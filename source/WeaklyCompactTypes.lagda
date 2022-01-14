@@ -17,6 +17,7 @@ open import DiscreteAndSeparated
 open import GenericConvergentSequence
 open import WLPO
 open import Plus-Properties
+open import OrderNotation
 
 open import UF-Base
 open import UF-Subsingletons
@@ -808,7 +809,7 @@ being-∃-compact∙-and-empty-is-prop {𝓤} {X} = sum-of-contradictory-props
 \begin{code}
 
 _has-inf_ : {X : 𝓤 ̇ } → (X → 𝟚) → 𝟚 → 𝓤 ̇
-p has-inf n = (∀ x → n ≤₂ p x) × (∀ m → (∀ x → m ≤₂ p x) → m ≤₂ n)
+p has-inf n = (∀ x → n ≤ p x) × (∀ (m : 𝟚) → (∀ x → m ≤ p x) → m ≤ n)
 
 having-inf-is-prop : {X : 𝓤 ̇ } (p : X → 𝟚) (n : 𝟚) → is-prop (p has-inf n)
 having-inf-is-prop {𝓤} {X} p n (f , g) (f' , g') = to-×-≡ r s
@@ -834,14 +835,14 @@ having-infs-is-prop {𝓤} {X} = Π-is-prop (fe 𝓤 𝓤) at-most-one-inf
   g (inl α) = ₁ , (λ x → back-transport (₁ ≤₂_) (α x) (≤₂-refl {₀})) , λ m ϕ → ₁-top
   g (inr u) = ₀ , (λ _ → ₀-bottom {₀}) , h
    where
-    h : (m : 𝟚) → (∀ x → m ≤₂ p x) → m ≤₂ ₀
+    h : (m : 𝟚) → (∀ x → m ≤ p x) → m ≤ ₀
     h m φ = ≤₂-criterion f
      where
       f : m ≡ ₁ → ₀ ≡ ₁
       f r = 𝟘-elim (u α)
        where
         α : ∀ x → p x ≡ ₁
-        α x = ₁-maximal (transport (_≤₂ p x) r (φ x))
+        α x = ₁-maximal (transport (_≤ p x) r (φ x))
 
 has-infs-Π-compact : {X : 𝓤 ̇ } → has-infs X → Π-compact X
 has-infs-Π-compact h p = f (h p)
@@ -879,9 +880,9 @@ inf₁-converse : {X : 𝓤 ̇ } (c : Π-compact X) {p : X → 𝟚}
               → (∀ x → p x ≡ ₁) → inf c p ≡ ₁
 inf₁-converse c {p} α = ₁-maximal (h g)
  where
-  h : (∀ x → ₁ ≤₂ p x) → ₁ ≤₂ inf c p
+  h : (∀ x → ₁ ≤ p x) → ₁ ≤ inf c p
   h = pr₂ (inf-property c p) ₁
-  g : ∀ x → ₁ ≤₂ p x
+  g : ∀ x → ₁ ≤ p x
   g x = ₁-maximal-converse (α x)
 
 \end{code}
@@ -911,7 +912,7 @@ The pointwise order on boolean predicates:
 \begin{code}
 
 _≤̇_ : {X : 𝓤 ̇ } → (X → 𝟚) → (X → 𝟚) → 𝓤 ̇
-p ≤̇ q = ∀ x → p x ≤₂ q x
+p ≤̇ q = ∀ x → p x ≤ q x
 
 \end{code}
 
@@ -921,10 +922,10 @@ is Κ with Y=𝟚, for simplicity, rather than in full generality:
 \begin{code}
 
 Κ⊣ : {X : 𝓤 ̇ } → ((X → 𝟚) → 𝟚) → 𝓤 ̇
-Κ⊣ A = (n : 𝟚) (p : _ → 𝟚) → Κ n ≤̇ p ⇔ n ≤₂ A p
+Κ⊣ A = (n : 𝟚) (p : _ → 𝟚) → Κ n ≤̇ p ⇔ n ≤ A p
 
 _⊣Κ : {X : 𝓤 ̇ } → ((X → 𝟚) → 𝟚) → 𝓤 ̇
-E ⊣Κ = (n : 𝟚) (p : _ → 𝟚) → E p ≤₂ n ⇔ p ≤̇ Κ n
+E ⊣Κ = (n : 𝟚) (p : _ → 𝟚) → E p ≤ n ⇔ p ≤̇ Κ n
 
 \end{code}
 
@@ -946,11 +947,11 @@ Right adjoints to Κ are characterized as follows:
     f₀ : A p ≡ ₁ → p ≡ (λ x → ₁)
     f₀ r = dfunext (fe 𝓤 𝓤₀) l₃
      where
-      l₀ : ₁ ≤₂ A p → Κ ₁ ≤̇ p
+      l₀ : ₁ ≤ A p → Κ ₁ ≤̇ p
       l₀ = pr₂ (φ ₁ p)
       l₁ : Κ ₁ ≤̇ p
       l₁ = l₀ (₁-maximal-converse r)
-      l₂ : (x : X) → ₁ ≤₂ p x
+      l₂ : (x : X) → ₁ ≤ p x
       l₂ = l₁
       l₃ : (x : X) → p x ≡ ₁
       l₃ x = ≤₂-criterion-converse (l₂ x) refl
@@ -959,16 +960,16 @@ Right adjoints to Κ are characterized as follows:
      where
       l₃ : (x : X) → p x ≡ ₁
       l₃ = happly s
-      l₂ : (x : X) → ₁ ≤₂ p x
+      l₂ : (x : X) → ₁ ≤ p x
       l₂ x = ₁-maximal-converse (l₃ x)
       l₁ : Κ ₁ ≤̇ p
       l₁ = l₂
-      l₀ : ₁ ≤₂ A p
+      l₀ : ₁ ≤ A p
       l₀ = pr₁ (φ ₁ p) l₁
   g : ((p : X → 𝟚) → A p ≡ ₁ ⇔ p ≡ (λ x → ₁)) → Κ⊣ A
   g γ n p = (g₀ n refl , g₁ n refl)
    where
-    g₀ : ∀ m → m ≡ n → Κ m ≤̇ p → m ≤₂ A p
+    g₀ : ∀ m → m ≡ n → Κ m ≤̇ p → m ≤ A p
     g₀ ₀ r l = ₀-bottom {₀}
     g₀ ₁ refl l = ₁-maximal-converse (pr₂ (γ p) l₁)
      where
@@ -977,7 +978,7 @@ Right adjoints to Κ are characterized as follows:
       l₁ : p ≡ (λ x → ₁)
       l₁ = dfunext (fe 𝓤 𝓤₀) l₀
 
-    g₁ : ∀ m → m ≡ n → m ≤₂ A p → Κ m ≤̇ p
+    g₁ : ∀ m → m ≡ n → m ≤ A p → Κ m ≤̇ p
     g₁ ₀ r l x = ₀-bottom {₀}
     g₁ ₁ refl l x = ₁-maximal-converse (l₀ x)
      where
@@ -1055,31 +1056,31 @@ and hence so is the type (X → 𝟚) with the pointwise operations.
   f : Κ⊣ A → E ⊣Κ
   f φ = γ
    where
-     γ : (n : 𝟚) (p : X → 𝟚) → (E p ≤₂ n) ⇔ (p ≤̇ Κ n)
+     γ : (n : 𝟚) (p : X → 𝟚) → (E p ≤ n) ⇔ (p ≤̇ Κ n)
      γ n p = (γ₀ , γ₁ )
       where
-       γ₀ : E p ≤₂ n → p ≤̇ Κ n
+       γ₀ : E p ≤ n → p ≤̇ Κ n
        γ₀ l = m₃
         where
-         m₀ : complement n ≤₂ A (λ x → complement (p x))
+         m₀ : complement n ≤ A (λ x → complement (p x))
          m₀ = complement-left l
          m₁ : Κ (complement n) ≤̇ (λ x → complement (p x))
          m₁ = pr₂ (φ (complement n) (λ x → complement (p x))) m₀
-         m₂ : (x : X) → complement n ≤₂ complement (p x)
+         m₂ : (x : X) → complement n ≤ complement (p x)
          m₂ = m₁
-         m₃ : (x : X) → p x ≤₂ n
+         m₃ : (x : X) → p x ≤ n
          m₃ x = complement-both-left (m₂ x)
 
-       γ₁ : p ≤̇ Κ n → E p ≤₂ n
+       γ₁ : p ≤̇ Κ n → E p ≤ n
        γ₁ l = complement-left m₀
         where
-         m₃ : (x : X) → p x ≤₂ n
+         m₃ : (x : X) → p x ≤ n
          m₃ = l
-         m₂ : (x : X) → complement n ≤₂ complement (p x)
+         m₂ : (x : X) → complement n ≤ complement (p x)
          m₂ x = complement-both-right (m₃ x)
          m₁ : Κ (complement n) ≤̇ (λ x → complement (p x))
          m₁ = m₂
-         m₀ : complement n ≤₂ A (λ x → complement (p x))
+         m₀ : complement n ≤ A (λ x → complement (p x))
          m₀ = pr₁ (φ (complement n) (λ x → complement (p x))) m₁
 
 𝟚-overt-is-Π-compact : {X : 𝓤 ̇ } → (E : (X → 𝟚) → 𝟚)
@@ -1091,31 +1092,31 @@ and hence so is the type (X → 𝟚) with the pointwise operations.
   g : E ⊣Κ → Κ⊣ A
   g γ = φ
    where
-     φ : (n : 𝟚) (p : X → 𝟚) → Κ n ≤̇ p ⇔ n ≤₂ A p
+     φ : (n : 𝟚) (p : X → 𝟚) → Κ n ≤̇ p ⇔ n ≤ A p
      φ n p = (φ₀ , φ₁ )
       where
-       φ₀ : Κ n ≤̇ p → n ≤₂ A p
+       φ₀ : Κ n ≤̇ p → n ≤ A p
        φ₀ l = complement-right m₀
         where
-         m₃ : (x : X) → n ≤₂ p x
+         m₃ : (x : X) → n ≤ p x
          m₃ = l
-         m₂ : (x : X) → complement (p x) ≤₂ complement n
+         m₂ : (x : X) → complement (p x) ≤ complement n
          m₂ x = complement-both-right (m₃ x)
          m₁ : (λ x → complement (p x)) ≤̇ Κ (complement n)
          m₁ = m₂
-         m₀ : E (λ x → complement (p x)) ≤₂ complement n
+         m₀ : E (λ x → complement (p x)) ≤ complement n
          m₀ = pr₂ (γ (complement n) (λ x → complement (p x))) m₂
 
-       φ₁ : n ≤₂ A p → Κ n ≤̇ p
+       φ₁ : n ≤ A p → Κ n ≤̇ p
        φ₁ l = m₃
         where
-         m₀ : E (λ x → complement (p x)) ≤₂ complement n
+         m₀ : E (λ x → complement (p x)) ≤ complement n
          m₀ = complement-right l
          m₁ : (λ x → complement (p x)) ≤̇ Κ (complement n)
          m₁ = pr₁ (γ (complement n) (λ x → complement (p x))) m₀
-         m₂ : (x : X) → complement (p x) ≤₂ complement n
+         m₂ : (x : X) → complement (p x) ≤ complement n
          m₂ = m₁
-         m₃ : (x : X) → n ≤₂ p x
+         m₃ : (x : X) → n ≤ p x
          m₃ x = complement-both-left (m₂ x)
 
 \end{code}

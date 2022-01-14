@@ -349,6 +349,19 @@ sub a ₀ g = a
 sub ₀ ₁ ()
 sub ₁ ₁ g = ₀
 
+sub-property₀ : {a b : 𝟚} (g : a ≥ b)
+              → sub a b g ≡ ₀
+              → a ≡ b
+sub-property₀ {₀} {₀} g p = refl
+sub-property₀ {₁} {₁} g p = refl
+
+sub-property₁ : {a b : 𝟚} (g : a ≥ b)
+              → sub a b g ≡ ₁
+              → (a ≡ ₁) × (b ≡ ₀)
+sub-property₁ {a} {₀} g p = p , refl
+sub-property₁ {₀} {₁} () p
+sub-property₁ {₁} {₁} g ()
+
 \end{code}
 
 

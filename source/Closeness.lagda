@@ -36,6 +36,7 @@ open import DiscreteAndSeparated
 open import UF-Miscelanea
 open import Two-Properties
 open import OrderNotation
+open import CanonicalMapNotation
 
 module sequences
         {𝓤 : Universe}
@@ -207,7 +208,7 @@ Ultra property:
                 → head α ≡ head β
  closeness-eq₁' α β p = Cases (δ (head α) (head β)) id
    (λ h≢ → 𝟘-elim (zero-is-not-one
-    (is-Zero-Zero ⁻¹ ∙ ap (λ - → incl - 0) (closeness-eq₀ α β h≢ ⁻¹) ∙ p)))
+    (is-Zero-Zero ⁻¹ ∙ ap (λ - → ι - 0) (closeness-eq₀ α β h≢ ⁻¹) ∙ p)))
 
  open import NaturalsOrder
 
@@ -278,26 +279,26 @@ convergent sequence:
 \begin{code}
 
 ℕ∞-closeness : ℕ∞ → ℕ∞ → ℕ∞
-ℕ∞-closeness u v = Cantor-closeness (incl u) (incl v)
+ℕ∞-closeness u v = Cantor-closeness (ι u) (ι v)
 
 ℕ∞-infinitely-close-to-itself : (u : ℕ∞) → ℕ∞-closeness u u ≡ ∞
-ℕ∞-infinitely-close-to-itself u = Cantor-infinitely-close-to-itself (incl u)
+ℕ∞-infinitely-close-to-itself u = Cantor-infinitely-close-to-itself (ι u)
 
 ℕ∞-equal-are-infinitely-close : (u v : ℕ∞) → u ≡ v → ℕ∞-closeness u v ≡ ∞
 ℕ∞-equal-are-infinitely-close u .u refl = ℕ∞-infinitely-close-to-itself u
 
 ℕ∞-infinitely-close-are-equal : (u v : ℕ∞) → ℕ∞-closeness u v ≡ ∞ → u ≡ v
-ℕ∞-infinitely-close-are-equal u v r = incl-lc (fe 𝓤₀ 𝓤₀) γ
+ℕ∞-infinitely-close-are-equal u v r = ℕ∞-to-ℕ→𝟚-lc (fe 𝓤₀ 𝓤₀) γ
  where
-  γ : incl u ≡ incl v
-  γ = Cantor-infinitely-close-are-equal (incl u) (incl v) r
+  γ : ι u ≡ ι v
+  γ = Cantor-infinitely-close-are-equal (ι u) (ι v) r
 
 ℕ∞-symmetric-property : (u v : ℕ∞) → ℕ∞-closeness u v ≡ ℕ∞-closeness v u
-ℕ∞-symmetric-property u v = Cantor-symmetric-property (incl u) (incl v)
+ℕ∞-symmetric-property u v = Cantor-symmetric-property (ι u) (ι v)
 
 ℕ∞-ultra-property : (u v w : ℕ∞)
                   → min (ℕ∞-closeness u v , ℕ∞-closeness v w) ≼ ℕ∞-closeness u w
-ℕ∞-ultra-property u v w = Cantor-ultra-property (incl u) (incl v) (incl w)
+ℕ∞-ultra-property u v w = Cantor-ultra-property (ι u) (ι v) (ι w)
 
 \end{code}
 

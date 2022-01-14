@@ -36,6 +36,7 @@ open import Two-Properties
 open import GenericConvergentSequence renaming (min to min')
 open import CoNaturals fe
 open import OrderNotation
+open import CanonicalMapNotation
 open import UF-Base
 
 \end{code}
@@ -259,14 +260,14 @@ given in GenericConvergentSequence:
 \begin{code}
 
 min'-eq₀ : ∀ v → uncurry min' (Zero , v) ≡ Zero
-min'-eq₀ v = incl-lc (fe 𝓤₀ 𝓤₀) refl
+min'-eq₀ v = ℕ∞-to-ℕ→𝟚-lc (fe 𝓤₀ 𝓤₀) refl
 
 min'-eq₁ : ∀ u → uncurry min' (Succ u , Zero) ≡ Zero
-min'-eq₁ u = incl-lc  (fe 𝓤₀ 𝓤₀)
+min'-eq₁ u = ℕ∞-to-ℕ→𝟚-lc  (fe 𝓤₀ 𝓤₀)
              (dfunext (fe 𝓤₀ 𝓤₀) (λ i → Lemma[min𝟚ab≡₀] (inr refl)))
 
 min'-eq₂ : ∀ u v → uncurry min' (Succ u , Succ v) ≡ Succ (uncurry min' (u , v))
-min'-eq₂ u v = incl-lc (fe 𝓤₀ 𝓤₀) (dfunext (fe 𝓤₀ 𝓤₀) γ)
+min'-eq₂ u v = ℕ∞-to-ℕ→𝟚-lc (fe 𝓤₀ 𝓤₀) (dfunext (fe 𝓤₀ 𝓤₀) γ)
  where γ : pr₁ (uncurry min' (Succ u , Succ v)) ∼ pr₁ (Succ (uncurry min' (u , v)))
        γ zero = refl
        γ (succ i) = refl
@@ -455,7 +456,7 @@ Relation of min with ≼ defined in the module GenericConvergentSequence.
   b : u ≡ Succ (Pred u)
   b = pr₁ (min-Succ u v (Pred (min (u , v))) a)
   γ : zero ⊏ u
-  γ = ap (λ - → incl - zero) b
+  γ = ap (λ - → ι - zero) b
 ≼-min-l u v (succ n) p = γ
  where
   a : min (u , v) ≡ Succ (Pred (min (u , v)))

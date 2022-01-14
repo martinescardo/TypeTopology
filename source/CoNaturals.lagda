@@ -75,6 +75,7 @@ module CoNaturals (fe : FunExt) where
 
 open import SpartanMLTT
 open import GenericConvergentSequence
+open import CanonicalMapNotation
 
 open import Two-Properties
 open import Plus-Properties
@@ -221,11 +222,11 @@ homomorphism-existence {𝓤} {X} κ = h , dfunext (fe 𝓤 𝓤₀) h-spec
              Q n (inr x')    ∎
       c₃ : (n : ℕ) → E(q(Q n (inr x))) ≡ E(Q n (inr x'))
       c₃ n = ap E (c₂ n)
-      c₄ : (i : ℕ) → incl(h x) i ≡ incl(Succ (h x')) i
+      c₄ : (i : ℕ) → ι (h x) i ≡ ι (Succ (h x')) i
       c₄ 0  = c₃ 0
       c₄ (succ i) = c₃(succ i)
       c₅ : h x ≡ Succ (h x')
-      c₅ = incl-lc fe₀ (dfunext fe₀ c₄)
+      c₅ = ℕ∞-to-ℕ→𝟚-lc fe₀ (dfunext fe₀ c₄)
 
 ℕ∞-corec  : {X : 𝓤 ̇ } → (X → 𝟙 + X) → (X → ℕ∞)
 ℕ∞-corec c = pr₁(homomorphism-existence c)
@@ -248,9 +249,9 @@ We now discuss coinduction. We first define bisimulations.
 ℕ∞-coinduction : (R : ℕ∞ → ℕ∞ → 𝓤 ̇ )
                → ℕ∞-bisimulation R
                → (u v : ℕ∞) → R u v → u ≡ v
-ℕ∞-coinduction R b u v r = incl-lc fe₀ (dfunext fe₀ (l u v r))
+ℕ∞-coinduction R b u v r = ℕ∞-to-ℕ→𝟚-lc fe₀ (dfunext fe₀ (l u v r))
  where
-  l : (u v : ℕ∞) → R u v → (i : ℕ) → incl u i ≡ incl v i
+  l : (u v : ℕ∞) → R u v → (i : ℕ) → ι u i ≡ ι v i
   l u v r 0 =  pr₁(b u v r)
   l u v r (succ i) = l (Pred u) (Pred v) (pr₂(b u v r)) i
 

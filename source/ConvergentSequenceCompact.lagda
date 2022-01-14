@@ -48,19 +48,19 @@ This is the main theorem proved in this module:
   a = (α , d)
 
   Dagger₀ : (n : ℕ) → a ≡ ι n → p (ι n) ≡ ₀
-  Dagger₀ 0 r =  p (ι 0)      ≡⟨ refl ⟩
-                 α 0          ≡⟨ ap (λ - → incl - 0) r ⟩
-                 incl (ι 0) 0 ≡⟨ refl ⟩
-                 ₀            ∎
+  Dagger₀ 0 r =  p (ι 0)   ≡⟨ refl ⟩
+                 α 0       ≡⟨ ap (λ - → ι - 0) r ⟩
+                 ι (ι 0) 0 ≡⟨ refl ⟩
+                 ₀         ∎
 
-  Dagger₀ (succ n) r = p (ι (succ n))             ≡⟨ w ⁻¹ ⟩
-                       α (succ n)                 ≡⟨ ap (λ - → incl - (succ n)) r ⟩
-                       incl (ι (succ n)) (succ n) ≡⟨ ι-diagonal₀ n ⟩
-                       ₀                          ∎
+  Dagger₀ (succ n) r = p (ι (succ n))          ≡⟨ w ⁻¹ ⟩
+                       α (succ n)              ≡⟨ ap (λ - → ι - (succ n)) r ⟩
+                       ι (ι (succ n)) (succ n) ≡⟨ ι-diagonal₀ n ⟩
+                       ₀                       ∎
    where
-    t = α n                 ≡⟨ ap (λ - → incl - n) r  ⟩
-        incl (ι (succ n)) n ≡⟨ ι-diagonal₁ n ⟩
-        ₁                   ∎
+    t = α n              ≡⟨ ap (λ - → ι - n) r  ⟩
+        ι (ι (succ n)) n ≡⟨ ι-diagonal₁ n ⟩
+        ₁                ∎
 
     w = α (succ n)              ≡⟨ ap (λ - → min𝟚 - (p (ι (succ n)))) t ⟩
         min𝟚 ₁ (p (ι (succ n))) ≡⟨ refl ⟩
@@ -68,16 +68,16 @@ This is the main theorem proved in this module:
 
   Dagger₁ : a ≡ ∞ → (n : ℕ) → p (ι n) ≡ ₁
   Dagger₁ r 0 = p (ι 0) ≡⟨ refl ⟩
-                α 0         ≡⟨ ap (λ - → incl - 0) r ⟩
-                incl ∞ 0    ≡⟨ refl ⟩
-                ₁           ∎
-  Dagger₁ r (succ n) = p (ι (succ n))  ≡⟨ w ⁻¹ ⟩
-                       α (succ n)      ≡⟨ ap (λ - → incl - (succ n)) r ⟩
-                       incl ∞ (succ n) ≡⟨ refl ⟩
-                       ₁               ∎
+                α 0     ≡⟨ ap (λ - → ι - 0) r ⟩
+                ι ∞ 0   ≡⟨ refl ⟩
+                ₁       ∎
+  Dagger₁ r (succ n) = p (ι (succ n)) ≡⟨ w ⁻¹ ⟩
+                       α (succ n)     ≡⟨ ap (λ - → ι - (succ n)) r ⟩
+                       ι ∞ (succ n)   ≡⟨ refl ⟩
+                       ₁              ∎
    where
     s : α n ≡ ₁
-    s = ap (λ - → incl - n) r
+    s = ap (λ - → ι - n) r
 
     w : α(succ n) ≡ p (ι (succ n))
     w = α (succ n)              ≡⟨ ap (λ - → min𝟚 - (p (ι (succ n)))) s ⟩

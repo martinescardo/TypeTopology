@@ -64,7 +64,7 @@ sense of UF) to our formulation.
 \begin{code}
 
 LPO-gives-compact-ℕ : LPO → compact ℕ
-LPO-gives-compact-ℕ lpo β = cases a b d
+LPO-gives-compact-ℕ ℓ β = cases a b d
   where
     A = (Σ n ꞉ ℕ , β n ≡ ₀) + (Π n ꞉ ℕ , β n ≡ ₁)
 
@@ -75,13 +75,13 @@ LPO-gives-compact-ℕ lpo β = cases a b d
     x = (α , force-decreasing-is-decreasing β)
 
     d : decidable(Σ n ꞉ ℕ , x ≡ ι n)
-    d = lpo x
+    d = ℓ x
 
     a : (Σ n ꞉ ℕ , x ≡ ι n) → A
     a (n , p) = inl (force-decreasing-is-not-much-smaller β n c)
       where
         c : α n ≡ ₀
-        c = ap (λ - → incl - n) p ∙ ι-diagonal₀ n
+        c = ap (λ - → ι - n) p ∙ ι-diagonal₀ n
 
     b : (¬ (Σ n ꞉ ℕ , x ≡ ι n)) → A
     b u = inr g
@@ -99,18 +99,18 @@ LPO-gives-compact-ℕ lpo β = cases a b d
             l = not-finite-is-∞ (fe 𝓤₀ 𝓤₀) v
 
             e : α n ≡ ₁
-            e = ap (λ - → incl - n) l
+            e = ap (λ - → ι - n) l
 
 compact-ℕ-gives-LPO : compact ℕ → LPO
-compact-ℕ-gives-LPO chlpo x = cases a b d
+compact-ℕ-gives-LPO κ x = γ
   where
     A = decidable (Σ n ꞉ ℕ , x ≡ ι n)
 
     β : ℕ → 𝟚
-    β = incl x
+    β = ι x
 
     d : (Σ n ꞉ ℕ , β n ≡ ₀) + (Π n ꞉ ℕ , β n ≡ ₁)
-    d = chlpo β
+    d = κ β
 
     a : (Σ n ꞉ ℕ , β n ≡ ₀) → A
     a (n , p) = inl (pr₁ g , pr₂(pr₂ g))
@@ -125,13 +125,16 @@ compact-ℕ-gives-LPO chlpo x = cases a b d
         ψ = uncurry (λ n → equal-₁-different-from-₀(φ n))
 
         f : (Σ n ꞉ ℕ , x ≡ ι n) → Σ n ꞉ ℕ , β n ≡ ₀
-        f (n , p) = (n , (ap (λ - → incl - n) p ∙ ι-diagonal₀ n))
+        f (n , p) = (n , (ap (λ - → ι - n) p ∙ ι-diagonal₀ n))
           where
-           l : incl x n ≡ incl (ι n) n
-           l = ap (λ - → incl - n) p
+           l : ι x n ≡ ι (ι n) n
+           l = ap (λ - → ι - n) p
 
         g : ¬ (Σ n ꞉ ℕ , x ≡ ι n)
         g = contrapositive f ψ
+
+    γ : decidable (Σ n ꞉ ℕ , x ≡ ι n)
+    γ = cases a b d
 
 \end{code}
 
