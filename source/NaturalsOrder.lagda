@@ -382,8 +382,8 @@ Tom de Jong, 5 November 2021.
 
 <-linear : (n m : ℕ) → n < m + (n ≡ m) + m < n
 <-linear zero     zero     = inr (inl refl)
-<-linear zero     (succ m) = inl *
-<-linear (succ n) zero     = inr (inr *)
+<-linear zero     (succ m) = inl ⋆
+<-linear (succ n) zero     = inr (inr ⋆)
 <-linear (succ n) (succ m) = γ IH
  where
   γ : (n < m) + (n ≡ m) + (m < n)
