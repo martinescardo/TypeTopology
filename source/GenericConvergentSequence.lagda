@@ -928,7 +928,7 @@ Notice that the condition on β can be expressed as "is-prop (fiber β ₁)".
 \begin{code}
 
 has-at-most-one-₁ : (ℕ → 𝟚) → 𝓤₀ ̇
-has-at-most-one-₁ β = is-prop (fiber β ₁)
+has-at-most-one-₁ β = is-prop (Σ n ꞉ ℕ , β n ≡ ₁)
 
 \end{code}
 
