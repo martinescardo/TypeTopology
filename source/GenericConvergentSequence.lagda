@@ -913,8 +913,28 @@ Characterization of ⊏.
 
 Added 14th January 2022.
 
-We now develop an automorphism of the Cantor type which induces an an
-equivalent copy of ℕ∞.
+We now develop an automorphism ϕ with inverse γ of the Cantor type
+which induces an equivalent copy of ℕ∞.
+
+The functions ϕ and γ restrict to an equivalence between ℕ∞ and the
+subtype
+
+     Σ β ꞉ (ℕ → 𝟚) , is-prop (Σ n ꞉ ℕ , β n ≡ ₁)
+
+of the Cantor type (the sequences with at most one ₁).
+
+Notice that the condition on β can be expressed as "is-prop (fiber β ₁)".
+
+\begin{code}
+
+has-at-most-one-₁ : (ℕ → 𝟚) → 𝓤₀ ̇
+has-at-most-one-₁ β = is-prop (fiber β ₁)
+
+\end{code}
+
+We define this in a submodule because the names ϕ and γ are likely to
+be used in other files that import this one, so that name clashes are
+avoided.
 
 \begin{code}
 
@@ -944,19 +964,14 @@ module an-automorphism-and-an-equivalence where
 
 \end{code}
 
-They restrict to an equivalence between ℕ∞ and a the subtype
-
-     Σ β ꞉ (ℕ → 𝟚) , is-prop (Σ n ꞉ ℕ , β n ≡ ₁)
-
-of the Cantor type (the sequences with at most one ₁).
-
-Notice that the condition on β can be expressed as "fiber β ₁".
+Now we discuss the restrictions of ϕ and γ mentioned above.
 
 \begin{code}
 
  ϕ-property : funext₀
-            → (α : ℕ → 𝟚) (δ : is-decreasing α)
-            → is-prop (Σ n ꞉ ℕ , ϕ α n ≡ ₁)
+            → (α : ℕ → 𝟚)
+            → is-decreasing α
+            → has-at-most-one-₁ (ϕ α)
  ϕ-property fe α δ (0 , p) (0 , q)      = to-subtype-≡ (λ _ → 𝟚-is-set) refl
  ϕ-property fe α δ (0 , p) (succ m , q) = 𝟘-elim (Zero-not-Succ (II ⁻¹ ∙ IV))
   where
@@ -977,7 +992,7 @@ Notice that the condition on β can be expressed as "fiber β ₁".
    IV : u ≡ Succ (ι m)
    IV = uncurry (Succ-criterion fe) III
 
- ϕ-property fe α δ (succ n , p) (0 , q)      = 𝟘-elim (Zero-not-Succ (II ⁻¹ ∙ IV))
+ ϕ-property fe α δ (succ n , p) (0 , q)= 𝟘-elim (Zero-not-Succ (II ⁻¹ ∙ IV))
   where
    u : ℕ∞
    u = (α , δ)
@@ -1036,22 +1051,23 @@ the definition of γ:
 
 \end{code}
 
-We need the following consequences of is-prop (fiber β ₁).
+We need the following consequences of the sequence β having at most
+one ₁.
 
 \begin{code}
 
- at-most-one-₁ : (β : ℕ → 𝟚)
-               → is-prop (fiber β ₁)
-               → {m n : ℕ} → (β m ≡ ₁) × (β n ≡ ₁) → m ≡ n
- at-most-one-₁ β π {m} {n} (p , q) = ap pr₁ (π (m , p) (n , q))
+ at-most-one-₁-Lemma₀ : (β : ℕ → 𝟚)
+                      → has-at-most-one-₁ β
+                      → {m n : ℕ} → (β m ≡ ₁) × (β n ≡ ₁) → m ≡ n
+ at-most-one-₁-Lemma₀ β π {m} {n} (p , q) = ap pr₁ (π (m , p) (n , q))
 
- at-most-one-₁' : (β : ℕ → 𝟚)
-                → is-prop (fiber β ₁)
-                → {m n : ℕ} → m ≢ n → β m ≡ ₁ → β n ≡ ₀
- at-most-one-₁' β π {m} {n} ν p = w
+ at-most-one-₁-Lemma₁ : (β : ℕ → 𝟚)
+                      → has-at-most-one-₁ β
+                      → {m n : ℕ} → m ≢ n → β m ≡ ₁ → β n ≡ ₀
+ at-most-one-₁-Lemma₁ β π {m} {n} ν p = w
   where
    I : β n ≢ ₁
-   I q = ν (at-most-one-₁ β π (p , q))
+   I q = ν (at-most-one-₁-Lemma₀ β π (p , q))
 
    w : β n ≡ ₀
    w = different-from-₁-equal-₀ I
@@ -1065,12 +1081,12 @@ a suitable induction hypothesis.
 \begin{code}
 
  γ-lemma : (β : ℕ → 𝟚)
-         → is-prop (fiber β ₁)
+         → has-at-most-one-₁ β
          → (n : ℕ) → β (n ∔ 1) ≡ ₁ → (k : ℕ) → k ≤ n → γ β k ≡ ₁
  γ-lemma β π n p zero l = w
   where
    w : complement (β 0) ≡ ₁
-   w = complement-intro₀ (at-most-one-₁' β π (positive-not-zero n) p)
+   w = complement-intro₀ (at-most-one-₁-Lemma₁ β π (positive-not-zero n) p)
 
  γ-lemma β π 0 p (succ k) ()
  γ-lemma β π (succ n) p (succ k) l = w
@@ -1078,19 +1094,20 @@ a suitable induction hypothesis.
    IH : γ β k ≡ ₁
    IH = γ-lemma β π (n ∔ 1) p k (≤-trans k n (n ∔ 1) l (≤-succ n))
 
-   II : n ∔ 2 ≢ succ k
-   II m = not-less-than-itself n u
+   I : n ∔ 2 ≢ succ k
+   I m = not-less-than-itself n r
     where
-     o : n ∔ 1 ≡ k
-     o = succ-lc m
-     u : n ∔ 1 ≤ n
-     u = back-transport (_≤ n) o l
+     q : n ∔ 1 ≡ k
+     q = succ-lc m
 
-   I : β (succ k) ≡ ₀
-   I = at-most-one-₁' β π II p
+     r : n ∔ 1 ≤ n
+     r = back-transport (_≤ n) q l
+
+   II : β (succ k) ≡ ₀
+   II = at-most-one-₁-Lemma₁ β π I p
 
    w : γ β k ⊕ β (succ k) ≡ ₁
-   w =  ⊕-intro₁₀ IH I
+   w =  ⊕-intro₁₀ IH II
 
 \end{code}
 
@@ -1099,8 +1116,9 @@ sequence if it is given a sequence with at most one ₁:
 
 \begin{code}
 
- γ-property : (β : ℕ → 𝟚) → is-prop (fiber β ₁)
-             → is-decreasing (γ β)
+ γ-property : (β : ℕ → 𝟚)
+            → has-at-most-one-₁ β
+            → is-decreasing (γ β)
  γ-property β π n = IV
   where
    I : β (n ∔ 1) ≡ ₁ → γ β n ≡ ₁
@@ -1121,7 +1139,7 @@ And with this we get the promised equivalence.
 
 \begin{code}
 
- ℕ∞-charac : funext₀ → ℕ∞ ≃ (Σ β ꞉ (ℕ → 𝟚), is-prop (fiber β ₁))
+ ℕ∞-charac : funext₀ → ℕ∞ ≃ (Σ β ꞉ (ℕ → 𝟚), has-at-most-one-₁ β)
  ℕ∞-charac fe = qinveq f (g , η , ε)
   where
    A = Σ β ꞉ (ℕ → 𝟚), is-prop (fiber β ₁)
@@ -1141,4 +1159,13 @@ And with this we get the promised equivalence.
    ε (β , π) = to-subtype-≡
                  (λ β → being-prop-is-prop fe)
                  (dfunext fe (η-cantor β))
+\end{code}
+
+We export the above outside the module:
+
+\begin{code}
+
+ℕ∞-charac : funext₀ → ℕ∞ ≃ (Σ β ꞉ (ℕ → 𝟚), has-at-most-one-₁ β)
+ℕ∞-charac = an-automorphism-and-an-equivalence.ℕ∞-charac
+
 \end{code}
