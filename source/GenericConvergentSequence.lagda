@@ -913,8 +913,8 @@ Characterization of ⊏.
 
 Added 14th January 2022.
 
-We now develop an automorphism ϕ with inverse γ of the Cantor type
-which induces an equivalent copy of ℕ∞.
+We now develop an automorphism ϕ with inverse γ of the Cantor
+type ℕ → 𝟚 which induces an equivalent copy of ℕ∞.
 
 The functions ϕ and γ restrict to an equivalence between ℕ∞ and the
 subtype
