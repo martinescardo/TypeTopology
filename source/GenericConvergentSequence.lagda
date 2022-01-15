@@ -911,6 +911,8 @@ Characterization of ⊏.
 
 \end{code}
 
+Added 14th January 2022.
+
 We now develop an automorphism of the Cantor type which induces an an
 equivalent copy of ℕ∞.
 
