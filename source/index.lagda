@@ -107,7 +107,7 @@ All modules in alphabetical order:
 
 \begin{code}
 
-import ADecidableQuantificationOverTheNaturals
+import ADecidableQuantificationOverTheNaturals -- Proved by Martin Escardo, formalized by Chuangjie Xu.
 import AlternativePlus
 import ArithmeticViaEquivalence
 import BanachFixedPointTheorem -- By Todd Waugh Ambridge
