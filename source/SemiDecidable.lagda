@@ -263,7 +263,7 @@ decidability-is-semidecidable X σ τ = ∥∥-rec being-semidecidable-is-prop �
 
 \end{code}
 
-Before ...
+Before ... TODO: Write more
 
 \begin{code}
 
@@ -293,7 +293,7 @@ instance
 Ωˢᵈ-is-set = subtypes-of-sets-are-sets ι Ωˢᵈ-to-Ω-left-cancellable
               (Ω-is-set fe pe)
 
---
+-- TODO: Write comment
 
 Ωᵈᵉᶜ : (𝓤 : Universe) → 𝓤 ⁺ ̇
 Ωᵈᵉᶜ 𝓤 = Σ P ꞉ Ω 𝓤 , decidable (P holds)
@@ -317,27 +317,24 @@ instance
                             Ωᵈᵉᶜ-to-Ωˢᵈ-left-cancellable
                             Ωˢᵈ-is-set
 
--- TODO: Use the above + 𝟚 ≃ Ωᵈᵉᶜ 𝓤 instead of the below, or don't use at all maybe?
-{-
+-- TODO: Write comment
 𝟚-to-Ωˢᵈ : 𝟚 → Ωˢᵈ 𝓤
-𝟚-to-Ωˢᵈ ₀ = 𝟘 , 𝟘-is-semidecidable
-𝟚-to-Ωˢᵈ ₁ = 𝟙 , 𝟙-is-semidecidable
+𝟚-to-Ωˢᵈ = Ωᵈᵉᶜ-to-Ωˢᵈ ∘ ⌜ 𝟚-is-the-type-of-decidable-propositions fe pe ⌝
 
 instance
  canonical-map-𝟚-to-Ωˢᵈ : Canonical-Map 𝟚 (Ωˢᵈ 𝓤)
  ι {{canonical-map-𝟚-to-Ωˢᵈ}} = 𝟚-to-Ωˢᵈ
 
-𝟚-to-Ωˢᵈ-left-cancellable : left-cancellable (canonical-map 𝟚 (Ωˢᵈ 𝓤))
-𝟚-to-Ωˢᵈ-left-cancellable {𝓤} {₀} {₀} e = refl
-𝟚-to-Ωˢᵈ-left-cancellable {𝓤} {₀} {₁} e = 𝟘-elim (idtofun 𝟙 𝟘 (ap pr₁ (e ⁻¹)) ⋆)
-𝟚-to-Ωˢᵈ-left-cancellable {𝓤} {₁} {₀} e = 𝟘-elim (idtofun 𝟙 𝟘 (ap pr₁ e     ) ⋆)
-𝟚-to-Ωˢᵈ-left-cancellable {𝓤} {₁} {₁} e = refl
+-- 𝟚-to-Ωˢᵈ-left-cancellable : left-cancellable (canonical-map 𝟚 (Ωˢᵈ 𝓤))
+-- 𝟚-to-Ωˢᵈ-left-cancellable =
 
 𝟚-to-Ωˢᵈ-is-embedding : is-embedding (canonical-map 𝟚 (Ωˢᵈ 𝓤))
-𝟚-to-Ωˢᵈ-is-embedding = lc-maps-into-sets-are-embeddings ι
-                         𝟚-to-Ωˢᵈ-left-cancellable
-                         Ωˢᵈ-is-set
--}
+𝟚-to-Ωˢᵈ-is-embedding {𝓤} =
+ ∘-is-embedding (equivs-are-embeddings ⌜ χ ⌝ (⌜⌝-is-equiv χ))
+                Ωᵈᵉᶜ-to-Ωˢᵈ-is-embedding
+  where
+   χ : 𝟚 ≃ Ωᵈᵉᶜ 𝓤
+   χ = 𝟚-is-the-type-of-decidable-propositions fe pe
 
 \end{code}
 
@@ -402,12 +399,12 @@ LPO-across-universes {𝓤} {𝓥} = LPO' 𝓤  ≃⟨ ≃-sym LPO-equivalence �
 
 \begin{code}
 
-LPO-in-terms-of-Ωˢᵈ : {𝓤 : Universe}
-                    → LPO' 𝓤 ≃ is-equiv (canonical-map (Ωᵈᵉᶜ 𝓤) (Ωˢᵈ 𝓤))
-LPO-in-terms-of-Ωˢᵈ {𝓤} = logically-equivalent-props-are-equivalent
-                           LPO'-is-prop
-                           (being-equiv-is-prop (λ _ _ → fe) ι)
-                           ⦅⇒⦆ ⦅⇐⦆
+LPO-in-terms-of-Ωᵈᵉᶜ-and-Ωˢᵈ : {𝓤 : Universe}
+                             → LPO' 𝓤 ≃ is-equiv (canonical-map (Ωᵈᵉᶜ 𝓤) (Ωˢᵈ 𝓤))
+LPO-in-terms-of-Ωᵈᵉᶜ-and-Ωˢᵈ {𝓤} = logically-equivalent-props-are-equivalent
+                                    LPO'-is-prop
+                                    (being-equiv-is-prop (λ _ _ → fe) ι)
+                                    ⦅⇒⦆ ⦅⇐⦆
    where
     ⦅⇒⦆ : LPO' 𝓤 → is-equiv ι
     ⦅⇒⦆ lpo = surjective-embeddings-are-equivs ι Ωᵈᵉᶜ-to-Ωˢᵈ-is-embedding
@@ -425,6 +422,22 @@ LPO-in-terms-of-Ωˢᵈ {𝓤} = logically-equivalent-props-are-equivalent
       Y-is-dec = pr₂ (β (X , σ))
       e : Y ≡ X
       e = ap pr₁ (inverses-are-sections ι ι-is-equiv (X , σ))
+
+LPO-in-terms-of-𝟚-and-Ωˢᵈ : {𝓤 : Universe}
+                          → LPO ≃ is-equiv (canonical-map 𝟚 (Ωˢᵈ 𝓤))
+LPO-in-terms-of-𝟚-and-Ωˢᵈ {𝓤} = logically-equivalent-props-are-equivalent
+                                 LPO-is-prop (being-equiv-is-prop (λ _ _ → fe) ι)
+                                 ⦅⇒⦆ ⦅⇐⦆
+ where
+  χ : 𝟚 ≃ Ωᵈᵉᶜ 𝓤
+  χ = 𝟚-is-the-type-of-decidable-propositions fe pe
+  ⦅⇒⦆ : LPO → is-equiv ι
+  ⦅⇒⦆ lpo = ∘-is-equiv (⌜⌝-is-equiv χ)
+            (⌜ LPO-in-terms-of-Ωᵈᵉᶜ-and-Ωˢᵈ ⌝ (⌜ LPO-equivalence ⌝ lpo))
+  ⦅⇐⦆ : is-equiv ι → LPO
+  ⦅⇐⦆ i = ⌜ LPO-equivalence ⌝⁻¹
+          (⌜ LPO-in-terms-of-Ωᵈᵉᶜ-and-Ωˢᵈ ⌝⁻¹
+            (≃-2-out-of-3-right (⌜⌝-is-equiv χ) i))
 
 \end{code}
 
