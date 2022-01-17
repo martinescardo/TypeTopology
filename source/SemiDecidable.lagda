@@ -25,6 +25,12 @@ The table of contents is as follows:
 
 References
 
+[Bauer2006] Andrej Bauer, "First Steps in Synthetic Computability Theory",
+            Electronic Notes in Theoretical Computer Science, volume 155,
+            pages 5–13, 2006. Proceedings of the 21st Annual Conference on
+            Mathematical Foundations of Programming Semantics (MFPS XXI).
+            doi:10.1016/j.entcs.2005.11.049
+
 [EK2017] Martín H. Escardó and Cory M. Knapp, "Partial Elements and Recursion
          via Dominances in Univalent Type Theory", In Valentin Goranko and Mads
          Dam, editors, 26th EACSL Annual Conference on Computer Science Logic
@@ -402,9 +408,6 @@ instance
  canonical-map-𝟚-to-Ωˢᵈ : Canonical-Map 𝟚 (Ωˢᵈ 𝓤)
  ι {{canonical-map-𝟚-to-Ωˢᵈ}} = 𝟚-to-Ωˢᵈ
 
--- 𝟚-to-Ωˢᵈ-left-cancellable : left-cancellable (canonical-map 𝟚 (Ωˢᵈ 𝓤))
--- 𝟚-to-Ωˢᵈ-left-cancellable =
-
 𝟚-to-Ωˢᵈ-is-embedding : is-embedding (canonical-map 𝟚 (Ωˢᵈ 𝓤))
 𝟚-to-Ωˢᵈ-is-embedding {𝓤} =
  ∘-is-embedding (equivs-are-embeddings ⌜ χ ⌝ (⌜⌝-is-equiv χ))
@@ -565,9 +568,12 @@ MP-across-universes {𝓤} {𝓥} = MP' 𝓤  ≃⟨ ≃-sym MP-equivalence ⟩
 
 \end{code}
 
-Link to Andrej's paper
+The below is a formalization of [Proposition 3.17, Bauer2006], specifically of
+the equivalence of items (i) and (iii) there.
 
-TODO: NB: The map e is an embedding...
+NB: The map e : Ωˢᵈ 𝓤 → Ω¬¬ 𝓤 in the type of MP-in-terms-of-Ω¬¬-and-Ω is an
+    embedding, because embeddings have the 2-out-of-3 property and
+    Ωˢᵈ-to-Ω ∼ Ω¬¬-to-Ω ∘ e is required to hold.
 
 \begin{code}
 
@@ -705,28 +711,11 @@ semidecidable-negations-from-LPO lpo X σ =
 
 \end{code}
 
-TODO: Clean up comments
+ It turns out that in the presence of Markov's Principle, the above implication
+ can be reversed. In other words, if we accept Markov's Principle, then LPO is
+ equivalent to semidecidable propositions being closed under negation.
 
-{-
-
-  Assume MP and Ωˢᵈ closed under ¬.
-
-  Suppose X is semidecidable, then so is ¬ X. Hence, (X + ¬ X) is semidecidable.
-  But ¬¬ (X + ¬ X) just holds. By MP: ¬¬ Y → Y for every semidecidable Y.
-  Hence, (X + ¬ X) which is LPO.
-
-
--}
-
-   The converse holds if we assume Markov's Principle (MP), which says that
-   every semidecidable proposition is ¬¬-stable:
-     Assume MP and that Ωˢᵈ is closed under negation.
-     We show that LPO holds, i.e. every semidecidable proposition is decidable.
-     Let X be semidecidable. By assumption so is ¬ X. We prove that X is
-     decidable following the proof of Theorem 3.21 of Bauer's "First Steps in
-     Synthetic Computability Theory": note (X + ¬ X) ∈ Ωˢᵈ, so by MP it is
-     ¬¬-stable, but ¬¬ (X + ¬ X) is a theorem of constructive logic, so X is
-     decidable.                                                                 □
+ I found the proof of this by inspecting the proof of [Theorem 3.21, Bauer2006].
 
 \begin{code}
 
@@ -742,6 +731,9 @@ LPO-from-semidecidable-negations mp h X σ = mp (decidable X) τ
 \end{code}
 
  (2) Closure under implications
+
+ The situation for implications is very similar, which is not too surprising as
+ negations are just special implications.
 
 \begin{code}
 
@@ -770,6 +762,9 @@ LPO-from-semidecidable-implications mp h =
 
  (3) Closure under all meets
 
+ For meets the situation is asymetric. We only managed to prove that if we have
+ all meets, then we can deduce LPO; and if we have BKS⁺, then we have all meets.
+
 \begin{code}
 
 Semidecidable-All-Meets : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥) ⁺ ̇
@@ -794,6 +789,9 @@ BKS⁺-implies-all-meets bks X Y σ =
 
  (4) Closure under all joins
 
+ For joins the situation is nicely symmetric again (modulo universe
+ parameters): we have closure under all joins if and only if BKS⁺ holds.
+
 \begin{code}
 
 Semidecidable-All-Joins : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥) ⁺ ̇
@@ -807,8 +805,7 @@ BKS⁺-implies-all-joins bks X Y σ = bks (∃ Y) ∥∥-is-prop
 
 \end{code}
 
--- TODO: Arbitrary subsingleton joins suffice
--- Implemented now:
+In fact, for the reverse implication, closure under subsingleton joins suffices.
 
 \begin{code}
 
@@ -888,10 +885,9 @@ dominance-axiom-if-closure-under-Σ scus P ρ Q σ = scus P ρ (λ _ → Q) σ
 
 \end{code}
 
-Next, we introduce the choice principle from [EK2017] (we call it
-Escardo-Knapp-Choice here) and formalize [Theorem 3, EK2017] which says that the
-semidecidable types are closed under Σ if and only if Escardo-Knapp-Choice
-holds.
+Next, we introduce the choice principle from [EK2017] - we call it Escardo Knapp
+Choice (EKC) - and formalize [Theorem 3, EK2017] which says that the
+semidecidable types are closed under Σ if and only if Escardo Knapp Choice holds.
 
 \begin{code}
 
