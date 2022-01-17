@@ -8,7 +8,7 @@ In particular, we try to investigate what form of countable choice, if any, is
 necessary for the semidecidable propositions to be closed under countable joins.
 
 Before we do that, we relate Bishop's Limited Principle of Omniscience (LPO),
-Markov's Principle (MP) and strong Brouwer-Kripke-Schema (BKS⁺) to properties of
+Markov's Principle (MP) and strong Brouwer-Kripke Schema (BKS⁺) to properties of
 the type of semidecidable propositions.
 
 Moreover, TODO: EKC + references
@@ -19,8 +19,19 @@ The table of contents is as follows:
 * Part III ...
 * Part IV  ...
 * Part V   ...
+* Part VI  ...
 
 (See Appendix II of CantorSchroederBernstein.lagda for more BKS⁺.)
+
+References
+
+[EK2017] Martín H. Escardó and Cory M. Knapp, "Partial Elements and Recursion
+         via Dominances in Univalent Type Theory", In Valentin Goranko and Mads
+         Dam, editors, 26th EACSL Annual Conference on Computer Science Logic
+         (CSL 2017), volume 82 of Leibniz International Proceedings in
+         Informatics (LIPIcs), pages 21:1–21:16.
+         Schloss Dagstuhl–Leibniz-Zentrum für Informatik, 2017.
+         doi:10.4230/LIPIcs.CSL.2017.21.
 
 \begin{code}
 
@@ -728,17 +739,6 @@ LPO-from-semidecidable-negations mp h X σ = mp (decidable X) τ
   τ : is-semidecidable (decidable X)
   τ = decidability-is-semidecidable X σ (h X σ)
 
-{-
-LPO-≃-semidecidable-negations : MP' 𝓤
-                              → LPO' 𝓤 ≃ Semidecidable-Closed-Under-Negations 𝓤
-LPO-≃-semidecidable-negations mp =
- logically-equivalent-props-are-equivalent
-  LPO'-is-prop
-  (Π₂-is-prop fe (λ X σ → being-semidecidable-is-prop))
-  semidecidable-negations-from-LPO
-  (LPO-from-semidecidable-negations mp)
--}
-
 \end{code}
 
  (2) Closure under implications
@@ -836,6 +836,12 @@ all-joins-implies-BKS⁺ j =
 
 Part V: TODO: EKC
 
+We start by formulating:
+* that the semidecidable types are closed under Σ;
+* Rosolini's dominance axiom of dependent closure under ×;
+
+and prove their equivalence following [End of Section 2.5, EKC2017].
+
 \end{code}
 
 \begin{code}
@@ -854,9 +860,9 @@ Semidecidable-Dominance-Axiom 𝓤 𝓥 = (P : 𝓤 ̇  )
                                   → (P → is-semidecidable Q)
                                   → is-semidecidable (P × Q)
 
-closure-under-Σ-criterion : Semidecidable-Dominance-Axiom 𝓤 (𝓤 ⊔ 𝓥)
-                          → Semidecidable-Closed-Under-Σ 𝓤 𝓥
-closure-under-Σ-criterion {𝓤} {𝓥} D P ρ Q σ = τ
+closure-under-Σ-if-dominance-axiom : Semidecidable-Dominance-Axiom 𝓤 (𝓤 ⊔ 𝓥)
+                                   → Semidecidable-Closed-Under-Σ 𝓤 𝓥
+closure-under-Σ-if-dominance-axiom {𝓤} {𝓥} D P ρ Q σ = τ
  where
   i : is-prop P
   i = prop-if-semidecidable ρ
@@ -876,13 +882,16 @@ closure-under-Σ-criterion {𝓤} {𝓥} D P ρ Q σ = τ
     τ' : P → is-semidecidable Q'
     τ' p = is-semidecidable-cong (≃-sym (e p)) (σ p)
 
-closure-under-Σ-criterion-converse : Semidecidable-Closed-Under-Σ 𝓤 𝓥
+dominance-axiom-if-closure-under-Σ : Semidecidable-Closed-Under-Σ 𝓤 𝓥
                                    → Semidecidable-Dominance-Axiom 𝓤 𝓥
-closure-under-Σ-criterion-converse scus P ρ Q σ = scus P ρ (λ _ → Q) σ
+dominance-axiom-if-closure-under-Σ scus P ρ Q σ = scus P ρ (λ _ → Q) σ
 
 \end{code}
 
-TODO: Pointers to literature
+Next, we introduce the choice principle from [EK2017] (we call it
+Escardo-Knapp-Choice here) and formalize [Theorem 3, EK2017] which says that the
+semidecidable types are closed under Σ if and only if Escardo-Knapp-Choice
+holds.
 
 \begin{code}
 
@@ -892,9 +901,9 @@ Escardo-Knapp-Choice 𝓤 𝓥 = (P : 𝓤 ̇  ) (Q : 𝓥 ̇  )
                          → (P → is-semidecidable Q)
                          → ∥ (P → semidecidability-structure Q) ∥
 
-theorem-3-1 : Semidecidable-Closed-Under-Σ 𝓤 𝓥
-            → Escardo-Knapp-Choice 𝓤 𝓥
-theorem-3-1 H P Q ρ σ = ∥∥-functor g τ
+semidecidable-closed-under-Σ-implies-EKC : Semidecidable-Closed-Under-Σ 𝓤 𝓥
+                                         → Escardo-Knapp-Choice 𝓤 𝓥
+semidecidable-closed-under-Σ-implies-EKC H P Q ρ σ = ∥∥-functor g τ
  where
   τ : is-semidecidable (P × Q)
   τ = H P ρ (λ _ → Q) σ
@@ -906,100 +915,109 @@ theorem-3-1 H P Q ρ σ = ∥∥-functor g τ
     Q-is-prop : is-prop Q
     Q-is-prop = prop-if-semidecidable (σ p)
   g : semidecidability-structure (P × Q) → (P → semidecidability-structure Q)
-  g 𝕤 p = semidecidability-structure-cong (f p) 𝕤
+  g ss p = semidecidability-structure-cong (f p) ss
 
-theorem-3-1-converse : Escardo-Knapp-Choice 𝓤 (𝓤 ⊔ 𝓥)
-                     → Semidecidable-Closed-Under-Σ 𝓤 𝓥
-theorem-3-1-converse {𝓤} {𝓥} ekc = closure-under-Σ-criterion γ
- where
-  γ : Semidecidable-Dominance-Axiom 𝓤 (𝓤 ⊔ 𝓥)
-  γ P ρ Q σ = ∥∥-rec being-semidecidable-is-prop r ρ
-   where
-    r : semidecidability-structure P → is-semidecidable (P × Q)
-    r (α , e) = ∥∥-functor s (ekc P Q ρ σ)
-     where
-      to-P : (∃ n ꞉ ℕ , α n ≡ ₁) → P
-      to-P = ⌜ e ⌝⁻¹
-      s : (P → semidecidability-structure Q)
-        → semidecidability-structure (P × Q)
-      s σ⁺ = ⌜ semidecidability-pairing-lemma ⌝ τ
-       where
-        β : P → (ℕ → 𝟚)
-        β p = pr₁ (σ⁺ p)
-        φ : ℕ × ℕ → 𝓤₀ ̇
-        φ (n , m) = Σ b ꞉ α n ≡ ₁ , β (to-P ∣ n , b ∣) m ≡ ₁
-        φ-is-detachable : detachable φ
-        φ-is-detachable (n , m) = decidable-closed-under-Σ
-                                   𝟚-is-set
-                                   (𝟚-is-discrete (α n) ₁)
+\end{code}
+
+The converse holds too, albeit with a much longer proof.
+
+(In the paper, some of the verifications - most importantly, the proof τ below -
+are left to the reader, presumably because they are straightforward yet tedious.)
+
+\begin{code}
+
+EKC-implies-semidecidable-closed-under-Σ : Escardo-Knapp-Choice 𝓤 (𝓤 ⊔ 𝓥)
+                                         → Semidecidable-Closed-Under-Σ 𝓤 𝓥
+EKC-implies-semidecidable-closed-under-Σ {𝓤} {𝓥} ekc =
+ closure-under-Σ-if-dominance-axiom γ
+  where
+   γ : Semidecidable-Dominance-Axiom 𝓤 (𝓤 ⊔ 𝓥)
+   γ P ρ Q σ = ∥∥-rec being-semidecidable-is-prop r ρ
+    where
+     r : semidecidability-structure P → is-semidecidable (P × Q)
+     r (α , e) = ∥∥-functor s (ekc P Q ρ σ)
+      where
+       to-P : (∃ n ꞉ ℕ , α n ≡ ₁) → P
+       to-P = ⌜ e ⌝⁻¹
+       s : (P → semidecidability-structure Q)
+         → semidecidability-structure (P × Q)
+       s σ⁺ = ⌜ semidecidability-pairing-lemma ⌝ τ
+        where
+         β : P → (ℕ → 𝟚)
+         β p = pr₁ (σ⁺ p)
+         φ : ℕ × ℕ → 𝓤₀ ̇
+         φ (n , m) = Σ b ꞉ α n ≡ ₁ , β (to-P ∣ n , b ∣) m ≡ ₁
+         φ-is-detachable : detachable φ
+         φ-is-detachable (n , m) =
+          decidable-closed-under-Σ 𝟚-is-set (𝟚-is-discrete (α n) ₁)
                                    (λ b → 𝟚-is-discrete (β (to-P ∣ n , b ∣) m) ₁)
-        φ-is-prop-valued : (k : ℕ × ℕ) → is-prop (φ k)
-        φ-is-prop-valued k = Σ-is-prop 𝟚-is-set (λ b → 𝟚-is-set)
-        φ⁺ : ℕ × ℕ → Ω 𝓤₀
-        φ⁺ k = φ k , φ-is-prop-valued k
+         φ-is-prop-valued : (k : ℕ × ℕ) → is-prop (φ k)
+         φ-is-prop-valued k = Σ-is-prop 𝟚-is-set (λ b → 𝟚-is-set)
+         φ⁺ : ℕ × ℕ → Ω 𝓤₀
+         φ⁺ k = φ k , φ-is-prop-valued k
 
-        τ : Σ Ψ ꞉ (ℕ → ℕ → 𝟚) , P × Q ≃ (∃ n ꞉ ℕ , Σ m ꞉ ℕ ,  Ψ n m ≡ ₁)
-        τ = ⌜ uncurry-lemma ⌝ τ'
-         where
-          uncurry-lemma :
-             (Σ Ψ ꞉ (ℕ × ℕ → 𝟚) , P × Q ≃ (∃ n ꞉ ℕ , Σ m ꞉ ℕ ,  Ψ (n , m) ≡ ₁))
-           ≃ (Σ Ψ ꞉ (ℕ → ℕ → 𝟚) , P × Q ≃ (∃ n ꞉ ℕ , Σ m ꞉ ℕ ,  Ψ n m ≡ ₁))
-          uncurry-lemma = ≃-sym
-                           (Σ-change-of-variable _ ⌜ μ ⌝⁻¹ (⌜⌝⁻¹-is-equiv μ))
-           where
-            μ : (ℕ × ℕ → 𝟚) ≃ (ℕ → ℕ → 𝟚)
-            μ = curry-uncurry fe'
+         τ : Σ Ψ ꞉ (ℕ → ℕ → 𝟚) , P × Q ≃ (∃ n ꞉ ℕ , Σ m ꞉ ℕ ,  Ψ n m ≡ ₁)
+         τ = ⌜ uncurry-lemma ⌝ τ'
+          where
+           uncurry-lemma :
+              (Σ Ψ ꞉ (ℕ × ℕ → 𝟚) , P × Q ≃ (∃ n ꞉ ℕ , Σ m ꞉ ℕ ,  Ψ (n , m) ≡ ₁))
+            ≃ (Σ Ψ ꞉ (ℕ → ℕ → 𝟚) , P × Q ≃ (∃ n ꞉ ℕ , Σ m ꞉ ℕ ,  Ψ n m ≡ ₁))
+           uncurry-lemma = ≃-sym
+                            (Σ-change-of-variable _ ⌜ μ ⌝⁻¹ (⌜⌝⁻¹-is-equiv μ))
+            where
+             μ : (ℕ × ℕ → 𝟚) ≃ (ℕ → ℕ → 𝟚)
+             μ = curry-uncurry fe'
 
-          τ' : (Σ Ψ ꞉ (ℕ × ℕ → 𝟚) , P × Q ≃ (∃ n ꞉ ℕ , Σ m ꞉ ℕ , Ψ (n , m) ≡ ₁))
-          τ' = Ψ , (P × Q                              ≃⟨ I  ⟩
-                   (∃ n ꞉ ℕ , Σ m ꞉ ℕ , φ (n , m))     ≃⟨ II ⟩
-                   (∃ n ꞉ ℕ , Σ m ꞉ ℕ , Ψ (n , m) ≡ ₁) ■)
-           where
-            χ : (Σ A ꞉ (ℕ × ℕ → Ω 𝓤₀) , is-decidable-subset A) → (ℕ × ℕ → 𝟚)
-            χ = ⌜ 𝟚-classifies-decidable-subsets fe fe pe ⌝⁻¹
-            Ψ : ℕ × ℕ → 𝟚
-            Ψ = χ (φ⁺ , φ-is-detachable)
+           τ' : (Σ Ψ ꞉ (ℕ × ℕ → 𝟚) , P × Q ≃ (∃ n ꞉ ℕ , Σ m ꞉ ℕ , Ψ (n , m) ≡ ₁))
+           τ' = Ψ , (P × Q                              ≃⟨ I  ⟩
+                    (∃ n ꞉ ℕ , Σ m ꞉ ℕ , φ (n , m))     ≃⟨ II ⟩
+                    (∃ n ꞉ ℕ , Σ m ꞉ ℕ , Ψ (n , m) ≡ ₁) ■)
+            where
+             χ : (Σ A ꞉ (ℕ × ℕ → Ω 𝓤₀) , is-decidable-subset A) → (ℕ × ℕ → 𝟚)
+             χ = ⌜ 𝟚-classifies-decidable-subsets fe fe pe ⌝⁻¹
+             Ψ : ℕ × ℕ → 𝟚
+             Ψ = χ (φ⁺ , φ-is-detachable)
 
-            II = ∥∥-cong pt
-                  (Σ-cong (λ n →
-                    Σ-cong (λ m → logically-equivalent-props-are-equivalent
-                                   (φ-is-prop-valued (n , m))
-                                   𝟚-is-set
-                                   (rl-implication (lemma n m))
-                                   (lr-implication (lemma n m)))))
-             where
-              lemma : (n m : ℕ)
-                    → χ (φ⁺ , φ-is-detachable) (n , m) ≡ ₁ ⇔ (n , m) ∈ φ⁺
-              lemma n m = pr₂ (𝟚-classifies-decidable-subsets-values fe fe pe
-                                φ⁺ φ-is-detachable (n , m))
-            I  = logically-equivalent-props-are-equivalent j ∥∥-is-prop f g
-             where
-              j : is-prop (P × Q)
-              j = prop-criterion
-                   (λ (p , q) → ×-is-prop (prop-if-semidecidable ρ)
-                                          (prop-if-semidecidable (σ p)))
-              e' : (p : P) → Q ≃ (∃ m ꞉ ℕ , β p m ≡ ₁)
-              e' p = pr₂ (σ⁺ p)
-              g : (∃ n ꞉ ℕ , Σ m ꞉ ℕ , φ (n , m)) → P × Q
-              g = ∥∥-rec j g'
-               where
-                g' : (Σ n ꞉ ℕ , Σ m ꞉ ℕ , φ (n , m)) → P × Q
-                g' (n , m , b , b') = p , ⌜ e' p ⌝⁻¹ ∣ m , b' ∣
-                 where
-                  p : P
-                  p = to-P ∣ n , b ∣
-              f : P × Q → ∃ n ꞉ ℕ , Σ m ꞉ ℕ , φ (n , m)
-              f (p , q) = ∥∥-rec ∥∥-is-prop f' (⌜ e ⌝ p)
-               where
-                f' : (Σ n ꞉ ℕ , α n ≡ ₁)
-                   → ∃ n ꞉ ℕ , Σ m ꞉ ℕ , φ (n , m)
-                f' (n , b) = ∥∥-functor f'' (⌜ e' p' ⌝ q)
-                 where
-                  p' : P
-                  p' = to-P ∣ n , b ∣
-                  f'' : (Σ m ꞉ ℕ , β p' m ≡ ₁)
-                      → Σ n ꞉ ℕ , Σ m ꞉ ℕ , φ (n , m)
-                  f'' (m , b') = n , m , b , b'
+             II = ∥∥-cong pt
+                   (Σ-cong (λ n →
+                     Σ-cong (λ m → logically-equivalent-props-are-equivalent
+                                    (φ-is-prop-valued (n , m))
+                                    𝟚-is-set
+                                    (rl-implication (lemma n m))
+                                    (lr-implication (lemma n m)))))
+              where
+               lemma : (n m : ℕ)
+                     → χ (φ⁺ , φ-is-detachable) (n , m) ≡ ₁ ⇔ (n , m) ∈ φ⁺
+               lemma n m = pr₂ (𝟚-classifies-decidable-subsets-values fe fe pe
+                                 φ⁺ φ-is-detachable (n , m))
+             I  = logically-equivalent-props-are-equivalent j ∥∥-is-prop f g
+              where
+               j : is-prop (P × Q)
+               j = prop-criterion
+                    (λ (p , q) → ×-is-prop (prop-if-semidecidable ρ)
+                                           (prop-if-semidecidable (σ p)))
+               e' : (p : P) → Q ≃ (∃ m ꞉ ℕ , β p m ≡ ₁)
+               e' p = pr₂ (σ⁺ p)
+               g : (∃ n ꞉ ℕ , Σ m ꞉ ℕ , φ (n , m)) → P × Q
+               g = ∥∥-rec j g'
+                where
+                 g' : (Σ n ꞉ ℕ , Σ m ꞉ ℕ , φ (n , m)) → P × Q
+                 g' (n , m , b , b') = p , ⌜ e' p ⌝⁻¹ ∣ m , b' ∣
+                  where
+                   p : P
+                   p = to-P ∣ n , b ∣
+               f : P × Q → ∃ n ꞉ ℕ , Σ m ꞉ ℕ , φ (n , m)
+               f (p , q) = ∥∥-rec ∥∥-is-prop f' (⌜ e ⌝ p)
+                where
+                 f' : (Σ n ꞉ ℕ , α n ≡ ₁)
+                    → ∃ n ꞉ ℕ , Σ m ꞉ ℕ , φ (n , m)
+                 f' (n , b) = ∥∥-functor f'' (⌜ e' p' ⌝ q)
+                  where
+                   p' : P
+                   p' = to-P ∣ n , b ∣
+                   f'' : (Σ m ꞉ ℕ , β p' m ≡ ₁)
+                       → Σ n ꞉ ℕ , Σ m ꞉ ℕ , φ (n , m)
+                   f'' (m , b') = n , m , b , b'
 
 \end{code}
 
@@ -1024,60 +1042,125 @@ Part V: ... TODO
         (∃ n ꞉ ℕ , ∃ m ꞉ ℕ , Ψ n m ≡ ₁) ≃⟨ outer-∃-inner-Σ pt        ⟩
         (∃ n ꞉ ℕ , Σ m ꞉ ℕ , Ψ n m ≡ ₁) ■
 
-Countable-Semidecidability-Choice : (𝓤 : Universe) → 𝓤 ⁺ ̇
-Countable-Semidecidability-Choice 𝓤 = (X : ℕ → 𝓤 ̇  )
-                                    → (Π n ꞉ ℕ , ∥ semidecidability-structure (X n) ∥)
-                                    → ∥ Π n ꞉ ℕ , semidecidability-structure (X n) ∥
+\end{code}
 
-Semidecidability-Closed-Under-ω-Joins : (𝓤 : Universe) → 𝓤 ⁺ ̇
-Semidecidability-Closed-Under-ω-Joins 𝓤 = (X : ℕ → 𝓤 ̇  )
-                                        → (Π n ꞉ ℕ , is-semidecidable (X n))
-                                        → is-semidecidable (∃ X)
+TODO: Comment (CSC)
 
-csc-implies-that-semidecidability-is-closed-under-ω-joins : {𝓤 : Universe}
- → Countable-Semidecidability-Choice 𝓤
- → Semidecidability-Closed-Under-ω-Joins 𝓤
-csc-implies-that-semidecidability-is-closed-under-ω-joins {𝓤} csc X σ =
+\begin{code}
+
+Countable-Semidecidable-Choice : (𝓤 : Universe) → 𝓤 ⁺ ̇
+Countable-Semidecidable-Choice 𝓤 =
+   (X : ℕ → 𝓤 ̇  )
+ → (Π n ꞉ ℕ , ∥ semidecidability-structure (X n) ∥)
+ → ∥ Π n ꞉ ℕ , semidecidability-structure (X n) ∥
+
+Semidecidable-Closed-Under-Countable-Joins : (𝓤 : Universe) → 𝓤 ⁺ ̇
+Semidecidable-Closed-Under-Countable-Joins 𝓤 =
+ (X : ℕ → 𝓤 ̇  ) → (Π n ꞉ ℕ , is-semidecidable (X n)) → is-semidecidable (∃ X)
+
+CSC-implies-semidecidable-closed-under-countable-joins :
+   Countable-Semidecidable-Choice 𝓤
+ → Semidecidable-Closed-Under-Countable-Joins 𝓤
+CSC-implies-semidecidable-closed-under-countable-joins {𝓤} csc X σ =
  ∥∥-functor (∃-has-semidecidability-structure X) (csc X σ)
 
+\end{code}
 
-key-construction : {X : 𝓤 ̇  } {Y : X → 𝓥 ̇  } {A : X → 𝓦 ̇  }
-                 → (∃ A → Σ Y)
-                 → X → X → 𝓤 ⊔ 𝓦 ̇
-key-construction {𝓤} {𝓥} {𝓦} {X} {Y} {A} f x y =
-  Σ a ꞉ A y , pr₁ (f ∣ y , a ∣) ≡ x
+TODO: Comment (SCSC)
 
-blah : {X : 𝓤 ̇  } {Y : X → 𝓥 ̇  } {A : X → 𝓦 ̇  }
-     → ((x : X) → is-prop (Y x))
-     → (f : (∃ A ≃ (Σ Y)))
-     → (x : X) → Y x ≃ ∃ (key-construction ⌜ f ⌝ x)
-blah {𝓤} {𝓥} {𝓦} {X} {Y} {A} i f x =
- logically-equivalent-props-are-equivalent (i x) ∥∥-is-prop α β
+\begin{code}
+
+Semidecidable-Closed-Under-Subsingleton-Countable-Joins : (𝓤 : Universe) → 𝓤 ⁺ ̇
+Semidecidable-Closed-Under-Subsingleton-Countable-Joins 𝓤 =
+   (X : ℕ → 𝓤 ̇  )
+ → is-prop (Σ X)
+ → (Π n ꞉ ℕ , is-semidecidable (X n))
+ → is-semidecidable (Σ X)
+
+Subsingleton-Countable-Semidecidable-Choice : (𝓤 : Universe) → 𝓤 ⁺ ̇
+Subsingleton-Countable-Semidecidable-Choice 𝓤 =
+   (X : ℕ → 𝓤 ̇  )
+ → is-prop (Σ X)
+ → (Π n ꞉ ℕ , ∥ semidecidability-structure (X n) ∥)
+ → ∥ Π n ꞉ ℕ , semidecidability-structure (X n) ∥
+
+\end{code}
+
+TODO: Comment
+
+\begin{code}
+
+SCSC-implies-semidecidable-closed-under-subsingleton-countable-joins :
+   Subsingleton-Countable-Semidecidable-Choice 𝓤
+ → Semidecidable-Closed-Under-Subsingleton-Countable-Joins 𝓤
+SCSC-implies-semidecidable-closed-under-subsingleton-countable-joins
+ scsc X ΣX-is-prop X-semidec = ∥∥-functor γ (scsc X ΣX-is-prop X-semidec)
   where
-   β : ∃ (key-construction ⌜ f ⌝ x) → Y x
-   β = ∥∥-rec (i x) γ
+   γ : ((n : ℕ) → semidecidability-structure (X n))
+     → semidecidability-structure (Σ X)
+   γ σ = semidecidability-structure-cong
+          e (∃-has-semidecidability-structure X σ)
     where
-     γ : Σ (key-construction ⌜ f ⌝ x) → Y x
-     γ (y , a , e) = transport Y e (pr₂ (⌜ f ⌝ ∣ y , a ∣))
-   α : Y x → ∃ (key-construction ⌜ f ⌝ x)
-   α y = ∥∥-functor γ (⌜ f ⌝⁻¹ (x , y))
-    where
-     γ : Σ A → Σ (key-construction ⌜ f ⌝ x)
-     γ (x' , a) = x' , (a , ap pr₁ e)
-      where
-       e = (⌜ f ⌝ ∣ x' , a ∣)        ≡⟨ ap ⌜ f ⌝ (∥∥-is-prop ∣ x' , a ∣ (⌜ f ⌝⁻¹ (x , y))) ⟩
-           (⌜ f ⌝ (⌜ f ⌝⁻¹ (x , y))) ≡⟨ ≃-sym-is-rinv f (x , y) ⟩
-           (x , y) ∎
+     e : ∃ X ≃ Σ X
+     e = prop-is-equivalent-to-its-truncation ΣX-is-prop
 
-{-
-  "All" that's left now is to show that key-construction n m is proposition-valued and decidable.
-  This would give that X n is semi-decidable for every n : ℕ.
--}
+-- TODO: Comment (aim to prove the converse:)
+SCSC-if-semidecidable-closed-under-subsingleton-countable-joins :
+   Semidecidable-Closed-Under-Subsingleton-Countable-Joins 𝓤
+ → Subsingleton-Countable-Semidecidable-Choice 𝓤
+
+\end{code}
+
+TODO: Comment on proof strategy
+
+\begin{code}
 
 semidecidability-structure-Σ : (X : ℕ → 𝓤 ̇  )
                              → ((n : ℕ) → is-prop (X n))
                              → semidecidability-structure (Σ X)
                              → (Π n ꞉ ℕ , semidecidability-structure (X n))
+
+private
+
+ key-construction : {X : 𝓤 ̇  } {Y : X → 𝓥 ̇  } {A : X → 𝓦 ̇  }
+                  → (∃ A → Σ Y)
+                  → X → X → 𝓤 ⊔ 𝓦 ̇
+ key-construction {𝓤} {𝓥} {𝓦} {X} {Y} {A} f x y =
+   Σ a ꞉ A y , pr₁ (f ∣ y , a ∣) ≡ x
+
+ key-construction-lemma : {X : 𝓤 ̇  } {Y : X → 𝓥 ̇  } {A : X → 𝓦 ̇  }
+                        → ((x : X) → is-prop (Y x))
+                        → (f : (∃ A ≃ (Σ Y)))
+                        → (x : X) → Y x ≃ ∃ (key-construction ⌜ f ⌝ x)
+ key-construction-lemma {𝓤} {𝓥} {𝓦} {X} {Y} {A} i f x =
+  logically-equivalent-props-are-equivalent (i x) ∥∥-is-prop α β
+   where
+    β : ∃ (key-construction ⌜ f ⌝ x) → Y x
+    β = ∥∥-rec (i x) γ
+     where
+      γ : Σ (key-construction ⌜ f ⌝ x) → Y x
+      γ (y , a , e) = transport Y e (pr₂ (⌜ f ⌝ ∣ y , a ∣))
+    α : Y x → ∃ (key-construction ⌜ f ⌝ x)
+    α y = ∥∥-functor γ (⌜ f ⌝⁻¹ (x , y))
+     where
+      γ : Σ A → Σ (key-construction ⌜ f ⌝ x)
+      γ (x' , a) = x' , (a , ap pr₁ e)
+       where
+        e = (⌜ f ⌝ ∣ x' , a ∣)        ≡⟨ I  ⟩
+            (⌜ f ⌝ (⌜ f ⌝⁻¹ (x , y))) ≡⟨ II ⟩
+            (x , y) ∎
+         where
+          I  = ap ⌜ f ⌝ (∥∥-is-prop ∣ x' , a ∣ (⌜ f ⌝⁻¹ (x , y)))
+          II = ≃-sym-is-rinv f (x , y)
+
+\end{code}
+
+TODO: Rephrase
+  "All" that's left now is to show that key-construction n m is proposition-valued and decidable.
+  This would give that X n is semi-decidable for every n : ℕ.
+
+\begin{code}
+
 semidecidability-structure-Σ X X-is-prop-valued (Ψ , e) n =
  ⌜ semidecidability-structure-≃ ⌝⁻¹ σ
   where
@@ -1092,29 +1175,33 @@ semidecidability-structure-Σ X X-is-prop-valued (Ψ , e) n =
    φ⁺ : ℕ → Ω 𝓤₀
    φ⁺ n = (φ n , φ-is-prop-valued n)
    σ : semidecidability-structure' 𝓤₀ (X n)
-   σ = φ⁺ , φ-is-detachable , (blah X-is-prop-valued (≃-sym e) n)
+   σ = φ⁺ , φ-is-detachable ,
+       (key-construction-lemma X-is-prop-valued (≃-sym e) n)
 
-Semidecidability-Closed-Under-Special-ω-Joins : (𝓤 : Universe) → 𝓤 ⁺ ̇
-Semidecidability-Closed-Under-Special-ω-Joins 𝓤 = (X : ℕ → 𝓤 ̇  )
-                                              → is-prop (Σ X)
-                                              → (Π n ꞉ ℕ , is-semidecidable (X n))
-                                              → is-semidecidable (Σ X)
+\end{code}
 
-Countable-Semidecidability-Special-Choice : (𝓤 : Universe) → 𝓤 ⁺ ̇
-Countable-Semidecidability-Special-Choice 𝓤 = (X : ℕ → 𝓤 ̇  )
-                                          → is-prop (Σ X)
-                                          → (Π n ꞉ ℕ , ∥ semidecidability-structure (X n) ∥)
-                                          → ∥ Π n ꞉ ℕ , semidecidability-structure (X n) ∥
+TODO: Finally...
 
-converse-in-special-cases : {𝓤 : Universe}
-                          → Semidecidability-Closed-Under-Special-ω-Joins 𝓤
-                          → Countable-Semidecidability-Special-Choice 𝓤
-converse-in-special-cases h X i σ =
+\begin{code}
+
+SCSC-if-semidecidable-closed-under-subsingleton-countable-joins h X i σ =
  ∥∥-functor (semidecidability-structure-Σ X j)
             (h X i σ)
  where
   j : (n : ℕ) → is-prop (X n)
   j n = prop-if-semidecidable (σ n)
+
+\end{code}
+
+Part VI: TODO: Comment
+
+\begin{code}
+
+-- TODO: Rephrase or rename
+-- Originally observed by Martín
+SCSC-implies-semidecidable-closed-under-Σ :
+   Semidecidable-Closed-Under-Subsingleton-Countable-Joins 𝓤
+ → Semidecidable-Closed-Under-Σ 𝓥 𝓤
 
 least-witness : (A : ℕ → Ω 𝓤)
               → is-decidable-subset A
@@ -1162,15 +1249,7 @@ least-witness {𝓤} A A-is-decidable = B , B-is-decidable , γ
          ν : is-empty (Σ r ꞉ Fin' k , pr₁ r ∈ A)
          ν ((m , l) , aₘ) = less-not-bigger-or-equal m k l (min m aₘ)
 
-\end{code}
-
-We should now have enough...
-
-\begin{code}
-
-semidecidable-closed-under-Σ : Semidecidability-Closed-Under-Special-ω-Joins 𝓤
-                             → Semidecidable-Closed-Under-Σ 𝓥 𝓤
-semidecidable-closed-under-Σ {𝓤} H P ρ Q σ =
+SCSC-implies-semidecidable-closed-under-Σ {𝓤} H P ρ Q σ =
  ∥∥-rec being-semidecidable-is-prop γ ρ
   where
    γ : semidecidability-structure P
@@ -1250,40 +1329,64 @@ semidecidable-closed-under-Σ {𝓤} H P ρ Q σ =
 
 \end{code}
 
-Summary:
+Summary of the above choice principles:
 
-   EKCˢᵈ <=> Dominance Axiom
-    ^                     ^
-    |                     |
-    |                     |
-Special CC <=> Special ω-joins in Ωˢᵈ
-    ^                     ^
-    |                     |
-    |                     |
-Semidecidable CC ==> ω-joins in Ωˢᵈ
+[  CSC =              Countable Semidecidable Choice ]
+[ SCSS = Subsingleton Countable Semidecidable Choice ]
 
-The conjecture is that ω-joins in Ωˢᵈ is equivalent to some form of countable choice. But which?!
+
+Escardo-Knapp-Choice ←→ Rosolini's Dominance Axiom
+         ↑           ←→ Semidecidable closed under Σ
+         ∣                         ↑
+         ∣                         ∣
+         ∣                         ∣
+         ∣                         ∣
+       SCSC ←→ Semidecidable closed under subsingleton
+         ↑                   countable joins
+         ∣                         ↑
+         ∣                         ∣
+         ∣                         ∣
+         ∣                         ∣
+        CSC -→ Semidecidable closed under countable joins
+
+
+The conjecture is that semidecidable propositions are closed under countable
+joins if and only if some form of countable choice holds. But it is not clear
+what form this is.
+
+Note that in the above diagram of implications, we only have
+  CSC -→ (Semidecidable closed under countable joins).
+
+However, for subsingleton countable joins we could get and if and only if with
+SCSC, so we do have (Semidecidable closed under countable joins) -→ SCSC, which
+shows that having closure under countable joins does imply some weak countable
+choice principle.
+
+
+
+Finally, two closing remarks regarding BSK⁺, SCSC and Escardo-Knapp-Choice.
 
 \begin{code}
 
-BKS⁺-implies-special-countable-choice : BKS⁺ 𝓤
-                                      → Countable-Semidecidability-Special-Choice 𝓤
-BKS⁺-implies-special-countable-choice {𝓤} bks = converse-in-special-cases γ
- where
-  γ : Semidecidability-Closed-Under-Special-ω-Joins 𝓤
-  γ X i σ = bks (Σ X) i
-
--- TODO: Hence, BKS⁺ → EKC.
--- Is there a quick direct proof of this?
-
--- Answer: Yes (of course), using Theorem 3.1.
+BKS⁺-implies-SCSC : BKS⁺ 𝓤
+                  → Subsingleton-Countable-Semidecidable-Choice 𝓤
+BKS⁺-implies-SCSC {𝓤} bks =
+ SCSC-if-semidecidable-closed-under-subsingleton-countable-joins γ
+  where
+   γ : Semidecidable-Closed-Under-Subsingleton-Countable-Joins 𝓤
+   γ X i σ = bks (Σ X) i
 
 \end{code}
 
+Hence, BKS⁺ implies Escardo-Knapp-Choice. But we can also easily give a direct
+proof of this fact.
+
 \begin{code}
 
-BKS⁺-implies-EKCˢᵈ : BKS⁺ (𝓤 ⊔ 𝓥)
-                   → Escardo-Knapp-Choice 𝓤 𝓥
-BKS⁺-implies-EKCˢᵈ bks = theorem-3-1 (λ P σ Q τ → bks (Σ Q) (Σ-is-prop (prop-if-semidecidable σ) (λ p → prop-if-semidecidable (τ p))))
+BKS⁺-implies-EKC : BKS⁺ (𝓤 ⊔ 𝓥) → Escardo-Knapp-Choice 𝓤 𝓥
+BKS⁺-implies-EKC bks = semidecidable-closed-under-Σ-implies-EKC
+                        (λ P σ Q τ → bks (Σ Q)
+                        (Σ-is-prop (prop-if-semidecidable σ)
+                                   (λ p → prop-if-semidecidable (τ p))))
 
 \end{code}
