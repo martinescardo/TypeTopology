@@ -64,7 +64,7 @@ sense of UF) to our formulation.
 \begin{code}
 
 LPO-gives-compact-ℕ : LPO → compact ℕ
-LPO-gives-compact-ℕ ℓ β = cases a b d
+LPO-gives-compact-ℕ ℓ β = γ
   where
     A = (Σ n ꞉ ℕ , β n ≡ ₀) + (Π n ꞉ ℕ , β n ≡ ₁)
 
@@ -100,6 +100,9 @@ LPO-gives-compact-ℕ ℓ β = cases a b d
 
             e : α n ≡ ₁
             e = ap (λ - → ι - n) l
+
+    γ : A
+    γ = cases a b d
 
 compact-ℕ-gives-LPO : compact ℕ → LPO
 compact-ℕ-gives-LPO κ x = γ

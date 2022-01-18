@@ -6,7 +6,7 @@ omniscience in all varieties of constructive mathematics", Journal of
 Symbolic Logic, volume 78, number 3, September 2013, pages 764-784.
 
 The theorem says that, for any p : ℕ∞ → 𝟚, the proposition
-(n : ℕ) → p (under n) ≡ ₁ is decidable.
+(n : ℕ) → p (ι n) ≡ ₁ is decidable where ι : ℕ → ∞ is the inclusion.
 
 \begin{code}
 
