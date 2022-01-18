@@ -89,7 +89,7 @@ complement : 𝟚 → 𝟚
 complement ₀ = ₁
 complement ₁ = ₀
 
-complement-no-fp : (n : 𝟚) → n ≡ complement n → 𝟘 {𝓤}
+complement-no-fp : (n : 𝟚) → n ≢ complement n
 complement-no-fp ₀ p = 𝟘-elim (zero-is-not-one p)
 complement-no-fp ₁ p = 𝟘-elim (one-is-not-zero p)
 
@@ -180,6 +180,18 @@ Lemma[a<b→c≢₀→a<c] {₀} {₁} {₁} l ν = ⋆
 ₀-bottom {₀} = ⋆
 ₀-bottom {₁} = ⋆
 
+₁-maximal : {b : 𝟚} → ₁ ≤ b → b ≡ ₁
+₁-maximal {₁} l = refl
+
+₁-maximal-converse : {b : 𝟚} → b ≡ ₁ → ₁ ≤ b
+₁-maximal-converse {₁} refl = ⋆
+
+₀-minimal : {b : 𝟚} → b ≤ ₀ → b ≡ ₀
+₀-minimal {₀} l = refl
+
+₀-minimal-converse : {b : 𝟚} → b ≡ ₀ → b ≤ ₀
+₀-minimal-converse {₀} refl = ⋆
+
 _≤₂'_ : (a b : 𝟚) → 𝓤₀ ̇
 a ≤₂' b = b ≡ ₀ → a ≡ ₀
 
@@ -207,12 +219,6 @@ a ≤₂' b = b ≡ ₀ → a ≡ ₀
 ≤₂-anti {₁} {₀} () m
 ≤₂-anti {₁} {₁} l m = refl
 
-₁-maximal : {b : 𝟚} → ₁ ≤ b → b ≡ ₁
-₁-maximal = ≤₂-anti ₁-top
-
-₁-maximal-converse : {b : 𝟚} → b ≡ ₁ → ₁ ≤ b
-₁-maximal-converse {₁} refl = ⋆
-
 min𝟚 : 𝟚 → 𝟚 → 𝟚
 min𝟚 ₀ b = ₀
 min𝟚 ₁ b = b
@@ -237,14 +243,11 @@ Lemma[min𝟚ab≡₁→b≡₁] {₀} {₁} r = refl
 Lemma[min𝟚ab≡₁→b≡₁] {₁} {₀} r = r
 Lemma[min𝟚ab≡₁→b≡₁] {₁} {₁} r = refl
 
-Lemma[min𝟚ab≡₁→a≡₁]  : {a b : 𝟚} → min𝟚 a b ≡ ₁ → a ≡ ₁
+Lemma[min𝟚ab≡₁→a≡₁] : {a b : 𝟚} → min𝟚 a b ≡ ₁ → a ≡ ₁
 Lemma[min𝟚ab≡₁→a≡₁] {₀} r = r
 Lemma[min𝟚ab≡₁→a≡₁] {₁} r = refl
 
 Lemma[a≡₁→b≡₁→min𝟚ab≡₁] : {a b : 𝟚} → a ≡ ₁ → b ≡ ₁ → min𝟚 a b ≡ ₁
-Lemma[a≡₁→b≡₁→min𝟚ab≡₁] {₀} {₀} p q = q
-Lemma[a≡₁→b≡₁→min𝟚ab≡₁] {₀} {₁} p q = p
-Lemma[a≡₁→b≡₁→min𝟚ab≡₁] {₁} {₀} p q = q
 Lemma[a≡₁→b≡₁→min𝟚ab≡₁] {₁} {₁} p q = refl
 
 Lemma[a≤₂b→min𝟚ab≡a] : {a b : 𝟚} → a ≤ b → min𝟚 a b ≡ a
@@ -312,12 +315,6 @@ Lemma[b≢c→b⊕c≡₁] = different-from-₀-equal-₁ ∘ (contrapositive Le
 Lemma[b⊕c≡₁→b≢c] : {b c : 𝟚} → b ⊕ c ≡ ₁ → b ≢ c
 Lemma[b⊕c≡₁→b≢c] = (contrapositive Lemma[b≡c→b⊕c≡₀]) ∘ equal-₁-different-from-₀
 
-\end{code}
-
-Order and complements:
-
-\begin{code}
-
 complement-left : {b c : 𝟚} → complement b ≤ c → complement c ≤ b
 complement-left {₀} {₁} l = ⋆
 complement-left {₁} {₀} l = ⋆
@@ -338,29 +335,53 @@ complement-both-right {₀} {₀} l = ⋆
 complement-both-right {₀} {₁} l = ⋆
 complement-both-right {₁} {₁} l = ⋆
 
-\end{code}
+⊕-involutive : {a b : 𝟚} → a ⊕ a ⊕ b ≡ b
+⊕-involutive {₀} {b} = refl
+⊕-involutive {₁} {b} = complement-involutive b
 
-Subtraction:
+⊕-property₁ : {a b : 𝟚} (g : a ≥ b)
+            → a ⊕ b ≡ ₁ → (a ≡ ₁) × (b ≡ ₀)
+⊕-property₁ {₀} {₀} g ()
+⊕-property₁ {₀} {₁} () p
+⊕-property₁ {₁} {₀} g p = refl , refl
 
-\begin{code}
+⊕-intro₀₀ : {a b : 𝟚} → a ≡ ₀ → b ≡ ₀ → a ⊕ b ≡ ₀
+⊕-intro₀₀ {₀} {₀} p q = refl
 
-sub : (a b : 𝟚) → a ≥ b → 𝟚
-sub a ₀ g = a
-sub ₀ ₁ ()
-sub ₁ ₁ g = ₀
+⊕-intro₀₁ : {a b : 𝟚} → a ≡ ₀ → b ≡ ₁ → a ⊕ b ≡ ₁
+⊕-intro₀₁ {₀} {₁} p q = refl
 
-sub-property₀ : {a b : 𝟚} (g : a ≥ b)
-              → sub a b g ≡ ₀
-              → a ≡ b
-sub-property₀ {₀} {₀} g p = refl
-sub-property₀ {₁} {₁} g p = refl
+⊕-intro₁₀ : {a b : 𝟚} → a ≡ ₁ → b ≡ ₀ → a ⊕ b ≡ ₁
+⊕-intro₁₀ {₁} {₀} p q = refl
 
-sub-property₁ : {a b : 𝟚} (g : a ≥ b)
-              → sub a b g ≡ ₁
-              → (a ≡ ₁) × (b ≡ ₀)
-sub-property₁ {a} {₀} g p = p , refl
-sub-property₁ {₀} {₁} () p
-sub-property₁ {₁} {₁} g ()
+⊕-intro₁₁ : {a b : 𝟚} → a ≡ ₁ → b ≡ ₁ → a ⊕ b ≡ ₀
+⊕-intro₁₁ {₁} {₁} p q = refl
+
+complement-intro₀ : {a : 𝟚} → a ≡ ₀ → complement a ≡ ₁
+complement-intro₀ {₀} p = refl
+
+complement-intro₁ : {a : 𝟚} → a ≡ ₁ → complement a ≡ ₀
+complement-intro₁ {₁} p = refl
+
+⊕-₀-right-neutral : {a : 𝟚} → a ⊕ ₀ ≡ a
+⊕-₀-right-neutral {₀} = refl
+⊕-₀-right-neutral {₁} = refl
+
+⊕-₀-right-neutral' : {a b : 𝟚} → b ≡ ₀ → a ⊕ b ≡ a
+⊕-₀-right-neutral' {₀} {₀} p = refl
+⊕-₀-right-neutral' {₁} {₀} p = refl
+
+⊕-left-complement : {a b : 𝟚} → b ≡ ₁ → a ⊕ b ≡ complement a
+⊕-left-complement {₀} {₁} p = refl
+⊕-left-complement {₁} {₁} p = refl
+
+≤₂-add-left : (a b : 𝟚) → b ≤ a → a ⊕ b ≤ a
+≤₂-add-left ₀ b = id
+≤₂-add-left ₁ b = λ _ → ₁-top
+
+≤₂-remove-left : (a b : 𝟚) → a ⊕ b ≤ a → b ≤ a
+≤₂-remove-left ₀ b = id
+≤₂-remove-left ₁ b = λ _ → ₁-top
 
 \end{code}
 

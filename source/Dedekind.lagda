@@ -59,7 +59,7 @@ module Dedekind
         (pe  : Prop-Ext)
         {𝓤  : Universe}
         (ℚ   : 𝓤 ̇ )
-        (_<-ℚ-ℚ_             : ℚ → ℚ → 𝓤 ̇ )
+        (_<-ℚ-ℚ_              : ℚ → ℚ → 𝓤 ̇ )
         (<-ℚ-ℚ-is-prop-valued : (p q : ℚ) → is-prop (p <-ℚ-ℚ q))
         (<-ℚ-ℚ-irrefl         : (q : ℚ) → ¬ (q <-ℚ-ℚ q))
        where
@@ -500,7 +500,7 @@ and a few more:
 module _ (ℚ-density         : (p r : ℚ) → p < r → Σ q ꞉ ℚ , (p < q) × (q < r))
          (ℚ-transitivity    : (p q r : ℚ) → p < q → q < r → p < r)
          (ℚ-order-criterion : (p q : ℚ) → q ≮ p → p ≢ q → p < q)
-         (ℚ-co-transitivity : (p q r : ℚ) → p < r → (p < q) ∨ (q < r))
+         (ℚ-cotransitivity  : (p q r : ℚ) → p < r → (p < q) ∨ (q < r))
          (ℚ-tightness       : (p q : ℚ) → q ≮ p → p ≮ q → p ≡ q)
          (ℚ-is-lower-open   : (q : ℚ) → ∃ p ꞉ ℚ , (p < q))
          (ℚ-is-upper-open   : (p : ℚ) → ∃ q ꞉ ℚ , (p < q))
@@ -1017,7 +1017,7 @@ The canonical embedding of the rationals into the reals:
 
  ℚ-to-ℝᵁ-is-upper-section-of-ℚ-to-ℝᴸ : (q : ℚ) → (ℚ-to-ℝᵁ q) is-upper-section-of (ℚ-to-ℝᴸ q)
  ℚ-to-ℝᵁ-is-upper-section-of-ℚ-to-ℝᴸ q = (λ p → ℚ-transitivity p q) ,
-                                         (λ p → ℚ-co-transitivity p q)
+                                         (λ p → ℚ-cotransitivity p q)
 
  ℚ-to-ℝᴸ-is-dedekind : (q : ℚ) → is-dedekind (ℚ-to-ℝᴸ q)
  ℚ-to-ℝᴸ-is-dedekind q = ℚ-to-ℝᵁ q , ℚ-to-ℝᵁ-is-upper-section-of-ℚ-to-ℝᴸ q
@@ -1103,14 +1103,14 @@ We now consider order and apartness on real numbers.
   strict-order-ℝ-ℝ : Strict-Order ℝ ℝ
   _<_ {{strict-order-ℝ-ℝ}} x y = ∃ q ꞉ ℚ , (x < q) × (q < y)
 
- strict-order-ℚ-ℝ-is-prop-valued : (p : ℚ) (x : ℝ) → is-prop (p < x)
- strict-order-ℚ-ℝ-is-prop-valued p x = ∈-is-prop (lowercut x) p
+ <-ℚ-ℝ-is-prop-valued : (p : ℚ) (x : ℝ) → is-prop (p < x)
+ <-ℚ-ℝ-is-prop-valued p x = ∈-is-prop (lowercut x) p
 
- strict-order-ℝ-ℚ-is-prop-valued : (x : ℝ) (q : ℚ) → is-prop (x < q)
- strict-order-ℝ-ℚ-is-prop-valued x q = ∈-is-prop (uppercut x) q
+ <-ℝ-ℚ-is-prop-valued : (x : ℝ) (q : ℚ) → is-prop (x < q)
+ <-ℝ-ℚ-is-prop-valued x q = ∈-is-prop (uppercut x) q
 
- strict-order-ℝ-ℝ-is-prop-valued : (x y : ℝ) → is-prop (x < y)
- strict-order-ℝ-ℝ-is-prop-valued x y = ∃-is-prop
+ <-ℝ-ℝ-is-prop-valued : (x y : ℝ) → is-prop (x < y)
+ <-ℝ-ℝ-is-prop-valued x y = ∃-is-prop
 
 \end{code}
 
@@ -1255,8 +1255,8 @@ in the case of the reals.
  ≤₂-is-prop-valued : (x y : ℝ) → is-prop (x ≤₂ y)
  ≤₃-is-prop-valued : (x y : ℝ) → is-prop (x ≤₃ y)
 
- ≤₀-is-prop-valued x y = Π₂-is-prop fe (λ _ _ → strict-order-ℚ-ℝ-is-prop-valued _ y)
- ≤₁-is-prop-valued x y = Π₂-is-prop fe (λ _ _ → strict-order-ℝ-ℚ-is-prop-valued x _)
+ ≤₀-is-prop-valued x y = Π₂-is-prop fe (λ _ _ → <-ℚ-ℝ-is-prop-valued _ y)
+ ≤₁-is-prop-valued x y = Π₂-is-prop fe (λ _ _ → <-ℝ-ℚ-is-prop-valued x _)
  ≤₂-is-prop-valued x y = negations-are-props fe
  ≤₃-is-prop-valued x y = Π₄-is-prop fe (λ _ _ _ _ → <-ℚ-ℚ-is-prop-valued _ _)
 
@@ -1292,7 +1292,7 @@ in the case of the reals.
    II = lowercut-is-upper-open x q ℓ
 
    III : (Σ p ꞉ ℚ , (q < p) × (p < x)) → q < y
-   III (p , i , j) = ∥∥-rec (strict-order-ℚ-ℝ-is-prop-valued q y) V IV
+   III (p , i , j) = ∥∥-rec (<-ℚ-ℝ-is-prop-valued q y) V IV
     where
      IV : (q < y) ∨ (y < p)
      IV = <-cotrans-ℚ q p i y
@@ -1302,7 +1302,7 @@ in the case of the reals.
      V (inr l) = 𝟘-elim (I p j l)
 
    VI : q < y
-   VI = ∥∥-rec (strict-order-ℚ-ℝ-is-prop-valued q y) III II
+   VI = ∥∥-rec (<-ℚ-ℝ-is-prop-valued q y) III II
 
  ≤-gives-≤₂ : (x y : ℝ) → x ≤ y → x ≤₂ y
  ≤-gives-≤₂ x y ℓ i = II
@@ -1405,7 +1405,7 @@ Relationship between the orders of ℚ and ℝ:
 
  ℚ-to-ℝ-left-converse : (p : ℚ) (x : ℝ) → ι p < x → p < x
  ℚ-to-ℝ-left-converse p x = ∥∥-rec
-                              (strict-order-ℚ-ℝ-is-prop-valued p x)
+                              (<-ℚ-ℝ-is-prop-valued p x)
                               (λ (q , m , o) → lowercut-is-lower x q o p m)
 
  ℚ-to-ℝ-right : (x : ℝ) (q : ℚ) → x < q → x < ι q
@@ -1414,7 +1414,7 @@ Relationship between the orders of ℚ and ℝ:
 
  ℚ-to-ℝ-right-converse : (x : ℝ) (q : ℚ) → x < ι q → x < q
  ℚ-to-ℝ-right-converse x q = ∥∥-rec
-                               (strict-order-ℝ-ℚ-is-prop-valued x q)
+                               (<-ℝ-ℚ-is-prop-valued x q)
                                (λ (p , m , o) → uppercut-is-upper x p m q o)
 \end{code}
 
@@ -1431,9 +1431,9 @@ The promised three more ways to define _≤_ on ℝ:
  ≤₁ₐ-is-prop-valued : (x y : ℝ) → is-prop (x ≤₁ₐ y)
  ≤₃ₐ-is-prop-valued : (x y : ℝ) → is-prop (x ≤₃ₐ y)
 
- ≤₀ₐ-is-prop-valued x y = Π₂-is-prop fe (λ z _ → strict-order-ℝ-ℝ-is-prop-valued z y)
- ≤₁ₐ-is-prop-valued x y = Π₂-is-prop fe (λ z _ → strict-order-ℝ-ℝ-is-prop-valued x z)
- ≤₃ₐ-is-prop-valued x y = Π₄-is-prop fe (λ z t _ _ → strict-order-ℝ-ℝ-is-prop-valued z t)
+ ≤₀ₐ-is-prop-valued x y = Π₂-is-prop fe (λ z _ → <-ℝ-ℝ-is-prop-valued z y)
+ ≤₁ₐ-is-prop-valued x y = Π₂-is-prop fe (λ z _ → <-ℝ-ℝ-is-prop-valued x z)
+ ≤₃ₐ-is-prop-valued x y = Π₄-is-prop fe (λ z t _ _ → <-ℝ-ℝ-is-prop-valued z t)
 
  ≤₀-gives-≤₀ₐ : (x y : ℝ) → x ≤₀ y → x ≤₀ₐ y
  ≤₀-gives-≤₀ₐ x y l z = ∥∥-functor f
@@ -1516,8 +1516,8 @@ Apartness of real numbers and its basic properties:
 
  ♯-is-prop-valued : (x y : ℝ) → is-prop (x ♯ y)
  ♯-is-prop-valued x y = sum-of-contradictory-props
-                          (strict-order-ℝ-ℝ-is-prop-valued x y)
-                          (strict-order-ℝ-ℝ-is-prop-valued y x)
+                          (<-ℝ-ℝ-is-prop-valued x y)
+                          (<-ℝ-ℝ-is-prop-valued y x)
                           (λ i j → <-irrefl x (<-ℝ-ℝ-trans x y x i j))
 
  ♯-irrefl : (x : ℝ) → ¬ (x ♯ x)
@@ -1616,9 +1616,9 @@ upper bound of the family x.
    order-F-ℝ : Order F ℝ
    _≤_ {{order-F-ℝ}} x y = (i : 𝐼) → x i ≤ y
 
-  order-F-ℝ-is-prop-valued : (x : F) (y : ℝ)
+  ≤-F-ℝ-is-prop-valued : (x : F) (y : ℝ)
                            → is-prop (x ≤ y)
-  order-F-ℝ-is-prop-valued x y = Π-is-prop fe (λ i → ≤₀-is-prop-valued (x i) y)
+  ≤-F-ℝ-is-prop-valued x y = Π-is-prop fe (λ i → ≤₀-is-prop-valued (x i) y)
 
   _has-lub_ : F → ℝ → 𝓤⁺ ̇
   x has-lub y = (x ≤ y) × ((z : ℝ) → x ≤ z → y ≤ z)
@@ -1629,7 +1629,7 @@ upper bound of the family x.
   having-lub-is-prop : (x : F) (y : ℝ)
                      → is-prop (x has-lub y)
   having-lub-is-prop x y = ×-is-prop
-                             (order-F-ℝ-is-prop-valued x y)
+                             (≤-F-ℝ-is-prop-valued x y)
                              (Π₂-is-prop fe (λ z _ → ≤₀-is-prop-valued y z))
 
   having-a-lub-is-prop : (x : F) → is-prop (x has-a-lub)
@@ -1742,7 +1742,7 @@ upper bound of the family x.
     a i p l = ∣ i , l ∣
 
     b : (z : ℝ) → x ≤ z → y ≤ z
-    b z l p = ∥∥-rec (strict-order-ℚ-ℝ-is-prop-valued p z) f
+    b z l p = ∥∥-rec (<-ℚ-ℝ-is-prop-valued p z) f
      where
       f : (Σ i ꞉ 𝐼 , p < x i) → p < z
       f (i , m) = l i p m
@@ -1751,9 +1751,8 @@ upper bound of the family x.
    strict-order-F-ℚ : Strict-Order F ℚ
    _<_ {{strict-order-F-ℚ}} x q = (i : 𝐼) → x i < q
 
-  strict-order-F-ℚ-is-prop : (q : ℚ) (x : F) → is-prop (x < q)
-  strict-order-F-ℚ-is-prop q x = Π-is-prop fe
-                                  (λ i → strict-order-ℝ-ℚ-is-prop-valued (x i) q)
+  <-F-ℚ-is-prop-valued : (q : ℚ) (x : F) → is-prop (x < q)
+  <-F-ℚ-is-prop-valued q x = Π-is-prop fe (λ i → <-ℝ-ℚ-is-prop-valued (x i) q)
 
   is-bishop-located : F → 𝓤 ̇
   is-bishop-located x = (p q : ℚ) → p < q → (p < x) ∨ (x < q)
@@ -1965,8 +1964,8 @@ Limits of sequences, but using the topological, rather than metric, structure of
 
  ⦅_,_⦆ : ℚ → ℚ → (ℝ → Ω 𝓤)
  ⦅ p , q ⦆ = λ x → ((p < x) × (x < q)) , ×-is-prop
-                                         (strict-order-ℚ-ℝ-is-prop-valued p x)
-                                         (strict-order-ℝ-ℚ-is-prop-valued x q)
+                                         (<-ℚ-ℝ-is-prop-valued p x)
+                                         (<-ℝ-ℚ-is-prop-valued x q)
 
  _has-limit_ : (ℕ → ℝ) → ℝ → 𝓤 ̇
  x has-limit x∞ = (p q : ℚ)
