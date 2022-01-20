@@ -380,11 +380,11 @@ Tom de Jong, 5 November 2021.
 
 \begin{code}
 
-<-linear : (n m : ℕ) → n < m + (n ≡ m) + m < n
-<-linear zero     zero     = inr (inl refl)
-<-linear zero     (succ m) = inl ⋆
-<-linear (succ n) zero     = inr (inr ⋆)
-<-linear (succ n) (succ m) = γ IH
+<-trichotomous : (n m : ℕ) → n < m + (n ≡ m) + m < n
+<-trichotomous zero     zero     = inr (inl refl)
+<-trichotomous zero     (succ m) = inl ⋆
+<-trichotomous (succ n) zero     = inr (inr ⋆)
+<-trichotomous (succ n) (succ m) = γ IH
  where
   γ : (n < m) + (n ≡ m) + (m < n)
     → (succ n < succ m) + (succ n ≡ succ m) + (succ m < succ n)
@@ -392,6 +392,6 @@ Tom de Jong, 5 November 2021.
   γ (inr (inl e)) = inr (inl (ap succ e))
   γ (inr (inr l)) = inr (inr l)
   IH : (n < m) + (n ≡ m) + (m < n)
-  IH = <-linear n m
+  IH = <-trichotomous n m
 
 \end{code}
