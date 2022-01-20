@@ -137,20 +137,6 @@ not-Π-implies-not-not-Σ f g h = g (λ x → f x (λ u → h (x , u)))
 
 \end{code}
 
-Added by Tom de Jong in January 2022.
-
-\begin{code}
-
-all-types-are-¬¬-decidable : (X : 𝓤 ̇  ) → ¬¬ (decidable X)
-all-types-are-¬¬-decidable X h = claim₂ claim₁
- where
-  claim₁ : ¬ X
-  claim₁ x = h (inl x)
-  claim₂ : ¬¬ X
-  claim₂ nx = h (inr nx)
-
-\end{code}
-
 Notation to try to make proofs readable:
 
 \begin{code}

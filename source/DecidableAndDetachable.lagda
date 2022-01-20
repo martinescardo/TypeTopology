@@ -462,3 +462,21 @@ decidable-cong : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
 decidable-cong e = decidable-⇔ (⌜ e ⌝ , ⌜ e ⌝⁻¹)
 
 \end{code}
+
+Added by Tom de Jong in January 2022.
+
+\begin{code}
+
+all-types-are-¬¬-decidable : (X : 𝓤 ̇  ) → ¬¬ (decidable X)
+all-types-are-¬¬-decidable X h = claim₂ claim₁
+ where
+  claim₁ : ¬ X
+  claim₁ x = h (inl x)
+  claim₂ : ¬¬ X
+  claim₂ nx = h (inr nx)
+
+¬¬-stable-if-decidable : (X : 𝓤 ̇  ) → decidable X → ¬¬-stable X
+¬¬-stable-if-decidable X (inl  x) = λ _ → x
+¬¬-stable-if-decidable X (inr nx) = λ h → 𝟘-elim (h nx)
+
+\end{code}
