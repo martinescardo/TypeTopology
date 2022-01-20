@@ -318,6 +318,9 @@ An application of Π-cong is the following:
                          (X + 𝟘) ≃⟨ 𝟘-rneutral' {𝓤} {𝓥} ⟩
                          X       ■
 
+one-𝟘-only : 𝟘 {𝓤} ≃ 𝟘 {𝓥}
+one-𝟘-only = qinveq 𝟘-elim (𝟘-elim , 𝟘-induction , 𝟘-induction)
+
 one-𝟙-only : (𝓤 𝓥 : Universe) → 𝟙 {𝓤} ≃ 𝟙 {𝓥}
 one-𝟙-only _ _ = unique-to-𝟙 , (unique-to-𝟙 , (λ {⋆ → refl})) , (unique-to-𝟙 , (λ {⋆ → refl}))
 
