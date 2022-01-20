@@ -442,7 +442,7 @@ module _ (pt : propositional-truncations-exist)
  Aut-finite (n , α) = n ! , γ
   where
    δ : X ≃ Fin n → Aut X ≃ Fin (n !)
-   δ d = Aut X       ≃⟨ Eq-Eq-cong fe d d ⟩
+   δ d = Aut X       ≃⟨ ≃-cong fe d d ⟩
          Aut (Fin n) ≃⟨ ≃-sym (pr₂ (!construction n)) ⟩
          Fin (n !)   ■
    γ : ∥ Aut X ≃ Fin (n !) ∥

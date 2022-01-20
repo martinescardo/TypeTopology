@@ -207,8 +207,8 @@ a neutral element for ordinary function composition, definitionally:
   p : inverse f e ∘ f ≡ id
   p = dfunext (fe 𝓤 𝓤) (inverses-are-retractions f e)
 
-≃-Comp : FunExt → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (Z : 𝓦 ̇ ) → X ≃ Y → (Y ≃ Z) ≃ (X ≃ Z)
-≃-Comp fe Z α = qinveq (α ●_) ((≃-sym α ●_), p , q)
+≃-cong' : FunExt → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (Z : 𝓦 ̇ ) → X ≃ Y → (Y ≃ Z) ≃ (X ≃ Z)
+≃-cong' fe Z α = qinveq (α ●_) ((≃-sym α ●_), p , q)
  where
   p = λ β → ≃-sym α ● (α ● β) ≡⟨ ≃-assoc fe (≃-sym α) α β ⟩
             (≃-sym α ● α) ● β ≡⟨ ap (_● β) (≃-sym-left-inverse fe α) ⟩
@@ -220,13 +220,13 @@ a neutral element for ordinary function composition, definitionally:
             ≃-refl _ ● γ      ≡⟨ ≃-refl-left fe _ ⟩
             γ                 ∎
 
-Eq-Eq-cong : FunExt
-           → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } {B : 𝓣 ̇ }
-           → X ≃ A → Y ≃ B → (X ≃ Y) ≃ (A ≃ B)
-Eq-Eq-cong fe {X} {Y} {A} {B} α β =
- (X ≃ Y)  ≃⟨ ≃-Comp fe Y (≃-sym α) ⟩
+≃-cong : FunExt
+       → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } {B : 𝓣 ̇ }
+       → X ≃ A → Y ≃ B → (X ≃ Y) ≃ (A ≃ B)
+≃-cong fe {X} {Y} {A} {B} α β =
+ (X ≃ Y)  ≃⟨ ≃-cong' fe Y (≃-sym α) ⟩
  (A ≃ Y)  ≃⟨ ≃-Sym fe ⟩
- (Y ≃ A)  ≃⟨ ≃-Comp fe A (≃-sym β) ⟩
+ (Y ≃ A)  ≃⟨ ≃-cong' fe A (≃-sym β) ⟩
  (B ≃ A)  ≃⟨ ≃-Sym fe ⟩
  (A ≃ B)  ■
 
