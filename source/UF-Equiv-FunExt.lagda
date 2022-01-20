@@ -207,28 +207,32 @@ a neutral element for ordinary function composition, definitionally:
   p : inverse f e ∘ f ≡ id
   p = dfunext (fe 𝓤 𝓤) (inverses-are-retractions f e)
 
-≃-cong' : FunExt → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (Z : 𝓦 ̇ ) → X ≃ Y → (Y ≃ Z) ≃ (X ≃ Z)
-≃-cong' fe Z α = qinveq (α ●_) ((≃-sym α ●_), p , q)
+≃-cong-left : FunExt → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } → X ≃ Y → (X ≃ Z) ≃ (Y ≃ Z)
+≃-cong-left fe α = qinveq ((≃-sym α) ●_) ((α ●_), p , q)
  where
-  p = λ β → ≃-sym α ● (α ● β) ≡⟨ ≃-assoc fe (≃-sym α) α β ⟩
+  p = λ γ → α ● (≃-sym α ● γ) ≡⟨ ≃-assoc fe α (≃-sym α) γ ⟩
+            (α ● ≃-sym α) ● γ ≡⟨ ap (_● γ) (≃-sym-right-inverse fe α) ⟩
+            ≃-refl _ ● γ      ≡⟨ ≃-refl-left fe _ ⟩
+            γ                 ∎
+  q = λ β → ≃-sym α ● (α ● β) ≡⟨ ≃-assoc fe (≃-sym α) α β ⟩
             (≃-sym α ● α) ● β ≡⟨ ap (_● β) (≃-sym-left-inverse fe α) ⟩
             ≃-refl _ ● β      ≡⟨ ≃-refl-left fe _ ⟩
             β                 ∎
 
-  q = λ γ → α ● (≃-sym α ● γ) ≡⟨ ≃-assoc fe α (≃-sym α) γ ⟩
-            (α ● ≃-sym α) ● γ ≡⟨ ap (_● γ) (≃-sym-right-inverse fe α) ⟩
-            ≃-refl _ ● γ      ≡⟨ ≃-refl-left fe _ ⟩
-            γ                 ∎
+≃-cong-right : FunExt → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } → X ≃ Y → (A ≃ X) ≃ (A ≃ Y)
+≃-cong-right fe {X} {Y} {A} α =
+ (A ≃ X) ≃⟨ ≃-Sym fe ⟩
+ (X ≃ A) ≃⟨ ≃-cong-left fe α ⟩
+ (Y ≃ A) ≃⟨ ≃-Sym fe ⟩
+ (A ≃ Y) ■
 
 ≃-cong : FunExt
        → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } {B : 𝓣 ̇ }
        → X ≃ A → Y ≃ B → (X ≃ Y) ≃ (A ≃ B)
 ≃-cong fe {X} {Y} {A} {B} α β =
- (X ≃ Y)  ≃⟨ ≃-cong' fe Y (≃-sym α) ⟩
- (A ≃ Y)  ≃⟨ ≃-Sym fe ⟩
- (Y ≃ A)  ≃⟨ ≃-cong' fe A (≃-sym β) ⟩
- (B ≃ A)  ≃⟨ ≃-Sym fe ⟩
- (A ≃ B)  ■
+ (X ≃ Y) ≃⟨ ≃-cong-left  fe α ⟩
+ (A ≃ Y) ≃⟨ ≃-cong-right fe β ⟩
+ (A ≃ B) ■
 
 \end{code}
 
@@ -322,43 +326,5 @@ TT-unchoice-is-equiv : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {A : (x : X) → Y x 
 TT-unchoice-is-equiv {𝓤} {𝓥} {𝓦} {X} {Y} {A} fe =
    (TT-choice , TT-unchoice-choice {𝓤} {𝓥} {𝓦} {X} {Y} {A} fe) ,
    (TT-choice , TT-choice-unchoice {𝓤} {𝓥} {𝓦} {X} {Y} {A})
-
-\end{code}
-
-\begin{code}
-
-≃-cong : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } {B : 𝓣 ̇ }
-       → FunExt
-       → X ≃ A → Y ≃ B → (X ≃ Y) ≃ (A ≃ B)
-≃-cong {𝓤} {𝓥} {𝓦} {𝓣} {X} {Y} {A} {B} fe ϕ ψ =
- (X ≃ Y)                              ≃⟨ I              ⟩
- (Σ g ꞉ (A → B) , is-equiv (⌜ e ⌝ g)) ≃⟨ II             ⟩
- (Σ g ꞉ (A → B) , is-equiv g)         ≃⟨ ≃-refl (A ≃ B) ⟩
- (A ≃ B)                              ■
-  where
-   e : (A → B) ≃ (X → Y)
-   e = ≃-sym (→cong (fe 𝓦 𝓣) (fe 𝓤 𝓥) ϕ ψ)
-   I  = ≃-sym (Σ-change-of-variable is-equiv ⌜ e ⌝ (⌜⌝-is-equiv e))
-   II = Σ-cong (λ g → logically-equivalent-props-are-equivalent
-                       (being-equiv-is-prop fe (⌜ ψ ⌝⁻¹ ∘ g ∘ ⌜ ϕ ⌝))
-                       (being-equiv-is-prop fe g)
-                       (II₁ g)
-                       (II₂ g))
-    where
-     II₂ : (g : A → B) → is-equiv g → is-equiv (⌜ ψ ⌝⁻¹ ∘ g ∘ ⌜ ϕ ⌝)
-     II₂ g i = ∘-is-equiv (⌜⌝-is-equiv ϕ) (∘-is-equiv i (⌜⌝⁻¹-is-equiv ψ))
-     II₁ : (g : A → B) → is-equiv (⌜ ψ ⌝⁻¹ ∘ g ∘ ⌜ ϕ ⌝) → is-equiv g
-     II₁ g i = ≃-2-out-of-3-right (⌜⌝-is-equiv ϕ)
-                (≃-2-out-of-3-left (⌜⌝⁻¹-is-equiv ψ) i)
-
-≃-cong-right : {X : 𝓤 ̇ } {A : 𝓥 ̇ } {B : 𝓦 ̇ }
-             → FunExt
-             → A ≃ B → (X ≃ A) ≃ (X ≃ B)
-≃-cong-right fe = ≃-cong fe (≃-refl _)
-
-≃-cong-left : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ }
-        → FunExt
-        → X ≃ Y → (X ≃ A) ≃ (Y ≃ A)
-≃-cong-left fe ϕ = ≃-cong fe ϕ (≃-refl _)
 
 \end{code}

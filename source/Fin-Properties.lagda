@@ -683,7 +683,7 @@ type-of-linear-orders-is-ℕ {𝓤} ua =
   fe = Univalence-gives-FunExt ua
 
   i   = Σ-cong (λ X → Σ-cong (λ n → ≃-Sym fe))
-  ii  = Σ-cong (λ X → Σ-cong (λ n → ≃-cong' fe X (Lift-≃ 𝓤 (Fin n))))
+  ii  = Σ-cong (λ X → Σ-cong (λ n → ≃-cong-left fe (≃-Lift 𝓤 (Fin n))))
   iii = Σ-cong (λ X → Σ-cong (λ n → ≃-sym (univalence-≃ (ua 𝓤) (Lift 𝓤 (Fin n)) X)))
   iv  = total-fiber-is-domain (Lift 𝓤 ∘ Fin)
 
