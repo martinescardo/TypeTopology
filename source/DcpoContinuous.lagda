@@ -538,21 +538,17 @@ module _
                                           × (y ≪⟨ 𝓓 ⟩ d)
                                           × (d ≪⟨ 𝓓 ⟩ z)
  str-≪-binary-interpolation {x} {y} {z} x-way-below-z y-way-below-z = do
+  let δ = approximating-family-is-directed z
+  let l = approximating-family-∐-⊒ 𝓓 C z
   (d₁ , x-way-below-d₁ , d₁-way-below-z) ← str-≪-unary-interpolation
                                             x-way-below-z
   (d₂ , y-way-below-d₂ , d₂-way-below-z) ← str-≪-unary-interpolation
                                             y-way-below-z
 
-  (i₁ , d₁-below-zⁱ₁)                    ← d₁-way-below-z _ _
-                                            (approximating-family-is-directed z)
-                                            (approximating-family-∐-⊒ 𝓓 C z)
-  (i₂ , d₂-below-zⁱ₂)                    ← d₂-way-below-z _ _
-                                            (approximating-family-is-directed z)
-                                            (approximating-family-∐-⊒ 𝓓 C z)
+  (i₁ , d₁-below-zⁱ₁)                    ← d₁-way-below-z _ _ δ l
+  (i₂ , d₂-below-zⁱ₂)                    ← d₂-way-below-z _ _ δ l
 
-  (i , zⁱ₁-below-zⁱ , zⁱ₂-below-zⁱ)      ← semidirected-if-Directed 𝓓 _
-                                            (approximating-family-is-directed z)
-                                            i₁ i₂
+  (i , zⁱ₁-below-zⁱ , zⁱ₂-below-zⁱ)      ← semidirected-if-Directed 𝓓 _ δ i₁ i₂
   let α = approximating-family z
   let d₁-below-αⁱ = d₁   ⊑⟨ 𝓓 ⟩[ d₁-below-zⁱ₁ ]
                     α i₁ ⊑⟨ 𝓓 ⟩[ zⁱ₁-below-zⁱ ]
