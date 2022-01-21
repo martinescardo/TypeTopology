@@ -964,7 +964,8 @@ module an-automorphism-and-an-equivalence where
 
 \end{code}
 
-Now we discuss the restrictions of ϕ and γ mentioned above.
+Now we discuss the restrictions of ϕ and γ mentioned above. Notice
+that the following is by four cases without induction.
 
 \begin{code}
 

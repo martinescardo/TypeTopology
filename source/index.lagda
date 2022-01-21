@@ -213,6 +213,7 @@ import FreeGroupOfLargeLocallySmallSet
 import RicesTheoremForTheUniverse
 import RootsTruncation
 import Sequence
+import SemiDecidable                   -- By Tom de Jong
 import Sigma
 import SimpleTypes
 import SliceAlgebras
