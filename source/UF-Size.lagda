@@ -162,7 +162,7 @@ has-size-is-prop {𝓤} ua X 𝓥 = c
         (Lift 𝓤 Y ≃ Lift 𝓥 X)  ≃⟨ a₁ ⟩
         (Lift 𝓤 Y ≡ Lift 𝓥 X)  ■
    where
-    a₀ = Eq-Eq-cong fe
+    a₀ = ≃-cong fe
            (≃-sym (Lift-is-universe-embedding 𝓤 Y))
            (≃-sym (Lift-is-universe-embedding 𝓥 X))
     a₁ = ≃-sym (univalence-≃ (ua (𝓤 ⊔ 𝓥)) _ _)
@@ -204,7 +204,7 @@ prop-has-size-is-prop {𝓤} pe fe P i 𝓥 = c
         (Lift 𝓤 Y ≃ Lift 𝓥 P)  ≃⟨ a₁ ⟩
         (Lift 𝓤 Y ≡ Lift 𝓥 P)  ■
    where
-    a₀ = Eq-Eq-cong fe
+    a₀ = ≃-cong fe
            (≃-sym (Lift-is-universe-embedding 𝓤 Y))
            (≃-sym (Lift-is-universe-embedding 𝓥 P))
 

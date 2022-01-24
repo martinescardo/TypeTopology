@@ -318,6 +318,9 @@ An application of Π-cong is the following:
                          (X + 𝟘) ≃⟨ 𝟘-rneutral' {𝓤} {𝓥} ⟩
                          X       ■
 
+one-𝟘-only : 𝟘 {𝓤} ≃ 𝟘 {𝓥}
+one-𝟘-only = qinveq 𝟘-elim (𝟘-elim , 𝟘-induction , 𝟘-induction)
+
 one-𝟙-only : (𝓤 𝓥 : Universe) → 𝟙 {𝓤} ≃ 𝟙 {𝓥}
 one-𝟙-only _ _ = unique-to-𝟙 , (unique-to-𝟙 , (λ {⋆ → refl})) , (unique-to-𝟙 , (λ {⋆ → refl}))
 
@@ -570,6 +573,12 @@ Ap+ {𝓤} {𝓥} {𝓦} {X} {Y} Z (f , (g , ε) , (h , η)) = f' , (g' , ε') ,
        → funext 𝓤 𝓥
        → Y ≃ B → (X → Y) ≃ (X → B)
 →cong' {𝓤} {𝓥} {𝓣} {X} {Y} {B} fe fe' = →cong fe fe' (≃-refl X)
+
+→cong'' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ }
+        → funext 𝓦 𝓥
+        → funext 𝓤 𝓥
+        → X ≃ A → (X → Y) ≃ (A → Y)
+→cong'' {𝓤} {𝓥} {𝓣} {X} {Y} {B} fe fe' e = →cong fe fe' e (≃-refl Y)
 
 pr₁-equivalence : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ )
                 → ((x : X) → is-singleton (A x))
@@ -931,5 +940,81 @@ fiber-of-unique-to-𝟙 {𝓤} {𝓥} {X} ⋆ =
 ∙-is-equiv-right : {X : 𝓤 ̇ } {x y z : X} (q : x ≡ y)
                  → is-equiv (λ (p : z ≡ x) → p ∙ q)
 ∙-is-equiv-right {𝓤} {X} {x} {y} {z} refl = id-is-equiv (z ≡ y)
+
+\end{code}
+
+Added by Tom de Jong, November 2021.
+
+\begin{code}
+
+≃-2-out-of-3-right : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
+                   → {f : X → Y} {g : Y → Z}
+                   → is-equiv f → is-equiv (g ∘ f) → is-equiv g
+≃-2-out-of-3-right {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {f} {g} i j =
+ equiv-closed-under-∼ (g ∘ f ∘ f⁻¹) g k h
+  where
+   𝕗 : X ≃ Y
+   𝕗 = (f , i)
+   f⁻¹ : Y → X
+   f⁻¹ = ⌜ 𝕗 ⌝⁻¹
+   k : is-equiv (g ∘ f ∘ f⁻¹)
+   k = ∘-is-equiv (⌜⌝⁻¹-is-equiv 𝕗) j
+   h : g ∼ g ∘ f ∘ f⁻¹
+   h y = ap g ((≃-sym-is-rinv 𝕗 y) ⁻¹)
+
+≃-2-out-of-3-left : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
+                  → {f : X → Y} {g : Y → Z}
+                  → is-equiv g → is-equiv (g ∘ f) → is-equiv f
+≃-2-out-of-3-left {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {f} {g} i j =
+ equiv-closed-under-∼ (g⁻¹ ∘ g ∘ f) f k h
+  where
+   𝕘 : Y ≃ Z
+   𝕘 = (g , i)
+   g⁻¹ : Z → Y
+   g⁻¹ = ⌜ 𝕘 ⌝⁻¹
+   k : is-equiv (g⁻¹ ∘ g ∘ f)
+   k = ∘-is-equiv j (⌜⌝⁻¹-is-equiv 𝕘)
+   h : f ∼ g⁻¹ ∘ g ∘ f
+   h x = (≃-sym-is-linv 𝕘 (f x)) ⁻¹
+
+\end{code}
+
+Completely unrelated to the above, but still useful.
+
+\begin{code}
+
+open import UF-PropTrunc
+
+module _
+        (pt : propositional-truncations-exist)
+       where
+
+ open PropositionalTruncation pt
+
+ ∥∥-cong : {X : 𝓤 ̇  } {Y : 𝓥 ̇  } → X ≃ Y → ∥ X ∥ ≃ ∥ Y ∥
+ ∥∥-cong f = logically-equivalent-props-are-equivalent ∥∥-is-prop ∥∥-is-prop
+              (∥∥-functor ⌜ f ⌝) (∥∥-functor ⌜ f ⌝⁻¹)
+
+ ∃-cong : {X : 𝓤 ̇  } {Y : X → 𝓥 ̇  } {Y' : X → 𝓦 ̇  }
+        → ((x : X) → Y x ≃ Y' x)
+        → ∃ Y ≃ ∃ Y'
+ ∃-cong e = ∥∥-cong (Σ-cong e)
+
+ outer-∃-inner-Σ : {X : 𝓤 ̇  } {Y : X → 𝓥 ̇  } {A : (x : X) → Y x → 𝓦 ̇  }
+                 → (∃ x ꞉ X , ∃ y ꞉ Y x , A x y)
+                 ≃ (∃ x ꞉ X , Σ y ꞉ Y x , A x y)
+ outer-∃-inner-Σ {𝓤} {𝓥} {𝓦} {X} {Y} {A} =
+  logically-equivalent-props-are-equivalent ∥∥-is-prop ∥∥-is-prop f g
+   where
+    g : (∃ x ꞉ X , Σ y ꞉ Y x , A x y)
+      → (∃ x ꞉ X , ∃ y ꞉ Y x , A x y)
+    g = ∥∥-functor (λ (x , y , a) → x , ∣ y , a ∣)
+    f : (∃ x ꞉ X , ∃ y ꞉ Y x , A x y)
+      → (∃ x ꞉ X , Σ y ꞉ Y x , A x y)
+    f = ∥∥-rec ∥∥-is-prop ϕ
+     where
+      ϕ : (Σ x ꞉ X , ∃ y ꞉ Y x , A x y)
+        → (∃ x ꞉ X , Σ y ꞉ Y x , A x y)
+      ϕ (x , p) = ∥∥-functor (λ (y , a) → x , y , a) p
 
 \end{code}
