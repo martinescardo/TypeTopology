@@ -276,3 +276,32 @@ module binary-union-of-subsets
         t₂ (inr c) = ∪-is-upperbound₂ (A ∪ B) C x c
 
 \end{code}
+
+Again assuming propositional truncations, we can construct arbitrary suprema in
+𝓟 (X : 𝓤) of families indexed by types in 𝓤.
+
+\begin{code}
+
+module unions-of-small-families
+        (pt : propositional-truncations-exist)
+       where
+
+ open PropositionalTruncation pt
+
+ ⋃  : {X I : 𝓤 ̇ } (α : I → 𝓟 X) → 𝓟 X
+ ⋃ {𝓤} {X} {I} α x = (∃ i ꞉ I , x ∈ α i) , ∃-is-prop
+
+ ⋃-is-upperbound : {X I : 𝓤 ̇ } (α : I → 𝓟 X) (i : I)
+                 → α i ⊆ ⋃ α
+ ⋃-is-upperbound α i x a = ∣ i , a ∣
+
+ ⋃-is-lowerbound-of-upperbounds : {X I : 𝓤 ̇ } (α : I → 𝓟 X) (A : 𝓟 X)
+                                → ((i : I) → α i ⊆ A)
+                                → ⋃ α ⊆ A
+ ⋃-is-lowerbound-of-upperbounds {𝓤} {X} {I} α A ub x u =
+  ∥∥-rec (∈-is-prop A x) γ u
+   where
+    γ : (Σ i ꞉ I , x ∈ α i) → x ∈ A
+    γ (i , a) = ub i x a
+
+\end{code}
