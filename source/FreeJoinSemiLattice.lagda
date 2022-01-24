@@ -64,6 +64,8 @@ then there is a *unique* mediating map f♭ : 𝓚 X → L such that:
           𝓚 X
      commutes.
 
+The map η : X → 𝓚 X is given by mapping x to the singleton subset ❴ x ❵.
+
 The idea in defining f♭ is to map a Kuratowski finite subset A to the finite
 join ∨ⁿ (f ∘ 𝕋-to-carrier ⟨ A ⟩ ∘ e) in L, where e is some eumeration
 (i.e. surjection) e : Fin n ↠ 𝕋 ⟨ A ⟩.
@@ -96,6 +98,9 @@ module _
 
   open singleton-subsets X-is-set
   open singleton-Kuratowski-finite-subsets X-is-set
+
+  η : X → 𝓚 X
+  η x = ❴ x ❵[𝓚]
 
 \end{code}
 
@@ -179,18 +184,16 @@ We show (ii) and then (i) now.
 
 \begin{code}
 
-  f♭-after-η-is-f : f♭ ∘ ❴_❵[𝓚] ∼ f
-  f♭-after-η-is-f x = f♭ ❴ x ❵[𝓚]     ≡⟨ I  ⟩
-                      fₛ A (1 , e , σ) ≡⟨ II ⟩
-                      f x              ∎
+  f♭-after-η-is-f : f♭ ∘ η ∼ f
+  f♭-after-η-is-f x = f♭ (η x)             ≡⟨ I  ⟩
+                      fₛ ❴ x ❵ (1 , e , σ) ≡⟨ II ⟩
+                      f x                  ∎
    where
-    A : 𝓟 X
-    A = ❴ x ❵
-    e : Fin 1 → 𝕋 A
+    e : Fin 1 → 𝕋 ❴ x ❵
     e 𝟎 = x , refl
     σ : is-surjection e
     σ (x , refl) = ∣ 𝟎 , refl ∣
-    I = f♭-in-terms-of-fₛ A σ ⟨ ❴ x ❵[𝓚] ⟩₂
+    I = f♭-in-terms-of-fₛ ❴ x ❵ σ ⟨ η x ⟩₂
     II = ⊑-is-antisymmetric _ _
           (∨-is-lowerbound-of-upperbounds _ _ _
            (⊥-is-least (f x)) (⊑-is-reflexive (f x)))
@@ -340,7 +343,7 @@ is proved in UF-Powerset-Fin.lagda.
    f♭-is-unique : (h : 𝓚 X → L)
                 → h ∅[𝓚] ≡ ⊥
                 → ((A B : 𝓚 X) → h (A ∪[𝓚] B) ≡ h A ∨ h B)
-                → (h ∘ ❴_❵[𝓚] ∼ f)
+                → (h ∘ η ∼ f)
                 → h ∼ f♭
    f♭-is-unique h p₁ p₂ p₃ = Kuratowski-finite-subset-induction pe fe
                              X X-is-set
@@ -352,10 +355,10 @@ is proved in UF-Powerset-Fin.lagda.
      q₁ = h ∅[𝓚]  ≡⟨ p₁                ⟩
           ⊥       ≡⟨ f♭-preserves-⊥ ⁻¹ ⟩
           f♭ ∅[𝓚] ∎
-     q₂ : (x : X) → h ❴ x ❵[𝓚] ≡ f♭ ❴ x ❵[𝓚]
-     q₂ x = h ❴ x ❵[𝓚]  ≡⟨ p₃ x                   ⟩
-            f x         ≡⟨ (f♭-after-η-is-f x) ⁻¹ ⟩
-            f♭ ❴ x ❵[𝓚] ∎
+     q₂ : (x : X) → h (η x) ≡ f♭ (η x)
+     q₂ x = h (η x)  ≡⟨ p₃ x                   ⟩
+            f x      ≡⟨ (f♭-after-η-is-f x) ⁻¹ ⟩
+            f♭ (η x) ∎
      q₃ : (A B : 𝓚 X)
         → h A ≡ f♭ A
         → h B ≡ f♭ B
@@ -382,13 +385,13 @@ subsingletons (as L is a set).
    homotopy-uniqueness-of-f♭ :
     ∃! h ꞉ (𝓚 X → L) , (h ∅[𝓚] ≡ ⊥)
                      × ((A B : 𝓚 X) → h (A ∪[𝓚] B) ≡ h A ∨ h B)
-                     × h ∘ ❴_❵[𝓚] ∼ f
+                     × h ∘ η ∼ f
    homotopy-uniqueness-of-f♭ =
     (f♭ , f♭-preserves-⊥ , f♭-preserves-∨ , f♭-after-η-is-f) , γ
      where
       γ : (t : (Σ h ꞉ (𝓚 X → L) , (h ∅[𝓚] ≡ ⊥)
                                 × ((A B : 𝓚 X) → h (A ∪[𝓚] B) ≡ h A ∨ h B)
-                                × h ∘ ❴_❵[𝓚] ∼ f))
+                                × h ∘ η ∼ f))
         → (f♭ , f♭-preserves-⊥ , f♭-preserves-∨ , f♭-after-η-is-f) ≡ t
       γ (h , p₁ , p₂ , p₃) = to-subtype-≡ ψ
                              (dfunext (lower-funext (𝓤 ⁺) (𝓤 ⁺) fe)
@@ -400,7 +403,7 @@ subsingletons (as L is a set).
         ψ : (k : 𝓚 X → L)
           → is-prop ((k ∅[𝓚] ≡ ⊥)
                     × ((A B : 𝓚 X) → k (A ∪[𝓚] B) ≡ (k A ∨ k B))
-                    × k ∘ ❴_❵[𝓚] ∼ f)
+                    × k ∘ η ∼ f)
         ψ k = ×-is-prop L-is-set (×-is-prop
                                    (Π-is-prop fe
                                      (λ _ → Π-is-prop (lower-funext (𝓤 ⁺) (𝓤 ⁺) fe)
