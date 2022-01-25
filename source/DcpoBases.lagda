@@ -72,6 +72,29 @@ module _
         k = ≡-to-⊑ 𝓓
              (ap α ((inverses-are-retractions ⌜ ρ ⌝ (⌜⌝-is-equiv ρ) i) ⁻¹))
 
+ reindexed-family-sup : (x : ⟨ 𝓓 ⟩)
+                      → is-sup (underlying-order 𝓓) x α
+                      → is-sup (underlying-order 𝓓) x (reindexed-family)
+ reindexed-family-sup x x-is-sup = ub , lb-of-ubs
+  where
+   β : J → ⟨ 𝓓 ⟩
+   β = reindexed-family
+   ub : is-upperbound (underlying-order 𝓓) x β
+   ub i = sup-is-upperbound (underlying-order 𝓓) x-is-sup (⌜ ρ ⌝⁻¹ i)
+   lb-of-ubs : is-lowerbound-of-upperbounds (underlying-order 𝓓) x β
+   lb-of-ubs y y-is-ub = sup-is-lowerbound-of-upperbounds (underlying-order 𝓓)
+                          x-is-sup y lemma
+    where
+     lemma : is-upperbound (underlying-order 𝓓) y α
+     lemma i = α i         ⊑⟨ 𝓓 ⟩[ ⦅1⦆ ]
+               β (⌜ ρ ⌝ i) ⊑⟨ 𝓓 ⟩[ ⦅2⦆ ]
+               y           ∎⟨ 𝓓 ⟩
+      where
+       ⦅1⦆ = ≡-to-⊑ 𝓓
+             (ap α (inverses-are-retractions ⌜ ρ ⌝ (⌜⌝-is-equiv ρ) i) ⁻¹)
+       ⦅2⦆ = y-is-ub (⌜ ρ ⌝ i)
+
+
 module _
         (𝓓 : DCPO {𝓤} {𝓣})
         {B : 𝓥 ̇  }
@@ -369,45 +392,70 @@ module _
    ↓ᴮ-is-directed : (x : ⟨ 𝓓 ⟩) → is-Directed 𝓓 (↓ι x)
    ↓ᴮ-is-sup : (x : ⟨ 𝓓 ⟩) → is-sup (underlying-order 𝓓) x (↓ι x)
 
-{-
-  _≪ᴮₛ_ : (b : B) (x : ⟨ 𝓓 ⟩) → 𝓥 ̇
-  b ≪ᴮₛ x = pr₁ (≪ᴮ-is-small x b)
+  _⊑ᴮₛ_ : (b : B) (x : ⟨ 𝓓 ⟩) → 𝓥 ̇
+  b ⊑ᴮₛ x = pr₁ (⊑ᴮ-is-small x b)
 
-  ≪ᴮₛ-≃-≪ᴮ : {b : B} {x : ⟨ 𝓓 ⟩} → (b ≪ᴮₛ x) ≃ (β b ≪⟨ 𝓓 ⟩ x)
-  ≪ᴮₛ-≃-≪ᴮ {b} {x} = pr₂ (≪ᴮ-is-small x b)
+  ⊑ᴮₛ-≃-⊑ᴮ : {b : B} {x : ⟨ 𝓓 ⟩} → (b ⊑ᴮₛ x) ≃ (β b ⊑⟨ 𝓓 ⟩ x)
+  ⊑ᴮₛ-≃-⊑ᴮ {b} {x} = pr₂ (⊑ᴮ-is-small x b)
 
-  ↡ᴮₛ : ⟨ 𝓓 ⟩ → 𝓥 ̇
-  ↡ᴮₛ x = Σ b ꞉ B , (b ≪ᴮₛ x)
+  ↓ᴮₛ : ⟨ 𝓓 ⟩ → 𝓥 ̇
+  ↓ᴮₛ x = Σ b ꞉ B , (b ⊑ᴮₛ x)
 
-  ιₛ : (x : ⟨ 𝓓 ⟩) → ↡ᴮₛ x → ⟨ 𝓓 ⟩
-  ιₛ x = β ∘ pr₁
+  ↓ιₛ : (x : ⟨ 𝓓 ⟩) → ↓ᴮₛ x → ⟨ 𝓓 ⟩
+  ↓ιₛ x = β ∘ pr₁
 
-  ↡ᴮₛ-is-directed : (x : ⟨ 𝓓 ⟩) → is-Directed 𝓓 (ιₛ x)
-  ↡ᴮₛ-is-directed x = reindexed-family-is-directed 𝓓
-                       (Σ-cong (λ b → ≃-sym ≪ᴮₛ-≃-≪ᴮ)) (ι x) (↡ᴮ-is-directed x)
+  ↓ᴮₛ-is-directed : (x : ⟨ 𝓓 ⟩) → is-Directed 𝓓 (↓ιₛ x)
+  ↓ᴮₛ-is-directed x = reindexed-family-is-directed 𝓓
+                       (Σ-cong (λ b → ≃-sym ⊑ᴮₛ-≃-⊑ᴮ)) (↓ι x) (↓ᴮ-is-directed x)
 
-  ↡ᴮₛ-∐-≡ : (x : ⟨ 𝓓 ⟩) → ∐ 𝓓 (↡ᴮₛ-is-directed x) ≡ x
-  ↡ᴮₛ-∐-≡ x = antisymmetry 𝓓 (∐ 𝓓 (↡ᴮₛ-is-directed x)) x ⦅1⦆ ⦅2⦆
+  ↓ᴮₛ-∐-≡ : (x : ⟨ 𝓓 ⟩) → ∐ 𝓓 (↓ᴮₛ-is-directed x) ≡ x
+  ↓ᴮₛ-∐-≡ x = antisymmetry 𝓓 (∐ 𝓓 (↓ᴮₛ-is-directed x)) x ⦅1⦆ ⦅2⦆
    where
-    ⦅1⦆ : ∐ 𝓓 (↡ᴮₛ-is-directed x) ⊑⟨ 𝓓 ⟩ x
-    ⦅1⦆ = ∐-is-lowerbound-of-upperbounds 𝓓 (↡ᴮₛ-is-directed x) x
-          (λ (b , u) → sup-is-upperbound (underlying-order 𝓓) (↡ᴮ-is-sup x)
-                        (b , (⌜ ≪ᴮₛ-≃-≪ᴮ ⌝ u)))
-    ⦅2⦆ : x ⊑⟨ 𝓓 ⟩ ∐ 𝓓 (↡ᴮₛ-is-directed x)
-    ⦅2⦆ = sup-is-lowerbound-of-upperbounds (underlying-order 𝓓) (↡ᴮ-is-sup x)
-          (∐ 𝓓 (↡ᴮₛ-is-directed x))
-          (λ (b , v) → ∐-is-upperbound 𝓓 (↡ᴮₛ-is-directed x)
-                        (b , (⌜ ≪ᴮₛ-≃-≪ᴮ ⌝⁻¹ v)))
+    ⦅1⦆ : ∐ 𝓓 (↓ᴮₛ-is-directed x) ⊑⟨ 𝓓 ⟩ x
+    ⦅1⦆ = ∐-is-lowerbound-of-upperbounds 𝓓 (↓ᴮₛ-is-directed x) x
+          (λ (b , u) → sup-is-upperbound (underlying-order 𝓓) (↓ᴮ-is-sup x)
+                        (b , (⌜ ⊑ᴮₛ-≃-⊑ᴮ ⌝ u)))
+    ⦅2⦆ : x ⊑⟨ 𝓓 ⟩ ∐ 𝓓 (↓ᴮₛ-is-directed x)
+    ⦅2⦆ = sup-is-lowerbound-of-upperbounds (underlying-order 𝓓) (↓ᴮ-is-sup x)
+          (∐ 𝓓 (↓ᴮₛ-is-directed x))
+          (λ (b , v) → ∐-is-upperbound 𝓓 (↓ᴮₛ-is-directed x)
+                        (b , (⌜ ⊑ᴮₛ-≃-⊑ᴮ ⌝⁻¹ v)))
 
-  ↡ᴮₛ-∐-⊑ : (x : ⟨ 𝓓 ⟩) → ∐ 𝓓 (↡ᴮₛ-is-directed x) ⊑⟨ 𝓓 ⟩ x
-  ↡ᴮₛ-∐-⊑ x = ≡-to-⊑ 𝓓 (↡ᴮₛ-∐-≡ x)
+  ↓ᴮₛ-∐-⊑ : (x : ⟨ 𝓓 ⟩) → ∐ 𝓓 (↓ᴮₛ-is-directed x) ⊑⟨ 𝓓 ⟩ x
+  ↓ᴮₛ-∐-⊑ x = ≡-to-⊑ 𝓓 (↓ᴮₛ-∐-≡ x)
 
-  ↡ᴮₛ-∐-⊒ : (x : ⟨ 𝓓 ⟩) → x ⊑⟨ 𝓓 ⟩ ∐ 𝓓 (↡ᴮₛ-is-directed x)
-  ↡ᴮₛ-∐-⊒ x = ≡-to-⊑ 𝓓 ((↡ᴮₛ-∐-≡ x) ⁻¹)
+  ↓ᴮₛ-∐-⊒ : (x : ⟨ 𝓓 ⟩) → x ⊑⟨ 𝓓 ⟩ ∐ 𝓓 (↓ᴮₛ-is-directed x)
+  ↓ᴮₛ-∐-⊒ x = ≡-to-⊑ 𝓓 ((↓ᴮₛ-∐-≡ x) ⁻¹)
 
-  ↡ᴮₛ-way-below : (x : ⟨ 𝓓 ⟩) (b : ↡ᴮₛ x) → ιₛ x b ≪⟨ 𝓓 ⟩ x
-  ↡ᴮₛ-way-below x (b , u) = ⌜ ≪ᴮₛ-≃-≪ᴮ ⌝ u
--}
+  ↓ᴮₛ-way-below : (x : ⟨ 𝓓 ⟩) (b : ↓ᴮₛ x) → ↓ιₛ x b ⊑⟨ 𝓓 ⟩ x
+  ↓ᴮₛ-way-below x (b , u) = ⌜ ⊑ᴮₛ-≃-⊑ᴮ ⌝ u
+
+ compact-basis-is-basis : is-small-compact-basis
+                        → is-small-basis 𝓓 β
+ compact-basis-is-basis scb = record {
+   ≪ᴮ-is-small    = λ x b → ( b ⊑ᴮₛ x
+                            , ((b ⊑ᴮₛ x)      ≃⟨ ⊑ᴮₛ-≃-⊑ᴮ ⟩
+                               (β b ⊑⟨ 𝓓 ⟩ x) ≃⟨ lemma b  ⟩
+                               (β b ≪⟨ 𝓓 ⟩ x) ■));
+   ↡ᴮ-is-directed = λ x → reindexed-family-is-directed 𝓓
+                           (↓ᴮ-≃-↡ᴮ x) (↓ι x) (↓ᴮ-is-directed x);
+   ↡ᴮ-is-sup      = λ x → reindexed-family-sup 𝓓 (↓ᴮ-≃-↡ᴮ x) (↓ι x)
+                           x (↓ᴮ-is-sup x)
+  }
+   where
+    open is-small-compact-basis scb
+    lemma : (b : B) {x : ⟨ 𝓓 ⟩} → (β b ⊑⟨ 𝓓 ⟩ x) ≃ (β b ≪⟨ 𝓓 ⟩ x)
+    lemma b = compact-⊑-≃-≪ 𝓓 (basis-is-compact b)
+    ↓ᴮ-≃-↡ᴮ : (x : ⟨ 𝓓 ⟩) → ↓ᴮ x ≃ ↡ᴮ 𝓓 β x
+    ↓ᴮ-≃-↡ᴮ x = Σ-cong (λ b → lemma b)
+
+
+
+
+
+
+
+
 
 {-
 module _
