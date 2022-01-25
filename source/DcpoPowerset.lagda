@@ -13,30 +13,23 @@ open import UF-Subsingletons
 module DcpoPowerset
         (pt : propositional-truncations-exist)
         (fe : ∀ {𝓤 𝓥} → funext 𝓤 𝓥)
-        (pe : propext 𝓤)
+        (pe : Prop-Ext)
         {X : 𝓤 ̇  }
         (X-is-set : is-set X)
        where
 
 open PropositionalTruncation pt
 
-{-
-open import UF-Equiv
-
-open import UF-Miscelanea
-open import UF-Subsingletons-FunExt
-
-
--}
-
 open import List
 
+open import UF-Equiv
 open import UF-ImageAndSurjection
 open import UF-Powerset
 open import UF-Powerset-Fin pt
 open import UF-Subsingletons-FunExt
 
 open import Dcpo pt fe 𝓤
+open import DcpoBases pt pe fe 𝓤
 open import DcpoMiscelanea pt fe 𝓤
 open import DcpoWayBelow pt fe 𝓤
 
@@ -118,10 +111,10 @@ open unions-of-small-families pt
 κ⁺-⋃-≡ : (A : 𝓟 X) → ⋃ (κ⁺ A) ≡ A
 κ⁺-⋃-≡ A = subset-extensionality pe fe (κ⁺-⋃-⊆ A) (κ⁺-⋃-⊇ A)
 
-Kuratowski-finite-if-compact : (A : 𝓟 X)
-                             → is-compact 𝓟-dcpo A
-                             → is-Kuratowski-finite-subset A
-Kuratowski-finite-if-compact A c =
+Kuratowski-finite-subset-if-compact : (A : 𝓟 X)
+                                    → is-compact 𝓟-dcpo A
+                                    → is-Kuratowski-finite-subset A
+Kuratowski-finite-subset-if-compact A c =
  Kuratowski-finite-subset-if-in-image-of-κ A γ
   where
    claim : ∃ l⁺ ꞉ (Σ l ꞉ List X , κ l ⊆ A) , A ⊆ κ⁺ A l⁺
@@ -152,10 +145,10 @@ singletons-are-compact x I α δ l = ∥∥-functor h (l x ∈-❴❵)
   (∪-is-upperbound₁ A B) (∪-is-upperbound₂ A B)
   (∪-is-lowerbound-of-upperbounds A B)
 
-compact-if-Kuratowski-finite : (A : 𝓟 X)
-                             → is-Kuratowski-finite-subset A
-                             → is-compact 𝓟-dcpo A
-compact-if-Kuratowski-finite A k = lemma (A , k)
+compact-if-Kuratowski-finite-subset : (A : 𝓟 X)
+                                    → is-Kuratowski-finite-subset A
+                                    → is-compact 𝓟-dcpo A
+compact-if-Kuratowski-finite-subset A k = lemma (A , k)
  where
   Q : 𝓚 X → 𝓤 ⁺ ̇
   Q A = is-compact 𝓟-dcpo (pr₁ A)
@@ -165,5 +158,18 @@ compact-if-Kuratowski-finite A k = lemma (A , k)
            ∅-is-compact
            singletons-are-compact
            (λ A B → ∪-is-compact (pr₁ A) (pr₁ B))
+
+\end{code}
+
+\begin{code}
+
+κ-is-small-compact-basis : is-small-compact-basis 𝓟-dcpo κ
+κ-is-small-compact-basis = record {
+  basis-is-compact = λ l → compact-if-Kuratowski-finite-subset (κ l)
+                            (κ-of-list-is-Kuratowski-finite-subset l);
+  ⊑ᴮ-is-small      = λ A l → (κ l ⊆ A , ≃-refl (κ l ⊆ A));
+  ↓ᴮ-is-directed   = κ⁺-is-directed;
+  ↓ᴮ-is-sup        = κ⁺-sup
+ }
 
 \end{code}
