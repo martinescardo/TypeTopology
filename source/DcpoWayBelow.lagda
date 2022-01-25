@@ -107,4 +107,43 @@ being-compact-is-prop : (𝓓 : DCPO {𝓤} {𝓣}) (x : ⟨ 𝓓 ⟩)
                       → is-prop (is-compact 𝓓 x)
 being-compact-is-prop 𝓓 x = ≪-is-prop-valued 𝓓
 
+⊥-is-compact : (𝓓 : DCPO⊥ {𝓤} {𝓣}) → is-compact (𝓓 ⁻) (⊥ 𝓓)
+⊥-is-compact 𝓓 I α δ _ = ∥∥-functor h (inhabited-if-Directed (𝓓 ⁻) α δ)
+ where
+  h : I → Σ i ꞉ I , ⊥ 𝓓 ⊑⟪ 𝓓 ⟫ α i
+  h i = (i , ⊥-is-least 𝓓 (α i))
+
+binary-join-is-compact : (𝓓 : DCPO {𝓤} {𝓣}) {x y z : ⟨ 𝓓 ⟩}
+                       → x ⊑⟨ 𝓓 ⟩ z → y ⊑⟨ 𝓓 ⟩ z
+                       → ((d : ⟨ 𝓓 ⟩) → x ⊑⟨ 𝓓 ⟩ d → y ⊑⟨ 𝓓 ⟩ d → z ⊑⟨ 𝓓 ⟩ d)
+                       → is-compact 𝓓 x → is-compact 𝓓 y → is-compact 𝓓 z
+binary-join-is-compact
+ 𝓓 {x} {y} {z} x-below-z y-below-z z-lb-of-ubs x-cpt y-cpt = γ
+  where
+   γ : is-compact 𝓓 z
+   γ I α δ z-below-∐α = ∥∥-rec₂ ∃-is-prop f
+                         (x-cpt I α δ (x     ⊑⟨ 𝓓 ⟩[ x-below-z ]
+                                       z     ⊑⟨ 𝓓 ⟩[ z-below-∐α ]
+                                       ∐ 𝓓 δ ∎⟨ 𝓓 ⟩))
+                         (y-cpt I α δ (y     ⊑⟨ 𝓓 ⟩[ y-below-z ]
+                                       z     ⊑⟨ 𝓓 ⟩[ z-below-∐α ]
+                                       ∐ 𝓓 δ ∎⟨ 𝓓 ⟩))
+    where
+     f : (Σ i ꞉ I , x ⊑⟨ 𝓓 ⟩ α i)
+       → (Σ j ꞉ I , y ⊑⟨ 𝓓 ⟩ α j)
+       → (∃ k ꞉ I , z ⊑⟨ 𝓓 ⟩ α k)
+     f (i , x-below-αᵢ) (j , y-below-αⱼ) =
+      ∥∥-functor g (semidirected-if-Directed 𝓓 α δ i j)
+       where
+        g : (Σ k ꞉ I , (α i ⊑⟨ 𝓓 ⟩ α k) × (α j ⊑⟨ 𝓓 ⟩ α k))
+          → Σ k ꞉ I , z ⊑⟨ 𝓓 ⟩ α k
+        g (k , lᵢ , lⱼ) =
+         (k , z-lb-of-ubs (α k)
+               (x   ⊑⟨ 𝓓 ⟩[ x-below-αᵢ ]
+                α i ⊑⟨ 𝓓 ⟩[ lᵢ ]
+                α k ∎⟨ 𝓓 ⟩)
+               (y   ⊑⟨ 𝓓 ⟩[ y-below-αⱼ ]
+                α j ⊑⟨ 𝓓 ⟩[ lⱼ ]
+                α k ∎⟨ 𝓓 ⟩))
+
 \end{code}
