@@ -159,6 +159,9 @@ module singleton-subsets
  ❴_❵ : X → 𝓟 X
  ❴ x ❵ = λ y → ((x ≡ y) , X-is-set)
 
+ ∈-❴❵ : {x : X} → x ∈ ❴ x ❵
+ ∈-❴❵ {x} = refl
+
  ❴❵-is-singleton : {x : X} → is-singleton (𝕋 ❴ x ❵)
  ❴❵-is-singleton {x} = singleton-types-are-singletons x
 
@@ -188,7 +191,7 @@ module _
 
 open import UF-PropTrunc
 
-module binary-union-of-subsets
+module binary-unions-of-subsets
         (pt : propositional-truncations-exist)
        where
 

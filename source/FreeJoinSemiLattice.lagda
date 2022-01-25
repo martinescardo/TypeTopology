@@ -33,7 +33,7 @@ module FreeJoinSemiLattice
 
 open import UF-Powerset-Fin pt hiding (κ)
 
-open binary-union-of-subsets pt
+open binary-unions-of-subsets pt
 
 open Kuratowski-finiteness pt
 
