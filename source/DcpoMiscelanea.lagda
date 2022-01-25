@@ -353,7 +353,7 @@ is-a-non-trivial-pointed-dcpo 𝓓 = ∃ x ꞉ ⟪ 𝓓 ⟫ , x ≢ ⊥ 𝓓
 Pointed dcpos have semidirected & subsingleton suprema and these are preserved
 by maps that are both strict and continuous.
 
-This is used to be prove (in DcpoLifting.lagda) that the lifting yields the free
+This is used to prove (in DcpoLifting.lagda) that the lifting yields the free
 pointed dcpo on a set.
 
 \begin{code}
