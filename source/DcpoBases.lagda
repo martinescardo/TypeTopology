@@ -344,6 +344,71 @@ module _
  is-continuous-dcpo-if-unspecified-small-basis =
   ∥∥-functor structurally-continuous-if-specified-small-basis
 
+
+
+\end{code}
+
+\begin{code}
+
+module _
+        (𝓓 : DCPO {𝓤} {𝓣})
+        {B : 𝓥 ̇  }
+        (β : B → ⟨ 𝓓 ⟩)
+       where
+
+ ↓ᴮ : ⟨ 𝓓 ⟩ → 𝓥 ⊔ 𝓣 ̇
+ ↓ᴮ x = Σ b ꞉ B , β b ⊑⟨ 𝓓 ⟩ x
+
+ ↓ι : (x : ⟨ 𝓓 ⟩) → ↓ᴮ x → ⟨ 𝓓 ⟩
+ ↓ι x = β ∘ pr₁
+
+ record is-small-compact-basis : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇  where
+  field
+   basis-is-compact : (b : B) → is-compact 𝓓 (β b)
+   ⊑ᴮ-is-small : (x : ⟨ 𝓓 ⟩) → ((b : B) → is-small (β b ⊑⟨ 𝓓 ⟩ x))
+   ↓ᴮ-is-directed : (x : ⟨ 𝓓 ⟩) → is-Directed 𝓓 (↓ι x)
+   ↓ᴮ-is-sup : (x : ⟨ 𝓓 ⟩) → is-sup (underlying-order 𝓓) x (↓ι x)
+
+{-
+  _≪ᴮₛ_ : (b : B) (x : ⟨ 𝓓 ⟩) → 𝓥 ̇
+  b ≪ᴮₛ x = pr₁ (≪ᴮ-is-small x b)
+
+  ≪ᴮₛ-≃-≪ᴮ : {b : B} {x : ⟨ 𝓓 ⟩} → (b ≪ᴮₛ x) ≃ (β b ≪⟨ 𝓓 ⟩ x)
+  ≪ᴮₛ-≃-≪ᴮ {b} {x} = pr₂ (≪ᴮ-is-small x b)
+
+  ↡ᴮₛ : ⟨ 𝓓 ⟩ → 𝓥 ̇
+  ↡ᴮₛ x = Σ b ꞉ B , (b ≪ᴮₛ x)
+
+  ιₛ : (x : ⟨ 𝓓 ⟩) → ↡ᴮₛ x → ⟨ 𝓓 ⟩
+  ιₛ x = β ∘ pr₁
+
+  ↡ᴮₛ-is-directed : (x : ⟨ 𝓓 ⟩) → is-Directed 𝓓 (ιₛ x)
+  ↡ᴮₛ-is-directed x = reindexed-family-is-directed 𝓓
+                       (Σ-cong (λ b → ≃-sym ≪ᴮₛ-≃-≪ᴮ)) (ι x) (↡ᴮ-is-directed x)
+
+  ↡ᴮₛ-∐-≡ : (x : ⟨ 𝓓 ⟩) → ∐ 𝓓 (↡ᴮₛ-is-directed x) ≡ x
+  ↡ᴮₛ-∐-≡ x = antisymmetry 𝓓 (∐ 𝓓 (↡ᴮₛ-is-directed x)) x ⦅1⦆ ⦅2⦆
+   where
+    ⦅1⦆ : ∐ 𝓓 (↡ᴮₛ-is-directed x) ⊑⟨ 𝓓 ⟩ x
+    ⦅1⦆ = ∐-is-lowerbound-of-upperbounds 𝓓 (↡ᴮₛ-is-directed x) x
+          (λ (b , u) → sup-is-upperbound (underlying-order 𝓓) (↡ᴮ-is-sup x)
+                        (b , (⌜ ≪ᴮₛ-≃-≪ᴮ ⌝ u)))
+    ⦅2⦆ : x ⊑⟨ 𝓓 ⟩ ∐ 𝓓 (↡ᴮₛ-is-directed x)
+    ⦅2⦆ = sup-is-lowerbound-of-upperbounds (underlying-order 𝓓) (↡ᴮ-is-sup x)
+          (∐ 𝓓 (↡ᴮₛ-is-directed x))
+          (λ (b , v) → ∐-is-upperbound 𝓓 (↡ᴮₛ-is-directed x)
+                        (b , (⌜ ≪ᴮₛ-≃-≪ᴮ ⌝⁻¹ v)))
+
+  ↡ᴮₛ-∐-⊑ : (x : ⟨ 𝓓 ⟩) → ∐ 𝓓 (↡ᴮₛ-is-directed x) ⊑⟨ 𝓓 ⟩ x
+  ↡ᴮₛ-∐-⊑ x = ≡-to-⊑ 𝓓 (↡ᴮₛ-∐-≡ x)
+
+  ↡ᴮₛ-∐-⊒ : (x : ⟨ 𝓓 ⟩) → x ⊑⟨ 𝓓 ⟩ ∐ 𝓓 (↡ᴮₛ-is-directed x)
+  ↡ᴮₛ-∐-⊒ x = ≡-to-⊑ 𝓓 ((↡ᴮₛ-∐-≡ x) ⁻¹)
+
+  ↡ᴮₛ-way-below : (x : ⟨ 𝓓 ⟩) (b : ↡ᴮₛ x) → ιₛ x b ≪⟨ 𝓓 ⟩ x
+  ↡ᴮₛ-way-below x (b , u) = ⌜ ≪ᴮₛ-≃-≪ᴮ ⌝ u
+-}
+
 {-
 module _
         (𝓓 : DCPO {𝓤} {𝓣})
