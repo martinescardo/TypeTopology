@@ -103,4 +103,8 @@ syntax way-below 𝓓 x y = x ≪⟨ 𝓓 ⟩ y
 is-compact : (𝓓 : DCPO {𝓤} {𝓣}) → ⟨ 𝓓 ⟩ → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
 is-compact 𝓓 x = x ≪⟨ 𝓓 ⟩ x
 
+being-compact-is-prop : (𝓓 : DCPO {𝓤} {𝓣}) (x : ⟨ 𝓓 ⟩)
+                      → is-prop (is-compact 𝓓 x)
+being-compact-is-prop 𝓓 x = ≪-is-prop-valued 𝓓
+
 \end{code}
