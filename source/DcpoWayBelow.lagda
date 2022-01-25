@@ -19,6 +19,7 @@ module DcpoWayBelow
 
 open PropositionalTruncation pt
 
+open import UF-Equiv
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
 
@@ -145,5 +146,15 @@ binary-join-is-compact
                (y   ⊑⟨ 𝓓 ⟩[ y-below-αⱼ ]
                 α j ⊑⟨ 𝓓 ⟩[ lⱼ ]
                 α k ∎⟨ 𝓓 ⟩))
+
+compact-⊑-≃-≪ : (𝓓 : DCPO {𝓤} {𝓣}) {x : ⟨ 𝓓 ⟩}
+              → is-compact 𝓓 x
+              → {y : ⟨ 𝓓 ⟩}
+              → (x ⊑⟨ 𝓓 ⟩ y) ≃ (x ≪⟨ 𝓓 ⟩ y)
+compact-⊑-≃-≪ 𝓓 {x} c {y} =
+ logically-equivalent-props-are-equivalent
+  (prop-valuedness 𝓓 x y) (≪-is-prop-valued 𝓓)
+  (≪-⊑-to-≪ 𝓓 c)
+  (≪-to-⊑ 𝓓)
 
 \end{code}
