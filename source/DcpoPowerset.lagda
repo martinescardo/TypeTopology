@@ -45,6 +45,7 @@ open import Poset fe
 open binary-unions-of-subsets pt
 open canonical-map-from-lists-to-subsets X-is-set
 open ImageAndSurjection pt
+open singleton-subsets X-is-set
 open unions-of-small-families pt
 
 𝓟-dcpo : DCPO {𝓤 ⁺} {𝓤}
@@ -59,7 +60,8 @@ open unions-of-small-families pt
   dir-compl : is-directed-complete _⊆_
   dir-compl I α δ = ⋃ α , ⋃-is-upperbound α , ⋃-is-lowerbound-of-upperbounds α
 
--- TODO: Add 𝓟-dcpo⊥ version
+𝓟-dcpo⊥ : DCPO⊥ {𝓤 ⁺} {𝓤}
+𝓟-dcpo⊥ = (𝓟-dcpo , ∅ , ∅-is-least)
 
 κ⁺ : (A : 𝓟 X) → (Σ l ꞉ List X , κ l ⊆ A) → 𝓟 X
 κ⁺ A = κ ∘ pr₁
@@ -100,10 +102,9 @@ Kuratowski-finite-if-compact A c =
    claim : ∃ l⁺ ꞉ (Σ l ꞉ List X , κ l ⊆ A) , A ⊆ κ⁺ A l⁺
    claim = c (domain (κ⁺ A)) (κ⁺ A) (κ⁺-is-directed A) A-below-∐κ⁺
     where
-     A-below-∐κ⁺ : A ⊆ ⋃ (κ⁺ A)
+     A-below-∐κ⁺ : A ⊆ ⋃ (κ⁺ A) -- TODO: Factor this out & prove the converse too
      A-below-∐κ⁺ x a = ⋃-is-upperbound (κ⁺ A) ([ x ] , s) x i
       where
-       open singleton-subsets X-is-set
        s : (❴ x ❵ ∪ ∅) ⊆ A
        s = ∪-is-lowerbound-of-upperbounds ❴ x ❵ ∅ A t (∅-is-least A)
         where
@@ -118,63 +119,37 @@ Kuratowski-finite-if-compact A c =
        → Σ l ꞉ List X , κ l ≡ A
      h ((l , s) , t) = (l , subset-extensionality pe fe s t)
 
+∅-is-compact : is-compact 𝓟-dcpo ∅
+∅-is-compact = ⊥-is-compact 𝓟-dcpo⊥
+
+singletons-are-compact : (x : X) → is-compact 𝓟-dcpo ❴ x ❵
+singletons-are-compact x I α δ l = ∥∥-functor h (l x ∈-❴❵)
+ where
+  h : (Σ i ꞉ I , x ∈ α i)
+    → (Σ i ꞉ I , ❴ x ❵ ⊆ α i)
+  h (i , m) = (i , (λ y p → transport (_∈ α i) p m))
+
+∪-is-compact : (A B : 𝓟 X)
+             → is-compact 𝓟-dcpo A
+             → is-compact 𝓟-dcpo B
+             → is-compact 𝓟-dcpo (A ∪ B)
+∪-is-compact A B =
+ binary-join-is-compact 𝓟-dcpo {A} {B} {A ∪ B}
+  (∪-is-upperbound₁ A B) (∪-is-upperbound₂ A B)
+  (∪-is-lowerbound-of-upperbounds A B)
+
 compact-if-Kuratowski-finite : (A : 𝓟 X)
                              → is-Kuratowski-finite-subset A
                              → is-compact 𝓟-dcpo A
-compact-if-Kuratowski-finite A k =
- ∥∥-rec (being-compact-is-prop 𝓟-dcpo A) goal claim
-  where
-   lemma : (l : List X) (I : 𝓤 ̇  ) (𝓐 : I → 𝓟 X)
-         → is-Directed 𝓟-dcpo 𝓐
-         → κ l ⊆ ⋃ 𝓐
-         → ∃ i ꞉ I , κ l ⊆ 𝓐 i
-   lemma []      I 𝓐 δ u = ∥∥-functor h (inhabited-if-Directed 𝓟-dcpo 𝓐 δ)
-    where
-     h : I → (Σ i ꞉ I , ∅ ⊆ 𝓐 i)
-     h i = i , (∅-is-least (𝓐 i))
-   lemma (x ∷ l) I 𝓐 δ u = ∥∥-rec₂ ∃-is-prop ρ h IH
-    where
-     open singleton-subsets X-is-set
-     ρ : (Σ i ꞉ I , ❴ x ❵ ⊆ 𝓐 i)
-       → (Σ j ꞉ I , κ l ⊆ 𝓐 j)
-       → (∃ k ꞉ I , κ (x ∷ l) ⊆ 𝓐 k)
-     ρ (i , sₓ) (j , sₗ) = ∥∥-functor σ (semidirected-if-Directed 𝓟-dcpo 𝓐 δ i j)
-      where
-       σ : (Σ k ꞉ I , (𝓐 i ⊆ 𝓐 k) × (𝓐 j ⊆ 𝓐 k))
-         → (Σ k ꞉ I , κ (x ∷ l) ⊆ 𝓐 k)
-       σ (k , sᵢ , sⱼ) = k , s
-        where
-         s : κ (x ∷ l) ⊆ 𝓐 k
-         s = ⊆-trans (κ (x ∷ l)) (𝓐 i ∪ 𝓐 j) (𝓐 k) ⦅1⦆ ⦅2⦆
-          where
-           ⦅1⦆ : (❴ x ❵ ∪ κ l) ⊆ (𝓐 i ∪ 𝓐 j)
-           ⦅1⦆ = ∪-is-lowerbound-of-upperbounds ❴ x ❵ (κ l) (𝓐 i ∪ 𝓐 j)
-                 (⊆-trans ❴ x ❵ (𝓐 i) (𝓐 i ∪ 𝓐 j)
-                   sₓ (∪-is-upperbound₁ (𝓐 i) (𝓐 j)))
-                 (⊆-trans (κ l) (𝓐 j) (𝓐 i ∪ 𝓐 j)
-                   sₗ (∪-is-upperbound₂ (𝓐 i) (𝓐 j)))
-           ⦅2⦆ : (𝓐 i ∪ 𝓐 j) ⊆ 𝓐 k
-           ⦅2⦆ = ∪-is-lowerbound-of-upperbounds (𝓐 i) (𝓐 j) (𝓐 k) sᵢ sⱼ
-     h : ∃ i ꞉ I , ❴ x ❵ ⊆ 𝓐 i
-     h = ∥∥-functor r (u₁ x ∈-❴❵)
-      where
-       r : (Σ i ꞉ I , x ∈ 𝓐 i) → (Σ i ꞉ I , ❴ x ❵ ⊆ 𝓐 i)
-       r (i , a) = (i , (λ y p → transport (_∈ 𝓐 i) p a))
-       u₁ : ❴ x ❵ ⊆ ⋃ 𝓐
-       u₁ = ⊆-trans ❴ x ❵ (❴ x ❵ ∪ κ l) (⋃ 𝓐)
-             (∪-is-upperbound₁ ❴ x ❵ (κ l)) u
-     IH : ∃ i ꞉ I , κ l ⊆ 𝓐 i
-     IH = lemma l I 𝓐 δ u₂
-      where
-       u₂ : κ l ⊆ ⋃ 𝓐
-       u₂ = (⊆-trans (κ l) (❴ x ❵ ∪ κ l) (⋃ 𝓐)
-              (∪-is-upperbound₂ ❴ x ❵ (κ l)) u)
-
-   claim : A ∈image κ
-   claim = in-image-of-κ-if-Kuratowski-finite-subset pe fe A k
-
-   goal : (Σ l ꞉ List X , κ l ≡ A) → is-compact 𝓟-dcpo A
-   goal (l , refl) I 𝓐 δ A-below-∐𝓐 = lemma l I 𝓐 δ A-below-∐𝓐
-
+compact-if-Kuratowski-finite A k = lemma (A , k)
+ where
+  Q : 𝓚 X → 𝓤 ⁺ ̇
+  Q A = is-compact 𝓟-dcpo (pr₁ A)
+  lemma : (A : 𝓚 X) → Q A
+  lemma = Kuratowski-finite-subset-induction pe fe X X-is-set Q
+           (λ A → being-compact-is-prop 𝓟-dcpo (pr₁ A))
+           ∅-is-compact
+           singletons-are-compact
+           (λ A B → ∪-is-compact (pr₁ A) (pr₁ B))
 
 \end{code}
