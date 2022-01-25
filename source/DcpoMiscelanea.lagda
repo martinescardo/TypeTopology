@@ -368,7 +368,7 @@ add-⊥-is-directed : (𝓓 : DCPO⊥ {𝓤} {𝓣}) {I : 𝓥 ̇ } {α : I → 
                   → is-Directed (𝓓 ⁻) (add-⊥ 𝓓 α)
 add-⊥-is-directed 𝓓 {I} {α} σ = ∣ inl ⋆ ∣ , δ
  where
-  δ : is-semidirected (underlying-order (𝓓 ⁻)) (add-⊥ 𝓓 _)
+  δ : is-semidirected (underlying-order (𝓓 ⁻)) (add-⊥ 𝓓 α)
   δ (inl ⋆) a       = ∣ a , ⊥-is-least 𝓓 (add-⊥ 𝓓 α a) ,
                             reflexivity (𝓓 ⁻) (add-⊥ 𝓓 α a) ∣
   δ (inr i) (inl ⋆) = ∣ (inr i) , reflexivity (𝓓 ⁻) (α i)
