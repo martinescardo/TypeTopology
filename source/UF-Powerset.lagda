@@ -162,6 +162,14 @@ module singleton-subsets
  ∈-❴❵ : {x : X} → x ∈ ❴ x ❵
  ∈-❴❵ {x} = refl
 
+ ❴❵-subset-characterization : {x : X} (A : 𝓟 X) → x ∈ A ⇔ ❴ x ❵ ⊆ A
+ ❴❵-subset-characterization {x} A = ⦅⇒⦆ , ⦅⇐⦆
+  where
+   ⦅⇒⦆ : x ∈ A → ❴ x ❵ ⊆ A
+   ⦅⇒⦆ a _ refl = a
+   ⦅⇐⦆ : ❴ x ❵ ⊆ A → x ∈ A
+   ⦅⇐⦆ s = s x ∈-❴❵
+
  ❴❵-is-singleton : {x : X} → is-singleton (𝕋 ❴ x ❵)
  ❴❵-is-singleton {x} = singleton-types-are-singletons x
 
