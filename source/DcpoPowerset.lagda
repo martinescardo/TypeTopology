@@ -93,6 +93,31 @@ open unions-of-small-families pt
       ⦅2⦆ : (κ l₁ ∪ κ l₂) ⊆ A
       ⦅2⦆ = ∪-is-lowerbound-of-upperbounds (κ l₁) (κ l₂) A s₁ s₂
 
+κ⁺-sup : (A : 𝓟 X) → is-sup _⊆_ A (κ⁺ A)
+κ⁺-sup A = ub , lb-of-ubs
+ where
+  ub : is-upperbound _⊆_ A (κ⁺ A)
+  ub (l , l-subset-A) x x-in-l = l-subset-A x x-in-l
+  lb-of-ubs : is-lowerbound-of-upperbounds _⊆_ A (κ⁺ A)
+  lb-of-ubs B B-is-ub x x-in-A = B-is-ub ([ x ] , s) x (∪-is-upperbound₁ ❴ x ❵ ∅ x ∈-❴❵)
+   where
+    s : (❴ x ❵ ∪ ∅) ⊆ A
+    s = ∪-is-lowerbound-of-upperbounds ❴ x ❵ ∅ A
+         (lr-implication (❴❵-subset-characterization A) x-in-A)
+         (∅-is-least A)
+
+κ⁺-⋃-⊆ : (A : 𝓟 X) → ⋃ (κ⁺ A) ⊆ A
+κ⁺-⋃-⊆ A = ⋃-is-lowerbound-of-upperbounds (κ⁺ A) A
+        (sup-is-upperbound _⊆_ {_} {_} {A} {κ⁺ A} (κ⁺-sup A))
+
+κ⁺-⋃-⊇ : (A : 𝓟 X) → ⋃ (κ⁺ A) ⊇ A
+κ⁺-⋃-⊇ A = sup-is-lowerbound-of-upperbounds _⊆_ {_} {_} {A} {κ⁺ A}
+            (κ⁺-sup A) (⋃ (κ⁺ A))
+            (⋃-is-upperbound (κ⁺ A))
+
+κ⁺-⋃-≡ : (A : 𝓟 X) → ⋃ (κ⁺ A) ≡ A
+κ⁺-⋃-≡ A = subset-extensionality pe fe (κ⁺-⋃-⊆ A) (κ⁺-⋃-⊇ A)
+
 Kuratowski-finite-if-compact : (A : 𝓟 X)
                              → is-compact 𝓟-dcpo A
                              → is-Kuratowski-finite-subset A
@@ -100,18 +125,7 @@ Kuratowski-finite-if-compact A c =
  Kuratowski-finite-subset-if-in-image-of-κ A γ
   where
    claim : ∃ l⁺ ꞉ (Σ l ꞉ List X , κ l ⊆ A) , A ⊆ κ⁺ A l⁺
-   claim = c (domain (κ⁺ A)) (κ⁺ A) (κ⁺-is-directed A) A-below-∐κ⁺
-    where
-     A-below-∐κ⁺ : A ⊆ ⋃ (κ⁺ A) -- TODO: Factor this out & prove the converse too
-     A-below-∐κ⁺ x a = ⋃-is-upperbound (κ⁺ A) ([ x ] , s) x i
-      where
-       s : (❴ x ❵ ∪ ∅) ⊆ A
-       s = ∪-is-lowerbound-of-upperbounds ❴ x ❵ ∅ A t (∅-is-least A)
-        where
-         t : ❴ x ❵ ⊆ A
-         t _ refl = a
-       i : x ∈ (❴ x ❵ ∪ ∅)
-       i = ∪-is-upperbound₁ ❴ x ❵ ∅ x ∈-❴❵
+   claim = c (domain (κ⁺ A)) (κ⁺ A) (κ⁺-is-directed A) (κ⁺-⋃-⊇ A)
    γ : A ∈image κ
    γ = ∥∥-functor h claim
     where
@@ -127,7 +141,7 @@ singletons-are-compact x I α δ l = ∥∥-functor h (l x ∈-❴❵)
  where
   h : (Σ i ꞉ I , x ∈ α i)
     → (Σ i ꞉ I , ❴ x ❵ ⊆ α i)
-  h (i , m) = (i , (λ y p → transport (_∈ α i) p m))
+  h (i , m) = (i , lr-implication (❴❵-subset-characterization (α i)) m)
 
 ∪-is-compact : (A B : 𝓟 X)
              → is-compact 𝓟-dcpo A
