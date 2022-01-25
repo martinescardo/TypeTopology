@@ -588,15 +588,10 @@ module _
  ∐-map-has-unspecified-left-adjoint : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
  ∐-map-has-unspecified-left-adjoint = ∥ ∐-map-has-specified-left-adjoint ∥
 
- -- TODO: Move this
- ∥∥-cong : {X : 𝓤' ̇  } {Y : 𝓥' ̇  } → X ≃ Y → ∥ X ∥ ≃ ∥ Y ∥
- ∥∥-cong e = logically-equivalent-props-are-equivalent ∥∥-is-prop ∥∥-is-prop
-              (∥∥-functor ⌜ e ⌝) (∥∥-functor ⌜ e ⌝⁻¹)
-
  continuous-dcpo-iff-∐-map-has-unspecified-left-adjoint :
    ∐-map-has-unspecified-left-adjoint ≃ is-continuous-dcpo 𝓓
  continuous-dcpo-iff-∐-map-has-unspecified-left-adjoint =
-  ∥∥-cong (Johnstone-Joyal-≃ 𝓓)
+  ∥∥-cong pt (Johnstone-Joyal-≃ 𝓓)
 
 \end{code}
 
