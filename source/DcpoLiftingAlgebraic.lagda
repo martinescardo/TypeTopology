@@ -12,9 +12,9 @@ open import UF-Subsingletons
 
 module DcpoLiftingAlgebraic
         (pt : propositional-truncations-exist)
+        (pe : Prop-Ext)
         (fe : ∀ {𝓤 𝓥} → funext 𝓤 𝓥)
         (𝓤 : Universe)
-        (pe : propext 𝓤)
        where
 
 open PropositionalTruncation pt
@@ -33,6 +33,7 @@ open import LiftingMiscelanea-PropExt-FunExt 𝓤 pe fe
 open import LiftingMonad 𝓤
 
 open import Dcpo pt fe 𝓤
+open import DcpoBases pt pe fe 𝓤
 open import DcpoLifting pt fe 𝓤 pe
 open import DcpoMiscelanea pt fe 𝓤
 open import DcpoWayBelow pt fe 𝓤
@@ -43,6 +44,31 @@ module _
         {X : 𝓤 ̇ }
         (X-is-set : is-set X)
        where
+
+ open import LiftingUnivalentPrecategory 𝓤 X
+
+\end{code}
+
+The order _⊑'_ is convenient for many purposes, but it does have large truth
+values. However, because _⊑_ has small truth values the dcpo 𝓛 X is still
+locally small.
+
+\begin{code}
+
+ 𝓛-is-locally-small : is-locally-small (𝓛-DCPO X-is-set)
+ 𝓛-is-locally-small = _⊑_ , γ
+  where
+   γ : (x y : 𝓛 X) → (x ⊑ y) ≃ (x ⊑' y)
+   γ x y = logically-equivalent-props-are-equivalent
+            (⊑-prop-valued fe fe X-is-set x y)
+            (⊑'-prop-valued X-is-set)
+            ⊑-to-⊑' ⊑'-to-⊑
+
+\end{code}
+
+TODO: Write comments
+
+\begin{code}
 
  κ : 𝟙{𝓤} + X → 𝓛 X
  κ (inl ⋆) = ⊥ (𝓛-DCPO⊥ X-is-set)
@@ -147,6 +173,12 @@ module _
    goal (inr p , lᵢ) =
     (inr (φ p) , ((lᵢ p) ⁻¹))
 
- -- TODO: κ-is-small-compact-basis : is-small-compact-basis (𝓛-DCPO X-is-set) κ
+ κ-is-small-compact-basis : is-small-compact-basis (𝓛-DCPO X-is-set) κ
+ κ-is-small-compact-basis = record {
+   basis-is-compact = λ b → compact-if-in-image-of-κ (κ b) ∣ b , refl ∣;
+   ⊑ᴮ-is-small      = λ l b → (κ b ⊑ l , pr₂ 𝓛-is-locally-small (κ b) l);
+   ↓ᴮ-is-directed   = κ⁺-is-directed  ;
+   ↓ᴮ-is-sup        = κ⁺-sup
+  }
 
 \end{code}
