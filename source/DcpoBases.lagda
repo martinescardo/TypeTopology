@@ -427,8 +427,8 @@ module _
   ↓ᴮₛ-∐-⊒ : (x : ⟨ 𝓓 ⟩) → x ⊑⟨ 𝓓 ⟩ ∐ 𝓓 (↓ᴮₛ-is-directed x)
   ↓ᴮₛ-∐-⊒ x = ≡-to-⊑ 𝓓 ((↓ᴮₛ-∐-≡ x) ⁻¹)
 
-  ↓ᴮₛ-way-below : (x : ⟨ 𝓓 ⟩) (b : ↓ᴮₛ x) → ↓ιₛ x b ⊑⟨ 𝓓 ⟩ x
-  ↓ᴮₛ-way-below x (b , u) = ⌜ ⊑ᴮₛ-≃-⊑ᴮ ⌝ u
+  ↓ᴮₛ-compact : (x : ⟨ 𝓓 ⟩) (b : ↓ᴮₛ x) → is-compact 𝓓 (↓ιₛ x b)
+  ↓ᴮₛ-compact x (b , u) = basis-is-compact b
 
  compact-basis-is-basis : is-small-compact-basis
                         → is-small-basis 𝓓 β
@@ -449,13 +449,45 @@ module _
     ↓ᴮ-≃-↡ᴮ : (x : ⟨ 𝓓 ⟩) → ↓ᴮ x ≃ ↡ᴮ 𝓓 β x
     ↓ᴮ-≃-↡ᴮ x = Σ-cong (λ b → lemma b)
 
+\end{code}
 
+\begin{code}
 
+module _
+        (𝓓 : DCPO {𝓤} {𝓣})
+       where
 
+ structurally-algebraic-if-equiped-with-small-compact-basis :
+    {B : 𝓥 ̇  } (β : B → ⟨ 𝓓 ⟩)
+  → is-small-compact-basis 𝓓 β
+  → structurally-algebraic 𝓓
+ structurally-algebraic-if-equiped-with-small-compact-basis β scb = record {
+   index-of-compact-family    = ↓ᴮₛ;
+   compact-family             = ↓ιₛ;
+   compact-family-is-directed = ↓ᴮₛ-is-directed;
+   compact-family-is-compact  = ↓ᴮₛ-compact;
+   compact-family-∐-≡         = ↓ᴮₛ-∐-≡
+  }
+   where
+    open is-small-compact-basis scb
 
+ has-specified-small-compact-basis : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
+ has-specified-small-compact-basis =
+  Σ B ꞉ 𝓥 ̇ , Σ β ꞉ (B → ⟨ 𝓓 ⟩) , is-small-compact-basis 𝓓 β
 
+ has-unspecified-small-compact-basis : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
+ has-unspecified-small-compact-basis = ∥ has-specified-small-compact-basis ∥
 
+ structurally-algebraic-if-specified-small-compact-basis :
+    has-specified-small-compact-basis
+  → structurally-algebraic 𝓓
+ structurally-algebraic-if-specified-small-compact-basis (B , β , sb) =
+  structurally-algebraic-if-equiped-with-small-compact-basis β sb
 
+ is-algebraic-dcpo-if-unspecified-small-compact-basis : has-unspecified-small-compact-basis
+                                               → is-algebraic-dcpo 𝓓
+ is-algebraic-dcpo-if-unspecified-small-compact-basis =
+  ∥∥-functor structurally-algebraic-if-specified-small-compact-basis
 
 {-
 module _
