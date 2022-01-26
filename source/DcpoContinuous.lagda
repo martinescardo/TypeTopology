@@ -588,9 +588,9 @@ module _
  ∐-map-has-unspecified-left-adjoint : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
  ∐-map-has-unspecified-left-adjoint = ∥ ∐-map-has-specified-left-adjoint ∥
 
- continuous-dcpo-iff-∐-map-has-unspecified-left-adjoint :
+ is-continuous-dcpo-iff-∐-map-has-unspecified-left-adjoint :
    ∐-map-has-unspecified-left-adjoint ≃ is-continuous-dcpo 𝓓
- continuous-dcpo-iff-∐-map-has-unspecified-left-adjoint =
+ is-continuous-dcpo-iff-∐-map-has-unspecified-left-adjoint =
   ∥∥-cong pt (Johnstone-Joyal-≃ 𝓓)
 
 \end{code}
@@ -1024,5 +1024,51 @@ module _
   ≪-is-small-valued-converse c ws =
    ∥∥-rec (being-locally-small-is-prop 𝓓 pe)
     (λ C → ≪-is-small-valued-str-converse C ws) c
+
+\end{code}
+
+TODO: Write comment
+
+\begin{code}
+
+record structurally-algebraic (𝓓 : DCPO {𝓤} {𝓣}) : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇  where
+ field
+  index-of-compact-family : ⟨ 𝓓 ⟩ → 𝓥 ̇
+  compact-family : (x : ⟨ 𝓓 ⟩) → (index-of-compact-family x) → ⟨ 𝓓 ⟩
+  compact-family-is-directed : (x : ⟨ 𝓓 ⟩) → is-Directed 𝓓 (compact-family x)
+  compact-family-is-compact : (x : ⟨ 𝓓 ⟩) (i : index-of-compact-family x)
+                            → is-compact 𝓓 (compact-family x i)
+  compact-family-∐-≡ : (x : ⟨ 𝓓 ⟩) → ∐ 𝓓 (compact-family-is-directed x) ≡ x
+
+is-algebraic-dcpo : (𝓓 : DCPO {𝓤} {𝓣}) → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
+is-algebraic-dcpo 𝓓 = ∥ structurally-algebraic 𝓓 ∥
+
+structurally-continuous-if-structurally-algebraic :
+   (𝓓 : DCPO {𝓤} {𝓣})
+ → structurally-algebraic 𝓓 → structurally-continuous 𝓓
+structurally-continuous-if-structurally-algebraic 𝓓 sa = record {
+  index-of-approximating-family     = index-of-compact-family;
+  approximating-family              = compact-family;
+  approximating-family-is-directed  = compact-family-is-directed;
+  approximating-family-is-way-below = γ;
+  approximating-family-∐-≡          = compact-family-∐-≡
+ }
+  where
+   open structurally-algebraic sa
+   γ : (x : ⟨ 𝓓 ⟩) → is-way-upperbound 𝓓 x (compact-family x)
+   γ x i = ≪-⊑-to-≪ 𝓓 (compact-family-is-compact x i) l
+    where
+     l = compact-family x i                 ⊑⟨ 𝓓 ⟩[ ⦅1⦆ ]
+         ∐ 𝓓 (compact-family-is-directed x) ⊑⟨ 𝓓 ⟩[ ⦅2⦆ ]
+         x                                  ∎⟨ 𝓓 ⟩
+      where
+       ⦅1⦆ = ∐-is-upperbound 𝓓 (compact-family-is-directed x) i
+       ⦅2⦆ = ≡-to-⊑ 𝓓 (compact-family-∐-≡ x)
+
+is-continuous-dcpo-if-algebraic-dcpo : (𝓓 : DCPO {𝓤} {𝓣})
+                                     → is-algebraic-dcpo 𝓓
+                                     → is-continuous-dcpo 𝓓
+is-continuous-dcpo-if-algebraic-dcpo 𝓓 =
+ ∥∥-functor (structurally-continuous-if-structurally-algebraic 𝓓)
 
 \end{code}
