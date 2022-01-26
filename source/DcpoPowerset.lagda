@@ -41,8 +41,8 @@ open ImageAndSurjection pt
 open singleton-subsets X-is-set
 open unions-of-small-families pt
 
-𝓟-dcpo : DCPO {𝓤 ⁺} {𝓤}
-𝓟-dcpo = 𝓟 X , _⊆_ ,
+𝓟-DCPO : DCPO {𝓤 ⁺} {𝓤}
+𝓟-DCPO = 𝓟 X , _⊆_ ,
          ( powersets-are-sets fe pe
          , ⊆-is-prop fe
          , ⊆-refl
@@ -53,13 +53,13 @@ open unions-of-small-families pt
   dir-compl : is-directed-complete _⊆_
   dir-compl I α δ = ⋃ α , ⋃-is-upperbound α , ⋃-is-lowerbound-of-upperbounds α
 
-𝓟-dcpo⊥ : DCPO⊥ {𝓤 ⁺} {𝓤}
-𝓟-dcpo⊥ = (𝓟-dcpo , ∅ , ∅-is-least)
+𝓟-DCPO⊥ : DCPO⊥ {𝓤 ⁺} {𝓤}
+𝓟-DCPO⊥ = (𝓟-DCPO , ∅ , ∅-is-least)
 
 κ⁺ : (A : 𝓟 X) → (Σ l ꞉ List X , κ l ⊆ A) → 𝓟 X
 κ⁺ A = κ ∘ pr₁
 
-κ⁺-is-directed : (A : 𝓟 X) → is-Directed 𝓟-dcpo (κ⁺ A)
+κ⁺-is-directed : (A : 𝓟 X) → is-Directed 𝓟-DCPO (κ⁺ A)
 κ⁺-is-directed A = inh , semidir
  where
   inh : ∃ l ꞉ List X , κ l ⊆ A
@@ -70,8 +70,8 @@ open unions-of-small-families pt
     e : κ (l₁ ++ l₂) ≡ κ l₁ ∪ κ l₂
     e = κ-of-concatenated-lists-is-union pe fe l₁ l₂
     u : (κ l₁ ∪ κ l₂) ⊆ κ (l₁ ++ l₂)
-    u = ≡-to-⊑ 𝓟-dcpo (e ⁻¹)
-    -- unfortunately, using the ⊑⟨ 𝓟-dcpo ⟩-syntax here gives
+    u = ≡-to-⊑ 𝓟-DCPO (e ⁻¹)
+    -- unfortunately, using the ⊑⟨ 𝓟-DCPO ⟩-syntax here gives
     -- implicit arguments problems, so we use ⊆-trans instead.
     u₁ : κ l₁ ⊆ κ (l₁ ++ l₂)
     u₁ = ⊆-trans (κ l₁) (κ l₁ ∪ κ l₂) (κ (l₁ ++ l₂))
@@ -82,7 +82,7 @@ open unions-of-small-families pt
     s = ⊆-trans (κ (l₁ ++ l₂)) (κ l₁ ∪ κ l₂) A ⦅1⦆ ⦅2⦆
      where
       ⦅1⦆ : κ (l₁ ++ l₂) ⊆ (κ l₁ ∪ κ l₂)
-      ⦅1⦆ = ≡-to-⊑ 𝓟-dcpo e
+      ⦅1⦆ = ≡-to-⊑ 𝓟-DCPO e
       ⦅2⦆ : (κ l₁ ∪ κ l₂) ⊆ A
       ⦅2⦆ = ∪-is-lowerbound-of-upperbounds (κ l₁) (κ l₂) A s₁ s₂
 
@@ -112,7 +112,7 @@ open unions-of-small-families pt
 κ⁺-⋃-≡ A = subset-extensionality pe fe (κ⁺-⋃-⊆ A) (κ⁺-⋃-⊇ A)
 
 Kuratowski-finite-subset-if-compact : (A : 𝓟 X)
-                                    → is-compact 𝓟-dcpo A
+                                    → is-compact 𝓟-DCPO A
                                     → is-Kuratowski-finite-subset A
 Kuratowski-finite-subset-if-compact A c =
  Kuratowski-finite-subset-if-in-image-of-κ A γ
@@ -126,10 +126,10 @@ Kuratowski-finite-subset-if-compact A c =
        → Σ l ꞉ List X , κ l ≡ A
      h ((l , s) , t) = (l , subset-extensionality pe fe s t)
 
-∅-is-compact : is-compact 𝓟-dcpo ∅
-∅-is-compact = ⊥-is-compact 𝓟-dcpo⊥
+∅-is-compact : is-compact 𝓟-DCPO ∅
+∅-is-compact = ⊥-is-compact 𝓟-DCPO⊥
 
-singletons-are-compact : (x : X) → is-compact 𝓟-dcpo ❴ x ❵
+singletons-are-compact : (x : X) → is-compact 𝓟-DCPO ❴ x ❵
 singletons-are-compact x I α δ l = ∥∥-functor h (l x ∈-❴❵)
  where
   h : (Σ i ꞉ I , x ∈ α i)
@@ -137,24 +137,24 @@ singletons-are-compact x I α δ l = ∥∥-functor h (l x ∈-❴❵)
   h (i , m) = (i , lr-implication (❴❵-subset-characterization (α i)) m)
 
 ∪-is-compact : (A B : 𝓟 X)
-             → is-compact 𝓟-dcpo A
-             → is-compact 𝓟-dcpo B
-             → is-compact 𝓟-dcpo (A ∪ B)
+             → is-compact 𝓟-DCPO A
+             → is-compact 𝓟-DCPO B
+             → is-compact 𝓟-DCPO (A ∪ B)
 ∪-is-compact A B =
- binary-join-is-compact 𝓟-dcpo {A} {B} {A ∪ B}
+ binary-join-is-compact 𝓟-DCPO {A} {B} {A ∪ B}
   (∪-is-upperbound₁ A B) (∪-is-upperbound₂ A B)
   (∪-is-lowerbound-of-upperbounds A B)
 
 compact-if-Kuratowski-finite-subset : (A : 𝓟 X)
                                     → is-Kuratowski-finite-subset A
-                                    → is-compact 𝓟-dcpo A
+                                    → is-compact 𝓟-DCPO A
 compact-if-Kuratowski-finite-subset A k = lemma (A , k)
  where
   Q : 𝓚 X → 𝓤 ⁺ ̇
-  Q A = is-compact 𝓟-dcpo (pr₁ A)
+  Q A = is-compact 𝓟-DCPO (pr₁ A)
   lemma : (A : 𝓚 X) → Q A
   lemma = Kuratowski-finite-subset-induction pe fe X X-is-set Q
-           (λ A → being-compact-is-prop 𝓟-dcpo (pr₁ A))
+           (λ A → being-compact-is-prop 𝓟-DCPO (pr₁ A))
            ∅-is-compact
            singletons-are-compact
            (λ A B → ∪-is-compact (pr₁ A) (pr₁ B))
@@ -163,7 +163,7 @@ compact-if-Kuratowski-finite-subset A k = lemma (A , k)
 
 \begin{code}
 
-κ-is-small-compact-basis : is-small-compact-basis 𝓟-dcpo κ
+κ-is-small-compact-basis : is-small-compact-basis 𝓟-DCPO κ
 κ-is-small-compact-basis = record {
   basis-is-compact = λ l → compact-if-Kuratowski-finite-subset (κ l)
                             (κ-of-list-is-Kuratowski-finite-subset l);
