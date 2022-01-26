@@ -30,6 +30,7 @@ open import UF-Subsingletons-FunExt
 
 open import Dcpo pt fe 𝓤
 open import DcpoBases pt pe fe 𝓤
+open import DcpoContinuous pt fe 𝓤
 open import DcpoMiscelanea pt fe 𝓤
 open import DcpoWayBelow pt fe 𝓤
 
@@ -171,5 +172,16 @@ compact-if-Kuratowski-finite-subset A k = lemma (A , k)
   ↓ᴮ-is-directed   = κ⁺-is-directed;
   ↓ᴮ-is-sup        = κ⁺-sup
  }
+
+𝓟-has-specified-small-compact-basis : has-specified-small-compact-basis 𝓟-DCPO
+𝓟-has-specified-small-compact-basis = (List X , κ , κ-is-small-compact-basis)
+
+𝓟-structurally-algebraic : structurally-algebraic 𝓟-DCPO
+𝓟-structurally-algebraic =
+ structurally-algebraic-if-specified-small-compact-basis
+  𝓟-DCPO 𝓟-has-specified-small-compact-basis
+
+𝓟-is-algebraic-dcpo : is-algebraic-dcpo 𝓟-DCPO
+𝓟-is-algebraic-dcpo = ∣ 𝓟-structurally-algebraic ∣
 
 \end{code}
