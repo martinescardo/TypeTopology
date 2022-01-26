@@ -1,4 +1,4 @@
-Tom de Jong, 25 January 2022
+Tom de Jong, 25 & 26 January 2022
 
 \begin{code}
 
@@ -51,7 +51,44 @@ module _
  κ⁺ : (l : 𝓛 X) → (Σ i ꞉ (𝟙 + X) , κ i ⊑' l) → 𝓛 X
  κ⁺ l = κ ∘ pr₁
 
- -- TODO: κ⁺ is directed, κ⁺-sup
+ κ⁺-is-directed : (l : 𝓛 X) → is-Directed (𝓛-DCPO X-is-set) (κ⁺ l)
+ κ⁺-is-directed l = inh , semidir
+  where
+   inh : ∃ i ꞉ (𝟙 + X) , κ i ⊑' l
+   inh = ∣ inl ⋆ , ⊥-is-least (𝓛-DCPO⊥ X-is-set) l ∣
+   semidir : is-semidirected _⊑'_ (κ⁺ l)
+   semidir (inl ⋆ , u) (inl ⋆ , v) = ∣ (inl ⋆ , u)
+                                     , ⊑'-is-reflexive , ⊑'-is-reflexive ∣
+   semidir (inl ⋆ , u) (inr y , v) = ∣ (inr y , v)
+                                     , ⊥-is-least (𝓛-DCPO⊥ X-is-set) (η y)
+                                     , ⊑'-is-reflexive ∣
+   semidir (inr x , u) (inl ⋆ , pr₄) = ∣ (inr x , u)
+                                       , ⊑'-is-reflexive
+                                       , (⊥-is-least (𝓛-DCPO⊥ X-is-set) (η x)) ∣
+   semidir (inr x , u) (inr y , v) = ∣ (inr x , u)
+                                     , ⊑'-is-reflexive , (λ _ → e) ∣
+    where
+     e = η y ≡⟨ v ⋆      ⟩
+         l   ≡⟨ (u ⋆) ⁻¹ ⟩
+         η x ∎
+
+ κ⁺-sup : (l : 𝓛 X) → is-sup _⊑'_ l (κ⁺ l)
+ κ⁺-sup l = ub , lb-of-ubs
+  where
+   ub : (i : domain (κ⁺ l)) → κ⁺ l i ⊑' l
+   ub (i , u) = u
+   lb-of-ubs : is-lowerbound-of-upperbounds _⊑'_ l (κ⁺ l)
+   lb-of-ubs m m-is-ub l-is-def = l                    ≡⟨ ⦅1⦆ ⟩
+                                  η (value l l-is-def) ≡⟨ ⦅2⦆ ⟩
+                                  m                    ∎
+    where
+     ⦅1⦆ : l ≡ η (value l l-is-def)
+     ⦅1⦆ = is-defined-η-≡ l-is-def
+     ⦅2⦆ : η (value l l-is-def) ≡ m
+     ⦅2⦆ = m-is-ub (inr (value l l-is-def) , v) ⋆
+      where
+       v : κ (inr (value l l-is-def)) ⊑' l
+       v _ = ⦅1⦆ ⁻¹
 
  ηs-are-compact : (x : X) → is-compact (𝓛-DCPO X-is-set) (η x)
  ηs-are-compact x I α δ ηx-below-∐α =
