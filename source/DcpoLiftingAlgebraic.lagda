@@ -34,6 +34,7 @@ open import LiftingMonad 𝓤
 
 open import Dcpo pt fe 𝓤
 open import DcpoBases pt pe fe 𝓤
+open import DcpoContinuous pt fe 𝓤
 open import DcpoLifting pt fe 𝓤 pe
 open import DcpoMiscelanea pt fe 𝓤
 open import DcpoWayBelow pt fe 𝓤
@@ -180,5 +181,17 @@ TODO: Write comments
    ↓ᴮ-is-directed   = κ⁺-is-directed  ;
    ↓ᴮ-is-sup        = κ⁺-sup
   }
+
+ 𝓛-has-specified-small-compact-basis : has-specified-small-compact-basis
+                                         (𝓛-DCPO X-is-set)
+ 𝓛-has-specified-small-compact-basis = ((𝟙 + X) , κ , κ-is-small-compact-basis)
+
+ 𝓛-structurally-algebraic : structurally-algebraic (𝓛-DCPO X-is-set)
+ 𝓛-structurally-algebraic =
+  structurally-algebraic-if-specified-small-compact-basis
+   (𝓛-DCPO X-is-set) 𝓛-has-specified-small-compact-basis
+
+ 𝓛-is-algebraic-dcpo : is-algebraic-dcpo (𝓛-DCPO X-is-set)
+ 𝓛-is-algebraic-dcpo = ∣ 𝓛-structurally-algebraic ∣
 
 \end{code}
