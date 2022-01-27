@@ -163,6 +163,7 @@ import InitialBinarySystem    -- More work than needed!
 import InitialBinarySystem2   -- No need to work with subtype of normal elements.
 import InjectiveTypes-article
 import InjectiveTypes
+import JoinSemiLattices                -- By Tom de Jong
 import LawvereFPT
 import LexicographicCompactness
 import LexicographicOrder
@@ -269,6 +270,7 @@ import UF-KrausLemma
 import UF-LeftCancellable
 import UF-Miscelanea
 import UF-Powerset
+import UF-Powerset-Fin                 -- By Tom de Jong
 import UF-PropIndexedPiSigma
 import UF-PropTrunc
 import UF-PropTrunc-F
