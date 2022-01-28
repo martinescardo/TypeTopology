@@ -104,14 +104,14 @@ module _
  ↡ᴮ : ⟨ 𝓓 ⟩ → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
  ↡ᴮ x = Σ b ꞉ B , β b ≪⟨ 𝓓 ⟩ x
 
- ι : (x : ⟨ 𝓓 ⟩) → ↡ᴮ x → ⟨ 𝓓 ⟩
- ι x = β ∘ pr₁
+ ↡ι : (x : ⟨ 𝓓 ⟩) → ↡ᴮ x → ⟨ 𝓓 ⟩
+ ↡ι x = β ∘ pr₁
 
  record is-small-basis : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇  where
   field
    ≪ᴮ-is-small : (x : ⟨ 𝓓 ⟩) → ((b : B) → is-small (β b ≪⟨ 𝓓 ⟩ x))
-   ↡ᴮ-is-directed : (x : ⟨ 𝓓 ⟩) → is-Directed 𝓓 (ι x)
-   ↡ᴮ-is-sup : (x : ⟨ 𝓓 ⟩) → is-sup (underlying-order 𝓓) x (ι x)
+   ↡ᴮ-is-directed : (x : ⟨ 𝓓 ⟩) → is-Directed 𝓓 (↡ι x)
+   ↡ᴮ-is-sup : (x : ⟨ 𝓓 ⟩) → is-sup (underlying-order 𝓓) x (↡ι x)
 
   _≪ᴮₛ_ : (b : B) (x : ⟨ 𝓓 ⟩) → 𝓥 ̇
   b ≪ᴮₛ x = pr₁ (≪ᴮ-is-small x b)
@@ -122,12 +122,12 @@ module _
   ↡ᴮₛ : ⟨ 𝓓 ⟩ → 𝓥 ̇
   ↡ᴮₛ x = Σ b ꞉ B , (b ≪ᴮₛ x)
 
-  ιₛ : (x : ⟨ 𝓓 ⟩) → ↡ᴮₛ x → ⟨ 𝓓 ⟩
-  ιₛ x = β ∘ pr₁
+  ↡ιₛ : (x : ⟨ 𝓓 ⟩) → ↡ᴮₛ x → ⟨ 𝓓 ⟩
+  ↡ιₛ x = β ∘ pr₁
 
-  ↡ᴮₛ-is-directed : (x : ⟨ 𝓓 ⟩) → is-Directed 𝓓 (ιₛ x)
+  ↡ᴮₛ-is-directed : (x : ⟨ 𝓓 ⟩) → is-Directed 𝓓 (↡ιₛ x)
   ↡ᴮₛ-is-directed x = reindexed-family-is-directed 𝓓
-                       (Σ-cong (λ b → ≃-sym ≪ᴮₛ-≃-≪ᴮ)) (ι x) (↡ᴮ-is-directed x)
+                       (Σ-cong (λ b → ≃-sym ≪ᴮₛ-≃-≪ᴮ)) (↡ι x) (↡ᴮ-is-directed x)
 
   ↡ᴮₛ-∐-≡ : (x : ⟨ 𝓓 ⟩) → ∐ 𝓓 (↡ᴮₛ-is-directed x) ≡ x
   ↡ᴮₛ-∐-≡ x = antisymmetry 𝓓 (∐ 𝓓 (↡ᴮₛ-is-directed x)) x ⦅1⦆ ⦅2⦆
@@ -148,7 +148,7 @@ module _
   ↡ᴮₛ-∐-⊒ : (x : ⟨ 𝓓 ⟩) → x ⊑⟨ 𝓓 ⟩ ∐ 𝓓 (↡ᴮₛ-is-directed x)
   ↡ᴮₛ-∐-⊒ x = ≡-to-⊑ 𝓓 ((↡ᴮₛ-∐-≡ x) ⁻¹)
 
-  ↡ᴮₛ-way-below : (x : ⟨ 𝓓 ⟩) (b : ↡ᴮₛ x) → ιₛ x b ≪⟨ 𝓓 ⟩ x
+  ↡ᴮₛ-way-below : (x : ⟨ 𝓓 ⟩) (b : ↡ᴮₛ x) → ↡ιₛ x b ≪⟨ 𝓓 ⟩ x
   ↡ᴮₛ-way-below x (b , u) = ⌜ ≪ᴮₛ-≃-≪ᴮ ⌝ u
 
 
@@ -162,7 +162,7 @@ module _
   structurally-continuous-if-equiped-with-small-basis : structurally-continuous 𝓓
   structurally-continuous-if-equiped-with-small-basis = record {
     index-of-approximating-family     = ↡ᴮₛ ;
-    approximating-family              = ιₛ ;
+    approximating-family              = ↡ιₛ ;
     approximating-family-is-directed  = ↡ᴮₛ-is-directed ;
     approximating-family-is-way-below = ↡ᴮₛ-way-below ;
     approximating-family-∐-≡          = ↡ᴮₛ-∐-≡
@@ -203,7 +203,7 @@ module _
 
   small-basis-nullary-interpolation : (x : ⟨ 𝓓 ⟩) → ∃ b ꞉ B , β b ≪⟨ 𝓓 ⟩ x
   small-basis-nullary-interpolation x =
-   ∥∥-functor id (inhabited-if-Directed 𝓓 (ι x) (↡ᴮ-is-directed x))
+   ∥∥-functor id (inhabited-if-Directed 𝓓 (↡ι x) (↡ᴮ-is-directed x))
 
   small-basis-nullary-interpolationₛ : (x : ⟨ 𝓓 ⟩) → ∃ b ꞉ B , b ≪ᴮₛ x
   small-basis-nullary-interpolationₛ x =
@@ -233,7 +233,7 @@ module _
       σ : is-semidirected (underlying-order 𝓓) π
       σ (b₁ , c₁ , b₁-way-below-c₁ , c₁-way-below-y)
         (b₂ , c₂ , b₂-way-below-c₂ , c₂-way-below-y) =
-       ∥∥-rec ∥∥-is-prop h (semidirected-if-Directed 𝓓 (ιₛ y) (↡ᴮₛ-is-directed y)
+       ∥∥-rec ∥∥-is-prop h (semidirected-if-Directed 𝓓 (↡ιₛ y) (↡ᴮₛ-is-directed y)
                              (c₁ , c₁-way-below-y)
                              (c₂ , c₂-way-below-y))
         where
@@ -241,7 +241,7 @@ module _
            → ∃ i ꞉ I , (β b₁ ⊑⟨ 𝓓 ⟩ π i) × (β b₂ ⊑⟨ 𝓓 ⟩ π i)
          h ((c , c-way-below-y) , c₁-below-c , c₂-below-c) =
           ∥∥-functor k
-           (semidirected-if-Directed 𝓓 (ιₛ (β c)) (↡ᴮₛ-is-directed (β c))
+           (semidirected-if-Directed 𝓓 (↡ιₛ (β c)) (↡ᴮₛ-is-directed (β c))
              (b₁ , ⌜ φ ⌝⁻¹ (≪-⊑-to-≪ 𝓓 (⌜ φ ⌝ b₁-way-below-c₁) c₁-below-c))
              (b₂ , ⌜ φ ⌝⁻¹ (≪-⊑-to-≪ 𝓓 (⌜ φ ⌝ b₂-way-below-c₂) c₂-below-c)))
            where
@@ -288,11 +288,11 @@ module _
    (b₂ , y-way-below-b₂ , b₂-way-below-z) ← small-basis-unary-interpolation
                                              y-way-below-z
 
-   ((c₁ , c₁-way-below-z) , b₁-below-c₁)  ← b₁-way-below-z (↡ᴮₛ z) (ιₛ z) δ l
-   ((c₂ , c₂-way-below-z) , b₂-below-c₂)  ← b₂-way-below-z (↡ᴮₛ z) (ιₛ z) δ l
+   ((c₁ , c₁-way-below-z) , b₁-below-c₁)  ← b₁-way-below-z (↡ᴮₛ z) (↡ιₛ z) δ l
+   ((c₂ , c₂-way-below-z) , b₂-below-c₂)  ← b₂-way-below-z (↡ᴮₛ z) (↡ιₛ z) δ l
 
    ((c  , c-way-below-z ) , c₁-below-c
-                          , c₂-below-c)   ← semidirected-if-Directed 𝓓 (ιₛ z) δ
+                          , c₂-below-c)   ← semidirected-if-Directed 𝓓 (↡ιₛ z) δ
                                              (c₁ , c₁-way-below-z)
                                              (c₂ , c₂-way-below-z)
    let b₁-below-c = β b₁ ⊑⟨ 𝓓 ⟩[ b₁-below-c₁ ]
@@ -310,8 +310,8 @@ module _
 
  is-small-basis-Σ : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
  is-small-basis-Σ = (x : ⟨ 𝓓 ⟩) → ((b : B) → is-small (β b ≪⟨ 𝓓 ⟩ x))
-                                × is-Directed 𝓓 (ι x)
-                                × is-sup (underlying-order 𝓓) x (ι x)
+                                × is-Directed 𝓓 (↡ι x)
+                                × is-sup (underlying-order 𝓓) x (↡ι x)
 
  being-small-basis-Σ-is-prop : is-prop is-small-basis-Σ
  being-small-basis-Σ-is-prop =
@@ -319,8 +319,8 @@ module _
    ×₃-is-prop (Π-is-prop fe
                (λ b → prop-has-size-is-prop (λ _ → pe) (λ _ _ → fe)
                        (β b ≪⟨ 𝓓 ⟩ x) (≪-is-prop-valued 𝓓) 𝓥))
-              (being-directed-is-prop (underlying-order 𝓓) (ι x))
-              (is-sup-is-prop (underlying-order 𝓓) (axioms-of-dcpo 𝓓) x (ι x)))
+              (being-directed-is-prop (underlying-order 𝓓) (↡ι x))
+              (is-sup-is-prop (underlying-order 𝓓) (axioms-of-dcpo 𝓓) x (↡ι x)))
 
  is-small-basis-≃ : is-small-basis ≃ is-small-basis-Σ
  is-small-basis-≃ = qinveq f (g , ρ , σ)
