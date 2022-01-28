@@ -28,34 +28,59 @@ open import UF-Powerset
 open import UF-Powerset-Fin pt
 open import UF-Subsingletons-FunExt
 
-open import Dcpo pt fe 𝓤
-open import DcpoBases pt pe fe 𝓤
-open import DcpoContinuous pt fe 𝓤
-open import DcpoMiscelanea pt fe 𝓤
-open import DcpoWayBelow pt fe 𝓤
-
 open import Poset fe
 
 open binary-unions-of-subsets pt
 open canonical-map-from-lists-to-subsets X-is-set
 open ImageAndSurjection pt
 open singleton-subsets X-is-set
-open unions-of-small-families pt
+
+module _
+        (𝓥 : Universe)
+       where
+
+ open import Dcpo pt fe 𝓥
+ open import DcpoBases pt pe fe 𝓥
+ open import DcpoContinuous pt fe 𝓥
+ open import DcpoMiscelanea pt fe 𝓥
+ open import DcpoWayBelow pt fe 𝓥
+
+ open unions-of-small-families pt 𝓥 X
+
+ generalized-𝓟-DCPO : DCPO {𝓥 ⁺ ⊔ 𝓤} {𝓤 ⊔ 𝓥}
+ generalized-𝓟-DCPO = (X → Ω 𝓥) , _⊆_ ,
+                      ( powersets-are-sets'' fe fe pe
+                      , ⊆-is-prop' fe fe
+                      , ⊆-refl'
+                      , ⊆-trans'
+                      , λ A B → subset-extensionality'' pe fe fe)
+                      , dir-compl
+  where
+   dir-compl : is-directed-complete _⊆_
+   dir-compl I α δ = ⋃ α , ⋃-is-upperbound α , ⋃-is-lowerbound-of-upperbounds α
+
+ generalized-𝓟-DCPO⊥ : DCPO⊥ {𝓥 ⁺ ⊔ 𝓤} {𝓤 ⊔ 𝓥}
+ generalized-𝓟-DCPO⊥ = (generalized-𝓟-DCPO , ∅ , ∅-is-least')
+
+\end{code}
+
+TODO: Comment
+
+\begin{code}
+
+open import Dcpo pt fe 𝓤
+open import DcpoBases pt pe fe 𝓤
+open import DcpoContinuous pt fe 𝓤
+open import DcpoMiscelanea pt fe 𝓤
+open import DcpoWayBelow pt fe 𝓤
+
+open unions-of-small-families pt 𝓤 X
 
 𝓟-DCPO : DCPO {𝓤 ⁺} {𝓤}
-𝓟-DCPO = 𝓟 X , _⊆_ ,
-         ( powersets-are-sets fe pe
-         , ⊆-is-prop fe
-         , ⊆-refl
-         , ⊆-trans
-         , λ A B → subset-extensionality pe fe)
-         , dir-compl
- where
-  dir-compl : is-directed-complete _⊆_
-  dir-compl I α δ = ⋃ α , ⋃-is-upperbound α , ⋃-is-lowerbound-of-upperbounds α
+𝓟-DCPO = generalized-𝓟-DCPO 𝓤
 
 𝓟-DCPO⊥ : DCPO⊥ {𝓤 ⁺} {𝓤}
-𝓟-DCPO⊥ = (𝓟-DCPO , ∅ , ∅-is-least)
+𝓟-DCPO⊥ = generalized-𝓟-DCPO⊥ 𝓤
 
 κ⁺ : (A : 𝓟 X) → (Σ l ꞉ List X , κ l ⊆ A) → 𝓟 X
 κ⁺ A = κ ∘ pr₁
