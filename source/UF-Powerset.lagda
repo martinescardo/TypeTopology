@@ -73,8 +73,11 @@ A ⊇ B = B ⊆ A
           → {X : 𝓤 ̇ } (A B : 𝓟 X) → is-prop (A ⊆ B)
 ⊆-is-prop fe = ⊆-is-prop' fe fe
 
+∅-is-least' : {X : 𝓤 ̇  } (A : X → Ω 𝓥) → ∅ {𝓤} {𝓥} ⊆ A
+∅-is-least' _ x = 𝟘-induction
+
 ∅-is-least : {X : 𝓤 ̇ } (A : 𝓟 X) → ∅ {𝓤} {𝓤} ⊆ A
-∅-is-least x _ = 𝟘-induction
+∅-is-least = ∅-is-least'
 
 ⊆-refl' : {X : 𝓤 ̇ } (A : X → Ω 𝓥) → A ⊆ A
 ⊆-refl' A x = id
@@ -82,8 +85,11 @@ A ⊇ B = B ⊆ A
 ⊆-refl : {X : 𝓤 ̇ } (A : 𝓟 X) → A ⊆ A
 ⊆-refl = ⊆-refl'
 
+⊆-trans' : {X : 𝓤 ̇ } (A B C : X → Ω 𝓥) → A ⊆ B → B ⊆ C → A ⊆ C
+⊆-trans' A B C s t x a = t x (s x a)
+
 ⊆-trans : {X : 𝓤 ̇ } (A B C : 𝓟 X) → A ⊆ B → B ⊆ C → A ⊆ C
-⊆-trans A B C s t x a = t x (s x a)
+⊆-trans = ⊆-trans'
 
 ⊆-refl-consequence : {X : 𝓤 ̇ } (A B : 𝓟 X)
                    → A ≡ B → (A ⊆ B) × (B ⊆ A)
@@ -135,13 +141,13 @@ module _
         {X : 𝓤 ̇ }
        where
 
- 𝕋 : 𝓟 X → 𝓤 ̇
+ 𝕋 : (X → Ω 𝓥) → 𝓤 ⊔ 𝓥 ̇
  𝕋 A = Σ x ꞉ X , x ∈ A
 
- 𝕋-to-carrier : (A : 𝓟 X) → 𝕋 A → X
+ 𝕋-to-carrier : (A : X → Ω 𝓥) → 𝕋 A → X
  𝕋-to-carrier A = pr₁
 
- 𝕋-to-membership : (A : 𝓟 X) → (t : 𝕋 A) → (𝕋-to-carrier A t) ∈ A
+ 𝕋-to-membership : (A : X → Ω 𝓥) → (t : 𝕋 A) → (𝕋-to-carrier A t) ∈ A
  𝕋-to-membership A = pr₂
 
 \end{code}
@@ -184,16 +190,16 @@ module _
         {X : 𝓤 ̇ }
        where
 
- _∩_ : 𝓟 X → 𝓟 X → 𝓟 X
+ _∩_ : (X → Ω 𝓥) → (X → Ω 𝓥) → (X → Ω 𝓥)
  (A ∩ B) x = (x ∈ A × x ∈ B) , ×-is-prop (∈-is-prop A x) (∈-is-prop B x)
 
- ∩-is-lowerbound₁ : (A B : 𝓟 X) → (A ∩ B) ⊆ A
+ ∩-is-lowerbound₁ : (A B : X → Ω 𝓥) → (A ∩ B) ⊆ A
  ∩-is-lowerbound₁ A B x = pr₁
 
- ∩-is-lowerbound₂ : (A B : 𝓟 X) → (A ∩ B) ⊆ B
+ ∩-is-lowerbound₂ : (A B : X → Ω 𝓥) → (A ∩ B) ⊆ B
  ∩-is-lowerbound₂ A B x = pr₂
 
- ∩-is-upperbound-of-lowerbounds : (A B C : 𝓟 X)
+ ∩-is-upperbound-of-lowerbounds : (A B C : X → Ω 𝓥)
                                 → C ⊆ A → C ⊆ B → C ⊆ (A ∩ B)
  ∩-is-upperbound-of-lowerbounds A B C s t x c = (s x c , t x c)
 
@@ -209,16 +215,16 @@ module binary-unions-of-subsets
          {X : 𝓤 ̇ }
         where
 
-  _∪_ : 𝓟 X → 𝓟 X → 𝓟 X
+  _∪_ : (X → Ω 𝓥) → (X → Ω 𝓥) → (X → Ω 𝓥)
   (A ∪ B) x = ∥ x ∈ A + x ∈ B ∥ , ∥∥-is-prop
 
-  ∪-is-upperbound₁ : (A B : 𝓟 X) → A ⊆ (A ∪ B)
+  ∪-is-upperbound₁ : (A B : X → Ω 𝓥) → A ⊆ (A ∪ B)
   ∪-is-upperbound₁ A B x a = ∣ inl a ∣
 
-  ∪-is-upperbound₂ : (A B : 𝓟 X) → B ⊆ (A ∪ B)
+  ∪-is-upperbound₂ : (A B : X → Ω 𝓥) → B ⊆ (A ∪ B)
   ∪-is-upperbound₂ A B x b = ∣ inr b ∣
 
-  ∪-is-lowerbound-of-upperbounds : (A B C : 𝓟 X)
+  ∪-is-lowerbound-of-upperbounds : (A B C : X → Ω 𝓥)
                                  → A ⊆ C → B ⊆ C → (A ∪ B) ⊆ C
   ∪-is-lowerbound-of-upperbounds A B C s t x = ∥∥-rec (∈-is-prop C x) γ
     where
@@ -226,36 +232,51 @@ module binary-unions-of-subsets
      γ (inl a) = s x a
      γ (inr b) = t x b
 
+  ∅-left-neutral-for-∪' : propext 𝓥
+                        → funext 𝓤 (𝓥 ⁺)
+                        → funext 𝓥 𝓥
+                        → (A : X → Ω 𝓥) → ∅ ∪ A ≡ A
+  ∅-left-neutral-for-∪' pe fe fe' A =
+   subset-extensionality'' pe fe fe' s (∪-is-upperbound₂ ∅ A)
+    where
+     s : (∅ ∪ A) ⊆ A
+     s x = ∥∥-rec (∈-is-prop A x) γ
+      where
+       γ : x ∈ ∅ + x ∈ A → x ∈ A
+       γ (inl p) = 𝟘-elim p
+       γ (inr a) = a
+
   ∅-left-neutral-for-∪ : propext 𝓤
                        → funext 𝓤 (𝓤 ⁺)
                        → (A : 𝓟 X) → ∅ ∪ A ≡ A
-  ∅-left-neutral-for-∪ pe fe A = subset-extensionality pe fe
-                                  s (∪-is-upperbound₂ ∅ A)
-   where
-    s : (∅ ∪ A) ⊆ A
-    s x = ∥∥-rec (∈-is-prop A x) γ
-     where
-      γ : x ∈ ∅ + x ∈ A → x ∈ A
-      γ (inl p) = 𝟘-elim p
-      γ (inr a) = a
+  ∅-left-neutral-for-∪ pe fe =
+   ∅-left-neutral-for-∪' pe fe (lower-funext 𝓤 (𝓤 ⁺) fe)
+
+  ∅-right-neutral-for-∪' : propext 𝓥
+                         → funext 𝓤 (𝓥 ⁺)
+                         → funext 𝓥 𝓥
+                         → (A : X → Ω 𝓥) → A ≡ A ∪ ∅
+  ∅-right-neutral-for-∪' pe fe fe' A =
+   subset-extensionality'' pe fe fe' (∪-is-upperbound₁ A ∅) s
+    where
+     s : (A ∪ ∅) ⊆ A
+     s x = ∥∥-rec (∈-is-prop A x) γ
+      where
+       γ : x ∈ A + x ∈ ∅ → x ∈ A
+       γ (inl a) = a
+       γ (inr p) = 𝟘-elim p
 
   ∅-right-neutral-for-∪ : propext 𝓤
                         → funext 𝓤 (𝓤 ⁺)
                         → (A : 𝓟 X) → A ≡ A ∪ ∅
-  ∅-right-neutral-for-∪ pe fe A = subset-extensionality pe fe
-                                   (∪-is-upperbound₁ A ∅) s
-   where
-    s : (A ∪ ∅) ⊆ A
-    s x = ∥∥-rec (∈-is-prop A x) γ
-     where
-      γ : x ∈ A + x ∈ ∅ → x ∈ A
-      γ (inl a) = a
-      γ (inr p) = 𝟘-elim p
+  ∅-right-neutral-for-∪ pe fe =
+   ∅-right-neutral-for-∪' pe fe (lower-funext 𝓤 (𝓤 ⁺) fe)
 
-  ∪-assoc : propext 𝓤
-          → funext 𝓤 (𝓤 ⁺)
-          → associative (_∪_)
-  ∪-assoc pe fe A B C = subset-extensionality pe fe s t
+  ∪-assoc' : propext 𝓥
+           → funext 𝓤 (𝓥 ⁺)
+           → funext 𝓥 𝓥
+           → associative {𝓥 ⁺ ⊔ 𝓤} {X → Ω 𝓥} (_∪_)
+  ∪-assoc' pe fe fe' A B C = subset-extensionality'' pe fe fe' s t
    where
     s : ((A ∪ B) ∪ C) ⊆ (A ∪ (B ∪ C))
     s x = ∥∥-rec i s₁
@@ -286,6 +307,11 @@ module binary-unions-of-subsets
         t₂ (inl b) = ∪-is-upperbound₁ (A ∪ B) C x (∪-is-upperbound₂ A B x b)
         t₂ (inr c) = ∪-is-upperbound₂ (A ∪ B) C x c
 
+  ∪-assoc : propext 𝓤
+          → funext 𝓤 (𝓤 ⁺)
+          → associative {𝓤 ⁺} {𝓟 X} (_∪_)
+  ∪-assoc pe fe = ∪-assoc' pe fe (lower-funext 𝓤 (𝓤 ⁺) fe)
+
 \end{code}
 
 Again assuming propositional truncations, we can construct arbitrary suprema in
@@ -295,21 +321,24 @@ Again assuming propositional truncations, we can construct arbitrary suprema in
 
 module unions-of-small-families
         (pt : propositional-truncations-exist)
+        (𝓥 : Universe)
+        (X : 𝓤 ̇  )
+        {I : 𝓥 ̇  }
        where
 
  open PropositionalTruncation pt
 
- ⋃  : {X I : 𝓤 ̇ } (α : I → 𝓟 X) → 𝓟 X
- ⋃ {𝓤} {X} {I} α x = (∃ i ꞉ I , x ∈ α i) , ∃-is-prop
+ ⋃  : (α : I → (X → Ω 𝓥)) → (X → Ω 𝓥)
+ ⋃ α x = (∃ i ꞉ I , x ∈ α i) , ∃-is-prop
 
- ⋃-is-upperbound : {X I : 𝓤 ̇ } (α : I → 𝓟 X) (i : I)
+ ⋃-is-upperbound : (α : I → (X → Ω 𝓥)) (i : I)
                  → α i ⊆ ⋃ α
  ⋃-is-upperbound α i x a = ∣ i , a ∣
 
- ⋃-is-lowerbound-of-upperbounds : {X I : 𝓤 ̇ } (α : I → 𝓟 X) (A : 𝓟 X)
+ ⋃-is-lowerbound-of-upperbounds : (α : I → (X → Ω 𝓥)) (A : X → Ω 𝓥)
                                 → ((i : I) → α i ⊆ A)
                                 → ⋃ α ⊆ A
- ⋃-is-lowerbound-of-upperbounds {𝓤} {X} {I} α A ub x u =
+ ⋃-is-lowerbound-of-upperbounds α A ub x u =
   ∥∥-rec (∈-is-prop A x) γ u
    where
     γ : (Σ i ꞉ I , x ∈ α i) → x ∈ A
