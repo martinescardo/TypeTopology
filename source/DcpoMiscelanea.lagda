@@ -68,6 +68,9 @@ to-continuous-function-≡ 𝓓 𝓔 h =
 ≡-to-⊑ : (𝓓 : DCPO {𝓤} {𝓣}) {x y : ⟨ 𝓓 ⟩} → x ≡ y → x ⊑⟨ 𝓓 ⟩ y
 ≡-to-⊑ 𝓓 {x} {x} refl = reflexivity 𝓓 x
 
+≡-to-⊒ : (𝓓 : DCPO {𝓤} {𝓣}) {x y : ⟨ 𝓓 ⟩} → y ≡ x → x ⊑⟨ 𝓓 ⟩ y
+≡-to-⊒ 𝓓 p = ≡-to-⊑ 𝓓 (p ⁻¹)
+
 ∐-independent-of-directedness-witness : (𝓓 : DCPO {𝓤} {𝓣})
                                         {I : 𝓥 ̇ } {α : I → ⟨ 𝓓 ⟩}
                                         (δ ε : is-Directed 𝓓 α)

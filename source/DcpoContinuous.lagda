@@ -338,7 +338,7 @@ module _
 
  approximating-family-∐-⊒ : (x : ⟨ 𝓓 ⟩)
                           → x ⊑⟨ 𝓓 ⟩ ∐ 𝓓 (approximating-family-is-directed x)
- approximating-family-∐-⊒ x = ≡-to-⊑ 𝓓 ((approximating-family-∐-≡ x) ⁻¹)
+ approximating-family-∐-⊒ x = ≡-to-⊒ 𝓓 (approximating-family-∐-≡ x)
 
 \end{code}
 
@@ -770,9 +770,9 @@ module _
                  τ@(J , β , β-way-below-x , (ε , x-sup-of-β)) =
       ≤-is-antisymmetric (κ σ) (κ τ)
        (η-preserves-order (I , α , δ) (J , β , ε)
-         (λ i → α-way-below-x i J β ε (≡-to-⊑ 𝓓 (x-sup-of-β ⁻¹))))
+         (λ i → α-way-below-x i J β ε (≡-to-⊒ 𝓓 x-sup-of-β)))
        (η-preserves-order (J , β , ε) (I , α , δ)
-         (λ j → β-way-below-x j I α δ (≡-to-⊑ 𝓓 (x-sup-of-α ⁻¹))))
+         (λ j → β-way-below-x j I α δ (≡-to-⊒ 𝓓 x-sup-of-α)))
 
      ω : Σ ϕ ꞉ (∥ dom ∥ → Ind') , κ ∼ ϕ ∘ ∣_∣
      ω = wconstant-map-to-set-factors-through-truncation-of-domain
@@ -863,8 +863,8 @@ module _
               where
                lem' : L' x ≤ η τ
                lem' = rl-implication (L'-is-left-adjoint x (η τ))
-                       (x            ⊑⟨ 𝓓 ⟩[ x-below-∐τ            ]
-                        ∐-map τ      ⊑⟨ 𝓓 ⟩[ ≡-to-⊑ 𝓓 (comm-eq ⁻¹) ]
+                       (x            ⊑⟨ 𝓓 ⟩[ x-below-∐τ       ]
+                        ∐-map τ      ⊑⟨ 𝓓 ⟩[ ≡-to-⊒ 𝓓 comm-eq ]
                         ∐-map' (η τ) ∎⟨ 𝓓 ⟩)
 
 
@@ -998,7 +998,7 @@ module _
 
 
  module _
-         (pe : PropExt)
+         (pe : Prop-Ext)
         where
 
   open import UF-Size hiding (is-small ; is-locally-small)
@@ -1009,7 +1009,8 @@ module _
   ≪-is-small-valued c ls x y = ∥∥-rec p (λ C → ≪-is-small-valued-str C ls x y) c
    where
     p : is-prop (is-small (x ≪⟨ 𝓓 ⟩ y))
-    p = prop-has-size-is-prop pe (λ _ _ → fe) (x ≪⟨ 𝓓 ⟩ y) (≪-is-prop-valued 𝓓) 𝓥
+    p = prop-has-size-is-prop (λ _ → pe) (λ _ _ → fe)
+         (x ≪⟨ 𝓓 ⟩ y) (≪-is-prop-valued 𝓓) 𝓥
 
   ≪-is-small-valued' : is-continuous-dcpo 𝓓
                      → is-locally-small 𝓓
@@ -1022,7 +1023,7 @@ module _
                              → ((x y : ⟨ 𝓓 ⟩) → is-small (x ≪⟨ 𝓓 ⟩ y))
                              → is-locally-small 𝓓
   ≪-is-small-valued-converse c ws =
-   ∥∥-rec (being-locally-small-is-prop 𝓓 pe)
+   ∥∥-rec (being-locally-small-is-prop 𝓓 (λ _ → pe))
     (λ C → ≪-is-small-valued-str-converse C ws) c
 
 \end{code}

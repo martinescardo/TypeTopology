@@ -297,7 +297,7 @@ module Diagram
                       ⦅ σ ⦆ j                      ∎⟨ 𝓓 j ⟩
      where
       u₁ = ≡-to-⊑ (𝓓 j) (ρ-in-terms-of-κ lᵢ lⱼ (⦅ σ ⦆ i))
-      u₂ = ≡-to-⊑ (𝓓 j) (ap (π lⱼ ∘ ε lᵢ) ((π-equality σ lᵢ) ⁻¹))
+      u₂ = ≡-to-⊒ (𝓓 j) (ap (π lⱼ ∘ ε lᵢ) (π-equality σ lᵢ))
       u₃ = monotone-if-continuous (𝓓 k) (𝓓 j) (π lⱼ , π-is-continuous lⱼ)
             (ε lᵢ (π lᵢ (⦅ σ ⦆ k))) (⦅ σ ⦆ k) (επ-deflation lᵢ (⦅ σ ⦆ k))
       u₄ = ≡-to-⊑ (𝓓 j) (π-equality σ lⱼ)
@@ -352,7 +352,7 @@ module Diagram
          mπ = monotone-if-continuous (𝓓 k) (𝓓 j)
                ((π lⱼ) , (π-is-continuous lⱼ))
        u₅ = reflexivity (𝓓 j) (π lⱼ (ε lᵢ y))
-       u₆ = ≡-to-⊑ (𝓓 j) ((ρ-in-terms-of-κ lᵢ lⱼ y) ⁻¹)
+       u₆ = ≡-to-⊒ (𝓓 j) (ρ-in-terms-of-κ lᵢ lⱼ y)
        u₇ = reflexivity (𝓓 j) (ρ i j y)
 
  ε∞-is-continuous : (i : I) → is-continuous (𝓓 i) 𝓓∞ (ε∞ i)
@@ -497,8 +497,8 @@ are preliminaries for doing so.
         u₁ = reflexivity (𝓓 k) (⦅ ε∞-family σ i ⦆ k)
         u₂ = ≡-to-⊑ (𝓓 k) (ρ-in-terms-of-κ (⊑-trans l lⱼ) lₖ (⦅ σ ⦆ i))
         u₃ = reflexivity (𝓓 k) (κ (⦅ σ ⦆ i) (m , ⊑-trans l lⱼ , lₖ))
-        u₄ = ≡-to-⊑ (𝓓 k) (ap (π lₖ) ((ε-comp l lⱼ (⦅ σ ⦆ i)) ⁻¹))
-        u₅ = ≡-to-⊑ (𝓓 k) (ap (π lₖ ∘ ε lⱼ ∘ ε l) ((π-equality σ l) ⁻¹))
+        u₄ = ≡-to-⊒ (𝓓 k) (ap (π lₖ) (ε-comp l lⱼ (⦅ σ ⦆ i)))
+        u₅ = ≡-to-⊒ (𝓓 k) (ap (π lₖ ∘ ε lⱼ ∘ ε l) (π-equality σ l))
         u₆ = mon (ε l (π l (⦅ σ ⦆ j))) (⦅ σ ⦆ j) (επ-deflation l (⦅ σ ⦆ j))
          where
           mon : is-monotone (𝓓 j) (𝓓 k) (π lₖ ∘ ε lⱼ)
@@ -507,7 +507,7 @@ are preliminaries for doing so.
                   ∘-is-continuous (𝓓 j) (𝓓 m) (𝓓 k)
                   (ε lⱼ) (π lₖ) (ε-is-continuous lⱼ) (π-is-continuous lₖ))
         u₇ = reflexivity (𝓓 k) (κ (⦅ σ ⦆ j) (m , lⱼ , lₖ))
-        u₈ = ≡-to-⊑ (𝓓 k) ((ρ-in-terms-of-κ lⱼ lₖ (⦅ σ ⦆ j)) ⁻¹)
+        u₈ = ≡-to-⊒ (𝓓 k) (ρ-in-terms-of-κ lⱼ lₖ (⦅ σ ⦆ j))
         u₉ = reflexivity (𝓓 k) (⦅ ε∞-family σ j ⦆ k)
 
  ε∞-family-is-directed : (σ : ⟨ 𝓓∞ ⟩) → is-Directed 𝓓∞ (ε∞-family σ)
@@ -543,10 +543,10 @@ are preliminaries for doing so.
     where
      δ' : is-Directed (𝓓 i) (family-at-ith-component α i)
      δ' = family-at-ith-component-is-directed α δ i
-     u₁ = ≡-to-⊑ (𝓓 i) ((ε-id i (⦅ σ ⦆ i)) ⁻¹)
-     u₂ = ≡-to-⊑ (𝓓 i) ((π-id i (ε ⊑-refl (⦅ σ ⦆ i))) ⁻¹)
+     u₁ = ≡-to-⊒ (𝓓 i) (ε-id i (⦅ σ ⦆ i))
+     u₂ = ≡-to-⊒ (𝓓 i) (π-id i (ε ⊑-refl (⦅ σ ⦆ i)))
      u₃ = reflexivity (𝓓 i) (π ⊑-refl (ε ⊑-refl (⦅ σ ⦆ i)))
-     u₄ = ≡-to-⊑ (𝓓 i) ((ρ-in-terms-of-κ ⊑-refl ⊑-refl (⦅ σ ⦆ i)) ⁻¹)
+     u₄ = ≡-to-⊒ (𝓓 i) (ρ-in-terms-of-κ ⊑-refl ⊑-refl (⦅ σ ⦆ i))
      u₅ = reflexivity (𝓓 i) (ρ i i (⦅ σ ⦆ i))
      u₆ = reflexivity (𝓓 i) (⦅ ε∞ i (⦅ σ ⦆ i) ⦆ i )
      u₇ = ∐-is-upperbound (𝓓 i) δ' i
@@ -572,7 +572,7 @@ are preliminaries for doing so.
          u₂ = reflexivity (𝓓 j) (⦅ ε∞ i (⦅ σ ⦆ i) ⦆ j)
          u₃ = ≡-to-⊑ (𝓓 j) (ρ-in-terms-of-κ lᵢ lⱼ (⦅ σ ⦆ i))
          u₄ = reflexivity (𝓓 j) (κ (⦅ σ ⦆ i) (k , lᵢ , lⱼ))
-         u₅ = ≡-to-⊑ (𝓓 j) (ap (π lⱼ ∘ ε lᵢ) ((π-equality σ lᵢ) ⁻¹))
+         u₅ = ≡-to-⊒ (𝓓 j) (ap (π lⱼ ∘ ε lᵢ) (π-equality σ lᵢ))
          u₆ = mon (ε lᵢ (π lᵢ (⦅ σ ⦆ k))) (⦅ σ ⦆ k) (επ-deflation lᵢ (⦅ σ ⦆ k))
           where
            mon : is-monotone (𝓓 k) (𝓓 j) (π lⱼ)
@@ -604,8 +604,8 @@ We now show that 𝓓∞ is the colimit of the diagram.
    g j (ε l (π l (⦅ σ ⦆ j))) ⊑⟨ 𝓔 ⟩[ w ]
    g j (⦅ σ ⦆ j)             ∎⟨ 𝓔 ⟩
     where
-     u = ≡-to-⊑ 𝓔 (ap (g i) ((π-equality σ l) ⁻¹))
-     v = ≡-to-⊑ 𝓔 ((comm i j l (π l (⦅ σ ⦆ j))) ⁻¹)
+     u = ≡-to-⊒ 𝓔 (ap (g i) (π-equality σ l))
+     v = ≡-to-⊒ 𝓔 (comm i j l (π l (⦅ σ ⦆ j)))
      w = gm (ε l (π l (⦅ σ ⦆ j))) (⦅ σ ⦆ j) (επ-deflation l (⦅ σ ⦆ j))
       where
        gm : is-monotone (𝓓 j) 𝓔 (g j)
@@ -660,7 +660,7 @@ We now show that 𝓓∞ is the colimit of the diagram.
             u₁ = reflexivity 𝓔 (colimit-family (ε∞ i x) j)
             u₂ = ≡-to-⊑ 𝓔 (ap (g j) (ρ-in-terms-of-κ lᵢ lⱼ x))
             u₃ = reflexivity 𝓔 (g j (κ x (k , lᵢ , lⱼ)))
-            u₄ = ≡-to-⊑ 𝓔 ((comm j k lⱼ (π lⱼ (ε lᵢ x))) ⁻¹)
+            u₄ = ≡-to-⊒ 𝓔 (comm j k lⱼ (π lⱼ (ε lᵢ x)))
             u₅ = m (ε lⱼ (π lⱼ (ε lᵢ x))) (ε lᵢ x) (επ-deflation lⱼ (ε lᵢ x))
              where
               m : is-monotone (𝓓 k) 𝓔 (g k)
@@ -676,10 +676,10 @@ We now show that 𝓓∞ is the colimit of the diagram.
          ∐ 𝓔 δ                            ⊑⟨ 𝓔 ⟩[ v₇ ]
          colimit-mediating-arrow (ε∞ i x) ∎⟨ 𝓔 ⟩
       where
-       v₁ = ≡-to-⊑ 𝓔 (ap (g i) ((ε-id i x) ⁻¹))
-       v₂ = ≡-to-⊑ 𝓔 (ap (g i) ((π-id i (ε ⊑-refl x)) ⁻¹))
+       v₁ = ≡-to-⊒ 𝓔 (ap (g i) (ε-id i x))
+       v₂ = ≡-to-⊒ 𝓔 (ap (g i) (π-id i (ε ⊑-refl x)))
        v₃ = reflexivity 𝓔 (g i (π ⊑-refl (ε ⊑-refl x)))
-       v₄ = ≡-to-⊑ 𝓔 (ap (g i) ((ρ-in-terms-of-κ ⊑-refl ⊑-refl x) ⁻¹))
+       v₄ = ≡-to-⊒ 𝓔 (ap (g i) (ρ-in-terms-of-κ ⊑-refl ⊑-refl x))
        v₅ = reflexivity 𝓔 (g i (ρ i i x))
        v₆ = ∐-is-upperbound 𝓔 δ i
        v₇ = reflexivity 𝓔 (∐ 𝓔 δ)

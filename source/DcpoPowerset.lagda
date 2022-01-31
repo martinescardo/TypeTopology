@@ -96,7 +96,7 @@ open unions-of-small-families pt 𝓤 X
     e : κ (l₁ ++ l₂) ≡ κ l₁ ∪ κ l₂
     e = κ-of-concatenated-lists-is-union pe fe l₁ l₂
     u : (κ l₁ ∪ κ l₂) ⊆ κ (l₁ ++ l₂)
-    u = ≡-to-⊑ 𝓟-DCPO (e ⁻¹)
+    u = ≡-to-⊒ 𝓟-DCPO e
     -- unfortunately, using the ⊑⟨ 𝓟-DCPO ⟩-syntax here gives
     -- implicit arguments problems, so we use ⊆-trans instead.
     u₁ : κ l₁ ⊆ κ (l₁ ++ l₂)

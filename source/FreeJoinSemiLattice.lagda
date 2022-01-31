@@ -125,7 +125,7 @@ the choice of enumeration is irrelevant, i.e. fₛ A is weakly constant.
       ψ k = ∥∥-rec (⊑-is-prop-valued _ _) ϕ (σ' (e k))
        where
         ϕ : (Σ k' ꞉ Fin n' , e' k' ≡ e k) → (f' ∘ e) k ⊑ ∨ⁿ (f' ∘ e')
-        ϕ (k' , p) = (f' ∘ e) k   ⊑⟨ ≡-to-⊑ (ap f' p ⁻¹)           ⟩
+        ϕ (k' , p) = (f' ∘ e) k   ⊑⟨ ≡-to-⊒ (ap f' p)              ⟩
                      (f' ∘ e') k' ⊑⟨ ∨ⁿ-is-upperbound (f' ∘ e') k' ⟩
                      ∨ⁿ (f' ∘ e') ⊑∎
     v : ∨ⁿ (f' ∘ e') ⊑ ∨ⁿ (f' ∘ e)
@@ -135,7 +135,7 @@ the choice of enumeration is irrelevant, i.e. fₛ A is weakly constant.
       ψ k' = ∥∥-rec (⊑-is-prop-valued _ _) ϕ (σ (e' k'))
        where
         ϕ : (Σ k ꞉ Fin n , e k ≡ e' k') → (f' ∘ e') k' ⊑ ∨ⁿ (f' ∘ e)
-        ϕ (k , p) = (f' ∘ e') k' ⊑⟨ ≡-to-⊑ (ap f' p ⁻¹)         ⟩
+        ϕ (k , p) = (f' ∘ e') k' ⊑⟨ ≡-to-⊒ (ap f' p)            ⟩
                     (f' ∘ e) k   ⊑⟨ ∨ⁿ-is-upperbound (f' ∘ e) k ⟩
                     ∨ⁿ (f' ∘ e)  ⊑∎
 
@@ -232,7 +232,7 @@ We show (ii) and then (i) now.
       f♭ 𝔹                         ⊑∎
        where
         u₁ = ≡-to-⊑ (f♭-in-terms-of-fₛ A e-surj κ₁)
-        u₃ = ≡-to-⊑ ((f♭-in-terms-of-fₛ B e'-surj κ₂) ⁻¹)
+        u₃ = ≡-to-⊒ (f♭-in-terms-of-fₛ B e'-surj κ₂)
         u₂ = ∨ⁿ-is-lowerbound-of-upperbounds (f ∘ 𝕋-to-carrier A ∘ e)
                                              (∨ⁿ (f ∘ 𝕋-to-carrier B ∘ e')) γ₁
          where
@@ -312,7 +312,7 @@ We show (ii) and then (i) now.
                 u₁ = ⊑-is-reflexive ((f ∘ 𝕋-to-carrier ⟨ A ⟩ ∘ e) k)
                 u₂ = ∨ⁿ-is-upperbound (f ∘ 𝕋-to-carrier ⟨ A ⟩ ∘ e) k
                 u₃ = ⊑-is-reflexive (∨ⁿ (f ∘ 𝕋-to-carrier ⟨ A ⟩ ∘ e))
-                u₄ = ≡-to-⊑ ((f♭-in-terms-of-fₛ ⟨ A ⟩ σ ⟨ A ⟩₂) ⁻¹)
+                u₄ = ≡-to-⊒ (f♭-in-terms-of-fₛ ⟨ A ⟩ σ ⟨ A ⟩₂)
                 u₅ = ∨-is-upperbound₁ (f♭ A) (f♭ B)
               ψ (inr k) = (f' ∘ ∪-enum' ⟨ A ⟩ ⟨ B ⟩ e e') (inr k) ⊑⟨ u₁' ⟩
                           (f ∘ 𝕋-to-carrier ⟨ B ⟩ ∘ e') k         ⊑⟨ u₂' ⟩
@@ -324,7 +324,7 @@ We show (ii) and then (i) now.
                 u₁' = ⊑-is-reflexive ((f ∘ 𝕋-to-carrier ⟨ B ⟩ ∘ e') k)
                 u₂' = ∨ⁿ-is-upperbound (f ∘ 𝕋-to-carrier ⟨ B ⟩ ∘ e') k
                 u₃' = ⊑-is-reflexive (∨ⁿ (f ∘ 𝕋-to-carrier ⟨ B ⟩ ∘ e'))
-                u₄' = ≡-to-⊑ ((f♭-in-terms-of-fₛ ⟨ B ⟩ σ' ⟨ B ⟩₂) ⁻¹)
+                u₄' = ≡-to-⊒ (f♭-in-terms-of-fₛ ⟨ B ⟩ σ' ⟨ B ⟩₂)
                 u₅' = ∨-is-upperbound₂ (f♭ A) (f♭ B)
 
 \end{code}

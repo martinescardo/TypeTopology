@@ -261,7 +261,7 @@ module _
                    y                                 ∎⟪ 𝓓 ⟫
         where
          ⦅1⦆ = ≡-to-⊑ (𝓓 ⁻) (ap f (value-is-constant s q ∣ i , p ∣))
-         ⦅2⦆ = ≡-to-⊑ (𝓓 ⁻) (ap f (lemma i p ⁻¹))
+         ⦅2⦆ = ≡-to-⊒ (𝓓 ⁻) (ap f (lemma i p))
          ⦅3⦆ = ∐ˢˢ-is-upperbound 𝓓 (f ∘ value (α i)) (being-defined-is-prop (α i)) p
 
  f̃-after-η-is-f : f̃ ∘ η ∼ f

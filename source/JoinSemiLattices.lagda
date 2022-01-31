@@ -49,6 +49,9 @@ record JoinSemiLattice (𝓥 𝓣 : Universe) : 𝓤ω where
   ≡-to-⊑ : {x y : L} → x ≡ y → x ⊑ y
   ≡-to-⊑ {x} {x} refl = reflexivity' x
 
+  ≡-to-⊒ : {x y : L} → y ≡ x → x ⊑ y
+  ≡-to-⊒ p = ≡-to-⊑ (p ⁻¹)
+
   ∨ⁿ : {n : ℕ} → (Fin n → L) → L
   ∨ⁿ {zero}   e = ⊥
   ∨ⁿ {succ m} e = (∨ⁿ (e ∘ suc)) ∨ (e 𝟎)
