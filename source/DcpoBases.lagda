@@ -497,7 +497,7 @@ TODO: Move to DcpoContinuous?
 
 \begin{code}
 
-record _is-continuous-retract-of_
+record _continuous-retract-of_
         (𝓓 : DCPO {𝓤} {𝓣})
         (𝓔 : DCPO {𝓤'} {𝓣'}) : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ⊔ 𝓤' ⊔ 𝓣' ̇  where
   field
@@ -509,7 +509,7 @@ record _is-continuous-retract-of_
 
 structural-continuity-of-dcpo-preserved-by-continuous-retract :
    (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
- → 𝓓 is-continuous-retract-of 𝓔
+ → 𝓓 continuous-retract-of 𝓔
  → structurally-continuous 𝓔
  → structurally-continuous 𝓓
 structural-continuity-of-dcpo-preserved-by-continuous-retract 𝓓 𝓔 ρ γ =
@@ -524,7 +524,7 @@ structural-continuity-of-dcpo-preserved-by-continuous-retract 𝓓 𝓔 ρ γ =
    }
  where
   open structurally-continuous γ
-  open _is-continuous-retract-of_ ρ
+  open _continuous-retract-of_ ρ
   r : ⟨ 𝓔 ⟩ → ⟨ 𝓓 ⟩
   r = retraction
   s : ⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩
@@ -572,7 +572,7 @@ structural-continuity-of-dcpo-preserved-by-continuous-retract 𝓓 𝓔 ρ γ =
 
 continuity-of-dcpo-preserved-by-continuous-retract :
    (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
- → 𝓓 is-continuous-retract-of 𝓔
+ → 𝓓 continuous-retract-of 𝓔
  → is-continuous-dcpo 𝓔
  → is-continuous-dcpo 𝓓
 continuity-of-dcpo-preserved-by-continuous-retract 𝓓 𝓔 ρ =
