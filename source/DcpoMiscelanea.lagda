@@ -225,9 +225,7 @@ constant-functions-are-continuous 𝓓 𝓔 e I α δ = u , v
   u : (i : I) → e ⊑⟨ 𝓔 ⟩ e
   u i = reflexivity 𝓔 e
   v : (y : ⟨ 𝓔 ⟩) → ((i : I) → e ⊑⟨ 𝓔 ⟩ y) → e ⊑⟨ 𝓔 ⟩ y
-  v y l  = ∥∥-rec (prop-valuedness 𝓔 e y)
-                  (λ (i : I) → l i)
-                  (inhabited-if-Directed 𝓓 α δ)
+  v y l  = ∥∥-rec (prop-valuedness 𝓔 e y) l (inhabited-if-Directed 𝓓 α δ)
 
 id-is-monotone : (𝓓 : DCPO {𝓤} {𝓣}) → is-monotone 𝓓 𝓓 id
 id-is-monotone 𝓓 x y l = l
