@@ -77,7 +77,7 @@ module Idl-Properties
  ↓ x = (λ (y : X) → (y ≺ x) , ≺-prop-valued) ,
        ls , inh , δ
   where
-   ls : is-lower-set (λ y → (y ≺ x) , ≺-prop-valued)
+   ls : is-lowerset (λ y → (y ≺ x) , ≺-prop-valued)
    ls x y = ≺-trans
    inh : ∃ y ꞉ X , y ≺ x
    inh = INT₀ x
@@ -149,7 +149,7 @@ module SmallIdeals
    l₂ i p = ∥∥-rec (∈-is-prop (carrier I) i) γ p
     where
      γ : (Σ j ꞉ 𝕋 (carrier I) , i ≺ pr₁ j) → i ∈ carrier I
-     γ ((j , q) , m) = ideals-are-lower-sets (carrier I) (ideality I)
+     γ ((j , q) , m) = ideals-are-lowersets (carrier I) (ideality I)
                            i j m q
 
  Idl-≪-in-terms-of-⊑ : (I J : Idl) → I ≪⟨ Idl-DCPO ⟩ J
@@ -187,7 +187,7 @@ module SmallIdeals
        t : (↓ x) ⊑⟨ Idl-DCPO ⟩ (↓ y)
        t = ↓-is-monotone l
        r : (↓ y) ⊑⟨ Idl-DCPO ⟩ J
-       r z m = ideals-are-lower-sets (carrier J) (ideality J) z y m yJ
+       r z m = ideals-are-lowersets (carrier J) (ideality J) z y m yJ
 
  Idl-≪-in-terms-of-⊑' : (I J : Idl)
                       → ∃ x ꞉ X , x ∈ᵢ J × I ⊑⟨ Idl-DCPO ⟩ (↓ x)
@@ -206,7 +206,7 @@ module SmallIdeals
        r = transitivity Idl-DCPO I (↓ x) (α a) s q
         where
          q : (↓ x) ⊑⟨ Idl-DCPO ⟩ α a
-         q y l = ideals-are-lower-sets (carrier (α a)) (ideality (α a)) y x l xa
+         q y l = ideals-are-lowersets (carrier (α a)) (ideality (α a)) y x l xa
 
  Idl-≪-in-terms-of-⊑₂' : (I J : Idl)
                        → ∃ x ꞉ X , Σ y ꞉ X , x ≺ y
@@ -231,7 +231,7 @@ module SmallIdeals
        h = transitivity Idl-DCPO I (↓ x) (α a) s s'
         where
          s' : (↓ x) ⊑⟨ Idl-DCPO ⟩ α a
-         s' z n = ideals-are-lower-sets (carrier (α a)) (ideality (α a)) z x n xa
+         s' z n = ideals-are-lowersets (carrier (α a)) (ideality (α a)) z x n xa
 
 \end{code}
 
@@ -504,5 +504,222 @@ module SmallIdeals
 
   Idl-is-algebraic-dcpo : is-algebraic-dcpo Idl-DCPO
   Idl-is-algebraic-dcpo = ∣ Idl-structurally-algebraic ∣
+
+\end{code}
+
+Dcpos with a small basis are continuous retracts (in fact, e-p pair...) of
+algebraic dcpos.
+
+\begin{code}
+
+module _
+        (𝓓 : DCPO {𝓤} {𝓣})
+        {B : 𝓥 ̇  }
+        (β : B → ⟨ 𝓓 ⟩)
+        (β-is-small-basis : is-small-basis 𝓓 β)
+       where
+
+ open is-small-basis β-is-small-basis
+
+ _⊑ₛ_ : ⟨ 𝓓 ⟩ → ⟨ 𝓓 ⟩ → 𝓥 ̇
+ _⊑ₛ_ = pr₁ (locally-small-if-small-basis 𝓓 β β-is-small-basis)
+
+ _⊑ᴮ_ : B → B → 𝓥 ̇
+ b ⊑ᴮ b' = β b ⊑ₛ β b'
+
+ ⊑ᴮ-≃-⊑ : {b b' : B} → (b ⊑ᴮ b') ≃ (β b ⊑⟨ 𝓓 ⟩ β b')
+ ⊑ᴮ-≃-⊑ {b} {b'} = (b ⊑ᴮ b')         ≃⟨ ⦅1⦆ ⟩
+                   (β b ⊑ₛ β b')     ≃⟨ ⦅2⦆ ⟩
+                   (β b ⊑⟨ 𝓓 ⟩ β b') ■
+  where
+   ⦅1⦆ = ≃-refl (b ⊑ᴮ b')
+   ⦅2⦆ = pr₂ (locally-small-if-small-basis 𝓓 β β-is-small-basis) (β b) (β b')
+
+ ⊑ᴮ-is-prop-valued : {b b' : B} → is-prop (b ⊑ᴮ b')
+ ⊑ᴮ-is-prop-valued = equiv-to-prop ⊑ᴮ-≃-⊑ (prop-valuedness 𝓓 _ _)
+
+ ⊑ᴮ-is-reflexive : {b : B} → b ⊑ᴮ b
+ ⊑ᴮ-is-reflexive = ⌜ ⊑ᴮ-≃-⊑ ⌝⁻¹ (reflexivity 𝓓 _)
+
+ ⊑ᴮ-is-transitive : {b b' b'' : B} → b ⊑ᴮ b' → b' ⊑ᴮ b'' → b ⊑ᴮ b''
+ ⊑ᴮ-is-transitive u v = ⌜ ⊑ᴮ-≃-⊑ ⌝⁻¹
+                         (transitivity 𝓓 _ _ _ (⌜ ⊑ᴮ-≃-⊑ ⌝ u) (⌜ ⊑ᴮ-≃-⊑ ⌝ v))
+
+ -- TODO: Rework this?
+ open Ideals {𝓥} {𝓥} {B} _⊑ᴮ_
+             ⊑ᴮ-is-prop-valued
+             (reflexivity-implies-INT₂ _⊑ᴮ_ ⊑ᴮ-is-reflexive)
+             (reflexivity-implies-INT₀ _⊑ᴮ_ ⊑ᴮ-is-reflexive)
+             ⊑ᴮ-is-transitive
+ open SmallIdeals {B} _⊑ᴮ_
+                  ⊑ᴮ-is-prop-valued
+                  (reflexivity-implies-INT₂ _⊑ᴮ_ ⊑ᴮ-is-reflexive)
+                  (reflexivity-implies-INT₀ _⊑ᴮ_ ⊑ᴮ-is-reflexive)
+                  ⊑ᴮ-is-transitive
+ open Idl-Properties {𝓥} {𝓥} {B} _⊑ᴮ_
+                     ⊑ᴮ-is-prop-valued
+                     (reflexivity-implies-INT₂ _⊑ᴮ_ ⊑ᴮ-is-reflexive)
+                     (reflexivity-implies-INT₀ _⊑ᴮ_ ⊑ᴮ-is-reflexive)
+                     ⊑ᴮ-is-transitive
+
+ to-Idl : ⟨ 𝓓 ⟩ → Idl
+ to-Idl x = Bₓ , (Bₓ-is-lowerset , Bₓ-is-directed-set)
+  where
+   Bₓ : 𝓟 B
+   Bₓ b = (b ≪ᴮₛ x , ≪ᴮₛ-is-prop-valued)
+   Bₓ-is-lowerset : is-lowerset Bₓ
+   Bₓ-is-lowerset b c b-below-c c-in-Bₓ =
+    ⌜ ≪ᴮₛ-≃-≪ᴮ ⌝⁻¹ (⊑-≪-to-≪ 𝓓 (⌜ ⊑ᴮ-≃-⊑ ⌝ b-below-c)
+                                 (⌜ ≪ᴮₛ-≃-≪ᴮ ⌝ c-in-Bₓ))
+   Bₓ-is-inhabited : ∥ 𝕋 Bₓ ∥
+   Bₓ-is-inhabited = inhabited-if-Directed 𝓓 (↡ιₛ x) (↡ᴮₛ-is-directed x)
+   Bₓ-is-semidirected-set : is-semidirected-set Bₓ
+   Bₓ-is-semidirected-set b₁ b₂ b₁-in-Bₓ b₂-in-Bₓ =
+    ∥∥-functor (λ ((b , b-in-Bₓ) , u , v)
+               → (b , b-in-Bₓ , ⌜ ⊑ᴮ-≃-⊑ ⌝⁻¹ u , ⌜ ⊑ᴮ-≃-⊑ ⌝⁻¹ v))
+              (semidirected-if-Directed 𝓓 (↡ιₛ x) (↡ᴮₛ-is-directed x)
+                (b₁ , b₁-in-Bₓ) (b₂ , b₂-in-Bₓ))
+   Bₓ-is-directed-set : is-directed-set Bₓ
+   Bₓ-is-directed-set = (Bₓ-is-inhabited , Bₓ-is-semidirected-set)
+
+
+ ideals-are-directed : (I : Idl)
+                     → is-Directed 𝓓 (β ∘ 𝕋-to-carrier (carrier I))
+ ideals-are-directed I = inh , semidir
+  where
+   δ : is-directed-set (carrier I)
+   δ = ideals-are-directed-sets (carrier I) (ideality I)
+   inh : ∥ 𝕋 (carrier I) ∥
+   inh = directed-sets-are-inhabited (carrier I) δ
+   semidir : is-semidirected (underlying-order 𝓓) (β ∘ 𝕋-to-carrier (carrier I))
+   semidir (b₁ , b₁-in-I) (b₂ , b₂-in-I) =
+    ∥∥-functor (λ (b , b-in-I , u , v)
+               → ((b , b-in-I) , ⌜ ⊑ᴮ-≃-⊑ ⌝ u , ⌜ ⊑ᴮ-≃-⊑ ⌝ v))
+              (directed-sets-are-semidirected (carrier I) δ b₁ b₂ b₁-in-I b₂-in-I)
+
+ from-Idl : Idl → ⟨ 𝓓 ⟩
+ from-Idl I = ∐ 𝓓 (ideals-are-directed I)
+
+ open import UF-Retracts
+
+ Idl-retract : retract ⟨ 𝓓 ⟩ of Idl
+ Idl-retract = (r , s , γ)
+  where
+   s : ⟨ 𝓓 ⟩ → Idl
+   s = to-Idl
+   r : Idl → ⟨ 𝓓 ⟩
+   r = from-Idl
+   γ : r ∘ s ∼ id
+   γ x = antisymmetry 𝓓 (r (s x)) x ⦅1⦆ ⦅2⦆
+    where
+     ⦅2⦆ : x ⊑⟨ 𝓓 ⟩ r (s x)
+     ⦅2⦆ = transport (λ - → - ⊑⟨ 𝓓 ⟩ r (s x)) (↡ᴮₛ-∐-≡ x) lemma
+      where
+       lemma : ∐ 𝓓 (↡ᴮₛ-is-directed x) ⊑⟨ 𝓓 ⟩ r (s x)
+       lemma = ∐-is-lowerbound-of-upperbounds 𝓓 (↡ᴮₛ-is-directed x) (r (s x))
+                (∐-is-upperbound 𝓓 (ideals-are-directed (s x)))
+     ⦅1⦆ : r (s x) ⊑⟨ 𝓓 ⟩ x
+     ⦅1⦆ = ∐-is-lowerbound-of-upperbounds 𝓓 (ideals-are-directed (s x)) x ub
+      where
+       ub : is-upperbound (underlying-order 𝓓) x
+             (β ∘ 𝕋-to-carrier (carrier (s x)))
+       ub (b , b-way-below-sx) = ≪-to-⊑ 𝓓 (⌜ ≪ᴮₛ-≃-≪ᴮ ⌝ b-way-below-sx)
+
+ Idl-deflation : (I : Idl) → to-Idl (from-Idl I) ⊑⟨ Idl-DCPO ⟩ I
+ Idl-deflation 𝕀@(I , I-is-ideal) b b-way-below-∐I =
+  ∥∥-rec (∈-is-prop I b) h
+        (⌜ ≪ᴮₛ-≃-≪ᴮ ⌝ b-way-below-∐I (𝕋 I) (β ∘ pr₁)
+          (ideals-are-directed 𝕀) (reflexivity 𝓓 (from-Idl 𝕀)))
+   where
+    h : (Σ i ꞉ 𝕋 I , β b ⊑⟨ 𝓓 ⟩ (β (pr₁ i))) → b ∈ I
+    h ((i , i-in-I) , u) = ideals-are-lowersets I I-is-ideal b i
+                            (⌜ ⊑ᴮ-≃-⊑ ⌝⁻¹ u) i-in-I
+
+ to-Idl-is-monotone : is-monotone 𝓓 Idl-DCPO to-Idl
+ to-Idl-is-monotone x y x-below-y b b-way-below-x =
+  ⌜ ≪ᴮₛ-≃-≪ᴮ ⌝⁻¹ (≪-⊑-to-≪ 𝓓 (⌜ ≪ᴮₛ-≃-≪ᴮ ⌝ b-way-below-x) x-below-y)
+
+ to-Idl-is-continuous : is-continuous 𝓓 Idl-DCPO to-Idl
+ to-Idl-is-continuous = continuity-criterion' 𝓓 Idl-DCPO to-Idl
+                         to-Idl-is-monotone γ
+  where
+   γ : (𝓐 : 𝓥 ̇) (α : 𝓐 → ⟨ 𝓓 ⟩) (δ : is-Directed 𝓓 α)
+     → is-lowerbound-of-upperbounds _⊑_ (to-Idl (∐ 𝓓 δ)) (to-Idl ∘ α)
+   γ 𝓐 α δ (I , I-is-ideal) I-is-ub b b-way-below-∐α =
+    ∥∥-rec (∈-is-prop I b) claim lemma
+     where
+      lemma : ∃ c ꞉ B , (β b ≪⟨ 𝓓 ⟩ β c) × (β c ≪⟨ 𝓓 ⟩ ∐ 𝓓 δ)
+      lemma = small-basis-unary-interpolation 𝓓 β β-is-small-basis
+               (⌜ ≪ᴮₛ-≃-≪ᴮ ⌝ b-way-below-∐α)
+      claim : (Σ c ꞉ B , (β b ≪⟨ 𝓓 ⟩ β c) × (β c ≪⟨ 𝓓 ⟩ ∐ 𝓓 δ))
+            → b ∈ I
+      claim (c , b-way-below-c , c-way-below-∐α) =
+       ∥∥-rec (∈-is-prop I b) h (c-way-below-∐α 𝓐 α δ (reflexivity 𝓓 (∐ 𝓓 δ)))
+        where
+         h : (Σ a ꞉ 𝓐 , β c ⊑⟨ 𝓓 ⟩ α a) → b ∈ I
+         h (a , c-below-αa) = I-is-ub a b (⌜ ≪ᴮₛ-≃-≪ᴮ ⌝⁻¹ wb)
+          where
+           wb : β b ≪⟨ 𝓓 ⟩ α a
+           wb = ≪-⊑-to-≪ 𝓓 b-way-below-c c-below-αa
+
+ -- TODO: Reconsider opening this?
+ open Ind-completion 𝓓
+
+ from-Idl-is-monotone : is-monotone Idl-DCPO 𝓓 from-Idl
+ from-Idl-is-monotone I J I-below-J =
+  ∐-map-is-monotone 𝕀 𝕁 γ
+   where
+    𝕀 : Ind
+    𝕀 = (𝕋 (carrier I) , β ∘ pr₁ , ideals-are-directed I)
+    𝕁 : Ind
+    𝕁 = (𝕋 (carrier J) , β ∘ pr₁ , ideals-are-directed J)
+    γ : 𝕀 ≲ 𝕁
+    γ (b , b-in-I) = ∣ (b , (I-below-J b b-in-I)) , (reflexivity 𝓓 (β b)) ∣
+
+ from-Idl-is-continuous : is-continuous Idl-DCPO 𝓓 from-Idl
+ from-Idl-is-continuous = continuity-criterion' Idl-DCPO 𝓓 from-Idl
+                           from-Idl-is-monotone γ
+  where
+   γ : (𝓐 : 𝓥 ̇) (α : 𝓐 → ⟨ Idl-DCPO ⟩) (δ : is-Directed Idl-DCPO α)
+     → is-lowerbound-of-upperbounds (underlying-order 𝓓)
+        (from-Idl (∐ Idl-DCPO {𝓐} {α} δ)) (from-Idl ∘ α)
+   γ 𝓐 α δ x x-is-ub = ∐-is-lowerbound-of-upperbounds 𝓓
+                        (ideals-are-directed (∐ Idl-DCPO {𝓐} {α} δ)) x ub
+    where
+     ub : is-upperbound (underlying-order 𝓓) x
+           (β ∘ 𝕋-to-carrier (carrier (∐ Idl-DCPO {𝓐} {α} δ)))
+     ub (b , b-in-⋃) = ∥∥-rec (prop-valuedness 𝓓 (β b) x) h b-in-⋃
+      where
+       h : (Σ a ꞉ 𝓐 , b ∈ᵢ α a) → β b ⊑⟨ 𝓓 ⟩ x
+       h (a , b-in-αa) = β b            ⊑⟨ 𝓓 ⟩[ ⦅1⦆ ]
+                         from-Idl (α a) ⊑⟨ 𝓓 ⟩[ ⦅2⦆ ]
+                         x              ∎⟨ 𝓓 ⟩
+        where
+         ⦅1⦆ = ∐-is-upperbound 𝓓 (ideals-are-directed (α a)) (b , b-in-αa)
+         ⦅2⦆ = x-is-ub a
+
+ Idl-continuous-retract : 𝓓 continuous-retract-of Idl-DCPO
+ Idl-continuous-retract =
+  record
+   { s = to-Idl
+   ; r = from-Idl
+   ; r-s-equation = retract-condition Idl-retract
+   ; s-is-continuous = to-Idl-is-continuous
+   ; r-is-continuous = from-Idl-is-continuous
+   }
+
+ -- TODO:
+ {-
+  ∗ (e-p pair) ; define first
+ -}
+
+ Idl-is-algebraic : is-algebraic-dcpo Idl-DCPO
+ Idl-is-algebraic = Idl-is-algebraic-dcpo (λ b → ⊑ᴮ-is-reflexive)
+
+\end{code}
+
+TODO: D ≅ Idl (B , ≺)
+
+\begin{code}
 
 \end{code}

@@ -119,6 +119,9 @@ module _
   ≪ᴮₛ-≃-≪ᴮ : {b : B} {x : ⟨ 𝓓 ⟩} → (b ≪ᴮₛ x) ≃ (β b ≪⟨ 𝓓 ⟩ x)
   ≪ᴮₛ-≃-≪ᴮ {b} {x} = pr₂ (≪ᴮ-is-small x b)
 
+  ≪ᴮₛ-is-prop-valued : {b : B} {x : ⟨ 𝓓 ⟩} → is-prop (b ≪ᴮₛ x)
+  ≪ᴮₛ-is-prop-valued = equiv-to-prop ≪ᴮₛ-≃-≪ᴮ (≪-is-prop-valued 𝓓)
+
   ↡ᴮₛ : ⟨ 𝓓 ⟩ → 𝓥 ̇
   ↡ᴮₛ x = Σ b ꞉ B , (b ≪ᴮₛ x)
 

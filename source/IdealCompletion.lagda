@@ -39,15 +39,11 @@ module Ideals
         (≺-trans : {p q r : P} → p ≺ q → q ≺ r → p ≺ r)
        where
 
- is-lower-set : (P → Ω (𝓥 ⊔ 𝓣)) → 𝓥 ⊔ 𝓤 ⊔ 𝓣 ̇
- is-lower-set A = (p q : P) → p ≺ q → q ∈ A → p ∈ A
+ is-lowerset : (P → Ω (𝓥 ⊔ 𝓣)) → 𝓥 ⊔ 𝓤 ⊔ 𝓣 ̇
+ is-lowerset A = (p q : P) → p ≺ q → q ∈ A → p ∈ A
 
- being-a-lower-set-is-a-prop : (I :  P → Ω (𝓥 ⊔ 𝓣)) → is-prop (is-lower-set I)
- being-a-lower-set-is-a-prop I = Π-is-prop fe
-                                 λ p → Π-is-prop fe
-                                 λ q → Π-is-prop fe
-                                 λ l → Π-is-prop fe
-                                 λ i → ∈-is-prop I p
+ being-a-lowerset-is-a-prop : (I :  P → Ω (𝓥 ⊔ 𝓣)) → is-prop (is-lowerset I)
+ being-a-lowerset-is-a-prop I = Π₄-is-prop fe (λ p q l i → ∈-is-prop I p)
 
  is-inhabited-set : (P → Ω (𝓥 ⊔ 𝓣)) → 𝓤 ⊔ 𝓥 ⊔ 𝓣 ̇
  is-inhabited-set A = ∃ p ꞉ P , p ∈ A
@@ -85,16 +81,16 @@ module Ideals
  directed-sets-are-semidirected A = pr₂
 
  is-ideal : (P → Ω (𝓥 ⊔ 𝓣)) → 𝓥 ⊔ 𝓤 ⊔ 𝓣 ̇
- is-ideal I = is-lower-set I × is-directed-set I
+ is-ideal I = is-lowerset I × is-directed-set I
 
  being-an-ideal-is-a-prop : (I : P → Ω (𝓥 ⊔ 𝓣)) → is-prop (is-ideal I)
  being-an-ideal-is-a-prop I =
   ×-is-prop
-   (being-a-lower-set-is-a-prop I)
+   (being-a-lowerset-is-a-prop I)
    (being-a-directed-set-is-a-prop I)
 
- ideals-are-lower-sets : (I : P → Ω (𝓥 ⊔ 𝓣)) → is-ideal I → is-lower-set I
- ideals-are-lower-sets I = pr₁
+ ideals-are-lowersets : (I : P → Ω (𝓥 ⊔ 𝓣)) → is-ideal I → is-lowerset I
+ ideals-are-lowersets I = pr₁
 
  ideals-are-directed-sets : (I : P → Ω (𝓥 ⊔ 𝓣))
                           → is-ideal I → is-directed-set I
@@ -120,11 +116,11 @@ module Ideals
   where
    ∐α : P → Ω (𝓥 ⊔ 𝓣)
    ∐α p = (∃ a ꞉ 𝓐 , (p ∈ᵢ α a)) , ∥∥-is-prop
-   ls : is-lower-set ∐α
+   ls : is-lowerset ∐α
    ls p q l = ∥∥-functor γ
     where
      γ : (Σ a ꞉ 𝓐 , q ∈ᵢ α a) → (Σ a ꞉ 𝓐 , p ∈ᵢ α a)
-     γ (a , u) = a , ideals-are-lower-sets (carrier (α a)) (ideality (α a))
+     γ (a , u) = a , ideals-are-lowersets (carrier (α a)) (ideality (α a))
                      p q l u
    inh : ∃ p ꞉ P , p ∈ ∐α
    inh = ∥∥-rec ∥∥-is-prop γ (inhabited-if-directed _⊑_ α δ)
