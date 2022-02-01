@@ -661,7 +661,7 @@ module Idl-algebraic -- TODO: Rethink module name
     𝕁 : Ind
     𝕁 = (𝕋 (carrier J) , β ∘ pr₁ , ideals-are-directed J)
     γ : 𝕀 ≲ 𝕁
-    γ (b , b-in-I) = ∣ (b , (I-below-J b b-in-I)) , (reflexivity 𝓓 (β b)) ∣
+    γ (b , b-in-I) = ∣ (b , I-below-J b b-in-I) , reflexivity 𝓓 (β b) ∣
 
  from-Idl-is-continuous : is-continuous Idl-DCPO 𝓓 from-Idl
  from-Idl-is-continuous = continuity-criterion' Idl-DCPO 𝓓 from-Idl
@@ -838,7 +838,7 @@ module Idl-continuous
 
  -- TODO: Rename
  Idl-iso₂ : to-Idl ∘ from-Idl ∼ id
- Idl-iso₂ 𝕀@(I , I-is-ideal) = γ
+ Idl-iso₂ 𝕀@(I , I-is-ideal) = γ -- TODO: Typechecking this is slow for some reason
   where
    s : ⟨ 𝓓 ⟩
    s = ∐ 𝓓 (ideals-are-directed 𝕀)
@@ -918,7 +918,7 @@ module Idl-continuous
     𝕁 : Ind
     𝕁 = (𝕋 (carrier J) , β ∘ pr₁ , ideals-are-directed J)
     γ : 𝕀 ≲ 𝕁
-    γ (b , b-in-I) = ∣ (b , (I-below-J b b-in-I)) , (reflexivity 𝓓 (β b)) ∣
+    γ (b , b-in-I) = ∣ (b , I-below-J b b-in-I) , reflexivity 𝓓 (β b) ∣
 
  -- Exactly as above
  from-Idl-is-continuous : is-continuous Idl-DCPO 𝓓 from-Idl
