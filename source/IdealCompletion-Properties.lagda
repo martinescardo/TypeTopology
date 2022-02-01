@@ -605,21 +605,14 @@ module Idl-algebraic -- TODO: Rethink module name
    s = to-Idl
    r : Idl → ⟨ 𝓓 ⟩
    r = from-Idl
-   γ : r ∘ s ∼ id
-   γ x = antisymmetry 𝓓 (r (s x)) x ⦅1⦆ ⦅2⦆
+   γ : (x : ⟨ 𝓓 ⟩) → ∐ 𝓓 (ideals-are-directed (s x)) ≡ x
+   γ x = ∐ 𝓓 {↡ᴮₛ x} {↡ιₛ x} (ideals-are-directed (s x)) ≡⟨ ⦅1⦆ ⟩
+         ∐ 𝓓 {↡ᴮₛ x} {↡ιₛ x} (↡ᴮₛ-is-directed x)         ≡⟨ ⦅2⦆ ⟩
+         x                               ∎
     where
-     ⦅2⦆ : x ⊑⟨ 𝓓 ⟩ r (s x)
-     ⦅2⦆ = transport (λ - → - ⊑⟨ 𝓓 ⟩ r (s x)) (↡ᴮₛ-∐-≡ x) lemma
-      where
-       lemma : ∐ 𝓓 (↡ᴮₛ-is-directed x) ⊑⟨ 𝓓 ⟩ r (s x)
-       lemma = ∐-is-lowerbound-of-upperbounds 𝓓 (↡ᴮₛ-is-directed x) (r (s x))
-                (∐-is-upperbound 𝓓 (ideals-are-directed (s x)))
-     ⦅1⦆ : r (s x) ⊑⟨ 𝓓 ⟩ x
-     ⦅1⦆ = ∐-is-lowerbound-of-upperbounds 𝓓 (ideals-are-directed (s x)) x ub
-      where
-       ub : is-upperbound (underlying-order 𝓓) x
-             (β ∘ 𝕋-to-carrier (carrier (s x)))
-       ub (b , b-way-below-sx) = ≪-to-⊑ 𝓓 (⌜ ≪ᴮₛ-≃-≪ᴮ ⌝ b-way-below-sx)
+     ⦅1⦆ = ∐-independent-of-directedness-witness 𝓓
+           (ideals-are-directed (s x)) (↡ᴮₛ-is-directed x)
+     ⦅2⦆ = ↡ᴮₛ-∐-≡ x
 
  Idl-deflation : (I : Idl) → to-Idl (from-Idl I) ⊑⟨ Idl-DCPO ⟩ I
  Idl-deflation 𝕀@(I , I-is-ideal) b b-way-below-∐I =
