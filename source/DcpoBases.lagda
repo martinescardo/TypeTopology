@@ -489,7 +489,63 @@ module _
  is-algebraic-dcpo-if-unspecified-small-compact-basis =
   ∥∥-functor structurally-algebraic-if-specified-small-compact-basis
 
+\end{code}
 
+TODO: Move this somewhere
+
+\begin{code}
+
+module _
+        (𝓓 : DCPO {𝓤} {𝓣})
+        {B : 𝓥 ̇  }
+        (β : B → ⟨ 𝓓 ⟩)
+        (x : ⟨ 𝓓 ⟩)
+        {I : 𝓥 ̇  }
+        (σ : I → ↡ᴮ 𝓓 β x)
+       where
+
+ ↡ᴮ-sup-criterion : is-sup (underlying-order 𝓓) x (↡ι 𝓓 β x ∘ σ)
+                  → is-sup (underlying-order 𝓓) x (↡ι 𝓓 β x)
+ ↡ᴮ-sup-criterion x-is-sup = (ub , lb-of-ubs)
+  where
+   ub : is-upperbound (underlying-order 𝓓) x (↡ι 𝓓 β x)
+   ub (b , b-way-below-x) = ≪-to-⊑ 𝓓 b-way-below-x
+   lb-of-ubs : is-lowerbound-of-upperbounds (underlying-order 𝓓) x (↡ι 𝓓 β x)
+   lb-of-ubs y y-is-ub =
+    sup-is-lowerbound-of-upperbounds (underlying-order 𝓓) x-is-sup y y-is-ub'
+     where
+      y-is-ub' : is-upperbound (underlying-order 𝓓) y (↡ι 𝓓 β x ∘ σ)
+      y-is-ub' i = y-is-ub (σ i)
+
+ ↡ᴮ-directedness-criterion : (δ : is-Directed 𝓓 (↡ι 𝓓 β x ∘ σ))
+                           → (x ⊑⟨ 𝓓 ⟩ ∐ 𝓓 δ)
+                           → is-Directed 𝓓 (↡ι 𝓓 β x)
+ ↡ᴮ-directedness-criterion δ@(inh , semidir) x-below-∐ = (inh' , semidir')
+  where
+   inh' : ∥ ↡ᴮ 𝓓 β x ∥
+   inh' = ∥∥-functor σ inh
+   semidir' : is-semidirected (underlying-order 𝓓) (↡ι 𝓓 β x)
+   semidir' (b₁ , b₁-way-below-x) (b₂ , b₂-way-below-x) =
+    ∥∥-rec₂ ∃-is-prop f (b₁-way-below-x I (↡ι 𝓓 β x ∘ σ) δ x-below-∐)
+                       (b₂-way-below-x I (↡ι 𝓓 β x ∘ σ) δ x-below-∐)
+     where
+      f : (Σ i ꞉ I , β b₁ ⊑⟨ 𝓓 ⟩ ↡ι 𝓓 β x (σ i))
+        → (Σ i ꞉ I , β b₂ ⊑⟨ 𝓓 ⟩ ↡ι 𝓓 β x (σ i))
+        → (∃ b ꞉ ↡ᴮ 𝓓 β x , (β b₁ ⊑⟨ 𝓓 ⟩ ↡ι 𝓓 β x b)
+                          × (β b₂ ⊑⟨ 𝓓 ⟩ ↡ι 𝓓 β x b))
+      f (i₁ , u₁) (i₂ , u₂) = ∥∥-functor g (semidir i₁ i₂)
+       where
+        g : (Σ i ꞉ I , (↡ι 𝓓 β x (σ i₁) ⊑⟨ 𝓓 ⟩ ↡ι 𝓓 β x (σ i))
+                     × (↡ι 𝓓 β x (σ i₂) ⊑⟨ 𝓓 ⟩ ↡ι 𝓓 β x (σ i)))
+          → (Σ b ꞉ ↡ᴮ 𝓓 β x , (β b₁ ⊑⟨ 𝓓 ⟩ ↡ι 𝓓 β x b)
+                            × (β b₂ ⊑⟨ 𝓓 ⟩ ↡ι 𝓓 β x b))
+        g (i , v₁ , v₂) = (σ i
+                        , (β b₁            ⊑⟨ 𝓓 ⟩[ u₁ ]
+                           ↡ι 𝓓 β x (σ i₁) ⊑⟨ 𝓓 ⟩[ v₁ ]
+                           ↡ι 𝓓 β x (σ i)  ∎⟨ 𝓓 ⟩)
+                        , (β b₂            ⊑⟨ 𝓓 ⟩[ u₂ ]
+                           ↡ι 𝓓 β x (σ i₂) ⊑⟨ 𝓓 ⟩[ v₂ ]
+                           ↡ι 𝓓 β x (σ i)  ∎⟨ 𝓓 ⟩))
 
 \end{code}
 
@@ -595,10 +651,10 @@ module _
  open _continuous-retract-of_ ρ
 
  -- TODO: Converse if y ⊑ s (r y), i.e. embedding-projection pair??
- retraction-≪-criterion : (y : ⟨ 𝓔 ⟩) (x : ⟨ 𝓓 ⟩)
-                        → y ≪⟨ 𝓔 ⟩ s x
-                        → r y ≪⟨ 𝓓 ⟩ x
- retraction-≪-criterion y x y-way-below-sx I α δ x-below-∐α =
+ continuous-retraction-≪-criterion : (y : ⟨ 𝓔 ⟩) (x : ⟨ 𝓓 ⟩)
+                                   → y ≪⟨ 𝓔 ⟩ s x
+                                   → r y ≪⟨ 𝓓 ⟩ x
+ continuous-retraction-≪-criterion y x y-way-below-sx I α δ x-below-∐α =
   ∥∥-functor h (y-way-below-sx I (s ∘ α) ε l)
    where
     ε : is-Directed 𝓔 (s ∘ α)
@@ -641,39 +697,61 @@ module _
         ⦅⇐⦆ : (x ⊑⟨ 𝓓 ⟩ y) → (s x ⊑ₛ s y)
         ⦅⇐⦆ l = ⌜ f (s x) (s y) ⌝⁻¹ (monotone-if-continuous 𝓓 𝓔 𝕤 x y l)
 
- small-basis-from-retract : {B : 𝓥 ̇  } (β : B → ⟨ 𝓔 ⟩)
-                          → is-small-basis 𝓔 β
-                          → is-small-basis 𝓓 (r ∘ β)
- small-basis-from-retract {B} β sb =
+ small-basis-from-continuous-retract : {B : 𝓥 ̇  } (β : B → ⟨ 𝓔 ⟩)
+                                     → is-small-basis 𝓔 β
+                                     → is-small-basis 𝓓 (r ∘ β)
+ small-basis-from-continuous-retract {B} β sb =
   record
-    { ≪ᴮ-is-small = λ x b → -- TODO: Comment on proof
-       ≪-is-small-valued 𝓓 pe
-        (continuity-of-dcpo-preserved-by-continuous-retract
-          𝓓 𝓔 ρ
-          ∣ structurally-continuous-if-specified-small-basis 𝓔 (B , (β , sb)) ∣)
-          (local-smallness-preserved-by-continuous-retract
-            (locally-small-if-small-basis 𝓔 β sb))
-        (r (β b)) x
-    ; ↡ᴮ-is-directed = lemma₁
-    ; ↡ᴮ-is-sup = {!!}
+    { ≪ᴮ-is-small    = lemma₁
+    ; ↡ᴮ-is-directed = lemma₂
+    ; ↡ᴮ-is-sup      = lemma₃
     }
      where
       open is-small-basis sb
-      lemma₁ : (x : ⟨ 𝓓 ⟩) → is-Directed 𝓓 (↡ι 𝓓 (r ∘ β) x)
-      lemma₁ x = inh , semidir
+
+      lemma₁ : (x : ⟨ 𝓓 ⟩) (b : B) → is-small (r (β b) ≪⟨ 𝓓 ⟩ x)
+      lemma₁ x b = ≪-is-small-valued 𝓓 pe 𝓓-cont 𝓓-loc-small (r (β b)) x
        where
-        inh : ∥ ↡ᴮ 𝓓 (r ∘ β) x ∥
-        inh = ∥∥-functor h (inhabited-if-Directed 𝓔 (↡ι 𝓔 β (s x))
-                            (↡ᴮ-is-directed (s x)))
+        𝓓-loc-small : is-locally-small 𝓓
+        𝓓-loc-small = (local-smallness-preserved-by-continuous-retract
+                        (locally-small-if-small-basis 𝓔 β sb))
+        𝓓-cont : is-continuous-dcpo 𝓓
+        𝓓-cont = continuity-of-dcpo-preserved-by-continuous-retract 𝓓 𝓔 ρ
+                  ∣ structurally-continuous-if-specified-small-basis
+                     𝓔 (B , (β , sb)) ∣
+
+      σ : (x : ⟨ 𝓓 ⟩) → ↡ᴮₛ (s x) → ↡ᴮ 𝓓 (r ∘ β) x
+      σ x (b , b-way-below-sx) =
+       (b , continuous-retraction-≪-criterion (β b) x
+             (⌜ ≪ᴮₛ-≃-≪ᴮ ⌝ b-way-below-sx))
+
+      ε : (x : ⟨ 𝓓 ⟩) → is-Directed 𝓔 (↡ιₛ (s x))
+      ε x = ↡ᴮₛ-is-directed (s x)
+
+      eq-lemma : (x : ⟨ 𝓓 ⟩) → r (∐ 𝓔 (ε x)) ≡ x
+      eq-lemma x = r (∐ 𝓔 (ε x)) ≡⟨ ap r (↡ᴮₛ-∐-≡ (s x)) ⟩
+                   r (s x)       ≡⟨ r-s-equation x       ⟩
+                   x             ∎
+
+      lemma₂ : (x : ⟨ 𝓓 ⟩) → is-Directed 𝓓 (↡ι 𝓓 (r ∘ β) x)
+      lemma₂ x = ↡ᴮ-directedness-criterion 𝓓 (r ∘ β) x (σ x) ε' h
+       where
+        ε' : is-Directed 𝓓 (r ∘ ↡ιₛ (s x))
+        ε' = image-is-directed' 𝓔 𝓓 𝕣 (ε x)
+        h : x ⊑⟨ 𝓓 ⟩ ∐ 𝓓 ε'
+        h = transport (λ - → - ⊑⟨ 𝓓 ⟩ ∐ 𝓓 ε') (eq-lemma x) claim
          where
-          h : ↡ᴮ 𝓔 β (s x) → ↡ᴮ 𝓓 (r ∘ β) x
-          h (b , b-way-below-sx) =
-           (b , retraction-≪-criterion (β b) x b-way-below-sx)
-        semidir : is-semidirected (underlying-order 𝓓) (↡ι 𝓓 (r ∘ β) x)
-        semidir (b₁ , rb₁-way-below-x) (b₂ , rb₂-way-below-x) =
-         ∥∥-functor {!!} (semidirected-if-Directed 𝓔 (↡ι 𝓔 β (s x))
-                          (↡ᴮ-is-directed (s x))
-                          (b₁ , {!b₁-way-below-sx!})
-                          {!!})
+          claim : r (∐ 𝓔 (ε x)) ⊑⟨ 𝓓 ⟩ ∐ 𝓓 ε'
+          claim = continuous-∐-⊑ 𝓔 𝓓 𝕣 (ε x)
+
+      lemma₃ : (x : ⟨ 𝓓 ⟩) → is-sup (underlying-order 𝓓) x (↡ι 𝓓 (r ∘ β) x)
+      lemma₃ x = ↡ᴮ-sup-criterion 𝓓 (r ∘ β) x (σ x) h
+       where
+        h : is-sup (underlying-order 𝓓) x (r ∘ ↡ιₛ (s x))
+        h = transport (λ - → is-sup (underlying-order 𝓓) - (r ∘ ↡ιₛ (s x)))
+             (eq-lemma x) claim
+         where
+          claim : is-sup (underlying-order 𝓓) (r (∐ 𝓔 (ε x))) (r ∘ ↡ιₛ (s x))
+          claim = r-is-continuous (↡ᴮₛ (s x)) (↡ιₛ (s x)) (ε x)
 
 \end{code}
