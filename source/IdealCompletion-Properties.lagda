@@ -105,8 +105,8 @@ module SmallIdeals
         (≺-trans : {x y z : X} → x ≺ y → y ≺ z → x ≺ z)
        where
 
- open Ideals {𝓥} {𝓥} {X} _≺_ ≺-prop-valued INT₂ INT₀ ≺-trans
- open Idl-Properties {𝓥} {𝓥} {X} _≺_ ≺-prop-valued INT₂ INT₀ ≺-trans
+ open Ideals {𝓥} {𝓥} {X} _≺_ ≺-prop-valued INT₂ INT₀ ≺-trans public
+ open Idl-Properties {𝓥} {𝓥} {X} _≺_ ≺-prop-valued INT₂ INT₀ ≺-trans public
 
  ↓-of-ideal : (I : Idl) → 𝕋 (carrier I) → Idl
  ↓-of-ideal I (i , _) = ↓ i
@@ -507,450 +507,497 @@ module SmallIdeals
 
 \end{code}
 
+TODO: We should do some of the below on the level of powersets so as to avoid
+duplication of code/proofs.
+
+\begin{code}
+
+module Idl-common -- TODO: Rethink module name
+        (𝓓 : DCPO {𝓤} {𝓣})
+        {B : 𝓥 ̇  }
+        (β : B → ⟨ 𝓓 ⟩)
+        (β-is-small-basis : is-small-basis 𝓓 β)
+       where
+
+ open is-small-basis β-is-small-basis
+
+ ↡ᴮ-subset : (x : ⟨ 𝓓 ⟩) → 𝓟 B
+ ↡ᴮ-subset x = (λ b → (b ≪ᴮₛ x , ≪ᴮₛ-is-prop-valued))
+
+ ∐-of-directed-subset : (I : 𝓟 B)
+                      → is-Directed 𝓓 (β ∘ 𝕋-to-carrier I)
+                      → ⟨ 𝓓 ⟩
+ ∐-of-directed-subset I δ = ∐ 𝓓 δ
+
+ ↡ᴮ-∐-retract : (x : ⟨ 𝓓 ⟩)
+              → ∐-of-directed-subset (↡ᴮ-subset x) (↡ᴮₛ-is-directed x) ≡ x
+ ↡ᴮ-∐-retract x = ↡ᴮₛ-∐-≡ x
+
+ ∐-↡ᴮ-deflation : (I : 𝓟 B) (δ : is-Directed 𝓓 (β ∘ 𝕋-to-carrier I))
+                → ((b c : B) → β b ⊑⟨ 𝓓 ⟩ β c → c ∈ I → b ∈ I)
+                → ↡ᴮ-subset (∐-of-directed-subset I δ) ⊆ I
+ ∐-↡ᴮ-deflation I δ I-lowerset b b-way-below-sup =
+  ∥∥-rec (∈-is-prop I b) lemma claim
+   where
+    claim : ∃ i ꞉ 𝕋 I , β b ⊑⟨ 𝓓 ⟩ β ((𝕋-to-carrier I) i)
+    claim = ⌜ ≪ᴮₛ-≃-≪ᴮ ⌝ b-way-below-sup (𝕋 I) (β ∘ 𝕋-to-carrier I) δ
+             (reflexivity 𝓓 (∐ 𝓓 δ))
+    lemma : (Σ i ꞉ 𝕋 I , β b ⊑⟨ 𝓓 ⟩ β ((𝕋-to-carrier I) i))
+          → b ∈ I
+    lemma ((c , c-in-I) , b-below-c) = I-lowerset b c b-below-c c-in-I
+
+-- TODO: What condition do we need for ↡ᴮ and ∐ to be isomorphisms?
+
+\end{code}
+
 Dcpos with a small basis are continuous retracts (in fact, e-p pair...) of
 algebraic dcpos.
 
 \begin{code}
 
-module Idl-algebraic -- TODO: Rethink module name
-        (𝓓 : DCPO {𝓤} {𝓣})
-        {B : 𝓥 ̇  }
-        (β : B → ⟨ 𝓓 ⟩)
-        (β-is-small-basis : is-small-basis 𝓓 β)
-       where
+-- module Idl-algebraic -- TODO: Rethink module name
+--         (𝓓 : DCPO {𝓤} {𝓣})
+--         {B : 𝓥 ̇  }
+--         (β : B → ⟨ 𝓓 ⟩)
+--         (β-is-small-basis : is-small-basis 𝓓 β)
+--        where
 
- open is-small-basis β-is-small-basis
+--  open is-small-basis β-is-small-basis
 
- _⊑ₛ_ : ⟨ 𝓓 ⟩ → ⟨ 𝓓 ⟩ → 𝓥 ̇
- _⊑ₛ_ = pr₁ (locally-small-if-small-basis 𝓓 β β-is-small-basis)
+--  _⊑ₛ_ : ⟨ 𝓓 ⟩ → ⟨ 𝓓 ⟩ → 𝓥 ̇
+--  _⊑ₛ_ = pr₁ (locally-small-if-small-basis 𝓓 β β-is-small-basis)
 
- _⊑ᴮ_ : B → B → 𝓥 ̇
- b ⊑ᴮ b' = β b ⊑ₛ β b'
+--  _⊑ᴮ_ : B → B → 𝓥 ̇
+--  b ⊑ᴮ b' = β b ⊑ₛ β b'
 
- ⊑ᴮ-≃-⊑ : {b b' : B} → (b ⊑ᴮ b') ≃ (β b ⊑⟨ 𝓓 ⟩ β b')
- ⊑ᴮ-≃-⊑ {b} {b'} = pr₂ (locally-small-if-small-basis 𝓓 β β-is-small-basis)
-                       (β b) (β b')
+--  ⊑ᴮ-≃-⊑ : {b b' : B} → (b ⊑ᴮ b') ≃ (β b ⊑⟨ 𝓓 ⟩ β b')
+--  ⊑ᴮ-≃-⊑ {b} {b'} = pr₂ (locally-small-if-small-basis 𝓓 β β-is-small-basis)
+--                        (β b) (β b')
 
- ⊑ᴮ-is-prop-valued : {b b' : B} → is-prop (b ⊑ᴮ b')
- ⊑ᴮ-is-prop-valued = equiv-to-prop ⊑ᴮ-≃-⊑ (prop-valuedness 𝓓 _ _)
+--  ⊑ᴮ-is-prop-valued : {b b' : B} → is-prop (b ⊑ᴮ b')
+--  ⊑ᴮ-is-prop-valued = equiv-to-prop ⊑ᴮ-≃-⊑ (prop-valuedness 𝓓 _ _)
 
- ⊑ᴮ-is-reflexive : {b : B} → b ⊑ᴮ b
- ⊑ᴮ-is-reflexive = ⌜ ⊑ᴮ-≃-⊑ ⌝⁻¹ (reflexivity 𝓓 _)
+--  ⊑ᴮ-is-reflexive : {b : B} → b ⊑ᴮ b
+--  ⊑ᴮ-is-reflexive = ⌜ ⊑ᴮ-≃-⊑ ⌝⁻¹ (reflexivity 𝓓 _)
 
- ⊑ᴮ-is-transitive : {b b' b'' : B} → b ⊑ᴮ b' → b' ⊑ᴮ b'' → b ⊑ᴮ b''
- ⊑ᴮ-is-transitive u v = ⌜ ⊑ᴮ-≃-⊑ ⌝⁻¹
-                         (transitivity 𝓓 _ _ _ (⌜ ⊑ᴮ-≃-⊑ ⌝ u) (⌜ ⊑ᴮ-≃-⊑ ⌝ v))
+--  ⊑ᴮ-is-transitive : {b b' b'' : B} → b ⊑ᴮ b' → b' ⊑ᴮ b'' → b ⊑ᴮ b''
+--  ⊑ᴮ-is-transitive u v = ⌜ ⊑ᴮ-≃-⊑ ⌝⁻¹
+--                          (transitivity 𝓓 _ _ _ (⌜ ⊑ᴮ-≃-⊑ ⌝ u) (⌜ ⊑ᴮ-≃-⊑ ⌝ v))
 
- -- TODO: Rework this?
- open Ideals {𝓥} {𝓥} {B} _⊑ᴮ_
-             ⊑ᴮ-is-prop-valued
-             (reflexivity-implies-INT₂ _⊑ᴮ_ ⊑ᴮ-is-reflexive)
-             (reflexivity-implies-INT₀ _⊑ᴮ_ ⊑ᴮ-is-reflexive)
-             ⊑ᴮ-is-transitive
- open SmallIdeals {B} _⊑ᴮ_
-                  ⊑ᴮ-is-prop-valued
-                  (reflexivity-implies-INT₂ _⊑ᴮ_ ⊑ᴮ-is-reflexive)
-                  (reflexivity-implies-INT₀ _⊑ᴮ_ ⊑ᴮ-is-reflexive)
-                  ⊑ᴮ-is-transitive
- open Idl-Properties {𝓥} {𝓥} {B} _⊑ᴮ_
-                     ⊑ᴮ-is-prop-valued
-                     (reflexivity-implies-INT₂ _⊑ᴮ_ ⊑ᴮ-is-reflexive)
-                     (reflexivity-implies-INT₀ _⊑ᴮ_ ⊑ᴮ-is-reflexive)
-                     ⊑ᴮ-is-transitive
+--  -- TODO: Rework this?
+--  {-
+--  open Ideals {𝓥} {𝓥} {B} _⊑ᴮ_
+--              ⊑ᴮ-is-prop-valued
+--              (reflexivity-implies-INT₂ _⊑ᴮ_ ⊑ᴮ-is-reflexive)
+--              (reflexivity-implies-INT₀ _⊑ᴮ_ ⊑ᴮ-is-reflexive)
+--              ⊑ᴮ-is-transitive -}
+--  open SmallIdeals {B} _⊑ᴮ_
+--                   ⊑ᴮ-is-prop-valued
+--                   (reflexivity-implies-INT₂ _⊑ᴮ_ ⊑ᴮ-is-reflexive)
+--                   (reflexivity-implies-INT₀ _⊑ᴮ_ ⊑ᴮ-is-reflexive)
+--                   ⊑ᴮ-is-transitive
+--  {-
+--  open Idl-Properties {𝓥} {𝓥} {B} _⊑ᴮ_
+--                      ⊑ᴮ-is-prop-valued
+--                      (reflexivity-implies-INT₂ _⊑ᴮ_ ⊑ᴮ-is-reflexive)
+--                      (reflexivity-implies-INT₀ _⊑ᴮ_ ⊑ᴮ-is-reflexive)
+--                      ⊑ᴮ-is-transitive -}
 
- to-Idl : ⟨ 𝓓 ⟩ → Idl
- to-Idl x = (Bₓ , Bₓ-is-lowerset , Bₓ-is-directed-set)
-  where
-   Bₓ : 𝓟 B
-   Bₓ b = (b ≪ᴮₛ x , ≪ᴮₛ-is-prop-valued)
-   Bₓ-is-lowerset : is-lowerset Bₓ
-   Bₓ-is-lowerset b c b-below-c c-in-Bₓ =
-    ⌜ ≪ᴮₛ-≃-≪ᴮ ⌝⁻¹ (⊑-≪-to-≪ 𝓓 (⌜ ⊑ᴮ-≃-⊑ ⌝ b-below-c)
-                                 (⌜ ≪ᴮₛ-≃-≪ᴮ ⌝ c-in-Bₓ))
-   Bₓ-is-inhabited : ∥ 𝕋 Bₓ ∥
-   Bₓ-is-inhabited = inhabited-if-Directed 𝓓 (↡ιₛ x) (↡ᴮₛ-is-directed x)
-   Bₓ-is-semidirected-set : is-semidirected-set Bₓ
-   Bₓ-is-semidirected-set b₁ b₂ b₁-in-Bₓ b₂-in-Bₓ =
-    ∥∥-functor (λ ((b , b-in-Bₓ) , u , v)
-               → (b , b-in-Bₓ , ⌜ ⊑ᴮ-≃-⊑ ⌝⁻¹ u , ⌜ ⊑ᴮ-≃-⊑ ⌝⁻¹ v))
-              (semidirected-if-Directed 𝓓 (↡ιₛ x) (↡ᴮₛ-is-directed x)
-                (b₁ , b₁-in-Bₓ) (b₂ , b₂-in-Bₓ))
-   Bₓ-is-directed-set : is-directed-set Bₓ
-   Bₓ-is-directed-set = (Bₓ-is-inhabited , Bₓ-is-semidirected-set)
+--  to-Idl : ⟨ 𝓓 ⟩ → Idl
+--  to-Idl x = (Bₓ , Bₓ-is-lowerset , Bₓ-is-directed-set)
+--   where
+--    Bₓ : 𝓟 B
+--    Bₓ b = (b ≪ᴮₛ x , ≪ᴮₛ-is-prop-valued)
+--    Bₓ-is-lowerset : is-lowerset Bₓ
+--    Bₓ-is-lowerset b c b-below-c c-in-Bₓ =
+--     ⌜ ≪ᴮₛ-≃-≪ᴮ ⌝⁻¹ (⊑-≪-to-≪ 𝓓 (⌜ ⊑ᴮ-≃-⊑ ⌝ b-below-c)
+--                                  (⌜ ≪ᴮₛ-≃-≪ᴮ ⌝ c-in-Bₓ))
+--    Bₓ-is-inhabited : ∥ 𝕋 Bₓ ∥
+--    Bₓ-is-inhabited = inhabited-if-Directed 𝓓 (↡ιₛ x) (↡ᴮₛ-is-directed x)
+--    Bₓ-is-semidirected-set : is-semidirected-set Bₓ
+--    Bₓ-is-semidirected-set b₁ b₂ b₁-in-Bₓ b₂-in-Bₓ =
+--     ∥∥-functor (λ ((b , b-in-Bₓ) , u , v)
+--                → (b , b-in-Bₓ , ⌜ ⊑ᴮ-≃-⊑ ⌝⁻¹ u , ⌜ ⊑ᴮ-≃-⊑ ⌝⁻¹ v))
+--               (semidirected-if-Directed 𝓓 (↡ιₛ x) (↡ᴮₛ-is-directed x)
+--                 (b₁ , b₁-in-Bₓ) (b₂ , b₂-in-Bₓ))
+--    Bₓ-is-directed-set : is-directed-set Bₓ
+--    Bₓ-is-directed-set = (Bₓ-is-inhabited , Bₓ-is-semidirected-set)
 
 
- ideals-are-directed : (I : Idl)
-                     → is-Directed 𝓓 (β ∘ 𝕋-to-carrier (carrier I))
- ideals-are-directed I = inh , semidir
-  where
-   δ : is-directed-set (carrier I)
-   δ = ideals-are-directed-sets (carrier I) (ideality I)
-   inh : ∥ 𝕋 (carrier I) ∥
-   inh = directed-sets-are-inhabited (carrier I) δ
-   semidir : is-semidirected (underlying-order 𝓓) (β ∘ 𝕋-to-carrier (carrier I))
-   semidir (b₁ , b₁-in-I) (b₂ , b₂-in-I) =
-    ∥∥-functor (λ (b , b-in-I , u , v)
-               → ((b , b-in-I) , ⌜ ⊑ᴮ-≃-⊑ ⌝ u , ⌜ ⊑ᴮ-≃-⊑ ⌝ v))
-              (directed-sets-are-semidirected (carrier I) δ b₁ b₂ b₁-in-I b₂-in-I)
+--  ideals-are-directed : (I : Idl)
+--                      → is-Directed 𝓓 (β ∘ 𝕋-to-carrier (carrier I))
+--  ideals-are-directed I = inh , semidir
+--   where
+--    δ : is-directed-set (carrier I)
+--    δ = ideals-are-directed-sets (carrier I) (ideality I)
+--    inh : ∥ 𝕋 (carrier I) ∥
+--    inh = directed-sets-are-inhabited (carrier I) δ
+--    semidir : is-semidirected (underlying-order 𝓓) (β ∘ 𝕋-to-carrier (carrier I))
+--    semidir (b₁ , b₁-in-I) (b₂ , b₂-in-I) =
+--     ∥∥-functor (λ (b , b-in-I , u , v)
+--                → ((b , b-in-I) , ⌜ ⊑ᴮ-≃-⊑ ⌝ u , ⌜ ⊑ᴮ-≃-⊑ ⌝ v))
+--               (directed-sets-are-semidirected (carrier I) δ b₁ b₂ b₁-in-I b₂-in-I)
 
- from-Idl : Idl → ⟨ 𝓓 ⟩
- from-Idl I = ∐ 𝓓 (ideals-are-directed I)
+--  from-Idl : Idl → ⟨ 𝓓 ⟩
+--  from-Idl I = ∐ 𝓓 (ideals-are-directed I)
 
- open import UF-Retracts
+--  open import UF-Retracts
 
- Idl-retract : retract ⟨ 𝓓 ⟩ of Idl
- Idl-retract = (r , s , γ)
-  where
-   s : ⟨ 𝓓 ⟩ → Idl
-   s = to-Idl
-   r : Idl → ⟨ 𝓓 ⟩
-   r = from-Idl
-   γ : (x : ⟨ 𝓓 ⟩) → ∐ 𝓓 (ideals-are-directed (s x)) ≡ x
-   γ x = ∐ 𝓓 {↡ᴮₛ x} {↡ιₛ x} (ideals-are-directed (s x)) ≡⟨ ⦅1⦆ ⟩
-         ∐ 𝓓 {↡ᴮₛ x} {↡ιₛ x} (↡ᴮₛ-is-directed x)         ≡⟨ ⦅2⦆ ⟩
-         x                               ∎
-    where
-     ⦅1⦆ = ∐-independent-of-directedness-witness 𝓓
-           (ideals-are-directed (s x)) (↡ᴮₛ-is-directed x)
-     ⦅2⦆ = ↡ᴮₛ-∐-≡ x
+--  Idl-retract : retract ⟨ 𝓓 ⟩ of Idl
+--  Idl-retract = (r , s , γ)
+--   where
+--    s : ⟨ 𝓓 ⟩ → Idl
+--    s = to-Idl
+--    r : Idl → ⟨ 𝓓 ⟩
+--    r = from-Idl
+--    γ : (x : ⟨ 𝓓 ⟩) → ∐ 𝓓 (ideals-are-directed (s x)) ≡ x
+--    γ x = ∐ 𝓓 {↡ᴮₛ x} {↡ιₛ x} (ideals-are-directed (s x)) ≡⟨ ⦅1⦆ ⟩
+--          ∐ 𝓓 {↡ᴮₛ x} {↡ιₛ x} (↡ᴮₛ-is-directed x)         ≡⟨ ⦅2⦆ ⟩
+--          x                               ∎
+--     where
+--      ⦅1⦆ = ∐-independent-of-directedness-witness 𝓓
+--            (ideals-are-directed (s x)) (↡ᴮₛ-is-directed x)
+--      ⦅2⦆ = ↡ᴮₛ-∐-≡ x
 
- Idl-deflation : (I : Idl) → to-Idl (from-Idl I) ⊑⟨ Idl-DCPO ⟩ I
- Idl-deflation 𝕀@(I , I-is-ideal) b b-way-below-∐I =
-  ∥∥-rec (∈-is-prop I b) h
-        (⌜ ≪ᴮₛ-≃-≪ᴮ ⌝ b-way-below-∐I (𝕋 I) (β ∘ pr₁)
-          (ideals-are-directed 𝕀) (reflexivity 𝓓 (from-Idl 𝕀)))
-   where
-    h : (Σ i ꞉ 𝕋 I , β b ⊑⟨ 𝓓 ⟩ (β (pr₁ i))) → b ∈ I
-    h ((i , i-in-I) , u) = ideals-are-lowersets I I-is-ideal b i
-                            (⌜ ⊑ᴮ-≃-⊑ ⌝⁻¹ u) i-in-I
+--  Idl-deflation : (I : Idl) → to-Idl (from-Idl I) ⊑⟨ Idl-DCPO ⟩ I
+--  Idl-deflation 𝕀@(I , I-is-ideal) b b-way-below-∐I =
+--   ∥∥-rec (∈-is-prop I b) h
+--         (⌜ ≪ᴮₛ-≃-≪ᴮ ⌝ b-way-below-∐I (𝕋 I) (β ∘ pr₁)
+--           (ideals-are-directed 𝕀) (reflexivity 𝓓 (from-Idl 𝕀)))
+--    where
+--     h : (Σ i ꞉ 𝕋 I , β b ⊑⟨ 𝓓 ⟩ (β (pr₁ i))) → b ∈ I
+--     h ((i , i-in-I) , u) = ideals-are-lowersets I I-is-ideal b i
+--                             (⌜ ⊑ᴮ-≃-⊑ ⌝⁻¹ u) i-in-I
 
- to-Idl-is-monotone : is-monotone 𝓓 Idl-DCPO to-Idl
- to-Idl-is-monotone x y x-below-y b b-way-below-x =
-  ⌜ ≪ᴮₛ-≃-≪ᴮ ⌝⁻¹ (≪-⊑-to-≪ 𝓓 (⌜ ≪ᴮₛ-≃-≪ᴮ ⌝ b-way-below-x) x-below-y)
+--  to-Idl-is-monotone : is-monotone 𝓓 Idl-DCPO to-Idl
+--  to-Idl-is-monotone x y x-below-y b b-way-below-x =
+--   ⌜ ≪ᴮₛ-≃-≪ᴮ ⌝⁻¹ (≪-⊑-to-≪ 𝓓 (⌜ ≪ᴮₛ-≃-≪ᴮ ⌝ b-way-below-x) x-below-y)
 
- to-Idl-is-continuous : is-continuous 𝓓 Idl-DCPO to-Idl
- to-Idl-is-continuous = continuity-criterion' 𝓓 Idl-DCPO to-Idl
-                         to-Idl-is-monotone γ
-  where
-   γ : (𝓐 : 𝓥 ̇) (α : 𝓐 → ⟨ 𝓓 ⟩) (δ : is-Directed 𝓓 α)
-     → is-lowerbound-of-upperbounds _⊑_ (to-Idl (∐ 𝓓 δ)) (to-Idl ∘ α)
-   γ 𝓐 α δ (I , I-is-ideal) I-is-ub b b-way-below-∐α =
-    ∥∥-rec (∈-is-prop I b) claim lemma
-     where
-      lemma : ∃ c ꞉ B , (β b ≪⟨ 𝓓 ⟩ β c) × (β c ≪⟨ 𝓓 ⟩ ∐ 𝓓 δ)
-      lemma = small-basis-unary-interpolation 𝓓 β β-is-small-basis
-               (⌜ ≪ᴮₛ-≃-≪ᴮ ⌝ b-way-below-∐α)
-      claim : (Σ c ꞉ B , (β b ≪⟨ 𝓓 ⟩ β c) × (β c ≪⟨ 𝓓 ⟩ ∐ 𝓓 δ))
-            → b ∈ I
-      claim (c , b-way-below-c , c-way-below-∐α) =
-       ∥∥-rec (∈-is-prop I b) h (c-way-below-∐α 𝓐 α δ (reflexivity 𝓓 (∐ 𝓓 δ)))
-        where
-         h : (Σ a ꞉ 𝓐 , β c ⊑⟨ 𝓓 ⟩ α a) → b ∈ I
-         h (a , c-below-αa) = I-is-ub a b (⌜ ≪ᴮₛ-≃-≪ᴮ ⌝⁻¹ wb)
-          where
-           wb : β b ≪⟨ 𝓓 ⟩ α a
-           wb = ≪-⊑-to-≪ 𝓓 b-way-below-c c-below-αa
+--  to-Idl-is-continuous : is-continuous 𝓓 Idl-DCPO to-Idl
+--  to-Idl-is-continuous = continuity-criterion' 𝓓 Idl-DCPO to-Idl
+--                          to-Idl-is-monotone γ
+--   where
+--    γ : (𝓐 : 𝓥 ̇) (α : 𝓐 → ⟨ 𝓓 ⟩) (δ : is-Directed 𝓓 α)
+--      → is-lowerbound-of-upperbounds _⊑_ (to-Idl (∐ 𝓓 δ)) (to-Idl ∘ α)
+--    γ 𝓐 α δ (I , I-is-ideal) I-is-ub b b-way-below-∐α =
+--     ∥∥-rec (∈-is-prop I b) claim lemma
+--      where
+--       lemma : ∃ c ꞉ B , (β b ≪⟨ 𝓓 ⟩ β c) × (β c ≪⟨ 𝓓 ⟩ ∐ 𝓓 δ)
+--       lemma = small-basis-unary-interpolation 𝓓 β β-is-small-basis
+--                (⌜ ≪ᴮₛ-≃-≪ᴮ ⌝ b-way-below-∐α)
+--       claim : (Σ c ꞉ B , (β b ≪⟨ 𝓓 ⟩ β c) × (β c ≪⟨ 𝓓 ⟩ ∐ 𝓓 δ))
+--             → b ∈ I
+--       claim (c , b-way-below-c , c-way-below-∐α) =
+--        ∥∥-rec (∈-is-prop I b) h (c-way-below-∐α 𝓐 α δ (reflexivity 𝓓 (∐ 𝓓 δ)))
+--         where
+--          h : (Σ a ꞉ 𝓐 , β c ⊑⟨ 𝓓 ⟩ α a) → b ∈ I
+--          h (a , c-below-αa) = I-is-ub a b (⌜ ≪ᴮₛ-≃-≪ᴮ ⌝⁻¹ wb)
+--           where
+--            wb : β b ≪⟨ 𝓓 ⟩ α a
+--            wb = ≪-⊑-to-≪ 𝓓 b-way-below-c c-below-αa
 
- from-Idl-is-monotone : is-monotone Idl-DCPO 𝓓 from-Idl
- from-Idl-is-monotone I J I-below-J =
-  ∐-map-is-monotone 𝕀 𝕁 γ
-   where
-    open Ind-completion 𝓓
-    𝕀 : Ind
-    𝕀 = (𝕋 (carrier I) , β ∘ pr₁ , ideals-are-directed I)
-    𝕁 : Ind
-    𝕁 = (𝕋 (carrier J) , β ∘ pr₁ , ideals-are-directed J)
-    γ : 𝕀 ≲ 𝕁
-    γ (b , b-in-I) = ∣ (b , I-below-J b b-in-I) , reflexivity 𝓓 (β b) ∣
+--  from-Idl-is-monotone : is-monotone Idl-DCPO 𝓓 from-Idl
+--  from-Idl-is-monotone I J I-below-J =
+--   ∐-map-is-monotone 𝕀 𝕁 γ
+--    where
+--     open Ind-completion 𝓓
+--     𝕀 : Ind
+--     𝕀 = (𝕋 (carrier I) , β ∘ pr₁ , ideals-are-directed I)
+--     𝕁 : Ind
+--     𝕁 = (𝕋 (carrier J) , β ∘ pr₁ , ideals-are-directed J)
+--     γ : 𝕀 ≲ 𝕁
+--     γ (b , b-in-I) = ∣ (b , I-below-J b b-in-I) , reflexivity 𝓓 (β b) ∣
 
- from-Idl-is-continuous : is-continuous Idl-DCPO 𝓓 from-Idl
- from-Idl-is-continuous = continuity-criterion' Idl-DCPO 𝓓 from-Idl
-                           from-Idl-is-monotone γ
-  where
-   γ : (𝓐 : 𝓥 ̇) (α : 𝓐 → ⟨ Idl-DCPO ⟩) (δ : is-Directed Idl-DCPO α)
-     → is-lowerbound-of-upperbounds (underlying-order 𝓓)
-        (from-Idl (∐ Idl-DCPO {𝓐} {α} δ)) (from-Idl ∘ α)
-   γ 𝓐 α δ x x-is-ub = ∐-is-lowerbound-of-upperbounds 𝓓
-                        (ideals-are-directed (∐ Idl-DCPO {𝓐} {α} δ)) x ub
-    where
-     ub : is-upperbound (underlying-order 𝓓) x
-           (β ∘ 𝕋-to-carrier (carrier (∐ Idl-DCPO {𝓐} {α} δ)))
-     ub (b , b-in-⋃) = ∥∥-rec (prop-valuedness 𝓓 (β b) x) h b-in-⋃
-      where
-       h : (Σ a ꞉ 𝓐 , b ∈ᵢ α a) → β b ⊑⟨ 𝓓 ⟩ x
-       h (a , b-in-αa) = β b            ⊑⟨ 𝓓 ⟩[ ⦅1⦆ ]
-                         from-Idl (α a) ⊑⟨ 𝓓 ⟩[ ⦅2⦆ ]
-                         x              ∎⟨ 𝓓 ⟩
-        where
-         ⦅1⦆ = ∐-is-upperbound 𝓓 (ideals-are-directed (α a)) (b , b-in-αa)
-         ⦅2⦆ = x-is-ub a
+--  from-Idl-is-continuous : is-continuous Idl-DCPO 𝓓 from-Idl
+--  from-Idl-is-continuous = continuity-criterion' Idl-DCPO 𝓓 from-Idl
+--                            from-Idl-is-monotone γ
+--   where
+--    γ : (𝓐 : 𝓥 ̇) (α : 𝓐 → ⟨ Idl-DCPO ⟩) (δ : is-Directed Idl-DCPO α)
+--      → is-lowerbound-of-upperbounds (underlying-order 𝓓)
+--         (from-Idl (∐ Idl-DCPO {𝓐} {α} δ)) (from-Idl ∘ α)
+--    γ 𝓐 α δ x x-is-ub = ∐-is-lowerbound-of-upperbounds 𝓓
+--                         (ideals-are-directed (∐ Idl-DCPO {𝓐} {α} δ)) x ub
+--     where
+--      ub : is-upperbound (underlying-order 𝓓) x
+--            (β ∘ 𝕋-to-carrier (carrier (∐ Idl-DCPO {𝓐} {α} δ)))
+--      ub (b , b-in-⋃) = ∥∥-rec (prop-valuedness 𝓓 (β b) x) h b-in-⋃
+--       where
+--        h : (Σ a ꞉ 𝓐 , b ∈ᵢ α a) → β b ⊑⟨ 𝓓 ⟩ x
+--        h (a , b-in-αa) = β b            ⊑⟨ 𝓓 ⟩[ ⦅1⦆ ]
+--                          from-Idl (α a) ⊑⟨ 𝓓 ⟩[ ⦅2⦆ ]
+--                          x              ∎⟨ 𝓓 ⟩
+--         where
+--          ⦅1⦆ = ∐-is-upperbound 𝓓 (ideals-are-directed (α a)) (b , b-in-αa)
+--          ⦅2⦆ = x-is-ub a
 
- Idl-continuous-retract : 𝓓 continuous-retract-of Idl-DCPO
- Idl-continuous-retract =
-  record
-   { s = to-Idl
-   ; r = from-Idl
-   ; r-s-equation = retract-condition Idl-retract
-   ; s-is-continuous = to-Idl-is-continuous
-   ; r-is-continuous = from-Idl-is-continuous
-   }
+--  Idl-continuous-retract : 𝓓 continuous-retract-of Idl-DCPO
+--  Idl-continuous-retract =
+--   record
+--    { s = to-Idl
+--    ; r = from-Idl
+--    ; r-s-equation = retract-condition Idl-retract
+--    ; s-is-continuous = to-Idl-is-continuous
+--    ; r-is-continuous = from-Idl-is-continuous
+--    }
 
- -- TODO: (e-p pair) ; define first in DcpoMisc probably, then it's an immediate
- -- consequence of the material above
+--  -- TODO: (e-p pair) ; define first in DcpoMisc probably, then it's an immediate
+--  -- consequence of the material above
 
- Idl-is-algebraic : is-algebraic-dcpo Idl-DCPO
- Idl-is-algebraic = Idl-is-algebraic-dcpo (λ b → ⊑ᴮ-is-reflexive)
+--  Idl-is-algebraic : is-algebraic-dcpo Idl-DCPO
+--  Idl-is-algebraic = Idl-is-algebraic-dcpo (λ b → ⊑ᴮ-is-reflexive)
 
-\end{code}
+-- \end{code}
 
-D ≅ Idl (B , ≺)
+-- D ≅ Idl (B , ≺)
 
-\begin{code}
+-- \begin{code}
 
-module Idl-continuous
-        (𝓓 : DCPO {𝓤} {𝓣})
-        {B : 𝓥 ̇  }
-        (β : B → ⟨ 𝓓 ⟩)
-        (β-is-small-basis : is-small-basis 𝓓 β)
-       where
+-- module Idl-continuous
+--         (𝓓 : DCPO {𝓤} {𝓣})
+--         {B : 𝓥 ̇  }
+--         (β : B → ⟨ 𝓓 ⟩)
+--         (β-is-small-basis : is-small-basis 𝓓 β)
+--        where
 
- open is-small-basis β-is-small-basis
+--  open is-small-basis β-is-small-basis
 
- _≺_ : B → B → 𝓥 ̇
- b ≺ b' = b ≪ᴮₛ β b'
+--  _≺_ : B → B → 𝓥 ̇
+--  b ≺ b' = b ≪ᴮₛ β b'
 
- ≺-≃-≪ : {b b' : B} → (b ≺ b') ≃ (β b ≪⟨ 𝓓 ⟩ β b')
- ≺-≃-≪ {b} {b'} = ≪ᴮₛ-≃-≪ᴮ
+--  ≺-≃-≪ : {b b' : B} → (b ≺ b') ≃ (β b ≪⟨ 𝓓 ⟩ β b')
+--  ≺-≃-≪ {b} {b'} = ≪ᴮₛ-≃-≪ᴮ
 
- ≺-is-prop-valued : {b b' : B} → is-prop (b ≺ b')
- ≺-is-prop-valued = equiv-to-prop ≺-≃-≪ (≪-is-prop-valued 𝓓)
+--  ≺-is-prop-valued : {b b' : B} → is-prop (b ≺ b')
+--  ≺-is-prop-valued = equiv-to-prop ≺-≃-≪ (≪-is-prop-valued 𝓓)
 
- ≺-is-transitive : {b b' b'' : B} → b ≺ b' → b' ≺ b'' → b ≺ b''
- ≺-is-transitive u v =
-  ⌜ ≺-≃-≪ ⌝⁻¹ (≪-is-transitive 𝓓 (⌜ ≺-≃-≪ ⌝ u) (⌜ ≺-≃-≪ ⌝ v))
+--  ≺-is-transitive : {b b' b'' : B} → b ≺ b' → b' ≺ b'' → b ≺ b''
+--  ≺-is-transitive u v =
+--   ⌜ ≺-≃-≪ ⌝⁻¹ (≪-is-transitive 𝓓 (⌜ ≺-≃-≪ ⌝ u) (⌜ ≺-≃-≪ ⌝ v))
 
- ≺-INT₀ : (b : B) → ∃ c ꞉ B , c ≺ b
- ≺-INT₀ b = ∥∥-functor h
-             (small-basis-nullary-interpolation 𝓓 β β-is-small-basis (β b))
-  where
-   h : (Σ c ꞉ B , β c ≪⟨ 𝓓 ⟩ β b) → (Σ c ꞉ B , c ≺ b)
-   h (c , c-way-below-b) = (c , ⌜ ≺-≃-≪ ⌝⁻¹ c-way-below-b)
+--  ≺-INT₀ : (b : B) → ∃ c ꞉ B , c ≺ b
+--  ≺-INT₀ b = ∥∥-functor h
+--              (small-basis-nullary-interpolation 𝓓 β β-is-small-basis (β b))
+--   where
+--    h : (Σ c ꞉ B , β c ≪⟨ 𝓓 ⟩ β b) → (Σ c ꞉ B , c ≺ b)
+--    h (c , c-way-below-b) = (c , ⌜ ≺-≃-≪ ⌝⁻¹ c-way-below-b)
 
- ≺-INT₂ : {b₁ b₂ b : B} → b₁ ≺ b → b₂ ≺ b
-        → ∃ c ꞉ B , (b₁ ≺ c) × (b₂ ≺ c) × (c ≺ b)
- ≺-INT₂ {b₁} {b₂} {b} b₁-below-b b₂-below-b =
-  ∥∥-functor h (small-basis-binary-interpolation 𝓓 β β-is-small-basis
-                (⌜ ≺-≃-≪ ⌝ b₁-below-b) (⌜ ≺-≃-≪ ⌝ b₂-below-b))
-   where
-    h : (Σ c ꞉ B , (β b₁ ≪⟨ 𝓓 ⟩ β c)
-                 × (β b₂ ≪⟨ 𝓓 ⟩ β c)
-                 × (β c ≪⟨ 𝓓 ⟩ β b))
-      → (Σ c ꞉ B , (b₁ ≺ c) × (b₂ ≺ c) × (c ≺ b))
-    h (c , u , v , w) = (c , ⌜ ≺-≃-≪ ⌝⁻¹ u , ⌜ ≺-≃-≪ ⌝⁻¹ v , ⌜ ≺-≃-≪ ⌝⁻¹ w)
+--  ≺-INT₂ : {b₁ b₂ b : B} → b₁ ≺ b → b₂ ≺ b
+--         → ∃ c ꞉ B , (b₁ ≺ c) × (b₂ ≺ c) × (c ≺ b)
+--  ≺-INT₂ {b₁} {b₂} {b} b₁-below-b b₂-below-b =
+--   ∥∥-functor h (small-basis-binary-interpolation 𝓓 β β-is-small-basis
+--                 (⌜ ≺-≃-≪ ⌝ b₁-below-b) (⌜ ≺-≃-≪ ⌝ b₂-below-b))
+--    where
+--     h : (Σ c ꞉ B , (β b₁ ≪⟨ 𝓓 ⟩ β c)
+--                  × (β b₂ ≪⟨ 𝓓 ⟩ β c)
+--                  × (β c ≪⟨ 𝓓 ⟩ β b))
+--       → (Σ c ꞉ B , (b₁ ≺ c) × (b₂ ≺ c) × (c ≺ b))
+--     h (c , u , v , w) = (c , ⌜ ≺-≃-≪ ⌝⁻¹ u , ⌜ ≺-≃-≪ ⌝⁻¹ v , ⌜ ≺-≃-≪ ⌝⁻¹ w)
 
- -- TODO: Rework this?
+--  -- TODO: Rework this?
 
- open Ideals {𝓥} {𝓥} {B} _≺_
-             ≺-is-prop-valued
-             ≺-INT₂
-             ≺-INT₀
-             ≺-is-transitive
+--  {-
+--  open Ideals {𝓥} {𝓥} {B} _≺_
+--              ≺-is-prop-valued
+--              ≺-INT₂
+--              ≺-INT₀
+--              ≺-is-transitive -}
 
- open SmallIdeals {B}  _≺_
-                  ≺-is-prop-valued
-                  ≺-INT₂
-                  ≺-INT₀
-                  ≺-is-transitive
- open Idl-Properties {𝓥} {𝓥} {B}  _≺_
-                     ≺-is-prop-valued
-                     ≺-INT₂
-                     ≺-INT₀
-                     ≺-is-transitive
+--  open SmallIdeals {B}  _≺_
+--                   ≺-is-prop-valued
+--                   ≺-INT₂
+--                   ≺-INT₀
+--                   ≺-is-transitive
+--  {-
+--  open Idl-Properties {𝓥} {𝓥} {B}  _≺_
+--                      ≺-is-prop-valued
+--                      ≺-INT₂
+--                      ≺-INT₀
+--                      ≺-is-transitive -}
 
- to-Idl : ⟨ 𝓓 ⟩ → Idl
- to-Idl x = Bₓ , (Bₓ-is-lowerset , Bₓ-is-directed-set)
-  where
-   Bₓ : 𝓟 B
-   Bₓ b = (b ≪ᴮₛ x , ≪ᴮₛ-is-prop-valued)
-   Bₓ-is-lowerset : is-lowerset Bₓ
-   Bₓ-is-lowerset b c b-below-c c-in-Bₓ =
-    ⌜ ≪ᴮₛ-≃-≪ᴮ ⌝⁻¹ (≪-is-transitive 𝓓 (⌜ ≺-≃-≪ ⌝ b-below-c)
-                                      (⌜ ≪ᴮₛ-≃-≪ᴮ ⌝ c-in-Bₓ))
-   Bₓ-is-inhabited : ∥ 𝕋 Bₓ ∥
-   Bₓ-is-inhabited = inhabited-if-Directed 𝓓 (↡ιₛ x) (↡ᴮₛ-is-directed x)
-   Bₓ-is-semidirected-set : is-semidirected-set Bₓ
-   Bₓ-is-semidirected-set b₁ b₂ b₁-in-Bₓ b₂-in-Bₓ =
-    ∥∥-rec₂ ∃-is-prop f (small-basis-unary-interpolation 𝓓 β
-                         β-is-small-basis (⌜ ≪ᴮₛ-≃-≪ᴮ ⌝ b₁-in-Bₓ))
-                       (small-basis-unary-interpolation 𝓓 β
-                         β-is-small-basis (⌜ ≪ᴮₛ-≃-≪ᴮ ⌝ b₂-in-Bₓ))
-     where
-      f : (Σ c₁ ꞉ B , (β b₁ ≪⟨ 𝓓 ⟩ β c₁) × (β c₁ ≪⟨ 𝓓 ⟩ x))
-        → (Σ c₂ ꞉ B , (β b₂ ≪⟨ 𝓓 ⟩ β c₂) × (β c₂ ≪⟨ 𝓓 ⟩ x))
-        → (∃ b ꞉ B , b ∈ Bₓ × (b₁ ≺ b) × (b₂ ≺ b))
-      f (c₁ , b₁-way-below-c₁ , c₁-way-below-x)
-        (c₂ , b₂-way-below-c₂ , c₂-way-below-x) = ∥∥-functor lemma claim
-         where
-          claim = semidirected-if-Directed 𝓓 (↡ιₛ x) (↡ᴮₛ-is-directed x)
-                   (c₁ , ⌜ ≪ᴮₛ-≃-≪ᴮ ⌝⁻¹ c₁-way-below-x)
-                   (c₂ , ⌜ ≪ᴮₛ-≃-≪ᴮ ⌝⁻¹ c₂-way-below-x)
-          lemma : (Σ k ꞉ domain (↡ιₛ x) , (β c₁ ⊑⟨ 𝓓 ⟩ ↡ιₛ x k)
-                                        × (β c₂ ⊑⟨ 𝓓 ⟩ ↡ιₛ x k))
-                → (Σ b ꞉ B , b ∈ Bₓ × (b₁ ≺ b) × (b₂ ≺ b))
-          lemma ((b , b-in-Bₓ) , u , v) =
-           (b , b-in-Bₓ , ⌜ ≺-≃-≪ ⌝⁻¹ (≪-⊑-to-≪ 𝓓 b₁-way-below-c₁ u)
-                        , ⌜ ≺-≃-≪ ⌝⁻¹ (≪-⊑-to-≪ 𝓓 b₂-way-below-c₂ v))
-   Bₓ-is-directed-set : is-directed-set Bₓ
-   Bₓ-is-directed-set = (Bₓ-is-inhabited , Bₓ-is-semidirected-set)
+--  to-Idl : ⟨ 𝓓 ⟩ → Idl
+--  to-Idl x = Bₓ , (Bₓ-is-lowerset , Bₓ-is-directed-set)
+--   where
+--    Bₓ : 𝓟 B
+--    Bₓ b = (b ≪ᴮₛ x , ≪ᴮₛ-is-prop-valued)
+--    Bₓ-is-lowerset : is-lowerset Bₓ
+--    Bₓ-is-lowerset b c b-below-c c-in-Bₓ =
+--     ⌜ ≪ᴮₛ-≃-≪ᴮ ⌝⁻¹ (≪-is-transitive 𝓓 (⌜ ≺-≃-≪ ⌝ b-below-c)
+--                                       (⌜ ≪ᴮₛ-≃-≪ᴮ ⌝ c-in-Bₓ))
+--    Bₓ-is-inhabited : ∥ 𝕋 Bₓ ∥
+--    Bₓ-is-inhabited = inhabited-if-Directed 𝓓 (↡ιₛ x) (↡ᴮₛ-is-directed x)
+--    Bₓ-is-semidirected-set : is-semidirected-set Bₓ
+--    Bₓ-is-semidirected-set b₁ b₂ b₁-in-Bₓ b₂-in-Bₓ =
+--     ∥∥-rec₂ ∃-is-prop f (small-basis-unary-interpolation 𝓓 β
+--                          β-is-small-basis (⌜ ≪ᴮₛ-≃-≪ᴮ ⌝ b₁-in-Bₓ))
+--                        (small-basis-unary-interpolation 𝓓 β
+--                          β-is-small-basis (⌜ ≪ᴮₛ-≃-≪ᴮ ⌝ b₂-in-Bₓ))
+--      where
+--       f : (Σ c₁ ꞉ B , (β b₁ ≪⟨ 𝓓 ⟩ β c₁) × (β c₁ ≪⟨ 𝓓 ⟩ x))
+--         → (Σ c₂ ꞉ B , (β b₂ ≪⟨ 𝓓 ⟩ β c₂) × (β c₂ ≪⟨ 𝓓 ⟩ x))
+--         → (∃ b ꞉ B , b ∈ Bₓ × (b₁ ≺ b) × (b₂ ≺ b))
+--       f (c₁ , b₁-way-below-c₁ , c₁-way-below-x)
+--         (c₂ , b₂-way-below-c₂ , c₂-way-below-x) = ∥∥-functor lemma claim
+--          where
+--           claim = semidirected-if-Directed 𝓓 (↡ιₛ x) (↡ᴮₛ-is-directed x)
+--                    (c₁ , ⌜ ≪ᴮₛ-≃-≪ᴮ ⌝⁻¹ c₁-way-below-x)
+--                    (c₂ , ⌜ ≪ᴮₛ-≃-≪ᴮ ⌝⁻¹ c₂-way-below-x)
+--           lemma : (Σ k ꞉ domain (↡ιₛ x) , (β c₁ ⊑⟨ 𝓓 ⟩ ↡ιₛ x k)
+--                                         × (β c₂ ⊑⟨ 𝓓 ⟩ ↡ιₛ x k))
+--                 → (Σ b ꞉ B , b ∈ Bₓ × (b₁ ≺ b) × (b₂ ≺ b))
+--           lemma ((b , b-in-Bₓ) , u , v) =
+--            (b , b-in-Bₓ , ⌜ ≺-≃-≪ ⌝⁻¹ (≪-⊑-to-≪ 𝓓 b₁-way-below-c₁ u)
+--                         , ⌜ ≺-≃-≪ ⌝⁻¹ (≪-⊑-to-≪ 𝓓 b₂-way-below-c₂ v))
+--    Bₓ-is-directed-set : is-directed-set Bₓ
+--    Bₓ-is-directed-set = (Bₓ-is-inhabited , Bₓ-is-semidirected-set)
 
- ideals-are-directed : (I : Idl)
-                     → is-Directed 𝓓 (β ∘ 𝕋-to-carrier (carrier I))
- ideals-are-directed I = inh , semidir
-  where
-   δ : is-directed-set (carrier I)
-   δ = ideals-are-directed-sets (carrier I) (ideality I)
-   inh : ∥ 𝕋 (carrier I) ∥
-   inh = directed-sets-are-inhabited (carrier I) δ
-   semidir : is-semidirected (underlying-order 𝓓) (β ∘ 𝕋-to-carrier (carrier I))
-   semidir (b₁ , b₁-in-I) (b₂ , b₂-in-I) =
-    ∥∥-functor (λ (b , b-in-I , u , v)
-               → ((b , b-in-I) , ≪-to-⊑ 𝓓 (⌜ ≺-≃-≪ ⌝ u)
-                               , ≪-to-⊑ 𝓓 (⌜ ≺-≃-≪ ⌝ v)))
-              (directed-sets-are-semidirected (carrier I) δ b₁ b₂ b₁-in-I b₂-in-I)
+--  ideals-are-directed : (I : Idl)
+--                      → is-Directed 𝓓 (β ∘ 𝕋-to-carrier (carrier I))
+--  ideals-are-directed I = inh , semidir
+--   where
+--    δ : is-directed-set (carrier I)
+--    δ = ideals-are-directed-sets (carrier I) (ideality I)
+--    inh : ∥ 𝕋 (carrier I) ∥
+--    inh = directed-sets-are-inhabited (carrier I) δ
+--    semidir : is-semidirected (underlying-order 𝓓) (β ∘ 𝕋-to-carrier (carrier I))
+--    semidir (b₁ , b₁-in-I) (b₂ , b₂-in-I) =
+--     ∥∥-functor (λ (b , b-in-I , u , v)
+--                → ((b , b-in-I) , ≪-to-⊑ 𝓓 (⌜ ≺-≃-≪ ⌝ u)
+--                                , ≪-to-⊑ 𝓓 (⌜ ≺-≃-≪ ⌝ v)))
+--               (directed-sets-are-semidirected (carrier I) δ b₁ b₂ b₁-in-I b₂-in-I)
 
- from-Idl : Idl → ⟨ 𝓓 ⟩
- from-Idl I = ∐ 𝓓 (ideals-are-directed I)
+--  from-Idl : Idl → ⟨ 𝓓 ⟩
+--  from-Idl I = ∐ 𝓓 (ideals-are-directed I)
 
- -- TODO: Rename and explain simularity with Idl-retract above
- Idl-iso₁ : from-Idl ∘ to-Idl ∼ id
- Idl-iso₁ = γ
-  where
-   s : ⟨ 𝓓 ⟩ → Idl
-   s = to-Idl
-   γ : (x : ⟨ 𝓓 ⟩) → ∐ 𝓓 (ideals-are-directed (s x)) ≡ x
-   γ x = ∐ 𝓓 {↡ᴮₛ x} {↡ιₛ x} (ideals-are-directed (s x)) ≡⟨ ⦅1⦆ ⟩
-         ∐ 𝓓 {↡ᴮₛ x} {↡ιₛ x} (↡ᴮₛ-is-directed x)         ≡⟨ ⦅2⦆ ⟩
-         x                               ∎
-    where
-     ⦅1⦆ = ∐-independent-of-directedness-witness 𝓓
-           (ideals-are-directed (s x)) (↡ᴮₛ-is-directed x)
-     ⦅2⦆ = ↡ᴮₛ-∐-≡ x
+--  -- TODO: Rename and explain simularity with Idl-retract above
+--  Idl-iso₁ : from-Idl ∘ to-Idl ∼ id
+--  Idl-iso₁ = γ
+--   where
+--    s : ⟨ 𝓓 ⟩ → Idl
+--    s = to-Idl
+--    γ : (x : ⟨ 𝓓 ⟩) → ∐ 𝓓 (ideals-are-directed (s x)) ≡ x
+--    γ x = ∐ 𝓓 {↡ᴮₛ x} {↡ιₛ x} (ideals-are-directed (s x)) ≡⟨ ⦅1⦆ ⟩
+--          ∐ 𝓓 {↡ᴮₛ x} {↡ιₛ x} (↡ᴮₛ-is-directed x)         ≡⟨ ⦅2⦆ ⟩
+--          x                               ∎
+--     where
+--      ⦅1⦆ = ∐-independent-of-directedness-witness 𝓓
+--            (ideals-are-directed (s x)) (↡ᴮₛ-is-directed x)
+--      ⦅2⦆ = ↡ᴮₛ-∐-≡ x
 
- -- TODO: Rename
- Idl-iso₂ : to-Idl ∘ from-Idl ∼ id
- Idl-iso₂ 𝕀@(I , I-is-ideal) = γ -- TODO: Typechecking this is slow for some reason
-  where
-   s : ⟨ 𝓓 ⟩
-   s = ∐ 𝓓 (ideals-are-directed 𝕀)
-   Bₛ : 𝓟 B
-   Bₛ b = (b ≪ᴮₛ s , ≪ᴮₛ-is-prop-valued)
-   Bₛ-is-ideal : is-ideal Bₛ
-   Bₛ-is-ideal = pr₂ (to-Idl s)
-   𝔹ₛ : Idl
-   𝔹ₛ = (Bₛ , Bₛ-is-ideal)
-   γ : 𝔹ₛ ≡ 𝕀
-   γ = antisymmetry Idl-DCPO 𝔹ₛ 𝕀 ⦅1⦆ ⦅2⦆
-    where
-     ⦅2⦆ : I ⊆ Bₛ
-     ⦅2⦆ b b-in-I = ∥∥-rec (∈-is-prop Bₛ b) h (roundedness 𝕀 b-in-I)
-      where
-       h : (Σ c ꞉ B , c ∈ I × b ≺ c) → b ∈ Bₛ
-       h (c , c-in-I , b-below-c) = ⌜ ≪ᴮₛ-≃-≪ᴮ ⌝⁻¹ claim
-        where
-         claim : β b ≪⟨ 𝓓 ⟩ s
-         claim = ≪-⊑-to-≪ 𝓓 (⌜ ≺-≃-≪ ⌝ b-below-c)
-                  (∐-is-upperbound 𝓓 (ideals-are-directed 𝕀) (c , c-in-I))
-     ⦅1⦆ : Bₛ ⊆ I
-     ⦅1⦆ b b-in-Bₛ = ∥∥-rec (∈-is-prop I b) lemma₁
-                     (⌜ ≪ᴮₛ-≃-≪ᴮ ⌝ b-in-Bₛ (𝕋 I) (β ∘ pr₁)
-                       (ideals-are-directed 𝕀) (reflexivity 𝓓 s))
-      where
-       lemma₁ : (Σ i ꞉ 𝕋 I , β b ⊑⟨ 𝓓 ⟩ β (pr₁ i))
-              → b ∈ I
-       lemma₁ ((c , c-in-I) , b-below-c) = ∥∥-rec (∈-is-prop I b) lemma₂
-                                            (roundedness 𝕀 c-in-I)
-        where
-         lemma₂ : (Σ c' ꞉ B , c' ∈ I × c ≺ c') → b ∈ I
-         lemma₂ (c' , c'-in-I , c-below-c') = ideals-are-lowersets I I-is-ideal
-                                               b c' claim c'-in-I
-          where
-           claim : b ≺ c'
-           claim = ⌜ ≺-≃-≪ ⌝⁻¹ (⊑-≪-to-≪ 𝓓 b-below-c (⌜ ≺-≃-≪ ⌝ c-below-c'))
+--  -- TODO: Rename
+--  Idl-iso₂ : to-Idl ∘ from-Idl ∼ id
+--  Idl-iso₂ 𝕀@(I , I-is-ideal) = γ -- TODO: Typechecking this is slow for some reason
+--   where
+--    s : ⟨ 𝓓 ⟩
+--    s = ∐ 𝓓 (ideals-are-directed 𝕀)
+--    Bₛ : 𝓟 B
+--    Bₛ b = (b ≪ᴮₛ s , ≪ᴮₛ-is-prop-valued)
+--    Bₛ-is-ideal : is-ideal Bₛ
+--    Bₛ-is-ideal = pr₂ (to-Idl s)
+--    𝔹ₛ : Idl
+--    𝔹ₛ = (Bₛ , Bₛ-is-ideal)
+--    γ : 𝔹ₛ ≡ 𝕀
+--    γ = antisymmetry Idl-DCPO 𝔹ₛ 𝕀 ⦅1⦆ ⦅2⦆
+--     where
+--      ⦅2⦆ : I ⊆ Bₛ
+--      ⦅2⦆ b b-in-I = ∥∥-rec (∈-is-prop Bₛ b) h (roundedness 𝕀 b-in-I)
+--       where
+--        h : (Σ c ꞉ B , c ∈ I × b ≺ c) → b ∈ Bₛ
+--        h (c , c-in-I , b-below-c) = ⌜ ≪ᴮₛ-≃-≪ᴮ ⌝⁻¹ claim
+--         where
+--          claim : β b ≪⟨ 𝓓 ⟩ s
+--          claim = ≪-⊑-to-≪ 𝓓 (⌜ ≺-≃-≪ ⌝ b-below-c)
+--                   (∐-is-upperbound 𝓓 (ideals-are-directed 𝕀) (c , c-in-I))
+--      ⦅1⦆ : Bₛ ⊆ I
+--      ⦅1⦆ b b-in-Bₛ = ∥∥-rec (∈-is-prop I b) lemma₁
+--                      (⌜ ≪ᴮₛ-≃-≪ᴮ ⌝ b-in-Bₛ (𝕋 I) (β ∘ pr₁)
+--                        (ideals-are-directed 𝕀) (reflexivity 𝓓 s))
+--       where
+--        lemma₁ : (Σ i ꞉ 𝕋 I , β b ⊑⟨ 𝓓 ⟩ β (pr₁ i))
+--               → b ∈ I
+--        lemma₁ ((c , c-in-I) , b-below-c) = ∥∥-rec (∈-is-prop I b) lemma₂
+--                                             (roundedness 𝕀 c-in-I)
+--         where
+--          lemma₂ : (Σ c' ꞉ B , c' ∈ I × c ≺ c') → b ∈ I
+--          lemma₂ (c' , c'-in-I , c-below-c') = ideals-are-lowersets I I-is-ideal
+--                                                b c' claim c'-in-I
+--           where
+--            claim : b ≺ c'
+--            claim = ⌜ ≺-≃-≪ ⌝⁻¹ (⊑-≪-to-≪ 𝓓 b-below-c (⌜ ≺-≃-≪ ⌝ c-below-c'))
 
- -- Exactly as above
- -- TODO: How to avoid the repetition?
- to-Idl-is-monotone : is-monotone 𝓓 Idl-DCPO to-Idl
- to-Idl-is-monotone x y x-below-y b b-way-below-x =
-  ⌜ ≪ᴮₛ-≃-≪ᴮ ⌝⁻¹ (≪-⊑-to-≪ 𝓓 (⌜ ≪ᴮₛ-≃-≪ᴮ ⌝ b-way-below-x) x-below-y)
+--  -- Exactly as above
+--  -- TODO: How to avoid the repetition?
+--  to-Idl-is-monotone : is-monotone 𝓓 Idl-DCPO to-Idl
+--  to-Idl-is-monotone x y x-below-y b b-way-below-x =
+--   ⌜ ≪ᴮₛ-≃-≪ᴮ ⌝⁻¹ (≪-⊑-to-≪ 𝓓 (⌜ ≪ᴮₛ-≃-≪ᴮ ⌝ b-way-below-x) x-below-y)
 
--- Exactly as above
- to-Idl-is-continuous : is-continuous 𝓓 Idl-DCPO to-Idl
- to-Idl-is-continuous = continuity-criterion' 𝓓 Idl-DCPO to-Idl
-                         to-Idl-is-monotone γ
-  where
-   γ : (𝓐 : 𝓥 ̇) (α : 𝓐 → ⟨ 𝓓 ⟩) (δ : is-Directed 𝓓 α)
-     → is-lowerbound-of-upperbounds _⊑_ (to-Idl (∐ 𝓓 δ)) (to-Idl ∘ α)
-   γ 𝓐 α δ (I , I-is-ideal) I-is-ub b b-way-below-∐α =
-    ∥∥-rec (∈-is-prop I b) claim lemma
-     where
-      lemma : ∃ c ꞉ B , (β b ≪⟨ 𝓓 ⟩ β c) × (β c ≪⟨ 𝓓 ⟩ ∐ 𝓓 δ)
-      lemma = small-basis-unary-interpolation 𝓓 β β-is-small-basis
-               (⌜ ≪ᴮₛ-≃-≪ᴮ ⌝ b-way-below-∐α)
-      claim : (Σ c ꞉ B , (β b ≪⟨ 𝓓 ⟩ β c) × (β c ≪⟨ 𝓓 ⟩ ∐ 𝓓 δ))
-            → b ∈ I
-      claim (c , b-way-below-c , c-way-below-∐α) =
-       ∥∥-rec (∈-is-prop I b) h (c-way-below-∐α 𝓐 α δ (reflexivity 𝓓 (∐ 𝓓 δ)))
-        where
-         h : (Σ a ꞉ 𝓐 , β c ⊑⟨ 𝓓 ⟩ α a) → b ∈ I
-         h (a , c-below-αa) = I-is-ub a b (⌜ ≪ᴮₛ-≃-≪ᴮ ⌝⁻¹ wb)
-          where
-           wb : β b ≪⟨ 𝓓 ⟩ α a
-           wb = ≪-⊑-to-≪ 𝓓 b-way-below-c c-below-αa
+-- -- Exactly as above
+--  to-Idl-is-continuous : is-continuous 𝓓 Idl-DCPO to-Idl
+--  to-Idl-is-continuous = continuity-criterion' 𝓓 Idl-DCPO to-Idl
+--                          to-Idl-is-monotone γ
+--   where
+--    γ : (𝓐 : 𝓥 ̇) (α : 𝓐 → ⟨ 𝓓 ⟩) (δ : is-Directed 𝓓 α)
+--      → is-lowerbound-of-upperbounds _⊑_ (to-Idl (∐ 𝓓 δ)) (to-Idl ∘ α)
+--    γ 𝓐 α δ (I , I-is-ideal) I-is-ub b b-way-below-∐α =
+--     ∥∥-rec (∈-is-prop I b) claim lemma
+--      where
+--       lemma : ∃ c ꞉ B , (β b ≪⟨ 𝓓 ⟩ β c) × (β c ≪⟨ 𝓓 ⟩ ∐ 𝓓 δ)
+--       lemma = small-basis-unary-interpolation 𝓓 β β-is-small-basis
+--                (⌜ ≪ᴮₛ-≃-≪ᴮ ⌝ b-way-below-∐α)
+--       claim : (Σ c ꞉ B , (β b ≪⟨ 𝓓 ⟩ β c) × (β c ≪⟨ 𝓓 ⟩ ∐ 𝓓 δ))
+--             → b ∈ I
+--       claim (c , b-way-below-c , c-way-below-∐α) =
+--        ∥∥-rec (∈-is-prop I b) h (c-way-below-∐α 𝓐 α δ (reflexivity 𝓓 (∐ 𝓓 δ)))
+--         where
+--          h : (Σ a ꞉ 𝓐 , β c ⊑⟨ 𝓓 ⟩ α a) → b ∈ I
+--          h (a , c-below-αa) = I-is-ub a b (⌜ ≪ᴮₛ-≃-≪ᴮ ⌝⁻¹ wb)
+--           where
+--            wb : β b ≪⟨ 𝓓 ⟩ α a
+--            wb = ≪-⊑-to-≪ 𝓓 b-way-below-c c-below-αa
 
- -- Exactly as above
- from-Idl-is-monotone : is-monotone Idl-DCPO 𝓓 from-Idl
- from-Idl-is-monotone I J I-below-J =
-  ∐-map-is-monotone 𝕀 𝕁 γ
-   where
-    open Ind-completion 𝓓
-    𝕀 : Ind
-    𝕀 = (𝕋 (carrier I) , β ∘ pr₁ , ideals-are-directed I)
-    𝕁 : Ind
-    𝕁 = (𝕋 (carrier J) , β ∘ pr₁ , ideals-are-directed J)
-    γ : 𝕀 ≲ 𝕁
-    γ (b , b-in-I) = ∣ (b , I-below-J b b-in-I) , reflexivity 𝓓 (β b) ∣
+--  -- Exactly as above
+--  from-Idl-is-monotone : is-monotone Idl-DCPO 𝓓 from-Idl
+--  from-Idl-is-monotone I J I-below-J =
+--   ∐-map-is-monotone 𝕀 𝕁 γ
+--    where
+--     open Ind-completion 𝓓
+--     𝕀 : Ind
+--     𝕀 = (𝕋 (carrier I) , β ∘ pr₁ , ideals-are-directed I)
+--     𝕁 : Ind
+--     𝕁 = (𝕋 (carrier J) , β ∘ pr₁ , ideals-are-directed J)
+--     γ : 𝕀 ≲ 𝕁
+--     γ (b , b-in-I) = ∣ (b , I-below-J b b-in-I) , reflexivity 𝓓 (β b) ∣
 
- -- Exactly as above
- from-Idl-is-continuous : is-continuous Idl-DCPO 𝓓 from-Idl
- from-Idl-is-continuous = continuity-criterion' Idl-DCPO 𝓓 from-Idl
-                           from-Idl-is-monotone γ
-  where
-   γ : (𝓐 : 𝓥 ̇) (α : 𝓐 → ⟨ Idl-DCPO ⟩) (δ : is-Directed Idl-DCPO α)
-     → is-lowerbound-of-upperbounds (underlying-order 𝓓)
-        (from-Idl (∐ Idl-DCPO {𝓐} {α} δ)) (from-Idl ∘ α)
-   γ 𝓐 α δ x x-is-ub = ∐-is-lowerbound-of-upperbounds 𝓓
-                        (ideals-are-directed (∐ Idl-DCPO {𝓐} {α} δ)) x ub
-    where
-     ub : is-upperbound (underlying-order 𝓓) x
-           (β ∘ 𝕋-to-carrier (carrier (∐ Idl-DCPO {𝓐} {α} δ)))
-     ub (b , b-in-⋃) = ∥∥-rec (prop-valuedness 𝓓 (β b) x) h b-in-⋃
-      where
-       h : (Σ a ꞉ 𝓐 , b ∈ᵢ α a) → β b ⊑⟨ 𝓓 ⟩ x
-       h (a , b-in-αa) = β b            ⊑⟨ 𝓓 ⟩[ ⦅1⦆ ]
-                         from-Idl (α a) ⊑⟨ 𝓓 ⟩[ ⦅2⦆ ]
-                         x              ∎⟨ 𝓓 ⟩
-        where
-         ⦅1⦆ = ∐-is-upperbound 𝓓 (ideals-are-directed (α a)) (b , b-in-αa)
-         ⦅2⦆ = x-is-ub a
+--  -- Exactly as above
+--  from-Idl-is-continuous : is-continuous Idl-DCPO 𝓓 from-Idl
+--  from-Idl-is-continuous = continuity-criterion' Idl-DCPO 𝓓 from-Idl
+--                            from-Idl-is-monotone γ
+--   where
+--    γ : (𝓐 : 𝓥 ̇) (α : 𝓐 → ⟨ Idl-DCPO ⟩) (δ : is-Directed Idl-DCPO α)
+--      → is-lowerbound-of-upperbounds (underlying-order 𝓓)
+--         (from-Idl (∐ Idl-DCPO {𝓐} {α} δ)) (from-Idl ∘ α)
+--    γ 𝓐 α δ x x-is-ub = ∐-is-lowerbound-of-upperbounds 𝓓
+--                         (ideals-are-directed (∐ Idl-DCPO {𝓐} {α} δ)) x ub
+--     where
+--      ub : is-upperbound (underlying-order 𝓓) x
+--            (β ∘ 𝕋-to-carrier (carrier (∐ Idl-DCPO {𝓐} {α} δ)))
+--      ub (b , b-in-⋃) = ∥∥-rec (prop-valuedness 𝓓 (β b) x) h b-in-⋃
+--       where
+--        h : (Σ a ꞉ 𝓐 , b ∈ᵢ α a) → β b ⊑⟨ 𝓓 ⟩ x
+--        h (a , b-in-αa) = β b            ⊑⟨ 𝓓 ⟩[ ⦅1⦆ ]
+--                          from-Idl (α a) ⊑⟨ 𝓓 ⟩[ ⦅2⦆ ]
+--                          x              ∎⟨ 𝓓 ⟩
+--         where
+--          ⦅1⦆ = ∐-is-upperbound 𝓓 (ideals-are-directed (α a)) (b , b-in-αa)
+--          ⦅2⦆ = x-is-ub a
 
- Idl-≃ : 𝓓 ≃ᵈᶜᵖᵒ Idl-DCPO
- Idl-≃ = (to-Idl , from-Idl , Idl-iso₁ , Idl-iso₂ ,
-          to-Idl-is-continuous , from-Idl-is-continuous)
+--  Idl-≃ : 𝓓 ≃ᵈᶜᵖᵒ Idl-DCPO
+--  Idl-≃ = (to-Idl , from-Idl , Idl-iso₁ , Idl-iso₂ ,
+--           to-Idl-is-continuous , from-Idl-is-continuous)
 
-\end{code}
+-- \end{code}
 
-TODO: 𝓓 ≃ Idl (B , ⊑ᴮ) in case 𝓓 has a small compact basis
+-- TODO: 𝓓 ≃ Idl (B , ⊑ᴮ) in case 𝓓 has a small compact basis
 
-\begin{code}
+-- \begin{code}
 
-\end{code}
+-- \end{code}
