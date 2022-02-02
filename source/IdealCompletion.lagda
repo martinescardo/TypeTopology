@@ -112,10 +112,11 @@ module Ideals
  I ⊑ J = carrier I ⊆ carrier J
 
  Idl-∐ : {𝓐 : 𝓥 ̇ } (α : 𝓐 → Idl) → is-directed _⊑_ α → Idl
- Idl-∐ {𝓐} α δ = ∐α , ls , inh , ε
+ Idl-∐ {𝓐} α δ = (∐α , ls , inh , ε)
   where
+   open unions-of-small-families pt 𝓥 𝓣 P
    ∐α : P → Ω (𝓥 ⊔ 𝓣)
-   ∐α p = (∃ a ꞉ 𝓐 , (p ∈ᵢ α a)) , ∥∥-is-prop
+   ∐α = ⋃ (carrier ∘ α)
    ls : is-lowerset ∐α
    ls p q l = ∥∥-functor γ
     where

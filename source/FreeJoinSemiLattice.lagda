@@ -31,7 +31,7 @@ module FreeJoinSemiLattice
         (pt : propositional-truncations-exist)
        where
 
-open import UF-Powerset-Fin pt hiding (κ)
+open import UF-Powerset-Fin pt
 
 open binary-unions-of-subsets pt
 

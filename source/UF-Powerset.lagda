@@ -322,20 +322,21 @@ Again assuming propositional truncations, we can construct arbitrary suprema in
 module unions-of-small-families
         (pt : propositional-truncations-exist)
         (𝓥 : Universe)
+        (𝓣 : Universe)
         (X : 𝓤 ̇  )
         {I : 𝓥 ̇  }
        where
 
  open PropositionalTruncation pt
 
- ⋃  : (α : I → (X → Ω 𝓥)) → (X → Ω 𝓥)
+ ⋃  : (α : I → (X → Ω (𝓥 ⊔ 𝓣))) → (X → Ω (𝓥 ⊔ 𝓣))
  ⋃ α x = (∃ i ꞉ I , x ∈ α i) , ∃-is-prop
 
- ⋃-is-upperbound : (α : I → (X → Ω 𝓥)) (i : I)
+ ⋃-is-upperbound : (α : I → (X → Ω (𝓥 ⊔ 𝓣))) (i : I)
                  → α i ⊆ ⋃ α
  ⋃-is-upperbound α i x a = ∣ i , a ∣
 
- ⋃-is-lowerbound-of-upperbounds : (α : I → (X → Ω 𝓥)) (A : X → Ω 𝓥)
+ ⋃-is-lowerbound-of-upperbounds : (α : I → (X → Ω (𝓥 ⊔ 𝓣))) (A : X → Ω (𝓥 ⊔ 𝓣))
                                 → ((i : I) → α i ⊆ A)
                                 → ⋃ α ⊆ A
  ⋃-is-lowerbound-of-upperbounds α A ub x u =
