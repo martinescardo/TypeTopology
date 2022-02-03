@@ -45,7 +45,7 @@ module _
  open import DcpoMiscelanea pt fe 𝓥
  open import DcpoWayBelow pt fe 𝓥
 
- open unions-of-small-families pt 𝓥 X
+ open unions-of-small-families pt 𝓥 𝓥 X
 
  generalized-𝓟-DCPO : DCPO {𝓥 ⁺ ⊔ 𝓤} {𝓤 ⊔ 𝓥}
  generalized-𝓟-DCPO = (X → Ω 𝓥) , _⊆_ ,
@@ -74,7 +74,7 @@ open import DcpoContinuous pt fe 𝓤
 open import DcpoMiscelanea pt fe 𝓤
 open import DcpoWayBelow pt fe 𝓤
 
-open unions-of-small-families pt 𝓤 X
+open unions-of-small-families pt 𝓤 𝓤 X
 
 𝓟-DCPO : DCPO {𝓤 ⁺} {𝓤}
 𝓟-DCPO = generalized-𝓟-DCPO 𝓤
