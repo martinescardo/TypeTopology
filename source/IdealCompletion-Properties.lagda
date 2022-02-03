@@ -91,6 +91,18 @@ module Idl-Properties
  ↓-is-monotone : {x y : X} → x ≺ y → (↓ x) ⊑⟨ Idl-DCPO ⟩ (↓ y)
  ↓-is-monotone {x} {y} l _ m = ≺-trans m l
 
+ Idl-sups-from-powerset : {𝓐 : 𝓥 ̇  } (α : 𝓐 → Idl) (I : Idl)
+                        → is-sup _⊆_ (carrier I) (carrier ∘ α)
+                        → is-sup _⊑_ I α
+ Idl-sups-from-powerset {𝓐} α I I-is-sup = (ub , lb-of-ubs)
+  where
+   ub : is-upperbound _⊑_ I α
+   ub = sup-is-upperbound _⊆_ {𝓥} {𝓐} {carrier I} {carrier ∘ α} I-is-sup
+   lb-of-ubs : is-lowerbound-of-upperbounds _⊑_ I α
+   lb-of-ubs J J-is-ub = sup-is-lowerbound-of-upperbounds _⊆_ {𝓥} {𝓐}
+                          {carrier I} {carrier ∘ α}
+                          I-is-sup (carrier J) J-is-ub
+
 \end{code}
 
 \begin{code}
@@ -239,89 +251,83 @@ TODO: Use this below?
 
 \begin{code}
 
- Idl-mediating-directed : (𝓓 : DCPO {𝓤} {𝓣})
-                        → (f : X → ⟨ 𝓓 ⟩)
-                        → ({x  y : X} → x ≺ y → f x ⊑⟨ 𝓓 ⟩ f y)
-                        → (I : Idl)
-                        → is-Directed 𝓓 {𝕋 (carrier I)} (f ∘ pr₁)
- Idl-mediating-directed 𝓓 f m I =
-  (directed-sets-are-inhabited (carrier I) Idir) , ε
+ module Idl-mediating
+         (𝓓 : DCPO {𝓤} {𝓣})
+         (f : X → ⟨ 𝓓 ⟩)
+         (f-is-monotone : {x y : X} → x ≺ y → f x ⊑⟨ 𝓓 ⟩ f y)
+        where
+
+  Idl-mediating-directed : (I : Idl)
+                         → is-Directed 𝓓 {𝕋 (carrier I)} (f ∘ pr₁)
+  Idl-mediating-directed I =
+   (directed-sets-are-inhabited (carrier I) Idir) , ε
+    where
+     ι : 𝕋 (carrier I) → ⟨ 𝓓 ⟩
+     ι = f ∘ pr₁
+     Idir : is-directed-set (carrier I)
+     Idir = ideals-are-directed-sets (carrier I) (ideality I)
+     ε : is-semidirected (underlying-order 𝓓) ι
+     ε (x , xI) (y , yI) = ∥∥-functor γ g
+      where
+       γ : (Σ z ꞉ X , z ∈ᵢ I × x ≺ z × y ≺ z)
+         → Σ i ꞉ 𝕋 (carrier I) , (ι (x , xI) ⊑⟨ 𝓓 ⟩ ι i)
+                               × (ι (y , yI) ⊑⟨ 𝓓 ⟩ ι i)
+       γ (z , zI , lx , ly) = (z , zI) , f-is-monotone lx , f-is-monotone ly
+       g : ∃ z ꞉ X , z ∈ᵢ I × x ≺ z × y ≺ z
+       g = directed-sets-are-semidirected (carrier I) Idir x y xI yI
+
+  Idl-mediating-map : Idl → ⟨ 𝓓 ⟩
+  Idl-mediating-map I = ∐ 𝓓 (Idl-mediating-directed I)
+
+  -- TODO: Use continuity-criterion' instead?
+  Idl-mediating-map-is-continuous : is-continuous Idl-DCPO 𝓓 Idl-mediating-map
+  Idl-mediating-map-is-continuous 𝓐 α δ = ub , lb
    where
-    ι : 𝕋 (carrier I) → ⟨ 𝓓 ⟩
-    ι = f ∘ pr₁
-    Idir : is-directed-set (carrier I)
-    Idir = ideals-are-directed-sets (carrier I) (ideality I)
-    ε : is-semidirected (underlying-order 𝓓) ι
-    ε (x , xI) (y , yI) = ∥∥-functor γ g
+    f' : Idl → ⟨ 𝓓 ⟩
+    f' = Idl-mediating-map
+    ε : (I : Idl) → is-Directed 𝓓 (f ∘ pr₁)
+    ε = Idl-mediating-directed
+    ub : (a : 𝓐) → f' (α a) ⊑⟨ 𝓓 ⟩ f' (∐ Idl-DCPO {𝓐} {α} δ)
+    ub a = ∐-is-lowerbound-of-upperbounds 𝓓 (ε (α a))
+           (f' (∐ Idl-DCPO {𝓐} {α} δ)) γ
      where
-      γ : (Σ z ꞉ X , z ∈ᵢ I × x ≺ z × y ≺ z)
-        → Σ i ꞉ 𝕋 (carrier I) , (ι (x , xI) ⊑⟨ 𝓓 ⟩ ι i)
-                              × (ι (y , yI) ⊑⟨ 𝓓 ⟩ ι i)
-      γ (z , zI , lx , ly) = (z , zI) , m lx , m ly
-      g : ∃ z ꞉ X , z ∈ᵢ I × x ≺ z × y ≺ z
-      g = directed-sets-are-semidirected (carrier I) Idir x y xI yI
+      γ : (y : (Σ x ꞉ X , x ∈ᵢ α a))
+        → f (pr₁ y) ⊑⟨ 𝓓 ⟩ f' (∐ Idl-DCPO {𝓐} {α} δ)
+      γ (x , p) = ∐-is-upperbound 𝓓 (ε (∐ Idl-DCPO {𝓐} {α} δ)) g
+       where
+        g : Σ y ꞉ X , y ∈ᵢ (∐ Idl-DCPO {𝓐} {α} δ)
+        g = x , ∣ a , p ∣
+    lb : is-lowerbound-of-upperbounds (underlying-order 𝓓)
+          (f' (∐ Idl-DCPO {𝓐} {α} δ))
+          (λ a → f' (α a))
+    lb d u = ∐-is-lowerbound-of-upperbounds 𝓓 (ε (∐ Idl-DCPO {𝓐} {α} δ)) d γ
+     where
+      γ : (x : (Σ y ꞉ X , y ∈ᵢ ∐ Idl-DCPO {𝓐} {α} δ))
+        → f (pr₁ x) ⊑⟨ 𝓓 ⟩ d
+      γ (x , p) = ∥∥-rec (prop-valuedness 𝓓 (f x) d) g p
+       where
+        g : (Σ a ꞉ 𝓐 , x ∈ᵢ α a) → f x ⊑⟨ 𝓓 ⟩ d
+        g (a , q) = f x      ⊑⟨ 𝓓 ⟩[ ∐-is-upperbound 𝓓 (ε (α a)) (x , q) ]
+                    f' (α a) ⊑⟨ 𝓓 ⟩[ u a ]
+                    d        ∎⟨ 𝓓 ⟩
 
- Idl-mediating-map : (𝓓 : DCPO {𝓤} {𝓣})
-                   → (f : X → ⟨ 𝓓 ⟩)
-                   → ({x  y : X} → x ≺ y → f x ⊑⟨ 𝓓 ⟩ f y)
-                   → Idl → ⟨ 𝓓 ⟩
- Idl-mediating-map 𝓓 f m I = ∐ 𝓓 (Idl-mediating-directed 𝓓 f m I)
-
- Idl-mediating-map-commutes : (𝓓 : DCPO {𝓤} {𝓣})
-                            → (f : X → ⟨ 𝓓 ⟩)
-                            → (m : {x  y : X} → x ≺ y → f x ⊑⟨ 𝓓 ⟩ f y)
-                            → ({x : X} → x ≺ x)
-                            → Idl-mediating-map 𝓓 f m ∘ ↓_ ∼ f
- Idl-mediating-map-commutes 𝓓 f m ρ x = γ
-  where
-   δ : is-Directed 𝓓 (f ∘ pr₁)
-   δ = Idl-mediating-directed 𝓓 f m (↓ x)
-   γ : ∐ 𝓓 δ ≡ f x
-   γ = antisymmetry 𝓓 (∐ 𝓓 δ) (f x) a b
-    where
-     a : ∐ 𝓓 δ ⊑⟨ 𝓓 ⟩ f x
-     a = ∐-is-lowerbound-of-upperbounds 𝓓 δ (f x) g
-      where
-       g : (y : Σ z ꞉ X , z ∈ᵢ (↓ x))
-         → f (pr₁ y) ⊑⟨ 𝓓 ⟩ f x
-       g (y , l) = m l
-     b : f x ⊑⟨ 𝓓 ⟩ ∐ 𝓓 δ
-     b = ∐-is-upperbound 𝓓 δ (x , ρ)
-
- Idl-mediating-map-is-continuous : (𝓓 : DCPO {𝓤} {𝓣})
-                                 → (f : X → ⟨ 𝓓 ⟩)
-                                 → (m : {x  y : X} → x ≺ y → f x ⊑⟨ 𝓓 ⟩ f y)
-                                 → is-continuous Idl-DCPO 𝓓
-                                   (Idl-mediating-map 𝓓 f m)
- Idl-mediating-map-is-continuous 𝓓 f m 𝓐 α δ = ub , lb
-  where
-   f' : Idl → ⟨ 𝓓 ⟩
-   f' = Idl-mediating-map 𝓓 f m
-   ε : (I : Idl) → is-Directed 𝓓 (f ∘ pr₁)
-   ε = Idl-mediating-directed 𝓓 f m
-   ub : (a : 𝓐) → f' (α a) ⊑⟨ 𝓓 ⟩ f' (∐ Idl-DCPO {𝓐} {α} δ)
-   ub a = ∐-is-lowerbound-of-upperbounds 𝓓 (ε (α a))
-          (f' (∐ Idl-DCPO {𝓐} {α} δ)) γ
-    where
-     γ : (y : (Σ x ꞉ X , x ∈ᵢ α a))
-       → f (pr₁ y) ⊑⟨ 𝓓 ⟩ f' (∐ Idl-DCPO {𝓐} {α} δ)
-     γ (x , p) = ∐-is-upperbound 𝓓 (ε (∐ Idl-DCPO {𝓐} {α} δ)) g
-      where
-       g : Σ y ꞉ X , y ∈ᵢ (∐ Idl-DCPO {𝓐} {α} δ)
-       g = x , ∣ a , p ∣
-   lb : is-lowerbound-of-upperbounds (underlying-order 𝓓)
-         (f' (∐ Idl-DCPO {𝓐} {α} δ))
-         (λ a → f' (α a))
-   lb d u = ∐-is-lowerbound-of-upperbounds 𝓓 (ε (∐ Idl-DCPO {𝓐} {α} δ)) d γ
-    where
-     γ : (x : (Σ y ꞉ X , y ∈ᵢ ∐ Idl-DCPO {𝓐} {α} δ))
-       → f (pr₁ x) ⊑⟨ 𝓓 ⟩ d
-     γ (x , p) = ∥∥-rec (prop-valuedness 𝓓 (f x) d) g p
-      where
-       g : (Σ a ꞉ 𝓐 , x ∈ᵢ α a) → f x ⊑⟨ 𝓓 ⟩ d
-       g (a , q) = f x      ⊑⟨ 𝓓 ⟩[ ∐-is-upperbound 𝓓 (ε (α a)) (x , q) ]
-                   f' (α a) ⊑⟨ 𝓓 ⟩[ u a ]
-                   d        ∎⟨ 𝓓 ⟩
+  Idl-mediating-map-commutes : ({x : X} → x ≺ x)
+                             → Idl-mediating-map ∘ ↓_ ∼ f
+  Idl-mediating-map-commutes ρ x = γ
+   where
+    δ : is-Directed 𝓓 (f ∘ pr₁)
+    δ = Idl-mediating-directed (↓ x)
+    γ : ∐ 𝓓 δ ≡ f x
+    γ = antisymmetry 𝓓 (∐ 𝓓 δ) (f x) a b
+     where
+      a : ∐ 𝓓 δ ⊑⟨ 𝓓 ⟩ f x
+      a = ∐-is-lowerbound-of-upperbounds 𝓓 δ (f x) g
+       where
+        g : (y : Σ z ꞉ X , z ∈ᵢ (↓ x))
+          → f (pr₁ y) ⊑⟨ 𝓓 ⟩ f x
+        g (y , l) = f-is-monotone l
+      b : f x ⊑⟨ 𝓓 ⟩ ∐ 𝓓 δ
+      b = ∐-is-upperbound 𝓓 δ (x , ρ)
 
 \end{code}
 
@@ -530,36 +536,48 @@ module Idl-common -- TODO: Rethink module name
  ↡ᴮ-is-monotone x y x-below-y b b-way-below-x =
   ⌜ ≪ᴮₛ-≃-≪ᴮ ⌝⁻¹ (≪-⊑-to-≪ 𝓓 (⌜ ≪ᴮₛ-≃-≪ᴮ ⌝ b-way-below-x) x-below-y)
 
- -- TODO: Do something similar for continuity?
-
- -- TODO: Use Idl-mediating-map? In particular, it has a good(?) directedness
- -- criterion
+ ↡ᴮ-is-continuous : {I : 𝓥 ̇  } {α : I → ⟨ 𝓓 ⟩} (δ : is-Directed 𝓓 α)
+                  → is-sup _⊆_ (↡ᴮ-subset (∐ 𝓓 δ)) (↡ᴮ-subset ∘ α)
+ ↡ᴮ-is-continuous {I} {α} δ = (ub , lb-of-ubs)
+  where
+   ub : is-upperbound _⊆_ (↡ᴮ-subset (∐ 𝓓 δ)) (↡ᴮ-subset ∘ α)
+   ub i b b-way-below-αᵢ =
+    ⌜ ≪ᴮₛ-≃-≪ᴮ ⌝⁻¹ (≪-⊑-to-≪ 𝓓 (⌜ ≪ᴮₛ-≃-≪ᴮ ⌝ b-way-below-αᵢ)
+                                 (∐-is-upperbound 𝓓 δ i))
+   lb-of-ubs : is-lowerbound-of-upperbounds _⊆_
+                (↡ᴮ-subset (∐ 𝓓 δ)) (↡ᴮ-subset ∘ α)
+   lb-of-ubs S S-is-ub b b-way-below-∐α =
+    ∥∥-rec (∈-is-prop S b) lemma₁ claim₁
+     where
+      claim₁ : ∃ c ꞉ B , (β b ≪⟨ 𝓓 ⟩ β c) × (β c ≪⟨ 𝓓 ⟩ (∐ 𝓓 δ))
+      claim₁ = small-basis-unary-interpolation 𝓓 β β-is-small-basis
+               (⌜ ≪ᴮₛ-≃-≪ᴮ ⌝ b-way-below-∐α)
+      lemma₁ : (Σ c ꞉ B , (β b ≪⟨ 𝓓 ⟩ β c) × (β c ≪⟨ 𝓓 ⟩ (∐ 𝓓 δ)))
+             → b ∈ S
+      lemma₁ (c , b-way-below-c , c-way-below-∐α) =
+       ∥∥-rec (∈-is-prop S b) lemma₂ claim₂
+        where
+         claim₂ : ∃ i ꞉ I , β c ⊑⟨ 𝓓 ⟩ α i
+         claim₂ = c-way-below-∐α I α δ (reflexivity 𝓓 (∐ 𝓓 δ))
+         lemma₂ : (Σ i ꞉ I , β c ⊑⟨ 𝓓 ⟩ α i) → b ∈ S
+         lemma₂ (i , c-below-αᵢ) =
+          S-is-ub i b (⌜ ≪ᴮₛ-≃-≪ᴮ ⌝⁻¹ (≪-⊑-to-≪ 𝓓 b-way-below-c c-below-αᵢ))
 
  ∐-of-directed-subset : (I : 𝓟 B)
                       → is-Directed 𝓓 (β ∘ 𝕋-to-carrier I)
                       → ⟨ 𝓓 ⟩
  ∐-of-directed-subset I δ = ∐ 𝓓 δ
 
- ∐-of-directed-subset-is-monotone : (I J : 𝓟 B)
-                                  → I ⊆ J
-                                  → {δ : is-Directed 𝓓 (β ∘ 𝕋-to-carrier I)}
-                                  → {ε : is-Directed 𝓓 (β ∘ 𝕋-to-carrier J)}
-                                  → ∐-of-directed-subset I δ ⊑⟨ 𝓓 ⟩
-                                    ∐-of-directed-subset J ε
- ∐-of-directed-subset-is-monotone I J I-subset-of-J {δ} {ε} =
-  ∐-map-is-monotone 𝕀 𝕁 γ
-   where
-    open Ind-completion 𝓓
-    𝕀 : Ind
-    𝕀 = (𝕋 I , β ∘ pr₁ , δ)
-    𝕁 : Ind
-    𝕁 = (𝕋 J , β ∘ pr₁ , ε)
-    γ : 𝕀 ≲ 𝕁
-    γ (b , b-in-I) = ∣ (b , I-subset-of-J b b-in-I) , reflexivity 𝓓 (β b) ∣
-
- ↡ᴮ-∐-retract : (x : ⟨ 𝓓 ⟩)
-              → ∐-of-directed-subset (↡ᴮ-subset x) (↡ᴮₛ-is-directed x) ≡ x
- ↡ᴮ-∐-retract x = ↡ᴮₛ-∐-≡ x
+ ↡ᴮ-∐-retract : (x : ⟨ 𝓓 ⟩) (δ : is-Directed 𝓓 (↡ιₛ x))
+              → ∐-of-directed-subset (↡ᴮ-subset x) δ ≡ x
+ ↡ᴮ-∐-retract x δ = ∐ 𝓓 δ ≡⟨ ⦅1⦆ ⟩
+                    ∐ 𝓓 ε ≡⟨ ⦅2⦆ ⟩
+                    x     ∎
+  where
+   ε : is-Directed 𝓓 (↡ιₛ x)
+   ε = ↡ᴮₛ-is-directed x
+   ⦅1⦆ = ∐-independent-of-directedness-witness 𝓓 δ ε
+   ⦅2⦆ = ↡ᴮₛ-∐-≡ x
 
  ∐-↡ᴮ-deflation : (I : 𝓟 B) {δ : is-Directed 𝓓 (β ∘ 𝕋-to-carrier I)}
                 → ((b c : B) → β b ⊑⟨ 𝓓 ⟩ β c → c ∈ I → b ∈ I)
@@ -585,6 +603,13 @@ module Idl-common -- TODO: Rethink module name
          → b ≪ᴮₛ ∐-of-directed-subset I δ
    lemma (c , c-in-I , b-way-below-c) =
     ⌜ ≪ᴮₛ-≃-≪ᴮ ⌝⁻¹ (≪-⊑-to-≪ 𝓓 b-way-below-c (∐-is-upperbound 𝓓 δ (c , c-in-I)))
+
+ ∐-↡ᴮ-retract : (I : 𝓟 B) {δ : is-Directed 𝓓 (β ∘ 𝕋-to-carrier I)}
+              → ((b c : B) → β b ⊑⟨ 𝓓 ⟩ β c → c ∈ I → b ∈ I)
+              → ((b : B) → b ∈ I → ∃ c ꞉ B , (c ∈ I) × (β b ≪⟨ 𝓓 ⟩ β c))
+              → ↡ᴮ-subset (∐-of-directed-subset I δ) ≡ I
+ ∐-↡ᴮ-retract I {δ} cond₁ cond₂ =
+  subset-extensionality pe fe (∐-↡ᴮ-deflation I cond₁) (∐-↡ᴮ-inflation I cond₂)
 
 \end{code}
 
@@ -628,9 +653,11 @@ module Idl-algebraic -- TODO: Rethink module name
                   (reflexivity-implies-INT₀ _⊑ᴮ_ ⊑ᴮ-is-reflexive)
                   ⊑ᴮ-is-transitive
  open Idl-common 𝓓 β β-is-small-basis
+ open Idl-mediating 𝓓 β ⌜ ⊑ᴮ-≃-⊑ ⌝
 
  to-Idl : ⟨ 𝓓 ⟩ → Idl
  to-Idl x = (Bₓ , Bₓ-is-lowerset , Bₓ-is-directed-set)
+ -- TODO: Find a unifying condition on ≺ for the latter two to hold
   where
    Bₓ : 𝓟 B
    Bₓ = ↡ᴮ-subset x
@@ -650,22 +677,8 @@ module Idl-algebraic -- TODO: Rethink module name
    Bₓ-is-directed-set = (Bₓ-is-inhabited , Bₓ-is-semidirected-set)
 
 
- ideals-are-directed : (I : Idl)
-                     → is-Directed 𝓓 (β ∘ 𝕋-to-carrier (carrier I))
- ideals-are-directed I = inh , semidir
-  where
-   δ : is-directed-set (carrier I)
-   δ = ideals-are-directed-sets (carrier I) (ideality I)
-   inh : ∥ 𝕋 (carrier I) ∥
-   inh = directed-sets-are-inhabited (carrier I) δ
-   semidir : is-semidirected (underlying-order 𝓓) (β ∘ 𝕋-to-carrier (carrier I))
-   semidir (b₁ , b₁-in-I) (b₂ , b₂-in-I) =
-    ∥∥-functor (λ (b , b-in-I , u , v)
-               → ((b , b-in-I) , ⌜ ⊑ᴮ-≃-⊑ ⌝ u , ⌜ ⊑ᴮ-≃-⊑ ⌝ v))
-              (directed-sets-are-semidirected (carrier I) δ b₁ b₂ b₁-in-I b₂-in-I)
-
  from-Idl : Idl → ⟨ 𝓓 ⟩
- from-Idl I = ∐-of-directed-subset (carrier I) (ideals-are-directed I)
+ from-Idl I = Idl-mediating-map I
 
  open import UF-Retracts
 
@@ -676,15 +689,8 @@ module Idl-algebraic -- TODO: Rethink module name
    s = to-Idl
    r : Idl → ⟨ 𝓓 ⟩
    r = from-Idl
-   -- TODO: Can we shorten this further using the things from Idl-common?
-   γ : (x : ⟨ 𝓓 ⟩) → ∐ 𝓓 (ideals-are-directed (s x)) ≡ x
-   γ x = ∐ 𝓓 {↡ᴮₛ x} {↡ιₛ x} (ideals-are-directed (s x)) ≡⟨ ⦅1⦆ ⟩
-         ∐ 𝓓 {↡ᴮₛ x} {↡ιₛ x} (↡ᴮₛ-is-directed x)         ≡⟨ ⦅2⦆ ⟩
-         x                               ∎
-    where
-     ⦅1⦆ = ∐-independent-of-directedness-witness 𝓓
-           (ideals-are-directed (s x)) (↡ᴮₛ-is-directed x)
-     ⦅2⦆ = ↡ᴮₛ-∐-≡ x
+   γ : (x : ⟨ 𝓓 ⟩) → r (s x) ≡ x
+   γ x = ↡ᴮ-∐-retract x (Idl-mediating-directed (s x))
 
  Idl-deflation : (I : Idl) → to-Idl (from-Idl I) ⊑⟨ Idl-DCPO ⟩ I
  Idl-deflation 𝕀@(I , I-is-ideal) = ∐-↡ᴮ-deflation I γ
@@ -695,57 +701,12 @@ module Idl-algebraic -- TODO: Rethink module name
      claim : b ⊑ᴮ c
      claim = ⌜ ⊑ᴮ-≃-⊑ ⌝⁻¹ b-below-c
 
- to-Idl-is-monotone : is-monotone 𝓓 Idl-DCPO to-Idl
- to-Idl-is-monotone = ↡ᴮ-is-monotone
-
  to-Idl-is-continuous : is-continuous 𝓓 Idl-DCPO to-Idl
- to-Idl-is-continuous = continuity-criterion' 𝓓 Idl-DCPO to-Idl
-                         to-Idl-is-monotone γ
-  where
-   γ : (𝓐 : 𝓥 ̇) (α : 𝓐 → ⟨ 𝓓 ⟩) (δ : is-Directed 𝓓 α)
-     → is-lowerbound-of-upperbounds _⊑_ (to-Idl (∐ 𝓓 δ)) (to-Idl ∘ α)
-   γ 𝓐 α δ (I , I-is-ideal) I-is-ub b b-way-below-∐α =
-    ∥∥-rec (∈-is-prop I b) claim lemma
-     where
-      lemma : ∃ c ꞉ B , (β b ≪⟨ 𝓓 ⟩ β c) × (β c ≪⟨ 𝓓 ⟩ ∐ 𝓓 δ)
-      lemma = small-basis-unary-interpolation 𝓓 β β-is-small-basis
-               (⌜ ≪ᴮₛ-≃-≪ᴮ ⌝ b-way-below-∐α)
-      claim : (Σ c ꞉ B , (β b ≪⟨ 𝓓 ⟩ β c) × (β c ≪⟨ 𝓓 ⟩ ∐ 𝓓 δ))
-            → b ∈ I
-      claim (c , b-way-below-c , c-way-below-∐α) =
-       ∥∥-rec (∈-is-prop I b) h (c-way-below-∐α 𝓐 α δ (reflexivity 𝓓 (∐ 𝓓 δ)))
-        where
-         h : (Σ a ꞉ 𝓐 , β c ⊑⟨ 𝓓 ⟩ α a) → b ∈ I
-         h (a , c-below-αa) = I-is-ub a b (⌜ ≪ᴮₛ-≃-≪ᴮ ⌝⁻¹ wb)
-          where
-           wb : β b ≪⟨ 𝓓 ⟩ α a
-           wb = ≪-⊑-to-≪ 𝓓 b-way-below-c c-below-αa
-
- from-Idl-is-monotone : is-monotone Idl-DCPO 𝓓 from-Idl
- from-Idl-is-monotone I J I-below-J =
-  ∐-of-directed-subset-is-monotone (carrier I) (carrier J) I-below-J
+ to-Idl-is-continuous I α δ =
+  Idl-sups-from-powerset (to-Idl ∘ α) (to-Idl (∐ 𝓓 δ)) (↡ᴮ-is-continuous δ)
 
  from-Idl-is-continuous : is-continuous Idl-DCPO 𝓓 from-Idl
- from-Idl-is-continuous = continuity-criterion' Idl-DCPO 𝓓 from-Idl
-                           from-Idl-is-monotone γ
-  where
-   γ : (𝓐 : 𝓥 ̇) (α : 𝓐 → ⟨ Idl-DCPO ⟩) (δ : is-Directed Idl-DCPO α)
-     → is-lowerbound-of-upperbounds (underlying-order 𝓓)
-        (from-Idl (∐ Idl-DCPO {𝓐} {α} δ)) (from-Idl ∘ α)
-   γ 𝓐 α δ x x-is-ub = ∐-is-lowerbound-of-upperbounds 𝓓
-                        (ideals-are-directed (∐ Idl-DCPO {𝓐} {α} δ)) x ub
-    where
-     ub : is-upperbound (underlying-order 𝓓) x
-           (β ∘ 𝕋-to-carrier (carrier (∐ Idl-DCPO {𝓐} {α} δ)))
-     ub (b , b-in-⋃) = ∥∥-rec (prop-valuedness 𝓓 (β b) x) h b-in-⋃
-      where
-       h : (Σ a ꞉ 𝓐 , b ∈ᵢ α a) → β b ⊑⟨ 𝓓 ⟩ x
-       h (a , b-in-αa) = β b            ⊑⟨ 𝓓 ⟩[ ⦅1⦆ ]
-                         from-Idl (α a) ⊑⟨ 𝓓 ⟩[ ⦅2⦆ ]
-                         x              ∎⟨ 𝓓 ⟩
-        where
-         ⦅1⦆ = ∐-is-upperbound 𝓓 (ideals-are-directed (α a)) (b , b-in-αa)
-         ⦅2⦆ = x-is-ub a
+ from-Idl-is-continuous = Idl-mediating-map-is-continuous
 
  Idl-continuous-retract : 𝓓 continuous-retract-of Idl-DCPO
  Idl-continuous-retract =
@@ -817,6 +778,7 @@ module Idl-continuous
                   ≺-is-transitive
 
  open Idl-common 𝓓 β β-is-small-basis
+ open Idl-mediating 𝓓 β (≪-to-⊑ 𝓓 ∘ ⌜ ≺-≃-≪ ⌝)
 
  to-Idl : ⟨ 𝓓 ⟩ → Idl
  to-Idl x = (Bₓ , Bₓ-is-lowerset , Bₓ-is-directed-set)
@@ -854,131 +816,44 @@ module Idl-continuous
    Bₓ-is-directed-set : is-directed-set Bₓ
    Bₓ-is-directed-set = (Bₓ-is-inhabited , Bₓ-is-semidirected-set)
 
- ideals-are-directed : (I : Idl)
-                     → is-Directed 𝓓 (β ∘ 𝕋-to-carrier (carrier I))
- ideals-are-directed I = inh , semidir
-  where
-   δ : is-directed-set (carrier I)
-   δ = ideals-are-directed-sets (carrier I) (ideality I)
-   inh : ∥ 𝕋 (carrier I) ∥
-   inh = directed-sets-are-inhabited (carrier I) δ
-   semidir : is-semidirected (underlying-order 𝓓) (β ∘ 𝕋-to-carrier (carrier I))
-   semidir (b₁ , b₁-in-I) (b₂ , b₂-in-I) =
-    ∥∥-functor (λ (b , b-in-I , u , v)
-               → ((b , b-in-I) , ≪-to-⊑ 𝓓 (⌜ ≺-≃-≪ ⌝ u)
-                               , ≪-to-⊑ 𝓓 (⌜ ≺-≃-≪ ⌝ v)))
-              (directed-sets-are-semidirected (carrier I) δ b₁ b₂ b₁-in-I b₂-in-I)
-
  from-Idl : Idl → ⟨ 𝓓 ⟩
- from-Idl I = ∐-of-directed-subset (carrier I) (ideals-are-directed I)
+ from-Idl I = Idl-mediating-map I
 
  -- TODO: Rename and explain simularity with Idl-retract above, or shorten
  Idl-iso₁ : from-Idl ∘ to-Idl ∼ id
- Idl-iso₁ = γ
-  where
-   s : ⟨ 𝓓 ⟩ → Idl
-   s = to-Idl
-   γ : (x : ⟨ 𝓓 ⟩) → ∐ 𝓓 (ideals-are-directed (s x)) ≡ x
-   γ x = ∐ 𝓓 {↡ᴮₛ x} {↡ιₛ x} (ideals-are-directed (s x)) ≡⟨ ⦅1⦆ ⟩
-         ∐ 𝓓 {↡ᴮₛ x} {↡ιₛ x} (↡ᴮₛ-is-directed x)         ≡⟨ ⦅2⦆ ⟩
-         x                               ∎
-    where
-     ⦅1⦆ = ∐-independent-of-directedness-witness 𝓓
-           (ideals-are-directed (s x)) (↡ᴮₛ-is-directed x)
-     ⦅2⦆ = ↡ᴮₛ-∐-≡ x
+ Idl-iso₁ x = ↡ᴮ-∐-retract x (Idl-mediating-directed (to-Idl x))
 
  -- TODO: Rename
  Idl-iso₂ : to-Idl ∘ from-Idl ∼ id
- Idl-iso₂ 𝕀@(I , I-is-ideal) = antisymmetry Idl-DCPO 𝔹ₛ 𝕀 ⦅1⦆ {!!}
-  where
-   s : ⟨ 𝓓 ⟩
-   s = ∐ 𝓓 (ideals-are-directed 𝕀)
-   Bₛ : 𝓟 B
-   Bₛ = ↡ᴮ-subset s
-   Bₛ-is-ideal : is-ideal Bₛ
-   Bₛ-is-ideal = ideality (to-Idl s)
-   𝔹ₛ : Idl
-   𝔹ₛ = (Bₛ , Bₛ-is-ideal)
-   ⦅2⦆ : I ⊆ Bₛ
-   ⦅2⦆ = ∐-↡ᴮ-inflation I condition
-    where
-     condition : (b : B) → b ∈ I → ∃ c ꞉ B , c ∈ I × β b ≪⟨ 𝓓 ⟩ β c
-     condition b b-in-I = ∥∥-functor lemma (roundedness 𝕀 b-in-I)
-      where
-       lemma : (Σ c ꞉ B , c ∈ I × b ≺ c)
-             → (Σ c ꞉ B , c ∈ I × β b ≪⟨ 𝓓 ⟩ β c)
-       lemma (c , c-in-I , b-below-c) = (c , c-in-I , ⌜ ≺-≃-≪ ⌝ b-below-c)
-   ⦅1⦆ : Bₛ ⊆ I
-   ⦅1⦆ = ∐-↡ᴮ-deflation I condition
-    where
-     condition : (b c : B) → β b ⊑⟨ 𝓓 ⟩ β c → c ∈ I → b ∈ I
-     condition b c b-below-c c-in-I =
-      ∥∥-rec (∈-is-prop I b) lemma (roundedness 𝕀 c-in-I)
-       where
-        lemma : (Σ b' ꞉ B , b' ∈ I × c ≺ b')
-              → b ∈ I
-        lemma (b' , b'-in-I , c-below-b') =
-         ideals-are-lowersets I I-is-ideal b b' claim b'-in-I
-          where
-           claim : b ≺ b'
-           claim = ⌜ ≺-≃-≪ ⌝⁻¹ (⊑-≪-to-≪ 𝓓 b-below-c (⌜ ≺-≃-≪ ⌝ c-below-b'))
+ Idl-iso₂ 𝕀@(I , I-is-ideal) =
+  to-subtype-≡ (λ J → being-ideal-is-prop J) (∐-↡ᴮ-retract I claim₁ claim₂)
+   where
+    claim₁ : (b c : B) → β b ⊑⟨ 𝓓 ⟩ β c → c ∈ I → b ∈ I
+    claim₁ b c b-below-c c-in-I = ∥∥-rec (∈-is-prop I b) h (roundedness 𝕀 c-in-I)
+     where
+      h : (Σ c' ꞉ B , c' ∈ I × (c ≺ c')) → b ∈ I
+      h (c' , c'-in-I , c-way-below-c') =
+       ideals-are-lowersets I I-is-ideal b c' l c'-in-I
+        where
+         l : b ≺ c'
+         l = (⌜ ≪ᴮₛ-≃-≪ᴮ ⌝⁻¹
+               (⊑-≪-to-≪ 𝓓 b-below-c (⌜ ≪ᴮₛ-≃-≪ᴮ ⌝ c-way-below-c')))
+    claim₂ : (b : B) → b ∈ I → ∃ c ꞉ B , c ∈ I × β b ≪⟨ 𝓓 ⟩ β c
+    claim₂ b b-in-I = ∥∥-functor h (roundedness 𝕀 b-in-I)
+     where
+      h : (Σ c ꞉ B , c ∈ I × b ≺ c)
+        → (Σ c ꞉ B , c ∈ I × β b ≪⟨ 𝓓 ⟩ β c)
+      h (c , c-in-I , b-below-c) = (c , c-in-I , ⌜ ≺-≃-≪ ⌝ b-below-c)
 
- -- Exactly as above
- -- TODO: How to avoid the repetition?
  to-Idl-is-monotone : is-monotone 𝓓 Idl-DCPO to-Idl
  to-Idl-is-monotone = ↡ᴮ-is-monotone
 
--- Exactly as above
  to-Idl-is-continuous : is-continuous 𝓓 Idl-DCPO to-Idl
- to-Idl-is-continuous = continuity-criterion' 𝓓 Idl-DCPO to-Idl
-                         to-Idl-is-monotone γ
-  where
-   γ : (𝓐 : 𝓥 ̇) (α : 𝓐 → ⟨ 𝓓 ⟩) (δ : is-Directed 𝓓 α)
-     → is-lowerbound-of-upperbounds _⊑_ (to-Idl (∐ 𝓓 δ)) (to-Idl ∘ α)
-   γ 𝓐 α δ (I , I-is-ideal) I-is-ub b b-way-below-∐α =
-    ∥∥-rec (∈-is-prop I b) claim lemma
-     where
-      lemma : ∃ c ꞉ B , (β b ≪⟨ 𝓓 ⟩ β c) × (β c ≪⟨ 𝓓 ⟩ ∐ 𝓓 δ)
-      lemma = small-basis-unary-interpolation 𝓓 β β-is-small-basis
-               (⌜ ≪ᴮₛ-≃-≪ᴮ ⌝ b-way-below-∐α)
-      claim : (Σ c ꞉ B , (β b ≪⟨ 𝓓 ⟩ β c) × (β c ≪⟨ 𝓓 ⟩ ∐ 𝓓 δ))
-            → b ∈ I
-      claim (c , b-way-below-c , c-way-below-∐α) =
-       ∥∥-rec (∈-is-prop I b) h (c-way-below-∐α 𝓐 α δ (reflexivity 𝓓 (∐ 𝓓 δ)))
-        where
-         h : (Σ a ꞉ 𝓐 , β c ⊑⟨ 𝓓 ⟩ α a) → b ∈ I
-         h (a , c-below-αa) = I-is-ub a b (⌜ ≪ᴮₛ-≃-≪ᴮ ⌝⁻¹ wb)
-          where
-           wb : β b ≪⟨ 𝓓 ⟩ α a
-           wb = ≪-⊑-to-≪ 𝓓 b-way-below-c c-below-αa
+ to-Idl-is-continuous I α δ =
+  Idl-sups-from-powerset (to-Idl ∘ α) (to-Idl (∐ 𝓓 δ)) (↡ᴮ-is-continuous δ)
 
- -- Exactly as above
- from-Idl-is-monotone : is-monotone Idl-DCPO 𝓓 from-Idl
- from-Idl-is-monotone I J I-below-J =
-  ∐-of-directed-subset-is-monotone (carrier I) (carrier J) I-below-J
-
- -- Exactly as above
  from-Idl-is-continuous : is-continuous Idl-DCPO 𝓓 from-Idl
- from-Idl-is-continuous = continuity-criterion' Idl-DCPO 𝓓 from-Idl
-                           from-Idl-is-monotone γ
-  where
-   γ : (𝓐 : 𝓥 ̇) (α : 𝓐 → ⟨ Idl-DCPO ⟩) (δ : is-Directed Idl-DCPO α)
-     → is-lowerbound-of-upperbounds (underlying-order 𝓓)
-        (from-Idl (∐ Idl-DCPO {𝓐} {α} δ)) (from-Idl ∘ α)
-   γ 𝓐 α δ x x-is-ub = ∐-is-lowerbound-of-upperbounds 𝓓
-                        (ideals-are-directed (∐ Idl-DCPO {𝓐} {α} δ)) x ub
-    where
-     ub : is-upperbound (underlying-order 𝓓) x
-           (β ∘ 𝕋-to-carrier (carrier (∐ Idl-DCPO {𝓐} {α} δ)))
-     ub (b , b-in-⋃) = ∥∥-rec (prop-valuedness 𝓓 (β b) x) h b-in-⋃
-      where
-       h : (Σ a ꞉ 𝓐 , b ∈ᵢ α a) → β b ⊑⟨ 𝓓 ⟩ x
-       h (a , b-in-αa) = β b            ⊑⟨ 𝓓 ⟩[ ⦅1⦆ ]
-                         from-Idl (α a) ⊑⟨ 𝓓 ⟩[ ⦅2⦆ ]
-                         x              ∎⟨ 𝓓 ⟩
-        where
-         ⦅1⦆ = ∐-is-upperbound 𝓓 (ideals-are-directed (α a)) (b , b-in-αa)
-         ⦅2⦆ = x-is-ub a
+ from-Idl-is-continuous = Idl-mediating-map-is-continuous
 
  Idl-≃ : 𝓓 ≃ᵈᶜᵖᵒ Idl-DCPO
  Idl-≃ = (to-Idl , from-Idl , Idl-iso₁ , Idl-iso₂ ,
