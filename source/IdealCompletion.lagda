@@ -42,34 +42,34 @@ module Ideals
  is-lowerset : (P → Ω (𝓥 ⊔ 𝓣)) → 𝓥 ⊔ 𝓤 ⊔ 𝓣 ̇
  is-lowerset A = (p q : P) → p ≺ q → q ∈ A → p ∈ A
 
- being-a-lowerset-is-a-prop : (I :  P → Ω (𝓥 ⊔ 𝓣)) → is-prop (is-lowerset I)
- being-a-lowerset-is-a-prop I = Π₄-is-prop fe (λ p q l i → ∈-is-prop I p)
+ being-lowerset-is-prop : (I :  P → Ω (𝓥 ⊔ 𝓣)) → is-prop (is-lowerset I)
+ being-lowerset-is-prop I = Π₄-is-prop fe (λ p q l i → ∈-is-prop I p)
 
  is-inhabited-set : (P → Ω (𝓥 ⊔ 𝓣)) → 𝓤 ⊔ 𝓥 ⊔ 𝓣 ̇
  is-inhabited-set A = ∃ p ꞉ P , p ∈ A
 
- being-an-inhabited-set-is-a-prop : (I : P → Ω (𝓥 ⊔ 𝓣))
-                                  → is-prop (is-inhabited-set I)
- being-an-inhabited-set-is-a-prop I = ∥∥-is-prop
+ being-inhabited-set-is-prop : (I : P → Ω (𝓥 ⊔ 𝓣))
+                             → is-prop (is-inhabited-set I)
+ being-inhabited-set-is-prop I = ∥∥-is-prop
 
  is-semidirected-set : (P → Ω (𝓥 ⊔ 𝓣)) → 𝓥 ⊔ 𝓤 ⊔ 𝓣 ̇
  is-semidirected-set A = (p q : P) → p ∈ A → q ∈ A
                           → ∃ r ꞉ P , r ∈ A
                           × p ≺ r × q ≺ r
 
- being-a-semidirected-set-is-a-prop : (I : P → Ω (𝓥 ⊔ 𝓣))
-                                    → is-prop (is-semidirected-set I)
- being-a-semidirected-set-is-a-prop I = Π₄-is-prop fe (λ p q i j → ∃-is-prop)
+ being-semidirected-set-is-prop : (I : P → Ω (𝓥 ⊔ 𝓣))
+                                → is-prop (is-semidirected-set I)
+ being-semidirected-set-is-prop I = Π₄-is-prop fe (λ p q i j → ∃-is-prop)
 
  is-directed-set : (P → Ω (𝓥 ⊔ 𝓣)) → 𝓥 ⊔ 𝓤 ⊔ 𝓣 ̇
  is-directed-set A = is-inhabited-set A × is-semidirected-set A
 
- being-a-directed-set-is-a-prop : (I : P → Ω (𝓥 ⊔ 𝓣))
-                                → is-prop (is-directed-set I)
- being-a-directed-set-is-a-prop I =
+ being-directed-set-is-prop : (I : P → Ω (𝓥 ⊔ 𝓣))
+                            → is-prop (is-directed-set I)
+ being-directed-set-is-prop I =
   ×-is-prop
-   (being-an-inhabited-set-is-a-prop I)
-   (being-a-semidirected-set-is-a-prop I)
+   (being-inhabited-set-is-prop I)
+   (being-semidirected-set-is-prop I)
 
  directed-sets-are-inhabited : (A : P → Ω (𝓥 ⊔ 𝓣))
                              → is-directed-set A → is-inhabited-set A
@@ -83,11 +83,11 @@ module Ideals
  is-ideal : (P → Ω (𝓥 ⊔ 𝓣)) → 𝓥 ⊔ 𝓤 ⊔ 𝓣 ̇
  is-ideal I = is-lowerset I × is-directed-set I
 
- being-an-ideal-is-a-prop : (I : P → Ω (𝓥 ⊔ 𝓣)) → is-prop (is-ideal I)
- being-an-ideal-is-a-prop I =
+ being-ideal-is-prop : (I : P → Ω (𝓥 ⊔ 𝓣)) → is-prop (is-ideal I)
+ being-ideal-is-prop I =
   ×-is-prop
-   (being-a-lowerset-is-a-prop I)
-   (being-a-directed-set-is-a-prop I)
+   (being-lowerset-is-prop I)
+   (being-directed-set-is-prop I)
 
  ideals-are-lowersets : (I : P → Ω (𝓥 ⊔ 𝓣)) → is-ideal I → is-lowerset I
  ideals-are-lowersets I = pr₁
@@ -168,7 +168,7 @@ module Ideals
       where
        s : is-set Idl
        s = subtypes-of-sets-are-sets carrier
-            (pr₁-lc λ {I} → being-an-ideal-is-a-prop I)
+            (pr₁-lc λ {I} → being-ideal-is-prop I)
             (powersets-are-sets'' fe fe pe)
        pv : is-prop-valued _⊑_
        pv I J = ⊆-is-prop' fe fe (carrier I) (carrier J)
@@ -178,7 +178,7 @@ module Ideals
        t I J K = ⊆-trans' (carrier I) (carrier J) (carrier K)
        a : is-antisymmetric _⊑_
        a I J u v = to-subtype-≡
-                    (λ K → being-an-ideal-is-a-prop K)
+                    (λ K → being-ideal-is-prop K)
                     (subset-extensionality'' pe fe fe u v)
      dc : is-directed-complete _⊑_
      dc 𝓐 α δ = (Idl-∐ α δ) , ub , lb
