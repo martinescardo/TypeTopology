@@ -532,6 +532,9 @@ module Idl-common -- TODO: Rethink module name
  ↡ᴮ-subset : (x : ⟨ 𝓓 ⟩) → 𝓟 B
  ↡ᴮ-subset x = (λ b → (b ≪ᴮₛ x , ≪ᴮₛ-is-prop-valued))
 
+ ↡ᴮ-subset-is-inhabited : (x : ⟨ 𝓓 ⟩) → ∥ 𝕋 (↡ᴮ-subset x) ∥
+ ↡ᴮ-subset-is-inhabited x = inhabited-if-Directed 𝓓 (↡ιₛ x) (↡ᴮₛ-is-directed x)
+
  ↡ᴮ-is-monotone : (x y : ⟨ 𝓓 ⟩) → x ⊑⟨ 𝓓 ⟩ y → ↡ᴮ-subset x ⊆ ↡ᴮ-subset y
  ↡ᴮ-is-monotone x y x-below-y b b-way-below-x =
   ⌜ ≪ᴮₛ-≃-≪ᴮ ⌝⁻¹ (≪-⊑-to-≪ 𝓓 (⌜ ≪ᴮₛ-≃-≪ᴮ ⌝ b-way-below-x) x-below-y)
@@ -611,6 +614,31 @@ module Idl-common -- TODO: Rethink module name
  ∐-↡ᴮ-retract I {δ} cond₁ cond₂ =
   subset-extensionality pe fe (∐-↡ᴮ-deflation I cond₁) (∐-↡ᴮ-inflation I cond₂)
 
+ module _
+         (_≺_ : B → B → 𝓥 ̇  )
+        where
+
+  ↡ᴮ-lowerset-criterion : (x : ⟨ 𝓓 ⟩)
+                        → ((b c : B) → b ≺ c → β b ⊑⟨ 𝓓 ⟩ β c)
+                        → (b c : B) → b ≺ c → c ∈ ↡ᴮ-subset x → b ∈ ↡ᴮ-subset x
+  ↡ᴮ-lowerset-criterion x β-mon b c b-below-c c-way-below-x =
+   ⌜ ≪ᴮₛ-≃-≪ᴮ ⌝⁻¹ (⊑-≪-to-≪ 𝓓 (β-mon b c b-below-c) (⌜ ≪ᴮₛ-≃-≪ᴮ ⌝ c-way-below-x))
+
+  ↡ᴮ-semidirected-set-criterion : (x : ⟨ 𝓓 ⟩)
+                                → ((b c : B) → β b ≪⟨ 𝓓 ⟩ β c → b ≺ c)
+                                → (a b : B) → a ∈ ↡ᴮ-subset x → b ∈ ↡ᴮ-subset x
+                                → ∃ c ꞉ B , c ∈ ↡ᴮ-subset x × (a ≺ c) × (b ≺ c)
+  ↡ᴮ-semidirected-set-criterion x β-mon a b a-way-below-x b-way-below-x =
+   ∥∥-functor h (small-basis-binary-interpolation 𝓓 β β-is-small-basis
+                 (⌜ ≪ᴮₛ-≃-≪ᴮ ⌝ a-way-below-x)
+                 (⌜ ≪ᴮₛ-≃-≪ᴮ ⌝ b-way-below-x))
+    where
+     h : (Σ c ꞉ B , (β a ≪⟨ 𝓓 ⟩ β c) × (β b ≪⟨ 𝓓 ⟩ β c) × (β c ≪⟨ 𝓓 ⟩ x))
+       → (Σ c ꞉ B , c ∈ ↡ᴮ-subset x × (a ≺ c) × (b ≺ c))
+     h (c , a-way-below-c , b-way-below-c , c-way-below-x) =
+      (c , ⌜ ≪ᴮₛ-≃-≪ᴮ ⌝⁻¹ c-way-below-x , β-mon a c a-way-below-c
+                                        , β-mon b c b-way-below-c)
+
 \end{code}
 
 Dcpos with a small basis are continuous retracts (in fact, e-p pair...) of
@@ -657,25 +685,17 @@ module Idl-algebraic -- TODO: Rethink module name
 
  to-Idl : ⟨ 𝓓 ⟩ → Idl
  to-Idl x = (Bₓ , Bₓ-is-lowerset , Bₓ-is-directed-set)
- -- TODO: Find a unifying condition on ≺ for the latter two to hold
   where
    Bₓ : 𝓟 B
    Bₓ = ↡ᴮ-subset x
    Bₓ-is-lowerset : is-lowerset Bₓ
-   Bₓ-is-lowerset b c b-below-c c-in-Bₓ =
-    ⌜ ≪ᴮₛ-≃-≪ᴮ ⌝⁻¹ (⊑-≪-to-≪ 𝓓 (⌜ ⊑ᴮ-≃-⊑ ⌝ b-below-c)
-                                 (⌜ ≪ᴮₛ-≃-≪ᴮ ⌝ c-in-Bₓ))
-   Bₓ-is-inhabited : ∥ 𝕋 Bₓ ∥
-   Bₓ-is-inhabited = inhabited-if-Directed 𝓓 (↡ιₛ x) (↡ᴮₛ-is-directed x)
+   Bₓ-is-lowerset = ↡ᴮ-lowerset-criterion _⊑ᴮ_ x (λ b c → ⌜ ⊑ᴮ-≃-⊑ ⌝)
    Bₓ-is-semidirected-set : is-semidirected-set Bₓ
-   Bₓ-is-semidirected-set b₁ b₂ b₁-in-Bₓ b₂-in-Bₓ =
-    ∥∥-functor (λ ((b , b-in-Bₓ) , u , v)
-               → (b , b-in-Bₓ , ⌜ ⊑ᴮ-≃-⊑ ⌝⁻¹ u , ⌜ ⊑ᴮ-≃-⊑ ⌝⁻¹ v))
-              (semidirected-if-Directed 𝓓 (↡ιₛ x) (↡ᴮₛ-is-directed x)
-                (b₁ , b₁-in-Bₓ) (b₂ , b₂-in-Bₓ))
+   Bₓ-is-semidirected-set =
+    ↡ᴮ-semidirected-set-criterion _⊑ᴮ_ x
+     (λ b c b-way-below-c → ⌜ ⊑ᴮ-≃-⊑ ⌝⁻¹ (≪-to-⊑ 𝓓 b-way-below-c))
    Bₓ-is-directed-set : is-directed-set Bₓ
-   Bₓ-is-directed-set = (Bₓ-is-inhabited , Bₓ-is-semidirected-set)
-
+   Bₓ-is-directed-set = (↡ᴮ-subset-is-inhabited x , Bₓ-is-semidirected-set)
 
  from-Idl : Idl → ⟨ 𝓓 ⟩
  from-Idl I = Idl-mediating-map I
@@ -786,40 +806,18 @@ module Idl-continuous
    Bₓ : 𝓟 B
    Bₓ = ↡ᴮ-subset x
    Bₓ-is-lowerset : is-lowerset Bₓ
-   Bₓ-is-lowerset b c b-below-c c-in-Bₓ =
-    ⌜ ≪ᴮₛ-≃-≪ᴮ ⌝⁻¹ (≪-is-transitive 𝓓 (⌜ ≺-≃-≪ ⌝ b-below-c)
-                                      (⌜ ≪ᴮₛ-≃-≪ᴮ ⌝ c-in-Bₓ))
-   Bₓ-is-inhabited : ∥ 𝕋 Bₓ ∥
-   Bₓ-is-inhabited = inhabited-if-Directed 𝓓 (↡ιₛ x) (↡ᴮₛ-is-directed x)
+   Bₓ-is-lowerset = ↡ᴮ-lowerset-criterion _≺_ x
+                     (λ b c b-below-c → ≪-to-⊑ 𝓓 (⌜ ≺-≃-≪ ⌝ b-below-c))
    Bₓ-is-semidirected-set : is-semidirected-set Bₓ
-   Bₓ-is-semidirected-set b₁ b₂ b₁-in-Bₓ b₂-in-Bₓ =
-    ∥∥-rec₂ ∃-is-prop f (small-basis-unary-interpolation 𝓓 β
-                         β-is-small-basis (⌜ ≪ᴮₛ-≃-≪ᴮ ⌝ b₁-in-Bₓ))
-                       (small-basis-unary-interpolation 𝓓 β
-                         β-is-small-basis (⌜ ≪ᴮₛ-≃-≪ᴮ ⌝ b₂-in-Bₓ))
-     where
-      f : (Σ c₁ ꞉ B , (β b₁ ≪⟨ 𝓓 ⟩ β c₁) × (β c₁ ≪⟨ 𝓓 ⟩ x))
-        → (Σ c₂ ꞉ B , (β b₂ ≪⟨ 𝓓 ⟩ β c₂) × (β c₂ ≪⟨ 𝓓 ⟩ x))
-        → (∃ b ꞉ B , b ∈ Bₓ × (b₁ ≺ b) × (b₂ ≺ b))
-      f (c₁ , b₁-way-below-c₁ , c₁-way-below-x)
-        (c₂ , b₂-way-below-c₂ , c₂-way-below-x) = ∥∥-functor lemma claim
-         where
-          claim = semidirected-if-Directed 𝓓 (↡ιₛ x) (↡ᴮₛ-is-directed x)
-                   (c₁ , ⌜ ≪ᴮₛ-≃-≪ᴮ ⌝⁻¹ c₁-way-below-x)
-                   (c₂ , ⌜ ≪ᴮₛ-≃-≪ᴮ ⌝⁻¹ c₂-way-below-x)
-          lemma : (Σ k ꞉ domain (↡ιₛ x) , (β c₁ ⊑⟨ 𝓓 ⟩ ↡ιₛ x k)
-                                        × (β c₂ ⊑⟨ 𝓓 ⟩ ↡ιₛ x k))
-                → (Σ b ꞉ B , b ∈ Bₓ × (b₁ ≺ b) × (b₂ ≺ b))
-          lemma ((b , b-in-Bₓ) , u , v) =
-           (b , b-in-Bₓ , ⌜ ≺-≃-≪ ⌝⁻¹ (≪-⊑-to-≪ 𝓓 b₁-way-below-c₁ u)
-                        , ⌜ ≺-≃-≪ ⌝⁻¹ (≪-⊑-to-≪ 𝓓 b₂-way-below-c₂ v))
+   Bₓ-is-semidirected-set = ↡ᴮ-semidirected-set-criterion _≺_ x
+                             (λ b c → ⌜ ≺-≃-≪ ⌝⁻¹)
    Bₓ-is-directed-set : is-directed-set Bₓ
-   Bₓ-is-directed-set = (Bₓ-is-inhabited , Bₓ-is-semidirected-set)
+   Bₓ-is-directed-set = (↡ᴮ-subset-is-inhabited x , Bₓ-is-semidirected-set)
 
  from-Idl : Idl → ⟨ 𝓓 ⟩
  from-Idl I = Idl-mediating-map I
 
- -- TODO: Rename and explain simularity with Idl-retract above, or shorten
+ -- TODO: Rename
  Idl-iso₁ : from-Idl ∘ to-Idl ∼ id
  Idl-iso₁ x = ↡ᴮ-∐-retract x (Idl-mediating-directed (to-Idl x))
 
