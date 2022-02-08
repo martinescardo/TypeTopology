@@ -758,3 +758,63 @@ module _
           claim = r-is-continuous (↡ᴮₛ (s x)) (↡ιₛ (s x)) (ε x)
 
 \end{code}
+
+TODO: Write some more...
+Criterion for locally small exponentials
+
+\begin{code}
+
+open import DcpoExponential pt fe 𝓥
+
+locally-small-exponential-criterion : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
+                                    → has-unspecified-small-basis 𝓓
+                                    → is-locally-small 𝓔
+                                    → is-locally-small (𝓓 ⟹ᵈᶜᵖᵒ 𝓔) -- TODO: Change ⟹?
+locally-small-exponential-criterion 𝓓 𝓔 𝓓-sb (_⊑ₛ_ , ⊑ₛ-≃-⊑) =
+ ∥∥-rec (being-locally-small-is-prop (𝓓 ⟹ᵈᶜᵖᵒ 𝓔) (λ _ → pe)) lemma 𝓓-sb
+  where
+   lemma : has-specified-small-basis 𝓓 → is-locally-small (𝓓 ⟹ᵈᶜᵖᵒ 𝓔)
+   lemma (B , β , β-is-small-basis) =
+    ⌜ local-smallness-equivalent-definitions (𝓓 ⟹ᵈᶜᵖᵒ 𝓔) ⌝⁻¹ γ
+     where
+      open is-small-basis β-is-small-basis
+      γ : is-locally-small' (𝓓 ⟹ᵈᶜᵖᵒ 𝓔)
+      γ 𝕗@(f , f-cont) 𝕘@(g , g-cont) = (order , claim)
+       where
+        order : 𝓥 ̇
+        order = (b : B) → f (β b) ⊑ₛ g (β b)
+        claim : order ≃ ((x : ⟨ 𝓓 ⟩) → f x ⊑⟨ 𝓔 ⟩ g x)
+        claim = logically-equivalent-props-are-equivalent
+                 (Π-is-prop fe (λ b → equiv-to-prop (⊑ₛ-≃-⊑ (f (β b)) (g (β b)))
+                                       (prop-valuedness 𝓔 (f (β b)) (g (β b)))))
+                 (Π-is-prop fe (λ x → prop-valuedness 𝓔 (f x) (g x)))
+                 ⦅⇒⦆ ⦅⇐⦆
+         where
+          ⦅⇐⦆ : ((x : ⟨ 𝓓 ⟩) → f x ⊑⟨ 𝓔 ⟩ g x) → order
+          ⦅⇐⦆ f-below-g b = ⌜ ⊑ₛ-≃-⊑ (f (β b)) (g (β b)) ⌝⁻¹ (f-below-g (β b))
+          ⦅⇒⦆ : order → ((x : ⟨ 𝓓 ⟩) → f x ⊑⟨ 𝓔 ⟩ g x)
+          ⦅⇒⦆ f-below-g x = transport (λ - → f - ⊑⟨ 𝓔 ⟩ g -)
+                             (↡ᴮₛ-∐-≡ x) f-below-g'
+           where
+            f-below-g' = f (∐ 𝓓 (↡ᴮₛ-is-directed x)) ⊑⟨ 𝓔 ⟩[ ⦅1⦆ ]
+                         ∐ 𝓔 εᶠ                      ⊑⟨ 𝓔 ⟩[ ⦅2⦆ ]
+                         ∐ 𝓔 εᵍ                      ⊑⟨ 𝓔 ⟩[ ⦅3⦆ ]
+                         g (∐ 𝓓 (↡ᴮₛ-is-directed x)) ∎⟨ 𝓔 ⟩
+             where
+              εᶠ : is-Directed 𝓔 (f ∘ ↡ιₛ x)
+              εᶠ = image-is-directed' 𝓓 𝓔 𝕗 (↡ᴮₛ-is-directed x)
+              εᵍ : is-Directed 𝓔 (g ∘ ↡ιₛ x)
+              εᵍ = image-is-directed' 𝓓 𝓔 𝕘 (↡ᴮₛ-is-directed x)
+              ⦅1⦆ = continuous-∐-⊑ 𝓓 𝓔 𝕗 (↡ᴮₛ-is-directed x)
+              ⦅3⦆ = continuous-∐-⊒ 𝓓 𝓔 𝕘 (↡ᴮₛ-is-directed x)
+              ⦅2⦆ = ∐-is-lowerbound-of-upperbounds 𝓔 εᶠ (∐ 𝓔 εᵍ) ub
+               where
+                ub : (i : ↡ᴮₛ x) → f (↡ιₛ x i) ⊑⟨ 𝓔 ⟩ ∐ 𝓔 εᵍ
+                ub (b , i) = f (β b) ⊑⟨ 𝓔 ⟩[ ⦅†⦆ ]
+                             g (β b) ⊑⟨ 𝓔 ⟩[ ⦅‡⦆ ]
+                             ∐ 𝓔 εᵍ  ∎⟨ 𝓔 ⟩
+                 where
+                  ⦅†⦆ = ⌜ ⊑ₛ-≃-⊑ (f (β b)) (g (β b)) ⌝ (f-below-g b)
+                  ⦅‡⦆ = ∐-is-upperbound 𝓔 εᵍ (b , i)
+
+\end{code}
