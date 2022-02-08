@@ -1,10 +1,11 @@
 Tom de Jong, 8 March 2020
 
-TODO: Minor updates on 28 January 2022
+TODO: Minor updates on 28 January 2022;
+      major updates 31 January - 4 February 2022.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --experimental-lossy-unification #-}
 
 open import SpartanMLTT hiding (J)
 
@@ -246,8 +247,6 @@ module SmallIdeals
          s' z n = ideals-are-lowersets (carrier (α a)) (ideality (α a)) z x n xa
 
 \end{code}
-
-TODO: Use this below?
 
 \begin{code}
 
@@ -571,6 +570,7 @@ module Idl-common -- TODO: Rethink module name
                       → ⟨ 𝓓 ⟩
  ∐-of-directed-subset I δ = ∐ 𝓓 δ
 
+ -- TODO: Swap ↡ᴮ and ∐?
  ↡ᴮ-∐-retract : (x : ⟨ 𝓓 ⟩) (δ : is-Directed 𝓓 (↡ιₛ x))
               → ∐-of-directed-subset (↡ᴮ-subset x) δ ≡ x
  ↡ᴮ-∐-retract x δ = ∐ 𝓓 δ ≡⟨ ⦅1⦆ ⟩
@@ -582,6 +582,7 @@ module Idl-common -- TODO: Rethink module name
    ⦅1⦆ = ∐-independent-of-directedness-witness 𝓓 δ ε
    ⦅2⦆ = ↡ᴮₛ-∐-≡ x
 
+ -- TODO: Swap ↡ᴮ and ∐?
  ∐-↡ᴮ-deflation : (I : 𝓟 B) {δ : is-Directed 𝓓 (β ∘ 𝕋-to-carrier I)}
                 → ((b c : B) → β b ⊑⟨ 𝓓 ⟩ β c → c ∈ I → b ∈ I)
                 → ↡ᴮ-subset (∐-of-directed-subset I δ) ⊆ I
@@ -680,8 +681,9 @@ module Idl-algebraic -- TODO: Rethink module name
                   (reflexivity-implies-INT₂ _⊑ᴮ_ ⊑ᴮ-is-reflexive)
                   (reflexivity-implies-INT₀ _⊑ᴮ_ ⊑ᴮ-is-reflexive)
                   ⊑ᴮ-is-transitive
- open Idl-common 𝓓 β β-is-small-basis
- open Idl-mediating 𝓓 β ⌜ ⊑ᴮ-≃-⊑ ⌝
+      public
+ open Idl-common 𝓓 β β-is-small-basis public
+ open Idl-mediating 𝓓 β ⌜ ⊑ᴮ-≃-⊑ ⌝ public
 
  to-Idl : ⟨ 𝓓 ⟩ → Idl
  to-Idl x = (Bₓ , Bₓ-is-lowerset , Bₓ-is-directed-set)
@@ -843,9 +845,6 @@ module Idl-continuous
         → (Σ c ꞉ B , c ∈ I × β b ≪⟨ 𝓓 ⟩ β c)
       h (c , c-in-I , b-below-c) = (c , c-in-I , ⌜ ≺-≃-≪ ⌝ b-below-c)
 
- to-Idl-is-monotone : is-monotone 𝓓 Idl-DCPO to-Idl
- to-Idl-is-monotone = ↡ᴮ-is-monotone
-
  to-Idl-is-continuous : is-continuous 𝓓 Idl-DCPO to-Idl
  to-Idl-is-continuous I α δ =
   Idl-sups-from-powerset (to-Idl ∘ α) (to-Idl (∐ 𝓓 δ)) (↡ᴮ-is-continuous δ)
@@ -859,8 +858,48 @@ module Idl-continuous
 
 \end{code}
 
-TODO: 𝓓 ≃ Idl (B , ⊑ᴮ) in case 𝓓 has a small compact basis
+𝓓 ≃ Idl (B , ⊑ᴮ) where B is a small compact basis for 𝓓
 
 \begin{code}
+
+module Idl-algebraic' -- TODO: Rename
+        (𝓓 : DCPO {𝓤} {𝓣})
+        {B : 𝓥 ̇  }
+        (β : B → ⟨ 𝓓 ⟩)
+        (β-is-small-compact-basis : is-small-compact-basis 𝓓 β)
+       where
+
+ open is-small-compact-basis β-is-small-compact-basis
+ open Idl-algebraic 𝓓 β (compact-basis-is-basis 𝓓 β β-is-small-compact-basis)
+
+ open import UF-Retracts
+
+ Idl-≃ : 𝓓 ≃ᵈᶜᵖᵒ Idl-DCPO
+ Idl-≃ = (to-Idl , from-Idl , retract-condition Idl-retract , γ ,
+          to-Idl-is-continuous , from-Idl-is-continuous)
+  where
+   -- This is where we use --experimental-lossy-unification
+   γ : (I : ⟨ Idl-DCPO ⟩) → to-Idl (from-Idl I) ≡ I
+   γ I = antisymmetry Idl-DCPO (to-Idl (from-Idl I)) I ⦅1⦆ ⦅2⦆
+    where
+     ⦅1⦆ : to-Idl (from-Idl I) ⊑⟨ Idl-DCPO ⟩ I
+     ⦅1⦆ = ∐-↡ᴮ-deflation (carrier I) claim
+      where
+       claim : (b c : B) → β b ⊑⟨ 𝓓 ⟩ β c → c ∈ᵢ I → b ∈ᵢ I
+       claim b c b-below-c c-in-I =
+        ideals-are-lowersets (carrier I) (ideality I) b c
+         (⌜ ⊑ᴮ-≃-⊑ ⌝⁻¹ b-below-c) c-in-I
+     ⦅2⦆ : I ⊑⟨ Idl-DCPO ⟩ to-Idl (from-Idl I)
+     ⦅2⦆ = ∐-↡ᴮ-inflation (carrier I) claim
+      where
+       claim : (b : B) → b ∈ᵢ I → ∃ c ꞉ B , c ∈ᵢ I × (β b ≪⟨ 𝓓 ⟩ β c)
+       claim b b-in-I = ∥∥-functor h (roundedness I b-in-I)
+        where
+         h : (Σ c ꞉ B , c ∈ᵢ I × b ⊑ᴮ c)
+           → (Σ c ꞉ B , c ∈ᵢ I × (β b ≪⟨ 𝓓 ⟩ β c))
+         h (c , c-in-I , b-below-c) = (c , c-in-I , lem)
+          where
+           lem : β b ≪⟨ 𝓓 ⟩ β c
+           lem = ≪-⊑-to-≪ 𝓓 (basis-is-compact b) (⌜ ⊑ᴮ-≃-⊑ ⌝ b-below-c)
 
 \end{code}
