@@ -96,34 +96,34 @@ module _ {𝓤 𝓣 : Universe}
  is-directed-complete : 𝓤 ⊔ (𝓥 ⁺) ⊔ 𝓣  ̇
  is-directed-complete = (I : 𝓥 ̇ ) (α : I → D) → is-directed α → has-sup α
 
- dcpo-axioms : 𝓤 ⊔ (𝓥 ⁺) ⊔ 𝓣 ̇
- dcpo-axioms = poset-axioms × is-directed-complete
-
- is-sup-is-prop : dcpo-axioms → {I : 𝓦 ̇ } (d : D) (α : I → D)
+ is-sup-is-prop : poset-axioms → {I : 𝓦 ̇ } (d : D) (α : I → D)
                 → is-prop (is-sup d α)
- is-sup-is-prop ((s , p , r , t , a) , c) {I} d α = γ
+ is-sup-is-prop (s , p , r , t , a) {I} d α = γ
   where
    γ : is-prop (is-sup d α)
    γ = ×-is-prop (Π-is-prop fe (λ i → p (α i) d))
                  (Π₂-is-prop fe (λ x l → p d x))
 
- sups-are-unique : dcpo-axioms
+ sups-are-unique : poset-axioms
                  → {I : 𝓦 ̇ } (α : I → D) {x y : D}
                  → is-sup x α → is-sup y α → x ≡ y
- sups-are-unique ((s , p , r , t , a) , c) {I} α {x} {y} x-is-sup y-is-sup =
+ sups-are-unique (s , p , r , t , a) {I} α {x} {y} x-is-sup y-is-sup =
   a x y
    (sup-is-lowerbound-of-upperbounds x-is-sup y (sup-is-upperbound y-is-sup))
    (sup-is-lowerbound-of-upperbounds y-is-sup x (sup-is-upperbound x-is-sup))
 
- having-sup-is-prop : dcpo-axioms → {I : 𝓦 ̇ } (α : I → D)
+ having-sup-is-prop : poset-axioms → {I : 𝓦 ̇ } (α : I → D)
                     → is-prop (has-sup α)
  having-sup-is-prop ax {I} α σ τ =
   to-subtype-≡ (λ x → is-sup-is-prop ax x α)
                (sups-are-unique ax α (pr₂ σ) (pr₂ τ))
 
+ dcpo-axioms : 𝓤 ⊔ (𝓥 ⁺) ⊔ 𝓣 ̇
+ dcpo-axioms = poset-axioms × is-directed-complete
+
  being-directed-complete-is-prop : dcpo-axioms → is-prop is-directed-complete
  being-directed-complete-is-prop a =
-  Π₃-is-prop fe (λ I α δ → having-sup-is-prop a α)
+  Π₃-is-prop fe (λ I α δ → having-sup-is-prop (pr₁ a) α)
 
  dcpo-axioms-is-prop : is-prop dcpo-axioms
  dcpo-axioms-is-prop = prop-criterion γ
@@ -324,7 +324,7 @@ being-continuous-is-prop : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {�
                            → is-prop (is-continuous 𝓓 𝓔 f)
 being-continuous-is-prop 𝓓 𝓔 f =
  Π₃-is-prop fe (λ I α δ → is-sup-is-prop (underlying-order 𝓔)
-                          (axioms-of-dcpo 𝓔)
+                          (pr₁ (axioms-of-dcpo 𝓔))
                           (f (∐ 𝓓 δ)) (f ∘ α))
 
 DCPO[_,_] : DCPO {𝓤} {𝓣} → DCPO {𝓤'} {𝓣'} → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ⊔ 𝓤' ⊔ 𝓣' ̇
