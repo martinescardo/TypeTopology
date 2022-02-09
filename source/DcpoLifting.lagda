@@ -202,7 +202,7 @@ module _ {𝓤 : Universe}
 
 \begin{code}
 
-module _
+module lifting-is-free-dcpo-on-set
          {X : 𝓤 ̇ }
          (X-is-set : is-set X)
          (𝓓 : DCPO⊥ {𝓥} {𝓦})
