@@ -30,7 +30,7 @@ open ImageAndSurjection pt
 open import Lifting 𝓥 hiding (⊥)
 open import LiftingIdentityViaSIP 𝓥
 open import LiftingMiscelanea 𝓥
-open import LiftingMiscelanea-PropExt-FunExt 𝓥 pe fe
+open import LiftingMiscelanea-PropExt-FunExt 𝓥 pe fe renaming (⊑'-to-⊑ to ⊑'-to-⊑'')
 -- open import LiftingMonad 𝓥
 
 open import Dcpo pt fe 𝓥
@@ -106,6 +106,13 @@ module _
        where
         lemma = ≡-to-⊑ 𝓓 (value-is-constant (α k) (g pⱼ) (f pᵢ))
 
+ family-in-dcpo-is-directed : {I : 𝓥 ̇  } (α : I → 𝓛D)
+                            → is-directed _⊑_ α
+                            → ∃ i ꞉ I , is-defined (α i)
+                            → is-Directed 𝓓 (family-in-dcpo α)
+ family-in-dcpo-is-directed α δ q =
+  (q , family-in-dcpo-is-semidirected α (semidirected-if-directed _⊑_ α δ))
+
  𝓛-DCPO : DCPO {𝓥 ⁺ ⊔ 𝓤} {𝓥 ⊔ 𝓣}
  𝓛-DCPO = (𝓛D , _⊑_ , (lifting-of-set-is-set (sethood 𝓓)
                     , ⊑-is-prop-valued
@@ -122,8 +129,7 @@ module _
      β : J → ⟨ 𝓓 ⟩
      β = family-in-dcpo α
      ε : ∥ J ∥ → is-Directed 𝓓 β
-     ε q = (q , family-in-dcpo-is-semidirected α
-                 (semidirected-if-directed _⊑_ α δ))
+     ε = family-in-dcpo-is-directed α δ
      s : 𝓛D
      s = ∥ J ∥ , t
       where
@@ -190,6 +196,59 @@ module _
 
   f̃-after-η-is-f' : f̃ ∘ η ∼ f
   f̃-after-η-is-f' = f̃-after-η-is-f
+
+  𝓛-order-lemma : (k l : 𝓛D) → k ⊑' l → k ⊑ l
+  𝓛-order-lemma k l k-below-l = (pr₁ claim , (λ p → ≡-to-⊑ 𝓓 (pr₂ claim p)))
+   where
+    open import LiftingUnivalentPrecategory 𝓥 ⟨ 𝓓 ⟩ renaming (_⊑_ to _⊑''_)
+    claim : k ⊑'' l
+    claim = ⊑'-to-⊑'' k-below-l
+
+  𝓛-DCPOₛ : DCPO
+  𝓛-DCPOₛ = 𝓛-DCPO-from-set (sethood 𝓓)
+
+  𝓛-monotone-lemma : (g : 𝓛D → ⟪ 𝓔 ⟫)
+                   → is-monotone 𝓛-DCPO  (𝓔 ⁻) g
+                   → is-monotone 𝓛-DCPOₛ (𝓔 ⁻) g
+  𝓛-monotone-lemma g g-mon k l k-below-l =
+   g-mon k l (𝓛-order-lemma k l k-below-l)
+
+  𝓛-continuity-lemma : (g : 𝓛D → ⟪ 𝓔 ⟫)
+                     → is-continuous 𝓛-DCPO  (𝓔 ⁻) g
+                     → is-continuous 𝓛-DCPOₛ (𝓔 ⁻) g
+  𝓛-continuity-lemma g g-cont = continuity-criterion' 𝓛-DCPOₛ (𝓔 ⁻) g g-mon lemma
+   where
+    g-mon : is-monotone 𝓛-DCPOₛ (𝓔 ⁻) g
+    g-mon = 𝓛-monotone-lemma g (monotone-if-continuous 𝓛-DCPO (𝓔 ⁻) (g , g-cont))
+    lemma : (I : 𝓥 ̇) (α : I → 𝓛D) (δ : is-Directed 𝓛-DCPOₛ α)
+          → is-lowerbound-of-upperbounds (underlying-order (𝓔 ⁻))
+                                         (g (∐ 𝓛-DCPOₛ δ)) (g ∘ α)
+    lemma I α δ = transport T claim
+                   (sup-is-lowerbound-of-upperbounds (underlying-order (𝓔 ⁻))
+                                                     (g-cont I α ε))
+     where
+      T : 𝓛D → 𝓥 ⊔ 𝓤' ⊔ 𝓣' ̇
+      T - = is-lowerbound-of-upperbounds (underlying-order (𝓔 ⁻)) (g -) (g ∘ α)
+      ε : is-Directed 𝓛-DCPO α
+      ε = (inhabited-if-Directed 𝓛-DCPOₛ α δ
+        , λ i j → ∥∥-functor (λ (k , u , v) → (k , 𝓛-order-lemma (α i) (α k) u
+                                                 , 𝓛-order-lemma (α j) (α k) v))
+                             (semidirected-if-Directed 𝓛-DCPOₛ α δ i j))
+      claim : ∐ 𝓛-DCPO {I} {α} ε ≡ ∐ 𝓛-DCPOₛ {I} {α} δ
+      claim = ⋍-to-≡ (e , dfunext fe γ)
+       where
+        e : is-defined (∐ 𝓛-DCPO {I} {α} ε) ≃ is-defined (∐ 𝓛-DCPOₛ δ)
+        e = ≃-refl (∃ i ꞉ I , is-defined (α i))
+        γ : (q : is-defined (∐ 𝓛-DCPOₛ δ))
+          → value (∐ 𝓛-DCPO {I} {α} ε) (⌜ e ⌝ q) ≡ value (∐ 𝓛-DCPOₛ δ) q
+        γ q = ∥∥-rec (sethood 𝓓) h q
+         where
+          h : (Σ i ꞉ I , is-defined (α i))
+            → value (∐ 𝓛-DCPO {I} {α} ε) (⌜ e ⌝ q) ≡ value (∐ 𝓛-DCPOₛ δ) q
+          h (i , qᵢ) = value (∐ 𝓛-DCPO {I} {α} ε) (⌜ e ⌝ q)           ≡⟨ refl ⟩
+                       ∐ 𝓓 (family-in-dcpo-is-directed α ε (⌜ e ⌝ q)) ≡⟨ {!!} ⟩
+                       value (α i) qᵢ                                 ≡⟨ {!!} ⟩
+                       value (∐ 𝓛-DCPOₛ δ) q                          ∎
 
   f̃-is-unique' : (g : 𝓛D → ⟪ 𝓔 ⟫)
                → is-continuous 𝓛-DCPO (𝓔 ⁻) g
