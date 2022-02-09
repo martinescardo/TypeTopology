@@ -543,7 +543,7 @@ preserves-subsingleton-sups-if-continuous-and-strict 𝓓 𝓔 f con str α ρ =
 ∐ˢˢ-≡-if-continuous-and-strict 𝓓 𝓔 f con str α ρ =
  sups-are-unique
   (underlying-order (𝓔 ⁻))
-  (axioms-of-dcpo (𝓔 ⁻)) (f ∘ α)
+  (pr₁ (axioms-of-dcpo (𝓔 ⁻))) (f ∘ α)
   (preserves-subsingleton-sups-if-continuous-and-strict 𝓓 𝓔 f con str α ρ)
   (∐ˢˢ-is-sup 𝓔 (f ∘ α) ρ)
 
