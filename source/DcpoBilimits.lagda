@@ -810,3 +810,30 @@ isomorphic to its own self-exponential.
      e₂ = (∐-of-ε∞s σ) ⁻¹
 
 \end{code}
+
+Added 9 February 2022.
+
+If every dcpo in the diagram is locally small, then so is its bilimit.
+
+\begin{code}
+
+ open import UF-Equiv
+ open import UF-EquivalenceExamples
+
+ 𝓓∞-is-locally-small : ((i : I) → is-locally-small (𝓓 i))
+                     → is-locally-small 𝓓∞
+ 𝓓∞-is-locally-small ls = (_⊑ₛ⟨∞⟩_ , γ)
+  where
+   small-order : (i : I) → ⟨ 𝓓 i ⟩ → ⟨ 𝓓 i ⟩ →  𝓥 ̇
+   small-order i = pr₁ (ls i)
+   syntax small-order i x y = x ⊑ₛ⟨ i ⟩ y
+   ⊑ₛ-≃-⊑ : (i : I) (x y : ⟨ 𝓓 i ⟩) → x ⊑ₛ⟨ i ⟩ y ≃ x ⊑⟨ 𝓓 i ⟩ y
+   ⊑ₛ-≃-⊑ i = pr₂ (ls i)
+   _⊑ₛ⟨∞⟩_ : ⟨ 𝓓∞ ⟩ → ⟨ 𝓓∞ ⟩ → 𝓥 ̇
+   σ ⊑ₛ⟨∞⟩ τ = (i : I) → ⦅ σ ⦆ i ⊑ₛ⟨ i ⟩ ⦅ τ ⦆ i
+   γ : (σ τ : ⟨ 𝓓∞ ⟩) → (σ ⊑ₛ⟨∞⟩ τ) ≃ (σ ⊑⟨ 𝓓∞ ⟩ τ)
+   γ σ τ = Π-cong fe fe I (λ i → ⦅ σ ⦆ i ⊑ₛ⟨ i ⟩ ⦅ τ ⦆ i)
+                          (λ i → ⦅ σ ⦆ i ⊑⟨ 𝓓 i ⟩ ⦅ τ ⦆ i)
+                          (λ i → ⊑ₛ-≃-⊑ i (⦅ σ ⦆ i) (⦅ τ ⦆ i))
+
+\end{code}
