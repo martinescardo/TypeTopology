@@ -56,21 +56,16 @@ module Ind-completion
   α-cofinal-in-β β-cofinal-in-γ i = ∥∥-rec ∥∥-is-prop r (α-cofinal-in-β i)
    where
     r : (Σ j ꞉ J , α i ⊑⟨ 𝓓 ⟩ β j)
-      → ∃ k ꞉ K , α i ⊑⟨ 𝓓 ⟩ γ k
+      → (∃ k ꞉ K , α i ⊑⟨ 𝓓 ⟩ γ k)
     r (j , u) = ∥∥-functor (λ (k , v) → k , (α i ⊑⟨ 𝓓 ⟩[ u ]
                                              β j ⊑⟨ 𝓓 ⟩[ v ]
                                              γ k ∎⟨ 𝓓 ⟩))
                            (β-cofinal-in-γ j)
 
- is-semidirected' : {A : 𝓥 ̇  } (𝓐 : A → Ind)
-                  → 𝓥 ⊔ 𝓣 ̇
- is-semidirected' {A} 𝓐 = (a₁ a₂ : A) → ∃ a ꞉ A , (𝓐 a₁ ≲ 𝓐 a) × (𝓐 a₂ ≲ 𝓐 a)
-
  Ind-∐ : {I : 𝓥 ̇  } (𝓐 : I → Ind)
-       → ∥ I ∥
-       → is-semidirected' 𝓐
+       → is-directed _≲_ 𝓐
        → Ind
- Ind-∐ {I} 𝓐 I-inhabited 𝓐-semidirected =
+ Ind-∐ {I} 𝓐 (I-inhabited , 𝓐-semidirected) =
   Σ J , β , K-is-inhabited , β-is-semidirected
    where
     J : I → 𝓥 ̇
@@ -120,17 +115,16 @@ module Ind-completion
                                   β (i  , jⁱ₂) ⊑⟨ 𝓓 ⟩[ w₂ ]
                                   β (i  , j)   ∎⟨ 𝓓 ⟩))
 
- Ind-∐-is-upperbound : {I : 𝓥 ̇  } (𝓐 : I → Ind)
-                       (ρ : ∥ I ∥) (σ : is-semidirected' 𝓐)
-                     → is-upperbound _≲_ (Ind-∐ 𝓐 ρ σ) 𝓐
- Ind-∐-is-upperbound 𝓐 ρ σ i j =
-  ∣ (i , j) , (reflexivity 𝓓 (pr₁ (pr₂ (𝓐 i)) j)) ∣
+ Ind-∐-is-upperbound : {I : 𝓥 ̇  } (𝓐 : I → Ind) (δ : is-directed _≲_ 𝓐)
+                     → is-upperbound _≲_ (Ind-∐ 𝓐 δ) 𝓐
+ Ind-∐-is-upperbound 𝓐 δ i j =
+  ∣ (i , j) , reflexivity 𝓓 (pr₁ (pr₂ (𝓐 i)) j) ∣
 
  Ind-∐-is-lowerbound-of-upperbounds : {I : 𝓥 ̇  } (𝓐 : I → Ind)
-                                      (ρ : ∥ I ∥) (σ : is-semidirected' 𝓐)
+                                      (δ : is-directed _≲_ 𝓐)
                                     → is-lowerbound-of-upperbounds _≲_
-                                       (Ind-∐ 𝓐 ρ σ) 𝓐
- Ind-∐-is-lowerbound-of-upperbounds {A} 𝓐 ρ σ _ ub (i , j) = ub i j
+                                       (Ind-∐ 𝓐 δ) 𝓐
+ Ind-∐-is-lowerbound-of-upperbounds {A} 𝓐 _ _ ub (i , j) = ub i j
 
  ∐-map : Ind → ⟨ 𝓓 ⟩
  ∐-map (I , α , δ) = ∐ 𝓓 δ
@@ -470,9 +464,9 @@ module _
    𝓑 : Iʸ → Ind
    𝓑 i = J i , β i , δ i
    𝓘 : Ind
-   𝓘 = Ind-∐ 𝓑 (inhabited-if-Directed 𝓓 αʸ δʸ) σ
+   𝓘 = Ind-∐ 𝓑 (inhabited-if-Directed 𝓓 αʸ δʸ , σ)
     where
-     σ : is-semidirected' 𝓑
+     σ : is-semidirected _≲_ 𝓑
      σ i₁ i₂ = ∥∥-functor r (semidirected-if-Directed 𝓓 αʸ δʸ i₁ i₂)
       where
        r : (Σ i ꞉ Iʸ , (αʸ i₁ ⊑⟨ 𝓓 ⟩ αʸ i) × (αʸ i₂ ⊑⟨ 𝓓 ⟩ αʸ i))
