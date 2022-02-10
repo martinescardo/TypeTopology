@@ -24,6 +24,7 @@ open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
 
 open import Dcpo pt fe 𝓥
+open import DcpoMiscelanea pt fe 𝓥
 
 way-below : (𝓓 : DCPO {𝓤} {𝓣}) → ⟨ 𝓓 ⟩ → ⟨ 𝓓 ⟩ → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
 way-below 𝓓 x y = (I : 𝓥 ̇ ) (α : I → ⟨ 𝓓 ⟩) (δ : is-Directed 𝓓 α)
@@ -156,5 +157,69 @@ compact-⊑-≃-≪ 𝓓 {x} c {y} =
   (prop-valuedness 𝓓 x y) (≪-is-prop-valued 𝓓)
   (≪-⊑-to-≪ 𝓓 c)
   (≪-to-⊑ 𝓓)
+
+\end{code}
+
+TODO: Comment and maybe reorganize?
+
+\begin{code}
+
+module _
+        (𝓓 : DCPO {𝓤}  {𝓣} )
+        (𝓔 : DCPO {𝓤'} {𝓣'})
+        (ε : ⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩)
+        (ε-is-continuous : is-continuous 𝓓 𝓔 ε)
+        (π : ⟨ 𝓔 ⟩ → ⟨ 𝓓 ⟩)
+        (π-is-continuous : is-continuous 𝓔 𝓓 π)
+        (π-ε-retraction : (x : ⟨ 𝓓 ⟩) → π (ε x) ≡ x)
+        (ε-π-deflation : (y : ⟨ 𝓔 ⟩) → ε (π y) ⊑⟨ 𝓔 ⟩ y)
+       where
+
+ embedding-preserves-≪ : (x y : ⟨ 𝓓 ⟩) → x ≪⟨ 𝓓 ⟩ y → ε x ≪⟨ 𝓔 ⟩ ε y
+ embedding-preserves-≪ x y x-way-below-y I α δ εx-below-∐α =
+  ∥∥-functor h (x-way-below-y I (π ∘ α) δ' y-below-∐πα)
+   where
+    δ' : is-Directed 𝓓 (π ∘ α)
+    δ' = image-is-directed' 𝓔 𝓓 (π , π-is-continuous) δ
+    y-below-∐πα = y         ⊑⟨ 𝓓 ⟩[ ⦅1⦆ ]
+                  π (ε y)   ⊑⟨ 𝓓 ⟩[ ⦅2⦆ ]
+                  π (∐ 𝓔 δ) ⊑⟨ 𝓓 ⟩[ ⦅3⦆ ]
+                  ∐ 𝓓 δ'    ∎⟨ 𝓓 ⟩
+     where
+      ⦅1⦆ = ≡-to-⊑ 𝓓 ((π-ε-retraction y) ⁻¹)
+      ⦅2⦆ = monotone-if-continuous 𝓔 𝓓 (π , π-is-continuous) (ε y) (∐ 𝓔 δ)
+             εx-below-∐α
+      ⦅3⦆ = continuous-∐-⊑ 𝓔 𝓓 (π , π-is-continuous) δ
+    h : (Σ i ꞉ I , x   ⊑⟨ 𝓓 ⟩ π (α i))
+      → (Σ i ꞉ I , ε x ⊑⟨ 𝓔 ⟩ α i)
+    h (i , u) = (i , (ε x         ⊑⟨ 𝓔 ⟩[ ⦅1⦆ ]
+                      ε (π (α i)) ⊑⟨ 𝓔 ⟩[ ⦅2⦆ ]
+                      α i         ∎⟨ 𝓔 ⟩))
+     where
+      ⦅1⦆ = monotone-if-continuous 𝓓 𝓔 (ε , ε-is-continuous) x (π (α i)) u
+      ⦅2⦆ = ε-π-deflation (α i)
+
+ embedding-reflects-≪ : (x y : ⟨ 𝓓 ⟩) → ε x ≪⟨ 𝓔 ⟩ ε y → x ≪⟨ 𝓓 ⟩ y
+ embedding-reflects-≪ x y εx-way-below-εy I α δ y-below-∐α =
+  ∥∥-functor h (εx-way-below-εy I (ε ∘ α) δ' εy-below-∐εα)
+   where
+    δ' : is-Directed 𝓔 (ε ∘ α)
+    δ' = image-is-directed' 𝓓 𝓔 (ε , ε-is-continuous) δ
+    εy-below-∐εα = ε y       ⊑⟨ 𝓔 ⟩[ ⦅1⦆ ]
+                   ε (∐ 𝓓 δ) ⊑⟨ 𝓔 ⟩[ ⦅2⦆ ]
+                   ∐ 𝓔 δ'    ∎⟨ 𝓔 ⟩
+     where
+      ⦅1⦆ = monotone-if-continuous 𝓓 𝓔 (ε , ε-is-continuous) y (∐ 𝓓 δ) y-below-∐α
+      ⦅2⦆ = continuous-∐-⊑ 𝓓 𝓔 (ε , ε-is-continuous) δ
+    h : (Σ i ꞉ I , ε x ⊑⟨ 𝓔 ⟩ ε (α i))
+      → (Σ i ꞉ I , x   ⊑⟨ 𝓓 ⟩ α i)
+    h (i , u) = (i , (x           ⊑⟨ 𝓓 ⟩[ ⦅1⦆ ]
+                      π (ε x)     ⊑⟨ 𝓓 ⟩[ ⦅2⦆ ]
+                      π (ε (α i)) ⊑⟨ 𝓓 ⟩[ ⦅3⦆ ]
+                      α i         ∎⟨ 𝓓 ⟩))
+     where
+      ⦅1⦆ = ≡-to-⊑ 𝓓 ((π-ε-retraction x) ⁻¹)
+      ⦅2⦆ = monotone-if-continuous 𝓔 𝓓 (π , π-is-continuous) (ε x) (ε (α i)) u
+      ⦅3⦆ = ≡-to-⊑ 𝓓 (π-ε-retraction (α i))
 
 \end{code}
