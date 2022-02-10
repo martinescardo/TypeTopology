@@ -323,7 +323,8 @@ module _
                (λ b → prop-has-size-is-prop (λ _ → pe) (λ _ _ → fe)
                        (β b ≪⟨ 𝓓 ⟩ x) (≪-is-prop-valued 𝓓) 𝓥))
               (being-directed-is-prop (underlying-order 𝓓) (↡ι x))
-              (is-sup-is-prop (underlying-order 𝓓) (axioms-of-dcpo 𝓓) x (↡ι x)))
+              (is-sup-is-prop (underlying-order 𝓓) (pr₁ (axioms-of-dcpo 𝓓))
+                              x (↡ι x)))
 
  is-small-basis-≃ : is-small-basis ≃ is-small-basis-Σ
  is-small-basis-≃ = qinveq f (g , ρ , σ)
