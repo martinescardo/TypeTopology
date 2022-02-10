@@ -30,8 +30,9 @@ open ImageAndSurjection pt
 open import Lifting 𝓥 hiding (⊥)
 open import LiftingIdentityViaSIP 𝓥
 open import LiftingMiscelanea 𝓥
-open import LiftingMiscelanea-PropExt-FunExt 𝓥 pe fe renaming (⊑'-to-⊑ to ⊑'-to-⊑'')
--- open import LiftingMonad 𝓥
+open import LiftingMiscelanea-PropExt-FunExt 𝓥 pe fe
+                                             renaming (⊑'-to-⊑ to ⊑'-to-⊑''
+                                                     ; ⊑-to-⊑' to ⊑''-to-⊑')
 
 open import Dcpo pt fe 𝓥
 open import DcpoMiscelanea pt fe 𝓥
@@ -40,7 +41,7 @@ open import DcpoLifting pt fe 𝓥 pe renaming (𝓛-DCPO to 𝓛-DCPO-from-set
 
 open import Poset fe
 
-module _
+module freely-add-⊥
         (𝓓 : DCPO {𝓤} {𝓣})
        where
 
@@ -180,47 +181,12 @@ module _
      γ i = ((λ ⋆ → q i)
           , (λ ⋆ → ∐-is-lowerbound-of-upperbounds 𝓓 δ (value l (q i)) (ub' i)))
 
-{-
- 𝓛-sup-defined-somewhere-lemma : (I : 𝓥 ̇ ) (α : I → 𝓛D)
-                                 (δ : is-Directed 𝓛-DCPO α)
-                                 (i : I) (p : is-defined (α i))
-                                 (q : ∃ i ꞉ I , is-defined (α i))
-                               → value (α i) p ≡ value (∐ 𝓛-DCPO {I} {α} δ) q
- 𝓛-sup-defined-somewhere-lemma I α δ i p q =
-  antisymmetry 𝓓 (value (α i) p) (value (∐ 𝓛-DCPO {I} {α} δ) q) ⦅†⦆ ⦅‡⦆
-   where
-    ε : is-Directed 𝓓 (family-in-dcpo α)
-    ε = family-in-dcpo-is-directed α δ q
-    ⦅†⦆ : value (α i) p ⊑⟨ 𝓓 ⟩ ∐ 𝓓 ε
-    ⦅†⦆ = ∐-is-upperbound 𝓓 ε (i , p)
-    ⦅‡⦆ : ∐ 𝓓 ε ⊑⟨ 𝓓 ⟩ value (α i) p
-    ⦅‡⦆ = ∐-is-lowerbound-of-upperbounds 𝓓 ε (value (α i) p) ub
-     where
-      ub : ((i' , p') : Σ i' ꞉ I , is-defined (α i'))
-         → value (α i') p' ⊑⟨ 𝓓 ⟩ value (α i) p
-      ub (i' , p') = ∥∥-rec (prop-valuedness 𝓓 (value (α i') p') (value (α i) p))
-                            lem (semidirected-if-Directed 𝓛-DCPO α δ i i')
-       where
-        lem : (Σ k ꞉ I , (α i ⊑ α k) × (α i' ⊑ α k))
-            → value (α i') p' ⊑⟨ 𝓓 ⟩ value (α i) p
-        lem (k , u , v) = {!!}
--}
-
-{- ≡-to-⊑ 𝓓 (≡-of-values-from-≡ (lemma j qⱼ))
-       where
-        lemma : (j : I) (qⱼ : is-defined (α j)) → α j ≡ α i
-        lemma j qⱼ =
-         ∥∥-rec (lifting-of-set-is-set (sethood 𝓓)) claim
-                (semidirected-if-Directed 𝓛-DCPOₛ α δ i j)
-         where
-          claim : (Σ k ꞉ I , (α i ⊑' α k) × (α j ⊑' α k)) → α j ≡ α i
-          claim (k , u , v) = v qⱼ ∙ (u p) ⁻¹ -}
-
- {-
-        antisymmetry 𝓓 (value (α i) p) (∐ 𝓓 ε)
-         where
- -}
-
+ 𝓛-order-lemma : {k l : 𝓛D} → k ⊑' l → k ⊑ l
+ 𝓛-order-lemma {k} {l} k-below-l = (pr₁ claim , (λ p → ≡-to-⊑ 𝓓 (pr₂ claim p)))
+  where
+   open import LiftingUnivalentPrecategory 𝓥 ⟨ 𝓓 ⟩ renaming (_⊑_ to _⊑''_)
+   claim : k ⊑'' l
+   claim = ⊑'-to-⊑'' k-below-l
 
  module _
          (𝓔 : DCPO⊥ {𝓤'} {𝓣'})
@@ -287,13 +253,6 @@ module _
 
   f̃-after-η-is-f' : f̃ ∘ η ∼ f
   f̃-after-η-is-f' = f̃-after-η-is-f
-
-  𝓛-order-lemma : {k l : 𝓛D} → k ⊑' l → k ⊑ l
-  𝓛-order-lemma {k} {l} k-below-l = (pr₁ claim , (λ p → ≡-to-⊑ 𝓓 (pr₂ claim p)))
-   where
-    open import LiftingUnivalentPrecategory 𝓥 ⟨ 𝓓 ⟩ renaming (_⊑_ to _⊑''_)
-    claim : k ⊑'' l
-    claim = ⊑'-to-⊑'' k-below-l
 
   𝓛-DCPOₛ : DCPO
   𝓛-DCPOₛ = 𝓛-DCPO-from-set (sethood 𝓓)
@@ -441,8 +400,34 @@ module _
        lb-of-ubs : is-lowerbound-of-upperbounds _≡_ (α i) α
        lb-of-ubs y y-is-ub = y-is-ub i
 
+ module _ where
+  open freely-add-⊥ X̃
+
+  𝓛-order-lemma-converse : {k l : 𝓛 X} → k ⊑ l → k ⊑' l
+  𝓛-order-lemma-converse {k} {l} k-below-l = ⊑''-to-⊑' k-below-l
+
+ open freely-add-⊥
+
+ -- TODO: Rename?
  𝓛X̃-≃-𝓛X : 𝓛-DCPO⊥ X̃ ≃ᵈᶜᵖᵒ⊥ 𝓛-DCPO⊥-from-set X-is-set
- 𝓛X̃-≃-𝓛X = ≃ᵈᶜᵖᵒ-to-≃ᵈᶜᵖᵒ⊥ (𝓛-DCPO⊥ X̃) (𝓛-DCPO⊥-from-set X-is-set)
-                           (id , id , (λ _ → refl) , (λ _ → refl) , {!!} , {!!})
+ 𝓛X̃-≃-𝓛X = ≃ᵈᶜᵖᵒ-to-≃ᵈᶜᵖᵒ⊥ (𝓛-DCPO⊥ X̃) 𝓛-DCPO⊥-X
+                           (id , id , (λ _ → refl) , (λ _ → refl) ,
+                            cont₁ , cont₂)
+  where
+   𝓛-DCPO⊥-X : DCPO⊥
+   𝓛-DCPO⊥-X = 𝓛-DCPO⊥-from-set X-is-set
+   cont₁ : is-continuous (𝓛-DCPO⊥ X̃ ⁻) (𝓛-DCPO⊥-X ⁻) id
+   cont₁ I α δ = (ub , lb-of-ubs)
+    where
+     ub : (i : I) → α i ⊑' ∐ (𝓛-DCPO⊥ X̃ ⁻) {I} {α} δ
+     ub i = (𝓛-order-lemma-converse (∐-is-upperbound (𝓛-DCPO⊥ X̃ ⁻) {I} {α} δ i))
+     lb-of-ubs : is-lowerbound-of-upperbounds _⊑'_ (∐ (𝓛-DCPO⊥ X̃ ⁻) {I} {α} δ) α
+     lb-of-ubs l l-is-ub = 𝓛-order-lemma-converse
+                            (∐-is-lowerbound-of-upperbounds (𝓛-DCPO⊥ X̃ ⁻) {I} {α}
+                            δ l
+                            (λ i → 𝓛-order-lemma X̃ (l-is-ub i)))
+   cont₂ : is-continuous (𝓛-DCPO⊥-X ⁻) (𝓛-DCPO⊥ X̃ ⁻) id
+   cont₂ = 𝓛-continuity-lemma X̃ (𝓛-DCPO⊥ X̃) η (η-is-continuous X̃)
+            id (id-is-continuous (𝓛-DCPO⊥ X̃ ⁻))
 
 \end{code}
