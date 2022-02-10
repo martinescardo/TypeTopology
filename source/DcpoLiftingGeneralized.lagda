@@ -31,12 +31,12 @@ open import Lifting 𝓥 hiding (⊥)
 open import LiftingIdentityViaSIP 𝓥
 open import LiftingMiscelanea 𝓥
 open import LiftingMiscelanea-PropExt-FunExt 𝓥 pe fe
-                                             renaming (⊑'-to-⊑ to ⊑'-to-⊑''
-                                                     ; ⊑-to-⊑' to ⊑''-to-⊑')
+                                             renaming ( ⊑'-to-⊑ to ⊑'-to-⊑''
+                                                      ; ⊑-to-⊑' to ⊑''-to-⊑')
 
 open import Dcpo pt fe 𝓥
 open import DcpoMiscelanea pt fe 𝓥
-open import DcpoLifting pt fe 𝓥 pe renaming (𝓛-DCPO to 𝓛-DCPO-from-set
+open import DcpoLifting pt fe 𝓥 pe renaming ( 𝓛-DCPO  to 𝓛-DCPO-from-set
                                             ; 𝓛-DCPO⊥ to 𝓛-DCPO⊥-from-set)
 
 open import Poset fe
