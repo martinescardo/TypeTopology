@@ -33,7 +33,7 @@ https://github.com/agda/agda/issues/1625
 
 \begin{code}
 
-open import SpartanMLTT
+open import SpartanMLTT hiding (J)
 open import UF-FunExt
 open import UF-PropTrunc
 
@@ -835,5 +835,33 @@ If every dcpo in the diagram is locally small, then so is its bilimit.
    γ σ τ = Π-cong fe fe I (λ i → ⦅ σ ⦆ i ⊑ₛ⟨ i ⟩ ⦅ τ ⦆ i)
                           (λ i → ⦅ σ ⦆ i ⊑⟨ 𝓓 i ⟩ ⦅ τ ⦆ i)
                           (λ i → ⊑ₛ-≃-⊑ i (⦅ σ ⦆ i) (⦅ τ ⦆ i))
+
+\end{code}
+
+TODO: Write comment
+
+\begin{code}
+
+ open import DcpoContinuous pt fe 𝓥
+
+ 𝓓∞-structurally-continuous : ((i : I) → structurally-continuous (𝓓 i))
+                            → structurally-continuous 𝓓∞
+ 𝓓∞-structurally-continuous 𝓒 = record
+  { index-of-approximating-family = J∞
+  ; approximating-family = α∞
+  ; approximating-family-is-directed = {!!}
+  ; approximating-family-is-way-below = {!!}
+  ; approximating-family-∐-≡ = {!!}
+  }
+   where
+    open structurally-continuous
+    J : (i : I) → ⟨ 𝓓 i ⟩ → 𝓥 ̇
+    J i = index-of-approximating-family (𝓒 i)
+    α : (i : I) (x : ⟨ 𝓓 i ⟩) → J i x → ⟨ 𝓓 i ⟩
+    α i = approximating-family (𝓒 i)
+    J∞ : ⟨ 𝓓∞ ⟩ → 𝓥 ̇
+    J∞ σ = Σ i ꞉ I , J i (⦅ σ ⦆ i)
+    α∞ : (σ : ⟨ 𝓓∞ ⟩) → J∞ σ → ⟨ 𝓓∞ ⟩
+    α∞ σ (i , j) = ε∞ i (α i (⦅ σ ⦆ i) j)
 
 \end{code}
