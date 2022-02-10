@@ -623,3 +623,25 @@ module _
                  being-locally-small'-is-prop
 
 \end{code}
+
+TODO: Reorder the material in this file
+
+\begin{code}
+
+is-deflation : (𝓓 : DCPO {𝓤} {𝓣}) → DCPO[ 𝓓 , 𝓓 ] → 𝓤 ⊔ 𝓣 ̇
+is-deflation 𝓓 f = (x : ⟨ 𝓓 ⟩) → [ 𝓓 , 𝓓 ]⟨ f ⟩ x ⊑⟨ 𝓓 ⟩ x
+
+is-continuous-retract : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
+                      → DCPO[ 𝓓 , 𝓔 ]
+                      → DCPO[ 𝓔 , 𝓓 ]
+                      → 𝓤 ̇
+is-continuous-retract 𝓓 𝓔 (σ , _) (ρ , _) = (x : ⟨ 𝓓 ⟩) → ρ (σ x) ≡ x
+
+is-embedding-projection : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
+                        → DCPO[ 𝓓 , 𝓔 ]
+                        → DCPO[ 𝓔 , 𝓓 ]
+                        → 𝓤 ⊔ 𝓤' ⊔ 𝓣' ̇
+is-embedding-projection 𝓓 𝓔 ε π =
+ is-continuous-retract 𝓓 𝓔 ε π × is-deflation 𝓔 (DCPO-∘ 𝓔 𝓓 𝓔 π ε)
+
+\end{code}
