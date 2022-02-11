@@ -843,15 +843,16 @@ TODO: Write comment
 \begin{code}
 
  open import DcpoContinuous pt fe 𝓥
+ open import DcpoWayBelow   pt fe 𝓥
 
  𝓓∞-structurally-continuous : ((i : I) → structurally-continuous (𝓓 i))
                             → structurally-continuous 𝓓∞
  𝓓∞-structurally-continuous 𝓒 = record
-  { index-of-approximating-family = J∞
-  ; approximating-family = α∞
-  ; approximating-family-is-directed = {!!}
+  { index-of-approximating-family     = J∞
+  ; approximating-family              = α∞
+  ; approximating-family-is-directed  = {!!}
   ; approximating-family-is-way-below = {!!}
-  ; approximating-family-∐-≡ = {!!}
+  ; approximating-family-∐-≡          = {!!}
   }
    where
     open structurally-continuous
@@ -863,5 +864,49 @@ TODO: Write comment
     J∞ σ = Σ i ꞉ I , J i (⦅ σ ⦆ i)
     α∞ : (σ : ⟨ 𝓓∞ ⟩) → J∞ σ → ⟨ 𝓓∞ ⟩
     α∞ σ (i , j) = ε∞ i (α i (⦅ σ ⦆ i) j)
+    α∞' : (σ : ⟨ 𝓓∞ ⟩) (i : I) → J i (⦅ σ ⦆ i) → ⟨ 𝓓∞ ⟩
+    α∞' σ i j = α∞ σ (i , j)
+    α∞-is-directed : (σ : ⟨ 𝓓∞ ⟩) → is-Directed 𝓓∞ (α∞ σ)
+    α∞-is-directed σ = γ
+     where
+      open Ind-completion 𝓓∞
+      α∞'-is-directed : (i : I) → is-Directed 𝓓∞ (α∞' σ i)
+      α∞'-is-directed i = image-is-directed' (𝓓 i) 𝓓∞ (ε∞' i)
+                           (approximating-family-is-directed (𝓒 i) (⦅ σ ⦆ i))
+      α∞⁺ : (i : I) → Ind
+      α∞⁺ i = (J i (⦅ σ ⦆ i) , α∞' σ i , α∞'-is-directed i)
+      γ : is-Directed 𝓓∞ (α∞ σ)
+      γ = pr₂ (pr₂ (Ind-∐ α∞⁺ lemma)) -- TODO: Name this projection in DcpoContinuous?
+       where
+        lemma : is-directed _≲_ α∞⁺
+        lemma = (I-inhabited , semidir)
+         where
+          semidir : is-semidirected _≲_ α∞⁺
+          semidir i₁ i₂ = ∥∥-functor h (I-semidirected i₁ i₂)
+           where
+            h : (Σ i ꞉ I , (i₁ ⊑ i) × (i₂ ⊑ i))
+              → (Σ i ꞉ I , (α∞⁺ i₁ ≲ α∞⁺ i) × (α∞⁺ i₂ ≲ α∞⁺ i))
+            h (i , u , v) = (i , claim₁ , {!!})
+             where
+              claim₁ : α∞⁺ i₁ ≲ α∞⁺ i
+              claim₁ j₁ = ∥∥-functor {!!} {!!}
+               where
+                x₁ : ⟨ 𝓓 i₁ ⟩
+                x₁ = α i₁ (⦅ σ ⦆ i₁) j₁
+                foo : x₁ ≪⟨ 𝓓 i₁ ⟩ ⦅ σ ⦆ i₁
+                foo = {!!}
+                bar : ε u x₁ ≪⟨ 𝓓 i ⟩ ⦅ σ ⦆ i
+                bar = ≪-⊑-to-≪ (𝓓 i) bar' (ε u (⦅ σ ⦆ i₁) ⊑⟨ 𝓓 i ⟩[ {!!} ]
+                                           {!!} -- π u (ε u (⦅ σ ⦆ i₁)) ⊑⟨ 𝓓 i ⟩[ ? ]
+                                           ⦅ σ ⦆ i ∎⟨ 𝓓 i ⟩)
+
+
+                 where
+                  bar' : ε u x₁ ≪⟨ 𝓓 i ⟩ ε u (⦅ σ ⦆ i₁)
+                  bar' = embedding-preserves-≪ (𝓓 i₁) (𝓓 i)
+                          (ε u) (ε-is-continuous u)
+                          (π u) (π-is-continuous u)
+                          (ε-section-of-π u) (επ-deflation u)
+                          x₁ (⦅ σ ⦆ i₁) foo
 
 \end{code}
