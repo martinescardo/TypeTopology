@@ -850,7 +850,7 @@ TODO: Write comment
  𝓓∞-structurally-continuous 𝓒 = record
   { index-of-approximating-family     = J∞
   ; approximating-family              = α∞
-  ; approximating-family-is-directed  = {!!}
+  ; approximating-family-is-directed  = α∞-is-directed
   ; approximating-family-is-way-below = {!!}
   ; approximating-family-∐-≡          = {!!}
   }
@@ -860,53 +860,87 @@ TODO: Write comment
     J i = index-of-approximating-family (𝓒 i)
     α : (i : I) (x : ⟨ 𝓓 i ⟩) → J i x → ⟨ 𝓓 i ⟩
     α i = approximating-family (𝓒 i)
+    δ : (i : I) (x : ⟨ 𝓓 i ⟩) → is-Directed (𝓓 i) (α i x)
+    δ i = approximating-family-is-directed (𝓒 i)
     J∞ : ⟨ 𝓓∞ ⟩ → 𝓥 ̇
     J∞ σ = Σ i ꞉ I , J i (⦅ σ ⦆ i)
     α∞ : (σ : ⟨ 𝓓∞ ⟩) → J∞ σ → ⟨ 𝓓∞ ⟩
     α∞ σ (i , j) = ε∞ i (α i (⦅ σ ⦆ i) j)
     α∞' : (σ : ⟨ 𝓓∞ ⟩) (i : I) → J i (⦅ σ ⦆ i) → ⟨ 𝓓∞ ⟩
     α∞' σ i j = α∞ σ (i , j)
+
+    cofinal-lemma : (σ : ⟨ 𝓓∞ ⟩) (i₁ i₂ : I)
+                  → i₁ ⊑ i₂
+                  → (j₁ : J i₁ (⦅ σ ⦆ i₁))
+                  → ∃ j₂ ꞉ J i₂ (⦅ σ ⦆ i₂)
+                         , α∞ σ (i₁ , j₁) ⊑⟨ 𝓓∞ ⟩ α∞ σ (i₂ , j₂)
+    cofinal-lemma σ i₁ i₂ u j₁ = ∥∥-functor lemma claim
+     where
+      lemma : (Σ j₂ ꞉ J i₂ (⦅ σ ⦆ i₂)
+                    , ε u (α i₁ (⦅ σ ⦆ i₁) j₁) ⊑⟨ 𝓓 i₂ ⟩ α i₂ (⦅ σ ⦆ i₂) j₂)
+            → (Σ j₂ ꞉ J i₂ (⦅ σ ⦆ i₂) , α∞ σ (i₁ , j₁) ⊑⟨ 𝓓∞ ⟩ α∞ σ (i₂ , j₂))
+      lemma (j₂ , v) = (j₂ , v')
+       where
+        -- TODO: We have everything at the i-th projection, because we get
+        -- yellow otherwise
+        v' : (i : I) → ⦅ α∞ σ (i₁ , j₁) ⦆ i ⊑⟨ 𝓓 i ⟩ ⦅ α∞ σ (i₂ , j₂) ⦆ i
+        v' i = ⦅ α∞ σ (i₁ , j₁)                   ⦆ i ⊑⟨ 𝓓 i ⟩[ ⦅1⦆ ]
+               ⦅ ε∞ i₁ (α i₁ (⦅ σ ⦆ i₁) j₁)       ⦆ i ⊑⟨ 𝓓 i ⟩[ ⦅2⦆ ]
+               ⦅ ε∞ i₂ (ε u (α i₁ (⦅ σ ⦆ i₁) j₁)) ⦆ i ⊑⟨ 𝓓 i ⟩[ ⦅3⦆ ]
+               ⦅ ε∞ i₂ (α i₂ (⦅ σ ⦆ i₂) j₂)       ⦆ i ⊑⟨ 𝓓 i ⟩[ ⦅4⦆ ]
+               ⦅ α∞ σ (i₂ , j₂)                   ⦆ i ∎⟨ 𝓓 i ⟩
+         where
+          ⦅1⦆ = reflexivity (𝓓 i) (⦅ α∞ σ (i₁ , j₁)⦆ i)
+          ⦅2⦆ = ≡-to-⊑ (𝓓 i) (ap (λ - → ⦅ - ⦆ i)
+                 ((ε∞-commutes-with-εs i₁ i₂ u (α i₁ (⦅ σ ⦆ i₁) j₁)) ⁻¹))
+          ⦅3⦆ = monotone-if-continuous (𝓓 i₂) (𝓓 i)
+                 (DCPO-∘ (𝓓 i₂) 𝓓∞ (𝓓 i) (ε∞' i₂) (π∞' i))
+                 (ε u (α i₁ (⦅ σ ⦆ i₁) j₁)) (α i₂ (⦅ σ ⦆ i₂) j₂)
+                 v
+          ⦅4⦆ = reflexivity (𝓓 i) (⦅ α∞ σ (i₂ , j₂) ⦆ i)
+      claim : ∃ j₂ ꞉ J i₂ (⦅ σ ⦆ i₂)
+                  , ε u (α i₁ (⦅ σ ⦆ i₁) j₁) ⊑⟨ 𝓓 i₂ ⟩ α i₂ (⦅ σ ⦆ i₂) j₂
+      claim = subclaim (J i₂ (⦅ σ ⦆ i₂)) (α i₂ (⦅ σ ⦆ i₂)) (δ i₂ (⦅ σ ⦆ i₂))
+               (approximating-family-∐-⊒ (𝓓 i₂) (𝓒 i₂) (⦅ σ ⦆ i₂))
+       where
+        subclaim : ε u (α i₁ (⦅ σ ⦆ i₁) j₁) ≪⟨ 𝓓 i₂ ⟩ ⦅ σ ⦆ i₂
+        subclaim = ≪-⊑-to-≪ (𝓓 i₂) wb bel
+         where
+          bel = ε u (⦅ σ ⦆ i₁)      ⊑⟨ 𝓓 i₂ ⟩[ ⦅1⦆ ]
+                ε u (π u (π∞ i₂ σ)) ⊑⟨ 𝓓 i₂ ⟩[ ⦅2⦆ ]
+                ⦅ σ ⦆ i₂            ∎⟨ 𝓓 i₂ ⟩
+           where
+            ⦅1⦆ = ≡-to-⊑ (𝓓 i₂) (ap (ε u) ((π∞-commutes-with-πs i₁ i₂ u σ) ⁻¹))
+            ⦅2⦆ = επ-deflation u (⦅ σ ⦆ i₂)
+          wb : ε u (α i₁ (⦅ σ ⦆ i₁) j₁) ≪⟨ 𝓓 i₂ ⟩ ε u (⦅ σ ⦆ i₁)
+          wb = embedding-preserves-≪ (𝓓 i₁) (𝓓 i₂)
+                (ε u) (ε-is-continuous u) (π u) (π-is-continuous u)
+                (ε-section-of-π u) (επ-deflation u)
+                (α i₁ (⦅ σ ⦆ i₁) j₁) (⦅ σ ⦆ i₁) wb'
+           where
+            wb' : α i₁ (⦅ σ ⦆ i₁) j₁ ≪⟨ 𝓓 i₁ ⟩ ⦅ σ ⦆ i₁
+            wb' = approximating-family-is-way-below (𝓒 i₁) (⦅ σ ⦆ i₁) j₁
+
+
     α∞-is-directed : (σ : ⟨ 𝓓∞ ⟩) → is-Directed 𝓓∞ (α∞ σ)
     α∞-is-directed σ = γ
      where
       open Ind-completion 𝓓∞
       α∞'-is-directed : (i : I) → is-Directed 𝓓∞ (α∞' σ i)
-      α∞'-is-directed i = image-is-directed' (𝓓 i) 𝓓∞ (ε∞' i)
-                           (approximating-family-is-directed (𝓒 i) (⦅ σ ⦆ i))
+      α∞'-is-directed i = image-is-directed' (𝓓 i) 𝓓∞ (ε∞' i) (δ i (⦅ σ ⦆ i))
       α∞⁺ : (i : I) → Ind
       α∞⁺ i = (J i (⦅ σ ⦆ i) , α∞' σ i , α∞'-is-directed i)
       γ : is-Directed 𝓓∞ (α∞ σ)
-      γ = pr₂ (pr₂ (Ind-∐ α∞⁺ lemma)) -- TODO: Name this projection in DcpoContinuous?
+      γ = pr₂ (pr₂ (Ind-∐ α∞⁺ α∞-directed-lemma)) -- TODO: Name this projection in DcpoContinuous?
        where
-        lemma : is-directed _≲_ α∞⁺
-        lemma = (I-inhabited , semidir)
+        α∞-directed-lemma : is-directed _≲_ α∞⁺
+        α∞-directed-lemma = (I-inhabited , semidir)
          where
           semidir : is-semidirected _≲_ α∞⁺
           semidir i₁ i₂ = ∥∥-functor h (I-semidirected i₁ i₂)
            where
             h : (Σ i ꞉ I , (i₁ ⊑ i) × (i₂ ⊑ i))
               → (Σ i ꞉ I , (α∞⁺ i₁ ≲ α∞⁺ i) × (α∞⁺ i₂ ≲ α∞⁺ i))
-            h (i , u , v) = (i , claim₁ , {!!})
-             where
-              claim₁ : α∞⁺ i₁ ≲ α∞⁺ i
-              claim₁ j₁ = ∥∥-functor {!!} {!!}
-               where
-                x₁ : ⟨ 𝓓 i₁ ⟩
-                x₁ = α i₁ (⦅ σ ⦆ i₁) j₁
-                foo : x₁ ≪⟨ 𝓓 i₁ ⟩ ⦅ σ ⦆ i₁
-                foo = {!!}
-                bar : ε u x₁ ≪⟨ 𝓓 i ⟩ ⦅ σ ⦆ i
-                bar = ≪-⊑-to-≪ (𝓓 i) bar' (ε u (⦅ σ ⦆ i₁) ⊑⟨ 𝓓 i ⟩[ {!!} ]
-                                           {!!} -- π u (ε u (⦅ σ ⦆ i₁)) ⊑⟨ 𝓓 i ⟩[ ? ]
-                                           ⦅ σ ⦆ i ∎⟨ 𝓓 i ⟩)
-
-
-                 where
-                  bar' : ε u x₁ ≪⟨ 𝓓 i ⟩ ε u (⦅ σ ⦆ i₁)
-                  bar' = embedding-preserves-≪ (𝓓 i₁) (𝓓 i)
-                          (ε u) (ε-is-continuous u)
-                          (π u) (π-is-continuous u)
-                          (ε-section-of-π u) (επ-deflation u)
-                          x₁ (⦅ σ ⦆ i₁) foo
+            h (i , u , v) = (i , cofinal-lemma σ i₁ i u , cofinal-lemma σ i₂ i v)
 
 \end{code}
