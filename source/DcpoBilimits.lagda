@@ -874,6 +874,7 @@ TODO: Write comment
                   → (j₁ : J i₁ (⦅ σ ⦆ i₁))
                   → ∃ j₂ ꞉ J i₂ (⦅ σ ⦆ i₂)
                          , α∞ σ (i₁ , j₁) ⊑⟨ 𝓓∞ ⟩ α∞ σ (i₂ , j₂)
+    -- TODO: Is this really any easier than proving directedness of α∞ directly?
     cofinal-lemma σ i₁ i₂ u j₁ = ∥∥-functor lemma claim
      where
       lemma : (Σ j₂ ꞉ J i₂ (⦅ σ ⦆ i₂)
