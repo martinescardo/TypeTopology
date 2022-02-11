@@ -176,16 +176,7 @@ module Ind-completion
              → (I , α , δ) ≲ (J , β , ε)
              → ∐ 𝓓 δ ⊑⟨ 𝓓 ⟩ ∐ 𝓓 ε
  ≲-to-⊑-of-∐ {I} {J} {α} {β} δ ε α-cofinal-in-β =
-  ∐-is-lowerbound-of-upperbounds 𝓓 δ (∐ 𝓓 ε) h
-   where
-    h : (i : I) → α i ⊑⟨ 𝓓 ⟩ ∐ 𝓓 ε
-    h i = ∥∥-rec (prop-valuedness 𝓓 (α i) (∐ 𝓓 ε)) r (α-cofinal-in-β i)
-     where
-      r : (Σ j ꞉ J , α i ⊑⟨ 𝓓 ⟩ β j)
-        → α i ⊑⟨ 𝓓 ⟩ ∐ 𝓓 ε
-      r (j , u) = α i   ⊑⟨ 𝓓 ⟩[ u ]
-                  β j   ⊑⟨ 𝓓 ⟩[ ∐-is-upperbound 𝓓 ε j ]
-                  ∐ 𝓓 ε ∎⟨ 𝓓 ⟩
+  ∐-⊑-if-cofinal 𝓓 α-cofinal-in-β δ ε
 
  ∐-map-is-monotone : (α β : Ind) → α ≲ β → ∐-map α ⊑⟨ 𝓓 ⟩ ∐-map β
  ∐-map-is-monotone (I , α , δ) (J , β , ε) = ≲-to-⊑-of-∐ δ ε
