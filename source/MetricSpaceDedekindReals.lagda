@@ -1,5 +1,5 @@
 \begin{code}
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --experimental-lossy-unification #-}
 
 open import SpartanMLTT renaming (_+_ to _∔_) -- TypeTopology
 
@@ -10,7 +10,7 @@ open import UF-Powerset -- TypeTopology
 open import UF-PropTrunc -- TypeTopology
 open import UF-Subsingletons -- TypeTopology
 
-open import DedekindRealsProperties
+
 open import NaturalsOrder hiding (max ;  max-comm ;  max-assoc)
 open import RationalsAddition
 open import Rationals
@@ -30,6 +30,7 @@ open import MetricSpaceAltDef pt fe pe
 open import DedekindReals pe pt fe
 open import MetricSpaceRationals fe pt pe
 open import RationalsMinMax fe
+open import DedekindRealsProperties fe pt pe
 
 B-ℝ : (x y : ℝ) → (ε : ℚ) → 0ℚ < ε → 𝓤₀ ̇
 B-ℝ ((Lx , Rx) , _) ((Ly , Ry) , _) ε l =
@@ -153,7 +154,7 @@ m1b-lemma q ε (l₁ , l₂) = IV
   IV = ℚ<-to-abs fe q ε (III , l₂) 
 
 ℝ-m1b : m1b ℝ B-ℝ
-ℝ-m1b ((L , R) , iscut) ε l = ∥∥-functor I (ℝ-arithmetically-located fe pt pe ((L , R) , iscut) ε l)
+ℝ-m1b ((L , R) , iscut) ε l = ∥∥-functor I (ℝ-arithmetically-located ((L , R) , iscut) ε l)
  where
   I : (Σ (x , y) ꞉ ℚ × ℚ , x ∈ L × y ∈ R × (0ℚ < (y - x)) × ((y - x) < ε)) → Σ (p , q , u , v) ꞉ ℚ × ℚ × ℚ × ℚ , p ∈ L × u ∈ L × q ∈ R × v ∈ R × B-ℚ (min p u) (max q v) ε l
   I ((x , y) , Lx , Ry , (l₁ , l₂)) = (x , y , x , y) , Lx , Lx , Ry , Ry , transport₂ (λ α β → B-ℚ α β ε l) (min-refl x ⁻¹) (max-refl y ⁻¹) iii
@@ -296,8 +297,42 @@ cauchy-approximation = Σ f ꞉ (ℚ₊ → ℝ) , (((δ , l₁) (ε , l₂) : �
 cauchy-approximation-limit : cauchy-approximation → 𝓤₁ ̇
 cauchy-approximation-limit (ca , _) = Σ l ꞉ ℝ , (((ε , l₁) (θ , l₂) : ℚ₊) → B-ℝ (ca (ε , l₁)) l (ε + θ) (ℚ<-adding-zero ε θ l₁ l₂))
 
+
+\end{code}
+
+A cauchy approximation is a map f : ℚ₊ → ℝ that satisfies | f ε - f δ | < ε + δ.
+I am trying to show that any such a map has a limit l such that ∀ ε δ > 0 , | f ε - l | < ε + δ
+
+Let y be the limit.
+
+We define the limit as
+
+p ∈ Ly → ∃ ε , δ > 0 such that p + ε + δ < f ε
+q ∈ Ry → ∃ ε , δ > 0 such that             f ε < q - ε - δ
+
+
+We want to show that this is a Real number. I have proved that this cut is located and rounded. I cannot see the proofs disjointness.
+
+
+Disjoint :
+
+p ∈ Ly , q ∈ Ry → p < q
+
+Unpack definitions to obtain:
+
+∃ ε₁ , δ₁ > 0 , p + ε₁ + δ₁ < f ε₁
+∃ ε₂ , δ₂ > 0 ,               f ε₂ < q - ε₂ - δ₂
+
+p + ε₁ + δ₁ - ε₂ - δ₂ < p + ε₁ + δ₁
+
+(Potentially misleading, but we have
+                                     | f ε₁ - f ε₂ | < ε₁ + ε₂
+                       → - (ε₁ + ε₂) < f ε₁ - f ε₂ < ε₁ + ε₂
+
+\begin{code}
+
 cauchy-approximation-limit-exists : (ca : cauchy-approximation) → cauchy-approximation-limit ca
-cauchy-approximation-limit-exists (f , approximation-condition) = y , {!!}
+cauchy-approximation-limit-exists (f , approximation-condition) = y , y-is-limit
  where
   type-of-approx : ((α , l₁) (β , l₂) : ℚ₊) → B-ℝ (f (α , l₁)) (f (β , l₂)) (α + β) (ℚ<-adding-zero α β l₁ l₂)
   type-of-approx = approximation-condition
@@ -308,11 +343,64 @@ cauchy-approximation-limit-exists (f , approximation-condition) = y , {!!}
   Ry : ℚ-subset-of-propositions
   Ry q = (∃ ((ε , l₁) , (θ , l₂)) ꞉ ℚ₊ × ℚ₊ , in-upper-cut (q - ε - θ) (f (ε , l₁))) , ∃-is-prop
 
-  inhabited-left-y : inhabited-left Ly
-  inhabited-left-y = ∣ {!!} , {!!} ∣
+  inhabited-left-y : inhabited-left Ly -- Todd helped extensively
+  inhabited-left-y = ∥∥-rec ∃-is-prop γ obtain-p'
+   where   
+    ε : ℚ
+    ε = 1ℚ
+    δ : ℚ
+    δ = 1ℚ
+    0<1 : 0ℚ < 1ℚ
+    0<1 = 0 , refl
+    obtain-p' : ∃ p' ꞉ ℚ , p' ∈ lower-cut-of (f (ε , 0<1))
+    obtain-p' = inhabited-from-real-L (f (ε , 0<1))
+
+    γ : Σ p' ꞉ ℚ , p' ∈ lower-cut-of (f (ε , 0<1)) → ∃ p ꞉ ℚ , p ∈ Ly
+    γ (p' , p'Ly) = ∣ p , ∣ ((ε , 0<1) , (δ , 0<1)) , transport (_∈ lower-cut-of (f (ε , 0<1))) I p'Ly ∣ ∣
+     where
+      p : ℚ
+      p = p' - ε - δ
+      I : p' ≡ p + ε + δ
+      I = p'                          ≡⟨ ℚ-zero-right-neutral fe p' ⁻¹ ⟩
+          p' + 0ℚ                     ≡⟨ ap (p' +_) (ℚ-inverse-sum-to-zero' fe ε ⁻¹) ⟩
+          p' + ((- ε) + ε)            ≡⟨ ℚ+-assoc fe p' (- ε) ε ⁻¹ ⟩
+          p' - ε + ε                  ≡⟨ ap ((p' - ε) +_) (ℚ-zero-left-neutral fe ε ⁻¹) ⟩
+          p' - ε + (0ℚ + ε)           ≡⟨ ap (λ α → p' - ε + (α + ε) ) (ℚ-inverse-sum-to-zero' fe δ ⁻¹) ⟩
+          p' - ε + ((- δ) + δ + ε)    ≡⟨ ap ((p' - ε) +_) (ℚ+-assoc fe (- δ) δ ε) ⟩
+          p' - ε + ((- δ) + (δ + ε))  ≡⟨ ap (λ α → p' - ε + ((- δ) + α)) (ℚ+-comm δ ε) ⟩
+          p' - ε + ((- δ) + (ε + δ))  ≡⟨ ℚ+-assoc fe (p' - ε) (- δ) (ε + δ) ⁻¹ ⟩
+          p' - ε - δ + (ε + δ)        ≡⟨ ℚ+-assoc fe (p' - ε - δ) ε δ ⁻¹ ⟩
+          p' - ε - δ + ε + δ          ≡⟨ by-definition ⟩
+          p + ε + δ ∎
 
   inhabited-right-y : inhabited-right Ry
-  inhabited-right-y = {!!}
+  inhabited-right-y = ∥∥-rec ∃-is-prop γ obtain-q'
+   where
+    ε : ℚ
+    ε = 1ℚ
+    δ : ℚ
+    δ = 1ℚ
+    0<1 : 0ℚ < 1ℚ
+    0<1 = 0 , refl
+    obtain-q' : ∃ q' ꞉ ℚ , q' ∈ upper-cut-of (f (ε , 0<1))
+    obtain-q' = inhabited-from-real-R (f (ε , 0<1))
+    γ : Σ q' ꞉ ℚ , q' ∈ upper-cut-of (f (ε , 0<1)) → ∃ q ꞉ ℚ , q ∈ Ry
+    γ (q' , q'Ly) = ∣ q , ∣ ((ε , 0<1) , (δ , 0<1)) , (transport (_∈ upper-cut-of (f (ε , 0<1))) I q'Ly) ∣ ∣
+     where
+      q : ℚ
+      q = q' + ε + δ
+      I : q' ≡ q - ε - δ
+      I = q'                                        ≡⟨ ℚ-zero-right-neutral fe q' ⁻¹ ⟩
+          q' + 0ℚ                                   ≡⟨  ap (q' +_) (ℚ-inverse-sum-to-zero fe ε ⁻¹) ⟩
+          q' + (ε + (- ε))                          ≡⟨ ℚ+-assoc fe q' ε (- ε) ⁻¹ ⟩
+          q' + ε + (- ε)                            ≡⟨ ap ((q' + ε) +_) (ℚ-zero-left-neutral fe (- ε) ⁻¹) ⟩
+          q' + ε + (0ℚ - ε)                         ≡⟨ ap (λ α → q' + ε + (α - ε) ) (ℚ-inverse-sum-to-zero fe δ ⁻¹) ⟩
+          q' + ε + (δ + (- δ) + (- ε))              ≡⟨ ap ((q' + ε) +_) (ℚ+-assoc fe δ (- δ) (- ε)) ⟩          
+          q' + ε + (δ + ((- δ) + (- ε)))            ≡⟨ ap (λ α → q' + ε + (δ + α)) (ℚ+-comm (- δ) (- ε)) ⟩
+          q' + ε + (δ + ((- ε) - δ))                ≡⟨ ℚ+-assoc fe (q' + ε) δ ((- ε) - δ) ⁻¹ ⟩
+          q' + ε + δ + ((- ε) + (- δ))              ≡⟨ ℚ+-assoc fe (q' + ε + δ) (- ε) (- δ) ⁻¹ ⟩
+          q' + ε + δ - ε - δ                        ≡⟨ by-definition ⟩
+          q - ε - δ ∎
 
   rounded-left-y : rounded-left Ly
   rounded-left-y k = I , II
@@ -418,22 +506,22 @@ cauchy-approximation-limit-exists (f , approximation-condition) = y , {!!}
     
 
   located-y : located Ly Ry
-  located-y q r l = ∥∥-functor II I
+  located-y q r l = ∥∥-rec ∨-is-prop II I
    where
-    5ε₊ : ℚ₊
-    5ε₊ = r - q , ℚ<-difference-positive fe q r l
     5ε : ℚ
-    5ε = pr₁ 5ε₊
+    5ε = r - q
 
-    ε₊ : ℚ₊
-    ε₊ = (1/5 * 5ε) , i
-     where
-      abstract
-       i : 0ℚ <ℚ 1/5 * 5ε
-       i = ℚ<-pos-multiplication-preserves-order 1/5 5ε 0<1/5 (pr₂ 5ε₊)
+    0<5ε : 0ℚ < (r - q)
+    0<5ε = ℚ<-difference-positive fe q r l
        
     ε : ℚ
-    ε = pr₁ ε₊
+    ε = 1/5 * 5ε
+
+    0<ε : 0ℚ < ε
+    0<ε = ℚ<-pos-multiplication-preserves-order 1/5 5ε 0<1/5 0<5ε
+
+    ε₊ : ℚ₊
+    ε₊ = ε , 0<ε
     
     q+2ε : ℚ
     q+2ε = q + ε + ε
@@ -457,18 +545,14 @@ cauchy-approximation-limit-exists (f , approximation-condition) = y , {!!}
     setup3 = ε + (ε + ε)                     ≡⟨ ap (ε +_) (ℚ-distributivity' fe 5ε 1/5 1/5 ⁻¹) ⟩
             1/5 * 5ε + (1/5 + 1/5) * 5ε      ≡⟨ ap (λ α → 1/5 * 5ε + α * 5ε) (1/5+1/5 fe) ⟩
             1/5 * 5ε + 2/5 * 5ε              ≡⟨ ℚ-distributivity' fe 5ε 1/5 2/5 ⁻¹ ⟩
-            (1/5 + 2/5) * 5ε                 ≡⟨ i ⟩
-            3/5 * 5ε                         ≡⟨ {!!} ⟩
+            (1/5 + 2/5) * 5ε                 ≡⟨ ap (_* 5ε) (1/5+2/5 fe) ⟩
+            3/5 * 5ε                         ≡⟨ ap (_* 5ε) (1-2/5≡3/5 fe ⁻¹) ⟩
             (1ℚ - 2/5) * 5ε                  ≡⟨ ℚ-distributivity' fe 5ε 1ℚ (- 2/5) ⟩
             1ℚ * 5ε + ((- 2/5) * 5ε)         ≡⟨ ap (_+ ((- 2/5) * 5ε)) (ℚ-mult-left-id fe 5ε) ⟩
             5ε + ((- 2/5) * 5ε)              ≡⟨ ap (λ α → 5ε + α) (ℚ-subtraction-dist-over-mult fe 2/5 5ε) ⟩
             5ε - (2/5 * 5ε)                  ≡⟨ ap (λ α → 5ε - (α * 5ε)) (1/5+1/5 fe ⁻¹)  ⟩
             5ε - ((1/5 + 1/5) * 5ε)          ≡⟨ ap (λ α → 5ε - α) (ℚ-distributivity' fe 5ε 1/5 1/5)  ⟩
             5ε - (ε + ε) ∎
-     where
-      abstract
-       i : (1/5 + 2/5) * 5ε ≡ 3/5 * 5ε   
-       i = ? -- ap (_* 5ε) (1/5+2/5 fe)
 
     last-two-equal : q + ε + ε + ε ≡ r - ε - ε
     last-two-equal = q + ε + ε + ε          ≡⟨ ℚ+-assoc fe (q + ε) ε ε ⟩
@@ -481,7 +565,7 @@ cauchy-approximation-limit-exists (f , approximation-condition) = y , {!!}
                      r - ε - ε ∎ 
 
     q+2ε<q+3ε : q+2ε < q+3ε
-    q+2ε<q+3ε = ℚ<-addition-preserves-order'' fe (q + ε + ε) ε (pr₂ ε₊)
+    q+2ε<q+3ε = ℚ<-addition-preserves-order'' fe q+2ε ε 0<ε
 
     q+2ε<r-2ε : q+2ε < r-2ε
     q+2ε<r-2ε = transport (q+2ε <_) last-two-equal q+2ε<q+3ε
@@ -492,13 +576,37 @@ cauchy-approximation-limit-exists (f , approximation-condition) = y , {!!}
     Rε = upper-cut-of (f ε₊)
     
     I : q+2ε ∈ Lε ∨ r-2ε ∈ Rε
-    I = located-from-real (f ε₊) q+2ε r-2ε q+2ε<r-2ε
-    II : q+2ε ∈ Lε ∔ r-2ε ∈ Rε → q ∈ Ly ∔ r ∈ Ry
-    II (inl s) = inl ∣ (ε₊ , ε₊) , {!!} ∣ -- s
-    II (inr s) = inr ∣ (ε₊ , ε₊) , {!!} ∣ -- s
-
+    I = located-from-real (f (ε , 0<ε)) q+2ε r-2ε q+2ε<r-2ε
+    
+    II : (q + ε + ε) ∈ Lε ∔ (r - ε - ε) ∈ Rε → q ∈ Ly ∨ r ∈ Ry
+    II = cases i ii
+     where
+      i : (q + ε + ε) ∈ Lε → q ∈ Ly ∨ r ∈ Ry
+      i s = ∣ inl ∣ ((ε , 0<ε) , (ε , 0<ε)) , s ∣ ∣      
+      ii : (r - ε - ε) ∈ Rε → q ∈ Ly ∨ r ∈ Ry
+      ii s = ∣ inr ∣ ((ε , 0<ε) , (ε , 0<ε)) , s ∣ ∣
+ 
   y : ℝ
   y = ((Ly , Ry) , inhabited-left-y , inhabited-right-y , rounded-left-y , rounded-right-y , disjoint-y , located-y)
+
+  y-is-limit : ((ε , l₁) (θ , l₂) : ℚ₊) → B-ℝ (f (ε , l₁)) y (ε + θ) (ℚ<-adding-zero ε θ l₁ l₂)
+  y-is-limit (ε , l₁) (θ , l₂) = ∥∥-rec ∃-is-prop I (ℝ-arithmetically-located (f (ε , l₁)) z z>0)
+   where
+    z : ℚ
+    z = {!!}
+
+    z>0 : 0ℚ < z
+    z>0 = {!!} 
+    
+    0<ε+θ : 0ℚ < (ε + θ)
+    0<ε+θ = ℚ<-adding-zero ε θ l₁ l₂
+
+    I : Σ (p , q) ꞉ ℚ × ℚ , p ∈ lower-cut-of (f (ε , l₁)) × q ∈ upper-cut-of (f (ε , l₁)) × 0ℚ < (q - p) × (q - p) < {!!}
+      → ∃ (a , b , c , d) ꞉ ℚ × ℚ × ℚ × ℚ , a ∈ lower-cut-of (f (ε , l₁)) × c ∈ lower-cut-of y × b ∈ upper-cut-of (f (ε , l₁)) × d ∈ upper-cut-of y × B-ℚ (min a c) (max b d) (ε + θ) 0<ε+θ
+    I ((p , q) , pLε , qRε , 0<q-p , q-p<t) = ∥∥-functor {!!} {!!} 
+     where
+
+    
   
 
 {-
@@ -515,11 +623,11 @@ cauchy-approximation-limit-exists (f , approximation-condition) = y , {!!}
     Rl = {!!}
   I : {!!}
   I = {!!}
--}
+
 
 ℝ-complete-metric-space : complete-metric-space ℝ
 ℝ-complete-metric-space = ℝ-metric-space , {!!} -- ℝ-cauchy-sequences-are-convergent
-
+-}
 
 
 

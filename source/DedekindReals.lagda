@@ -58,6 +58,9 @@ rounded-left-a L r x y l y-L = II (ℚ≤-split fe x y l)
   II (inl l) = I ∣ y , (l , y-L) ∣
   II (inr r) = transport (_∈ L) (r ⁻¹) y-L
 
+rounded-left-b : (L : ℚ-subset-of-propositions) → rounded-left L → (x : ℚ) → x ∈ L → (∃ p ꞉ ℚ , (x < p) × p ∈ L)
+rounded-left-b L r x x-L = (pr₁ (r x)) x-L
+
 rounded-right : (R : ℚ-subset-of-propositions) → 𝓤₀ ̇
 rounded-right R = (x : ℚ) → x ∈ R ⇔ (∃ q ꞉ ℚ , (q < x) × q ∈ R)
 
@@ -69,6 +72,9 @@ rounded-right-a R r x y l x-R = II (ℚ≤-split fe x y l)
   II : (x < y) ∔ (x ≡ y) → y ∈ R
   II (inl r) = I ∣ x , (r , x-R) ∣
   II (inr r) = transport (_∈ R) r x-R
+
+rounded-right-b : (R : ℚ-subset-of-propositions) → rounded-right R → (x : ℚ) → x ∈ R → (∃ q ꞉ ℚ , (q < x) × q ∈ R)
+rounded-right-b R r x x-R = (pr₁ (r x)) x-R
 
 rounded-left-is-prop : (L : ℚ-subset-of-propositions) → is-prop (rounded-left L)
 rounded-left-is-prop L = Π-is-prop fe δ
@@ -258,7 +264,25 @@ in-upper-cut : ℚ → ℝ → 𝓤₀ ̇
 in-upper-cut q ((L , R) , _) = q ∈ R
 
 located-from-real : (((L , R) , _) : ℝ) → (p q : ℚ) → p < q → p ∈ L ∨ q ∈ R
-located-from-real ((L , R) , _ , _ , _ , _ , _ , located-y) = located-y 
+located-from-real ((L , R) , _ , _ , _ , _ , _ , located-y) = located-y
+
+inhabited-from-real-L : (((L , R) , i) : ℝ) → inhabited-left L
+inhabited-from-real-L ((L , R) , inhabited-L , _) = inhabited-L
+
+inhabited-from-real-R : (((L , R) , i) : ℝ) → inhabited-left R
+inhabited-from-real-R ((L , R) , _ , inhabited-R , _) = inhabited-R
+
+rounded-from-real-L : (((L , R) , i) : ℝ) → rounded-left L
+rounded-from-real-L ((L , R) , _ , _ , rounded-L , _) = rounded-L
+
+rounded-from-real-R : (((L , R) , i) : ℝ) → rounded-right R
+rounded-from-real-R ((L , R) , _ , _ , _ , rounded-R , _) = rounded-R
+
+disjoint-from-real : (((L , R) , i) : ℝ) → disjoint L R
+disjoint-from-real ((L , R) , _ , _ , _ , _ , disjoint , _) = disjoint
+
+
+
 
 
 

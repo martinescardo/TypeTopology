@@ -27,7 +27,7 @@ For the rationals, the apartness relation is defined as x ≢ y, but for the rea
 
 \begin{code}
 
-field-axioms : (F : 𝓤 ̇) → { 𝓥 : Universe } → field-structure F { 𝓥 } → Set (𝓤 ⊔ 𝓥) 
+field-axioms : (F : 𝓤 ̇) → { 𝓥 : Universe } → field-structure F { 𝓥 } → 𝓤 ⊔ 𝓥 ̇
 field-axioms F { 𝓥 } (_⊕_ , _⊙_ , _#_) = is-set F × associative _⊕_
                                                    × associative _⊙_
                                                    × commutative _⊕_
@@ -70,7 +70,13 @@ Ordered-Field 𝓤 {𝓥} {𝓦} = Σ X ꞉ Field 𝓤 { 𝓥 } , Ordered-field-
 ⟨ (F , fs) , ofs ⟩ = F
 
 addition : {𝓥 𝓦 : Universe} → (F : Ordered-Field 𝓤 { 𝓥 } { 𝓦 }) → ⟨ F ⟩ → ⟨ F ⟩ → ⟨ F ⟩
-addition ((_ , (_+_ , _) , _) , _ , _ , _) = _+_
+addition ((_ , (_+_ , b) , _) , _ , _ , _) = _+_
+
+addition-commutative : {𝓥 𝓦 : Universe} → (F : Ordered-Field 𝓤 { 𝓥 } { 𝓦 }) → _
+addition-commutative ((_ , _ , _ , _ , _ , +-comm , *-comm , _) , _) = +-comm
+
+multiplication-commutative : {𝓥 𝓦 : Universe} → (F : Ordered-Field 𝓤 { 𝓥 } { 𝓦 }) → _
+multiplication-commutative ((_ , _ , _ , _ , _ , +-comm , *-comm , _) , _) = *-comm
 
 multiplication : {𝓥 𝓦 : Universe} → (F : Ordered-Field 𝓤 { 𝓥 } { 𝓦 }) → ⟨ F ⟩ → ⟨ F ⟩ → ⟨ F ⟩
 multiplication ((_ , (_ , _*_ , _) , _) , _ , _ , _) = _*_
@@ -84,4 +90,13 @@ additive-identity ((F , _ , _ , _ , _ , _ , _ , _ , (e₀ , e₁) , _) , _) = e�
 multiplicative-identity : {𝓥 𝓦 : Universe} → (F : Ordered-Field 𝓤 { 𝓥 } { 𝓦 }) → ⟨ F ⟩
 multiplicative-identity ((F , _ , _ , _ , _ , _ , _ , _ , (e₀ , e₁) , _) , _) = e₁
 
+underlying-type-is-set : {𝓥 𝓦 : Universe} → (F : Ordered-Field 𝓤 { 𝓥 } { 𝓦 }) → is-set ⟨ F ⟩
+underlying-type-is-set {𝓥} ((a , (pr₃ , pr₄) , F-is-set , c) , d) = F-is-set
+
+{-
+open import Rationals
+
+ArchimedeanOrderedField : (𝓤 : Universe) → {𝓥 𝓦 : Universe} → (𝓤 ⁺) ⊔ (𝓥 ⁺) ⊔ (𝓦 ⁺) ̇
+ArchimedeanOrderedField 𝓤 {𝓥} {𝓦} = Σ (F , (_<_ , ofa)) ꞉ Ordered-Field 𝓤 {𝓥 } { 𝓦 } , ((embedding : (ℚ → ⟨ (F , (_<_ , ofa)) ⟩)) → (∀ x y → ∃ z ꞉ ℚ , (x < embedding z) × (embedding z < y)))
+-}
 \end{code}

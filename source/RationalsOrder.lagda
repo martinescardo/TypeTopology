@@ -628,6 +628,9 @@ trisect fe x y l = (x + d * 1/3 , x + d * 2/3) , I , II , III , IV , V
 0<1/5 : 0ℚ < 1/5
 0<1/5 = toℚ-< (pos 0 , 0) (pos 1 , 5) (0 , refl)
 
+1/2<1 : 1/2 < 1ℚ
+1/2<1 = toℚ-< (pos 1 , 1) (pos 1 , 0) (0 , refl)
+
 halving-preserves-order : (p : ℚ) → 0ℚ < p → 0ℚ < p * 1/2
 halving-preserves-order p l = ℚ<-pos-multiplication-preserves-order p 1/2 l 0<1/2
 

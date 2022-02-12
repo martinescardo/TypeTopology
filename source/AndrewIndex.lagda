@@ -61,7 +61,7 @@ import DedekindRealsOrder
 
 import MetricSpaceAltDef
 import MetricSpaceRationals
-import MetricSpaceDedekindReals
+-- import MetricSpaceDedekindReals
 
 -- import ContinuousExtensionTheorem
 

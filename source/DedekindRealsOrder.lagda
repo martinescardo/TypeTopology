@@ -54,3 +54,84 @@ instance
 
 ℝ≤-trans : (x y z : ℝ) → x ≤ y → y ≤ z → x ≤ z
 ℝ≤-trans ((Lx , Rx) , _) ((Ly , Ry) , _) ((Lz , Rz) , _) f g = λ q qLx → g q (f q qLx)
+
+ℝ-archimedean : (x y : ℝ) → x < y → ∃ q ꞉ ℚ , q ∈ upper-cut-of x × q ∈ lower-cut-of y
+ℝ-archimedean x y l = l
+
+weak-linearity : (x y z : ℝ) → x < y → x < z ∨ z < y
+weak-linearity x y z l = ∥∥-rec ∨-is-prop I l
+ where
+  I : Σ q ꞉ ℚ , q ∈ upper-cut-of x × q ∈ lower-cut-of y → x < z ∨ z < y
+  I (q , qRx , qLy) = ∥∥-rec ∨-is-prop II (binary-choice exists-r exists-s)
+   where
+    exists-r : ∃ r ꞉ ℚ , r < q × r ∈ upper-cut-of x
+    exists-r = rounded-right-b (upper-cut-of x) (rounded-from-real-R x) q qRx
+    exists-s : ∃ s ꞉ ℚ , q < s × s ∈ lower-cut-of y
+    exists-s = rounded-left-b (lower-cut-of y) (rounded-from-real-L y) q qLy
+    II : (Σ r ꞉ ℚ , r < q × r ∈ upper-cut-of x) × (Σ s ꞉ ℚ , q < s × s ∈ lower-cut-of y) → x < z ∨ z < y
+    II ((r , r<q , rRx) , s , q<s , sLy) = ∥∥-rec ∨-is-prop IV III
+     where
+      III : r ∈ lower-cut-of z ∨ s ∈ upper-cut-of z
+      III = located-from-real z r s (ℚ<-trans r q s r<q q<s)
+      IV : r ∈ lower-cut-of z ∔ s ∈ upper-cut-of z → x < z ∨ z < y
+      IV (inl rLz) = ∣ inl ∣ r , rRx , rLz ∣ ∣
+      IV (inr sRz) = ∣ inr ∣ s , sRz , sLy ∣ ∣
+
+_♯_ : (x y : ℝ) → 𝓤₀ ̇
+x ♯ y = x < y ∨ y < x
+
+apartness-gives-inequality : (x y : ℝ) → x ♯ y → ¬ (x ≡ y)
+apartness-gives-inequality x y apart e = ∥∥-rec 𝟘-is-prop I apart
+ where
+  I : x < y ∔ y < x → 𝟘
+  I (inl l) = ∥∥-rec 𝟘-is-prop III II
+   where
+    II : x < x
+    II = transport (x <_) (e ⁻¹) l
+    III : Σ q ꞉ ℚ , q ∈ upper-cut-of x × q ∈ lower-cut-of x → 𝟘
+    III (q , qRx , qLx) = ℚ<-not-itself q (disjoint-from-real x q q (qLx , qRx))
+  I (inr r) = ∥∥-rec 𝟘-is-prop III II
+   where
+    II : y < y
+    II = transport (y <_) e r
+    III : Σ p ꞉ ℚ , p ∈ upper-cut-of y × p ∈ lower-cut-of y → 𝟘
+    III (p , pRy , pLy) = ℚ<-not-itself p (disjoint-from-real y p p (pLy , pRy))
+
+ℝ<-≤-trans : (x y z : ℝ) → x < y → y ≤ z → x < z
+ℝ<-≤-trans x y z x<y y≤z = ∥∥-functor I x<y
+ where
+  I : Σ q ꞉ ℚ , q ∈ upper-cut-of x × q ∈ lower-cut-of y → Σ q' ꞉ ℚ , q' ∈ upper-cut-of x × q' ∈ lower-cut-of z
+  I (q , qRx , qLy) = q , qRx , y≤z q qLy
+
+ℝ-less-than-or-equal-not-greater : (x y : ℝ) → x ≤ y → ¬ (y < x)
+ℝ-less-than-or-equal-not-greater x y x≤y y<x = ∥∥-rec 𝟘-is-prop I y<x
+ where
+  I : Σ q ꞉ ℚ , q ∈ upper-cut-of y × q ∈ lower-cut-of x → 𝟘
+  I (q , qRy , qLx) = ℚ<-not-itself q (disjoint-from-real y q q ((x≤y q qLx) , qRy))
+
+ℝ-less-than-not-greater-or-equal : (x y : ℝ) → x < y → ¬ (y ≤ x)
+ℝ-less-than-not-greater-or-equal x y l₁ l₂ = ℝ-less-than-or-equal-not-greater y x l₂ l₁
+
+ℝ≤-<-trans : (x y z : ℝ) → x ≤ y → y < z → x < z
+ℝ≤-<-trans x y z x≤y y<z = ∥∥-functor I y<z
+ where
+  I : Σ q ꞉ ℚ , q ∈ upper-cut-of y × q ∈ lower-cut-of z
+    → Σ q' ꞉ ℚ , q' ∈ upper-cut-of x × q' ∈ lower-cut-of z
+  I (q , qRy , qLz) = q , ∥∥-rec (∈-is-prop (upper-cut-of x) q) III II , qLz
+   where
+    II : ∃ k ꞉ ℚ , k < q × k ∈ upper-cut-of y
+    II = rounded-right-b (upper-cut-of y) (rounded-from-real-R y) q qRy 
+
+    III : Σ k ꞉ ℚ , k < q × k ∈ upper-cut-of y → q ∈ upper-cut-of x
+    III (k , k<q , kRy) = ∥∥-rec (∈-is-prop (upper-cut-of x) q) IV (located-from-real x k q k<q)
+     where
+      IV : k ∈ lower-cut-of x ∔ q ∈ upper-cut-of x → q ∈ upper-cut-of x
+      IV (inl kLx) = 𝟘-elim (ℚ<-not-itself k (disjoint-from-real y k k (x≤y k kLx , kRy)))
+      IV (inr qRx) = qRx
+
+ℝ-zero-less-than-one : 0ℝ < 1ℝ
+ℝ-zero-less-than-one = ∣ 1/2 , 0<1/2 , 1/2<1 ∣
+
+ℝ-zero-apart-from-one : 0ℝ ♯ 1ℝ
+ℝ-zero-apart-from-one = ∣ inl ℝ-zero-less-than-one ∣
+

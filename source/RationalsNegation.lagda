@@ -4,7 +4,7 @@ In this file I define the free rationals. They are rationals they may not be in 
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --experimental-lossy-unification #-}
 
 open import SpartanMLTT renaming (_+_ to _∔_) --TypeTopology
 
@@ -249,7 +249,12 @@ toℚ-subtraction fe p q = II
        toℚ p + toℚ (ℚₙ- q) ≡⟨ I ⁻¹ ⟩
        toℚ (p ℚₙ+ (ℚₙ- q)) ∎
 
-1-2/5≡3/5 : 1ℚ - 2/5 ≡ 3/5
-1-2/5≡3/5 = {!!}
- where
-  
+1-2/5≡3/5 : Fun-Ext → 1ℚ - 2/5 ≡ 3/5
+1-2/5≡3/5 fe = 1ℚ - 2/5              ≡⟨ ap (λ α → α - 2/5) (2/5+3/5 fe ⁻¹) ⟩
+               2/5 + 3/5 - 2/5       ≡⟨ ℚ+-assoc fe 2/5 3/5 (- 2/5) ⟩
+               2/5 + (3/5 - 2/5)     ≡⟨ ap (2/5 +_) (ℚ+-comm 3/5 (- 2/5)) ⟩
+               2/5 + ((- 2/5) + 3/5) ≡⟨ ℚ+-assoc fe 2/5 (- 2/5) 3/5 ⁻¹ ⟩
+               2/5 - 2/5 + 3/5       ≡⟨ ap (_+ 3/5) (ℚ-inverse-sum-to-zero fe 2/5) ⟩
+               0ℚ + 3/5              ≡⟨ ℚ-zero-left-neutral fe 3/5 ⟩ 
+               3/5                   ∎
+

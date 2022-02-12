@@ -281,7 +281,6 @@ abs-of-pos-is-pos fe ((negsucc x , a) , α) l = 𝟘-elim (III II)
     δ : q ≤ 0ℚ
     δ = transport (_≤ 0ℚ) (ℚ-minus-minus fe q ⁻¹) γ
   
-
 ℚ-triangle-inequality : Fun-Ext → (x y : ℚ) → abs (x + y) ≤ (abs x + abs y)
 ℚ-triangle-inequality fe x y = ℚ≤-to-abs fe (x + y) (abs x + abs y) (I (ℚ-abs-≤ fe x) (ℚ-abs-≤ fe y))
  where

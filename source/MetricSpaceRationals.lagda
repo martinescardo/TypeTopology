@@ -10,7 +10,6 @@ open import UF-Base -- TypeTopology
 open import UF-Subsingletons --TypeTopology
 open import UF-PropTrunc -- TypeTopology
 
-
 open import Rationals
 open import RationalsAbs
 open import RationalsAddition
@@ -22,6 +21,8 @@ module MetricSpaceRationals
          (pt : propositional-truncations-exist)
          (pe : Prop-Ext)
  where
+
+open import RationalsMinMax fe
 
 open import MetricSpaceAltDef pt fe pe
 
@@ -178,5 +179,36 @@ B-ℚ x y ε l = ℚ-metric x y < ε
 ℚ-metric-space : metric-space ℚ
 ℚ-metric-space = B-ℚ , ℚ-m1a , ℚ-m1b , ℚ-m2 , ℚ-m3 , ℚ-m4
 
+{-
+stretch-metric : (p q u v ε₁ ε₂ : ℚ) → (l₁ : 0ℚ < ε₁) → (l₂ : 0ℚ < ε₂) → B-ℚ p q ε₁ l₁ → B-ℚ u v ε₂ l₂ → B-ℚ (min p u) (max q v) (ε₁ + ε₂) (ℚ<-adding-zero ε₁ ε₂ l₁ l₂)
+stretch-metric p q u v ε₁ ε₂ l₁ l₂ B₁ B₂ = III I II
+ where
+  l₃ : 0ℚ < ε₁ + ε₂
+  l₃ = ℚ<-adding-zero ε₁ ε₂ l₁ l₂
+  l₄ : ε₂ < ε₁ + ε₂
+  l₄ = transport (ε₂ <_) (ℚ+-comm ε₂ ε₁) (ℚ<-addition-preserves-order'' fe ε₂ ε₁ l₁)
+  l₅ : ε₁ < (ε₁ + ε₂)
+  l₅ = ℚ<-addition-preserves-order'' fe ε₁ ε₂ l₂
+  I : p ≤ u × (min p u ≡ p) ∔ u ≤ p × (min p u ≡ u)
+  I = min-to-≤ p u
+  II : q ≤ v × (max q v ≡ v) ∔ v ≤ q × (max q v ≡ q)
+  II = max-to-≤ q v
+  III : p ≤ u × (min p u ≡ p) ∔ u ≤ p × (min p u ≡ u)
+      → q ≤ v × (max q v ≡ v) ∔ v ≤ q × (max q v ≡ q)
+      → B-ℚ (min p u) (max q v) (ε₁ + ε₂) l₃
+  III (inl (α , β)) (inl (δ , γ)) = {!!}
+   where
+    i : {!!}
+    i = inequality-chain-with-metric p q u v ε₁ ε₂ {!!} {!!} {!!} {!!}
+  III (inl (α , β)) (inr (δ , γ)) = transport₂ (λ a b → B-ℚ a b (ε₁ + ε₂) l₃) (β ⁻¹) (γ ⁻¹) i
+   where
+    i : B-ℚ p q (ε₁ + ε₂) l₃
+    i = ℚ-m3 p q ε₁ (ε₁ + ε₂) l₁ l₃ l₅ B₁
+  III (inr (α , β)) (inl (δ , γ)) = transport₂ (λ a b → B-ℚ a b (ε₁ + ε₂) l₃) (β ⁻¹) (γ ⁻¹) i
+   where
+    i : B-ℚ u v (ε₁ + ε₂) l₃
+    i = ℚ-m3 u v ε₂ (ε₁ + ε₂) l₂ l₃ l₄ B₂
+  III (inr (α , β)) (inr (δ , γ)) = {!!}
+-}
 
 \end{code}

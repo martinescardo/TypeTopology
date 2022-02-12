@@ -104,6 +104,14 @@ toℚ q = pr₁ (toℚlemma q)
 3/5 : ℚ
 3/5 = toℚ (pos 3 , 4)
 
+1/4 : ℚ
+1/4 = toℚ (pos 1 , 3)
+
+3/4 : ℚ
+3/4 = toℚ (pos 3 , 3)
+
+
+
 \end{code}
 I would like to rewrite the following proof as it is difficult to follow, and having ⇔ introduces many projections later in the code.
 \begin{code}

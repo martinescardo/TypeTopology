@@ -2,7 +2,7 @@ Andrew Sneap
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe  --experimental-lossy-unification #-}
 
 open import SpartanMLTT renaming (_+_ to _∔_) --TypeTopology
 
@@ -144,21 +144,31 @@ add-same-denom fe (x , a) (y , b) = I ⁻¹ ∙ equiv→equality fe ((x , b) ℚ
 2/5+1/5 : Fun-Ext → 2/5 + 1/5 ≡ 3/5
 2/5+1/5 fe = (ℚ+-comm 2/5 1/5) ∙ (1/5+2/5 fe)
 
-kk : Fun-Ext → toℚ (pos 2 , 4) + toℚ (pos 3 , 4) ≡ toℚ (pos 2 ℤ+ pos 3 , 4)
-kk fe = I
+2/5+3/5-lemma : Fun-Ext → toℚ (pos 2 , 4) + toℚ (pos 3 , 4) ≡ toℚ (pos 2 ℤ+ pos 3 , 4)
+2/5+3/5-lemma fe = I
  where
   abstract
    I : toℚ (pos 2 , 4) + toℚ (pos 3 , 4) ≡ toℚ (pos 2 ℤ+ pos 3 , 4)
    I = add-same-denom fe (pos 2 , 4) (pos 3 , 4)
 
-{-
+\end{code}
+
+Abstracting the proofs above lets me compile 2/5+1/5, otherwise we get an infinite compile.
+
+It does not work for the proof below.
+
+\begin{code}
+
+
 2/5+3/5 : Fun-Ext → 2/5 + 3/5 ≡ 1ℚ
 2/5+3/5 fe = I 
  where
   abstract
    I : 2/5 + 3/5 ≡ 1ℚ
-   I = kk fe ∙ equiv→equality fe (pos 5 , 4) (pos 1 , 0) refl
--}
+   I = 2/5+3/5-lemma fe ∙ equiv→equality fe (pos 5 , 4) (pos 1 , 0) refl
+
+\end{code}
+
 
   
 
