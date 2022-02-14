@@ -871,7 +871,7 @@ TODO: Write comment
     α∞-way-below σ (i , j) = ≪-⊑-to-≪ 𝓓∞ lem (ε∞π∞-deflation σ)
      where
       lem : ε∞ i (α i (⦅ σ ⦆ i) j) ≪⟨ 𝓓∞ ⟩ ε∞ i (π∞ i σ)
-      lem = embedding-preserves-≪ (𝓓 i) 𝓓∞ (ε∞ i) (ε∞-is-continuous i)
+      lem = embeddings-preserve-≪ (𝓓 i) 𝓓∞ (ε∞ i) (ε∞-is-continuous i)
                                            (π∞ i) (π∞-is-continuous i)
                                            ε∞-section-of-π∞
                                            ε∞π∞-deflation
@@ -925,7 +925,7 @@ TODO: Write comment
             ⦅1⦆ = ≡-to-⊑ (𝓓 i₂) (ap (ε u) ((π∞-commutes-with-πs i₁ i₂ u σ) ⁻¹))
             ⦅2⦆ = επ-deflation u (⦅ σ ⦆ i₂)
           wb : ε u (α i₁ (⦅ σ ⦆ i₁) j₁) ≪⟨ 𝓓 i₂ ⟩ ε u (⦅ σ ⦆ i₁)
-          wb = embedding-preserves-≪ (𝓓 i₁) (𝓓 i₂)
+          wb = embeddings-preserve-≪ (𝓓 i₁) (𝓓 i₂)
                 (ε u) (ε-is-continuous u) (π u) (π-is-continuous u)
                 (ε-section-of-π u) (επ-deflation u)
                 (α i₁ (⦅ σ ⦆ i₁) j₁) (⦅ σ ⦆ i₁) wb'
@@ -993,5 +993,38 @@ TODO: Write comment
                 (λ i → ∐-is-lowerbound-of-upperbounds 𝓓∞ (α∞'-is-directed σ i)
                         (∐ 𝓓∞ (α∞-is-directed σ))
                 (λ j → ∐-is-upperbound 𝓓∞ (α∞-is-directed σ) (i , j))))
+
+\end{code}
+
+TODO: Comment on building on the above
+
+\begin{code}
+
+ 𝓓∞-structurally-algebraic : ((i : I) → structurally-algebraic (𝓓 i))
+                          → structurally-algebraic 𝓓∞
+ 𝓓∞-structurally-algebraic 𝓐 = record
+  { index-of-compact-family    = index-of-approximating-family C∞
+  ; compact-family             = approximating-family C∞
+  ; compact-family-is-directed = approximating-family-is-directed C∞
+  ; compact-family-is-compact  = γ
+  ; compact-family-∐-≡         = approximating-family-∐-≡ C∞
+  }
+   where
+    open structurally-continuous
+    open structurally-algebraic
+    𝓒 : (i : I) → structurally-continuous (𝓓 i)
+    𝓒 i = structurally-continuous-if-structurally-algebraic (𝓓 i) (𝓐 i)
+    C∞ : structurally-continuous 𝓓∞
+    C∞ = 𝓓∞-structurally-continuous 𝓒
+    J∞ : ⟨ 𝓓∞ ⟩ → 𝓥 ̇
+    J∞ = index-of-approximating-family C∞
+    α∞ : (σ : ⟨ 𝓓∞ ⟩) → J∞ σ → ⟨ 𝓓∞ ⟩
+    α∞ = approximating-family C∞
+    γ : (σ : ⟨ 𝓓∞ ⟩) (j : J∞ σ) → is-compact 𝓓∞ (α∞ σ j)
+    γ σ (i , j) = embeddings-preserve-compactness (𝓓 i) 𝓓∞
+                   (ε∞ i) (ε∞-is-continuous i) (π∞ i) (π∞-is-continuous i)
+                   ε∞-section-of-π∞ ε∞π∞-deflation
+                   (compact-family (𝓐 i) (⦅ σ ⦆ i) j)
+                   (compact-family-is-compact (𝓐 i) (⦅ σ ⦆ i) j)
 
 \end{code}

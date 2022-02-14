@@ -175,8 +175,8 @@ module _
         (ε-π-deflation : (y : ⟨ 𝓔 ⟩) → ε (π y) ⊑⟨ 𝓔 ⟩ y)
        where
 
- embedding-preserves-≪ : (x y : ⟨ 𝓓 ⟩) → x ≪⟨ 𝓓 ⟩ y → ε x ≪⟨ 𝓔 ⟩ ε y
- embedding-preserves-≪ x y x-way-below-y I α δ εx-below-∐α =
+ embeddings-preserve-≪ : (x y : ⟨ 𝓓 ⟩) → x ≪⟨ 𝓓 ⟩ y → ε x ≪⟨ 𝓔 ⟩ ε y
+ embeddings-preserve-≪ x y x-way-below-y I α δ εx-below-∐α =
   ∥∥-functor h (x-way-below-y I (π ∘ α) δ' y-below-∐πα)
    where
     δ' : is-Directed 𝓓 (π ∘ α)
@@ -199,8 +199,12 @@ module _
       ⦅1⦆ = monotone-if-continuous 𝓓 𝓔 (ε , ε-is-continuous) x (π (α i)) u
       ⦅2⦆ = ε-π-deflation (α i)
 
- embedding-reflects-≪ : (x y : ⟨ 𝓓 ⟩) → ε x ≪⟨ 𝓔 ⟩ ε y → x ≪⟨ 𝓓 ⟩ y
- embedding-reflects-≪ x y εx-way-below-εy I α δ y-below-∐α =
+ embeddings-preserve-compactness : (x : ⟨ 𝓓 ⟩)
+                                 → is-compact 𝓓 x → is-compact 𝓔 (ε x)
+ embeddings-preserve-compactness x = embeddings-preserve-≪ x x
+
+ embeddings-reflect-≪ : (x y : ⟨ 𝓓 ⟩) → ε x ≪⟨ 𝓔 ⟩ ε y → x ≪⟨ 𝓓 ⟩ y
+ embeddings-reflect-≪ x y εx-way-below-εy I α δ y-below-∐α =
   ∥∥-functor h (εx-way-below-εy I (ε ∘ α) δ' εy-below-∐εα)
    where
     δ' : is-Directed 𝓔 (ε ∘ α)
@@ -221,5 +225,10 @@ module _
       ⦅1⦆ = ≡-to-⊑ 𝓓 ((π-ε-retraction x) ⁻¹)
       ⦅2⦆ = monotone-if-continuous 𝓔 𝓓 (π , π-is-continuous) (ε x) (ε (α i)) u
       ⦅3⦆ = ≡-to-⊑ 𝓓 (π-ε-retraction (α i))
+
+ embeddings-reflect-compactness : (x : ⟨ 𝓓 ⟩)
+                                → is-compact 𝓔 (ε x)
+                                → is-compact 𝓓 x
+ embeddings-reflect-compactness x = embeddings-reflect-≪ x x
 
 \end{code}
