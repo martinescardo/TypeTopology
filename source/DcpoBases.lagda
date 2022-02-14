@@ -495,7 +495,8 @@ module _
 
 \end{code}
 
-TODO: Move this somewhere
+TODO: Move this somewhere and explain
+       (ref. Abramsky-Jung, compendium, subset of basis...)
 
 \begin{code}
 
