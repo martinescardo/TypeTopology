@@ -851,8 +851,8 @@ TODO: Write comment
   { index-of-approximating-family     = J∞
   ; approximating-family              = α∞
   ; approximating-family-is-directed  = α∞-is-directed
-  ; approximating-family-is-way-below = {!!}
-  ; approximating-family-∐-≡          = {!!}
+  ; approximating-family-is-way-below = α∞-way-below
+  ; approximating-family-∐-≡          = α∞-∐-≡
   }
    where
     open structurally-continuous
@@ -866,15 +866,26 @@ TODO: Write comment
     J∞ σ = Σ i ꞉ I , J i (⦅ σ ⦆ i)
     α∞ : (σ : ⟨ 𝓓∞ ⟩) → J∞ σ → ⟨ 𝓓∞ ⟩
     α∞ σ (i , j) = ε∞ i (α i (⦅ σ ⦆ i) j)
-    α∞' : (σ : ⟨ 𝓓∞ ⟩) (i : I) → J i (⦅ σ ⦆ i) → ⟨ 𝓓∞ ⟩
-    α∞' σ i j = α∞ σ (i , j)
+
+    α∞-way-below : (σ : ⟨ 𝓓∞ ⟩) → is-way-upperbound 𝓓∞ σ (α∞ σ)
+    α∞-way-below σ (i , j) = ≪-⊑-to-≪ 𝓓∞ lem (ε∞π∞-deflation σ)
+     where
+      lem : ε∞ i (α i (⦅ σ ⦆ i) j) ≪⟨ 𝓓∞ ⟩ ε∞ i (π∞ i σ)
+      lem = embedding-preserves-≪ (𝓓 i) 𝓓∞ (ε∞ i) (ε∞-is-continuous i)
+                                           (π∞ i) (π∞-is-continuous i)
+                                           ε∞-section-of-π∞
+                                           ε∞π∞-deflation
+                                           (α i (⦅ σ ⦆ i) j) (π∞ i σ)
+                                           claim
+       where
+        claim : α i (⦅ σ ⦆ i) j ≪⟨ 𝓓 i ⟩ π∞ i σ
+        claim = approximating-family-is-way-below (𝓒 i) (π∞ i σ) j
 
     cofinal-lemma : (σ : ⟨ 𝓓∞ ⟩) (i₁ i₂ : I)
                   → i₁ ⊑ i₂
                   → (j₁ : J i₁ (⦅ σ ⦆ i₁))
                   → ∃ j₂ ꞉ J i₂ (⦅ σ ⦆ i₂)
                          , α∞ σ (i₁ , j₁) ⊑⟨ 𝓓∞ ⟩ α∞ σ (i₂ , j₂)
-    -- TODO: Is this really any easier than proving directedness of α∞ directly?
     cofinal-lemma σ i₁ i₂ u j₁ = ∥∥-functor lemma claim
      where
       lemma : (Σ j₂ ꞉ J i₂ (⦅ σ ⦆ i₂)
@@ -922,15 +933,18 @@ TODO: Write comment
             wb' : α i₁ (⦅ σ ⦆ i₁) j₁ ≪⟨ 𝓓 i₁ ⟩ ⦅ σ ⦆ i₁
             wb' = approximating-family-is-way-below (𝓒 i₁) (⦅ σ ⦆ i₁) j₁
 
+    α∞' : (σ : ⟨ 𝓓∞ ⟩) (i : I) → J i (⦅ σ ⦆ i) → ⟨ 𝓓∞ ⟩
+    α∞' σ i j = α∞ σ (i , j)
+
+    α∞'-is-directed : (σ : ⟨ 𝓓∞ ⟩) (i : I) → is-Directed 𝓓∞ (α∞' σ i)
+    α∞'-is-directed σ i = image-is-directed' (𝓓 i) 𝓓∞ (ε∞' i) (δ i (⦅ σ ⦆ i))
 
     α∞-is-directed : (σ : ⟨ 𝓓∞ ⟩) → is-Directed 𝓓∞ (α∞ σ)
     α∞-is-directed σ = γ
      where
       open Ind-completion 𝓓∞
-      α∞'-is-directed : (i : I) → is-Directed 𝓓∞ (α∞' σ i)
-      α∞'-is-directed i = image-is-directed' (𝓓 i) 𝓓∞ (ε∞' i) (δ i (⦅ σ ⦆ i))
       α∞⁺ : (i : I) → Ind
-      α∞⁺ i = (J i (⦅ σ ⦆ i) , α∞' σ i , α∞'-is-directed i)
+      α∞⁺ i = (J i (⦅ σ ⦆ i) , α∞' σ i , α∞'-is-directed σ i)
       γ : is-Directed 𝓓∞ (α∞ σ)
       γ = pr₂ (pr₂ (Ind-∐ α∞⁺ α∞-directed-lemma)) -- TODO: Name this projection in DcpoContinuous?
        where
@@ -943,5 +957,41 @@ TODO: Write comment
             h : (Σ i ꞉ I , (i₁ ⊑ i) × (i₂ ⊑ i))
               → (Σ i ꞉ I , (α∞⁺ i₁ ≲ α∞⁺ i) × (α∞⁺ i₂ ≲ α∞⁺ i))
             h (i , u , v) = (i , cofinal-lemma σ i₁ i u , cofinal-lemma σ i₂ i v)
+
+    α∞-∐-≡ : (σ : ⟨ 𝓓∞ ⟩) → ∐ 𝓓∞ (α∞-is-directed σ) ≡ σ
+    α∞-∐-≡ σ = claim₁ ∙ claim₂ ⁻¹
+     where
+      e₁ : ε∞-family σ ≡ (λ i → ε∞ i (∐ (𝓓 i) (δ i (⦅ σ ⦆ i))))
+      e₁ = dfunext fe (λ i → ap (ε∞ i)
+            ((approximating-family-∐-≡ (𝓒 i) (⦅ σ ⦆ i)) ⁻¹))
+      e₂ : (λ i → ε∞ i (∐ (𝓓 i) (δ i (⦅ σ ⦆ i))))
+         ≡ (λ i → ∐ 𝓓∞ (α∞'-is-directed σ i))
+      e₂ = dfunext fe (λ i → continuous-∐-≡ (𝓓 i) 𝓓∞ (ε∞' i) (δ i (⦅ σ ⦆ i)))
+      δ₁ : is-Directed 𝓓∞ (λ (i : I) → ε∞ i (∐ (𝓓 i) (δ i (⦅ σ ⦆ i))))
+      δ₁ = transport (is-Directed 𝓓∞) e₁ (ε∞-family-is-directed σ)
+      δ₂ : is-Directed 𝓓∞ (λ i → ∐ 𝓓∞ (α∞'-is-directed σ i))
+      δ₂ = transport (is-Directed 𝓓∞) e₂ δ₁
+
+      claim₂ = σ                            ≡⟨ ∐-of-ε∞s σ ⟩
+             ∐ 𝓓∞ (ε∞-family-is-directed σ) ≡⟨ ⦅1⦆ ⟩
+             ∐ 𝓓∞ δ₁                        ≡⟨ ⦅2⦆ ⟩
+             ∐ 𝓓∞ δ₂                        ∎
+       where
+        ⦅1⦆ = ∐-family-≡ 𝓓∞ e₁ (ε∞-family-is-directed σ)
+        ⦅2⦆ = ∐-family-≡ 𝓓∞ e₂ δ₁
+
+      claim₁ : ∐ 𝓓∞ (α∞-is-directed σ) ≡ ∐ 𝓓∞ δ₂
+      claim₁ = antisymmetry 𝓓∞ (∐ 𝓓∞ (α∞-is-directed σ)) (∐ 𝓓∞ δ₂)
+                (∐-is-lowerbound-of-upperbounds 𝓓∞ (α∞-is-directed σ) (∐ 𝓓∞ δ₂)
+                 (λ (i , j) → transitivity 𝓓∞
+                               (α∞ σ (i , j))
+                               (∐ 𝓓∞ (α∞'-is-directed σ i))
+                               (∐ 𝓓∞ δ₂)
+                               (∐-is-upperbound 𝓓∞ (α∞'-is-directed σ i) j)
+                               (∐-is-upperbound 𝓓∞ δ₂ i)))
+               (∐-is-lowerbound-of-upperbounds 𝓓∞ δ₂ (∐ 𝓓∞ (α∞-is-directed σ))
+                (λ i → ∐-is-lowerbound-of-upperbounds 𝓓∞ (α∞'-is-directed σ i)
+                        (∐ 𝓓∞ (α∞-is-directed σ))
+                (λ j → ∐-is-upperbound 𝓓∞ (α∞-is-directed σ) (i , j))))
 
 \end{code}
