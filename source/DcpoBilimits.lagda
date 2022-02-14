@@ -842,17 +842,147 @@ TODO: Write comment
 
 \begin{code}
 
- open import DcpoContinuous pt fe 𝓥
+ module 𝓓∞-family
+         (J : (i : I) → 𝓥 ̇  )
+         (α : (i : I) → J i → ⟨ 𝓓 i ⟩)
+        where
+
+  J∞ : 𝓥 ̇
+  J∞ = Σ i ꞉ I , J i
+
+  J∞-is-inhabited : ((i : I) → ∥ J i ∥)
+                  → ∥ J∞ ∥
+  J∞-is-inhabited J-inh =
+   ∥∥-rec ∥∥-is-prop (λ i → ∥∥-functor (λ j → (i , j)) (J-inh i)) I-inhabited
+
+  α∞ : J∞ → ⟨ 𝓓∞ ⟩
+  α∞ (i , j) = ε∞ i (α i j)
+
+  α∞-is-semidirected-lemma : (i i' : I) (j : J i) (j' j'' : J i') (k : J∞)
+                             (u : i ⊑ i')
+                           → ε u (α i j) ⊑⟨ 𝓓 i' ⟩ α i' j'
+                           → α i' j' ⊑⟨ 𝓓 i' ⟩ α i' j''
+                           → α∞ (i , j) ⊑⟨ 𝓓∞ ⟩ α∞ (i' , j'')
+  α∞-is-semidirected-lemma i i' j j' j'' k u v w x =
+   -- TODO: We do everyting at x : I to avoid yellow
+   ⦅ α∞ (i , j)          ⦆ x ⊑⟨ 𝓓 x ⟩[ ⦅1⦆ ]
+   ⦅ ε∞ i (α i j)        ⦆ x ⊑⟨ 𝓓 x ⟩[ ⦅2⦆ ]
+   ⦅ ε∞ i' (ε u (α i j)) ⦆ x ⊑⟨ 𝓓 x ⟩[ ⦅3⦆ ]
+   ⦅ ε∞ i' (α i' j')     ⦆ x ⊑⟨ 𝓓 x ⟩[ ⦅4⦆ ]
+   ⦅ ε∞ i' (α i' j'')    ⦆ x ⊑⟨ 𝓓 x ⟩[ ⦅5⦆ ]
+   ⦅ α∞ (i' , j'')       ⦆ x ∎⟨ 𝓓 x ⟩
+    where
+     f : DCPO[ 𝓓 i' , 𝓓 x ]
+     f = DCPO-∘ (𝓓 i') 𝓓∞ (𝓓 x) (ε∞' i') (π∞' x)
+     ⦅1⦆ = reflexivity (𝓓 x) (⦅ α∞ (i , j) ⦆ x)
+     ⦅2⦆ = ≡-to-⊑ (𝓓 x) (ap (λ - → ⦅ - ⦆ x)
+            ((ε∞-commutes-with-εs i i' u (α i j)) ⁻¹))
+     ⦅3⦆ = monotone-if-continuous (𝓓 i') (𝓓 x) f (ε u (α i j)) (α i' j') v
+     ⦅4⦆ = monotone-if-continuous (𝓓 i') (𝓓 x) f (α i' j') (α i' j'') w
+     ⦅5⦆ = reflexivity (𝓓 x) (⦅ α∞ (i' , j'') ⦆ x)
+
+  α∞-is-semidirected-criterion :
+     ((i : I) → is-Semidirected (𝓓 i) (α i))
+   → ((i₁ : I) (i₂ : I) (u : i₁ ⊑ i₂)
+     → (j₁ : J i₁)
+     → ∃ j₂ ꞉ J i₂ , ε u (α i₁ j₁) ⊑⟨ 𝓓 i₂ ⟩ α i₂ j₂)
+   → is-Semidirected 𝓓∞ α∞
+  α∞-is-semidirected-criterion αs-semidir crit (i₁ , j₁) (i₂ , j₂) =
+   ∥∥-rec ∃-is-prop step₁ (I-semidirected i₁ i₂)
+    where
+     step₁ : (Σ i ꞉ I , (i₁ ⊑ i) × (i₂ ⊑ i))
+           → (∃ k ꞉ J∞ , (α∞ (i₁ , j₁) ⊑⟨ 𝓓∞ ⟩ α∞ k)
+                       × (α∞ (i₂ , j₂) ⊑⟨ 𝓓∞ ⟩ α∞ k))
+     step₁ (i , u₁ , u₂) = ∥∥-rec₂ ∃-is-prop step₂ (crit i₁ i u₁ j₁)
+                                                   (crit i₂ i u₂ j₂)
+      where
+       step₂ : (Σ j₁' ꞉ J i , ε u₁ (α i₁ j₁) ⊑⟨ 𝓓 i ⟩ α i j₁')
+             → (Σ j₂' ꞉ J i , ε u₂ (α i₂ j₂) ⊑⟨ 𝓓 i ⟩ α i j₂')
+             → (∃ k ꞉ J∞ , (α∞ (i₁ , j₁) ⊑⟨ 𝓓∞ ⟩ α∞ k)
+                         × (α∞ (i₂ , j₂) ⊑⟨ 𝓓∞ ⟩ α∞ k))
+       step₂ (j₁' , v₁) (j₂' , v₂) = ∥∥-functor step₃ (αs-semidir i j₁' j₂')
+        where
+         step₃ : (Σ j ꞉ J i , (α i j₁' ⊑⟨ 𝓓 i ⟩ α i j)
+                            × (α i j₂' ⊑⟨ 𝓓 i ⟩ α i j))
+               → (Σ k ꞉ J∞ , (α∞ (i₁ , j₁) ⊑⟨ 𝓓∞ ⟩ α∞ k)
+                           × (α∞ (i₂ , j₂) ⊑⟨ 𝓓∞ ⟩ α∞ k))
+         step₃ (j , w₁ , w₂) = ((i , j) , ineq₁ , ineq₂)
+          where
+           ineq₁ : α∞ (i₁ , j₁) ⊑⟨ 𝓓∞ ⟩ α∞ (i , j)
+           ineq₁ = α∞-is-semidirected-lemma i₁ i j₁ j₁' j (i , j) u₁ v₁ w₁
+           ineq₂ : α∞ (i₂ , j₂) ⊑⟨ 𝓓∞ ⟩ α∞ (i , j)
+           ineq₂ = α∞-is-semidirected-lemma i₂ i j₂ j₂' j (i , j) u₂ v₂ w₂
+
+  α∞-∐-≡ : (σ : ⟨ 𝓓∞ ⟩) (δ : (i : I) → is-Directed (𝓓 i) (α i))
+         → ((i : I) → ∐ (𝓓 i) (δ i) ≡ ⦅ σ ⦆ i)
+         → (δ∞ : is-Directed 𝓓∞ α∞)
+         → ∐ 𝓓∞ δ∞ ≡ σ
+  α∞-∐-≡ σ δ e δ∞ = claim₁ ∙ claim₂ ⁻¹
+   where
+    δ' : (i : I) → is-Directed 𝓓∞ (ε∞ i ∘ α i)
+    δ' i = image-is-directed' (𝓓 i) 𝓓∞ (ε∞' i) (δ i)
+    e₁ : ε∞-family σ ≡ (λ i → ε∞ i (∐ (𝓓 i) (δ i)))
+    e₁ = dfunext fe (λ i → ap (ε∞ i) (e i) ⁻¹)
+    e₂ : (λ i → ε∞ i (∐ (𝓓 i) (δ i))) ≡ (λ i → ∐ 𝓓∞ (δ' i))
+    e₂ = dfunext fe (λ i → continuous-∐-≡ (𝓓 i) 𝓓∞ (ε∞' i) (δ i))
+
+    δ₁ : is-Directed 𝓓∞ (λ (i : I) → ε∞ i (∐ (𝓓 i) (δ i)))
+    δ₁ = transport (is-Directed 𝓓∞) e₁ (ε∞-family-is-directed σ)
+    δ₂ : is-Directed 𝓓∞ (λ i → ∐ 𝓓∞ (δ' i))
+    δ₂ = transport (is-Directed 𝓓∞) e₂ δ₁
+
+    claim₂ = σ                            ≡⟨ ∐-of-ε∞s σ ⟩
+           ∐ 𝓓∞ (ε∞-family-is-directed σ) ≡⟨ ⦅1⦆ ⟩
+           ∐ 𝓓∞ δ₁                        ≡⟨ ⦅2⦆ ⟩
+           ∐ 𝓓∞ δ₂                        ∎
+     where
+      ⦅1⦆ = ∐-family-≡ 𝓓∞ e₁ (ε∞-family-is-directed σ)
+      ⦅2⦆ = ∐-family-≡ 𝓓∞ e₂ δ₁
+
+    claim₁ : ∐ 𝓓∞ {Σ J} {α∞} δ∞ ≡ ∐ 𝓓∞ {I} {λ i → ∐ 𝓓∞ (δ' i)} δ₂
+    claim₁ = antisymmetry 𝓓∞ (∐ 𝓓∞ δ∞) (∐ 𝓓∞ δ₂)
+              (∐-is-lowerbound-of-upperbounds 𝓓∞ δ∞ (∐ 𝓓∞ δ₂)
+                (λ (i , j) → transitivity 𝓓∞
+                              (α∞ (i , j))
+                              (∐ 𝓓∞ (δ' i))
+                              (∐ 𝓓∞ δ₂)
+                              (∐-is-upperbound 𝓓∞ (δ' i) j)
+                              (∐-is-upperbound 𝓓∞ δ₂ i)))
+              (∐-is-lowerbound-of-upperbounds 𝓓∞ δ₂ (∐ 𝓓∞ δ∞)
+                (λ i → ∐-is-lowerbound-of-upperbounds 𝓓∞ (δ' i) (∐ 𝓓∞ δ∞)
+                       ((λ j → ∐-is-upperbound 𝓓∞ δ∞ (i , j)))))
+
+  open import DcpoWayBelow pt fe 𝓥 -- TODO: Move this?
+
+  α∞-is-way-below : (σ : ⟨ 𝓓∞ ⟩)
+                  → ((i : I) (j : J i) → α i j ≪⟨ 𝓓 i ⟩ ⦅ σ ⦆ i)
+                  → (j : J∞) → α∞ j ≪⟨ 𝓓∞ ⟩ σ
+  α∞-is-way-below σ wb (i , j) = ≪-⊑-to-≪ 𝓓∞ lem (ε∞π∞-deflation σ)
+   where
+    lem : ε∞ i (α i j) ≪⟨ 𝓓∞ ⟩ ε∞ i (π∞ i σ)
+    lem = embeddings-preserve-≪ (𝓓 i) 𝓓∞
+           (ε∞ i) (ε∞-is-continuous i)
+           (π∞ i) (π∞-is-continuous i)
+           ε∞-section-of-π∞ ε∞π∞-deflation
+           (α i j) (π∞ i σ)
+           (wb i j)
+
+\end{code}
+
+
+\begin{code}
+
  open import DcpoWayBelow   pt fe 𝓥
+ open import DcpoContinuous pt fe 𝓥
 
  𝓓∞-structurally-continuous : ((i : I) → structurally-continuous (𝓓 i))
                             → structurally-continuous 𝓓∞
  𝓓∞-structurally-continuous 𝓒 = record
-  { index-of-approximating-family     = J∞
-  ; approximating-family              = α∞
-  ; approximating-family-is-directed  = α∞-is-directed
-  ; approximating-family-is-way-below = α∞-way-below
-  ; approximating-family-∐-≡          = α∞-∐-≡
+  { index-of-approximating-family     = J∞⁺
+  ; approximating-family              = α∞⁺
+  ; approximating-family-is-directed  = α∞⁺-is-directed
+  ; approximating-family-is-way-below = α∞⁺-is-way-below
+  ; approximating-family-∐-≡          = α∞⁺-∐-≡
   }
    where
     open structurally-continuous
@@ -862,137 +992,69 @@ TODO: Write comment
     α i = approximating-family (𝓒 i)
     δ : (i : I) (x : ⟨ 𝓓 i ⟩) → is-Directed (𝓓 i) (α i x)
     δ i = approximating-family-is-directed (𝓒 i)
-    J∞ : ⟨ 𝓓∞ ⟩ → 𝓥 ̇
-    J∞ σ = Σ i ꞉ I , J i (⦅ σ ⦆ i)
-    α∞ : (σ : ⟨ 𝓓∞ ⟩) → J∞ σ → ⟨ 𝓓∞ ⟩
-    α∞ σ (i , j) = ε∞ i (α i (⦅ σ ⦆ i) j)
 
-    α∞-way-below : (σ : ⟨ 𝓓∞ ⟩) → is-way-upperbound 𝓓∞ σ (α∞ σ)
-    α∞-way-below σ (i , j) = ≪-⊑-to-≪ 𝓓∞ lem (ε∞π∞-deflation σ)
-     where
-      lem : ε∞ i (α i (⦅ σ ⦆ i) j) ≪⟨ 𝓓∞ ⟩ ε∞ i (π∞ i σ)
-      lem = embeddings-preserve-≪ (𝓓 i) 𝓓∞ (ε∞ i) (ε∞-is-continuous i)
-                                           (π∞ i) (π∞-is-continuous i)
-                                           ε∞-section-of-π∞
-                                           ε∞π∞-deflation
-                                           (α i (⦅ σ ⦆ i) j) (π∞ i σ)
-                                           claim
-       where
-        claim : α i (⦅ σ ⦆ i) j ≪⟨ 𝓓 i ⟩ π∞ i σ
-        claim = approximating-family-is-way-below (𝓒 i) (π∞ i σ) j
+    J⁺ : (σ : ⟨ 𝓓∞ ⟩) → I → 𝓥 ̇
+    J⁺ σ i = J i (⦅ σ ⦆ i)
+    α⁺ : (σ : ⟨ 𝓓∞ ⟩) (i : I) → J⁺ σ i → ⟨ 𝓓 i ⟩
+    α⁺ σ i = α i (⦅ σ ⦆ i)
+    δ⁺ : (σ : ⟨ 𝓓∞ ⟩) (i : I) → is-Directed (𝓓 i) (α⁺ σ i)
+    δ⁺ σ i = δ i (⦅ σ ⦆ i)
 
-    cofinal-lemma : (σ : ⟨ 𝓓∞ ⟩) (i₁ i₂ : I)
-                  → i₁ ⊑ i₂
-                  → (j₁ : J i₁ (⦅ σ ⦆ i₁))
-                  → ∃ j₂ ꞉ J i₂ (⦅ σ ⦆ i₂)
-                         , α∞ σ (i₁ , j₁) ⊑⟨ 𝓓∞ ⟩ α∞ σ (i₂ , j₂)
-    cofinal-lemma σ i₁ i₂ u j₁ = ∥∥-functor lemma claim
-     where
-      lemma : (Σ j₂ ꞉ J i₂ (⦅ σ ⦆ i₂)
-                    , ε u (α i₁ (⦅ σ ⦆ i₁) j₁) ⊑⟨ 𝓓 i₂ ⟩ α i₂ (⦅ σ ⦆ i₂) j₂)
-            → (Σ j₂ ꞉ J i₂ (⦅ σ ⦆ i₂) , α∞ σ (i₁ , j₁) ⊑⟨ 𝓓∞ ⟩ α∞ σ (i₂ , j₂))
-      lemma (j₂ , v) = (j₂ , v')
-       where
-        -- TODO: We have everything at the i-th projection, because we get
-        -- yellow otherwise
-        v' : (i : I) → ⦅ α∞ σ (i₁ , j₁) ⦆ i ⊑⟨ 𝓓 i ⟩ ⦅ α∞ σ (i₂ , j₂) ⦆ i
-        v' i = ⦅ α∞ σ (i₁ , j₁)                   ⦆ i ⊑⟨ 𝓓 i ⟩[ ⦅1⦆ ]
-               ⦅ ε∞ i₁ (α i₁ (⦅ σ ⦆ i₁) j₁)       ⦆ i ⊑⟨ 𝓓 i ⟩[ ⦅2⦆ ]
-               ⦅ ε∞ i₂ (ε u (α i₁ (⦅ σ ⦆ i₁) j₁)) ⦆ i ⊑⟨ 𝓓 i ⟩[ ⦅3⦆ ]
-               ⦅ ε∞ i₂ (α i₂ (⦅ σ ⦆ i₂) j₂)       ⦆ i ⊑⟨ 𝓓 i ⟩[ ⦅4⦆ ]
-               ⦅ α∞ σ (i₂ , j₂)                   ⦆ i ∎⟨ 𝓓 i ⟩
-         where
-          ⦅1⦆ = reflexivity (𝓓 i) (⦅ α∞ σ (i₁ , j₁)⦆ i)
-          ⦅2⦆ = ≡-to-⊑ (𝓓 i) (ap (λ - → ⦅ - ⦆ i)
-                 ((ε∞-commutes-with-εs i₁ i₂ u (α i₁ (⦅ σ ⦆ i₁) j₁)) ⁻¹))
-          ⦅3⦆ = monotone-if-continuous (𝓓 i₂) (𝓓 i)
-                 (DCPO-∘ (𝓓 i₂) 𝓓∞ (𝓓 i) (ε∞' i₂) (π∞' i))
-                 (ε u (α i₁ (⦅ σ ⦆ i₁) j₁)) (α i₂ (⦅ σ ⦆ i₂) j₂)
-                 v
-          ⦅4⦆ = reflexivity (𝓓 i) (⦅ α∞ σ (i₂ , j₂) ⦆ i)
-      claim : ∃ j₂ ꞉ J i₂ (⦅ σ ⦆ i₂)
-                  , ε u (α i₁ (⦅ σ ⦆ i₁) j₁) ⊑⟨ 𝓓 i₂ ⟩ α i₂ (⦅ σ ⦆ i₂) j₂
-      claim = subclaim (J i₂ (⦅ σ ⦆ i₂)) (α i₂ (⦅ σ ⦆ i₂)) (δ i₂ (⦅ σ ⦆ i₂))
-               (approximating-family-∐-⊒ (𝓓 i₂) (𝓒 i₂) (⦅ σ ⦆ i₂))
-       where
-        subclaim : ε u (α i₁ (⦅ σ ⦆ i₁) j₁) ≪⟨ 𝓓 i₂ ⟩ ⦅ σ ⦆ i₂
-        subclaim = ≪-⊑-to-≪ (𝓓 i₂) wb bel
-         where
-          bel = ε u (⦅ σ ⦆ i₁)      ⊑⟨ 𝓓 i₂ ⟩[ ⦅1⦆ ]
-                ε u (π u (π∞ i₂ σ)) ⊑⟨ 𝓓 i₂ ⟩[ ⦅2⦆ ]
-                ⦅ σ ⦆ i₂            ∎⟨ 𝓓 i₂ ⟩
+    module _
+            (σ : ⟨ 𝓓∞ ⟩)
            where
-            ⦅1⦆ = ≡-to-⊑ (𝓓 i₂) (ap (ε u) ((π∞-commutes-with-πs i₁ i₂ u σ) ⁻¹))
-            ⦅2⦆ = επ-deflation u (⦅ σ ⦆ i₂)
-          wb : ε u (α i₁ (⦅ σ ⦆ i₁) j₁) ≪⟨ 𝓓 i₂ ⟩ ε u (⦅ σ ⦆ i₁)
-          wb = embeddings-preserve-≪ (𝓓 i₁) (𝓓 i₂)
-                (ε u) (ε-is-continuous u) (π u) (π-is-continuous u)
-                (ε-section-of-π u) (επ-deflation u)
-                (α i₁ (⦅ σ ⦆ i₁) j₁) (⦅ σ ⦆ i₁) wb'
-           where
-            wb' : α i₁ (⦅ σ ⦆ i₁) j₁ ≪⟨ 𝓓 i₁ ⟩ ⦅ σ ⦆ i₁
-            wb' = approximating-family-is-way-below (𝓒 i₁) (⦅ σ ⦆ i₁) j₁
 
-    α∞' : (σ : ⟨ 𝓓∞ ⟩) (i : I) → J i (⦅ σ ⦆ i) → ⟨ 𝓓∞ ⟩
-    α∞' σ i j = α∞ σ (i , j)
+     open 𝓓∞-family (J⁺ σ) (α⁺ σ)
 
-    α∞'-is-directed : (σ : ⟨ 𝓓∞ ⟩) (i : I) → is-Directed 𝓓∞ (α∞' σ i)
-    α∞'-is-directed σ i = image-is-directed' (𝓓 i) 𝓓∞ (ε∞' i) (δ i (⦅ σ ⦆ i))
+     J∞⁺ :  𝓥 ̇
+     J∞⁺ = J∞
+     α∞⁺ : J∞⁺ → ⟨ 𝓓∞ ⟩
+     α∞⁺ = α∞
 
-    α∞-is-directed : (σ : ⟨ 𝓓∞ ⟩) → is-Directed 𝓓∞ (α∞ σ) -- TODO: Factor out this as a general lemma
-    α∞-is-directed σ = γ
-     where
-      open Ind-completion 𝓓∞
-      α∞⁺ : (i : I) → Ind
-      α∞⁺ i = (J i (⦅ σ ⦆ i) , α∞' σ i , α∞'-is-directed σ i)
-      γ : is-Directed 𝓓∞ (α∞ σ)
-      γ = pr₂ (pr₂ (Ind-∐ α∞⁺ α∞-directed-lemma)) -- TODO: Name this projection in DcpoContinuous?
-       where
-        α∞-directed-lemma : is-directed _≲_ α∞⁺
-        α∞-directed-lemma = (I-inhabited , semidir)
-         where
-          semidir : is-semidirected _≲_ α∞⁺
-          semidir i₁ i₂ = ∥∥-functor h (I-semidirected i₁ i₂)
-           where
-            h : (Σ i ꞉ I , (i₁ ⊑ i) × (i₂ ⊑ i))
-              → (Σ i ꞉ I , (α∞⁺ i₁ ≲ α∞⁺ i) × (α∞⁺ i₂ ≲ α∞⁺ i))
-            h (i , u , v) = (i , cofinal-lemma σ i₁ i u , cofinal-lemma σ i₂ i v)
+     α∞⁺-is-way-below : is-way-upperbound 𝓓∞ σ α∞⁺
+     α∞⁺-is-way-below = α∞-is-way-below σ
+                         (λ i j → approximating-family-is-way-below (𝓒 i)
+                                   (⦅ σ ⦆ i) j)
 
-    α∞-∐-≡ : (σ : ⟨ 𝓓∞ ⟩) → ∐ 𝓓∞ (α∞-is-directed σ) ≡ σ
-    α∞-∐-≡ σ = claim₁ ∙ claim₂ ⁻¹
-     where
-      e₁ : ε∞-family σ ≡ (λ i → ε∞ i (∐ (𝓓 i) (δ i (⦅ σ ⦆ i))))
-      e₁ = dfunext fe (λ i → ap (ε∞ i)
-            ((approximating-family-∐-≡ (𝓒 i) (⦅ σ ⦆ i)) ⁻¹))
-      e₂ : (λ i → ε∞ i (∐ (𝓓 i) (δ i (⦅ σ ⦆ i))))
-         ≡ (λ i → ∐ 𝓓∞ (α∞'-is-directed σ i))
-      e₂ = dfunext fe (λ i → continuous-∐-≡ (𝓓 i) 𝓓∞ (ε∞' i) (δ i (⦅ σ ⦆ i)))
-      δ₁ : is-Directed 𝓓∞ (λ (i : I) → ε∞ i (∐ (𝓓 i) (δ i (⦅ σ ⦆ i))))
-      δ₁ = transport (is-Directed 𝓓∞) e₁ (ε∞-family-is-directed σ)
-      δ₂ : is-Directed 𝓓∞ (λ i → ∐ 𝓓∞ (α∞'-is-directed σ i))
-      δ₂ = transport (is-Directed 𝓓∞) e₂ δ₁
+     α∞⁺-is-directed : is-Directed 𝓓∞ α∞⁺
+     α∞⁺-is-directed = (inh , semidir)
+      where
+       inh : ∥ J∞ ∥
+       inh = J∞-is-inhabited (λ i → inhabited-if-Directed (𝓓 i)
+                                     (α⁺ σ i) (δ i (⦅ σ ⦆ i)))
+       semidir : is-semidirected (underlying-order 𝓓∞) α∞
+       semidir = α∞-is-semidirected-criterion
+                  (λ i → semidirected-if-Directed (𝓓 i) (α⁺ σ i) (δ⁺ σ i))
+                  crit
+        where
+         crit : (i₁ i₂ : I) (u : i₁ ⊑ i₂) (j₁ : J⁺ σ i₁)
+              → ∃ j₂ ꞉ J⁺ σ i₂ , ε u (α⁺ σ i₁ j₁) ⊑⟨ 𝓓 i₂ ⟩ α⁺ σ i₂ j₂
+         crit i₁ i₂ u j₁ = claim₂ (J⁺ σ i₂) (α⁺ σ i₂) (δ⁺ σ i₂)
+                            (reflexivity (𝓓 i₂) (∐ (𝓓 i₂) (δ⁺ σ i₂)))
+          where
+           claim₁ : ε u (α⁺ σ i₁ j₁) ≪⟨ 𝓓 i₂ ⟩ ε u (⦅ σ ⦆ i₁)
+           claim₁ = embeddings-preserve-≪ (𝓓 i₁) (𝓓 i₂)
+                     (ε u) (ε-is-continuous u)
+                     (π u) (π-is-continuous u)
+                     (ε-section-of-π u) (επ-deflation u)
+                     (α⁺ σ i₁ j₁) (⦅ σ ⦆ i₁)
+                     (approximating-family-is-way-below (𝓒 i₁) (⦅ σ ⦆ i₁) j₁)
+           claim₂ : ε u (α⁺ σ i₁ j₁) ≪⟨ 𝓓 i₂ ⟩ ∐ (𝓓 i₂) (δ⁺ σ i₂)
+           claim₂ = ≪-⊑-to-≪ (𝓓 i₂) claim₁
+                     (ε u (⦅ σ ⦆ i₁)       ⊑⟨ 𝓓 i₂ ⟩[ ⦅1⦆ ]
+                      ε u (π u (π∞ i₂ σ))  ⊑⟨ 𝓓 i₂ ⟩[ ⦅2⦆ ]
+                      ⦅ σ ⦆ i₂             ⊑⟨ 𝓓 i₂ ⟩[ ⦅3⦆ ]
+                      ∐ (𝓓 i₂) (δ⁺ σ i₂)  ∎⟨ 𝓓 i₂ ⟩)
+            where
+             ⦅1⦆ = ≡-to-⊑ (𝓓 i₂) (ap (ε u) ((π∞-commutes-with-πs i₁ i₂ u σ) ⁻¹))
+             ⦅2⦆ = επ-deflation u (π∞ i₂ σ)
+             ⦅3⦆ = approximating-family-∐-⊒ (𝓓 i₂) (𝓒 i₂) (⦅ σ ⦆ i₂)
 
-      claim₂ = σ                            ≡⟨ ∐-of-ε∞s σ ⟩
-             ∐ 𝓓∞ (ε∞-family-is-directed σ) ≡⟨ ⦅1⦆ ⟩
-             ∐ 𝓓∞ δ₁                        ≡⟨ ⦅2⦆ ⟩
-             ∐ 𝓓∞ δ₂                        ∎
-       where
-        ⦅1⦆ = ∐-family-≡ 𝓓∞ e₁ (ε∞-family-is-directed σ)
-        ⦅2⦆ = ∐-family-≡ 𝓓∞ e₂ δ₁
-
-      claim₁ : ∐ 𝓓∞ (α∞-is-directed σ) ≡ ∐ 𝓓∞ δ₂
-      claim₁ = antisymmetry 𝓓∞ (∐ 𝓓∞ (α∞-is-directed σ)) (∐ 𝓓∞ δ₂)
-                (∐-is-lowerbound-of-upperbounds 𝓓∞ (α∞-is-directed σ) (∐ 𝓓∞ δ₂)
-                 (λ (i , j) → transitivity 𝓓∞
-                               (α∞ σ (i , j))
-                               (∐ 𝓓∞ (α∞'-is-directed σ i))
-                               (∐ 𝓓∞ δ₂)
-                               (∐-is-upperbound 𝓓∞ (α∞'-is-directed σ i) j)
-                               (∐-is-upperbound 𝓓∞ δ₂ i)))
-               (∐-is-lowerbound-of-upperbounds 𝓓∞ δ₂ (∐ 𝓓∞ (α∞-is-directed σ))
-                (λ i → ∐-is-lowerbound-of-upperbounds 𝓓∞ (α∞'-is-directed σ i)
-                        (∐ 𝓓∞ (α∞-is-directed σ))
-                (λ j → ∐-is-upperbound 𝓓∞ (α∞-is-directed σ) (i , j))))
+     α∞⁺-∐-≡ : ∐ 𝓓∞ α∞⁺-is-directed ≡ σ
+     α∞⁺-∐-≡ = α∞-∐-≡ σ
+                (λ i → δ⁺ σ i)
+                (λ i → approximating-family-∐-≡ (𝓒 i) (⦅ σ ⦆ i))
+                α∞⁺-is-directed
 
 \end{code}
 
