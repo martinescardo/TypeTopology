@@ -939,7 +939,7 @@ TODO: Write comment
     α∞'-is-directed : (σ : ⟨ 𝓓∞ ⟩) (i : I) → is-Directed 𝓓∞ (α∞' σ i)
     α∞'-is-directed σ i = image-is-directed' (𝓓 i) 𝓓∞ (ε∞' i) (δ i (⦅ σ ⦆ i))
 
-    α∞-is-directed : (σ : ⟨ 𝓓∞ ⟩) → is-Directed 𝓓∞ (α∞ σ)
+    α∞-is-directed : (σ : ⟨ 𝓓∞ ⟩) → is-Directed 𝓓∞ (α∞ σ) -- TODO: Factor out this as a general lemma
     α∞-is-directed σ = γ
      where
       open Ind-completion 𝓓∞
