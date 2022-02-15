@@ -495,6 +495,40 @@ module _
 
 \end{code}
 
+TODO: Write comment
+
+\begin{code}
+
+small-and-compact-basis : (𝓓 : DCPO {𝓤} {𝓣}) {B : 𝓥 ̇  } (β : B → ⟨ 𝓓 ⟩)
+                        → is-small-basis 𝓓 β
+                        → ((b : B) → is-compact 𝓓 (β b))
+                        → is-small-compact-basis 𝓓 β
+small-and-compact-basis 𝓓 {B} β β-is-small-basis κ = record {
+   basis-is-compact = κ
+  ; ⊑ᴮ-is-small     = I
+  ; ↓ᴮ-is-directed  = II
+  ; ↓ᴮ-is-sup       = III
+ }
+  where
+   open is-small-basis β-is-small-basis
+   module _
+           (x : ⟨ 𝓓 ⟩)
+          where
+    ↡-and-↓-coincide : ↡ᴮ 𝓓 β x ≃ ↓ᴮ 𝓓 β x
+    ↡-and-↓-coincide = Σ-cong (λ b → ≃-sym (compact-⊑-≃-≪ 𝓓 (κ b)))
+    I : (b : B) → is-small (β b ⊑⟨ 𝓓 ⟩ x)
+    I b = ⌜ local-smallness-equivalent-definitions 𝓓 ⌝
+           (locally-small-if-small-basis 𝓓 β β-is-small-basis)
+           (β b) x
+    II : is-Directed 𝓓 (↓ι 𝓓 β x)
+    II = reindexed-family-is-directed 𝓓 ↡-and-↓-coincide (↡ι 𝓓 β x)
+          (↡ᴮ-is-directed x)
+    III : is-sup (underlying-order 𝓓) x (↓ι 𝓓 β x)
+    III = reindexed-family-sup 𝓓 ↡-and-↓-coincide (↡ι 𝓓 β x) x (↡ᴮ-is-sup x)
+
+
+\end{code}
+
 TODO: Move this somewhere and explain
        (ref. Abramsky-Jung, compendium, subset of basis...)
 
