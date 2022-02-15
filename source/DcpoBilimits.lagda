@@ -967,6 +967,61 @@ TODO: Write comment
            (α i j) (π∞ i σ)
            (wb i j)
 
+  α∞-is-compact : ((i : I) (j : J i) → is-compact (𝓓 i) (α i j))
+                → (j : J∞) → is-compact 𝓓∞ (α∞ j)
+  α∞-is-compact κ (i , j) = embeddings-preserve-compactness (𝓓 i) 𝓓∞
+                             (ε∞ i) (ε∞-is-continuous i)
+                             (π∞ i) (π∞-is-continuous i)
+                             ε∞-section-of-π∞ ε∞π∞-deflation
+                             (α i j) (κ i j)
+
+  α∞-is-semidirected-criterion' :
+     (σ : ⟨ 𝓓∞ ⟩)
+     (δ : (i : I) → is-Directed (𝓓 i) (α i))
+   → ((i : I) → ⦅ σ ⦆ i ⊑⟨ 𝓓 i ⟩ ∐ (𝓓 i) (δ i))
+   → ((i : I) (j : J i) → α i j ≪⟨ 𝓓 i ⟩ ⦅ σ ⦆ i)
+   → is-Semidirected 𝓓∞ α∞
+  α∞-is-semidirected-criterion' σ δ bel wb =
+   α∞-is-semidirected-criterion
+    (λ i → semidirected-if-Directed (𝓓 i) (α i) (δ i))
+    crit
+    where
+     crit : (i₁ i₂ : I) (u : i₁ ⊑ i₂) (j₁ : J i₁)
+          → ∃ j₂ ꞉ J i₂ , ε u (α i₁ j₁) ⊑⟨ 𝓓 i₂ ⟩ α i₂ j₂
+     crit i₁ i₂ u j₁ = claim₂ (J i₂) (α i₂) (δ i₂)
+                        (reflexivity (𝓓 i₂) (∐ (𝓓 i₂) (δ i₂)))
+      where
+       claim₁ : ε u (α i₁ j₁) ≪⟨ 𝓓 i₂ ⟩ ε u (⦅ σ ⦆ i₁)
+       claim₁ = embeddings-preserve-≪ (𝓓 i₁) (𝓓 i₂)
+                 (ε u) (ε-is-continuous u)
+                 (π u) (π-is-continuous u)
+                 (ε-section-of-π u) (επ-deflation u)
+                 (α i₁ j₁) (⦅ σ ⦆ i₁)
+                 (wb i₁ j₁)
+       claim₂ : ε u (α i₁ j₁) ≪⟨ 𝓓 i₂ ⟩ ∐ (𝓓 i₂) (δ i₂)
+       claim₂ = ≪-⊑-to-≪ (𝓓 i₂) claim₁
+                 (ε u (⦅ σ ⦆ i₁)      ⊑⟨ 𝓓 i₂ ⟩[ ⦅1⦆ ]
+                  ε u (π u (π∞ i₂ σ)) ⊑⟨ 𝓓 i₂ ⟩[ ⦅2⦆ ]
+                  ⦅ σ ⦆ i₂            ⊑⟨ 𝓓 i₂ ⟩[ ⦅3⦆ ]
+                  ∐ (𝓓 i₂) (δ i₂)     ∎⟨ 𝓓 i₂ ⟩)
+        where
+         ⦅1⦆ = ≡-to-⊑ (𝓓 i₂) (ap (ε u) ((π∞-commutes-with-πs i₁ i₂ u σ) ⁻¹))
+         ⦅2⦆ = επ-deflation u (π∞ i₂ σ)
+         ⦅3⦆ = bel i₂
+
+  α∞-is-directed-criterion :
+     (σ : ⟨ 𝓓∞ ⟩)
+     (δ : (i : I) → is-Directed (𝓓 i) (α i))
+   → ((i : I) → ⦅ σ ⦆ i ⊑⟨ 𝓓 i ⟩ ∐ (𝓓 i) (δ i))
+   → ((i : I) (j : J i) → α i j ≪⟨ 𝓓 i ⟩ ⦅ σ ⦆ i)
+   → is-Directed 𝓓∞ α∞
+  α∞-is-directed-criterion σ δ bel wb = (inh , semidir)
+   where
+    inh : ∥ J∞ ∥
+    inh = J∞-is-inhabited (λ i → inhabited-if-Directed (𝓓 i) (α i) (δ i))
+    semidir : is-semidirected (underlying-order 𝓓∞) α∞
+    semidir = α∞-is-semidirected-criterion' σ δ bel wb
+
 \end{code}
 
 
@@ -997,8 +1052,6 @@ TODO: Write comment
     J⁺ σ i = J i (⦅ σ ⦆ i)
     α⁺ : (σ : ⟨ 𝓓∞ ⟩) (i : I) → J⁺ σ i → ⟨ 𝓓 i ⟩
     α⁺ σ i = α i (⦅ σ ⦆ i)
-    δ⁺ : (σ : ⟨ 𝓓∞ ⟩) (i : I) → is-Directed (𝓓 i) (α⁺ σ i)
-    δ⁺ σ i = δ i (⦅ σ ⦆ i)
 
     module _
             (σ : ⟨ 𝓓∞ ⟩)
@@ -1010,49 +1063,18 @@ TODO: Write comment
      J∞⁺ = J∞
      α∞⁺ : J∞⁺ → ⟨ 𝓓∞ ⟩
      α∞⁺ = α∞
-
      α∞⁺-is-way-below : is-way-upperbound 𝓓∞ σ α∞⁺
      α∞⁺-is-way-below = α∞-is-way-below σ
                          (λ i j → approximating-family-is-way-below (𝓒 i)
                                    (⦅ σ ⦆ i) j)
-
      α∞⁺-is-directed : is-Directed 𝓓∞ α∞⁺
-     α∞⁺-is-directed = (inh , semidir)
-      where
-       inh : ∥ J∞ ∥
-       inh = J∞-is-inhabited (λ i → inhabited-if-Directed (𝓓 i)
-                                     (α⁺ σ i) (δ i (⦅ σ ⦆ i)))
-       semidir : is-semidirected (underlying-order 𝓓∞) α∞
-       semidir = α∞-is-semidirected-criterion
-                  (λ i → semidirected-if-Directed (𝓓 i) (α⁺ σ i) (δ⁺ σ i))
-                  crit
-        where
-         crit : (i₁ i₂ : I) (u : i₁ ⊑ i₂) (j₁ : J⁺ σ i₁)
-              → ∃ j₂ ꞉ J⁺ σ i₂ , ε u (α⁺ σ i₁ j₁) ⊑⟨ 𝓓 i₂ ⟩ α⁺ σ i₂ j₂
-         crit i₁ i₂ u j₁ = claim₂ (J⁺ σ i₂) (α⁺ σ i₂) (δ⁺ σ i₂)
-                            (reflexivity (𝓓 i₂) (∐ (𝓓 i₂) (δ⁺ σ i₂)))
-          where
-           claim₁ : ε u (α⁺ σ i₁ j₁) ≪⟨ 𝓓 i₂ ⟩ ε u (⦅ σ ⦆ i₁)
-           claim₁ = embeddings-preserve-≪ (𝓓 i₁) (𝓓 i₂)
-                     (ε u) (ε-is-continuous u)
-                     (π u) (π-is-continuous u)
-                     (ε-section-of-π u) (επ-deflation u)
-                     (α⁺ σ i₁ j₁) (⦅ σ ⦆ i₁)
-                     (approximating-family-is-way-below (𝓒 i₁) (⦅ σ ⦆ i₁) j₁)
-           claim₂ : ε u (α⁺ σ i₁ j₁) ≪⟨ 𝓓 i₂ ⟩ ∐ (𝓓 i₂) (δ⁺ σ i₂)
-           claim₂ = ≪-⊑-to-≪ (𝓓 i₂) claim₁
-                     (ε u (⦅ σ ⦆ i₁)       ⊑⟨ 𝓓 i₂ ⟩[ ⦅1⦆ ]
-                      ε u (π u (π∞ i₂ σ))  ⊑⟨ 𝓓 i₂ ⟩[ ⦅2⦆ ]
-                      ⦅ σ ⦆ i₂             ⊑⟨ 𝓓 i₂ ⟩[ ⦅3⦆ ]
-                      ∐ (𝓓 i₂) (δ⁺ σ i₂)  ∎⟨ 𝓓 i₂ ⟩)
-            where
-             ⦅1⦆ = ≡-to-⊑ (𝓓 i₂) (ap (ε u) ((π∞-commutes-with-πs i₁ i₂ u σ) ⁻¹))
-             ⦅2⦆ = επ-deflation u (π∞ i₂ σ)
-             ⦅3⦆ = approximating-family-∐-⊒ (𝓓 i₂) (𝓒 i₂) (⦅ σ ⦆ i₂)
-
+     α∞⁺-is-directed = α∞-is-directed-criterion σ
+                        (λ i → δ i (⦅ σ ⦆ i))
+                        (λ i → approximating-family-∐-⊒ (𝓓 i) (𝓒 i) (⦅ σ ⦆ i))
+                        (λ i → approximating-family-is-way-below (𝓒 i) (⦅ σ ⦆ i))
      α∞⁺-∐-≡ : ∐ 𝓓∞ α∞⁺-is-directed ≡ σ
      α∞⁺-∐-≡ = α∞-∐-≡ σ
-                (λ i → δ⁺ σ i)
+                (λ i → δ i (⦅ σ ⦆ i))
                 (λ i → approximating-family-∐-≡ (𝓒 i) (⦅ σ ⦆ i))
                 α∞⁺-is-directed
 
@@ -1063,7 +1085,7 @@ TODO: Comment on building on the above
 \begin{code}
 
  𝓓∞-structurally-algebraic : ((i : I) → structurally-algebraic (𝓓 i))
-                          → structurally-algebraic 𝓓∞
+                           → structurally-algebraic 𝓓∞
  𝓓∞-structurally-algebraic 𝓐 = record
   { index-of-compact-family    = index-of-approximating-family C∞
   ; compact-family             = approximating-family C∞
@@ -1097,7 +1119,7 @@ TODO: Comment on building on the above
          (pe : Prop-Ext)
         where
 
-  open import DcpoBases     pt pe fe 𝓥
+  open import DcpoBases pt pe fe 𝓥
 
   𝓓∞-has-small-basis : ((i : I) → has-specified-small-basis (𝓓 i))
                      → has-specified-small-basis 𝓓∞
@@ -1163,29 +1185,74 @@ TODO: Comment on building on the above
                                    -- TODO: Make explicit ≪ᴮₛ-to-≪ᴮ function and
                                    -- drop the final ᴮ?
 
-        lemma₂ : is-Directed 𝓓∞ (↡ι 𝓓∞ β∞ σ)
-        lemma₂ = ↡ᴮ-directedness-criterion 𝓓∞ β∞ σ ι claim₁ {!!}
+        sublemma₁ : is-Directed 𝓓∞ (↡ι 𝓓∞ β∞ σ ∘ ι)
+        sublemma₁ = α∞-is-directed-criterion σ
+                     (λ i → ↡ᴮₛ-is-directed (β-is-small-basis i) (⦅ σ ⦆ i))
+                     (λ i → ↡ᴮₛ-∐-⊒ (β-is-small-basis i) (⦅ σ ⦆ i))
+                     (λ i → ↡ᴮₛ-way-below (β-is-small-basis i) (⦅ σ ⦆ i))
+                     -- TODO: Rename to ↡ᴮₛ-is-way-below?
+
+        sublemma₂ : σ ≡ ∐ 𝓓∞ sublemma₁
+        sublemma₂ = (α∞-∐-≡ σ δs es sublemma₁) ⁻¹
          where
-          claim₁ : is-Directed 𝓓∞ (↡ι 𝓓∞ β∞ σ ∘ ι)
-          claim₁ = (J∞-is-inhabited inh ,
-                    α∞-is-semidirected-criterion semidir crit)
-           where
-            inh : (i : I) → ∥ ↡ᴮₛ⁺ i ∥
-            inh i = inhabited-if-Directed (𝓓 i)
-                     (↡ιₛ (β-is-small-basis i) (⦅ σ ⦆ i))
-                     (↡ᴮₛ-is-directed (β-is-small-basis i) (⦅ σ ⦆ i))
-            semidir : (i : I)
-                    → is-Semidirected (𝓓 i) (↡ιₛ (β-is-small-basis i) (⦅ σ ⦆ i))
-            semidir = {!!}
-            crit : (i₁ i₂ : I) (u : i₁ ⊑ i₂) (j₁ : ↡ᴮₛ⁺ i₁)
-                 → ∃ j₂ ꞉ ↡ᴮₛ⁺ i₂ , ε u (β i₁ (pr₁ j₁)) ⊑⟨ 𝓓 i₂ ⟩ β i₂ (pr₁ j₂)
-                                       -- TODO: Replace the pr₁'s
-            crit = {!!}
+          δs : (i : I) → is-Directed (𝓓 i) (↡ιₛ (β-is-small-basis i) (⦅ σ ⦆ i))
+          δs i = ↡ᴮₛ-is-directed (β-is-small-basis i) (⦅ σ ⦆ i)
+          es : (i : I) → ∐ (𝓓 i) (δs i) ≡ ⦅ σ ⦆ i
+          es i = ↡ᴮₛ-∐-≡ (β-is-small-basis i) (⦅ σ ⦆ i)
 
-
+        lemma₂ : is-Directed 𝓓∞ (↡ι 𝓓∞ β∞ σ)
+        lemma₂ = ↡ᴮ-directedness-criterion 𝓓∞ β∞ σ ι
+                  sublemma₁ (≡-to-⊑ 𝓓∞ sublemma₂)
 
         lemma₃ : is-sup (underlying-order 𝓓∞) σ (↡ι 𝓓∞ β∞ σ)
-        lemma₃ = {!!}
+        lemma₃ = ↡ᴮ-sup-criterion 𝓓∞ β∞ σ ι claim
+         where
+          claim : is-sup (underlying-order 𝓓∞) σ (↡ι 𝓓∞ β∞ σ ∘ ι)
+          claim =
+           transport (λ - → is-sup (underlying-order 𝓓∞) - (↡ι 𝓓∞ β∞ σ ∘ ι))
+                     (sublemma₂ ⁻¹)
+                     (∐-is-sup 𝓓∞ sublemma₁)
 
+\end{code}
+
+TODO: Put comment
+
+\begin{code}
+
+  𝓓∞-has-small-compact-basis :
+     ((i : I) → has-specified-small-compact-basis (𝓓 i))
+   → has-specified-small-compact-basis 𝓓∞
+  𝓓∞-has-small-compact-basis κ = (B∞ , β∞ , γ)
+   where
+    B : (i : I) → 𝓥 ̇
+    B i = pr₁ (κ i)
+    β : (i : I) → B i → ⟨ 𝓓 i ⟩
+    β i = pr₁ (pr₂ (κ i))
+    β-is-small-compact-basis : (i : I) → is-small-compact-basis (𝓓 i) (β i)
+    β-is-small-compact-basis i = pr₂ (pr₂ (κ i))
+    β-is-small-basis : (i : I) → is-small-basis (𝓓 i) (β i)
+    β-is-small-basis i = compact-basis-is-basis (𝓓 i) (β i)
+                          (β-is-small-compact-basis i)
+
+    𝔹 : has-specified-small-basis 𝓓∞
+    𝔹 = 𝓓∞-has-small-basis (λ i → (B i , β i , β-is-small-basis i))
+    B∞ : 𝓥 ̇
+    B∞ = pr₁ 𝔹
+    β∞ : B∞ → ⟨ 𝓓∞ ⟩
+    β∞ = pr₁ (pr₂ 𝔹)
+    β∞-is-small-basis : is-small-basis 𝓓∞ β∞
+    β∞-is-small-basis = pr₂ (pr₂ 𝔹)
+
+    γ : is-small-compact-basis 𝓓∞ β∞
+    γ = small-and-compact-basis 𝓓∞ β∞ β∞-is-small-basis β∞-is-compact
+     where
+      open is-small-compact-basis
+      β∞-is-compact : (b : B∞) → is-compact 𝓓∞ (β∞ b)
+      β∞-is-compact (i , b) = embeddings-preserve-compactness (𝓓 i) 𝓓∞
+                               (ε∞ i) (ε∞-is-continuous i)
+                               (π∞ i) (π∞-is-continuous i)
+                               ε∞-section-of-π∞ ε∞π∞-deflation
+                               (β i b)
+                               (basis-is-compact (β-is-small-compact-basis i) b)
 
 \end{code}
