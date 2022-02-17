@@ -568,12 +568,12 @@ follows:
 
 \begin{code}
 
-is-regular₀ : (F : frame 𝓤 𝓥 𝓦) → (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺) ̇ 
+is-regular₀ : (F : frame 𝓤 𝓥 𝓦) → (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺) ̇
 is-regular₀ {𝓤 = 𝓤} {𝓥} {𝓦} F =
  let
   open Joins (λ U V → U ≤[ poset-of F ] V)
 
-  P : Fam 𝓦 ⟨ F ⟩ → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺ ̇ 
+  P : Fam 𝓦 ⟨ F ⟩ → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺ ̇
   P ℬ = Π U ꞉ ⟨ F ⟩ ,
          Σ J ꞉ Fam 𝓦 (index ℬ) ,
             (U is-lub-of ⁅ ℬ [ j ] ∣ j ε J ⁆) holds
@@ -813,7 +813,7 @@ closed-under-binary-meets F U =
 closed-under-finite-meets : (F : frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦)
 closed-under-finite-meets F S = contains-top F S ∧ closed-under-binary-meets F S
 
-is-spectral₀ : frame 𝓤 𝓥 𝓦 → (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺) ̇ 
+is-spectral₀ : frame 𝓤 𝓥 𝓦 → (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺) ̇
 is-spectral₀ {𝓤 = 𝓤} {𝓥} {𝓦} F =
  Σ ℬ ꞉ Fam 𝓦 ⟨ F ⟩ , is-basis-for F ℬ
                    × consists-of-compact-opens F ℬ holds
@@ -823,7 +823,7 @@ is-spectral₀ {𝓤 = 𝓤} {𝓥} {𝓦} F =
 --                         → is-spectral₀ F →  has-basis F holds
 -- basis-of-spectral-frame = {!!}
 
-is-spectral : frame 𝓤 𝓥 𝓦 → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺) 
+is-spectral : frame 𝓤 𝓥 𝓦 → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
 is-spectral F = ∥ is-spectral₀ F ∥Ω
 
 \end{code}
