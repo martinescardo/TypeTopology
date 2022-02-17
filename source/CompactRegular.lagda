@@ -369,11 +369,11 @@ clopenness-equivalent-to-well-inside-itself F U =
 
 \begin{code}
 
-well-inside-upwards : (F : frame 𝓤 𝓥 𝓦) {U₁ U₂ V : ⟨ F ⟩}
-                    → (U₁ ⋜[ F ] V) holds
-                    → (U₂ ⋜[ F ] V) holds
-                    → ((U₁ ∨[ F ] U₂) ⋜[ F ] V) holds
-well-inside-upwards F {U₁} {U₂} {V} =
+well-inside-is-join-stable : (F : frame 𝓤 𝓥 𝓦) {U₁ U₂ V : ⟨ F ⟩}
+                           → (U₁ ⋜[ F ] V) holds
+                           → (U₂ ⋜[ F ] V) holds
+                           → ((U₁ ∨[ F ] U₂) ⋜[ F ] V) holds
+well-inside-is-join-stable F {U₁} {U₂} {V} =
  ∥∥-rec₂ (holds-is-prop ((U₁ ∨[ F ] U₂) ⋜[ F ] V)) γ
   where
    open PosetReasoning (poset-of F)
@@ -637,7 +637,7 @@ directification-preserves-regularity F ℬ β r U = γ
 
   γ : (Ɐ js ∶ index 𝒥↑ , ℬ↑ [ 𝒥↑ [ js ] ] ⋜[ F ] U) holds
   γ []       = 𝟎-is-well-inside-anything F U
-  γ (j ∷ js) = well-inside-upwards F (r U j) (γ js)
+  γ (j ∷ js) = well-inside-is-join-stable F (r U j) (γ js)
 
 \end{code}
 
