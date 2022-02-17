@@ -754,7 +754,7 @@ zero-dimensional-locales-are-regular {𝓦 = 𝓦} F =
        c = pr₂ (β U)
 
        ε : Π i ꞉ index 𝒥 , (ℬ [ 𝒥 [ i ] ] ⋜[ F ] U) holds
-       ε i = {!!}
+       ε i = ↑↑-is-upwards-closed F ∣ ξ (𝒥 [ i ]) ∣ (pr₁ c i)
         where
          η : ((ℬ [ 𝒥 [ i ] ]) ≤[ poset-of F ] (ℬ [ 𝒥 [ i ] ])) holds
          η = ≤-is-reflexive (poset-of F) (ℬ [ 𝒥 [ i ] ])
