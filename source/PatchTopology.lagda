@@ -41,7 +41,7 @@ A _locale_ is a type that has a frame of opens.
 
 record locale (𝓤 𝓥 𝓦 : Universe) : 𝓤 ⁺ ⊔ 𝓥 ⁺ ⊔ 𝓦 ⁺ ̇  where
  field
-  ⟨_⟩ₗ         : 𝓤 ̇ 
+  ⟨_⟩ₗ         : 𝓤 ̇
   frame-str-of : frame-structure 𝓥 𝓦 ⟨_⟩ₗ
 
  𝒪 : frame 𝓤 𝓥 𝓦
