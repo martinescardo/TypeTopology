@@ -709,8 +709,8 @@ clopen elements.
 consists-of-clopens : (F : frame 𝓤 𝓥 𝓦) → (S : Fam 𝓦 ⟨ F ⟩) → Ω (𝓤 ⊔ 𝓦)
 consists-of-clopens F S = Ɐ i ∶ index S , is-clopen F (S [ i ])
 
-is-zero-dimensional₀ : frame 𝓤 𝓥 𝓦 → (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺) ̇
-is-zero-dimensional₀ {𝓦 = 𝓦} F =
+zero-dimensional₀ : frame 𝓤 𝓥 𝓦 → (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺) ̇
+zero-dimensional₀ {𝓦 = 𝓦} F =
  Σ ℬ ꞉ Fam 𝓦 ⟨ F ⟩ , is-basis-for F ℬ × consists-of-clopens F ℬ holds
 
 is-zero-dimensional : frame 𝓤 𝓥 𝓦 → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
@@ -736,7 +736,7 @@ zero-dimensional-locales-are-regular {𝓦 = 𝓦} F =
   where
    open Joins (λ x y → x ≤[ poset-of F ] y)
 
-   γ : is-zero-dimensional₀ F → is-regular F holds
+   γ : zero-dimensional₀ F → is-regular F holds
    γ (ℬ , β , ξ) = ∣ ℬ , δ ∣
     where
      δ : Π U ꞉ ⟨ F ⟩ ,
