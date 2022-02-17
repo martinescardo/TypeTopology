@@ -135,7 +135,6 @@ not-Π-implies-not-not-Σ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
                         → ¬¬ (Σ x ꞉ X , ¬ (A x))
 not-Π-implies-not-not-Σ f g h = g (λ x → f x (λ u → h (x , u)))
 
-
 \end{code}
 
 Notation to try to make proofs readable:

@@ -25,7 +25,7 @@ List X = Σ n ꞉ ℕ , Vec X n
 length : {X : 𝓤 ̇ } → List X → ℕ
 length = pr₁
 
-pattern [] = (0 , *)
+pattern [] = (0 , ⋆)
 
 _∷_ : {X : 𝓤 ̇ } → X → List X → List X
 x ∷ (n , s) = succ n , x , s
@@ -69,7 +69,7 @@ List-induction-∷ : {X : 𝓤 ̇ } (P : List X → 𝓥 ̇ )
                → List-induction P p f (x ∷ xs) ≡ f x xs (List-induction P p f xs)
 List-induction-∷ {𝓤} {𝓥} {X} P p f x xs = refl
 
-pattern ⟨⟩       = *
+pattern ⟨⟩       = ⋆
 pattern _::_ x xs = (x , xs)
 
 hd : {n : ℕ} {X : Fin (succ n) → 𝓤 ̇ } → vec (succ n) X → X 𝟎

@@ -21,9 +21,10 @@ open import Two-Properties
 open import Plus-Properties
 open import GenericConvergentSequence
 open import WLPO
+open import CanonicalMapNotation
 
 basic-discontinuity : (ℕ∞ → 𝟚) → 𝓤₀ ̇
-basic-discontinuity p = ((n : ℕ) → p (under n) ≡ ₀) × (p ∞ ≡ ₁)
+basic-discontinuity p = ((n : ℕ) → p (ι n) ≡ ₀) × (p ∞ ≡ ₁)
 
 basic-discontinuity-taboo : (p : ℕ∞ → 𝟚) → basic-discontinuity p → WLPO
 basic-discontinuity-taboo p (f , r) u = 𝟚-equality-cases lemma₀ lemma₁
@@ -42,11 +43,11 @@ basic-discontinuity-taboo p (f , r) u = 𝟚-equality-cases lemma₀ lemma₁
   lemma₀ : p u ≡ ₀ → (u ≡ ∞) + (u ≢ ∞)
   lemma₀ s = inr (fact₂ s)
 
-  fact₃ : p u ≡ ₁ → ((n : ℕ) → u ≢ under n)
-  fact₃ t n s = zero-is-not-one (₀           ≡⟨ (f n)⁻¹ ⟩
-                                 p (under n) ≡⟨ (ap p s)⁻¹ ⟩
-                                 p u         ≡⟨ t ⟩
-                                 ₁           ∎)
+  fact₃ : p u ≡ ₁ → ((n : ℕ) → u ≢ ι n)
+  fact₃ t n s = zero-is-not-one (₀       ≡⟨ (f n)⁻¹ ⟩
+                                 p (ι n) ≡⟨ (ap p s)⁻¹ ⟩
+                                 p u     ≡⟨ t ⟩
+                                 ₁       ∎)
 
   lemma₁ : p u ≡ ₁ → (u ≡ ∞) + (u ≢ ∞)
   lemma₁ t = inl (not-finite-is-∞ (fe 𝓤₀ 𝓤₀) (fact₃ t))
@@ -71,13 +72,13 @@ WLPO-is-discontinuous f = p , (d , d∞)
     case₁ : (r : u ≢ ∞) → f u ≡ inr r → 𝟚
     case₁ r s = ₀
 
-  d : (n : ℕ) → p (under n) ≡ ₀
-  d n = equality-cases (f (under n)) case₀ case₁
+  d : (n : ℕ) → p (ι n) ≡ ₀
+  d n = equality-cases (f (ι n)) case₀ case₁
    where
-    case₀ : (r : under n ≡ ∞) → f (under n) ≡ inl r → p (under n) ≡ ₀
+    case₀ : (r : ι n ≡ ∞) → f (ι n) ≡ inl r → p (ι n) ≡ ₀
     case₀ r s = 𝟘-elim (∞-is-not-finite n (r ⁻¹))
 
-    case₁ : (g : under n ≢ ∞) → f (under n) ≡ inr g → p (under n) ≡ ₀
+    case₁ : (g : ι n ≢ ∞) → f (ι n) ≡ inr g → p (ι n) ≡ ₀
     case₁ g = ap (λ - → equality-cases - (λ r s → ₁) (λ r s → ₀))
 
   d∞ : p ∞ ≡ ₁
@@ -96,13 +97,13 @@ at ∞ too, unless WLPO holds:
 
 \begin{code}
 
-disagreement-taboo : (p q : ℕ∞ → 𝟚) → ((n : ℕ) → p (under n) ≡ q (under n)) → p ∞ ≢ q ∞ → WLPO
+disagreement-taboo : (p q : ℕ∞ → 𝟚) → ((n : ℕ) → p (ι n) ≡ q (ι n)) → p ∞ ≢ q ∞ → WLPO
 disagreement-taboo p q f g = basic-discontinuity-taboo r (r-lemma , r-lemma∞)
  where
   r : ℕ∞ → 𝟚
   r u = (p u) ⊕ (q u)
 
-  r-lemma : (n : ℕ) → r (under n) ≡ ₀
+  r-lemma : (n : ℕ) → r (ι n) ≡ ₀
   r-lemma n = Lemma[b≡c→b⊕c≡₀] (f n)
 
   r-lemma∞ : r ∞ ≡ ₁
@@ -110,7 +111,7 @@ disagreement-taboo p q f g = basic-discontinuity-taboo r (r-lemma , r-lemma∞)
 
 open import DiscreteAndSeparated
 
-agreement-cotaboo :  ¬ WLPO → (p q : ℕ∞ → 𝟚) → ((n : ℕ) → p (under n) ≡ q (under n)) → p ∞ ≡ q ∞
+agreement-cotaboo :  ¬ WLPO → (p q : ℕ∞ → 𝟚) → ((n : ℕ) → p (ι n) ≡ q (ι n)) → p ∞ ≡ q ∞
 agreement-cotaboo φ p q f = 𝟚-is-¬¬-separated (p ∞) (q ∞) (contrapositive (disagreement-taboo p q f) φ)
 
 \end{code}

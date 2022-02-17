@@ -19,6 +19,7 @@ module OrdinalOfOrdinals
 open import SpartanMLTT
 open import OrdinalNotions
 open import OrdinalsType
+open import CanonicalMapNotation
 
 open import UF-Base
 open import UF-Subsingletons
@@ -886,18 +887,18 @@ module example where
  open import NaturalsOrder
 
  fact : (ℕₒ +ₒ 𝟙ₒ) ⊴ ℕ∞ₒ
- fact = under𝟙 , i , p
+ fact = ι𝟙 , i , p
   where
    i : (x : ⟨ ℕₒ +ₒ 𝟙ₒ ⟩) (y : ⟨ ℕ∞ₒ ⟩)
-     → y ≺⟨ ℕ∞ₒ ⟩ under𝟙 x
-     → Σ x' ꞉ ⟨ ℕₒ +ₒ 𝟙ₒ ⟩ , (x' ≺⟨ ℕₒ +ₒ 𝟙ₒ ⟩ x) × (under𝟙 x' ≡ y)
+     → y ≺⟨ ℕ∞ₒ ⟩ ι𝟙 x
+     → Σ x' ꞉ ⟨ ℕₒ +ₒ 𝟙ₒ ⟩ , (x' ≺⟨ ℕₒ +ₒ 𝟙ₒ ⟩ x) × (ι𝟙 x' ≡ y)
    i (inl m) y (n , r , l) = inl n , ⊏-gives-< n m l , (r ⁻¹)
    i (inr *) y (n , r , l) = inl n , * , (r ⁻¹)
 
    p : (x y : ⟨ ℕₒ +ₒ 𝟙ₒ ⟩)
      → x ≺⟨ ℕₒ +ₒ 𝟙ₒ ⟩ y
-     → under𝟙 x ≺⟨ ℕ∞ₒ ⟩ under𝟙 y
-   p (inl n) (inl m) l = under-order-preserving n m l
+     → ι𝟙 x ≺⟨ ℕ∞ₒ ⟩ ι𝟙 y
+   p (inl n) (inl m) l = ι-order-preserving n m l
    p (inl n) (inr *) * = ∞-≺-maximal n
    p (inr *) (inl m) l = 𝟘-elim l
    p (inr *) (inr *) l = 𝟘-elim l
@@ -908,44 +909,44 @@ module example where
    b : (ℕₒ +ₒ 𝟙ₒ) ≃ₒ ℕ∞ₒ
    b = bisimilarity-gives-ordinal-equiv (ℕₒ +ₒ 𝟙ₒ) ℕ∞ₒ fact l
 
-   e : is-equiv under𝟙
+   e : is-equiv ι𝟙
    e = pr₂ (≃ₒ-gives-≃ (ℕₒ +ₒ 𝟙ₒ) ℕ∞ₒ b)
 
    γ : LPO
-   γ = has-section-under𝟙-gives-LPO (equivs-have-sections under𝟙 e)
+   γ = has-section-ι𝟙-gives-LPO (equivs-have-sections ι𝟙 e)
 
  converse-fails-constructively-converse : LPO → ℕ∞ₒ ⊴ (ℕₒ +ₒ 𝟙ₒ)
- converse-fails-constructively-converse lpo = (λ x → under𝟙-inverse x (lpo x)) ,
+ converse-fails-constructively-converse lpo = (λ x → ι𝟙-inverse x (lpo x)) ,
                                               (λ x → i x (lpo x)) ,
                                               (λ x y → p x y (lpo x) (lpo y))
   where
-   under𝟙-inverse-inl : (u : ℕ∞) (d : decidable (Σ n ꞉ ℕ , u ≡ under n))
-                      → (m : ℕ) → u ≡ under m → under𝟙-inverse u d ≡ inl m
-   under𝟙-inverse-inl . (under n) (inl (n , refl)) m q = ap inl (under-lc q)
-   under𝟙-inverse-inl u          (inr g)          m q = 𝟘-elim (g (m , q))
+   ι𝟙-inverse-inl : (u : ℕ∞) (d : decidable (Σ n ꞉ ℕ , u ≡ ι n))
+                      → (m : ℕ) → u ≡ ι m → ι𝟙-inverse u d ≡ inl m
+   ι𝟙-inverse-inl . (ι n) (inl (n , refl)) m q = ap inl (ℕ-to-ℕ∞-lc q)
+   ι𝟙-inverse-inl u          (inr g)          m q = 𝟘-elim (g (m , q))
 
-   i : (x : ℕ∞) (d : decidable (Σ n ꞉ ℕ , x ≡ under n)) (y : ℕ + 𝟙)
-     → y ≺⟨ ℕₒ +ₒ 𝟙ₒ ⟩ under𝟙-inverse x d
-     → Σ x' ꞉ ℕ∞ , (x' ≺⟨ ℕ∞ₒ ⟩ x) × (under𝟙-inverse x' (lpo x') ≡ y)
-   i .(under n) (inl (n , refl)) (inl m) l =
-     under m ,
-     under-order-preserving m n l ,
-     under𝟙-inverse-inl (under m) (lpo (under m)) m refl
-   i .(under n) (inl (n , refl)) (inr *) l = 𝟘-elim l
+   i : (x : ℕ∞) (d : decidable (Σ n ꞉ ℕ , x ≡ ι n)) (y : ℕ + 𝟙)
+     → y ≺⟨ ℕₒ +ₒ 𝟙ₒ ⟩ ι𝟙-inverse x d
+     → Σ x' ꞉ ℕ∞ , (x' ≺⟨ ℕ∞ₒ ⟩ x) × (ι𝟙-inverse x' (lpo x') ≡ y)
+   i .(ι n) (inl (n , refl)) (inl m) l =
+     ι m ,
+     ι-order-preserving m n l ,
+     ι𝟙-inverse-inl (ι m) (lpo (ι m)) m refl
+   i .(ι n) (inl (n , refl)) (inr *) l = 𝟘-elim l
    i x (inr g) (inl n) * =
-     under n ,
-     transport (underlying-order ℕ∞ₒ (under n))
+     ι n ,
+     transport (underlying-order ℕ∞ₒ (ι n))
                ((not-finite-is-∞ (fe 𝓤₀ 𝓤₀) (curry g)) ⁻¹)
                (∞-≺-maximal n) ,
-     under𝟙-inverse-inl (under n) (lpo (under n)) n refl
+     ι𝟙-inverse-inl (ι n) (lpo (ι n)) n refl
    i x (inr g) (inr *) l = 𝟘-elim l
 
-   p : (x y : ℕ∞)  (d : decidable (Σ n ꞉ ℕ , x ≡ under n)) (e : decidable (Σ m ꞉ ℕ , y ≡ under m))
+   p : (x y : ℕ∞)  (d : decidable (Σ n ꞉ ℕ , x ≡ ι n)) (e : decidable (Σ m ꞉ ℕ , y ≡ ι m))
      →  x ≺⟨ ℕ∞ₒ ⟩ y
-     → under𝟙-inverse x d ≺⟨ ℕₒ +ₒ 𝟙ₒ ⟩ under𝟙-inverse y e
-   p .(under n) .(under m) (inl (n , refl)) (inl (m , refl)) (k , r , l) =
-    back-transport (λ - → - < m) (under-lc r) (⊏-gives-< k m l)
-   p .(under n) y (inl (n , refl)) (inr f) l = *
+     → ι𝟙-inverse x d ≺⟨ ℕₒ +ₒ 𝟙ₒ ⟩ ι𝟙-inverse y e
+   p .(ι n) .(ι m) (inl (n , refl)) (inl (m , refl)) (k , r , l) =
+    back-transport (λ - → - <ℕ m) (ℕ-to-ℕ∞-lc r) (⊏-gives-< k m l)
+   p .(ι n) y (inl (n , refl)) (inr f) l = ⋆
    p x y (inr f) e (k , r , l) =
     𝟘-elim (∞-is-not-finite k ((not-finite-is-∞ (fe 𝓤₀ 𝓤₀) (curry f))⁻¹ ∙ r))
 

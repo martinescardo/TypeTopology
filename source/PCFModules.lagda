@@ -2,8 +2,8 @@ Tom de Jong, 31 October 2019
 
 The following modules develop PCF and a constructive version of the Scott model
 of PCF. This includes a constructive and predicative (i.e. without assuming
-propositional resizing) treatment of dcpos with ⊥. In particular, we exhibit the
-lifting of a set as a dcpo with ⊥.
+propositional resizing) treatment of pointed dcpos. In particular, we exhibit
+the lifting of a set as a pointed dcpo.
 
 \begin{code}
 
@@ -12,8 +12,12 @@ lifting of a set as a dcpo with ⊥.
 module PCFModules where
 
 import PCF
-import Dcpo
-import DcpoConstructions
 import ScottModelOfPCF
+
+import Dcpo
+import DcpoMiscelanea
+import DcpoExponential
+import DcpoLeastFixedPoint
+import DcpoPCFCombinators
 
 \end{code}

@@ -233,14 +233,14 @@ retract-𝟙+𝟙-of-𝟚 : retract 𝟙 + 𝟙 of 𝟚
 retract-𝟙+𝟙-of-𝟚 = f , (g , fg)
  where
   f : 𝟚 → 𝟙 {𝓤₀} + 𝟙 {𝓤₀}
-  f = 𝟚-cases (inl *) (inr *)
+  f = 𝟚-cases (inl ⋆) (inr ⋆)
 
   g : 𝟙 + 𝟙 → 𝟚
   g = cases (λ x → ₀) (λ x → ₁)
 
   fg : (x : 𝟙 + 𝟙) → f (g x) ≡ x
-  fg (inl *) = refl
-  fg (inr *) = refl
+  fg (inl ⋆) = refl
+  fg (inr ⋆) = refl
 
 \end{code}
 
@@ -284,16 +284,16 @@ retract-𝟙+𝟙-of-ℕ : retract 𝟙 + 𝟙 of ℕ
 retract-𝟙+𝟙-of-ℕ = r , s , rs
  where
   r : ℕ → 𝟙 + 𝟙
-  r zero = inl *
-  r (succ _) = inr *
+  r zero = inl ⋆
+  r (succ _) = inr ⋆
 
   s : 𝟙 + 𝟙 → ℕ
-  s (inl *) = zero
-  s (inr *) = succ zero
+  s (inl ⋆) = zero
+  s (inr ⋆) = succ zero
 
   rs : (z : 𝟙 {𝓤₀} + 𝟙 {𝓤₀}) → r (s z) ≡ z
-  rs (inl *) = refl
-  rs (inr *) = refl
+  rs (inl ⋆) = refl
+  rs (inr ⋆) = refl
 
 \end{code}
 

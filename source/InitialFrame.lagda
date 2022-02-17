@@ -80,7 +80,7 @@ open propositional-truncations-exist pt
   open Meets _⊑_ renaming (is-top to is-the-top)
 
   top : is-the-top (⊤Ω {𝓤}) holds
-  top _ _ = *
+  top _ _ = ⋆
 
   meet : (Ɐ (P , Q) , (P ∧ Q) is-glb-of (P , Q)) holds
   meet (P , Q) = β , γ
@@ -154,7 +154,7 @@ f-respects-⊤ ua A = ≤-is-antisymmetric (poset-of A) α β
   α = 𝟏-is-top A (f ua A 𝟏[ 𝟎-𝔽𝕣𝕞 ua ])
 
   β : (𝟏[ A ] ≤A f ua A 𝟏[ 𝟎-𝔽𝕣𝕞 ua ]) holds
-  β = ⋁[ A ]-upper (⁅ 𝟏[ A ] ∣ x ∶ ⊤Ω holds ⁆) *
+  β = ⋁[ A ]-upper (⁅ 𝟏[ A ] ∣ x ∶ ⊤Ω holds ⁆) ⋆
 
 \end{code}
 
@@ -221,7 +221,7 @@ f-respects-⋁ ua A U = β , γ
 main-lemma : {𝓦 : Universe} (ua : is-univalent 𝓦) (P : Ω 𝓦)
            → (P ⊑ (⋁[ 𝟎-𝔽𝕣𝕞 ua ] ⁅ 𝟏[ 𝟎-𝔽𝕣𝕞 ua ] ∣ x ∶ P holds ⁆)) holds
 main-lemma ua P p =
- ⋁[ 𝟎-𝔽𝕣𝕞 ua ]-upper (⁅ 𝟏[ 𝟎-𝔽𝕣𝕞 ua ] ∣ x ∶ P holds ⁆) p *
+ ⋁[ 𝟎-𝔽𝕣𝕞 ua ]-upper (⁅ 𝟏[ 𝟎-𝔽𝕣𝕞 ua ] ∣ x ∶ P holds ⁆) p ⋆
 
 \end{code}
 

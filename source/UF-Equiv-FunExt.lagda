@@ -207,28 +207,32 @@ a neutral element for ordinary function composition, definitionally:
   p : inverse f e ∘ f ≡ id
   p = dfunext (fe 𝓤 𝓤) (inverses-are-retractions f e)
 
-≃-Comp : FunExt → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (Z : 𝓦 ̇ ) → X ≃ Y → (Y ≃ Z) ≃ (X ≃ Z)
-≃-Comp fe Z α = qinveq (α ●_) ((≃-sym α ●_), p , q)
+≃-cong-left : FunExt → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } → X ≃ Y → (X ≃ Z) ≃ (Y ≃ Z)
+≃-cong-left fe α = qinveq ((≃-sym α) ●_) ((α ●_), p , q)
  where
-  p = λ β → ≃-sym α ● (α ● β) ≡⟨ ≃-assoc fe (≃-sym α) α β ⟩
+  p = λ γ → α ● (≃-sym α ● γ) ≡⟨ ≃-assoc fe α (≃-sym α) γ ⟩
+            (α ● ≃-sym α) ● γ ≡⟨ ap (_● γ) (≃-sym-right-inverse fe α) ⟩
+            ≃-refl _ ● γ      ≡⟨ ≃-refl-left fe _ ⟩
+            γ                 ∎
+  q = λ β → ≃-sym α ● (α ● β) ≡⟨ ≃-assoc fe (≃-sym α) α β ⟩
             (≃-sym α ● α) ● β ≡⟨ ap (_● β) (≃-sym-left-inverse fe α) ⟩
             ≃-refl _ ● β      ≡⟨ ≃-refl-left fe _ ⟩
             β                 ∎
 
-  q = λ γ → α ● (≃-sym α ● γ) ≡⟨ ≃-assoc fe α (≃-sym α) γ ⟩
-            (α ● ≃-sym α) ● γ ≡⟨ ap (_● γ) (≃-sym-right-inverse fe α) ⟩
-            ≃-refl _ ● γ      ≡⟨ ≃-refl-left fe _ ⟩
-            γ                 ∎
+≃-cong-right : FunExt → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } → X ≃ Y → (A ≃ X) ≃ (A ≃ Y)
+≃-cong-right fe {X} {Y} {A} α =
+ (A ≃ X) ≃⟨ ≃-Sym fe ⟩
+ (X ≃ A) ≃⟨ ≃-cong-left fe α ⟩
+ (Y ≃ A) ≃⟨ ≃-Sym fe ⟩
+ (A ≃ Y) ■
 
-Eq-Eq-cong : FunExt
-           → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } {B : 𝓣 ̇ }
-           → X ≃ A → Y ≃ B → (X ≃ Y) ≃ (A ≃ B)
-Eq-Eq-cong fe {X} {Y} {A} {B} α β =
- (X ≃ Y)  ≃⟨ ≃-Comp fe Y (≃-sym α) ⟩
- (A ≃ Y)  ≃⟨ ≃-Sym fe ⟩
- (Y ≃ A)  ≃⟨ ≃-Comp fe A (≃-sym β) ⟩
- (B ≃ A)  ≃⟨ ≃-Sym fe ⟩
- (A ≃ B)  ■
+≃-cong : FunExt
+       → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } {B : 𝓣 ̇ }
+       → X ≃ A → Y ≃ B → (X ≃ Y) ≃ (A ≃ B)
+≃-cong fe {X} {Y} {A} {B} α β =
+ (X ≃ Y) ≃⟨ ≃-cong-left  fe α ⟩
+ (A ≃ Y) ≃⟨ ≃-cong-right fe β ⟩
+ (A ≃ B) ■
 
 \end{code}
 

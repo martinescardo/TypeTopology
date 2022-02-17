@@ -68,7 +68,7 @@ universe-embeddings-are-embeddings ua 𝓤 𝓥 f i = embedding-criterion' f γ
             (X ≡ X')      ■
    where
     a = univalence-≃ (ua 𝓥) (f X) (f X')
-    b = Eq-Eq-cong (Univalence-gives-FunExt ua) (i X) (i X')
+    b = ≃-cong (Univalence-gives-FunExt ua) (i X) (i X')
     c = ≃-sym (univalence-≃ (ua 𝓤) X X')
 
 \end{code}
@@ -104,10 +104,10 @@ Lift : (𝓥 : Universe) → 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
 Lift 𝓥 X = X × 𝟙 {𝓥}
 
 lift : (𝓥 : Universe) {X : 𝓤 ̇ } → X → Lift 𝓥 X
-lift 𝓥 x = (x , *)
+lift 𝓥 x = (x , ⋆)
 
 lower : {X : 𝓤 ̇ } → Lift 𝓥 X → X
-lower (x , *) = x
+lower (x , ⋆) = x
 
 η-Lift : (𝓥 : Universe) {X : 𝓤 ̇ } (𝔁 : Lift 𝓥 X)
        → lift 𝓥 (lower 𝔁) ≡ 𝔁
@@ -161,7 +161,7 @@ prop-fiber-criterion pe fe 𝓤 𝓥 f i Q j (P , r) = d (P , r)
 
   a : (X : 𝓤 ̇ ) → (f X ≡ f P) ≃ (X ≡ P)
   a X = (f X ≡ f P)  ≃⟨ prop-univalent-≃ (pe 𝓥) (fe 𝓥 𝓥) (f X) (f P) k ⟩
-        (f X ≃ f P)  ≃⟨ Eq-Eq-cong fe (i X) (i P) ⟩
+        (f X ≃ f P)  ≃⟨ ≃-cong fe (i X) (i P) ⟩
         (X ≃ P)      ≃⟨ ≃-sym (prop-univalent-≃ (pe 𝓤) (fe 𝓤 𝓤) X P l) ⟩
         (X ≡ P)      ■
 

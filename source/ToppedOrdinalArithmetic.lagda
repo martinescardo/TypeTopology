@@ -30,10 +30,11 @@ open import OrdinalsType
 open import OrdinalArithmetic fe
 open import OrdinalsWellOrderArithmetic
 open import ToppedOrdinalsType fe
-open import GenericConvergentSequence renaming (_≺_ to _≺[ℕ∞]_)
-open import NaturalsOrder hiding (_≤_) renaming (_<_ to _≺[ℕ]_)
+open import GenericConvergentSequence
+open import NaturalsOrder
 open import InjectiveTypes fe
 open import SquashedSum fe
+open import CanonicalMapNotation
 
 open import UF-Subsingletons
 open import UF-Embeddings
@@ -45,10 +46,10 @@ succₒ α = α +ₒ 𝟙ₒ  ,
           plus.top-preservation
            (underlying-order α)
            (underlying-order 𝟙ₒ)
-           (prop.topped 𝟙 𝟙-is-prop *)
+           (prop.topped 𝟙 𝟙-is-prop ⋆)
 
 𝟙ᵒ 𝟚ᵒ ℕ∞ᵒ : Ordᵀ
-𝟙ᵒ  = 𝟙ₒ , prop.topped 𝟙 𝟙-is-prop *
+𝟙ᵒ  = 𝟙ₒ , prop.topped 𝟙 𝟙-is-prop ⋆
 𝟚ᵒ  = succₒ 𝟙ₒ
 ℕ∞ᵒ = (ℕ∞ₒ , ∞ , ∞-top)
 
@@ -109,7 +110,7 @@ ordinals defined above.
 \begin{code}
 
 ∑¹ : (ℕ → Ordᵀ) → Ordᵀ
-∑¹ τ = ∑ ℕ∞ᵒ (τ ↗ (under , under-embedding fe₀))
+∑¹ τ = ∑ ℕ∞ᵒ (τ ↗ (ι , ι-embedding fe₀))
 
 \end{code}
 

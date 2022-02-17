@@ -294,8 +294,8 @@ after quotienting:
  η-irreducible ((x ∷ []) , v , y , () , refl)
  η-irreducible ((x ∷ y ∷ u) , v , z , () , q)
 
- η-irreducible* : {a : A} {s : FA} → η a ▷* s → η a ≡ s
- η-irreducible* {a} {s} (n , r) = f n r
+ η-irreducible⋆ : {a : A} {s : FA} → η a ▷⋆ s → η a ≡ s
+ η-irreducible⋆ {a} {s} (n , r) = f n r
   where
    f : (n : ℕ) → η a ▷[ n ] s → η a ≡ s
    f zero     refl = refl
@@ -304,12 +304,12 @@ after quotienting:
  η-identifies-∿-related-points : {a b : A} → η a ∿ η b → a ≡ b
  η-identifies-∿-related-points {a} {b} e = η-lc p
   where
-   σ : Σ s ꞉ FA , (η a ▷* s) × (η b ▷* s)
+   σ : Σ s ꞉ FA , (η a ▷⋆ s) × (η b ▷⋆ s)
    σ = from-∿ Church-Rosser (η a) (η b) e
    s = pr₁ σ
 
-   p = η a ≡⟨  η-irreducible* (pr₁ (pr₂ σ)) ⟩
-       s   ≡⟨ (η-irreducible* (pr₂ (pr₂ σ)))⁻¹ ⟩
+   p = η a ≡⟨  η-irreducible⋆ (pr₁ (pr₂ σ)) ⟩
+       s   ≡⟨ (η-irreducible⋆ (pr₂ (pr₂ σ)))⁻¹ ⟩
        η b ∎
 
 \end{code}
@@ -745,17 +745,17 @@ assume another group G with a map f : A → G:
             (G-is-set : is-set G)
             (e : G)
             (invG : G → G)
-            (_⋆_ : G → G → G)
-            (G-ln : left-neutral e _⋆_)
-            (G-rn : right-neutral e _⋆_)
-            (G-invl : (g : G) → invG g ⋆ g ≡ e)
-            (G-invr : (g : G) → g ⋆ invG g ≡ e)
-            (G-assoc : associative _⋆_)
+            (_*_ : G → G → G)
+            (G-ln : left-neutral e _*_)
+            (G-rn : right-neutral e _*_)
+            (G-invl : (g : G) → invG g * g ≡ e)
+            (G-invr : (g : G) → g * invG g ≡ e)
+            (G-assoc : associative _*_)
             (f : A → G)
          where
 
     𝓖 : Group 𝓥
-    𝓖 = (G , _⋆_ ,
+    𝓖 = (G , _*_ ,
          G-is-set , G-assoc , e , G-ln , G-rn ,
          (λ x → invG x , G-invl x , G-invr x))
 
@@ -769,8 +769,8 @@ construct a map h by induction of lists:
 
     h : FA → G
     h [] = e
-    h ((₀ , a) ∷ s) = f a ⋆ h s
-    h ((₁ , a) ∷ s) = invG (f a) ⋆ h s
+    h ((₀ , a) ∷ s) = f a * h s
+    h ((₁ , a) ∷ s) = invG (f a) * h s
 
 \end{code}
 
@@ -780,12 +780,12 @@ We need the following property of h with respect to formal inverses:
 
     h⁻ : (x : X) → h ([ x ] ++ [ x ⁻ ]) ≡ e
 
-    h⁻ (₀ , a) = f a ⋆ (invG (f a) ⋆ e) ≡⟨ ap (f a ⋆_) (G-rn (invG (f a))) ⟩
-                 f a ⋆ invG (f a)       ≡⟨ G-invr (f a) ⟩
+    h⁻ (₀ , a) = f a * (invG (f a) * e) ≡⟨ ap (f a *_) (G-rn (invG (f a))) ⟩
+                 f a * invG (f a)       ≡⟨ G-invr (f a) ⟩
                  e                      ∎
 
-    h⁻ (₁ , a) = invG (f a) ⋆ (f a ⋆ e) ≡⟨ ap (invG (f a) ⋆_) (G-rn (f a)) ⟩
-                 invG (f a) ⋆ f a       ≡⟨ G-invl (f a) ⟩
+    h⁻ (₁ , a) = invG (f a) * (f a * e) ≡⟨ ap (invG (f a) *_) (G-rn (f a)) ⟩
+                 invG (f a) * f a       ≡⟨ G-invl (f a) ⟩
                  e                      ∎
 \end{code}
 
@@ -795,23 +795,23 @@ group, which it isn't):
 
 \begin{code}
 
-    h-is-hom : (s t : FA) → h (s ++ t) ≡ h s ⋆ h t
+    h-is-hom : (s t : FA) → h (s ++ t) ≡ h s * h t
 
     h-is-hom [] t =
      h  t    ≡⟨ (G-ln (h t))⁻¹ ⟩
-     e ⋆ h t ∎
+     e * h t ∎
 
     h-is-hom ((₀ , a) ∷ s) t =
-     f a ⋆ h (s ++ t)    ≡⟨ ap (f a ⋆_) (h-is-hom s t) ⟩
-     f a ⋆ (h s ⋆ h t)   ≡⟨ (G-assoc (f a) (h s) (h t))⁻¹ ⟩
-     (f a ⋆ h s) ⋆ h t   ≡⟨ refl ⟩
-     h (₀ , a ∷ s) ⋆ h t ∎
+     f a * h (s ++ t)    ≡⟨ ap (f a *_) (h-is-hom s t) ⟩
+     f a * (h s * h t)   ≡⟨ (G-assoc (f a) (h s) (h t))⁻¹ ⟩
+     (f a * h s) * h t   ≡⟨ refl ⟩
+     h (₀ , a ∷ s) * h t ∎
 
     h-is-hom (₁ , a ∷ s) t =
-     invG (f a) ⋆ h (s ++ t)  ≡⟨ ap (invG (f a) ⋆_) (h-is-hom s t) ⟩
-     invG (f a) ⋆ (h s ⋆ h t) ≡⟨ (G-assoc (invG (f a)) (h s) (h t))⁻¹ ⟩
-     (invG (f a) ⋆ h s) ⋆ h t ≡⟨ refl ⟩
-     h (₁ , a ∷ s) ⋆ h t      ∎
+     invG (f a) * h (s ++ t)  ≡⟨ ap (invG (f a) *_) (h-is-hom s t) ⟩
+     invG (f a) * (h s * h t) ≡⟨ (G-assoc (invG (f a)) (h s) (h t))⁻¹ ⟩
+     (invG (f a) * h s) * h t ≡⟨ refl ⟩
+     h (₁ , a ∷ s) * h t      ∎
 
 \end{code}
 
@@ -824,15 +824,15 @@ our desired group homomorphism f':
     h-identifies-▷-related-points {s} {t} (u , v , y , p , q) =
        h s ≡⟨ ap h p ⟩
        h (u ++ [ y ] ++ [ y ⁻ ] ++ v) ≡⟨ h-is-hom u ([ y ] ++ [ y ⁻ ] ++ v) ⟩
-       h u ⋆ h (y ∷ y ⁻ ∷ v)          ≡⟨ ap (h u ⋆_) (h-is-hom (y ∷ y ⁻ ∷ []) v) ⟩
-       h u ⋆ (h (y ∷ y ⁻ ∷ []) ⋆ h v) ≡⟨ ap (λ - → h u ⋆ (- ⋆ h v)) (h⁻ y) ⟩
-       h u ⋆ (e ⋆ h v)                ≡⟨ ap (h u ⋆_) (G-ln (h v)) ⟩
-       h u ⋆ h v                      ≡⟨ (h-is-hom u v)⁻¹ ⟩
+       h u * h (y ∷ y ⁻ ∷ v)          ≡⟨ ap (h u *_) (h-is-hom (y ∷ y ⁻ ∷ []) v) ⟩
+       h u * (h (y ∷ y ⁻ ∷ []) * h v) ≡⟨ ap (λ - → h u * (- * h v)) (h⁻ y) ⟩
+       h u * (e * h v)                ≡⟨ ap (h u *_) (G-ln (h v)) ⟩
+       h u * h v                      ≡⟨ (h-is-hom u v)⁻¹ ⟩
        h (u ++ v)                     ≡⟨ ap h (q ⁻¹) ⟩
        h t                            ∎
 
-    h-identifies-▷*-related-points : {s t : FA} → s ▷* t → h s ≡ h t
-    h-identifies-▷*-related-points {s} {t} (n , r) = γ n s t r
+    h-identifies-▷⋆-related-points : {s t : FA} → s ▷⋆ t → h s ≡ h t
+    h-identifies-▷⋆-related-points {s} {t} (n , r) = γ n s t r
      where
       γ : (n : ℕ) (s t : FA) → s ▷[ n ] t → h s ≡ h t
       γ zero s s refl  = refl
@@ -843,9 +843,9 @@ our desired group homomorphism f':
     h-identifies-∾-related-points : {s t : FA} → s ∾ t → h s ≡ h t
     h-identifies-∾-related-points {s} {t} e = γ
      where
-      δ : (Σ u ꞉ FA , (s ▷* u) × (t ▷* u)) → h s ≡ h t
-      δ (u , σ , τ) = h s ≡⟨ (h-identifies-▷*-related-points σ) ⟩
-                      h u ≡⟨ (h-identifies-▷*-related-points τ)⁻¹ ⟩
+      δ : (Σ u ꞉ FA , (s ▷⋆ u) × (t ▷⋆ u)) → h s ≡ h t
+      δ (u , σ , τ) = h s ≡⟨ (h-identifies-▷⋆-related-points σ) ⟩
+                      h u ≡⟨ (h-identifies-▷⋆-related-points τ)⁻¹ ⟩
                       h t ∎
       γ : h s ≡ h t
       γ = ∥∥-rec G-is-set δ (∥∥-functor (from-∿ Church-Rosser s t) e)
@@ -873,7 +873,7 @@ free group:
     f'-triangle : f' ∘ ηᴳʳᵖ ∼ f
     f'-triangle a = f' (η/∾ (η a)) ≡⟨ f'-/triangle (η a) ⟩
                     h (η a)        ≡⟨ refl ⟩
-                    f a ⋆ e        ≡⟨ G-rn (f a) ⟩
+                    f a * e        ≡⟨ G-rn (f a) ⟩
                     f a            ∎
 
 \end{code}
@@ -886,22 +886,22 @@ homomorphism like h):
     f'-is-hom : is-hom 𝓕 𝓖 f'
     f'-is-hom {x} {y} = γ x y
      where
-      δ : (s t : FA) → f' (η/∾ s · η/∾ t) ≡ f' (η/∾ s) ⋆ f' (η/∾ t)
+      δ : (s t : FA) → f' (η/∾ s · η/∾ t) ≡ f' (η/∾ s) * f' (η/∾ t)
       δ s t = f' (η/∾ s · η/∾ t)      ≡⟨ I ⟩
               f' (η/∾ (s ++ t))       ≡⟨ II ⟩
               h (s ++ t)              ≡⟨ III ⟩
-              h s ⋆ h t               ≡⟨ IV ⟩
-              f' (η/∾ s) ⋆ f' (η/∾ t) ∎
+              h s * h t               ≡⟨ IV ⟩
+              f' (η/∾ s) * f' (η/∾ t) ∎
         where
          I   = ap f' (·-natural s t)
          II  = f'-/triangle (s ++ t)
          III = h-is-hom s t
-         IV  = ap₂ _⋆_ ((f'-/triangle s)⁻¹) ((f'-/triangle t)⁻¹)
+         IV  = ap₂ _*_ ((f'-/triangle s)⁻¹) ((f'-/triangle t)⁻¹)
 
-      γ : (x y : FA / -∾-) → f' (x · y) ≡ f' x ⋆ f' y
-      γ = /-induction -∾- (λ x → ∀ y → f' (x · y) ≡ f' x ⋆ f' y)
+      γ : (x y : FA / -∾-) → f' (x · y) ≡ f' x * f' y
+      γ = /-induction -∾- (λ x → ∀ y → f' (x · y) ≡ f' x * f' y)
            (λ x → Π-is-prop fe (λ y → G-is-set))
-           (λ s → /-induction -∾- (λ y → f' (η/∾ s · y) ≡ f' (η/∾ s) ⋆ f' y)
+           (λ s → /-induction -∾- (λ y → f' (η/∾ s · y) ≡ f' (η/∾ s) * f' y)
                    (λ a → G-is-set)
                    (δ s))
 \end{code}
@@ -939,29 +939,29 @@ But for this one we do:
       δ ((₀ , a) ∷ s) =
              f₀ (η/∾ (η a ++ s))    ≡⟨ ap f₀ ((·-natural (η a) s)⁻¹) ⟩
              f₀ (ηᴳʳᵖ a · η/∾ s)      ≡⟨ i₀  ⟩
-             f₀ (ηᴳʳᵖ a) ⋆ f₀ (η/∾ s) ≡⟨ ap₂ _⋆_ (p a) (δ s) ⟩
-             f₁ (ηᴳʳᵖ a) ⋆ f₁ (η/∾ s) ≡⟨ i₁ ⁻¹ ⟩
+             f₀ (ηᴳʳᵖ a) * f₀ (η/∾ s) ≡⟨ ap₂ _*_ (p a) (δ s) ⟩
+             f₁ (ηᴳʳᵖ a) * f₁ (η/∾ s) ≡⟨ i₁ ⁻¹ ⟩
              f₁ (ηᴳʳᵖ a · η/∾ s)      ≡⟨ ap f₁ (·-natural (η a) s) ⟩
              f₁ (η/∾ (η a ++ s))    ∎
       δ ((₁ , a) ∷ s) =
              f₀ (η/∾ (finv (η a) ++ s))         ≡⟨ I ⟩
              f₀ (η/∾ (finv (η a)) · η/∾ s)      ≡⟨ II ⟩
-             f₀ (η/∾ (finv (η a))) ⋆ f₀ (η/∾ s) ≡⟨ III ⟩
-             f₀ (inv/ (ηᴳʳᵖ a)) ⋆ f₀ (η/∾ s)      ≡⟨ IV ⟩
-             invG (f₀ (ηᴳʳᵖ a)) ⋆ f₀ (η/∾ s)      ≡⟨ IH ⟩
-             invG (f₁ (ηᴳʳᵖ a)) ⋆ f₁ (η/∾ s)      ≡⟨ IV' ⟩
-             f₁ (inv/ (ηᴳʳᵖ a)) ⋆ f₁ (η/∾ s)      ≡⟨ III' ⟩
-             f₁ (η/∾ (finv (η a))) ⋆ f₁ (η/∾ s) ≡⟨ II' ⟩
+             f₀ (η/∾ (finv (η a))) * f₀ (η/∾ s) ≡⟨ III ⟩
+             f₀ (inv/ (ηᴳʳᵖ a)) * f₀ (η/∾ s)      ≡⟨ IV ⟩
+             invG (f₀ (ηᴳʳᵖ a)) * f₀ (η/∾ s)      ≡⟨ IH ⟩
+             invG (f₁ (ηᴳʳᵖ a)) * f₁ (η/∾ s)      ≡⟨ IV' ⟩
+             f₁ (inv/ (ηᴳʳᵖ a)) * f₁ (η/∾ s)      ≡⟨ III' ⟩
+             f₁ (η/∾ (finv (η a))) * f₁ (η/∾ s) ≡⟨ II' ⟩
              f₁ (η/∾ (finv (η a)) · η/∾ s)      ≡⟨ I' ⟩
              f₁ (η/∾ (finv (η a) ++ s))         ∎
             where
              I    = ap f₀ ((·-natural (finv (η a)) s)⁻¹)
              II   = i₀
-             III  = ap (λ - → f₀ - ⋆ f₀ (η/∾ s)) ((inv/-natural (η a))⁻¹)
-             IV   = ap (_⋆ f₀ (η/∾ s)) (homs-preserve-invs 𝓕 𝓖 f₀ i₀ (ηᴳʳᵖ a))
-             IH   = ap₂ (λ - -' → invG - ⋆ -') (p a) (δ s)
-             IV'  = ap (_⋆ f₁ (η/∾ s)) ((homs-preserve-invs 𝓕 𝓖 f₁ i₁ (ηᴳʳᵖ a))⁻¹)
-             III' = ap (λ - → f₁ - ⋆ f₁ (η/∾ s)) (inv/-natural (η a))
+             III  = ap (λ - → f₀ - * f₀ (η/∾ s)) ((inv/-natural (η a))⁻¹)
+             IV   = ap (_* f₀ (η/∾ s)) (homs-preserve-invs 𝓕 𝓖 f₀ i₀ (ηᴳʳᵖ a))
+             IH   = ap₂ (λ - -' → invG - * -') (p a) (δ s)
+             IV'  = ap (_* f₁ (η/∾ s)) ((homs-preserve-invs 𝓕 𝓖 f₁ i₁ (ηᴳʳᵖ a))⁻¹)
+             III' = ap (λ - → f₁ - * f₁ (η/∾ s)) (inv/-natural (η a))
              II'  = i₁ ⁻¹
              I'   = ap f₁ (·-natural (finv (η a)) s)
 
@@ -1017,12 +1017,12 @@ module FreeGroupInterface
  η-free-group-is-embedding : is-set A → is-embedding η-free-group
  η-free-group-is-embedding = ηᴳʳᵖ-is-embedding
 
- module _ ((G , _⋆_ , G-is-set , G-assoc , e , l , r , inversion) : Group 𝓥)
+ module _ ((G , _*_ , G-is-set , G-assoc , e , l , r , inversion) : Group 𝓥)
           (f : A → G)
         where
 
   open free-group-construction-step₃
-        G G-is-set e (λ x → pr₁ (inversion x)) _⋆_ l r
+        G G-is-set e (λ x → pr₁ (inversion x)) _*_ l r
         (λ x → pr₁ (pr₂ (inversion x))) (λ x → pr₂ (pr₂ (inversion x))) G-assoc f
 
   free-group-extension : ⟨ free-group ⟩ → ⟨ 𝓖 ⟩

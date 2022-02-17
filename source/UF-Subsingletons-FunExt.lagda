@@ -220,7 +220,7 @@ not : funext 𝓤 𝓤₀ → Ω 𝓤 → Ω 𝓤
 not fe (P , i) = (¬ P , negations-are-props fe)
 
 equal-⊤-is-true : (P : 𝓤 ̇ ) (i : is-prop P) → (P , i) ≡ ⊤ → P
-equal-⊤-is-true P hp r = f *
+equal-⊤-is-true P hp r = f ⋆
  where
   s : 𝟙 ≡ P
   s = (ap pr₁ r)⁻¹
@@ -248,7 +248,7 @@ holds-gives-equal-⊤ : propext 𝓤 → funext 𝓤 𝓤 → (p : Ω 𝓤) → 
 holds-gives-equal-⊤ pe fe (P , i) = true-is-equal-⊤ pe fe P i
 
 equal-𝟙-gives-holds : (P : 𝓤 ̇ ) → P ≡ 𝟙 → P
-equal-𝟙-gives-holds P r = Idtofun (r ⁻¹) *
+equal-𝟙-gives-holds P r = Idtofun (r ⁻¹) ⋆
 
 equal-⊤-gives-holds : (p : Ω 𝓤) → p ≡ ⊤ → p holds
 equal-⊤-gives-holds p r = equal-𝟙-gives-holds (p holds) (ap pr₁ r)
@@ -258,7 +258,7 @@ not-𝟘-is-𝟙 : funext 𝓤 𝓤₀
            → (¬ 𝟘) ≡ 𝟙
 not-𝟘-is-𝟙 fe pe = pe (negations-are-props fe)
                       𝟙-is-prop
-                      (λ _ → *)
+                      (λ _ → ⋆)
                       (λ _ z → 𝟘-elim z)
 
 equal-⊥-gives-not-equal-⊤ : (fe : Fun-Ext)
@@ -287,7 +287,7 @@ not-equal-⊤-gives-equal-⊥ : (fe : Fun-Ext)
 not-equal-⊤-gives-equal-⊥ fe pe p r = to-subtype-≡ (λ _ → being-prop-is-prop fe) t
  where
   f : (not fe p) holds
-  f = Idtofun (ap _holds r ⁻¹) *
+  f = Idtofun (ap _holds r ⁻¹) ⋆
 
   t : p holds ≡ 𝟘
   t = empty-types-are-≡-𝟘 fe pe f
@@ -416,22 +416,22 @@ type nameless:
 
 𝟙-is-true-props-center : funext 𝓤 𝓤
                        → propext 𝓤
-                       → (σ : Σ P ꞉ 𝓤 ̇ , is-prop P × P) → (𝟙 , 𝟙-is-prop , *) ≡ σ
+                       → (σ : Σ P ꞉ 𝓤 ̇ , is-prop P × P) → (𝟙 , 𝟙-is-prop , ⋆) ≡ σ
 𝟙-is-true-props-center fe pe = γ
  where
   φ : ∀ P → is-prop (is-prop P × P)
   φ P (i , p) = ×-is-prop (being-prop-is-prop fe) i (i , p)
 
-  γ : ∀ σ → (𝟙 , 𝟙-is-prop , *) ≡ σ
+  γ : ∀ σ → (𝟙 , 𝟙-is-prop , ⋆) ≡ σ
   γ (P , i , p) = to-subtype-≡ φ s
    where
     s : 𝟙 ≡ P
-    s = pe 𝟙-is-prop i (λ _ → p) (λ _ → *)
+    s = pe 𝟙-is-prop i (λ _ → p) (λ _ → ⋆)
 
 the-true-props-form-a-singleton-type : funext 𝓤 𝓤
                                      → propext 𝓤
                                      → is-singleton (Σ P ꞉ 𝓤 ̇ , is-prop P × P)
-the-true-props-form-a-singleton-type fe pe = (𝟙 , 𝟙-is-prop , *) , 𝟙-is-true-props-center fe pe
+the-true-props-form-a-singleton-type fe pe = (𝟙 , 𝟙-is-prop , ⋆) , 𝟙-is-true-props-center fe pe
 
 
 the-true-props-form-a-prop : funext 𝓤 𝓤

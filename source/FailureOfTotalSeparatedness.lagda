@@ -46,6 +46,7 @@ open import GenericConvergentSequence
 open import BasicDiscontinuityTaboo
 open import WLPO
 open import UF-Base
+open import CanonicalMapNotation
 
 \end{code}
 
@@ -108,10 +109,10 @@ module concrete-example where
    p₁ : ℕ∞ → 𝟚
    p₁ u = p (u , λ r → ₁)
 
-   lemma : (n : ℕ) → p₀ (under n) ≡ p₁ (under n)
-   lemma n = ap (λ - → p (under n , -)) (dfunext (fe 𝓤₀ 𝓤₀) claim)
+   lemma : (n : ℕ) → p₀ (ι n) ≡ p₁ (ι n)
+   lemma n = ap (λ - → p (ι n , -)) (dfunext (fe 𝓤₀ 𝓤₀) claim)
     where
-     claim : (r : under n ≡ ∞) → (λ r → ₀) r ≡ (λ r → ₁) r
+     claim : (r : ι n ≡ ∞) → (λ r → ₀) r ≡ (λ r → ₁) r
      claim s = 𝟘-elim (∞-is-not-finite n (s ⁻¹))
 
  open import DiscreteAndSeparated

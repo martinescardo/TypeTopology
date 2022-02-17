@@ -63,16 +63,21 @@ open import Sigma
 open import GeneralNotation
 
 inl-preservation : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X + 𝟙 {𝓦}  → Y + 𝟙 {𝓣})
-                 → f (inr *) ≡ inr *
+                 → f (inr ⋆) ≡ inr ⋆
                  → left-cancellable f
                  → (x : X) → Σ y ꞉ Y , f (inl x) ≡ inl y
 inl-preservation {𝓤} {𝓥} {𝓦} {𝓣} {X} {Y} f p l x = γ x (f (inl x)) refl
  where
   γ : (x : X) (z : Y + 𝟙) → f (inl x) ≡ z → Σ y ꞉ Y , z ≡ inl y
   γ x (inl y) q = y , refl
-  γ x (inr *) q = 𝟘-elim (+disjoint (l r))
+  γ x (inr ⋆) q = 𝟘-elim (+disjoint (l r))
    where
-    r : f (inl x) ≡ f (inr *)
+    r : f (inl x) ≡ f (inr ⋆)
     r = q ∙ p ⁻¹
+
++functor : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } {B : 𝓣 ̇ }
+         → (X → A) → (Y → B) → X + Y → A + B
++functor f g (inl x) = inl (f x)
++functor f g (inr y) = inr (g y)
 
 \end{code}

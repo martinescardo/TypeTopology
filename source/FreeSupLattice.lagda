@@ -23,40 +23,6 @@ open PropositionalTruncation pt
 
 \end{code}
 
-We start with some basic constructions on the powerset.
-
-\begin{code}
-
-𝕋 : {X : 𝓥 ̇ } → 𝓟 X → 𝓥 ̇
-𝕋 {𝓥} {X} A = Σ x ꞉ X , (x ∈ A)
-
-𝕋-to-carrier : {X : 𝓥 ̇ } (A : 𝓟 X) → 𝕋 A → X
-𝕋-to-carrier A = pr₁
-
-𝕋-to-membership : {X : 𝓥 ̇ } (A : 𝓟 X) (t : 𝕋 A) → (𝕋-to-carrier A t) ∈ A
-𝕋-to-membership A = pr₂
-
-⦅_⦆[_] : {X : 𝓥 ̇ } → X → is-set X → 𝓟 X
-⦅ x ⦆[ i ] = (λ y → ((y ≡ x) , i))
-
-⋃  : {X I : 𝓥 ̇ } (α : I → 𝓟 X) → 𝓟 X
-⋃ {𝓥} {X} {I} α x = (∃ i ꞉ I , x ∈ α i) , ∃-is-prop
-
-⋃-is-upperbound : {X I : 𝓥 ̇ } (α : I → 𝓟 X) (i : I)
-                → α i ⊆ ⋃ α
-⋃-is-upperbound α i x a = ∣ i , a ∣
-
-⋃-is-lowerbound-of-upperbounds : {X I : 𝓥 ̇ } (α : I → 𝓟 X) (A : 𝓟 X)
-                               → ((i : I) → α i ⊆ A)
-                               → ⋃ α ⊆ A
-⋃-is-lowerbound-of-upperbounds {𝓥} {X} {I} α A ub x u =
- ∥∥-rec (∈-is-prop A x) γ u
-  where
-   γ : (Σ i ꞉ I , x ∈ α i) → x ∈ A
-   γ (i , a) = ub i x a
-
-\end{code}
-
 We define sup-lattices using a record. We also introduce convenient helpers
 and syntax for reasoning about the order ⊑.
 
@@ -122,6 +88,8 @@ as a union of singletons (this will come in useful later).
 
 \begin{code}
 
+open unions-of-small-families pt
+
 module _
         (pe : propext 𝓥)
         (fe : funext 𝓥 (𝓥 ⁺))
@@ -141,16 +109,19 @@ module _
  SupLattice.⋁-is-upperbound 𝓟-lattice                = ⋃-is-upperbound
  SupLattice.⋁-is-lowerbound-of-upperbounds 𝓟-lattice = ⋃-is-lowerbound-of-upperbounds
 
+ open singleton-subsets X-is-set
+
  express-subset-as-union-of-singletons :
-  (A : 𝓟 X) → A ≡ ⋃ {𝓥} {X} {𝕋 A} (⦅_⦆[ X-is-set ] ∘ pr₁)
+  (A : 𝓟 X) → A ≡ ⋃ {𝓥} {X} {𝕋 A} (❴_❵ ∘ (𝕋-to-carrier A))
  express-subset-as-union-of-singletons A = subset-extensionality pe fe u v
   where
-   u : A ⊆ ⋃ (⦅_⦆[ X-is-set ] ∘ pr₁)
+   u : A ⊆ ⋃ (❴_❵ ∘ (𝕋-to-carrier A))
    u x a = ∣ (x , a) , refl ∣
-   v : ⋃ (⦅_⦆[ X-is-set ] ∘ pr₁) ⊆ A
+   v : ⋃ (❴_❵ ∘ (𝕋-to-carrier A)) ⊆ A
    v x = ∥∥-rec (∈-is-prop A x) γ
     where
-     γ : (Σ i ꞉ 𝕋 A , x ∈ (⦅_⦆[ X-is-set ] ∘ pr₁) i) → x ∈ A
+     γ : (Σ i ꞉ 𝕋 A , x ∈ (❴_❵ ∘ 𝕋-to-carrier A) i)
+       → x ∈ A
      γ ((x , a) , refl) = a
 
 \end{code}
@@ -171,6 +142,8 @@ then there is a *unique* mediating map f♭ : 𝓟 X → L such that:
           𝓟 X
      commutes.
 
+(The map η : X → 𝓟 X is of course given by x ↦ ❴ x ❵.)
+
 \begin{code}
 
 module _
@@ -185,57 +158,62 @@ module _
          (f : X → L)
         where
 
+  open singleton-subsets X-is-set
+
+  f̃ : (A : 𝓟 X) → 𝕋 A → L
+  f̃ A = f ∘ (𝕋-to-carrier A)
+
   f♭ : 𝓟 X → L
-  f♭ A = ⋁ {𝕋 A} (f ∘ pr₁)
+  f♭ A = ⋁ {𝕋 A} (f̃ A)
 
   η : X → 𝓟 X
-  η = ⦅_⦆[ X-is-set ]
+  η = ❴_❵
 
   f♭-after-η-is-f : f♭ ∘ η ∼ f
   f♭-after-η-is-f x = ⊑-is-antisymmetric ((f♭ ∘ η) x) (f x) u v
    where
-    u : ⋁ (λ x₁ → f (pr₁ x₁)) ⊑ f x
-    u = ⋁-is-lowerbound-of-upperbounds (f ∘ pr₁) (f x) γ
+    u : (f♭ ∘ η) x ⊑ f x
+    u = ⋁-is-lowerbound-of-upperbounds (f̃ (η x)) (f x) γ
      where
-      γ : (i : Σ y ꞉ X , y ≡ x) → f (pr₁ i) ⊑ f x
+      γ : (i : 𝕋 (η x)) → (f̃ (η x)) i ⊑ f x
       γ (x , refl) = ⊑-is-reflexive (f x)
-    v : f x ⊑ ⋁ (λ x₁ → f (pr₁ x₁))
+    v : f x ⊑ (f♭ ∘ η) x
     v = ⋁-is-upperbound (λ (x , _) → f x) (x , refl)
 
   f♭-is-monotone : (A B : 𝓟 X) → A ⊆ B → f♭ A ⊑ f♭ B
-  f♭-is-monotone A B s = ⋁-is-lowerbound-of-upperbounds (f ∘ pr₁) (f♭ B) γ₁
+  f♭-is-monotone A B s = ⋁-is-lowerbound-of-upperbounds (f̃ A) (f♭ B) γ
    where
-    γ₁ : (i : Σ x ꞉ X , x ∈ A) → f (pr₁ i) ⊑ ⋁ (f ∘ pr₁)
-    γ₁ (x , a) = ⋁-is-upperbound (f ∘ pr₁) (x , s x a)
+    γ : (i : Σ x ꞉ X , x ∈ A) → f̃ A i ⊑ ⋁ (f̃ B)
+    γ (x , a) = ⋁-is-upperbound (f̃ B) (x , s x a)
 
   f♭-preserves-joins : (I : 𝓥 ̇ ) (α : I → 𝓟 X)
                      → f♭ (⋃ α) ≡ ⋁ (f♭ ∘ α)
   f♭-preserves-joins I α = ⊑-is-antisymmetric (f♭ (⋃ α)) (⋁ (f♭ ∘ α)) u v
    where
-    u : ⋁ (f ∘ pr₁) ⊑ ⋁ (λ (i : I) → ⋁ (f ∘ pr₁))
-    u = ⋁-is-lowerbound-of-upperbounds (f ∘ pr₁) (⋁ (λ i → ⋁ (f ∘ pr₁))) γ
+    u : ⋁ (f̃ (⋃ α)) ⊑ ⋁ (λ (i : I) → ⋁ (f̃ (α i)))
+    u = ⋁-is-lowerbound-of-upperbounds (f̃ (⋃ α)) (⋁ (λ (i : I) → ⋁ (f̃ (α i)))) γ
      where
       γ : (p : (Σ x ꞉ X , x ∈ ⋃ α))
-        → f (pr₁ p) ⊑ ⋁ (λ i → ⋁ (λ x → f (pr₁ x)))
+        → f̃ (⋃ α) p ⊑ ⋁ (λ (i : I) → ⋁ (f̃ (α i)))
       γ (x , a) = ∥∥-rec (⊑-is-prop-valued _ _) ψ a
        where
-        ψ : (Σ i ꞉ I , x ∈ α i) → f x ⊑ ⋁ (λ i' → ⋁ (f ∘ pr₁))
-        ψ (i , a') = f x                    ⊑⟨ u₁ ⟩
-                     ⋁ (f ∘ pr₁)            ⊑⟨ u₂ ⟩
-                     ⋁ (λ i' → ⋁ (f ∘ pr₁)) ⊑∎
+        ψ : (Σ i ꞉ I , x ∈ α i) → f x ⊑ ⋁ (λ (i : I) → ⋁ (f̃ (α i)))
+        ψ (i , a') = f x                         ⊑⟨ u₁ ⟩
+                     ⋁ (f̃ (α i))                 ⊑⟨ u₂ ⟩
+                     ⋁ (λ (i : I) → ⋁ (f̃ (α i))) ⊑∎
          where
-          u₁ = ⋁-is-upperbound (f ∘ pr₁) (x , a')
-          u₂ = ⋁-is-upperbound (λ i' → ⋁ (f ∘ pr₁)) i
-    v : ⋁ (λ (i : I) → ⋁ (f ∘ pr₁)) ⊑ ⋁ (f ∘ pr₁)
-    v = ⋁-is-lowerbound-of-upperbounds (λ i → ⋁ (f ∘ pr₁)) (⋁ (f ∘ pr₁)) γ
+          u₁ = ⋁-is-upperbound (f̃ (α i)) (x , a')
+          u₂ = ⋁-is-upperbound (λ i' → ⋁ (f̃ (α i'))) i
+    v : ⋁ (λ (i : I) → ⋁ (f̃ (α i))) ⊑ ⋁ (f̃ (⋃ α))
+    v = ⋁-is-lowerbound-of-upperbounds (λ i → ⋁ (f̃ (α i))) (⋁ (f̃ (⋃ α))) γ
      where
       γ : (i : I)
-        → ⋁ {Σ x ꞉ X , x ∈ α i} (f ∘ pr₁) ⊑ ⋁ {Σ x ꞉ X , x ∈ ⋃ α} (f ∘ pr₁)
-      γ i = ⋁-is-lowerbound-of-upperbounds (f ∘ pr₁) (⋁ (f ∘ pr₁)) ψ
+        → ⋁ (f̃ (α i)) ⊑ ⋁ (f̃ (⋃ α))
+      γ i = ⋁-is-lowerbound-of-upperbounds (f̃ (α i)) (⋁ (f̃ (⋃ α))) ψ
        where
         ψ : (p : Σ x ꞉ X , x ∈ α i)
-          → f (pr₁ p) ⊑ ⋁ (f ∘ pr₁)
-        ψ (x , a) = ⋁-is-upperbound (f ∘ pr₁) (x , ∣ i , a ∣)
+          → f̃ (α i) p ⊑ ⋁ (f̃ (⋃ α))
+        ψ (x , a) = ⋁-is-upperbound (f̃ (⋃ α)) (x , ∣ i , a ∣)
 
 \end{code}
 

@@ -11,6 +11,9 @@ module Two-Properties where
 
 open import SpartanMLTT
 open import Unit-Properties
+open import OrderNotation
+
+open import UF-Subsingletons
 
 𝟚-Cases : {A : 𝓤 ̇ } → 𝟚 → A → A → A
 𝟚-Cases a b c = 𝟚-cases b c a
@@ -34,7 +37,6 @@ open import Unit-Properties
 𝟚-possibilities : (b : 𝟚) → (b ≡ ₀) + (b ≡ ₁)
 𝟚-possibilities ₀ = inl refl
 𝟚-possibilities ₁ = inr refl
-
 
 𝟚-excluded-third : (b : 𝟚) → b ≢ ₀ → b ≢ ₁ → 𝟘 {𝓤₀}
 𝟚-excluded-third ₀ u v = u refl
@@ -87,7 +89,7 @@ complement : 𝟚 → 𝟚
 complement ₀ = ₁
 complement ₁ = ₀
 
-complement-no-fp : (n : 𝟚) → n ≡ complement n → 𝟘 {𝓤}
+complement-no-fp : (n : 𝟚) → n ≢ complement n
 complement-no-fp ₀ p = 𝟘-elim (zero-is-not-one p)
 complement-no-fp ₁ p = 𝟘-elim (one-is-not-zero p)
 
@@ -114,57 +116,126 @@ Natural order of binary numbers:
 \begin{code}
 
 _<₂_ : (a b : 𝟚) → 𝓤₀ ̇
-a <₂ b = (a ≡ ₀) × (b ≡ ₁)
+₀ <₂ ₀ = 𝟘
+₀ <₂ ₁ = 𝟙
+₁ <₂ b = 𝟘
 
 _≤₂_ : (a b : 𝟚) → 𝓤₀ ̇
-a ≤₂ b = a ≡ ₁ → b ≡ ₁
+₀ ≤₂ b = 𝟙
+₁ ≤₂ ₀ = 𝟘
+₁ ≤₂ ₁ = 𝟙
 
-<₂-gives-≤₂ : {a b : 𝟚} → a <₂ b → a ≤₂ b
-<₂-gives-≤₂ (refl , refl) _ = refl
+instance
+ strict-order-𝟚-𝟚 : Strict-Order 𝟚 𝟚
+ _<_ {{strict-order-𝟚-𝟚}} = _<₂_
 
-₁-top : {b : 𝟚} → b ≤₂ ₁
-₁-top r = refl
+ order-𝟚-𝟚 : Order 𝟚 𝟚
+ _≤_ {{order-𝟚-𝟚}} = _≤₂_
 
-₀-bottom : {b : 𝟚} → ₀ ≤₂ b
-₀-bottom {b} p = 𝟘-elim (zero-is-not-one p)
+<₂-is-prop-valued : {b c : 𝟚} → is-prop (b < c)
+<₂-is-prop-valued {₀} {₀} = 𝟘-is-prop
+<₂-is-prop-valued {₀} {₁} = 𝟙-is-prop
+<₂-is-prop-valued {₁} {c} = 𝟘-is-prop
+
+≤₂-is-prop-valued : {b c : 𝟚} → is-prop (b ≤ c)
+≤₂-is-prop-valued {₀} {c} = 𝟙-is-prop
+≤₂-is-prop-valued {₁} {₀} = 𝟘-is-prop
+≤₂-is-prop-valued {₁} {₁} = 𝟙-is-prop
+
+<₂-criterion : {a b : 𝟚} → (a ≡ ₀) → (b ≡ ₁) → a <₂ b
+<₂-criterion {₀} {₁} refl refl = ⋆
+
+<₂-criterion-converse : {a b : 𝟚} → a <₂ b → (a ≡ ₀) × (b ≡ ₁)
+<₂-criterion-converse {₀} {₁} l = refl , refl
+
+≤₂-criterion : {a b : 𝟚} → (a ≡ ₁ → b ≡ ₁) → a ≤₂ b
+≤₂-criterion {₀} {b} f = ⋆
+≤₂-criterion {₁} {₀} f = 𝟘-elim (zero-is-not-one (f refl))
+≤₂-criterion {₁} {₁} f = ⋆
+
+≤₂-criterion-converse : {a b : 𝟚} → a ≤₂ b → a ≡ ₁ → b ≡ ₁
+≤₂-criterion-converse {₁} {₁} l refl = refl
+
+<₂-gives-≤₂ : {a b : 𝟚} → a < b → a ≤ b
+<₂-gives-≤₂ {₀} {₀} ()
+<₂-gives-≤₂ {₀} {₁} ⋆ = ⋆
+<₂-gives-≤₂ {₁} {c} ()
+
+<₂-trans : (a b c : 𝟚) → a < b → b < c → a < c
+<₂-trans ₀ ₀ c l m = m
+<₂-trans ₀ ₁ c l ()
+
+Lemma[a≡₀→b<c→a<c] : {a b c : 𝟚} → a ≡ ₀ → b < c → a < c
+Lemma[a≡₀→b<c→a<c] {₀} {₀} {c} refl l = l
+
+Lemma[a<b→c≢₀→a<c] : {a b c : 𝟚} → a < b → c ≢ ₀ → a < c
+Lemma[a<b→c≢₀→a<c] {₀} {₁} {₀} l ν = ν refl
+Lemma[a<b→c≢₀→a<c] {₀} {₁} {₁} l ν = ⋆
+
+₁-top : {b : 𝟚} → b ≤ ₁
+₁-top {₀} = ⋆
+₁-top {₁} = ⋆
+
+₀-bottom : {b : 𝟚} → ₀ ≤ b
+₀-bottom {₀} = ⋆
+₀-bottom {₁} = ⋆
+
+₁-maximal : {b : 𝟚} → ₁ ≤ b → b ≡ ₁
+₁-maximal {₁} l = refl
+
+₁-maximal-converse : {b : 𝟚} → b ≡ ₁ → ₁ ≤ b
+₁-maximal-converse {₁} refl = ⋆
+
+₀-minimal : {b : 𝟚} → b ≤ ₀ → b ≡ ₀
+₀-minimal {₀} l = refl
+
+₀-minimal-converse : {b : 𝟚} → b ≡ ₀ → b ≤ ₀
+₀-minimal-converse {₀} refl = ⋆
 
 _≤₂'_ : (a b : 𝟚) → 𝓤₀ ̇
 a ≤₂' b = b ≡ ₀ → a ≡ ₀
 
-≤₂-gives-≤₂' : {a b : 𝟚} → a ≤₂ b → a ≤₂' b
-≤₂-gives-≤₂' {₀} {b} f p = refl
-≤₂-gives-≤₂' {₁} {₀} f p = (f refl)⁻¹
-≤₂-gives-≤₂' {₁} {₁} f p = p
+≤₂-gives-≤₂' : {a b : 𝟚} → a ≤ b → a ≤₂' b
+≤₂-gives-≤₂' {₀} {b} _ p = refl
+≤₂-gives-≤₂' {₁} {₀} () p
+≤₂-gives-≤₂' {₁} {₁} _ p = p
 
-≤₂'-gives-≤₂ : {a b : 𝟚} → a ≤₂' b → a ≤₂ b
-≤₂'-gives-≤₂ {₀} {₀} f p = p
-≤₂'-gives-≤₂ {₀} {₁} f p = refl
-≤₂'-gives-≤₂ {₁} {₀} f p = (f refl)⁻¹
-≤₂'-gives-≤₂ {₁} {₁} f p = p
+≤₂'-gives-≤₂ : {a b : 𝟚} → a ≤₂' b → a ≤ b
+≤₂'-gives-≤₂ {₀} {b} _ = ⋆
+≤₂'-gives-≤₂ {₁} {₀} l = 𝟘-elim (one-is-not-zero (l refl))
+≤₂'-gives-≤₂ {₁} {₁} _ = ⋆
 
-≤₂-anti : {a b : 𝟚} → a ≤₂ b → b ≤₂ a → a ≡ b
-≤₂-anti {₀} {₀} f g = refl
-≤₂-anti {₀} {₁} f g = g refl
-≤₂-anti {₁} {₀} f g = ≤₂-gives-≤₂' f refl
-≤₂-anti {₁} {₁} f g = refl
+≤₂-refl : {b : 𝟚} → b ≤ b
+≤₂-refl {₀} = ⋆
+≤₂-refl {₁} = ⋆
 
-₁-maximal : {b : 𝟚} → ₁ ≤₂ b → b ≡ ₁
-₁-maximal = ≤₂-anti ₁-top
+≤₂-trans : (a b c : 𝟚) → a ≤ b → b ≤ c → a ≤ c
+≤₂-trans ₀ b c l m = ⋆
+≤₂-trans ₁ ₁ ₁ l m = ⋆
 
-_≥₂_ : (a b : 𝟚) → 𝓤₀ ̇
-a ≥₂ b = b ≤₂ a
+≤₂-anti : {a b : 𝟚} → a ≤ b → b ≤ a → a ≡ b
+≤₂-anti {₀} {₀} l m = refl
+≤₂-anti {₀} {₁} l ()
+≤₂-anti {₁} {₀} () m
+≤₂-anti {₁} {₁} l m = refl
 
 min𝟚 : 𝟚 → 𝟚 → 𝟚
 min𝟚 ₀ b = ₀
 min𝟚 ₁ b = b
 
-Lemma[minab≤₂a] : {a b : 𝟚} → min𝟚 a b ≤₂ a
-Lemma[minab≤₂a] {₀} {b} r = 𝟘-elim (equal-₁-different-from-₀ r refl)
-Lemma[minab≤₂a] {₁} {b} r = refl
+min𝟚-preserves-≤ : {a b a' b' : 𝟚} → a ≤ a' → b ≤ b' → min𝟚 a b ≤ min𝟚 a' b'
+min𝟚-preserves-≤ {₀} {b} {a'} {b'} l m = l
+min𝟚-preserves-≤ {₁} {b} {₁}  {b'} l m = m
 
-Lemma[minab≤₂b] : {a b : 𝟚} → min𝟚 a b ≤₂ b
-Lemma[minab≤₂b] {₀} {b} r = 𝟘-elim (equal-₁-different-from-₀ r refl)
-Lemma[minab≤₂b] {₁} {b} r = r
+Lemma[minab≤₂a] : {a b : 𝟚} → min𝟚 a b ≤ a
+Lemma[minab≤₂a] {₀} {b} = ⋆
+Lemma[minab≤₂a] {₁} {₀} = ⋆
+Lemma[minab≤₂a] {₁} {₁} = ⋆
+
+Lemma[minab≤₂b] : {a b : 𝟚} → min𝟚 a b ≤ b
+Lemma[minab≤₂b] {₀} {b} = ⋆
+Lemma[minab≤₂b] {₁} {₀} = ⋆
+Lemma[minab≤₂b] {₁} {₁} = ⋆
 
 Lemma[min𝟚ab≡₁→b≡₁] : {a b : 𝟚} → min𝟚 a b ≡ ₁ → b ≡ ₁
 Lemma[min𝟚ab≡₁→b≡₁] {₀} {₀} r = r
@@ -172,19 +243,16 @@ Lemma[min𝟚ab≡₁→b≡₁] {₀} {₁} r = refl
 Lemma[min𝟚ab≡₁→b≡₁] {₁} {₀} r = r
 Lemma[min𝟚ab≡₁→b≡₁] {₁} {₁} r = refl
 
-Lemma[min𝟚ab≡₁→a≡₁]  : {a b : 𝟚} → min𝟚 a b ≡ ₁ → a ≡ ₁
+Lemma[min𝟚ab≡₁→a≡₁] : {a b : 𝟚} → min𝟚 a b ≡ ₁ → a ≡ ₁
 Lemma[min𝟚ab≡₁→a≡₁] {₀} r = r
 Lemma[min𝟚ab≡₁→a≡₁] {₁} r = refl
 
 Lemma[a≡₁→b≡₁→min𝟚ab≡₁] : {a b : 𝟚} → a ≡ ₁ → b ≡ ₁ → min𝟚 a b ≡ ₁
-Lemma[a≡₁→b≡₁→min𝟚ab≡₁] {₀} {₀} p q = q
-Lemma[a≡₁→b≡₁→min𝟚ab≡₁] {₀} {₁} p q = p
-Lemma[a≡₁→b≡₁→min𝟚ab≡₁] {₁} {₀} p q = q
 Lemma[a≡₁→b≡₁→min𝟚ab≡₁] {₁} {₁} p q = refl
 
-Lemma[a≤₂b→min𝟚ab≡a] : {a b : 𝟚} → a ≤₂ b → min𝟚 a b ≡ a
+Lemma[a≤₂b→min𝟚ab≡a] : {a b : 𝟚} → a ≤ b → min𝟚 a b ≡ a
 Lemma[a≤₂b→min𝟚ab≡a] {₀} {b} p = refl
-Lemma[a≤₂b→min𝟚ab≡a] {₁} {b} p = p refl
+Lemma[a≤₂b→min𝟚ab≡a] {₁} {₁} p = refl
 
 Lemma[min𝟚ab≡₀] : {a b : 𝟚} → (a ≡ ₀) + (b ≡ ₀) → min𝟚 a b ≡ ₀
 Lemma[min𝟚ab≡₀] {₀} {b} (inl p) = refl
@@ -207,6 +275,12 @@ max𝟚-lemma-converse : (a b : 𝟚) → (a ≡ ₁) + (b ≡ ₁) → max𝟚 
 max𝟚-lemma-converse ₀ b (inl r) = unique-from-𝟘 (zero-is-not-one r)
 max𝟚-lemma-converse ₀ b (inr r) = r
 max𝟚-lemma-converse ₁ b x = refl
+
+max𝟚-preserves-≤ : {a b a' b' : 𝟚} → a ≤ a' → b ≤ b' → max𝟚 a b ≤ max𝟚 a' b'
+max𝟚-preserves-≤ {₀} {b} {₀} {b'} l m = m
+max𝟚-preserves-≤ {₀} {₀} {₁} {b'} l m = m
+max𝟚-preserves-≤ {₀} {₁} {₁} {b'} l m = l
+max𝟚-preserves-≤ {₁} {b} {₁} {b'} l m = l
 
 \end{code}
 
@@ -241,33 +315,76 @@ Lemma[b≢c→b⊕c≡₁] = different-from-₀-equal-₁ ∘ (contrapositive Le
 Lemma[b⊕c≡₁→b≢c] : {b c : 𝟚} → b ⊕ c ≡ ₁ → b ≢ c
 Lemma[b⊕c≡₁→b≢c] = (contrapositive Lemma[b≡c→b⊕c≡₀]) ∘ equal-₁-different-from-₀
 
+complement-left : {b c : 𝟚} → complement b ≤ c → complement c ≤ b
+complement-left {₀} {₁} l = ⋆
+complement-left {₁} {₀} l = ⋆
+complement-left {₁} {₁} l = ⋆
+
+complement-right : {b c : 𝟚} → b ≤ complement c → c ≤ complement b
+complement-right {₀} {₀} l = ⋆
+complement-right {₀} {₁} l = ⋆
+complement-right {₁} {₀} l = ⋆
+
+complement-both-left : {b c : 𝟚} → complement b ≤ complement c → c ≤ b
+complement-both-left {₀} {₀} l = ⋆
+complement-both-left {₁} {₀} l = ⋆
+complement-both-left {₁} {₁} l = ⋆
+
+complement-both-right : {b c : 𝟚} → b ≤ c → complement c ≤ complement b
+complement-both-right {₀} {₀} l = ⋆
+complement-both-right {₀} {₁} l = ⋆
+complement-both-right {₁} {₁} l = ⋆
+
+⊕-involutive : {a b : 𝟚} → a ⊕ a ⊕ b ≡ b
+⊕-involutive {₀} {b} = refl
+⊕-involutive {₁} {b} = complement-involutive b
+
+⊕-property₁ : {a b : 𝟚} (g : a ≥ b)
+            → a ⊕ b ≡ ₁ → (a ≡ ₁) × (b ≡ ₀)
+⊕-property₁ {₀} {₀} g ()
+⊕-property₁ {₀} {₁} () p
+⊕-property₁ {₁} {₀} g p = refl , refl
+
+⊕-intro₀₀ : {a b : 𝟚} → a ≡ ₀ → b ≡ ₀ → a ⊕ b ≡ ₀
+⊕-intro₀₀ {₀} {₀} p q = refl
+
+⊕-intro₀₁ : {a b : 𝟚} → a ≡ ₀ → b ≡ ₁ → a ⊕ b ≡ ₁
+⊕-intro₀₁ {₀} {₁} p q = refl
+
+⊕-intro₁₀ : {a b : 𝟚} → a ≡ ₁ → b ≡ ₀ → a ⊕ b ≡ ₁
+⊕-intro₁₀ {₁} {₀} p q = refl
+
+⊕-intro₁₁ : {a b : 𝟚} → a ≡ ₁ → b ≡ ₁ → a ⊕ b ≡ ₀
+⊕-intro₁₁ {₁} {₁} p q = refl
+
+complement-intro₀ : {a : 𝟚} → a ≡ ₀ → complement a ≡ ₁
+complement-intro₀ {₀} p = refl
+
+complement-intro₁ : {a : 𝟚} → a ≡ ₁ → complement a ≡ ₀
+complement-intro₁ {₁} p = refl
+
+⊕-₀-right-neutral : {a : 𝟚} → a ⊕ ₀ ≡ a
+⊕-₀-right-neutral {₀} = refl
+⊕-₀-right-neutral {₁} = refl
+
+⊕-₀-right-neutral' : {a b : 𝟚} → b ≡ ₀ → a ⊕ b ≡ a
+⊕-₀-right-neutral' {₀} {₀} p = refl
+⊕-₀-right-neutral' {₁} {₀} p = refl
+
+⊕-left-complement : {a b : 𝟚} → b ≡ ₁ → a ⊕ b ≡ complement a
+⊕-left-complement {₀} {₁} p = refl
+⊕-left-complement {₁} {₁} p = refl
+
+≤₂-add-left : (a b : 𝟚) → b ≤ a → a ⊕ b ≤ a
+≤₂-add-left ₀ b = id
+≤₂-add-left ₁ b = λ _ → ₁-top
+
+≤₂-remove-left : (a b : 𝟚) → a ⊕ b ≤ a → b ≤ a
+≤₂-remove-left ₀ b = id
+≤₂-remove-left ₁ b = λ _ → ₁-top
+
 \end{code}
 
-Order and complements:
-
-\begin{code}
-
-complement-left : {b c : 𝟚} → complement b ≤₂ c → complement c ≤₂ b
-complement-left {₀} {₀} f p = f p
-complement-left {₀} {₁} f p = p
-complement-left {₁} {c} f p = refl
-
-complement-right : {b c : 𝟚} → b ≤₂ complement c → c ≤₂ complement b
-complement-right {₀} {c} f p = refl
-complement-right {₁} {₀} f p = p
-complement-right {₁} {₁} f p = f p
-
-complement-both-left : {b c : 𝟚} → complement b ≤₂ complement c → c ≤₂ b
-complement-both-left {₀} {₀} f p = p
-complement-both-left {₀} {₁} f p = f p
-complement-both-left {₁} {c} f p = refl
-
-complement-both-right : {b c : 𝟚} → b ≤₂ c → complement c ≤₂ complement b
-complement-both-right {₀} {c} f p = refl
-complement-both-right {₁} {₀} f p = f p
-complement-both-right {₁} {₁} f p = p
-
-\end{code}
 
 Fixities and precedences:
 
