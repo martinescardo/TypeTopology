@@ -31,6 +31,7 @@ open import Frame pt fe hiding (is-directed)
 open AllCombinators pt fe
 open PropositionalTruncation pt
 open import Nucleus pt fe
+open import CompactRegular pt fe
 
 \end{code}
 
@@ -52,9 +53,9 @@ We fix a locale `X` for the remainder of this module.
 
 \begin{code}
 
-module PatchConstruction (X : locale 𝓤 𝓥 𝓦) where
+open locale
 
- open locale
+module PatchConstruction (X : locale 𝓤 𝓥 𝓦) (σ : is-spectral (𝒪 X) holds) where
 
  _≤_ : ⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩ → Ω 𝓥
  U ≤ V = U ≤[ poset-of (𝒪 X) ] V

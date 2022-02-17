@@ -816,6 +816,10 @@ is-spectral₀ {𝓤 = 𝓤} {𝓥} {𝓦} F =
                    × consists-of-compact-opens F ℬ holds
                    × closed-under-binary-meets F ℬ holds
 
+-- basis-of-spectral-frame : (F : frame 𝓤 𝓥 𝓦)
+--                         → is-spectral₀ F →  has-basis F holds
+-- basis-of-spectral-frame = {!!}
+
 is-spectral : frame 𝓤 𝓥 𝓦 → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺) 
 is-spectral F = ∥ is-spectral₀ F ∥Ω
 
@@ -859,19 +863,52 @@ syntax compact-rel-syntax F U V = U ≤ₖ[ F ] V
 
 spectral-yoneda : (F : frame 𝓤 𝓥 𝓦) → is-spectral F holds → (U V : ⟨ F ⟩)
                 → (U ≤ₖ[ F ] V ⇒ U ≤[ poset-of F ] V) holds
-spectral-yoneda {𝓦 = 𝓦} F σ U V W =
+spectral-yoneda {𝓦 = 𝓦} F σ U V χ =
  ∥∥-rec (holds-is-prop (U ≤[ poset-of F ] V)) γ σ
   where
    open PosetReasoning (poset-of F)
+   open Joins (λ x y → x ≤[ poset-of F ] y)
    open JoinNotation (λ - → ⋁[ F ] -)
 
    γ : is-spectral₀ F → (U ≤[ poset-of F ] V) holds
    γ (ℬ , υ , φ , ψ) =
-    U                           ≤⟨ {!!} ⟩
-    ⋁[ F ] ⁅ ℬ [ i ] ∣ i ε ℐ ⁆  ≤⟨ {!!} ⟩
-    V                           ■
+    U                            ≡⟨ I  ⟩ₚ
+    ⋁[ F ] ⁅ ℬ [ i ] ∣ i ε ℐ ⁆   ≤⟨ ii ⟩
+    V                            ■
     where
      ℐ : Fam 𝓦 (index ℬ)
      ℐ = pr₁ (υ U)
+
+     I : U ≡ ⋁[ F ] ⁅ ℬ [ i ] ∣ i ε ℐ ⁆
+     I = ⋁[ F ]-unique ⁅ ℬ [ i ] ∣ i ε ℐ ⁆ U (pr₂ (υ U))
+
+     ϑ : (i : index ℐ) → ((ℬ [ ℐ [ i ] ]) ≤[ poset-of F ] U) holds
+     ϑ i = ℬ [ ℐ [ i ] ]               ≤⟨ ⋁[ F ]-upper ⁅ ℬ [ i ] ∣ i ε ℐ ⁆ i ⟩
+           ⋁[ F ] ⁅ ℬ [ i ] ∣ i ε ℐ ⁆  ≡⟨ I ⁻¹                               ⟩ₚ
+           U                           ■
+
+     ξ : (V is-an-upper-bound-of ⁅ ℬ [ i ] ∣ i ε ℐ ⁆) holds
+     ξ i = χ (ℬ [ ℐ [ i ] ]) (φ (ℐ [ i ])) (ϑ i)
+
+     ii : ((⋁[ F ] ⁅ ℬ [ i ] ∣ i ε ℐ ⁆) ≤[ poset-of F ] V) holds
+     ii = ⋁[ F ]-least ⁅ ℬ [ i ] ∣ i ε ℐ ⁆ (V , ξ)
+
+\end{code}
+
+\begin{code}
+
+-- compact-opens-are-basic-in-spectral-frames : (F : frame 𝓤 𝓥 𝓦)
+--                                            → (σ : is-spectral₀ F)
+--                                            → (U : ⟨ F ⟩)
+--                                            → is-compact-open F U holds
+--                                            → ∥ Σ i ꞉ index (pr₁ σ) , U ≡ pr₁ σ [ i ] ∥
+-- compact-opens-are-basic-in-spectral-frames {𝓦 = 𝓦} F (ℬ , p) U κ =
+--  ∥∥-rec ∥∥-is-prop {!!} (κ ⁅ ℬ [ i ] ∣ i ε ℐ ⁆ δ {!!})
+--   where
+--    ℐ : Fam 𝓦 (index ℬ)
+--    ℐ = pr₁ (pr₁ p U)
+
+--    δ : is-directed (poset-of F) ⁅ ℬ [ i ] ∣ i ε ℐ ⁆ holds
+--    δ = {!!}
 
 \end{code}
