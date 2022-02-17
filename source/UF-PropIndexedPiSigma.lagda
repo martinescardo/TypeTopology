@@ -57,10 +57,10 @@ prop-indexed-product-one {𝓤} {𝓥} {𝓦} {𝓣} fe {X} {Y} v = γ
   g : 𝟙 → Π Y
   g * x = unique-from-𝟘 {𝓥} {𝓦} (v x)
 
-  η : (u : 𝟙) → * ≡ u
-  η * = refl
+  η : (u : 𝟙) → ⋆ ≡ u
+  η ⋆ = refl
 
-  ε : (φ : Π Y) → g * ≡ φ
+  ε : (φ : Π Y) → g ⋆ ≡ φ
   ε φ = dfunext fe u
    where
     u : (x : X) → g (unique-to-𝟙 φ) x ≡ φ x

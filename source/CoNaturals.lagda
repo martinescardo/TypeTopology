@@ -75,6 +75,7 @@ module CoNaturals (fe : FunExt) where
 
 open import SpartanMLTT
 open import GenericConvergentSequence
+open import CanonicalMapNotation
 
 open import Two-Properties
 open import Plus-Properties
@@ -84,7 +85,7 @@ private
  fe₀ = fe 𝓤₀ 𝓤₀
 
 Zero' : 𝟙 + ℕ∞
-Zero' = inl {𝓤₀} {𝓤₀} *
+Zero' = inl {𝓤₀} {𝓤₀} ⋆
 
 Pred' : ℕ∞ → 𝟙 + ℕ∞
 Pred' u = inr {𝓤₀} {𝓤₀} (Pred u)
@@ -99,11 +100,11 @@ PRED-Succ : (u : ℕ∞) → PRED(Succ u) ≡ inr u
 PRED-Succ u = ap inr Pred-Succ
 
 SUCC : 𝟙 {𝓤₀} + ℕ∞ → ℕ∞
-SUCC(inl *) = Zero
+SUCC(inl ⋆) = Zero
 SUCC(inr u) = Succ u
 
 PRED-SUCC : {y : 𝟙 + ℕ∞} → PRED(SUCC y) ≡ y
-PRED-SUCC{inl *} = refl
+PRED-SUCC{inl ⋆} = refl
 PRED-SUCC{inr u} = refl
 
 SUCC-lc : {y z : 𝟙 + ℕ∞} → SUCC y ≡ SUCC z → y ≡ z
@@ -145,7 +146,7 @@ PRED-lc {u} {v} r = u             ≡⟨ SUCC-PRED ⁻¹ ⟩
 𝟙+ f (inr x) = inr(f x)
 
 𝟙+id-is-id : {X : 𝓤 ̇ } → 𝟙+ id ∼ id {𝓤} {𝟙 + X}
-𝟙+id-is-id {𝓤} {X} (inl *) = refl
+𝟙+id-is-id {𝓤} {X} (inl ⋆) = refl
 𝟙+id-is-id {𝓤} {X} (inr x) = refl
 
 is-homomorphism : {X : 𝓤 ̇ } → (X → 𝟙 + X) → (X → ℕ∞) → 𝓤 ̇
@@ -191,14 +192,14 @@ homomorphism-existence {𝓤} {X} κ = h , dfunext (fe 𝓤 𝓤₀) h-spec
   hl (inr x) r = refl
 
   h : X → ℕ∞
-  h x = ((λ i → E(Q(succ i) (inr x))) ,
-          λ i → hl(Q(succ i) (inr x)))
+  h x = (λ i → E(Q(succ i) (inr x))) ,
+        (λ i → ≤₂-criterion (hl(Q(succ i) (inr x))))
 
   h-spec : (x : X) → PRED(h x) ≡ (𝟙+ h)(κ x)
   h-spec x = equality-cases (κ x) l₀ l₁
    where
     l₀ : (s : 𝟙) → κ x ≡ inl s → PRED(h x) ≡ (𝟙+ h)(κ x)
-    l₀ * r = PRED (h x) ≡⟨ ap PRED c ⟩
+    l₀ ⋆ r = PRED (h x) ≡⟨ ap PRED c ⟩
              PRED Zero  ≡⟨ PRED-Zero ⟩
              Zero'      ≡⟨ (ap (𝟙+ h) r)⁻¹ ⟩
              𝟙+ h (κ x) ∎
@@ -221,11 +222,11 @@ homomorphism-existence {𝓤} {X} κ = h , dfunext (fe 𝓤 𝓤₀) h-spec
              Q n (inr x')    ∎
       c₃ : (n : ℕ) → E(q(Q n (inr x))) ≡ E(Q n (inr x'))
       c₃ n = ap E (c₂ n)
-      c₄ : (i : ℕ) → incl(h x) i ≡ incl(Succ (h x')) i
+      c₄ : (i : ℕ) → ι (h x) i ≡ ι (Succ (h x')) i
       c₄ 0  = c₃ 0
       c₄ (succ i) = c₃(succ i)
       c₅ : h x ≡ Succ (h x')
-      c₅ = incl-lc fe₀ (dfunext fe₀ c₄)
+      c₅ = ℕ∞-to-ℕ→𝟚-lc fe₀ (dfunext fe₀ c₄)
 
 ℕ∞-corec  : {X : 𝓤 ̇ } → (X → 𝟙 + X) → (X → ℕ∞)
 ℕ∞-corec c = pr₁(homomorphism-existence c)
@@ -248,9 +249,9 @@ We now discuss coinduction. We first define bisimulations.
 ℕ∞-coinduction : (R : ℕ∞ → ℕ∞ → 𝓤 ̇ )
                → ℕ∞-bisimulation R
                → (u v : ℕ∞) → R u v → u ≡ v
-ℕ∞-coinduction R b u v r = incl-lc fe₀ (dfunext fe₀ (l u v r))
+ℕ∞-coinduction R b u v r = ℕ∞-to-ℕ→𝟚-lc fe₀ (dfunext fe₀ (l u v r))
  where
-  l : (u v : ℕ∞) → R u v → (i : ℕ) → incl u i ≡ incl v i
+  l : (u v : ℕ∞) → R u v → (i : ℕ) → ι u i ≡ ι v i
   l u v r 0 =  pr₁(b u v r)
   l u v r (succ i) = l (Pred u) (Pred v) (pr₂(b u v r)) i
 
@@ -264,14 +265,14 @@ coalgebra homomorphisms in more detail.
 coalg-morphism-Zero : {X : 𝓤 ̇ } (κ : X →  𝟙 + X) (h : X → ℕ∞)
                     → is-homomorphism κ h
                     → (x : X) (s : 𝟙) → κ x ≡ inl s → h x ≡ Zero
-coalg-morphism-Zero p h a x * κ = h x               ≡⟨ SUCC-PRED ⁻¹ ⟩
+coalg-morphism-Zero p h a x ⋆ κ = h x               ≡⟨ SUCC-PRED ⁻¹ ⟩
                                   SUCC (PRED (h x)) ≡⟨ ap SUCC c ⟩
-                                  SUCC (inl *)      ∎
+                                  SUCC (inl ⋆)      ∎
  where
-  c : PRED(h x) ≡ inl *
+  c : PRED(h x) ≡ inl ⋆
   c = PRED (h x) ≡⟨ ap (λ - → - x) a ⟩
       𝟙+ h (p x) ≡⟨ ap (𝟙+ h) κ ⟩
-      inl *      ∎
+      inl ⋆      ∎
 
 Coalg-morphism-Zero : {X : 𝓤 ̇ } (κ : X →  𝟙 + X)
                     → (x : X) (s : 𝟙) → κ x ≡ inl s → ℕ∞-corec κ x ≡ Zero

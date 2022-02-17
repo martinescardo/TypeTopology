@@ -35,6 +35,8 @@ private
 open import Two-Properties
 open import GenericConvergentSequence renaming (min to min')
 open import CoNaturals fe
+open import OrderNotation
+open import CanonicalMapNotation
 open import UF-Base
 
 \end{code}
@@ -47,9 +49,9 @@ homomorphism to the final coalgebra PRED : ℕ∞ → 𝟙 + ℕ∞ on ℕ∞.
 private
  κ-min : ℕ∞ × ℕ∞ → 𝟙 {𝓤₀} + ℕ∞ × ℕ∞
  κ-min (u , v) = 𝟚-Cases (positivity u)
-                  (inl *)
+                  (inl ⋆)
                   (𝟚-Cases (positivity v)
-                    (inl *)
+                    (inl ⋆)
                     (inr (Pred u , Pred v)))
 
 min : ℕ∞ × ℕ∞ → ℕ∞
@@ -65,8 +67,8 @@ min-eq₀ : ∀ v   → min (Zero , v) ≡ Zero
 min-eq₁ : ∀ u   → min (Succ u , Zero) ≡ Zero
 min-eq₂ : ∀ u v → min (Succ u , Succ v) ≡ Succ (min (u , v))
 
-min-eq₀ = λ v   → Coalg-morphism-Zero κ-min (Zero , v) * refl
-min-eq₁ = λ u   → Coalg-morphism-Zero κ-min (Succ u , Zero) * refl
+min-eq₀ = λ v   → Coalg-morphism-Zero κ-min (Zero , v) ⋆ refl
+min-eq₁ = λ u   → Coalg-morphism-Zero κ-min (Succ u , Zero) ⋆ refl
 min-eq₂ = λ u v → Coalg-morphism-Succ κ-min (Succ u , Succ v) (u , v) refl
 
 \end{code}
@@ -79,7 +81,7 @@ private
  κ-max : ℕ∞ × ℕ∞ → 𝟙 {𝓤₀} + ℕ∞ × ℕ∞
  κ-max (u , v) = 𝟚-Cases (positivity u)
                    (𝟚-Cases (positivity v)
-                      (inl *)
+                      (inl ⋆)
                       (inr (Zero , Pred v)))
                    (𝟚-Cases (positivity v)
                       (inr (Pred u , Zero))
@@ -93,7 +95,7 @@ max-eq₁ : ∀ v   → max' (Zero , Succ v) ≡ Succ (max' (Zero , v))
 max-eq₂ : ∀ u   → max' (Succ u , Zero) ≡ Succ (max' (u , Zero))
 max-eq₃ : ∀ u v → max' (Succ u , Succ v) ≡ Succ (max' (u , v))
 
-max-eq₀ =         Coalg-morphism-Zero κ-max (Zero , Zero) * refl
+max-eq₀ =         Coalg-morphism-Zero κ-max (Zero , Zero) ⋆ refl
 max-eq₁ = λ v   → Coalg-morphism-Succ κ-max (Zero , Succ v) (Zero , v) refl
 max-eq₂ = λ u   → Coalg-morphism-Succ κ-max (Succ u , Zero) (u , Zero) refl
 max-eq₃ = λ u v → Coalg-morphism-Succ κ-max (Succ u , Succ v) (u , v) refl
@@ -108,7 +110,7 @@ private
  κ-add : ℕ∞ × ℕ∞ → 𝟙 {𝓤₀} + ℕ∞ × ℕ∞
  κ-add (u , v) = 𝟚-Cases (positivity u)
                    (𝟚-Cases (positivity v)
-                      (inl *)
+                      (inl ⋆)
                       (inr (Zero , Pred v)))
                    (inr (Pred u , v))
 
@@ -119,7 +121,7 @@ add-eq₀ :         add (Zero , Zero) ≡ Zero
 add-eq₁ : ∀ v   → add (Zero , Succ v) ≡ Succ (add (Zero , v))
 add-eq₂ : ∀ u v → add (Succ u , v) ≡ Succ (add (u , v))
 
-add-eq₀ =         Coalg-morphism-Zero κ-add (Zero , Zero) * refl
+add-eq₀ =         Coalg-morphism-Zero κ-add (Zero , Zero) ⋆ refl
 add-eq₁ = λ v   → Coalg-morphism-Succ κ-add (Zero , Succ v) (Zero , v) refl
 add-eq₂ = λ u v → Coalg-morphism-Succ κ-add (Succ u , v) (u , v) refl
 
@@ -258,14 +260,14 @@ given in GenericConvergentSequence:
 \begin{code}
 
 min'-eq₀ : ∀ v → uncurry min' (Zero , v) ≡ Zero
-min'-eq₀ v = incl-lc (fe 𝓤₀ 𝓤₀) refl
+min'-eq₀ v = ℕ∞-to-ℕ→𝟚-lc (fe 𝓤₀ 𝓤₀) refl
 
 min'-eq₁ : ∀ u → uncurry min' (Succ u , Zero) ≡ Zero
-min'-eq₁ u = incl-lc  (fe 𝓤₀ 𝓤₀)
+min'-eq₁ u = ℕ∞-to-ℕ→𝟚-lc  (fe 𝓤₀ 𝓤₀)
              (dfunext (fe 𝓤₀ 𝓤₀) (λ i → Lemma[min𝟚ab≡₀] (inr refl)))
 
 min'-eq₂ : ∀ u v → uncurry min' (Succ u , Succ v) ≡ Succ (uncurry min' (u , v))
-min'-eq₂ u v = incl-lc (fe 𝓤₀ 𝓤₀) (dfunext (fe 𝓤₀ 𝓤₀) γ)
+min'-eq₂ u v = ℕ∞-to-ℕ→𝟚-lc (fe 𝓤₀ 𝓤₀) (dfunext (fe 𝓤₀ 𝓤₀) γ)
  where γ : pr₁ (uncurry min' (Succ u , Succ v)) ∼ pr₁ (Succ (uncurry min' (u , v)))
        γ zero = refl
        γ (succ i) = refl
@@ -322,11 +324,11 @@ min-associative u v w = ap (λ - → - (u , v , w)) p
   g (u , v , w) = min (min (u , v) , w)
   κ : ℕ∞ × ℕ∞ × ℕ∞ → 𝟙 + ℕ∞ × ℕ∞ × ℕ∞
   κ (u , v , w) = 𝟚-Cases (positivity u)
-                   (inl *)
+                   (inl ⋆)
                    (𝟚-Cases (positivity v)
-                     (inl *)
+                     (inl ⋆)
                      (𝟚-Cases (positivity w)
-                       (inl *)
+                       (inl ⋆)
                        (inr (Pred u , Pred v , Pred w))))
   f-homomorphism : is-homomorphism κ f
   f-homomorphism = dfunext fe₀ γ
@@ -454,7 +456,7 @@ Relation of min with ≼ defined in the module GenericConvergentSequence.
   b : u ≡ Succ (Pred u)
   b = pr₁ (min-Succ u v (Pred (min (u , v))) a)
   γ : zero ⊏ u
-  γ = ap (λ - → incl - zero) b
+  γ = ap (λ - → ι - zero) b
 ≼-min-l u v (succ n) p = γ
  where
   a : min (u , v) ≡ Succ (Pred (min (u , v)))
@@ -480,80 +482,5 @@ Relation of min with ≼ defined in the module GenericConvergentSequence.
 
 ≼-from-min→ : (u v : ℕ∞) → min (u , v) ≡ u → u ≼ v
 ≼-from-min→ u v p = transport (λ - → - ≼ v) p (≼-min-r u v)
-
-\end{code}
-
-\begin{code}
-
-{-
-min-pointwise : (u v : ℕ∞) (i : ℕ) → incl (min (u , v)) i ≡ min𝟚 (incl u i) (incl v i)
-min-pointwise u v zero = {!!}
-min-pointwise u v (succ i) = {!!}
--}
-\end{code}
-
-
-For the sake of variation, we use another proof technique, namely
-density:
-
-\begin{code}
-
-{-
-≼-from-min← : (u v : ℕ∞) → u ≼ v → min (u , v) ≡ u
-≼-from-min← u v l = ℕ∞-density fe₀ (ℕ∞-separated fe₀) p q u
- where
-   h : ℕ∞ → ℕ∞
-   h u = min (u , v)
-   p : (n : ℕ) → h (under n) ≡ under n
-   p zero = min-eq₀ v
-   p (succ n) =
-    min (under (succ n) , v) ≡⟨ {!!} ⟩
-    min (under (succ n) , Succ (Pred v)) ≡⟨ {!!} ⟩
-    Succ (min (succ n , Pred v) ≡⟨ {!!} ⟩
-    under (succ n) ∎
-    where
-     a : Succ (h (under n)) ≡ under (succ n)
-     a = ap Succ (p n)
-     r : under (succ n) ≼ Succ (Pred v)
-     r = ≼-unfold-Succ fe₀ (under n) v {!!}
-     γ : h (under (succ n)) ≡ under (succ n)
-     γ = h (under (succ n)) ≡⟨ {!!} ⟩ under (succ n) ∎
-   q : h ∞ ≡ ∞
-   q = {!!}
--}
-
-{-
- γ (Zero+Succ fe₀ v)
- where
-  γ :  (v ≡ Zero) + (Σ t ꞉ ℕ∞ , v ≡ Succ t) → min (u , v) ≡ u
-  γ (inl refl) =
-    min (u , v)    ≡⟨ ap (λ - → min (- , v)) (≼-anti fe₀ u Zero l (Zero-minimal u)) ⟩
-    min (Zero , v) ≡⟨ min-eq₀ v ⟩
-    Zero           ≡⟨ ≼-anti fe₀ Zero u (Zero-minimal u) l ⟩
-    u              ∎
-  γ (inr (t , refl)) = ap (λ - → - u) h-is-corec
-   where
-    h : ℕ∞ → ℕ∞
-    h u = min (u , Succ t)
-    h-homomorphism : is-homomorphism PRED h
-    h-homomorphism = dfunext fe₀ (λ u → φ u (Zero+Succ fe₀ u))
-     where
-      φ : (u : ℕ∞) → (u ≡ Zero) + (Σ w ꞉ ℕ∞ , u ≡ Succ w) → PRED (h u) ≡ 𝟙+ h (PRED u)
-      φ u (inl refl) =
-        PRED (h Zero)    ≡⟨ ap PRED (min-eq₀ v) ⟩
-        PRED Zero        ≡⟨ refl ⟩
-        𝟙+ h (PRED Zero) ∎
-      φ u (inr (w , refl)) =
-        PRED (h (Succ w)) ≡⟨ refl ⟩
-        PRED (min (Succ w , Succ t)) ≡⟨ ap PRED (min-eq₂ w t) ⟩
-        PRED (Succ (min (w , t))) ≡⟨ {!refl!} ⟩
-        𝟙+ h (PRED (Succ w))         ∎
-    h-is-corec : h ≡ id
-    h-is-corec = homomorphism-uniqueness PRED h id h-homomorphism id-homomorphism
--}
-{-
-min-glb : (u v w : ℕ∞) → u ≼ v → u ≼ w → u ≼ min (v , w)
-min-glb u v w = {!!}
--}
 
 \end{code}

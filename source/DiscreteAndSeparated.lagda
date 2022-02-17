@@ -360,6 +360,38 @@ equality-of-¬¬stable-propositions fe pe p q f g a = γ
   γ : p ≡ q
   γ = to-subtype-≡ (λ _ → being-prop-is-prop fe) δ
 
+\end{code}
+
+Added by Tom de Jong in January 2022.
+
+Another logical place for these three lemmas would be Negation.lagda, but
+(1) the first lemma needs _⇔_ which is defined in GeneralNotation.lagda, which
+    imports Negation.lagda;
+(2) the second lemma needs _≃_ which is only defined in UF-Equiv.lagda;
+(3) the third lemma needs funext, which is only defined in UF-FunExt.lagda.
+
+\begin{code}
+
+¬¬-stable-⇔ : {X : 𝓤 ̇  } {Y : 𝓥 ̇  }
+            → X ⇔ Y
+            → ¬¬-stable X
+            → ¬¬-stable Y
+¬¬-stable-⇔ (f , g) σ h = f (σ (¬¬-functor g h))
+
+¬¬-stable-≃ : {X : 𝓤 ̇  } {Y : 𝓥 ̇  }
+            → X ≃ Y
+            → ¬¬-stable X
+            → ¬¬-stable Y
+¬¬-stable-≃ e = ¬¬-stable-⇔ (⌜ e ⌝ , ⌜ e ⌝⁻¹)
+
+being-¬¬-stable-is-prop : {X : 𝓤 ̇  }
+                        → funext 𝓤 𝓤
+                        → is-prop X → is-prop (¬¬-stable X)
+being-¬¬-stable-is-prop fe i = Π-is-prop fe (λ _ → i)
+
+\end{code}
+
+\begin{code}
 
 Ω¬¬ : (𝓤 : Universe)  → 𝓤 ⁺ ̇
 Ω¬¬ 𝓤 = Σ p ꞉ Ω 𝓤 , ¬¬-stable (p holds)
@@ -422,12 +454,12 @@ equivs-preserve-isolatedness : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) → i
                              → (x : X) → is-isolated x → is-isolated (f x)
 equivs-preserve-isolatedness f e = qinvs-preserve-isolatedness f (equivs-are-qinvs f e)
 
-new-point-is-isolated : {X : 𝓤 ̇ } → is-isolated {𝓤 ⊔ 𝓥} {X + 𝟙 {𝓥}} (inr *)
+new-point-is-isolated : {X : 𝓤 ̇ } → is-isolated {𝓤 ⊔ 𝓥} {X + 𝟙 {𝓥}} (inr ⋆)
 new-point-is-isolated {𝓤} {𝓥} {X} = h
  where
-  h :  (y : X + 𝟙) → decidable (inr * ≡ y)
+  h :  (y : X + 𝟙) → decidable (inr ⋆ ≡ y)
   h (inl x) = inr +disjoint'
-  h (inr *) = inl refl
+  h (inr ⋆) = inl refl
 
 \end{code}
 

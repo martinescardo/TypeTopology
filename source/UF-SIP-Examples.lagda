@@ -40,7 +40,9 @@ notes:
 
 module UF-SIP-Examples where
 
-open import SpartanMLTT hiding (*)
+open import SpartanMLTT
+open import OrderNotation
+
 open import UF-Base
 open import UF-SIP
 open import UF-Equiv hiding (_≅_)

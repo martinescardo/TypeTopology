@@ -133,7 +133,7 @@ End of digression.
 \begin{code}
 
 𝟙-decidable : decidable (𝟙 {𝓤})
-𝟙-decidable = pointed-decidable *
+𝟙-decidable = pointed-decidable ⋆
 
 ×-preserves-decidability : {A : 𝓤 ̇ } {B : 𝓥 ̇ }
                          → decidable A
@@ -202,9 +202,9 @@ The following is a special case we are interested in:
 \begin{code}
 
 boolean-value : {A : 𝓤 ̇ }
-            → decidable A
-            → Σ b ꞉ 𝟚 , (b ≡ ₀ →   A)
-                      × (b ≡ ₁ → ¬ A)
+              → decidable A
+              → Σ b ꞉ 𝟚 , (b ≡ ₀ →   A)
+                        × (b ≡ ₁ → ¬ A)
 boolean-value = which-of
 
 \end{code}
@@ -218,11 +218,11 @@ requires choice, which holds in BHK-style constructive mathematics:
 
 \begin{code}
 
-indicator : {X : 𝓤 ̇ } → {A B : X → 𝓥 ̇ }
+indicator : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {B : X → 𝓦 ̇ }
           → ((x : X) → A x + B x)
           → Σ p ꞉ (X → 𝟚) , ((x : X) → (p x ≡ ₀ → A x)
                                      × (p x ≡ ₁ → B x))
-indicator {𝓤} {𝓥} {X} {A} {B} h = (λ x → pr₁(lemma₁ x)) , (λ x → pr₂(lemma₁ x))
+indicator {𝓤} {𝓥} {𝓦} {X} {A} {B} h = (λ x → pr₁(lemma₁ x)) , (λ x → pr₂(lemma₁ x))
  where
   lemma₀ : (x : X) → (A x + B x) → Σ b ꞉ 𝟚 , (b ≡ ₀ → A x) × (b ≡ ₁ → B x)
   lemma₀ x = which-of
@@ -299,6 +299,14 @@ module _ (pt : propositional-truncations-exist) where
    h : (Σ x ꞉ X , p x ≡ ₀) → 𝟘
    h (x , r) = zero-is-not-one (r ⁻¹ ∙ α x)
 
+ forall₀-implies-not-exists₁ : {X : 𝓤 ̇ } (p : X → 𝟚)
+                            → (∀ (x : X) → p x ≡ ₀)
+                            → ¬ (∃ x ꞉ X , p x ≡ ₁)
+ forall₀-implies-not-exists₁ {𝓤} {X} p α = ∥∥-rec 𝟘-is-prop h
+  where
+   h : (Σ x ꞉ X , p x ≡ ₁) → 𝟘
+   h (x , r) = one-is-not-zero (r ⁻¹ ∙ α x)
+
 \end{code}
 
 Tom de Jong, 1 November 2021.
@@ -309,6 +317,25 @@ We start by defining the type Ωᵈ 𝓤 of decidable propositions in a type
 universe 𝓤 and we show that 𝟚 ≃ Ωᵈ 𝓤 (for any universe 𝓤).
 
 \begin{code}
+
+boolean-value' : {A : 𝓤 ̇ }
+               → decidable A
+               → Σ b ꞉ 𝟚 , (b ≡ ₀ ⇔ ¬ A)
+                         × (b ≡ ₁ ⇔   A)
+boolean-value' {𝓤} {A} (inl a ) = (₁ , ϕ , ψ)
+ where
+  ϕ : ₁ ≡ ₀ ⇔ ¬ A
+  ϕ = (λ p → 𝟘-elim (one-is-not-zero p))
+    , (λ na → 𝟘-elim (na a))
+  ψ : ₁ ≡ ₁ ⇔ A
+  ψ = (λ _ → a) , (λ _ → refl)
+boolean-value' {𝓤} {A} (inr na) = ₀ , ϕ , ψ
+ where
+  ϕ : ₀ ≡ ₀ ⇔ ¬ A
+  ϕ = (λ _ → na) , (λ _ → refl)
+  ψ : ₀ ≡ ₁ ⇔ A
+  ψ = (λ p → 𝟘-elim (zero-is-not-one p))
+    , (λ a → 𝟘-elim (na a))
 
 private
  Ωᵈ : (𝓤 : Universe) → 𝓤 ⁺ ̇
@@ -343,32 +370,30 @@ module _
  𝟚-is-the-type-of-decidable-propositions : 𝟚 ≃ Ωᵈ 𝓤
  𝟚-is-the-type-of-decidable-propositions = qinveq f (g , η , ε)
   where
-   -- Because of the definition of boolean-value above,
-   -- the map f (somewhat confusingly) sends ₀ to 𝟙 and ₁ to 𝟘.
    f : 𝟚 → Ωᵈ 𝓤
-   f ₀ = ((𝟙 , 𝟙-is-prop) , inl *)
-   f ₁ = ((𝟘 , 𝟘-is-prop) , inr 𝟘-elim)
+   f ₀ = ((𝟘 , 𝟘-is-prop) , inr 𝟘-elim)
+   f ₁ = ((𝟙 , 𝟙-is-prop) , inl ⋆)
    g : Ωᵈ 𝓤 → 𝟚
-   g (P , δ) = pr₁ (boolean-value δ)
+   g (P , δ) = pr₁ (boolean-value' δ)
    η : g ∘ f ∼ id
    η ₀ = refl
    η ₁ = refl
    ε : f ∘ g ∼ id
    ε P = 𝟚-equality-cases ε₀ ε₁
     where
-     lemma : (g P ≡ ₀ → ⟨ P ⟩)
-           × (g P ≡ ₁ → ¬ ⟨ P ⟩)
-     lemma = pr₂ (boolean-value (pr₂ P))
+     lemma : (g P ≡ ₀ ⇔ ¬ ⟨ P ⟩)
+           × (g P ≡ ₁ ⇔   ⟨ P ⟩)
+     lemma = pr₂ (boolean-value' (pr₂ P))
      ε₀ : g P ≡ ₀
         → (f ∘ g) P ≡ P
      ε₀ e = to-Ωᵈ-equality (f (g P)) P
-             (λ _ → pr₁ lemma e)
-             (λ _ → back-transport (λ (b : 𝟚) → ⟨ f b ⟩) e *)
+             (λ (q : ⟨ f (g P) ⟩) → 𝟘-elim (transport (λ b → ⟨ f b ⟩) e q))
+             (λ (p : ⟨ P ⟩) → 𝟘-elim (lr-implication (pr₁ lemma) e p))
      ε₁ : g P ≡ ₁
         → (f ∘ g) P ≡ P
      ε₁ e = to-Ωᵈ-equality (f (g P)) P
-             (λ (q : ⟨ f (g P) ⟩) → 𝟘-elim (transport (λ b → ⟨ f b ⟩) e q))
-             (λ (p : ⟨ P ⟩      ) → 𝟘-elim (pr₂ lemma e p))
+             (λ _ → lr-implication (pr₂ lemma) e)
+             (λ _ → back-transport (λ (b : 𝟚) → ⟨ f b ⟩) e ⋆)
 
 \end{code}
 
@@ -382,21 +407,76 @@ equivalences.
 
 open import UF-Powerset
 open import UF-EquivalenceExamples
-
 is-decidable-subset : {X : 𝓤 ̇  } → (X → Ω 𝓣) → 𝓤 ⊔ 𝓣 ̇
 is-decidable-subset {𝓤} {𝓣} {X} A = (x : X) → decidable (x ∈ A)
 
-𝟚-classifies-decidable-subsets : funext 𝓤 (𝓣 ⁺) → funext 𝓣 𝓣
-                               → propext 𝓣
-                               → {X : 𝓤 ̇  }
-                               → (X → 𝟚)
-                               ≃ (Σ A ꞉ (X → Ω 𝓣) , is-decidable-subset A)
-𝟚-classifies-decidable-subsets {𝓤} {𝓣} fe fe' pe {X} =
- (X → 𝟚)                                    ≃⟨ γ          ⟩
- (X → Ωᵈ 𝓣)                                ≃⟨ ΠΣ-distr-≃ ⟩
- (Σ A ꞉ (X → Ω 𝓣) , is-decidable-subset A) ■
+module _
+        (fe  : funext 𝓤 (𝓣 ⁺))
+        (fe' : funext 𝓣 𝓣)
+        (pe : propext 𝓣)
+       where
+
+ 𝟚-classifies-decidable-subsets : {X : 𝓤 ̇  }
+                                → (X → 𝟚)
+                                ≃ (Σ A ꞉ (X → Ω 𝓣) , is-decidable-subset A)
+ 𝟚-classifies-decidable-subsets {X} =
+  (X → 𝟚)                                    ≃⟨ γ          ⟩
+  (X → Ωᵈ 𝓣)                                ≃⟨ ΠΣ-distr-≃ ⟩
+  (Σ A ꞉ (X → Ω 𝓣) , is-decidable-subset A) ■
+   where
+    γ = →cong' fe (lower-funext 𝓤 (𝓣 ⁺) fe)
+         (𝟚-is-the-type-of-decidable-propositions fe' pe)
+
+ 𝟚-classifies-decidable-subsets-values :
+   {X : 𝓤 ̇  }
+   (A : X → Ω 𝓣)
+   (δ : is-decidable-subset A)
+   (x : X)
+   → ((⌜ 𝟚-classifies-decidable-subsets ⌝⁻¹ (A , δ) x ≡ ₀) ⇔ ¬ (x ∈ A))
+   × ((⌜ 𝟚-classifies-decidable-subsets ⌝⁻¹ (A , δ) x ≡ ₁) ⇔   (x ∈ A))
+ 𝟚-classifies-decidable-subsets-values {X} A δ x = γ
   where
-   γ = →cong' fe (lower-funext 𝓤 (𝓣 ⁺) fe)
-        (𝟚-is-the-type-of-decidable-propositions fe' pe)
+   χ : (Σ A ꞉ (X → Ω 𝓣) , is-decidable-subset A) → (X → 𝟚)
+   χ = ⌜ 𝟚-classifies-decidable-subsets ⌝⁻¹
+   γ : (χ (A , δ) x ≡ ₀ ⇔ ¬ (x ∈ A))
+     × (χ (A , δ) x ≡ ₁ ⇔   (x ∈ A))
+   γ = pr₂ (boolean-value' (δ x))
+
+\end{code}
+
+Added by Tom de Jong, November 2021.
+
+\begin{code}
+
+decidable-⇔ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+            → X ⇔ Y
+            → decidable X
+            → decidable Y
+decidable-⇔ {𝓤} {𝓥} {X} {Y} (f , g) (inl  x) = inl (f x)
+decidable-⇔ {𝓤} {𝓥} {X} {Y} (f , g) (inr nx) = inr (nx ∘ g)
+
+decidable-cong : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+               → X ≃ Y
+               → decidable X
+               → decidable Y
+decidable-cong e = decidable-⇔ (⌜ e ⌝ , ⌜ e ⌝⁻¹)
+
+\end{code}
+
+Added by Tom de Jong in January 2022.
+
+\begin{code}
+
+all-types-are-¬¬-decidable : (X : 𝓤 ̇  ) → ¬¬ (decidable X)
+all-types-are-¬¬-decidable X h = claim₂ claim₁
+ where
+  claim₁ : ¬ X
+  claim₁ x = h (inl x)
+  claim₂ : ¬¬ X
+  claim₂ nx = h (inr nx)
+
+¬¬-stable-if-decidable : (X : 𝓤 ̇  ) → decidable X → ¬¬-stable X
+¬¬-stable-if-decidable X (inl  x) = λ _ → x
+¬¬-stable-if-decidable X (inr nx) = λ h → 𝟘-elim (h nx)
 
 \end{code}

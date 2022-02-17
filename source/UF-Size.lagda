@@ -129,7 +129,7 @@ EM-gives-PR {𝓤} {𝓥} em P i = Q (em P i) , e
    j (inr n) = 𝟘-is-prop
 
    f : (d : decidable P) → P → Q d
-   f (inl p) p' = *
+   f (inl p) p' = ⋆
    f (inr n) p  = 𝟘-elim (n p)
 
    g : (d : decidable P) → Q d → P
@@ -162,7 +162,7 @@ has-size-is-prop {𝓤} ua X 𝓥 = c
         (Lift 𝓤 Y ≃ Lift 𝓥 X)  ≃⟨ a₁ ⟩
         (Lift 𝓤 Y ≡ Lift 𝓥 X)  ■
    where
-    a₀ = Eq-Eq-cong fe
+    a₀ = ≃-cong fe
            (≃-sym (Lift-is-universe-embedding 𝓤 Y))
            (≃-sym (Lift-is-universe-embedding 𝓥 X))
     a₁ = ≃-sym (univalence-≃ (ua (𝓤 ⊔ 𝓥)) _ _)
@@ -204,7 +204,7 @@ prop-has-size-is-prop {𝓤} pe fe P i 𝓥 = c
         (Lift 𝓤 Y ≃ Lift 𝓥 P)  ≃⟨ a₁ ⟩
         (Lift 𝓤 Y ≡ Lift 𝓥 P)  ■
    where
-    a₀ = Eq-Eq-cong fe
+    a₀ = ≃-cong fe
            (≃-sym (Lift-is-universe-embedding 𝓤 Y))
            (≃-sym (Lift-is-universe-embedding 𝓥 P))
 
@@ -311,14 +311,14 @@ universe, and of all other universes, of course:
   φ (inr y) = ⊤
 
   ψ : (p : Ω 𝓤) → decidable (p holds) → 𝟙 + 𝟙
-  ψ p (inl h) = inr *
-  ψ p (inr n) = inl *
+  ψ p (inl h) = inr ⋆
+  ψ p (inr n) = inl ⋆
 
   ψφ : (z : 𝟙 + 𝟙) (d : decidable ((φ z) holds)) → ψ (φ z) d ≡ z
   ψφ (inl x) (inl h) = 𝟘-elim h
-  ψφ (inl x) (inr n) = ap inl (𝟙-is-prop * x)
-  ψφ (inr y) (inl h) = ap inr (𝟙-is-prop * y)
-  ψφ (inr y) (inr n) = 𝟘-elim (n *)
+  ψφ (inl x) (inr n) = ap inl (𝟙-is-prop ⋆ x)
+  ψφ (inr y) (inl h) = ap inr (𝟙-is-prop ⋆ y)
+  ψφ (inr y) (inr n) = 𝟘-elim (n ⋆)
 
   φψ : (p : Ω 𝓤) (d : decidable (p holds)) → φ (ψ p d) ≡ p
   φψ p (inl h) = (true-is-equal-⊤  pe fe (p holds) (holds-is-prop p) h)⁻¹
@@ -357,10 +357,10 @@ universes:
   j = O-is-set
 
   φ : Q → P
-  φ q = idtofun 𝟙 P (ap pr₁ (equivs-are-lc down (⌜⌝-is-equiv (≃-sym e)) q)) *
+  φ q = idtofun 𝟙 P (ap pr₁ (equivs-are-lc down (⌜⌝-is-equiv (≃-sym e)) q)) ⋆
 
   ψ : P → Q
-  ψ p = ap down (to-Σ-≡ (pe 𝟙-is-prop i (λ _ → p) (λ _ → *) ,
+  ψ p = ap down (to-Σ-≡ (pe 𝟙-is-prop i (λ _ → p) (λ _ → ⋆) ,
                          being-prop-is-prop fe _ _))
 
   ε : Q ≃ P
@@ -602,7 +602,7 @@ has-size-idempotent ua 𝓤 𝓥 Y i (H , e) = X , γ
       f (e' , x) = eqtofun (pr₂ e') x
 
       g : Y → X'
-      g y = (𝟙{𝓥} , singleton-≃-𝟙' (pointed-props-are-singletons y i)) , *
+      g y = (𝟙{𝓥} , singleton-≃-𝟙' (pointed-props-are-singletons y i)) , ⋆
 
 has-size-resizing : (𝓤 𝓥 : Universe) → 𝓤 ⁺ ⊔ 𝓥 ⁺ ̇
 has-size-resizing 𝓤 𝓥 = (Y : 𝓤 ̇ ) → (Y has-size 𝓥) has-size 𝓥

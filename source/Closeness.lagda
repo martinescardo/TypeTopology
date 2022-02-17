@@ -35,6 +35,8 @@ open import GenericConvergentSequence renaming (min to min')
 open import DiscreteAndSeparated
 open import UF-Miscelanea
 open import Two-Properties
+open import OrderNotation
+open import CanonicalMapNotation
 
 module sequences
         {𝓤 : Universe}
@@ -58,7 +60,7 @@ the functor 𝟙 + (-), which we refer to as corecursion.
   f : (α β : 𝓢) → head α ≡ head β → 𝟙 {𝓤₀} + X
   f α β q = inr (tail α , tail β)
   g : (α β : 𝓢) → head α ≢ head β → 𝟙 {𝓤₀} + X
-  g α β n = inl *
+  g α β n = inl ⋆
   p : X → 𝟙 {𝓤₀} + X
   p (α , β) = cases (f α β) (g α β) (δ (head α) (head β))
   c : 𝓢 → 𝓢 → ℕ∞
@@ -89,10 +91,10 @@ The two defining properties of the function c are the following:
   where
    t : δ (head α) (head β) ≡ inr n
    t = discrete-inr (fe 𝓤 𝓤₀) δ (head α) (head β) n
-   r : p (α , β) ≡ inl *
+   r : p (α , β) ≡ inl ⋆
    r = ap (cases (f α β) (g α β)) t
-   γ : p (α , β) ≡ inl * → c α β ≡ Zero
-   γ = Coalg-morphism-Zero p (α , β) *
+   γ : p (α , β) ≡ inl ⋆ → c α β ≡ Zero
+   γ = Coalg-morphism-Zero p (α , β) ⋆
 
  closeness-eq₁ α β q = γ r
   where
@@ -206,7 +208,7 @@ Ultra property:
                 → head α ≡ head β
  closeness-eq₁' α β p = Cases (δ (head α) (head β)) id
    (λ h≢ → 𝟘-elim (zero-is-not-one
-    (is-Zero-Zero ⁻¹ ∙ ap (λ - → incl - 0) (closeness-eq₀ α β h≢ ⁻¹) ∙ p)))
+    (is-Zero-Zero ⁻¹ ∙ ap (λ - → ι - 0) (closeness-eq₀ α β h≢ ⁻¹) ∙ p)))
 
  open import NaturalsOrder
 
@@ -214,10 +216,10 @@ Ultra property:
                          → ((k : ℕ) → k ≤ n → α k ≡ β k)
                          → n ⊏ c α β
  closeness-conceptually₁ α β zero α≈ₙβ
-  = transport (0 ⊏_) (closeness-eq₁ α β (α≈ₙβ 0 *) ⁻¹)
+  = transport (0 ⊏_) (closeness-eq₁ α β (α≈ₙβ 0 ⋆) ⁻¹)
     (is-positive-Succ (c (tail α) (tail β)))
  closeness-conceptually₁ α β (succ n) α≈ₙβ
-  = transport (succ n ⊏_) (closeness-eq₁ α β (α≈ₙβ 0 *) ⁻¹)
+  = transport (succ n ⊏_) (closeness-eq₁ α β (α≈ₙβ 0 ⋆) ⁻¹)
     (closeness-conceptually₁ (tail α) (tail β) n (λ m → α≈ₙβ (succ m)))
 
  closeness-conceptually₂ : (α β : 𝓢) (n : ℕ)
@@ -227,7 +229,7 @@ Ultra property:
   = closeness-eq₁' α β (⊏-trans'' (c α β) n 0 k≤n ⊏ₙcαβ)
  closeness-conceptually₂ α β n ⊏ₙcαβ (succ k) k≤n
   = closeness-conceptually₂ (tail α) (tail β) k (transport (succ k ⊏_)
-      (closeness-eq₁ α β (closeness-eq₁' α β (⊏-trans'' (c α β) n 0 * ⊏ₙcαβ)))
+      (closeness-eq₁ α β (closeness-eq₁' α β (⊏-trans'' (c α β) n 0 ⋆ ⊏ₙcαβ)))
       (⊏-trans'' (c α β) n (succ k) k≤n ⊏ₙcαβ))
     k (≤-refl k)
 
@@ -277,26 +279,26 @@ convergent sequence:
 \begin{code}
 
 ℕ∞-closeness : ℕ∞ → ℕ∞ → ℕ∞
-ℕ∞-closeness u v = Cantor-closeness (incl u) (incl v)
+ℕ∞-closeness u v = Cantor-closeness (ι u) (ι v)
 
 ℕ∞-infinitely-close-to-itself : (u : ℕ∞) → ℕ∞-closeness u u ≡ ∞
-ℕ∞-infinitely-close-to-itself u = Cantor-infinitely-close-to-itself (incl u)
+ℕ∞-infinitely-close-to-itself u = Cantor-infinitely-close-to-itself (ι u)
 
 ℕ∞-equal-are-infinitely-close : (u v : ℕ∞) → u ≡ v → ℕ∞-closeness u v ≡ ∞
 ℕ∞-equal-are-infinitely-close u .u refl = ℕ∞-infinitely-close-to-itself u
 
 ℕ∞-infinitely-close-are-equal : (u v : ℕ∞) → ℕ∞-closeness u v ≡ ∞ → u ≡ v
-ℕ∞-infinitely-close-are-equal u v r = incl-lc (fe 𝓤₀ 𝓤₀) γ
+ℕ∞-infinitely-close-are-equal u v r = ℕ∞-to-ℕ→𝟚-lc (fe 𝓤₀ 𝓤₀) γ
  where
-  γ : incl u ≡ incl v
-  γ = Cantor-infinitely-close-are-equal (incl u) (incl v) r
+  γ : ι u ≡ ι v
+  γ = Cantor-infinitely-close-are-equal (ι u) (ι v) r
 
 ℕ∞-symmetric-property : (u v : ℕ∞) → ℕ∞-closeness u v ≡ ℕ∞-closeness v u
-ℕ∞-symmetric-property u v = Cantor-symmetric-property (incl u) (incl v)
+ℕ∞-symmetric-property u v = Cantor-symmetric-property (ι u) (ι v)
 
 ℕ∞-ultra-property : (u v w : ℕ∞)
                   → min (ℕ∞-closeness u v , ℕ∞-closeness v w) ≼ ℕ∞-closeness u w
-ℕ∞-ultra-property u v w = Cantor-ultra-property (incl u) (incl v) (incl w)
+ℕ∞-ultra-property u v w = Cantor-ultra-property (ι u) (ι v) (ι w)
 
 \end{code}
 

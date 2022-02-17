@@ -28,7 +28,7 @@ open import UF-FunExt
 open import UF-UA-FunExt
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
-open import UF-Powerset
+open import UF-Powerset hiding (𝕋)
 open import UF-EquivalenceExamples
 open import UF-Retracts
 

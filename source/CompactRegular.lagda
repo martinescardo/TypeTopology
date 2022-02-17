@@ -147,7 +147,7 @@ clopen.
 
 \begin{code}
 
-well-inside₀ : (F : frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → ⟨ F ⟩ → 𝓤 ̇ 
+well-inside₀ : (F : frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → ⟨ F ⟩ → 𝓤 ̇
 well-inside₀ F U V =
  Σ W ꞉ ⟨ F ⟩ , (U ∧[ F ] W ≡ 𝟎[ F ]) × (V ∨[ F ] W ≡ 𝟏[ F ])
 
@@ -194,7 +194,7 @@ well-inside₀-is-not-prop ua = IF , ε
   𝟎-is-not-𝟏 p = γ
    where
     γ : ⊥Ω holds
-    γ = transport _holds (𝟏[ IF ] ≡⟨ p ⁻¹ ⟩ 𝟎[ IF ] ≡⟨ 𝟎-of-IF-is-⊥ ua ⟩ ⊥Ω ∎) *
+    γ = transport _holds (𝟏[ IF ] ≡⟨ p ⁻¹ ⟩ 𝟎[ IF ] ≡⟨ 𝟎-of-IF-is-⊥ ua ⟩ ⊥Ω ∎) ⋆
 
   ε : ¬ ((U V : ⟨ IF ⟩) → is-prop (well-inside₀ IF U V))
   ε ψ = 𝟎-is-not-𝟏 (pr₁ (from-Σ-≡ δ))
@@ -242,35 +242,43 @@ well-inside-implies-below F U V = ∥∥-rec (holds-is-prop (U ≤[ poset-of F ]
 
 \begin{code}
 
-T≤U⋜V≤W-implies-T⋜W : (F : frame 𝓤 𝓥 𝓦)
-                    → {T U V W : ⟨ F ⟩}
-                    → (T ≤[ poset-of F ] U) holds
-                    → (U ⋜[ F ] V) holds
-                    → (V ≤[ poset-of F ] W) holds
-                    → (T ⋜[ F ] W) holds
-T≤U⋜V≤W-implies-T⋜W F {T} {U} {V} {W} p q r =
- ∥∥-rec (holds-is-prop (T ⋜[ F ] W)) γ q
+↑↑-is-upwards-closed : (F : frame 𝓤 𝓥 𝓦)
+                     → {U V W : ⟨ F ⟩}
+                     → (U ⋜[ F ] V) holds
+                     → (V ≤[ poset-of F ] W) holds
+                     → (U ⋜[ F ] W) holds
+↑↑-is-upwards-closed F {U} {V} {W} p q =
+ ∥∥-rec (holds-is-prop (U ⋜[ F ] W)) γ p
   where
-   γ : U ⋜₀[ F ] V → (T ⋜[ F ] W) holds
-   γ (S , c₁ , c₂) = ∣ S , δ , ε ∣
+   open PosetReasoning (poset-of F)
+
+   γ : U ⋜₀[ F ] V → (U ⋜[ F ] W) holds
+   γ (T , c₁ , c₂) = ∣ T , c₁ , d₂ ∣
     where
-     open PosetReasoning (poset-of F)
+     β : (𝟏[ F ] ≤[ poset-of F ] (W ∨[ F ] T)) holds
+     β = 𝟏[ F ]      ≡⟨ c₂ ⁻¹                  ⟩ₚ
+         V ∨[ F ] T  ≤⟨ ∨[ F ]-left-monotone q ⟩
+         W ∨[ F ] T  ■
 
-     δ : T ∧[ F ] S ≡ 𝟎[ F ]
-     δ = only-𝟎-is-below-𝟎 F (T ∧[ F ] S) δ₁
-      where
-       δ₁ : ((T ∧[ F ] S) ≤[ poset-of F ] 𝟎[ F ]) holds
-       δ₁ = T ∧[ F ] S  ≤⟨ ∧[ F ]-left-monotone p ⟩
-            U ∧[ F ] S  ≡⟨ c₁                     ⟩ₚ
-            𝟎[ F ]      ■
+     d₂ : W ∨[ F ] T ≡ 𝟏[ F ]
+     d₂ = only-𝟏-is-above-𝟏 F (W ∨[ F ] T) β
 
-     ε : W ∨[ F ] S ≡ 𝟏[ F ]
-     ε = only-𝟏-is-above-𝟏 F (W ∨[ F ] S) ε₁
-      where
-       ε₁ : (𝟏[ F ] ≤[ poset-of F ] (W ∨[ F ] S)) holds
-       ε₁ = 𝟏[ F ]      ≡⟨ c₂ ⁻¹                  ⟩ₚ
-            V ∨[ F ] S  ≤⟨ ∨[ F ]-left-monotone r ⟩
-            W ∨[ F ] S  ■
+↓↓-is-downwards-closed : (F : frame 𝓤 𝓥 𝓦)
+                       → {U V W : ⟨ F ⟩}
+                       → (V ⋜[ F ] W) holds
+                       → (U ≤[ poset-of F ] V) holds
+                       → (U ⋜[ F ] W) holds
+↓↓-is-downwards-closed F {U} {V} {W} p q = ∥∥-rec ∥∥-is-prop γ p
+ where
+  open PosetReasoning (poset-of F)
+
+  γ : V ⋜₀[ F ] W → (U ⋜[ F ] W) holds
+  γ (T , c₁ , c₂) = ∣ T , (only-𝟎-is-below-𝟎 F (U ∧[ F ] T) β , c₂) ∣
+   where
+    β : ((U ∧[ F ] T) ≤[ poset-of F ] 𝟎[ F ]) holds
+    β = U ∧[ F ] T  ≤⟨ ∧[ F ]-left-monotone q ⟩
+        V ∧[ F ] T  ≡⟨ c₁                     ⟩ₚ
+        𝟎[ F ]      ■
 
 \end{code}
 
@@ -278,7 +286,7 @@ An open _U_ in a frame _A_ is *clopen* iff it is well-inside itself.
 
 \begin{code}
 
-is-clopen₀ : (F : frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → 𝓤 ̇ 
+is-clopen₀ : (F : frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → 𝓤 ̇
 is-clopen₀ F U = Σ W ꞉ ⟨ F ⟩ , (U ∧[ F ] W ≡ 𝟎[ F ]) × (U ∨[ F ] W ≡ 𝟏[ F ])
 
 is-clopen₀-is-prop : (F : frame 𝓤 𝓥 𝓦) → (U : ⟨ F ⟩) → is-prop (is-clopen₀ F U)
@@ -357,23 +365,18 @@ clopenness-equivalent-to-well-inside-itself F U =
 
 𝟎-is-well-inside-anything : (F : frame 𝓤 𝓥 𝓦) (U : ⟨ F ⟩)
                           → (𝟎[ F ] ⋜[ F ] U) holds
-𝟎-is-well-inside-anything F U = T≤U⋜V≤W-implies-T⋜W F β ∣ 𝟎-is-clopen F ∣ γ
- where
-  β : (𝟎[ F ] ≤[ poset-of F ] 𝟎[ F ]) holds
-  β = ≤-is-reflexive (poset-of F) 𝟎[ F ]
-
-  γ : (𝟎[ F ] ≤[ poset-of F ] U) holds
-  γ = 𝟎-is-bottom F U
+𝟎-is-well-inside-anything F U =
+ ↑↑-is-upwards-closed F ∣ 𝟎-is-clopen F ∣ (𝟎-is-bottom F U)
 
 \end{code}
 
 \begin{code}
 
-well-inside-upwards : (F : frame 𝓤 𝓥 𝓦) {U₁ U₂ V : ⟨ F ⟩}
-                    → (U₁ ⋜[ F ] V) holds
-                    → (U₂ ⋜[ F ] V) holds
-                    → ((U₁ ∨[ F ] U₂) ⋜[ F ] V) holds
-well-inside-upwards F {U₁} {U₂} {V} =
+well-inside-is-join-stable : (F : frame 𝓤 𝓥 𝓦) {U₁ U₂ V : ⟨ F ⟩}
+                           → (U₁ ⋜[ F ] V) holds
+                           → (U₂ ⋜[ F ] V) holds
+                           → ((U₁ ∨[ F ] U₂) ⋜[ F ] V) holds
+well-inside-is-join-stable F {U₁} {U₂} {V} =
  ∥∥-rec₂ (holds-is-prop ((U₁ ∨[ F ] U₂) ⋜[ F ] V)) γ
   where
    open PosetReasoning (poset-of F)
@@ -568,13 +571,13 @@ follows:
 is-regular₀ : (F : frame 𝓤 𝓥 𝓦) → (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺) ̇ 
 is-regular₀ {𝓤 = 𝓤} {𝓥} {𝓦} F =
  let
-  open Joins (λ x y → x ≤[ poset-of F ] y)
+  open Joins (λ U V → U ≤[ poset-of F ] V)
 
   P : Fam 𝓦 ⟨ F ⟩ → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺ ̇ 
-  P ℬ = Π x ꞉ ⟨ F ⟩ ,
+  P ℬ = Π U ꞉ ⟨ F ⟩ ,
          Σ J ꞉ Fam 𝓦 (index ℬ) ,
-            (x is-lub-of ⁅ ℬ [ j ] ∣ j ε J ⁆) holds
-          × (Π i ꞉ index J , (ℬ [ J [ i ] ] ⋜[ F ] x) holds)
+            (U is-lub-of ⁅ ℬ [ j ] ∣ j ε J ⁆) holds
+          × (Π i ꞉ index J , (ℬ [ J [ i ] ] ⋜[ F ] U) holds)
  in
   Σ ℬ ꞉ Fam 𝓦 ⟨ F ⟩ , P ℬ
 
@@ -637,7 +640,7 @@ directification-preserves-regularity F ℬ β r U = γ
 
   γ : (Ɐ js ∶ index 𝒥↑ , ℬ↑ [ 𝒥↑ [ js ] ] ⋜[ F ] U) holds
   γ []       = 𝟎-is-well-inside-anything F U
-  γ (j ∷ js) = well-inside-upwards F (r U j) (γ js)
+  γ (j ∷ js) = well-inside-is-join-stable F (r U j) (γ js)
 
 \end{code}
 
@@ -684,7 +687,7 @@ which the result we are interested in follows:
      c = reflexivity+ (poset-of F) (⋁[ F ]-unique S V (pr₂ (β↑ V)))
 
      ζ : Σ k ꞉ index S , (U ≤[ poset-of F ] (S [ k ])) holds → (U ⋜[ F ] V) holds
-     ζ (k , q) = T≤U⋜V≤W-implies-T⋜W F q (ρ↑ V k) (≤-is-reflexive (poset-of F) V)
+     ζ (k , q) = ↓↓-is-downwards-closed F (ρ↑ V k) q
 
 \end{code}
 
@@ -709,8 +712,8 @@ clopen elements.
 consists-of-clopens : (F : frame 𝓤 𝓥 𝓦) → (S : Fam 𝓦 ⟨ F ⟩) → Ω (𝓤 ⊔ 𝓦)
 consists-of-clopens F S = Ɐ i ∶ index S , is-clopen F (S [ i ])
 
-is-zero-dimensional₀ : frame 𝓤 𝓥 𝓦 → (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺) ̇
-is-zero-dimensional₀ {𝓦 = 𝓦} F =
+zero-dimensional₀ : frame 𝓤 𝓥 𝓦 → (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺) ̇
+zero-dimensional₀ {𝓦 = 𝓦} F =
  Σ ℬ ꞉ Fam 𝓦 ⟨ F ⟩ , is-basis-for F ℬ × consists-of-clopens F ℬ holds
 
 is-zero-dimensional : frame 𝓤 𝓥 𝓦 → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
@@ -736,7 +739,7 @@ zero-dimensional-locales-are-regular {𝓦 = 𝓦} F =
   where
    open Joins (λ x y → x ≤[ poset-of F ] y)
 
-   γ : is-zero-dimensional₀ F → is-regular F holds
+   γ : zero-dimensional₀ F → is-regular F holds
    γ (ℬ , β , ξ) = ∣ ℬ , δ ∣
     where
      δ : Π U ꞉ ⟨ F ⟩ ,
@@ -751,7 +754,7 @@ zero-dimensional-locales-are-regular {𝓦 = 𝓦} F =
        c = pr₂ (β U)
 
        ε : Π i ꞉ index 𝒥 , (ℬ [ 𝒥 [ i ] ] ⋜[ F ] U) holds
-       ε i = T≤U⋜V≤W-implies-T⋜W F η ∣ ξ (𝒥 [ i ]) ∣ (pr₁ c i)
+       ε i = ↑↑-is-upwards-closed F ∣ ξ (𝒥 [ i ]) ∣ (pr₁ c i)
         where
          η : ((ℬ [ 𝒥 [ i ] ]) ≤[ poset-of F ] (ℬ [ 𝒥 [ i ] ])) holds
          η = ≤-is-reflexive (poset-of F) (ℬ [ 𝒥 [ i ] ])

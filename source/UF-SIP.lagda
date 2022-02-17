@@ -18,7 +18,7 @@ There are three submodules:
 
 module UF-SIP where
 
-open import SpartanMLTT hiding (*)
+open import SpartanMLTT
 open import UF-Base
 open import UF-Equiv hiding (_≅_)
 open import UF-Univalence

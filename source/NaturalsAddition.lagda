@@ -14,7 +14,6 @@ _+_ : ℕ → ℕ → ℕ
 n + 0 = n
 n + (succ m) = succ (n + m)
 
-
 zero-right-neutral : (n : ℕ) → n + 0 ≡ n
 zero-right-neutral n = refl
 

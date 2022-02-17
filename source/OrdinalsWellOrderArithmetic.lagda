@@ -101,17 +101,17 @@ and then adapt the following definitions.
              → is-extensional _≺_
              → is-extensional _⊏_
  extensional w e e' (inl x) (inl x') f g = ap inl (e x x' (f ∘ inl) (g ∘ inl))
- extensional w e e' (inl x) (inr y') f g = 𝟘-elim (irreflexive _<_ x (w x) (g (inl x) *))
- extensional w e e' (inr y) (inl x') f g = 𝟘-elim (irreflexive _<_ x' (w x') (f (inl x') *))
+ extensional w e e' (inl x) (inr y') f g = 𝟘-elim (irreflexive _<_ x (w x) (g (inl x) ⋆))
+ extensional w e e' (inr y) (inl x') f g = 𝟘-elim (irreflexive _<_ x' (w x') (f (inl x') ⋆))
  extensional w e e' (inr y) (inr y') f g = ap inr (e' y y' (f ∘ inr) (g ∘ inr))
 
  transitive : is-transitive _<_
             → is-transitive _≺_
             → is-transitive _⊏_
  transitive t t' (inl x) (inl x') (inl z)  l m = t x x' z l m
- transitive t t' (inl x) (inl x') (inr z') l m = *
+ transitive t t' (inl x) (inl x') (inr z') l m = ⋆
  transitive t t' (inl x) (inr y') (inl z)  l m = 𝟘-elim m
- transitive t t' (inl x) (inr y') (inr z') l m = *
+ transitive t t' (inl x) (inr y') (inr z') l m = ⋆
  transitive t t' (inr y) (inl x') _        l m = 𝟘-elim l
  transitive t t' (inr y) (inr y') (inl z') l m = 𝟘-elim m
  transitive t t' (inr y) (inr y') (inr z') l m = t' y y' z' l m
@@ -179,11 +179,11 @@ module successor
   well-order o = plus.well-order _<_ _≺_ o (prop.well-order 𝟙 𝟙-is-prop)
 
   top : has-top _<'_
-  top = inr * , g
+  top = inr ⋆ , g
    where
-    g : (y : X + 𝟙) → ¬ (inr * <' y)
+    g : (y : X + 𝟙) → ¬ (inr ⋆ <' y)
     g (inl x) l = 𝟘-elim l
-    g (inr *) l = 𝟘-elim l
+    g (inr ⋆) l = 𝟘-elim l
 
 \end{code}
 

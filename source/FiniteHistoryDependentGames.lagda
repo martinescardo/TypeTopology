@@ -77,7 +77,7 @@ Path Xt for a dependent-type-tree Xt.
 
 \begin{code}
 
-pattern ⟨⟩        = *
+pattern ⟨⟩        = ⋆
 pattern _::_ x xs = (x , xs)
 
 path-head : {X : Type} {Xf : X → DTT} → Path (X ∷ Xf) → X
@@ -135,14 +135,14 @@ assigns selection functions to the nodes.
 
 \end{code}
 
- * ϕ ranges over the type K R X of quantifiers.
- * ε ranges over the type J R X of selection functions.
+ ⋆ ϕ ranges over the type K R X of quantifiers.
+ ⋆ ε ranges over the type J R X of selection functions.
 
- * ϕt ranges over the type 𝓚 R Xt of quantifier trees.
- * εt ranges over the type 𝓙 R Xt of selection-function trees.
+ ⋆ ϕt ranges over the type 𝓚 R Xt of quantifier trees.
+ ⋆ εt ranges over the type 𝓙 R Xt of selection-function trees.
 
- * ϕf ranges over the type (x : X) → 𝓚 R (Xf x) of quantifier forests.
- * εf ranges over the type (x : X) → 𝓙 R (Xf x) of selection-function forests.
+ ⋆ ϕf ranges over the type (x : X) → 𝓚 R (Xf x) of quantifier forests.
+ ⋆ εf ranges over the type (x : X) → 𝓙 R (Xf x) of selection-function forests.
 
 Sequencing quantifiers and selections, as constructed in Definitions 2
 and 12 of reference [1], but using our tree representation of games
@@ -247,10 +247,10 @@ Strategy (X ∷ Xf) = X × ((x : X) → Strategy (Xf x))
 
 \end{code}
 
- * σ ranges over the type Strategy Xt of strategies for a
+ ⋆ σ ranges over the type Strategy Xt of strategies for a
    dependent-type tree Xt.
 
- * σf ranges over the type (x : X) → Strategy (Xf x) of strategy
+ ⋆ σf ranges over the type (x : X) → Strategy (Xf x) of strategy
    forests for a dependent-type forest Xf.
 
 We get a path in the tree by following any given strategy:
@@ -302,11 +302,11 @@ is-sgpe {X ∷ Xf} (ϕ :: ϕf) q (x₀ :: σf) =
 
 In the above definition:
 
- * If the game tree is empty, then the strategy is empty, and we say
+ ⋆ If the game tree is empty, then the strategy is empty, and we say
    that it is true that it is in sgpe, where "true" is represented by
    the unit type 𝟙 in propositions-as-types.
 
- * If the game tree has a root X followed by a forest Xf, then the
+ ⋆ If the game tree has a root X followed by a forest Xf, then the
    strategy must be of the form x₀ :: σf, where x₀ is the first move
    according to the strategy, and where σf is a forest of strategies
    that depends on a deviation x.

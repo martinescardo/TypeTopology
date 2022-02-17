@@ -226,11 +226,11 @@ TODO. Redo the above proof using the technique of the following proof.
 
 \begin{code}
 
-embedding-factor : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (f : X → Y) (g : Y → Z)
-                 → is-embedding (g ∘ f)
-                 → is-embedding g
-                 → is-embedding f
-embedding-factor {𝓤} {𝓥} {𝓦} {X} {Y} {Z} f g i j = γ
+factor-is-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (f : X → Y) (g : Y → Z)
+                    → is-embedding (g ∘ f)
+                    → is-embedding g
+                    → is-embedding f
+factor-is-embedding {𝓤} {𝓥} {𝓦} {X} {Y} {Z} f g i j = γ
  where
   a : (x x' : X) → (x ≡ x') ≃ (g (f x) ≡ g (f x'))
   a x x' = ap (g ∘ f) {x} {x'} , embedding-embedding' (g ∘ f) i x x'

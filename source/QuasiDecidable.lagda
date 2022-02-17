@@ -26,7 +26,7 @@ type theory. Their specifications are as follows:
     countable existential quantification, or countable joins in the
     frame of propositions.
 
-    They for a dominance.
+    They form a dominance.
 
   * The initial σ-frame.
 
@@ -478,12 +478,12 @@ closure under binary products (that is, conjunctions, or meets):
      r = pe 𝟘-is-prop (λ (z , q) → 𝟘-elim z) unique-from-𝟘 pr₁
 
    F₁ : F 𝟙
-   F₁ Q φ = transport is-quasidecidable r (φ *)
+   F₁ Q φ = transport is-quasidecidable r (φ ⋆)
     where
      i : is-prop Q
-     i = quasidecidable-types-are-props Q (φ *)
+     i = quasidecidable-types-are-props Q (φ ⋆)
      r : Q ≡ 𝟙 × Q
-     r = pe i (×-is-prop 𝟙-is-prop i) (λ q → (* , q)) pr₂
+     r = pe i (×-is-prop 𝟙-is-prop i) (λ q → (⋆ , q)) pr₂
 
    Fω :  (P : ℕ → 𝓣 ̇ ) → ((n : ℕ) → F (P n)) → F (∃ n ꞉ ℕ , P n)
    Fω P f Q φ = γ
@@ -732,7 +732,7 @@ prop-valued predicates only.
     F₀ = ⊥' , unique-from-𝟘 , (λ u ψ → ⟨ 𝓐 ⟩-⊥-is-minimum u)
 
     F₁ : F 𝟙
-    F₁ = t , (λ _ → ⟨ 𝓐 ⟩-refl t) , (λ u ψ → ψ *)
+    F₁ = t , (λ _ → ⟨ 𝓐 ⟩-refl t) , (λ u ψ → ψ ⋆)
 
     Fω :  (P : ℕ → 𝓣 ̇ ) → ((n : ℕ) → F (P n)) → F (∃ n ꞉ ℕ , P n)
     Fω P φ = a∞ , α∞ , β∞
@@ -791,7 +791,7 @@ homomorphism, and are all we need for that purpose.
 \begin{code}
 
     f⊤ : f ⊤ ≡ t
-    f⊤ = ⟨ 𝓐 ⟩-antisym (f ⊤) t (β ⊤ t (λ _ → ⟨ 𝓐 ⟩-refl t)) (α ⊤ *)
+    f⊤ = ⟨ 𝓐 ⟩-antisym (f ⊤) t (β ⊤ t (λ _ → ⟨ 𝓐 ⟩-refl t)) (α ⊤ ⋆)
 
     f⊥ : f ⊥ ≡ ⊥'
     f⊥ = ⟨ 𝓐 ⟩-antisym (f ⊥) ⊥' (β ⊥ ⊥' unique-from-𝟘) (⟨ 𝓐 ⟩-⊥-is-minimum (f ⊥))
@@ -2081,7 +2081,7 @@ meets:
     F₀ f = ⊥⟨ 𝓑 ⟩ , (λ (i : 𝟘) → 𝟘-elim i) , λ u ψ → ⟨ 𝓑 ⟩-⊥-is-minimum u
 
     F₁ : F 𝟙
-    F₁ f = f * , (λ * → ⟨ 𝓑 ⟩-refl (f *)) , λ u ψ → ψ *
+    F₁ f = f ⋆ , (λ ⋆ → ⟨ 𝓑 ⟩-refl (f ⋆)) , λ u ψ → ψ ⋆
 
     Fω : ((P : ℕ → 𝓣 ̇ ) → ((n : ℕ) → F (P n)) → F (∃ n ꞉ ℕ , P n))
     Fω P φ f = b∞ , α∞ , β∞
@@ -2305,7 +2305,7 @@ theorem₄ {𝓣} {𝓚} ρ = quasidecidable-propositions
 
 TODO:
 
-  * Very little here has to do with the nature of the type ℕ. We never
+  ⋆ Very little here has to do with the nature of the type ℕ. We never
     used zero, successor, or induction! (But they are used in another
     module to construct binary joins, which are not used here.) Any
     indexing type replacing ℕ works in the above development, with the
@@ -2314,7 +2314,7 @@ TODO:
     indexing types, but this would require a modification of the above
     development.)
 
-  * Define, by induction (or as a W-type) a type similar to the
+  ⋆ Define, by induction (or as a W-type) a type similar to the
     Brouwer ordinals, with two constructors 0 and 1 and a formal
     ℕ-indexed sup operation. We have a unique map to the initial
     σ-sup-lattice that transforms formal sups into sups and maps 0 to
