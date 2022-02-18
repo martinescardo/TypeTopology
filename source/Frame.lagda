@@ -1041,6 +1041,19 @@ not a structure so this is important.
 has-basis : (F : frame 𝓤 𝓥 𝓦) → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
 has-basis {𝓦 = 𝓦} F = ∥ Σ ℬ ꞉ Fam 𝓦 ⟨ F ⟩ , is-basis-for F ℬ ∥Ω
 
+covering-index-family : (F : frame 𝓤 𝓥 𝓦) (ℬ : Fam 𝓦 ⟨ F ⟩) (b : is-basis-for F ℬ)
+                      → ⟨ F ⟩ → Fam 𝓦 (index ℬ)
+covering-index-family F ℬ p x = pr₁ (p x)
+
+covers : (F : frame 𝓤 𝓥 𝓦) (ℬ : Fam 𝓦 ⟨ F ⟩) (b : is-basis-for F ℬ)
+       → (x : ⟨ F ⟩) → let
+                         ℐ = covering-index-family F ℬ b x
+                       in
+                         x ≡ ⋁[ F ] ⁅ ℬ [ i ] ∣ i ε ℐ ⁆
+covers F ℬ b x = ⋁[ F ]-unique ⁅ ℬ [ i ] ∣ i ε ℐ ⁆ x (pr₂ (b x))
+ where
+  ℐ = covering-index-family F ℬ b x
+
 \end{code}
 
 We also have the notion of a directed basis, in which every covering

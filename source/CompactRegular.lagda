@@ -607,9 +607,9 @@ A projection for easily referring to the basis of a regular frame:
 
 \begin{code}
 
-basis-of-regular-frame : (F : frame 𝓤 𝓥 𝓦)
-                       → (is-regular F ⇒ has-basis F) holds
-basis-of-regular-frame F r = ∥∥-rec (holds-is-prop (has-basis F)) γ r
+basisᵣ : (F : frame 𝓤 𝓥 𝓦)
+       → (is-regular F ⇒ has-basis F) holds
+basisᵣ F r = ∥∥-rec (holds-is-prop (has-basis F)) γ r
  where
   γ : is-regular₀ F → has-basis F holds
   γ (ℬ , δ)= ∣ ℬ , (λ U → pr₁ (δ U) , pr₁ (pr₂ (δ U))) ∣
@@ -819,12 +819,17 @@ is-spectral₀ {𝓤 = 𝓤} {𝓥} {𝓦} F =
                    × consists-of-compact-opens F ℬ holds
                    × closed-under-binary-meets F ℬ holds
 
--- basis-of-spectral-frame : (F : frame 𝓤 𝓥 𝓦)
---                         → is-spectral₀ F →  has-basis F holds
--- basis-of-spectral-frame = {!!}
+basisₛ : (F : frame 𝓤 𝓥 𝓦) → is-spectral₀ F → Fam 𝓦 ⟨ F ⟩
+basisₛ F (ℬ , _) = ℬ
 
 is-spectral : frame 𝓤 𝓥 𝓦 → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
 is-spectral F = ∥ is-spectral₀ F ∥Ω
+
+spectral-frames-have-bases : (F : frame 𝓤 𝓥 𝓦) → (is-spectral F ⇒ has-basis F) holds
+spectral-frames-have-bases F σ = ∥∥-rec ∥∥-is-prop γ σ
+ where
+  γ : is-spectral₀ F → ∥ Σ ℬ ꞉ Fam _ ⟨ F ⟩ , is-basis-for F ℬ ∥
+  γ (ℬ , p) = ∣ ℬ , pr₁ p ∣
 
 \end{code}
 
@@ -900,18 +905,48 @@ spectral-yoneda {𝓦 = 𝓦} F σ U V χ =
 
 \begin{code}
 
--- compact-opens-are-basic-in-spectral-frames : (F : frame 𝓤 𝓥 𝓦)
---                                            → (σ : is-spectral₀ F)
---                                            → (U : ⟨ F ⟩)
---                                            → is-compact-open F U holds
---                                            → ∥ Σ i ꞉ index (pr₁ σ) , U ≡ pr₁ σ [ i ] ∥
--- compact-opens-are-basic-in-spectral-frames {𝓦 = 𝓦} F (ℬ , p) U κ =
---  ∥∥-rec ∥∥-is-prop {!!} (κ ⁅ ℬ [ i ] ∣ i ε ℐ ⁆ δ {!!})
---   where
---    ℐ : Fam 𝓦 (index ℬ)
---    ℐ = pr₁ (pr₁ p U)
+compacts-are-basic-in-spectral-frames : (F : frame 𝓤 𝓥 𝓦)
+                                      → (σ : is-spectral₀ F)
+                                      → (U : ⟨ F ⟩)
+                                      → is-compact-open F U holds
+                                      → let
+                                         ℬ  = basisₛ F σ
+                                         ℬ↑ = directify F ℬ
+                                         I  = index ℬ↑
+                                        in
+                                         ∥ Σ i ꞉ I , U ≡ ℬ↑ [ i ] ∥
+compacts-are-basic-in-spectral-frames {𝓦 = 𝓦} F σ U κ =
+ ∥∥-rec ∥∥-is-prop γ (κ ⁅ ℬ↑ [ i ] ∣ i ε ℐ ⁆ δ c)
+  where
+   open PosetReasoning (poset-of F)
 
---    δ : is-directed (poset-of F) ⁅ ℬ [ i ] ∣ i ε ℐ ⁆ holds
---    δ = {!!}
+   ℬ  = basisₛ F σ
+   ℬ↑ = directify F ℬ
+
+   b : is-basis-for F ℬ
+   b = pr₁ (pr₂ σ)
+
+   b↑ : is-basis-for F ℬ↑
+   b↑ = directified-basis-is-basis F ℬ b
+
+   𝒥 = covering-index-family F ℬ  b  U
+   ℐ = covering-index-family F ℬ↑ b↑ U
+
+   δ : is-directed (poset-of F) ⁅ ℬ↑ [ i ] ∣ i ε ℐ ⁆ holds
+   δ = covers-of-directified-basis-are-directed F ℬ b U
+
+   υ = pr₂ (pr₁ (pr₂ σ) U)
+
+   c : (U ≤[ poset-of F ] (⋁[ F ] ⁅ ℬ↑ [ i ] ∣ i ε ℐ ⁆)) holds
+   c = reflexivity+ (poset-of F) (covers F ℬ↑ b↑ U)
+
+   γ : (Σ k ꞉ index ℐ , (U ≤[ poset-of F ] (ℬ↑ [ ℐ [ k ] ])) holds)
+     → ∥ Σ i ꞉ index ℬ↑ , U ≡ ℬ↑ [ i ] ∥
+   γ (k , p) = ∣ ℐ [ k ] , ≤-is-antisymmetric (poset-of F) p β ∣
+    where
+     β : ((ℬ↑ [ ℐ [ k ] ]) ≤[ poset-of F ] U) holds
+     β = ℬ↑ [ ℐ [ k ] ]              ≤⟨ ⋁[ F ]-upper ⁅ ℬ↑ [ i ] ∣ i ε ℐ ⁆ k ⟩
+         ⋁[ F ] ⁅ ℬ↑ [ i ] ∣ i ε ℐ ⁆ ≡⟨ covers F ℬ↑ b↑ U ⁻¹                 ⟩ₚ
+         U                           ■
 
 \end{code}
