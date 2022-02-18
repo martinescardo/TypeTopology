@@ -804,11 +804,12 @@ consists-of-compact-opens F U = Ɐ i ∶ index U , is-compact-open F (U [ i ])
 contains-top : (F : frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦)
 contains-top F U = Ǝ t ∶ index U , is-top F (U [ t ]) holds
 
-closed-under-binary-meets : (F : frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓥 ⊔ 𝓦)
-closed-under-binary-meets F U =
- Ɐ i ∶ index U , Ɐ j ∶ index U ,
-  Ǝ k ∶ index U ,
-   ((U [ i ]) ≤[ poset-of F ] (U [ k ]) ∧ (U [ j ]) ≤[ poset-of F ] (U [ k ])) holds
+closed-under-binary-meets : (F : frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦)
+closed-under-binary-meets F 𝒮 =
+ Ɐ i ∶ index 𝒮 , Ɐ j ∶ index 𝒮 ,
+  Ǝ k ∶ index 𝒮 , ((𝒮 [ k ]) is-glb-of (𝒮 [ i ] , 𝒮 [ k ])) holds
+   where
+    open Meets (λ x y → x ≤[ poset-of F ] y)
 
 closed-under-finite-meets : (F : frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦)
 closed-under-finite-meets F S = contains-top F S ∧ closed-under-binary-meets F S
@@ -817,7 +818,7 @@ is-spectral₀ : frame 𝓤 𝓥 𝓦 → (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺) ̇
 is-spectral₀ {𝓤 = 𝓤} {𝓥} {𝓦} F =
  Σ ℬ ꞉ Fam 𝓦 ⟨ F ⟩ , is-basis-for F ℬ
                    × consists-of-compact-opens F ℬ holds
-                   × closed-under-binary-meets F ℬ holds
+                   × closed-under-finite-meets F ℬ holds
 
 basisₛ : (F : frame 𝓤 𝓥 𝓦) → is-spectral₀ F → Fam 𝓦 ⟨ F ⟩
 basisₛ F (ℬ , _) = ℬ
