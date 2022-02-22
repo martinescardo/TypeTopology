@@ -10,8 +10,11 @@ open import SpartanMLTT hiding (J)
 open import UF-FunExt
 open import UF-PropTrunc
 
+open import UF-Subsingletons
+
 module DcpoStepFunctions
         (pt : propositional-truncations-exist)
+        (pe : Prop-Ext)
         (fe : ∀ {𝓤 𝓥} → funext 𝓤 𝓥)
         (𝓥 : Universe) -- where the index types for directed completeness live
        where
@@ -26,6 +29,7 @@ open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
 
 open import Dcpo pt fe 𝓥
+open import DcpoBases pt pe fe 𝓥
 open import DcpoContinuous pt fe 𝓥
 open import DcpoExponential pt fe 𝓥
 open import DcpoMiscelanea pt fe 𝓥
@@ -166,6 +170,38 @@ module _
       v : ⦅ d ⇒ e ⦆[ κ ] ⊑⟨ 𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻) ⟩ g i
       v = rl-implication
            (below-single-step-function-criterion d e κ (g i)) u
+
+
+ module _
+         (Bᴰ Bᴱ : 𝓥 ̇  )
+         (βᴰ : Bᴰ → ⟨ 𝓓 ⟩)
+         (βᴱ : Bᴱ → ⟪ 𝓔 ⟫)
+         (κᴰ : is-small-compact-basis 𝓓     βᴰ)
+         (κᴱ : is-small-compact-basis (𝓔 ⁻) βᴱ)
+        where
+
+  open is-small-compact-basis
+
+  _⊑'_ : ⟪ 𝓔 ⟫ → ⟪ 𝓔 ⟫ → 𝓥 ̇
+  _⊑'_ = pr₁ (locally-small-if-small-basis (𝓔 ⁻) βᴱ
+               (compact-basis-is-basis (𝓔 ⁻) βᴱ κᴱ)) -- TODO: Rename and add 'small'?
+
+  single-step-functions-below-function : (f : DCPO[ 𝓓 , 𝓔 ⁻ ])
+                                       → 𝓥 ̇
+  single-step-functions-below-function f =
+   Σ d ꞉ Bᴰ , Σ e ꞉ Bᴱ , (βᴱ e ⊑' [ 𝓓 , 𝓔 ⁻ ]⟨ f ⟩ (βᴰ d))
+
+  single-step-functions-below-function-family :
+     (f : DCPO[ 𝓓 , 𝓔 ⁻ ])
+   → single-step-functions-below-function f → DCPO[ 𝓓 , 𝓔 ⁻ ]
+  single-step-functions-below-function-family f (d , e , _) =
+   ⦅ βᴰ d ⇒ βᴱ e ⦆[ basis-is-compact κᴰ d ]
+
+  sup-of-single-step-functions :
+     (f : DCPO[ 𝓓 , 𝓔 ⁻ ])
+   → is-sup (underlying-order (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻))) f
+            (single-step-functions-below-function-family f)
+  sup-of-single-step-functions = {!!}
 
 
 \end{code}
