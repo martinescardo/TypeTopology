@@ -1,4 +1,4 @@
-Tom de Jong, 22 February 2022.
+Tom de Jong, 22 & 23 February 2022.
 
 TODO: Describe contents.
 
@@ -122,6 +122,7 @@ module _
  ⦅_⇒_⦆[_] d e d-is-compact =
   (⦅ d ⇒ e ⦆ , single-step-function-is-continuous d e d-is-compact)
 
+ -- TODO: Separate the implications?
  below-single-step-function-criterion : (d : ⟨ 𝓓 ⟩) (e : ⟪ 𝓔 ⟫) (κ : is-compact 𝓓 d)
                                         (f : DCPO[ 𝓓 , 𝓔 ⁻ ])
                                       → ⦅ d ⇒ e ⦆[ κ ] ⊑⟨ 𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻) ⟩ f
@@ -180,28 +181,94 @@ module _
          (κᴱ : is-small-compact-basis (𝓔 ⁻) βᴱ)
         where
 
-  open is-small-compact-basis
-
-  _⊑'_ : ⟪ 𝓔 ⟫ → ⟪ 𝓔 ⟫ → 𝓥 ̇
-  _⊑'_ = pr₁ (locally-small-if-small-basis (𝓔 ⁻) βᴱ
-               (compact-basis-is-basis (𝓔 ⁻) βᴱ κᴱ)) -- TODO: Rename and add 'small'?
+  open is-small-compact-basis κᴱ
 
   single-step-functions-below-function : (f : DCPO[ 𝓓 , 𝓔 ⁻ ])
                                        → 𝓥 ̇
   single-step-functions-below-function f =
-   Σ d ꞉ Bᴰ , Σ e ꞉ Bᴱ , (βᴱ e ⊑' [ 𝓓 , 𝓔 ⁻ ]⟨ f ⟩ (βᴰ d))
+   Σ d ꞉ Bᴰ , Σ e ꞉ Bᴱ , e ⊑ᴮₛ [ 𝓓 , 𝓔 ⁻ ]⟨ f ⟩ (βᴰ d)
 
   single-step-functions-below-function-family :
      (f : DCPO[ 𝓓 , 𝓔 ⁻ ])
    → single-step-functions-below-function f → DCPO[ 𝓓 , 𝓔 ⁻ ]
   single-step-functions-below-function-family f (d , e , _) =
-   ⦅ βᴰ d ⇒ βᴱ e ⦆[ basis-is-compact κᴰ d ]
+   ⦅ βᴰ d ⇒ βᴱ e ⦆[ is-small-compact-basis.basis-is-compact κᴰ d ]
 
   sup-of-single-step-functions :
      (f : DCPO[ 𝓓 , 𝓔 ⁻ ])
    → is-sup (underlying-order (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻))) f
             (single-step-functions-below-function-family f)
-  sup-of-single-step-functions = {!!}
+  sup-of-single-step-functions 𝕗@(f , _) = (ub , lb-of-ubs)
+   where
+    ub : is-upperbound (underlying-order (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻))) 𝕗
+          (single-step-functions-below-function-family 𝕗)
+    ub (d , e , u) =
+     rl-implication (below-single-step-function-criterion (βᴰ d) (βᴱ e)
+                      (is-small-compact-basis.basis-is-compact κᴰ d) 𝕗)
+                      (⌜ ⊑ᴮₛ-≃-⊑ᴮ ⌝ u)
 
+    lb-of-ubs : is-lowerbound-of-upperbounds (underlying-order (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻))) 𝕗
+                 (single-step-functions-below-function-family 𝕗)
+    lb-of-ubs 𝕘@(g , _) g-is-ub x = goal
+     where
+      claim₁ : (d : Bᴰ) (e : Bᴱ) → e ⊑ᴮₛ f (βᴰ d) → βᴱ e ⊑⟪ 𝓔 ⟫ g (βᴰ d)
+      claim₁ d e u =
+       lr-implication (below-single-step-function-criterion (βᴰ d) (βᴱ e)
+                        (is-small-compact-basis.basis-is-compact κᴰ d) 𝕘)
+                        (g-is-ub (d , e , u))
+      claim₂ : (d : Bᴰ) → f (βᴰ d) ⊑⟪ 𝓔 ⟫ g (βᴰ d)
+      claim₂ d = f (βᴰ d)                             ⊑⟪ 𝓔 ⟫[ ⦅1⦆ ]
+                 ∐ (𝓔 ⁻) (↓ᴮₛ-is-directed (f (βᴰ d))) ⊑⟪ 𝓔 ⟫[ ⦅2⦆ ]
+                 g (βᴰ d)                             ∎⟪ 𝓔 ⟫
+       where
+        ⦅1⦆ = ↓ᴮₛ-∐-⊒ (f (βᴰ d))
+        ⦅2⦆ = ∐-is-lowerbound-of-upperbounds (𝓔 ⁻) (↓ᴮₛ-is-directed (f (βᴰ d)))
+               (g (βᴰ d)) (λ (e , v) → claim₁ d e v)
+
+      δ : is-Directed 𝓓 (is-small-compact-basis.↓ιₛ κᴰ x)
+      δ = is-small-compact-basis.↓ᴮₛ-is-directed κᴰ x
+      ε : is-Directed (𝓔 ⁻) (f ∘ is-small-compact-basis.↓ιₛ κᴰ x)
+      ε = image-is-directed' 𝓓 (𝓔 ⁻) 𝕗 δ
+      goal : f x ⊑⟪ 𝓔 ⟫ g x
+      goal = f x       ⊑⟪ 𝓔 ⟫[ ⦅1⦆ ]
+             f (∐ 𝓓 δ) ⊑⟪ 𝓔 ⟫[ ⦅2⦆ ]
+             ∐ (𝓔 ⁻) ε ⊑⟪ 𝓔 ⟫[ ⦅3⦆ ]
+             g x       ∎⟪ 𝓔 ⟫
+       where
+        ⦅1⦆ = ≡-to-⊒ (𝓔 ⁻) (ap f (is-small-compact-basis.↓ᴮₛ-∐-≡ κᴰ x))
+        ⦅2⦆ = continuous-∐-⊑ 𝓓 (𝓔 ⁻) 𝕗 δ
+        ⦅3⦆ = ∐-is-lowerbound-of-upperbounds (𝓔 ⁻) ε (g x) γ
+         where
+          γ : is-upperbound (underlying-order (𝓔 ⁻)) (g x)
+               (f ∘ is-small-compact-basis.↓ιₛ κᴰ x)
+          γ (d , u) = f (βᴰ d) ⊑⟪ 𝓔 ⟫[ claim₂ d ]
+                      g (βᴰ d) ⊑⟪ 𝓔 ⟫[ v        ]
+                      g x      ∎⟪ 𝓔 ⟫
+           where
+            v = monotone-if-continuous 𝓓 (𝓔 ⁻) 𝕘 (βᴰ d) x
+                 (⌜ is-small-compact-basis.⊑ᴮₛ-≃-⊑ᴮ κᴰ ⌝ u)
+
+  open import List
+
+  B : 𝓥 ̇
+  B = List (Bᴰ × Bᴱ)
+
+  -- We assume that 𝓔 has binary joins of compact elements
+  -- TODO: Think more about this
+  module _
+          (∨ : (x y : ⟪ 𝓔 ⟫) → is-compact (𝓔 ⁻) x → is-compact (𝓔 ⁻) y → ⟪ 𝓔 ⟫)
+          (∨-is-upperbound₁ : (x y : ⟪ 𝓔 ⟫)
+                              (c₁ : is-compact (𝓔 ⁻) x)
+                              (c₂ : is-compact (𝓔 ⁻) y)
+                            → x ⊑⟪ 𝓔 ⟫ ∨ x y c₁ c₂ )
+          (∨-is-upperbound₁ : (x y : ⟪ 𝓔 ⟫)
+                              (c₁ : is-compact (𝓔 ⁻) x)
+                              (c₂ : is-compact (𝓔 ⁻) y)
+                            → x ⊑⟪ 𝓔 ⟫ ∨ x y c₁ c₂ )
+         where
+
+   β : B → DCPO[ 𝓓 , 𝓔 ⁻ ]
+   β []            = (λ _ → ⊥ 𝓔) , constant-functions-are-continuous 𝓓 (𝓔 ⁻) (⊥ 𝓔)
+   β ((d , e) ∷ l) = {!!}
 
 \end{code}
