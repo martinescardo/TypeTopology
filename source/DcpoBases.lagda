@@ -556,6 +556,8 @@ module _
       y-is-ub' : is-upperbound (underlying-order 𝓓) y (↡ι 𝓓 β x ∘ σ)
       y-is-ub' i = y-is-ub (σ i)
 
+ -- TODO: Maybe generalize this to allow I in an arbitrary universe?
+ -- (Just avoid the use of ∐ in this case)
  ↡ᴮ-directedness-criterion : (δ : is-Directed 𝓓 (↡ι 𝓓 β x ∘ σ))
                            → (x ⊑⟨ 𝓓 ⟩ ∐ 𝓓 δ)
                            → is-Directed 𝓓 (↡ι 𝓓 β x)
@@ -852,5 +854,33 @@ locally-small-exponential-criterion 𝓓 𝓔 𝓓-sb (_⊑ₛ_ , ⊑ₛ-≃-⊑
                  where
                   ⦅†⦆ = ⌜ ⊑ₛ-≃-⊑ (f (β b)) (g (β b)) ⌝ (f-below-g b)
                   ⦅‡⦆ = ∐-is-upperbound 𝓔 εᵍ (b , i)
+
+\end{code}
+
+TODO: Put this somewhere else in this file
+
+\begin{code}
+
+module _
+        (𝓓 : DCPO {𝓤} {𝓣})
+        {B : 𝓥 ̇  }
+        (β : B → ⟨ 𝓓 ⟩)
+        (β-is-small-compact-basis : is-small-compact-basis 𝓓 β)
+       where
+
+ open is-small-compact-basis β-is-small-compact-basis
+
+ small-compact-basis-contains-all-compact-elements : (x : ⟨ 𝓓 ⟩)
+                                                   → is-compact 𝓓 x
+                                                   → ∃ b ꞉ B , β b ≡ x
+ small-compact-basis-contains-all-compact-elements x x-is-compact =
+  ∥∥-functor γ (x-is-compact (↓ᴮₛ x) (↓ιₛ x) (↓ᴮₛ-is-directed x) (↓ᴮₛ-∐-⊒ x))
+   where
+    γ : (Σ (b , b-below-x) ꞉ ↓ᴮₛ x , x ⊑⟨ 𝓓 ⟩ β b)
+      → (Σ b ꞉ B , β b ≡ x)
+    γ ((b , b-below-x) , x-below-b) = (b , e)
+     where
+      e : β b ≡ x
+      e = antisymmetry 𝓓 (β b) x (⌜ ⊑ᴮₛ-≃-⊑ᴮ ⌝ b-below-x) x-below-b
 
 \end{code}
