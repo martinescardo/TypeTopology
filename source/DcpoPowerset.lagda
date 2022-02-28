@@ -40,10 +40,6 @@ module _
        where
 
  open import Dcpo pt fe 𝓥
- open import DcpoBases pt pe fe 𝓥
- open import DcpoContinuous pt fe 𝓥
- open import DcpoMiscelanea pt fe 𝓥
- open import DcpoWayBelow pt fe 𝓥
 
  open unions-of-small-families pt 𝓥 𝓥 X
 
