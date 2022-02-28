@@ -629,7 +629,7 @@ distributivity (_ , _ , _ , (_ , _ , _ , d)) x U = d (x , U)
 \begin{code}
 
 is-a-frame-homomorphism : (F : frame 𝓤  𝓥  𝓦)
-                          (G : frame 𝓤′ 𝓥′ 𝓦′)
+                          (G : frame 𝓤′ 𝓥′ 𝓦)
                         → (⟨ F ⟩ → ⟨ G ⟩)
                         → Ω (𝓤 ⊔ 𝓦 ⁺ ⊔ 𝓤′ ⊔ 𝓥′)
 is-a-frame-homomorphism {𝓦 = 𝓦} F G f = α ∧ β ∧ γ
@@ -645,7 +645,7 @@ is-a-frame-homomorphism {𝓦 = 𝓦} F G f = α ∧ β ∧ γ
   β = Ɐ (x , y) ∶ ⟨ F ⟩ × ⟨ F ⟩ , (f (x ∧[ F ] y) ≡[ iss ]≡ f x ∧[ G ] f y)
   γ = Ɐ U ∶ Fam 𝓦 ⟨ F ⟩ , f (⋁[ F ] U) is-lub-of ⁅ f x ∣ x ε U ⁆
 
-_─f→_ : frame 𝓤 𝓥 𝓦 → frame 𝓤′ 𝓥′ 𝓦′ → 𝓤 ⊔ 𝓦 ⁺ ⊔ 𝓤′ ⊔ 𝓥′ ̇
+_─f→_ : frame 𝓤 𝓥 𝓦 → frame 𝓤′ 𝓥′ 𝓦 → 𝓤 ⊔ 𝓦 ⁺ ⊔ 𝓤′ ⊔ 𝓥′ ̇
 F ─f→ G =
  Σ f ꞉ (⟨ F ⟩ → ⟨ G ⟩) , is-a-frame-homomorphism F G f holds
 
@@ -709,7 +709,7 @@ connecting-lemma₂ F {x} {y} p = x ≡⟨ p ⟩ₚ x ∧[ F ] y ≤⟨ ∧[ F ]
   open PosetReasoning (poset-of F)
 
 frame-morphisms-are-monotonic : (F : frame 𝓤  𝓥  𝓦)
-                                (G : frame 𝓤′ 𝓥′ 𝓦′)
+                                (G : frame 𝓤′ 𝓥′ 𝓦)
                               → (f : ⟨ F ⟩ → ⟨ G ⟩)
                               → is-a-frame-homomorphism F G f holds
                               → is-monotonic (poset-of F) (poset-of G) f holds
