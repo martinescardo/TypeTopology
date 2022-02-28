@@ -166,3 +166,36 @@ module _
  Ω-is-algebraic-dcpo = ∣ Ω-structurally-algebraic ∣
 
 \end{code}
+
+TODO: Comment
+
+\begin{code}
+
+ open import DecidableAndDetachable
+ open import UF-EquivalenceExamples
+
+ compact-iff-decidable : (P : Ω 𝓤) → is-compact Ω-DCPO P ⇔ decidable (P holds)
+ compact-iff-decidable P = ⦅⇒⦆ , ⦅⇐⦆
+  where
+   ⦅⇒⦆ : is-compact Ω-DCPO P → decidable (P holds)
+   ⦅⇒⦆ c = ∥∥-rec (decidability-of-prop-is-prop fe (holds-is-prop P))
+                  γ (in-image-of-κ-if-compact P c)
+    where
+     γ : (Σ b ꞉ Bool , κ b ≡ P) → decidable (P holds)
+     γ (inl ⋆ , refl) = 𝟘-decidable
+     γ (inr ⋆ , refl) = 𝟙-decidable
+   ⦅⇐⦆ : decidable (P holds) → is-compact Ω-DCPO P
+   ⦅⇐⦆ (inl p) = transport (is-compact Ω-DCPO) e ⊤-is-compact
+    where
+     e : ⊤ ≡ P
+     e = to-subtype-≡ (λ _ → being-prop-is-prop fe)
+                      (pe 𝟙-is-prop (holds-is-prop P)
+                          (λ _ → p) (λ _ → ⋆))
+   ⦅⇐⦆ (inr q) = transport (is-compact Ω-DCPO) e (⊥-is-compact Ω-DCPO⊥)
+    where
+     e : ⊥ Ω-DCPO⊥ ≡ P
+     e = to-subtype-≡ (λ _ → being-prop-is-prop fe)
+                      (pe 𝟘-is-prop (holds-is-prop P)
+                          𝟘-elim (⌜ one-𝟘-only ⌝ ∘ q))
+
+\end{code}
