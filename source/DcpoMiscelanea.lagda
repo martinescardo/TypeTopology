@@ -614,7 +614,7 @@ module _
 
   being-locally-small'-is-prop : is-prop is-locally-small'
   being-locally-small'-is-prop =
-   Π₂-is-prop fe (λ x y → prop-has-size-is-prop pe (λ _ _ → fe)
+   Π₂-is-prop fe (λ x y → prop-being-small-is-prop pe (λ _ _ → fe)
                            (x ⊑⟨ 𝓓 ⟩ y) (prop-valuedness 𝓓 x y) 𝓥)
 
   being-locally-small-is-prop : is-prop is-locally-small

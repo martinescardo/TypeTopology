@@ -320,7 +320,7 @@ module _
  being-small-basis-Σ-is-prop =
   Π-is-prop fe (λ x →
    ×₃-is-prop (Π-is-prop fe
-               (λ b → prop-has-size-is-prop (λ _ → pe) (λ _ _ → fe)
+               (λ b → prop-being-small-is-prop (λ _ → pe) (λ _ _ → fe)
                        (β b ≪⟨ 𝓓 ⟩ x) (≪-is-prop-valued 𝓓) 𝓥))
               (being-directed-is-prop (underlying-order 𝓓) (↡ι x))
               (is-sup-is-prop (underlying-order 𝓓) (pr₁ (axioms-of-dcpo 𝓓))

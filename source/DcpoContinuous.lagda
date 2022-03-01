@@ -994,7 +994,7 @@ module _
   ≪-is-small-valued c ls x y = ∥∥-rec p (λ C → ≪-is-small-valued-str C ls x y) c
    where
     p : is-prop (is-small (x ≪⟨ 𝓓 ⟩ y))
-    p = prop-has-size-is-prop (λ _ → pe) (λ _ _ → fe)
+    p = prop-being-small-is-prop (λ _ → pe) (λ _ _ → fe)
          (x ≪⟨ 𝓓 ⟩ y) (≪-is-prop-valued 𝓓) 𝓥
 
   ≪-is-small-valued' : is-continuous-dcpo 𝓓
