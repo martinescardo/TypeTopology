@@ -369,9 +369,32 @@ module _
 
   open import List
 
-  B : 𝓥 ̇
-  B = List (Bᴰ × Bᴱ)
+  list-of-single-step-functions-bounded-by : (l : List (Bᴰ × Bᴱ)) (e : Bᴱ)
+                                           → 𝓥 ̇
+  list-of-single-step-functions-bounded-by []              e = 𝟙{𝓥}
+  list-of-single-step-functions-bounded-by ((d₀ , e₀) ∷ l) e =
+   e₀ ⊑ᴮₛ (βᴱ e) × list-of-single-step-functions-bounded-by l e
 
+  B : 𝓥 ̇
+  B = Σ l ꞉ List (Bᴰ × Bᴱ) , ∃ e ꞉ Bᴱ
+                           , list-of-single-step-functions-bounded-by l e
+
+  module _
+          (𝓔-bounded-complete : is-bounded-complete (𝓔 ⁻))
+         where
+
+   β : B → DCPO[ 𝓓 , 𝓔 ⁻ ]
+   β (l , b) = ⋁ {!!} {!!}
+    where
+     open is-bounded-complete (exponential-is-bounded-complete 𝓓 (𝓔 ⁻)
+                                𝓔-bounded-complete)
+     open import UF-Size
+     I : 𝓥 ̇
+     I = {!lift!}
+     -- α :
+
+
+{-
   -- We assume that 𝓔 has binary joins of compact elements
   -- TODO: Think more about this
   module _
@@ -389,5 +412,6 @@ module _
    β : B → DCPO[ 𝓓 , 𝓔 ⁻ ]
    β []            = (λ _ → ⊥ 𝓔) , constant-functions-are-continuous 𝓓 (𝓔 ⁻) (⊥ 𝓔)
    β ((d , e) ∷ l) = {!!}
+-}
 
 \end{code}
