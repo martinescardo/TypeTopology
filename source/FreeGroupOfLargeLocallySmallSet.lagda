@@ -419,7 +419,7 @@ group is rather large - it jumps up two universe levels:
 
 \begin{code}
 
- ηᴳʳᵖ-native-size : ηᴳʳᵖ Has-size 𝓤⁺⁺
+ ηᴳʳᵖ-native-size : ηᴳʳᵖ is 𝓤⁺⁺ small-map
  ηᴳʳᵖ-native-size y = fiber ηᴳʳᵖ y , ≃-refl _
 
 \end{code}
@@ -438,9 +438,9 @@ suffices to prove it for elements of the form η/∾ s with s : FA.
 
 \begin{code}
 
- ηᴳʳᵖ-is-medium : ηᴳʳᵖ Has-size 𝓤⁺
+ ηᴳʳᵖ-is-medium : ηᴳʳᵖ is 𝓤⁺ small-map
  ηᴳʳᵖ-is-medium = /-induction -∾- (λ y → fiber ηᴳʳᵖ y has-size 𝓤⁺)
-                   (λ y → has-size-is-prop ua (fiber ηᴳʳᵖ y) 𝓤⁺) γ
+                   (λ y → being-small-is-prop ua (fiber ηᴳʳᵖ y) 𝓤⁺) γ
   where
    e : (a : A) (s : FA) → (η/∾ (η a) ≡ η/∾ s) ≃ (η a ∥≏∥ s)
    e a s = (η/∾ (η a) ≡ η/∾ s) ≃⟨ I ⟩
@@ -591,9 +591,9 @@ With this we can further reduce the size of the universal map ηᴳʳᵖ:
 
 \begin{code}
 
- ηᴳʳᵖ-is-small : ηᴳʳᵖ Has-size 𝓤
+ ηᴳʳᵖ-is-small : ηᴳʳᵖ is 𝓤 small-map
  ηᴳʳᵖ-is-small = /-induction -∾- (λ y → fiber ηᴳʳᵖ y has-size 𝓤)
-                  (λ y → has-size-is-prop ua (fiber ηᴳʳᵖ y) 𝓤) γ
+                  (λ y → being-small-is-prop ua (fiber ηᴳʳᵖ y) 𝓤) γ
   where
    e : (a : A) (s : FA) → (η/∾ (η a) ≡ η/∾ s) ≃ (η a ∾ s)
    e a s = logically-equivalent-props-are-equivalent

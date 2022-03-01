@@ -971,8 +971,6 @@ module test where
 
 \end{code}
 
-
-
 TODO. Generalize the above to multi-valued quantifiers, as in [1], using monads.
 
 \begin{code}
