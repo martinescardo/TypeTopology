@@ -36,6 +36,124 @@ open import DcpoMiscelanea pt fe 𝓥
 open import DcpoWayBelow pt fe 𝓥
 
 module _
+        (𝓓 : DCPO {𝓤} {𝓣})
+       where
+
+ is-bounded : {I : 𝓦 ̇  } (α : I → ⟨ 𝓓 ⟩) → 𝓤 ⊔ 𝓣 ⊔ 𝓦 ̇
+ is-bounded {𝓦} {I} α = ∃ x ꞉ ⟨ 𝓓 ⟩ , is-upperbound (underlying-order 𝓓) x α
+
+ record is-bounded-complete : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇  where
+  field
+   ⋁ : {I : 𝓥 ̇  } (α : I → ⟨ 𝓓 ⟩) → is-bounded α → ⟨ 𝓓 ⟩
+   ⋁-is-sup : {I : 𝓥 ̇  } (α : I → ⟨ 𝓓 ⟩) (b : is-bounded α)
+            → is-sup (underlying-order 𝓓) (⋁ α b) α
+
+  ⋁-is-upperbound : {I : 𝓥 ̇  } (α : I → ⟨ 𝓓 ⟩) (b : is-bounded α)
+                  → is-upperbound (underlying-order 𝓓) (⋁ α b) α
+  ⋁-is-upperbound α b = sup-is-upperbound (underlying-order 𝓓) (⋁-is-sup α b)
+
+  ⋁-is-lowerbound-of-upperbounds : {I : 𝓥 ̇  } (α : I → ⟨ 𝓓 ⟩) (b : is-bounded α)
+                                 → is-lowerbound-of-upperbounds
+                                    (underlying-order 𝓓) (⋁ α b) α
+  ⋁-is-lowerbound-of-upperbounds α b =
+   sup-is-lowerbound-of-upperbounds (underlying-order 𝓓) (⋁-is-sup α b)
+
+module _
+        (𝓓 : DCPO {𝓤} {𝓣})
+        (𝓔 : DCPO {𝓤'} {𝓣'})
+        (𝓔-bounded-complete : is-bounded-complete 𝓔)
+       where
+
+ open is-bounded-complete 𝓔-bounded-complete
+
+ pointwise-family-is-bounded : {I : 𝓥 ̇} (α : I → DCPO[ 𝓓 , 𝓔 ])
+                               (b : is-bounded (𝓓 ⟹ᵈᶜᵖᵒ 𝓔) α)
+                               (x : ⟨ 𝓓 ⟩)
+                             → is-bounded 𝓔 (pointwise-family 𝓓 𝓔 α x)
+ pointwise-family-is-bounded α b x = ∥∥-functor γ b
+  where
+   γ : (Σ f ꞉ DCPO[ 𝓓 , 𝓔 ] , is-upperbound (underlying-order (𝓓 ⟹ᵈᶜᵖᵒ 𝓔)) f α)
+     → (Σ y ꞉ ⟨ 𝓔 ⟩ , is-upperbound (underlying-order 𝓔) y
+                       (pointwise-family 𝓓 𝓔 α x))
+   γ ((f , _) , f-is-ub) = (f x , (λ i → f-is-ub i x))
+
+ bounded-continuous-functions-sup : {I : 𝓥 ̇  } (α : I → DCPO[ 𝓓 , 𝓔 ])
+                                  → is-bounded (𝓓 ⟹ᵈᶜᵖᵒ 𝓔) α
+                                  → DCPO[ 𝓓 , 𝓔 ]
+ bounded-continuous-functions-sup {I} α b = (f , c)
+  where
+   f : ⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩
+   f x = ⋁ (pointwise-family 𝓓 𝓔 α x) (pointwise-family-is-bounded α b x)
+   c : is-continuous 𝓓 𝓔 f
+   c J β δ = (ub , lb-of-ubs)
+    where
+     ub : is-upperbound (underlying-order 𝓔) (f (∐ 𝓓 δ)) (f ∘ β)
+     ub i = ⋁-is-lowerbound-of-upperbounds
+             (pointwise-family 𝓓 𝓔 α (β i))
+             (pointwise-family-is-bounded α b (β i)) (f (∐ 𝓓 δ))
+             γ
+      where
+       γ : is-upperbound (underlying-order 𝓔) (f (∐ 𝓓 δ))
+            (pointwise-family 𝓓 𝓔 α (β i))
+       γ j = [ 𝓓 , 𝓔 ]⟨ α j ⟩ (β i)   ⊑⟨ 𝓔 ⟩[ ⦅1⦆ ]
+             [ 𝓓 , 𝓔 ]⟨ α j ⟩ (∐ 𝓓 δ) ⊑⟨ 𝓔 ⟩[ ⦅2⦆ ]
+             f (∐ 𝓓 δ)                 ∎⟨ 𝓔 ⟩
+        where
+         ⦅1⦆ = monotone-if-continuous 𝓓 𝓔 (α j) (β i) (∐ 𝓓 δ)
+               (∐-is-upperbound 𝓓 δ i)
+         ⦅2⦆ = ⋁-is-upperbound (pointwise-family 𝓓 𝓔 α (∐ 𝓓 δ))
+                               (pointwise-family-is-bounded α b (∐ 𝓓 δ))
+                               j
+     lb-of-ubs : is-lowerbound-of-upperbounds (underlying-order 𝓔) (f (∐ 𝓓 δ))
+                  (f ∘ β)
+     lb-of-ubs y y-is-ub =
+      ⋁-is-lowerbound-of-upperbounds
+       (pointwise-family 𝓓 𝓔 α (∐ 𝓓 δ))
+       (pointwise-family-is-bounded α b (∐ 𝓓 δ)) y γ
+        where
+         γ : is-upperbound (underlying-order 𝓔) y
+              (pointwise-family 𝓓 𝓔 α (∐ 𝓓 δ))
+         γ i = [ 𝓓 , 𝓔 ]⟨ α i ⟩ (∐ 𝓓 δ) ⊑⟨ 𝓔 ⟩[ ⦅1⦆ ]
+               ∐ 𝓔 ε                    ⊑⟨ 𝓔 ⟩[ ⦅2⦆ ]
+               y                        ∎⟨ 𝓔 ⟩
+          where
+           ε : is-Directed 𝓔 ([ 𝓓 , 𝓔 ]⟨ α i ⟩ ∘ β)
+           ε = image-is-directed' 𝓓 𝓔 (α i) δ
+           ⦅1⦆ = continuous-∐-⊑ 𝓓 𝓔 (α i) δ
+           ⦅2⦆ = ∐-is-lowerbound-of-upperbounds 𝓔 ε y h
+            where
+             h : is-upperbound (underlying-order 𝓔) y ([ 𝓓 , 𝓔 ]⟨ α i ⟩ ∘ β)
+             h j = [ 𝓓 , 𝓔 ]⟨ α i ⟩ (β j) ⊑⟨ 𝓔 ⟩[ ⦅†⦆ ]
+                   f (β j)                 ⊑⟨ 𝓔 ⟩[ y-is-ub j ]
+                   y                       ∎⟨ 𝓔 ⟩
+              where
+               ⦅†⦆ = ⋁-is-upperbound (pointwise-family 𝓓 𝓔 α (β j))
+                                      (pointwise-family-is-bounded α b (β j)) i
+
+ exponential-is-bounded-complete : is-bounded-complete (𝓓 ⟹ᵈᶜᵖᵒ 𝓔)
+ exponential-is-bounded-complete = record {
+     ⋁        = bounded-continuous-functions-sup
+   ; ⋁-is-sup = lem
+  }
+   where
+    lem : {I : 𝓥 ̇  } (α : I → DCPO[ 𝓓 , 𝓔 ])
+        → (b : is-bounded (𝓓 ⟹ᵈᶜᵖᵒ 𝓔) α)
+        → is-sup (underlying-order (𝓓 ⟹ᵈᶜᵖᵒ 𝓔))
+           (bounded-continuous-functions-sup α b) α
+    lem {I} α b = (ub , lb-of-ubs)
+     where
+      ub : is-upperbound (underlying-order (𝓓 ⟹ᵈᶜᵖᵒ 𝓔))
+            (bounded-continuous-functions-sup α b) α
+      ub i x = ⋁-is-upperbound (pointwise-family 𝓓 𝓔 α x)
+                               (pointwise-family-is-bounded α b x) i
+      lb-of-ubs : is-lowerbound-of-upperbounds (underlying-order (𝓓 ⟹ᵈᶜᵖᵒ 𝓔))
+                   (bounded-continuous-functions-sup α b) α
+      lb-of-ubs g g-is-ub x =
+       ⋁-is-lowerbound-of-upperbounds (pointwise-family 𝓓 𝓔 α x)
+                                      (pointwise-family-is-bounded α b x)
+                                      ([ 𝓓 , 𝓔 ]⟨ g ⟩ x) (λ i → g-is-ub i x)
+
+module _
         (𝓓 : DCPO {𝓤}  {𝓣})
         (𝓔 : DCPO⊥ {𝓤'} {𝓣'})
         (𝓓-is-locally-small : is-locally-small 𝓓)
@@ -123,6 +241,7 @@ module _
   (⦅ d ⇒ e ⦆ , single-step-function-is-continuous d e d-is-compact)
 
  -- TODO: Separate the implications?
+ -- TODO: Write out ⊑ so as to drop the compactness assumption?
  below-single-step-function-criterion : (d : ⟨ 𝓓 ⟩) (e : ⟪ 𝓔 ⟫) (κ : is-compact 𝓓 d)
                                         (f : DCPO[ 𝓓 , 𝓔 ⁻ ])
                                       → ⦅ d ⇒ e ⦆[ κ ] ⊑⟨ 𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻) ⟩ f
