@@ -2,6 +2,8 @@ Ayberk Tosun, 28 February 2022.
 
 \begin{code}
 
+{-# OPTIONS --without-K --safe #-}
+
 open import Universes
 open import SpartanMLTT
 open import UF-Base
