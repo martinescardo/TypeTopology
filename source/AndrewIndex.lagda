@@ -18,7 +18,7 @@ buffer view by typing "C-x 1" in the buffer you want to see.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split #-}
+{-# OPTIONS --without-K --exact-split --safe #-}
 
 module AndrewIndex where
 
@@ -61,7 +61,7 @@ import DedekindRealsOrder
 
 import MetricSpaceAltDef
 import MetricSpaceRationals
--- import MetricSpaceDedekindReals
+import MetricSpaceDedekindReals
 
 -- import ContinuousExtensionTheorem
 

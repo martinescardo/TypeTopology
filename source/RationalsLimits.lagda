@@ -101,8 +101,16 @@ sandwich-theorem L f g h (k , k-greater) lim-f lim-h = lim-g
         abs 0ℚ                ≡⟨ by-definition ⟩
         0ℚ ∎
 
+constant-sequence : (q : ℚ) → (n : ℕ) → ℚ
+constant-sequence q n = q 
+
+constant-sequence-converges : (q : ℚ) → q limit-of (constant-sequence q)
+constant-sequence-converges q ε l = 0 , (λ n l₂ → transport (_< ε) I l)
+ where
+  I : 0ℚ ≡ ℚ-metric q q
+  I = ℚ-self-dist fe q ⁻¹
+
 open import IntegersB
-open import IntegersAddition
 open import ncRationalsOrder
 open import ncRationalsOperations renaming (_*_ to _ℚₙ*_ ; _+_ to _ℚₙ+_ ; -_ to ℚₙ-_ ; abs to ℚₙ-abs) 
 
@@ -111,9 +119,6 @@ embedding-ℕ-to-ℚ n = toℚ (pos n , 0)
 
 embedding-1/ℕ-to-ℚ : ℕ → ℚ
 embedding-1/ℕ-to-ℚ n = toℚ (pos 1 , n)
-
--- always-a-smaller-ε : (ε : ℚ) → 0ℚ < ε → Σ n ꞉ ℕ , (embedding-ℕ-to-ℚ n < ε)
--- always-a-smaller-ε = {!!}
 
 open import NaturalsDivision
 open import NaturalsAddition renaming (_+_ to _ℕ+_)
@@ -311,16 +316,9 @@ generalised-dependent-type-universal-property A P f = (λ x → pr₁ (f x)) , �
 RationalsCauchySequence : (S : ℕ → ℚ) → 𝓤₀ ̇
 RationalsCauchySequence = cauchy-sequence ℚ ℚ-metric-space
 
-modulus-of-convergence-from-cauchy : (S : ℕ → ℚ) → (RCS : RationalsCauchySequence S)
-                       → Σ M ꞉ ((ε : ℚ₊) → ℕ) , (((ε , l) : ℚ₊) → (m n : ℕ) → M (ε , l) < m → M (ε , l) < n → B-ℚ (S m) (S n) ε l)
-modulus-of-convergence-from-cauchy S RCS  = generalised-dependent-type-universal-property { 𝓤₀ } M condition RCS
- where
-  M : ℚ₊ → 𝓤₀ ̇
-  M _ = ℕ
-  condition : (x : ℚ₊) → M x → 𝓤₀ ̇
-  condition (ε , l) N = (m n : ℕ) → N < m → N < n → B-ℚ (S m) (S n) ε l
+open import RationalsAddition
 
-modulus-of-convergence : (S : ℕ → ℚ) → (RCS : RationalsCauchySequence S) → ℚ₊ → ℕ
-modulus-of-convergence S RCS = pr₁ (modulus-of-convergence-from-cauchy S RCS)
+every-point-in-ℚ-is-limit-point : (q : ℚ) → Σ S ꞉ (ℕ → ℚ) , (q limit-of S)
+every-point-in-ℚ-is-limit-point q = (constant-sequence q) , (constant-sequence-converges q)
 
 \end{code}

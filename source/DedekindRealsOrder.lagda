@@ -55,7 +55,10 @@ instance
 ℝ≤-trans : (x y z : ℝ) → x ≤ y → y ≤ z → x ≤ z
 ℝ≤-trans ((Lx , Rx) , _) ((Ly , Ry) , _) ((Lz , Rz) , _) f g = λ q qLx → g q (f q qLx)
 
-ℝ-archimedean : (x y : ℝ) → x < y → ∃ q ꞉ ℚ , q ∈ upper-cut-of x × q ∈ lower-cut-of y
+ℝ-archimedean : (x y : ℝ)
+              → x < y
+              → ∃ q ꞉ ℚ , q ∈ upper-cut-of x
+                        × q ∈ lower-cut-of y
 ℝ-archimedean x y l = l
 
 weak-linearity : (x y z : ℝ) → x < y → x < z ∨ z < y
@@ -112,6 +115,36 @@ apartness-gives-inequality x y apart e = ∥∥-rec 𝟘-is-prop I apart
 ℝ-less-than-not-greater-or-equal : (x y : ℝ) → x < y → ¬ (y ≤ x)
 ℝ-less-than-not-greater-or-equal x y l₁ l₂ = ℝ-less-than-or-equal-not-greater y x l₂ l₁
 
+
+{-
+ℝ-not-less-is-greater-or-equal : (x y : ℝ) → ¬ (x < y) → y ≤ x
+ℝ-not-less-is-greater-or-equal x y nl q qLy = ∥∥-rec (∈-is-prop (lower-cut-of x) q) I xR-inhabited 
+ where
+  xR-inhabited : inhabited-right (upper-cut-of x)
+  xR-inhabited = inhabited-from-real-R x
+  I : Σ p ꞉ ℚ , p ∈ upper-cut-of x → q ∈ lower-cut-of x
+  I (p , pRx) = II (ℚ-trichotomous fe p q)
+   where
+    II : p < q ∔ (p ≡ q) ∔ q < p → q ∈ lower-cut-of x
+    II (inl p<q) = ∥∥-rec (∈-is-prop (lower-cut-of x) q) III (located-from-real x p q p<q)
+     where
+      III : p ∈ lower-cut-of x ∔ q ∈ upper-cut-of x → q ∈ lower-cut-of x
+      III (inl pLx) = 𝟘-elim (ℚ<-not-itself p (disjoint-from-real x p p (pLx , pRx)))
+      III (inr qRx) = 𝟘-elim (nl ∣ q , (qRx , qLy) ∣)
+    II (inr (inl p-is-q)) = 𝟘-elim (nl ∣ p , pRx , (transport (_∈ lower-cut-of y) (p-is-q ⁻¹) qLy) ∣)
+    II (inr (inr q<p)) = ∥∥-rec (∈-is-prop (lower-cut-of x) q) III (located-from-real x q k (pr₁ (pr₂ from-ℚ-dense)))
+     where
+      from-ℚ-dense : Σ k ꞉ ℚ , q < k × k < p
+      from-ℚ-dense = ℚ-dense fe q p q<p
+      k = pr₁ from-ℚ-dense
+      III : q ∈ lower-cut-of x ∔ k ∈ upper-cut-of x → q ∈ lower-cut-of x
+      III (inl qLx) = qLx
+      III (inr kRx) = {!IV!}
+       where
+        IV : {!!}
+        IV = {!!}
+-}   
+
 ℝ≤-<-trans : (x y z : ℝ) → x ≤ y → y < z → x < z
 ℝ≤-<-trans x y z x≤y y<z = ∥∥-functor I y<z
  where
@@ -134,4 +167,6 @@ apartness-gives-inequality x y apart e = ∥∥-rec 𝟘-is-prop I apart
 
 ℝ-zero-apart-from-one : 0ℝ ♯ 1ℝ
 ℝ-zero-apart-from-one = ∣ inl ℝ-zero-less-than-one ∣
+
+
 

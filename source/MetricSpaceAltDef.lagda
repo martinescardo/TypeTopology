@@ -58,29 +58,6 @@ It is also useful to define the type of positive rationals.
 
 \begin{code}
 
-{- 
-bounded-sequence : {𝓤 : Universe} → (X : 𝓤 ̇) → metric-space X → (S : ℕ → X) → 𝓤₀ ̇
-bounded-sequence X (B , _) S = ∃ K ꞉ ℚ , ((x y : ℕ) → (l : (0ℚ < K)) → B (S x) (S y) K l)
-
-bounded-sequence-is-prop : {𝓤 : Universe} → (X : 𝓤 ̇) → (m : metric-space X) → (S : ℕ → X) → is-prop (bounded-sequence X m S)
-bounded-sequence-is-prop X m S = ∃-is-prop
-
-convergent-sequence : {𝓤 : Universe} → (X : 𝓤 ̇) → metric-space X → (S : ℕ → X) → 𝓤 ̇
-convergent-sequence X (B , _) S = ∃ x ꞉ X , ((ε : ℚ) → (l : (0ℚ < ε)) → Σ N ꞉ ℕ , ((n : ℕ) → N < n → B x (S n) ε l))
-
-cauchy-sequence : {𝓤 : Universe} → (X : 𝓤 ̇) → metric-space X → (S : ℕ → X) → 𝓤₀ ̇
-cauchy-sequence X (B , _) S = (ε : ℚ) → (l : 0ℚ < ε) → Σ N ꞉ ℕ , ((m n : ℕ) → N < m → N < n → B (S m) (S n) ε l)
-
-convergent→cauchy : {𝓤 : Universe} → (X : 𝓤 ̇) → (m : metric-space X) → (S : ℕ → X) → 𝓤 ̇
-convergent→cauchy X m S = convergent-sequence X m S → cauchy-sequence X m S
-
-cauchy→convergent : {𝓤 : Universe} → (X : 𝓤 ̇) → metric-space X → (S : ℕ → X) → 𝓤 ̇
-cauchy→convergent X m S = cauchy-sequence X m S → convergent-sequence X m S
-
-complete-metric-space : {𝓤 : Universe} → (X : 𝓤 ̇) → 𝓤₁ ⊔ 𝓤 ̇
-complete-metric-space X = Σ m ꞉ (metric-space X) , ((S : ℕ → X) → cauchy→convergent X m S)
--} 
-
 ℚ₊ : 𝓤₀ ̇
 ℚ₊ = Σ ε ꞉ ℚ , 0ℚ < ε
 
@@ -94,7 +71,7 @@ convergent-sequence : {𝓤 : Universe} → (X : 𝓤 ̇) → metric-space X →
 convergent-sequence X (B , _) S = ∃ x ꞉ X , (((ε , l) : ℚ₊) → Σ N ꞉ ℕ , ((n : ℕ) → N < n → B x (S n) ε l))
 
 cauchy-sequence : {𝓤 : Universe} → (X : 𝓤 ̇) → metric-space X → (S : ℕ → X) → 𝓤₀ ̇
-cauchy-sequence X (B , _) S = ((ε , l) : ℚ₊) → Σ N ꞉ ℕ , ((m n : ℕ) → N < m → N < n → B (S m) (S n) ε l)
+cauchy-sequence X (B , _) S = ((ε , l) : ℚ₊) → Σ N ꞉ ℕ , ((m n : ℕ) → N ≤ m → N ≤ n → B (S m) (S n) ε l)
 
 convergent→cauchy : {𝓤 : Universe} → (X : 𝓤 ̇) → (m : metric-space X) → (S : ℕ → X) → 𝓤 ̇
 convergent→cauchy X m S = convergent-sequence X m S → cauchy-sequence X m S

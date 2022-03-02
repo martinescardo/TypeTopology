@@ -192,6 +192,9 @@ min-to-≤ p q = I (min'-to-≤ p q (ℚ-trichotomous fe p q))
 ≤-to-min : (x y : ℚ) → x ≤ y → x ≡ min x y
 ≤-to-min x y l = ≤-to-min' x y l (ℚ-trichotomous fe x y)
 
+<-to-min : (x y : ℚ) → x < y → x ≡ min x y
+<-to-min x y l = ≤-to-min x y (ℚ<-coarser-than-≤ x y l)
+
 ≤-to-max' : (x y : ℚ) → x ≤ y → (t : (x < y) ∔ (x ≡ y) ∔ (y < x)) → y ≡ max' x y t 
 ≤-to-max' x y l (inl t) = refl
 ≤-to-max' x y l (inr (inl t)) = t ⁻¹
@@ -203,6 +206,9 @@ min-to-≤ p q = I (min'-to-≤ p q (ℚ-trichotomous fe p q))
 
 ≤-to-max : (x y : ℚ) → x ≤ y → y ≡ max x y 
 ≤-to-max x y l = ≤-to-max' x y l (ℚ-trichotomous fe x y)
+
+<-to-max : (x y : ℚ) → x < y → y ≡ max x y 
+<-to-max x y l = ≤-to-max x y (ℚ<-coarser-than-≤ x y l)
 
 min-assoc : (x y z : ℚ) → min (min x y) z ≡ min x (min y z)
 min-assoc x y z = I (min-to-≤ x y) (min-to-≤ (min x y) z) (min-to-≤ y z) (min-to-≤ x (min y z))
@@ -265,6 +271,17 @@ max-assoc x y z = I (max-to-≤ x y) (max-to-≤ (max x y) z) (max-to-≤ y z) (
   I (inr (l₁ , e₁)) (inr (l₂ , e₂)) (inr (l₃ , e₃)) (inl (l₄ , e₄)) = e₂ ∙ ap (λ - → max x -) (e₃ ⁻¹)
   I (inr (l₁ , e₁)) (inr (l₂ , e₂)) (inr (l₃ , e₃)) (inr (l₄ , e₄)) = e₂ ∙ ap (λ - → max x -) (e₃ ⁻¹)
 
+min₃ : (a b c : ℚ) → ℚ
+min₃ a b c = min (min a b) c
+
+min₄ : (a b c d : ℚ) → ℚ
+min₄ a b c d = min (min (min a b) c) d
+
+max₃ : (a b c : ℚ) → ℚ
+max₃ a b c = max (max a b) c
+
+max₄ : (a b c d : ℚ) → ℚ
+max₄ a b c d = max (max (max a b) c) d
 
 
 

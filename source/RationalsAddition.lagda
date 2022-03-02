@@ -78,6 +78,17 @@ toℚ-+ fe p q = equiv→equality fe (p ℚₙ+ q) (p' ℚₙ+ q') conclusion
        toℚ p' + β           ≡⟨ ap (_+ β) (pp ⁻¹) ⟩
        (x , p) + β ∎
 
+ℚ+-rearrange : Fun-Ext → (x y z : ℚ) → x + y + z ≡ x + z + y
+ℚ+-rearrange fe x y z = x + y + z     ≡⟨ ℚ+-assoc fe x y z ⟩
+                        x + (y + z)   ≡⟨ ap (x +_) (ℚ+-comm y z) ⟩
+                        x + (z + y)   ≡⟨ ℚ+-assoc fe x z y ⁻¹ ⟩
+                        x + z + y     ∎
+
+ℚ+-rearrange' : Fun-Ext → (x y z : ℚ) → x + y + z ≡ z + x + y
+ℚ+-rearrange' fe x y z = x + y + z   ≡⟨ ℚ+-comm (x + y) z ⟩
+                         z + (x + y) ≡⟨ ℚ+-assoc fe z x y ⁻¹ ⟩
+                         z + x + y ∎
+
 ℚ-zero-left-neutral : Fun-Ext → (q : ℚ) → 0ℚ + q ≡ q
 ℚ-zero-left-neutral fe q = II
  where
@@ -111,6 +122,16 @@ add-same-denom fe (x , a) (y , b) = I ⁻¹ ∙ equiv→equality fe ((x , b) ℚ
 
 1/3+1/3 : Fun-Ext → 1/3 + 1/3 ≡ 2/3
 1/3+1/3 fe = add-same-denom fe (pos 1 , 2) (pos 1 , 2)
+
+1/2+1/4 : Fun-Ext → 1/2 + 1/4 ≡ 3/4
+1/2+1/4 fe = equiv→equality fe ((pos 1 , 1) ℚₙ+ (pos 1 , 3)) (pos 3 , 3) refl
+
+1/4+3/4 : Fun-Ext → 1/4 + 3/4 ≡ 1ℚ
+1/4+3/4 fe = I ⁻¹ ∙ equiv→equality fe ((pos 1 , 3) ℚₙ+ (pos 3 , 3)) (pos 1 , 0) refl
+ where
+  abstract
+   I : toℚ ((pos 1 , 3) ℚₙ+ (pos 3 , 3)) ≡  toℚ (pos 1 , 3) + toℚ (pos 3 , 3)
+   I = toℚ-+ fe (pos 1 , 3) (pos 3 , 3) -- equiv→equality fe ((pos 1 , 3) ℚₙ+ (pos 3 , 3)) (pos 1 , 1) refl
 
 
 1/3+2/3 : Fun-Ext → 1/3 + 2/3 ≡ 1ℚ
@@ -156,6 +177,8 @@ add-same-denom fe (x , a) (y , b) = I ⁻¹ ∙ equiv→equality fe ((x , b) ℚ
 Abstracting the proofs above lets me compile 2/5+1/5, otherwise we get an infinite compile.
 
 It does not work for the proof below.
+
+Edit : This was fixed by adding the flag experimental lossy unification.
 
 \begin{code}
 

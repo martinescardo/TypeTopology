@@ -70,28 +70,34 @@ Ordered-Field 𝓤 {𝓥} {𝓦} = Σ X ꞉ Field 𝓤 { 𝓥 } , Ordered-field-
 ⟨ (F , fs) , ofs ⟩ = F
 
 addition : {𝓥 𝓦 : Universe} → (F : Ordered-Field 𝓤 { 𝓥 } { 𝓦 }) → ⟨ F ⟩ → ⟨ F ⟩ → ⟨ F ⟩
-addition ((_ , (_+_ , b) , _) , _ , _ , _) = _+_
+addition ((F , (_+_ , _*_ , _♯_) , F-is-set , +-assoc , *-assoc , +-comm , *-comm , dist , (e₀ , e₁) , e₀♯e₁ , zero-left-neutral , +-inverse , *-left-neutral , *-inverse) , _<_ , <-respects-additions , <-respects-multiplication) = _+_
 
 addition-commutative : {𝓥 𝓦 : Universe} → (F : Ordered-Field 𝓤 { 𝓥 } { 𝓦 }) → _
-addition-commutative ((_ , _ , _ , _ , _ , +-comm , *-comm , _) , _) = +-comm
+addition-commutative ((F , (_+_ , _*_ , _♯_) , F-is-set , +-assoc , *-assoc , +-comm , *-comm , dist , (e₀ , e₁) , e₀♯e₁ , zero-left-neutral , +-inverse , *-left-neutral , *-inverse) , _<_ , <-respects-additions , <-respects-multiplication) = +-comm
 
 multiplication-commutative : {𝓥 𝓦 : Universe} → (F : Ordered-Field 𝓤 { 𝓥 } { 𝓦 }) → _
-multiplication-commutative ((_ , _ , _ , _ , _ , +-comm , *-comm , _) , _) = *-comm
+multiplication-commutative ((F , (_+_ , _*_ , _♯_) , F-is-set , +-assoc , *-assoc , +-comm , *-comm , dist , (e₀ , e₁) , e₀♯e₁ , zero-left-neutral , +-inverse , *-left-neutral , *-inverse) , _<_ , <-respects-additions , <-respects-multiplication) = *-comm
 
 multiplication : {𝓥 𝓦 : Universe} → (F : Ordered-Field 𝓤 { 𝓥 } { 𝓦 }) → ⟨ F ⟩ → ⟨ F ⟩ → ⟨ F ⟩
-multiplication ((_ , (_ , _*_ , _) , _) , _ , _ , _) = _*_
+multiplication ((F , (_+_ , _*_ , _♯_) , F-is-set , +-assoc , *-assoc , +-comm , *-comm , dist , (e₀ , e₁) , e₀♯e₁ , zero-left-neutral , +-inverse , *-left-neutral , *-inverse) , _<_ , <-respects-additions , <-respects-multiplication) = _*_
 
 apartness : {𝓥 𝓦 : Universe} → (F : Ordered-Field 𝓤 { 𝓥 } { 𝓦 }) → ⟨ F ⟩ → ⟨ F ⟩ → 𝓥 ̇
-apartness ((_ , (_ , _ , _♯_) , _) , _ , _ , _) = _♯_
+apartness ((F , (_+_ , _*_ , _♯_) , F-is-set , +-assoc , *-assoc , +-comm , *-comm , dist , (e₀ , e₁) , e₀♯e₁ , zero-left-neutral , +-inverse , *-left-neutral , *-inverse) , _<_ , <-respects-additions , <-respects-multiplication) = _♯_
 
 additive-identity : {𝓥 𝓦 : Universe} → (F : Ordered-Field 𝓤 { 𝓥 } { 𝓦 }) → ⟨ F ⟩
-additive-identity ((F , _ , _ , _ , _ , _ , _ , _ , (e₀ , e₁) , _) , _) = e₀
+additive-identity ((F , (_+_ , _*_ , _♯_) , F-is-set , +-assoc , *-assoc , +-comm , *-comm , dist , (e₀ , e₁) , e₀♯e₁ , zero-left-neutral , +-inverse , *-left-neutral , *-inverse) , _<_ , <-respects-additions , <-respects-multiplication)  = e₀
 
 multiplicative-identity : {𝓥 𝓦 : Universe} → (F : Ordered-Field 𝓤 { 𝓥 } { 𝓦 }) → ⟨ F ⟩
-multiplicative-identity ((F , _ , _ , _ , _ , _ , _ , _ , (e₀ , e₁) , _) , _) = e₁
+multiplicative-identity ((F , (_+_ , _*_ , _♯_) , F-is-set , +-assoc , *-assoc , +-comm , *-comm , dist , (e₀ , e₁) , e₀♯e₁ , zero-left-neutral , +-inverse , *-left-neutral , *-inverse) , _<_ , <-respects-additions , <-respects-multiplication) =  e₁
 
 underlying-type-is-set : {𝓥 𝓦 : Universe} → (F : Ordered-Field 𝓤 { 𝓥 } { 𝓦 }) → is-set ⟨ F ⟩
 underlying-type-is-set {𝓥} ((a , (pr₃ , pr₄) , F-is-set , c) , d) = F-is-set
+
+zero-left-neutral : {𝓥 𝓦 : Universe} → (F : Ordered-Field 𝓤 { 𝓥 } { 𝓦 }) → _
+zero-left-neutral ((F , (_+_ , _*_ , _♯_) , F-is-set , +-assoc , *-assoc , +-comm , *-comm , dist , (e₀ , e₁) , e₀♯e₁ , zln , +-inverse , *-left-neutral , *-inverse) , _<_ , <-respects-additions , <-respects-multiplication) = zln
+
+addition-associative : {𝓥 𝓦 : Universe} → (F : Ordered-Field 𝓤 { 𝓥 } { 𝓦 }) → _
+addition-associative ((F , (_+_ , _*_ , _♯_) , F-is-set , +-assoc , *-assoc , +-comm , *-comm , dist , (e₀ , e₁) , e₀♯e₁ , zln , +-inverse , *-left-neutral , *-inverse) , _<_ , <-respects-additions , <-respects-multiplication) = +-assoc
 
 {-
 open import Rationals

@@ -634,6 +634,22 @@ trisect fe x y l = (x + d * 1/3 , x + d * 2/3) , I , II , III , IV , V
 halving-preserves-order : (p : ℚ) → 0ℚ < p → 0ℚ < p * 1/2
 halving-preserves-order p l = ℚ<-pos-multiplication-preserves-order p 1/2 l 0<1/2
 
+halving-preserves-order' : (p : ℚ) → 0ℚ < p → 0ℚ < 1/2 * p
+halving-preserves-order' p l = ℚ<-pos-multiplication-preserves-order 1/2 p 0<1/2 l
+
+half-of-pos-is-less : Fun-Ext → (p : ℚ) → 0ℚ < p → 1/2 * p < p
+half-of-pos-is-less fe p l = transport (1/2 * p <_) III II
+ where
+  I : 0ℚ < 1/2 * p
+  I = halving-preserves-order' p l
+  II : 1/2 * p < 1/2 * p + 1/2 * p
+  II = ℚ<-addition-preserves-order'' fe (1/2 * p) (1/2 * p) I
+  III : 1/2 * p + 1/2 * p ≡ p
+  III = 1/2 * p + 1/2 * p ≡⟨ ℚ-distributivity' fe p 1/2 1/2 ⁻¹ ⟩
+        (1/2 + 1/2) * p   ≡⟨ ap (_* p) (1/2+1/2 fe) ⟩
+        1ℚ * p            ≡⟨ ℚ-mult-left-id fe p ⟩
+        p ∎
+
 ℚ-dense : Fun-Ext → (p q : ℚ) → p < q → Σ x ꞉ ℚ , (p < x) × (x < q)
 ℚ-dense fe p q l = (p + (1/2 * (q - p))) , I , II
  where
@@ -659,5 +675,41 @@ halving-preserves-order p l = ℚ<-pos-multiplication-preserves-order p 1/2 l 0<
    
   II : p + (1/2 * (q - p)) < q
   II = transport (p + (1/2 * (q - p)) <_) iv iii
+
+inequality-chain-outer-bounds-inner : Fun-Ext → (a b c d : ℚ) → a < b → b < c → c < d → c - b < d - a
+inequality-chain-outer-bounds-inner fe a b c d l₁ l₂ l₃ = ℚ<-trans (c - b) (d - b) (d - a) I III
+ where
+  I : c - b < d - b
+  I = ℚ<-addition-preserves-order c d (- b) l₃
+  II : - b < - a
+  II = ℚ<-swap fe a b l₁
+  III : d - b < d - a
+  III = transport₂ _<_ (ℚ+-comm (- b) d) (ℚ+-comm (- a) d) (ℚ<-addition-preserves-order (- b) (- a) d II)
+     
+ℚ<-trans₂ : (p q r s : ℚ) → p < q → q < r → r < s → p < s
+ℚ<-trans₂ p q r s l₁ l₂ l₃ = ℚ<-trans p r s I l₃
+ where
+  I : p < r
+  I = ℚ<-trans p q r l₁ l₂
+
+ℚ<-trans₃ : (p q r s t : ℚ) → p < q → q < r → r < s → s < t → p < t
+ℚ<-trans₃ p q r s t l₁ l₂ l₃ l₄ = ℚ<-trans p s t I l₄
+ where
+  I : p < s
+  I = ℚ<-trans₂ p q r s l₁ l₂ l₃
+
+ℚ≤-trans₂ : Fun-Ext → (p q r s : ℚ) → p ≤ q → q ≤ r → r ≤ s → p ≤ s
+ℚ≤-trans₂ fe p q r s l₁ l₂ l₃ = ℚ≤-trans fe p r s I l₃
+ where
+  I : p ≤ r
+  I = ℚ≤-trans fe p q r l₁ l₂
+
+ℚ≤-trans₃ : Fun-Ext → (p q r s t : ℚ) → p ≤ q → q ≤ r → r ≤ s → s ≤ t → p ≤ t
+ℚ≤-trans₃ fe p q r s t l₁ l₂ l₃ l₄ = ℚ≤-trans fe p s t I l₄
+ where
+  I : p ≤ s
+  I = ℚ≤-trans₂ fe p q r s l₁ l₂ l₃
+
+
 
 \end{code}

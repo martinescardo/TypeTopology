@@ -207,7 +207,8 @@ f-bar f g f-order-preserving f-g-bijective ((L , R) , inhabited-left-x , inhabit
 diagram-commutes : (f g : ℚ → ℚ) 
                  → (f-order-preserving : ((p q : ℚ) → p < q ⇔ f p < f q))
                  → (f-g-bijective : ((r : ℚ) → (g (f r) ≡ r) × (f (g r) ≡ r)))
-                 → (q : ℚ) → (f-bar f g f-order-preserving f-g-bijective ∘ embedding-ℚ-to-ℝ) q ≡ (embedding-ℚ-to-ℝ ∘ f) q
+                 → (q : ℚ)
+                 → (f-bar f g f-order-preserving f-g-bijective ∘ embedding-ℚ-to-ℝ) q ≡ (embedding-ℚ-to-ℝ ∘ f) q
 diagram-commutes f g f-order-preserving f-g-bijective q = ℝ-equality' ((f-bar f g f-order-preserving f-g-bijective ∘ embedding-ℚ-to-ℝ) q) ((embedding-ℚ-to-ℝ ∘ f) q) I II III IV
  where
   I : (a : ℚ) → g a < q → a < f q 
@@ -265,11 +266,11 @@ this p =   p + 1ℚ + -1ℚ   ≡⟨ ℚ+-assoc fe p 1ℚ (- 1ℚ) ⟩
     ii : ℚ-succ p < ℚ-succ q → p < q
     ii l = transport₂ _<_ iv v iii
      where
-      iii : (p + 1ℚ + (- 1ℚ)) < (q + 1ℚ + (- 1ℚ))
+      iii : p + 1ℚ - 1ℚ < q + 1ℚ - 1ℚ
       iii = ℚ<-addition-preserves-order (p + 1ℚ) (q + 1ℚ) (- 1ℚ) l
-      iv : p + 1ℚ + (-1ℚ) ≡ p
+      iv : p + 1ℚ - 1ℚ ≡ p
       iv = this p
-      v : (q + 1ℚ + (- 1ℚ)) ≡ q
+      v : q + 1ℚ - 1ℚ ≡ q
       v =  this q
   II : (r : ℚ) → (ℚ-pred (ℚ-succ r) ≡ r) × (ℚ-succ (ℚ-pred r) ≡ r)
   II r = i , ii
@@ -281,8 +282,10 @@ this p =   p + 1ℚ + -1ℚ   ≡⟨ ℚ+-assoc fe p 1ℚ (- 1ℚ) ⟩
          r - 1ℚ + 1ℚ       ≡⟨ ℚ+-assoc fe r (- 1ℚ) 1ℚ ⟩
          r + ((- 1ℚ) + 1ℚ) ≡⟨ ap (r +_) (ℚ+-comm (- 1ℚ) 1ℚ) ⟩
          r + (1ℚ + (- 1ℚ)) ≡⟨ ap (r +_) (ℚ-inverse-sum-to-zero fe 1ℚ) ⟩
-         r + 0ℚ ≡⟨ ℚ-zero-right-neutral fe r ⟩
+         r + 0ℚ            ≡⟨ ℚ-zero-right-neutral fe r ⟩
          r ∎
+
+
 
 {-
 single-extension : (f : ℚ → ℝ) → (ℝ → ℝ)

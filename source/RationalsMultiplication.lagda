@@ -242,3 +242,18 @@ division-by-self-is-one fe (pos (succ x) , a) e = I II
                    q * 1ℚ            ≡⟨ ap (q *_) (1/2+1/2 fe ⁻¹) ⟩
                    q * (1/2 + 1/2)   ≡⟨ ℚ-distributivity fe q 1/2 1/2 ⟩
                    q * 1/2 + q * 1/2 ∎
+
+ℚ*-rearrange : Fun-Ext → (x y z : ℚ) → x * y * z ≡ x * z * y
+ℚ*-rearrange fe x y z = x * y * z     ≡⟨ ℚ*-assoc fe x y z ⟩
+                        x * (y * z)   ≡⟨ ap (x *_) (ℚ*-comm y z) ⟩
+                        x * (z * y)   ≡⟨ ℚ*-assoc fe x z y ⁻¹ ⟩
+                        x * z * y     ∎
+
+ℚ*-rearrange' : Fun-Ext → (x y z : ℚ) → x * y * z ≡ z * x * y
+ℚ*-rearrange' fe x y z = x * y * z   ≡⟨ ℚ*-comm (x * y) z ⟩
+                         z * (x * y) ≡⟨ ℚ*-assoc fe z x y ⁻¹ ⟩
+                         z * x * y   ∎
+
+half-of-quarter : Fun-Ext → 1/2 * 1/2 ≡ 1/4
+half-of-quarter fe = toℚ-* fe (pos 1 , 1) (pos 1 , 1)
+
