@@ -654,6 +654,16 @@ is-monotonic : (P : poset 𝓤 𝓥) (Q : poset 𝓤′ 𝓥′)
 is-monotonic P Q f =
  Ɐ (x , y) ∶ (pr₁ P × pr₁ P) , ((x ≤[ P ] y) ⇒ f x ≤[ Q ] f y)
 
+_─m→_ : (P : poset 𝓤 𝓥) (Q : poset 𝓤′ 𝓥′) → 𝓤 ⊔ 𝓥 ⊔ 𝓤′ ⊔ 𝓥′ ̇
+P ─m→ Q = Σ f ꞉ (∣ P ∣ₚ → ∣ Q ∣ₚ) , (is-monotonic P Q f) holds
+
+is-join-preserving : (F : frame 𝓤 𝓥 𝓦) (G : frame 𝓤' 𝓥' 𝓦)
+                   → (⟨ F ⟩ → ⟨ G ⟩) → Ω (𝓤 ⊔ 𝓤' ⊔ 𝓦 ⁺)
+is-join-preserving {𝓦 = 𝓦} F G f =
+ Ɐ S ∶ Fam 𝓦 ⟨ F ⟩ , f (⋁[ F ] S) ≡[ iss ]≡ ⋁[ G ] ⁅ f s ∣ s ε S ⁆
+  where
+   iss = carrier-of-[ poset-of G ]-is-set
+
 \end{code}
 
 \section{Some properties of frames}
