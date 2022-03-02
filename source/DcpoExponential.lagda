@@ -141,8 +141,17 @@ _⟹ᵈᶜᵖᵒ⊥_ : DCPO⊥ {𝓤} {𝓣} → DCPO⊥ {𝓤'} {𝓣'}
  where
   h : has-least (underlying-order ((𝓓 ⁻) ⟹ᵈᶜᵖᵒ (𝓔 ⁻)))
   h = ((λ _ → ⊥ 𝓔) ,
-      constant-functions-are-continuous (𝓓 ⁻) (𝓔 ⁻) (⊥ 𝓔)) ,
+      constant-functions-are-continuous (𝓓 ⁻) (𝓔 ⁻)) ,
       (λ g d → ⊥-is-least 𝓔 (underlying-function (𝓓 ⁻) (𝓔 ⁻) g d))
+
+_⟹ᵈᶜᵖᵒ⊥'_ : DCPO {𝓤} {𝓣} → DCPO⊥ {𝓤'} {𝓣'}
+          → DCPO⊥ {(𝓥 ⁺) ⊔ 𝓤 ⊔ 𝓣 ⊔ 𝓤' ⊔ 𝓣'} {𝓤 ⊔ 𝓣'}
+𝓓 ⟹ᵈᶜᵖᵒ⊥' 𝓔 = 𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻) , h
+ where
+  h : has-least (underlying-order (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻)))
+  h = ((λ _ → ⊥ 𝓔) ,
+      constant-functions-are-continuous 𝓓 (𝓔 ⁻)) ,
+      (λ g d → ⊥-is-least 𝓔 (underlying-function 𝓓 (𝓔 ⁻) g d))
 
 \end{code}
 

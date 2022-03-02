@@ -222,8 +222,8 @@ Continuity of basic functions (constant functions, identity, composition).
 \begin{code}
 
 constant-functions-are-continuous : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
-                                    (e : ⟨ 𝓔 ⟩) → is-continuous 𝓓 𝓔 (λ d → e)
-constant-functions-are-continuous 𝓓 𝓔 e I α δ = u , v
+                                    {e : ⟨ 𝓔 ⟩} → is-continuous 𝓓 𝓔 (λ d → e)
+constant-functions-are-continuous 𝓓 𝓔 {e} I α δ = u , v
  where
   u : (i : I) → e ⊑⟨ 𝓔 ⟩ e
   u i = reflexivity 𝓔 e
@@ -348,6 +348,10 @@ _≃ᵈᶜᵖᵒ⊥_ : (𝓓 : DCPO⊥ {𝓤} {𝓣}) (𝓔 : DCPO⊥ {𝓤'} {�
 
 is-a-non-trivial-pointed-dcpo : (𝓓 : DCPO⊥ {𝓤} {𝓣}) → 𝓤 ̇
 is-a-non-trivial-pointed-dcpo 𝓓 = ∃ x ꞉ ⟪ 𝓓 ⟫ , x ≢ ⊥ 𝓓
+
+≡-to-⊥-criterion : (𝓓 : DCPO⊥ {𝓤} {𝓣}) {x : ⟪ 𝓓 ⟫} → x ⊑⟪ 𝓓 ⟫ ⊥ 𝓓 → x ≡ ⊥ 𝓓
+≡-to-⊥-criterion 𝓓 {x} x-below-⊥ =
+ antisymmetry (𝓓 ⁻) x (⊥ 𝓓) x-below-⊥ (⊥-is-least 𝓓 x)
 
 \end{code}
 

@@ -44,19 +44,35 @@ module _
 
  record is-bounded-complete : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇  where
   field
-   ⋁ : {I : 𝓥 ̇  } (α : I → ⟨ 𝓓 ⟩) → is-bounded α → ⟨ 𝓓 ⟩
-   ⋁-is-sup : {I : 𝓥 ̇  } (α : I → ⟨ 𝓓 ⟩) (b : is-bounded α)
-            → is-sup (underlying-order 𝓓) (⋁ α b) α
+   ⋁ : {I : 𝓥 ̇  } {α : I → ⟨ 𝓓 ⟩} → is-bounded α → ⟨ 𝓓 ⟩
+   ⋁-is-sup : {I : 𝓥 ̇  } {α : I → ⟨ 𝓓 ⟩} (b : is-bounded α)
+            → is-sup (underlying-order 𝓓) (⋁ b) α
 
-  ⋁-is-upperbound : {I : 𝓥 ̇  } (α : I → ⟨ 𝓓 ⟩) (b : is-bounded α)
-                  → is-upperbound (underlying-order 𝓓) (⋁ α b) α
-  ⋁-is-upperbound α b = sup-is-upperbound (underlying-order 𝓓) (⋁-is-sup α b)
+  ⋁-is-upperbound : {I : 𝓥 ̇  } {α : I → ⟨ 𝓓 ⟩} (b : is-bounded α)
+                  → is-upperbound (underlying-order 𝓓) (⋁ b) α
+  ⋁-is-upperbound b = sup-is-upperbound (underlying-order 𝓓) (⋁-is-sup b)
 
-  ⋁-is-lowerbound-of-upperbounds : {I : 𝓥 ̇  } (α : I → ⟨ 𝓓 ⟩) (b : is-bounded α)
+  ⋁-is-lowerbound-of-upperbounds : {I : 𝓥 ̇  } {α : I → ⟨ 𝓓 ⟩} (b : is-bounded α)
                                  → is-lowerbound-of-upperbounds
-                                    (underlying-order 𝓓) (⋁ α b) α
-  ⋁-is-lowerbound-of-upperbounds α b =
-   sup-is-lowerbound-of-upperbounds (underlying-order 𝓓) (⋁-is-sup α b)
+                                    (underlying-order 𝓓) (⋁ b) α
+  ⋁-is-lowerbound-of-upperbounds b =
+   sup-is-lowerbound-of-upperbounds (underlying-order 𝓓) (⋁-is-sup b)
+
+module _
+        (𝓓 : DCPO {𝓤} {𝓣})
+        {I : 𝓦 ̇  } {J : 𝓦' ̇  }
+        (ρ : I ≃ J)
+        (α : I → ⟨ 𝓓 ⟩)
+       where
+
+ reindexed-family-is-bounded : is-bounded 𝓓 α
+                             → is-bounded 𝓓 (reindexed-family 𝓓 ρ α)
+ reindexed-family-is-bounded = ∥∥-functor γ
+  where
+   γ : (Σ x ꞉ ⟨ 𝓓 ⟩ , is-upperbound (underlying-order 𝓓) x α)
+     → (Σ x ꞉ ⟨ 𝓓 ⟩ , is-upperbound (underlying-order 𝓓) x
+                       (reindexed-family 𝓓 ρ α))
+   γ (x , x-is-ub) = (x , (λ j → x-is-ub (⌜ ρ ⌝⁻¹ j)))
 
 module _
         (𝓓 : DCPO {𝓤} {𝓣})
@@ -83,15 +99,13 @@ module _
  bounded-continuous-functions-sup {I} α b = (f , c)
   where
    f : ⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩
-   f x = ⋁ (pointwise-family 𝓓 𝓔 α x) (pointwise-family-is-bounded α b x)
+   f x = ⋁ (pointwise-family-is-bounded α b x)
    c : is-continuous 𝓓 𝓔 f
    c J β δ = (ub , lb-of-ubs)
     where
      ub : is-upperbound (underlying-order 𝓔) (f (∐ 𝓓 δ)) (f ∘ β)
      ub i = ⋁-is-lowerbound-of-upperbounds
-             (pointwise-family 𝓓 𝓔 α (β i))
-             (pointwise-family-is-bounded α b (β i)) (f (∐ 𝓓 δ))
-             γ
+             (pointwise-family-is-bounded α b (β i)) (f (∐ 𝓓 δ)) γ
       where
        γ : is-upperbound (underlying-order 𝓔) (f (∐ 𝓓 δ))
             (pointwise-family 𝓓 𝓔 α (β i))
@@ -101,15 +115,12 @@ module _
         where
          ⦅1⦆ = monotone-if-continuous 𝓓 𝓔 (α j) (β i) (∐ 𝓓 δ)
                (∐-is-upperbound 𝓓 δ i)
-         ⦅2⦆ = ⋁-is-upperbound (pointwise-family 𝓓 𝓔 α (∐ 𝓓 δ))
-                               (pointwise-family-is-bounded α b (∐ 𝓓 δ))
-                               j
+         ⦅2⦆ = ⋁-is-upperbound (pointwise-family-is-bounded α b (∐ 𝓓 δ)) j
      lb-of-ubs : is-lowerbound-of-upperbounds (underlying-order 𝓔) (f (∐ 𝓓 δ))
                   (f ∘ β)
      lb-of-ubs y y-is-ub =
-      ⋁-is-lowerbound-of-upperbounds
-       (pointwise-family 𝓓 𝓔 α (∐ 𝓓 δ))
-       (pointwise-family-is-bounded α b (∐ 𝓓 δ)) y γ
+      ⋁-is-lowerbound-of-upperbounds (pointwise-family-is-bounded α b (∐ 𝓓 δ))
+       y γ
         where
          γ : is-upperbound (underlying-order 𝓔) y
               (pointwise-family 𝓓 𝓔 α (∐ 𝓓 δ))
@@ -127,13 +138,12 @@ module _
                    f (β j)                 ⊑⟨ 𝓔 ⟩[ y-is-ub j ]
                    y                       ∎⟨ 𝓔 ⟩
               where
-               ⦅†⦆ = ⋁-is-upperbound (pointwise-family 𝓓 𝓔 α (β j))
-                                      (pointwise-family-is-bounded α b (β j)) i
+               ⦅†⦆ = ⋁-is-upperbound (pointwise-family-is-bounded α b (β j)) i
 
  exponential-is-bounded-complete : is-bounded-complete (𝓓 ⟹ᵈᶜᵖᵒ 𝓔)
  exponential-is-bounded-complete = record {
-     ⋁        = bounded-continuous-functions-sup
-   ; ⋁-is-sup = lem
+     ⋁        = λ {I} {α} → bounded-continuous-functions-sup α
+   ; ⋁-is-sup = λ {I} {α} → lem α
   }
    where
     lem : {I : 𝓥 ̇  } (α : I → DCPO[ 𝓓 , 𝓔 ])
@@ -144,13 +154,11 @@ module _
      where
       ub : is-upperbound (underlying-order (𝓓 ⟹ᵈᶜᵖᵒ 𝓔))
             (bounded-continuous-functions-sup α b) α
-      ub i x = ⋁-is-upperbound (pointwise-family 𝓓 𝓔 α x)
-                               (pointwise-family-is-bounded α b x) i
+      ub i x = ⋁-is-upperbound (pointwise-family-is-bounded α b x) i
       lb-of-ubs : is-lowerbound-of-upperbounds (underlying-order (𝓓 ⟹ᵈᶜᵖᵒ 𝓔))
                    (bounded-continuous-functions-sup α b) α
       lb-of-ubs g g-is-ub x =
-       ⋁-is-lowerbound-of-upperbounds (pointwise-family 𝓓 𝓔 α x)
-                                      (pointwise-family-is-bounded α b x)
+       ⋁-is-lowerbound-of-upperbounds (pointwise-family-is-bounded α b x)
                                       ([ 𝓓 , 𝓔 ]⟨ g ⟩ x) (λ i → g-is-ub i x)
 
 module _
@@ -367,13 +375,20 @@ module _
             v = monotone-if-continuous 𝓓 (𝓔 ⁻) 𝕘 (βᴰ d) x
                  (⌜ is-small-compact-basis.⊑ᴮₛ-≃-⊑ᴮ κᴰ ⌝ u)
 
-  open import List
+  open import Fin
+  open import SpartanMLTT-List hiding (⟨_⟩)
 
   list-of-single-step-functions-bounded-by : (l : List (Bᴰ × Bᴱ)) (e : Bᴱ)
                                            → 𝓥 ̇
-  list-of-single-step-functions-bounded-by []              e = 𝟙{𝓥}
-  list-of-single-step-functions-bounded-by ((d₀ , e₀) ∷ l) e =
-   e₀ ⊑ᴮₛ (βᴱ e) × list-of-single-step-functions-bounded-by l e
+  list-of-single-step-functions-bounded-by l e =
+   (i : Fin (length l)) → e̅ i ⊑ᴮₛ βᴱ e
+    where
+     e̅ : Fin (length l) → Bᴱ
+     e̅ i = pr₂ (pr₂ l !! i)
+
+  list-of-single-step-functions-is-bounded : (l : List (Bᴰ × Bᴱ)) → 𝓥 ̇
+  list-of-single-step-functions-is-bounded l =
+   ∃ e ꞉ Bᴱ , list-of-single-step-functions-bounded-by l e
 
   B : 𝓥 ̇
   B = Σ l ꞉ List (Bᴰ × Bᴱ) , ∃ e ꞉ Bᴱ
@@ -383,15 +398,114 @@ module _
           (𝓔-bounded-complete : is-bounded-complete (𝓔 ⁻))
          where
 
+   open is-bounded-complete (exponential-is-bounded-complete 𝓓 (𝓔 ⁻)
+                              𝓔-bounded-complete)
+
+   module _
+           (l : List (Bᴰ × Bᴱ))
+          where
+    private
+     n : ℕ
+     n = length l
+
+    d̅ : Fin n → Bᴰ
+    d̅ i = pr₁ (pr₂ l !! i)
+
+    e̅ : Fin n → Bᴱ
+    e̅ i = pr₂ (pr₂ l !! i)
+
+    d̅s-are-compact : (i : Fin n) → is-compact 𝓓 (βᴰ (d̅ i))
+    d̅s-are-compact i = is-small-compact-basis.basis-is-compact κᴰ (d̅ i)
+
+    list-of-single-step-functions-family : Fin n → DCPO[ 𝓓 , 𝓔 ⁻ ]
+    list-of-single-step-functions-family i =
+     ⦅ βᴰ (d̅ i) ⇒ βᴱ (e̅ i) ⦆[ d̅s-are-compact i ]
+
+    list-of-single-step-functions-family-is-bounded :
+       list-of-single-step-functions-is-bounded l
+     → is-bounded (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻)) list-of-single-step-functions-family
+    list-of-single-step-functions-family-is-bounded = ∥∥-functor γ
+     where
+       α : Fin n → DCPO[ 𝓓 , 𝓔 ⁻ ]
+       α = list-of-single-step-functions-family
+       γ : (Σ e ꞉ Bᴱ , list-of-single-step-functions-bounded-by l e)
+         → (Σ f ꞉ DCPO[ 𝓓 , 𝓔 ⁻ ] , is-upperbound (_hom-⊑_ 𝓓 (𝓔 ⁻)) f α)
+       γ (e , e-bounded) = ((f , f-is-continuous) , f-is-ub-of-α')
+        where
+         f : ⟨ 𝓓 ⟩ → ⟪ 𝓔 ⟫
+         f _ = βᴱ e
+         f-is-continuous : is-continuous 𝓓 (𝓔 ⁻) f
+         f-is-continuous = constant-functions-are-continuous 𝓓 (𝓔 ⁻)
+         f-is-ub-of-α' : (i : domain α) (x : ⟨ 𝓓 ⟩)
+                       → [ 𝓓 , 𝓔 ⁻ ]⟨ α i ⟩ x ⊑⟪ 𝓔 ⟫ f x
+         f-is-ub-of-α' i =
+          rl-implication (below-single-step-function-criterion
+                           (βᴰ (d̅ i)) (βᴱ (e̅ i))
+                           (d̅s-are-compact i)
+                           (f , f-is-continuous)) h
+          where
+           h : βᴱ (e̅ i) ⊑⟪ 𝓔 ⟫ βᴱ e
+           h = ⌜ ⊑ᴮₛ-≃-⊑ᴮ ⌝ (e-bounded i)
+
+    open import UF-UniverseEmbedding
+
+    list-of-single-step-functions-small-family : Lift 𝓥 (Fin n) → DCPO[ 𝓓 , 𝓔 ⁻ ]
+    list-of-single-step-functions-small-family =
+     reindexed-family (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻)) (≃-Lift 𝓥 (Fin n))
+                      list-of-single-step-functions-family
+
+    list-of-single-step-functions-small-family-is-bounded :
+       list-of-single-step-functions-is-bounded l
+     → is-bounded (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻)) list-of-single-step-functions-small-family
+    list-of-single-step-functions-small-family-is-bounded b =
+     reindexed-family-is-bounded (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻)) (≃-Lift 𝓥 (Fin n))
+      list-of-single-step-functions-family
+      (list-of-single-step-functions-family-is-bounded b)
+
+
    β : B → DCPO[ 𝓓 , 𝓔 ⁻ ]
-   β (l , b) = ⋁ {!!} {!!}
+   β (l , b) = ⋁ {_} {list-of-single-step-functions-small-family l}
+                     (list-of-single-step-functions-small-family-is-bounded l b)
+
+{-constantly-⊥ : ⟨ 𝓓 ⟩ → ⟪ 𝓔 ⟫
+   constantly-⊥ _ = ⊥ 𝓔
+
+   constantly-⊥⁺ : DCPO[ 𝓓 , 𝓔 ⁻ ]
+   constantly-⊥⁺ = (constantly-⊥ , constant-functions-are-continuous 𝓓 (𝓔 ⁻)) -}
+
+   []-is-bounded : ∃ e ꞉ Bᴱ , list-of-single-step-functions-bounded-by [] e
+   []-is-bounded = ∥∥-functor γ
+                    (small-compact-basis-contains-all-compact-elements (𝓔 ⁻)
+                      βᴱ κᴱ (⊥ 𝓔) (⊥-is-compact 𝓔))
     where
-     open is-bounded-complete (exponential-is-bounded-complete 𝓓 (𝓔 ⁻)
-                                𝓔-bounded-complete)
-     open import UF-Size
-     I : 𝓥 ̇
-     I = {!lift!}
-     -- α :
+     γ : (Σ e ꞉ Bᴱ , βᴱ e ≡ ⊥ 𝓔)
+       → (Σ e ꞉ Bᴱ , list-of-single-step-functions-bounded-by [] e)
+     γ (e , _) = (e , 𝟘-induction)
+
+   β-of-[]-is-⊥ : β ([] , []-is-bounded) ≡ ⊥ (𝓓 ⟹ᵈᶜᵖᵒ⊥' 𝓔)
+   β-of-[]-is-⊥ =
+    ≡-to-⊥-criterion (𝓓 ⟹ᵈᶜᵖᵒ⊥' 𝓔)
+     (⋁-is-lowerbound-of-upperbounds {_}
+       {list-of-single-step-functions-small-family []}
+       (list-of-single-step-functions-small-family-is-bounded [] []-is-bounded)
+       (⊥ (𝓓 ⟹ᵈᶜᵖᵒ⊥' 𝓔)) (λ i → 𝟘-elim (pr₁ i)))
+
+   Bs-are-compact : (b : B) → is-compact (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻)) (β b)
+   Bs-are-compact (l , b) =  lemma l b
+    where
+     A : List (Bᴰ × Bᴱ) → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ⊔ 𝓤' ⊔ 𝓣' ̇
+     A l = (b : (∃ e ꞉ Bᴱ , list-of-single-step-functions-bounded-by l e))
+         → is-compact (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻)) (β (l , b))
+     lemma : (l : List (Bᴰ × Bᴱ)) → A l
+     lemma = List-induction A base {!!}
+      where
+       base : A []
+       base bnd = transport (is-compact (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻))) {!claim!}
+                            (⊥-is-compact (𝓓 ⟹ᵈᶜᵖᵒ⊥' 𝓔))
+        where
+         claim : {!!}
+         claim = {!!}
+
 
 
 {-
