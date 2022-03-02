@@ -4,7 +4,7 @@ TODO: Describe contents.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --experimental-lossy-unification #-}
 
 open import SpartanMLTT hiding (J)
 open import UF-FunExt
@@ -500,11 +500,13 @@ module _
      lemma = List-induction A base {!!}
       where
        base : A []
-       base bnd = transport (is-compact (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻))) {!claim!}
+       base bnd = transport (is-compact (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻))) claim
                             (⊥-is-compact (𝓓 ⟹ᵈᶜᵖᵒ⊥' 𝓔))
         where
-         claim : {!!}
-         claim = {!!}
+         claim = ⊥ (𝓓 ⟹ᵈᶜᵖᵒ⊥' 𝓔)      ≡⟨ β-of-[]-is-⊥ ⁻¹ ⟩
+                 -- This is where we use --experimental-lossy-unification
+                 β ([] , []-is-bounded) ≡⟨ ap β (to-subtype-≡ (λ _ → ∃-is-prop) refl) ⟩
+                 β ([] , bnd)           ∎
 
 
 
