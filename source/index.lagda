@@ -150,6 +150,8 @@ import Frame-version1
 import Frame                           -- By Ayberk Tosun
 import InitialFrame                    -- By Ayberk Tosun
 import CompactRegular                  -- By Ayberk Tosun
+import GaloisConnection                -- By Ayberk Tosun
+import AdjointFunctorTheoremForFrames  -- By Ayberk Tosun
 import FreeGroup                       -- By Marc Bezem, Thierry Coquand, Dybjer, and Martin Escardo.
 import FreeGroupOfLargeLocallySmallSet -- By Marc Bezem, Thierry Coquand, Dybjer, and Martin Escardo.
 import FreeJoinSemiLattice             -- By Tom de Jong
