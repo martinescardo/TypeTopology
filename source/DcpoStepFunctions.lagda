@@ -1,4 +1,4 @@
-Tom de Jong, 22 & 23 February 2022.
+Tom de Jong, late February, early March 2022.
 
 TODO: Describe contents.
 
@@ -250,6 +250,7 @@ module _
 
  -- TODO: Separate the implications?
  -- TODO: Write out ⊑ so as to drop the compactness assumption?
+ -- TODO: Make more things abstract?
  below-single-step-function-criterion : (d : ⟨ 𝓓 ⟩) (e : ⟪ 𝓔 ⟫) (κ : is-compact 𝓓 d)
                                         (f : DCPO[ 𝓓 , 𝓔 ⁻ ])
                                       → ⦅ d ⇒ e ⦆[ κ ] ⊑⟨ 𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻) ⟩ f
@@ -400,6 +401,7 @@ module _
 
    open is-bounded-complete (exponential-is-bounded-complete 𝓓 (𝓔 ⁻)
                               𝓔-bounded-complete)
+   open import UF-UniverseEmbedding
 
    module _
            (l : List (Bᴰ × Bᴱ))
@@ -416,6 +418,8 @@ module _
 
     d̅s-are-compact : (i : Fin n) → is-compact 𝓓 (βᴰ (d̅ i))
     d̅s-are-compact i = is-small-compact-basis.basis-is-compact κᴰ (d̅ i)
+
+    -- TODO: Add e̅s-are-compact too?
 
     list-of-single-step-functions-family : Fin n → DCPO[ 𝓓 , 𝓔 ⁻ ]
     list-of-single-step-functions-family i =
@@ -446,8 +450,6 @@ module _
           where
            h : βᴱ (e̅ i) ⊑⟪ 𝓔 ⟫ βᴱ e
            h = ⌜ ⊑ᴮₛ-≃-⊑ᴮ ⌝ (e-bounded i)
-
-    open import UF-UniverseEmbedding
 
     list-of-single-step-functions-small-family : Lift 𝓥 (Fin n) → DCPO[ 𝓓 , 𝓔 ⁻ ]
     list-of-single-step-functions-small-family =
@@ -494,10 +496,10 @@ module _
    Bs-are-compact (l , b) =  lemma l b
     where
      A : List (Bᴰ × Bᴱ) → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ⊔ 𝓤' ⊔ 𝓣' ̇
-     A l = (b : (∃ e ꞉ Bᴱ , list-of-single-step-functions-bounded-by l e))
+     A l = (b : list-of-single-step-functions-is-bounded l)
          → is-compact (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻)) (β (l , b))
      lemma : (l : List (Bᴰ × Bᴱ)) → A l
-     lemma = List-induction A base {!!}
+     lemma = List-induction A base step
       where
        base : A []
        base bnd = transport (is-compact (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻))) claim
@@ -507,27 +509,114 @@ module _
                  -- This is where we use --experimental-lossy-unification
                  β ([] , []-is-bounded) ≡⟨ ap β (to-subtype-≡ (λ _ → ∃-is-prop) refl) ⟩
                  β ([] , bnd)           ∎
-
-
-
-{-
-  -- We assume that 𝓔 has binary joins of compact elements
-  -- TODO: Think more about this
-  module _
-          (∨ : (x y : ⟪ 𝓔 ⟫) → is-compact (𝓔 ⁻) x → is-compact (𝓔 ⁻) y → ⟪ 𝓔 ⟫)
-          (∨-is-upperbound₁ : (x y : ⟪ 𝓔 ⟫)
-                              (c₁ : is-compact (𝓔 ⁻) x)
-                              (c₂ : is-compact (𝓔 ⁻) y)
-                            → x ⊑⟪ 𝓔 ⟫ ∨ x y c₁ c₂ )
-          (∨-is-upperbound₁ : (x y : ⟪ 𝓔 ⟫)
-                              (c₁ : is-compact (𝓔 ⁻) x)
-                              (c₂ : is-compact (𝓔 ⁻) y)
-                            → x ⊑⟪ 𝓔 ⟫ ∨ x y c₁ c₂ )
+       step : (x : Bᴰ × Bᴱ) (l : List (Bᴰ × Bᴱ)) → A l → A (x ∷ l)
+       step (d₀ , e₀) l IH l⁺-is-bounded =
+        binary-join-is-compact (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻)) ⦅1⦆ ⦅2⦆ ⦅3⦆
+         d₀⇒e₀-is-compact βl-is-compact
          where
+          l⁺ : List (Bᴰ × Bᴱ)
+          l⁺ = (d₀ , e₀) ∷ l
+          l-is-bounded : list-of-single-step-functions-is-bounded l
+          l-is-bounded = ∥∥-functor γ l⁺-is-bounded
+           where
+            γ : (Σ e ꞉ Bᴱ , list-of-single-step-functions-bounded-by
+                             ((d₀ :: e₀) ∷ l) e)
+              → (Σ e ꞉ Bᴱ , list-of-single-step-functions-bounded-by l e)
+            γ (e , e-ub) = (e , e-ub ∘ fsucc)
+          βl-is-compact : is-compact (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻)) (β (l , l-is-bounded))
+          βl-is-compact = IH l-is-bounded
+          d₀-is-compact : is-compact 𝓓 (βᴰ d₀)
+          d₀-is-compact = d̅s-are-compact l⁺ fzero
+          e₀-is-compact : is-compact (𝓔 ⁻) (βᴱ e₀)
+          e₀-is-compact = is-small-compact-basis.basis-is-compact κᴱ e₀
+          d₀⇒e₀-is-compact : is-compact (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻))
+                              (⦅ βᴰ d₀ ⇒ βᴱ e₀ ⦆[ d₀-is-compact ])
+          d₀⇒e₀-is-compact = single-step-function-is-compact (βᴰ d₀) (βᴱ e₀)
+                              d₀-is-compact e₀-is-compact
 
-   β : B → DCPO[ 𝓓 , 𝓔 ⁻ ]
-   β []            = (λ _ → ⊥ 𝓔) , constant-functions-are-continuous 𝓓 (𝓔 ⁻) (⊥ 𝓔)
-   β ((d , e) ∷ l) = {!!}
--}
+          l-is-bounded-family : is-bounded (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻))
+                                 (list-of-single-step-functions-small-family l)
+          l-is-bounded-family =
+           list-of-single-step-functions-small-family-is-bounded l l-is-bounded
+          l⁺-is-bounded-family : is-bounded (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻))
+                                  (list-of-single-step-functions-small-family l⁺)
+          l⁺-is-bounded-family =
+           list-of-single-step-functions-small-family-is-bounded l⁺ l⁺-is-bounded
+
+          -- TODO: Clean this up
+          ⦅1⦆ : ⦅ βᴰ d₀ ⇒ βᴱ e₀ ⦆[ d₀-is-compact ] ⊑⟨ 𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻) ⟩
+               β (l⁺ , l⁺-is-bounded)
+          ⦅1⦆ = ⋁-is-upperbound l⁺-is-bounded-family (⌜ ≃-Lift 𝓥 _ ⌝ fzero)
+          ⦅2⦆ : β (l , l-is-bounded) ⊑⟨ 𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻) ⟩ β (l⁺ , l⁺-is-bounded)
+          ⦅2⦆ = ⋁-is-lowerbound-of-upperbounds l-is-bounded-family
+                (β (l⁺ , l⁺-is-bounded))
+                (λ i → ⋁-is-upperbound l⁺-is-bounded-family (⌜ ≃-Lift 𝓥 _ ⌝ (fsucc (⌜ Lift-≃ 𝓥 _ ⌝ i))))
+          ⦅3⦆ : (f : DCPO[ 𝓓 , 𝓔 ⁻ ])
+              → ⦅ βᴰ d₀ ⇒ βᴱ e₀ ⦆[ d₀-is-compact ] ⊑⟨ 𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻) ⟩ f
+              → β (l , l-is-bounded) ⊑⟨ 𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻) ⟩ f
+              → β (l⁺ , l⁺-is-bounded) ⊑⟨ 𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻) ⟩ f
+          ⦅3⦆ f f-ub₁ f-ub₂ = ⋁-is-lowerbound-of-upperbounds l⁺-is-bounded-family f h
+           where
+            lem : is-upperbound (underlying-order (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻))) f
+                   (list-of-single-step-functions-family l⁺)
+            lem 𝟎       = f-ub₁
+            lem (suc i) x = pr₁ (list-of-single-step-functions-family l⁺ (suc i)) x ⊑⟪ 𝓔 ⟫[ ⋁-is-upperbound l-is-bounded-family (⌜ ≃-Lift 𝓥 _ ⌝ i) x ]
+                            pr₁ (β (l , l-is-bounded)) x ⊑⟪ 𝓔 ⟫[ f-ub₂ x ]
+                            pr₁ f x ∎⟪ 𝓔 ⟫
+            h : is-upperbound (underlying-order (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻))) f
+                 (list-of-single-step-functions-small-family l⁺)
+            h i = lem (⌜ Lift-≃ 𝓥 _ ⌝ i)
+
+   module _
+           (f : DCPO[ 𝓓 , 𝓔 ⁻ ])
+          where
+
+    _hom-⊑ₛ_ : DCPO[ 𝓓 , 𝓔 ⁻ ] → DCPO[ 𝓓 , 𝓔 ⁻ ] → 𝓥 ̇
+    _hom-⊑ₛ_ = pr₁ (locally-small-exponential-criterion 𝓓 (𝓔 ⁻)
+                   ∣ Bᴰ , βᴰ , compact-basis-is-basis 𝓓 βᴰ κᴰ ∣
+                   -- TODO: Add this as separate lemma?
+                   (locally-small-if-small-basis (𝓔 ⁻) βᴱ (compact-basis-is-basis (𝓔 ⁻) βᴱ κᴱ)))
+
+    -- TODO: Rename and clean up
+    test-family-index : 𝓥 ⊔ 𝓤 ⊔ 𝓣' ̇  -- We make this small later, using hom-⊑ₛ
+    test-family-index = Σ b ꞉ B , β b ⊑⟨ 𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻) ⟩  f
+
+    test-family : test-family-index → DCPO[ 𝓓 , 𝓔 ⁻ ]
+    test-family = β ∘ pr₁
+
+    sup-of-test-family : is-sup (underlying-order (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻))) f test-family
+    sup-of-test-family = (ub , lb-of-ubs)
+     where
+      ub : is-upperbound (underlying-order (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻))) f test-family
+      ub i = pr₂ i
+      lb-of-ubs : is-lowerbound-of-upperbounds
+                   (underlying-order (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻))) f test-family
+      lb-of-ubs g g-is-ub = sup-is-lowerbound-of-upperbounds
+                             (underlying-order (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻)))
+                             (sup-of-single-step-functions f) g
+                             foo
+       where
+        foo : is-upperbound (underlying-order (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻))) g
+               (single-step-functions-below-function-family f)
+        foo (d , e , below-f) x =
+         pr₁ (⦅ βᴰ d ⇒ βᴱ e ⦆[ d̅s-are-compact [ d :: e ] 𝟎 ]) x ⊑⟪ 𝓔 ⟫[ ⋁-is-upperbound ccc (⌜ ≃-Lift 𝓥 _ ⌝ 𝟎) x ]
+         pr₁ (β ([ (d , e) ] , ∣ e , bbb ∣)) x ⊑⟪ 𝓔 ⟫[ g-is-ub (([ (d , e) ] , ∣ e , bbb ∣) , zzz) x ]
+         pr₁ g x ∎⟪ 𝓔 ⟫
+          where
+           bbb : list-of-single-step-functions-bounded-by [ d :: e ] e
+           bbb 𝟎 = ⌜ ⊑ᴮₛ-≃-⊑ᴮ ⌝⁻¹ (reflexivity (𝓔 ⁻) (βᴱ e))
+           ccc : is-bounded (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻))
+                   (list-of-single-step-functions-small-family [ d :: e ])
+           ccc = (list-of-single-step-functions-small-family-is-bounded [ d , e ] ∣ e , bbb ∣)
+           zzz : underlying-order (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻)) (β ([ d :: e ] :: ∣ e :: bbb ∣)) f
+           zzz = ⋁-is-lowerbound-of-upperbounds ccc f yyy
+            where
+             ppp : is-upperbound (underlying-order (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻))) f
+                    (list-of-single-step-functions-family [ d :: e ])
+             ppp 𝟎 = rl-implication (below-single-step-function-criterion (βᴰ d) (βᴱ e)
+                      (d̅s-are-compact [ d :: e ] 𝟎) f) (⌜ ⊑ᴮₛ-≃-⊑ᴮ ⌝ below-f)
+             yyy : is-upperbound (underlying-order (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻))) f
+                    (list-of-single-step-functions-small-family [ d :: e ])
+             yyy i = ppp (⌜ Lift-≃ 𝓥 _ ⌝ i)
 
 \end{code}
