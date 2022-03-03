@@ -599,24 +599,81 @@ module _
         foo : is-upperbound (underlying-order (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻))) g
                (single-step-functions-below-function-family f)
         foo (d , e , below-f) x =
-         pr₁ (⦅ βᴰ d ⇒ βᴱ e ⦆[ d̅s-are-compact [ d :: e ] 𝟎 ]) x ⊑⟪ 𝓔 ⟫[ ⋁-is-upperbound ccc (⌜ ≃-Lift 𝓥 _ ⌝ 𝟎) x ]
-         pr₁ (β ([ (d , e) ] , ∣ e , bbb ∣)) x ⊑⟪ 𝓔 ⟫[ g-is-ub (([ (d , e) ] , ∣ e , bbb ∣) , zzz) x ]
+         pr₁ (⦅ βᴰ d ⇒ βᴱ e ⦆[ d̅s-are-compact [ d , e ] 𝟎 ]) x ⊑⟪ 𝓔 ⟫[ ⋁-is-upperbound ccc (⌜ ≃-Lift 𝓥 _ ⌝ 𝟎) x ]
+         pr₁ (β ([ d , e ] , ∣ e , bbb ∣)) x ⊑⟪ 𝓔 ⟫[ g-is-ub (([ d , e ] , ∣ e , bbb ∣) , zzz) x ]
          pr₁ g x ∎⟪ 𝓔 ⟫
           where
-           bbb : list-of-single-step-functions-bounded-by [ d :: e ] e
+           bbb : list-of-single-step-functions-bounded-by [ d , e ] e -- TODO: Factor this out
            bbb 𝟎 = ⌜ ⊑ᴮₛ-≃-⊑ᴮ ⌝⁻¹ (reflexivity (𝓔 ⁻) (βᴱ e))
            ccc : is-bounded (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻))
-                   (list-of-single-step-functions-small-family [ d :: e ])
+                   (list-of-single-step-functions-small-family [ d , e ])
            ccc = (list-of-single-step-functions-small-family-is-bounded [ d , e ] ∣ e , bbb ∣)
-           zzz : underlying-order (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻)) (β ([ d :: e ] :: ∣ e :: bbb ∣)) f
+           zzz : underlying-order (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻)) (β ([ d , e ] :: ∣ e :: bbb ∣)) f
            zzz = ⋁-is-lowerbound-of-upperbounds ccc f yyy
             where
              ppp : is-upperbound (underlying-order (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻))) f
-                    (list-of-single-step-functions-family [ d :: e ])
+                    (list-of-single-step-functions-family [ d , e ])
              ppp 𝟎 = rl-implication (below-single-step-function-criterion (βᴰ d) (βᴱ e)
-                      (d̅s-are-compact [ d :: e ] 𝟎) f) (⌜ ⊑ᴮₛ-≃-⊑ᴮ ⌝ below-f)
+                      (d̅s-are-compact [ d , e ] 𝟎) f) (⌜ ⊑ᴮₛ-≃-⊑ᴮ ⌝ below-f)
              yyy : is-upperbound (underlying-order (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻))) f
-                    (list-of-single-step-functions-small-family [ d :: e ])
+                    (list-of-single-step-functions-small-family [ d , e ])
              yyy i = ppp (⌜ Lift-≃ 𝓥 _ ⌝ i)
+
+    test-family-index-inhabited : ∥ Bᴰ ∥ → ∥ test-family-index ∥
+    test-family-index-inhabited = ∥∥-rec ∥∥-is-prop γ
+     where
+      γ : Bᴰ → ∥ test-family-index ∥
+      γ d = ∥∥-functor h (small-compact-basis-contains-all-compact-elements (𝓔 ⁻) βᴱ κᴱ (⊥ 𝓔) (⊥-is-compact 𝓔))
+       where
+        h : Σ (λ b → βᴱ b ≡ ⊥ 𝓔) → test-family-index
+        h (e :: refl) = (([ d , e ] , ∣ e , bbb ∣) , zzz)
+         where
+          bbb : list-of-single-step-functions-bounded-by [ d , e ] e -- TODO: Factor this out
+          bbb 𝟎 = ⌜ ⊑ᴮₛ-≃-⊑ᴮ ⌝⁻¹ (reflexivity (𝓔 ⁻) (βᴱ e))
+          ccc : is-bounded (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻))
+                  (list-of-single-step-functions-small-family [ d , e ])
+          ccc = (list-of-single-step-functions-small-family-is-bounded [ d , e ] ∣ e , bbb ∣)
+          zzz : underlying-order (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻)) (β ([ d , e ] :: ∣ e :: bbb ∣)) f
+          zzz = ⋁-is-lowerbound-of-upperbounds ccc f yyy
+           where
+            ppp : is-upperbound (underlying-order (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻))) f
+                   (list-of-single-step-functions-family [ d , e ])
+            ppp 𝟎 = rl-implication (below-single-step-function-criterion (βᴰ d) (βᴱ e)
+                     (d̅s-are-compact [ d , e ] 𝟎) f) (⊥-is-least 𝓔 ([ 𝓓 , 𝓔 ⁻ ]⟨ f ⟩ (βᴰ d))) -- (⌜ ⊑ᴮₛ-≃-⊑ᴮ ⌝ below-f)
+            yyy : is-upperbound (underlying-order (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻))) f
+                   (list-of-single-step-functions-small-family [ d , e ])
+            yyy i = ppp (⌜ Lift-≃ 𝓥 _ ⌝ i)
+
+    test-family-semidirected : is-Semidirected (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻)) test-family
+    test-family-semidirected ((l , l-is-bounded) , l-below-f)
+                             ((k , k-is-bounded) , k-below-f) = {!!}
+     where
+      {- l++k : Vec (Bᴰ × Bᴱ) (n ∔ m)
+      l++k = l ++ k -}
+      l++k : List (Bᴰ × Bᴱ)
+      l++k = (length l ∔ length k , pr₂ l ++ pr₂ k)
+      l++k-is-bounded : list-of-single-step-functions-is-bounded l++k
+      l++k-is-bounded = ∥∥-rec₂ ∃-is-prop {!!} l-is-bounded k-is-bounded
+       where
+        {-
+
+
+        -}
+        {-
+        h : (Σ e ꞉ Bᴱ , list-of-single-step-functions-bounded-by l e)
+          → (Σ e ꞉ Bᴱ , list-of-single-step-functions-bounded-by k e)
+          → (∃ e ꞉ Bᴱ , list-of-single-step-functions-bounded-by l++k e)
+        h = {!!} -} {- (eˡ , eˡ-ub) (eᵏ , eᵏ-ub) =
+         ∥∥-functor {!!}
+                    (small-compact-basis-contains-all-compact-elements (𝓔 ⁻) βᴱ κᴱ y y-is-compact)
+          where
+           y : ⟪ 𝓔 ⟫
+           y = is-bounded-complete.⋁ 𝓔-bounded-complete {!!}
+           y-is-compact : {!!}
+           y-is-compact = {!!} -}
+      l++k-below-f : β (l++k , l++k-is-bounded) ⊑⟨ 𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻) ⟩ f
+      l++k-below-f = {!!} -- TODO: Prove a general lemma on (β l++k)
+
+      -- list-of-single-step-functions-bounded-by
 
 \end{code}
