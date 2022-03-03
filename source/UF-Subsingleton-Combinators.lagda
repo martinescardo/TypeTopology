@@ -72,6 +72,11 @@ module Implication (fe : Fun-Ext) where
    γ : is-prop (P holds → Q holds)
    γ = Π-is-prop fe λ _ → holds-is-prop Q
 
+ open Conjunction
+
+ _↔_ : Ω 𝓤 → Ω 𝓥 → Ω (𝓤 ⊔ 𝓥)
+ P ↔ Q = (P ⇒ Q) ∧ (Q ⇒ P)
+
 \end{code}
 
 \section{Disjunction}

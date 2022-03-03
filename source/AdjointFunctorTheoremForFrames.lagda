@@ -37,8 +37,9 @@ module AdjointFunctorTheorem (K : frame 𝓤  𝓥  𝓥)
 
 \begin{code}
 
- Kₚ = poset-of K
- Lₚ = poset-of L
+ private
+  Kₚ = poset-of K
+  Lₚ = poset-of L
 
  open GaloisConnectionBetween Kₚ Lₚ
 
@@ -147,11 +148,11 @@ module AdjointFunctorTheorem (K : frame 𝓤  𝓥  𝓥)
 
        β₂ : (x ≤[ Kₚ ] g y ⇒ f x ≤[ Lₚ ] y) holds
        β₂ p =
-        f x                                     ≤⟨ μf (x , g y) p                ⟩
-        f (g y)                                 ≡⟨ refl                          ⟩ₚ
-        f (⋁[ K ] ⁅ ℬ [ i ] ∣ (i , _) ∶ 𝒦 y ⁆)  ≡⟨ φ ⁅ ℬ [ i ] ∣ (i , _) ∶ 𝒦 y ⁆ ⟩ₚ
-        ⋁[ L ] ⁅ f (ℬ [ i ]) ∣ (i , _) ∶ 𝒦 y ⁆  ≤⟨ †                             ⟩
-        y                                       ■
+        f x                                    ≤⟨ μf (x , g y) p                ⟩
+        f (g y)                                ≡⟨ refl                          ⟩ₚ
+        f (⋁[ K ] ⁅ ℬ [ i ] ∣ (i , _) ∶ 𝒦 y ⁆) ≡⟨ φ ⁅ ℬ [ i ] ∣ (i , _) ∶ 𝒦 y ⁆ ⟩ₚ
+        ⋁[ L ] ⁅ f (ℬ [ i ]) ∣ (i , _) ∶ 𝒦 y ⁆ ≤⟨ †                             ⟩
+        y                                      ■
          where
           open PosetReasoning Lₚ
 
@@ -162,5 +163,17 @@ module AdjointFunctorTheorem (K : frame 𝓤  𝓥  𝓥)
  aft : (𝒻 : Kₚ ─m→ Lₚ)
      → has-right-adjoint 𝒻 ⇔ is-join-preserving K L (𝒻 .pr₁) holds
  aft 𝒻 = aft-forward 𝒻 , aft-backward 𝒻
+
+ right-adjoint-of : (K ─f→ L) → Lₚ ─m→ Kₚ
+ right-adjoint-of 𝒽@(h , υ@(_ , _ , jp)) = pr₁ (aft-backward hₘ γ)
+  where
+   hₘ : Kₚ ─m→ Lₚ
+   hₘ = h , frame-morphisms-are-monotonic K L h υ
+
+   γ : is-join-preserving K L h holds
+   γ S = ⋁[ L ]-unique ⁅ h s ∣ s ε S ⁆ (h (⋁[ K ] S)) (jp S)
+
+ _^* : (K ─f→ L) → ⟨ L ⟩ → ⟨ K ⟩
+ _^* = pr₁ ∘ right-adjoint-of
 
 \end{code}
