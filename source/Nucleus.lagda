@@ -29,23 +29,32 @@ open AllCombinators pt fe
 
 \begin{code}
 
+is-inflationary : (L : frame 𝓤 𝓥 𝓦) → (⟨ L ⟩ → ⟨ L ⟩) → Ω (𝓤 ⊔ 𝓥)
+is-inflationary L j = Ɐ x ∶ ⟨ L ⟩ , x ≤[ poset-of L ] j x
+
+is-idempotent : (L : frame 𝓤 𝓥 𝓦) → (⟨ L ⟩ → ⟨ L ⟩) → Ω (𝓤 ⊔ 𝓥)
+is-idempotent L j = Ɐ x ∶ ⟨ L ⟩ , j (j x) ≤[ poset-of L ] j x
+
+preserves-meets : (L : frame 𝓤 𝓥 𝓦) → (⟨ L ⟩ → ⟨ L ⟩) → Ω 𝓤
+preserves-meets L j =
+ Ɐ x ∶ ⟨ L ⟩ , Ɐ y ∶ ⟨ L ⟩ , (j (x ∧[ L ] y) ≡[ ψ ]≡ j x ∧[ L ] j y)
+  where
+   ψ : is-set ⟨ L ⟩
+   ψ = carrier-of-[ poset-of L ]-is-set
+
 is-nuclear : (L : frame 𝓤 𝓥 𝓦) → (⟨ L ⟩ → ⟨ L ⟩) → Ω (𝓤 ⊔ 𝓥)
 is-nuclear {𝓤 = 𝓤} {𝓥} {𝓦} F j = 𝓃₁ ∧  𝓃₂ ∧ 𝓃₃
  where
   open PosetNotation (poset-of F)
 
-  ψ : is-set ⟨ F ⟩
-  ψ = carrier-of-[ poset-of F ]-is-set
-
   𝓃₁ : Ω (𝓤 ⊔ 𝓥)
-  𝓃₁ = Ɐ x ∶ ⟨ F ⟩ , x ≤[ poset-of F ] j x
+  𝓃₁ = is-inflationary F j
 
   𝓃₂ : Ω (𝓤 ⊔ 𝓥)
-  𝓃₂ = Ɐ x ∶ ⟨ F ⟩ , j (j x) ≤[ poset-of F ] j x
+  𝓃₂ = is-idempotent F j
 
   𝓃₃ : Ω 𝓤
-  𝓃₃ = Ɐ x ∶ ⟨ F ⟩ , Ɐ y ∶ ⟨ F ⟩ ,
-        (j (x ∧[ F ] y) ≡[ ψ ]≡ j x ∧[ F ] j y)
+  𝓃₃ = preserves-meets F j
 
 \end{code}
 
