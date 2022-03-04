@@ -41,7 +41,7 @@ import CoNaturalsArithmetic
 import CoNaturalsExercise
 import CoNaturals
 import ConvergentSequenceCompact
-import ConvergentSequenceInfCompact
+import ConvergentSequenceHasLeast
 import DecidabilityOfNonContinuity
 import ExtendedSumCompact
 import FailureOfTotalSeparatedness

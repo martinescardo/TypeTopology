@@ -35,7 +35,7 @@ import CompactRegular
 import CompactTypes
 import Compactness
 import ConvergentSequenceCompact
-import ConvergentSequenceInfCompact
+import ConvergentSequenceHasLeast
 import Dcpo
 import DcpoBilimits
 import DcpoBilimitsSequential
@@ -148,6 +148,7 @@ import OrdinalArithmetic-Properties
 import OrdinalArithmetic
 import OrdinalCodes
 import OrdinalNotationInterpretation
+import OrdinalExtendedNotationInterpretation
 import OrdinalNotions
 import OrdinalOfOrdinals
 import OrdinalOfTruthValues

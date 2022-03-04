@@ -71,7 +71,7 @@ We now develop a discrete (but not compact) version Σ₁ X of Σ¹ X
 with a dense embedding into Σ¹ X, where an embedding is called dense
 if the complement of its image is empty. Recall that the function
 
-  over𝟙 : ℕ + 𝟙 → ℕ∞
+  ι𝟙 : ℕ + 𝟙 → ℕ∞
 
 is the canonical embedding that maps the added isolated point to ∞,
 which is dense.
@@ -95,7 +95,7 @@ over-is-discrete : (X : ℕ → 𝓤 ̇ )
                  → (z : ℕ + 𝟙) → is-discrete ((X / over) z)
 over-is-discrete X d (inl n) = retract-is-discrete
                                  (≃-gives-◁
-                                   (Π-extension-in-range X over
+                                   (Π-extension-property X over
                                       over-embedding n))
                                  (d n)
 over-is-discrete X d (inr *) = retract-is-discrete {𝓤₀}
@@ -121,8 +121,8 @@ The type (X / over) z is densely embedded into the type
 over-ι : (X : ℕ → 𝓤 ̇ ) (z : ℕ + 𝟙)
            → (X / over) z ↪ᵈ (X / ι) (ι𝟙 z)
 over-ι X (inl n) = equiv-dense-embedding (
- (X / over) (over n)   ≃⟨ Π-extension-in-range X over over-embedding n ⟩
- X n                   ≃⟨ ≃-sym (Π-extension-in-range X ι (ι-embedding fe₀) n) ⟩
+ (X / over) (over n)   ≃⟨ Π-extension-property X over over-embedding n ⟩
+ X n                   ≃⟨ ≃-sym (Π-extension-property X ι (ι-embedding fe₀) n) ⟩
  (X / ι) (ι n) ■)
 over-ι X (inr *) = equiv-dense-embedding (
  (X / over) (inr *) ≃⟨ Π-extension-out-of-range X over (inr *) (λ x → +disjoint ) ⟩
@@ -173,7 +173,7 @@ the compact type Σ¹ X:
 Σ-up-embedding X = pair-fun-is-embedding
                     ι𝟙
                     (over-ι-map X)
-                    (ι𝟙-embedding fe₀)
+                    (ι𝟙-is-embedding fe₀)
                     (λ z → is-embedding-detofun (over-ι X z))
 
 Σ-up-dense : (X : ℕ → 𝓤 ̇ ) → is-dense (Σ-up X)
@@ -200,9 +200,9 @@ Over : (X : ℕ → 𝓤 ̇ ) (Y : ℕ → 𝓤 ̇ )
        (f : (n : ℕ) → X n → Y n)
      → (z : ℕ + 𝟙) → (X / over) z → (Y / over) z
 Over X Y f (inl n) =
-  ⌜ Π-extension-in-range Y over over-embedding n ⌝⁻¹ ∘
+  ⌜ Π-extension-property Y over over-embedding n ⌝⁻¹ ∘
   f n ∘
-  ⌜ Π-extension-in-range X over over-embedding n ⌝
+  ⌜ Π-extension-property X over over-embedding n ⌝
 Over X Y f (inr *) =
   _∘_ {_} {𝓤₀}
    ⌜ Π-extension-out-of-range Y over (inr *) (λ _ → +disjoint) ⌝⁻¹
@@ -233,21 +233,21 @@ Over-dense : (X : ℕ → 𝓤 ̇ ) (Y : ℕ → 𝓤 ̇ )
            → ((n : ℕ) → is-dense (f n))
            → (z : ℕ + 𝟙) → is-dense (Over X Y f z)
 Over-dense X Y f d (inl n) =
- comp-dense
-  (comp-dense
-    (is-equiv-is-dense
-      ⌜ Π-extension-in-range X over over-embedding n ⌝
-      (⌜⌝-is-equiv (Π-extension-in-range X over over-embedding n)))
+ comp-is-dense
+  (comp-is-dense
+    (equivs-are-dense
+      ⌜ Π-extension-property X over over-embedding n ⌝
+      (⌜⌝-is-equiv (Π-extension-property X over over-embedding n)))
     (d n))
-  (is-equiv-is-dense
-    ⌜ Π-extension-in-range Y over over-embedding n ⌝⁻¹
-    (⌜⌝-is-equiv (≃-sym (Π-extension-in-range Y over over-embedding n))))
+  (equivs-are-dense
+    ⌜ Π-extension-property Y over over-embedding n ⌝⁻¹
+    (⌜⌝-is-equiv (≃-sym (Π-extension-property Y over over-embedding n))))
 Over-dense X Y f d (inr ⋆) =
- comp-dense {_} {𝓤₀}
-  (is-equiv-is-dense
+ comp-is-dense {_} {𝓤₀}
+  (equivs-are-dense
     ⌜ Π-extension-out-of-range X over (inr ⋆) (λ x → +disjoint) ⌝
     (⌜⌝-is-equiv (Π-extension-out-of-range X over (inr ⋆) (λ x → +disjoint))))
-  (is-equiv-is-dense
+  (equivs-are-dense
     ⌜ Π-extension-out-of-range Y over (inr ⋆) (λ x → +disjoint) ⌝⁻¹
    (⌜⌝-is-equiv (≃-sym (Π-extension-out-of-range Y over (inr ⋆) (λ x → +disjoint)))))
 
@@ -259,12 +259,12 @@ Over-embedding {𝓤} X Y f d (inl n) =
  ∘-is-embedding
   (∘-is-embedding
     (equivs-are-embeddings
-      ⌜ Π-extension-in-range X over over-embedding n ⌝
-      (⌜⌝-is-equiv (Π-extension-in-range X over over-embedding n)))
+      ⌜ Π-extension-property X over over-embedding n ⌝
+      (⌜⌝-is-equiv (Π-extension-property X over over-embedding n)))
     (d n))
   (equivs-are-embeddings
-    ⌜ Π-extension-in-range Y over over-embedding n ⌝⁻¹
-   (⌜⌝-is-equiv (≃-sym (Π-extension-in-range Y over over-embedding n))))
+    ⌜ Π-extension-property Y over over-embedding n ⌝⁻¹
+   (⌜⌝-is-equiv (≃-sym (Π-extension-property Y over over-embedding n))))
 Over-embedding {𝓤} X Y f d (inr ⋆) =
  ∘-is-embedding {𝓤} {𝓤₀}
   (equivs-are-embeddings
@@ -307,7 +307,7 @@ Over-embedding {𝓤} X Y f d (inr ⋆) =
            (f : (n : ℕ) → X n → Y n)
          → ((n : ℕ) → is-dense (f n))
          → is-dense (Σ↑ X Y f)
-Σ↑-dense X Y f d = comp-dense (Σ₁-functor-dense X Y f d) (Σ-up-dense Y)
+Σ↑-dense X Y f d = comp-is-dense (Σ₁-functor-dense X Y f d) (Σ-up-dense Y)
 
 Σ↑-embedding : (X : ℕ → 𝓤 ̇ ) (Y : ℕ → 𝓤 ̇ )
                (f : (n : ℕ) → X n → Y n)

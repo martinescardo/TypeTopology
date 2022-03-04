@@ -127,7 +127,6 @@ open import ToppedOrdinalArithmetic fe
 open import OrdinalsClosure fe
 open import OrdinalCodes
 open import CompactTypes
-open import InfCompact
 open import TotallySeparated
 open import SquashedSum fe
 open import SquashedCantor fe hiding (Κ)
@@ -145,33 +144,33 @@ _≺⟪ τ ⟫_ denotes its underlying order.
 
 \begin{code}
 
-Κ                      : OE → Ordᵀ
-Κ-compact∙             : (ν : OE) → compact∙ ⟪ Κ ν ⟫
-Κ-Cantor-retract       : (ν : OE) → retract ⟪ Κ ν ⟫ of (ℕ → 𝟚)
-Κ-is-totally-separated : (ν : OE) → is-totally-separated ⟪ Κ ν ⟫
+Κ                            : OE → Ordᵀ
+Κ-compact∙                   : (ν : OE) → compact∙ ⟪ Κ ν ⟫
+Κ-Cantor-retract             : (ν : OE) → retract ⟪ Κ ν ⟫ of (ℕ → 𝟚)
+Κ-is-totally-separated       : (ν : OE) → is-totally-separated ⟪ Κ ν ⟫
 
-Δ                      : OE → Ordᵀ
-Δ-retract-of-ℕ         : (ν : OE) → retract ⟪ Δ ν ⟫ of ℕ
-Δ-is-discrete          : (ν : OE) → is-discrete ⟪ Δ ν ⟫
+Δ                            : OE → Ordᵀ
+Δ-retract-of-ℕ               : (ν : OE) → retract ⟪ Δ ν ⟫ of ℕ
+Δ-is-discrete                : (ν : OE) → is-discrete ⟪ Δ ν ⟫
 
-ι                      : {ν : OE} → ⟪ Δ ν ⟫ → ⟪ Κ ν ⟫
-ι-dense                : (ν : OE) → is-dense (ι {ν})
-ι-embedding            : (ν : OE) → is-embedding (ι {ν})
+ι                            : {ν : OE} → ⟪ Δ ν ⟫ → ⟪ Κ ν ⟫
+ι-is-dense                   : (ν : OE) → is-dense (ι {ν})
+ι-is-embedding               : (ν : OE) → is-embedding (ι {ν})
 
-ι-order-preserving     : (ν : OE) (x y : ⟪ Δ ν ⟫)
-                            →   x ≺⟪ Δ ν ⟫   y
-                            → ι x ≺⟪ Κ ν ⟫ ι y
+ι-is-order-preserving        : (ν : OE) (x y : ⟪ Δ ν ⟫)
+                             →   x ≺⟪ Δ ν ⟫   y
+                             → ι x ≺⟪ Κ ν ⟫ ι y
 
-ι-order-reflecting     : (ν : OE) (x y : ⟪ Δ ν ⟫)
-                            → ι x ≺⟪ Κ ν ⟫ ι y
-                            →   x ≺⟪ Δ ν ⟫   y
+ι-is-order-reflecting        : (ν : OE) (x y : ⟪ Δ ν ⟫)
+                             → ι x ≺⟪ Κ ν ⟫ ι y
+                             →   x ≺⟪ Δ ν ⟫   y
 
-Κ-inf-compact          : propext 𝓤₀
-                       → (ν : OE) → inf-compact (λ x y → x ≼⟪ Κ ν ⟫ y)
+Κ-has-least-element-property : propext 𝓤₀
+                             → (ν : OE) → has-least-element-property (Κ ν)
 
-brouwer-to-oe          : B → OE
-ε₀-upper-bound         : Ordᵀ
-compact∙-ε₀-ub         : compact∙ ⟪ ε₀-upper-bound ⟫
+brouwer-to-oe                : B → OE
+ε₀-upper-bound               : Ordᵀ
+compact∙-ε₀-ub               : compact∙ ⟪ ε₀-upper-bound ⟫
 
 \end{code}
 
@@ -274,89 +273,89 @@ order preserving and reflecting (28 July 2018).
 ι {Mul ν μ} = pair-fun (ι {ν}) (λ _ → ι {μ})
 ι {Sum1 ν}  = ∑↑ (λ n → Δ (ν n)) (λ n → Κ (ν n)) (λ n → ι {ν n})
 
-ι-dense One       = id-is-dense
-ι-dense (Add ν μ) = pair-fun-dense
-                     id
-                    (dep-cases (λ _ → ι {ν}) (λ _ → ι {μ}))
-                    id-is-dense
-                    (dep-cases (λ _ → ι-dense ν) (λ _ → ι-dense μ))
-ι-dense (Mul ν μ) = pair-fun-dense _ _
-                    (ι-dense ν)
-                    (λ _ → ι-dense μ)
-ι-dense (Sum1 ν) =  Σ↑-dense
-                     (λ n → ⟪ Δ (ν n) ⟫)
-                     (λ n → ⟪ Κ (ν n) ⟫)
-                     (λ n → ι {ν n})
-                     (λ i → ι-dense (ν i))
+ι-is-dense One       = id-is-dense
+ι-is-dense (Add ν μ) = pair-fun-dense
+                        id
+                        (dep-cases (λ _ → ι {ν}) (λ _ → ι {μ}))
+                        id-is-dense
+                        (dep-cases (λ _ → ι-is-dense ν) (λ _ → ι-is-dense μ))
+ι-is-dense (Mul ν μ) = pair-fun-dense _ _
+                        (ι-is-dense ν)
+                        (λ _ → ι-is-dense μ)
+ι-is-dense (Sum1 ν) =  Σ↑-dense
+                        (λ n → ⟪ Δ (ν n) ⟫)
+                        (λ n → ⟪ Κ (ν n) ⟫)
+                        (λ n → ι {ν n})
+                        (λ i → ι-is-dense (ν i))
 
-ι-embedding One       = id-is-embedding
-ι-embedding (Add ν μ) = pair-fun-is-embedding
-                         id
-                         (dep-cases (λ _ → ι {ν}) (λ _ → ι {μ}))
-                         id-is-embedding
-                         (dep-cases (λ _ → ι-embedding ν) (λ _ → ι-embedding μ))
-ι-embedding (Mul ν μ) = pair-fun-is-embedding _ _
-                         (ι-embedding ν)
-                         (λ _ → ι-embedding μ)
-ι-embedding (Sum1 ν)  = Σ↑-embedding
-                         (λ n → ⟪ Δ (ν n) ⟫)
-                         (λ n → ⟪ Κ (ν n) ⟫)
-                         (λ n → ι {ν n})
-                         (λ i → ι-embedding (ν i))
+ι-is-embedding One       = id-is-embedding
+ι-is-embedding (Add ν μ) = pair-fun-is-embedding
+                            id
+                            (dep-cases (λ _ → ι {ν}) (λ _ → ι {μ}))
+                            id-is-embedding
+                            (dep-cases (λ _ → ι-is-embedding ν) (λ _ → ι-is-embedding μ))
+ι-is-embedding (Mul ν μ) = pair-fun-is-embedding _ _
+                            (ι-is-embedding ν)
+                            (λ _ → ι-is-embedding μ)
+ι-is-embedding (Sum1 ν)  = Σ↑-embedding
+                            (λ n → ⟪ Δ (ν n) ⟫)
+                            (λ n → ⟪ Κ (ν n) ⟫)
+                            (λ n → ι {ν n})
+                            (λ i → ι-is-embedding (ν i))
 
-ι-order-preserving One       = λ x y l → l
-ι-order-preserving (Add ν μ) = pair-fun-is-order-preserving
-                                𝟚ᵒ
-                                𝟚ᵒ
-                                (cases (λ _ → Δ ν) (λ _ → Δ μ))
-                                (cases (λ _ → Κ ν) (λ _ → Κ μ))
-                                id
-                                (dep-cases (λ _ → ι {ν}) (λ _ → ι {μ}))
-                                (λ x y l → l)
-                                (dep-cases (λ _ → ι-order-preserving ν)
-                                           (λ _ → ι-order-preserving μ))
-ι-order-preserving (Mul ν μ) = pair-fun-is-order-preserving
-                                (Δ ν)
-                                (Κ ν)
-                                (λ _ → Δ μ)
-                                (λ _ → Κ μ)
-                                (ι {ν})
-                                (λ _ → ι {μ})
-                                (ι-order-preserving ν)
-                                (λ _ → ι-order-preserving μ)
-ι-order-preserving (Sum1 ν) = ∑↑-is-order-preserving
-                                (Δ ∘ ν)
-                                (Κ ∘ ν)
-                                (λ n → ι {ν n})
-                                (λ i → ι-order-preserving (ν i))
+ι-is-order-preserving One       = λ x y l → l
+ι-is-order-preserving (Add ν μ) = pair-fun-is-order-preserving
+                                   𝟚ᵒ
+                                   𝟚ᵒ
+                                   (cases (λ _ → Δ ν) (λ _ → Δ μ))
+                                   (cases (λ _ → Κ ν) (λ _ → Κ μ))
+                                   id
+                                   (dep-cases (λ _ → ι {ν}) (λ _ → ι {μ}))
+                                   (λ x y l → l)
+                                   (dep-cases (λ _ → ι-is-order-preserving ν)
+                                              (λ _ → ι-is-order-preserving μ))
+ι-is-order-preserving (Mul ν μ) = pair-fun-is-order-preserving
+                                   (Δ ν)
+                                   (Κ ν)
+                                   (λ _ → Δ μ)
+                                   (λ _ → Κ μ)
+                                   (ι {ν})
+                                   (λ _ → ι {μ})
+                                   (ι-is-order-preserving ν)
+                                   (λ _ → ι-is-order-preserving μ)
+ι-is-order-preserving (Sum1 ν) = ∑↑-is-order-preserving
+                                  (Δ ∘ ν)
+                                  (Κ ∘ ν)
+                                  (λ n → ι {ν n})
+                                  (λ i → ι-is-order-preserving (ν i))
 
-ι-order-reflecting One       = λ x y l → l
-ι-order-reflecting (Add ν μ) = pair-fun-is-order-reflecting
-                                𝟚ᵒ
-                                𝟚ᵒ
-                                (cases (λ _ → Δ ν) (λ _ → Δ μ))
-                                (cases (λ _ → Κ ν) (λ _ → Κ μ))
-                                id
-                                (dep-cases (λ _ → ι {ν}) (λ _ → ι {μ}))
-                                (λ x y l → l)
-                                id-is-embedding
-                                (dep-cases (λ _ → ι-order-reflecting ν)
-                                           (λ _ → ι-order-reflecting μ))
-ι-order-reflecting (Mul ν μ) = pair-fun-is-order-reflecting
-                                (Δ ν)
-                                (Κ ν)
-                                (λ _ → Δ μ)
-                                (λ _ → Κ μ)
-                                (ι {ν})
-                                (λ _ → ι {μ})
-                                (ι-order-reflecting ν)
-                                (ι-embedding ν)
-                                (λ _ → ι-order-reflecting μ)
-ι-order-reflecting (Sum1 ν)  = ∑↑-is-order-reflecting
-                                (Δ ∘ ν)
-                                (Κ ∘ ν)
-                                (λ n → ι {ν n})
-                                (λ i → ι-order-reflecting (ν i))
+ι-is-order-reflecting One       = λ x y l → l
+ι-is-order-reflecting (Add ν μ) = pair-fun-is-order-reflecting
+                                    𝟚ᵒ
+                                    𝟚ᵒ
+                                    (cases (λ _ → Δ ν) (λ _ → Δ μ))
+                                    (cases (λ _ → Κ ν) (λ _ → Κ μ))
+                                    id
+                                    (dep-cases (λ _ → ι {ν}) (λ _ → ι {μ}))
+                                    (λ x y l → l)
+                                    id-is-embedding
+                                    (dep-cases (λ _ → ι-is-order-reflecting ν)
+                                               (λ _ → ι-is-order-reflecting μ))
+ι-is-order-reflecting (Mul ν μ) = pair-fun-is-order-reflecting
+                                   (Δ ν)
+                                   (Κ ν)
+                                   (λ _ → Δ μ)
+                                   (λ _ → Κ μ)
+                                   (ι {ν})
+                                   (λ _ → ι {μ})
+                                   (ι-is-order-reflecting ν)
+                                   (ι-is-embedding ν)
+                                   (λ _ → ι-is-order-reflecting μ)
+ι-is-order-reflecting (Sum1 ν)  = ∑↑-is-order-reflecting
+                                    (Δ ∘ ν)
+                                    (Κ ∘ ν)
+                                    (λ n → ι {ν n})
+                                    (λ i → ι-is-order-reflecting (ν i))
 \end{code}
 
 As discussed in the module Ordinals, propositional extensionality in
@@ -365,22 +364,22 @@ much easier (given the mathematics we have already developed).
 
 \begin{code}
 
-Κ-inf-compact pe One       = 𝟙ᵒ-inf-compact
-Κ-inf-compact pe (Add ν μ) = ∑-inf-compact pe
-                               𝟚ᵒ
-                               (cases (λ _ → Κ ν) (λ _ → Κ μ))
-                               𝟚ᵒ-inf-compact
-                               (dep-cases (λ _ → Κ-inf-compact pe ν)
-                                          (λ _ → Κ-inf-compact pe μ))
-Κ-inf-compact pe (Mul ν μ) = ∑-inf-compact pe
-                               (Κ ν)
-                               (λ _ → Κ μ)
-                               (Κ-inf-compact pe ν)
-                               (λ _ → Κ-inf-compact pe μ)
-Κ-inf-compact pe (Sum1 ν) = ∑₁-inf-compact
-                               pe
-                               (Κ ∘ ν)
-                               (λ i → Κ-inf-compact pe (ν i))
+Κ-has-least-element-property pe One       = 𝟙ᵒ-has-least-element-property
+Κ-has-least-element-property pe (Add ν μ) = ∑-has-least-element-property pe
+                                             𝟚ᵒ
+                                             (cases (λ _ → Κ ν) (λ _ → Κ μ))
+                                             𝟚ᵒ-has-least-element-property
+                                             (dep-cases (λ _ → Κ-has-least-element-property pe ν)
+                                                        (λ _ → Κ-has-least-element-property pe μ))
+Κ-has-least-element-property pe (Mul ν μ) = ∑-has-least-element-property pe
+                                             (Κ ν)
+                                             (λ _ → Κ μ)
+                                             (Κ-has-least-element-property pe ν)
+                                             (λ _ → Κ-has-least-element-property pe μ)
+Κ-has-least-element-property pe (Sum1 ν) = ∑₁-has-least-element-property
+                                             pe
+                                             (Κ ∘ ν)
+                                             (λ i → Κ-has-least-element-property pe (ν i))
 \end{code}
 
 Added 31 July 2018:

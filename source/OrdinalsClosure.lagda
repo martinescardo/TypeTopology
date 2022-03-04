@@ -24,11 +24,11 @@ open import SquashedSum fe
 open import SquashedCantor fe
 open import LexicographicOrder
 open import LexicographicCompactness
-open import ConvergentSequenceInfCompact
+open import ConvergentSequenceHasLeast
 open import PropInfTychonoff
 open import DiscreteAndSeparated
 open import BinaryNaturals hiding (_+_ ; L ; R)
-open import InfCompact
+open import LeastElementProperty
 open import Plus-Properties
 open import CanonicalMapNotation
 
@@ -193,9 +193,11 @@ comp-is-order-preserving : (τ υ φ : Ordᵀ)  (f : ⟪ τ ⟫ → ⟪ υ ⟫
                          → is-order-preserving τ φ (g ∘ f)
 comp-is-order-preserving τ υ φ f g p q x y l = q (f x) (f y) (p x y l)
 
-pair-fun-is-order-preserving : (τ υ : Ordᵀ) (A : ⟪ τ ⟫ → Ordᵀ) (B : ⟪ υ ⟫ → Ordᵀ)
+pair-fun-is-order-preserving : (τ υ : Ordᵀ)
+                               (A : ⟪ τ ⟫ → Ordᵀ)
+                               (B : ⟪ υ ⟫ → Ordᵀ)
                                (f : ⟪ τ ⟫ → ⟪ υ ⟫)
-                               (g  : (x : ⟪ τ ⟫) → ⟪ A x ⟫ → ⟪ B (f x) ⟫)
+                               (g : (x : ⟪ τ ⟫) → ⟪ A x ⟫ → ⟪ B (f x) ⟫)
                              → is-order-preserving τ υ f
                              → ((x : ⟪ τ ⟫) → is-order-preserving (A x) (B (f x)) (g x))
                              → is-order-preserving (∑ τ A) (∑ υ B) (pair-fun f g)
@@ -401,7 +403,7 @@ over-ι-map-is-order-reflecting τ (inr *) x y ((m , p) , l) = 𝟘-elim (∞-is
                                ι𝟙ᵒ
                                (over-ι-map (λ n → ⟪ τ n ⟫))
                                ι𝟙ᵒ-is-order-reflecting
-                               (ι𝟙-embedding fe₀)
+                               (ι𝟙-is-embedding fe₀)
                                (over-ι-map-is-order-reflecting τ)
 
 Overᵒ-is-order-reflecting : (τ υ : ℕ → Ordᵀ) (f : (n : ℕ) → ⟪ τ n ⟫ → ⟪ υ n ⟫)
@@ -444,12 +446,12 @@ Overᵒ-is-order-reflecting τ υ f p (inr *) x y ((n , q) , l) = 𝟘-elim (+di
                                  (∑-up-is-order-reflecting υ)
 \end{code}
 
-28 July 2018. Inf compactness.
+28 July 2018. Least element property.
 
 \begin{code}
 
-𝟙ᵒ-inf-compact : inf-compact (λ x y → x ≼⟪ 𝟙ᵒ ⟫ y)
-𝟙ᵒ-inf-compact p = ⋆ , f , g , h
+𝟙ᵒ-has-least-element-property : has-least-element-property 𝟙ᵒ
+𝟙ᵒ-has-least-element-property p = ⋆ , f , g , h
  where
   f : (Σ x ꞉ 𝟙 , p x ≡ ₀) → p ⋆ ≡ ₀
   f (⋆ , r) = r
@@ -459,8 +461,8 @@ Overᵒ-is-order-reflecting τ υ f p (inr *) x y ((n , q) , l) = 𝟘-elim (+di
     → x ≼⟪ 𝟙ᵒ ⟫ ⋆
   h ⋆ φ a = 𝟘-elim a
 
-𝟚ᵒ-inf-compact : inf-compact (λ x y → x ≼⟪ 𝟚ᵒ ⟫ y)
-𝟚ᵒ-inf-compact p = 𝟚-equality-cases φ γ
+𝟚ᵒ-has-least-element-property : has-least-element-property 𝟚ᵒ
+𝟚ᵒ-has-least-element-property p = 𝟚-equality-cases φ γ
  where
   _≤_ : 𝟙 + 𝟙 → 𝟙 + 𝟙 → 𝓤₀ ̇
   x ≤ y = x ≼⟪ 𝟚ᵒ ⟫ y
@@ -498,17 +500,17 @@ Overᵒ-is-order-reflecting τ υ f p (inr *) x y ((n , q) , l) = 𝟘-elim (+di
 
 It is not necessary to use propositional extensionality to prove the
 following, but it is simpler to do so given that we have already
-proved the inf-compactness of various types using different,
+proved the has-least-element-propertyness of various types using different,
 logically equivalent orders.
 
 \begin{code}
 
-∑-inf-compact : propext 𝓤₀
+∑-has-least-element-property : propext 𝓤₀
               → (τ : Ordᵀ) (υ : ⟪ τ ⟫ → Ordᵀ)
-              → inf-compact (λ x y → x ≼⟪ τ ⟫ y)
-              → ((x : ⟪ τ ⟫) → inf-compact (λ a b → a ≼⟪ υ x ⟫ b))
-              → inf-compact (λ z t → z ≼⟪ ∑ τ υ ⟫ t)
-∑-inf-compact pe τ υ ε δ = γ
+              → has-least-element-property τ
+              → ((x : ⟪ τ ⟫) → has-least-element-property (υ x))
+              → has-least-element-property (∑ τ υ)
+∑-has-least-element-property pe τ υ ε δ = γ
  where
   _≤_ : ⟪ ∑ τ υ ⟫ → ⟪ ∑ τ υ ⟫ → 𝓤₀ ̇
   _≤_ = lex-order (λ x y → x ≼⟪ τ ⟫ y) (λ {x} a b → a ≼⟪ υ x ⟫ b)
@@ -519,8 +521,8 @@ logically equivalent orders.
      (≼-prop-valued τ x y p q ,
      dfunext fe₀ (λ r → ≼-prop-valued (υ y) _ _ _ _))
 
-  φ : inf-compact _≤_
-  φ = Σ-inf-compact ((λ x y → x ≼⟪ τ ⟫ y)) ((λ {x} a b → a ≼⟪ υ x ⟫ b)) ε δ
+  φ : has-least _≤_
+  φ = Σ-has-least ((λ x y → x ≼⟪ τ ⟫ y)) ((λ {x} a b → a ≼⟪ υ x ⟫ b)) ε δ
   open commutation (tunderlying-order τ) (λ {x} → tunderlying-order (υ x)) (𝟘 {𝓤₀}) hiding (_≤_)
   i : (z t : ⟪ ∑ τ υ ⟫) → z ≤ t → z ≼⟪ ∑ τ υ ⟫ t
   i (x , a) (y , b) = back y x b a
@@ -533,18 +535,12 @@ logically equivalent orders.
 
   l : _≤_ ≡ (λ z t → z ≼⟪ ∑ τ υ ⟫ t)
   l = dfunext (fe 𝓤₀ 𝓤₁) λ z → dfunext (fe 𝓤₀ 𝓤₁) (k z)
-  γ : inf-compact (λ z t → z ≼⟪ ∑ τ υ ⟫ t)
-  γ = transport inf-compact l φ
 
-∑₁-inf-compact : propext 𝓤₀
-               → (τ : ℕ → Ordᵀ)
-               → ((n : ℕ) → inf-compact λ x y → x ≼⟪ τ n ⟫ y)
-               → inf-compact (λ z t → z ≼⟪ ∑¹ τ ⟫ t)
-∑₁-inf-compact pe τ ε = ∑-inf-compact pe
-                            ℕ∞ᵒ
-                            (λ (x : ℕ∞) → (τ ↗ (ι , ι-embedding fe₀)) x)
-                            a
-                            b
+  γ : has-least-element-property (∑ τ υ)
+  γ = transport has-least l φ
+
+ℕ∞ᵒ-has-least-element-property : propext 𝓤₀ → has-least-element-property ℕ∞ᵒ
+ℕ∞ᵒ-has-least-element-property pe = transport has-least p (ℕ∞-has-least fe₀)
  where
   p : _≼ℕ∞_ ≡ tunderlying-rorder ℕ∞ᵒ
   p = dfunext (fe 𝓤₀ 𝓤₁)
@@ -554,13 +550,19 @@ logically equivalent orders.
                           (≼-not-≺ u v)
                           (not-≺-≼ fe₀ u v)))
 
-  a : inf-compact (tunderlying-rorder ℕ∞ᵒ)
-  a = transport inf-compact p (ℕ∞-inf-compact fe₀)
 
-  b : (x : ⟪ ℕ∞ᵒ ⟫) → inf-compact
-                        (tunderlying-rorder
-                        ((τ ↗ (ι , ι-embedding fe₀)) x))
-  b x = prop-inf-tychonoff fe
+∑₁-has-least-element-property : propext 𝓤₀
+               → (τ : ℕ → Ordᵀ)
+               → ((n : ℕ) → has-least-element-property (τ n))
+               → has-least-element-property (∑¹ τ)
+∑₁-has-least-element-property pe τ ε = ∑-has-least-element-property pe
+                            ℕ∞ᵒ
+                            (λ (x : ℕ∞) → (τ ↗ (ι , ι-embedding fe₀)) x)
+                            (ℕ∞ᵒ-has-least-element-property pe)
+                            a
+ where
+  a : (x : ⟪ ℕ∞ᵒ ⟫) → has-least-element-property ((τ ↗ (ι , ι-embedding fe₀)) x)
+  a x = prop-inf-tychonoff fe
          (ι-embedding fe₀ x)
          (λ {w} x y → x ≺⟪ τ (pr₁ w) ⟫ y)
          (λ w → ε (pr₁ w))

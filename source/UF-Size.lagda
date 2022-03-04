@@ -52,7 +52,7 @@ open import UF-Section-Embedding
 \end{code}
 
 
-We say that a type X is has size 𝓥, or that it is 𝓥 small if it is
+We say that a type X has size 𝓥, or that it is 𝓥 small if it is
 equivalent to a type in the universe 𝓥:
 
 \begin{code}
@@ -669,17 +669,23 @@ is-large X = ¬ is-small X
 _is_small-map : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → (𝓦 : Universe) → 𝓤 ⊔ 𝓥 ⊔ (𝓦 ⁺) ̇
 f is 𝓦 small-map = ∀ y → (fiber f y) is 𝓦 small
 
+_is-small-map : {X Y : 𝓤 ⁺ ̇ } → (X → Y) → 𝓤 ⁺ ̇
+_is-small-map {𝓤} f = f is 𝓤 small-map
+
 \end{code}
 
 Obsolete notation used in some publications:
 
 \begin{code}
 
-_hHas-size_ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → (𝓦 : Universe) → 𝓤 ⊔ 𝓥 ⊔ (𝓦 ⁺) ̇
-f hHas-size 𝓦 = f is 𝓦 small-map
+_Has-size_ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → (𝓦 : Universe) → 𝓤 ⊔ 𝓥 ⊔ (𝓦 ⁺) ̇
+f Has-size 𝓦 = f is 𝓦 small-map
 
-_is-small-map : {X Y : 𝓤 ⁺ ̇ } → (X → Y) → 𝓤 ⁺ ̇
-f is-small-map = ∀ y → is-small (fiber f y)
+\end{code}
+
+The above should not be used anymore, but should be kept here.
+
+\begin{code}
 
 size-contravariance : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                     → f is 𝓦 small-map
