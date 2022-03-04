@@ -547,11 +547,11 @@ module _
     exp-is-sup-complete : is-sup-complete (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻))
     exp-is-sup-complete = exponential-is-sup-complete 𝓓 (𝓔 ⁻) 𝓔-is-sup-complete
 
-   B : 𝓥 ̇
-   B = domain (directify (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻)) exp-is-sup-complete pre-β)
+    B : 𝓥 ̇
+    B = domain (directify (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻)) exp-is-sup-complete pre-β)
 
-   β : B → DCPO[ 𝓓 , 𝓔 ⁻ ]
-   β = directify (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻)) exp-is-sup-complete pre-β
+    β : B → DCPO[ 𝓓 , 𝓔 ⁻ ]
+    β = directify (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻)) exp-is-sup-complete pre-β
 
    exponential-has-small-compact-basis : is-small-compact-basis (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻)) β
    exponential-has-small-compact-basis = record {
@@ -591,5 +591,10 @@ module _
        directify-↓-sup (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻)) exp-is-sup-complete pre-β
         (single-step-functions-below-function-sup 𝓔-is-sup-complete
         f f-is-cts)
+
+   exponential-has-specified-small-compact-basis :
+    has-specified-small-compact-basis (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻))
+   exponential-has-specified-small-compact-basis =
+    (B , β , exponential-has-small-compact-basis)
 
 \end{code}

@@ -38,7 +38,7 @@ open import UF-Subsingletons
 module DcpoDinfinity
         (pt : propositional-truncations-exist)
         (fe : ∀ {𝓤 𝓥} → funext 𝓤 𝓥)
-        (pe : propext 𝓤₀)
+        (pe : Prop-Ext)
        where
 
 open PropositionalTruncation pt
@@ -75,7 +75,7 @@ We start by defining the ℕ-indexed diagram of iterated exponentials.
 𝓓-diagram zero = (e₀ , e₀-continuity) , p₀ , p₀-continuity
  where
   e₀ : ⟨ 𝓓 0 ⟩ → ⟨ 𝓓 1 ⟩
-  e₀ x = (λ y → x) , (constant-functions-are-continuous (𝓓 0) (𝓓 0) x)
+  e₀ x = (λ y → x) , (constant-functions-are-continuous (𝓓 0) (𝓓 0))
   e₀-continuity : is-continuous (𝓓 0) (𝓓 1) e₀
   e₀-continuity I α δ = ub , lb-of-ubs
    where
@@ -913,5 +913,58 @@ is not the least element.
   e₀ = ap (λ - → ⦅ - ⦆ 0) e
   γ : 𝟙 ≡ 𝟘
   γ = ap pr₁ e₀
+
+\end{code}
+
+TODO: Write comment
+
+\begin{code}
+
+open import DcpoBases pt pe fe 𝓤₀
+open import DcpoLiftingAlgebraic pt pe fe 𝓤₀
+open import DcpoStepFunctions pt pe fe 𝓤₀
+
+open import Lifting 𝓤₀
+open import LiftingMiscelanea 𝓤₀
+open import UF-Subsingletons-FunExt
+
+𝓓∞-has-specified-small-compact-basis : has-specified-small-compact-basis 𝓓∞
+𝓓∞-has-specified-small-compact-basis = 𝓓∞-has-small-compact-basis pe γ
+ where
+  -- TODO: Factor out as separate lemma
+  𝓓s-are-sup-complete : (n : ℕ) → is-sup-complete (𝓓 n)
+  -------------------------------------------------------------
+   -- Factor out proof that 𝓛𝟙 is actually sup-complete
+  𝓓s-are-sup-complete zero     = record {
+     ⋁        = λ {I} α → (∃ i ꞉ I , is-defined (α i)) , (λ _ → ⋆) , ∃-is-prop
+   ; ⋁-is-sup = λ {I} α → ((λ i p → to-Σ-≡ (pe (being-defined-is-prop (α i)) ∃-is-prop
+                                    (λ _ → ∣ i , p ∣) (λ _ → p) ,
+                                    (to-Σ-≡ (dfunext fe (λ _ → refl) ,
+                                         being-prop-is-prop fe _ _)))) ,
+                            (λ y y-ub p → to-Σ-≡ ((pe ∃-is-prop (being-defined-is-prop y)
+                                          (λ _ → ≡-to-is-defined (y-ub {!!} {!!}) {!!}) (λ _ → p)) ,
+                                          (to-Σ-≡ ((dfunext fe (λ _ → refl)) ,
+                                            (being-prop-is-prop fe _ _))))))
+   }
+   -------------------------------------------------------------
+  𝓓s-are-sup-complete (succ n) = exponential-is-sup-complete (𝓓 n) (𝓓 n)
+                                  (𝓓s-are-sup-complete n)
+  γ : (n : ℕ) → has-specified-small-compact-basis (𝓓 n)
+  γ zero     = 𝓛-has-specified-small-compact-basis (props-are-sets 𝟙-is-prop)
+  γ (succ n) = exponential-has-specified-small-compact-basis
+                (𝓓 n) (𝓓⊥ n)
+                (locally-small-if-small-basis (𝓓 n) β
+                  (compact-basis-is-basis (𝓓 n) β β-is-compact-small-basis))
+                B B β β β-is-compact-small-basis β-is-compact-small-basis
+                  (𝓓s-are-sup-complete n)
+   where
+    IH : has-specified-small-compact-basis (𝓓 n)
+    IH = γ n
+    B : 𝓤₀ ̇
+    B = pr₁ IH
+    β : B → ⟨ 𝓓 n ⟩
+    β = pr₁ (pr₂ IH)
+    β-is-compact-small-basis : is-small-compact-basis (𝓓 n) β
+    β-is-compact-small-basis = pr₂ (pr₂ IH)
 
 \end{code}
