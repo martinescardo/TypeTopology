@@ -212,6 +212,11 @@ retracts-compose (r , s , rs) (r' , s' , rs') =
     p : transport A (rs x) (back-transport A (rs x) a) ≡ a
     p = back-and-forth-transport (rs x)
 
+Σ-reindex-retract' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : X → 𝓦 ̇ }
+                   → (ρ : retract X of Y)
+                   → retract (Σ x ꞉ X , A x) of (Σ y ꞉ Y , A (retraction ρ y))
+Σ-reindex-retract' (r , s , rs) = Σ-reindex-retract r (s , rs)
+
 Σ-retract : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ )
           → ((x : X) → retract (A x) of (B x))
           → retract (Σ A) of (Σ B)

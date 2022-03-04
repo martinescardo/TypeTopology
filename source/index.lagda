@@ -430,7 +430,7 @@ increasingly complex compact ordinals.
 import SquashedSum
 import OrdinalNotationInterpretation
 import LexicographicCompactness
-import ConvergentSequenceInfCompact
+import ConvergentSequenceHasLeast
 
 \end{code}
 

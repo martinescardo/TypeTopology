@@ -1,8 +1,42 @@
 Martin Escardo, 1st March 2022
 
-This extends OrdinalNotationInterpretation.lagda.
+A Tarski universe E of ordinal codes with two related decoding
+functions Δ and Κ (standing for "discrete" and "compact"
+respectively).
 
-This is a draft version that needs polishing.
+Roughly speaking, E gives ordinal codes or expressions denoting
+infinite ordinals. The expressions themselves are infinitary.
+
+An ordinal is a type equipped with an order that _≺_ satisfies
+suitable properties (which in particular implies that the type is a
+set in the sense of HoTT/UF).
+
+For a code ν : E, we have an ordinal Δ ν, which is discrete (has
+decidable equality).
+
+For a code ν : E, we have an ordinal Κ ν, which is searchable (or
+compact). More than that, evey decidable subset of Κ ν is either empty
+or has a minimal element.
+
+There is an embedding ι : Δ ν → Κ ν which is order preserving and
+reflecting, and whose image has empty complement. The assumption that
+it is a bijection implies LPO.
+
+The adopted notion of ordinal is that of the HoTT book.
+
+This extends and generalizes OrdinalNotationInterpretation.lagda, for
+which slides for a talk are available at
+https://www.cs.bham.ac.uk/~mhe/.talks/csl2022.pdf which may well serve
+as an introduction to this file. The main difference is that the
+ordinal expressions considered there amount to a W type, where the
+ones considered here amount to an inductive-recursive type,
+generalizing that.
+
+This is a draft version that needs polishing and more explanation.
+
+It should be said that the majority of the work is performed in the
+files imported here. This is mostly a put-things-together file. But
+there *are* some new ideas here.
 
 \begin{code}
 
@@ -22,6 +56,7 @@ open import InjectiveTypes fe
 open import GenericConvergentSequence
 open import ConvergentSequenceHasLeast
 open import PropInfTychonoff fe
+open import BinaryNaturals hiding (_+_)
 
 open import UF-Base
 open import UF-Subsingletons
@@ -29,6 +64,7 @@ open import UF-Retracts
 open import UF-Embeddings
 open import UF-Equiv
 open import UF-Subsingletons-FunExt
+open import UF-Miscelanea
 
 \end{code}
 
@@ -51,6 +87,31 @@ data E where
 Δ (ν₀ ⌜+⌝ ν₁) = Δ ν₀ +ᵒ Δ ν₁
 Δ (ν₀ ⌜×⌝ ν₁) = Δ ν₀ ×ᵒ Δ ν₁
 Δ (⌜Σ⌝ ν A)   = ∑ (Δ ν) (Δ ∘ A)
+
+\end{code}
+
+All ordinals in the image of Δ are retracts of ℕ.
+
+\begin{code}
+
+Δ-retract-of-ℕ : (ν : E) → retract ⟪ Δ ν ⟫ of ℕ
+Δ-retract-of-ℕ ⌜𝟙⌝         = (λ _ → ⋆) , (λ _ → 0) , 𝟙-is-prop ⋆
+Δ-retract-of-ℕ ⌜ω+𝟙⌝       = ≃-gives-◁ ℕ-plus-𝟙
+Δ-retract-of-ℕ (ν₀ ⌜+⌝ ν₁) = Σ-retract-of-ℕ
+                              retract-𝟙+𝟙-of-ℕ
+                              (dep-cases (λ _ → Δ-retract-of-ℕ ν₀)
+                                         (λ _ → Δ-retract-of-ℕ ν₁))
+Δ-retract-of-ℕ (ν₀ ⌜×⌝ ν₁) = Σ-retract-of-ℕ (Δ-retract-of-ℕ ν₀) (λ _ → Δ-retract-of-ℕ ν₁)
+Δ-retract-of-ℕ (⌜Σ⌝ ν A)   = Σ-retract-of-ℕ (Δ-retract-of-ℕ ν) (λ x → Δ-retract-of-ℕ (A x))
+
+\end{code}
+
+Hence all ordinals in the image of Δ are discrete (have decidable equality):
+
+\begin{code}
+
+Δ-is-discrete : (ν : E) → is-discrete ⟪ Δ ν ⟫
+Δ-is-discrete ν = retract-is-discrete (Δ-retract-of-ℕ ν) ℕ-is-discrete
 
 \end{code}
 
@@ -79,9 +140,6 @@ module _ (ν : E) (A : ⟪ Δ ν ⟫ → E) where
 
  φ⁻¹ : (x : ⟪ Δ ν ⟫) → ⟪ Κ (A x) ⟫ → ⟪ ψ (ι ν x) ⟫
  φ⁻¹ x = ⌜ ϕ x ⌝⁻¹
-
- εφ : (x : ⟪ Δ ν ⟫) → φ x ∘ φ⁻¹ x ∼ id
- εφ x = inverses-are-sections (φ x) (⌜⌝-is-equiv (ϕ x))
 
  γ : (x : ⟪ Δ ν ⟫) → ⟪ Δ (A x) ⟫ → ⟪ ψ (ι ν x) ⟫
  γ x = φ⁻¹ x ∘ ι (A x)
@@ -133,7 +191,8 @@ is either empty or has a least element:
 
 \begin{code}
 
-K-has-least-element-property : propext 𝓤₀ → (ν : E) → has-least-element-property (Κ ν)
+K-has-least-element-property : propext 𝓤₀
+                             → (ν : E) → has-least-element-property (Κ ν)
 K-has-least-element-property pe ⌜𝟙⌝         = 𝟙ᵒ-has-least-element-property
 K-has-least-element-property pe ⌜ω+𝟙⌝       = ℕ∞ᵒ-has-least-element-property pe
 K-has-least-element-property pe (ν₀ ⌜+⌝ ν₁) = ∑-has-least-element-property pe
@@ -296,3 +355,80 @@ complement):
                                     (φ⁻¹ ν A x)
                                     (inverses-are-equivs (φ ν A x) (⌜⌝-is-equiv (ϕ ν A x)))))
 \end{code}
+
+We would like to have the following, but we don't. However, I like the
+following failed proof because it shows exactly where the problem is:
+
+\begin{code}
+{-
+Κ-Cantor-retract : (ν : E) → retract ⟪ Κ ν ⟫ of (ℕ → 𝟚)
+Κ-Cantor-retract ⌜𝟙⌝         =  (λ _ → ⋆) , (λ _ → λ n → ₀) , 𝟙-is-prop ⋆
+Κ-Cantor-retract ⌜ω+𝟙⌝       = ℕ∞-retract-of-Cantor (fe 𝓤₀ 𝓤₀)
+Κ-Cantor-retract (ν₀ ⌜+⌝ ν₁) = +-retract-of-Cantor
+                                 (Κ ν₀)
+                                 (Κ ν₁)
+                                 (Κ-Cantor-retract ν₀)
+                                 (Κ-Cantor-retract ν₁)
+Κ-Cantor-retract (ν₀ ⌜×⌝ ν₁) =  ×-retract-of-Cantor
+                                 (Κ ν₀)
+                                 (Κ ν₁)
+                                 (Κ-Cantor-retract ν₀)
+                                 (Κ-Cantor-retract ν₁)
+Κ-Cantor-retract (⌜Σ⌝ ν A)   = g
+ where
+  i : retract ⟪ Κ ν ⟫ of (ℕ → 𝟚)
+  i = Κ-Cantor-retract ν
+
+  i' : retract (Σ y ꞉ ⟪ Κ ν ⟫ , ⟪ ψ ν A y ⟫) of (Σ α ꞉ (ℕ → 𝟚) , ⟪ ψ ν A (retraction i α) ⟫)
+  i' = Σ-reindex-retract' i
+
+  ii : (x : ⟪ Δ ν ⟫) → retract ⟪ Κ (A x) ⟫ of (ℕ → 𝟚)
+  ii x = Κ-Cantor-retract (A x)
+
+  iv : (x : ⟪ Δ ν ⟫) → retract ⟪ Κ (A x) ⟫ of ⟪ ψ ν A (ι ν x) ⟫
+  iv x = ≃-gives-▷ (ϕ ν A x)
+
+  fact :  (y : ⟪ Κ ν ⟫) → ⟪ ψ ν A y ⟫ ≡ ((λ x → ⟪ Κ (A x) ⟫) / ι ν) y
+  fact y = refl
+
+  s : (y : ⟪ Κ ν ⟫) → retract ⟪ ψ ν A y ⟫ of ((λ _ → ℕ → 𝟚) / ι ν) y
+  s y = retract-extension (λ - → ⟪ Κ (A -) ⟫) (λ _ → ℕ → 𝟚) (ι ν) ii y
+
+  r : retract (Σ y ꞉ ⟪ Κ ν ⟫ , ⟪ ψ ν A y ⟫) of (Σ y ꞉ ⟪ Κ ν ⟫ , (fiber (ι ν) y → ℕ → 𝟚))
+  r = Σ-retract ((λ x → ⟪ Κ (A x) ⟫) / ι ν) ((λ _ → ℕ → 𝟚) / ι ν) s
+
+  t : retract (Σ y ꞉ ⟪ Κ ν ⟫ , (fiber (ι ν) y → ℕ → 𝟚))
+      of (Σ α ꞉ (ℕ → 𝟚) , ((fiber (ι ν) (retraction i α)) → ℕ → 𝟚))
+  t = Σ-reindex-retract' i
+
+  u : retract (Σ y ꞉ ⟪ Κ ν ⟫ , ⟪ ψ ν A y ⟫) of (Σ α ꞉ (ℕ → 𝟚) , ((fiber (ι ν) (retraction i α)) → ℕ → 𝟚))
+  u = retracts-compose t r
+
+  can-this-be : retract (Σ α ꞉ (ℕ → 𝟚) , ((fiber (ι ν) (retraction i α)) → ℕ → 𝟚)) of (ℕ → 𝟚)
+  can-this-be = f , g , ε
+   where
+    f : (ℕ → 𝟚) → (Σ α ꞉ (ℕ → 𝟚) , ((fiber (ι ν) (retraction i α)) → ℕ → 𝟚))
+    f α = α , λ _ → α
+    g : (Σ α ꞉ (ℕ → 𝟚) , ((fiber (ι ν) (retraction i α)) → ℕ → 𝟚)) → (ℕ → 𝟚)
+    g (α , κ) = α
+    ε : f ∘ g ∼ id
+    ε (α , κ) = to-Σ-≡ (refl , dfunext (fe 𝓤₀ 𝓤₀) want)
+     where
+      want : (w : (fiber (ι ν) (retraction i α))) → α ≡ κ w
+      want = {!!}
+
+  h : retract (Σ y ꞉ ⟪ Κ ν ⟫ , ⟪ ψ ν A y ⟫) of (ℕ → 𝟚)
+  h = retracts-compose can-this-be u
+
+  g : retract ⟪ ∑ (Κ ν) (ψ ν A) ⟫ of (ℕ → 𝟚)
+  g = h
+-}
+\end{code}
+
+In the file OrdinalNotationInterpretation.lagda, which is less general
+that this one, this proof idea succeeds. And the proof is quite
+complicated (with the difficult lemmas provided in other files).
+
+TODO. Derive a taboo from the hypothesis that the above could be
+proved. This should be easy using the file
+FailureOfTotalSeparatedness.lagda.
