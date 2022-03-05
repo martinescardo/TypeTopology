@@ -205,7 +205,7 @@ module Κ-extension (ν : E) (A : ⟪ Δ ν ⟫ → E) where
 
 The Κ interpretation gives ordinals such that every decidable subset
 is either empty or has a least element (and so in particular these
-ordinals are searchable or compact):
+ordinals are searchable, or compact):
 
 \begin{code}
 
@@ -231,6 +231,7 @@ K-has-least-element-property pe (⌜Σ⌝ ν A)   = ∑-has-least-element-proper
                                                        (λ (x , _) → K-has-least-element-property pe (A x)))
  where
   open Κ-extension ν A
+
 \end{code}
 
 The embedding of the Δ interpretation into the Κ interpretation is
@@ -286,7 +287,8 @@ complement):
   f x y z l = canonical-fiber-point x ,
               transport₂ (λ j k → j ≺⟪ Κ (A x) ⟫ k)
                (ι-γ-lemma x y)
-               (ι-γ-lemma x z) l
+               (ι-γ-lemma x z)
+               l
 
   g : (x : ⟪ Δ ν ⟫) (y z : ⟪ Δ (A x) ⟫)
     →     y ≺⟪ Δ (A x) ⟫       z
@@ -341,13 +343,12 @@ complement):
   f : (x : ⟪ Δ ν ⟫) (y z : ⟪ Δ (A x) ⟫)
     →     γ x y ≺⟪ B (ι ν x) ⟫     γ x z
     → ι (A x) y ≺⟪ Κ (A x)   ⟫ ι (A x) z
-  f x y z ((x' , p) , l) = n
+  f x y z (w , l) = n
    where
-    q : (x' , p) ≡ canonical-fiber-point x
+    q : w ≡ canonical-fiber-point x
     q = ι-is-embedding ν (ι ν x) _ _
 
-    m :             φ⁻¹ x (ι (A x) y) (canonical-fiber-point x)
-      ≺⟪ Κ (A x) ⟫  φ⁻¹ x (ι (A x) z) (canonical-fiber-point x)
+    m : γ x y (canonical-fiber-point x) ≺⟪ Κ (A x) ⟫  γ x z (canonical-fiber-point x)
     m = transport (λ (x' , p) → γ x y (x' , p) ≺⟪ Κ (A x') ⟫ γ x z (x' , p)) q l
 
     n : ι (A x) y ≺⟪ Κ (A x) ⟫ ι (A x) z
