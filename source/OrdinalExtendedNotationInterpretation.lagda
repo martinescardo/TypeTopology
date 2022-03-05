@@ -48,7 +48,6 @@ open import OrdinalArithmetic fe
 open import ToppedOrdinalArithmetic fe
 open import OrdinalsClosure fe
 open import DiscreteAndSeparated
-open import InjectiveTypes fe
 open import GenericConvergentSequence
 open import ConvergentSequenceHasLeast
 open import PropInfTychonoff fe
@@ -126,11 +125,13 @@ I ν = (ι ν , ι-is-embedding ν)
 
 \end{code}
 
-We use the following auxiliary constructions:
+We use the following auxiliary extension constructions:
 
 \begin{code}
 
 module Κ-extension (ν : E) (A : ⟪ Δ ν ⟫ → E) where
+
+ open import InjectiveTypes fe
 
  B : ⟪ Κ ν ⟫ → Ordᵀ
  B = (Κ ∘ A) ↗ I ν
@@ -338,13 +339,14 @@ complement):
     → ι (A x) y ≺⟪ Κ (A x) ⟫ ι (A x) z
   f x y z ((x' , p) , l) = n
    where
-    q : (x' , p) ≡ (x , refl)
+    q : (x' , p) ≡ canonical-fiber-point x
     q = ι-is-embedding ν (ι ν x) _ _
 
-    m : φ⁻¹ x  (ι (A x) y) (x , refl) ≺⟪ Κ (A x) ⟫  φ⁻¹ x (ι (A x) z) (x , refl)
+    m :             φ⁻¹ x (ι (A x) y) (canonical-fiber-point x)
+      ≺⟪ Κ (A x) ⟫  φ⁻¹ x (ι (A x) z) (canonical-fiber-point x)
     m = transport (λ (x' , p) → γ x y (x' , p) ≺⟪ Κ (A x') ⟫ γ x z (x' , p)) q l
 
-    n : ι (A x) y ≺⟪ Κ (A x) ⟫  ι (A x) z
+    n : ι (A x) y ≺⟪ Κ (A x) ⟫ ι (A x) z
     n = transport₂ (λ u v → u ≺⟪ Κ (A x) ⟫ v) ((ι-γ-lemma x y)⁻¹) ((ι-γ-lemma x z)⁻¹) m
 
   g : (x : ⟪ Δ ν ⟫) (y z : ⟪ Δ (A x) ⟫)
