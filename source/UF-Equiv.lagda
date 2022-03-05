@@ -171,6 +171,9 @@ inverses-are-equivs f e = (f , inverses-are-retractions f e) , (f , inverses-are
 ⌜⌝⁻¹-is-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (e : X ≃ Y) → is-equiv ⌜ e ⌝⁻¹
 ⌜⌝⁻¹-is-equiv (f , i) = inverses-are-equivs f i
 
+⌜_⌝⁻¹-is-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (e : X ≃ Y) → is-equiv ⌜ e ⌝⁻¹
+⌜_⌝⁻¹-is-equiv = ⌜⌝⁻¹-is-equiv
+
 inversion-involutive : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equiv f)
                      → inverse (inverse f e) (inverses-are-equivs f e) ≡ f
 inversion-involutive f e = refl

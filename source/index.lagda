@@ -125,7 +125,7 @@ import CoNaturalsArithmetic
 import CoNaturalsExercise
 import CoNaturals
 import ConvergentSequenceCompact
-import ConvergentSequenceInfCompact
+import ConvergentSequenceHasLeast
 -- import CubicalBinarySystem -- works with Agda 2.6.2 only and need the Cubical Library. By Martin Escardo and Alex Rice
 import DcpoDinfinity                   -- By Tom de Jong
 import DecidabilityOfNonContinuity
@@ -158,7 +158,7 @@ import GeneralNotation
 import GenericConvergentSequence
 import HiggsInvolutionTheorem
 import Id
-import InfCompact
+import LeastElementProperty
 import InitialBinarySystem    -- More work than needed!
 import InitialBinarySystem2   -- No need to work with subtype of normal elements.
 import InjectiveTypes-article
@@ -192,6 +192,7 @@ import OrdinalArithmetic
 import OrdinalArithmetic-Properties
 import OrdinalCodes
 import OrdinalNotationInterpretation
+import OrdinalExtendedNotationInterpretation
 import OrdinalNotions
 import OrdinalOfOrdinals
 import OrdinalOfTruthValues
@@ -429,7 +430,7 @@ increasingly complex compact ordinals.
 import SquashedSum
 import OrdinalNotationInterpretation
 import LexicographicCompactness
-import ConvergentSequenceInfCompact
+import ConvergentSequenceHasLeast
 
 \end{code}
 

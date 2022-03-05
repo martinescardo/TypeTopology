@@ -10,10 +10,10 @@ of continuity is decidable.
 
 import CompactTypes
 import ConvergentSequenceCompact
-import ConvergentSequenceInfCompact
+import ConvergentSequenceHasLeast
 import ADecidableQuantificationOverTheNaturals
 import ExtendedSumCompact
-import InfCompact
+import LeastElementProperty
 import LexicographicCompactness
 import WeaklyCompactTypes
 import DecidabilityOfNonContinuity

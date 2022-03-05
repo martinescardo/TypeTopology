@@ -35,7 +35,7 @@ import CompactRegular
 import CompactTypes
 import Compactness
 import ConvergentSequenceCompact
-import ConvergentSequenceInfCompact
+import ConvergentSequenceHasLeast
 import Dcpo
 import DcpoBilimits
 import DcpoBilimitsSequential
@@ -78,7 +78,6 @@ import Groups
 import HiggsInvolutionTheorem
 import Id
 import Identity-Type
-import InfCompact
 import InitialBinarySystem
 import InitialBinarySystem2
 import InitialFrame
@@ -89,6 +88,7 @@ import Integers-SymmetricInduction
 import Integers
 import LPO
 import LawvereFPT
+import LeastElementProperty
 import LexicographicCompactness
 import LexicographicOrder
 import Lifting
@@ -148,6 +148,7 @@ import OrdinalArithmetic-Properties
 import OrdinalArithmetic
 import OrdinalCodes
 import OrdinalNotationInterpretation
+import OrdinalExtendedNotationInterpretation
 import OrdinalNotions
 import OrdinalOfOrdinals
 import OrdinalOfTruthValues

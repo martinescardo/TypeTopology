@@ -271,17 +271,17 @@ module _ {X : 𝓤 ̇ }
 
 \begin{code}
 
-  Π-extension-in-range : is-embedding j → (x : X) → f/j (j x) ≃ f x
-  Π-extension-in-range e x = prop-indexed-product (fe (𝓤 ⊔ 𝓥) 𝓦) {fiber j (j x)} {λ (z : fiber j (j x)) → f (pr₁ z)} (e (j x)) (x , refl)
+  Π-extension-property : is-embedding j → (x : X) → f/j (j x) ≃ f x
+  Π-extension-property e x = prop-indexed-product (fe (𝓤 ⊔ 𝓥) 𝓦) {fiber j (j x)} {λ (z : fiber j (j x)) → f (pr₁ z)} (e (j x)) (x , refl)
 
   Π-extension-equivalence : is-embedding j → (x : X) → is-equiv (Π-proj (x , refl))
-  Π-extension-equivalence e x = pr₂ (Π-extension-in-range e x)
+  Π-extension-equivalence e x = pr₂ (Π-extension-property e x)
 
   Π-extension-out-of-range : ∀ {𝓦} (y : Y) → ((x : X) → j x ≢ y) → f/j (y) ≃ 𝟙 {𝓦}
   Π-extension-out-of-range y φ = prop-indexed-product-one (fe (𝓤 ⊔ 𝓥) 𝓦) (uncurry φ)
 
-  Σ-extension-in-range : is-embedding j → (x : X) → f∖j (j x) ≃ f x
-  Σ-extension-in-range e x = prop-indexed-sum (e (j x)) (x , refl)
+  Σ-extension-property : is-embedding j → (x : X) → f∖j (j x) ≃ f x
+  Σ-extension-property e x = prop-indexed-sum (e (j x)) (x , refl)
 
   Σ-extension-out-of-range : (y : Y) → ((x : X) → j x ≢ y) → f∖j (y) ≃ 𝟘 {𝓦}
   Σ-extension-out-of-range y φ = prop-indexed-sum-zero (uncurry φ)
@@ -312,11 +312,11 @@ module _ {X : 𝓤 ̇ }
 
   Π-observation : is-embedding j → (a : X) → f a ≃ (Π x ꞉ X , (j x ≡ j a → f x))
   Π-observation e a = ≃-sym ((≃-sym (2nd-Π-extension-formula (j a))) ●
-                                      (Π-extension-in-range e a))
+                                      (Π-extension-property e a))
 
   Σ-observation : is-embedding j → (a : X) → f a ≃ (Σ x ꞉ X , (j x ≡ j a) × f x)
   Σ-observation e a = ≃-sym ((≃-sym (2nd-Σ-extension-formula (j a))) ●
-                                      (Σ-extension-in-range e a))
+                                      (Σ-extension-property e a))
 
 \end{code}
 
@@ -458,7 +458,7 @@ There is more to do about this.
 Π-extension-is-extension : is-univalent (𝓤 ⊔ 𝓥) → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (j : X → Y)
                          → is-embedding j
                          → (f : X → 𝓤 ⊔ 𝓥 ̇ ) → (f / j) ∘ j ∼ f
-Π-extension-is-extension ua j e f x = eqtoid ua _ _ (Π-extension-in-range f j e x)
+Π-extension-is-extension ua j e f x = eqtoid ua _ _ (Π-extension-property f j e x)
 
 Π-extension-is-extension' : is-univalent (𝓤 ⊔ 𝓥) → funext 𝓤 ((𝓤 ⊔ 𝓥)⁺)
                           → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (j : X → Y)
@@ -476,7 +476,7 @@ There is more to do about this.
 Σ-extension-is-extension : is-univalent (𝓤 ⊔ 𝓥) → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (j : X → Y)
                          → is-embedding j
                          → (f : X → 𝓤 ⊔ 𝓥 ̇ ) → (f ∖ j) ∘ j ∼ f
-Σ-extension-is-extension ua j e f x = eqtoid ua _ _ (Σ-extension-in-range f j e x)
+Σ-extension-is-extension ua j e f x = eqtoid ua _ _ (Σ-extension-property f j e x)
 
 Σ-extension-is-extension' : is-univalent (𝓤 ⊔ 𝓥)
                           → funext 𝓤 ((𝓤 ⊔ 𝓥)⁺)
@@ -535,7 +535,7 @@ universes-are-ainjective-Π' : is-univalent 𝓤 → ainjective-type (𝓤 ̇ ) 
 universes-are-ainjective-Π' = universes-are-ainjective-Π
 
 universes-are-ainjective-Σ : is-univalent (𝓤 ⊔ 𝓥) → ainjective-type (𝓤 ⊔ 𝓥 ̇ ) 𝓤 𝓥
-universes-are-ainjective-Σ ua j e f = f ∖ j , λ x → eqtoid ua _ _ (Σ-extension-in-range f j e x)
+universes-are-ainjective-Σ ua j e f = f ∖ j , λ x → eqtoid ua _ _ (Σ-extension-property f j e x)
 
 ainjective-is-retract-of-power-of-universe : (D : 𝓤 ̇ ) → is-univalent 𝓤
                                            → ainjective-type D 𝓤  (𝓤 ⁺)

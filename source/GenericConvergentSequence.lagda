@@ -381,8 +381,8 @@ not-finite-is-∞ fe {u} f = ℕ∞-to-ℕ→𝟚-lc fe (dfunext fe lemma)
 ι𝟙 : ℕ + 𝟙 → ℕ∞
 ι𝟙 = cases {𝓤₀} {𝓤₀} ι (λ _ → ∞)
 
-ι𝟙-embedding : funext₀ → is-embedding ι𝟙
-ι𝟙-embedding fe = disjoint-cases-embedding ι (λ _ → ∞) (ι-embedding fe) g d
+ι𝟙-is-embedding : funext₀ → is-embedding ι𝟙
+ι𝟙-is-embedding fe = disjoint-cases-embedding ι (λ _ → ∞) (ι-embedding fe) g d
  where
   g : is-embedding (λ _ → ∞)
   g x (* , p) (⋆ , q) = ap (λ - → ⋆ , -) (ℕ∞-is-set fe p q)

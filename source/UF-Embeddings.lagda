@@ -321,12 +321,12 @@ is-dense f = is-empty (Σ y ꞉ codomain f , ¬ fiber f y)
 id-is-dense : {X : 𝓤 ̇ } → is-dense (id {𝓤} {X})
 id-is-dense (y , n) = n (y , refl)
 
-comp-dense : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
-             {f : X → Y} {g : Y → Z}
-           → is-dense f
-           → is-dense g
-           → is-dense (g ∘ f)
-comp-dense {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {f} {g} e d = h
+comp-is-dense : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
+                {f : X → Y} {g : Y → Z}
+              → is-dense f
+              → is-dense g
+              → is-dense (g ∘ f)
+comp-is-dense {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {f} {g} e d = h
  where
   h : ¬ (Σ z ꞉ Z , ¬ fiber (g ∘ f) z)
   h (z , n) = d (z , k)
@@ -353,13 +353,13 @@ module _ {𝓤 𝓥} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } where
  retraction-is-dense : (r : X → Y) → has-section r → is-dense r
  retraction-is-dense r (s , rs) (y , n) = n (s y , rs y)
 
- is-equiv-is-dense : (f : X → Y) → is-equiv f → is-dense f
- is-equiv-is-dense f e = retraction-is-dense f (equivs-have-sections f e)
+ equivs-are-dense : (f : X → Y) → is-equiv f → is-dense f
+ equivs-are-dense f e = retraction-is-dense f (equivs-have-sections f e)
 
  equiv-dense-embedding : X ≃ Y → X ↪ᵈ Y
  equiv-dense-embedding e = ⌜ e ⌝ ,
                            equivs-are-embeddings ⌜ e ⌝ (⌜⌝-is-equiv e),
-                           is-equiv-is-dense     ⌜ e ⌝ (⌜⌝-is-equiv e)
+                           equivs-are-dense      ⌜ e ⌝ (⌜⌝-is-equiv e)
 
  detofun : (X ↪ᵈ Y) → X → Y
  detofun = pr₁
