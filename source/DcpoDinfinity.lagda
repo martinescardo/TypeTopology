@@ -928,27 +928,14 @@ open import Lifting 𝓤₀
 open import LiftingMiscelanea 𝓤₀
 open import UF-Subsingletons-FunExt
 
+𝓓s-are-sup-complete : (n : ℕ) → is-sup-complete (𝓓 n)
+𝓓s-are-sup-complete zero     = lifting-of-prop-is-sup-complete 𝟙-is-prop
+𝓓s-are-sup-complete (succ n) = exponential-is-sup-complete (𝓓 n) (𝓓 n)
+                                (𝓓s-are-sup-complete n)
+
 𝓓∞-has-specified-small-compact-basis : has-specified-small-compact-basis 𝓓∞
 𝓓∞-has-specified-small-compact-basis = 𝓓∞-has-small-compact-basis pe γ
  where
-  -- TODO: Factor out as separate lemma
-  𝓓s-are-sup-complete : (n : ℕ) → is-sup-complete (𝓓 n)
-  -------------------------------------------------------------
-   -- Factor out proof that 𝓛𝟙 is actually sup-complete
-  𝓓s-are-sup-complete zero     = record {
-     ⋁        = λ {I} α → (∃ i ꞉ I , is-defined (α i)) , (λ _ → ⋆) , ∃-is-prop
-   ; ⋁-is-sup = λ {I} α → ((λ i p → to-Σ-≡ (pe (being-defined-is-prop (α i)) ∃-is-prop
-                                    (λ _ → ∣ i , p ∣) (λ _ → p) ,
-                                    (to-Σ-≡ (dfunext fe (λ _ → refl) ,
-                                         being-prop-is-prop fe _ _)))) ,
-                            (λ y y-ub p → to-Σ-≡ ((pe ∃-is-prop (being-defined-is-prop y)
-                                          (λ _ → ≡-to-is-defined (y-ub {!!} {!!}) {!!}) (λ _ → p)) ,
-                                          (to-Σ-≡ ((dfunext fe (λ _ → refl)) ,
-                                            (being-prop-is-prop fe _ _))))))
-   }
-   -------------------------------------------------------------
-  𝓓s-are-sup-complete (succ n) = exponential-is-sup-complete (𝓓 n) (𝓓 n)
-                                  (𝓓s-are-sup-complete n)
   γ : (n : ℕ) → has-specified-small-compact-basis (𝓓 n)
   γ zero     = 𝓛-has-specified-small-compact-basis (props-are-sets 𝟙-is-prop)
   γ (succ n) = exponential-has-specified-small-compact-basis

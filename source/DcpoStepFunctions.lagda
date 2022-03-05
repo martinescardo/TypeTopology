@@ -35,99 +35,8 @@ open import DcpoExponential pt fe 𝓥
 open import DcpoMiscelanea pt fe 𝓥
 open import DcpoWayBelow pt fe 𝓥
 
-module _
-        (𝓓 : DCPO {𝓤} {𝓣})
-       where
-
- record is-sup-complete : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇  where
-  field
-   ⋁ : {I : 𝓥 ̇  } (α : I → ⟨ 𝓓 ⟩) → ⟨ 𝓓 ⟩
-   ⋁-is-sup : {I : 𝓥 ̇  } (α : I → ⟨ 𝓓 ⟩) → is-sup (underlying-order 𝓓) (⋁ α) α
-
-  ⋁-is-upperbound : {I : 𝓥 ̇  } (α : I → ⟨ 𝓓 ⟩)
-                  → is-upperbound (underlying-order 𝓓) (⋁ α) α
-  ⋁-is-upperbound α = sup-is-upperbound (underlying-order 𝓓) (⋁-is-sup α)
-
-  ⋁-is-lowerbound-of-upperbounds : {I : 𝓥 ̇  } (α : I → ⟨ 𝓓 ⟩)
-                                 → is-lowerbound-of-upperbounds
-                                    (underlying-order 𝓓) (⋁ α) α
-  ⋁-is-lowerbound-of-upperbounds α =
-   sup-is-lowerbound-of-upperbounds (underlying-order 𝓓) (⋁-is-sup α)
-
-module _
-        (𝓓 : DCPO {𝓤} {𝓣})
-        (𝓔 : DCPO {𝓤'} {𝓣'})
-        (𝓔-is-sup-complete : is-sup-complete 𝓔)
-       where
-
- open is-sup-complete 𝓔-is-sup-complete
-
- sup-of-continuous-functions : {I : 𝓥 ̇  } → (I → DCPO[ 𝓓 , 𝓔 ]) → DCPO[ 𝓓 , 𝓔 ]
- sup-of-continuous-functions {I} α = (f , c)
-  where
-   f : ⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩
-   f x = ⋁ (pointwise-family 𝓓 𝓔 α x)
-   c : is-continuous 𝓓 𝓔 f
-   c J β δ = (ub , lb-of-ubs)
-    where
-     ub : is-upperbound (underlying-order 𝓔) (f (∐ 𝓓 δ)) (f ∘ β)
-     ub i = ⋁-is-lowerbound-of-upperbounds
-             (pointwise-family 𝓓 𝓔 α (β i)) (f (∐ 𝓓 δ)) γ
-      where
-       γ : is-upperbound (underlying-order 𝓔) (f (∐ 𝓓 δ))
-            (pointwise-family 𝓓 𝓔 α (β i))
-       γ j = [ 𝓓 , 𝓔 ]⟨ α j ⟩ (β i)   ⊑⟨ 𝓔 ⟩[ ⦅1⦆ ]
-             [ 𝓓 , 𝓔 ]⟨ α j ⟩ (∐ 𝓓 δ) ⊑⟨ 𝓔 ⟩[ ⦅2⦆ ]
-             f (∐ 𝓓 δ)                 ∎⟨ 𝓔 ⟩
-        where
-         ⦅1⦆ = monotone-if-continuous 𝓓 𝓔 (α j) (β i) (∐ 𝓓 δ)
-               (∐-is-upperbound 𝓓 δ i)
-         ⦅2⦆ = ⋁-is-upperbound (pointwise-family 𝓓 𝓔 α (∐ 𝓓 δ)) j
-     lb-of-ubs : is-lowerbound-of-upperbounds (underlying-order 𝓔) (f (∐ 𝓓 δ))
-                  (f ∘ β)
-     lb-of-ubs y y-is-ub =
-      ⋁-is-lowerbound-of-upperbounds (pointwise-family 𝓓 𝓔 α (∐ 𝓓 δ))
-       y γ
-        where
-         γ : is-upperbound (underlying-order 𝓔) y
-              (pointwise-family 𝓓 𝓔 α (∐ 𝓓 δ))
-         γ i = [ 𝓓 , 𝓔 ]⟨ α i ⟩ (∐ 𝓓 δ) ⊑⟨ 𝓔 ⟩[ ⦅1⦆ ]
-               ∐ 𝓔 ε                    ⊑⟨ 𝓔 ⟩[ ⦅2⦆ ]
-               y                        ∎⟨ 𝓔 ⟩
-          where
-           ε : is-Directed 𝓔 ([ 𝓓 , 𝓔 ]⟨ α i ⟩ ∘ β)
-           ε = image-is-directed' 𝓓 𝓔 (α i) δ
-           ⦅1⦆ = continuous-∐-⊑ 𝓓 𝓔 (α i) δ
-           ⦅2⦆ = ∐-is-lowerbound-of-upperbounds 𝓔 ε y h
-            where
-             h : is-upperbound (underlying-order 𝓔) y ([ 𝓓 , 𝓔 ]⟨ α i ⟩ ∘ β)
-             h j = [ 𝓓 , 𝓔 ]⟨ α i ⟩ (β j) ⊑⟨ 𝓔 ⟩[ ⦅†⦆ ]
-                   f (β j)                 ⊑⟨ 𝓔 ⟩[ y-is-ub j ]
-                   y                       ∎⟨ 𝓔 ⟩
-              where
-               ⦅†⦆ = ⋁-is-upperbound (pointwise-family 𝓓 𝓔 α (β j)) i
-
- exponential-is-sup-complete : is-sup-complete (𝓓 ⟹ᵈᶜᵖᵒ 𝓔)
- exponential-is-sup-complete = record {
-     ⋁        = λ {I} α → sup-of-continuous-functions α
-   ; ⋁-is-sup = λ {I} → lemma
-  }
-   where
-    lemma : {I : 𝓥 ̇  } (α : I → DCPO[ 𝓓 , 𝓔 ])
-          → is-sup (underlying-order (𝓓 ⟹ᵈᶜᵖᵒ 𝓔))
-             (sup-of-continuous-functions α) α
-    lemma {I} α = (ub , lb-of-ubs)
-     where
-      ub : is-upperbound (underlying-order (𝓓 ⟹ᵈᶜᵖᵒ 𝓔))
-            (sup-of-continuous-functions α) α
-      ub i x = ⋁-is-upperbound (pointwise-family 𝓓 𝓔 α x) i
-      lb-of-ubs : is-lowerbound-of-upperbounds (underlying-order (𝓓 ⟹ᵈᶜᵖᵒ 𝓔))
-                   (sup-of-continuous-functions α) α
-      lb-of-ubs g g-is-ub x =
-       ⋁-is-lowerbound-of-upperbounds (pointwise-family 𝓓 𝓔 α x)
-                                      ([ 𝓓 , 𝓔 ]⟨ g ⟩ x) (λ i → g-is-ub i x)
-
-module _ -- Name this module so to avoid giving the sup-completeness all the time?
+-- TODO: Move this to DcpoMiscelanea, but think about hiding (⊥ ; ⊥-is-least)
+module _ -- TODO: Name this module so to avoid giving the sup-completeness all the time?
         (𝓓 : DCPO {𝓤} {𝓣'})
         (𝓓-is-sup-complete : is-sup-complete 𝓓)
        where
@@ -273,6 +182,8 @@ module _ -- Name this module so to avoid giving the sup-completeness all the tim
 
 \end{code}
 
+TODO: Write comment
+
 \begin{code}
 
  module _
@@ -317,7 +228,7 @@ module _
         (𝓓-is-locally-small : is-locally-small 𝓓)
        where
 
- -- TODO: Factor this out somehow
+ -- TODO: Factor this out somehow (with Record?)
  {- - - - - - - - - - - - - - - - -}
  _⊑ₛ_ : ⟨ 𝓓 ⟩ → ⟨ 𝓓 ⟩ → 𝓥 ̇
  _⊑ₛ_ = pr₁ 𝓓-is-locally-small

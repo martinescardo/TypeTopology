@@ -723,3 +723,28 @@ directed-if-bicofinal 𝓓 {I} {J} {α} {β} κ₁ κ₂ δ =
                                 (∐-⊑-if-cofinal 𝓓 κ₂ ε δ)
 
 \end{code}
+
+TODO: Write comment
+
+\begin{code}
+
+module _
+        (𝓓 : DCPO {𝓤} {𝓣})
+       where
+
+ record is-sup-complete : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇  where
+  field
+   ⋁ : {I : 𝓥 ̇  } (α : I → ⟨ 𝓓 ⟩) → ⟨ 𝓓 ⟩
+   ⋁-is-sup : {I : 𝓥 ̇  } (α : I → ⟨ 𝓓 ⟩) → is-sup (underlying-order 𝓓) (⋁ α) α
+
+  ⋁-is-upperbound : {I : 𝓥 ̇  } (α : I → ⟨ 𝓓 ⟩)
+                  → is-upperbound (underlying-order 𝓓) (⋁ α) α
+  ⋁-is-upperbound α = sup-is-upperbound (underlying-order 𝓓) (⋁-is-sup α)
+
+  ⋁-is-lowerbound-of-upperbounds : {I : 𝓥 ̇  } (α : I → ⟨ 𝓓 ⟩)
+                                 → is-lowerbound-of-upperbounds
+                                    (underlying-order 𝓓) (⋁ α) α
+  ⋁-is-lowerbound-of-upperbounds α =
+   sup-is-lowerbound-of-upperbounds (underlying-order 𝓓) (⋁-is-sup α)
+
+\end{code}
