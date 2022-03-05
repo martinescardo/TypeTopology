@@ -227,7 +227,7 @@ K-has-least-element-property pe (⌜Σ⌝ ν A)   = ∑-has-least-element-proper
                                                (K-has-least-element-property pe ν)
                                                (λ x → prop-inf-tychonoff
                                                        (ι-is-embedding ν x)
-                                                       (λ {w} x y → x ≺⟪ Κ (A (pr₁ w)) ⟫ y)
+                                                       (λ {(x , _)} y z → y ≺⟪ Κ (A x) ⟫ z)
                                                        (λ (x , _) → K-has-least-element-property pe (A x)))
  where
   open Κ-extension ν A
@@ -391,7 +391,9 @@ OrdinalExtendedNotation:
 
 \begin{code}
 {-
-Κ-Cantor-retract : (ν : E) → retract ⟪ Κ ν ⟫ of (ℕ → 𝟚)
+Cantor = ℕ → 𝟚
+
+Κ-Cantor-retract : (ν : E) → retract ⟪ Κ ν ⟫ of Cantor
 Κ-Cantor-retract ⌜𝟙⌝         =  (λ _ → ⋆) , (λ _ → λ n → ₀) , 𝟙-is-prop ⋆
 Κ-Cantor-retract ⌜ω+𝟙⌝       = ℕ∞-retract-of-Cantor fe₀
 Κ-Cantor-retract (ν₀ ⌜+⌝ ν₁) = +-retract-of-Cantor
@@ -407,34 +409,32 @@ OrdinalExtendedNotation:
 Κ-Cantor-retract (⌜Σ⌝ ν A)   = g
  where
   open Κ-extension ν A
+  open import InjectiveTypes fe
 
-  i : retract ⟪ Κ ν ⟫ of (ℕ → 𝟚)
+  i : retract ⟪ Κ ν ⟫ of Cantor
   i = Κ-Cantor-retract ν
 
-  ii : (x : ⟪ Δ ν ⟫) → retract ⟪ Κ (A x) ⟫ of (ℕ → 𝟚)
+  ii : (x : ⟪ Δ ν ⟫) → retract ⟪ Κ (A x) ⟫ of Cantor
   ii x = Κ-Cantor-retract (A x)
 
-  s : (y : ⟪ Κ ν ⟫) → retract ⟪ B y ⟫ of ((λ _ → ℕ → 𝟚) / ι ν) y
-  s y = retract-extension (λ - → ⟪ Κ (A -) ⟫) (λ _ → ℕ → 𝟚) (ι ν) ii y
+  s : (y : ⟪ Κ ν ⟫) → retract ⟪ B y ⟫ of ((λ _ → Cantor) / ι ν) y
+  s y = retract-extension (λ - → ⟪ Κ (A -) ⟫) (λ _ → Cantor) (ι ν) ii y
 
-  r : retract (Σ y ꞉ ⟪ Κ ν ⟫ , ⟪ B y ⟫) of (Σ y ꞉ ⟪ Κ ν ⟫ , (fiber (ι ν) y → ℕ → 𝟚))
-  r = Σ-retract ((λ x → ⟪ Κ (A x) ⟫) / ι ν) ((λ _ → ℕ → 𝟚) / ι ν) s
+  r : retract (Σ y ꞉ ⟪ Κ ν ⟫ , ⟪ B y ⟫) of (Σ y ꞉ ⟪ Κ ν ⟫ , (fiber (ι ν) y → Cantor))
+  r = Σ-retract ((λ x → ⟪ Κ (A x) ⟫) / ι ν) ((λ _ → Cantor) / ι ν) s
 
-  t : retract (Σ y ꞉ ⟪ Κ ν ⟫ , (fiber (ι ν) y → ℕ → 𝟚))
-      of (Σ α ꞉ (ℕ → 𝟚) , ((fiber (ι ν) (retraction i α)) → ℕ → 𝟚))
+  t : retract (Σ y ꞉ ⟪ Κ ν ⟫ , (fiber (ι ν) y → Cantor))
+      of (Σ α ꞉ Cantor , ((fiber (ι ν) (retraction i α)) → Cantor))
   t = Σ-reindex-retract' i
 
-  u : retract (Σ y ꞉ ⟪ Κ ν ⟫ , ⟪ B y ⟫) of (Σ α ꞉ (ℕ → 𝟚) , ((fiber (ι ν) (retraction i α)) → ℕ → 𝟚))
+  u : retract (Σ y ꞉ ⟪ Κ ν ⟫ , ⟪ B y ⟫) of (Σ α ꞉ Cantor , ((fiber (ι ν) (retraction i α)) → Cantor))
   u = retracts-compose t r
 
-  unlikely : retract (Σ α ꞉ (ℕ → 𝟚) , ((fiber (ι ν) (retraction i α)) → ℕ → 𝟚)) of (ℕ → 𝟚)
+  unlikely : retract (Σ α ꞉ Cantor , ((fiber (ι ν) (retraction i α)) → Cantor)) of Cantor
   unlikely = {!!}
 
-  h : retract (Σ y ꞉ ⟪ Κ ν ⟫ , ⟪ B y ⟫) of (ℕ → 𝟚)
-  h = retracts-compose unlikely u
-
-  g : retract ⟪ ∑ (Κ ν) B ⟫ of (ℕ → 𝟚)
-  g = h
+  g : retract (Σ y ꞉ ⟪ Κ ν ⟫ , ⟪ B y ⟫) of Cantor
+  g = retracts-compose unlikely u
 -}
 \end{code}
 
