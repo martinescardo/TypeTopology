@@ -488,8 +488,9 @@ module _
  structurally-algebraic-if-specified-small-compact-basis (B , β , sb) =
   structurally-algebraic-if-equiped-with-small-compact-basis β sb
 
- is-algebraic-dcpo-if-unspecified-small-compact-basis : has-unspecified-small-compact-basis
-                                               → is-algebraic-dcpo 𝓓
+ is-algebraic-dcpo-if-unspecified-small-compact-basis :
+    has-unspecified-small-compact-basis
+  → is-algebraic-dcpo 𝓓
  is-algebraic-dcpo-if-unspecified-small-compact-basis =
   ∥∥-functor structurally-algebraic-if-specified-small-compact-basis
 

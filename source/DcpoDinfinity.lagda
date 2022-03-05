@@ -921,6 +921,7 @@ TODO: Write comment
 \begin{code}
 
 open import DcpoBases pt pe fe 𝓤₀
+open import DcpoContinuous pt fe 𝓤₀
 open import DcpoLiftingAlgebraic pt pe fe 𝓤₀
 open import DcpoStepFunctions pt pe fe 𝓤₀
 
@@ -953,5 +954,10 @@ open import UF-Subsingletons-FunExt
     β = pr₁ (pr₂ IH)
     β-is-compact-small-basis : is-small-compact-basis (𝓓 n) β
     β-is-compact-small-basis = pr₂ (pr₂ IH)
+
+𝓓∞-is-algebraic-dcpo : is-algebraic-dcpo 𝓓∞
+𝓓∞-is-algebraic-dcpo =
+ is-algebraic-dcpo-if-unspecified-small-compact-basis 𝓓∞
+  ∣ 𝓓∞-has-specified-small-compact-basis ∣
 
 \end{code}
