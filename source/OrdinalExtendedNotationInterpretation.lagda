@@ -272,23 +272,25 @@ complement):
                                      g
  where
   open Κ-extension ν A
+
   IH : (x : ⟪ Δ ν ⟫) (y z : ⟪ Δ (A x) ⟫)
-     → y ≺⟪ Δ (A x) ⟫ z
+     →         y ≺⟪ Δ (A x) ⟫ z
      → ι (A x) y ≺⟪ Κ (A x) ⟫ ι (A x) z
   IH x = ι-is-order-preserving (A x)
 
   f : (x : ⟪ Δ ν ⟫) (y z : ⟪ Δ (A x) ⟫)
-    → ι (A x) y ≺⟪ Κ (A x) ⟫ ι (A x) z
-    → γ x y ≺⟪ B (ι ν x) ⟫ γ x z
+    → ι (A x) y ≺⟪ Κ (A x) ⟫   ι (A x) z
+    →     γ x y ≺⟪ B (ι ν x) ⟫     γ x z
   f x y z l = canonical-fiber-point x ,
               transport₂ (λ j k → j ≺⟪ Κ (A x) ⟫ k)
                (ι-γ-lemma x y)
                (ι-γ-lemma x z) l
 
   g : (x : ⟪ Δ ν ⟫) (y z : ⟪ Δ (A x) ⟫)
-    → y ≺⟪ Δ (A x) ⟫ z
+    →     y ≺⟪ Δ (A x) ⟫       z
     → γ x y ≺⟪ B (ι ν x) ⟫ γ x z
   g x y z l = f x y z (IH x y z l)
+
 
 ι-is-order-reflecting : (ν : E) (x y : ⟪ Δ ν ⟫)
                       → ι ν x ≺⟪ Κ ν ⟫ ι ν y
@@ -331,12 +333,12 @@ complement):
 
   IH : (x : ⟪ Δ ν ⟫) (y z : ⟪ Δ (A x) ⟫)
      → ι (A x) y ≺⟪ Κ (A x) ⟫ ι (A x) z
-     → y ≺⟪ Δ (A x) ⟫ z
+     →         y ≺⟪ Δ (A x) ⟫         z
   IH x = ι-is-order-reflecting (A x)
 
   f : (x : ⟪ Δ ν ⟫) (y z : ⟪ Δ (A x) ⟫)
-    → γ x y ≺⟪ B (ι ν x) ⟫ γ x z
-    → ι (A x) y ≺⟪ Κ (A x) ⟫ ι (A x) z
+    →     γ x y ≺⟪ B (ι ν x) ⟫     γ x z
+    → ι (A x) y ≺⟪ Κ (A x)   ⟫ ι (A x) z
   f x y z ((x' , p) , l) = n
    where
     q : (x' , p) ≡ canonical-fiber-point x
@@ -351,7 +353,7 @@ complement):
 
   g : (x : ⟪ Δ ν ⟫) (y z : ⟪ Δ (A x) ⟫)
     → γ x y ≺⟪ B (ι ν x) ⟫ γ x z
-    → y ≺⟪ Δ (A x) ⟫ z
+    →     y ≺⟪ Δ (A x)   ⟫     z
   g x y z l = IH x y z (f x y z l)
 
 ι-is-dense : (ν : E) → is-dense (ι ν)
