@@ -43,6 +43,8 @@ open import UF-FunExt
 
 module OrdinalExtendedNotationInterpretation (fe : FunExt) where
 
+fe₀ = fe 𝓤₀ 𝓤₀
+
 open import ToppedOrdinalsType fe
 open import OrdinalArithmetic fe
 open import ToppedOrdinalArithmetic fe
@@ -184,7 +186,7 @@ module Κ-extension (ν : E) (A : ⟪ Δ ν ⟫ → E) where
 
 
 ι-is-embedding ⌜𝟙⌝         = id-is-embedding
-ι-is-embedding ⌜ω+𝟙⌝       = ι𝟙-is-embedding (fe 𝓤₀ 𝓤₀)
+ι-is-embedding ⌜ω+𝟙⌝       = ι𝟙-is-embedding fe₀
 ι-is-embedding (ν₀ ⌜+⌝ ν₁) = pair-fun-is-embedding
                               id
                               (dep-cases (λ _ → ι ν₀) (λ _ → ι ν₁))
@@ -358,7 +360,7 @@ complement):
 
 ι-is-dense : (ν : E) → is-dense (ι ν)
 ι-is-dense ⌜𝟙⌝         = id-is-dense
-ι-is-dense ⌜ω+𝟙⌝       = ι𝟙-dense (fe 𝓤₀ 𝓤₀)
+ι-is-dense ⌜ω+𝟙⌝       = ι𝟙-dense fe₀
 ι-is-dense (ν₀ ⌜+⌝ ν₁) = pair-fun-dense
                           id
                           (dep-cases (λ _ → ι ν₀) (λ _ → ι ν₁))
@@ -390,7 +392,7 @@ OrdinalExtendedNotation:
 {-
 Κ-Cantor-retract : (ν : E) → retract ⟪ Κ ν ⟫ of (ℕ → 𝟚)
 Κ-Cantor-retract ⌜𝟙⌝         =  (λ _ → ⋆) , (λ _ → λ n → ₀) , 𝟙-is-prop ⋆
-Κ-Cantor-retract ⌜ω+𝟙⌝       = ℕ∞-retract-of-Cantor (fe 𝓤₀ 𝓤₀)
+Κ-Cantor-retract ⌜ω+𝟙⌝       = ℕ∞-retract-of-Cantor fe₀
 Κ-Cantor-retract (ν₀ ⌜+⌝ ν₁) = +-retract-of-Cantor
                                  (Κ ν₀)
                                  (Κ ν₁)
