@@ -78,7 +78,6 @@ import Groups
 import HiggsInvolutionTheorem
 import Id
 import Identity-Type
-import InfCompact
 import InitialBinarySystem
 import InitialBinarySystem2
 import InitialFrame
@@ -89,6 +88,7 @@ import Integers-SymmetricInduction
 import Integers
 import LPO
 import LawvereFPT
+import LeastElementProperty
 import LexicographicCompactness
 import LexicographicOrder
 import Lifting

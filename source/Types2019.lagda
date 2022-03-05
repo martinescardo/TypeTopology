@@ -46,8 +46,8 @@ import DecidabilityOfNonContinuity
 import ExtendedSumCompact
 import FailureOfTotalSeparatedness
 import GenericConvergentSequence
-import InfCompact
 import InjectiveTypes
+import LeastElementProperty
 import LexicographicCompactness
 import LexicographicOrder
 import LPO
@@ -69,5 +69,13 @@ import SquashedSum
 import TotallySeparated
 import WeaklyCompactTypes
 import WLPO
+
+\end{code}
+
+Generalization of the above (March 2022):
+
+\begin{code}
+
+import OrdinalExtendedNotationInterpretation
 
 \end{code}

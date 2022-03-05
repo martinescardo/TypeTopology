@@ -158,7 +158,7 @@ import GeneralNotation
 import GenericConvergentSequence
 import HiggsInvolutionTheorem
 import Id
-import InfCompact
+import LeastElementProperty
 import InitialBinarySystem    -- More work than needed!
 import InitialBinarySystem2   -- No need to work with subtype of normal elements.
 import InjectiveTypes-article
