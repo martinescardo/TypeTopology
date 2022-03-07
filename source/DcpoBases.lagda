@@ -35,66 +35,6 @@ open import DcpoWayBelow pt fe 𝓥
 
 open import UF-Size hiding (is-small ; is-locally-small)
 
-
--- TODO: Move elsewhere
-module _
-        (𝓓 : DCPO {𝓤} {𝓣})
-        {I : 𝓦 ̇  } {J : 𝓦' ̇  }
-        (ρ : I ≃ J)
-        (α : I → ⟨ 𝓓 ⟩)
-       where
-
- reindexed-family : J → ⟨ 𝓓 ⟩
- reindexed-family = α ∘ ⌜ ρ ⌝⁻¹
-
- reindexed-family-is-directed : is-Directed 𝓓 α
-                              → is-Directed 𝓓 reindexed-family
- reindexed-family-is-directed δ = J-inh , β-semidirected
-  where
-   J-inh : ∥ J ∥
-   J-inh = ∥∥-functor ⌜ ρ ⌝ (inhabited-if-Directed 𝓓 α δ)
-   β : J → ⟨ 𝓓 ⟩
-   β = reindexed-family
-   β-semidirected : is-semidirected (underlying-order 𝓓) β
-   β-semidirected j₁ j₂ =
-    ∥∥-functor r (semidirected-if-Directed 𝓓 α δ (⌜ ρ ⌝⁻¹ j₁) (⌜ ρ ⌝⁻¹ j₂))
-     where
-      r : (Σ i ꞉ I , (β j₁ ⊑⟨ 𝓓 ⟩ α i) × (β j₂ ⊑⟨ 𝓓 ⟩ α i))
-        → (Σ j ꞉ J , (β j₁ ⊑⟨ 𝓓 ⟩ β j) × (β j₂ ⊑⟨ 𝓓 ⟩ β j))
-      r (i , l₁ , l₂) = (⌜ ρ ⌝ i
-                        , (β j₁                    ⊑⟨ 𝓓 ⟩[ l₁ ]
-                           α i                     ⊑⟨ 𝓓 ⟩[ k ]
-                           (α ∘ ⌜ ρ ⌝⁻¹ ∘ ⌜ ρ ⌝) i ∎⟨ 𝓓 ⟩)
-                        , (β j₂                    ⊑⟨ 𝓓 ⟩[ l₂ ]
-                           α i                     ⊑⟨ 𝓓 ⟩[ k ]
-                           (α ∘ ⌜ ρ ⌝⁻¹ ∘ ⌜ ρ ⌝) i ∎⟨ 𝓓 ⟩))
-       where
-        k = ≡-to-⊒ 𝓓
-             (ap α (inverses-are-retractions ⌜ ρ ⌝ (⌜⌝-is-equiv ρ) i))
-
- reindexed-family-sup : (x : ⟨ 𝓓 ⟩)
-                      → is-sup (underlying-order 𝓓) x α
-                      → is-sup (underlying-order 𝓓) x (reindexed-family)
- reindexed-family-sup x x-is-sup = ub , lb-of-ubs
-  where
-   β : J → ⟨ 𝓓 ⟩
-   β = reindexed-family
-   ub : is-upperbound (underlying-order 𝓓) x β
-   ub i = sup-is-upperbound (underlying-order 𝓓) x-is-sup (⌜ ρ ⌝⁻¹ i)
-   lb-of-ubs : is-lowerbound-of-upperbounds (underlying-order 𝓓) x β
-   lb-of-ubs y y-is-ub = sup-is-lowerbound-of-upperbounds (underlying-order 𝓓)
-                          x-is-sup y lemma
-    where
-     lemma : is-upperbound (underlying-order 𝓓) y α
-     lemma i = α i         ⊑⟨ 𝓓 ⟩[ ⦅1⦆ ]
-               β (⌜ ρ ⌝ i) ⊑⟨ 𝓓 ⟩[ ⦅2⦆ ]
-               y           ∎⟨ 𝓓 ⟩
-      where
-       ⦅1⦆ = ≡-to-⊒ 𝓓
-             (ap α (inverses-are-retractions ⌜ ρ ⌝ (⌜⌝-is-equiv ρ) i))
-       ⦅2⦆ = y-is-ub (⌜ ρ ⌝ i)
-
-
 module _
         (𝓓 : DCPO {𝓤} {𝓣})
         {B : 𝓥 ̇  }

@@ -23,8 +23,10 @@ open import UF-Equiv
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
 
-open import Dcpo pt fe 𝓥
+import Dcpo pt fe 𝓥 as Dcpo
 open import DcpoMiscelanea pt fe 𝓥
+
+open Dcpo hiding (⊥ ; ⊥-is-least)
 
 way-below : (𝓓 : DCPO {𝓤} {𝓣}) → ⟨ 𝓓 ⟩ → ⟨ 𝓓 ⟩ → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
 way-below 𝓓 x y = (I : 𝓥 ̇ ) (α : I → ⟨ 𝓓 ⟩) (δ : is-Directed 𝓓 α)
@@ -109,11 +111,14 @@ being-compact-is-prop : (𝓓 : DCPO {𝓤} {𝓣}) (x : ⟨ 𝓓 ⟩)
                       → is-prop (is-compact 𝓓 x)
 being-compact-is-prop 𝓓 x = ≪-is-prop-valued 𝓓
 
-⊥-is-compact : (𝓓 : DCPO⊥ {𝓤} {𝓣}) → is-compact (𝓓 ⁻) (⊥ 𝓓)
-⊥-is-compact 𝓓 I α δ _ = ∥∥-functor h (inhabited-if-Directed (𝓓 ⁻) α δ)
- where
-  h : I → Σ i ꞉ I , ⊥ 𝓓 ⊑⟪ 𝓓 ⟫ α i
-  h i = (i , ⊥-is-least 𝓓 (α i))
+module _ where
+ open Dcpo using (⊥ ; ⊥-is-least)
+
+ ⊥-is-compact : (𝓓 : DCPO⊥ {𝓤} {𝓣}) → is-compact (𝓓 ⁻) (⊥ 𝓓)
+ ⊥-is-compact 𝓓 I α δ _ = ∥∥-functor h (inhabited-if-Directed (𝓓 ⁻) α δ)
+  where
+   h : I → Σ i ꞉ I , ⊥ 𝓓 ⊑⟪ 𝓓 ⟫ α i
+   h i = (i , ⊥-is-least 𝓓 (α i))
 
 binary-join-is-compact : (𝓓 : DCPO {𝓤} {𝓣}) {x y z : ⟨ 𝓓 ⟩}
                        → x ⊑⟨ 𝓓 ⟩ z → y ⊑⟨ 𝓓 ⟩ z
@@ -230,5 +235,38 @@ module _
                                 → is-compact 𝓔 (ε x)
                                 → is-compact 𝓓 x
  embeddings-reflect-compactness x = embeddings-reflect-≪ x x
+
+\end{code}
+
+TODO: Write comment
+
+\begin{code}
+
+module directify-compact
+        (𝓓 : DCPO {𝓤} {𝓣})
+        (𝓓-is-sup-complete : is-sup-complete 𝓓)
+       where
+
+ open sup-complete-dcpo 𝓓 𝓓-is-sup-complete
+ open import List
+
+ directify-is-compact : {I : 𝓦 ̇  } (α : I → ⟨ 𝓓 ⟩)
+                      → ((i : I) → is-compact 𝓓 (α i))
+                      → (l : List I) → is-compact 𝓓 (directify α l)
+ directify-is-compact α αs-are-compact []      =
+  ⊥-is-compact (𝓓 , ⊥ , ⊥-is-least)
+ directify-is-compact α αs-are-compact (i ∷ l) =
+  binary-join-is-compact 𝓓 ∨-is-upperbound₁ ∨-is-upperbound₂
+   (λ d → ∨-is-lowerbound-of-upperbounds) (αs-are-compact i) IH
+   where
+    IH : is-compact 𝓓 (directify α l)
+    IH = directify-is-compact α αs-are-compact l
+
+ directify-↓-is-compact : {I : 𝓦 ̇  } (α : I → ⟨ 𝓓 ⟩) {x : ⟨ 𝓓 ⟩}
+                        → ((i : I) → is-compact 𝓓 (α i))
+                        → (j : domain (directify-↓ α x))
+                        → is-compact 𝓓 (directify-↓ α x j)
+ directify-↓-is-compact α αs-are-compact j =
+  directify-is-compact α αs-are-compact (pr₁ j)
 
 \end{code}
