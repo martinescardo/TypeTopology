@@ -331,3 +331,104 @@ module _
     (B , β , exponential-has-small-compact-basis)
 
 \end{code}
+
+TODO: Write comment on proof strategy
+
+Exponentials of dcpos with small bases...
+
+\begin{code}
+
+module _
+        (𝓓 : DCPO {𝓤} {𝓣})
+        (𝓔 : DCPO {𝓤'} {𝓣'})
+        {Bᴰ Bᴱ : 𝓥 ̇  }
+        (βᴰ : Bᴰ → ⟨ 𝓓 ⟩)
+        (βᴱ : Bᴱ → ⟨ 𝓔 ⟩)
+        (βᴰ-is-small-basis : is-small-basis 𝓓 βᴰ)
+        (βᴱ-is-small-basis : is-small-basis 𝓔 βᴱ)
+        (𝓔-is-sup-complete : is-sup-complete 𝓔)
+       where
+
+ open import IdealCompletion-Properties pt fe pe 𝓥
+
+ private
+  module _ where
+   open Idl-algebraic 𝓓 βᴰ βᴰ-is-small-basis
+   𝓓' : DCPO {𝓥 ⁺} {𝓥}
+   𝓓' = Idl-DCPO
+   𝓓-continuous-retract-of-𝓓' : 𝓓 continuous-retract-of 𝓓'
+   𝓓-continuous-retract-of-𝓓' = Idl-continuous-retract
+  module _ where
+   open Idl-algebraic 𝓔 βᴱ βᴱ-is-small-basis
+   𝓔' : DCPO {𝓥 ⁺} {𝓥}
+   𝓔' = Idl-DCPO
+   𝓔-continuous-retract-of-𝓔' : 𝓔 continuous-retract-of 𝓔'
+   𝓔-continuous-retract-of-𝓔' = Idl-continuous-retract
+
+  exp-continuous-retract : (𝓓 ⟹ᵈᶜᵖᵒ 𝓔) continuous-retract-of (𝓓' ⟹ᵈᶜᵖᵒ 𝓔')
+  exp-continuous-retract = record {
+     s               = s
+   ; r               = r
+   ; r-s-equation    = r-s-equation
+   ; s-is-continuous = s-is-cts
+   ; r-is-continuous = r-is-cts
+   }
+    where
+     module _ where
+      open _continuous-retract-of_ 𝓓-continuous-retract-of-𝓓'
+      sᴰ = s
+      rᴰ = r
+      sᴰ-is-cts = s-is-continuous
+      rᴰ-is-cts = r-is-continuous
+      rᴰ-sᴰ-equation = r-s-equation
+     module _ where
+      open _continuous-retract-of_ 𝓔-continuous-retract-of-𝓔'
+      sᴱ = s
+      rᴱ = r
+      sᴱ-is-cts = s-is-continuous
+      rᴱ-is-cts = r-is-continuous
+      rᴱ-sᴱ-equation = r-s-equation
+     s : ⟨ 𝓓 ⟹ᵈᶜᵖᵒ 𝓔 ⟩ → ⟨ 𝓓' ⟹ᵈᶜᵖᵒ 𝓔' ⟩
+     s f = DCPO-∘₃ 𝓓' 𝓓 𝓔 𝓔' (rᴰ , rᴰ-is-cts) f (sᴱ , sᴱ-is-cts)
+     r : ⟨ 𝓓' ⟹ᵈᶜᵖᵒ 𝓔' ⟩ → ⟨ 𝓓 ⟹ᵈᶜᵖᵒ 𝓔 ⟩
+     r g = DCPO-∘₃ 𝓓 𝓓' 𝓔' 𝓔 (sᴰ , sᴰ-is-cts) g (rᴱ , rᴱ-is-cts)
+     r-s-equation : r ∘ s ∼ id
+     r-s-equation (f , _) = to-continuous-function-≡ 𝓓 𝓔 γ
+      where
+       γ : rᴱ ∘ sᴱ ∘ f ∘ rᴰ ∘ sᴰ ∼ f
+       γ x = (rᴱ ∘ sᴱ ∘ f ∘ rᴰ ∘ sᴰ) x ≡⟨ rᴱ-sᴱ-equation ((f ∘ rᴰ ∘ sᴰ) x) ⟩
+             (f ∘ rᴰ ∘ sᴰ) x           ≡⟨ ap f (rᴰ-sᴰ-equation x) ⟩
+             f x                       ∎
+     s-is-cts : is-continuous (𝓓 ⟹ᵈᶜᵖᵒ 𝓔) (𝓓' ⟹ᵈᶜᵖᵒ 𝓔') s
+     s-is-cts = DCPO-∘₃-is-continuous₂ 𝓓' 𝓓 𝓔 𝓔'
+                 (rᴰ , rᴰ-is-cts) (sᴱ , sᴱ-is-cts)
+     r-is-cts : is-continuous (𝓓' ⟹ᵈᶜᵖᵒ 𝓔') (𝓓 ⟹ᵈᶜᵖᵒ 𝓔) r
+     r-is-cts = DCPO-∘₃-is-continuous₂ 𝓓 𝓓' 𝓔' 𝓔
+                 (sᴰ , sᴰ-is-cts) (rᴱ , rᴱ-is-cts)
+
+  exp-has-small-compact-basis : has-specified-small-compact-basis (𝓓' ⟹ᵈᶜᵖᵒ 𝓔')
+  exp-has-small-compact-basis =
+   exponential-has-specified-small-compact-basis 𝓓' (𝓔' , {!!})
+    {!!} B' {!!} β' {!!} {!!} {!!} {!!}
+     where
+      module _ where
+       open Idl-algebraic 𝓓 βᴰ βᴰ-is-small-basis
+       B' : 𝓥 ̇
+       B' = pr₁ (Idl-has-specified-small-compact-basis (λ _ → ⊑ᴮ-is-reflexive))
+       β' : {!!}
+       β' = pr₁ (pr₂ (Idl-has-specified-small-compact-basis
+                       (λ _ → ⊑ᴮ-is-reflexive)))
+
+ exponential-has-small-basis : has-specified-small-basis (𝓓 ⟹ᵈᶜᵖᵒ 𝓔)
+ exponential-has-small-basis = B , r ∘ β ,
+  small-basis-from-continuous-retract (𝓓 ⟹ᵈᶜᵖᵒ 𝓔) (𝓓' ⟹ᵈᶜᵖᵒ 𝓔')
+   exp-continuous-retract β (compact-basis-is-basis (𝓓' ⟹ᵈᶜᵖᵒ 𝓔') β
+    ((pr₂ (pr₂ (exp-has-small-compact-basis))))) -- TODO: Clean up
+  where
+   open _continuous-retract-of_ exp-continuous-retract
+   B : 𝓥 ̇
+   B = pr₁ exp-has-small-compact-basis
+   β : B → DCPO[ 𝓓' , 𝓔' ]
+   β = pr₁ (pr₂ exp-has-small-compact-basis)
+
+\end{code}
