@@ -82,18 +82,30 @@ props-are-discrete i x y = inl (i x y)
    step (inl r) = inl (ap succ r)
    step (inr f) = inr (λ s → f (succ-lc s))
 
+inl-is-isolated : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (x : X)
+                → is-isolated x → is-isolated (inl x)
+inl-is-isolated {𝓤} {𝓥} {X} {Y} x i = γ
+ where
+  γ : (z : X + Y) → decidable (inl x ≡ z)
+  γ (inl x') = Cases (i x')
+                (λ (p : x ≡ x') → inl (ap inl p))
+                (λ (n : ¬ (x ≡ x')) → inr (contrapositive inl-lc n))
+  γ (inr y)  = inr +disjoint
+
+inr-is-isolated : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (y : Y)
+                → is-isolated y → is-isolated (inr y)
+inr-is-isolated {𝓤} {𝓥} {X} {Y} y i = γ
+ where
+  γ : (z : X + Y) → decidable (inr y ≡ z)
+  γ (inl x)  = inr +disjoint'
+  γ (inr y') = Cases (i y')
+                (λ (p : y ≡ y') → inl (ap inr p))
+                (λ (n : ¬ (y ≡ y')) → inr (contrapositive inr-lc n))
+
 +-is-discrete : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-          → is-discrete X → is-discrete Y → is-discrete (X + Y)
-+-is-discrete d e (inl x) (inl x') =
-    Cases (d x x')
-     (λ (p : x ≡ x') → inl (ap inl p))
-     (λ (n : ¬ (x ≡ x')) → inr (contrapositive inl-lc n))
-+-is-discrete d e (inl x) (inr y) = inr +disjoint
-+-is-discrete d e (inr y) (inl x) = inr +disjoint'
-+-is-discrete d e (inr y) (inr y') =
-    Cases (e y y')
-     (λ (p : y ≡ y') → inl (ap inr p))
-     (λ (n : ¬ (y ≡ y')) → inr (contrapositive inr-lc n))
+              → is-discrete X → is-discrete Y → is-discrete (X + Y)
++-is-discrete d e (inl x) = inl-is-isolated x (d x)
++-is-discrete d e (inr y) = inr-is-isolated y (e y)
 
 \end{code}
 

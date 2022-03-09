@@ -13,6 +13,10 @@ open import Pi
 open import Plus
 open import Sigma
 
+private
+ _⇔_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
+ A ⇔ B = (A → B) × (B → A)
+
 ¬_ : 𝓤 ̇ → 𝓤 ̇
 ¬ A = A → 𝟘 {𝓤₀}
 _≢_ : {X : 𝓤 ̇ } → (x y : X) → 𝓤 ̇
@@ -47,6 +51,17 @@ double-contrapositive = contrapositive ∘ contrapositive
 
 decidable : 𝓤 ̇ → 𝓤 ̇
 decidable A = A + ¬ A
+
+map-decidable : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → (A → B) → (B → A) → decidable A → decidable B
+map-decidable f g (inl x) = inl (f x)
+map-decidable f g (inr h) = inr (λ y → h (g y))
+
+map-decidable-corollary : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → (A ⇔ B) → (decidable A ⇔ decidable B)
+map-decidable-corollary (f , g) = map-decidable f g , map-decidable g f
+
+map-decidable' : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → (A → ¬ B) → (¬ A → B) → decidable A → decidable B
+map-decidable' f g (inl x) = inr (f x)
+map-decidable' f g (inr h) = inl (g h)
 
 double-negation-intro : {A : 𝓤 ̇ } → A → ¬¬ A
 double-negation-intro x u = u x

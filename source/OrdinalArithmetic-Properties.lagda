@@ -387,7 +387,7 @@ partial ordering:
 
 Classically, if α ≼ β then there is (a necessarily unique) γ with
 α +ₒ γ ≡ β. But this not the case constructively. For that purpose, we
-first consider characterize the order to subsingleton ordinals.
+first characterize the order of subsingleton ordinals.
 
 \begin{code}
 
@@ -466,6 +466,7 @@ ordinal-subtraction-gives-excluded-middle {𝓤} ϕ P P-is-prop = g
   α = prop-ordinal P P-is-prop
   β = prop-ordinal 𝟙 𝟙-is-prop
   σ = ϕ α β (fact₁-converse {𝓤} P 𝟙 P-is-prop 𝟙-is-prop (λ _ → ⋆))
+
   γ : Ordinal 𝓤
   γ = pr₁ σ
 
@@ -502,7 +503,7 @@ ordinal-subtraction-gives-excluded-middle {𝓤} ϕ P P-is-prop = g
 \end{code}
 
 Another example where subtraction doesn't exist is (ℕₒ +ₒ 𝟙ₒ) ≼ ℕ∞ₒ,
-discussed in the module . The types ℕₒ +ₒ 𝟙ₒ and ℕ∞ₒ
+discussed in the module OrdinalOfOrdinals. The types ℕₒ +ₒ 𝟙ₒ and ℕ∞ₒ
 are equal if and only if LPO holds. Without assuming LPO, the image of
 the inclusion (ℕₒ +ₒ 𝟙ₒ) → ℕ∞ₒ, has empty complement, and so there is
 nothing that can be added to (ℕₒ +ₒ 𝟙ₒ) to get ℕ∞ₒ, unless LPO holds.

@@ -282,6 +282,12 @@ max𝟚-preserves-≤ {₀} {₀} {₁} {b'} l m = m
 max𝟚-preserves-≤ {₀} {₁} {₁} {b'} l m = l
 max𝟚-preserves-≤ {₁} {b} {₁} {b'} l m = l
 
+max𝟚-₀-left : {a b : 𝟚} → max𝟚 a b ≡ ₀ → a ≡ ₀
+max𝟚-₀-left {₀} {b} p = refl
+
+max𝟚-₀-right : {a b : 𝟚} → max𝟚 a b ≡ ₀ → b ≡ ₀
+max𝟚-₀-right {₀} {b} p = p
+
 \end{code}
 
 Addition modulo 2:

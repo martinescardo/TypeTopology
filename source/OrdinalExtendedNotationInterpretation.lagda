@@ -54,6 +54,7 @@ open import GenericConvergentSequence
 open import ConvergentSequenceHasLeast
 open import PropInfTychonoff fe
 open import BinaryNaturals hiding (_+_)
+open import Two-Properties
 
 open import UF-Base
 open import UF-Subsingletons
@@ -155,11 +156,11 @@ module Κ-extension (ν : E) (A : ⟪ Δ ν ⟫ → E) where
                      (ι-is-embedding (A x))
                      (equivs-are-embeddings _ (⌜⌝⁻¹-is-equiv (ϕ x)))
 
- canonical-fiber-point : (x : ⟪ Δ ν ⟫) → fiber (ι ν) (ι ν x)
- canonical-fiber-point x = (x , refl)
+ canonical-ι-fiber-point : (x : ⟪ Δ ν ⟫) → fiber (ι ν) (ι ν x)
+ canonical-ι-fiber-point x = (x , refl)
 
  ι-γ-lemma : (x : ⟪ Δ ν ⟫) (y : ⟪ Δ (A x) ⟫)
-           → ι (A x) y ≡ γ x y (canonical-fiber-point x)
+           → ι (A x) y ≡ γ x y (canonical-ι-fiber-point x)
  ι-γ-lemma x = q
   where
    p : refl ≡ (ι-is-embedding ν (ι ν x) (x , refl) (x , refl))
@@ -203,9 +204,8 @@ module Κ-extension (ν : E) (A : ⟪ Δ ν ⟫ → E) where
 
 \end{code}
 
-The Κ interpretation gives ordinals such that every decidable subset
-is either empty or has a least element (and so in particular these
-ordinals are searchable, or compact):
+The important fact about the Κ interpretation is that the ordinals in
+its image have the least element property for decidable subsets:
 
 \begin{code}
 
@@ -284,7 +284,7 @@ complement):
   f : (x : ⟪ Δ ν ⟫) (y z : ⟪ Δ (A x) ⟫)
     → ι (A x) y ≺⟪ Κ (A x) ⟫   ι (A x) z
     →     γ x y ≺⟪ B (ι ν x) ⟫     γ x z
-  f x y z l = canonical-fiber-point x ,
+  f x y z l = canonical-ι-fiber-point x ,
               transport₂ (λ j k → j ≺⟪ Κ (A x) ⟫ k)
                (ι-γ-lemma x y)
                (ι-γ-lemma x z)
@@ -345,10 +345,10 @@ complement):
     → ι (A x) y ≺⟪ Κ (A x)   ⟫ ι (A x) z
   f x y z (w , l) = n
    where
-    q : w ≡ canonical-fiber-point x
+    q : w ≡ canonical-ι-fiber-point x
     q = ι-is-embedding ν (ι ν x) _ _
 
-    m : γ x y (canonical-fiber-point x) ≺⟪ Κ (A x) ⟫  γ x z (canonical-fiber-point x)
+    m : γ x y (canonical-ι-fiber-point x) ≺⟪ Κ (A x) ⟫  γ x z (canonical-ι-fiber-point x)
     m = transport (λ (x' , p) → γ x y (x' , p) ≺⟪ Κ (A x') ⟫ γ x z (x' , p)) q l
 
     n : ι (A x) y ≺⟪ Κ (A x) ⟫ ι (A x) z
@@ -384,64 +384,60 @@ complement):
 
 \end{code}
 
-We would like to have the following, but I don't think we do. However,
-I like the following failed proof because it shows exactly where the
-problem is if we follow the (successful) approach of the module
-OrdinalExtendedNotation:
+TODO. Derive a taboo from the hypothesis that the type ⟪ Κ ν ⟫ is a
+retract of the type (ℕ → 𝟚). This should be easy using the module
+FailureOfTotalSeparatedness.lagda.  In the file
+OrdinalNotationInterpretation.lagda, which is less general that this
+one, an analogous result holds. And the proof is quite complicated
+(with the difficult lemmas provided in other files).
+
+The characteristic function of limit points:
 
 \begin{code}
-{-
-Cantor = ℕ → 𝟚
 
-Κ-Cantor-retract : (ν : E) → retract ⟪ Κ ν ⟫ of Cantor
-Κ-Cantor-retract ⌜𝟙⌝         =  (λ _ → ⋆) , (λ _ → λ n → ₀) , 𝟙-is-prop ⋆
-Κ-Cantor-retract ⌜ω+𝟙⌝       = ℕ∞-retract-of-Cantor fe₀
-Κ-Cantor-retract (ν₀ ⌜+⌝ ν₁) = +-retract-of-Cantor
-                                 (Κ ν₀)
-                                 (Κ ν₁)
-                                 (Κ-Cantor-retract ν₀)
-                                 (Κ-Cantor-retract ν₁)
-Κ-Cantor-retract (ν₀ ⌜×⌝ ν₁) =  ×-retract-of-Cantor
-                                 (Κ ν₀)
-                                 (Κ ν₁)
-                                 (Κ-Cantor-retract ν₀)
-                                 (Κ-Cantor-retract ν₁)
-Κ-Cantor-retract (⌜Σ⌝ ν A)   = g
- where
-  open Κ-extension ν A
-  open import InjectiveTypes fe
+Λ : (ν : E) → ⟪ Δ ν ⟫ → 𝟚
+Λ ⌜𝟙⌝         ⋆            = ₀
+Λ ⌜ω+𝟙⌝       (inl n)      = ₀
+Λ ⌜ω+𝟙⌝       (inr ⋆)      = ₁
+Λ (ν₀ ⌜+⌝ ν₁) (inl ⋆ , x₀) = Λ ν₀ x₀
+Λ (ν₀ ⌜+⌝ ν₁) (inr ⋆ , x₁) = Λ ν₁ x₁
+Λ (ν₀ ⌜×⌝ ν₁) (x₀ , x₁)    = max𝟚 (Λ ν₀ x₀) (Λ ν₁ x₁)
+Λ (⌜Σ⌝ ν A)   (x  , y)     = max𝟚 (Λ ν x) (Λ (A x) y)
 
-  i : retract ⟪ Κ ν ⟫ of Cantor
-  i = Κ-Cantor-retract ν
-
-  ii : (x : ⟪ Δ ν ⟫) → retract ⟪ Κ (A x) ⟫ of Cantor
-  ii x = Κ-Cantor-retract (A x)
-
-  s : (y : ⟪ Κ ν ⟫) → retract ⟪ B y ⟫ of ((λ _ → Cantor) / ι ν) y
-  s y = retract-extension (λ - → ⟪ Κ (A -) ⟫) (λ _ → Cantor) (ι ν) ii y
-
-  r : retract (Σ y ꞉ ⟪ Κ ν ⟫ , ⟪ B y ⟫) of (Σ y ꞉ ⟪ Κ ν ⟫ , (fiber (ι ν) y → Cantor))
-  r = Σ-retract ((λ x → ⟪ Κ (A x) ⟫) / ι ν) ((λ _ → Cantor) / ι ν) s
-
-  t : retract (Σ y ꞉ ⟪ Κ ν ⟫ , (fiber (ι ν) y → Cantor))
-      of (Σ α ꞉ Cantor , ((fiber (ι ν) (retraction i α)) → Cantor))
-  t = Σ-reindex-retract' i
-
-  u : retract (Σ y ꞉ ⟪ Κ ν ⟫ , ⟪ B y ⟫) of (Σ α ꞉ Cantor , ((fiber (ι ν) (retraction i α)) → Cantor))
-  u = retracts-compose t r
-
-  unlikely : retract (Σ α ꞉ Cantor , ((fiber (ι ν) (retraction i α)) → Cantor)) of Cantor
-  unlikely = {!!}
-
-  g : retract (Σ y ꞉ ⟪ Κ ν ⟫ , ⟪ B y ⟫) of Cantor
-  g = retracts-compose unlikely u
--}
 \end{code}
 
-In the file OrdinalNotationInterpretation.lagda, which is less general
-that this one, this proof idea succeeds. And the proof is quite
-complicated (with the difficult lemmas provided in other files).
+Non-limit points are isolated in the Κ interpretation:
 
-TODO. Derive a taboo from the hypothesis that the above could be
-proved. This should be easy using the file
-FailureOfTotalSeparatedness.lagda.
+\begin{code}
+
+Λ-isolated : (ν : E) (x : ⟪ Δ ν ⟫) → Λ ν x ≡ ₀ → is-isolated (ι ν x)
+Λ-isolated ⌜𝟙⌝         ⋆            p    = 𝟙-is-discrete ⋆
+Λ-isolated ⌜ω+𝟙⌝       (inl n)      refl = finite-isolated fe₀ n
+Λ-isolated (ν₀ ⌜+⌝ ν₁) (inl ⋆ , x₀) p    = Σ-isolated
+                                            (inl-is-isolated ⋆ (𝟙-is-discrete ⋆))
+                                            (Λ-isolated ν₀ x₀ p)
+Λ-isolated (ν₀ ⌜+⌝ ν₁) (inr ⋆ , x₁) p    = Σ-isolated
+                                            (inr-is-isolated ⋆ (𝟙-is-discrete ⋆))
+                                            (Λ-isolated ν₁ x₁ p)
+Λ-isolated (ν₀ ⌜×⌝ ν₁) (x₀ , x₁)    p    = Σ-isolated
+                                            (Λ-isolated ν₀ x₀ (max𝟚-₀-left p))
+                                            (Λ-isolated ν₁ x₁ (max𝟚-₀-right p))
+Λ-isolated (⌜Σ⌝ ν A)   (x , y)      p    = iv
+ where
+  open Κ-extension ν A
+
+  i : is-isolated (ι ν x)
+  i = Λ-isolated ν x (max𝟚-₀-left p)
+
+  ii : is-isolated (ι (A x) y)
+  ii = Λ-isolated (A x) y (max𝟚-₀-right p)
+
+  iii : is-isolated (γ x y)
+  iii = equivs-preserve-isolatedness (φ⁻¹ x) (⌜⌝⁻¹-is-equiv (ϕ x)) (ι (A x) y) ii
+
+  iv : is-isolated (ι ν x , γ x y)
+  iv = Σ-isolated i iii
+
+\end{code}
+
+TODO. Show that (ν : E) (x : ⟪ Δ ν ⟫) → Λ ν x ≡ ₁ → is-isolated (ι ν x) → WLPO.
