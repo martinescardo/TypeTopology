@@ -340,6 +340,21 @@ Exponentials of dcpos with small bases...
 
 module _
         (𝓓 : DCPO {𝓤} {𝓣})
+        {Bᴰ : 𝓥 ̇  }
+        (βᴰ : Bᴰ → ⟨ 𝓓 ⟩)
+        (βᴰ-is-small-basis : is-small-basis 𝓓 βᴰ)
+        (𝓓-is-sup-complete : is-sup-complete 𝓓)
+       where
+
+ open import IdealCompletion-Properties pt fe pe 𝓥
+ open Idl-algebraic 𝓓 βᴰ βᴰ-is-small-basis
+
+ -- TODO: How to prove that Idl-DCPO is sup-complete?
+ -- Seem to need that the basis is closed under binary joins...
+
+
+module _
+        (𝓓 : DCPO {𝓤} {𝓣})
         (𝓔 : DCPO {𝓤'} {𝓣'})
         {Bᴰ Bᴱ : 𝓥 ̇  }
         (βᴰ : Bᴰ → ⟨ 𝓓 ⟩)
