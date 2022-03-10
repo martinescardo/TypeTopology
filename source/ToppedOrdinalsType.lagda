@@ -41,6 +41,11 @@ Ordinalᵀ 𝓤 = Σ α ꞉ Ordinal 𝓤 , has-top (underlying-order α)
 ⟪_⟫ : Ordinalᵀ 𝓤 → 𝓤 ̇
 ⟪ (X , _<_ , o) , t ⟫ = X
 
+underlying-type-is-setᵀ : FunExt
+                        → (β : Ordinalᵀ 𝓤)
+                        → is-set ⟪ β ⟫
+underlying-type-is-setᵀ fe (α , t) = underlying-type-is-set fe α
+
 \end{code}
 
 Topped ordinals are ranged over by τ,υ.

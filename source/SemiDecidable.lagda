@@ -283,10 +283,10 @@ decidability-is-semidecidable X σ τ = ∥∥-rec being-semidecidable-is-prop �
        where
         u : decidable X → ∃ n ꞉ ℕ , γ n ≡ ₁
         u (inl  x) = ∥∥-functor
-                      (λ (n , b) → n , max𝟚-lemma-converse (α n) (β n) (inl b))
+                      (λ (n , b) → n , max𝟚-lemma-converse (inl b))
                       (⌜ f ⌝ x)
         u (inr nx) = ∥∥-functor
-                      (λ (n , b) → n , max𝟚-lemma-converse (α n) (β n) (inr b))
+                      (λ (n , b) → n , max𝟚-lemma-converse (inr b))
                       (⌜ g ⌝ nx)
         v : ∃ n ꞉ ℕ , γ n ≡ ₁ → decidable X
         v = ∥∥-rec dec-of-X-is-prop ν
@@ -294,7 +294,7 @@ decidability-is-semidecidable X σ τ = ∥∥-rec being-semidecidable-is-prop �
           ν : (Σ n ꞉ ℕ , γ n ≡ ₁) → decidable X
           ν (n , p) = cases (λ a → inl (⌜ f ⌝⁻¹ ∣ n , a ∣))
                             (λ b → inr (⌜ g ⌝⁻¹ ∣ n , b ∣))
-                            (max𝟚-lemma (α n) (β n) p)
+                            (max𝟚-lemma p)
 
 \end{code}
 

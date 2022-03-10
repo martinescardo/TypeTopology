@@ -267,14 +267,27 @@ max𝟚 : 𝟚 → 𝟚 → 𝟚
 max𝟚 ₀ b = b
 max𝟚 ₁ b = ₁
 
-max𝟚-lemma : (a b : 𝟚) → max𝟚 a b ≡ ₁ → (a ≡ ₁) + (b ≡ ₁)
-max𝟚-lemma ₀ b r = inr r
-max𝟚-lemma ₁ b r = inl refl
+max𝟚-lemma : {a b : 𝟚} → max𝟚 a b ≡ ₁ → (a ≡ ₁) + (b ≡ ₁)
+max𝟚-lemma {₀} r = inr r
+max𝟚-lemma {₁} r = inl refl
 
-max𝟚-lemma-converse : (a b : 𝟚) → (a ≡ ₁) + (b ≡ ₁) → max𝟚 a b ≡ ₁
-max𝟚-lemma-converse ₀ b (inl r) = unique-from-𝟘 (zero-is-not-one r)
-max𝟚-lemma-converse ₀ b (inr r) = r
-max𝟚-lemma-converse ₁ b x = refl
+max𝟚-lemma-converse : {a b : 𝟚} → (a ≡ ₁) + (b ≡ ₁) → max𝟚 a b ≡ ₁
+max𝟚-lemma-converse {₀} (inl r) = unique-from-𝟘 (zero-is-not-one r)
+max𝟚-lemma-converse {₀} (inr r) = r
+max𝟚-lemma-converse {₁} x       = refl
+
+max𝟚-lemma' : {a b : 𝟚} → max𝟚 a b ≡ ₁ → (a ≡ ₀) × (b ≡ ₁)
+                                       + (a ≡ ₁) × (b ≡ ₀)
+                                       + (a ≡ ₁) × (b ≡ ₁)
+max𝟚-lemma' {₀} {₁} r = inl (refl , refl)
+max𝟚-lemma' {₁} {₀} r = inr (inl (refl , refl))
+max𝟚-lemma' {₁} {₁} r = inr (inr (refl , refl))
+
+max𝟚-lemma'' : {a b : 𝟚} → max𝟚 a b ≡ ₁ → (a ≡ ₁) × (b ≡ ₀)
+                                        + (b ≡ ₁)
+max𝟚-lemma'' {₁} {₀} r = inl (refl , refl)
+max𝟚-lemma'' {₀} {₁} r = inr refl
+max𝟚-lemma'' {₁} {₁} r = inr refl
 
 max𝟚-preserves-≤ : {a b a' b' : 𝟚} → a ≤ a' → b ≤ b' → max𝟚 a b ≤ max𝟚 a' b'
 max𝟚-preserves-≤ {₀} {b} {₀} {b'} l m = m

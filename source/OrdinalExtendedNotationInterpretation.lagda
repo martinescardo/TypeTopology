@@ -156,18 +156,19 @@ module Κ-extension (ν : E) (A : ⟪ Δ ν ⟫ → E) where
                      (ι-is-embedding (A x))
                      (equivs-are-embeddings _ (⌜⌝⁻¹-is-equiv (ϕ x)))
 
- canonical-ι-fiber-point : (x : ⟪ Δ ν ⟫) → fiber (ι ν) (ι ν x)
- canonical-ι-fiber-point x = (x , refl)
+ ι-fiber-point : (x : ⟪ Δ ν ⟫) → fiber (ι ν) (ι ν x)
+ ι-fiber-point x = (x , refl)
+
+ notice-that : (x : ⟪ Δ ν ⟫) (y : ⟪ Δ (A x) ⟫)
+             → φ x (γ x y) ≡ γ x y (ι-fiber-point x)
+ notice-that x y = refl
 
  ι-γ-lemma : (x : ⟪ Δ ν ⟫) (y : ⟪ Δ (A x) ⟫)
-           → ι (A x) y ≡ γ x y (canonical-ι-fiber-point x)
- ι-γ-lemma x = q
-  where
-   p : refl ≡ (ι-is-embedding ν (ι ν x) (x , refl) (x , refl))
-   p = props-are-sets (ι-is-embedding ν (ι ν x)) _ _
-
-   q : (y : ⟪ Δ (A x) ⟫) → ι (A x) y ≡ γ x y (x , refl)
-   q y = ap (λ - → transport (λ (x , _) → ⟪ Κ (A x) ⟫) - (ι (A x) y)) p
+           → ι (A x) y ≡ φ x (γ x y)
+ ι-γ-lemma x y =
+  ι (A x) y               ≡⟨ (inverses-are-sections (φ x) (⌜⌝-is-equiv (ϕ x)) (ι (A x) y))⁻¹ ⟩
+  φ x (φ⁻¹ x (ι (A x) y)) ≡⟨ refl ⟩
+  φ x (γ x y)             ∎
 
 Κ ⌜𝟙⌝         = 𝟙ᵒ
 Κ ⌜ω+𝟙⌝       = ℕ∞ᵒ
@@ -184,7 +185,6 @@ module Κ-extension (ν : E) (A : ⟪ Δ ν ⟫ → E) where
 ι (⌜Σ⌝ ν A)   = pair-fun (ι ν) γ
  where
   open Κ-extension ν A
-
 
 ι-is-embedding ⌜𝟙⌝         = id-is-embedding
 ι-is-embedding ⌜ω+𝟙⌝       = ι𝟙-is-embedding fe₀
@@ -284,7 +284,7 @@ complement):
   f : (x : ⟪ Δ ν ⟫) (y z : ⟪ Δ (A x) ⟫)
     → ι (A x) y ≺⟪ Κ (A x) ⟫   ι (A x) z
     →     γ x y ≺⟪ B (ι ν x) ⟫     γ x z
-  f x y z l = canonical-ι-fiber-point x ,
+  f x y z l = ι-fiber-point x ,
               transport₂ (λ j k → j ≺⟪ Κ (A x) ⟫ k)
                (ι-γ-lemma x y)
                (ι-γ-lemma x z)
@@ -345,10 +345,10 @@ complement):
     → ι (A x) y ≺⟪ Κ (A x)   ⟫ ι (A x) z
   f x y z (w , l) = n
    where
-    q : w ≡ canonical-ι-fiber-point x
+    q : w ≡ ι-fiber-point x
     q = ι-is-embedding ν (ι ν x) _ _
 
-    m : γ x y (canonical-ι-fiber-point x) ≺⟪ Κ (A x) ⟫  γ x z (canonical-ι-fiber-point x)
+    m : γ x y (ι-fiber-point x) ≺⟪ Κ (A x) ⟫  γ x z (ι-fiber-point x)
     m = transport (λ (x' , p) → γ x y (x' , p) ≺⟪ Κ (A x') ⟫ γ x z (x' , p)) q l
 
     n : ι (A x) y ≺⟪ Κ (A x) ⟫ ι (A x) z
@@ -441,3 +441,94 @@ Non-limit points are isolated in the Κ interpretation:
 \end{code}
 
 TODO. Show that (ν : E) (x : ⟪ Δ ν ⟫) → Λ ν x ≡ ₁ → is-isolated (ι ν x) → WLPO.
+
+\begin{code}
+
+open import WLPO
+
+
+Σ-isolated-right : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {x : X} {y : Y x}
+                 → is-set X
+                 → is-isolated ((x , y) ∶ Σ Y)
+                 → is-isolated y
+Σ-isolated-right {𝓤} {𝓥} {X} {Y} {x} {y} s i y' = γ (i (x , y'))
+ where
+  γ : decidable ((x , y) ≡ (x , y')) → decidable (y ≡ y')
+  γ (inl p) = inl (y ≡⟨ refl ⟩
+                   transport Y refl y ≡⟨ ap (λ - → transport Y - y) (s refl (ap pr₁ p)) ⟩
+                   transport Y (ap pr₁ p) y ≡⟨ (transport-ap Y pr₁ p)⁻¹ ⟩
+                   transport (λ z → Y (pr₁ z)) p y ≡⟨ apd pr₂ p ⟩
+                   y' ∎)
+  γ (inr ν) = inr (contrapositive (ap (x ,_)) ν)
+
+-- This is wrong, very wrong:
+{-
+Σ-isolated-left : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {x : X} {y : Y x}
+                → (f : (x' : X) → Y x')
+                → is-isolated (x , y)
+                → is-isolated x
+Σ-isolated-left {𝓤} {𝓥} {X} {Y} {x} {y} f i x' = γ (i (x' , {!!}))
+ where
+   j : is-isolated y
+   j = Σ-isolated-right {!!} i
+
+   γ : decidable ((x , y) ≡ (x' , {!!})) → decidable (x ≡ x')
+   γ (inl p) = inl (ap pr₁ p)
+   γ (inr ν) = inr (λ (p : x ≡ x') → ν (to-Σ-≡ (p , {!!})))
+-}
+
+{- This was supposed to use the above wrong thing, but it can be rescued:
+Λ-limit : (ν : E) (x : ⟪ Δ ν ⟫) → Λ ν x ≡ ₁ → is-isolated (ι ν x) → WLPO
+Λ-limit ⌜ω+𝟙⌝      (inr ⋆)      p i = is-isolated-gives-is-isolated' ∞ i
+Λ-limit (ν ⌜+⌝ ν₁) (inl ⋆ , x₀) p i = {!!}
+Λ-limit (ν ⌜+⌝ ν₁) (inr ⋆ , x₁) p i = {!!}
+Λ-limit (ν ⌜×⌝ ν₁) (x₀ , x₁)    p i = {!!}
+Λ-limit (⌜Σ⌝ ν A)  (x , y)      p i = Γ (max𝟚-lemma p)
+ where
+  open Κ-extension ν A
+
+  Γ : (Λ ν x ≡ ₁) + (Λ (A x) y ≡ ₁) → WLPO
+  Γ (inl r) = ii {!!}
+   where
+    vi : is-isolated (ι ν x , γ x y)
+    vi = i
+
+    {-
+    Given k : ⟪ K ν ⟫, we can define P b = (ι ν x , γ x y) ≡ (k , b).
+    By vi, this predicate is decidable, and because ⟪ B k ⟫ is searchable, either
+
+        (a) Σ b ꞉ ⟪ B k ⟫ , (ι ν x , γ x y) ≡ (k , b), or
+        (b) Π b ꞉ ⟪ B k ⟫ , (ι ν x , γ x y) ≢ (k , b).
+
+    In the first case (a) we conclude that ι ν x ≡ k.
+    In the second case (b) we conclude that ι ν x ≢ k, for if we have r : ι ν x ≡ k then
+     (ι ν x , γ x y) ≡ (k , transport r (γ x y) ), which constradicts (b).
+
+    Yay!
+    -}
+
+    ii : is-isolated (ι ν x) → WLPO
+    ii = Λ-limit ν x r
+
+    vii : is-isolated (γ x y)
+    vii = Σ-isolated-right (underlying-type-is-setᵀ fe (Κ ν)) vi
+
+    v : Σ k ꞉ ⟪ Κ ν ⟫ , ⟪ B k ⟫
+    v = ι ν x , γ x y
+
+
+  Γ (inr q) = iii v
+   where
+    iv : is-isolated (γ x y)
+    iv = Σ-isolated-right (underlying-type-is-setᵀ fe (Κ ν)) i
+
+    vi : is-isolated (φ x (γ x y))
+    vi = equivs-preserve-isolatedness (φ x) (⌜⌝-is-equiv (ϕ x)) (γ x y) iv
+
+    v : is-isolated (ι (A x) y)
+    v = transport is-isolated ((ι-γ-lemma x y)⁻¹) vi
+
+    iii : is-isolated (ι (A x) y) → WLPO
+    iii = Λ-limit (A x) y q
+-}
+\end{code}
