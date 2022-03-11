@@ -216,47 +216,8 @@ module Κ-extension (ν : E) (A : ⟪ Δ ν ⟫ → E) where
 \end{code}
 
 The important fact about the Κ interpretation is that the ordinals in
-its image have the least element property for decidable subsets:
-
-\begin{code}
-
-module _ (pe : propext 𝓤₀) where
-
- K-has-least-element-property : (ν : E) → has-least-element-property (Κ ν)
- ↑-has-least-element-property : (ν : E) (A : ⟪ Δ ν ⟫ → E) (x : ⟪ Κ ν ⟫) → has-least-element-property (↑ ν A x)
-
- K-has-least-element-property ⌜𝟙⌝         = 𝟙ᵒ-has-least-element-property
- K-has-least-element-property ⌜ω+𝟙⌝       = ℕ∞ᵒ-has-least-element-property pe
- K-has-least-element-property (ν₀ ⌜+⌝ ν₁) = ∑-has-least-element-property pe
-                                                𝟚ᵒ
-                                                (cases (λ _ → Κ ν₀) (λ _ → Κ ν₁))
-                                                𝟚ᵒ-has-least-element-property
-                                                (dep-cases (λ _ → K-has-least-element-property ν₀)
-                                                           (λ _ → K-has-least-element-property ν₁))
- K-has-least-element-property (ν₀ ⌜×⌝ ν₁) = ∑-has-least-element-property pe
-                                                (Κ ν₀)
-                                                (λ _ → Κ ν₁)
-                                                (K-has-least-element-property ν₀)
-                                                (λ _ → K-has-least-element-property ν₁)
- K-has-least-element-property (⌜Σ⌝ ν A)   = ∑-has-least-element-property pe (Κ ν) B
-                                                (K-has-least-element-property ν)
-                                                (↑-has-least-element-property ν A)
-  where
-   open Κ-extension ν A
-
- ↑-has-least-element-property ν A x = prop-inf-tychonoff
-                                       (ι-is-embedding ν x)
-                                       (λ {(x , _)} y z → y ≺⟪ Κ (A x) ⟫ z)
-                                       (λ (x , _) → K-has-least-element-property (A x))
-
- Κ-Searchable : {𝓥 : Universe} (ν : E) → Searchable ⟪ Κ ν ⟫ {𝓥}
- Κ-Searchable ν = has-least-gives-Searchable _ (K-has-least-element-property ν)
-
- ↑-Searchable : {𝓥 : Universe} (ν : E) (A : ⟪ Δ ν ⟫ → E) (x : ⟪ Κ ν ⟫) → Searchable ⟪ ↑ ν A x ⟫ {𝓥}
- ↑-Searchable ν A x = has-least-gives-Searchable _ (↑-has-least-element-property ν A x)
-
-
-\end{code}
+its image have the least element property for decidable subsets, and,
+in particular, they are searchable - see below.
 
 The embedding of the Δ interpretation into the Κ interpretation is
 order-preserving, order-reflecting, and dense (its image has empty
@@ -415,6 +376,52 @@ OrdinalNotationInterpretation.lagda, which is less general that this
 one, an analogous result holds. And the proof is quite complicated
 (with the difficult lemmas provided in other files).
 
+\begin{code}
+
+module _ (pe : propext 𝓤₀) where
+
+ K-has-least-element-property : (ν : E)
+                              → has-least-element-property (Κ ν)
+ ↑-has-least-element-property : (ν : E) (A : ⟪ Δ ν ⟫ → E) (x : ⟪ Κ ν ⟫)
+                              → has-least-element-property (↑ ν A x)
+
+ K-has-least-element-property ⌜𝟙⌝         = 𝟙ᵒ-has-least-element-property
+ K-has-least-element-property ⌜ω+𝟙⌝       = ℕ∞ᵒ-has-least-element-property pe
+ K-has-least-element-property (ν₀ ⌜+⌝ ν₁) =
+   ∑-has-least-element-property pe
+     𝟚ᵒ
+     (cases (λ _ → Κ ν₀) (λ _ → Κ ν₁))
+     𝟚ᵒ-has-least-element-property
+     (dep-cases (λ _ →  K-has-least-element-property ν₀)
+                (λ _ → K-has-least-element-property ν₁))
+ K-has-least-element-property (ν₀ ⌜×⌝ ν₁) =
+   ∑-has-least-element-property pe
+     (Κ ν₀)
+     (λ _ → Κ ν₁)
+     (K-has-least-element-property ν₀)
+     (λ _ → K-has-least-element-property ν₁)
+ K-has-least-element-property (⌜Σ⌝ ν A)   =
+   ∑-has-least-element-property pe (Κ ν) B
+     (K-has-least-element-property ν)
+     (↑-has-least-element-property ν A)
+  where
+   open Κ-extension ν A
+
+ ↑-has-least-element-property ν A x = prop-inf-tychonoff
+                                       (ι-is-embedding ν x)
+                                       (λ {(x , _)} y z → y ≺⟪ Κ (A x) ⟫ z)
+                                       (λ (x , _) → K-has-least-element-property (A x))
+
+ Κ-Searchable : {𝓥 : Universe} (ν : E) → Searchable ⟪ Κ ν ⟫ {𝓥}
+ Κ-Searchable ν = has-least-gives-Searchable _ (K-has-least-element-property ν)
+
+ ↑-Searchable : {𝓥 : Universe} (ν : E) (A : ⟪ Δ ν ⟫ → E) (x : ⟪ Κ ν ⟫)
+              → Searchable ⟪ ↑ ν A x ⟫ {𝓥}
+ ↑-Searchable ν A x = has-least-gives-Searchable _ (↑-has-least-element-property ν A x)
+
+
+\end{code}
+
 The characteristic function of limit points:
 
 \begin{code}
@@ -464,27 +471,36 @@ Non-limit points are isolated in the Κ interpretation:
 
 \end{code}
 
-TODO. Show that (ν : E) (x : ⟪ Δ ν ⟫) → Λ ν x ≡ ₁ → is-isolated (ι ν x) → WLPO.
+Limit points are "not" isolated:
 
 \begin{code}
 
-open import WLPO
+module _ (pe : propext 𝓤₀) where
 
-Λ-limit : propext 𝓤₀ → (ν : E) (x : ⟪ Δ ν ⟫) → Λ ν x ≡ ₁ → is-isolated (ι ν x) → WLPO
-Λ-limit pe ⌜ω+𝟙⌝       (inr ⋆)      p i = is-isolated-gives-is-isolated' ∞ i
-Λ-limit pe (ν₀ ⌜+⌝ ν₁) (inl ⋆ , x₀) p i = Λ-limit pe ν₀ x₀ p (Σ-isolated-right (underlying-type-is-setᵀ fe 𝟚ᵒ) i)
-Λ-limit pe (ν₀ ⌜+⌝ ν₁) (inr ⋆ , x₁) p i = Λ-limit pe ν₁ x₁ p (Σ-isolated-right (underlying-type-is-setᵀ fe 𝟚ᵒ) i)
-Λ-limit pe (ν₀ ⌜×⌝ ν₁) (x₀ , x₁)    p i =
-  Cases (max𝟚-lemma p)
-   (λ (p₀ : Λ ν₀ x₀ ≡ ₁) → Λ-limit pe ν₀ x₀ p₀ (×-isolated-left i))
-   (λ (p₁ : Λ ν₁ x₁ ≡ ₁) → Λ-limit pe ν₁ x₁ p₁ (×-isolated-right i))
-Λ-limit pe (⌜Σ⌝ ν A)   (x , y)      p i =
-  Cases (max𝟚-lemma p)
-   (λ (p₀ : Λ ν x ≡ ₁) → Λ-limit pe ν x p₀ (Σ-isolated-left (↑-Searchable pe ν A) i))
-   (λ (p₁ : Λ (A x) y ≡ ₁) → Λ-limit pe (A x) y p₁
-                              (isolated-γ-gives-isolated-ι x y
-                                (Σ-isolated-right (underlying-type-is-setᵀ fe (Κ ν)) i)))
- where
-  open Κ-extension ν A
+ open import WLPO
 
+ Λ-limit : (ν : E) (x : ⟪ Δ ν ⟫) → Λ ν x ≡ ₁ → is-isolated (ι ν x) → WLPO
+ Λ-limit ⌜ω+𝟙⌝       (inr ⋆)      p i = is-isolated-gives-is-isolated' ∞ i
+ Λ-limit (ν₀ ⌜+⌝ ν₁) (inl ⋆ , x₀) p i = Λ-limit ν₀ x₀ p
+                                         (Σ-isolated-right (underlying-type-is-setᵀ fe 𝟚ᵒ) i)
+ Λ-limit (ν₀ ⌜+⌝ ν₁) (inr ⋆ , x₁) p i = Λ-limit ν₁ x₁ p
+                                         (Σ-isolated-right (underlying-type-is-setᵀ fe 𝟚ᵒ) i)
+ Λ-limit (ν₀ ⌜×⌝ ν₁) (x₀ , x₁)    p i =
+   Cases (max𝟚-lemma p)
+    (λ (p₀ : Λ ν₀ x₀ ≡ ₁) → Λ-limit ν₀ x₀ p₀ (×-isolated-left i))
+    (λ (p₁ : Λ ν₁ x₁ ≡ ₁) → Λ-limit ν₁ x₁ p₁ (×-isolated-right i))
+ Λ-limit (⌜Σ⌝ ν A)   (x , y)      p i =
+   Cases (max𝟚-lemma p)
+    (λ (p₀ : Λ ν x ≡ ₁) → Λ-limit ν x p₀ (Σ-isolated-left (↑-Searchable pe ν A) i))
+    (λ (p₁ : Λ (A x) y ≡ ₁) → Λ-limit (A x) y p₁
+                               (isolated-γ-gives-isolated-ι x y
+                                 (Σ-isolated-right (underlying-type-is-setᵀ fe (Κ ν)) i)))
+  where
+   open Κ-extension ν A
+
+ isolatedness-decision : (ν : E) (x : ⟪ Δ ν ⟫)
+                       → is-isolated (ι ν x) + (is-isolated (ι ν x) → WLPO)
+ isolatedness-decision ν x = 𝟚-equality-cases
+                              (λ (p : Λ ν x ≡ ₀) → inl (Λ-isolated ν x p))
+                              (λ (p : Λ ν x ≡ ₁) → inr (Λ-limit ν x p))
 \end{code}
