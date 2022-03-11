@@ -52,6 +52,20 @@ equivs-are-embeddings : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                       → is-embedding f
 equivs-are-embeddings f e y = singletons-are-props (equivs-are-vv-equivs f e y)
 
+embeddings-with-sections-are-vv-equivs : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                                       → is-embedding f
+                                       → has-section f
+                                       → is-vv-equiv f
+embeddings-with-sections-are-vv-equivs f i (g , η) y = pointed-props-are-singletons
+                                                        (g y , η y) (i y)
+
+embeddings-with-sections-are-equivs : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                                    → is-embedding f
+                                    → has-section f
+                                    → is-equiv f
+embeddings-with-sections-are-equivs f i h = vv-equivs-are-equivs f
+                                             (embeddings-with-sections-are-vv-equivs f i h)
+
 _↪_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
 X ↪ Y = Σ f ꞉ (X → Y) , is-embedding f
 
@@ -383,35 +397,75 @@ module _ {𝓤 𝓥 𝓦 𝓣}
  pair-fun : Σ A → Σ B
  pair-fun (x , a) = (f x , g x a)
 
- pair-fun-is-embedding : is-embedding f
-                    → ((x : X) → is-embedding (g x))
-                    → is-embedding pair-fun
- pair-fun-is-embedding e d (y , b) = h
+ pair-fun-fiber' : (y : Y) → B y → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓣 ̇
+ pair-fun-fiber' y b = Σ w ꞉ fiber f y , fiber (g (pr₁ w)) (back-transport B (pr₂ w) b)
+
+ pair-fun-fiber-≃ : (y : Y) (b : B y)
+                  → fiber pair-fun (y , b)
+                  ≃ pair-fun-fiber' y b
+ pair-fun-fiber-≃  y b = qinveq φ (γ , γφ , φγ)
   where
-   Z : 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓣 ̇
-   Z = Σ w ꞉ fiber f y , fiber (g (pr₁ w)) (back-transport B (pr₂ w) b)
-
-   Z-is-prop : is-prop Z
-   Z-is-prop = subtype-of-prop-is-prop
-                pr₁
-                (pr₁-lc (λ {w} → d (pr₁ w) (back-transport B (pr₂ w) b)))
-                (e y)
-
-   φ : fiber pair-fun (y , b) → Z
+   φ : fiber pair-fun (y , b) → pair-fun-fiber' y b
    φ ((x , a) , refl) = (x , refl) , (a , refl)
 
-   γ : Z → fiber pair-fun (y , b)
+   γ : pair-fun-fiber' y b → fiber pair-fun (y , b)
    γ ((x , refl) , (a , refl)) = (x , a) , refl
 
    γφ : (t : fiber pair-fun (y , b)) → γ (φ t) ≡ t
    γφ ((x , a) , refl) = refl
 
+   φγ : (s : pair-fun-fiber' y b) → φ (γ s) ≡ s
+   φγ ((x , refl) , (a , refl)) = refl
+
+
+ pair-fun-is-embedding : is-embedding f
+                       → ((x : X) → is-embedding (g x))
+                       → is-embedding pair-fun
+ pair-fun-is-embedding e d (y , b) = h
+  where
+   i : is-prop (pair-fun-fiber' y b)
+   i = subtype-of-prop-is-prop
+        pr₁
+        (pr₁-lc (λ {w} → d (pr₁ w) (back-transport B (pr₂ w) b)))
+        (e y)
+
    h : is-prop (fiber pair-fun (y , b))
-   h = subtype-of-prop-is-prop φ (sections-are-lc φ (γ , γφ)) Z-is-prop
+   h = equiv-to-prop (pair-fun-fiber-≃ y b) i
+
+ pair-fun-is-vv-equiv : is-vv-equiv f
+                      → ((x : X) → is-vv-equiv (g x))
+                      → is-vv-equiv pair-fun
+ pair-fun-is-vv-equiv e d (y , b) = h
+  where
+   k : is-prop (fiber pair-fun (y , b))
+   k = pair-fun-is-embedding
+        (equivs-are-embeddings f (vv-equivs-are-equivs f e))
+        (λ x → equivs-are-embeddings (g x) (vv-equivs-are-equivs (g x) (d x)))
+        (y , b)
+
+   x : X
+   x = fiber-point (center (e y))
+
+   i : f x ≡ y
+   i = fiber-identification (center (e y))
+
+   w : pair-fun-fiber' y b
+   w = (center (e y) , (center (d x (back-transport B i b))))
+
+   h : is-singleton (fiber pair-fun (y , b))
+   h = pointed-props-are-singletons (⌜ pair-fun-fiber-≃ y b ⌝⁻¹ w) k
+
+ pair-fun-is-equiv : is-equiv f
+                   → ((x : X) → is-equiv (g x))
+                   → is-equiv pair-fun
+ pair-fun-is-equiv e d = vv-equivs-are-equivs pair-fun
+                          (pair-fun-is-vv-equiv
+                            (equivs-are-vv-equivs f e)
+                            (λ x → equivs-are-vv-equivs (g x) (d x)))
 
  pair-fun-dense : is-dense f
-               → ((x : X) → is-dense (g x))
-               → is-dense pair-fun
+                → ((x : X) → is-dense (g x))
+                → is-dense pair-fun
  pair-fun-dense i j = contrapositive γ i
   where
    γ : (Σ w ꞉ Σ B , ¬ fiber pair-fun w) → Σ y ꞉ Y , ¬ fiber f y

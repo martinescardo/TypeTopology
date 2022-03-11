@@ -15,12 +15,12 @@ For a code ν : E, we have an ordinal Δ ν, which is discrete (has
 decidable equality).
 
 For a code ν : E, we have an ordinal Κ ν, which is searchable (or
-compact). More than that, evey decidable subset of Κ ν is either empty
+compact). More than that, every decidable subset of Κ ν is either empty
 or has a minimal element.
 
 There is an embedding ι : Δ ν → Κ ν which is order preserving and
 reflecting, and whose image has empty complement. The assumption that
-it is a bijection implies LPO.
+it is a bijection implies WLPO.
 
 The adopted notion of ordinal is that of the HoTT book.
 
@@ -45,6 +45,14 @@ module OrdinalExtendedNotationInterpretation (fe : FunExt) where
 
 fe₀ = fe 𝓤₀ 𝓤₀
 
+open import UF-Base
+open import UF-Subsingletons
+open import UF-Retracts
+open import UF-Embeddings
+open import UF-Equiv
+open import UF-Subsingletons-FunExt
+open import UF-Miscelanea
+
 open import ToppedOrdinalsType fe
 open import OrdinalArithmetic fe
 open import ToppedOrdinalArithmetic fe
@@ -58,14 +66,9 @@ open import BinaryNaturals hiding (_+_)
 open import Two-Properties
 open import CompactTypes
 open import LeastElementProperty
+open import WLPO
+open import LPO fe
 
-open import UF-Base
-open import UF-Subsingletons
-open import UF-Retracts
-open import UF-Embeddings
-open import UF-Equiv
-open import UF-Subsingletons-FunExt
-open import UF-Miscelanea
 
 \end{code}
 
@@ -213,6 +216,50 @@ module Κ-extension (ν : E) (A : ⟪ Δ ν ⟫ → E) where
  where
   open Κ-extension ν A
 
+ι-has-section-gives-Κ-discrete : (ν : E) → has-section (ι ν) → is-discrete ⟪ Κ ν ⟫
+ι-has-section-gives-Κ-discrete ν (θ , ιθ) = lc-maps-reflect-discreteness θ
+                                               (sections-are-lc θ (ι ν , ιθ))
+                                               (Δ-is-discrete ν)
+
+ι-is-equiv-gives-Κ-discrete : (ν : E) → is-equiv (ι ν) → is-discrete ⟪ Κ ν ⟫
+ι-is-equiv-gives-Κ-discrete ν e = ι-has-section-gives-Κ-discrete ν (equivs-have-sections (ι ν) e)
+
+
+
+
+ι-is-equiv-gives-WLPO : ((ν : E) → is-equiv (ι ν)) → WLPO
+ι-is-equiv-gives-WLPO h = ℕ∞-discrete-gives-WLPO (ι-is-equiv-gives-Κ-discrete ⌜ω+𝟙⌝ (h ⌜ω+𝟙⌝))
+
+LPO-gives-ι-is-equiv : LPO → (ν : E) → is-equiv (ι ν)
+LPO-gives-ι-is-equiv lpo ⌜𝟙⌝         = id-is-equiv 𝟙
+LPO-gives-ι-is-equiv lpo ⌜ω+𝟙⌝       = LPO-gives-ι𝟙-is-equiv lpo
+LPO-gives-ι-is-equiv lpo (ν₀ ⌜+⌝ ν₁) = pair-fun-is-equiv
+                                          id
+                                          (dep-cases (λ _ → ι ν₀) (λ _ → ι ν₁))
+                                          (id-is-equiv (𝟙 + 𝟙))
+                                          (dep-cases
+                                            (λ _ → LPO-gives-ι-is-equiv lpo ν₀)
+                                            (λ _ → LPO-gives-ι-is-equiv lpo ν₁))
+LPO-gives-ι-is-equiv lpo (ν₀ ⌜×⌝ ν₁) = pair-fun-is-equiv _ _
+                                          (LPO-gives-ι-is-equiv lpo ν₀)
+                                          (λ _ → LPO-gives-ι-is-equiv lpo ν₁)
+LPO-gives-ι-is-equiv lpo (⌜Σ⌝ ν A)   = pair-fun-is-equiv
+                                          (ι ν)
+                                          γ
+                                          (LPO-gives-ι-is-equiv lpo ν)
+                                          (λ x → ∘-is-equiv
+                                                  (LPO-gives-ι-is-equiv lpo (A x))
+                                                  (⌜⌝⁻¹-is-equiv (ϕ x)))
+ where
+  open Κ-extension ν A
+
+ι-is-equiv-gives-LPO : ((ν : E) → is-equiv (ι ν)) → LPO
+ι-is-equiv-gives-LPO f = ι𝟙-is-equiv-gives-LPO (f ⌜ω+𝟙⌝)
+
+ι-is-equiv-iff-LPO : ((ν : E) → is-equiv (ι ν)) ⇔ LPO
+ι-is-equiv-iff-LPO = ι-is-equiv-gives-LPO , LPO-gives-ι-is-equiv
+
+
 \end{code}
 
 The important fact about the Κ interpretation is that the ordinals in
@@ -226,7 +273,7 @@ complement):
 \begin{code}
 
 ι-is-order-preserving : (ν : E) (x y : ⟪ Δ ν ⟫)
-                      →     x ≺⟪ Δ ν ⟫     y
+                     →     x ≺⟪ Δ ν ⟫     y
                       → ι ν x ≺⟪ Κ ν ⟫ ι ν y
 ι-is-order-preserving ⌜𝟙⌝         = λ x y l → l
 ι-is-order-preserving ⌜ω+𝟙⌝       = ι𝟙ᵒ-is-order-preserving
@@ -477,8 +524,6 @@ Limit points are "not" isolated:
 
 module _ (pe : propext 𝓤₀) where
 
- open import WLPO
-
  Λ-limit : (ν : E) (x : ⟪ Δ ν ⟫) → Λ ν x ≡ ₁ → is-isolated (ι ν x) → WLPO
  Λ-limit ⌜ω+𝟙⌝       (inr ⋆)      p i = is-isolated-gives-is-isolated' ∞ i
  Λ-limit (ν₀ ⌜+⌝ ν₁) (inl ⋆ , x₀) p i = Λ-limit ν₀ x₀ p
@@ -503,4 +548,11 @@ module _ (pe : propext 𝓤₀) where
  isolatedness-decision ν x = 𝟚-equality-cases
                               (λ (p : Λ ν x ≡ ₀) → inl (Λ-isolated ν x p))
                               (λ (p : Λ ν x ≡ ₁) → inr (Λ-limit ν x p))
+
+ isolatedness-decision' : ¬ WLPO → (ν : E) (x : ⟪ Δ ν ⟫) → decidable (is-isolated (ι ν x))
+ isolatedness-decision' f ν x =
+   Cases (isolatedness-decision ν x)
+    inl
+    (λ (g : is-isolated (ι ν x) → WLPO)  → inr (contrapositive g f))
+
 \end{code}

@@ -913,7 +913,7 @@ module example where
    e = pr₂ (≃ₒ-gives-≃ (ℕₒ +ₒ 𝟙ₒ) ℕ∞ₒ b)
 
    γ : LPO
-   γ = has-section-ι𝟙-gives-LPO (equivs-have-sections ι𝟙 e)
+   γ = ι𝟙-has-section-gives-LPO (equivs-have-sections ι𝟙 e)
 
  converse-fails-constructively-converse : LPO → ℕ∞ₒ ⊴ (ℕₒ +ₒ 𝟙ₒ)
  converse-fails-constructively-converse lpo = (λ x → ι𝟙-inverse x (lpo x)) ,
