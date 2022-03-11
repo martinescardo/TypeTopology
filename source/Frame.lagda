@@ -450,6 +450,11 @@ binary-family {A = A} 𝓦 x y = 𝟚 𝓦  , α
   α (inl *) = x
   α (inr *) = y
 
+binary-family-syntax : {A : 𝓤 ̇ } {𝓦 : Universe} → A → A → Fam 𝓦 A
+binary-family-syntax {𝓦 = 𝓦} x y = binary-family 𝓦 x y
+
+syntax binary-family-syntax x y = ⁅ x , y ⁆
+
 fmap-binary-family : {A : 𝓤 ̇ } {B : 𝓥 ̇ }
                    → (𝓦 : Universe)
                    → (f : A → B)
@@ -624,6 +629,27 @@ distributivity (_ , _ , _ , (_ , _ , _ , d)) x U = d (x , U)
 
 \end{code}
 
+\section{Scott-continuity}
+
+\begin{code}
+
+is-directed : (F : frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓥 ⊔ 𝓦)
+is-directed F (I , β) =
+   ∥ I ∥Ω
+ ∧ (Ɐ i ∶ I , Ɐ j ∶ I , (Ǝ k ∶ I , ((β i ≤ β k) ∧ (β j ≤ β k)) holds))
+  where open PosetNotation (poset-of F)
+
+is-scott-continuous : (F : frame 𝓤  𝓥  𝓦)
+                    → (G : frame 𝓤′ 𝓥′ 𝓦)
+                    → (f : ⟨ F ⟩ → ⟨ G ⟩)
+                    → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺ ⊔ 𝓤′ ⊔ 𝓥′)
+is-scott-continuous {𝓦 = 𝓦} F G f =
+ Ɐ S ∶ Fam 𝓦 ⟨ F ⟩ , is-directed F S ⇒ f (⋁[ F ] S) is-lub-of ⁅ f s ∣ s ε S ⁆
+  where
+   open Joins (λ x y → x ≤[ poset-of G ] y) using (_is-lub-of_)
+
+\end{code}
+
 \section{Frame homomorphisms}
 
 \begin{code}
@@ -653,6 +679,30 @@ is-monotonic : (P : poset 𝓤 𝓥) (Q : poset 𝓤′ 𝓥′)
              → (pr₁ P → pr₁ Q) → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓥′)
 is-monotonic P Q f =
  Ɐ (x , y) ∶ (pr₁ P × pr₁ P) , ((x ≤[ P ] y) ⇒ f x ≤[ Q ] f y)
+
+_─m→_ : (P : poset 𝓤 𝓥) (Q : poset 𝓤′ 𝓥′) → 𝓤 ⊔ 𝓥 ⊔ 𝓤′ ⊔ 𝓥′ ̇
+P ─m→ Q = Σ f ꞉ (∣ P ∣ₚ → ∣ Q ∣ₚ) , (is-monotonic P Q f) holds
+
+is-join-preserving : (F : frame 𝓤 𝓥 𝓦) (G : frame 𝓤' 𝓥' 𝓦)
+                   → (⟨ F ⟩ → ⟨ G ⟩) → Ω (𝓤 ⊔ 𝓤' ⊔ 𝓦 ⁺)
+is-join-preserving {𝓦 = 𝓦} F G f =
+ Ɐ S ∶ Fam 𝓦 ⟨ F ⟩ , f (⋁[ F ] S) ≡[ iss ]≡ ⋁[ G ] ⁅ f s ∣ s ε S ⁆
+  where
+   iss = carrier-of-[ poset-of G ]-is-set
+
+join-preserving-implies-scott-continuous : (F : frame 𝓤 𝓥 𝓦) (G : frame 𝓤' 𝓥' 𝓦)
+                                         → (f : ⟨ F ⟩ → ⟨ G ⟩)
+                                         → is-join-preserving F G f holds
+                                         → is-scott-continuous F G f holds
+join-preserving-implies-scott-continuous F G f φ S _ = γ
+ where
+  open Joins (λ x y → x ≤[ poset-of G ] y)
+
+  γ : (f (⋁[ F ] S) is-lub-of ⁅ f s ∣ s ε S ⁆) holds
+  γ = transport
+       (λ - → (- is-lub-of (fmap-syntax (λ s → f s)) S) holds)
+       (φ S ⁻¹)
+       (⋁[ G ]-upper ⁅ f s ∣ s ε S ⁆ , ⋁[ G ]-least ⁅ f s ∣ s ε S ⁆)
 
 \end{code}
 
@@ -708,8 +758,27 @@ connecting-lemma₂ F {x} {y} p = x ≡⟨ p ⟩ₚ x ∧[ F ] y ≤⟨ ∧[ F ]
  where
   open PosetReasoning (poset-of F)
 
+connecting-lemma₃ : (F : frame 𝓤 𝓥 𝓦) {x y : ⟨ F ⟩}
+                  → y ≡ x ∨[ F ] y
+                  → (x ≤[ poset-of F ] y) holds
+connecting-lemma₃ F {x} {y} p =
+ x ≤⟨ ∨[ F ]-upper₁ x y ⟩ x ∨[ F ] y ≡⟨ p ⁻¹ ⟩ₚ y ■
+  where
+   open PosetReasoning (poset-of F)
+
+connecting-lemma₄ : (F : frame 𝓤 𝓥 𝓦) {x y : ⟨ F ⟩}
+                  → (x ≤[ poset-of F ] y) holds
+                  → y ≡ x ∨[ F ] y
+connecting-lemma₄ F {x} {y} p = ≤-is-antisymmetric (poset-of F) β γ
+ where
+  β : (y ≤[ poset-of F ] (x ∨[ F ] y)) holds
+  β = ∨[ F ]-upper₂ x y
+
+  γ : ((x ∨[ F ] y) ≤[ poset-of F ] y) holds
+  γ = ∨[ F ]-least p (≤-is-reflexive (poset-of F) y)
+
 frame-morphisms-are-monotonic : (F : frame 𝓤  𝓥  𝓦)
-                                (G : frame 𝓤′ 𝓥′ 𝓦′)
+                                (G : frame 𝓤′ 𝓥′ 𝓦)
                               → (f : ⟨ F ⟩ → ⟨ G ⟩)
                               → is-a-frame-homomorphism F G f holds
                               → is-monotonic (poset-of F) (poset-of G) f holds
@@ -724,6 +793,42 @@ frame-morphisms-are-monotonic F G f (_ , ψ , _) (x , y) p =
    i  = reflexivity+ (poset-of G) (ap f (connecting-lemma₁ F x y p))
    ii = reflexivity+ (poset-of G) (ψ (x , y))
 
+scott-continuous-implies-monotone : (F : frame 𝓤 𝓥 𝓦) (G : frame 𝓤′ 𝓥′ 𝓦)
+                                  → (f : ⟨ F ⟩ → ⟨ G ⟩)
+                                  → is-scott-continuous F G f holds
+                                  → is-monotonic (poset-of F) (poset-of G) f holds
+scott-continuous-implies-monotone {𝓦 = 𝓦} F G f φ (x , y) p =
+ f x                                       ≤⟨ i   ⟩
+ f x ∨[ G ] f y                            ≡⟨ ii  ⟩ₚ
+ ⋁[ G ] ⁅ f z ∣ z ε binary-family 𝓦 x y ⁆  ≡⟨ iii ⟩ₚ
+ f (x ∨[ F ] y)                            ≡⟨ iv  ⟩ₚ
+ f y                                       ■
+  where
+   open PosetReasoning (poset-of G)
+   open PropositionalTruncation pt
+
+   δ : is-directed F (binary-family 𝓦 x y) holds
+   δ = ∣ inr ⋆ ∣ , †
+        where
+         rx : (x ≤[ poset-of F ] x) holds
+         rx = ≤-is-reflexive (poset-of F) x
+
+         ry : (y ≤[ poset-of F ] y) holds
+         ry = ≤-is-reflexive (poset-of F) y
+
+         † : _
+         † (inl ⋆) (inl ⋆) = ∣ inl ⋆ , rx , rx ∣
+         † (inl ⋆) (inr ⋆) = ∣ inr ⋆ , p  , ry ∣
+         † (inr ⋆) (inl ⋆) = ∣ inr ⋆ , ry , p  ∣
+         † (inr ⋆) (inr ⋆) = ∣ inr ⋆ , ry , ry ∣
+
+   i   = ∨[ G ]-upper₁ (f x) (f y)
+   ii  = ap (λ - → ⋁[ G ] -) (fmap-binary-family 𝓦 f x y ⁻¹)
+   iii = (⋁[ G ]-unique
+           ⁅ f z ∣ z ε binary-family 𝓦 x y ⁆
+           (f (⋁[ F ] ⁅ x , y ⁆))
+           (φ ⁅ x , y ⁆ δ)) ⁻¹
+   iv  = ap f (connecting-lemma₄ F p) ⁻¹
 
 \end{code}
 
@@ -1048,12 +1153,6 @@ family is directed.
 
 \begin{code}
 
-is-directed : (F : frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓥 ⊔ 𝓦)
-is-directed F (I , β) =
-   ∥ I ∥Ω
- ∧ (Ɐ i ∶ I , Ɐ j ∶ I , (Ǝ k ∶ I , ((β i ≤ β k) ∧ (β j ≤ β k)) holds))
-  where open PosetNotation (poset-of F)
-
 has-directed-basis₀ : (F : frame 𝓤 𝓥 𝓦) → (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺) ̇ 
 has-directed-basis₀ {𝓦 = 𝓦} F =
  Σ ℬ ꞉ Fam 𝓦 ⟨ F ⟩ ,
@@ -1304,20 +1403,5 @@ directify-basis {𝓦 = 𝓦} F = ∥∥-rec (holds-is-prop (has-directed-basis 
     δ x = transport (λ - → is-directed F - holds) (ψ x ⁻¹) ε
      where
       ε = directify-is-directed F ⁅ ℬ [ j ] ∣ j ε 𝒥 x ⁆
-
-\end{code}
-
-\section{Scott-continuity}
-
-\begin{code}
-
-is-scott-continuous : (F : frame 𝓤  𝓥  𝓦)
-                    → (G : frame 𝓤′ 𝓥′ 𝓦)
-                    → (f : ⟨ F ⟩ → ⟨ G ⟩)
-                    → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺ ⊔ 𝓤′ ⊔ 𝓥′)
-is-scott-continuous {𝓦 = 𝓦} F G f =
- Ɐ S ∶ Fam 𝓦 ⟨ F ⟩ , is-directed F S ⇒ f (⋁[ F ] S) is-lub-of ⁅ f s ∣ s ε S ⁆
-  where
-   open Joins (λ x y → x ≤[ poset-of G ] y) using (_is-lub-of_)
 
 \end{code}
