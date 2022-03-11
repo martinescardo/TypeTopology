@@ -168,16 +168,30 @@ Nuclei are ordered pointwise.
   ∧[ 𝒪 X ]-greatest (j U) (k U) U (p U) (q U)
 
  ⋏₀-idempotent : (j k : ⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩)
+               → preserves-meets (𝒪 X) j holds
+               → preserves-meets (𝒪 X) k holds
                → is-idempotent (𝒪 X) j holds
                → is-idempotent (𝒪 X) k holds
                → is-idempotent (𝒪 X) (j ⋏₀ k) holds
- ⋏₀-idempotent j k p q = {!!}
+ ⋏₀-idempotent j k ζ η ϑ ι U =
+  (j ⋏₀ k) ((j ⋏₀ k) U)                                          ≡⟨ refl ⟩ₚ
+  (j ⋏₀ k) (j U ∧[ 𝒪 X ] k U)                                    ≡⟨ refl ⟩ₚ
+  (j (j U ∧[ 𝒪 X ] k U)) ∧[ 𝒪 X ] (k (j U ∧[ 𝒪 X ] k U))         ≤⟨ i    ⟩
+  (j (j U) ∧[ 𝒪 X ] j (k U)) ∧[ 𝒪 X ] (k (j U) ∧[ 𝒪 X ] k (k U)) ≤⟨ ii   ⟩
+  j (j U) ∧[ 𝒪 X ] k (k U)                                       ≤⟨ iii  ⟩
+  (j ⋏₀ k) U ■
+   where
+    open PosetReasoning (poset-of (𝒪 X))
+
+    i   = {!!}
+    ii  = {!!}
+    iii = {!!}
 
  _⋏₁_ : nucleus (𝒪 X) → nucleus (𝒪 X) → nucleus (𝒪 X)
  𝒿@(j , jn) ⋏₁ 𝓀@(k , kn) = (j ⋏₀ k) , ⋏-𝓃₁ , ⋏-𝓃₂ , ⋏-𝓃₃
   where
    ⋏-𝓃₁ = ⋏₀-inflationary j k (𝓃₁ (𝒪 X) 𝒿) (𝓃₁ (𝒪 X) 𝓀)
-   ⋏-𝓃₂ = {!!}
+   ⋏-𝓃₂ = ⋏₀-idempotent j k (𝓃₃ (𝒪 X) 𝒿) {!!} {!!} {!!}
    ⋏-𝓃₃ = {!!}
 
  _⋏_ : perfect-nucleus → perfect-nucleus → perfect-nucleus
