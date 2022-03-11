@@ -168,7 +168,7 @@ open import PropTychonoff
 [LPO→ℕ]-compact = compact∙-gives-compact [LPO→ℕ]-compact∙
 
 [LPO→ℕ]-Compact : Compact (LPO → ℕ) {𝓤}
-[LPO→ℕ]-Compact = compact-gives-Compact (LPO → ℕ) [LPO→ℕ]-compact
+[LPO→ℕ]-Compact = compact-gives-Compact [LPO→ℕ]-compact
 
 \end{code}
 

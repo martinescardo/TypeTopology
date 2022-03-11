@@ -102,10 +102,8 @@ on it, it decidable whether it has a root:
 Σ-compact : 𝓤 ̇ → 𝓤 ̇
 Σ-compact X = (p : X → 𝟚) → (Σ x ꞉ X , p x ≡ ₀) + (Π x ꞉ X , p x ≡ ₁)
 
-compact : 𝓤 ̇ → 𝓤 ̇
-compact = Σ-compact
-
-exhaustible = compact
+compact    = Σ-compact
+searchable = compact
 
 \end{code}
 
@@ -122,7 +120,7 @@ compactness and pointedness, and hence the notation "compact∙":
 compact∙ : 𝓤 ̇ → 𝓤 ̇
 compact∙ X = (p : X → 𝟚) → Σ x₀ ꞉ X , (p x₀ ≡ ₁ → (x : X) → p x ≡ ₁)
 
-searchable = compact∙
+searchable∙ = compact∙
 
 \end{code}
 
@@ -659,8 +657,8 @@ in the original development:
 Σ-Compact : 𝓤 ̇ → {𝓥 : Universe} → 𝓤 ⊔ (𝓥 ⁺) ̇
 Σ-Compact {𝓤} X {𝓥} = (A : X → 𝓥 ̇ ) → detachable A → decidable (Σ A)
 
-Compact : 𝓤 ̇ → {𝓥 : Universe} → 𝓤 ⊔ (𝓥 ⁺) ̇
 Compact = Σ-Compact
+Searchable = Compact
 
 Compactness-gives-Markov : {X : 𝓤 ̇ }
                          → Compact X
@@ -675,8 +673,8 @@ Compactness-gives-Markov {𝓤} {X} c A δ φ = γ (c A δ)
   γ (inl σ) = σ
   γ (inr u) = 𝟘-elim (φ u)
 
-compact-gives-Compact : (X : 𝓤 ̇ ) → compact X → Compact X {𝓥}
-compact-gives-Compact X c A d = iii
+compact-gives-Compact : {X : 𝓤 ̇ } → compact X → Compact X {𝓥}
+compact-gives-Compact {𝓤} {𝓥} {X} c A d = iii
  where
   i : Σ p ꞉ (X → 𝟚) , ((x : X) → (p x ≡ ₀ → A x) × (p x ≡ ₁ → ¬ (A x)))
   i = characteristic-function d
@@ -694,8 +692,8 @@ compact-gives-Compact X c A d = iii
   iii : decidable (Σ A)
   iii = ii (c p)
 
-Compact-gives-compact : (X : 𝓤 ̇ ) → Σ-Compact X → Σ-compact X
-Compact-gives-compact X C p = iv
+Compact-gives-compact : {X : 𝓤 ̇ } → Σ-Compact X → Σ-compact X
+Compact-gives-compact {𝓤} {X} C p = iv
  where
   A : X → 𝓤₀ ̇
   A x = p x ≡ ₀
@@ -713,8 +711,8 @@ Compact-gives-compact X C p = iv
   iv : (Σ x ꞉ X , p x ≡ ₀) + (Π x ꞉ X , p x ≡ ₁)
   iv = iii (i ii)
 
-Compact-resizeup : (X : 𝓤 ̇ ) → Σ-Compact X {𝓤₀} → Σ-Compact X {𝓥}
-Compact-resizeup X C = compact-gives-Compact X (Compact-gives-compact X C)
+Compact-resizeup : {X : 𝓤 ̇ } → Σ-Compact X {𝓤₀} → Σ-Compact X {𝓥}
+Compact-resizeup C = compact-gives-Compact (Compact-gives-compact C)
 
 \end{code}
 
@@ -1135,5 +1133,31 @@ Compact-cong {𝓤} {𝓥} {𝓦} {X} {Y} f c A δ =
    g = Σ-change-of-variable A ⌜ f ⌝ (⌜⌝-is-equiv f)
    d : detachable B
    d x = δ (⌜ f ⌝ x)
+
+\end{code}
+
+Added by Martin Escardo 11th March 2022 (needed to prove things about
+compact ordinals).
+
+\begin{code}
+
+Σ-isolated-left : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {x : X} {y : Y x}
+                → ((x : X) → Searchable (Y x))
+                → is-isolated (x , y)
+                → is-isolated x
+Σ-isolated-left {𝓤} {𝓥} {X} {Y} {x} {y} σ i x' = γ δ
+ where
+   A : (y' : Y x') → 𝓤 ⊔ 𝓥 ̇
+   A y' = (x , y) ≡ (x' , y')
+
+   d : detachable A
+   d y' = i (x' , y')
+
+   δ : decidable (Σ A)
+   δ = σ x' A d
+
+   γ : decidable (Σ A) → decidable (x ≡ x')
+   γ (inl (y' , p)) = inl (ap pr₁ p)
+   γ (inr ν)        = inr (λ (q : x ≡ x') → ν (transport Y q y , to-Σ-≡ (q , refl)))
 
 \end{code}

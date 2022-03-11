@@ -23,4 +23,29 @@ roots-infimum p x = root-lower-bound p x × upper-bound-of-root-lower-bounds p x
 has-least : 𝓤 ⊔ 𝓥 ̇
 has-least = (p : X → 𝟚) → Σ x ꞉ X , conditional-root p x × roots-infimum p x
 
+open import CompactTypes
+open import Two-Properties
+
+has-least-gives-searchable∙ : has-least → searchable∙ X
+has-least-gives-searchable∙ h p = f (h p)
+ where
+  f : (Σ x₀ ꞉ X , conditional-root p x₀ × roots-infimum p x₀)
+    → (Σ x₀ ꞉ X , (p x₀ ≡ ₁ → (x : X) → p x ≡ ₁))
+  f (x₀ , g , _) = (x₀ , k)
+   where
+    g' : p x₀ ≢ ₀ → ¬ (Σ x ꞉ X , p x ≡ ₀)
+    g' = contrapositive g
+
+    u : ¬ (Σ x ꞉ X , p x ≡ ₀) → (x : X) → p x ≡ ₁
+    u ν x = different-from-₀-equal-₁ (λ (e : p x ≡ ₀) → ν (x , e))
+
+    k : p x₀ ≡ ₁ → (x : X) → p x ≡ ₁
+    k e = u (g' (equal-₁-different-from-₀ e))
+
+has-least-gives-searchable : has-least → searchable X
+has-least-gives-searchable = compact∙-gives-compact ∘ has-least-gives-searchable∙
+
+has-least-gives-Searchable : {𝓦 : Universe} → has-least → Searchable X {𝓦}
+has-least-gives-Searchable = compact-gives-Compact ∘ has-least-gives-searchable
+
 \end{code}

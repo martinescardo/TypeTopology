@@ -133,7 +133,7 @@ Corollaries:
 ℕ∞-compact = compact∙-gives-compact ℕ∞-compact∙
 
 ℕ∞-Compact : Compact ℕ∞ {𝓤}
-ℕ∞-Compact = compact-gives-Compact ℕ∞ ℕ∞-compact
+ℕ∞-Compact = compact-gives-Compact ℕ∞-compact
 
 ℕ∞→ℕ-is-discrete : is-discrete (ℕ∞ → ℕ)
 ℕ∞→ℕ-is-discrete = compact-discrete-discrete fe ℕ∞-compact (λ u → ℕ-is-discrete)

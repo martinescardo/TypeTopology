@@ -36,7 +36,7 @@ This is a draft version that needs polishing and more explanation.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import SpartanMLTT
 open import UF-FunExt
@@ -52,9 +52,12 @@ open import OrdinalsClosure fe
 open import DiscreteAndSeparated
 open import GenericConvergentSequence
 open import ConvergentSequenceHasLeast
+open import PropTychonoff fe
 open import PropInfTychonoff fe
 open import BinaryNaturals hiding (_+_)
 open import Two-Properties
+open import CompactTypes
+open import LeastElementProperty
 
 open import UF-Base
 open import UF-Subsingletons
@@ -123,21 +126,21 @@ induction:
 ι : (ν : E) → ⟪ Δ ν ⟫ → ⟪ Κ ν ⟫
 ι-is-embedding : (ν : E) → is-embedding (ι ν)
 
-I : (ν : E) → ⟪ Δ ν ⟫ ↪ ⟪ Κ ν ⟫
-I ν = (ι ν , ι-is-embedding ν)
-
 \end{code}
 
 We use the following auxiliary extension constructions:
 
 \begin{code}
 
+↑ : (ν : E) → (⟪ Δ ν ⟫ → E) → ⟪ Κ ν ⟫ → Ordᵀ
+↑ ν A = (Κ ∘ A) ↗ (ι ν , ι-is-embedding ν)
+
 module Κ-extension (ν : E) (A : ⟪ Δ ν ⟫ → E) where
 
  open import InjectiveTypes fe
 
  B : ⟪ Κ ν ⟫ → Ordᵀ
- B = (Κ ∘ A) ↗ I ν
+ B = ↑ ν A
 
  ϕ : (x : ⟪ Δ ν ⟫) → ⟪ B (ι ν x) ⟫ ≃ ⟪ Κ (A x) ⟫
  ϕ = Π-extension-property (λ x → ⟪ Κ (A x) ⟫) (ι ν) (ι-is-embedding ν)
@@ -170,13 +173,21 @@ module Κ-extension (ν : E) (A : ⟪ Δ ν ⟫ → E) where
   φ x (φ⁻¹ x (ι (A x) y)) ≡⟨ refl ⟩
   φ x (γ x y)             ∎
 
+ isolated-γ-gives-isolated-ι : (x : ⟪ Δ ν ⟫) (y : ⟪ Δ (A x) ⟫) → is-isolated (γ x y) → is-isolated (ι (A x) y)
+ isolated-γ-gives-isolated-ι x y i = iii
+   where
+    ii : is-isolated (φ x (γ x y))
+    ii = equivs-preserve-isolatedness (φ x) (⌜⌝-is-equiv (ϕ x)) (γ x y) i
+
+    iii : is-isolated (ι (A x) y)
+    iii = transport is-isolated ((ι-γ-lemma x y)⁻¹) ii
+
+
 Κ ⌜𝟙⌝         = 𝟙ᵒ
 Κ ⌜ω+𝟙⌝       = ℕ∞ᵒ
 Κ (ν₀ ⌜+⌝ ν₁) = Κ ν₀ +ᵒ Κ ν₁
 Κ (ν₀ ⌜×⌝ ν₁) = Κ ν₀ ×ᵒ Κ ν₁
-Κ (⌜Σ⌝ ν A)   = ∑ (Κ ν) B
- where
-  open Κ-extension ν A
+Κ (⌜Σ⌝ ν A)   = ∑ (Κ ν) (↑ ν A)
 
 ι ⌜𝟙⌝         = id
 ι ⌜ω+𝟙⌝       = ι𝟙
@@ -192,7 +203,7 @@ module Κ-extension (ν : E) (A : ⟪ Δ ν ⟫ → E) where
                               id
                               (dep-cases (λ _ → ι ν₀) (λ _ → ι ν₁))
                               id-is-embedding
-                             (dep-cases (λ _ → ι-is-embedding ν₀) (λ _ → ι-is-embedding ν₁))
+                              (dep-cases (λ _ → ι-is-embedding ν₀) (λ _ → ι-is-embedding ν₁))
 ι-is-embedding (ν₀ ⌜×⌝ ν₁) = pair-fun-is-embedding _ _
                               (ι-is-embedding ν₀)
                               (λ _ → ι-is-embedding ν₁)
@@ -209,28 +220,41 @@ its image have the least element property for decidable subsets:
 
 \begin{code}
 
-K-has-least-element-property : propext 𝓤₀ → (ν : E) → has-least-element-property (Κ ν)
-K-has-least-element-property pe ⌜𝟙⌝         = 𝟙ᵒ-has-least-element-property
-K-has-least-element-property pe ⌜ω+𝟙⌝       = ℕ∞ᵒ-has-least-element-property pe
-K-has-least-element-property pe (ν₀ ⌜+⌝ ν₁) = ∑-has-least-element-property pe
-                                               𝟚ᵒ
-                                               (cases (λ _ → Κ ν₀) (λ _ → Κ ν₁))
-                                               𝟚ᵒ-has-least-element-property
-                                               (dep-cases (λ _ → K-has-least-element-property pe ν₀)
-                                                          (λ _ → K-has-least-element-property pe ν₁))
-K-has-least-element-property pe (ν₀ ⌜×⌝ ν₁) = ∑-has-least-element-property pe
-                                               (Κ ν₀)
-                                               (λ _ → Κ ν₁)
-                                               (K-has-least-element-property pe ν₀)
-                                               (λ _ → K-has-least-element-property pe ν₁)
-K-has-least-element-property pe (⌜Σ⌝ ν A)   = ∑-has-least-element-property pe (Κ ν) B
-                                               (K-has-least-element-property pe ν)
-                                               (λ x → prop-inf-tychonoff
-                                                       (ι-is-embedding ν x)
-                                                       (λ {(x , _)} y z → y ≺⟪ Κ (A x) ⟫ z)
-                                                       (λ (x , _) → K-has-least-element-property pe (A x)))
- where
-  open Κ-extension ν A
+module _ (pe : propext 𝓤₀) where
+
+ K-has-least-element-property : (ν : E) → has-least-element-property (Κ ν)
+ ↑-has-least-element-property : (ν : E) (A : ⟪ Δ ν ⟫ → E) (x : ⟪ Κ ν ⟫) → has-least-element-property (↑ ν A x)
+
+ K-has-least-element-property ⌜𝟙⌝         = 𝟙ᵒ-has-least-element-property
+ K-has-least-element-property ⌜ω+𝟙⌝       = ℕ∞ᵒ-has-least-element-property pe
+ K-has-least-element-property (ν₀ ⌜+⌝ ν₁) = ∑-has-least-element-property pe
+                                                𝟚ᵒ
+                                                (cases (λ _ → Κ ν₀) (λ _ → Κ ν₁))
+                                                𝟚ᵒ-has-least-element-property
+                                                (dep-cases (λ _ → K-has-least-element-property ν₀)
+                                                           (λ _ → K-has-least-element-property ν₁))
+ K-has-least-element-property (ν₀ ⌜×⌝ ν₁) = ∑-has-least-element-property pe
+                                                (Κ ν₀)
+                                                (λ _ → Κ ν₁)
+                                                (K-has-least-element-property ν₀)
+                                                (λ _ → K-has-least-element-property ν₁)
+ K-has-least-element-property (⌜Σ⌝ ν A)   = ∑-has-least-element-property pe (Κ ν) B
+                                                (K-has-least-element-property ν)
+                                                (↑-has-least-element-property ν A)
+  where
+   open Κ-extension ν A
+
+ ↑-has-least-element-property ν A x = prop-inf-tychonoff
+                                       (ι-is-embedding ν x)
+                                       (λ {(x , _)} y z → y ≺⟪ Κ (A x) ⟫ z)
+                                       (λ (x , _) → K-has-least-element-property (A x))
+
+ Κ-Searchable : {𝓥 : Universe} (ν : E) → Searchable ⟪ Κ ν ⟫ {𝓥}
+ Κ-Searchable ν = has-least-gives-Searchable _ (K-has-least-element-property ν)
+
+ ↑-Searchable : {𝓥 : Universe} (ν : E) (A : ⟪ Δ ν ⟫ → E) (x : ⟪ Κ ν ⟫) → Searchable ⟪ ↑ ν A x ⟫ {𝓥}
+ ↑-Searchable ν A x = has-least-gives-Searchable _ (↑-has-least-element-property ν A x)
+
 
 \end{code}
 
@@ -446,89 +470,21 @@ TODO. Show that (ν : E) (x : ⟪ Δ ν ⟫) → Λ ν x ≡ ₁ → is-isolated
 
 open import WLPO
 
-
-Σ-isolated-right : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {x : X} {y : Y x}
-                 → is-set X
-                 → is-isolated ((x , y) ∶ Σ Y)
-                 → is-isolated y
-Σ-isolated-right {𝓤} {𝓥} {X} {Y} {x} {y} s i y' = γ (i (x , y'))
- where
-  γ : decidable ((x , y) ≡ (x , y')) → decidable (y ≡ y')
-  γ (inl p) = inl (y ≡⟨ refl ⟩
-                   transport Y refl y ≡⟨ ap (λ - → transport Y - y) (s refl (ap pr₁ p)) ⟩
-                   transport Y (ap pr₁ p) y ≡⟨ (transport-ap Y pr₁ p)⁻¹ ⟩
-                   transport (λ z → Y (pr₁ z)) p y ≡⟨ apd pr₂ p ⟩
-                   y' ∎)
-  γ (inr ν) = inr (contrapositive (ap (x ,_)) ν)
-
--- This is wrong, very wrong:
-{-
-Σ-isolated-left : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {x : X} {y : Y x}
-                → (f : (x' : X) → Y x')
-                → is-isolated (x , y)
-                → is-isolated x
-Σ-isolated-left {𝓤} {𝓥} {X} {Y} {x} {y} f i x' = γ (i (x' , {!!}))
- where
-   j : is-isolated y
-   j = Σ-isolated-right {!!} i
-
-   γ : decidable ((x , y) ≡ (x' , {!!})) → decidable (x ≡ x')
-   γ (inl p) = inl (ap pr₁ p)
-   γ (inr ν) = inr (λ (p : x ≡ x') → ν (to-Σ-≡ (p , {!!})))
--}
-
-{- This was supposed to use the above wrong thing, but it can be rescued:
-Λ-limit : (ν : E) (x : ⟪ Δ ν ⟫) → Λ ν x ≡ ₁ → is-isolated (ι ν x) → WLPO
-Λ-limit ⌜ω+𝟙⌝      (inr ⋆)      p i = is-isolated-gives-is-isolated' ∞ i
-Λ-limit (ν ⌜+⌝ ν₁) (inl ⋆ , x₀) p i = {!!}
-Λ-limit (ν ⌜+⌝ ν₁) (inr ⋆ , x₁) p i = {!!}
-Λ-limit (ν ⌜×⌝ ν₁) (x₀ , x₁)    p i = {!!}
-Λ-limit (⌜Σ⌝ ν A)  (x , y)      p i = Γ (max𝟚-lemma p)
+Λ-limit : propext 𝓤₀ → (ν : E) (x : ⟪ Δ ν ⟫) → Λ ν x ≡ ₁ → is-isolated (ι ν x) → WLPO
+Λ-limit pe ⌜ω+𝟙⌝       (inr ⋆)      p i = is-isolated-gives-is-isolated' ∞ i
+Λ-limit pe (ν₀ ⌜+⌝ ν₁) (inl ⋆ , x₀) p i = Λ-limit pe ν₀ x₀ p (Σ-isolated-right (underlying-type-is-setᵀ fe 𝟚ᵒ) i)
+Λ-limit pe (ν₀ ⌜+⌝ ν₁) (inr ⋆ , x₁) p i = Λ-limit pe ν₁ x₁ p (Σ-isolated-right (underlying-type-is-setᵀ fe 𝟚ᵒ) i)
+Λ-limit pe (ν₀ ⌜×⌝ ν₁) (x₀ , x₁)    p i =
+  Cases (max𝟚-lemma p)
+   (λ (p₀ : Λ ν₀ x₀ ≡ ₁) → Λ-limit pe ν₀ x₀ p₀ (×-isolated-left i))
+   (λ (p₁ : Λ ν₁ x₁ ≡ ₁) → Λ-limit pe ν₁ x₁ p₁ (×-isolated-right i))
+Λ-limit pe (⌜Σ⌝ ν A)   (x , y)      p i =
+  Cases (max𝟚-lemma p)
+   (λ (p₀ : Λ ν x ≡ ₁) → Λ-limit pe ν x p₀ (Σ-isolated-left (↑-Searchable pe ν A) i))
+   (λ (p₁ : Λ (A x) y ≡ ₁) → Λ-limit pe (A x) y p₁
+                              (isolated-γ-gives-isolated-ι x y
+                                (Σ-isolated-right (underlying-type-is-setᵀ fe (Κ ν)) i)))
  where
   open Κ-extension ν A
 
-  Γ : (Λ ν x ≡ ₁) + (Λ (A x) y ≡ ₁) → WLPO
-  Γ (inl r) = ii {!!}
-   where
-    vi : is-isolated (ι ν x , γ x y)
-    vi = i
-
-    {-
-    Given k : ⟪ K ν ⟫, we can define P b = (ι ν x , γ x y) ≡ (k , b).
-    By vi, this predicate is decidable, and because ⟪ B k ⟫ is searchable, either
-
-        (a) Σ b ꞉ ⟪ B k ⟫ , (ι ν x , γ x y) ≡ (k , b), or
-        (b) Π b ꞉ ⟪ B k ⟫ , (ι ν x , γ x y) ≢ (k , b).
-
-    In the first case (a) we conclude that ι ν x ≡ k.
-    In the second case (b) we conclude that ι ν x ≢ k, for if we have r : ι ν x ≡ k then
-     (ι ν x , γ x y) ≡ (k , transport r (γ x y) ), which constradicts (b).
-
-    Yay!
-    -}
-
-    ii : is-isolated (ι ν x) → WLPO
-    ii = Λ-limit ν x r
-
-    vii : is-isolated (γ x y)
-    vii = Σ-isolated-right (underlying-type-is-setᵀ fe (Κ ν)) vi
-
-    v : Σ k ꞉ ⟪ Κ ν ⟫ , ⟪ B k ⟫
-    v = ι ν x , γ x y
-
-
-  Γ (inr q) = iii v
-   where
-    iv : is-isolated (γ x y)
-    iv = Σ-isolated-right (underlying-type-is-setᵀ fe (Κ ν)) i
-
-    vi : is-isolated (φ x (γ x y))
-    vi = equivs-preserve-isolatedness (φ x) (⌜⌝-is-equiv (ϕ x)) (γ x y) iv
-
-    v : is-isolated (ι (A x) y)
-    v = transport is-isolated ((ι-γ-lemma x y)⁻¹) vi
-
-    iii : is-isolated (ι (A x) y) → WLPO
-    iii = Λ-limit (A x) y q
--}
 \end{code}

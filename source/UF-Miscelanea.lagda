@@ -189,6 +189,41 @@ equiv-to-discrete (f , e) = equivs-preserve-discreteness f e
               → is-discrete (X × Y)
 ×-is-discrete d e = Σ-is-discrete d (λ _ → e)
 
+
+
+×-isolated-left : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {x : X} {y : Y}
+                → is-isolated (x , y)
+                → is-isolated x
+×-isolated-left {𝓤} {𝓥} {X} {Y} {x} {y} i x' = γ (i (x' , y))
+ where
+  γ : decidable ((x , y) ≡ (x' , y)) → decidable (x ≡ x')
+  γ (inl p) = inl (ap pr₁ p)
+  γ (inr ν) = inr (λ (q : x ≡ x') → ν (to-×-≡ q refl))
+
+×-isolated-right : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {x : X} {y : Y}
+                 → is-isolated (x , y)
+                 → is-isolated y
+×-isolated-right {𝓤} {𝓥} {X} {Y} {x} {y} i y' = γ (i (x , y'))
+ where
+  γ : decidable ((x , y) ≡ (x , y')) → decidable (y ≡ y')
+  γ (inl p) = inl (ap pr₂ p)
+  γ (inr ν) = inr (λ (q : y ≡ y') → ν (to-×-≡ refl q))
+
+
+Σ-isolated-right : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {x : X} {y : Y x}
+                 → is-set X
+                 → is-isolated ((x , y) ∶ Σ Y)
+                 → is-isolated y
+Σ-isolated-right {𝓤} {𝓥} {X} {Y} {x} {y} s i y' = γ (i (x , y'))
+ where
+  γ : decidable ((x , y) ≡ (x , y')) → decidable (y ≡ y')
+  γ (inl p) = inl (y                               ≡⟨ refl ⟩
+                   transport Y refl y              ≡⟨ ap (λ - → transport Y - y) (s refl (ap pr₁ p)) ⟩
+                   transport Y (ap pr₁ p) y        ≡⟨ (transport-ap Y pr₁ p)⁻¹ ⟩
+                   transport (λ - → Y (pr₁ -)) p y ≡⟨ apd pr₂ p ⟩
+                   y'                              ∎)
+  γ (inr ν) = inr (contrapositive (ap (x ,_)) ν)
+
 𝟙-is-set : is-set (𝟙 {𝓤})
 𝟙-is-set = discrete-types-are-sets 𝟙-is-discrete
 

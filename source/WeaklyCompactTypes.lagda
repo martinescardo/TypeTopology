@@ -103,7 +103,7 @@ compact-types-are-∃-compact {𝓤} {X} φ p = g (φ p)
 
 ∥Compact∥-types-are-∃-compact : {X : 𝓤 ̇ } → ∥ Compact X ∥ → ∃-compact X
 ∥Compact∥-types-are-∃-compact {𝓤} {X} = ∥∥-rec ∃-compactness-is-prop
-                                        (compact-types-are-∃-compact ∘ Compact-gives-compact X)
+                                        (compact-types-are-∃-compact ∘ Compact-gives-compact)
 
 \end{code}
 
