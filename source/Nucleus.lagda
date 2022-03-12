@@ -35,13 +35,6 @@ is-inflationary L j = Ɐ x ∶ ⟨ L ⟩ , x ≤[ poset-of L ] j x
 is-idempotent : (L : frame 𝓤 𝓥 𝓦) → (⟨ L ⟩ → ⟨ L ⟩) → Ω (𝓤 ⊔ 𝓥)
 is-idempotent L j = Ɐ x ∶ ⟨ L ⟩ , j (j x) ≤[ poset-of L ] j x
 
-preserves-meets : (L : frame 𝓤 𝓥 𝓦) → (⟨ L ⟩ → ⟨ L ⟩) → Ω 𝓤
-preserves-meets L j =
- Ɐ x ∶ ⟨ L ⟩ , Ɐ y ∶ ⟨ L ⟩ , (j (x ∧[ L ] y) ≡[ ψ ]≡ j x ∧[ L ] j y)
-  where
-   ψ : is-set ⟨ L ⟩
-   ψ = carrier-of-[ poset-of L ]-is-set
-
 is-nuclear : (L : frame 𝓤 𝓥 𝓦) → (⟨ L ⟩ → ⟨ L ⟩) → Ω (𝓤 ⊔ 𝓥)
 is-nuclear {𝓤 = 𝓤} {𝓥} {𝓦} F j = 𝓃₁ ∧  𝓃₂ ∧ 𝓃₃
  where
@@ -54,7 +47,7 @@ is-nuclear {𝓤 = 𝓤} {𝓥} {𝓦} F j = 𝓃₁ ∧  𝓃₂ ∧ 𝓃₃
   𝓃₂ = is-idempotent F j
 
   𝓃₃ : Ω 𝓤
-  𝓃₃ = preserves-meets F j
+  𝓃₃ = preserves-meets F F j
 
 \end{code}
 
@@ -62,7 +55,7 @@ The type of nuclei on a given frame.
 
 \begin{code}
 
-nucleus : frame 𝓤 𝓥 𝓦 → 𝓤 ⊔ 𝓥 ̇ 
+nucleus : frame 𝓤 𝓥 𝓦 → 𝓤 ⊔ 𝓥 ̇
 nucleus F = Σ j ꞉ (⟨ F ⟩ → ⟨ F ⟩) , is-nuclear F j holds
 
 𝓃₁ : (L : frame 𝓤 𝓥 𝓦) ((j , _) : nucleus L)
@@ -76,5 +69,15 @@ nucleus F = Σ j ꞉ (⟨ F ⟩ → ⟨ F ⟩) , is-nuclear F j holds
 𝓃₃ : (L : frame 𝓤 𝓥 𝓦) ((j , _) : nucleus L)
    → (U V : ⟨ L ⟩) → j (U ∧[ L ] V) ≡ j U ∧[ L ] j V
 𝓃₃ F (j , _ , _ , 𝓃₃) = 𝓃₃
+
+\end{code}
+
+Every nucleus is monotone.
+
+\begin{code}
+
+nuclei-are-monotone : (L : frame 𝓤 𝓥 𝓦) ((j , _) : nucleus L)
+                    → is-monotonic (poset-of L) (poset-of L) j holds
+nuclei-are-monotone L 𝒿 = meet-preserving-implies-monotone L L (pr₁ 𝒿) (𝓃₃ L 𝒿)
 
 \end{code}

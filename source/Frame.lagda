@@ -8,7 +8,7 @@ Ported from `ayberkt/formal-topology-in-UF`.
 
 \begin{code}[hide]
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import SpartanMLTT hiding (𝟚)
 open import UF-Base
@@ -378,7 +378,7 @@ only-𝟏-is-above-𝟏 F x p =
 meet-of : (F : frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → ⟨ F ⟩ → ⟨ F ⟩
 meet-of (_ , (_ , _ , _∧_ , _) , _ , _) x y = x ∧ y
 
-infix 4 meet-of
+infixl 4 meet-of
 
 syntax meet-of F x y = x ∧[ F ] y
 
@@ -654,6 +654,14 @@ is-scott-continuous {𝓦 = 𝓦} F G f =
 
 \begin{code}
 
+preserves-meets : (F : frame 𝓤 𝓥 𝓦) (G : frame 𝓤′ 𝓥′ 𝓦)
+                → (⟨ F ⟩ → ⟨ G ⟩) → Ω (𝓤 ⊔ 𝓤′)
+preserves-meets F G h =
+ Ɐ x ∶ ⟨ F ⟩ , Ɐ y ∶ ⟨ F ⟩ , (h (x ∧[ F ] y) ≡[ ψ ]≡ h x ∧[ G ] h y)
+  where
+   ψ : is-set ⟨ G ⟩
+   ψ = carrier-of-[ poset-of G ]-is-set
+
 is-a-frame-homomorphism : (F : frame 𝓤  𝓥  𝓦)
                           (G : frame 𝓤′ 𝓥′ 𝓦)
                         → (⟨ F ⟩ → ⟨ G ⟩)
@@ -668,7 +676,7 @@ is-a-frame-homomorphism {𝓦 = 𝓦} F G f = α ∧ β ∧ γ
   open Joins (λ x y → x ≤[ P ] y)
 
   α = f 𝟏[ F ] ≡[ iss ]≡ 𝟏[ G ]
-  β = Ɐ (x , y) ∶ ⟨ F ⟩ × ⟨ F ⟩ , (f (x ∧[ F ] y) ≡[ iss ]≡ f x ∧[ G ] f y)
+  β = preserves-meets F G f
   γ = Ɐ U ∶ Fam 𝓦 ⟨ F ⟩ , f (⋁[ F ] U) is-lub-of ⁅ f x ∣ x ε U ⁆
 
 _─f→_ : frame 𝓤 𝓥 𝓦 → frame 𝓤′ 𝓥′ 𝓦 → 𝓤 ⊔ 𝓦 ⁺ ⊔ 𝓤′ ⊔ 𝓥′ ̇
@@ -738,10 +746,10 @@ join-preserving-implies-scott-continuous F G f φ S _ = γ
   β : ((⋁[ F ] U) ≤ u) holds
   β = ⋁[ F ]-least U (u , p)
 
-connecting-lemma₁ : (F : frame 𝓤 𝓥 𝓦) (x y : ⟨ F ⟩)
+connecting-lemma₁ : (F : frame 𝓤 𝓥 𝓦) {x y : ⟨ F ⟩}
                   → (x ≤[ poset-of F ] y) holds
                   → x ≡ x ∧[ F ] y
-connecting-lemma₁ F x y p = ∧[ F ]-unique (β , γ)
+connecting-lemma₁ F {x} {y} p = ∧[ F ]-unique (β , γ)
  where
   open Meets (λ x y → x ≤[ poset-of F ] y)
 
@@ -790,8 +798,8 @@ frame-morphisms-are-monotonic F G f (_ , ψ , _) (x , y) p =
   where
    open PosetReasoning (poset-of G)
 
-   i  = reflexivity+ (poset-of G) (ap f (connecting-lemma₁ F x y p))
-   ii = reflexivity+ (poset-of G) (ψ (x , y))
+   i  = reflexivity+ (poset-of G) (ap f (connecting-lemma₁ F p))
+   ii = reflexivity+ (poset-of G) (ψ x y)
 
 scott-continuous-implies-monotone : (F : frame 𝓤 𝓥 𝓦) (G : frame 𝓤′ 𝓥′ 𝓦)
                                   → (f : ⟨ F ⟩ → ⟨ G ⟩)
@@ -829,6 +837,32 @@ scott-continuous-implies-monotone {𝓦 = 𝓦} F G f φ (x , y) p =
            (f (⋁[ F ] ⁅ x , y ⁆))
            (φ ⁅ x , y ⁆ δ)) ⁻¹
    iv  = ap f (connecting-lemma₄ F p) ⁻¹
+
+meet-preserving-implies-monotone : (F : frame 𝓤 𝓥 𝓦) (G : frame 𝓤′ 𝓥′ 𝓦)
+                                 → (h : ⟨ F ⟩ → ⟨ G ⟩)
+                                 → preserves-meets F G h holds
+                                 → is-monotonic (poset-of F) (poset-of G) h holds
+meet-preserving-implies-monotone F G h μ (x , y) p =
+ h x              ≡⟨ i   ⟩ₚ
+ h (x ∧[ F ] y)   ≡⟨ ii  ⟩ₚ
+ h x ∧[ G ] h y   ≤⟨ iii ⟩
+ h y              ■
+  where
+   open PosetReasoning (poset-of G)
+
+   i   = ap h (connecting-lemma₁ F p)
+   ii  = μ x y
+   iii = ∧[ G ]-lower₂ (h x) (h y)
+
+scott-continuous-join-eq : (F : frame 𝓤  𝓥  𝓦)
+                         → (G : frame 𝓤′ 𝓥′ 𝓦)
+                         → (f : ⟨ F ⟩ → ⟨ G ⟩)
+                         → is-scott-continuous F G f holds
+                         → (S : Fam 𝓦 ⟨ F ⟩)
+                         → is-directed F S holds
+                         → f (⋁[ F ] S) ≡ ⋁[ G ] ⁅ f s ∣ s ε S ⁆
+scott-continuous-join-eq F G f ζ S δ =
+ ⋁[ G ]-unique ⁅ f s ∣ s ε S ⁆ (f (⋁[ F ] S)) (ζ S δ)
 
 \end{code}
 

@@ -211,7 +211,7 @@ f-respects-⋁ ua A U = β , γ
   → (𝟎-𝔽𝕣𝕞 ua) ─f→ F
 𝒻 ua F = (f ua F)
        , f-respects-⊤ ua F
-       , (λ (P , Q) → f-respects-∧ ua F P Q)
+       , f-respects-∧ ua F
        , f-respects-⋁ ua F
 
 \end{code}
