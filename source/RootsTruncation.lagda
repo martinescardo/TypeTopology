@@ -12,7 +12,7 @@ equality with any other point of the type is decidable.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import SpartanMLTT
 

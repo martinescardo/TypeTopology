@@ -11,7 +11,7 @@ Escardo, Thierry Coquand, and Thorsten Altenkirch.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 module UF-KrausLemma where
 

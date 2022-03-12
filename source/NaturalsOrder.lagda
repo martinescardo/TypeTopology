@@ -2,7 +2,7 @@ Martin Escardo, started 5th May 2018
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 module NaturalsOrder where
 

@@ -7,7 +7,7 @@ witnesses can be found.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import UF-FunExt
 open import SpartanMLTT

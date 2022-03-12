@@ -42,7 +42,7 @@ assumption beyond MLTT is explicit in each claim).
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 module CantorSchroederBernstein where
 

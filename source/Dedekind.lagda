@@ -34,7 +34,7 @@ See also the discussion at https://twitter.com/EscardoMartin/status/147339326101
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import SpartanMLTT
 open import CanonicalMapNotation

@@ -72,7 +72,7 @@ Click at the imported module names to navigate to them:
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 module index where
 

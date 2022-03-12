@@ -4,7 +4,7 @@ Closure properties of some ordinal constructions.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import UF-FunExt
 

@@ -2,7 +2,7 @@ Properties of the disjoint sum _+_ of types.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 module Plus-Properties where
 

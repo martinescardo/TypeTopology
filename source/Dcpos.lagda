@@ -5,7 +5,7 @@ Generic overview module for (pointed) directed complete posets.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 module Dcpos where
 

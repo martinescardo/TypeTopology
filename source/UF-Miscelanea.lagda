@@ -4,7 +4,7 @@ UF things that depend on non-UF things.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 module UF-Miscelanea where
 

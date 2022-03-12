@@ -5,7 +5,7 @@ file PropTychonoff has many comments, but this one doesn't.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import SpartanMLTT
 open import UF-FunExt

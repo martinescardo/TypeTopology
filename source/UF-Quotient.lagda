@@ -29,7 +29,7 @@ is postulated - any non-MLTT axiom has to be an explicit assumption
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import SpartanMLTT
 

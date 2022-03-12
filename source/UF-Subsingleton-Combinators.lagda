@@ -5,7 +5,7 @@ Based in part by the `Cubical.Functions.Logic` module of
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 module UF-Subsingleton-Combinators where
 

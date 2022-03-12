@@ -70,7 +70,7 @@ topologically compact, when one reasons constructively.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 module CompactTypes where
 

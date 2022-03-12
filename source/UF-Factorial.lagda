@@ -42,7 +42,7 @@ This is the case, for example, if X is the circle S¹.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import UF-FunExt
 

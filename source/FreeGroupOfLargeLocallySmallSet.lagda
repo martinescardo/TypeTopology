@@ -51,7 +51,7 @@ from which we borrow other techniques in the development below.
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe #-}
+{-# OPTIONS --without-K --safe --auto-inline #-}
 
 open import SpartanMLTT
 open import UF-PropTrunc

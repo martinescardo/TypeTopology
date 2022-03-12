@@ -8,7 +8,7 @@ but increases universe levels. We start with that formulation.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import SpartanMLTT
 open import UF-PropTrunc

@@ -8,7 +8,7 @@ univalence axiom is needed.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import UF-Univalence
 

@@ -29,7 +29,7 @@ infinite games instead.
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe #-} -- --exact-split
+{-# OPTIONS --without-K --safe --auto-inline #-} -- --exact-split
 
 open import SpartanMLTT hiding (J)
 open import UF-Base

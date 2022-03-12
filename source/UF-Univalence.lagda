@@ -6,7 +6,7 @@ universe. Univalence, when used, is taken as an explicit hypothesis.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 module UF-Univalence where
 

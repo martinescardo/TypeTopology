@@ -4,7 +4,7 @@ We specialize the work of DcpoBilimits.lagda to ℕ-indexed diagrams.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import SpartanMLTT
 open import UF-PropTrunc

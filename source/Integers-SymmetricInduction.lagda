@@ -10,7 +10,7 @@ UniMath" by Bezem, Buchholtz, Grayson and Shulman
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import NaturalNumbers-UniversalProperty
 

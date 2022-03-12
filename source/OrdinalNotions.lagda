@@ -6,7 +6,7 @@ Ordinals like in the HoTT book and variations.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import SpartanMLTT
 open import DiscreteAndSeparated

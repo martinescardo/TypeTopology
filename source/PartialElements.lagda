@@ -12,7 +12,7 @@ We apply the results to characterize injective types.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 module PartialElements where
 

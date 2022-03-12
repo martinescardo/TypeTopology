@@ -6,7 +6,7 @@ We construct the exponential (pointed) dcpos (𝓓 ⟹ᵈᶜᵖᵒ 𝓔) and (�
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import SpartanMLTT hiding (J)
 open import UF-FunExt

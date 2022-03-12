@@ -59,7 +59,7 @@ apartness relation is a set, and so this reflection is always a set.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 module TotallySeparated where
 

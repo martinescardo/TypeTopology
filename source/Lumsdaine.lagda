@@ -11,7 +11,7 @@ J'-comp) with a "propositional computation rule" J'-comp for J'.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import Universes
 

@@ -2,7 +2,7 @@ The disjoint sum X + Y of two types X and Y.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 module Plus where
 

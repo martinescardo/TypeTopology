@@ -5,7 +5,7 @@ They are also investigated in relation to compact types.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 import TotallySeparated
 import FailureOfTotalSeparatedness

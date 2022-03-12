@@ -4,7 +4,7 @@ This module is mainly for use in the module CompactOrdinals.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 module LexicographicCompactness where
 

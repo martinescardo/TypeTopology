@@ -6,7 +6,7 @@ of continuity is decidable.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 import CompactTypes
 import ConvergentSequenceCompact

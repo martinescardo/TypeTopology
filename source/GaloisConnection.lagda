@@ -2,7 +2,7 @@ Ayberk Tosun, 28 February 2022.
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe #-}
+{-# OPTIONS --without-K --safe --auto-inline #-}
 
 open import Universes
 open import SpartanMLTT

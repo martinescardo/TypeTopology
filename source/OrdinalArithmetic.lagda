@@ -4,7 +4,7 @@ Some operations and constructions on ordinals.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import UF-FunExt
 

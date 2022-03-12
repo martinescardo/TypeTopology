@@ -2,7 +2,7 @@ Martin Escardo, 19th December 2020
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 module W-Properties where
 

@@ -4,7 +4,7 @@ Expanded on demand whenever a general equivalence is needed.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import SpartanMLTT
 open import Two-Properties

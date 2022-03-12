@@ -11,7 +11,7 @@ We specialize to ℕ-indexed diagrams in DcpoBilimitsSequential.lagda.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --experimental-lossy-unification #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline --experimental-lossy-unification #-}
 
 \end{code}
 

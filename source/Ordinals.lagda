@@ -8,7 +8,7 @@ OrdinalNotationInterpretation.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 import BuraliForti
 import LexicographicOrder

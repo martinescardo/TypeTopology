@@ -10,7 +10,7 @@ lemmas. More additions after that date.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 module GenericConvergentSequence where
 

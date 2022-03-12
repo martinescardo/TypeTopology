@@ -4,7 +4,7 @@ Earlier version: 18 September 2020
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import Integers
 

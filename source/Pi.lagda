@@ -4,7 +4,7 @@ Built-in, with the notation (x : X) → A x for Π A.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 module Pi where
 
