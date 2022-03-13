@@ -52,7 +52,7 @@ module _ (𝓓 : DCPO {𝓤} {𝓣})
  Kᵈᶜᵖᵒ : DCPO[ 𝓓 , 𝓔 ⟹ᵈᶜᵖᵒ 𝓓 ]
  Kᵈᶜᵖᵒ = k , c where
   k : ⟨ 𝓓 ⟩ → DCPO[ 𝓔 , 𝓓 ]
-  k x = (λ _ → x) , (constant-functions-are-continuous 𝓔 𝓓 x)
+  k x = ((λ _ → x) , constant-functions-are-continuous 𝓔 𝓓)
   c : (I : 𝓥 ̇ ) (α : I → ⟨ 𝓓 ⟩) (δ : is-Directed 𝓓 α)
     → is-sup (underlying-order (𝓔 ⟹ᵈᶜᵖᵒ 𝓓)) (k (∐ 𝓓 δ)) (λ (i : I) → k (α i))
   c I α δ = u , v where
