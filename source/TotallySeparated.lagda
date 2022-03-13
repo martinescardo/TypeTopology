@@ -410,6 +410,8 @@ with the assumption that
 
 Then the previous few functions would be a particular case of this.
 
+See also the module SigmaDiscreteAndTotallySeparated.
+
 The following can also be considered as a special case of Σ (indexed
 by the type 𝟚):
 
@@ -439,7 +441,7 @@ The Cantor type ℕ → 𝟚 is totally separated:
 
 Π-is-totally-separated : funext 𝓤 𝓥
                        → {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
-                       → ((x : X) → is-totally-separated(Y x))
+                       → ((x : X) → is-totally-separated (Y x))
                        → is-totally-separated(Π Y)
 Π-is-totally-separated fe {X} {Y} t {f} {g} e = dfunext fe h
  where

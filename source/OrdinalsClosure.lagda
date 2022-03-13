@@ -31,6 +31,7 @@ open import BinaryNaturals hiding (_+_ ; L ; R)
 open import LeastElementProperty
 open import Plus-Properties
 open import CanonicalMapNotation
+open import SigmaDiscreteAndTotallySeparated
 
 open import UF-Base
 open import UF-Equiv

@@ -135,7 +135,7 @@ open import DiscreteAndSeparated
 open import UF-Subsingletons
 open import UF-Retracts
 open import UF-Embeddings
-open import UF-Miscelanea
+open import SigmaDiscreteAndTotallySeparated
 
 \end{code}
 

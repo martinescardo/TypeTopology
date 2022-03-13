@@ -14,9 +14,9 @@ set in the sense of HoTT/UF).
 For a code ν : E, we have an ordinal Δ ν, which is discrete (has
 decidable equality).
 
-For a code ν : E, we have an ordinal Κ ν, which is searchable (or
-compact). More than that, every decidable subset of Κ ν is either empty
-or has a minimal element.
+For a code ν : E, we have an ordinal Κ ν, which is compact (or
+"searchable"). More than that, every decidable subset of Κ ν is either
+empty or has a minimal element.
 
 There is an embedding ι : Δ ν → Κ ν which is order preserving and
 reflecting, and whose image has empty complement. The assumption that
@@ -43,7 +43,8 @@ open import UF-FunExt
 
 module OrdinalExtendedNotationInterpretation (fe : FunExt) where
 
-fe₀ = fe 𝓤₀ 𝓤₀
+private
+ fe₀ = fe 𝓤₀ 𝓤₀
 
 open import UF-Base
 open import UF-Subsingletons
@@ -53,6 +54,7 @@ open import UF-Equiv
 open import UF-Subsingletons-FunExt
 open import UF-Miscelanea
 
+open import SigmaDiscreteAndTotallySeparated
 open import ToppedOrdinalsType fe
 open import OrdinalArithmetic fe
 open import ToppedOrdinalArithmetic fe
@@ -68,7 +70,6 @@ open import CompactTypes
 open import LeastElementProperty
 open import WLPO
 open import LPO fe
-
 
 \end{code}
 
@@ -135,15 +136,15 @@ We use the following auxiliary extension constructions:
 
 \begin{code}
 
-↑ : (ν : E) → (⟪ Δ ν ⟫ → E) → ⟪ Κ ν ⟫ → Ordᵀ
-↑ ν A = (Κ ∘ A) ↗ (ι ν , ι-is-embedding ν)
+𝓚 : (ν : E) → (⟪ Δ ν ⟫ → E) → ⟪ Κ ν ⟫ → Ordᵀ
+𝓚 ν A = (Κ ∘ A) ↗ (ι ν , ι-is-embedding ν)
 
 module Κ-extension (ν : E) (A : ⟪ Δ ν ⟫ → E) where
 
  open import InjectiveTypes fe
 
  B : ⟪ Κ ν ⟫ → Ordᵀ
- B = ↑ ν A
+ B = 𝓚 ν A
 
  ϕ : (x : ⟪ Δ ν ⟫) → ⟪ B (ι ν x) ⟫ ≃ ⟪ Κ (A x) ⟫
  ϕ = Π-extension-property (λ x → ⟪ Κ (A x) ⟫) (ι ν) (ι-is-embedding ν)
@@ -176,7 +177,8 @@ module Κ-extension (ν : E) (A : ⟪ Δ ν ⟫ → E) where
   φ x (φ⁻¹ x (ι (A x) y)) ≡⟨ refl ⟩
   φ x (γ x y)             ∎
 
- isolated-γ-gives-isolated-ι : (x : ⟪ Δ ν ⟫) (y : ⟪ Δ (A x) ⟫) → is-isolated (γ x y) → is-isolated (ι (A x) y)
+ isolated-γ-gives-isolated-ι : (x : ⟪ Δ ν ⟫) (y : ⟪ Δ (A x) ⟫)
+                             → is-isolated (γ x y) → is-isolated (ι (A x) y)
  isolated-γ-gives-isolated-ι x y i = iii
    where
     ii : is-isolated (φ x (γ x y))
@@ -190,7 +192,7 @@ module Κ-extension (ν : E) (A : ⟪ Δ ν ⟫ → E) where
 Κ ⌜ω+𝟙⌝       = ℕ∞ᵒ
 Κ (ν₀ ⌜+⌝ ν₁) = Κ ν₀ +ᵒ Κ ν₁
 Κ (ν₀ ⌜×⌝ ν₁) = Κ ν₀ ×ᵒ Κ ν₁
-Κ (⌜Σ⌝ ν A)   = ∑ (Κ ν) (↑ ν A)
+Κ (⌜Σ⌝ ν A)   = ∑ (Κ ν) (𝓚 ν A)
 
 ι ⌜𝟙⌝         = id
 ι ⌜ω+𝟙⌝       = ι𝟙
@@ -222,10 +224,8 @@ module Κ-extension (ν : E) (A : ⟪ Δ ν ⟫ → E) where
                                                (Δ-is-discrete ν)
 
 ι-is-equiv-gives-Κ-discrete : (ν : E) → is-equiv (ι ν) → is-discrete ⟪ Κ ν ⟫
-ι-is-equiv-gives-Κ-discrete ν e = ι-has-section-gives-Κ-discrete ν (equivs-have-sections (ι ν) e)
-
-
-
+ι-is-equiv-gives-Κ-discrete ν e = ι-has-section-gives-Κ-discrete ν
+                                   (equivs-have-sections (ι ν) e)
 
 ι-is-equiv-gives-WLPO : ((ν : E) → is-equiv (ι ν)) → WLPO
 ι-is-equiv-gives-WLPO h = ℕ∞-discrete-gives-WLPO (ι-is-equiv-gives-Κ-discrete ⌜ω+𝟙⌝ (h ⌜ω+𝟙⌝))
@@ -264,7 +264,7 @@ LPO-gives-ι-is-equiv lpo (⌜Σ⌝ ν A)   = pair-fun-is-equiv
 
 The important fact about the Κ interpretation is that the ordinals in
 its image have the least element property for decidable subsets, and,
-in particular, they are searchable - see below.
+in particular, they are compact - see below.
 
 The embedding of the Δ interpretation into the Κ interpretation is
 order-preserving, order-reflecting, and dense (its image has empty
@@ -429,8 +429,8 @@ module _ (pe : propext 𝓤₀) where
 
  K-has-least-element-property : (ν : E)
                               → has-least-element-property (Κ ν)
- ↑-has-least-element-property : (ν : E) (A : ⟪ Δ ν ⟫ → E) (x : ⟪ Κ ν ⟫)
-                              → has-least-element-property (↑ ν A x)
+ 𝓚-has-least-element-property : (ν : E) (A : ⟪ Δ ν ⟫ → E) (x : ⟪ Κ ν ⟫)
+                              → has-least-element-property (𝓚 ν A x)
 
  K-has-least-element-property ⌜𝟙⌝         = 𝟙ᵒ-has-least-element-property
  K-has-least-element-property ⌜ω+𝟙⌝       = ℕ∞ᵒ-has-least-element-property pe
@@ -450,21 +450,21 @@ module _ (pe : propext 𝓤₀) where
  K-has-least-element-property (⌜Σ⌝ ν A)   =
    ∑-has-least-element-property pe (Κ ν) B
      (K-has-least-element-property ν)
-     (↑-has-least-element-property ν A)
+     (𝓚-has-least-element-property ν A)
   where
    open Κ-extension ν A
 
- ↑-has-least-element-property ν A x = prop-inf-tychonoff
+ 𝓚-has-least-element-property ν A x = prop-inf-tychonoff
                                        (ι-is-embedding ν x)
                                        (λ {(x , _)} y z → y ≺⟪ Κ (A x) ⟫ z)
                                        (λ (x , _) → K-has-least-element-property (A x))
 
- Κ-Searchable : {𝓥 : Universe} (ν : E) → Searchable ⟪ Κ ν ⟫ {𝓥}
- Κ-Searchable ν = has-least-gives-Searchable _ (K-has-least-element-property ν)
+ Κ-Compact : {𝓥 : Universe} (ν : E) → Compact ⟪ Κ ν ⟫ {𝓥}
+ Κ-Compact ν = has-least-gives-Compact _ (K-has-least-element-property ν)
 
- ↑-Searchable : {𝓥 : Universe} (ν : E) (A : ⟪ Δ ν ⟫ → E) (x : ⟪ Κ ν ⟫)
-              → Searchable ⟪ ↑ ν A x ⟫ {𝓥}
- ↑-Searchable ν A x = has-least-gives-Searchable _ (↑-has-least-element-property ν A x)
+ 𝓚-Compact : {𝓥 : Universe} (ν : E) (A : ⟪ Δ ν ⟫ → E) (x : ⟪ Κ ν ⟫)
+            → Compact ⟪ 𝓚 ν A x ⟫ {𝓥}
+ 𝓚-Compact ν A x = has-least-gives-Compact _ (𝓚-has-least-element-property ν A x)
 
 
 \end{code}
@@ -536,7 +536,7 @@ module _ (pe : propext 𝓤₀) where
     (λ (p₁ : Λ ν₁ x₁ ≡ ₁) → Λ-limit ν₁ x₁ p₁ (×-isolated-right i))
  Λ-limit (⌜Σ⌝ ν A)   (x , y)      p i =
    Cases (max𝟚-lemma p)
-    (λ (p₀ : Λ ν x ≡ ₁) → Λ-limit ν x p₀ (Σ-isolated-left (↑-Searchable pe ν A) i))
+    (λ (p₀ : Λ ν x ≡ ₁) → Λ-limit ν x p₀ (Σ-isolated-left (𝓚-Compact pe ν A) i))
     (λ (p₁ : Λ (A x) y ≡ ₁) → Λ-limit (A x) y p₁
                                (isolated-γ-gives-isolated-ι x y
                                  (Σ-isolated-right (underlying-type-is-setᵀ fe (Κ ν)) i)))

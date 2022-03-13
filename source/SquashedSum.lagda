@@ -29,6 +29,8 @@ open import InjectiveTypes fe
 open import ExtendedSumCompact fe
 open import DiscreteAndSeparated
 open import CanonicalMapNotation
+open import SigmaDiscreteAndTotallySeparated
+
 open import UF-Miscelanea
 
 \end{code}

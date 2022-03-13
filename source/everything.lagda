@@ -179,6 +179,7 @@ import ScottModelOfPCF
 import Sequence
 import Sigma-Type
 import Sigma
+import SigmaDiscreteAndTotallySeparated
 import SimpleTypes
 import Slice
 import SliceAlgebras

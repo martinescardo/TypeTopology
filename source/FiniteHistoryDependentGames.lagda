@@ -35,6 +35,8 @@ open import SpartanMLTT hiding (J)
 open import UF-Base
 open import UF-FunExt
 
+open import SigmaDiscreteAndTotallySeparated
+
 module FiniteHistoryDependentGames (fe : Fun-Ext) where
 
 \end{code}

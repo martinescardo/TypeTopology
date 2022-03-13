@@ -64,6 +64,9 @@ The name "compact" is appropriate, because e.g. in the model of
 Kleene-Kreisel spaces for simple types, it does correspond to
 topological compactness, as proved in the above LMCS paper.
 
+The name "compact" is also adopted in Longley and Normann's book
+"Higher-Order Computability" (Springer 2015).
+
 We emphasize that here we don't assume continuity axioms, but all
 functions are secretly continuous, and compact sets are secretly
 topologically compact, when one reasons constructively.
@@ -103,7 +106,6 @@ on it, it decidable whether it has a root:
 Σ-compact X = (p : X → 𝟚) → (Σ x ꞉ X , p x ≡ ₀) + (Π x ꞉ X , p x ≡ ₁)
 
 compact    = Σ-compact
-searchable = compact
 
 \end{code}
 
@@ -119,8 +121,6 @@ compactness and pointedness, and hence the notation "compact∙":
 
 compact∙ : 𝓤 ̇ → 𝓤 ̇
 compact∙ X = (p : X → 𝟚) → Σ x₀ ꞉ X , (p x₀ ≡ ₁ → (x : X) → p x ≡ ₁)
-
-searchable∙ = compact∙
 
 \end{code}
 
@@ -199,6 +199,9 @@ checking the two possibilities, we can always take x₀ = p ₀.
 
     lemma₁ : p x₀ ≡ ₁ → p ₁ ≡ ₁
     lemma₁ r = transport (λ - → p - ≡ ₁) (lemma₀ r) r
+
+𝟚-compact : compact 𝟚
+𝟚-compact = compact∙-gives-compact 𝟚-compact∙
 
 \end{code}
 
@@ -658,7 +661,6 @@ in the original development:
 Σ-Compact {𝓤} X {𝓥} = (A : X → 𝓥 ̇ ) → detachable A → decidable (Σ A)
 
 Compact = Σ-Compact
-Searchable = Compact
 
 Compactness-gives-Markov : {X : 𝓤 ̇ }
                          → Compact X
@@ -1133,31 +1135,5 @@ Compact-cong {𝓤} {𝓥} {𝓦} {X} {Y} f c A δ =
    g = Σ-change-of-variable A ⌜ f ⌝ (⌜⌝-is-equiv f)
    d : detachable B
    d x = δ (⌜ f ⌝ x)
-
-\end{code}
-
-Added by Martin Escardo 11th March 2022 (needed to prove things about
-compact ordinals).
-
-\begin{code}
-
-Σ-isolated-left : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {x : X} {y : Y x}
-                → ((x : X) → Searchable (Y x))
-                → is-isolated (x , y)
-                → is-isolated x
-Σ-isolated-left {𝓤} {𝓥} {X} {Y} {x} {y} σ i x' = γ δ
- where
-   A : (y' : Y x') → 𝓤 ⊔ 𝓥 ̇
-   A y' = (x , y) ≡ (x' , y')
-
-   d : detachable A
-   d y' = i (x' , y')
-
-   δ : decidable (Σ A)
-   δ = σ x' A d
-
-   γ : decidable (Σ A) → decidable (x ≡ x')
-   γ (inl (y' , p)) = inl (ap pr₁ p)
-   γ (inr ν)        = inr (λ (q : x ≡ x') → ν (transport Y q y , to-Σ-≡ (q , refl)))
 
 \end{code}

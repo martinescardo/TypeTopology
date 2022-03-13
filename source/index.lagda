@@ -189,6 +189,7 @@ import NaturalsOrder
 import Negation
 import NonCollapsibleFamily
 import NonSpartanMLTTTypes
+import SigmaDiscreteAndTotallySeparated
 import SRTclosure
 import OrdinalArithmetic
 import OrdinalArithmetic-Properties

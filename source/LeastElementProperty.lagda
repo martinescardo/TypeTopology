@@ -5,6 +5,8 @@ Martin Escardo 20-21 December 2012
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import SpartanMLTT
+open import Two-Properties
+open import CompactTypes
 
 module LeastElementProperty {𝓤 𝓥} {X : 𝓤 ̇ } (_≤_ : X → X → 𝓥 ̇ ) where
 
@@ -23,11 +25,8 @@ roots-infimum p x = root-lower-bound p x × upper-bound-of-root-lower-bounds p x
 has-least : 𝓤 ⊔ 𝓥 ̇
 has-least = (p : X → 𝟚) → Σ x ꞉ X , conditional-root p x × roots-infimum p x
 
-open import CompactTypes
-open import Two-Properties
-
-has-least-gives-searchable∙ : has-least → searchable∙ X
-has-least-gives-searchable∙ h p = f (h p)
+has-least-gives-compact∙ : has-least → compact∙ X
+has-least-gives-compact∙ h p = f (h p)
  where
   f : (Σ x₀ ꞉ X , conditional-root p x₀ × roots-infimum p x₀)
     → (Σ x₀ ꞉ X , (p x₀ ≡ ₁ → (x : X) → p x ≡ ₁))
@@ -42,10 +41,10 @@ has-least-gives-searchable∙ h p = f (h p)
     k : p x₀ ≡ ₁ → (x : X) → p x ≡ ₁
     k e = u (g' (equal-₁-different-from-₀ e))
 
-has-least-gives-searchable : has-least → searchable X
-has-least-gives-searchable = compact∙-gives-compact ∘ has-least-gives-searchable∙
+has-least-gives-compact : has-least → compact X
+has-least-gives-compact = compact∙-gives-compact ∘ has-least-gives-compact∙
 
-has-least-gives-Searchable : {𝓦 : Universe} → has-least → Searchable X {𝓦}
-has-least-gives-Searchable = compact-gives-Compact ∘ has-least-gives-searchable
+has-least-gives-Compact : {𝓦 : Universe} → has-least → Compact X {𝓦}
+has-least-gives-Compact = compact-gives-Compact ∘ has-least-gives-compact
 
 \end{code}
