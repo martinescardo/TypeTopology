@@ -49,12 +49,62 @@ module WellOrderingTaboo
         (pe  : Prop-Ext)
        where
 
-extensionality-for-minimal-elements : {X : 𝓤 ̇ } (_≺_ : X → X → 𝓣 ̇ )
-                                    → 𝓤 ⊔ 𝓣 ̇
-extensionality-for-minimal-elements {𝓤} {𝓣} {X} _≺_ =
-  (x y : X) → ((a : X) → ¬ (a ≺ x))
-            → ((a : X) → ¬ (a ≺ y))
-            → ((a : X) → a ≺ x ⇔ a ≺ y) → x ≡ y
+module _
+        {X : 𝓤 ̇  } (_≺_ : X → X → 𝓣 ̇  )
+       where
+
+ extensionality-for-minimal-elements : 𝓤 ⊔ 𝓣 ̇
+ extensionality-for-minimal-elements = (x y : X)
+                                     → ((a : X) → ¬ (a ≺ x))
+                                     → ((a : X) → ¬ (a ≺ y))
+                                     → ((a : X) → a ≺ x ⇔ a ≺ y) → x ≡ y
+
+\end{code}
+
+Added 13 March 2022.
+
+Martín Escadó observed that extensionality for minimal elements is logically
+equivalent to the arguably simpler condition that there is at most one minimal
+element.
+
+This observation was implicitly used in some of the proofs below. Since Martín's
+observation and adding a proof of the equivalence, the uses have been made
+explicit.
+
+\begin{code}
+
+ having-at-most-one-minimal-element : 𝓤 ⊔ 𝓣 ̇
+ having-at-most-one-minimal-element = is-prop (Σ x ꞉ X , ((y : X) → ¬ (y ≺ x)))
+
+ extensionality-for-minimal-elts-if-at-most-one-minimal-elt :
+  having-at-most-one-minimal-element → extensionality-for-minimal-elements
+ extensionality-for-minimal-elts-if-at-most-one-minimal-elt
+  at-most-one-min x y x-min y-min x-y-ext = goal
+   where
+    claim : (x , x-min ≡ y , y-min)
+    claim = at-most-one-min (x , x-min) (y , y-min)
+    goal : x ≡ y
+    goal =  ap pr₁ claim
+
+ at-most-one-minimal-elt-if-extensionality-for-minimal-elts :
+  extensionality-for-minimal-elements → having-at-most-one-minimal-element
+ at-most-one-minimal-elt-if-extensionality-for-minimal-elts
+  ext (x , x-min) (y , y-min) = goal
+   where
+    claim : (a : X) → (a ≺ x) ⇔ (a ≺ y)
+    claim a = (I , II)
+     where
+      I : a ≺ x → a ≺ y
+      I p = 𝟘-elim (x-min a p)
+      II : a ≺ y → a ≺ x
+      II q = 𝟘-elim (y-min a q)
+    goal : (x , x-min) ≡ (y , y-min)
+    goal = to-subtype-≡ I II
+     where
+      I : (b : X) → is-prop ((a : X) → ¬ (a ≺ b))
+      I b = Π-is-prop fe (λ a → negations-are-props fe)
+      II : x ≡ y
+      II = ext x y x-min y-min claim
 
 \end{code}
 
@@ -116,18 +166,17 @@ module swan
     γ l refl = ≺-irreflexive x l
 
   all-elements-are-equal : (x y : S) → x ≡ y
-  all-elements-are-equal x y = ≺-minimally-extensional x y
-                                (λ s → all-elements-are-minimal s x)
-                                (λ s → all-elements-are-minimal s y)
-                                γ
+  all-elements-are-equal x y = goal
    where
-    γ : (s : S) → (s ≺ x) ⇔ (s ≺ y)
-    γ s = (f , g)
-     where
-      f : s ≺ x → s ≺ y
-      f l = 𝟘-elim (all-elements-are-minimal s x l)
-      g : s ≺ y → s ≺ x
-      g l = 𝟘-elim (all-elements-are-minimal s y l)
+    x-min : (a : S) → ¬ (a ≺ x)
+    x-min a = all-elements-are-minimal a x
+    y-min : (a : S) → ¬ (a ≺ y)
+    y-min a = all-elements-are-minimal a y
+    claim : (x , x-min) ≡ (y , y-min)
+    claim = at-most-one-minimal-elt-if-extensionality-for-minimal-elts
+             _≺_ ≺-minimally-extensional (x , x-min) (y , y-min)
+    goal : x ≡ y
+    goal = ap pr₁ claim
 
   P-must-hold : P
   P-must-hold = Idtofun γ ⋆
@@ -336,16 +385,13 @@ module swan'
         claim = η-equiv-equal ∣ inr p ∣
 
   ≈-identifies-₀-and-₁ : η ₀ ≡ η ₁
-  ≈-identifies-₀-and-₁ = ≺-minimally-extensional (η ₀) (η ₁)
-                          η₀-minimal η₁-minimal γ
+  ≈-identifies-₀-and-₁ = goal
    where
-    γ : (s : S) → (s ≺ η ₀) ⇔ (s ≺ η ₁)
-    γ s = f , g
-     where
-      f : s ≺ η ₀ → s ≺ η ₁
-      f h = 𝟘-elim (η₀-minimal s h)
-      g : s ≺ η ₁ → s ≺ η ₀
-      g h = 𝟘-elim (η₁-minimal s h)
+    claim : (η ₀ , η₀-minimal) ≡ (η ₁ , η₁-minimal)
+    claim = at-most-one-minimal-elt-if-extensionality-for-minimal-elts
+             _≺_ ≺-minimally-extensional (η ₀ , η₀-minimal) (η ₁ , η₁-minimal)
+    goal : η ₀ ≡ η ₁
+    goal = ap pr₁ claim
 
   P-must-hold : P
   P-must-hold =
