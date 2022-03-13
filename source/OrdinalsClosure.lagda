@@ -507,10 +507,10 @@ logically equivalent orders.
 \begin{code}
 
 ∑-has-least-element-property : propext 𝓤₀
-              → (τ : Ordᵀ) (υ : ⟪ τ ⟫ → Ordᵀ)
-              → has-least-element-property τ
-              → ((x : ⟪ τ ⟫) → has-least-element-property (υ x))
-              → has-least-element-property (∑ τ υ)
+                             → (τ : Ordᵀ) (υ : ⟪ τ ⟫ → Ordᵀ)
+                             → has-least-element-property τ
+                             → ((x : ⟪ τ ⟫) → has-least-element-property (υ x))
+                             → has-least-element-property (∑ τ υ)
 ∑-has-least-element-property pe τ υ ε δ = γ
  where
   _≤_ : ⟪ ∑ τ υ ⟫ → ⟪ ∑ τ υ ⟫ → 𝓤₀ ̇
@@ -553,14 +553,14 @@ logically equivalent orders.
 
 
 ∑₁-has-least-element-property : propext 𝓤₀
-               → (τ : ℕ → Ordᵀ)
-               → ((n : ℕ) → has-least-element-property (τ n))
-               → has-least-element-property (∑¹ τ)
+                              → (τ : ℕ → Ordᵀ)
+                              → ((n : ℕ) → has-least-element-property (τ n))
+                              → has-least-element-property (∑¹ τ)
 ∑₁-has-least-element-property pe τ ε = ∑-has-least-element-property pe
-                            ℕ∞ᵒ
-                            (λ (x : ℕ∞) → (τ ↗ (ι , ι-embedding fe₀)) x)
-                            (ℕ∞ᵒ-has-least-element-property pe)
-                            a
+                                        ℕ∞ᵒ
+                                        (λ (x : ℕ∞) → (τ ↗ (ι , ι-embedding fe₀)) x)
+                                        (ℕ∞ᵒ-has-least-element-property pe)
+                                        a
  where
   a : (x : ⟪ ℕ∞ᵒ ⟫) → has-least-element-property ((τ ↗ (ι , ι-embedding fe₀)) x)
   a x = prop-inf-tychonoff fe

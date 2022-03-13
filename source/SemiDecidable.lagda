@@ -1347,7 +1347,7 @@ subset-with-only-the-least-witness {𝓤} A A-is-decidable = B , B-is-decidable 
                                               (¬-preserves-decidability σ)
    where
     σ : decidable (Σ r ꞉ Fin' n , pr₁ r ∈ A)
-    σ = Compact-cong (≃-Fin n) Fin-Compact (pr₁ ∘ A ∘ pr₁)
+    σ = Compact-closed-under-≃ (≃-Fin n) Fin-Compact (pr₁ ∘ A ∘ pr₁)
          (λ r → A-is-decidable (pr₁ r))
   ΣB-is-prop : is-prop (Σ n ꞉ ℕ , n ∈ B)
   ΣB-is-prop (n , a , min) (n' , a' , min') =

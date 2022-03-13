@@ -407,6 +407,7 @@ equivalences.
 
 open import UF-Powerset
 open import UF-EquivalenceExamples
+
 is-decidable-subset : {X : 𝓤 ̇  } → (X → Ω 𝓣) → 𝓤 ⊔ 𝓣 ̇
 is-decidable-subset {𝓤} {𝓣} {X} A = (x : X) → decidable (x ∈ A)
 

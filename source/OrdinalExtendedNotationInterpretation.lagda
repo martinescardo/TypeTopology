@@ -173,7 +173,8 @@ module Κ-extension (ν : E) (A : ⟪ Δ ν ⟫ → E) where
  ι-γ-lemma : (x : ⟪ Δ ν ⟫) (y : ⟪ Δ (A x) ⟫)
            → ι (A x) y ≡ φ x (γ x y)
  ι-γ-lemma x y =
-  ι (A x) y               ≡⟨ (inverses-are-sections (φ x) (⌜⌝-is-equiv (ϕ x)) (ι (A x) y))⁻¹ ⟩
+  ι (A x) y               ≡⟨ (inverses-are-sections (φ x)
+                               (⌜⌝-is-equiv (ϕ x)) (ι (A x) y))⁻¹ ⟩
   φ x (φ⁻¹ x (ι (A x) y)) ≡⟨ refl ⟩
   φ x (γ x y)             ∎
 
@@ -186,7 +187,6 @@ module Κ-extension (ν : E) (A : ⟪ Δ ν ⟫ → E) where
 
     iii : is-isolated (ι (A x) y)
     iii = transport is-isolated ((ι-γ-lemma x y)⁻¹) ii
-
 
 Κ ⌜𝟙⌝         = 𝟙ᵒ
 Κ ⌜ω+𝟙⌝       = ℕ∞ᵒ

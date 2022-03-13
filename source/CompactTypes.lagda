@@ -808,7 +808,7 @@ Compact-closed-under-retracts {𝓤} {𝓥} {𝓦} {X} {Y} (r , s , η) c A δ =
 
   γ : decidable (Σ B) → decidable (Σ A)
   γ (inl (x , a)) = inl (r x , a)
-  γ (inr u)       = inr λ {(y , a) → u (s y , transport A ((η y)⁻¹) a)}
+  γ (inr u)       = inr (λ (y , a) → u (s y , transport A ((η y)⁻¹) a))
 
 
 Compact-closed-under-≃ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
@@ -1112,28 +1112,5 @@ compact-gives-Σ+Π X A B κ q = III II
   III : type-of II → (Σ x ꞉ X , A x) + (Π x ꞉ X , B x)
   III (inl (x , e)) = inl (x , pr₁ (I x) e)
   III (inr ϕ)       = inr (λ x → pr₂ (I x) (ϕ x))
-
-\end{code}
-
-Added by Tom de Jong, November 2021.
-
-\begin{code}
-
-open import UF-Equiv
-open import UF-EquivalenceExamples
-
-Compact-cong : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-             → X ≃ Y
-             → Compact X {𝓦}
-             → Compact Y {𝓦}
-Compact-cong {𝓤} {𝓥} {𝓦} {X} {Y} f c A δ =
- decidable-⇔ (⌜ g ⌝ , ⌜ g ⌝⁻¹) (c B d)
-  where
-   B : X → 𝓦 ̇
-   B x = A (⌜ f ⌝ x)
-   g : Σ B ≃ Σ A
-   g = Σ-change-of-variable A ⌜ f ⌝ (⌜⌝-is-equiv f)
-   d : detachable B
-   d x = δ (⌜ f ⌝ x)
 
 \end{code}
