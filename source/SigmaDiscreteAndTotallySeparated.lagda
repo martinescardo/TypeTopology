@@ -20,6 +20,8 @@ open import TotallySeparated
 open import GenericConvergentSequence
 open import PropTychonoff
 open import ConvergentSequenceCompact
+open import WLPO
+open import FailureOfTotalSeparatedness
 
 open import UF-Base
 open import UF-Subsingletons renaming (⊤Ω to ⊤ ; ⊥Ω to ⊥)
@@ -112,6 +114,12 @@ open import UF-Miscelanea
          y'                              ∎)
   γ (inr ν) = inr (contrapositive (ap (x ,_)) ν)
 
+\end{code}
+
+Here we need a compactness assumption:
+
+\begin{code}
+
 Σ-isolated-left : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {x : X} {y : Y x}
                 → ((x : X) → Compact (Y x))
                 → is-isolated (x , y)
@@ -133,10 +141,24 @@ open import UF-Miscelanea
 
 \end{code}
 
+TODO. Is this assumption absolutely necessary?
+
+Recall that we proved the following:
+
 \begin{code}
 
-open import WLPO
-open import FailureOfTotalSeparatedness
+private
+ recall : (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ )
+        → is-discrete X
+        → ((x : X) → is-totally-separated (Y x))
+        → is-totally-separated (Σ Y)
+ recall = Σ-is-totally-separated-if-index-type-is-discrete
+
+\end{code}
+
+We now derive a constructive taboo from the assumption that totally separated types are closed under Σ.
+
+\begin{code}
 
 module _ (fe : FunExt) where
 
@@ -159,7 +181,15 @@ module _ (fe : FunExt) where
           (λ u → Π-is-totally-separated fe₀ (λ _ → 𝟚-is-totally-separated)))
 \end{code}
 
-Even with further compactness assumptions it is not possible to prove the total separatedness of a Σ type:
+Remark. ¬ WLPO is equivalent to a continuity principle that is compatible with constructive mathematics and with MLTT. Therefore its negatation is not provable. See
+
+  Constructive decidability of classical continuity.
+  Mathematical Structures in Computer Science
+  Volume 25 , Special Issue 7: Computing with Infinite Data:
+  Topological and Logical Foundations Part 1 , October 2015 , pp. 1578-1589
+  https://doi.org/10.1017/S096012951300042X
+
+Even compact totally separated types fail to be closed under Σ:
 
 \begin{code}
 
