@@ -1,8 +1,8 @@
 Martin Escardo, 1st January 2022
 
-Almost all modules. More precisely, the safe ones, the ones that don't
-depend on the cubical library, and the ones that don't cause
-circularity when this is imported from index.lagda.
+Almost all modules. We comment out the unsafe one, the ones that
+depend on the cubical library, and the ones that cause circularity
+when this is imported from index.lagda and AllModulesIndex.
 
 This is automatically generated, with the modules mentioned above
 excluded manually.
