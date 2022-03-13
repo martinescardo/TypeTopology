@@ -696,7 +696,7 @@ Convention: in a board (p , A), p is the opponent of the the current player.
                             (λ g → Nothing-is-isolated' (A g))
 
   Move-compact : (b : Board) → Compact (Move b)
-  Move-compact (x , A) = decidable-subtype-of-compact-type
+  Move-compact (x , A) = complemented-subset-of-compact-type
                           Grid-compact
                           (λ g → Nothing-is-isolated' (A g))
                           (λ g → Nothing-is-h-isolated' (A g))

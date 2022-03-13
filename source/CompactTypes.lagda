@@ -810,7 +810,6 @@ Compact-closed-under-retracts {𝓤} {𝓥} {𝓦} {X} {Y} (r , s , η) c A δ =
   γ (inl (x , a)) = inl (r x , a)
   γ (inr u)       = inr (λ (y , a) → u (s y , transport A ((η y)⁻¹) a))
 
-
 Compact-closed-under-≃ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                        → X ≃ Y
                        → Compact X {𝓦}
@@ -1059,26 +1058,26 @@ Added 21st October 2021.
 
 \begin{code}
 
-decidable-subtype-of-compact-type : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
-                                  → Compact X {𝓥 ⊔ 𝓦}
-                                  → detachable A
-                                  → ((x : X) → is-prop (A x))
-                                  → Compact (Σ x ꞉ X , A x) {𝓦}
-decidable-subtype-of-compact-type {𝓤} {𝓥} {𝓦} {X} {A}
-                                  X-compact
-                                  A-detachable
-                                  A-is-prop-valued
-                                  B B-detachable = γ II
+complemented-subset-of-compact-type : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
+                                    → Compact X {𝓥 ⊔ 𝓦}
+                                    → detachable A
+                                    → ((x : X) → is-prop (A x))
+                                    → Compact (Σ x ꞉ X , A x) {𝓦}
+complemented-subset-of-compact-type {𝓤} {𝓥} {𝓦} {X} {A}
+                                    X-compact
+                                    A-detachable
+                                    A-is-prop-valued
+                                    B B-detachable = γ II
  where
   I : (x : X) → decidable (Σ a ꞉ A x , B (x , a))
   I x = Cases (A-detachable x)
          (λ (a : A x)
-              → Cases (B-detachable (x , a))
-                 (λ (b : B (x , a))     → inl (a , b))
-                 (λ ν → inr (λ (a' , b) → ν (transport
-                                              (λ - → B (x , -))
-                                              (A-is-prop-valued x a' a)
-                                              b))))
+               → Cases (B-detachable (x , a))
+                  (λ (b : B (x , a))     → inl (a , b))
+                  (λ ν → inr (λ (a' , b) → ν (transport
+                                               (λ - → B (x , -))
+                                               (A-is-prop-valued x a' a)
+                                               b))))
          (λ ν → inr (λ (a , b) → ν a))
 
   II : decidable (Σ x ꞉ X , Σ a ꞉ A x , B (x , a))
