@@ -99,7 +99,7 @@ open import UF-Miscelanea
 
 Σ-isolated-right : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {x : X} {y : Y x}
                  → is-set X
-                 → is-isolated ((x , y) ∶ Σ Y)
+                 → is-isolated {_} {Σ Y} (x , y)
                  → is-isolated y
 Σ-isolated-right {𝓤} {𝓥} {X} {Y} {x} {y} s i y' = γ (i (x , y'))
  where
