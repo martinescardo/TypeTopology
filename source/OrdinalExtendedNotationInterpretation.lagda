@@ -73,8 +73,9 @@ open import LPO fe
 
 \end{code}
 
-We define E and Δ by simultaneous induction. The type Ordᵀ is that or
-ordinals with a top element (classically, successor ordinals).
+We define E and Δ by simultaneous induction. The type Ordᵀ is that of
+ordinals with a top element (classically, successor ordinals). Recall
+that ⟪ α ⟫ is the underlying type of α : ⟪ Ordᵀ ⟫.
 
 \begin{code}
 
@@ -107,9 +108,10 @@ All ordinals in the image of Δ are retracts of ℕ.
                               retract-𝟙+𝟙-of-ℕ
                               (dep-cases (λ _ → Δ-retract-of-ℕ ν₀)
                                          (λ _ → Δ-retract-of-ℕ ν₁))
-Δ-retract-of-ℕ (ν₀ ⌜×⌝ ν₁) = Σ-retract-of-ℕ (Δ-retract-of-ℕ ν₀) (λ _ → Δ-retract-of-ℕ ν₁)
-Δ-retract-of-ℕ (⌜Σ⌝ ν A)   = Σ-retract-of-ℕ (Δ-retract-of-ℕ ν) (λ x → Δ-retract-of-ℕ (A x))
-
+Δ-retract-of-ℕ (ν₀ ⌜×⌝ ν₁) = Σ-retract-of-ℕ (Δ-retract-of-ℕ ν₀)
+                              (λ _ → Δ-retract-of-ℕ ν₁)
+Δ-retract-of-ℕ (⌜Σ⌝ ν A)   = Σ-retract-of-ℕ (Δ-retract-of-ℕ ν)
+                              (λ x → Δ-retract-of-ℕ (A x))
 \end{code}
 
 Hence all ordinals in the image of Δ are discrete (have decidable equality):
@@ -208,7 +210,8 @@ module Κ-extension (ν : E) (A : ⟪ Δ ν ⟫ → E) where
                               id
                               (dep-cases (λ _ → ι ν₀) (λ _ → ι ν₁))
                               id-is-embedding
-                              (dep-cases (λ _ → ι-is-embedding ν₀) (λ _ → ι-is-embedding ν₁))
+                              (dep-cases (λ _ → ι-is-embedding ν₀)
+                                         (λ _ → ι-is-embedding ν₁))
 ι-is-embedding (ν₀ ⌜×⌝ ν₁) = pair-fun-is-embedding _ _
                               (ι-is-embedding ν₀)
                               (λ _ → ι-is-embedding ν₁)
@@ -228,7 +231,8 @@ module Κ-extension (ν : E) (A : ⟪ Δ ν ⟫ → E) where
                                    (equivs-have-sections (ι ν) e)
 
 ι-is-equiv-gives-WLPO : ((ν : E) → is-equiv (ι ν)) → WLPO
-ι-is-equiv-gives-WLPO h = ℕ∞-discrete-gives-WLPO (ι-is-equiv-gives-Κ-discrete ⌜ω+𝟙⌝ (h ⌜ω+𝟙⌝))
+ι-is-equiv-gives-WLPO h = ℕ∞-discrete-gives-WLPO
+                            (ι-is-equiv-gives-Κ-discrete ⌜ω+𝟙⌝ (h ⌜ω+𝟙⌝))
 
 LPO-gives-ι-is-equiv : LPO → (ν : E) → is-equiv (ι ν)
 LPO-gives-ι-is-equiv lpo ⌜𝟙⌝         = id-is-equiv 𝟙
@@ -273,7 +277,7 @@ complement):
 \begin{code}
 
 ι-is-order-preserving : (ν : E) (x y : ⟪ Δ ν ⟫)
-                     →     x ≺⟪ Δ ν ⟫     y
+                      →     x ≺⟪ Δ ν ⟫     y
                       → ι ν x ≺⟪ Κ ν ⟫ ι ν y
 ι-is-order-preserving ⌜𝟙⌝         = λ x y l → l
 ι-is-order-preserving ⌜ω+𝟙⌝       = ι𝟙ᵒ-is-order-preserving
@@ -384,7 +388,10 @@ complement):
     m = transport (λ (x' , p) → γ x y (x' , p) ≺⟪ Κ (A x') ⟫ γ x z (x' , p)) q l
 
     n : ι (A x) y ≺⟪ Κ (A x) ⟫ ι (A x) z
-    n = transport₂ (λ u v → u ≺⟪ Κ (A x) ⟫ v) ((ι-γ-lemma x y)⁻¹) ((ι-γ-lemma x z)⁻¹) m
+    n = transport₂ (λ u v → u ≺⟪ Κ (A x) ⟫ v)
+         ((ι-γ-lemma x y)⁻¹)
+         ((ι-γ-lemma x z)⁻¹)
+         m
 
   g : (x : ⟪ Δ ν ⟫) (y z : ⟪ Δ (A x) ⟫)
     → γ x y ≺⟪ B (ι ν x) ⟫ γ x z
@@ -454,10 +461,11 @@ module _ (pe : propext 𝓤₀) where
   where
    open Κ-extension ν A
 
- 𝓚-has-least-element-property ν A x = prop-inf-tychonoff
-                                       (ι-is-embedding ν x)
-                                       (λ {(x , _)} y z → y ≺⟪ Κ (A x) ⟫ z)
-                                       (λ (x , _) → K-has-least-element-property (A x))
+ 𝓚-has-least-element-property ν A x =
+   prop-inf-tychonoff
+    (ι-is-embedding ν x)
+    (λ {(x , _)} y z → y ≺⟪ Κ (A x) ⟫ z)
+    (λ (x , _) → K-has-least-element-property (A x))
 
  Κ-Compact : {𝓥 : Universe} (ν : E) → Compact ⟪ Κ ν ⟫ {𝓥}
  Κ-Compact ν = has-least-gives-Compact _ (K-has-least-element-property ν)
@@ -465,7 +473,6 @@ module _ (pe : propext 𝓤₀) where
  𝓚-Compact : {𝓥 : Universe} (ν : E) (A : ⟪ Δ ν ⟫ → E) (x : ⟪ Κ ν ⟫)
             → Compact ⟪ 𝓚 ν A x ⟫ {𝓥}
  𝓚-Compact ν A x = has-least-gives-Compact _ (𝓚-has-least-element-property ν A x)
-
 
 \end{code}
 
@@ -518,18 +525,23 @@ Non-limit points are isolated in the Κ interpretation:
 
 \end{code}
 
-Limit points are "not" isolated:
+We define limit points as follow:
 
 \begin{code}
 
+is-limit-point : {X : 𝓤 ̇ } → X → 𝓤 ̇
+is-limit-point x = is-isolated x → WLPO
+
 module _ (pe : propext 𝓤₀) where
 
- Λ-limit : (ν : E) (x : ⟪ Δ ν ⟫) → Λ ν x ≡ ₁ → is-isolated (ι ν x) → WLPO
+ Λ-limit : (ν : E) (x : ⟪ Δ ν ⟫) → Λ ν x ≡ ₁ → is-limit-point (ι ν x)
  Λ-limit ⌜ω+𝟙⌝       (inr ⋆)      p i = is-isolated-gives-is-isolated' ∞ i
  Λ-limit (ν₀ ⌜+⌝ ν₁) (inl ⋆ , x₀) p i = Λ-limit ν₀ x₀ p
-                                         (Σ-isolated-right (underlying-type-is-setᵀ fe 𝟚ᵒ) i)
+                                         (Σ-isolated-right
+                                           (underlying-type-is-setᵀ fe 𝟚ᵒ) i)
  Λ-limit (ν₀ ⌜+⌝ ν₁) (inr ⋆ , x₁) p i = Λ-limit ν₁ x₁ p
-                                         (Σ-isolated-right (underlying-type-is-setᵀ fe 𝟚ᵒ) i)
+                                         (Σ-isolated-right
+                                           (underlying-type-is-setᵀ fe 𝟚ᵒ) i)
  Λ-limit (ν₀ ⌜×⌝ ν₁) (x₀ , x₁)    p i =
    Cases (max𝟚-lemma p)
     (λ (p₀ : Λ ν₀ x₀ ≡ ₁) → Λ-limit ν₀ x₀ p₀ (×-isolated-left i))
@@ -539,17 +551,19 @@ module _ (pe : propext 𝓤₀) where
     (λ (p₀ : Λ ν x ≡ ₁) → Λ-limit ν x p₀ (Σ-isolated-left (𝓚-Compact pe ν A) i))
     (λ (p₁ : Λ (A x) y ≡ ₁) → Λ-limit (A x) y p₁
                                (isolated-γ-gives-isolated-ι x y
-                                 (Σ-isolated-right (underlying-type-is-setᵀ fe (Κ ν)) i)))
+                                 (Σ-isolated-right
+                                   (underlying-type-is-setᵀ fe (Κ ν)) i)))
   where
    open Κ-extension ν A
 
  isolatedness-decision : (ν : E) (x : ⟪ Δ ν ⟫)
-                       → is-isolated (ι ν x) + (is-isolated (ι ν x) → WLPO)
+                       → is-isolated (ι ν x) + is-limit-point (ι ν x)
  isolatedness-decision ν x = 𝟚-equality-cases
                               (λ (p : Λ ν x ≡ ₀) → inl (Λ-isolated ν x p))
                               (λ (p : Λ ν x ≡ ₁) → inr (Λ-limit ν x p))
 
- isolatedness-decision' : ¬ WLPO → (ν : E) (x : ⟪ Δ ν ⟫) → decidable (is-isolated (ι ν x))
+ isolatedness-decision' : ¬ WLPO → (ν : E) (x : ⟪ Δ ν ⟫)
+                        → decidable (is-isolated (ι ν x))
  isolatedness-decision' f ν x =
    Cases (isolatedness-decision ν x)
     inl
