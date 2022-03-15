@@ -72,7 +72,7 @@ index (I , _) = I
 _[_] : {A : 𝓤 ̇} → (U : Fam 𝓥 A) → index U → A
 (_ , f) [ i ] = f i
 
-infixr 9 _[_]
+infix 9 _[_]
 
 \end{code}
 

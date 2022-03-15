@@ -4,7 +4,7 @@ Based on `ayberkt/formal-topology-in-UF`.
 
 \begin{code}[hide]
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import SpartanMLTT
 open import UF-Base
@@ -85,6 +85,13 @@ A nucleus is called perfect iff it is Scott-continuous:
 
 \end{code}
 
+\begin{code}
+
+ nucleus-of : perfect-nucleus → nucleus (𝒪 X)
+ nucleus-of (j , ζ , _) = j , ζ
+
+\end{code}
+
 \section{Poset of perfect nuclei}
 
 \begin{code}
@@ -109,8 +116,14 @@ Nuclei are ordered pointwise.
 
 \begin{code}
 
+ _≼₀_ : (⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩) → (⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩) → Ω (𝓤 ⊔ 𝓥)
+ _≼₀_ j k = Ɐ U ∶ ⟨ 𝒪 X ⟩ , (j U) ≤[ poset-of (𝒪 X) ] (k U)
+
+ _≼₁_ : prenucleus (𝒪 X) → prenucleus (𝒪 X) → Ω (𝓤 ⊔ 𝓥)
+ 𝒿 ≼₁ 𝓀 = pr₁ 𝒿 ≼₀ pr₁ 𝓀
+
  _≼_ : perfect-nucleus → perfect-nucleus → Ω (𝓤 ⊔ 𝓥)
- 𝒿 ≼ 𝓀 = Ɐ U ∶ ⟨ 𝒪 X ⟩ , (𝒿 $ U) ≤ (𝓀 $ U)
+ 𝒿 ≼ 𝓀 = (λ x → 𝒿 $ x) ≼₀ (λ x → 𝓀 $ x)
 
 \end{code}
 
@@ -320,5 +333,128 @@ Nuclei are ordered pointwise.
 
    γ : is-perfect (𝒿 ⋏₀ 𝓀) holds
    γ = ⋏₀-perfect 𝒿 𝓀 μj μk ζj ζk
+
+\end{code}
+
+\section{Construction of the join}
+
+The construction of the join is the nontrivial component of this development.
+Given a family `S ∶≡ { fᵢ : A → A | i ∶ I }` of endofunctions on some type `A`,
+and a list `i₀, …, iₙ` of indices (of type `I`), the function `sequence gives
+the composition of all `fᵢₙ ∘ ⋯ ∘ fᵢ₀`:
+
+\begin{code}
+
+ sequence : {A : 𝓤 ̇ } → (S : Fam 𝓦 (A → A)) → List (index S) → A → A
+ sequence S []       = id
+ sequence S (i ∷ is) = sequence S is ∘ S [ i ]
+
+\end{code}
+
+Using `sequence`, we define the following functio that will help us “directify”
+a given family:
+
+\begin{code}
+
+ 𝔡𝔦𝔯 : {A : 𝓤 ̇ } (S : Fam 𝓦 (A → A)) → Fam 𝓦 (A → A)
+ 𝔡𝔦𝔯 S = List (index S) , sequence S
+
+\end{code}
+
+The first lemma we prove about `𝔡𝔦𝔯` is the fact that, given a family
+
+```
+S ∶≡ { jᵢ : 𝒪 X → 𝒪 X ∣ i ∶ I }
+```
+
+of prenuclei, `sequence S is` is a prenuclei for any given list `is : List I` of
+indices.
+
+\begin{code}
+
+ 𝔡𝔦𝔯-prenuclear : (K : Fam 𝓦 (⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩))
+                → (Ɐ i ∶ index K , is-prenuclear (𝒪 X) (K [ i ])) holds
+                → (Ɐ is ∶ List (index K) , is-prenuclear (𝒪 X) (𝔡𝔦𝔯 K [ is ])) holds
+ 𝔡𝔦𝔯-prenuclear K ϑ []       = pr₂ (nucleus-pre (𝒪 X) (identity-nucleus (𝒪 X)))
+ 𝔡𝔦𝔯-prenuclear K ϑ (j ∷ js) = n₁ , n₂
+  where
+   open PosetReasoning (poset-of (𝒪 X))
+
+   IH = 𝔡𝔦𝔯-prenuclear K ϑ js
+
+   n₁ : is-inflationary (𝒪 X) (𝔡𝔦𝔯 K [ j ∷ js ]) holds
+   n₁ x = x                             ≤⟨ i    ⟩
+          (K [ j ]) x                   ≤⟨ ii   ⟩
+          (𝔡𝔦𝔯 K [ js ]) ((K [ j ]) x)  ≡⟨ refl ⟩ₚ
+          (𝔡𝔦𝔯 K [ j ∷ js ]) x          ■
+           where
+            i  = pr₁ (ϑ j) x
+            ii = pr₁ IH ((K [ j ]) x)
+
+   n₂ : preserves-meets (𝒪 X) (𝒪 X) (𝔡𝔦𝔯 K [ j ∷ js ]) holds
+   n₂ x y = (𝔡𝔦𝔯 K [ j ∷ js ]) (x ∧[ 𝒪 X ] y)                   ≡⟨ refl ⟩
+            (𝔡𝔦𝔯 K [ js ]) ((K [ j ]) (x ∧[ 𝒪 X ] y))           ≡⟨ i    ⟩
+            (𝔡𝔦𝔯 K [ js ]) ((K [ j ]) x ∧[ 𝒪 X ] (K [ j ]) y)   ≡⟨ ii   ⟩
+            (𝔡𝔦𝔯 K [ j ∷ js ]) x ∧[ 𝒪 X ] (𝔡𝔦𝔯 K [ j ∷ js ]) y  ∎
+             where
+              i   = ap (𝔡𝔦𝔯 K [ js ]) (pr₂ (ϑ j) x y)
+              ii  = pr₂ IH ((K [ j ]) x) ((K [ j ]) y)
+
+\end{code}
+
+\begin{code}
+
+ _^** : Fam 𝓦 (nucleus (𝒪 X)) → Fam 𝓦 (⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩)
+ _^** K = 𝔡𝔦𝔯 ⁅ k ∣ (k , _) ε K ⁆
+
+ ^**-functorial : (K : Fam 𝓦 (nucleus (𝒪 X)))
+                → (is js : List (index K))
+                →  K ^** [ is ++ js ] ∼ K ^** [ js ] ∘ K ^** [ is ]
+ ^**-functorial K []       js _ = refl
+ ^**-functorial K (i ∷ is) js x = ^**-functorial K is js ((K [ i ]) .pr₁ x)
+
+ _^* : Fam 𝓦 (nucleus (𝒪 X)) → Fam 𝓦 (prenucleus (𝒪 X))
+ _^* K = (List (index K)) , α
+  where
+   α : List (index K) → prenucleus (𝒪 X)
+   α is = 𝔡𝔦𝔯 ⁅ k ∣ (k , _) ε K ⁆ [ is ]
+        , 𝔡𝔦𝔯-prenuclear ⁅ k ∣ (k , _) ε K ⁆ † is
+    where
+     † : (i : index K) → is-prenuclear (𝒪 X) (pr₁ (K [ i ])) holds
+     † = pr₂ ∘ nucleus-pre (𝒪 X) ∘ (λ - → K [ - ])
+
+\end{code}
+
+\begin{code}
+
+ ^*-inhabited : (K : Fam 𝓦 (nucleus (𝒪 X))) → ∥ index (K ^*) ∥
+ ^*-inhabited K = ∣ [] ∣
+
+ ^*-upwards-directed : (K : Fam 𝓦 (nucleus (𝒪 X)))
+                     → (Ɐ is ∶ index (K ^*) , Ɐ js ∶ index (K ^*) ,
+                         Ǝ ks ∶ index (K ^*) ,
+                            (((K ^* [ is ]) ≼₁ (K ^* [ ks ]))
+                          ∧ ((K ^* [ js ]) ≼₁ (K ^* [ ks ]))) holds)
+                       holds
+ ^*-upwards-directed K is js = ∣ (is ++ js) , β , γ ∣
+  where
+   open PosetReasoning (poset-of (𝒪 X))
+   open PrenucleusApplicationSyntax (𝒪 X) using (_$ₚ_)
+
+   β : (((K ^*) [ is ]) ≼₁ (K ^* [ is ++ js ])) holds
+   β U = K ^* [ is ] $ₚ U                 ≤⟨ i  ⟩
+         K ^* [ js ] $ₚ K ^* [ is ] $ₚ U  ≡⟨ ii ⟩ₚ
+         K ^* [ is ++ js ] $ₚ U           ■
+          where
+           i  = prenucleus-property₂ (𝒪 X) (K ^* [ js ]) (K ^* [ is ]) U
+           ii = ^**-functorial K is js U ⁻¹
+
+   γ : ((K ^* [ js ]) ≼₁ (K ^* [ is ++ js ])) holds
+   γ U = K ^* [ js ] $ₚ U                 ≤⟨ i  ⟩
+         K ^* [ js ] $ₚ K ^* [ is ] $ₚ U  ≡⟨ ii ⟩ₚ
+         K ^* [ is ++ js ] $ₚ U           ■
+          where
+           i  = prenucleus-property₁ (𝒪 X) (K ^* [ js ]) (K ^* [ is ]) U
+           ii = ^**-functorial K is js U ⁻¹
 
 \end{code}

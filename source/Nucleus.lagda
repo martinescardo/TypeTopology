@@ -81,3 +81,66 @@ nuclei-are-monotone : (L : frame 𝓤 𝓥 𝓦) ((j , _) : nucleus L)
 nuclei-are-monotone L 𝒿 = meet-preserving-implies-monotone L L (pr₁ 𝒿) (𝓃₃ L 𝒿)
 
 \end{code}
+
+\begin{code}
+
+identity-nucleus : (L : frame 𝓤 𝓥 𝓦) → nucleus L
+identity-nucleus L = id , n₁ , n₂ , n₃
+ where
+  n₁ : is-inflationary L id holds
+  n₁ = ≤-is-reflexive (poset-of L)
+
+  n₂ : is-idempotent L id holds
+  n₂ = ≤-is-reflexive (poset-of L)
+
+  n₃ : preserves-meets L L id holds
+  n₃ x y = refl {x = x ∧[ L ] y}
+
+\end{code}
+
+In this development, it will be useful to define and work with the notion of a
+prenucleus: a meet-preserving inflationary endomap (that is not necessary
+idempotent):
+
+\begin{code}
+
+is-prenuclear : (L : frame 𝓤 𝓥 𝓦) (j : ⟨ L ⟩ → ⟨ L ⟩) → Ω (𝓤 ⊔ 𝓥)
+is-prenuclear L j = is-inflationary L j  ∧ preserves-meets L L j
+
+prenucleus : frame 𝓤 𝓥 𝓦 → (𝓤 ⊔ 𝓥) ̇
+prenucleus L = Σ j ꞉ (⟨ L ⟩ → ⟨ L ⟩) , is-prenuclear L j holds
+
+module PrenucleusApplicationSyntax (L : frame 𝓤 𝓥 𝓦) where
+
+ _$ₚ_ : prenucleus L → ⟨ L ⟩ → ⟨ L ⟩
+ _$ₚ_ = pr₁
+
+ infixr 2 _$ₚ_
+
+\end{code}
+
+Inclusion of nuclei into the type of prenuclei:
+
+\begin{code}
+
+nucleus-pre : (L : frame 𝓤 𝓥 𝓦) → nucleus L → prenucleus L
+nucleus-pre L 𝒿@(j , _) = j , 𝓃₁ L 𝒿 , 𝓃₃ L 𝒿
+
+\end{code}
+
+Some important properties of prenuclei:
+
+\begin{code}
+
+prenucleus-property₁ : (L : frame 𝓤 𝓥 𝓦)
+                     → ((j , _) (k , _) : prenucleus L)
+                     → (Ɐ x ∶ ⟨ L ⟩ , j x ≤[ poset-of L ] (j ∘ k) x) holds
+prenucleus-property₁ L (j , _ , μj) (k , ζ , _) x =
+ meet-preserving-implies-monotone L L j μj (x , k x) (ζ x)
+
+prenucleus-property₂ : (L : frame 𝓤 𝓥 𝓦)
+                     → ((j , _) (k , _) : prenucleus L)
+                     → (Ɐ x ∶ ⟨ L ⟩ , k x ≤[ poset-of L ] (j ∘ k) x) holds
+prenucleus-property₂ L (j , ζj , _) (k , _) x = ζj (k x)
+
+\end{code}
