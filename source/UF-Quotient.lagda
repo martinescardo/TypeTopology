@@ -515,3 +515,69 @@ quotients-equivalent X (_≈_  , ≈p ,  ≈r  , ≈s  , ≈t )
   γ = qinveq f (f' , α' , α)
 
 \end{code}
+
+Added 15 March 2022 by Tom de Jong, after discussion with Martín.
+
+If we have pushouts and univalence, then images of maps from small types to
+locally small types are small, as proved by Egbert Rijke in
+https://arxiv.org/abs/1701.07538
+
+We can also take the result on small images as a stand-alone assumption, which
+is what we do here.
+
+We show, under this assumption, that quotients of small types by small-valued
+equivalence relations are small again, as observed by Rijke in Corollary 5.1 of
+the above paper.
+
+\begin{code}
+
+open import UF-Size hiding (is-locally-small)
+open ImageAndSurjection pt
+
+_is-locally_small : 𝓥 ̇  → (𝓤 : Universe) → 𝓤 ⁺ ⊔ 𝓥 ̇
+X is-locally 𝓤 small = (x y : X) → (x ≡ y) is 𝓤 small
+
+Small-Images : (𝓤 : Universe) → 𝓤ω
+Small-Images 𝓤 = {𝓥 𝓦 : Universe} {X : 𝓥 ̇  } {Y : 𝓦 ̇  } (f : X → Y)
+               → X is 𝓤 small → Y is-locally 𝓤 small
+               → (image f) is 𝓤 small
+
+module _
+        {𝓤 : Universe}
+        (small-images : Small-Images 𝓤)
+        (X : 𝓤 ̇  )
+        (_≈_ : X → X → 𝓤 ̇  )
+        (≈p  : is-prop-valued _≈_)
+        (≈r  : reflexive _≈_)
+        (≈s  : symmetric _≈_)
+        (≈t  : transitive _≈_)
+       where
+
+ open quotient X _≈_ ≈p ≈r ≈s ≈t
+
+ open import UF-Equiv
+ open import UF-EquivalenceExamples
+
+ X/≈-is-small : X/≈ is 𝓤 small
+ X/≈-is-small = small-images equiv-rel (X , ≃-refl X) γ
+  where
+   γ : (X → Ω 𝓤) is-locally 𝓤 small
+   γ f g = S , ≃-sym e
+    where
+     S : 𝓤 ̇
+     S = (x : X) → f x holds ⇔ g x holds
+     e = (f ≡ g) ≃⟨ ≃-funext fe f g ⟩
+         f ∼ g   ≃⟨ I ⟩
+         S       ■
+      where
+       I = Π-cong fe fe X (λ x → f x ≡ g x) (λ x → f x holds ⇔ g x holds) II
+        where
+         II : (x : X) → (f x ≡ g x) ≃ (f x holds ⇔ g x holds)
+         II x = logically-equivalent-props-are-equivalent
+                 (Ω-is-set fe pe)
+                 (×-is-prop (Π-is-prop fe (λ _ → holds-is-prop (g x)))
+                            (Π-is-prop fe (λ _ → holds-is-prop (f x))))
+                 (λ p → transport _holds p , back-transport _holds p)
+                 (λ (u , v) → Ω-extensionality fe pe u v)
+
+\end{code}
