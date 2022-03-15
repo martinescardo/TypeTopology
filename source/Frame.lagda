@@ -39,7 +39,7 @@ living in universe 𝓤.
 
 private
   variable
-    𝓤′ 𝓥′ 𝓦′ : Universe
+    𝓤′ 𝓥′ 𝓦′ 𝓤′′ 𝓥′′ : Universe
 
 Fam : (𝓤 : Universe) → 𝓥 ̇ → 𝓤 ⁺ ⊔ 𝓥 ̇
 Fam 𝓤 A = Σ I ꞉ (𝓤 ̇) , (I → A)
@@ -639,6 +639,17 @@ is-directed F (I , β) =
  ∧ (Ɐ i ∶ I , Ɐ j ∶ I , (Ǝ k ∶ I , ((β i ≤ β k) ∧ (β j ≤ β k)) holds))
   where open PosetNotation (poset-of F)
 
+monotone-image-on-directed-family-is-directed : (F : frame 𝓤  𝓥  𝓦)
+                                              → (G : frame 𝓤′ 𝓥′ 𝓦)
+                                              → (S : Fam 𝓦 ⟨ F ⟩)
+                                              → is-directed F S holds
+                                              → (f : ⟨ F ⟩ → ⟨ G ⟩)
+                                              → is-directed G ⁅ f s ∣ s ε S ⁆ holds
+monotone-image-on-directed-family-is-directed F G S (ι , υ) f = ι , γ
+ where
+  γ : {!!}
+  γ = {!!}
+
 is-scott-continuous : (F : frame 𝓤  𝓥  𝓦)
                     → (G : frame 𝓤′ 𝓥′ 𝓦)
                     → (f : ⟨ F ⟩ → ⟨ G ⟩)
@@ -647,6 +658,40 @@ is-scott-continuous {𝓦 = 𝓦} F G f =
  Ɐ S ∶ Fam 𝓦 ⟨ F ⟩ , is-directed F S ⇒ f (⋁[ F ] S) is-lub-of ⁅ f s ∣ s ε S ⁆
   where
    open Joins (λ x y → x ≤[ poset-of G ] y) using (_is-lub-of_)
+
+id-is-scott-continuous : (F : frame 𝓤 𝓥 𝓦) → is-scott-continuous F F id holds
+id-is-scott-continuous F S δ = ⋁[ F ]-upper S , ⋁[ F ]-least S
+ where
+  open Joins (λ x y → x ≤[ poset-of F ] y)
+
+∘-of-scott-cont-is-scott-cont : (F : frame 𝓤   𝓥   𝓦)
+                                (G : frame 𝓤′  𝓥′  𝓦)
+                                (H : frame 𝓤′′ 𝓥′′ 𝓦)
+                              → (g : ⟨ G ⟩ → ⟨ H ⟩)
+                              → (f : ⟨ F ⟩ → ⟨ G ⟩)
+                              → is-scott-continuous G H g holds
+                              → is-scott-continuous F G f holds
+                              → is-scott-continuous F H (g ∘ f) holds
+∘-of-scott-cont-is-scott-cont F G H g f ζg ζf S δ =
+ β , γ
+  where
+   open Joins (λ x y → x ≤[ poset-of H ] y)
+   open PosetReasoning (poset-of H)
+
+   β : (g (f (⋁[ F ] S)) is-an-upper-bound-of ⁅ g (f s) ∣ s ε S ⁆) holds
+   β k = g (f (S [ k ]))              ≤⟨ i   ⟩
+         ⋁[ H ] ⁅ g (f s) ∣ s ε S ⁆   ≤⟨ ii  ⟩
+         g (⋁[ G ] ⁅ f s ∣ s ε S ⁆)   ≤⟨ iii ⟩
+         g (f (⋁[ F ] S))             ■
+          where
+           i   = ⋁[ H ]-upper ⁅ g (f s) ∣ s ε S ⁆ k
+           ii  = ⋁[ H ]-least
+                  ⁅ g (f s) ∣ s ε S ⁆
+                  (g (⋁[ G ] ⁅ f s ∣ s ε S ⁆) , pr₁ (ζg ⁅ f s ∣ s ε S ⁆ {!!}))
+           iii = {!!}
+
+   γ : {!!}
+   γ = {!!}
 
 \end{code}
 

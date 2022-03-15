@@ -458,3 +458,15 @@ indices.
            ii = ^**-functorial K is js U ⁻¹
 
 \end{code}
+
+\begin{code}
+
+ ^*-scott-continuous : (K : Fam 𝓦 (⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩))
+                     → (Ɐ i ∶ index K ,
+                         is-scott-continuous (𝒪 X) (𝒪 X) (K [ i ])) holds
+                     → (Ɐ is ∶ List (index K) ,
+                         is-scott-continuous (𝒪 X) (𝒪 X) (𝔡𝔦𝔯 K [ is ])) holds
+ ^*-scott-continuous K ϑ []       = {!!}
+ ^*-scott-continuous K ϑ (i ∷ is) = {!!}
+
+\end{code}
