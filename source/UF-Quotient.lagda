@@ -531,16 +531,8 @@ the above paper.
 
 \begin{code}
 
-open import UF-Size hiding (is-locally-small)
-open ImageAndSurjection pt
-
-_is-locally_small : 𝓥 ̇  → (𝓤 : Universe) → 𝓤 ⁺ ⊔ 𝓥 ̇
-X is-locally 𝓤 small = (x y : X) → (x ≡ y) is 𝓤 small
-
-Small-Images : (𝓤 : Universe) → 𝓤ω
-Small-Images 𝓤 = {𝓥 𝓦 : Universe} {X : 𝓥 ̇  } {Y : 𝓦 ̇  } (f : X → Y)
-               → X is 𝓤 small → Y is-locally 𝓤 small
-               → (image f) is 𝓤 small
+open import UF-Size
+open SmallImages pt
 
 module _
         {𝓤 : Universe}

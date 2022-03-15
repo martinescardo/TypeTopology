@@ -836,3 +836,30 @@ Id⟦ ls ⟧ x y = x ≡⟦ ls ⟧ y
 ⟦ ls ⟧-refl x = ⌜ ≃-sym (pr₂ (ls x x)) ⌝ refl
 
 \end{code}
+
+Added 15 March 2022.
+
+The following type describes what it means to have "small images". It is
+provable if we assume pushouts and univalence, as shown by Egbert Rijke in
+https://arxiv.org/abs/1701.07538
+
+In UF-Quotient, we show that assuming small images yields small set-quotients,
+provided the given type and equivalence relation are small.
+
+\begin{code}
+
+open import UF-ImageAndSurjection
+
+module SmallImages (pt : propositional-truncations-exist) where
+
+ open ImageAndSurjection pt
+
+ _is-locally_small : 𝓥 ̇  → (𝓤 : Universe) → 𝓤 ⁺ ⊔ 𝓥 ̇
+ X is-locally 𝓤 small = (x y : X) → (x ≡ y) is 𝓤 small
+
+ Small-Images : (𝓤 : Universe) → 𝓤ω
+ Small-Images 𝓤 = {𝓥 𝓦 : Universe} {X : 𝓥 ̇  } {Y : 𝓦 ̇  } (f : X → Y)
+                → X is 𝓤 small → Y is-locally 𝓤 small
+                → (image f) is 𝓤 small
+
+\end{code}
