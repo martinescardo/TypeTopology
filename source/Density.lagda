@@ -10,13 +10,44 @@ A function is dense if the complement of its image is empty. Maybe
 module Density where
 
 open import SpartanMLTT
+open import DiscreteAndSeparated
 
+open import UF-Base
 open import UF-Equiv
 open import UF-Retracts
 open import UF-Embeddings
 
 is-dense : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
-is-dense f = is-empty (Σ y ꞉ codomain f , ¬ fiber f y)
+is-dense {𝓤} {𝓥} {X} {Y} f = ¬ (Σ y ꞉ Y , ¬ (Σ x ꞉ X , f x ≡ y))
+
+dense-maps-into-¬¬-separated-types-are-rc' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : Y → 𝓦 ̇ }
+                                            {h : X → Y} {f g : Π Z}
+                                          → is-dense h
+                                          → ((y : Y) → is-¬¬-separated (Z y))
+                                          → f ∘ h ∼ g ∘ h
+                                          → f ∼ g
+dense-maps-into-¬¬-separated-types-are-rc' {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {h} {f} {g} d s p = γ
+ where
+  a : (y : Y) → (Σ x ꞉ X , h x ≡ y) → ¬ (f y ≢ g y)
+  a y (x , q) ψ = ψ (f y                     ≡⟨ (apd f q )⁻¹ ⟩
+                     transport Z q (f (h x)) ≡⟨ ap (transport Z q) (p x) ⟩
+                     transport Z q (g (h x)) ≡⟨ apd g q ⟩
+                     g y                     ∎)
+
+  b : (y : Y) → ¬ (f y ≢ g y)
+  b y ψ = d (y , λ σ → a y σ ψ)
+
+  γ : f ∼ g
+  γ y = s y (f y) (g y) (b y)
+
+dense-maps-into-¬¬-separated-types-are-rc : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
+                                            {h : X → Y} {f g : Y → Z}
+                                          → is-dense h
+                                          → is-¬¬-separated Z
+                                          → f ∘ h ∼ g ∘ h
+                                          → f ∼ g
+dense-maps-into-¬¬-separated-types-are-rc d s =
+ dense-maps-into-¬¬-separated-types-are-rc' d (λ _ → s)
 
 id-is-dense : {X : 𝓤 ̇ } → is-dense (id {𝓤} {X})
 id-is-dense (y , n) = n (y , refl)

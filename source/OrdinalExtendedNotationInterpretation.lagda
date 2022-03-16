@@ -232,66 +232,53 @@ This completes the definitions of Κ, ι and ι-is-embedding.
 
 The important fact about the Κ interpretation is that the ordinals in
 its image have the least element property for decidable subsets, and,
-in particular, they are compact - see below.
-
-We first discuss some impossibility results.
+in particular, they are compact.
 
 \begin{code}
 
-ι-is-equiv-gives-LPO : ((ν : E) → is-equiv (ι ν)) → LPO
-ι-is-equiv-gives-LPO f = ι𝟙-is-equiv-gives-LPO (f ⌜ω+𝟙⌝)
+module _ (pe : propext 𝓤₀) where
 
-LPO-gives-ι-is-equiv : LPO → (ν : E) → is-equiv (ι ν)
-LPO-gives-ι-is-equiv lpo ⌜𝟙⌝         = id-is-equiv 𝟙
-LPO-gives-ι-is-equiv lpo ⌜ω+𝟙⌝       = LPO-gives-ι𝟙-is-equiv lpo
-LPO-gives-ι-is-equiv lpo (ν₀ ⌜+⌝ ν₁) = pair-fun-is-equiv
-                                          id
-                                          (dep-cases (λ _ → ι ν₀) (λ _ → ι ν₁))
-                                          (id-is-equiv (𝟙 + 𝟙))
-                                          (dep-cases
-                                            (λ _ → LPO-gives-ι-is-equiv lpo ν₀)
-                                            (λ _ → LPO-gives-ι-is-equiv lpo ν₁))
-LPO-gives-ι-is-equiv lpo (ν₀ ⌜×⌝ ν₁) = pair-fun-is-equiv _ _
-                                          (LPO-gives-ι-is-equiv lpo ν₀)
-                                          (λ _ → LPO-gives-ι-is-equiv lpo ν₁)
-LPO-gives-ι-is-equiv lpo (⌜Σ⌝ ν A)   = pair-fun-is-equiv
-                                          (ι ν)
-                                          γ
-                                          (LPO-gives-ι-is-equiv lpo ν)
-                                          (λ x → ∘-is-equiv
-                                                  (LPO-gives-ι-is-equiv lpo (A x))
-                                                  (⌜⌝⁻¹-is-equiv (ϕ x)))
- where
-  open Κ-extension ν A
+ K-has-least-element-property : (ν : E)
+                              → has-least-element-property (Κ ν)
+ 𝓚-has-least-element-property : (ν : E) (A : ⟪ Δ ν ⟫ → E) (x : ⟪ Κ ν ⟫)
+                              → has-least-element-property (𝓚 ν A x)
 
-ι-is-equiv-iff-LPO : ((ν : E) → is-equiv (ι ν)) ⇔ LPO
-ι-is-equiv-iff-LPO = ι-is-equiv-gives-LPO , LPO-gives-ι-is-equiv
+ K-has-least-element-property ⌜𝟙⌝         = 𝟙ᵒ-has-least-element-property
+ K-has-least-element-property ⌜ω+𝟙⌝       = ℕ∞ᵒ-has-least-element-property pe
+ K-has-least-element-property (ν₀ ⌜+⌝ ν₁) =
+   ∑-has-least-element-property pe
+     𝟚ᵒ
+     (cases (λ _ → Κ ν₀) (λ _ → Κ ν₁))
+     𝟚ᵒ-has-least-element-property
+     (dep-cases (λ _ → K-has-least-element-property ν₀)
+                (λ _ → K-has-least-element-property ν₁))
+ K-has-least-element-property (ν₀ ⌜×⌝ ν₁) =
+   ∑-has-least-element-property pe
+     (Κ ν₀)
+     (λ _ → Κ ν₁)
+     (K-has-least-element-property ν₀)
+     (λ _ → K-has-least-element-property ν₁)
+ K-has-least-element-property (⌜Σ⌝ ν A)   =
+   ∑-has-least-element-property pe (Κ ν) B
+     (K-has-least-element-property ν)
+     (𝓚-has-least-element-property ν A)
+  where
+   open Κ-extension ν A
 
-\end{code}
+ 𝓚-has-least-element-property ν A x =
+   prop-inf-tychonoff
+    (ι-is-embedding ν x)
+    (λ {(x , _)} y z → y ≺⟪ Κ (A x) ⟫ z)
+    (λ (x , _) → K-has-least-element-property (A x))
 
-We also have the following:
+ Κ-Compact : {𝓥 : Universe} (ν : E) → Compact ⟪ Κ ν ⟫ {𝓥}
+ Κ-Compact ν = has-least-gives-Compact _ (K-has-least-element-property ν)
 
-\begin{code}
-
-ι-has-section-gives-Κ-discrete : (ν : E) → has-section (ι ν) → is-discrete ⟪ Κ ν ⟫
-ι-has-section-gives-Κ-discrete ν (θ , ιθ) = lc-maps-reflect-discreteness θ
-                                              (sections-are-lc θ (ι ν , ιθ))
-                                              (Δ-is-discrete ν)
-
-ι-is-equiv-gives-Κ-discrete : (ν : E) → is-equiv (ι ν) → is-discrete ⟪ Κ ν ⟫
-ι-is-equiv-gives-Κ-discrete ν e = ι-has-section-gives-Κ-discrete ν
-                                   (equivs-have-sections (ι ν) e)
-
-LPO-gives-Κ-discrete : LPO → (ν : E) → is-discrete ⟪ Κ ν ⟫
-LPO-gives-Κ-discrete lpo ν = ι-is-equiv-gives-Κ-discrete ν
-                              (LPO-gives-ι-is-equiv lpo ν)
-
-Κ-discrete-gives-WLPO : ((ν : E) → is-discrete ⟪ Κ ν ⟫) → WLPO
-Κ-discrete-gives-WLPO f = ℕ∞-discrete-gives-WLPO (f ⌜ω+𝟙⌝)
+ 𝓚-Compact : {𝓥 : Universe} (ν : E) (A : ⟪ Δ ν ⟫ → E) (x : ⟪ Κ ν ⟫)
+            → Compact ⟪ 𝓚 ν A x ⟫ {𝓥}
+ 𝓚-Compact ν A x = has-least-gives-Compact _ (𝓚-has-least-element-property ν A x)
 
 \end{code}
-
-TODO. Can we close the gap between the last two facts?
 
 The embedding of the Δ interpretation into the Κ interpretation is
 order-preserving, order-reflecting, and dense (its image has empty
@@ -446,55 +433,6 @@ complement):
 
 \end{code}
 
-We now show that the ordinal Κ ν has the least-element property
-discussed above and hence is compact (or searchable).
-
-\begin{code}
-
-module _ (pe : propext 𝓤₀) where
-
- K-has-least-element-property : (ν : E)
-                              → has-least-element-property (Κ ν)
- 𝓚-has-least-element-property : (ν : E) (A : ⟪ Δ ν ⟫ → E) (x : ⟪ Κ ν ⟫)
-                              → has-least-element-property (𝓚 ν A x)
-
- K-has-least-element-property ⌜𝟙⌝         = 𝟙ᵒ-has-least-element-property
- K-has-least-element-property ⌜ω+𝟙⌝       = ℕ∞ᵒ-has-least-element-property pe
- K-has-least-element-property (ν₀ ⌜+⌝ ν₁) =
-   ∑-has-least-element-property pe
-     𝟚ᵒ
-     (cases (λ _ → Κ ν₀) (λ _ → Κ ν₁))
-     𝟚ᵒ-has-least-element-property
-     (dep-cases (λ _ → K-has-least-element-property ν₀)
-                (λ _ → K-has-least-element-property ν₁))
- K-has-least-element-property (ν₀ ⌜×⌝ ν₁) =
-   ∑-has-least-element-property pe
-     (Κ ν₀)
-     (λ _ → Κ ν₁)
-     (K-has-least-element-property ν₀)
-     (λ _ → K-has-least-element-property ν₁)
- K-has-least-element-property (⌜Σ⌝ ν A)   =
-   ∑-has-least-element-property pe (Κ ν) B
-     (K-has-least-element-property ν)
-     (𝓚-has-least-element-property ν A)
-  where
-   open Κ-extension ν A
-
- 𝓚-has-least-element-property ν A x =
-   prop-inf-tychonoff
-    (ι-is-embedding ν x)
-    (λ {(x , _)} y z → y ≺⟪ Κ (A x) ⟫ z)
-    (λ (x , _) → K-has-least-element-property (A x))
-
- Κ-Compact : {𝓥 : Universe} (ν : E) → Compact ⟪ Κ ν ⟫ {𝓥}
- Κ-Compact ν = has-least-gives-Compact _ (K-has-least-element-property ν)
-
- 𝓚-Compact : {𝓥 : Universe} (ν : E) (A : ⟪ Δ ν ⟫ → E) (x : ⟪ Κ ν ⟫)
-            → Compact ⟪ 𝓚 ν A x ⟫ {𝓥}
- 𝓚-Compact ν A x = has-least-gives-Compact _ (𝓚-has-least-element-property ν A x)
-
-\end{code}
-
 We define limit points as follows:
 
 \begin{code}
@@ -602,3 +540,62 @@ module _ (pe : propext 𝓤₀) where
     (λ (g : is-isolated (ι ν x) → WLPO)  → inr (contrapositive g f))
 
 \end{code}
+
+We conclude with some impossibility results.
+
+\begin{code}
+
+ι-is-equiv-gives-LPO : ((ν : E) → is-equiv (ι ν)) → LPO
+ι-is-equiv-gives-LPO f = ι𝟙-is-equiv-gives-LPO (f ⌜ω+𝟙⌝)
+
+LPO-gives-ι-is-equiv : LPO → (ν : E) → is-equiv (ι ν)
+LPO-gives-ι-is-equiv lpo ⌜𝟙⌝         = id-is-equiv 𝟙
+LPO-gives-ι-is-equiv lpo ⌜ω+𝟙⌝       = LPO-gives-ι𝟙-is-equiv lpo
+LPO-gives-ι-is-equiv lpo (ν₀ ⌜+⌝ ν₁) = pair-fun-is-equiv
+                                          id
+                                          (dep-cases (λ _ → ι ν₀) (λ _ → ι ν₁))
+                                          (id-is-equiv (𝟙 + 𝟙))
+                                          (dep-cases
+                                            (λ _ → LPO-gives-ι-is-equiv lpo ν₀)
+                                            (λ _ → LPO-gives-ι-is-equiv lpo ν₁))
+LPO-gives-ι-is-equiv lpo (ν₀ ⌜×⌝ ν₁) = pair-fun-is-equiv _ _
+                                          (LPO-gives-ι-is-equiv lpo ν₀)
+                                          (λ _ → LPO-gives-ι-is-equiv lpo ν₁)
+LPO-gives-ι-is-equiv lpo (⌜Σ⌝ ν A)   = pair-fun-is-equiv
+                                          (ι ν)
+                                          γ
+                                          (LPO-gives-ι-is-equiv lpo ν)
+                                          (λ x → ∘-is-equiv
+                                                  (LPO-gives-ι-is-equiv lpo (A x))
+                                                  (⌜⌝⁻¹-is-equiv (ϕ x)))
+ where
+  open Κ-extension ν A
+
+ι-is-equiv-iff-LPO : ((ν : E) → is-equiv (ι ν)) ⇔ LPO
+ι-is-equiv-iff-LPO = ι-is-equiv-gives-LPO , LPO-gives-ι-is-equiv
+
+\end{code}
+
+We also have the following:
+
+\begin{code}
+
+ι-has-section-gives-Κ-discrete : (ν : E) → has-section (ι ν) → is-discrete ⟪ Κ ν ⟫
+ι-has-section-gives-Κ-discrete ν (θ , ιθ) = lc-maps-reflect-discreteness θ
+                                              (sections-are-lc θ (ι ν , ιθ))
+                                              (Δ-is-discrete ν)
+
+ι-is-equiv-gives-Κ-discrete : (ν : E) → is-equiv (ι ν) → is-discrete ⟪ Κ ν ⟫
+ι-is-equiv-gives-Κ-discrete ν e = ι-has-section-gives-Κ-discrete ν
+                                   (equivs-have-sections (ι ν) e)
+
+LPO-gives-Κ-discrete : LPO → (ν : E) → is-discrete ⟪ Κ ν ⟫
+LPO-gives-Κ-discrete lpo ν = ι-is-equiv-gives-Κ-discrete ν
+                              (LPO-gives-ι-is-equiv lpo ν)
+
+Κ-discrete-gives-WLPO : ((ν : E) → is-discrete ⟪ Κ ν ⟫) → WLPO
+Κ-discrete-gives-WLPO f = ℕ∞-discrete-gives-WLPO (f ⌜ω+𝟙⌝)
+
+\end{code}
+
+TODO. Can we close the gap between the last two facts?
