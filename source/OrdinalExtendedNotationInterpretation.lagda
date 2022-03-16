@@ -598,4 +598,15 @@ LPO-gives-Κ-discrete lpo ν = ι-is-equiv-gives-Κ-discrete ν
 
 \end{code}
 
-TODO. Can we close the gap between the last two facts?
+TODO. Can we close the gap between the last two facts? The difficulty
+that arises here is similar to the following.
+
+Let P be a proposition and assume function extensionality.
+
+(0) If P is decidable, then the function type (P → 𝟚) has decidable equality.
+
+(1) If (P → 𝟚) has decidable equality, then ¬ P is decidable.
+
+It doesn't seem to be possible to reverse any of the implications (0)
+and (1), so that the proposition "(P -> 2) has decidable equality"
+seems to be strictly between "P is decidable" and "¬P is decidable".
