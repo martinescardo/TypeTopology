@@ -206,7 +206,9 @@ discrete-power-of-disconnected-gives-compact-exponent {𝓤} {𝓥} {X} {Y} ρ d
 
 discrete-power-of-non-trivial-discrete-gives-compact-exponent' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                                                                → (Σ y₀ ꞉ Y , Σ y₁ ꞉ Y , y₀ ≢ y₁)
-                                                               → is-discrete Y → is-discrete (X → Y) → Π-compact X
+                                                               → is-discrete Y
+                                                               → is-discrete (X → Y)
+                                                               → Π-compact X
 discrete-power-of-non-trivial-discrete-gives-compact-exponent' w d =
   discrete-power-of-disconnected-gives-compact-exponent
    (discrete-type-with-two-different-points-gives-disconnected w d)

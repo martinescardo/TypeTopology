@@ -273,15 +273,23 @@ We also have the following:
 
 ι-has-section-gives-Κ-discrete : (ν : E) → has-section (ι ν) → is-discrete ⟪ Κ ν ⟫
 ι-has-section-gives-Κ-discrete ν (θ , ιθ) = lc-maps-reflect-discreteness θ
-                                               (sections-are-lc θ (ι ν , ιθ))
-                                               (Δ-is-discrete ν)
+                                              (sections-are-lc θ (ι ν , ιθ))
+                                              (Δ-is-discrete ν)
 
 ι-is-equiv-gives-Κ-discrete : (ν : E) → is-equiv (ι ν) → is-discrete ⟪ Κ ν ⟫
 ι-is-equiv-gives-Κ-discrete ν e = ι-has-section-gives-Κ-discrete ν
                                    (equivs-have-sections (ι ν) e)
+
+LPO-gives-Κ-discrete : LPO → (ν : E) → is-discrete ⟪ Κ ν ⟫
+LPO-gives-Κ-discrete lpo ν = ι-is-equiv-gives-Κ-discrete ν
+                              (LPO-gives-ι-is-equiv lpo ν)
+
+Κ-discrete-gives-WLPO : ((ν : E) → is-discrete ⟪ Κ ν ⟫) → WLPO
+Κ-discrete-gives-WLPO f = ℕ∞-discrete-gives-WLPO (f ⌜ω+𝟙⌝)
+
 \end{code}
 
-But we need to say more about this.
+TODO. Can we close the gap between the last two facts?
 
 The embedding of the Δ interpretation into the Κ interpretation is
 order-preserving, order-reflecting, and dense (its image has empty
@@ -333,11 +341,11 @@ complement):
   f : (x : ⟪ Δ ν ⟫) (y z : ⟪ Δ (A x) ⟫)
     → ι (A x) y ≺⟪ Κ (A x) ⟫   ι (A x) z
     →     γ x y ≺⟪ B (ι ν x) ⟫     γ x z
-  f x y z l = ι-fiber-point x ,
+  f x y z l = (ι-fiber-point x ,
               transport₂ (λ j k → j ≺⟪ Κ (A x) ⟫ k)
                (ι-γ-lemma x y)
                (ι-γ-lemma x z)
-               l
+              l)
 
   g : (x : ⟪ Δ ν ⟫) (y z : ⟪ Δ (A x) ⟫)
     →     y ≺⟪ Δ (A x) ⟫       z
@@ -410,6 +418,7 @@ complement):
     → γ x y ≺⟪ B (ι ν x) ⟫ γ x z
     →     y ≺⟪ Δ (A x)   ⟫     z
   g x y z l = IH x y z (f x y z l)
+
 
 ι-is-dense : (ν : E) → is-dense (ι ν)
 ι-is-dense ⌜𝟙⌝         = id-is-dense
