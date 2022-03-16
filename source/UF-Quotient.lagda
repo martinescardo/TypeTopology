@@ -550,10 +550,10 @@ module _
  open import UF-Equiv
  open import UF-EquivalenceExamples
 
- X/≈-is-small : X/≈ is 𝓤 small
- X/≈-is-small = small-images equiv-rel (X , ≃-refl X) γ
+ X/≈-is-small : is-small X/≈
+ X/≈-is-small = small-images equiv-rel γ
   where
-   γ : (X → Ω 𝓤) is-locally 𝓤 small
+   γ : is-locally-small (X → Ω 𝓤)
    γ f g = S , ≃-sym e
     where
      S : 𝓤 ̇
