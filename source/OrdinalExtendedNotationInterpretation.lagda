@@ -71,6 +71,8 @@ open import CompactTypes
 open import LeastElementProperty
 open import WLPO
 open import LPO fe
+open import Density
+open import PairFun
 
 \end{code}
 
@@ -418,7 +420,6 @@ complement):
     → γ x y ≺⟪ B (ι ν x) ⟫ γ x z
     →     y ≺⟪ Δ (A x)   ⟫     z
   g x y z l = IH x y z (f x y z l)
-
 
 ι-is-dense : (ν : E) → is-dense (ι ν)
 ι-is-dense ⌜𝟙⌝         = id-is-dense

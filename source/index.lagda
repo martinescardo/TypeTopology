@@ -131,6 +131,7 @@ import DcpoDinfinity                   -- By Tom de Jong
 import DecidabilityOfNonContinuity
 import DecidableAndDetachable
 import Dedekind
+import Density
 import DisconnectedTypes
 import DiscreteAndSeparated
 import Dyadic
@@ -206,6 +207,7 @@ import OrdinalsFreeGroup
 import OrdinalsType
 import OrdinalsWellOrderArithmetic
 import OrdinalsWellOrderTransport
+import PairFun
 import PartialElements
 import Pi
 import Plus

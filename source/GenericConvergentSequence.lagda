@@ -22,6 +22,7 @@ open import NaturalNumbers-Properties
 open import DiscreteAndSeparated
 open import OrderNotation
 open import CanonicalMapNotation
+open import Density
 
 open import UF-Base
 open import UF-Subsingletons

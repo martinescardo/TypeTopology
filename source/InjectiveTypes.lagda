@@ -102,8 +102,9 @@ open import UF-FunExt
 module InjectiveTypes (fe : FunExt) where
 
 open import SpartanMLTT
-
 open import Plus-Properties
+open import PairFun
+
 open import UF-Base
 open import UF-Equiv
 open import UF-Embeddings
