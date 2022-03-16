@@ -1,4 +1,6 @@
-Martin Escardo, 1st March 2022
+Martin Escardo, March 2022
+
+This generalizes the 2018 file OrdinalNotationInterpretation.
 
 A Tarski universe E of ordinal codes with two related decoding
 functions Δ and Κ (standing for "discrete" and "compact"
@@ -7,28 +9,27 @@ respectively).
 Roughly speaking, E gives ordinal codes or expressions denoting
 infinite ordinals. The expressions themselves are infinitary.
 
-An ordinal is a type equipped with an order that _≺_ satisfies
-suitable properties (which in particular implies that the type is a
-set in the sense of HoTT/UF).
+An ordinal is a type equipped with an order _≺_ that satisfies
+suitable properties, which in particular imply that the type is a set
+in the sense of HoTT/UF. The adopted notion of ordinal is that of the
+HoTT book.
 
 For a code ν : E, we have an ordinal Δ ν, which is discrete (has
 decidable equality).
 
 For a code ν : E, we have an ordinal Κ ν, which is compact (or
-"searchable"). More than that, every decidable subset of Κ ν is either
-empty or has a minimal element.
+"searchable"). More than that, every complemented subset of Κ ν is
+either empty or has a minimal element.
 
 There is an embedding ι : Δ ν → Κ ν which is order preserving and
 reflecting, and whose image has empty complement. The assumption that
 it is a bijection implies WLPO.
 
-The adopted notion of ordinal is that of the HoTT book.
-
 This extends and generalizes OrdinalNotationInterpretation.lagda, for
 which slides for a talk are available at
 https://www.cs.bham.ac.uk/~mhe/.talks/csl2022.pdf which may well serve
 as an introduction to this file. The main difference is that the
-ordinal expressions considered there amount to a W type, where the
+ordinal expressions considered there amount to a W type, whereas the
 ones considered here amount to an inductive-recursive type,
 generalizing that.
 
@@ -108,9 +109,11 @@ All ordinals in the image of Δ are retracts of ℕ.
                               retract-𝟙+𝟙-of-ℕ
                               (dep-cases (λ _ → Δ-retract-of-ℕ ν₀)
                                          (λ _ → Δ-retract-of-ℕ ν₁))
-Δ-retract-of-ℕ (ν₀ ⌜×⌝ ν₁) = Σ-retract-of-ℕ (Δ-retract-of-ℕ ν₀)
+Δ-retract-of-ℕ (ν₀ ⌜×⌝ ν₁) = Σ-retract-of-ℕ
+                              (Δ-retract-of-ℕ ν₀)
                               (λ _ → Δ-retract-of-ℕ ν₁)
-Δ-retract-of-ℕ (⌜Σ⌝ ν A)   = Σ-retract-of-ℕ (Δ-retract-of-ℕ ν)
+Δ-retract-of-ℕ (⌜Σ⌝ ν A)   = Σ-retract-of-ℕ
+                              (Δ-retract-of-ℕ ν)
                               (λ x → Δ-retract-of-ℕ (A x))
 \end{code}
 
@@ -221,18 +224,20 @@ module Κ-extension (ν : E) (A : ⟪ Δ ν ⟫ → E) where
  where
   open Κ-extension ν A
 
-ι-has-section-gives-Κ-discrete : (ν : E) → has-section (ι ν) → is-discrete ⟪ Κ ν ⟫
-ι-has-section-gives-Κ-discrete ν (θ , ιθ) = lc-maps-reflect-discreteness θ
-                                               (sections-are-lc θ (ι ν , ιθ))
-                                               (Δ-is-discrete ν)
+\end{code}
 
-ι-is-equiv-gives-Κ-discrete : (ν : E) → is-equiv (ι ν) → is-discrete ⟪ Κ ν ⟫
-ι-is-equiv-gives-Κ-discrete ν e = ι-has-section-gives-Κ-discrete ν
-                                   (equivs-have-sections (ι ν) e)
+This completes the definitions of Κ, ι and ι-is-embedding.
 
-ι-is-equiv-gives-WLPO : ((ν : E) → is-equiv (ι ν)) → WLPO
-ι-is-equiv-gives-WLPO h = ℕ∞-discrete-gives-WLPO
-                            (ι-is-equiv-gives-Κ-discrete ⌜ω+𝟙⌝ (h ⌜ω+𝟙⌝))
+The important fact about the Κ interpretation is that the ordinals in
+its image have the least element property for decidable subsets, and,
+in particular, they are compact - see below.
+
+We first discuss some impossibility results.
+
+\begin{code}
+
+ι-is-equiv-gives-LPO : ((ν : E) → is-equiv (ι ν)) → LPO
+ι-is-equiv-gives-LPO f = ι𝟙-is-equiv-gives-LPO (f ⌜ω+𝟙⌝)
 
 LPO-gives-ι-is-equiv : LPO → (ν : E) → is-equiv (ι ν)
 LPO-gives-ι-is-equiv lpo ⌜𝟙⌝         = id-is-equiv 𝟙
@@ -257,18 +262,26 @@ LPO-gives-ι-is-equiv lpo (⌜Σ⌝ ν A)   = pair-fun-is-equiv
  where
   open Κ-extension ν A
 
-ι-is-equiv-gives-LPO : ((ν : E) → is-equiv (ι ν)) → LPO
-ι-is-equiv-gives-LPO f = ι𝟙-is-equiv-gives-LPO (f ⌜ω+𝟙⌝)
-
 ι-is-equiv-iff-LPO : ((ν : E) → is-equiv (ι ν)) ⇔ LPO
 ι-is-equiv-iff-LPO = ι-is-equiv-gives-LPO , LPO-gives-ι-is-equiv
 
-
 \end{code}
 
-The important fact about the Κ interpretation is that the ordinals in
-its image have the least element property for decidable subsets, and,
-in particular, they are compact - see below.
+We also have the following:
+
+\begin{code}
+
+ι-has-section-gives-Κ-discrete : (ν : E) → has-section (ι ν) → is-discrete ⟪ Κ ν ⟫
+ι-has-section-gives-Κ-discrete ν (θ , ιθ) = lc-maps-reflect-discreteness θ
+                                               (sections-are-lc θ (ι ν , ιθ))
+                                               (Δ-is-discrete ν)
+
+ι-is-equiv-gives-Κ-discrete : (ν : E) → is-equiv (ι ν) → is-discrete ⟪ Κ ν ⟫
+ι-is-equiv-gives-Κ-discrete ν e = ι-has-section-gives-Κ-discrete ν
+                                   (equivs-have-sections (ι ν) e)
+\end{code}
+
+But we need to say more about this.
 
 The embedding of the Δ interpretation into the Κ interpretation is
 order-preserving, order-reflecting, and dense (its image has empty
@@ -423,12 +436,8 @@ complement):
 
 \end{code}
 
-TODO. Derive a taboo from the hypothesis that the type ⟪ Κ ν ⟫ is a
-retract of the type (ℕ → 𝟚). This should be easy using the module
-FailureOfTotalSeparatedness.lagda.  In the file
-OrdinalNotationInterpretation.lagda, which is less general that this
-one, an analogous result holds. And the proof is quite complicated
-(with the difficult lemmas provided in other files).
+We now show that the ordinal Κ ν has the least-element property
+discussed above and hence is compact (or searchable).
 
 \begin{code}
 
@@ -446,7 +455,7 @@ module _ (pe : propext 𝓤₀) where
      𝟚ᵒ
      (cases (λ _ → Κ ν₀) (λ _ → Κ ν₁))
      𝟚ᵒ-has-least-element-property
-     (dep-cases (λ _ →  K-has-least-element-property ν₀)
+     (dep-cases (λ _ → K-has-least-element-property ν₀)
                 (λ _ → K-has-least-element-property ν₁))
  K-has-least-element-property (ν₀ ⌜×⌝ ν₁) =
    ∑-has-least-element-property pe
@@ -476,18 +485,32 @@ module _ (pe : propext 𝓤₀) where
 
 \end{code}
 
+We define limit points as follows:
+
+\begin{code}
+
+private
+ recall-notion-of-isolatedness  : {X : 𝓤 ̇ } (x : X)
+                                → is-isolated x ≡ ((y : X) → decidable (x ≡ y))
+ recall-notion-of-isolatedness x = refl
+
+is-limit-point : {X : 𝓤 ̇ } → X → 𝓤 ̇
+is-limit-point x = is-isolated x → WLPO
+
+\end{code}
+
 The characteristic function of limit points:
 
 \begin{code}
 
-Λ : (ν : E) → ⟪ Δ ν ⟫ → 𝟚
-Λ ⌜𝟙⌝         ⋆            = ₀
-Λ ⌜ω+𝟙⌝       (inl n)      = ₀
-Λ ⌜ω+𝟙⌝       (inr ⋆)      = ₁
-Λ (ν₀ ⌜+⌝ ν₁) (inl ⋆ , x₀) = Λ ν₀ x₀
-Λ (ν₀ ⌜+⌝ ν₁) (inr ⋆ , x₁) = Λ ν₁ x₁
-Λ (ν₀ ⌜×⌝ ν₁) (x₀ , x₁)    = max𝟚 (Λ ν₀ x₀) (Λ ν₁ x₁)
-Λ (⌜Σ⌝ ν A)   (x  , y)     = max𝟚 (Λ ν x) (Λ (A x) y)
+ℓ : (ν : E) → ⟪ Δ ν ⟫ → 𝟚
+ℓ ⌜𝟙⌝         ⋆            = ₀
+ℓ ⌜ω+𝟙⌝       (inl n)      = ₀
+ℓ ⌜ω+𝟙⌝       (inr ⋆)      = ₁
+ℓ (ν₀ ⌜+⌝ ν₁) (inl ⋆ , x₀) = ℓ ν₀ x₀
+ℓ (ν₀ ⌜+⌝ ν₁) (inr ⋆ , x₁) = ℓ ν₁ x₁
+ℓ (ν₀ ⌜×⌝ ν₁) (x₀ , x₁)    = max𝟚 (ℓ ν₀ x₀) (ℓ ν₁ x₁)
+ℓ (⌜Σ⌝ ν A)   (x  , y)     = max𝟚 (ℓ ν x) (ℓ (A x) y)
 
 \end{code}
 
@@ -495,27 +518,27 @@ Non-limit points are isolated in the Κ interpretation:
 
 \begin{code}
 
-Λ-isolated : (ν : E) (x : ⟪ Δ ν ⟫) → Λ ν x ≡ ₀ → is-isolated (ι ν x)
-Λ-isolated ⌜𝟙⌝         ⋆            p    = 𝟙-is-discrete ⋆
-Λ-isolated ⌜ω+𝟙⌝       (inl n)      refl = finite-isolated fe₀ n
-Λ-isolated (ν₀ ⌜+⌝ ν₁) (inl ⋆ , x₀) p    = Σ-isolated
+ℓ-isolated : (ν : E) (x : ⟪ Δ ν ⟫) → ℓ ν x ≡ ₀ → is-isolated (ι ν x)
+ℓ-isolated ⌜𝟙⌝         ⋆            p    = 𝟙-is-discrete ⋆
+ℓ-isolated ⌜ω+𝟙⌝       (inl n)      refl = finite-isolated fe₀ n
+ℓ-isolated (ν₀ ⌜+⌝ ν₁) (inl ⋆ , x₀) p    = Σ-isolated
                                             (inl-is-isolated ⋆ (𝟙-is-discrete ⋆))
-                                            (Λ-isolated ν₀ x₀ p)
-Λ-isolated (ν₀ ⌜+⌝ ν₁) (inr ⋆ , x₁) p    = Σ-isolated
+                                            (ℓ-isolated ν₀ x₀ p)
+ℓ-isolated (ν₀ ⌜+⌝ ν₁) (inr ⋆ , x₁) p    = Σ-isolated
                                             (inr-is-isolated ⋆ (𝟙-is-discrete ⋆))
-                                            (Λ-isolated ν₁ x₁ p)
-Λ-isolated (ν₀ ⌜×⌝ ν₁) (x₀ , x₁)    p    = Σ-isolated
-                                            (Λ-isolated ν₀ x₀ (max𝟚-₀-left p))
-                                            (Λ-isolated ν₁ x₁ (max𝟚-₀-right p))
-Λ-isolated (⌜Σ⌝ ν A)   (x , y)      p    = iv
+                                            (ℓ-isolated ν₁ x₁ p)
+ℓ-isolated (ν₀ ⌜×⌝ ν₁) (x₀ , x₁)    p    = Σ-isolated
+                                            (ℓ-isolated ν₀ x₀ (max𝟚-₀-left p))
+                                            (ℓ-isolated ν₁ x₁ (max𝟚-₀-right p))
+ℓ-isolated (⌜Σ⌝ ν A)   (x , y)      p    = iv
  where
   open Κ-extension ν A
 
   i : is-isolated (ι ν x)
-  i = Λ-isolated ν x (max𝟚-₀-left p)
+  i = ℓ-isolated ν x (max𝟚-₀-left p)
 
   ii : is-isolated (ι (A x) y)
-  ii = Λ-isolated (A x) y (max𝟚-₀-right p)
+  ii = ℓ-isolated (A x) y (max𝟚-₀-right p)
 
   iii : is-isolated (γ x y)
   iii = equivs-preserve-isolatedness (φ⁻¹ x) (⌜⌝⁻¹-is-equiv (ϕ x)) (ι (A x) y) ii
@@ -525,42 +548,41 @@ Non-limit points are isolated in the Κ interpretation:
 
 \end{code}
 
-We define limit points as follow:
+The function ℓ really does detect limit points:
 
 \begin{code}
 
-is-limit-point : {X : 𝓤 ̇ } → X → 𝓤 ̇
-is-limit-point x = is-isolated x → WLPO
-
 module _ (pe : propext 𝓤₀) where
 
- Λ-limit : (ν : E) (x : ⟪ Δ ν ⟫) → Λ ν x ≡ ₁ → is-limit-point (ι ν x)
- Λ-limit ⌜ω+𝟙⌝       (inr ⋆)      p i = is-isolated-gives-is-isolated' ∞ i
- Λ-limit (ν₀ ⌜+⌝ ν₁) (inl ⋆ , x₀) p i = Λ-limit ν₀ x₀ p
+ ℓ-limit : (ν : E) (x : ⟪ Δ ν ⟫) → ℓ ν x ≡ ₁ → is-limit-point (ι ν x)
+ ℓ-limit ⌜ω+𝟙⌝       (inr ⋆)      p i = is-isolated-gives-is-isolated' ∞ i
+ ℓ-limit (ν₀ ⌜+⌝ ν₁) (inl ⋆ , x₀) p i = ℓ-limit ν₀ x₀ p
                                          (Σ-isolated-right
                                            (underlying-type-is-setᵀ fe 𝟚ᵒ) i)
- Λ-limit (ν₀ ⌜+⌝ ν₁) (inr ⋆ , x₁) p i = Λ-limit ν₁ x₁ p
+ ℓ-limit (ν₀ ⌜+⌝ ν₁) (inr ⋆ , x₁) p i = ℓ-limit ν₁ x₁ p
                                          (Σ-isolated-right
                                            (underlying-type-is-setᵀ fe 𝟚ᵒ) i)
- Λ-limit (ν₀ ⌜×⌝ ν₁) (x₀ , x₁)    p i =
+ ℓ-limit (ν₀ ⌜×⌝ ν₁) (x₀ , x₁)    p i =
    Cases (max𝟚-lemma p)
-    (λ (p₀ : Λ ν₀ x₀ ≡ ₁) → Λ-limit ν₀ x₀ p₀ (×-isolated-left i))
-    (λ (p₁ : Λ ν₁ x₁ ≡ ₁) → Λ-limit ν₁ x₁ p₁ (×-isolated-right i))
- Λ-limit (⌜Σ⌝ ν A)   (x , y)      p i =
+    (λ (p₀ : ℓ ν₀ x₀ ≡ ₁) → ℓ-limit ν₀ x₀ p₀ (×-isolated-left i))
+    (λ (p₁ : ℓ ν₁ x₁ ≡ ₁) → ℓ-limit ν₁ x₁ p₁ (×-isolated-right i))
+ ℓ-limit (⌜Σ⌝ ν A)   (x , y)      p i =
    Cases (max𝟚-lemma p)
-    (λ (p₀ : Λ ν x ≡ ₁) → Λ-limit ν x p₀ (Σ-isolated-left (𝓚-Compact pe ν A) i))
-    (λ (p₁ : Λ (A x) y ≡ ₁) → Λ-limit (A x) y p₁
-                               (isolated-γ-gives-isolated-ι x y
-                                 (Σ-isolated-right
-                                   (underlying-type-is-setᵀ fe (Κ ν)) i)))
+    (λ (p₀ : ℓ ν x ≡ ₁)
+           → ℓ-limit ν x p₀ (Σ-isolated-left (𝓚-Compact pe ν A) i))
+    (λ (p₁ : ℓ (A x) y ≡ ₁)
+           → ℓ-limit (A x) y p₁
+              (isolated-γ-gives-isolated-ι x y
+                (Σ-isolated-right
+                  (underlying-type-is-setᵀ fe (Κ ν)) i)))
   where
    open Κ-extension ν A
 
  isolatedness-decision : (ν : E) (x : ⟪ Δ ν ⟫)
                        → is-isolated (ι ν x) + is-limit-point (ι ν x)
  isolatedness-decision ν x = 𝟚-equality-cases
-                              (λ (p : Λ ν x ≡ ₀) → inl (Λ-isolated ν x p))
-                              (λ (p : Λ ν x ≡ ₁) → inr (Λ-limit ν x p))
+                              (λ (p : ℓ ν x ≡ ₀) → inl (ℓ-isolated ν x p))
+                              (λ (p : ℓ ν x ≡ ₁) → inr (ℓ-limit ν x p))
 
  isolatedness-decision' : ¬ WLPO → (ν : E) (x : ⟪ Δ ν ⟫)
                         → decidable (is-isolated (ι ν x))
