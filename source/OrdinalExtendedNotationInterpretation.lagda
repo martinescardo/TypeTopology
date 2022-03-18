@@ -23,7 +23,7 @@ either empty or has a minimal element.
 
 There is an embedding ι : Δ ν → Κ ν which is order preserving and
 reflecting, and whose image has empty complement. The assumption that
-it is a bijection implies WLPO.
+it is a bijection implies LPO.
 
 This extends and generalizes OrdinalNotationInterpretation.lagda, for
 which slides for a talk are available at
@@ -78,7 +78,7 @@ open import PairFun
 
 We define E and Δ by simultaneous induction. The type Ordᵀ is that of
 ordinals with a top element (classically, successor ordinals). Recall
-that ⟪ α ⟫ is the underlying type of α : ⟪ Ordᵀ ⟫.
+that ⟪ α ⟫ is the underlying type of α : Ordᵀ.
 
 \begin{code}
 
@@ -150,19 +150,16 @@ module Κ-extension (ν : E) (A : ⟪ Δ ν ⟫ → E) where
 
  open import InjectiveTypes fe
 
- B : ⟪ Κ ν ⟫ → Ordᵀ
- B = 𝓚 ν A
-
- ϕ : (x : ⟪ Δ ν ⟫) → ⟪ B (ι ν x) ⟫ ≃ ⟪ Κ (A x) ⟫
+ ϕ : (x : ⟪ Δ ν ⟫) → ⟪ 𝓚 ν A (ι ν x) ⟫ ≃ ⟪ Κ (A x) ⟫
  ϕ = Π-extension-property (λ x → ⟪ Κ (A x) ⟫) (ι ν) (ι-is-embedding ν)
 
- φ : (x : ⟪ Δ ν ⟫) → ⟪ B (ι ν x) ⟫ → ⟪ Κ (A x) ⟫
+ φ : (x : ⟪ Δ ν ⟫) → ⟪ 𝓚 ν A (ι ν x) ⟫ → ⟪ Κ (A x) ⟫
  φ x = ⌜ ϕ x ⌝
 
- φ⁻¹ : (x : ⟪ Δ ν ⟫) → ⟪ Κ (A x) ⟫ → ⟪ B (ι ν x) ⟫
+ φ⁻¹ : (x : ⟪ Δ ν ⟫) → ⟪ Κ (A x) ⟫ → ⟪ 𝓚 ν A (ι ν x) ⟫
  φ⁻¹ x = ⌜ ϕ x ⌝⁻¹
 
- γ : (x : ⟪ Δ ν ⟫) → ⟪ Δ (A x) ⟫ → ⟪ B (ι ν x) ⟫
+ γ : (x : ⟪ Δ ν ⟫) → ⟪ Δ (A x) ⟫ → ⟪ 𝓚 ν A (ι ν x) ⟫
  γ x = φ⁻¹ x ∘ ι (A x)
 
  γ-is-embedding : (x : ⟪ Δ ν ⟫) → is-embedding (γ x)
@@ -259,11 +256,9 @@ module _ (pe : propext 𝓤₀) where
      (K-has-least-element-property ν₀)
      (λ _ → K-has-least-element-property ν₁)
  K-has-least-element-property (⌜Σ⌝ ν A)   =
-   ∑-has-least-element-property pe (Κ ν) B
+   ∑-has-least-element-property pe (Κ ν) (𝓚 ν A)
      (K-has-least-element-property ν)
      (𝓚-has-least-element-property ν A)
-  where
-   open Κ-extension ν A
 
  𝓚-has-least-element-property ν A x =
    prop-inf-tychonoff
@@ -314,7 +309,7 @@ complement):
                                      (Δ ν)
                                      (Κ ν)
                                      (Δ ∘ A)
-                                     B
+                                     (𝓚 ν A)
                                      (ι ν)
                                      γ
                                      (ι-is-order-preserving ν)
@@ -328,8 +323,8 @@ complement):
   IH x = ι-is-order-preserving (A x)
 
   f : (x : ⟪ Δ ν ⟫) (y z : ⟪ Δ (A x) ⟫)
-    → ι (A x) y ≺⟪ Κ (A x) ⟫   ι (A x) z
-    →     γ x y ≺⟪ B (ι ν x) ⟫     γ x z
+    → ι (A x) y ≺⟪ Κ (A x) ⟫        ι (A x) z
+    →     γ x y ≺⟪ 𝓚 ν A (ι ν x) ⟫     γ x z
   f x y z l = (ι-fiber-point x ,
               transport₂ (λ j k → j ≺⟪ Κ (A x) ⟫ k)
                (ι-γ-lemma x y)
@@ -337,8 +332,8 @@ complement):
               l)
 
   g : (x : ⟪ Δ ν ⟫) (y z : ⟪ Δ (A x) ⟫)
-    →     y ≺⟪ Δ (A x) ⟫       z
-    → γ x y ≺⟪ B (ι ν x) ⟫ γ x z
+    →     y ≺⟪ Δ (A x) ⟫            z
+    → γ x y ≺⟪ 𝓚 ν A (ι ν x) ⟫ γ x z
   g x y z l = f x y z (IH x y z l)
 
 
@@ -372,7 +367,7 @@ complement):
                                     (Δ ν)
                                     (Κ ν)
                                     (Δ ∘ A)
-                                    B
+                                    (𝓚 ν A)
                                     (ι ν)
                                     γ
                                     (ι-is-order-reflecting ν)
@@ -387,8 +382,8 @@ complement):
   IH x = ι-is-order-reflecting (A x)
 
   f : (x : ⟪ Δ ν ⟫) (y z : ⟪ Δ (A x) ⟫)
-    →     γ x y ≺⟪ B (ι ν x) ⟫     γ x z
-    → ι (A x) y ≺⟪ Κ (A x)   ⟫ ι (A x) z
+    →     γ x y ≺⟪ 𝓚 ν A (ι ν x) ⟫    γ x z
+    → ι (A x) y ≺⟪ Κ (A x)   ⟫     ι (A x) z
   f x y z (w , l) = n
    where
     q : w ≡ ι-fiber-point x
@@ -404,7 +399,7 @@ complement):
          m
 
   g : (x : ⟪ Δ ν ⟫) (y z : ⟪ Δ (A x) ⟫)
-    → γ x y ≺⟪ B (ι ν x) ⟫ γ x z
+    → γ x y ≺⟪ 𝓚 ν A (ι ν x) ⟫ γ x z
     →     y ≺⟪ Δ (A x)   ⟫     z
   g x y z l = IH x y z (f x y z l)
 
