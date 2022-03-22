@@ -843,7 +843,7 @@ The following type describes what it means to have "small images". It is
 provable if we assume pushouts and univalence, as shown by Egbert Rijke in
 https://arxiv.org/abs/1701.07538
 
-In UF-Quotient, we show that assuming small images yields small set-quotients,
+In UF-Quotient, we show that assuming small images yields small set quotients,
 provided the given type and equivalence relation are small.
 
 \begin{code}
@@ -858,5 +858,25 @@ module SmallImages (pt : propositional-truncations-exist) where
  Small-Images 𝓤 = {X : 𝓤 ̇  } {Y : 𝓤 ⁺ ̇  } (f : X → Y)
                 → is-locally-small Y
                 → is-small (image f)
+
+\end{code}
+
+Added 22 March 2022.
+
+We can also consider a more modest version where the codomain is required to be
+a set. In UF-Quotient, we prove this to be equivalent to having small set
+quotients.
+
+\begin{code}
+
+ Small-Set-Images : (𝓤 : Universe) → 𝓤 ⁺⁺ ̇
+ Small-Set-Images 𝓤 = {X : 𝓤 ̇  } {Y : 𝓤 ⁺ ̇  } (f : X → Y)
+                    → is-set Y
+                    → is-locally-small Y
+                    → is-small (image f)
+
+ Small-Set-Images-from-Small-Images : Small-Images 𝓤
+                                    → Small-Set-Images 𝓤
+ Small-Set-Images-from-Small-Images h f i s = h f s
 
 \end{code}
