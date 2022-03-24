@@ -465,7 +465,88 @@ Extending unary and binary operations to the quotient:
 Without the above abstract declarations, the use of naturality₂/ takes
 for ever in the module FreeGroup.lagda.
 
+
+Added in March 2022 by Tom de Jong.
+We extend unary and binary prop-valued relations to the quotient.
+
 \begin{code}
+
+  module _ (r : X → Ω 𝓣)
+           (p : {x y : X} → x ≈ y → r x ≡ r y)
+         where
+
+   extension-rel₁ : X / ≋ → Ω 𝓣
+   extension-rel₁ = mediating-map/ (Ω-is-set fe pe) r p
+
+   extension-rel-triangle₁ : extension-rel₁ ∘ η/ ∼ r
+   extension-rel-triangle₁ = universality-triangle/ (Ω-is-set fe pe) r p
+
+  module _ (r : X → X → Ω 𝓣)
+           (p : {x y x' y' : X} → x ≈ x' → y ≈ y' → r x y ≡ r x' y')
+         where
+
+   abstract
+    private
+     p' : (x : X) {y y' : X} → y ≈ y' → r x y ≡ r x y'
+     p' x {y} {y'} = p (≈r x)
+
+     r₁ : X → X / ≋ → Ω 𝓣
+     r₁ x = extension-rel₁ (r x) (p' x)
+
+     δ : {x x' : X} → x ≈ x' → (y : X) → r₁ x (η/ y) ≡ r₁ x' (η/ y)
+     δ {x} {x'} e y =
+       r₁ x (η/ y)  ≡⟨ extension-rel-triangle₁ (r x) (p (≈r x)) y        ⟩
+       r  x     y   ≡⟨ p e (≈r y)                                        ⟩
+       r  x'    y   ≡⟨ (extension-rel-triangle₁ (r x') (p (≈r x')) y) ⁻¹ ⟩
+       r₁ x' (η/ y) ∎
+
+     ρ : (q : X / ≋) {x x' : X} → x ≈ x' → r₁ x q ≡ r₁ x' q
+     ρ q {x} {x'} e = /-induction (λ p → r₁ x p ≡ r₁ x' p)
+                        (λ q → Ω-is-set fe pe) (δ e) q
+
+     r₂ : X / ≋ → X / ≋ → Ω 𝓣
+     r₂ = mediating-map/ (Π-is-set fe (λ _ → Ω-is-set fe pe)) r₁
+                         (λ {x} {x'} e → dfunext fe (λ q → ρ q e))
+
+     σ : (x y : X) → r₂ (η/ x) (η/ y) ≡ r x y
+     σ x y = r₂ (η/ x) (η/ y) ≡⟨ happly (universality-triangle/ (Π-is-set fe (λ _ → Ω-is-set fe pe)) {!!} {!!} x) (η/ y) ⟩
+             r₁ x      (η/ y) ≡⟨ extension-rel-triangle₁ (r x) (p' x) y ⟩
+             r  x          y  ∎
+
+   extension-rel₂ : X / ≋ → X / ≋ → Ω 𝓣
+   extension-rel₂ = r₂
+
+   extension-rel-triangle₂ : (x y : X) → extension-rel₂ (η/ x) (η/ y) ≡ r x y
+   extension-rel-triangle₂ x y = {!!} {-
+     extension-rel₂ (η/ x) (η/ y) ≡⟨ ? ⟩
+     extension-rel₂ (η/ x) r x y -}
+
+{-
+  extension/ : (f : X → X / ≋)
+             → identifies-related-points f
+             → (X / ≋ → X / ≋)
+  extension/ = mediating-map/ quotient-is-set
+
+  extension-triangle/ : (f : X → X / ≋)
+                        (i : identifies-related-points f)
+                      → extension/ f i ∘ η/ ∼ f
+  extension-triangle/ = universality-triangle/ quotient-is-set
+
+  module _ (f : X → X)
+           (p : {x y : X} → x ≈ y → f x ≈ f y)
+         where
+
+   abstract
+    private
+      π : identifies-related-points (η/ ∘ f)
+      π e = η/-identifies-related-points (p e)
+
+   extension₁/ : X / ≋ → X / ≋
+   extension₁/ = extension/ (η/ ∘ f) π
+
+   naturality/ : extension₁/ ∘ η/ ∼ η/ ∘ f
+   naturality/ = universality-triangle/ quotient-is-set (η/ ∘ f) π
+-}
 
 quotients-equivalent : (X : 𝓤 ̇ ) (R : EqRel {𝓤} {𝓥} X) (R' : EqRel {𝓤} {𝓦} X)
                      → ({x y : X} → x ≈[ R ] y ⇔ x ≈[ R' ] y)
