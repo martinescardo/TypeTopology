@@ -672,76 +672,74 @@ We now proceed to show that X/≈ and image f are equivalent types.
  corestriction-respects-≈ =
   to-subtype-≡ (λ y → being-in-the-image-is-prop y f)
 
- X/≈-to-image : X/≈ → image f
- X/≈-to-image = mediating-map/ ≈R
-                 (image-is-set f Y-is-set)
-                 (corestriction f) (corestriction-respects-≈)
+ quotient-to-image : X/≈ → image f
+ quotient-to-image = mediating-map/ ≈R (image-is-set f Y-is-set)
+                      (corestriction f) (corestriction-respects-≈)
 
- image-to-X/≈' : (y : image f)
-               → Σ q ꞉ X/≈ , ∃ x ꞉ X , ([ x ] ≡ q) × (f x ≡ pr₁ y)
- image-to-X/≈' (y , p) = ∥∥-rec prp r p
+ image-to-quotient' : (y : image f)
+                    → Σ q ꞉ X/≈ , ∃ x ꞉ X , ([ x ] ≡ q) × (f x ≡ pr₁ y)
+ image-to-quotient' (y , p) = ∥∥-rec prp r p
   where
    r : (Σ x ꞉ X , f x ≡ y)
      → (Σ q ꞉ X/≈ , ∃ x ꞉ X , ([ x ] ≡ q) × (f x ≡ y))
    r (x , e) = [ x ] , ∣ x , refl , e ∣
    prp : is-prop (Σ q ꞉ X/≈ , ∃ x ꞉ X , ([ x ] ≡ q) × (f x ≡ y))
-   prp (q , u) (q' , u') =
-    to-subtype-≡ (λ _ → ∃-is-prop)
-                 (∥∥-rec₂ (quotient-is-set (≈R)) γ u u')
-     where
-      γ : (Σ x  ꞉ X , ([ x  ] ≡ q ) × (f x  ≡ y))
-        → (Σ x' ꞉ X , ([ x' ] ≡ q') × (f x' ≡ y))
-        → q ≡ q'
-      γ (x , refl , e) (x' , refl , refl) =
-       η/-identifies-related-points ≈R e
+   prp (q , u) (q' , u') = to-subtype-≡ (λ _ → ∃-is-prop)
+                                        (∥∥-rec₂ (quotient-is-set (≈R)) γ u u')
+    where
+     γ : (Σ x  ꞉ X , ([ x  ] ≡ q ) × (f x  ≡ y))
+       → (Σ x' ꞉ X , ([ x' ] ≡ q') × (f x' ≡ y))
+       → q ≡ q'
+     γ (x , refl , e) (x' , refl , refl) = η/-identifies-related-points ≈R e
 
- image-to-X/≈ : image f → X/≈
- image-to-X/≈ y = pr₁ (image-to-X/≈' y)
+ image-to-quotient : image f → X/≈
+ image-to-quotient y = pr₁ (image-to-quotient' y)
 
- image-to-X/≈-lemma : (x : X) → image-to-X/≈ (corestriction f x) ≡ [ x ]
- image-to-X/≈-lemma x = ∥∥-rec (quotient-is-set ≈R) γ t
+ image-to-quotient-lemma : (x : X)
+                         → image-to-quotient (corestriction f x) ≡ [ x ]
+ image-to-quotient-lemma x = ∥∥-rec (quotient-is-set ≈R) γ t
   where
    q : X/≈
-   q = image-to-X/≈ (corestriction f x)
+   q = image-to-quotient (corestriction f x)
    t : ∃ x' ꞉ X , ([ x' ] ≡ q) × (f x' ≡ f x)
-   t = pr₂ (image-to-X/≈' (corestriction f x))
+   t = pr₂ (image-to-quotient' (corestriction f x))
    γ : (Σ x' ꞉ X , ([ x' ] ≡ q) × (f x' ≡ f x))
      → q ≡ [ x ]
-   γ (x' , u , v) = q      ≡⟨ u ⁻¹ ⟩
+   γ (x' , u , v) =   q    ≡⟨ u ⁻¹ ⟩
                     [ x' ] ≡⟨ η/-identifies-related-points ≈R v ⟩
                     [ x  ] ∎
 
- image-≃-X/≈ : image f ≃ X/≈
- image-≃-X/≈ = qinveq image-to-X/≈ (X/≈-to-image , ρ , σ)
+ image-≃-quotient : image f ≃ X/≈
+ image-≃-quotient = qinveq ϕ (ψ , ρ , σ)
   where
-   τ : (x : X) → X/≈-to-image [ x ] ≡ corestriction f x
+   ϕ : image f → X/≈
+   ϕ = image-to-quotient
+   ψ : X/≈ → image f
+   ψ = quotient-to-image
+   τ : (x : X) → ψ [ x ] ≡ corestriction f x
    τ = universality-triangle/ ≈R (image-is-set f Y-is-set)
                               (corestriction f)
                               corestriction-respects-≈
-   σ : image-to-X/≈ ∘ X/≈-to-image ∼ id
+   σ : ϕ ∘ ψ ∼ id
    σ = /-induction ≈R _ (λ q → quotient-is-set ≈R) γ
     where
-     γ : (x : X) → image-to-X/≈ (X/≈-to-image [ x ]) ≡ [ x ]
-     γ x = image-to-X/≈ (X/≈-to-image [ x ]) ≡⟨ ⦅1⦆ ⟩
-           image-to-X/≈ (corestriction f x ) ≡⟨ ⦅2⦆ ⟩
-           [ x ]                             ∎
-      where
-       ⦅1⦆ = ap image-to-X/≈ (τ x)
-       ⦅2⦆ = image-to-X/≈-lemma x
-   ρ : X/≈-to-image ∘ image-to-X/≈ ∼ id
+     γ : (x : X) → ϕ (ψ [ x ]) ≡ [ x ]
+     γ x = ϕ (ψ [ x ])            ≡⟨ ap ϕ (τ x)                ⟩
+           ϕ (corestriction f x ) ≡⟨ image-to-quotient-lemma x ⟩
+           [ x ]                  ∎
+   ρ : ψ ∘ ϕ ∼ id
    ρ (y , p) = ∥∥-rec (image-is-set f Y-is-set) γ p
     where
-     γ : (Σ x ꞉ X , f x ≡ y)
-       → X/≈-to-image (image-to-X/≈ (y , p)) ≡ (y , p)
-     γ (x , refl) = X/≈-to-image (image-to-X/≈ (f x , p))           ≡⟨ ⦅1⦆ ⟩
-                    X/≈-to-image (image-to-X/≈ (corestriction f x)) ≡⟨ ⦅2⦆ ⟩
-                    X/≈-to-image [ x ]                              ≡⟨ ⦅3⦆ ⟩
-                    corestriction f x                               ≡⟨ ⦅4⦆ ⟩
-                    (f x , p)                                       ∎
+     γ : (Σ x ꞉ X , f x ≡ y) → ψ (ϕ (y , p)) ≡ (y , p)
+     γ (x , refl) = ψ (ϕ (f x , p))           ≡⟨ ⦅1⦆ ⟩
+                    ψ (ϕ (corestriction f x)) ≡⟨ ⦅2⦆ ⟩
+                    ψ [ x ]                   ≡⟨ ⦅3⦆ ⟩
+                    corestriction f x         ≡⟨ ⦅4⦆ ⟩
+                    (f x , p)                 ∎
       where
        ⦅4⦆ = to-subtype-≡ (λ y → being-in-the-image-is-prop y f) refl
-       ⦅1⦆ = ap (X/≈-to-image ∘ image-to-X/≈) (⦅4⦆ ⁻¹)
-       ⦅2⦆ = ap X/≈-to-image (image-to-X/≈-lemma x)
+       ⦅1⦆ = ap (ψ ∘ ϕ) (⦅4⦆ ⁻¹)
+       ⦅2⦆ = ap ψ (image-to-quotient-lemma x)
        ⦅3⦆ = τ x
 
 \end{code}
@@ -759,8 +757,8 @@ image-is-small h f Y-is-set Y-is-loc-small =
  ≃-size-contravariance e (h (_≈⁻_ , ≈⁻-is-equiv-rel))
   where
    open small-images-construction f Y-is-set Y-is-loc-small
-   e = image f ≃⟨ image-≃-X/≈ ⟩
-       X/≈     ≃⟨ X/≈-≃-X/≈⁻  ⟩
+   e = image f ≃⟨ image-≃-quotient ⟩
+       X/≈     ≃⟨ X/≈-≃-X/≈⁻       ⟩
        X/≈⁻    ■
 
 \end{code}
