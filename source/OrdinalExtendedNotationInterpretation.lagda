@@ -86,11 +86,11 @@ data E : 𝓤₀ ̇
 Δ : E → Ordᵀ
 
 data E where
- ⌜𝟙⌝     : E
- ⌜ω+𝟙⌝   : E
- _⌜+⌝_   : E → E → E
- _⌜×⌝_   : E → E → E
- ⌜Σ⌝     : (ν : E) → (⟪ Δ ν ⟫ → E) → E
+ ⌜𝟙⌝   : E
+ ⌜ω+𝟙⌝ : E
+ _⌜+⌝_ : E → E → E
+ _⌜×⌝_ : E → E → E
+ ⌜Σ⌝   : (ν : E) → (⟪ Δ ν ⟫ → E) → E
 
 Δ ⌜𝟙⌝         = 𝟙ᵒ
 Δ ⌜ω+𝟙⌝       = succₒ ℕₒ
@@ -128,8 +128,7 @@ Hence all ordinals in the image of Δ are discrete (have decidable equality):
 
 \end{code}
 
-And now we define Κ, ι, ι-is-embedding by simultaneous
-induction:
+Now we define Κ, ι, ι-is-embedding by simultaneous induction.
 
 \begin{code}
 
@@ -139,12 +138,42 @@ induction:
 
 \end{code}
 
-We use the following auxiliary extension constructions:
+We use the following auxiliary extension constructions, illustrated by
+this diagram:
+
+                   ι ν
+          ⟪ Δ ν ⟫  ⟶ ⟪ Κ ν ⟫
+              |           .
+              |           .
+           A  |           .  (K ∘ A) ↗ (ι ν , ι-is-embedding ν)
+              |           .
+              ↓           ↓
+              E    ⟶   Ordᵀ
+                    Κ
+
+See the files ToppedOrdinalArithmetic and InjectiveTypes for details.
 
 \begin{code}
 
 𝓚 : (ν : E) → (⟪ Δ ν ⟫ → E) → ⟪ Κ ν ⟫ → Ordᵀ
 𝓚 ν A = (Κ ∘ A) ↗ (ι ν , ι-is-embedding ν)
+
+\end{code}
+
+Explicitly, the underlying set of this ordinal is given as follows in
+the file InjectiveTypes:
+
+\begin{code}
+
+underlying-set-of-𝓚 : (ν : E) (A : ⟪ Δ ν ⟫ → E) (y : ⟪ Κ ν ⟫)
+                    → ⟪ 𝓚 ν A y ⟫ ≡ (Π (x , _) ꞉ fiber (ι ν) y , ⟪ Κ (A x) ⟫)
+underlying-set-of-𝓚 ν A y = refl
+
+\end{code}
+
+Here are some more facts about this:
+
+\begin{code}
 
 module Κ-extension (ν : E) (A : ⟪ Δ ν ⟫ → E) where
 
