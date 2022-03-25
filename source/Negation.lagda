@@ -31,6 +31,9 @@ is-empty = ¬_
 ¬¬_ : 𝓤 ̇ → 𝓤 ̇
 ¬¬ A = ¬ (¬ A)
 
+¬¬¬_ : 𝓤 ̇ → 𝓤 ̇
+¬¬¬ A = ¬ (¬¬ A)
+
 is-nonempty : 𝓤 ̇ → 𝓤 ̇
 is-nonempty = ¬¬_
 
@@ -66,7 +69,7 @@ map-decidable' f g (inr h) = inl (g h)
 double-negation-intro : {A : 𝓤 ̇ } → A → ¬¬ A
 double-negation-intro x u = u x
 
-three-negations-imply-one : {A : 𝓤 ̇ } → ¬ (¬¬ A) → ¬ A
+three-negations-imply-one : {A : 𝓤 ̇ } → ¬¬¬ A → ¬ A
 three-negations-imply-one = contrapositive double-negation-intro
 
 dne' : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → (A → B) → (¬¬ B → B) → ¬¬ A → B
@@ -174,6 +177,7 @@ Fixities:
 
 infix  50 ¬_
 infix  50 ¬¬_
+infix  50 ¬¬¬_
 infix  0 _≢_
 
 \end{code}

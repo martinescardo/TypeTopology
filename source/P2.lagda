@@ -71,7 +71,9 @@ inhabited-gives-pseudo-inhabited {𝓤} {P} i p = pseudo-inhabitedness-criterion
   γκ : γ ∘ κ P ∼ id
   γκ n = refl
 
-pseudo-inhabited-gives-irrefutable : {P : 𝓤 ̇ } → is-pseudo-inhabited P → ¬¬ P
+pseudo-inhabited-gives-irrefutable : {P : 𝓤 ̇ }
+                                   → is-pseudo-inhabited P
+                                   → ¬¬ P
 pseudo-inhabited-gives-irrefutable {𝓤} {P} e n = zero-is-not-one II
  where
   I : inverse (κ P) e (κ P ₀) ≡ inverse (κ P) e (κ P ₁)
@@ -82,6 +84,12 @@ pseudo-inhabited-gives-irrefutable {𝓤} {P} e n = zero-is-not-one II
        inverse (κ P) e (κ P ₀) ≡⟨ I ⟩
        inverse (κ P) e (κ P ₁) ≡⟨ inverses-are-retractions (κ P) e ₁ ⟩
        ₁                       ∎
+
+pseudo-inhabited-gives-irrefutable-special : {P : 𝓤 ̇ }
+                                           → is-pseudo-inhabited (¬ P)
+                                           → ¬ P
+pseudo-inhabited-gives-irrefutable-special h = three-negations-imply-one
+                                                (pseudo-inhabited-gives-irrefutable h)
 
 P→𝟚-discreteness-criterion : {P : 𝓤 ̇ } → ¬ P + is-pseudo-inhabited P → is-discrete (P → 𝟚)
 P→𝟚-discreteness-criterion (inl n) f g = inl (dfunext (fe _ 𝓤₀) (λ p → 𝟘-elim (n p)))
@@ -129,21 +137,12 @@ pseudo-inhabited, then weak excluded middle holds.
 
 \begin{code}
 
-open import UF-ExcludedMiddle
-
-irrefutable-pseudo-inhabited-taboo :
-
- ((P : 𝓤 ̇ ) → is-prop P → ¬¬ P → is-pseudo-inhabited P) → WEM 𝓤
-
-irrefutable-pseudo-inhabited-taboo {𝓤} α Q i = b
+pseudo-inhabitedness-wem-lemma : (Q : 𝓤 ̇)
+                               → is-pseudo-inhabited (Q + ¬ Q)
+                               → ¬ Q + ¬¬ Q
+pseudo-inhabitedness-wem-lemma Q h = b
  where
   P = Q + ¬ Q
-
-  ν : ¬¬ P
-  ν ϕ = ϕ (inr (λ q → ϕ (inl q)))
-
-  h : is-pseudo-inhabited P
-  h = α P (decidability-of-prop-is-prop (fe 𝓤 𝓤₀) i) ν
 
   f : P → 𝟚
   f (inl _) = ₀
@@ -177,4 +176,36 @@ irrefutable-pseudo-inhabited-taboo {𝓤} α Q i = b
   b : ¬ Q + ¬¬ Q
   b = a (inverse (κ P) h f) refl
 
+open import UF-ExcludedMiddle
+
+irrefutable-pseudo-inhabited-taboo :
+
+ ((P : 𝓤 ̇ ) → is-prop P → ¬¬ P → is-pseudo-inhabited P) → WEM 𝓤
+
+irrefutable-pseudo-inhabited-taboo {𝓤} α Q i = pseudo-inhabitedness-wem-lemma Q h
+ where
+  P = Q + ¬ Q
+
+  ν : ¬¬ P
+  ν ϕ = ϕ (inr (λ q → ϕ (inl q)))
+
+  h : is-pseudo-inhabited P
+  h = α P (decidability-of-prop-is-prop (fe 𝓤 𝓤₀) i) ν
 \end{code}
+
+A special case of the lemma:
+
+\begin{code}
+
+pseudo-inhabitedness-wem-special : (Q : 𝓤 ̇)
+                                 → is-pseudo-inhabited (¬ Q + ¬¬ Q)
+                                 → ¬ Q + ¬¬ Q
+pseudo-inhabitedness-wem-special Q h = Cases (pseudo-inhabitedness-wem-lemma (¬ Q) h)
+                                        inr
+                                        (inl ∘ three-negations-imply-one)
+\end{code}
+
+
+TODO. Derive a constructive taboo from the hypothesis
+
+      ((P : 𝓤 ̇ ) → is-prop P → is-pseudo-inhabited P → P).
