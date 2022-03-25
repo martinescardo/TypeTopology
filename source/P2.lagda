@@ -1,4 +1,4 @@
-Martin Escardo, March 2022
+Martin Escardo, 24th March 2022
 
 \begin{code}
 
@@ -110,17 +110,17 @@ P→𝟚-discreteness-criterion-necessity {𝓤} {P} i δ = ϕ (δ (κ P ₀) (�
     γ : (P → 𝟚) → 𝟚
     γ f = h f (δ f (κ P ₀))
 
-    δ₀ : (d : decidable (κ P ₀ ≡ κ P ₀)) → h (κ P ₀) d ≡ ₀
-    δ₀ (inl _) = refl
-    δ₀ (inr d) = 𝟘-elim (d refl)
+    h₀ : (d : decidable (κ P ₀ ≡ κ P ₀)) → h (κ P ₀) d ≡ ₀
+    h₀ (inl _) = refl
+    h₀ (inr d) = 𝟘-elim (d refl)
 
-    δ₁ : (d : decidable (κ P ₁ ≡ κ P ₀)) → h (κ P ₁) d ≡ ₁
-    δ₁ (inl e) = 𝟘-elim (n (e ⁻¹))
-    δ₁ (inr _) = refl
+    h₁ : (d : decidable (κ P ₁ ≡ κ P ₀)) → h (κ P ₁) d ≡ ₁
+    h₁ (inl e) = 𝟘-elim (n (e ⁻¹))
+    h₁ (inr _) = refl
 
     γκ : γ ∘ κ P ∼ id
-    γκ ₀ = δ₀ (δ (κ P ₀) (κ P ₀))
-    γκ ₁ = δ₁ (δ (κ P ₁) (κ P ₀))
+    γκ ₀ = h₀ (δ (κ P ₀) (κ P ₀))
+    γκ ₁ = h₁ (δ (κ P ₁) (κ P ₀))
 
 \end{code}
 
