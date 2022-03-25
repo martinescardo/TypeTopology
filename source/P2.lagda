@@ -10,6 +10,7 @@ open import UF-FunExt
 module P2 (fe : FunExt) where
 
 open import UF-Subsingletons
+open import UF-Subsingletons-FunExt
 open import UF-Retracts
 open import UF-Equiv
 
@@ -120,5 +121,60 @@ P→𝟚-discreteness-criterion-necessity {𝓤} {P} i δ = ϕ (δ (κ P ₀) (�
     γκ : γ ∘ κ P ∼ id
     γκ ₀ = δ₀ (δ (κ P ₀) (κ P ₀))
     γκ ₁ = δ₁ (δ (κ P ₁) (κ P ₀))
+
+\end{code}
+
+Added 25th March 2022. If every irrefutable proposition is
+pseudo-inhabited, then weak excluded middle holds.
+
+\begin{code}
+
+open import UF-ExcludedMiddle
+
+irrefutable-pseudo-inhabited-taboo :
+
+ ((P : 𝓤 ̇ ) → is-prop P → ¬¬ P → is-pseudo-inhabited P) → WEM 𝓤
+
+irrefutable-pseudo-inhabited-taboo {𝓤} α Q i = b
+ where
+  P = Q + ¬ Q
+
+  ν : ¬¬ P
+  ν ϕ = ϕ (inr (λ q → ϕ (inl q)))
+
+  h : is-pseudo-inhabited P
+  h = α P (decidability-of-prop-is-prop (fe 𝓤 𝓤₀) i) ν
+
+  f : P → 𝟚
+  f (inl _) = ₀
+  f (inr _) = ₁
+
+  a : (n : 𝟚) → inverse (κ P) h f ≡ n → ¬ Q + ¬¬ Q
+  a ₀ e = inr ϕ
+   where
+    I = f                       ≡⟨ (inverses-are-sections (κ P) h f)⁻¹ ⟩
+        κ P (inverse (κ P) h f) ≡⟨ ap (κ P) e ⟩
+        (λ _ → ₀)               ∎
+    ϕ : ¬¬ Q
+    ϕ u = zero-is-not-one II
+     where
+      II = ₀         ≡⟨ (ap (λ - → - (inr u)) I)⁻¹ ⟩
+           f (inr u) ≡⟨ refl ⟩
+           ₁         ∎
+
+  a ₁ e = inl u
+   where
+    I = f                       ≡⟨ (inverses-are-sections (κ P) h f)⁻¹ ⟩
+        κ P (inverse (κ P) h f) ≡⟨ ap (κ P) e ⟩
+        (λ _ → ₁)               ∎
+    u : ¬ Q
+    u q = zero-is-not-one II
+     where
+      II = ₀         ≡⟨ refl ⟩
+           f (inl q) ≡⟨ ap (λ - → - (inl q)) I ⟩
+           ₁         ∎
+
+  b : ¬ Q + ¬¬ Q
+  b = a (inverse (κ P) h f) refl
 
 \end{code}
