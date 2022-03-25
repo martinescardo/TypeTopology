@@ -193,6 +193,10 @@ irrefutable-pseudo-inhabited-taboo {𝓤} α Q i = pseudo-inhabitedness-wem-lemm
   h = α P (decidability-of-prop-is-prop (fe 𝓤 𝓤₀) i) ν
 \end{code}
 
+
+Nathanael Rosnik proved the above independently within a few hours of difference here:
+https://gist.github.com/nrosnick/922250ddcc6bd04272199f59443d7510
+
 A special case of the lemma:
 
 \begin{code}
