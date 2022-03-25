@@ -155,6 +155,7 @@ module _
     goal : (α i ↓ x') ≃ₒ (α j ↓ y)
     goal = ⌜ UAₒ-≃ (α i ↓ x') (α j ↓ y) ⌝ (subgoal ⁻¹)
      where
+      subgoal : (α j ↓ y) ≡ (α i ↓ x')
       subgoal = (α j ↓ y)       ≡⟨ e ⟩
                 ((α i ↓ x) ↓ p) ≡⟨ iterated-↓ (α i) x x' l ⟩
                 (α i ↓ x')      ∎
@@ -219,8 +220,8 @@ module _
  ≈R : EqRel Σα
  ≈R = _≈_ , ≈-is-prop-valued , ≈-is-reflexive , ≈-is-symmetric , ≈-is-transitive
 
- α⁺ : 𝓤 ⁺ ̇
- α⁺ = Σα / ≈R
+ α/ : 𝓤 ⁺ ̇
+ α/ = Σα / ≈R
 
  private
   _≺[Ω]_ : Σα → Σα → Ω (𝓤 ⁺)
@@ -248,39 +249,152 @@ module _
        e₂ = ⌜ UAₒ-≃ (α j' ↓ y') (α j ↓ y) ⌝⁻¹
              (≈-is-symmetric (j , y) (j' , y') v)
 
-  _≺⁺[Ω]_ : α⁺ → α⁺ → Ω (𝓤 ⁺)
-  _≺⁺[Ω]_ = extension-rel₂ ≈R (λ x y → x ≺ y , ≺-is-prop-valued x y) ≺-congruence
+  _≺/[Ω]_ : α/ → α/ → Ω (𝓤 ⁺)
+  _≺/[Ω]_ = extension-rel₂ ≈R (λ x y → x ≺ y , ≺-is-prop-valued x y) ≺-congruence
 
-  [_] : Σα → α⁺
+  [_] : Σα → α/
   [_] = η/ ≈R
 
- _≺⁺_ : α⁺ → α⁺ → 𝓤 ⁺ ̇
- x ≺⁺ y = (x ≺⁺[Ω] y) holds
+ _≺/_ : α/ → α/ → 𝓤 ⁺ ̇
+ x ≺/ y = (x ≺/[Ω] y) holds
 
- ≺⁺-≡-≺ : (p q : Σα) → [ p ] ≺⁺ [ q ] ≡ p ≺ q
- ≺⁺-≡-≺ p q = ap pr₁ (extension-rel-triangle₂ ≈R _≺[Ω]_ ≺-congruence p q)
+ ≺/-≡-≺ : {p q : Σα} → [ p ] ≺/ [ q ] ≡ p ≺ q
+ ≺/-≡-≺ {p} {q} = ap pr₁ (extension-rel-triangle₂ ≈R _≺[Ω]_ ≺-congruence p q)
 
- ≺⁺-to-≺ : {p q : Σα} → [ p ] ≺⁺ [ q ] → p ≺ q
- ≺⁺-to-≺ {p} {q} = Idtofun (≺⁺-≡-≺ p q)
+ ≺/-to-≺ : {p q : Σα} → [ p ] ≺/ [ q ] → p ≺ q
+ ≺/-to-≺ = Idtofun ≺/-≡-≺
 
- ≺-to-≺⁺ : {p q : Σα} → p ≺ q → [ p ] ≺⁺ [ q ]
- ≺-to-≺⁺ {p} {q} = Idtofun (≺⁺-≡-≺ p q ⁻¹)
+ ≺-to-≺/ : {p q : Σα} → p ≺ q → [ p ] ≺/ [ q ]
+ ≺-to-≺/ = back-Idtofun ≺/-≡-≺
 
- ≺⁺-is-prop-valued : is-prop-valued _≺⁺_
- ≺⁺-is-prop-valued x y = holds-is-prop (x ≺⁺[Ω] y)
+ ≺/-is-prop-valued : is-prop-valued _≺/_
+ ≺/-is-prop-valued x y = holds-is-prop (x ≺/[Ω] y)
 
- ≺⁺-is-transitive : transitive _≺⁺_
- ≺⁺-is-transitive = /-induction₃ ≈R _ ρ γ
+ ≺/-is-transitive : transitive _≺/_
+ ≺/-is-transitive = /-induction₃ ≈R ρ γ
   where
-   ρ : (x y z : α⁺) → is-prop (x ≺⁺ y → y ≺⁺ z → x ≺⁺ z)
-   ρ x y z = Π₂-is-prop fe' (λ _ _ → ≺⁺-is-prop-valued x z)
-   γ : (p q r : Σα) → [ p ] ≺⁺ [ q ] → [ q ] ≺⁺ [ r ] → [ p ] ≺⁺ [ r ]
-   γ p q r k l = ≺-to-≺⁺ (≺-is-transitive p q r (≺⁺-to-≺ k) (≺⁺-to-≺ l))
+   ρ : (x y z : α/) → is-prop (x ≺/ y → y ≺/ z → x ≺/ z)
+   ρ x y z = Π₂-is-prop fe' (λ _ _ → ≺/-is-prop-valued x z)
+   γ : (p q r : Σα) → [ p ] ≺/ [ q ] → [ q ] ≺/ [ r ] → [ p ] ≺/ [ r ]
+   γ p q r k l = ≺-to-≺/ (≺-is-transitive p q r (≺/-to-≺ k) (≺/-to-≺ l))
 
- ≺⁺-is-extensional : is-extensional _≺⁺_
- ≺⁺-is-extensional = /-induction₂ ≈R {!!} {!!} {!!}
+ ≺/-is-extensional : is-extensional _≺/_
+ ≺/-is-extensional = /-induction₂ ≈R
+                      (λ x y → Π₂-is-prop fe' (λ _ _ → quotient-is-set ≈R))
+                      γ
+  where
+   γ : (p q : Σα)
+     → ((z : α/) → z ≺/ [ p ] → z ≺/ [ q ])
+     → ((z : α/) → z ≺/ [ q ] → z ≺/ [ p ])
+     → [ p ] ≡ [ q ]
+   γ p q u v = η/-identifies-related-points ≈R e
+    where
+     e : p ≈ q
+     e = ≺-is-extensional-up-to-≈ p q u' v'
+      where
+       u' : (r : Σα) → r ≺ p → r ≺ q
+       u' r l = ≺/-to-≺ (u [ r ] (≺-to-≺/ l))
+       v' : (r : Σα) → r ≺ q → r ≺ p
+       v' r l = ≺/-to-≺ (v [ r ] (≺-to-≺/ l))
+
+ ≺/-is-well-founded : is-well-founded _≺/_
+ ≺/-is-well-founded = γ
+  where
+   a : (x : α/) → is-prop (is-accessible _≺/_ x)
+   a = accessibility-is-prop _≺/_ fe
+   lemma : (p : Σα) → is-accessible _≺/_ [ p ]
+   lemma = transfinite-induction _≺_ ≺-is-well-founded
+            (λ p → is-accessible _≺/_ [ p ]) ϕ
+    where
+     ϕ : (p : Σα) → ((q : Σα) → q ≺ p → is-accessible _≺/_ [ q ])
+       → is-accessible _≺/_ [ p ]
+     ϕ p IH = next [ p ] IH'
+      where
+       IH' : (y : α/) → y ≺/ [ p ] → is-accessible _≺/_ y
+       IH' = /-induction' ≈R (λ q → Π-is-prop fe' (λ _ → a q))
+              (λ q l → IH q (≺/-to-≺ l))
+   γ : (x : α/) → is-accessible _≺/_ x
+   γ = /-induction' ≈R a lemma
+
+ ≺/-is-well-order : is-well-order _≺/_
+ ≺/-is-well-order =
+  ≺/-is-prop-valued , ≺/-is-well-founded , ≺/-is-extensional , ≺/-is-transitive
+
+ α/-Ord : Ordinal (𝓤 ⁺)
+ α/-Ord = α/ , _≺/_ , ≺/-is-well-order
+
+\end{code}
+
+TODO: We now resize...
+
+\begin{code}
+
+ open import UF-Size
+
+ open import OrdinalsWellOrderTransport fe
+
+ _≺⁻_ : Σα → Σα → 𝓤 ̇
+ (i , x) ≺⁻ (j , y) = (α i ↓ x) ⊲⁻ (α j ↓ y)
+
+ ≺-≃-≺⁻ : (p q : Σα) → (p ≺ q) ≃ (p ≺⁻ q)
+ ≺-≃-≺⁻ (i , x) (j , y) = ⊲-is-equivalent-to-⊲⁻ (α i ↓ x) (α j ↓ y)
+
+ ≺/-has-small-values : (x y : α/) → is-small (x ≺/ y)
+ ≺/-has-small-values =
+  /-induction₂ ≈R (λ x y → being-small-is-prop ua (x ≺/ y) 𝓤)
+                  (λ p q → p ≺⁻ q , (p ≺⁻ q         ≃⟨ ≃-sym (≺-≃-≺⁻ p q)     ⟩
+                                     p ≺ q          ≃⟨ idtoeq _ _ (≺/-≡-≺ ⁻¹) ⟩
+                                     [ p ] ≺/ [ q ] ■))
+
+ _≺/⁻_ : α/ → α/ → 𝓤 ̇
+ x ≺/⁻ y = pr₁ (≺/-has-small-values x y)
+
+ ≺/-≃-≺/⁻ : {x y : α/} → x ≺/ y ≃ x ≺/⁻ y
+ ≺/-≃-≺/⁻ {x} {y} = ≃-sym (pr₂ (≺/-has-small-values x y))
+
+ ≺/-to-≺/⁻ : {x y : α/} → x ≺/ y → x ≺/⁻ y
+ ≺/-to-≺/⁻ = ⌜ ≺/-≃-≺/⁻ ⌝
+
+ ≺/⁻-to-≺/ : {x y : α/} → x ≺/⁻ y → x ≺/ y
+ ≺/⁻-to-≺/ = ⌜ ≺/-≃-≺/⁻ ⌝⁻¹
+
+ α/-Ord-is-upperbound : (i : I) → α i ⊴ α/-Ord
+ α/-Ord-is-upperbound i = ([_] ∘ ι i , sim)
+  where
+   sim : is-simulation (α i) α/-Ord (λ x → [ i , x ])
+   sim = simulation-unprime pt (α i) α/-Ord (λ x → [ i , x ])
+          (init-seg , order-pres)
+    where
+     order-pres : is-order-preserving (α i) α/-Ord (λ x → [ i , x ])
+     order-pres x y l = ≺-to-≺/ {i , x} {i , y} (ι-is-order-preserving i x y l)
+     init-seg : is-initial-segment' pt (α i) α/-Ord (λ x → [ i , x ])
+     init-seg x = /-induction' ≈R (λ y → Π-is-prop fe' λ _ → ∃-is-prop) claim
+      where
+       claim : {!!}
+       claim = {!!}
+
+
 
 {-
+ open order-transfer-lemma₂ α/ _≺/_ _≺/⁻_ (λ x y → ≺/-≃-≺/⁻)
+
+ ≺/⁻-is-transitive : transitive _≺/⁻_
+ ≺/⁻-is-transitive = is-transitive→ ≺/-is-transitive
+
+ ≺/⁻-is-prop-valued : is-prop-valued _≺/⁻_
+ ≺/⁻-is-prop-valued = is-prop-valued→ ≺/-is-prop-valued
+
+ ≺/⁻-is-extensional : is-extensional _≺/⁻_
+ ≺/⁻-is-extensional = is-extensional→ ≺/-is-extensional
+
+ ≺/⁻-is-well-founded : is-well-founded _≺/⁻_
+ ≺/⁻-is-well-founded = is-well-founded→ ≺/-is-well-founded
+
+ ≺/⁻-is-well-order : is-well-order _≺/⁻_
+ ≺/⁻-is-well-order =
+  ≺/⁻-is-prop-valued , ≺/⁻-is-well-founded ,
+  ≺/⁻-is-extensional , ≺/⁻-is-transitive
+
  open import UF-PropTrunc
  module _ (pt : propositional-truncations-exist)
           (pe : Prop-Ext)

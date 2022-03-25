@@ -1247,7 +1247,7 @@ original one.
 \begin{code}
 
 open import UF-PropTrunc
-module simulation-∃ (pt : propositional-truncations-exist) where
+module _ (pt : propositional-truncations-exist) where
 
  open PropositionalTruncation pt
 

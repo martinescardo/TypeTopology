@@ -317,6 +317,12 @@ module _ {𝓤 𝓥 : Universe} where
               → (x' : X / ≋) → P x'
   /-induction = surjection-induction η/ η/-is-surjection
 
+  /-induction' : ∀ {𝓦} {P : X / ≋ → 𝓦 ̇ }
+               → ((x' : X / ≋) → is-prop (P x'))
+               → ((x : X) → P (η/ x))
+               → (x' : X / ≋) → P x'
+  /-induction' {𝓦} {P} = surjection-induction η/ η/-is-surjection P
+
   identifies-related-points : {A : 𝓦 ̇ } → (X → A) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
   identifies-related-points f = ∀ {x x'} → x ≈ x' → f x ≡ f x'
 
@@ -558,21 +564,21 @@ binary and ternary versions of quotient induction.
 
 \begin{code}
 
-  /-induction₂ : ∀ {𝓦} (P : X / ≋ → X / ≋ → 𝓦 ̇ )
+  /-induction₂ : ∀ {𝓦} {P : X / ≋ → X / ≋ → 𝓦 ̇ }
                → ((x' y' : X / ≋) → is-prop (P x' y'))
                → ((x y : X) → P (η/ x) (η/ y))
                → (x' y' : X / ≋) → P x' y'
-  /-induction₂ P p h =
+  /-induction₂ p h =
    /-induction _ (λ x' → Π-is-prop fe (p x'))
-                 (λ x → /-induction _ (p (η/ x)) (h x))
+                 (λ x → /-induction' (p (η/ x)) (h x))
 
-  /-induction₃ : ∀ {𝓦} (P : X / ≋ → X / ≋ → X / ≋ → 𝓦 ̇ )
+  /-induction₃ : ∀ {𝓦} {P : X / ≋ → X / ≋ → X / ≋ → 𝓦 ̇ }
                → ((x' y' z' : X / ≋) → is-prop (P x' y' z'))
                → ((x y z : X) → P (η/ x) (η/ y) (η/ z))
                → (x' y' z' : X / ≋) → P x' y' z'
-  /-induction₃ P p h =
-   /-induction₂ _ (λ x' y' → Π-is-prop fe (p x' y'))
-                  (λ x y → /-induction _ (p (η/ x) (η/ y)) (h x y))
+  /-induction₃ p h =
+   /-induction₂ (λ x' y' → Π-is-prop fe (p x' y'))
+                (λ x y → /-induction' (p (η/ x) (η/ y)) (h x y))
 
 
 quotients-equivalent : (X : 𝓤 ̇ ) (R : EqRel {𝓤} {𝓥} X) (R' : EqRel {𝓤} {𝓦} X)
