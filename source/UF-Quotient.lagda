@@ -481,6 +481,16 @@ We extend unary and binary prop-valued relations to the quotient.
    extension-rel-triangle₁ : extension-rel₁ ∘ η/ ∼ r
    extension-rel-triangle₁ = universality-triangle/ (Ω-is-set fe pe) r p
 
+   {-
+   extension-rel-induction₁ : ((x : X) → r x holds)
+                            → (x' : X / ≋) → extension-rel₁ x' holds
+   extension-rel-induction₁ h =
+    /-induction _ (λ x' → holds-is-prop (extension-rel₁ x')) γ
+     where
+      γ : (x : X) → extension-rel₁ (η/ x) holds
+      γ x = back-transport _holds (extension-rel-triangle₁ x) (h x)
+   -}
+
   module _ (r : X → X → Ω 𝓣)
            (p : {x y x' y' : X} → x ≈ x' → y ≈ y' → r x y ≡ r x' y')
          where
@@ -508,45 +518,62 @@ We extend unary and binary prop-valued relations to the quotient.
      r₂ = mediating-map/ (Π-is-set fe (λ _ → Ω-is-set fe pe)) r₁
                          (λ {x} {x'} e → dfunext fe (λ q → ρ q e))
 
-     σ : (x y : X) → r₂ (η/ x) (η/ y) ≡ r x y
-     σ x y = r₂ (η/ x) (η/ y) ≡⟨ happly (universality-triangle/ (Π-is-set fe (λ _ → Ω-is-set fe pe)) {!!} {!!} x) (η/ y) ⟩
+     σ : (x : X) → r₂ (η/ x) ≡ r₁ x
+     σ = universality-triangle/ (Π-is-set fe (λ _ → Ω-is-set fe pe)) r₁
+                                (λ {x} {x'} e → dfunext fe (λ q → ρ q e))
+
+     τ : (x y : X) → r₂ (η/ x) (η/ y) ≡ r x y
+     τ x y = r₂ (η/ x) (η/ y) ≡⟨ happly (σ x) (η/ y) ⟩
              r₁ x      (η/ y) ≡⟨ extension-rel-triangle₁ (r x) (p' x) y ⟩
              r  x          y  ∎
+
+     {-
+     φ : ((x y : X) → r x y holds)
+       → (x' y' : X / ≋) → r₂ x' y' holds
+     φ h = /-induction _
+            (λ x' → Π-is-prop fe (prp x'))
+            (λ x → /-induction _ (prp (η/ x))
+                   (λ y → back-transport _holds (τ x y) (h x y)))
+      where
+       prp : (x' y' : X / ≋) → is-prop (r₂ x' y' holds)
+       prp x' y' = holds-is-prop (r₂ x' y')
+      -}
 
    extension-rel₂ : X / ≋ → X / ≋ → Ω 𝓣
    extension-rel₂ = r₂
 
    extension-rel-triangle₂ : (x y : X) → extension-rel₂ (η/ x) (η/ y) ≡ r x y
-   extension-rel-triangle₂ x y = {!!} {-
-     extension-rel₂ (η/ x) (η/ y) ≡⟨ ? ⟩
-     extension-rel₂ (η/ x) r x y -}
+   extension-rel-triangle₂ = τ
 
-{-
-  extension/ : (f : X → X / ≋)
-             → identifies-related-points f
-             → (X / ≋ → X / ≋)
-  extension/ = mediating-map/ quotient-is-set
+   {-
+   extension-rel-induction₂ : ((x y : X) → r x y holds)
+                            → (x' y' : X / ≋) → extension-rel₂ x' y' holds
+   extension-rel-induction₂ = φ
+   -}
 
-  extension-triangle/ : (f : X → X / ≋)
-                        (i : identifies-related-points f)
-                      → extension/ f i ∘ η/ ∼ f
-  extension-triangle/ = universality-triangle/ quotient-is-set
+\end{code}
 
-  module _ (f : X → X)
-           (p : {x y : X} → x ≈ y → f x ≈ f y)
-         where
+For proving properties of an extended binary relation, it is useful to have a
+binary and ternary versions of quotient induction.
 
-   abstract
-    private
-      π : identifies-related-points (η/ ∘ f)
-      π e = η/-identifies-related-points (p e)
+\begin{code}
 
-   extension₁/ : X / ≋ → X / ≋
-   extension₁/ = extension/ (η/ ∘ f) π
+  /-induction₂ : ∀ {𝓦} (P : X / ≋ → X / ≋ → 𝓦 ̇ )
+               → ((x' y' : X / ≋) → is-prop (P x' y'))
+               → ((x y : X) → P (η/ x) (η/ y))
+               → (x' y' : X / ≋) → P x' y'
+  /-induction₂ P p h =
+   /-induction _ (λ x' → Π-is-prop fe (p x'))
+                 (λ x → /-induction _ (p (η/ x)) (h x))
 
-   naturality/ : extension₁/ ∘ η/ ∼ η/ ∘ f
-   naturality/ = universality-triangle/ quotient-is-set (η/ ∘ f) π
--}
+  /-induction₃ : ∀ {𝓦} (P : X / ≋ → X / ≋ → X / ≋ → 𝓦 ̇ )
+               → ((x' y' z' : X / ≋) → is-prop (P x' y' z'))
+               → ((x y z : X) → P (η/ x) (η/ y) (η/ z))
+               → (x' y' z' : X / ≋) → P x' y' z'
+  /-induction₃ P p h =
+   /-induction₂ _ (λ x' y' → Π-is-prop fe (p x' y'))
+                  (λ x y → /-induction _ (p (η/ x) (η/ y)) (h x y))
+
 
 quotients-equivalent : (X : 𝓤 ̇ ) (R : EqRel {𝓤} {𝓥} X) (R' : EqRel {𝓤} {𝓦} X)
                      → ({x y : X} → x ≈[ R ] y ⇔ x ≈[ R' ] y)
