@@ -36,12 +36,6 @@ decidable-eq-sym x y = cases
                         (λ (p : x ≡ y) → inl (p ⁻¹))
                         (λ (n : ¬ (x ≡ y)) → inr (λ (q : y ≡ x) → n (q ⁻¹)))
 
--is-isolated'-gives-is-isolated : {X : 𝓤 ̇ } (x : X) → is-isolated' x → is-isolated x
--is-isolated'-gives-is-isolated x i' y = cases
-                                   (λ (p : y ≡ x) → inl (p ⁻¹))
-                                   (λ (n : ¬ (y ≡ x)) → inr (λ (p : x ≡ y) → n (p ⁻¹)))
-                                   (i' y)
-
 is-isolated'-gives-is-isolated : {X : 𝓤 ̇ } (x : X) → is-isolated' x → is-isolated x
 is-isolated'-gives-is-isolated x i' y = decidable-eq-sym y x (i' y)
 
