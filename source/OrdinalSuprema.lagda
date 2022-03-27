@@ -1,6 +1,25 @@
 Tom de Jong, March 2022
 
-TODO: Describe contents
+We show that the ordinal of ordinals has small suprema. More precisely, given a
+univalent universe 𝓤, the ordinal (Ordinal 𝓤) of ordinals in 𝓤 has suprema for
+every family I → Ordinal 𝓤 with I : 𝓤.
+
+We extend and formalize Lemma 10.3.22 of [Uni2013] where the given construction
+is only claimed to be an upperbound. Our development also extends [Theorem 9,
+KFX2021] where the least upperbound property is only shown for weakly increasing
+ℕ-indexed families.
+
+[Uni2013] The Univalent Foundations Program.
+          "Homotopy Type Theory: Univalent Foundations of Mathematics."
+          https://homotopytypetheory.org/book, Institute for Advanced Study, 2013.
+
+[KFX2021] Nicolai Kraus, Fredrik Nordvall Forsberg and Chuangjie Xu.
+          "Connecting Constructive Notions of Ordinals in Homotopy Type Theory".
+          In Filippo Bonchi and Simon J. Puglisi, editors, "46th International
+          Symposium on Mathematical Foundations of Computer Science (MFCS 2021)",
+          volume 202 of "Leibniz International Proceedings in Informatics
+          (LIPIcs)", pages: 70:1─70:16. Schloss Dagstuhl ─ Leibniz-Zentrum für
+          Informatik, 2021. doi:10.4230/LIPIcs.MFCS.2021.70.
 
 \begin{code}
 
@@ -22,12 +41,13 @@ open import UF-Base hiding (_≈_)
 open import UF-Equiv
 open import UF-FunExt
 open import UF-UA-FunExt
+open import UF-Size
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
 
 open import OrdinalNotions hiding (is-prop-valued)
-open import OrdinalsType
 open import OrdinalOfOrdinals ua
+open import OrdinalsType
 
 
 private
@@ -44,12 +64,54 @@ private
  pe' {𝓤} = pe 𝓤
 
 open import UF-Quotient pt fe' pe'
+open import OrdinalsWellOrderTransport fe
+
+\end{code}
+
+The following defines what it means for the ordinal of ordinals in a universe to
+have small suprema. A proof of this statement will be given at the end by
+ordinal-of-ordinals-has-small-suprema.
+
+(Although it is not needed at present, we prove for good measure that the
+statement is a proposition.)
+
+\begin{code}
+
+Ordinal-Of-Ordinals-Has-Small-Suprema : {𝓤 : Universe} → 𝓤 ⁺ ̇
+Ordinal-Of-Ordinals-Has-Small-Suprema {𝓤} =
+   (I : 𝓤 ̇  ) (α : I → Ordinal 𝓤)
+ → Σ β ꞉ Ordinal 𝓤 , ((i : I) → α i ⊴ β)
+                   × ((γ : Ordinal 𝓤) → ((i : I) → α i ⊴ γ) → β ⊴ γ)
+
+Ordinal-Of-Ordinals-Has-Small-Suprema-is-prop :
+ is-prop (Ordinal-Of-Ordinals-Has-Small-Suprema {𝓤})
+Ordinal-Of-Ordinals-Has-Small-Suprema-is-prop =
+ Π₂-is-prop fe' h
+  where
+   h : (I : 𝓤 ̇  ) (α : I → Ordinal 𝓤)
+     → is-prop (Σ β ꞉ Ordinal 𝓤 , ((i : I) → α i ⊴ β)
+                                × ((γ : Ordinal 𝓤) → ((i : I) → α i ⊴ γ)
+                                                   → β ⊴ γ))
+   h I α (β , β-is-ub , β-is-lb) (β' , β'-is-ub , β'-is-lb) =
+    to-subtype-≡ (λ β → ×-is-prop
+                         (Π-is-prop  fe' (λ i   → ⊴-is-prop-valued (α i) β))
+                         (Π₂-is-prop fe' (λ γ _ → ⊴-is-prop-valued β     γ)))
+                 (⊴-antisym β β' (β-is-lb β' β'-is-ub) (β'-is-lb β β-is-ub))
 
 module _
         {I : 𝓤 ̇  }
         (α : I → Ordinal 𝓤)
        where
 
+\end{code}
+
+Given a small family of ordinals α : I → Ordinal 𝓤, we construct the supremum
+(following [Lemma 10.3.22, Uni2013]) as a (set) quotient of Σ i ꞉ I , ⟨ α i ⟩.
+
+We only construct the quotient later, as a lot of the work is performed on the
+unquotiented type Σ i ꞉ I , ⟨ α i ⟩.
+
+\begin{code}
  private
   Σα : 𝓤 ̇
   Σα = Σ i ꞉ I , ⟨ α i ⟩
@@ -96,6 +158,12 @@ module _
           subclaim : ((j , y) : Σα) → (j , y) ≺ (i , x) → P (j , y)
           subclaim (j , y) (z , e) = IH' ((α i ↓ x) ↓ z) (z , refl) j y (e ⁻¹)
 
+\end{code}
+
+The following lemma makes it clear why we eventually pass to the quotient.
+
+\begin{code}
+
   ≺-is-extensional-up-to-≈ : (p q : Σα)
                            → ((r : Σα) → r ≺ p → r ≺ q)
                            → ((r : Σα) → r ≺ q → r ≺ p)
@@ -114,12 +182,12 @@ module _
           where
            x' : ⟨ α i ⟩
            x' = pr₁ p
-           x'-below-x : x' ≺⟨ α i ⟩ x
-           x'-below-x = pr₂ p
+           l : x' ≺⟨ α i ⟩ x
+           l = pr₂ p
            claim₁ : (α i ↓ x') ⊲ (α j ↓ y)
-           claim₁ = hyp₁ (i , x') (↓-preserves-order (α i) x' x x'-below-x)
+           claim₁ = hyp₁ (i , x') (↓-preserves-order (α i) x' x l)
            claim₂ : ((α i ↓ x) ↓ p) ≡ (α i ↓ x')
-           claim₂ = iterated-↓ (α i) x x' x'-below-x
+           claim₂ = iterated-↓ (α i) x x' l
        ⦅2⦆ : (β : Ordinal 𝓤) → β ⊲ (α j ↓ y) → β ⊲ (α i ↓ x)
        ⦅2⦆ β (p , refl) = goal₂
         where
@@ -128,12 +196,19 @@ module _
           where
            y' : ⟨ α j ⟩
            y' = pr₁ p
-           y'-below-y : y' ≺⟨ α j ⟩ y
-           y'-below-y = pr₂ p
+           l : y' ≺⟨ α j ⟩ y
+           l = pr₂ p
            claim₁ : (α j ↓ y') ⊲ (α i ↓ x)
-           claim₁ = hyp₂ (j , y') (↓-preserves-order (α j) y' y y'-below-y)
+           claim₁ = hyp₂ (j , y') (↓-preserves-order (α j) y' y l)
            claim₂ : ((α j ↓ y) ↓ p) ≡ (α j ↓ y')
-           claim₂ = iterated-↓ (α j) y y' y'-below-y
+           claim₂ = iterated-↓ (α j) y y' l
+
+\end{code}
+
+The above suffies to prove that the quotient of Σα will be an ordinal. We now
+prepare to proof that it will be the supremum of α.
+
+\begin{code}
 
   ι : (i : I) → ⟨ α i ⟩ → Σα
   ι i x = (i , x)
@@ -216,6 +291,13 @@ module _
      goal₁ = ↓-preserves-order (α i) x' x x'-below-x
      goal₂ : f̃ (i , x') ≡ b
      goal₂ = pr₂ (pr₂ lemma)
+
+\end{code}
+
+It is now time to pass to the quotient and prove that it is an ordinal with the
+induced order on Σα.
+
+\begin{code}
 
  ≈R : EqRel Σα
  ≈R = _≈_ , ≈-is-prop-valued , ≈-is-reflexive , ≈-is-symmetric , ≈-is-transitive
@@ -323,6 +405,12 @@ module _
  α/-Ord : Ordinal (𝓤 ⁺)
  α/-Ord = α/ , _≺/_ , ≺/-is-well-order
 
+\end{code}
+
+Next, we show that the quotient α/ is the least upperbound of α.
+
+\begin{code}
+
  α/-is-upperbound : (i : I) → α i ⊴ α/-Ord
  α/-is-upperbound i = ([_] ∘ ι i , sim)
   where
@@ -403,12 +491,14 @@ module _
 
 \end{code}
 
-TODO: Finally, we resize... (Use Small-Set-Quotients from other branch)
+In the above construction it is important to notice that α/ lives in the next
+universe 𝓤 ⁺, so it does not proof that Ordinal 𝓤 has small suprema.
+
+To prove this, we resize α/ down to an equivalent ordinal in 𝓤. The first step
+in doing so, is proving that the order ≺ on α (which takes values in 𝓤 ⁺) is
+equivalent to one with values in 𝓤.
 
 \begin{code}
-
- open import UF-Size
- open import OrdinalsWellOrderTransport fe
 
  _≺⁻_ : Σα → Σα → 𝓤 ̇
  (i , x) ≺⁻ (j , y) = (α i ↓ x) ⊲⁻ (α j ↓ y)
@@ -434,6 +524,17 @@ TODO: Finally, we resize... (Use Small-Set-Quotients from other branch)
 
  ≺/⁻-to-≺/ : {x y : α/} → x ≺/⁻ y → x ≺/ y
  ≺/⁻-to-≺/ = ⌜ ≺/-≃-≺/⁻ ⌝⁻¹
+
+\end{code}
+
+Next, we resize α/ using:
+(1) the assumption that set quotients are small; i.e. for every type Y : 𝓤 and
+    equivalence relation ∼ : Y → Y → 𝓤, the set quotient of Y by ∼ is equivalent
+    to a type in 𝓤.
+(2) Martín's machinery developed in OrdinalsWellOrderTransport to transport the
+    well order along the supposed equivalence.
+
+\begin{code}
 
  module _ (small-set-quotients : Small-Set-Quotients 𝓤) where
 
@@ -470,38 +571,16 @@ TODO: Finally, we resize... (Use Small-Set-Quotients from other branch)
 
 \end{code}
 
+Finally, the desired result follows (under the assumption of small set
+quotients).
+
 \begin{code}
 
-module _ (small-set-quotients : Small-Set-Quotients 𝓤) where
-
-  Ordinal-Of-Ordinals-Has-Small-Suprema : 𝓤 ⁺ ̇
-  Ordinal-Of-Ordinals-Has-Small-Suprema =
-     (I : 𝓤 ̇  ) (α : I → Ordinal 𝓤)
-   → Σ β ꞉ Ordinal 𝓤 , ((i : I) → α i ⊴ β)
-                     × ((γ : Ordinal 𝓤) → ((i : I) → α i ⊴ γ) → β ⊴ γ)
-
-  Ordinal-Of-Ordinals-Has-Small-Suprema-is-prop :
-   is-prop (Ordinal-Of-Ordinals-Has-Small-Suprema)
-  Ordinal-Of-Ordinals-Has-Small-Suprema-is-prop =
-   Π₂-is-prop fe' h
-    where
-     h : (I : 𝓤 ̇  ) (α : I → Ordinal 𝓤)
-       → is-prop (Σ β ꞉ Ordinal 𝓤 , ((i : I) → α i ⊴ β)
-                                  × ((γ : Ordinal 𝓤) → ((i : I) → α i ⊴ γ)
-                                                     → β ⊴ γ))
-     h I α (β , β-is-ub , β-is-lb) (β' , β'-is-ub , β'-is-lb) =
-      to-subtype-≡ (λ β → ×-is-prop
-                           (Π-is-prop fe' (λ i → ⊴-is-prop-valued (α i) β))
-                           (Π₂-is-prop fe' (λ γ _ → ⊴-is-prop-valued β γ)))
-                   (⊴-antisym β β' (β-is-lb β' β'-is-ub) (β'-is-lb β β-is-ub))
-
-  ordinal-of-ordinals-has-small-suprema : Ordinal-Of-Ordinals-Has-Small-Suprema
-  ordinal-of-ordinals-has-small-suprema I α =
-   (α/⁻-Ord α smq , α/⁻-is-upperbound α smq
-                  , α/⁻-is-lowerbound-of-upperbounds α smq)
-    where
-     smq : Small-Set-Quotients 𝓤
-     smq = small-set-quotients
+ordinal-of-ordinals-has-small-suprema : Small-Set-Quotients 𝓤
+                                      → Ordinal-Of-Ordinals-Has-Small-Suprema
+ordinal-of-ordinals-has-small-suprema smq I α =
+ (α/⁻-Ord α smq , α/⁻-is-upperbound α smq
+                , α/⁻-is-lowerbound-of-upperbounds α smq)
 
 \end{code}
 
