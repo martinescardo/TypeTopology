@@ -28,7 +28,7 @@ KFX2021] where the least upperbound property is only shown for weakly increasing
 open import UF-PropTrunc
 open import UF-Univalence
 
-module OrdinalSuprema
+module OrdinalOfOrdinalsSuprema
        (ua : Univalence)
        (pt : propositional-truncations-exist)
        where
