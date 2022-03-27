@@ -29,8 +29,8 @@ open import UF-PropTrunc
 open import UF-Univalence
 
 module OrdinalOfOrdinalsSuprema
-       (ua : Univalence)
        (pt : propositional-truncations-exist)
+       (ua : Univalence)
        where
 
 open PropositionalTruncation pt
