@@ -310,6 +310,9 @@ _⊴_ : Ordinal 𝓤 → Ordinal 𝓥 → 𝓤 ⊔ 𝓥 ̇
          (being-order-equiv-is-prop α β)
          (dfunext fe' r)
 
+≃ₒ-to-⊴ : (α : Ordinal 𝓤) (β : Ordinal 𝓥) → α ≃ₒ β → α ⊴ β
+≃ₒ-to-⊴ α β (f , e) = f , (order-equivs-are-simulations α β f e)
+
 ordinal-equiv-gives-bisimilarity : (α β : Ordinal 𝓤)
                                  → α ≃ₒ β
                                  → (α ⊴ β) × (β ⊴ α)

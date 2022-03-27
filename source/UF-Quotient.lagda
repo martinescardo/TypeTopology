@@ -487,16 +487,6 @@ We extend unary and binary prop-valued relations to the quotient.
    extension-rel-triangle₁ : extension-rel₁ ∘ η/ ∼ r
    extension-rel-triangle₁ = universality-triangle/ (Ω-is-set fe pe) r p
 
-   {-
-   extension-rel-induction₁ : ((x : X) → r x holds)
-                            → (x' : X / ≋) → extension-rel₁ x' holds
-   extension-rel-induction₁ h =
-    /-induction _ (λ x' → holds-is-prop (extension-rel₁ x')) γ
-     where
-      γ : (x : X) → extension-rel₁ (η/ x) holds
-      γ x = back-transport _holds (extension-rel-triangle₁ x) (h x)
-   -}
-
   module _ (r : X → X → Ω 𝓣)
            (p : {x y x' y' : X} → x ≈ x' → y ≈ y' → r x y ≡ r x' y')
          where
@@ -533,29 +523,11 @@ We extend unary and binary prop-valued relations to the quotient.
              r₁ x      (η/ y) ≡⟨ extension-rel-triangle₁ (r x) (p' x) y ⟩
              r  x          y  ∎
 
-     {-
-     φ : ((x y : X) → r x y holds)
-       → (x' y' : X / ≋) → r₂ x' y' holds
-     φ h = /-induction _
-            (λ x' → Π-is-prop fe (prp x'))
-            (λ x → /-induction _ (prp (η/ x))
-                   (λ y → back-transport _holds (τ x y) (h x y)))
-      where
-       prp : (x' y' : X / ≋) → is-prop (r₂ x' y' holds)
-       prp x' y' = holds-is-prop (r₂ x' y')
-      -}
-
    extension-rel₂ : X / ≋ → X / ≋ → Ω 𝓣
    extension-rel₂ = r₂
 
    extension-rel-triangle₂ : (x y : X) → extension-rel₂ (η/ x) (η/ y) ≡ r x y
    extension-rel-triangle₂ = τ
-
-   {-
-   extension-rel-induction₂ : ((x y : X) → r x y holds)
-                            → (x' y' : X / ≋) → extension-rel₂ x' y' holds
-   extension-rel-induction₂ = φ
-   -}
 
 \end{code}
 

@@ -43,12 +43,6 @@ private
  pe' : Prop-Ext
  pe' {𝓤} = pe 𝓤
 
-----
--- TODO: Move this
-≃ₒ-to-⊴ : (α : Ordinal 𝓤) (β : Ordinal 𝓥) → α ≃ₒ β → α ⊴ β
-≃ₒ-to-⊴ α β (f , e) = f , (order-equivs-are-simulations α β f e)
-----
-
 open import UF-Quotient pt fe' pe'
 
 module _
@@ -355,61 +349,57 @@ module _
           e : (i , y) ≈ p
           e = pr₂ (pr₂ lem)
 
- module _
-         (β : Ordinal 𝓤)
-         (β-is-upperbound : (i : I) → α i ⊴ β)
-        where
-
-  open lowerbound-of-upperbounds-proof β β-is-upperbound
-
-  α/-is-lowerbound-of-upperbounds : α/-Ord ⊴ β
-  α/-is-lowerbound-of-upperbounds = f/ , f/-is-simulation
-   where
-    f/ : α/ → ⟨ β ⟩
-    f/ = mediating-map/ ≈R (underlying-type-is-set fe β) f̃ f̃-respects-≈
-    f/-≡-f̃ : {p : Σα} → f/ [ p ] ≡ f̃ p
-    f/-≡-f̃ {p} = universality-triangle/ ≈R (underlying-type-is-set fe β)
-                  f̃ f̃-respects-≈ p
-    f/-is-order-preserving : is-order-preserving α/-Ord β f/
-    f/-is-order-preserving =
-     /-induction₂ ≈R prp ρ
-      where
-       prp : (x y : α/) → is-prop (x ≺/ y → f/ x ≺⟨ β ⟩ f/ y)
-       prp x y = Π-is-prop fe' (λ _ → Prop-valuedness β (f/ x) (f/ y))
-       ρ : (p q : Σα) → [ p ] ≺/ [ q ] → f/ [ p ] ≺⟨ β ⟩ f/ [ q ]
-       ρ p q l = back-transport₂ (λ -₁ -₂ → -₁ ≺⟨ β ⟩ -₂)
-                  f/-≡-f̃ f/-≡-f̃
-                  (f̃-is-order-preserving p q (≺/-to-≺ l))
-    f/-is-simulation : is-simulation α/-Ord β f/
-    f/-is-simulation = simulation-unprime pt α/-Ord β f/ σ
+ α/-is-lowerbound-of-upperbounds : (β : Ordinal 𝓤)
+                                 → ((i : I) → α i ⊴ β)
+                                 → α/-Ord ⊴ β
+ α/-is-lowerbound-of-upperbounds β β-is-ub = f/ , f/-is-simulation
+  where
+   open lowerbound-of-upperbounds-proof β β-is-ub
+   f/ : α/ → ⟨ β ⟩
+   f/ = mediating-map/ ≈R (underlying-type-is-set fe β) f̃ f̃-respects-≈
+   f/-≡-f̃ : {p : Σα} → f/ [ p ] ≡ f̃ p
+   f/-≡-f̃ {p} = universality-triangle/ ≈R (underlying-type-is-set fe β)
+                 f̃ f̃-respects-≈ p
+   f/-is-order-preserving : is-order-preserving α/-Ord β f/
+   f/-is-order-preserving =
+    /-induction₂ ≈R prp ρ
      where
-      σ : is-simulation' pt α/-Ord β f/
-      σ = init-seg , f/-is-order-preserving
-       where
-        init-seg : is-initial-segment' pt α/-Ord β f/
-        init-seg = /-induction' ≈R prp ρ
-         where
-          prp : (x : α/)
-              → is-prop ((y : ⟨ β ⟩) → y ≺⟨ β ⟩ f/ x
-                                     → ∃ x' ꞉ α/ , (x' ≺/ x) × (f/ x' ≡ y))
-          prp x = Π₂-is-prop fe' (λ _ _ → ∃-is-prop)
-          ρ : (p : Σα) (y : ⟨ β ⟩)
-            → y ≺⟨ β ⟩ f/ [ p ]
-            → ∃ x' ꞉ α/ , (x' ≺/ [ p ]) × (f/ x' ≡ y)
-          ρ p y l = ∣ [ q ] , k , e ∣
-           where
-            abstract
-             lem : Σ q ꞉ Σα , (q ≺ p) × (f̃ q ≡ y)
-             lem = f̃-is-initial-segment p y
-                    (transport (λ - → y ≺⟨ β ⟩ -) f/-≡-f̃ l)
-             q : Σα
-             q = pr₁ lem
-             k : [ q ] ≺/ [ p ]
-             k = ≺-to-≺/ {q} {p} (pr₁ (pr₂ lem))
-             e : f/ [ q ] ≡ y
-             e = f/ [ q ] ≡⟨ f/-≡-f̃ {q}    ⟩
-                 f̃    q   ≡⟨ pr₂ (pr₂ lem) ⟩
-                 y        ∎
+      prp : (x y : α/) → is-prop (x ≺/ y → f/ x ≺⟨ β ⟩ f/ y)
+      prp x y = Π-is-prop fe' (λ _ → Prop-valuedness β (f/ x) (f/ y))
+      ρ : (p q : Σα) → [ p ] ≺/ [ q ] → f/ [ p ] ≺⟨ β ⟩ f/ [ q ]
+      ρ p q l = back-transport₂ (λ -₁ -₂ → -₁ ≺⟨ β ⟩ -₂)
+                 f/-≡-f̃ f/-≡-f̃
+                 (f̃-is-order-preserving p q (≺/-to-≺ l))
+   f/-is-simulation : is-simulation α/-Ord β f/
+   f/-is-simulation = simulation-unprime pt α/-Ord β f/ σ
+    where
+     σ : is-simulation' pt α/-Ord β f/
+     σ = init-seg , f/-is-order-preserving
+      where
+       init-seg : is-initial-segment' pt α/-Ord β f/
+       init-seg = /-induction' ≈R prp ρ
+        where
+         prp : (x : α/)
+             → is-prop ((y : ⟨ β ⟩) → y ≺⟨ β ⟩ f/ x
+                                    → ∃ x' ꞉ α/ , (x' ≺/ x) × (f/ x' ≡ y))
+         prp x = Π₂-is-prop fe' (λ _ _ → ∃-is-prop)
+         ρ : (p : Σα) (y : ⟨ β ⟩)
+           → y ≺⟨ β ⟩ f/ [ p ]
+           → ∃ x' ꞉ α/ , (x' ≺/ [ p ]) × (f/ x' ≡ y)
+         ρ p y l = ∣ [ q ] , k , e ∣
+          where
+           abstract
+            lem : Σ q ꞉ Σα , (q ≺ p) × (f̃ q ≡ y)
+            lem = f̃-is-initial-segment p y
+                   (transport (λ - → y ≺⟨ β ⟩ -) f/-≡-f̃ l)
+            q : Σα
+            q = pr₁ lem
+            k : [ q ] ≺/ [ p ]
+            k = ≺-to-≺/ {q} {p} (pr₁ (pr₂ lem))
+            e : f/ [ q ] ≡ y
+            e = f/ [ q ] ≡⟨ f/-≡-f̃ {q}    ⟩
+                f̃    q   ≡⟨ pr₂ (pr₂ lem) ⟩
+                y        ∎
 
 \end{code}
 
@@ -418,7 +408,6 @@ TODO: Finally, we resize... (Use Small-Set-Quotients from other branch)
 \begin{code}
 
  open import UF-Size
-
  open import OrdinalsWellOrderTransport fe
 
  _≺⁻_ : Σα → Σα → 𝓤 ̇
@@ -446,20 +435,26 @@ TODO: Finally, we resize... (Use Small-Set-Quotients from other branch)
  ≺/⁻-to-≺/ : {x y : α/} → x ≺/⁻ y → x ≺/ y
  ≺/⁻-to-≺/ = ⌜ ≺/-≃-≺/⁻ ⌝⁻¹
 
- module _
-         {X : 𝓤 ̇  }
-         (φ : α/ ≃ X)
-        where
+ module _ (small-set-quotients : Small-Set-Quotients 𝓤) where
 
   private
-   res : Σ s ꞉ OrdinalStructure X , (X , s) ≃ₒ α/-Ord
-   res = transfer-structure X α/-Ord (≃-sym φ) (_≺/⁻_ , (λ x y → ≺/-≃-≺/⁻))
+   X : 𝓤 ̇
+   X = pr₁ (small-set-quotients ≈R)
+
+   φ : X ≃ α/
+   φ = pr₂ (small-set-quotients ≈R)
+
+   resize-ordinal : Σ s ꞉ OrdinalStructure X , (X , s) ≃ₒ α/-Ord
+   resize-ordinal = transfer-structure X α/-Ord φ (_≺/⁻_ , (λ x y → ≺/-≃-≺/⁻))
 
   α/⁻-Ord : Ordinal 𝓤
-  α/⁻-Ord = X , pr₁ res
+  α/⁻-Ord = X , pr₁ resize-ordinal
+
+  α/⁻-≃-α/ : α/⁻-Ord ≃ₒ α/-Ord
+  α/⁻-≃-α/ = pr₂ resize-ordinal
 
   α/-≃-α/⁻ : α/-Ord ≃ₒ α/⁻-Ord
-  α/-≃-α/⁻ = ≃ₒ-sym α/⁻-Ord α/-Ord (pr₂ res)
+  α/-≃-α/⁻ = ≃ₒ-sym α/⁻-Ord α/-Ord α/⁻-≃-α/
 
   α/⁻-is-upperbound : (i : I) → α i ⊴ α/⁻-Ord
   α/⁻-is-upperbound i = ⊴-trans (α i) α/-Ord α/⁻-Ord
@@ -470,347 +465,44 @@ TODO: Finally, we resize... (Use Small-Set-Quotients from other branch)
                                    → ((i : I) → α i ⊴ β)
                                    → α/⁻-Ord ⊴ β
   α/⁻-is-lowerbound-of-upperbounds β β-is-ub =
-   ⊴-trans α/⁻-Ord α/-Ord β (≃ₒ-to-⊴ α/⁻-Ord α/-Ord (pr₂ res))
+   ⊴-trans α/⁻-Ord α/-Ord β (≃ₒ-to-⊴ α/⁻-Ord α/-Ord α/⁻-≃-α/)
                             (α/-is-lowerbound-of-upperbounds β β-is-ub)
 
 \end{code}
 
+\begin{code}
 
+module _ (small-set-quotients : Small-Set-Quotients 𝓤) where
 
-{-
- open order-transfer-lemma₂ α/ _≺/_ _≺/⁻_ (λ x y → ≺/-≃-≺/⁻)
+  Ordinal-Of-Ordinals-Has-Small-Suprema : 𝓤 ⁺ ̇
+  Ordinal-Of-Ordinals-Has-Small-Suprema =
+     (I : 𝓤 ̇  ) (α : I → Ordinal 𝓤)
+   → Σ β ꞉ Ordinal 𝓤 , ((i : I) → α i ⊴ β)
+                     × ((γ : Ordinal 𝓤) → ((i : I) → α i ⊴ γ) → β ⊴ γ)
 
- ≺/⁻-is-transitive : transitive _≺/⁻_
- ≺/⁻-is-transitive = is-transitive→ ≺/-is-transitive
-
- ≺/⁻-is-prop-valued : is-prop-valued _≺/⁻_
- ≺/⁻-is-prop-valued = is-prop-valued→ ≺/-is-prop-valued
-
- ≺/⁻-is-extensional : is-extensional _≺/⁻_
- ≺/⁻-is-extensional = is-extensional→ ≺/-is-extensional
-
- ≺/⁻-is-well-founded : is-well-founded _≺/⁻_
- ≺/⁻-is-well-founded = is-well-founded→ ≺/-is-well-founded
-
- ≺/⁻-is-well-order : is-well-order _≺/⁻_
- ≺/⁻-is-well-order =
-  ≺/⁻-is-prop-valued , ≺/⁻-is-well-founded ,
-  ≺/⁻-is-extensional , ≺/⁻-is-transitive
-
- open import UF-PropTrunc
- module _ (pt : propositional-truncations-exist)
-          (pe : Prop-Ext)
-        where
-
-  open import UF-ImageAndSurjection
-  open ImageAndSurjection pt
-  open PropositionalTruncation pt
-
-  module _
-          (α⁺ : 𝓤 ̇  )
-          (α⁺-is-set : is-set α⁺)
-          ([_] : Σα → α⁺)
-          ([]-respects-≈ : (p q : Σα) → p ≈ q → [ p ] ≡ [ q ])
-          ([]-is-surjection : is-surjection [_])
-          (quotient-universal-property : {𝓥 : Universe} (X : 𝓥 ̇  ) (g : Σα → X)
-                                       → is-set X
-                                       → ((p q : Σα) → p ≈ q → g p ≡ g q)
-                                       → Σ g̃ ꞉ (α⁺ → X) , g̃ ∘ [_] ∼ g)
-         where
-
-   quotient-induction : ∀ {𝓥} → imageInduction {𝓥} [_]
-   quotient-induction = surjection-induction [_] []-is-surjection
-
-   extend₂ : {𝓥 : Universe} (X : 𝓥 ̇  ) (g : Σα → Σα → X)
-           → is-set X
-           → ((p q₁ q₂ : Σα) → q₁ ≈ q₂ → g p q₁  ≡ g p q₂)
-           → ((p₁ p₂ q : Σα) → p₁ ≈ p₂ → g p₁ q  ≡ g p₂ q)
-           → Σ g̃ ꞉ (α⁺ → α⁺ → X) , ((p q : Σα) → g̃ [ p ] [ q ] ≡ g p q)
-   extend₂ {𝓥} X g X-is-set resp₁ resp₂ = g̃ , goal
+  Ordinal-Of-Ordinals-Has-Small-Suprema-is-prop :
+   is-prop (Ordinal-Of-Ordinals-Has-Small-Suprema)
+  Ordinal-Of-Ordinals-Has-Small-Suprema-is-prop =
+   Π₂-is-prop fe' h
     where
-     g' : Σα → α⁺ → X
-     g' p = pr₁ (quotient-universal-property X (g p) X-is-set (resp₁ p))
-     g'-eq : (p : Σα) → g' p ∘ [_] ∼ g p
-     g'-eq p = pr₂ (quotient-universal-property X (g p) X-is-set (resp₁ p))
-     foofoo : Σ (λ g̃ → g̃ ∘ [_] ∼ g')
-     foofoo = quotient-universal-property (α⁺ → X) g' (Π-is-set (fe 𝓤 𝓥) (λ _ → X-is-set)) γ
-      where
-       γ : (p q : Σα) → p ≈ q → g' p ≡ g' q
-       γ p q e = dfunext (fe 𝓤 𝓥) h
-        where
-         h : g' p ∼ g' q
-         h = quotient-induction (λ z → g' p z ≡ g' q z) (λ _ → X-is-set)
-              blah
-          where
-           blah : (r : Σα) → g' p [ r ] ≡ g' q [ r ]
-           blah r = g' p [ r ] ≡⟨ g'-eq p r ⟩
-                    g  p   r   ≡⟨ resp₂ p q r e ⟩
-                    g  q   r   ≡⟨ (g'-eq q r) ⁻¹ ⟩
-                    g' q [ r ] ∎
-     g̃ : α⁺ → α⁺ → X
-     g̃ = pr₁ foofoo
-     foo : g̃ ∘ [_] ∼ g'
-     foo = pr₂ foofoo
-     goal : (p q : Σα) → g̃ [ p ] [ q ] ≡ g p q
-     goal p q = g̃ [ p ] [ q ] ≡⟨ happly (foo p) [ q ] ⟩
-                g' p    [ q ] ≡⟨ g'-eq p q ⟩
-                g  p      q   ∎
+     h : (I : 𝓤 ̇  ) (α : I → Ordinal 𝓤)
+       → is-prop (Σ β ꞉ Ordinal 𝓤 , ((i : I) → α i ⊴ β)
+                                  × ((γ : Ordinal 𝓤) → ((i : I) → α i ⊴ γ)
+                                                     → β ⊴ γ))
+     h I α (β , β-is-ub , β-is-lb) (β' , β'-is-ub , β'-is-lb) =
+      to-subtype-≡ (λ β → ×-is-prop
+                           (Π-is-prop fe' (λ i → ⊴-is-prop-valued (α i) β))
+                           (Π₂-is-prop fe' (λ γ _ → ⊴-is-prop-valued β γ)))
+                   (⊴-antisym β β' (β-is-lb β' β'-is-ub) (β'-is-lb β β-is-ub))
 
-   ≺-congruence-right : (p q r : Σα) → p ≺ q → q ≈ r → p ≺ r
-   ≺-congruence-right (i , x) (j , y) (k , z) u e =
-    transport ((α i ↓ x) ⊲_) e⁺ u
-     where
-      e⁺ : (α j ↓ y) ≡ (α k ↓ z)
-      e⁺ = ⌜ UAₒ-≃ (α j ↓ y) (α k ↓ z) ⌝⁻¹ e
-
-   ≺-congruence-left : (p q r : Σα) → p ≺ r → p ≈ q → q ≺ r
-   ≺-congruence-left (i , x) (j , y) (k , z) u e = transport (_⊲ (α k ↓ z)) e⁺ u
+  ordinal-of-ordinals-has-small-suprema : Ordinal-Of-Ordinals-Has-Small-Suprema
+  ordinal-of-ordinals-has-small-suprema I α =
+   (α/⁻-Ord α smq , α/⁻-is-upperbound α smq
+                  , α/⁻-is-lowerbound-of-upperbounds α smq)
     where
-     e⁺ : (α i ↓ x) ≡ (α j ↓ y)
-     e⁺ = ⌜ UAₒ-≃ (α i ↓ x) (α j ↓ y) ⌝⁻¹ e
+     smq : Small-Set-Quotients 𝓤
+     smq = small-set-quotients
 
-   ≺-setup : Σ g̃ ꞉ (α⁺ → α⁺ → Ω (𝓤 ⁺)) ,
-              ((p q : Σα) → g̃ [ p ] [ q ] ≡ (p ≺ q) , ≺-is-prop-valued p q)
-   ≺-setup = extend₂ (Ω (𝓤 ⁺)) (λ p q → (p ≺ q) , (≺-is-prop-valued p q))
-              (Ω-is-set (fe (𝓤 ⁺) (𝓤 ⁺)) pe)
-                (λ p q₁ q₂ e → Ω-extensionality (fe (𝓤 ⁺) (𝓤 ⁺)) pe
-                                (λ u → ≺-congruence-right p q₁ q₂ u e)
-                                (λ v → ≺-congruence-right p q₂ q₁
-                                        v (≈-is-symmetric q₁ q₂ e)))
-                λ p₁ p₂ q e → Ω-extensionality (fe (𝓤 ⁺) (𝓤 ⁺)) pe
-                               (λ u → ≺-congruence-left p₁ p₂ q u e)
-                               (λ v → ≺-congruence-left p₂ p₁ q v
-                                       (≈-is-symmetric p₁ p₂ e))
-
-   _≺[Ω]_ : α⁺ → α⁺ → Ω (𝓤 ⁺)
-   _≺[Ω]_ = pr₁ ≺-setup
-
-   _≺_ : α⁺ → α⁺ → 𝓤 ⁺ ̇
-   x ≺ y = (x ≺[Ω] y) holds
-
-   ≺-≡-≺ : (p q : Σα) → [ p ] ≺ [ q ] ≡ p ≺ q
-   ≺-≡-≺ p q = ap pr₁ (pr₂ ≺-setup p q)
-
-   quotient-induction₂ : (P : α⁺ → α⁺ → 𝓦 ̇ )
-                       → ((x y : α⁺) → is-prop (P x y))
-                       → ((p q : Σα) → P [ p ] [ q ])
-                       → (x y : α⁺) → P x y
-   quotient-induction₂ P P-is-prop-valued P-on-[] =
-    quotient-induction (λ x → (y : α⁺) → P x y)
-      (λ x → Π-is-prop (fe 𝓤 _) (λ y → P-is-prop-valued x y))
-      (λ p → quotient-induction (P [ p ]) (λ y → P-is-prop-valued [ p ] y)
-              (P-on-[] p))
-
-   quotient-induction₃ : (P : α⁺ → α⁺ → α⁺ → 𝓦 ̇ )
-                       → ((x y z : α⁺) → is-prop (P x y z))
-                       → ((p q r : Σα) → P [ p ] [ q ] [ r ])
-                       → (x y z : α⁺) → P x y z
-   quotient-induction₃ P P-is-prop-valued P-on-[] =
-    quotient-induction₂ (λ x y → (z : α⁺) → P x y z)
-                        (λ x y → Π-is-prop (fe 𝓤 _) (λ z → P-is-prop-valued x y z))
-                        (λ p q → quotient-induction (P [ p ] [ q ])
-                                  (λ z → P-is-prop-valued [ p ] [ q ] z)
-                                  (P-on-[] p q))
-
-   ≺-is-prop-valued : (x y : α⁺) → is-prop (x ≺ y)
-   ≺-is-prop-valued = quotient-induction₂ (λ x y → is-prop (x ≺ y))
-                       (λ x y → being-prop-is-prop (fe (𝓤 ⁺) (𝓤 ⁺)))
-                       (λ p q → back-transport is-prop (≺-≡-≺ p q) (≺-is-prop-valued p q))
-
-   ≺-is-transitive : transitive _≺_
-   ≺-is-transitive = quotient-induction₃ (λ x y z → x ≺ y → y ≺ z → x ≺ z)
-                      (λ x y z → Π₂-is-prop (fe _ _) (λ _ _ → ≺-is-prop-valued x z))
-                      (λ p q r u v → Idtofun ((≺-≡-≺ p r) ⁻¹)
-                                      (≺-is-transitive p q r (Idtofun (≺-≡-≺ p q) u)
-                                                              (Idtofun (≺-≡-≺ q r) v)))
-
-   ≺-is-extensional : is-extensional _≺_
-   ≺-is-extensional = quotient-induction₂
-     (λ x y → ((z : α⁺) → z ≺ x → z ≺ y) → ((z : α⁺) → z ≺ y → z ≺ x) → x ≡ y)
-     (λ x y → Π₂-is-prop (fe _ _) (λ _ _ → α⁺-is-set))
-     γ
-    where
-     γ : (p q : Σα)
-       → ((z : α⁺) → z ≺ [ p ] → z ≺ [ q ])
-       → ((z : α⁺) → z ≺ [ q ] → z ≺ [ p ])
-       → [ p ] ≡ [ q ]
-     γ p q u v = []-respects-≈ p q goal
-      where
-       goal : p ≈ q
-       goal = ≺-is-extensional-up-to-≈ p q u' v'
-        where
-         u' : (r : Σα) → r ≺ p → r ≺ q
-         u' r l = Idtofun (≺-≡-≺ r q) (u [ r ] (Idtofun (≺-≡-≺ r p ⁻¹) l))
-         v' : (r : Σα) → r ≺ q → r ≺ p
-         v' r l = Idtofun (≺-≡-≺ r p) (v [ r ] (Idtofun (≺-≡-≺ r q ⁻¹) l))
-
-   ≺-is-well-founded : is-well-founded _≺_
-   ≺-is-well-founded = goal
-    where
-     goal' : (p : Σα) → is-accessible _≺_ [ p ]
-     goal' = transfinite-induction _≺_ ≺-is-well-founded
-              (λ p → is-accessible _≺_ [ p ])
-              γ
-      where
-       γ : (p : Σα)
-         → ((q : Σα) → q ≺ p → is-accessible _≺_ [ q ])
-         → is-accessible _≺_ [ p ]
-       γ p IH = next [ p ] IH'
-        where
-         IH' : (y : α⁺) → y ≺ [ p ] → is-accessible _≺_ y
-         IH' = quotient-induction (λ y → y ≺ [ p ] → is-accessible _≺_ y)
-                (λ y → Π-is-prop (fe (𝓤 ⁺) (𝓤 ⁺)) (λ _ → accessibility-is-prop _≺_ fe y))
-                (λ q u → IH q (Idtofun (≺-≡-≺ q p) u))
-     goal : (x : α⁺ ) → is-accessible _≺_ x
-     goal = quotient-induction (λ x → is-accessible _≺_ x)
-             (λ x → accessibility-is-prop _≺_ fe x)
-             goal'
-
-   ≺-is-well-order : is-well-order _≺_
-   ≺-is-well-order =
-    ≺-is-prop-valued , ≺-is-well-founded , ≺-is-extensional , ≺-is-transitive
-
-   _≺⁻_ : Σα → Σα → 𝓤 ̇
-   (i , x) ≺⁻ (j , y) = (α i ↓ x) ⊲⁻ (α j ↓ y)
-
-   ≺-≃-≺⁻ : (p q : Σα) → p ≺ q ≃ p ≺⁻ q
-   ≺-≃-≺⁻ (i , x) (j , y) = ⊲-is-equivalent-to-⊲⁻ (α i ↓ x) (α j ↓ y)
-
-
-   open import UF-Size
-   ≺-has-small-values : (x y : α⁺) → is-small (x ≺ y)
-   ≺-has-small-values = quotient-induction₂ (λ x y → is-small (x ≺ y))
-     (λ x y → being-small-is-prop ua (x ≺ y) 𝓤)
-     (λ p q → (p ≺⁻ q) , (p ≺⁻ q ≃⟨ ≃-sym (≺-≃-≺⁻ p q) ⟩
-                           p ≺  q ≃⟨ idtoeq (p ≺ q) ([ p ] ≺ [ q ]) ((≺-≡-≺ p q) ⁻¹) ⟩
-                           [ p ] ≺ [ q ] ■))
-
-   _≺⁻_ : α⁺ → α⁺ → 𝓤 ̇
-   x ≺⁻ y = pr₁ (≺-has-small-values x y)
-
-   ≺-≃-≺⁻ : {x y : α⁺} → x ≺ y ≃ x ≺⁻ y
-   ≺-≃-≺⁻ {x} {y} = ≃-sym (pr₂ (≺-has-small-values x y))
-
-
-   open import OrdinalsWellOrderTransport fe
-   open order-transfer-lemma₂ α⁺ _≺_ _≺⁻_ (λ x y → ≺-≃-≺⁻)
-
-   ≺⁻-is-transitive : transitive _≺⁻_
-   ≺⁻-is-transitive = is-transitive→ ≺-is-transitive
-
-   ≺⁻-is-prop-valued : is-prop-valued _≺⁻_
-   ≺⁻-is-prop-valued = is-prop-valued→ ≺-is-prop-valued
-
-   ≺⁻-is-extensional : is-extensional _≺⁻_
-   ≺⁻-is-extensional = is-extensional→ ≺-is-extensional
-
-   ≺⁻-is-well-founded : is-well-founded _≺⁻_
-   ≺⁻-is-well-founded = is-well-founded→ ≺-is-well-founded
-
-   ≺⁻-is-well-order : is-well-order _≺⁻_
-   ≺⁻-is-well-order =
-    ≺⁻-is-prop-valued , ≺⁻-is-well-founded , ≺⁻-is-extensional , ≺⁻-is-transitive
-
-   α⁺-Ord : Ordinal 𝓤
-   α⁺-Ord = α⁺ , _≺⁻_ , ≺⁻-is-well-order
-
-   ≺⁻-≃-≺ : {p q : Σα} → [ p ] ≺⁻ [ q ] ≃ p ≺ q
-   ≺⁻-≃-≺ {p} {q} = [ p ] ≺⁻ [ q ] ≃⟨ ≃-sym ≺-≃-≺⁻ ⟩
-                     [ p ] ≺  [ q ] ≃⟨ idtoeq ([ p ] ≺ [ q ]) (p ≺ q) (≺-≡-≺ p q) ⟩
-                     p     ≺   q   ■
-
-   open simulation-∃ pt
-   α⁺-Ord-is-upperbound : (i : I) → α i ⊴ α⁺-Ord
-   α⁺-Ord-is-upperbound i = ([_] ∘ (to-Σα i) , γ)
-    where
-     γ : is-simulation (α i) α⁺-Ord (λ x → [ i , x ])
-     γ = simulation-unprime (α i) α⁺-Ord (λ x → [ i , x ]) σ
-      where
-       σ : is-simulation' (α i) α⁺-Ord (λ x → [ i , x ])
-       σ = init-seg , order-pres
-        where
-         order-pres : is-order-preserving (α i) α⁺-Ord (λ x → [ i , x ])
-         order-pres x y l = ⌜ ≺-≃-≺⁻ ⌝ (Idtofun ((≺-≡-≺ (i , x) (i , y)) ⁻¹)
-                             (to-Σα-is-order-preserving i x y l))
-         init-seg : is-initial-segment' (α i) α⁺-Ord (λ x → [ i , x ])
-         init-seg x = quotient-induction _ (λ y → Π-is-prop (fe 𝓤 𝓤) (λ _ → ∃-is-prop))
-                       claim
-          where
-           claim : (p : Σα) → [ p ] ≺⁻ [ i , x ]
-                 → ∃ y ꞉ ⟨ α i ⟩ , (y ≺⟨ α i ⟩ x) × ([ i , y ] ≡ [ p ])
-           claim p l = ∣ y , k , []-respects-≈ (i , y) p e ∣
-            where
-             abstract
-              lem : Σ y ꞉ ⟨ α i ⟩ , (y ≺⟨ α i ⟩ x) × ((i , y) ≈ p)
-              lem = to-Σα-is-initial-segment-up-to-≈ i x p
-                     (Idtofun (≺-≡-≺ p (i , x)) (⌜ ≺-≃-≺⁻ ⌝⁻¹ l))
-              y : ⟨ α i ⟩
-              y = pr₁ lem
-              k : y ≺⟨ α i ⟩ x
-              k = pr₁ (pr₂ lem)
-              e : (i , y) ≈ p
-              e = pr₂ (pr₂ lem)
-
-   module _
-           (β : Ordinal 𝓤)
-           (β-is-upperbound : (i : I) → α i ⊴ β)
-          where
-
-    open lowerbound-of-upperbounds-proof β β-is-upperbound
-
-    α⁺-is-lowerbound-of-upperbounds : α⁺-Ord ⊴ β
-    α⁺-is-lowerbound-of-upperbounds = f⁺ , f⁺-is-simulation
-     where
-      f⁺ : α⁺ → ⟨ β ⟩
-      f⁺ = pr₁ (quotient-universal-property ⟨ β ⟩ f̃
-                (underlying-type-is-set fe β) f̃-respects-≈)
-      f⁺-≡-f̃ : (p : Σα) → f⁺ [ p ] ≡ f̃ p
-      f⁺-≡-f̃ = pr₂ (quotient-universal-property ⟨ β ⟩ f̃
-                     (underlying-type-is-set fe β) f̃-respects-≈)
-
-      f⁺-is-order-preserving : is-order-preserving α⁺-Ord β f⁺
-      f⁺-is-order-preserving =
-       quotient-induction₂ _ (λ x y → Π-is-prop (fe 𝓤 𝓤)
-                             (λ _ → Prop-valuedness β (f⁺ x) (f⁺ y)))
-                             lem
-        where
-         lem : (p q : Σα) → [ p ] ≺⁻ [ q ]
-             → f⁺ [ p ] ≺⟨ β ⟩ f⁺ [ q ]
-         lem p q u = transport₂ (λ -₁ -₂ → -₁ ≺⟨ β ⟩ -₂)
-                      ((f⁺-≡-f̃ p) ⁻¹) ((f⁺-≡-f̃ q) ⁻¹)
-                      (f̃-is-order-preserving p q (⌜ ≺⁻-≃-≺ ⌝ u))
-
-      f⁺-is-simulation : is-simulation α⁺-Ord β f⁺
-      f⁺-is-simulation = simulation-unprime α⁺-Ord β f⁺ σ
-       where
-        σ : is-simulation' α⁺-Ord β f⁺
-        σ = init-seg , f⁺-is-order-preserving
-         where
-          init-seg : is-initial-segment' α⁺-Ord β f⁺
-          init-seg = quotient-induction _ (λ x → Π₂-is-prop (fe _ _) (λ _ _ → ∃-is-prop))
-                      τ
-           where
-            τ : (p : Σα) (y : ⟨ β ⟩)
-              → y ≺⟨ β ⟩ f⁺ [ p ]
-              → ∃ x ꞉ α⁺ , (x ≺⁻ [ p ]) × (f⁺ x ≡ y)
-            τ p y l = ∣ [ q ] , k' , e' ∣
-             where
-              abstract
-               lem : Σ q ꞉ Σα , (q ≺ p) × (f̃ q ≡ y)
-               lem = f̃-is-initial-segment p y (transport (λ - → y ≺⟨ β ⟩ -)
-                      (f⁺-≡-f̃ p) l)
-               q : Σα
-               q = pr₁ lem
-               k : q ≺ p
-               k = pr₁ (pr₂ lem)
-               k' : [ q ] ≺⁻ [ p ]
-               k' = ⌜ ≺⁻-≃-≺ {q} {p} ⌝⁻¹ k
-               e : f̃ q ≡ y
-               e = pr₂ (pr₂ lem)
-               e' : f⁺ [ q ] ≡ y
-               e' = f⁺ [ q ] ≡⟨ f⁺-≡-f̃ q ⟩
-                    f̃    q   ≡⟨ e ⟩
-                    y        ∎
-
--}
 \end{code}
+
+TODO: Formalize Martín's alternative construction of the least upper bound.
