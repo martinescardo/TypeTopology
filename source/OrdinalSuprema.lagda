@@ -43,6 +43,12 @@ private
  pe' : Prop-Ext
  pe' {𝓤} = pe 𝓤
 
+----
+-- TODO: Move this
+≃ₒ-to-⊴ : (α : Ordinal 𝓤) (β : Ordinal 𝓥) → α ≃ₒ β → α ⊴ β
+≃ₒ-to-⊴ α β (f , e) = f , (order-equivs-are-simulations α β f e)
+----
+
 open import UF-Quotient pt fe' pe'
 
 module _
@@ -179,8 +185,8 @@ module _
    β-is-upperbound-≼ : (i : I) → α i ≼ β
    β-is-upperbound-≼ i = ⊴-gives-≼ (α i) β (β-is-upperbound i)
 
-   f̃-respects-≈ : (p q : Σα) → p ≈ q → f̃ p ≡ f̃ q
-   f̃-respects-≈ (i , x) (j , y) e = ↓-lc β (f̃ (i , x)) (f̃ (j , y)) goal
+   f̃-respects-≈ : {p q : Σα} → p ≈ q → f̃ p ≡ f̃ q
+   f̃-respects-≈ {(i , x)} {(j , y)} e = ↓-lc β (f̃ (i , x)) (f̃ (j , y)) goal
     where
      goal = (β ↓ f̃ (i , x)) ≡⟨ ⦅1⦆ ⟩
             (α i ↓ x)       ≡⟨ ⦅2⦆ ⟩
@@ -323,9 +329,91 @@ module _
  α/-Ord : Ordinal (𝓤 ⁺)
  α/-Ord = α/ , _≺/_ , ≺/-is-well-order
 
+ α/-is-upperbound : (i : I) → α i ⊴ α/-Ord
+ α/-is-upperbound i = ([_] ∘ ι i , sim)
+  where
+   sim : is-simulation (α i) α/-Ord (λ x → [ i , x ])
+   sim = simulation-unprime pt (α i) α/-Ord (λ x → [ i , x ])
+          (init-seg , order-pres)
+    where
+     order-pres : is-order-preserving (α i) α/-Ord (λ x → [ i , x ])
+     order-pres x y l = ≺-to-≺/ {i , x} {i , y} (ι-is-order-preserving i x y l)
+     init-seg : is-initial-segment' pt (α i) α/-Ord (λ x → [ i , x ])
+     init-seg x = /-induction' ≈R (λ y → Π-is-prop fe' λ _ → ∃-is-prop) claim
+      where
+       claim : (p : Σα) → [ p ] ≺/ [ i , x ]
+             → ∃ y ꞉ ⟨ α i ⟩ , (y ≺⟨ α i ⟩ x) × ([ i , y ] ≡ [ p ])
+       claim p l = ∣ y , k , η/-identifies-related-points ≈R e ∣
+        where
+         abstract
+          lem : Σ y ꞉ ⟨ α i ⟩ , (y ≺⟨ α i ⟩ x) × ((i , y) ≈ p)
+          lem = ι-is-initial-segment-up-to-≈ i x p (≺/-to-≺ l)
+          y : ⟨ α i ⟩
+          y = pr₁ lem
+          k : y ≺⟨ α i ⟩ x
+          k = pr₁ (pr₂ lem)
+          e : (i , y) ≈ p
+          e = pr₂ (pr₂ lem)
+
+ module _
+         (β : Ordinal 𝓤)
+         (β-is-upperbound : (i : I) → α i ⊴ β)
+        where
+
+  open lowerbound-of-upperbounds-proof β β-is-upperbound
+
+  α/-is-lowerbound-of-upperbounds : α/-Ord ⊴ β
+  α/-is-lowerbound-of-upperbounds = f/ , f/-is-simulation
+   where
+    f/ : α/ → ⟨ β ⟩
+    f/ = mediating-map/ ≈R (underlying-type-is-set fe β) f̃ f̃-respects-≈
+    f/-≡-f̃ : {p : Σα} → f/ [ p ] ≡ f̃ p
+    f/-≡-f̃ {p} = universality-triangle/ ≈R (underlying-type-is-set fe β)
+                  f̃ f̃-respects-≈ p
+    f/-is-order-preserving : is-order-preserving α/-Ord β f/
+    f/-is-order-preserving =
+     /-induction₂ ≈R prp ρ
+      where
+       prp : (x y : α/) → is-prop (x ≺/ y → f/ x ≺⟨ β ⟩ f/ y)
+       prp x y = Π-is-prop fe' (λ _ → Prop-valuedness β (f/ x) (f/ y))
+       ρ : (p q : Σα) → [ p ] ≺/ [ q ] → f/ [ p ] ≺⟨ β ⟩ f/ [ q ]
+       ρ p q l = back-transport₂ (λ -₁ -₂ → -₁ ≺⟨ β ⟩ -₂)
+                  f/-≡-f̃ f/-≡-f̃
+                  (f̃-is-order-preserving p q (≺/-to-≺ l))
+    f/-is-simulation : is-simulation α/-Ord β f/
+    f/-is-simulation = simulation-unprime pt α/-Ord β f/ σ
+     where
+      σ : is-simulation' pt α/-Ord β f/
+      σ = init-seg , f/-is-order-preserving
+       where
+        init-seg : is-initial-segment' pt α/-Ord β f/
+        init-seg = /-induction' ≈R prp ρ
+         where
+          prp : (x : α/)
+              → is-prop ((y : ⟨ β ⟩) → y ≺⟨ β ⟩ f/ x
+                                     → ∃ x' ꞉ α/ , (x' ≺/ x) × (f/ x' ≡ y))
+          prp x = Π₂-is-prop fe' (λ _ _ → ∃-is-prop)
+          ρ : (p : Σα) (y : ⟨ β ⟩)
+            → y ≺⟨ β ⟩ f/ [ p ]
+            → ∃ x' ꞉ α/ , (x' ≺/ [ p ]) × (f/ x' ≡ y)
+          ρ p y l = ∣ [ q ] , k , e ∣
+           where
+            abstract
+             lem : Σ q ꞉ Σα , (q ≺ p) × (f̃ q ≡ y)
+             lem = f̃-is-initial-segment p y
+                    (transport (λ - → y ≺⟨ β ⟩ -) f/-≡-f̃ l)
+             q : Σα
+             q = pr₁ lem
+             k : [ q ] ≺/ [ p ]
+             k = ≺-to-≺/ {q} {p} (pr₁ (pr₂ lem))
+             e : f/ [ q ] ≡ y
+             e = f/ [ q ] ≡⟨ f/-≡-f̃ {q}    ⟩
+                 f̃    q   ≡⟨ pr₂ (pr₂ lem) ⟩
+                 y        ∎
+
 \end{code}
 
-TODO: We now resize...
+TODO: Finally, we resize... (Use Small-Set-Quotients from other branch)
 
 \begin{code}
 
@@ -358,20 +446,34 @@ TODO: We now resize...
  ≺/⁻-to-≺/ : {x y : α/} → x ≺/⁻ y → x ≺/ y
  ≺/⁻-to-≺/ = ⌜ ≺/-≃-≺/⁻ ⌝⁻¹
 
- α/-Ord-is-upperbound : (i : I) → α i ⊴ α/-Ord
- α/-Ord-is-upperbound i = ([_] ∘ ι i , sim)
-  where
-   sim : is-simulation (α i) α/-Ord (λ x → [ i , x ])
-   sim = simulation-unprime pt (α i) α/-Ord (λ x → [ i , x ])
-          (init-seg , order-pres)
-    where
-     order-pres : is-order-preserving (α i) α/-Ord (λ x → [ i , x ])
-     order-pres x y l = ≺-to-≺/ {i , x} {i , y} (ι-is-order-preserving i x y l)
-     init-seg : is-initial-segment' pt (α i) α/-Ord (λ x → [ i , x ])
-     init-seg x = /-induction' ≈R (λ y → Π-is-prop fe' λ _ → ∃-is-prop) claim
-      where
-       claim : {!!}
-       claim = {!!}
+ module _
+         {X : 𝓤 ̇  }
+         (φ : α/ ≃ X)
+        where
+
+  private
+   res : Σ s ꞉ OrdinalStructure X , (X , s) ≃ₒ α/-Ord
+   res = transfer-structure X α/-Ord (≃-sym φ) (_≺/⁻_ , (λ x y → ≺/-≃-≺/⁻))
+
+  α/⁻-Ord : Ordinal 𝓤
+  α/⁻-Ord = X , pr₁ res
+
+  α/-≃-α/⁻ : α/-Ord ≃ₒ α/⁻-Ord
+  α/-≃-α/⁻ = ≃ₒ-sym α/⁻-Ord α/-Ord (pr₂ res)
+
+  α/⁻-is-upperbound : (i : I) → α i ⊴ α/⁻-Ord
+  α/⁻-is-upperbound i = ⊴-trans (α i) α/-Ord α/⁻-Ord
+                         (α/-is-upperbound i)
+                         (≃ₒ-to-⊴ α/-Ord α/⁻-Ord α/-≃-α/⁻)
+
+  α/⁻-is-lowerbound-of-upperbounds : (β : Ordinal 𝓤)
+                                   → ((i : I) → α i ⊴ β)
+                                   → α/⁻-Ord ⊴ β
+  α/⁻-is-lowerbound-of-upperbounds β β-is-ub =
+   ⊴-trans α/⁻-Ord α/-Ord β (≃ₒ-to-⊴ α/⁻-Ord α/-Ord (pr₂ res))
+                            (α/-is-lowerbound-of-upperbounds β β-is-ub)
+
+\end{code}
 
 
 
