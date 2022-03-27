@@ -199,6 +199,7 @@ import OrdinalNotationInterpretation
 import OrdinalExtendedNotationInterpretation
 import OrdinalNotions
 import OrdinalOfOrdinals
+import OrdinalOfOrdinalsSuprema        -- By Tom de Jong
 import OrdinalOfTruthValues
 import Ordinals
 import OrdinalsClosure
