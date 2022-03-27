@@ -21,7 +21,7 @@ open import OrdinalNotions
 open import OrdinalsType
 open import CanonicalMapNotation
 
-open import UF-Base hiding (_≈_)
+open import UF-Base
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
 open import UF-Embeddings
