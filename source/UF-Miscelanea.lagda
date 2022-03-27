@@ -31,14 +31,24 @@ discrete-types-are-sets : {X : 𝓤 ̇ } → is-discrete X → is-set X
 discrete-types-are-sets d = Id-collapsibles-are-sets (discrete-is-Id-collapsible d)
 
 being-isolated-is-prop : FunExt → {X : 𝓤 ̇ } (x : X) → is-prop (is-isolated x)
-being-isolated-is-prop {𝓤} fe x i = γ i
+being-isolated-is-prop {𝓤} fe x = prop-criterion γ
  where
-  γ : is-prop (is-isolated x)
-  γ = Π-is-prop (fe 𝓤 𝓤)
-        (λ x → sum-of-contradictory-props
-                (local-hedberg _ (λ y → decidable-is-collapsible (i y)) x)
-                (negations-are-props (fe 𝓤 𝓤₀))
-                (λ p n → n p))
+  γ : is-isolated x → is-prop (is-isolated x)
+  γ i = Π-is-prop (fe 𝓤 𝓤)
+         (λ x → sum-of-contradictory-props
+                 (local-hedberg _ (λ y → decidable-is-collapsible (i y)) x)
+                 (negations-are-props (fe 𝓤 𝓤₀))
+                 (λ p n → n p))
+
+being-isolated'-is-prop : FunExt → {X : 𝓤 ̇ } (x : X) → is-prop (is-isolated' x)
+being-isolated'-is-prop {𝓤} fe x = prop-criterion γ
+ where
+  γ : is-isolated' x → is-prop (is-isolated' x)
+  γ i = Π-is-prop (fe 𝓤 𝓤)
+         (λ x → sum-of-contradictory-props
+                 (local-hedberg' _ (λ y → decidable-is-collapsible (i y)) x)
+                 (negations-are-props (fe 𝓤 𝓤₀))
+                 (λ p n → n p))
 
 being-discrete-is-prop : FunExt → {X : 𝓤 ̇ } → is-prop (is-discrete X)
 being-discrete-is-prop {𝓤} fe {X} = Π-is-prop (fe 𝓤 𝓤) (being-isolated-is-prop fe)

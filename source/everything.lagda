@@ -54,6 +54,7 @@ import Dcpos
 import DecidabilityOfNonContinuity
 import DecidableAndDetachable
 import Dedekind
+import Density
 import DisconnectedTypes
 import DiscreteAndSeparated
 import Dominance
@@ -170,6 +171,8 @@ import OrdinalsShulmanTaboo
 import OrdinalsType
 import OrdinalsWellOrderArithmetic
 import OrdinalsWellOrderTransport
+import P2
+import PairFun
 import PartialElements
 import PCF
 import PCFModules

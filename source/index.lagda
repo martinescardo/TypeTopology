@@ -55,7 +55,7 @@
      compactness of the Cantor type using countable Tychonoff.
      (https://www.cs.bham.ac.uk/~mhe/TypeTopology/UnsafeModulesIndex.html)
 
-   * In our last count, this development has 85000 lines, including
+   * In our last count, this development has 91000 lines, including
      comments and blank lines.
 
    * A module dependency graph is available, updated manually from
@@ -131,6 +131,7 @@ import DcpoDinfinity                   -- By Tom de Jong
 import DecidabilityOfNonContinuity
 import DecidableAndDetachable
 import Dedekind
+import Density
 import DisconnectedTypes
 import DiscreteAndSeparated
 import Dyadic
@@ -206,6 +207,8 @@ import OrdinalsFreeGroup
 import OrdinalsType
 import OrdinalsWellOrderArithmetic
 import OrdinalsWellOrderTransport
+import P2
+import PairFun
 import PartialElements
 import Pi
 import Plus

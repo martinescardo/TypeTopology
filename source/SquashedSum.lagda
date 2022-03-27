@@ -18,10 +18,7 @@ fe₀ = fe 𝓤₀ 𝓤₀
 
 open import Two-Properties
 open import Plus-Properties
-open import UF-Base
-open import UF-Subsingletons
-open import UF-Equiv
-open import UF-Embeddings
+open import Density
 open import GenericConvergentSequence
 open import CompactTypes
 open import ConvergentSequenceCompact fe₀
@@ -30,7 +27,12 @@ open import ExtendedSumCompact fe
 open import DiscreteAndSeparated
 open import CanonicalMapNotation
 open import SigmaDiscreteAndTotallySeparated
+open import PairFun
 
+open import UF-Base
+open import UF-Subsingletons
+open import UF-Equiv
+open import UF-Embeddings
 open import UF-Miscelanea
 
 \end{code}

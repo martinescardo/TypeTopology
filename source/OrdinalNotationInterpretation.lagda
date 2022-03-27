@@ -131,6 +131,8 @@ open import TotallySeparated
 open import SquashedSum fe
 open import SquashedCantor fe hiding (Κ)
 open import DiscreteAndSeparated
+open import Density
+open import PairFun
 
 open import UF-Subsingletons
 open import UF-Retracts
