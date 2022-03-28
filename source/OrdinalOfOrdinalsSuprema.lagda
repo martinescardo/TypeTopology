@@ -585,3 +585,112 @@ ordinal-of-ordinals-has-small-suprema smq I α =
 \end{code}
 
 TODO: Formalize Martín's alternative construction of the least upper bound.
+
+\begin{code}
+
+open import UF-EquivalenceExamples
+open import UF-ImageAndSurjection
+open ImageAndSurjection pt
+
+module _
+        {I : 𝓤 ̇  }
+        (α : I → Ordinal 𝓤)
+       where
+
+ σ : (Σ i ꞉ I , ⟨ α i ⟩) → Ordinal 𝓤
+ σ (i , x) = α i ↓ x
+
+ image-σ-alt : image σ ≃ (Σ β ꞉ Ordinal 𝓤 , ∃ i ꞉ I , β ⊲ α i)
+ image-σ-alt = Σ-cong ϕ
+  where
+   ϕ : (β : Ordinal 𝓤) → β ∈image σ ≃ (∃ i ꞉ I , β ⊲ α i)
+   ϕ β = ∥ Σ p ꞉ domain σ , σ p ≡ β ∥              ≃⟨ ∥∥-cong pt Σ-assoc ⟩
+         ∥ Σ i ꞉ I , Σ x ꞉ ⟨ α i ⟩ , α i ↓ x ≡ β ∥ ≃⟨ ∥∥-cong pt ψ       ⟩
+         (∃ i ꞉ I , β ⊲ α i)                       ■
+    where
+     ψ : (Σ i ꞉ I , Σ x ꞉ ⟨ α i ⟩ , α i ↓ x ≡ β) ≃ (Σ i ꞉ I , β ⊲ α i)
+     ψ = Σ-cong (λ i → Σ-cong (λ x → ≡-flip))
+
+ α⁺ : 𝓤 ⁺ ̇
+ α⁺ = Σ β ꞉ Ordinal 𝓤 , ∃ i ꞉ I , β ⊲ α i
+
+ ⟨_⟩⁺ : α⁺ → Ordinal 𝓤
+ ⟨_⟩⁺ = pr₁
+
+ _≺_ : α⁺ → α⁺ → 𝓤 ⁺ ̇
+ (β , _) ≺ (γ , _) = β ⊲ γ
+
+ ≺-is-prop-valued : is-prop-valued _≺_
+ ≺-is-prop-valued (β , _) (γ , _) = ⊲-is-prop-valued β γ
+
+ ≺-is-transitive : transitive _≺_
+ ≺-is-transitive (β , _) (γ , _) (δ , _) = ⊲-is-transitive β γ δ
+
+ ≺-is-extensional : is-extensional _≺_
+ ≺-is-extensional (β , s) (γ , t) u v = to-subtype-≡ (λ _ → ∃-is-prop) goal
+  where
+   goal : β ≡ γ
+   goal = ⊲-is-extensional β γ u' v'
+    where
+     u' : (δ : Ordinal 𝓤) → δ ⊲ β → δ ⊲ γ
+     u' δ l = ∥∥-rec (⊲-is-prop-valued δ γ) h s
+      where
+       h : (Σ i ꞉ I , β ⊲ α i) → δ ⊲ γ
+       h (i , k) = u (δ , ∣ i , m ∣) l
+        where
+         m : δ ⊲ α i
+         m = ⊲-is-transitive δ β (α i) l k
+     v' : (δ : Ordinal 𝓤) → δ ⊲ γ → δ ⊲ β
+     v' δ l = ∥∥-rec (⊲-is-prop-valued δ β) h t
+      where
+       h : (Σ i ꞉ I , γ ⊲ α i) → δ ⊲ β
+       h (i , k) = v (δ , ∣ i , m ∣) l
+        where
+         m : δ ⊲ α i
+         m = ⊲-is-transitive δ γ (α i) l k
+
+ ≺-is-well-founded : is-well-founded _≺_
+ ≺-is-well-founded = goal
+  where
+   lemma : (β : Ordinal 𝓤) (s : ∃ i ꞉ I , β ⊲ α i)
+         → is-accessible _≺_ (β , s)
+   lemma = transfinite-induction _⊲_ ⊲-is-well-founded _ ϕ
+    where
+     ϕ : (β : Ordinal 𝓤)
+       → ((γ : Ordinal 𝓤) → γ ⊲ β
+                          → (t : ∃ i ꞉ I , γ ⊲ α i)
+                          → is-accessible _≺_ (γ , t))
+       → (s : ∃ i ꞉ I , β ⊲ α i) → is-accessible _≺_ (β , s)
+     ϕ β IH s = next (β , s) IH'
+      where
+       IH' : (γ : α⁺) → γ ≺ (β , s) → is-accessible _≺_ γ
+       IH' (γ , t) l = IH γ l t
+   goal : (β : α⁺) → is-accessible _≺_ β
+   goal (β , s) = lemma β s
+
+ ≺-is-well-order : is-well-order _≺_
+ ≺-is-well-order =
+  ≺-is-prop-valued , ≺-is-well-founded , ≺-is-extensional , ≺-is-transitive
+
+ α⁺-Ord : Ordinal (𝓤 ⁺)
+ α⁺-Ord = α⁺ , _≺_ , ≺-is-well-order
+
+ α⁺-is-upperbound : (i : I) → α i ⊴ α⁺-Ord
+ α⁺-is-upperbound i = f , f-is-initial-segment , f-is-order-preserving
+  where
+   f : ⟨ α i ⟩ → α⁺
+   f x = α i ↓ x , ∣ i , x , refl ∣
+   f-is-order-preserving : is-order-preserving (α i) α⁺-Ord f
+   f-is-order-preserving x y l = goal
+    where
+     goal : (α i ↓ x) ⊲ (α i ↓ y)
+     goal = (x , l) , ((iterated-↓ (α i) y x l) ⁻¹)
+   f-is-initial-segment : is-initial-segment (α i) α⁺-Ord f
+   f-is-initial-segment x (β , _) ((x' , l) , e) =
+    (x' , l , to-subtype-≡ (λ _ → ∃-is-prop) (e' ⁻¹))
+     where
+      e' = β                      ≡⟨ e ⟩
+           ((α i ↓ x) ↓ (x' , l)) ≡⟨ iterated-↓ (α i) x x' l ⟩
+           (α i ↓ x')             ∎
+
+\end{code}
