@@ -693,7 +693,7 @@ module _
            ((α i ↓ x) ↓ (x' , l)) ≡⟨ iterated-↓ (α i) x x' l ⟩
            (α i ↓ x')             ∎
 
- module _
+ module lowerbound-of-upperbounds-proof
          (β : Ordinal 𝓤)
          (β-is-upperbound : (i : I) → α i ⊴ β)
         where
@@ -711,6 +711,8 @@ module _
 TODO: Put some comments explaining what's going on here...
 
 \begin{code}
+
+  private
 
    module _ (γ : Ordinal 𝓤) where
 
@@ -741,8 +743,8 @@ TODO: Put some comments explaining what's going on here...
                         → y ≺⟨ β ⟩ f̃ γ s
                         → Σ γ' ꞉ Ordinal 𝓤 , Σ s' ꞉ (Σ j ꞉ I , γ' ⊲ α j)
                                            , (γ' ⊲ γ) × (f̃ γ' s' ≡ y)
-   f̃-is-initial-segment {γ} (i , x , refl) y l =
-    (β ↓ y , (i , x' , e') , m , (e ⁻¹))
+   f̃-is-initial-segment {γ} (i , x , e) y l =
+    (β ↓ y , (i , x' , e₁) , back-transport ((β ↓ y) ⊲_) e m , (e₂ ⁻¹))
      where
       k : (β ↓ y) ⊲ (β ↓ f i x)
       k = ↓-preserves-order β y (f i x) l
@@ -750,24 +752,89 @@ TODO: Put some comments explaining what's going on here...
       m = back-transport ((β ↓ y) ⊲_) (f-key-property i x) k
       x' : ⟨ α i ⟩
       x' = pr₁ (pr₁ m)
-      e' : β ↓ y ≡ α i ↓ x'
-      e' = pr₂ m ∙ iterated-↓ (α i) x x' (pr₂ (pr₁ m))
-      e : y ≡ f i x'
-      e = ↓-lc β y (f i x')
-           (β   ↓ y      ≡⟨ e' ⟩
-            α i ↓ x'     ≡⟨ f-key-property i x' ⟩
-            β   ↓ f i x' ∎)
+      e₁ : β ↓ y ≡ α i ↓ x'
+      e₁ = pr₂ m ∙ iterated-↓ (α i) x x' (pr₂ (pr₁ m))
+      e₂ : y ≡ f i x'
+      e₂ = ↓-lc β y (f i x')
+            (β   ↓ y      ≡⟨ e₁ ⟩
+             α i ↓ x'     ≡⟨ f-key-property i x' ⟩
+             β   ↓ f i x' ∎)
 
    f̅-setup : (γ : Ordinal 𝓤)
            → Σ f̅ ꞉ ((∃ i ꞉ I , γ ⊲ α i) → ⟨ β ⟩) , f̃ γ ∼ f̅ ∘ ∣_∣
    f̅-setup γ = wconstant-map-to-set-factors-through-truncation-of-domain
                 (underlying-type-is-set fe β) (f̃ γ) (f̃-is-constant γ)
 
-   f̅ : α⁺ → ⟨ β ⟩
-   f̅ (γ , s) = pr₁ (f̅-setup γ) s
+  f̅ : α⁺ → ⟨ β ⟩
+  f̅ (γ , s) = pr₁ (f̅-setup γ) s
 
-   f̅-key-property : (γ : Ordinal 𝓤) (s : Σ i ꞉ I , γ ⊲ α i)
-                  → f̃ γ s ≡ f̅ (γ , ∣ s ∣)
-   f̅-key-property γ = pr₂ (f̅-setup γ)
+  f̅-key-property : (γ : Ordinal 𝓤) (s : Σ i ꞉ I , γ ⊲ α i)
+                   (t : ∃ i ꞉ I , γ ⊲ α i)
+                 → f̃ γ s ≡ f̅ (γ , t)
+  f̅-key-property γ s t =
+   f̃ γ s         ≡⟨ pr₂ (f̅-setup γ) s                        ⟩
+   f̅ (γ , ∣ s ∣) ≡⟨ ap (λ - → f̅ (γ , -)) (∃-is-prop ∣ s ∣ t) ⟩
+   f̅ (γ , t)     ∎
+
+  f̅-is-order-preserving : is-order-preserving α⁺-Ord β f̅
+  f̅-is-order-preserving (γ , s) (γ' , s') l =
+   ∥∥-rec₂ (Prop-valuedness β (f̅ (γ , s)) (f̅ (γ' , s'))) h s s'
+    where
+     h : (Σ i ꞉ I , γ ⊲ α i) → (Σ j ꞉ I , γ' ⊲ α j)
+       → f̅ (γ , s) ≺⟨ β ⟩ f̅ (γ' , s')
+     h (i , u) (j , v) = transport₂ (λ -₁ -₂ → -₁ ≺⟨ β ⟩ -₂)
+                                    (f̅-key-property γ  (i , u) s )
+                                    (f̅-key-property γ' (j , v) s')
+                                    (f̃-is-order-preserving (i , u) (j , v) l)
+
+  f̅-is-initial-segment : is-initial-segment α⁺-Ord β f̅
+  f̅-is-initial-segment (γ , s) y l = (β ↓ y , t) , k , e
+   where
+    claim : 𝓤 ⁺ ̇
+    claim = ((β ↓ y) ⊲ γ) × (Σ r ꞉ (∃ i ꞉ I , (β ↓ y) ⊲ α i)
+                                            , f̅ ((β ↓ y) , r) ≡ y)
+    claim-is-prop : is-prop claim
+    claim-is-prop = ×-is-prop (⊲-is-prop-valued (β ↓ y) γ)
+                              (Σ-is-prop ∃-is-prop
+                                         (λ k → underlying-type-is-set fe β))
+    proof-of-claim : ((β ↓ y) ⊲ γ) × (Σ r ꞉ (∃ i ꞉ I , (β ↓ y) ⊲ α i)
+                                                     , f̅ ((β ↓ y) , r) ≡ y)
+    proof-of-claim = ∥∥-rec claim-is-prop h s
+     where
+      h : (Σ i ꞉ I , γ ⊲ α i) → claim
+      h u = pr₁ (pr₂ lem) , ∣ v ∣ , e'
+       where
+        lem : Σ v ꞉ (Σ j ꞉ I , (β ↓ y) ⊲ α j)
+                             , ((β ↓ y) ⊲ γ) × (f̃ (β ↓ y) v ≡ y)
+        lem = pr₂ (f̃-is-initial-segment u y l')
+         where
+          l' : y ≺⟨ β ⟩ f̃ γ u
+          l' = back-transport (λ - → y ≺⟨ β ⟩ -) (f̅-key-property γ u s) l
+        v : Σ j ꞉ I , (β ↓ y) ⊲ α j
+        v = pr₁ lem
+        e' : f̅ ((β ↓ y) , ∣ v ∣) ≡ y
+        e' = (f̅-key-property (β ↓ y) v ∣ v ∣) ⁻¹ ∙ pr₂ (pr₂ lem)
+    t : ∃ i ꞉ I , (β ↓ y) ⊲ α i
+    t = pr₁ (pr₂ proof-of-claim)
+    k : (β ↓ y) ⊲ γ
+    k = pr₁ proof-of-claim
+    e : f̅ ((β ↓ y) , t) ≡ y
+    e = pr₂ (pr₂ proof-of-claim)
+
+ α⁺-is-lowerbound-of-upperbounds : (β : Ordinal 𝓤)
+                                 → ((i : I) → α i ⊴ β)
+                                 → α⁺-Ord ⊴ β
+ α⁺-is-lowerbound-of-upperbounds β β-is-ub = f̅ , f̅-is-initial-segment
+                                               , f̅-is-order-preserving
+  where
+   open lowerbound-of-upperbounds-proof β β-is-ub
+
+\end{code}
+
+TODO: We resize...
+
+\begin{code}
+
+
 
 \end{code}
