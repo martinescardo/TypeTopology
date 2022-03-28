@@ -693,4 +693,81 @@ module _
            ((α i ↓ x) ↓ (x' , l)) ≡⟨ iterated-↓ (α i) x x' l ⟩
            (α i ↓ x')             ∎
 
+ module _
+         (β : Ordinal 𝓤)
+         (β-is-upperbound : (i : I) → α i ⊴ β)
+        where
+
+  private
+   f : (i : I) → ⟨ α i ⟩ → ⟨ β ⟩
+   f i x = pr₁ (β-is-upperbound i) x
+
+   f-key-property : (i : I) (x : ⟨ α i ⟩) → α i ↓ x ≡ β ↓ (f i x)
+   f-key-property i x =
+    pr₂ (⊴-gives-≼ (α i) β (β-is-upperbound i) (α i ↓ x) (x , refl))
+
+\end{code}
+
+TODO: Put some comments explaining what's going on here...
+
+\begin{code}
+
+   module _ (γ : Ordinal 𝓤) where
+
+    f̃ : (Σ i ꞉ I , γ ⊲ α i) → ⟨ β ⟩
+    f̃ (i , x , _) = f i x
+
+    f̃-is-constant : (p q : domain f̃) → f̃ p ≡ f̃ q
+    f̃-is-constant (i , x , e) (i' , x' , e') = ↓-lc β (f i x) (f i' x') p
+     where
+      p = β ↓ f i x   ≡⟨ (f-key-property i x) ⁻¹ ⟩
+          α i ↓ x     ≡⟨ e ⁻¹                    ⟩
+          γ           ≡⟨ e'                      ⟩
+          α i' ↓ x'   ≡⟨ f-key-property i' x'    ⟩
+          β ↓ f i' x' ∎
+
+   f̃-is-order-preserving : {γ γ' : Ordinal 𝓤}
+                           (s  : Σ i ꞉ I , γ  ⊲ α i)
+                           (s' : Σ j ꞉ I , γ' ⊲ α j)
+                         → γ ⊲ γ'
+                         → f̃ γ s ≺⟨ β ⟩ f̃ γ' s'
+   f̃-is-order-preserving {γ} {γ'} (i , x , e) (i' , x' , e') l =
+    ↓-reflects-order β (f i x) (f i' x') k
+     where
+      k : (β ↓ f i x) ⊲ (β ↓ f i' x')
+      k = transport₂ _⊲_ (e ∙ f-key-property i x) (e' ∙ f-key-property i' x') l
+
+   f̃-is-initial-segment : {γ : Ordinal 𝓤} (s : Σ i ꞉ I , γ ⊲ α i) (y : ⟨ β ⟩)
+                        → y ≺⟨ β ⟩ f̃ γ s
+                        → Σ γ' ꞉ Ordinal 𝓤 , Σ s' ꞉ (Σ j ꞉ I , γ' ⊲ α j)
+                                           , (γ' ⊲ γ) × (f̃ γ' s' ≡ y)
+   f̃-is-initial-segment {γ} (i , x , refl) y l =
+    (β ↓ y , (i , x' , e') , m , (e ⁻¹))
+     where
+      k : (β ↓ y) ⊲ (β ↓ f i x)
+      k = ↓-preserves-order β y (f i x) l
+      m : (β ↓ y) ⊲ (α i ↓ x)
+      m = back-transport ((β ↓ y) ⊲_) (f-key-property i x) k
+      x' : ⟨ α i ⟩
+      x' = pr₁ (pr₁ m)
+      e' : β ↓ y ≡ α i ↓ x'
+      e' = pr₂ m ∙ iterated-↓ (α i) x x' (pr₂ (pr₁ m))
+      e : y ≡ f i x'
+      e = ↓-lc β y (f i x')
+           (β   ↓ y      ≡⟨ e' ⟩
+            α i ↓ x'     ≡⟨ f-key-property i x' ⟩
+            β   ↓ f i x' ∎)
+
+   f̅-setup : (γ : Ordinal 𝓤)
+           → Σ f̅ ꞉ ((∃ i ꞉ I , γ ⊲ α i) → ⟨ β ⟩) , f̃ γ ∼ f̅ ∘ ∣_∣
+   f̅-setup γ = wconstant-map-to-set-factors-through-truncation-of-domain
+                (underlying-type-is-set fe β) (f̃ γ) (f̃-is-constant γ)
+
+   f̅ : α⁺ → ⟨ β ⟩
+   f̅ (γ , s) = pr₁ (f̅-setup γ) s
+
+   f̅-key-property : (γ : Ordinal 𝓤) (s : Σ i ꞉ I , γ ⊲ α i)
+                  → f̃ γ s ≡ f̅ (γ , ∣ s ∣)
+   f̅-key-property γ = pr₂ (f̅-setup γ)
+
 \end{code}
