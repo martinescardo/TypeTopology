@@ -24,6 +24,10 @@ open import Two-Properties
 is-pseudo-inhabited : 𝓤 ̇ → 𝓤 ̇
 is-pseudo-inhabited P = is-equiv (κ P)
 
+is-pseudo-inhabited' : 𝓤 ̇ → 𝓤 ̇
+is-pseudo-inhabited' P = is-section (κ P)
+
+
 retraction-of-κ-is-section : {P : 𝓤 ̇ }
                            → is-prop P
                            → (r : (P → 𝟚) → 𝟚)
@@ -49,14 +53,14 @@ retraction-of-κ-is-section {𝓤} {P} i r h f = IV
 
 pseudo-inhabitedness-criterion : {P : 𝓤 ̇ }
                                → is-prop P
-                               → is-section (κ P)
-                               → is-pseudo-inhabited P
+                               → is-pseudo-inhabited' P
+                               → is-pseudo-inhabited  P
 pseudo-inhabitedness-criterion {𝓤} {P} i (r , rκ) =
  qinvs-are-equivs (κ P) (r , rκ , retraction-of-κ-is-section i r rκ)
 
 pseudo-inhabitedness-criterion-necessity : {P : 𝓤 ̇ }
                                          → is-pseudo-inhabited P
-                                         → is-section (κ P)
+                                         → is-pseudo-inhabited' P
 pseudo-inhabitedness-criterion-necessity {𝓤} {P} = equivs-are-sections (κ P)
 
 inhabited-gives-pseudo-inhabited : {P : 𝓤 ̇ }
@@ -212,3 +216,34 @@ pseudo-inhabitedness-wem-special Q h = Cases (pseudo-inhabitedness-wem-lemma (¬
 TODO. Derive a constructive taboo from the hypothesis
 
       ((P : 𝓤 ̇ ) → is-prop P → is-pseudo-inhabited P → P).
+
+
+Monad:
+
+\begin{code}
+
+η : (X : 𝓤 ̇ ) → X → is-pseudo-inhabited' X
+η X x = (λ f → f x) , (λ n → refl)
+
+μ : (X : 𝓤 ̇ ) → is-pseudo-inhabited' (is-pseudo-inhabited' X) → is-pseudo-inhabited' X
+μ X (R , Rκ) = r , rκ
+ where
+  R' : (is-pseudo-inhabited' X → 𝟚) → 𝟚
+  R' = R
+
+  r : (X → 𝟚) → 𝟚
+  r f = R (λ (r , rκ) → r f)
+
+  rκ : r ∘ κ X ∼ id
+  rκ n = II
+   where
+    I : (σ : is-pseudo-inhabited' X) → pr₁ σ (κ X n) ≡ κ (is-pseudo-inhabited' X) n σ
+    I (r , rκ) = rκ n
+
+    II = r (κ X n)                        ≡⟨ refl ⟩
+         R (λ (r , rκ) → r (κ X n))       ≡⟨ ap R (dfunext (fe _ 𝓤₀) I) ⟩
+         R (κ (is-pseudo-inhabited' X) n) ≡⟨ Rκ n ⟩
+         n                                ∎
+
+
+\end{code}
