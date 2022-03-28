@@ -9,16 +9,19 @@ is only claimed to be an upperbound. Our development also extends [Theorem 9,
 KFX2021] where the least upperbound property is only shown for weakly increasing
 ℕ-indexed families.
 
+We also include an alternative construction of suprema due to Martín Ecardó that
+notably doesn't use set quotients.
+
 [Uni2013] The Univalent Foundations Program.
-          "Homotopy Type Theory: Univalent Foundations of Mathematics."
+          Homotopy Type Theory: Univalent Foundations of Mathematics.
           https://homotopytypetheory.org/book, Institute for Advanced Study, 2013.
 
 [KFX2021] Nicolai Kraus, Fredrik Nordvall Forsberg and Chuangjie Xu.
-          "Connecting Constructive Notions of Ordinals in Homotopy Type Theory".
-          In Filippo Bonchi and Simon J. Puglisi, editors, "46th International
-          Symposium on Mathematical Foundations of Computer Science (MFCS 2021)",
-          volume 202 of "Leibniz International Proceedings in Informatics
-          (LIPIcs)", pages: 70:1─70:16. Schloss Dagstuhl ─ Leibniz-Zentrum für
+          Connecting Constructive Notions of Ordinals in Homotopy Type Theory.
+          In Filippo Bonchi and Simon J. Puglisi, editors, 46th International
+          Symposium on Mathematical Foundations of Computer Science (MFCS 2021),
+          volume 202 of Leibniz International Proceedings in Informatics
+          (LIPIcs), pages: 70:1─70:16. Schloss Dagstuhl ─ Leibniz-Zentrum für
           Informatik, 2021. doi:10.4230/LIPIcs.MFCS.2021.70.
 
 \begin{code}
@@ -534,17 +537,17 @@ Next, we resize α/ using:
  module _ (small-set-quotients : Small-Set-Quotients 𝓤) where
 
   private
-   X : 𝓤 ̇
-   X = pr₁ (small-set-quotients ≈R)
+   α/⁻ : 𝓤 ̇
+   α/⁻ = pr₁ (small-set-quotients ≈R)
 
-   φ : X ≃ α/
+   φ : α/⁻ ≃ α/
    φ = pr₂ (small-set-quotients ≈R)
 
-   resize-ordinal : Σ s ꞉ OrdinalStructure X , (X , s) ≃ₒ α/-Ord
-   resize-ordinal = transfer-structure X α/-Ord φ (_≺/⁻_ , (λ x y → ≺/-≃-≺/⁻))
+   resize-ordinal : Σ s ꞉ OrdinalStructure α/⁻ , (α/⁻ , s) ≃ₒ α/-Ord
+   resize-ordinal = transfer-structure α/⁻ α/-Ord φ (_≺/⁻_ , (λ x y → ≺/-≃-≺/⁻))
 
   α/⁻-Ord : Ordinal 𝓤
-  α/⁻-Ord = X , pr₁ resize-ordinal
+  α/⁻-Ord = α/⁻ , pr₁ resize-ordinal
 
   α/⁻-≃-α/ : α/⁻-Ord ≃ₒ α/-Ord
   α/⁻-≃-α/ = pr₂ resize-ordinal
@@ -579,7 +582,8 @@ ordinal-of-ordinals-has-small-suprema smq I α =
 
 \end{code}
 
-TODO: Formalize Martín's alternative construction of the least upper bound.
+We formalize an alternative construction due to Martín Escardó that doesn't use
+set quotients.
 
 \begin{code}
 
@@ -605,6 +609,16 @@ module _
     where
      ψ : (Σ i ꞉ I , Σ x ꞉ ⟨ α i ⟩ , α i ↓ x ≡ β) ≃ (Σ i ꞉ I , β ⊲ α i)
      ψ = Σ-cong (λ i → Σ-cong (λ x → ≡-flip))
+
+\end{code}
+
+We will construct the supremum of α as the image of σ, but we will use the
+description above as it will be more convenient for us.
+
+The ordinal structure on the image of σ will be the one induced from Ordinal 𝓤
+(i.e. _⊲_).
+
+\begin{code}
 
  α⁺ : 𝓤 ⁺ ̇
  α⁺ = Σ β ꞉ Ordinal 𝓤 , ∃ i ꞉ I , β ⊲ α i
@@ -667,6 +681,13 @@ module _
  α⁺-Ord : Ordinal (𝓤 ⁺)
  α⁺-Ord = α⁺ , _≺_ , ≺-is-well-order
 
+\end{code}
+
+With the ordinal structure in place, we prove that α⁺ is the least upperbound of
+the given family α.
+
+\begin{code}
+
  α⁺-is-upperbound : (i : I) → α i ⊴ α⁺-Ord
  α⁺-is-upperbound i = f , f-is-initial-segment , f-is-order-preserving
   where
@@ -700,12 +721,32 @@ module _
 
 \end{code}
 
-TODO: Put some comments explaining what's going on here...
+In proving that α⁺ is the *least* upperbound of α, it is helpful to consider an
+auxiliary map where we have γ : Ordinal 𝓤 and an element of Σ i ꞉ I , γ ⊲ α i
+(rather than only an element of ∃ i ꞉ I , γ ⊲ α i).
+
+More precisely, the strategy is as follows. Given any γ : Ordinal 𝓤, the
+canonical map
+
+    f̃ : (Σ i ꞉ I , γ ⊲ α i) → ⟨ β ⟩
+    f̃ (i , x , _) = f i x
+
+is a constant map to a set and therefore by [Theorem 5.4, KECA17] factors
+through the truncation of its domain yielding a map
+
+    f̅ : α⁺ ≡ (Σ γ : Ordinal 𝓤 , ∃ i ꞉ I , γ ⊲ α i) → ⟨ β ⟩
+
+which can be shown to be a simulation by proving related properties of f̃.
+
+[KECA17] Nicolai Kraus, Martı́n Hötzel Escardó, Thierry Coquand, and Thorsten
+         Altenkirch.
+         Notions of anonymous existence in Martin-Löf Type Theory.
+         Logical Methods in Computer Science, 13(1), 2017.
+         doi:10.23638/LMCS-13(1:15)2017.
 
 \begin{code}
 
   private
-
    module _ (γ : Ordinal 𝓤) where
 
     f̃ : (Σ i ꞉ I , γ ⊲ α i) → ⟨ β ⟩
@@ -823,7 +864,12 @@ TODO: Put some comments explaining what's going on here...
 
 \end{code}
 
-TODO: We resize...
+In the above construction it is important to notice that α⁺ lives in the next
+universe 𝓤 ⁺, so it does not proof that Ordinal 𝓤 has small suprema.
+
+To prove this, we resize α⁺ down to an equivalent ordinal in 𝓤. The first step
+in doing so, is proving that the order ≺ on α⁺ (which takes values in 𝓤 ⁺) is
+equivalent to one with values in 𝓤.
 
 \begin{code}
 
@@ -834,6 +880,16 @@ TODO: We resize...
   ≺-≃-≺⁻ : (x y : α⁺) → (x ≺ y) ≃ (x ≺⁻ y)
   ≺-≃-≺⁻ (β , _) (γ , _) = ⊲-is-equivalent-to-⊲⁻ β γ
 
+\end{code}
+
+Next, we resize α⁺ using:
+(1) the assumption that set quotients are small, which we use to prove that
+    images of maps into locally small sets are small.
+(2) Martín's machinery developed in OrdinalsWellOrderTransport to transport the
+    well order along the supposed equivalence.
+
+\begin{code}
+
  open SmallImages pt
 
  module _ (small-set-images : Small-Set-Images 𝓤) where
@@ -843,19 +899,19 @@ TODO: We resize...
    small-image = small-set-images σ the-type-of-ordinals-is-a-set
                                   (λ β γ → (β ≃ₒ γ) ,
                                            (≃-sym (UAₒ-≃ β γ)))
-   X : 𝓤 ̇
-   X = pr₁ small-image
+   α⁻ : 𝓤 ̇
+   α⁻ = pr₁ small-image
 
-   φ : X ≃ α⁺
-   φ = X       ≃⟨ pr₂ small-image ⟩
+   φ : α⁻ ≃ α⁺
+   φ = α⁻      ≃⟨ pr₂ small-image ⟩
        image σ ≃⟨ image-σ-≃       ⟩
        α⁺      ■
 
-   resize-ordinal : Σ s ꞉ OrdinalStructure X , (X , s) ≃ₒ α⁺-Ord
-   resize-ordinal = transfer-structure X α⁺-Ord φ (_≺⁻_ , ≺-≃-≺⁻)
+   resize-ordinal : Σ s ꞉ OrdinalStructure α⁻ , (α⁻ , s) ≃ₒ α⁺-Ord
+   resize-ordinal = transfer-structure α⁻ α⁺-Ord φ (_≺⁻_ , ≺-≃-≺⁻)
 
   α⁻-Ord : Ordinal 𝓤
-  α⁻-Ord = X , pr₁ resize-ordinal
+  α⁻-Ord = α⁻ , pr₁ resize-ordinal
 
   α⁻-≃-α⁺ : α⁻-Ord ≃ₒ α⁺-Ord
   α⁻-≃-α⁺ = pr₂ resize-ordinal
