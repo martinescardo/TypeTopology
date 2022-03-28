@@ -18,6 +18,7 @@ import OrdinalCodes
 import OrdinalNotationInterpretation
 import OrdinalNotions
 import OrdinalOfOrdinals
+import OrdinalOfOrdinalsSuprema
 import OrdinalOfTruthValues
 import OrdinalsClosure
 import OrdinalsFreeGroup

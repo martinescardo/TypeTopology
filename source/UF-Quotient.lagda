@@ -317,6 +317,12 @@ module _ {𝓤 𝓥 : Universe} where
               → (x' : X / ≋) → P x'
   /-induction = surjection-induction η/ η/-is-surjection
 
+  /-induction' : ∀ {𝓦} {P : X / ≋ → 𝓦 ̇ }
+               → ((x' : X / ≋) → is-prop (P x'))
+               → ((x : X) → P (η/ x))
+               → (x' : X / ≋) → P x'
+  /-induction' {𝓦} {P} = surjection-induction η/ η/-is-surjection P
+
   identifies-related-points : {A : 𝓦 ̇ } → (X → A) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
   identifies-related-points f = ∀ {x x'} → x ≈ x' → f x ≡ f x'
 
@@ -465,7 +471,87 @@ Extending unary and binary operations to the quotient:
 Without the above abstract declarations, the use of naturality₂/ takes
 for ever in the module FreeGroup.lagda.
 
+
+Added in March 2022 by Tom de Jong.
+We extend unary and binary prop-valued relations to the quotient.
+
 \begin{code}
+
+  module _ (r : X → Ω 𝓣)
+           (p : {x y : X} → x ≈ y → r x ≡ r y)
+         where
+
+   extension-rel₁ : X / ≋ → Ω 𝓣
+   extension-rel₁ = mediating-map/ (Ω-is-set fe pe) r p
+
+   extension-rel-triangle₁ : extension-rel₁ ∘ η/ ∼ r
+   extension-rel-triangle₁ = universality-triangle/ (Ω-is-set fe pe) r p
+
+  module _ (r : X → X → Ω 𝓣)
+           (p : {x y x' y' : X} → x ≈ x' → y ≈ y' → r x y ≡ r x' y')
+         where
+
+   abstract
+    private
+     p' : (x : X) {y y' : X} → y ≈ y' → r x y ≡ r x y'
+     p' x {y} {y'} = p (≈r x)
+
+     r₁ : X → X / ≋ → Ω 𝓣
+     r₁ x = extension-rel₁ (r x) (p' x)
+
+     δ : {x x' : X} → x ≈ x' → (y : X) → r₁ x (η/ y) ≡ r₁ x' (η/ y)
+     δ {x} {x'} e y =
+       r₁ x (η/ y)  ≡⟨ extension-rel-triangle₁ (r x) (p (≈r x)) y        ⟩
+       r  x     y   ≡⟨ p e (≈r y)                                        ⟩
+       r  x'    y   ≡⟨ (extension-rel-triangle₁ (r x') (p (≈r x')) y) ⁻¹ ⟩
+       r₁ x' (η/ y) ∎
+
+     ρ : (q : X / ≋) {x x' : X} → x ≈ x' → r₁ x q ≡ r₁ x' q
+     ρ q {x} {x'} e = /-induction (λ p → r₁ x p ≡ r₁ x' p)
+                        (λ q → Ω-is-set fe pe) (δ e) q
+
+     r₂ : X / ≋ → X / ≋ → Ω 𝓣
+     r₂ = mediating-map/ (Π-is-set fe (λ _ → Ω-is-set fe pe)) r₁
+                         (λ {x} {x'} e → dfunext fe (λ q → ρ q e))
+
+     σ : (x : X) → r₂ (η/ x) ≡ r₁ x
+     σ = universality-triangle/ (Π-is-set fe (λ _ → Ω-is-set fe pe)) r₁
+                                (λ {x} {x'} e → dfunext fe (λ q → ρ q e))
+
+     τ : (x y : X) → r₂ (η/ x) (η/ y) ≡ r x y
+     τ x y = r₂ (η/ x) (η/ y) ≡⟨ happly (σ x) (η/ y) ⟩
+             r₁ x      (η/ y) ≡⟨ extension-rel-triangle₁ (r x) (p' x) y ⟩
+             r  x          y  ∎
+
+   extension-rel₂ : X / ≋ → X / ≋ → Ω 𝓣
+   extension-rel₂ = r₂
+
+   extension-rel-triangle₂ : (x y : X) → extension-rel₂ (η/ x) (η/ y) ≡ r x y
+   extension-rel-triangle₂ = τ
+
+\end{code}
+
+For proving properties of an extended binary relation, it is useful to have a
+binary and ternary versions of quotient induction.
+
+\begin{code}
+
+  /-induction₂ : ∀ {𝓦} {P : X / ≋ → X / ≋ → 𝓦 ̇ }
+               → ((x' y' : X / ≋) → is-prop (P x' y'))
+               → ((x y : X) → P (η/ x) (η/ y))
+               → (x' y' : X / ≋) → P x' y'
+  /-induction₂ p h =
+   /-induction _ (λ x' → Π-is-prop fe (p x'))
+                 (λ x → /-induction' (p (η/ x)) (h x))
+
+  /-induction₃ : ∀ {𝓦} {P : X / ≋ → X / ≋ → X / ≋ → 𝓦 ̇ }
+               → ((x' y' z' : X / ≋) → is-prop (P x' y' z'))
+               → ((x y z : X) → P (η/ x) (η/ y) (η/ z))
+               → (x' y' z' : X / ≋) → P x' y' z'
+  /-induction₃ p h =
+   /-induction₂ (λ x' y' → Π-is-prop fe (p x' y'))
+                (λ x y → /-induction' (p (η/ x) (η/ y)) (h x y))
+
 
 quotients-equivalent : (X : 𝓤 ̇ ) (R : EqRel {𝓤} {𝓥} X) (R' : EqRel {𝓤} {𝓦} X)
                      → ({x y : X} → x ≈[ R ] y ⇔ x ≈[ R' ] y)
@@ -752,8 +838,9 @@ to locally small sets.
 Small-Set-Quotients : (𝓤 : Universe) → 𝓤 ⁺ ̇
 Small-Set-Quotients 𝓤 = {X : 𝓤 ̇  } (R : EqRel {𝓤} {𝓤} X) → is-small (X / R)
 
-image-is-small : Small-Set-Quotients 𝓤 → Small-Set-Images 𝓤
-image-is-small h f Y-is-set Y-is-loc-small =
+Small-Set-Images-from-Small-Set-Quotients : Small-Set-Quotients 𝓤
+                                          → Small-Set-Images 𝓤
+Small-Set-Images-from-Small-Set-Quotients h f Y-is-set Y-is-loc-small =
  ≃-size-contravariance e (h (_≈⁻_ , ≈⁻-is-equiv-rel))
   where
    open small-images-construction f Y-is-set Y-is-loc-small

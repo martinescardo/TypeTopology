@@ -310,6 +310,9 @@ _⊴_ : Ordinal 𝓤 → Ordinal 𝓥 → 𝓤 ⊔ 𝓥 ̇
          (being-order-equiv-is-prop α β)
          (dfunext fe' r)
 
+≃ₒ-to-⊴ : (α : Ordinal 𝓤) (β : Ordinal 𝓥) → α ≃ₒ β → α ⊴ β
+≃ₒ-to-⊴ α β (f , e) = (f , order-equivs-are-simulations α β f e)
+
 ordinal-equiv-gives-bisimilarity : (α β : Ordinal 𝓤)
                                  → α ≃ₒ β
                                  → (α ⊴ β) × (β ⊴ α)
@@ -1225,5 +1228,102 @@ NB-minimal α a = f , g
 
   g : ((x : ⟨ α ⟩) → a ≼⟨ α ⟩ x) → ((x : ⟨ α ⟩) → a ≾⟨ α ⟩ x)
   g k x m = irrefl α x (k x x m)
+
+\end{code}
+
+Added in March 2022 by Tom de Jong.
+
+Notice that we defined "is-initial-segment" using Σ (rather than ∃). This is
+fine, because if f is a simulation from α to β, then for every x : ⟨ α ⟩ and
+y : ⟨ β ⟩ with y ≺⟨ β ⟩ f x, the type (Σ x' ꞉ ⟨ α ⟩ , (x' ≺⟨ α ⟩ x) × (f x' ≡ y))
+is a proposition. It follows (see the proof above) that being a simulation is
+property.
+
+However, for some purposes, notably for constructing suprema of ordinals in
+OrdinalSupOfOrdinals.lagda, it is useful to formulate the notion of initial
+segment and the notion of simulation using ∃, rather than Σ.
+
+Using the techniques that were used above to prove that being a simulation is
+property, we show the definition of simulation with ∃ to be equivalent to the
+original one.
+
+\begin{code}
+
+open import UF-PropTrunc
+module _ (pt : propositional-truncations-exist) where
+
+ open PropositionalTruncation pt
+
+ is-initial-segment' : (α : Ordinal 𝓤) (β : Ordinal 𝓥) → (⟨ α ⟩ → ⟨ β ⟩) → 𝓤 ⊔ 𝓥 ̇
+ is-initial-segment' α β f = (x : ⟨ α ⟩) (y : ⟨ β ⟩)
+                           → y ≺⟨ β ⟩ f x
+                           → ∃ x' ꞉ ⟨ α ⟩ , (x' ≺⟨ α ⟩ x) × (f x' ≡ y)
+
+ is-simulation' : (α : Ordinal 𝓤) (β : Ordinal 𝓥) → (⟨ α ⟩ → ⟨ β ⟩) → 𝓤 ⊔ 𝓥 ̇
+ is-simulation' α β f = is-initial-segment' α β f × is-order-preserving α β f
+
+ simulations-are-lc' : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
+                       (f : ⟨ α ⟩ → ⟨ β ⟩)
+                     → is-simulation' α β f
+                     → left-cancellable f
+ simulations-are-lc' α β f (i , p) = γ
+  where
+   φ : ∀ x y
+     → is-accessible (underlying-order α) x
+     → is-accessible (underlying-order α) y
+     → f x ≡ f y
+     → x ≡ y
+   φ x y (next x s) (next y t) r = Extensionality α x y g h
+    where
+     g : (u : ⟨ α ⟩) → u ≺⟨ α ⟩ x → u ≺⟨ α ⟩ y
+     g u l = ∥∥-rec (Prop-valuedness α u y) b (i y (f u) a)
+      where
+       a : f u ≺⟨ β ⟩ f y
+       a = transport (λ - → f u ≺⟨ β ⟩ -) r (p u x l)
+       b : (Σ v ꞉ ⟨ α ⟩ , (v ≺⟨ α ⟩ y) × (f v ≡ f u))
+         → u ≺⟨ α ⟩ y
+       b (v , k , e) = transport (λ - → - ≺⟨ α ⟩ y) (c ⁻¹) k
+        where
+         c : u ≡ v
+         c = φ u v (s u l) (t v k) (e ⁻¹)
+     h : (u : ⟨ α ⟩) → u ≺⟨ α ⟩ y → u ≺⟨ α ⟩ x
+     h u l = ∥∥-rec (Prop-valuedness α u x) b (i x (f u) a)
+      where
+       a : f u ≺⟨ β ⟩ f x
+       a = transport (λ - → f u ≺⟨ β ⟩ -) (r ⁻¹) (p u y l)
+       b : (Σ v ꞉ ⟨ α ⟩ , (v ≺⟨ α ⟩ x) × (f v ≡ f u))
+         → u ≺⟨ α ⟩ x
+       b (v , k , e) = transport (λ - → - ≺⟨ α ⟩ x) c k
+        where
+         c : v ≡ u
+         c = φ v u (s v k) (t u l) e
+   γ : left-cancellable f
+   γ {x} {y} = φ x y (Well-foundedness α x) (Well-foundedness α y)
+
+ simulation-prime : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
+                    (f : ⟨ α ⟩ → ⟨ β ⟩)
+                  → is-simulation α β f
+                  → is-simulation' α β f
+ simulation-prime α β f (i , p) = (j , p)
+  where
+   j : is-initial-segment' α β f
+   j x y l = ∣ i x y l ∣
+
+ simulation-unprime : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
+                      (f : ⟨ α ⟩ → ⟨ β ⟩)
+                    → is-simulation' α β f
+                    → is-simulation α β f
+ simulation-unprime α β f (i , p) = (j , p)
+  where
+   j : is-initial-segment α β f
+   j x y l = ∥∥-rec prp id (i x y l)
+    where
+     prp : is-prop (Σ x' ꞉ ⟨ α ⟩ , (x' ≺⟨ α ⟩ x) × (f x' ≡ y))
+     prp (z , l , e) (z' , l' , e') = to-subtype-≡ ⦅1⦆ ⦅2⦆
+      where
+       ⦅1⦆ : (x' : ⟨ α ⟩) → is-prop ((x' ≺⟨ α ⟩ x) × (f x' ≡ y))
+       ⦅1⦆ x' = ×-is-prop (Prop-valuedness α x' x) (underlying-type-is-set fe β)
+       ⦅2⦆ : z ≡ z'
+       ⦅2⦆ = simulations-are-lc' α β f (i , p) (e ∙ e' ⁻¹)
 
 \end{code}
