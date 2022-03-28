@@ -495,7 +495,7 @@ Next, we show that the quotient α/ is the least upperbound of α.
 \end{code}
 
 In the above construction it is important to notice that α/ lives in the next
-universe 𝓤 ⁺, so it does not proof that Ordinal 𝓤 has small suprema.
+universe 𝓤 ⁺, so it does not prove that Ordinal 𝓤 has small suprema.
 
 To prove this, we resize α/ down to an equivalent ordinal in 𝓤. The first step
 in doing so, is proving that the order ≺ on α (which takes values in 𝓤 ⁺) is
@@ -582,8 +582,12 @@ ordinal-of-ordinals-has-small-suprema smq I α =
 
 \end{code}
 
-We formalize an alternative construction due to Martín Escardó that doesn't use
-set quotients.
+This completes the formalization of the approach based on the HoTT Book
+[Uni2013].
+
+We now formalize an alternative construction due to Martín Escardó that doesn't
+use set quotients, but instead relies on small images of maps into locally small
+sets.
 
 \begin{code}
 
@@ -731,18 +735,18 @@ canonical map
     f̃ : (Σ i ꞉ I , γ ⊲ α i) → ⟨ β ⟩
     f̃ (i , x , _) = f i x
 
-is a constant map to a set and therefore by [Theorem 5.4, KECA17] factors
+is a constant map to a set and therefore by [Theorem 5.4, KECA2017] factors
 through the truncation of its domain yielding a map
 
     f̅ : α⁺ ≡ (Σ γ : Ordinal 𝓤 , ∃ i ꞉ I , γ ⊲ α i) → ⟨ β ⟩
 
 which can be shown to be a simulation by proving related properties of f̃.
 
-[KECA17] Nicolai Kraus, Martı́n Hötzel Escardó, Thierry Coquand, and Thorsten
-         Altenkirch.
-         Notions of anonymous existence in Martin-Löf Type Theory.
-         Logical Methods in Computer Science, 13(1), 2017.
-         doi:10.23638/LMCS-13(1:15)2017.
+[KECA2017] Nicolai Kraus, Martı́n Hötzel Escardó, Thierry Coquand, and Thorsten
+           Altenkirch.
+           Notions of anonymous existence in Martin-Löf Type Theory.
+           Logical Methods in Computer Science, 13(1), 2017.
+           doi:10.23638/LMCS-13(1:15)2017.
 
 \begin{code}
 
@@ -865,7 +869,7 @@ which can be shown to be a simulation by proving related properties of f̃.
 \end{code}
 
 In the above construction it is important to notice that α⁺ lives in the next
-universe 𝓤 ⁺, so it does not proof that Ordinal 𝓤 has small suprema.
+universe 𝓤 ⁺, so it does not prove that Ordinal 𝓤 has small suprema.
 
 To prove this, we resize α⁺ down to an equivalent ordinal in 𝓤. The first step
 in doing so, is proving that the order ≺ on α⁺ (which takes values in 𝓤 ⁺) is
@@ -933,18 +937,31 @@ Next, we resize α⁺ using:
 
 \end{code}
 
-Finally, the desired result follows (under the assumption of small set
-quotients, just as above).
+Finally, the desired result follows (under the assumption of small set images).
 
 \begin{code}
 
-ordinal-of-ordinals-has-small-suprema' : Small-Set-Quotients 𝓤
+open SmallImages pt
+
+ordinal-of-ordinals-has-small-suprema' : Small-Set-Images 𝓤
                                        → Ordinal-Of-Ordinals-Has-Small-Suprema
-ordinal-of-ordinals-has-small-suprema' {𝓤} smq I α =
+ordinal-of-ordinals-has-small-suprema' {𝓤} ssi I α =
  (α⁻-Ord α ssi , α⁻-is-upperbound α ssi
                , α⁻-is-lowerbound-of-upperbounds α ssi)
+
+\end{code}
+
+Since Small-Set-Images 𝓤 and Small-Set-Quotients 𝓤 are equivalent, it follows
+immediately that Ordinal 𝓤 has small suprema if we assume Small-Set-Quotients 𝓤
+instead (just like in ordinal-of-ordinals-has-small-suprema above).
+
+\begin{code}
+
+ordinal-of-ordinals-has-small-suprema'' : Small-Set-Quotients 𝓤
+                                        → Ordinal-Of-Ordinals-Has-Small-Suprema
+ordinal-of-ordinals-has-small-suprema'' {𝓤} smq =
+ ordinal-of-ordinals-has-small-suprema' ssi
   where
-   open SmallImages pt
    ssi : Small-Set-Images 𝓤
    ssi = Small-Set-Images-from-Small-Set-Quotients smq
 
