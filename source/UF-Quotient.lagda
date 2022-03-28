@@ -838,8 +838,9 @@ to locally small sets.
 Small-Set-Quotients : (𝓤 : Universe) → 𝓤 ⁺ ̇
 Small-Set-Quotients 𝓤 = {X : 𝓤 ̇  } (R : EqRel {𝓤} {𝓤} X) → is-small (X / R)
 
-image-is-small : Small-Set-Quotients 𝓤 → Small-Set-Images 𝓤
-image-is-small h f Y-is-set Y-is-loc-small =
+Small-Set-Images-from-Small-Set-Quotients : Small-Set-Quotients 𝓤
+                                          → Small-Set-Images 𝓤
+Small-Set-Images-from-Small-Set-Quotients h f Y-is-set Y-is-loc-small =
  ≃-size-contravariance e (h (_≈⁻_ , ≈⁻-is-equiv-rel))
   where
    open small-images-construction f Y-is-set Y-is-loc-small
