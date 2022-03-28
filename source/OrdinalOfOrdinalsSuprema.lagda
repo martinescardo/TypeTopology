@@ -500,30 +500,25 @@ equivalent to one with values in 𝓤.
 
 \begin{code}
 
- _≺⁻_ : Σα → Σα → 𝓤 ̇
- (i , x) ≺⁻ (j , y) = (α i ↓ x) ⊲⁻ (α j ↓ y)
+ private
+  _≺⁻_ : Σα → Σα → 𝓤 ̇
+  (i , x) ≺⁻ (j , y) = (α i ↓ x) ⊲⁻ (α j ↓ y)
 
- ≺-≃-≺⁻ : (p q : Σα) → (p ≺ q) ≃ (p ≺⁻ q)
- ≺-≃-≺⁻ (i , x) (j , y) = ⊲-is-equivalent-to-⊲⁻ (α i ↓ x) (α j ↓ y)
+  ≺-≃-≺⁻ : (p q : Σα) → (p ≺ q) ≃ (p ≺⁻ q)
+  ≺-≃-≺⁻ (i , x) (j , y) = ⊲-is-equivalent-to-⊲⁻ (α i ↓ x) (α j ↓ y)
 
- ≺/-has-small-values : (x y : α/) → is-small (x ≺/ y)
- ≺/-has-small-values =
-  /-induction₂ ≈R (λ x y → being-small-is-prop ua (x ≺/ y) 𝓤)
-                  (λ p q → p ≺⁻ q , (p ≺⁻ q         ≃⟨ ≃-sym (≺-≃-≺⁻ p q)     ⟩
-                                     p ≺ q          ≃⟨ idtoeq _ _ (≺/-≡-≺ ⁻¹) ⟩
-                                     [ p ] ≺/ [ q ] ■))
+  ≺/-has-small-values : (x y : α/) → is-small (x ≺/ y)
+  ≺/-has-small-values =
+   /-induction₂ ≈R (λ x y → being-small-is-prop ua (x ≺/ y) 𝓤)
+                   (λ p q → p ≺⁻ q , (p ≺⁻ q         ≃⟨ ≃-sym (≺-≃-≺⁻ p q)     ⟩
+                                      p ≺ q          ≃⟨ idtoeq _ _ (≺/-≡-≺ ⁻¹) ⟩
+                                      [ p ] ≺/ [ q ] ■))
 
- _≺/⁻_ : α/ → α/ → 𝓤 ̇
- x ≺/⁻ y = pr₁ (≺/-has-small-values x y)
+  _≺/⁻_ : α/ → α/ → 𝓤 ̇
+  x ≺/⁻ y = pr₁ (≺/-has-small-values x y)
 
- ≺/-≃-≺/⁻ : {x y : α/} → x ≺/ y ≃ x ≺/⁻ y
- ≺/-≃-≺/⁻ {x} {y} = ≃-sym (pr₂ (≺/-has-small-values x y))
-
- ≺/-to-≺/⁻ : {x y : α/} → x ≺/ y → x ≺/⁻ y
- ≺/-to-≺/⁻ = ⌜ ≺/-≃-≺/⁻ ⌝
-
- ≺/⁻-to-≺/ : {x y : α/} → x ≺/⁻ y → x ≺/ y
- ≺/⁻-to-≺/ = ⌜ ≺/-≃-≺/⁻ ⌝⁻¹
+  ≺/-≃-≺/⁻ : {x y : α/} → x ≺/ y ≃ x ≺/⁻ y
+  ≺/-≃-≺/⁻ {x} {y} = ≃-sym (pr₂ (≺/-has-small-values x y))
 
 \end{code}
 
@@ -600,8 +595,8 @@ module _
  σ : (Σ i ꞉ I , ⟨ α i ⟩) → Ordinal 𝓤
  σ (i , x) = α i ↓ x
 
- image-σ-alt : image σ ≃ (Σ β ꞉ Ordinal 𝓤 , ∃ i ꞉ I , β ⊲ α i)
- image-σ-alt = Σ-cong ϕ
+ image-σ-≃ : image σ ≃ (Σ β ꞉ Ordinal 𝓤 , ∃ i ꞉ I , β ⊲ α i)
+ image-σ-≃ = Σ-cong ϕ
   where
    ϕ : (β : Ordinal 𝓤) → β ∈image σ ≃ (∃ i ꞉ I , β ⊲ α i)
    ϕ β = ∥ Σ p ꞉ domain σ , σ p ≡ β ∥              ≃⟨ ∥∥-cong pt Σ-assoc ⟩
@@ -613,9 +608,6 @@ module _
 
  α⁺ : 𝓤 ⁺ ̇
  α⁺ = Σ β ꞉ Ordinal 𝓤 , ∃ i ꞉ I , β ⊲ α i
-
- ⟨_⟩⁺ : α⁺ → Ordinal 𝓤
- ⟨_⟩⁺ = pr₁
 
  _≺_ : α⁺ → α⁺ → 𝓤 ⁺ ̇
  (β , _) ≺ (γ , _) = β ⊲ γ
@@ -835,6 +827,69 @@ TODO: We resize...
 
 \begin{code}
 
+ private
+  _≺⁻_ : α⁺ → α⁺ → 𝓤 ̇
+  (β , _) ≺⁻ (γ , _) = β ⊲⁻ γ
 
+  ≺-≃-≺⁻ : (x y : α⁺) → (x ≺ y) ≃ (x ≺⁻ y)
+  ≺-≃-≺⁻ (β , _) (γ , _) = ⊲-is-equivalent-to-⊲⁻ β γ
+
+ open SmallImages pt
+
+ module _ (small-set-images : Small-Set-Images 𝓤) where
+
+  private
+   small-image : is-small (image σ)
+   small-image = small-set-images σ the-type-of-ordinals-is-a-set
+                                  (λ β γ → (β ≃ₒ γ) ,
+                                           (≃-sym (UAₒ-≃ β γ)))
+   X : 𝓤 ̇
+   X = pr₁ small-image
+
+   φ : X ≃ α⁺
+   φ = X       ≃⟨ pr₂ small-image ⟩
+       image σ ≃⟨ image-σ-≃       ⟩
+       α⁺      ■
+
+   resize-ordinal : Σ s ꞉ OrdinalStructure X , (X , s) ≃ₒ α⁺-Ord
+   resize-ordinal = transfer-structure X α⁺-Ord φ (_≺⁻_ , ≺-≃-≺⁻)
+
+  α⁻-Ord : Ordinal 𝓤
+  α⁻-Ord = X , pr₁ resize-ordinal
+
+  α⁻-≃-α⁺ : α⁻-Ord ≃ₒ α⁺-Ord
+  α⁻-≃-α⁺ = pr₂ resize-ordinal
+
+  α⁺-≃-α⁻ : α⁺-Ord ≃ₒ α⁻-Ord
+  α⁺-≃-α⁻ = ≃ₒ-sym α⁻-Ord α⁺-Ord α⁻-≃-α⁺
+
+  α⁻-is-upperbound : (i : I) → α i ⊴ α⁻-Ord
+  α⁻-is-upperbound i = ⊴-trans (α i) α⁺-Ord α⁻-Ord
+                        (α⁺-is-upperbound i)
+                        (≃ₒ-to-⊴ α⁺-Ord α⁻-Ord α⁺-≃-α⁻)
+
+  α⁻-is-lowerbound-of-upperbounds : (β : Ordinal 𝓤)
+                                  → ((i : I) → α i ⊴ β)
+                                  → α⁻-Ord ⊴ β
+  α⁻-is-lowerbound-of-upperbounds β β-is-ub =
+   ⊴-trans α⁻-Ord α⁺-Ord β (≃ₒ-to-⊴ α⁻-Ord α⁺-Ord α⁻-≃-α⁺)
+                           (α⁺-is-lowerbound-of-upperbounds β β-is-ub)
+
+\end{code}
+
+Finally, the desired result follows (under the assumption of small set
+quotients, just as above).
+
+\begin{code}
+
+ordinal-of-ordinals-has-small-suprema' : Small-Set-Quotients 𝓤
+                                       → Ordinal-Of-Ordinals-Has-Small-Suprema
+ordinal-of-ordinals-has-small-suprema' {𝓤} smq I α =
+ (α⁻-Ord α ssi , α⁻-is-upperbound α ssi
+               , α⁻-is-lowerbound-of-upperbounds α ssi)
+  where
+   open SmallImages pt
+   ssi : Small-Set-Images 𝓤
+   ssi = Small-Set-Images-from-Small-Set-Quotients smq
 
 \end{code}
