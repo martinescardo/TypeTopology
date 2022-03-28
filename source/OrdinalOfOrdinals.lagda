@@ -1240,8 +1240,8 @@ is a proposition. It follows (see the proof above) that being a simulation is
 property.
 
 However, for some purposes, notably for constructing suprema of ordinals in
-OrdinalSupOfOrdinals.lagda, it is useful to formulate being an initial segment
-and the notion of simulation using ∃, rather than Σ.
+OrdinalSupOfOrdinals.lagda, it is useful to formulate the notion of initial
+segment and the notion of simulation using ∃, rather than Σ.
 
 Using the techniques that were used above to prove that being a simulation is
 property, we show the definition of simulation with ∃ to be equivalent to the
