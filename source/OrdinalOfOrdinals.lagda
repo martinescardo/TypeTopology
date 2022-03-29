@@ -396,8 +396,8 @@ UAₒ {𝓤} α = nats-with-sections-are-equivs α
 
 the-type-of-ordinals-is-a-set : is-set (Ordinal 𝓤)
 the-type-of-ordinals-is-a-set {𝓤} {α} {β} = equiv-to-prop
-                                        (idtoeqₒ α β , UAₒ α β)
-                                        (≃ₒ-is-prop-valued α β)
+                                              (idtoeqₒ α β , UAₒ α β)
+                                              (≃ₒ-is-prop-valued α β)
 
 UAₒ-≃ : (α β : Ordinal 𝓤) → (α ≡ β) ≃ (α ≃ₒ β)
 UAₒ-≃ α β = idtoeqₒ α β , UAₒ α β
@@ -1007,11 +1007,6 @@ from-≼ {𝓤} {α} {β} l a = l (α ↓ a) m
   m : (α ↓ a) ⊲ α
   m = (a , refl)
 
-\end{code}
-
-
-\begin{code}
-
 ⊴-gives-≼ : (α β : Ordinal 𝓤) → α ⊴ β → α ≼ β
 ⊴-gives-≼ α β (f , f-is-initial-segment , f-is-order-preserving) α' (a , p) = l
  where
@@ -1231,7 +1226,61 @@ NB-minimal α a = f , g
 
 \end{code}
 
-Added in March 2022 by Tom de Jong.
+Added 29th March.
+
+Simulations preserve minimal elements.
+
+\begin{code}
+
+is-minimal : (α : Ordinal 𝓤) → ⟨ α ⟩ → 𝓤 ̇
+is-minimal α x = (y : ⟨ α ⟩) → x ≼⟨ α ⟩ y
+
+initial-segments-preserve-minimals : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
+                                     (x : ⟨ α ⟩) (y : ⟨ β ⟩)
+                                     (f : ⟨ α ⟩ → ⟨ β ⟩)
+                                   → is-initial-segment α β f
+                                   → is-minimal α x
+                                   → is-minimal β y
+                                   → f x ≡ y
+initial-segments-preserve-minimals α β x y f i m n = c
+ where
+  a : f x ≼⟨ β ⟩ y
+  a u l = IV
+   where
+    x' : ⟨ α ⟩
+    x' = pr₁ (i x u l)
+
+    I : x' ≺⟨ α ⟩ x
+    I = pr₁ (pr₂ (i x u l))
+
+    II : x ≼⟨ α ⟩ x'
+    II = m x'
+
+    III : x' ≺⟨ α ⟩ x'
+    III = II x' I
+
+    IV : u ≺⟨ β ⟩ y
+    IV = 𝟘-elim (irrefl α x' III)
+
+  b : y ≼⟨ β ⟩ f x
+  b = n (f x)
+
+  c : f x ≡ y
+  c = Antisymmetry β (f x) y a b
+
+simulations-preserve-minimals : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
+                                (x : ⟨ α ⟩) (y : ⟨ β ⟩)
+                                (f : ⟨ α ⟩ → ⟨ β ⟩)
+                              → is-simulation α β f
+                              → is-minimal α x
+                              → is-minimal β y
+                              → f x ≡ y
+simulations-preserve-minimals α β x y f (i , _) =
+ initial-segments-preserve-minimals α β x y f i
+
+\end{code}
+
+Added in March 2022 by Tom de Jong:
 
 Notice that we defined "is-initial-segment" using Σ (rather than ∃). This is
 fine, because if f is a simulation from α to β, then for every x : ⟨ α ⟩ and

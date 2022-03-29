@@ -534,3 +534,48 @@ retract-Ω-of-Ordinal {𝓤} = r , s , η
     t = pe 𝓤 (having-bottom-is-prop fe' (prop-ordinal P i)) i g f
 
 \end{code}
+
+Added 29 March 2022.
+
+It is not the case in general that β ≼ α +ₒ β. We work with the
+equivalent order _⊴_.
+
+\begin{code}
+
+module _ {𝓤 : Universe} where
+
+ open import OrdinalOfTruthValues fe 𝓤 (pe 𝓤)
+
+ open import DiscreteAndSeparated
+ open import UF-Miscelanea
+
+ ⊴-add-taboo : Ωₒ ⊴ (𝟙ₒ +ₒ Ωₒ) → WEM 𝓤
+ ⊴-add-taboo (f , s) = VI
+  where
+   I : is-minimal Ωₒ ⊥Ω
+   I (P , i) (𝟘 , 𝟘-is-prop) (refl , q) = 𝟘-elim (equal-⊤-is-true 𝟘 𝟘-is-prop q)
+
+   II : is-minimal (𝟙ₒ +ₒ Ωₒ) (inl ⋆)
+   II (inl ⋆) u       l = l
+   II (inr x) (inl ⋆) l = 𝟘-elim l
+   II (inr x) (inr y) l = 𝟘-elim l
+
+   III : f ⊥Ω ≡ inl ⋆
+   III = simulations-preserve-minimals Ωₒ (𝟙ₒ +ₒ Ωₒ) ⊥Ω (inl ⋆) f s I II
+
+   IV : is-isolated (f ⊥Ω)
+   IV = transport is-isolated (III ⁻¹) (inl-is-isolated ⋆ (𝟙-is-discrete ⋆))
+
+   V : is-isolated ⊥Ω
+   V = lc-maps-reflect-isolatedness f (simulations-are-lc Ωₒ (𝟙ₒ +ₒ Ωₒ) f s) ⊥Ω IV
+
+   VI : ∀ P → is-prop P → ¬ P + ¬¬ P
+   VI P i = Cases (V (P , i))
+             (λ (e : ⊥Ω ≡ (P , i))
+                   → inl (equal-𝟘-is-empty (ap pr₁ (e ⁻¹))))
+             (λ (ν : ⊥Ω ≢ (P , i))
+                   → inr (contrapositive
+                           (λ (u : ¬ P)
+                                 → to-subtype-≡ (λ _ → being-prop-is-prop fe')
+                                    (empty-types-are-≡-𝟘 fe' (pe 𝓤) u)⁻¹) ν))
+\end{code}

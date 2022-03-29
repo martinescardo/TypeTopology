@@ -9,6 +9,9 @@ open import UF-FunExt
 
 module P2 (fe : FunExt) where
 
+fe₀ : {𝓤 : Universe} → DN-funext 𝓤 𝓤₀
+fe₀ {𝓤} = dfunext (fe 𝓤 𝓤₀)
+
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
 open import UF-Retracts
@@ -26,7 +29,6 @@ is-pseudo-inhabited P = is-equiv (κ P)
 
 is-pseudo-inhabited' : 𝓤 ̇ → 𝓤 ̇
 is-pseudo-inhabited' P = is-section (κ P)
-
 
 retraction-of-κ-is-section : {P : 𝓤 ̇ }
                            → is-prop P
@@ -46,10 +48,10 @@ retraction-of-κ-is-section {𝓤} {P} i r h f = IV
            κ P (f p) q ∎
 
     III : f ≡ κ P (f p)
-    III = dfunext (fe 𝓤 𝓤₀) II
+    III = fe₀ II
 
   IV : κ P (r f) ≡ f
-  IV = dfunext (fe 𝓤 𝓤₀) I
+  IV = fe₀ I
 
 pseudo-inhabitedness-criterion : {P : 𝓤 ̇ }
                                → is-prop P
@@ -81,7 +83,7 @@ pseudo-inhabited-gives-irrefutable : {P : 𝓤 ̇ }
 pseudo-inhabited-gives-irrefutable {𝓤} {P} e n = zero-is-not-one II
  where
   I : inverse (κ P) e (κ P ₀) ≡ inverse (κ P) e (κ P ₁)
-  I = ap (inverse (κ P) e) (κ P ₀ ≡⟨ dfunext (fe 𝓤 𝓤₀) (λ p → 𝟘-elim (n p)) ⟩
+  I = ap (inverse (κ P) e) (κ P ₀ ≡⟨ fe₀ (λ p → 𝟘-elim (n p)) ⟩
                             κ P ₁ ∎)
 
   II = ₀                       ≡⟨ (inverses-are-retractions (κ P) e ₀)⁻¹ ⟩
@@ -218,32 +220,42 @@ TODO. Derive a constructive taboo from the hypothesis
       ((P : 𝓤 ̇ ) → is-prop P → is-pseudo-inhabited P → P).
 
 
-Monad:
-
 \begin{code}
 
 η : (X : 𝓤 ̇ ) → X → is-pseudo-inhabited' X
 η X x = (λ f → f x) , (λ n → refl)
 
-μ : (X : 𝓤 ̇ ) → is-pseudo-inhabited' (is-pseudo-inhabited' X) → is-pseudo-inhabited' X
-μ X (R , Rκ) = r , rκ
+_♯ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+   → (X → is-pseudo-inhabited' Y)
+   → (is-pseudo-inhabited' X → is-pseudo-inhabited' Y)
+_♯ {𝓤} {𝓥} {X} {Y} h (r , rκ) = q
  where
-  R' : (is-pseudo-inhabited' X → 𝟚) → 𝟚
-  R' = R
+  a : X → (Y → 𝟚) → 𝟚
+  a x = pr₁ (h x)
 
-  r : (X → 𝟚) → 𝟚
-  r f = R (λ (r , rκ) → r f)
+  b : (x : X) (n : 𝟚) → a x (κ Y n) ≡ n
+  b x = pr₂ (h x)
 
-  rκ : r ∘ κ X ∼ id
-  rκ n = II
-   where
-    I : (σ : is-pseudo-inhabited' X) → pr₁ σ (κ X n) ≡ κ (is-pseudo-inhabited' X) n σ
-    I (r , rκ) = rκ n
+  u : (Y → 𝟚) → 𝟚
+  u g = r (λ x → a x g)
 
-    II = r (κ X n)                        ≡⟨ refl ⟩
-         R (λ (r , rκ) → r (κ X n))       ≡⟨ ap R (dfunext (fe _ 𝓤₀) I) ⟩
-         R (κ (is-pseudo-inhabited' X) n) ≡⟨ Rκ n ⟩
-         n                                ∎
+  v : u ∘ κ Y ∼ id
+  v n = (u ∘ κ Y) n           ≡⟨ refl ⟩
+        r (λ x → a x (κ Y n)) ≡⟨ ap r (fe₀ (λ x → b x n)) ⟩
+        r (λ _ → n)           ≡⟨ refl ⟩
+        r (κ X n)             ≡⟨ rκ n ⟩
+        n                     ∎
 
+  q : is-pseudo-inhabited' Y
+  q = u , v
 
-\end{code}
+μ : (X : 𝓤 ̇ ) → is-pseudo-inhabited' (is-pseudo-inhabited' X) → is-pseudo-inhabited' X
+μ X = id ♯
+
+open import UF-Base
+open import UF-Equiv-FunExt
+
+being-pseudo-inhabited'-is-prop : {X : 𝓤 ̇ } → is-prop X → is-prop (is-pseudo-inhabited' X)
+being-pseudo-inhabited'-is-prop {𝓤} {X} i = prop-criterion
+                                              (λ (r , rκ) → sections-have-at-most-one-retraction fe (κ X)
+                                                             (r , retraction-of-κ-is-section i r rκ))

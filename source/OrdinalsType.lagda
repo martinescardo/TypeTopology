@@ -75,6 +75,9 @@ Prop-valuedness α = prop-valuedness (underlying-order α) (is-well-ordered α)
 Transitivity : (α : Ordinal 𝓤) → is-transitive (underlying-order α)
 Transitivity α = transitivity (underlying-order α) (is-well-ordered α)
 
+Antisymmetry : (α : Ordinal 𝓤) → is-extensional (underlying-order α)
+Antisymmetry α = extensionality (underlying-order α) (is-well-ordered α)
+
 Well-foundedness : (α : Ordinal 𝓤) (x : ⟨ α ⟩) → is-accessible (underlying-order α) x
 Well-foundedness α = well-foundedness (underlying-order α) (is-well-ordered α)
 
