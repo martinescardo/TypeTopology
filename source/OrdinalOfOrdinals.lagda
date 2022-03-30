@@ -882,7 +882,7 @@ other direction is equivalent to LPO.
 
 \begin{code}
 
-module example where
+module ℕ∞-in-Ord where
 
  open import LPO fe
  open import OrdinalArithmetic fe
@@ -968,13 +968,6 @@ module example where
  corollary₄ ua lpo = eqtoid ua ℕ∞ (ℕ + 𝟙) (corollary₂ lpo)
 
 \end{code}
-
-TODO.
-
-Question. Do we have (finite or arbitrary) joins of ordinals? Probably not.
-
-Conjecture. We have bounded joins. The construction would be to take
-the joint image in any upper bound.
 
 Added 19-20 January 2021.
 
