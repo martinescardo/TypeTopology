@@ -972,8 +972,8 @@ OrdinalOfOrdinals, moved here 30th March 2022). We have bounded
 joins constructed by taking the joint image in any upper bound.
 
 In this way we avoid both small quotients and small images. Moreover,
-the results of second part of this file are a particular case of this
-taking Ord 𝓤 as an upper bound.
+the results of the second part of this file are a particular case of
+this taking Ord 𝓤 as an upper bound.
 
 TODO. Well, this isn't a conjecture any longer. It is simply something
 to implement by modifying the above code.
