@@ -262,7 +262,7 @@ Overᵒ-is-order-preserving : (τ υ : ℕ → Ordᵀ) (f : (n : ℕ) → ⟪ τ
                                             ((υ ↗ (over , over-embedding)) z)
                                             (Overᵒ τ υ f z)
 Overᵒ-is-order-preserving τ υ f p (inl n) x y ((.n , refl) , l) = (n , refl) , p n _ _ l
-Overᵒ-is-order-preserving τ υ f p (inr *) x y ((n , q) , l) = 𝟘-elim (+disjoint q)
+Overᵒ-is-order-preserving τ υ f p (inr *) x y ((n , q) , l)     = 𝟘-elim (+disjoint q)
 
 ∑₁-functor : (τ υ : ℕ → Ordᵀ) (f : (n : ℕ) → ⟪ τ n ⟫ → ⟪ υ n ⟫)
            → ⟪ ∑₁ τ ⟫ → ⟪ ∑₁ υ ⟫
@@ -282,8 +282,8 @@ Overᵒ-is-order-preserving τ υ f p (inr *) x y ((n , q) , l) = 𝟘-elim (+di
                                           (Overᵒ-is-order-preserving τ υ f p)
 
 ∑↑-is-order-preserving : (τ υ : ℕ → Ordᵀ) (f : (n : ℕ) → ⟪ τ n ⟫ → ⟪ υ n ⟫)
-                    → ((n : ℕ) → is-order-preserving (τ n) (υ n) (f n))
-                    → is-order-preserving (∑₁ τ) (∑¹ υ) (∑↑ τ υ f)
+                       → ((n : ℕ) → is-order-preserving (τ n) (υ n) (f n))
+                       → is-order-preserving (∑₁ τ) (∑¹ υ) (∑↑ τ υ f)
 ∑↑-is-order-preserving τ υ f p = comp-is-order-preserving
                                   (∑₁ τ)
                                   (∑₁ υ )
@@ -524,7 +524,12 @@ logically equivalent orders.
 
   φ : has-least _≤_
   φ = Σ-has-least ((λ x y → x ≼⟪ τ ⟫ y)) ((λ {x} a b → a ≼⟪ υ x ⟫ b)) ε δ
-  open commutation (tunderlying-order τ) (λ {x} → tunderlying-order (υ x)) (𝟘 {𝓤₀}) hiding (_≤_)
+  open lexicographic-commutation
+         (tunderlying-order τ)
+         (λ {x} → tunderlying-order (υ x))
+         (𝟘 {𝓤₀})
+       hiding (_≤_)
+
   i : (z t : ⟪ ∑ τ υ ⟫) → z ≤ t → z ≼⟪ ∑ τ υ ⟫ t
   i (x , a) (y , b) = back y x b a
 
