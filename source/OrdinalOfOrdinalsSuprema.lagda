@@ -239,7 +239,7 @@ prepare to proof that it will be the supremum of α.
                 (α i ↓ x')      ∎
 
 
-  module lowerbound-of-upper-bounds-proof
+  module lower-bound-of-upper-bounds-proof
           (β : Ordinal 𝓤)
           (β-is-upper-bound : (i : I) → α i ⊴ β)
          where
@@ -440,12 +440,12 @@ Next, we show that the quotient α/ is the least upper bound of α.
           e : (i , y) ≈ p
           e = pr₂ (pr₂ lem)
 
- α/-is-lowerbound-of-upper-bounds : (β : Ordinal 𝓤)
-                                  → ((i : I) → α i ⊴ β)
-                                  → α/-Ord ⊴ β
- α/-is-lowerbound-of-upper-bounds β β-is-ub = f/ , f/-is-simulation
+ α/-is-lower-bound-of-upper-bounds : (β : Ordinal 𝓤)
+                                   → ((i : I) → α i ⊴ β)
+                                   → α/-Ord ⊴ β
+ α/-is-lower-bound-of-upper-bounds β β-is-ub = f/ , f/-is-simulation
   where
-   open lowerbound-of-upper-bounds-proof β β-is-ub
+   open lower-bound-of-upper-bounds-proof β β-is-ub
    f/ : α/ → ⟨ β ⟩
    f/ = mediating-map/ ≈R (underlying-type-is-set fe β) f̃ f̃-respects-≈
    f/-≡-f̃ : {p : Σα} → f/ [ p ] ≡ f̃ p
@@ -560,12 +560,12 @@ Next, we resize α/ using:
                           (α/-is-upper-bound i)
                           (≃ₒ-to-⊴ α/-Ord α/⁻-Ord α/-≃-α/⁻)
 
-  α/⁻-is-lowerbound-of-upper-bounds : (β : Ordinal 𝓤)
-                                    → ((i : I) → α i ⊴ β)
-                                    → α/⁻-Ord ⊴ β
-  α/⁻-is-lowerbound-of-upper-bounds β β-is-ub =
+  α/⁻-is-lower-bound-of-upper-bounds : (β : Ordinal 𝓤)
+                                     → ((i : I) → α i ⊴ β)
+                                     → α/⁻-Ord ⊴ β
+  α/⁻-is-lower-bound-of-upper-bounds β β-is-ub =
    ⊴-trans α/⁻-Ord α/-Ord β (≃ₒ-to-⊴ α/⁻-Ord α/-Ord α/⁻-≃-α/)
-                            (α/-is-lowerbound-of-upper-bounds β β-is-ub)
+                            (α/-is-lower-bound-of-upper-bounds β β-is-ub)
 
 \end{code}
 
@@ -578,7 +578,7 @@ ordinal-of-ordinals-has-small-suprema : Small-Set-Quotients 𝓤
                                       → Ordinal-Of-Ordinals-Has-Small-Suprema
 ordinal-of-ordinals-has-small-suprema smq I α =
  (α/⁻-Ord α smq , α/⁻-is-upper-bound α smq
-                , α/⁻-is-lowerbound-of-upper-bounds α smq)
+                , α/⁻-is-lower-bound-of-upper-bounds α smq)
 
 \end{code}
 
@@ -710,7 +710,7 @@ the given family α.
            ((α i ↓ x) ↓ (x' , l)) ≡⟨ iterated-↓ (α i) x x' l ⟩
            (α i ↓ x')             ∎
 
- module lowerbound-of-upper-bounds-proof
+ module lower-bound-of-upper-bounds-proof
          (β : Ordinal 𝓤)
          (β-is-upper-bound : (i : I) → α i ⊴ β)
         where
@@ -858,13 +858,13 @@ which can be shown to be a simulation by proving related properties of f̃.
     e : f̅ ((β ↓ y) , t) ≡ y
     e = pr₂ (pr₂ proof-of-claim)
 
- α⁺-is-lowerbound-of-upper-bounds : (β : Ordinal 𝓤)
-                                  → ((i : I) → α i ⊴ β)
-                                  → α⁺-Ord ⊴ β
- α⁺-is-lowerbound-of-upper-bounds β β-is-ub = f̅ , f̅-is-initial-segment
-                                                , f̅-is-order-preserving
+ α⁺-is-lower-bound-of-upper-bounds : (β : Ordinal 𝓤)
+                                   → ((i : I) → α i ⊴ β)
+                                   → α⁺-Ord ⊴ β
+ α⁺-is-lower-bound-of-upper-bounds β β-is-ub = f̅ , f̅-is-initial-segment
+                                                 , f̅-is-order-preserving
   where
-   open lowerbound-of-upper-bounds-proof β β-is-ub
+   open lower-bound-of-upper-bounds-proof β β-is-ub
 
 \end{code}
 
@@ -928,12 +928,12 @@ Next, we resize α⁺ using:
                         (α⁺-is-upper-bound i)
                         (≃ₒ-to-⊴ α⁺-Ord α⁻-Ord α⁺-≃-α⁻)
 
-  α⁻-is-lowerbound-of-upper-bounds : (β : Ordinal 𝓤)
-                                   → ((i : I) → α i ⊴ β)
-                                   → α⁻-Ord ⊴ β
-  α⁻-is-lowerbound-of-upper-bounds β β-is-ub =
+  α⁻-is-lower-bound-of-upper-bounds : (β : Ordinal 𝓤)
+                                    → ((i : I) → α i ⊴ β)
+                                    → α⁻-Ord ⊴ β
+  α⁻-is-lower-bound-of-upper-bounds β β-is-ub =
    ⊴-trans α⁻-Ord α⁺-Ord β (≃ₒ-to-⊴ α⁻-Ord α⁺-Ord α⁻-≃-α⁺)
-                           (α⁺-is-lowerbound-of-upper-bounds β β-is-ub)
+                           (α⁺-is-lower-bound-of-upper-bounds β β-is-ub)
 
 \end{code}
 
@@ -947,7 +947,7 @@ ordinal-of-ordinals-has-small-suprema' : Small-Set-Images 𝓤
                                        → Ordinal-Of-Ordinals-Has-Small-Suprema
 ordinal-of-ordinals-has-small-suprema' {𝓤} ssi I α =
  (α⁻-Ord α ssi , α⁻-is-upper-bound α ssi
-               , α⁻-is-lowerbound-of-upper-bounds α ssi)
+               , α⁻-is-lower-bound-of-upper-bounds α ssi)
 
 \end{code}
 
