@@ -5,8 +5,8 @@ univalent universe 𝓤, the ordinal (Ordinal 𝓤) of ordinals in 𝓤 has supr
 every family I → Ordinal 𝓤 with I : 𝓤.
 
 We extend and formalize Lemma 10.3.22 of [Uni2013] where the given construction
-is only claimed to be an upperbound. Our development also extends [Theorem 9,
-KFX2021] where the least upperbound property is only shown for weakly increasing
+is only claimed to be an upper bound. Our development also extends [Theorem 9,
+KFX2021] where the least upper bound property is only shown for weakly increasing
 ℕ-indexed families.
 
 We also include an alternative construction of suprema due to Martín Ecardó that
@@ -239,23 +239,23 @@ prepare to proof that it will be the supremum of α.
                 (α i ↓ x')      ∎
 
 
-  module lowerbound-of-upperbounds-proof
+  module lowerbound-of-upper-bounds-proof
           (β : Ordinal 𝓤)
-          (β-is-upperbound : (i : I) → α i ⊴ β)
+          (β-is-upper-bound : (i : I) → α i ⊴ β)
          where
 
    f : (i : I) → ⟨ α i ⟩ → ⟨ β ⟩
-   f i x = pr₁ (β-is-upperbound i) x
+   f i x = pr₁ (β-is-upper-bound i) x
 
    f-key-property : (i : I) (x : ⟨ α i ⟩) → α i ↓ x ≡ β ↓ (f i x)
    f-key-property i x =
-    pr₂ (⊴-gives-≼ (α i) β (β-is-upperbound i) (α i ↓ x) (x , refl))
+    pr₂ (⊴-gives-≼ (α i) β (β-is-upper-bound i) (α i ↓ x) (x , refl))
 
    f̃ : Σα → ⟨ β ⟩
    f̃ (i , x) = f i x
 
-   β-is-upperbound-≼ : (i : I) → α i ≼ β
-   β-is-upperbound-≼ i = ⊴-gives-≼ (α i) β (β-is-upperbound i)
+   β-is-upper-bound-≼ : (i : I) → α i ≼ β
+   β-is-upper-bound-≼ i = ⊴-gives-≼ (α i) β (β-is-upper-bound i)
 
    f̃-respects-≈ : {p q : Σα} → p ≈ q → f̃ p ≡ f̃ q
    f̃-respects-≈ {(i , x)} {(j , y)} e = ↓-lc β (f̃ (i , x)) (f̃ (j , y)) goal
@@ -283,7 +283,7 @@ prepare to proof that it will be the supremum of α.
     where
      lemma : Σ x' ꞉ ⟨ α i ⟩ , (x' ≺⟨ α i ⟩ x) × (f i x' ≡ b)
      lemma = simulations-are-initial-segments (α i) β
-              (f i) (pr₂ (β-is-upperbound i))
+              (f i) (pr₂ (β-is-upper-bound i))
               x b l
      x' : ⟨ α i ⟩
      x' = pr₁ lemma
@@ -410,12 +410,12 @@ induced order on Σα.
 
 \end{code}
 
-Next, we show that the quotient α/ is the least upperbound of α.
+Next, we show that the quotient α/ is the least upper bound of α.
 
 \begin{code}
 
- α/-is-upperbound : (i : I) → α i ⊴ α/-Ord
- α/-is-upperbound i = ([_] ∘ ι i , sim)
+ α/-is-upper-bound : (i : I) → α i ⊴ α/-Ord
+ α/-is-upper-bound i = ([_] ∘ ι i , sim)
   where
    sim : is-simulation (α i) α/-Ord (λ x → [ i , x ])
    sim = simulation-unprime pt (α i) α/-Ord (λ x → [ i , x ])
@@ -440,12 +440,12 @@ Next, we show that the quotient α/ is the least upperbound of α.
           e : (i , y) ≈ p
           e = pr₂ (pr₂ lem)
 
- α/-is-lowerbound-of-upperbounds : (β : Ordinal 𝓤)
-                                 → ((i : I) → α i ⊴ β)
-                                 → α/-Ord ⊴ β
- α/-is-lowerbound-of-upperbounds β β-is-ub = f/ , f/-is-simulation
+ α/-is-lowerbound-of-upper-bounds : (β : Ordinal 𝓤)
+                                  → ((i : I) → α i ⊴ β)
+                                  → α/-Ord ⊴ β
+ α/-is-lowerbound-of-upper-bounds β β-is-ub = f/ , f/-is-simulation
   where
-   open lowerbound-of-upperbounds-proof β β-is-ub
+   open lowerbound-of-upper-bounds-proof β β-is-ub
    f/ : α/ → ⟨ β ⟩
    f/ = mediating-map/ ≈R (underlying-type-is-set fe β) f̃ f̃-respects-≈
    f/-≡-f̃ : {p : Σα} → f/ [ p ] ≡ f̃ p
@@ -555,17 +555,17 @@ Next, we resize α/ using:
   α/-≃-α/⁻ : α/-Ord ≃ₒ α/⁻-Ord
   α/-≃-α/⁻ = ≃ₒ-sym α/⁻-Ord α/-Ord α/⁻-≃-α/
 
-  α/⁻-is-upperbound : (i : I) → α i ⊴ α/⁻-Ord
-  α/⁻-is-upperbound i = ⊴-trans (α i) α/-Ord α/⁻-Ord
-                         (α/-is-upperbound i)
-                         (≃ₒ-to-⊴ α/-Ord α/⁻-Ord α/-≃-α/⁻)
+  α/⁻-is-upper-bound : (i : I) → α i ⊴ α/⁻-Ord
+  α/⁻-is-upper-bound i = ⊴-trans (α i) α/-Ord α/⁻-Ord
+                          (α/-is-upper-bound i)
+                          (≃ₒ-to-⊴ α/-Ord α/⁻-Ord α/-≃-α/⁻)
 
-  α/⁻-is-lowerbound-of-upperbounds : (β : Ordinal 𝓤)
-                                   → ((i : I) → α i ⊴ β)
-                                   → α/⁻-Ord ⊴ β
-  α/⁻-is-lowerbound-of-upperbounds β β-is-ub =
+  α/⁻-is-lowerbound-of-upper-bounds : (β : Ordinal 𝓤)
+                                    → ((i : I) → α i ⊴ β)
+                                    → α/⁻-Ord ⊴ β
+  α/⁻-is-lowerbound-of-upper-bounds β β-is-ub =
    ⊴-trans α/⁻-Ord α/-Ord β (≃ₒ-to-⊴ α/⁻-Ord α/-Ord α/⁻-≃-α/)
-                            (α/-is-lowerbound-of-upperbounds β β-is-ub)
+                            (α/-is-lowerbound-of-upper-bounds β β-is-ub)
 
 \end{code}
 
@@ -577,8 +577,8 @@ quotients).
 ordinal-of-ordinals-has-small-suprema : Small-Set-Quotients 𝓤
                                       → Ordinal-Of-Ordinals-Has-Small-Suprema
 ordinal-of-ordinals-has-small-suprema smq I α =
- (α/⁻-Ord α smq , α/⁻-is-upperbound α smq
-                , α/⁻-is-lowerbound-of-upperbounds α smq)
+ (α/⁻-Ord α smq , α/⁻-is-upper-bound α smq
+                , α/⁻-is-lowerbound-of-upper-bounds α smq)
 
 \end{code}
 
@@ -687,13 +687,13 @@ The ordinal structure on the image of σ will be the one induced from Ordinal �
 
 \end{code}
 
-With the ordinal structure in place, we prove that α⁺ is the least upperbound of
+With the ordinal structure in place, we prove that α⁺ is the least upper bound of
 the given family α.
 
 \begin{code}
 
- α⁺-is-upperbound : (i : I) → α i ⊴ α⁺-Ord
- α⁺-is-upperbound i = f , f-is-initial-segment , f-is-order-preserving
+ α⁺-is-upper-bound : (i : I) → α i ⊴ α⁺-Ord
+ α⁺-is-upper-bound i = f , f-is-initial-segment , f-is-order-preserving
   where
    f : ⟨ α i ⟩ → α⁺
    f x = α i ↓ x , ∣ i , x , refl ∣
@@ -710,22 +710,22 @@ the given family α.
            ((α i ↓ x) ↓ (x' , l)) ≡⟨ iterated-↓ (α i) x x' l ⟩
            (α i ↓ x')             ∎
 
- module lowerbound-of-upperbounds-proof
+ module lowerbound-of-upper-bounds-proof
          (β : Ordinal 𝓤)
-         (β-is-upperbound : (i : I) → α i ⊴ β)
+         (β-is-upper-bound : (i : I) → α i ⊴ β)
         where
 
   private
    f : (i : I) → ⟨ α i ⟩ → ⟨ β ⟩
-   f i x = pr₁ (β-is-upperbound i) x
+   f i x = pr₁ (β-is-upper-bound i) x
 
    f-key-property : (i : I) (x : ⟨ α i ⟩) → α i ↓ x ≡ β ↓ (f i x)
    f-key-property i x =
-    pr₂ (⊴-gives-≼ (α i) β (β-is-upperbound i) (α i ↓ x) (x , refl))
+    pr₂ (⊴-gives-≼ (α i) β (β-is-upper-bound i) (α i ↓ x) (x , refl))
 
 \end{code}
 
-In proving that α⁺ is the *least* upperbound of α, it is helpful to consider an
+In proving that α⁺ is the *least* upper bound of α, it is helpful to consider an
 auxiliary map where we have γ : Ordinal 𝓤 and an element of Σ i ꞉ I , γ ⊲ α i
 (rather than only an element of ∃ i ꞉ I , γ ⊲ α i).
 
@@ -858,13 +858,13 @@ which can be shown to be a simulation by proving related properties of f̃.
     e : f̅ ((β ↓ y) , t) ≡ y
     e = pr₂ (pr₂ proof-of-claim)
 
- α⁺-is-lowerbound-of-upperbounds : (β : Ordinal 𝓤)
-                                 → ((i : I) → α i ⊴ β)
-                                 → α⁺-Ord ⊴ β
- α⁺-is-lowerbound-of-upperbounds β β-is-ub = f̅ , f̅-is-initial-segment
-                                               , f̅-is-order-preserving
+ α⁺-is-lowerbound-of-upper-bounds : (β : Ordinal 𝓤)
+                                  → ((i : I) → α i ⊴ β)
+                                  → α⁺-Ord ⊴ β
+ α⁺-is-lowerbound-of-upper-bounds β β-is-ub = f̅ , f̅-is-initial-segment
+                                                , f̅-is-order-preserving
   where
-   open lowerbound-of-upperbounds-proof β β-is-ub
+   open lowerbound-of-upper-bounds-proof β β-is-ub
 
 \end{code}
 
@@ -923,17 +923,17 @@ Next, we resize α⁺ using:
   α⁺-≃-α⁻ : α⁺-Ord ≃ₒ α⁻-Ord
   α⁺-≃-α⁻ = ≃ₒ-sym α⁻-Ord α⁺-Ord α⁻-≃-α⁺
 
-  α⁻-is-upperbound : (i : I) → α i ⊴ α⁻-Ord
-  α⁻-is-upperbound i = ⊴-trans (α i) α⁺-Ord α⁻-Ord
-                        (α⁺-is-upperbound i)
+  α⁻-is-upper-bound : (i : I) → α i ⊴ α⁻-Ord
+  α⁻-is-upper-bound i = ⊴-trans (α i) α⁺-Ord α⁻-Ord
+                        (α⁺-is-upper-bound i)
                         (≃ₒ-to-⊴ α⁺-Ord α⁻-Ord α⁺-≃-α⁻)
 
-  α⁻-is-lowerbound-of-upperbounds : (β : Ordinal 𝓤)
-                                  → ((i : I) → α i ⊴ β)
-                                  → α⁻-Ord ⊴ β
-  α⁻-is-lowerbound-of-upperbounds β β-is-ub =
+  α⁻-is-lowerbound-of-upper-bounds : (β : Ordinal 𝓤)
+                                   → ((i : I) → α i ⊴ β)
+                                   → α⁻-Ord ⊴ β
+  α⁻-is-lowerbound-of-upper-bounds β β-is-ub =
    ⊴-trans α⁻-Ord α⁺-Ord β (≃ₒ-to-⊴ α⁻-Ord α⁺-Ord α⁻-≃-α⁺)
-                           (α⁺-is-lowerbound-of-upperbounds β β-is-ub)
+                           (α⁺-is-lowerbound-of-upper-bounds β β-is-ub)
 
 \end{code}
 
@@ -946,8 +946,8 @@ open SmallImages pt
 ordinal-of-ordinals-has-small-suprema' : Small-Set-Images 𝓤
                                        → Ordinal-Of-Ordinals-Has-Small-Suprema
 ordinal-of-ordinals-has-small-suprema' {𝓤} ssi I α =
- (α⁻-Ord α ssi , α⁻-is-upperbound α ssi
-               , α⁻-is-lowerbound-of-upperbounds α ssi)
+ (α⁻-Ord α ssi , α⁻-is-upper-bound α ssi
+               , α⁻-is-lowerbound-of-upper-bounds α ssi)
 
 \end{code}
 

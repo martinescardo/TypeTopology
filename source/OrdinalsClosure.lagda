@@ -524,6 +524,7 @@ logically equivalent orders.
 
   φ : has-least _≤_
   φ = Σ-has-least ((λ x y → x ≼⟪ τ ⟫ y)) ((λ {x} a b → a ≼⟪ υ x ⟫ b)) ε δ
+
   open lexicographic-commutation
          (tunderlying-order τ)
          (λ {x} → tunderlying-order (υ x))
