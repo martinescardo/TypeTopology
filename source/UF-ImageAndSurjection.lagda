@@ -89,10 +89,13 @@ module ImageAndSurjection (pt : propositional-truncations-exist) where
       ρ = ap (restriction f) (p (corestriction f x) (f'' ∣ x ∣))
 
  is-surjection : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
- is-surjection f = ∀ y → ∃ x ꞉ domain f , f x ≡ y
+ is-surjection f = ∀ y → y ∈image f
 
  _↠_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
  X ↠ Y = Σ f ꞉ (X → Y) , is-surjection f
+
+ _is-image-of_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
+ Y is-image-of X = X ↠ Y
 
  image-is-set : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
               → (f : X → Y)
