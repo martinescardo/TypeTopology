@@ -259,3 +259,5 @@ being-pseudo-inhabited'-is-prop : {X : 𝓤 ̇ } → is-prop X → is-prop (is-p
 being-pseudo-inhabited'-is-prop {𝓤} {X} i = prop-criterion
                                               (λ (r , rκ) → sections-have-at-most-one-retraction fe (κ X)
                                                              (r , retraction-of-κ-is-section i r rκ))
+
+\end{code}

@@ -432,6 +432,7 @@ complement):
     →     y ≺⟪ Δ (A x)   ⟫     z
   g x y z l = IH x y z (f x y z l)
 
+
 ι-is-dense : (ν : E) → is-dense (ι ν)
 ι-is-dense ⌜𝟙⌝         = id-is-dense
 ι-is-dense ⌜ω+𝟙⌝       = ι𝟙-dense fe₀
@@ -634,3 +635,20 @@ Let P be a proposition and assume function extensionality.
 It doesn't seem to be possible to reverse any of the implications (0)
 and (1), so that the proposition "(P -> 2) has decidable equality"
 seems to be strictly between "P is decidable" and "¬P is decidable".
+
+TODO. Do we have (ν : E) → [ Δ ν ] ⊴ [ Κ ν ]? Notice that we do have
+(ℕₒ +ₒ 𝟙ₒ) ⊴ ℕ∞ₒ, proved in OrdinalOfOrdinals, submodule ℕ∞-in-Ord.
+
+TODO. Define an element x of an ordinal to be trisolated if for every
+y we have that y ≺ x or x ≡ y or x ≺ y.  Notice that trisolated
+elements are isolated. Define an ordinal to be trichotomous if every
+element is trisolated. (1) Δ ν should be trichotomous. (2) We should have:
+
+ℓ-trisolated : (ν : E) (x : ⟪ Δ ν ⟫) → ℓ ν x ≡ ₀ → is-trisolated (ι ν x)
+
+We don't need to discuss the case ℓ ν x ≡ ₁ because this is already
+covered by ℓ-limit as trisolated points are isolated.
+
+TODO. An element x of α is trisolated iff there are ordinals αₕ and αₜ
+and an ordinal-equivalence αₕ +ₒ 𝟙ₒ + αₜ → α that maps the point at
+the component 𝟙ₒ to x.
