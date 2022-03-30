@@ -91,10 +91,10 @@ following construction is performed in the module SquashedCantor.
   e = transport (λ - → retract ⟪ τ +ᵒ υ ⟫ of (Σ -)) (dfunext (fe 𝓤₀ 𝓤₁) l) h
    where
     f : 𝟚 → 𝟙 + 𝟙
-    f = pr₁ retract-𝟙+𝟙-of-𝟚
+    f = retraction retract-𝟙+𝟙-of-𝟚
 
     h : retract ⟪ τ +ᵒ υ ⟫ of (Σ i ꞉ 𝟚 , ⟪ cases (λ _ → τ) (λ _ → υ) (f i) ⟫)
-    h = Σ-reindex-retract f (pr₂ retract-𝟙+𝟙-of-𝟚)
+    h = Σ-reindex-retract f (retraction-has-section retract-𝟙+𝟙-of-𝟚)
 
     l : (i : 𝟚) → ⟪ cases (λ _ → τ) (λ _ → υ) (f i) ⟫
                 ≡ 𝟚-cases ⟪ τ ⟫ ⟪ υ ⟫ i
@@ -204,7 +204,7 @@ pair-fun-is-order-preserving : (τ υ : Ordᵀ)
                              → ((x : ⟪ τ ⟫) → is-order-preserving (A x) (B (f x)) (g x))
                              → is-order-preserving (∑ τ A) (∑ υ B) (pair-fun f g)
 
-pair-fun-is-order-preserving τ υ A B f g φ γ (x , a) (y , b) (inl l) = inl (φ x y l)
+pair-fun-is-order-preserving τ υ A B f g φ γ (x , a) (y , b) (inl l)          = inl (φ x y l)
 pair-fun-is-order-preserving τ υ A B f g φ γ (x , a) (x , b) (inr (refl , l)) = inr (refl , γ x a b l)
 
 ι𝟙ᵒ : ⟪ succₒ ℕₒ ⟫ → ⟪ ℕ∞ᵒ ⟫
@@ -238,14 +238,14 @@ over-ι-map-is-order-preserving τ (inr *) x y ((n , p) , l) = 𝟘-elim (+disjo
 ∑-up-is-order-preserving : (τ : ℕ → Ordᵀ)
                          → is-order-preserving (∑₁ τ) (∑¹ τ) (∑-up τ)
 ∑-up-is-order-preserving τ  = pair-fun-is-order-preserving
-                            (succₒ ℕₒ)
-                            ℕ∞ᵒ
-                            (τ ↗ (over , over-embedding))
-                            (τ  ↗ (ι , ι-embedding fe₀))
-                            ι𝟙ᵒ
-                            (over-ι-map (λ n → ⟪ τ n ⟫))
-                            ι𝟙ᵒ-is-order-preserving
-                            (over-ι-map-is-order-preserving τ)
+                               (succₒ ℕₒ)
+                               ℕ∞ᵒ
+                               (τ ↗ (over , over-embedding))
+                               (τ  ↗ (ι , ι-embedding fe₀))
+                               ι𝟙ᵒ
+                               (over-ι-map (λ n → ⟪ τ n ⟫))
+                               ι𝟙ᵒ-is-order-preserving
+                               (over-ι-map-is-order-preserving τ)
 
 ∑↑ : (τ υ : ℕ → Ordᵀ) (f : (n : ℕ) → ⟪ τ n ⟫ → ⟪ υ n ⟫)
    → ⟪ ∑₁ τ ⟫ → ⟪ ∑¹ υ ⟫
@@ -258,9 +258,9 @@ Overᵒ τ υ = Over (λ n → ⟪ τ n ⟫) (λ n → ⟪ υ n ⟫)
 Overᵒ-is-order-preserving : (τ υ : ℕ → Ordᵀ) (f : (n : ℕ) → ⟪ τ n ⟫ → ⟪ υ n ⟫)
                           → ((n : ℕ) → is-order-preserving (τ n) (υ n) (f n))
                           → (z : ℕ + 𝟙) → is-order-preserving
-                                             ((τ ↗ (over , over-embedding)) z)
-                                             ((υ ↗ (over , over-embedding)) z)
-                                             (Overᵒ τ υ f z)
+                                            ((τ ↗ (over , over-embedding)) z)
+                                            ((υ ↗ (over , over-embedding)) z)
+                                            (Overᵒ τ υ f z)
 Overᵒ-is-order-preserving τ υ f p (inl n) x y ((.n , refl) , l) = (n , refl) , p n _ _ l
 Overᵒ-is-order-preserving τ υ f p (inr *) x y ((n , q) , l) = 𝟘-elim (+disjoint q)
 
@@ -269,33 +269,32 @@ Overᵒ-is-order-preserving τ υ f p (inr *) x y ((n , q) , l) = 𝟘-elim (+di
 ∑₁-functor τ ν = Σ₁-functor (λ n → ⟪ τ n ⟫) (λ n → ⟪ ν n ⟫)
 
 ∑₁-functor-is-order-preserving : (τ υ : ℕ → Ordᵀ) (f : (n : ℕ) → ⟪ τ n ⟫ → ⟪ υ n ⟫)
-                            → ((n : ℕ) → is-order-preserving (τ n) (υ n) (f n))
-                            → is-order-preserving (∑₁ τ) (∑₁ υ) (∑₁-functor τ υ f)
-∑₁-functor-is-order-preserving τ υ f p =
- pair-fun-is-order-preserving
-  (succₒ ℕₒ)
-  (succₒ ℕₒ)
-  (τ ↗ (over , over-embedding))
-  (υ ↗ (over , over-embedding))
-  id
-  (Over (λ n → ⟪ τ n ⟫) (λ n → ⟪ υ n ⟫) f)
-  (λ x y l → l)
-  (Overᵒ-is-order-preserving τ υ f p)
+                               → ((n : ℕ) → is-order-preserving (τ n) (υ n) (f n))
+                               → is-order-preserving (∑₁ τ) (∑₁ υ) (∑₁-functor τ υ f)
+∑₁-functor-is-order-preserving τ υ f p = pair-fun-is-order-preserving
+                                          (succₒ ℕₒ)
+                                          (succₒ ℕₒ)
+                                          (τ ↗ (over , over-embedding))
+                                          (υ ↗ (over , over-embedding))
+                                          id
+                                          (Over (λ n → ⟪ τ n ⟫) (λ n → ⟪ υ n ⟫) f)
+                                          (λ x y l → l)
+                                          (Overᵒ-is-order-preserving τ υ f p)
 
 ∑↑-is-order-preserving : (τ υ : ℕ → Ordᵀ) (f : (n : ℕ) → ⟪ τ n ⟫ → ⟪ υ n ⟫)
                     → ((n : ℕ) → is-order-preserving (τ n) (υ n) (f n))
                     → is-order-preserving (∑₁ τ) (∑¹ υ) (∑↑ τ υ f)
 ∑↑-is-order-preserving τ υ f p = comp-is-order-preserving
-                                (∑₁ τ)
-                                (∑₁ υ )
-                                (∑¹ υ)
-                                (Σ₁-functor
-                                   (λ n → ⟪ τ n ⟫)
-                                   (λ n → ⟪ υ n ⟫)
-                                   f)
-                                (∑-up υ)
-                                (∑₁-functor-is-order-preserving τ υ f p)
-                                (∑-up-is-order-preserving υ)
+                                  (∑₁ τ)
+                                  (∑₁ υ )
+                                  (∑¹ υ)
+                                  (Σ₁-functor
+                                     (λ n → ⟪ τ n ⟫)
+                                     (λ n → ⟪ υ n ⟫)
+                                     f)
+                                  (∑-up υ)
+                                  (∑₁-functor-is-order-preserving τ υ f p)
+                                  (∑-up-is-order-preserving υ)
 \end{code}
 
 And now order reflection.
@@ -316,17 +315,17 @@ pair-fun-is-order-reflecting : (τ υ : Ordᵀ) (A : ⟪ τ ⟫ → Ordᵀ) (B :
                              → ((x : ⟪ τ ⟫) → is-order-reflecting (A x) (B (f x)) (g x))
                              → is-order-reflecting (∑ τ A) (∑ υ B) (pair-fun f g)
 
-pair-fun-is-order-reflecting τ υ A B f g φ e γ (x , a) (y , b) (inl l) = inl (φ x y l)
+pair-fun-is-order-reflecting τ υ A B f g φ e γ (x , a) (y , b) (inl l)       = inl (φ x y l)
 pair-fun-is-order-reflecting τ υ A B f g φ e γ (x , a) (y , b) (inr (r , l)) = inr (c r , p)
  where
   e' : is-equiv (ap f)
   e' = embedding-embedding' f e x y
 
   c : f x ≡ f y → x ≡ y
-  c = pr₁ (pr₁ e')
+  c = inverse (ap f) e'
 
   η : (q : f x ≡ f y) → ap f (c q) ≡ q
-  η = pr₂ (pr₁ e')
+  η = retract-condition (ap f , equivs-have-sections (ap f) e')
 
   i : transport (λ - → ⟪ B (f -) ⟫) (c r) (g x a)
     ≡ transport (λ - → ⟪ B - ⟫) (ap f (c r)) (g x a)
@@ -353,10 +352,10 @@ pair-fun-is-order-reflecting τ υ A B f g φ e γ (x , a) (y , b) (inr (r , l))
 ι𝟙ᵒ-is-order-reflecting (inr *) (inr *) (n , (p , l)) = 𝟘-elim (∞-is-not-finite n p)
 
 over-ι-map-is-order-reflecting  : (τ : ℕ → Ordᵀ) (z : ℕ + 𝟙)
-                                    → is-order-reflecting
-                                        ((τ ↗ (over , over-embedding)) z)
-                                        ((τ ↗ (ι , ι-embedding fe₀)) (ι𝟙 z))
-                                        (over-ι-map (λ n → ⟪ τ n ⟫) z)
+                                → is-order-reflecting
+                                    ((τ ↗ (over , over-embedding)) z)
+                                    ((τ ↗ (ι , ι-embedding fe₀)) (ι𝟙 z))
+                                    (over-ι-map (λ n → ⟪ τ n ⟫) z)
 over-ι-map-is-order-reflecting τ (inl n) x y ((m , p) , l) = (n , refl) , q
  where
   x' : ⟪ τ n ⟫
