@@ -652,3 +652,6 @@ covered by ℓ-limit as trisolated points are isolated.
 TODO. An element x of α is trisolated iff there are ordinals αₕ and αₜ
 and an ordinal-equivalence αₕ +ₒ 𝟙ₒ + αₜ → α that maps the point at
 the component 𝟙ₒ to x.
+
+TODO. Suprema of compact ordinals are compact. (This follows directly
+from the constructions in the file OrdinalOfOrdinalsSupremum.)
