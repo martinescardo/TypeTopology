@@ -209,7 +209,7 @@ The following lemma makes it clear why we eventually pass to the quotient.
 \end{code}
 
 The above suffies to prove that the quotient of Σα will be an ordinal. We now
-prepare to proof that it will be the supremum of α.
+prepare to prove that it will be the supremum of α.
 
 \begin{code}
 
