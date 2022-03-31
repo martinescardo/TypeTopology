@@ -101,7 +101,7 @@ Ordinal-Of-Ordinals-Has-Small-Suprema-is-prop =
                          (Π₂-is-prop fe' (λ γ _ → ⊴-is-prop-valued β     γ)))
                  (⊴-antisym β β' (β-is-lb β' β'-is-ub) (β'-is-lb β β-is-ub))
 
-module _
+module construction-using-quotient
         {I : 𝓤 ̇  }
         (α : I → Ordinal 𝓤)
        where
@@ -549,22 +549,22 @@ Next, we resize α/ using:
   α/⁻-Ord : Ordinal 𝓤
   α/⁻-Ord = α/⁻ , pr₁ resize-ordinal
 
-  α/⁻-≃-α/ : α/⁻-Ord ≃ₒ α/-Ord
-  α/⁻-≃-α/ = pr₂ resize-ordinal
+  α/⁻-≃ₒ-α/ : α/⁻-Ord ≃ₒ α/-Ord
+  α/⁻-≃ₒ-α/ = pr₂ resize-ordinal
 
-  α/-≃-α/⁻ : α/-Ord ≃ₒ α/⁻-Ord
-  α/-≃-α/⁻ = ≃ₒ-sym α/⁻-Ord α/-Ord α/⁻-≃-α/
+  α/-≃ₒ-α/⁻ : α/-Ord ≃ₒ α/⁻-Ord
+  α/-≃ₒ-α/⁻ = ≃ₒ-sym α/⁻-Ord α/-Ord α/⁻-≃ₒ-α/
 
   α/⁻-is-upper-bound : (i : I) → α i ⊴ α/⁻-Ord
   α/⁻-is-upper-bound i = ⊴-trans (α i) α/-Ord α/⁻-Ord
                           (α/-is-upper-bound i)
-                          (≃ₒ-to-⊴ α/-Ord α/⁻-Ord α/-≃-α/⁻)
+                          (≃ₒ-to-⊴ α/-Ord α/⁻-Ord α/-≃ₒ-α/⁻)
 
   α/⁻-is-lower-bound-of-upper-bounds : (β : Ordinal 𝓤)
                                      → ((i : I) → α i ⊴ β)
                                      → α/⁻-Ord ⊴ β
   α/⁻-is-lower-bound-of-upper-bounds β β-is-ub =
-   ⊴-trans α/⁻-Ord α/-Ord β (≃ₒ-to-⊴ α/⁻-Ord α/-Ord α/⁻-≃-α/)
+   ⊴-trans α/⁻-Ord α/-Ord β (≃ₒ-to-⊴ α/⁻-Ord α/-Ord α/⁻-≃ₒ-α/)
                             (α/-is-lower-bound-of-upper-bounds β β-is-ub)
 
 \end{code}
@@ -576,9 +576,11 @@ quotients).
 
 ordinal-of-ordinals-has-small-suprema : Small-Set-Quotients 𝓤
                                       → Ordinal-Of-Ordinals-Has-Small-Suprema
-ordinal-of-ordinals-has-small-suprema smq I α =
- (α/⁻-Ord α smq , α/⁻-is-upper-bound α smq
-                , α/⁻-is-lower-bound-of-upper-bounds α smq)
+ordinal-of-ordinals-has-small-suprema ssq I α =
+ (α/⁻-Ord ssq , α/⁻-is-upper-bound ssq
+              , α/⁻-is-lower-bound-of-upper-bounds ssq)
+  where
+   open construction-using-quotient α
 
 \end{code}
 
@@ -595,7 +597,7 @@ open import UF-EquivalenceExamples
 open import UF-ImageAndSurjection
 open ImageAndSurjection pt
 
-module _
+module construction-using-image
         {I : 𝓤 ̇  }
         (α : I → Ordinal 𝓤)
        where
@@ -917,22 +919,22 @@ Next, we resize α⁺ using:
   α⁻-Ord : Ordinal 𝓤
   α⁻-Ord = α⁻ , pr₁ resize-ordinal
 
-  α⁻-≃-α⁺ : α⁻-Ord ≃ₒ α⁺-Ord
-  α⁻-≃-α⁺ = pr₂ resize-ordinal
+  α⁻-≃ₒ-α⁺ : α⁻-Ord ≃ₒ α⁺-Ord
+  α⁻-≃ₒ-α⁺ = pr₂ resize-ordinal
 
-  α⁺-≃-α⁻ : α⁺-Ord ≃ₒ α⁻-Ord
-  α⁺-≃-α⁻ = ≃ₒ-sym α⁻-Ord α⁺-Ord α⁻-≃-α⁺
+  α⁺-≃ₒ-α⁻ : α⁺-Ord ≃ₒ α⁻-Ord
+  α⁺-≃ₒ-α⁻ = ≃ₒ-sym α⁻-Ord α⁺-Ord α⁻-≃ₒ-α⁺
 
   α⁻-is-upper-bound : (i : I) → α i ⊴ α⁻-Ord
   α⁻-is-upper-bound i = ⊴-trans (α i) α⁺-Ord α⁻-Ord
                         (α⁺-is-upper-bound i)
-                        (≃ₒ-to-⊴ α⁺-Ord α⁻-Ord α⁺-≃-α⁻)
+                        (≃ₒ-to-⊴ α⁺-Ord α⁻-Ord α⁺-≃ₒ-α⁻)
 
   α⁻-is-lower-bound-of-upper-bounds : (β : Ordinal 𝓤)
                                     → ((i : I) → α i ⊴ β)
                                     → α⁻-Ord ⊴ β
   α⁻-is-lower-bound-of-upper-bounds β β-is-ub =
-   ⊴-trans α⁻-Ord α⁺-Ord β (≃ₒ-to-⊴ α⁻-Ord α⁺-Ord α⁻-≃-α⁺)
+   ⊴-trans α⁻-Ord α⁺-Ord β (≃ₒ-to-⊴ α⁻-Ord α⁺-Ord α⁻-≃ₒ-α⁺)
                            (α⁺-is-lower-bound-of-upper-bounds β β-is-ub)
 
 \end{code}
@@ -946,8 +948,10 @@ open SmallImages pt
 ordinal-of-ordinals-has-small-suprema' : Small-Set-Images 𝓤
                                        → Ordinal-Of-Ordinals-Has-Small-Suprema
 ordinal-of-ordinals-has-small-suprema' {𝓤} ssi I α =
- (α⁻-Ord α ssi , α⁻-is-upper-bound α ssi
-               , α⁻-is-lower-bound-of-upper-bounds α ssi)
+ (α⁻-Ord ssi , α⁻-is-upper-bound ssi
+             , α⁻-is-lower-bound-of-upper-bounds ssi)
+  where
+   open construction-using-image α
 
 \end{code}
 
@@ -959,11 +963,53 @@ instead (just like in ordinal-of-ordinals-has-small-suprema above).
 
 ordinal-of-ordinals-has-small-suprema'' : Small-Set-Quotients 𝓤
                                         → Ordinal-Of-Ordinals-Has-Small-Suprema
-ordinal-of-ordinals-has-small-suprema'' {𝓤} smq =
+ordinal-of-ordinals-has-small-suprema'' {𝓤} ssq =
  ordinal-of-ordinals-has-small-suprema' ssi
   where
    ssi : Small-Set-Images 𝓤
-   ssi = Small-Set-Images-from-Small-Set-Quotients smq
+   ssi = Small-Set-Images-from-Small-Set-Quotients ssq
+
+\end{code}
+
+We repackage the above for convenient use.
+
+\begin{code}
+
+module _
+        {𝓤 : Universe}
+        (ssq : Small-Set-Quotients 𝓤)
+        {I : 𝓤 ̇  }
+        (α : I → Ordinal 𝓤)
+       where
+
+ open construction-using-image α
+
+ supremum : Ordinal 𝓤
+ supremum = pr₁ (ordinal-of-ordinals-has-small-suprema'' ssq I α)
+
+ supremum-is-least-upperbound :
+    ((i : I) → α i ⊴ supremum)
+  × ((β : Ordinal 𝓤) → ((i : I) → α i ⊴ β) → supremum ⊴ β)
+ supremum-is-least-upperbound =
+  pr₂ (ordinal-of-ordinals-has-small-suprema'' ssq I α)
+
+ supremum-is-upperbound : (i : I) → α i ⊴ supremum
+ supremum-is-upperbound = pr₁ (supremum-is-least-upperbound)
+
+ supremum-is-lowerbound-of-upperbound : (β : Ordinal 𝓤)
+                                      → ((i : I) → α i ⊴ β)
+                                      → supremum ⊴ β
+ supremum-is-lowerbound-of-upperbound = pr₂ (supremum-is-least-upperbound)
+
+ supremum-is-image-of-Σ : ⟨ supremum ⟩ ≃ image σ
+ supremum-is-image-of-Σ = ⟨ supremum ⟩ ≃⟨ e               ⟩
+                          α⁺           ≃⟨ ≃-sym image-σ-≃ ⟩
+                          image σ      ■
+  where
+   e = ≃ₒ-gives-≃ supremum α⁺-Ord (α⁻-≃ₒ-α⁺ ssi)
+    where
+     ssi : Small-Set-Images 𝓤
+     ssi = Small-Set-Images-from-Small-Set-Quotients ssq
 
 \end{code}
 
