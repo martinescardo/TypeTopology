@@ -975,7 +975,7 @@ We repackage the above for convenient use.
 
 \begin{code}
 
-module _
+module suprema
         {𝓤 : Universe}
         (ssq : Small-Set-Quotients 𝓤)
         {I : 𝓤 ̇  }
@@ -987,19 +987,19 @@ module _
  supremum : Ordinal 𝓤
  supremum = pr₁ (ordinal-of-ordinals-has-small-suprema'' ssq I α)
 
- supremum-is-least-upperbound :
+ supremum-is-least-upper-bound :
     ((i : I) → α i ⊴ supremum)
   × ((β : Ordinal 𝓤) → ((i : I) → α i ⊴ β) → supremum ⊴ β)
- supremum-is-least-upperbound =
+ supremum-is-least-upper-bound =
   pr₂ (ordinal-of-ordinals-has-small-suprema'' ssq I α)
 
- supremum-is-upperbound : (i : I) → α i ⊴ supremum
- supremum-is-upperbound = pr₁ (supremum-is-least-upperbound)
+ supremum-is-upper-bound : (i : I) → α i ⊴ supremum
+ supremum-is-upper-bound = pr₁ (supremum-is-least-upper-bound)
 
- supremum-is-lowerbound-of-upperbound : (β : Ordinal 𝓤)
+ supremum-is-lowerbound-of-upper-bound : (β : Ordinal 𝓤)
                                       → ((i : I) → α i ⊴ β)
                                       → supremum ⊴ β
- supremum-is-lowerbound-of-upperbound = pr₂ (supremum-is-least-upperbound)
+ supremum-is-lowerbound-of-upper-bound = pr₂ (supremum-is-least-upper-bound)
 
  supremum-is-image-of-Σ : ⟨ supremum ⟩ ≃ image σ
  supremum-is-image-of-Σ = ⟨ supremum ⟩ ≃⟨ e               ⟩
