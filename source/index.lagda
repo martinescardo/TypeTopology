@@ -1,4 +1,4 @@
-w
+
    Various new theorems in univalent mathematics written in Agda
    -------------------------------------------------------------
 
