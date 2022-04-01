@@ -9,7 +9,7 @@ is only claimed to be an upper bound. Our development also extends [Theorem 9,
 KFX2021] where the least upper bound property is only shown for weakly increasing
 ℕ-indexed families.
 
-We also include an alternative construction of suprema due to Martín Ecardó that
+We also include an alternative construction of suprema due to Martín Escardó that
 notably doesn't use set quotients.
 
 [Uni2013] The Univalent Foundations Program.
@@ -975,43 +975,43 @@ We repackage the above for convenient use.
 
 \begin{code}
 
-module _
+module suprema
         {𝓤 : Universe}
         (ssq : Small-Set-Quotients 𝓤)
-        {I : 𝓤 ̇  }
-        (α : I → Ordinal 𝓤)
        where
 
- open construction-using-image α
+ module _ {I : 𝓤 ̇  } (α : I → Ordinal 𝓤) where
 
- abstract
-  supremum : Ordinal 𝓤
-  supremum = pr₁ (ordinal-of-ordinals-has-small-suprema'' ssq I α)
+  open construction-using-image α
 
-  supremum-is-least-upperbound :
-     ((i : I) → α i ⊴ supremum)
-   × ((β : Ordinal 𝓤) → ((i : I) → α i ⊴ β) → supremum ⊴ β)
-  supremum-is-least-upperbound =
-   pr₂ (ordinal-of-ordinals-has-small-suprema'' ssq I α)
+  abstract
+   supremum : Ordinal 𝓤
+   supremum = pr₁ (ordinal-of-ordinals-has-small-suprema'' ssq I α)
 
-  supremum-is-upperbound : (i : I) → α i ⊴ supremum
-  supremum-is-upperbound = pr₁ (supremum-is-least-upperbound)
+   supremum-is-least-upper-bound :
+      ((i : I) → α i ⊴ supremum)
+    × ((β : Ordinal 𝓤) → ((i : I) → α i ⊴ β) → supremum ⊴ β)
+   supremum-is-least-upper-bound =
+    pr₂ (ordinal-of-ordinals-has-small-suprema'' ssq I α)
 
-  supremum-is-lowerbound-of-upperbound : (β : Ordinal 𝓤)
-                                       → ((i : I) → α i ⊴ β)
-                                       → supremum ⊴ β
-  supremum-is-lowerbound-of-upperbound = pr₂ (supremum-is-least-upperbound)
+   supremum-is-upper-bound : (i : I) → α i ⊴ supremum
+   supremum-is-upper-bound = pr₁ (supremum-is-least-upper-bound)
 
-  supremum-is-image-of-Σ : ⟨ supremum ⟩ ≃ image σ
-  supremum-is-image-of-Σ = ⟨ supremum ⟩ ≃⟨ e               ⟩
-                           α⁺           ≃⟨ ≃-sym image-σ-≃ ⟩
-                           image σ      ■
-   where
-    e : ⟨ supremum ⟩ ≃ α⁺
-    e = ≃ₒ-gives-≃ supremum α⁺-Ord (α⁻-≃ₒ-α⁺ ssi)
-     where
-      ssi : Small-Set-Images 𝓤
-      ssi = Small-Set-Images-from-Small-Set-Quotients ssq
+   supremum-is-lower-bound-of-upper-bound : (β : Ordinal 𝓤)
+                                          → ((i : I) → α i ⊴ β)
+                                          → supremum ⊴ β
+   supremum-is-lower-bound-of-upper-bound = pr₂ (supremum-is-least-upper-bound)
+
+   supremum-is-image-of-Σ : ⟨ supremum ⟩ ≃ image σ
+   supremum-is-image-of-Σ = ⟨ supremum ⟩ ≃⟨ e               ⟩
+                            α⁺           ≃⟨ ≃-sym image-σ-≃ ⟩
+                            image σ      ■
+    where
+     e : ⟨ supremum ⟩ ≃ α⁺
+     e = ≃ₒ-gives-≃ supremum α⁺-Ord (α⁻-≃ₒ-α⁺ ssi)
+      where
+       ssi : Small-Set-Images 𝓤
+       ssi = Small-Set-Images-from-Small-Set-Quotients ssq
 
 \end{code}
 
@@ -1025,3 +1025,22 @@ this taking Ord 𝓤 as an upper bound.
 
 TODO. Well, this isn't a conjecture any longer. It is simply something
 to implement by modifying the above code.
+
+\begin{code}
+
+open import UF-Embeddings
+open import Density
+
+module experiment
+        {𝓤 : Universe}
+        (ssq : Small-Set-Quotients 𝓤)
+        {I J : 𝓤 ̇  }
+        (α : I → Ordinal 𝓤)
+        (e : I → J)
+        (e-is-embedding : is-embedding e)
+        (e-is-dense : is-dense e)
+       where
+
+ open suprema ssq
+
+\end{code}
