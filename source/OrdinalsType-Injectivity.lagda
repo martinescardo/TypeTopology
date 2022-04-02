@@ -24,9 +24,9 @@ _↗_ : {I : 𝓤  ̇ } {J : 𝓥 ̇ }
     → (I → Ordinal 𝓦)
     → (I ↪ J)
     → (J → Ordinal (𝓤 ⊔ 𝓥 ⊔ 𝓦))
-α ↗ (e , e-is-embedding) = λ i → ((a / e) i  ,
-                           Extension.order i ,
-                           Extension.well-order i (λ x → is-well-ordered (α x)))
+α ↗ (e , e-is-embedding) = λ j → ((a / e) j  ,
+                                  Extension.order j ,
+                                  Extension.well-order j (λ i → is-well-ordered (α i)))
  where
   a = λ i → ⟨ α i ⟩
   module Extension = extension fe a e e-is-embedding (λ {i} → underlying-order (α i))

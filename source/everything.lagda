@@ -212,6 +212,7 @@ import Swap
 import TheTopologyOfTheUniverse
 import ToppedOrdinalArithmetic
 import ToppedOrdinalsType
+import ToppedOrdinalsType-Injectivity
 import TotallySeparated
 import TotalSeparatedness
 import Two

@@ -87,7 +87,7 @@ _×ᵒ_ : Ordᵀ → Ordᵀ → Ordᵀ
 
 Extension of a family X → Ordᵀ along an embedding j : X → A to get a
 family A → Ordᵀ. (This can also be done for Ord-valued families.)
-This uses the module 𝓤₀F-InjectiveTypes to calculate Y / j.
+This uses the module UF-InjectiveTypes to calculate Y / j.
 
 \begin{code}
 
