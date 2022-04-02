@@ -12,21 +12,13 @@ module OrdinalsType-Injectivity (fe : FunExt) where
 
 open import SpartanMLTT
 
-open import UF-Base hiding (_≈_)
+open import UF-Base
 open import UF-Equiv
-open import UF-UA-FunExt
-open import UF-Size
-open import UF-Subsingletons
-open import UF-Subsingletons-FunExt
 open import UF-Embeddings
-open import UF-Equiv
 
-open import OrdinalNotions hiding (is-prop-valued)
 open import OrdinalsType
 open import OrdinalsWellOrderArithmetic
-open import Density
 open import InjectiveTypes fe
-open import OrdinalArithmetic fe
 
 _↗_ : {I : 𝓤  ̇ } {J : 𝓥 ̇ }
     → (I → Ordinal 𝓦)
@@ -82,5 +74,3 @@ _↗_ : {I : 𝓤  ̇ } {J : 𝓥 ̇ }
   γ = g , g-is-order-preserving , g-is-equiv , g⁻¹-is-order-preserving
 
 \end{code}
-
-Another approach would be to transfer the structure with univalence or with transport machinery in another module. But this approach would gives less general universe levels.
