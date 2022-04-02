@@ -169,6 +169,7 @@ import OrdinalsFreeGroup
 import Ordinals
 import OrdinalsShulmanTaboo
 import OrdinalsType
+import OrdinalsType-Injectivity
 import OrdinalsWellOrderArithmetic
 import OrdinalsWellOrderTransport
 import P2

@@ -206,6 +206,7 @@ import OrdinalsClosure
 import Ordinals
 import OrdinalsFreeGroup
 import OrdinalsType
+import OrdinalsType-Injectivity
 import OrdinalsWellOrderArithmetic
 import OrdinalsWellOrderTransport
 import P2
