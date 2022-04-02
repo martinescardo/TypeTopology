@@ -984,33 +984,41 @@ module suprema
 
   open construction-using-image α
 
-  supremum : Ordinal 𝓤
-  supremum = pr₁ (ordinal-of-ordinals-has-small-suprema'' ssq I α)
+  private
+   ssi : Small-Set-Images 𝓤
+   ssi = Small-Set-Images-from-Small-Set-Quotients ssq
 
-  supremum-is-least-upper-bound :
-     ((i : I) → α i ⊴ supremum)
-   × ((β : Ordinal 𝓤) → ((i : I) → α i ⊴ β) → supremum ⊴ β)
-  supremum-is-least-upper-bound =
-   pr₂ (ordinal-of-ordinals-has-small-suprema'' ssq I α)
+  abstract
+   sup : Ordinal 𝓤
+   sup = pr₁ (ordinal-of-ordinals-has-small-suprema' ssi I α)
 
-  supremum-is-upper-bound : (i : I) → α i ⊴ supremum
-  supremum-is-upper-bound = pr₁ (supremum-is-least-upper-bound)
+   sup-is-least-upper-bound : ((i : I) → α i ⊴ sup)
+                            × ((β : Ordinal 𝓤) → ((i : I) → α i ⊴ β) → sup ⊴ β)
+   sup-is-least-upper-bound = pr₂ (ordinal-of-ordinals-has-small-suprema' ssi I α)
 
-  supremum-is-lowerbound-of-upper-bound : (β : Ordinal 𝓤)
-                                       → ((i : I) → α i ⊴ β)
-                                       → supremum ⊴ β
-  supremum-is-lowerbound-of-upper-bound = pr₂ (supremum-is-least-upper-bound)
+   sup-is-upper-bound : (i : I) → α i ⊴ sup
+   sup-is-upper-bound = pr₁ (sup-is-least-upper-bound)
 
-  supremum-is-image-of-Σ : ⟨ supremum ⟩ ≃ image σ
-  supremum-is-image-of-Σ = ⟨ supremum ⟩ ≃⟨ e               ⟩
-                           α⁺           ≃⟨ ≃-sym image-σ-≃ ⟩
-                           image σ      ■
-   where
-    e = ≃ₒ-gives-≃ supremum α⁺-Ord (α⁻-≃ₒ-α⁺ ssi)
-     where
-      ssi : Small-Set-Images 𝓤
-      ssi = Small-Set-Images-from-Small-Set-Quotients ssq
+   sup-is-lowerbound-of-upper-bound : (β : Ordinal 𝓤)
+                                    → ((i : I) → α i ⊴ β)
+                                    → sup ⊴ β
+   sup-is-lowerbound-of-upper-bound = pr₂ (sup-is-least-upper-bound)
 
+   sup-is-image-of-σ : ⟨ sup ⟩ ≃ image σ
+   sup-is-image-of-σ = ⟨ sup ⟩  ≃⟨ ≃ₒ-gives-≃ sup α⁺-Ord (α⁻-≃ₒ-α⁺ ssi) ⟩
+                       α⁺       ≃⟨ ≃-sym image-σ-≃ ⟩
+                       image σ  ■
+
+   sup-is-image-of-sum : ⟨ sup ⟩ is-image-of (Σ i ꞉ I , ⟨ α i ⟩)
+   sup-is-image-of-sum = f , f-is-surjection
+    where
+     f : (Σ i ꞉ I , ⟨ α i ⟩) → ⟨ sup ⟩
+     f = ⌜ ≃-sym sup-is-image-of-σ ⌝ ∘ corestriction σ
+     f-is-surjection : is-surjection f
+     f-is-surjection = ∘-is-surjection
+                        (corestriction-is-surjection σ)
+                        (equivs-are-surjections
+                          (⌜⌝-is-equiv (≃-sym sup-is-image-of-σ)))
 \end{code}
 
 Conjecture (Martin Escardo, August 2018 originally in the file
