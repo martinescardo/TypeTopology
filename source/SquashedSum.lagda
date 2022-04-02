@@ -13,8 +13,9 @@ open import UF-FunExt
 
 module SquashedSum (fe : FunExt) where
 
-fe₀ : funext 𝓤₀ 𝓤₀
-fe₀ = fe 𝓤₀ 𝓤₀
+private
+ fe₀ : funext 𝓤₀ 𝓤₀
+ fe₀ = fe 𝓤₀ 𝓤₀
 
 open import Two-Properties
 open import Plus-Properties

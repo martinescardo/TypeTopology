@@ -57,6 +57,7 @@ open import UF-Miscelanea
 
 open import SigmaDiscreteAndTotallySeparated
 open import ToppedOrdinalsType fe
+open import ToppedOrdinalsType-Injectivity fe
 open import OrdinalArithmetic fe
 open import ToppedOrdinalArithmetic fe
 open import OrdinalsClosure fe

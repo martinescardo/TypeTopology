@@ -133,11 +133,15 @@ open import SquashedCantor fe hiding (Κ)
 open import DiscreteAndSeparated
 open import Density
 open import PairFun
+open import SigmaDiscreteAndTotallySeparated
 
 open import UF-Subsingletons
 open import UF-Retracts
 open import UF-Embeddings
-open import SigmaDiscreteAndTotallySeparated
+
+private
+ fe₀ : funext 𝓤₀ 𝓤₀
+ fe₀ = fe 𝓤₀ 𝓤₀
 
 \end{code}
 

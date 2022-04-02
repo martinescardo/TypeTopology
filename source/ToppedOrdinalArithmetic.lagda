@@ -25,19 +25,17 @@ module ToppedOrdinalArithmetic
         (fe : FunExt)
        where
 
+open import UF-Subsingletons
+
 open import SpartanMLTT
 open import OrdinalsType
 open import OrdinalArithmetic fe
 open import OrdinalsWellOrderArithmetic
 open import ToppedOrdinalsType fe
+open import ToppedOrdinalsType-Injectivity fe
 open import GenericConvergentSequence
-open import NaturalsOrder
-open import InjectiveTypes fe
 open import SquashedSum fe
 open import CanonicalMapNotation
-
-open import UF-Subsingletons
-open import UF-Embeddings
 
 Ordᵀ = Ordinalᵀ 𝓤₀
 
@@ -89,20 +87,6 @@ Extension of a family X → Ordᵀ along an embedding j : X → A to get a
 family A → Ordᵀ. (This can also be done for Ord-valued families.)
 This uses the module UF-InjectiveTypes to calculate Y / j.
 
-\begin{code}
-
-_↗_ : {X A : 𝓤₀ ̇ } → (X → Ordᵀ) → (Σ j ꞉ (X → A), is-embedding j) → (A → Ordᵀ)
-τ ↗ (j , e) = λ a → ((Y / j) a ,
-                     Extension.order a ,
-                     Extension.well-order a (λ x → tis-well-ordered (τ x))) ,
-                     Extension.top-preservation a (λ x → topped (τ x))
- where
-  Y : domain τ → 𝓤₀ ̇
-  Y x = ⟪ τ x ⟫
-  module Extension = extension fe Y j e (λ {x} → tunderlying-order (τ x))
-
-\end{code}
-
 Sum of a countable family with an added non-isolated top element. We
 first extend the family to ℕ∞ and then take the ordinal-indexed sum of
 ordinals defined above.
@@ -110,7 +94,7 @@ ordinals defined above.
 \begin{code}
 
 ∑¹ : (ℕ → Ordᵀ) → Ordᵀ
-∑¹ τ = ∑ ℕ∞ᵒ (τ ↗ (ι , ι-embedding fe₀))
+∑¹ τ = ∑ ℕ∞ᵒ (τ ↗ (ι , ι-embedding (fe 𝓤₀ 𝓤₀)))
 
 \end{code}
 

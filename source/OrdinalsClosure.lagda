@@ -12,10 +12,19 @@ module OrdinalsClosure
         (fe : FunExt)
        where
 
+open import UF-Base
+open import UF-Equiv
+open import UF-Subsingletons
+open import InjectiveTypes fe
+open import UF-Retracts
+open import UF-Embeddings
+open import UF-Miscelanea
+
 open import SpartanMLTT
 open import Two-Properties
 open import AlternativePlus
 open import ToppedOrdinalsType fe
+open import ToppedOrdinalsType-Injectivity fe
 open import OrdinalArithmetic fe
 open import ToppedOrdinalArithmetic fe
 open import CompactTypes
@@ -34,13 +43,9 @@ open import CanonicalMapNotation
 open import SigmaDiscreteAndTotallySeparated
 open import PairFun
 
-open import UF-Base
-open import UF-Equiv
-open import UF-Subsingletons
-open import InjectiveTypes fe
-open import UF-Retracts
-open import UF-Embeddings
-open import UF-Miscelanea
+private
+ fe₀ : funext 𝓤₀ 𝓤₀
+ fe₀ = fe 𝓤₀ 𝓤₀
 
 \end{code}
 

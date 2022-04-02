@@ -20,6 +20,12 @@ open import UF-FunExt
 
 module SquashedCantor (fe : FunExt) where
 
+open import UF-Base
+open import UF-Subsingletons
+open import UF-Equiv
+open import UF-Embeddings
+open import UF-Retracts
+
 open import SpartanMLTT
 open import Two-Properties
 open import GenericConvergentSequence
@@ -29,11 +35,10 @@ open import CoNaturals fe
 open import Sequence fe renaming (head to head' ; tail to tail' ; _∶∶_ to _∶∶'_)
 open import InjectiveTypes fe
 open import CanonicalMapNotation
-open import UF-Base
-open import UF-Subsingletons
-open import UF-Equiv
-open import UF-Embeddings
-open import UF-Retracts
+
+private
+ fe₀ : funext 𝓤₀ 𝓤₀
+ fe₀ = fe 𝓤₀ 𝓤₀
 
 \end{code}
 
