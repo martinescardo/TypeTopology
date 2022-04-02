@@ -72,6 +72,9 @@ is-well-ordered (X , _<_ , o) = o
 Prop-valuedness : (α : Ordinal 𝓤) → is-prop-valued (underlying-order α)
 Prop-valuedness α = prop-valuedness (underlying-order α) (is-well-ordered α)
 
+Reflexivity : (α : Ordinal 𝓤) {x : ⟨ α ⟩} → x ≼⟨ α ⟩ x
+Reflexivity α = ≼-refl (underlying-order α)
+
 Transitivity : (α : Ordinal 𝓤) → is-transitive (underlying-order α)
 Transitivity α = transitivity (underlying-order α) (is-well-ordered α)
 

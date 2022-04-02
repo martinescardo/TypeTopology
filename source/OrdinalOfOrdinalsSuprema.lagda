@@ -1023,22 +1023,3 @@ this taking Ord 𝓤 as an upper bound.
 
 TODO. Well, this isn't a conjecture any longer. It is simply something
 to implement by modifying the above code.
-
-\begin{code}
-
-open import UF-Embeddings
-open import Density
-
-module experiment
-        {𝓤 : Universe}
-        (ssq : Small-Set-Quotients 𝓤)
-        {I J : 𝓤 ̇  }
-        (α : I → Ordinal 𝓤)
-        (e : I → J)
-        (e-is-embedding : is-embedding e)
-        (e-is-dense : is-dense e)
-       where
-
- open suprema ssq
-
-\end{code}

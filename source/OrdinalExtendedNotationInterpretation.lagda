@@ -358,7 +358,7 @@ complement):
               transport₂ (λ j k → j ≺⟪ Κ (A x) ⟫ k)
                (ι-γ-lemma x y)
                (ι-γ-lemma x z)
-              l)
+               l)
 
   g : (x : ⟪ Δ ν ⟫) (y z : ⟪ Δ (A x) ⟫)
     →     y ≺⟪ Δ (A x) ⟫            z
