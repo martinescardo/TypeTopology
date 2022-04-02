@@ -1,4 +1,4 @@
-Martin Escardo, 1st April 2022
+Martin Escardo, 2018
 
 The type of ordinals is (algebraically) injective.
 
@@ -30,6 +30,12 @@ _↗_ : {I : 𝓤  ̇ } {J : 𝓥 ̇ }
  where
   a = λ i → ⟨ α i ⟩
   module Extension = extension fe a e e-is-embedding (λ {i} → underlying-order (α i))
+
+\end{code}
+
+Added 1st April 2022.
+
+\begin{code}
 
 ↗-property : {I : 𝓤  ̇ } {J : 𝓥 ̇ }
              (α : I → Ordinal 𝓤)

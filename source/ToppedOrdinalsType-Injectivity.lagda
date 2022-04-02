@@ -1,4 +1,4 @@
-Martin Escardo, 1st April 2022
+Martin Escardo, 2018
 
 The type of topped ordinals is (algebraically) injective.
 
@@ -35,6 +35,12 @@ _↗_ : {I : 𝓤  ̇ } {J : 𝓥 ̇ }
  where
   t = λ x → ⟪ τ x ⟫
   module Extension = extension fe t e e-is-embedding (λ {i} → tunderlying-order (τ i))
+
+\end{code}
+
+Added 1st April 2022.
+
+\begin{code}
 
 ↗-property : {I : 𝓤  ̇ } {J : 𝓥 ̇ }
              (α : I → Ordinalᵀ 𝓤)
