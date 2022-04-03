@@ -98,7 +98,7 @@ import Integers-Properties
 import Integers-SymmetricInduction
 import JoinSemiLattices
 import LawvereFPT
-import LeastElementProperty
+import InfProperty
 import LexicographicCompactness
 import LexicographicOrder
 import LiftingAlgebras

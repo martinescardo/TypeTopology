@@ -8,7 +8,7 @@ open import SpartanMLTT
 open import Two-Properties
 open import CompactTypes
 
-module LeastElementProperty {𝓤 𝓥} {X : 𝓤 ̇ } (_≤_ : X → X → 𝓥 ̇ ) where
+module InfProperty {𝓤 𝓥} {X : 𝓤 ̇ } (_≤_ : X → X → 𝓥 ̇ ) where
 
 conditional-root : (X → 𝟚) → X → 𝓤 ̇
 conditional-root p x₀ = (Σ x ꞉ X , p x ≡ ₀) → p x₀ ≡ ₀
@@ -22,11 +22,11 @@ upper-bound-of-root-lower-bounds p u = (l : X) → root-lower-bound p l → l �
 roots-infimum : (X → 𝟚) → X → 𝓤 ⊔ 𝓥 ̇
 roots-infimum p x = root-lower-bound p x × upper-bound-of-root-lower-bounds p x
 
-has-least : 𝓤 ⊔ 𝓥 ̇
-has-least = (p : X → 𝟚) → Σ x ꞉ X , conditional-root p x × roots-infimum p x
+has-inf : 𝓤 ⊔ 𝓥 ̇
+has-inf = (p : X → 𝟚) → Σ x ꞉ X , conditional-root p x × roots-infimum p x
 
-has-least-gives-compact∙ : has-least → compact∙ X
-has-least-gives-compact∙ h p = f (h p)
+has-inf-gives-compact∙ : has-inf → compact∙ X
+has-inf-gives-compact∙ h p = f (h p)
  where
   f : (Σ x₀ ꞉ X , conditional-root p x₀ × roots-infimum p x₀)
     → (Σ x₀ ꞉ X , (p x₀ ≡ ₁ → (x : X) → p x ≡ ₁))
@@ -41,10 +41,10 @@ has-least-gives-compact∙ h p = f (h p)
     k : p x₀ ≡ ₁ → (x : X) → p x ≡ ₁
     k e = u (g' (equal-₁-different-from-₀ e))
 
-has-least-gives-compact : has-least → compact X
-has-least-gives-compact = compact∙-gives-compact ∘ has-least-gives-compact∙
+has-inf-gives-compact : has-inf → compact X
+has-inf-gives-compact = compact∙-gives-compact ∘ has-inf-gives-compact∙
 
-has-least-gives-Compact : {𝓦 : Universe} → has-least → Compact X {𝓦}
-has-least-gives-Compact = compact-gives-Compact ∘ has-least-gives-compact
+has-inf-gives-Compact : {𝓦 : Universe} → has-inf → Compact X {𝓦}
+has-inf-gives-Compact = compact-gives-Compact ∘ has-inf-gives-compact
 
 \end{code}

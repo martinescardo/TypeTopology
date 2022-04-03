@@ -13,7 +13,7 @@ import ConvergentSequenceCompact
 import ConvergentSequenceHasLeast
 import ADecidableQuantificationOverTheNaturals
 import ExtendedSumCompact
-import LeastElementProperty
+import InfProperty
 import LexicographicCompactness
 import WeaklyCompactTypes
 import DecidabilityOfNonContinuity

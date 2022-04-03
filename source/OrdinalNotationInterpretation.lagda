@@ -171,8 +171,9 @@ _≺⟪ τ ⟫_ denotes its underlying order.
                              → ι x ≺⟪ Κ ν ⟫ ι y
                              →   x ≺⟪ Δ ν ⟫   y
 
-Κ-has-least-element-property : propext 𝓤₀
-                             → (ν : OE) → has-least-element-property (Κ ν)
+Κ-has-infs-of-complemented-subsets
+                             : propext 𝓤₀
+                             → (ν : OE) → has-infs-of-complemented-subsets (Κ ν)
 
 brouwer-to-oe                : B → OE
 ε₀-upper-bound               : Ordᵀ
@@ -370,22 +371,26 @@ much easier (given the mathematics we have already developed).
 
 \begin{code}
 
-Κ-has-least-element-property pe One       = 𝟙ᵒ-has-least-element-property
-Κ-has-least-element-property pe (Add ν μ) = ∑-has-least-element-property pe
-                                             𝟚ᵒ
-                                             (cases (λ _ → Κ ν) (λ _ → Κ μ))
-                                             𝟚ᵒ-has-least-element-property
-                                             (dep-cases (λ _ → Κ-has-least-element-property pe ν)
-                                                        (λ _ → Κ-has-least-element-property pe μ))
-Κ-has-least-element-property pe (Mul ν μ) = ∑-has-least-element-property pe
-                                             (Κ ν)
-                                             (λ _ → Κ μ)
-                                             (Κ-has-least-element-property pe ν)
-                                             (λ _ → Κ-has-least-element-property pe μ)
-Κ-has-least-element-property pe (Sum1 ν) = ∑₁-has-least-element-property
-                                             pe
-                                             (Κ ∘ ν)
-                                             (λ i → Κ-has-least-element-property pe (ν i))
+Κ-has-infs-of-complemented-subsets pe One       = 𝟙ᵒ-has-infs-of-complemented-subsets
+Κ-has-infs-of-complemented-subsets pe (Add ν μ) =
+ ∑-has-infs-of-complemented-subsets pe
+  𝟚ᵒ
+  (cases (λ _ → Κ ν) (λ _ → Κ μ))
+  𝟚ᵒ-has-infs-of-complemented-subsets
+  (dep-cases (λ _ → Κ-has-infs-of-complemented-subsets pe ν)
+                                                        (λ _ → Κ-has-infs-of-complemented-subsets pe μ))
+Κ-has-infs-of-complemented-subsets pe (Mul ν μ) =
+ ∑-has-infs-of-complemented-subsets pe
+  (Κ ν)
+  (λ _ → Κ μ)
+  (Κ-has-infs-of-complemented-subsets pe ν)
+  (λ _ → Κ-has-infs-of-complemented-subsets pe μ)
+Κ-has-infs-of-complemented-subsets pe (Sum1 ν) =
+ ∑₁-has-infs-of-complemented-subsets
+   pe
+   (Κ ∘ ν)
+   (λ i → Κ-has-infs-of-complemented-subsets pe (ν i))
+
 \end{code}
 
 Added 31 July 2018:

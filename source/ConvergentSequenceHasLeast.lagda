@@ -16,13 +16,13 @@ module ConvergentSequenceHasLeast (fe₀ : funext 𝓤₀ 𝓤₀) where
 
 
 open import Two-Properties
-open import LeastElementProperty
+open import InfProperty
 open import GenericConvergentSequence
 open import OrderNotation
 open import CanonicalMapNotation
 
-ℕ∞-has-least : has-least _≼_
-ℕ∞-has-least p = a , putative-root-lemma , lower-bound-lemma , uborlb-lemma
+ℕ∞-has-inf : has-inf _≼_
+ℕ∞-has-inf p = a , putative-root-lemma , lower-bound-lemma , uborlb-lemma
  where
   α : ℕ → 𝟚
   α 0       = p (ι 0)
