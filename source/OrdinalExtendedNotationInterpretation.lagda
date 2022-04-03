@@ -173,7 +173,7 @@ underlying-set-of-𝓚 ν A y = refl
 
 \end{code}
 
-Here are some more facts about this:
+Here are some more useful facts and constructions with this:
 
 \begin{code}
 
@@ -181,35 +181,23 @@ module Κ-extension (ν : E) (A : ⟪ Δ ν ⟫ → E) where
 
  open import InjectiveTypes fe
 
- ϕ : (x : ⟪ Δ ν ⟫) → ⟪ 𝓚 ν A (ι ν x) ⟫ ≃ ⟪ Κ (A x) ⟫
- ϕ = Π-extension-property (λ x → ⟪ Κ (A x) ⟫) (ι ν) (ι-is-embedding ν)
-
- ϕϕ : (x : ⟪ Δ ν ⟫) → [ 𝓚 ν A (ι ν x) ] ≃ₒ [ Κ (A x) ]
- ϕϕ = ↗-property (Κ ∘ A) (ι ν , ι-is-embedding ν)
+ ϕ : (x : ⟪ Δ ν ⟫) → [ 𝓚 ν A (ι ν x) ] ≃ₒ [ Κ (A x) ]
+ ϕ = ↗-property (Κ ∘ A) (ι ν , ι-is-embedding ν)
 
  φ : (x : ⟪ Δ ν ⟫) → ⟪ 𝓚 ν A (ι ν x) ⟫ → ⟪ Κ (A x) ⟫
- φ x = ≃ₒ-to-fun [ 𝓚 ν A (ι ν x) ] [ Κ (A x) ] (ϕϕ x)
+ φ x = ≃ₒ-to-fun [ 𝓚 ν A (ι ν x) ] [ Κ (A x) ] (ϕ x)
+
+ φ-is-equiv : (x : ⟪ Δ ν ⟫) → is-equiv (φ x)
+ φ-is-equiv x = ≃ₒ-to-fun-is-equiv [ 𝓚 ν A (ι ν x) ] [ Κ (A x) ] (ϕ x)
 
  φ⁻¹ : (x : ⟪ Δ ν ⟫) → ⟪ Κ (A x) ⟫ → ⟪ 𝓚 ν A (ι ν x) ⟫
- φ⁻¹ x = ≃ₒ-to-fun⁻¹ [ 𝓚 ν A (ι ν x) ] [ Κ (A x) ] (ϕϕ x)
+ φ⁻¹ x = ≃ₒ-to-fun⁻¹ [ 𝓚 ν A (ι ν x) ] [ Κ (A x) ] (ϕ x)
+
+ φ⁻¹-is-equiv : (x : ⟪ Δ ν ⟫) → is-equiv (φ⁻¹ x)
+ φ⁻¹-is-equiv x = ≃ₒ-to-fun⁻¹-is-equiv [ 𝓚 ν A (ι ν x) ] [ Κ (A x) ] (ϕ x)
 
  γ : (x : ⟪ Δ ν ⟫) → ⟪ Δ (A x) ⟫ → ⟪ 𝓚 ν A (ι ν x) ⟫
  γ x = φ⁻¹ x ∘ ι (A x)
-
- γ-is-embedding : (x : ⟪ Δ ν ⟫) → is-embedding (γ x)
- γ-is-embedding x = ∘-is-embedding
-                     (ι-is-embedding (A x))
-                     (equivs-are-embeddings _ (⌜⌝⁻¹-is-equiv (ϕ x)))
-
- isolated-γ-gives-isolated-ι : (x : ⟪ Δ ν ⟫) (y : ⟪ Δ (A x) ⟫)
-                             → is-isolated (γ x y) → is-isolated (ι (A x) y)
- isolated-γ-gives-isolated-ι x y = equivs-reflect-isolatedness (φ⁻¹ x)
-                                      (inverses-are-equivs (φ x)
-
-                                        (≃ₒ-to-fun-is-equiv [  𝓚 ν A (ι ν x) ] [ Κ (A x) ]
-                                           (ϕϕ x)))
-                                      (ι (A x) y)
-
 
 Κ ⌜𝟙⌝         = 𝟙ᵒ
 Κ ⌜ω+𝟙⌝       = ℕ∞ᵒ
@@ -238,7 +226,9 @@ module Κ-extension (ν : E) (A : ⟪ Δ ν ⟫ → E) where
                               (λ _ → ι-is-embedding ν₁)
 ι-is-embedding (⌜Σ⌝ ν A)   = pair-fun-is-embedding _ _
                               (ι-is-embedding ν)
-                              γ-is-embedding
+                              (λ x → ∘-is-embedding
+                                      (ι-is-embedding (A x))
+                                      (equivs-are-embeddings (φ⁻¹ x) (φ⁻¹-is-equiv x)))
  where
   open Κ-extension ν A
 
@@ -345,7 +335,7 @@ complement):
     → ι (A x) y ≺⟪ Κ (A x) ⟫        ι (A x) z
     →     γ x y ≺⟪ 𝓚 ν A (ι ν x) ⟫     γ x z
   f x y z = inverses-of-order-equivs-are-order-preserving [ 𝓚 ν A (ι ν x) ] [ Κ (A x) ]
-             (≃ₒ-to-fun-is-order-equiv [ 𝓚 ν A (ι ν x) ] [ Κ (A x) ] (ϕϕ x))
+             (≃ₒ-to-fun-is-order-equiv [ 𝓚 ν A (ι ν x) ] [ Κ (A x) ] (ϕ x))
              (ι (A x) y)
              (ι (A x) z)
 
@@ -403,7 +393,7 @@ complement):
     →     γ x y ≺⟪ 𝓚 ν A (ι ν x) ⟫    γ x z
     → ι (A x) y ≺⟪ Κ (A x)   ⟫     ι (A x) z
   f x y z = inverses-of-order-equivs-are-order-reflecting [ 𝓚 ν A (ι ν x) ] [ Κ (A x) ]
-             (≃ₒ-to-fun-is-order-equiv [ 𝓚 ν A (ι ν x) ] [ Κ (A x) ] (ϕϕ x))
+             (≃ₒ-to-fun-is-order-equiv [ 𝓚 ν A (ι ν x) ] [ Κ (A x) ] (ϕ x))
              (ι (A x) y)
              (ι (A x) z)
 
@@ -432,7 +422,7 @@ complement):
                                   (ι-is-dense (A x))
                                   (equivs-are-dense
                                     (φ⁻¹ x)
-                                    (inverses-are-equivs (φ x) (⌜⌝-is-equiv (ϕ x)))))
+                                    (φ⁻¹-is-equiv x)))
  where
   open Κ-extension ν A
 
@@ -494,7 +484,7 @@ Non-limit points are isolated in the Κ interpretation:
   ii = ℓ-isolated (A x) y (max𝟚-₀-right p)
 
   iii : is-isolated (γ x y)
-  iii = equivs-preserve-isolatedness (φ⁻¹ x) (⌜⌝⁻¹-is-equiv (ϕ x)) (ι (A x) y) ii
+  iii = equivs-preserve-isolatedness (φ⁻¹ x) (φ⁻¹-is-equiv x) (ι (A x) y) ii
 
   iv : is-isolated (ι ν x , γ x y)
   iv = Σ-isolated i iii
@@ -525,7 +515,9 @@ module _ (pe : propext 𝓤₀) where
            → ℓ-limit ν x p₀ (Σ-isolated-left (𝓚-Compact pe ν A) i))
     (λ (p₁ : ℓ (A x) y ≡ ₁)
            → ℓ-limit (A x) y p₁
-              (isolated-γ-gives-isolated-ι x y
+              (equivs-reflect-isolatedness (φ⁻¹ x)
+                (inverses-are-equivs (φ x) (φ-is-equiv x))
+                (ι (A x) y)
                 (Σ-isolated-right
                   (underlying-type-is-setᵀ fe (Κ ν)) i)))
   where
@@ -572,7 +564,7 @@ LPO-gives-ι-is-equiv lpo (⌜Σ⌝ ν A)   = pair-fun-is-equiv
                                           (LPO-gives-ι-is-equiv lpo ν)
                                           (λ x → ∘-is-equiv
                                                   (LPO-gives-ι-is-equiv lpo (A x))
-                                                  (⌜⌝⁻¹-is-equiv (ϕ x)))
+                                                  (φ⁻¹-is-equiv x))
  where
   open Κ-extension ν A
 
