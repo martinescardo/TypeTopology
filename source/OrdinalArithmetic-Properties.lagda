@@ -51,7 +51,7 @@ open import Plus-Properties
 
 
   h : (𝟘ₒ +ₒ α) ≃ₒ α
-  h = f , order-equiv-criterion (𝟘ₒ +ₒ α) α f
+  h = f , order-preserving-reflecting-equivs-are-order-equivs (𝟘ₒ +ₒ α) α f
            (⌜⌝-is-equiv 𝟘-lneutral) f-preserves-order f-reflects-order
 
 𝟘ₒ-right-neutral : (α : Ordinal 𝓤) → α  +ₒ 𝟘ₒ ≡ α
@@ -68,7 +68,7 @@ open import Plus-Properties
 
 
   h : (α +ₒ 𝟘ₒ) ≃ₒ α
-  h = f , order-equiv-criterion (α +ₒ 𝟘ₒ) α f
+  h = f , order-preserving-reflecting-equivs-are-order-equivs (α +ₒ 𝟘ₒ) α f
            (⌜⌝-is-equiv 𝟘-rneutral') f-preserves-order f-reflects-order
 
 +ₒ-assoc : (α β γ : Ordinal 𝓤) → (α  +ₒ β) +ₒ γ ≡ α  +ₒ (β +ₒ γ)
@@ -98,8 +98,9 @@ open import Plus-Properties
 
 
   h : ((α  +ₒ β) +ₒ γ) ≃ₒ (α  +ₒ (β +ₒ γ))
-  h = f , order-equiv-criterion ((α  +ₒ β) +ₒ γ) (α  +ₒ (β +ₒ γ)) f
-           (⌜⌝-is-equiv +assoc) f-preserves-order f-reflects-order
+  h = f , order-preserving-reflecting-equivs-are-order-equivs
+           ((α  +ₒ β) +ₒ γ) (α  +ₒ (β +ₒ γ))
+           f (⌜⌝-is-equiv +assoc) f-preserves-order f-reflects-order
 
 +ₒ-↓-left : {α β : Ordinal 𝓤} (a : ⟨ α ⟩)
           → (α ↓ a) ≡ ((α +ₒ β) ↓ inl a)

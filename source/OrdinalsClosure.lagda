@@ -222,10 +222,10 @@ pair-fun-is-order-preserving τ υ A B f g φ γ (x , a) (x , b) (inr (refl , l)
 ι𝟙ᵒ-is-order-preserving (inr *) (inr *) l = 𝟘-elim l
 
 over-ι-map-is-order-preserving  : (τ : ℕ → Ordᵀ) (z : ℕ + 𝟙)
-                                    → is-order-preserving
-                                        ((τ ↗ (over , over-embedding)) z)
-                                        ((τ ↗ (ι , ι-embedding fe₀)) (ι𝟙 z))
-                                        (over-ι-map (λ n → ⟪ τ n ⟫) z)
+                                     → is-order-preserving
+                                         ((τ ↗ (over , over-embedding)) z)
+                                         ((τ ↗ (ι , ι-embedding fe₀)) (ι𝟙 z))
+                                         (over-ι-map (λ n → ⟪ τ n ⟫) z)
 over-ι-map-is-order-preserving τ (inl n) x y ((.n , refl) , l) = (n , refl) , γ
  where
   γ : over-ι-map (λ n → ⟪ τ n ⟫) (inl n) x (n , refl) ≺⟪ τ n ⟫

@@ -55,6 +55,7 @@ open import UF-Equiv
 open import UF-Subsingletons-FunExt
 open import UF-Miscelanea
 
+open import OrdinalsType
 open import SigmaDiscreteAndTotallySeparated
 open import ToppedOrdinalsType fe
 open import ToppedOrdinalsType-Injectivity fe
@@ -183,11 +184,14 @@ module Κ-extension (ν : E) (A : ⟪ Δ ν ⟫ → E) where
  ϕ : (x : ⟪ Δ ν ⟫) → ⟪ 𝓚 ν A (ι ν x) ⟫ ≃ ⟪ Κ (A x) ⟫
  ϕ = Π-extension-property (λ x → ⟪ Κ (A x) ⟫) (ι ν) (ι-is-embedding ν)
 
+ ϕϕ : (x : ⟪ Δ ν ⟫) → [ 𝓚 ν A (ι ν x) ] ≃ₒ [ Κ (A x) ]
+ ϕϕ = ↗-property (Κ ∘ A) (ι ν , ι-is-embedding ν)
+
  φ : (x : ⟪ Δ ν ⟫) → ⟪ 𝓚 ν A (ι ν x) ⟫ → ⟪ Κ (A x) ⟫
- φ x = ⌜ ϕ x ⌝
+ φ x = ≃ₒ-to-fun [ 𝓚 ν A (ι ν x) ] [ Κ (A x) ] (ϕϕ x)
 
  φ⁻¹ : (x : ⟪ Δ ν ⟫) → ⟪ Κ (A x) ⟫ → ⟪ 𝓚 ν A (ι ν x) ⟫
- φ⁻¹ x = ⌜ ϕ x ⌝⁻¹
+ φ⁻¹ x = ≃ₒ-to-fun⁻¹ [ 𝓚 ν A (ι ν x) ] [ Κ (A x) ] (ϕϕ x)
 
  γ : (x : ⟪ Δ ν ⟫) → ⟪ Δ (A x) ⟫ → ⟪ 𝓚 ν A (ι ν x) ⟫
  γ x = φ⁻¹ x ∘ ι (A x)
@@ -197,30 +201,15 @@ module Κ-extension (ν : E) (A : ⟪ Δ ν ⟫ → E) where
                      (ι-is-embedding (A x))
                      (equivs-are-embeddings _ (⌜⌝⁻¹-is-equiv (ϕ x)))
 
- ι-fiber-point : (x : ⟪ Δ ν ⟫) → fiber (ι ν) (ι ν x)
- ι-fiber-point x = (x , refl)
-
- notice-that : (x : ⟪ Δ ν ⟫) (y : ⟪ Δ (A x) ⟫)
-             → φ x (γ x y) ≡ γ x y (ι-fiber-point x)
- notice-that x y = refl
-
- ι-γ-lemma : (x : ⟪ Δ ν ⟫) (y : ⟪ Δ (A x) ⟫)
-           → ι (A x) y ≡ φ x (γ x y)
- ι-γ-lemma x y =
-  ι (A x) y               ≡⟨ (inverses-are-sections (φ x)
-                               (⌜⌝-is-equiv (ϕ x)) (ι (A x) y))⁻¹ ⟩
-  φ x (φ⁻¹ x (ι (A x) y)) ≡⟨ refl ⟩
-  φ x (γ x y)             ∎
-
  isolated-γ-gives-isolated-ι : (x : ⟪ Δ ν ⟫) (y : ⟪ Δ (A x) ⟫)
                              → is-isolated (γ x y) → is-isolated (ι (A x) y)
- isolated-γ-gives-isolated-ι x y i = iii
-   where
-    ii : is-isolated (φ x (γ x y))
-    ii = equivs-preserve-isolatedness (φ x) (⌜⌝-is-equiv (ϕ x)) (γ x y) i
+ isolated-γ-gives-isolated-ι x y = equivs-reflect-isolatedness (φ⁻¹ x)
+                                      (inverses-are-equivs (φ x)
 
-    iii : is-isolated (ι (A x) y)
-    iii = transport is-isolated ((ι-γ-lemma x y)⁻¹) ii
+                                        (≃ₒ-to-fun-is-equiv [  𝓚 ν A (ι ν x) ] [ Κ (A x) ]
+                                           (ϕϕ x)))
+                                      (ι (A x) y)
+
 
 Κ ⌜𝟙⌝         = 𝟙ᵒ
 Κ ⌜ω+𝟙⌝       = ℕ∞ᵒ
@@ -355,11 +344,10 @@ complement):
   f : (x : ⟪ Δ ν ⟫) (y z : ⟪ Δ (A x) ⟫)
     → ι (A x) y ≺⟪ Κ (A x) ⟫        ι (A x) z
     →     γ x y ≺⟪ 𝓚 ν A (ι ν x) ⟫     γ x z
-  f x y z l = (ι-fiber-point x ,
-              transport₂ (λ j k → j ≺⟪ Κ (A x) ⟫ k)
-               (ι-γ-lemma x y)
-               (ι-γ-lemma x z)
-               l)
+  f x y z = inverses-of-order-equivs-are-order-preserving [ 𝓚 ν A (ι ν x) ] [ Κ (A x) ]
+             (≃ₒ-to-fun-is-order-equiv [ 𝓚 ν A (ι ν x) ] [ Κ (A x) ] (ϕϕ x))
+             (ι (A x) y)
+             (ι (A x) z)
 
   g : (x : ⟪ Δ ν ⟫) (y z : ⟪ Δ (A x) ⟫)
     →     y ≺⟪ Δ (A x) ⟫            z
@@ -414,19 +402,10 @@ complement):
   f : (x : ⟪ Δ ν ⟫) (y z : ⟪ Δ (A x) ⟫)
     →     γ x y ≺⟪ 𝓚 ν A (ι ν x) ⟫    γ x z
     → ι (A x) y ≺⟪ Κ (A x)   ⟫     ι (A x) z
-  f x y z (w , l) = n
-   where
-    q : w ≡ ι-fiber-point x
-    q = ι-is-embedding ν (ι ν x) _ _
-
-    m : γ x y (ι-fiber-point x) ≺⟪ Κ (A x) ⟫  γ x z (ι-fiber-point x)
-    m = transport (λ (x' , p) → γ x y (x' , p) ≺⟪ Κ (A x') ⟫ γ x z (x' , p)) q l
-
-    n : ι (A x) y ≺⟪ Κ (A x) ⟫ ι (A x) z
-    n = transport₂ (λ u v → u ≺⟪ Κ (A x) ⟫ v)
-         ((ι-γ-lemma x y)⁻¹)
-         ((ι-γ-lemma x z)⁻¹)
-         m
+  f x y z = inverses-of-order-equivs-are-order-reflecting [ 𝓚 ν A (ι ν x) ] [ Κ (A x) ]
+             (≃ₒ-to-fun-is-order-equiv [ 𝓚 ν A (ι ν x) ] [ Κ (A x) ] (ϕϕ x))
+             (ι (A x) y)
+             (ι (A x) z)
 
   g : (x : ⟪ Δ ν ⟫) (y z : ⟪ Δ (A x) ⟫)
     → γ x y ≺⟪ 𝓚 ν A (ι ν x) ⟫ γ x z
