@@ -72,6 +72,9 @@ is-well-ordered (X , _<_ , o) = o
 Prop-valuedness : (α : Ordinal 𝓤) → is-prop-valued (underlying-order α)
 Prop-valuedness α = prop-valuedness (underlying-order α) (is-well-ordered α)
 
+Reflexivity : (α : Ordinal 𝓤) {x : ⟨ α ⟩} → x ≼⟨ α ⟩ x
+Reflexivity α = ≼-refl (underlying-order α)
+
 Transitivity : (α : Ordinal 𝓤) → is-transitive (underlying-order α)
 Transitivity α = transitivity (underlying-order α) (is-well-ordered α)
 
@@ -146,7 +149,7 @@ Ordinal-≡ {𝓤} fe = generalized-metric-space.characterization-of-M-≡ (𝓤
 
 \end{code}
 
-Often it is convenient to work with the following alternative notion
+Often it is convenient to work with the following alternative notion _≃ₒ_
 of ordinal equivalence, which we take as the official one:
 
 \begin{code}
@@ -159,16 +162,72 @@ is-order-equiv : (α : Ordinal 𝓤) (β : Ordinal 𝓥) → (⟨ α ⟩ → ⟨
 is-order-equiv α β f = is-order-preserving α β f
                      × (Σ e ꞉ is-equiv f , is-order-preserving β α (inverse f e))
 
+order-equivs-are-order-preserving : (α : Ordinal 𝓤) (β : Ordinal 𝓥) {f : ⟨ α ⟩ → ⟨ β ⟩}
+                                  → is-order-equiv α β f
+                                  → is-order-preserving α β f
+order-equivs-are-order-preserving α β = pr₁
+
+
+order-equivs-are-equivs : (α : Ordinal 𝓤) (β : Ordinal 𝓥) {f : ⟨ α ⟩ → ⟨ β ⟩}
+                        → (i : is-order-equiv α β f)
+                        → is-equiv f
+order-equivs-are-equivs α β = pr₁ ∘ pr₂
+
+_≃ₒ_ : Ordinal 𝓤 → Ordinal 𝓥 → 𝓤 ⊔ 𝓥 ̇
+α ≃ₒ β = Σ f ꞉ (⟨ α ⟩ → ⟨ β ⟩) , is-order-equiv α β f
+
+\end{code}
+
+See the module for a proof that α ≃ₒ β is canonically equivalent to
+α ≡ β. (For historical reasons, that proof doesn't use the structure
+identity principle.)
+
+\begin{code}
+
+≃ₒ-refl : (α : Ordinal 𝓤) → α ≃ₒ α
+≃ₒ-refl α = id , (λ x y → id) , id-is-equiv ⟨ α ⟩ , (λ x y → id)
+
+≃ₒ-sym : (α : Ordinal 𝓤) (β : Ordinal 𝓥 )
+       → α ≃ₒ β → β ≃ₒ α
+≃ₒ-sym α β (f , p , e , q) = inverse f e , q , inverses-are-equivs f e , p
+
+≃ₒ-trans : ∀ {𝓤} {𝓥} {𝓦} (α : Ordinal 𝓤) (β : Ordinal 𝓥 ) (γ : Ordinal 𝓦)
+         → α ≃ₒ β → β ≃ₒ γ → α ≃ₒ γ
+≃ₒ-trans α β γ (f , p , e , q) (f' , p' , e' , q') =
+  f' ∘ f ,
+  (λ x y l → p' (f x) (f y) (p x y l)) ,
+  ∘-is-equiv e e' ,
+  (λ x y l → q (inverse f' e' x) (inverse f' e' y) (q' x y l))
+
+≃ₒ-to-fun : (α : Ordinal 𝓤) (β : Ordinal 𝓥) → α ≃ₒ β → ⟨ α ⟩ → ⟨ β ⟩
+≃ₒ-to-fun α β = pr₁
+
+≃ₒ-to-fun-is-order-equiv : (α : Ordinal 𝓤) (β : Ordinal 𝓥) (e : α ≃ₒ β)
+                         → is-order-equiv α β (≃ₒ-to-fun α β e)
+≃ₒ-to-fun-is-order-equiv α β = pr₂
+
+≃ₒ-to-fun-is-equiv : (α : Ordinal 𝓤) (β : Ordinal 𝓥) (e : α ≃ₒ β)
+                   → is-equiv (≃ₒ-to-fun α β e)
+≃ₒ-to-fun-is-equiv α β e = order-equivs-are-equivs α β (≃ₒ-to-fun-is-order-equiv α β e)
+
+inverses-of-order-equivs-are-order-preserving : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
+                                                {f : ⟨ α ⟩ → ⟨ β ⟩}
+                                              → (i : is-order-equiv α β f)
+                                              → is-order-preserving β α
+                                                  (inverse f (order-equivs-are-equivs α β i))
+inverses-of-order-equivs-are-order-preserving α β = pr₂ ∘ pr₂
+
 is-order-reflecting : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
                     → (⟨ α ⟩ → ⟨ β ⟩) → 𝓤 ⊔ 𝓥 ̇
 is-order-reflecting α β f = (x y : ⟨ α ⟩) → f x ≺⟨ β ⟩ f y → x ≺⟨ α ⟩ y
 
-order-equiv-criterion : (α : Ordinal 𝓤) (β : Ordinal 𝓥) (f : ⟨ α ⟩ → ⟨ β ⟩)
-                      → is-equiv f
-                      → is-order-preserving α β f
-                      → is-order-reflecting α β f
-                      → is-order-equiv α β f
-order-equiv-criterion α β f e p r = p , e , q
+order-preserving-reflecting-equivs-are-order-equivs : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
+                                                      (f : ⟨ α ⟩ → ⟨ β ⟩)
+                                                    → is-equiv f
+                                                    → is-order-preserving α β f
+                                                    → is-order-reflecting α β f
+                                                    → is-order-equiv α β f
+order-preserving-reflecting-equivs-are-order-equivs α β f e p r = p , e , q
  where
   g : ⟨ β ⟩ → ⟨ α ⟩
   g = inverse f e
@@ -186,11 +245,10 @@ order-equiv-criterion α β f e p r = p , e , q
     m : g x ≺⟨ α ⟩ g y
     m = s l'
 
-
-order-equiv-criterion-converse : (α : Ordinal 𝓤) (β : Ordinal 𝓥) (f : ⟨ α ⟩ → ⟨ β ⟩)
-                               → is-order-equiv α β f
-                               → is-order-reflecting α β f
-order-equiv-criterion-converse α β f (p , e , q) x y l = r
+order-equivs-are-order-reflecting : (α : Ordinal 𝓤) (β : Ordinal 𝓥) (f : ⟨ α ⟩ → ⟨ β ⟩)
+                                  → is-order-equiv α β f
+                                  → is-order-reflecting α β f
+order-equivs-are-order-reflecting α β f (p , e , q) x y l = r
  where
   g : ⟨ β ⟩ → ⟨ α ⟩
   g = inverse f e
@@ -202,30 +260,30 @@ order-equiv-criterion-converse α β f (p , e , q) x y l = r
   r = transport₂ (λ x y → x ≺⟨ α ⟩ y)
        (inverses-are-retractions f e x) (inverses-are-retractions f e y) s
 
-_≃ₒ_ : Ordinal 𝓤 → Ordinal 𝓥 → 𝓤 ⊔ 𝓥 ̇
-α ≃ₒ β = Σ f ꞉ (⟨ α ⟩ → ⟨ β ⟩) , is-order-equiv α β f
+inverses-of-order-equivs-are-order-reflecting : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
+                                                {f : ⟨ α ⟩ → ⟨ β ⟩}
+                                              → (i : is-order-equiv α β f)
+                                              → is-order-reflecting β α
+                                                  (inverse f (order-equivs-are-equivs α β i))
+inverses-of-order-equivs-are-order-reflecting α β {f} (p , e , q) =
+ order-equivs-are-order-reflecting β α (inverse f e) (q , inverses-are-equivs f e , p)
 
-\end{code}
+inverses-of-order-equivs-are-order-equivs : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
+                                            {f : ⟨ α ⟩ → ⟨ β ⟩}
+                                          → (i : is-order-equiv α β f)
+                                          → is-order-equiv β α
+                                              (inverse f (order-equivs-are-equivs α β i))
+inverses-of-order-equivs-are-order-equivs α β {f} (p , e , q) =
+ (q , inverses-are-equivs f e , p)
 
-See the module  for a proof that α ≃ₒ β is
-canonically equivalent to α ≡ β. (For historical reasons, that proof
-doesn't use the structure identity principle.)
 
-\begin{code}
+≃ₒ-to-fun⁻¹ : (α : Ordinal 𝓤) (β : Ordinal 𝓥) → α ≃ₒ β → ⟨ β ⟩ → ⟨ α ⟩
+≃ₒ-to-fun⁻¹ α β e = inverse (≃ₒ-to-fun α β e)
+                      (order-equivs-are-equivs α β
+                        (≃ₒ-to-fun-is-order-equiv α β e))
 
-≃ₒ-refl : (α : Ordinal 𝓤) → α ≃ₒ α
-≃ₒ-refl α = id , (λ x y → id) , id-is-equiv ⟨ α ⟩ , (λ x y → id)
-
-≃ₒ-sym : ∀ {𝓤} {𝓥} (α : Ordinal 𝓤) (β : Ordinal 𝓥 )
-       → α ≃ₒ β → β ≃ₒ α
-≃ₒ-sym α β (f , p , e , q) = inverse f e , q , inverses-are-equivs f e , p
-
-≃ₒ-trans : ∀ {𝓤} {𝓥} {𝓦} (α : Ordinal 𝓤) (β : Ordinal 𝓥 ) (γ : Ordinal 𝓦)
-         → α ≃ₒ β → β ≃ₒ γ → α ≃ₒ γ
-≃ₒ-trans α β γ (f , p , e , q) (f' , p' , e' , q') =
-  f' ∘ f ,
-  (λ x y l → p' (f x) (f y) (p x y l)) ,
-  ∘-is-equiv e e' ,
-  (λ x y l → q (inverse f' e' x) (inverse f' e' y) (q' x y l))
-
+≃ₒ-to-fun⁻¹-is-equiv : (α : Ordinal 𝓤) (β : Ordinal 𝓥) (e : α ≃ₒ β)
+                     → is-equiv (≃ₒ-to-fun⁻¹ α β e)
+≃ₒ-to-fun⁻¹-is-equiv α β e = inverses-are-equivs (≃ₒ-to-fun α β e)
+                                (≃ₒ-to-fun-is-equiv α β e)
 \end{code}

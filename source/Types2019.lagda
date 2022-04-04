@@ -47,7 +47,7 @@ import ExtendedSumCompact
 import FailureOfTotalSeparatedness
 import GenericConvergentSequence
 import InjectiveTypes
-import LeastElementProperty
+import InfProperty
 import LexicographicCompactness
 import LexicographicOrder
 import LPO

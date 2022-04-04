@@ -17,6 +17,7 @@ open import UF-Subsingletons renaming (⊤Ω to ⊤ ; ⊥Ω to ⊥)
 open import UF-FunExt
 open import UF-Lower-FunExt
 open import UF-Subsingletons-FunExt
+open import UF-Equiv
 open import UF-Embeddings
 open import DiscreteAndSeparated
 
@@ -122,6 +123,13 @@ embeddings-reflect-isolatedness : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                                 → is-isolated x
 embeddings-reflect-isolatedness f e x i y = lc-maps-reflect-isolatedness f
                                               (embeddings-are-lc f e) x i y
+
+equivs-reflect-isolatedness : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                            → is-equiv f
+                            → (x : X) → is-isolated (f x)
+                            → is-isolated x
+equivs-reflect-isolatedness f e = embeddings-reflect-isolatedness f
+                                   (equivs-are-embeddings f e)
 
 embeddings-reflect-discreteness : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                                 → is-embedding f

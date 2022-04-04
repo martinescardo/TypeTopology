@@ -161,7 +161,7 @@ import GeneralNotation
 import GenericConvergentSequence
 import HiggsInvolutionTheorem
 import Id
-import LeastElementProperty
+import InfProperty
 import InitialBinarySystem    -- More work than needed!
 import InitialBinarySystem2   -- No need to work with subtype of normal elements.
 import InjectiveTypes-article
@@ -206,6 +206,7 @@ import OrdinalsClosure
 import Ordinals
 import OrdinalsFreeGroup
 import OrdinalsType
+import OrdinalsType-Injectivity
 import OrdinalsWellOrderArithmetic
 import OrdinalsWellOrderTransport
 import P2
@@ -242,6 +243,7 @@ import TheTopologyOfTheUniverse
 import TotallySeparated
 import ToppedOrdinalArithmetic
 import ToppedOrdinalsType
+import ToppedOrdinalsType-Injectivity
 import Two
 import Two-Properties
 import UnivalenceFromScratch

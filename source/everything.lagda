@@ -98,7 +98,7 @@ import Integers-Properties
 import Integers-SymmetricInduction
 import JoinSemiLattices
 import LawvereFPT
-import LeastElementProperty
+import InfProperty
 import LexicographicCompactness
 import LexicographicOrder
 import LiftingAlgebras
@@ -169,6 +169,7 @@ import OrdinalsFreeGroup
 import Ordinals
 import OrdinalsShulmanTaboo
 import OrdinalsType
+import OrdinalsType-Injectivity
 import OrdinalsWellOrderArithmetic
 import OrdinalsWellOrderTransport
 import P2
@@ -211,6 +212,7 @@ import Swap
 import TheTopologyOfTheUniverse
 import ToppedOrdinalArithmetic
 import ToppedOrdinalsType
+import ToppedOrdinalsType-Injectivity
 import TotallySeparated
 import TotalSeparatedness
 import Two

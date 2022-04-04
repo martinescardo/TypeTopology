@@ -12,10 +12,19 @@ module OrdinalsClosure
         (fe : FunExt)
        where
 
+open import UF-Base
+open import UF-Equiv
+open import UF-Subsingletons
+open import InjectiveTypes fe
+open import UF-Retracts
+open import UF-Embeddings
+open import UF-Miscelanea
+
 open import SpartanMLTT
 open import Two-Properties
 open import AlternativePlus
 open import ToppedOrdinalsType fe
+open import ToppedOrdinalsType-Injectivity fe
 open import OrdinalArithmetic fe
 open import ToppedOrdinalArithmetic fe
 open import CompactTypes
@@ -28,19 +37,15 @@ open import ConvergentSequenceHasLeast
 open import PropInfTychonoff
 open import DiscreteAndSeparated
 open import BinaryNaturals hiding (_+_ ; L ; R)
-open import LeastElementProperty
+open import InfProperty
 open import Plus-Properties
 open import CanonicalMapNotation
 open import SigmaDiscreteAndTotallySeparated
 open import PairFun
 
-open import UF-Base
-open import UF-Equiv
-open import UF-Subsingletons
-open import InjectiveTypes fe
-open import UF-Retracts
-open import UF-Embeddings
-open import UF-Miscelanea
+private
+ fe₀ : funext 𝓤₀ 𝓤₀
+ fe₀ = fe 𝓤₀ 𝓤₀
 
 \end{code}
 
@@ -217,10 +222,10 @@ pair-fun-is-order-preserving τ υ A B f g φ γ (x , a) (x , b) (inr (refl , l)
 ι𝟙ᵒ-is-order-preserving (inr *) (inr *) l = 𝟘-elim l
 
 over-ι-map-is-order-preserving  : (τ : ℕ → Ordᵀ) (z : ℕ + 𝟙)
-                                    → is-order-preserving
-                                        ((τ ↗ (over , over-embedding)) z)
-                                        ((τ ↗ (ι , ι-embedding fe₀)) (ι𝟙 z))
-                                        (over-ι-map (λ n → ⟪ τ n ⟫) z)
+                                     → is-order-preserving
+                                         ((τ ↗ (over , over-embedding)) z)
+                                         ((τ ↗ (ι , ι-embedding fe₀)) (ι𝟙 z))
+                                         (over-ι-map (λ n → ⟪ τ n ⟫) z)
 over-ι-map-is-order-preserving τ (inl n) x y ((.n , refl) , l) = (n , refl) , γ
  where
   γ : over-ι-map (λ n → ⟪ τ n ⟫) (inl n) x (n , refl) ≺⟪ τ n ⟫
@@ -447,12 +452,12 @@ Overᵒ-is-order-reflecting τ υ f p (inr *) x y ((n , q) , l) = 𝟘-elim (+di
                                  (∑-up-is-order-reflecting υ)
 \end{code}
 
-28 July 2018. Least element property.
+28 July 2018. Inf property.
 
 \begin{code}
 
-𝟙ᵒ-has-least-element-property : has-least-element-property 𝟙ᵒ
-𝟙ᵒ-has-least-element-property p = ⋆ , f , g , h
+𝟙ᵒ-has-infs-of-complemented-subsets : has-infs-of-complemented-subsets 𝟙ᵒ
+𝟙ᵒ-has-infs-of-complemented-subsets p = ⋆ , f , g , h
  where
   f : (Σ x ꞉ 𝟙 , p x ≡ ₀) → p ⋆ ≡ ₀
   f (⋆ , r) = r
@@ -462,8 +467,8 @@ Overᵒ-is-order-reflecting τ υ f p (inr *) x y ((n , q) , l) = 𝟘-elim (+di
     → x ≼⟪ 𝟙ᵒ ⟫ ⋆
   h ⋆ φ a = 𝟘-elim a
 
-𝟚ᵒ-has-least-element-property : has-least-element-property 𝟚ᵒ
-𝟚ᵒ-has-least-element-property p = 𝟚-equality-cases φ γ
+𝟚ᵒ-has-infs-of-complemented-subsets : has-infs-of-complemented-subsets 𝟚ᵒ
+𝟚ᵒ-has-infs-of-complemented-subsets p = 𝟚-equality-cases φ γ
  where
   _≤_ : 𝟙 + 𝟙 → 𝟙 + 𝟙 → 𝓤₀ ̇
   x ≤ y = x ≼⟪ 𝟚ᵒ ⟫ y
@@ -501,17 +506,17 @@ Overᵒ-is-order-reflecting τ υ f p (inr *) x y ((n , q) , l) = 𝟘-elim (+di
 
 It is not necessary to use propositional extensionality to prove the
 following, but it is simpler to do so given that we have already
-proved the has-least-element-propertyness of various types using different,
-logically equivalent orders.
+proved has-infs-of-complemented-subsetsness for various types using
+different, logically equivalent orders.
 
 \begin{code}
 
-∑-has-least-element-property : propext 𝓤₀
-                             → (τ : Ordᵀ) (υ : ⟪ τ ⟫ → Ordᵀ)
-                             → has-least-element-property τ
-                             → ((x : ⟪ τ ⟫) → has-least-element-property (υ x))
-                             → has-least-element-property (∑ τ υ)
-∑-has-least-element-property pe τ υ ε δ = γ
+∑-has-infs-of-complemented-subsets : propext 𝓤₀
+                                   → (τ : Ordᵀ) (υ : ⟪ τ ⟫ → Ordᵀ)
+                                   → has-infs-of-complemented-subsets τ
+                                   → ((x : ⟪ τ ⟫) → has-infs-of-complemented-subsets (υ x))
+                                   → has-infs-of-complemented-subsets (∑ τ υ)
+∑-has-infs-of-complemented-subsets pe τ υ ε δ = γ
  where
   _≤_ : ⟪ ∑ τ υ ⟫ → ⟪ ∑ τ υ ⟫ → 𝓤₀ ̇
   _≤_ = lex-order (λ x y → x ≼⟪ τ ⟫ y) (λ {x} a b → a ≼⟪ υ x ⟫ b)
@@ -522,8 +527,8 @@ logically equivalent orders.
      (≼-prop-valued τ x y p q ,
      dfunext fe₀ (λ r → ≼-prop-valued (υ y) _ _ _ _))
 
-  φ : has-least _≤_
-  φ = Σ-has-least ((λ x y → x ≼⟪ τ ⟫ y)) ((λ {x} a b → a ≼⟪ υ x ⟫ b)) ε δ
+  φ : has-inf _≤_
+  φ = Σ-has-inf ((λ x y → x ≼⟪ τ ⟫ y)) ((λ {x} a b → a ≼⟪ υ x ⟫ b)) ε δ
 
   open lexicographic-commutation
          (tunderlying-order τ)
@@ -543,11 +548,11 @@ logically equivalent orders.
   l : _≤_ ≡ (λ z t → z ≼⟪ ∑ τ υ ⟫ t)
   l = dfunext (fe 𝓤₀ 𝓤₁) λ z → dfunext (fe 𝓤₀ 𝓤₁) (k z)
 
-  γ : has-least-element-property (∑ τ υ)
-  γ = transport has-least l φ
+  γ : has-infs-of-complemented-subsets (∑ τ υ)
+  γ = transport has-inf l φ
 
-ℕ∞ᵒ-has-least-element-property : propext 𝓤₀ → has-least-element-property ℕ∞ᵒ
-ℕ∞ᵒ-has-least-element-property pe = transport has-least p (ℕ∞-has-least fe₀)
+ℕ∞ᵒ-has-infs-of-complemented-subsets : propext 𝓤₀ → has-infs-of-complemented-subsets ℕ∞ᵒ
+ℕ∞ᵒ-has-infs-of-complemented-subsets pe = transport has-inf p (ℕ∞-has-inf fe₀)
  where
   p : _≼ℕ∞_ ≡ tunderlying-rorder ℕ∞ᵒ
   p = dfunext (fe 𝓤₀ 𝓤₁)
@@ -558,17 +563,17 @@ logically equivalent orders.
                           (not-≺-≼ fe₀ u v)))
 
 
-∑₁-has-least-element-property : propext 𝓤₀
-                              → (τ : ℕ → Ordᵀ)
-                              → ((n : ℕ) → has-least-element-property (τ n))
-                              → has-least-element-property (∑¹ τ)
-∑₁-has-least-element-property pe τ ε = ∑-has-least-element-property pe
-                                        ℕ∞ᵒ
-                                        (λ (x : ℕ∞) → (τ ↗ (ι , ι-embedding fe₀)) x)
-                                        (ℕ∞ᵒ-has-least-element-property pe)
-                                        a
+∑₁-has-infs-of-complemented-subsets : propext 𝓤₀
+                                    → (τ : ℕ → Ordᵀ)
+                                    → ((n : ℕ) → has-infs-of-complemented-subsets (τ n))
+                                    → has-infs-of-complemented-subsets (∑¹ τ)
+∑₁-has-infs-of-complemented-subsets pe τ ε = ∑-has-infs-of-complemented-subsets pe
+                                              ℕ∞ᵒ
+                                              (λ (x : ℕ∞) → (τ ↗ (ι , ι-embedding fe₀)) x)
+                                              (ℕ∞ᵒ-has-infs-of-complemented-subsets pe)
+                                              a
  where
-  a : (x : ⟪ ℕ∞ᵒ ⟫) → has-least-element-property ((τ ↗ (ι , ι-embedding fe₀)) x)
+  a : (x : ⟪ ℕ∞ᵒ ⟫) → has-infs-of-complemented-subsets ((τ ↗ (ι , ι-embedding fe₀)) x)
   a x = prop-inf-tychonoff fe
          (ι-embedding fe₀ x)
          (λ {w} x y → x ≺⟪ τ (pr₁ w) ⟫ y)
