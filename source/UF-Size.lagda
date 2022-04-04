@@ -837,6 +837,28 @@ Id⟦ ls ⟧ x y = x ≡⟦ ls ⟧ y
 
 \end{code}
 
+TODO
+
+\begin{code}
+
+_is-locally_small : 𝓤 ̇  → (𝓥 : Universe) → 𝓥 ⁺ ⊔ 𝓤 ̇
+X is-locally 𝓥 small = (x y : X) → (x ≡ y) is 𝓥 small
+
+module Replacement (pt : propositional-truncations-exist) where
+
+ open import UF-ImageAndSurjection
+ open ImageAndSurjection pt public
+
+ Replacement : 𝓤ω
+ Replacement = {𝓤 𝓦 𝓥 : Universe} {X : 𝓤 ̇  } {Y : 𝓦 ̇  } (f : X → Y)
+             → Y is-locally 𝓥 small
+             → is-set Y
+             → image f is (𝓤 ⊔ 𝓥) small
+
+\end{code}
+
+TODO: Remove
+
 Added 15 March 2022.
 
 The following type describes what it means to have "small images". It is
