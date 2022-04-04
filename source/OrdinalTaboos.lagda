@@ -195,58 +195,26 @@ constructing an ordinal that depends on a proposition P. What matters is that:
 
 \begin{code}
 
-module discrete-sup-taboo-construction-I
-        (P : 𝓤 ̇  )
+module _
+        (fe : FunExt)
        where
 
- P' : 𝓤 ̇
- P' = P + 𝟙{𝓤}
+ open import OrdinalArithmetic fe
+ open import OrdinalsWellOrderArithmetic
 
- _≺_ : P' → P' → 𝓤 ̇
- inl p ≺ inl q = 𝟘
- inl p ≺ inr ⋆ = 𝟙
- inr ⋆ ≺ inl q = 𝟘
- inr ⋆ ≺ inr ⋆ = 𝟘
+ module discrete-sup-taboo-construction-I
+         (P : 𝓤 ̇  )
+         (P-is-prop : is-prop P)
+        where
 
- ≺-is-prop-valued : is-prop-valued _≺_
- ≺-is-prop-valued (inl p) (inl q) = 𝟘-is-prop
- ≺-is-prop-valued (inl p) (inr ⋆) = 𝟙-is-prop
- ≺-is-prop-valued (inr ⋆) (inl q) = 𝟘-is-prop
- ≺-is-prop-valued (inr ⋆) (inr ⋆) = 𝟘-is-prop
+  P' : Ordinal 𝓤
+  P' = prop-ordinal P P-is-prop +ₒ 𝟙ₒ
 
- ≺-is-transitive : is-transitive _≺_
- ≺-is-transitive (inl p) (inr ⋆) (inl q) u v = v
- ≺-is-transitive (inl p) (inr ⋆) (inr ⋆) u v = ⋆
- ≺-is-transitive (inr ⋆) (inl q) z       u v = 𝟘-elim u
- ≺-is-transitive (inr ⋆) (inr ⋆) z       u v = 𝟘-elim u
-
- ≺-is-well-founded : is-well-founded _≺_
- ≺-is-well-founded x = next x (IH x)
-  where
-   IH : (x y : P') → y ≺ x → is-accessible _≺_ y
-   IH (inl p) (inl q) l = 𝟘-elim l
-   IH (inl p) (inr ⋆) l = 𝟘-elim l
-   IH (inr ⋆) (inl q) l = next (inl q) IH'
-    where
-     IH' : (y : P') → y ≺ inl q → is-accessible _≺_ y
-     IH' (inl p) k = 𝟘-elim k
-     IH' (inr ⋆) k = 𝟘-elim k
-
- ≺-is-extensional : is-prop P → is-extensional _≺_
- ≺-is-extensional i (inl p) (inl q) u v = ap inl (i p q)
- ≺-is-extensional i (inl p) (inr ⋆) u v = 𝟘-elim (v (inl p) ⋆)
- ≺-is-extensional i (inr ⋆) (inl q) u v = 𝟘-elim (u (inl q) ⋆)
- ≺-is-extensional i (inr ⋆) (inr ⋆) u v = refl
-
- P'-ordinal : is-prop P → Ordinal 𝓤
- P'-ordinal i = P' , _≺_ , ≺-is-prop-valued   , ≺-is-well-founded
-                         , ≺-is-extensional i , ≺-is-transitive
-
- ≺-is-trichotomous : is-prop P → is-trichotomous _≺_
- ≺-is-trichotomous i (inl p) (inl q) = inr (inl (ap inl (i p q)))
- ≺-is-trichotomous i (inl p) (inr ⋆) = inl ⋆
- ≺-is-trichotomous i (inr ⋆) (inl q) = inr (inr ⋆)
- ≺-is-trichotomous i (inr ⋆) (inr ⋆) = inr (inl refl)
+  P'-is-trichotomous : is-trichotomous (underlying-order P')
+  P'-is-trichotomous = trichotomy-preservation (prop.trichotomous P P-is-prop)
+                                               (prop.trichotomous 𝟙 𝟙-is-prop)
+   where
+    open plus (prop.order P P-is-prop) (prop.order 𝟙 𝟙-is-prop)
 
 \end{code}
 
@@ -263,10 +231,14 @@ module _
 
  open ordinal-of-ordinals-assumptions pt ua
 
+ private
+  fe : FunExt
+  fe = Univalence-gives-FunExt ua
+
  open import DecidableAndDetachable
- open import OrdinalArithmetic (Univalence-gives-FunExt ua)
- open import OrdinalsWellOrderArithmetic
+ open import OrdinalArithmetic fe
  open import OrdinalOfOrdinals ua
+ open import OrdinalsWellOrderArithmetic
 
  open import UF-Embeddings
  open import UF-ImageAndSurjection
@@ -284,17 +256,17 @@ module _
            (P-is-prop : is-prop P)
           where
 
-   open discrete-sup-taboo-construction-I P
+   open discrete-sup-taboo-construction-I fe P P-is-prop
 
    I : 𝓤 ̇
    I = 𝟚 {𝓤}
 
    α : I → Ordinal 𝓤
-   α ₀ = P'-ordinal P-is-prop
+   α ₀ = P'
    α ₁ = 𝟙ₒ +ₒ 𝟙ₒ
 
    α-is-trichotomous : (i : I) → is-trichotomous (underlying-order (α i))
-   α-is-trichotomous ₀ = ≺-is-trichotomous P-is-prop
+   α-is-trichotomous ₀ = P'-is-trichotomous
    α-is-trichotomous ₁ = trichotomy-preservation trichotomous trichotomous
     where
      open prop 𝟙 𝟙-is-prop
@@ -324,7 +296,7 @@ e : ⟨ sup α ⟩ → Ordinal 𝓤 and ⟨ sup α ⟩ is discrete by assumption
      g : P → ⟨ α ₀ ↓ ₁ ⟩
      g p = (inl p , ⋆)
      η : g ∘ f ∼ id
-     η (inl p , _) = to-subtype-≡ (λ x → ≺-is-prop-valued x ₁) refl
+     η (inl p , _) = to-subtype-≡ (λ x → Prop-valuedness P' x ₁) refl
      ε : f ∘ g ∼ id
      ε p = P-is-prop (f (g p)) p
 
@@ -353,7 +325,7 @@ e : ⟨ sup α ⟩ → Ordinal 𝓤 and ⟨ sup α ⟩ is discrete by assumption
        ε : f ∘ g ∼ id
        ε (inl ⋆ , _) = refl
        η : g ∘ f ∼ id
-       η (inl q , _) = to-subtype-≡ (λ x → ≺-is-prop-valued x ₁)
+       η (inl q , _) = to-subtype-≡ (λ x → Prop-valuedness P' x ₁)
                                     (ap inl (P-is-prop p q))
 
    fact-III : (α ₀ ↓ inr ⋆) ≃ₒ (α ₁ ↓ inr ⋆) → P
