@@ -63,8 +63,8 @@ X n is compact then so is its squashed sum Σ¹ X.
             → ((n : ℕ) → compact∙(X n))
             → compact∙(Σ¹ X)
 Σ¹-compact∙ X ε = extended-sum-compact∙
-                     ι
-                     (ι-embedding fe₀)
+                     ℕ-to-ℕ∞
+                     (ℕ-to-ℕ∞-is-embedding fe₀)
                      ε
                      ℕ∞-compact∙
 
@@ -127,7 +127,7 @@ over-ι : (X : ℕ → 𝓤 ̇ ) (z : ℕ + 𝟙)
            → (X / over) z ↪ᵈ (X / ι) (ι𝟙 z)
 over-ι X (inl n) = equiv-dense-embedding (
  (X / over) (over n)   ≃⟨ Π-extension-property X over over-embedding n ⟩
- X n                   ≃⟨ ≃-sym (Π-extension-property X ι (ι-embedding fe₀) n) ⟩
+ X n                   ≃⟨ ≃-sym (Π-extension-property X ℕ-to-ℕ∞ (ℕ-to-ℕ∞-is-embedding fe₀) n) ⟩
  (X / ι) (ι n) ■)
 over-ι X (inr *) = equiv-dense-embedding (
  (X / over) (inr *) ≃⟨ Π-extension-out-of-range X over (inr *) (λ x → +disjoint ) ⟩
@@ -151,8 +151,8 @@ over-ι-map-left X n φ =
   (λ - → over-ι-map X (inl n) φ (n , refl)
        ≡ transport (λ - → X (pr₁ -)) - (φ (n , refl)))
   (props-are-sets
-    (ι-embedding fe₀ (ι n))
-    (ι-embedding fe₀ (ι n) (n , refl) (n , refl))
+    (ℕ-to-ℕ∞-is-embedding fe₀ (ι n))
+    (ℕ-to-ℕ∞-is-embedding fe₀ (ι n) (n , refl) (n , refl))
     refl)
   (f (n , refl))
  where
@@ -160,7 +160,7 @@ over-ι-map-left X n φ =
   f : (t : fiber ι (ι n))
     → over-ι-map X (inl n) φ t
     ≡ transport (λ - → X (pr₁ -))
-                 (ι-embedding fe₀ (ι n) (n , refl) t)
+                 (ℕ-to-ℕ∞-is-embedding fe₀ (ι n) (n , refl) t)
                  (φ (n , refl))
   f t = refl
 

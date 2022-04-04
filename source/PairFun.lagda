@@ -29,7 +29,7 @@ module _ {𝓤 𝓥 𝓦 𝓣}
  pair-fun (x , a) = (f x , g x a)
 
  pair-fun-fiber' : (y : Y) → B y → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓣 ̇
- pair-fun-fiber' y b = Σ w ꞉ fiber f y , fiber (g (pr₁ w)) (back-transport B (pr₂ w) b)
+ pair-fun-fiber' y b = Σ (x , a) ꞉ fiber f y , fiber (g x) (back-transport B a b)
 
  pair-fun-fiber-≃ : (y : Y) (b : B y)
                   → fiber pair-fun (y , b)
@@ -81,7 +81,7 @@ module _ {𝓤 𝓥 𝓦 𝓣}
    i = fiber-identification (center (e y))
 
    w : pair-fun-fiber' y b
-   w = (center (e y) , (center (d x (back-transport B i b))))
+   w = (center (e y) , center (d x (back-transport B i b)))
 
    h : is-singleton (fiber pair-fun (y , b))
    h = pointed-props-are-singletons (⌜ pair-fun-fiber-≃ y b ⌝⁻¹ w) k
@@ -107,5 +107,25 @@ module _ {𝓤 𝓥 𝓦 𝓣}
       where
        l : ¬ fiber (g x) b
        l (a , refl) = n ((x , a) , refl)
+
+ open import UF-PropTrunc
+ open import UF-ImageAndSurjection
+
+ module pair-fun-surjection (pt : propositional-truncations-exist) where
+
+  open PropositionalTruncation pt
+  open ImageAndSurjection pt
+
+  pair-fun-is-surjection : is-surjection f
+                         → ((x : X) → is-surjection (g x))
+                         → is-surjection pair-fun
+  pair-fun-is-surjection s t (y , b) = γ
+   where
+    γ : ∃ (x , a) ꞉ Σ A , (pair-fun (x , a) ≡ y , b)
+    γ = ∥∥-rec ∃-is-prop
+         (λ {(x , refl) → ∥∥-rec ∃-is-prop
+                           (λ {(a , refl) → ∣ (x , a) , refl ∣})
+                           (t x b)})
+         (s y)
 
 \end{code}

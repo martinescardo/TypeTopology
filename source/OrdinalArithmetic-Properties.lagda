@@ -580,3 +580,15 @@ module _ {𝓤 : Universe} where
                                  → to-subtype-≡ (λ _ → being-prop-is-prop fe')
                                     (empty-types-are-≡-𝟘 fe' (pe 𝓤) u)⁻¹) ν))
 \end{code}
+
+Added 4th April 2022.
+
+\begin{code}
+
+𝟘ₒ-minimal : {α : Ordinal 𝓤} → 𝟘₀ ⊴ α
+𝟘ₒ-minimal = unique-from-𝟘 , (λ x y l → 𝟘-elim x) , (λ x y l → 𝟘-elim x)
+
+\end{code}
+
+TODO. Get a taboo from {α : Ordinal 𝓤} {β : Ordinal 𝓥} → α ⊴ β → (α +ₒ 𝟙ₒ) ⊴ (β +ₒ 𝟙ₒ).
+Also from  α ⊲ β → (α +ₒ 𝟙ₒ) ⊲ (β +ₒ 𝟙ₒ).

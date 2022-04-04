@@ -243,7 +243,6 @@ import TheTopologyOfTheUniverse
 import TotallySeparated
 import ToppedOrdinalArithmetic
 import ToppedOrdinalsType
-import ToppedOrdinalsType-Injectivity
 import Two
 import Two-Properties
 import UnivalenceFromScratch

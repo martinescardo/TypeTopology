@@ -30,7 +30,7 @@ https://www.cs.bham.ac.uk/~mhe/TypeTopology/OrdinalNotationInterpretation.pdf
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline --experimental-lossy-unification #-}
 
 open import SpartanMLTT
 open import UF-FunExt
@@ -46,10 +46,10 @@ we also consider towards the end of this article.
 \begin{code}
 
 data OE : 𝓤₀ ̇ where
- One  : OE
- Add  : OE → OE → OE
- Mul  : OE → OE → OE
- Sum1 : (ℕ → OE) → OE
+ One : OE
+ Add : OE → OE → OE
+ Mul : OE → OE → OE
+ L   : (ℕ → OE) → OE
 
 \end{code}
 
@@ -90,12 +90,12 @@ crucial for compactness purposes, as dicussed below.
     which is not provable in any variety of constructive mathematics.
 
 The Δ and Κ interpretation of One, Add and Mul are as expected. They
-differ only in the interpretation of Sum1.
+differ only in the interpretation of S.
 
-   * In the discrete case, Sum1 is interpreted as simply the countable
+   * In the discrete case, S is interpreted as simply the countable
      sum plus the ordinal 𝟙 (written ∑₁).
 
-   * In the compact case, Sum1 is interpreted as the sum with an added
+   * In the compact case, S is interpreted as the sum with an added
      non-isolated top point (written ∑¹). It is this that makes the
      searchability of the compact ordinals possible. The searchability
      of the discrete ordinals is a contructive taboo.
@@ -193,10 +193,10 @@ construct the order as this was work in progress):
 
 \begin{code}
 
-Κ One  = 𝟙ᵒ
+Κ One       = 𝟙ᵒ
 Κ (Add ν μ) = Κ ν +ᵒ Κ μ
 Κ (Mul ν μ) = Κ ν ×ᵒ  Κ μ
-Κ (Sum1 ν) = ∑¹ λ(i : ℕ) → Κ(ν i)
+Κ (L ν)     = ∑¹ λ(i : ℕ) → Κ (ν i)
 
 \end{code}
 
@@ -209,7 +209,7 @@ The underlying sets  of such ordinals are compact∙:
                         𝟙+𝟙-compact∙
                         (dep-cases (λ _ → Κ-compact∙ ν) (λ _ → Κ-compact∙ μ))
 Κ-compact∙ (Mul ν μ) = Σ-compact∙ (Κ-compact∙ ν) (λ _ → Κ-compact∙ μ)
-Κ-compact∙ (Sum1 ν)  = Σ¹-compact∙ (λ n → ⟪ Κ (ν n) ⟫) (λ i → Κ-compact∙ (ν i))
+Κ-compact∙ (L ν)     = Σ¹-compact∙ (λ n → ⟪ Κ (ν n) ⟫) (λ n → Κ-compact∙ (ν n))
 
 \end{code}
 
@@ -224,7 +224,7 @@ The compact∙ ordinals are retracts of the Cantor type (ℕ → 𝟚).
                               (Κ-Cantor-retract ν) (Κ-Cantor-retract μ)
 Κ-Cantor-retract (Mul ν μ) = ×-retract-of-Cantor (Κ ν) (Κ μ)
                               (Κ-Cantor-retract ν) (Κ-Cantor-retract μ)
-Κ-Cantor-retract (Sum1 ν)  = Σ¹-Cantor-retract
+Κ-Cantor-retract (L ν)     = Σ¹-Cantor-retract
                                (λ n → ⟪ Κ (ν n) ⟫) (λ i → Κ-Cantor-retract (ν i))
 \end{code}
 
@@ -255,7 +255,7 @@ many interesting properties, formulated above and proved below.
 Δ One       = 𝟙ᵒ
 Δ (Add ν μ) = Δ ν +ᵒ Δ μ
 Δ (Mul ν μ) = Δ ν ×ᵒ  Δ μ
-Δ (Sum1 ν)  = ∑₁ λ(i : ℕ) → Δ(ν i)
+Δ (L ν)     = ∑₁ λ(i : ℕ) → Δ(ν i)
 
 Δ-is-discrete One       = 𝟙-is-discrete
 Δ-is-discrete (Add ν μ) = Σ-is-discrete
@@ -263,7 +263,7 @@ many interesting properties, formulated above and proved below.
                            (dep-cases (λ _ → Δ-is-discrete ν)
                            (λ _ → Δ-is-discrete μ))
 Δ-is-discrete (Mul ν μ) = Σ-is-discrete (Δ-is-discrete ν) (λ _ → Δ-is-discrete μ)
-Δ-is-discrete (Sum1 ν)  = Σ₁-is-discrete
+Δ-is-discrete (L ν)     = Σ₁-is-discrete
                             (λ n → ⟪ Δ (ν n) ⟫)
                             (λ i → Δ-is-discrete (ν i))
 \end{code}
@@ -278,7 +278,7 @@ order preserving and reflecting (28 July 2018).
 ι {One}     = id
 ι {Add ν μ} = pair-fun id (dep-cases (λ _ → ι {ν}) (λ _ → ι {μ}))
 ι {Mul ν μ} = pair-fun (ι {ν}) (λ _ → ι {μ})
-ι {Sum1 ν}  = ∑↑ (λ n → Δ (ν n)) (λ n → Κ (ν n)) (λ n → ι {ν n})
+ι {L ν}     = ∑↑ (λ n → Δ (ν n)) (λ n → Κ (ν n)) (λ n → ι {ν n})
 
 ι-is-dense One       = id-is-dense
 ι-is-dense (Add ν μ) = pair-fun-dense
@@ -289,7 +289,7 @@ order preserving and reflecting (28 July 2018).
 ι-is-dense (Mul ν μ) = pair-fun-dense _ _
                         (ι-is-dense ν)
                         (λ _ → ι-is-dense μ)
-ι-is-dense (Sum1 ν) =  Σ↑-dense
+ι-is-dense (L ν)     =  Σ↑-dense
                         (λ n → ⟪ Δ (ν n) ⟫)
                         (λ n → ⟪ Κ (ν n) ⟫)
                         (λ n → ι {ν n})
@@ -304,7 +304,7 @@ order preserving and reflecting (28 July 2018).
 ι-is-embedding (Mul ν μ) = pair-fun-is-embedding _ _
                             (ι-is-embedding ν)
                             (λ _ → ι-is-embedding μ)
-ι-is-embedding (Sum1 ν)  = Σ↑-embedding
+ι-is-embedding (L ν)     = Σ↑-embedding
                             (λ n → ⟪ Δ (ν n) ⟫)
                             (λ n → ⟪ Κ (ν n) ⟫)
                             (λ n → ι {ν n})
@@ -330,7 +330,7 @@ order preserving and reflecting (28 July 2018).
                                    (λ _ → ι {μ})
                                    (ι-is-order-preserving ν)
                                    (λ _ → ι-is-order-preserving μ)
-ι-is-order-preserving (Sum1 ν) = ∑↑-is-order-preserving
+ι-is-order-preserving (L ν)    = ∑↑-is-order-preserving
                                   (Δ ∘ ν)
                                   (Κ ∘ ν)
                                   (λ n → ι {ν n})
@@ -358,7 +358,7 @@ order preserving and reflecting (28 July 2018).
                                    (ι-is-order-reflecting ν)
                                    (ι-is-embedding ν)
                                    (λ _ → ι-is-order-reflecting μ)
-ι-is-order-reflecting (Sum1 ν)  = ∑↑-is-order-reflecting
+ι-is-order-reflecting (L ν)     = ∑↑-is-order-reflecting
                                     (Δ ∘ ν)
                                     (Κ ∘ ν)
                                     (λ n → ι {ν n})
@@ -385,7 +385,7 @@ much easier (given the mathematics we have already developed).
   (λ _ → Κ μ)
   (Κ-has-infs-of-complemented-subsets pe ν)
   (λ _ → Κ-has-infs-of-complemented-subsets pe μ)
-Κ-has-infs-of-complemented-subsets pe (Sum1 ν) =
+Κ-has-infs-of-complemented-subsets pe (L ν) =
  ∑₁-has-infs-of-complemented-subsets
    pe
    (Κ ∘ ν)
@@ -405,7 +405,7 @@ Added 31 July 2018:
 Δ-retract-of-ℕ (Mul ν μ) = Σ-retract-of-ℕ
                              (Δ-retract-of-ℕ ν)
                              (λ _ → Δ-retract-of-ℕ μ)
-Δ-retract-of-ℕ (Sum1 ν) = Σ₁-ℕ-retract (λ i → Δ-retract-of-ℕ (ν i))
+Δ-retract-of-ℕ (L ν)     = Σ₁-ℕ-retract (λ i → Δ-retract-of-ℕ (ν i))
 
 \end{code}
 
@@ -423,7 +423,7 @@ bigger or equal, because sums dominate suprema.
 
 brouwer-to-oe    Z  = One
 brouwer-to-oe (S ν) = Add One (brouwer-to-oe ν)
-brouwer-to-oe (L ν) = Sum1 (λ i → brouwer-to-oe (ν i))
+brouwer-to-oe (L ν) = L (λ i → brouwer-to-oe (ν i))
 
 \end{code}
 
@@ -440,3 +440,106 @@ compact∙-ε₀-ub = Κ-compact∙ (brouwer-to-oe B-ε₀)
 
 We can go much higher using the work of and Setzer, Hancock and
 others.
+
+Added 4th April 2022. It is not true that sums dominate suprema constructively. So we proceed as follows.
+
+\begin{code}
+
+open import ConvergentSequenceCompact
+open import PropTychonoff
+
+open import UF-Equiv
+open import UF-PropTrunc
+open import UF-ImageAndSurjection
+open import UF-Univalence
+
+module _ (pt : propositional-truncations-exist)
+         (ua : Univalence)
+       where
+
+ open PropositionalTruncation pt
+ open ImageAndSurjection pt
+
+
+ fe' : Fun-Ext
+ fe' {𝓤} {𝓥} = fe 𝓤 𝓥
+
+ pe : Prop-Ext
+ pe = Univalence-gives-Prop-Ext ua
+
+ open import UF-Quotient pt fe' pe
+
+ module _ (ssq : Small-Set-Quotients 𝓤₀) where
+
+  open import OrdinalOfOrdinalsSuprema pt ua
+  open import OrdinalsType-Injectivity fe
+  open import GenericConvergentSequence
+  open import Plus-Properties
+
+  open import UF-Equiv
+
+  open suprema ssq
+  open ordinals-injectivity
+
+  brouwer-to-ordinal : B → Ordinal 𝓤₀
+  brouwer-to-ordinal Z     = 𝟘ₒ
+  brouwer-to-ordinal (S b) = brouwer-to-ordinal b +ₒ 𝟙ₒ
+  brouwer-to-ordinal (L b) = sup (λ i → brouwer-to-ordinal (b i))
+
+  brouwer-to-ordinal' : B → Ordinal 𝓤₀
+  brouwer-to-ordinal' Z     = 𝟙ₒ
+  brouwer-to-ordinal' (S b) = brouwer-to-ordinal' b +ₒ 𝟙ₒ
+  brouwer-to-ordinal' (L b) = sup ((λ i → brouwer-to-ordinal' (b i)) ↗ embedding-ℕ-to-ℕ∞ fe₀)
+
+  brouwer-to-ordinal'-compact∙ : (b : B) → compact∙ ⟨ brouwer-to-ordinal' b ⟩
+  brouwer-to-ordinal'-compact∙ Z     = 𝟙-compact∙
+  brouwer-to-ordinal'-compact∙ (S b) = +-compact∙
+                                        (brouwer-to-ordinal'-compact∙ b)
+                                        (𝟙-compact∙)
+  brouwer-to-ordinal'-compact∙ (L b) =
+    surjection-compact∙ pt
+     (sum-to-sup α)
+     (sum-to-sup-is-surjection α)
+     (Σ-compact∙
+       (ℕ∞-compact∙ fe₀)
+       (λ u → prop-tychonoff fe
+               (ℕ-to-ℕ∞-is-embedding fe₀ u)
+               (λ (i , _) → brouwer-to-ordinal'-compact∙ (b i))))
+   where
+    α : ℕ∞ → Ordinal 𝓤₀
+    α = (λ i → brouwer-to-ordinal' (b i)) ↗ embedding-ℕ-to-ℕ∞ fe₀
+
+
+  𝓢 : OE → Ordinal 𝓤₀
+  𝓢 One       = 𝟙ₒ
+  𝓢 (Add ν μ) = 𝓢 ν +ₒ 𝓢 μ
+  𝓢 (Mul ν μ) = 𝓢 ν ×ₒ 𝓢 μ
+  𝓢 (L ν)     = sup ((λ i → 𝓢 (ν i)) ↗ embedding-ℕ-to-ℕ∞ fe₀)
+
+  𝓢-compact∙ : (ν : OE) → compact∙ ⟨ 𝓢 ν ⟩
+  𝓢-compact∙ One       = 𝟙-compact∙
+  𝓢-compact∙ (Add ν μ) = +-compact∙ (𝓢-compact∙ ν) (𝓢-compact∙ μ)
+  𝓢-compact∙ (Mul ν μ) = ×-compact∙ (𝓢-compact∙ ν) (𝓢-compact∙ μ)
+  𝓢-compact∙ (L ν)     = surjection-compact∙ pt
+                           (sum-to-sup α)
+                           (sum-to-sup-is-surjection α)
+                           (Σ-compact∙
+                             (ℕ∞-compact∙ fe₀)
+                             (λ u → prop-tychonoff fe
+                                     (ℕ-to-ℕ∞-is-embedding fe₀ u)
+                                     (λ (i , _) → 𝓢-compact∙ (ν i))))
+   where
+    α : ℕ∞ → Ordinal 𝓤₀
+    α = (λ i → 𝓢 (ν i)) ↗ embedding-ℕ-to-ℕ∞ fe₀
+
+  σ : (ν : OE) → ⟪ Κ ν ⟫ → ⟨ 𝓢 ν ⟩
+  σ One       x           = x
+  σ (Add ν μ) (inl ⋆ , x) = inl (σ ν x)
+  σ (Add ν μ) (inr ⋆ , y) = inr (σ μ y)
+  σ (Mul ν μ) (x , y)     = (σ ν x , σ μ y)
+  σ (L ν)     (u , f)     = sum-to-sup ((λ i → 𝓢 (ν i)) ↗ embedding-ℕ-to-ℕ∞ fe₀) (u , g)
+   where
+    g : ((i , _) : fiber ℕ-to-ℕ∞ u) → ⟨ 𝓢 (ν i) ⟩
+    g (i , p) = σ (ν i) (f (i , p))
+
+\end{code}
