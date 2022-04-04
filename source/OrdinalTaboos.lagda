@@ -188,7 +188,7 @@ EM-if-Every-Discrete-Ordinal-Is-Trichotomous fe h =
 It is somewhat more involved to get a taboo from the assertion that
 discretely-indexed suprema of trichotomous ordinals are discrete.
 
-The first step is fairly straighforward however and once again involves
+The first step is fairly straightforward however and once again involves
 constructing an ordinal that depends on a proposition P. What matters is that:
 (1) the constructed ordinal is trichotomous;
 (2) an initial segment of the ordinal is equivalent to P.
