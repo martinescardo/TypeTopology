@@ -54,6 +54,9 @@ module prop
  topped : P → has-top _<_
  topped p = p , λ q l → 𝟘-elim l
 
+ trichotomous : is-trichotomous _<_
+ trichotomous x y = inr (inl (isp x y))
+
 \end{code}
 
 Two particular cases are 𝟘 and 𝟙, of course.
@@ -153,6 +156,26 @@ and then adapt the following definitions.
    g : (z : X + Y) → ¬ (inr y ⊏ z)
    g (inl x)  l = 𝟘-elim l
    g (inr y') l = f y' l
+
+ trichotomy-preservation : is-trichotomous _<_
+                         → is-trichotomous _≺_
+                         → is-trichotomous order
+ trichotomy-preservation s t (inl x) (inr y ) = inl ⋆
+ trichotomy-preservation s t (inr y) (inl x ) = inr (inr ⋆)
+ trichotomy-preservation s t (inl x) (inl x') = lemma (s x x')
+  where
+   lemma : (x < x') + (x ≡ x') + (x' < x)
+         → inl x ⊏ inl x' + (inl x ≡ inl x') + inl x' ⊏ inl x
+   lemma (inl l)       = inl l
+   lemma (inr (inl e)) = inr (inl (ap inl e))
+   lemma (inr (inr k)) = inr (inr k)
+ trichotomy-preservation s t (inr y) (inr y') = lemma (t y y')
+  where
+   lemma : (y ≺ y') + (y ≡ y') + (y' ≺ y)
+         → inr y ⊏ inr y' + (inr y ≡ inr y') + inr y' ⊏ inr y
+   lemma (inl l)       = inl l
+   lemma (inr (inl e)) = inr (inl (ap inr e))
+   lemma (inr (inr k)) = inr (inr k)
 
 \end{code}
 

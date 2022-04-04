@@ -984,6 +984,9 @@ module suprema
 
   open construction-using-image α
 
+  sum-to-ordinals : (Σ i ꞉ I , ⟨ α i ⟩) → Ordinal 𝓤
+  sum-to-ordinals (i , x) = α i ↓ x
+
   private
    ssi : Small-Set-Images 𝓤
    ssi = Small-Set-Images-from-Small-Set-Quotients ssq
@@ -999,26 +1002,29 @@ module suprema
    sup-is-upper-bound : (i : I) → α i ⊴ sup
    sup-is-upper-bound = pr₁ (sup-is-least-upper-bound)
 
-   sup-is-lowerbound-of-upper-bound : (β : Ordinal 𝓤)
-                                    → ((i : I) → α i ⊴ β)
-                                    → sup ⊴ β
-   sup-is-lowerbound-of-upper-bound = pr₂ (sup-is-least-upper-bound)
+   sup-is-lower-bound-of-upper-bound : (β : Ordinal 𝓤)
+                                     → ((i : I) → α i ⊴ β)
+                                     → sup ⊴ β
+   sup-is-lower-bound-of-upper-bound = pr₂ (sup-is-least-upper-bound)
 
-   sup-is-image-of-σ : ⟨ sup ⟩ ≃ image σ
-   sup-is-image-of-σ = ⟨ sup ⟩  ≃⟨ ≃ₒ-gives-≃ sup α⁺-Ord (α⁻-≃ₒ-α⁺ ssi) ⟩
-                       α⁺       ≃⟨ ≃-sym image-σ-≃ ⟩
-                       image σ  ■
+   sup-is-image-of-sum-to-ordinals : ⟨ sup ⟩ ≃ image sum-to-ordinals
+   sup-is-image-of-sum-to-ordinals =
+    ⟨ sup ⟩  ≃⟨ ≃ₒ-gives-≃ sup α⁺-Ord (α⁻-≃ₒ-α⁺ ssi) ⟩
+    α⁺       ≃⟨ ≃-sym image-σ-≃ ⟩
+    image σ  ■
 
    sup-is-image-of-sum : ⟨ sup ⟩ is-image-of (Σ i ꞉ I , ⟨ α i ⟩)
    sup-is-image-of-sum = f , f-is-surjection
     where
+     φ : image σ ≃ ⟨ sup ⟩
+     φ = ≃-sym sup-is-image-of-sum-to-ordinals
      f : (Σ i ꞉ I , ⟨ α i ⟩) → ⟨ sup ⟩
-     f = ⌜ ≃-sym sup-is-image-of-σ ⌝ ∘ corestriction σ
+     f = ⌜ φ ⌝ ∘ corestriction σ
      f-is-surjection : is-surjection f
      f-is-surjection = ∘-is-surjection
                         (corestriction-is-surjection σ)
                         (equivs-are-surjections
-                          (⌜⌝-is-equiv (≃-sym sup-is-image-of-σ)))
+                          (⌜⌝-is-equiv φ))
 \end{code}
 
 Conjecture (Martin Escardo, August 2018 originally in the file
