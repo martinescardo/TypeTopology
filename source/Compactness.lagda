@@ -10,7 +10,7 @@ of continuity is decidable.
 
 import CompactTypes
 import ConvergentSequenceCompact
-import ConvergentSequenceHasLeast
+import ConvergentSequenceHasInf
 import ADecidableQuantificationOverTheNaturals
 import ExtendedSumCompact
 import InfProperty

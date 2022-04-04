@@ -64,7 +64,7 @@ open import ToppedOrdinalArithmetic fe
 open import OrdinalsClosure fe
 open import DiscreteAndSeparated
 open import GenericConvergentSequence
-open import ConvergentSequenceHasLeast
+open import ConvergentSequenceHasInf
 open import PropTychonoff fe
 open import PropInfTychonoff fe
 open import BinaryNaturals hiding (_+_)
