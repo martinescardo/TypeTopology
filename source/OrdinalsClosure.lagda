@@ -33,7 +33,7 @@ open import SquashedSum fe
 open import SquashedCantor fe
 open import LexicographicOrder
 open import LexicographicCompactness
-open import ConvergentSequenceHasLeast
+open import ConvergentSequenceHasInf
 open import PropInfTychonoff
 open import DiscreteAndSeparated
 open import BinaryNaturals hiding (_+_ ; L ; R)

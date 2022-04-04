@@ -125,7 +125,7 @@ import CoNaturalsArithmetic
 import CoNaturalsExercise
 import CoNaturals
 import ConvergentSequenceCompact
-import ConvergentSequenceHasLeast
+import ConvergentSequenceHasInf
 -- import CubicalBinarySystem -- works with Agda 2.6.2 only and need the Cubical Library. By Martin Escardo and Alex Rice
 import DcpoDinfinity                   -- By Tom de Jong
 import DecidabilityOfNonContinuity
@@ -439,7 +439,7 @@ increasingly complex compact ordinals.
 import SquashedSum
 import OrdinalNotationInterpretation
 import LexicographicCompactness
-import ConvergentSequenceHasLeast
+import ConvergentSequenceHasInf
 
 \end{code}
 
