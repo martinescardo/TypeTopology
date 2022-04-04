@@ -1,4 +1,4 @@
-Tom de Jong, 1 April 2022.
+Tom de Jong, 1 and 4 April 2022.
 
 \begin{code}
 
@@ -14,32 +14,57 @@ open import OrdinalNotions
 open import OrdinalsType
 
 open import UF-Equiv
+open import UF-EquivalenceExamples
 open import UF-ExcludedMiddle
 open import UF-FunExt
+open import UF-PropTrunc
 open import UF-Subsingletons
+open import UF-UA-FunExt
+open import UF-Univalence
 
------
--- TODO: MOVE THIS
+\end{code}
 
-open import UF-EquivalenceExamples
+We show that two classically true statements about ordinals are constructively
+unacceptable, because each of them implies excluded middle.
 
-subtype-≃ : {X : 𝓤 ̇  } {Y : X → 𝓥 ̇  }
-          → ((x : X) → is-prop (Y x))
-          → {x x' : X} {y : Y x} {y' : Y x'}
-          → ((x , y) ≡ (x' , y')) ≃ (x ≡ x')
-subtype-≃ {𝓤} {𝓥} {X} {Y} i {x} {x'} {y} {y'} =
- ((x , y) ≡ (x' , y'))                   ≃⟨ Σ-≡-≃      ⟩
- (Σ e ꞉ (x ≡ x') , transport Y e y ≡ y') ≃⟨ Σ-cong φ   ⟩
- (x ≡ x') × 𝟙{𝓤}                         ≃⟨ 𝟙-rneutral ⟩
- (x ≡ x')                                ■
-  where
-   φ : (e : x ≡ x') → (transport Y e y ≡ y') ≃ 𝟙
-   φ e = logically-equivalent-props-are-equivalent
-          (props-are-sets (i x')) 𝟙-is-prop
-          (λ _ → ⋆)
-          (λ _ → i x' (transport Y e y) y')
+The first statement is that every discrete ordinal is trichotomous. Classically,
+this is trivial, because every ordinal is trichotomous (and discrete).
+Constructively, the converse (trichotomous implies discrete) *does* hold.
 
------
+The second statement is that the supremum of a family of trichotomous ordinals
+indexed by a discrete type is again discrete.
+
+\begin{code}
+
+Every-Discrete-Ordinal-Is-Trichotomous : (𝓤 : Universe) → 𝓤 ⁺ ̇
+Every-Discrete-Ordinal-Is-Trichotomous 𝓤 =
+   ((α : Ordinal 𝓤) → is-discrete ⟨ α ⟩
+                    → is-trichotomous (underlying-order α))
+
+module ordinal-of-ordinals-assumptions
+        (pt : propositional-truncations-exist)
+        (ua : Univalence)
+       where
+
+ open import UF-Quotient pt (Univalence-gives-Fun-Ext ua)
+                            (Univalence-gives-Prop-Ext ua) public
+ open import OrdinalOfOrdinalsSuprema pt ua public
+
+ Sups-Of-Discretely-Indexed-Trichotomous-Ordinals-Are-Discrete :
+  (𝓤 : Universe) → Small-Set-Quotients 𝓤 → 𝓤 ⁺ ̇
+ Sups-Of-Discretely-Indexed-Trichotomous-Ordinals-Are-Discrete 𝓤 ssq =
+  (I : 𝓤 ̇  ) → is-discrete I → (α : I → Ordinal 𝓤)
+             → ((i : I) → is-trichotomous (underlying-order (α i)))
+             → is-discrete ⟨ sup α ⟩
+   where
+    open suprema ssq
+
+\end{code}
+
+In showing that the first statement implies excluded middle, the two-element
+type in some fixed but arbitrary universe 𝓤 will be useful.
+
+\begin{code}
 
 module _ {𝓤 : Universe} where
 
@@ -52,7 +77,26 @@ module _ {𝓤 : Universe} where
  𝟚-is-discrete : is-discrete 𝟚
  𝟚-is-discrete = +-is-discrete 𝟙-is-discrete 𝟙-is-discrete
 
-module ordinal-construction
+\end{code}
+
+We now work towards proving that excluded middle follows from the assertion that
+every discrete ordinal is trichotomous.
+
+The outline of the proof is given here:
+(1) Fix a type P and construct a transitive and well-founded relation ≺ on 𝟚
+    involving P.
+(2) If P is a proposition, then ≺ is prop-valued.
+(3) If ¬¬ P holds, then ≺ is extensional.
+(4) Hence, if P is a proposition such that ¬¬ P holds, then (𝟚 , ≺) is a
+    (discrete) ordinal.
+(5) The order ≺ is trichotomous if and only if P holds.
+
+Hence, if every discrete ordinal is trichotomous, then ¬¬ P → P for every
+proposition P, which is equivalent to excluded middle.
+
+\begin{code}
+
+module discrete-trichotomous-taboo-construction
         (P : 𝓤 ̇  )
        where
 
@@ -86,41 +130,42 @@ module ordinal-construction
    γ ₀ l = next ₀ ≺-well-founded-lemma
 
  ≺-is-extensional : ¬¬ P → is-extensional _≺_
- ≺-is-extensional nnp ₀ ₀ u v = refl
- ≺-is-extensional nnp ₀ ₁ u v = 𝟘-elim (nnp γ)
+ ≺-is-extensional h ₀ ₀ u v = refl
+ ≺-is-extensional h ₁ ₁ u v = refl
+ ≺-is-extensional h ₀ ₁ u v = 𝟘-elim (h γ)
   where
    γ : ¬ P
    γ p = 𝟘-elim (v ₀ p)
- ≺-is-extensional nnp ₁ ₀ u v = 𝟘-elim (nnp γ)
+ ≺-is-extensional h ₁ ₀ u v = 𝟘-elim (h γ)
   where
    γ : ¬ P
    γ p = 𝟘-elim (u ₀ p)
- ≺-is-extensional nnp ₁ ₁ u v = refl
 
  𝟚≺-ordinal : is-prop P → ¬¬ P → Ordinal 𝓤
- 𝟚≺-ordinal i nnp = 𝟚 , _≺_ , ≺-is-prop-valued i   , ≺-is-well-founded
-                             , ≺-is-extensional nnp , ≺-is-transitive
+ 𝟚≺-ordinal i h = 𝟚 , _≺_ , ≺-is-prop-valued i   , ≺-is-well-founded
+                          , ≺-is-extensional h , ≺-is-transitive
 
  ≺-trichotomous-characterization : is-trichotomous _≺_ ⇔ P
  ≺-trichotomous-characterization = ⦅⇒⦆ , ⦅⇐⦆
   where
-   ⦅⇒⦆ : is-trichotomous _≺_ → P
-   ⦅⇒⦆ t = lemma (t ₀ ₁)
-    where
-     lemma : (₀ ≺ ₁) + (₀ ≡ ₁) + (₁ ≺ ₀) → P
-     lemma (inl p) = p
-     lemma (inr (inl e)) = 𝟘-elim (+disjoint e)
-     lemma (inr (inr l)) = 𝟘-elim l
    ⦅⇐⦆ : P → is-trichotomous _≺_
    ⦅⇐⦆ p ₀ ₀ = inr (inl refl)
    ⦅⇐⦆ p ₀ ₁ = inl p
    ⦅⇐⦆ p ₁ ₀ = inr (inr p)
    ⦅⇐⦆ p ₁ ₁ = inr (inl refl)
+   ⦅⇒⦆ : is-trichotomous _≺_ → P
+   ⦅⇒⦆ t = lemma (t ₀ ₁)
+    where
+     lemma : (₀ ≺ ₁) + (₀ ≡ ₁) + (₁ ≺ ₀) → P
+     lemma (inl p)       = p
+     lemma (inr (inl e)) = 𝟘-elim (+disjoint e)
+     lemma (inr (inr l)) = 𝟘-elim l
 
-Every-Discrete-Ordinal-Is-Trichotomous : (𝓤 : Universe) → 𝓤 ⁺ ̇
-Every-Discrete-Ordinal-Is-Trichotomous 𝓤 =
-   ((α : Ordinal 𝓤) → is-discrete ⟨ α ⟩
-                    → is-trichotomous (underlying-order α))
+\end{code}
+
+The above construction quickly yields the first promised result.
+
+\begin{code}
 
 DNE-if-Every-Discrete-Ordinal-Is-Trichotomous :
    Every-Discrete-Ordinal-Is-Trichotomous 𝓤
@@ -129,7 +174,7 @@ DNE-if-Every-Discrete-Ordinal-Is-Trichotomous h P P-is-prop not-not-P =
  lr-implication ≺-trichotomous-characterization
                   (h (𝟚≺-ordinal P-is-prop not-not-P) (𝟚-is-discrete))
   where
-   open ordinal-construction P
+   open discrete-trichotomous-taboo-construction P
 
 EM-if-Every-Discrete-Ordinal-Is-Trichotomous :
    funext 𝓤 𝓤₀
@@ -138,9 +183,19 @@ EM-if-Every-Discrete-Ordinal-Is-Trichotomous :
 EM-if-Every-Discrete-Ordinal-Is-Trichotomous fe h =
  DNE-gives-EM fe (DNE-if-Every-Discrete-Ordinal-Is-Trichotomous h)
 
-------
+\end{code}
 
-module ordinal-construction' -- TODO: Rename
+It is somewhat more involved to get a taboo from the assertion that
+discretely-indexed suprema of trichotomous ordinals are discrete.
+
+The first step is fairly straighforward however and once again involves
+constructing an ordinal that depends on a proposition P. What matters is that:
+(1) the constructed ordinal is trichotomous;
+(2) an initial segment of the ordinal is equivalent to P.
+
+\begin{code}
+
+module discrete-sup-taboo-construction-I
         (P : 𝓤 ̇  )
        where
 
@@ -193,85 +248,43 @@ module ordinal-construction' -- TODO: Rename
  ≺-is-trichotomous i (inr ⋆) (inl q) = inr (inr ⋆)
  ≺-is-trichotomous i (inr ⋆) (inr ⋆) = inr (inl refl)
 
----
+\end{code}
 
--- TODO: Move to OrdinalsWellOrderArithmetic
-module _
-        {𝓤 𝓥 𝓦}
-        {X : 𝓤 ̇ }
-        {Y : 𝓥 ̇ }
-        (_<_ : X → X → 𝓦 ̇ )
-        (_≺_ : Y → Y → 𝓦 ̇ )
-       where
+Next, we turn to the second part of our construction, which defines a
+discretely-indexed family of trichotomous ordinals. To work with (suprema of)
+ordinals, we need additional assumptions and imports.
 
- open import OrdinalsWellOrderArithmetic
- open plus _<_ _≺_
-
- private
-  _⊏_ = order
-
- +₀-preserves-trichotomy : is-trichotomous _<_
-                         → is-trichotomous _≺_
-                         → is-trichotomous order
- +₀-preserves-trichotomy s t (inl x) (inl x') = lemma (s x x')
-  where
-   lemma : (x < x') + (x ≡ x') + (x' < x)
-         → inl x ⊏ inl x' + (inl x ≡ inl x') + inl x' ⊏ inl x
-   lemma (inl l)       = inl l
-   lemma (inr (inl e)) = inr (inl (ap inl e))
-   lemma (inr (inr k)) = inr (inr k)
- +₀-preserves-trichotomy s t (inl x) (inr y ) = inl ⋆
- +₀-preserves-trichotomy s t (inr y) (inl x ) = inr (inr ⋆)
- +₀-preserves-trichotomy s t (inr y) (inr y') = lemma (t y y')
-  where
-   lemma : (y ≺ y') + (y ≡ y') + (y' ≺ y)
-         → inr y ⊏ inr y' + (inr y ≡ inr y') + inr y' ⊏ inr y
-   lemma (inl l)       = inl l
-   lemma (inr (inl e)) = inr (inl (ap inr e))
-   lemma (inr (inr k)) = inr (inr k)
-
-open import UF-PropTrunc
-open import UF-UA-FunExt
-open import UF-Univalence
-
-
+\begin{code}
 
 module _
-        (pt  : propositional-truncations-exist)
+        (pt : propositional-truncations-exist)
         (ua : Univalence)
        where
 
- private
-  fe : FunExt
-  fe = Univalence-gives-FunExt ua
+ open ordinal-of-ordinals-assumptions pt ua
 
-  fe' : Fun-Ext
-  fe' {𝓤} {𝓥} = fe 𝓤 𝓥
-
-  pe : PropExt
-  pe = Univalence-gives-PropExt ua
-
-  pe' : Prop-Ext
-  pe' {𝓤} = pe 𝓤
-
- open PropositionalTruncation pt
-
- open import OrdinalOfOrdinalsSuprema pt ua
- open import OrdinalArithmetic fe
+ open import DecidableAndDetachable
+ open import OrdinalArithmetic (Univalence-gives-FunExt ua)
+ open import OrdinalsWellOrderArithmetic
  open import OrdinalOfOrdinals ua
 
- open import UF-Quotient pt fe' pe'
+ open import UF-Embeddings
  open import UF-ImageAndSurjection
  open ImageAndSurjection pt
 
- module ordinal-construction'' -- TODO: rename
-          {𝓤 : Universe}
-          (ssq : Small-Set-Quotients 𝓤)
-          (P : 𝓤 ̇  )
-          (P-is-prop : is-prop P)
-         where
+ module ordinal-of-ordinals-sup-assumptions
+         {𝓤 : Universe}
+         (ssq : Small-Set-Quotients 𝓤)
+        where
 
-   open ordinal-construction' P
+  open suprema ssq
+
+  module discrete-sup-taboo-construction-II
+           (P : 𝓤 ̇  )
+           (P-is-prop : is-prop P)
+          where
+
+   open discrete-sup-taboo-construction-I P
 
    I : 𝓤 ̇
    I = 𝟚 {𝓤}
@@ -280,120 +293,143 @@ module _
    α ₀ = P'-ordinal P-is-prop
    α ₁ = 𝟙ₒ +ₒ 𝟙ₒ
 
-   --TODO: Move and generalize to any proposition?
-   𝟙ₒ-is-trichotomous : is-trichotomous {𝓤} {𝓤} (underlying-order 𝟙ₒ)
-   𝟙ₒ-is-trichotomous ⋆ ⋆ = inr (inl refl)
-
-   𝟙ₒ+ₒ𝟙ₒ-trichotomous : is-trichotomous {𝓤} {𝓤} (underlying-order (𝟙ₒ +ₒ 𝟙ₒ))
-   𝟙ₒ+ₒ𝟙ₒ-trichotomous = +₀-preserves-trichotomy (underlying-order 𝟙ₒ)
-                                                 (underlying-order 𝟙ₒ)
-                                                 𝟙ₒ-is-trichotomous
-                                                 𝟙ₒ-is-trichotomous
-
    α-is-trichotomous : (i : I) → is-trichotomous (underlying-order (α i))
    α-is-trichotomous ₀ = ≺-is-trichotomous P-is-prop
-   α-is-trichotomous ₁ = 𝟙ₒ+ₒ𝟙ₒ-trichotomous
-
-   sup-of-α : Ordinal 𝓤
-   sup-of-α = supremum ssq α
-
-   open import UF-Embeddings
-   open import DecidableAndDetachable
-
-   -- TODO: Move
-   ≺-lemma : (p : P') → p ≺ inr ⋆ → P
-   ≺-lemma (inl p) l = p
-
-   -- TODO: Clean up
-   decidability-if-sup-of-α-discrete : is-discrete ⟨ sup-of-α ⟩
-                                     → decidable P
-   decidability-if-sup-of-α-discrete δ = γ
+   α-is-trichotomous ₁ = trichotomy-preservation trichotomous trichotomous
     where
-     open construction-using-image α hiding (_≺_ ; ≺-is-prop-valued) -- TODO: Remove this and make σ visible
-     x : Ordinal 𝓤
-     x = α ₀ ↓ inr ⋆
-     y : Ordinal 𝓤
-     y = α ₁ ↓ ₁
-     x-y-key : P → x ≃ₒ y
-     x-y-key p = f , f-op , qinvs-are-equivs f (g , η , ε) , g-op
-      where
-       f : ⟨ x ⟩ → ⟨ y ⟩
-       f _ = (inl ⋆ , ⋆)
-       f-op : is-order-preserving x y f
-       f-op (inl p , k) (inl q , l) m = 𝟘-elim m
-       g : ⟨ y ⟩ → ⟨ x ⟩
-       g _ = (inl p , ⋆)
-       η : g ∘ f ∼ id
-       η (inl q , ⋆) = to-subtype-≡ (λ _ → ≺-is-prop-valued _ _) (ap inl (P-is-prop p q))
-       ε : f ∘ g ∼ id
-       ε (inl ⋆ , ⋆) = refl
-       g-op : is-order-preserving y x g
-       g-op (inl ⋆ , ⋆) (inl ⋆ , ⋆) l = 𝟘-elim l
-     φ : ⟨ sup-of-α ⟩ ≃ image σ
-     φ = supremum-is-image-of-Σ ssq α
-     x' : ⟨ sup-of-α ⟩
-     x' = ⌜ φ ⌝⁻¹ (corestriction σ (₀ , inr ⋆))
-     y' : ⟨ sup-of-α ⟩
-     y' = ⌜ φ ⌝⁻¹ (corestriction σ (₁ , ₁))
-     foo : (x' ≡ y') ≃ (x ≡ y)
-     foo = (x' ≡ y') ≃⟨ embedding-criterion-converse ⌜ φ ⌝⁻¹ (equivs-are-embeddings ⌜ φ ⌝⁻¹ (⌜⌝⁻¹-is-equiv φ)) (corestriction σ (₀ , ₁)) (corestriction σ (₁ , ₁)) ⟩
-           (corestriction σ (₀ , inr ⋆) ≡ corestriction σ (₁ , ₁)) ≃⟨ subtype-≃ (λ β → being-in-the-image-is-prop β σ) ⟩
-           (x ≡ y) ■
-     key : decidable (x ≡ y)
-     key = decidable-cong foo (δ x' y')
-     point : decidable (x ≡ y) → decidable P
-     point (inl  e) = inl (≺-lemma fff ggg)
-      where
-       a : ⟨ x ⟩
-       a = idtofun ⟨ y ⟩ ⟨ x ⟩ (ap ⟨_⟩ (e ⁻¹)) (inl ⋆ , ⋆)
-       fff : ⟨ α ₀ ⟩
-       fff = pr₁ a
-       ggg : fff ≺ inr ⋆
-       ggg = pr₂ a
-     point (inr ne) = inr (λ p → ne (eqtoidₒ x y (x-y-key p)))
-     γ : decidable P
-     γ = point key
+     open prop 𝟙 𝟙-is-prop
+     open plus (underlying-order 𝟙ₒ) (underlying-order 𝟙ₒ)
 
-open import UF-Univalence
+\end{code}
+
+We will derive decidability of P from the assumption that the supremum of α is
+discrete.
+
+The idea of the proof is captured by NB₁ and NB₂ below. We will decide P by
+deciding whether (α ₀ ↓ inr ⋆) and (α ₁ ↓ inr ⋆) are equivalent ordinals.
+
+This, in turn, is decidable, because both ordinals are images of an embedding
+e : ⟨ sup α ⟩ → Ordinal 𝓤 and ⟨ sup α ⟩ is discrete by assumption.
+
+\begin{code}
+
+   fact-I : ⟨ α ₀ ↓ inr ⋆ ⟩ → P
+   fact-I (inl p , _) = p
+
+   NB₁ : ⟨ α ₀ ↓ inr ⋆ ⟩ ≃ P
+   NB₁ = qinveq f (g , η , ε)
+    where
+     f : ⟨ α ₀ ↓ ₁ ⟩ → P
+     f = fact-I
+     g : P → ⟨ α ₀ ↓ ₁ ⟩
+     g p = (inl p , ⋆)
+     η : g ∘ f ∼ id
+     η (inl p , _) = to-subtype-≡ (λ x → ≺-is-prop-valued x ₁) refl
+     ε : f ∘ g ∼ id
+     ε p = P-is-prop (f (g p)) p
+
+   NB₂ : ⟨ α ₁ ↓ inr ⋆ ⟩ ≃ 𝟙{𝓤}
+   NB₂ = singleton-≃-𝟙 (x , c)
+    where
+     x : ⟨ α ₁ ↓ inr ⋆ ⟩
+     x = (inl ⋆ , ⋆)
+     c : is-central (⟨ α ₁ ↓ inr ⋆ ⟩) (₀ , ⋆)
+     c (inl ⋆ , ⋆) = refl
+
+   fact-II : P → (α ₀ ↓ inr ⋆) ≃ₒ (α ₁ ↓ inr ⋆)
+   fact-II p = f , (f-order-pres , f-is-equiv , g-order-pres)
+    where
+     f : ⟨ α ₀ ↓ inr ⋆ ⟩ → ⟨ α ₁ ↓ inr ⋆ ⟩
+     f _ = inl ⋆ , ⋆
+     g : ⟨ α ₁ ↓ inr ⋆ ⟩ → ⟨ α ₀ ↓ inr ⋆ ⟩
+     g _ = inl p , ⋆
+     f-order-pres : is-order-preserving (α ₀ ↓ inr ⋆) (α ₁ ↓ inr ⋆) f
+     f-order-pres (inl p , _) (inl q , _) l = 𝟘-elim l
+     g-order-pres : is-order-preserving (α ₁ ↓ inr ⋆) (α ₀ ↓ inr ⋆) g
+     g-order-pres (inl ⋆ , _) (inl ⋆ , _) l = 𝟘-elim l
+     f-is-equiv : is-equiv f
+     f-is-equiv = qinvs-are-equivs f (g , η , ε)
+      where
+       ε : f ∘ g ∼ id
+       ε (inl ⋆ , _) = refl
+       η : g ∘ f ∼ id
+       η (inl q , _) = to-subtype-≡ (λ x → ≺-is-prop-valued x ₁)
+                                    (ap inl (P-is-prop p q))
+
+   fact-III : (α ₀ ↓ inr ⋆) ≃ₒ (α ₁ ↓ inr ⋆) → P
+   fact-III e = fact-I (≃ₒ-to-fun⁻¹ (α ₀ ↓ inr ⋆) (α ₁ ↓ inr ⋆) e (inl ⋆ , ⋆))
+
+   decidability-if-sup-of-α-discrete : is-discrete ⟨ sup α ⟩ → decidable P
+   decidability-if-sup-of-α-discrete δ = decidable-⇔ (fact-III , fact-II) dec
+    where
+     r : image (sum-to-ordinals α) → Ordinal 𝓤
+     r = restriction (sum-to-ordinals α)
+     c : (Σ i ꞉ I , ⟨ α i ⟩) → image (sum-to-ordinals α)
+     c = corestriction (sum-to-ordinals α)
+
+     φ : ⟨ sup α ⟩ ≃ image (sum-to-ordinals α)
+     φ = sup-is-image-of-sum-to-ordinals α
+     f : (Σ i ꞉ I , ⟨ α i ⟩) → ⟨ sup α ⟩
+     f = ⌜ φ ⌝⁻¹ ∘ c
+     e : ⟨ sup α ⟩ → Ordinal 𝓤
+     e = r ∘ ⌜ φ ⌝
+
+     e-is-embedding : is-embedding e
+     e-is-embedding =
+      ∘-is-embedding (equivs-are-embeddings ⌜ φ ⌝ (⌜⌝-is-equiv φ))
+                     (restriction-embedding (sum-to-ordinals α))
+     e-after-f-lemma : e ∘ f ∼ sum-to-ordinals α
+     e-after-f-lemma (i , x) =
+      (r ∘ ⌜ φ ⌝ ∘ ⌜ φ ⌝⁻¹ ∘ c) (i , x) ≡⟨ h    ⟩
+      r (c (i , x))                     ≡⟨ refl ⟩
+      sum-to-ordinals α (i , x)         ∎
+       where
+        h = ap r (inverses-are-sections ⌜ φ ⌝ (⌜⌝-is-equiv φ) (c (i , x)))
+
+     dec : decidable ((α ₀ ↓ inr ⋆) ≃ₒ (α ₁ ↓ inr ⋆))
+     dec = decidable-cong γ (δ (f (₀ , inr ⋆)) (f (₁ , inr ⋆)))
+      where
+       γ = (f (₀ , inr ⋆)     ≡  f (₁ , inr ⋆))     ≃⟨ ⦅1⦆ ⟩
+           (e (f (₀ , inr ⋆)) ≡  e (f (₁ , inr ⋆))) ≃⟨ ⦅2⦆ ⟩
+           ((α ₀ ↓ inr ⋆)     ≡  (α ₁ ↓ inr ⋆))     ≃⟨ ⦅3⦆ ⟩
+           ((α ₀ ↓ inr ⋆)     ≃ₒ (α ₁ ↓ inr ⋆))     ■
+        where
+         ⦅1⦆ = ≃-sym (embedding-criterion-converse e e-is-embedding
+                       (f (₀ , inr ⋆)) (f (₁ , inr ⋆)))
+         ⦅2⦆ = ≡-cong _ _ (e-after-f-lemma (₀ , inr ⋆))
+                          (e-after-f-lemma (₁ , inr ⋆))
+         ⦅3⦆ = UAₒ-≃ (α ₀ ↓ inr ⋆) (α ₁ ↓ inr ⋆)
+
+\end{code}
+
+Finally, we derive excluded middle from the assumption that discretely-indexed
+suprema of trichotomous ordinals are discrete, as announced at the top of this
+file.
+
+\begin{code}
 
 module _
         (pt  : propositional-truncations-exist)
         (ua : Univalence)
        where
 
- private
-  fe : FunExt
-  fe = Univalence-gives-FunExt ua
+ open ordinal-of-ordinals-assumptions pt ua
+ module _
+         {𝓤 : Universe}
+         (ssq : Small-Set-Quotients 𝓤)
+        where
 
-  fe' : Fun-Ext
-  fe' {𝓤} {𝓥} = fe 𝓤 𝓥
+  open ordinal-of-ordinals-sup-assumptions pt ua ssq
+  open suprema ssq
 
-  pe : PropExt
-  pe = Univalence-gives-PropExt ua
-
-  pe' : Prop-Ext
-  pe' {𝓤} = pe 𝓤
-
- open import UF-Quotient pt fe' pe'
-
- open import OrdinalOfOrdinalsSuprema pt ua
-
- Sups-Of-Discretely-Indexed-Trichotomous-Ordinals-Are-Discrete :
-  (𝓤 : Universe) → Small-Set-Quotients 𝓤 → 𝓤 ⁺ ̇
- Sups-Of-Discretely-Indexed-Trichotomous-Ordinals-Are-Discrete 𝓤 ssq =
-  (I : 𝓤 ̇  ) → is-discrete I → (α : I → Ordinal 𝓤)
-             → ((i : I) → is-trichotomous (underlying-order (α i)))
-             → is-discrete ⟨ supremum ssq α ⟩
-
- EM-if-Sups-Of-Discretely-Indexed-Trichotomous-Ordinals-Are-Discrete :
-    (ssq : Small-Set-Quotients 𝓤)
-  → Sups-Of-Discretely-Indexed-Trichotomous-Ordinals-Are-Discrete 𝓤 ssq
-  → EM 𝓤
- EM-if-Sups-Of-Discretely-Indexed-Trichotomous-Ordinals-Are-Discrete ssq h P i =
-  decidability-if-sup-of-α-discrete γ
-   where
-    open ordinal-construction'' pt ua ssq P i
-    γ : is-discrete ⟨ supremum ssq α ⟩
-    γ = h 𝟚 𝟚-is-discrete α α-is-trichotomous
+  EM-if-Sups-Of-Discretely-Indexed-Trichotomous-Ordinals-Are-Discrete :
+   Sups-Of-Discretely-Indexed-Trichotomous-Ordinals-Are-Discrete 𝓤 ssq
+   → EM 𝓤
+  EM-if-Sups-Of-Discretely-Indexed-Trichotomous-Ordinals-Are-Discrete h P i =
+   decidability-if-sup-of-α-discrete γ
+    where
+     open discrete-sup-taboo-construction-II P i
+     γ : is-discrete ⟨ sup α ⟩
+     γ = h 𝟚 𝟚-is-discrete α α-is-trichotomous
 
 \end{code}
