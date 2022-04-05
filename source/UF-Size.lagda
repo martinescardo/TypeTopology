@@ -837,16 +837,38 @@ Id⟦ ls ⟧ x y = x ≡⟦ ls ⟧ y
 
 \end{code}
 
-TODO
+Added 5 April 2022 by Tom de Jong, after discussion with Martín.
+(Refactoring an earlier addition dated 15 March 2022.)
 
-{-
-The following type describes what it means to have "small images". It is
-provable if we assume pushouts and univalence, as shown by Egbert Rijke in
-https://arxiv.org/abs/1701.07538
+Set Replacement is what we call the following principle:
+given X : 𝓤 and Y a locally 𝓥-small *set*, the image of a map f : X → Y is
+(𝓤 ⊔ 𝓥)-small.
 
-In UF-Quotient, we show that assuming small images yields small set quotients,
-provided the given type and equivalence relation are small.
--}
+The name "Set Replacement" is inspired by [Section 2.19, Bezem+2022], but is
+different in two ways:
+(1) In [Bezem+2022] replacement is not restriced to maps into sets, hence our
+    name *Set* Replacement
+(2) In [Bezem+2022] the universe parameters 𝓤 and 𝓥 are taken to be the same.
+
+[Rijke2017] shows that the replacement of [Bezem+2022] is provable in the
+presence of a univalent universes 𝓤 closed under pushouts.
+
+In UF-Quotient-Axiomatically.lagda, we prove that Set Replacement is provable
+if we assume (axiomatically) that for every X : 𝓤 and 𝓥-valued equivalence
+relation ≈, the set quotient X / ≈ exists in 𝓤 ⊔ 𝓥.
+
+In UF-Quotient.lagda we prove the converse using a specific construction of
+quotients, similar to [Corollary 5.1, Rijke2017].
+
+[Rijke2017]  Egbert Rijke. The join construction.
+             https://arxiv.org/abs/1701.07538, January 2017.
+
+[Bezem+2022] Marc Bezem, Ulrik Buchholtz, Pierre Cagne, Bj‌ørn Ian Dundas and
+             Daniel R. Grayson
+             Symmetry
+             https://unimath.github.io/SymmetryBook/book.pdf
+             https://github.com/UniMath/SymmetryBook
+             Book version: 2722568 (2022-03-31)
 
 \begin{code}
 
@@ -859,7 +881,8 @@ module Set-Replacement (pt : propositional-truncations-exist) where
  open ImageAndSurjection pt
 
  Set-Replacement : 𝓤ω
- Set-Replacement = {𝓤 𝓦 𝓥 : Universe} {X : 𝓤 ̇  } {Y : 𝓦 ̇  } (f : X → Y)
+ Set-Replacement = {𝓦 𝓣 𝓤 𝓥 : Universe} {X : 𝓣 ̇  } {Y : 𝓦 ̇  } (f : X → Y)
+                 → X is 𝓤 small
                  → Y is-locally 𝓥 small
                  → is-set Y
                  → image f is (𝓤 ⊔ 𝓥) small

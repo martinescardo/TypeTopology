@@ -611,9 +611,11 @@ the quotient as a type in 𝓥 ⁺ ⊔ 𝓤.
 If we assume Set Replacement, as defined and explained in UF-Size.lagda, then we
 get a quotient in 𝓥 ⊔ 𝓤. In particular, for a 𝓤-valued equivalence relation on a
 type X : 𝓤, the quotient will live in the same universe 𝓤. This particular case
-was first proved by Egbert Rijke as Corollary 5.1 of
-https://arxiv.org/abs/1701.07538, but under a different Set Replacement
-assumption (again, see UF-Size.lagda for details).
+was first proved in [Corollary 5.1, Rijke2017], but under a different Set
+Replacement assumption (again, see UF-Size.lagda for details).
+
+[Rijke2017]  Egbert Rijke. The join construction.
+             https://arxiv.org/abs/1701.07538, January 2017.
 
 \begin{code}
 
@@ -632,7 +634,8 @@ module _
 
  abstract
   resize-set-quotient : (X / ≋) is (𝓤 ⊔ 𝓥) small
-  resize-set-quotient = R equiv-rel γ (powersets-are-sets'' fe fe pe)
+  resize-set-quotient = R equiv-rel (X , (≃-refl X)) γ
+                          (powersets-are-sets'' fe fe pe)
    where
     open quotient X _≈_ ≈p ≈r ≈s ≈t using (equiv-rel)
     γ : (X → Ω 𝓥) is-locally 𝓤 ⊔ 𝓥 small

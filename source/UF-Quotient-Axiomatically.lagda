@@ -414,14 +414,23 @@ module _
         ⦅3⦆ = τ x
 
  Set-Replacement-from-axiomatic-quotients : Set-Replacement
- Set-Replacement-from-axiomatic-quotients {𝓤} {𝓦} {𝓥} {X} {Y} f
-                                          Y-is-loc-small Y-is-set = X/≈⁻
-                                                                  , ≃-sym e
+ Set-Replacement-from-axiomatic-quotients
+  {𝓦} {𝓣} {𝓤} {𝓥} {X} {Y} f X-is-small Y-is-loc-small Y-is-set = X/≈⁻ , ≃-sym e
   where
-   open set-replacement-construction f Y-is-loc-small Y-is-set
-   e = image f ≃⟨ image-≃-quotient ⟩
-       X/≈     ≃⟨ X/≈-≃-X/≈⁻       ⟩
-       X/≈⁻    ■
-
+   X' : 𝓤 ̇
+   X' = pr₁ X-is-small
+   φ : X' ≃ X
+   φ = pr₂ X-is-small
+   f' : X' → Y
+   f' = f ∘ ⌜ φ ⌝
+   open set-replacement-construction f' Y-is-loc-small Y-is-set
+   open import UF-EquivalenceExamples
+   e = image f  ≃⟨ Σ-cong (λ y → ∥∥-cong pt (h y)) ⟩
+       image f' ≃⟨ image-≃-quotient ⟩
+       X/≈      ≃⟨ X/≈-≃-X/≈⁻       ⟩
+       X/≈⁻     ■
+    where
+     h : (y : Y) → (Σ x ꞉ X , f x ≡ y) ≃ (Σ x' ꞉ X' , f' x' ≡ y)
+     h y = ≃-sym (Σ-change-of-variable (λ x → f x ≡ y) ⌜ φ ⌝ (⌜⌝-is-equiv φ))
 
 \end{code}
