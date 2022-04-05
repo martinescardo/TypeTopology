@@ -137,18 +137,6 @@ unquotiented type Σ i ꞉ I , ⟨ α i ⟩.
   _≈_ : Σα → Σα → 𝓤 ⁺ ̇
   (i , x) ≈ (j , y) = (α i ↓ x) ≡ (α j ↓ y)
 
-  ≈-is-symmetric : symmetric _≈_
-  ≈-is-symmetric (i , x) (j , y) = _⁻¹
-
-  ≈-is-transitive : transitive _≈_
-  ≈-is-transitive (i , x) (j , y) (k , z) = _∙_
-
-  ≈-is-reflexive : reflexive _≈_
-  ≈-is-reflexive (i , x) = refl
-
-  ≈-is-prop-valued : is-prop-valued _≈_
-  ≈-is-prop-valued (i , x) (j , y) = the-type-of-ordinals-is-a-set
-
   _≺_ : Σα → Σα → 𝓤 ⁺ ̇
   (i , x) ≺ (j , y) = (α i ↓ x) ⊲ (α j ↓ y)
 
@@ -310,7 +298,10 @@ induced order on Σα.
 \begin{code}
 
  ≋ : EqRel Σα
- ≋ = _≈_ , ≈-is-prop-valued , ≈-is-reflexive , ≈-is-symmetric , ≈-is-transitive
+ ≋ = _≈_ , (λ _ _   → the-type-of-ordinals-is-a-set)
+         , (λ _     → refl)
+         , (λ _ _   → _⁻¹)
+         , (λ _ _ _ → _∙_)
 
  α/ : 𝓤 ⁺ ̇
  α/ = Σα / ≋
