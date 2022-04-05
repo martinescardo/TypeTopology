@@ -24,8 +24,8 @@ open import SpartanMLTT
 open import Two-Properties
 open import AlternativePlus
 open import ToppedOrdinalsType fe
-open import ToppedOrdinalsType-Injectivity fe
 open import OrdinalArithmetic fe
+open import OrdinalsType-Injectivity fe
 open import ToppedOrdinalArithmetic fe
 open import CompactTypes
 open import GenericConvergentSequence
@@ -221,10 +221,12 @@ pair-fun-is-order-preserving τ υ A B f g φ γ (x , a) (x , b) (inr (refl , l)
 ι𝟙ᵒ-is-order-preserving (inr *) (inl m) l = 𝟘-elim l
 ι𝟙ᵒ-is-order-preserving (inr *) (inr *) l = 𝟘-elim l
 
+open topped-ordinals-injectivity
+
 over-ι-map-is-order-preserving  : (τ : ℕ → Ordᵀ) (z : ℕ + 𝟙)
                                      → is-order-preserving
                                          ((τ ↗ (over , over-embedding)) z)
-                                         ((τ ↗ (ι , ι-embedding fe₀)) (ι𝟙 z))
+                                         ((τ ↗ embedding-ℕ-to-ℕ∞ fe₀) (ι𝟙 z))
                                          (over-ι-map (λ n → ⟪ τ n ⟫) z)
 over-ι-map-is-order-preserving τ (inl n) x y ((.n , refl) , l) = (n , refl) , γ
  where
@@ -246,7 +248,7 @@ over-ι-map-is-order-preserving τ (inr *) x y ((n , p) , l) = 𝟘-elim (+disjo
                                (succₒ ℕₒ)
                                ℕ∞ᵒ
                                (τ ↗ (over , over-embedding))
-                               (τ  ↗ (ι , ι-embedding fe₀))
+                               (τ  ↗ embedding-ℕ-to-ℕ∞ fe₀)
                                ι𝟙ᵒ
                                (over-ι-map (λ n → ⟪ τ n ⟫))
                                ι𝟙ᵒ-is-order-preserving
@@ -359,7 +361,7 @@ pair-fun-is-order-reflecting τ υ A B f g φ e γ (x , a) (y , b) (inr (r , l))
 over-ι-map-is-order-reflecting  : (τ : ℕ → Ordᵀ) (z : ℕ + 𝟙)
                                 → is-order-reflecting
                                     ((τ ↗ (over , over-embedding)) z)
-                                    ((τ ↗ (ι , ι-embedding fe₀)) (ι𝟙 z))
+                                    ((τ ↗ embedding-ℕ-to-ℕ∞ fe₀) (ι𝟙 z))
                                     (over-ι-map (λ n → ⟪ τ n ⟫) z)
 over-ι-map-is-order-reflecting τ (inl n) x y ((m , p) , l) = (n , refl) , q
  where
@@ -370,7 +372,7 @@ over-ι-map-is-order-reflecting τ (inl n) x y ((m , p) , l) = (n , refl) , q
   y' = over-ι-map (λ n → ⟪ τ n ⟫) (inl n) y (n , refl)
 
   r : n , refl ≡ m , p
-  r = ι-embedding fe₀ (ι n) (n , refl) (m , p)
+  r = ℕ-to-ℕ∞-is-embedding fe₀ (ι n) (n , refl) (m , p)
 
   t : ⟪ τ n ⟫ → ⟪ τ m ⟫
   t = transport (λ - → ⟪ τ (pr₁ -) ⟫) r
@@ -405,7 +407,7 @@ over-ι-map-is-order-reflecting τ (inr *) x y ((m , p) , l) = 𝟘-elim (∞-is
                                (succₒ ℕₒ)
                                ℕ∞ᵒ
                                (τ ↗ (over , over-embedding))
-                               (τ  ↗ (ι , ι-embedding fe₀))
+                               (τ  ↗ embedding-ℕ-to-ℕ∞ fe₀)
                                ι𝟙ᵒ
                                (over-ι-map (λ n → ⟪ τ n ⟫))
                                ι𝟙ᵒ-is-order-reflecting
@@ -569,13 +571,14 @@ different, logically equivalent orders.
                                     → has-infs-of-complemented-subsets (∑¹ τ)
 ∑₁-has-infs-of-complemented-subsets pe τ ε = ∑-has-infs-of-complemented-subsets pe
                                               ℕ∞ᵒ
-                                              (λ (x : ℕ∞) → (τ ↗ (ι , ι-embedding fe₀)) x)
+                                              (λ (x : ℕ∞) → (τ ↗ embedding-ℕ-to-ℕ∞ fe₀) x)
                                               (ℕ∞ᵒ-has-infs-of-complemented-subsets pe)
                                               a
  where
-  a : (x : ⟪ ℕ∞ᵒ ⟫) → has-infs-of-complemented-subsets ((τ ↗ (ι , ι-embedding fe₀)) x)
+  a : (x : ⟪ ℕ∞ᵒ ⟫) → has-infs-of-complemented-subsets
+                       ((τ ↗ embedding-ℕ-to-ℕ∞ fe₀) x)
   a x = prop-inf-tychonoff fe
-         (ι-embedding fe₀ x)
+         (ℕ-to-ℕ∞-is-embedding fe₀ x)
          (λ {w} x y → x ≺⟪ τ (pr₁ w) ⟫ y)
          (λ w → ε (pr₁ w))
 

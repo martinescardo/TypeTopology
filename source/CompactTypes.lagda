@@ -496,7 +496,9 @@ Corollary: Binary products preserve compactness:
 binary-Tychonoff : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → compact∙ X → compact∙ Y → compact∙ (X × Y)
 binary-Tychonoff ε δ = Σ-compact∙ ε (λ i → δ)
 
-+'-compact∙ : {X₀ : 𝓤 ̇ } {X₁ : 𝓤 ̇ }
+×-compact∙ = binary-Tychonoff
+
++'-compact∙ : {X₀ X₁ : 𝓤 ̇ }
             → compact∙ X₀
             → compact∙ X₁
             → compact∙ (X₀ +' X₁)
@@ -544,6 +546,14 @@ retract-compact∙ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                  → compact∙ X
                  → compact∙ Y
 retract-compact∙ (_ , φ) = retractions-preserve-compactness φ
+
++-compact∙ : {X₀ X₁ : 𝓤 ̇ }
+            → compact∙ X₀
+            → compact∙ X₁
+            → compact∙ (X₀ + X₁)
++-compact∙ {𝓤} {X₀} {X₁} ε₀ ε₁ = retract-compact∙
+                                   (retract-of-gives-retract-Of +-retract-of-+')
+                                   (+'-compact∙ ε₀ ε₁)
 
 𝟙+𝟙-compact∙ : compact∙ (𝟙 {𝓤} + 𝟙 {𝓥})
 𝟙+𝟙-compact∙ = retract-compact∙ (f , r) 𝟚-compact∙

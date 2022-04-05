@@ -246,8 +246,11 @@ u ≣ n = u ≡ ι n
 ℕ-to-ℕ∞-lc {succ m} {0}      r = 𝟘-elim (Zero-not-Succ (r ⁻¹))
 ℕ-to-ℕ∞-lc {succ m} {succ n} r = ap succ (ℕ-to-ℕ∞-lc {m} {n} (Succ-lc r))
 
-ι-embedding : funext₀ → is-embedding ι
-ι-embedding fe = lc-maps-into-sets-are-embeddings ι ℕ-to-ℕ∞-lc (ℕ∞-is-set fe)
+ℕ-to-ℕ∞-is-embedding : funext₀ → is-embedding ℕ-to-ℕ∞
+ℕ-to-ℕ∞-is-embedding fe = lc-maps-into-sets-are-embeddings ℕ-to-ℕ∞ ℕ-to-ℕ∞-lc (ℕ∞-is-set fe)
+
+embedding-ℕ-to-ℕ∞ : funext₀ → ℕ ↪ ℕ∞
+embedding-ℕ-to-ℕ∞ fe = ℕ-to-ℕ∞ , ℕ-to-ℕ∞-is-embedding fe
 
 ℕ-to-ℕ∞-lc-refl : (k : ℕ) → ℕ-to-ℕ∞-lc refl ≡ refl {_} {ℕ} {k}
 ℕ-to-ℕ∞-lc-refl 0        = refl
@@ -384,7 +387,7 @@ not-finite-is-∞ fe {u} f = ℕ∞-to-ℕ→𝟚-lc fe (dfunext fe lemma)
 ι𝟙 = cases {𝓤₀} {𝓤₀} ι (λ _ → ∞)
 
 ι𝟙-is-embedding : funext₀ → is-embedding ι𝟙
-ι𝟙-is-embedding fe = disjoint-cases-embedding ι (λ _ → ∞) (ι-embedding fe) g d
+ι𝟙-is-embedding fe = disjoint-cases-embedding ι (λ _ → ∞) (ℕ-to-ℕ∞-is-embedding fe) g d
  where
   g : is-embedding (λ _ → ∞)
   g x (* , p) (⋆ , q) = ap (λ - → ⋆ , -) (ℕ∞-is-set fe p q)
@@ -452,7 +455,7 @@ size : {u : ℕ∞} → is-finite u → ℕ
 size (n , r) = n
 
 being-finite-is-prop : funext₀ → (u : ℕ∞) → is-prop (is-finite u)
-being-finite-is-prop = ι-embedding
+being-finite-is-prop = ℕ-to-ℕ∞-is-embedding
 
 ι-is-finite : (n : ℕ) → is-finite (ι n)
 ι-is-finite n = (n , refl)

@@ -26,7 +26,7 @@ notably doesn't use set quotients.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline --experimental-lossy-unification #-}
 
 
 open import UF-Quotient-Axiomatically
@@ -1028,18 +1028,26 @@ module suprema
     α⁺       ≃⟨ ≃-sym image-σ-≃ ⟩
     image σ  ■
 
+   sum-to-sup : (Σ i ꞉ I , ⟨ α i ⟩) → ⟨ sup ⟩
+   sum-to-sup = ⌜ ≃-sym sup-is-image-of-sum-to-ordinals ⌝ ∘ corestriction σ
+
+   sum-to-sup-is-surjection : is-surjection sum-to-sup
+   sum-to-sup-is-surjection = ∘-is-surjection
+                               (corestriction-is-surjection σ)
+                               (equivs-are-surjections
+                                 (⌜⌝-is-equiv
+                                    (≃-sym sup-is-image-of-sum-to-ordinals)))
+
    sup-is-image-of-sum : ⟨ sup ⟩ is-image-of (Σ i ꞉ I , ⟨ α i ⟩)
-   sup-is-image-of-sum = f , f-is-surjection
-    where
-     φ : image σ ≃ ⟨ sup ⟩
-     φ = ≃-sym sup-is-image-of-sum-to-ordinals
-     f : (Σ i ꞉ I , ⟨ α i ⟩) → ⟨ sup ⟩
-     f = ⌜ φ ⌝ ∘ corestriction σ
-     f-is-surjection : is-surjection f
-     f-is-surjection = ∘-is-surjection
-                        (corestriction-is-surjection σ)
-                        (equivs-are-surjections
-                          (⌜⌝-is-equiv φ))
+   sup-is-image-of-sum = sum-to-sup , sum-to-sup-is-surjection
+
+ sup-monotone : {I : 𝓤 ̇ } (α β : I → Ordinal 𝓤)
+              → ((i : I) → α i ⊴ β i)
+              → sup α ⊴ sup β
+ sup-monotone α β l = sup-is-lower-bound-of-upper-bound α (sup β)
+                       (λ i → ⊴-trans
+                                (α i) (β i) (sup β)
+                                (l i) (sup-is-upper-bound β i))
 \end{code}
 
 Conjecture (Martin Escardo, August 2018 originally in the file
@@ -1049,6 +1057,3 @@ joins constructed by taking the joint image in any upper bound.
 In this way we avoid both small quotients and small images. Moreover,
 the results of the second part of this file are a particular case of
 this taking Ord 𝓤 as an upper bound.
-
-TODO. Well, this isn't a conjecture any longer. It is simply something
-to implement by modifying the above code.

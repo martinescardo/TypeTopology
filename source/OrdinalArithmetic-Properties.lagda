@@ -580,3 +580,75 @@ module _ {𝓤 : Universe} where
                                  → to-subtype-≡ (λ _ → being-prop-is-prop fe')
                                     (empty-types-are-≡-𝟘 fe' (pe 𝓤) u)⁻¹) ν))
 \end{code}
+
+Added 4th April 2022.
+
+\begin{code}
+
+𝟘ₒ-least : {α : Ordinal 𝓤} → 𝟘₀ ⊴ α
+𝟘ₒ-least = unique-from-𝟘 , (λ x y l → 𝟘-elim x) , (λ x y l → 𝟘-elim x)
+
+\end{code}
+
+Successor reflects order:
+
+\begin{code}
+
+succₒ-reflects-⊴ : (α : Ordinal 𝓤) (β : Ordinal 𝓥) → (α +ₒ 𝟙ₒ) ⊴ (β +ₒ 𝟙ₒ) → α ⊴ β
+succₒ-reflects-⊴ α β (f , i , p) = g , j , q
+ where
+  k : (x : ⟨ α ⟩) (t : ⟨ β ⟩ + 𝟙) → f (inl x) ≡ t → Σ y ꞉ ⟨ β ⟩ , f (inl x) ≡ inl y
+  k x (inl y) e = y , e
+  k x (inr ⋆) e = 𝟘-elim (III (f (inr ⋆)) II)
+   where
+    I : f (inl x) ≺⟨ β +ₒ 𝟙ₒ ⟩ (f (inr ⋆))
+    I = p (inl x) (inr ⋆) ⋆
+
+    II : inr ⋆ ≺⟨ β +ₒ 𝟙ₒ ⟩ (f (inr ⋆))
+    II = transport (λ - → - ≺⟨ β +ₒ 𝟙ₒ ⟩ (f (inr ⋆))) e I
+
+    III : (t : ⟨ β ⟩ + 𝟙) → ¬ (inr ⋆  ≺⟨ β +ₒ 𝟙ₒ ⟩ t)
+    III (inl y) l = 𝟘-elim l
+    III (inr ⋆) l = 𝟘-elim l
+
+  h : (x : ⟨ α ⟩) → Σ y ꞉ ⟨ β ⟩ , f (inl x) ≡ inl y
+  h x = k x (f (inl x)) refl
+
+  g : ⟨ α ⟩ → ⟨ β ⟩
+  g x = pr₁ (h x)
+
+  ϕ : (x : ⟨ α ⟩) → f (inl x) ≡ inl (g x)
+  ϕ x = pr₂ (h x)
+
+  j : is-initial-segment α β g
+  j x y l = II I
+   where
+    m : inl y ≺⟨ β +ₒ 𝟙ₒ ⟩ f (inl x)
+    m = transport (λ - → inl y ≺⟨ β +ₒ 𝟙ₒ ⟩ -) ((ϕ x)⁻¹) l
+
+    I : Σ z ꞉ ⟨ α +ₒ 𝟙ₒ ⟩ , (z ≺⟨ α +ₒ 𝟙ₒ ⟩ inl x) × (f z ≡ inl y)
+    I = i (inl x) (inl y) m
+
+    II : type-of I → Σ x' ꞉ ⟨ α ⟩ , (x' ≺⟨ α ⟩ x) × (g x' ≡ y)
+    II (inl x' , n , e) = x' , n , inl-lc (inl (g x') ≡⟨ (ϕ x')⁻¹ ⟩
+                                           f (inl x') ≡⟨ e ⟩
+                                           inl y      ∎)
+
+  q : is-order-preserving α β g
+  q x x' l = transport₂ (λ y y' → y ≺⟨ β +ₒ 𝟙ₒ ⟩ y') (ϕ x) (ϕ x') I
+   where
+    I : f (inl x) ≺⟨ β +ₒ 𝟙ₒ ⟩ f (inl x')
+    I = p (inl x) (inl x') l
+
+succₒ-reflects-≼ : (α β : Ordinal 𝓤) → (α +ₒ 𝟙ₒ) ≼ (β +ₒ 𝟙ₒ) → α ≼ β
+succₒ-reflects-≼ α β l = ⊴-gives-≼ α β
+                          (succₒ-reflects-⊴ α β
+                            (≼-gives-⊴ (α +ₒ 𝟙ₒ) (β +ₒ 𝟙ₒ) l))
+
+succₒ-preserves-≾ : (α β : Ordinal 𝓤) → α ≾ β → (α +ₒ 𝟙ₒ) ≾ (β +ₒ 𝟙ₒ)
+succₒ-preserves-≾ α β = contrapositive (succₒ-reflects-≼ β α)
+
+\end{code}
+
+TODO. Get a taboo from {α : Ordinal 𝓤} {β : Ordinal 𝓥} → α ⊴ β → (α +ₒ 𝟙ₒ) ⊴ (β +ₒ 𝟙ₒ).
+Also from  α ⊲ β → (α +ₒ 𝟙ₒ) ⊲ (β +ₒ 𝟙ₒ).

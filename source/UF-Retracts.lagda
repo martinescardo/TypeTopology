@@ -108,14 +108,14 @@ has-section' f = (y : codomain f) → Σ x ꞉ domain f , f x ≡ y
 retract_Of_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
 retract Y Of X = Σ f ꞉ (X → Y) , has-section' f
 
-retract-of-retract-Of : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → retract Y of X → retract Y Of X
-retract-of-retract-Of {𝓤} {𝓥} {X} {Y} ρ = (retraction ρ , hass)
+retract-of-gives-retract-Of : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → retract Y of X → retract Y Of X
+retract-of-gives-retract-Of {𝓤} {𝓥} {X} {Y} ρ = (retraction ρ , hass)
  where
   hass : (y : Y) → Σ x ꞉ X , retraction ρ x ≡ y
   hass y = section ρ y , retract-condition ρ y
 
-retract-Of-retract-of : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → retract Y Of X → retract Y of X
-retract-Of-retract-of {𝓤} {𝓥} {X} {Y} (f , hass) = (f , φ)
+retract-Of-gives-retract-of : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → retract Y Of X → retract Y of X
+retract-Of-gives-retract-of {𝓤} {𝓥} {X} {Y} (f , hass) = (f , φ)
  where
   φ : Σ s ꞉ (Y → X) , f ∘ s ∼ id
   φ = (λ y → pr₁ (hass y)) , (λ y → pr₂ (hass y))
@@ -177,6 +177,22 @@ retracts-compose (r , s , rs) (r' , s' , rs') =
   fg : (z : X +' Y) → f (g z) ≡ z
   fg (₀ , x) = refl
   fg (₁ , y) = refl
+
++-retract-of-+' : {X Y : 𝓤 ̇ }
+                → retract (X + Y) of (X +' Y)
++-retract-of-+' {𝓤} {X} {Y} = g , f , gf
+ where
+  f : X + Y → X +' Y
+  f (inl x) = ₀ , x
+  f (inr y) = ₁ , y
+
+  g : X +' Y → X + Y
+  g (₀ , x) = inl x
+  g (₁ , y) = inr y
+
+  gf : (z : X + Y) → g (f z) ≡ z
+  gf (inl x) = refl
+  gf (inr y) = refl
 
 +'-retract : {X Y : 𝓤 ̇ } {A B : 𝓥 ̇ }
            → retract X of A
