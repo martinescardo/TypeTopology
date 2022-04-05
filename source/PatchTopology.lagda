@@ -466,7 +466,11 @@ indices.
                          is-scott-continuous (𝒪 X) (𝒪 X) (K [ i ])) holds
                      → (Ɐ is ∶ List (index K) ,
                          is-scott-continuous (𝒪 X) (𝒪 X) (𝔡𝔦𝔯 K [ is ])) holds
- ^*-scott-continuous K ϑ []       = {!!}
- ^*-scott-continuous K ϑ (i ∷ is) = {!!}
+ ^*-scott-continuous K ϑ []       = id-is-scott-continuous (𝒪 X)
+ ^*-scott-continuous K ϑ (i ∷ is) = ∘-of-scott-cont-is-scott-cont (𝒪 X) (𝒪 X) (𝒪 X)
+                                     (𝔡𝔦𝔯 K [ is ])
+                                     (K [ i ])
+                                     (^*-scott-continuous K ϑ is)
+                                     (ϑ i)
 
 \end{code}
