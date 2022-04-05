@@ -912,9 +912,9 @@ Next, we resize α⁺ using:
 
 \begin{code}
 
- open Replacement pt
+ open Set-Replacement pt
 
- module _ (replacement : Replacement) where
+ module _ (replacement : Set-Replacement) where
 
   private
    small-image : is-small (image σ)
@@ -961,10 +961,10 @@ Finally, the desired result follows (under the assumption of small set images).
 
 module _ (pt : propositional-truncations-exist) where
 
- open Replacement pt
+ open Set-Replacement pt
 
  ordinal-of-ordinals-has-small-suprema' :
-  Replacement → ∀ {𝓤} → Ordinal-Of-Ordinals-Has-Small-Suprema 𝓤
+  Set-Replacement → ∀ {𝓤} → Ordinal-Of-Ordinals-Has-Small-Suprema 𝓤
  ordinal-of-ordinals-has-small-suprema' R I α =
   (α⁻-Ord R , α⁻-is-upper-bound R
             , α⁻-is-lower-bound-of-upper-bounds R)
@@ -987,8 +987,9 @@ ordinal-of-ordinals-has-small-suprema'' sq =
    open set-quotients-exist sq
    pt : propositional-truncations-exist
    pt = propositional-truncations-from-axiomatic-set-quotients fe'
-   R : Replacement.Replacement pt
-   R = Replacement-from-axiomatic-quotients sq pt
+   open Set-Replacement pt
+   R : Set-Replacement
+   R = Set-Replacement-from-axiomatic-quotients sq pt
 
 \end{code}
 
@@ -1007,9 +1008,9 @@ module suprema
 
  open ImageAndSurjection pt
 
- open Replacement pt
- R : Replacement
- R = Replacement-from-axiomatic-quotients sq pt
+ open Set-Replacement pt
+ R : Set-Replacement
+ R = Set-Replacement-from-axiomatic-quotients sq pt
 
  module _ {I : 𝓤 ̇  } (α : I → Ordinal 𝓤) where
 

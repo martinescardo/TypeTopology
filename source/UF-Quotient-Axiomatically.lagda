@@ -255,10 +255,10 @@ module _
  open set-quotients-exist sq
 
  open ImageAndSurjection pt
- open Replacement pt
+ open Set-Replacement pt
  open PropositionalTruncation pt
 
- module replacement-construction
+ module set-replacement-construction
          {X : 𝓤 ̇  }
          {Y : 𝓦 ̇  }
          (f : X → Y)
@@ -413,11 +413,12 @@ module _
         ⦅2⦆ = ap ψ (image-to-quotient-lemma x)
         ⦅3⦆ = τ x
 
- Replacement-from-axiomatic-quotients : Replacement
- Replacement-from-axiomatic-quotients {𝓤} {𝓦} {𝓥} {X} {Y} f
-                                      Y-is-loc-small Y-is-set = X/≈⁻ , ≃-sym e
+ Set-Replacement-from-axiomatic-quotients : Set-Replacement
+ Set-Replacement-from-axiomatic-quotients {𝓤} {𝓦} {𝓥} {X} {Y} f
+                                          Y-is-loc-small Y-is-set = X/≈⁻
+                                                                  , ≃-sym e
   where
-   open replacement-construction f Y-is-loc-small Y-is-set
+   open set-replacement-construction f Y-is-loc-small Y-is-set
    e = image f ≃⟨ image-≃-quotient ⟩
        X/≈     ≃⟨ X/≈-≃-X/≈⁻       ⟩
        X/≈⁻    ■

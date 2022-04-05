@@ -608,21 +608,21 @@ Added 5 April 2022 by Tom de Jong, after discussion with Martín.
 The above takes a type X : 𝓤 and a 𝓥-valued equivalence relation and constructs
 the quotient as a type in 𝓥 ⁺ ⊔ 𝓤.
 
-If we assume Replacement, as defined and explained in UF-Size.lagda, then we get
-a quotient in 𝓥 ⊔ 𝓤. In particular, for a 𝓤-valued equivalence relation on a
+If we assume Set Replacement, as defined and explained in UF-Size.lagda, then we
+get a quotient in 𝓥 ⊔ 𝓤. In particular, for a 𝓤-valued equivalence relation on a
 type X : 𝓤, the quotient will live in the same universe 𝓤. This particular case
 was first proved by Egbert Rijke as Corollary 5.1 of
-https://arxiv.org/abs/1701.07538, but under a different Replacement assumption
-(again, see UF-Size.lagda for details).
+https://arxiv.org/abs/1701.07538, but under a different Set Replacement
+assumption (again, see UF-Size.lagda for details).
 
 \begin{code}
 
 open import UF-Quotient-Axiomatically using (set-quotients-exist)
 open import UF-Size
-open Replacement pt
+open Set-Replacement pt
 
 module _
-        (R : Replacement)
+        (R : Set-Replacement)
         {X : 𝓤 ̇  }
         (≋@(_≈_ , ≈p , ≈r , ≈s , ≈t) : EqRel {𝓤} {𝓥} X)
        where
@@ -710,7 +710,7 @@ UF-Quotient-Axiomatically.lagda.
        where
         open import UF-Equiv-FunExt using (qinv-pre)
 
-axiomatic-set-quotients-exist : Replacement → set-quotients-exist
+axiomatic-set-quotients-exist : Set-Replacement → set-quotients-exist
 axiomatic-set-quotients-exist R = record
  { _/_                          = λ X → X/ₛ≈ R
  ; η/                           = η/ₛ R
