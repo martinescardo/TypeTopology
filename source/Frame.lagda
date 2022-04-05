@@ -639,17 +639,6 @@ is-directed F (I , β) =
  ∧ (Ɐ i ∶ I , Ɐ j ∶ I , (Ǝ k ∶ I , ((β i ≤ β k) ∧ (β j ≤ β k)) holds))
   where open PosetNotation (poset-of F)
 
-monotone-image-on-directed-family-is-directed : (F : frame 𝓤  𝓥  𝓦)
-                                              → (G : frame 𝓤′ 𝓥′ 𝓦)
-                                              → (S : Fam 𝓦 ⟨ F ⟩)
-                                              → is-directed F S holds
-                                              → (f : ⟨ F ⟩ → ⟨ G ⟩)
-                                              → is-directed G ⁅ f s ∣ s ε S ⁆ holds
-monotone-image-on-directed-family-is-directed F G S (ι , υ) f = ι , γ
- where
-  γ : {!!}
-  γ = {!!}
-
 is-scott-continuous : (F : frame 𝓤  𝓥  𝓦)
                     → (G : frame 𝓤′ 𝓥′ 𝓦)
                     → (f : ⟨ F ⟩ → ⟨ G ⟩)
@@ -663,35 +652,6 @@ id-is-scott-continuous : (F : frame 𝓤 𝓥 𝓦) → is-scott-continuous F F 
 id-is-scott-continuous F S δ = ⋁[ F ]-upper S , ⋁[ F ]-least S
  where
   open Joins (λ x y → x ≤[ poset-of F ] y)
-
-∘-of-scott-cont-is-scott-cont : (F : frame 𝓤   𝓥   𝓦)
-                                (G : frame 𝓤′  𝓥′  𝓦)
-                                (H : frame 𝓤′′ 𝓥′′ 𝓦)
-                              → (g : ⟨ G ⟩ → ⟨ H ⟩)
-                              → (f : ⟨ F ⟩ → ⟨ G ⟩)
-                              → is-scott-continuous G H g holds
-                              → is-scott-continuous F G f holds
-                              → is-scott-continuous F H (g ∘ f) holds
-∘-of-scott-cont-is-scott-cont F G H g f ζg ζf S δ =
- β , γ
-  where
-   open Joins (λ x y → x ≤[ poset-of H ] y)
-   open PosetReasoning (poset-of H)
-
-   β : (g (f (⋁[ F ] S)) is-an-upper-bound-of ⁅ g (f s) ∣ s ε S ⁆) holds
-   β k = g (f (S [ k ]))              ≤⟨ i   ⟩
-         ⋁[ H ] ⁅ g (f s) ∣ s ε S ⁆   ≤⟨ ii  ⟩
-         g (⋁[ G ] ⁅ f s ∣ s ε S ⁆)   ≤⟨ iii ⟩
-         g (f (⋁[ F ] S))             ■
-          where
-           i   = ⋁[ H ]-upper ⁅ g (f s) ∣ s ε S ⁆ k
-           ii  = ⋁[ H ]-least
-                  ⁅ g (f s) ∣ s ε S ⁆
-                  (g (⋁[ G ] ⁅ f s ∣ s ε S ⁆) , pr₁ (ζg ⁅ f s ∣ s ε S ⁆ {!!}))
-           iii = {!!}
-
-   γ : {!!}
-   γ = {!!}
 
 \end{code}
 
@@ -735,6 +695,33 @@ is-monotonic P Q f =
 
 _─m→_ : (P : poset 𝓤 𝓥) (Q : poset 𝓤′ 𝓥′) → 𝓤 ⊔ 𝓥 ⊔ 𝓤′ ⊔ 𝓥′ ̇
 P ─m→ Q = Σ f ꞉ (∣ P ∣ₚ → ∣ Q ∣ₚ) , (is-monotonic P Q f) holds
+
+monotone-image-on-directed-family-is-directed : (F : frame 𝓤  𝓥  𝓦)
+                                              → (G : frame 𝓤′ 𝓥′ 𝓦)
+                                              → (S : Fam 𝓦 ⟨ F ⟩)
+                                              → is-directed F S holds
+                                              → (f : ⟨ F ⟩ → ⟨ G ⟩)
+                                              → is-monotonic (poset-of F) (poset-of G) f holds
+                                              → is-directed G ⁅ f s ∣ s ε S ⁆ holds
+monotone-image-on-directed-family-is-directed F G S (ι , υ) f μ = ι , γ
+ where
+  open PropositionalTruncation pt
+
+  I = index S
+
+  γ : (Ɐ i ∶ I , Ɐ j ∶ I ,
+        (Ǝ k ∶ I ,
+          ((f (S [ i ]) ≤[ poset-of G ] f (S [ k ]))
+         ∧ (f (S [ j ]) ≤[ poset-of G ] f (S [ k ]))) holds)) holds
+  γ i j = ∥∥-rec ∥∥-is-prop β (υ i j)
+   where
+    β : (Σ k ꞉ I , (((S [ i ]) ≤[ poset-of F ] (S [ k ]))
+                  ∧ ((S [ j ]) ≤[ poset-of F ] (S [ k ]))) holds)
+      → (∃ k ꞉ I , ((f (S [ i ]) ≤[ poset-of G ] f (S [ k ]))
+                  ∧ (f (S [ j ]) ≤[ poset-of G ] f (S [ k ]))) holds)
+    β (k , p , q) = ∣ k , μ (S [ i ] , S [ k ]) p , μ (S [ j ] , S [ k ]) q ∣
+
+
 
 is-join-preserving : (F : frame 𝓤 𝓥 𝓦) (G : frame 𝓤' 𝓥' 𝓦)
                    → (⟨ F ⟩ → ⟨ G ⟩) → Ω (𝓤 ⊔ 𝓤' ⊔ 𝓦 ⁺)
@@ -883,6 +870,7 @@ scott-continuous-implies-monotone {𝓦 = 𝓦} F G f φ (x , y) p =
            (φ ⁅ x , y ⁆ δ)) ⁻¹
    iv  = ap f (connecting-lemma₄ F p) ⁻¹
 
+
 meet-preserving-implies-monotone : (F : frame 𝓤 𝓥 𝓦) (G : frame 𝓤′ 𝓥′ 𝓦)
                                  → (h : ⟨ F ⟩ → ⟨ G ⟩)
                                  → preserves-meets F G h holds
@@ -908,6 +896,56 @@ scott-continuous-join-eq : (F : frame 𝓤  𝓥  𝓦)
                          → f (⋁[ F ] S) ≡ ⋁[ G ] ⁅ f s ∣ s ε S ⁆
 scott-continuous-join-eq F G f ζ S δ =
  ⋁[ G ]-unique ⁅ f s ∣ s ε S ⁆ (f (⋁[ F ] S)) (ζ S δ)
+
+∘-of-scott-cont-is-scott-cont : (F : frame 𝓤   𝓥   𝓦)
+                                (G : frame 𝓤′  𝓥′  𝓦)
+                                (H : frame 𝓤′′ 𝓥′′ 𝓦)
+                              → (g : ⟨ G ⟩ → ⟨ H ⟩)
+                              → (f : ⟨ F ⟩ → ⟨ G ⟩)
+                              → is-scott-continuous G H g holds
+                              → is-scott-continuous F G f holds
+                              → is-scott-continuous F H (g ∘ f) holds
+∘-of-scott-cont-is-scott-cont F G H g f ζg ζf S δ =
+ β , γ
+  where
+   open Joins (λ x y → x ≤[ poset-of H ] y)
+   open PosetReasoning (poset-of H)
+
+   μf : is-monotonic (poset-of F) (poset-of G) f holds
+   μf = scott-continuous-implies-monotone F G f ζf
+
+   μg : is-monotonic (poset-of G) (poset-of H) g holds
+   μg = scott-continuous-implies-monotone G H g ζg
+
+   † : is-directed G ⁅ f s ∣ s ε  S ⁆ holds
+   † = monotone-image-on-directed-family-is-directed F G S δ f μf
+
+   β : (g (f (⋁[ F ] S)) is-an-upper-bound-of ⁅ g (f s) ∣ s ε S ⁆) holds
+   β k = g (f (S [ k ]))              ≤⟨ i   ⟩
+         ⋁[ H ] ⁅ g (f s) ∣ s ε S ⁆   ≤⟨ ii  ⟩
+         g (⋁[ G ] ⁅ f s ∣ s ε S ⁆)   ≡⟨ iii ⟩ₚ
+         g (f (⋁[ F ] S))             ■
+          where
+           i   = ⋁[ H ]-upper ⁅ g (f s) ∣ s ε S ⁆ k
+           ii  = ⋁[ H ]-least
+                  ⁅ g (f s) ∣ s ε S ⁆
+                  (g (⋁[ G ] ⁅ f s ∣ s ε S ⁆) , pr₁ (ζg ⁅ f s ∣ s ε S ⁆ †))
+           iii = ap g (scott-continuous-join-eq F G f ζf S δ ⁻¹)
+
+   γ : (Ɐ (u , _) ∶ upper-bound ⁅ g (f s) ∣ s ε S ⁆ ,
+         (g (f (⋁[ F ] S)) ≤[ poset-of H ] u)) holds
+   γ (u , p) = g (f (⋁[ F ] S))              ≤⟨ i   ⟩
+               g (⋁[ G ] ⁅ f s ∣ s ε S ⁆)    ≡⟨ ii  ⟩ₚ
+               ⋁[ H ] ⁅ g (f s) ∣ s ε S ⁆    ≤⟨ iii ⟩
+               u                             ■
+                where
+                 ※ : (f (⋁[ F ] S) ≤[ poset-of G ] (⋁[ G ] ⁅ f s ∣ s ε S ⁆)) holds
+                 ※ = pr₂ (ζf S δ) ((⋁[ G ] ⁅ f s ∣ s ε S ⁆)
+                                  , ⋁[ G ]-upper (⁅ f s ∣ s ε S ⁆))
+
+                 i   = μg (f (⋁[ F ] S) , ⋁[ G ] ⁅ f s ∣ s ε S ⁆) ※
+                 ii  = scott-continuous-join-eq G H g ζg ⁅ f s ∣ s ε S ⁆ †
+                 iii = ⋁[ H ]-least ⁅ g (f s) ∣ s ε S ⁆ (u , p)
 
 \end{code}
 
