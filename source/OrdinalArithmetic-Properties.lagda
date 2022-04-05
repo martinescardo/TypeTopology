@@ -594,8 +594,8 @@ Successor reflects order:
 
 \begin{code}
 
-succₒ-reflects-⊴ : {α : Ordinal 𝓤} {β : Ordinal 𝓥} → (α +ₒ 𝟙ₒ) ⊴ (β +ₒ 𝟙ₒ) → α ⊴ β
-succₒ-reflects-⊴ {𝓤} {𝓥} {α} {β} (f , i , p) = g , j , q
+succₒ-reflects-⊴ : (α : Ordinal 𝓤) (β : Ordinal 𝓥) → (α +ₒ 𝟙ₒ) ⊴ (β +ₒ 𝟙ₒ) → α ⊴ β
+succₒ-reflects-⊴ α β (f , i , p) = g , j , q
  where
   k : (x : ⟨ α ⟩) (t : ⟨ β ⟩ + 𝟙) → f (inl x) ≡ t → Σ y ꞉ ⟨ β ⟩ , f (inl x) ≡ inl y
   k x (inl y) e = y , e
@@ -617,29 +617,33 @@ succₒ-reflects-⊴ {𝓤} {𝓥} {α} {β} (f , i , p) = g , j , q
   g : ⟨ α ⟩ → ⟨ β ⟩
   g x = pr₁ (h x)
 
-  gh : (x : ⟨ α ⟩) → f (inl x) ≡ inl (g x)
-  gh x = pr₂ (h x)
+  ϕ : (x : ⟨ α ⟩) → f (inl x) ≡ inl (g x)
+  ϕ x = pr₂ (h x)
 
   j : is-initial-segment α β g
   j x y l = II I
    where
     m : inl y ≺⟨ β +ₒ 𝟙ₒ ⟩ f (inl x)
-    m = transport (λ - → inl y ≺⟨ β +ₒ 𝟙ₒ ⟩ -) ((gh x)⁻¹) l
+    m = transport (λ - → inl y ≺⟨ β +ₒ 𝟙ₒ ⟩ -) ((ϕ x)⁻¹) l
 
     I : Σ z ꞉ ⟨ α +ₒ 𝟙ₒ ⟩ , (z ≺⟨ α +ₒ 𝟙ₒ ⟩ inl x) × (f z ≡ inl y)
     I = i (inl x) (inl y) m
 
     II : type-of I → Σ x' ꞉ ⟨ α ⟩ , (x' ≺⟨ α ⟩ x) × (g x' ≡ y)
-    II (inl x' , n , e) = x' , n , inl-lc (inl (g x') ≡⟨ (gh x')⁻¹ ⟩
+    II (inl x' , n , e) = x' , n , inl-lc (inl (g x') ≡⟨ (ϕ x')⁻¹ ⟩
                                            f (inl x') ≡⟨ e ⟩
                                            inl y      ∎)
 
   q : is-order-preserving α β g
-  q x x' l = transport₂ (λ y y' → y ≺⟨ β +ₒ 𝟙ₒ ⟩ y') (gh x) (gh x') I
+  q x x' l = transport₂ (λ y y' → y ≺⟨ β +ₒ 𝟙ₒ ⟩ y') (ϕ x) (ϕ x') I
    where
     I : f (inl x) ≺⟨ β +ₒ 𝟙ₒ ⟩ f (inl x')
     I = p (inl x) (inl x') l
 
+succₒ-reflects-≼ : (α β : Ordinal 𝓤) → (α +ₒ 𝟙ₒ) ≼ (β +ₒ 𝟙ₒ) → α ≼ β
+succₒ-reflects-≼ α β l = ⊴-gives-≼ α β
+                          (succₒ-reflects-⊴ α β
+                             (≼-gives-⊴ (α +ₒ 𝟙ₒ) (β +ₒ 𝟙ₒ) l))
 \end{code}
 
 TODO. Get a taboo from {α : Ordinal 𝓤} {β : Ordinal 𝓥} → α ⊴ β → (α +ₒ 𝟙ₒ) ⊴ (β +ₒ 𝟙ₒ).
