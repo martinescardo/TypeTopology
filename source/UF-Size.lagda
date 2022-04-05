@@ -860,6 +860,10 @@ relation ≈, the set quotient X / ≈ exists in 𝓤 ⊔ 𝓥.
 In UF-Quotient.lagda we prove the converse using a specific construction of
 quotients, similar to [Corollary 5.1, Rijke2017].
 
+Thus, Set Replacement is equivalent to having set quotients in 𝓤 ⊔ 𝓥 for every
+type in 𝓤 with a 𝓥-valued equivalence relation (which is what you would have
+when adding set quotients as higher inductive types).
+
 [Rijke2017]  Egbert Rijke. The join construction.
              https://arxiv.org/abs/1701.07538, January 2017.
 
