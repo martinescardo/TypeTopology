@@ -1,14 +1,16 @@
 Tom de Jong, 4 & 5 April 2022.
 
-TODO
+Assuming axiomatic set quotients, we
+(1) derive propositional truncations in the presence of function extensionality;
+(2) prove Set Replacement as defined in UF-Size.lagda.
 
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import SpartanMLTT
-
 module UF-Quotient-Axiomatically where
+
+open import SpartanMLTT
 
 open import UF-Base hiding (_≈_)
 open import UF-Equiv
@@ -51,6 +53,22 @@ record set-quotients-exist : 𝓤ω where
                  → is-set Y → (f : X → Y)
                  → identifies-related-points ≋ f
                  → ∃! f̅ ꞉ (X / ≋ → Y) , f̅ ∘ η/ ≋ ∼ f
+
+\end{code}
+
+Paying attention to universe levels, it is important to note that the quotient
+of X : 𝓤 by a 𝓥-valued equivalence relation is assumed to live in 𝓤 ⊔ 𝓥. In
+particular, the quotient of type in 𝓤 by a 𝓤-valued equivalence relation lives
+in 𝓤 again.
+
+The following is boilerplate and duplicates some of the material in
+UF-Quotient.lagda, where large set quotients are constructed using propositional
+truncations, function extensionality and propositional extensionality.
+
+We need the boilerplate in OrdinalOfOrdinalsSuprema.lagda, where we use
+axiomatic set quotients to construct small suprema of small ordinals.
+
+\begin{code}
 
  module _
          {X : 𝓤 ̇  }
@@ -207,6 +225,10 @@ binary and ternary versions of quotient induction.
 
 \end{code}
 
+We now construct propositional truncations using set quotients. Notice that
+function extensionality is (only) needed to prove that the quotient is a
+proposition.
+
 \begin{code}
 
  private
@@ -235,8 +257,8 @@ binary and ternary versions of quotient induction.
 
  propositional-truncations-from-axiomatic-set-quotients :
   Fun-Ext → propositional-truncations-exist
- propositional-truncations-from-axiomatic-set-quotients fe = record {
-    ∥_∥        = ∥_∥
+ propositional-truncations-from-axiomatic-set-quotients fe = record
+  { ∥_∥        = ∥_∥
   ; ∥∥-is-prop = ∥∥-is-prop fe
   ; ∣_∣        = ∣_∣
   ; ∥∥-rec     = ∥∥-rec
@@ -244,7 +266,12 @@ binary and ternary versions of quotient induction.
 
 \end{code}
 
-TODO: Comment on pt assumption in presence of Fun-Ext
+Finally, we show that Set Replacement is derivable when we have set quotients as
+defined above.
+
+Notice how we could replace propositional-truncations-exist assumption by
+function extensionality (funext) as we can use funext to construct truncations,
+as shown above.
 
 \begin{code}
 
