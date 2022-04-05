@@ -602,20 +602,18 @@ quotients-equivalent X (_≈_  , ≈p ,  ≈r  , ≈s  , ≈t )
 
 \end{code}
 
-TODO: Update
+Added 5 April 2022 by Tom de Jong, after discussion with Martín.
+(Refactoring an earlier addition dated 15 March 2022.)
 
-Added 15 March 2022 by Tom de Jong, after discussion with Martín.
+The above takes a type X : 𝓤 and a 𝓥-valued equivalence relation and constructs
+the quotient as a type in 𝓥 ⁺ ⊔ 𝓤.
 
-If we have pushouts and univalence, then images of maps from small types to
-locally small types are small, as proved by Egbert Rijke in
-https://arxiv.org/abs/1701.07538
-
-We can also take the result on small images as a stand-alone assumption, which
-is what we do here.
-
-We show, under this assumption, that quotients of small types by small-valued
-equivalence relations are small again, as observed by Rijke in Corollary 5.1 of
-the above paper.
+If we assume Replacement, as defined and explained in UF-Size.lagda, then we get
+a quotient in 𝓥 ⊔ 𝓤. In particular, for a 𝓤-valued equivalence relation on a
+type X : 𝓤, the quotient will live in the same universe 𝓤. This particular case
+was first proved by Egbert Rijke as Corollary 5.1 of
+https://arxiv.org/abs/1701.07538, but under a different Replacement assumption
+(again, see UF-Size.lagda for details).
 
 \begin{code}
 
@@ -657,6 +655,14 @@ module _
                              (Π-is-prop fe (λ _ → holds-is-prop (f x))))
                   (λ p → transport _holds p , back-transport _holds p)
                   (λ (u , v) → Ω-extensionality fe pe u v)
+
+\end{code}
+
+We now use the above resizing to construct a quotient that strictly lives in the
+universe 𝓤 ⊔ 𝓥, yielding set quotients as defined in
+UF-Quotient-Axiomatically.lagda.
+
+\begin{code}
 
  X/ₛ≈ : 𝓤 ⊔ 𝓥 ̇
  X/ₛ≈ = pr₁ resize-set-quotient
