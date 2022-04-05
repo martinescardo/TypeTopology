@@ -978,8 +978,10 @@ logically equivalent to the condition (a : ⟨ α ⟩) → (α ↓ a) ⊲ β.
 
 \begin{code}
 
-_≼_ : Ordinal 𝓤 → Ordinal 𝓤 → 𝓤 ⁺ ̇
+_≼_ _≾_ : Ordinal 𝓤 → Ordinal 𝓤 → 𝓤 ⁺ ̇
 α ≼ β = α ≼⟨ OO _ ⟩ β
+α ≾ β = ¬ (β ≼ α)
+
 
 to-≼ : {α β : Ordinal 𝓤}
      → ((a : ⟨ α ⟩) → (α ↓ a) ⊲ β)

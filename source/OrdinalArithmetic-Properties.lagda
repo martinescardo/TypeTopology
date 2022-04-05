@@ -585,8 +585,8 @@ Added 4th April 2022.
 
 \begin{code}
 
-𝟘ₒ-minimal : {α : Ordinal 𝓤} → 𝟘₀ ⊴ α
-𝟘ₒ-minimal = unique-from-𝟘 , (λ x y l → 𝟘-elim x) , (λ x y l → 𝟘-elim x)
+𝟘ₒ-least : {α : Ordinal 𝓤} → 𝟘₀ ⊴ α
+𝟘ₒ-least = unique-from-𝟘 , (λ x y l → 𝟘-elim x) , (λ x y l → 𝟘-elim x)
 
 \end{code}
 
@@ -643,7 +643,11 @@ succₒ-reflects-⊴ α β (f , i , p) = g , j , q
 succₒ-reflects-≼ : (α β : Ordinal 𝓤) → (α +ₒ 𝟙ₒ) ≼ (β +ₒ 𝟙ₒ) → α ≼ β
 succₒ-reflects-≼ α β l = ⊴-gives-≼ α β
                           (succₒ-reflects-⊴ α β
-                             (≼-gives-⊴ (α +ₒ 𝟙ₒ) (β +ₒ 𝟙ₒ) l))
+                            (≼-gives-⊴ (α +ₒ 𝟙ₒ) (β +ₒ 𝟙ₒ) l))
+
+succₒ-preserves-≾ : (α β : Ordinal 𝓤) → α ≾ β → (α +ₒ 𝟙ₒ) ≾ (β +ₒ 𝟙ₒ)
+succₒ-preserves-≾ α β = contrapositive (succₒ-reflects-≼ β α)
+
 \end{code}
 
 TODO. Get a taboo from {α : Ordinal 𝓤} {β : Ordinal 𝓥} → α ⊴ β → (α +ₒ 𝟙ₒ) ⊴ (β +ₒ 𝟙ₒ).

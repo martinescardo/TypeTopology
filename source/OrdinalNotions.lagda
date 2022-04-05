@@ -217,8 +217,9 @@ being-well-order-is-prop fe = prop-criterion γ
                    (extensionality-is-prop fe (prop-valuedness o))
                    (transitivity-is-prop fe (prop-valuedness o))
 
-_≾_ : X → X → 𝓥 ̇
-x ≾ y = ¬ (y < x)
+private
+ _≾_ : X → X → 𝓥 ̇
+ x ≾ y = ¬ (y < x)
 
 ≾-is-prop-valued : funext 𝓥 𝓤₀ → is-prop-valued → (x y : X) → is-prop (x ≾ y)
 ≾-is-prop-valued fe p x y = negations-are-props fe
@@ -229,15 +230,15 @@ is-top x = (y : X) → y ≾ x
 has-top : 𝓤 ⊔ 𝓥 ̇
 has-top = Σ x ꞉ X , is-top x
 
-<-coarser-than-≾  : (x : X)
-                  → is-accessible x
-                  → (y : X) → y < x → y ≾ x
-<-coarser-than-≾ = transfinite-induction'
+<-gives-≾  : (x : X)
+           → is-accessible x
+           → (y : X) → y < x → y ≾ x
+<-gives-≾ = transfinite-induction'
                      (λ x → (y : X) → y < x → y ≾ x)
                      (λ x f y l m → f y l x m l)
 
 ≾-refl : (x : X) → is-accessible x → x ≾ x
-≾-refl x a l = <-coarser-than-≾ x a x l l
+≾-refl x a l = <-gives-≾ x a x l l
 
 irreflexive : (x : X) → is-accessible x → ¬ (x < x)
 irreflexive = ≾-refl
@@ -246,11 +247,11 @@ irreflexive = ≾-refl
           → (x y : X) → x < y → x ≢ y
 <-gives-≢ w x y l p = irreflexive y (w y) (transport (_< y) p l)
 
-<-coarser-than-≼ : is-transitive → {x y : X} → x < y → x ≼ y
-<-coarser-than-≼ t {x} {y} l u m = t u x y m l
+<-gives-≼ : is-transitive → {x y : X} → x < y → x ≼ y
+<-gives-≼ t {x} {y} l u m = t u x y m l
 
-≼-coarser-than-≾ : (y : X) → is-accessible y → (x : X) → x ≼ y → x ≾ y
-≼-coarser-than-≾ y a x f l = ≾-refl y a (f y l)
+≼-gives-≾ : (y : X) → is-accessible y → (x : X) → x ≼ y → x ≾ y
+≼-gives-≾ y a x f l = ≾-refl y a (f y l)
 
 no-minimal-is-empty : is-well-founded
                      → ∀ {𝓦} (A : X → 𝓦 ̇ )
@@ -510,8 +511,8 @@ proposition valued.
 cotransitive : 𝓤 ⊔ 𝓥 ̇
 cotransitive = (x y z : X) → x < y → (x < z) + (z < y)
 
-cotransitive-≾-coarser-than-≼ : cotransitive → (x y : X) → x ≾ y → x ≼ y
-cotransitive-≾-coarser-than-≼ c x y n u l = γ (c u x y l)
+cotransitive-≾-gives-≼ : cotransitive → (x y : X) → x ≾ y → x ≼ y
+cotransitive-≾-gives-≼ c x y n u l = γ (c u x y l)
  where
   γ : (u < y) + (y < x) → u < y
   γ (inl l) = l

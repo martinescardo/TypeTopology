@@ -480,23 +480,24 @@ module _ (pt : propositional-truncations-exist)
 
   open suprema ssq
   open ordinals-injectivity
+  open import OrdinalOfOrdinals ua
 
-  brouwer-to-ordinal : B → Ordinal 𝓤₀
-  brouwer-to-ordinal Z     = 𝟘ₒ
-  brouwer-to-ordinal (S b) = brouwer-to-ordinal b +ₒ 𝟙ₒ
-  brouwer-to-ordinal (L b) = sup (λ i → brouwer-to-ordinal (b i))
+  brouwer-ordinal : B → Ordinal 𝓤₀
+  brouwer-ordinal Z     = 𝟘ₒ
+  brouwer-ordinal (S b) = brouwer-ordinal b +ₒ 𝟙ₒ
+  brouwer-ordinal (L b) = sup (λ i → brouwer-ordinal (b i))
 
-  brouwer-to-ordinal' : B → Ordinal 𝓤₀
-  brouwer-to-ordinal' Z     = 𝟙ₒ
-  brouwer-to-ordinal' (S b) = brouwer-to-ordinal' b +ₒ 𝟙ₒ
-  brouwer-to-ordinal' (L b) = sup ((λ i → brouwer-to-ordinal' (b i)) ↗ embedding-ℕ-to-ℕ∞ fe₀)
+  brouwer-compact-ordinal : B → Ordinal 𝓤₀
+  brouwer-compact-ordinal Z     = 𝟙ₒ
+  brouwer-compact-ordinal (S b) = brouwer-compact-ordinal b +ₒ 𝟙ₒ
+  brouwer-compact-ordinal (L b) = sup ((λ i → brouwer-compact-ordinal (b i)) ↗ embedding-ℕ-to-ℕ∞ fe₀)
 
-  brouwer-to-ordinal'-compact∙ : (b : B) → compact∙ ⟨ brouwer-to-ordinal' b ⟩
-  brouwer-to-ordinal'-compact∙ Z     = 𝟙-compact∙
-  brouwer-to-ordinal'-compact∙ (S b) = +-compact∙
-                                        (brouwer-to-ordinal'-compact∙ b)
+  brouwer-compact-ordinal-compact∙ : (b : B) → compact∙ ⟨ brouwer-compact-ordinal b ⟩
+  brouwer-compact-ordinal-compact∙ Z     = 𝟙-compact∙
+  brouwer-compact-ordinal-compact∙ (S b) = +-compact∙
+                                        (brouwer-compact-ordinal-compact∙ b)
                                         (𝟙-compact∙)
-  brouwer-to-ordinal'-compact∙ (L b) =
+  brouwer-compact-ordinal-compact∙ (L b) =
     surjection-compact∙ pt
      (sum-to-sup α)
      (sum-to-sup-is-surjection α)
@@ -504,12 +505,16 @@ module _ (pt : propositional-truncations-exist)
        (ℕ∞-compact∙ fe₀)
        (λ u → prop-tychonoff fe
                (ℕ-to-ℕ∞-is-embedding fe₀ u)
-               (λ (i , _) → brouwer-to-ordinal'-compact∙ (b i))))
+               (λ (i , _) → brouwer-compact-ordinal-compact∙ (b i))))
    where
     α : ℕ∞ → Ordinal 𝓤₀
-    α = (λ i → brouwer-to-ordinal' (b i)) ↗ embedding-ℕ-to-ℕ∞ fe₀
-
-
+    α = (λ i → brouwer-compact-ordinal (b i)) ↗ embedding-ℕ-to-ℕ∞ fe₀
+{-
+  brouwer-bound : (b : B) → brouwer-ordinal b ≾ brouwer-compact-ordinal b
+  brouwer-bound Z     = {!!}
+  brouwer-bound (S b) = {!!}
+  brouwer-bound (L x) = {!!}
+-}
   𝓢 : OE → Ordinal 𝓤₀
   𝓢 One       = 𝟙ₒ
   𝓢 (Add ν μ) = 𝓢 ν +ₒ 𝓢 μ
