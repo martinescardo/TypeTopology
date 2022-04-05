@@ -66,6 +66,9 @@ module PatchConstruction (X : locale 𝓤 𝓥 𝓦) (σ : is-spectral (𝒪 X) 
  _⊓_ : ⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩
  U ⊓ V = U ∧[ 𝒪 X ] V
 
+ ⋁_ : Fam 𝓦 ⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩
+ ⋁ S = ⋁[ 𝒪 X ] S
+
 \end{code}
 
 A nucleus is called perfect iff it is Scott-continuous:
@@ -431,12 +434,13 @@ indices.
  ^*-inhabited K = ∣ [] ∣
 
  ^*-upwards-directed : (K : Fam 𝓦 (nucleus (𝒪 X)))
-                     → (Ɐ is ∶ index (K ^*) , Ɐ js ∶ index (K ^*) ,
-                         Ǝ ks ∶ index (K ^*) ,
-                            (((K ^* [ is ]) ≼₁ (K ^* [ ks ]))
-                          ∧ ((K ^* [ js ]) ≼₁ (K ^* [ ks ]))) holds)
+                     → (is : index (K ^*))
+                     → (js : index (K ^*))
+                     → Σ ks ꞉ index (K ^*) ,
+                          (((K ^* [ is ]) ≼₁ (K ^* [ ks ]))
+                        ∧ ((K ^* [ js ]) ≼₁ (K ^* [ ks ])))
                        holds
- ^*-upwards-directed K is js = ∣ (is ++ js) , β , γ ∣
+ ^*-upwards-directed K is js = (is ++ js) , β , γ
   where
    open PosetReasoning (poset-of (𝒪 X))
    open PrenucleusApplicationSyntax (𝒪 X) using (_$ₚ_)
@@ -472,5 +476,103 @@ indices.
                                      (K [ i ])
                                      (^*-scott-continuous K ϑ is)
                                      (ϑ i)
+
+\end{code}
+
+\begin{code}
+
+ joins-commute : (J : Fam 𝓦 (⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩)) (S : Fam 𝓦 ⟨ 𝒪 X ⟩)
+               → ⋁ ⁅ ⋁ ⁅ α U ∣ α ε 𝔡𝔦𝔯 J ⁆ ∣ U ε S ⁆
+               ≡ ⋁ ⁅ ⋁ ⁅ α U ∣ U ε S ⁆ ∣ α ε 𝔡𝔦𝔯 J ⁆
+ joins-commute J S =
+  ⋁ ⁅ ⋁ ⁅ α U ∣ α ε 𝔡𝔦𝔯 J ⁆ ∣ U ε S ⁆                                ≡⟨ i   ⟩
+  ⋁ ⁅ (𝔡𝔦𝔯 J [ j ]) (S [ i ]) ∣ (i , j) ∶ index S × index (𝔡𝔦𝔯 J) ⁆  ≡⟨ ii  ⟩
+  ⋁ ⁅ (𝔡𝔦𝔯 J [ j ]) (S [ i ]) ∣ (j , i) ∶ index (𝔡𝔦𝔯 J) × index S ⁆  ≡⟨ iii ⟩
+  ⋁ ⁅ ⋁ ⁅ α U ∣ U ε S ⁆ ∣ α ε 𝔡𝔦𝔯 J ⁆                                ∎
+   where
+    T = ⁅ (𝔡𝔦𝔯 J [ j ]) (S [ i ]) ∣ (i , j) ∶ index S × index (𝔡𝔦𝔯 J) ⁆
+    U = ⁅ (𝔡𝔦𝔯 J [ j ]) (S [ i ]) ∣ (j , i) ∶ index (𝔡𝔦𝔯 J) × index S ⁆
+
+    † = ⋁[ 𝒪 X ]-least T (⋁ U , λ (i , j) → ⋁[ 𝒪 X ]-upper U (j , i))
+    ‡ = ⋁[ 𝒪 X ]-least U (⋁ T , λ (j , i) → ⋁[ 𝒪 X ]-upper T (i , j))
+
+    i   = (⋁[ 𝒪 X ]-iterated-join (index S) κ λ i j → (𝔡𝔦𝔯 J [ j ]) (S [ i ])) ⁻¹
+           where
+            κ : index S → 𝓦 ̇
+            κ = λ _ → index (𝔡𝔦𝔯 J)
+    ii  = ≤-is-antisymmetric (poset-of (𝒪 X)) † ‡
+    iii = ⋁[ 𝒪 X ]-iterated-join
+           (index (𝔡𝔦𝔯 J))
+           (λ _ → index S)
+           λ j i → (𝔡𝔦𝔯 J [ j ]) (S [ i ])
+
+\end{code}
+
+The definition of the join:
+
+\begin{code}
+
+ join : Fam 𝓦 (⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩) → ⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩
+ join K = λ U → ⋁ ⁅ α U ∣ α ε 𝔡𝔦𝔯 K ⁆
+
+ ⋁ₙ : Fam 𝓦 perfect-nucleus → perfect-nucleus
+ ⋁ₙ K = join K₀ , (n₁ , n₂ , n₃) , {!!}
+  where
+   open PosetReasoning (poset-of (𝒪 X))
+   open Joins (λ x y → x ≤[ poset-of (𝒪 X) ] y)
+
+   K₀ : Fam 𝓦 (⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩)
+   K₀ = ⁅ pr₁ j ∣ j ε K ⁆
+
+   ϑ : ∀[∶]-syntax (index K₀) (λ i → is-scott-continuous (𝒪 X) (𝒪 X) (K₀ [ i ])) holds
+   ϑ i = pr₂ (pr₂ (K [ i ]))
+
+   K₁ : Fam 𝓦 (nucleus (𝒪 X))
+   K₁ = {!⁅!}
+
+   n₁ : is-inflationary (𝒪 X) (join K₀) holds
+   n₁ U = ⋁[ 𝒪 X ]-upper ⁅ α U ∣ α ε 𝔡𝔦𝔯 K₀ ⁆ []
+
+   n₂ : is-idempotent (𝒪 X) (join K₀) holds
+   n₂ U =
+    join K₀ (join K₀ U)                                             ≡⟨ refl ⟩ₚ
+    ⋁ ⁅ α (⋁ ⁅ β U ∣ β ε 𝔡𝔦𝔯 K₀ ⁆) ∣ α ε 𝔡𝔦𝔯 K₀ ⁆                   ≡⟨ i    ⟩ₚ
+    ⋁ ⁅ ⋁ ⁅ α (β U) ∣ β ε 𝔡𝔦𝔯 K₀ ⁆ ∣ α ε 𝔡𝔦𝔯 K₀ ⁆                   ≡⟨ ii   ⟩ₚ
+    ⋁ ⁅ (𝔡𝔦𝔯 K₀ [ js ]) ((𝔡𝔦𝔯 K₀ [ is ]) U) ∣ (js , is) ∶ (_ × _) ⁆ ≤⟨ iii  ⟩
+    join K₀ U                                                       ■
+     where
+      S   = ⁅ (𝔡𝔦𝔯 K₀ [ j ]) ((𝔡𝔦𝔯 K₀ [ i ]) U) ∣ (j , i) ∶ (_ × _) ⁆
+
+      † : ((join K₀ U) is-an-upper-bound-of S) holds
+      † (js , is) =
+       transport
+        (λ - →  (- ≤[ poset-of (𝒪 X) ] (join K₀ U)) holds)
+        (^**-functorial K₁ is js U)
+        (⋁[ 𝒪 X ]-upper _ (is ++ js))
+
+      δ : is-directed (poset-of (𝒪 X)) ⁅ pr₁ α U ∣ α ε K₁ ^* ⁆ holds
+      δ = (^*-inhabited K₁) , γ
+           where
+            γ : _
+            γ is js = ∣ ks , υ₁ , υ₂ ∣
+             where
+              ks = pr₁ (^*-upwards-directed K₁ is js)
+              υ₁ = pr₁ (pr₂ (^*-upwards-directed K₁ is js)) U
+              υ₂ = pr₂ (pr₂ (^*-upwards-directed K₁ is js)) U
+
+      i   = ap
+             (λ - → ⋁ (index (𝔡𝔦𝔯 K₀) , -))
+             (dfunext fe λ is →
+               scott-continuous-join-eq (𝒪 X) (𝒪 X)
+                (𝔡𝔦𝔯 K₀ [ is ])
+                (^*-scott-continuous K₀ ϑ is) ⁅ β U ∣ β ε 𝔡𝔦𝔯 K₀ ⁆ δ)
+      ii  = ⋁[ 𝒪 X ]-iterated-join
+             (index (𝔡𝔦𝔯 K₀))
+             (λ _ → index (K₁ ^*))
+             (λ j i → (K₁ ^* [ j ]) .pr₁ ((K₁ ^* [ i ]) .pr₁ U)) ⁻¹
+      iii = ⋁[ 𝒪 X ]-least S (join K₀ U , †)
+
+   n₃ : {!!}
+   n₃ = {!!}
 
 \end{code}
