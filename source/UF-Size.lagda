@@ -847,7 +847,7 @@ X is-locally 𝓥 small = (x y : X) → (x ≡ y) is 𝓥 small
 module Replacement (pt : propositional-truncations-exist) where
 
  open import UF-ImageAndSurjection
- open ImageAndSurjection pt public
+ open ImageAndSurjection pt
 
  Replacement : 𝓤ω
  Replacement = {𝓤 𝓦 𝓥 : Universe} {X : 𝓤 ̇  } {Y : 𝓦 ̇  } (f : X → Y)

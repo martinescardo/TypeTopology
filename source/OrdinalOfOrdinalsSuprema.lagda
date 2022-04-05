@@ -1,5 +1,7 @@
 Tom de Jong, March 2022
 
+TODO: Update
+
 We show that the ordinal of ordinals has small suprema. More precisely, given a
 univalent universe 𝓤, the ordinal (Ordinal 𝓤) of ordinals in 𝓤 has suprema for
 every family I → Ordinal 𝓤 with I : 𝓤.
@@ -28,15 +30,13 @@ notably doesn't use set quotients.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import UF-PropTrunc
+
+open import UF-Quotient-Axiomatically
 open import UF-Univalence
 
 module OrdinalOfOrdinalsSuprema
-       (pt : propositional-truncations-exist)
-       (ua : Univalence)
+        (ua : Univalence)
        where
-
-open PropositionalTruncation pt
 
 open import SpartanMLTT
 
@@ -44,6 +44,7 @@ open import UF-Base hiding (_≈_)
 open import UF-Equiv
 open import UF-FunExt
 open import UF-UA-FunExt
+open import UF-PropTrunc
 open import UF-Size
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
@@ -51,7 +52,6 @@ open import UF-Subsingletons-FunExt
 open import OrdinalNotions hiding (is-prop-valued)
 open import OrdinalOfOrdinals ua
 open import OrdinalsType
-
 
 private
  fe : FunExt
@@ -66,7 +66,6 @@ private
  pe' : Prop-Ext
  pe' {𝓤} = pe 𝓤
 
-open import UF-Quotient pt fe' pe'
 open import OrdinalsWellOrderTransport fe
 
 \end{code}
@@ -80,14 +79,14 @@ statement is a proposition.)
 
 \begin{code}
 
-Ordinal-Of-Ordinals-Has-Small-Suprema : {𝓤 : Universe} → 𝓤 ⁺ ̇
-Ordinal-Of-Ordinals-Has-Small-Suprema {𝓤} =
+Ordinal-Of-Ordinals-Has-Small-Suprema : (𝓤 : Universe) → 𝓤 ⁺ ̇
+Ordinal-Of-Ordinals-Has-Small-Suprema 𝓤 =
    (I : 𝓤 ̇  ) (α : I → Ordinal 𝓤)
  → Σ β ꞉ Ordinal 𝓤 , ((i : I) → α i ⊴ β)
                    × ((γ : Ordinal 𝓤) → ((i : I) → α i ⊴ γ) → β ⊴ γ)
 
 Ordinal-Of-Ordinals-Has-Small-Suprema-is-prop :
- is-prop (Ordinal-Of-Ordinals-Has-Small-Suprema {𝓤})
+ is-prop (Ordinal-Of-Ordinals-Has-Small-Suprema 𝓤)
 Ordinal-Of-Ordinals-Has-Small-Suprema-is-prop =
  Π₂-is-prop fe' h
   where
@@ -101,10 +100,26 @@ Ordinal-Of-Ordinals-Has-Small-Suprema-is-prop =
                          (Π₂-is-prop fe' (λ γ _ → ⊴-is-prop-valued β     γ)))
                  (⊴-antisym β β' (β-is-lb β' β'-is-ub) (β'-is-lb β β-is-ub))
 
+\end{code}
+
+TODO
+
+\begin{code}
+
 module construction-using-quotient
+        (sq : set-quotients-exist)
         {I : 𝓤 ̇  }
         (α : I → Ordinal 𝓤)
        where
+
+ open set-quotients-exist sq
+
+ private
+  pt : propositional-truncations-exist
+  pt = propositional-truncations-from-axiomatic-set-quotients fe'
+
+ open extending-relations-to-quotient fe' pe'
+ open PropositionalTruncation pt
 
 \end{code}
 
@@ -119,20 +134,20 @@ unquotiented type Σ i ꞉ I , ⟨ α i ⟩.
   Σα : 𝓤 ̇
   Σα = Σ i ꞉ I , ⟨ α i ⟩
 
-  _≈_ : Σα → Σα → 𝓤 ̇
-  (i , x) ≈ (j , y) = (α i ↓ x) ≃ₒ (α j ↓ y)
+  _≈_ : Σα → Σα → 𝓤 ⁺ ̇
+  (i , x) ≈ (j , y) = (α i ↓ x) ≡ (α j ↓ y)
 
   ≈-is-symmetric : symmetric _≈_
-  ≈-is-symmetric (i , x) (j , y) = ≃ₒ-sym (α i ↓ x) (α j ↓ y)
+  ≈-is-symmetric (i , x) (j , y) = _⁻¹
 
   ≈-is-transitive : transitive _≈_
-  ≈-is-transitive (i , x) (j , y) (k , z) = ≃ₒ-trans (α i ↓ x) (α j ↓ y) (α k ↓ z)
+  ≈-is-transitive (i , x) (j , y) (k , z) = _∙_
 
   ≈-is-reflexive : reflexive _≈_
-  ≈-is-reflexive (i , x) = ≃ₒ-refl (α i ↓ x)
+  ≈-is-reflexive (i , x) = refl
 
   ≈-is-prop-valued : is-prop-valued _≈_
-  ≈-is-prop-valued (i , x) (j , y) = ≃ₒ-is-prop-valued (α i ↓ x) (α j ↓ y)
+  ≈-is-prop-valued (i , x) (j , y) = the-type-of-ordinals-is-a-set
 
   _≺_ : Σα → Σα → 𝓤 ⁺ ̇
   (i , x) ≺ (j , y) = (α i ↓ x) ⊲ (α j ↓ y)
@@ -145,10 +160,10 @@ unquotiented type Σ i ꞉ I , ⟨ α i ⟩.
    ⊲-is-transitive (α i ↓ x) (α j ↓ y) (α k ↓ z)
 
   ≺-is-well-founded : is-well-founded _≺_
-  ≺-is-well-founded = transfinite-induction-converse _≺_ goal
+  ≺-is-well-founded = transfinite-induction-converse _≺_ wf
    where
-    goal : Well-founded _≺_
-    goal P IH (i , x) = lemma (α i ↓ x) i x refl
+    wf : Well-founded _≺_
+    wf P IH (i , x) = lemma (α i ↓ x) i x refl
      where
       P̃ : Ordinal 𝓤 → 𝓤 ⁺ ̇
       P̃ β = (i : I) (x : ⟨ α i ⟩) → β ≡ (α i ↓ x) → P (i , x)
@@ -171,40 +186,39 @@ The following lemma makes it clear why we eventually pass to the quotient.
                            → ((r : Σα) → r ≺ p → r ≺ q)
                            → ((r : Σα) → r ≺ q → r ≺ p)
                            → p ≈ q
-  ≺-is-extensional-up-to-≈ (i , x) (j , y) hyp₁ hyp₂ =
-   ⌜ UAₒ-≃ (α i ↓ x) (α j ↓ y) ⌝ goal
-    where
-     goal : (α i ↓ x) ≡ (α j ↓ y)
-     goal = ⊲-is-extensional (α i ↓ x) (α j ↓ y) ⦅1⦆ ⦅2⦆
-      where
-       ⦅1⦆ : (β : Ordinal 𝓤) → β ⊲ (α i ↓ x) → β ⊲ (α j ↓ y)
-       ⦅1⦆ β (p , refl) = goal₁
-        where
-         goal₁ : ((α i ↓ x) ↓ p) ⊲ (α j ↓ y)
-         goal₁ = back-transport (_⊲ (α j ↓ y)) claim₂ claim₁
-          where
-           x' : ⟨ α i ⟩
-           x' = pr₁ p
-           l : x' ≺⟨ α i ⟩ x
-           l = pr₂ p
-           claim₁ : (α i ↓ x') ⊲ (α j ↓ y)
-           claim₁ = hyp₁ (i , x') (↓-preserves-order (α i) x' x l)
-           claim₂ : ((α i ↓ x) ↓ p) ≡ (α i ↓ x')
-           claim₂ = iterated-↓ (α i) x x' l
-       ⦅2⦆ : (β : Ordinal 𝓤) → β ⊲ (α j ↓ y) → β ⊲ (α i ↓ x)
-       ⦅2⦆ β (p , refl) = goal₂
-        where
-         goal₂ : ((α j ↓ y) ↓ p) ⊲ (α i ↓ x)
-         goal₂ = back-transport (_⊲ (α i ↓ x)) claim₂ claim₁
-          where
-           y' : ⟨ α j ⟩
-           y' = pr₁ p
-           l : y' ≺⟨ α j ⟩ y
-           l = pr₂ p
-           claim₁ : (α j ↓ y') ⊲ (α i ↓ x)
-           claim₁ = hyp₂ (j , y') (↓-preserves-order (α j) y' y l)
-           claim₂ : ((α j ↓ y) ↓ p) ≡ (α j ↓ y')
-           claim₂ = iterated-↓ (α j) y y' l
+  ≺-is-extensional-up-to-≈ (i , x) (j , y) hyp₁ hyp₂ = e
+   where
+    e : (α i ↓ x) ≡ (α j ↓ y)
+    e = ⊲-is-extensional (α i ↓ x) (α j ↓ y) ⦅1⦆ ⦅2⦆
+     where
+      ⦅1⦆ : (β : Ordinal 𝓤) → β ⊲ (α i ↓ x) → β ⊲ (α j ↓ y)
+      ⦅1⦆ β (p , refl) = u
+       where
+        u : ((α i ↓ x) ↓ p) ⊲ (α j ↓ y)
+        u = back-transport (_⊲ (α j ↓ y)) claim₂ claim₁
+         where
+          x' : ⟨ α i ⟩
+          x' = pr₁ p
+          l : x' ≺⟨ α i ⟩ x
+          l = pr₂ p
+          claim₁ : (α i ↓ x') ⊲ (α j ↓ y)
+          claim₁ = hyp₁ (i , x') (↓-preserves-order (α i) x' x l)
+          claim₂ : ((α i ↓ x) ↓ p) ≡ (α i ↓ x')
+          claim₂ = iterated-↓ (α i) x x' l
+      ⦅2⦆ : (β : Ordinal 𝓤) → β ⊲ (α j ↓ y) → β ⊲ (α i ↓ x)
+      ⦅2⦆ β (p , refl) = v
+       where
+        v : ((α j ↓ y) ↓ p) ⊲ (α i ↓ x)
+        v = back-transport (_⊲ (α i ↓ x)) claim₂ claim₁
+         where
+          y' : ⟨ α j ⟩
+          y' = pr₁ p
+          l : y' ≺⟨ α j ⟩ y
+          l = pr₂ p
+          claim₁ : (α j ↓ y') ⊲ (α i ↓ x)
+          claim₁ = hyp₂ (j , y') (↓-preserves-order (α j) y' y l)
+          claim₂ : ((α j ↓ y) ↓ p) ≡ (α j ↓ y')
+          claim₂ = iterated-↓ (α j) y y' l
 
 \end{code}
 
@@ -224,19 +238,16 @@ prepare to prove that it will be the supremum of α.
                                → (j , y) ≺ ι i x
                                → Σ x' ꞉ ⟨ α i ⟩ , (x' ≺⟨ α i ⟩ x)
                                                 × (ι i x' ≈ (j , y))
-  ι-is-initial-segment-up-to-≈ i x (j , y) (p , e) = (x' , l , goal)
+  ι-is-initial-segment-up-to-≈ i x (j , y) (p , e) = (x' , l , (eq ⁻¹))
    where
     x' : ⟨ α i ⟩
     x' = pr₁ p
     l : x' ≺⟨ α i ⟩ x
     l = pr₂ p
-    goal : (α i ↓ x') ≃ₒ (α j ↓ y)
-    goal = ⌜ UAₒ-≃ (α i ↓ x') (α j ↓ y) ⌝ (subgoal ⁻¹)
-     where
-      subgoal : (α j ↓ y) ≡ (α i ↓ x')
-      subgoal = (α j ↓ y)       ≡⟨ e ⟩
-                ((α i ↓ x) ↓ p) ≡⟨ iterated-↓ (α i) x x' l ⟩
-                (α i ↓ x')      ∎
+    eq : (α j ↓ y) ≡ (α i ↓ x')
+    eq = (α j ↓ y)       ≡⟨ e ⟩
+         ((α i ↓ x) ↓ p) ≡⟨ iterated-↓ (α i) x x' l ⟩
+         (α i ↓ x')      ∎
 
 
   module lower-bound-of-upper-bounds-proof
@@ -258,28 +269,24 @@ prepare to prove that it will be the supremum of α.
    β-is-upper-bound-≼ i = ⊴-gives-≼ (α i) β (β-is-upper-bound i)
 
    f̃-respects-≈ : {p q : Σα} → p ≈ q → f̃ p ≡ f̃ q
-   f̃-respects-≈ {(i , x)} {(j , y)} e = ↓-lc β (f̃ (i , x)) (f̃ (j , y)) goal
+   f̃-respects-≈ {(i , x)} {(j , y)} e = ↓-lc β (f̃ (i , x)) (f̃ (j , y)) eq
     where
-     goal = (β ↓ f̃ (i , x)) ≡⟨ ⦅1⦆ ⟩
-            (α i ↓ x)       ≡⟨ ⦅2⦆ ⟩
-            (α j ↓ y)       ≡⟨ ⦅3⦆ ⟩
-            (β ↓ f̃ (j , y)) ∎
-      where
-       ⦅1⦆ = (f-key-property i x) ⁻¹
-       ⦅2⦆ = ⌜ UAₒ-≃ (α i ↓ x) (α j ↓ y) ⌝⁻¹ e
-       ⦅3⦆ = f-key-property j y
+     eq = (β ↓ f̃ (i , x)) ≡⟨ (f-key-property i x) ⁻¹ ⟩
+          (α i ↓ x)       ≡⟨ e ⟩
+          (α j ↓ y)       ≡⟨ f-key-property j y ⟩
+          (β ↓ f̃ (j , y)) ∎
 
    f̃-is-order-preserving : (p q : Σα) → p ≺ q → f̃ p ≺⟨ β ⟩ f̃ q
    f̃-is-order-preserving (i , x) (j , y) l =
-    ↓-reflects-order β (f̃ (i , x)) (f̃ (j , y)) goal
+    ↓-reflects-order β (f̃ (i , x)) (f̃ (j , y)) k
      where
-      goal : (β ↓ f̃ (i , x)) ⊲ (β ↓ f̃ (j , y))
-      goal = transport₂ _⊲_ (f-key-property i x) (f-key-property j y) l
+      k : (β ↓ f̃ (i , x)) ⊲ (β ↓ f̃ (j , y))
+      k = transport₂ _⊲_ (f-key-property i x) (f-key-property j y) l
 
    f̃-is-initial-segment : (p : Σα) (b : ⟨ β ⟩)
                         → b ≺⟨ β ⟩ f̃ p
                         → Σ q ꞉ Σα , (q ≺ p) × (f̃ q ≡ b)
-   f̃-is-initial-segment (i , x) b l = (i , x') , goal₁ , goal₂
+   f̃-is-initial-segment (i , x) b l = (i , x') , u , v
     where
      lemma : Σ x' ꞉ ⟨ α i ⟩ , (x' ≺⟨ α i ⟩ x) × (f i x' ≡ b)
      lemma = simulations-are-initial-segments (α i) β
@@ -290,10 +297,10 @@ prepare to prove that it will be the supremum of α.
      x'-below-x : x' ≺⟨ α i ⟩ x
      x'-below-x = pr₁ (pr₂ lemma)
 
-     goal₁ : (α i ↓ x') ⊲ (α i ↓ x)
-     goal₁ = ↓-preserves-order (α i) x' x x'-below-x
-     goal₂ : f̃ (i , x') ≡ b
-     goal₂ = pr₂ (pr₂ lemma)
+     u : (α i ↓ x') ⊲ (α i ↓ x)
+     u = ↓-preserves-order (α i) x' x x'-below-x
+     v : f̃ (i , x') ≡ b
+     v = pr₂ (pr₂ lemma)
 
 \end{code}
 
@@ -302,11 +309,11 @@ induced order on Σα.
 
 \begin{code}
 
- ≈R : EqRel Σα
- ≈R = _≈_ , ≈-is-prop-valued , ≈-is-reflexive , ≈-is-symmetric , ≈-is-transitive
+ ≋ : EqRel Σα
+ ≋ = _≈_ , ≈-is-prop-valued , ≈-is-reflexive , ≈-is-symmetric , ≈-is-transitive
 
  α/ : 𝓤 ⁺ ̇
- α/ = Σα / ≈R
+ α/ = Σα / ≋
 
  private
   _≺[Ω]_ : Σα → Σα → Ω (𝓤 ⁺)
@@ -314,37 +321,26 @@ induced order on Σα.
 
   ≺-congruence : {p q p' q' : Σα} → p ≈ p' → q ≈ q'
                → (p ≺[Ω] q) ≡ (p' ≺[Ω] q')
-  ≺-congruence {(i , x)} {(j , y)} {(i' , x')} {(j' , y')} u v =
+  ≺-congruence {(i , x)} {(j , y)} {(i' , x')} {(j' , y')} e₁ e₂ =
    Ω-extensionality fe' pe' ⦅1⦆ ⦅2⦆
     where
      ⦅1⦆ : (α i ↓ x) ⊲ (α j ↓ y) → (α i' ↓ x') ⊲ (α j' ↓ y')
      ⦅1⦆ l = transport₂ _⊲_ e₁ e₂ l
-      where
-       e₁ : (α i ↓ x) ≡ (α i' ↓ x')
-       e₁ = ⌜ UAₒ-≃ (α i ↓ x) (α i' ↓ x') ⌝⁻¹ u
-       e₂ : (α j ↓ y) ≡ (α j' ↓ y')
-       e₂ = ⌜ UAₒ-≃ (α j ↓ y) (α j' ↓ y') ⌝⁻¹ v
      ⦅2⦆ : (α i' ↓ x') ⊲ (α j' ↓ y') → (α i ↓ x) ⊲ (α j ↓ y)
-     ⦅2⦆ l = transport₂ _⊲_ e₁ e₂ l
-      where
-       e₁ : (α i' ↓ x') ≡ (α i ↓ x)
-       e₁ = ⌜ UAₒ-≃ (α i' ↓ x') (α i ↓ x) ⌝⁻¹
-             (≈-is-symmetric (i , x) (i' , x') u)
-       e₂ : (α j' ↓ y') ≡ (α j ↓ y)
-       e₂ = ⌜ UAₒ-≃ (α j' ↓ y') (α j ↓ y) ⌝⁻¹
-             (≈-is-symmetric (j , y) (j' , y') v)
+     ⦅2⦆ l = transport₂ _⊲_ (e₁ ⁻¹) (e₂ ⁻¹) l
 
   _≺/[Ω]_ : α/ → α/ → Ω (𝓤 ⁺)
-  _≺/[Ω]_ = extension-rel₂ ≈R (λ x y → x ≺ y , ≺-is-prop-valued x y) ≺-congruence
+  _≺/[Ω]_ = extension-rel₂ ≋ (λ x y → x ≺ y , ≺-is-prop-valued x y)
+                                     ≺-congruence
 
   [_] : Σα → α/
-  [_] = η/ ≈R
+  [_] = η/ ≋
 
  _≺/_ : α/ → α/ → 𝓤 ⁺ ̇
  x ≺/ y = (x ≺/[Ω] y) holds
 
  ≺/-≡-≺ : {p q : Σα} → [ p ] ≺/ [ q ] ≡ p ≺ q
- ≺/-≡-≺ {p} {q} = ap pr₁ (extension-rel-triangle₂ ≈R _≺[Ω]_ ≺-congruence p q)
+ ≺/-≡-≺ {p} {q} = ap pr₁ (extension-rel-triangle₂ ≋ _≺[Ω]_ ≺-congruence p q)
 
  ≺/-to-≺ : {p q : Σα} → [ p ] ≺/ [ q ] → p ≺ q
  ≺/-to-≺ = Idtofun ≺/-≡-≺
@@ -356,7 +352,7 @@ induced order on Σα.
  ≺/-is-prop-valued x y = holds-is-prop (x ≺/[Ω] y)
 
  ≺/-is-transitive : transitive _≺/_
- ≺/-is-transitive = /-induction₃ ≈R ρ γ
+ ≺/-is-transitive = /-induction₃ fe' ≋ ρ γ
   where
    ρ : (x y z : α/) → is-prop (x ≺/ y → y ≺/ z → x ≺/ z)
    ρ x y z = Π₂-is-prop fe' (λ _ _ → ≺/-is-prop-valued x z)
@@ -364,15 +360,15 @@ induced order on Σα.
    γ p q r k l = ≺-to-≺/ (≺-is-transitive p q r (≺/-to-≺ k) (≺/-to-≺ l))
 
  ≺/-is-extensional : is-extensional _≺/_
- ≺/-is-extensional = /-induction₂ ≈R
-                      (λ x y → Π₂-is-prop fe' (λ _ _ → quotient-is-set ≈R))
+ ≺/-is-extensional = /-induction₂ fe' ≋
+                      (λ x y → Π₂-is-prop fe' (λ _ _ → /-is-set ≋))
                       γ
   where
    γ : (p q : Σα)
      → ((z : α/) → z ≺/ [ p ] → z ≺/ [ q ])
      → ((z : α/) → z ≺/ [ q ] → z ≺/ [ p ])
      → [ p ] ≡ [ q ]
-   γ p q u v = η/-identifies-related-points ≈R e
+   γ p q u v = η/-identifies-related-points ≋ e
     where
      e : p ≈ q
      e = ≺-is-extensional-up-to-≈ p q u' v'
@@ -396,10 +392,10 @@ induced order on Σα.
      ϕ p IH = next [ p ] IH'
       where
        IH' : (y : α/) → y ≺/ [ p ] → is-accessible _≺/_ y
-       IH' = /-induction' ≈R (λ q → Π-is-prop fe' (λ _ → a q))
+       IH' = /-induction ≋ (λ q → Π-is-prop fe' (λ _ → a q))
               (λ q l → IH q (≺/-to-≺ l))
    γ : (x : α/) → is-accessible _≺/_ x
-   γ = /-induction' ≈R a lemma
+   γ = /-induction ≋ a lemma
 
  ≺/-is-well-order : is-well-order _≺/_
  ≺/-is-well-order =
@@ -424,11 +420,11 @@ Next, we show that the quotient α/ is the least upper bound of α.
      order-pres : is-order-preserving (α i) α/-Ord (λ x → [ i , x ])
      order-pres x y l = ≺-to-≺/ {i , x} {i , y} (ι-is-order-preserving i x y l)
      init-seg : is-initial-segment' pt (α i) α/-Ord (λ x → [ i , x ])
-     init-seg x = /-induction' ≈R (λ y → Π-is-prop fe' λ _ → ∃-is-prop) claim
+     init-seg x = /-induction ≋ (λ y → Π-is-prop fe' λ _ → ∃-is-prop) claim
       where
        claim : (p : Σα) → [ p ] ≺/ [ i , x ]
              → ∃ y ꞉ ⟨ α i ⟩ , (y ≺⟨ α i ⟩ x) × ([ i , y ] ≡ [ p ])
-       claim p l = ∣ y , k , η/-identifies-related-points ≈R e ∣
+       claim p l = ∣ y , k , η/-identifies-related-points ≋ e ∣
         where
          abstract
           lem : Σ y ꞉ ⟨ α i ⟩ , (y ≺⟨ α i ⟩ x) × ((i , y) ≈ p)
@@ -447,13 +443,13 @@ Next, we show that the quotient α/ is the least upper bound of α.
   where
    open lower-bound-of-upper-bounds-proof β β-is-ub
    f/ : α/ → ⟨ β ⟩
-   f/ = mediating-map/ ≈R (underlying-type-is-set fe β) f̃ f̃-respects-≈
+   f/ = mediating-map/ ≋ (underlying-type-is-set fe β) f̃ f̃-respects-≈
    f/-≡-f̃ : {p : Σα} → f/ [ p ] ≡ f̃ p
-   f/-≡-f̃ {p} = universality-triangle/ ≈R (underlying-type-is-set fe β)
+   f/-≡-f̃ {p} = universality-triangle/ ≋ (underlying-type-is-set fe β)
                  f̃ f̃-respects-≈ p
    f/-is-order-preserving : is-order-preserving α/-Ord β f/
    f/-is-order-preserving =
-    /-induction₂ ≈R prp ρ
+    /-induction₂ fe' ≋ prp ρ
      where
       prp : (x y : α/) → is-prop (x ≺/ y → f/ x ≺⟨ β ⟩ f/ y)
       prp x y = Π-is-prop fe' (λ _ → Prop-valuedness β (f/ x) (f/ y))
@@ -468,7 +464,7 @@ Next, we show that the quotient α/ is the least upper bound of α.
      σ = init-seg , f/-is-order-preserving
       where
        init-seg : is-initial-segment' pt α/-Ord β f/
-       init-seg = /-induction' ≈R prp ρ
+       init-seg = /-induction ≋ prp ρ
         where
          prp : (x : α/)
              → is-prop ((y : ⟨ β ⟩) → y ≺⟨ β ⟩ f/ x
@@ -512,10 +508,11 @@ equivalent to one with values in 𝓤.
 
   ≺/-has-small-values : (x y : α/) → is-small (x ≺/ y)
   ≺/-has-small-values =
-   /-induction₂ ≈R (λ x y → being-small-is-prop ua (x ≺/ y) 𝓤)
-                   (λ p q → p ≺⁻ q , (p ≺⁻ q         ≃⟨ ≃-sym (≺-≃-≺⁻ p q)     ⟩
-                                      p ≺ q          ≃⟨ idtoeq _ _ (≺/-≡-≺ ⁻¹) ⟩
-                                      [ p ] ≺/ [ q ] ■))
+   /-induction₂ fe' ≋
+    (λ x y → being-small-is-prop ua (x ≺/ y) 𝓤)
+    (λ p q → p ≺⁻ q , (p ≺⁻ q         ≃⟨ ≃-sym (≺-≃-≺⁻ p q)     ⟩
+                       p ≺ q          ≃⟨ idtoeq _ _ (≺/-≡-≺ ⁻¹) ⟩
+                       [ p ] ≺/ [ q ] ■))
 
   _≺/⁻_ : α/ → α/ → 𝓤 ̇
   x ≺/⁻ y = pr₁ (≺/-has-small-values x y)
@@ -525,7 +522,7 @@ equivalent to one with values in 𝓤.
 
 \end{code}
 
-Next, we resize α/ using:
+Next, we resize α/ using: TODO: Update
 (1) the assumption that set quotients are small; i.e. for every type Y : 𝓤 and
     equivalence relation ∼ : Y → Y → 𝓤, the set quotient of Y by ∼ is equivalent
     to a type in 𝓤.
@@ -534,38 +531,55 @@ Next, we resize α/ using:
 
 \begin{code}
 
- module _ (small-set-quotients : Small-Set-Quotients 𝓤) where
+ ≋⁻ : EqRel Σα
+ ≋⁻ = _≈⁻_ , ≈⁻p , ≈⁻r , ≈⁻s , ≈⁻t
+  where
+   _≈⁻_ : Σα → Σα → 𝓤 ̇
+   (i , x) ≈⁻ (j , y) = (α i ↓ x) ≃ₒ (α j ↓ y)
+   ≈⁻s : symmetric _≈⁻_
+   ≈⁻s (i , x) (j , y) = ≃ₒ-sym (α i ↓ x) (α j ↓ y)
+   ≈⁻t : transitive _≈⁻_
+   ≈⁻t (i , x) (j , y) (k , z) = ≃ₒ-trans (α i ↓ x) (α j ↓ y) (α k ↓ z)
+   ≈⁻r : reflexive _≈⁻_
+   ≈⁻r (i , x) = ≃ₒ-refl (α i ↓ x)
+   ≈⁻p : is-prop-valued _≈⁻_
+   ≈⁻p (i , x) (j , y) = ≃ₒ-is-prop-valued (α i ↓ x) (α j ↓ y)
 
-  private
-   α/⁻ : 𝓤 ̇
-   α/⁻ = pr₁ (small-set-quotients ≈R)
+ ≋-≃-≋⁻ : {p q : Σα} → p ≈[ ≋ ] q ⇔ p ≈[ ≋⁻ ] q
+ ≋-≃-≋⁻ {(i , x)} {(j , y)} = (idtoeqₒ (α i ↓ x) (α j ↓ y))
+                            , (eqtoidₒ (α i ↓ x) (α j ↓ y))
 
-   φ : α/⁻ ≃ α/
-   φ = pr₂ (small-set-quotients ≈R)
+ private
+  α/⁻ : 𝓤 ̇
+  α/⁻ = Σα / ≋⁻
 
-   resize-ordinal : Σ s ꞉ OrdinalStructure α/⁻ , (α/⁻ , s) ≃ₒ α/-Ord
-   resize-ordinal = transfer-structure α/⁻ α/-Ord φ (_≺/⁻_ , (λ x y → ≺/-≃-≺/⁻))
+  φ : α/ ≃ α/⁻
+  φ = quotients-equivalent Σα ≋ ≋⁻ ≋-≃-≋⁻
 
-  α/⁻-Ord : Ordinal 𝓤
-  α/⁻-Ord = α/⁻ , pr₁ resize-ordinal
+  resize-ordinal : Σ s ꞉ OrdinalStructure α/⁻ , (α/⁻ , s) ≃ₒ α/-Ord
+  resize-ordinal = transfer-structure α/⁻ α/-Ord (≃-sym φ)
+                    (_≺/⁻_ , (λ x y → ≺/-≃-≺/⁻))
 
-  α/⁻-≃ₒ-α/ : α/⁻-Ord ≃ₒ α/-Ord
-  α/⁻-≃ₒ-α/ = pr₂ resize-ordinal
+ α/⁻-Ord : Ordinal 𝓤
+ α/⁻-Ord = α/⁻ , pr₁ resize-ordinal
 
-  α/-≃ₒ-α/⁻ : α/-Ord ≃ₒ α/⁻-Ord
-  α/-≃ₒ-α/⁻ = ≃ₒ-sym α/⁻-Ord α/-Ord α/⁻-≃ₒ-α/
+ α/⁻-≃ₒ-α/ : α/⁻-Ord ≃ₒ α/-Ord
+ α/⁻-≃ₒ-α/ = pr₂ resize-ordinal
 
-  α/⁻-is-upper-bound : (i : I) → α i ⊴ α/⁻-Ord
-  α/⁻-is-upper-bound i = ⊴-trans (α i) α/-Ord α/⁻-Ord
-                          (α/-is-upper-bound i)
-                          (≃ₒ-to-⊴ α/-Ord α/⁻-Ord α/-≃ₒ-α/⁻)
+ α/-≃ₒ-α/⁻ : α/-Ord ≃ₒ α/⁻-Ord
+ α/-≃ₒ-α/⁻ = ≃ₒ-sym α/⁻-Ord α/-Ord α/⁻-≃ₒ-α/
 
-  α/⁻-is-lower-bound-of-upper-bounds : (β : Ordinal 𝓤)
-                                     → ((i : I) → α i ⊴ β)
-                                     → α/⁻-Ord ⊴ β
-  α/⁻-is-lower-bound-of-upper-bounds β β-is-ub =
-   ⊴-trans α/⁻-Ord α/-Ord β (≃ₒ-to-⊴ α/⁻-Ord α/-Ord α/⁻-≃ₒ-α/)
-                            (α/-is-lower-bound-of-upper-bounds β β-is-ub)
+ α/⁻-is-upper-bound : (i : I) → α i ⊴ α/⁻-Ord
+ α/⁻-is-upper-bound i = ⊴-trans (α i) α/-Ord α/⁻-Ord
+                         (α/-is-upper-bound i)
+                         (≃ₒ-to-⊴ α/-Ord α/⁻-Ord α/-≃ₒ-α/⁻)
+
+ α/⁻-is-lower-bound-of-upper-bounds : (β : Ordinal 𝓤)
+                                    → ((i : I) → α i ⊴ β)
+                                    → α/⁻-Ord ⊴ β
+ α/⁻-is-lower-bound-of-upper-bounds β β-is-ub =
+  ⊴-trans α/⁻-Ord α/-Ord β (≃ₒ-to-⊴ α/⁻-Ord α/-Ord α/⁻-≃ₒ-α/)
+                           (α/-is-lower-bound-of-upper-bounds β β-is-ub)
 
 \end{code}
 
@@ -574,13 +588,12 @@ quotients).
 
 \begin{code}
 
-ordinal-of-ordinals-has-small-suprema : Small-Set-Quotients 𝓤
-                                      → Ordinal-Of-Ordinals-Has-Small-Suprema
-ordinal-of-ordinals-has-small-suprema ssq I α =
- (α/⁻-Ord ssq , α/⁻-is-upper-bound ssq
-              , α/⁻-is-lower-bound-of-upper-bounds ssq)
+ordinal-of-ordinals-has-small-suprema :
+ set-quotients-exist → ∀ {𝓤} → Ordinal-Of-Ordinals-Has-Small-Suprema 𝓤
+ordinal-of-ordinals-has-small-suprema sq I α =
+ (α/⁻-Ord , α/⁻-is-upper-bound , α/⁻-is-lower-bound-of-upper-bounds)
   where
-   open construction-using-quotient α
+   open construction-using-quotient sq α
 
 \end{code}
 
@@ -595,12 +608,15 @@ sets.
 
 open import UF-EquivalenceExamples
 open import UF-ImageAndSurjection
-open ImageAndSurjection pt
 
 module construction-using-image
+        (pt : propositional-truncations-exist)
         {I : 𝓤 ̇  }
         (α : I → Ordinal 𝓤)
        where
+
+ open PropositionalTruncation pt
+ open ImageAndSurjection pt
 
  σ : (Σ i ꞉ I , ⟨ α i ⟩) → Ordinal 𝓤
  σ (i , x) = α i ↓ x
@@ -896,15 +912,14 @@ Next, we resize α⁺ using:
 
 \begin{code}
 
- open SmallImages pt
+ open Replacement pt
 
- module _ (small-set-images : Small-Set-Images 𝓤) where
+ module _ (replacement : Replacement) where
 
   private
    small-image : is-small (image σ)
-   small-image = small-set-images σ the-type-of-ordinals-is-a-set
-                                  (λ β γ → (β ≃ₒ γ) ,
-                                           (≃-sym (UAₒ-≃ β γ)))
+   small-image = replacement σ (λ β γ → β ≃ₒ γ , ≃-sym (UAₒ-≃ β γ))
+                               the-type-of-ordinals-is-a-set
    α⁻ : 𝓤 ̇
    α⁻ = pr₁ small-image
 
@@ -939,19 +954,22 @@ Next, we resize α⁺ using:
 
 \end{code}
 
+TODO: Search for "small set images"
 Finally, the desired result follows (under the assumption of small set images).
 
 \begin{code}
 
-open SmallImages pt
+module _ (pt : propositional-truncations-exist) where
 
-ordinal-of-ordinals-has-small-suprema' : Small-Set-Images 𝓤
-                                       → Ordinal-Of-Ordinals-Has-Small-Suprema
-ordinal-of-ordinals-has-small-suprema' {𝓤} ssi I α =
- (α⁻-Ord ssi , α⁻-is-upper-bound ssi
-             , α⁻-is-lower-bound-of-upper-bounds ssi)
-  where
-   open construction-using-image α
+ open Replacement pt
+
+ ordinal-of-ordinals-has-small-suprema' :
+  Replacement → ∀ {𝓤} → Ordinal-Of-Ordinals-Has-Small-Suprema 𝓤
+ ordinal-of-ordinals-has-small-suprema' R I α =
+  (α⁻-Ord R , α⁻-is-upper-bound R
+            , α⁻-is-lower-bound-of-upper-bounds R)
+   where
+    open construction-using-image pt α
 
 \end{code}
 
@@ -961,13 +979,16 @@ instead (just like in ordinal-of-ordinals-has-small-suprema above).
 
 \begin{code}
 
-ordinal-of-ordinals-has-small-suprema'' : Small-Set-Quotients 𝓤
-                                        → Ordinal-Of-Ordinals-Has-Small-Suprema
-ordinal-of-ordinals-has-small-suprema'' {𝓤} ssq =
- ordinal-of-ordinals-has-small-suprema' ssi
+ordinal-of-ordinals-has-small-suprema'' :
+ set-quotients-exist → ∀ {𝓤} → Ordinal-Of-Ordinals-Has-Small-Suprema 𝓤
+ordinal-of-ordinals-has-small-suprema'' sq =
+ ordinal-of-ordinals-has-small-suprema' pt R
   where
-   ssi : Small-Set-Images 𝓤
-   ssi = Small-Set-Images-from-Small-Set-Quotients ssq
+   open set-quotients-exist sq
+   pt : propositional-truncations-exist
+   pt = propositional-truncations-from-axiomatic-set-quotients fe'
+   R : Replacement.Replacement pt
+   R = Replacement-from-axiomatic-quotients sq pt
 
 \end{code}
 
@@ -976,28 +997,35 @@ We repackage the above for convenient use.
 \begin{code}
 
 module suprema
-        {𝓤 : Universe}
-        (ssq : Small-Set-Quotients 𝓤)
+        (sq : set-quotients-exist)
        where
+
+ open set-quotients-exist sq
+
+ pt : propositional-truncations-exist
+ pt = propositional-truncations-from-axiomatic-set-quotients fe'
+
+ open ImageAndSurjection pt
+
+ open Replacement pt
+ R : Replacement
+ R = Replacement-from-axiomatic-quotients sq pt
 
  module _ {I : 𝓤 ̇  } (α : I → Ordinal 𝓤) where
 
-  open construction-using-image α
+  open construction-using-image pt α
 
   sum-to-ordinals : (Σ i ꞉ I , ⟨ α i ⟩) → Ordinal 𝓤
   sum-to-ordinals (i , x) = α i ↓ x
 
-  private
-   ssi : Small-Set-Images 𝓤
-   ssi = Small-Set-Images-from-Small-Set-Quotients ssq
-
   abstract
    sup : Ordinal 𝓤
-   sup = pr₁ (ordinal-of-ordinals-has-small-suprema' ssi I α)
+   sup = pr₁ (ordinal-of-ordinals-has-small-suprema' pt R I α)
 
    sup-is-least-upper-bound : ((i : I) → α i ⊴ sup)
                             × ((β : Ordinal 𝓤) → ((i : I) → α i ⊴ β) → sup ⊴ β)
-   sup-is-least-upper-bound = pr₂ (ordinal-of-ordinals-has-small-suprema' ssi I α)
+   sup-is-least-upper-bound =
+    pr₂ (ordinal-of-ordinals-has-small-suprema' pt R I α)
 
    sup-is-upper-bound : (i : I) → α i ⊴ sup
    sup-is-upper-bound = pr₁ (sup-is-least-upper-bound)
@@ -1009,7 +1037,7 @@ module suprema
 
    sup-is-image-of-sum-to-ordinals : ⟨ sup ⟩ ≃ image sum-to-ordinals
    sup-is-image-of-sum-to-ordinals =
-    ⟨ sup ⟩  ≃⟨ ≃ₒ-gives-≃ sup α⁺-Ord (α⁻-≃ₒ-α⁺ ssi) ⟩
+    ⟨ sup ⟩  ≃⟨ ≃ₒ-gives-≃ sup α⁺-Ord (α⁻-≃ₒ-α⁺ R) ⟩
     α⁺       ≃⟨ ≃-sym image-σ-≃ ⟩
     image σ  ■
 

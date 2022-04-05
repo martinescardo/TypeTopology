@@ -1,4 +1,4 @@
-Tom de Jong & Martín Escardó, 4 April 2022.
+Tom de Jong, 4 & 5 April 2022.
 
 TODO
 
@@ -10,10 +10,13 @@ open import SpartanMLTT
 
 module UF-Quotient-Axiomatically where
 
+open import UF-Base hiding (_≈_)
 open import UF-Equiv
+open import UF-FunExt
 open import UF-ImageAndSurjection
 open import UF-PropTrunc
 open import UF-Subsingletons
+open import UF-Subsingletons-FunExt
 open import UF-Size
 
 is-prop-valued is-equiv-relation : {X : 𝓤 ̇ } → (X → X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
@@ -39,16 +42,19 @@ record set-quotients-exist : 𝓤ω where
                                  {X : 𝓤 ̇  } (≋ : EqRel {𝓤} {𝓥} X)
                                → identifies-related-points ≋ (η/ ≋)
   /-is-set : {𝓤 𝓥 : Universe} {X : 𝓤 ̇  } (≋ : EqRel {𝓤} {𝓥} X) → is-set (X / ≋)
-  /-induction : {𝓤 𝓥 𝓦 : Universe} {X : 𝓤 ̇  } (≋ : EqRel {𝓤} {𝓥} X)
-              → {P : X / ≋ → 𝓦 ̇  } → ((x : X) → P (η/ ≋ x)) → (y : X / ≋) → P y
-  /-universality : {𝓤 𝓥 𝓦 : Universe} {X : 𝓤 ̇  } (≋ : EqRel {𝓤} {𝓥} X)
-                 → {Y : 𝓦 ̇  } → is-set Y → (f : X → Y)
+  /-induction : {𝓤 𝓥 : Universe} {X : 𝓤 ̇  } (≋ : EqRel {𝓤} {𝓥} X)
+                {𝓦 : Universe} {P : X / ≋ → 𝓦 ̇  }
+              → ((x' : X / ≋) → is-prop (P x'))
+              → ((x : X) → P (η/ ≋ x)) → (y : X / ≋) → P y
+  /-universality : {𝓤 𝓥 : Universe} {X : 𝓤 ̇  } (≋ : EqRel {𝓤} {𝓥} X)
+                   {𝓦 : Universe} {Y : 𝓦 ̇  }
+                 → is-set Y → (f : X → Y)
                  → identifies-related-points ≋ f
                  → ∃! f̅ ꞉ (X / ≋ → Y) , f̅ ∘ η/ ≋ ∼ f
 
  module _
          {X : 𝓤 ̇  }
-         (≋ : EqRel {𝓤} {𝓥} X)
+         (≋@(_≈_ , ≈p , ≈r , ≈s , ≈t) : EqRel {𝓤} {𝓥} X)
         where
 
   module _
@@ -65,6 +71,101 @@ record set-quotients-exist : 𝓤ω where
                             (p : identifies-related-points ≋ f)
                           → mediating-map/ f p ∘ η/ ≋ ∼ f
    universality-triangle/ f p = ∃!-is-witness (/-universality ≋ A-is-set f p)
+
+\end{code}
+
+We extend unary and binary prop-valued relations to the quotient.
+
+\begin{code}
+
+ module extending-relations-to-quotient (fe : Fun-Ext) (pe : Prop-Ext) where
+
+  module _
+          {X : 𝓤 ̇  }
+          (≋@(_≈_ , ≈p , ≈r , ≈s , ≈t) : EqRel {𝓤} {𝓥} X)
+         where
+
+   module _
+           (r : X → Ω 𝓣)
+           (p : {x y : X} → x ≈ y → r x ≡ r y)
+          where
+
+    extension-rel₁ : X / ≋ → Ω 𝓣
+    extension-rel₁ = mediating-map/ ≋ (Ω-is-set fe pe) r p
+
+    extension-rel-triangle₁ : extension-rel₁ ∘ η/ ≋ ∼ r
+    extension-rel-triangle₁ = universality-triangle/ ≋ (Ω-is-set fe pe) r p
+
+   module _ (r : X → X → Ω 𝓣)
+            (p : {x y x' y' : X} → x ≈ x' → y ≈ y' → r x y ≡ r x' y')
+          where
+
+    abstract
+     private
+      p' : (x : X) {y y' : X} → y ≈ y' → r x y ≡ r x y'
+      p' x {y} {y'} = p (≈r x)
+
+      r₁ : X → X / ≋ → Ω 𝓣
+      r₁ x = extension-rel₁ (r x) (p' x)
+
+      δ : {x x' : X} → x ≈ x' → (y : X) → r₁ x (η/ ≋ y) ≡ r₁ x' (η/ ≋ y)
+      δ {x} {x'} e y =
+        r₁ x  (η/ ≋ y)  ≡⟨ extension-rel-triangle₁ (r x) (p (≈r x)) y        ⟩
+        r  x     y      ≡⟨ p e (≈r y)                                        ⟩
+        r  x'    y      ≡⟨ (extension-rel-triangle₁ (r x') (p (≈r x')) y) ⁻¹ ⟩
+        r₁ x' (η/ ≋ y)  ∎
+
+      ρ : (q : X / ≋) {x x' : X} → x ≈ x' → r₁ x q ≡ r₁ x' q
+      ρ q {x} {x'} e = /-induction ≋ (λ q → Ω-is-set fe pe) (δ e) q
+
+      r₂ : X / ≋ → X / ≋ → Ω 𝓣
+      r₂ = mediating-map/ ≋ (Π-is-set fe (λ _ → Ω-is-set fe pe)) r₁
+                            (λ {x} {x'} e → dfunext fe (λ q → ρ q e))
+
+      σ : (x : X) → r₂ (η/ ≋ x) ≡ r₁ x
+      σ = universality-triangle/ ≋ (Π-is-set fe (λ _ → Ω-is-set fe pe)) r₁
+                                   (λ {x} {x'} e → dfunext fe (λ q → ρ q e))
+
+      τ : (x y : X) → r₂ (η/ ≋ x) (η/ ≋ y) ≡ r x y
+      τ x y = r₂ (η/ ≋ x) (η/ ≋ y) ≡⟨ happly (σ x) (η/ ≋ y) ⟩
+              r₁ x        (η/ ≋ y) ≡⟨ extension-rel-triangle₁ (r x) (p' x) y ⟩
+              r  x            y    ∎
+
+     extension-rel₂ : X / ≋ → X / ≋ → Ω 𝓣
+     extension-rel₂ = r₂
+
+     extension-rel-triangle₂ : (x y : X)
+                             → extension-rel₂ (η/ ≋ x) (η/ ≋ y) ≡ r x y
+     extension-rel-triangle₂ = τ
+
+\end{code}
+
+For proving properties of an extended binary relation, it is useful to have a
+binary and ternary versions of quotient induction.
+
+\begin{code}
+
+ module _
+         (fe : Fun-Ext)
+         {X : 𝓤 ̇  }
+         (≋ : EqRel {𝓤 } {𝓥} X)
+        where
+
+  /-induction₂ : ∀ {𝓦} {P : X / ≋ → X / ≋ → 𝓦 ̇ }
+               → ((x' y' : X / ≋) → is-prop (P x' y'))
+               → ((x y : X) → P (η/ ≋ x) (η/ ≋ y))
+               → (x' y' : X / ≋) → P x' y'
+  /-induction₂ p h =
+   /-induction ≋ (λ x' → Π-is-prop fe (p x'))
+                 (λ x → /-induction ≋ (p (η/ ≋ x)) (h x))
+
+  /-induction₃ : ∀ {𝓦} → {P : X / ≋ → X / ≋ → X / ≋ → 𝓦 ̇ }
+               → ((x' y' z' : X / ≋) → is-prop (P x' y' z'))
+               → ((x y z : X) → P (η/ ≋ x) (η/ ≋ y) (η/ ≋ z))
+               → (x' y' z' : X / ≋) → P x' y' z'
+  /-induction₃ p h =
+   /-induction₂ (λ x' y' → Π-is-prop fe (p x' y'))
+                (λ x y → /-induction ≋ (p (η/ ≋ x) (η/ ≋ y)) (h x y))
 
 
  quotients-equivalent : (X : 𝓤 ̇ ) (R : EqRel {𝓤} {𝓥} X) (R' : EqRel {𝓤} {𝓦} X)
@@ -91,7 +192,7 @@ record set-quotients-exist : 𝓤ω where
      I  = ap f (universality-triangle/ ≋' (/-is-set ≋) (η/ ≋) i' x)
      II = universality-triangle/ ≋ (/-is-set ≋') (η/ ≋') i x
    α : f ∘ f' ∼ id
-   α = /-induction ≋' a
+   α = /-induction ≋' (λ _ → /-is-set ≋') a
    a' : (x : X) → f' (f (η/ ≋ x)) ≡ η/ ≋ x
    a' x = f' (f (η/ ≋ x)) ≡⟨ I ⟩
          f' (η/ ≋' x)     ≡⟨ II ⟩
@@ -100,7 +201,7 @@ record set-quotients-exist : 𝓤ω where
      I  = ap f' (universality-triangle/ ≋ (/-is-set ≋') (η/ ≋') i x)
      II = universality-triangle/ ≋' (/-is-set ≋) (η/ ≋) i' x
    α' : f' ∘ f ∼ id
-   α' = /-induction ≋ a'
+   α' = /-induction ≋ (λ _ → /-is-set ≋) a'
    γ : (X / ≋) ≃ (X / ≋')
    γ = qinveq f (f' , α' , α)
 
@@ -121,30 +222,39 @@ record set-quotients-exist : 𝓤ω where
   ∣_∣ : {X : 𝓤 ̇  } → X → ∥ X ∥
   ∣_∣ = η/ ≋
 
-  ∥∥-is-prop : {X : 𝓤 ̇  } → is-prop ∥ X ∥
-  ∥∥-is-prop = /-induction ≋ (λ x → /-induction ≋
-                             (λ y → η/-identifies-related-points ≋ ⋆))
+  ∥∥-is-prop : {X : 𝓤 ̇  } → funext 𝓤 𝓤 → is-prop ∥ X ∥
+  ∥∥-is-prop {𝓤} {X} fe = /-induction ≋ (λ x' → Π-is-prop fe (λ y' → /-is-set ≋))
+                           (λ x → /-induction ≋ (λ y' → /-is-set ≋)
+                                  (λ y → η/-identifies-related-points ≋ ⋆))
 
   ∥∥-rec : {X : 𝓤 ̇  } {P : 𝓥 ̇  } → is-prop P → (X → P) → ∥ X ∥ → P
   ∥∥-rec {𝓤} {𝓥} {X} {P} i f =
    ∃!-witness (/-universality ≋ (props-are-sets i) f
                               (λ {x} {x'}_ → i (f x) (f x')))
 
- propositional-truncations-from-axiomatic-quotients :
-  propositional-truncations-exist
- propositional-truncations-from-axiomatic-quotients = record {
+
+ propositional-truncations-from-axiomatic-set-quotients :
+  Fun-Ext → propositional-truncations-exist
+ propositional-truncations-from-axiomatic-set-quotients fe = record {
     ∥_∥        = ∥_∥
-  ; ∥∥-is-prop = ∥∥-is-prop
+  ; ∥∥-is-prop = ∥∥-is-prop fe
   ; ∣_∣        = ∣_∣
   ; ∥∥-rec     = ∥∥-rec
   }
 
-module _ (sq : set-quotients-exist) where
+\end{code}
+
+TODO: Comment on pt assumption in presence of Fun-Ext
+
+\begin{code}
+
+module _
+        (sq : set-quotients-exist)
+        (pt : propositional-truncations-exist)
+       where
  open set-quotients-exist sq
 
- private
-  pt = propositional-truncations-from-axiomatic-quotients
-
+ open ImageAndSurjection pt
  open Replacement pt
  open PropositionalTruncation pt
 
@@ -282,7 +392,7 @@ module _ (sq : set-quotients-exist) where
                                (corestriction f)
                                corestriction-respects-≈
     σ : ϕ ∘ ψ ∼ id
-    σ = /-induction ≋ γ
+    σ = /-induction ≋ (λ x' → /-is-set ≋) γ
      where
       γ : (x : X) → ϕ (ψ [ x ]) ≡ [ x ]
       γ x = ϕ (ψ [ x ])            ≡⟨ ap ϕ (τ x)                ⟩
@@ -303,8 +413,8 @@ module _ (sq : set-quotients-exist) where
         ⦅2⦆ = ap ψ (image-to-quotient-lemma x)
         ⦅3⦆ = τ x
 
- replacement-from-axiomatic-quotients : Replacement
- replacement-from-axiomatic-quotients {𝓤} {𝓦} {𝓥} {X} {Y} f
+ Replacement-from-axiomatic-quotients : Replacement
+ Replacement-from-axiomatic-quotients {𝓤} {𝓦} {𝓥} {X} {Y} f
                                       Y-is-loc-small Y-is-set = X/≈⁻ , ≃-sym e
   where
    open replacement-construction f Y-is-loc-small Y-is-set
