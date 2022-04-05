@@ -1,7 +1,5 @@
 Tom de Jong, March 2022
 
-TODO: Update
-
 We show that the ordinal of ordinals has small suprema. More precisely, given a
 univalent universe 𝓤, the ordinal (Ordinal 𝓤) of ordinals in 𝓤 has suprema for
 every family I → Ordinal 𝓤 with I : 𝓤.
@@ -99,12 +97,6 @@ Ordinal-Of-Ordinals-Has-Small-Suprema-is-prop =
                          (Π-is-prop  fe' (λ i   → ⊴-is-prop-valued (α i) β))
                          (Π₂-is-prop fe' (λ γ _ → ⊴-is-prop-valued β     γ)))
                  (⊴-antisym β β' (β-is-lb β' β'-is-ub) (β'-is-lb β β-is-ub))
-
-\end{code}
-
-TODO
-
-\begin{code}
 
 module construction-using-quotient
         (sq : set-quotients-exist)
@@ -513,12 +505,12 @@ equivalent to one with values in 𝓤.
 
 \end{code}
 
-Next, we resize α/ using: TODO: Update
-(1) the assumption that set quotients are small; i.e. for every type Y : 𝓤 and
-    equivalence relation ∼ : Y → Y → 𝓤, the set quotient of Y by ∼ is equivalent
-    to a type in 𝓤.
+Next, we resize α/ using:
+(1) The fact that, by univalence, (α i ↓ x) ≡ (α j ↓ y) is equivalent to
+    (α i ↓ x) ≃ₒ (α j ↓ y), which means that ≈ is equivalent to a 𝓤-valued
+    equivalence relation, yielding an equivalent quotient in 𝓤.
 (2) Martín's machinery developed in OrdinalsWellOrderTransport to transport the
-    well order along the supposed equivalence.
+    well order along the equivalence of quotients.
 
 \begin{code}
 
@@ -574,7 +566,7 @@ Next, we resize α/ using: TODO: Update
 
 \end{code}
 
-Finally, the desired result follows (under the assumption of small set
+Finally, the desired result follows under the assumption of (small) set
 quotients).
 
 \begin{code}
@@ -592,8 +584,11 @@ This completes the formalization of the approach based on the HoTT Book
 [Uni2013].
 
 We now formalize an alternative construction due to Martín Escardó that doesn't
-use set quotients, but instead relies on small images of maps into locally small
-sets.
+use set quotients, but instead relies on Set Replacement (as defined and
+explained in UF-Size.lagda) to obtain a small ordinal at the end.
+
+(As proved in UF-Quotient-Axiomatically.lagda and UF-Quotient.lagda, Set
+Replacement is equivalent to having small set quotients.)
 
 \begin{code}
 
@@ -896,8 +891,7 @@ equivalent to one with values in 𝓤.
 \end{code}
 
 Next, we resize α⁺ using:
-(1) the assumption that set quotients are small, which we use to prove that
-    images of maps into locally small sets are small.
+(1) Set Replacement, as defined and explained in UF-Size.lagda.
 (2) Martín's machinery developed in OrdinalsWellOrderTransport to transport the
     well order along the supposed equivalence.
 
@@ -946,8 +940,7 @@ Next, we resize α⁺ using:
 
 \end{code}
 
-TODO: Search for "small set images"
-Finally, the desired result follows (under the assumption of small set images).
+Finally, the desired result follows (under the assumption of Set Replacement).
 
 \begin{code}
 
@@ -965,9 +958,10 @@ module _ (pt : propositional-truncations-exist) where
 
 \end{code}
 
-Since Small-Set-Images 𝓤 and Small-Set-Quotients 𝓤 are equivalent, it follows
-immediately that Ordinal 𝓤 has small suprema if we assume Small-Set-Quotients 𝓤
-instead (just like in ordinal-of-ordinals-has-small-suprema above).
+As proved in UF-Quotient-Axiomatically.lagda and UF-Quotient.lagda, Set
+Replacement is equivalent to having small set quotients, so it follows
+immediately that (just as above) Ordinal 𝓤 has small suprema if we assume the
+existence of (small) set quotients.
 
 \begin{code}
 
