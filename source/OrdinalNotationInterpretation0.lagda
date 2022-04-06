@@ -82,7 +82,7 @@ module _ (sr : Set-Replacement pt) where
                                        (brouwer-ordinal₁-is-compact∙ b)
                                        (𝟙-compact∙)
  brouwer-ordinal₁-is-compact∙ (L b) =
-   surjection-compact∙ pt
+   surjection-compact∙
     (sum-to-sup (extension (brouwer-ordinal₁ ∘ b)))
     (sum-to-sup-is-surjection (extension (brouwer-ordinal₁ ∘ b)))
     (Σ-compact∙

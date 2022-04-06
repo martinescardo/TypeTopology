@@ -493,7 +493,7 @@ module _ (pt : propositional-truncations-exist)
   𝓢-compact∙ One       = 𝟙-compact∙
   𝓢-compact∙ (Add ν μ) = +-compact∙ (𝓢-compact∙ ν) (𝓢-compact∙ μ)
   𝓢-compact∙ (Mul ν μ) = ×-compact∙ (𝓢-compact∙ ν) (𝓢-compact∙ μ)
-  𝓢-compact∙ (L ν)     = surjection-compact∙ _
+  𝓢-compact∙ (L ν)     = surjection-compact∙
                            (sum-to-sup (extension (𝓢 ∘ ν)))
                            (sum-to-sup-is-surjection (extension (𝓢 ∘ ν)))
                            (Σ-compact∙

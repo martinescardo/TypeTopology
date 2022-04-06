@@ -1,6 +1,6 @@
 Martin Escardo, 1st January 2022
 
-Almost all modules. We comment out the unsafe one, the ones that
+Almost all modules. We comment out the unsafe ones, the ones that
 depend on the cubical library, and the ones that cause circularity
 when this is imported from index.lagda and AllModulesIndex.
 
@@ -12,6 +12,8 @@ excluded manually.
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 module everything where
+
+\end{code}
 
 import ADecidableQuantificationOverTheNaturals
 import AdjointFunctorTheoremForFrames
