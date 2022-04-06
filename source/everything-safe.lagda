@@ -1,6 +1,6 @@
 Martin Escardo, 1st January 2022
 
-Almost all modules. We comment out the unsafe ones, the ones that
+Almost all modules. We comment out the unsafe one, the ones that
 depend on the cubical library, and the ones that cause circularity
 when this is imported from index.lagda and AllModulesIndex.
 
@@ -9,11 +9,9 @@ excluded manually.
 
 \begin{code}
 
-{-# OPTIONS --without-K --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 module everything where
-
-\end{code}
 
 import ADecidableQuantificationOverTheNaturals
 import AdjointFunctorTheoremForFrames
@@ -25,7 +23,7 @@ import BasicDiscontinuityTaboo
 import BinaryNaturals
 import BuraliForti
 import CanonicalMapNotation
-import CantorCompact
+-- import CantorCompact
 import CantorSchroederBernstein-TheoryLabLunch
 import CantorSchroederBernstein
 import CantorSearch
@@ -41,7 +39,7 @@ import CompactTypes
 import Compactness
 import ConvergentSequenceCompact
 import ConvergentSequenceHasInf
-import CountableTychonoff
+-- import CountableTychonoff
 -- import CubicalBinarySystem
 import Dcpo
 import DcpoBilimits
@@ -218,7 +216,7 @@ import TotalSeparatedness
 import TotallySeparated
 import Two-Properties
 import Two
-import Type-in-Type-False
+-- import Type-in-Type-False
 import Types2019
 import UF-Base
 import UF-Choice
@@ -273,7 +271,7 @@ import Unit-Type
 import Unit
 import UnivalenceFromScratch
 import Universes
-import UnsafeModulesIndex
+-- import UnsafeModulesIndex
 import W-Properties
 import W
 import WLPO

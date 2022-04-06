@@ -312,7 +312,7 @@ Everything again to make sure we didn't forget anything above.
 
 \begin{code}
 
-import everything
+import everything-safe
 
 \end{code}
 
