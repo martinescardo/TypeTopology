@@ -9,7 +9,7 @@ excluded manually.
 
 \begin{code}
 
-{-# OPTIONS --without-K --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 module everything where
 
@@ -23,7 +23,7 @@ import BasicDiscontinuityTaboo
 import BinaryNaturals
 import BuraliForti
 import CanonicalMapNotation
-import CantorCompact
+-- import CantorCompact
 import CantorSchroederBernstein-TheoryLabLunch
 import CantorSchroederBernstein
 import CantorSearch
@@ -39,7 +39,7 @@ import CompactTypes
 import Compactness
 import ConvergentSequenceCompact
 import ConvergentSequenceHasInf
-import CountableTychonoff
+-- import CountableTychonoff
 -- import CubicalBinarySystem
 import Dcpo
 import DcpoBilimits
@@ -216,7 +216,7 @@ import TotalSeparatedness
 import TotallySeparated
 import Two-Properties
 import Two
-import Type-in-Type-False
+-- import Type-in-Type-False
 import Types2019
 import UF-Base
 import UF-Choice
@@ -271,7 +271,7 @@ import Unit-Type
 import Unit
 import UnivalenceFromScratch
 import Universes
-import UnsafeModulesIndex
+-- import UnsafeModulesIndex
 import W-Properties
 import W
 import WLPO
