@@ -989,14 +989,16 @@ module suprema
 
  open set-quotients-exist sq
 
- pt : propositional-truncations-exist
- pt = propositional-truncations-from-axiomatic-set-quotients fe'
+ private
+  pt : propositional-truncations-exist
+  pt = propositional-truncations-from-axiomatic-set-quotients fe'
 
  open ImageAndSurjection pt
 
  open Set-Replacement pt
- R : Set-Replacement
- R = Set-Replacement-from-axiomatic-quotients sq pt
+ private
+  R : Set-Replacement
+  R = Set-Replacement-from-axiomatic-quotients sq pt
 
  module _ {I : 𝓤 ̇  } (α : I → Ordinal 𝓤) where
 
