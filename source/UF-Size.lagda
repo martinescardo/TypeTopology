@@ -844,6 +844,8 @@ Set Replacement is what we call the following principle:
 given X : 𝓤 and Y a locally 𝓥-small *set*, the image of a map f : X → Y is
 (𝓤 ⊔ 𝓥)-small.
 
+In particular, if 𝓤 and 𝓥 are the same, then the image is 𝓤-small.
+
 The name "Set Replacement" is inspired by [Section 2.19, Bezem+2022], but is
 different in two ways:
 (1) In [Bezem+2022] replacement is not restriced to maps into sets, hence our
