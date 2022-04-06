@@ -203,6 +203,7 @@ import OrdinalNotions
 import OrdinalOfOrdinals
 import OrdinalOfOrdinalsSuprema        -- By Tom de Jong
 import OrdinalOfTruthValues
+import OrdinalTaboos                   -- By Tom de Jong
 import Ordinals
 import OrdinalsClosure
 import Ordinals
@@ -285,6 +286,7 @@ import UF-Powerset-Fin                 -- By Tom de Jong
 import UF-PropIndexedPiSigma
 import UF-PropTrunc
 import UF-PropTrunc-F
+import UF-Quotient-Axiomatically       -- By Tom de Jong
 import UF-Quotient
 import UF-Quotient-F
 import UF-Retracts-FunExt

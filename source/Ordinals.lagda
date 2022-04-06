@@ -20,6 +20,7 @@ import OrdinalNotions
 import OrdinalOfOrdinals
 import OrdinalOfOrdinalsSuprema
 import OrdinalOfTruthValues
+import OrdinalTaboos
 import OrdinalsClosure
 import OrdinalsFreeGroup
 import OrdinalsShulmanTaboo

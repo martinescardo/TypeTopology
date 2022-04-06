@@ -541,8 +541,8 @@ binary and ternary versions of quotient induction.
                → ((x y : X) → P (η/ x) (η/ y))
                → (x' y' : X / ≋) → P x' y'
   /-induction₂ p h =
-   /-induction _ (λ x' → Π-is-prop fe (p x'))
-                 (λ x → /-induction' (p (η/ x)) (h x))
+   /-induction' (λ x' → Π-is-prop fe (p x'))
+                (λ x → /-induction' (p (η/ x)) (h x))
 
   /-induction₃ : ∀ {𝓦} {P : X / ≋ → X / ≋ → X / ≋ → 𝓦 ̇ }
                → ((x' y' z' : X / ≋) → is-prop (P x' y' z'))
@@ -602,250 +602,125 @@ quotients-equivalent X (_≈_  , ≈p ,  ≈r  , ≈s  , ≈t )
 
 \end{code}
 
-Added 15 March 2022 by Tom de Jong, after discussion with Martín.
+Added 5 April 2022 by Tom de Jong, after discussion with Martín.
+(Refactoring an earlier addition dated 15 March 2022.)
 
-If we have pushouts and univalence, then images of maps from small types to
-locally small types are small, as proved by Egbert Rijke in
-https://arxiv.org/abs/1701.07538
+The above takes a type X : 𝓤 and a 𝓥-valued equivalence relation and constructs
+the quotient as a type in 𝓥 ⁺ ⊔ 𝓤.
 
-We can also take the result on small images as a stand-alone assumption, which
-is what we do here.
+If we assume Set Replacement, as defined and explained in UF-Size.lagda, then we
+get a quotient in 𝓥 ⊔ 𝓤. In particular, for a 𝓤-valued equivalence relation on a
+type X : 𝓤, the quotient will live in the same universe 𝓤. This particular case
+was first proved in [Corollary 5.1, Rijke2017], but under a different
+replacement assumption (again, see UF-Size.lagda for details).
 
-We show, under this assumption, that quotients of small types by small-valued
-equivalence relations are small again, as observed by Rijke in Corollary 5.1 of
-the above paper.
+[Rijke2017]  Egbert Rijke. The join construction.
+             https://arxiv.org/abs/1701.07538, January 2017.
 
 \begin{code}
 
+open import UF-Quotient-Axiomatically using (set-quotients-exist)
 open import UF-Size
-open SmallImages pt
+open Set-Replacement pt
 
 module _
-        (X : 𝓤 ̇  )
-        (_≈_ : X → X → 𝓤 ̇  )
-        (≈p  : is-prop-valued _≈_)
-        (≈r  : reflexive _≈_)
-        (≈s  : symmetric _≈_)
-        (≈t  : transitive _≈_)
+        (R : Set-Replacement)
+        {X : 𝓤 ̇  }
+        (≋@(_≈_ , ≈p , ≈r , ≈s , ≈t) : EqRel {𝓤} {𝓥} X)
        where
-
- open quotient X _≈_ ≈p ≈r ≈s ≈t
 
  open import UF-Equiv
  open import UF-EquivalenceExamples
 
- set-quotient-is-small : Small-Set-Images 𝓤 → is-small X/≈
- set-quotient-is-small smi = smi equiv-rel (powersets-are-sets fe pe) γ
-  where
-   γ : is-locally-small (X → Ω 𝓤)
-   γ f g = S , ≃-sym e
-    where
-     S : 𝓤 ̇
-     S = (x : X) → f x holds ⇔ g x holds
-     e = (f ≡ g) ≃⟨ ≃-funext fe f g ⟩
-         f ∼ g   ≃⟨ I ⟩
-         S       ■
-      where
-       I = Π-cong fe fe X (λ x → f x ≡ g x) (λ x → f x holds ⇔ g x holds) II
-        where
-         II : (x : X) → (f x ≡ g x) ≃ (f x holds ⇔ g x holds)
-         II x = logically-equivalent-props-are-equivalent
-                 (Ω-is-set fe pe)
-                 (×-is-prop (Π-is-prop fe (λ _ → holds-is-prop (g x)))
-                            (Π-is-prop fe (λ _ → holds-is-prop (f x))))
-                 (λ p → transport _holds p , back-transport _holds p)
-                 (λ (u , v) → Ω-extensionality fe pe u v)
-
- set-quotient-is-small' : Small-Images 𝓤 → is-small X/≈
- set-quotient-is-small' =
-  set-quotient-is-small ∘ Small-Set-Images-from-Small-Images
-
-\end{code}
-
-Added 22 March 2022.
-
-We now prove the converse. That is, given small set quotients, we get small
-images of maps to locally small sets.
-
-\begin{code}
-
-open import UF-ImageAndSurjection
-open ImageAndSurjection pt
-open PropositionalTruncation pt
-
-module small-images-construction
-        {X : 𝓤 ̇  }
-        {Y : 𝓤 ⁺ ̇  }
-        (f : X → Y)
-        (Y-is-set : is-set Y)
-        (Y-is-loc-small : is-locally-small Y)
+ abstract
+  resize-set-quotient : (X / ≋) is (𝓤 ⊔ 𝓥) small
+  resize-set-quotient = R equiv-rel (X , (≃-refl X)) γ
+                          (powersets-are-sets'' fe fe pe)
+   where
+    open quotient X _≈_ ≈p ≈r ≈s ≈t using (equiv-rel)
+    γ : (X → Ω 𝓥) is-locally 𝓤 ⊔ 𝓥 small
+    γ f g = S , ≃-sym e
+     where
+      S : 𝓤 ⊔ 𝓥 ̇
+      S = (x : X) → f x holds ⇔ g x holds
+      e : (f ≡ g) ≃ S
+      e = (f ≡ g) ≃⟨ ≃-funext fe f g ⟩
+          f ∼ g   ≃⟨ I ⟩
+          S       ■
        where
-
- _≈_ : X → X → 𝓤 ⁺ ̇
- x ≈ x' = f x ≡ f x'
-
- ≈-is-prop-valued : is-prop-valued _≈_
- ≈-is-prop-valued x x' = Y-is-set
-
- ≈-is-reflexive : reflexive _≈_
- ≈-is-reflexive x = refl
-
- ≈-is-symmetric : symmetric _≈_
- ≈-is-symmetric x x' p = p ⁻¹
-
- ≈-is-transitive : transitive _≈_
- ≈-is-transitive _ _ _ p q = p ∙ q
-
- ≈-is-equiv-rel : is-equiv-relation _≈_
- ≈-is-equiv-rel = ≈-is-prop-valued , ≈-is-reflexive  ,
-                  ≈-is-symmetric   , ≈-is-transitive
+        I : (f ∼ g) ≃ S
+        I = Π-cong fe fe X (λ x → f x ≡ g x) (λ x → f x holds ⇔ g x holds) II
+         where
+          II : (x : X) → (f x ≡ g x) ≃ (f x holds ⇔ g x holds)
+          II x = logically-equivalent-props-are-equivalent
+                  (Ω-is-set fe pe)
+                  (×-is-prop (Π-is-prop fe (λ _ → holds-is-prop (g x)))
+                             (Π-is-prop fe (λ _ → holds-is-prop (f x))))
+                  (λ p → transport _holds p , back-transport _holds p)
+                  (λ (u , v) → Ω-extensionality fe pe u v)
 
 \end{code}
 
-Using that Y is locally small, we resize _≈_ down to a 𝓤-valued equivalence
-relation.
+We now use the above resizing to construct a quotient that strictly lives in the
+universe 𝓤 ⊔ 𝓥, yielding set quotients as defined in
+UF-Quotient-Axiomatically.lagda.
 
 \begin{code}
 
- _≈⁻_ : X → X → 𝓤 ̇
- x ≈⁻ x' = pr₁ (Y-is-loc-small (f x) (f x'))
-
- ≈⁻-≃-≈ : {x x' : X} → x ≈⁻ x' ≃ x ≈ x'
- ≈⁻-≃-≈ {x} {x'} = pr₂ (Y-is-loc-small (f x) (f x'))
-
- ≈⁻-is-prop-valued : is-prop-valued _≈⁻_
- ≈⁻-is-prop-valued x x' = equiv-to-prop ≈⁻-≃-≈ (≈-is-prop-valued x x')
-
- ≈⁻-is-reflexive : reflexive _≈⁻_
- ≈⁻-is-reflexive x = ⌜ ≈⁻-≃-≈ ⌝⁻¹ (≈-is-reflexive x)
-
- ≈⁻-is-symmetric : symmetric _≈⁻_
- ≈⁻-is-symmetric x x' p = ⌜ ≈⁻-≃-≈ ⌝⁻¹ (≈-is-symmetric x x' (⌜ ≈⁻-≃-≈ ⌝ p))
-
- ≈⁻-is-transitive : transitive _≈⁻_
- ≈⁻-is-transitive x x' x'' p q =
-  ⌜ ≈⁻-≃-≈ ⌝⁻¹ (≈-is-transitive x x' x'' (⌜ ≈⁻-≃-≈ ⌝ p) (⌜ ≈⁻-≃-≈ ⌝ q))
-
- ≈⁻-is-equiv-rel : is-equiv-relation _≈⁻_
- ≈⁻-is-equiv-rel = ≈⁻-is-prop-valued , ≈⁻-is-reflexive  ,
-                   ≈⁻-is-symmetric   , ≈⁻-is-transitive
-
- ≈R : EqRel X
- ≈R = _≈_ , ≈-is-equiv-rel
-
- X/≈ : 𝓤 ⁺⁺ ̇
- X/≈ = (X / ≈R)
-
- X/≈⁻ : 𝓤 ⁺ ̇
- X/≈⁻ = (X / (_≈⁻_ , ≈⁻-is-equiv-rel))
-
- [_] : X → X/≈
- [_] = η/ ≈R
-
- X/≈-≃-X/≈⁻ : X/≈ ≃ X/≈⁻
- X/≈-≃-X/≈⁻ = quotients-equivalent X ≈R (_≈⁻_ , ≈⁻-is-equiv-rel)
-                                        (⌜ ≈⁻-≃-≈ ⌝⁻¹ , ⌜ ≈⁻-≃-≈ ⌝)
-
-\end{code}
-
-We now proceed to show that X/≈ and image f are equivalent types.
-
-\begin{code}
-
- corestriction-respects-≈ : {x x' : X}
-                          → x ≈ x'
-                          → corestriction f x ≡ corestriction f x'
- corestriction-respects-≈ =
-  to-subtype-≡ (λ y → being-in-the-image-is-prop y f)
-
- quotient-to-image : X/≈ → image f
- quotient-to-image = mediating-map/ ≈R (image-is-set f Y-is-set)
-                      (corestriction f) (corestriction-respects-≈)
-
- image-to-quotient' : (y : image f)
-                    → Σ q ꞉ X/≈ , ∃ x ꞉ X , ([ x ] ≡ q) × (f x ≡ pr₁ y)
- image-to-quotient' (y , p) = ∥∥-rec prp r p
+ X/ₛ≈ : 𝓤 ⊔ 𝓥 ̇
+ X/ₛ≈ = pr₁ resize-set-quotient
+ φ : X/ₛ≈ ≃ X / ≋
+ φ = pr₂ resize-set-quotient
+ η/ₛ : X → X/ₛ≈
+ η/ₛ = ⌜ φ ⌝⁻¹  ∘ η/ ≋
+ η/ₛ-identifies-related-points : identifies-related-points ≋ η/ₛ
+ η/ₛ-identifies-related-points e = ap ⌜ φ ⌝⁻¹ (η/-identifies-related-points ≋ e)
+ /ₛ-is-set : is-set (X/ₛ≈)
+ /ₛ-is-set = equiv-to-set φ (quotient-is-set ≋)
+ /ₛ-induction : ∀ {𝓦} {P : X/ₛ≈ → 𝓦 ̇ }
+              → ((x' : X/ₛ≈) → is-prop (P x'))
+              → ((x : X) → P (η/ₛ x))
+              → (x' : X/ₛ≈) → P x'
+ /ₛ-induction {𝓦} {P} i h x' = transport P e (γ (⌜ φ ⌝ x'))
   where
-   r : (Σ x ꞉ X , f x ≡ y)
-     → (Σ q ꞉ X/≈ , ∃ x ꞉ X , ([ x ] ≡ q) × (f x ≡ y))
-   r (x , e) = [ x ] , ∣ x , refl , e ∣
-   prp : is-prop (Σ q ꞉ X/≈ , ∃ x ꞉ X , ([ x ] ≡ q) × (f x ≡ y))
-   prp (q , u) (q' , u') = to-subtype-≡ (λ _ → ∃-is-prop)
-                                        (∥∥-rec₂ (quotient-is-set (≈R)) γ u u')
-    where
-     γ : (Σ x  ꞉ X , ([ x  ] ≡ q ) × (f x  ≡ y))
-       → (Σ x' ꞉ X , ([ x' ] ≡ q') × (f x' ≡ y))
-       → q ≡ q'
-     γ (x , refl , e) (x' , refl , refl) = η/-identifies-related-points ≈R e
+   P' : X / ≋ → 𝓦 ̇
+   P' = P ∘ ⌜ φ ⌝⁻¹
+   γ : (y : X / ≋) → P' y
+   γ = /-induction' ≋ (λ y → i (⌜ φ ⌝⁻¹ y)) h
+   e : ⌜ φ ⌝⁻¹ (⌜ φ ⌝ x') ≡ x'
+   e = ≃-sym-is-linv φ x'
+ /ₛ-universality : {A : 𝓦 ̇  } → is-set A
+                 → (f : X → A)
+                 → identifies-related-points ≋ f
+                 → ∃! f' ꞉ (X/ₛ≈ → A), f' ∘ η/ₛ ∼ f
+ /ₛ-universality {𝓦} {A} i f p =
+  equiv-to-singleton (≃-sym e) (universal-property/ ≋ i f p)
+   where
+    e = (Σ f' ꞉ (X / ≋ → A)  , f' ∘ η/ ≋ ≡ f)        ≃⟨ ⦅1⦆ ⟩
+        (Σ f' ꞉ (X / ≋ → A)  , f' ∘ η/ ≋ ∼ f)        ≃⟨ ⦅2⦆ ⟩
+        (Σ f' ꞉ (X / ≋ → A)  , f' ∘ ⌜ φ ⌝ ∘ η/ₛ ∼ f) ≃⟨ ⦅3⦆ ⟩
+        (Σ f' ꞉ (X/ₛ≈ → A) , f' ∘ η/ₛ ∼ f)         ■
+     where
+      ⦅1⦆ = Σ-cong (λ f' → ≃-funext fe (f' ∘ η/ ≋) f)
+      ⦅2⦆ = Σ-cong
+            (λ f' → Π-cong fe fe X _ _
+                    (λ x → ≡-cong-l (f' (η/ ≋ x)) (f x)
+                                    (ap f' ((≃-sym-is-rinv φ (η/ ≋ x)) ⁻¹))))
+      ⦅3⦆ = Σ-change-of-variable _ (_∘ ⌜ φ ⌝)
+            (qinvs-are-equivs (_∘ ⌜ φ ⌝)
+              (qinv-pre (λ _ _ → dfunext fe) ⌜ φ ⌝
+               (equivs-are-qinvs ⌜ φ ⌝ (⌜⌝-is-equiv φ))))
+       where
+        open import UF-Equiv-FunExt using (qinv-pre)
 
- image-to-quotient : image f → X/≈
- image-to-quotient y = pr₁ (image-to-quotient' y)
-
- image-to-quotient-lemma : (x : X)
-                         → image-to-quotient (corestriction f x) ≡ [ x ]
- image-to-quotient-lemma x = ∥∥-rec (quotient-is-set ≈R) γ t
-  where
-   q : X/≈
-   q = image-to-quotient (corestriction f x)
-   t : ∃ x' ꞉ X , ([ x' ] ≡ q) × (f x' ≡ f x)
-   t = pr₂ (image-to-quotient' (corestriction f x))
-   γ : (Σ x' ꞉ X , ([ x' ] ≡ q) × (f x' ≡ f x))
-     → q ≡ [ x ]
-   γ (x' , u , v) =   q    ≡⟨ u ⁻¹ ⟩
-                    [ x' ] ≡⟨ η/-identifies-related-points ≈R v ⟩
-                    [ x  ] ∎
-
- image-≃-quotient : image f ≃ X/≈
- image-≃-quotient = qinveq ϕ (ψ , ρ , σ)
-  where
-   ϕ : image f → X/≈
-   ϕ = image-to-quotient
-   ψ : X/≈ → image f
-   ψ = quotient-to-image
-   τ : (x : X) → ψ [ x ] ≡ corestriction f x
-   τ = universality-triangle/ ≈R (image-is-set f Y-is-set)
-                              (corestriction f)
-                              corestriction-respects-≈
-   σ : ϕ ∘ ψ ∼ id
-   σ = /-induction ≈R _ (λ q → quotient-is-set ≈R) γ
-    where
-     γ : (x : X) → ϕ (ψ [ x ]) ≡ [ x ]
-     γ x = ϕ (ψ [ x ])            ≡⟨ ap ϕ (τ x)                ⟩
-           ϕ (corestriction f x ) ≡⟨ image-to-quotient-lemma x ⟩
-           [ x ]                  ∎
-   ρ : ψ ∘ ϕ ∼ id
-   ρ (y , p) = ∥∥-rec (image-is-set f Y-is-set) γ p
-    where
-     γ : (Σ x ꞉ X , f x ≡ y) → ψ (ϕ (y , p)) ≡ (y , p)
-     γ (x , refl) = ψ (ϕ (f x , p))           ≡⟨ ⦅1⦆ ⟩
-                    ψ (ϕ (corestriction f x)) ≡⟨ ⦅2⦆ ⟩
-                    ψ [ x ]                   ≡⟨ ⦅3⦆ ⟩
-                    corestriction f x         ≡⟨ ⦅4⦆ ⟩
-                    (f x , p)                 ∎
-      where
-       ⦅4⦆ = to-subtype-≡ (λ y → being-in-the-image-is-prop y f) refl
-       ⦅1⦆ = ap (ψ ∘ ϕ) (⦅4⦆ ⁻¹)
-       ⦅2⦆ = ap ψ (image-to-quotient-lemma x)
-       ⦅3⦆ = τ x
-
-\end{code}
-
-And finally, the promised result: small set quotients yield small images of maps
-to locally small sets.
-
-\begin{code}
-
-Small-Set-Quotients : (𝓤 : Universe) → 𝓤 ⁺ ̇
-Small-Set-Quotients 𝓤 = {X : 𝓤 ̇  } (R : EqRel {𝓤} {𝓤} X) → is-small (X / R)
-
-Small-Set-Images-from-Small-Set-Quotients : Small-Set-Quotients 𝓤
-                                          → Small-Set-Images 𝓤
-Small-Set-Images-from-Small-Set-Quotients h f Y-is-set Y-is-loc-small =
- ≃-size-contravariance e (h (_≈⁻_ , ≈⁻-is-equiv-rel))
-  where
-   open small-images-construction f Y-is-set Y-is-loc-small
-   e = image f ≃⟨ image-≃-quotient ⟩
-       X/≈     ≃⟨ X/≈-≃-X/≈⁻       ⟩
-       X/≈⁻    ■
+axiomatic-set-quotients-exist : Set-Replacement → set-quotients-exist
+axiomatic-set-quotients-exist R = record
+ { _/_                          = λ X → X/ₛ≈ R
+ ; η/                           = η/ₛ R
+ ; η/-identifies-related-points = η/ₛ-identifies-related-points R
+ ; /-is-set                     = /ₛ-is-set R
+ ; /-induction                  = /ₛ-induction R
+ ; /-universality               = /ₛ-universality R
+ }
 
 \end{code}

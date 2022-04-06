@@ -18,6 +18,7 @@ open import UF-EquivalenceExamples
 open import UF-ExcludedMiddle
 open import UF-FunExt
 open import UF-PropTrunc
+open import UF-Quotient-Axiomatically hiding (is-prop-valued)
 open import UF-Subsingletons
 open import UF-UA-FunExt
 open import UF-Univalence
@@ -41,23 +42,20 @@ Every-Discrete-Ordinal-Is-Trichotomous 𝓤 =
    ((α : Ordinal 𝓤) → is-discrete ⟨ α ⟩
                     → is-trichotomous (underlying-order α))
 
-module ordinal-of-ordinals-assumptions
-        (pt : propositional-truncations-exist)
+module suprema-of-ordinals-assumptions
+        (sq : set-quotients-exist)
         (ua : Univalence)
        where
 
- open import UF-Quotient pt (Univalence-gives-Fun-Ext ua)
-                            (Univalence-gives-Prop-Ext ua) public
- open import OrdinalOfOrdinalsSuprema pt ua public
+ open import OrdinalOfOrdinalsSuprema ua
+ open suprema sq public
 
  Sups-Of-Discretely-Indexed-Trichotomous-Ordinals-Are-Discrete :
-  (𝓤 : Universe) → Small-Set-Quotients 𝓤 → 𝓤 ⁺ ̇
- Sups-Of-Discretely-Indexed-Trichotomous-Ordinals-Are-Discrete 𝓤 ssq =
+  (𝓤 : Universe) → 𝓤 ⁺ ̇
+ Sups-Of-Discretely-Indexed-Trichotomous-Ordinals-Are-Discrete 𝓤 =
   (I : 𝓤 ̇  ) → is-discrete I → (α : I → Ordinal 𝓤)
              → ((i : I) → is-trichotomous (underlying-order (α i)))
              → is-discrete ⟨ sup α ⟩
-   where
-    open suprema ssq
 
 \end{code}
 
@@ -225,15 +223,17 @@ ordinals, we need additional assumptions and imports.
 \begin{code}
 
 module _
-        (pt : propositional-truncations-exist)
+        (sq : set-quotients-exist)
         (ua : Univalence)
        where
 
- open ordinal-of-ordinals-assumptions pt ua
+ open suprema-of-ordinals-assumptions sq ua
 
  private
   fe : FunExt
   fe = Univalence-gives-FunExt ua
+  fe' : Fun-Ext
+  fe' = Univalence-gives-Fun-Ext ua
 
  open import DecidableAndDetachable
  open import OrdinalArithmetic fe
@@ -244,33 +244,26 @@ module _
  open import UF-ImageAndSurjection
  open ImageAndSurjection pt
 
- module ordinal-of-ordinals-sup-assumptions
-         {𝓤 : Universe}
-         (ssq : Small-Set-Quotients 𝓤)
-        where
+ module discrete-sup-taboo-construction-II
+          (P : 𝓤 ̇  )
+          (P-is-prop : is-prop P)
+         where
 
-  open suprema ssq
+  open discrete-sup-taboo-construction-I fe P P-is-prop
 
-  module discrete-sup-taboo-construction-II
-           (P : 𝓤 ̇  )
-           (P-is-prop : is-prop P)
-          where
+  I : 𝓤 ̇
+  I = 𝟚 {𝓤}
 
-   open discrete-sup-taboo-construction-I fe P P-is-prop
+  α : I → Ordinal 𝓤
+  α ₀ = P'
+  α ₁ = 𝟙ₒ +ₒ 𝟙ₒ
 
-   I : 𝓤 ̇
-   I = 𝟚 {𝓤}
-
-   α : I → Ordinal 𝓤
-   α ₀ = P'
-   α ₁ = 𝟙ₒ +ₒ 𝟙ₒ
-
-   α-is-trichotomous : (i : I) → is-trichotomous (underlying-order (α i))
-   α-is-trichotomous ₀ = P'-is-trichotomous
-   α-is-trichotomous ₁ = trichotomy-preservation trichotomous trichotomous
-    where
-     open prop 𝟙 𝟙-is-prop
-     open plus (underlying-order 𝟙ₒ) (underlying-order 𝟙ₒ)
+  α-is-trichotomous : (i : I) → is-trichotomous (underlying-order (α i))
+  α-is-trichotomous ₀ = P'-is-trichotomous
+  α-is-trichotomous ₁ = trichotomy-preservation trichotomous trichotomous
+   where
+    open prop 𝟙 𝟙-is-prop
+    open plus (underlying-order 𝟙ₒ) (underlying-order 𝟙ₒ)
 
 \end{code}
 
@@ -285,92 +278,92 @@ e : ⟨ sup α ⟩ → Ordinal 𝓤 and ⟨ sup α ⟩ is discrete by assumption
 
 \begin{code}
 
-   fact-I : ⟨ α ₀ ↓ inr ⋆ ⟩ → P
-   fact-I (inl p , _) = p
+  fact-I : ⟨ α ₀ ↓ inr ⋆ ⟩ → P
+  fact-I (inl p , _) = p
 
-   NB₁ : ⟨ α ₀ ↓ inr ⋆ ⟩ ≃ P
-   NB₁ = qinveq f (g , η , ε)
-    where
-     f : ⟨ α ₀ ↓ ₁ ⟩ → P
-     f = fact-I
-     g : P → ⟨ α ₀ ↓ ₁ ⟩
-     g p = (inl p , ⋆)
-     η : g ∘ f ∼ id
-     η (inl p , _) = to-subtype-≡ (λ x → Prop-valuedness P' x ₁) refl
-     ε : f ∘ g ∼ id
-     ε p = P-is-prop (f (g p)) p
+  NB₁ : ⟨ α ₀ ↓ inr ⋆ ⟩ ≃ P
+  NB₁ = qinveq f (g , η , ε)
+   where
+    f : ⟨ α ₀ ↓ ₁ ⟩ → P
+    f = fact-I
+    g : P → ⟨ α ₀ ↓ ₁ ⟩
+    g p = (inl p , ⋆)
+    η : g ∘ f ∼ id
+    η (inl p , _) = to-subtype-≡ (λ x → Prop-valuedness P' x ₁) refl
+    ε : f ∘ g ∼ id
+    ε p = P-is-prop (f (g p)) p
 
-   NB₂ : ⟨ α ₁ ↓ inr ⋆ ⟩ ≃ 𝟙{𝓤}
-   NB₂ = singleton-≃-𝟙 (x , c)
-    where
-     x : ⟨ α ₁ ↓ inr ⋆ ⟩
-     x = (inl ⋆ , ⋆)
-     c : is-central (⟨ α ₁ ↓ inr ⋆ ⟩) (₀ , ⋆)
-     c (inl ⋆ , ⋆) = refl
+  NB₂ : ⟨ α ₁ ↓ inr ⋆ ⟩ ≃ 𝟙{𝓤}
+  NB₂ = singleton-≃-𝟙 (x , c)
+   where
+    x : ⟨ α ₁ ↓ inr ⋆ ⟩
+    x = (inl ⋆ , ⋆)
+    c : is-central (⟨ α ₁ ↓ inr ⋆ ⟩) (₀ , ⋆)
+    c (inl ⋆ , ⋆) = refl
 
-   fact-II : P → (α ₀ ↓ inr ⋆) ≃ₒ (α ₁ ↓ inr ⋆)
-   fact-II p = f , (f-order-pres , f-is-equiv , g-order-pres)
-    where
-     f : ⟨ α ₀ ↓ inr ⋆ ⟩ → ⟨ α ₁ ↓ inr ⋆ ⟩
-     f _ = inl ⋆ , ⋆
-     g : ⟨ α ₁ ↓ inr ⋆ ⟩ → ⟨ α ₀ ↓ inr ⋆ ⟩
-     g _ = inl p , ⋆
-     f-order-pres : is-order-preserving (α ₀ ↓ inr ⋆) (α ₁ ↓ inr ⋆) f
-     f-order-pres (inl p , _) (inl q , _) l = 𝟘-elim l
-     g-order-pres : is-order-preserving (α ₁ ↓ inr ⋆) (α ₀ ↓ inr ⋆) g
-     g-order-pres (inl ⋆ , _) (inl ⋆ , _) l = 𝟘-elim l
-     f-is-equiv : is-equiv f
-     f-is-equiv = qinvs-are-equivs f (g , η , ε)
+  fact-II : P → (α ₀ ↓ inr ⋆) ≃ₒ (α ₁ ↓ inr ⋆)
+  fact-II p = f , (f-order-pres , f-is-equiv , g-order-pres)
+   where
+    f : ⟨ α ₀ ↓ inr ⋆ ⟩ → ⟨ α ₁ ↓ inr ⋆ ⟩
+    f _ = inl ⋆ , ⋆
+    g : ⟨ α ₁ ↓ inr ⋆ ⟩ → ⟨ α ₀ ↓ inr ⋆ ⟩
+    g _ = inl p , ⋆
+    f-order-pres : is-order-preserving (α ₀ ↓ inr ⋆) (α ₁ ↓ inr ⋆) f
+    f-order-pres (inl p , _) (inl q , _) l = 𝟘-elim l
+    g-order-pres : is-order-preserving (α ₁ ↓ inr ⋆) (α ₀ ↓ inr ⋆) g
+    g-order-pres (inl ⋆ , _) (inl ⋆ , _) l = 𝟘-elim l
+    f-is-equiv : is-equiv f
+    f-is-equiv = qinvs-are-equivs f (g , η , ε)
+     where
+      ε : f ∘ g ∼ id
+      ε (inl ⋆ , _) = refl
+      η : g ∘ f ∼ id
+      η (inl q , _) = to-subtype-≡ (λ x → Prop-valuedness P' x ₁)
+                                   (ap inl (P-is-prop p q))
+
+  fact-III : (α ₀ ↓ inr ⋆) ≃ₒ (α ₁ ↓ inr ⋆) → P
+  fact-III e = fact-I (≃ₒ-to-fun⁻¹ (α ₀ ↓ inr ⋆) (α ₁ ↓ inr ⋆) e (inl ⋆ , ⋆))
+
+  decidability-if-sup-of-α-discrete : is-discrete ⟨ sup α ⟩ → decidable P
+  decidability-if-sup-of-α-discrete δ = decidable-⇔ (fact-III , fact-II) dec
+   where
+    r : image (sum-to-ordinals α) → Ordinal 𝓤
+    r = restriction (sum-to-ordinals α)
+    c : (Σ i ꞉ I , ⟨ α i ⟩) → image (sum-to-ordinals α)
+    c = corestriction (sum-to-ordinals α)
+
+    φ : ⟨ sup α ⟩ ≃ image (sum-to-ordinals α)
+    φ = sup-is-image-of-sum-to-ordinals α
+    f : (Σ i ꞉ I , ⟨ α i ⟩) → ⟨ sup α ⟩
+    f = ⌜ φ ⌝⁻¹ ∘ c
+    e : ⟨ sup α ⟩ → Ordinal 𝓤
+    e = r ∘ ⌜ φ ⌝
+
+    e-is-embedding : is-embedding e
+    e-is-embedding =
+     ∘-is-embedding (equivs-are-embeddings ⌜ φ ⌝ (⌜⌝-is-equiv φ))
+                    (restriction-embedding (sum-to-ordinals α))
+    e-after-f-lemma : e ∘ f ∼ sum-to-ordinals α
+    e-after-f-lemma (i , x) =
+     (r ∘ ⌜ φ ⌝ ∘ ⌜ φ ⌝⁻¹ ∘ c) (i , x) ≡⟨ h    ⟩
+     r (c (i , x))                     ≡⟨ refl ⟩
+     sum-to-ordinals α (i , x)         ∎
       where
-       ε : f ∘ g ∼ id
-       ε (inl ⋆ , _) = refl
-       η : g ∘ f ∼ id
-       η (inl q , _) = to-subtype-≡ (λ x → Prop-valuedness P' x ₁)
-                                    (ap inl (P-is-prop p q))
+       h = ap r (inverses-are-sections ⌜ φ ⌝ (⌜⌝-is-equiv φ) (c (i , x)))
 
-   fact-III : (α ₀ ↓ inr ⋆) ≃ₒ (α ₁ ↓ inr ⋆) → P
-   fact-III e = fact-I (≃ₒ-to-fun⁻¹ (α ₀ ↓ inr ⋆) (α ₁ ↓ inr ⋆) e (inl ⋆ , ⋆))
-
-   decidability-if-sup-of-α-discrete : is-discrete ⟨ sup α ⟩ → decidable P
-   decidability-if-sup-of-α-discrete δ = decidable-⇔ (fact-III , fact-II) dec
-    where
-     r : image (sum-to-ordinals α) → Ordinal 𝓤
-     r = restriction (sum-to-ordinals α)
-     c : (Σ i ꞉ I , ⟨ α i ⟩) → image (sum-to-ordinals α)
-     c = corestriction (sum-to-ordinals α)
-
-     φ : ⟨ sup α ⟩ ≃ image (sum-to-ordinals α)
-     φ = sup-is-image-of-sum-to-ordinals α
-     f : (Σ i ꞉ I , ⟨ α i ⟩) → ⟨ sup α ⟩
-     f = ⌜ φ ⌝⁻¹ ∘ c
-     e : ⟨ sup α ⟩ → Ordinal 𝓤
-     e = r ∘ ⌜ φ ⌝
-
-     e-is-embedding : is-embedding e
-     e-is-embedding =
-      ∘-is-embedding (equivs-are-embeddings ⌜ φ ⌝ (⌜⌝-is-equiv φ))
-                     (restriction-embedding (sum-to-ordinals α))
-     e-after-f-lemma : e ∘ f ∼ sum-to-ordinals α
-     e-after-f-lemma (i , x) =
-      (r ∘ ⌜ φ ⌝ ∘ ⌜ φ ⌝⁻¹ ∘ c) (i , x) ≡⟨ h    ⟩
-      r (c (i , x))                     ≡⟨ refl ⟩
-      sum-to-ordinals α (i , x)         ∎
+    dec : decidable ((α ₀ ↓ inr ⋆) ≃ₒ (α ₁ ↓ inr ⋆))
+    dec = decidable-cong γ (δ (f (₀ , inr ⋆)) (f (₁ , inr ⋆)))
+     where
+      γ = (f (₀ , inr ⋆)     ≡  f (₁ , inr ⋆))     ≃⟨ ⦅1⦆ ⟩
+          (e (f (₀ , inr ⋆)) ≡  e (f (₁ , inr ⋆))) ≃⟨ ⦅2⦆ ⟩
+          ((α ₀ ↓ inr ⋆)     ≡  (α ₁ ↓ inr ⋆))     ≃⟨ ⦅3⦆ ⟩
+          ((α ₀ ↓ inr ⋆)     ≃ₒ (α ₁ ↓ inr ⋆))     ■
        where
-        h = ap r (inverses-are-sections ⌜ φ ⌝ (⌜⌝-is-equiv φ) (c (i , x)))
-
-     dec : decidable ((α ₀ ↓ inr ⋆) ≃ₒ (α ₁ ↓ inr ⋆))
-     dec = decidable-cong γ (δ (f (₀ , inr ⋆)) (f (₁ , inr ⋆)))
-      where
-       γ = (f (₀ , inr ⋆)     ≡  f (₁ , inr ⋆))     ≃⟨ ⦅1⦆ ⟩
-           (e (f (₀ , inr ⋆)) ≡  e (f (₁ , inr ⋆))) ≃⟨ ⦅2⦆ ⟩
-           ((α ₀ ↓ inr ⋆)     ≡  (α ₁ ↓ inr ⋆))     ≃⟨ ⦅3⦆ ⟩
-           ((α ₀ ↓ inr ⋆)     ≃ₒ (α ₁ ↓ inr ⋆))     ■
-        where
-         ⦅1⦆ = ≃-sym (embedding-criterion-converse e e-is-embedding
-                       (f (₀ , inr ⋆)) (f (₁ , inr ⋆)))
-         ⦅2⦆ = ≡-cong _ _ (e-after-f-lemma (₀ , inr ⋆))
-                          (e-after-f-lemma (₁ , inr ⋆))
-         ⦅3⦆ = UAₒ-≃ (α ₀ ↓ inr ⋆) (α ₁ ↓ inr ⋆)
+        ⦅1⦆ = ≃-sym (embedding-criterion-converse e e-is-embedding
+                      (f (₀ , inr ⋆)) (f (₁ , inr ⋆)))
+        ⦅2⦆ = ≡-cong _ _ (e-after-f-lemma (₀ , inr ⋆))
+                         (e-after-f-lemma (₁ , inr ⋆))
+        ⦅3⦆ = UAₒ-≃ (α ₀ ↓ inr ⋆) (α ₁ ↓ inr ⋆)
 
 \end{code}
 
@@ -380,28 +373,14 @@ file.
 
 \begin{code}
 
-module _
-        (pt  : propositional-truncations-exist)
-        (ua : Univalence)
-       where
-
- open ordinal-of-ordinals-assumptions pt ua
- module _
-         {𝓤 : Universe}
-         (ssq : Small-Set-Quotients 𝓤)
-        where
-
-  open ordinal-of-ordinals-sup-assumptions pt ua ssq
-  open suprema ssq
-
-  EM-if-Sups-Of-Discretely-Indexed-Trichotomous-Ordinals-Are-Discrete :
-   Sups-Of-Discretely-Indexed-Trichotomous-Ordinals-Are-Discrete 𝓤 ssq
-   → EM 𝓤
-  EM-if-Sups-Of-Discretely-Indexed-Trichotomous-Ordinals-Are-Discrete h P i =
-   decidability-if-sup-of-α-discrete γ
-    where
-     open discrete-sup-taboo-construction-II P i
-     γ : is-discrete ⟨ sup α ⟩
-     γ = h 𝟚 𝟚-is-discrete α α-is-trichotomous
+ EM-if-Sups-Of-Discretely-Indexed-Trichotomous-Ordinals-Are-Discrete :
+  Sups-Of-Discretely-Indexed-Trichotomous-Ordinals-Are-Discrete 𝓤
+  → EM 𝓤
+ EM-if-Sups-Of-Discretely-Indexed-Trichotomous-Ordinals-Are-Discrete h P i =
+  decidability-if-sup-of-α-discrete γ
+   where
+    open discrete-sup-taboo-construction-II P i
+    γ : is-discrete ⟨ sup α ⟩
+    γ = h 𝟚 𝟚-is-discrete α α-is-trichotomous
 
 \end{code}
