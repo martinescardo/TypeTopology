@@ -452,6 +452,7 @@ open import PropTychonoff
 open import UF-PropTrunc
 open import UF-Univalence
 open import UF-Equiv
+open import UF-Size
 
 module _ (pt : propositional-truncations-exist)
          (ua : Univalence)
@@ -465,7 +466,6 @@ module _ (pt : propositional-truncations-exist)
  pe : Prop-Ext
  pe = Univalence-gives-Prop-Ext ua
 
- open import UF-Quotient
  open import OrdinalOfOrdinalsSuprema ua
  open import OrdinalsType-Injectivity fe
  open import OrdinalOfOrdinals ua
@@ -475,9 +475,9 @@ module _ (pt : propositional-truncations-exist)
  open ImageAndSurjection pt
  open ordinals-injectivity
 
- module _ (sq : set-quotients-exist) where
+ module _ (sr : Set-Replacement pt) where
 
-  open suprema sq
+  open suprema pt sr
 
   private
    extension : (ℕ → Ordinal 𝓤₀) → (ℕ∞ → Ordinal 𝓤₀)

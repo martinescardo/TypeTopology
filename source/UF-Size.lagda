@@ -881,7 +881,7 @@ when adding set quotients as higher inductive types).
 _is-locally_small : 𝓤 ̇  → (𝓥 : Universe) → 𝓥 ⁺ ⊔ 𝓤 ̇
 X is-locally 𝓥 small = (x y : X) → (x ≡ y) is 𝓥 small
 
-module Set-Replacement (pt : propositional-truncations-exist) where
+module _ (pt : propositional-truncations-exist) where
 
  open import UF-ImageAndSurjection
  open ImageAndSurjection pt

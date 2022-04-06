@@ -897,9 +897,7 @@ Next, we resize α⁺ using:
 
 \begin{code}
 
- open Set-Replacement pt
-
- module _ (replacement : Set-Replacement) where
+ module _ (replacement : Set-Replacement pt) where
 
   private
    small-image : is-small (image σ)
@@ -946,10 +944,8 @@ Finally, the desired result follows (under the assumption of Set Replacement).
 
 module _ (pt : propositional-truncations-exist) where
 
- open Set-Replacement pt
-
  ordinal-of-ordinals-has-small-suprema' :
-  Set-Replacement → ∀ {𝓤} → Ordinal-Of-Ordinals-Has-Small-Suprema 𝓤
+  Set-Replacement pt → ∀ {𝓤} → Ordinal-Of-Ordinals-Has-Small-Suprema 𝓤
  ordinal-of-ordinals-has-small-suprema' R I α =
   (α⁻-Ord R , α⁻-is-upper-bound R
             , α⁻-is-lower-bound-of-upper-bounds R)
@@ -973,8 +969,7 @@ ordinal-of-ordinals-has-small-suprema'' sq =
    open set-quotients-exist sq
    pt : propositional-truncations-exist
    pt = propositional-truncations-from-set-quotients fe'
-   open Set-Replacement pt
-   R : Set-Replacement
+   R : Set-Replacement pt
    R = set-replacement-from-set-quotients sq pt
 
 \end{code}
@@ -984,21 +979,11 @@ We repackage the above for convenient use.
 \begin{code}
 
 module suprema
-        (sq : set-quotients-exist)
+        (pt : propositional-truncations-exist)
+        (sr : Set-Replacement pt)
        where
 
- open set-quotients-exist sq
-
- private
-  pt : propositional-truncations-exist
-  pt = propositional-truncations-from-set-quotients fe'
-
  open ImageAndSurjection pt
-
- open Set-Replacement pt
- private
-  R : Set-Replacement
-  R = set-replacement-from-set-quotients sq pt
 
  module _ {I : 𝓤 ̇  } (α : I → Ordinal 𝓤) where
 
@@ -1009,12 +994,12 @@ module suprema
 
   abstract
    sup : Ordinal 𝓤
-   sup = pr₁ (ordinal-of-ordinals-has-small-suprema' pt R I α)
+   sup = pr₁ (ordinal-of-ordinals-has-small-suprema' pt sr I α)
 
    sup-is-least-upper-bound : ((i : I) → α i ⊴ sup)
                             × ((β : Ordinal 𝓤) → ((i : I) → α i ⊴ β) → sup ⊴ β)
    sup-is-least-upper-bound =
-    pr₂ (ordinal-of-ordinals-has-small-suprema' pt R I α)
+    pr₂ (ordinal-of-ordinals-has-small-suprema' pt sr I α)
 
    sup-is-upper-bound : (i : I) → α i ⊴ sup
    sup-is-upper-bound = pr₁ (sup-is-least-upper-bound)
@@ -1026,7 +1011,7 @@ module suprema
 
    sup-is-image-of-sum-to-ordinals : ⟨ sup ⟩ ≃ image sum-to-ordinals
    sup-is-image-of-sum-to-ordinals =
-    ⟨ sup ⟩  ≃⟨ ≃ₒ-gives-≃ sup α⁺-Ord (α⁻-≃ₒ-α⁺ R) ⟩
+    ⟨ sup ⟩  ≃⟨ ≃ₒ-gives-≃ sup α⁺-Ord (α⁻-≃ₒ-α⁺ sr) ⟩
     α⁺       ≃⟨ ≃-sym image-σ-≃ ⟩
     image σ  ■
 

@@ -38,10 +38,9 @@ open import UF-Equiv
 open import UF-Large-Quotient pt fe pe
 open import UF-Quotient using (set-quotients-exist)
 open import UF-Size
-open Set-Replacement pt
 
 module _
-        (R : Set-Replacement)
+        (R : Set-Replacement pt)
         {X : 𝓤 ̇  }
         (≋@(_≈_ , ≈p , ≈r , ≈s , ≈t) : EqRel {𝓤} {𝓥} X)
        where
@@ -130,7 +129,7 @@ UF-Quotient.lagda.
        where
         open import UF-Equiv-FunExt using (qinv-pre)
 
-set-replacement-gives-set-quotients : Set-Replacement → set-quotients-exist
+set-replacement-gives-set-quotients : Set-Replacement pt → set-quotients-exist
 set-replacement-gives-set-quotients R = record
  { _/_                          = λ X → X/ₛ≈ R
  ; η/                           = η/ₛ R

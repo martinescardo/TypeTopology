@@ -18,7 +18,7 @@ open import UF-EquivalenceExamples
 open import UF-ExcludedMiddle
 open import UF-FunExt
 open import UF-PropTrunc
-open import UF-Quotient hiding (is-prop-valued)
+open import UF-Size
 open import UF-Subsingletons
 open import UF-UA-FunExt
 open import UF-Univalence
@@ -43,12 +43,13 @@ Every-Discrete-Ordinal-Is-Trichotomous 𝓤 =
                     → is-trichotomous (underlying-order α))
 
 module suprema-of-ordinals-assumptions
-        (sq : set-quotients-exist)
+        (pt : propositional-truncations-exist)
+        (sr : Set-Replacement pt)
         (ua : Univalence)
        where
 
  open import OrdinalOfOrdinalsSuprema ua
- open suprema sq public
+ open suprema pt sr public
 
  Sups-Of-Discretely-Indexed-Trichotomous-Ordinals-Are-Discrete :
   (𝓤 : Universe) → 𝓤 ⁺ ̇
@@ -223,20 +224,16 @@ ordinals, we need additional assumptions and imports.
 \begin{code}
 
 module _
-        (sq : set-quotients-exist)
+        (pt : propositional-truncations-exist)
+        (sr : Set-Replacement pt)
         (ua : Univalence)
        where
 
- open suprema-of-ordinals-assumptions sq ua
+ open suprema-of-ordinals-assumptions pt sr ua
 
  private
   fe : FunExt
   fe = Univalence-gives-FunExt ua
-  fe' : Fun-Ext
-  fe' = Univalence-gives-Fun-Ext ua
-  open set-quotients-exist sq
-  pt : propositional-truncations-exist
-  pt = propositional-truncations-from-set-quotients fe'
 
  open import DecidableAndDetachable
  open import OrdinalArithmetic fe
