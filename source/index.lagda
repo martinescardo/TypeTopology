@@ -196,7 +196,9 @@ import OrdinalArithmetic
 import OrdinalArithmetic-Properties
 import OrdinalCodes
 import OrdinalNotationInterpretation
-import OrdinalExtendedNotationInterpretation
+import OrdinalNotationInterpretation0
+import OrdinalNotationInterpretation1
+import OrdinalNotationInterpretation2
 import OrdinalNotions
 import OrdinalOfOrdinals
 import OrdinalOfOrdinalsSuprema        -- By Tom de Jong

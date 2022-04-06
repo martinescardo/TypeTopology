@@ -585,10 +585,15 @@ Added 4th April 2022.
 
 \begin{code}
 
-𝟘ₒ-least : {α : Ordinal 𝓤} → 𝟘₀ ⊴ α
-𝟘ₒ-least = unique-from-𝟘 , (λ x y l → 𝟘-elim x) , (λ x y l → 𝟘-elim x)
+𝟘ₒ-least-⊴ : (α : Ordinal 𝓤) → 𝟘ₒ {𝓤} ⊴ α
+𝟘ₒ-least-⊴ α = unique-from-𝟘 , (λ x y l → 𝟘-elim x) , (λ x y l → 𝟘-elim x)
+
+𝟘ₒ-least : (α : Ordinal 𝓤) → 𝟘ₒ {𝓤} ≼ α
+𝟘ₒ-least α = ⊴-gives-≼ 𝟘ₒ α (𝟘ₒ-least-⊴ α)
 
 \end{code}
+
+Added 5th April 2022.
 
 Successor reflects order:
 
@@ -650,5 +655,59 @@ succₒ-preserves-≾ α β = contrapositive (succₒ-reflects-≼ β α)
 
 \end{code}
 
-TODO. Get a taboo from {α : Ordinal 𝓤} {β : Ordinal 𝓥} → α ⊴ β → (α +ₒ 𝟙ₒ) ⊴ (β +ₒ 𝟙ₒ).
-Also from  α ⊲ β → (α +ₒ 𝟙ₒ) ⊲ (β +ₒ 𝟙ₒ).
+However, the successor function does not preserve _⊴_ in general:
+
+\begin{code}
+
+succ-not-necessarily-monotone : ((α β : Ordinal 𝓤) → α ⊴ β → (α +ₒ 𝟙ₒ) ⊴ (β +ₒ 𝟙ₒ))
+                              → WEM 𝓤
+succ-not-necessarily-monotone {𝓤} ϕ P isp = II I
+ where
+  α = prop-ordinal P isp
+
+  𝟚ₒ = 𝟙ₒ +ₒ 𝟙ₒ
+
+  I :  (α +ₒ 𝟙ₒ) ⊴ 𝟚ₒ
+  I = ϕ α 𝟙ₒ l
+   where
+    l : α ⊴ 𝟙ₒ
+    l = unique-to-𝟙 ,
+        (λ x y (l : y ≺⟨ 𝟙ₒ ⟩ ⋆) → 𝟘-elim l) ,
+        (λ x y l → l)
+
+  II : type-of I → ¬ P + ¬¬ P
+  II (f , f-is-initial , f-is-order-preserving) = III (f (inr ⋆)) refl
+   where
+    III : (y : ⟨ 𝟚ₒ ⟩) → f (inr ⋆) ≡ y → ¬ P + ¬¬ P
+    III (inl ⋆) e = inl VII
+     where
+      IV : (p : P) → f (inl p) ≺⟨ 𝟚ₒ ⟩ f (inr ⋆)
+      IV p = f-is-order-preserving (inl p) (inr ⋆) ⋆
+
+      V : (p : P) → f (inl p) ≺⟨ 𝟚ₒ ⟩ inl ⋆
+      V p = transport (λ - → f (inl p) ≺⟨ 𝟚ₒ ⟩ -) e (IV p)
+
+      VI : (z : ⟨ 𝟚ₒ ⟩) → ¬ (z ≺⟨ 𝟚ₒ ⟩ inl ⋆)
+      VI (inl ⋆) l = 𝟘-elim l
+      VI (inr ⋆) l = 𝟘-elim l
+
+      VII : ¬ P
+      VII p = VI (f (inl p)) (V p)
+    III (inr ⋆) e = inr IX
+     where
+      VIII : Σ x' ꞉ ⟨ α +ₒ 𝟙ₒ ⟩ , (x' ≺⟨ α +ₒ 𝟙ₒ ⟩ inr ⋆) × (f x' ≡ inl ⋆)
+      VIII = f-is-initial (inr ⋆) (inl ⋆) (transport (λ - → inl ⋆ ≺⟨ 𝟚ₒ ⟩ -) (e ⁻¹) ⋆)
+
+      IX : ¬¬ P
+      IX u = XI
+       where
+        X : ∀ x' → ¬ (x' ≺⟨ α +ₒ 𝟙ₒ ⟩ inr ⋆)
+        X (inl p) l = u p
+        X (inr ⋆) l = 𝟘-elim l
+
+        XI : 𝟘
+        XI = X (pr₁ VIII) (pr₁ (pr₂ VIII))
+
+\end{code}
+
+TODO. Also the implication α ⊲ β → (α +ₒ 𝟙ₒ) ⊲ (β +ₒ 𝟙ₒ) fails in general.
