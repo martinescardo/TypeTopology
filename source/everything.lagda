@@ -159,8 +159,10 @@ import OrderNotation
 import OrdinalArithmetic
 import OrdinalArithmetic-Properties
 import OrdinalCodes
-import OrdinalExtendedNotationInterpretation
 import OrdinalNotationInterpretation
+import OrdinalNotationInterpretation0
+import OrdinalNotationInterpretation1
+import OrdinalNotationInterpretation2
 import OrdinalNotions
 import OrdinalOfOrdinals
 import OrdinalOfTruthValues

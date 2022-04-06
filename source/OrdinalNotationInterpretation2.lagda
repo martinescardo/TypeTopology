@@ -42,7 +42,7 @@ This is a draft version that needs polishing and more explanation.
 open import SpartanMLTT
 open import UF-FunExt
 
-module OrdinalExtendedNotationInterpretation (fe : FunExt) where
+module OrdinalNotationInterpretation2 (fe : FunExt) where
 
 private
  fe₀ = fe 𝓤₀ 𝓤₀

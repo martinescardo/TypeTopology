@@ -71,11 +71,3 @@ import WeaklyCompactTypes
 import WLPO
 
 \end{code}
-
-Generalization of the above (March 2022):
-
-\begin{code}
-
-import OrdinalExtendedNotationInterpretation
-
-\end{code}

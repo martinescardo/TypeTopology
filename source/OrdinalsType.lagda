@@ -124,6 +124,9 @@ OrdinalNotions. For the moment, we add this:
 irrefl : (α : Ordinal 𝓤) (x : ⟨ α ⟩) → ¬(x ≺⟨ α ⟩ x)
 irrefl α x = irreflexive (underlying-order α) x (Well-foundedness α x)
 
+≼-gives-≾ : (α : Ordinal 𝓤) (x y : ⟨ α ⟩) → x ≼⟨ α ⟩ y → x ≾⟨ α ⟩ y
+≼-gives-≾ {𝓤} α x y = ≼-coarser-than-≾ (underlying-order α)
+                       y (Well-foundedness α y) x
 \end{code}
 
 Characterization of equality of ordinals using the structure identity

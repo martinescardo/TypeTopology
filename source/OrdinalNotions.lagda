@@ -55,7 +55,7 @@ prev-behaviour' : (x : X) (σ : (y : X) → y < x → is-accessible y)
 prev-behaviour' x σ = refl
 
 transfinite-induction' :  (P : X → 𝓦 ̇ )
-                       → ((x : X) → (∀(y : X) → y < x → P y) → P x)
+                       → ((x : X) → ((y : X) → y < x → P y) → P x)
                        → (x : X) → is-accessible x → P x
 transfinite-induction' P f = accessible-induction
                               (λ x _ → P x)
@@ -224,12 +224,6 @@ private
 ≾-is-prop-valued : funext 𝓥 𝓤₀ → is-prop-valued → (x y : X) → is-prop (x ≾ y)
 ≾-is-prop-valued fe p x y = negations-are-props fe
 
-is-top : X → 𝓤 ⊔ 𝓥 ̇
-is-top x = (y : X) → y ≾ x
-
-has-top : 𝓤 ⊔ 𝓥 ̇
-has-top = Σ x ꞉ X , is-top x
-
 <-gives-≾  : (x : X)
            → is-accessible x
            → (y : X) → y < x → y ≾ x
@@ -250,8 +244,20 @@ irreflexive = ≾-refl
 <-gives-≼ : is-transitive → {x y : X} → x < y → x ≼ y
 <-gives-≼ t {x} {y} l u m = t u x y m l
 
-≼-gives-≾ : (y : X) → is-accessible y → (x : X) → x ≼ y → x ≾ y
-≼-gives-≾ y a x f l = ≾-refl y a (f y l)
+≼-coarser-than-≾ : (y : X) → is-accessible y → (x : X) → x ≼ y → x ≾ y
+≼-coarser-than-≾ y a x f l = ≾-refl y a (f y l)
+
+is-top : X → 𝓤 ⊔ 𝓥 ̇
+is-top x = (y : X) → y ≾ x
+
+is-top' : X → 𝓤 ⊔ 𝓥 ̇
+is-top' x = (y : X) → y ≼ x
+
+is-top'-gives-is-top : is-well-founded → (x : X) → is-top' x → is-top x
+is-top'-gives-is-top w x i y = ≼-coarser-than-≾ x (w x) y (i y)
+
+has-top : 𝓤 ⊔ 𝓥 ̇
+has-top = Σ x ꞉ X , is-top x
 
 no-minimal-is-empty : is-well-founded
                      → ∀ {𝓦} (A : X → 𝓦 ̇ )
