@@ -11,7 +11,7 @@ excluded manually.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module everything where
+module everything-safe where
 
 import ADecidableQuantificationOverTheNaturals
 import AdjointFunctorTheoremForFrames
@@ -265,7 +265,6 @@ import UF-Univalence
 import UF-UniverseEmbedding
 import UF-Yoneda
 import UF-hlevels
-import UF
 import Unit-Properties
 import Unit-Type
 import Unit

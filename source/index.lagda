@@ -90,7 +90,6 @@ import RicesTheoremForTheUniverse
 import Ordinals
 import LawvereFPT
 import PartialElements
-import UF
 import Types2019
 import MGS           -- Modular version of https://github.com/martinescardo/HoTT-UF-Agda-Lecture-Notes
 import PCFModules    -- By Tom de Jong
@@ -257,7 +256,6 @@ import WellOrderingTaboo -- By Tom de Jong, based on a theorem by Andrew Swan
 import W
 import W-Properties
 import WLPO
-import UF
 import UF-Base
 import UF-Choice
 import UF-Classifiers
