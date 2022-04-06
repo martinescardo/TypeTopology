@@ -562,7 +562,7 @@ higher-inductive types other than propositional truncation:
 
 \begin{code}
 
-   open import UF-Quotient pt fe pe
+   open import UF-Large-Quotient pt fe pe
    open psrt pt _▷_ public
 
 \end{code}

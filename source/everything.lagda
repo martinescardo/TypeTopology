@@ -250,7 +250,7 @@ import UF-PropIndexedPiSigma
 import UF-PropTrunc-F
 import UF-PropTrunc
 import UF-Quotient-F
-import UF-Quotient
+import UF-Large-Quotient
 import UF-Retracts-FunExt
 import UF-Retracts
 import UF-Section-Embedding

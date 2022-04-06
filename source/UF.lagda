@@ -31,7 +31,7 @@ import UF-Miscelanea
 import UF-Powerset
 import UF-PropIndexedPiSigma
 import UF-PropTrunc
-import UF-Quotient
+import UF-Large-Quotient
 import UF-Retracts-FunExt
 import UF-Retracts
 import UF-Size

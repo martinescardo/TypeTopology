@@ -234,6 +234,9 @@ module _
   fe = Univalence-gives-FunExt ua
   fe' : Fun-Ext
   fe' = Univalence-gives-Fun-Ext ua
+  open set-quotients-exist sq
+  pt : propositional-truncations-exist
+  pt = propositional-truncations-from-axiomatic-set-quotients fe'
 
  open import DecidableAndDetachable
  open import OrdinalArithmetic fe

@@ -41,7 +41,7 @@ open import UF-Subsingletons-FunExt
 open import UF-ImageAndSurjection
 open import UF-Equiv
 
-module UF-Quotient
+module UF-Large-Quotient
         (pt  : propositional-truncations-exist)
         (fe  : Fun-Ext)
         (pe  : Prop-Ext)

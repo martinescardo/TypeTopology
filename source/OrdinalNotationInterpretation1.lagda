@@ -465,8 +465,8 @@ module _ (pt : propositional-truncations-exist)
  pe : Prop-Ext
  pe = Univalence-gives-Prop-Ext ua
 
- open import UF-Quotient pt fe' pe
- open import OrdinalOfOrdinalsSuprema pt ua
+ open import UF-Quotient-Axiomatically
+ open import OrdinalOfOrdinalsSuprema ua
  open import OrdinalsType-Injectivity fe
  open import OrdinalOfOrdinals ua
  open import OrdinalArithmetic-Properties ua
@@ -475,9 +475,9 @@ module _ (pt : propositional-truncations-exist)
  open ImageAndSurjection pt
  open ordinals-injectivity
 
- module _ (ssq : Small-Set-Quotients 𝓤₀) where
+ module _ (sq : set-quotients-exist) where
 
-  open suprema ssq
+  open suprema sq
 
   private
    extension : (ℕ → Ordinal 𝓤₀) → (ℕ∞ → Ordinal 𝓤₀)
@@ -493,7 +493,7 @@ module _ (pt : propositional-truncations-exist)
   𝓢-compact∙ One       = 𝟙-compact∙
   𝓢-compact∙ (Add ν μ) = +-compact∙ (𝓢-compact∙ ν) (𝓢-compact∙ μ)
   𝓢-compact∙ (Mul ν μ) = ×-compact∙ (𝓢-compact∙ ν) (𝓢-compact∙ μ)
-  𝓢-compact∙ (L ν)     = surjection-compact∙ pt
+  𝓢-compact∙ (L ν)     = surjection-compact∙ _
                            (sum-to-sup (extension (𝓢 ∘ ν)))
                            (sum-to-sup-is-surjection (extension (𝓢 ∘ ν)))
                            (Σ-compact∙

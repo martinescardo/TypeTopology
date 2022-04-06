@@ -301,7 +301,7 @@ module swan'
 
  open import Two-Properties
 
- open import UF-Quotient pt fe pe
+ open import UF-Large-Quotient pt fe pe
 
  open import UF-ImageAndSurjection
  open ImageAndSurjection pt

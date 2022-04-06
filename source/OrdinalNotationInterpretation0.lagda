@@ -37,7 +37,7 @@ open PropositionalTruncation pt
 
 open import UF-ImageAndSurjection
 open import UF-Embeddings
-open import UF-Quotient pt fe' pe
+open import UF-Quotient-Axiomatically
 
 open import ConvergentSequenceCompact
 open import CompactTypes
@@ -46,7 +46,7 @@ open import OrdinalCodes
 open import OrdinalsType
 open import OrdinalArithmetic fe
 open import OrdinalArithmetic-Properties ua
-open import OrdinalOfOrdinalsSuprema pt ua
+open import OrdinalOfOrdinalsSuprema ua
 open import OrdinalOfOrdinals ua
 open import OrdinalsType-Injectivity fe
 open import Plus-Properties
@@ -58,9 +58,9 @@ open import ToppedOrdinalsType fe
 open ImageAndSurjection pt
 open ordinals-injectivity
 
-module _ (ssq : Small-Set-Quotients 𝓤₀) where
+module _ (sq : set-quotients-exist) where
 
- open suprema ssq
+ open suprema sq
 
  private
   extension : (ℕ → Ordinal 𝓤₀) → (ℕ∞ → Ordinal 𝓤₀)
@@ -82,7 +82,7 @@ module _ (ssq : Small-Set-Quotients 𝓤₀) where
                                        (brouwer-ordinal₁-is-compact∙ b)
                                        (𝟙-compact∙)
  brouwer-ordinal₁-is-compact∙ (L b) =
-   surjection-compact∙ pt
+   surjection-compact∙ _
     (sum-to-sup (extension (brouwer-ordinal₁ ∘ b)))
     (sum-to-sup-is-surjection (extension (brouwer-ordinal₁ ∘ b)))
     (Σ-compact∙
