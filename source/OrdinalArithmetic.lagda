@@ -31,8 +31,8 @@ Here the subscript is the letter "o":
 \begin{code}
 
 𝟘ₒ 𝟙ₒ : {𝓤 : Universe} → Ordinal 𝓤
-𝟙ₒ = prop-ordinal 𝟙 𝟙-is-prop
 𝟘ₒ = prop-ordinal 𝟘 𝟘-is-prop
+𝟙ₒ = prop-ordinal 𝟙 𝟙-is-prop
 
 \end{code}
 
@@ -72,6 +72,9 @@ _×ₒ_ : Ordinal 𝓤 → Ordinal 𝓥 → Ordinal (𝓤 ⊔ 𝓥)
 (X , _<_ , o) ×ₒ (Y , _≺_ , p) = (X × Y) ,
                                  times.order _<_ _≺_ ,
                                  times.well-order _<_ _≺_ fe o p
+
+𝟚ₒ : {𝓤 : Universe} → Ordinal 𝓤
+𝟚ₒ = 𝟙ₒ +ₒ 𝟙ₒ
 
 prop-indexed-product : {P : 𝓤 ̇ }
                      → is-prop P

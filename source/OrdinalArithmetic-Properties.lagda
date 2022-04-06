@@ -663,9 +663,8 @@ succ-not-necessarily-monotone : ((α β : Ordinal 𝓤) → α ⊴ β → (α +�
                               → WEM 𝓤
 succ-not-necessarily-monotone {𝓤} ϕ P isp = II I
  where
+  α : Ordinal 𝓤
   α = prop-ordinal P isp
-
-  𝟚ₒ = 𝟙ₒ +ₒ 𝟙ₒ
 
   I :  (α +ₒ 𝟙ₒ) ⊴ 𝟚ₒ
   I = ϕ α 𝟙ₒ l
