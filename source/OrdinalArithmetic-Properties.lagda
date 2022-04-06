@@ -655,6 +655,11 @@ succₒ-preserves-≾ α β = contrapositive (succₒ-reflects-≼ β α)
 
 \end{code}
 
+TODO. Actually (α +ₒ 𝟙ₒ) ⊴ (β +ₒ 𝟙ₒ) is equivalent to
+α ≃ₒ β or β ≃ₒ α +ₒ 𝟙ₒ + γ for some (necessarily unique) γ.
+This condition in turn implies α ⊴ β (and is equivalent to α ⊴ β under
+excluded middle).
+
 However, the successor function does not preserve _⊴_ in general:
 
 \begin{code}
