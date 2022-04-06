@@ -611,8 +611,8 @@ the quotient as a type in 𝓥 ⁺ ⊔ 𝓤.
 If we assume Set Replacement, as defined and explained in UF-Size.lagda, then we
 get a quotient in 𝓥 ⊔ 𝓤. In particular, for a 𝓤-valued equivalence relation on a
 type X : 𝓤, the quotient will live in the same universe 𝓤. This particular case
-was first proved in [Corollary 5.1, Rijke2017], but under a different Set
-Replacement assumption (again, see UF-Size.lagda for details).
+was first proved in [Corollary 5.1, Rijke2017], but under a different
+replacement assumption (again, see UF-Size.lagda for details).
 
 [Rijke2017]  Egbert Rijke. The join construction.
              https://arxiv.org/abs/1701.07538, January 2017.
