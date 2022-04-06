@@ -37,7 +37,7 @@ open PropositionalTruncation pt
 
 open import UF-ImageAndSurjection
 open import UF-Embeddings
-open import UF-Quotient-Axiomatically
+open import UF-Quotient
 
 open import ConvergentSequenceCompact
 open import CompactTypes

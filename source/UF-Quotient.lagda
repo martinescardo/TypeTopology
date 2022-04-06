@@ -1,6 +1,6 @@
 Tom de Jong, 4 & 5 April 2022.
 
-Assuming axiomatic set quotients, we
+Assuming set quotients, we
 (1) derive propositional truncations in the presence of function extensionality;
 (2) prove Set Replacement as defined in UF-Size.lagda.
 
@@ -8,7 +8,7 @@ Assuming axiomatic set quotients, we
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module UF-Quotient-Axiomatically where
+module UF-Quotient where
 
 open import SpartanMLTT
 
@@ -65,8 +65,8 @@ The following is boilerplate and duplicates some of the material in
 UF-Quotient.lagda, where large set quotients are constructed using propositional
 truncations, function extensionality and propositional extensionality.
 
-We need the boilerplate in OrdinalOfOrdinalsSuprema.lagda, where we use
-axiomatic set quotients to construct small suprema of small ordinals.
+We need the boilerplate in OrdinalOfOrdinalsSuprema.lagda, where we use set
+quotients to construct small suprema of small ordinals.
 
 \begin{code}
 
@@ -255,9 +255,9 @@ proposition.
                               (λ {x} {x'}_ → i (f x) (f x')))
 
 
- propositional-truncations-from-axiomatic-set-quotients :
+ propositional-truncations-from-set-quotients :
   Fun-Ext → propositional-truncations-exist
- propositional-truncations-from-axiomatic-set-quotients fe = record
+ propositional-truncations-from-set-quotients fe = record
   { ∥_∥        = ∥_∥
   ; ∥∥-is-prop = ∥∥-is-prop fe
   ; ∣_∣        = ∣_∣
@@ -440,8 +440,8 @@ module _
         ⦅2⦆ = ap ψ (image-to-quotient-lemma x)
         ⦅3⦆ = τ x
 
- Set-Replacement-from-axiomatic-quotients : Set-Replacement
- Set-Replacement-from-axiomatic-quotients
+ set-replacement-from-set-quotients : Set-Replacement
+ set-replacement-from-set-quotients
   {𝓦} {𝓣} {𝓤} {𝓥} {X} {Y} f X-is-small Y-is-loc-small Y-is-set = X/≈⁻ , ≃-sym e
   where
    X' : 𝓤 ̇

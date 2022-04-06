@@ -286,9 +286,10 @@ import UF-Powerset-Fin                 -- By Tom de Jong
 import UF-PropIndexedPiSigma
 import UF-PropTrunc
 import UF-PropTrunc-F
-import UF-Quotient-Axiomatically       -- By Tom de Jong
+import UF-Quotient                     -- By Tom de Jong
 import UF-Large-Quotient
 import UF-Quotient-F
+import UF-Quotient-Replacement         -- By Tom de Jong
 import UF-Retracts-FunExt
 import UF-Retracts
 import UF-Section-Embedding

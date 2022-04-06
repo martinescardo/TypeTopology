@@ -18,7 +18,7 @@ open import UF-EquivalenceExamples
 open import UF-ExcludedMiddle
 open import UF-FunExt
 open import UF-PropTrunc
-open import UF-Quotient-Axiomatically hiding (is-prop-valued)
+open import UF-Quotient hiding (is-prop-valued)
 open import UF-Subsingletons
 open import UF-UA-FunExt
 open import UF-Univalence
@@ -236,7 +236,7 @@ module _
   fe' = Univalence-gives-Fun-Ext ua
   open set-quotients-exist sq
   pt : propositional-truncations-exist
-  pt = propositional-truncations-from-axiomatic-set-quotients fe'
+  pt = propositional-truncations-from-set-quotients fe'
 
  open import DecidableAndDetachable
  open import OrdinalArithmetic fe

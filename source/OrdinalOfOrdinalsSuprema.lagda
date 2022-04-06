@@ -29,7 +29,7 @@ notably doesn't use set quotients.
 {-# OPTIONS --without-K --exact-split --safe --auto-inline --experimental-lossy-unification #-}
 
 
-open import UF-Quotient-Axiomatically
+open import UF-Quotient
 open import UF-Univalence
 
 module OrdinalOfOrdinalsSuprema
@@ -108,7 +108,7 @@ module construction-using-quotient
 
  private
   pt : propositional-truncations-exist
-  pt = propositional-truncations-from-axiomatic-set-quotients fe'
+  pt = propositional-truncations-from-set-quotients fe'
 
  open extending-relations-to-quotient fe' pe'
  open PropositionalTruncation pt
@@ -587,7 +587,7 @@ We now formalize an alternative construction due to Martín Escardó that doesn'
 use set quotients, but instead relies on Set Replacement (as defined and
 explained in UF-Size.lagda) to obtain a small ordinal at the end.
 
-(As proved in UF-Quotient-Axiomatically.lagda and UF-Quotient.lagda, Set
+(As proved in UF-Quotient.lagda and UF-Quotient-Replacement.lagda, Set
 Replacement is equivalent to having small set quotients.)
 
 \begin{code}
@@ -958,7 +958,7 @@ module _ (pt : propositional-truncations-exist) where
 
 \end{code}
 
-As proved in UF-Quotient-Axiomatically.lagda and UF-Quotient.lagda, Set
+As proved in UF-Quotient.lagda and UF-Quotient-Replacement.lagda, Set
 Replacement is equivalent to having small set quotients, so it follows
 immediately that (just as above) Ordinal 𝓤 has small suprema if we assume the
 existence of (small) set quotients.
@@ -972,10 +972,10 @@ ordinal-of-ordinals-has-small-suprema'' sq =
   where
    open set-quotients-exist sq
    pt : propositional-truncations-exist
-   pt = propositional-truncations-from-axiomatic-set-quotients fe'
+   pt = propositional-truncations-from-set-quotients fe'
    open Set-Replacement pt
    R : Set-Replacement
-   R = Set-Replacement-from-axiomatic-quotients sq pt
+   R = set-replacement-from-set-quotients sq pt
 
 \end{code}
 
@@ -991,14 +991,14 @@ module suprema
 
  private
   pt : propositional-truncations-exist
-  pt = propositional-truncations-from-axiomatic-set-quotients fe'
+  pt = propositional-truncations-from-set-quotients fe'
 
  open ImageAndSurjection pt
 
  open Set-Replacement pt
  private
   R : Set-Replacement
-  R = Set-Replacement-from-axiomatic-quotients sq pt
+  R = set-replacement-from-set-quotients sq pt
 
  module _ {I : 𝓤 ̇  } (α : I → Ordinal 𝓤) where
 

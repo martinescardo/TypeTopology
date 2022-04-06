@@ -465,7 +465,7 @@ module _ (pt : propositional-truncations-exist)
  pe : Prop-Ext
  pe = Univalence-gives-Prop-Ext ua
 
- open import UF-Quotient-Axiomatically
+ open import UF-Quotient
  open import OrdinalOfOrdinalsSuprema ua
  open import OrdinalsType-Injectivity fe
  open import OrdinalOfOrdinals ua
