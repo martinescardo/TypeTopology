@@ -516,7 +516,7 @@ The definition of the join:
  join K = λ U → ⋁ ⁅ α U ∣ α ε 𝔡𝔦𝔯 K ⁆
 
  ⋁ₙ : Fam 𝓦 perfect-nucleus → perfect-nucleus
- ⋁ₙ K = join K₀ , (n₁ , n₂ , n₃) , {!!}
+ ⋁ₙ K = join K₀ , (n₁ , n₂ , n₃) , γ
   where
    open PosetReasoning (poset-of (𝒪 X))
    open Joins (λ x y → x ≤[ poset-of (𝒪 X) ] y)
@@ -524,11 +524,11 @@ The definition of the join:
    K₀ : Fam 𝓦 (⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩)
    K₀ = ⁅ pr₁ j ∣ j ε K ⁆
 
-   ϑ : ∀[∶]-syntax (index K₀) (λ i → is-scott-continuous (𝒪 X) (𝒪 X) (K₀ [ i ])) holds
+   ϑ : (Ɐ i ∶ index K₀ , is-scott-continuous (𝒪 X) (𝒪 X) (K₀ [ i ])) holds
    ϑ i = pr₂ (pr₂ (K [ i ]))
 
    K₁ : Fam 𝓦 (nucleus (𝒪 X))
-   K₁ = {!⁅!}
+   K₁ = ⁅ nucleus-of k ∣ k ε K ⁆
 
    n₁ : is-inflationary (𝒪 X) (join K₀) holds
    n₁ U = ⋁[ 𝒪 X ]-upper ⁅ α U ∣ α ε 𝔡𝔦𝔯 K₀ ⁆ []
@@ -572,7 +572,38 @@ The definition of the join:
              (λ j i → (K₁ ^* [ j ]) .pr₁ ((K₁ ^* [ i ]) .pr₁ U)) ⁻¹
       iii = ⋁[ 𝒪 X ]-least S (join K₀ U , †)
 
-   n₃ : {!!}
-   n₃ = {!!}
+   μ : (is : List (index K₀)) → preserves-meets (𝒪 X) (𝒪 X) (𝔡𝔦𝔯 K₀ [ is ]) holds
+   μ is = pr₂ (𝔡𝔦𝔯-prenuclear K₀ (λ i → pr₂ (nucleus-pre (𝒪 X) (K₁ [ i ]))) is)
+
+   n₃ : preserves-meets (𝒪 X) (𝒪 X) (join K₀) holds
+   n₃ U V =
+    join K₀ (U ∧[ 𝒪 X ] V)                                                 ≡⟨ refl ⟩
+    ⋁ ⁅ α (U ∧[ 𝒪 X ] V) ∣ α ε 𝔡𝔦𝔯 K₀ ⁆                                    ≡⟨ i    ⟩
+    ⋁ ⁅ (α U) ∧[ 𝒪 X ] (α V) ∣ α ε 𝔡𝔦𝔯 K₀ ⁆                                ≡⟨ ii   ⟩
+    ⋁ ⁅ (𝔡𝔦𝔯 K₀ [ is ]) U ∧[ 𝒪 X ] (𝔡𝔦𝔯 K₀ [ js ]) V ∣ (is , js) ∶ _ × _ ⁆ ≡⟨ iii  ⟩
+    join K₀ U ∧[ 𝒪 X ] join K₀ V                                           ∎
+     where
+      † : ((⋁ ⁅ (α U) ∧[ 𝒪 X ] (α V) ∣ α ε 𝔡𝔦𝔯 K₀ ⁆)
+           ≤[ poset-of (𝒪 X) ]
+           (⋁ ⁅ (𝔡𝔦𝔯 K₀ [ is ]) U ∧[ 𝒪 X ] (𝔡𝔦𝔯 K₀ [ js ]) V ∣ (is , js) ∶ _ × _ ⁆))
+          holds
+      † = ⋁[ 𝒪 X ]-least ⁅ (α U) ∧[ 𝒪 X ] (α V) ∣ α ε 𝔡𝔦𝔯 K₀ ⁆ (_ , ※)
+           where
+            ※ : _
+            ※ i = ⋁[ 𝒪 X ]-upper
+                   ⁅ (𝔡𝔦𝔯 K₀ [ is ]) U ∧[ 𝒪 X ] (𝔡𝔦𝔯 K₀ [ js ]) V ∣ (is , js) ∶ _ × _ ⁆
+                   (i , i)
+
+      ‡ : ((⋁ ⁅ (𝔡𝔦𝔯 K₀ [ is ]) U ∧[ 𝒪 X ] (𝔡𝔦𝔯 K₀ [ js ]) V ∣ (is , js) ∶ _ × _ ⁆)
+            ≤[ poset-of (𝒪 X) ]
+           (⋁ ⁅ (α U) ∧[ 𝒪 X ] (α V) ∣ α ε 𝔡𝔦𝔯 K₀ ⁆)) holds
+      ‡ = {!!}
+
+      i   = ap (λ - → ⋁ (index (𝔡𝔦𝔯 K₀) , -)) (dfunext fe λ is → μ is U V)
+      ii  = ≤-is-antisymmetric (poset-of (𝒪 X)) † ‡
+      iii = distributivity+ (𝒪 X) ⁅ α U ∣ α ε 𝔡𝔦𝔯 K₀ ⁆ ⁅ β V ∣ β ε 𝔡𝔦𝔯 K₀ ⁆ ⁻¹
+
+   γ : is-perfect (join K₀) holds
+   γ = {!? ≡⟨ ? ⟩ ? ∎!}
 
 \end{code}
