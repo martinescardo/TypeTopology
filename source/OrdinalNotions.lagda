@@ -16,6 +16,7 @@ open import UF-Subsingletons
 open import UF-FunExt
 open import UF-Subsingletons-FunExt
 open import UF-ExcludedMiddle
+open import UF-PropTrunc
 
 module OrdinalNotions
         {𝓤 𝓥 : Universe}
@@ -54,8 +55,14 @@ prev-behaviour' : (x : X) (σ : (y : X) → y < x → is-accessible y)
                 → prev x (next x σ) ≡ σ
 prev-behaviour' x σ = refl
 
+induction-hypothesis : (P : X → 𝓦 ̇ ) → (x : X) → Set (𝓤 ⊔ 𝓥 ⊔ 𝓦)
+induction-hypothesis P x = (y : X) → y < x → P y
+
+induction-goal : (P : X → 𝓦 ̇ ) → Set (𝓤 ⊔ 𝓥 ⊔ 𝓦)
+induction-goal P = (x : X) → induction-hypothesis P x → P x
+
 transfinite-induction' :  (P : X → 𝓦 ̇ )
-                       → ((x : X) → ((y : X) → y < x → P y) → P x)
+                       → induction-goal P
                        → (x : X) → is-accessible x → P x
 transfinite-induction' P f = accessible-induction
                               (λ x _ → P x)
@@ -301,8 +308,33 @@ the time of writing, namely 11th January 2021).
 
 \begin{code}
 
+comparable : (x y : X) → 𝓤 ⊔ 𝓥 ̇
+comparable x y = (x < y) + (x ≡ y) + (y < x)
+
+_≦_ : (x y : X) → 𝓤 ⊔ 𝓥 ̇
+x ≦ y = (x < y) + (x ≡ y)
+
+-- Blunder through prop stuff
+≦-is-prop : is-set X → is-well-order → (x y : X) → is-prop (x ≦ y)
+≦-is-prop set (p , w , e , t) x y (inl prf1) (inl prf2) with p x y prf1 prf2
+... | refl = refl
+≦-is-prop set (p , w , e , t) x .x (inl x<x) (inr refl) = 𝟘-elim (irreflexive x (w x) x<x)
+≦-is-prop set (p , w , e , t) x .x (inr refl) (inl x<x) = 𝟘-elim (irreflexive x (w x) x<x)
+≦-is-prop set wo x .x (inr refl) (inr prf) with set prf refl
+... | refl = refl
+
+-- Similar to previous, defer until I learn how to do this
+comparable-is-prop : is-set X → is-well-order → (x y : X) → is-prop (comparable x y)
+comparable-is-prop = {!!}
+
 is-trichotomous : 𝓤 ⊔ 𝓥 ̇
 is-trichotomous = (x y : X) → (x < y) + (x ≡ y) + (y < x)
+
+-- Probably standard somewhere
+
+pair-cong : (P : X → (𝓤 ⊔ 𝓥) ̇) → {x y : X} {px : P x} {py : P y}
+  → (prf : x ≡ y) → (transport P prf px ≡ py) → (x , px) ≡ (y , py)
+pair-cong P refl refl = refl
 
 \end{code}
 
@@ -336,7 +368,73 @@ as an assumption (to know that the negation of a type is a
 proposition).
 
 \begin{code}
+module _
+        (fe : Fun-Ext)
+        (em : Excluded-Middle)
+       where
 
+ pt : propositional-truncations-exist
+ pt = (fem-proptrunc (λ 𝓤 𝓥 → fe {𝓤} {𝓥}) em)
+
+ open import UF-PropTrunc
+ open PropositionalTruncation pt
+
+ lem-consequence : is-well-order → (u v : X) → (∃ i ꞉ X , ((i < u) × ¬ (i < v))) + (u ≼ v)
+ lem-consequence (p , _) u v = Cases
+     (EM-∃¬-∀ pt em {Σ (λ i → i < u)}
+        (λ (i , i_<_u) → i < v)
+        (λ (i , i_<_u) → p i v))
+     (λ witness → inl ((∥∥-induction (λ s → ∃-is-prop)
+       (λ ((i , i<u) , i≮v) → ∣ i , i<u , i≮v ∣) witness)))
+     λ prf → inr (λ i i<u → prf (i , i<u))
+
+ set : is-well-order → is-set X
+ set wo = well-ordered-types-are-sets (λ 𝓤₃ 𝓥₁ → fe) wo
+
+ trichotomy' : is-well-order → is-trichotomous
+ trichotomy' wo@(p , w , e , t) = transfinite-induction w P ϕ
+  where
+   P : (x : X) → 𝓤 ⊔ 𝓥 ̇
+   P x = ∀ y → comparable x y
+
+   ϕ : (x : X) → induction-hypothesis P x → P x
+   ϕ u ih = -- now we proceed by induction on the inner argument
+     transfinite-induction w (comparable u) λ v innerIH →
+       -- use LEM to get either (∃i<v . i≯u) ∨ (v ≼ u)
+       Cases (lem-consequence wo v u)
+         (∥∥-induction (λ s → comparable-is-prop (set wo) wo u v)
+           λ (i , i<v , i≮u) → case (innerIH i i<v) of λ where
+              (inl      i>u ) → inl (t u i v i>u i<v)
+              (inr (inl u≡i)) → inl (transport (_< v) (u≡i ⁻¹) i<v)
+              (inr (inr i<u)) → 𝟘-elim (i≮u i<u))
+         λ v≼u → Cases (lemma v v≼u)
+           (λ v<u → inr (inr v<u))
+           (λ v≡u → inr (inl (v≡u ⁻¹)))
+    where
+     lemma : (x : X) → (x ≼ u) → (x < u) + (x ≡ u)
+     lemma x x≼u = Cases (lem-consequence wo u x)
+       (∥∥-induction (λ s → ≦-is-prop (set wo) wo x u)
+         λ (i , i<u , i≮x) → Cases (ih i i<u x)
+           (λ i<x → 𝟘-elim (i≮x i<x))
+           λ where
+             (inl i≡x) → inl (transport (_< u) i≡x i<u)
+             (inr i>x) → inl (t x i u i>x i<u))
+       λ u≼x → inr (e x u x≼u u≼x)
+
+
+      {-Cases (EM-∃¬-∀ pt em {Σ (λ i → i < u)}
+                                (λ (i , i_<_u) → i < x) λ (i , i_<_u) → p i x)
+       (∥∥-induction
+          -- blunder through the prop stuff
+          (λ s → ≦-is-prop (well-ordered-types-are-sets
+                               (λ 𝓤₃ 𝓥₁ → fe) (p , w , e , t))
+                           (p , w , e , t) x u)
+         λ ((i , i_<_u) , i_≮_x) → Cases (ih i i_<_u x)
+         (λ i_<_x → 𝟘-elim (i_≮_x i_<_x))
+         λ scrutinee → Cases scrutinee
+           (λ i≡x → inl (transport (_< u) i≡x i_<_u))
+           λ i>x → inl (t x i u i>x i_<_u))
+       λ prf → inr (e x u x_≼_u λ i i<u → prf (i , i<u))-}
 
 trichotomy : funext (𝓤 ⊔ 𝓥) 𝓤₀
            → excluded-middle (𝓤 ⊔ 𝓥)
