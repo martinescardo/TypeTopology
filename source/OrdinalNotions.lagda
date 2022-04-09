@@ -421,21 +421,6 @@ module _
              (inr i>x) → inl (t x i u i>x i<u))
        λ u≼x → inr (e x u x≼u u≼x)
 
-
-      {-Cases (EM-∃¬-∀ pt em {Σ (λ i → i < u)}
-                                (λ (i , i_<_u) → i < x) λ (i , i_<_u) → p i x)
-       (∥∥-induction
-          -- blunder through the prop stuff
-          (λ s → ≦-is-prop (well-ordered-types-are-sets
-                               (λ 𝓤₃ 𝓥₁ → fe) (p , w , e , t))
-                           (p , w , e , t) x u)
-         λ ((i , i_<_u) , i_≮_x) → Cases (ih i i_<_u x)
-         (λ i_<_x → 𝟘-elim (i_≮_x i_<_x))
-         λ scrutinee → Cases scrutinee
-           (λ i≡x → inl (transport (_< u) i≡x i_<_u))
-           λ i>x → inl (t x i u i>x i_<_u))
-       λ prf → inr (e x u x_≼_u λ i i<u → prf (i , i<u))-}
-
 trichotomy : funext (𝓤 ⊔ 𝓥) 𝓤₀
            → excluded-middle (𝓤 ⊔ 𝓥)
            → is-well-order
