@@ -414,11 +414,11 @@ module _
      lemma : (x : X) → (x ≼ u) → (x < u) + (x ≡ u)
      lemma x x≼u = Cases (lem-consequence wo u x)
        (∥∥-induction (λ s → ≦-is-prop (set wo) wo x u)
-         λ (i , i<u , i≮x) → Cases (ih i i<u x)
-           (λ i<x → 𝟘-elim (i≮x i<x))
+         λ (i , i<u , i≮x) → case (ih i i<u x) of
            λ where
-             (inl i≡x) → inl (transport (_< u) i≡x i<u)
-             (inr i>x) → inl (t x i u i>x i<u))
+             (inl      i<x ) → 𝟘-elim (i≮x i<x)
+             (inr (inl i≡x)) → inl (transport (_< u) i≡x i<u)
+             (inr (inr i>x)) → inl (t x i u i>x i<u))
        λ u≼x → inr (e x u x≼u u≼x)
 
 trichotomy : funext (𝓤 ⊔ 𝓥) 𝓤₀
