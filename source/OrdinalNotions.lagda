@@ -348,12 +348,6 @@ comparable-is-prop set wo@(p , w , _) x y = disjoint-props (p x y) (≧-is-prop 
 is-trichotomous : 𝓤 ⊔ 𝓥 ̇
 is-trichotomous = (x y : X) → (x < y) + (x ≡ y) + (y < x)
 
--- Probably standard somewhere
-
-pair-cong : (P : X → (𝓤 ⊔ 𝓥) ̇) → {x y : X} {px : P x} {py : P y}
-  → (prf : x ≡ y) → (transport P prf px ≡ py) → (x , px) ≡ (y , py)
-pair-cong P refl refl = refl
-
 \end{code}
 
 Not all ordinals are trichotomous, in the absence of excluded middle
