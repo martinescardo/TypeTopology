@@ -17,7 +17,6 @@ open import UF-FunExt
 open import UF-Subsingletons-FunExt
 open import UF-ExcludedMiddle
 open import UF-PropTrunc
-open import MGS-Universe-Lifting using (Lift;lift;lower)
 
 module OrdinalNotions
         {𝓤 𝓥 : Universe}
