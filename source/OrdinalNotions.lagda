@@ -17,6 +17,7 @@ open import UF-FunExt
 open import UF-Subsingletons-FunExt
 open import UF-ExcludedMiddle
 open import UF-PropTrunc
+open import MGS-Universe-Lifting using (Lift;lift;lower)
 
 module OrdinalNotions
         {𝓤 𝓥 : Universe}
@@ -314,18 +315,35 @@ comparable x y = (x < y) + (x ≡ y) + (y < x)
 _≦_ : (x y : X) → 𝓤 ⊔ 𝓥 ̇
 x ≦ y = (x < y) + (x ≡ y)
 
--- Blunder through prop stuff
-≦-is-prop : is-set X → is-well-order → (x y : X) → is-prop (x ≦ y)
-≦-is-prop set (p , w , e , t) x y (inl prf1) (inl prf2) with p x y prf1 prf2
-... | refl = refl
-≦-is-prop set (p , w , e , t) x .x (inl x<x) (inr refl) = 𝟘-elim (irreflexive x (w x) x<x)
-≦-is-prop set (p , w , e , t) x .x (inr refl) (inl x<x) = 𝟘-elim (irreflexive x (w x) x<x)
-≦-is-prop set wo x .x (inr refl) (inr prf) with set prf refl
-... | refl = refl
+_≧_ : (x y : X) → 𝓤 ⊔ 𝓥 ̇
+x ≧ y = (x ≡ y) + (y < x)
 
--- Similar to previous, defer until I learn how to do this
+-- Must be already somewhere
+disjoint : forall {𝓤₀} {𝓥₀} → (A : 𝓤₀ ̇) → (B : 𝓥₀ ̇) → 𝓤₀ ⊔ 𝓥₀ ̇
+disjoint A B = ¬ (A × B)
+
+disjoint-props : forall {𝓤} {𝓥} {A : 𝓤 ̇} {B : 𝓥 ̇} →
+  is-prop A → is-prop B → disjoint A B → is-prop (A + B)
+disjoint-props {A} {B} propA propB A∩B=∅ (inl a1) (inl a2) = ap inl (propA a1 a2)
+disjoint-props {A} {B} propA propB A∩B=∅ (inl a1) (inr b2) = 𝟘-elim (A∩B=∅ (a1 , b2))
+disjoint-props {A} {B} propA propB A∩B=∅ (inr b1) (inl a2) = 𝟘-elim (A∩B=∅ (a2 , b1))
+disjoint-props {A} {B} propA propB A∩B=∅ (inr b1) (inr b2) = ap inr (propB b1 b2)
+
+≦-is-prop : is-set X → is-well-order → (x y : X) → is-prop (x ≦ y)
+≦-is-prop set wo@(p , w , e , t) x y = disjoint-props (p x y) set
+  λ (x<y , x≡y) → irreflexive y (w y) (transport (_< y) (x≡y) x<y)
+
+≧-is-prop : is-set X → is-well-order → (x y : X) → is-prop (x ≧ y)
+≧-is-prop set wo@(p , w , e , t) x y = disjoint-props set (p y x)
+  λ (x≡y , x>y) → irreflexive x (w x) (transport (_< x) (x≡y ⁻¹) x>y)
+
+≧->-transitive : is-well-order → {x y z : X} → (x ≧ y) → (z < y) → z < x
+≧->-transitive wo {x} {y} {z} (inl refl) y>z = y>z
+≧->-transitive wo@(p , w , e , t) {x} {y} {z} (inr x>y) y>z = t z y x y>z x>y
+
 comparable-is-prop : is-set X → is-well-order → (x y : X) → is-prop (comparable x y)
-comparable-is-prop = {!!}
+comparable-is-prop set wo@(p , w , _) x y = disjoint-props (p x y) (≧-is-prop set wo x y)
+  λ (x<y , x≧y) → irreflexive x (w x) (≧->-transitive wo x≧y x<y)
 
 is-trichotomous : 𝓤 ⊔ 𝓥 ̇
 is-trichotomous = (x y : X) → (x < y) + (x ≡ y) + (y < x)
