@@ -950,4 +950,30 @@ compacts-are-basic-in-spectral-frames {𝓦 = 𝓦} F σ U κ =
          ⋁[ F ] ⁅ ℬ↑ [ i ] ∣ i ε ℐ ⁆ ≡⟨ covers F ℬ↑ b↑ U ⁻¹                 ⟩ₚ
          U                           ■
 
+-- TODO: it's not clear if this lemma will be needed. Think more about this and
+-- remove it if it turns out that it won't be needed.
+compact-meet-lemma : (F : frame 𝓤 𝓥 𝓦)
+                   → (U V K : ⟨ F ⟩)
+                   → is-compact-open F K holds
+                   → (K ≤[ poset-of F ] (U ∧[ F ] V)) holds
+                   → Σ K₁ ꞉ ⟨ F ⟩ ,  Σ K₂ ꞉ ⟨ F ⟩ ,
+                       is-compact-open F K₁ holds
+                     × is-compact-open F K₂ holds
+                     × ((K ≤[ poset-of F ] (K₁ ∧[ F ] K₂)) holds)
+                     × (((K₁ ≤[ poset-of F ] U) ∧ (K₂ ≤[ poset-of F ] V)) holds)
+compact-meet-lemma F U V K κ p = K , K , κ , κ , γ , p₁ , p₂
+  where
+   open PosetReasoning (poset-of F)
+
+   γ : (K ≤[ poset-of F ] (K ∧[ F ] K)) holds
+   γ = ∧[ F ]-greatest K K K
+        (≤-is-reflexive (poset-of F) K)
+        (≤-is-reflexive (poset-of F) K)
+
+   p₁ : (K ≤[ poset-of F ] U) holds
+   p₁ = K ≤⟨ p ⟩ U ∧[ F ] V ≤⟨ ∧[ F ]-lower₁ U V ⟩ U ■
+
+   p₂ : (K ≤[ poset-of F ] V) holds
+   p₂ = K ≤⟨ p ⟩ U ∧[ F ] V ≤⟨ ∧[ F ]-lower₂ U V ⟩ V ■
+
 \end{code}
