@@ -639,3 +639,37 @@ The definition of the join:
            ii = joins-commute K₀ S ⁻¹
 
 \end{code}
+
+## The definition of the patch locale
+
+\begin{code}
+
+ 𝟏ₚ : perfect-nucleus
+ 𝟏ₚ = 𝟏 , (n₁ , n₂ , n₃) , ζ
+       where
+        𝟏 = λ _ → 𝟏[ 𝒪 X ]
+
+        n₁ : is-inflationary (𝒪 X) 𝟏 holds
+        n₁ = 𝟏-is-top (𝒪 X)
+
+        n₂ : is-idempotent (𝒪 X) 𝟏 holds
+        n₂ _ = ≤-is-reflexive (poset-of (𝒪 X)) 𝟏[ 𝒪 X ]
+
+        n₃ : preserves-meets (𝒪 X) (𝒪 X) 𝟏 holds
+        n₃ _ _ = ∧[ 𝒪 X ]-is-idempotent 𝟏[ 𝒪 X ]
+
+        ζ : is-perfect 𝟏 holds
+        ζ S δ = (λ _ → 𝟏-is-top (𝒪 X) 𝟏[ 𝒪 X ])
+              , λ (u , φ) → {!!}
+
+ 𝟏ₚ-is-top : Meets.is-top (λ 𝒿 𝓀 → 𝒿 ≼ 𝓀) 𝟏ₚ holds
+ 𝟏ₚ-is-top 𝒿 U = 𝟏-is-top (𝒪 X) (𝒿 $ U)
+
+ Patch : locale (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺) (𝓤 ⊔ 𝓥) {!!}
+ Patch = record { ⟨_⟩ₗ         = perfect-nucleus
+                ; frame-str-of = (_≼_ , 𝟏ₚ , _⋏_ , ⋁ₙ)
+                               , (≼-is-preorder , ≼-is-antisymmetric)
+                               , 𝟏ₚ-is-top
+                               , {!!} , {!!} , {!!} }
+
+\end{code}
