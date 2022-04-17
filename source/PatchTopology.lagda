@@ -619,12 +619,23 @@ The definition of the join:
       iii = distributivity+ (𝒪 X) ⁅ α U ∣ α ε 𝔡𝔦𝔯 K₀ ⁆ ⁅ β V ∣ β ε 𝔡𝔦𝔯 K₀ ⁆ ⁻¹
 
    γ : is-perfect (join K₀) holds
-   γ S δ = {!!}
+   γ S δ = transport
+            (λ - → (- is-lub-of T) holds)
+            (※ ⁻¹)
+            (⋁[ 𝒪 X ]-upper T , ⋁[ 𝒪 X ]-least T)
     where
+     T = ⁅ join K₀ s ∣ s ε S ⁆
      ※ : join K₀ (⋁ S) ≡ ⋁ ⁅ join K₀ s ∣ s ε S ⁆
      ※ = join K₀ (⋁ S)                         ≡⟨ refl ⟩
-         ⋁ ⁅ α (⋁ S) ∣ α ε 𝔡𝔦𝔯 K₀ ⁆            ≡⟨ {!!} ⟩
-         ⋁ ⁅ ⋁ ⁅ α s ∣ s ε S ⁆ ∣ α ε 𝔡𝔦𝔯 K₀ ⁆  ≡⟨ {!!} ⟩
+         ⋁ ⁅ α (⋁ S) ∣ α ε 𝔡𝔦𝔯 K₀ ⁆            ≡⟨ i    ⟩
+         ⋁ ⁅ ⋁ ⁅ α s ∣ s ε S ⁆ ∣ α ε 𝔡𝔦𝔯 K₀ ⁆  ≡⟨ ii   ⟩
          ⋁ ⁅ join K₀ s ∣ s ε S ⁆               ∎
+          where
+           †  = dfunext fe λ is →
+                 scott-continuous-join-eq (𝒪 X) (𝒪 X)
+                  (𝔡𝔦𝔯 K₀ [ is ]) (^*-scott-continuous K₀ ϑ is) S δ
+
+           i  = ap (λ - → ⋁ (index (𝔡𝔦𝔯 K₀) , -)) †
+           ii = joins-commute K₀ S ⁻¹
 
 \end{code}
