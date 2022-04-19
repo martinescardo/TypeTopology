@@ -274,7 +274,7 @@ transports-are-equivs : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {x y : X} (p : x ≡
 transports-are-equivs refl = id-is-equiv _
 
 back-transports-are-equivs : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {x y : X} (p : x ≡ y)
-                           → is-equiv (back-transport A p)
+                           → is-equiv (transport⁻¹ A p)
 back-transports-are-equivs p = transports-are-equivs (p ⁻¹)
 
 \end{code}

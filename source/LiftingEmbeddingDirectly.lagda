@@ -134,7 +134,7 @@ two embeddings:
                → funext 𝓤 (𝓣 ⁺ ⊔ 𝓤)
                → {X : 𝓤 ̇ } → is-embedding (η {𝓤} {X})
 η-is-embedding pe fe fe' fe'' {X} =
-  back-transport
+  transport⁻¹
    is-embedding
    (η-composite fe fe'')
    (∘-is-embedding (κ-is-embedding pe fe fe') (𝓚→𝓛-is-embedding fe X))

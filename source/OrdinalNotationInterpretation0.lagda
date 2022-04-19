@@ -69,12 +69,17 @@ module _ (sr : Set-Replacement pt) where
  brouwer-ordinal₀ : B → Ordinal 𝓤₀
  brouwer-ordinal₀ Z     = 𝟘ₒ
  brouwer-ordinal₀ (S b) = brouwer-ordinal₀ b +ₒ 𝟙ₒ
- brouwer-ordinal₀ (L b) = sup (λ i → brouwer-ordinal₀ (b i))
+ brouwer-ordinal₀ (L b) = sup (brouwer-ordinal₀ ∘ b)
 
  brouwer-ordinal₁ : B → Ordinal 𝓤₀
  brouwer-ordinal₁ Z     = 𝟙ₒ
  brouwer-ordinal₁ (S b) = brouwer-ordinal₁ b +ₒ 𝟙ₒ
  brouwer-ordinal₁ (L b) = sup (extension (brouwer-ordinal₁ ∘ b))
+
+ brouwer-ordinal₂ : B → Ordinalᵀ 𝓤₀
+ brouwer-ordinal₂ Z     = 𝟙ᵒ
+ brouwer-ordinal₂ (S b) = brouwer-ordinal₂ b +ᵒ 𝟙ᵒ
+ brouwer-ordinal₂ (L b) = ∑¹ (brouwer-ordinal₂ ∘ b)
 
  brouwer-ordinal₁-is-compact∙ : (b : B) → compact∙ ⟨ brouwer-ordinal₁ b ⟩
  brouwer-ordinal₁-is-compact∙ Z     = 𝟙-compact∙
@@ -90,11 +95,6 @@ module _ (sr : Set-Replacement pt) where
       (λ u → prop-tychonoff fe
               (ℕ-to-ℕ∞-is-embedding fe' u)
               (λ (i , _) → brouwer-ordinal₁-is-compact∙ (b i))))
-
- brouwer-ordinal₂ : B → Ordinalᵀ 𝓤₀
- brouwer-ordinal₂ Z     = 𝟙ᵒ
- brouwer-ordinal₂ (S b) = brouwer-ordinal₂ b +ᵒ 𝟙ᵒ
- brouwer-ordinal₂ (L b) = ∑¹ (brouwer-ordinal₂ ∘ b)
 
  brouwer-ordinal₂-is-compact∙ : (b : B) → compact∙ ⟪ brouwer-ordinal₂ b ⟫
  brouwer-ordinal₂-is-compact∙ Z     = 𝟙-compact∙

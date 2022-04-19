@@ -489,6 +489,19 @@ Non-limit points are isolated in the Κ interpretation:
   iv : is-isolated (ι ν x , γ x (ι (A x) y))
   iv = Σ-isolated i iii
 
+{- Under construction.
+
+ℓ-trichotomous : (ν : E) (x : ⟪ Δ ν ⟫)
+               → ℓ ν x ≡ ₀
+               → (y : ⟪ Κ ν ⟫) → (ι ν x ≺⟪ Κ ν ⟫ y) + (ι ν x ≡ y) + (y ≺⟪ Κ ν ⟫ ι ν x)
+ℓ-trichotomous ⌜𝟙⌝         ⋆ p ⋆ = inr (inl refl)
+ℓ-trichotomous ⌜ω+𝟙⌝ (inl n) refl y = finite-trichotomous fe₀ n y
+ℓ-trichotomous (ν₀ ⌜+⌝ ν₁) (inl ⋆ , x₀) p y = {!!}
+ℓ-trichotomous (ν₀ ⌜+⌝ ν₁) (inr ⋆ , x₁) p y = {!!}
+ℓ-trichotomous (ν₀ ⌜×⌝ ν₁) x p y = {!!}
+ℓ-trichotomous (⌜Σ⌝ ν A)   x p y = {!!}
+-}
+
 \end{code}
 
 The function ℓ really does detect limit points:

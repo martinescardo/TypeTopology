@@ -103,6 +103,9 @@ Notation to try to make proofs readable:
 need_which-is-given-by_ : (A : 𝓤 ̇ ) → A → A
 need A which-is-given-by a = a
 
+have_by_ : (A : 𝓤 ̇ ) → A → A
+have A by a = a
+
 have_so_ : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → A → B → B
 have a so b = b
 

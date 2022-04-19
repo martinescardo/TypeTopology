@@ -232,7 +232,7 @@ over-ι-map-is-order-preserving τ (inl n) x y ((.n , refl) , l) = (n , refl) , 
  where
   γ : over-ι-map (λ n → ⟪ τ n ⟫) (inl n) x (n , refl) ≺⟪ τ n ⟫
       over-ι-map (λ n → ⟪ τ n ⟫) (inl n) y (n , refl)
-  γ = back-transport₂
+  γ = transport₂⁻¹
         (λ a b → a ≺⟪ τ n ⟫ b)
         (over-ι-map-left (λ n → ⟪ τ n ⟫) n x)
         (over-ι-map-left (λ n → ⟪ τ n ⟫) n y)
@@ -339,10 +339,10 @@ pair-fun-is-order-reflecting τ υ A B f g φ e γ (x , a) (y , b) (inr (r , l))
   i = transport-ap (λ - → ⟪ B - ⟫) f (c r)
 
   j : transport (λ - → ⟪ B - ⟫) (ap f (c r)) (g x a) ≺⟪ B (f y) ⟫ (g y b)
-  j = back-transport (λ - → transport (λ - → ⟪ B - ⟫) - (g x a) ≺⟪ B (f y) ⟫ (g y b)) (η r) l
+  j = transport⁻¹ (λ - → transport (λ - → ⟪ B - ⟫) - (g x a) ≺⟪ B (f y) ⟫ (g y b)) (η r) l
 
   k : transport (λ - → ⟪ B (f -) ⟫) (c r) (g x a) ≺⟪ B (f y) ⟫ (g y b)
-  k = back-transport (λ - → - ≺⟪ B (f y) ⟫ (g y b)) i j
+  k = transport⁻¹ (λ - → - ≺⟪ B (f y) ⟫ (g y b)) i j
 
   h : {x y : ⟪ τ ⟫} (s : x ≡ y) {a : ⟪ A x ⟫} {b : ⟪ A y ⟫}
     → transport (λ - → ⟪ B (f -) ⟫) s (g x a) ≺⟪ B (f y) ⟫ (g y b)
@@ -388,7 +388,7 @@ over-ι-map-is-order-reflecting τ (inl n) x y ((m , p) , l) = (n , refl) , q
   b = apd (over-ι-map (λ n → ⟪ τ n ⟫) (inl n) y) r
 
   c : t x' ≺⟪ τ m ⟫ t y'
-  c = back-transport₂ (λ a b → a ≺⟪ τ m ⟫ b) a b l
+  c = transport₂⁻¹ (λ a b → a ≺⟪ τ m ⟫ b) a b l
 
   d : x' ≺⟪ τ n ⟫ y'
   d = tr r _ _ c

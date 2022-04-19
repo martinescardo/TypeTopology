@@ -163,7 +163,7 @@ bounded-∀-next A k a φ n l = cases f g s
   f : n < k → A n
   f = φ n
   g : succ n ≡ succ k → A n
-  g p = back-transport A (succ-lc p) a
+  g p = transport⁻¹ A (succ-lc p) a
 
 \end{code}
 
@@ -187,9 +187,9 @@ Added 20th June 2018:
 regress : (P : ℕ → 𝓤 ̇ )
         → ((n : ℕ) → P (succ n) → P n)
         → (n m : ℕ) → m ≤ n → P n → P m
-regress P ρ zero m l p = back-transport P (unique-minimal m l) p
+regress P ρ zero m l p = transport⁻¹ P (unique-minimal m l) p
 regress P ρ (succ n) m l p = cases (λ (l' : m ≤ n) → IH m l' (ρ n p))
-                                   (λ (r : m ≡ succ n) → back-transport P r p)
+                                   (λ (r : m ≡ succ n) → transport⁻¹ P r p)
                                    (≤-split m n l)
  where
   IH : (m : ℕ) → m ≤ n → P n → P m
@@ -201,7 +201,7 @@ regress P ρ (succ n) m l p = cases (λ (l' : m ≤ n) → IH m l' (ρ n p))
  where
   τ : is-accessible _<_ m → (n : ℕ) → n < succ m → is-accessible _<_ n
   τ a n u = cases (λ (v : n < m) → prev _<_ m a n v)
-                  (λ (p : n ≡ m) → back-transport (is-accessible _<_) p a)
+                  (λ (p : n ≡ m) → transport⁻¹ (is-accessible _<_) p a)
                   (<-split n m u)
 
 course-of-values-induction : (P : ℕ → 𝓤 ̇ )

@@ -301,8 +301,11 @@ the time of writing, namely 11th January 2021).
 
 \begin{code}
 
+is-trichotomous-element : X → 𝓤 ⊔ 𝓥 ̇
+is-trichotomous-element x = (y : X) → (x < y) + (x ≡ y) + (y < x)
+
 is-trichotomous : 𝓤 ⊔ 𝓥 ̇
-is-trichotomous = (x y : X) → (x < y) + (x ≡ y) + (y < x)
+is-trichotomous = (x : X) → is-trichotomous-element x
 
 \end{code}
 

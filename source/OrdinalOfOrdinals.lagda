@@ -492,14 +492,14 @@ segment-⊴ α a = segment-inclusion α a , segment-inclusion-is-simulation α a
   q = h (u , l)
 
   n : u ≺⟨ α ⟩ b
-  n = back-transport (λ - → - ≺⟨ α ⟩ b) q m
+  n = transport⁻¹ (λ - → - ≺⟨ α ⟩ b) q m
 
 ↓-lc : (α : Ordinal 𝓤) (a b : ⟨ α ⟩)
      → α ↓ a ≡ α ↓ b → a ≡ b
 ↓-lc α a b p =
  Extensionality α a b
   (↓-⊴-lc α a b (transport      (λ - → (α ↓ a) ⊴ -) p (⊴-refl (α ↓ a))))
-  (↓-⊴-lc α b a (back-transport (λ - → (α ↓ b) ⊴ -) p (⊴-refl (α ↓ b))))
+  (↓-⊴-lc α b a (transport⁻¹ (λ - → (α ↓ b) ⊴ -) p (⊴-refl (α ↓ b))))
 
 \end{code}
 
@@ -616,7 +616,7 @@ Therefore the map (α ↓ -) reflects and preserves order:
   r = ↓-lc α a u q
 
   γ : a ≺⟨ α ⟩ b
-  γ = back-transport (λ - → - ≺⟨ α ⟩ b) r l
+  γ = transport⁻¹ (λ - → - ≺⟨ α ⟩ b) r l
 
 ↓-preserves-order : (α : Ordinal 𝓤) (a b : ⟨ α ⟩)
                   → a ≺⟨ α ⟩ b
@@ -642,7 +642,7 @@ It remains to show that _⊲_ is a well-order:
     IH b l = f b (s b l)
 
     g : (β : Ordinal 𝓤) → β ⊲ (α ↓ a) → is-accessible _⊲_ β
-    g β ((b , l) , p) = back-transport (is-accessible _⊲_) q (IH b l)
+    g β ((b , l) , p) = transport⁻¹ (is-accessible _⊲_) q (IH b l)
      where
       q : β ≡ (α ↓ b)
       q = p ∙ iterated-↓ α a b l
@@ -651,7 +651,7 @@ It remains to show that _⊲_ is a well-order:
 ⊲-is-well-founded {𝓤} α = next α g
  where
   g : (β : Ordinal 𝓤) → β ⊲ α → is-accessible _⊲_ β
-  g β (b , p) = back-transport (is-accessible _⊲_) p (↓-accessible α b)
+  g β (b , p) = transport⁻¹ (is-accessible _⊲_) p (↓-accessible α b)
 
 ⊲-is-extensional : is-extensional (_⊲_ {𝓤})
 ⊲-is-extensional α β f g = ⊴-antisym α β
@@ -834,7 +834,7 @@ order-embeddings-are-lc α β f (p , r) {x} {y} s = γ
 
     j : f u ≺⟨ β ⟩ f x
 
-    j = back-transport (λ - → f u ≺⟨ β ⟩ -) s i
+    j = transport⁻¹ (λ - → f u ≺⟨ β ⟩ -) s i
 
 
   γ : x ≡ y
@@ -948,7 +948,7 @@ module ℕ∞-in-Ord where
      →  x ≺⟨ ℕ∞ₒ ⟩ y
      → ι𝟙-inverse x d ≺⟨ ℕₒ +ₒ 𝟙ₒ ⟩ ι𝟙-inverse y e
    p .(ι n) .(ι m) (inl (n , refl)) (inl (m , refl)) (k , r , l) =
-    back-transport (λ - → - <ℕ m) (ℕ-to-ℕ∞-lc r) (⊏-gives-< k m l)
+    transport⁻¹ (λ - → - <ℕ m) (ℕ-to-ℕ∞-lc r) (⊏-gives-< k m l)
    p .(ι n) y (inl (n , refl)) (inr f) l = ⋆
    p x y (inr f) e (k , r , l) =
     𝟘-elim (∞-is-not-finite k ((not-finite-is-∞ (fe 𝓤₀ 𝓤₀) (curry f))⁻¹ ∙ r))
