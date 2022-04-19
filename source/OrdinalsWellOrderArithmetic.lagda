@@ -687,6 +687,8 @@ module sum
 
 \end{code}
 
+NB. The above trichotomy preservation added 19th April 2022.
+
 We know how to prove extensionality either assuming top elements or
 assuming cotransitivity. We do this in the following two modules.
 
