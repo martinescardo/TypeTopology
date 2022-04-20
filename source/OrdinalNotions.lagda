@@ -340,7 +340,6 @@ proposition).
 
 \begin{code}
 
-
 trichotomy : funext (𝓤 ⊔ 𝓥) 𝓤₀
            → excluded-middle (𝓤 ⊔ 𝓥)
            → is-well-order

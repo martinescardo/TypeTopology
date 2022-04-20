@@ -115,23 +115,22 @@ following:
 
 \begin{code}
 
- succ-monotone : 𝓤₁ ̇
- succ-monotone = (α β : Ordinal 𝓤₀) → α ⊴ β → (α +ₒ 𝟙ₒ) ⊴ (β +ₒ 𝟙ₒ)
+ open import UF-ExcludedMiddle
 
- comparison₀₁ : succ-monotone → (b : B) → brouwer-ordinal₀ b ⊴ brouwer-ordinal₁ b
- comparison₀₁ sm Z     = 𝟘ₒ-least-⊴ 𝟙ₒ
- comparison₀₁ sm (S b) = sm (brouwer-ordinal₀ b) (brouwer-ordinal₁ b) (comparison₀₁ sm b)
- comparison₀₁ sm (L b) = VI
+ comparison₀₁ : EM 𝓤₁ → (b : B) → brouwer-ordinal₀ b ⊴ brouwer-ordinal₁ b
+ comparison₀₁ em Z     = 𝟘ₒ-least-⊴ 𝟙ₒ
+ comparison₀₁ em (S b) = succ-monotone em (brouwer-ordinal₀ b) (brouwer-ordinal₁ b) (comparison₀₁ em b)
+ comparison₀₁ em (L b) = VI
   where
    I : (n : ℕ) → brouwer-ordinal₀ (b n) ⊴ brouwer-ordinal₁ (b n)
-   I n = comparison₀₁ sm (b n)
+   I n = comparison₀₁ em (b n)
 
    II : (n : ℕ) → extension (brouwer-ordinal₁ ∘ b) (ℕ-to-ℕ∞ n)
-                 ≡ brouwer-ordinal₁ (b n)
+                ≡ brouwer-ordinal₁ (b n)
    II n = eqtoidₒ _ _ (↗-property (brouwer-ordinal₁ ∘ b) (embedding-ℕ-to-ℕ∞ fe') n)
 
    III : (n : ℕ) → brouwer-ordinal₀ (b n)
-                ⊴ extension (brouwer-ordinal₁ ∘ b) (ℕ-to-ℕ∞ n)
+                 ⊴ extension (brouwer-ordinal₁ ∘ b) (ℕ-to-ℕ∞ n)
    III n = transport (brouwer-ordinal₀ (b n) ⊴_) ((II n)⁻¹) (I n)
 
    IV : sup (brouwer-ordinal₀ ∘ b) ⊴ sup (extension (brouwer-ordinal₁ ∘ b) ∘ ℕ-to-ℕ∞)

@@ -715,3 +715,32 @@ succ-not-necessarily-monotone {𝓤} ϕ P isp = II I
 \end{code}
 
 TODO. Also the implication α ⊲ β → (α +ₒ 𝟙ₒ) ⊲ (β +ₒ 𝟙ₒ) fails in general.
+
+\begin{code}
+
+succ-monotone : EM (𝓤 ⁺) → (α β : Ordinal 𝓤) → α ⊴ β → (α +ₒ 𝟙ₒ) ⊴ (β +ₒ 𝟙ₒ)
+succ-monotone em α β l = II I
+ where
+  I : ((α +ₒ 𝟙ₒ) ⊲ (β +ₒ 𝟙ₒ)) + ((α +ₒ 𝟙ₒ) ≡ (β +ₒ 𝟙ₒ)) + ((β +ₒ 𝟙ₒ) ⊲ (α +ₒ 𝟙ₒ))
+  I = trichotomy _⊲_ fe' em ⊲-is-well-order (α +ₒ 𝟙ₒ) (β +ₒ 𝟙ₒ)
+
+  II : type-of I → (α +ₒ 𝟙ₒ) ⊴ (β +ₒ 𝟙ₒ)
+  II (inl m)       = ⊲-gives-⊴ _ _ m
+  II (inr (inl e)) = transport ((α +ₒ 𝟙ₒ) ⊴_) e  (⊴-refl (α +ₒ 𝟙ₒ))
+  II (inr (inr m)) = transport ((α +ₒ 𝟙ₒ) ⊴_) VI (⊴-refl (α +ₒ 𝟙ₒ))
+   where
+    III : (β +ₒ 𝟙ₒ) ⊴ (α +ₒ 𝟙ₒ)
+    III = ⊲-gives-⊴ _ _ m
+
+    IV : β ⊴ α
+    IV = succₒ-reflects-⊴ β α III
+
+    V : α ≡ β
+    V = ⊴-antisym _ _ l IV
+
+    VI : (α +ₒ 𝟙ₒ) ≡ (β +ₒ 𝟙ₒ)
+    VI = ap (_+ₒ 𝟙ₒ) V
+
+\end{code}
+
+TODO. EM (𝓤 ⁺) is sufficient, because we can work with the resized order _⊲⁻_.
