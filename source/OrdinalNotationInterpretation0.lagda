@@ -108,10 +108,8 @@ module _ (sr : Set-Replacement pt) where
 
 \end{code}
 
-The monotonicity of the successor function on ordinals is equivalent
-to the principle of excluded middle (see
-OrdinalArithmetic-Properties). Using it as an assumption, we get the
-following:
+The successor function on ordinals is not necessarily monotone, but it
+is if excluded middle holds.
 
 \begin{code}
 
@@ -146,15 +144,13 @@ following:
  comparison₂₁ Z     x           = x
  comparison₂₁ (S b) (inl ⋆ , x) = inl (comparison₂₁ b x)
  comparison₂₁ (S b) (inr ⋆ , y) = inr ⋆
- comparison₂₁ (L b) (u , f)     = sum-to-sup (extension (λ n → brouwer-ordinal₁ (b n))) (u , g)
+ comparison₂₁ (L b) (u , f)     = sum-to-sup
+                                   (extension (brouwer-ordinal₁ ∘ b))
+                                   (u , g)
   where
    g : ((i , _) : fiber ℕ-to-ℕ∞ u) → ⟨ brouwer-ordinal₁ (b i) ⟩
    g (i , p) = comparison₂₁ (b i) (f (i , p))
 
-{- TODO:
- comparison₂₁-is-surjection : (b : B) → is-surjection (comparison₂₁ b)
- comparison₂₁-is-surjection b = {!!}
--}
 \end{code}
 
-More can be said about this.
+Question. Is the function comparison₂₁ a surjection?
