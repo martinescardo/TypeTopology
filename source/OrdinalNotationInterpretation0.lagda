@@ -106,15 +106,56 @@ module _ (sr : Set-Replacement pt) where
                                         (λ i → ⟪ brouwer-ordinal₂ (b i) ⟫)
                                         (λ i → brouwer-ordinal₂-is-compact∙ (b i))
 
- comparison₂₋₁ : (b : B) → ⟪ brouwer-ordinal₂ b ⟫ → ⟨ brouwer-ordinal₁ b ⟩
- comparison₂₋₁ Z     x           = x
- comparison₂₋₁ (S b) (inl ⋆ , x) = inl (comparison₂₋₁ b x)
- comparison₂₋₁ (S b) (inr ⋆ , y) = inr ⋆
- comparison₂₋₁ (L b) (u , f)     = sum-to-sup (extension (λ n → brouwer-ordinal₁ (b n))) (u , g)
+\end{code}
+
+The monotonicity of the successor function on ordinals is equivalent
+to the principle of excluded middle (see
+OrdinalArithmetic-Properties). Using it as an assumption, we get the
+following:
+
+\begin{code}
+
+ succ-monotone : 𝓤₁ ̇
+ succ-monotone = (α β : Ordinal 𝓤₀) → α ⊴ β → (α +ₒ 𝟙ₒ) ⊴ (β +ₒ 𝟙ₒ)
+
+ comparison₀₁ : succ-monotone → (b : B) → brouwer-ordinal₀ b ⊴ brouwer-ordinal₁ b
+ comparison₀₁ sm Z     = 𝟘ₒ-least-⊴ 𝟙ₒ
+ comparison₀₁ sm (S b) = sm (brouwer-ordinal₀ b) (brouwer-ordinal₁ b) (comparison₀₁ sm b)
+ comparison₀₁ sm (L b) = VI
+  where
+   I : (n : ℕ) → brouwer-ordinal₀ (b n) ⊴ brouwer-ordinal₁ (b n)
+   I n = comparison₀₁ sm (b n)
+
+   II : (n : ℕ) → extension (brouwer-ordinal₁ ∘ b) (ℕ-to-ℕ∞ n)
+                 ≡ brouwer-ordinal₁ (b n)
+   II n = eqtoidₒ _ _ (↗-property (brouwer-ordinal₁ ∘ b) (embedding-ℕ-to-ℕ∞ fe') n)
+
+   III : (n : ℕ) → brouwer-ordinal₀ (b n)
+                ⊴ extension (brouwer-ordinal₁ ∘ b) (ℕ-to-ℕ∞ n)
+   III n = transport (brouwer-ordinal₀ (b n) ⊴_) ((II n)⁻¹) (I n)
+
+   IV : sup (brouwer-ordinal₀ ∘ b) ⊴ sup (extension (brouwer-ordinal₁ ∘ b) ∘ ℕ-to-ℕ∞)
+   IV = sup-monotone _ _ III
+
+   V : sup (extension (brouwer-ordinal₁ ∘ b) ∘ ℕ-to-ℕ∞) ⊴ sup (extension (brouwer-ordinal₁ ∘ b))
+   V = sup-is-lower-bound-of-upper-bound _ _ (λ n → sup-is-upper-bound _ (ℕ-to-ℕ∞ n))
+
+   VI : sup (brouwer-ordinal₀ ∘ b) ⊴ sup (extension (brouwer-ordinal₁ ∘ b))
+   VI = ⊴-trans _ _ _ IV V
+
+ comparison₂₁ : (b : B) → ⟪ brouwer-ordinal₂ b ⟫ → ⟨ brouwer-ordinal₁ b ⟩
+ comparison₂₁ Z     x           = x
+ comparison₂₁ (S b) (inl ⋆ , x) = inl (comparison₂₁ b x)
+ comparison₂₁ (S b) (inr ⋆ , y) = inr ⋆
+ comparison₂₁ (L b) (u , f)     = sum-to-sup (extension (λ n → brouwer-ordinal₁ (b n))) (u , g)
   where
    g : ((i , _) : fiber ℕ-to-ℕ∞ u) → ⟨ brouwer-ordinal₁ (b i) ⟩
-   g (i , p) = comparison₂₋₁ (b i) (f (i , p))
+   g (i , p) = comparison₂₁ (b i) (f (i , p))
 
+{- TODO:
+ comparison₂₁-is-surjection : (b : B) → is-surjection (comparison₂₁ b)
+ comparison₂₁-is-surjection b = {!!}
+-}
 \end{code}
 
 More can be said about this.
