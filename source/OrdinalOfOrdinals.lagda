@@ -876,8 +876,8 @@ simulations-are-monotone α β f (i , p) = φ
 
 \end{code}
 
-Example. Classically, the ordinals ℕₒ +ₒ 𝟙ₒ and ℕ∞ₒ are equal.
-Constructively, we have (ℕₒ +ₒ 𝟙ₒ) ⊴ ℕ∞ₒ, but the inequality in the
+Example. Classically, the ordinals ω +ₒ 𝟙ₒ and ℕ∞ₒ are equal.
+Constructively, we have (ω +ₒ 𝟙ₒ) ⊴ ℕ∞ₒ, but the inequality in the
 other direction is equivalent to LPO.
 
 \begin{code}
@@ -889,36 +889,36 @@ module ℕ∞-in-Ord where
  open import GenericConvergentSequence
  open import NaturalsOrder
 
- fact : (ℕₒ +ₒ 𝟙ₒ) ⊴ ℕ∞ₒ
+ fact : (ω +ₒ 𝟙ₒ) ⊴ ℕ∞ₒ
  fact = ι𝟙 , i , p
   where
-   i : (x : ⟨ ℕₒ +ₒ 𝟙ₒ ⟩) (y : ⟨ ℕ∞ₒ ⟩)
+   i : (x : ⟨ ω +ₒ 𝟙ₒ ⟩) (y : ⟨ ℕ∞ₒ ⟩)
      → y ≺⟨ ℕ∞ₒ ⟩ ι𝟙 x
-     → Σ x' ꞉ ⟨ ℕₒ +ₒ 𝟙ₒ ⟩ , (x' ≺⟨ ℕₒ +ₒ 𝟙ₒ ⟩ x) × (ι𝟙 x' ≡ y)
+     → Σ x' ꞉ ⟨ ω +ₒ 𝟙ₒ ⟩ , (x' ≺⟨ ω +ₒ 𝟙ₒ ⟩ x) × (ι𝟙 x' ≡ y)
    i (inl m) y (n , r , l) = inl n , ⊏-gives-< n m l , (r ⁻¹)
    i (inr *) y (n , r , l) = inl n , * , (r ⁻¹)
 
-   p : (x y : ⟨ ℕₒ +ₒ 𝟙ₒ ⟩)
-     → x ≺⟨ ℕₒ +ₒ 𝟙ₒ ⟩ y
+   p : (x y : ⟨ ω +ₒ 𝟙ₒ ⟩)
+     → x ≺⟨ ω +ₒ 𝟙ₒ ⟩ y
      → ι𝟙 x ≺⟨ ℕ∞ₒ ⟩ ι𝟙 y
    p (inl n) (inl m) l = ι-order-preserving n m l
    p (inl n) (inr *) * = ∞-≺-maximal n
    p (inr *) (inl m) l = 𝟘-elim l
    p (inr *) (inr *) l = 𝟘-elim l
 
- converse-fails-constructively : ℕ∞ₒ ⊴ (ℕₒ +ₒ 𝟙ₒ) → LPO
+ converse-fails-constructively : ℕ∞ₒ ⊴ (ω +ₒ 𝟙ₒ) → LPO
  converse-fails-constructively l = γ
   where
-   b : (ℕₒ +ₒ 𝟙ₒ) ≃ₒ ℕ∞ₒ
-   b = bisimilarity-gives-ordinal-equiv (ℕₒ +ₒ 𝟙ₒ) ℕ∞ₒ fact l
+   b : (ω +ₒ 𝟙ₒ) ≃ₒ ℕ∞ₒ
+   b = bisimilarity-gives-ordinal-equiv (ω +ₒ 𝟙ₒ) ℕ∞ₒ fact l
 
    e : is-equiv ι𝟙
-   e = pr₂ (≃ₒ-gives-≃ (ℕₒ +ₒ 𝟙ₒ) ℕ∞ₒ b)
+   e = pr₂ (≃ₒ-gives-≃ (ω +ₒ 𝟙ₒ) ℕ∞ₒ b)
 
    γ : LPO
    γ = ι𝟙-has-section-gives-LPO (equivs-have-sections ι𝟙 e)
 
- converse-fails-constructively-converse : LPO → ℕ∞ₒ ⊴ (ℕₒ +ₒ 𝟙ₒ)
+ converse-fails-constructively-converse : LPO → ℕ∞ₒ ⊴ (ω +ₒ 𝟙ₒ)
  converse-fails-constructively-converse lpo = (λ x → ι𝟙-inverse x (lpo x)) ,
                                               (λ x → i x (lpo x)) ,
                                               (λ x y → p x y (lpo x) (lpo y))
@@ -929,7 +929,7 @@ module ℕ∞-in-Ord where
    ι𝟙-inverse-inl u          (inr g)          m q = 𝟘-elim (g (m , q))
 
    i : (x : ℕ∞) (d : decidable (Σ n ꞉ ℕ , x ≡ ι n)) (y : ℕ + 𝟙)
-     → y ≺⟨ ℕₒ +ₒ 𝟙ₒ ⟩ ι𝟙-inverse x d
+     → y ≺⟨ ω +ₒ 𝟙ₒ ⟩ ι𝟙-inverse x d
      → Σ x' ꞉ ℕ∞ , (x' ≺⟨ ℕ∞ₒ ⟩ x) × (ι𝟙-inverse x' (lpo x') ≡ y)
    i .(ι n) (inl (n , refl)) (inl m) l =
      ι m ,
@@ -946,23 +946,23 @@ module ℕ∞-in-Ord where
 
    p : (x y : ℕ∞)  (d : decidable (Σ n ꞉ ℕ , x ≡ ι n)) (e : decidable (Σ m ꞉ ℕ , y ≡ ι m))
      →  x ≺⟨ ℕ∞ₒ ⟩ y
-     → ι𝟙-inverse x d ≺⟨ ℕₒ +ₒ 𝟙ₒ ⟩ ι𝟙-inverse y e
+     → ι𝟙-inverse x d ≺⟨ ω +ₒ 𝟙ₒ ⟩ ι𝟙-inverse y e
    p .(ι n) .(ι m) (inl (n , refl)) (inl (m , refl)) (k , r , l) =
     transport⁻¹ (λ - → - <ℕ m) (ℕ-to-ℕ∞-lc r) (⊏-gives-< k m l)
    p .(ι n) y (inl (n , refl)) (inr f) l = ⋆
    p x y (inr f) e (k , r , l) =
     𝟘-elim (∞-is-not-finite k ((not-finite-is-∞ (fe 𝓤₀ 𝓤₀) (curry f))⁻¹ ∙ r))
 
- corollary₁ : LPO → ℕ∞ₒ ≃ₒ (ℕₒ +ₒ 𝟙ₒ)
+ corollary₁ : LPO → ℕ∞ₒ ≃ₒ (ω +ₒ 𝟙ₒ)
  corollary₁ lpo = bisimilarity-gives-ordinal-equiv
-                   ℕ∞ₒ (ℕₒ +ₒ 𝟙ₒ)
+                   ℕ∞ₒ (ω +ₒ 𝟙ₒ)
                    (converse-fails-constructively-converse lpo) fact
 
  corollary₂ : LPO → ℕ∞ ≃ (ℕ + 𝟙)
- corollary₂ lpo = ≃ₒ-gives-≃ ℕ∞ₒ (ℕₒ +ₒ 𝟙ₒ) (corollary₁ lpo)
+ corollary₂ lpo = ≃ₒ-gives-≃ ℕ∞ₒ (ω +ₒ 𝟙ₒ) (corollary₁ lpo)
 
- corollary₃ : is-univalent 𝓤₀ → LPO → ℕ∞ₒ ≡ (ℕₒ +ₒ 𝟙ₒ)
- corollary₃ ua lpo = eqtoidₒ ℕ∞ₒ (ℕₒ +ₒ 𝟙ₒ) (corollary₁ lpo)
+ corollary₃ : is-univalent 𝓤₀ → LPO → ℕ∞ₒ ≡ (ω +ₒ 𝟙ₒ)
+ corollary₃ ua lpo = eqtoidₒ ℕ∞ₒ (ω +ₒ 𝟙ₒ) (corollary₁ lpo)
 
  corollary₄ : is-univalent 𝓤₀ → LPO → ℕ∞ ≡ (ℕ + 𝟙)
  corollary₄ ua lpo = eqtoid ua ℕ∞ (ℕ + 𝟙) (corollary₂ lpo)

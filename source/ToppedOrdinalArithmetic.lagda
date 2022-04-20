@@ -46,6 +46,11 @@ succₒ α = α +ₒ 𝟙ₒ  ,
            (underlying-order 𝟙ₒ)
            (prop.topped 𝟙 𝟙-is-prop ⋆)
 
+succₒ-is-trichotomous : (α : Ord)
+                      → is-trichotomous α
+                      → is-trichotomous [ succₒ α ]
+succₒ-is-trichotomous α t = +ₒ-is-trichotomous α 𝟙ₒ t 𝟙ₒ-is-trichotomous
+
 𝟙ᵒ 𝟚ᵒ ℕ∞ᵒ : Ordᵀ
 𝟙ᵒ  = 𝟙ₒ , prop.topped 𝟙 𝟙-is-prop ⋆
 𝟚ᵒ  = succₒ 𝟙ₒ
@@ -68,6 +73,12 @@ Sum of an ordinal-indexed family of ordinals:
 
   module Sum = sum-top fe _<_ _≺_ (λ x → top (υ x)) (λ x → top-is-top (υ x))
 
+∑-is-trichotomous : (τ : Ordᵀ) (υ : ⟪ τ ⟫ → Ordᵀ)
+                  → is-trichotomous [ τ ]
+                  → ((x : ⟪ τ ⟫) → is-trichotomous [ υ x ])
+                  → is-trichotomous [ ∑ τ υ ]
+∑-is-trichotomous τ υ = sum.trichotomy-preservation _ _
+
 \end{code}
 
 Addition and multiplication can be reduced to ∑, given the ordinal 𝟚ᵒ
@@ -78,8 +89,22 @@ defined above:
 _+ᵒ_ : Ordᵀ → Ordᵀ → Ordᵀ
 τ +ᵒ υ = ∑ 𝟚ᵒ (cases (λ _ → τ) (λ _ → υ))
 
++ᵒ-is-trichotomous : (τ υ : Ordᵀ)
+                   → is-trichotomous [ τ ]
+                   → is-trichotomous [ υ ]
+                   → is-trichotomous [ τ +ᵒ υ ]
++ᵒ-is-trichotomous τ υ t u = ∑-is-trichotomous 𝟚ᵒ (cases (λ _ → τ) (λ _ → υ))
+                              𝟚ₒ-is-trichotomous
+                              (dep-cases (λ _ → t) (λ _ → u))
+
 _×ᵒ_ : Ordᵀ → Ordᵀ → Ordᵀ
 τ ×ᵒ υ = ∑ τ  (λ (_ : ⟪ τ ⟫) → υ)
+
+×ᵒ-is-trichotomous : (τ υ : Ordᵀ)
+                   → is-trichotomous [ τ ]
+                   → is-trichotomous [ υ ]
+                   → is-trichotomous [ τ ×ᵒ υ ]
+×ᵒ-is-trichotomous τ υ t u = ∑-is-trichotomous τ (λ _ → υ) t (λ _ → u)
 
 \end{code}
 
@@ -105,6 +130,6 @@ And now with an isolated top element:
 \begin{code}
 
 ∑₁ : (ℕ → Ordᵀ) → Ordᵀ
-∑₁ τ = ∑ (succₒ ℕₒ) (τ ↗ (over , over-embedding))
+∑₁ τ = ∑ (succₒ ω) (τ ↗ (over , over-embedding))
 
 \end{code}

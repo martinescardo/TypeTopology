@@ -461,7 +461,7 @@ module ClassicalWellOrder
 
 \begin{code}
 
-  minimal-is-prop : is-trichotomous
+  minimal-is-prop : is-trichotomous-order
                   → (A : X → (𝓤 ⊔ 𝓣) ̇ )
                   → ((x : X) → is-prop (A x))
                   → is-prop (Σ x ꞉ X , A x × ((y : X) → A y → ¬ (y ≺ x)))

@@ -95,7 +95,7 @@ data E where
  ⌜Σ⌝   : (ν : E) → (⟪ Δ ν ⟫ → E) → E
 
 Δ ⌜𝟙⌝         = 𝟙ᵒ
-Δ ⌜ω+𝟙⌝       = succₒ ℕₒ
+Δ ⌜ω+𝟙⌝       = succₒ ω
 Δ (ν₀ ⌜+⌝ ν₁) = Δ ν₀ +ᵒ Δ ν₁
 Δ (ν₀ ⌜×⌝ ν₁) = Δ ν₀ ×ᵒ Δ ν₁
 Δ (⌜Σ⌝ ν A)   = ∑ (Δ ν) (Δ ∘ A)
@@ -128,6 +128,24 @@ Hence all ordinals in the image of Δ are discrete (have decidable equality):
 Δ-is-discrete : (ν : E) → is-discrete ⟪ Δ ν ⟫
 Δ-is-discrete ν = retract-is-discrete (Δ-retract-of-ℕ ν) ℕ-is-discrete
 
+\end{code}
+
+A stronger result is that the ordinals in the image of Δ are trichotomous:
+
+\begin{code}
+
+Δ-is-trichotomous : (ν : E) → is-trichotomous [ Δ ν ]
+Δ-is-trichotomous ⌜𝟙⌝         = 𝟙ₒ-is-trichotomous
+Δ-is-trichotomous ⌜ω+𝟙⌝       = succₒ-is-trichotomous ω ω-is-trichotomous
+Δ-is-trichotomous (ν₀ ⌜+⌝ ν₁) = +ᵒ-is-trichotomous (Δ ν₀) (Δ ν₁)
+                                  (Δ-is-trichotomous ν₀)
+                                  (Δ-is-trichotomous ν₁)
+Δ-is-trichotomous (ν₀ ⌜×⌝ ν₁) = ×ᵒ-is-trichotomous (Δ ν₀) (Δ ν₁)
+                                  (Δ-is-trichotomous ν₀)
+                                  (Δ-is-trichotomous ν₁)
+Δ-is-trichotomous (⌜Σ⌝ ν A)   = ∑-is-trichotomous (Δ ν) (Δ ∘ A)
+                                 (Δ-is-trichotomous ν)
+                                 (λ x → Δ-is-trichotomous (A x))
 \end{code}
 
 Now we define Κ, ι, ι-is-embedding by simultaneous induction.
@@ -165,7 +183,7 @@ open topped-ordinals-injectivity
 \end{code}
 
 Explicitly, the underlying set of this ordinal is given as follows in
-the file InjectiveTypes, but we don't need to know this fact here:
+the file InjectiveTypes:
 
 \begin{code}
 
@@ -489,19 +507,6 @@ Non-limit points are isolated in the Κ interpretation:
   iv : is-isolated (ι ν x , γ x (ι (A x) y))
   iv = Σ-isolated i iii
 
-{- Under construction.
-
-ℓ-trichotomous : (ν : E) (x : ⟪ Δ ν ⟫)
-               → ℓ ν x ≡ ₀
-               → (y : ⟪ Κ ν ⟫) → (ι ν x ≺⟪ Κ ν ⟫ y) + (ι ν x ≡ y) + (y ≺⟪ Κ ν ⟫ ι ν x)
-ℓ-trichotomous ⌜𝟙⌝         ⋆ p ⋆ = inr (inl refl)
-ℓ-trichotomous ⌜ω+𝟙⌝ (inl n) refl y = finite-trichotomous fe₀ n y
-ℓ-trichotomous (ν₀ ⌜+⌝ ν₁) (inl ⋆ , x₀) p y = {!!}
-ℓ-trichotomous (ν₀ ⌜+⌝ ν₁) (inr ⋆ , x₁) p y = {!!}
-ℓ-trichotomous (ν₀ ⌜×⌝ ν₁) x p y = {!!}
-ℓ-trichotomous (⌜Σ⌝ ν A)   x p y = {!!}
--}
-
 \end{code}
 
 The function ℓ really does detect limit points:
@@ -622,7 +627,7 @@ and (1), so that the proposition "(P -> 2) has decidable equality"
 seems to be strictly between "P is decidable" and "¬P is decidable".
 
 TODO. Do we have (ν : E) → [ Δ ν ] ⊴ [ Κ ν ]? Notice that we do have
-(ℕₒ +ₒ 𝟙ₒ) ⊴ ℕ∞ₒ, proved in OrdinalOfOrdinals, submodule ℕ∞-in-Ord.
+(ω +ₒ 𝟙ₒ) ⊴ ℕ∞ₒ, proved in OrdinalOfOrdinals, submodule ℕ∞-in-Ord.
 
 TODO. Define an element x of an ordinal to be trisolated if for every
 y we have that y ≺ x or x ≡ y or x ≺ y.  Notice that trisolated

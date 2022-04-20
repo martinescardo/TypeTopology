@@ -54,7 +54,7 @@ module prop
  topped : P → has-top _<_
  topped p = p , λ q l → 𝟘-elim l
 
- trichotomous : is-trichotomous _<_
+ trichotomous : is-trichotomous-order _<_
  trichotomous x y = inr (inl (isp x y))
 
 \end{code}
@@ -157,25 +157,36 @@ and then adapt the following definitions.
    g (inl x)  l = 𝟘-elim l
    g (inr y') l = f y' l
 
- trichotomy-preservation : is-trichotomous _<_
-                         → is-trichotomous _≺_
-                         → is-trichotomous order
- trichotomy-preservation s t (inl x) (inr y ) = inl ⋆
- trichotomy-preservation s t (inr y) (inl x ) = inr (inr ⋆)
- trichotomy-preservation s t (inl x) (inl x') = lemma (s x x')
+ tricho-left : (x : X)
+             → is-trichotomous-element _<_ x
+             → is-trichotomous-element _⊏_ (inl x)
+ tricho-left x t (inl x') = lemma (t x')
   where
    lemma : (x < x') + (x ≡ x') + (x' < x)
          → inl x ⊏ inl x' + (inl x ≡ inl x') + inl x' ⊏ inl x
    lemma (inl l)       = inl l
    lemma (inr (inl e)) = inr (inl (ap inl e))
    lemma (inr (inr k)) = inr (inr k)
- trichotomy-preservation s t (inr y) (inr y') = lemma (t y y')
+
+ tricho-left x t (inr y)  = inl ⋆
+
+ tricho-right : (y : Y)
+              → is-trichotomous-element _≺_ y
+              → is-trichotomous-element _⊏_ (inr y)
+ tricho-right y u (inl x)  = inr (inr ⋆)
+ tricho-right y u (inr y') = lemma (u y')
   where
    lemma : (y ≺ y') + (y ≡ y') + (y' ≺ y)
          → inr y ⊏ inr y' + (inr y ≡ inr y') + inr y' ⊏ inr y
    lemma (inl l)       = inl l
    lemma (inr (inl e)) = inr (inl (ap inr e))
    lemma (inr (inr k)) = inr (inr k)
+
+ trichotomy-preservation : is-trichotomous-order _<_
+                         → is-trichotomous-order _≺_
+                         → is-trichotomous-order _⊏_
+ trichotomy-preservation t u (inl x) = tricho-left  x (t x)
+ trichotomy-preservation t u (inr y) = tricho-right y (u y)
 
 \end{code}
 
@@ -333,7 +344,32 @@ module times
    h (x' , y') (inl l) = f x' l
    h (x' , y') (inr (r , l)) = g y' l
 
+ tricho : {x : X} {y : Y}
+        → is-trichotomous-element _<_ x
+        → is-trichotomous-element _≺_ y
+        → is-trichotomous-element _⊏_ (x , y)
+ tricho {x} {y} t u (x' , y') =
+  Cases (t x')
+   (λ (l : x < x') → inl (inl l))
+   (cases
+     (λ (p : x ≡ x')
+        → Cases (u y')
+           (λ (l : y ≺ y')
+              → inl (inr (p , l)))
+           (cases
+             (λ (q : y ≡ y')
+                → inr (inl (to-×-≡ p q)))
+             (λ (l : y' ≺ y) → inr (inr (inr ((p ⁻¹) , l))))))
+     (λ (l : x' < x) → inr (inr (inl l))))
+
+ trichotomy-preservation : is-trichotomous-order _<_
+                         → is-trichotomous-order _≺_
+                         → is-trichotomous-order _⊏_
+ trichotomy-preservation t u (x , y) = tricho (t x) (u y)
+
 \end{code}
+
+Above trichotomy preservation added 20th April 2022.
 
 Added 27 June 2018. A product of ordinals indexed by a prop is
 an ordinal. Here "is" is used to indicate a construction, not a
@@ -658,11 +694,11 @@ module sum
    ap inr (to-Σ-≡ (extensionally-ordered-types-are-sets _<_ fe p e r s ,
                      (f x (transport Y s b) y _ m)))
 
- tricho : (x : X) (y : Y x)
+ tricho : {x : X} {y : Y x}
         → is-trichotomous-element _<_ x
         → is-trichotomous-element _≺_ y
         → is-trichotomous-element _⊏_ (x , y)
- tricho x y t u (x' , y') =
+ tricho {x} {y} t u (x' , y') =
   Cases (t x')
    (λ (l : x < x') → inl (inl l))
    (cases
@@ -680,14 +716,14 @@ module sum
              (λ (l : transport⁻¹ Y p y' ≺ y) → inr (inr (inr ((p ⁻¹) , l))))))
      (λ (l : x' < x) → inr (inr (inl l))))
 
- trichotomy-preservation : is-trichotomous _<_
-                         → ((x : X) → is-trichotomous (_≺_ {x}))
-                         → is-trichotomous order
- trichotomy-preservation t u (x , y) = tricho x y (t x) (u x y)
+ trichotomy-preservation : is-trichotomous-order _<_
+                         → ((x : X) → is-trichotomous-order (_≺_ {x}))
+                         → is-trichotomous-order _⊏_
+ trichotomy-preservation t u (x , y) = tricho (t x) (u x y)
 
 \end{code}
 
-NB. The above trichotomy preservation added 19th April 2022.
+The above trichotomy preservation added 19th April 2022.
 
 We know how to prove extensionality either assuming top elements or
 assuming cotransitivity. We do this in the following two modules.

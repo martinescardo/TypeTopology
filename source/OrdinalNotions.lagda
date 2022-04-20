@@ -304,8 +304,8 @@ the time of writing, namely 11th January 2021).
 is-trichotomous-element : X → 𝓤 ⊔ 𝓥 ̇
 is-trichotomous-element x = (y : X) → (x < y) + (x ≡ y) + (y < x)
 
-is-trichotomous : 𝓤 ⊔ 𝓥 ̇
-is-trichotomous = (x : X) → is-trichotomous-element x
+is-trichotomous-order : 𝓤 ⊔ 𝓥 ̇
+is-trichotomous-order = (x : X) → is-trichotomous-element x
 
 \end{code}
 
@@ -317,7 +317,7 @@ relations are discrete (have decidable equality):
 \begin{code}
 
 trichotomous-gives-discrete : is-well-founded
-                            → is-trichotomous
+                            → is-trichotomous-order
                             → is-discrete X
 trichotomous-gives-discrete w t x y = f (t x y)
  where
@@ -344,7 +344,7 @@ proposition).
 trichotomy : funext (𝓤 ⊔ 𝓥) 𝓤₀
            → excluded-middle (𝓤 ⊔ 𝓥)
            → is-well-order
-           → is-trichotomous
+           → is-trichotomous-order
 trichotomy fe em (p , w , e , t) = γ
  where
   P : X → X → 𝓤 ⊔ 𝓥 ̇

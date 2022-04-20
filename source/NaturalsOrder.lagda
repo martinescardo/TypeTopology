@@ -391,6 +391,7 @@ Tom de Jong, 5 November 2021.
   γ (inl k)       = inl k
   γ (inr (inl e)) = inr (inl (ap succ e))
   γ (inr (inr l)) = inr (inr l)
+
   IH : (n < m) + (n ≡ m) + (m < n)
   IH = <-trichotomous n m
 
