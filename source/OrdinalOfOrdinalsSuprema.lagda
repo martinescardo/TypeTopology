@@ -1004,10 +1004,10 @@ module suprema
    sup-is-upper-bound : (i : I) → α i ⊴ sup
    sup-is-upper-bound = pr₁ (sup-is-least-upper-bound)
 
-   sup-is-lower-bound-of-upper-bound : (β : Ordinal 𝓤)
-                                     → ((i : I) → α i ⊴ β)
-                                     → sup ⊴ β
-   sup-is-lower-bound-of-upper-bound = pr₂ (sup-is-least-upper-bound)
+   sup-is-lower-bound-of-upper-bounds : (β : Ordinal 𝓤)
+                                      → ((i : I) → α i ⊴ β)
+                                      → sup ⊴ β
+   sup-is-lower-bound-of-upper-bounds = pr₂ (sup-is-least-upper-bound)
 
    sup-is-image-of-sum-to-ordinals : ⟨ sup ⟩ ≃ image sum-to-ordinals
    sup-is-image-of-sum-to-ordinals =
@@ -1031,7 +1031,7 @@ module suprema
  sup-monotone : {I : 𝓤 ̇ } (α β : I → Ordinal 𝓤)
               → ((i : I) → α i ⊴ β i)
               → sup α ⊴ sup β
- sup-monotone α β l = sup-is-lower-bound-of-upper-bound α (sup β)
+ sup-monotone α β l = sup-is-lower-bound-of-upper-bounds α (sup β)
                        (λ i → ⊴-trans
                                 (α i) (β i) (sup β)
                                 (l i) (sup-is-upper-bound β i))

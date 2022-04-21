@@ -386,9 +386,9 @@ partial ordering:
 
 \end{code}
 
-Classically, if α ≼ β then there is (a necessarily unique) γ with
-α +ₒ γ ≡ β. But this not the case constructively. For that purpose, we
-first characterize the order of subsingleton ordinals.
+Classically, if α ≼ β then there is (a necessarily unique) γ with α +ₒ
+γ ≡ β. But this not necessarily the case constructively. For that
+purpose, we first characterize the order of subsingleton ordinals.
 
 \begin{code}
 
@@ -744,3 +744,124 @@ succ-monotone em α β l = II I
 \end{code}
 
 TODO. EM (𝓤 ⁺) is sufficient, because we can work with the resized order _⊲⁻_.
+
+Added 21st April 2022.
+
+We say that an ordinal is a limit ordinal if it is the least upper
+bound of its predecessors:
+
+\begin{code}
+
+is-limit-ordinal⁺ : Ordinal 𝓤 → 𝓤 ⁺ ̇
+is-limit-ordinal⁺ {𝓤} α = (β : Ordinal 𝓤)
+                         → ((γ : Ordinal 𝓤) → γ ⊲ α → γ ⊴ β)
+                         → α ⊴ β
+\end{code}
+
+We give an equivalent definition below.
+
+Recall from another module [say which one] that the existence
+propositional truncations and the set-replacement property are
+together equivalent to the existence of small quotients. With them we
+can construct suprema of families of ordinals.
+
+\begin{code}
+
+open import UF-PropTrunc
+open import UF-Size
+
+module _ (pt : propositional-truncations-exist)
+         (sr : Set-Replacement pt)
+       where
+
+ open import OrdinalOfOrdinalsSuprema ua
+ open suprema pt sr
+
+\end{code}
+
+Recall that, by definition, γ ⊲ α iff γ is of the form α ↓ x for some
+x : ⟨ α ⟩. We define the "floor" of an ordinal to be the supremum of
+its predecessors:
+
+\begin{code}
+
+ ⌊_⌋ : Ordinal 𝓤 → Ordinal 𝓤
+ ⌊ α ⌋ = sup (λ (x : ⟨ α ⟩) → α ↓ x)
+
+ ⌊⌋-lower-bound : (α : Ordinal 𝓤) → ⌊ α ⌋ ⊴ α
+ ⌊⌋-lower-bound α = sup-is-lower-bound-of-upper-bounds _ α
+                     (λ (x : ⟨ α ⟩) → segment-⊴ α x)
+
+ is-limit-ordinal : Ordinal 𝓤 → 𝓤 ̇
+ is-limit-ordinal α = α ⊴ ⌊ α ⌋
+
+ is-limit-ordinal-fact : (α : Ordinal 𝓤)
+                       → is-limit-ordinal α
+                       ⇔ α ≡ ⌊ α ⌋
+ is-limit-ordinal-fact α = (λ ℓ → ⊴-antisym _ _ ℓ (⌊⌋-lower-bound α)) ,
+                           (λ p → transport (α ⊴_) p (⊴-refl α))
+
+ successor-lemma-left : (α : Ordinal 𝓤) (x : ⟨ α ⟩) → ((α +ₒ 𝟙ₒ) ↓ inl x) ⊴ α
+ successor-lemma-left α x = III
+    where
+     I : (α ↓ x) ⊴ α
+     I = segment-⊴ α x
+
+     II : (α ↓ x) ≡ ((α +ₒ 𝟙ₒ) ↓ inl x)
+     II = +ₒ-↓-left x
+
+     III : ((α +ₒ 𝟙ₒ) ↓ inl x) ⊴ α
+     III = transport (_⊴ α) II I
+
+ successor-lemma-right : (α : Ordinal 𝓤) → (α +ₒ 𝟙ₒ) ↓ inr ⋆ ≡ α
+ successor-lemma-right α  = III
+  where
+   I : (𝟙ₒ ↓ ⋆) ⊴ 𝟘ₒ
+   I = (λ x → 𝟘-elim (pr₂ x)) , (λ x → 𝟘-elim (pr₂ x)) , (λ x → 𝟘-elim (pr₂ x))
+   II : (𝟙ₒ ↓ ⋆) ≡ 𝟘ₒ
+   II = ⊴-antisym _ _ I (𝟘ₒ-least-⊴ (𝟙ₒ ↓ ⋆))
+   III : (α +ₒ 𝟙ₒ) ↓ inr ⋆ ≡ α
+   III = (α +ₒ 𝟙ₒ) ↓ inr ⋆ ≡⟨ (+ₒ-↓-right ⋆)⁻¹ ⟩
+         α +ₒ (𝟙ₒ ↓ ⋆) ≡⟨ ap (α +ₒ_) II ⟩
+         α +ₒ 𝟘ₒ       ≡⟨ 𝟘ₒ-right-neutral α ⟩
+         α             ∎
+
+ ⌊⌋-of-successor : (α : Ordinal 𝓤)
+                 → ⌊ α +ₒ 𝟙ₒ ⌋ ⊴ α
+ ⌊⌋-of-successor α = sup-is-lower-bound-of-upper-bounds _ α h
+  where
+   h : (x : ⟨ α +ₒ 𝟙ₒ ⟩) → ((α +ₒ 𝟙ₒ) ↓ x) ⊴ α
+   h (inl x) = successor-lemma-left α x
+   h (inr ⋆) = transport⁻¹ (_⊴ α) (successor-lemma-right α) (⊴-refl α)
+
+ ⌊⌋-of-successor' : (α : Ordinal 𝓤)
+                  → ⌊ α +ₒ 𝟙ₒ ⌋ ≡ α
+ ⌊⌋-of-successor' α = III
+  where
+   I : ((α +ₒ 𝟙ₒ) ↓ inr ⋆) ⊴ ⌊ α +ₒ 𝟙ₒ ⌋
+   I = sup-is-upper-bound _ (inr ⋆)
+   II : α ⊴ ⌊ α +ₒ 𝟙ₒ ⌋
+   II = transport (_⊴ ⌊ α +ₒ 𝟙ₒ ⌋) (successor-lemma-right α) I
+   III : ⌊ α +ₒ 𝟙ₒ ⌋ ≡ α
+   III = ⊴-antisym _ _ (⌊⌋-of-successor α) II
+
+ successor-increasing : (α : Ordinal 𝓤) → α ⊲ (α +ₒ 𝟙ₒ)
+ successor-increasing α = inr ⋆ , ((successor-lemma-right α)⁻¹)
+
+ successors-are-not-limit-ordinals : (α : Ordinal 𝓤)
+                                   → ¬ is-limit-ordinal (α +ₒ 𝟙ₒ)
+ successors-are-not-limit-ordinals α le = irrefl (OO _) α II
+  where
+   I : (α +ₒ 𝟙ₒ) ⊴ α
+   I = ⊴-trans (α +ₒ 𝟙ₒ) ⌊ α +ₒ 𝟙ₒ ⌋ α le (⌊⌋-of-successor α)
+
+   II : α ⊲ α
+   II = ⊴-gives-≼ _ _ I α (successor-increasing α)
+
+\end{code}
+
+TODO (easy). Show that is-limit-ordinal⁺ α is logically equivalent to
+is-limit-ordinal α.
+
+TODO. ⌊ ℕ∞ ⌋ = ω, and hence ℕ∞ is not a limit ordinal, but also it is
+not a successor unless LPO holds.

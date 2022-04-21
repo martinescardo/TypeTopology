@@ -135,7 +135,7 @@ is if excluded middle holds.
    IV = sup-monotone _ _ III
 
    V : sup (extension (brouwer-ordinal₁ ∘ b) ∘ ℕ-to-ℕ∞) ⊴ sup (extension (brouwer-ordinal₁ ∘ b))
-   V = sup-is-lower-bound-of-upper-bound _ _ (λ n → sup-is-upper-bound _ (ℕ-to-ℕ∞ n))
+   V = sup-is-lower-bound-of-upper-bounds _ _ (λ n → sup-is-upper-bound _ (ℕ-to-ℕ∞ n))
 
    VI : sup (brouwer-ordinal₀ ∘ b) ⊴ sup (extension (brouwer-ordinal₁ ∘ b))
    VI = ⊴-trans _ _ _ IV V
