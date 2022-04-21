@@ -647,6 +647,8 @@ The definition of the join:
  𝟏ₚ : perfect-nucleus
  𝟏ₚ = 𝟏 , (n₁ , n₂ , n₃) , ζ
        where
+        open Joins (λ x y → x ≤[ poset-of (𝒪 X) ] y)
+
         𝟏 = λ _ → 𝟏[ 𝒪 X ]
 
         n₁ : is-inflationary (𝒪 X) 𝟏 holds
@@ -659,17 +661,158 @@ The definition of the join:
         n₃ _ _ = ∧[ 𝒪 X ]-is-idempotent 𝟏[ 𝒪 X ]
 
         ζ : is-perfect 𝟏 holds
-        ζ S δ = (λ _ → 𝟏-is-top (𝒪 X) 𝟏[ 𝒪 X ])
-              , λ (u , φ) → {!!}
+        ζ S δ = † , ‡
+         where
+          P = poset-of (𝒪 X)
+
+          † : (𝟏 (⋁[ 𝒪 X ] S) is-an-upper-bound-of ⁅ 𝟏[ 𝒪 X ] ∣ _ ε S ⁆) holds
+          † i = 𝟏-is-top (𝒪 X) 𝟏[ 𝒪 X ]
+
+          ‡ : (Ɐ (u , _) ∶ upper-bound ⁅ 𝟏[ 𝒪 X ] ∣ _ ε S ⁆ , 𝟏[ 𝒪 X ] ≤[ P ] u) holds
+          ‡ (u , φ) = ∥∥-rec (holds-is-prop (𝟏[ 𝒪 X ] ≤[ P ] u)) φ (pr₁ δ)
 
  𝟏ₚ-is-top : Meets.is-top (λ 𝒿 𝓀 → 𝒿 ≼ 𝓀) 𝟏ₚ holds
  𝟏ₚ-is-top 𝒿 U = 𝟏-is-top (𝒪 X) (𝒿 $ U)
 
- Patch : locale (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺) (𝓤 ⊔ 𝓥) {!!}
+ ⋏-is-meet : (Ɐ (𝒿 , 𝓀) ∶ perfect-nucleus × perfect-nucleus ,
+               Meets._is-glb-of_ _≼_ (𝒿 ⋏ 𝓀) (𝒿 , 𝓀)) holds
+ ⋏-is-meet (𝒿 , 𝓀) = β , γ
+  where
+   β : (Meets._is-a-lower-bound-of_ _≼_ (𝒿 ⋏ 𝓀)) (𝒿 , 𝓀) holds
+   β = (λ U → ∧[ 𝒪 X ]-lower₁ (𝒿 $ U) (𝓀 $ U))
+     , (λ U → ∧[ 𝒪 X ]-lower₂ (𝒿 $ U) (𝓀 $ U))
+
+   γ : (Ɐ (𝒾 , _) ∶ (Meets.lower-bound _≼_ (𝒿 , 𝓀)) , 𝒾 ≼ (𝒿 ⋏ 𝓀)) holds
+   γ (𝒾 , φ , ϑ) U = ∧[ 𝒪 X ]-greatest (𝒿 $ U) (𝓀 $ U) (𝒾 $ U) (φ U) (ϑ U)
+
+ ⋁ₙ-is-join : (Ɐ K ∶ Fam 𝓦 perfect-nucleus , Joins._is-lub-of_ _≼_ (⋁ₙ K) K) holds
+ ⋁ₙ-is-join K = β , γ
+  where
+   K₀ : Fam 𝓦 (⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩)
+   K₀ = ⁅ pr₁ j ∣ j ε K ⁆
+
+   K₁ : Fam 𝓦 (nucleus (𝒪 X))
+   K₁ = ⁅ nucleus-of 𝒿 ∣ 𝒿 ε K ⁆
+
+   β : Joins._is-an-upper-bound-of_ _≼_ (⋁ₙ K) K holds
+   β i U = ⋁[ 𝒪 X ]-upper ⁅ α U ∣ α ε 𝔡𝔦𝔯 K₀ ⁆ (i ∷ [])
+
+   γ : (Ɐ (𝒾 , _) ∶ Joins.upper-bound _≼_ K , (⋁ₙ K) ≼ 𝒾) holds
+   γ (𝓀@(k , (n₁ , n₂ , n₃) , ζ) , φ) U =
+    ⋁[ 𝒪 X ]-least ⁅ α U ∣ α ε 𝔡𝔦𝔯 K₀ ⁆ (𝓀 $ U , λ is → † is U)
+     where
+      open Joins (λ x y → x ≤[ poset-of (𝒪 X) ] y)
+      open PosetReasoning (poset-of (𝒪 X))
+
+      † : (is : (index (𝔡𝔦𝔯 K₀))) → ((𝔡𝔦𝔯 K₀ [ is ]) ≼₀ k) holds
+      † []       U = n₁ U
+      † (j ∷ js) U = (𝔡𝔦𝔯 K₀ [ js ]) ((K₀ [ j ]) U)  ≤⟨ ♠           ⟩
+                     (𝔡𝔦𝔯 K₀ [ js ]) (k U)           ≤⟨ † js (k U)  ⟩
+                     k (k U)                         ≤⟨ n₂ U        ⟩
+                     k U                             ■
+                      where
+                       ♠ = prenuclei-are-monotone (𝒪 X) (K₁ ^* [ js ]) _ (φ j U)
+
+\end{code}
+
+It's hard to find a good name for the following two lemmas, which are crucial
+when proving distributivity.
+
+\begin{code}
+
+ lemma-δ : (j : nucleus (𝒪 X)) (K : Fam 𝓦 (nucleus (𝒪 X)))
+         → (is : index (K ^*))
+         → ((⁅ j ⋏₁ k ∣ k ε K ⁆ ^* [ is ]) ≼₁ nucleus-pre (𝒪 X) j) holds
+ lemma-δ 𝒿@(j , n₁ , n₂ , n₃) K []       U = n₁ U
+ lemma-δ 𝒿@(j , n₁ , n₂ , n₃) K (i ∷ is) U =
+  (⁅ 𝒿 ⋏₁ 𝓀 ∣ 𝓀 ε K ⁆ ^** [ i ∷ is ]) U                            ≡⟨ refl ⟩ₚ
+  (⁅ 𝒿 ⋏₁ 𝓀 ∣ 𝓀 ε K ⁆ ^** [ is ]) (j U ∧[ 𝒪 X ] (K [ i ]) .pr₁ U)  ≤⟨ ♠    ⟩
+  j ((j U) ∧[ 𝒪 X ] ((K [ i ]) .pr₁ U))                            ≡⟨ ♥    ⟩ₚ
+  j (j U) ∧[ 𝒪 X ] j ((K [ i ]) .pr₁ U)                            ≤⟨ ♣    ⟩
+  j (j U)                                                          ≤⟨ n₂ U ⟩
+  j U                                                              ■
+   where
+    open PosetReasoning (poset-of (𝒪 X))
+
+    ♠ = lemma-δ 𝒿 K is (j U ∧[ 𝒪 X ] ((K [ i ]) .pr₁ U))
+    ♥ = n₃ (j U) ((K [ i ]) .pr₁ U)
+    ♣ = ∧[ 𝒪 X ]-lower₁ (j (j U)) (j ((K [ i ]) .pr₁ U))
+
+ lemma-γ : (j : nucleus (𝒪 X)) (K : Fam 𝓦 (nucleus (𝒪 X)))
+         → (is : index (K ^*))
+         → ((⁅ j ⋏₁ k ∣ k ε K ⁆ ^* [ is ]) ≼₁ (K ^* [ is ])) holds
+ lemma-γ j K []       U = {!!}
+ lemma-γ j K (i ∷ is) U = {!!}
+
+\end{code}
+
+\begin{code}
+
+ distributivityₚ : (𝒿 : perfect-nucleus) (𝒦 : Fam 𝓦 perfect-nucleus)
+                 → 𝒿 ⋏ (⋁ₙ 𝒦) ≡ ⋁ₙ ⁅ 𝒿 ⋏ 𝓀 ∣ 𝓀 ε 𝒦 ⁆
+ distributivityₚ 𝒿 𝒦 =
+  perfect-nuclei-eq (𝒿 ⋏ ⋁ₙ 𝒦) (⋁ₙ ⁅ 𝒿 ⋏ 𝓀 ∣ 𝓀 ε 𝒦 ⁆) (dfunext fe γ)
+   where
+    𝒦₀ : Fam 𝓦 (⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩)
+    𝒦₀ = ⁅ pr₁ j ∣ j ε 𝒦 ⁆
+
+    γ : (U : ⟨ 𝒪 X ⟩) → (𝒿 ⋏ (⋁ₙ 𝒦)) $ U ≡ (⋁ₙ ⁅ 𝒿 ⋏ 𝓀 ∣ 𝓀 ε 𝒦 ⁆) $ U
+    γ U = ((𝒿 ⋏ (⋁ₙ 𝒦)) $ U)                               ≡⟨ refl ⟩
+          (𝒿 $ U) ∧[ 𝒪 X ] ((⋁ₙ 𝒦) $ U)                    ≡⟨ refl ⟩
+          (𝒿 $ U) ∧[ 𝒪 X ] (⋁[ 𝒪 X ] ⁅ α U ∣ α ε 𝔡𝔦𝔯 𝒦₀ ⁆) ≡⟨ i    ⟩
+          ⋁[ 𝒪 X ] ⁅ (𝒿 $ U) ∧[ 𝒪 X ] α U ∣ α ε 𝔡𝔦𝔯 𝒦₀ ⁆   ≡⟨ ii   ⟩
+          (⋁ₙ ⁅ 𝒿 ⋏ 𝓀 ∣ 𝓀 ε 𝒦 ⁆) $ U                       ∎
+           where
+            lemma : (V : ⟨ 𝒪 X ⟩)
+                  → cofinal-in (𝒪 X)
+                     ⁅ (𝒿 $ V) ∧[ 𝒪 X ] α V ∣ α ε 𝔡𝔦𝔯 𝒦₀ ⁆
+                     ⁅ α V ∣ α ε 𝔡𝔦𝔯 ⁅ pr₁ (𝒿 ⋏ 𝓀) ∣ 𝓀 ε 𝒦 ⁆ ⁆
+                    holds
+            lemma V []       = ∣ []       , ∧[ 𝒪 X ]-lower₂ (𝒿 $ V) V ∣
+            lemma V (i ∷ is) = ∥∥-rec ∃-is-prop † ih
+             where
+              ih = lemma ((𝒿 $ U) ∧[ 𝒪 X ] ((𝒦 [ i ]) .pr₁ U)) is
+
+              † : (Σ p ꞉ index (𝔡𝔦𝔯 𝒦₀) , (_ ≤[ poset-of (𝒪 X) ] _) holds)
+                → {!!}
+              † (js , ϑ) = {!!}
+
+            δ : cofinal-in (𝒪 X)
+                 ⁅ (𝒿 $ U) ∧[ 𝒪 X ] α U ∣ α ε 𝔡𝔦𝔯 𝒦₀ ⁆
+                 ⁅ α U ∣ α ε 𝔡𝔦𝔯 ⁅ pr₁ (𝒿 ⋏ 𝓀) ∣ 𝓀 ε 𝒦 ⁆ ⁆
+                holds
+            δ = lemma U
+
+            ε : cofinal-in (𝒪 X)
+                 ⁅ α U ∣ α ε 𝔡𝔦𝔯 ⁅ pr₁ (𝒿 ⋏ 𝓀) ∣ 𝓀 ε 𝒦 ⁆ ⁆
+                 ⁅ (𝒿 $ U) ∧[ 𝒪 X ] α U ∣ α ε 𝔡𝔦𝔯 𝒦₀ ⁆
+                holds
+            ε is = ∣ is , ※ ∣
+             where
+              † = lemma-δ (nucleus-of 𝒿) ⁅ nucleus-of 𝓀 ∣ 𝓀 ε 𝒦 ⁆ is U
+              ‡ = lemma-γ (nucleus-of 𝒿) ⁅ nucleus-of 𝓀 ∣ 𝓀 ε 𝒦 ⁆ is U
+
+              ※ = ∧[ 𝒪 X ]-greatest (𝒿 $ U) ((𝔡𝔦𝔯 𝒦₀ [ is ]) U) _ † ‡
+
+            i  = distributivity (𝒪 X) (𝒿 $ U) ⁅ α U ∣ α ε 𝔡𝔦𝔯 𝒦₀ ⁆
+            ii = bicofinal-implies-same-join (𝒪 X)
+                  ⁅ (𝒿 $ U) ∧[ 𝒪 X ] α U ∣ α ε 𝔡𝔦𝔯 𝒦₀ ⁆
+                  ⁅ α U ∣ α ε 𝔡𝔦𝔯 ⁅ pr₁ (𝒿 ⋏ 𝓀) ∣ 𝓀 ε 𝒦 ⁆ ⁆
+                  δ
+                  ε
+
+\end{code}
+
+\begin{code}
+
+ Patch : locale (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺) (𝓤 ⊔ 𝓥) 𝓦
  Patch = record { ⟨_⟩ₗ         = perfect-nucleus
                 ; frame-str-of = (_≼_ , 𝟏ₚ , _⋏_ , ⋁ₙ)
                                , (≼-is-preorder , ≼-is-antisymmetric)
                                , 𝟏ₚ-is-top
-                               , {!!} , {!!} , {!!} }
+                               , ⋏-is-meet
+                               , ⋁ₙ-is-join
+                               , λ { (𝒿 , 𝒦) → distributivityₚ 𝒿 𝒦 }
+                }
 
 \end{code}

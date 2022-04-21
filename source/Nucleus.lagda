@@ -72,16 +72,6 @@ nucleus F = Σ j ꞉ (⟨ F ⟩ → ⟨ F ⟩) , is-nuclear F j holds
 
 \end{code}
 
-Every nucleus is monotone.
-
-\begin{code}
-
-nuclei-are-monotone : (L : frame 𝓤 𝓥 𝓦) ((j , _) : nucleus L)
-                    → is-monotonic (poset-of L) (poset-of L) j holds
-nuclei-are-monotone L 𝒿 = meet-preserving-implies-monotone L L (pr₁ 𝒿) (𝓃₃ L 𝒿)
-
-\end{code}
-
 \begin{code}
 
 identity-nucleus : (L : frame 𝓤 𝓥 𝓦) → nucleus L
@@ -128,7 +118,27 @@ nucleus-pre L 𝒿@(j , _) = j , 𝓃₁ L 𝒿 , 𝓃₃ L 𝒿
 
 \end{code}
 
-Some important properties of prenuclei:
+Prenuclei are monotone:
+
+\begin{code}
+
+prenuclei-are-monotone : (L : frame 𝓤 𝓥 𝓦)
+                       → ((j , _) : prenucleus L)
+                       → is-monotonic (poset-of L) (poset-of L) j holds
+prenuclei-are-monotone L (j , _ , μ) =
+ meet-preserving-implies-monotone L L j μ
+
+\end{code}
+
+As a corollary, nuclei are monotone:
+
+\begin{code}
+
+nuclei-are-monotone : (L : frame 𝓤 𝓥 𝓦) ((j , _) : nucleus L)
+                    → is-monotonic (poset-of L) (poset-of L) j holds
+nuclei-are-monotone L 𝒿 = prenuclei-are-monotone L (nucleus-pre L 𝒿)
+
+\end{code}
 
 \begin{code}
 
