@@ -814,22 +814,22 @@ closed-under-binary-meets F 𝒮 =
 closed-under-finite-meets : (F : frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦)
 closed-under-finite-meets F S = contains-top F S ∧ closed-under-binary-meets F S
 
-is-spectral₀ : frame 𝓤 𝓥 𝓦 → (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺) ̇
-is-spectral₀ {𝓤 = 𝓤} {𝓥} {𝓦} F =
+spectral-data : frame 𝓤 𝓥 𝓦 → (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺) ̇
+spectral-data {𝓤 = 𝓤} {𝓥} {𝓦} F =
  Σ ℬ ꞉ Fam 𝓦 ⟨ F ⟩ , is-basis-for F ℬ
                    × consists-of-compact-opens F ℬ holds
                    × closed-under-finite-meets F ℬ holds
 
-basisₛ : (F : frame 𝓤 𝓥 𝓦) → is-spectral₀ F → Fam 𝓦 ⟨ F ⟩
+basisₛ : (F : frame 𝓤 𝓥 𝓦) → spectral-data F → Fam 𝓦 ⟨ F ⟩
 basisₛ F (ℬ , _) = ℬ
 
 is-spectral : frame 𝓤 𝓥 𝓦 → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
-is-spectral F = ∥ is-spectral₀ F ∥Ω
+is-spectral F = ∥ spectral-data F ∥Ω
 
 spectral-frames-have-bases : (F : frame 𝓤 𝓥 𝓦) → (is-spectral F ⇒ has-basis F) holds
 spectral-frames-have-bases F σ = ∥∥-rec ∥∥-is-prop γ σ
  where
-  γ : is-spectral₀ F → ∥ Σ ℬ ꞉ Fam _ ⟨ F ⟩ , is-basis-for F ℬ ∥
+  γ : spectral-data F → ∥ Σ ℬ ꞉ Fam _ ⟨ F ⟩ , is-basis-for F ℬ ∥
   γ (ℬ , p) = ∣ ℬ , pr₁ p ∣
 
 \end{code}
@@ -879,7 +879,7 @@ spectral-yoneda {𝓦 = 𝓦} F σ U V χ =
    open Joins (λ x y → x ≤[ poset-of F ] y)
    open JoinNotation (λ - → ⋁[ F ] -)
 
-   γ : is-spectral₀ F → (U ≤[ poset-of F ] V) holds
+   γ : spectral-data F → (U ≤[ poset-of F ] V) holds
    γ (ℬ , υ , φ , ψ) =
     U                            ≡⟨ I  ⟩ₚ
     ⋁[ F ] ⁅ ℬ [ i ] ∣ i ε ℐ ⁆   ≤⟨ ii ⟩
@@ -907,7 +907,7 @@ spectral-yoneda {𝓦 = 𝓦} F σ U V χ =
 \begin{code}
 
 compacts-are-basic-in-spectral-frames : (F : frame 𝓤 𝓥 𝓦)
-                                      → (σ : is-spectral₀ F)
+                                      → (σ : spectral-data F)
                                       → (U : ⟨ F ⟩)
                                       → is-compact-open F U holds
                                       → let
