@@ -55,7 +55,7 @@
      compactness of the Cantor type using countable Tychonoff.
      (https://www.cs.bham.ac.uk/~mhe/TypeTopology/UnsafeModulesIndex.html)
 
-   * In our last count, this development has 91000 lines, including
+   * In our last count, this development has 95000 lines, including
      comments and blank lines.
 
    * A module dependency graph is available, updated manually from
