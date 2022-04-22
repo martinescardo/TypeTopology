@@ -923,9 +923,9 @@ Added 19th April 2022.
 \begin{code}
 
 bounded-is-finite : funext₀
-                    → (n : ℕ) (u : ℕ∞)
-                    → u ⊑ n
-                    → is-finite u
+                  → (n : ℕ) (u : ℕ∞)
+                  → u ⊑ n
+                  → is-finite u
 bounded-is-finite fe n u le = case ℕ-to-ℕ∞-lemma fe u n le of
                                (λ (m , _ , p) → m , (p ⁻¹))
 

@@ -961,11 +961,11 @@ module ℕ∞-in-Ord where
  corollary₂ : LPO → ℕ∞ ≃ (ℕ + 𝟙)
  corollary₂ lpo = ≃ₒ-gives-≃ ℕ∞ₒ (ω +ₒ 𝟙ₒ) (corollary₁ lpo)
 
- corollary₃ : is-univalent 𝓤₀ → LPO → ℕ∞ₒ ≡ (ω +ₒ 𝟙ₒ)
- corollary₃ ua lpo = eqtoidₒ ℕ∞ₒ (ω +ₒ 𝟙ₒ) (corollary₁ lpo)
+ corollary₃ : LPO → ℕ∞ₒ ≡ (ω +ₒ 𝟙ₒ)
+ corollary₃ lpo = eqtoidₒ ℕ∞ₒ (ω +ₒ 𝟙ₒ) (corollary₁ lpo)
 
- corollary₄ : is-univalent 𝓤₀ → LPO → ℕ∞ ≡ (ℕ + 𝟙)
- corollary₄ ua lpo = eqtoid ua ℕ∞ (ℕ + 𝟙) (corollary₂ lpo)
+ corollary₄ : LPO → ℕ∞ ≡ (ℕ + 𝟙)
+ corollary₄ lpo = eqtoid (ua 𝓤₀) ℕ∞ (ℕ + 𝟙) (corollary₂ lpo)
 
 \end{code}
 

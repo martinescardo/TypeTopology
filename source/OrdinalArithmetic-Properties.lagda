@@ -2,7 +2,7 @@ Martin Escardo, 18 January 2021.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline --experimental-lossy-unification #-}
 
 open import UF-Univalence
 
@@ -565,7 +565,7 @@ module _ {𝓤 : Universe} where
    III = simulations-preserve-minimals Ωₒ (𝟙ₒ +ₒ Ωₒ) ⊥Ω (inl ⋆) f s I II
 
    IV : is-isolated (f ⊥Ω)
-   IV = transport is-isolated (III ⁻¹) (inl-is-isolated ⋆ (𝟙-is-discrete ⋆))
+   IV = transport⁻¹ is-isolated III (inl-is-isolated ⋆ (𝟙-is-discrete ⋆))
 
    V : is-isolated ⊥Ω
    V = lc-maps-reflect-isolatedness f (simulations-are-lc Ωₒ (𝟙ₒ +ₒ Ωₒ) f s) ⊥Ω IV
@@ -629,7 +629,7 @@ succₒ-reflects-⊴ α β (f , i , p) = g , j , q
   j x y l = II I
    where
     m : inl y ≺⟨ β +ₒ 𝟙ₒ ⟩ f (inl x)
-    m = transport (λ - → inl y ≺⟨ β +ₒ 𝟙ₒ ⟩ -) ((ϕ x)⁻¹) l
+    m = transport⁻¹ (λ - → inl y ≺⟨ β +ₒ 𝟙ₒ ⟩ -) (ϕ x) l
 
     I : Σ z ꞉ ⟨ α +ₒ 𝟙ₒ ⟩ , (z ≺⟨ α +ₒ 𝟙ₒ ⟩ inl x) × (f z ≡ inl y)
     I = i (inl x) (inl y) m
@@ -700,7 +700,7 @@ succ-not-necessarily-monotone {𝓤} ϕ P isp = II I
     III (inr ⋆) e = inr IX
      where
       VIII : Σ x' ꞉ ⟨ α +ₒ 𝟙ₒ ⟩ , (x' ≺⟨ α +ₒ 𝟙ₒ ⟩ inr ⋆) × (f x' ≡ inl ⋆)
-      VIII = f-is-initial (inr ⋆) (inl ⋆) (transport (λ - → inl ⋆ ≺⟨ 𝟚ₒ ⟩ -) (e ⁻¹) ⋆)
+      VIII = f-is-initial (inr ⋆) (inl ⋆) (transport⁻¹ (λ - → inl ⋆ ≺⟨ 𝟚ₒ ⟩ -) e ⋆)
 
       IX : ¬¬ P
       IX u = XI
@@ -786,11 +786,10 @@ its predecessors:
 \begin{code}
 
  ⌊_⌋ : Ordinal 𝓤 → Ordinal 𝓤
- ⌊ α ⌋ = sup (λ (x : ⟨ α ⟩) → α ↓ x)
+ ⌊ α ⌋ = sup (α ↓_)
 
  ⌊⌋-lower-bound : (α : Ordinal 𝓤) → ⌊ α ⌋ ⊴ α
- ⌊⌋-lower-bound α = sup-is-lower-bound-of-upper-bounds _ α
-                     (λ (x : ⟨ α ⟩) → segment-⊴ α x)
+ ⌊⌋-lower-bound α = sup-is-lower-bound-of-upper-bounds _ α (segment-⊴ α)
 
  is-limit-ordinal : Ordinal 𝓤 → 𝓤 ̇
  is-limit-ordinal α = α ⊴ ⌊ α ⌋
@@ -818,8 +817,10 @@ its predecessors:
   where
    I : (𝟙ₒ ↓ ⋆) ⊴ 𝟘ₒ
    I = (λ x → 𝟘-elim (pr₂ x)) , (λ x → 𝟘-elim (pr₂ x)) , (λ x → 𝟘-elim (pr₂ x))
+
    II : (𝟙ₒ ↓ ⋆) ≡ 𝟘ₒ
    II = ⊴-antisym _ _ I (𝟘ₒ-least-⊴ (𝟙ₒ ↓ ⋆))
+
    III : (α +ₒ 𝟙ₒ) ↓ inr ⋆ ≡ α
    III = (α +ₒ 𝟙ₒ) ↓ inr ⋆ ≡⟨ (+ₒ-↓-right ⋆)⁻¹ ⟩
          α +ₒ (𝟙ₒ ↓ ⋆) ≡⟨ ap (α +ₒ_) II ⟩
@@ -840,8 +841,10 @@ its predecessors:
   where
    I : ((α +ₒ 𝟙ₒ) ↓ inr ⋆) ⊴ ⌊ α +ₒ 𝟙ₒ ⌋
    I = sup-is-upper-bound _ (inr ⋆)
+
    II : α ⊴ ⌊ α +ₒ 𝟙ₒ ⌋
    II = transport (_⊴ ⌊ α +ₒ 𝟙ₒ ⌋) (successor-lemma-right α) I
+
    III : ⌊ α +ₒ 𝟙ₒ ⌋ ≡ α
    III = ⊴-antisym _ _ (⌊⌋-of-successor α) II
 
@@ -863,5 +866,94 @@ its predecessors:
 TODO (easy). Show that is-limit-ordinal⁺ α is logically equivalent to
 is-limit-ordinal α.
 
-TODO. ⌊ ℕ∞ ⌋ = ω, and hence ℕ∞ is not a limit ordinal, but also it is
-not a successor unless LPO holds.
+\begin{code}
+
+ ⌊⌋-monotone : (α β : Ordinal 𝓤) → α ⊴ β → ⌊ α ⌋ ⊴ ⌊ β ⌋
+ ⌊⌋-monotone α β le = V
+  where
+   I : (y : ⟨ β ⟩) → (β ↓ y) ⊴ ⌊ β ⌋
+   I = sup-is-upper-bound (β ↓_)
+
+   II : (x : ⟨ α ⟩) → (α ↓ x) ⊲ β
+   II x = ⊴-gives-≼ _ _ le (α ↓ x) (x , refl)
+
+   III : (x : ⟨ α ⟩) → Σ y ꞉ ⟨ β ⟩ , (α ↓ x) ≡ (β ↓ y)
+   III = II
+
+   IV : (x : ⟨ α ⟩) → (α ↓ x) ⊴ ⌊ β ⌋
+   IV x = transport⁻¹ (_⊴ ⌊ β ⌋) (pr₂ (III x)) (I (pr₁ (III x)))
+
+   V : sup (α ↓_) ⊴ ⌊ β ⌋
+   V = sup-is-lower-bound-of-upper-bounds (α ↓_) ⌊ β ⌋ IV
+
+ open import CanonicalMapNotation
+ open import GenericConvergentSequence
+ open import OrderNotation
+
+\end{code}
+
+TODO. The following proof, which shows that ℕ∞ is not a limit ordinal,
+hasn't been streamlined after it was first obtained.
+
+\begin{code}
+
+ ⌊⌋-of-ℕ∞ : ⌊ ℕ∞ₒ ⌋ ≡ ω
+ ⌊⌋-of-ℕ∞ = c
+  where
+   a : ⌊ ℕ∞ₒ ⌋ ⊴ ω
+   a = sup-is-lower-bound-of-upper-bounds (ℕ∞ₒ ↓_) ω I
+    where
+     I : (u : ⟨ ℕ∞ₒ ⟩) → (ℕ∞ₒ ↓ u) ⊴ ω
+     I u = ≼-gives-⊴ (ℕ∞ₒ ↓ u) ω II
+      where
+       II : (α : Ordinal 𝓤₀) → α ⊲ (ℕ∞ₒ ↓ u) → α ⊲ ω
+       II .((ℕ∞ₒ ↓ u) ↓ (ι n , n , refl , p)) ((.(ι n) , n , refl , p) , refl) = IX
+        where
+         l : ι n ≺ u
+         l = n , refl , p
+         III : ((ℕ∞ₒ ↓ u) ↓ (ι n , n , refl , p)) ≡ ℕ∞ₒ ↓ ι n
+         III = iterated-↓ ℕ∞ₒ u (ι n) l
+         VI : (ℕ∞ₒ ↓ ι n) ≃ₒ (ω ↓ n)
+         VI = f , fop , qinvs-are-equivs f (g , gf , fg) , gop
+          where
+           f : ⟨ ℕ∞ₒ ↓ ι n ⟩ → ⟨ ω ↓ n ⟩
+           f (.(ι k) , k , refl , q) = k , ⊏-gives-< _ _ q
+           g : ⟨ ω ↓ n ⟩ → ⟨ ℕ∞ₒ ↓ ι n ⟩
+           g (k , l) = (ι k , k , refl , <-gives-⊏ _ _ l)
+           open import NaturalsOrder
+           fg : f ∘ g ∼ id
+           fg (k , l) = to-subtype-≡ (λ k → <-is-prop-valued k n) refl
+           gf : g ∘ f ∼ id
+           gf (.(ι k) , k , refl , q) = to-subtype-≡ (λ u → ≺-prop-valued fe' u (ι n)) refl
+           fop : is-order-preserving (ℕ∞ₒ ↓ ι n) (ω ↓ n) f
+           fop (.(ι k) , k , refl , q) (.(ι k') , k' , refl , q') (m , r , cc) = IX
+            where
+             VII : k ≡ m
+             VII = ℕ-to-ℕ∞-lc r
+             VIII : m < k'
+             VIII = ⊏-gives-< _ _ cc
+             IX : k < k'
+             IX = transport⁻¹ (_< k') VII VIII
+           gop : is-order-preserving (ω ↓ n) (ℕ∞ₒ ↓ ι n)  g
+           gop (k , l) (k' , l') ℓ = k , refl , <-gives-⊏ _ _ ℓ
+         V : ℕ∞ₒ ↓ ι n ≡ ω ↓ n
+         V = eqtoidₒ _ _ VI
+         IV : (ℕ∞ₒ ↓ (ι n)) ⊲ ω
+         IV = n , V
+         IX : ((ℕ∞ₒ ↓ u) ↓ (ι n , n , refl , p)) ⊲ ω
+         IX = transport⁻¹ (_⊲ ω) III IV
+
+   b : ω ⊴ ⌊ ℕ∞ₒ ⌋
+   b = transport (_⊴ ⌊ ℕ∞ₒ ⌋) (⌊⌋-of-successor' ω) I
+    where
+     I : ⌊ ω +ₒ 𝟙ₒ ⌋ ⊴ ⌊ ℕ∞ₒ ⌋
+     I = ⌊⌋-monotone (ω +ₒ 𝟙ₒ) ℕ∞ₒ ℕ∞-in-Ord.fact
+
+   c : ⌊ ℕ∞ₒ ⌋ ≡ ω
+   c = ⊴-antisym _ _ a b
+
+\end{code}
+
+TODO. ℕ∞ is not a successor unless LPO holds. Therefore,
+constructively, it is not necessarily the case that every ordinal is
+either a successor or a limit.
