@@ -84,7 +84,7 @@ A nucleus is called perfect iff it is Scott-continuous:
 
  perfect-nucleus : 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺ ̇
  perfect-nucleus = Σ j ꞉ (⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩) ,
-                    ((is-nuclear (𝒪 X) j ∧ is-perfect j) holds)
+                    ((is-nucleus (𝒪 X) j ∧ is-perfect j) holds)
 
 \end{code}
 
@@ -110,8 +110,8 @@ A nucleus is called perfect iff it is Scott-continuous:
  perfect-nuclei-eq 𝒿 𝓀 = to-subtype-≡ γ
   where
    γ : (j : ⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩)
-     → is-prop ((is-nuclear (𝒪 X) j ∧ is-perfect j) holds)
-   γ j = holds-is-prop (is-nuclear (𝒪 X) j ∧ is-perfect j)
+     → is-prop ((is-nucleus (𝒪 X) j ∧ is-perfect j) holds)
+   γ j = holds-is-prop (is-nucleus (𝒪 X) j ∧ is-perfect j)
 
 \end{code}
 

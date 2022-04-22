@@ -35,8 +35,8 @@ is-inflationary L j = Ɐ x ∶ ⟨ L ⟩ , x ≤[ poset-of L ] j x
 is-idempotent : (L : frame 𝓤 𝓥 𝓦) → (⟨ L ⟩ → ⟨ L ⟩) → Ω (𝓤 ⊔ 𝓥)
 is-idempotent L j = Ɐ x ∶ ⟨ L ⟩ , j (j x) ≤[ poset-of L ] j x
 
-is-nuclear : (L : frame 𝓤 𝓥 𝓦) → (⟨ L ⟩ → ⟨ L ⟩) → Ω (𝓤 ⊔ 𝓥)
-is-nuclear {𝓤 = 𝓤} {𝓥} {𝓦} F j = 𝓃₁ ∧  𝓃₂ ∧ 𝓃₃
+is-nucleus : (L : frame 𝓤 𝓥 𝓦) → (⟨ L ⟩ → ⟨ L ⟩) → Ω (𝓤 ⊔ 𝓥)
+is-nucleus {𝓤 = 𝓤} {𝓥} {𝓦} F j = 𝓃₁ ∧  𝓃₂ ∧ 𝓃₃
  where
   open PosetNotation (poset-of F)
 
@@ -56,7 +56,7 @@ The type of nuclei on a given frame.
 \begin{code}
 
 nucleus : frame 𝓤 𝓥 𝓦 → 𝓤 ⊔ 𝓥 ̇
-nucleus F = Σ j ꞉ (⟨ F ⟩ → ⟨ F ⟩) , is-nuclear F j holds
+nucleus F = Σ j ꞉ (⟨ F ⟩ → ⟨ F ⟩) , is-nucleus F j holds
 
 𝓃₁ : (L : frame 𝓤 𝓥 𝓦) ((j , _) : nucleus L)
    → (x : ⟨ L ⟩) → (x ≤[ poset-of L ] j x) holds
