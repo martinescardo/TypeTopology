@@ -375,15 +375,15 @@ indices.
 
 \begin{code}
 
- 𝔡𝔦𝔯-prenuclear : (K : Fam 𝓦 (⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩))
+ 𝔡𝔦𝔯-prenuclei : (K : Fam 𝓦 (⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩))
                 → (Ɐ i ∶ index K , is-prenuclear (𝒪 X) (K [ i ])) holds
                 → (Ɐ is ∶ List (index K) , is-prenuclear (𝒪 X) (𝔡𝔦𝔯 K [ is ])) holds
- 𝔡𝔦𝔯-prenuclear K ϑ []       = pr₂ (nucleus-pre (𝒪 X) (identity-nucleus (𝒪 X)))
- 𝔡𝔦𝔯-prenuclear K ϑ (j ∷ js) = n₁ , n₂
+ 𝔡𝔦𝔯-prenuclei K ϑ []       = pr₂ (nucleus-pre (𝒪 X) (identity-nucleus (𝒪 X)))
+ 𝔡𝔦𝔯-prenuclei K ϑ (j ∷ js) = n₁ , n₂
   where
    open PosetReasoning (poset-of (𝒪 X))
 
-   IH = 𝔡𝔦𝔯-prenuclear K ϑ js
+   IH = 𝔡𝔦𝔯-prenuclei K ϑ js
 
    n₁ : is-inflationary (𝒪 X) (𝔡𝔦𝔯 K [ j ∷ js ]) holds
    n₁ x = x                             ≤⟨ i    ⟩
@@ -421,7 +421,7 @@ indices.
   where
    α : List (index K) → prenucleus (𝒪 X)
    α is = 𝔡𝔦𝔯 ⁅ k ∣ (k , _) ε K ⁆ [ is ]
-        , 𝔡𝔦𝔯-prenuclear ⁅ k ∣ (k , _) ε K ⁆ † is
+        , 𝔡𝔦𝔯-prenuclei ⁅ k ∣ (k , _) ε K ⁆ † is
     where
      † : (i : index K) → is-prenuclear (𝒪 X) (pr₁ (K [ i ])) holds
      † = pr₂ ∘ nucleus-pre (𝒪 X) ∘ (λ - → K [ - ])
@@ -573,7 +573,7 @@ The definition of the join:
       iii = ⋁[ 𝒪 X ]-least S (join K₀ U , †)
 
    μ : (is : List (index K₀)) → preserves-binary-meets (𝒪 X) (𝒪 X) (𝔡𝔦𝔯 K₀ [ is ]) holds
-   μ is = pr₂ (𝔡𝔦𝔯-prenuclear K₀ (λ i → pr₂ (nucleus-pre (𝒪 X) (K₁ [ i ]))) is)
+   μ is = pr₂ (𝔡𝔦𝔯-prenuclei K₀ (λ i → pr₂ (nucleus-pre (𝒪 X) (K₁ [ i ]))) is)
 
    n₃ : preserves-binary-meets (𝒪 X) (𝒪 X) (join K₀) holds
    n₃ U V =
@@ -756,7 +756,7 @@ when proving distributivity.
     φ i = pr₂ (nucleus-pre (𝒪 X) (K [ i ]))
 
     ih = lemma-γ 𝒿 K is (j U ⊓ (K₀ [ i ]) U )
-    †  = pr₂ (𝔡𝔦𝔯-prenuclear K₀ φ is) (j U) ((K₀ [ i ]) U)
+    †  = pr₂ (𝔡𝔦𝔯-prenuclei K₀ φ is) (j U) ((K₀ [ i ]) U)
     ‡  = ∧[ 𝒪 X ]-lower₂ ((K ^** [ is ]) (j U)) (((K ^**) [ is ]) ((K₀ [ i ]) U))
 
 \end{code}
@@ -784,7 +784,7 @@ when proving distributivity.
     μ i = pr₂ (nucleus-pre (𝒪 X) (𝒦₁ [ i ]))
 
     ξ : (is : index (𝔡𝔦𝔯 𝒦₀)) (U : ⟨ 𝒪 X ⟩) → (U ≤ ((𝔡𝔦𝔯 𝒦₀) [ is ]) U) holds
-    ξ is U = pr₁ (𝔡𝔦𝔯-prenuclear 𝒦₀ μ is) U
+    ξ is U = pr₁ (𝔡𝔦𝔯-prenuclei 𝒦₀ μ is) U
 
     α = (𝔡𝔦𝔯 𝒦₀) [ is ]
 
@@ -820,7 +820,7 @@ when proving distributivity.
       ♥ = ∧[ 𝒪 X ]-greatest _ _ _ p q
       ♠ = ap
             (λ - → (j (j U) ⊓ j (Kᵢ U)) ⊓ -)
-            ((pr₂ (𝔡𝔦𝔯-prenuclear 𝒦₀ μ is) (j U) (Kᵢ U)) ⁻¹)
+            ((pr₂ (𝔡𝔦𝔯-prenuclei 𝒦₀ μ is) (j U) (Kᵢ U)) ⁻¹)
       ♣ = ap (λ - → - ∧[ 𝒪 X ] (α (j U ⊓ Kᵢ U))) (n₃ (j U) (Kᵢ U) ⁻¹)
 
       ※ = (j U) ∧[ 𝒪 X ] α (Kᵢ U)                                            ≤⟨ ♥ ⟩
