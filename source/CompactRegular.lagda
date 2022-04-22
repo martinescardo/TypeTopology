@@ -814,22 +814,22 @@ closed-under-binary-meets F 𝒮 =
 closed-under-finite-meets : (F : frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦)
 closed-under-finite-meets F S = contains-top F S ∧ closed-under-binary-meets F S
 
-spectral-data : frame 𝓤 𝓥 𝓦 → (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺) ̇
-spectral-data {𝓤 = 𝓤} {𝓥} {𝓦} F =
+spectralᴰ : frame 𝓤 𝓥 𝓦 → (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺) ̇
+spectralᴰ {𝓤 = 𝓤} {𝓥} {𝓦} F =
  Σ ℬ ꞉ Fam 𝓦 ⟨ F ⟩ , is-basis-for F ℬ
                    × consists-of-compact-opens F ℬ holds
                    × closed-under-finite-meets F ℬ holds
 
-basisₛ : (F : frame 𝓤 𝓥 𝓦) → spectral-data F → Fam 𝓦 ⟨ F ⟩
+basisₛ : (F : frame 𝓤 𝓥 𝓦) → spectralᴰ F → Fam 𝓦 ⟨ F ⟩
 basisₛ F (ℬ , _) = ℬ
 
 is-spectral : frame 𝓤 𝓥 𝓦 → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
-is-spectral F = ∥ spectral-data F ∥Ω
+is-spectral F = ∥ spectralᴰ F ∥Ω
 
 spectral-frames-have-bases : (F : frame 𝓤 𝓥 𝓦) → (is-spectral F ⇒ has-basis F) holds
 spectral-frames-have-bases F σ = ∥∥-rec ∥∥-is-prop γ σ
  where
-  γ : spectral-data F → ∥ Σ ℬ ꞉ Fam _ ⟨ F ⟩ , is-basis-for F ℬ ∥
+  γ : spectralᴰ F → ∥ Σ ℬ ꞉ Fam _ ⟨ F ⟩ , is-basis-for F ℬ ∥
   γ (ℬ , p) = ∣ ℬ , pr₁ p ∣
 
 \end{code}
@@ -879,7 +879,7 @@ spectral-yoneda {𝓦 = 𝓦} F σ U V χ =
    open Joins (λ x y → x ≤[ poset-of F ] y)
    open JoinNotation (λ - → ⋁[ F ] -)
 
-   γ : spectral-data F → (U ≤[ poset-of F ] V) holds
+   γ : spectralᴰ F → (U ≤[ poset-of F ] V) holds
    γ (ℬ , υ , φ , ψ) =
     U                            ≡⟨ I  ⟩ₚ
     ⋁[ F ] ⁅ ℬ [ i ] ∣ i ε ℐ ⁆   ≤⟨ ii ⟩
@@ -907,15 +907,15 @@ spectral-yoneda {𝓦 = 𝓦} F σ U V χ =
 \begin{code}
 
 compacts-are-basic-in-spectralᴰ-frames : (F : frame 𝓤 𝓥 𝓦)
-                                      → (σ : spectral-data F)
-                                      → (U : ⟨ F ⟩)
-                                      → is-compact-open F U holds
-                                      → let
-                                         ℬ  = basisₛ F σ
-                                         ℬ↑ = directify F ℬ
-                                         I  = index ℬ↑
-                                        in
-                                         ∥ Σ i ꞉ I , U ≡ ℬ↑ [ i ] ∥
+                                       → (σ : spectralᴰ F)
+                                       → (U : ⟨ F ⟩)
+                                       → is-compact-open F U holds
+                                       → let
+                                          ℬ  = basisₛ F σ
+                                          ℬ↑ = directify F ℬ
+                                          I  = index ℬ↑
+                                         in
+                                          ∥ Σ i ꞉ I , U ≡ ℬ↑ [ i ] ∥
 compacts-are-basic-in-spectralᴰ-frames {𝓦 = 𝓦} F σ U κ =
  ∥∥-rec ∥∥-is-prop γ (κ ⁅ ℬ↑ [ i ] ∣ i ε ℐ ⁆ δ c)
   where
