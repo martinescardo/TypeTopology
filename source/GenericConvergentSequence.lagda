@@ -508,11 +508,11 @@ instance
   γ : ι u ≡ ι v
   γ = dfunext fe (λ i → ≤₂-anti (≤₂-criterion (l i)) (≤₂-criterion (m i)))
 
-∞-maximal : (u : ℕ∞) → u ≼ ∞
-∞-maximal u = λ n _ → refl
+∞-largest : (u : ℕ∞) → u ≼ ∞
+∞-largest u = λ n _ → refl
 
-Zero-minimal : (u : ℕ∞) → Zero ≼ u
-Zero-minimal u n = λ (p : ₀ ≡ ₁) → 𝟘-elim (zero-is-not-one p)
+Zero-smallest : (u : ℕ∞) → Zero ≼ u
+Zero-smallest u n = λ (p : ₀ ≡ ₁) → 𝟘-elim (zero-is-not-one p)
 
 Succ-not-≼-Zero : (u : ℕ∞) → ¬ (Succ u ≼ Zero)
 Succ-not-≼-Zero u l = zero-is-not-one (l zero refl)
@@ -545,7 +545,7 @@ above-Succ-is-positive u v l = l zero refl
 ≼-fold : (u v : ℕ∞)
        → ((u ≡ Zero) + (Σ w ꞉ ℕ∞ , Σ t ꞉ ℕ∞ , (u ≡ Succ w) × (v ≡ Succ t) × (w ≼ t)))
        → u ≼ v
-≼-fold Zero      v         (inl refl)                      = Zero-minimal v
+≼-fold Zero      v         (inl refl)                      = Zero-smallest v
 ≼-fold .(Succ w) .(Succ t) (inr (w , t , refl , refl , l)) = Succ-monotone w t l
 
 max : ℕ∞ → ℕ∞ → ℕ∞
@@ -567,8 +567,8 @@ as the need arises.
 
 \begin{code}
 
-∞-⊏-maximal : (n : ℕ) → n ⊏ ∞
-∞-⊏-maximal n = refl
+∞-⊏-largest : (n : ℕ) → n ⊏ ∞
+∞-⊏-largest n = refl
 
 _≺ℕ∞_ : ℕ∞ → ℕ∞ → 𝓤₀ ̇
 u ≺ℕ∞ v = Σ n ꞉ ℕ , (u ≡ ι n) × n ⊏ v
@@ -594,8 +594,8 @@ below-isolated fe u v (n , r , l) = transport⁻¹ is-isolated r (finite-isolate
 ≺-gives-⊏ : (n : ℕ) (u : ℕ∞) → ι n ≺ u → n ⊏ u
 ≺-gives-⊏ n u (m , r , a) = transport⁻¹ (λ k → k ⊏ u) (ℕ-to-ℕ∞-lc r) a
 
-∞-≺-maximal : (n : ℕ) → ι n ≺ ∞
-∞-≺-maximal n = n , refl , ∞-⊏-maximal n
+∞-≺-largest : (n : ℕ) → ι n ≺ ∞
+∞-≺-largest n = n , refl , ∞-⊏-largest n
 
 ≺-implies-finite : (a b : ℕ∞) → a ≺ b → is-finite a
 ≺-implies-finite a b (n , p , _) = n , (p ⁻¹)
@@ -621,7 +621,7 @@ open import NaturalsOrder
 
 ⊏-gives-< : (m n : ℕ) →  m ⊏ ι n → m < n
 ⊏-gives-< zero     zero     l = 𝟘-elim (zero-is-not-one l)
-⊏-gives-< zero     (succ n) l = zero-minimal n
+⊏-gives-< zero     (succ n) l = zero-least n
 ⊏-gives-< (succ m) zero     l = 𝟘-elim (zero-is-not-one l)
 ⊏-gives-< (succ m) (succ n) l = ⊏-gives-< m n l
 
@@ -882,7 +882,7 @@ Characterization of ⊏.
 \begin{code}
 
 ⊏-positive : (n : ℕ) (u : ℕ∞) → n ⊏ u → is-positive u
-⊏-positive n u = ⊏-trans'' u n 0 (zero-minimal n)
+⊏-positive n u = ⊏-trans'' u n 0 (zero-least n)
 
 ⊏-charac→ : funext₀
           → (n : ℕ) (u : ℕ∞)

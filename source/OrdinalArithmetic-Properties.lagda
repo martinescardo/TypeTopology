@@ -553,16 +553,16 @@ module _ {𝓤 : Universe} where
  ⊴-add-taboo : Ωₒ ⊴ (𝟙ₒ +ₒ Ωₒ) → WEM 𝓤
  ⊴-add-taboo (f , s) = VI
   where
-   I : is-minimal Ωₒ ⊥Ω
+   I : is-least Ωₒ ⊥Ω
    I (P , i) (𝟘 , 𝟘-is-prop) (refl , q) = 𝟘-elim (equal-⊤-is-true 𝟘 𝟘-is-prop q)
 
-   II : is-minimal (𝟙ₒ +ₒ Ωₒ) (inl ⋆)
+   II : is-least (𝟙ₒ +ₒ Ωₒ) (inl ⋆)
    II (inl ⋆) u       l = l
    II (inr x) (inl ⋆) l = 𝟘-elim l
    II (inr x) (inr y) l = 𝟘-elim l
 
    III : f ⊥Ω ≡ inl ⋆
-   III = simulations-preserve-minimals Ωₒ (𝟙ₒ +ₒ Ωₒ) ⊥Ω (inl ⋆) f s I II
+   III = simulations-preserve-least Ωₒ (𝟙ₒ +ₒ Ωₒ) ⊥Ω (inl ⋆) f s I II
 
    IV : is-isolated (f ⊥Ω)
    IV = transport⁻¹ is-isolated III (inl-is-isolated ⋆ (𝟙-is-discrete ⋆))
@@ -886,16 +886,17 @@ is-limit-ordinal α.
    V : sup (α ↓_) ⊴ ⌊ β ⌋
    V = sup-is-lower-bound-of-upper-bounds (α ↓_) ⌊ β ⌋ IV
 
+\end{code}
+
+We now gives an example of an ordinal which is not a limit ordinal and
+also is not a successor ordinal unless LPO holds:
+
+\begin{code}
+
  open import CanonicalMapNotation
  open import GenericConvergentSequence
  open import OrderNotation
-
-\end{code}
-
-TODO. The following proof, which shows that ℕ∞ is not a limit ordinal,
-hasn't been streamlined after it was first obtained.
-
-\begin{code}
+ open import NaturalsOrder
 
  ⌊⌋-of-ℕ∞ : ⌊ ℕ∞ₒ ⌋ ≡ ω
  ⌊⌋-of-ℕ∞ = c
@@ -907,41 +908,52 @@ hasn't been streamlined after it was first obtained.
      I u = ≼-gives-⊴ (ℕ∞ₒ ↓ u) ω II
       where
        II : (α : Ordinal 𝓤₀) → α ⊲ (ℕ∞ₒ ↓ u) → α ⊲ ω
-       II .((ℕ∞ₒ ↓ u) ↓ (ι n , n , refl , p)) ((.(ι n) , n , refl , p) , refl) = IX
+       II .((ℕ∞ₒ ↓ u) ↓ (ι n , n , refl , p)) ((.(ι n) , n , refl , p) , refl) = XI
         where
-         l : ι n ≺ u
-         l = n , refl , p
-         III : ((ℕ∞ₒ ↓ u) ↓ (ι n , n , refl , p)) ≡ ℕ∞ₒ ↓ ι n
-         III = iterated-↓ ℕ∞ₒ u (ι n) l
-         VI : (ℕ∞ₒ ↓ ι n) ≃ₒ (ω ↓ n)
-         VI = f , fop , qinvs-are-equivs f (g , gf , fg) , gop
+         III : ι n ≺ u
+         III = n , refl , p
+
+         IV : ((ℕ∞ₒ ↓ u) ↓ (ι n , n , refl , p)) ≡ ℕ∞ₒ ↓ ι n
+         IV = iterated-↓ ℕ∞ₒ u (ι n) III
+
+         V : (ℕ∞ₒ ↓ ι n) ≃ₒ (ω ↓ n)
+         V = f , fop , qinvs-are-equivs f (g , gf , fg) , gop
           where
            f : ⟨ ℕ∞ₒ ↓ ι n ⟩ → ⟨ ω ↓ n ⟩
            f (.(ι k) , k , refl , q) = k , ⊏-gives-< _ _ q
+
            g : ⟨ ω ↓ n ⟩ → ⟨ ℕ∞ₒ ↓ ι n ⟩
            g (k , l) = (ι k , k , refl , <-gives-⊏ _ _ l)
-           open import NaturalsOrder
+
            fg : f ∘ g ∼ id
            fg (k , l) = to-subtype-≡ (λ k → <-is-prop-valued k n) refl
+
            gf : g ∘ f ∼ id
            gf (.(ι k) , k , refl , q) = to-subtype-≡ (λ u → ≺-prop-valued fe' u (ι n)) refl
+
            fop : is-order-preserving (ℕ∞ₒ ↓ ι n) (ω ↓ n) f
-           fop (.(ι k) , k , refl , q) (.(ι k') , k' , refl , q') (m , r , cc) = IX
+           fop (.(ι k) , k , refl , q) (.(ι k') , k' , refl , q') (m , r , cc) = VIII
             where
-             VII : k ≡ m
-             VII = ℕ-to-ℕ∞-lc r
-             VIII : m < k'
-             VIII = ⊏-gives-< _ _ cc
-             IX : k < k'
-             IX = transport⁻¹ (_< k') VII VIII
+             VI : k ≡ m
+             VI = ℕ-to-ℕ∞-lc r
+
+             VII : m < k'
+             VII = ⊏-gives-< _ _ cc
+
+             VIII : k < k'
+             VIII = transport⁻¹ (_< k') VI VII
+
            gop : is-order-preserving (ω ↓ n) (ℕ∞ₒ ↓ ι n)  g
            gop (k , l) (k' , l') ℓ = k , refl , <-gives-⊏ _ _ ℓ
-         V : ℕ∞ₒ ↓ ι n ≡ ω ↓ n
-         V = eqtoidₒ _ _ VI
-         IV : (ℕ∞ₒ ↓ (ι n)) ⊲ ω
-         IV = n , V
-         IX : ((ℕ∞ₒ ↓ u) ↓ (ι n , n , refl , p)) ⊲ ω
-         IX = transport⁻¹ (_⊲ ω) III IV
+
+         IX : ℕ∞ₒ ↓ ι n ≡ ω ↓ n
+         IX = eqtoidₒ _ _ V
+
+         X : (ℕ∞ₒ ↓ (ι n)) ⊲ ω
+         X = n , IX
+
+         XI : ((ℕ∞ₒ ↓ u) ↓ (ι n , n , refl , p)) ⊲ ω
+         XI = transport⁻¹ (_⊲ ω) IV X
 
    b : ω ⊴ ⌊ ℕ∞ₒ ⌋
    b = transport (_⊴ ⌊ ℕ∞ₒ ⌋) (⌊⌋-of-successor' ω) I
@@ -952,8 +964,60 @@ hasn't been streamlined after it was first obtained.
    c : ⌊ ℕ∞ₒ ⌋ ≡ ω
    c = ⊴-antisym _ _ a b
 
+ ℕ∞-is-not-limit : ¬ is-limit-ordinal ℕ∞ₒ
+ ℕ∞-is-not-limit ℓ = III II
+  where
+   I = ℕ∞ₒ     ≡⟨ lr-implication (is-limit-ordinal-fact ℕ∞ₒ) ℓ ⟩
+       ⌊ ℕ∞ₒ ⌋ ≡⟨ ⌊⌋-of-ℕ∞  ⟩
+       ω       ∎
+
+   II : ℕ∞ₒ ≃ₒ ω
+   II = idtoeqₒ _ _ I
+
+   III : ¬ (ℕ∞ₒ ≃ₒ ω)
+   III (f , e) = irrefl ω (f ∞) VII
+    where
+     IV : is-largest ω (f ∞)
+     IV = order-equivs-preserve-largest ℕ∞ₒ ω f e ∞
+           (λ u t l → ≺≼-gives-≺ t u ∞ l (∞-largest u))
+
+     V : f ∞ ≺⟨ ω ⟩ succ (f ∞)
+     V = <-succ (f ∞)
+
+     VI : succ (f ∞) ≼⟨ ω ⟩ f ∞
+     VI = IV (succ (f ∞))
+
+     VII : f ∞ ≺⟨ ω ⟩ f ∞
+     VII = VI (f ∞) V
+
+ open import LPO fe
+
+ ℕ∞-successor-gives-LPO : (Σ α ꞉ Ordinal 𝓤₀ , (ℕ∞ₒ ≡ (α +ₒ 𝟙ₒ))) → LPO
+ ℕ∞-successor-gives-LPO (α , p) = IV
+  where
+   I = α           ≡⟨ (⌊⌋-of-successor' α)⁻¹ ⟩
+       ⌊ α +ₒ 𝟙ₒ ⌋ ≡⟨ ap ⌊_⌋ (p ⁻¹) ⟩
+       ⌊ ℕ∞ₒ ⌋     ≡⟨ ⌊⌋-of-ℕ∞ ⟩
+       ω           ∎
+
+   II : ℕ∞ₒ ≡ (ω +ₒ 𝟙ₒ)
+   II = transport (λ - → ℕ∞ₒ ≡ (- +ₒ 𝟙ₒ)) I p
+
+   III : ℕ∞ₒ ⊴ (ω +ₒ 𝟙ₒ)
+   III = transport (ℕ∞ₒ ⊴_) II (⊴-refl ℕ∞ₒ)
+
+   IV : LPO
+   IV = ℕ∞-in-Ord.converse-fails-constructively III
+
+ open PropositionalTruncation pt
+
+ ℕ∞-successor-gives-LPO' : (∃ α ꞉ Ordinal 𝓤₀ , (ℕ∞ₒ ≡ (α +ₒ 𝟙ₒ))) → LPO
+ ℕ∞-successor-gives-LPO' = ∥∥-rec LPO-is-prop ℕ∞-successor-gives-LPO
+
+ LPO-gives-ℕ∞-successor : LPO → (Σ α ꞉ Ordinal 𝓤₀ , (ℕ∞ₒ ≡ (α +ₒ 𝟙ₒ)))
+ LPO-gives-ℕ∞-successor lpo = ω , ℕ∞-in-Ord.corollary₃ lpo
+
 \end{code}
 
-TODO. ℕ∞ is not a successor unless LPO holds. Therefore,
-constructively, it is not necessarily the case that every ordinal is
-either a successor or a limit.
+Therefore, constructively, it is not necessarily the case that every
+ordinal is either a successor or a limit.

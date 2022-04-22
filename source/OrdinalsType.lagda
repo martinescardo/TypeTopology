@@ -289,4 +289,34 @@ inverses-of-order-equivs-are-order-equivs α β {f} (p , e , q) =
                      → is-equiv (≃ₒ-to-fun⁻¹ α β e)
 ≃ₒ-to-fun⁻¹-is-equiv α β e = inverses-are-equivs (≃ₒ-to-fun α β e)
                                 (≃ₒ-to-fun-is-equiv α β e)
+
+is-largest : (α : Ordinal 𝓤) → ⟨ α ⟩ → 𝓤 ̇
+is-largest α x = (y : ⟨ α ⟩) → y ≼⟨ α ⟩ x
+
+order-equivs-preserve-largest : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
+                              → (f : ⟨ α ⟩ → ⟨ β ⟩)
+                              → is-order-equiv α β f
+                              → (x : ⟨ α ⟩)
+                              → is-largest α x
+                              → is-largest β (f x)
+order-equivs-preserve-largest α β f (o , e , p) x ℓ = δ
+ where
+  f⁻¹ : ⟨ β ⟩ → ⟨ α ⟩
+  f⁻¹ = inverse f e
+
+  δ : (y : ⟨ β ⟩) → y ≼⟨ β ⟩ f x
+  δ y t l = IV
+   where
+    I : f⁻¹ t ≺⟨ α ⟩ f⁻¹ y
+    I = p t y l
+
+    II : f⁻¹ t ≺⟨ α ⟩ x
+    II = ℓ (f⁻¹ y) (f⁻¹ t) I
+
+    III : f (f⁻¹ t) ≺⟨ β ⟩ f x
+    III = o (f⁻¹ t) x II
+
+    IV : t ≺⟨ β ⟩ f x
+    IV = transport (λ - → - ≺⟨ β ⟩ f x) (inverses-are-sections f e t) III
+
 \end{code}

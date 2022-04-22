@@ -902,7 +902,7 @@ module ℕ∞-in-Ord where
      → x ≺⟨ ω +ₒ 𝟙ₒ ⟩ y
      → ι𝟙 x ≺⟨ ℕ∞ₒ ⟩ ι𝟙 y
    p (inl n) (inl m) l = ι-order-preserving n m l
-   p (inl n) (inr *) * = ∞-≺-maximal n
+   p (inl n) (inr *) * = ∞-≺-largest n
    p (inr *) (inl m) l = 𝟘-elim l
    p (inr *) (inr *) l = 𝟘-elim l
 
@@ -940,7 +940,7 @@ module ℕ∞-in-Ord where
      ι n ,
      transport (underlying-order ℕ∞ₒ (ι n))
                ((not-finite-is-∞ (fe 𝓤₀ 𝓤₀) (curry g)) ⁻¹)
-               (∞-≺-maximal n) ,
+               (∞-≺-largest n) ,
      ι𝟙-inverse-inl (ι n) (lpo (ι n)) n refl
    i x (inr g) (inr *) l = 𝟘-elim l
 
@@ -1227,17 +1227,17 @@ Simulations preserve minimal elements.
 
 \begin{code}
 
-is-minimal : (α : Ordinal 𝓤) → ⟨ α ⟩ → 𝓤 ̇
-is-minimal α x = (y : ⟨ α ⟩) → x ≼⟨ α ⟩ y
+is-least : (α : Ordinal 𝓤) → ⟨ α ⟩ → 𝓤 ̇
+is-least α x = (y : ⟨ α ⟩) → x ≼⟨ α ⟩ y
 
-initial-segments-preserve-minimals : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
-                                     (x : ⟨ α ⟩) (y : ⟨ β ⟩)
-                                     (f : ⟨ α ⟩ → ⟨ β ⟩)
-                                   → is-initial-segment α β f
-                                   → is-minimal α x
-                                   → is-minimal β y
-                                   → f x ≡ y
-initial-segments-preserve-minimals α β x y f i m n = c
+initial-segments-preserve-least : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
+                                  (x : ⟨ α ⟩) (y : ⟨ β ⟩)
+                                  (f : ⟨ α ⟩ → ⟨ β ⟩)
+                                → is-initial-segment α β f
+                                → is-least α x
+                                → is-least β y
+                                → f x ≡ y
+initial-segments-preserve-least α β x y f i m n = c
  where
   a : f x ≼⟨ β ⟩ y
   a u l = IV
@@ -1263,15 +1263,15 @@ initial-segments-preserve-minimals α β x y f i m n = c
   c : f x ≡ y
   c = Antisymmetry β (f x) y a b
 
-simulations-preserve-minimals : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
-                                (x : ⟨ α ⟩) (y : ⟨ β ⟩)
-                                (f : ⟨ α ⟩ → ⟨ β ⟩)
-                              → is-simulation α β f
-                              → is-minimal α x
-                              → is-minimal β y
-                              → f x ≡ y
-simulations-preserve-minimals α β x y f (i , _) =
- initial-segments-preserve-minimals α β x y f i
+simulations-preserve-least : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
+                             (x : ⟨ α ⟩) (y : ⟨ β ⟩)
+                             (f : ⟨ α ⟩ → ⟨ β ⟩)
+                           → is-simulation α β f
+                           → is-least α x
+                           → is-least β y
+                           → f x ≡ y
+simulations-preserve-least α β x y f (i , _) =
+ initial-segments-preserve-least α β x y f i
 
 \end{code}
 
