@@ -712,8 +712,8 @@ clopen elements.
 consists-of-clopens : (F : frame 𝓤 𝓥 𝓦) → (S : Fam 𝓦 ⟨ F ⟩) → Ω (𝓤 ⊔ 𝓦)
 consists-of-clopens F S = Ɐ i ∶ index S , is-clopen F (S [ i ])
 
-zero-dimensional₀ : frame 𝓤 𝓥 𝓦 → (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺) ̇
-zero-dimensional₀ {𝓦 = 𝓦} F =
+zero-dimensionalᴰ : frame 𝓤 𝓥 𝓦 → (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺) ̇
+zero-dimensionalᴰ {𝓦 = 𝓦} F =
  Σ ℬ ꞉ Fam 𝓦 ⟨ F ⟩ , is-basis-for F ℬ × consists-of-clopens F ℬ holds
 
 is-zero-dimensional : frame 𝓤 𝓥 𝓦 → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
@@ -739,7 +739,7 @@ zero-dimensional-locales-are-regular {𝓦 = 𝓦} F =
   where
    open Joins (λ x y → x ≤[ poset-of F ] y)
 
-   γ : zero-dimensional₀ F → is-regular F holds
+   γ : zero-dimensionalᴰ F → is-regular F holds
    γ (ℬ , β , ξ) = ∣ ℬ , δ ∣
     where
      δ : Π U ꞉ ⟨ F ⟩ ,
@@ -906,7 +906,7 @@ spectral-yoneda {𝓦 = 𝓦} F σ U V χ =
 
 \begin{code}
 
-compacts-are-basic-in-spectral-frames : (F : frame 𝓤 𝓥 𝓦)
+compacts-are-basic-in-spectralᴰ-frames : (F : frame 𝓤 𝓥 𝓦)
                                       → (σ : spectral-data F)
                                       → (U : ⟨ F ⟩)
                                       → is-compact-open F U holds
@@ -916,7 +916,7 @@ compacts-are-basic-in-spectral-frames : (F : frame 𝓤 𝓥 𝓦)
                                          I  = index ℬ↑
                                         in
                                          ∥ Σ i ꞉ I , U ≡ ℬ↑ [ i ] ∥
-compacts-are-basic-in-spectral-frames {𝓦 = 𝓦} F σ U κ =
+compacts-are-basic-in-spectralᴰ-frames {𝓦 = 𝓦} F σ U κ =
  ∥∥-rec ∥∥-is-prop γ (κ ⁅ ℬ↑ [ i ] ∣ i ε ℐ ⁆ δ c)
   where
    open PosetReasoning (poset-of F)
