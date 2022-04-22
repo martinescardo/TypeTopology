@@ -94,11 +94,11 @@ idempotent):
 
 \begin{code}
 
-is-prenuclear : (L : frame 𝓤 𝓥 𝓦) (j : ⟨ L ⟩ → ⟨ L ⟩) → Ω (𝓤 ⊔ 𝓥)
-is-prenuclear L j = is-inflationary L j  ∧ preserves-binary-meets L L j
+is-prenucleus : (L : frame 𝓤 𝓥 𝓦) (j : ⟨ L ⟩ → ⟨ L ⟩) → Ω (𝓤 ⊔ 𝓥)
+is-prenucleus L j = is-inflationary L j  ∧ preserves-binary-meets L L j
 
 prenucleus : frame 𝓤 𝓥 𝓦 → (𝓤 ⊔ 𝓥) ̇
-prenucleus L = Σ j ꞉ (⟨ L ⟩ → ⟨ L ⟩) , is-prenuclear L j holds
+prenucleus L = Σ j ꞉ (⟨ L ⟩ → ⟨ L ⟩) , is-prenucleus L j holds
 
 module PrenucleusApplicationSyntax (L : frame 𝓤 𝓥 𝓦) where
 

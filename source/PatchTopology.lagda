@@ -376,8 +376,8 @@ indices.
 \begin{code}
 
  𝔡𝔦𝔯-prenuclei : (K : Fam 𝓦 (⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩))
-                → (Ɐ i ∶ index K , is-prenuclear (𝒪 X) (K [ i ])) holds
-                → (Ɐ is ∶ List (index K) , is-prenuclear (𝒪 X) (𝔡𝔦𝔯 K [ is ])) holds
+                → (Ɐ i ∶ index K , is-prenucleus (𝒪 X) (K [ i ])) holds
+                → (Ɐ is ∶ List (index K) , is-prenucleus (𝒪 X) (𝔡𝔦𝔯 K [ is ])) holds
  𝔡𝔦𝔯-prenuclei K ϑ []       = pr₂ (nucleus-pre (𝒪 X) (identity-nucleus (𝒪 X)))
  𝔡𝔦𝔯-prenuclei K ϑ (j ∷ js) = n₁ , n₂
   where
@@ -423,7 +423,7 @@ indices.
    α is = 𝔡𝔦𝔯 ⁅ k ∣ (k , _) ε K ⁆ [ is ]
         , 𝔡𝔦𝔯-prenuclei ⁅ k ∣ (k , _) ε K ⁆ † is
     where
-     † : (i : index K) → is-prenuclear (𝒪 X) (pr₁ (K [ i ])) holds
+     † : (i : index K) → is-prenucleus (𝒪 X) (pr₁ (K [ i ])) holds
      † = pr₂ ∘ nucleus-pre (𝒪 X) ∘ (λ - → K [ - ])
 
 \end{code}
@@ -752,7 +752,7 @@ when proving distributivity.
 
     K₀ = ⁅ pr₁ k ∣ k ε K ⁆
 
-    φ : (i : index K₀) → is-prenuclear (𝒪 X) (K₀ [ i ]) holds
+    φ : (i : index K₀) → is-prenucleus (𝒪 X) (K₀ [ i ]) holds
     φ i = pr₂ (nucleus-pre (𝒪 X) (K [ i ]))
 
     ih = lemma-γ 𝒿 K is (j U ⊓ (K₀ [ i ]) U )
@@ -780,7 +780,7 @@ when proving distributivity.
     𝒦₀ = ⁅ pr₁ j ∣ j ε 𝒦 ⁆
     𝒦₁ = ⁅ nucleus-of 𝒿 ∣ 𝒿 ε 𝒦 ⁆
 
-    μ : (i : index 𝒦₀) → is-prenuclear (𝒪 X) (𝒦₀ [ i ]) holds
+    μ : (i : index 𝒦₀) → is-prenucleus (𝒪 X) (𝒦₀ [ i ]) holds
     μ i = pr₂ (nucleus-pre (𝒪 X) (𝒦₁ [ i ]))
 
     ξ : (is : index (𝔡𝔦𝔯 𝒦₀)) (U : ⟨ 𝒪 X ⟩) → (U ≤ ((𝔡𝔦𝔯 𝒦₀) [ is ]) U) holds
