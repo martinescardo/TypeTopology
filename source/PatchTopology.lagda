@@ -40,12 +40,12 @@ A _locale_ is a type that has a frame of opens.
 
 \begin{code}
 
-record locale (𝓤 𝓥 𝓦 : Universe) : 𝓤 ⁺ ⊔ 𝓥 ⁺ ⊔ 𝓦 ⁺ ̇  where
+record Locale (𝓤 𝓥 𝓦 : Universe) : 𝓤 ⁺ ⊔ 𝓥 ⁺ ⊔ 𝓦 ⁺ ̇  where
  field
   ⟨_⟩ₗ         : 𝓤 ̇
   frame-str-of : frame-structure 𝓥 𝓦 ⟨_⟩ₗ
 
- 𝒪 : frame 𝓤 𝓥 𝓦
+ 𝒪 : Frame 𝓤 𝓥 𝓦
  𝒪 = ⟨_⟩ₗ , frame-str-of
 
 \end{code}
@@ -54,9 +54,9 @@ We fix a locale `X` for the remainder of this module.
 
 \begin{code}
 
-open locale
+open Locale
 
-module PatchConstruction (X : locale 𝓤 𝓥 𝓦) (σ : is-spectral (𝒪 X) holds) where
+module PatchConstruction (X : Locale 𝓤 𝓥 𝓦) (σ : is-spectral (𝒪 X) holds) where
 
  _≤_ : ⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩ → Ω 𝓥
  U ≤ V = U ≤[ poset-of (𝒪 X) ] V
@@ -82,15 +82,15 @@ A nucleus is called perfect iff it is Scott-continuous:
 
 \begin{code}
 
- perfect-nucleus : 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺ ̇
- perfect-nucleus = Σ j ꞉ (⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩) ,
+ Perfect-Nucleus : 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺ ̇
+ Perfect-Nucleus = Σ j ꞉ (⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩) ,
                     ((is-nucleus (𝒪 X) j ∧ is-perfect j) holds)
 
 \end{code}
 
 \begin{code}
 
- nucleus-of : perfect-nucleus → nucleus (𝒪 X)
+ nucleus-of : Perfect-Nucleus → Nucleus (𝒪 X)
  nucleus-of (j , ζ , _) = j , ζ
 
 \end{code}
@@ -99,14 +99,14 @@ A nucleus is called perfect iff it is Scott-continuous:
 
 \begin{code}
 
- _$_ : perfect-nucleus → ⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩
+ _$_ : Perfect-Nucleus → ⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩
  (j , _) $ U = j U
 
 \end{code}
 
 \begin{code}
 
- perfect-nuclei-eq : (𝒿 𝓀 : perfect-nucleus) → 𝒿 $_ ≡ 𝓀 $_ → 𝒿 ≡ 𝓀
+ perfect-nuclei-eq : (𝒿 𝓀 : Perfect-Nucleus) → 𝒿 $_ ≡ 𝓀 $_ → 𝒿 ≡ 𝓀
  perfect-nuclei-eq 𝒿 𝓀 = to-subtype-≡ γ
   where
    γ : (j : ⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩)
@@ -122,10 +122,10 @@ Nuclei are ordered pointwise.
  _≼₀_ : (⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩) → (⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩) → Ω (𝓤 ⊔ 𝓥)
  _≼₀_ j k = Ɐ U ∶ ⟨ 𝒪 X ⟩ , (j U) ≤[ poset-of (𝒪 X) ] (k U)
 
- _≼₁_ : prenucleus (𝒪 X) → prenucleus (𝒪 X) → Ω (𝓤 ⊔ 𝓥)
+ _≼₁_ : Prenucleus (𝒪 X) → Prenucleus (𝒪 X) → Ω (𝓤 ⊔ 𝓥)
  𝒿 ≼₁ 𝓀 = pr₁ 𝒿 ≼₀ pr₁ 𝓀
 
- _≼_ : perfect-nucleus → perfect-nucleus → Ω (𝓤 ⊔ 𝓥)
+ _≼_ : Perfect-Nucleus → Perfect-Nucleus → Ω (𝓤 ⊔ 𝓥)
  𝒿 ≼ 𝓀 = (λ x → 𝒿 $ x) ≼₀ (λ x → 𝓀 $ x)
 
 \end{code}
@@ -165,8 +165,8 @@ Nuclei are ordered pointwise.
 
 \begin{code}
 
- patch-poset : poset (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺) (𝓤 ⊔ 𝓥)
- patch-poset = perfect-nucleus , _≼_ , ≼-is-preorder , ≼-is-antisymmetric
+ patch-poset : Poset (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺) (𝓤 ⊔ 𝓥)
+ patch-poset = Perfect-Nucleus , _≼_ , ≼-is-preorder , ≼-is-antisymmetric
 
 \end{code}
 
@@ -238,7 +238,7 @@ Nuclei are ordered pointwise.
     v   = ap (λ - → j U ∧[ 𝒪 X ] -) (∧[ 𝒪 X ]-is-associative (k U) (j V) (k V) ⁻¹)
     vi  = ∧[ 𝒪 X ]-is-associative (j U) (k U) (j V ∧[ 𝒪 X ] k V)
 
- _⋏₁_ : nucleus (𝒪 X) → nucleus (𝒪 X) → nucleus (𝒪 X)
+ _⋏₁_ : Nucleus (𝒪 X) → Nucleus (𝒪 X) → Nucleus (𝒪 X)
  𝒿@(j , jn) ⋏₁ 𝓀@(k , kn) = (j ⋏₀ k) , ⋏-𝓃₁ , ⋏-𝓃₂ , ⋏-𝓃₃
   where
    ⋏-𝓃₁ = ⋏₀-inflationary j k (𝓃₁ (𝒪 X) 𝒿) (𝓃₁ (𝒪 X) 𝓀)
@@ -328,7 +328,7 @@ Nuclei are ordered pointwise.
 
       v   = ⋁[ 𝒪 X ]-least ⁅ j (S [ i ]) ∧[ 𝒪 X ] k (S [ i ]) ∣ i ∶ I ⁆ 𝓊
 
- _⋏_ : perfect-nucleus → perfect-nucleus → perfect-nucleus
+ _⋏_ : Perfect-Nucleus → Perfect-Nucleus → Perfect-Nucleus
  (𝒿 , νj , ζj) ⋏ (𝓀 , νk , ζk) = pr₁ Σ-assoc (((𝒿 , νj) ⋏₁ (𝓀 , νk)) , γ)
   where
    μj = nuclei-are-monotone (𝒪 X) (𝒿 , νj)
@@ -407,19 +407,19 @@ indices.
 
 \begin{code}
 
- _^** : Fam 𝓦 (nucleus (𝒪 X)) → Fam 𝓦 (⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩)
+ _^** : Fam 𝓦 (Nucleus (𝒪 X)) → Fam 𝓦 (⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩)
  _^** K = 𝔡𝔦𝔯 ⁅ k ∣ (k , _) ε K ⁆
 
- ^**-functorial : (K : Fam 𝓦 (nucleus (𝒪 X)))
+ ^**-functorial : (K : Fam 𝓦 (Nucleus (𝒪 X)))
                 → (is js : List (index K))
                 →  K ^** [ is ++ js ] ∼ K ^** [ js ] ∘ K ^** [ is ]
  ^**-functorial K []       js _ = refl
  ^**-functorial K (i ∷ is) js x = ^**-functorial K is js ((K [ i ]) .pr₁ x)
 
- _^* : Fam 𝓦 (nucleus (𝒪 X)) → Fam 𝓦 (prenucleus (𝒪 X))
+ _^* : Fam 𝓦 (Nucleus (𝒪 X)) → Fam 𝓦 (Prenucleus (𝒪 X))
  _^* K = (List (index K)) , α
   where
-   α : List (index K) → prenucleus (𝒪 X)
+   α : List (index K) → Prenucleus (𝒪 X)
    α is = 𝔡𝔦𝔯 ⁅ k ∣ (k , _) ε K ⁆ [ is ]
         , 𝔡𝔦𝔯-prenuclei ⁅ k ∣ (k , _) ε K ⁆ † is
     where
@@ -430,10 +430,10 @@ indices.
 
 \begin{code}
 
- ^*-inhabited : (K : Fam 𝓦 (nucleus (𝒪 X))) → ∥ index (K ^*) ∥
+ ^*-inhabited : (K : Fam 𝓦 (Nucleus (𝒪 X))) → ∥ index (K ^*) ∥
  ^*-inhabited K = ∣ [] ∣
 
- ^*-upwards-directed : (K : Fam 𝓦 (nucleus (𝒪 X)))
+ ^*-upwards-directed : (K : Fam 𝓦 (Nucleus (𝒪 X)))
                      → (is : index (K ^*))
                      → (js : index (K ^*))
                      → Σ ks ꞉ index (K ^*) ,
@@ -515,7 +515,7 @@ The definition of the join:
  join : Fam 𝓦 (⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩) → ⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩
  join K = λ U → ⋁ ⁅ α U ∣ α ε 𝔡𝔦𝔯 K ⁆
 
- ⋁ₙ : Fam 𝓦 perfect-nucleus → perfect-nucleus
+ ⋁ₙ : Fam 𝓦 Perfect-Nucleus → Perfect-Nucleus
  ⋁ₙ K = join K₀ , (n₁ , n₂ , n₃) , γ
   where
    open PosetReasoning (poset-of (𝒪 X))
@@ -527,7 +527,7 @@ The definition of the join:
    ϑ : (Ɐ i ∶ index K₀ , is-scott-continuous (𝒪 X) (𝒪 X) (K₀ [ i ])) holds
    ϑ i = pr₂ (pr₂ (K [ i ]))
 
-   K₁ : Fam 𝓦 (nucleus (𝒪 X))
+   K₁ : Fam 𝓦 (Nucleus (𝒪 X))
    K₁ = ⁅ nucleus-of k ∣ k ε K ⁆
 
    n₁ : is-inflationary (𝒪 X) (join K₀) holds
@@ -644,7 +644,7 @@ The definition of the join:
 
 \begin{code}
 
- 𝟏ₚ : perfect-nucleus
+ 𝟏ₚ : Perfect-Nucleus
  𝟏ₚ = 𝟏 , (n₁ , n₂ , n₃) , ζ
        where
         open Joins (λ x y → x ≤[ poset-of (𝒪 X) ] y)
@@ -674,7 +674,7 @@ The definition of the join:
  𝟏ₚ-is-top : Meets.is-top (λ 𝒿 𝓀 → 𝒿 ≼ 𝓀) 𝟏ₚ holds
  𝟏ₚ-is-top 𝒿 U = 𝟏-is-top (𝒪 X) (𝒿 $ U)
 
- ⋏-is-meet : (Ɐ (𝒿 , 𝓀) ∶ perfect-nucleus × perfect-nucleus ,
+ ⋏-is-meet : (Ɐ (𝒿 , 𝓀) ∶ Perfect-Nucleus × Perfect-Nucleus ,
                Meets._is-glb-of_ _≼_ (𝒿 ⋏ 𝓀) (𝒿 , 𝓀)) holds
  ⋏-is-meet (𝒿 , 𝓀) = β , γ
   where
@@ -685,13 +685,13 @@ The definition of the join:
    γ : (Ɐ (𝒾 , _) ∶ (Meets.lower-bound _≼_ (𝒿 , 𝓀)) , 𝒾 ≼ (𝒿 ⋏ 𝓀)) holds
    γ (𝒾 , φ , ϑ) U = ∧[ 𝒪 X ]-greatest (𝒿 $ U) (𝓀 $ U) (𝒾 $ U) (φ U) (ϑ U)
 
- ⋁ₙ-is-join : (Ɐ K ∶ Fam 𝓦 perfect-nucleus , Joins._is-lub-of_ _≼_ (⋁ₙ K) K) holds
+ ⋁ₙ-is-join : (Ɐ K ∶ Fam 𝓦 Perfect-Nucleus , Joins._is-lub-of_ _≼_ (⋁ₙ K) K) holds
  ⋁ₙ-is-join K = β , γ
   where
    K₀ : Fam 𝓦 (⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩)
    K₀ = ⁅ pr₁ j ∣ j ε K ⁆
 
-   K₁ : Fam 𝓦 (nucleus (𝒪 X))
+   K₁ : Fam 𝓦 (Nucleus (𝒪 X))
    K₁ = ⁅ nucleus-of 𝒿 ∣ 𝒿 ε K ⁆
 
    β : Joins._is-an-upper-bound-of_ _≼_ (⋁ₙ K) K holds
@@ -720,7 +720,7 @@ when proving distributivity.
 
 \begin{code}
 
- lemma-δ : (j : nucleus (𝒪 X)) (K : Fam 𝓦 (nucleus (𝒪 X)))
+ lemma-δ : (j : Nucleus (𝒪 X)) (K : Fam 𝓦 (Nucleus (𝒪 X)))
          → (is : index (K ^*))
          → ((⁅ j ⋏₁ k ∣ k ε K ⁆ ^* [ is ]) ≼₁ nucleus-pre (𝒪 X) j) holds
  lemma-δ 𝒿@(j , n₁ , n₂ , n₃) K []       U = n₁ U
@@ -738,7 +738,7 @@ when proving distributivity.
     ♥ = n₃ (j U) ((K [ i ]) .pr₁ U)
     ♣ = ∧[ 𝒪 X ]-lower₁ (j (j U)) (j ((K [ i ]) .pr₁ U))
 
- lemma-γ : (j : nucleus (𝒪 X)) (K : Fam 𝓦 (nucleus (𝒪 X)))
+ lemma-γ : (j : Nucleus (𝒪 X)) (K : Fam 𝓦 (Nucleus (𝒪 X)))
          → (is : index (K ^*))
          → ((⁅ j ⋏₁ k ∣ k ε K ⁆ ^* [ is ]) ≼₁ (K ^* [ is ])) holds
  lemma-γ j         K []       U = ≤-is-reflexive (poset-of (𝒪 X)) U
@@ -763,7 +763,7 @@ when proving distributivity.
 
 \begin{code}
 
- lemma : (𝒿 : perfect-nucleus) (𝒦 : Fam 𝓦 perfect-nucleus)
+ lemma : (𝒿 : Perfect-Nucleus) (𝒦 : Fam 𝓦 Perfect-Nucleus)
        → let 𝒦₀ = ⁅ pr₁ j ∣ j ε 𝒦 ⁆ in
          (V : ⟨ 𝒪 X ⟩)
        → cofinal-in (𝒪 X)
@@ -829,7 +829,7 @@ when proving distributivity.
           (j (j U ∧[ 𝒪 X ] (Kᵢ U))) ∧[ 𝒪 X ] α (j U ∧[ 𝒪 X ] Kᵢ U)           ≤⟨ ϑ ⟩
           ((𝔡𝔦𝔯 ⁅ pr₁ (𝒿 ⋏ 𝓀) ∣ 𝓀 ε 𝒦 ⁆) [ i ∷ js ]) U                       ■
 
- distributivityₚ : (𝒿 : perfect-nucleus) (𝒦 : Fam 𝓦 perfect-nucleus)
+ distributivityₚ : (𝒿 : Perfect-Nucleus) (𝒦 : Fam 𝓦 Perfect-Nucleus)
                  → 𝒿 ⋏ (⋁ₙ 𝒦) ≡ ⋁ₙ ⁅ 𝒿 ⋏ 𝓀 ∣ 𝓀 ε 𝒦 ⁆
  distributivityₚ 𝒿 𝒦 =
   perfect-nuclei-eq (𝒿 ⋏ ⋁ₙ 𝒦) (⋁ₙ ⁅ 𝒿 ⋏ 𝓀 ∣ 𝓀 ε 𝒦 ⁆) (dfunext fe γ)
@@ -873,8 +873,8 @@ when proving distributivity.
 
 \begin{code}
 
- Patch : locale (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺) (𝓤 ⊔ 𝓥) 𝓦
- Patch = record { ⟨_⟩ₗ         = perfect-nucleus
+ Patch : Locale (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺) (𝓤 ⊔ 𝓥) 𝓦
+ Patch = record { ⟨_⟩ₗ         = Perfect-Nucleus
                 ; frame-str-of = (_≼_ , 𝟏ₚ , _⋏_ , ⋁ₙ)
                                , (≼-is-preorder , ≼-is-antisymmetric)
                                , 𝟏ₚ-is-top

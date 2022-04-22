@@ -29,13 +29,13 @@ open AllCombinators pt fe
 
 \begin{code}
 
-is-inflationary : (L : frame 𝓤 𝓥 𝓦) → (⟨ L ⟩ → ⟨ L ⟩) → Ω (𝓤 ⊔ 𝓥)
+is-inflationary : (L : Frame 𝓤 𝓥 𝓦) → (⟨ L ⟩ → ⟨ L ⟩) → Ω (𝓤 ⊔ 𝓥)
 is-inflationary L j = Ɐ x ∶ ⟨ L ⟩ , x ≤[ poset-of L ] j x
 
-is-idempotent : (L : frame 𝓤 𝓥 𝓦) → (⟨ L ⟩ → ⟨ L ⟩) → Ω (𝓤 ⊔ 𝓥)
+is-idempotent : (L : Frame 𝓤 𝓥 𝓦) → (⟨ L ⟩ → ⟨ L ⟩) → Ω (𝓤 ⊔ 𝓥)
 is-idempotent L j = Ɐ x ∶ ⟨ L ⟩ , j (j x) ≤[ poset-of L ] j x
 
-is-nucleus : (L : frame 𝓤 𝓥 𝓦) → (⟨ L ⟩ → ⟨ L ⟩) → Ω (𝓤 ⊔ 𝓥)
+is-nucleus : (L : Frame 𝓤 𝓥 𝓦) → (⟨ L ⟩ → ⟨ L ⟩) → Ω (𝓤 ⊔ 𝓥)
 is-nucleus {𝓤 = 𝓤} {𝓥} {𝓦} F j = 𝓃₁ ∧  𝓃₂ ∧ 𝓃₃
  where
   open PosetNotation (poset-of F)
@@ -55,18 +55,18 @@ The type of nuclei on a given frame.
 
 \begin{code}
 
-nucleus : frame 𝓤 𝓥 𝓦 → 𝓤 ⊔ 𝓥 ̇
-nucleus F = Σ j ꞉ (⟨ F ⟩ → ⟨ F ⟩) , is-nucleus F j holds
+Nucleus : Frame 𝓤 𝓥 𝓦 → 𝓤 ⊔ 𝓥 ̇
+Nucleus F = Σ j ꞉ (⟨ F ⟩ → ⟨ F ⟩) , is-nucleus F j holds
 
-𝓃₁ : (L : frame 𝓤 𝓥 𝓦) ((j , _) : nucleus L)
+𝓃₁ : (L : Frame 𝓤 𝓥 𝓦) ((j , _) : Nucleus L)
    → (x : ⟨ L ⟩) → (x ≤[ poset-of L ] j x) holds
 𝓃₁ F (j , 𝓃₁ , _ , _)= 𝓃₁
 
-𝓃₂ : (L : frame 𝓤 𝓥 𝓦) ((j , _) : nucleus L)
+𝓃₂ : (L : Frame 𝓤 𝓥 𝓦) ((j , _) : Nucleus L)
    → (U : ⟨ L ⟩) → (j (j U) ≤[ poset-of L ] j U) holds
 𝓃₂ F (j , _ , 𝓃₂ , _) = 𝓃₂
 
-𝓃₃ : (L : frame 𝓤 𝓥 𝓦) ((j , _) : nucleus L)
+𝓃₃ : (L : Frame 𝓤 𝓥 𝓦) ((j , _) : Nucleus L)
    → (U V : ⟨ L ⟩) → j (U ∧[ L ] V) ≡ j U ∧[ L ] j V
 𝓃₃ F (j , _ , _ , 𝓃₃) = 𝓃₃
 
@@ -74,7 +74,7 @@ nucleus F = Σ j ꞉ (⟨ F ⟩ → ⟨ F ⟩) , is-nucleus F j holds
 
 \begin{code}
 
-identity-nucleus : (L : frame 𝓤 𝓥 𝓦) → nucleus L
+identity-nucleus : (L : Frame 𝓤 𝓥 𝓦) → Nucleus L
 identity-nucleus L = id , n₁ , n₂ , n₃
  where
   n₁ : is-inflationary L id holds
@@ -94,15 +94,15 @@ idempotent):
 
 \begin{code}
 
-is-prenucleus : (L : frame 𝓤 𝓥 𝓦) (j : ⟨ L ⟩ → ⟨ L ⟩) → Ω (𝓤 ⊔ 𝓥)
+is-prenucleus : (L : Frame 𝓤 𝓥 𝓦) (j : ⟨ L ⟩ → ⟨ L ⟩) → Ω (𝓤 ⊔ 𝓥)
 is-prenucleus L j = is-inflationary L j  ∧ preserves-binary-meets L L j
 
-prenucleus : frame 𝓤 𝓥 𝓦 → (𝓤 ⊔ 𝓥) ̇
-prenucleus L = Σ j ꞉ (⟨ L ⟩ → ⟨ L ⟩) , is-prenucleus L j holds
+Prenucleus : Frame 𝓤 𝓥 𝓦 → (𝓤 ⊔ 𝓥) ̇
+Prenucleus L = Σ j ꞉ (⟨ L ⟩ → ⟨ L ⟩) , is-prenucleus L j holds
 
-module PrenucleusApplicationSyntax (L : frame 𝓤 𝓥 𝓦) where
+module PrenucleusApplicationSyntax (L : Frame 𝓤 𝓥 𝓦) where
 
- _$ₚ_ : prenucleus L → ⟨ L ⟩ → ⟨ L ⟩
+ _$ₚ_ : Prenucleus L → ⟨ L ⟩ → ⟨ L ⟩
  _$ₚ_ = pr₁
 
  infixr 2 _$ₚ_
@@ -113,7 +113,7 @@ Inclusion of nuclei into the type of prenuclei:
 
 \begin{code}
 
-nucleus-pre : (L : frame 𝓤 𝓥 𝓦) → nucleus L → prenucleus L
+nucleus-pre : (L : Frame 𝓤 𝓥 𝓦) → Nucleus L → Prenucleus L
 nucleus-pre L 𝒿@(j , _) = j , 𝓃₁ L 𝒿 , 𝓃₃ L 𝒿
 
 \end{code}
@@ -122,8 +122,8 @@ Prenuclei are monotone:
 
 \begin{code}
 
-prenuclei-are-monotone : (L : frame 𝓤 𝓥 𝓦)
-                       → ((j , _) : prenucleus L)
+prenuclei-are-monotone : (L : Frame 𝓤 𝓥 𝓦)
+                       → ((j , _) : Prenucleus L)
                        → is-monotonic (poset-of L) (poset-of L) j holds
 prenuclei-are-monotone L (j , _ , μ) =
  meet-preserving-implies-monotone L L j μ
@@ -134,7 +134,7 @@ As a corollary, nuclei are monotone:
 
 \begin{code}
 
-nuclei-are-monotone : (L : frame 𝓤 𝓥 𝓦) ((j , _) : nucleus L)
+nuclei-are-monotone : (L : Frame 𝓤 𝓥 𝓦) ((j , _) : Nucleus L)
                     → is-monotonic (poset-of L) (poset-of L) j holds
 nuclei-are-monotone L 𝒿 = prenuclei-are-monotone L (nucleus-pre L 𝒿)
 
@@ -142,14 +142,14 @@ nuclei-are-monotone L 𝒿 = prenuclei-are-monotone L (nucleus-pre L 𝒿)
 
 \begin{code}
 
-prenucleus-property₁ : (L : frame 𝓤 𝓥 𝓦)
-                     → ((j , _) (k , _) : prenucleus L)
+prenucleus-property₁ : (L : Frame 𝓤 𝓥 𝓦)
+                     → ((j , _) (k , _) : Prenucleus L)
                      → (Ɐ x ∶ ⟨ L ⟩ , j x ≤[ poset-of L ] (j ∘ k) x) holds
 prenucleus-property₁ L (j , _ , μj) (k , ζ , _) x =
  meet-preserving-implies-monotone L L j μj (x , k x) (ζ x)
 
-prenucleus-property₂ : (L : frame 𝓤 𝓥 𝓦)
-                     → ((j , _) (k , _) : prenucleus L)
+prenucleus-property₂ : (L : Frame 𝓤 𝓥 𝓦)
+                     → ((j , _) (k , _) : Prenucleus L)
                      → (Ɐ x ∶ ⟨ L ⟩ , k x ≤[ poset-of L ] (j ∘ k) x) holds
 prenucleus-property₂ L (j , ζj , _) (k , _) x = ζj (k x)
 

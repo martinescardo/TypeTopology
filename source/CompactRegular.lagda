@@ -41,7 +41,7 @@ good idea to address this duplication at some point.
 
 \begin{code}
 
-is-directed : (P : poset 𝓤 𝓥) → (S : Fam 𝓦 ∣ P ∣ₚ) → Ω (𝓥 ⊔ 𝓦)
+is-directed : (P : Poset 𝓤 𝓥) → (S : Fam 𝓦 ∣ P ∣ₚ) → Ω (𝓥 ⊔ 𝓦)
 is-directed P (I , s) =
    ∥ I ∥Ω
  ∧ (Ɐ i ∶ I , Ɐ j ∶ I , Ǝ k ∶ I , ((s i ≤ s k) ∧ (s j ≤ s k)) holds)
@@ -51,7 +51,7 @@ is-directed P (I , s) =
 
 \begin{code}
 
-way-below : (F : frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
+way-below : (F : Frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
 way-below {𝓤 = 𝓤} {𝓦 = 𝓦} F U V =
  Ɐ S ∶ Fam 𝓦 ⟨ F ⟩ , is-directed (poset-of F) S ⇒
   V ≤ (⋁[ F ] S) ⇒ (Ǝ i ∶ index S , (U ≤ S [ i ]) holds)
@@ -68,7 +68,7 @@ A compact open is one that is way below itself.
 
 \begin{code}
 
-is-compact-open : (F : frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
+is-compact-open : (F : Frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
 is-compact-open F U = U ≪[ F ] U
 
 \end{code}
@@ -77,7 +77,7 @@ A compact frame is simply a frame whose top element is finite.
 
 \begin{code}
 
-is-compact : frame 𝓤 𝓥 𝓦 → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
+is-compact : Frame 𝓤 𝓥 𝓦 → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
 is-compact F = is-compact-open F 𝟏[ F ]
 
 \end{code}
@@ -86,7 +86,7 @@ Compacts opens are always closed undery binary joins.
 
 \begin{code}
 
-compacts-are-closed-under-joins : (F : frame 𝓤 𝓥 𝓦)
+compacts-are-closed-under-joins : (F : Frame 𝓤 𝓥 𝓦)
                                 → (U V : ⟨ F ⟩)
                                 → is-compact-open F U holds
                                 → is-compact-open F V holds
@@ -147,7 +147,7 @@ clopen.
 
 \begin{code}
 
-well-inside₀ : (F : frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → ⟨ F ⟩ → 𝓤 ̇
+well-inside₀ : (F : Frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → ⟨ F ⟩ → 𝓤 ̇
 well-inside₀ F U V =
  Σ W ꞉ ⟨ F ⟩ , (U ∧[ F ] W ≡ 𝟎[ F ]) × (V ∨[ F ] W ≡ 𝟏[ F ])
 
@@ -163,11 +163,11 @@ complement” predicate (i.e. is well inside itself) is propositional.
 \begin{code}
 
 well-inside₀-is-not-prop : is-univalent 𝓤₀
-                        → Σ F ꞉ frame 𝓤₁ 𝓤₀ 𝓤₀ ,
+                        → Σ F ꞉ Frame 𝓤₁ 𝓤₀ 𝓤₀ ,
                            (¬ ((U V : ⟨ F ⟩) → is-prop (U ⋜₀[ F ] V)))
 well-inside₀-is-not-prop ua = IF , ε
  where
-  IF : frame 𝓤₁ 𝓤₀ 𝓤₀ -- “IF” standing for “initial frame”.
+  IF : Frame 𝓤₁ 𝓤₀ 𝓤₀ -- “IF” standing for “initial frame”.
   IF = 𝟎-𝔽𝕣𝕞 ua
 
   γ₂ : 𝟎[ IF ] ⋜₀[ IF ] 𝟏[ IF ]
@@ -209,7 +209,7 @@ relation.
 
 \begin{code}
 
-well-inside : (F : frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → ⟨ F ⟩ → Ω 𝓤
+well-inside : (F : Frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → ⟨ F ⟩ → Ω 𝓤
 well-inside F U V = ∥ U ⋜₀[ F ] V ∥Ω
 
 infix 4 well-inside
@@ -220,7 +220,7 @@ syntax well-inside F U V = U ⋜[ F ] V
 
 \begin{code}
 
-well-inside-implies-below : (F : frame 𝓤 𝓥 𝓦)
+well-inside-implies-below : (F : Frame 𝓤 𝓥 𝓦)
                           → (U V : ⟨ F ⟩)
                           → (U ⋜[ F ] V ⇒ (U ≤[ poset-of F ] V)) holds
 well-inside-implies-below F U V = ∥∥-rec (holds-is-prop (U ≤[ poset-of F ] V)) γ
@@ -242,7 +242,7 @@ well-inside-implies-below F U V = ∥∥-rec (holds-is-prop (U ≤[ poset-of F ]
 
 \begin{code}
 
-↑↑-is-upwards-closed : (F : frame 𝓤 𝓥 𝓦)
+↑↑-is-upwards-closed : (F : Frame 𝓤 𝓥 𝓦)
                      → {U V W : ⟨ F ⟩}
                      → (U ⋜[ F ] V) holds
                      → (V ≤[ poset-of F ] W) holds
@@ -263,7 +263,7 @@ well-inside-implies-below F U V = ∥∥-rec (holds-is-prop (U ≤[ poset-of F ]
      d₂ : W ∨[ F ] T ≡ 𝟏[ F ]
      d₂ = only-𝟏-is-above-𝟏 F (W ∨[ F ] T) β
 
-↓↓-is-downwards-closed : (F : frame 𝓤 𝓥 𝓦)
+↓↓-is-downwards-closed : (F : Frame 𝓤 𝓥 𝓦)
                        → {U V W : ⟨ F ⟩}
                        → (V ⋜[ F ] W) holds
                        → (U ≤[ poset-of F ] V) holds
@@ -286,10 +286,10 @@ An open _U_ in a frame _A_ is *clopen* iff it is well-inside itself.
 
 \begin{code}
 
-is-clopen₀ : (F : frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → 𝓤 ̇
+is-clopen₀ : (F : Frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → 𝓤 ̇
 is-clopen₀ F U = Σ W ꞉ ⟨ F ⟩ , (U ∧[ F ] W ≡ 𝟎[ F ]) × (U ∨[ F ] W ≡ 𝟏[ F ])
 
-is-clopen₀-is-prop : (F : frame 𝓤 𝓥 𝓦) → (U : ⟨ F ⟩) → is-prop (is-clopen₀ F U)
+is-clopen₀-is-prop : (F : Frame 𝓤 𝓥 𝓦) → (U : ⟨ F ⟩) → is-prop (is-clopen₀ F U)
 is-clopen₀-is-prop F U (W₁ , p₁ , q₁) (W₂ , p₂ , q₂) = to-subtype-≡ β γ
  where
   P = poset-of F -- we refer to the underlying poset of F as P.
@@ -320,21 +320,21 @@ is-clopen₀-is-prop F U (W₁ , p₁ , q₁) (W₂ , p₂ , q₂) = to-subtype-
         vii  = ap (λ - → W₂ ∧[ F ] -) q₁
         viii = 𝟏-right-unit-of-∧ F W₂
 
-is-clopen : (F : frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → Ω 𝓤
+is-clopen : (F : Frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → Ω 𝓤
 is-clopen F U = is-clopen₀ F U , is-clopen₀-is-prop F U
 
-clopen-implies-well-inside-itself : (F : frame 𝓤 𝓥 𝓦)
+clopen-implies-well-inside-itself : (F : Frame 𝓤 𝓥 𝓦)
                                    → (U : ⟨ F ⟩)
                                    → (is-clopen F U ⇒ U ⋜[ F ] U) holds
 clopen-implies-well-inside-itself F U = ∣_∣
 
-well-inside-itself-implies-clopen : (F : frame 𝓤 𝓥 𝓦)
+well-inside-itself-implies-clopen : (F : Frame 𝓤 𝓥 𝓦)
                                           → (U : ⟨ F ⟩)
                                           → (U ⋜[ F ] U ⇒ is-clopen F U) holds
 well-inside-itself-implies-clopen F U =
  ∥∥-rec (holds-is-prop (is-clopen F U)) id
 
-clopenness-equivalent-to-well-inside-itself : (F : frame 𝓤 𝓥 𝓦)
+clopenness-equivalent-to-well-inside-itself : (F : Frame 𝓤 𝓥 𝓦)
                                              → (U : ⟨ F ⟩)
                                              → (U ⋜[ F ] U) holds
                                              ≃ is-clopen F U holds
@@ -350,7 +350,7 @@ clopenness-equivalent-to-well-inside-itself F U =
 
 \begin{code}
 
-𝟎-is-clopen : (F : frame 𝓤 𝓥 𝓦) → 𝟎[ F ] ⋜₀[ F ] 𝟎[ F ]
+𝟎-is-clopen : (F : Frame 𝓤 𝓥 𝓦) → 𝟎[ F ] ⋜₀[ F ] 𝟎[ F ]
 𝟎-is-clopen F = 𝟏[ F ] , β , γ
  where
   β : 𝟎[ F ] ∧[ F ] 𝟏[ F ] ≡ 𝟎[ F ]
@@ -363,7 +363,7 @@ clopenness-equivalent-to-well-inside-itself F U =
 
 \begin{code}
 
-𝟎-is-well-inside-anything : (F : frame 𝓤 𝓥 𝓦) (U : ⟨ F ⟩)
+𝟎-is-well-inside-anything : (F : Frame 𝓤 𝓥 𝓦) (U : ⟨ F ⟩)
                           → (𝟎[ F ] ⋜[ F ] U) holds
 𝟎-is-well-inside-anything F U =
  ↑↑-is-upwards-closed F ∣ 𝟎-is-clopen F ∣ (𝟎-is-bottom F U)
@@ -372,7 +372,7 @@ clopenness-equivalent-to-well-inside-itself F U =
 
 \begin{code}
 
-well-inside-is-join-stable : (F : frame 𝓤 𝓥 𝓦) {U₁ U₂ V : ⟨ F ⟩}
+well-inside-is-join-stable : (F : Frame 𝓤 𝓥 𝓦) {U₁ U₂ V : ⟨ F ⟩}
                            → (U₁ ⋜[ F ] V) holds
                            → (U₂ ⋜[ F ] V) holds
                            → ((U₁ ∨[ F ] U₂) ⋜[ F ] V) holds
@@ -435,7 +435,7 @@ well-inside-is-join-stable F {U₁} {U₂} {V} =
 
 \begin{code}
 
-∨-is-scott-continuous : (F : frame 𝓤 𝓥 𝓦)
+∨-is-scott-continuous : (F : Frame 𝓤 𝓥 𝓦)
                       → (U : ⟨ F ⟩)
                       → is-scott-continuous F F (λ - → U ∨[ F ] -) holds
 ∨-is-scott-continuous F U S dir = β , γ
@@ -467,7 +467,7 @@ well-inside-is-join-stable F {U₁} {U₂} {V} =
              U ∨[ F ] (S [ i ])              ≤⟨ p i                       ⟩
              u′                              ■
 
-∨-is-scott-continuous-eq : (F : frame 𝓤 𝓥 𝓦)
+∨-is-scott-continuous-eq : (F : Frame 𝓤 𝓥 𝓦)
                          → (U : ⟨ F ⟩)
                          → (S : Fam 𝓦 ⟨ F ⟩)
                          → (is-directed (poset-of F) S) holds
@@ -478,7 +478,7 @@ well-inside-is-join-stable F {U₁} {U₂} {V} =
    γ = pr₁ ((∨-is-scott-continuous F U) S dir)
    δ = pr₂ ((∨-is-scott-continuous F U) S dir)
 
-⋜₀-implies-≪-in-compact-frames : (F : frame 𝓤 𝓥 𝓦)
+⋜₀-implies-≪-in-compact-frames : (F : Frame 𝓤 𝓥 𝓦)
                                → is-compact F holds
                                → (U V : ⟨ F ⟩)
                                → U ⋜₀[ F ] V
@@ -536,13 +536,13 @@ The family `T` we defined is also directed by the directedness of `S`.
 
      ι = only-𝟏-is-above-𝟏 F ((S [ i ]) ∨[ F ] W) η
 
-⋜-implies-≪-in-compact-frames : (F : frame 𝓤 𝓥 𝓦)
+⋜-implies-≪-in-compact-frames : (F : Frame 𝓤 𝓥 𝓦)
                               → is-compact F holds
                               → (U V : ⟨ F ⟩) → (U ⋜[ F ] V ⇒ U ≪[ F ] V) holds
 ⋜-implies-≪-in-compact-frames F κ U V =
  ∥∥-rec (holds-is-prop (U ≪[ F ] V)) (⋜₀-implies-≪-in-compact-frames F κ U V)
 
-clopens-are-compact-in-compact-frames : (F : frame 𝓤 𝓥 𝓦)
+clopens-are-compact-in-compact-frames : (F : Frame 𝓤 𝓥 𝓦)
                                       → is-compact F holds
                                       → (U : ⟨ F ⟩)
                                       → is-clopen F U holds
@@ -558,7 +558,7 @@ We would like to be able to express regularity using `↓↓` defined as:
 
 \begin{code}
 
-↓↓[_] : (F : frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → Fam 𝓤 ⟨ F ⟩
+↓↓[_] : (F : Frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → Fam 𝓤 ⟨ F ⟩
 ↓↓[ F ] U = (Σ V ꞉ ⟨ F ⟩ , (V ⋜[ F ] U) holds) , pr₁
 
 \end{code}
@@ -568,7 +568,7 @@ follows:
 
 \begin{code}
 
-is-regular₀ : (F : frame 𝓤 𝓥 𝓦) → (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺) ̇
+is-regular₀ : (F : Frame 𝓤 𝓥 𝓦) → (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺) ̇
 is-regular₀ {𝓤 = 𝓤} {𝓥} {𝓦} F =
  let
   open Joins (λ U V → U ≤[ poset-of F ] V)
@@ -585,7 +585,7 @@ is-regular₀ {𝓤 = 𝓤} {𝓥} {𝓦} F =
 
 \begin{code}
 
-is-regular : (F : frame 𝓤 𝓥 𝓦) → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
+is-regular : (F : Frame 𝓤 𝓥 𝓦) → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
 is-regular {𝓤 = 𝓤} {𝓥} {𝓦} F = ∥ is-regular₀ F ∥Ω
 
 \end{code}
@@ -596,7 +596,7 @@ basic covering family for some open `U` is well inside `U`.
 
 \begin{code}
 
-is-regular-basis : (F : frame 𝓤 𝓥 𝓦)
+is-regular-basis : (F : Frame 𝓤 𝓥 𝓦)
                  → (ℬ : Fam 𝓦 ⟨ F ⟩) → (β : is-basis-for F ℬ) → Ω (𝓤 ⊔ 𝓦)
 is-regular-basis F ℬ β =
  Ɐ U ∶ ⟨ F ⟩ , let 𝒥 = pr₁ (β U) in Ɐ j ∶ (index 𝒥) , ℬ [ 𝒥 [ j ] ] ⋜[ F ] U
@@ -607,7 +607,7 @@ A projection for easily referring to the basis of a regular frame:
 
 \begin{code}
 
-basisᵣ : (F : frame 𝓤 𝓥 𝓦)
+basisᵣ : (F : Frame 𝓤 𝓥 𝓦)
        → (is-regular F ⇒ has-basis F) holds
 basisᵣ F r = ∥∥-rec (holds-is-prop (has-basis F)) γ r
  where
@@ -621,7 +621,7 @@ regular:
 
 \begin{code}
 
-directification-preserves-regularity : (F : frame 𝓤 𝓥 𝓦)
+directification-preserves-regularity : (F : Frame 𝓤 𝓥 𝓦)
                                      → (ℬ : Fam 𝓦 ⟨ F ⟩)
                                      → (β : is-basis-for F ℬ)
                                      → is-regular-basis F ℬ β holds
@@ -649,7 +649,7 @@ which the result we are interested in follows:
 
 \begin{code}
 
-≪-implies-⋜-in-regular-frames : (F : frame 𝓤 𝓥 𝓦)
+≪-implies-⋜-in-regular-frames : (F : Frame 𝓤 𝓥 𝓦)
                               → (is-regular F) holds
                               → (U V : ⟨ F ⟩)
                               → (U ≪[ F ] V ⇒ U ⋜[ F ] V) holds
@@ -693,7 +693,7 @@ which the result we are interested in follows:
 
 \begin{code}
 
-compacts-are-clopen-in-regular-frames : (F : frame 𝓤 𝓥 𝓦)
+compacts-are-clopen-in-regular-frames : (F : Frame 𝓤 𝓥 𝓦)
                                       → is-regular F holds
                                       → (Ɐ U ∶ ⟨ F ⟩ ,
                                           is-compact-open F U ⇒ is-clopen F U) holds
@@ -709,18 +709,18 @@ clopen elements.
 
 \begin{code}
 
-consists-of-clopens : (F : frame 𝓤 𝓥 𝓦) → (S : Fam 𝓦 ⟨ F ⟩) → Ω (𝓤 ⊔ 𝓦)
+consists-of-clopens : (F : Frame 𝓤 𝓥 𝓦) → (S : Fam 𝓦 ⟨ F ⟩) → Ω (𝓤 ⊔ 𝓦)
 consists-of-clopens F S = Ɐ i ∶ index S , is-clopen F (S [ i ])
 
-zero-dimensionalᴰ : frame 𝓤 𝓥 𝓦 → (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺) ̇
+zero-dimensionalᴰ : Frame 𝓤 𝓥 𝓦 → (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺) ̇
 zero-dimensionalᴰ {𝓦 = 𝓦} F =
  Σ ℬ ꞉ Fam 𝓦 ⟨ F ⟩ , is-basis-for F ℬ × consists-of-clopens F ℬ holds
 
-is-zero-dimensional : frame 𝓤 𝓥 𝓦 → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
+is-zero-dimensional : Frame 𝓤 𝓥 𝓦 → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
 is-zero-dimensional {𝓦 = 𝓦} F =
  Ǝ ℬ ∶ Fam 𝓦 ⟨ F ⟩ , is-basis-for F ℬ × consists-of-clopens F ℬ holds
 
-basis-of-zero-dimensional-frame : (F : frame 𝓤 𝓥 𝓦)
+basis-of-zero-dimensional-frame : (F : Frame 𝓤 𝓥 𝓦)
                                 → (is-zero-dimensional F ⇒ has-basis F) holds
 basis-of-zero-dimensional-frame F =
  ∥∥-rec (holds-is-prop (has-basis F)) λ { (ℬ , δ , _) → ∣ ℬ , δ ∣ }
@@ -731,7 +731,7 @@ Every zero-dimensional locale is regular.
 
 \begin{code}
 
-zero-dimensional-locales-are-regular : (F : frame 𝓤 𝓥 𝓦)
+zero-dimensional-locales-are-regular : (F : Frame 𝓤 𝓥 𝓦)
                                      → is-zero-dimensional F holds
                                      → is-regular F holds
 zero-dimensional-locales-are-regular {𝓦 = 𝓦} F =
@@ -767,7 +767,7 @@ A frame F is called Stone iff it is compact and zero-dimensional.
 
 \begin{code}
 
-is-stone : (F : frame 𝓤 𝓥 𝓦) → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
+is-stone : (F : Frame 𝓤 𝓥 𝓦) → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
 is-stone F = is-compact F ∧ is-zero-dimensional F
 
 \end{code}
@@ -776,7 +776,7 @@ In a Stone locale, an open is a clopen iff it is compact.
 
 \begin{code}
 
-clopen-iff-compact-in-stone-frame : (F : frame 𝓤 𝓥 𝓦)
+clopen-iff-compact-in-stone-frame : (F : Frame 𝓤 𝓥 𝓦)
                                   → is-stone F holds
                                   → (U : ⟨ F ⟩)
                                   → (is-clopen F U holds)
@@ -798,35 +798,35 @@ clopen-iff-compact-in-stone-frame F (κ , ζ) U = β , γ
 
 \begin{code}
 
-consists-of-compact-opens : (F : frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
+consists-of-compact-opens : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
 consists-of-compact-opens F U = Ɐ i ∶ index U , is-compact-open F (U [ i ])
 
-contains-top : (F : frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦)
+contains-top : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦)
 contains-top F U = Ǝ t ∶ index U , is-top F (U [ t ]) holds
 
-closed-under-binary-meets : (F : frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦)
+closed-under-binary-meets : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦)
 closed-under-binary-meets F 𝒮 =
  Ɐ i ∶ index 𝒮 , Ɐ j ∶ index 𝒮 ,
   Ǝ k ∶ index 𝒮 , ((𝒮 [ k ]) is-glb-of (𝒮 [ i ] , 𝒮 [ k ])) holds
    where
     open Meets (λ x y → x ≤[ poset-of F ] y)
 
-closed-under-finite-meets : (F : frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦)
+closed-under-finite-meets : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦)
 closed-under-finite-meets F S = contains-top F S ∧ closed-under-binary-meets F S
 
-spectralᴰ : frame 𝓤 𝓥 𝓦 → (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺) ̇
+spectralᴰ : Frame 𝓤 𝓥 𝓦 → (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺) ̇
 spectralᴰ {𝓤 = 𝓤} {𝓥} {𝓦} F =
  Σ ℬ ꞉ Fam 𝓦 ⟨ F ⟩ , is-basis-for F ℬ
                    × consists-of-compact-opens F ℬ holds
                    × closed-under-finite-meets F ℬ holds
 
-basisₛ : (F : frame 𝓤 𝓥 𝓦) → spectralᴰ F → Fam 𝓦 ⟨ F ⟩
+basisₛ : (F : Frame 𝓤 𝓥 𝓦) → spectralᴰ F → Fam 𝓦 ⟨ F ⟩
 basisₛ F (ℬ , _) = ℬ
 
-is-spectral : frame 𝓤 𝓥 𝓦 → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
+is-spectral : Frame 𝓤 𝓥 𝓦 → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
 is-spectral F = ∥ spectralᴰ F ∥Ω
 
-spectral-frames-have-bases : (F : frame 𝓤 𝓥 𝓦) → (is-spectral F ⇒ has-basis F) holds
+spectral-frames-have-bases : (F : Frame 𝓤 𝓥 𝓦) → (is-spectral F ⇒ has-basis F) holds
 spectral-frames-have-bases F σ = ∥∥-rec ∥∥-is-prop γ σ
  where
   γ : spectralᴰ F → ∥ Σ ℬ ꞉ Fam _ ⟨ F ⟩ , is-basis-for F ℬ ∥
@@ -836,11 +836,11 @@ spectral-frames-have-bases F σ = ∥∥-rec ∥∥-is-prop γ σ
 
 \begin{code}
 
-cofinal-in : (F : frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Fam 𝓦 ⟨ F ⟩ → Ω (𝓥 ⊔ 𝓦)
+cofinal-in : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Fam 𝓦 ⟨ F ⟩ → Ω (𝓥 ⊔ 𝓦)
 cofinal-in F R S =
  Ɐ i ∶ index R , Ǝ j ∶ index S , ((R [ i ]) ≤[ poset-of F ] (S [ j ])) holds
 
-cofinal-implies-join-covered : (F : frame 𝓤 𝓥 𝓦) (R S : Fam 𝓦 ⟨ F ⟩)
+cofinal-implies-join-covered : (F : Frame 𝓤 𝓥 𝓦) (R S : Fam 𝓦 ⟨ F ⟩)
                              → cofinal-in F R S holds
                              → ((⋁[ F ] R) ≤[ poset-of F ] (⋁[ F ] S)) holds
 cofinal-implies-join-covered F R S φ = ⋁[ F ]-least R ((⋁[ F ] S) , β)
@@ -854,7 +854,7 @@ cofinal-implies-join-covered F R S φ = ⋁[ F ]-least R ((⋁[ F ] S) , β)
         → ((R [ i ]) ≤[ poset-of F ] (⋁[ F ] S)) holds
     γ (j , p) = R [ i ] ≤⟨ p ⟩ S [ j ] ≤⟨ ⋁[ F ]-upper S j ⟩ ⋁[ F ] S ■
 
-bicofinal-implies-same-join : (F : frame 𝓤 𝓥 𝓦) (R S : Fam 𝓦 ⟨ F ⟩)
+bicofinal-implies-same-join : (F : Frame 𝓤 𝓥 𝓦) (R S : Fam 𝓦 ⟨ F ⟩)
                             → cofinal-in F R S holds
                             → cofinal-in F S R holds
                             → ⋁[ F ] R ≡ ⋁[ F ] S
@@ -864,13 +864,13 @@ bicofinal-implies-same-join F R S φ ψ =
   (cofinal-implies-join-covered F R S φ)
   (cofinal-implies-join-covered F S R ψ)
 
-compact-rel-syntax : (F : frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
+compact-rel-syntax : (F : Frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
 compact-rel-syntax F U V =
  Ɐ W ∶ ⟨ F ⟩ , is-compact-open F W ⇒ W ≤[ poset-of F ] U ⇒ W ≤[ poset-of F ] V
 
 syntax compact-rel-syntax F U V = U ≤ₖ[ F ] V
 
-spectral-yoneda : (F : frame 𝓤 𝓥 𝓦) → is-spectral F holds → (U V : ⟨ F ⟩)
+spectral-yoneda : (F : Frame 𝓤 𝓥 𝓦) → is-spectral F holds → (U V : ⟨ F ⟩)
                 → (U ≤ₖ[ F ] V ⇒ U ≤[ poset-of F ] V) holds
 spectral-yoneda {𝓦 = 𝓦} F σ U V χ =
  ∥∥-rec (holds-is-prop (U ≤[ poset-of F ] V)) γ σ
@@ -906,7 +906,7 @@ spectral-yoneda {𝓦 = 𝓦} F σ U V χ =
 
 \begin{code}
 
-compacts-are-basic-in-spectralᴰ-frames : (F : frame 𝓤 𝓥 𝓦)
+compacts-are-basic-in-spectralᴰ-frames : (F : Frame 𝓤 𝓥 𝓦)
                                        → (σ : spectralᴰ F)
                                        → (U : ⟨ F ⟩)
                                        → is-compact-open F U holds
@@ -952,7 +952,7 @@ compacts-are-basic-in-spectralᴰ-frames {𝓦 = 𝓦} F σ U κ =
 
 -- TODO: it's not clear if this lemma will be needed. Think more about this and
 -- remove it if it turns out that it won't be needed.
-compact-meet-lemma : (F : frame 𝓤 𝓥 𝓦)
+compact-meet-lemma : (F : Frame 𝓤 𝓥 𝓦)
                    → (U V K : ⟨ F ⟩)
                    → is-compact-open F K holds
                    → (K ≤[ poset-of F ] (U ∧[ F ] V)) holds
