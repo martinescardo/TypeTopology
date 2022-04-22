@@ -27,24 +27,24 @@ open PropositionalTruncation pt
 
 open import AdjointFunctorTheoremForFrames pt fe
 
-is-heyting-implication-of : (L : frame 𝓤 𝓥 𝓦) → ⟨ L ⟩ → ⟨ L ⟩ × ⟨ L ⟩ →  Ω (𝓤 ⊔ 𝓥)
+is-heyting-implication-of : (L : Frame 𝓤 𝓥 𝓦) → ⟨ L ⟩ → ⟨ L ⟩ × ⟨ L ⟩ →  Ω (𝓤 ⊔ 𝓥)
 is-heyting-implication-of L z (x , y) =
  Ɐ w ∶ ⟨ L ⟩ , ((w ∧[ L ] x) ≤[ poset-of L ] y) ↔ (w ≤[ poset-of L ] z)
 
-is-heyting-implication-operation : (L : frame 𝓤 𝓥 𝓦)
+is-heyting-implication-operation : (L : Frame 𝓤 𝓥 𝓦)
                                  → (⟨ L ⟩ → ⟨ L ⟩ → ⟨ L ⟩)
                                  → Ω (𝓤 ⊔ 𝓥)
 is-heyting-implication-operation L _==>_ =
  Ɐ x ∶ ⟨ L ⟩ , Ɐ y ∶ ⟨ L ⟩ , is-heyting-implication-of L (x ==> y) (x , y)
 
-modus-ponens : (L : frame 𝓤 𝓥 𝓦) {x y z : ⟨ L ⟩}
+modus-ponens : (L : Frame 𝓤 𝓥 𝓦) {x y z : ⟨ L ⟩}
              → is-heyting-implication-of L z (x , y) holds
              → ((z ∧[ L ] x) ≤[ poset-of L ] y) holds
 modus-ponens L {x} {y} {z} p = pr₂ (p z) (≤-is-reflexive (poset-of L) z)
  where
   open PosetReasoning (poset-of L)
 
-module HeytingImplicationConstruction (L : frame 𝓤  𝓥  𝓥)
+module HeytingImplicationConstruction (L : Frame 𝓤  𝓥  𝓥)
                                       (𝒷 : has-basis L holds) where
 
 \end{code}

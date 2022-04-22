@@ -29,9 +29,9 @@ open PropositionalTruncation pt
 
 \begin{code}
 
-module AdjointFunctorTheorem (K : frame 𝓤  𝓥  𝓥)
+module AdjointFunctorTheorem (K : Frame 𝓤  𝓥  𝓥)
                              (𝒷 : has-basis K holds)
-                             (L : frame 𝓤' 𝓥 𝓥) where
+                             (L : Frame 𝓤' 𝓥 𝓥) where
 
 \end{code}
 
