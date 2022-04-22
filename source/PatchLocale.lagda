@@ -19,7 +19,7 @@ open import List hiding ([_])
 
 \begin{code}
 
-module PatchTopology
+module PatchLocale
         (pt : propositional-truncations-exist)
         (fe : Fun-Ext)
        where
