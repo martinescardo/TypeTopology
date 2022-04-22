@@ -659,9 +659,9 @@ id-is-scott-continuous F S δ = ⋁[ F ]-upper S , ⋁[ F ]-least S
 
 \begin{code}
 
-preserves-meets : (F : frame 𝓤 𝓥 𝓦) (G : frame 𝓤′ 𝓥′ 𝓦)
+preserves-binary-meets : (F : frame 𝓤 𝓥 𝓦) (G : frame 𝓤′ 𝓥′ 𝓦)
                 → (⟨ F ⟩ → ⟨ G ⟩) → Ω (𝓤 ⊔ 𝓤′)
-preserves-meets F G h =
+preserves-binary-meets F G h =
  Ɐ x ∶ ⟨ F ⟩ , Ɐ y ∶ ⟨ F ⟩ , (h (x ∧[ F ] y) ≡[ ψ ]≡ h x ∧[ G ] h y)
   where
    ψ : is-set ⟨ G ⟩
@@ -681,7 +681,7 @@ is-a-frame-homomorphism {𝓦 = 𝓦} F G f = α ∧ β ∧ γ
   open Joins (λ x y → x ≤[ P ] y)
 
   α = f 𝟏[ F ] ≡[ iss ]≡ 𝟏[ G ]
-  β = preserves-meets F G f
+  β = preserves-binary-meets F G f
   γ = Ɐ U ∶ Fam 𝓦 ⟨ F ⟩ , f (⋁[ F ] U) is-lub-of ⁅ f x ∣ x ε U ⁆
 
 _─f→_ : frame 𝓤 𝓥 𝓦 → frame 𝓤′ 𝓥′ 𝓦 → 𝓤 ⊔ 𝓦 ⁺ ⊔ 𝓤′ ⊔ 𝓥′ ̇
@@ -873,7 +873,7 @@ scott-continuous-implies-monotone {𝓦 = 𝓦} F G f φ (x , y) p =
 
 meet-preserving-implies-monotone : (F : frame 𝓤 𝓥 𝓦) (G : frame 𝓤′ 𝓥′ 𝓦)
                                  → (h : ⟨ F ⟩ → ⟨ G ⟩)
-                                 → preserves-meets F G h holds
+                                 → preserves-binary-meets F G h holds
                                  → is-monotonic (poset-of F) (poset-of G) h holds
 meet-preserving-implies-monotone F G h μ (x , y) p =
  h x              ≡⟨ i   ⟩ₚ

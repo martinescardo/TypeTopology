@@ -47,7 +47,7 @@ is-nucleus {𝓤 = 𝓤} {𝓥} {𝓦} F j = 𝓃₁ ∧  𝓃₂ ∧ 𝓃₃
   𝓃₂ = is-idempotent F j
 
   𝓃₃ : Ω 𝓤
-  𝓃₃ = preserves-meets F F j
+  𝓃₃ = preserves-binary-meets F F j
 
 \end{code}
 
@@ -83,7 +83,7 @@ identity-nucleus L = id , n₁ , n₂ , n₃
   n₂ : is-idempotent L id holds
   n₂ = ≤-is-reflexive (poset-of L)
 
-  n₃ : preserves-meets L L id holds
+  n₃ : preserves-binary-meets L L id holds
   n₃ x y = refl {x = x ∧[ L ] y}
 
 \end{code}
@@ -95,7 +95,7 @@ idempotent):
 \begin{code}
 
 is-prenuclear : (L : frame 𝓤 𝓥 𝓦) (j : ⟨ L ⟩ → ⟨ L ⟩) → Ω (𝓤 ⊔ 𝓥)
-is-prenuclear L j = is-inflationary L j  ∧ preserves-meets L L j
+is-prenuclear L j = is-inflationary L j  ∧ preserves-binary-meets L L j
 
 prenucleus : frame 𝓤 𝓥 𝓦 → (𝓤 ⊔ 𝓥) ̇
 prenucleus L = Σ j ꞉ (⟨ L ⟩ → ⟨ L ⟩) , is-prenuclear L j holds

@@ -185,8 +185,8 @@ Nuclei are ordered pointwise.
   ∧[ 𝒪 X ]-greatest (j U) (k U) U (p U) (q U)
 
  ⋏₀-idempotent : (j k : ⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩)
-               → preserves-meets (𝒪 X) (𝒪 X) j holds
-               → preserves-meets (𝒪 X) (𝒪 X) k holds
+               → preserves-binary-meets (𝒪 X) (𝒪 X) j holds
+               → preserves-binary-meets (𝒪 X) (𝒪 X) k holds
                → is-idempotent (𝒪 X) j holds
                → is-idempotent (𝒪 X) k holds
                → is-idempotent (𝒪 X) (j ⋏₀ k) holds
@@ -211,9 +211,9 @@ Nuclei are ordered pointwise.
     vi  = ∧[ 𝒪 X ]-right-monotone (ϑk U)
 
  ⋏₀-is-meet-preserving : (j k : ⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩)
-                       → preserves-meets (𝒪 X) (𝒪 X) j holds
-                       → preserves-meets (𝒪 X) (𝒪 X) k holds
-                       → preserves-meets (𝒪 X) (𝒪 X) (j ⋏₀ k) holds
+                       → preserves-binary-meets (𝒪 X) (𝒪 X) j holds
+                       → preserves-binary-meets (𝒪 X) (𝒪 X) k holds
+                       → preserves-binary-meets (𝒪 X) (𝒪 X) (j ⋏₀ k) holds
  ⋏₀-is-meet-preserving j k ζⱼ ζₖ U V =
   (j ⋏₀ k) (U ∧[ 𝒪 X ] V)                        ≡⟨ refl  ⟩
   j (U ∧[ 𝒪 X ] V) ∧[ 𝒪 X ] k (U ∧[ 𝒪 X ] V)     ≡⟨ i     ⟩
@@ -394,7 +394,7 @@ indices.
             i  = pr₁ (ϑ j) x
             ii = pr₁ IH ((K [ j ]) x)
 
-   n₂ : preserves-meets (𝒪 X) (𝒪 X) (𝔡𝔦𝔯 K [ j ∷ js ]) holds
+   n₂ : preserves-binary-meets (𝒪 X) (𝒪 X) (𝔡𝔦𝔯 K [ j ∷ js ]) holds
    n₂ x y = (𝔡𝔦𝔯 K [ j ∷ js ]) (x ∧[ 𝒪 X ] y)                   ≡⟨ refl ⟩
             (𝔡𝔦𝔯 K [ js ]) ((K [ j ]) (x ∧[ 𝒪 X ] y))           ≡⟨ i    ⟩
             (𝔡𝔦𝔯 K [ js ]) ((K [ j ]) x ∧[ 𝒪 X ] (K [ j ]) y)   ≡⟨ ii   ⟩
@@ -572,10 +572,10 @@ The definition of the join:
              (λ j i → (K₁ ^* [ j ]) .pr₁ ((K₁ ^* [ i ]) .pr₁ U)) ⁻¹
       iii = ⋁[ 𝒪 X ]-least S (join K₀ U , †)
 
-   μ : (is : List (index K₀)) → preserves-meets (𝒪 X) (𝒪 X) (𝔡𝔦𝔯 K₀ [ is ]) holds
+   μ : (is : List (index K₀)) → preserves-binary-meets (𝒪 X) (𝒪 X) (𝔡𝔦𝔯 K₀ [ is ]) holds
    μ is = pr₂ (𝔡𝔦𝔯-prenuclear K₀ (λ i → pr₂ (nucleus-pre (𝒪 X) (K₁ [ i ]))) is)
 
-   n₃ : preserves-meets (𝒪 X) (𝒪 X) (join K₀) holds
+   n₃ : preserves-binary-meets (𝒪 X) (𝒪 X) (join K₀) holds
    n₃ U V =
     join K₀ (U ∧[ 𝒪 X ] V)                                                 ≡⟨ refl ⟩
     ⋁ ⁅ α (U ∧[ 𝒪 X ] V) ∣ α ε 𝔡𝔦𝔯 K₀ ⁆                                    ≡⟨ i    ⟩
@@ -657,7 +657,7 @@ The definition of the join:
         n₂ : is-idempotent (𝒪 X) 𝟏 holds
         n₂ _ = ≤-is-reflexive (poset-of (𝒪 X)) 𝟏[ 𝒪 X ]
 
-        n₃ : preserves-meets (𝒪 X) (𝒪 X) 𝟏 holds
+        n₃ : preserves-binary-meets (𝒪 X) (𝒪 X) 𝟏 holds
         n₃ _ _ = ∧[ 𝒪 X ]-is-idempotent 𝟏[ 𝒪 X ]
 
         ζ : is-perfect 𝟏 holds
