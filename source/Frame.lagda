@@ -1535,3 +1535,21 @@ directify-basis {𝓦 = 𝓦} F = ∥∥-rec (holds-is-prop (has-directed-basis 
       ε = directify-is-directed F ⁅ ℬ [ j ] ∣ j ε 𝒥 x ⁆
 
 \end{code}
+
+\section{Locale notation}
+
+A _locale_ is a type that has a frame of opens.
+
+\begin{code}
+
+record Locale (𝓤 𝓥 𝓦 : Universe) : 𝓤 ⁺ ⊔ 𝓥 ⁺ ⊔ 𝓦 ⁺ ̇  where
+ field
+  ⟨_⟩ₗ         : 𝓤 ̇
+  frame-str-of : frame-structure 𝓥 𝓦 ⟨_⟩ₗ
+
+ 𝒪 : Frame 𝓤 𝓥 𝓦
+ 𝒪 = ⟨_⟩ₗ , frame-str-of
+
+
+\end{code}
+

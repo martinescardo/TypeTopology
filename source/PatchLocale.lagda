@@ -36,20 +36,6 @@ open import CompactRegular pt fe
 
 \end{code}
 
-A _locale_ is a type that has a frame of opens.
-
-\begin{code}
-
-record Locale (𝓤 𝓥 𝓦 : Universe) : 𝓤 ⁺ ⊔ 𝓥 ⁺ ⊔ 𝓦 ⁺ ̇  where
- field
-  ⟨_⟩ₗ         : 𝓤 ̇
-  frame-str-of : frame-structure 𝓥 𝓦 ⟨_⟩ₗ
-
- 𝒪 : Frame 𝓤 𝓥 𝓦
- 𝒪 = ⟨_⟩ₗ , frame-str-of
-
-\end{code}
-
 We fix a locale `X` for the remainder of this module.
 
 \begin{code}
