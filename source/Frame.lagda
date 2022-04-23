@@ -1553,3 +1553,13 @@ record Locale (𝓤 𝓥 𝓦 : Universe) : 𝓤 ⁺ ⊔ 𝓥 ⁺ ⊔ 𝓦 ⁺ �
 
 \end{code}
 
+The type of continuous maps from locale `X` to locale `Y`:
+
+\begin{code}
+
+open Locale
+
+_─c→_ : Locale 𝓤 𝓥 𝓦 → Locale 𝓤′ 𝓥′ 𝓦 → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺ ⊔ 𝓤′ ̇
+X ─c→ Y = (𝒪 Y) ─f→ (𝒪 X)
+
+\end{code}
