@@ -154,3 +154,32 @@ prenucleus-property₂ : (L : Frame 𝓤 𝓥 𝓦)
 prenucleus-property₂ L (j , ζj , _) (k , _) x = ζj (k x)
 
 \end{code}
+
+\section{Closed nucleus}
+
+\begin{code}
+
+∨-is-inflationary : (L : Frame 𝓤 𝓥 𝓦)
+                  → (x : ⟨ L ⟩) → is-inflationary L (binary-join L x) holds
+∨-is-inflationary L = ∨[ L ]-upper₂
+
+∨-is-idempotent : (L : Frame 𝓤 𝓥 𝓦)
+                → (x : ⟨ L ⟩) → is-idempotent L (binary-join L x) holds
+∨-is-idempotent L x y = ∨[ L ]-least
+                         (∨[ L ]-upper₁ x y)
+                         (≤-is-reflexive (poset-of L) (x ∨[ L ] y) )
+
+∨-preserves-binary-meets : (L : Frame 𝓤 𝓥 𝓦) (x : ⟨ L ⟩)
+                         → preserves-binary-meets L L (binary-join L x) holds
+∨-preserves-binary-meets L x y₁ y₂ =
+ x ∨[ L ] (y₁ ∧[ L ] y₂)             ≡⟨ binary-distributivity-op L x y₁ y₂ ⟩
+ (x ∨[ L ] y₁) ∧[ L ] (x ∨[ L ] y₂)  ∎
+
+∨-is-nucleus : (L : Frame 𝓤 𝓥 𝓦)
+             → (x : ⟨ L ⟩)
+             → is-nucleus L (binary-join L x) holds
+∨-is-nucleus L x = ∨-is-inflationary L x
+                 , ∨-is-idempotent L x
+                 , ∨-preserves-binary-meets L x
+
+\end{code}
