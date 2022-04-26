@@ -1123,3 +1123,23 @@ compact-gives-Σ+Π X A B κ q = III II
   III (inr ϕ)       = inr (λ x → pr₂ (I x) (ϕ x))
 
 \end{code}
+
+Added 26th April 2022. All types are compact iff global choice holds:
+
+\begin{code}
+
+open import UF-ExcludedMiddle
+
+all-types-compact-gives-global-choice : ((X : 𝓤 ̇ ) → Compact X {𝓤})
+                                      → Global-Choice 𝓤
+all-types-compact-gives-global-choice {𝓤} α X =
+ Cases (α X (λ _ → 𝟙 {𝓤}) (λ x → 𝟙-decidable))
+   (λ (x , _) → inl x)
+   (λ ν       → inr (λ x → ν (x , ⋆)))
+
+global-choice-gives-all-types-compact : Global-Choice 𝓤
+                                      → ((X : 𝓤 ̇ ) → Compact X {𝓤})
+global-choice-gives-all-types-compact gc X A δ = gc (Σ A)
+
+
+\end{code}

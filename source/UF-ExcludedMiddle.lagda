@@ -72,7 +72,7 @@ DNE : ∀ 𝓤 → 𝓤 ⁺ ̇
 DNE 𝓤 = (P : 𝓤 ̇ ) → is-prop P → ¬¬ P → P
 
 EM-gives-DNE : EM 𝓤 → DNE 𝓤
-EM-gives-DNE em P isp φ = cases (λ p → p) (λ u → 𝟘-elim (φ u)) (em P isp)
+EM-gives-DNE em P isp φ = cases id (λ u → 𝟘-elim (φ u)) (em P isp)
 
 double-negation-elim : EM 𝓤 → DNE 𝓤
 double-negation-elim = EM-gives-DNE
@@ -125,3 +125,23 @@ Added by Tom de Jong in August 2021.
     γ g = f (λ x a → g ∣ x , a ∣)
 
 \end{code}
+
+Added by Martin Escardo 26th April 2022. We can find a point of every non-empty type.
+
+\begin{code}
+
+Global-Choice' : ∀ 𝓤 → 𝓤 ⁺ ̇
+Global-Choice' 𝓤 = (X : 𝓤 ̇ ) → is-nonempty X → X
+
+Global-Choice : ∀ 𝓤 → 𝓤 ⁺ ̇
+Global-Choice 𝓤 = (X : 𝓤 ̇ ) → X + ¬ X
+
+Global-Choice-gives-Global-Choice' : Global-Choice 𝓤 → Global-Choice' 𝓤
+Global-Choice-gives-Global-Choice' gc X φ = cases id (λ u → 𝟘-elim (φ u)) (gc X)
+
+Global-Choice'-gives-Global-Choice : Global-Choice' 𝓤 → Global-Choice 𝓤
+Global-Choice'-gives-Global-Choice gc X = gc (X + ¬ X)
+                                             (λ u → u (inr (λ p → u (inl p))))
+\end{code}
+
+Global choice contradicts univalence.
