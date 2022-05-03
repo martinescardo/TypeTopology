@@ -58,11 +58,8 @@ prev-behaviour' x σ = refl
 induction-hypothesis : (P : X → 𝓦 ̇ ) → (x : X) → (𝓤 ⊔ 𝓥 ⊔ 𝓦) ̇
 induction-hypothesis P x = (y : X) → y < x → P y
 
-induction-goal : (P : X → 𝓦 ̇ ) → (𝓤 ⊔ 𝓥 ⊔ 𝓦) ̇
-induction-goal P = (x : X) → induction-hypothesis P x → P x
-
 transfinite-induction' :  (P : X → 𝓦 ̇ )
-                       → induction-goal P
+                       → ((x : X) → induction-hypothesis P x → P x)
                        → (x : X) → is-accessible x → P x
 transfinite-induction' P f = accessible-induction
                               (λ x _ → P x)
