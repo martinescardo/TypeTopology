@@ -52,14 +52,14 @@ cosubtraction zero n (.n , refl) = ⋆
 cosubtraction (succ m) zero (k , p) = positive-not-zero (k +' m) p
 cosubtraction (succ m) (succ .(k +' m)) (k , refl) = cosubtraction m (k +' m) (k , refl)
 
-zero-minimal : (n : ℕ) → zero ≤ n
-zero-minimal n = ⋆
+zero-least : (n : ℕ) → zero ≤ n
+zero-least n = ⋆
 
-zero-minimal' : (n : ℕ) → ¬ (succ n ≤ zero)
-zero-minimal' n l = l
+zero-least' : (n : ℕ) → ¬ (succ n ≤ zero)
+zero-least' n l = l
 
-zero-minimal'' : (n : ℕ) → n ≤ zero → n ≡ zero
-zero-minimal'' zero l = refl
+zero-least'' : (n : ℕ) → n ≤ zero → n ≡ zero
+zero-least'' zero l = refl
 
 succ-monotone : (m n : ℕ) → m ≤ n → succ m ≤ succ n
 succ-monotone m n l = l
@@ -68,7 +68,7 @@ succ-order-injective : (m n : ℕ) → succ m ≤ succ n → m ≤ n
 succ-order-injective m n l = l
 
 ≤-induction : (P : (m n : ℕ) (l : m ≤ n) → 𝓤 ̇ )
-            → ((n : ℕ) → P zero n (zero-minimal n))
+            → ((n : ℕ) → P zero n (zero-least n))
             → ((m n : ℕ) (l : m ≤ n) → P m n l → P (succ m) (succ n) (succ-monotone m n l))
             → (m n : ℕ) (l : m ≤ n) → P m n l
 ≤-induction P base step zero n ⋆            = base n
@@ -98,13 +98,13 @@ succ≤≡ m n = refl
 ≤-succ zero     = ⋆
 ≤-succ (succ n) = ≤-succ n
 
-unique-minimal : (n : ℕ) → n ≤ zero → n ≡ zero
-unique-minimal zero l = refl
-unique-minimal (succ n) l = 𝟘-elim l
+unique-least : (n : ℕ) → n ≤ zero → n ≡ zero
+unique-least zero l = refl
+unique-least (succ n) l = 𝟘-elim l
 
 ≤-split : (m n : ℕ) → m ≤ succ n → (m ≤ n) + (m ≡ succ n)
 ≤-split zero n l = inl l
-≤-split (succ m) zero l = inr (ap succ (unique-minimal m l))
+≤-split (succ m) zero l = inr (ap succ (unique-least m l))
 ≤-split (succ m) (succ n) l = cases inl (inr ∘ (ap succ)) (≤-split m n l)
 
 ≤-join : (m n : ℕ) → (m ≤ n) + (m ≡ succ n) → m ≤ succ n
@@ -142,8 +142,8 @@ not-less-than-itself zero l = l
 not-less-than-itself (succ n) l = not-less-than-itself n l
 
 not-less-bigger-or-equal : (m n : ℕ) → ¬ (n < m) → n ≥ m
-not-less-bigger-or-equal zero n u = zero-minimal n
-not-less-bigger-or-equal (succ m) zero = double-negation-intro (zero-minimal m)
+not-less-bigger-or-equal zero n u = zero-least n
+not-less-bigger-or-equal (succ m) zero = ¬¬-intro (zero-least m)
 not-less-bigger-or-equal (succ m) (succ n) = not-less-bigger-or-equal m n
 
 bigger-or-equal-not-less : (m n : ℕ) → n ≥ m → ¬ (n < m)
@@ -163,7 +163,7 @@ bounded-∀-next A k a φ n l = cases f g s
   f : n < k → A n
   f = φ n
   g : succ n ≡ succ k → A n
-  g p = back-transport A (succ-lc p) a
+  g p = transport⁻¹ A (succ-lc p) a
 
 \end{code}
 
@@ -181,15 +181,15 @@ Added 20th June 2018:
 <-trans l m n u v = ≤-trans (succ l) m n u (<-coarser-than-≤ m n v)
 
 <-split : (m n : ℕ) → m < succ n → (m < n) + (m ≡ n)
-<-split m zero     l = inr (unique-minimal m l)
+<-split m zero     l = inr (unique-least m l)
 <-split m (succ n) l = ≤-split m n l
 
 regress : (P : ℕ → 𝓤 ̇ )
         → ((n : ℕ) → P (succ n) → P n)
         → (n m : ℕ) → m ≤ n → P n → P m
-regress P ρ zero m l p = back-transport P (unique-minimal m l) p
+regress P ρ zero m l p = transport⁻¹ P (unique-least m l) p
 regress P ρ (succ n) m l p = cases (λ (l' : m ≤ n) → IH m l' (ρ n p))
-                                   (λ (r : m ≡ succ n) → back-transport P r p)
+                                   (λ (r : m ≡ succ n) → transport⁻¹ P r p)
                                    (≤-split m n l)
  where
   IH : (m : ℕ) → m ≤ n → P n → P m
@@ -201,7 +201,7 @@ regress P ρ (succ n) m l p = cases (λ (l' : m ≤ n) → IH m l' (ρ n p))
  where
   τ : is-accessible _<_ m → (n : ℕ) → n < succ m → is-accessible _<_ n
   τ a n u = cases (λ (v : n < m) → prev _<_ m a n v)
-                  (λ (p : n ≡ m) → back-transport (is-accessible _<_) p a)
+                  (λ (p : n ≡ m) → transport⁻¹ (is-accessible _<_) p a)
                   (<-split n m u)
 
 course-of-values-induction : (P : ℕ → 𝓤 ̇ )
@@ -211,8 +211,8 @@ course-of-values-induction = transfinite-induction _<_ <-is-well-founded
 
 <-is-extensional : is-extensional _<_
 <-is-extensional zero     zero     f g = refl
-<-is-extensional zero     (succ n) f g = unique-from-𝟘 (g zero (zero-minimal n))
-<-is-extensional (succ m) (zero)   f g = unique-from-𝟘 (f zero (zero-minimal m))
+<-is-extensional zero     (succ n) f g = unique-from-𝟘 (g zero (zero-least n))
+<-is-extensional (succ m) (zero)   f g = unique-from-𝟘 (f zero (zero-least m))
 <-is-extensional (succ m) (succ n) f g = ap succ (≤-anti m n (f m (≤-refl m)) (g n (≤-refl n)))
 
 ℕ-ordinal : is-well-order _<_
@@ -227,7 +227,7 @@ Induction on z, then x, then y:
 ℕ-cotransitive : cotransitive _<_
 ℕ-cotransitive zero     y        zero     l = inr l
 ℕ-cotransitive (succ x) y        zero     l = inr (≤-trans 1 (succ(succ x)) y ⋆ l)
-ℕ-cotransitive zero     (succ y) (succ z) l = inl (zero-minimal y)
+ℕ-cotransitive zero     (succ y) (succ z) l = inl (zero-least y)
 ℕ-cotransitive (succ x) (succ y) (succ z) l = γ IH
  where
   IH : (x < z) + (z < y)
@@ -245,8 +245,8 @@ Added December 2019.
 open import DecidableAndDetachable
 
 ≤-decidable : (m n : ℕ ) → decidable (m ≤ n)
-≤-decidable zero     n        = inl (zero-minimal n)
-≤-decidable (succ m) zero     = inr (zero-minimal' m)
+≤-decidable zero     n        = inl (zero-least n)
+≤-decidable (succ m) zero     = inr (zero-least' m)
 ≤-decidable (succ m) (succ n) = ≤-decidable m n
 
 <-decidable : (m n : ℕ ) → decidable (m < n)
@@ -262,7 +262,7 @@ Bounded minimization (added 14th December 2019):
   → (k : ℕ) → (Σ m ꞉ ℕ , (m < k) × A m × ((n : ℕ) → A n → m ≤ n))
             + ((n : ℕ) → A n → n ≥ k)
 
-βμ A δ 0 = inr (λ n a → zero-minimal n)
+βμ A δ 0 = inr (λ n a → zero-least n)
 βμ A δ (succ k) = γ
  where
   conclusion = (Σ m ꞉ ℕ , (m < succ k) × A m × ((n : ℕ) → A n → m ≤ n))
@@ -282,7 +282,7 @@ Bounded minimization (added 14th December 2019):
       ψ 0 a = 𝟘-elim (v a)
        where
         p : k ≡ 0
-        p = zero-minimal'' k (φ 0 a)
+        p = zero-least'' k (φ 0 a)
         v : ¬ A 0
         v = transport (λ - → ¬ A -) p u
       ψ (succ n) a = III
@@ -299,7 +299,7 @@ Bounded minimization (added 14th December 2019):
 
 \end{code}
 
-Given k : ℕ with A k, find the minimal m : ℕ with A m, by reduction to
+Given k : ℕ with A k, find the least m : ℕ with A m, by reduction to
 bounded minimization:
 
 \begin{code}
@@ -307,8 +307,8 @@ bounded minimization:
 Σμ : (ℕ → 𝓤 ̇ ) → 𝓤 ̇
 Σμ A = Σ m ꞉ ℕ , A m × ((n : ℕ) → A n → m ≤ n)
 
-minimal-from-given : (A : ℕ → 𝓤 ̇ ) → detachable A → Σ A → Σμ A
-minimal-from-given A δ (k , a) = γ
+least-from-given : (A : ℕ → 𝓤 ̇ ) → detachable A → Σ A → Σμ A
+least-from-given A δ (k , a) = γ
  where
   f : (Σ m ꞉ ℕ , (m < k) × A m × ((n : ℕ) → A n → m ≤ n)) → Σμ A
   f (m , l , a' , φ) = m , a' , φ
@@ -391,6 +391,7 @@ Tom de Jong, 5 November 2021.
   γ (inl k)       = inl k
   γ (inr (inl e)) = inr (inl (ap succ e))
   γ (inr (inr l)) = inr (inr l)
+
   IH : (n < m) + (n ≡ m) + (m < n)
   IH = <-trichotomous n m
 

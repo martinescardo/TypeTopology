@@ -221,7 +221,7 @@ module _ {X : 𝓤 ̇ }
   Π-extension-right-Kan {𝓣} g = qinveq (ψ g) (φ g , φψ' g , ψφ' g)
    where
     φ : (g : Y → 𝓣 ̇ ) → g ∘ j ≾ f → g ≾ f/j
-    φ g η y C (x , p) = η x (back-transport g p C)
+    φ g η y C (x , p) = η x (transport⁻¹ g p C)
 
     ψ : (g : Y → 𝓣 ̇ ) → g ≾ f/j → g ∘ j ≾ f
     ψ g θ x C = θ (j x) C (x , refl)
@@ -872,7 +872,7 @@ module /-extension-is-embedding
  sr g = refl
 
  κ : (g : Y → 𝓤 ̇ ) → g ≾ s (r g)
- κ g y C (x , p) = back-transport g p C
+ κ g y C (x , p) = transport⁻¹ g p C
 
  M : (𝓤 ⁺) ̇
  M = Σ g ꞉ (Y → 𝓤 ̇ ), ((y : Y) → is-equiv (κ g y))

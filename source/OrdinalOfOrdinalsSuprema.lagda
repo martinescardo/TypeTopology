@@ -175,7 +175,7 @@ The following lemma makes it clear why we eventually pass to the quotient.
       ⦅1⦆ β (p , refl) = u
        where
         u : ((α i ↓ x) ↓ p) ⊲ (α j ↓ y)
-        u = back-transport (_⊲ (α j ↓ y)) claim₂ claim₁
+        u = transport⁻¹ (_⊲ (α j ↓ y)) claim₂ claim₁
          where
           x' : ⟨ α i ⟩
           x' = pr₁ p
@@ -189,7 +189,7 @@ The following lemma makes it clear why we eventually pass to the quotient.
       ⦅2⦆ β (p , refl) = v
        where
         v : ((α j ↓ y) ↓ p) ⊲ (α i ↓ x)
-        v = back-transport (_⊲ (α i ↓ x)) claim₂ claim₁
+        v = transport⁻¹ (_⊲ (α i ↓ x)) claim₂ claim₁
          where
           y' : ⟨ α j ⟩
           y' = pr₁ p
@@ -437,7 +437,7 @@ Next, we show that the quotient α/ is the least upper bound of α.
       prp : (x y : α/) → is-prop (x ≺/ y → f/ x ≺⟨ β ⟩ f/ y)
       prp x y = Π-is-prop fe' (λ _ → Prop-valuedness β (f/ x) (f/ y))
       ρ : (p q : Σα) → [ p ] ≺/ [ q ] → f/ [ p ] ≺⟨ β ⟩ f/ [ q ]
-      ρ p q l = back-transport₂ (λ -₁ -₂ → -₁ ≺⟨ β ⟩ -₂)
+      ρ p q l = transport₂⁻¹ (λ -₁ -₂ → -₁ ≺⟨ β ⟩ -₂)
                  f/-≡-f̃ f/-≡-f̃
                  (f̃-is-order-preserving p q (≺/-to-≺ l))
    f/-is-simulation : is-simulation α/-Ord β f/
@@ -785,12 +785,12 @@ which can be shown to be a simulation by proving related properties of f̃.
                         → Σ γ' ꞉ Ordinal 𝓤 , Σ s' ꞉ (Σ j ꞉ I , γ' ⊲ α j)
                                            , (γ' ⊲ γ) × (f̃ γ' s' ≡ y)
    f̃-is-initial-segment {γ} (i , x , e) y l =
-    (β ↓ y , (i , x' , e₁) , back-transport ((β ↓ y) ⊲_) e m , (e₂ ⁻¹))
+    (β ↓ y , (i , x' , e₁) , transport⁻¹ ((β ↓ y) ⊲_) e m , (e₂ ⁻¹))
      where
       k : (β ↓ y) ⊲ (β ↓ f i x)
       k = ↓-preserves-order β y (f i x) l
       m : (β ↓ y) ⊲ (α i ↓ x)
-      m = back-transport ((β ↓ y) ⊲_) (f-key-property i x) k
+      m = transport⁻¹ ((β ↓ y) ⊲_) (f-key-property i x) k
       x' : ⟨ α i ⟩
       x' = pr₁ (pr₁ m)
       e₁ : β ↓ y ≡ α i ↓ x'
@@ -850,7 +850,7 @@ which can be shown to be a simulation by proving related properties of f̃.
         lem = pr₂ (f̃-is-initial-segment u y l')
          where
           l' : y ≺⟨ β ⟩ f̃ γ u
-          l' = back-transport (λ - → y ≺⟨ β ⟩ -) (f̅-key-property γ u s) l
+          l' = transport⁻¹ (λ - → y ≺⟨ β ⟩ -) (f̅-key-property γ u s) l
         v : Σ j ꞉ I , (β ↓ y) ⊲ α j
         v = pr₁ lem
         e' : f̅ ((β ↓ y) , ∣ v ∣) ≡ y
@@ -1004,10 +1004,10 @@ module suprema
    sup-is-upper-bound : (i : I) → α i ⊴ sup
    sup-is-upper-bound = pr₁ (sup-is-least-upper-bound)
 
-   sup-is-lower-bound-of-upper-bound : (β : Ordinal 𝓤)
-                                     → ((i : I) → α i ⊴ β)
-                                     → sup ⊴ β
-   sup-is-lower-bound-of-upper-bound = pr₂ (sup-is-least-upper-bound)
+   sup-is-lower-bound-of-upper-bounds : (β : Ordinal 𝓤)
+                                      → ((i : I) → α i ⊴ β)
+                                      → sup ⊴ β
+   sup-is-lower-bound-of-upper-bounds = pr₂ (sup-is-least-upper-bound)
 
    sup-is-image-of-sum-to-ordinals : ⟨ sup ⟩ ≃ image sum-to-ordinals
    sup-is-image-of-sum-to-ordinals =
@@ -1031,7 +1031,7 @@ module suprema
  sup-monotone : {I : 𝓤 ̇ } (α β : I → Ordinal 𝓤)
               → ((i : I) → α i ⊴ β i)
               → sup α ⊴ sup β
- sup-monotone α β l = sup-is-lower-bound-of-upper-bound α (sup β)
+ sup-monotone α β l = sup-is-lower-bound-of-upper-bounds α (sup β)
                        (λ i → ⊴-trans
                                 (α i) (β i) (sup β)
                                 (l i) (sup-is-upper-bound β i))

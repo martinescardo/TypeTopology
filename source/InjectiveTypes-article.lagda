@@ -549,7 +549,7 @@ embedding are themselves embeddings.
   sr g = refl
 
   κ : (g : Y → 𝓤 ⊔ 𝓥 ̇ ) → g ≼ s (r g)
-  κ g y C (x , p) = back-transport g p C
+  κ g y C (x , p) = transport⁻¹ g p C
 
   M : (𝓤 ⊔ 𝓥)⁺ ̇
   M = Σ g ꞉ (Y → 𝓤 ⊔ 𝓥 ̇ ), ((y : Y) → is-equiv (κ g y))

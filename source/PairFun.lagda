@@ -29,7 +29,7 @@ module _ {𝓤 𝓥 𝓦 𝓣}
  pair-fun (x , a) = (f x , g x a)
 
  pair-fun-fiber' : (y : Y) → B y → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓣 ̇
- pair-fun-fiber' y b = Σ (x , a) ꞉ fiber f y , fiber (g x) (back-transport B a b)
+ pair-fun-fiber' y b = Σ (x , a) ꞉ fiber f y , fiber (g x) (transport⁻¹ B a b)
 
  pair-fun-fiber-≃ : (y : Y) (b : B y)
                   → fiber pair-fun (y , b)
@@ -57,7 +57,7 @@ module _ {𝓤 𝓥 𝓦 𝓣}
    i : is-prop (pair-fun-fiber' y b)
    i = subtype-of-prop-is-prop
         pr₁
-        (pr₁-lc (λ {w} → d (pr₁ w) (back-transport B (pr₂ w) b)))
+        (pr₁-lc (λ {w} → d (pr₁ w) (transport⁻¹ B (pr₂ w) b)))
         (e y)
 
    h : is-prop (fiber pair-fun (y , b))
@@ -81,7 +81,7 @@ module _ {𝓤 𝓥 𝓦 𝓣}
    i = fiber-identification (center (e y))
 
    w : pair-fun-fiber' y b
-   w = (center (e y) , center (d x (back-transport B i b)))
+   w = (center (e y) , center (d x (transport⁻¹ B i b)))
 
    h : is-singleton (fiber pair-fun (y , b))
    h = pointed-props-are-singletons (⌜ pair-fun-fiber-≃ y b ⌝⁻¹ w) k

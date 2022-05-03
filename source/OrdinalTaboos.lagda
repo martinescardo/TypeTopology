@@ -40,7 +40,7 @@ indexed by a discrete type is again discrete.
 Every-Discrete-Ordinal-Is-Trichotomous : (𝓤 : Universe) → 𝓤 ⁺ ̇
 Every-Discrete-Ordinal-Is-Trichotomous 𝓤 =
    ((α : Ordinal 𝓤) → is-discrete ⟨ α ⟩
-                    → is-trichotomous (underlying-order α))
+                    → is-trichotomous-order (underlying-order α))
 
 module suprema-of-ordinals-assumptions
         (pt : propositional-truncations-exist)
@@ -55,7 +55,7 @@ module suprema-of-ordinals-assumptions
   (𝓤 : Universe) → 𝓤 ⁺ ̇
  Sups-Of-Discretely-Indexed-Trichotomous-Ordinals-Are-Discrete 𝓤 =
   (I : 𝓤 ̇  ) → is-discrete I → (α : I → Ordinal 𝓤)
-             → ((i : I) → is-trichotomous (underlying-order (α i)))
+             → ((i : I) → is-trichotomous-order (underlying-order (α i)))
              → is-discrete ⟨ sup α ⟩
 
 \end{code}
@@ -144,15 +144,15 @@ module discrete-trichotomous-taboo-construction
  𝟚≺-ordinal i h = 𝟚 , _≺_ , ≺-is-prop-valued i   , ≺-is-well-founded
                           , ≺-is-extensional h , ≺-is-transitive
 
- ≺-trichotomous-characterization : is-trichotomous _≺_ ⇔ P
+ ≺-trichotomous-characterization : is-trichotomous-order _≺_ ⇔ P
  ≺-trichotomous-characterization = ⦅⇒⦆ , ⦅⇐⦆
   where
-   ⦅⇐⦆ : P → is-trichotomous _≺_
+   ⦅⇐⦆ : P → is-trichotomous-order _≺_
    ⦅⇐⦆ p ₀ ₀ = inr (inl refl)
    ⦅⇐⦆ p ₀ ₁ = inl p
    ⦅⇐⦆ p ₁ ₀ = inr (inr p)
    ⦅⇐⦆ p ₁ ₁ = inr (inl refl)
-   ⦅⇒⦆ : is-trichotomous _≺_ → P
+   ⦅⇒⦆ : is-trichotomous-order _≺_ → P
    ⦅⇒⦆ t = lemma (t ₀ ₁)
     where
      lemma : (₀ ≺ ₁) + (₀ ≡ ₁) + (₁ ≺ ₀) → P
@@ -209,7 +209,7 @@ module _
   P' : Ordinal 𝓤
   P' = prop-ordinal P P-is-prop +ₒ 𝟙ₒ
 
-  P'-is-trichotomous : is-trichotomous (underlying-order P')
+  P'-is-trichotomous : is-trichotomous-order (underlying-order P')
   P'-is-trichotomous = trichotomy-preservation (prop.trichotomous P P-is-prop)
                                                (prop.trichotomous 𝟙 𝟙-is-prop)
    where
@@ -258,7 +258,7 @@ module _
   α ₀ = P'
   α ₁ = 𝟙ₒ +ₒ 𝟙ₒ
 
-  α-is-trichotomous : (i : I) → is-trichotomous (underlying-order (α i))
+  α-is-trichotomous : (i : I) → is-trichotomous-order (underlying-order (α i))
   α-is-trichotomous ₀ = P'-is-trichotomous
   α-is-trichotomous ₁ = trichotomy-preservation trichotomous trichotomous
    where

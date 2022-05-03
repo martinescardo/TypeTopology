@@ -1,4 +1,4 @@
-Martin Escardo 2012.
+<Martin Escardo 2012.
 
 See my JSL paper "Infinite sets that satisfy the principle of
 omniscience" for a discussion of the type ℕ∞ defined here.
@@ -279,10 +279,10 @@ same-positivity fe₀ u v f g = ≤₂-anti (≤₂'-gives-≤₂ a)
                                       (≤₂'-gives-≤₂ b)
  where
   a : is-Zero v → is-Zero u
-  a p = back-transport is-Zero (g (is-Zero-equal-Zero fe₀ p)) refl
+  a p = transport⁻¹ is-Zero (g (is-Zero-equal-Zero fe₀ p)) refl
 
   b : is-Zero u → is-Zero v
-  b p = back-transport is-Zero (f (is-Zero-equal-Zero fe₀ p)) refl
+  b p = transport⁻¹ is-Zero (f (is-Zero-equal-Zero fe₀ p)) refl
 
 successors-same-positivity : {u u' v v' : ℕ∞}
                            → u ≡ Succ u'
@@ -359,10 +359,10 @@ not-finite-is-∞ fe {u} f = ℕ∞-to-ℕ→𝟚-lc fe (dfunext fe lemma)
 ℕ∞-ddensity fe {Y} s {f} {g} h h∞ u = s (f u) (g u) c
  where
   a : f u ≢ g u → (n : ℕ) → u ≢ ι n
-  a t n = contrapositive (λ (r : u ≡ ι n) → back-transport (λ - → f - ≡ g -) r (h n)) t
+  a t n = contrapositive (λ (r : u ≡ ι n) → transport⁻¹ (λ - → f - ≡ g -) r (h n)) t
 
   b : f u ≢ g u → u ≢ ∞
-  b = contrapositive (λ (r : u ≡ ∞) → back-transport (λ - → f - ≡ g -) r h∞)
+  b = contrapositive (λ (r : u ≡ ∞) → transport⁻¹ (λ - → f - ≡ g -) r h∞)
 
   c : ¬¬ (f u ≡ g u)
   c = λ t → b t (not-finite-is-∞ fe (a t))
@@ -464,7 +464,7 @@ Zero-is-finite : is-finite Zero
 Zero-is-finite = ι-is-finite zero
 
 Zero-is-finite' : funext₀ → (u : ℕ∞) → is-Zero u → is-finite u
-Zero-is-finite' fe u z = back-transport
+Zero-is-finite' fe u z = transport⁻¹
                            is-finite
                            (is-Zero-equal-Zero fe z)
                            Zero-is-finite
@@ -481,7 +481,7 @@ is-finite-up' fe u i = 𝟚-equality-cases
                          (λ (z : is-Zero u)
                             → Zero-is-finite' fe u z)
                          (λ (p : is-positive u)
-                            → back-transport
+                            → transport⁻¹
                                is-finite
                                (positive-equal-Succ fe p)
                                (is-finite-up (Pred u) i))
@@ -508,11 +508,11 @@ instance
   γ : ι u ≡ ι v
   γ = dfunext fe (λ i → ≤₂-anti (≤₂-criterion (l i)) (≤₂-criterion (m i)))
 
-∞-maximal : (u : ℕ∞) → u ≼ ∞
-∞-maximal u = λ n _ → refl
+∞-largest : (u : ℕ∞) → u ≼ ∞
+∞-largest u = λ n _ → refl
 
-Zero-minimal : (u : ℕ∞) → Zero ≼ u
-Zero-minimal u n = λ (p : ₀ ≡ ₁) → 𝟘-elim (zero-is-not-one p)
+Zero-smallest : (u : ℕ∞) → Zero ≼ u
+Zero-smallest u n = λ (p : ₀ ≡ ₁) → 𝟘-elim (zero-is-not-one p)
 
 Succ-not-≼-Zero : (u : ℕ∞) → ¬ (Succ u ≼ Zero)
 Succ-not-≼-Zero u l = zero-is-not-one (l zero refl)
@@ -545,7 +545,7 @@ above-Succ-is-positive u v l = l zero refl
 ≼-fold : (u v : ℕ∞)
        → ((u ≡ Zero) + (Σ w ꞉ ℕ∞ , Σ t ꞉ ℕ∞ , (u ≡ Succ w) × (v ≡ Succ t) × (w ≼ t)))
        → u ≼ v
-≼-fold Zero      v         (inl refl)                      = Zero-minimal v
+≼-fold Zero      v         (inl refl)                      = Zero-smallest v
 ≼-fold .(Succ w) .(Succ t) (inr (w , t , refl , refl , l)) = Succ-monotone w t l
 
 max : ℕ∞ → ℕ∞ → ℕ∞
@@ -567,8 +567,8 @@ as the need arises.
 
 \begin{code}
 
-∞-⊏-maximal : (n : ℕ) → n ⊏ ∞
-∞-⊏-maximal n = refl
+∞-⊏-largest : (n : ℕ) → n ⊏ ∞
+∞-⊏-largest n = refl
 
 _≺ℕ∞_ : ℕ∞ → ℕ∞ → 𝓤₀ ̇
 u ≺ℕ∞ v = Σ n ꞉ ℕ , (u ≡ ι n) × n ⊏ v
@@ -581,7 +581,7 @@ instance
 ∞-top u (n , r , l) = ∞-is-not-finite n r
 
 below-isolated : funext₀ → (u v : ℕ∞) → u ≺ v → is-isolated u
-below-isolated fe u v (n , r , l) = back-transport is-isolated r (finite-isolated fe n)
+below-isolated fe u v (n , r , l) = transport⁻¹ is-isolated r (finite-isolated fe n)
 
 ≺-prop-valued : funext₀ → (u v : ℕ∞) → is-prop (u ≺ v)
 ≺-prop-valued fe u v (n , r , a) (m , s , b) = to-Σ-≡ (ℕ-to-ℕ∞-lc (r ⁻¹ ∙ s) ,
@@ -592,10 +592,10 @@ below-isolated fe u v (n , r , l) = back-transport is-isolated r (finite-isolate
 ⊏-gives-≺ n u a = n , refl , a
 
 ≺-gives-⊏ : (n : ℕ) (u : ℕ∞) → ι n ≺ u → n ⊏ u
-≺-gives-⊏ n u (m , r , a) = back-transport (λ k → k ⊏ u) (ℕ-to-ℕ∞-lc r) a
+≺-gives-⊏ n u (m , r , a) = transport⁻¹ (λ k → k ⊏ u) (ℕ-to-ℕ∞-lc r) a
 
-∞-≺-maximal : (n : ℕ) → ι n ≺ ∞
-∞-≺-maximal n = n , refl , ∞-⊏-maximal n
+∞-≺-largest : (n : ℕ) → ι n ≺ ∞
+∞-≺-largest n = n , refl , ∞-⊏-largest n
 
 ≺-implies-finite : (a b : ℕ∞) → a ≺ b → is-finite a
 ≺-implies-finite a b (n , p , _) = n , (p ⁻¹)
@@ -621,7 +621,7 @@ open import NaturalsOrder
 
 ⊏-gives-< : (m n : ℕ) →  m ⊏ ι n → m < n
 ⊏-gives-< zero     zero     l = 𝟘-elim (zero-is-not-one l)
-⊏-gives-< zero     (succ n) l = zero-minimal n
+⊏-gives-< zero     (succ n) l = zero-least n
 ⊏-gives-< (succ m) zero     l = 𝟘-elim (zero-is-not-one l)
 ⊏-gives-< (succ m) (succ n) l = ⊏-gives-< m n l
 
@@ -662,13 +662,13 @@ finite-accessible = course-of-values-induction (λ n → is-accessible _≺_ (ι
   φ n σ = next (ι n) τ
    where
     τ : (u : ℕ∞) → u ≺ ι n → is-accessible _≺_ u
-    τ u (m , r , l) = back-transport (is-accessible _≺_) r (σ m (⊏-gives-< m n l))
+    τ u (m , r , l) = transport⁻¹ (is-accessible _≺_) r (σ m (⊏-gives-< m n l))
 
 ≺-well-founded : is-well-founded _≺_
 ≺-well-founded v = next v σ
  where
   σ : (u : ℕ∞) → u ≺ v → is-accessible _≺_ u
-  σ u (n , r , l) = back-transport (is-accessible _≺_) r (finite-accessible n)
+  σ u (n , r , l) = transport⁻¹ (is-accessible _≺_) r (finite-accessible n)
 
 ≺-extensional : funext₀ → is-extensional _≺_
 ≺-extensional fe u v l m = γ
@@ -702,13 +702,13 @@ proved above, that ≺ is well founded:
   γ n g = φ (ι n) h
    where
     h : (u : ℕ∞) → u ≺ ι n → p u ≡ ₁
-    h u (m , r , l) = back-transport (λ v → p v ≡ ₁) r (g m (⊏-gives-< m n l))
+    h u (m , r , l) = transport⁻¹ (λ v → p v ≡ ₁) r (g m (⊏-gives-< m n l))
 
   a : (n : ℕ) → p (ι n) ≡ ₁
   a = course-of-values-induction (λ n → p (ι n) ≡ ₁) γ
 
   f : (u : ℕ∞) → u ≺ ∞ → p u ≡ ₁
-  f u (n , r , l) = back-transport (λ v → p v ≡ ₁) r (a n)
+  f u (n , r , l) = transport⁻¹ (λ v → p v ≡ ₁) r (a n)
 
   b : p ∞ ≡ ₁
   b = φ ∞ f
@@ -727,7 +727,9 @@ proved above, that ≺ is well founded:
   IH = ℕ-to-ℕ∞-lemma fe u n
 
   g : decidable(u ⊑ n) → Σ m ꞉ ℕ , (m ≤ n ∔ 1) × (u ≡ ι m)
-  g (inl q) = pr₁(IH q) , ≤-trans (pr₁(IH q)) n (n ∔ 1) (pr₁(pr₂(IH q))) (≤-succ n) , pr₂(pr₂(IH q))
+  g (inl q) = pr₁(IH q) , ≤-trans (pr₁ (IH q)) n (n ∔ 1)
+                           (pr₁ (pr₂ (IH q)))
+                           (≤-succ n) , pr₂ (pr₂ (IH q))
   g (inr φ) = n ∔ 1 , ≤-refl n , s
     where
      q : n ⊏ u
@@ -765,7 +767,7 @@ proved above, that ≺ is well founded:
   p z = ι z n
 
   e : ι x n ≡ ₀
-  e = back-transport (λ z → p z ≡ ₀) r (ι-diagonal₀ n)
+  e = transport⁻¹ (λ z → p z ≡ ₀) r (ι-diagonal₀ n)
 
   t : ι x n <₂ ι y n
   t = <₂-criterion e l
@@ -801,7 +803,7 @@ proved above, that ≺ is well founded:
 ι-order-reflecting m n (m' , p , l') = ⊏-gives-< m n l
  where
   l : m ⊏ ι n
-  l = back-transport (λ - → - ⊏ ι n) (ℕ-to-ℕ∞-lc p) l'
+  l = transport⁻¹ (λ - → - ⊏ ι n) (ℕ-to-ℕ∞-lc p) l'
 
 {- TODO
 
@@ -880,7 +882,7 @@ Characterization of ⊏.
 \begin{code}
 
 ⊏-positive : (n : ℕ) (u : ℕ∞) → n ⊏ u → is-positive u
-⊏-positive n u = ⊏-trans'' u n 0 (zero-minimal n)
+⊏-positive n u = ⊏-trans'' u n 0 (zero-least n)
 
 ⊏-charac→ : funext₀
           → (n : ℕ) (u : ℕ∞)
@@ -915,6 +917,44 @@ Characterization of ⊏.
   γ = IH
 
 \end{code}
+
+Added 19th April 2022.
+
+\begin{code}
+
+bounded-is-finite : funext₀
+                  → (n : ℕ) (u : ℕ∞)
+                  → u ⊑ n
+                  → is-finite u
+bounded-is-finite fe n u le = case ℕ-to-ℕ∞-lemma fe u n le of
+                               (λ (m , _ , p) → m , (p ⁻¹))
+
+⊑-succ-gives-≺ : funext₀
+               → (n : ℕ) (u : ℕ∞)
+               → u ⊑ n
+               → u ≺ ι (succ n)
+⊑-succ-gives-≺ fe n u les = f (ℕ-to-ℕ∞-lemma fe u n les)
+ where
+  f : (Σ m ꞉ ℕ , (m ≤ n) × (u ≡ ι m)) → u ≺ ι (succ n)
+  f (m , le , p) = m , p , a
+   where
+    a : m ⊏ ι (succ n)
+    a = <-gives-⊏ m (succ n) le
+
+finite-trichotomous : funext₀
+                    → (n : ℕ) (u : ℕ∞)
+                    → (ι n ≺ u) + (ι n ≡ u) + (u ≺ ι n)
+finite-trichotomous fe 0        u = 𝟚-equality-cases
+                                     (λ (l : is-Zero u) → inr (inl ((is-Zero-equal-Zero fe l)⁻¹)))
+                                     (λ (m : is-positive u) → inl (⊏-gives-≺ 0 u m))
+finite-trichotomous fe (succ n) u = 𝟚-equality-cases
+                                     (λ (l : u ⊑ succ n) →
+                                           𝟚-equality-cases
+                                            (λ (a : u ⊑ n) → inr (inr (⊑-succ-gives-≺ fe n u a)))
+                                            (λ (b : n ⊏ u) → inr (inl ((Succ-criterion fe b l)⁻¹))))
+                                     (λ (m : succ n ⊏ u) → inl (⊏-gives-≺ (succ n) u m))
+\end{code}
+
 
 Added 14th January 2022.
 
@@ -1107,7 +1147,7 @@ a suitable induction hypothesis.
      q = succ-lc m
 
      r : n ∔ 1 ≤ n
-     r = back-transport (_≤ n) q l
+     r = transport⁻¹ (_≤ n) q l
 
    II : β (succ k) ≡ ₀
    II = at-most-one-₁-Lemma₁ β π I p

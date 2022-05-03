@@ -1370,7 +1370,7 @@ subset-with-only-the-least-witness {𝓤} A A-is-decidable = B , B-is-decidable 
       h (n , a) = k , a' , ν
        where
         u : Σμ (λ m → m ∈ A)
-        u = minimal-from-given (λ m → m ∈ A) A-is-decidable (n , a)
+        u = least-from-given (λ m → m ∈ A) A-is-decidable (n , a)
         k : ℕ
         k = pr₁ u
         a' : k ∈ A

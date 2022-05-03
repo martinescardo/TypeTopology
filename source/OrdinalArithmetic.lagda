@@ -21,8 +21,17 @@ open import NaturalsOrder
 
 open import UF-Subsingletons
 
+is-trichotomous : {𝓤 : Universe} → Ordinal 𝓤 → 𝓤 ̇
+is-trichotomous α = ∀ x y → (x < y) + (x ≡ y) + (y < x)
+ where
+  _<_ = underlying-order α
+
 prop-ordinal : (P : 𝓤 ̇ ) → is-prop P → Ordinal 𝓤
 prop-ordinal P i = P , prop.order P i , prop.well-order P i
+
+prop-ordinal-is-trichotomous : (P : 𝓤 ̇ ) (i : is-prop P)
+                             → is-trichotomous (prop-ordinal P i)
+prop-ordinal-is-trichotomous = prop.trichotomous
 
 \end{code}
 
@@ -33,6 +42,12 @@ Here the subscript is the letter "o":
 𝟘ₒ 𝟙ₒ : {𝓤 : Universe} → Ordinal 𝓤
 𝟘ₒ = prop-ordinal 𝟘 𝟘-is-prop
 𝟙ₒ = prop-ordinal 𝟙 𝟙-is-prop
+
+𝟘ₒ-is-trichotomous : is-trichotomous (𝟘ₒ {𝓤})
+𝟘ₒ-is-trichotomous = prop-ordinal-is-trichotomous 𝟘 𝟘-is-prop
+
+𝟙ₒ-is-trichotomous : is-trichotomous (𝟙ₒ {𝓤})
+𝟙ₒ-is-trichotomous = prop-ordinal-is-trichotomous 𝟙 𝟙-is-prop
 
 \end{code}
 
@@ -51,9 +66,12 @@ Here the subscript is the letter "o":
 
 \begin{code}
 
-ℕₒ ℕ∞ₒ : Ord
-ℕₒ = (ℕ , _<ℕ_ , ℕ-ordinal)
+ω ℕ∞ₒ : Ord
+ω = (ℕ , _<ℕ_ , ℕ-ordinal)
 ℕ∞ₒ = (ℕ∞ , _≺ℕ∞_ , ℕ∞-ordinal (fe 𝓤₀ 𝓤₀))
+
+ω-is-trichotomous : is-trichotomous ω
+ω-is-trichotomous = <-trichotomous
 
 \end{code}
 
@@ -68,13 +86,30 @@ _+ₒ_ : Ordinal 𝓤  → Ordinal 𝓤 → Ordinal 𝓤
                                  plus.order _<_ _≺_ ,
                                  plus.well-order _<_ _≺_ o p
 
++ₒ-is-trichotomous : (α β : Ordinal 𝓤)
+                   → is-trichotomous α
+                   → is-trichotomous β
+                   → is-trichotomous (α +ₒ β)
++ₒ-is-trichotomous α β = plus.trichotomy-preservation _ _
+
 _×ₒ_ : Ordinal 𝓤 → Ordinal 𝓥 → Ordinal (𝓤 ⊔ 𝓥)
 (X , _<_ , o) ×ₒ (Y , _≺_ , p) = (X × Y) ,
                                  times.order _<_ _≺_ ,
                                  times.well-order _<_ _≺_ fe o p
 
+×ₒ-is-trichotomous : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
+                   → is-trichotomous α
+                   → is-trichotomous β
+                   → is-trichotomous (α ×ₒ β)
+×ₒ-is-trichotomous α β = times.trichotomy-preservation _ _
+
 𝟚ₒ : {𝓤 : Universe} → Ordinal 𝓤
 𝟚ₒ = 𝟙ₒ +ₒ 𝟙ₒ
+
+𝟚ₒ-is-trichotomous : is-trichotomous (𝟚ₒ {𝓤})
+𝟚ₒ-is-trichotomous = +ₒ-is-trichotomous 𝟙ₒ 𝟙ₒ
+                       𝟙ₒ-is-trichotomous
+                       𝟙ₒ-is-trichotomous
 
 prop-indexed-product : {P : 𝓤 ̇ }
                      → is-prop P

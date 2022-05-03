@@ -865,7 +865,7 @@ having-infs-is-prop {𝓤} {X} = Π-is-prop (fe 𝓤 𝓤) at-most-one-inf
 Π-compact-has-infs c p = g (c p)
  where
   g : decidable (∀ x → p x ≡ ₁) → Σ n ꞉ 𝟚 , p has-inf n
-  g (inl α) = ₁ , (λ x → back-transport (₁ ≤₂_) (α x) (≤₂-refl {₀})) , λ m ϕ → ₁-top
+  g (inl α) = ₁ , (λ x → transport⁻¹ (₁ ≤₂_) (α x) (≤₂-refl {₀})) , λ m ϕ → ₁-top
   g (inr u) = ₀ , (λ _ → ₀-bottom {₀}) , h
    where
     h : (m : 𝟚) → (∀ x → m ≤ p x) → m ≤ ₀

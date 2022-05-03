@@ -185,7 +185,7 @@ module swan
     γ = ap pr₁ (all-elements-are-equal 𝟙-in-S P-in-S)
      where
       P-in-S : S
-      P-in-S = (P , P-is-prop , double-negation-intro refl)
+      P-in-S = (P , P-is-prop , ¬¬-intro refl)
       𝟙-in-S : S
       𝟙-in-S = (𝟙 , 𝟙-is-prop , h)
        where
@@ -461,7 +461,7 @@ module ClassicalWellOrder
 
 \begin{code}
 
-  minimal-is-prop : is-trichotomous
+  minimal-is-prop : is-trichotomous-order
                   → (A : X → (𝓤 ⊔ 𝓣) ̇ )
                   → ((x : X) → is-prop (A x))
                   → is-prop (Σ x ꞉ X , A x × ((y : X) → A y → ¬ (y ≺ x)))
@@ -628,7 +628,7 @@ with a fairly direct proof.
     ι : 𝟚 → 𝟚'
     ι = lift 𝓤
     ρ : is-prop (P + ¬ P)
-    ρ = +-is-prop P-is-prop (negations-are-props fe) double-negation-intro
+    ρ = +-is-prop P-is-prop (negations-are-props fe) ¬¬-intro
     γ : (Σ _≺_ ꞉ (𝟚' → 𝟚' → 𝓣 ̇ ) , (is-classical-well-order _≺_)) → P + ¬ P
     γ (_≺_ , trans , trich , min) = κ (center (trich (ι ₀) (ι ₁)))
      where

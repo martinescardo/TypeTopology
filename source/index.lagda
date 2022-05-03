@@ -1,4 +1,4 @@
-
+O
    Various new theorems in univalent mathematics written in Agda
    -------------------------------------------------------------
 
@@ -55,7 +55,7 @@
      compactness of the Cantor type using countable Tychonoff.
      (https://www.cs.bham.ac.uk/~mhe/TypeTopology/UnsafeModulesIndex.html)
 
-   * In our last count, this development has 91000 lines, including
+   * In our last count, this development has 95000 lines, including
      comments and blank lines.
 
    * A module dependency graph is available, updated manually from
@@ -152,6 +152,8 @@ import InitialFrame                    -- By Ayberk Tosun
 import CompactRegular                  -- By Ayberk Tosun
 import GaloisConnection                -- By Ayberk Tosun
 import AdjointFunctorTheoremForFrames  -- By Ayberk Tosun
+import HeytingImplication              -- By Ayberk Tosun
+import PatchLocale                     -- By Ayberk Tosun
 import FreeGroup                       -- By Marc Bezem, Thierry Coquand, Dybjer, and Martin Escardo.
 import FreeGroupOfLargeLocallySmallSet -- By Marc Bezem, Thierry Coquand, Dybjer, and Martin Escardo.
 import FreeJoinSemiLattice             -- By Tom de Jong
@@ -202,11 +204,14 @@ import OrdinalNotions
 import OrdinalOfOrdinals
 import OrdinalOfOrdinalsSuprema        -- By Tom de Jong
 import OrdinalOfTruthValues
+import OrdinalToppedArithmetic
 import OrdinalTaboos                   -- By Tom de Jong
 import Ordinals
 import OrdinalsClosure
 import Ordinals
 import OrdinalsFreeGroup
+import OrdinalsSupSum
+import OrdinalsToppedType
 import OrdinalsType
 import OrdinalsType-Injectivity
 import OrdinalsWellOrderArithmetic
@@ -243,8 +248,6 @@ import sigma-sup-lattice
 import sigma-frame
 import TheTopologyOfTheUniverse
 import TotallySeparated
-import ToppedOrdinalArithmetic
-import ToppedOrdinalsType
 import Two
 import Two-Properties
 import UnivalenceFromScratch

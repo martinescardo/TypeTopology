@@ -2,7 +2,7 @@ Martin Escardo, 18 January 2021.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline --experimental-lossy-unification #-}
 
 open import UF-Univalence
 
@@ -386,9 +386,9 @@ partial ordering:
 
 \end{code}
 
-Classically, if α ≼ β then there is (a necessarily unique) γ with
-α +ₒ γ ≡ β. But this not the case constructively. For that purpose, we
-first characterize the order of subsingleton ordinals.
+Classically, if α ≼ β then there is (a necessarily unique) γ with α +ₒ
+γ ≡ β. But this not necessarily the case constructively. For that
+purpose, we first characterize the order of subsingleton ordinals.
 
 \begin{code}
 
@@ -457,7 +457,7 @@ existence-of-subtraction : (𝓤 : Universe) → 𝓤 ⁺ ̇
 existence-of-subtraction 𝓤 = (α β : Ordinal 𝓤) → α ≼ β → Σ γ ꞉ Ordinal 𝓤 , α +ₒ γ ≡ β
 
 existence-of-subtraction-is-prop : is-prop (existence-of-subtraction 𝓤)
-existence-of-subtraction-is-prop = Π₃-is-prop (λ {𝓤} {𝓥} → fe 𝓤 𝓥)
+existence-of-subtraction-is-prop = Π₃-is-prop fe'
                                      (λ α β l → left-+ₒ-is-embedding α β)
 
 
@@ -503,11 +503,12 @@ ordinal-subtraction-gives-excluded-middle {𝓤} ϕ P P-is-prop = g
 
 \end{code}
 
-Another example where subtraction doesn't exist is (ℕₒ +ₒ 𝟙ₒ) ≼ ℕ∞ₒ,
-discussed in the module OrdinalOfOrdinals. The types ℕₒ +ₒ 𝟙ₒ and ℕ∞ₒ
-are equal if and only if LPO holds. Without assuming LPO, the image of
-the inclusion (ℕₒ +ₒ 𝟙ₒ) → ℕ∞ₒ, has empty complement, and so there is
-nothing that can be added to (ℕₒ +ₒ 𝟙ₒ) to get ℕ∞ₒ, unless LPO holds.
+Another example where subtraction doesn't necessarily exist is the
+situation (ω +ₒ 𝟙ₒ) ≼ ℕ∞ₒ, discussed in the module
+OrdinalOfOrdinals. The types ω +ₒ 𝟙ₒ and ℕ∞ₒ are equal if and only if
+LPO holds. Without assuming LPO, the image of the inclusion (ω +ₒ 𝟙ₒ)
+→ ℕ∞ₒ, has empty complement, and so there is nothing that can be added
+to (ω +ₒ 𝟙ₒ) to get ℕ∞ₒ, unless LPO holds.
 
 \begin{code}
 
@@ -553,19 +554,19 @@ module _ {𝓤 : Universe} where
  ⊴-add-taboo : Ωₒ ⊴ (𝟙ₒ +ₒ Ωₒ) → WEM 𝓤
  ⊴-add-taboo (f , s) = VI
   where
-   I : is-minimal Ωₒ ⊥Ω
+   I : is-least Ωₒ ⊥Ω
    I (P , i) (𝟘 , 𝟘-is-prop) (refl , q) = 𝟘-elim (equal-⊤-is-true 𝟘 𝟘-is-prop q)
 
-   II : is-minimal (𝟙ₒ +ₒ Ωₒ) (inl ⋆)
+   II : is-least (𝟙ₒ +ₒ Ωₒ) (inl ⋆)
    II (inl ⋆) u       l = l
    II (inr x) (inl ⋆) l = 𝟘-elim l
    II (inr x) (inr y) l = 𝟘-elim l
 
    III : f ⊥Ω ≡ inl ⋆
-   III = simulations-preserve-minimals Ωₒ (𝟙ₒ +ₒ Ωₒ) ⊥Ω (inl ⋆) f s I II
+   III = simulations-preserve-least Ωₒ (𝟙ₒ +ₒ Ωₒ) ⊥Ω (inl ⋆) f s I II
 
    IV : is-isolated (f ⊥Ω)
-   IV = transport is-isolated (III ⁻¹) (inl-is-isolated ⋆ (𝟙-is-discrete ⋆))
+   IV = transport⁻¹ is-isolated III (inl-is-isolated ⋆ (𝟙-is-discrete ⋆))
 
    V : is-isolated ⊥Ω
    V = lc-maps-reflect-isolatedness f (simulations-are-lc Ωₒ (𝟙ₒ +ₒ Ωₒ) f s) ⊥Ω IV
@@ -629,7 +630,7 @@ succₒ-reflects-⊴ α β (f , i , p) = g , j , q
   j x y l = II I
    where
     m : inl y ≺⟨ β +ₒ 𝟙ₒ ⟩ f (inl x)
-    m = transport (λ - → inl y ≺⟨ β +ₒ 𝟙ₒ ⟩ -) ((ϕ x)⁻¹) l
+    m = transport⁻¹ (λ - → inl y ≺⟨ β +ₒ 𝟙ₒ ⟩ -) (ϕ x) l
 
     I : Σ z ꞉ ⟨ α +ₒ 𝟙ₒ ⟩ , (z ≺⟨ α +ₒ 𝟙ₒ ⟩ inl x) × (f z ≡ inl y)
     I = i (inl x) (inl y) m
@@ -700,7 +701,7 @@ succ-not-necessarily-monotone {𝓤} ϕ P isp = II I
     III (inr ⋆) e = inr IX
      where
       VIII : Σ x' ꞉ ⟨ α +ₒ 𝟙ₒ ⟩ , (x' ≺⟨ α +ₒ 𝟙ₒ ⟩ inr ⋆) × (f x' ≡ inl ⋆)
-      VIII = f-is-initial (inr ⋆) (inl ⋆) (transport (λ - → inl ⋆ ≺⟨ 𝟚ₒ ⟩ -) (e ⁻¹) ⋆)
+      VIII = f-is-initial (inr ⋆) (inl ⋆) (transport⁻¹ (λ - → inl ⋆ ≺⟨ 𝟚ₒ ⟩ -) e ⋆)
 
       IX : ¬¬ P
       IX u = XI
@@ -715,3 +716,309 @@ succ-not-necessarily-monotone {𝓤} ϕ P isp = II I
 \end{code}
 
 TODO. Also the implication α ⊲ β → (α +ₒ 𝟙ₒ) ⊲ (β +ₒ 𝟙ₒ) fails in general.
+
+\begin{code}
+
+succ-monotone : EM (𝓤 ⁺) → (α β : Ordinal 𝓤) → α ⊴ β → (α +ₒ 𝟙ₒ) ⊴ (β +ₒ 𝟙ₒ)
+succ-monotone em α β l = II I
+ where
+  I : ((α +ₒ 𝟙ₒ) ⊲ (β +ₒ 𝟙ₒ)) + ((α +ₒ 𝟙ₒ) ≡ (β +ₒ 𝟙ₒ)) + ((β +ₒ 𝟙ₒ) ⊲ (α +ₒ 𝟙ₒ))
+  I = trichotomy _⊲_ fe' em ⊲-is-well-order (α +ₒ 𝟙ₒ) (β +ₒ 𝟙ₒ)
+
+  II : type-of I → (α +ₒ 𝟙ₒ) ⊴ (β +ₒ 𝟙ₒ)
+  II (inl m)       = ⊲-gives-⊴ _ _ m
+  II (inr (inl e)) = transport ((α +ₒ 𝟙ₒ) ⊴_) e  (⊴-refl (α +ₒ 𝟙ₒ))
+  II (inr (inr m)) = transport ((α +ₒ 𝟙ₒ) ⊴_) VI (⊴-refl (α +ₒ 𝟙ₒ))
+   where
+    III : (β +ₒ 𝟙ₒ) ⊴ (α +ₒ 𝟙ₒ)
+    III = ⊲-gives-⊴ _ _ m
+
+    IV : β ⊴ α
+    IV = succₒ-reflects-⊴ β α III
+
+    V : α ≡ β
+    V = ⊴-antisym _ _ l IV
+
+    VI : (α +ₒ 𝟙ₒ) ≡ (β +ₒ 𝟙ₒ)
+    VI = ap (_+ₒ 𝟙ₒ) V
+
+\end{code}
+
+TODO. EM 𝓤 is sufficient, because we can work with the resized order _⊲⁻_.
+
+Added 21st April 2022.
+
+We say that an ordinal is a limit ordinal if it is the least upper
+bound of its predecessors:
+
+\begin{code}
+
+is-limit-ordinal⁺ : Ordinal 𝓤 → 𝓤 ⁺ ̇
+is-limit-ordinal⁺ {𝓤} α = (β : Ordinal 𝓤)
+                         → ((γ : Ordinal 𝓤) → γ ⊲ α → γ ⊴ β)
+                         → α ⊴ β
+\end{code}
+
+We give an equivalent definition below.
+
+Recall from another module [say which one] that the existence
+propositional truncations and the set-replacement property are
+together equivalent to the existence of small quotients. With them we
+can construct suprema of families of ordinals.
+
+\begin{code}
+
+open import UF-PropTrunc
+open import UF-Size
+
+module _ (pt : propositional-truncations-exist)
+         (sr : Set-Replacement pt)
+       where
+
+ open import OrdinalOfOrdinalsSuprema ua
+ open suprema pt sr
+
+\end{code}
+
+Recall that, by definition, γ ⊲ α iff γ is of the form α ↓ x for some
+x : ⟨ α ⟩. We define the "floor" of an ordinal to be the supremum of
+its predecessors:
+
+\begin{code}
+
+ ⌊_⌋ : Ordinal 𝓤 → Ordinal 𝓤
+ ⌊ α ⌋ = sup (α ↓_)
+
+ ⌊⌋-lower-bound : (α : Ordinal 𝓤) → ⌊ α ⌋ ⊴ α
+ ⌊⌋-lower-bound α = sup-is-lower-bound-of-upper-bounds _ α (segment-⊴ α)
+
+ is-limit-ordinal : Ordinal 𝓤 → 𝓤 ̇
+ is-limit-ordinal α = α ⊴ ⌊ α ⌋
+
+ is-limit-ordinal-fact : (α : Ordinal 𝓤)
+                       → is-limit-ordinal α
+                       ⇔ α ≡ ⌊ α ⌋
+ is-limit-ordinal-fact α = (λ ℓ → ⊴-antisym _ _ ℓ (⌊⌋-lower-bound α)) ,
+                           (λ p → transport (α ⊴_) p (⊴-refl α))
+
+ successor-lemma-left : (α : Ordinal 𝓤) (x : ⟨ α ⟩) → ((α +ₒ 𝟙ₒ) ↓ inl x) ⊴ α
+ successor-lemma-left α x = III
+    where
+     I : (α ↓ x) ⊴ α
+     I = segment-⊴ α x
+
+     II : (α ↓ x) ≡ ((α +ₒ 𝟙ₒ) ↓ inl x)
+     II = +ₒ-↓-left x
+
+     III : ((α +ₒ 𝟙ₒ) ↓ inl x) ⊴ α
+     III = transport (_⊴ α) II I
+
+ successor-lemma-right : (α : Ordinal 𝓤) → (α +ₒ 𝟙ₒ) ↓ inr ⋆ ≡ α
+ successor-lemma-right α  = III
+  where
+   I : (𝟙ₒ ↓ ⋆) ⊴ 𝟘ₒ
+   I = (λ x → 𝟘-elim (pr₂ x)) , (λ x → 𝟘-elim (pr₂ x)) , (λ x → 𝟘-elim (pr₂ x))
+
+   II : (𝟙ₒ ↓ ⋆) ≡ 𝟘ₒ
+   II = ⊴-antisym _ _ I (𝟘ₒ-least-⊴ (𝟙ₒ ↓ ⋆))
+
+   III : (α +ₒ 𝟙ₒ) ↓ inr ⋆ ≡ α
+   III = (α +ₒ 𝟙ₒ) ↓ inr ⋆ ≡⟨ (+ₒ-↓-right ⋆)⁻¹ ⟩
+         α +ₒ (𝟙ₒ ↓ ⋆) ≡⟨ ap (α +ₒ_) II ⟩
+         α +ₒ 𝟘ₒ       ≡⟨ 𝟘ₒ-right-neutral α ⟩
+         α             ∎
+
+ ⌊⌋-of-successor : (α : Ordinal 𝓤)
+                 → ⌊ α +ₒ 𝟙ₒ ⌋ ⊴ α
+ ⌊⌋-of-successor α = sup-is-lower-bound-of-upper-bounds _ α h
+  where
+   h : (x : ⟨ α +ₒ 𝟙ₒ ⟩) → ((α +ₒ 𝟙ₒ) ↓ x) ⊴ α
+   h (inl x) = successor-lemma-left α x
+   h (inr ⋆) = transport⁻¹ (_⊴ α) (successor-lemma-right α) (⊴-refl α)
+
+ ⌊⌋-of-successor' : (α : Ordinal 𝓤)
+                  → ⌊ α +ₒ 𝟙ₒ ⌋ ≡ α
+ ⌊⌋-of-successor' α = III
+  where
+   I : ((α +ₒ 𝟙ₒ) ↓ inr ⋆) ⊴ ⌊ α +ₒ 𝟙ₒ ⌋
+   I = sup-is-upper-bound _ (inr ⋆)
+
+   II : α ⊴ ⌊ α +ₒ 𝟙ₒ ⌋
+   II = transport (_⊴ ⌊ α +ₒ 𝟙ₒ ⌋) (successor-lemma-right α) I
+
+   III : ⌊ α +ₒ 𝟙ₒ ⌋ ≡ α
+   III = ⊴-antisym _ _ (⌊⌋-of-successor α) II
+
+ successor-increasing : (α : Ordinal 𝓤) → α ⊲ (α +ₒ 𝟙ₒ)
+ successor-increasing α = inr ⋆ , ((successor-lemma-right α)⁻¹)
+
+ successors-are-not-limit-ordinals : (α : Ordinal 𝓤)
+                                   → ¬ is-limit-ordinal (α +ₒ 𝟙ₒ)
+ successors-are-not-limit-ordinals α le = irrefl (OO _) α II
+  where
+   I : (α +ₒ 𝟙ₒ) ⊴ α
+   I = ⊴-trans (α +ₒ 𝟙ₒ) ⌊ α +ₒ 𝟙ₒ ⌋ α le (⌊⌋-of-successor α)
+
+   II : α ⊲ α
+   II = ⊴-gives-≼ _ _ I α (successor-increasing α)
+
+\end{code}
+
+TODO (easy). Show that is-limit-ordinal⁺ α is logically equivalent to
+is-limit-ordinal α.
+
+\begin{code}
+
+ ⌊⌋-monotone : (α β : Ordinal 𝓤) → α ⊴ β → ⌊ α ⌋ ⊴ ⌊ β ⌋
+ ⌊⌋-monotone α β le = V
+  where
+   I : (y : ⟨ β ⟩) → (β ↓ y) ⊴ ⌊ β ⌋
+   I = sup-is-upper-bound (β ↓_)
+
+   II : (x : ⟨ α ⟩) → (α ↓ x) ⊲ β
+   II x = ⊴-gives-≼ _ _ le (α ↓ x) (x , refl)
+
+   III : (x : ⟨ α ⟩) → Σ y ꞉ ⟨ β ⟩ , (α ↓ x) ≡ (β ↓ y)
+   III = II
+
+   IV : (x : ⟨ α ⟩) → (α ↓ x) ⊴ ⌊ β ⌋
+   IV x = transport⁻¹ (_⊴ ⌊ β ⌋) (pr₂ (III x)) (I (pr₁ (III x)))
+
+   V : sup (α ↓_) ⊴ ⌊ β ⌋
+   V = sup-is-lower-bound-of-upper-bounds (α ↓_) ⌊ β ⌋ IV
+
+\end{code}
+
+We now gives an example of an ordinal which is not a limit ordinal and
+also is not a successor ordinal unless LPO holds:
+
+\begin{code}
+
+ open import CanonicalMapNotation
+ open import GenericConvergentSequence
+ open import OrderNotation
+ open import NaturalsOrder
+
+ ⌊⌋-of-ℕ∞ : ⌊ ℕ∞ₒ ⌋ ≡ ω
+ ⌊⌋-of-ℕ∞ = c
+  where
+   a : ⌊ ℕ∞ₒ ⌋ ⊴ ω
+   a = sup-is-lower-bound-of-upper-bounds (ℕ∞ₒ ↓_) ω I
+    where
+     I : (u : ⟨ ℕ∞ₒ ⟩) → (ℕ∞ₒ ↓ u) ⊴ ω
+     I u = ≼-gives-⊴ (ℕ∞ₒ ↓ u) ω II
+      where
+       II : (α : Ordinal 𝓤₀) → α ⊲ (ℕ∞ₒ ↓ u) → α ⊲ ω
+       II .((ℕ∞ₒ ↓ u) ↓ (ι n , n , refl , p)) ((.(ι n) , n , refl , p) , refl) = XI
+        where
+         III : ι n ≺ u
+         III = n , refl , p
+
+         IV : ((ℕ∞ₒ ↓ u) ↓ (ι n , n , refl , p)) ≡ ℕ∞ₒ ↓ ι n
+         IV = iterated-↓ ℕ∞ₒ u (ι n) III
+
+         V : (ℕ∞ₒ ↓ ι n) ≃ₒ (ω ↓ n)
+         V = f , fop , qinvs-are-equivs f (g , gf , fg) , gop
+          where
+           f : ⟨ ℕ∞ₒ ↓ ι n ⟩ → ⟨ ω ↓ n ⟩
+           f (.(ι k) , k , refl , q) = k , ⊏-gives-< _ _ q
+
+           g : ⟨ ω ↓ n ⟩ → ⟨ ℕ∞ₒ ↓ ι n ⟩
+           g (k , l) = (ι k , k , refl , <-gives-⊏ _ _ l)
+
+           fg : f ∘ g ∼ id
+           fg (k , l) = to-subtype-≡ (λ k → <-is-prop-valued k n) refl
+
+           gf : g ∘ f ∼ id
+           gf (.(ι k) , k , refl , q) = to-subtype-≡ (λ u → ≺-prop-valued fe' u (ι n)) refl
+
+           fop : is-order-preserving (ℕ∞ₒ ↓ ι n) (ω ↓ n) f
+           fop (.(ι k) , k , refl , q) (.(ι k') , k' , refl , q') (m , r , cc) = VIII
+            where
+             VI : k ≡ m
+             VI = ℕ-to-ℕ∞-lc r
+
+             VII : m < k'
+             VII = ⊏-gives-< _ _ cc
+
+             VIII : k < k'
+             VIII = transport⁻¹ (_< k') VI VII
+
+           gop : is-order-preserving (ω ↓ n) (ℕ∞ₒ ↓ ι n)  g
+           gop (k , l) (k' , l') ℓ = k , refl , <-gives-⊏ _ _ ℓ
+
+         IX : ℕ∞ₒ ↓ ι n ≡ ω ↓ n
+         IX = eqtoidₒ _ _ V
+
+         X : (ℕ∞ₒ ↓ (ι n)) ⊲ ω
+         X = n , IX
+
+         XI : ((ℕ∞ₒ ↓ u) ↓ (ι n , n , refl , p)) ⊲ ω
+         XI = transport⁻¹ (_⊲ ω) IV X
+
+   b : ω ⊴ ⌊ ℕ∞ₒ ⌋
+   b = transport (_⊴ ⌊ ℕ∞ₒ ⌋) (⌊⌋-of-successor' ω) I
+    where
+     I : ⌊ ω +ₒ 𝟙ₒ ⌋ ⊴ ⌊ ℕ∞ₒ ⌋
+     I = ⌊⌋-monotone (ω +ₒ 𝟙ₒ) ℕ∞ₒ ℕ∞-in-Ord.fact
+
+   c : ⌊ ℕ∞ₒ ⌋ ≡ ω
+   c = ⊴-antisym _ _ a b
+
+ ℕ∞-is-not-limit : ¬ is-limit-ordinal ℕ∞ₒ
+ ℕ∞-is-not-limit ℓ = III II
+  where
+   I = ℕ∞ₒ     ≡⟨ lr-implication (is-limit-ordinal-fact ℕ∞ₒ) ℓ ⟩
+       ⌊ ℕ∞ₒ ⌋ ≡⟨ ⌊⌋-of-ℕ∞  ⟩
+       ω       ∎
+
+   II : ℕ∞ₒ ≃ₒ ω
+   II = idtoeqₒ _ _ I
+
+   III : ¬ (ℕ∞ₒ ≃ₒ ω)
+   III (f , e) = irrefl ω (f ∞) VII
+    where
+     IV : is-largest ω (f ∞)
+     IV = order-equivs-preserve-largest ℕ∞ₒ ω f e ∞
+           (λ u t l → ≺≼-gives-≺ t u ∞ l (∞-largest u))
+
+     V : f ∞ ≺⟨ ω ⟩ succ (f ∞)
+     V = <-succ (f ∞)
+
+     VI : succ (f ∞) ≼⟨ ω ⟩ f ∞
+     VI = IV (succ (f ∞))
+
+     VII : f ∞ ≺⟨ ω ⟩ f ∞
+     VII = VI (f ∞) V
+
+ open import LPO fe
+
+ ℕ∞-successor-gives-LPO : (Σ α ꞉ Ordinal 𝓤₀ , (ℕ∞ₒ ≡ (α +ₒ 𝟙ₒ))) → LPO
+ ℕ∞-successor-gives-LPO (α , p) = IV
+  where
+   I = α           ≡⟨ (⌊⌋-of-successor' α)⁻¹ ⟩
+       ⌊ α +ₒ 𝟙ₒ ⌋ ≡⟨ ap ⌊_⌋ (p ⁻¹) ⟩
+       ⌊ ℕ∞ₒ ⌋     ≡⟨ ⌊⌋-of-ℕ∞ ⟩
+       ω           ∎
+
+   II : ℕ∞ₒ ≡ (ω +ₒ 𝟙ₒ)
+   II = transport (λ - → ℕ∞ₒ ≡ (- +ₒ 𝟙ₒ)) I p
+
+   III : ℕ∞ₒ ⊴ (ω +ₒ 𝟙ₒ)
+   III = transport (ℕ∞ₒ ⊴_) II (⊴-refl ℕ∞ₒ)
+
+   IV : LPO
+   IV = ℕ∞-in-Ord.converse-fails-constructively III
+
+ open PropositionalTruncation pt
+
+ ℕ∞-successor-gives-LPO' : (∃ α ꞉ Ordinal 𝓤₀ , (ℕ∞ₒ ≡ (α +ₒ 𝟙ₒ))) → LPO
+ ℕ∞-successor-gives-LPO' = ∥∥-rec LPO-is-prop ℕ∞-successor-gives-LPO
+
+ LPO-gives-ℕ∞-successor : LPO → (Σ α ꞉ Ordinal 𝓤₀ , (ℕ∞ₒ ≡ (α +ₒ 𝟙ₒ)))
+ LPO-gives-ℕ∞-successor lpo = ω , ℕ∞-in-Ord.corollary₃ lpo
+
+\end{code}
+
+Therefore, constructively, it is not necessarily the case that every
+ordinal is either a successor or a limit.

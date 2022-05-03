@@ -13,7 +13,7 @@ univalence axiom is needed.
 open import UF-Univalence
 
 module OrdinalOfOrdinals
-       (ua : Univalence)
+        (ua : Univalence)
        where
 
 open import SpartanMLTT
@@ -455,6 +455,10 @@ segment-inclusion : (α : Ordinal 𝓤) (a : ⟨ α ⟩)
                   → ⟨ α ↓ a ⟩ → ⟨ α ⟩
 segment-inclusion α a = pr₁
 
+segment-inclusion-bound : (α : Ordinal 𝓤) (a : ⟨ α ⟩)
+                        → (x : ⟨ α ↓ a ⟩) → segment-inclusion α a x ≺⟨ α ⟩ a
+segment-inclusion-bound α a = pr₂
+
 segment-inclusion-is-simulation : (α : Ordinal 𝓤) (a : ⟨ α ⟩)
                                 → is-simulation (α ↓ a) α (segment-inclusion α a)
 segment-inclusion-is-simulation α a = i , p
@@ -486,20 +490,20 @@ segment-⊴ α a = segment-inclusion α a , segment-inclusion-is-simulation α a
   v = segment-inclusion α b (f (u , l))
 
   m : v ≺⟨ α ⟩ b
-  m = pr₂ (f (u , l))
+  m = segment-inclusion-bound α b (f (u , l))
 
   q : u ≡ v
   q = h (u , l)
 
   n : u ≺⟨ α ⟩ b
-  n = back-transport (λ - → - ≺⟨ α ⟩ b) q m
+  n = transport⁻¹ (λ - → - ≺⟨ α ⟩ b) q m
 
 ↓-lc : (α : Ordinal 𝓤) (a b : ⟨ α ⟩)
      → α ↓ a ≡ α ↓ b → a ≡ b
 ↓-lc α a b p =
  Extensionality α a b
   (↓-⊴-lc α a b (transport      (λ - → (α ↓ a) ⊴ -) p (⊴-refl (α ↓ a))))
-  (↓-⊴-lc α b a (back-transport (λ - → (α ↓ b) ⊴ -) p (⊴-refl (α ↓ b))))
+  (↓-⊴-lc α b a (transport⁻¹ (λ - → (α ↓ b) ⊴ -) p (⊴-refl (α ↓ b))))
 
 \end{code}
 
@@ -513,7 +517,6 @@ _⊲_ : Ordinal 𝓤 → Ordinal 𝓤 → 𝓤 ⁺ ̇
 ⊲-is-prop-valued : (α β : Ordinal 𝓤) → is-prop (α ⊲ β)
 ⊲-is-prop-valued {𝓤} α β (b , p) (b' , p') = γ
  where
-  q : (β ↓ b) ≡ (β ↓ b')
   q = (β ↓ b)  ≡⟨ p ⁻¹ ⟩
        α       ≡⟨ p' ⟩
       (β ↓ b') ∎
@@ -616,7 +619,7 @@ Therefore the map (α ↓ -) reflects and preserves order:
   r = ↓-lc α a u q
 
   γ : a ≺⟨ α ⟩ b
-  γ = back-transport (λ - → - ≺⟨ α ⟩ b) r l
+  γ = transport⁻¹ (λ - → - ≺⟨ α ⟩ b) r l
 
 ↓-preserves-order : (α : Ordinal 𝓤) (a b : ⟨ α ⟩)
                   → a ≺⟨ α ⟩ b
@@ -642,7 +645,7 @@ It remains to show that _⊲_ is a well-order:
     IH b l = f b (s b l)
 
     g : (β : Ordinal 𝓤) → β ⊲ (α ↓ a) → is-accessible _⊲_ β
-    g β ((b , l) , p) = back-transport (is-accessible _⊲_) q (IH b l)
+    g β ((b , l) , p) = transport⁻¹ (is-accessible _⊲_) q (IH b l)
      where
       q : β ≡ (α ↓ b)
       q = p ∙ iterated-↓ α a b l
@@ -651,7 +654,7 @@ It remains to show that _⊲_ is a well-order:
 ⊲-is-well-founded {𝓤} α = next α g
  where
   g : (β : Ordinal 𝓤) → β ⊲ α → is-accessible _⊲_ β
-  g β (b , p) = back-transport (is-accessible _⊲_) p (↓-accessible α b)
+  g β (b , p) = transport⁻¹ (is-accessible _⊲_) p (↓-accessible α b)
 
 ⊲-is-extensional : is-extensional (_⊲_ {𝓤})
 ⊲-is-extensional α β f g = ⊴-antisym α β
@@ -834,7 +837,7 @@ order-embeddings-are-lc α β f (p , r) {x} {y} s = γ
 
     j : f u ≺⟨ β ⟩ f x
 
-    j = back-transport (λ - → f u ≺⟨ β ⟩ -) s i
+    j = transport⁻¹ (λ - → f u ≺⟨ β ⟩ -) s i
 
 
   γ : x ≡ y
@@ -876,8 +879,8 @@ simulations-are-monotone α β f (i , p) = φ
 
 \end{code}
 
-Example. Classically, the ordinals ℕₒ +ₒ 𝟙ₒ and ℕ∞ₒ are equal.
-Constructively, we have (ℕₒ +ₒ 𝟙ₒ) ⊴ ℕ∞ₒ, but the inequality in the
+Example. Classically, the ordinals ω +ₒ 𝟙ₒ and ℕ∞ₒ are equal.
+Constructively, we have (ω +ₒ 𝟙ₒ) ⊴ ℕ∞ₒ, but the inequality in the
 other direction is equivalent to LPO.
 
 \begin{code}
@@ -889,36 +892,36 @@ module ℕ∞-in-Ord where
  open import GenericConvergentSequence
  open import NaturalsOrder
 
- fact : (ℕₒ +ₒ 𝟙ₒ) ⊴ ℕ∞ₒ
+ fact : (ω +ₒ 𝟙ₒ) ⊴ ℕ∞ₒ
  fact = ι𝟙 , i , p
   where
-   i : (x : ⟨ ℕₒ +ₒ 𝟙ₒ ⟩) (y : ⟨ ℕ∞ₒ ⟩)
+   i : (x : ⟨ ω +ₒ 𝟙ₒ ⟩) (y : ⟨ ℕ∞ₒ ⟩)
      → y ≺⟨ ℕ∞ₒ ⟩ ι𝟙 x
-     → Σ x' ꞉ ⟨ ℕₒ +ₒ 𝟙ₒ ⟩ , (x' ≺⟨ ℕₒ +ₒ 𝟙ₒ ⟩ x) × (ι𝟙 x' ≡ y)
+     → Σ x' ꞉ ⟨ ω +ₒ 𝟙ₒ ⟩ , (x' ≺⟨ ω +ₒ 𝟙ₒ ⟩ x) × (ι𝟙 x' ≡ y)
    i (inl m) y (n , r , l) = inl n , ⊏-gives-< n m l , (r ⁻¹)
    i (inr *) y (n , r , l) = inl n , * , (r ⁻¹)
 
-   p : (x y : ⟨ ℕₒ +ₒ 𝟙ₒ ⟩)
-     → x ≺⟨ ℕₒ +ₒ 𝟙ₒ ⟩ y
+   p : (x y : ⟨ ω +ₒ 𝟙ₒ ⟩)
+     → x ≺⟨ ω +ₒ 𝟙ₒ ⟩ y
      → ι𝟙 x ≺⟨ ℕ∞ₒ ⟩ ι𝟙 y
    p (inl n) (inl m) l = ι-order-preserving n m l
-   p (inl n) (inr *) * = ∞-≺-maximal n
+   p (inl n) (inr *) * = ∞-≺-largest n
    p (inr *) (inl m) l = 𝟘-elim l
    p (inr *) (inr *) l = 𝟘-elim l
 
- converse-fails-constructively : ℕ∞ₒ ⊴ (ℕₒ +ₒ 𝟙ₒ) → LPO
+ converse-fails-constructively : ℕ∞ₒ ⊴ (ω +ₒ 𝟙ₒ) → LPO
  converse-fails-constructively l = γ
   where
-   b : (ℕₒ +ₒ 𝟙ₒ) ≃ₒ ℕ∞ₒ
-   b = bisimilarity-gives-ordinal-equiv (ℕₒ +ₒ 𝟙ₒ) ℕ∞ₒ fact l
+   b : (ω +ₒ 𝟙ₒ) ≃ₒ ℕ∞ₒ
+   b = bisimilarity-gives-ordinal-equiv (ω +ₒ 𝟙ₒ) ℕ∞ₒ fact l
 
    e : is-equiv ι𝟙
-   e = pr₂ (≃ₒ-gives-≃ (ℕₒ +ₒ 𝟙ₒ) ℕ∞ₒ b)
+   e = pr₂ (≃ₒ-gives-≃ (ω +ₒ 𝟙ₒ) ℕ∞ₒ b)
 
    γ : LPO
    γ = ι𝟙-has-section-gives-LPO (equivs-have-sections ι𝟙 e)
 
- converse-fails-constructively-converse : LPO → ℕ∞ₒ ⊴ (ℕₒ +ₒ 𝟙ₒ)
+ converse-fails-constructively-converse : LPO → ℕ∞ₒ ⊴ (ω +ₒ 𝟙ₒ)
  converse-fails-constructively-converse lpo = (λ x → ι𝟙-inverse x (lpo x)) ,
                                               (λ x → i x (lpo x)) ,
                                               (λ x y → p x y (lpo x) (lpo y))
@@ -929,7 +932,7 @@ module ℕ∞-in-Ord where
    ι𝟙-inverse-inl u          (inr g)          m q = 𝟘-elim (g (m , q))
 
    i : (x : ℕ∞) (d : decidable (Σ n ꞉ ℕ , x ≡ ι n)) (y : ℕ + 𝟙)
-     → y ≺⟨ ℕₒ +ₒ 𝟙ₒ ⟩ ι𝟙-inverse x d
+     → y ≺⟨ ω +ₒ 𝟙ₒ ⟩ ι𝟙-inverse x d
      → Σ x' ꞉ ℕ∞ , (x' ≺⟨ ℕ∞ₒ ⟩ x) × (ι𝟙-inverse x' (lpo x') ≡ y)
    i .(ι n) (inl (n , refl)) (inl m) l =
      ι m ,
@@ -940,32 +943,32 @@ module ℕ∞-in-Ord where
      ι n ,
      transport (underlying-order ℕ∞ₒ (ι n))
                ((not-finite-is-∞ (fe 𝓤₀ 𝓤₀) (curry g)) ⁻¹)
-               (∞-≺-maximal n) ,
+               (∞-≺-largest n) ,
      ι𝟙-inverse-inl (ι n) (lpo (ι n)) n refl
    i x (inr g) (inr *) l = 𝟘-elim l
 
    p : (x y : ℕ∞)  (d : decidable (Σ n ꞉ ℕ , x ≡ ι n)) (e : decidable (Σ m ꞉ ℕ , y ≡ ι m))
      →  x ≺⟨ ℕ∞ₒ ⟩ y
-     → ι𝟙-inverse x d ≺⟨ ℕₒ +ₒ 𝟙ₒ ⟩ ι𝟙-inverse y e
+     → ι𝟙-inverse x d ≺⟨ ω +ₒ 𝟙ₒ ⟩ ι𝟙-inverse y e
    p .(ι n) .(ι m) (inl (n , refl)) (inl (m , refl)) (k , r , l) =
-    back-transport (λ - → - <ℕ m) (ℕ-to-ℕ∞-lc r) (⊏-gives-< k m l)
+    transport⁻¹ (λ - → - <ℕ m) (ℕ-to-ℕ∞-lc r) (⊏-gives-< k m l)
    p .(ι n) y (inl (n , refl)) (inr f) l = ⋆
    p x y (inr f) e (k , r , l) =
     𝟘-elim (∞-is-not-finite k ((not-finite-is-∞ (fe 𝓤₀ 𝓤₀) (curry f))⁻¹ ∙ r))
 
- corollary₁ : LPO → ℕ∞ₒ ≃ₒ (ℕₒ +ₒ 𝟙ₒ)
+ corollary₁ : LPO → ℕ∞ₒ ≃ₒ (ω +ₒ 𝟙ₒ)
  corollary₁ lpo = bisimilarity-gives-ordinal-equiv
-                   ℕ∞ₒ (ℕₒ +ₒ 𝟙ₒ)
+                   ℕ∞ₒ (ω +ₒ 𝟙ₒ)
                    (converse-fails-constructively-converse lpo) fact
 
  corollary₂ : LPO → ℕ∞ ≃ (ℕ + 𝟙)
- corollary₂ lpo = ≃ₒ-gives-≃ ℕ∞ₒ (ℕₒ +ₒ 𝟙ₒ) (corollary₁ lpo)
+ corollary₂ lpo = ≃ₒ-gives-≃ ℕ∞ₒ (ω +ₒ 𝟙ₒ) (corollary₁ lpo)
 
- corollary₃ : is-univalent 𝓤₀ → LPO → ℕ∞ₒ ≡ (ℕₒ +ₒ 𝟙ₒ)
- corollary₃ ua lpo = eqtoidₒ ℕ∞ₒ (ℕₒ +ₒ 𝟙ₒ) (corollary₁ lpo)
+ corollary₃ : LPO → ℕ∞ₒ ≡ (ω +ₒ 𝟙ₒ)
+ corollary₃ lpo = eqtoidₒ ℕ∞ₒ (ω +ₒ 𝟙ₒ) (corollary₁ lpo)
 
- corollary₄ : is-univalent 𝓤₀ → LPO → ℕ∞ ≡ (ℕ + 𝟙)
- corollary₄ ua lpo = eqtoid ua ℕ∞ (ℕ + 𝟙) (corollary₂ lpo)
+ corollary₄ : LPO → ℕ∞ ≡ (ℕ + 𝟙)
+ corollary₄ lpo = eqtoid (ua 𝓤₀) ℕ∞ (ℕ + 𝟙) (corollary₂ lpo)
 
 \end{code}
 
@@ -1221,23 +1224,23 @@ NB-minimal α a = f , g
 
 \end{code}
 
-Added 29th March.
+Added 29th March 2022.
 
 Simulations preserve minimal elements.
 
 \begin{code}
 
-is-minimal : (α : Ordinal 𝓤) → ⟨ α ⟩ → 𝓤 ̇
-is-minimal α x = (y : ⟨ α ⟩) → x ≼⟨ α ⟩ y
+is-least : (α : Ordinal 𝓤) → ⟨ α ⟩ → 𝓤 ̇
+is-least α x = (y : ⟨ α ⟩) → x ≼⟨ α ⟩ y
 
-initial-segments-preserve-minimals : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
-                                     (x : ⟨ α ⟩) (y : ⟨ β ⟩)
-                                     (f : ⟨ α ⟩ → ⟨ β ⟩)
-                                   → is-initial-segment α β f
-                                   → is-minimal α x
-                                   → is-minimal β y
-                                   → f x ≡ y
-initial-segments-preserve-minimals α β x y f i m n = c
+initial-segments-preserve-least : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
+                                  (x : ⟨ α ⟩) (y : ⟨ β ⟩)
+                                  (f : ⟨ α ⟩ → ⟨ β ⟩)
+                                → is-initial-segment α β f
+                                → is-least α x
+                                → is-least β y
+                                → f x ≡ y
+initial-segments-preserve-least α β x y f i m n = c
  where
   a : f x ≼⟨ β ⟩ y
   a u l = IV
@@ -1263,15 +1266,15 @@ initial-segments-preserve-minimals α β x y f i m n = c
   c : f x ≡ y
   c = Antisymmetry β (f x) y a b
 
-simulations-preserve-minimals : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
-                                (x : ⟨ α ⟩) (y : ⟨ β ⟩)
-                                (f : ⟨ α ⟩ → ⟨ β ⟩)
-                              → is-simulation α β f
-                              → is-minimal α x
-                              → is-minimal β y
-                              → f x ≡ y
-simulations-preserve-minimals α β x y f (i , _) =
- initial-segments-preserve-minimals α β x y f i
+simulations-preserve-least : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
+                             (x : ⟨ α ⟩) (y : ⟨ β ⟩)
+                             (f : ⟨ α ⟩ → ⟨ β ⟩)
+                           → is-simulation α β f
+                           → is-least α x
+                           → is-least β y
+                           → f x ≡ y
+simulations-preserve-least α β x y f (i , _) =
+ initial-segments-preserve-least α β x y f i
 
 \end{code}
 
@@ -1369,5 +1372,4 @@ module _ (pt : propositional-truncations-exist) where
        ⦅1⦆ x' = ×-is-prop (Prop-valuedness α x' x) (underlying-type-is-set fe β)
        ⦅2⦆ : z ≡ z'
        ⦅2⦆ = simulations-are-lc' α β f (i , p) (e ∙ e' ⁻¹)
-
 \end{code}

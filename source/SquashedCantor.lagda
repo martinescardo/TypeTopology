@@ -86,7 +86,7 @@ transport-finite : {u v : ℕ∞} (p : u ≡ v) → is-finite u → is-finite v
 transport-finite = transport is-finite
 
 back-transport-finite : {u v : ℕ∞} (p : u ≡ v) → is-finite v → is-finite u
-back-transport-finite = back-transport is-finite
+back-transport-finite = transport⁻¹ is-finite
 
 ap-Cantor : {X : 𝓤 ̇ } (f : (u : ℕ∞) → Cantor[ u ] → X)
             {u v : ℕ∞} (p : u ≡ v) {φ : Cantor[ u ]}

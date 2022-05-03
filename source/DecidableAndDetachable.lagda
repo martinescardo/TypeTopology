@@ -388,7 +388,7 @@ module _
         → (f ∘ g) P ≡ P
      ε₁ e = to-Ωᵈ-equality (f (g P)) P
              (λ _ → lr-implication (pr₂ lemma) e)
-             (λ _ → back-transport (λ (b : 𝟚) → ⟨ f b ⟩) e ⋆)
+             (λ _ → transport⁻¹ (λ (b : 𝟚) → ⟨ f b ⟩) e ⋆)
 
 \end{code}
 

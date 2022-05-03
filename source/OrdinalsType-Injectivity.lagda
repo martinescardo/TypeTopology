@@ -79,7 +79,7 @@ module ordinals-injectivity where
 
 module topped-ordinals-injectivity where
 
- open import ToppedOrdinalsType fe
+ open import OrdinalsToppedType fe
 
  _↗_ : {I : 𝓤  ̇ } {J : 𝓥 ̇ }
      → (I → Ordinalᵀ 𝓦)

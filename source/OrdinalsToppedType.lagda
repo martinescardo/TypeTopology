@@ -9,8 +9,8 @@ ordinals with a top element.
 
 open import UF-FunExt
 
-module ToppedOrdinalsType
-       (fe : FunExt)
+module OrdinalsToppedType
+        (fe : FunExt)
        where
 
 open import SpartanMLTT
