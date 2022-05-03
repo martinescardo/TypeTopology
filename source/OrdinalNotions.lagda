@@ -55,10 +55,10 @@ prev-behaviour' : (x : X) (σ : (y : X) → y < x → is-accessible y)
                 → prev x (next x σ) ≡ σ
 prev-behaviour' x σ = refl
 
-induction-hypothesis : (P : X → 𝓦 ̇ ) → (x : X) → Set (𝓤 ⊔ 𝓥 ⊔ 𝓦)
+induction-hypothesis : (P : X → 𝓦 ̇ ) → (x : X) → (𝓤 ⊔ 𝓥 ⊔ 𝓦) ̇
 induction-hypothesis P x = (y : X) → y < x → P y
 
-induction-goal : (P : X → 𝓦 ̇ ) → Set (𝓤 ⊔ 𝓥 ⊔ 𝓦)
+induction-goal : (P : X → 𝓦 ̇ ) → (𝓤 ⊔ 𝓥 ⊔ 𝓦) ̇
 induction-goal P = (x : X) → induction-hypothesis P x → P x
 
 transfinite-induction' :  (P : X → 𝓦 ̇ )
@@ -392,7 +392,7 @@ module _
 
  lem-consequence : is-well-order → (u v : X) → (∃ i ꞉ X , ((i < u) × ¬ (i < v))) + (u ≼ v)
  lem-consequence (p , _) u v = Cases
-     (EM-∃¬-∀ pt em {Σ (λ i → i < u)}
+     (∃¬-gives-∀ pt em {Σ (λ i → i < u)}
         (λ (i , i_<_u) → i < v)
         (λ (i , i_<_u) → p i v))
      (λ witness → inl ((∥∥-induction (λ s → ∃-is-prop)
