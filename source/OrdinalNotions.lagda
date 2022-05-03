@@ -342,8 +342,8 @@ disjoint-props {A} {B} propA propB A-B-disjoint (inr b1) (inr b2) = ap inr (prop
 ≧->-transitive wo {x} {y} {z} (inl refl) y>z = y>z
 ≧->-transitive wo@(p , w , e , t) {x} {y} {z} (inr x-gt-y) y-gt-z = t z y x y-gt-z x-gt-y
 
-comparable-is-prop : is-set X → is-well-order → (x y : X) → is-prop (in-trichotomy x y)
-comparable-is-prop set wo@(p , w , _) x y = disjoint-props (p x y) (≧-is-prop set wo x y)
+in-trichotomy-is-prop : is-set X → is-well-order → (x y : X) → is-prop (in-trichotomy x y)
+in-trichotomy-is-prop set wo@(p , w , _) x y = disjoint-props (p x y) (≧-is-prop set wo x y)
   λ (x-lt-y , x-geq-y) → irreflexive x (w x) (≧->-transitive wo x-geq-y x-lt-y)
 
 \end{code}
@@ -409,7 +409,7 @@ module _
      transfinite-induction w (in-trichotomy u) λ v innerIH →
        -- use LEM to get either (∃i<v . i≯u) ∨ (v ≼ u)
        Cases (lem-consequence wo v u)
-         (∥∥-induction (λ s → comparable-is-prop (set wo) wo u v)
+         (∥∥-induction (λ s → in-trichotomy-is-prop (set wo) wo u v)
            λ (i , i-lt-v , i-not-lt-u) → case (innerIH i i-lt-v) of λ where
               (inl      i-gt-u ) → inl (t u i v i-gt-u i-lt-v)
               (inr (inl u-equals-i)) → inl (transport (_< v) (u-equals-i ⁻¹) i-lt-v)
