@@ -1,4 +1,4 @@
-
+O
    Various new theorems in univalent mathematics written in Agda
    -------------------------------------------------------------
 
@@ -204,11 +204,14 @@ import OrdinalNotions
 import OrdinalOfOrdinals
 import OrdinalOfOrdinalsSuprema        -- By Tom de Jong
 import OrdinalOfTruthValues
+import OrdinalToppedArithmetic
 import OrdinalTaboos                   -- By Tom de Jong
 import Ordinals
 import OrdinalsClosure
 import Ordinals
 import OrdinalsFreeGroup
+import OrdinalsSupSum
+import OrdinalsToppedType
 import OrdinalsType
 import OrdinalsType-Injectivity
 import OrdinalsWellOrderArithmetic
@@ -245,8 +248,6 @@ import sigma-sup-lattice
 import sigma-frame
 import TheTopologyOfTheUniverse
 import TotallySeparated
-import ToppedOrdinalArithmetic
-import ToppedOrdinalsType
 import Two
 import Two-Properties
 import UnivalenceFromScratch

@@ -210,8 +210,9 @@ import SquashedCantor
 import SquashedSum
 import Swap
 import TheTopologyOfTheUniverse
-import ToppedOrdinalArithmetic
-import ToppedOrdinalsType
+import OrdinalToppedArithmetic
+import OrdinalsToppedType
+import OrdinalsSupSum
 import TotalSeparatedness
 import TotallySeparated
 import Two-Properties

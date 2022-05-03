@@ -111,7 +111,7 @@ roots α = Σ n ꞉ ℕ , α n ≡ z
 
 μρ-root-minimal : (α : ℕ → Z) (m : ℕ) (p : α m ≡ z)
                 → (n : ℕ) → α n ≡ z → μρ-root α (m , p) ≤ n
-μρ-root-minimal α m p n q = not-less-bigger-or-equal (μρ-root α (m , p)) n (f (double-negation-intro q))
+μρ-root-minimal α m p n q = not-less-bigger-or-equal (μρ-root α (m , p)) n (f (¬¬-intro q))
  where
   f : ¬ (α n ≢ z) → ¬ (n < μρ-root α (m , p))
   f = contrapositive (pr₂(pr₂(pr₂ (minimal-root α m p))) n)

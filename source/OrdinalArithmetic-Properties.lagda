@@ -457,7 +457,7 @@ existence-of-subtraction : (𝓤 : Universe) → 𝓤 ⁺ ̇
 existence-of-subtraction 𝓤 = (α β : Ordinal 𝓤) → α ≼ β → Σ γ ꞉ Ordinal 𝓤 , α +ₒ γ ≡ β
 
 existence-of-subtraction-is-prop : is-prop (existence-of-subtraction 𝓤)
-existence-of-subtraction-is-prop = Π₃-is-prop (λ {𝓤} {𝓥} → fe 𝓤 𝓥)
+existence-of-subtraction-is-prop = Π₃-is-prop fe'
                                      (λ α β l → left-+ₒ-is-embedding α β)
 
 
@@ -503,11 +503,12 @@ ordinal-subtraction-gives-excluded-middle {𝓤} ϕ P P-is-prop = g
 
 \end{code}
 
-Another example where subtraction doesn't exist is (ω +ₒ 𝟙ₒ) ≼ ℕ∞ₒ,
-discussed in the module OrdinalOfOrdinals. The types ω +ₒ 𝟙ₒ and ℕ∞ₒ
-are equal if and only if LPO holds. Without assuming LPO, the image of
-the inclusion (ω +ₒ 𝟙ₒ) → ℕ∞ₒ, has empty complement, and so there is
-nothing that can be added to (ω +ₒ 𝟙ₒ) to get ℕ∞ₒ, unless LPO holds.
+Another example where subtraction doesn't necessarily exist is the
+situation (ω +ₒ 𝟙ₒ) ≼ ℕ∞ₒ, discussed in the module
+OrdinalOfOrdinals. The types ω +ₒ 𝟙ₒ and ℕ∞ₒ are equal if and only if
+LPO holds. Without assuming LPO, the image of the inclusion (ω +ₒ 𝟙ₒ)
+→ ℕ∞ₒ, has empty complement, and so there is nothing that can be added
+to (ω +ₒ 𝟙ₒ) to get ℕ∞ₒ, unless LPO holds.
 
 \begin{code}
 
@@ -743,7 +744,7 @@ succ-monotone em α β l = II I
 
 \end{code}
 
-TODO. EM (𝓤 ⁺) is sufficient, because we can work with the resized order _⊲⁻_.
+TODO. EM 𝓤 is sufficient, because we can work with the resized order _⊲⁻_.
 
 Added 21st April 2022.
 

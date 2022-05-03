@@ -13,7 +13,7 @@ univalence axiom is needed.
 open import UF-Univalence
 
 module OrdinalOfOrdinals
-       (ua : Univalence)
+        (ua : Univalence)
        where
 
 open import SpartanMLTT
@@ -455,6 +455,10 @@ segment-inclusion : (α : Ordinal 𝓤) (a : ⟨ α ⟩)
                   → ⟨ α ↓ a ⟩ → ⟨ α ⟩
 segment-inclusion α a = pr₁
 
+segment-inclusion-bound : (α : Ordinal 𝓤) (a : ⟨ α ⟩)
+                        → (x : ⟨ α ↓ a ⟩) → segment-inclusion α a x ≺⟨ α ⟩ a
+segment-inclusion-bound α a = pr₂
+
 segment-inclusion-is-simulation : (α : Ordinal 𝓤) (a : ⟨ α ⟩)
                                 → is-simulation (α ↓ a) α (segment-inclusion α a)
 segment-inclusion-is-simulation α a = i , p
@@ -486,7 +490,7 @@ segment-⊴ α a = segment-inclusion α a , segment-inclusion-is-simulation α a
   v = segment-inclusion α b (f (u , l))
 
   m : v ≺⟨ α ⟩ b
-  m = pr₂ (f (u , l))
+  m = segment-inclusion-bound α b (f (u , l))
 
   q : u ≡ v
   q = h (u , l)
@@ -513,7 +517,6 @@ _⊲_ : Ordinal 𝓤 → Ordinal 𝓤 → 𝓤 ⁺ ̇
 ⊲-is-prop-valued : (α β : Ordinal 𝓤) → is-prop (α ⊲ β)
 ⊲-is-prop-valued {𝓤} α β (b , p) (b' , p') = γ
  where
-  q : (β ↓ b) ≡ (β ↓ b')
   q = (β ↓ b)  ≡⟨ p ⁻¹ ⟩
        α       ≡⟨ p' ⟩
       (β ↓ b') ∎
@@ -1221,7 +1224,7 @@ NB-minimal α a = f , g
 
 \end{code}
 
-Added 29th March.
+Added 29th March 2022.
 
 Simulations preserve minimal elements.
 
@@ -1369,5 +1372,4 @@ module _ (pt : propositional-truncations-exist) where
        ⦅1⦆ x' = ×-is-prop (Prop-valuedness α x' x) (underlying-type-is-set fe β)
        ⦅2⦆ : z ≡ z'
        ⦅2⦆ = simulations-are-lc' α β f (i , p) (e ∙ e' ⁻¹)
-
 \end{code}

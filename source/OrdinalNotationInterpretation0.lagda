@@ -52,8 +52,8 @@ open import OrdinalsType-Injectivity fe
 open import Plus-Properties
 open import PropTychonoff
 open import SquashedSum fe
-open import ToppedOrdinalArithmetic fe
-open import ToppedOrdinalsType fe
+open import OrdinalToppedArithmetic fe
+open import OrdinalsToppedType fe
 
 open ImageAndSurjection pt
 open ordinals-injectivity

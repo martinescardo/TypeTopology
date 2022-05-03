@@ -260,9 +260,9 @@ has-top : 𝓤 ⊔ 𝓥 ̇
 has-top = Σ x ꞉ X , is-top x
 
 no-minimal-is-empty : is-well-founded
-                     → ∀ {𝓦} (A : X → 𝓦 ̇ )
-                     → ((x : X) → A x → is-nonempty (Σ y ꞉ X , (y < x) × A y))
-                     → is-empty (Σ A)
+                    → ∀ {𝓦} (A : X → 𝓦 ̇ )
+                    → ((x : X) → A x → is-nonempty (Σ y ꞉ X , (y < x) × A y))
+                    → is-empty (Σ A)
 no-minimal-is-empty w A s (x , p) = γ
  where
   g : (x : X) → is-accessible x → ¬ (A x)
@@ -287,12 +287,11 @@ no-minimal-is-empty w A s (x , p) = γ
   γ : 𝟘
   γ = f s x p
 
-no-minimal-is-empty-weaker-version : is-well-founded
-                                   → ∀ {𝓦} (A : X → 𝓦 ̇ )
-                                   → ((x : X) → A x → Σ y ꞉ X , (y < x) × A y)
-                                   → is-empty (Σ A)
-no-minimal-is-empty-weaker-version w A s =
-  no-minimal-is-empty w A (λ x a → double-negation-intro (s x a))
+no-minimal-is-empty' : is-well-founded
+                     → ∀ {𝓦} (A : X → 𝓦 ̇ )
+                     → ((x : X) → A x → Σ y ꞉ X , (y < x) × A y)
+                     → is-empty (Σ A)
+no-minimal-is-empty' w A s = no-minimal-is-empty w A (λ x a → ¬¬-intro (s x a))
 
 \end{code}
 
@@ -437,6 +436,27 @@ trichotomy fe em (p , w , e , t) = γ
                       ¬¬B-gives-P)
              ¬¬A-gives-P
 
+not-<-gives-≼ : funext (𝓤 ⊔ 𝓥) 𝓤₀
+              → excluded-middle (𝓤 ⊔ 𝓥)
+              → is-well-order
+              → (x y : X) → ¬ (x < y) → y ≼ x
+not-<-gives-≼ fe em wo@(p , w , e , t) x y = γ (trichotomy fe em wo x y)
+ where
+  γ : (x < y) + (x ≡ y) + (y < x) → ¬ (x < y) → y ≼ x
+  γ (inl l)       ν = 𝟘-elim (ν l)
+  γ (inr (inl e)) ν = transport (_≼ x) e ≼-refl
+  γ (inr (inr m)) ν = <-gives-≼ t m
+
+≼-or-> : funext (𝓤 ⊔ 𝓥) 𝓤₀
+       → excluded-middle (𝓤 ⊔ 𝓥)
+       → is-well-order
+       → (x y : X) → (x ≼ y) + y < x
+≼-or-> fe em wo@(p , w , e , t) x y = γ (trichotomy fe em wo x y)
+ where
+  γ : (x < y) + (x ≡ y) + (y < x) → (x ≼ y) + (y < x)
+  γ (inl l)       = inl (<-gives-≼ t l)
+  γ (inr (inl e)) = inl (transport (x ≼_) e ≼-refl)
+  γ (inr (inr m)) = inr m
 
 \end{code}
 
@@ -525,6 +545,14 @@ cotransitive-≾-gives-≼ c x y n u l = γ (c u x y l)
   γ : (u < y) + (y < x) → u < y
   γ (inl l) = l
   γ (inr l) = 𝟘-elim (n l)
+
+tricho-gives-contrans : is-transitive → is-trichotomous-order → cotransitive
+tricho-gives-contrans tra tri x y z l = γ (tri z y)
+ where
+  γ : (z < y) + (z ≡ y) + (y < z) → (x < z) + (z < y)
+  γ (inl m)          = inr m
+  γ (inr (inl refl)) = inl l
+  γ (inr (inr m))    = inl (tra x y z l m)
 
 \end{code}
 

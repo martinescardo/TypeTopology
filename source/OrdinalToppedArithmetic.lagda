@@ -21,7 +21,7 @@ cumbersome and (2) requires much work in other modules.
 
 open import UF-FunExt
 
-module ToppedOrdinalArithmetic
+module OrdinalToppedArithmetic
         (fe : FunExt)
        where
 
@@ -31,7 +31,7 @@ open import SpartanMLTT
 open import OrdinalsType
 open import OrdinalArithmetic fe
 open import OrdinalsWellOrderArithmetic
-open import ToppedOrdinalsType fe
+open import OrdinalsToppedType fe
 open import OrdinalsType-Injectivity fe
 open import GenericConvergentSequence
 open import SquashedSum fe

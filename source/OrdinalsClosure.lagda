@@ -23,10 +23,10 @@ open import UF-Miscelanea
 open import SpartanMLTT
 open import Two-Properties
 open import AlternativePlus
-open import ToppedOrdinalsType fe
+open import OrdinalsToppedType fe
 open import OrdinalArithmetic fe
 open import OrdinalsType-Injectivity fe
-open import ToppedOrdinalArithmetic fe
+open import OrdinalToppedArithmetic fe
 open import CompactTypes
 open import GenericConvergentSequence
 open import SquashedSum fe
