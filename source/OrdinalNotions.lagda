@@ -304,14 +304,14 @@ the time of writing, namely 11th January 2021).
 
 \begin{code}
 
+in-trichotomy : (x y : X) → 𝓤 ⊔ 𝓥 ̇
+in-trichotomy x y = (x < y) + (x ≡ y) + (y < x)
+
 is-trichotomous-element : X → 𝓤 ⊔ 𝓥 ̇
-is-trichotomous-element x = (y : X) → (x < y) + (x ≡ y) + (y < x)
+is-trichotomous-element x = (y : X) → in-trichotomy x y
 
 is-trichotomous-order : 𝓤 ⊔ 𝓥 ̇
 is-trichotomous-order = (x : X) → is-trichotomous-element x
-
-comparable : (x y : X) → 𝓤 ⊔ 𝓥 ̇
-comparable x y = (x < y) + (x ≡ y) + (y < x)
 
 _≦_ : (x y : X) → 𝓤 ⊔ 𝓥 ̇
 x ≦ y = (x < y) + (x ≡ y)
@@ -319,32 +319,32 @@ x ≦ y = (x < y) + (x ≡ y)
 _≧_ : (x y : X) → 𝓤 ⊔ 𝓥 ̇
 x ≧ y = (x ≡ y) + (y < x)
 
--- Must be already somewhere
+-- Maybe this notion ought to be defined elsewhere
 disjoint : forall {𝓤₀} {𝓥₀} → (A : 𝓤₀ ̇) → (B : 𝓥₀ ̇) → 𝓤₀ ⊔ 𝓥₀ ̇
 disjoint A B = ¬ (A × B)
 
 disjoint-props : forall {𝓤} {𝓥} {A : 𝓤 ̇} {B : 𝓥 ̇} →
   is-prop A → is-prop B → disjoint A B → is-prop (A + B)
-disjoint-props {A} {B} propA propB A∩B=∅ (inl a1) (inl a2) = ap inl (propA a1 a2)
-disjoint-props {A} {B} propA propB A∩B=∅ (inl a1) (inr b2) = 𝟘-elim (A∩B=∅ (a1 , b2))
-disjoint-props {A} {B} propA propB A∩B=∅ (inr b1) (inl a2) = 𝟘-elim (A∩B=∅ (a2 , b1))
-disjoint-props {A} {B} propA propB A∩B=∅ (inr b1) (inr b2) = ap inr (propB b1 b2)
+disjoint-props {A} {B} propA propB A-B-disjoint (inl a1) (inl a2) = ap inl (propA a1 a2)
+disjoint-props {A} {B} propA propB A-B-disjoint (inl a1) (inr b2) = 𝟘-elim (A-B-disjoint (a1 , b2))
+disjoint-props {A} {B} propA propB A-B-disjoint (inr b1) (inl a2) = 𝟘-elim (A-B-disjoint (a2 , b1))
+disjoint-props {A} {B} propA propB A-B-disjoint (inr b1) (inr b2) = ap inr (propB b1 b2)
 
 ≦-is-prop : is-set X → is-well-order → (x y : X) → is-prop (x ≦ y)
 ≦-is-prop set wo@(p , w , e , t) x y = disjoint-props (p x y) set
-  λ (x<y , x≡y) → irreflexive y (w y) (transport (_< y) (x≡y) x<y)
+  λ (x-lt-y , x-equals-y) → irreflexive y (w y) (transport (_< y) (x-equals-y) x-lt-y)
 
 ≧-is-prop : is-set X → is-well-order → (x y : X) → is-prop (x ≧ y)
 ≧-is-prop set wo@(p , w , e , t) x y = disjoint-props set (p y x)
-  λ (x≡y , x>y) → irreflexive x (w x) (transport (_< x) (x≡y ⁻¹) x>y)
+  λ (x-equals-y , x-gt-y) → irreflexive x (w x) (transport (_< x) (x-equals-y ⁻¹) x-gt-y)
 
 ≧->-transitive : is-well-order → {x y z : X} → (x ≧ y) → (z < y) → z < x
 ≧->-transitive wo {x} {y} {z} (inl refl) y>z = y>z
-≧->-transitive wo@(p , w , e , t) {x} {y} {z} (inr x>y) y>z = t z y x y>z x>y
+≧->-transitive wo@(p , w , e , t) {x} {y} {z} (inr x-gt-y) y-gt-z = t z y x y-gt-z x-gt-y
 
-comparable-is-prop : is-set X → is-well-order → (x y : X) → is-prop (comparable x y)
+comparable-is-prop : is-set X → is-well-order → (x y : X) → is-prop (in-trichotomy x y)
 comparable-is-prop set wo@(p , w , _) x y = disjoint-props (p x y) (≧-is-prop set wo x y)
-  λ (x<y , x≧y) → irreflexive x (w x) (≧->-transitive wo x≧y x<y)
+  λ (x-lt-y , x-geq-y) → irreflexive x (w x) (≧->-transitive wo x-geq-y x-lt-y)
 
 \end{code}
 
@@ -392,44 +392,41 @@ module _
  lem-consequence : is-well-order → (u v : X) → (∃ i ꞉ X , ((i < u) × ¬ (i < v))) + (u ≼ v)
  lem-consequence (p , _) u v = Cases
      (∃¬-gives-∀ pt em {Σ (λ i → i < u)}
-        (λ (i , i_<_u) → i < v)
-        (λ (i , i_<_u) → p i v))
+        (λ (i , i-lt-u) → i < v)
+        (λ (i , i-<-u) → p i v))
      (λ witness → inl ((∥∥-induction (λ s → ∃-is-prop)
-       (λ ((i , i<u) , i≮v) → ∣ i , i<u , i≮v ∣) witness)))
-     λ prf → inr (λ i i<u → prf (i , i<u))
+       (λ ((i , i-lt-u) , i-not-lt-v) → ∣ i , i-lt-u , i-not-lt-v ∣) witness)))
+     λ prf → inr (λ i i-lt-u → prf (i , i-lt-u))
 
  set : is-well-order → is-set X
  set wo = well-ordered-types-are-sets (λ 𝓤₃ 𝓥₁ → fe) wo
 
  trichotomy' : is-well-order → is-trichotomous-order
- trichotomy' wo@(p , w , e , t) = transfinite-induction w P ϕ
+ trichotomy' wo@(p , w , e , t) = transfinite-induction w is-trichotomous-element ϕ
   where
-   P : (x : X) → 𝓤 ⊔ 𝓥 ̇
-   P x = ∀ y → comparable x y
-
-   ϕ : (x : X) → induction-hypothesis P x → P x
+   ϕ : (x : X) → induction-hypothesis is-trichotomous-element x → is-trichotomous-element x
    ϕ u ih = -- now we proceed by induction on the inner argument
-     transfinite-induction w (comparable u) λ v innerIH →
+     transfinite-induction w (in-trichotomy u) λ v innerIH →
        -- use LEM to get either (∃i<v . i≯u) ∨ (v ≼ u)
        Cases (lem-consequence wo v u)
          (∥∥-induction (λ s → comparable-is-prop (set wo) wo u v)
-           λ (i , i<v , i≮u) → case (innerIH i i<v) of λ where
-              (inl      i>u ) → inl (t u i v i>u i<v)
-              (inr (inl u≡i)) → inl (transport (_< v) (u≡i ⁻¹) i<v)
-              (inr (inr i<u)) → 𝟘-elim (i≮u i<u))
-         λ v≼u → Cases (lemma v v≼u)
-           (λ v<u → inr (inr v<u))
-           (λ v≡u → inr (inl (v≡u ⁻¹)))
+           λ (i , i-lt-v , i-not-lt-u) → case (innerIH i i-lt-v) of λ where
+              (inl      i-gt-u ) → inl (t u i v i-gt-u i-lt-v)
+              (inr (inl u-equals-i)) → inl (transport (_< v) (u-equals-i ⁻¹) i-lt-v)
+              (inr (inr i-lt-u)) → 𝟘-elim (i-not-lt-u i-lt-u))
+         λ v-below-u → Cases (lemma v v-below-u)
+           (λ v-lt-u → inr (inr v-lt-u))
+           (λ v-equals-u → inr (inl (v-equals-u ⁻¹)))
     where
-     lemma : (x : X) → (x ≼ u) → (x < u) + (x ≡ u)
-     lemma x x≼u = Cases (lem-consequence wo u x)
+     lemma : (x : X) → (x ≼ u) → x ≦ u
+     lemma x x-below-u = Cases (lem-consequence wo u x)
        (∥∥-induction (λ s → ≦-is-prop (set wo) wo x u)
-         λ (i , i<u , i≮x) → case (ih i i<u x) of
+         λ (i , i-lt-u , i-not-lt-x) → case (ih i i-lt-u x) of
            λ where
-             (inl      i<x ) → 𝟘-elim (i≮x i<x)
-             (inr (inl i≡x)) → inl (transport (_< u) i≡x i<u)
-             (inr (inr i>x)) → inl (t x i u i>x i<u))
-       λ u≼x → inr (e x u x≼u u≼x)
+             (inl      i-lt-x ) → 𝟘-elim (i-not-lt-x i-lt-x)
+             (inr (inl i-equals-x)) → inl (transport (_< u) i-equals-x i-lt-u)
+             (inr (inr i-gt-x)) → inl (t x i u i-gt-x i-lt-u))
+       λ u-below-x → inr (e x u x-below-u u-below-x)
 
 trichotomy : funext (𝓤 ⊔ 𝓥) 𝓤₀
            → excluded-middle (𝓤 ⊔ 𝓥)

@@ -115,8 +115,8 @@ module _ (pt : propositional-truncations-exist) where
          → (∃ x ꞉ X , ¬ (A x)) + (Π A)
  ∃¬-gives-∀ {𝓤} {𝓥} em {X} A is-prop-valued = Cases (em (∃ x ꞉ X , ¬ (A x)) ∥∥-is-prop)
    inl
-   λ ¬∃ → inr (λ x → EM-gives-DNE (lower-EM (𝓤 ⊔ 𝓥) em) (A x) (is-prop-valued x)
-     λ notAx → ¬∃ ∣ (x , notAx) ∣)
+   λ notExists → inr (λ x → EM-gives-DNE (lower-EM (𝓤 ⊔ 𝓥) em) (A x) (is-prop-valued x)
+     λ notAx → notExists ∣ (x , notAx) ∣)
 \end{code}
 
 Added by Tom de Jong in August 2021.
