@@ -1274,7 +1274,7 @@ simulations-preserve-least α β x y f (i , _) = initial-segments-preserve-least
 
 \end{code}
 
-Added 2nd May by Martin Escardo
+Added 2nd May 2022 by Martin Escardo.
 
 \begin{code}
 
