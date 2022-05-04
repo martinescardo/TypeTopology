@@ -17,6 +17,7 @@ open import UF-FunExt
 open import UF-Subsingletons-FunExt
 open import UF-ExcludedMiddle
 open import UF-PropTrunc
+open import Plus-Properties using (+-commutative)
 
 module OrdinalNotions
         {𝓤 𝓥 : Universe}
@@ -330,10 +331,6 @@ in-trichotomy-symm (inl x-lt-y) = inr (inr x-lt-y)
 in-trichotomy-symm (inr (inl x-equiv-y)) = inr (inl (x-equiv-y ⁻¹))
 in-trichotomy-symm (inr (inr y-lt-x)) = inl y-lt-x
 
-[_,_] : ∀ {𝓤 𝓥 𝓦} {X : 𝓤 ̇} {Y : 𝓥 ̇} {Z : 𝓦 ̇} → (X → Z) → (Y → Z) → (X + Y → Z)
-[ f , g ] (inl x) = f x
-[ f , g ] (inr x) = g x
-
 _>_ : (x y : X) → 𝓥 ̇
 x > y = y < x
 
@@ -343,20 +340,17 @@ x ≦ y = (x < y) + (y ≡ x)
 _≧_ : (x y : X) → 𝓤 ⊔ 𝓥 ̇
 x ≧ y = (x ≡ y) + (y < x)
 
-coprod-symm : ∀ {𝓤 𝓥} {X : 𝓤 ̇} {Y : 𝓥 ̇} → X + Y → Y + X
-coprod-symm = [ inr , inl ]
-
 ≧-implies-≦ : {x y : X} → x ≧ y → y ≦ x
-≧-implies-≦ x-geq-y = coprod-symm x-geq-y
+≧-implies-≦ x-geq-y = +-commutative x-geq-y
 
 ≦-implies-≧ : {x y : X} → x ≦ y → y ≧ x
-≦-implies-≧ x-leq-y = coprod-symm x-leq-y
+≦-implies-≧ x-leq-y = +-commutative x-leq-y
 
 ≧-implies-in-trichotomy : {x y : X} → x ≧ y → in-trichotomy x y
 ≧-implies-in-trichotomy = inr
 
 ≦-implies-in-trichotomy : {x y : X} → x ≦ y → in-trichotomy x y
-≦-implies-in-trichotomy = [ inl , ≡-implies-in-trichotomy ∘ _⁻¹ ]
+≦-implies-in-trichotomy = cases inl (≡-implies-in-trichotomy ∘ _⁻¹)
 
 in-trichotomy-not->-implies-≦ : {x y : X} → in-trichotomy x y → ¬ (y < x) → x ≦ y
 in-trichotomy-not->-implies-≦ (inl x-lt-y) y-not-lt-x = inl x-lt-y
