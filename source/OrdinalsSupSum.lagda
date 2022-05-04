@@ -45,6 +45,7 @@ private
 
  fe' : Fun-Ext
  fe' {𝓤} {𝓥} = fe 𝓤 𝓥
+
  pe : PropExt
  pe = Univalence-gives-PropExt ua
 
