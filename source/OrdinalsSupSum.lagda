@@ -9,7 +9,8 @@ principle of excluded middle (excluded middle for negated
 propositions).
 
 The problem is that the sum doesn't always exist constructively. So we
-need a more precise formulation of the above.
+need a more precise formulation of the above, which we give below in
+Agda notation.
 
 \begin{code}
 
@@ -22,11 +23,9 @@ module OrdinalsSupSum
        where
 
 open import SpartanMLTT
-open import OrdinalNotions
 open import OrdinalsType
 open import OrdinalOfOrdinals ua
 open import OrdinalOfOrdinalsSuprema ua
-open import CanonicalMapNotation
 
 open import UF-FunExt
 open import UF-UA-FunExt
@@ -46,47 +45,22 @@ private
 
 open import OrdinalArithmetic fe
 
-order-preserving-gives-not-⊲ : (α β : Ordinal 𝓤)
-                             → (Σ f ꞉ (⟨ α ⟩ → ⟨ β ⟩) , is-order-preserving α β f)
-                             → ¬ (β ⊲ α)
-order-preserving-gives-not-⊲ {𝓤} α β σ (x₀ , refl) = γ σ
- where
-  γ : ¬ (Σ f ꞉ (⟨ α ⟩ → ⟨ α ↓ x₀ ⟩) , is-order-preserving α (α ↓ x₀) f)
-  γ (f , fop) = κ
-   where
-    g : ⟨ α ⟩ → ⟨ α ⟩
-    g x = pr₁ (f x)
+\end{code}
 
-    h : (x : ⟨ α ⟩) → g x ≺⟨ α ⟩ x₀
-    h x = pr₂ (f x)
+Our construction of suprema of families of ordinals needs the
+assumption of set quotients, or, equivalently, propositional
+truncations and set replacement. But because the existence of
+propositional truncations follows from excluded middle, which we
+assume for our next theorem, we only need to assume set replacement to
+formulate the next theorem, in addition to excluded middle.
 
-    δ : (n : ℕ) → (g ^ succ n) x₀ ≺⟨ α ⟩ (g ^ n) x₀
-    δ 0        = h x₀
-    δ (succ n) = fop _ _ (δ n)
+Also, sums of ordinal-indexed families of ordinals don't always exist
+(see the module OrdinalsShulmanTaboo). They do exist, for example, for
+ordinals with a largest element (which, constructively, are not
+necessarily limit ordinals), or for all ordinals if we assume the
+principle of excluded middle.
 
-    A : ⟨ α ⟩ → 𝓤 ̇
-    A x = Σ n ꞉ ℕ , (g ^ n) x₀ ≡ x
-
-    d : (x : ⟨ α ⟩) → A x → Σ y ꞉ ⟨ α ⟩ , (y ≺⟨ α ⟩ x) × A y
-    d x (n , refl) = g x , δ n , succ n , refl
-
-    κ : 𝟘
-    κ = no-minimal-is-empty' (underlying-order α) (Well-foundedness α)
-         A d (x₀ , 0 , refl)
-
-order-preserving-gives-≼ : EM (𝓤 ⁺)
-                         → (α β : Ordinal 𝓤)
-                         → (Σ f ꞉ (⟨ α ⟩ → ⟨ β ⟩) , is-order-preserving α β f)
-                         → α ≼ β
-order-preserving-gives-≼ em α β σ = δ
- where
-  γ : (α ≼ β) + (β ⊲ α) → α ≼ β
-  γ (inl l) = l
-  γ (inr m) = 𝟘-elim (order-preserving-gives-not-⊲ α β σ m)
-
-  δ : α ≼ β
-  δ = γ (≼-or-> _⊲_ fe' em ⊲-is-well-order α β)
-
+\begin{code}
 
 module _ {𝓤 : Universe}
          (em : Excluded-Middle)
@@ -98,17 +72,27 @@ module _ {𝓤 : Universe}
 
  sup-bounded-by-sum : (α : Ordinal 𝓤) (β : ⟨ α ⟩ → Ordinal 𝓤)
                     → sup β ⊴ ∑ α β
- sup-bounded-by-sum α β = sup-is-lower-bound-of-upper-bounds β (∑ α β) l
+ sup-bounded-by-sum α β = sup-is-lower-bound-of-upper-bounds β (∑ α β) bound
   where
-   l : (x : ⟨ α ⟩) → β x ⊴ ∑ α β
-   l x = ≼-gives-⊴ (β x) (∑ α β) m
+   bound : (x : ⟨ α ⟩) → β x ⊴ ∑ α β
+   bound x = ≼-gives-⊴ (β x) (∑ α β) m
     where
      f : ⟨ β x ⟩ → ⟨ ∑ α β ⟩
      f y = x , y
+
      fop : is-order-preserving (β x) (∑ α β) f
      fop y z l = inr (refl , l)
+
      m : β x ≼ ∑ α β
      m = order-preserving-gives-≼ em (β x) (∑ α β) (f , fop)
+
+\end{code}
+
+We also formulate the following immediate consequence for use in
+another module, where Ordinalᵀ 𝓤 is the type of topped ordinals in the
+universe 𝓤, that is, the ordinals that have a largest element.
+
+\begin{code}
 
  open import OrdinalsToppedType fe
  open import OrdinalToppedArithmetic fe renaming (∑ to ∑ᵀ)
@@ -116,12 +100,18 @@ module _ {𝓤 : Universe}
  sup-bounded-by-sumᵀ : (τ : Ordinalᵀ 𝓤) (υ : ⟪ τ ⟫ → Ordinalᵀ 𝓤)
                      → sup (λ x → [ υ x ]) ⊴ [ ∑ᵀ τ υ ]
  sup-bounded-by-sumᵀ τ υ = sup-bounded-by-sum [ τ ] (λ x → [ υ x ])
+
 \end{code}
 
-To get closure under sums constructively, we need to restrict to
-particular kinds of ordinals. Having a top element is a simple
-sufficient condition, which holds in the applications we have in mind
-(for compact ordinals).
+This is the end of the anonymous module that assumes the principle of
+excluded middle.
+
+We now prove a weak converse of this consequence, namely that weak
+excluded middle follows from the assumption that sups are bounded by
+sums of topped-ordinals indexed by topped-ordinals. In order to
+formulate this, we need to speak of suprema, which are available if we
+assume propositional truncations and set replacement (or, equivalently
+set quotients).
 
 \begin{code}
 
@@ -134,10 +124,11 @@ module _ {𝓤 : Universe}
  open import OrdinalToppedArithmetic fe
  open suprema pt sr
 
- sup-bounded-by-sum-gives-EM : ({𝓤 : Universe} (τ : Ordinalᵀ 𝓤) (υ : ⟪ τ ⟫ → Ordinalᵀ 𝓤)
-                                   → sup (λ x → [ υ x ]) ⊴ [ ∑ τ υ ])
-                             → {𝓤 : Universe} → WEM 𝓤
- sup-bounded-by-sum-gives-EM ϕ {𝓤} = γ
+ sup-bounded-by-sum-gives-WEM : ({𝓤 : Universe} (τ : Ordinalᵀ 𝓤) (υ : ⟪ τ ⟫ → Ordinalᵀ 𝓤)
+                                    → sup (λ x → [ υ x ]) ⊴ [ ∑ τ υ ])
+
+                              → {𝓤 : Universe} → WEM 𝓤
+ sup-bounded-by-sum-gives-WEM ϕ {𝓤} = γ
   where
    open import OrdinalOfTruthValues fe 𝓤 (pe 𝓤)
    open Omega (pe 𝓤)
