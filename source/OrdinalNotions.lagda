@@ -562,15 +562,16 @@ module _
         (fe : Fun-Ext)
         (em : Excluded-Middle)
        where
+ private
+   pt : propositional-truncations-exist
+   pt = (fem-proptrunc (λ 𝓤 𝓥 → fe {𝓤} {𝓥}) em)
 
- pt : propositional-truncations-exist
- pt = (fem-proptrunc (λ 𝓤 𝓥 → fe {𝓤} {𝓥}) em)
+   open import UF-PropTrunc
+   open PropositionalTruncation pt
 
- open import UF-PropTrunc
- open PropositionalTruncation pt
 
- lem-consequence : is-well-order → (u v : X) → (∃ i ꞉ X , ((i < u) × ¬ (i < v))) + (u ≼ v)
- lem-consequence (p , _) u v = Cases
+   lem-consequence : is-well-order → (u v : X) → (∃ i ꞉ X , ((i < u) × ¬ (i < v))) + (u ≼ v)
+   lem-consequence (p , _) u v = Cases
      (∃¬-gives-∀ pt em {Σ (λ i → i < u)}
         (λ (i , i-lt-u) → i < v)
         (λ (i , i-<-u) → p i v))
@@ -578,8 +579,8 @@ module _
        (λ ((i , i-lt-u) , i-not-lt-v) → ∣ i , i-lt-u , i-not-lt-v ∣) witness)))
      λ prf → inr (λ i i-lt-u → prf (i , i-lt-u))
 
- set : is-well-order → is-set X
- set wo = well-ordered-types-are-sets (λ 𝓤₃ 𝓥₁ → fe) wo
+   set : is-well-order → is-set X
+   set wo = well-ordered-types-are-sets (λ 𝓤₃ 𝓥₁ → fe) wo
 
  trichotomy' : is-well-order → is-trichotomous-order
  trichotomy' wo@(p , w , e , t) = transfinite-induction w is-trichotomous-element ϕ
