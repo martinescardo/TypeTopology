@@ -879,6 +879,34 @@ simulations-are-monotone α β f (i , p) = φ
 
 \end{code}
 
+Example.
+
+\begin{code}
+
+module example (pe : propext 𝓤) where
+
+ open import OrdinalArithmetic fe
+ open import OrdinalOfTruthValues fe 𝓤 pe
+
+ 𝟚ₒ-leq-Ωₒ : 𝟚ₒ {𝓤} ⊴ Ωₒ
+ 𝟚ₒ-leq-Ωₒ = f , i , p
+  where
+   f : 𝟙 + 𝟙 → Ω 𝓤
+   f (inl ⋆) = ⊥Ω
+   f (inr ⋆) = ⊤Ω
+
+   i : is-initial-segment 𝟚ₒ Ωₒ f
+   i (inl ⋆) .⊥Ω (refl , e) = 𝟘-elim (⊥-is-not-⊤ e)
+   i (inr ⋆) .⊥Ω (refl , _) = inl ⋆ , ⋆ , refl
+
+   p : is-order-preserving 𝟚ₒ Ωₒ f
+   p (inl ⋆) (inr x) ⋆ = refl , refl
+   p (inr ⋆) (inl x) l = 𝟘-elim l
+   p (inr ⋆) (inr x) l = 𝟘-elim l
+
+\end{code}
+
+
 Example. Classically, the ordinals ω +ₒ 𝟙ₒ and ℕ∞ₒ are equal.
 Constructively, we have (ω +ₒ 𝟙ₒ) ⊴ ℕ∞ₒ, but the inequality in the
 other direction is equivalent to LPO.
@@ -1297,6 +1325,7 @@ original one.
 \begin{code}
 
 open import UF-PropTrunc
+
 module _ (pt : propositional-truncations-exist) where
 
  open PropositionalTruncation pt

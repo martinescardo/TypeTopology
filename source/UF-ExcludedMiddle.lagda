@@ -94,12 +94,24 @@ de-Morgan em em' {A} {B} i j n = Cases (em A i)
                                           inr)
                                   inl
 
-fem-proptrunc : FunExt → Excluded-Middle → propositional-truncations-exist
-fem-proptrunc fe em = record {
+fe-and-em-give-propositional-truncations : FunExt
+                                         → Excluded-Middle
+                                         → propositional-truncations-exist
+fe-and-em-give-propositional-truncations fe em =
+ record {
   ∥_∥          = λ X → ¬¬ X ;
   ∥∥-is-prop   = Π-is-prop (fe _ _) (λ _ → 𝟘-is-prop) ;
   ∣_∣         = λ x u → u x ;
-  ∥∥-rec       = λ i u φ → EM-gives-DNE em _ i (¬¬-functor u φ) }
+  ∥∥-rec       = λ i u φ → EM-gives-DNE em _ i (¬¬-functor u φ)
+  }
+
+\end{code}
+
+Old, bad name for the above (TODO: get rid of it):
+
+\begin{code}
+
+fem-proptrunc = fe-and-em-give-propositional-truncations
 
 module _ (pt : propositional-truncations-exist) where
 

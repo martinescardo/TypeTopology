@@ -62,18 +62,18 @@ Sum of an ordinal-indexed family of ordinals:
 
 \begin{code}
 
-∑ : (τ : Ordᵀ) → (⟪ τ ⟫ → Ordᵀ) → Ordᵀ
-∑ ((X , _<_ , o) , t) υ = ((Σ x ꞉ X , ⟪ υ x ⟫) ,
+∑ : (τ : Ordinalᵀ 𝓤) → (⟪ τ ⟫ → Ordinalᵀ 𝓤) → Ordinalᵀ 𝓤
+∑ {𝓤} ((X , _<_ , o) , t) υ = ((Σ x ꞉ X , ⟪ υ x ⟫) ,
                               Sum.order ,
                               Sum.well-order o (λ x → tis-well-ordered (υ x))) ,
                           Sum.top-preservation t
  where
-  _≺_ : {x : X} → ⟪ υ x ⟫ → ⟪ υ x ⟫ → 𝓤₀ ̇
+  _≺_ : {x : X} → ⟪ υ x ⟫ → ⟪ υ x ⟫ → 𝓤 ̇
   y ≺ z = y ≺⟪ υ _ ⟫ z
 
   module Sum = sum-top fe _<_ _≺_ (λ x → top (υ x)) (λ x → top-is-top (υ x))
 
-∑-is-trichotomous : (τ : Ordᵀ) (υ : ⟪ τ ⟫ → Ordᵀ)
+∑-is-trichotomous : (τ : Ordinalᵀ 𝓤) (υ : ⟪ τ ⟫ → Ordinalᵀ 𝓤)
                   → is-trichotomous [ τ ]
                   → ((x : ⟪ τ ⟫) → is-trichotomous [ υ x ])
                   → is-trichotomous [ ∑ τ υ ]
