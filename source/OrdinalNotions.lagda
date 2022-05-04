@@ -538,7 +538,7 @@ trichotomy fe em (p , w , e , t) = γ
              ¬¬A-gives-P
 \end{code}
 
-Added 09-04-2022 -- 03-05-2022 by Ohad Kammar.
+Added 09-04-2022 -- 04-05-2022 by Ohad Kammar.
 
 We can give a shorter proof using `∃¬-gives-∀` and LEM, by deducing
 that in a well-order, for every u and v, either u ≼ v or there is some
@@ -577,7 +577,6 @@ module _
 
    open import UF-PropTrunc
    open PropositionalTruncation pt
-
 
    lem-consequence : is-well-order → (u v : X) → (∃ i ꞉ X , ((i < u) × ¬ (i < v))) + (u ≼ v)
    lem-consequence (p , _) u v = Cases
