@@ -352,7 +352,7 @@ in-trichotomy-symm (inl x-lt-y) = inr (inr x-lt-y)
 in-trichotomy-symm (inr (inl x-equiv-y)) = inr (inl (x-equiv-y ⁻¹))
 in-trichotomy-symm (inr (inr y-lt-x)) = inl y-lt-x
 
-[_,_] : ∀ {𝓠 𝓡 𝓦} {X : 𝓠 ̇} {Y : 𝓡 ̇} {Z : 𝓦 ̇} → (X → Z) → (Y → Z) → (X + Y → Z)
+[_,_] : ∀ {𝓤 𝓥 𝓦} {X : 𝓤 ̇} {Y : 𝓥 ̇} {Z : 𝓦 ̇} → (X → Z) → (Y → Z) → (X + Y → Z)
 [ f , g ] (inl x) = f x
 [ f , g ] (inr x) = g x
 
@@ -365,7 +365,7 @@ x ≦ y = (x < y) + (y ≡ x)
 _≧_ : (x y : X) → 𝓤 ⊔ 𝓥 ̇
 x ≧ y = (x ≡ y) + (y < x)
 
-coprod-symm : ∀ {𝓠 𝓡} {X : 𝓠 ̇} {Y : 𝓡 ̇} → X + Y → Y + X
+coprod-symm : {X : 𝓤 ̇} {Y : 𝓥 ̇} → X + Y → Y + X
 coprod-symm = [ inr , inl ]
 
 ≧-implies-≦ : {x y : X} → x ≧ y → y ≦ x
