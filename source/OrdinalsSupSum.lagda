@@ -9,8 +9,7 @@ principle of excluded middle (excluded middle for negated
 propositions).
 
 The problem is that the sum doesn't always exist constructively. So we
-need a more precise formulation of the above, which we give below in
-Agda notation.
+need a more precise formulation of the above, which we give below.
 
 \begin{code}
 
