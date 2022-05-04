@@ -11,9 +11,15 @@ propositions).
 The problem is that the sum doesn't always exist constructively. So we
 need a more precise formulation of the above, which we give below.
 
+We assume univalence in this module, which is needed for the
+development of the large ordinal of small ordinals, and, in
+particular, the ordering _⊴_ between ordinals and its properties.
+
+Other local assumptions belonging to HoTT/UF are discussed below.
+
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline --experimental-lossy-unification #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import UF-Univalence
 
@@ -145,7 +151,7 @@ module _ {𝓤 : Universe}
    m = sup-is-upper-bound (λ x → [ υ x ]) (inr ⋆)
 
    o : Ωₒ ⊴ [ ∑ τ υ ]
-   o = ⊴-trans _ _ _ m l
+   o = ⊴-trans Ωₒ (sup (λ x → [ υ x ])) [ ∑ τ υ ] m l
 
    p : [ ∑ τ υ ] ≡ (𝟙ₒ +ₒ Ωₒ)
    p = eqtoidₒ _ _ (alternative-plus 𝟙ᵒ Ωᵒ)
