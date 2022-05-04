@@ -312,30 +312,8 @@ is-trichotomous-element x = (y : X) → in-trichotomy x y
 
 open import UF-Subsingletons
 
-being-trichotomous-element-is-prop : FunExt
-                                   → is-well-order
-                                   → (x : X) → is-prop (is-trichotomous-element x)
-being-trichotomous-element-is-prop fe wo@(p , w , e , t) x =
-  Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥))
-   (λ y → sum-of-contradictory-props
-           (p x y)
-           (sum-of-contradictory-props
-              (extensionally-ordered-types-are-sets fe p e)
-              (p y x)
-              (λ {refl l
-                    → irreflexive x (w x) l}))
-           (λ l → cases
-                   (λ {refl → irreflexive x (w x) l})
-                   (λ m → irreflexive x (w x) (t x y x l m))))
-
 is-trichotomous-order : 𝓤 ⊔ 𝓥 ̇
 is-trichotomous-order = (x : X) → is-trichotomous-element x
-
-trichotomy-is-prop : FunExt
-                   → is-well-order
-                   → is-prop (is-trichotomous-order)
-trichotomy-is-prop fe wo = Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥))
-                            (being-trichotomous-element-is-prop fe wo)
 
 -- injections into in-trichotomy
 >-implies-in-trichotomy : {x y : X} → (x < y) → in-trichotomy x y
@@ -365,7 +343,7 @@ x ≦ y = (x < y) + (y ≡ x)
 _≧_ : (x y : X) → 𝓤 ⊔ 𝓥 ̇
 x ≧ y = (x ≡ y) + (y < x)
 
-coprod-symm : {X : 𝓤 ̇} {Y : 𝓥 ̇} → X + Y → Y + X
+coprod-symm : ∀ {𝓤 𝓥} {X : 𝓤 ̇} {Y : 𝓥 ̇} → X + Y → Y + X
 coprod-symm = [ inr , inl ]
 
 ≧-implies-≦ : {x y : X} → x ≧ y → y ≦ x
@@ -391,25 +369,6 @@ in-trichotomy-not->-implies-≧ x-in-trichotomy-y y-not-lt-x =
                  (in-trichotomy-symm x-in-trichotomy-y)
                  y-not-lt-x)
 
--- Maybe this notion ought to be defined elsewhere
-disjoint : forall {𝓤₀} {𝓥₀} → (A : 𝓤₀ ̇) → (B : 𝓥₀ ̇) → 𝓤₀ ⊔ 𝓥₀ ̇
-disjoint A B = ¬ (A × B)
-
-disjoint-props : forall {𝓤} {𝓥} {A : 𝓤 ̇} {B : 𝓥 ̇} →
-  is-prop A → is-prop B → disjoint A B → is-prop (A + B)
-disjoint-props {A} {B} propA propB A-B-disjoint (inl a1) (inl a2) = ap inl (propA a1 a2)
-disjoint-props {A} {B} propA propB A-B-disjoint (inl a1) (inr b2) = 𝟘-elim (A-B-disjoint (a1 , b2))
-disjoint-props {A} {B} propA propB A-B-disjoint (inr b1) (inl a2) = 𝟘-elim (A-B-disjoint (a2 , b1))
-disjoint-props {A} {B} propA propB A-B-disjoint (inr b1) (inr b2) = ap inr (propB b1 b2)
-
-≦-is-prop : is-set X → is-well-order → (x y : X) → is-prop (x ≦ y)
-≦-is-prop set wo@(p , w , e , t) x y = disjoint-props (p x y) set
-  λ (x-lt-y , x-equals-y) → irreflexive y (w y) (transport (_< y) (x-equals-y ⁻¹) x-lt-y)
-
-≧-is-prop : is-set X → is-well-order → (x y : X) → is-prop (x ≧ y)
-≧-is-prop set wo@(p , w , e , t) x y = disjoint-props set (p y x)
-  λ (x-equals-y , x-gt-y) → irreflexive x (w x) (transport (_< x) (x-equals-y ⁻¹) x-gt-y)
-
 ≧->-transitive : is-well-order → {x y z : X} → (x ≧ y) → (z < y) → z < x
 ≧->-transitive wo {x} {y} {z} (inl refl) y-gt-z = y-gt-z
 ≧->-transitive wo@(p , w , e , t) {x} {y} {z} (inr x-gt-y) y-gt-z = t z y x y-gt-z x-gt-y
@@ -418,9 +377,38 @@ disjoint-props {A} {B} propA propB A-B-disjoint (inr b1) (inr b2) = ap inr (prop
 >-≧-transitive wo {x} {y} {.y} x-gt-y (inl refl) = x-gt-y
 >-≧-transitive wo@(p , w , e , t) {x} {y} {z} x-gt-y (inr y-gt-z) = t z y x y-gt-z x-gt-y
 
-in-trichotomy-is-prop : is-set X → is-well-order → (x y : X) → is-prop (in-trichotomy x y)
-in-trichotomy-is-prop set wo@(p , w , _) x y = disjoint-props (p x y) (≧-is-prop set wo x y)
-  λ (x-lt-y , x-geq-y) → irreflexive x (w x) (≧->-transitive wo x-geq-y x-lt-y)
+module _ (fe : FunExt) (wo : is-well-order) where
+  private
+    X-is-set : is-set X
+    X-is-set = well-ordered-types-are-sets fe wo
+
+  ≦-is-prop : (x y : X) → is-prop (x ≦ y)
+  ≦-is-prop x y = sum-of-contradictory-props (prop-valuedness wo x y)
+    X-is-set
+    λ x-lt-y x-equals-y → irreflexive y (well-foundedness wo y)
+      (transport (_< y) (x-equals-y ⁻¹) x-lt-y)
+
+  ≧-is-prop : (x y : X) → is-prop (x ≧ y)
+  ≧-is-prop x y = sum-of-contradictory-props
+    (well-ordered-types-are-sets fe wo)
+    (prop-valuedness wo y x)
+    λ x-equals-y x-gt-y → irreflexive x (well-foundedness wo x)
+      (transport (_< x) (x-equals-y ⁻¹) x-gt-y)
+
+  in-trichotomy-is-prop : (x y : X) → is-prop (in-trichotomy x y)
+  in-trichotomy-is-prop x y =
+    sum-of-contradictory-props (prop-valuedness wo x y) (≧-is-prop x y)
+      λ x-lt-y  x-geq-y → irreflexive x (well-foundedness wo x)
+        (≧->-transitive wo x-geq-y x-lt-y)
+
+  being-trichotomous-element-is-prop : (x : X) → is-prop (is-trichotomous-element x)
+  being-trichotomous-element-is-prop x =
+    Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥))
+     (λ y → in-trichotomy-is-prop x y)
+
+  trichotomy-is-prop : is-prop (is-trichotomous-order)
+  trichotomy-is-prop = Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥))
+                         being-trichotomous-element-is-prop
 
 \end{code}
 
@@ -583,12 +571,15 @@ i >= u, and so v > i >= u, and so u and v are again in trichotomy.
 
 \begin{code}
 module _
-        (fe : Fun-Ext)
+        (f-e : Fun-Ext)
         (em : Excluded-Middle)
        where
  private
    pt : propositional-truncations-exist
-   pt = (fem-proptrunc (λ 𝓤 𝓥 → fe {𝓤} {𝓥}) em)
+   pt = (fem-proptrunc (λ 𝓤 𝓥 → f-e {𝓤} {𝓥}) em)
+
+   fe : FunExt
+   fe 𝓤 𝓥 = f-e
 
    open import UF-PropTrunc
    open PropositionalTruncation pt
@@ -603,9 +594,6 @@ module _
        (λ ((i , i-lt-u) , i-not-lt-v) → ∣ i , i-lt-u , i-not-lt-v ∣) witness)))
      λ prf → inr (λ i i-lt-u → prf (i , i-lt-u))
 
-   set : is-well-order → is-set X
-   set wo = well-ordered-types-are-sets (λ 𝓤₃ 𝓥₁ → fe) wo
-
  trichotomy' : is-well-order → is-trichotomous-order
  trichotomy' wo@(p , w , e , t) = transfinite-induction w is-trichotomous-element ϕ
   where
@@ -614,7 +602,7 @@ module _
      transfinite-induction w (in-trichotomy u) λ v innerIH →
        -- use LEM to get either (∃i<v . i≯u) ∨ (v ≼ u)
        Cases (lem-consequence wo v u)
-         (∥∥-induction (λ s → in-trichotomy-is-prop (set wo) wo u v)
+         (∥∥-induction (λ s → in-trichotomy-is-prop fe wo u v)
            λ (i , i-lt-v , i-not-lt-u) → inl -- show u < v
            let u-leq-i = in-trichotomy-not->-implies-≦ ((innerIH i i-lt-v)) i-not-lt-u in
            >-≧-transitive wo i-lt-v (≦-implies-≧ u-leq-i))
@@ -622,7 +610,7 @@ module _
     where
      lemma : (x : X) → (x ≼ u) → x ≦ u
      lemma x x-below-u = Cases (lem-consequence wo u x)
-       (∥∥-induction (λ s → ≦-is-prop (set wo) wo x u)
+       (∥∥-induction (λ s → ≦-is-prop fe wo x u)
          λ (i , i-lt-u , i-not-lt-x) → inl -- show x < u
            let i-in-trichotomy-x = ih i i-lt-u x in
            (>-≧-transitive wo
