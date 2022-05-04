@@ -14,11 +14,14 @@ open import SpartanMLTT
 open import OrdinalNotions
 open import OrdinalsType
 open import OrdinalOfOrdinals ua
+open import OrdinalOfOrdinalsSuprema ua
 open import CanonicalMapNotation
 
 open import UF-FunExt
 open import UF-UA-FunExt
 open import UF-ExcludedMiddle
+open import UF-Size
+open import UF-PropTrunc
 
 private
  fe : FunExt
@@ -26,6 +29,8 @@ private
 
  fe' : Fun-Ext
  fe' {𝓤} {𝓥} = fe 𝓤 𝓥
+
+open import OrdinalArithmetic fe
 
 order-preserving-gives-not-⊲ : (α β : Ordinal 𝓤)
                              → (Σ f ꞉ (⟨ α ⟩ → ⟨ β ⟩) , is-order-preserving α β f)
@@ -68,6 +73,66 @@ order-preserving-gives-≼ em α β σ = δ
   δ : α ≼ β
   δ = γ (≼-or-> _⊲_ fe' em ⊲-is-well-order α β)
 
+
+module _ {𝓤 : Universe}
+         (em : Excluded-Middle)
+         (sr : Set-Replacement (fe-and-em-give-propositional-truncations fe em))
+       where
+
+ open sums-assuming-EM (em {𝓤})
+ open suprema (fe-and-em-give-propositional-truncations fe em) sr
+
+ sup-bounded-by-sum : (α : Ordinal 𝓤) (β : ⟨ α ⟩ → Ordinal 𝓤)
+                    → sup β ⊴ ∑ α β
+ sup-bounded-by-sum α β = sup-is-lower-bound-of-upper-bounds β (∑ α β) l
+  where
+   l : (x : ⟨ α ⟩) → β x ⊴ ∑ α β
+   l x = ≼-gives-⊴ (β x) (∑ α β) m
+    where
+     f : ⟨ β x ⟩ → ⟨ ∑ α β ⟩
+     f y = x , y
+     fop : is-order-preserving (β x) (∑ α β) f
+     fop y z l = inr (refl , l)
+     m : β x ≼ ∑ α β
+     m = order-preserving-gives-≼ em (β x) (∑ α β) (f , fop)
+
+ open import OrdinalsToppedType fe
+ open import OrdinalToppedArithmetic fe renaming (∑ to ∑ᵀ)
+
+ sup-bounded-by-sumᵀ : (τ : Ordinalᵀ 𝓤) (υ : ⟪ τ ⟫ → Ordinalᵀ 𝓤)
+                     → sup (λ x → [ υ x ]) ⊴ [ ∑ᵀ τ υ ]
+ sup-bounded-by-sumᵀ τ υ = sup-bounded-by-sum [ τ ] (λ x → [ υ x ])
 \end{code}
 
-To be continued. The main thing we wanted to add here is not yet written down.
+TODO. It remains to complete the following.
+
+To get closure under sums constructively, we need to restrict to
+particular kinds of ordinals. Having a top element is a simple
+sufficient condition, which holds in the applications we have in mind
+(for compact ordinals).
+
+We will reduce the following the function ⊴-add-taboo in the module
+OrdinalArithmetic-Propertoes.
+
+\begin{code}
+
+{-
+module _ {𝓤 : Universe}
+         (pt : propositional-truncations-exist)
+         (sr : Set-Replacement pt)
+       where
+
+ open import OrdinalsToppedType fe
+ open import OrdinalToppedArithmetic fe
+ open suprema pt sr
+
+
+ sup-bounded-by-sum-gives-EM : ((α : Ordinalᵀ 𝓤) (β : ⟪ α ⟫ → Ordinalᵀ 𝓤)
+                                   → sup (λ x → [ β x ]) ⊴ [ ∑ α β ])
+                             → EM 𝓤
+ sup-bounded-by-sum-gives-EM ϕ P P-is-prop = {!!}
+-}
+
+\end{code}
+
+TBC.

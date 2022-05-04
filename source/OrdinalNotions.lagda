@@ -303,9 +303,32 @@ the time of writing, namely 11th January 2021).
 is-trichotomous-element : X → 𝓤 ⊔ 𝓥 ̇
 is-trichotomous-element x = (y : X) → (x < y) + (x ≡ y) + (y < x)
 
+open import UF-Subsingletons
+
+being-trichotomous-element-is-prop : FunExt
+                                   → is-well-order
+                                   → (x : X) → is-prop (is-trichotomous-element x)
+being-trichotomous-element-is-prop fe wo@(p , w , e , t) x =
+  Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥))
+   (λ y → sum-of-contradictory-props
+           (p x y)
+           (sum-of-contradictory-props
+              (extensionally-ordered-types-are-sets fe p e)
+              (p y x)
+              (λ {refl l
+                    → irreflexive x (w x) l}))
+           (λ l → cases
+                   (λ {refl → irreflexive x (w x) l})
+                   (λ m → irreflexive x (w x) (t x y x l m))))
+
 is-trichotomous-order : 𝓤 ⊔ 𝓥 ̇
 is-trichotomous-order = (x : X) → is-trichotomous-element x
 
+trichotomy-is-prop : FunExt
+                   → is-well-order
+                   → is-prop (is-trichotomous-order)
+trichotomy-is-prop fe wo = Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥))
+                            (being-trichotomous-element-is-prop fe wo)
 \end{code}
 
 Not all ordinals are trichotomous, in the absence of excluded middle
@@ -554,6 +577,9 @@ tricho-gives-contrans tra tri x y z l = γ (tri z y)
   γ (inr (inl refl)) = inl l
   γ (inr (inr m))    = inl (tra x y z l m)
 
+em-gives-cotrans : FunExt → EM (𝓤 ⊔ 𝓥) → is-well-order → cotransitive
+em-gives-cotrans fe em wo@(p , w , e , t) = tricho-gives-contrans t
+                                              (trichotomy (fe (𝓤 ⊔ 𝓥) 𝓤₀) em wo)
 \end{code}
 
 This is the end of the submodule with the assumption of excluded

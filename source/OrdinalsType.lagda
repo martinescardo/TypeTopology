@@ -56,6 +56,9 @@ structure (X , s) = s
 underlying-order : (α : Ordinal 𝓤) → ⟨ α ⟩ → ⟨ α ⟩ → 𝓤 ̇
 underlying-order (X , _<_ , o) = _<_
 
+is-trichotomous : Ordinal 𝓤 → 𝓤 ̇
+is-trichotomous α = is-trichotomous-order (underlying-order α)
+
 underlying-weak-order : (α : Ordinal 𝓤) → ⟨ α ⟩ → ⟨ α ⟩ → 𝓤 ̇
 underlying-weak-order α x y = ¬ (underlying-order α y x)
 
