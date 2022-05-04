@@ -120,6 +120,15 @@ module _ (pt : propositional-truncations-exist) where
  double-negation-is-truncation-gives-DNE : ((X : 𝓤 ̇ ) → ¬¬ X → ∥ X ∥) → DNE 𝓤
  double-negation-is-truncation-gives-DNE {𝓤} f P isp u = ∥∥-rec isp id (f P u)
 
+ ∃¬-gives-∀ : EM (𝓤 ⊔ 𝓥)
+         → {X : 𝓤 ̇ }
+         → (A : X → 𝓥 ̇ )
+         → ((x : X) → is-prop (A x))
+         → (∃ x ꞉ X , ¬ (A x)) + (Π A)
+ ∃¬-gives-∀ {𝓤} {𝓥} em {X} A is-prop-valued = Cases (em (∃ x ꞉ X , ¬ (A x)) ∥∥-is-prop)
+   inl
+   λ notExists → inr (λ x → EM-gives-DNE (lower-EM (𝓤 ⊔ 𝓥) em) (A x) (is-prop-valued x)
+     λ notAx → notExists ∣ (x , notAx) ∣)
 \end{code}
 
 Added by Tom de Jong in August 2021.
