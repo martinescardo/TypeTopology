@@ -1020,7 +1020,7 @@ also is not a successor ordinal unless LPO holds:
 Therefore, constructively, it is not necessarily the case that every
 ordinal is either a successor or a limit.
 
-Added 4th March 2022.
+Added 4th May 2022.
 
 \begin{code}
 
