@@ -547,7 +547,7 @@ i < u for which ¬ (i < v).
 Like the HoTT proof, we nest two inductions, the outer one that every
 element is trichotomous, and the inner one that the currently
 considered outer element u is in trichotomy with the currently
-consider inner element v.
+considered inner element v.
 
 The crucial observation (`lemma`) is that, under the outer induction
 hypothesis for u, the relations (_≼ u) and (_≦ u) coincide. We prove
