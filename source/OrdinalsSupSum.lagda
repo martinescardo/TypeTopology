@@ -1,8 +1,19 @@
-Martin Escardo, 2nd May 2022
+Martin Escardo, 2-4 May 2022
+
+Roughly, we show that, for any family β of ordinals indexed by ordinals
+
+    EM → sup β ⊴ ∑ β → WEM
+
+where EM is the principle of excluded middle and WEM is the weak
+principle of excluded middle (excluded middle for negated
+propositions).
+
+The problem is that the sum doesn't always exist constructively. So we
+need a more precise formulation of the above.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline --experimental-lossy-unification #-}
 
 open import UF-Univalence
 
@@ -22,6 +33,7 @@ open import UF-UA-FunExt
 open import UF-ExcludedMiddle
 open import UF-Size
 open import UF-PropTrunc
+open import UF-Subsingletons
 
 private
  fe : FunExt
@@ -29,6 +41,8 @@ private
 
  fe' : Fun-Ext
  fe' {𝓤} {𝓥} = fe 𝓤 𝓥
+ pe : PropExt
+ pe = Univalence-gives-PropExt ua
 
 open import OrdinalArithmetic fe
 
@@ -104,19 +118,13 @@ module _ {𝓤 : Universe}
  sup-bounded-by-sumᵀ τ υ = sup-bounded-by-sum [ τ ] (λ x → [ υ x ])
 \end{code}
 
-TODO. It remains to complete the following.
-
 To get closure under sums constructively, we need to restrict to
 particular kinds of ordinals. Having a top element is a simple
 sufficient condition, which holds in the applications we have in mind
 (for compact ordinals).
 
-We will reduce the following the function ⊴-add-taboo in the module
-OrdinalArithmetic-Propertoes.
-
 \begin{code}
 
-{-
 module _ {𝓤 : Universe}
          (pt : propositional-truncations-exist)
          (sr : Set-Replacement pt)
@@ -126,13 +134,36 @@ module _ {𝓤 : Universe}
  open import OrdinalToppedArithmetic fe
  open suprema pt sr
 
+ sup-bounded-by-sum-gives-EM : ({𝓤 : Universe} (τ : Ordinalᵀ 𝓤) (υ : ⟪ τ ⟫ → Ordinalᵀ 𝓤)
+                                   → sup (λ x → [ υ x ]) ⊴ [ ∑ τ υ ])
+                             → {𝓤 : Universe} → WEM 𝓤
+ sup-bounded-by-sum-gives-EM ϕ {𝓤} = γ
+  where
+   open import OrdinalOfTruthValues fe 𝓤 (pe 𝓤)
+   open Omega (pe 𝓤)
+   open import OrdinalArithmetic-Properties ua
 
- sup-bounded-by-sum-gives-EM : ((α : Ordinalᵀ 𝓤) (β : ⟪ α ⟫ → Ordinalᵀ 𝓤)
-                                   → sup (λ x → [ β x ]) ⊴ [ ∑ α β ])
-                             → EM 𝓤
- sup-bounded-by-sum-gives-EM ϕ P P-is-prop = {!!}
--}
+   τ = 𝟚ᵒ
+
+   υ : ⟪ 𝟚ᵒ ⟫ →  Ordinalᵀ (𝓤 ⁺)
+   υ = cases (λ ⋆ → 𝟙ᵒ) (λ ⋆ → Ωᵒ)
+
+   l : sup (λ x → [ υ x ]) ⊴ [ ∑ τ υ ]
+   l = ϕ τ υ
+
+   m : Ωₒ ⊴ sup (λ x → [ υ x ])
+   m = sup-is-upper-bound (λ x → [ υ x ]) (inr ⋆)
+
+   o : Ωₒ ⊴ [ ∑ τ υ ]
+   o = ⊴-trans _ _ _ m l
+
+   p : [ ∑ τ υ ] ≡ (𝟙ₒ +ₒ Ωₒ)
+   p = eqtoidₒ _ _ (alternative-plus 𝟙ᵒ Ωᵒ)
+
+   q : Ωₒ ⊴ (𝟙ₒ +ₒ Ωₒ)
+   q = transport (Ωₒ ⊴_) p o
+
+   γ : WEM 𝓤
+   γ = ⊴-add-taboo q
 
 \end{code}
-
-TBC.

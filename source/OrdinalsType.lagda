@@ -293,6 +293,9 @@ inverses-of-order-equivs-are-order-equivs α β {f} (p , e , q) =
 ≃ₒ-to-fun⁻¹-is-equiv α β e = inverses-are-equivs (≃ₒ-to-fun α β e)
                                 (≃ₒ-to-fun-is-equiv α β e)
 
+is-least : (α : Ordinal 𝓤) → ⟨ α ⟩ → 𝓤 ̇
+is-least α x = (y : ⟨ α ⟩) → x ≼⟨ α ⟩ y
+
 is-largest : (α : Ordinal 𝓤) → ⟨ α ⟩ → 𝓤 ̇
 is-largest α x = (y : ⟨ α ⟩) → y ≼⟨ α ⟩ x
 
