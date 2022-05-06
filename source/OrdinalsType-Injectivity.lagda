@@ -106,3 +106,9 @@ TODO. The type of compact∙ ordinals is injective. The type of ordinals
 that have infs of complemented subsets is injective. These two results
 are already proved in other modules, but these results are not
 explicitly stated. We should refactor that code.
+
+Added 6th May 2022.
+
+\begin{code}
+
+\end{code}

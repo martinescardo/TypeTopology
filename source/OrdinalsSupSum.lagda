@@ -1,6 +1,6 @@
 Martin Escardo, 2-4 May 2022
 
-Roughly, we show that, for any family β of ordinals indexed by ordinals
+Roughly, we show that, for any family β of ordinals indexed by ordinals,
 
     EM → sup β ⊴ ∑ β → WEM
 
@@ -155,7 +155,7 @@ module _ {𝓤 : Universe}
    o = ⊴-trans Ωₒ (sup (λ x → [ υ x ])) [ ∑ τ υ ] m l
 
    p : [ ∑ τ υ ] ≡ (𝟙ₒ +ₒ Ωₒ)
-   p = eqtoidₒ _ _ (alternative-plus 𝟙ᵒ Ωᵒ)
+   p = alternative-plus 𝟙ᵒ Ωᵒ
 
    q : Ωₒ ⊴ (𝟙ₒ +ₒ Ωₒ)
    q = transport (Ωₒ ⊴_) p o

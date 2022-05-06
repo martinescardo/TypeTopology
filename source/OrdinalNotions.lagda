@@ -311,8 +311,6 @@ in-trichotomy x y = (x < y) + (x ≡ y) + (y < x)
 is-trichotomous-element : X → 𝓤 ⊔ 𝓥 ̇
 is-trichotomous-element x = (y : X) → in-trichotomy x y
 
-open import UF-Subsingletons
-
 is-trichotomous-order : 𝓤 ⊔ 𝓥 ̇
 is-trichotomous-order = (x : X) → is-trichotomous-element x
 

@@ -1027,9 +1027,9 @@ Added 4th May 2022.
 open import OrdinalsToppedType fe
 open import OrdinalToppedArithmetic fe
 
-alternative-plus : (τ₀ τ₁ : Ordinalᵀ 𝓤)
-                 → [ ∑ 𝟚ᵒ (cases (λ ⋆ → τ₀) (λ ⋆ → τ₁)) ] ≃ₒ ([ τ₀ ] +ₒ [ τ₁ ])
-alternative-plus τ₀ τ₁ = e
+alternative-plusₒ : (τ₀ τ₁ : Ordinalᵀ 𝓤)
+                 → [ τ₀ +ᵒ τ₁ ] ≃ₒ ([ τ₀ ] +ₒ [ τ₁ ])
+alternative-plusₒ τ₀ τ₁ = e
  where
   υ = cases (λ ⋆ → τ₀) (λ ⋆ → τ₁)
 
@@ -1066,5 +1066,9 @@ alternative-plus τ₀ τ₁ = e
 
   e : [ ∑ 𝟚ᵒ υ ] ≃ₒ ([ τ₀ ] +ₒ [ τ₁ ])
   e = f , f-is-op , f-is-equiv , g-is-op
+
+alternative-plus : (τ₀ τ₁ : Ordinalᵀ 𝓤)
+                 → [ τ₀ +ᵒ τ₁ ] ≡ ([ τ₀ ] +ₒ [ τ₁ ])
+alternative-plus τ₀ τ₁ = eqtoidₒ _ _ (alternative-plusₒ τ₀ τ₁)
 
 \end{code}
