@@ -53,8 +53,10 @@ module HeytingImplicationConstruction (X : Locale 𝓤  𝓥  𝓥)
 
 \begin{code}
 
- L  = 𝒪 X
- Lₚ = poset-of (𝒪 X)
+ private
+  _≤_ = λ U V → U ≤[ poset-of (𝒪 X) ] V
+  L   = 𝒪 X
+  Lₚ  = poset-of (𝒪 X)
 
  open GaloisConnectionBetween
  open AdjointFunctorTheorem X X 𝒷
@@ -95,5 +97,28 @@ module HeytingImplicationConstruction (X : Locale 𝓤  𝓥  𝓥)
          (U ==> V) ∧[ L ] U    ≡⟨ ∧[ L ]-is-commutative (U ==> V) U ⟩ₚ
          U ∧[ L ] (U ==> V)    ≤⟨ †                                 ⟩
          V                     ■
+
+ heyting-implication₁ : (U V W : ⟨ 𝒪 X ⟩)
+                      → ((W ∧[ 𝒪 X ] U) ≤ V ⇒ W ≤ (U ==> V))
+                         holds
+ heyting-implication₁ U V W = pr₁ (==>-is-heyting-implication U V W)
+
+ heyting-implication₂ : (U V W : ⟨ 𝒪 X ⟩)
+                      → (W ≤ (U ==> V) ⇒ ((W ∧[ 𝒪 X ] U) ≤ V)) holds
+ heyting-implication₂ U V W = pr₂ (==>-is-heyting-implication U V W)
+
+ currying : (U V W : ⟨ 𝒪 X ⟩)
+          → (((U ∧[ 𝒪 X ] V) ==> W) ≤ (U ==> (V ==> W))) holds
+ currying U V W = heyting-implication₁ U (V ==> W) _ (heyting-implication₁ V W _ γ)
+  where
+   open PosetReasoning (poset-of (𝒪 X))
+
+   i   = ∧[ 𝒪 X ]-is-associative ((U ∧[ 𝒪 X ] V) ==> W) U V ⁻¹
+   ii  = modus-ponens X (==>-is-heyting-implication (U ∧[ 𝒪 X ] V) W)
+
+   γ : ((((U ∧[ 𝒪 X ] V) ==> W) ∧[ 𝒪 X ] U ∧[ 𝒪 X ] V) ≤ W) holds
+   γ = ((U ∧[ 𝒪 X ] V) ==> W) ∧[ 𝒪 X ] U ∧[ 𝒪 X ] V    ≡⟨ i  ⟩ₚ
+       ((U ∧[ 𝒪 X ] V) ==> W) ∧[ 𝒪 X ] (U ∧[ 𝒪 X ] V)  ≤⟨ ii ⟩
+       W                                               ■
 
 \end{code}
