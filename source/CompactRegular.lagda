@@ -977,3 +977,24 @@ compact-meet-lemma F U V K κ p = K , K , κ , κ , γ , p₁ , p₂
    p₂ = K ≤⟨ p ⟩ U ∧[ F ] V ≤⟨ ∧[ F ]-lower₂ U V ⟩ V ■
 
 \end{code}
+
+## Characterisation of continuity
+
+\begin{code}
+
+continuity-condition : (L : Frame 𝓤 𝓥 𝓦) (M : Frame 𝓤' 𝓥' 𝓦)
+                     → (⟨ L ⟩ → ⟨ M ⟩) → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺ ⊔ 𝓤' ⊔ 𝓥')
+continuity-condition L M h =
+ Ɐ b ∶ ⟨ M ⟩ , Ɐ x ∶ ⟨ L ⟩ , is-compact-open M b ⇒
+  b ≤[ poset-of M ] h x ⇒
+   (Ǝ a ∶ ⟨ L ⟩ , ((is-compact-open L a ∧ a ≤[ poset-of L ] x ∧ b ≤[ poset-of M ] h a) holds))
+
+characterisation-of-continuity : (L : Frame 𝓤 𝓥 𝓦)
+                               → is-spectral L holds
+                               → (h : ⟨ L ⟩ → ⟨ L ⟩)
+                               → is-monotonic (poset-of L) (poset-of L) h holds
+                               → continuity-condition L L h holds
+                               → is-scott-continuous L L h holds
+characterisation-of-continuity = {!!}
+
+\end{code}
