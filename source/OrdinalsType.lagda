@@ -56,6 +56,9 @@ structure (X , s) = s
 underlying-order : (α : Ordinal 𝓤) → ⟨ α ⟩ → ⟨ α ⟩ → 𝓤 ̇
 underlying-order (X , _<_ , o) = _<_
 
+is-trichotomous : Ordinal 𝓤 → 𝓤 ̇
+is-trichotomous α = is-trichotomous-order (underlying-order α)
+
 underlying-weak-order : (α : Ordinal 𝓤) → ⟨ α ⟩ → ⟨ α ⟩ → 𝓤 ̇
 underlying-weak-order α x y = ¬ (underlying-order α y x)
 
@@ -289,6 +292,9 @@ inverses-of-order-equivs-are-order-equivs α β {f} (p , e , q) =
                      → is-equiv (≃ₒ-to-fun⁻¹ α β e)
 ≃ₒ-to-fun⁻¹-is-equiv α β e = inverses-are-equivs (≃ₒ-to-fun α β e)
                                 (≃ₒ-to-fun-is-equiv α β e)
+
+is-least : (α : Ordinal 𝓤) → ⟨ α ⟩ → 𝓤 ̇
+is-least α x = (y : ⟨ α ⟩) → x ≼⟨ α ⟩ y
 
 is-largest : (α : Ordinal 𝓤) → ⟨ α ⟩ → 𝓤 ̇
 is-largest α x = (y : ⟨ α ⟩) → y ≼⟨ α ⟩ x

@@ -66,11 +66,11 @@ map-decidable' : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → (A → ¬ B) → (¬ A → B)
 map-decidable' f g (inl x) = inr (f x)
 map-decidable' f g (inr h) = inl (g h)
 
-double-negation-intro : {A : 𝓤 ̇ } → A → ¬¬ A
-double-negation-intro x u = u x
+¬¬-intro : {A : 𝓤 ̇ } → A → ¬¬ A
+¬¬-intro x u = u x
 
 three-negations-imply-one : {A : 𝓤 ̇ } → ¬¬¬ A → ¬ A
-three-negations-imply-one = contrapositive double-negation-intro
+three-negations-imply-one = contrapositive ¬¬-intro
 
 dne' : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → (A → B) → (¬¬ B → B) → ¬¬ A → B
 dne' f h ϕ = h (λ g → ϕ (λ a → g (f a)))

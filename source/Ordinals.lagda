@@ -27,9 +27,9 @@ import OrdinalsShulmanTaboo
 import OrdinalsType
 import OrdinalsWellOrderArithmetic
 import OrdinalsWellOrderTransport
+import OrdinalToppedArithmetic
+import OrdinalsToppedType
 import SquashedCantor
 import SquashedSum
-import ToppedOrdinalArithmetic
-import ToppedOrdinalsType
 
 \end{code}

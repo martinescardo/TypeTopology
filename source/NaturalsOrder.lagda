@@ -143,7 +143,7 @@ not-less-than-itself (succ n) l = not-less-than-itself n l
 
 not-less-bigger-or-equal : (m n : ℕ) → ¬ (n < m) → n ≥ m
 not-less-bigger-or-equal zero n u = zero-least n
-not-less-bigger-or-equal (succ m) zero = double-negation-intro (zero-least m)
+not-less-bigger-or-equal (succ m) zero = ¬¬-intro (zero-least m)
 not-less-bigger-or-equal (succ m) (succ n) = not-less-bigger-or-equal m n
 
 bigger-or-equal-not-less : (m n : ℕ) → n ≥ m → ¬ (n < m)

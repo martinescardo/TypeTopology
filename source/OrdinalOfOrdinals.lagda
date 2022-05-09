@@ -13,7 +13,7 @@ univalence axiom is needed.
 open import UF-Univalence
 
 module OrdinalOfOrdinals
-       (ua : Univalence)
+        (ua : Univalence)
        where
 
 open import SpartanMLTT
@@ -455,6 +455,10 @@ segment-inclusion : (α : Ordinal 𝓤) (a : ⟨ α ⟩)
                   → ⟨ α ↓ a ⟩ → ⟨ α ⟩
 segment-inclusion α a = pr₁
 
+segment-inclusion-bound : (α : Ordinal 𝓤) (a : ⟨ α ⟩)
+                        → (x : ⟨ α ↓ a ⟩) → segment-inclusion α a x ≺⟨ α ⟩ a
+segment-inclusion-bound α a = pr₂
+
 segment-inclusion-is-simulation : (α : Ordinal 𝓤) (a : ⟨ α ⟩)
                                 → is-simulation (α ↓ a) α (segment-inclusion α a)
 segment-inclusion-is-simulation α a = i , p
@@ -486,7 +490,7 @@ segment-⊴ α a = segment-inclusion α a , segment-inclusion-is-simulation α a
   v = segment-inclusion α b (f (u , l))
 
   m : v ≺⟨ α ⟩ b
-  m = pr₂ (f (u , l))
+  m = segment-inclusion-bound α b (f (u , l))
 
   q : u ≡ v
   q = h (u , l)
@@ -513,7 +517,6 @@ _⊲_ : Ordinal 𝓤 → Ordinal 𝓤 → 𝓤 ⁺ ̇
 ⊲-is-prop-valued : (α β : Ordinal 𝓤) → is-prop (α ⊲ β)
 ⊲-is-prop-valued {𝓤} α β (b , p) (b' , p') = γ
  where
-  q : (β ↓ b) ≡ (β ↓ b')
   q = (β ↓ b)  ≡⟨ p ⁻¹ ⟩
        α       ≡⟨ p' ⟩
       (β ↓ b') ∎
@@ -1221,14 +1224,11 @@ NB-minimal α a = f , g
 
 \end{code}
 
-Added 29th March.
+Added 29th March 2022.
 
-Simulations preserve minimal elements.
+Simulations preserve least elements.
 
 \begin{code}
-
-is-least : (α : Ordinal 𝓤) → ⟨ α ⟩ → 𝓤 ̇
-is-least α x = (y : ⟨ α ⟩) → x ≼⟨ α ⟩ y
 
 initial-segments-preserve-least : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
                                   (x : ⟨ α ⟩) (y : ⟨ β ⟩)
@@ -1270,10 +1270,59 @@ simulations-preserve-least : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
                            → is-least α x
                            → is-least β y
                            → f x ≡ y
-simulations-preserve-least α β x y f (i , _) =
- initial-segments-preserve-least α β x y f i
+simulations-preserve-least α β x y f (i , _) = initial-segments-preserve-least α β x y f i
 
 \end{code}
+
+Added 2nd May 2022 by Martin Escardo.
+
+\begin{code}
+
+order-preserving-gives-not-⊲ : (α β : Ordinal 𝓤)
+                             → (Σ f ꞉ (⟨ α ⟩ → ⟨ β ⟩) , is-order-preserving α β f)
+                             → ¬ (β ⊲ α)
+order-preserving-gives-not-⊲ {𝓤} α β σ (x₀ , refl) = γ σ
+ where
+  γ : ¬ (Σ f ꞉ (⟨ α ⟩ → ⟨ α ↓ x₀ ⟩) , is-order-preserving α (α ↓ x₀) f)
+  γ (f , fop) = κ
+   where
+    g : ⟨ α ⟩ → ⟨ α ⟩
+    g x = pr₁ (f x)
+
+    h : (x : ⟨ α ⟩) → g x ≺⟨ α ⟩ x₀
+    h x = pr₂ (f x)
+
+    δ : (n : ℕ) → (g ^ succ n) x₀ ≺⟨ α ⟩ (g ^ n) x₀
+    δ 0        = h x₀
+    δ (succ n) = fop _ _ (δ n)
+
+    A : ⟨ α ⟩ → 𝓤 ̇
+    A x = Σ n ꞉ ℕ , (g ^ n) x₀ ≡ x
+
+    d : (x : ⟨ α ⟩) → A x → Σ y ꞉ ⟨ α ⟩ , (y ≺⟨ α ⟩ x) × A y
+    d x (n , refl) = g x , δ n , succ n , refl
+
+    κ : 𝟘
+    κ = no-minimal-is-empty' (underlying-order α) (Well-foundedness α)
+         A d (x₀ , 0 , refl)
+
+open import UF-ExcludedMiddle
+
+order-preserving-gives-≼ : EM (𝓤 ⁺)
+                         → (α β : Ordinal 𝓤)
+                         → (Σ f ꞉ (⟨ α ⟩ → ⟨ β ⟩) , is-order-preserving α β f)
+                         → α ≼ β
+order-preserving-gives-≼ em α β σ = δ
+ where
+  γ : (α ≼ β) + (β ⊲ α) → α ≼ β
+  γ (inl l) = l
+  γ (inr m) = 𝟘-elim (order-preserving-gives-not-⊲ α β σ m)
+
+  δ : α ≼ β
+  δ = γ (≼-or-> _⊲_ fe' em ⊲-is-well-order α β)
+
+\end{code}
+
 
 Added in March 2022 by Tom de Jong:
 
@@ -1294,6 +1343,7 @@ original one.
 \begin{code}
 
 open import UF-PropTrunc
+
 module _ (pt : propositional-truncations-exist) where
 
  open PropositionalTruncation pt
@@ -1369,5 +1419,4 @@ module _ (pt : propositional-truncations-exist) where
        ⦅1⦆ x' = ×-is-prop (Prop-valuedness α x' x) (underlying-type-is-set fe β)
        ⦅2⦆ : z ≡ z'
        ⦅2⦆ = simulations-are-lc' α β f (i , p) (e ∙ e' ⁻¹)
-
 \end{code}

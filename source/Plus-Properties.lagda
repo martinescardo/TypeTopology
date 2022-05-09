@@ -27,7 +27,6 @@ open import Unit-Properties
   q : 𝟙 ≡ 𝟘
   q = ap f p
 
-
 +disjoint' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {x : X} {y : Y} → ¬ (inr y ≡ inl x)
 +disjoint' p = +disjoint (p ⁻¹)
 

@@ -1,7 +1,6 @@
 Martin Escardo, 29 June 2018
 
-The type Ordinals of ordinals in a universe U, and the subtype Ordinalsᵀ of
-ordinals with a top element.
+The subtype Ordinalsᵀ of ordinals with a top element.
 
 \begin{code}
 
@@ -9,8 +8,8 @@ ordinals with a top element.
 
 open import UF-FunExt
 
-module ToppedOrdinalsType
-       (fe : FunExt)
+module OrdinalsToppedType
+        (fe : FunExt)
        where
 
 open import SpartanMLTT

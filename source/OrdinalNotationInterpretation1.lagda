@@ -121,9 +121,9 @@ the theorems and constructions to be performed here:
 \begin{code}
 
 open import OrdinalsType
-open import ToppedOrdinalsType fe
+open import OrdinalsToppedType fe
 open import OrdinalArithmetic fe
-open import ToppedOrdinalArithmetic fe
+open import OrdinalToppedArithmetic fe
 open import OrdinalsClosure fe
 open import OrdinalCodes
 open import CompactTypes
