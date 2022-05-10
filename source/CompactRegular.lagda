@@ -826,11 +826,28 @@ basisₛ F (ℬ , _) = ℬ
 is-spectral : Frame 𝓤 𝓥 𝓦 → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
 is-spectral F = ∥ spectralᴰ F ∥Ω
 
-spectral-frames-have-bases : (F : Frame 𝓤 𝓥 𝓦) → (is-spectral F ⇒ has-basis F) holds
+spectral-frames-have-bases : (F : Frame 𝓤 𝓥 𝓦)
+                           → (is-spectral F ⇒ has-basis F) holds
 spectral-frames-have-bases F σ = ∥∥-rec ∥∥-is-prop γ σ
  where
   γ : spectralᴰ F → ∥ Σ ℬ ꞉ Fam _ ⟨ F ⟩ , is-basis-for F ℬ ∥
   γ (ℬ , p) = ∣ ℬ , pr₁ p ∣
+
+directification-preserves-coherence : (F : Frame 𝓤 𝓥 𝓦)
+                                    → (ℬ : Fam 𝓦 ⟨ F ⟩)
+                                    → (σ : closed-under-finite-meets F ℬ holds)
+                                    → closed-under-finite-meets F (directify F ℬ) holds
+directification-preserves-coherence F ℬ (τ , σ) = β , γ
+ where
+  β : contains-top F (directify F ℬ) holds
+  β = ∥∥-rec (holds-is-prop (contains-top F (directify F ℬ))) † τ
+       where
+        † : Σ t ꞉ index ℬ , is-top F (ℬ [ t ]) holds
+          → contains-top F (directify F ℬ) holds
+        † (t , p) = ∣ (t ∷ []) , {!p!} ∣
+
+  γ : {!!}
+  γ = {!!}
 
 \end{code}
 
@@ -949,6 +966,31 @@ compacts-are-basic-in-spectralᴰ-frames {𝓦 = 𝓦} F σ U κ =
      β = ℬ↑ [ ℐ [ k ] ]              ≤⟨ ⋁[ F ]-upper ⁅ ℬ↑ [ i ] ∣ i ε ℐ ⁆ k ⟩
          ⋁[ F ] ⁅ ℬ↑ [ i ] ∣ i ε ℐ ⁆ ≡⟨ covers F ℬ↑ b↑ U ⁻¹                 ⟩ₚ
          U                           ■
+
+compacts-closed-under-∧-in-spectral-frames : (F : Frame 𝓤 𝓥 𝓦)
+                                           → is-spectral F holds
+                                           → (K₁ K₂ : ⟨ F ⟩)
+                                           → is-compact-open F K₁ holds
+                                           → is-compact-open F K₂ holds
+                                           → is-compact-open F (K₁ ∧[ F ] K₂) holds
+compacts-closed-under-∧-in-spectral-frames F σ K₁ K₂ κ₁ κ₂ = ∥∥-rec † γ σ
+  where
+   † : is-prop (is-compact-open F (K₁ ∧[ F ] K₂) holds)
+   † = holds-is-prop (is-compact-open F (K₁ ∧[ F ] K₂))
+
+   γ : spectralᴰ F → is-compact-open F (meet-of F K₁ K₂) holds
+   γ σᴰ@(ℬ , φ , _ , ψ) = ∥∥-rec₂ † β ι₁ ι₂
+    where
+     ι₁ : ∥ Σ i ꞉ index (directify F ℬ) , K₁ ≡ directify F ℬ [ i ] ∥
+     ι₁ = compacts-are-basic-in-spectralᴰ-frames F σᴰ K₁ κ₁
+
+     ι₂ : ∥ Σ i ꞉ index (directify F ℬ) , K₂ ≡ directify F ℬ [ i ] ∥
+     ι₂ = compacts-are-basic-in-spectralᴰ-frames F σᴰ K₂ κ₂
+
+     β : (Σ i ꞉ (index (directify F ℬ)) , K₁ ≡ directify F ℬ [ i ])
+       → (Σ i ꞉ (index (directify F ℬ)) , K₂ ≡ directify F ℬ [ i ])
+       → is-compact-open F (K₁ ∧[ F ] K₂) holds
+     β (is , p) (js , q) = {!is js!}
 
 -- TODO: it's not clear if this lemma will be needed. Think more about this and
 -- remove it if it turns out that it won't be needed.
