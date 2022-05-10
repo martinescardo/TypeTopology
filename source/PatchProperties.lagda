@@ -69,6 +69,15 @@ module OpenNucleus (X : Locale 𝓤 𝓥 𝓥) (σ : is-spectral (𝒪 X) holds)
  opn : ⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩
  opn U = U ==>_
 
+ opn-monotone : (U : ⟨ 𝒪 X ⟩)
+              → is-monotonic (poset-of (𝒪 X)) (poset-of (𝒪 X)) (opn U) holds
+ opn-monotone U (V , W) p = heyting-implication₁ U W (U ==> V) †
+  where
+   open PosetReasoning (poset-of (𝒪 X))
+
+   † : (((U ==> V) ∧[ 𝒪 X ] U) ≤[ poset-of (𝒪 X) ] W) holds
+   † = (U ==> V) ∧[ 𝒪 X ] U ≤⟨ mp-right U V ⟩ V ≤⟨ p ⟩ W ■
+
  opn-is-inflationary : (U : ⟨ 𝒪 X ⟩) → is-inflationary (𝒪 X) (opn U) holds
  opn-is-inflationary U V = heyting-implication₁ U V V (∧[ 𝒪 X ]-lower₁ V U)
 
@@ -80,8 +89,8 @@ module OpenNucleus (X : Locale 𝓤 𝓥 𝓥) (σ : is-spectral (𝒪 X) holds)
    γ : (((U ==> (U ==> V)) ∧[ 𝒪 X ] U) ≤[ poset-of (𝒪 X) ] V) holds
    γ = (U ==> (U ==> V)) ∧[ 𝒪 X ] U                ≡⟨ i    ⟩ₚ
        (U ==> (U ==> V)) ∧[ 𝒪 X ] (U ∧[ 𝒪 X ] U)   ≡⟨ ii   ⟩ₚ
-       ((U ==> (U ==> V)) ∧[ 𝒪 X ] U) ∧[ 𝒪 X ] U   ≤⟨ iii ⟩
-       (U ==> V) ∧[ 𝒪 X ] U                        ≤⟨ iv ⟩
+       ((U ==> (U ==> V)) ∧[ 𝒪 X ] U) ∧[ 𝒪 X ] U   ≤⟨ iii  ⟩
+       (U ==> V) ∧[ 𝒪 X ] U                        ≤⟨ iv   ⟩
        V                                           ■
         where
          i   = ap (λ - → (U ==> (U ==> V)) ∧[ 𝒪 X ] -) (∧[ 𝒪 X ]-is-idempotent U)
@@ -149,12 +158,19 @@ module OpenNucleus (X : Locale 𝓤 𝓥 𝓥) (σ : is-spectral (𝒪 X) holds)
              V ∧[ 𝒪 X ] W ■
 
  opn-perfect : ((K , _) : 𝒦) → is-perfect (opn K) holds
- opn-perfect (K , κ) S δ = {!!} , {!!}
-  where
-   open PosetReasoning (poset-of (𝒪 X))
+ opn-perfect (K , κ) =
+  characterisation-of-continuity (𝒪 X) (𝒪 X) σ (opn K) (opn-monotone K) γ
+   where
 
-   γ : opn K (⋁[ 𝒪 X ] S) ≡ ⋁[ 𝒪 X ] ⁅ opn K V ∣ V ε S ⁆
-   γ = {!!}
+    γ : continuity-condition (𝒪 X) (𝒪 X) (opn K) holds
+    γ K′ U κ p = ∣ (K ∧[ 𝒪 X ] K′) , κ′ , {!!} , {!!} ∣
+     where
+      δ : spectralᴰ (𝒪 X) → is-compact-open (𝒪 X) (K ∧[ 𝒪 X ] K′) holds
+      δ (ℬ , ψ) = {!!}
+
+      κ′ : is-compact-open (𝒪 X) (K ∧[ 𝒪 X ] K′) holds
+      κ′ = ∥∥-rec
+            (holds-is-prop (is-compact-open (𝒪 X) (K ∧[ 𝒪 X ] K′))) δ σ
 
  opn-is-nucleus : (U : ⟨ 𝒪 X ⟩) → is-nucleus (𝒪 X) (opn U) holds
  opn-is-nucleus U = opn-is-inflationary U
