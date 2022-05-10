@@ -990,47 +990,48 @@ continuity-condition L M h =
    (Ǝ a ∶ ⟨ L ⟩ ,
      ((is-compact-open L a ∧ a ≤[ poset-of L ] x ∧ b ≤[ poset-of M ] h a) holds))
 
-characterisation-of-continuity : (L : Frame 𝓤 𝓥 𝓦)
-                               → is-spectral L holds
-                               → (h : ⟨ L ⟩ → ⟨ L ⟩)
-                               → is-monotonic (poset-of L) (poset-of L) h holds
-                               → continuity-condition L L h holds
-                               → is-scott-continuous L L h holds
-characterisation-of-continuity L σ h μ ζ S δ = β , γ
+characterisation-of-continuity : (L : Frame 𝓤  𝓥  𝓦)
+                               → (M : Frame 𝓤' 𝓥' 𝓦)
+                               → is-spectral M holds
+                               → (h : ⟨ L ⟩ → ⟨ M ⟩)
+                               → is-monotonic (poset-of L) (poset-of M) h holds
+                               → continuity-condition L M h holds
+                               → is-scott-continuous L M h holds
+characterisation-of-continuity L M σ h μ ζ S δ = β , γ
  where
-  open PosetReasoning (poset-of L)
-  open Joins (λ x y → x ≤[ poset-of L ] y)
+  open PosetReasoning (poset-of M)
+  open Joins (λ x y → x ≤[ poset-of M ] y)
 
   β : (h (⋁[ L ] S) is-an-upper-bound-of ⁅ h s ∣ s ε S ⁆) holds
   β i = μ (S [ i ] , ⋁[ L ] S) (⋁[ L ]-upper S i)
 
   γ : (Ɐ (u , _) ∶ upper-bound ⁅ h s ∣ s ε S ⁆ ,
-        h (⋁[ L ] S) ≤[ poset-of L ] u) holds
-  γ (u , φ) = spectral-yoneda L σ (h (⋁[ L ] S)) u ε
+        h (⋁[ L ] S) ≤[ poset-of M ] u) holds
+  γ (u , φ) = spectral-yoneda M σ (h (⋁[ L ] S)) u ε
    where
-    ε : (h (⋁[ L ] S) ≤ₖ[ L ] u) holds
-    ε k κ p = ∥∥-rec (holds-is-prop (k ≤[ poset-of L ] u)) † (ζ k (⋁[ L ] S) κ p)
+    ε : (h (⋁[ L ] S) ≤ₖ[ M ] u) holds
+    ε k κ p = ∥∥-rec (holds-is-prop (k ≤[ poset-of M ] u)) † (ζ k (⋁[ L ] S) κ p)
      where
       † : (Σ a ꞉ ⟨ L ⟩  ,
              (is-compact-open L a
            ∧ (a ≤[ poset-of L ] (⋁[ L ] S))
-           ∧ (k ≤[ poset-of L ] h a)) holds)
-        → (k ≤[ poset-of L ] u) holds
+           ∧ (k ≤[ poset-of M ] h a)) holds)
+        → (k ≤[ poset-of M ] u) holds
       † (a , κₐ , q , r) =
        k                        ≤⟨ r                                    ⟩
        h a                      ≤⟨ ♠                                    ⟩
-       ⋁[ L ] ⁅ h s ∣ s ε S ⁆   ≤⟨ ⋁[ L ]-least ⁅ h s ∣ s ε S ⁆ (u , φ) ⟩
+       ⋁[ M ] ⁅ h s ∣ s ε S ⁆   ≤⟨ ⋁[ M ]-least ⁅ h s ∣ s ε S ⁆ (u , φ) ⟩
        u                        ■
         where
          ♣ : (Σ i ꞉ index S , (a ≤[ poset-of L ] (S [ i ])) holds)
-           → (h a ≤[ poset-of L ] (⋁[ L ] ⁅ h s ∣ s ε S ⁆)) holds
+           → (h a ≤[ poset-of M ] (⋁[ M ] ⁅ h s ∣ s ε S ⁆)) holds
          ♣ (i , ψ) = h a                    ≤⟨ μ (a , S [ i ]) ψ               ⟩
-                     h (S [ i ])            ≤⟨ ⋁[ L ]-upper ⁅ h s ∣ s ε S ⁆ i  ⟩
-                     ⋁[ L ] ⁅ h s ∣ s ε S ⁆ ■
+                     h (S [ i ])            ≤⟨ ⋁[ M ]-upper ⁅ h s ∣ s ε S ⁆ i  ⟩
+                     ⋁[ M ] ⁅ h s ∣ s ε S ⁆ ■
 
-         ♠ : (h a ≤[ poset-of L ] (⋁[ L ] ⁅ h s ∣ s ε S ⁆)) holds
+         ♠ : (h a ≤[ poset-of M ] (⋁[ M ] ⁅ h s ∣ s ε S ⁆)) holds
          ♠ = ∥∥-rec
-              (holds-is-prop (h a ≤[ poset-of L ] (⋁[ L ] ⁅ h s ∣ s ε S ⁆)))
+              (holds-is-prop (h a ≤[ poset-of M ] (⋁[ M ] ⁅ h s ∣ s ε S ⁆)))
               ♣
               (κₐ S δ q)
 
