@@ -4,7 +4,7 @@ Based on `ayberkt/formal-topology-in-UF`.
 
 \begin{code}[hide]
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline --experimental-lossy-unification #-}
 
 open import SpartanMLTT
 open import UF-Base
@@ -807,7 +807,7 @@ contains-top F U = Ǝ t ∶ index U , is-top F (U [ t ]) holds
 closed-under-binary-meets : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦)
 closed-under-binary-meets F 𝒮 =
  Ɐ i ∶ index 𝒮 , Ɐ j ∶ index 𝒮 ,
-  Ǝ k ∶ index 𝒮 , ((𝒮 [ k ]) is-glb-of (𝒮 [ i ] , 𝒮 [ k ])) holds
+  Ǝ k ∶ index 𝒮 , ((𝒮 [ k ]) is-glb-of (𝒮 [ i ] , 𝒮 [ j ])) holds
    where
     open Meets (λ x y → x ≤[ poset-of F ] y)
 
@@ -833,21 +833,68 @@ spectral-frames-have-bases F σ = ∥∥-rec ∥∥-is-prop γ σ
   γ : spectralᴰ F → ∥ Σ ℬ ꞉ Fam _ ⟨ F ⟩ , is-basis-for F ℬ ∥
   γ (ℬ , p) = ∣ ℬ , pr₁ p ∣
 
+finite-meet : (F : Frame 𝓤 𝓥 𝓦) → (ℬ : Fam 𝓦 ⟨ F ⟩) → List (index ℬ) → ⟨ F ⟩
+finite-meet F ℬ []       = 𝟏[ F ]
+finite-meet F ℬ (i ∷ is) = ℬ [ i ] ∧[ F ] finite-meet F ℬ is
+
+coherence-list : (F : Frame 𝓤 𝓥 𝓦)
+               → (ℬ : Fam 𝓦 ⟨ F ⟩)
+               → closed-under-finite-meets F ℬ holds
+               → (is : List (index ℬ))
+               → ∥ Σ k ꞉ index ℬ , ℬ [ k ] ≡ finite-meet F ℬ is ∥
+coherence-list F ℬ (φ , ψ) []       = ∥∥-rec ∥∥-is-prop † φ
+ where
+  † : Σ t ꞉ index ℬ , is-top F (ℬ [ t ]) holds
+    → ∥ Σ k ꞉ index ℬ , ℬ [ k ] ≡ finite-meet F ℬ [] ∥
+  † (t , τ) = ∣ t , 𝟏-is-unique F (ℬ [ t ]) τ ∣
+coherence-list F ℬ (φ , ψ) (i ∷ is) = ∥∥-rec ∥∥-is-prop † ih
+ where
+  open Meets (λ x y → x ≤[ poset-of F ] y)
+
+  † : Σ k ꞉ index ℬ , ℬ [ k ] ≡ finite-meet F ℬ is
+    → ∥ Σ k ꞉ index ℬ , ℬ [ k ] ≡ finite-meet F ℬ (i ∷ is) ∥
+  † (k , p) = ∥∥-rec ∥∥-is-prop ※ (ψ i k)
+   where
+    ※ : _
+    ※ (j , q , r) = ∣ j , ∧[ F ]-unique (β , γ) ∣
+     where
+      β : ((ℬ [ j ]) is-a-lower-bound-of (ℬ [ i ] , finite-meet F ℬ is)) holds
+      β = transport (λ - → ((ℬ [ j ]) is-a-lower-bound-of (ℬ [ i ] , -)) holds) p q
+
+      γ : (Ɐ i ∶ lower-bound (ℬ [ i ] , finite-meet F ℬ is)
+          , {!!}) holds
+      γ = {!!}
+
+  ih : ∥ Σ k ꞉ index ℬ , ℬ [ k ] ≡ finite-meet F ℬ is ∥
+  ih = coherence-list F ℬ (φ , ψ) is
+
+
 directification-preserves-coherence : (F : Frame 𝓤 𝓥 𝓦)
                                     → (ℬ : Fam 𝓦 ⟨ F ⟩)
                                     → (σ : closed-under-finite-meets F ℬ holds)
                                     → closed-under-finite-meets F (directify F ℬ) holds
 directification-preserves-coherence F ℬ (τ , σ) = β , γ
  where
+  open PosetReasoning (poset-of F)
+  open Meets (λ x y → x ≤[ poset-of F ] y) hiding (is-top)
+
   β : contains-top F (directify F ℬ) holds
   β = ∥∥-rec (holds-is-prop (contains-top F (directify F ℬ))) † τ
        where
         † : Σ t ꞉ index ℬ , is-top F (ℬ [ t ]) holds
           → contains-top F (directify F ℬ) holds
-        † (t , p) = ∣ (t ∷ []) , {!p!} ∣
+        † (t , p) = ∣ (t ∷ []) , transport (λ - → is-top F - holds) (‡ ⁻¹) p ∣
+         where
+          ‡ : directify F ℬ [ t ∷ [] ] ≡ ℬ [ t ]
+          ‡ = ℬ [ t ] ∨[ F ] 𝟎[ F ]  ≡⟨ 𝟎-left-unit-of-∨ F (ℬ [ t ]) ⟩
+              ℬ [ t ]                ∎
 
-  γ : {!!}
-  γ = {!!}
+  lemma : (is : List (index ℬ)) → directify F ℬ [ is ] ≡ finite-meet F ℬ is
+  lemma is = {!!}
+
+  γ : closed-under-binary-meets F (directify F ℬ) holds
+  γ []       js = ∣ {!!} , {!!} ∣
+  γ (x ∷ is) js = {!!}
 
 \end{code}
 
