@@ -64,13 +64,16 @@ The name "compact" is appropriate, because e.g. in the model of
 Kleene-Kreisel spaces for simple types, it does correspond to
 topological compactness, as proved in the above LMCS paper.
 
+The name "compact" is also adopted in Longley and Normann's book
+"Higher-Order Computability" (Springer 2015).
+
 We emphasize that here we don't assume continuity axioms, but all
 functions are secretly continuous, and compact sets are secretly
 topologically compact, when one reasons constructively.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 module CompactTypes where
 
@@ -102,10 +105,7 @@ on it, it decidable whether it has a root:
 Σ-compact : 𝓤 ̇ → 𝓤 ̇
 Σ-compact X = (p : X → 𝟚) → (Σ x ꞉ X , p x ≡ ₀) + (Π x ꞉ X , p x ≡ ₁)
 
-compact : 𝓤 ̇ → 𝓤 ̇
-compact = Σ-compact
-
-exhaustible = compact
+compact    = Σ-compact
 
 \end{code}
 
@@ -121,8 +121,6 @@ compactness and pointedness, and hence the notation "compact∙":
 
 compact∙ : 𝓤 ̇ → 𝓤 ̇
 compact∙ X = (p : X → 𝟚) → Σ x₀ ꞉ X , (p x₀ ≡ ₁ → (x : X) → p x ≡ ₁)
-
-searchable = compact∙
 
 \end{code}
 
@@ -201,6 +199,9 @@ checking the two possibilities, we can always take x₀ = p ₀.
 
     lemma₁ : p x₀ ≡ ₁ → p ₁ ≡ ₁
     lemma₁ r = transport (λ - → p - ≡ ₁) (lemma₀ r) r
+
+𝟚-compact : compact 𝟚
+𝟚-compact = compact∙-gives-compact 𝟚-compact∙
 
 \end{code}
 
@@ -495,7 +496,9 @@ Corollary: Binary products preserve compactness:
 binary-Tychonoff : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → compact∙ X → compact∙ Y → compact∙ (X × Y)
 binary-Tychonoff ε δ = Σ-compact∙ ε (λ i → δ)
 
-+'-compact∙ : {X₀ : 𝓤 ̇ } {X₁ : 𝓤 ̇ }
+×-compact∙ = binary-Tychonoff
+
++'-compact∙ : {X₀ X₁ : 𝓤 ̇ }
             → compact∙ X₀
             → compact∙ X₁
             → compact∙ (X₀ +' X₁)
@@ -543,6 +546,14 @@ retract-compact∙ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                  → compact∙ X
                  → compact∙ Y
 retract-compact∙ (_ , φ) = retractions-preserve-compactness φ
+
++-compact∙ : {X₀ X₁ : 𝓤 ̇ }
+            → compact∙ X₀
+            → compact∙ X₁
+            → compact∙ (X₀ + X₁)
++-compact∙ {𝓤} {X₀} {X₁} ε₀ ε₁ = retract-compact∙
+                                   (retract-of-gives-retract-Of +-retract-of-+')
+                                   (+'-compact∙ ε₀ ε₁)
 
 𝟙+𝟙-compact∙ : compact∙ (𝟙 {𝓤} + 𝟙 {𝓥})
 𝟙+𝟙-compact∙ = retract-compact∙ (f , r) 𝟚-compact∙
@@ -659,7 +670,6 @@ in the original development:
 Σ-Compact : 𝓤 ̇ → {𝓥 : Universe} → 𝓤 ⊔ (𝓥 ⁺) ̇
 Σ-Compact {𝓤} X {𝓥} = (A : X → 𝓥 ̇ ) → detachable A → decidable (Σ A)
 
-Compact : 𝓤 ̇ → {𝓥 : Universe} → 𝓤 ⊔ (𝓥 ⁺) ̇
 Compact = Σ-Compact
 
 Compactness-gives-Markov : {X : 𝓤 ̇ }
@@ -675,8 +685,8 @@ Compactness-gives-Markov {𝓤} {X} c A δ φ = γ (c A δ)
   γ (inl σ) = σ
   γ (inr u) = 𝟘-elim (φ u)
 
-compact-gives-Compact : (X : 𝓤 ̇ ) → compact X → Compact X {𝓥}
-compact-gives-Compact X c A d = iii
+compact-gives-Compact : {X : 𝓤 ̇ } → compact X → Compact X {𝓥}
+compact-gives-Compact {𝓤} {𝓥} {X} c A d = iii
  where
   i : Σ p ꞉ (X → 𝟚) , ((x : X) → (p x ≡ ₀ → A x) × (p x ≡ ₁ → ¬ (A x)))
   i = characteristic-function d
@@ -694,8 +704,8 @@ compact-gives-Compact X c A d = iii
   iii : decidable (Σ A)
   iii = ii (c p)
 
-Compact-gives-compact : (X : 𝓤 ̇ ) → Σ-Compact X → Σ-compact X
-Compact-gives-compact X C p = iv
+Compact-gives-compact : {X : 𝓤 ̇ } → Σ-Compact X → Σ-compact X
+Compact-gives-compact {𝓤} {X} C p = iv
  where
   A : X → 𝓤₀ ̇
   A x = p x ≡ ₀
@@ -713,8 +723,8 @@ Compact-gives-compact X C p = iv
   iv : (Σ x ꞉ X , p x ≡ ₀) + (Π x ꞉ X , p x ≡ ₁)
   iv = iii (i ii)
 
-Compact-resizeup : (X : 𝓤 ̇ ) → Σ-Compact X {𝓤₀} → Σ-Compact X {𝓥}
-Compact-resizeup X C = compact-gives-Compact X (Compact-gives-compact X C)
+Compact-resizeup : {X : 𝓤 ̇ } → Σ-Compact X {𝓤₀} → Σ-Compact X {𝓥}
+Compact-resizeup C = compact-gives-Compact (Compact-gives-compact C)
 
 \end{code}
 
@@ -808,8 +818,7 @@ Compact-closed-under-retracts {𝓤} {𝓥} {𝓦} {X} {Y} (r , s , η) c A δ =
 
   γ : decidable (Σ B) → decidable (Σ A)
   γ (inl (x , a)) = inl (r x , a)
-  γ (inr u)       = inr λ {(y , a) → u (s y , transport A ((η y)⁻¹) a)}
-
+  γ (inr u)       = inr (λ (y , a) → u (s y , transport A ((η y)⁻¹) a))
 
 Compact-closed-under-≃ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                        → X ≃ Y
@@ -1059,26 +1068,26 @@ Added 21st October 2021.
 
 \begin{code}
 
-decidable-subtype-of-compact-type : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
-                                  → Compact X {𝓥 ⊔ 𝓦}
-                                  → detachable A
-                                  → ((x : X) → is-prop (A x))
-                                  → Compact (Σ x ꞉ X , A x) {𝓦}
-decidable-subtype-of-compact-type {𝓤} {𝓥} {𝓦} {X} {A}
-                                  X-compact
-                                  A-detachable
-                                  A-is-prop-valued
-                                  B B-detachable = γ II
+complemented-subset-of-compact-type : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
+                                    → Compact X {𝓥 ⊔ 𝓦}
+                                    → detachable A
+                                    → ((x : X) → is-prop (A x))
+                                    → Compact (Σ x ꞉ X , A x) {𝓦}
+complemented-subset-of-compact-type {𝓤} {𝓥} {𝓦} {X} {A}
+                                    X-compact
+                                    A-detachable
+                                    A-is-prop-valued
+                                    B B-detachable = γ II
  where
   I : (x : X) → decidable (Σ a ꞉ A x , B (x , a))
   I x = Cases (A-detachable x)
          (λ (a : A x)
-              → Cases (B-detachable (x , a))
-                 (λ (b : B (x , a))     → inl (a , b))
-                 (λ ν → inr (λ (a' , b) → ν (transport
-                                              (λ - → B (x , -))
-                                              (A-is-prop-valued x a' a)
-                                              b))))
+               → Cases (B-detachable (x , a))
+                  (λ (b : B (x , a))     → inl (a , b))
+                  (λ ν → inr (λ (a' , b) → ν (transport
+                                               (λ - → B (x , -))
+                                               (A-is-prop-valued x a' a)
+                                               b))))
          (λ ν → inr (λ (a , b) → ν a))
 
   II : decidable (Σ x ꞉ X , Σ a ꞉ A x , B (x , a))
@@ -1115,25 +1124,22 @@ compact-gives-Σ+Π X A B κ q = III II
 
 \end{code}
 
-Added by Tom de Jong, November 2021.
+Added 26th April 2022. All types are compact iff global choice holds:
 
 \begin{code}
 
-open import UF-Equiv
-open import UF-EquivalenceExamples
+open import UF-ExcludedMiddle
 
-Compact-cong : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-             → X ≃ Y
-             → Compact X {𝓦}
-             → Compact Y {𝓦}
-Compact-cong {𝓤} {𝓥} {𝓦} {X} {Y} f c A δ =
- decidable-⇔ (⌜ g ⌝ , ⌜ g ⌝⁻¹) (c B d)
-  where
-   B : X → 𝓦 ̇
-   B x = A (⌜ f ⌝ x)
-   g : Σ B ≃ Σ A
-   g = Σ-change-of-variable A ⌜ f ⌝ (⌜⌝-is-equiv f)
-   d : detachable B
-   d x = δ (⌜ f ⌝ x)
+all-types-compact-gives-global-choice : ((X : 𝓤 ̇ ) → Compact X {𝓤})
+                                      → Global-Choice 𝓤
+all-types-compact-gives-global-choice {𝓤} α X =
+ Cases (α X (λ _ → 𝟙 {𝓤}) (λ x → 𝟙-decidable))
+   (λ (x , _) → inl x)
+   (λ ν       → inr (λ x → ν (x , ⋆)))
+
+global-choice-gives-all-types-compact : Global-Choice 𝓤
+                                      → ((X : 𝓤 ̇ ) → Compact X {𝓤})
+global-choice-gives-all-types-compact gc X A δ = gc (Σ A)
+
 
 \end{code}

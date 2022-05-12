@@ -5,7 +5,7 @@ Based in part by the `Cubical.Functions.Logic` module of
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 module UF-Subsingleton-Combinators where
 
@@ -71,6 +71,11 @@ module Implication (fe : Fun-Ext) where
   where
    γ : is-prop (P holds → Q holds)
    γ = Π-is-prop fe λ _ → holds-is-prop Q
+
+ open Conjunction
+
+ _↔_ : Ω 𝓤 → Ω 𝓥 → Ω (𝓤 ⊔ 𝓥)
+ P ↔ Q = (P ⇒ Q) ∧ (Q ⇒ P)
 
 \end{code}
 

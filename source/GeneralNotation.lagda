@@ -2,7 +2,7 @@ General terminology and notation.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 module GeneralNotation where
 
@@ -89,7 +89,7 @@ This is used for efficiency as a substitute for lazy "let" (or "where"):
 case_of_ : {A : 𝓤 ̇ } {B : A → 𝓥 ̇ } → (a : A) → ((a : A) → B a) → B a
 case x of f = f x
 
-Case_of_ : {A : 𝓤 ̇ } {B : A → 𝓥 ̇ } → (a : A) → (f : (x : A) → x ≡ a → B a) → B a
+Case_of_ : {A : 𝓤 ̇ } {B : A → 𝓥 ̇ } → (a : A) → ((x : A) → a ≡ x → B a) → B a
 Case x of f = f x refl
 
 {-# NOINLINE case_of_ #-}
@@ -102,6 +102,9 @@ Notation to try to make proofs readable:
 
 need_which-is-given-by_ : (A : 𝓤 ̇ ) → A → A
 need A which-is-given-by a = a
+
+have_by_ : (A : 𝓤 ̇ ) → A → A
+have A by a = a
 
 have_so_ : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → A → B → B
 have a so b = b

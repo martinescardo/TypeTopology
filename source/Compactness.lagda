@@ -6,14 +6,14 @@ of continuity is decidable.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 import CompactTypes
 import ConvergentSequenceCompact
-import ConvergentSequenceInfCompact
+import ConvergentSequenceHasInf
 import ADecidableQuantificationOverTheNaturals
 import ExtendedSumCompact
-import InfCompact
+import InfProperty
 import LexicographicCompactness
 import WeaklyCompactTypes
 import DecidabilityOfNonContinuity

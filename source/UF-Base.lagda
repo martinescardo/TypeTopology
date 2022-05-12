@@ -2,7 +2,7 @@ This file needs reorganization and clean-up.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 module UF-Base where
 
@@ -59,10 +59,10 @@ transport₃ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (A : X → Y → Z �
            → x ≡ x' → y ≡ y' → z ≡ z' → A x y z → A x' y' z'
 transport₃ A refl refl refl = id
 
-back-transport₂ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : X → Y → 𝓦 ̇ )
-                  {x x' : X} {y y' : Y}
-                → x ≡ x' → y ≡ y' → A x' y' → A x y
-back-transport₂ A refl refl = id
+transport₂⁻¹ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : X → Y → 𝓦 ̇ )
+               {x x' : X} {y y' : Y}
+             → x ≡ x' → y ≡ y' → A x' y' → A x y
+transport₂⁻¹ A refl refl = id
 
 Idtofun : {X Y : 𝓤 ̇ } → X ≡ Y → X → Y
 Idtofun = transport id
@@ -74,21 +74,21 @@ Idtofun-section : {X Y : 𝓤 ̇ } (p : X ≡ Y) → Idtofun (p ⁻¹) ∘ Idtof
 Idtofun-section refl _ = refl
 
 back-Idtofun : {X Y : 𝓤 ̇ } → X ≡ Y → Y → X
-back-Idtofun = back-transport id
+back-Idtofun = transport⁻¹ id
 
 forth-and-back-transport : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
                            {x y : X} (p : x ≡ y) {a : A x}
-                         → back-transport A p (transport A p a) ≡ a
+                         → transport⁻¹ A p (transport A p a) ≡ a
 forth-and-back-transport refl = refl
 
 back-and-forth-transport : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
                            {x y : X} (p : y ≡ x) {a : A x}
-                         → transport A p (back-transport A p a) ≡ a
+                         → transport A p (transport⁻¹ A p a) ≡ a
 back-and-forth-transport refl = refl
 
-back-transport-is-pre-comp : {X X' : 𝓤 ̇ } {Y : 𝓥 ̇ } (p : X ≡ X') (g : X' → Y)
-                           → back-transport (λ - → - → Y) p g ≡ g ∘ Idtofun p
-back-transport-is-pre-comp refl g = refl
+transport⁻¹-is-pre-comp : {X X' : 𝓤 ̇ } {Y : 𝓥 ̇ } (p : X ≡ X') (g : X' → Y)
+                        → transport⁻¹ (λ - → - → Y) p g ≡ g ∘ Idtofun p
+transport⁻¹-is-pre-comp refl g = refl
 
 transport-is-pre-comp : {X X' : 𝓤 ̇ } {Y : 𝓥 ̇ } (p : X ≡ X') (g : X → Y)
                       → transport (λ - → - → Y) p g ≡ g ∘ Idtofun (p ⁻¹)
@@ -132,20 +132,32 @@ nat-transport : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {B : X → 𝓦 ̇ }
 nat-transport f refl = refl
 
 transport-fam : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } (P : {x : X} → Y x → 𝓦 ̇ )
-               (x : X) (y : Y x) → P y → (x' : X) (r : x ≡ x') → P(transport Y r y)
+               (x : X) (y : Y x) → P y → (x' : X) (r : x ≡ x') → P (transport Y r y)
 transport-fam P x y p .x refl = p
 
-transport-rel : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } (_≺_ : {x : X} → Y x → Y x → 𝓦 ̇ )
-              → (a x : X) (b : Y a) (v : Y x) (p : a ≡ x)
-              →  v ≺ transport Y p b
-              → back-transport Y p v ≺ b
-transport-rel _≺_ a .a b v refl = id
+transport-left-rel : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } (_≺_ : {x : X} → Y x → Y x → 𝓦 ̇ )
+                   → (a x : X) (b : Y a) (v : Y x) (r : x ≡ a)
+                   → transport Y r v ≺ b
+                   → v ≺ transport⁻¹ Y r b
+transport-left-rel _≺_ a .a b v refl = id
 
-transport-rel' : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } (_≺_ : {x : X} → Y x → Y x → 𝓦 ̇ )
-               → (a x : X) (b : Y a) (v : Y x) (r : x ≡ a)
-               → transport Y r v ≺ b
-               → v ≺ back-transport Y r b
-transport-rel' _≺_ a .a b v refl = id
+transport-right-rel : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } (_≺_ : {x : X} → Y x → Y x → 𝓦 ̇ )
+                    → (a x : X) (b : Y a) (v : Y x) (p : a ≡ x)
+                    →  v ≺ transport Y p b
+                    → transport⁻¹ Y p v ≺ b
+transport-right-rel _≺_ a .a b v refl = id
+
+transport⁻¹-right-rel : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } (_≺_ : {x : X} → Y x → Y x → 𝓦 ̇ )
+                      → (a x : X) (b : Y a) (v : Y x) (r : x ≡ a)
+                      → v ≺ transport⁻¹ Y r b
+                      → transport Y r v ≺ b
+transport⁻¹-right-rel _≺_ a .a b v refl = id
+
+transport⁻¹-left-rel : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } (_≺_ : {x : X} → Y x → Y x → 𝓦 ̇ )
+                     → (a x : X) (b : Y a) (v : Y x) (p : a ≡ x)
+                     → transport⁻¹ Y p v ≺ b
+                     → v ≺ transport Y p b
+transport⁻¹-left-rel _≺_ a .a b v refl = id
 
 transport-const : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {x x' : X} {y : Y} (p : x ≡ x')
                 → transport (λ (_ : X) → Y) p y ≡ y

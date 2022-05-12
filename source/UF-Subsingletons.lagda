@@ -9,7 +9,7 @@ https://unimath.github.io/bham2017/uf.pdf
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 module UF-Subsingletons where
 
@@ -155,8 +155,14 @@ wconstant-post-comp f g c x x' = c (f x) (f x')
 collapsible : 𝓤 ̇ → 𝓤 ̇
 collapsible X = Σ f ꞉ (X → X) , wconstant f
 
+Id-collapsible' : {X : 𝓤 ̇ } → X → 𝓤 ̇
+Id-collapsible' x = ∀ {y} → collapsible (x ≡ y)
+
 Id-collapsible : 𝓤 ̇ → 𝓤 ̇
-Id-collapsible X = {x y : X} → collapsible (x ≡ y)
+Id-collapsible X = {x : X} → Id-collapsible' x
+
+h-isolated-points-are-Id-collapsible : {X : 𝓤 ̇ } {x : X} → is-h-isolated x → Id-collapsible' x
+h-isolated-points-are-Id-collapsible h = id , h
 
 sets-are-Id-collapsible : {X : 𝓤 ̇ } → is-set X → Id-collapsible X
 sets-are-Id-collapsible u = (id , u)
@@ -177,8 +183,11 @@ local-hedberg {𝓤} {X} x pc y p q =
   c : (y : X) (r : x ≡ y) → r ≡ (f x refl)⁻¹ ∙ f y r
   c _ refl = sym-is-inverse (f x refl)
 
+Id-collapsibles-are-h-isolated : {X : 𝓤 ̇ } (x : X) → Id-collapsible' x → is-h-isolated x
+Id-collapsibles-are-h-isolated x pc {y} p q = local-hedberg x (λ y → (pr₁ (pc {y})) , (pr₂ (pc {y}))) y p q
+
 Id-collapsibles-are-sets : {X : 𝓤 ̇ } → Id-collapsible X → is-set X
-Id-collapsibles-are-sets pc {x} {y} p q = local-hedberg x (λ y → (pr₁ (pc {x} {y})) , (pr₂ (pc {x} {y}))) y p q
+Id-collapsibles-are-sets pc {x} = Id-collapsibles-are-h-isolated x pc
 
 \end{code}
 

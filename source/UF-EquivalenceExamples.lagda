@@ -4,7 +4,7 @@ Expanded on demand whenever a general equivalence is needed.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import SpartanMLTT
 open import Two-Properties
@@ -675,24 +675,24 @@ NatΣ-equiv' A B ζ i = ((s , ζs), (r , rζ))
   γ (y , a) = (g y , a)
 
   φ : Σ A → Σ y ꞉ Y , A (g y)
-  φ (x , a) = (f x , back-transport A (ε x) a)
+  φ (x , a) = (f x , transport⁻¹ A (ε x) a)
 
   γφ : (σ : Σ A) → γ (φ σ) ≡ σ
   γφ (x , a) = to-Σ-≡ (ε x , p)
    where
-    p : transport A (ε x) (back-transport A (ε x) a) ≡ a
+    p : transport A (ε x) (transport⁻¹ A (ε x) a) ≡ a
     p = back-and-forth-transport (ε x)
 
   φγ : (τ : (Σ y ꞉ Y , A (g y))) → φ (γ τ) ≡ τ
   φγ (y , a) = to-Σ-≡ (η y , q)
    where
-    q = transport (λ - → A (g -)) (η y) (back-transport A (ε (g y)) a) ≡⟨ i ⟩
-        transport A (ap g (η y)) (back-transport A (ε (g y)) a)        ≡⟨ ii ⟩
-        transport A (ε (g y)) (back-transport A (ε (g y)) a)           ≡⟨ iii ⟩
-        a                                                              ∎
+    q = transport (λ - → A (g -)) (η y) (transport⁻¹ A (ε (g y)) a) ≡⟨ i ⟩
+        transport A (ap g (η y)) (transport⁻¹ A (ε (g y)) a)        ≡⟨ ii ⟩
+        transport A (ε (g y)) (transport⁻¹ A (ε (g y)) a)           ≡⟨ iii ⟩
+        a                                                           ∎
      where
       i   = transport-ap A g (η y)
-      ii  = ap (λ - → transport A - (back-transport A (ε (g y)) a)) (α y)
+      ii  = ap (λ - → transport A - (transport⁻¹ A (ε (g y)) a)) (α y)
       iii = back-and-forth-transport (ε (g y))
 
 Σ-change-of-variable : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : X → 𝓦 ̇ ) (g : Y → X)

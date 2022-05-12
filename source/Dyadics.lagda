@@ -6,7 +6,7 @@ Cluster module for inductively defined dyadic rationals.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 module Dyadics where
 

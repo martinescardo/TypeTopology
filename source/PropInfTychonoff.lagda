@@ -5,7 +5,7 @@ file PropTychonoff has many comments, but this one doesn't.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import SpartanMLTT
 open import UF-FunExt
@@ -14,7 +14,7 @@ module PropInfTychonoff (fe : FunExt) where
 
 open import Two-Properties
 open import CompactTypes
-open import InfCompact
+open import InfProperty
 open import UF-Base
 open import UF-Subsingletons
 open import UF-PropIndexedPiSigma
@@ -24,8 +24,8 @@ open import UF-EquivalenceExamples
 prop-inf-tychonoff : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
                    → is-prop X
                    → (_≺_ : {x : X} → Y x → Y x → 𝓦 ̇ )
-                   → ((x : X) → inf-compact (λ (y y' : Y x) → ¬ (y' ≺ y)))
-                   → inf-compact (λ (φ γ : Π Y) → ¬ (Σ x ꞉ X , γ x ≺ φ x))
+                   → ((x : X) → has-inf (λ (y y' : Y x) → ¬ (y' ≺ y)))
+                   → has-inf (λ (φ γ : Π Y) → ¬ (Σ x ꞉ X , γ x ≺ φ x))
 prop-inf-tychonoff {𝓤} {𝓥} {𝓦} {X} {Y} hp _≺_ ε p =
  φ₀ , φ₀-is-conditional-root , a , b
  where

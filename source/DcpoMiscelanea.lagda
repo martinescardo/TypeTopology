@@ -17,7 +17,7 @@ The table of contents is roughly:
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import SpartanMLTT
 open import UF-FunExt
@@ -445,7 +445,7 @@ preserves-semidirected-sups-if-continuous-and-strict 𝓓 𝓔 f con str {I} {α
   claim₁ = con (𝟙 + I) (add-⊥ 𝓓 α) (add-⊥-is-directed 𝓓 σ)
   claim₂ : is-sup (underlying-order (𝓔 ⁻)) (f (∐ˢᵈ 𝓓 σ))
             (f ∘ add-⊥ 𝓓 α)
-  claim₂ = back-transport
+  claim₂ = transport⁻¹
             (λ - → is-sup (underlying-order (𝓔 ⁻)) (f -) (f ∘ (add-⊥ 𝓓 α)))
             (∐ˢᵈ-in-terms-of-∐ 𝓓 σ) claim₁
   ub : (i : I) → f (α i) ⊑⟪ 𝓔 ⟫ f (∐ˢᵈ 𝓓 σ)

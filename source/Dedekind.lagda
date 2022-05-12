@@ -34,7 +34,7 @@ See also the discussion at https://twitter.com/EscardoMartin/status/147339326101
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import SpartanMLTT
 open import CanonicalMapNotation
@@ -1897,7 +1897,7 @@ We also consider the following notion of locator for families:
                       + (Π i ꞉ 𝐼 , x i < q)
 
  pointwise-locator-gives-bishop-locator : (𝐼 : 𝓤 ̇ ) (x : 𝐼 → ℝ)
-                                        → searchable 𝐼
+                                        → compact∙ 𝐼
                                         → ((i : 𝐼) → locator (x i))
                                         → bishop-locator x
  pointwise-locator-gives-bishop-locator 𝐼 x κ ℓ p q l = γ
@@ -1909,7 +1909,7 @@ We also consider the following notion of locator for families:
         (λ i → ℓ i p q l)
 
  lub-with-locators : (𝐼 : 𝓤 ̇ ) (x : 𝐼 → ℝ)
-                   → searchable 𝐼
+                   → compact∙ 𝐼
                    → is-upper-bounded x
                    → ((i : 𝐼) → locator (x i))
                    → Σ y ꞉ ℝ , (x has-lub y) × locator y

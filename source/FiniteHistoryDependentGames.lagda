@@ -29,11 +29,13 @@ infinite games instead.
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe #-} -- --exact-split
+{-# OPTIONS --without-K --safe --auto-inline #-} -- --exact-split
 
 open import SpartanMLTT hiding (J)
 open import UF-Base
 open import UF-FunExt
+
+open import SigmaDiscreteAndTotallySeparated
 
 module FiniteHistoryDependentGames (fe : Fun-Ext) where
 
@@ -694,7 +696,7 @@ Convention: in a board (p , A), p is the opponent of the the current player.
                             (λ g → Nothing-is-isolated' (A g))
 
   Move-compact : (b : Board) → Compact (Move b)
-  Move-compact (x , A) = decidable-subtype-of-compact-type
+  Move-compact (x , A) = complemented-subset-of-compact-type
                           Grid-compact
                           (λ g → Nothing-is-isolated' (A g))
                           (λ g → Nothing-is-h-isolated' (A g))
@@ -970,8 +972,6 @@ module test where
  test n = ε n (qq n)
 
 \end{code}
-
-
 
 TODO. Generalize the above to multi-valued quantifiers, as in [1], using monads.
 

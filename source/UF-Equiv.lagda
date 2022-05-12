@@ -1,6 +1,6 @@
 ]\begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 module UF-Equiv where
 
@@ -171,6 +171,9 @@ inverses-are-equivs f e = (f , inverses-are-retractions f e) , (f , inverses-are
 ⌜⌝⁻¹-is-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (e : X ≃ Y) → is-equiv ⌜ e ⌝⁻¹
 ⌜⌝⁻¹-is-equiv (f , i) = inverses-are-equivs f i
 
+⌜_⌝⁻¹-is-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (e : X ≃ Y) → is-equiv ⌜ e ⌝⁻¹
+⌜_⌝⁻¹-is-equiv = ⌜⌝⁻¹-is-equiv
+
 inversion-involutive : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equiv f)
                      → inverse (inverse f e) (inverses-are-equivs f e) ≡ f
 inversion-involutive f e = refl
@@ -271,7 +274,7 @@ transports-are-equivs : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {x y : X} (p : x ≡
 transports-are-equivs refl = id-is-equiv _
 
 back-transports-are-equivs : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {x y : X} (p : x ≡ y)
-                           → is-equiv (back-transport A p)
+                           → is-equiv (transport⁻¹ A p)
 back-transports-are-equivs p = transports-are-equivs (p ⁻¹)
 
 \end{code}

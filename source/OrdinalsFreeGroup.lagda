@@ -8,7 +8,7 @@ Please follow the link in the following import.
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe #-}
+{-# OPTIONS --without-K --safe --auto-inline #-}
 
 module OrdinalsFreeGroup where
 

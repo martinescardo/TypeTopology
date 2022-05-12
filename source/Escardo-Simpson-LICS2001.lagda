@@ -13,7 +13,7 @@ https://www.cs.bham.ac.uk/~mhe/.talks/map2011/
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import SpartanMLTT
 open import NaturalsAddition renaming (_+_ to _+ℕ_)

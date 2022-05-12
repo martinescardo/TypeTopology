@@ -6,7 +6,7 @@ Ordinals like in the HoTT book and variations.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import SpartanMLTT
 open import DiscreteAndSeparated
@@ -16,6 +16,8 @@ open import UF-Subsingletons
 open import UF-FunExt
 open import UF-Subsingletons-FunExt
 open import UF-ExcludedMiddle
+open import UF-PropTrunc
+open import Plus-Properties using (+-commutative)
 
 module OrdinalNotions
         {𝓤 𝓥 : Universe}
@@ -54,8 +56,11 @@ prev-behaviour' : (x : X) (σ : (y : X) → y < x → is-accessible y)
                 → prev x (next x σ) ≡ σ
 prev-behaviour' x σ = refl
 
+induction-hypothesis : (P : X → 𝓦 ̇ ) → (x : X) → (𝓤 ⊔ 𝓥 ⊔ 𝓦) ̇
+induction-hypothesis P x = (y : X) → y < x → P y
+
 transfinite-induction' :  (P : X → 𝓦 ̇ )
-                       → ((x : X) → (∀(y : X) → y < x → P y) → P x)
+                       → ((x : X) → induction-hypothesis P x → P x)
                        → (x : X) → is-accessible x → P x
 transfinite-induction' P f = accessible-induction
                               (λ x _ → P x)
@@ -217,27 +222,22 @@ being-well-order-is-prop fe = prop-criterion γ
                    (extensionality-is-prop fe (prop-valuedness o))
                    (transitivity-is-prop fe (prop-valuedness o))
 
-_≾_ : X → X → 𝓥 ̇
-x ≾ y = ¬ (y < x)
+private
+ _≾_ : X → X → 𝓥 ̇
+ x ≾ y = ¬ (y < x)
 
 ≾-is-prop-valued : funext 𝓥 𝓤₀ → is-prop-valued → (x y : X) → is-prop (x ≾ y)
 ≾-is-prop-valued fe p x y = negations-are-props fe
 
-is-top : X → 𝓤 ⊔ 𝓥 ̇
-is-top x = (y : X) → y ≾ x
-
-has-top : 𝓤 ⊔ 𝓥 ̇
-has-top = Σ x ꞉ X , is-top x
-
-<-coarser-than-≾  : (x : X)
-                  → is-accessible x
-                  → (y : X) → y < x → y ≾ x
-<-coarser-than-≾ = transfinite-induction'
+<-gives-≾  : (x : X)
+           → is-accessible x
+           → (y : X) → y < x → y ≾ x
+<-gives-≾ = transfinite-induction'
                      (λ x → (y : X) → y < x → y ≾ x)
                      (λ x f y l m → f y l x m l)
 
 ≾-refl : (x : X) → is-accessible x → x ≾ x
-≾-refl x a l = <-coarser-than-≾ x a x l l
+≾-refl x a l = <-gives-≾ x a x l l
 
 irreflexive : (x : X) → is-accessible x → ¬ (x < x)
 irreflexive = ≾-refl
@@ -246,16 +246,28 @@ irreflexive = ≾-refl
           → (x y : X) → x < y → x ≢ y
 <-gives-≢ w x y l p = irreflexive y (w y) (transport (_< y) p l)
 
-<-coarser-than-≼ : is-transitive → {x y : X} → x < y → x ≼ y
-<-coarser-than-≼ t {x} {y} l u m = t u x y m l
+<-gives-≼ : is-transitive → {x y : X} → x < y → x ≼ y
+<-gives-≼ t {x} {y} l u m = t u x y m l
 
 ≼-coarser-than-≾ : (y : X) → is-accessible y → (x : X) → x ≼ y → x ≾ y
 ≼-coarser-than-≾ y a x f l = ≾-refl y a (f y l)
 
+is-top : X → 𝓤 ⊔ 𝓥 ̇
+is-top x = (y : X) → y ≾ x
+
+is-top' : X → 𝓤 ⊔ 𝓥 ̇
+is-top' x = (y : X) → y ≼ x
+
+is-top'-gives-is-top : is-well-founded → (x : X) → is-top' x → is-top x
+is-top'-gives-is-top w x i y = ≼-coarser-than-≾ x (w x) y (i y)
+
+has-top : 𝓤 ⊔ 𝓥 ̇
+has-top = Σ x ꞉ X , is-top x
+
 no-minimal-is-empty : is-well-founded
-                     → ∀ {𝓦} (A : X → 𝓦 ̇ )
-                     → ((x : X) → A x → is-nonempty (Σ y ꞉ X , (y < x) × A y))
-                     → is-empty (Σ A)
+                    → ∀ {𝓦} (A : X → 𝓦 ̇ )
+                    → ((x : X) → A x → is-nonempty (Σ y ꞉ X , (y < x) × A y))
+                    → is-empty (Σ A)
 no-minimal-is-empty w A s (x , p) = γ
  where
   g : (x : X) → is-accessible x → ¬ (A x)
@@ -280,12 +292,11 @@ no-minimal-is-empty w A s (x , p) = γ
   γ : 𝟘
   γ = f s x p
 
-no-minimal-is-empty-weaker-version : is-well-founded
-                                   → ∀ {𝓦} (A : X → 𝓦 ̇ )
-                                   → ((x : X) → A x → Σ y ꞉ X , (y < x) × A y)
-                                   → is-empty (Σ A)
-no-minimal-is-empty-weaker-version w A s =
-  no-minimal-is-empty w A (λ x a → double-negation-intro (s x a))
+no-minimal-is-empty' : is-well-founded
+                     → ∀ {𝓦} (A : X → 𝓦 ̇ )
+                     → ((x : X) → A x → Σ y ꞉ X , (y < x) × A y)
+                     → is-empty (Σ A)
+no-minimal-is-empty' w A s = no-minimal-is-empty w A (λ x a → ¬¬-intro (s x a))
 
 \end{code}
 
@@ -294,8 +305,102 @@ the time of writing, namely 11th January 2021).
 
 \begin{code}
 
-is-trichotomous : 𝓤 ⊔ 𝓥 ̇
-is-trichotomous = (x y : X) → (x < y) + (x ≡ y) + (y < x)
+in-trichotomy : (x y : X) → 𝓤 ⊔ 𝓥 ̇
+in-trichotomy x y = (x < y) + (x ≡ y) + (y < x)
+
+is-trichotomous-element : X → 𝓤 ⊔ 𝓥 ̇
+is-trichotomous-element x = (y : X) → in-trichotomy x y
+
+is-trichotomous-order : 𝓤 ⊔ 𝓥 ̇
+is-trichotomous-order = (x : X) → is-trichotomous-element x
+
+-- injections into in-trichotomy
+>-implies-in-trichotomy : {x y : X} → (x < y) → in-trichotomy x y
+>-implies-in-trichotomy = inl
+
+≡-implies-in-trichotomy : {x y : X} → (x ≡ y) → in-trichotomy x y
+≡-implies-in-trichotomy = inr ∘ inl
+
+<-implies-in-trichotomy : {x y : X} → (y < x) → in-trichotomy x y
+<-implies-in-trichotomy = inr ∘ inr
+
+in-trichotomy-symm : {x y : X} → in-trichotomy x y → in-trichotomy y x
+in-trichotomy-symm (inl x-lt-y) = inr (inr x-lt-y)
+in-trichotomy-symm (inr (inl x-equiv-y)) = inr (inl (x-equiv-y ⁻¹))
+in-trichotomy-symm (inr (inr y-lt-x)) = inl y-lt-x
+
+_>_ : (x y : X) → 𝓥 ̇
+x > y = y < x
+
+_≦_ : (x y : X) → 𝓤 ⊔ 𝓥 ̇
+x ≦ y = (x < y) + (y ≡ x)
+
+_≧_ : (x y : X) → 𝓤 ⊔ 𝓥 ̇
+x ≧ y = (x ≡ y) + (y < x)
+
+≧-implies-≦ : {x y : X} → x ≧ y → y ≦ x
+≧-implies-≦ x-geq-y = +-commutative x-geq-y
+
+≦-implies-≧ : {x y : X} → x ≦ y → y ≧ x
+≦-implies-≧ x-leq-y = +-commutative x-leq-y
+
+≧-implies-in-trichotomy : {x y : X} → x ≧ y → in-trichotomy x y
+≧-implies-in-trichotomy = inr
+
+≦-implies-in-trichotomy : {x y : X} → x ≦ y → in-trichotomy x y
+≦-implies-in-trichotomy = cases inl (≡-implies-in-trichotomy ∘ _⁻¹)
+
+in-trichotomy-not->-implies-≦ : {x y : X} → in-trichotomy x y → ¬ (y < x) → x ≦ y
+in-trichotomy-not->-implies-≦ (inl x-lt-y) y-not-lt-x = inl x-lt-y
+in-trichotomy-not->-implies-≦ (inr (inl x-equals-y)) y-not-lt-x = inr (x-equals-y ⁻¹)
+in-trichotomy-not->-implies-≦ (inr (inr y-lt-x)) y-not-lt-x = 𝟘-elim (y-not-lt-x y-lt-x)
+
+in-trichotomy-not->-implies-≧ : {x y : X} → in-trichotomy x y → ¬ (x < y) → x ≧ y
+in-trichotomy-not->-implies-≧ x-in-trichotomy-y y-not-lt-x =
+  ≦-implies-≧ (in-trichotomy-not->-implies-≦
+                 (in-trichotomy-symm x-in-trichotomy-y)
+                 y-not-lt-x)
+
+≧->-transitive : is-well-order → {x y z : X} → (x ≧ y) → (z < y) → z < x
+≧->-transitive wo {x} {y} {z} (inl refl) y-gt-z = y-gt-z
+≧->-transitive wo@(p , w , e , t) {x} {y} {z} (inr x-gt-y) y-gt-z = t z y x y-gt-z x-gt-y
+
+>-≧-transitive : is-well-order → {x y z : X} → (y < x) → (y ≧ z) → z < x
+>-≧-transitive wo {x} {y} {.y} x-gt-y (inl refl) = x-gt-y
+>-≧-transitive wo@(p , w , e , t) {x} {y} {z} x-gt-y (inr y-gt-z) = t z y x y-gt-z x-gt-y
+
+module _ (fe : FunExt) (wo : is-well-order) where
+  private
+    X-is-set : is-set X
+    X-is-set = well-ordered-types-are-sets fe wo
+
+  ≦-is-prop : (x y : X) → is-prop (x ≦ y)
+  ≦-is-prop x y = sum-of-contradictory-props (prop-valuedness wo x y)
+    X-is-set
+    λ x-lt-y x-equals-y → irreflexive y (well-foundedness wo y)
+      (transport (_< y) (x-equals-y ⁻¹) x-lt-y)
+
+  ≧-is-prop : (x y : X) → is-prop (x ≧ y)
+  ≧-is-prop x y = sum-of-contradictory-props
+    (well-ordered-types-are-sets fe wo)
+    (prop-valuedness wo y x)
+    λ x-equals-y x-gt-y → irreflexive x (well-foundedness wo x)
+      (transport (_< x) (x-equals-y ⁻¹) x-gt-y)
+
+  in-trichotomy-is-prop : (x y : X) → is-prop (in-trichotomy x y)
+  in-trichotomy-is-prop x y =
+    sum-of-contradictory-props (prop-valuedness wo x y) (≧-is-prop x y)
+      λ x-lt-y  x-geq-y → irreflexive x (well-foundedness wo x)
+        (≧->-transitive wo x-geq-y x-lt-y)
+
+  being-trichotomous-element-is-prop : (x : X) → is-prop (is-trichotomous-element x)
+  being-trichotomous-element-is-prop x =
+    Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥))
+     (λ y → in-trichotomy-is-prop x y)
+
+  trichotomy-is-prop : is-prop (is-trichotomous-order)
+  trichotomy-is-prop = Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥))
+                         being-trichotomous-element-is-prop
 
 \end{code}
 
@@ -307,7 +412,7 @@ relations are discrete (have decidable equality):
 \begin{code}
 
 trichotomous-gives-discrete : is-well-founded
-                            → is-trichotomous
+                            → is-trichotomous-order
                             → is-discrete X
 trichotomous-gives-discrete w t x y = f (t x y)
  where
@@ -328,13 +433,15 @@ truncation. Notice also we additionally need function extensionality
 as an assumption (to know that the negation of a type is a
 proposition).
 
+There is also a shorter proof below that uses the existence of
+propositional truncations (but seems different to the proof of the
+HoTT book).
+
 \begin{code}
-
-
 trichotomy : funext (𝓤 ⊔ 𝓥) 𝓤₀
            → excluded-middle (𝓤 ⊔ 𝓥)
            → is-well-order
-           → is-trichotomous
+           → is-trichotomous-order
 trichotomy fe em (p , w , e , t) = γ
  where
   P : X → X → 𝓤 ⊔ 𝓥 ̇
@@ -427,7 +534,104 @@ trichotomy fe em (p , w , e , t) = γ
                       (¬A-and-¬B-give-P ν)
                       ¬¬B-gives-P)
              ¬¬A-gives-P
+\end{code}
 
+Added 09-04-2022 -- 04-05-2022 by Ohad Kammar.
+
+We can give a shorter proof using `∃¬-gives-∀` and LEM, by deducing
+that in a well-order, for every u and v, either u ≼ v or there is some
+i < u for which ¬ (i < v).
+
+Like the HoTT proof, we nest two inductions, the outer one that every
+element is trichotomous, and the inner one that the currently
+considered outer element u is in trichotomy with the currently
+considered inner element v.
+
+The crucial observation (`lemma`) is that, under the outer induction
+hypothesis for u, the relations (_≼ u) and (_≦ u) coincide. We prove
+this observation by appealing to LEM to get that either u ≼ x or there
+is a witness i < u but ¬ (i < x). The former means (by extensionality)
+that u ≡ x. In the latter case, the witness i satisfies the induction
+hypothesis, and so is in trichotomy with x, which by elimination means
+i >= x, so u > i >= x.
+
+With this lemma, we can prove the inner induction step by LEM.  If v ≼
+u, then by the lemma v <= u and so they are in trichotomy.  Otherwise,
+there is a witness i < v , ¬ (i < u). By the induction hypothesis for
+v, we have that i is in trichotomy with u, which by elimination means
+i >= u, and so v > i >= u, and so u and v are again in trichotomy.
+
+\begin{code}
+module _
+        (f-e : Fun-Ext)
+        (em : Excluded-Middle)
+       where
+ private
+   pt : propositional-truncations-exist
+   pt = (fem-proptrunc (λ 𝓤 𝓥 → f-e {𝓤} {𝓥}) em)
+
+   fe : FunExt
+   fe 𝓤 𝓥 = f-e
+
+   open import UF-PropTrunc
+   open PropositionalTruncation pt
+
+   lem-consequence : is-well-order → (u v : X) → (∃ i ꞉ X , ((i < u) × ¬ (i < v))) + (u ≼ v)
+   lem-consequence (p , _) u v = Cases
+     (∃¬-gives-∀ pt em {Σ (λ i → i < u)}
+        (λ (i , i-lt-u) → i < v)
+        (λ (i , i-<-u) → p i v))
+     (λ witness → inl ((∥∥-induction (λ s → ∃-is-prop)
+       (λ ((i , i-lt-u) , i-not-lt-v) → ∣ i , i-lt-u , i-not-lt-v ∣) witness)))
+     λ prf → inr (λ i i-lt-u → prf (i , i-lt-u))
+
+ trichotomy' : is-well-order → is-trichotomous-order
+ trichotomy' wo@(p , w , e , t) = transfinite-induction w is-trichotomous-element ϕ
+  where
+   ϕ : (x : X) → induction-hypothesis is-trichotomous-element x → is-trichotomous-element x
+   ϕ u ih = -- now we proceed by induction on the inner argument
+     transfinite-induction w (in-trichotomy u) λ v innerIH →
+       -- use LEM to get either (∃i<v . i≯u) ∨ (v ≼ u)
+       Cases (lem-consequence wo v u)
+         (∥∥-induction (λ s → in-trichotomy-is-prop fe wo u v)
+           λ (i , i-lt-v , i-not-lt-u) → inl -- show u < v
+           let u-leq-i = in-trichotomy-not->-implies-≦ ((innerIH i i-lt-v)) i-not-lt-u in
+           >-≧-transitive wo i-lt-v (≦-implies-≧ u-leq-i))
+         λ v-below-u → in-trichotomy-symm (≦-implies-in-trichotomy (lemma v v-below-u))
+    where
+     lemma : (x : X) → (x ≼ u) → x ≦ u
+     lemma x x-below-u = Cases (lem-consequence wo u x)
+       (∥∥-induction (λ s → ≦-is-prop fe wo x u)
+         λ (i , i-lt-u , i-not-lt-x) → inl -- show x < u
+           let i-in-trichotomy-x = ih i i-lt-u x in
+           (>-≧-transitive wo
+             i-lt-u
+             (in-trichotomy-not->-implies-≧ i-in-trichotomy-x i-not-lt-x)))
+       λ u-below-x → inr ((e x u x-below-u u-below-x) ⁻¹)
+\end{code}
+
+\begin{code}
+not-<-gives-≼ : funext (𝓤 ⊔ 𝓥) 𝓤₀
+              → excluded-middle (𝓤 ⊔ 𝓥)
+              → is-well-order
+              → (x y : X) → ¬ (x < y) → y ≼ x
+not-<-gives-≼ fe em wo@(p , w , e , t) x y = γ (trichotomy fe em wo x y)
+ where
+  γ : (x < y) + (x ≡ y) + (y < x) → ¬ (x < y) → y ≼ x
+  γ (inl l)       ν = 𝟘-elim (ν l)
+  γ (inr (inl e)) ν = transport (_≼ x) e ≼-refl
+  γ (inr (inr m)) ν = <-gives-≼ t m
+
+≼-or-> : funext (𝓤 ⊔ 𝓥) 𝓤₀
+       → excluded-middle (𝓤 ⊔ 𝓥)
+       → is-well-order
+       → (x y : X) → (x ≼ y) + y < x
+≼-or-> fe em wo@(p , w , e , t) x y = γ (trichotomy fe em wo x y)
+ where
+  γ : (x < y) + (x ≡ y) + (y < x) → (x ≼ y) + (y < x)
+  γ (inl l)       = inl (<-gives-≼ t l)
+  γ (inr (inl e)) = inl (transport (x ≼_) e ≼-refl)
+  γ (inr (inr m)) = inr m
 
 \end{code}
 
@@ -510,13 +714,24 @@ proposition valued.
 cotransitive : 𝓤 ⊔ 𝓥 ̇
 cotransitive = (x y z : X) → x < y → (x < z) + (z < y)
 
-cotransitive-≾-coarser-than-≼ : cotransitive → (x y : X) → x ≾ y → x ≼ y
-cotransitive-≾-coarser-than-≼ c x y n u l = γ (c u x y l)
+cotransitive-≾-gives-≼ : cotransitive → (x y : X) → x ≾ y → x ≼ y
+cotransitive-≾-gives-≼ c x y n u l = γ (c u x y l)
  where
   γ : (u < y) + (y < x) → u < y
   γ (inl l) = l
   γ (inr l) = 𝟘-elim (n l)
 
+tricho-gives-contrans : is-transitive → is-trichotomous-order → cotransitive
+tricho-gives-contrans tra tri x y z l = γ (tri z y)
+ where
+  γ : (z < y) + (z ≡ y) + (y < z) → (x < z) + (z < y)
+  γ (inl m)          = inr m
+  γ (inr (inl refl)) = inl l
+  γ (inr (inr m))    = inl (tra x y z l m)
+
+em-gives-cotrans : FunExt → EM (𝓤 ⊔ 𝓥) → is-well-order → cotransitive
+em-gives-cotrans fe em wo@(p , w , e , t) = tricho-gives-contrans t
+                                              (trichotomy (fe (𝓤 ⊔ 𝓥) 𝓤₀) em wo)
 \end{code}
 
 This is the end of the submodule with the assumption of excluded

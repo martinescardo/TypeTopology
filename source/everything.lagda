@@ -1,19 +1,23 @@
 Martin Escardo, 1st January 2022
 
-Almost all modules. More precisely, the safe ones, the ones that don't
-depend on the cubical library, and the ones that don't cause
-circularity when this is imported from index.lagda.
+Almost all modules. We comment out the unsafe ones, the ones that
+depend on the cubical library, and the ones that cause circularity
+when this is imported from index.lagda and AllModulesIndex.
 
 This is automatically generated, with the modules mentioned above
 excluded manually.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --auto-inline #-}
 
 module everything where
 
+\end{code}
+
 import ADecidableQuantificationOverTheNaturals
+import AdjointFunctorTheoremForFrames
+-- import AllModulesIndex
 import AlternativePlus
 import ArithmeticViaEquivalence
 import BanachFixedPointTheorem
@@ -21,6 +25,7 @@ import BasicDiscontinuityTaboo
 import BinaryNaturals
 import BuraliForti
 import CanonicalMapNotation
+import CantorCompact
 import CantorSchroederBernstein-TheoryLabLunch
 import CantorSchroederBernstein
 import CantorSearch
@@ -35,7 +40,9 @@ import CompactRegular
 import CompactTypes
 import Compactness
 import ConvergentSequenceCompact
-import ConvergentSequenceInfCompact
+import ConvergentSequenceHasInf
+import CountableTychonoff
+-- import CubicalBinarySystem
 import Dcpo
 import DcpoBilimits
 import DcpoBilimitsSequential
@@ -49,6 +56,7 @@ import Dcpos
 import DecidabilityOfNonContinuity
 import DecidableAndDetachable
 import Dedekind
+import Density
 import DisconnectedTypes
 import DiscreteAndSeparated
 import Dominance
@@ -72,13 +80,15 @@ import FreeGroup
 import FreeGroupOfLargeLocallySmallSet
 import FreeJoinSemiLattice
 import FreeSupLattice
+import GaloisConnection
 import GeneralNotation
 import GenericConvergentSequence
 import Groups
+import HeytingImplication
 import HiggsInvolutionTheorem
 import Id
 import Identity-Type
-import InfCompact
+import InfProperty
 import InitialBinarySystem
 import InitialBinarySystem2
 import InitialFrame
@@ -87,6 +97,7 @@ import InjectiveTypes
 import Integers-Properties
 import Integers-SymmetricInduction
 import Integers
+import JoinSemiLattices
 import LPO
 import LawvereFPT
 import LexicographicCompactness
@@ -144,22 +155,31 @@ import NaturalsOrder
 import Negation
 import NonCollapsibleFamily
 import NonSpartanMLTTTypes
+import OrderNotation
 import OrdinalArithmetic-Properties
 import OrdinalArithmetic
 import OrdinalCodes
 import OrdinalNotationInterpretation
+import OrdinalNotationInterpretation0
+import OrdinalNotationInterpretation1
+import OrdinalNotationInterpretation2
 import OrdinalNotions
 import OrdinalOfOrdinals
+import OrdinalOfOrdinalsSuprema
 import OrdinalOfTruthValues
+import OrdinalTaboos
 import Ordinals
 import OrdinalsClosure
 import OrdinalsFreeGroup
 import OrdinalsShulmanTaboo
+import OrdinalsType-Injectivity
 import OrdinalsType
 import OrdinalsWellOrderArithmetic
 import OrdinalsWellOrderTransport
+import P2
 import PCF
 import PCFModules
+import PairFun
 import PartialElements
 import Pi
 import Plus-Properties
@@ -175,9 +195,11 @@ import RicesTheoremForTheUniverse
 import RootsTruncation
 import SRTclosure
 import ScottModelOfPCF
+import SemiDecidable
 import Sequence
 import Sigma-Type
 import Sigma
+import SigmaDiscreteAndTotallySeparated
 import SimpleTypes
 import Slice
 import SliceAlgebras
@@ -188,7 +210,6 @@ import SpartanMLTT-List
 import SpartanMLTT
 import SquashedCantor
 import SquashedSum
-import OrderNotation
 import Swap
 import TheTopologyOfTheUniverse
 import ToppedOrdinalArithmetic
@@ -197,6 +218,7 @@ import TotalSeparatedness
 import TotallySeparated
 import Two-Properties
 import Two
+import Type-in-Type-False
 import Types2019
 import UF-Base
 import UF-Choice
@@ -217,14 +239,17 @@ import UF-ImageAndSurjection-F
 import UF-ImageAndSurjection
 import UF-Knapp-UA
 import UF-KrausLemma
+import UF-Large-Quotient
 import UF-LeftCancellable
 import UF-Lower-FunExt
 import UF-Miscelanea
+import UF-Powerset-Fin
 import UF-Powerset
 import UF-PropIndexedPiSigma
 import UF-PropTrunc-F
 import UF-PropTrunc
 import UF-Quotient-F
+import UF-Quotient-Replacement
 import UF-Quotient
 import UF-Retracts-FunExt
 import UF-Retracts
@@ -242,17 +267,19 @@ import UF-Univalence
 import UF-UniverseEmbedding
 import UF-Yoneda
 import UF-hlevels
-import UF
 import Unit-Properties
 import Unit-Type
 import Unit
 import UnivalenceFromScratch
 import Universes
+import UnsafeModulesIndex
 import W-Properties
 import W
 import WLPO
 import WeaklyCompactTypes
 import WellOrderingTaboo
+-- import everything
+-- import index
 import sigma-frame
 import sigma-sup-lattice
 

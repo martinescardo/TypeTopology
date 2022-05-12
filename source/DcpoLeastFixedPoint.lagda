@@ -5,7 +5,7 @@ Least fixed points of Scott continuous maps.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import SpartanMLTT
 open import UF-FunExt
@@ -197,7 +197,7 @@ module _ {𝓥 : Universe} where
                  → (iter-c n) ⊑⟨ ((𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓) ⁻) ⟹ᵈᶜᵖᵒ (𝓓 ⁻) ⟩ (iter-c m)
   iter-increases n zero l     f = transport
                                    (λ - → iter - f ⊑⟪ 𝓓 ⟫ iter zero f)
-                                   (unique-minimal n l ⁻¹)
+                                   (unique-least n l ⁻¹)
                                    (reflexivity (𝓓 ⁻) (iter zero f))
   iter-increases n (succ m) l f = h (≤-split n m l)
    where

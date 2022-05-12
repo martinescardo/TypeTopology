@@ -1,8 +1,10 @@
-Martin Escardo 2011.
+Martin Escardo 2011. With additions by Tom de Jong 2021.
+
+We look at decidable propositions, detachable families, and complemented subsets.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 module DecidableAndDetachable where
 
@@ -12,13 +14,6 @@ open import Plus-Properties
 open import Two-Properties
 open import UF-Subsingletons
 open import UF-PropTrunc
-
-\end{code}
-
-We look at decidable propositions and subsets (using the terminogy
-"detachable" for the latter").
-
-\begin{code}
 
 ¬¬-elim : {A : 𝓤 ̇ } → decidable A → ¬¬ A → A
 ¬¬-elim (inl a) f = a
@@ -393,7 +388,7 @@ module _
         → (f ∘ g) P ≡ P
      ε₁ e = to-Ωᵈ-equality (f (g P)) P
              (λ _ → lr-implication (pr₂ lemma) e)
-             (λ _ → back-transport (λ (b : 𝟚) → ⟨ f b ⟩) e ⋆)
+             (λ _ → transport⁻¹ (λ (b : 𝟚) → ⟨ f b ⟩) e ⋆)
 
 \end{code}
 
@@ -407,8 +402,9 @@ equivalences.
 
 open import UF-Powerset
 open import UF-EquivalenceExamples
-is-decidable-subset : {X : 𝓤 ̇  } → (X → Ω 𝓣) → 𝓤 ⊔ 𝓣 ̇
-is-decidable-subset {𝓤} {𝓣} {X} A = (x : X) → decidable (x ∈ A)
+
+is-complemented-subset : {X : 𝓤 ̇  } → (X → Ω 𝓣) → 𝓤 ⊔ 𝓣 ̇
+is-complemented-subset {𝓤} {𝓣} {X} A = (x : X) → decidable (x ∈ A)
 
 module _
         (fe  : funext 𝓤 (𝓣 ⁺))
@@ -418,11 +414,11 @@ module _
 
  𝟚-classifies-decidable-subsets : {X : 𝓤 ̇  }
                                 → (X → 𝟚)
-                                ≃ (Σ A ꞉ (X → Ω 𝓣) , is-decidable-subset A)
+                                ≃ (Σ A ꞉ (X → Ω 𝓣) , is-complemented-subset A)
  𝟚-classifies-decidable-subsets {X} =
-  (X → 𝟚)                                    ≃⟨ γ          ⟩
-  (X → Ωᵈ 𝓣)                                ≃⟨ ΠΣ-distr-≃ ⟩
-  (Σ A ꞉ (X → Ω 𝓣) , is-decidable-subset A) ■
+  (X → 𝟚)                                      ≃⟨ γ          ⟩
+  (X → Ωᵈ 𝓣)                                   ≃⟨ ΠΣ-distr-≃ ⟩
+  (Σ A ꞉ (X → Ω 𝓣) , is-complemented-subset A) ■
    where
     γ = →cong' fe (lower-funext 𝓤 (𝓣 ⁺) fe)
          (𝟚-is-the-type-of-decidable-propositions fe' pe)
@@ -430,13 +426,13 @@ module _
  𝟚-classifies-decidable-subsets-values :
    {X : 𝓤 ̇  }
    (A : X → Ω 𝓣)
-   (δ : is-decidable-subset A)
+   (δ : is-complemented-subset A)
    (x : X)
    → ((⌜ 𝟚-classifies-decidable-subsets ⌝⁻¹ (A , δ) x ≡ ₀) ⇔ ¬ (x ∈ A))
    × ((⌜ 𝟚-classifies-decidable-subsets ⌝⁻¹ (A , δ) x ≡ ₁) ⇔   (x ∈ A))
  𝟚-classifies-decidable-subsets-values {X} A δ x = γ
   where
-   χ : (Σ A ꞉ (X → Ω 𝓣) , is-decidable-subset A) → (X → 𝟚)
+   χ : (Σ A ꞉ (X → Ω 𝓣) , is-complemented-subset A) → (X → 𝟚)
    χ = ⌜ 𝟚-classifies-decidable-subsets ⌝⁻¹
    γ : (χ (A , δ) x ≡ ₀ ⇔ ¬ (x ∈ A))
      × (χ (A , δ) x ≡ ₁ ⇔   (x ∈ A))

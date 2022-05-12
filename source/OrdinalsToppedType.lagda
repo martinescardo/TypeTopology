@@ -1,16 +1,15 @@
 Martin Escardo, 29 June 2018
 
-The type Ordinals of ordinals in a universe U, and the subtype Ordinalsᵀ of
-ordinals with a top element.
+The subtype Ordinalsᵀ of ordinals with a top element.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import UF-FunExt
 
-module ToppedOrdinalsType
-       (fe : FunExt)
+module OrdinalsToppedType
+        (fe : FunExt)
        where
 
 open import SpartanMLTT
@@ -40,6 +39,11 @@ Ordinalᵀ 𝓤 = Σ α ꞉ Ordinal 𝓤 , has-top (underlying-order α)
 
 ⟪_⟫ : Ordinalᵀ 𝓤 → 𝓤 ̇
 ⟪ (X , _<_ , o) , t ⟫ = X
+
+underlying-type-is-setᵀ : FunExt
+                        → (β : Ordinalᵀ 𝓤)
+                        → is-set ⟪ β ⟫
+underlying-type-is-setᵀ fe (α , t) = underlying-type-is-set fe α
 
 \end{code}
 
@@ -71,5 +75,10 @@ top-is-top (α , (x , i)) = i
 
 tis-well-ordered : (τ : Ordinalᵀ 𝓤) → is-well-order (tunderlying-order τ)
 tis-well-ordered ((X , _<_ , o) , t) = o
+
+open import InfProperty
+
+has-infs-of-complemented-subsets : Ordinalᵀ 𝓤 → 𝓤 ̇
+has-infs-of-complemented-subsets α = has-inf (λ x y → x ≼⟪ α ⟫ y)
 
 \end{code}

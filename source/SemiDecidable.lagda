@@ -58,7 +58,7 @@ References
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import SpartanMLTT
 
@@ -105,7 +105,7 @@ semidecidability-structure : (X : 𝓤 ̇  ) → 𝓤 ̇
 semidecidability-structure X = Σ α ꞉ (ℕ → 𝟚) , X ≃ (∃ n ꞉ ℕ , α n ≡ ₁)
 
 semidecidability-structure' : (𝓣 : Universe) (X : 𝓤 ̇  ) → 𝓣 ⁺ ⊔ 𝓤 ̇
-semidecidability-structure' 𝓣 X = Σ A ꞉ (ℕ → Ω 𝓣) , is-decidable-subset A
+semidecidability-structure' 𝓣 X = Σ A ꞉ (ℕ → Ω 𝓣) , is-complemented-subset A
                                                   × (X ≃ (∃ n ꞉ ℕ , n ∈ A))
 
 is-semidecidable : (X : 𝓤 ̇  ) → 𝓤 ̇
@@ -129,13 +129,13 @@ semidecidability-structure-≃ : {𝓣 : Universe} {X : 𝓤 ̇  }
                              ≃ semidecidability-structure' 𝓣 X
 semidecidability-structure-≃ {𝓤} {𝓣} {X} =
  (Σ α ꞉ (ℕ → 𝟚) , X ≃ (∃ n ꞉ ℕ , α n ≡ ₁))                           ≃⟨ I   ⟩
- (Σ 𝔸 ꞉ (Σ A ꞉ (ℕ → Ω 𝓣) , is-decidable-subset A)
+ (Σ 𝔸 ꞉ (Σ A ꞉ (ℕ → Ω 𝓣) , is-complemented-subset A)
                           , X ≃ (∃ n ꞉ ℕ , ⌜ χ ⌝ 𝔸 n ≡ ₁))           ≃⟨ II  ⟩
- (Σ A ꞉ (ℕ → Ω 𝓣) , Σ δ ꞉ is-decidable-subset A
+ (Σ A ꞉ (ℕ → Ω 𝓣) , Σ δ ꞉ is-complemented-subset A
                          , X ≃ (∃ n ꞉ ℕ , ⌜ χ ⌝ (A , δ) n ≡ ₁))      ≃⟨ III ⟩
- (Σ A ꞉ (ℕ → Ω 𝓣) , is-decidable-subset A × (X ≃ (∃ n ꞉ ℕ , n ∈ A))) ■
+ (Σ A ꞉ (ℕ → Ω 𝓣) , is-complemented-subset A × (X ≃ (∃ n ꞉ ℕ , n ∈ A))) ■
   where
-   χ : (Σ A ꞉ (ℕ → Ω 𝓣) , is-decidable-subset A) ≃ (ℕ → 𝟚)
+   χ : (Σ A ꞉ (ℕ → Ω 𝓣) , is-complemented-subset A) ≃ (ℕ → 𝟚)
    χ = ≃-sym (𝟚-classifies-decidable-subsets fe fe pe)
    I   = ≃-sym (Σ-change-of-variable (λ α → X ≃ (∃ n ꞉ ℕ , α n ≡ ₁))
           ⌜ χ ⌝ (⌜⌝-is-equiv χ))
@@ -143,7 +143,7 @@ semidecidability-structure-≃ {𝓤} {𝓣} {X} =
    III = Σ-cong (λ A → Σ-cong
                 (λ δ → ≃-cong-right fe' (∥∥-cong pt (Σ-cong (λ n → κ A δ n)))))
     where
-     κ : (A : ℕ → Ω 𝓣) (δ : is-decidable-subset A) (n : ℕ )
+     κ : (A : ℕ → Ω 𝓣) (δ : is-complemented-subset A) (n : ℕ )
        → (⌜ χ ⌝ (A , δ) n ≡ ₁) ≃ (A n holds)
      κ A δ n = logically-equivalent-props-are-equivalent
                     𝟚-is-set (holds-is-prop (A n))
@@ -283,10 +283,10 @@ decidability-is-semidecidable X σ τ = ∥∥-rec being-semidecidable-is-prop �
        where
         u : decidable X → ∃ n ꞉ ℕ , γ n ≡ ₁
         u (inl  x) = ∥∥-functor
-                      (λ (n , b) → n , max𝟚-lemma-converse (α n) (β n) (inl b))
+                      (λ (n , b) → n , max𝟚-lemma-converse (inl b))
                       (⌜ f ⌝ x)
         u (inr nx) = ∥∥-functor
-                      (λ (n , b) → n , max𝟚-lemma-converse (α n) (β n) (inr b))
+                      (λ (n , b) → n , max𝟚-lemma-converse (inr b))
                       (⌜ g ⌝ nx)
         v : ∃ n ꞉ ℕ , γ n ≡ ₁ → decidable X
         v = ∥∥-rec dec-of-X-is-prop ν
@@ -294,7 +294,7 @@ decidability-is-semidecidable X σ τ = ∥∥-rec being-semidecidable-is-prop �
           ν : (Σ n ꞉ ℕ , γ n ≡ ₁) → decidable X
           ν (n , p) = cases (λ a → inl (⌜ f ⌝⁻¹ ∣ n , a ∣))
                             (λ b → inr (⌜ g ⌝⁻¹ ∣ n , b ∣))
-                            (max𝟚-lemma (α n) (β n) p)
+                            (max𝟚-lemma p)
 
 \end{code}
 
@@ -725,7 +725,7 @@ open import UF-Size
 BKS⁺-gives-Propositional-Resizing : BKS⁺ 𝓤
                                   → propositional-resizing 𝓤 𝓤₀
 BKS⁺-gives-Propositional-Resizing bks X X-is-prop =
- ∥∥-rec (prop-has-size-is-prop (λ _ → pe) fe' X X-is-prop 𝓤₀) γ (bks X X-is-prop)
+ ∥∥-rec (prop-being-small-is-prop (λ _ → pe) fe' X X-is-prop 𝓤₀) γ (bks X X-is-prop)
   where
    γ : semidecidability-structure X → X has-size 𝓤₀
    γ (α , e) = (∃ n ꞉ ℕ , α n ≡ ₁) , (≃-sym e)
@@ -1030,7 +1030,7 @@ EKC-implies-semidecidable-closed-under-Σ {𝓤} {𝓥} ekc =
                     (∃ n ꞉ ℕ , Σ m ꞉ ℕ , φ (n , m))     ≃⟨ II ⟩
                     (∃ n ꞉ ℕ , Σ m ꞉ ℕ , Ψ (n , m) ≡ ₁) ■)
             where
-             χ : (Σ A ꞉ (ℕ × ℕ → Ω 𝓤₀) , is-decidable-subset A) → (ℕ × ℕ → 𝟚)
+             χ : (Σ A ꞉ (ℕ × ℕ → Ω 𝓤₀) , is-complemented-subset A) → (ℕ × ℕ → 𝟚)
              χ = ⌜ 𝟚-classifies-decidable-subsets fe fe pe ⌝⁻¹
              Ψ : ℕ × ℕ → 𝟚
              Ψ = χ (φ⁺ , φ-is-detachable)
@@ -1333,8 +1333,8 @@ the least such n ∈ A, if A happens to be inhabited.
 \begin{code}
 
 subset-with-only-the-least-witness : (A : ℕ → Ω 𝓤)
-                                   → is-decidable-subset A
-                                   → Σ B ꞉ (ℕ → Ω 𝓤) , is-decidable-subset B
+                                   → is-complemented-subset A
+                                   → Σ B ꞉ (ℕ → Ω 𝓤) , is-complemented-subset B
                                                      × ((∃ n ꞉ ℕ , n ∈ A)
                                                      ≃ (Σ n ꞉ ℕ , n ∈ B))
 subset-with-only-the-least-witness {𝓤} A A-is-decidable = B , B-is-decidable , γ
@@ -1342,12 +1342,12 @@ subset-with-only-the-least-witness {𝓤} A A-is-decidable = B , B-is-decidable 
   B : ℕ → Ω 𝓤
   B n = (n ∈ A × is-empty (Σ r ꞉ Fin' n , pr₁ r ∈ A))
       , (×-is-prop (∈-is-prop A n) (negations-are-props fe))
-  B-is-decidable : is-decidable-subset B
+  B-is-decidable : is-complemented-subset B
   B-is-decidable n = ×-preserves-decidability (A-is-decidable n)
                                               (¬-preserves-decidability σ)
    where
     σ : decidable (Σ r ꞉ Fin' n , pr₁ r ∈ A)
-    σ = Compact-cong (≃-Fin n) Fin-Compact (pr₁ ∘ A ∘ pr₁)
+    σ = Compact-closed-under-≃ (≃-Fin n) Fin-Compact (pr₁ ∘ A ∘ pr₁)
          (λ r → A-is-decidable (pr₁ r))
   ΣB-is-prop : is-prop (Σ n ꞉ ℕ , n ∈ B)
   ΣB-is-prop (n , a , min) (n' , a' , min') =
@@ -1370,7 +1370,7 @@ subset-with-only-the-least-witness {𝓤} A A-is-decidable = B , B-is-decidable 
       h (n , a) = k , a' , ν
        where
         u : Σμ (λ m → m ∈ A)
-        u = minimal-from-given (λ m → m ∈ A) A-is-decidable (n , a)
+        u = least-from-given (λ m → m ∈ A) A-is-decidable (n , a)
         k : ℕ
         k = pr₁ u
         a' : k ∈ A
@@ -1424,14 +1424,14 @@ closure-under-Σ-if-closure-under-subsingleton-countable-joins {𝓤} H P ρ Q �
      Q-is-prop-valued : (p : P) → is-prop (Q p)
      Q-is-prop-valued p = prop-if-semidecidable (σ p)
 
-     W : Σ B ꞉ (ℕ → Ω 𝓤₀) , is-decidable-subset B
+     W : Σ B ꞉ (ℕ → Ω 𝓤₀) , is-complemented-subset B
                           × ((∃ n ꞉ ℕ , α n ≡ ₁) ≃ (Σ n ꞉ ℕ , n ∈ B))
      W = subset-with-only-the-least-witness
           (λ n → (α n ≡ ₁) , 𝟚-is-set) (λ n → 𝟚-is-discrete (α n) ₁)
 
      P̃ : ℕ → Ω 𝓤₀
      P̃ = pr₁ W
-     P̃-is-decidable : is-decidable-subset P̃
+     P̃-is-decidable : is-complemented-subset P̃
      P̃-is-decidable = pr₁ (pr₂ W)
      ΣP̃-equiv : (∃ n ꞉ ℕ , α n ≡ ₁) ≃ (Σ n ꞉ ℕ , n ∈ P̃)
      ΣP̃-equiv = pr₂ (pr₂ W)

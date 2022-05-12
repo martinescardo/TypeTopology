@@ -2,7 +2,7 @@ Identity type.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 module Id where
 
@@ -61,8 +61,8 @@ p ⁻¹ = transport (_≡ lhs p) p refl
 ap : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) {x x' : X} → x ≡ x' → f x ≡ f x'
 ap f p = transport (λ - → f (lhs p) ≡ f -) p refl
 
-back-transport : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) {x y : X} → x ≡ y → A y → A x
-back-transport B p = transport B (p ⁻¹)
+transport⁻¹ : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) {x y : X} → x ≡ y → A y → A x
+transport⁻¹ B p = transport B (p ⁻¹)
 
 _∼_ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } → ((x : X) → A x) → ((x : X) → A x) → 𝓤 ⊔ 𝓥 ̇
 f ∼ g = ∀ x → f x ≡ g x

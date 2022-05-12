@@ -8,7 +8,7 @@ This formalization is based on Scott's "Continuous lattices"
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --experimental-lossy-unification #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline --experimental-lossy-unification #-}
 
 \end{code}
 

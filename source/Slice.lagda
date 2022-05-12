@@ -4,7 +4,7 @@ Cf. The lifting monad.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import SpartanMLTT
 
@@ -151,7 +151,7 @@ open import UF-EquivalenceExamples
 
     p : fiber (pr₁ ∘ f) , I , ≃-sym (total-fiber-is-domain (pr₁ ∘ f)) ≡ A , I , f , e
     p = to-Σ-≡ (dfunext (fe 𝓤 ((𝓣 ⊔ 𝓤) ⁺)) (λ x → eqtoid (ua (𝓣 ⊔ 𝓤)) (fiber (pr₁ ∘ f) x) (A x) (h x)) ,
-                has-size-is-prop ua (Σ A) 𝓣 _ (I , f , e))
+                being-small-is-prop ua (Σ A) 𝓣 _ (I , f , e))
   ψφ : (l : 𝓕 X) → ψ (φ l) ≡ l
   ψφ (I , φ) = ap (λ - → I , -) (dfunext (fe 𝓣 𝓤) (λ i → refl))
 

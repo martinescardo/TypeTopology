@@ -24,35 +24,40 @@ GenericConvergentSequence)
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import UF-FunExt
 
 module LPO (fe : FunExt) where
 
 open import SpartanMLTT
-
-open import Two-Properties
 open import UF-Base
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
+open import UF-Embeddings
+open import UF-Equiv
+
+open import Two-Properties
 open import GenericConvergentSequence
 open import CompactTypes
 open import NaturalsOrder
 open import OrderNotation
 open import CanonicalMapNotation
 
+private
+ fe₀ = fe 𝓤₀ 𝓤₀
+
 LPO : 𝓤₀ ̇
 LPO = (x : ℕ∞) → decidable (Σ n ꞉ ℕ , x ≡ ι n)
 
 LPO-is-prop : is-prop LPO
-LPO-is-prop = Π-is-prop (fe 𝓤₀ 𝓤₀) f
+LPO-is-prop = Π-is-prop fe₀ f
  where
   a : (x : ℕ∞) → is-prop (Σ n ꞉ ℕ , x ≡ ι n)
-  a x (n , p) (m , q) = to-Σ-≡ (ℕ-to-ℕ∞-lc (p ⁻¹ ∙ q) , ℕ∞-is-set (fe 𝓤₀ 𝓤₀)_ _)
+  a x (n , p) (m , q) = to-Σ-≡ (ℕ-to-ℕ∞-lc (p ⁻¹ ∙ q) , ℕ∞-is-set fe₀ _ _)
 
   f : (x : ℕ∞) → is-prop (decidable (Σ n ꞉ ℕ , x ≡ ι n))
-  f x = decidability-of-prop-is-prop (fe 𝓤₀ 𝓤₀) (a x)
+  f x = decidability-of-prop-is-prop fe₀ (a x)
 
 \end{code}
 
@@ -96,7 +101,7 @@ LPO-gives-compact-ℕ ℓ β = γ
             c = v n
 
             l : x ≡ ∞
-            l = not-finite-is-∞ (fe 𝓤₀ 𝓤₀) v
+            l = not-finite-is-∞ fe₀ v
 
             e : α n ≡ ₁
             e = ap (λ - → ι - n) l
@@ -119,7 +124,7 @@ compact-ℕ-gives-LPO κ x = γ
     a (n , p) = inl (pr₁ g , pr₂(pr₂ g))
       where
         g : Σ m ꞉ ℕ , (m ≤ n) × (x ≡ ι m)
-        g = ℕ-to-ℕ∞-lemma (fe 𝓤₀ 𝓤₀) x n p
+        g = ℕ-to-ℕ∞-lemma fe₀ x n p
 
     b : (Π n ꞉ ℕ , β n ≡ ₁) → A
     b φ = inr g
@@ -168,7 +173,7 @@ open import PropTychonoff
 [LPO→ℕ]-compact = compact∙-gives-compact [LPO→ℕ]-compact∙
 
 [LPO→ℕ]-Compact : Compact (LPO → ℕ) {𝓤}
-[LPO→ℕ]-Compact = compact-gives-Compact (LPO → ℕ) [LPO→ℕ]-compact
+[LPO→ℕ]-Compact = compact-gives-Compact [LPO→ℕ]-compact
 
 \end{code}
 
@@ -182,9 +187,10 @@ open import DiscreteAndSeparated
 open import NaturalNumbers-Properties
 
 [LPO→ℕ]-discrete-gives-¬LPO-decidable : is-discrete (LPO → ℕ) → decidable (¬ LPO)
-[LPO→ℕ]-discrete-gives-¬LPO-decidable = discrete-exponential-has-decidable-emptiness-of-exponent
-                                         (fe 𝓤₀ 𝓤₀)
-                                         (1 , 0 , positive-not-zero 0)
+[LPO→ℕ]-discrete-gives-¬LPO-decidable =
+  discrete-exponential-has-decidable-emptiness-of-exponent
+   fe₀
+   (1 , 0 , positive-not-zero 0)
 
 \end{code}
 
@@ -193,20 +199,23 @@ embedding ι𝟙 : ℕ + 𝟙 → ℕ∞ has a section:
 
 \begin{code}
 
-has-section-ι𝟙-gives-LPO : (Σ s ꞉ (ℕ∞ → ℕ + 𝟙) , ι𝟙 ∘ s ∼ id) → LPO
-has-section-ι𝟙-gives-LPO (s , ε) u = ψ (s u) refl
+ι𝟙-has-section-gives-LPO : (Σ s ꞉ (ℕ∞ → ℕ + 𝟙) , ι𝟙 ∘ s ∼ id) → LPO
+ι𝟙-has-section-gives-LPO (s , ε) u = ψ (s u) refl
  where
-  ψ : (z : ℕ + 𝟙) → s u ≡ z → decidable(Σ n ꞉ ℕ , u ≡ ι n)
-  ψ (inl n) p = inl (n , (u            ≡⟨ (ε u) ⁻¹ ⟩
+  ψ : (z : ℕ + 𝟙) → s u ≡ z → decidable (Σ n ꞉ ℕ , u ≡ ι n)
+  ψ (inl n) p = inl (n , (u        ≡⟨ (ε u) ⁻¹ ⟩
                           ι𝟙 (s u) ≡⟨ ap ι𝟙 p ⟩
                           ι n      ∎))
   ψ (inr *) p = inr γ
    where
     γ : ¬ (Σ n ꞉ ℕ , u ≡ ι n)
-    γ (n , q) = ∞-is-not-finite n (∞            ≡⟨ (ap ι𝟙 p)⁻¹ ⟩
+    γ (n , q) = ∞-is-not-finite n (∞        ≡⟨ (ap ι𝟙 p)⁻¹ ⟩
                                    ι𝟙 (s u) ≡⟨ ε u ⟩
-                                   u            ≡⟨ q ⟩
+                                   u        ≡⟨ q ⟩
                                    ι n      ∎)
+
+ι𝟙-is-equiv-gives-LPO : is-equiv ι𝟙 → LPO
+ι𝟙-is-equiv-gives-LPO i = ι𝟙-has-section-gives-LPO (equivs-have-sections ι𝟙 i)
 
 ι𝟙-inverse : (u : ℕ∞) → decidable (Σ n ꞉ ℕ , u ≡ ι n) → ℕ + 𝟙 {𝓤₀}
 ι𝟙-inverse .(ι n) (inl (n , refl)) = inl n
@@ -217,10 +226,16 @@ LPO-gives-has-section-ι𝟙 lpo = s , ε
  where
   s : ℕ∞ → ℕ + 𝟙
   s u = ι𝟙-inverse u (lpo u)
+
   φ : (u : ℕ∞) (d : decidable (Σ n ꞉ ℕ , u ≡ ι n)) → ι𝟙 (ι𝟙-inverse u d) ≡ u
   φ .(ι n) (inl (n , refl)) = refl
-  φ u (inr g) = (not-finite-is-∞ (fe 𝓤₀ 𝓤₀) (curry g))⁻¹
+  φ u (inr g) = (not-finite-is-∞ fe₀ (curry g))⁻¹
+
   ε : ι𝟙 ∘ s ∼ id
   ε u = φ u (lpo u)
 
+LPO-gives-ι𝟙-is-equiv : LPO → is-equiv ι𝟙
+LPO-gives-ι𝟙-is-equiv lpo = embeddings-with-sections-are-equivs ι𝟙
+                             (ι𝟙-is-embedding fe₀)
+                             (LPO-gives-has-section-ι𝟙 lpo)
 \end{code}

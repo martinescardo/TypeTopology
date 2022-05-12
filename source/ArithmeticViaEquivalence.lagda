@@ -141,7 +141,7 @@ foundations in Agda notation).
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import SpartanMLTT hiding (_^_)
 

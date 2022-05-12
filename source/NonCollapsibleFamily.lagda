@@ -2,7 +2,7 @@ Martin Escardo, 1st April 2013
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 module NonCollapsibleFamily where
 

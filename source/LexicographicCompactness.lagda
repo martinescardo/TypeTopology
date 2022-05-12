@@ -4,26 +4,27 @@ This module is mainly for use in the module CompactOrdinals.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 module LexicographicCompactness where
 
 open import SpartanMLTT
 open import LexicographicOrder
-open import InfCompact
+open import InfProperty
 
-Σ-inf-compact : ∀ {𝓣} {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
-              → (_≤_ : X → X → 𝓦 ̇ )
-              → (_≼_ : {x : X} → Y x → Y x → 𝓣 ̇ )
-              → inf-compact _≤_
-              → ((x : X) → inf-compact (_≼_ {x}))
-              → inf-compact (lex-order _≤_ _≼_)
-Σ-inf-compact {𝓤} {𝓥} {𝓦} {𝓣} {X} {Y} _≤_ _≼_ ε δ p =
+Σ-has-inf : ∀ {𝓣} {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
+          → (_≤_ : X → X → 𝓦 ̇ )
+          → (_≼_ : {x : X} → Y x → Y x → 𝓣 ̇ )
+          → has-inf _≤_
+          → ((x : X) → has-inf (_≼_ {x}))
+          → has-inf (lex-order _≤_ _≼_)
+Σ-has-inf {𝓤} {𝓥} {𝓦} {𝓣} {X} {Y} _≤_ _≼_ ε δ p =
  (x₀ , y₀) , (putative-root-lemma , (lower-bound-lemma , uborlb-lemma))
  where
-  lemma-next : (x : X) → Σ y₀ ꞉ Y x , ((Σ y ꞉ Y x , p (x , y) ≡ ₀) → p (x , y₀) ≡ ₀)
-                                        × ((y : Y x) → p (x , y) ≡ ₀ → y₀ ≼ y)
-                                        × ((l : Y x) → ((y : Y x) → p (x , y) ≡ ₀ → l ≼ y) → l ≼ y₀)
+  lemma-next : (x : X) → Σ y₀ ꞉ Y x
+                              , ((Σ y ꞉ Y x , p (x , y) ≡ ₀) → p (x , y₀) ≡ ₀)
+                              × ((y : Y x) → p (x , y) ≡ ₀ → y₀ ≼ y)
+                              × ((l : Y x) → ((y : Y x) → p (x , y) ≡ ₀ → l ≼ y) → l ≼ y₀)
   lemma-next x = δ x (λ y → p (x , y))
 
   next : (x : X) → Y x

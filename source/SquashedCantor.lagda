@@ -14,11 +14,17 @@ a Cantor retract.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import UF-FunExt
 
 module SquashedCantor (fe : FunExt) where
+
+open import UF-Base
+open import UF-Subsingletons
+open import UF-Equiv
+open import UF-Embeddings
+open import UF-Retracts
 
 open import SpartanMLTT
 open import Two-Properties
@@ -29,11 +35,10 @@ open import CoNaturals fe
 open import Sequence fe renaming (head to head' ; tail to tail' ; _∶∶_ to _∶∶'_)
 open import InjectiveTypes fe
 open import CanonicalMapNotation
-open import UF-Base
-open import UF-Subsingletons
-open import UF-Equiv
-open import UF-Embeddings
-open import UF-Retracts
+
+private
+ fe₀ : funext 𝓤₀ 𝓤₀
+ fe₀ = fe 𝓤₀ 𝓤₀
 
 \end{code}
 
@@ -81,7 +86,7 @@ transport-finite : {u v : ℕ∞} (p : u ≡ v) → is-finite u → is-finite v
 transport-finite = transport is-finite
 
 back-transport-finite : {u v : ℕ∞} (p : u ≡ v) → is-finite v → is-finite u
-back-transport-finite = back-transport is-finite
+back-transport-finite = transport⁻¹ is-finite
 
 ap-Cantor : {X : 𝓤 ̇ } (f : (u : ℕ∞) → Cantor[ u ] → X)
             {u v : ℕ∞} (p : u ≡ v) {φ : Cantor[ u ]}

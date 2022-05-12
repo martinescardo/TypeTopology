@@ -6,7 +6,7 @@ Athenian in this respect.
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe --exact-split #-}
+{-# OPTIONS --without-K --safe --auto-inline --exact-split #-}
 
 module List where
 

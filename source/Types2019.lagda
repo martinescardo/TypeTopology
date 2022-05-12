@@ -15,7 +15,7 @@ https://www.cs.bham.ac.uk/~mhe/TypeTopology/OrdinalNotationInterpretation.pdf
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 module Types2019 where
 
@@ -41,13 +41,13 @@ import CoNaturalsArithmetic
 import CoNaturalsExercise
 import CoNaturals
 import ConvergentSequenceCompact
-import ConvergentSequenceInfCompact
+import ConvergentSequenceHasInf
 import DecidabilityOfNonContinuity
 import ExtendedSumCompact
 import FailureOfTotalSeparatedness
 import GenericConvergentSequence
-import InfCompact
 import InjectiveTypes
+import InfProperty
 import LexicographicCompactness
 import LexicographicOrder
 import LPO

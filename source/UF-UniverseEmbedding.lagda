@@ -14,11 +14,13 @@ propositions, or subsingletons, as in HoTT/UF.)
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 module UF-UniverseEmbedding where
 
 open import SpartanMLTT
+open import PairFun
+
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
 open import UF-Embeddings
@@ -154,7 +156,7 @@ prop-fiber-criterion : PropExt
 prop-fiber-criterion pe fe 𝓤 𝓥 f i Q j (P , r) = d (P , r)
  where
   k : is-prop (f P)
-  k = back-transport is-prop r j
+  k = transport⁻¹ is-prop r j
 
   l : is-prop P
   l = equiv-to-prop (≃-sym (i P)) k

@@ -1,13 +1,13 @@
 Martin Escardo and Tom de Jong, October 2021
 
-Modified from UF-Quotient.lagda to add the parameter F.
+Modified from UF-Large-Quotient.lagda to add the parameter F.
 
 We use F to control the universe where propositional truncations live.
 For more comments and explanations, see the original files.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import SpartanMLTT
 

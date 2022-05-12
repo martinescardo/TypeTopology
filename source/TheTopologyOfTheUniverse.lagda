@@ -114,7 +114,7 @@ them, so to speak. This is Rice's Theorem for the universe U.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import UF-FunExt
 
@@ -151,6 +151,6 @@ Universe-Indiscreteness-Theorem {𝓤} X X∞ = Y , (λ i → a (inl i)) , (a (i
   Y = X' / ι𝟙
 
   a : (z : ℕ + 𝟙) → Y (ι𝟙 z) ≃ X' z
-  a z = Π-extension-in-range X' ι𝟙 (ι𝟙-embedding (fe 𝓤₀ 𝓤₀)) z
+  a z = Π-extension-property X' ι𝟙 (ι𝟙-is-embedding (fe 𝓤₀ 𝓤₀)) z
 
 \end{code}

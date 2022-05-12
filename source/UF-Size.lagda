@@ -25,7 +25,7 @@ which seems to be a new result.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 module UF-Size where
 
@@ -51,16 +51,28 @@ open import UF-Section-Embedding
 
 \end{code}
 
-We say that a type X has size 𝓥 if it is equivalent to a type in the
-universe 𝓥:
+
+We say that a type X has size 𝓥, or that it is 𝓥 small if it is
+equivalent to a type in the universe 𝓥:
 
 \begin{code}
 
 _has-size_ : 𝓤 ̇ → (𝓥 : Universe) → 𝓥 ⁺  ⊔ 𝓤 ̇
 X has-size 𝓥 = Σ Y ꞉ 𝓥 ̇ , Y ≃ X
 
+_is_small : 𝓤 ̇ → (𝓥 : Universe) → 𝓥 ⁺  ⊔ 𝓤 ̇
+X is 𝓥 small = X has-size 𝓥
+
+\end{code}
+
+The preferred terminology is now "_is_small", but it is better to keep
+the terminology "_has-size_" in the papers that have already been
+published, in particular "Injective types in univalent mathematics".
+
+\begin{code}
+
 propositional-resizing : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
-propositional-resizing 𝓤 𝓥 = (P : 𝓤 ̇ ) → is-prop P → P has-size 𝓥
+propositional-resizing 𝓤 𝓥 = (P : 𝓤 ̇ ) → is-prop P → P is 𝓥 small
 
 Propositional-Resizing : 𝓤ω
 Propositional-Resizing = {𝓤 𝓥 : Universe} → propositional-resizing 𝓤 𝓥
@@ -71,7 +83,7 @@ holds, of course:
 
 \begin{code}
 
-resize-up : (X : 𝓤 ̇ ) → X has-size (𝓤 ⊔ 𝓥)
+resize-up : (X : 𝓤 ̇ ) → X is (𝓤 ⊔ 𝓥) small
 resize-up {𝓤} {𝓥} X = Lift 𝓥 X , Lift-is-universe-embedding 𝓥 X
 
 resize-up-proposition : propositional-resizing 𝓤 (𝓤 ⊔ 𝓥)
@@ -144,15 +156,15 @@ EM-gives-PR {𝓤} {𝓥} em P i = Q (em P i) , e
 
 To show that the axiom of propositional resizing is itself a
 proposition, we use univalence here (and there is a proof with weaker
-hypotheses below). But notice that the type "X has-size 𝓥" is a
+hypotheses below). But notice that the type "X is 𝓥 small" is a
 proposition if and only if univalence holds.
 
 \begin{code}
 
-has-size-is-prop : Univalence
-                 → (X : 𝓤 ̇ ) (𝓥 :  Universe)
-                 → is-prop (X has-size 𝓥)
-has-size-is-prop {𝓤} ua X 𝓥 = c
+being-small-is-prop : Univalence
+                    → (X : 𝓤 ̇ ) (𝓥 :  Universe)
+                    → is-prop (X is 𝓥 small)
+being-small-is-prop {𝓤} ua X 𝓥 = c
  where
   fe : FunExt
   fe = Univalence-gives-FunExt ua
@@ -176,7 +188,7 @@ has-size-is-prop {𝓤} ua X 𝓥 = c
 propositional-resizing-is-prop : Univalence → is-prop (propositional-resizing 𝓤 𝓥)
 propositional-resizing-is-prop {𝓤} {𝓥} ua =  Π-is-prop (fe (𝓤 ⁺) (𝓥 ⁺ ⊔ 𝓤))
                                                 (λ P → Π-is-prop (fe 𝓤 (𝓥 ⁺ ⊔ 𝓤))
-                                                (λ i → has-size-is-prop ua P 𝓥))
+                                                (λ i → being-small-is-prop ua P 𝓥))
  where
   fe : FunExt
   fe = Univalence-gives-FunExt ua
@@ -189,12 +201,12 @@ instead of univalence:
 
 \begin{code}
 
-prop-has-size-is-prop : PropExt
-                      → FunExt
-                      → (P : 𝓤 ̇ )
-                      → is-prop P
-                      → (𝓥 :  Universe) → is-prop (P has-size 𝓥)
-prop-has-size-is-prop {𝓤} pe fe P i 𝓥 = c
+prop-being-small-is-prop : PropExt
+                         → FunExt
+                         → (P : 𝓤 ̇ )
+                         → is-prop P
+                         → (𝓥 :  Universe) → is-prop (P is 𝓥 small)
+prop-being-small-is-prop {𝓤} pe fe P i 𝓥 = c
  where
   j : is-prop (Lift 𝓥 P)
   j = equiv-to-prop (Lift-is-universe-embedding 𝓥 P) i
@@ -223,7 +235,7 @@ propositional-resizing-is-prop' : PropExt
 propositional-resizing-is-prop' {𝓤} {𝓥} pe fe =
   Π-is-prop (fe (𝓤 ⁺) (𝓥 ⁺ ⊔ 𝓤))
    (λ P → Π-is-prop (fe 𝓤 (𝓥 ⁺ ⊔ 𝓤))
-           (λ i → prop-has-size-is-prop pe fe P i 𝓥))
+           (λ i → prop-being-small-is-prop pe fe P i 𝓥))
 \end{code}
 
 Impredicativity. We begin with this strong notion, which says that the
@@ -233,7 +245,7 @@ universe (i.e. in all universes except the first).
 \begin{code}
 
 Ω⁺-resizing : (𝓤 : Universe) → 𝓤ω
-Ω⁺-resizing 𝓤 = (𝓥 : Universe) → (Ω 𝓤) has-size (𝓥 ⁺)
+Ω⁺-resizing 𝓤 = (𝓥 : Universe) → (Ω 𝓤) is (𝓥 ⁺) small
 
 Ω⁺-resizing-from-pr-pe-fe : Propositional-resizing
                           → PropExt
@@ -261,7 +273,7 @@ universe (i.e. in all universes except the first).
                (to-resize ρ (resize ρ Q j) (resize-is-prop ρ Q j) ∘
                 to-resize ρ Q j)
 
-  γ : (Ω 𝓤) has-size (𝓥 ⁺)
+  γ : (Ω 𝓤) is (𝓥 ⁺) small
   γ = Ω 𝓥 , qinveq φ (ψ , ψφ , φψ)
 \end{code}
 
@@ -271,7 +283,7 @@ truth-values in the universe 𝓤 itself lives in 𝓤.
 \begin{code}
 
 Ω-resizing : (𝓤 : Universe) → 𝓤 ⁺ ̇
-Ω-resizing 𝓤 = (Ω 𝓤) has-size 𝓤
+Ω-resizing 𝓤 = (Ω 𝓤) is 𝓤 small
 
 \end{code}
 
@@ -295,7 +307,7 @@ universe, and of all other universes, of course:
 \begin{code}
 
 Ω-Resizing : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥 )⁺ ̇
-Ω-Resizing 𝓤 𝓥 = (Ω 𝓤) has-size 𝓥
+Ω-Resizing 𝓤 𝓥 = (Ω 𝓤) is 𝓥 small
 
 Ω-global-resizing-from-em-pe-fe : EM 𝓤
                                 → propext 𝓤
@@ -370,7 +382,7 @@ universes:
   γ = Q , ε
 
 Ω-resizing₀ : (𝓤 : Universe) → 𝓤 ⁺ ̇
-Ω-resizing₀ 𝓤 = (Ω 𝓤) has-size 𝓤₀
+Ω-resizing₀ 𝓤 = (Ω 𝓤) is 𝓤₀ small
 
 Ω-resizing₀-from-em-pe-fe₀ : EM 𝓤
                            → propext 𝓤
@@ -387,7 +399,7 @@ the second universe 𝓤₁:
 \begin{code}
 
 Ω-resizing₁ : (𝓤 : Universe) → 𝓤 ⁺ ⊔ 𝓤₂ ̇
-Ω-resizing₁ 𝓤 = (Ω 𝓤) has-size 𝓤₁
+Ω-resizing₁ 𝓤 = (Ω 𝓤) is 𝓤₁ small
 
 Ω-resizing₁-from-pr-pe-fe : Propositional-resizing
                           → PropExt
@@ -569,18 +581,18 @@ is not necessary.
 Added 24 January 2020 (originally proved 19 November 2019) by Tom de Jong.
 
 It turns out that a proposition Y has size 𝓥 precisely if
-(Y has-size 𝓥) has size 𝓥.
+(Y is 𝓥 small) is 𝓥 small.
 
-Hence, if you can resize the propositions of the form (Y has-size 𝓥)
+Hence, if you can resize the propositions of the form (Y is 𝓥 small)
 (with Y in 𝓤), then you can resize all propositions in 𝓤 (to 𝓥).
 
 \begin{code}
 
-has-size-idempotent : (ua : Univalence) (𝓤 𝓥 : Universe) (Y : 𝓤 ̇ )
-                    → is-prop Y
-                    → (Y has-size 𝓥) has-size 𝓥
-                    → Y has-size 𝓥
-has-size-idempotent ua 𝓤 𝓥 Y i (H , e) = X , γ
+being-small-is-idempotent : (ua : Univalence) (𝓤 𝓥 : Universe) (Y : 𝓤 ̇ )
+                          → is-prop Y
+                          → (Y is 𝓥 small) is 𝓥 small
+                          → Y is 𝓥 small
+being-small-is-idempotent ua 𝓤 𝓥 Y i (H , e) = X , γ
  where
   X : 𝓥 ̇
   X = Σ h ꞉ H , pr₁ (eqtofun e h)
@@ -590,13 +602,13 @@ has-size-idempotent ua 𝓤 𝓥 Y i (H , e) = X , γ
       Y  ■
    where
     X' : 𝓥 ⁺ ⊔ 𝓤 ̇
-    X' = Σ h ꞉ Y has-size 𝓥 , pr₁ h
+    X' = Σ h ꞉ Y is 𝓥 small , pr₁ h
 
     ϕ = logically-equivalent-props-are-equivalent j i f g
      where
       j : is-prop X'
-      j = Σ-is-prop (has-size-is-prop ua Y 𝓥)
-            (λ (h : Y has-size 𝓥) → equiv-to-prop (pr₂ h) i)
+      j = Σ-is-prop (being-small-is-prop ua Y 𝓥)
+            (λ (h : Y is 𝓥 small) → equiv-to-prop (pr₂ h) i)
 
       f : X' → Y
       f (e' , x) = eqtofun (pr₂ e') x
@@ -604,42 +616,42 @@ has-size-idempotent ua 𝓤 𝓥 Y i (H , e) = X , γ
       g : Y → X'
       g y = (𝟙{𝓥} , singleton-≃-𝟙' (pointed-props-are-singletons y i)) , ⋆
 
-has-size-resizing : (𝓤 𝓥 : Universe) → 𝓤 ⁺ ⊔ 𝓥 ⁺ ̇
-has-size-resizing 𝓤 𝓥 = (Y : 𝓤 ̇ ) → (Y has-size 𝓥) has-size 𝓥
+deJong-resizing : (𝓤 𝓥 : Universe) → 𝓤 ⁺ ⊔ 𝓥 ⁺ ̇
+deJong-resizing 𝓤 𝓥 = (Y : 𝓤 ̇ ) → (Y is 𝓥 small) is 𝓥 small
 
-has-size-resizing-implies-propositional-resizing : (ua : Univalence)
-                                                   (𝓤 𝓥 : Universe)
-                                                 → has-size-resizing 𝓤 𝓥
-                                                 → propositional-resizing 𝓤 𝓥
-has-size-resizing-implies-propositional-resizing ua 𝓤 𝓥 r P i =
-  has-size-idempotent ua 𝓤 𝓥 P i (r P)
+deJong-resizing-implies-propositional-resizing : (ua : Univalence)
+                                                 (𝓤 𝓥 : Universe)
+                                               → deJong-resizing 𝓤 𝓥
+                                               → propositional-resizing 𝓤 𝓥
+deJong-resizing-implies-propositional-resizing ua 𝓤 𝓥 r P i =
+  being-small-is-idempotent ua 𝓤 𝓥 P i (r P)
 
-has-size-idempotent' : (ua : Univalence) (𝓤 𝓥 : Universe) (Y : 𝓤 ̇ )
-                     → Y has-size 𝓥
-                     → (Y has-size 𝓥) has-size 𝓥
-has-size-idempotent' ua 𝓤 𝓥 Y r = 𝟙{𝓥} , γ
+being-small-is-idempotent-converse : (ua : Univalence) (𝓤 𝓥 : Universe) (Y : 𝓤 ̇ )
+                                   → Y is 𝓥 small
+                                   → (Y is 𝓥 small) is 𝓥 small
+being-small-is-idempotent-converse ua 𝓤 𝓥 Y r = 𝟙{𝓥} , γ
  where
-  γ : 𝟙{𝓥} ≃ (Y has-size 𝓥)
-  γ = singleton-≃-𝟙' (pointed-props-are-singletons r (has-size-is-prop ua Y 𝓥))
+  γ : 𝟙{𝓥} ≃ (Y is 𝓥 small)
+  γ = singleton-≃-𝟙' (pointed-props-are-singletons r (being-small-is-prop ua Y 𝓥))
 
-has-size-idempotent-≃ : (ua : Univalence) (𝓤 𝓥 : Universe) (Y : 𝓤 ̇ )
-                      → is-prop Y
-                      → ((Y has-size 𝓥) has-size 𝓥) ≃ (Y has-size 𝓥)
-has-size-idempotent-≃ ua 𝓤 𝓥 Y i =
+being-small-is-idempotent-≃ : (ua : Univalence) (𝓤 𝓥 : Universe) (Y : 𝓤 ̇ )
+                            → is-prop Y
+                            → ((Y is 𝓥 small) is 𝓥 small) ≃ (Y is 𝓥 small)
+being-small-is-idempotent-≃ ua 𝓤 𝓥 Y i =
  logically-equivalent-props-are-equivalent
-   (has-size-is-prop ua (Y has-size 𝓥) 𝓥)
-   (has-size-is-prop ua Y 𝓥)
-   (has-size-idempotent ua 𝓤 𝓥 Y i)
-   (has-size-idempotent' ua 𝓤 𝓥 Y)
+   (being-small-is-prop ua (Y is 𝓥 small) 𝓥)
+   (being-small-is-prop ua Y 𝓥)
+   (being-small-is-idempotent ua 𝓤 𝓥 Y i)
+   (being-small-is-idempotent-converse ua 𝓤 𝓥 Y)
 
-has-size-idempotent-≡ : (ua : Univalence) (𝓤 𝓥 : Universe) (Y : 𝓤 ̇ )
-                      → is-prop Y
-                      → ((Y has-size 𝓥) has-size 𝓥) ≡ (Y has-size 𝓥)
-has-size-idempotent-≡ ua 𝓤 𝓥 Y i =
+being-small-is-idempotent-≡ : (ua : Univalence) (𝓤 𝓥 : Universe) (Y : 𝓤 ̇ )
+                            → is-prop Y
+                            → ((Y is 𝓥 small) is 𝓥 small) ≡ (Y is 𝓥 small)
+being-small-is-idempotent-≡ ua 𝓤 𝓥 Y i =
   eqtoid (ua (𝓤 ⊔ 𝓥 ⁺))
-    ((Y has-size 𝓥) has-size 𝓥)
-    (Y has-size 𝓥)
-    (has-size-idempotent-≃ ua 𝓤 𝓥 Y i)
+    ((Y is 𝓥 small) is 𝓥 small)
+    (Y is 𝓥 small)
+    (being-small-is-idempotent-≃ ua 𝓤 𝓥 Y i)
 
 \end{code}
 
@@ -649,21 +661,36 @@ de Jong with Martin Escardo.
 \begin{code}
 
 is-small : 𝓤 ⁺ ̇ → 𝓤 ⁺ ̇
-is-small {𝓤} X = X has-size 𝓤
+is-small {𝓤} X = X is 𝓤 small
 
 is-large : 𝓤 ⁺ ̇ → 𝓤 ⁺ ̇
 is-large X = ¬ is-small X
 
-_Has-size_ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → (𝓦 : Universe) → 𝓤 ⊔ 𝓥 ⊔ (𝓦 ⁺) ̇
-f Has-size 𝓦 = ∀ y → (fiber f y) has-size 𝓦
+_is_small-map : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → (𝓦 : Universe) → 𝓤 ⊔ 𝓥 ⊔ (𝓦 ⁺) ̇
+f is 𝓦 small-map = ∀ y → (fiber f y) is 𝓦 small
 
-is-small-map : {X Y : 𝓤 ⁺ ̇ } → (X → Y) → 𝓤 ⁺ ̇
-is-small-map f = ∀ y → is-small (fiber f y)
+_is-small-map : {X Y : 𝓤 ⁺ ̇ } → (X → Y) → 𝓤 ⁺ ̇
+_is-small-map {𝓤} f = f is 𝓤 small-map
+
+\end{code}
+
+Obsolete notation used in some publications:
+
+\begin{code}
+
+_Has-size_ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → (𝓦 : Universe) → 𝓤 ⊔ 𝓥 ⊔ (𝓦 ⁺) ̇
+f Has-size 𝓦 = f is 𝓦 small-map
+
+\end{code}
+
+The above should not be used anymore, but should be kept here.
+
+\begin{code}
 
 size-contravariance : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                    → f Has-size 𝓦
-                    → Y has-size 𝓦
-                    → X has-size 𝓦
+                    → f is 𝓦 small-map
+                    → Y is 𝓦 small
+                    → X is 𝓦 small
 size-contravariance {𝓤} {𝓥} {𝓦} {X} {Y} f f-size (Y' , 𝕘) = γ
  where
   F : Y → 𝓦 ̇
@@ -680,23 +707,23 @@ size-contravariance {𝓤} {𝓥} {𝓦} {X} {Y} f f-size (Y' , 𝕘) = γ
       (Σ y ꞉ Y , fiber f y) ≃⟨ total-fiber-is-domain f ⟩
       X                     ■
 
-  γ : X has-size 𝓦
+  γ : X is 𝓦 small
   γ = X' , e
 
 size-covariance : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                    → f Has-size 𝓦
-                    → ¬ (X has-size 𝓦)
-                    → ¬ (Y has-size 𝓦)
+                → f is 𝓦 small-map
+                → ¬ (X is 𝓦 small)
+                → ¬ (Y is 𝓦 small)
 size-covariance f ϕ = contrapositive (size-contravariance f ϕ)
 
 small-contravariance : {X Y : 𝓤 ⁺ ̇ } (f : X → Y)
-                     → is-small-map f
+                     → f is-small-map
                      → is-small Y
                      → is-small X
 small-contravariance = size-contravariance
 
 large-covariance : {X Y : 𝓤 ⁺ ̇ } (f : X → Y)
-                 → is-small-map f
+                 → f is-small-map
                  → is-large X
                  → is-large Y
 large-covariance = size-covariance
@@ -704,7 +731,7 @@ large-covariance = size-covariance
 size-of-section-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (s : X → Y)
                           → is-section s
                           → is-embedding s
-                          → s Has-size 𝓥
+                          → s is 𝓥 small-map
 size-of-section-embedding {𝓤} {𝓥} {X} {Y} s (r , η) e y = γ
  where
   c : (x : Y) → collapsible (s (r x) ≡ x)
@@ -734,14 +761,14 @@ size-of-section-embedding {𝓤} {𝓥} {X} {Y} s (r , η) e y = γ
   δ : B ≃ fiber s y
   δ = logically-equivalent-props-are-equivalent B-is-prop (e y) α β
 
-  γ : (fiber s y) has-size 𝓥
+  γ : (fiber s y) is 𝓥 small
   γ = B , δ
 
 section-embedding-size-contravariance : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                                       → is-embedding f
                                       → is-section f
-                                      → Y has-size 𝓦
-                                      → X has-size 𝓦
+                                      → Y is 𝓦 small
+                                      → X is 𝓦 small
 section-embedding-size-contravariance {𝓤} {𝓥} {𝓦} {X} {Y} f e (g , η) (Y' , h , i) = γ
  where
   h⁻¹ : Y → Y'
@@ -754,30 +781,28 @@ section-embedding-size-contravariance {𝓤} {𝓥} {𝓦} {X} {Y} f e (g , η) 
              g (f x)           ≡⟨ η x ⟩
              x                 ∎
 
-  δ : f' Has-size 𝓦
+  δ : f' is 𝓦 small-map
   δ = size-of-section-embedding f' (g ∘ h , η')
        (∘-is-embedding e (equivs-are-embeddings h⁻¹
                          (inverses-are-equivs h i)))
 
-  γ : X has-size 𝓦
+  γ : X is 𝓦 small
   γ = size-contravariance f' δ (Y' , ≃-refl Y')
-
-
 
 ≃-size-contravariance : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                       → X ≃ Y
-                      → Y has-size 𝓦
-                      → X has-size 𝓦
+                      → Y is 𝓦 small
+                      → X is 𝓦 small
 ≃-size-contravariance {𝓤} {𝓥} {𝓦} {X} {Y} e (Z , d) = Z , ≃-comp d (≃-sym e)
 
 singletons-have-any-size : {X : 𝓤 ̇ }
                          → is-singleton X
-                         → X has-size 𝓥
+                         → X is 𝓥 small
 singletons-have-any-size i = 𝟙 , singleton-≃-𝟙' i
 
 equivs-have-any-size : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                      → is-equiv f
-                     → f Has-size 𝓦
+                     → f is 𝓦 small-map
 equivs-have-any-size {𝓤} {𝓥} {𝓦} {X} {Y} f e y =
  singletons-have-any-size (equivs-are-vv-equivs f e y)
 
@@ -809,5 +834,63 @@ Id⟦ ls ⟧ x y = x ≡⟦ ls ⟧ y
 
 ⟦_⟧-refl : {X : 𝓤 ⁺ ̇ } (ls : is-locally-small X) (x : X) → x ≡⟦ ls ⟧ x
 ⟦ ls ⟧-refl x = ⌜ ≃-sym (pr₂ (ls x x)) ⌝ refl
+
+\end{code}
+
+Added 5 April 2022 by Tom de Jong, after discussion with Martín.
+(Refactoring an earlier addition dated 15 March 2022.)
+
+Set Replacement is what we call the following principle:
+given X : 𝓤 and Y a locally 𝓥-small *set*, the image of a map f : X → Y is
+(𝓤 ⊔ 𝓥)-small.
+
+In particular, if 𝓤 and 𝓥 are the same, then the image is 𝓤-small.
+
+The name "Set Replacement" is inspired by [Section 2.19, Bezem+2022], but is
+different in two ways:
+(1) In [Bezem+2022] replacement is not restriced to maps into sets, hence our
+    name *Set* Replacement
+(2) In [Bezem+2022] the universe parameters 𝓤 and 𝓥 are taken to be the same.
+
+[Rijke2017] shows that the replacement of [Bezem+2022] is provable in the
+presence of a univalent universes 𝓤 closed under pushouts.
+
+In UF-Quotient.lagda, we prove that Set Replacement is provable if we assume
+that for every X : 𝓤 and 𝓥-valued equivalence relation ≈, the set quotient X / ≈
+exists in 𝓤 ⊔ 𝓥.
+
+In UF-Quotient.lagda we prove the converse using a specific construction of
+quotients, similar to [Corollary 5.1, Rijke2017].
+
+Thus, Set Replacement is equivalent to having set quotients in 𝓤 ⊔ 𝓥 for every
+type in 𝓤 with a 𝓥-valued equivalence relation (which is what you would have
+when adding set quotients as higher inductive types).
+
+[Rijke2017]  Egbert Rijke. The join construction.
+             https://arxiv.org/abs/1701.07538, January 2017.
+
+[Bezem+2022] Marc Bezem, Ulrik Buchholtz, Pierre Cagne, Bj‌ørn Ian Dundas and
+             Daniel R. Grayson
+             Symmetry
+             https://unimath.github.io/SymmetryBook/book.pdf
+             https://github.com/UniMath/SymmetryBook
+             Book version: 2722568 (2022-03-31)
+
+\begin{code}
+
+_is-locally_small : 𝓤 ̇  → (𝓥 : Universe) → 𝓥 ⁺ ⊔ 𝓤 ̇
+X is-locally 𝓥 small = (x y : X) → (x ≡ y) is 𝓥 small
+
+module _ (pt : propositional-truncations-exist) where
+
+ open import UF-ImageAndSurjection
+ open ImageAndSurjection pt
+
+ Set-Replacement : 𝓤ω
+ Set-Replacement = {𝓦 𝓣 𝓤 𝓥 : Universe} {X : 𝓣 ̇  } {Y : 𝓦 ̇  } (f : X → Y)
+                 → X is 𝓤 small
+                 → Y is-locally 𝓥 small
+                 → is-set Y
+                 → image f is (𝓤 ⊔ 𝓥) small
 
 \end{code}

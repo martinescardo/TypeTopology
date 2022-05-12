@@ -2,7 +2,7 @@ Martin Escardo
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 module UF-Embeddings where
 
@@ -51,6 +51,20 @@ equivs-are-embeddings : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                       → is-equiv f
                       → is-embedding f
 equivs-are-embeddings f e y = singletons-are-props (equivs-are-vv-equivs f e y)
+
+embeddings-with-sections-are-vv-equivs : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                                       → is-embedding f
+                                       → has-section f
+                                       → is-vv-equiv f
+embeddings-with-sections-are-vv-equivs f i (g , η) y = pointed-props-are-singletons
+                                                        (g y , η y) (i y)
+
+embeddings-with-sections-are-equivs : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                                    → is-embedding f
+                                    → has-section f
+                                    → is-equiv f
+embeddings-with-sections-are-equivs f i h = vv-equivs-are-equivs f
+                                             (embeddings-with-sections-are-vv-equivs f i h)
 
 _↪_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
 X ↪ Y = Σ f ꞉ (X → Y) , is-embedding f
@@ -315,62 +329,6 @@ This can be deduced directly from Yoneda.
 
 \begin{code}
 
-is-dense : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
-is-dense f = is-empty (Σ y ꞉ codomain f , ¬ fiber f y)
-
-id-is-dense : {X : 𝓤 ̇ } → is-dense (id {𝓤} {X})
-id-is-dense (y , n) = n (y , refl)
-
-comp-dense : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
-             {f : X → Y} {g : Y → Z}
-           → is-dense f
-           → is-dense g
-           → is-dense (g ∘ f)
-comp-dense {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {f} {g} e d = h
- where
-  h : ¬ (Σ z ꞉ Z , ¬ fiber (g ∘ f) z)
-  h (z , n) = d (z , k)
-   where
-    k : ¬ fiber g z
-    k (y , refl) = e (y , l)
-     where
-      l : ¬ fiber f y
-      l (x , refl) = n (x , refl)
-
-\end{code}
-
-We should find a better home for the above definition, which says that
-the complement of the image of f is empty. Perhaps a better
-terminology would be ¬¬-dense.
-
-\begin{code}
-
-_↪ᵈ_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
-X ↪ᵈ Y = Σ f ꞉ (X → Y) , is-embedding f × is-dense f
-
-module _ {𝓤 𝓥} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } where
-
- retraction-is-dense : (r : X → Y) → has-section r → is-dense r
- retraction-is-dense r (s , rs) (y , n) = n (s y , rs y)
-
- is-equiv-is-dense : (f : X → Y) → is-equiv f → is-dense f
- is-equiv-is-dense f e = retraction-is-dense f (equivs-have-sections f e)
-
- equiv-dense-embedding : X ≃ Y → X ↪ᵈ Y
- equiv-dense-embedding e = ⌜ e ⌝ ,
-                           equivs-are-embeddings ⌜ e ⌝ (⌜⌝-is-equiv e),
-                           is-equiv-is-dense     ⌜ e ⌝ (⌜⌝-is-equiv e)
-
- detofun : (X ↪ᵈ Y) → X → Y
- detofun = pr₁
-
- is-embedding-detofun : (e : X ↪ᵈ Y) → is-embedding (detofun e)
- is-embedding-detofun e = pr₁ (pr₂ e)
-
- is-dense-detofun : (e : X ↪ᵈ Y) → is-dense (detofun e)
- is-dense-detofun e = pr₂ (pr₂ e)
-
-
 module _ {𝓤 𝓥 𝓦 𝓣}
          {X : 𝓤 ̇ }
          {A : X → 𝓥 ̇ }
@@ -380,48 +338,6 @@ module _ {𝓤 𝓥 𝓦 𝓣}
          (g : (x : X) → A x → B (f x))
        where
 
- pair-fun : Σ A → Σ B
- pair-fun (x , a) = (f x , g x a)
-
- pair-fun-is-embedding : is-embedding f
-                    → ((x : X) → is-embedding (g x))
-                    → is-embedding pair-fun
- pair-fun-is-embedding e d (y , b) = h
-  where
-   Z : 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓣 ̇
-   Z = Σ w ꞉ fiber f y , fiber (g (pr₁ w)) (back-transport B (pr₂ w) b)
-
-   Z-is-prop : is-prop Z
-   Z-is-prop = subtype-of-prop-is-prop
-                pr₁
-                (pr₁-lc (λ {w} → d (pr₁ w) (back-transport B (pr₂ w) b)))
-                (e y)
-
-   φ : fiber pair-fun (y , b) → Z
-   φ ((x , a) , refl) = (x , refl) , (a , refl)
-
-   γ : Z → fiber pair-fun (y , b)
-   γ ((x , refl) , (a , refl)) = (x , a) , refl
-
-   γφ : (t : fiber pair-fun (y , b)) → γ (φ t) ≡ t
-   γφ ((x , a) , refl) = refl
-
-   h : is-prop (fiber pair-fun (y , b))
-   h = subtype-of-prop-is-prop φ (sections-are-lc φ (γ , γφ)) Z-is-prop
-
- pair-fun-dense : is-dense f
-               → ((x : X) → is-dense (g x))
-               → is-dense pair-fun
- pair-fun-dense i j = contrapositive γ i
-  where
-   γ : (Σ w ꞉ Σ B , ¬ fiber pair-fun w) → Σ y ꞉ Y , ¬ fiber f y
-   γ ((y , b) , n) = y , m
-    where
-     m : ¬ fiber f y
-     m (x , refl) = j x (b , l)
-      where
-       l : ¬ fiber (g x) b
-       l (a , refl) = n ((x , a) , refl)
 
 inl-is-embedding : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ )
                  → is-embedding (inl {𝓤} {𝓥} {X} {Y})

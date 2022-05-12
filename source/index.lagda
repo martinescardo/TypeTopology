@@ -55,7 +55,7 @@
      compactness of the Cantor type using countable Tychonoff.
      (https://www.cs.bham.ac.uk/~mhe/TypeTopology/UnsafeModulesIndex.html)
 
-   * In our last count, this development has 85000 lines, including
+   * In our last count, this development has 97000 lines, including
      comments and blank lines.
 
    * A module dependency graph is available, updated manually from
@@ -66,13 +66,13 @@
      file, explaining part of what we do in this development. See
      instead the comments in the various modules.
 
-   * This has been tested with 2.6.2.
+   * This has been tested with 2.6.2.1.
 
 Click at the imported module names to navigate to them:
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 module index where
 
@@ -90,7 +90,6 @@ import RicesTheoremForTheUniverse
 import Ordinals
 import LawvereFPT
 import PartialElements
-import UF
 import Types2019
 import MGS           -- Modular version of https://github.com/martinescardo/HoTT-UF-Agda-Lecture-Notes
 import PCFModules    -- By Tom de Jong
@@ -125,12 +124,13 @@ import CoNaturalsArithmetic
 import CoNaturalsExercise
 import CoNaturals
 import ConvergentSequenceCompact
-import ConvergentSequenceInfCompact
+import ConvergentSequenceHasInf
 -- import CubicalBinarySystem -- works with Agda 2.6.2 only and need the Cubical Library. By Martin Escardo and Alex Rice
 import DcpoDinfinity                   -- By Tom de Jong
 import DecidabilityOfNonContinuity
 import DecidableAndDetachable
 import Dedekind
+import Density
 import DisconnectedTypes
 import DiscreteAndSeparated
 import Dyadic
@@ -150,6 +150,10 @@ import Frame-version1
 import Frame                           -- By Ayberk Tosun
 import InitialFrame                    -- By Ayberk Tosun
 import CompactRegular                  -- By Ayberk Tosun
+import GaloisConnection                -- By Ayberk Tosun
+import AdjointFunctorTheoremForFrames  -- By Ayberk Tosun
+import HeytingImplication              -- By Ayberk Tosun
+import PatchLocale                     -- By Ayberk Tosun
 import FreeGroup                       -- By Marc Bezem, Thierry Coquand, Dybjer, and Martin Escardo.
 import FreeGroupOfLargeLocallySmallSet -- By Marc Bezem, Thierry Coquand, Dybjer, and Martin Escardo.
 import FreeJoinSemiLattice             -- By Tom de Jong
@@ -158,7 +162,7 @@ import GeneralNotation
 import GenericConvergentSequence
 import HiggsInvolutionTheorem
 import Id
-import InfCompact
+import InfProperty
 import InitialBinarySystem    -- More work than needed!
 import InitialBinarySystem2   -- No need to work with subtype of normal elements.
 import InjectiveTypes-article
@@ -187,21 +191,33 @@ import NaturalsOrder
 import Negation
 import NonCollapsibleFamily
 import NonSpartanMLTTTypes
+import SigmaDiscreteAndTotallySeparated
 import SRTclosure
 import OrdinalArithmetic
 import OrdinalArithmetic-Properties
 import OrdinalCodes
 import OrdinalNotationInterpretation
+import OrdinalNotationInterpretation0
+import OrdinalNotationInterpretation1
+import OrdinalNotationInterpretation2
 import OrdinalNotions
 import OrdinalOfOrdinals
+import OrdinalOfOrdinalsSuprema        -- By Tom de Jong
 import OrdinalOfTruthValues
+import OrdinalToppedArithmetic
+import OrdinalTaboos                   -- By Tom de Jong
 import Ordinals
 import OrdinalsClosure
 import Ordinals
 import OrdinalsFreeGroup
+import OrdinalsSupSum
+import OrdinalsToppedType
 import OrdinalsType
+import OrdinalsType-Injectivity
 import OrdinalsWellOrderArithmetic
 import OrdinalsWellOrderTransport
+import P2
+import PairFun
 import PartialElements
 import Pi
 import Plus
@@ -232,8 +248,6 @@ import sigma-sup-lattice
 import sigma-frame
 import TheTopologyOfTheUniverse
 import TotallySeparated
-import ToppedOrdinalArithmetic
-import ToppedOrdinalsType
 import Two
 import Two-Properties
 import UnivalenceFromScratch
@@ -245,7 +259,6 @@ import WellOrderingTaboo -- By Tom de Jong, based on a theorem by Andrew Swan
 import W
 import W-Properties
 import WLPO
-import UF
 import UF-Base
 import UF-Choice
 import UF-Classifiers
@@ -274,8 +287,10 @@ import UF-Powerset-Fin                 -- By Tom de Jong
 import UF-PropIndexedPiSigma
 import UF-PropTrunc
 import UF-PropTrunc-F
-import UF-Quotient
+import UF-Quotient                     -- By Tom de Jong
+import UF-Large-Quotient
 import UF-Quotient-F
+import UF-Quotient-Replacement         -- By Tom de Jong
 import UF-Retracts-FunExt
 import UF-Retracts
 import UF-Section-Embedding
@@ -298,9 +313,22 @@ Everything again to make sure we didn't forget anything above.
 
 \begin{code}
 
-import everything
+import everything-safe
 
 \end{code}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -429,7 +457,7 @@ increasingly complex compact ordinals.
 import SquashedSum
 import OrdinalNotationInterpretation
 import LexicographicCompactness
-import ConvergentSequenceInfCompact
+import ConvergentSequenceHasInf
 
 \end{code}
 

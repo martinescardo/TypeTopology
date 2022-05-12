@@ -59,7 +59,7 @@ apartness relation is a set, and so this reflection is always a set.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 module TotallySeparated where
 
@@ -368,11 +368,14 @@ the following particular cases:
    to-×-≡ (t (λ (p : X → 𝟚) → φ (λ (z : X × Y) → p (pr₁ z))))
           (u (λ (q : Y → 𝟚) → φ (λ (z : X × Y) → q (pr₂ z))))
 
-Σ-is-totally-separated : (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ )
-                       → is-discrete X
-                       → ((x : X) → is-totally-separated (Y x))
-                       → is-totally-separated (Σ Y)
-Σ-is-totally-separated X Y d t {a , b} {x , y} φ = to-Σ-≡ (r , s)
+Σ-is-totally-separated-if-index-type-is-discrete :
+
+    (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ )
+  → is-discrete X
+  → ((x : X) → is-totally-separated (Y x))
+  → is-totally-separated (Σ Y)
+
+Σ-is-totally-separated-if-index-type-is-discrete X Y d t {a , b} {x , y} φ = to-Σ-≡ (r , s)
  where
   r : a ≡ x
   r = discrete-types-are-totally-separated d (λ p → φ (λ z → p (pr₁ z)))
@@ -410,6 +413,8 @@ with the assumption that
 
 Then the previous few functions would be a particular case of this.
 
+See also the module SigmaDiscreteAndTotallySeparated.
+
 The following can also be considered as a special case of Σ (indexed
 by the type 𝟚):
 
@@ -439,7 +444,7 @@ The Cantor type ℕ → 𝟚 is totally separated:
 
 Π-is-totally-separated : funext 𝓤 𝓥
                        → {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
-                       → ((x : X) → is-totally-separated(Y x))
+                       → ((x : X) → is-totally-separated (Y x))
                        → is-totally-separated(Π Y)
 Π-is-totally-separated fe {X} {Y} t {f} {g} e = dfunext fe h
  where

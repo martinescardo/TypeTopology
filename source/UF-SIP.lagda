@@ -1,9 +1,9 @@
 Martin Escardo, 30 April 2020
 
-The structure identity principle and tools from
+The structure identity principle and tools from the 2019 paper and links
 
- https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/index.html
  https://arxiv.org/abs/1911.00580
+ https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/index.html
  https://github.com/martinescardo/HoTT-UF-Agda-Lecture-Notes
 
 There are three submodules:
@@ -14,7 +14,7 @@ There are three submodules:
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 module UF-SIP where
 

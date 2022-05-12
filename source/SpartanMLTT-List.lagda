@@ -5,7 +5,7 @@ Vectors with a different type for each entry (vec), usual vectors
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 module SpartanMLTT-List where
 

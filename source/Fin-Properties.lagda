@@ -27,7 +27,7 @@ using the corresponding properties for (finite) types.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 module Fin-Properties where
 
@@ -226,7 +226,7 @@ by this injection property:
 \begin{code}
 
 ↣-gives-≤ : (m n : ℕ) → (Fin m ↣ Fin n) → m ≤ n
-↣-gives-≤ 0        n        e       = zero-minimal n
+↣-gives-≤ 0        n        e       = zero-least n
 ↣-gives-≤ (succ m) 0        (f , i) = 𝟘-elim (f 𝟎)
 ↣-gives-≤ (succ m) (succ n) e       = ↣-gives-≤ m n (+𝟙-cancel Fin-is-discrete e)
 
@@ -355,7 +355,7 @@ Fin' : ℕ → 𝓤₀ ̇
 Fin' n = Σ k ꞉ ℕ , k < n
 
 𝟎' : {n : ℕ} → Fin' (succ n)
-𝟎' {n} = 0 , zero-minimal n
+𝟎' {n} = 0 , zero-least n
 
 suc' : {n : ℕ} → Fin' n → Fin' (succ n)
 suc' (k , l) = succ k , l
@@ -535,7 +535,7 @@ inf-construction {𝓤} {succ n} A δ = γ (δ 𝟎)
   γ (suc a) = 𝟎 , (φ , ψ) , ε
     where
      φ : (j : Fin (succ (succ n))) → A j → 𝟎 ≤ j
-     φ j b = zero-minimal (⟦_⟧ j)
+     φ j b = zero-least (⟦_⟧ j)
 
      ψ : (j : Fin (succ (succ n))) → j is-lower-bound-of A → j ≤ 𝟎
      ψ j l = l 𝟎 a
@@ -550,7 +550,7 @@ inf-construction {𝓤} {succ n} A δ = γ (δ 𝟎)
      φ (suc j) a = l j a
 
      ψ : (j : Fin (succ (succ n))) → j is-lower-bound-of A → j ≤ suc i
-     ψ 𝟎 l = zero-minimal (⟦_⟧ i)
+     ψ 𝟎 l = zero-least (⟦_⟧ i)
      ψ (suc j) l = u j (l ∘ suc)
 
      ε : Σ A → A (suc i)
@@ -1025,7 +1025,7 @@ Further versions of the pigeonhole principle are the following.
 Added 13th December 2019.
 
 A well-known application of the pigeonhole principle is that every
-element has a (minimal) finite order in a finite group. This holds
+element has a (least) finite order in a finite group. This holds
 more generally for any finite type equipped with a left-cancellable
 binary operation _·_ and a distinguished element e, with the same
 construction.
@@ -1062,13 +1062,13 @@ construction.
 
 \end{code}
 
-And of course then there is a minimal such k, by bounded minimization,
+And of course then there is a least such k, by bounded minimization,
 because finite types are discrete:
 
 \begin{code}
 
-    minimal-finite-order : (x : X) → Σμ λ(k : ℕ) → x ↑ (succ k) ≡ e
-    minimal-finite-order x = minimal-from-given A γ (finite-order x)
+    least-finite-order : (x : X) → Σμ λ(k : ℕ) → x ↑ (succ k) ≡ e
+    least-finite-order x = least-from-given A γ (finite-order x)
      where
       A : ℕ → 𝓤 ̇
       A n = x ↑ (succ n) ≡ e
@@ -1079,8 +1079,8 @@ because finite types are discrete:
 \end{code}
 
 Remark: the given construction finite-order already produces the
-minimal order, but it seems slightly more difficult to prove this than
-just compute the minimal order from any order. If we were interested
+least order, but it seems slightly more difficult to prove this than
+just compute the least order from any order. If we were interested
 in the efficiency of our constructions (Agda constructions are
 functional programs!), we would have to consider this.
 
@@ -1820,7 +1820,7 @@ equivalent):
 
 With Paulo Oliva (for applications to game theory), October 2021.
 
-Every inhabited detachable "subset" of Fin n has a minimal and a
+Every inhabited detachable "subset" of Fin n has a least and a
 maximal element.
 
 \begin{code}
