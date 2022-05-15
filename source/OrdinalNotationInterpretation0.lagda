@@ -48,7 +48,7 @@ open import OrdinalArithmetic fe
 open import OrdinalArithmetic-Properties ua
 open import OrdinalOfOrdinalsSuprema ua
 open import OrdinalOfOrdinals ua
-open import OrdinalsType-Injectivity fe
+open import OrdinalsType-Injectivity
 open import Plus-Properties
 open import PropTychonoff
 open import SquashedSum fe
@@ -56,7 +56,7 @@ open import OrdinalToppedArithmetic fe
 open import OrdinalsToppedType fe
 
 open ImageAndSurjection pt
-open ordinals-injectivity
+open ordinals-injectivity fe
 
 module _ (sr : Set-Replacement pt) where
 

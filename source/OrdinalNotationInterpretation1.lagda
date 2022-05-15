@@ -467,13 +467,13 @@ module _ (pt : propositional-truncations-exist)
  pe = Univalence-gives-Prop-Ext ua
 
  open import OrdinalOfOrdinalsSuprema ua
- open import OrdinalsType-Injectivity fe
+ open import OrdinalsType-Injectivity
  open import OrdinalOfOrdinals ua
  open import OrdinalArithmetic-Properties ua
 
  open import UF-ImageAndSurjection
  open ImageAndSurjection pt
- open ordinals-injectivity
+ open ordinals-injectivity fe
 
  module _ (sr : Set-Replacement pt) where
 

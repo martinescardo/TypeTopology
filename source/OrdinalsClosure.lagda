@@ -25,7 +25,7 @@ open import Two-Properties
 open import AlternativePlus
 open import OrdinalsToppedType fe
 open import OrdinalArithmetic fe
-open import OrdinalsType-Injectivity fe
+open import OrdinalsType-Injectivity
 open import OrdinalToppedArithmetic fe
 open import CompactTypes
 open import GenericConvergentSequence
@@ -221,7 +221,7 @@ pair-fun-is-order-preserving τ υ A B f g φ γ (x , a) (x , b) (inr (refl , l)
 ι𝟙ᵒ-is-order-preserving (inr *) (inl m) l = 𝟘-elim l
 ι𝟙ᵒ-is-order-preserving (inr *) (inr *) l = 𝟘-elim l
 
-open topped-ordinals-injectivity
+open topped-ordinals-injectivity fe
 
 over-ι-map-is-order-preserving  : (τ : ℕ → Ordᵀ) (z : ℕ + 𝟙)
                                      → is-order-preserving

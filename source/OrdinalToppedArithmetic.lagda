@@ -32,7 +32,7 @@ open import OrdinalsType
 open import OrdinalArithmetic fe
 open import OrdinalsWellOrderArithmetic
 open import OrdinalsToppedType fe
-open import OrdinalsType-Injectivity fe
+open import OrdinalsType-Injectivity
 open import GenericConvergentSequence
 open import SquashedSum fe
 open import CanonicalMapNotation
@@ -120,7 +120,7 @@ ordinals defined above.
 
 \begin{code}
 
-open topped-ordinals-injectivity
+open topped-ordinals-injectivity fe
 
 ∑¹ : (ℕ → Ordᵀ) → Ordᵀ
 ∑¹ τ = ∑ ℕ∞ᵒ (τ ↗ embedding-ℕ-to-ℕ∞ (fe 𝓤₀ 𝓤₀))
