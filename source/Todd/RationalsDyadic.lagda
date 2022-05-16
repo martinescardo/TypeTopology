@@ -13,6 +13,7 @@ open import ncRationals
 open import Rationals
 open import IntegersB
 open import IntegersAddition renaming (_+_ to _+ℤ_)
+open import IntegersDivision
 open import UF-FunExt
 
 module Todd.RationalsDyadic
@@ -60,23 +61,42 @@ raise-again n a (succ b) = I
 
 open import NaturalNumbers-Properties
 
+odd even : ℤ → 𝓤₀ ̇
+odd (pos                   0) = 𝟘
+odd (pos                   1) = 𝟙
+odd (pos (succ (succ x)))     = odd (pos x)
+odd (negsucc               0) = 𝟙
+odd (negsucc               1) = 𝟘
+odd (negsucc (succ (succ x))) = odd (negsucc x)
+even x = ¬ odd x
+
+even-or-odd? : (x : ℤ) → even x ∔ odd x
+even-or-odd? (pos                   0) = inl (λ x → x)
+even-or-odd? (pos                   1) = inr ⋆
+even-or-odd? (pos (succ (succ x)))     = even-or-odd? (pos x)
+even-or-odd? (negsucc               0) = inr ⋆
+even-or-odd? (negsucc               1) = inl (λ x → x)
+even-or-odd? (negsucc (succ (succ x))) = even-or-odd? (negsucc x)
+
 ℤ[1/2] : 𝓤₀ ̇
 ℤ[1/2] = Σ (z , n) ꞉ ℤ × ℕ , is-in-lowest-terms (z , pred (2^ n))
 
--- normalise (k , n)  = k/2^n
-normalise : ℤ × ℤ → ℤ[1/2]
+open import Todd.TernaryBoehmDef
+open import IntegersAbs
+open import IntegersMultiplication renaming (_*_ to _ℤ*_)
 
 normalise-pos : ℤ → ℕ → ℤ[1/2]
-normalise-pos k zero = (k , 0) , {!!} 
-normalise-pos k (succ n) = {!!} -- with even-or-odd? k
--- ... | inl even = (k /2 , n) , {!!}
--- ... | inr odd  = (k , succ n) , {!!}
+normalise-pos k zero     = (k , 0) , {!!} 
+normalise-pos k (succ n) with even-or-odd? k
+... | inl even = ({!!} , n) , {!!}
+... | inr odd  = (k , succ n) , {!!}
 
 normalise-neg : ℤ → ℕ → ℤ[1/2]
-normalise-neg k 0 = (k +ℤ k , 0) , {!!}
--- normalise k/2^-1 = 2k/2^0 = 2k
+normalise-neg k 0        = (k +ℤ k , 0) , {!!}
 normalise-neg k (succ n) = normalise-neg (k +ℤ k) n
- 
+
+-- normalise (k , n)  = k/2^n
+normalise : ℤ × ℤ → ℤ[1/2]
 normalise (k , pos     n) = normalise-pos k n
 normalise (k , negsucc n) = normalise-neg k n
 
@@ -89,20 +109,10 @@ normalise (k , negsucc n) = normalise-neg k n
 1ℤ[1/2] : ℤ[1/2]
 1ℤ[1/2] = (pos 1 , 0) , ((1 , refl) , 1 , refl) , λ f → pr₂
 
--- Following shows it is not feasible to construct arbitrary constants without some machinery to obtain the lowest terms proof easily.
-{-
-3/2ℤ[1/2] : ℤ[1/2]
-3/2ℤ[1/2] = (pos 3 , 1) , ((3 , refl) , 2 , refl) , lt
- where
-  lt : (x : ℕ) → (Σ a ꞉ ℕ , x * a ≡ 3) × (Σ b ꞉ ℕ , x * b ≡ succ (pred (2^ 1)))
-               → Σ k ꞉ ℕ ,  x * k ≡ 1
-  lt x ((a , e₁)  , b , e₂) = {!b - a!} , {!!}
--}
-{-
 instance
  canonical-map-ℤ[1/2]-to-ℚ : Canonical-Map ℤ[1/2] ℚ
  ι {{canonical-map-ℤ[1/2]-to-ℚ}} = ℤ[1/2]-to-ℚ
--}
+
 \end{code}
 
 
