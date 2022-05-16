@@ -1,6 +1,8 @@
 Andrew Sneap
-ra
-\begin{code}
+
+In this file, I prove that the Reals are arithmetically located.
+
+\begin{code}[hide]
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
@@ -32,6 +34,7 @@ open import DedekindReals pe pt fe
 open import MetricSpaceRationals fe pt pe
 open PropositionalTruncation pt
 
+ -- Need to generalise this , y - x ≡ a , 0 < a
 exists-2/3-n : (x y p : ℚ) → x < y → 0ℚ < p → Σ n ꞉ ℕ , (((⟨2/3⟩^ n) * (y - x)) < p)
 exists-2/3-n x y (p , α) l₁ l₂ = V use-limit
  where
@@ -89,7 +92,6 @@ exists-2/3-n x y (p , α) l₁ l₂ = V use-limit
           (p , α) * 1ℚ ≡⟨ ℚ-mult-right-id fe (p , α) ⟩
           p , α ∎
 
-
 ral-lemma : (α β : ℚ) → (n : ℕ) → β ≡ 2/3 * α → ((rec 2/3 (λ k → k * 2/3) n * 2/3) * α) ≡ (rec 2/3 (λ k → k * 2/3) n * β)
 ral-lemma α β n e = ((rec 2/3 (λ k → k * 2/3) n * 2/3) * α) ≡⟨ refl ⟩
                (((⟨2/3⟩^ (succ (succ n))) * α) )            ≡⟨ ap (_* α) (I (succ n)) ⟩
@@ -105,11 +107,10 @@ ral-lemma α β n e = ((rec 2/3 (λ k → k * 2/3) n * 2/3) * α) ≡⟨ refl �
      f = (ℚ-mult-left-id fe 2/3) ⁻¹
   I (succ n) = refl
 
-
-ℝ-arithmetically-located : (((L , R) , _) : ℝ)
-                          → (p : ℚ)
-                          → 0ℚ < p
-                          → ∃ (x , y) ꞉ ℚ × ℚ , x ∈ L × y ∈ R × 0ℚ < (y - x) × (y - x) < p
+ℝ-arithmetically-located : (z : ℝ)
+                         → (p : ℚ)
+                         → 0ℚ < p
+                         → ∃ (x , y) ꞉ ℚ × ℚ , (x < z) × (z < y) × 0ℚ < (y - x) × (y - x) < p
 ℝ-arithmetically-located ((L , R) , inhabited-left , inhabited-right , rounded-left , rounded-right , disjoint , located) p l = ∥∥-rec ∃-is-prop I (binary-choice inhabited-left inhabited-right)
  where
   I : (Σ x ꞉ ℚ , x ∈ L) × (Σ y ꞉ ℚ , y ∈ R) → ∃ (x , y) ꞉ ℚ × ℚ , x ∈ L × y ∈ R × (0ℚ < (y - x) × (y - x) < p)
@@ -157,13 +158,13 @@ ral-lemma α β n e = ((rec 2/3 (λ k → k * 2/3) n * 2/3) * α) ≡⟨ refl �
       IV : ((⟨2/3⟩^ succ n) * (y' - x)) < p
       IV = transport (_< p) (ral-lemma (y - x) (y' - x) n e₂) l₄
 
-trans→disjoint : (L R : ℚ-subset-of-propositions) → disjoint L R → (q : ℚ) → ¬ (q ∈ L × q ∈ R)
+trans→disjoint : (L R : 𝓟 ℚ) → disjoint L R → (q : ℚ) → ¬ (q ∈ L × q ∈ R)
 trans→disjoint L R dis q (qL , qR) = ℚ<-not-itself q I
  where
   I : q < q
   I = dis q q (qL , qR)
 
-disjoint→trans : (L R : ℚ-subset-of-propositions) → located L R →  ((q : ℚ) → ¬ (q ∈ L × q ∈ R)) → disjoint L R
+disjoint→trans : (L R : 𝓟 ℚ) → located L R →  ((q : ℚ) → ¬ (q ∈ L × q ∈ R)) → disjoint L R
 disjoint→trans L R loc dis p q (pL , qR) = I (ℚ-trichotomous fe p q)
  where
   I : p < q ∔ (p ≡ q) ∔ q < p → p < q

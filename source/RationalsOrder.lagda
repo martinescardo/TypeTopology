@@ -1,5 +1,6 @@
+Andrew Sneap
 
-Andrew Sneap - 11th November 2021
+In this file I define order of rationals, and prove many properties of order.
 
 \begin{code}
 
@@ -7,17 +8,16 @@ Andrew Sneap - 11th November 2021
 
 open import SpartanMLTT renaming (_+_ to _∔_) --TypeTopology
 
-open import NaturalNumbers-Properties
-open import MoreNaturalProperties
-open import OrderNotation
-open import NaturalsAddition renaming (_+_ to _ℕ+_)
-open import Plus-Properties
+open import NaturalNumbers-Properties --TypeTopology
+open import OrderNotation --TypeTopology
+open import NaturalsAddition renaming (_+_ to _ℕ+_) --TypeTopology
+open import Plus-Properties --TypeTopology
 open import UF-Base hiding (_≈_) --TypeTopology
 open import UF-FunExt --TypeTopology
 open import UF-Subsingletons --TypeTopology
 
 open import IntegersAbs
-open import IntegersAddition renaming (_+_ to _ℤ+_)
+open import IntegersAddition renaming (_+_ to _ℤ+_) hiding (_-_)
 open import IntegersB
 open import IntegersMultiplication renaming (_*_ to _ℤ*_)
 open import IntegersOrder
@@ -242,6 +242,14 @@ toℚ-≤ (x , a) (y , b) l = ℤ≤-ordering-right-cancellable (x' ℤ* pos (su
 ℚ-dichotomous : (p q : ℚ) → p ≤ q ∔ q ≤ p
 ℚ-dichotomous ((x , a) , α) ((y , b) , β) = ℤ-dichotomous (x ℤ* pos (succ b)) (y ℤ* pos (succ a))
 
+ℚ-dichotomous' : Fun-Ext → (p q : ℚ) → p < q ∔ q ≤ p
+ℚ-dichotomous' fe p q = I (ℚ-trichotomous fe p q)
+ where
+  I : p < q ∔ (p ≡ q) ∔ q < p → p < q ∔ q ≤ p
+  I (inl l) = inl l
+  I (inr (inl e)) = inr (transport (_≤ p) e (ℚ≤-refl p))
+  I (inr (inr l)) = inr (ℚ<-coarser-than-≤ q p l)
+
 located-property : Fun-Ext → (p q x : ℚ) → p < q → (p < x) ∔ (x < q) 
 located-property fe p q x l = f (ℚ-trichotomous fe x q)
  where
@@ -306,7 +314,32 @@ rounded-lemma₀ (succ a) = succ (2 ℕ* pred (succ (succ a))) ≡⟨ ap (λ - �
   III : p + q - q ≡ p
   III = ℚ+-assoc fe p q (- q) ∙ (ap (p +_) (ℚ-inverse-sum-to-zero fe q) ∙ ℚ-zero-right-neutral fe p)
 
- 
+ℚ<-subtraction-preserves-order' : Fun-Ext → (p q : ℚ) → q < 0ℚ → p + q < p
+ℚ<-subtraction-preserves-order' fe p q l = transport₂ _<_ (ℚ+-comm q p) (ℚ-zero-left-neutral fe p) I 
+ where
+  I : q + p < 0ℚ + p
+  I = ℚ<-addition-preserves-order q 0ℚ p l
+
+ℚ<-difference-positive' : Fun-Ext → (p q : ℚ) → p < q → p - q < 0ℚ
+ℚ<-difference-positive' fe p q l = transport (p - q <_) (ℚ-inverse-sum-to-zero fe q) (ℚ<-addition-preserves-order p q (- q) l)
+
+ℚ<-swap' : Fun-Ext → (p q r : ℚ) → p - q < r → p - r < q
+ℚ<-swap' fe p q r l = transport₂ _<_ I II (ℚ<-addition-preserves-order (p - q) r (q - r) l  )
+ where
+  I : p - q + (q - r) ≡ p - r
+  I = p - q + (q - r)         ≡⟨ ℚ+-assoc fe p (- q) (q - r) ⟩
+      p + ((- q) + (q - r))   ≡⟨ ap (p +_) (ℚ+-assoc fe (- q) q (- r) ⁻¹) ⟩
+      p + ((- q) + q - r)     ≡⟨ ap (λ z → p + (z - r)) (ℚ-inverse-sum-to-zero' fe q) ⟩
+      p + (0ℚ - r)            ≡⟨ ap (p +_) (ℚ-zero-left-neutral fe (- r)) ⟩
+      p - r ∎
+  II : r + (q - r) ≡ q
+  II = r + (q - r)     ≡⟨ ap (r +_) (ℚ+-comm q (- r)) ⟩
+       r + ((- r) + q) ≡⟨ ℚ+-assoc fe r (- r) q ⁻¹ ⟩
+       r - r + q       ≡⟨ ap (_+ q) (ℚ-inverse-sum-to-zero fe r) ⟩
+       0ℚ + q          ≡⟨ ℚ-zero-left-neutral fe q ⟩
+       q ∎
+
+
 
 ℚ<-adding-zero : (p q : ℚ) → 0ℚ < p → 0ℚ < q → 0ℚ < p + q
 ℚ<-adding-zero p q l₁ l₂ = ℚ<-adding 0ℚ p 0ℚ q l₁ l₂
@@ -417,57 +450,63 @@ rounded-lemma₀ (succ a) = succ (2 ℕ* pred (succ (succ a))) ≡⟨ ap (λ - �
   I (inl l) = ℚ<-trans p q r l l₂
   I (inr l) = transport (_< r) (l ⁻¹) l₂
 
-ℚ≤-adding : Fun-Ext → (x y u v : ℚ) → x ≤ y → u ≤ v → (x + u) ≤ (y + v)
+ℚ≤-adding : Fun-Ext → (x y u v : ℚ) → x ≤ y → u ≤ v → x + u ≤ y + v
 ℚ≤-adding fe x y u v l₁ l₂ = ℚ≤-trans fe (x + u) (y + u) (y + v) I III
  where
-  I : (x + u) ≤ (y + u)
+  I : x + u ≤ y + u
   I = ℚ≤-addition-preserves-order fe x y u l₁
 
-  II : (u + y) ≤ (v + y)
+  II : u + y ≤ v + y
   II = ℚ≤-addition-preserves-order fe u v y l₂
 
-  III : (y + u) ≤ (y + v)
+  III : y + u ≤ y + v
   III = transport₂ _≤_ (ℚ+-comm u y) (ℚ+-comm v y) II
 
-ℚ≤-swap : Fun-Ext → (x y : ℚ) → x ≤ y → (- y) ≤ (- x)
+ℚ≤-swap : Fun-Ext → (x y : ℚ) → x ≤ y → - y ≤ - x
 ℚ≤-swap fe x y l = transport id III II
  where
-  I : (x - x) ≤ (y + (- x))
+  I : x - x ≤ y - x
   I = ℚ≤-addition-preserves-order fe x y (- x) l
   
-  II : ((x - x) + (- y)) ≤ ((y + (- x)) + (- y))
-  II = ℚ≤-addition-preserves-order fe (x - x) (y + (- x)) (- y) I
+  II : x - x - y ≤ y - x - y
+  II = ℚ≤-addition-preserves-order fe (x - x) (y - x) (- y) I
 
-  III : (((x - x) + (- y)) ≤ ((y + (- x)) + (- y))) ≡ ((- y) ≤ (- x))
+  III : x - x - y ≤ y - x - y ≡ - y ≤ - x
   III = ap₂ _≤_ α β
    where
-    α : (((x - x) + (- y))) ≡ (- y)
-    α = (x - x) + (- y)       ≡⟨ ap (_+ (- y)) (ℚ-inverse-sum-to-zero fe x) ⟩
-        0ℚ + (- y)            ≡⟨ ℚ-zero-left-neutral fe (- y) ⟩ 
-        (- y)                 ∎
-    β : (y - x) + (- y) ≡ (- x)
-    β = (y - x) + (- y)       ≡⟨ ap (_+ (- y)) (ℚ+-comm y (- x)) ⟩
-        (- x) + y + (- y)     ≡⟨ ℚ+-assoc fe (- x) y (- y) ⟩
+    α : x - x - y ≡ - y
+    α = x - x - y             ≡⟨ ap (_- y) (ℚ-inverse-sum-to-zero fe x) ⟩
+        0ℚ - y                ≡⟨ ℚ-zero-left-neutral fe (- y) ⟩ 
+        - y                   ∎
+    β : y - x - y ≡ - x
+    β = y - x - y             ≡⟨ ap (_- y) (ℚ+-comm y (- x)) ⟩
+        (- x) + y - y         ≡⟨ ℚ+-assoc fe (- x) y (- y) ⟩
         (- x) + (y - y)       ≡⟨ ap ((- x) +_) (ℚ-inverse-sum-to-zero fe y) ⟩
         (- x) + 0ℚ            ≡⟨ ℚ-zero-right-neutral fe (- x) ⟩
         (- x) ∎
 
-ℚ<-swap : Fun-Ext → (x y : ℚ) → x < y → (- y) < (- x)
+ℚ≤-swap' : Fun-Ext → (x : ℚ) → x ≤ 0ℚ → 0ℚ ≤ - x
+ℚ≤-swap' fe x l = transport (_≤ - x) ℚ-minus-zero-is-zero (ℚ≤-swap fe x 0ℚ l)
+
+ℚ<-swap : Fun-Ext → (x y : ℚ) → x < y → - y < - x
 ℚ<-swap fe x y l = split (ℚ≤-split fe (- y) (- x) I)
  where
-  I : (- y) ≤ (- x)
+  I : - y ≤ - x
   I = ℚ≤-swap fe x y (ℚ<-coarser-than-≤ x y l)
-  split : ((- y) < (- x)) ∔ (- y ≡ - x) → (- y) < (- x)
+  split : - y < - x ∔ (- y ≡ - x) → - y < - x
   split (inl il) = il
   split (inr ir) = 𝟘-elim (ℚ<-not-itself x (transport (x <_) III l))
    where
     II : - (- y) ≡ - (- x)
     II = ap -_ ir
     III : y ≡ x
-    III = y ≡⟨ ℚ-minus-minus fe y ⟩
+    III = y       ≡⟨ ℚ-minus-minus fe y ⟩
           - (- y) ≡⟨ II ⟩
           - (- x) ≡⟨ ℚ-minus-minus fe x ⁻¹ ⟩
           x ∎
+
+ℚ<-swap'' : Fun-Ext → (p : ℚ) → p < 0ℚ → 0ℚ < - p
+ℚ<-swap'' fe p l = transport (_< - p) ℚ-minus-zero-is-zero (ℚ<-swap fe p 0ℚ l)
 
 multiplicative-inverse-preserves-pos : (fe : Fun-Ext) → (p : ℚ) → 0ℚ < p → (nz : ¬ (p ≡ 0ℚ)) → 0ℚ < multiplicative-inverse fe p nz
 multiplicative-inverse-preserves-pos fe ((pos 0 , a) , α) l nz = 𝟘-elim (nz (numerator-zero-is-zero fe ((pos zero , a) , α) by-definition))
@@ -495,7 +534,6 @@ multiplicative-inverse-preserves-pos fe ((negsucc x , a) , α) l nz = 𝟘-elim 
             negsucc x ℤ+ pos (succ x)           ≡⟨ ℤ-sum-of-inverse-is-zero' (pos (succ x)) ⟩
             pos 0                               ≡⟨ ℤ-zero-left-is-zero (pos (succ a)) ⁻¹ ⟩
             pos 0 ℤ* pos (succ a)               ∎
-
 
 ℚ-equal-or-less-than-is-prop : Fun-Ext → (x y : ℚ) → is-prop ((x ≡ y) ∔ (y < x))
 ℚ-equal-or-less-than-is-prop fe x y (inl l) (inl r) = ap inl (ℚ-is-set fe l r)
@@ -625,6 +663,9 @@ trisect fe x y l = (x + d * 1/3 , x + d * 2/3) , I , II , III , IV , V
 0<1/2 : 0ℚ < 1/2
 0<1/2 = toℚ-< (pos 0 , 0) (pos 1 , 1) (0 , refl)
 
+0<1/4 : 0ℚ < 1/4
+0<1/4 = toℚ-< (pos 0 , 0) (pos 1 , 3) (0 , refl)
+
 0<1/5 : 0ℚ < 1/5
 0<1/5 = toℚ-< (pos 0 , 0) (pos 1 , 5) (0 , refl)
 
@@ -636,6 +677,12 @@ halving-preserves-order p l = ℚ<-pos-multiplication-preserves-order p 1/2 l 0<
 
 halving-preserves-order' : (p : ℚ) → 0ℚ < p → 0ℚ < 1/2 * p
 halving-preserves-order' p l = ℚ<-pos-multiplication-preserves-order 1/2 p 0<1/2 l
+
+quarter-preserves-order : (p : ℚ) → 0ℚ < p → 0ℚ < p * 1/4
+quarter-preserves-order p l = ℚ<-pos-multiplication-preserves-order p 1/4 l 0<1/4
+
+quarter-preserves-order' : (p : ℚ) → 0ℚ < p → 0ℚ < 1/4 * p
+quarter-preserves-order' p l = ℚ<-pos-multiplication-preserves-order 1/4 p 0<1/4 l
 
 half-of-pos-is-less : Fun-Ext → (p : ℚ) → 0ℚ < p → 1/2 * p < p
 half-of-pos-is-less fe p l = transport (1/2 * p <_) III II
@@ -651,30 +698,33 @@ half-of-pos-is-less fe p l = transport (1/2 * p <_) III II
         p ∎
 
 ℚ-dense : Fun-Ext → (p q : ℚ) → p < q → Σ x ꞉ ℚ , (p < x) × (x < q)
-ℚ-dense fe p q l = (p + (1/2 * (q - p))) , I , II
+ℚ-dense fe p q l = p + (1/2 * (q - p)) , left-inequality , right-inequality
  where
-  i : 0ℚ < (q - p) * 1/2
-  i = halving-preserves-order (q - p) (ℚ<-difference-positive fe p q l)
-  ii : 0ℚ < 1/2 * (q - p)
-  ii = transport (0ℚ <_) (ℚ*-comm (q - p) 1/2) i
-  I : p < p + (1/2 * (q - p))
-  I = ℚ<-addition-preserves-order'' fe p (1/2 * (q - p)) ii
-
-  iii : p + (1/2 * (q - p)) < p + (1/2 * (q - p)) + (1/2 * (q - p))
-  iii = ℚ<-addition-preserves-order'' fe (p + (1/2 * (q - p))) (1/2 * (q - p)) ii
-  iv : p + (1/2 * (q - p)) + (1/2 * (q - p)) ≡ q
-  iv = p + 1/2 * (q - p) + 1/2 * (q - p)    ≡⟨ ℚ+-assoc fe p (1/2 * (q - p)) (1/2 * (q - p)) ⟩
+  I : 0ℚ < (q - p) * 1/2
+  I = halving-preserves-order (q - p) (ℚ<-difference-positive fe p q l)
+  
+  II : 0ℚ < 1/2 * (q - p)
+  II = transport (0ℚ <_) (ℚ*-comm (q - p) 1/2) I
+  
+  III : p + 1/2 * (q - p) < p + 1/2 * (q - p) + 1/2 * (q - p)
+  III = ℚ<-addition-preserves-order'' fe (p + 1/2 * (q - p)) (1/2 * (q - p)) II
+  
+  IV : p + 1/2 * (q - p) + 1/2 * (q - p) ≡ q
+  IV = p + 1/2 * (q - p) + 1/2 * (q - p)    ≡⟨ ℚ+-assoc fe p (1/2 * (q - p)) (1/2 * (q - p))       ⟩
        p + (1/2 * (q - p) + 1/2 * (q - p))  ≡⟨ ap (p +_) (ℚ-distributivity' fe (q - p) 1/2 1/2 ⁻¹) ⟩
-       p + (1/2 + 1/2) * (q - p)            ≡⟨ ap (λ α → p + α * (q - p)) (1/2+1/2 fe) ⟩
-       p + 1ℚ * (q - p)                     ≡⟨ ap (p +_) (ℚ-mult-left-id fe (q - p)) ⟩
-       p + (q - p)                          ≡⟨ ap (p +_) (ℚ+-comm q (- p)) ⟩
-       p + ((- p) + q)                      ≡⟨ ℚ+-assoc fe p (- p) q ⁻¹ ⟩
-       p - p + q                            ≡⟨ ap (_+ q) (ℚ-inverse-sum-to-zero fe p) ⟩
-       0ℚ + q                               ≡⟨ ℚ-zero-left-neutral fe q ⟩
-       q ∎
+       p + (1/2 + 1/2) * (q - p)            ≡⟨ ap (λ α → p + α * (q - p)) (1/2+1/2 fe)             ⟩
+       p + 1ℚ * (q - p)                     ≡⟨ ap (p +_) (ℚ-mult-left-id fe (q - p))               ⟩
+       p + (q - p)                          ≡⟨ ap (p +_) (ℚ+-comm q (- p))                         ⟩
+       p + ((- p) + q)                      ≡⟨ ℚ+-assoc fe p (- p) q ⁻¹                            ⟩
+       p - p + q                            ≡⟨ ap (_+ q) (ℚ-inverse-sum-to-zero fe p)              ⟩
+       0ℚ + q                               ≡⟨ ℚ-zero-left-neutral fe q                            ⟩
+       q                                    ∎ 
+
+  left-inequality : p < p + 1/2 * (q - p)
+  left-inequality = ℚ<-addition-preserves-order'' fe p (1/2 * (q - p)) II
    
-  II : p + (1/2 * (q - p)) < q
-  II = transport (p + (1/2 * (q - p)) <_) iv iii
+  right-inequality : p + 1/2 * (q - p) < q
+  right-inequality = transport (p + 1/2 * (q - p) <_) IV III
 
 inequality-chain-outer-bounds-inner : Fun-Ext → (a b c d : ℚ) → a < b → b < c → c < d → c - b < d - a
 inequality-chain-outer-bounds-inner fe a b c d l₁ l₂ l₃ = ℚ<-trans (c - b) (d - b) (d - a) I III
@@ -709,6 +759,8 @@ inequality-chain-outer-bounds-inner fe a b c d l₁ l₂ l₃ = ℚ<-trans (c - 
  where
   I : p ≤ s
   I = ℚ≤-trans₂ fe p q r s l₁ l₂ l₃
+
+
 
 
 

@@ -1,6 +1,6 @@
-Andrew Sneap - 26th November 2021
+Andrew Sneap 
 
-In this file I define the free rationals. They are rationals they may not be in the lowest terms, with (a , b) : ℤ × ℕ were ℤ is the numerator, and b represents a denominator of b+1, ruling out the possibility of a zero-denominator.
+In this file I define negation of real numbers.
 
 \begin{code}
 
@@ -12,7 +12,7 @@ open import UF-Base hiding (_≈_) --TypeTopology
 open import UF-FunExt --TypeTopology
 
 open import IntegersB
-open import IntegersAddition renaming (_+_ to _ℤ+_)
+open import IntegersAddition renaming (_+_ to _ℤ+_) hiding (_-_)
 open import IntegersMultiplication renaming (_*_ to _ℤ*_)
 open import IntegersNegation renaming (-_ to ℤ-_)
 open import NaturalsMultiplication renaming (_*_ to _ℕ*_)
@@ -258,3 +258,20 @@ toℚ-subtraction fe p q = II
                0ℚ + 3/5              ≡⟨ ℚ-zero-left-neutral fe 3/5 ⟩ 
                3/5                   ∎
 
+
+ℚ-inverse-intro : Fun-Ext → (p q : ℚ) → p ≡ p + (q - q)
+ℚ-inverse-intro fe p q = p           ≡⟨ ℚ-zero-right-neutral fe p ⁻¹ ⟩
+                         p + 0ℚ      ≡⟨ ap (p +_) (ℚ-inverse-sum-to-zero fe q ⁻¹) ⟩
+                         p + (q - q) ∎
+
+ℚ-inverse-intro'' : Fun-Ext → (p q : ℚ) → p ≡ p + q - q
+ℚ-inverse-intro'' fe p q = ℚ-inverse-intro fe p q ∙ ℚ+-assoc fe p q (- q) ⁻¹
+
+ℚ-inverse-intro' : Fun-Ext → (p q : ℚ) → p ≡ (q - q) + p
+ℚ-inverse-intro' fe p q = ℚ-inverse-intro fe p q ∙ ℚ+-comm p (q - q)
+
+ℚ-inverse-intro''' : Fun-Ext → (p q : ℚ) → p ≡ p + ((- q) + q) 
+ℚ-inverse-intro''' fe p q = ℚ-inverse-intro fe p q ∙ ap (p +_) (ℚ+-comm q (- q))
+
+ℚ-inverse-intro'''' : Fun-Ext → (p q : ℚ) → p ≡ p - q + q
+ℚ-inverse-intro'''' fe p q = ℚ-inverse-intro''' fe p q ∙ ℚ+-assoc fe p (- q) q ⁻¹

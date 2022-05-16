@@ -1,3 +1,7 @@
+Andrew Sneap
+
+In this file I prove that the rationals are an ordered field.
+
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe #-}

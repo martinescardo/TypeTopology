@@ -1,21 +1,19 @@
-Andrew Sneap - 27th April 2021
+Andrew Sneap - 12/05/2021
 
-I link to this module within the Natural Numbers section of my report.
+This file defines multiplication of natural numbers, and proves many
+standard properties of multiplication.
 
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import SpartanMLTT renaming (_+_ to _∔_) -- TypeTopology
+open import SpartanMLTT renaming (_+_ to _∔_) 
 
-open import NaturalsAddition -- TypeTopology
-open import NaturalNumbers-Properties -- TypeTopology
-open import NaturalsOrder -- TypeTopology
-open import OrderNotation -- TypeTopology
-open import UF-Base --TypeTopology
-
-open import MoreNaturalProperties
-open import NaturalsOrderExtended
+open import NaturalsAddition
+open import NaturalNumbers-Properties
+open import NaturalsOrder 
+open import OrderNotation 
+open import UF-Base
 
 module NaturalsMultiplication where
 
@@ -83,8 +81,11 @@ addition-associativity-lemma x y u v = x + y + (u + v) ≡⟨ addition-associati
                                        x + y + u + v   ∎
 
 distributivity-mult-over-nat' : (x y z : ℕ) → (x + y) * z ≡ x * z + y * z
-distributivity-mult-over-nat' x y = induction refl step
+distributivity-mult-over-nat' x y = induction base step
  where
+  base : (x + y) * 0 ≡ x * 0 + y * 0
+  base = refl
+  
   step : (k : ℕ)
        → (x + y) * k      ≡ x * k + y * k
        → (x + y) * succ k ≡ x * succ k + y * succ k
@@ -157,6 +158,15 @@ pos-mult-is-succ x = induction base step
         succ x + succ z                 ≡⟨ ap (succ x +_) IH ⟩
         succ x + (succ x + succ x * k)  ≡⟨ refl ⟩
         succ x * succ (succ k) ∎
+
+\end{code}
+
+It is surprisingly difficult to prove that multiplication is
+cancellable. The method employed below first proves that cancellation
+of multiplication preserves order. We can then use this to prove that
+multiplication is cancellable, by constructing a contradiction.
+
+\begin{code}
         
 ordering-multiplication-compatible : (m n k : ℕ) → m < n → m * succ k < n * succ k
 ordering-multiplication-compatible m n = induction base step
@@ -175,7 +185,7 @@ ordering-multiplication-compatible' : (m n k : ℕ) → m ≤ n → m * k ≤ n 
 ordering-multiplication-compatible' m n = induction base step
  where
   base : m ≤ n → (m * 0) ≤ (n * 0)
-  base l = zero-minimal 0
+  base l = zero-least 0
 
   step : (k : ℕ)
        → (m ≤ n → (m * k) ≤ (n * k))
@@ -184,13 +194,11 @@ ordering-multiplication-compatible' m n = induction base step
   step k IH l = ≤-adding m n (m * k) (n * k) l (IH l)
 
 mult-right-cancellable : (x y z : ℕ) → (x * succ z) ≡ (y * succ z) → x ≡ y
-mult-right-cancellable x y z e = tri-split (nat-order-trichotomous x y)
- where
-  tri-split : (x < y) ∔ (x ≡ y) ∔ (y < x) → x ≡ y
-  tri-split (inl t)       = have less-than-not-equal (x * succ z) (y * succ z) (ordering-multiplication-compatible x y z t) which-contradicts e
-  tri-split (inr (inl t)) = t
-  tri-split (inr (inr t)) = have less-than-not-equal (y * succ z) (x * succ z) (ordering-multiplication-compatible y x z t) which-contradicts (e ⁻¹)
-      
+mult-right-cancellable x y z e with <-trichotomous x y
+... | inl x<y       = 𝟘-elim (less-than-not-equal (x * succ z) (y * succ z) (ordering-multiplication-compatible x y z x<y) e)
+... | inr (inl x≡y) = x≡y
+... | inr (inr y<x) = 𝟘-elim (less-than-not-equal (y * succ z) (x * succ z) (ordering-multiplication-compatible y x z y<x) (e ⁻¹))
+
 mult-left-cancellable : (x y z : ℕ) → succ z * x ≡ succ z * y → x ≡ y
 mult-left-cancellable x y z r = mult-right-cancellable x y z lemma₀
  where
@@ -199,16 +207,6 @@ mult-left-cancellable x y z r = mult-right-cancellable x y z lemma₀
            succ z * x ≡⟨ r                              ⟩
            succ z * y ≡⟨ mult-commutativity (succ z) y  ⟩
            y * succ z ∎
-
-mult-cancellable : (x y z : ℕ) → (x * succ z ≡ y * succ z)
-                                ∔ (succ z * x ≡ succ z * y)
-                                ∔ (succ z * x ≡ y * succ z)
-                                ∔ (x * succ z ≡ succ z * y)
-                               → x ≡ y
-mult-cancellable x y z (inl e)             = mult-right-cancellable x y z e
-mult-cancellable x y z (inr (inl e))       = mult-right-cancellable x y z (transport₂ (λ k k' → k ≡ k') (mult-commutativity (succ z) x) (mult-commutativity (succ z) y) e)
-mult-cancellable x y z (inr (inr (inl e))) = mult-right-cancellable x y z (transport (_≡ y * succ z) (mult-commutativity (succ z) x) e)
-mult-cancellable x y z (inr (inr (inr e))) = mult-right-cancellable x y z (transport (x * succ z ≡_) (mult-commutativity (succ z) y) e)
 
 product-less-than-cancellable : (x y z : ℕ) → x * (succ y) ≤ z → x ≤ z
 product-less-than-cancellable x = induction base step

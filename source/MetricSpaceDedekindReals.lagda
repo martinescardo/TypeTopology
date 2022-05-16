@@ -1,4 +1,9 @@
-\begin{code}
+Andrew Sneap
+
+In this file, I prove that the Dedekind reals are a complete metric space.
+The core result (that cauchy sequences converge) requires cleaning.
+
+\begin{code}[hide]
 {-# OPTIONS --without-K --exact-split --safe --experimental-lossy-unification #-}
 
 open import SpartanMLTT renaming (_+_ to _∔_) -- TypeTopology
@@ -32,18 +37,29 @@ open import MetricSpaceRationals fe pt pe
 open import RationalsMinMax fe
 open import DedekindRealsProperties fe pt pe
 
-B-ℝ : (x y : ℝ) → (ε : ℚ) → 0ℚ < ε → 𝓤₀ ̇
-B-ℝ ((Lx , Rx) , _) ((Ly , Ry) , _) ε l =
- ∃ (p , q , u , v) ꞉ ℚ × ℚ × ℚ × ℚ , p ∈ Lx × u ∈ Ly × q ∈ Rx × v ∈ Ry × B-ℚ (min p u) (max q v) ε l
+\end{code}
 
+%We say that two reals are ε-close if we can find a pair of rationals,
+%one either side of each real such that the the distance between the
+%furthest value on each side is less than ε.
+
+\begin{code}
+B-ℝ : (x y : ℝ) → (ε : ℚ) → 0ℚ < ε → 𝓤₀ ̇
+B-ℝ x y ε l =
+ ∃ (p , q , u , v) ꞉ ℚ × ℚ × ℚ × ℚ , (p < x)
+                                   × (u < y)
+                                   × (x < q)
+                                   × (y < v)
+                                   × B-ℚ (min p u) (max q v) ε l
+                                   
 B-ℝ-ε-transport : (x y : ℝ) → (ε ε' : ℚ) → (ε ≡ ε') → (l₁ : 0ℚ < ε) → (l₂ : 0ℚ < ε') → B-ℝ x y ε l₁ → B-ℝ x y ε' l₂
-B-ℝ-ε-transport ((Lx , Rx) , _) ((Ly , Ry) , _) ε ε' e l₁ l₂ = ∥∥-functor I
+B-ℝ-ε-transport x y ε ε' e l₁ l₂ = ∥∥-functor I
  where
-  I : Σ (p , q , u , v) ꞉ ℚ × ℚ × ℚ × ℚ , p ∈ Lx × u ∈ Ly × q ∈ Rx × v ∈ Ry × B-ℚ (min p u) (max q v) ε l₁
-    → Σ (p , q , u , v) ꞉ ℚ × ℚ × ℚ × ℚ , p ∈ Lx × u ∈ Ly × q ∈ Rx × v ∈ Ry × B-ℚ (min p u) (max q v) ε' l₂
+  I : Σ (p , q , u , v) ꞉ ℚ × ℚ × ℚ × ℚ , p < x × u < y × x < q × y < v × B-ℚ (min p u) (max q v) ε l₁
+    → Σ (p , q , u , v) ꞉ ℚ × ℚ × ℚ × ℚ , p < x × u < y × x < q × y < v × B-ℚ (min p u) (max q v) ε' l₂
   I ((p , q , u , v) , pLx , uLy , qRx , vRy , B) = ((p , q , u , v) , pLx , uLy , qRx , vRy , transport (ℚ-metric (min p u) (max q v) <_) e B)
 
-ℝ-m1a-lemma : (((Lx , Rx) , _) ((Ly , Ry) , _) : ℝ) → ((ε : ℚ) → (ε>0 : 0ℚ < ε) → ∃ (p , q , u , v) ꞉ ℚ × ℚ × ℚ × ℚ , p ∈ Lx × u ∈ Ly × q ∈ Rx × v ∈ Ry × B-ℚ (min p u) (max q v) ε ε>0) → Lx ⊆ Ly
+ℝ-m1a-lemma : (x y : ℝ) → ((ε : ℚ) → (ε>0 : 0ℚ < ε) → ∃ (p , q , u , v) ꞉ ℚ × ℚ × ℚ × ℚ , p < x × u < y × x < q × y < v × B-ℚ (min p u) (max q v) ε ε>0) → lower-cut-of x ⊆ lower-cut-of y
 ℝ-m1a-lemma ((Lx , Rx) , inhabited-left-x , inhabited-right-x , rounded-left-x , rounded-right-x , disjoint-x , located-x) ((Ly , Ry) , inhabited-left-y , inhabited-right-y , rounded-left-y , rounded-right-y , disjoint-y , located-y) f k kLx = ∥∥-rec Ly-is-prop α obtain-k'
  where
   Ly-is-prop : is-prop (k ∈ Ly)
@@ -123,63 +139,61 @@ B-ℝ-ε-transport ((Lx , Rx) , _) ((Ly , Ry) , _) ε ε' e l₁ l₂ = ∥∥-f
       if-smaller-than-u = pr₂ (rounded-left-y k)
 
 \end{code}
-It's useful to have the second condition before the first in order to abstract a proof in the first condition.
-\begin{code}
+
+%It's useful to have the second condition before the first in order to
+%abstract a proof in the first condition.
+
+\begin{code}[hide]
 
 ℝ-m2 : m2 ℝ B-ℝ
-ℝ-m2 ((Lx , Rx) , _) ((Ly , Ry) , _) ε l B = ∥∥-functor α B
+ℝ-m2 x y ε l = ∥∥-functor α 
  where
-  α : Σ (p , q , u , v) ꞉ ℚ × ℚ × ℚ × ℚ , p ∈ Lx × u ∈ Ly × q ∈ Rx × v ∈ Ry × B-ℚ (min p u) (max q v) ε l
-    → Σ (p , q , u , v) ꞉ ℚ × ℚ × ℚ × ℚ , p ∈ Ly × u ∈ Lx × q ∈ Ry × v ∈ Rx × B-ℚ (min p u) (max q v) ε l
-  α ((p , q , u , v) , pLx , uLy , qRx , vRy , B) = (u , v , p , q) , uLy , pLx , vRy , qRx , transport₂ (λ α β → B-ℚ α β ε l) (min-comm p u) (max-comm q v) B
+  α : Σ (p , q , u , v) ꞉ ℚ × ℚ × ℚ × ℚ , p < x × u < y × x < q × y < v × B-ℚ (min p u) (max q v) ε l
+    → Σ (u , v , p , q) ꞉ ℚ × ℚ × ℚ × ℚ , u < y × p < x × y < v × x < q × B-ℚ (min u p) (max v q) ε l
+  α ((p , q , u , v) , p<x , u<y , x<q , y<v , B)
+   = (u , v , p , q) , u<y , p<x , y<v , x<q , transport₂ (λ α β → B-ℚ α β ε l) (min-comm p u) (max-comm q v) B
   
 ℝ-m1a : m1a ℝ B-ℝ
-ℝ-m1a ((Lx , Rx) , inhabited-left-x , inhabited-right-x , rounded-left-x , rounded-right-x , disjoint-x , located-x) ((Ly , Ry) , inhabited-left-y , inhabited-right-y , rounded-left-y , rounded-right-y , disjoint-y , located-y) f = ℝ-equality-from-left-cut' x y I II
+ℝ-m1a x y f = ℝ-equality-from-left-cut' x y I II
  where
-  x = ((Lx , Rx) , inhabited-left-x , inhabited-right-x , rounded-left-x , rounded-right-x , disjoint-x , located-x)
-  y = ((Ly , Ry) , inhabited-left-y , inhabited-right-y , rounded-left-y , rounded-right-y , disjoint-y , located-y)
-
-  I : Lx ⊆ Ly
+  I : lower-cut-of x ⊆ lower-cut-of y
   I = ℝ-m1a-lemma x y f
 
-  II : Ly ⊆ Lx
+  II : lower-cut-of y ⊆ lower-cut-of x
   II = ℝ-m1a-lemma y x (λ ε ε>0 → ℝ-m2 x y ε ε>0 (f ε ε>0))
 
-m1b-lemma : (q ε : ℚ) → 0ℚ < q × q < ε → abs q < ε
-m1b-lemma q ε (l₁ , l₂) = IV
- where
-  I : 0ℚ < ε 
-  I = ℚ<-trans 0ℚ q ε l₁ l₂
-  II : ((- ε) < 0ℚ)
-  II = transport (- ε <_) ℚ-minus-zero-is-zero i
-   where
-    i : (- ε) < (- 0ℚ)
-    i = ℚ<-swap fe 0ℚ ε I
-  III : (- ε) < q
-  III = ℚ<-trans (- ε) 0ℚ q II l₁
-  IV : abs q < ε
-  IV = ℚ<-to-abs fe q ε (III , l₂) 
-
 ℝ-m1b : m1b ℝ B-ℝ
-ℝ-m1b ((L , R) , iscut) ε l = ∥∥-functor I (ℝ-arithmetically-located ((L , R) , iscut) ε l)
+ℝ-m1b x ε l = ∥∥-functor I (ℝ-arithmetically-located x ε l)
  where
-  I : (Σ (x , y) ꞉ ℚ × ℚ , x ∈ L × y ∈ R × (0ℚ < (y - x)) × ((y - x) < ε)) → Σ (p , q , u , v) ꞉ ℚ × ℚ × ℚ × ℚ , p ∈ L × u ∈ L × q ∈ R × v ∈ R × B-ℚ (min p u) (max q v) ε l
-  I ((x , y) , Lx , Ry , (l₁ , l₂)) = (x , y , x , y) , Lx , Lx , Ry , Ry , transport₂ (λ α β → B-ℚ α β ε l) (min-refl x ⁻¹) (max-refl y ⁻¹) iii
-   where
-    i : ℚ-metric y x < ε 
-    i = m1b-lemma (y - x) ε (l₁ , l₂)
-    ii : ℚ-metric y x ≡ ℚ-metric x y
-    ii = ℚ-metric-commutes y x
-    iii : ℚ-metric x y < ε
-    iii = transport (_< ε) ii i
-
+  I : Σ (a , b) ꞉ ℚ × ℚ , (a < x)
+                        × (x < b)
+                        × (0ℚ < (b - a))
+                        × ((b - a) < ε)
+    → Σ (p , q , u , v) ꞉ ℚ × ℚ × ℚ × ℚ , (p < x)
+                                        × (u < x)
+                                        × (x < q)
+                                        × (x < v)
+                                        × B-ℚ (min p u) (max q v) ε l
+  I ((a , b) , a<x , x<b , l₁ , l₂)
+   = (a , b , a , b) , a<x , a<x , x<b , x<b , iv iii
+    where
+     i : ℚ-metric b a < ε 
+     i = pos-abs-no-increase fe (b - a) ε (l₁ , l₂)
+     ii : ℚ-metric b a ≡ ℚ-metric a b
+     ii = ℚ-metric-commutes b a
+     iii : ℚ-metric a b < ε
+     iii = transport (_< ε) ii i
+     iv : B-ℚ a b ε l → B-ℚ (min a a) (max b b) ε l
+     iv = transport₂ (λ α β → B-ℚ α β ε l) (min-refl a ⁻¹) (max-refl b ⁻¹) 
 
 ℝ-m3 : m3 ℝ B-ℝ
-ℝ-m3 ((Lx , Rx) , iscutx) ((Ly , Ry) , iscuty) ε₁ ε₂ l₁ l₂ l₃ B = ∥∥-functor I B
+ℝ-m3 x y ε₁ ε₂ l₁ l₂ l₃ = ∥∥-functor I
  where
-  I : Σ (p , q , u , v) ꞉ ℚ × ℚ × ℚ × ℚ , p ∈ Lx × u ∈ Ly × q ∈ Rx × v ∈ Ry × B-ℚ (min p u) (max q v) ε₁ l₁
-    → Σ (p , q , u , v) ꞉ ℚ × ℚ × ℚ × ℚ , p ∈ Lx × u ∈ Ly × q ∈ Rx × v ∈ Ry × B-ℚ (min p u) (max q v) ε₂ l₂
-  I ((p , q , u , v) , pLx , uLy , qRx , vRy , B) = (p , q , u , v) , pLx , uLy , qRx , vRy , ℚ<-trans (ℚ-metric (min p u) (max q v)) ε₁ ε₂ B l₃
+  I : Σ (p , q , u , v) ꞉ ℚ × ℚ × ℚ × ℚ , p < x × u < y × x < q × y < v × B-ℚ (min p u) (max q v) ε₁ l₁
+    → Σ (p , q , u , v) ꞉ ℚ × ℚ × ℚ × ℚ , p < x × u < y × x < q × y < v × B-ℚ (min p u) (max q v) ε₂ l₂
+  I ((p , q , u , v) , p<x , y<u , x<q , y<v , B)
+   = (p , q , u , v) , p<x , y<u , x<q , y<v , ℚ<-trans (ℚ-metric (min p u) (max q v)) ε₁ ε₂ B l₃ 
+
 ℝ-m4 : m4 ℝ B-ℝ
 ℝ-m4 ((Lx , Rx) , inhabited-left-x , inhabited-right-x , rounded-left-x , rounded-right-x , disjoint-x , located-x)
      ((Ly , Ry) , inhabited-left-y , inhabited-right-y , rounded-left-y , rounded-right-y , disjoint-y , located-y)
@@ -299,7 +313,8 @@ open import DedekindRealsOrder pe pt fe
 open import RationalsMultiplication
 
 cauchy-approximation : 𝓤₁ ̇
-cauchy-approximation = Σ f ꞉ (ℚ₊ → ℝ) , (((δ , l₁) (ε , l₂) : ℚ₊) → B-ℝ (f (δ , l₁)) (f (ε , l₂)) (δ + ε) (ℚ<-adding-zero δ ε l₁ l₂))
+cauchy-approximation
+ = Σ f ꞉ (ℚ₊ → ℝ) , (((δ , l₁) (ε , l₂) : ℚ₊) → B-ℝ (f (δ , l₁)) (f (ε , l₂)) (δ + ε) (ℚ<-adding-zero δ ε l₁ l₂))
 
 cauchy-approximation-limit : cauchy-approximation → 𝓤₁ ̇
 cauchy-approximation-limit (ca , _) = Σ l ꞉ ℝ , (((ε , l₁) (θ , l₂) : ℚ₊) → B-ℝ (ca (ε , l₁)) l (ε + θ) (ℚ<-adding-zero ε θ l₁ l₂))
@@ -309,14 +324,20 @@ cauchy-approximation-limit-exists (f , approximation-condition) = y , y-is-limit
  where
   type-of-approx : ((α , l₁) (β , l₂) : ℚ₊) → B-ℝ (f (α , l₁)) (f (β , l₂)) (α + β) (ℚ<-adding-zero α β l₁ l₂)
   type-of-approx = approximation-condition
+
+  LeftCondition : (q : ℚ) → 𝓤₀ ̇
+  LeftCondition q = ∃ ((ε , l₁) , (θ , l₂)) ꞉ ℚ₊ × ℚ₊ , in-lower-cut (q + ε + θ) (f (ε , l₁))
+ 
+  RightCondition : (q : ℚ) → 𝓤₀ ̇
+  RightCondition q = ∃ ((ε , l₁) , (θ , l₂)) ꞉ ℚ₊ × ℚ₊ , in-upper-cut (q - ε - θ) (f (ε , l₁))
   
-  Ly : ℚ-subset-of-propositions
-  Ly q = (∃ ((ε , l₁) , (θ , l₂)) ꞉ ℚ₊ × ℚ₊ , in-lower-cut (q + ε + θ) (f (ε , l₁))) , ∃-is-prop
+  Ly : 𝓟 ℚ
+  Ly q = LeftCondition q , ∃-is-prop
 
-  Ry : ℚ-subset-of-propositions
-  Ry q = (∃ ((ε , l₁) , (θ , l₂)) ꞉ ℚ₊ × ℚ₊ , in-upper-cut (q - ε - θ) (f (ε , l₁))) , ∃-is-prop
+  Ry : 𝓟 ℚ
+  Ry q = RightCondition q , ∃-is-prop
 
-  inhabited-left-y : inhabited-left Ly -- Todd helped extensively
+  inhabited-left-y : inhabited-left Ly 
   inhabited-left-y = ∥∥-rec ∃-is-prop γ obtain-p'
    where   
     ε : ℚ
@@ -325,11 +346,11 @@ cauchy-approximation-limit-exists (f , approximation-condition) = y , y-is-limit
     δ = 1ℚ
     0<1 : 0ℚ < 1ℚ
     0<1 = 0 , refl
-    obtain-p' : ∃ p' ꞉ ℚ , p' ∈ lower-cut-of (f (ε , 0<1))
+    obtain-p' : ∃ p' ꞉ ℚ , p' < (f (ε , 0<1))
     obtain-p' = inhabited-from-real-L (f (ε , 0<1))
 
-    γ : Σ p' ꞉ ℚ , p' ∈ lower-cut-of (f (ε , 0<1)) → ∃ p ꞉ ℚ , p ∈ Ly
-    γ (p' , p'Ly) = ∣ p , ∣ ((ε , 0<1) , (δ , 0<1)) , transport (_∈ lower-cut-of (f (ε , 0<1))) I p'Ly ∣ ∣
+    γ : Σ p' ꞉ ℚ , p' < (f (ε , 0<1)) → ∃ p ꞉ ℚ , p ∈ Ly
+    γ (p' , p'Ly) = ∣ p , ∣ ((ε , 0<1) , (δ , 0<1)) , transport (_< (f (ε , 0<1))) I p'Ly ∣ ∣
      where
       p : ℚ
       p = p' - ε - δ
@@ -355,10 +376,10 @@ cauchy-approximation-limit-exists (f , approximation-condition) = y , y-is-limit
     δ = 1ℚ
     0<1 : 0ℚ < 1ℚ
     0<1 = 0 , refl
-    obtain-q' : ∃ q' ꞉ ℚ , q' ∈ upper-cut-of (f (ε , 0<1))
+    obtain-q' : ∃ q' ꞉ ℚ , q' > (f (ε , 0<1))
     obtain-q' = inhabited-from-real-R (f (ε , 0<1))
-    γ : Σ q' ꞉ ℚ , q' ∈ upper-cut-of (f (ε , 0<1)) → ∃ q ꞉ ℚ , q ∈ Ry
-    γ (q' , q'Ly) = ∣ q , ∣ ((ε , 0<1) , (δ , 0<1)) , (transport (_∈ upper-cut-of (f (ε , 0<1))) I q'Ly) ∣ ∣
+    γ : Σ q' ꞉ ℚ , q' > (f (ε , 0<1)) → ∃ q ꞉ ℚ , q ∈ Ry
+    γ (q' , q'Ly) = ∣ q , ∣ ((ε , 0<1) , (δ , 0<1)) , (transport (_> (f (ε , 0<1))) I q'Ly) ∣ ∣
      where
       q : ℚ
       q = q' + ε + δ
@@ -534,9 +555,9 @@ cauchy-approximation-limit-exists (f , approximation-condition) = y , y-is-limit
     q+2ε<r-2ε : q+2ε < r-2ε
     q+2ε<r-2ε = transport (q+2ε <_) last-two-equal q+2ε<q+3ε
     
-    Lε : ℚ-subset-of-propositions
+    Lε : 𝓟 ℚ
     Lε = lower-cut-of (f ε₊)
-    Rε : ℚ-subset-of-propositions
+    Rε : 𝓟 ℚ
     Rε = upper-cut-of (f ε₊)
     
     I : q+2ε ∈ Lε ∨ r-2ε ∈ Rε
@@ -561,7 +582,7 @@ cauchy-approximation-limit-exists (f , approximation-condition) = y , y-is-limit
          → 𝟘 
       II ((((ε₁ , l₁) , (θ₁ , l₂)) , klc) , ((ε₂ , l₃) , (θ₂ , l₄)) , kuc)  = ∥∥-rec 𝟘-is-prop III (approximation-condition (ε₁ , l₁) (ε₂ , l₃))
        where
-        III : Σ (a , b , c , d) ꞉ ℚ × ℚ × ℚ × ℚ , a ∈ lower-cut-of (f (ε₁ , l₁)) × c ∈ lower-cut-of (f (ε₂ , l₃)) × b ∈ upper-cut-of (f (ε₁ , l₁)) × d ∈ upper-cut-of (f (ε₂ , l₃)) × B-ℚ (min a c) (max b d) (ε₁ + ε₂) (ℚ<-adding-zero ε₁ ε₂ l₁ l₃) → 𝟘
+        III : Σ (a , b , c , d) ꞉ ℚ × ℚ × ℚ × ℚ , a < (f (ε₁ , l₁)) × c < (f (ε₂ , l₃)) × b > (f (ε₁ , l₁)) × d > (f (ε₂ , l₃)) × B-ℚ (min a c) (max b d) (ε₁ + ε₂) (ℚ<-adding-zero ε₁ ε₂ l₁ l₃) → 𝟘
         III ((a , b , c , d) , aL1 , cL2 , bR1 , dR2 , B)  = ℚ<-not-itself 0ℚ xii
          where
           i : c < k - ε₂ - θ₂
@@ -689,9 +710,9 @@ cauchy-approximation-limit-exists (f , approximation-condition) = y , y-is-limit
     0<θ/2 : 0ℚ < 1/2 * θ
     0<θ/2 = ℚ<-pos-multiplication-preserves-order 1/2 θ (0 , refl) l₂
     
-    obtain-bounds :  ∃ (u , v) ꞉ ℚ × ℚ , u ∈ lower-cut-of (f (ε , l₁)) × v ∈ upper-cut-of (f (ε , l₁)) × 0ℚ < (v - u) × (v - u) < 1/2 * θ
+    obtain-bounds :  ∃ (u , v) ꞉ ℚ × ℚ , u < (f (ε , l₁)) × v > (f (ε , l₁)) × 0ℚ < (v - u) × (v - u) < 1/2 * θ
     obtain-bounds = ℝ-arithmetically-located (f (ε , l₁)) (1/2 * θ) 0<θ/2
-    I :  Σ (u , v) ꞉ ℚ × ℚ , u ∈ lower-cut-of (f (ε , l₁)) × v ∈ upper-cut-of (f (ε , l₁)) × 0ℚ < (v - u) × (v - u) < 1/2 * θ
+    I :  Σ (u , v) ꞉ ℚ × ℚ , u < (f (ε , l₁)) × v > (f (ε , l₁)) × 0ℚ < (v - u) × (v - u) < 1/2 * θ
       → ∃ (a , b , c , d) ꞉ ℚ × ℚ × ℚ × ℚ , a ∈ Lε × c ∈ Ly × b ∈ Rε × d ∈ Ry × B-ℚ (min a c) (max b d) (ε + θ) l₃
     I ((u , v) , uLε , vRε , 0<v-u , v-u<θ/2) = ∥∥-functor using-located (located-from-real y u v u<v)
      where
@@ -802,7 +823,9 @@ RealsCauchySequence : (S : ℕ → ℝ) → 𝓤₀ ̇
 RealsCauchySequence = cauchy-sequence ℝ ℝ-metric-space
 
 
-modulus-of-convergence' : (S : ℕ → ℝ) → (RCS : RealsCauchySequence S) → Σ M ꞉ (ℚ₊ → ℕ) , ((ε : ℚ) → (l : 0ℚ < ε) → (m n : ℕ) → M (ε , l) ≤ m → M (ε , l) ≤ n → B-ℝ (S m) (S n) ε l)
+modulus-of-convergence' : (S : ℕ → ℝ)
+                        → (RCS : RealsCauchySequence S)
+                        → Σ M ꞉ (ℚ₊ → ℕ) , ((ε : ℚ) → (l : 0ℚ < ε) → (m n : ℕ) → M (ε , l) ≤ m → M (ε , l) ≤ n → B-ℝ (S m) (S n) ε l)
 modulus-of-convergence' S RCS = II I
  where
   condition : (ε : ℚ₊) → ℕ → 𝓤₀ ̇
@@ -816,7 +839,6 @@ modulus-of-convergence' S RCS = II I
 
 open import NaturalsAddition renaming (_+_ to _ℕ+_)
 open import NaturalsOrder renaming (max to ℕmax ; max-comm to ℕmax-comm)
-open import NaturalsOrderExtended
 
 mod-convergence-property : (S : ℕ → ℝ) → (RCS : RealsCauchySequence S)
                          → ((M , f) : Σ M ꞉ (ℚ₊ → ℕ) , ((ε : ℚ) → (l : 0ℚ < ε) → (m n : ℕ) → M (ε , l) ≤ m → M (ε , l) ≤ n → B-ℝ (S m) (S n) ε l))
@@ -904,21 +926,7 @@ mod-convergence-property S RCS (M , f) (ε , l₁) (δ , l₂) = B-ℝ-ε-transp
                 1ℚ * ε                      ≡⟨ ℚ-mult-left-id fe ε ⟩
                 ε ∎
 
-
 ℝ-complete-metric-space : complete-metric-space ℝ
 ℝ-complete-metric-space = ℝ-metric-space , ℝ-cauchy-sequences-are-convergent
 
-{-
-continuous : {M₁ : 𝓤 ̇} {M₂ : 𝓥 ̇} → (m₁ : metric-space M₁) → (m₂ : metric-space M₂) → (f : M₁ → M₂) → 𝓤 ̇ 
-continuous {𝓤} {𝓥} {M₁} {M₂} (B₁ , conditions) (B₂ , conditions') f = (c : M₁) → (ε : ℚ) → (l : 0ℚ < ε) → Σ δ ꞉ ℚ , ((l₂ : 0ℚ < δ) → (x : M₁) → B₁ c x δ l₂ → B₂ (f c) (f x) ε l)
-
-addition-ℚ→ℝ : ℚ → ℚ → ℝ
-addition-ℚ→ℝ p q = embedding-ℚ-to-ℝ (p + q)
-
-embedding-continuous : continuous ℚ-metric-space ℝ-metric-space embedding-ℚ-to-ℝ
-embedding-continuous c ε l = {!!}
--}
-
-
-
-
+\end{code}

@@ -1,4 +1,4 @@
-Andrew Sneap - 26th November 2021
+Andrew Sneap
 
 In this file, I define negation of integers, and prove some common properties of negation.
 

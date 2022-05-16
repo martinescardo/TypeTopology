@@ -1,6 +1,4 @@
-Andrew Sneap - 27th April 2021
-
-I link to this module within the Integers section of my report.
+Andrew Sneap
 
 \begin{code}
 

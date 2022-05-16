@@ -1,4 +1,4 @@
-Andrew Sneap - 27th April 2021
+Andrew Sneap
 
 In this file I define Integers, along with an induction principle for integers
 
@@ -31,6 +31,7 @@ succℤ (negsucc (succ x)) = negsucc x
                              → ((k : ℤ) → A k → A (succℤ k))
                              → ((k : ℤ) → A (succℤ k) → A k)
                              → (x : ℤ)
+                             
                              → A x 
 ℤ-induction base step₀ step₁ (pos 0)            = base
 ℤ-induction base step₀ step₁ (pos (succ x))     = step₀ (pos x) (ℤ-induction base step₀ step₁ (pos x))
@@ -47,17 +48,10 @@ predsuccℤ (pos x)            = refl
 predsuccℤ (negsucc 0)        = refl
 predsuccℤ (negsucc (succ x)) = refl
 
+open import CanonicalMapNotation
 
-
-{-
-
-_-_ : ℤ → ℤ → ℤ 
-x - pos 0        = x + (- pos 0)
-x - pos (succ y) = x + (- pos (succ y))
-x - negsucc y    = x + (- negsucc y)
-
-
-
--}
+instance
+ canonical-map-ℕ-to-ℤ : Canonical-Map ℕ ℤ
+ ι {{canonical-map-ℕ-to-ℤ}} = λ x → pos x
 
 \end{code}

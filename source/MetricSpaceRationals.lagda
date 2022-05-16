@@ -1,4 +1,9 @@
-\begin{code}
+Andrew Sneap
+
+In this file, I prove that the Rationals are metric space, with
+respect to the usual metric.
+
+\begin{code}[hide]
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
@@ -49,7 +54,9 @@ open import MetricSpaceAltDef pt fe pe
                abs (q - p)                    ≡⟨ by-definition ⟩
                ℚ-metric q p                   ∎
 
-inequality-chain-to-metric : (w y z : ℚ) → w ≤ y → y ≤ z → ℚ-metric w z ≡ ℚ-metric w y + ℚ-metric y z
+inequality-chain-to-metric : (w y z : ℚ) → w ≤ y
+                                         → y ≤ z
+                                         → ℚ-metric w z ≡ ℚ-metric w y + ℚ-metric y z                                         
 inequality-chain-to-metric w y z l₁ l₂ = conclusion
  where
   l₃ : w ≤ z
@@ -71,7 +78,11 @@ inequality-chain-to-metric w y z l₁ l₂ = conclusion
                abs (w - y) + abs (y - z)   ≡⟨ by-definition ⟩
                ℚ-metric w y + ℚ-metric y z ∎
 
-inequality-chain-with-metric : (x y w z ε₁ ε₂ : ℚ) → w ≤ y → y ≤ z → ℚ-metric x y < ε₁ → ℚ-metric w z < ε₂ → ℚ-metric x z < (ε₁ + ε₂)
+inequality-chain-with-metric : (x y w z ε₁ ε₂ : ℚ) → w ≤ y
+                                                   → y ≤ z
+                                                   → ℚ-metric x y < ε₁
+                                                   → ℚ-metric w z < ε₂
+                                                   → ℚ-metric x z < (ε₁ + ε₂)
 inequality-chain-with-metric x y w z ε₁ ε₂ l₁ l₂ l₃ l₄ = conclusion 
  where
   from-previous-result : ℚ-metric w z ≡ ℚ-metric w y + ℚ-metric y z
@@ -169,7 +180,9 @@ B-ℚ x y ε l = ℚ-metric x y < ε
   conclusion : abs ((x - y) + (y - z)) ≤ (abs (x - y) + abs (y - z)) → abs (x - z) < (ε₁ + ε₂)
   conclusion l = I (ℚ≤-split fe (abs ((x - y) + (y - z))) ((abs (x - y) + abs (y - z))) l) 
    where
-    I : (abs ((x - y) + (y - z)) < (abs (x - y) + abs (y - z))) ∔ (abs ((x - y) + (y - z)) ≡ abs (x - y) + abs (y - z)) → abs (x - z) < (ε₁ + ε₂)
+    I : (abs ((x - y) + (y - z)) < (abs (x - y) + abs (y - z)))
+      ∔ (abs ((x - y) + (y - z)) ≡ abs (x - y) + abs (y - z))
+      → abs (x - z) < (ε₁ + ε₂)
     I (inl l) =  ℚ<-trans (abs (x - z)) ((abs (x - y) + abs (y - z))) (ε₁ + ε₂) γ β
      where
       γ : abs (x - z) < (abs (x - y) + abs (y - z))
@@ -178,5 +191,5 @@ B-ℚ x y ε l = ℚ-metric x y < ε
 
 ℚ-metric-space : metric-space ℚ
 ℚ-metric-space = B-ℚ , ℚ-m1a , ℚ-m1b , ℚ-m2 , ℚ-m3 , ℚ-m4
-
 \end{code}
+

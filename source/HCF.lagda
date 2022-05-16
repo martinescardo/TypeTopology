@@ -1,25 +1,23 @@
 Andrew Sneap - 27th April 2021
 
-In this file I define common divisors, and HCF's, along with a proof that the Euclidean Algorithm produces HCF's.
+In this file I define common divisors, and HCF's, along with a proof
+that the Euclidean Algorithm produces HCF's.
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import SpartanMLTT renaming (_+_ to _∔_) --TypeTopology
+open import SpartanMLTT renaming (_+_ to _∔_) 
 
-open import NaturalsAddition --TypeTopology
-open import NaturalNumbers-Properties --TypeTopology
-open import NaturalsOrder --TypeTopoology
-open import OrderNotation --TypeTopology
-open import UF-Base --TypeTopology
-open import UF-FunExt --TypeTopology
-open import UF-Subsingletons --TypeTopology
-open import UF-Subsingletons-FunExt --TypeTopology
- 
+open import NaturalsAddition
 open import NaturalsDivision
 open import NaturalsMultiplication
-open import NaturalsOrderExtended
-open import MoreNaturalProperties
+open import NaturalNumbers-Properties 
+open import NaturalsOrder 
+open import OrderNotation 
+open import UF-Base 
+open import UF-FunExt
+open import UF-Subsingletons 
+open import UF-Subsingletons-FunExt
 
 module HCF where
 
@@ -44,7 +42,7 @@ is-hcf-is-prop fe d x y p q = ×-is-prop (is-common-divisor-is-prop d x y) g p q
   
     g : is-prop ((f : ℕ) → is-common-divisor f x y → f ∣ succ d)
     g p' q' = Π₂-is-prop fe h p' q'
-
+ 
 has-hcf : (x y : ℕ) → 𝓤₀ ̇
 has-hcf x y = Σ d ꞉ ℕ , is-hcf (succ d) x y
 
@@ -123,8 +121,8 @@ HCF = course-of-values-induction (λ n → (b : ℕ) → Σ h ꞉ ℕ , is-hcf h
         ii f ((α , αₚ) , β , βₚ) = γ f ((hcflemma f β (q * α) r e₂) , (α , αₚ))
          where
           e₂ : f * β ≡ f * (q * α) + r
-          e₂ = f * β           ≡⟨ βₚ                                             ⟩
-               b               ≡⟨ e₀                                             ⟩
+          e₂ = f * β           ≡⟨ βₚ                                            ⟩
+               b               ≡⟨ e₀                                            ⟩
                q * succ n + r  ≡⟨ ap (λ z → q * z + r) (αₚ ⁻¹)                  ⟩
                q * (f * α) + r ≡⟨ ap (_+ r) (mult-associativity q f α ⁻¹)       ⟩
                q * f * α + r   ≡⟨ ap (λ z → z * α + r) (mult-commutativity q f) ⟩
@@ -193,7 +191,7 @@ hcf-unique a b (h , h-icd , f) (h' , h'-icd , f') = ∣-anti h h' I II
 Sketch code to formalise rationals stuff 
 
 \begin{code}
-
+{-
 HCF' : (a b : ℕ) → Σ h ꞉ ℕ , is-hcf (succ h) a (succ b)
 HCF' a b = I (HCF a (succ b))
  where
@@ -228,8 +226,5 @@ new-denominator fe x a = I (HCF' x a)
 
     h-is-hcf : h ≡ pr₁ (HCF' x a)
     h-is-hcf = pr₁ (from-Σ-≡ h-is-hcf')
-{-
-divbyhcf-gives-coprime : (x a : ℕ) → {!!}
-divbyhcf-gives-coprime = {!!}
 -}
 \end{code}

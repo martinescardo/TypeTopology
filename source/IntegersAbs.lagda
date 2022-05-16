@@ -1,6 +1,7 @@
-Andrew Sneap - 26th November 2021
+Andrew Sneap
 
-In this file I define absolute values of integers and some properties of abs, along with positive and negative properties of integers.
+In this file I define absolute values of integers and some properties
+of abs, along with positive and negative properties of integers.
 
 \begin{code}
 
@@ -227,7 +228,6 @@ gtzmt₀ x = induction base step
 greater-than-zero-mult-trans : (x y : ℤ) → greater-than-zero x → greater-than-zero y → greater-than-zero (x * y)
 greater-than-zero-mult-trans x (negsucc y) l r = 𝟘-elim r
 greater-than-zero-mult-trans x (pos y)     l r = gtzmt₀ x y l r
-
 
 {-
 ℤ-not-equal-to-succ : (x : ℤ) → ¬ (x ≡ succℤ x)

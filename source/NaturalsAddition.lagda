@@ -79,3 +79,62 @@ trivial-addition-rearrangement x y z =
   (x + z) + y ∎
 
 \end{code}
+
+Added 12/05/2020 by Andrew Sneap.
+
+\begin{code}
+
+open import NaturalNumbers-Properties
+
+succ-right : (x y : ℕ) → x + succ y ≡ succ (x + y)
+succ-right x y = refl
+
+succ-left : (x y : ℕ) → succ x + y ≡ succ (x + y)
+succ-left x = induction base step 
+  where
+    base : succ x + 0 ≡ succ (x + 0)
+    base = succ x + 0   ≡⟨ refl         ⟩
+           succ x       ≡⟨ ap succ refl ⟩ 
+           succ (x + 0) ∎
+
+    step : (k : ℕ) → succ x + k ≡ succ (x + k) → succ x + succ k ≡ succ (x + succ k)
+    step k IH = succ x + succ k     ≡⟨ refl ⟩
+                succ (succ x + k)   ≡⟨ ap succ IH ⟩
+                succ (succ (x + k)) ≡⟨ refl ⟩
+                succ (x + succ k)   ∎
+
+addition-left-cancellable : (x y z : ℕ) → z + x ≡ z + y → x ≡ y
+addition-left-cancellable x y = induction base step
+ where
+  base : 0 + x ≡ 0 + y → x ≡ y
+  base h = x      ≡⟨ zero-left-neutral x ⁻¹ ⟩
+           0 + x  ≡⟨ h                      ⟩
+           0 + y  ≡⟨ zero-left-neutral y    ⟩
+           y ∎
+
+  step : (k : ℕ)
+       → (k + x      ≡ k + y      → x ≡ y)
+       → (succ k + x ≡ succ k + y → x ≡ y)
+  step k IH r = IH (succ-lc (lemma₁ r))
+   where
+    lemma₁ : succ k + x ≡ succ k + y → succ (k + x) ≡ succ (k + y)
+    lemma₁ r = succ (k + x)           ≡⟨ succ-left k x ⁻¹ ⟩
+               succ k + x             ≡⟨ r                         ⟩
+               succ k + y             ≡⟨ succ-left k y    ⟩
+               succ (k + y) ∎        
+
+
+addition-right-cancellable : (x y z : ℕ) → x + z ≡ y + z → x ≡ y
+addition-right-cancellable x y z r = addition-left-cancellable x y z lemma₀
+ where
+  lemma₀ : z + x ≡ z + y
+  lemma₀ = z + x      ≡⟨ addition-commutativity z x ⟩
+           x + z      ≡⟨ r                          ⟩
+           y + z      ≡⟨ addition-commutativity y z ⟩ 
+           z + y ∎
+
+sum-to-zero-gives-zero : (x y : ℕ) → x + y ≡ 0 → y ≡ 0
+sum-to-zero-gives-zero x 0        e = refl
+sum-to-zero-gives-zero x (succ y) e = have positive-not-zero (x + y) which-contradicts e
+
+\end{code}

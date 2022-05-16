@@ -1,6 +1,6 @@
-Andrew Sneap - 27th April 2021
+Andrew Sneap
 
-I link to this module within the Dedekind Reals and Discussion sections of my report.
+In this file I define the constructive field axioms.
 
 \begin{code}
 
@@ -21,9 +21,12 @@ field-structure F {𝓥} = (F → F → F) × (F → F → F) × (F → F → �
 
 \end{code}
 
-In the following axioms, e₀ is the additive identity element (usually 0), e₁ is the multiplicative identity element (usually 1)
-We cannot simply say that e₀ ≢ e₁, since this is not constructive for the Dedekind Reals, so we use an apartness relation.
-For the rationals, the apartness relation is defined as x ≢ y, but for the reals it is defined as (x < y) ∔ (y < x)
+In the following axioms, e₀ is the additive identity element (usually
+0), e₁ is the multiplicative identity element (usually 1). We cannot
+simply say that e₀ ≢ e₁, since this is not constructive for the
+Dedekind Reals, so we use an apartness relation.  For the rationals,
+the apartness relation is defined as x ≢ y, but for the reals it is
+defined as (x < y) ∔ (y < x)
 
 \begin{code}
 
@@ -105,4 +108,5 @@ open import Rationals
 ArchimedeanOrderedField : (𝓤 : Universe) → {𝓥 𝓦 : Universe} → (𝓤 ⁺) ⊔ (𝓥 ⁺) ⊔ (𝓦 ⁺) ̇
 ArchimedeanOrderedField 𝓤 {𝓥} {𝓦} = Σ (F , (_<_ , ofa)) ꞉ Ordered-Field 𝓤 {𝓥 } { 𝓦 } , ((embedding : (ℚ → ⟨ (F , (_<_ , ofa)) ⟩)) → (∀ x y → ∃ z ꞉ ℚ , (x < embedding z) × (embedding z < y)))
 -}
+
 \end{code}

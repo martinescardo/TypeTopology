@@ -1,24 +1,22 @@
-Andrew Sneap - 27th April 2021
+Andrew Sneap - 12/05/2022
 
-In this file I define the division operator on Natural Numbers, and prove the division theorem.
+This file defines division of natural numbers as a Σ type. Many common
+proofs of properties of division are also provided.
 
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import SpartanMLTT renaming (_+_ to _∔_) --TypeTopology
+open import SpartanMLTT renaming (_+_ to _∔_) 
 
-open import NaturalsAddition --TypeTopology
-open import NaturalNumbers-Properties -- TypeTopology
-open import NaturalsOrder --TypeTopology
-open import OrderNotation --TypeTopology
-open import UF-Base --TypeTopology
-open import UF-Miscelanea -- TypeTopology
-open import UF-Subsingletons -- TypeTopology
-
-open import MoreNaturalProperties
+open import NaturalsAddition
 open import NaturalsMultiplication
-open import NaturalsOrderExtended 
+open import NaturalNumbers-Properties
+open import NaturalsOrder
+open import OrderNotation
+open import UF-Base
+open import UF-Miscelanea
+open import UF-Subsingletons
 
 module NaturalsDivision where
 
@@ -47,7 +45,7 @@ zero-does-not-divide-positive x (a , p) = positive-not-zero x (p ⁻¹ ∙ zero-
   step k IH l₁ _ = <-+ x y (y * k) l₁
 
 product-one-gives-one : (x y : ℕ) → x * y ≡ 1 → x ≡ 1
-product-one-gives-one x y r = tri-split (nat-order-trichotomous x 1)
+product-one-gives-one x y r = tri-split (<-trichotomous x 1)
  where
   tri-split : (x < 1) ∔ (x ≡ 1) ∔ (1 < x) → x ≡ 1
   tri-split (inl z) = have succ-no-fp 0 which-contradicts I
@@ -59,7 +57,7 @@ product-one-gives-one x y r = tri-split (nat-order-trichotomous x 1)
           1     ∎
                                                        
   tri-split (inr (inl z)) = z
-  tri-split (inr (inr z)) = tri-split' (nat-order-trichotomous y 1)
+  tri-split (inr (inr z)) = tri-split' (<-trichotomous y 1)
    where
     tri-split' : (y < 1) ∔ (y ≡ 1) ∔ (1 < y) → x ≡ 1
     tri-split' (inl z')       = have succ-no-fp 0 which-contradicts I
@@ -190,6 +188,13 @@ division a d = induction base step a
 division-is-prop-lemma : (a b c : ℕ) → a ≤ b → b < c → a < c
 division-is-prop-lemma a b c l₀ l₁ = ≤-trans (succ a) (succ b) c l₀ l₁
 
+\end{code}
+
+Proving that division is a proposition guarantees uniqueness -
+division results in a unique output.
+
+\begin{code}
+
 division-is-prop : (a d : ℕ) → is-prop (divisiontheorem a d)
 division-is-prop a d (q₀ , r₀ , α , αₚ) (q₁ , r₁ , β , βₚ) = to-subtype-≡ I II
  where
@@ -243,12 +248,20 @@ division-is-prop a d (q₀ , r₀ , α , αₚ) (q₁ , r₁ , β , βₚ) = to-
     vii = division-is-prop-lemma (d * succ k) r (d * succ k) iv v
 
   II : q₀ ≡ q₁
-  II = f (nat-order-trichotomous q₀ q₁)
+  II = f (<-trichotomous q₀ q₁)
    where
     f : (q₀ < q₁) ∔ (q₀ ≡ q₁) ∔ (q₁ < q₀) → q₀ ≡ q₁
     f (inl z)       = II-abstract q₀ q₁ r₀ r₁ assumption z αₚ
     f (inr (inl z)) = z
     f (inr (inr z)) = II-abstract q₁ q₀ r₁ r₀ (assumption ⁻¹) z βₚ ⁻¹
+
+\end{code}
+
+The following section defines division by using bounded
+maximisation. Also provided is a proof that these two versions of
+division provide the same output, using the proof division is a prop.
+
+\begin{code}
 
 division' : (a d : ℕ) → Σ q ꞉ ℕ , Σ r ꞉ ℕ , (a ≡ q * (succ d) + r) × (r < (succ d))
 division' 0 d     = 0 , (0 , (I , II))
@@ -263,10 +276,10 @@ division' 0 d     = 0 , (0 , (I , II))
 division' (succ a) d = f (maximal-from-given' (λ - → - * succ d ≤ succ a) (succ a) (λ q → ≤-decidable (q * succ d) (succ a)) ii)
  where
   i : (0 + 0 * d) ≤ succ a
-  i = transport (_≤ succ a) (zero-left-is-zero (succ d) ⁻¹) (zero-minimal (succ a))
+  i = transport (_≤ succ a) (zero-left-is-zero (succ d) ⁻¹) (zero-least (succ a))
     
   ii : Σ k ꞉ ℕ , (k * succ d ≤ succ a) × (k ≤ succ a)
-  ii = 0 , i , zero-minimal (succ a)
+  ii = 0 , i , zero-least (succ a)
 
   f : Σ q ꞉ ℕ , q ≤ succ a × (q * succ d) ≤ succ a × ((n : ℕ) → n ≤ succ a → n * succ d ≤ succ a → n ≤ q)
     → Σ q ꞉ ℕ , Σ r ꞉ ℕ , (succ a ≡ q * succ d + r) × (r < succ d)
