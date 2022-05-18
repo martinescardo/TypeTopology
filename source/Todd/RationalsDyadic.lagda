@@ -79,7 +79,7 @@ even-or-odd? (negsucc               1) = inl (λ x → x)
 even-or-odd? (negsucc (succ (succ x))) = even-or-odd? (negsucc x)
 
 ℤ[1/2] : 𝓤₀ ̇
-ℤ[1/2] = Σ (z , n) ꞉ ℤ × ℕ , is-in-lowest-terms (z , pred (2^ n))
+ℤ[1/2] = Σ (z , n) ꞉ ℤ × ℕ , {!!} -- is-in-lowest-terms-dyadic (z , pred (2^ n))
 
 open import Todd.TernaryBoehmDef
 open import IntegersAbs
@@ -88,7 +88,7 @@ open import IntegersMultiplication renaming (_*_ to _ℤ*_)
 normalise-pos : ℤ → ℕ → ℤ[1/2]
 normalise-pos k zero     = (k , 0) , {!!} 
 normalise-pos k (succ n) with even-or-odd? k
-... | inl even = ({!!} , n) , {!!}
+... | inl even = normalise-pos {!k /2!} n
 ... | inr odd  = (k , succ n) , {!!}
 
 normalise-neg : ℤ → ℕ → ℤ[1/2]
