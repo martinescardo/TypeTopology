@@ -188,6 +188,10 @@ of a Ternary Boehm object at each layer n.
                 → pr₁ (encoding x , b at-level x i) < pr₂ (encoding x , b at-level x j)
  disjoint-lemma = {!!}
 
+ disjoint-lemma' : ((x , b) : 𝕂) → (i j : ℤ)
+                 → pr₁ (encoding x , b at-level i) < pr₂ (encoding x , b at-level j)
+ disjoint-lemma' = {!!}
+
  located-lemma₁ : (p q l r : ℤ[1/2]) → (r ℤ[1/2]- l) < (q ℤ[1/2]- p)
                 → p < l ∔ r < q
  located-lemma₁ = {!!}
@@ -195,6 +199,10 @@ of a Ternary Boehm object at each layer n.
  located-lemma₂ : ((x , b) : 𝕂) → (p : ℤ[1/2]) → 0ℤ[1/2] < p
                 → ∃ k ꞉ ℤ , ((pr₂ (encoding x , b at-level x k)) ℤ[1/2]- (pr₁ (encoding x , b at-level x k))) < p
  located-lemma₂ = {!!}
+
+ located-lemma₃ : ((x , b) : 𝕂) → (p : ℤ[1/2]) → 0ℤ[1/2] < p
+                → ∃ k ꞉ ℤ , ((pr₂ (encoding x , b at-level k)) ℤ[1/2]- (pr₁ (encoding x , b at-level k))) < p
+ located-lemma₃ = {!!}
 
  _⊂_ : ℤ[1/2] × ℤ[1/2] → ℤ[1/2] × ℤ[1/2] → 𝓤₀ ̇ 
  (a , b) ⊂ (c , d) = ((c ≤ a) × (d < b))
@@ -336,6 +344,92 @@ different sizes.
      I (k , less) with located-lemma₁ p q (pr₁ (encoding x , b at-level x k)) (pr₂ (encoding x , b at-level x k)) less
      ... | inl p<l = ∣ inl ∣ k , p<l ∣ ∣
      ... | inr r<q = ∣ inr ∣ k , r<q ∣ ∣
+
+ ⟦_⟧' : 𝕂 → ℝ-d --yadic
+ ⟦ x , b ⟧' = (L , R) , inhabited-L , inhabited-R , rounded-L , rounded-R , is-disjoint , is-located
+  where
+   L R : 𝓟 ℤ[1/2]
+   L p = (∃ k ꞉ ℤ , p < pr₁ (encoding x , b at-level k)) , ∃-is-prop
+   R q = (∃ k ꞉ ℤ , pr₂ (encoding x , b at-level k) < q) , ∃-is-prop
+   
+   inhabited-L : inhabited-left L
+   inhabited-L = let (m , m<l) = no-min (pr₁ (encoding x , b at-level pos 0))
+                 in ∣ m , ∣ (pos 0) , m<l ∣ ∣
+   inhabited-R : inhabited-right R
+   inhabited-R = let (m , r<m) = no-max (pr₂ (encoding x , b at-level pos 0))
+                 in ∣ m , ∣ pos 0 , r<m ∣  ∣
+
+   rounded-L : rounded-left L
+   rounded-L p = left-implication , right-implication
+    where  
+     left-implication : ∃ k ꞉ ℤ , p < pr₁ (encoding x , b at-level k)
+                      → ∃ z ꞉ ℤ[1/2] , p < z × (∃ k' ꞉ ℤ , z < pr₁ (encoding x , b at-level k'))
+     left-implication  = ∥∥-functor I
+      where
+       I : Σ k ꞉ ℤ , p < pr₁ (encoding x , b at-level k)
+         → Σ z ꞉ ℤ[1/2] , p < z × (∃ k' ꞉ ℤ , z < pr₁ (encoding x , b at-level k'))
+       I (k , p<l) = let (m , p<m , m<l) = dense p (pr₁ (encoding x , b at-level k))
+                     in m , p<m , ∣ k , m<l ∣
+     right-implication : ∃ z ꞉ ℤ[1/2] , p < z × (∃ k' ꞉ ℤ , z < pr₁ (encoding x , b at-level k'))
+                       → ∃ k ꞉ ℤ , p < pr₁ (encoding x , b at-level k)
+     right-implication = ∥∥-rec ∃-is-prop I
+      where
+       I : Σ z ꞉ ℤ[1/2] , p < z × (∃ k' ꞉ ℤ , z < pr₁ (encoding x , b at-level k'))
+         → ∃ k ꞉ ℤ , p < pr₁ (encoding x , b at-level k)
+       I (z , p<z , z<l) = ∥∥-functor II z<l
+        where
+         II : Σ k' ꞉ ℤ , z < pr₁ (encoding x , b at-level k')
+            → Σ k ꞉ ℤ , p < pr₁ (encoding x , b at-level k)
+         II (k , z<l) = k , trans p z (pr₁ (encoding x , b at-level k)) p<z z<l 
+
+   rounded-R : rounded-right R
+   rounded-R q = left-implication , right-implication
+    where
+     left-implication : ∃ k ꞉ ℤ , pr₂ (encoding x , b at-level k) < q
+                      → ∃ z ꞉ ℤ[1/2] , z < q × (∃ k' ꞉ ℤ , pr₂ (encoding x , b at-level k') < z)
+     left-implication = ∥∥-functor I
+      where
+       I : Σ k ꞉ ℤ , pr₂ (encoding x , b at-level k) < q
+         → Σ z ꞉ ℤ[1/2] , z < q × (∃ k' ꞉ ℤ , pr₂ (encoding x , b at-level k') < z)
+       I (k , r<z) = let (m , r<m , m<q) = dense (pr₂ (encoding x , b at-level k)) q
+                     in m , m<q , ∣ k , r<m ∣
+     right-implication : ∃ z ꞉ ℤ[1/2] , z < q × (∃ k' ꞉ ℤ , pr₂ (encoding x , b at-level k') < z)
+                       → ∃ k ꞉ ℤ , pr₂ (encoding x , b at-level k) < q 
+     right-implication = ∥∥-rec ∃-is-prop I
+      where
+       I : Σ z ꞉ ℤ[1/2] , z < q × (∃ k' ꞉ ℤ , pr₂ (encoding x , b at-level k') < z)
+         → ∃ k ꞉ ℤ , pr₂ (encoding x , b at-level k) < q
+       I (z , z<q , r<z) = ∥∥-functor II r<z
+        where
+         II : Σ k' ꞉ ℤ , pr₂ (encoding x , b at-level k') < z
+            → Σ k ꞉ ℤ , pr₂ (encoding x , b at-level k) < q
+         II (k , r<z) = k , trans (pr₂ (encoding x , b at-level k)) z q r<z z<q
+      
+   is-disjoint : disjoint L R
+   is-disjoint p q (p<l , r<q) = I (binary-choice p<l r<q)
+    where
+     I : ∥ (Σ k ꞉ ℤ , p < pr₁ (encoding x , b at-level k))
+         × (Σ k' ꞉ ℤ , pr₂ (encoding x , b at-level k') < q) ∥
+       → p < q
+     I = ∥∥-rec (<ℤ[1/2]-is-prop p q) II
+      where
+       II : (Σ k ꞉ ℤ , p < pr₁ (encoding x , b at-level k))
+          × (Σ k' ꞉ ℤ , pr₂ (encoding x , b at-level k') < q)
+          → p < q
+       II ((k , p<l) , k' , r<q) = trans₂ p l r q p<l l<r r<q
+        where
+         l = pr₁ (encoding x , b at-level k)
+         r = pr₂ (encoding x , b at-level k')
+         l<r = disjoint-lemma' (x , b) k k'
+
+   is-located : located L R
+   is-located p q p<q = ∥∥-rec ∨-is-prop I (located-lemma₃ (x , b) (q ℤ[1/2]- p) (difference-positive p q p<q))
+    where
+     I : Σ k ꞉ ℤ , ((pr₂ (encoding x , b at-level k)) ℤ[1/2]- (pr₁ (encoding x , b at-level k))) < (q ℤ[1/2]- p)
+       → (L p holds) ∨ (R q holds)
+     I (k , less) with located-lemma₁ p q (pr₁ (encoding x , b at-level k)) (pr₂ (encoding x , b at-level k)) less
+     ... | inl p<l = ∣ inl ∣ k , p<l ∣ ∣
+     ... | inr r<q = ∣ inr ∣ k , r<q ∣ ∣
                         
 \end{code}
 
@@ -384,9 +478,9 @@ We also require the same operations for Dyadic Reals.
  _ℝd+_ : ℝ-d → ℝ-d → ℝ-d
  x ℝd+ y = (L , R) , inhab-L , inhab-R , rounded-L , rounded-R , disjoint' , located'
   where
-   L R : {!!}
-   L = {!!}
-   R = {!!}
+   L R : 𝓟 ℤ[1/2]
+   L p = (∃ (r , s) ꞉ ℤ[1/2] × ℤ[1/2] , r ∈ lower-cut-of x × s ∈ lower-cut-of y × (p ≡ r ℤ[1/2]+ s)) , ∃-is-prop
+   R q = (∃ (r , s) ꞉ ℤ[1/2] × ℤ[1/2] , r ∈ upper-cut-of x × s ∈ upper-cut-of y × (q ≡ r ℤ[1/2]+ s)) , ∃-is-prop
    
    inhab-L : inhabited-left L
    inhab-L = {!!}
@@ -441,13 +535,14 @@ on ternary Boehm reals and Dedekind Reals correlate.
  open import UF-Base
 
  negation-commutes-lemma₁ : (k : 𝕂) → (n : ℤ)
-                          → pr₁ (encoding k at-level n) ≡ (ℤ[1/2]- pr₂ (encoding 𝕂- k at-level n))
+                          → pr₂ (encoding k at-level n) ≡ (ℤ[1/2]- pr₁ (encoding 𝕂- k at-level n))
  negation-commutes-lemma₁ = {!!}
 
  negation-commutes-lemma₂ : (k : 𝕂) → (n : ℤ)
-                          → pr₂ (encoding k at-level n) ≡ (ℤ[1/2]- pr₁ (encoding 𝕂- k at-level n))
+                          → ℤ[1/2]- (pr₂ (encoding k at-level n)) ≡ pr₁ (encoding 𝕂- k at-level n)
  negation-commutes-lemma₂ = {!!}
 
+ \end{code}
  negation-commutes : (x : 𝕂) → ⟦ 𝕂- x ⟧ ≡ ℝd- ⟦ x ⟧ 
  negation-commutes (f , b) = ℝ-d-equality-from-left-cut Ll⊆Lr Lr⊆Ll
   where
@@ -468,11 +563,57 @@ on ternary Boehm reals and Dedekind Reals correlate.
      -}
    Lr⊆Ll : {!!}
    Lr⊆Ll = {!!}
+ \begin{code}
+ 
+ negation-commutes' : (x : 𝕂) → ⟦ 𝕂- x ⟧' ≡ ℝd- ⟦ x ⟧' 
+ negation-commutes' z = ℝ-d-equality-from-left-cut Ll⊆Lr Lr⊆Ll
+  where
+   Ll⊆Lr : lower-cut-of ⟦ 𝕂- z ⟧' ⊆ lower-cut-of (ℝd- ⟦ z ⟧')
+   Ll⊆Lr p = ∥∥-functor I
+    where
+     I : Σ n ꞉ ℤ , p < pr₁ (encoding 𝕂- z at-level n)
+       → Σ n ꞉ ℤ , pr₂ (encoding z at-level n) < (ℤ[1/2]- p)
+     I (n , p<l) = let (left-imp , right-imp) = ℤ[1/2]<-swap p (pr₁ (encoding 𝕂- z at-level n))
+                   in n , transport (_< (ℤ[1/2]- p)) II (left-imp p<l)
+      where
+       II : ℤ[1/2]- pr₁ (encoding 𝕂- z at-level n) ≡ pr₂ (encoding z at-level n)
+       II = negation-commutes-lemma₁ z n ⁻¹                 
+ 
+   Lr⊆Ll : lower-cut-of (ℝd- ⟦ z ⟧') ⊆ lower-cut-of ⟦ 𝕂- z ⟧'
+   Lr⊆Ll p = ∥∥-functor I
+    where
+     I : Σ n ꞉ ℤ , pr₂ (encoding z at-level n) < (ℤ[1/2]- p)
+       → Σ n ꞉ ℤ , p < pr₁ (encoding 𝕂- z at-level n)
+     I (n , r<-p) = let (left-imp , right-imp) = ℤ[1/2]<-swap (pr₂ (encoding z at-level n)) (ℤ[1/2]- p)
+                    in n , (transport₂ _<_ (ℤ[1/2]-negation-involutive p ⁻¹) II (left-imp r<-p))
+      where
+       II : ℤ[1/2]- (pr₂ (encoding z at-level n)) ≡ pr₁ (encoding 𝕂- z at-level n)
+       II = negation-commutes-lemma₂ z n
 
- addition-commutes : (x y : 𝕂) → ⟦ x 𝕂+ y ⟧ ≡ (⟦ x ⟧ ℝd+ ⟦ y ⟧)
- addition-commutes = {!!}
+ addition-commutes : (x y : 𝕂) → ⟦ x 𝕂+ y ⟧' ≡ (⟦ x ⟧' ℝd+ ⟦ y ⟧')
+ addition-commutes x y = ℝ-d-equality-from-left-cut Ll⊆Lr Lr⊆Ll
+  where
+   Ll⊆Lr : lower-cut-of ⟦ x 𝕂+ y ⟧' ⊆ lower-cut-of (⟦ x ⟧' ℝd+ ⟦ y ⟧')
+   Ll⊆Lr p = ∥∥-functor I
+    where
+     I : Σ n ꞉ ℤ , (p < pr₁ (encoding x 𝕂+ y at-level n))
+       → Σ (r , s) ꞉ ℤ[1/2] × ℤ[1/2] , r < ⟦ x ⟧' × s < ⟦ y ⟧' × (p ≡ r ℤ[1/2]+ s)
+     I (n , p<x+y) = {!!}
 
- multiplication-commutes : (x y : 𝕂) → ⟦ x 𝕂* y ⟧ ≡ (⟦ x ⟧ ℝd* ⟦ y ⟧)
+   Lr⊆Ll : lower-cut-of (⟦ x ⟧' ℝd+ ⟦ y ⟧') ⊆ lower-cut-of ⟦ x 𝕂+ y ⟧'
+   Lr⊆Ll p p∈x'+y' = ∥∥-rec ∃-is-prop I p∈x'+y'
+    where
+     I : Σ (r , s) ꞉ ℤ[1/2] × ℤ[1/2] , r < ⟦ x ⟧' × s < ⟦ y ⟧' × (p ≡ r ℤ[1/2]+ s)
+       → ∃ n ꞉ ℤ , (p < pr₁ (encoding x 𝕂+ y at-level n))      
+     I ((r , s) , r<x' , s<y' , e) = ∥∥-functor II (binary-choice r<x' s<y') 
+      where
+       II : (Σ k  ꞉ ℤ , r < pr₁ (encoding x at-level k))
+          × (Σ k' ꞉ ℤ , s < pr₁ (encoding y at-level k'))
+          → Σ n ꞉ ℤ , (p < pr₁ (encoding x 𝕂+ y at-level n)) 
+       II = {!!}
+   
+
+ multiplication-commutes : (x y : 𝕂) → ⟦ x 𝕂* y ⟧' ≡ (⟦ x ⟧' ℝd* ⟦ y ⟧')
  multiplication-commutes = {!!}
 
 \end{code}
