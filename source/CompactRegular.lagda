@@ -878,54 +878,54 @@ coherence-list F ℬ (φ , ψ) (i ∷ is) = ∥∥-rec ∥∥-is-prop † ih
 
 
 
-directification-preserves-coherence : (F : Frame 𝓤 𝓥 𝓦)
-                                    → (ℬ : Fam 𝓦 ⟨ F ⟩)
-                                    → (σ : closed-under-finite-meets F ℬ holds)
-                                    → closed-under-finite-meets F (directify F ℬ) holds
-directification-preserves-coherence F ℬ c@(τ , σ) = β , γ
- where
-  open PosetReasoning (poset-of F)
-  open Meets (λ x y → x ≤[ poset-of F ] y) hiding (is-top)
+-- directification-preserves-coherence : (F : Frame 𝓤 𝓥 𝓦)
+--                                     → (ℬ : Fam 𝓦 ⟨ F ⟩)
+--                                     → (σ : closed-under-finite-meets F ℬ holds)
+--                                     → closed-under-finite-meets F (directify F ℬ) holds
+-- directification-preserves-coherence F ℬ c@(τ , σ) = β , γ
+--  where
+--   open PosetReasoning (poset-of F)
+--   open Meets (λ x y → x ≤[ poset-of F ] y) hiding (is-top)
 
-  β : contains-top F (directify F ℬ) holds
-  β = ∥∥-rec (holds-is-prop (contains-top F (directify F ℬ))) † τ
-       where
-        † : Σ t ꞉ index ℬ , is-top F (ℬ [ t ]) holds
-          → contains-top F (directify F ℬ) holds
-        † (t , p) = ∣ (t ∷ []) , transport (λ - → is-top F - holds) (‡ ⁻¹) p ∣
-         where
-          ‡ : directify F ℬ [ t ∷ [] ] ≡ ℬ [ t ]
-          ‡ = ℬ [ t ] ∨[ F ] 𝟎[ F ]  ≡⟨ 𝟎-left-unit-of-∨ F (ℬ [ t ]) ⟩
-              ℬ [ t ]                ∎
+--   β : contains-top F (directify F ℬ) holds
+--   β = ∥∥-rec (holds-is-prop (contains-top F (directify F ℬ))) † τ
+--        where
+--         † : Σ t ꞉ index ℬ , is-top F (ℬ [ t ]) holds
+--           → contains-top F (directify F ℬ) holds
+--         † (t , p) = ∣ (t ∷ []) , transport (λ - → is-top F - holds) (‡ ⁻¹) p ∣
+--          where
+--           ‡ : directify F ℬ [ t ∷ [] ] ≡ ℬ [ t ]
+--           ‡ = ℬ [ t ] ∨[ F ] 𝟎[ F ]  ≡⟨ 𝟎-left-unit-of-∨ F (ℬ [ t ]) ⟩
+--               ℬ [ t ]                ∎
 
-  γ : closed-under-binary-meets F (directify F ℬ) holds
-  γ is js = ∥∥-rec₂ ∥∥-is-prop δ (coherence-list F ℬ c is) (coherence-list F ℬ c is)
-   where
-    δ : (Σ m ꞉ index ℬ , ℬ [ m ] ≡ finite-meet F ℬ is)
-      → (Σ n ꞉ index ℬ , ℬ [ n ] ≡ finite-meet F ℬ is)
-      → ∥ Σ ks ꞉ index (directify F ℬ) ,
-           ((directify F ℬ [ ks ]) is-glb-of (directify F ℬ [ is ] , directify F ℬ [ js ])) holds ∥
-    δ (m , μ) (n , ν) = ∥∥-rec ∥∥-is-prop ϵ (σ m n )
-     where
-      ϵ : Sigma (index ℬ) (λ k → ((ℬ [ k ]) is-glb-of (ℬ [ m ] , ℬ [ n ])) holds)
-        → ∥ Sigma
-             (index (directify F ℬ))
-             (λ ks → ((directify F ℬ [ ks ]) is-glb-of (directify F ℬ [ is ] , directify F ℬ [ js ])) holds) ∥
-      ϵ (k , ξ) = ∣ (k ∷ []) , (ζ₁ , ζ₂) , θ ∣
-       where
-        ζ₁ : ((directify F ℬ [ k ∷ [] ]) ≤[ poset-of F ] (directify F ℬ [ is ])) holds
-        ζ₁ = ℬ [ k ] ∨[ F ] 𝟎[ F ]                             ≤⟨ {!!} ⟩
-             ℬ [ k ]                                           ≤⟨ {!!} ⟩
-             ℬ [ m ] ∧[ F ] ℬ [ n ]                            ≤⟨ {!!} ⟩
-             (finite-meet F ℬ is) ∧[ F ] (finite-meet F ℬ js)  ≤⟨ {!!} ⟩
-             finite-meet F ℬ is                                ≤⟨ {!!} ⟩
-             directify F ℬ [ is ]                              ■
+--   γ : closed-under-binary-meets F (directify F ℬ) holds
+--   γ is js = ∥∥-rec₂ ∥∥-is-prop δ (coherence-list F ℬ c is) (coherence-list F ℬ c is)
+--    where
+--     δ : (Σ m ꞉ index ℬ , ℬ [ m ] ≡ finite-meet F ℬ is)
+--       → (Σ n ꞉ index ℬ , ℬ [ n ] ≡ finite-meet F ℬ is)
+--       → ∥ Σ ks ꞉ index (directify F ℬ) ,
+--            ((directify F ℬ [ ks ]) is-glb-of (directify F ℬ [ is ] , directify F ℬ [ js ])) holds ∥
+--     δ (m , μ) (n , ν) = ∥∥-rec ∥∥-is-prop ϵ (σ m n )
+--      where
+--       ϵ : Sigma (index ℬ) (λ k → ((ℬ [ k ]) is-glb-of (ℬ [ m ] , ℬ [ n ])) holds)
+--         → ∥ Sigma
+--              (index (directify F ℬ))
+--              (λ ks → ((directify F ℬ [ ks ]) is-glb-of (directify F ℬ [ is ] , directify F ℬ [ js ])) holds) ∥
+--       ϵ (k , ξ) = ∣ (k ∷ []) , (ζ₁ , ζ₂) , θ ∣
+--        where
+--         ζ₁ : ((directify F ℬ [ k ∷ [] ]) ≤[ poset-of F ] (directify F ℬ [ is ])) holds
+--         ζ₁ = ℬ [ k ] ∨[ F ] 𝟎[ F ]                             ≤⟨ {!!} ⟩
+--              ℬ [ k ]                                           ≤⟨ {!!} ⟩
+--              ℬ [ m ] ∧[ F ] ℬ [ n ]                            ≤⟨ {!!} ⟩
+--              (finite-meet F ℬ is) ∧[ F ] (finite-meet F ℬ js)  ≤⟨ {!!} ⟩
+--              finite-meet F ℬ is                                ≤⟨ {!!} ⟩
+--              directify F ℬ [ is ]                              ■
 
-        ζ₂ : {!!}
-        ζ₂ = {!!}
+--         ζ₂ : {!!}
+--         ζ₂ = {!!}
 
-        θ : {!!}
-        θ = {!!}
+--         θ : {!!}
+--         θ = {!!}
 
 \end{code}
 
@@ -1045,30 +1045,30 @@ compacts-are-basic-in-spectralᴰ-frames {𝓦 = 𝓦} F σ U κ =
          ⋁[ F ] ⁅ ℬ↑ [ i ] ∣ i ε ℐ ⁆ ≡⟨ covers F ℬ↑ b↑ U ⁻¹                 ⟩ₚ
          U                           ■
 
-compacts-closed-under-∧-in-spectral-frames : (F : Frame 𝓤 𝓥 𝓦)
-                                           → is-spectral F holds
-                                           → (K₁ K₂ : ⟨ F ⟩)
-                                           → is-compact-open F K₁ holds
-                                           → is-compact-open F K₂ holds
-                                           → is-compact-open F (K₁ ∧[ F ] K₂) holds
-compacts-closed-under-∧-in-spectral-frames F σ K₁ K₂ κ₁ κ₂ = ∥∥-rec † γ σ
-  where
-   † : is-prop (is-compact-open F (K₁ ∧[ F ] K₂) holds)
-   † = holds-is-prop (is-compact-open F (K₁ ∧[ F ] K₂))
+-- compacts-closed-under-∧-in-spectral-frames : (F : Frame 𝓤 𝓥 𝓦)
+--                                            → is-spectral F holds
+--                                            → (K₁ K₂ : ⟨ F ⟩)
+--                                            → is-compact-open F K₁ holds
+--                                            → is-compact-open F K₂ holds
+--                                            → is-compact-open F (K₁ ∧[ F ] K₂) holds
+-- compacts-closed-under-∧-in-spectral-frames F σ K₁ K₂ κ₁ κ₂ = ∥∥-rec † γ σ
+--   where
+--    † : is-prop (is-compact-open F (K₁ ∧[ F ] K₂) holds)
+--    † = holds-is-prop (is-compact-open F (K₁ ∧[ F ] K₂))
 
-   γ : spectralᴰ F → is-compact-open F (K₁ ∧[ F ] K₂) holds
-   γ σᴰ@(ℬ , φ , _ , ψ) = ∥∥-rec₂ † β ι₁ ι₂
-    where
-     ι₁ : ∥ Σ i ꞉ index (directify F ℬ) , K₁ ≡ directify F ℬ [ i ] ∥
-     ι₁ = compacts-are-basic-in-spectralᴰ-frames F σᴰ K₁ κ₁
+--    γ : spectralᴰ F → is-compact-open F (K₁ ∧[ F ] K₂) holds
+--    γ σᴰ@(ℬ , φ , _ , ψ) = ∥∥-rec₂ † β ι₁ ι₂
+--     where
+--      ι₁ : ∥ Σ i ꞉ index (directify F ℬ) , K₁ ≡ directify F ℬ [ i ] ∥
+--      ι₁ = compacts-are-basic-in-spectralᴰ-frames F σᴰ K₁ κ₁
 
-     ι₂ : ∥ Σ i ꞉ index (directify F ℬ) , K₂ ≡ directify F ℬ [ i ] ∥
-     ι₂ = compacts-are-basic-in-spectralᴰ-frames F σᴰ K₂ κ₂
+--      ι₂ : ∥ Σ i ꞉ index (directify F ℬ) , K₂ ≡ directify F ℬ [ i ] ∥
+--      ι₂ = compacts-are-basic-in-spectralᴰ-frames F σᴰ K₂ κ₂
 
-     β : (Σ i ꞉ (index (directify F ℬ)) , K₁ ≡ directify F ℬ [ i ])
-       → (Σ i ꞉ (index (directify F ℬ)) , K₂ ≡ directify F ℬ [ i ])
-       → is-compact-open F (K₁ ∧[ F ] K₂) holds
-     β (is , p) (js , q) = {!!}
+--      β : (Σ i ꞉ (index (directify F ℬ)) , K₁ ≡ directify F ℬ [ i ])
+--        → (Σ i ꞉ (index (directify F ℬ)) , K₂ ≡ directify F ℬ [ i ])
+--        → is-compact-open F (K₁ ∧[ F ] K₂) holds
+--      β (is , p) (js , q) = {!!}
 
 -- TODO: it's not clear if this lemma will be needed. Think more about this and
 -- remove it if it turns out that it won't be needed.
