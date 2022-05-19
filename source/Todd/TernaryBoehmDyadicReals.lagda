@@ -1,4 +1,5 @@
-
+This file proves that the ternary Boehm reals are embedded in the
+Dedekind reals defined using subsets of dyadic rationals.
 
 \begin{code}
 
@@ -10,6 +11,7 @@ open import IntegersB
 open import IntegersAddition
 open import IntegersOrder
 open import IntegersMultiplication
+open import IntegersNegation
 open import Todd.TernaryBoehmDef
 open import UF-FunExt
 open import UF-Powerset
@@ -36,12 +38,13 @@ record DyadicProperties : 𝓤₁ ̇ where
   _ℤ[1/2]+_     : ℤ[1/2] → ℤ[1/2] → ℤ[1/2]
   ℤ[1/2]+-comm  : commutative _ℤ[1/2]+_
   ℤ[1/2]+-assoc : associative _ℤ[1/2]+_
-  ℤ[1/2]-_       : ℤ[1/2] → ℤ[1/2]
+  ℤ[1/2]-_      : ℤ[1/2] → ℤ[1/2]
   ℤ[1/2]+-inv   : (x : ℤ[1/2]) → Σ y ꞉ ℤ[1/2] , (x ℤ[1/2]+ y) ≡ 0ℤ[1/2]
   _ℤ[1/2]*_     : ℤ[1/2] → ℤ[1/2] → ℤ[1/2]
   ℤ[1/2]-comm   : commutative _ℤ[1/2]*_
   ℤ[1/2]-assoc  : associative _ℤ[1/2]*_
-
+  ℤ[1/2]-negation-involutive : (x : ℤ[1/2]) → x ≡ ℤ[1/2]- (ℤ[1/2]- x)
+  
  infix 20  ℤ[1/2]-_
  infixl 19 _ℤ[1/2]-_
 
@@ -50,6 +53,7 @@ record DyadicProperties : 𝓤₁ ̇ where
 
 
   -- Could use alternative definition here, but since (a < b) ⇔ (2ᵃ < 2ᵇ), we can be simple
+  -- Perhaps we could prove this later
   
 _≤ℤ[1/2]_ _<ℤ[1/2]_ : ℤ[1/2] → ℤ[1/2] → 𝓤₀ ̇ 
 ((x , n) , _) ≤ℤ[1/2] ((y , m) , _) = (x * pos m) ≤ℤ (y * pos n)
@@ -67,7 +71,6 @@ instance
  Order-ℤ[1/2]-ℤ[1/2] : Order ℤ[1/2] ℤ[1/2]
  _≤_ {{Order-ℤ[1/2]-ℤ[1/2]}} = _≤ℤ[1/2]_
 
-instance
  Strict-Order-ℤ[1/2]-ℤ[1/2] : Strict-Order ℤ[1/2] ℤ[1/2]
  _<_ {{Strict-Order-ℤ[1/2]-ℤ[1/2]}} = _<ℤ[1/2]_
 
@@ -140,6 +143,31 @@ correlate well with the ternary Boehm reals.
  ℝ-d : 𝓤₁  ̇
  ℝ-d = Σ (L , R) ꞉ 𝓟 ℤ[1/2] × 𝓟 ℤ[1/2] , isCut L R
 
+ lower-cut-of : ℝ-d → 𝓟 ℤ[1/2]
+ lower-cut-of ((L , R) , _) = L
+
+ upper-cut-of : ℝ-d → 𝓟 ℤ[1/2]
+ upper-cut-of ((L , R) , _) = R
+
+ in-lower-cut : ℤ[1/2] → ℝ-d → 𝓤₀ ̇
+ in-lower-cut q ((L , R) , _) = q ∈ L
+
+ in-upper-cut : ℤ[1/2] → ℝ-d → 𝓤₀ ̇
+ in-upper-cut q ((L , R) , _) = q ∈ R
+
+ ℝ-d-equality-from-left-cut : {x y : ℝ-d}
+                            → lower-cut-of x ⊆ lower-cut-of y
+                            → lower-cut-of y ⊆ lower-cut-of x
+                            → x ≡ y
+ ℝ-d-equality-from-left-cut { x } { y } Lx⊆Ly Ly⊆Lx = {!!}
+
+ instance
+  Strict-Order-ℤ[1/2]-ℝ-d : Strict-Order ℤ[1/2] ℝ-d
+  _<_ {{Strict-Order-ℤ[1/2]-ℝ-d}} = in-lower-cut
+
+  Strict-Order-ℝ-d-ℤ[1/2] : Strict-Order ℝ-d ℤ[1/2]
+  _<_ {{Strict-Order-ℝ-d-ℤ[1/2]}} = λ y q → in-upper-cut q y
+
 \end{code}
 
 The following defines machinery to obtain the interval representation
@@ -148,7 +176,7 @@ of a Ternary Boehm object at each layer n.
 \begin{code}
 
  brick_on-level_ : ℤ → ℤ → ℤ[1/2] × ℤ[1/2]
- brick k on-level n = (normalise (k , predℤ n)) , (normalise (succℤ (succℤ k) , predℤ n))
+ brick k on-level n = (normalise (k , n)) , (normalise (succℤ (succℤ k) , n))
 
  encoding_at-level_ : 𝕂 → ℤ → ℤ[1/2] × ℤ[1/2]
  encoding (x , _) at-level n = brick (x n) on-level n
@@ -203,6 +231,29 @@ different sizes.
  ⟦_⟧ : 𝕂 → ℝ-d --yadic
  ⟦ x , b ⟧ = (L , R) , inhabited-L , inhabited-R , rounded-L , rounded-R , is-disjoint , is-located
   where
+   \end{code}
+   
+   I believe we need to change this condition. The x k is some layer which happens to be the same as a brick position.
+   I thing is should just be the following:
+ 
+   L R : 𝓟 ℤ[1/2]
+   L p = (∃ k ꞉ ℤ , p < pr₁ (encoding x , b at-level k)) , ∃-is-prop
+   R q = (∃ k ꞉ ℤ , pr₂ (encoding x , b at-level k) < q) , ∃-is-prop
+
+   The logic is that the intervals look something like  :
+   -------(          |           )----------
+   ----(             |   )------------------
+   -----------(      |     )----------------
+   -----------------(|     )----------------
+   ----------------( |   )------------------
+   ---------------(  |)---------------------
+   -----------------(|)---------------------
+
+   We simply need the rational to be outside the interval on any arbitrary layer.
+
+   Having the conditions as they are below makes is very difficult to prove that the operations commute properly, since we then need to have some f⁻¹ function for each (f , b) : 𝕂.
+   
+   \begin{code}
    L R : 𝓟 ℤ[1/2]
    L p = (∃ k ꞉ ℤ , p < pr₁ (encoding x , b at-level x k)) , ∃-is-prop
    R q = (∃ k ꞉ ℤ , pr₂ (encoding x , b at-level x k) < q) , ∃-is-prop
@@ -286,6 +337,145 @@ different sizes.
      ... | inl p<l = ∣ inl ∣ k , p<l ∣ ∣
      ... | inr r<q = ∣ inr ∣ k , r<q ∣ ∣
                         
-  
 \end{code}
+
+Now, we define negation, addition and multiplication of ternary Boehm reals.
+
+\begin{code}
+
+ 𝕂- : 𝕂 → 𝕂
+ 𝕂- (x , b) = (λ x → - x) , {!!}
+
+ _𝕂+_ : 𝕂 → 𝕂 → 𝕂
+ (x , b) 𝕂+ (y , b') = {!!}
+
+ _𝕂*_ : 𝕂 → 𝕂 → 𝕂
+ (x , b) 𝕂* (y , b') = {!!}
+
+\end{code}
+
+We also require the same operations for Dyadic Reals.
+
+\begin{code}
+
+ ℝd- : ℝ-d → ℝ-d
+ ℝd- x = (L , R) , inhab-L , inhab-R , rounded-L , rounded-R , disjoint' , located'
+  where
+   L R : 𝓟 ℤ[1/2]
+   L p = x < (ℤ[1/2]- p) , ∈-is-prop (upper-cut-of x) (ℤ[1/2]- p) 
+   R q = (ℤ[1/2]- q) < x , ∈-is-prop (lower-cut-of x) (ℤ[1/2]- q) 
+
+   inhab-L : inhabited-left L
+   inhab-L = {!!}
+   inhab-R : inhabited-right R
+   inhab-R = {!!}
+
+   rounded-L : rounded-left L
+   rounded-L = {!!}
+   rounded-R : rounded-right R
+   rounded-R = {!!}
+
+   disjoint' : disjoint L R
+   disjoint' = {!!}
+
+   located' : located L R
+   located' = {!!}
+
+ _ℝd+_ : ℝ-d → ℝ-d → ℝ-d
+ x ℝd+ y = (L , R) , inhab-L , inhab-R , rounded-L , rounded-R , disjoint' , located'
+  where
+   L R : {!!}
+   L = {!!}
+   R = {!!}
+   
+   inhab-L : inhabited-left L
+   inhab-L = {!!}
+   inhab-R : inhabited-right R
+   inhab-R = {!!}
+
+   rounded-L : rounded-left L
+   rounded-L = {!!}
+   rounded-R : rounded-right R
+   rounded-R = {!!}
+
+   disjoint' : disjoint L R
+   disjoint' = {!!}
+
+   located' : located L R
+   located' = {!!}
+   
+
+ _ℝd*_ : ℝ-d → ℝ-d → ℝ-d
+ x ℝd* y = (L , R) , inhab-L , inhab-R , rounded-L , rounded-R , disjoint' , located'
+  where
+   L R : {!!}
+   L = {!!}
+   R = {!!}
+   
+   inhab-L : inhabited-left L
+   inhab-L = {!!}
+   inhab-R : inhabited-right R
+   inhab-R = {!!}
+
+   rounded-L : rounded-left L
+   rounded-L = {!!}
+   rounded-R : rounded-right R
+   rounded-R = {!!}
+
+   disjoint' : disjoint L R
+   disjoint' = {!!}
+
+   located' : located L R
+   located' = {!!}
+
+\end{code}
+
+The result we are now interested in is proving that these operations
+on ternary Boehm reals and Dedekind Reals correlate.
+
+\begin{code}
+
+ ℤ[1/2]<-swap : (x y : ℤ[1/2]) → x < y ⇔ (ℤ[1/2]- y) < (ℤ[1/2]- x)
+ ℤ[1/2]<-swap = {!!}
+
+ open import UF-Base
+
+ negation-commutes-lemma₁ : (k : 𝕂) → (n : ℤ)
+                          → pr₁ (encoding k at-level n) ≡ (ℤ[1/2]- pr₂ (encoding 𝕂- k at-level n))
+ negation-commutes-lemma₁ = {!!}
+
+ negation-commutes-lemma₂ : (k : 𝕂) → (n : ℤ)
+                          → pr₂ (encoding k at-level n) ≡ (ℤ[1/2]- pr₁ (encoding 𝕂- k at-level n))
+ negation-commutes-lemma₂ = {!!}
+
+ negation-commutes : (x : 𝕂) → ⟦ 𝕂- x ⟧ ≡ ℝd- ⟦ x ⟧ 
+ negation-commutes (f , b) = ℝ-d-equality-from-left-cut Ll⊆Lr Lr⊆Ll
+  where
+   Ll⊆Lr : lower-cut-of ⟦ 𝕂- (f , b) ⟧ ⊆ lower-cut-of (ℝd- ⟦ f , b ⟧)
+   Ll⊆Lr p = ∥∥-functor I
+    where
+     I : Σ n ꞉ ℤ , p < pr₁ (encoding 𝕂- (f , b) at-level (- n))
+       → Σ n' ꞉ ℤ , pr₂ (encoding f , b at-level f n') < (ℤ[1/2]- p)
+     I (n , p<l) = n , {!!}
+     {-
+     I : Σ n ꞉ ℤ , p < pr₁ (encoding 𝕂- (f , b) at-level (- n))
+       → Σ r ꞉ ℤ[1/2] , ⟦ f , b ⟧ < r × (p ≡ ℤ[1/2]- r)
+     I (n , p<l) = let (less , d) = ℤ[1/2]<-swap p (pr₁ (encoding 𝕂- (f , b) at-level (- n)))
+                   in (ℤ[1/2]- p) , ∣ - n , transport (_<ℤ[1/2] (ℤ[1/2]- p)) II (less p<l) ∣ , ℤ[1/2]-negation-involutive p
+      where
+       II : (ℤ[1/2]- (pr₁ (encoding 𝕂- (f , b) at-level (- n)))) ≡ pr₂ (encoding f , b at-level f (- n)) 
+       II = negation-commutes-lemma₂ (f , b) {!!} ⁻¹
+     -}
+   Lr⊆Ll : {!!}
+   Lr⊆Ll = {!!}
+
+ addition-commutes : (x y : 𝕂) → ⟦ x 𝕂+ y ⟧ ≡ (⟦ x ⟧ ℝd+ ⟦ y ⟧)
+ addition-commutes = {!!}
+
+ multiplication-commutes : (x y : 𝕂) → ⟦ x 𝕂* y ⟧ ≡ (⟦ x ⟧ ℝd* ⟦ y ⟧)
+ multiplication-commutes = {!!}
+
+\end{code}
+
+
 
