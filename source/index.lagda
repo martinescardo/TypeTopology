@@ -209,7 +209,6 @@ import OrdinalTaboos                   -- By Tom de Jong
 import OrdinalTrichotomousArithmetic
 import Ordinals
 import OrdinalsClosure
-import Ordinals
 import OrdinalsFreeGroup
 import OrdinalsSupSum
 import OrdinalsToppedType
