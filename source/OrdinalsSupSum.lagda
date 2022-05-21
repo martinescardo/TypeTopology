@@ -68,9 +68,10 @@ principle of excluded middle.
 
 \begin{code}
 
-module _ {𝓤 : Universe}
-         (em : Excluded-Middle)
-         (sr : Set-Replacement (fe-and-em-give-propositional-truncations fe em))
+module sup-bounded-by-sum-under-em
+        {𝓤 : Universe}
+        (em : Excluded-Middle)
+        (sr : Set-Replacement (fe-and-em-give-propositional-truncations fe em))
        where
 
  open sums-assuming-EM (em {𝓤})
@@ -162,5 +163,69 @@ module _ {𝓤 : Universe}
 
    γ : WEM 𝓤
    γ = ⊴-add-taboo q
+
+\end{code}
+
+Added 21st May 2022. Unfortunately, the above is not very useful in
+the generality it is proved. The reason is that in other modules we
+have sups and sums constructed under different assumptions, and
+although the assumptions are propositions and hence we can transport
+using propositional extensionality, this becomes to cumbersome to even
+write down, let alone prove. Hence we will repeat the above (short)
+code with the two assumptions we need.
+
+\begin{code}
+
+module _ {𝓤 : Universe}
+         (em : Excluded-Middle)
+         (pt : propositional-truncations-exist)
+         (sr : Set-Replacement pt)
+       where
+
+ open suprema pt sr
+
+ open import OrdinalsToppedType fe
+ open import OrdinalToppedArithmetic fe
+
+ sup-bounded-by-sumᵀ : (τ : Ordinalᵀ 𝓤) (υ : ⟪ τ ⟫ → Ordinalᵀ 𝓤)
+                     → sup (λ x → [ υ x ]) ⊴ [ ∑ τ υ ]
+ sup-bounded-by-sumᵀ τ υ = γ
+  where
+   bound : (x : ⟪ τ ⟫) → [ υ x ] ⊴ [ ∑ τ υ ]
+   bound x = ≼-gives-⊴ [ υ x ] [ ∑ τ υ ] m
+    where
+     f : ⟪ υ x ⟫ → ⟪ ∑ τ υ ⟫
+     f y = x , y
+
+     fop : is-order-preserving [ υ x ] [ ∑ τ υ ] f
+     fop y z l = inr (refl , l)
+
+     m : [ υ x ] ≼ [ ∑ τ υ ]
+     m = order-preserving-gives-≼ em [ υ x ] [ ∑ τ υ ] (f , fop)
+
+   γ : sup (λ x → [ υ x ]) ⊴ [ ∑ τ υ ]
+   γ = sup-is-lower-bound-of-upper-bounds (λ x → [ υ x ]) [ ∑ τ υ ] bound
+
+ open import OrdinalsTrichotomousType fe
+ open import OrdinalTrichotomousArithmetic fe
+
+ sup-bounded-by-sum₃ : (τ : Ordinal₃ 𝓤) (υ : ⦅ τ ⦆ → Ordinal₃ 𝓤)
+                     → sup (λ x → ⁅ υ x ⁆) ⊴ ⁅ ∑³ τ υ ⁆
+ sup-bounded-by-sum₃ τ υ = γ
+  where
+   bound : (x : ⦅ τ ⦆) → ⁅ υ x ⁆ ⊴ ⁅ ∑³ τ υ ⁆
+   bound x = ≼-gives-⊴ ⁅ υ x ⁆ ⁅ ∑³ τ υ ⁆ m
+    where
+     f : ⦅ υ x ⦆ → ⦅ ∑³ τ υ ⦆
+     f y = x , y
+
+     fop : is-order-preserving ⁅ υ x ⁆ ⁅ ∑³ τ υ ⁆ f
+     fop y z l = inr (refl , l)
+
+     m : ⁅ υ x ⁆ ≼ ⁅ ∑³ τ υ ⁆
+     m = order-preserving-gives-≼ em ⁅ υ x ⁆ ⁅ ∑³ τ υ ⁆ (f , fop)
+
+   γ : sup (λ x → ⁅ υ x ⁆) ⊴ ⁅ ∑³ τ υ ⁆
+   γ = sup-is-lower-bound-of-upper-bounds (λ x → ⁅ υ x ⁆) ⁅ ∑³ τ υ ⁆ bound
 
 \end{code}

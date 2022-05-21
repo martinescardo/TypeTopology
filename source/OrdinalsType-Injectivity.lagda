@@ -109,7 +109,7 @@ that have infs of complemented subsets is injective. These two results
 are already proved in other modules, but these results are not
 explicitly stated. We should refactor that code.
 
-Added 11th May 2022. But we still need to clean-up it.
+Added 11th May 2022. But we still need to clean it up.
 
 \begin{code}
 
@@ -200,5 +200,26 @@ module ordinals-injectivity-order (ua : Univalence) where
 
    fop : is-order-preserving ((α ↗ 𝓮) j) ((β ↗ 𝓮) j) f
    fop ϕ γ ((i , refl) , m) = (i , refl) , hop i (ϕ (i , refl)) (γ (i , refl)) m
+
+
+module topped-ordinals-injectivity-order (ua : Univalence) where
+
+ open import UF-UA-FunExt
+
+ fe : FunExt
+ fe = Univalence-gives-FunExt ua
+
+ open import OrdinalsToppedType fe
+ open import OrdinalOfOrdinals ua
+ open import UF-Subsingletons
+
+ open topped-ordinals-injectivity fe
+
+ ↗-preserves-⊴ : {I J : 𝓤  ̇ } (𝓮 : I ↪ J)
+                 (α β : I → Ordinalᵀ 𝓤)
+               → ((i : I) → [ α i ] ⊴ [ β i ])
+               → (j : J) → [ (α ↗ 𝓮) j ] ⊴ [ (β ↗ 𝓮) j ]
+ ↗-preserves-⊴ 𝓮 α β =
+   ordinals-injectivity-order.↗-preserves-⊴ ua 𝓮 (λ i → [ α i ]) (λ i → [ β i ])
 
 \end{code}

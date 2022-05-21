@@ -904,7 +904,7 @@ module ℕ∞-in-Ord where
    p : (x y : ⟨ ω +ₒ 𝟙ₒ ⟩)
      → x ≺⟨ ω +ₒ 𝟙ₒ ⟩ y
      → ι𝟙 x ≺⟨ ℕ∞ₒ ⟩ ι𝟙 y
-   p (inl n) (inl m) l = ι-order-preserving n m l
+   p (inl n) (inl m) l = ℕ-to-ℕ∞-order-preserving n m l
    p (inl n) (inr *) * = ∞-≺-largest n
    p (inr *) (inl m) l = 𝟘-elim l
    p (inr *) (inr *) l = 𝟘-elim l
@@ -936,7 +936,7 @@ module ℕ∞-in-Ord where
      → Σ x' ꞉ ℕ∞ , (x' ≺⟨ ℕ∞ₒ ⟩ x) × (ι𝟙-inverse x' (lpo x') ≡ y)
    i .(ι n) (inl (n , refl)) (inl m) l =
      ι m ,
-     ι-order-preserving m n l ,
+     ℕ-to-ℕ∞-order-preserving m n l ,
      ι𝟙-inverse-inl (ι m) (lpo (ι m)) m refl
    i .(ι n) (inl (n , refl)) (inr *) l = 𝟘-elim l
    i x (inr g) (inl n) * =

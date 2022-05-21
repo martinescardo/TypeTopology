@@ -56,11 +56,8 @@ prev-behaviour' : (x : X) (σ : (y : X) → y < x → is-accessible y)
                 → prev x (next x σ) ≡ σ
 prev-behaviour' x σ = refl
 
-induction-hypothesis : (P : X → 𝓦 ̇ ) → (x : X) → (𝓤 ⊔ 𝓥 ⊔ 𝓦) ̇
-induction-hypothesis P x = (y : X) → y < x → P y
-
 transfinite-induction' :  (P : X → 𝓦 ̇ )
-                       → ((x : X) → induction-hypothesis P x → P x)
+                       → ((x : X) → ((y : X) → y < x → P y) → P x)
                        → (x : X) → is-accessible x → P x
 transfinite-induction' P f = accessible-induction
                               (λ x _ → P x)
@@ -562,6 +559,10 @@ v, we have that i is in trichotomy with u, which by elimination means
 i >= u, and so v > i >= u, and so u and v are again in trichotomy.
 
 \begin{code}
+
+induction-hypothesis : (P : X → 𝓦 ̇ ) → (x : X) → (𝓤 ⊔ 𝓥 ⊔ 𝓦) ̇
+induction-hypothesis P x = (y : X) → y < x → P y
+
 module _
         (f-e : Fun-Ext)
         (em : Excluded-Middle)
@@ -721,8 +722,8 @@ cotransitive-≾-gives-≼ c x y n u l = γ (c u x y l)
   γ (inl l) = l
   γ (inr l) = 𝟘-elim (n l)
 
-tricho-gives-contrans : is-transitive → is-trichotomous-order → cotransitive
-tricho-gives-contrans tra tri x y z l = γ (tri z y)
+tricho-gives-cotrans : is-transitive → is-trichotomous-order → cotransitive
+tricho-gives-cotrans tra tri x y z l = γ (tri z y)
  where
   γ : (z < y) + (z ≡ y) + (y < z) → (x < z) + (z < y)
   γ (inl m)          = inr m
@@ -730,7 +731,7 @@ tricho-gives-contrans tra tri x y z l = γ (tri z y)
   γ (inr (inr m))    = inl (tra x y z l m)
 
 em-gives-cotrans : FunExt → EM (𝓤 ⊔ 𝓥) → is-well-order → cotransitive
-em-gives-cotrans fe em wo@(p , w , e , t) = tricho-gives-contrans t
+em-gives-cotrans fe em wo@(p , w , e , t) = tricho-gives-cotrans t
                                               (trichotomy (fe (𝓤 ⊔ 𝓥) 𝓤₀) em wo)
 \end{code}
 
