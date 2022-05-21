@@ -206,12 +206,14 @@ import OrdinalOfOrdinalsSuprema        -- By Tom de Jong
 import OrdinalOfTruthValues
 import OrdinalToppedArithmetic
 import OrdinalTaboos                   -- By Tom de Jong
+import OrdinalTrichotomousArithmetic
 import Ordinals
 import OrdinalsClosure
 import Ordinals
 import OrdinalsFreeGroup
 import OrdinalsSupSum
 import OrdinalsToppedType
+import OrdinalsTrichotomousType
 import OrdinalsType
 import OrdinalsType-Injectivity
 import OrdinalsWellOrderArithmetic

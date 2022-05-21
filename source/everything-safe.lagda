@@ -176,10 +176,12 @@ import OrdinalsShulmanTaboo
 import OrdinalsSupSum
 import OrdinalsToppedType
 import OrdinalsType-Injectivity
+import OrdinalsTrichotomousType
 import OrdinalsType
 import OrdinalsWellOrderArithmetic
 import OrdinalsWellOrderTransport
 import OrdinalTaboos
+import OrdinalTrichotomousArithmetic
 import OrdinalToppedArithmetic
 import P2
 import PairFun
