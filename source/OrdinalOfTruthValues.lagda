@@ -90,4 +90,6 @@ module _ (ua : Univalence) where
 
 \end{code}
 
-Notice also that being a least element is not in general decidable because in this example
+Notice also that being a least element is not in general decidable
+because in this example being a least element amounts to being false,
+and deciding falsity is equivalent to weak excluded middle.
