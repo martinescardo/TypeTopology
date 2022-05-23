@@ -44,18 +44,11 @@ accessible-induction P f = h
 prev : {x : X}
      → is-accessible x
      → (y : X) → y < x → is-accessible y
-prev {x} = accessible-induction
-            (λ x _ → (y : X) → y < x → is-accessible y)
-            (λ x σ f → σ)
-            x
+prev (step a) = a
 
 prev-behaviour : (x : X) (a : is-accessible x)
                → step (prev a) ≡ a
 prev-behaviour = accessible-induction _ (λ _ _ _ → refl)
-
-prev-behaviour' : (x : X) (σ : (y : X) → y < x → is-accessible y)
-                → prev (step σ) ≡ σ
-prev-behaviour' x σ = refl
 
 transfinite-induction' :  (P : X → 𝓦 ̇ )
                        → ((x : X) → ((y : X) → y < x → P y) → P x)
