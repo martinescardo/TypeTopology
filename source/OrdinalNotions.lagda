@@ -29,17 +29,17 @@ is-prop-valued : 𝓤 ⊔ 𝓥 ̇
 is-prop-valued = (x y : X) → is-prop (x < y)
 
 data is-accessible : X → 𝓤 ⊔ 𝓥 ̇ where
- next : (x : X) → ((y : X) → y < x → is-accessible y) → is-accessible x
+ step : {x : X} → ((y : X) → y < x → is-accessible y) → is-accessible x
 
 accessible-induction : (P : (x : X) → is-accessible x → 𝓦 ̇ )
                      → ((x : X) (σ : (y : X) → y < x → is-accessible y)
                          → ((y : X) (l : y < x) → P y (σ y l))
-                         → P x (next x σ))
+                         → P x (step σ))
                      → (x : X) (a : is-accessible x) → P x a
 accessible-induction P f = h
   where
    h : (x : X) (a : is-accessible x) → P x a
-   h x (next x σ) = f x σ (λ y l → h y (σ y l))
+   h x (step σ) = f x σ (λ y l → h y (σ y l))
 
 prev : (x : X)
      → is-accessible x
@@ -49,11 +49,11 @@ prev = accessible-induction
         (λ x σ f → σ)
 
 prev-behaviour : (x : X) (a : is-accessible x)
-               → next x (prev x a) ≡ a
+               → step (prev x a) ≡ a
 prev-behaviour = accessible-induction _ (λ _ _ _ → refl)
 
 prev-behaviour' : (x : X) (σ : (y : X) → y < x → is-accessible y)
-                → prev x (next x σ) ≡ σ
+                → prev x (step σ) ≡ σ
 prev-behaviour' x σ = refl
 
 transfinite-induction' :  (P : X → 𝓦 ̇ )
@@ -75,7 +75,7 @@ transfinite-induction : is-well-founded → ∀ {𝓦} → Well-founded {𝓦}
 transfinite-induction w P f x = transfinite-induction' P f x (w x)
 
 transfinite-induction-converse : Well-founded {𝓤 ⊔ 𝓥} → is-well-founded
-transfinite-induction-converse φ = φ is-accessible next
+transfinite-induction-converse φ = φ is-accessible (λ _ → step)
 
 transfinite-recursion : is-well-founded
                       → ∀ {𝓦} {Y : 𝓦 ̇ }
@@ -153,10 +153,10 @@ accessibility-is-prop fe = accessible-induction P φ
 
   φ : (x : X) (σ : (y : X) → y < x → is-accessible y)
     → ((y : X) (l : y < x) (a : is-accessible y) → σ y l ≡ a)
-    → (b : is-accessible x) → next x σ ≡ b
-  φ x σ IH b = next x σ ≡⟨ i ⟩
-               next x τ ≡⟨ prev-behaviour x b ⟩
-               b        ∎
+    → (b : is-accessible x) → step σ ≡ b
+  φ x σ IH b = step σ ≡⟨ i ⟩
+               step τ ≡⟨ prev-behaviour x b ⟩
+               b      ∎
    where
     τ : (y : X) → y < x → is-accessible y
     τ = prev x b
@@ -164,7 +164,7 @@ accessibility-is-prop fe = accessible-induction P φ
     h :  (y : X) (l : y < x) → σ y l ≡ τ y l
     h y l = IH y l (τ y l)
 
-    i = ap (next x)
+    i = ap step
            (dfunext (fe 𝓤 (𝓤 ⊔ 𝓥)) (λ y → dfunext (fe 𝓥 (𝓤 ⊔ 𝓥)) (h y)))
 
 well-foundedness-is-prop : FunExt → is-prop is-well-founded
@@ -268,7 +268,7 @@ no-minimal-is-empty : is-well-founded
 no-minimal-is-empty w A s (x , p) = γ
  where
   g : (x : X) → is-accessible x → ¬ (A x)
-  g x (next x σ) ν = δ
+  g x (step σ) ν = δ
    where
     h : ¬¬ (Σ y ꞉ X , (y < x) × A y)
     h = s x ν

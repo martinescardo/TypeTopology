@@ -659,13 +659,13 @@ finite-accessible = course-of-values-induction (λ n → is-accessible _≺_ (ι
   φ : (n : ℕ)
     → ((m : ℕ) → m < n → is-accessible _≺_ (ι m))
     → is-accessible _≺_ (ι n)
-  φ n σ = next (ι n) τ
+  φ n σ = step τ
    where
     τ : (u : ℕ∞) → u ≺ ι n → is-accessible _≺_ u
     τ u (m , r , l) = transport⁻¹ (is-accessible _≺_) r (σ m (⊏-gives-< m n l))
 
 ≺-well-founded : is-well-founded _≺_
-≺-well-founded v = next v σ
+≺-well-founded v = step σ
  where
   σ : (u : ℕ∞) → u ≺ v → is-accessible _≺_ u
   σ u (n , r , l) = transport⁻¹ (is-accessible _≺_) r (finite-accessible n)

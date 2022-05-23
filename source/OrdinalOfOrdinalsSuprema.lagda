@@ -372,7 +372,7 @@ induced order on Σα.
     where
      ϕ : (p : Σα) → ((q : Σα) → q ≺ p → is-accessible _≺/_ [ q ])
        → is-accessible _≺/_ [ p ]
-     ϕ p IH = next [ p ] IH'
+     ϕ p IH = step IH'
       where
        IH' : (y : α/) → y ≺/ [ p ] → is-accessible _≺/_ y
        IH' = /-induction ≋ (λ q → Π-is-prop fe' (λ _ → a q))
@@ -675,7 +675,7 @@ The ordinal structure on the image of σ will be the one induced from Ordinal �
                           → (t : ∃ i ꞉ I , γ ⊲ α i)
                           → is-accessible _≺_ (γ , t))
        → (s : ∃ i ꞉ I , β ⊲ α i) → is-accessible _≺_ (β , s)
-     ϕ β IH s = next (β , s) IH'
+     ϕ β IH s = step IH'
       where
        IH' : (γ : α⁺) → γ ≺ (β , s) → is-accessible _≺_ γ
        IH' (γ , t) l = IH γ l t
