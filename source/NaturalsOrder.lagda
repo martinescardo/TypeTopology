@@ -200,7 +200,7 @@ regress P ρ (succ n) m l p = cases (λ (l' : m ≤ n) → IH m l' (ρ n p))
 <-is-well-founded (succ m) = step (τ (<-is-well-founded m))
  where
   τ : is-accessible _<_ m → (n : ℕ) → n < succ m → is-accessible _<_ n
-  τ a n u = cases (λ (v : n < m) → prev _<_ m a n v)
+  τ a n u = cases (λ (v : n < m) → prev _<_ a n v)
                   (λ (p : n ≡ m) → transport⁻¹ (is-accessible _<_) p a)
                   (<-split n m u)
 

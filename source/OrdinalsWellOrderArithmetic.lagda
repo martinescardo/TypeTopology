@@ -568,7 +568,7 @@ lemma.
    σ v (p , l) = d
     where
      b : is-accessible _<_ (φ p v)
-     b = prev _<_ (φ p u) (w p (φ p u)) (φ p v) l
+     b = prev _<_ (w p (φ p u)) (φ p v) l
 
      c : is-accessible _≺_ (ψ p (φ p v))
      c = retract-accessible _<_ _≺_ (ψ p) (φ p) (η p) f (φ p v) b
