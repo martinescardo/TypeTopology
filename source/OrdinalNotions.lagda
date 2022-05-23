@@ -280,7 +280,7 @@ no-minimal-is-empty : is-well-founded
                     → ∀ {𝓦} (A : X → 𝓦 ̇ )
                     → ((x : X) → A x → is-nonempty (Σ y ꞉ X , (y < x) × A y))
                     → is-empty (Σ A)
-no-minimal-is-empty w A s (x , p) = γ
+no-minimal-is-empty w A s (x , a₀) = γ
  where
   g : (x : X) → is-accessible x → ¬ (A x)
   g x (step σ) ν = δ
@@ -299,10 +299,10 @@ no-minimal-is-empty w A s (x , p) = γ
 
   f : ((x : X) → A x → ¬¬ (Σ y ꞉ X , (y < x) × A y))
     → (x : X) → ¬ (A x)
-  f s x p = g x (w x) p
+  f s x = g x (w x)
 
   γ : 𝟘
-  γ = f s x p
+  γ = f s x a₀
 
 no-minimal-is-empty' : is-well-founded
                      → ∀ {𝓦} (A : X → 𝓦 ̇ )
@@ -311,6 +311,10 @@ no-minimal-is-empty' : is-well-founded
 no-minimal-is-empty' w A s = no-minimal-is-empty w A (λ x a → ¬¬-intro (s x a))
 
 \end{code}
+
+The emptiness of the empty set doesn't play any special role in the
+above argument, and can be replaced by any type - would that be
+useful?
 
 The remainder of this file is not needed anywhere else (at least at
 the time of writing, namely 11th January 2021).

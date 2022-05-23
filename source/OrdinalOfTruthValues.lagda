@@ -93,3 +93,8 @@ module _ (ua : Univalence) where
 Notice also that being a least element is not in general decidable
 because in this example being a least element amounts to being false,
 and deciding falsity is equivalent to weak excluded middle.
+
+TODO (in another file). It is not in general possible to find a least
+element of an inhabited ordinal. In fact, consider the ordinal P + α
+where P is a proposition. Then if we can find an element of this
+ordinal, we can decide whether P or ¬ P.
