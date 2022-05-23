@@ -243,6 +243,18 @@ irreflexive = ≾-refl
 ≼-coarser-than-≾ : (y : X) → is-accessible y → (x : X) → x ≼ y → x ≾ y
 ≼-coarser-than-≾ y a x f l = ≾-refl y a (f y l)
 
+is-bottom : X → 𝓤 ⊔ 𝓥 ̇
+is-bottom x = (y : X) → x ≾ y
+
+is-bottom' : X → 𝓤 ⊔ 𝓥 ̇
+is-bottom' x = (y : X) → x ≼ y
+
+is-bottom'-gives-is-bottom : is-well-founded → (x : X) → is-bottom' x → is-bottom x
+is-bottom'-gives-is-bottom w x i y = ≼-coarser-than-≾ y (w y) x (i y)
+
+is-bottom-gives-is-bottom' : (x : X) → is-bottom x → is-bottom' x
+is-bottom-gives-is-bottom' x i y z l = 𝟘-elim (i z l)
+
 is-top : X → 𝓤 ⊔ 𝓥 ̇
 is-top x = (y : X) → y ≾ x
 
@@ -251,6 +263,15 @@ is-top' x = (y : X) → y ≼ x
 
 is-top'-gives-is-top : is-well-founded → (x : X) → is-top' x → is-top x
 is-top'-gives-is-top w x i y = ≼-coarser-than-≾ x (w x) y (i y)
+
+\end{code}
+
+There is no hope of proving the converse constructively, because in
+the ordinal of truth values any ¬¬-dense truth-value p satisfies
+is-top p, and the only truth-value that satisfies is-top is ⊤. See the
+module OrdinalOfTruthValues.
+
+\begin{code}
 
 has-top : 𝓤 ⊔ 𝓥 ̇
 has-top = Σ x ꞉ X , is-top x

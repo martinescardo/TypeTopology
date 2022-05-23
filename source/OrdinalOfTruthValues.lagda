@@ -58,8 +58,16 @@ open import OrdinalsType
 ⊥-is-least : is-least Ωₒ ⊥
 ⊥-is-least (P , i) (𝟘 , 𝟘-is-prop) (refl , q) = 𝟘-elim (equal-⊤-is-true 𝟘 𝟘-is-prop q)
 
-⊥-is-largest : is-largest Ωₒ ⊤
-⊥-is-largest (.𝟙 , .𝟙-is-prop) (.𝟘 , .𝟘-is-prop) (refl , refl) = refl , refl
+⊤-is-largest : is-largest Ωₒ ⊤
+⊤-is-largest (.𝟙 , .𝟙-is-prop) (.𝟘 , .𝟘-is-prop) (refl , refl) = refl , refl
+
+largest-is-⊤ : (p : Ω 𝓤) → is-largest Ωₒ p → p ≡ ⊤
+largest-is-⊤ p i = pr₂ (i ⊤ ⊥ (refl , refl))
+
+¬¬-dense-is-largest' : (p q : Ω 𝓤)
+                     → ¬¬ (p holds)
+                     → (q ≾⟨ Ωₒ ⟩ p)
+¬¬-dense-is-largest' .⊥ .⊤ f (refl , refl) = f 𝟘-elim
 
 open import UF-Univalence
 
