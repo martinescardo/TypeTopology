@@ -243,17 +243,17 @@ irreflexive = ≾-refl
 ≼-coarser-than-≾ : (y : X) → is-accessible y → (x : X) → x ≼ y → x ≾ y
 ≼-coarser-than-≾ y a x f l = ≾-refl y a (f y l)
 
-is-bottom : X → 𝓤 ⊔ 𝓥 ̇
-is-bottom x = (y : X) → x ≾ y
+is-bot : X → 𝓤 ⊔ 𝓥 ̇
+is-bot x = (y : X) → x ≾ y
 
-is-bottom' : X → 𝓤 ⊔ 𝓥 ̇
-is-bottom' x = (y : X) → x ≼ y
+is-bot' : X → 𝓤 ⊔ 𝓥 ̇
+is-bot' x = (y : X) → x ≼ y
 
-is-bottom'-gives-is-bottom : is-well-founded → (x : X) → is-bottom' x → is-bottom x
-is-bottom'-gives-is-bottom w x i y = ≼-coarser-than-≾ y (w y) x (i y)
+is-bot'-gives-is-bot : is-well-founded → (x : X) → is-bot' x → is-bot x
+is-bot'-gives-is-bot w x i y = ≼-coarser-than-≾ y (w y) x (i y)
 
-is-bottom-gives-is-bottom' : (x : X) → is-bottom x → is-bottom' x
-is-bottom-gives-is-bottom' x i y z l = 𝟘-elim (i z l)
+is-bot-gives-is-bot' : (x : X) → is-bot x → is-bot' x
+is-bot-gives-is-bot' x i y z l = 𝟘-elim (i z l)
 
 is-top : X → 𝓤 ⊔ 𝓥 ̇
 is-top x = (y : X) → y ≾ x

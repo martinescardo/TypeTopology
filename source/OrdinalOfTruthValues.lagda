@@ -61,9 +61,6 @@ open import OrdinalsType
 ⊤-is-largest : is-largest Ωₒ ⊤
 ⊤-is-largest (.𝟙 , .𝟙-is-prop) (.𝟘 , .𝟘-is-prop) (refl , refl) = refl , refl
 
-largest-is-⊤ : (p : Ω 𝓤) → is-largest Ωₒ p → p ≡ ⊤
-largest-is-⊤ p i = pr₂ (i ⊤ ⊥ (refl , refl))
-
 ¬¬-dense-is-largest' : (p q : Ω 𝓤)
                      → ¬¬ (p holds)
                      → (q ≾⟨ Ωₒ ⟩ p)
@@ -92,3 +89,5 @@ module _ (ua : Univalence) where
    p (inr ⋆) (inr x) l = 𝟘-elim l
 
 \end{code}
+
+Notice also that being a least element is not in general decidable because in this example
