@@ -226,6 +226,8 @@ negative-less-than-positive x y = (x ℕ+ y) , I
   I (inl l) = inr (ℤ≤-swap (pos (succ x)) (pos (succ y)) (ℕ≤-to-ℤ≤ (succ x) (succ y) l))
   I (inr r) = inl (ℤ≤-swap (pos (succ y)) (pos (succ x)) (ℕ≤-to-ℤ≤ (succ y) (succ x) r))
 
+\end{code}
+
 ℤ-trichotomous : (x y : ℤ) → (x < y) ∔ (x ≡ y) ∔ (y < x)
 ℤ-trichotomous x y = I (ℤ-dichotomous x y) 
  where
@@ -240,6 +242,37 @@ negative-less-than-positive x y = (x ℕ+ y) , I
     II : (y < x) ∔ (y ≡ x) → (x < y) ∔ (x ≡ y) ∔ (y < x) 
     II (inl l) = inr (inr l)
     II (inr r) = inr (inl (r ⁻¹))
+
+Different version of trich by Todd
+
+\begin{code}
+
+trich-locate : (x y : ℤ) → 𝓤₀ ̇ 
+trich-locate x y = (x < y) ∔ (x ≡ y) ∔ (y < x)
+
+ℤ-trichotomous : (x y : ℤ) → trich-locate x y
+ℤ-trichotomous x y = I (ℤ-dichotomous x y) 
+ where
+  I : (x ≤ y) ∔ (y ≤ x) → (x < y) ∔ (x ≡ y) ∔ (y < x)
+  I (inl l) = II (ℤ≤-split x y l)
+   where
+    II : (x < y) ∔ (x ≡ y) → (x < y) ∔ (x ≡ y) ∔ (y < x)
+    II (inl l) = inl l
+    II (inr r) = inr (inl r)
+  I (inr r) = II (ℤ≤-split y x r)
+   where
+    II : (y < x) ∔ (y ≡ x) → (x < y) ∔ (x ≡ y) ∔ (y < x) 
+    II (inl l) = inr (inr l)
+    II (inr r) = inr (inl (r ⁻¹))
+
+ℤ-trichotomous-is-prop : (x y : ℤ) → is-prop ((x < y) ∔ (x ≡ y) ∔ (y < x))
+ℤ-trichotomous-is-prop x y
+ = +-is-prop (ℤ<-is-prop x y)
+     (+-is-prop ℤ-is-set (ℤ<-is-prop y x)
+       (λ x≡y → transport (λ - → ¬ (- <ℤ x)) x≡y (ℤ-equal-not-less-than x)))
+       (λ x<y → cases
+                  (λ x≡y → ℤ-bigger-or-equal-not-less y x (0 , (x≡y ⁻¹)) x<y)
+                  (ℤ-bigger-or-equal-not-less x y (<-is-≤ x y x<y)))
 
 ℤ≤-adding : (a b c d : ℤ) → a ≤ b → c ≤ d → a + c ≤ b + d
 ℤ≤-adding a b c d (p , β) (q , β') = (p ℕ+ q) , I
@@ -441,5 +474,28 @@ ordering-right-cancellable a b (pos (succ x)) p l = orcl' a b x l
   I (inl x<y) (inr e)   = e ⁻¹
   I (inr e)   (inl y<x) = e
   I (inr e)   (inr e')  = e
-       
+
+\end{code}
+
+Added by Todd for paper
+
+\begin{code}
+
+ℤ≤-attach : (x y : ℤ) → (y ≡ x) ∔ (x < y) → x ≤ y
+ℤ≤-attach x x (inl refl) = 0 , refl
+ℤ≤-attach x y (inr (a , p)) = succ a , (ℤ-left-succ-pos x a ⁻¹ ∙ p)
+
+ℤ≤-same-witness : (x y : ℤ) → ((n , _) (m , _) : x ≤ y) → n ≡ m
+ℤ≤-same-witness x y p q = ap pr₁ (ℤ≤-is-prop x y p q)
+
+ℤ≤-add-witness : (x y z : ℤ) → ((n , p) : x ≤ y) ((m , q) : y ≤ z)
+               → ((o , r) : x ≤ z)
+               → o ≡ n ℕ+ m
+ℤ≤-add-witness x y z x≤y y≤z x≤z
+ = ℤ≤-same-witness x z x≤z (ℤ≤-trans x y z x≤y y≤z)
+
+ℤ-less-not-bigger-or-equal : (x y : ℤ) → x < y → ¬ (y ≤ x)
+ℤ-less-not-bigger-or-equal x y x<y y≤x
+ = ℤ-bigger-or-equal-not-less y x y≤x x<y
+
 \end{code}

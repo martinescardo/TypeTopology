@@ -10,7 +10,7 @@ import NaturalsMultiplication
 import NaturalsDivision
 import HCF
 
-import IntegersB
+import IntegersB --Commented up to here
 import IntegersAbs
 import IntegersAddition
 import IntegersOrder

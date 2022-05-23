@@ -1,6 +1,8 @@
-Andrew Sneap
+18/05/22 - Andrew Sneap
 
-In this file I define Integers, along with an induction principle for integers
+This file defines Integers using existing natural numbers, the
+successor and predecessor functions, induction on integers and the
+canonical inclusion of natural numbers in the integers.
 
 \begin{code}
 

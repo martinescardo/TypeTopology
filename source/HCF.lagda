@@ -90,12 +90,11 @@ hcflemma a b c d e = subtraction-gives-factor (dichotomy-split (≥-dichotomy b 
     II : a * f + d ≡ 0
     II = addition-right-cancellable (a * f + d) 0 (a * b) I
 
---using hints from cubical agda and strong induction cornell lecture
 HCF : (a b : ℕ) → Σ h ꞉ ℕ , is-hcf h a b
 HCF = course-of-values-induction (λ n → (b : ℕ) → Σ h ꞉ ℕ , is-hcf h n b) step
  where
   step : (n : ℕ) → ((m : ℕ) → m < n → (b : ℕ) → Σ h ꞉ ℕ , is-hcf h m b) → (b : ℕ) → Σ h ꞉ ℕ , is-hcf h n b
-  step zero IH b = b , ((zero , refl) , 1 , refl) , (λ x → pr₂)
+  step zero     IH b = b , ((zero , refl) , 1 , refl) , (λ x → pr₂)
   step (succ n) IH b = I (division b n)
    where
     I : Σ q ꞉ ℕ , Σ r ꞉ ℕ , (b ≡ q * succ n + r) × (r < succ n) → Σ h ꞉ ℕ , is-hcf h (succ n) b

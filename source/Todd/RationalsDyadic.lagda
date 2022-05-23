@@ -6,19 +6,25 @@
 open import SpartanMLTT renaming (_+_ to _∔_) -- TypeTopology
 
 open import CanonicalMapNotation
-open import NaturalsMultiplication
-open import NaturalNumbers
-open import NaturalsAddition
-open import ncRationals
-open import Rationals
 open import IntegersB
+open import IntegersAbs
 open import IntegersAddition renaming (_+_ to _+ℤ_)
 open import IntegersDivision
+open import IntegersMultiplication renaming (_*_ to _ℤ*_)
+open import NaturalsAddition
+open import NaturalsDivision
+open import NaturalsMultiplication
+open import NaturalNumbers
+open import NaturalNumbers-Properties
+open import ncRationals
+open import Rationals
 open import UF-FunExt
 
 module Todd.RationalsDyadic
   (fe : FunExt)
  where
+ 
+open import Todd.TernaryBoehmRealsPrelude fe
 
 _ℕ^_ : ℕ → ℕ → ℕ
 a ℕ^ b = ((a *_) ^ b) 1
@@ -61,53 +67,71 @@ raise-again n a (succ b) = I
 
 open import NaturalNumbers-Properties
 
-odd even : ℤ → 𝓤₀ ̇
-odd (pos                   0) = 𝟘
-odd (pos                   1) = 𝟙
-odd (pos (succ (succ x)))     = odd (pos x)
-odd (negsucc               0) = 𝟙
-odd (negsucc               1) = 𝟘
-odd (negsucc (succ (succ x))) = odd (negsucc x)
-even x = ¬ odd x
-
-even-or-odd? : (x : ℤ) → even x ∔ odd x
-even-or-odd? (pos                   0) = inl (λ x → x)
-even-or-odd? (pos                   1) = inr ⋆
-even-or-odd? (pos (succ (succ x)))     = even-or-odd? (pos x)
-even-or-odd? (negsucc               0) = inr ⋆
-even-or-odd? (negsucc               1) = inl (λ x → x)
-even-or-odd? (negsucc (succ (succ x))) = even-or-odd? (negsucc x)
-
 ℤ[1/2] : 𝓤₀ ̇
-ℤ[1/2] = Σ (z , n) ꞉ ℤ × ℕ , {!!} -- is-in-lowest-terms-dyadic (z , pred (2^ n))
+ℤ[1/2] = Σ (z , n) ꞉ ℤ × ℕ , (n ≡ 0) ∔ ((n ≢ 0) × odd z)
 
-open import Todd.TernaryBoehmDef
-open import IntegersAbs
-open import IntegersMultiplication renaming (_*_ to _ℤ*_)
+_/2' : ℤ → ℤ
+pos x     /2' = pos (x /2)
+negsucc x /2' = succℤ (negsucc (succ x /2))
 
-normalise-pos : ℤ → ℕ → ℤ[1/2]
-normalise-pos k zero     = (k , 0) , {!!} 
-normalise-pos k (succ n) with even-or-odd? k
-... | inl even = normalise-pos {!k /2!} n
-... | inr odd  = (k , succ n) , {!!}
+normalise-pos normalise-neg : ℤ → ℕ → ℤ[1/2]
+normalise-pos z 0        = (z , 0) , inl refl
+normalise-pos z (succ n) with even-or-odd? z
+... | inl e = normalise-pos (z /2') n
+... | inr o = (z , succ n) , inr (positive-not-zero n , o)
+normalise-neg z 0        = (z +ℤ z , 0) , inl refl
+normalise-neg z (succ n) = normalise-neg (z +ℤ z) n
 
-normalise-neg : ℤ → ℕ → ℤ[1/2]
-normalise-neg k 0        = (k +ℤ k , 0) , {!!}
-normalise-neg k (succ n) = normalise-neg (k +ℤ k) n
-
--- normalise (k , n)  = k/2^n
 normalise : ℤ × ℤ → ℤ[1/2]
 normalise (k , pos     n) = normalise-pos k n
 normalise (k , negsucc n) = normalise-neg k n
 
-ℤ[1/2]-to-ℚ : ℤ[1/2] → ℚ
-ℤ[1/2]-to-ℚ ((z , n) , lt) = (z , (pred (2^ n))) , lt
+-- open import Todd.TernaryBoehmDe
 
 0ℤ[1/2] : ℤ[1/2]
-0ℤ[1/2] = (pos 0 , 0) , ((zero , refl) , 1 , refl) , λ f → pr₂
+0ℤ[1/2] = (pos 0 , 0) , inl refl
 
 1ℤ[1/2] : ℤ[1/2]
-1ℤ[1/2] = (pos 1 , 0) , ((1 , refl) , 1 , refl) , λ f → pr₂
+1ℤ[1/2] = (pos 1 , 0) , inl refl
+
+open import HCF
+
+ℕ-even ℕ-odd : ℕ → 𝓤₀ ̇
+ℕ-odd 0 = 𝟘
+ℕ-odd 1 = 𝟙
+ℕ-odd (succ (succ n)) = ℕ-odd n
+ℕ-even n = ¬ ℕ-odd n
+
+odd→ℕ-odd : (z : ℤ) → odd z → ℕ-odd (abs z)
+odd→ℕ-odd (pos (succ 0))            o = ⋆
+odd→ℕ-odd (pos (succ (succ x)))     o = odd→ℕ-odd (pos x) o
+odd→ℕ-odd (negsucc 0)               o = ⋆
+odd→ℕ-odd (negsucc (succ (succ x))) o = odd→ℕ-odd (negsucc x) o
+
+odd-even-gives-hcf-1 : (a b : ℕ) → ℕ-odd a → ℕ-even b → coprime a b
+odd-even-gives-hcf-1 a b even-a odd-b = {!!}
+
+positive-powers-of-two-not-zero : (n : ℕ) → ¬ (2^ (succ n) ≡ 0)
+positive-powers-of-two-not-zero (succ n) e = positive-powers-of-two-not-zero n (mult-left-cancellable (2^ (succ n)) 0 1 e)
+
+succ-succ-even : (n : ℕ) → ℕ-even n → ℕ-even (2 + n)
+succ-succ-even zero even-n ()
+succ-succ-even (succ zero) even-n = λ _ → even-n ⋆
+succ-succ-even (succ (succ n)) even-n = succ-succ-even n even-n
+
+times-two-even : (n : ℕ) → ℕ-even (2 * n)
+times-two-even 0 ()
+times-two-even (succ n) = succ-succ-even (2 * n) (times-two-even n)
+
+zero-denom-lt : (x : ℤ) → is-in-lowest-terms (x , 0)
+zero-denom-lt x = (1-divides-all (abs x) , 1 , refl) , λ f → pr₂
+
+ℤ[1/2]-to-ℚ : ℤ[1/2] → ℚ
+ℤ[1/2]-to-ℚ ((a , 0)      , p)                = (a , 0) , zero-denom-lt a
+ℤ[1/2]-to-ℚ ((a , succ n) , inr (nz , odd-a)) = (a , (pred (2^ (succ n)))) , odd-even-gives-hcf-1 (abs a) (succ (pred (2^ (succ n)))) (odd→ℕ-odd a odd-a) even-denom
+ where
+  even-denom : ℕ-even (succ (pred (2^ (succ n))))
+  even-denom = transport (λ - → ℕ-even -) (succ-pred' (2^ (succ n)) (positive-powers-of-two-not-zero n) ⁻¹) (times-two-even (2^ n))
 
 instance
  canonical-map-ℤ[1/2]-to-ℚ : Canonical-Map ℤ[1/2] ℚ

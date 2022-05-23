@@ -26,6 +26,9 @@ x ∣ y = Σ a ꞉ ℕ , (x * a ≡ y)
 _∣_-is-prop : (x y : ℕ) → is-prop (succ x ∣ y)
 _∣_-is-prop x y (a , p) (b , p') = to-subtype-≡ (λ _ → ℕ-is-set) (mult-left-cancellable a b x (p ∙ p' ⁻¹))
 
+1-divides-all : (x : ℕ) → 1 ∣ x
+1-divides-all x = x , mult-left-id x
+
 zero-does-not-divide-positive : (x : ℕ) → ¬(0 ∣ succ x)
 zero-does-not-divide-positive x (a , p) = positive-not-zero x (p ⁻¹ ∙ zero-left-is-zero a)
 
