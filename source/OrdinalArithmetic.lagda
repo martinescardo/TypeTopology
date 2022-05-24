@@ -168,3 +168,11 @@ module sums-assuming-EM (em : EM 𝓤) where
    module Sum = sum-cotransitive fe _<_ _≺_ (em-gives-cotrans _<_ fe em (is-well-ordered α))
 
 \end{code}
+
+Added 23rd May 2022.
+
+TODO. It is not in general possible to find a least element of an
+inhabited ordinal. In fact, consider the ordinal P + 𝟙 where P is a
+proposition. Then if we can find a least element of this ordinal, we
+can decide whether P or ¬ P. Similarly, we can't find a top element,
+unless excluded middle holds, by considering the ordinal 𝟙 + P.
