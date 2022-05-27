@@ -200,6 +200,9 @@ negative-less-than-positive x y = (x ℕ+ y) , I
       y + (x - x)             ≡⟨ ℤ+-assoc y x (- x) ⁻¹                                   ⟩
       y + x - x               ∎
 
+ℤ≤-swap₂ : (x y z : ℤ) → x ≤ y × y ≤ z → - y ≤ - x × - z ≤ - y
+ℤ≤-swap₂ x y z (l₁ , l₂) = (ℤ≤-swap x y l₁) , (ℤ≤-swap y z l₂)
+
 ℕ≤-to-ℤ≤ : (x y : ℕ) → x ≤ y → pos x ≤ pos y
 ℕ≤-to-ℤ≤ x y l = I (subtraction x y l) 
  where
@@ -211,7 +214,7 @@ negative-less-than-positive x y = (x ℕ+ y) , I
          pos (x ℕ+ k)  ≡⟨ ap pos (addition-commutativity x k) ⟩
          pos (k ℕ+ x)  ≡⟨ ap pos e                            ⟩
          pos y         ∎
-         
+
 ℤ-dichotomous : (x y : ℤ) → x ≤ y ∔ y ≤ x
 ℤ-dichotomous (pos x) (pos y) = I (≤-dichotomous x y)
  where
@@ -307,6 +310,9 @@ trich-locate x y = (x < y) ∔ (x ≡ y) ∔ (y < x)
       a + (pos k + c) ≡⟨ ℤ+-assoc a (pos k) c ⁻¹       ⟩
       a + pos k + c   ≡⟨ ap (_+ c) p                   ⟩
       b + c           ∎
+
+ℤ≤-adding₂ : (a b c d : ℤ) → a ≤ b × b ≤ c → (a + d ≤ b + d) × (b + d ≤ c + d) 
+ℤ≤-adding₂ a b c d (l₁ , l₂) = (ℤ≤-adding' a b d l₁) , (ℤ≤-adding' b c d l₂)
 
 ℤ<-adding' : (a b c : ℤ) → a < b → a + c < b + c
 ℤ<-adding' a b c (k , p) = I (ℤ≤-adding' (succℤ a) b c (k , p))

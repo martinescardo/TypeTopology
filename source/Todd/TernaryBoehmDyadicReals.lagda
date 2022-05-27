@@ -12,7 +12,9 @@ open import IntegersB
 open import IntegersAddition
 open import IntegersOrder
 open import IntegersMultiplication
+open import NaturalsAddition renaming (_+_ to _+ℕ_)
 open import IntegersNegation
+open import UF-Base
 open import UF-FunExt
 open import UF-Powerset hiding (𝕋)
 open import UF-PropTrunc
@@ -88,13 +90,24 @@ postulate, but can be proved in the future.
 
 \begin{code}
 
-record OrderProperties : 𝓤₀ ̇ where
+record OrderProperties : 𝓤₁ ̇ where
+ field
+  Dp : DyadicProperties
+ open DyadicProperties Dp
  field
   trans  : (x y z : ℤ[1/2]) → x < y → y < z → x < z
   no-min : (x : ℤ[1/2]) → Σ y ꞉ ℤ[1/2] , (y < x)
   no-max : (x : ℤ[1/2]) → Σ y ꞉ ℤ[1/2] , (x < y)
   dense  : (x y : ℤ[1/2]) → Σ k ꞉ ℤ[1/2] , x < k × (k < y)
+--  <-addition : (x y z : ℤ[1/2]) → x < y → (x ℤ[1/2]+ z) < (y ℤ[1/2]+ z)
+--  ≤-addition : (x y z : ℤ[1/2]) → x ≤ y → (x ℤ[1/2]+ z) ≤ (y ℤ[1/2]+ z)
+ {-
+ _<_<_ : (x y z : ℤ[1/2]) → 𝓤₀ ̇
+ x < y < z = (x < y) × (y < z)
 
+ _≤_≤_ : (x y z : ℤ[1/2]) → 𝓤₀ ̇
+ x ≤ y ≤ z = (x ≤ y) × (y ≤ z)
+ -}
  trans₂ : (w x y z : ℤ[1/2]) → w < x → x < y → y < z → w < z
  trans₂ w x y z w<x x<y y<z = trans w x z w<x (trans x y z x<y y<z)
 
@@ -106,7 +119,13 @@ module _
 
  open DyadicProperties DyPr
  open OrderProperties DyOrPr
+ {-
+ <-addition : (x y z : ℤ[1/2]) → x < y → (x ℤ[1/2]+ z) < (y ℤ[1/2]+ z)
+ <-addition = {!!}
 
+ <₂-addition : (w x y z : ℤ[1/2]) → w < x < y → {!!}
+ <₂-addition = {!!}
+ -}
 \end{code}
 
 Now, we introduce the reals defined using dyadic rationals. Dyadic
@@ -194,7 +213,7 @@ of a Ternary Boehm object at each layer n.
  disjoint-lemma = {!!}
 
  located-lemma₁ : (p q l r : ℤ[1/2]) → (r ℤ[1/2]- l) < (q ℤ[1/2]- p)
-                → p < l ∔ r < q
+                → (p < l) ∔ (r < q)
  located-lemma₁ = {!!}
 
  located-lemma₂ : ((x , b) : 𝕋) → (p : ℤ[1/2]) → 0ℤ[1/2] < p
@@ -341,8 +360,27 @@ want to prove that (x : ℤ[1/2]) → ⟦ map x ⟧ ≡ ι x
  map : ℤ[1/2] → 𝕋
  map ((k , δ) , _) = build-via (k , pos δ)
 
+ normalise-downLeft-rec : (k : ℤ) (δ : ℕ) → ∀ ζ → (n : ℕ) → normalise-pos ((downLeft ^ n) k) (δ +ℕ n) ≡ ((k , δ) , ζ)
+ normalise-downLeft-rec k δ ζ zero = {!!}
+ normalise-downLeft-rec k δ ζ (succ n) = {!!}
+
+ proof' : (z : ℤ[1/2]) → (i : ℤ) → (n : ℕ) → pos (succ (layer z)) +pos n ≡ i → li (map z) i ≡ z
+ proof' z i zero refl with ℤ-trichotomous (pos (succ (layer z))) (pos (succ (layer z)))
+ ... | inl (pr₃ , pr₄) = {!!}
+ ... | inr y = {!!}
+ proof' z .(pos (succ (layer z)) +pos succ n) (succ n) refl = {!!}
+
+ open import Todd.TernaryBoehmRealsPrelude fe
+
+ proof'' : (z : ℤ[1/2]) (i : ℤ) → let z' = pos (layer z) in
+           z' < i → (ζ : trich-locate i z')
+         → normalise ((build-via' (pr₁ (pr₁ z) , pos (pr₂ (pr₁ z))) i ζ) , i) ≡ z
+ proof'' z i (0 , refl) ζ with even-or-odd? (build-via' (pr₁ (pr₁ z) , pos (pr₂ (pr₁ z))) i ζ)
+ ... | inl _ = {!p!}
+ ... | inr _ = {!!}
+
  proof : (z : ℤ[1/2]) → (i : ℤ) → pos (layer z) < i → li (map z) i ≡ z
- proof ((k , δ) , ϕ) i l = {!!}
+ proof z i (n , p) = {!!}
 
  embedding-ℤ[1/2]-to-ℝ-d : ℤ[1/2] → ℝ-d
  embedding-ℤ[1/2]-to-ℝ-d z = (L , R) , {!!}
@@ -365,15 +403,50 @@ Now, we define negation, addition and multiplication of ternary Boehm reals.
 
  𝕋− : 𝕋 → 𝕋
  𝕋− (x , b) = (λ n → 𝕀− (x n , n)) . {!!}
- 
+
+We begin with negation, being the easiest operation to define.
+
+Notice that we cannot simple take (λ n → - x n) as our new TBR precision function. 
+
+Recall the following brick → interval definition
+
+⟪_⟫ : ℤ × ℤ → ℚ × ℚ
+⟪ k , δ ⟫ = (k / 2^{δ - 1}) , ((k + 2) / 2^{δ - 1})
+
+where k = x (δ) for t : 𝕋 , t = (x , b).
+
+If we define subtraction at (λ n → - x n), then we obtain that
+⟪ 𝕋- (x , b) , δ ⟫ = (- k / 2^{δ - 1} , - k - 2 / 2^{δ - 1})
+
 \begin{code}
 
  𝕋- : 𝕋 → 𝕋
  𝕋- (x , b) = (λ n → predℤ (predℤ (- x n))) , below-proof
   where
    below-proof : (δ : ℤ) → predℤ (predℤ (- x (succℤ δ))) below predℤ (predℤ (- x δ))
-   below-proof δ = {!!}
- 
+   below-proof δ with b (x δ)
+   ... | below with ℤ≤-swap₂ (x δ * pos 2) (x (succℤ δ)) (x δ * pos 2 + pos 2) (b δ) 
+   ... | l₁ , l₂ = transport (_≤ℤ predℤ (predℤ (- x (succℤ δ)))) I (ℤ≤-adding' (- succℤ (succℤ (x δ + x δ))) (- x (succℤ δ)) (negsucc 1) l₂) ,
+                  (transport(predℤ (predℤ (- x (succℤ δ))) ≤ℤ_) II (ℤ≤-adding' (- x (succℤ δ)) (- (x δ + x δ)) (negsucc 1) l₁))
+    where
+     I : (- ((x δ + x δ) + pos 2)) - pos 2 ≡ (- x δ) - pos 2 + ((- x δ) - pos 2)
+     I = (- (x δ + x δ + pos 2)) - pos 2         ≡⟨ ap (λ z → (- z) - pos 2) (ℤ+-assoc (x δ) (x δ) (pos 2)) ⟩
+         (- (x δ + (x δ + pos 2))) - pos 2       ≡⟨ ap (_- pos 2) (negation-dist (x δ) (x δ + pos 2) ⁻¹) ⟩
+         (- x δ) + (- (x δ + pos 2)) - pos 2     ≡⟨ ap (λ z → (- x δ) + (- z) - pos 2) (ℤ+-comm (x δ) (pos 2)) ⟩
+         (- x δ) + (- (pos 2 + x δ)) - pos 2     ≡⟨ ap (λ z → (- x δ) + z - pos 2) (negation-dist (pos 2) (x δ) ⁻¹) ⟩
+         (- x δ) + ((- pos 2) + (- x δ)) - pos 2 ≡⟨ ap (_- pos 2) (ℤ+-assoc (- x δ) (- pos 2) (- x δ) ⁻¹) ⟩
+         (- x δ) - pos 2 + (- x δ) - pos 2       ≡⟨ ℤ+-assoc ((- x δ) - pos 2) (- x δ) (- pos 2) ⟩
+         (- x δ) - pos 2 + ((- x δ) - pos 2)     ∎
+     II : (- (x δ + x δ)) - pos 2 ≡ ((- x δ) - pos 2) + ((- x δ) - pos 2) + pos 2
+     II = (- (x δ + x δ)) - pos 2                           ≡⟨ ap (_- pos 2) (negation-dist (x δ) (x δ) ⁻¹) ⟩
+          (- x δ) + (- x δ) - pos 2                         ≡⟨ ℤ+-assoc (- x δ) (- x δ) (- pos 2) ⟩
+          (- x δ) + ((- x δ) - pos 2)                       ≡⟨ ap ((- x δ) +_) (ℤ+-comm (- x δ) (- pos 2)) ⟩
+          (- x δ) + ((- pos 2) + (- x δ))                   ≡⟨ ℤ+-assoc (- (x δ)) (- pos 2) (- x δ) ⁻¹ ⟩
+          (- x δ) - pos 2 - x δ                             ≡⟨ ap (λ z → (- x δ) - pos 2 + ((- x δ) + z)) (ℤ-sum-of-inverse-is-zero' (pos 2) ⁻¹) ⟩
+          (- x δ) - pos 2 + ((- x δ) + ((- pos 2) + pos 2)) ≡⟨ ap (λ z → (- x δ) - pos 2 + z) (ℤ+-assoc (- x δ) (- pos 2) (pos 2) ⁻¹) ⟩
+          (- x δ) - pos 2 + ((- x δ) - pos 2 + pos 2)       ≡⟨ ℤ+-assoc ((- x δ) - pos 2) ((- x δ) - pos 2) (pos 2) ⁻¹ ⟩
+          (- x δ) - pos 2 + ((- x δ) - pos 2) + pos 2       ∎
+  
  _𝕋+_ : 𝕋 → 𝕋 → 𝕋
  (x , b) 𝕋+ (y , b') = {!!}
 
@@ -410,7 +483,7 @@ on TBR and Dedekind reals correlate.
 
 \begin{code}
 
- ℤ[1/2]<-swap : (x y : ℤ[1/2]) → x < y ⇔ (ℤ[1/2]- y) < (ℤ[1/2]- x)
+ ℤ[1/2]<-swap : (x y : ℤ[1/2]) → (x < y) ⇔ (ℤ[1/2]- y) < (ℤ[1/2]- x)
  ℤ[1/2]<-swap = {!!}
 
  open import UF-Base
