@@ -497,8 +497,6 @@ module _
       y-is-ub' : is-upperbound (underlying-order 𝓓) y (↡ι 𝓓 β x ∘ σ)
       y-is-ub' i = y-is-ub (σ i)
 
- -- TODO: Maybe generalize this to allow I in an arbitrary universe?
- -- (Just avoid the use of ∐ in this case)
  ↡ᴮ-directedness-criterion : (δ : is-Directed 𝓓 (↡ι 𝓓 β x ∘ σ))
                            → (x ⊑⟨ 𝓓 ⟩ ∐ 𝓓 δ)
                            → is-Directed 𝓓 (↡ι 𝓓 β x)
@@ -632,7 +630,6 @@ module _
 
  open _continuous-retract-of_ ρ
 
- -- TODO: Converse if y ⊑ s (r y), i.e. embedding-projection pair??
  continuous-retraction-≪-criterion : (y : ⟨ 𝓔 ⟩) (x : ⟨ 𝓓 ⟩)
                                    → y ≪⟨ 𝓔 ⟩ s x
                                    → r y ≪⟨ 𝓓 ⟩ x

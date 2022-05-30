@@ -334,10 +334,13 @@ module _
 
 TODO: Write comment on proof strategy
 
+TODO: Finish
+
 Exponentials of dcpos with small bases...
 
 \begin{code}
 
+{-
 module _
         (𝓓 : DCPO {𝓤} {𝓣})
         {Bᴰ : 𝓥 ̇  }
@@ -445,5 +448,6 @@ module _
    B = pr₁ exp-has-small-compact-basis
    β : B → DCPO[ 𝓓' , 𝓔' ]
    β = pr₁ (pr₂ exp-has-small-compact-basis)
+-}
 
 \end{code}

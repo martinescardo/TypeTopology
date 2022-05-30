@@ -165,7 +165,7 @@ compact-⊑-≃-≪ 𝓓 {x} c {y} =
 
 \end{code}
 
-TODO: Comment and maybe reorganize?
+TODO: Comment
 
 \begin{code}
 

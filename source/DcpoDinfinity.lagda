@@ -1,9 +1,9 @@
 Tom de Jong, 12 May 2020 - 9 June 2020.
 
 We construct Scott's famous nontrivial pointed dcpo D∞ for which D∞ is
-isomorphic to its own function space.
+isomorphic to its own function space and prove that it is algebraic.
 
-This formalization is based on Scott's "Continuous lattices"
+The construction of D∞ is based on Scott's "Continuous lattices"
 (doi:10.1007/BFB0073967), specifically pages 126--128.
 
 \begin{code}
@@ -886,8 +886,8 @@ the pointed exponential (𝓓∞⊥ ⟹ᵈᶜᵖᵒ⊥ 𝓓∞⊥), which we pro
 
 \end{code}
 
-Finally, we show that 𝓓∞ is nontrivial, i.e. it has an element σ₀ such that σ₀
-is not the least element.
+Of course, for the above to be interesting, we want 𝓓∞ to be nontrivial, i.e. it
+has an element σ₀ such that σ₀ is not the least element, which we prove now.
 
 \begin{code}
 
@@ -916,7 +916,9 @@ is not the least element.
 
 \end{code}
 
-TODO: Write comment
+Finally, we prove that 𝓓∞ is an algebraic dcpo. We use that our starting dcpo is
+sup-complete and has a small compact basis, and that both these things are closed
+under taking exponentials.
 
 \begin{code}
 

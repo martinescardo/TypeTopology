@@ -871,8 +871,6 @@ module sup-complete-dcpo
   directify []      = ⊥
   directify (x ∷ l) = α x ∨ directify l
 
-  -- TODO: directy α is directed (hence the name)
-
   directify-is-inhabited : ∥ domain directify ∥
   directify-is-inhabited = ∣ [] ∣
 

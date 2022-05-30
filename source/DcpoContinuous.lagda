@@ -130,19 +130,13 @@ module Ind-completion
  ∐-map (I , α , δ) = ∐ 𝓓 δ
 
  left-adjoint-to-∐-map-local : ⟨ 𝓓 ⟩ → Ind → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
- left-adjoint-to-∐-map-local x α = (β : Ind) → (α ≲ β) ⇔ (x ⊑⟨ 𝓓 ⟩ ∐-map β) -- TODO: Replace by ≃?
-
- -- TODO: Move elsewhere
- ⇔-is-prop : {X : 𝓤' ̇  } {Y : 𝓥' ̇  } → is-prop X → is-prop Y → is-prop (X ⇔ Y)
- ⇔-is-prop X-is-prop Y-is-prop = ×-is-prop
-  (Π-is-prop fe (λ _ → Y-is-prop))
-  (Π-is-prop fe (λ _ → X-is-prop))
+ left-adjoint-to-∐-map-local x α = (β : Ind) → (α ≲ β) ⇔ (x ⊑⟨ 𝓓 ⟩ ∐-map β)
 
  left-adjoint-to-∐-map-local-is-prop : (x : ⟨ 𝓓 ⟩) (σ : Ind)
                                      → is-prop (left-adjoint-to-∐-map-local x σ)
  left-adjoint-to-∐-map-local-is-prop x σ =
-  Π-is-prop fe (λ τ → ⇔-is-prop (≲-is-prop-valued σ τ)
-                                (prop-valuedness 𝓓 x (∐-map τ)))
+  Π-is-prop fe (λ τ → ⇔-is-prop fe fe (≲-is-prop-valued σ τ)
+                                      (prop-valuedness 𝓓 x (∐-map τ)))
 
  left-adjoint-to-∐-map : (⟨ 𝓓 ⟩ → Ind) → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
  left-adjoint-to-∐-map L = (x : ⟨ 𝓓 ⟩) → left-adjoint-to-∐-map-local x (L x)
@@ -669,7 +663,7 @@ record poset-reflection (F : Universe → Universe → Universe)
                      → (f : X → Q)
                      → ((x y : X) → x ≲ y → f x ⊑ f y)
                      → ∃! f̃ ꞉ (X̃ → Q) , ((x' y' : X̃) → x' ≤ y' → f̃ x' ⊑ f̃ y')
-                                       × (f̃ ∘ η ≡ f)
+                                      × (f̃ ∘ η ≡ f)
 
 module _
         (F : Universe → Universe → Universe)
@@ -728,17 +722,6 @@ module _
                    (rl-implication (L'-is-left-adjoint x (L x))
                                    (lr-implication (L-is-left-adjoint x (L x))
                                      (≤-is-reflexive (L x))))))
-
-  -- TODO: Move these two general lemmas
-  open import UF-EquivalenceExamples
-
-  ⇔-trans : {X : 𝓤' ̇  } {Y : 𝓥' ̇  } {Z : 𝓦' ̇  }
-         → X ⇔ Y → Y ⇔ Z → X ⇔ Z
-  ⇔-trans (f , g) (h , k) = (h ∘ f , g ∘ k)
-
-  ⇔-refl : {X : 𝓤' ̇  } → X ⇔ X
-  ⇔-refl = (id , id)
-  --
 
   pseudo₁ : is-pseudocontinuous-dcpo 𝓓
           → ∐-map'-has-specified-left-adjoint

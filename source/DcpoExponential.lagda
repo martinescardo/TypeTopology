@@ -256,7 +256,9 @@ DCPO-∘₃-is-continuous₂ 𝓓₁ 𝓓₂ 𝓓₃ 𝓓₄ f h =
 
 \end{code}
 
-TODO: Write comment
+When 𝓔 is sup-complete, then the exponential (𝓓 ⟹ᵈᶜᵖᵒ 𝓔) is also sup-complete
+(even if 𝓓 isn't). This comes in useful when proving that exponentials of
+sup-complete dcpos are algebraic.
 
 \begin{code}
 
@@ -314,7 +316,8 @@ module _
                ⦅†⦆ = ⋁-is-upperbound (pointwise-family 𝓓 𝓔 α (β j)) i
 
  exponential-is-sup-complete : is-sup-complete (𝓓 ⟹ᵈᶜᵖᵒ 𝓔)
- exponential-is-sup-complete = record {
+ exponential-is-sup-complete =
+  record {
      ⋁        = λ {I} α → sup-of-continuous-functions α
    ; ⋁-is-sup = λ {I} → lemma
   }

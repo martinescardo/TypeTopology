@@ -1178,7 +1178,7 @@ TODO: Comment on building on the above
           v = ≪-⊑-to-≪ 𝓓∞ w (ε∞π∞-deflation σ)
            where
             w : ε∞ i (β i b) ≪⟨ 𝓓∞ ⟩ ε∞ i (⦅ σ ⦆ i)
-            w = embeddings-preserve-≪ (𝓓 i) 𝓓∞ -- TODO: Name the module and open it once?
+            w = embeddings-preserve-≪ (𝓓 i) 𝓓∞
                  (ε∞ i) (ε∞-is-continuous i) (π∞ i) (π∞-is-continuous i)
                  ε∞-section-of-π∞ ε∞π∞-deflation
                  (β i b) (⦅ σ ⦆ i) (⌜ ≪ᴮₛ-≃-≪ᴮ (β-is-small-basis i) ⌝ u)

@@ -1,4 +1,4 @@
-Tom de Jong, 27 May 2019.
+STom de Jong, 27 May 2019.
 Refactored December 2021.
 
 * Continuous K and S functions. These will interpret the K and S combinators of
@@ -226,10 +226,8 @@ module _ (𝓓 : DCPO⊥ {𝓤} {𝓣})
 
 \end{code}
 
-TODO: Revise comments
-
-Finally, we construct the continuous ifZero function, specific to the lifting of
-ℕ. This will then be used to interpret the ifZero combinator of PCF in
+Finally, we construct the continuous ifZero function, specific to the lifting
+of ℕ. This will then be used to interpret the ifZero combinator of PCF in
 ScottModelOfPCF.lagda.
 
 \begin{code}

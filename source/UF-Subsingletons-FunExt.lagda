@@ -62,6 +62,12 @@ being-prop-is-prop {𝓤} {X} fe f g = c₁
   c₁ : f ≡ g
   c₁  = dfunext fe c₀
 
+⇔-is-prop : {X : 𝓤 ̇  } {Y : 𝓥 ̇  } → funext 𝓤 𝓥 → funext 𝓥 𝓤
+          → is-prop X → is-prop Y → is-prop (X ⇔ Y)
+⇔-is-prop fe fe' X-is-prop Y-is-prop = ×-is-prop
+ (Π-is-prop fe  (λ _ → Y-is-prop))
+ (Π-is-prop fe' (λ _ → X-is-prop))
+
 identifications-of-props-are-props : propext 𝓤
                                    → funext 𝓤 𝓤
                                    → (P : 𝓤 ̇ )
@@ -77,9 +83,8 @@ identifications-of-props-are-props {𝓤} pe fe P i = local-hedberg' P (λ X →
   g X (l , φ , γ) = pe l i φ γ
 
   j : (X : 𝓤 ̇ ) → is-prop (is-prop X × (X ⇔ P))
-  j X = ×-prop-criterion ((λ _ → being-prop-is-prop fe) ,
-                          (λ l → ×-is-prop (Π-is-prop fe (λ x → i))
-                                            (Π-is-prop fe (λ p → l))))
+  j X = ×-prop-criterion ( (λ _ → being-prop-is-prop fe)
+                         , (λ l → ⇔-is-prop fe fe l i))
 
   k : (X : 𝓤 ̇ ) → wconstant (g X ∘ f X)
   k X p q = ap (g X) (j X (f X p) (f X q))
