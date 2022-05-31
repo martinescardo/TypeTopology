@@ -528,96 +528,7 @@ module _
 
 \end{code}
 
-TODO: Move to DcpoContinuous?
-
-\begin{code}
-
-record _continuous-retract-of_
-        (𝓓 : DCPO {𝓤} {𝓣})
-        (𝓔 : DCPO {𝓤'} {𝓣'}) : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ⊔ 𝓤' ⊔ 𝓣' ̇  where
-  field
-   s : ⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩
-   r : ⟨ 𝓔 ⟩ → ⟨ 𝓓 ⟩
-   r-s-equation : r ∘ s ∼ id
-   s-is-continuous : is-continuous 𝓓 𝓔 s
-   r-is-continuous : is-continuous 𝓔 𝓓 r
-
-  𝕤 : DCPO[ 𝓓 , 𝓔 ]
-  𝕤 = s , s-is-continuous
-
-  𝕣 : DCPO[ 𝓔 , 𝓓 ]
-  𝕣 = r , r-is-continuous
-
-module _
-        (𝓓 : DCPO {𝓤} {𝓣})
-        (𝓔 : DCPO {𝓤'} {𝓣'})
-        (ρ : 𝓓 continuous-retract-of 𝓔)
-       where
-
- open _continuous-retract-of_ ρ
-
- structural-continuity-of-dcpo-preserved-by-continuous-retract :
-    structurally-continuous 𝓔
-  → structurally-continuous 𝓓
- structural-continuity-of-dcpo-preserved-by-continuous-retract C =
-  record
-    { index-of-approximating-family =
-       λ x → index-of-approximating-family (s x)
-    ; approximating-family =
-       λ x → r ∘ approximating-family (s x)
-    ; approximating-family-is-directed = lemma₁
-    ; approximating-family-is-way-below = lemma₂
-    ; approximating-family-∐-≡ = lemma₃
-    }
-  where
-   open structurally-continuous C
-   α : (y : ⟨ 𝓔 ⟩) → index-of-approximating-family y → ⟨ 𝓔 ⟩
-   α = approximating-family
-   lemma₁ : (x : ⟨ 𝓓 ⟩) → is-Directed 𝓓 (r ∘ α (s x))
-   lemma₁ x = image-is-directed' 𝓔 𝓓 𝕣
-               (approximating-family-is-directed (s x))
-   lemma₂ : (x : ⟨ 𝓓 ⟩) → is-way-upperbound 𝓓 x (r ∘ α (s x))
-   lemma₂ x i J β δ x-below-∐β =
-    ∥∥-functor h (approximating-family-is-way-below (s x) i J (s ∘ β) ε l)
-     where
-      h : (Σ j ꞉ J , α (s x) i ⊑⟨ 𝓔 ⟩ s (β j))
-        → Σ j ꞉ J , r (α (s x) i) ⊑⟨ 𝓓 ⟩ β j
-      h (j , u) = (j , v)
-       where
-        v = r (α (s x) i) ⊑⟨ 𝓓 ⟩[ ⦅1⦆ ]
-            r (s (β j))   ⊑⟨ 𝓓 ⟩[ ⦅2⦆ ]
-            β j           ∎⟨ 𝓓 ⟩
-         where
-          ⦅1⦆ = monotone-if-continuous 𝓔 𝓓 𝕣
-                (α (s x) i) (s (β j)) u
-          ⦅2⦆ = ≡-to-⊑ 𝓓 (r-s-equation (β j))
-      ε : is-Directed 𝓔 (s ∘ β)
-      ε = image-is-directed' 𝓓 𝓔 𝕤 δ
-      l = s x       ⊑⟨ 𝓔 ⟩[ ⦅1⦆ ]
-          s (∐ 𝓓 δ) ⊑⟨ 𝓔 ⟩[ ⦅2⦆ ]
-          ∐ 𝓔 ε     ∎⟨ 𝓔 ⟩
-       where
-        ⦅1⦆ = monotone-if-continuous 𝓓 𝓔 𝕤
-              x (∐ 𝓓 δ) x-below-∐β
-        ⦅2⦆ = continuous-∐-⊑ 𝓓 𝓔 𝕤 δ
-   lemma₃ : (x : ⟨ 𝓓 ⟩) → ∐ 𝓓 (lemma₁ x) ≡ x
-   lemma₃ x = ∐ 𝓓 (lemma₁ x) ≡⟨ ⦅1⦆ ⟩
-              r (∐ 𝓔 δ)      ≡⟨ ⦅2⦆ ⟩
-              r (s x)        ≡⟨ ⦅3⦆ ⟩
-              x              ∎
-    where
-     δ : is-Directed 𝓔 (α (s x))
-     δ = approximating-family-is-directed (s x)
-     ⦅1⦆ = (continuous-∐-≡ 𝓔 𝓓 𝕣 δ) ⁻¹
-     ⦅2⦆ = ap r (approximating-family-∐-≡ (s x))
-     ⦅3⦆ = r-s-equation x
-
- continuity-of-dcpo-preserved-by-continuous-retract : is-continuous-dcpo 𝓔
-                                                    → is-continuous-dcpo 𝓓
- continuity-of-dcpo-preserved-by-continuous-retract =
-  ∥∥-functor structural-continuity-of-dcpo-preserved-by-continuous-retract
-
-\end{code}
+TODO
 
 \begin{code}
 
@@ -628,54 +539,6 @@ module _
        where
 
  open _continuous-retract-of_ ρ
-
- continuous-retraction-≪-criterion : (y : ⟨ 𝓔 ⟩) (x : ⟨ 𝓓 ⟩)
-                                   → y ≪⟨ 𝓔 ⟩ s x
-                                   → r y ≪⟨ 𝓓 ⟩ x
- continuous-retraction-≪-criterion y x y-way-below-sx I α δ x-below-∐α =
-  ∥∥-functor h (y-way-below-sx I (s ∘ α) ε l)
-   where
-    ε : is-Directed 𝓔 (s ∘ α)
-    ε = image-is-directed' 𝓓 𝓔 𝕤 δ
-    l : s x ⊑⟨ 𝓔 ⟩ ∐ 𝓔 ε
-    l = s x       ⊑⟨ 𝓔 ⟩[ monotone-if-continuous 𝓓 𝓔 𝕤 x (∐ 𝓓 δ) x-below-∐α ]
-        s (∐ 𝓓 δ) ⊑⟨ 𝓔 ⟩[ continuous-∐-⊑ 𝓓 𝓔 𝕤 δ ]
-        ∐ 𝓔 ε     ∎⟨ 𝓔 ⟩
-    h : (Σ i ꞉ I , y ⊑⟨ 𝓔 ⟩ s (α i))
-      → (Σ i ꞉ I , r y ⊑⟨ 𝓓 ⟩ α i)
-    h (i , u) = (i , v)
-     where
-      v = r y         ⊑⟨ 𝓓 ⟩[ monotone-if-continuous 𝓔 𝓓 𝕣 y (s (α i)) u ]
-          r (s (α i)) ⊑⟨ 𝓓 ⟩[ ≡-to-⊑ 𝓓 (r-s-equation (α i)) ]
-          α i         ∎⟨ 𝓓 ⟩
-
- local-smallness-preserved-by-continuous-retract : is-locally-small 𝓔
-                                                 → is-locally-small 𝓓
- local-smallness-preserved-by-continuous-retract ls =
-  ⌜ local-smallness-equivalent-definitions 𝓓 ⌝⁻¹ γ
-   where
-    open is-locally-small ls
-    γ : is-locally-small' 𝓓
-    γ x y = (s x ⊑ₛ s y , g)
-     where
-      g : (s x ⊑ₛ s y) ≃ (x ⊑⟨ 𝓓 ⟩ y)
-      g = logically-equivalent-props-are-equivalent
-           (equiv-to-prop ⊑ₛ-≃-⊑ -- (f (s x) (s y))
-             (prop-valuedness 𝓔 (s x) (s y)))
-           (prop-valuedness 𝓓 x y)
-           ⦅⇒⦆ ⦅⇐⦆
-       where
-        ⦅⇒⦆ : (s x ⊑ₛ s y) → (x ⊑⟨ 𝓓 ⟩ y)
-        ⦅⇒⦆ l = x      ⊑⟨ 𝓓 ⟩[ ⦅1⦆ ]
-               r (s x) ⊑⟨ 𝓓 ⟩[ ⦅2⦆ ]
-               r (s y) ⊑⟨ 𝓓 ⟩[ ⦅3⦆ ]
-               y       ∎⟨ 𝓓 ⟩
-         where
-          ⦅1⦆ = ≡-to-⊒ 𝓓 (r-s-equation x)
-          ⦅2⦆ = monotone-if-continuous 𝓔 𝓓 𝕣 (s x) (s y) (⊑ₛ-to-⊑ l)
-          ⦅3⦆ = ≡-to-⊑ 𝓓 (r-s-equation y)
-        ⦅⇐⦆ : (x ⊑⟨ 𝓓 ⟩ y) → (s x ⊑ₛ s y)
-        ⦅⇐⦆ l = ⊑-to-⊑ₛ (monotone-if-continuous 𝓓 𝓔 𝕤 x y l)
 
  small-basis-from-continuous-retract : Prop-Ext → {B : 𝓥 ̇  } (β : B → ⟨ 𝓔 ⟩)
                                      → is-small-basis 𝓔 β
@@ -694,7 +557,7 @@ module _
        where
         𝓓-loc-small : is-locally-small 𝓓
         𝓓-loc-small = (local-smallness-preserved-by-continuous-retract
-                        (locally-small-if-small-basis 𝓔 β sb))
+                        𝓓 𝓔 ρ (locally-small-if-small-basis 𝓔 β sb))
         𝓓-cont : is-continuous-dcpo 𝓓
         𝓓-cont = continuity-of-dcpo-preserved-by-continuous-retract 𝓓 𝓔 ρ
                   ∣ structurally-continuous-if-specified-small-basis
@@ -702,7 +565,7 @@ module _
 
       σ : (x : ⟨ 𝓓 ⟩) → ↡ᴮₛ (s x) → ↡ᴮ 𝓓 (r ∘ β) x
       σ x (b , b-way-below-sx) =
-       (b , continuous-retraction-≪-criterion (β b) x
+       (b , continuous-retraction-≪-criterion 𝓓 𝓔 ρ (β b) x
              (⌜ ≪ᴮₛ-≃-≪ᴮ ⌝ b-way-below-sx))
 
       ε : (x : ⟨ 𝓓 ⟩) → is-Directed 𝓔 (↡ιₛ (s x))

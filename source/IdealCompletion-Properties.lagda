@@ -28,7 +28,7 @@ open import DcpoMiscelanea pt fe 𝓥
 open import DcpoWayBelow pt fe 𝓥
 -- open import DcpoBasis pt fe 𝓥
 
-open import DcpoBases pt pe fe 𝓥
+open import DcpoBases pt fe 𝓥
 open import DcpoContinuous pt fe 𝓥
 
 
@@ -655,16 +655,13 @@ module Idl-algebraic -- TODO: Rethink module name
        where
 
  open is-small-basis β-is-small-basis
-
- _⊑ₛ_ : ⟨ 𝓓 ⟩ → ⟨ 𝓓 ⟩ → 𝓥 ̇
- _⊑ₛ_ = pr₁ (locally-small-if-small-basis 𝓓 β β-is-small-basis)
+ open is-locally-small (locally-small-if-small-basis 𝓓 β β-is-small-basis)
 
  _⊑ᴮ_ : B → B → 𝓥 ̇
  b ⊑ᴮ b' = β b ⊑ₛ β b'
 
  ⊑ᴮ-≃-⊑ : {b b' : B} → (b ⊑ᴮ b') ≃ (β b ⊑⟨ 𝓓 ⟩ β b')
- ⊑ᴮ-≃-⊑ {b} {b'} = pr₂ (locally-small-if-small-basis 𝓓 β β-is-small-basis)
-                       (β b) (β b')
+ ⊑ᴮ-≃-⊑ {b} {b'} = ⊑ₛ-≃-⊑
 
  ⊑ᴮ-is-prop-valued : {b b' : B} → is-prop (b ⊑ᴮ b')
  ⊑ᴮ-is-prop-valued = equiv-to-prop ⊑ᴮ-≃-⊑ (prop-valuedness 𝓓 _ _)

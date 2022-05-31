@@ -256,3 +256,37 @@ module _
  embeddings-reflect-compactness x = embeddings-reflect-≪ x x
 
 \end{code}
+
+TODO
+
+\begin{code}
+
+module _
+        (𝓓 : DCPO {𝓤} {𝓣})
+        (𝓔 : DCPO {𝓤'} {𝓣'})
+        (ρ : 𝓓 continuous-retract-of 𝓔)
+       where
+
+ open _continuous-retract-of_ ρ
+
+ continuous-retraction-≪-criterion : (y : ⟨ 𝓔 ⟩) (x : ⟨ 𝓓 ⟩)
+                                   → y ≪⟨ 𝓔 ⟩ s x
+                                   → r y ≪⟨ 𝓓 ⟩ x
+ continuous-retraction-≪-criterion y x y-way-below-sx I α δ x-below-∐α =
+  ∥∥-functor h (y-way-below-sx I (s ∘ α) ε l)
+   where
+    ε : is-Directed 𝓔 (s ∘ α)
+    ε = image-is-directed' 𝓓 𝓔 𝕤 δ
+    l : s x ⊑⟨ 𝓔 ⟩ ∐ 𝓔 ε
+    l = s x       ⊑⟨ 𝓔 ⟩[ monotone-if-continuous 𝓓 𝓔 𝕤 x (∐ 𝓓 δ) x-below-∐α ]
+        s (∐ 𝓓 δ) ⊑⟨ 𝓔 ⟩[ continuous-∐-⊑ 𝓓 𝓔 𝕤 δ ]
+        ∐ 𝓔 ε     ∎⟨ 𝓔 ⟩
+    h : (Σ i ꞉ I , y ⊑⟨ 𝓔 ⟩ s (α i))
+      → (Σ i ꞉ I , r y ⊑⟨ 𝓓 ⟩ α i)
+    h (i , u) = (i , v)
+     where
+      v = r y         ⊑⟨ 𝓓 ⟩[ monotone-if-continuous 𝓔 𝓓 𝕣 y (s (α i)) u ]
+          r (s (α i)) ⊑⟨ 𝓓 ⟩[ ≡-to-⊑ 𝓓 (r-s-equation (α i)) ]
+          α i         ∎⟨ 𝓓 ⟩
+
+\end{code}

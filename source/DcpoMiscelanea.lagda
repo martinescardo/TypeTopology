@@ -321,6 +321,22 @@ is-continuous-retract : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'}
                       → 𝓤 ̇
 is-continuous-retract 𝓓 𝓔 (σ , _) (ρ , _) = (x : ⟨ 𝓓 ⟩) → ρ (σ x) ≡ x
 
+record _continuous-retract-of_
+        (𝓓 : DCPO {𝓤} {𝓣})
+        (𝓔 : DCPO {𝓤'} {𝓣'}) : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ⊔ 𝓤' ⊔ 𝓣' ̇  where
+  field
+   s : ⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩
+   r : ⟨ 𝓔 ⟩ → ⟨ 𝓓 ⟩
+   r-s-equation : r ∘ s ∼ id
+   s-is-continuous : is-continuous 𝓓 𝓔 s
+   r-is-continuous : is-continuous 𝓔 𝓓 r
+
+  𝕤 : DCPO[ 𝓓 , 𝓔 ]
+  𝕤 = s , s-is-continuous
+
+  𝕣 : DCPO[ 𝓔 , 𝓓 ]
+  𝕣 = r , r-is-continuous
+
 is-embedding-projection : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
                         → DCPO[ 𝓓 , 𝓔 ]
                         → DCPO[ 𝓔 , 𝓓 ]
@@ -439,6 +455,44 @@ module _
   being-locally-small-is-prop =
    equiv-to-prop local-smallness-equivalent-definitions
                  being-locally-small'-is-prop
+
+\end{code}
+
+TODO
+
+\begin{code}
+
+local-smallness-preserved-by-continuous-retract :
+   (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
+ → 𝓓 continuous-retract-of 𝓔
+ → is-locally-small 𝓔
+ → is-locally-small 𝓓
+local-smallness-preserved-by-continuous-retract 𝓓 𝓔 ρ ls =
+ ⌜ local-smallness-equivalent-definitions 𝓓 ⌝⁻¹ γ
+  where
+   open _continuous-retract-of_ ρ
+   open is-locally-small ls
+   γ : is-locally-small' 𝓓
+   γ x y = (s x ⊑ₛ s y , g)
+    where
+     g : (s x ⊑ₛ s y) ≃ (x ⊑⟨ 𝓓 ⟩ y)
+     g = logically-equivalent-props-are-equivalent
+          (equiv-to-prop ⊑ₛ-≃-⊑
+            (prop-valuedness 𝓔 (s x) (s y)))
+          (prop-valuedness 𝓓 x y)
+          ⦅⇒⦆ ⦅⇐⦆
+      where
+       ⦅⇒⦆ : (s x ⊑ₛ s y) → (x ⊑⟨ 𝓓 ⟩ y)
+       ⦅⇒⦆ l = x      ⊑⟨ 𝓓 ⟩[ ⦅1⦆ ]
+              r (s x) ⊑⟨ 𝓓 ⟩[ ⦅2⦆ ]
+              r (s y) ⊑⟨ 𝓓 ⟩[ ⦅3⦆ ]
+              y       ∎⟨ 𝓓 ⟩
+        where
+         ⦅1⦆ = ≡-to-⊒ 𝓓 (r-s-equation x)
+         ⦅2⦆ = monotone-if-continuous 𝓔 𝓓 𝕣 (s x) (s y) (⊑ₛ-to-⊑ l)
+         ⦅3⦆ = ≡-to-⊑ 𝓓 (r-s-equation y)
+       ⦅⇐⦆ : (x ⊑⟨ 𝓓 ⟩ y) → (s x ⊑ₛ s y)
+       ⦅⇐⦆ l = ⊑-to-⊑ₛ (monotone-if-continuous 𝓓 𝓔 𝕤 x y l)
 
 \end{code}
 
