@@ -278,7 +278,6 @@ module SmallIdeals
   Idl-mediating-map : Idl → ⟨ 𝓓 ⟩
   Idl-mediating-map I = ∐ 𝓓 (Idl-mediating-directed I)
 
-  -- TODO: Use continuity-criterion' instead?
   Idl-mediating-map-is-continuous : is-continuous Idl-DCPO 𝓓 Idl-mediating-map
   Idl-mediating-map-is-continuous 𝓐 α δ = ub , lb
    where
@@ -514,8 +513,7 @@ module SmallIdeals
 
 \end{code}
 
-TODO: We should do some of the below on the level of powersets so as to avoid
-duplication of code/proofs.
+TODO
 
 \begin{code}
 
