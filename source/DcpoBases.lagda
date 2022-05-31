@@ -651,15 +651,17 @@ module _
 
  local-smallness-preserved-by-continuous-retract : is-locally-small 𝓔
                                                  → is-locally-small 𝓓
- local-smallness-preserved-by-continuous-retract (_⊑ₛ_ , f) =
+ local-smallness-preserved-by-continuous-retract ls =
   ⌜ local-smallness-equivalent-definitions 𝓓 ⌝⁻¹ γ
    where
+    open is-locally-small ls
     γ : is-locally-small' 𝓓
     γ x y = (s x ⊑ₛ s y , g)
      where
       g : (s x ⊑ₛ s y) ≃ (x ⊑⟨ 𝓓 ⟩ y)
       g = logically-equivalent-props-are-equivalent
-           (equiv-to-prop (f (s x) (s y)) (prop-valuedness 𝓔 (s x) (s y)))
+           (equiv-to-prop ⊑ₛ-≃-⊑ -- (f (s x) (s y))
+             (prop-valuedness 𝓔 (s x) (s y)))
            (prop-valuedness 𝓓 x y)
            ⦅⇒⦆ ⦅⇐⦆
        where
@@ -670,10 +672,10 @@ module _
                y       ∎⟨ 𝓓 ⟩
          where
           ⦅1⦆ = ≡-to-⊒ 𝓓 (r-s-equation x)
-          ⦅2⦆ = monotone-if-continuous 𝓔 𝓓 𝕣 (s x) (s y) (⌜ f (s x) (s y) ⌝ l)
+          ⦅2⦆ = monotone-if-continuous 𝓔 𝓓 𝕣 (s x) (s y) (⊑ₛ-to-⊑ l)
           ⦅3⦆ = ≡-to-⊑ 𝓓 (r-s-equation y)
         ⦅⇐⦆ : (x ⊑⟨ 𝓓 ⟩ y) → (s x ⊑ₛ s y)
-        ⦅⇐⦆ l = ⌜ f (s x) (s y) ⌝⁻¹ (monotone-if-continuous 𝓓 𝓔 𝕤 x y l)
+        ⦅⇐⦆ l = ⊑-to-⊑ₛ (monotone-if-continuous 𝓓 𝓔 𝕤 x y l)
 
  small-basis-from-continuous-retract : Prop-Ext → {B : 𝓥 ̇  } (β : B → ⟨ 𝓔 ⟩)
                                      → is-small-basis 𝓔 β
@@ -746,9 +748,10 @@ locally-small-exponential-criterion : Prop-Ext
                                     → has-unspecified-small-basis 𝓓
                                     → is-locally-small 𝓔
                                     → is-locally-small (𝓓 ⟹ᵈᶜᵖᵒ 𝓔) -- TODO: Change ⟹?
-locally-small-exponential-criterion pe 𝓓 𝓔 𝓓-sb (_⊑ₛ_ , ⊑ₛ-≃-⊑) =
+locally-small-exponential-criterion pe 𝓓 𝓔 𝓓-sb ls =
  ∥∥-rec (being-locally-small-is-prop (𝓓 ⟹ᵈᶜᵖᵒ 𝓔) (λ _ → pe)) lemma 𝓓-sb
   where
+   open is-locally-small ls
    lemma : has-specified-small-basis 𝓓 → is-locally-small (𝓓 ⟹ᵈᶜᵖᵒ 𝓔)
    lemma (B , β , β-is-small-basis) =
     ⌜ local-smallness-equivalent-definitions (𝓓 ⟹ᵈᶜᵖᵒ 𝓔) ⌝⁻¹ γ
@@ -761,13 +764,13 @@ locally-small-exponential-criterion pe 𝓓 𝓔 𝓓-sb (_⊑ₛ_ , ⊑ₛ-≃-
         order = (b : B) → f (β b) ⊑ₛ g (β b)
         claim : order ≃ ((x : ⟨ 𝓓 ⟩) → f x ⊑⟨ 𝓔 ⟩ g x)
         claim = logically-equivalent-props-are-equivalent
-                 (Π-is-prop fe (λ b → equiv-to-prop (⊑ₛ-≃-⊑ (f (β b)) (g (β b)))
+                 (Π-is-prop fe (λ b → equiv-to-prop ⊑ₛ-≃-⊑
                                        (prop-valuedness 𝓔 (f (β b)) (g (β b)))))
                  (Π-is-prop fe (λ x → prop-valuedness 𝓔 (f x) (g x)))
                  ⦅⇒⦆ ⦅⇐⦆
          where
           ⦅⇐⦆ : ((x : ⟨ 𝓓 ⟩) → f x ⊑⟨ 𝓔 ⟩ g x) → order
-          ⦅⇐⦆ f-below-g b = ⌜ ⊑ₛ-≃-⊑ (f (β b)) (g (β b)) ⌝⁻¹ (f-below-g (β b))
+          ⦅⇐⦆ f-below-g b = ⊑-to-⊑ₛ (f-below-g (β b))
           ⦅⇒⦆ : order → ((x : ⟨ 𝓓 ⟩) → f x ⊑⟨ 𝓔 ⟩ g x)
           ⦅⇒⦆ f-below-g x = transport (λ - → f - ⊑⟨ 𝓔 ⟩ g -)
                              (↡ᴮₛ-∐-≡ x) f-below-g'
@@ -790,7 +793,7 @@ locally-small-exponential-criterion pe 𝓓 𝓔 𝓓-sb (_⊑ₛ_ , ⊑ₛ-≃-
                              g (β b) ⊑⟨ 𝓔 ⟩[ ⦅‡⦆ ]
                              ∐ 𝓔 εᵍ  ∎⟨ 𝓔 ⟩
                  where
-                  ⦅†⦆ = ⌜ ⊑ₛ-≃-⊑ (f (β b)) (g (β b)) ⌝ (f-below-g b)
+                  ⦅†⦆ = ⊑ₛ-to-⊑ (f-below-g b)
                   ⦅‡⦆ = ∐-is-upperbound 𝓔 εᵍ (b , i)
 
 \end{code}

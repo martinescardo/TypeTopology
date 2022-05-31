@@ -889,8 +889,9 @@ module _
  ≪-is-small-valued-str : structurally-continuous 𝓓
                        → is-locally-small 𝓓
                        → (x y : ⟨ 𝓓 ⟩) → is-small (x ≪⟨ 𝓓 ⟩ y)
- ≪-is-small-valued-str C (_⊑ₛ_ , φ) x y = (∃ i ꞉ I , x ⊑ₛ α i) , ψ
+ ≪-is-small-valued-str C ls x y = (∃ i ꞉ I , x ⊑ₛ α i) , ψ
   where
+   open is-locally-small ls
    open structurally-continuous C
    I : 𝓥 ̇
    I = index-of-approximating-family y
@@ -906,7 +907,7 @@ module _
                                       (approximating-family-∐-⊒ 𝓓 C y))
       where
        r : (Σ i ꞉ I , x ⊑⟨ 𝓓 ⟩ α i) → Σ i ꞉ I , x ⊑ₛ α i
-       r (i , x-below-αᵢ) = (i , ⌜ φ x (α i) ⌝⁻¹ x-below-αᵢ)
+       r (i , x-below-αᵢ) = (i , ⊑-to-⊑ₛ x-below-αᵢ)
      ⦅⇒⦆ : (∃ i ꞉ I , x ⊑ₛ α i) → x ≪⟨ 𝓓 ⟩ y
      ⦅⇒⦆ h J β ε y-below-∐β = ∥∥-rec ∥∥-is-prop r h
       where
@@ -916,7 +917,7 @@ module _
                                          J β ε y-below-∐β
         where
          x-below-αᵢ : x ⊑⟨ 𝓓 ⟩ α i
-         x-below-αᵢ = ⌜ φ x (α i) ⌝ x-belowₛ-αᵢ
+         x-below-αᵢ = ⊑ₛ-to-⊑ x-belowₛ-αᵢ
 
  ≪-is-small-valued-str' : structurally-continuous 𝓓
                         → is-locally-small 𝓓

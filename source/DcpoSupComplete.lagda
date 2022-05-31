@@ -197,9 +197,7 @@ TODO: Write comment
          (α : I → ⟨ 𝓓 ⟩)
         where
 
-  private
-   _⊑ₛ_ : ⟨ 𝓓 ⟩ → ⟨ 𝓓 ⟩ → 𝓥 ̇
-   _⊑ₛ_ = pr₁ 𝓓-is-locally-small -- TODO: Think about making local smallness a record
+  open is-locally-small 𝓓-is-locally-small
 
   directify-↓-small : (x : ⟨ 𝓓 ⟩) → (Σ l ꞉ List I , directify α l ⊑ₛ x) → ⟨ 𝓓 ⟩
   directify-↓-small x = directify α ∘ pr₁
@@ -210,7 +208,7 @@ TODO: Write comment
 
    directify-↓-small-≃ : domain (directify-↓ α x) ≃ domain (directify-↓-small x)
    directify-↓-small-≃ =
-    Σ-cong (λ l → ≃-sym (pr₂ 𝓓-is-locally-small (directify α l) x))
+    Σ-cong (λ l → ≃-sym ⊑ₛ-≃-⊑)
 
    directify-↓-small-sup : is-sup (underlying-order 𝓓) x (↓-family α)
                          → is-sup (underlying-order 𝓓) x (directify-↓-small x)

@@ -50,8 +50,11 @@ module _
         (𝓓-is-locally-small : is-locally-small 𝓓)
        where
 
+ open is-locally-small 𝓓-is-locally-small
+
  -- TODO: Factor this out somehow (with Record?)
  {- - - - - - - - - - - - - - - - -}
+ {-
  _⊑ₛ_ : ⟨ 𝓓 ⟩ → ⟨ 𝓓 ⟩ → 𝓥 ̇
  _⊑ₛ_ = pr₁ 𝓓-is-locally-small
 
@@ -75,7 +78,7 @@ module _
  reflexivityₛ x = ⌜ ⊑ₛ-≃-⊑ ⌝⁻¹ (reflexivity 𝓓 x)
 
  syntax reflexivityₛ x = x ∎ₛ
- infix 1 reflexivityₛ
+ infix 1 reflexivityₛ -}
  {- - - - - - - - - - - - - - - - -}
 
  ⦅_⇒_⦆ : ⟨ 𝓓 ⟩ → ⟪ 𝓔 ⟫ → ⟨ 𝓓 ⟩ → ⟪ 𝓔 ⟫
@@ -314,8 +317,6 @@ module _
           ∣ Bᴰ , βᴰ , compact-basis-is-basis 𝓓 βᴰ κᴰ ∣ -- TODO: Improve these "projections"
           (locally-small-if-small-basis (𝓔 ⁻) βᴱ
             (compact-basis-is-basis (𝓔 ⁻) βᴱ κᴱ))
-        _⊑'_ : DCPO[ 𝓓 , 𝓔 ⁻ ] → DCPO[ 𝓓 , 𝓔 ⁻ ] → 𝓥 ̇
-        _⊑'_ = pr₁ exp-is-locally-small
       ⦅3⦆ : (f : ⟨ 𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻) ⟩)
           → is-Directed (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻)) (↓ι (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻)) β f)
       ⦅3⦆ f = directify-↓-is-directed pre-β {f}

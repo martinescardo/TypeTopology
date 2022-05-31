@@ -2,6 +2,7 @@ Tom de Jong, January 2020.
 
 December 2021: Added material on semidirected and subsingleton suprema.
 
+TODO: Revise
 A collection of various useful facts on (pointed) directed complete posets and
 Scott continuous maps between them.
 
@@ -311,6 +312,22 @@ _≃ᵈᶜᵖᵒ_ : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'}) �
               × is-continuous 𝓓 𝓔 f
               × is-continuous 𝓔 𝓓 g
 
+is-deflation : (𝓓 : DCPO {𝓤} {𝓣}) → DCPO[ 𝓓 , 𝓓 ] → 𝓤 ⊔ 𝓣 ̇
+is-deflation 𝓓 f = (x : ⟨ 𝓓 ⟩) → [ 𝓓 , 𝓓 ]⟨ f ⟩ x ⊑⟨ 𝓓 ⟩ x
+
+is-continuous-retract : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
+                      → DCPO[ 𝓓 , 𝓔 ]
+                      → DCPO[ 𝓔 , 𝓓 ]
+                      → 𝓤 ̇
+is-continuous-retract 𝓓 𝓔 (σ , _) (ρ , _) = (x : ⟨ 𝓓 ⟩) → ρ (σ x) ≡ x
+
+is-embedding-projection : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
+                        → DCPO[ 𝓓 , 𝓔 ]
+                        → DCPO[ 𝓔 , 𝓓 ]
+                        → 𝓤 ⊔ 𝓤' ⊔ 𝓣' ̇
+is-embedding-projection 𝓓 𝓔 ε π =
+ is-continuous-retract 𝓓 𝓔 ε π × is-deflation 𝓔 (DCPO-∘ 𝓔 𝓓 𝓔 π ε)
+
 \end{code}
 
 Many examples of dcpos conveniently happen to be locally small.
@@ -352,20 +369,62 @@ small-binary-relation-equivalence {𝓤} {𝓦} {𝓣} {X} {Y} {R} =
    IV  = Σ-change-of-variable (λ R' → (x : X) (y : Y) → R' x y ≃ R x y)
           ⌜ φ ⌝ (⌜⌝-is-equiv φ)
 
+-- TODO: Comment
+
 module _
         (𝓓 : DCPO {𝓤} {𝓣})
        where
 
- is-locally-small : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
- is-locally-small = Σ _⊑ₛ_ ꞉ (⟨ 𝓓 ⟩ → ⟨ 𝓓 ⟩ → 𝓥 ̇  ) ,
-                             ((x y : ⟨ 𝓓 ⟩) → (x ⊑ₛ y) ≃ (x ⊑⟨ 𝓓 ⟩ y))
+ record is-locally-small : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇  where
+  field
+   _⊑ₛ_ : ⟨ 𝓓 ⟩ → ⟨ 𝓓 ⟩ → 𝓥 ̇
+   ⊑ₛ-≃-⊑ : {x y : ⟨ 𝓓 ⟩} → x ⊑ₛ y ≃ x ⊑⟨ 𝓓 ⟩ y
+
+  ⊑ₛ-to-⊑ : {x y : ⟨ 𝓓 ⟩} → x ⊑ₛ y → x ⊑⟨ 𝓓 ⟩ y
+  ⊑ₛ-to-⊑ = ⌜ ⊑ₛ-≃-⊑ ⌝
+
+  ⊑-to-⊑ₛ : {x y : ⟨ 𝓓 ⟩} → x ⊑⟨ 𝓓 ⟩ y → x ⊑ₛ y
+  ⊑-to-⊑ₛ = ⌜ ⊑ₛ-≃-⊑ ⌝⁻¹
+
+  ⊑ₛ-is-prop-valued : (x y : ⟨ 𝓓 ⟩) → is-prop (x ⊑ₛ y)
+  ⊑ₛ-is-prop-valued x y = equiv-to-prop ⊑ₛ-≃-⊑ (prop-valuedness 𝓓 x y)
+
+  transitivityₛ : (x : ⟨ 𝓓 ⟩) {y z : ⟨ 𝓓 ⟩}
+                → x ⊑ₛ y → y ⊑ₛ z → x ⊑ₛ z
+  transitivityₛ x {y} {z} u v = ⌜ ⊑ₛ-≃-⊑ ⌝⁻¹
+                                 (transitivity 𝓓 x y z
+                                               (⌜ ⊑ₛ-≃-⊑ ⌝ u)
+                                               (⌜ ⊑ₛ-≃-⊑ ⌝ v))
+
+  syntax transitivityₛ x u v = x ⊑ₛ[ u ] v
+  infixr 0 transitivityₛ
+
+  reflexivityₛ : (x : ⟨ 𝓓 ⟩) → x ⊑ₛ x
+  reflexivityₛ x = ⌜ ⊑ₛ-≃-⊑ ⌝⁻¹ (reflexivity 𝓓 x)
+
+  syntax reflexivityₛ x = x ∎ₛ
+  infix 1 reflexivityₛ
+
+ is-locally-small-Σ : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
+ is-locally-small-Σ =
+   Σ _⊑ₛ_ ꞉ (⟨ 𝓓 ⟩ → ⟨ 𝓓 ⟩ → 𝓥 ̇  ) , ((x y : ⟨ 𝓓 ⟩) → (x ⊑ₛ y) ≃ (x ⊑⟨ 𝓓 ⟩ y))
+
+ is-locally-small-record-equivalence : is-locally-small ≃ is-locally-small-Σ
+ is-locally-small-record-equivalence = qinveq f (g , (λ _ → refl) , (λ _ → refl))
+  where
+   f : is-locally-small → is-locally-small-Σ
+   f ls = _⊑ₛ_ , (λ x y → ⊑ₛ-≃-⊑)
+    where
+     open is-locally-small ls
+   g : is-locally-small-Σ → is-locally-small
+   g ls = record { _⊑ₛ_ = pr₁ ls ; ⊑ₛ-≃-⊑ = (λ {x} {y} → pr₂ ls x y) }
 
  is-locally-small' : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
  is-locally-small' = (x y : ⟨ 𝓓 ⟩) → is-small (x ⊑⟨ 𝓓 ⟩ y)
 
  local-smallness-equivalent-definitions : is-locally-small ≃ is-locally-small'
  local-smallness-equivalent-definitions =
-  ≃-sym (small-binary-relation-equivalence)
+  is-locally-small-record-equivalence ● ≃-sym (small-binary-relation-equivalence)
 
  module _
          (pe : PropExt)
@@ -386,23 +445,6 @@ module _
 TODO: Reorder the material in this file
 
 \begin{code}
-
-is-deflation : (𝓓 : DCPO {𝓤} {𝓣}) → DCPO[ 𝓓 , 𝓓 ] → 𝓤 ⊔ 𝓣 ̇
-is-deflation 𝓓 f = (x : ⟨ 𝓓 ⟩) → [ 𝓓 , 𝓓 ]⟨ f ⟩ x ⊑⟨ 𝓓 ⟩ x
-
-is-continuous-retract : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
-                      → DCPO[ 𝓓 , 𝓔 ]
-                      → DCPO[ 𝓔 , 𝓓 ]
-                      → 𝓤 ̇
-is-continuous-retract 𝓓 𝓔 (σ , _) (ρ , _) = (x : ⟨ 𝓓 ⟩) → ρ (σ x) ≡ x
-
-is-embedding-projection : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
-                        → DCPO[ 𝓓 , 𝓔 ]
-                        → DCPO[ 𝓔 , 𝓓 ]
-                        → 𝓤 ⊔ 𝓤' ⊔ 𝓣' ̇
-is-embedding-projection 𝓓 𝓔 ε π =
- is-continuous-retract 𝓓 𝓔 ε π × is-deflation 𝓔 (DCPO-∘ 𝓔 𝓓 𝓔 π ε)
-
 
 semidirected-if-bicofinal : (𝓓 : DCPO {𝓤} {𝓣}) {I J : 𝓦 ̇  }
                             (α : I → ⟨ 𝓓 ⟩) (β : J → ⟨ 𝓓 ⟩)

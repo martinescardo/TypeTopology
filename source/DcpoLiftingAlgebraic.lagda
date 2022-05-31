@@ -58,13 +58,13 @@ locally small.
 \begin{code}
 
  𝓛-is-locally-small : is-locally-small (𝓛-DCPO X-is-set)
- 𝓛-is-locally-small = _⊑_ , γ
+ 𝓛-is-locally-small = record { _⊑ₛ_ = _⊑_ ; ⊑ₛ-≃-⊑ = γ }
   where
-   γ : (x y : 𝓛 X) → (x ⊑ y) ≃ (x ⊑' y)
-   γ x y = logically-equivalent-props-are-equivalent
-            (⊑-prop-valued fe fe X-is-set x y)
-            (⊑'-prop-valued X-is-set)
-            ⊑-to-⊑' ⊑'-to-⊑
+   γ : {x y : 𝓛 X} → (x ⊑ y) ≃ (x ⊑' y)
+   γ {x} {y} = logically-equivalent-props-are-equivalent
+                (⊑-prop-valued fe fe X-is-set x y)
+                (⊑'-prop-valued X-is-set)
+                ⊑-to-⊑' ⊑'-to-⊑
 
 \end{code}
 
@@ -178,7 +178,9 @@ TODO: Write comments
  κ-is-small-compact-basis : is-small-compact-basis (𝓛-DCPO X-is-set) κ
  κ-is-small-compact-basis = record {
    basis-is-compact = λ b → compact-if-in-image-of-κ (κ b) ∣ b , refl ∣;
-   ⊑ᴮ-is-small      = λ l b → (κ b ⊑ l , pr₂ 𝓛-is-locally-small (κ b) l);
+   ⊑ᴮ-is-small      = λ l b → ⌜ local-smallness-equivalent-definitions
+                                 (𝓛-DCPO X-is-set) ⌝
+                              𝓛-is-locally-small (κ b) l;
    ↓ᴮ-is-directed   = κ⁺-is-directed  ;
    ↓ᴮ-is-sup        = κ⁺-sup
   }
