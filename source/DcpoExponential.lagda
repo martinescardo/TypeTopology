@@ -25,6 +25,7 @@ open import UF-Subsingletons-FunExt
 
 open import Dcpo pt fe 𝓥
 open import DcpoMiscelanea pt fe 𝓥
+open import DcpoPointed pt fe 𝓥
 open import DcpoSupComplete pt fe 𝓥
 
 open import Poset fe
@@ -133,6 +134,7 @@ _⟹ᵈᶜᵖᵒ_ : DCPO {𝓤} {𝓣} → DCPO {𝓤'} {𝓣'}
     v (g , _) l d = ∐-is-lowerbound-of-upperbounds 𝓔
                      (pointwise-family-is-directed 𝓓 𝓔 α δ d)
                      (g d) (λ (i : I) → l i d)
+
 
 infixr 20 _⟹ᵈᶜᵖᵒ⊥_
 

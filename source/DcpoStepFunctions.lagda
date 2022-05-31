@@ -27,7 +27,7 @@ open import UF-EquivalenceExamples
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
 
-open import Dcpo pt fe 𝓥 hiding (⊥ ; ⊥-is-least)
+open import Dcpo pt fe 𝓥
 open import DcpoBases pt fe 𝓥
 open import DcpoContinuous pt fe 𝓥
 open import DcpoExponential pt fe 𝓥

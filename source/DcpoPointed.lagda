@@ -20,6 +20,7 @@ open PropositionalTruncation pt hiding (_∨_)
 
 open import UF-Subsingletons
 
+-- open import Poset pt fe 𝓥
 open import Dcpo pt fe 𝓥
 open import DcpoMiscelanea pt fe 𝓥
 
@@ -27,12 +28,67 @@ open import DcpoMiscelanea pt fe 𝓥
 
 \begin{code}
 
+module _ {𝓤 𝓣 : Universe} where
+
+ DCPO⊥ : (𝓥 ⁺) ⊔ (𝓤 ⁺) ⊔ (𝓣 ⁺) ̇
+ DCPO⊥ = Σ 𝓓 ꞉ DCPO {𝓤} {𝓣} , has-least (underlying-order 𝓓)
+
+ _⁻ : DCPO⊥ → DCPO
+ _⁻ = pr₁
+
+ ⟪_⟫ : DCPO⊥ → 𝓤 ̇
+ ⟪ 𝓓 ⟫ = ⟨ 𝓓 ⁻ ⟩
+
+ underlying-order⊥ : (𝓓 : DCPO⊥) → ⟪ 𝓓 ⟫ → ⟪ 𝓓 ⟫ → 𝓣 ̇
+ underlying-order⊥ 𝓓 = underlying-order (𝓓 ⁻)
+
+ syntax underlying-order⊥ 𝓓 x y = x ⊑⟪ 𝓓 ⟫ y
+
+ ⊥ : (𝓓 : DCPO⊥) → ⟨ 𝓓 ⁻ ⟩
+ ⊥ (𝓓 , x , p) = x
+
+ ⊥-is-least : (𝓓 : DCPO⊥) → is-least (underlying-order (𝓓 ⁻)) (⊥ 𝓓)
+ ⊥-is-least (𝓓 , x , p) = p
+
+ transitivity'' : (𝓓 : DCPO⊥) (x : ⟪ 𝓓 ⟫) {y z : ⟪ 𝓓 ⟫}
+               → x ⊑⟪ 𝓓 ⟫ y → y ⊑⟪ 𝓓 ⟫ z → x ⊑⟪ 𝓓 ⟫ z
+ transitivity'' 𝓓 = transitivity' (𝓓 ⁻)
+
+ reflexivity' : (𝓓 : DCPO⊥) → reflexive (underlying-order (𝓓 ⁻))
+ reflexivity' (D , _) = reflexivity D
+
+ syntax transitivity'' 𝓓 x u v = x ⊑⟪ 𝓓 ⟫[ u ] v
+ infixr 0 transitivity''
+
+ syntax reflexivity' 𝓓 x = x ∎⟪ 𝓓 ⟫
+ infix 1 reflexivity'
+
 is-a-non-trivial-pointed-dcpo : (𝓓 : DCPO⊥ {𝓤} {𝓣}) → 𝓤 ̇
 is-a-non-trivial-pointed-dcpo 𝓓 = ∃ x ꞉ ⟪ 𝓓 ⟫ , x ≢ ⊥ 𝓓
 
 ≡-to-⊥-criterion : (𝓓 : DCPO⊥ {𝓤} {𝓣}) {x : ⟪ 𝓓 ⟫} → x ⊑⟪ 𝓓 ⟫ ⊥ 𝓓 → x ≡ ⊥ 𝓓
 ≡-to-⊥-criterion 𝓓 {x} x-below-⊥ =
  antisymmetry (𝓓 ⁻) x (⊥ 𝓓) x-below-⊥ (⊥-is-least 𝓓 x)
+
+DCPO⊥[_,_] : DCPO⊥ {𝓤} {𝓣} → DCPO⊥ {𝓤'} {𝓣'} → (𝓥 ⁺) ⊔ 𝓤 ⊔ 𝓣 ⊔ 𝓤' ⊔ 𝓣' ̇
+DCPO⊥[ 𝓓 , 𝓔 ] = DCPO[ 𝓓 ⁻ , 𝓔 ⁻ ]
+
+is-strict : (𝓓 : DCPO⊥ {𝓤} {𝓣}) (𝓔 : DCPO⊥ {𝓤'} {𝓣'})
+          → (⟪ 𝓓 ⟫ → ⟪ 𝓔 ⟫)
+          → 𝓤' ̇
+is-strict 𝓓 𝓔 f = f (⊥ 𝓓) ≡ ⊥ 𝓔
+
+being-strict-is-prop : (𝓓 : DCPO⊥ {𝓤} {𝓣}) (𝓔 : DCPO⊥ {𝓤'} {𝓣'})
+                       (f : ⟪ 𝓓 ⟫ → ⟪ 𝓔 ⟫)
+                     → is-prop (is-strict 𝓓 𝓔 f)
+being-strict-is-prop 𝓓 𝓔 f = sethood (𝓔 ⁻)
+
+strictness-criterion : (𝓓 : DCPO⊥ {𝓤} {𝓣}) (𝓔 : DCPO⊥ {𝓤'} {𝓣'})
+                       (f : ⟪ 𝓓 ⟫ → ⟪ 𝓔 ⟫)
+                     → f (⊥ 𝓓) ⊑⟪ 𝓔 ⟫ ⊥ 𝓔
+                     → is-strict 𝓓 𝓔 f
+strictness-criterion 𝓓 𝓔 f crit =
+ antisymmetry (𝓔 ⁻) (f (⊥ 𝓓)) (⊥ 𝓔) crit (⊥-is-least 𝓔 (f (⊥ 𝓓)))
 
 \end{code}
 

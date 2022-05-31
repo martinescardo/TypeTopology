@@ -134,7 +134,7 @@ module _ {𝓤 𝓣 : Universe}
 
 \end{code}
 
-Since we will also consider dcpos with a least element, we also make the
+Since we will also consider dcpos with a least element later, we make the
 following definitions.
 
 \begin{code}
@@ -190,32 +190,6 @@ module _ {𝓤 𝓣 : Universe} where
 
 \end{code}
 
-We also consider pointed dcpos, i.e. dcpos with a least element.
-
-\begin{code}
-
- DCPO⊥ : (𝓥 ⁺) ⊔ (𝓤 ⁺) ⊔ (𝓣 ⁺) ̇
- DCPO⊥ = Σ 𝓓 ꞉ DCPO , has-least (underlying-order 𝓓)
-
- _⁻ : DCPO⊥ → DCPO
- _⁻ = pr₁
-
- ⟪_⟫ : DCPO⊥ → 𝓤 ̇
- ⟪ 𝓓 ⟫ = ⟨ 𝓓 ⁻ ⟩
-
- underlying-order⊥ : (𝓓 : DCPO⊥) → ⟪ 𝓓 ⟫ → ⟪ 𝓓 ⟫ → 𝓣 ̇
- underlying-order⊥ 𝓓 = underlying-order (𝓓 ⁻)
-
- syntax underlying-order⊥ 𝓓 x y = x ⊑⟪ 𝓓 ⟫ y
-
- ⊥ : (𝓓 : DCPO⊥) → ⟨ 𝓓 ⁻ ⟩
- ⊥ (𝓓 , x , p) = x
-
- ⊥-is-least : (𝓓 : DCPO⊥) → is-least (underlying-order (𝓓 ⁻)) (⊥ 𝓓)
- ⊥-is-least (𝓓 , x , p) = p
-
-\end{code}
-
 We introduce pretty syntax for chain reasoning with inequalities.
 (Cf. ≡⟨_⟩ and ∎ in Id.lagda, ≃⟨_⟩ and ■ in UF-Equiv.lagda)
 
@@ -251,19 +225,6 @@ z = transitivity 𝓓 a c d z' w
 
  syntax reflexivity 𝓓 x = x ∎⟨ 𝓓 ⟩
  infix 1 reflexivity
-
- transitivity'' : (𝓓 : DCPO⊥) (x : ⟪ 𝓓 ⟫) {y z : ⟪ 𝓓 ⟫}
-               → x ⊑⟪ 𝓓 ⟫ y → y ⊑⟪ 𝓓 ⟫ z → x ⊑⟪ 𝓓 ⟫ z
- transitivity'' 𝓓 = transitivity' (𝓓 ⁻)
-
- reflexivity' : (𝓓 : DCPO⊥) → is-reflexive (underlying-order (𝓓 ⁻))
- reflexivity' (D , _) = reflexivity D
-
- syntax transitivity'' 𝓓 x u v = x ⊑⟪ 𝓓 ⟫[ u ] v
- infixr 0 transitivity''
-
- syntax reflexivity' 𝓓 x = x ∎⟪ 𝓓 ⟫
- infix 1 reflexivity'
 
 \end{code}
 
@@ -330,9 +291,6 @@ being-continuous-is-prop 𝓓 𝓔 f =
 DCPO[_,_] : DCPO {𝓤} {𝓣} → DCPO {𝓤'} {𝓣'} → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ⊔ 𝓤' ⊔ 𝓣' ̇
 DCPO[ 𝓓 , 𝓔 ] = Σ f ꞉ (⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩) , is-continuous 𝓓 𝓔 f
 
-DCPO⊥[_,_] : DCPO⊥ {𝓤} {𝓣} → DCPO⊥ {𝓤'} {𝓣'} → (𝓥 ⁺) ⊔ 𝓤 ⊔ 𝓣 ⊔ 𝓤' ⊔ 𝓣' ̇
-DCPO⊥[ 𝓓 , 𝓔 ] = DCPO[ 𝓓 ⁻ , 𝓔 ⁻ ]
-
 underlying-function : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
                     → DCPO[ 𝓓 , 𝓔 ] → ⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩
 underlying-function 𝓓 𝓔 (f , _) = f
@@ -342,22 +300,5 @@ syntax underlying-function 𝓓 𝓔 f = [ 𝓓 , 𝓔 ]⟨ f ⟩
 continuity-of-function : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'}) (f : DCPO[ 𝓓 , 𝓔 ])
                        → is-continuous 𝓓 𝓔 [ 𝓓 ,  𝓔 ]⟨ f ⟩
 continuity-of-function 𝓓 𝓔 (_ , c) = c
-
-is-strict : (𝓓 : DCPO⊥ {𝓤} {𝓣}) (𝓔 : DCPO⊥ {𝓤'} {𝓣'})
-          → (⟪ 𝓓 ⟫ → ⟪ 𝓔 ⟫)
-          → 𝓤' ̇
-is-strict 𝓓 𝓔 f = f (⊥ 𝓓) ≡ ⊥ 𝓔
-
-being-strict-is-prop : (𝓓 : DCPO⊥ {𝓤} {𝓣}) (𝓔 : DCPO⊥ {𝓤'} {𝓣'})
-                       (f : ⟪ 𝓓 ⟫ → ⟪ 𝓔 ⟫)
-                     → is-prop (is-strict 𝓓 𝓔 f)
-being-strict-is-prop 𝓓 𝓔 f = sethood (𝓔 ⁻)
-
-strictness-criterion : (𝓓 : DCPO⊥ {𝓤} {𝓣}) (𝓔 : DCPO⊥ {𝓤'} {𝓣'})
-                       (f : ⟪ 𝓓 ⟫ → ⟪ 𝓔 ⟫)
-                     → f (⊥ 𝓓) ⊑⟪ 𝓔 ⟫ ⊥ 𝓔
-                     → is-strict 𝓓 𝓔 f
-strictness-criterion 𝓓 𝓔 f crit =
- antisymmetry (𝓔 ⁻) (f (⊥ 𝓓)) (⊥ 𝓔) crit (⊥-is-least 𝓔 (f (⊥ 𝓓)))
 
 \end{code}

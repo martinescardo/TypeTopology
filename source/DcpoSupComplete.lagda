@@ -21,11 +21,9 @@ open PropositionalTruncation pt hiding (_∨_)
 open import UF-Equiv
 open import UF-EquivalenceExamples
 
-import Dcpo pt fe 𝓥 as Dcpo
+open import Dcpo pt fe 𝓥
 open import DcpoMiscelanea pt fe 𝓥
 open import DcpoWayBelow pt fe 𝓥
-
-open Dcpo hiding (⊥ ; ⊥-is-least)
 
 module _
         (𝓓 : DCPO {𝓤} {𝓣})
