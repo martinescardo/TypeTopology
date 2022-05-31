@@ -266,7 +266,7 @@ module _
                               x (↡ι x)))
 
  is-small-basis-≃ : is-small-basis ≃ is-small-basis-Σ
- is-small-basis-≃ = qinveq f (g , ρ , σ)
+ is-small-basis-≃ = qinveq f (g , (λ _ → refl) , (λ _ → refl))
   where
    f : is-small-basis → is-small-basis-Σ
    f sb x = (≪ᴮ-is-small x , ↡ᴮ-is-directed x , ↡ᴮ-is-sup x)
@@ -278,10 +278,6 @@ module _
      ↡ᴮ-is-directed = λ x → pr₁ (pr₂ (sb x));
      ↡ᴮ-is-sup  = λ x → pr₂ (pr₂ (sb x))
     }
-   ρ : g ∘ f ∼ id
-   ρ _ = refl
-   σ : f ∘ g ∼ id
-   σ _ = refl
 
  being-small-basis-is-prop : Prop-Ext → is-prop is-small-basis
  being-small-basis-is-prop pe = equiv-to-prop is-small-basis-≃
@@ -573,7 +569,7 @@ module _
 
       eq-lemma : (x : ⟨ 𝓓 ⟩) → r (∐ 𝓔 (ε x)) ≡ x
       eq-lemma x = r (∐ 𝓔 (ε x)) ≡⟨ ap r (↡ᴮₛ-∐-≡ (s x)) ⟩
-                   r (s x)       ≡⟨ r-s-equation x       ⟩
+                   r (s x)       ≡⟨ s-section-of-r x     ⟩
                    x             ∎
 
       lemma₂ : (x : ⟨ 𝓓 ⟩) → is-Directed 𝓓 (↡ι 𝓓 (r ∘ β) x)

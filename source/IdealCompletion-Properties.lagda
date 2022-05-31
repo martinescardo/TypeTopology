@@ -732,13 +732,21 @@ module Idl-algebraic -- TODO: Rethink module name
   record
    { s = to-Idl
    ; r = from-Idl
-   ; r-s-equation = retract-condition Idl-retract
+   ; s-section-of-r = retract-condition Idl-retract
    ; s-is-continuous = to-Idl-is-continuous
    ; r-is-continuous = from-Idl-is-continuous
    }
 
- -- TODO: (e-p pair) ; define first in DcpoMisc probably, then it's an immediate
- -- consequence of the material above
+ Idl-embedding-projection-pair : embedding-projection-pair-between 𝓓 Idl-DCPO
+ Idl-embedding-projection-pair =
+  record
+    { e = to-Idl
+    ; p = from-Idl
+    ; e-section-of-p = retract-condition Idl-retract
+    ; e-p-deflation = Idl-deflation
+    ; e-is-continuous = to-Idl-is-continuous
+    ; p-is-continuous = from-Idl-is-continuous
+    }
 
  Idl-is-algebraic : is-algebraic-dcpo Idl-DCPO
  Idl-is-algebraic = Idl-is-algebraic-dcpo (λ b → ⊑ᴮ-is-reflexive)

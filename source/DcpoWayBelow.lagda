@@ -286,7 +286,7 @@ module _
     h (i , u) = (i , v)
      where
       v = r y         ⊑⟨ 𝓓 ⟩[ monotone-if-continuous 𝓔 𝓓 𝕣 y (s (α i)) u ]
-          r (s (α i)) ⊑⟨ 𝓓 ⟩[ ≡-to-⊑ 𝓓 (r-s-equation (α i)) ]
+          r (s (α i)) ⊑⟨ 𝓓 ⟩[ ≡-to-⊑ 𝓓 (s-section-of-r (α i)) ]
           α i         ∎⟨ 𝓓 ⟩
 
 \end{code}

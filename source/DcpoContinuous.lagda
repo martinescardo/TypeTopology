@@ -1089,7 +1089,7 @@ module _
          where
           ⦅1⦆ = monotone-if-continuous 𝓔 𝓓 𝕣
                 (α (s x) i) (s (β j)) u
-          ⦅2⦆ = ≡-to-⊑ 𝓓 (r-s-equation (β j))
+          ⦅2⦆ = ≡-to-⊑ 𝓓 (s-section-of-r (β j))
       ε : is-Directed 𝓔 (s ∘ β)
       ε = image-is-directed' 𝓓 𝓔 𝕤 δ
       l = s x       ⊑⟨ 𝓔 ⟩[ ⦅1⦆ ]
@@ -1109,7 +1109,7 @@ module _
      δ = approximating-family-is-directed (s x)
      ⦅1⦆ = (continuous-∐-≡ 𝓔 𝓓 𝕣 δ) ⁻¹
      ⦅2⦆ = ap r (approximating-family-∐-≡ (s x))
-     ⦅3⦆ = r-s-equation x
+     ⦅3⦆ = s-section-of-r x
 
  continuity-of-dcpo-preserved-by-continuous-retract : is-continuous-dcpo 𝓔
                                                     → is-continuous-dcpo 𝓓

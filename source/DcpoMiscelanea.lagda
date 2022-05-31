@@ -327,7 +327,7 @@ record _continuous-retract-of_
   field
    s : ⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩
    r : ⟨ 𝓔 ⟩ → ⟨ 𝓓 ⟩
-   r-s-equation : r ∘ s ∼ id
+   s-section-of-r : r ∘ s ∼ id
    s-is-continuous : is-continuous 𝓓 𝓔 s
    r-is-continuous : is-continuous 𝓔 𝓓 r
 
@@ -343,6 +343,24 @@ is-embedding-projection : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣
                         → 𝓤 ⊔ 𝓤' ⊔ 𝓣' ̇
 is-embedding-projection 𝓓 𝓔 ε π =
  is-continuous-retract 𝓓 𝓔 ε π × is-deflation 𝓔 (DCPO-∘ 𝓔 𝓓 𝓔 π ε)
+
+record embedding-projection-pair-between
+        (𝓓 : DCPO {𝓤} {𝓣})
+        (𝓔 : DCPO {𝓤'} {𝓣'}) : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ⊔ 𝓤' ⊔ 𝓣' ̇  where
+  field
+   e : ⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩
+   p : ⟨ 𝓔 ⟩ → ⟨ 𝓓 ⟩
+   e-section-of-p : p ∘ e ∼ id
+   e-p-deflation : (y : ⟨ 𝓔 ⟩) → e (p y) ⊑⟨ 𝓔 ⟩ y
+   e-is-continuous : is-continuous 𝓓 𝓔 e
+   p-is-continuous : is-continuous 𝓔 𝓓 p
+
+  𝕖 : DCPO[ 𝓓 , 𝓔 ]
+  𝕖 = e , e-is-continuous
+
+  𝕡 : DCPO[ 𝓔 , 𝓓 ]
+  𝕡 = p , p-is-continuous
+
 
 \end{code}
 
@@ -488,9 +506,9 @@ local-smallness-preserved-by-continuous-retract 𝓓 𝓔 ρ ls =
               r (s y) ⊑⟨ 𝓓 ⟩[ ⦅3⦆ ]
               y       ∎⟨ 𝓓 ⟩
         where
-         ⦅1⦆ = ≡-to-⊒ 𝓓 (r-s-equation x)
+         ⦅1⦆ = ≡-to-⊒ 𝓓 (s-section-of-r x)
          ⦅2⦆ = monotone-if-continuous 𝓔 𝓓 𝕣 (s x) (s y) (⊑ₛ-to-⊑ l)
-         ⦅3⦆ = ≡-to-⊑ 𝓓 (r-s-equation y)
+         ⦅3⦆ = ≡-to-⊑ 𝓓 (s-section-of-r y)
        ⦅⇐⦆ : (x ⊑⟨ 𝓓 ⟩ y) → (s x ⊑ₛ s y)
        ⦅⇐⦆ l = ⊑-to-⊑ₛ (monotone-if-continuous 𝓓 𝓔 𝕤 x y l)
 
