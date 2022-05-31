@@ -37,7 +37,7 @@ open import UF-Subsingletons
 
 module DcpoDinfinity
         (pt : propositional-truncations-exist)
-        (fe : ∀ {𝓤 𝓥} → funext 𝓤 𝓥)
+        (fe : Fun-Ext)
         (pe : Prop-Ext)
        where
 
@@ -49,6 +49,7 @@ open import Dcpo pt fe 𝓤₀
 open import DcpoExponential pt fe 𝓤₀
 open import DcpoLifting pt fe 𝓤₀ pe
 open import DcpoMiscelanea pt fe 𝓤₀
+open import DcpoPointed pt fe 𝓤₀
 
 open import DcpoBilimitsSequential pt fe 𝓤₁ 𝓤₁
 
@@ -922,10 +923,11 @@ under taking exponentials.
 
 \begin{code}
 
-open import DcpoBases pt pe fe 𝓤₀
+open import DcpoBases pt fe 𝓤₀
 open import DcpoContinuous pt fe 𝓤₀
 open import DcpoLiftingAlgebraic pt pe fe 𝓤₀
-open import DcpoStepFunctions pt pe fe 𝓤₀
+open import DcpoStepFunctions pt fe 𝓤₀
+open import DcpoSupComplete pt fe 𝓤₀
 
 open import Lifting 𝓤₀
 open import LiftingMiscelanea 𝓤₀
@@ -937,7 +939,7 @@ open import UF-Subsingletons-FunExt
                                 (𝓓s-are-sup-complete n)
 
 𝓓∞-has-specified-small-compact-basis : has-specified-small-compact-basis 𝓓∞
-𝓓∞-has-specified-small-compact-basis = 𝓓∞-has-small-compact-basis pe γ
+𝓓∞-has-specified-small-compact-basis = 𝓓∞-has-small-compact-basis γ
  where
   γ : (n : ℕ) → has-specified-small-compact-basis (𝓓 n)
   γ zero     = 𝓛-has-specified-small-compact-basis (props-are-sets 𝟙-is-prop)
@@ -946,7 +948,7 @@ open import UF-Subsingletons-FunExt
                 (locally-small-if-small-basis (𝓓 n) β
                   (compact-basis-is-basis (𝓓 n) β β-is-compact-small-basis))
                 B B β β β-is-compact-small-basis β-is-compact-small-basis
-                  (𝓓s-are-sup-complete n)
+                (𝓓s-are-sup-complete n) pe
    where
     IH : has-specified-small-compact-basis (𝓓 n)
     IH = γ n

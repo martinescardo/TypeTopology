@@ -15,7 +15,7 @@ open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
 
 module Poset
-        (fe : ∀ {𝓤 𝓥} → funext 𝓤 𝓥)
+        (fe : Fun-Ext)
        where
 
  module PosetAxioms

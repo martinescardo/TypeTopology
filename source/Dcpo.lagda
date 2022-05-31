@@ -20,7 +20,7 @@ open import UF-PropTrunc
 
 module Dcpo
         (pt : propositional-truncations-exist)
-        (fe : ∀ {𝓤 𝓥} → funext 𝓤 𝓥)
+        (fe : Fun-Ext)
         (𝓥 : Universe) -- where the index types for directed completeness live
        where
 

@@ -1,7 +1,15 @@
 Tom de Jong, late February - early March 2020.
-4 January 2022: Minor refactorings.
+Jan - Mar 2022: Some additions, most notably on embeddings.
 
-The way-below relation for a directed complete poset.
+We define the way-below relation and the notion of a compact element in a
+directed complete poset.
+
+Contents
+* Basic properties of the way-below relation and its interaction with the order.
+* Definition of a compact element as an element that is way below itself.
+* The compact elements are closed under existing finite joins.
+* In an embedding-projection pair, the embedding preserves and reflects the
+  way-below relation, and hence, compact elements.
 
 \begin{code}
 
@@ -13,7 +21,7 @@ open import UF-PropTrunc
 
 module DcpoWayBelow
         (pt : propositional-truncations-exist)
-        (fe : ∀ {𝓤 𝓥} → funext 𝓤 𝓥)
+        (fe : Fun-Ext)
         (𝓥 : Universe) -- where the index types for directed completeness live
        where
 
@@ -104,12 +112,34 @@ syntax way-below 𝓓 x y = x ≪⟨ 𝓓 ⟩ y
       z     ⊑⟨ 𝓓 ⟩[ l ]
       ∐ 𝓓 δ ∎⟨ 𝓓 ⟩
 
+\end{code}
+
+An element is called compact if it way below itself.
+
+\begin{code}
+
 is-compact : (𝓓 : DCPO {𝓤} {𝓣}) → ⟨ 𝓓 ⟩ → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
 is-compact 𝓓 x = x ≪⟨ 𝓓 ⟩ x
 
 being-compact-is-prop : (𝓓 : DCPO {𝓤} {𝓣}) (x : ⟨ 𝓓 ⟩)
                       → is-prop (is-compact 𝓓 x)
 being-compact-is-prop 𝓓 x = ≪-is-prop-valued 𝓓
+
+compact-⊑-≃-≪ : (𝓓 : DCPO {𝓤} {𝓣}) {x : ⟨ 𝓓 ⟩}
+              → is-compact 𝓓 x
+              → {y : ⟨ 𝓓 ⟩}
+              → (x ⊑⟨ 𝓓 ⟩ y) ≃ (x ≪⟨ 𝓓 ⟩ y)
+compact-⊑-≃-≪ 𝓓 {x} c {y} =
+ logically-equivalent-props-are-equivalent
+  (prop-valuedness 𝓓 x y) (≪-is-prop-valued 𝓓)
+  (≪-⊑-to-≪ 𝓓 c)
+  (≪-to-⊑ 𝓓)
+
+\end{code}
+
+The compact elements are closed under existing finite joins.
+
+\begin{code}
 
 module _ where
  open Dcpo using (⊥ ; ⊥-is-least)
@@ -153,19 +183,10 @@ binary-join-is-compact
                 α j ⊑⟨ 𝓓 ⟩[ lⱼ ]
                 α k ∎⟨ 𝓓 ⟩))
 
-compact-⊑-≃-≪ : (𝓓 : DCPO {𝓤} {𝓣}) {x : ⟨ 𝓓 ⟩}
-              → is-compact 𝓓 x
-              → {y : ⟨ 𝓓 ⟩}
-              → (x ⊑⟨ 𝓓 ⟩ y) ≃ (x ≪⟨ 𝓓 ⟩ y)
-compact-⊑-≃-≪ 𝓓 {x} c {y} =
- logically-equivalent-props-are-equivalent
-  (prop-valuedness 𝓓 x y) (≪-is-prop-valued 𝓓)
-  (≪-⊑-to-≪ 𝓓 c)
-  (≪-to-⊑ 𝓓)
-
 \end{code}
 
-TODO: Comment
+In an embedding-projection pair, the embedding preserves and reflects the
+way-below relation, and hence, compact elements.
 
 \begin{code}
 
@@ -235,38 +256,5 @@ module _
                                 → is-compact 𝓔 (ε x)
                                 → is-compact 𝓓 x
  embeddings-reflect-compactness x = embeddings-reflect-≪ x x
-
-\end{code}
-
-TODO: Write comment
-
-\begin{code}
-
-module directify-compact
-        (𝓓 : DCPO {𝓤} {𝓣})
-        (𝓓-is-sup-complete : is-sup-complete 𝓓)
-       where
-
- open sup-complete-dcpo 𝓓 𝓓-is-sup-complete
- open import List
-
- directify-is-compact : {I : 𝓦 ̇  } (α : I → ⟨ 𝓓 ⟩)
-                      → ((i : I) → is-compact 𝓓 (α i))
-                      → (l : List I) → is-compact 𝓓 (directify α l)
- directify-is-compact α αs-are-compact []      =
-  ⊥-is-compact (𝓓 , ⊥ , ⊥-is-least)
- directify-is-compact α αs-are-compact (i ∷ l) =
-  binary-join-is-compact 𝓓 ∨-is-upperbound₁ ∨-is-upperbound₂
-   (λ d → ∨-is-lowerbound-of-upperbounds) (αs-are-compact i) IH
-   where
-    IH : is-compact 𝓓 (directify α l)
-    IH = directify-is-compact α αs-are-compact l
-
- directify-↓-is-compact : {I : 𝓦 ̇  } (α : I → ⟨ 𝓓 ⟩) {x : ⟨ 𝓓 ⟩}
-                        → ((i : I) → is-compact 𝓓 (α i))
-                        → (j : domain (directify-↓ α x))
-                        → is-compact 𝓓 (directify-↓ α x j)
- directify-↓-is-compact α αs-are-compact j =
-  directify-is-compact α αs-are-compact (pr₁ j)
 
 \end{code}

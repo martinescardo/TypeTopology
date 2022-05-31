@@ -13,7 +13,7 @@ open import UF-PropTrunc
 
 module DcpoLeastFixedPoint
         (pt : propositional-truncations-exist)
-        (fe : ∀ {𝓤 𝓥} → funext 𝓤 𝓥)
+        (fe : Fun-Ext)
        where
 
 open PropositionalTruncation pt

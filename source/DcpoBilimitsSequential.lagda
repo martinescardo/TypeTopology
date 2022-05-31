@@ -12,7 +12,7 @@ open import UF-FunExt
 
 module DcpoBilimitsSequential
         (pt : propositional-truncations-exist)
-        (fe : ∀ {𝓤 𝓥} → funext 𝓤 𝓥)
+        (fe : Fun-Ext)
         (𝓤 𝓣 : Universe)
        where
 

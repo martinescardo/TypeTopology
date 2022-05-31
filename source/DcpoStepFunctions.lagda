@@ -14,8 +14,7 @@ open import UF-Subsingletons
 
 module DcpoStepFunctions
         (pt : propositional-truncations-exist)
-        (pe : Prop-Ext)
-        (fe : ∀ {𝓤 𝓥} → funext 𝓤 𝓥)
+        (fe : Fun-Ext)
         (𝓥 : Universe) -- where the index types for directed completeness live
        where
 
@@ -29,10 +28,12 @@ open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
 
 open import Dcpo pt fe 𝓥 hiding (⊥ ; ⊥-is-least)
-open import DcpoBases pt pe fe 𝓥
+open import DcpoBases pt fe 𝓥
 open import DcpoContinuous pt fe 𝓥
 open import DcpoExponential pt fe 𝓥
 open import DcpoMiscelanea pt fe 𝓥
+open import DcpoPointed pt fe 𝓥
+open import DcpoSupComplete pt fe 𝓥
 open import DcpoWayBelow pt fe 𝓥
 
 \end{code}
@@ -288,8 +289,9 @@ module _
     β : B → DCPO[ 𝓓 , 𝓔 ⁻ ]
     β = directify pre-β
 
-   exponential-has-small-compact-basis : is-small-compact-basis (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻)) β
-   exponential-has-small-compact-basis = record {
+   exponential-has-small-compact-basis : Prop-Ext
+                                       → is-small-compact-basis (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻)) β
+   exponential-has-small-compact-basis pe = record {
       basis-is-compact = ⦅1⦆
     ; ⊑ᴮ-is-small      = ⦅2⦆
     ; ↓ᴮ-is-directed   = ⦅3⦆
@@ -308,7 +310,7 @@ module _
        where
         exp-is-locally-small : is-locally-small (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻))
         exp-is-locally-small =
-         locally-small-exponential-criterion 𝓓 (𝓔 ⁻)
+         locally-small-exponential-criterion pe 𝓓 (𝓔 ⁻)
           ∣ Bᴰ , βᴰ , compact-basis-is-basis 𝓓 βᴰ κᴰ ∣ -- TODO: Improve these "projections"
           (locally-small-if-small-basis (𝓔 ⁻) βᴱ
             (compact-basis-is-basis (𝓔 ⁻) βᴱ κᴱ))
@@ -325,10 +327,10 @@ module _
         (single-step-functions-below-function-sup 𝓔-is-sup-complete
         f f-is-cts)
 
-   exponential-has-specified-small-compact-basis :
-    has-specified-small-compact-basis (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻))
-   exponential-has-specified-small-compact-basis =
-    (B , β , exponential-has-small-compact-basis)
+   exponential-has-specified-small-compact-basis : Prop-Ext
+    → has-specified-small-compact-basis (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻))
+   exponential-has-specified-small-compact-basis pe =
+    (B , β , exponential-has-small-compact-basis pe)
 
 \end{code}
 

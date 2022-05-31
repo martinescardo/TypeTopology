@@ -13,7 +13,7 @@ open import UF-Subsingletons
 
 module DcpoLifting
         (pt : propositional-truncations-exist)
-        (fe : ∀ {𝓤 𝓥} → funext 𝓤 𝓥)
+        (fe : Fun-Ext)
         (𝓣 : Universe)
         (pe : propext 𝓣)
        where
@@ -35,6 +35,7 @@ open import LiftingMonad 𝓣
 
 open import Dcpo pt fe 𝓣
 open import DcpoMiscelanea pt fe 𝓣
+open import DcpoPointed pt fe 𝓣
 
 open import Poset fe
 
@@ -329,6 +330,8 @@ module lifting-is-free-dcpo-on-set
 TODO: Write comment
 
 \begin{code}
+
+open import DcpoSupComplete pt fe 𝓣
 
 module _
         {P : 𝓤 ̇  }

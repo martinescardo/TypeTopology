@@ -14,8 +14,7 @@ open import UF-Subsingletons
 
 module DcpoBases
         (pt : propositional-truncations-exist)
-        (pe : Prop-Ext)
-        (fe : ∀ {𝓤 𝓥} → funext 𝓤 𝓥)
+        (fe : Fun-Ext)
         (𝓥 : Universe) -- where the index types for directed completeness live
        where
 
@@ -256,8 +255,8 @@ module _
                                 × is-Directed 𝓓 (↡ι x)
                                 × is-sup (underlying-order 𝓓) x (↡ι x)
 
- being-small-basis-Σ-is-prop : is-prop is-small-basis-Σ
- being-small-basis-Σ-is-prop =
+ being-small-basis-Σ-is-prop : Prop-Ext → is-prop is-small-basis-Σ
+ being-small-basis-Σ-is-prop pe =
   Π-is-prop fe (λ x →
    ×₃-is-prop (Π-is-prop fe
                (λ b → prop-being-small-is-prop (λ _ → pe) (λ _ _ → fe)
@@ -284,9 +283,9 @@ module _
    σ : f ∘ g ∼ id
    σ _ = refl
 
- being-small-basis-is-prop : is-prop is-small-basis
- being-small-basis-is-prop = equiv-to-prop is-small-basis-≃
-                              being-small-basis-Σ-is-prop
+ being-small-basis-is-prop : Prop-Ext → is-prop is-small-basis
+ being-small-basis-is-prop pe = equiv-to-prop is-small-basis-≃
+                                 (being-small-basis-Σ-is-prop pe)
 
 
 
@@ -676,10 +675,10 @@ module _
         ⦅⇐⦆ : (x ⊑⟨ 𝓓 ⟩ y) → (s x ⊑ₛ s y)
         ⦅⇐⦆ l = ⌜ f (s x) (s y) ⌝⁻¹ (monotone-if-continuous 𝓓 𝓔 𝕤 x y l)
 
- small-basis-from-continuous-retract : {B : 𝓥 ̇  } (β : B → ⟨ 𝓔 ⟩)
+ small-basis-from-continuous-retract : Prop-Ext → {B : 𝓥 ̇  } (β : B → ⟨ 𝓔 ⟩)
                                      → is-small-basis 𝓔 β
                                      → is-small-basis 𝓓 (r ∘ β)
- small-basis-from-continuous-retract {B} β sb =
+ small-basis-from-continuous-retract pe {B} β sb =
   record
     { ≪ᴮ-is-small    = lemma₁
     ; ↡ᴮ-is-directed = lemma₂
@@ -742,11 +741,12 @@ Criterion for locally small exponentials
 
 open import DcpoExponential pt fe 𝓥
 
-locally-small-exponential-criterion : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
+locally-small-exponential-criterion : Prop-Ext
+                                    → (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
                                     → has-unspecified-small-basis 𝓓
                                     → is-locally-small 𝓔
                                     → is-locally-small (𝓓 ⟹ᵈᶜᵖᵒ 𝓔) -- TODO: Change ⟹?
-locally-small-exponential-criterion 𝓓 𝓔 𝓓-sb (_⊑ₛ_ , ⊑ₛ-≃-⊑) =
+locally-small-exponential-criterion pe 𝓓 𝓔 𝓓-sb (_⊑ₛ_ , ⊑ₛ-≃-⊑) =
  ∥∥-rec (being-locally-small-is-prop (𝓓 ⟹ᵈᶜᵖᵒ 𝓔) (λ _ → pe)) lemma 𝓓-sb
   where
    lemma : has-specified-small-basis 𝓓 → is-locally-small (𝓓 ⟹ᵈᶜᵖᵒ 𝓔)

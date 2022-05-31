@@ -13,7 +13,7 @@ open import UF-Subsingletons
 module DcpoLiftingAlgebraic
         (pt : propositional-truncations-exist)
         (pe : Prop-Ext)
-        (fe : ∀ {𝓤 𝓥} → funext 𝓤 𝓥)
+        (fe : Fun-Ext)
         (𝓤 : Universe)
        where
 
@@ -33,10 +33,11 @@ open import LiftingMiscelanea-PropExt-FunExt 𝓤 pe fe
 open import LiftingMonad 𝓤
 
 open import Dcpo pt fe 𝓤
-open import DcpoBases pt pe fe 𝓤
+open import DcpoBases pt fe 𝓤
 open import DcpoContinuous pt fe 𝓤
 open import DcpoLifting pt fe 𝓤 pe
 open import DcpoMiscelanea pt fe 𝓤
+open import DcpoPointed pt fe 𝓤
 open import DcpoWayBelow pt fe 𝓤
 
 open import Poset fe

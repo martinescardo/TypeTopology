@@ -12,7 +12,7 @@ open import UF-Subsingletons
 
 module DcpoOmega
         (pt : propositional-truncations-exist)
-        (fe : ∀ {𝓤 𝓥} → funext 𝓤 𝓥)
+        (fe : Fun-Ext)
         (pe : Prop-Ext)
        where
 

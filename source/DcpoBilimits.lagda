@@ -39,7 +39,7 @@ open import UF-PropTrunc
 
 module DcpoBilimits
         (pt : propositional-truncations-exist)
-        (fe : ∀ {𝓤 𝓥} → funext 𝓤 𝓥)
+        (fe : Fun-Ext)
         (𝓥 : Universe)
         (𝓤 𝓣 : Universe)
        where
@@ -1115,103 +1115,99 @@ TODO: Comment on building on the above
 
 \begin{code}
 
- module _
-         (pe : Prop-Ext)
+ open import DcpoBases pt fe 𝓥
+
+ 𝓓∞-has-small-basis : ((i : I) → has-specified-small-basis (𝓓 i))
+                    → has-specified-small-basis 𝓓∞
+ 𝓓∞-has-small-basis 𝓑 = (B∞ , β∞ , β∞-is-small-basis)
+  where
+   B : I → 𝓥 ̇
+   B i = pr₁ (𝓑 i)
+   β : (i : I) → B i → ⟨ 𝓓 i ⟩
+   β i = pr₁ (pr₂ (𝓑 i))
+   β-is-small-basis : (i : I) → is-small-basis (𝓓 i) (β i)
+   β-is-small-basis i = pr₂ (pr₂ (𝓑 i))
+   B∞ : 𝓥 ̇
+   B∞ = Σ i ꞉ I , B i
+   β∞ : B∞ → ⟨ 𝓓∞ ⟩
+   β∞ (i , b) = ε∞ i (β i b)
+
+   𝓓s-are-locally-small : (i : I) → is-locally-small (𝓓 i)
+   𝓓s-are-locally-small i = locally-small-if-small-basis (𝓓 i) (β i)
+                             (β-is-small-basis i)
+
+   𝓓s-are-structurally-continuous : (i : I) → structurally-continuous (𝓓 i)
+   𝓓s-are-structurally-continuous i =
+    structurally-continuous-if-specified-small-basis (𝓓 i)
+     (B i , β i , β-is-small-basis i)
+
+   β∞-is-small-basis : is-small-basis 𝓓∞ β∞
+   β∞-is-small-basis = record {
+       ≪ᴮ-is-small    = lemma₁
+     ; ↡ᴮ-is-directed = lemma₂
+     ; ↡ᴮ-is-sup      = lemma₃
+    }
+     where
+      open is-small-basis
+
+      lemma₁ : (σ : ⟨ 𝓓∞ ⟩) (b : B∞) → is-small (β∞ b ≪⟨ 𝓓∞ ⟩ σ)
+      lemma₁ σ (i , b) =
+       ≪-is-small-valued-str 𝓓∞
+        (𝓓∞-structurally-continuous 𝓓s-are-structurally-continuous)
+        (𝓓∞-is-locally-small 𝓓s-are-locally-small)
+        (β∞ (i , b)) σ
+
+      module _
+              (σ : ⟨ 𝓓∞ ⟩)
+             where
+
+       ↡ᴮₛ⁺ : (i : I) → 𝓥 ̇
+       ↡ᴮₛ⁺ i = ↡ᴮₛ (β-is-small-basis i) (⦅ σ ⦆ i)
+       ↡ιₛ⁺ : (i : I) → ↡ᴮₛ⁺ i → ⟨ 𝓓 i ⟩
+       ↡ιₛ⁺ i = ↡ιₛ (β-is-small-basis i) (⦅ σ ⦆ i)
+       open 𝓓∞-family ↡ᴮₛ⁺ ↡ιₛ⁺
+
+       ι : J∞ → ↡ᴮ 𝓓∞ β∞ σ
+       ι (i , b , u) = ((i , b) , v)
         where
+         v : ε∞ i (β i b) ≪⟨ 𝓓∞ ⟩ σ
+         v = ≪-⊑-to-≪ 𝓓∞ w (ε∞π∞-deflation σ)
+          where
+           w : ε∞ i (β i b) ≪⟨ 𝓓∞ ⟩ ε∞ i (⦅ σ ⦆ i)
+           w = embeddings-preserve-≪ (𝓓 i) 𝓓∞
+                (ε∞ i) (ε∞-is-continuous i) (π∞ i) (π∞-is-continuous i)
+                ε∞-section-of-π∞ ε∞π∞-deflation
+                (β i b) (⦅ σ ⦆ i) (⌜ ≪ᴮₛ-≃-≪ᴮ (β-is-small-basis i) ⌝ u)
+                                  -- TODO: Make explicit ≪ᴮₛ-to-≪ᴮ function and
+                                  -- drop the final ᴮ?
 
-  open import DcpoBases pt pe fe 𝓥
+       sublemma₁ : is-Directed 𝓓∞ (↡ι 𝓓∞ β∞ σ ∘ ι)
+       sublemma₁ = α∞-is-directed-criterion σ
+                    (λ i → ↡ᴮₛ-is-directed (β-is-small-basis i) (⦅ σ ⦆ i))
+                    (λ i → ↡ᴮₛ-∐-⊒ (β-is-small-basis i) (⦅ σ ⦆ i))
+                    (λ i → ↡ᴮₛ-way-below (β-is-small-basis i) (⦅ σ ⦆ i))
+                    -- TODO: Rename to ↡ᴮₛ-is-way-below?
 
-  𝓓∞-has-small-basis : ((i : I) → has-specified-small-basis (𝓓 i))
-                     → has-specified-small-basis 𝓓∞
-  𝓓∞-has-small-basis 𝓑 = (B∞ , β∞ , β∞-is-small-basis)
-   where
-    B : I → 𝓥 ̇
-    B i = pr₁ (𝓑 i)
-    β : (i : I) → B i → ⟨ 𝓓 i ⟩
-    β i = pr₁ (pr₂ (𝓑 i))
-    β-is-small-basis : (i : I) → is-small-basis (𝓓 i) (β i)
-    β-is-small-basis i = pr₂ (pr₂ (𝓑 i))
-    B∞ : 𝓥 ̇
-    B∞ = Σ i ꞉ I , B i
-    β∞ : B∞ → ⟨ 𝓓∞ ⟩
-    β∞ (i , b) = ε∞ i (β i b)
+       sublemma₂ : σ ≡ ∐ 𝓓∞ sublemma₁
+       sublemma₂ = (α∞-∐-≡ σ δs es sublemma₁) ⁻¹
+        where
+         δs : (i : I) → is-Directed (𝓓 i) (↡ιₛ (β-is-small-basis i) (⦅ σ ⦆ i))
+         δs i = ↡ᴮₛ-is-directed (β-is-small-basis i) (⦅ σ ⦆ i)
+         es : (i : I) → ∐ (𝓓 i) (δs i) ≡ ⦅ σ ⦆ i
+         es i = ↡ᴮₛ-∐-≡ (β-is-small-basis i) (⦅ σ ⦆ i)
 
-    𝓓s-are-locally-small : (i : I) → is-locally-small (𝓓 i)
-    𝓓s-are-locally-small i = locally-small-if-small-basis (𝓓 i) (β i)
-                              (β-is-small-basis i)
+       lemma₂ : is-Directed 𝓓∞ (↡ι 𝓓∞ β∞ σ)
+       lemma₂ = ↡ᴮ-directedness-criterion 𝓓∞ β∞ σ ι
+                 sublemma₁ (≡-to-⊑ 𝓓∞ sublemma₂)
 
-    𝓓s-are-structurally-continuous : (i : I) → structurally-continuous (𝓓 i)
-    𝓓s-are-structurally-continuous i =
-     structurally-continuous-if-specified-small-basis (𝓓 i)
-      (B i , β i , β-is-small-basis i)
-
-    β∞-is-small-basis : is-small-basis 𝓓∞ β∞
-    β∞-is-small-basis = record {
-        ≪ᴮ-is-small    = lemma₁
-      ; ↡ᴮ-is-directed = lemma₂
-      ; ↡ᴮ-is-sup      = lemma₃
-     }
-      where
-       open is-small-basis
-
-       lemma₁ : (σ : ⟨ 𝓓∞ ⟩) (b : B∞) → is-small (β∞ b ≪⟨ 𝓓∞ ⟩ σ)
-       lemma₁ σ (i , b) =
-        ≪-is-small-valued-str 𝓓∞
-         (𝓓∞-structurally-continuous 𝓓s-are-structurally-continuous)
-         (𝓓∞-is-locally-small 𝓓s-are-locally-small)
-         (β∞ (i , b)) σ
-
-       module _
-               (σ : ⟨ 𝓓∞ ⟩)
-              where
-
-        ↡ᴮₛ⁺ : (i : I) → 𝓥 ̇
-        ↡ᴮₛ⁺ i = ↡ᴮₛ (β-is-small-basis i) (⦅ σ ⦆ i)
-        ↡ιₛ⁺ : (i : I) → ↡ᴮₛ⁺ i → ⟨ 𝓓 i ⟩
-        ↡ιₛ⁺ i = ↡ιₛ (β-is-small-basis i) (⦅ σ ⦆ i)
-        open 𝓓∞-family ↡ᴮₛ⁺ ↡ιₛ⁺
-
-        ι : J∞ → ↡ᴮ 𝓓∞ β∞ σ
-        ι (i , b , u) = ((i , b) , v)
-         where
-          v : ε∞ i (β i b) ≪⟨ 𝓓∞ ⟩ σ
-          v = ≪-⊑-to-≪ 𝓓∞ w (ε∞π∞-deflation σ)
-           where
-            w : ε∞ i (β i b) ≪⟨ 𝓓∞ ⟩ ε∞ i (⦅ σ ⦆ i)
-            w = embeddings-preserve-≪ (𝓓 i) 𝓓∞
-                 (ε∞ i) (ε∞-is-continuous i) (π∞ i) (π∞-is-continuous i)
-                 ε∞-section-of-π∞ ε∞π∞-deflation
-                 (β i b) (⦅ σ ⦆ i) (⌜ ≪ᴮₛ-≃-≪ᴮ (β-is-small-basis i) ⌝ u)
-                                   -- TODO: Make explicit ≪ᴮₛ-to-≪ᴮ function and
-                                   -- drop the final ᴮ?
-
-        sublemma₁ : is-Directed 𝓓∞ (↡ι 𝓓∞ β∞ σ ∘ ι)
-        sublemma₁ = α∞-is-directed-criterion σ
-                     (λ i → ↡ᴮₛ-is-directed (β-is-small-basis i) (⦅ σ ⦆ i))
-                     (λ i → ↡ᴮₛ-∐-⊒ (β-is-small-basis i) (⦅ σ ⦆ i))
-                     (λ i → ↡ᴮₛ-way-below (β-is-small-basis i) (⦅ σ ⦆ i))
-                     -- TODO: Rename to ↡ᴮₛ-is-way-below?
-
-        sublemma₂ : σ ≡ ∐ 𝓓∞ sublemma₁
-        sublemma₂ = (α∞-∐-≡ σ δs es sublemma₁) ⁻¹
-         where
-          δs : (i : I) → is-Directed (𝓓 i) (↡ιₛ (β-is-small-basis i) (⦅ σ ⦆ i))
-          δs i = ↡ᴮₛ-is-directed (β-is-small-basis i) (⦅ σ ⦆ i)
-          es : (i : I) → ∐ (𝓓 i) (δs i) ≡ ⦅ σ ⦆ i
-          es i = ↡ᴮₛ-∐-≡ (β-is-small-basis i) (⦅ σ ⦆ i)
-
-        lemma₂ : is-Directed 𝓓∞ (↡ι 𝓓∞ β∞ σ)
-        lemma₂ = ↡ᴮ-directedness-criterion 𝓓∞ β∞ σ ι
-                  sublemma₁ (≡-to-⊑ 𝓓∞ sublemma₂)
-
-        lemma₃ : is-sup (underlying-order 𝓓∞) σ (↡ι 𝓓∞ β∞ σ)
-        lemma₃ = ↡ᴮ-sup-criterion 𝓓∞ β∞ σ ι claim
-         where
-          claim : is-sup (underlying-order 𝓓∞) σ (↡ι 𝓓∞ β∞ σ ∘ ι)
-          claim =
-           transport (λ - → is-sup (underlying-order 𝓓∞) - (↡ι 𝓓∞ β∞ σ ∘ ι))
-                     (sublemma₂ ⁻¹)
-                     (∐-is-sup 𝓓∞ sublemma₁)
+       lemma₃ : is-sup (underlying-order 𝓓∞) σ (↡ι 𝓓∞ β∞ σ)
+       lemma₃ = ↡ᴮ-sup-criterion 𝓓∞ β∞ σ ι claim
+        where
+         claim : is-sup (underlying-order 𝓓∞) σ (↡ι 𝓓∞ β∞ σ ∘ ι)
+         claim =
+          transport (λ - → is-sup (underlying-order 𝓓∞) - (↡ι 𝓓∞ β∞ σ ∘ ι))
+                    (sublemma₂ ⁻¹)
+                    (∐-is-sup 𝓓∞ sublemma₁)
 
 \end{code}
 
@@ -1219,40 +1215,40 @@ TODO: Put comment
 
 \begin{code}
 
-  𝓓∞-has-small-compact-basis :
-     ((i : I) → has-specified-small-compact-basis (𝓓 i))
-   → has-specified-small-compact-basis 𝓓∞
-  𝓓∞-has-small-compact-basis κ = (B∞ , β∞ , γ)
-   where
-    B : (i : I) → 𝓥 ̇
-    B i = pr₁ (κ i)
-    β : (i : I) → B i → ⟨ 𝓓 i ⟩
-    β i = pr₁ (pr₂ (κ i))
-    β-is-small-compact-basis : (i : I) → is-small-compact-basis (𝓓 i) (β i)
-    β-is-small-compact-basis i = pr₂ (pr₂ (κ i))
-    β-is-small-basis : (i : I) → is-small-basis (𝓓 i) (β i)
-    β-is-small-basis i = compact-basis-is-basis (𝓓 i) (β i)
-                          (β-is-small-compact-basis i)
+ 𝓓∞-has-small-compact-basis :
+    ((i : I) → has-specified-small-compact-basis (𝓓 i))
+  → has-specified-small-compact-basis 𝓓∞
+ 𝓓∞-has-small-compact-basis κ = (B∞ , β∞ , γ)
+  where
+   B : (i : I) → 𝓥 ̇
+   B i = pr₁ (κ i)
+   β : (i : I) → B i → ⟨ 𝓓 i ⟩
+   β i = pr₁ (pr₂ (κ i))
+   β-is-small-compact-basis : (i : I) → is-small-compact-basis (𝓓 i) (β i)
+   β-is-small-compact-basis i = pr₂ (pr₂ (κ i))
+   β-is-small-basis : (i : I) → is-small-basis (𝓓 i) (β i)
+   β-is-small-basis i = compact-basis-is-basis (𝓓 i) (β i)
+                         (β-is-small-compact-basis i)
 
-    𝔹 : has-specified-small-basis 𝓓∞
-    𝔹 = 𝓓∞-has-small-basis (λ i → (B i , β i , β-is-small-basis i))
-    B∞ : 𝓥 ̇
-    B∞ = pr₁ 𝔹
-    β∞ : B∞ → ⟨ 𝓓∞ ⟩
-    β∞ = pr₁ (pr₂ 𝔹)
-    β∞-is-small-basis : is-small-basis 𝓓∞ β∞
-    β∞-is-small-basis = pr₂ (pr₂ 𝔹)
+   𝔹 : has-specified-small-basis 𝓓∞
+   𝔹 = 𝓓∞-has-small-basis (λ i → (B i , β i , β-is-small-basis i))
+   B∞ : 𝓥 ̇
+   B∞ = pr₁ 𝔹
+   β∞ : B∞ → ⟨ 𝓓∞ ⟩
+   β∞ = pr₁ (pr₂ 𝔹)
+   β∞-is-small-basis : is-small-basis 𝓓∞ β∞
+   β∞-is-small-basis = pr₂ (pr₂ 𝔹)
 
-    γ : is-small-compact-basis 𝓓∞ β∞
-    γ = small-and-compact-basis 𝓓∞ β∞ β∞-is-small-basis β∞-is-compact
-     where
-      open is-small-compact-basis
-      β∞-is-compact : (b : B∞) → is-compact 𝓓∞ (β∞ b)
-      β∞-is-compact (i , b) = embeddings-preserve-compactness (𝓓 i) 𝓓∞
-                               (ε∞ i) (ε∞-is-continuous i)
-                               (π∞ i) (π∞-is-continuous i)
-                               ε∞-section-of-π∞ ε∞π∞-deflation
-                               (β i b)
-                               (basis-is-compact (β-is-small-compact-basis i) b)
+   γ : is-small-compact-basis 𝓓∞ β∞
+   γ = small-and-compact-basis 𝓓∞ β∞ β∞-is-small-basis β∞-is-compact
+    where
+     open is-small-compact-basis
+     β∞-is-compact : (b : B∞) → is-compact 𝓓∞ (β∞ b)
+     β∞-is-compact (i , b) = embeddings-preserve-compactness (𝓓 i) 𝓓∞
+                              (ε∞ i) (ε∞-is-continuous i)
+                              (π∞ i) (π∞-is-continuous i)
+                              ε∞-section-of-π∞ ε∞π∞-deflation
+                              (β i b)
+                              (basis-is-compact (β-is-small-compact-basis i) b)
 
 \end{code}

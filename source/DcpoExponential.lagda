@@ -14,7 +14,7 @@ open import UF-PropTrunc
 
 module DcpoExponential
         (pt : propositional-truncations-exist)
-        (fe : ∀ {𝓤 𝓥} → funext 𝓤 𝓥)
+        (fe : Fun-Ext)
         (𝓥 : Universe)
        where
 
@@ -25,6 +25,7 @@ open import UF-Subsingletons-FunExt
 
 open import Dcpo pt fe 𝓥
 open import DcpoMiscelanea pt fe 𝓥
+open import DcpoSupComplete pt fe 𝓥
 
 open import Poset fe
 

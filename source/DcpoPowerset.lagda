@@ -12,7 +12,7 @@ open import UF-Subsingletons
 
 module DcpoPowerset
         (pt : propositional-truncations-exist)
-        (fe : ∀ {𝓤 𝓥} → funext 𝓤 𝓥)
+        (fe : Fun-Ext)
         (pe : Prop-Ext)
         {X : 𝓤 ̇  }
         (X-is-set : is-set X)
@@ -65,7 +65,7 @@ TODO: Comment
 \begin{code}
 
 open import Dcpo pt fe 𝓤
-open import DcpoBases pt pe fe 𝓤
+open import DcpoBases pt fe 𝓤
 open import DcpoContinuous pt fe 𝓤
 open import DcpoMiscelanea pt fe 𝓤
 open import DcpoWayBelow pt fe 𝓤

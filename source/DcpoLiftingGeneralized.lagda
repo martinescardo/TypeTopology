@@ -12,7 +12,7 @@ open import UF-Subsingletons
 
 module DcpoLiftingGeneralized
         (pt : propositional-truncations-exist)
-        (fe : ∀ {𝓤 𝓥} → funext 𝓤 𝓥)
+        (fe : Fun-Ext)
         (𝓥 : Universe)
         (pe : propext 𝓥)
        where
@@ -36,6 +36,7 @@ open import LiftingMiscelanea-PropExt-FunExt 𝓥 pe fe
 
 open import Dcpo pt fe 𝓥
 open import DcpoMiscelanea pt fe 𝓥
+open import DcpoPointed pt fe 𝓥
 open import DcpoLifting pt fe 𝓥 pe renaming ( 𝓛-DCPO  to 𝓛-DCPO-from-set
                                             ; 𝓛-DCPO⊥ to 𝓛-DCPO⊥-from-set)
 
