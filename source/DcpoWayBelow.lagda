@@ -257,7 +257,8 @@ module _
 
 \end{code}
 
-TODO
+Finally, if we have a continuous section s with continuous retraction r, then
+y ≪ s x implies r y ≪ x for all elements x and y.
 
 \begin{code}
 
