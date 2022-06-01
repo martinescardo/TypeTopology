@@ -1,8 +1,14 @@
 Tom de Jong, 31 May 2019
 
+The denotational semantics of PCF based on pointed directed complete posets.
+
+The flag --experimental-lossy-unification significantly speeds up the
+typechecking of the line ⟦ S {ρ} {σ} {τ} ⟧ₑ = Sᵈᶜᵖᵒ⊥ ⟦ ρ ⟧ ⟦ σ ⟧ ⟦ τ ⟧ below.
+(https://agda.readthedocs.io/en/latest/language/lossy-unification.html)
+
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --experimental-lossy-unification #-}
 
 open import SpartanMLTT
 open import UF-PropTrunc
@@ -25,12 +31,12 @@ open import PCF pt
 open import Dcpo pt fe 𝓤₀
 open import DcpoExponential pt fe 𝓤₀
 open import DcpoMiscelanea pt fe 𝓤₀
+open import DcpoPointed pt fe 𝓤₀
 
 open import DcpoPCFCombinators pt fe 𝓤₀
 open IfZeroDenotationalSemantics pe
 
 open import DcpoLeastFixedPoint pt fe
-
 open import DcpoLifting pt fe 𝓤₀ pe
 
 open import Lifting 𝓤₀
