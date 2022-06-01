@@ -13,8 +13,8 @@ open import UF-Subsingletons
 
 module DyadicIdealCompletion
         (pt : propositional-truncations-exist)
-        (fe : ∀ {𝓤} {𝓥} → funext 𝓤 𝓥)
-        (pe : ∀ {𝓤} → propext 𝓤)
+        (fe : Fun-Ext)
+        (pe : Prop-Ext)
        where
 
 open PropositionalTruncation pt
