@@ -1,6 +1,14 @@
-Tom de Jong, January 2020.
+Tom de Jong, May 2019.
+Refactored January 2020, December 2021.
+February 2022: Show that pointed dcpos have semidirected and subsingleton
+               suprema.
 
-TODO
+We define dcpos with a least element, typically denoted by ⊥, which are called
+pointed dcpos. A map between pointed dcpos is called strict if it preserves
+least elements. We show that every isomorphism of dcpos is strict.
+
+Finally, we show that pointed dcpos have semidirected and subsingleton suprema
+and that these are preserved by maps that are both strict and Scott continuous.
 
 \begin{code}
 
@@ -20,13 +28,8 @@ open PropositionalTruncation pt hiding (_∨_)
 
 open import UF-Subsingletons
 
--- open import Poset pt fe 𝓥
 open import Dcpo pt fe 𝓥
 open import DcpoMiscelanea pt fe 𝓥
-
-\end{code}
-
-\begin{code}
 
 module _ {𝓤 𝓣 : Universe} where
 
@@ -92,7 +95,8 @@ strictness-criterion 𝓓 𝓔 f crit =
 
 \end{code}
 
-Defining isomorphisms of pointed dcpos.
+Defining isomorphisms of pointed dcpos and showing that every isomorphism of
+dcpos is automatically strict.
 
 \begin{code}
 
