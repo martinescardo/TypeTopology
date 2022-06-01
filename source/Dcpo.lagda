@@ -4,10 +4,9 @@ Refactored January 2020, December 2021 by Tom de Jong.
 Definitions of:
  * Directed complete posets (dcpos).
  * Scott continuous maps.
- * Pointed dcpos (i.e. dcpos with a least element) and strict continuous maps
-   (i.e. continuous maps that preserve the least element)
 
-See Dcpos.lagda for an overview of the formalization the theory of dcpos.
+See DomainTheory.lagda for an overview of the formalization of the theory of
+dcpos.
 
 \begin{code}
 

@@ -1,13 +1,14 @@
 Tom de Jong, 4 June 2019.
 Updated 23 December 2021.
+Updated TODO
 
-Generic overview module for (pointed) directed complete posets.
+Overview module for the theory of (pointed) directed complete posets.
 
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-module Dcpos where
+module DomainTheory where
 
 -- Basic definitions of (pointed) directed complete posets and
 -- Scott continuous maps
