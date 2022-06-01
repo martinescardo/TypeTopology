@@ -1,6 +1,11 @@
-Tom de Jong
+Tom de Jong, late February - early March 2022.
 
-TODO
+We consider sup-complete dcpos. Of course, every sup-complete poset is a dcpo,
+but because the basic object of our domain-theoretic development is a dcpo, the
+formalization is structured around dcpos that are additionally sup-complete.
+
+The main point of this file is to show that we can extend families into a
+sup-complete dcpo to directed families.
 
 \begin{code}
 
@@ -46,7 +51,7 @@ module _
 
 \end{code}
 
-TODO: Write comment
+Since we have all small joins, we have binary joins in particular.
 
 \begin{code}
 
@@ -90,6 +95,14 @@ module sup-complete-dcpo
     γ (inl _) = u
     γ (inr _) = v
 
+\end{code}
+
+An important consequence of having binary joins is that every (small) family can
+be made directed (in the sense that the resulting family will have the same
+supremum).
+
+\begin{code}
+
  module _
          {I : 𝓦 ̇  }
          (α : I → ⟨ 𝓓 ⟩)
@@ -124,68 +137,127 @@ module sup-complete-dcpo
   directify-is-directed : is-Directed 𝓓 directify
   directify-is-directed = (directify-is-inhabited , directify-is-semidirected)
 
-  directify-↓ : (x : ⟨ 𝓓 ⟩) → (Σ l ꞉ List I , directify l ⊑⟨ 𝓓 ⟩ x) → ⟨ 𝓓 ⟩
-  directify-↓ x = directify ∘ pr₁
+  directify-upperbound : (x : ⟨ 𝓓 ⟩) → is-upperbound (underlying-order 𝓓) x α
+                       → is-upperbound (underlying-order 𝓓) x directify
+  directify-upperbound x x-is-ub []      = ⊥-is-least x
+  directify-upperbound x x-is-ub (i ∷ l) =
+   ∨-is-lowerbound-of-upperbounds (x-is-ub i) (directify-upperbound x x-is-ub l)
 
-  directify-↓-is-inhabited : {x : ⟨ 𝓓 ⟩} → ∥ domain (directify-↓ x) ∥
-  directify-↓-is-inhabited {x} = ∣ [] , ⊥-is-least x ∣
+  directify-lowerbound-of-upperbounds :
+     (x : ⟨ 𝓓 ⟩)
+   → is-lowerbound-of-upperbounds (underlying-order 𝓓) x α
+   → is-lowerbound-of-upperbounds (underlying-order 𝓓) x directify
+  directify-lowerbound-of-upperbounds x x-is-lb y y-is-ub = x-is-lb y y-is-ub'
+   where
+    y-is-ub' : (i : I) → α i ⊑⟨ 𝓓 ⟩ y
+    y-is-ub' i = α i             ⊑⟨ 𝓓 ⟩[ ∨-is-upperbound₁ ]
+                 α i ∨ ⊥         ⊑⟨ 𝓓 ⟩[ reflexivity 𝓓 _  ]
+                 directify [ i ] ⊑⟨ 𝓓 ⟩[ y-is-ub [ i ]    ]
+                 y               ∎⟨ 𝓓 ⟩
 
-  ++-is-lowerbound-of-upperbounds : (l k : List I) {x : ⟨ 𝓓 ⟩}
-                                  → directify l ⊑⟨ 𝓓 ⟩ x
-                                  → directify k ⊑⟨ 𝓓 ⟩ x
-                                  → directify (l ++ k) ⊑⟨ 𝓓 ⟩ x
-  ++-is-lowerbound-of-upperbounds []      k {x} u v = v
-  ++-is-lowerbound-of-upperbounds (i ∷ l) k {x} u v =
-   ∨-is-lowerbound-of-upperbounds ⦅1⦆ ⦅2⦆
+  directify-sup : (x : ⟨ 𝓓 ⟩) → is-sup (underlying-order 𝓓) x α
+                → is-sup (underlying-order 𝓓) x directify
+  directify-sup x (x-is-ub , x-is-lb-of-ubs)  =
+   ( directify-upperbound x x-is-ub
+   , directify-lowerbound-of-upperbounds x x-is-lb-of-ubs)
+
+\end{code}
+
+Moreover, if each of the αᵢ's are compact, then so is every element in the
+directified family, because taking finite joins preserves compactness.
+
+\begin{code}
+
+  directify-is-compact : ((i : I) → is-compact 𝓓 (α i))
+                       → (l : List I) → is-compact 𝓓 (directify l)
+  directify-is-compact αs-are-compact []      =
+   ⊥-is-compact (𝓓 , ⊥ , ⊥-is-least)
+  directify-is-compact αs-are-compact (i ∷ l) =
+   binary-join-is-compact 𝓓 ∨-is-upperbound₁ ∨-is-upperbound₂
+    (λ d → ∨-is-lowerbound-of-upperbounds) (αs-are-compact i) IH
     where
-     ⦅1⦆ = α i              ⊑⟨ 𝓓 ⟩[ ∨-is-upperbound₁ ]
-          α i ∨ directify l ⊑⟨ 𝓓 ⟩[ u ]
-          x                 ∎⟨ 𝓓 ⟩
-     ⦅2⦆ : directify (l ++ k) ⊑⟨ 𝓓 ⟩ x
-     ⦅2⦆ = ++-is-lowerbound-of-upperbounds l k ⦅2'⦆ v
-      where
-       ⦅2'⦆ = directify l      ⊑⟨ 𝓓 ⟩[ ∨-is-upperbound₂ ]
-             α i ∨ directify l ⊑⟨ 𝓓 ⟩[ u ]
-             x                 ∎⟨ 𝓓 ⟩
+     IH : is-compact 𝓓 (directify l)
+     IH = directify-is-compact αs-are-compact l
 
-  directify-↓-is-semidirected : {x : ⟨ 𝓓 ⟩} → is-Semidirected 𝓓 (directify-↓ x)
-  directify-↓-is-semidirected (l , l-below-x) (k , k-below-x) =
-   ∣ ((l ++ k) , ++-is-lowerbound-of-upperbounds l k l-below-x k-below-x)
-               , (++-is-upperbound₁ l k) , (++-is-upperbound₂ l k) ∣
+\end{code}
+
+When constructing small compact bases for exponentials, it turns out that it is
+convenient to consider a variation: we consider the family of elements αᵢ less
+than some given element x, and the corresponding family of lists l such that
+directify l is less than x.
+
+\begin{code}
 
   module _
           {x : ⟨ 𝓓 ⟩}
          where
 
-   directify-↓-is-directed : is-Directed 𝓓 (directify-↓ x)
-   directify-↓-is-directed =
-    (directify-↓-is-inhabited , directify-↓-is-semidirected)
-
-   directify-↓-upperbound : is-upperbound (underlying-order 𝓓) x (directify-↓ x)
-   directify-↓-upperbound = pr₂
-
    ↓-family : (Σ i ꞉ I , α i ⊑⟨ 𝓓 ⟩ x) → ⟨ 𝓓 ⟩
    ↓-family = α ∘ pr₁
 
+   directify-↓ : (Σ l ꞉ List I , directify l ⊑⟨ 𝓓 ⟩ x) → ⟨ 𝓓 ⟩
+   directify-↓ = directify ∘ pr₁
+
+   directify-↓-is-inhabited : ∥ domain directify-↓ ∥
+   directify-↓-is-inhabited = ∣ [] , ⊥-is-least x ∣
+
+   ++-is-lowerbound-of-upperbounds : (l k : List I)
+                                   → directify l ⊑⟨ 𝓓 ⟩ x
+                                   → directify k ⊑⟨ 𝓓 ⟩ x
+                                   → directify (l ++ k) ⊑⟨ 𝓓 ⟩ x
+   ++-is-lowerbound-of-upperbounds []      k u v = v
+   ++-is-lowerbound-of-upperbounds (i ∷ l) k u v =
+    ∨-is-lowerbound-of-upperbounds ⦅1⦆ ⦅2⦆
+     where
+      ⦅1⦆ = α i              ⊑⟨ 𝓓 ⟩[ ∨-is-upperbound₁ ]
+           α i ∨ directify l ⊑⟨ 𝓓 ⟩[ u ]
+           x                 ∎⟨ 𝓓 ⟩
+      ⦅2⦆ : directify (l ++ k) ⊑⟨ 𝓓 ⟩ x
+      ⦅2⦆ = ++-is-lowerbound-of-upperbounds l k ⦅2'⦆ v
+       where
+        ⦅2'⦆ = directify l      ⊑⟨ 𝓓 ⟩[ ∨-is-upperbound₂ ]
+              α i ∨ directify l ⊑⟨ 𝓓 ⟩[ u ]
+              x                 ∎⟨ 𝓓 ⟩
+
+   directify-↓-is-semidirected : is-Semidirected 𝓓 directify-↓
+   directify-↓-is-semidirected (l , l-below-x) (k , k-below-x) =
+    ∣ ((l ++ k) , ++-is-lowerbound-of-upperbounds l k l-below-x k-below-x)
+                , (++-is-upperbound₁ l k) , (++-is-upperbound₂ l k) ∣
+
+
+   directify-↓-is-directed : is-Directed 𝓓 directify-↓
+   directify-↓-is-directed =
+    (directify-↓-is-inhabited , directify-↓-is-semidirected)
+
+   directify-↓-upperbound : is-upperbound (underlying-order 𝓓) x directify-↓
+   directify-↓-upperbound = pr₂
+
    directify-↓-sup : is-sup (underlying-order 𝓓) x ↓-family
-                   → is-sup (underlying-order 𝓓) x (directify-↓ x)
+                   → is-sup (underlying-order 𝓓) x directify-↓
    directify-↓-sup (x-ub , x-lb-of-ubs) = (directify-↓-upperbound , γ)
     where
-     γ : is-lowerbound-of-upperbounds (underlying-order 𝓓) x (directify-↓ x)
+     γ : is-lowerbound-of-upperbounds (underlying-order 𝓓) x directify-↓
      γ y y-is-ub = x-lb-of-ubs y claim
       where
        claim : is-upperbound (underlying-order 𝓓) y ↓-family
        claim (i , αᵢ-below-x) =
-        α i                       ⊑⟨ 𝓓 ⟩[ ∨-is-upperbound₁ ]
-        directify-↓ x ([ i ] , u) ⊑⟨ 𝓓 ⟩[ y-is-ub ([ i ] , u) ]
-        y                         ∎⟨ 𝓓 ⟩
+        α i                     ⊑⟨ 𝓓 ⟩[ ∨-is-upperbound₁ ]
+        directify-↓ ([ i ] , u) ⊑⟨ 𝓓 ⟩[ y-is-ub ([ i ] , u) ]
+        y                       ∎⟨ 𝓓 ⟩
          where
           u : α i ∨ ⊥ ⊑⟨ 𝓓 ⟩ x
           u = ∨-is-lowerbound-of-upperbounds αᵢ-below-x (⊥-is-least x)
 
+   directify-↓-is-compact : ((i : I) → is-compact 𝓓 (α i))
+                          → (j : domain directify-↓)
+                          → is-compact 𝓓 (directify-↓ j)
+   directify-↓-is-compact αs-are-compact j =
+    directify-is-compact αs-are-compact (pr₁ j)
+
 \end{code}
 
-TODO: Write comment
+Finally if the dcpo is locally small, then the family directify-↓ can be indexed
+by a small type (provided the original family was indexed by a small type).
 
 \begin{code}
 
@@ -204,7 +276,7 @@ TODO: Write comment
           {x : ⟨ 𝓓 ⟩}
          where
 
-   directify-↓-small-≃ : domain (directify-↓ α x) ≃ domain (directify-↓-small x)
+   directify-↓-small-≃ : domain (directify-↓ α) ≃ domain (directify-↓-small x)
    directify-↓-small-≃ =
     Σ-cong (λ l → ≃-sym ⊑ₛ-≃-⊑)
 
@@ -212,48 +284,11 @@ TODO: Write comment
                          → is-sup (underlying-order 𝓓) x (directify-↓-small x)
    directify-↓-small-sup x-is-sup =
     reindexed-family-sup 𝓓 directify-↓-small-≃
-     (directify-↓ α x) x (directify-↓-sup α x-is-sup)
+     (directify-↓ α) x (directify-↓-sup α x-is-sup)
 
    directify-↓-small-is-directed : is-Directed 𝓓 (directify-↓-small x)
    directify-↓-small-is-directed =
     reindexed-family-is-directed 𝓓 directify-↓-small-≃
-     (directify-↓ α x) (directify-↓-is-directed α)
-
-\end{code}
-
-TODO: Comment
-As a consequence, if we have all joins, then the 'directification' of a
-family of compact elements again consists of compact elements.
-(To get all joins in a dcpo, it suffices to ask for all finite joins to exist,
-but we don't formalize or need this.)
-
-\begin{code}
-
-module directify-compact
-        (𝓓 : DCPO {𝓤} {𝓣})
-        (𝓓-is-sup-complete : is-sup-complete 𝓓)
-       where
-
- open sup-complete-dcpo 𝓓 𝓓-is-sup-complete
- open import List
-
- directify-is-compact : {I : 𝓦 ̇  } (α : I → ⟨ 𝓓 ⟩)
-                      → ((i : I) → is-compact 𝓓 (α i))
-                      → (l : List I) → is-compact 𝓓 (directify α l)
- directify-is-compact α αs-are-compact []      =
-  ⊥-is-compact (𝓓 , ⊥ , ⊥-is-least)
- directify-is-compact α αs-are-compact (i ∷ l) =
-  binary-join-is-compact 𝓓 ∨-is-upperbound₁ ∨-is-upperbound₂
-   (λ d → ∨-is-lowerbound-of-upperbounds) (αs-are-compact i) IH
-   where
-    IH : is-compact 𝓓 (directify α l)
-    IH = directify-is-compact α αs-are-compact l
-
- directify-↓-is-compact : {I : 𝓦 ̇  } (α : I → ⟨ 𝓓 ⟩) {x : ⟨ 𝓓 ⟩}
-                        → ((i : I) → is-compact 𝓓 (α i))
-                        → (j : domain (directify-↓ α x))
-                        → is-compact 𝓓 (directify-↓ α x j)
- directify-↓-is-compact α αs-are-compact j =
-  directify-is-compact α αs-are-compact (pr₁ j)
+     (directify-↓ α) (directify-↓-is-directed α)
 
 \end{code}

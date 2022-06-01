@@ -52,35 +52,6 @@ module _
 
  open is-locally-small 𝓓-is-locally-small
 
- -- TODO: Factor this out somehow (with Record?)
- {- - - - - - - - - - - - - - - - -}
- {-
- _⊑ₛ_ : ⟨ 𝓓 ⟩ → ⟨ 𝓓 ⟩ → 𝓥 ̇
- _⊑ₛ_ = pr₁ 𝓓-is-locally-small
-
- ⊑ₛ-≃-⊑ : {x y : ⟨ 𝓓 ⟩} → x ⊑ₛ y ≃ x ⊑⟨ 𝓓 ⟩ y
- ⊑ₛ-≃-⊑ {x} {y} = pr₂ 𝓓-is-locally-small x y
-
- ⊑ₛ-is-prop-valued : (x y : ⟨ 𝓓 ⟩) → is-prop (x ⊑ₛ y)
- ⊑ₛ-is-prop-valued x y = equiv-to-prop ⊑ₛ-≃-⊑ (prop-valuedness 𝓓 x y)
-
- transitivityₛ : (x : ⟨ 𝓓 ⟩) {y z : ⟨ 𝓓 ⟩}
-               → x ⊑ₛ y → y ⊑ₛ z → x ⊑ₛ z
- transitivityₛ x {y} {z} u v = ⌜ ⊑ₛ-≃-⊑ ⌝⁻¹
-                                (transitivity 𝓓 x y z
-                                              (⌜ ⊑ₛ-≃-⊑ ⌝ u)
-                                              (⌜ ⊑ₛ-≃-⊑ ⌝ v))
-
- syntax transitivityₛ x u v = x ⊑ₛ[ u ] v
- infixr 0 transitivityₛ
-
- reflexivityₛ : (x : ⟨ 𝓓 ⟩) → x ⊑ₛ x
- reflexivityₛ x = ⌜ ⊑ₛ-≃-⊑ ⌝⁻¹ (reflexivity 𝓓 x)
-
- syntax reflexivityₛ x = x ∎ₛ
- infix 1 reflexivityₛ -}
- {- - - - - - - - - - - - - - - - -}
-
  ⦅_⇒_⦆ : ⟨ 𝓓 ⟩ → ⟪ 𝓔 ⟫ → ⟨ 𝓓 ⟩ → ⟪ 𝓔 ⟫
  ⦅ d ⇒ e ⦆ x = ∐ˢˢ 𝓔 α (⊑ₛ-is-prop-valued d x)
   where
@@ -284,7 +255,6 @@ module _
     exp-is-sup-complete = exponential-is-sup-complete 𝓓 (𝓔 ⁻) 𝓔-is-sup-complete
 
    open sup-complete-dcpo (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻)) exp-is-sup-complete
-   open directify-compact (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻)) exp-is-sup-complete
 
    private
     B : 𝓥 ̇
