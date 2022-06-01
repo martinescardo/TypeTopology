@@ -32,13 +32,13 @@ open import OrdinalsType
   pv p q = ×-is-prop (Ω-is-set (fe 𝓤 𝓤) pe) (Ω-is-set (fe 𝓤 𝓤) pe)
 
   w : is-well-founded _≺_
-  w p = next p s
+  w p = step s
    where
     t : (q : Ω 𝓤) →  q ≺ ⊥ → is-accessible _≺_ q
     t ⊥ (refl , b) = 𝟘-elim (⊥-is-not-⊤ b)
 
     ⊥-accessible : is-accessible _≺_ ⊥
-    ⊥-accessible = next ⊥ t
+    ⊥-accessible = step t
 
     s : (q : Ω 𝓤) → q ≺ p → is-accessible _≺_ q
     s ⊥ (refl , b) = ⊥-accessible
@@ -58,8 +58,13 @@ open import OrdinalsType
 ⊥-is-least : is-least Ωₒ ⊥
 ⊥-is-least (P , i) (𝟘 , 𝟘-is-prop) (refl , q) = 𝟘-elim (equal-⊤-is-true 𝟘 𝟘-is-prop q)
 
-⊥-is-largest : is-largest Ωₒ ⊤
-⊥-is-largest (.𝟙 , .𝟙-is-prop) (.𝟘 , .𝟘-is-prop) (refl , refl) = refl , refl
+⊤-is-largest : is-largest Ωₒ ⊤
+⊤-is-largest (.𝟙 , .𝟙-is-prop) (.𝟘 , .𝟘-is-prop) (refl , refl) = refl , refl
+
+¬¬-dense-is-largest' : (p q : Ω 𝓤)
+                     → ¬¬ (p holds)
+                     → (q ≾⟨ Ωₒ ⟩ p)
+¬¬-dense-is-largest' .⊥ .⊤ f (refl , refl) = f 𝟘-elim
 
 open import UF-Univalence
 
@@ -84,3 +89,7 @@ module _ (ua : Univalence) where
    p (inr ⋆) (inr x) l = 𝟘-elim l
 
 \end{code}
+
+Notice also that being a least element is not in general decidable
+because in this example being a least element amounts to being false,
+and deciding falsity is equivalent to weak excluded middle.

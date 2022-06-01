@@ -131,7 +131,7 @@ simulations-are-lc α β f (i , p) = γ
     → is-accessible (underlying-order α) y
     → f x ≡ f y
     → x ≡ y
-  φ x y (next x s) (next y t) r = Extensionality α x y g h
+  φ x y (step s) (step t) r = Extensionality α x y g h
    where
     g : (u : ⟨ α ⟩) → u ≺⟨ α ⟩ x → u ≺⟨ α ⟩ y
     g u l = d
@@ -218,7 +218,7 @@ at-most-one-simulation α β f f' (i , p) (i' , p') x = γ
   φ : ∀ x
     → is-accessible (underlying-order α) x
     → f x ≡ f' x
-  φ x (next x u) = Extensionality β (f x) (f' x) a b
+  φ x (step u) = Extensionality β (f x) (f' x) a b
    where
     IH : ∀ y → y ≺⟨ α ⟩ x → f y ≡ f' y
     IH y l = φ y (u y l)
@@ -438,7 +438,7 @@ _↓_ : (α : Ordinal 𝓤) → ⟨ α ⟩ → Ordinal 𝓤
   w (x , l) = f x (Well-foundedness α x) l
    where
     f : ∀ x → is-accessible (underlying-order α) x → ∀ l → is-accessible _<_ (x , l)
-    f x (next x s) l = next (x , l) (λ σ m → f (pr₁ σ) (s (pr₁ σ) m) (pr₂ σ))
+    f x (step s) l = step (λ σ m → f (pr₁ σ) (s (pr₁ σ) m) (pr₂ σ))
 
   e : is-extensional _<_
   e (x , l) (y , m) f g =
@@ -639,7 +639,7 @@ It remains to show that _⊲_ is a well-order:
   f : (a : ⟨ α ⟩)
     → is-accessible (underlying-order α) a
     → is-accessible _⊲_ (α ↓ a)
-  f a (next .a s) = next (α ↓ a) g
+  f a (step s) = step g
    where
     IH : (b : ⟨ α ⟩) → b ≺⟨ α ⟩ a → is-accessible _⊲_ (α ↓ b)
     IH b l = f b (s b l)
@@ -651,7 +651,7 @@ It remains to show that _⊲_ is a well-order:
       q = p ∙ iterated-↓ α a b l
 
 ⊲-is-well-founded : is-well-founded (_⊲_ {𝓤})
-⊲-is-well-founded {𝓤} α = next α g
+⊲-is-well-founded {𝓤} α = step g
  where
   g : (β : Ordinal 𝓤) → β ⊲ α → is-accessible _⊲_ β
   g β (b , p) = transport⁻¹ (is-accessible _⊲_) p (↓-accessible α b)
@@ -904,7 +904,7 @@ module ℕ∞-in-Ord where
    p : (x y : ⟨ ω +ₒ 𝟙ₒ ⟩)
      → x ≺⟨ ω +ₒ 𝟙ₒ ⟩ y
      → ι𝟙 x ≺⟨ ℕ∞ₒ ⟩ ι𝟙 y
-   p (inl n) (inl m) l = ι-order-preserving n m l
+   p (inl n) (inl m) l = ℕ-to-ℕ∞-order-preserving n m l
    p (inl n) (inr *) * = ∞-≺-largest n
    p (inr *) (inl m) l = 𝟘-elim l
    p (inr *) (inr *) l = 𝟘-elim l
@@ -936,7 +936,7 @@ module ℕ∞-in-Ord where
      → Σ x' ꞉ ℕ∞ , (x' ≺⟨ ℕ∞ₒ ⟩ x) × (ι𝟙-inverse x' (lpo x') ≡ y)
    i .(ι n) (inl (n , refl)) (inl m) l =
      ι m ,
-     ι-order-preserving m n l ,
+     ℕ-to-ℕ∞-order-preserving m n l ,
      ι𝟙-inverse-inl (ι m) (lpo (ι m)) m refl
    i .(ι n) (inl (n , refl)) (inr *) l = 𝟘-elim l
    i x (inr g) (inl n) * =
@@ -1367,7 +1367,7 @@ module _ (pt : propositional-truncations-exist) where
      → is-accessible (underlying-order α) y
      → f x ≡ f y
      → x ≡ y
-   φ x y (next x s) (next y t) r = Extensionality α x y g h
+   φ x y (step s) (step t) r = Extensionality α x y g h
     where
      g : (u : ⟨ α ⟩) → u ≺⟨ α ⟩ x → u ≺⟨ α ⟩ y
      g u l = ∥∥-rec (Prop-valuedness α u y) b (i y (f u) a)

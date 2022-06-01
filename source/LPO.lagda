@@ -86,7 +86,7 @@ LPO-gives-compact-ℕ ℓ β = γ
     a (n , p) = inl (force-decreasing-is-not-much-smaller β n c)
       where
         c : α n ≡ ₀
-        c = ap (λ - → ι - n) p ∙ ι-diagonal₀ n
+        c = ap (λ - → ι - n) p ∙ ℕ-to-ℕ∞-diagonal₀ n
 
     b : (¬ (Σ n ꞉ ℕ , x ≡ ι n)) → A
     b u = inr g
@@ -133,7 +133,7 @@ compact-ℕ-gives-LPO κ x = γ
         ψ = uncurry (λ n → equal-₁-different-from-₀(φ n))
 
         f : (Σ n ꞉ ℕ , x ≡ ι n) → Σ n ꞉ ℕ , β n ≡ ₀
-        f (n , p) = (n , (ap (λ - → ι - n) p ∙ ι-diagonal₀ n))
+        f (n , p) = (n , (ap (λ - → ι - n) p ∙ ℕ-to-ℕ∞-diagonal₀ n))
           where
            l : ι x n ≡ ι (ι n) n
            l = ap (λ - → ι - n) p

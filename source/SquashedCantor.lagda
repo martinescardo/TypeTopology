@@ -347,20 +347,20 @@ Cons (ι n , φ) we get the sequence φ (ι-is-finite n):
 \begin{code}
 
 tail-Cons-ι : (n : ℕ) (φ : Cantor[ ι n ])
-            → Cons (ι n , φ) ∘ (λ k → k ∔ succ n) ≡ φ (ι-is-finite n)
+            → Cons (ι n , φ) ∘ (λ k → k ∔ succ n) ≡ φ (ℕ-to-ℕ∞-is-finite n)
 tail-Cons-ι zero φ     = ap tail (Cons₀ φ)
 tail-Cons-ι (succ n) φ = γ
  where
   IH : Cons (ι n , φ ∘ is-finite-up (ι n)) ∘ (λ k → k ∔ succ n)
-     ≡ φ (is-finite-up (ι n) (ι-is-finite n))
+     ≡ φ (is-finite-up (ι n) (ℕ-to-ℕ∞-is-finite n))
   IH = tail-Cons-ι n (φ ∘ is-finite-up (ι n))
 
   γ : Cons (ι (succ n) , φ) ∘ (λ k → k ∔ succ (succ n))
-    ≡ φ (ι-is-finite (succ n))
+    ≡ φ (ℕ-to-ℕ∞-is-finite (succ n))
   γ = Cons (ι (succ n) , φ) ∘ (λ k → k ∔ succ (succ n))        ≡⟨ I ⟩
       Cons (ι n , φ ∘ is-finite-up (ι n)) ∘ (λ k → k ∔ succ n) ≡⟨ IH ⟩
-      φ (is-finite-up (ι n) (ι-is-finite n))                   ≡⟨ II ⟩
-      φ (ι-is-finite (succ n))                                 ∎
+      φ (is-finite-up (ι n) (ℕ-to-ℕ∞-is-finite n))             ≡⟨ II ⟩
+      φ (ℕ-to-ℕ∞-is-finite (succ n))                           ∎
    where
     I  = ap (λ - → - ∘ (λ k → k ∔ succ (succ n))) (Cons₁ (ι n) φ)
     II = ap φ (being-finite-is-prop fe₀ (ι (succ n)) _ _)
@@ -506,7 +506,7 @@ Tail-Cons u φ = dfunext fe₀ (γ u φ)
          Tail (₁ ∶∶ Cons (ι n , φ ∘ t')) k        ≡⟨ III ⟩
          Cons (ι n , φ ∘ t') ∘ (λ l → l ∔ size k) ≡⟨ IV ⟩
          Cons (ι n , φ ∘ t') ∘ (λ l → l ∔ succ n) ≡⟨ V ⟩
-         φ (t' (ι-is-finite n))                   ≡⟨ VI ⟩
+         φ (t' (ℕ-to-ℕ∞-is-finite n))             ≡⟨ VI ⟩
          φ (Head-finite u φ (succ n , r))         ∎
       where
        I   = ap₂-Tail (succ n , r) q

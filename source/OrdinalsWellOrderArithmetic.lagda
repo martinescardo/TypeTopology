@@ -46,7 +46,7 @@ module prop
  transitive x y z a = 𝟘-elim a
 
  well-founded : is-well-founded _<_
- well-founded x = next x (λ y a → 𝟘-elim a)
+ well-founded x = step (λ y a → 𝟘-elim a)
 
  well-order : is-well-order _<_
  well-order = prop-valued , well-founded , extensional , transitive
@@ -125,14 +125,14 @@ and then adapt the following definitions.
  well-founded w w' = g
   where
    φ : (x : X) → is-accessible _<_ x → is-accessible _⊏_ (inl x)
-   φ x (next x σ) = next (inl x) τ
+   φ x (step σ) = step τ
     where
      τ : (s : X + Y) → s ⊏ inl x → is-accessible _⊏_ s
      τ (inl x') l = φ x' (σ x' l)
      τ (inr y') l = 𝟘-elim l
 
    γ : (y : Y) → is-accessible _≺_ y → is-accessible _⊏_ (inr y)
-   γ y (next .y σ) = next (inr y) τ
+   γ y (step σ) = step τ
     where
      τ : (s : X + Y) → s ⊏ inr y → is-accessible _⊏_ s
      τ (inl x)  l = φ x (w x)
@@ -248,10 +248,10 @@ module times
    P = is-accessible _⊏_
 
    γ : (x : X) → ((x' : X) → x' < x → (y' : Y) → P (x' , y')) → (y : Y) → P (x , y)
-   γ x step = transfinite-induction _≺_ w' (λ y → P (x , y)) (λ y f → next (x , y) (ψ y f))
+   γ x s = transfinite-induction _≺_ w' (λ y → P (x , y)) (λ y f → step (ψ y f))
     where
      ψ : (y : Y) → ((y' : Y) → y' ≺ y → P (x , y')) → (z' : X × Y) → z' ⊏ (x , y) → P z'
-     ψ y f (x' , y') (inl l) = step x' l y'
+     ψ y f (x' , y') (inl l) = s x' l y'
      ψ y f (x' , y') (inr (r , m)) = transport⁻¹ P p α
       where
        α : P (x , y')
@@ -389,7 +389,7 @@ retract-accessible _<_ _≺_ r s η φ = transfinite-induction' _<_ P γ
   P = λ x → is-accessible _≺_ (r x)
 
   γ : ∀ x → (∀ x' → x' < x → is-accessible _≺_ (r x')) → is-accessible _≺_ (r x)
-  γ x τ = next (r x) σ
+  γ x τ = step σ
    where
     σ : ∀ y → y ≺ r x → is-accessible _≺_ y
     σ y l = transport (is-accessible _≺_) (η y) m
@@ -562,13 +562,13 @@ lemma.
 
  well-founded : ((p : P) → is-well-founded (_<_ {p}))
               → is-well-founded _≺_
- well-founded w u = next u σ
+ well-founded w u = step σ
   where
    σ : (v : Π X) → v ≺ u → is-accessible _≺_ v
    σ v (p , l) = d
     where
      b : is-accessible _<_ (φ p v)
-     b = prev _<_ (φ p u) (w p (φ p u)) (φ p v) l
+     b = prev _<_ (w p (φ p u)) (φ p v) l
 
      c : is-accessible _≺_ (ψ p (φ p v))
      c = retract-accessible _<_ _≺_ (ψ p) (φ p) (η p) f (φ p v) b
@@ -648,14 +648,14 @@ module sum
    γ : (x : X)
      → ((x' : X) → x' < x → (y' : Y x') → P (x' , y'))
      → (y : Y x) → P (x , y)
-   γ x step = transfinite-induction _≺_ (w' x)
-               (λ y → P (x , y))
-               (λ y f → next (x , y) (ψ y f))
+   γ x s = transfinite-induction _≺_ (w' x)
+            (λ y → P (x , y))
+            (λ y f → step (ψ y f))
     where
      ψ : (y : Y x)
        → ((y' : Y x) → y' ≺ y → P (x , y'))
        → (z' : Σ Y) → z' ⊏ (x , y) → P z'
-     ψ y f (x' , y') (inl l) = step x' l y'
+     ψ y f (x' , y') (inl l) = s x' l y'
      ψ y f (x' , y') (inr (r , m)) = transport⁻¹ P p α
       where
        α : P (x , transport Y r y')

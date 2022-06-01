@@ -256,13 +256,13 @@ embedding-ℕ-to-ℕ∞ fe = ℕ-to-ℕ∞ , ℕ-to-ℕ∞-is-embedding fe
 ℕ-to-ℕ∞-lc-refl 0        = refl
 ℕ-to-ℕ∞-lc-refl (succ k) = ap (ap succ) (ℕ-to-ℕ∞-lc-refl k)
 
-ι-diagonal₀ : (n : ℕ) → ι n ⊑ n
-ι-diagonal₀ 0        = refl
-ι-diagonal₀ (succ n) = ι-diagonal₀ n
+ℕ-to-ℕ∞-diagonal₀ : (n : ℕ) → ι n ⊑ n
+ℕ-to-ℕ∞-diagonal₀ 0        = refl
+ℕ-to-ℕ∞-diagonal₀ (succ n) = ℕ-to-ℕ∞-diagonal₀ n
 
-ι-diagonal₁ : (n : ℕ) → n ⊏ ι (n ∔ 1)
-ι-diagonal₁ 0        = refl
-ι-diagonal₁ (succ n) = ι-diagonal₁ n
+ℕ-to-ℕ∞-diagonal₁ : (n : ℕ) → n ⊏ ι (n ∔ 1)
+ℕ-to-ℕ∞-diagonal₁ 0        = refl
+ℕ-to-ℕ∞-diagonal₁ (succ n) = ℕ-to-ℕ∞-diagonal₁ n
 
 is-Zero-equal-Zero : funext₀ → {u : ℕ∞} → is-Zero u → u ≡ Zero
 is-Zero-equal-Zero fe {u} base = ℕ∞-to-ℕ→𝟚-lc fe (dfunext fe lemma)
@@ -340,7 +340,7 @@ Succ-criterion fe {u} {n} r s = ℕ∞-to-ℕ→𝟚-lc fe claim
 
 ∞-is-not-finite : (n : ℕ) → ∞ ≢ ι n
 ∞-is-not-finite n s = one-is-not-zero (₁         ≡⟨ ap (λ - → ι - n) s ⟩
-                                       ι (ι n) n ≡⟨ ι-diagonal₀ n ⟩
+                                       ι (ι n) n ≡⟨ ℕ-to-ℕ∞-diagonal₀ n ⟩
                                        ₀         ∎)
 
 not-finite-is-∞ : funext₀ → {u : ℕ∞} → ((n : ℕ) → u ≢ ι n) → u ≡ ∞
@@ -430,13 +430,13 @@ finite-isolated fe n u = decidable-eq-sym u (ι n) (f u n)
   f u (succ n) = 𝟚-equality-cases g₀ g₁
    where
     g : u ≡ ι (n ∔ 1) → n ⊏ u
-    g r = ap (λ - → ι - n) r ∙ ι-diagonal₁ n
+    g r = ap (λ - → ι - n) r ∙ ℕ-to-ℕ∞-diagonal₁ n
 
     g₀ :  u ⊑ n → decidable (u ≡ ι (n ∔ 1))
     g₀ r = inr (contrapositive g (equal-₀-different-from-₁ r))
 
     h : u ≡ ι (n ∔ 1) → u ⊑ n ∔ 1
-    h r = ap (λ - → ι - (n ∔ 1)) r ∙ ι-diagonal₀ (n ∔ 1)
+    h r = ap (λ - → ι - (n ∔ 1)) r ∙ ℕ-to-ℕ∞-diagonal₀ (n ∔ 1)
 
     g₁ :  n ⊏ u → decidable (u ≡ ι (n ∔ 1))
     g₁ r = 𝟚-equality-cases g₁₀ g₁₁
@@ -457,11 +457,11 @@ size (n , r) = n
 being-finite-is-prop : funext₀ → (u : ℕ∞) → is-prop (is-finite u)
 being-finite-is-prop = ℕ-to-ℕ∞-is-embedding
 
-ι-is-finite : (n : ℕ) → is-finite (ι n)
-ι-is-finite n = (n , refl)
+ℕ-to-ℕ∞-is-finite : (n : ℕ) → is-finite (ι n)
+ℕ-to-ℕ∞-is-finite n = (n , refl)
 
 Zero-is-finite : is-finite Zero
-Zero-is-finite = ι-is-finite zero
+Zero-is-finite = ℕ-to-ℕ∞-is-finite zero
 
 Zero-is-finite' : funext₀ → (u : ℕ∞) → is-Zero u → is-finite u
 Zero-is-finite' fe u z = transport⁻¹
@@ -600,13 +600,13 @@ below-isolated fe u v (n , r , l) = transport⁻¹ is-isolated r (finite-isolate
 ≺-implies-finite : (a b : ℕ∞) → a ≺ b → is-finite a
 ≺-implies-finite a b (n , p , _) = n , (p ⁻¹)
 
-ι-≺-diagonal : (n : ℕ) → ι n ≺ ι (n ∔ 1)
-ι-≺-diagonal n = n , refl , ι-diagonal₁ n
+ℕ-to-ℕ∞-≺-diagonal : (n : ℕ) → ι n ≺ ι (n ∔ 1)
+ℕ-to-ℕ∞-≺-diagonal n = n , refl , ℕ-to-ℕ∞-diagonal₁ n
 
 finite-≺-Succ : (a : ℕ∞) → is-finite a → a ≺ Succ a
 finite-≺-Succ a (n , p) = transport (_≺ Succ a) p
                             (transport (ι n ≺_) (ap Succ p)
-                              (ι-≺-diagonal n))
+                              (ℕ-to-ℕ∞-≺-diagonal n))
 
 ≺-Succ : (a b : ℕ∞) → a ≺ b → Succ a ≺ Succ b
 ≺-Succ a b (n , p , q) = n ∔ 1 , ap Succ p , q
@@ -659,13 +659,13 @@ finite-accessible = course-of-values-induction (λ n → is-accessible _≺_ (ι
   φ : (n : ℕ)
     → ((m : ℕ) → m < n → is-accessible _≺_ (ι m))
     → is-accessible _≺_ (ι n)
-  φ n σ = next (ι n) τ
+  φ n σ = step τ
    where
     τ : (u : ℕ∞) → u ≺ ι n → is-accessible _≺_ u
     τ u (m , r , l) = transport⁻¹ (is-accessible _≺_) r (σ m (⊏-gives-< m n l))
 
 ≺-well-founded : is-well-founded _≺_
-≺-well-founded v = next v σ
+≺-well-founded v = step σ
  where
   σ : (u : ℕ∞) → u ≺ v → is-accessible _≺_ u
   σ u (n , r , l) = transport⁻¹ (is-accessible _≺_) r (finite-accessible n)
@@ -767,7 +767,7 @@ proved above, that ≺ is well founded:
   p z = ι z n
 
   e : ι x n ≡ ₀
-  e = transport⁻¹ (λ z → p z ≡ ₀) r (ι-diagonal₀ n)
+  e = transport⁻¹ (λ z → p z ≡ ₀) r (ℕ-to-ℕ∞-diagonal₀ n)
 
   t : ι x n <₂ ι y n
   t = <₂-criterion e l
@@ -796,11 +796,11 @@ proved above, that ≺ is well founded:
   h : (u v : ℕ∞) → (u ≺ v → p u ≤ p v) × (p u <₂ p v → u ≺ v)
   h u v = f u v , g u v
 
-ι-order-preserving : (m n : ℕ) → m < n → ι m ≺ ι n
-ι-order-preserving m n l = m , refl , <-gives-⊏ m n l
+ℕ-to-ℕ∞-order-preserving : (m n : ℕ) → m < n → ι m ≺ ι n
+ℕ-to-ℕ∞-order-preserving m n l = m , refl , <-gives-⊏ m n l
 
-ι-order-reflecting : (m n : ℕ) → ι m ≺ ι n → m < n
-ι-order-reflecting m n (m' , p , l') = ⊏-gives-< m n l
+ℕ-to-ℕ∞-order-reflecting : (m n : ℕ) → ι m ≺ ι n → m < n
+ℕ-to-ℕ∞-order-reflecting m n (m' , p , l') = ⊏-gives-< m n l
  where
   l : m ⊏ ι n
   l = transport⁻¹ (λ - → - ⊏ ι n) (ℕ-to-ℕ∞-lc p) l'
@@ -852,7 +852,7 @@ Needed 28 July 2018:
   d = transport (λ - → k ⊏ -) b c
 
   e : ι (ι k) k ≡ ₀
-  e = ι-diagonal₀ k
+  e = ℕ-to-ℕ∞-diagonal₀ k
 
 not-≺-≼ : funext₀ → (u v : ℕ∞) → ¬ (v ≺ u) → u ≼ v
 not-≺-≼ fe u v φ n l = 𝟚-equality-cases f g

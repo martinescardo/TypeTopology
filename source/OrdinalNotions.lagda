@@ -29,38 +29,29 @@ is-prop-valued : 𝓤 ⊔ 𝓥 ̇
 is-prop-valued = (x y : X) → is-prop (x < y)
 
 data is-accessible : X → 𝓤 ⊔ 𝓥 ̇ where
- next : (x : X) → ((y : X) → y < x → is-accessible y) → is-accessible x
+ step : {x : X} → ((y : X) → y < x → is-accessible y) → is-accessible x
 
 accessible-induction : (P : (x : X) → is-accessible x → 𝓦 ̇ )
                      → ((x : X) (σ : (y : X) → y < x → is-accessible y)
                          → ((y : X) (l : y < x) → P y (σ y l))
-                         → P x (next x σ))
+                         → P x (step σ))
                      → (x : X) (a : is-accessible x) → P x a
 accessible-induction P f = h
   where
    h : (x : X) (a : is-accessible x) → P x a
-   h x (next x σ) = f x σ (λ y l → h y (σ y l))
+   h x (step σ) = f x σ (λ y l → h y (σ y l))
 
-prev : (x : X)
+prev : {x : X}
      → is-accessible x
      → (y : X) → y < x → is-accessible y
-prev = accessible-induction
-        (λ x _ → (y : X) → y < x → is-accessible y)
-        (λ x σ f → σ)
+prev (step a) = a
 
 prev-behaviour : (x : X) (a : is-accessible x)
-               → next x (prev x a) ≡ a
+               → step (prev a) ≡ a
 prev-behaviour = accessible-induction _ (λ _ _ _ → refl)
 
-prev-behaviour' : (x : X) (σ : (y : X) → y < x → is-accessible y)
-                → prev x (next x σ) ≡ σ
-prev-behaviour' x σ = refl
-
-induction-hypothesis : (P : X → 𝓦 ̇ ) → (x : X) → (𝓤 ⊔ 𝓥 ⊔ 𝓦) ̇
-induction-hypothesis P x = (y : X) → y < x → P y
-
 transfinite-induction' :  (P : X → 𝓦 ̇ )
-                       → ((x : X) → induction-hypothesis P x → P x)
+                       → ((x : X) → ((y : X) → y < x → P y) → P x)
                        → (x : X) → is-accessible x → P x
 transfinite-induction' P f = accessible-induction
                               (λ x _ → P x)
@@ -78,7 +69,7 @@ transfinite-induction : is-well-founded → ∀ {𝓦} → Well-founded {𝓦}
 transfinite-induction w P f x = transfinite-induction' P f x (w x)
 
 transfinite-induction-converse : Well-founded {𝓤 ⊔ 𝓥} → is-well-founded
-transfinite-induction-converse φ = φ is-accessible next
+transfinite-induction-converse φ = φ is-accessible (λ _ → step)
 
 transfinite-recursion : is-well-founded
                       → ∀ {𝓦} {Y : 𝓦 ̇ }
@@ -156,18 +147,18 @@ accessibility-is-prop fe = accessible-induction P φ
 
   φ : (x : X) (σ : (y : X) → y < x → is-accessible y)
     → ((y : X) (l : y < x) (a : is-accessible y) → σ y l ≡ a)
-    → (b : is-accessible x) → next x σ ≡ b
-  φ x σ IH b = next x σ ≡⟨ i ⟩
-               next x τ ≡⟨ prev-behaviour x b ⟩
-               b        ∎
+    → (b : is-accessible x) → step σ ≡ b
+  φ x σ IH b = step σ ≡⟨ i ⟩
+               step τ ≡⟨ prev-behaviour x b ⟩
+               b      ∎
    where
     τ : (y : X) → y < x → is-accessible y
-    τ = prev x b
+    τ = prev b
 
     h :  (y : X) (l : y < x) → σ y l ≡ τ y l
     h y l = IH y l (τ y l)
 
-    i = ap (next x)
+    i = ap step
            (dfunext (fe 𝓤 (𝓤 ⊔ 𝓥)) (λ y → dfunext (fe 𝓥 (𝓤 ⊔ 𝓥)) (h y)))
 
 well-foundedness-is-prop : FunExt → is-prop is-well-founded
@@ -252,6 +243,18 @@ irreflexive = ≾-refl
 ≼-coarser-than-≾ : (y : X) → is-accessible y → (x : X) → x ≼ y → x ≾ y
 ≼-coarser-than-≾ y a x f l = ≾-refl y a (f y l)
 
+is-bot : X → 𝓤 ⊔ 𝓥 ̇
+is-bot x = (y : X) → x ≾ y
+
+is-bot' : X → 𝓤 ⊔ 𝓥 ̇
+is-bot' x = (y : X) → x ≼ y
+
+is-bot'-gives-is-bot : is-well-founded → (x : X) → is-bot' x → is-bot x
+is-bot'-gives-is-bot w x i y = ≼-coarser-than-≾ y (w y) x (i y)
+
+is-bot-gives-is-bot' : (x : X) → is-bot x → is-bot' x
+is-bot-gives-is-bot' x i y z l = 𝟘-elim (i z l)
+
 is-top : X → 𝓤 ⊔ 𝓥 ̇
 is-top x = (y : X) → y ≾ x
 
@@ -261,6 +264,15 @@ is-top' x = (y : X) → y ≼ x
 is-top'-gives-is-top : is-well-founded → (x : X) → is-top' x → is-top x
 is-top'-gives-is-top w x i y = ≼-coarser-than-≾ x (w x) y (i y)
 
+\end{code}
+
+There is no hope of proving the converse constructively, because in
+the ordinal of truth values any ¬¬-dense truth-value p satisfies
+is-top p, and the only truth-value that satisfies is-top is ⊤. See the
+module OrdinalOfTruthValues.
+
+\begin{code}
+
 has-top : 𝓤 ⊔ 𝓥 ̇
 has-top = Σ x ꞉ X , is-top x
 
@@ -268,10 +280,10 @@ no-minimal-is-empty : is-well-founded
                     → ∀ {𝓦} (A : X → 𝓦 ̇ )
                     → ((x : X) → A x → is-nonempty (Σ y ꞉ X , (y < x) × A y))
                     → is-empty (Σ A)
-no-minimal-is-empty w A s (x , p) = γ
+no-minimal-is-empty w A s (x , a₀) = γ
  where
   g : (x : X) → is-accessible x → ¬ (A x)
-  g x (next x σ) ν = δ
+  g x (step σ) ν = δ
    where
     h : ¬¬ (Σ y ꞉ X , (y < x) × A y)
     h = s x ν
@@ -287,10 +299,10 @@ no-minimal-is-empty w A s (x , p) = γ
 
   f : ((x : X) → A x → ¬¬ (Σ y ꞉ X , (y < x) × A y))
     → (x : X) → ¬ (A x)
-  f s x p = g x (w x) p
+  f s x = g x (w x)
 
   γ : 𝟘
-  γ = f s x p
+  γ = f s x a₀
 
 no-minimal-is-empty' : is-well-founded
                      → ∀ {𝓦} (A : X → 𝓦 ̇ )
@@ -299,6 +311,10 @@ no-minimal-is-empty' : is-well-founded
 no-minimal-is-empty' w A s = no-minimal-is-empty w A (λ x a → ¬¬-intro (s x a))
 
 \end{code}
+
+The emptiness of the empty set doesn't play any special role in the
+above argument, and can be replaced by any type - would that be
+useful?
 
 The remainder of this file is not needed anywhere else (at least at
 the time of writing, namely 11th January 2021).
@@ -562,6 +578,10 @@ v, we have that i is in trichotomy with u, which by elimination means
 i >= u, and so v > i >= u, and so u and v are again in trichotomy.
 
 \begin{code}
+
+induction-hypothesis : (P : X → 𝓦 ̇ ) → (x : X) → (𝓤 ⊔ 𝓥 ⊔ 𝓦) ̇
+induction-hypothesis P x = (y : X) → y < x → P y
+
 module _
         (f-e : Fun-Ext)
         (em : Excluded-Middle)
@@ -721,8 +741,8 @@ cotransitive-≾-gives-≼ c x y n u l = γ (c u x y l)
   γ (inl l) = l
   γ (inr l) = 𝟘-elim (n l)
 
-tricho-gives-contrans : is-transitive → is-trichotomous-order → cotransitive
-tricho-gives-contrans tra tri x y z l = γ (tri z y)
+tricho-gives-cotrans : is-transitive → is-trichotomous-order → cotransitive
+tricho-gives-cotrans tra tri x y z l = γ (tri z y)
  where
   γ : (z < y) + (z ≡ y) + (y < z) → (x < z) + (z < y)
   γ (inl m)          = inr m
@@ -730,7 +750,7 @@ tricho-gives-contrans tra tri x y z l = γ (tri z y)
   γ (inr (inr m))    = inl (tra x y z l m)
 
 em-gives-cotrans : FunExt → EM (𝓤 ⊔ 𝓥) → is-well-order → cotransitive
-em-gives-cotrans fe em wo@(p , w , e , t) = tricho-gives-contrans t
+em-gives-cotrans fe em wo@(p , w , e , t) = tricho-gives-cotrans t
                                               (trichotomy (fe (𝓤 ⊔ 𝓥) 𝓤₀) em wo)
 \end{code}
 

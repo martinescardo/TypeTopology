@@ -521,19 +521,19 @@ retract-Ω-of-Ordinal {𝓤} = r , s , η
   s (P , i) = prop-ordinal P i
 
   r : Ordinal 𝓤 → Ω 𝓤
-  r α = has-bottom α , having-bottom-is-prop fe' α
+  r α = has-least α , having-least-is-prop fe' α
 
   η : r ∘ s ∼ id
   η (P , i) = to-subtype-≡ (λ _ → being-prop-is-prop fe') t
    where
-    f : P → has-bottom (prop-ordinal P i)
+    f : P → has-least (prop-ordinal P i)
     f p = p , (λ x u → id)
 
-    g : has-bottom (prop-ordinal P i) → P
+    g : has-least (prop-ordinal P i) → P
     g (p , _) = p
 
-    t : has-bottom (prop-ordinal P i) ≡ P
-    t = pe 𝓤 (having-bottom-is-prop fe' (prop-ordinal P i)) i g f
+    t : has-least (prop-ordinal P i) ≡ P
+    t = pe 𝓤 (having-least-is-prop fe' (prop-ordinal P i)) i g f
 
 \end{code}
 
