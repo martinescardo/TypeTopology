@@ -1,6 +1,8 @@
 Tom de Jong, 9 March 2020
-
 Refactored 9 February 2022
+
+Taking the rounded ideal copmletion of the dyadics (𝔻,≺) we obtain an example of
+a continuous dcpo without any compact elements. Hence, it cannot be algebraic.
 
 \begin{code}
 

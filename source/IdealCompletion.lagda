@@ -1,6 +1,10 @@
 Tom de Jong, 26 Feburary 2020
-
 Minor updates on 28 January 2022
+
+We construct the rounded ideal completion of an abstract basis, cf. Section
+2.2.6 in Domain Theory by Abramsky and Jung.
+
+Further properties and developments are in the file IdealCompletion-Properties.
 
 \begin{code}
 
