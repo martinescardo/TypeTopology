@@ -14,6 +14,7 @@ module DcpoOmega
         (pt : propositional-truncations-exist)
         (fe : Fun-Ext)
         (pe : Prop-Ext)
+        (𝓤 : Universe)
        where
 
 open PropositionalTruncation pt
@@ -26,144 +27,141 @@ open ImageAndSurjection pt
 
 open import Poset fe
 
-module _
-        (𝓤 : Universe)
-       where
+open import Dcpo pt fe 𝓤
+open import DcpoBases pt fe 𝓤
+open import DcpoContinuous pt fe 𝓤
+open import DcpoMiscelanea pt fe 𝓤
+open import DcpoPointed pt fe 𝓤
+open import DcpoWayBelow pt fe 𝓤
 
- open import Dcpo pt fe 𝓤
- open import DcpoBases pt pe fe 𝓤
- open import DcpoContinuous pt fe 𝓤
- open import DcpoMiscelanea pt fe 𝓤
- open import DcpoWayBelow pt fe 𝓤
+_⊑_ : Ω 𝓤 → Ω 𝓤 → 𝓤 ̇
+P ⊑ Q = P holds → Q holds
 
- _⊑_ : Ω 𝓤 → Ω 𝓤 → 𝓤 ̇
- P ⊑ Q = P holds → Q holds
+⊑-is-reflexive : (P : Ω 𝓤) → P ⊑ P
+⊑-is-reflexive _ = id
 
- ⊑-is-reflexive : (P : Ω 𝓤) → P ⊑ P
- ⊑-is-reflexive _ = id
+⊑-is-prop-valued : (P Q : Ω 𝓤) → is-prop (P ⊑ Q)
+⊑-is-prop-valued P Q = Π-is-prop fe (λ _ → holds-is-prop Q)
 
- ⊑-is-prop-valued : (P Q : Ω 𝓤) → is-prop (P ⊑ Q)
- ⊑-is-prop-valued P Q = Π-is-prop fe (λ _ → holds-is-prop Q)
+⊑-is-transitive : (P Q R : Ω 𝓤) → P ⊑ Q → Q ⊑ R → P ⊑ R
+⊑-is-transitive P Q R f g p = g (f p)
 
- ⊑-is-transitive : (P Q R : Ω 𝓤) → P ⊑ Q → Q ⊑ R → P ⊑ R
- ⊑-is-transitive P Q R f g p = g (f p)
+⊑-is-antisymmetric : (P Q : Ω 𝓤) → P ⊑ Q → Q ⊑ P → P ≡ Q
+⊑-is-antisymmetric P Q f g =
+ to-subtype-≡ (λ _ → being-prop-is-prop fe)
+              (pe (holds-is-prop P) (holds-is-prop Q) f g)
 
- ⊑-is-antisymmetric : (P Q : Ω 𝓤) → P ⊑ Q → Q ⊑ P → P ≡ Q
- ⊑-is-antisymmetric P Q f g =
-  to-subtype-≡ (λ _ → being-prop-is-prop fe)
-               (pe (holds-is-prop P) (holds-is-prop Q) f g)
-
- Ω-DCPO : DCPO {𝓤 ⁺} {𝓤}
- Ω-DCPO = (Ω 𝓤 , _⊑_
-        , (Ω-is-set fe pe
-        , ⊑-is-prop-valued
-        , ⊑-is-reflexive
-        , ⊑-is-transitive
-        , ⊑-is-antisymmetric)
-        , γ)
-  where
-   γ : is-directed-complete _⊑_
-   γ I α δ = (sup , ub , lb-of-ubs)
-    where
-     sup : Ω 𝓤
-     sup = ((∃ i ꞉ I , α i holds) , ∃-is-prop)
-     ub : is-upperbound _⊑_ sup α
-     ub i p = ∣ i , p ∣
-     lb-of-ubs : is-lowerbound-of-upperbounds _⊑_ sup α
-     lb-of-ubs Q Q-is-ub = ∥∥-rec (holds-is-prop Q) h
-      where
-       h : (Σ i ꞉ I , α i holds) → Q holds
-       h (i , p) = Q-is-ub i p
-
- Ω-DCPO⊥ : DCPO⊥ {𝓤 ⁺} {𝓤}
- Ω-DCPO⊥ = Ω-DCPO , ((𝟘 , 𝟘-is-prop) , (λ _ → 𝟘-elim))
-
- ⊤ : Ω 𝓤
- ⊤ = 𝟙 , 𝟙-is-prop
-
- ⊤-is-greatest : (P : Ω 𝓤) → P ⊑ ⊤
- ⊤-is-greatest P _ = ⋆
-
- Bool : 𝓤 ̇
- Bool = 𝟙{𝓤} + 𝟙{𝓤}
-
- κ : Bool → Ω 𝓤
- κ (inl _) = ⊥ Ω-DCPO⊥
- κ (inr _) = ⊤
-
- κ⁺ : (P : Ω 𝓤) → (Σ b ꞉ Bool , κ b ⊑ P) → Ω 𝓤
- κ⁺ P = κ ∘ pr₁
-
- κ⁺-is-directed : (P : Ω 𝓤) → is-Directed Ω-DCPO (κ⁺ P)
- κ⁺-is-directed P = inh , semidir
-  where
-   inh : ∥ domain (κ⁺ P) ∥
-   inh = ∣ inl ⋆ , ⊥-is-least Ω-DCPO⊥ P ∣
-   semidir : is-semidirected _⊑_ (κ⁺ P)
-   semidir (inl ⋆ , _) i = ∣ i , ⊥-is-least Ω-DCPO⊥ (κ⁺ P i)
-                               , ⊑-is-reflexive (κ⁺ P i) ∣
-   semidir (inr ⋆ , u) j = ∣ (inr ⋆ , u) , ⊑-is-reflexive ⊤
-                                         , ⊤-is-greatest (κ⁺ P j) ∣
-
- κ⁺-sup : (P : Ω 𝓤) → is-sup _⊑_ P (κ⁺ P)
- κ⁺-sup P = ub , lb-of-ubs
-  where
-   ub : is-upperbound _⊑_ P (κ⁺ P)
-   ub (i , u) = u
-   lb-of-ubs : is-lowerbound-of-upperbounds _⊑_ P (κ⁺ P)
-   lb-of-ubs Q Q-is-ub p = Q-is-ub (inr ⋆ , (λ _ → p)) ⋆
-
- ⊤-is-compact : is-compact Ω-DCPO ⊤
- ⊤-is-compact I α δ ⊤-below-∐α = ∥∥-functor γ (⊤-below-∐α ⋆)
-  where
-   γ : (Σ i ꞉ I , α i holds) → (Σ i ꞉ I , ⊤ ⊑ α i)
-   γ (i , p) = (i , (λ _ → p))
-
- compact-if-in-image-of-κ : (P : Ω 𝓤) → P ∈image κ → is-compact Ω-DCPO P
- compact-if-in-image-of-κ P P-in-image-of-κ =
-  ∥∥-rec (being-compact-is-prop Ω-DCPO P) γ P-in-image-of-κ
+Ω-DCPO : DCPO {𝓤 ⁺} {𝓤}
+Ω-DCPO = (Ω 𝓤 , _⊑_
+       , (Ω-is-set fe pe
+       , ⊑-is-prop-valued
+       , ⊑-is-reflexive
+       , ⊑-is-transitive
+       , ⊑-is-antisymmetric)
+       , γ)
+ where
+  γ : is-directed-complete _⊑_
+  γ I α δ = (sup , ub , lb-of-ubs)
    where
-    γ : (Σ b ꞉ Bool , κ b ≡ P) → is-compact Ω-DCPO P
-    γ (inl ⋆ , refl) = ⊥-is-compact Ω-DCPO⊥
-    γ (inr ⋆ , refl) = ⊤-is-compact
+    sup : Ω 𝓤
+    sup = ((∃ i ꞉ I , α i holds) , ∃-is-prop)
+    ub : is-upperbound _⊑_ sup α
+    ub i p = ∣ i , p ∣
+    lb-of-ubs : is-lowerbound-of-upperbounds _⊑_ sup α
+    lb-of-ubs Q Q-is-ub = ∥∥-rec (holds-is-prop Q) h
+     where
+      h : (Σ i ꞉ I , α i holds) → Q holds
+      h (i , p) = Q-is-ub i p
 
- in-image-of-κ-if-compact : (P : Ω 𝓤) → is-compact Ω-DCPO P → P ∈image κ
- in-image-of-κ-if-compact P P-cpt = ∥∥-functor goal claim
+Ω-DCPO⊥ : DCPO⊥ {𝓤 ⁺} {𝓤}
+Ω-DCPO⊥ = Ω-DCPO , ((𝟘 , 𝟘-is-prop) , (λ _ → 𝟘-elim))
+
+⊤ : Ω 𝓤
+⊤ = 𝟙 , 𝟙-is-prop
+
+⊤-is-greatest : (P : Ω 𝓤) → P ⊑ ⊤
+⊤-is-greatest P _ = ⋆
+
+Bool : 𝓤 ̇
+Bool = 𝟙{𝓤} + 𝟙{𝓤}
+
+κ : Bool → Ω 𝓤
+κ (inl _) = ⊥ Ω-DCPO⊥
+κ (inr _) = ⊤
+
+κ⁺ : (P : Ω 𝓤) → (Σ b ꞉ Bool , κ b ⊑ P) → Ω 𝓤
+κ⁺ P = κ ∘ pr₁
+
+κ⁺-is-directed : (P : Ω 𝓤) → is-Directed Ω-DCPO (κ⁺ P)
+κ⁺-is-directed P = inh , semidir
+ where
+  inh : ∥ domain (κ⁺ P) ∥
+  inh = ∣ inl ⋆ , ⊥-is-least Ω-DCPO⊥ P ∣
+  semidir : is-semidirected _⊑_ (κ⁺ P)
+  semidir (inl ⋆ , _) i = ∣ i , ⊥-is-least Ω-DCPO⊥ (κ⁺ P i)
+                              , ⊑-is-reflexive (κ⁺ P i) ∣
+  semidir (inr ⋆ , u) j = ∣ (inr ⋆ , u) , ⊑-is-reflexive ⊤
+                                        , ⊤-is-greatest (κ⁺ P j) ∣
+
+κ⁺-sup : (P : Ω 𝓤) → is-sup _⊑_ P (κ⁺ P)
+κ⁺-sup P = ub , lb-of-ubs
+ where
+  ub : is-upperbound _⊑_ P (κ⁺ P)
+  ub (i , u) = u
+  lb-of-ubs : is-lowerbound-of-upperbounds _⊑_ P (κ⁺ P)
+  lb-of-ubs Q Q-is-ub p = Q-is-ub (inr ⋆ , (λ _ → p)) ⋆
+
+⊤-is-compact : is-compact Ω-DCPO ⊤
+⊤-is-compact I α δ ⊤-below-∐α = ∥∥-functor γ (⊤-below-∐α ⋆)
+ where
+  γ : (Σ i ꞉ I , α i holds) → (Σ i ꞉ I , ⊤ ⊑ α i)
+  γ (i , p) = (i , (λ _ → p))
+
+compact-if-in-image-of-κ : (P : Ω 𝓤) → P ∈image κ → is-compact Ω-DCPO P
+compact-if-in-image-of-κ P P-in-image-of-κ =
+ ∥∥-rec (being-compact-is-prop Ω-DCPO P) γ P-in-image-of-κ
   where
-   I : 𝓤 ̇
-   I = 𝟙{𝓤} + (P holds)
-   α : I → Ω 𝓤
-   α = add-⊥ Ω-DCPO⊥ (λ _ → ⊤)
-   δ : is-Directed Ω-DCPO α
-   δ = add-⊥-is-directed Ω-DCPO⊥
-        (subsingleton-indexed-is-semidirected Ω-DCPO (λ _ → ⊤) (holds-is-prop P))
-   P-below-∐α : P ⊑ ∐ Ω-DCPO {I} {α} δ
-   P-below-∐α p = ∣ inr p , ⋆ ∣
-   claim : ∃ i ꞉ I , P ⊑ α i
-   claim = P-cpt I α δ P-below-∐α
-   goal : (Σ i ꞉ I , P ⊑ α i) → Σ b ꞉ Bool , κ b ≡ P
-   goal (inl ⋆ , u) = (inl ⋆ , ⊑-is-antisymmetric (⊥ Ω-DCPO⊥) P
-                                (⊥-is-least Ω-DCPO⊥ P) u)
-   goal (inr p , u) = (inr ⋆ , ⊑-is-antisymmetric ⊤ P (λ _ → p) u)
+   γ : (Σ b ꞉ Bool , κ b ≡ P) → is-compact Ω-DCPO P
+   γ (inl ⋆ , refl) = ⊥-is-compact Ω-DCPO⊥
+   γ (inr ⋆ , refl) = ⊤-is-compact
 
- κ-is-small-compact-basis : is-small-compact-basis Ω-DCPO κ
- κ-is-small-compact-basis = record {
-   basis-is-compact = λ b → compact-if-in-image-of-κ (κ b) ∣ b , refl ∣
-  ; ⊑ᴮ-is-small     = λ P b → (κ b ⊑ P , ≃-refl (κ b ⊑ P))
-  ; ↓ᴮ-is-directed  = κ⁺-is-directed
-  ; ↓ᴮ-is-sup       = κ⁺-sup
-  }
+in-image-of-κ-if-compact : (P : Ω 𝓤) → is-compact Ω-DCPO P → P ∈image κ
+in-image-of-κ-if-compact P P-cpt = ∥∥-functor goal claim
+ where
+  I : 𝓤 ̇
+  I = 𝟙{𝓤} + (P holds)
+  α : I → Ω 𝓤
+  α = add-⊥ Ω-DCPO⊥ (λ _ → ⊤)
+  δ : is-Directed Ω-DCPO α
+  δ = add-⊥-is-directed Ω-DCPO⊥
+       (subsingleton-indexed-is-semidirected Ω-DCPO (λ _ → ⊤) (holds-is-prop P))
+  P-below-∐α : P ⊑ ∐ Ω-DCPO {I} {α} δ
+  P-below-∐α p = ∣ inr p , ⋆ ∣
+  claim : ∃ i ꞉ I , P ⊑ α i
+  claim = P-cpt I α δ P-below-∐α
+  goal : (Σ i ꞉ I , P ⊑ α i) → Σ b ꞉ Bool , κ b ≡ P
+  goal (inl ⋆ , u) = (inl ⋆ , ⊑-is-antisymmetric (⊥ Ω-DCPO⊥) P
+                               (⊥-is-least Ω-DCPO⊥ P) u)
+  goal (inr p , u) = (inr ⋆ , ⊑-is-antisymmetric ⊤ P (λ _ → p) u)
 
- Ω-has-specified-small-compact-basis : has-specified-small-compact-basis Ω-DCPO
- Ω-has-specified-small-compact-basis = (Bool , κ , κ-is-small-compact-basis)
+κ-is-small-compact-basis : is-small-compact-basis Ω-DCPO κ
+κ-is-small-compact-basis = record {
+  basis-is-compact = λ b → compact-if-in-image-of-κ (κ b) ∣ b , refl ∣
+ ; ⊑ᴮ-is-small     = λ P b → (κ b ⊑ P , ≃-refl (κ b ⊑ P))
+ ; ↓ᴮ-is-directed  = κ⁺-is-directed
+ ; ↓ᴮ-is-sup       = κ⁺-sup
+ }
 
- Ω-structurally-algebraic : structurally-algebraic Ω-DCPO
- Ω-structurally-algebraic =
-  structurally-algebraic-if-specified-small-compact-basis Ω-DCPO
-   Ω-has-specified-small-compact-basis
+Ω-has-specified-small-compact-basis : has-specified-small-compact-basis Ω-DCPO
+Ω-has-specified-small-compact-basis = (Bool , κ , κ-is-small-compact-basis)
 
- Ω-is-algebraic-dcpo : is-algebraic-dcpo Ω-DCPO
- Ω-is-algebraic-dcpo = ∣ Ω-structurally-algebraic ∣
+Ω-structurally-algebraic : structurally-algebraic Ω-DCPO
+Ω-structurally-algebraic =
+ structurally-algebraic-if-specified-small-compact-basis Ω-DCPO
+  Ω-has-specified-small-compact-basis
+
+Ω-is-algebraic-dcpo : is-algebraic-dcpo Ω-DCPO
+Ω-is-algebraic-dcpo = ∣ Ω-structurally-algebraic ∣
 
 \end{code}
 
@@ -171,31 +169,31 @@ TODO: Comment
 
 \begin{code}
 
- open import DecidableAndDetachable
- open import UF-EquivalenceExamples
+open import DecidableAndDetachable
+open import UF-EquivalenceExamples
 
- compact-iff-decidable : (P : Ω 𝓤) → is-compact Ω-DCPO P ⇔ decidable (P holds)
- compact-iff-decidable P = ⦅⇒⦆ , ⦅⇐⦆
-  where
-   ⦅⇒⦆ : is-compact Ω-DCPO P → decidable (P holds)
-   ⦅⇒⦆ c = ∥∥-rec (decidability-of-prop-is-prop fe (holds-is-prop P))
-                  γ (in-image-of-κ-if-compact P c)
-    where
-     γ : (Σ b ꞉ Bool , κ b ≡ P) → decidable (P holds)
-     γ (inl ⋆ , refl) = 𝟘-decidable
-     γ (inr ⋆ , refl) = 𝟙-decidable
-   ⦅⇐⦆ : decidable (P holds) → is-compact Ω-DCPO P
-   ⦅⇐⦆ (inl p) = transport (is-compact Ω-DCPO) e ⊤-is-compact
-    where
-     e : ⊤ ≡ P
-     e = to-subtype-≡ (λ _ → being-prop-is-prop fe)
-                      (pe 𝟙-is-prop (holds-is-prop P)
-                          (λ _ → p) (λ _ → ⋆))
-   ⦅⇐⦆ (inr q) = transport (is-compact Ω-DCPO) e (⊥-is-compact Ω-DCPO⊥)
-    where
-     e : ⊥ Ω-DCPO⊥ ≡ P
-     e = to-subtype-≡ (λ _ → being-prop-is-prop fe)
-                      (pe 𝟘-is-prop (holds-is-prop P)
-                          𝟘-elim (⌜ one-𝟘-only ⌝ ∘ q))
+compact-iff-decidable : (P : Ω 𝓤) → is-compact Ω-DCPO P ⇔ decidable (P holds)
+compact-iff-decidable P = ⦅⇒⦆ , ⦅⇐⦆
+ where
+  ⦅⇒⦆ : is-compact Ω-DCPO P → decidable (P holds)
+  ⦅⇒⦆ c = ∥∥-rec (decidability-of-prop-is-prop fe (holds-is-prop P))
+                 γ (in-image-of-κ-if-compact P c)
+   where
+    γ : (Σ b ꞉ Bool , κ b ≡ P) → decidable (P holds)
+    γ (inl ⋆ , refl) = 𝟘-decidable
+    γ (inr ⋆ , refl) = 𝟙-decidable
+  ⦅⇐⦆ : decidable (P holds) → is-compact Ω-DCPO P
+  ⦅⇐⦆ (inl p) = transport (is-compact Ω-DCPO) e ⊤-is-compact
+   where
+    e : ⊤ ≡ P
+    e = to-subtype-≡ (λ _ → being-prop-is-prop fe)
+                     (pe 𝟙-is-prop (holds-is-prop P)
+                         (λ _ → p) (λ _ → ⋆))
+  ⦅⇐⦆ (inr q) = transport (is-compact Ω-DCPO) e (⊥-is-compact Ω-DCPO⊥)
+   where
+    e : ⊥ Ω-DCPO⊥ ≡ P
+    e = to-subtype-≡ (λ _ → being-prop-is-prop fe)
+                     (pe 𝟘-is-prop (holds-is-prop P)
+                         𝟘-elim (⌜ one-𝟘-only ⌝ ∘ q))
 
 \end{code}
