@@ -1,5 +1,13 @@
 Tom de Jong, 25 January 2022
 
+We consider the powerset of a set as a pointed dcpo. Given a set X : 𝓤, the
+𝓥-valued subsets X → Ω 𝓥 are a pointed 𝓥-dcpo.
+
+Taking 𝓥 to be equal to 𝓤 is more interesting as in this case we get a pointed
+dcpo with a small compact basis (given by lists on X). In particular, the
+powerset is algebraic and we characterize its compact elements as the Kuratowski
+finite subsets.
+
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe #-}
@@ -18,8 +26,6 @@ module DcpoPowerset
         (X-is-set : is-set X)
        where
 
-open PropositionalTruncation pt
-
 open import List
 
 open import UF-Equiv
@@ -33,6 +39,7 @@ open import Poset fe
 open binary-unions-of-subsets pt
 open canonical-map-from-lists-to-subsets X-is-set
 open ImageAndSurjection pt
+open PropositionalTruncation pt
 open singleton-subsets X-is-set
 
 module _
@@ -61,7 +68,8 @@ module _
 
 \end{code}
 
-TODO: Comment
+We now specialize to taking 𝓥 to be equal to 𝓤, the universe where X lives and
+we prove that lists on X give a small compact basis for the powerset.
 
 \begin{code}
 
@@ -95,7 +103,7 @@ open unions-of-small-families pt 𝓤 𝓤 X
     e = κ-of-concatenated-lists-is-union pe fe l₁ l₂
     u : (κ l₁ ∪ κ l₂) ⊆ κ (l₁ ++ l₂)
     u = ≡-to-⊒ 𝓟-DCPO e
-    -- unfortunately, using the ⊑⟨ 𝓟-DCPO ⟩-syntax here gives
+    -- Unfortunately, using the ⊑⟨ 𝓟-DCPO ⟩-syntax here gives
     -- implicit arguments problems, so we use ⊆-trans instead.
     u₁ : κ l₁ ⊆ κ (l₁ ++ l₂)
     u₁ = ⊆-trans (κ l₁) (κ l₁ ∪ κ l₂) (κ (l₁ ++ l₂))
@@ -182,10 +190,6 @@ compact-if-Kuratowski-finite-subset A k = lemma (A , k)
            ∅-is-compact
            singletons-are-compact
            (λ A B → ∪-is-compact (pr₁ A) (pr₁ B))
-
-\end{code}
-
-\begin{code}
 
 κ-is-small-compact-basis : is-small-compact-basis 𝓟-DCPO κ
 κ-is-small-compact-basis = record {
