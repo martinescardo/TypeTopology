@@ -1,21 +1,20 @@
 Tom de Jong, January 2020.
 
 December 2021: Added material on semidirected and subsingleton suprema.
+June 2022: Refactored and moved some material around to/from other files.
 
-TODO: Revise
-A collection of various useful facts on (pointed) directed complete posets and
-Scott continuous maps between them.
+A collection of various useful definitions and facts on directed complete posets
+and Scott continuous maps between them.
 
-The table of contents is roughly:
+Table of contents
  * Lemmas for establishing Scott continuity of maps between dcpos.
  * Continuity of basic functions (constant functions, identity, composition).
- * Defining isomorphisms of (pointed) dcpos.
- * Pointed dcpos have semidirected & subsingleton suprema and these are
-   preserved by maps that are both strict and continuous.
-
-   The latter is used to be prove (in DcpoLifting.lagda) that the lifting yields
-   the free pointed dcpo on a set.
- * Defining local smallness for dcpos.
+ * Definitions of isomorphisms of dcpos, continuous retracts and
+   embedding-projection pairs.
+ * Defining local smallness for dcpos and showing it is preserved by continuous
+   retracts.
+ * Lemmas involving (joins of) cofinal directed families.
+ * Reindexing directed families.
 
 \begin{code}
 
@@ -31,9 +30,17 @@ module DcpoMiscelanea
         (𝓥 : Universe)
        where
 
-open PropositionalTruncation pt hiding (_∨_)
+private
+ fe' : FunExt
+ fe' _ _ = fe
 
+open PropositionalTruncation pt
+
+open import UF-Equiv
+open import UF-EquivalenceExamples
+open import UF-Size hiding (is-small ; is-locally-small)
 open import UF-Subsingletons
+open import UF-Subsingletons-FunExt
 
 open import Dcpo pt fe 𝓥
 
@@ -366,18 +373,18 @@ record embedding-projection-pair-between
 
 Many examples of dcpos conveniently happen to be locally small.
 
-We present two definitions and prove they are equivalent. The former is easier
-to work with, while the latter arguably looks more like the familiar categorical
-notion of a locally small category.
+We present and prove the equivalence of three definitions:
+- our main one, is-locally-small, which uses a record so that we have convenient
+  helper functions;
+- a second one, is-locally-small-Σ, which is like the above but uses a Σ-type
+  rather than a record;
+- a third one, is-locally-small', which arguably looks more like the familiar
+  categorical notion of a locally small category.
+
+To prove their equivalence, we prove a general lemma on small-valued binary
+relations.
 
 \begin{code}
-
-open import UF-Equiv
-open import UF-EquivalenceExamples
-
-open import UF-Size hiding (is-small ; is-locally-small)
-
-open import UF-Subsingletons-FunExt
 
 is-small : (X : 𝓤 ̇  ) → 𝓥 ⁺ ⊔ 𝓤 ̇
 is-small X = X has-size 𝓥
@@ -396,14 +403,12 @@ small-binary-relation-equivalence {𝓤} {𝓦} {𝓣} {X} {Y} {R} =
    φ : {𝓤 𝓥 𝓦 : Universe}
        {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {Z : (Σ x ꞉ X , Y x) → 𝓦 ̇ }
      → Π Z ≃ (Π x ꞉ X , Π y ꞉ Y x , Z (x , y))
-   φ = curry-uncurry (λ _ _ → fe)
+   φ = curry-uncurry fe'
    I   = ≃-sym φ
    II  = ΠΣ-distr-≃
    III = Σ-cong (λ R → φ)
    IV  = Σ-change-of-variable (λ R' → (x : X) (y : Y) → R' x y ≃ R x y)
           ⌜ φ ⌝ (⌜⌝-is-equiv φ)
-
--- TODO: Comment
 
 module _
         (𝓓 : DCPO {𝓤} {𝓣})
@@ -439,6 +444,13 @@ module _
   syntax reflexivityₛ x = x ∎ₛ
   infix 1 reflexivityₛ
 
+\end{code}
+
+This ends our helper function for the record and we proceed by giving the
+alternative definitions of local smallness and proving their equivalence.
+
+\begin{code}
+
  is-locally-small-Σ : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
  is-locally-small-Σ =
    Σ _⊑ₛ_ ꞉ (⟨ 𝓓 ⟩ → ⟨ 𝓓 ⟩ → 𝓥 ̇  ) , ((x y : ⟨ 𝓓 ⟩) → (x ⊑ₛ y) ≃ (x ⊑⟨ 𝓓 ⟩ y))
@@ -460,23 +472,19 @@ module _
  local-smallness-equivalent-definitions =
   is-locally-small-record-equivalence ● ≃-sym (small-binary-relation-equivalence)
 
- module _
-         (pe : PropExt)
-        where
+ being-locally-small'-is-prop : PropExt → is-prop is-locally-small'
+ being-locally-small'-is-prop pe =
+  Π₂-is-prop fe (λ x y → prop-being-small-is-prop pe fe'
+                          (x ⊑⟨ 𝓓 ⟩ y) (prop-valuedness 𝓓 x y) 𝓥)
 
-  being-locally-small'-is-prop : is-prop is-locally-small'
-  being-locally-small'-is-prop =
-   Π₂-is-prop fe (λ x y → prop-being-small-is-prop pe (λ _ _ → fe)
-                           (x ⊑⟨ 𝓓 ⟩ y) (prop-valuedness 𝓓 x y) 𝓥)
-
-  being-locally-small-is-prop : is-prop is-locally-small
-  being-locally-small-is-prop =
-   equiv-to-prop local-smallness-equivalent-definitions
-                 being-locally-small'-is-prop
+ being-locally-small-is-prop : PropExt → is-prop is-locally-small
+ being-locally-small-is-prop pe =
+  equiv-to-prop local-smallness-equivalent-definitions
+                (being-locally-small'-is-prop pe)
 
 \end{code}
 
-TODO
+Being locally small is preserved by continuous retracts.
 
 \begin{code}
 
@@ -514,7 +522,8 @@ local-smallness-preserved-by-continuous-retract 𝓓 𝓔 ρ ls =
 
 \end{code}
 
-TODO: Reorder the material in this file
+Moving on from local smallness, we present a few useful lemmas on cofinality and
+(joins of) directed families.
 
 \begin{code}
 
@@ -593,11 +602,12 @@ directed-if-bicofinal 𝓓 {I} {J} {α} {β} κ₁ κ₂ δ =
 
 \end{code}
 
-TODO: Write comment
+Finally, we sometimes wish to reindex a directed family by another equivalent
+type. The resulting family is of course directed again and has the same
+supremum, which is what we prove here.
 
 \begin{code}
 
--- TODO: Move elsewhere
 module _
         (𝓓 : DCPO {𝓤} {𝓣})
         {I : 𝓦 ̇  } {J : 𝓦' ̇  }
