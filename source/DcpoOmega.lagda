@@ -1,5 +1,11 @@
 Tom de Jong, 28 February 2022
 
+We show that the type Ω 𝓤 of propositions in a universe 𝓤 form an algebraic
+pointed 𝓤-dcpo.
+
+In fact, we show that the Booleans give a small compact basis for Ω 𝓤 and
+characterize the compact elements of Ω 𝓤 as the decidable propositions.
+
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe #-}
@@ -17,13 +23,15 @@ module DcpoOmega
         (𝓤 : Universe)
        where
 
-open PropositionalTruncation pt
+open import DecidableAndDetachable
 
 open import UF-Equiv
+open import UF-EquivalenceExamples
 open import UF-ImageAndSurjection
 open import UF-Subsingletons-FunExt
 
 open ImageAndSurjection pt
+open PropositionalTruncation pt
 
 open import Poset fe
 
@@ -75,6 +83,12 @@ P ⊑ Q = P holds → Q holds
 
 Ω-DCPO⊥ : DCPO⊥ {𝓤 ⁺} {𝓤}
 Ω-DCPO⊥ = Ω-DCPO , ((𝟘 , 𝟘-is-prop) , (λ _ → 𝟘-elim))
+
+\end{code}
+
+We proceed by showing that the Booleans give a small compact basis for Ω 𝓤.
+
+\begin{code}
 
 ⊤ : Ω 𝓤
 ⊤ = 𝟙 , 𝟙-is-prop
@@ -155,6 +169,12 @@ in-image-of-κ-if-compact P P-cpt = ∥∥-functor goal claim
 Ω-has-specified-small-compact-basis : has-specified-small-compact-basis Ω-DCPO
 Ω-has-specified-small-compact-basis = (Bool , κ , κ-is-small-compact-basis)
 
+\end{code}
+
+Hence, Ω 𝓤 is algebraic.
+
+\begin{code}
+
 Ω-structurally-algebraic : structurally-algebraic Ω-DCPO
 Ω-structurally-algebraic =
  structurally-algebraic-if-specified-small-compact-basis Ω-DCPO
@@ -165,12 +185,10 @@ in-image-of-κ-if-compact P P-cpt = ∥∥-functor goal claim
 
 \end{code}
 
-TODO: Comment
+Finally, it follows that the compact elements of Ω 𝓤 are exactly the decidable
+propositions.
 
 \begin{code}
-
-open import DecidableAndDetachable
-open import UF-EquivalenceExamples
 
 compact-iff-decidable : (P : Ω 𝓤) → is-compact Ω-DCPO P ⇔ decidable (P holds)
 compact-iff-decidable P = ⦅⇒⦆ , ⦅⇐⦆
