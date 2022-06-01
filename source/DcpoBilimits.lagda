@@ -9,6 +9,9 @@ This formalization is based on Scott's "Continuous lattices"
 
 We specialize to ℕ-indexed diagrams in DcpoBilimitsSequential.lagda.
 
+We also prove that taking the bilmit preserves local smallness and that it is
+closed under structural continuity/algebraicity and having a small (compact) basis.
+
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe --experimental-lossy-unification #-}
@@ -44,15 +47,23 @@ module DcpoBilimits
         (𝓤 𝓣 : Universe)
        where
 
-open PropositionalTruncation pt
+open import UF-Equiv
+open import UF-EquivalenceExamples
+open import UF-ImageAndSurjection
+open import UF-Subsingletons
+open import UF-Subsingletons-FunExt
 
-open import Dcpo pt fe 𝓥
-open import DcpoMiscelanea pt fe 𝓥
+open ImageAndSurjection pt
+open PropositionalTruncation pt
 
 open import Poset fe
 
-open import UF-Subsingletons
-open import UF-Subsingletons-FunExt
+open import Dcpo pt fe 𝓥
+open import DcpoBases pt fe 𝓥
+open import DcpoContinuous pt fe 𝓥
+open import DcpoExponential pt fe 𝓥
+open import DcpoMiscelanea pt fe 𝓥
+open import DcpoWayBelow pt fe 𝓥
 
 module Diagram
         {I : 𝓥 ̇ }
@@ -175,9 +186,6 @@ module Diagram
 
  π∞-commutes-with-πs : (i j : I) (l : i ⊑ j) → π l ∘ π∞ j ∼ π∞ i
  π∞-commutes-with-πs i j l σ = π-equality σ l
-
- open import UF-ImageAndSurjection
- open ImageAndSurjection pt
 
  κ : {i j : I} → ⟨ 𝓓 i ⟩ → (Σ k ꞉ I , i ⊑ k × j ⊑ k) → ⟨ 𝓓 j ⟩
  κ x (k , lᵢ , lⱼ) = π lⱼ (ε lᵢ x)
@@ -769,8 +777,6 @@ isomorphic to its own self-exponential.
 
 \begin{code}
 
- open import DcpoExponential pt fe 𝓥
-
  ε∞π∞-family : I → ⟨ 𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞ ⟩
  ε∞π∞-family i = DCPO-∘ 𝓓∞ (𝓓 i) 𝓓∞ (π∞' i) (ε∞' i)
 
@@ -817,9 +823,6 @@ If every dcpo in the diagram is locally small, then so is its bilimit.
 
 \begin{code}
 
- open import UF-Equiv
- open import UF-EquivalenceExamples
-
  𝓓∞-is-locally-small : ((i : I) → is-locally-small (𝓓 i))
                      → is-locally-small 𝓓∞
  𝓓∞-is-locally-small ls = record { _⊑ₛ_ = _⊑ₛ⟨∞⟩_ ; ⊑ₛ-≃-⊑ = γ }
@@ -838,7 +841,12 @@ If every dcpo in the diagram is locally small, then so is its bilimit.
 
 \end{code}
 
-TODO: Write comment
+Next we are going to show that taking the bilimit is closed under structural
+continuity/algebraicity and having a small (compact) basis.
+
+To ease the development we first develop some generalities. Given I-indexed
+families αᵢ from Jᵢ into 𝓓ᵢ, we construct a family α∞ from Σ J to 𝓓∞ and present
+criteria for the family α∞ to be directed.
 
 \begin{code}
 
@@ -850,13 +858,51 @@ TODO: Write comment
   J∞ : 𝓥 ̇
   J∞ = Σ i ꞉ I , J i
 
-  J∞-is-inhabited : ((i : I) → ∥ J i ∥)
-                  → ∥ J∞ ∥
+  J∞-is-inhabited : ((i : I) → ∥ J i ∥) → ∥ J∞ ∥
   J∞-is-inhabited J-inh =
    ∥∥-rec ∥∥-is-prop (λ i → ∥∥-functor (λ j → (i , j)) (J-inh i)) I-inhabited
 
   α∞ : J∞ → ⟨ 𝓓∞ ⟩
   α∞ (i , j) = ε∞ i (α i j)
+
+  α∞-∐-≡ : (σ : ⟨ 𝓓∞ ⟩) (δ : (i : I) → is-Directed (𝓓 i) (α i))
+         → ((i : I) → ∐ (𝓓 i) (δ i) ≡ ⦅ σ ⦆ i)
+         → (δ∞ : is-Directed 𝓓∞ α∞)
+         → ∐ 𝓓∞ δ∞ ≡ σ
+  α∞-∐-≡ σ δ e δ∞ = claim₁ ∙ claim₂ ⁻¹
+   where
+    δ' : (i : I) → is-Directed 𝓓∞ (ε∞ i ∘ α i)
+    δ' i = image-is-directed' (𝓓 i) 𝓓∞ (ε∞' i) (δ i)
+    e₁ : ε∞-family σ ≡ (λ i → ε∞ i (∐ (𝓓 i) (δ i)))
+    e₁ = dfunext fe (λ i → ap (ε∞ i) (e i) ⁻¹)
+    e₂ : (λ i → ε∞ i (∐ (𝓓 i) (δ i))) ≡ (λ i → ∐ 𝓓∞ (δ' i))
+    e₂ = dfunext fe (λ i → continuous-∐-≡ (𝓓 i) 𝓓∞ (ε∞' i) (δ i))
+
+    δ₁ : is-Directed 𝓓∞ (λ (i : I) → ε∞ i (∐ (𝓓 i) (δ i)))
+    δ₁ = transport (is-Directed 𝓓∞) e₁ (ε∞-family-is-directed σ)
+    δ₂ : is-Directed 𝓓∞ (λ i → ∐ 𝓓∞ (δ' i))
+    δ₂ = transport (is-Directed 𝓓∞) e₂ δ₁
+
+    claim₂ = σ                            ≡⟨ ∐-of-ε∞s σ ⟩
+           ∐ 𝓓∞ (ε∞-family-is-directed σ) ≡⟨ ⦅1⦆ ⟩
+           ∐ 𝓓∞ δ₁                        ≡⟨ ⦅2⦆ ⟩
+           ∐ 𝓓∞ δ₂                        ∎
+     where
+      ⦅1⦆ = ∐-family-≡ 𝓓∞ e₁ (ε∞-family-is-directed σ)
+      ⦅2⦆ = ∐-family-≡ 𝓓∞ e₂ δ₁
+
+    claim₁ : ∐ 𝓓∞ {Σ J} {α∞} δ∞ ≡ ∐ 𝓓∞ {I} {λ i → ∐ 𝓓∞ (δ' i)} δ₂
+    claim₁ = antisymmetry 𝓓∞ (∐ 𝓓∞ δ∞) (∐ 𝓓∞ δ₂)
+              (∐-is-lowerbound-of-upperbounds 𝓓∞ δ∞ (∐ 𝓓∞ δ₂)
+                (λ (i , j) → transitivity 𝓓∞
+                              (α∞ (i , j))
+                              (∐ 𝓓∞ (δ' i))
+                              (∐ 𝓓∞ δ₂)
+                              (∐-is-upperbound 𝓓∞ (δ' i) j)
+                              (∐-is-upperbound 𝓓∞ δ₂ i)))
+              (∐-is-lowerbound-of-upperbounds 𝓓∞ δ₂ (∐ 𝓓∞ δ∞)
+                (λ i → ∐-is-lowerbound-of-upperbounds 𝓓∞ (δ' i) (∐ 𝓓∞ δ∞)
+                       ((λ j → ∐-is-upperbound 𝓓∞ δ∞ (i , j)))))
 
   α∞-is-semidirected-lemma : (i i' : I) (j : J i) (j' j'' : J i') (k : J∞)
                              (u : i ⊑ i')
@@ -864,7 +910,7 @@ TODO: Write comment
                            → α i' j' ⊑⟨ 𝓓 i' ⟩ α i' j''
                            → α∞ (i , j) ⊑⟨ 𝓓∞ ⟩ α∞ (i' , j'')
   α∞-is-semidirected-lemma i i' j j' j'' k u v w x =
-   -- TODO: We do everyting at x : I to avoid yellow
+   -- We do everyting at x : I to avoid problems with implicit arguments.
    ⦅ α∞ (i , j)          ⦆ x ⊑⟨ 𝓓 x ⟩[ ⦅1⦆ ]
    ⦅ ε∞ i (α i j)        ⦆ x ⊑⟨ 𝓓 x ⟩[ ⦅2⦆ ]
    ⦅ ε∞ i' (ε u (α i j)) ⦆ x ⊑⟨ 𝓓 x ⟩[ ⦅3⦆ ]
@@ -912,68 +958,6 @@ TODO: Write comment
            ineq₁ = α∞-is-semidirected-lemma i₁ i j₁ j₁' j (i , j) u₁ v₁ w₁
            ineq₂ : α∞ (i₂ , j₂) ⊑⟨ 𝓓∞ ⟩ α∞ (i , j)
            ineq₂ = α∞-is-semidirected-lemma i₂ i j₂ j₂' j (i , j) u₂ v₂ w₂
-
-  α∞-∐-≡ : (σ : ⟨ 𝓓∞ ⟩) (δ : (i : I) → is-Directed (𝓓 i) (α i))
-         → ((i : I) → ∐ (𝓓 i) (δ i) ≡ ⦅ σ ⦆ i)
-         → (δ∞ : is-Directed 𝓓∞ α∞)
-         → ∐ 𝓓∞ δ∞ ≡ σ
-  α∞-∐-≡ σ δ e δ∞ = claim₁ ∙ claim₂ ⁻¹
-   where
-    δ' : (i : I) → is-Directed 𝓓∞ (ε∞ i ∘ α i)
-    δ' i = image-is-directed' (𝓓 i) 𝓓∞ (ε∞' i) (δ i)
-    e₁ : ε∞-family σ ≡ (λ i → ε∞ i (∐ (𝓓 i) (δ i)))
-    e₁ = dfunext fe (λ i → ap (ε∞ i) (e i) ⁻¹)
-    e₂ : (λ i → ε∞ i (∐ (𝓓 i) (δ i))) ≡ (λ i → ∐ 𝓓∞ (δ' i))
-    e₂ = dfunext fe (λ i → continuous-∐-≡ (𝓓 i) 𝓓∞ (ε∞' i) (δ i))
-
-    δ₁ : is-Directed 𝓓∞ (λ (i : I) → ε∞ i (∐ (𝓓 i) (δ i)))
-    δ₁ = transport (is-Directed 𝓓∞) e₁ (ε∞-family-is-directed σ)
-    δ₂ : is-Directed 𝓓∞ (λ i → ∐ 𝓓∞ (δ' i))
-    δ₂ = transport (is-Directed 𝓓∞) e₂ δ₁
-
-    claim₂ = σ                            ≡⟨ ∐-of-ε∞s σ ⟩
-           ∐ 𝓓∞ (ε∞-family-is-directed σ) ≡⟨ ⦅1⦆ ⟩
-           ∐ 𝓓∞ δ₁                        ≡⟨ ⦅2⦆ ⟩
-           ∐ 𝓓∞ δ₂                        ∎
-     where
-      ⦅1⦆ = ∐-family-≡ 𝓓∞ e₁ (ε∞-family-is-directed σ)
-      ⦅2⦆ = ∐-family-≡ 𝓓∞ e₂ δ₁
-
-    claim₁ : ∐ 𝓓∞ {Σ J} {α∞} δ∞ ≡ ∐ 𝓓∞ {I} {λ i → ∐ 𝓓∞ (δ' i)} δ₂
-    claim₁ = antisymmetry 𝓓∞ (∐ 𝓓∞ δ∞) (∐ 𝓓∞ δ₂)
-              (∐-is-lowerbound-of-upperbounds 𝓓∞ δ∞ (∐ 𝓓∞ δ₂)
-                (λ (i , j) → transitivity 𝓓∞
-                              (α∞ (i , j))
-                              (∐ 𝓓∞ (δ' i))
-                              (∐ 𝓓∞ δ₂)
-                              (∐-is-upperbound 𝓓∞ (δ' i) j)
-                              (∐-is-upperbound 𝓓∞ δ₂ i)))
-              (∐-is-lowerbound-of-upperbounds 𝓓∞ δ₂ (∐ 𝓓∞ δ∞)
-                (λ i → ∐-is-lowerbound-of-upperbounds 𝓓∞ (δ' i) (∐ 𝓓∞ δ∞)
-                       ((λ j → ∐-is-upperbound 𝓓∞ δ∞ (i , j)))))
-
-  open import DcpoWayBelow pt fe 𝓥 -- TODO: Move this?
-
-  α∞-is-way-below : (σ : ⟨ 𝓓∞ ⟩)
-                  → ((i : I) (j : J i) → α i j ≪⟨ 𝓓 i ⟩ ⦅ σ ⦆ i)
-                  → (j : J∞) → α∞ j ≪⟨ 𝓓∞ ⟩ σ
-  α∞-is-way-below σ wb (i , j) = ≪-⊑-to-≪ 𝓓∞ lem (ε∞π∞-deflation σ)
-   where
-    lem : ε∞ i (α i j) ≪⟨ 𝓓∞ ⟩ ε∞ i (π∞ i σ)
-    lem = embeddings-preserve-≪ (𝓓 i) 𝓓∞
-           (ε∞ i) (ε∞-is-continuous i)
-           (π∞ i) (π∞-is-continuous i)
-           ε∞-section-of-π∞ ε∞π∞-deflation
-           (α i j) (π∞ i σ)
-           (wb i j)
-
-  α∞-is-compact : ((i : I) (j : J i) → is-compact (𝓓 i) (α i j))
-                → (j : J∞) → is-compact 𝓓∞ (α∞ j)
-  α∞-is-compact κ (i , j) = embeddings-preserve-compactness (𝓓 i) 𝓓∞
-                             (ε∞ i) (ε∞-is-continuous i)
-                             (π∞ i) (π∞-is-continuous i)
-                             ε∞-section-of-π∞ ε∞π∞-deflation
-                             (α i j) (κ i j)
 
   α∞-is-semidirected-criterion' :
      (σ : ⟨ 𝓓∞ ⟩)
@@ -1024,11 +1008,41 @@ TODO: Write comment
 
 \end{code}
 
+The construction that defines the family α∞ into 𝓓∞ preserves the way-below
+relation and compactness in a sense made precise below.
 
 \begin{code}
 
- open import DcpoWayBelow   pt fe 𝓥
- open import DcpoContinuous pt fe 𝓥
+  α∞-is-way-below : (σ : ⟨ 𝓓∞ ⟩)
+                  → ((i : I) (j : J i) → α i j ≪⟨ 𝓓 i ⟩ ⦅ σ ⦆ i)
+                  → (j : J∞) → α∞ j ≪⟨ 𝓓∞ ⟩ σ
+  α∞-is-way-below σ wb (i , j) = ≪-⊑-to-≪ 𝓓∞ lem (ε∞π∞-deflation σ)
+   where
+    lem : ε∞ i (α i j) ≪⟨ 𝓓∞ ⟩ ε∞ i (π∞ i σ)
+    lem = embeddings-preserve-≪ (𝓓 i) 𝓓∞
+           (ε∞ i) (ε∞-is-continuous i)
+           (π∞ i) (π∞-is-continuous i)
+           ε∞-section-of-π∞ ε∞π∞-deflation
+           (α i j) (π∞ i σ)
+           (wb i j)
+
+  α∞-is-compact : ((i : I) (j : J i) → is-compact (𝓓 i) (α i j))
+                → (j : J∞) → is-compact 𝓓∞ (α∞ j)
+  α∞-is-compact κ (i , j) = embeddings-preserve-compactness (𝓓 i) 𝓓∞
+                             (ε∞ i) (ε∞-is-continuous i)
+                             (π∞ i) (π∞-is-continuous i)
+                             ε∞-section-of-π∞ ε∞π∞-deflation
+                             (α i j) (κ i j)
+
+\end{code}
+
+It is now fairly straightforward to prove that if each 𝓓ᵢ is structurally
+continuous, then so is its bilimit 𝓓∞.
+
+Note how we don't expect to have a similar result for ordinary continuity,
+because this seems to need instances of the axiom of choice in general.
+
+\begin{code}
 
  𝓓∞-structurally-continuous : ((i : I) → structurally-continuous (𝓓 i))
                             → structurally-continuous 𝓓∞
@@ -1080,7 +1094,7 @@ TODO: Write comment
 
 \end{code}
 
-TODO: Comment on building on the above
+Similarly, if each 𝓓ᵢ is structurally algebraic then so is its bilimit 𝓓∞.
 
 \begin{code}
 
@@ -1113,9 +1127,10 @@ TODO: Comment on building on the above
 
 \end{code}
 
-\begin{code}
+With a little bit more work, we can show that if each 𝓓ᵢ comes equipped with a
+small (compact) basis, then the bilimit 𝓓∞ does too.
 
- open import DcpoBases pt fe 𝓥
+\begin{code}
 
  𝓓∞-has-small-basis : ((i : I) → has-specified-small-basis (𝓓 i))
                     → has-specified-small-basis 𝓓∞
@@ -1205,12 +1220,6 @@ TODO: Comment on building on the above
           transport (λ - → is-sup (underlying-order 𝓓∞) - (↡ι 𝓓∞ β∞ σ ∘ ι))
                     (sublemma₂ ⁻¹)
                     (∐-is-sup 𝓓∞ sublemma₁)
-
-\end{code}
-
-TODO: Put comment
-
-\begin{code}
 
  𝓓∞-has-small-compact-basis :
     ((i : I) → has-specified-small-compact-basis (𝓓 i))
