@@ -1,4 +1,4 @@
-STom de Jong, 27 May 2019.
+Tom de Jong, 27 May 2019.
 Refactored December 2021.
 
 * Continuous K and S functions. These will interpret the K and S combinators of
@@ -28,8 +28,9 @@ open import UF-Subsingletons-FunExt
 
 open import Poset fe
 open import Dcpo pt fe 𝓥
-open import DcpoMiscelanea pt fe 𝓥
 open import DcpoExponential pt fe 𝓥
+open import DcpoMiscelanea pt fe 𝓥
+open import DcpoPointed pt fe 𝓥
 
 \end{code}
 
