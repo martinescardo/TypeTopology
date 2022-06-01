@@ -20,7 +20,7 @@ module DcpoBases
 
 open PropositionalTruncation pt
 
-open import UF-Base hiding (_≈_)
+open import UF-Base
 open import UF-Equiv
 open import UF-EquivalenceExamples
 
@@ -58,6 +58,12 @@ module _
   ≪ᴮₛ-≃-≪ᴮ : {b : B} {x : ⟨ 𝓓 ⟩} → (b ≪ᴮₛ x) ≃ (β b ≪⟨ 𝓓 ⟩ x)
   ≪ᴮₛ-≃-≪ᴮ {b} {x} = pr₂ (≪ᴮ-is-small x b)
 
+  ≪ᴮₛ-to-≪ᴮ : {b : B} {x : ⟨ 𝓓 ⟩} → (b ≪ᴮₛ x) → (β b ≪⟨ 𝓓 ⟩ x)
+  ≪ᴮₛ-to-≪ᴮ = ⌜ ≪ᴮₛ-≃-≪ᴮ ⌝
+
+  ≪ᴮ-to-≪ᴮₛ : {b : B} {x : ⟨ 𝓓 ⟩} → (β b ≪⟨ 𝓓 ⟩ x) → (b ≪ᴮₛ x)
+  ≪ᴮ-to-≪ᴮₛ = ⌜ ≪ᴮₛ-≃-≪ᴮ ⌝⁻¹
+
   ≪ᴮₛ-is-prop-valued : {b : B} {x : ⟨ 𝓓 ⟩} → is-prop (b ≪ᴮₛ x)
   ≪ᴮₛ-is-prop-valued = equiv-to-prop ≪ᴮₛ-≃-≪ᴮ (≪-is-prop-valued 𝓓)
 
@@ -77,12 +83,12 @@ module _
     ⦅1⦆ : ∐ 𝓓 (↡ᴮₛ-is-directed x) ⊑⟨ 𝓓 ⟩ x
     ⦅1⦆ = ∐-is-lowerbound-of-upperbounds 𝓓 (↡ᴮₛ-is-directed x) x
           (λ (b , u) → sup-is-upperbound (underlying-order 𝓓) (↡ᴮ-is-sup x)
-                        (b , (⌜ ≪ᴮₛ-≃-≪ᴮ ⌝ u)))
+                        (b , ≪ᴮₛ-to-≪ᴮ u))
     ⦅2⦆ : x ⊑⟨ 𝓓 ⟩ ∐ 𝓓 (↡ᴮₛ-is-directed x)
     ⦅2⦆ = sup-is-lowerbound-of-upperbounds (underlying-order 𝓓) (↡ᴮ-is-sup x)
           (∐ 𝓓 (↡ᴮₛ-is-directed x))
           (λ (b , v) → ∐-is-upperbound 𝓓 (↡ᴮₛ-is-directed x)
-                        (b , (⌜ ≪ᴮₛ-≃-≪ᴮ ⌝⁻¹ v)))
+                        (b , ≪ᴮ-to-≪ᴮₛ v))
 
   ↡ᴮₛ-∐-⊑ : (x : ⟨ 𝓓 ⟩) → ∐ 𝓓 (↡ᴮₛ-is-directed x) ⊑⟨ 𝓓 ⟩ x
   ↡ᴮₛ-∐-⊑ x = ≡-to-⊑ 𝓓 (↡ᴮₛ-∐-≡ x)
@@ -90,8 +96,8 @@ module _
   ↡ᴮₛ-∐-⊒ : (x : ⟨ 𝓓 ⟩) → x ⊑⟨ 𝓓 ⟩ ∐ 𝓓 (↡ᴮₛ-is-directed x)
   ↡ᴮₛ-∐-⊒ x = ≡-to-⊒ 𝓓 (↡ᴮₛ-∐-≡ x)
 
-  ↡ᴮₛ-way-below : (x : ⟨ 𝓓 ⟩) (b : ↡ᴮₛ x) → ↡ιₛ x b ≪⟨ 𝓓 ⟩ x
-  ↡ᴮₛ-way-below x (b , u) = ⌜ ≪ᴮₛ-≃-≪ᴮ ⌝ u
+  ↡ᴮₛ-is-way-below : (x : ⟨ 𝓓 ⟩) (b : ↡ᴮₛ x) → ↡ιₛ x b ≪⟨ 𝓓 ⟩ x
+  ↡ᴮₛ-is-way-below x (b , u) = ≪ᴮₛ-to-≪ᴮ u
 
 
 
@@ -106,7 +112,7 @@ module _
     index-of-approximating-family     = ↡ᴮₛ ;
     approximating-family              = ↡ιₛ ;
     approximating-family-is-directed  = ↡ᴮₛ-is-directed ;
-    approximating-family-is-way-below = ↡ᴮₛ-way-below ;
+    approximating-family-is-way-below = ↡ᴮₛ-is-way-below ;
     approximating-family-∐-≡          = ↡ᴮₛ-∐-≡
    }
 
@@ -149,7 +155,7 @@ module _
 
   small-basis-nullary-interpolationₛ : (x : ⟨ 𝓓 ⟩) → ∃ b ꞉ B , b ≪ᴮₛ x
   small-basis-nullary-interpolationₛ x =
-   ∥∥-functor (λ (b , u) → b , (⌜ ≪ᴮₛ-≃-≪ᴮ ⌝⁻¹ u))
+   ∥∥-functor (λ (b , u) → b , ≪ᴮ-to-≪ᴮₛ u)
              (small-basis-nullary-interpolation x)
 
   small-basis-unary-interpolation : {x y : ⟨ 𝓓 ⟩} → x ≪⟨ 𝓓 ⟩ y
@@ -202,8 +208,8 @@ module _
                            (↡ᴮ-is-sup (β c)) (∐ 𝓓 δ)
                             (λ (b , b-way-below-c) →
                               ∐-is-upperbound 𝓓 δ
-                               (b , c , ⌜ ≪ᴮₛ-≃-≪ᴮ ⌝⁻¹ b-way-below-c
-                                      , ⌜ ≪ᴮₛ-≃-≪ᴮ ⌝⁻¹ c-way-below-y)))
+                               (b , c , ≪ᴮ-to-≪ᴮₛ b-way-below-c
+                                      , ≪ᴮ-to-≪ᴮₛ c-way-below-y)))
 
     claim : ∃ i ꞉ I , x ⊑⟨ 𝓓 ⟩ π i
     claim = x-way-below-y I π δ y-below-sup-of-π
@@ -214,8 +220,8 @@ module _
       γ : (Σ i ꞉ I , x ⊑⟨ 𝓓 ⟩ π i)
         → Σ b ꞉ B , (x ≪⟨ 𝓓 ⟩ β b) × (β b ≪⟨ 𝓓 ⟩ y)
       γ ((b , c , b-way-below-c , c-way-below-y) , x-below-b) =
-       (c , (⊑-≪-to-≪ 𝓓 x-below-b (⌜ ≪ᴮₛ-≃-≪ᴮ ⌝ b-way-below-c))
-          , ⌜ ≪ᴮₛ-≃-≪ᴮ ⌝ c-way-below-y)
+       (c , ⊑-≪-to-≪ 𝓓 x-below-b (≪ᴮₛ-to-≪ᴮ b-way-below-c)
+          , ≪ᴮₛ-to-≪ᴮ c-way-below-y)
 
   -- TODO: Explain use of do-notation
   small-basis-binary-interpolation : {x y z : ⟨ 𝓓 ⟩} → x ≪⟨ 𝓓 ⟩ z → y ≪⟨ 𝓓 ⟩ z
@@ -244,8 +250,8 @@ module _
                     β c₂ ⊑⟨ 𝓓 ⟩[ c₂-below-c ]
                     β c  ∎⟨ 𝓓 ⟩
    ∣ c , ≪-⊑-to-≪ 𝓓 x-way-below-b₁ b₁-below-c
-       , (≪-⊑-to-≪ 𝓓 y-way-below-b₂ b₂-below-c)
-       , ⌜ ≪ᴮₛ-≃-≪ᴮ ⌝ c-way-below-z ∣
+       , ≪-⊑-to-≪ 𝓓 y-way-below-b₂ b₂-below-c
+       , ≪ᴮₛ-to-≪ᴮ c-way-below-z ∣
 
 
 
@@ -562,7 +568,7 @@ module _
       σ : (x : ⟨ 𝓓 ⟩) → ↡ᴮₛ (s x) → ↡ᴮ 𝓓 (r ∘ β) x
       σ x (b , b-way-below-sx) =
        (b , continuous-retraction-≪-criterion 𝓓 𝓔 ρ (β b) x
-             (⌜ ≪ᴮₛ-≃-≪ᴮ ⌝ b-way-below-sx))
+             (≪ᴮₛ-to-≪ᴮ b-way-below-sx))
 
       ε : (x : ⟨ 𝓓 ⟩) → is-Directed 𝓔 (↡ιₛ (s x))
       ε x = ↡ᴮₛ-is-directed (s x)

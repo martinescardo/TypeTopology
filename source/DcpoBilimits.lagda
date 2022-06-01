@@ -1177,16 +1177,13 @@ TODO: Comment on building on the above
            w = embeddings-preserve-≪ (𝓓 i) 𝓓∞
                 (ε∞ i) (ε∞-is-continuous i) (π∞ i) (π∞-is-continuous i)
                 ε∞-section-of-π∞ ε∞π∞-deflation
-                (β i b) (⦅ σ ⦆ i) (⌜ ≪ᴮₛ-≃-≪ᴮ (β-is-small-basis i) ⌝ u)
-                                  -- TODO: Make explicit ≪ᴮₛ-to-≪ᴮ function and
-                                  -- drop the final ᴮ?
+                (β i b) (⦅ σ ⦆ i) (≪ᴮₛ-to-≪ᴮ (β-is-small-basis i) u)
 
        sublemma₁ : is-Directed 𝓓∞ (↡ι 𝓓∞ β∞ σ ∘ ι)
        sublemma₁ = α∞-is-directed-criterion σ
                     (λ i → ↡ᴮₛ-is-directed (β-is-small-basis i) (⦅ σ ⦆ i))
                     (λ i → ↡ᴮₛ-∐-⊒ (β-is-small-basis i) (⦅ σ ⦆ i))
-                    (λ i → ↡ᴮₛ-way-below (β-is-small-basis i) (⦅ σ ⦆ i))
-                    -- TODO: Rename to ↡ᴮₛ-is-way-below?
+                    (λ i → ↡ᴮₛ-is-way-below (β-is-small-basis i) (⦅ σ ⦆ i))
 
        sublemma₂ : σ ≡ ∐ 𝓓∞ sublemma₁
        sublemma₂ = (α∞-∐-≡ σ δs es sublemma₁) ⁻¹

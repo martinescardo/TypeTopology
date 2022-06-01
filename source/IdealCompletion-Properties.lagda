@@ -534,7 +534,7 @@ module Idl-common -- TODO: Rethink module name
 
  ↡ᴮ-is-monotone : (x y : ⟨ 𝓓 ⟩) → x ⊑⟨ 𝓓 ⟩ y → ↡ᴮ-subset x ⊆ ↡ᴮ-subset y
  ↡ᴮ-is-monotone x y x-below-y b b-way-below-x =
-  ⌜ ≪ᴮₛ-≃-≪ᴮ ⌝⁻¹ (≪-⊑-to-≪ 𝓓 (⌜ ≪ᴮₛ-≃-≪ᴮ ⌝ b-way-below-x) x-below-y)
+  ≪ᴮ-to-≪ᴮₛ (≪-⊑-to-≪ 𝓓 (≪ᴮₛ-to-≪ᴮ b-way-below-x) x-below-y)
 
  ↡ᴮ-is-continuous : {I : 𝓥 ̇  } {α : I → ⟨ 𝓓 ⟩} (δ : is-Directed 𝓓 α)
                   → is-sup _⊆_ (↡ᴮ-subset (∐ 𝓓 δ)) (↡ᴮ-subset ∘ α)
@@ -542,8 +542,7 @@ module Idl-common -- TODO: Rethink module name
   where
    ub : is-upperbound _⊆_ (↡ᴮ-subset (∐ 𝓓 δ)) (↡ᴮ-subset ∘ α)
    ub i b b-way-below-αᵢ =
-    ⌜ ≪ᴮₛ-≃-≪ᴮ ⌝⁻¹ (≪-⊑-to-≪ 𝓓 (⌜ ≪ᴮₛ-≃-≪ᴮ ⌝ b-way-below-αᵢ)
-                                 (∐-is-upperbound 𝓓 δ i))
+    ≪ᴮ-to-≪ᴮₛ (≪-⊑-to-≪ 𝓓 (≪ᴮₛ-to-≪ᴮ b-way-below-αᵢ) (∐-is-upperbound 𝓓 δ i))
    lb-of-ubs : is-lowerbound-of-upperbounds _⊆_
                 (↡ᴮ-subset (∐ 𝓓 δ)) (↡ᴮ-subset ∘ α)
    lb-of-ubs S S-is-ub b b-way-below-∐α =
@@ -551,7 +550,7 @@ module Idl-common -- TODO: Rethink module name
      where
       claim₁ : ∃ c ꞉ B , (β b ≪⟨ 𝓓 ⟩ β c) × (β c ≪⟨ 𝓓 ⟩ (∐ 𝓓 δ))
       claim₁ = small-basis-unary-interpolation 𝓓 β β-is-small-basis
-               (⌜ ≪ᴮₛ-≃-≪ᴮ ⌝ b-way-below-∐α)
+                (≪ᴮₛ-to-≪ᴮ b-way-below-∐α)
       lemma₁ : (Σ c ꞉ B , (β b ≪⟨ 𝓓 ⟩ β c) × (β c ≪⟨ 𝓓 ⟩ (∐ 𝓓 δ)))
              → b ∈ S
       lemma₁ (c , b-way-below-c , c-way-below-∐α) =
@@ -561,7 +560,7 @@ module Idl-common -- TODO: Rethink module name
          claim₂ = c-way-below-∐α I α δ (reflexivity 𝓓 (∐ 𝓓 δ))
          lemma₂ : (Σ i ꞉ I , β c ⊑⟨ 𝓓 ⟩ α i) → b ∈ S
          lemma₂ (i , c-below-αᵢ) =
-          S-is-ub i b (⌜ ≪ᴮₛ-≃-≪ᴮ ⌝⁻¹ (≪-⊑-to-≪ 𝓓 b-way-below-c c-below-αᵢ))
+          S-is-ub i b (≪ᴮ-to-≪ᴮₛ (≪-⊑-to-≪ 𝓓 b-way-below-c c-below-αᵢ))
 
  ∐-of-directed-subset : (I : 𝓟 B)
                       → is-Directed 𝓓 (β ∘ 𝕋-to-carrier I)
@@ -588,7 +587,7 @@ module Idl-common -- TODO: Rethink module name
   ∥∥-rec (∈-is-prop I b) lemma claim
    where
     claim : ∃ i ꞉ 𝕋 I , β b ⊑⟨ 𝓓 ⟩ β ((𝕋-to-carrier I) i)
-    claim = ⌜ ≪ᴮₛ-≃-≪ᴮ ⌝ b-way-below-sup (𝕋 I) (β ∘ 𝕋-to-carrier I) δ
+    claim = ≪ᴮₛ-to-≪ᴮ b-way-below-sup (𝕋 I) (β ∘ 𝕋-to-carrier I) δ
              (reflexivity 𝓓 (∐ 𝓓 δ))
     lemma : (Σ i ꞉ 𝕋 I , β b ⊑⟨ 𝓓 ⟩ β ((𝕋-to-carrier I) i))
           → b ∈ I
@@ -604,7 +603,7 @@ module Idl-common -- TODO: Rethink module name
    lemma : (Σ c ꞉ B , (c ∈ I) × (β b ≪⟨ 𝓓 ⟩ β c))
          → b ≪ᴮₛ ∐-of-directed-subset I δ
    lemma (c , c-in-I , b-way-below-c) =
-    ⌜ ≪ᴮₛ-≃-≪ᴮ ⌝⁻¹ (≪-⊑-to-≪ 𝓓 b-way-below-c (∐-is-upperbound 𝓓 δ (c , c-in-I)))
+    ≪ᴮ-to-≪ᴮₛ (≪-⊑-to-≪ 𝓓 b-way-below-c (∐-is-upperbound 𝓓 δ (c , c-in-I)))
 
  ∐-↡ᴮ-retract : (I : 𝓟 B) {δ : is-Directed 𝓓 (β ∘ 𝕋-to-carrier I)}
               → ((b c : B) → β b ⊑⟨ 𝓓 ⟩ β c → c ∈ I → b ∈ I)
@@ -621,7 +620,7 @@ module Idl-common -- TODO: Rethink module name
                         → ((b c : B) → b ≺ c → β b ⊑⟨ 𝓓 ⟩ β c)
                         → (b c : B) → b ≺ c → c ∈ ↡ᴮ-subset x → b ∈ ↡ᴮ-subset x
   ↡ᴮ-lowerset-criterion x β-mon b c b-below-c c-way-below-x =
-   ⌜ ≪ᴮₛ-≃-≪ᴮ ⌝⁻¹ (⊑-≪-to-≪ 𝓓 (β-mon b c b-below-c) (⌜ ≪ᴮₛ-≃-≪ᴮ ⌝ c-way-below-x))
+   ≪ᴮ-to-≪ᴮₛ (⊑-≪-to-≪ 𝓓 (β-mon b c b-below-c) (≪ᴮₛ-to-≪ᴮ c-way-below-x))
 
   ↡ᴮ-semidirected-set-criterion : (x : ⟨ 𝓓 ⟩)
                                 → ((b c : B) → β b ≪⟨ 𝓓 ⟩ β c → b ≺ c)
@@ -629,14 +628,14 @@ module Idl-common -- TODO: Rethink module name
                                 → ∃ c ꞉ B , c ∈ ↡ᴮ-subset x × (a ≺ c) × (b ≺ c)
   ↡ᴮ-semidirected-set-criterion x β-mon a b a-way-below-x b-way-below-x =
    ∥∥-functor h (small-basis-binary-interpolation 𝓓 β β-is-small-basis
-                 (⌜ ≪ᴮₛ-≃-≪ᴮ ⌝ a-way-below-x)
-                 (⌜ ≪ᴮₛ-≃-≪ᴮ ⌝ b-way-below-x))
+                 (≪ᴮₛ-to-≪ᴮ a-way-below-x)
+                 (≪ᴮₛ-to-≪ᴮ b-way-below-x))
     where
      h : (Σ c ꞉ B , (β a ≪⟨ 𝓓 ⟩ β c) × (β b ≪⟨ 𝓓 ⟩ β c) × (β c ≪⟨ 𝓓 ⟩ x))
        → (Σ c ꞉ B , c ∈ ↡ᴮ-subset x × (a ≺ c) × (b ≺ c))
      h (c , a-way-below-c , b-way-below-c , c-way-below-x) =
-      (c , ⌜ ≪ᴮₛ-≃-≪ᴮ ⌝⁻¹ c-way-below-x , β-mon a c a-way-below-c
-                                        , β-mon b c b-way-below-c)
+      (c , ≪ᴮ-to-≪ᴮₛ c-way-below-x , β-mon a c a-way-below-c
+                                   , β-mon b c b-way-below-c)
 
 \end{code}
 
@@ -839,8 +838,7 @@ module Idl-continuous
        ideals-are-lowersets I I-is-ideal b c' l c'-in-I
         where
          l : b ≺ c'
-         l = (⌜ ≪ᴮₛ-≃-≪ᴮ ⌝⁻¹
-               (⊑-≪-to-≪ 𝓓 b-below-c (⌜ ≪ᴮₛ-≃-≪ᴮ ⌝ c-way-below-c')))
+         l = (≪ᴮ-to-≪ᴮₛ (⊑-≪-to-≪ 𝓓 b-below-c (≪ᴮₛ-to-≪ᴮ c-way-below-c')))
     claim₂ : (b : B) → b ∈ I → ∃ c ꞉ B , c ∈ I × β b ≪⟨ 𝓓 ⟩ β c
     claim₂ b b-in-I = ∥∥-functor h (roundedness 𝕀 b-in-I)
      where
