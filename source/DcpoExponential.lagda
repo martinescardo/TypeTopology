@@ -1,8 +1,11 @@
 Tom de Jong, May 2019.
 Major additions January 2020.
+Added sup-complete exponentials somewhere in February - March 2022.
 
 We construct the exponential (pointed) dcpos (𝓓 ⟹ᵈᶜᵖᵒ 𝓔) and (𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓔) for
-(pointed) dcpos 𝓓 and 𝓔.
+(pointed) dcpos 𝓓 and 𝓔. We also show that if 𝓔 is sup-complete, then the
+exponential (𝓓 ⟹ᵈᶜᵖᵒ 𝓔) is also sup-complete (even if 𝓓 isn't). This comes in
+useful when proving that exponentials of sup-complete dcpos are algebraic.
 
 \begin{code}
 
