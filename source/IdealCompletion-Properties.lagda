@@ -18,24 +18,19 @@ module IdealCompletion-Properties
         (fe : Fun-Ext)
         (pe : Prop-Ext)
         (𝓥 : Universe) -- universe where the index types for directedness
-                        -- completeness live
+                       -- completeness live
        where
-
-open import Dcpo pt fe 𝓥
-open import DcpoMiscelanea pt fe 𝓥
-
--- open import DcpoAlgebraic pt fe 𝓥
-open import DcpoWayBelow pt fe 𝓥
--- open import DcpoBasis pt fe 𝓥
-
-open import DcpoBases pt fe 𝓥
-open import DcpoContinuous pt fe 𝓥
-
-
-open import IdealCompletion pt fe pe 𝓥
 
 open import UF-Equiv
 open import UF-Powerset
+
+open import Dcpo pt fe 𝓥
+open import DcpoBases pt fe 𝓥
+open import DcpoContinuous pt fe 𝓥
+open import DcpoMiscelanea pt fe 𝓥
+open import DcpoWayBelow pt fe 𝓥
+
+open import IdealCompletion pt fe pe 𝓥
 
 open PropositionalTruncation pt
 
