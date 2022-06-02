@@ -26,172 +26,23 @@ module Todd.TernaryBoehmDyadicReals
   (pe : PropExt)
  where
 
+open import Todd.DyadicReals pt fe
 open import Todd.RationalsDyadic fe
+open import Todd.TernaryBoehmRealsPrelude fe
 open import Todd.TernaryBoehmReals fe pe hiding (ι)
-
-\end{code}
-
-First, we define the properties of the dyadic rationals which we may
-wish to use. These are postulated for now, but are all commonly
-accepted results that can be proved in the future.
-
-\begin{code}
-
-record DyadicProperties : 𝓤₁ ̇ where
- field
-  _ℤ[1/2]+_     : ℤ[1/2] → ℤ[1/2] → ℤ[1/2]
-  ℤ[1/2]+-comm  : commutative _ℤ[1/2]+_
-  ℤ[1/2]+-assoc : associative _ℤ[1/2]+_
-  ℤ[1/2]-_      : ℤ[1/2] → ℤ[1/2]
-  ℤ[1/2]+-inv   : (x : ℤ[1/2]) → Σ y ꞉ ℤ[1/2] , (x ℤ[1/2]+ y) ≡ 0ℤ[1/2]
-  _ℤ[1/2]*_     : ℤ[1/2] → ℤ[1/2] → ℤ[1/2]
-  ℤ[1/2]-comm   : commutative _ℤ[1/2]*_
-  ℤ[1/2]-assoc  : associative _ℤ[1/2]*_
-  ℤ[1/2]-negation-involutive : (x : ℤ[1/2]) → x ≡ ℤ[1/2]- (ℤ[1/2]- x)
-  
- infix 20  ℤ[1/2]-_
- infixl 19 _ℤ[1/2]-_
-
- _ℤ[1/2]-_ : (p q : ℤ[1/2]) → ℤ[1/2]
- p ℤ[1/2]- q = p ℤ[1/2]+ (ℤ[1/2]- q)
-
-  -- Could use alternative definition here, but since (a < b) ⇔ (2ᵃ < 2ᵇ), we can be simple
-  -- Perhaps we could prove this later
-  
-_≤ℤ[1/2]_ _<ℤ[1/2]_ : ℤ[1/2] → ℤ[1/2] → 𝓤₀ ̇ 
-((x , n) , _) ≤ℤ[1/2] ((y , m) , _) = (x * pos m) ≤ℤ (y * pos n)
-((x , n) , _) <ℤ[1/2] ((y , m) , _) = (x * pos m) <ℤ (y * pos n)
-
-\end{code}
-
-Define order notation so '<' and '≤' may be overloaded, and reduce
-clutter in code. Also, proofs that order relations are propositions
-follow easily from ℤ-order.
-
-\begin{code}
-
-instance
- Order-ℤ[1/2]-ℤ[1/2] : Order ℤ[1/2] ℤ[1/2]
- _≤_ {{Order-ℤ[1/2]-ℤ[1/2]}} = _≤ℤ[1/2]_
-
- Strict-Order-ℤ[1/2]-ℤ[1/2] : Strict-Order ℤ[1/2] ℤ[1/2]
- _<_ {{Strict-Order-ℤ[1/2]-ℤ[1/2]}} = _<ℤ[1/2]_
-
-≤ℤ[1/2]-is-prop : (x y : ℤ[1/2]) → is-prop (x ≤ℤ[1/2] y)
-≤ℤ[1/2]-is-prop ((x , a) , _) ((y , b) , _) = ℤ≤-is-prop (x * pos b) (y * pos a)
-
-<ℤ[1/2]-is-prop : (x y : ℤ[1/2]) → is-prop (x <ℤ[1/2] y)
-<ℤ[1/2]-is-prop ((x , a) , _) ((y , b) , _) = ℤ<-is-prop (x * pos b) (y * pos a)
-
-\end{code}
-
-We also want results about order. For now, they can be safely
-postulate, but can be proved in the future.
-
-\begin{code}
-
-record OrderProperties : 𝓤₁ ̇ where
- field
-  Dp : DyadicProperties
- open DyadicProperties Dp
- field
-  trans  : (x y z : ℤ[1/2]) → x < y → y < z → x < z
-  no-min : (x : ℤ[1/2]) → Σ y ꞉ ℤ[1/2] , (y < x)
-  no-max : (x : ℤ[1/2]) → Σ y ꞉ ℤ[1/2] , (x < y)
-  dense  : (x y : ℤ[1/2]) → Σ k ꞉ ℤ[1/2] , x < k × (k < y)
---  <-addition : (x y z : ℤ[1/2]) → x < y → (x ℤ[1/2]+ z) < (y ℤ[1/2]+ z)
---  ≤-addition : (x y z : ℤ[1/2]) → x ≤ y → (x ℤ[1/2]+ z) ≤ (y ℤ[1/2]+ z)
- {-
- _<_<_ : (x y z : ℤ[1/2]) → 𝓤₀ ̇
- x < y < z = (x < y) × (y < z)
-
- _≤_≤_ : (x y z : ℤ[1/2]) → 𝓤₀ ̇
- x ≤ y ≤ z = (x ≤ y) × (y ≤ z)
- -}
- trans₂ : (w x y z : ℤ[1/2]) → w < x → x < y → y < z → w < z
- trans₂ w x y z w<x x<y y<z = trans w x z w<x (trans x y z x<y y<z)
 
 open PropositionalTruncation pt
 module _
-  (DyPr : DyadicProperties)
   (DyOrPr : OrderProperties)
  where
-
- open DyadicProperties DyPr
+ 
  open OrderProperties DyOrPr
- {-
- <-addition : (x y z : ℤ[1/2]) → x < y → (x ℤ[1/2]+ z) < (y ℤ[1/2]+ z)
- <-addition = {!!}
-
- <₂-addition : (w x y z : ℤ[1/2]) → w < x < y → {!!}
- <₂-addition = {!!}
- -}
-\end{code}
-
-Now, we introduce the reals defined using dyadic rationals. Dyadic
-rationals are dense, so should be a good foundation for the reals, and
-correlate well with the ternary Boehm reals.
-
-\begin{code}
-
- inhabited-left : (L : 𝓟 ℤ[1/2]) → 𝓤₀ ̇
- inhabited-left L = ∃ p ꞉ ℤ[1/2] , p ∈ L
-
- inhabited-right : (R : 𝓟 ℤ[1/2]) → 𝓤₀ ̇
- inhabited-right R = ∃ q ꞉ ℤ[1/2] , q ∈ R
-
- rounded-left : (L : 𝓟 ℤ[1/2]) → 𝓤₀ ̇
- rounded-left L = (x : ℤ[1/2]) → (x ∈ L ⇔ (∃ p ꞉ ℤ[1/2] , (x < p) × p ∈ L))
-
- rounded-right : (R : 𝓟 ℤ[1/2]) → 𝓤₀ ̇
- rounded-right R = (x : ℤ[1/2]) → x ∈ R ⇔ (∃ q ꞉ ℤ[1/2] , (q < x) × q ∈ R)
-
- disjoint : (L R : 𝓟 ℤ[1/2]) → 𝓤₀ ̇
- disjoint L R = (p q : ℤ[1/2]) → p ∈ L × q ∈ R → p < q
-
- located : (L R : 𝓟 ℤ[1/2]) → 𝓤₀ ̇
- located L R = (p q : ℤ[1/2]) → p < q → p ∈ L ∨ q ∈ R
-
- isCut : (L R : 𝓟 ℤ[1/2]) → 𝓤₀ ̇
- isCut L R = inhabited-left L
-           × inhabited-right R
-           × rounded-left L
-           × rounded-right R
-           × disjoint L R
-           × located L R
-
- ℝ-d : 𝓤₁  ̇
- ℝ-d = Σ (L , R) ꞉ 𝓟 ℤ[1/2] × 𝓟 ℤ[1/2] , isCut L R
-
- lower-cut-of : ℝ-d → 𝓟 ℤ[1/2]
- lower-cut-of ((L , R) , _) = L
-
- upper-cut-of : ℝ-d → 𝓟 ℤ[1/2]
- upper-cut-of ((L , R) , _) = R
-
- in-lower-cut : ℤ[1/2] → ℝ-d → 𝓤₀ ̇
- in-lower-cut q ((L , R) , _) = q ∈ L
-
- in-upper-cut : ℤ[1/2] → ℝ-d → 𝓤₀ ̇
- in-upper-cut q ((L , R) , _) = q ∈ R
-
- ℝ-d-equality-from-left-cut : {x y : ℝ-d}
-                            → lower-cut-of x ⊆ lower-cut-of y
-                            → lower-cut-of y ⊆ lower-cut-of x
-                            → x ≡ y
- ℝ-d-equality-from-left-cut { x } { y } Lx⊆Ly Ly⊆Lx = {!!}
-
- instance
-  Strict-Order-ℤ[1/2]-ℝ-d : Strict-Order ℤ[1/2] ℝ-d
-  _<_ {{Strict-Order-ℤ[1/2]-ℝ-d}} = in-lower-cut
-
-  Strict-Order-ℝ-d-ℤ[1/2] : Strict-Order ℝ-d ℤ[1/2]
-  _<_ {{Strict-Order-ℝ-d-ℤ[1/2]}} = λ y q → in-upper-cut q y
+ open DyadicProperties Dp
 
 \end{code}
 
-The following defines machinery to obtain the interval representation
-of a Ternary Boehm object at each layer n.
+The following defines machinery to obtain the interval representations
+of a ternary Boehm object at each layer n.
 
 \begin{code}
 
@@ -201,23 +52,19 @@ of a Ternary Boehm object at each layer n.
  encoding_at-level_ : 𝕋 → ℤ → ℤ[1/2] × ℤ[1/2]
  encoding (x , _) at-level n = brick (x n) on-level n
 
- li ri : 𝕋 → ℤ → ℤ[1/2]
- li t n = pr₁ (encoding t at-level n)
- ri t n = pr₂ (encoding t at-level n)
+ lb rb : 𝕋 → ℤ → ℤ[1/2]
+ lb t n = pr₁ (encoding t at-level n)
+ rb t n = pr₂ (encoding t at-level n)
 
- difference-positive : (x y : ℤ[1/2]) → x < y → 0ℤ[1/2] < (y ℤ[1/2]- x)
- difference-positive = {!!}
-
- disjoint-lemma : ((x , b) : 𝕋) → (i j : ℤ)
-                 → li (x , b) i < ri (x , b) j
- disjoint-lemma = {!!}
+ disjoint-lemma : (t : 𝕋) → (i j : ℤ) → lb t i < rb t j
+ disjoint-lemma t i j = {!!}
 
  located-lemma₁ : (p q l r : ℤ[1/2]) → (r ℤ[1/2]- l) < (q ℤ[1/2]- p)
                 → (p < l) ∔ (r < q)
  located-lemma₁ = {!!}
 
- located-lemma₂ : ((x , b) : 𝕋) → (p : ℤ[1/2]) → 0ℤ[1/2] < p
-                → ∃ k ꞉ ℤ , ((ri (x , b) k) ℤ[1/2]- (li (x , b) k)) < p
+ located-lemma₂ : (t : 𝕋) → (p : ℤ[1/2]) → 0ℤ[1/2] < p
+                → ∃ k ꞉ ℤ , (rb t k ℤ[1/2]- lb t k) < p
  located-lemma₂ = {!!}
 
  _⊂_ : ℤ[1/2] × ℤ[1/2] → ℤ[1/2] × ℤ[1/2] → 𝓤₀ ̇ 
@@ -256,101 +103,94 @@ different sizes.
  ⟦ x , b ⟧ = (L , R) , inhabited-L , inhabited-R , rounded-L , rounded-R , is-disjoint , is-located
   where
    L R : 𝓟 ℤ[1/2]
-   L p = (∃ k ꞉ ℤ , p < li (x , b) k) , ∃-is-prop
-   R q = (∃ k ꞉ ℤ , ri (x , b) k < q) , ∃-is-prop
+   L p = (∃ k ꞉ ℤ , p < lb (x , b) k) , ∃-is-prop
+   R q = (∃ k ꞉ ℤ , rb (x , b) k < q) , ∃-is-prop
    
    inhabited-L : inhabited-left L
-   inhabited-L = let (m , m<l) = no-min (li (x , b) (pos 0))
+   inhabited-L = let (m , m<l) = no-min (lb (x , b) (pos 0))
                  in ∣ m , ∣ (pos 0) , m<l ∣ ∣
    inhabited-R : inhabited-right R
-   inhabited-R = let (m , r<m) = no-max (ri (x , b) (pos 0))
+   inhabited-R = let (m , r<m) = no-max (rb (x , b) (pos 0))
                  in ∣ m , ∣ pos 0 , r<m ∣  ∣
 
    rounded-L : rounded-left L
    rounded-L p = left-implication , right-implication
     where  
-     left-implication : ∃ k ꞉ ℤ , p < li (x , b) k
-                      → ∃ z ꞉ ℤ[1/2] , p < z × (∃ k' ꞉ ℤ , z < li (x , b) k')
+     left-implication : ∃ k ꞉ ℤ , p < lb (x , b) k
+                      → ∃ z ꞉ ℤ[1/2] , p < z × (∃ k' ꞉ ℤ , z < lb (x , b) k')
      left-implication  = ∥∥-functor I
       where
-       I : Σ k ꞉ ℤ , p < li (x , b) k
-         → Σ z ꞉ ℤ[1/2] , p < z × (∃ k' ꞉ ℤ , z < li (x , b) k')
-       I (k , p<l) = let (m , p<m , m<l) = dense p (li (x , b) k)
+       I : Σ k ꞉ ℤ , p < lb (x , b) k
+         → Σ z ꞉ ℤ[1/2] , p < z × (∃ k' ꞉ ℤ , z < lb (x , b) k')
+       I (k , p<l) = let (m , p<m , m<l) = dense p (lb (x , b) k)
                      in m , p<m , ∣ k , m<l ∣
-     right-implication : ∃ z ꞉ ℤ[1/2] , p < z × (∃ k' ꞉ ℤ , z < li (x , b) k')
-                       → ∃ k ꞉ ℤ , p < li (x , b) k
+     right-implication : ∃ z ꞉ ℤ[1/2] , p < z × (∃ k' ꞉ ℤ , z < lb (x , b) k')
+                       → ∃ k ꞉ ℤ , p < lb (x , b) k
      right-implication = ∥∥-rec ∃-is-prop I
       where
-       I : Σ z ꞉ ℤ[1/2] , p < z × (∃ k' ꞉ ℤ , z < li (x , b) k')
-         → ∃ k ꞉ ℤ , p < li (x , b) k
+       I : Σ z ꞉ ℤ[1/2] , p < z × (∃ k' ꞉ ℤ , z < lb (x , b) k')
+         → ∃ k ꞉ ℤ , p < lb (x , b) k
        I (z , p<z , z<l) = ∥∥-functor II z<l
         where
-         II : Σ k' ꞉ ℤ , z < li (x , b) k'
-            → Σ k ꞉ ℤ , p < li (x , b) k
-         II (k , z<l) = k , trans p z (li (x , b) k) p<z z<l 
+         II : Σ k' ꞉ ℤ , z < lb (x , b) k'
+            → Σ k ꞉ ℤ , p < lb (x , b) k
+         II (k , z<l) = k , trans p z (lb (x , b) k) p<z z<l 
 
    rounded-R : rounded-right R
    rounded-R q = left-implication , right-implication
     where
-     left-implication : ∃ k ꞉ ℤ , ri (x , b) k < q
-                      → ∃ z ꞉ ℤ[1/2] , z < q × (∃ k' ꞉ ℤ , ri (x , b) k' < z)
+     left-implication : ∃ k ꞉ ℤ , rb (x , b) k < q
+                      → ∃ z ꞉ ℤ[1/2] , z < q × (∃ k' ꞉ ℤ , rb (x , b) k' < z)
      left-implication = ∥∥-functor I
       where
-       I : Σ k ꞉ ℤ , ri (x , b) k < q
-         → Σ z ꞉ ℤ[1/2] , z < q × (∃ k' ꞉ ℤ , ri (x , b) k' < z)
-       I (k , r<z) = let (m , r<m , m<q) = dense (ri (x , b) k) q
+       I : Σ k ꞉ ℤ , rb (x , b) k < q
+         → Σ z ꞉ ℤ[1/2] , z < q × (∃ k' ꞉ ℤ , rb (x , b) k' < z)
+       I (k , r<z) = let (m , r<m , m<q) = dense (rb (x , b) k) q
                      in m , m<q , ∣ k , r<m ∣
-     right-implication : ∃ z ꞉ ℤ[1/2] , z < q × (∃ k' ꞉ ℤ , ri (x , b) k' < z)
-                       → ∃ k ꞉ ℤ , ri (x , b) k < q 
+     right-implication : ∃ z ꞉ ℤ[1/2] , z < q × (∃ k' ꞉ ℤ , rb (x , b) k' < z)
+                       → ∃ k ꞉ ℤ , rb (x , b) k < q 
      right-implication = ∥∥-rec ∃-is-prop I
       where
-       I : Σ z ꞉ ℤ[1/2] , z < q × (∃ k' ꞉ ℤ , ri (x , b) k' < z)
-         → ∃ k ꞉ ℤ , ri (x , b) k < q
+       I : Σ z ꞉ ℤ[1/2] , z < q × (∃ k' ꞉ ℤ , rb (x , b) k' < z)
+         → ∃ k ꞉ ℤ , rb (x , b) k < q
        I (z , z<q , r<z) = ∥∥-functor II r<z
         where
-         II : Σ k' ꞉ ℤ , ri (x , b) k' < z
-            → Σ k ꞉ ℤ , ri (x , b) k < q
-         II (k , r<z) = k , trans (ri (x , b) k) z q r<z z<q
+         II : Σ k' ꞉ ℤ , rb (x , b) k' < z
+            → Σ k ꞉ ℤ , rb (x , b) k < q
+         II (k , r<z) = k , trans (rb (x , b) k) z q r<z z<q
       
    is-disjoint : disjoint L R
    is-disjoint p q (p<l , r<q) = I (binary-choice p<l r<q)
     where
-     I : ∥ (Σ k ꞉ ℤ , p < li (x , b) k)
-         × (Σ k' ꞉ ℤ , ri (x , b) k' < q) ∥
+     I : ∥ (Σ k ꞉ ℤ , p < lb (x , b) k)
+         × (Σ k' ꞉ ℤ , rb (x , b) k' < q) ∥
        → p < q
      I = ∥∥-rec (<ℤ[1/2]-is-prop p q) II
       where
-       II : (Σ k ꞉ ℤ , p < li (x , b) k)
-          × (Σ k' ꞉ ℤ , ri (x , b) k' < q)
+       II : (Σ k ꞉ ℤ , p < lb (x , b) k)
+          × (Σ k' ꞉ ℤ , rb (x , b) k' < q)
           → p < q
        II ((k , p<l) , k' , r<q) = trans₂ p l r q p<l l<r r<q
         where
-         l = li (x , b) k
-         r = ri (x , b) k'
+         l = lb (x , b) k
+         r = rb (x , b) k'
          l<r = disjoint-lemma (x , b) k k'
 
    is-located : located L R
-   is-located p q p<q = ∥∥-rec ∨-is-prop I (located-lemma₂ (x , b) (q ℤ[1/2]- p) (difference-positive p q p<q))
+   is-located p q p<q = ∥∥-rec ∨-is-prop I (located-lemma₂ (x , b) (q ℤ[1/2]- p) (diff-positive p q p<q ))
     where
-     I : Σ k ꞉ ℤ , ((ri (x , b) k) ℤ[1/2]- (li (x , b) k)) < (q ℤ[1/2]- p)
+     I : Σ k ꞉ ℤ , ((rb (x , b) k) ℤ[1/2]- (lb (x , b) k)) < (q ℤ[1/2]- p)
        → (L p holds) ∨ (R q holds)
-     I (k , less) with located-lemma₁ p q (li (x , b) k) (ri (x , b) k) less
+     I (k , less) with located-lemma₁ p q (lb (x , b) k) (rb (x , b) k) less
      ... | inl p<l = ∣ inl ∣ k , p<l ∣ ∣
      ... | inr r<q = ∣ inr ∣ k , r<q ∣ ∣
                         
 \end{code}
-map : ℤ[1/2] → 𝕋
-map = {!!} -- use function called 'build-via' in TernaryBoehmReals.lagda.md
-
-proof : ((k , p) : ℤ[1/2])
-      → let x = map (k , p) in
-        (i : ℤ) → i > p → pr₁ (encoding x at-level i) ≡ (k , p) 
-proof = {!!}
-
-ι : ℤ[1/2] → ℝ
-ι = {!!}
 
 want to prove that (x : ℤ[1/2]) → ⟦ map x ⟧ ≡ ι x
+
+We now wish to introduce the map from encodings to TBR's : ℤ[1/2] → 𝕋.
+The intuition behind the map is that ... 
 
 \begin{code}
 
@@ -360,39 +200,113 @@ want to prove that (x : ℤ[1/2]) → ⟦ map x ⟧ ≡ ι x
  map : ℤ[1/2] → 𝕋
  map ((k , δ) , _) = build-via (k , pos δ)
 
- normalise-downLeft-rec : (k : ℤ) (δ : ℕ) → ∀ ζ → (n : ℕ) → normalise-pos ((downLeft ^ n) k) (δ +ℕ n) ≡ ((k , δ) , ζ)
- normalise-downLeft-rec k δ ζ zero = {!!}
- normalise-downLeft-rec k δ ζ (succ n) = {!!}
+ normalise-pos-lemma₁ : (k : ℤ) (δ : ℕ) (p : (δ ≡ 0) ∔ ((δ ≢ 0) × odd k))
+              → normalise-pos ((k + k) /2') δ ≡ (k , δ) , p
+ normalise-pos-lemma₁ k 0 (inl refl) = to-subtype-≡ (λ (z , n) → ℤ[1/2]-cond-is-prop z n) (to-×-≡ (div-by-two k) refl)
+ normalise-pos-lemma₁ k 0 (inr (δnz , k-odd)) = 𝟘-elim (δnz refl)
+ normalise-pos-lemma₁ k (succ δ) (inr p) with even-or-odd? ((k + k) /2')
+ normalise-pos-lemma₁ k (succ δ) (inr (δnz , k-odd)) | inl k-even = 𝟘-elim (k-even (transport odd (div-by-two k ⁻¹) k-odd))
+ ... | inr _ = to-subtype-≡ (λ (z , n) → ℤ[1/2]-cond-is-prop z n) (to-×-≡ (div-by-two k) refl)
 
- proof' : (z : ℤ[1/2]) → (i : ℤ) → (n : ℕ) → pos (succ (layer z)) +pos n ≡ i → li (map z) i ≡ z
- proof' z i zero refl with ℤ-trichotomous (pos (succ (layer z))) (pos (succ (layer z)))
- ... | inl (pr₃ , pr₄) = {!!}
- ... | inr y = {!!}
- proof' z .(pos (succ (layer z)) +pos succ n) (succ n) refl = {!!}
+ normalise-pos-lemma₂ : (k : ℤ) (δ : ℕ) → normalise-pos k δ ≡ normalise-pos (k + k) (succ δ)
+ normalise-pos-lemma₂ k δ with even-or-odd? (k + k)
+ ... | inl _ = ap (λ s → normalise-pos s δ) (div-by-two k ⁻¹)
+ ... | inr o = 𝟘-elim (times-two-even' k o)
+ 
+ normalise-lemma : (k : ℤ) (δ : ℕ) (n : ℕ) (p : (δ ≡ 0) ∔ ((δ ≢ 0) × odd k))
+                 → normalise (rec k downLeft n + rec k downLeft n , (pos (succ δ) + pos n)) ≡ (k , δ) , p
+ normalise-lemma k δ 0 p with even-or-odd? (k + k)
+ ... | inl even = normalise-pos-lemma₁ k δ p
+ ... | inr odd = 𝟘-elim (times-two-even' k odd)
+ normalise-lemma k δ (succ n) p with even-or-odd? (k + k)
+ ... | inl even = let y = rec k downLeft n 
+                      z = (y + y) in 
+                  normalise (z + z , (succℤ (pos (succ δ) + pos n))) ≡⟨ ap (λ - → normalise (z + z , succℤ -)) (pos-addition-equiv-to-ℕ (succ δ) n) ⟩
+                  normalise (z + z , succℤ (pos (succ δ +ℕ n)))      ≡⟨ refl ⟩
+                  normalise-pos (z + z) (succ (succ δ +ℕ n))         ≡⟨ normalise-pos-lemma₂ z (succ δ +ℕ n) ⁻¹ ⟩
+                  normalise-pos z (succ δ +ℕ n)                      ≡⟨ refl ⟩
+                  normalise (z , pos (succ δ +ℕ n))                  ≡⟨ ap (λ - → normalise (z , -)) (pos-addition-equiv-to-ℕ (succ δ) n ⁻¹) ⟩
+                  normalise (z , pos (succ δ) + pos n)               ≡⟨ normalise-lemma k δ n p ⟩
+                  (k , δ) , p ∎ 
+ ... | inr odd = 𝟘-elim (times-two-even' k odd)
+ 
+ lowest-terms-normalised : (((k , δ) , p) : ℤ[1/2]) → normalise-pos k δ ≡ ((k , δ) , p)
+ lowest-terms-normalised ((k , .0) , inl refl) = refl
+ lowest-terms-normalised ((k , zero) , inr (δnz , k-odd)) = 𝟘-elim (δnz refl)
+ lowest-terms-normalised ((k , succ δ) , inr (δnz , k-odd)) with even-or-odd? k
+ ... | inl k-even = 𝟘-elim (k-even k-odd)
+ ... | inr k-odd = to-subtype-≡ (λ (z , n) → ℤ[1/2]-cond-is-prop z n) refl
 
- open import Todd.TernaryBoehmRealsPrelude fe
+ map-lemma : (z : ℤ[1/2]) → (i : ℤ) → pos (layer z) < i → lb (map z) i ≡ z
+ map-lemma ((k , δ) , p) i δ<i with ℤ-trichotomous i (pos δ)
+ ... | inl i<δ       = 𝟘-elim (ℤ-equal-not-less-than i (ℤ<-trans i (pos δ) i i<δ δ<i))
+ ... | inr (inl i≡δ) = 𝟘-elim (ℤ-equal-not-less-than i (transport (_< i) (i≡δ ⁻¹) δ<i))
+ ... | inr (inr (n , refl)) with even-or-odd? (downLeft k)
+ ... | inr odd-2k = 𝟘-elim (times-two-even' k odd-2k)
+ map-lemma ((k , δ) , p) i δ<i | inr (inr (n , refl)) | inl even-2k = normalise-lemma k δ n p
 
- proof'' : (z : ℤ[1/2]) (i : ℤ) → let z' = pos (layer z) in
-           z' < i → (ζ : trich-locate i z')
-         → normalise ((build-via' (pr₁ (pr₁ z) , pos (pr₂ (pr₁ z))) i ζ) , i) ≡ z
- proof'' z i (0 , refl) ζ with even-or-odd? (build-via' (pr₁ (pr₁ z) , pos (pr₂ (pr₁ z))) i ζ)
- ... | inl _ = {!p!}
- ... | inr _ = {!!}
+ map-lemma-≤ : (z : ℤ[1/2]) → (i : ℤ) → pos (layer z) ≤ i → lb (map z) i ≡ z
+ map-lemma-≤ ((k , δ) , p) i δ≤i with ℤ≤-split (pos δ) i δ≤i
+ ... | inl δ<i = map-lemma ((k , δ) , p) i δ<i
+ ... | inr refl with ℤ-trichotomous (pos δ) (pos δ)
+ ... | inl δ<δ = 𝟘-elim (ℤ-equal-not-less-than (pos δ) δ<δ)
+ ... | inr (inr δ<δ) = 𝟘-elim (ℤ-equal-not-less-than (pos δ) δ<δ)
+ ... | inr (inl δ≡δ) = to-subtype-≡ (λ (z , n) → ℤ[1/2]-cond-is-prop z n) (ap pr₁ (lowest-terms-normalised ((k , δ) , p)))
 
- proof : (z : ℤ[1/2]) → (i : ℤ) → pos (layer z) < i → li (map z) i ≡ z
- proof z i (n , p) = {!!}
+ normalise-pos-lemma : {!!}
+ normalise-pos-lemma = {!!}
 
- embedding-ℤ[1/2]-to-ℝ-d : ℤ[1/2] → ℝ-d
- embedding-ℤ[1/2]-to-ℝ-d z = (L , R) , {!!}
+ {-
+ normalise-< : (((k₁ , δ₁) , p₁) ((k₂ , δ₂) , p₂) : ℤ[1/2])
+             → ((k₁ , δ₁) , p₁) < ((k₂ , δ₂) , p₂)
+             → normalise (k₁ , pos δ₁) < normalise (k₂ , pos δ₂)
+ normalise-< ((k₁ , δ₁) , p₁) ((k₂ , δ₂) , p₂) = {!!}
+
+ normalise-≤ : (((k₁ , δ₁) , p₁) ((k₂ , δ₂) , p₂) : ℤ[1/2])
+             → ((k₁ , δ₁) , p₁) ≤ ((k₂ , δ₂) , p₂)
+             → normalise (k₁ , pos δ₁) ≤ normalise (k₂ , pos δ₂)
+ normalise-≤ ((k₁ , δ₁) , p₁) ((k₂ , δ₂) , p₂) = {!!}
+ -}
+
+ normalise-≤ : ((k , δ) : ℤ × ℕ) → ((m , ε) : ℤ × ℕ)
+             → k * pos (2^ ε) ≤ m * pos (2^ δ)
+             → normalise (k , pos δ) ≤ normalise (m , pos ε)
+ normalise-≤ (k , 0) (m , 0) l = l
+ normalise-≤ (k , 0) (m , succ ε) l with even-or-odd? m
+ ... | inl m-even = {!!}
+ ... | inr m-odd = l
+ normalise-≤ (k , succ δ) (m , 0) l with even-or-odd? k
+ ... | inl k-even = {!!}
+ ... | inr k-odd = l
+ normalise-≤ (k , succ δ) (m , succ ε) l = {!!}
+
+ needed : {!!}
+ needed = {!!}
+
+ left-interval-monotonic' : (t : 𝕋) → (n : ℤ) → lb t n ≤ lb t (succℤ n)
+ left-interval-monotonic' (x , b) n = {!!}
+ -- goal : normalise ((x n) , n) ≤ normalise (x (succℤ n) , succℤ n)
   where
-   L : 𝓟 ℤ[1/2]
-   L p = p < z , <ℤ[1/2]-is-prop p z
-   R : 𝓟 ℤ[1/2]
-   R q = z < q , <ℤ[1/2]-is-prop z q
+   I : x n + x n ≤ x (succℤ n)
+   I = pr₁ (b n) 
+ 
+ left-interval-monotonic : (x : ℤ[1/2]) → (n : ℤ) → lb (map x) n ≤ lb (map x) (succℤ n)
+ left-interval-monotonic x n = let (f , b) = map x
+                               in left-interval-monotonic' (map x) n
 
- instance
-  canonical-map-ℤ[1/2]-to-ℝ-d : Canonical-Map ℤ[1/2] ℝ-d
-  ι {{canonical-map-ℤ[1/2]-to-ℝ-d}} = embedding-ℤ[1/2]-to-ℝ-d
+ left-interval-is-minimum : (x : ℤ[1/2]) → (n : ℤ) → lb (map x) n ≤ x
+ left-interval-is-minimum ((x , δ) , p) n with ℤ-trichotomous (pos δ) n
+ ... | inl δ<n = transport (_≤ ((x , δ) , p)) (map-lemma ((x , δ) , p) n δ<n ⁻¹) (≤-refl ((x , δ) , p))
+ ... | inr (inl refl) = transport (_≤ ((x , δ) , p)) (map-lemma-≤ (((x , δ) , p)) n (ℤ≤-refl (pos δ)) ⁻¹) (≤-refl ((x , δ) , p))
+ ... | inr (inr n<δ) = {!!}
+
+ encodings-agree-with-reals : (x : ℤ[1/2]) → ⟦ map x ⟧ ≡ ι x
+ encodings-agree-with-reals x = ℝ-d-equality-from-left-cut left right
+  where
+   left : (y : ℤ[1/2]) → (∃ n ꞉ ℤ , y < lb (map x) n) → y < x
+   left y = ∥∥-rec (<ℤ[1/2]-is-prop y x) λ (n , y<l) → trans<≤ y (lb (map x) n) x y<l (left-interval-is-minimum x n) 
+   right : (y : ℤ[1/2]) → y < x → ∃ n ꞉ ℤ , y < lb (map x) n
+   right y y<x = ∣ (pos (layer x) , (transport (y <_) (map-lemma-≤ x (pos (layer x) ) (ℤ≤-refl (pos (layer x))) ⁻¹) y<x)) ∣
 
 \end{code}
 
@@ -446,19 +360,21 @@ If we define subtraction at (λ n → - x n), then we obtain that
           (- x δ) - pos 2 + ((- x δ) + ((- pos 2) + pos 2)) ≡⟨ ap (λ z → (- x δ) - pos 2 + z) (ℤ+-assoc (- x δ) (- pos 2) (pos 2) ⁻¹) ⟩
           (- x δ) - pos 2 + ((- x δ) - pos 2 + pos 2)       ≡⟨ ℤ+-assoc ((- x δ) - pos 2) ((- x δ) - pos 2) (pos 2) ⁻¹ ⟩
           (- x δ) - pos 2 + ((- x δ) - pos 2) + pos 2       ∎
-  
+          
+ {-
  _𝕋+_ : 𝕋 → 𝕋 → 𝕋
- (x , b) 𝕋+ (y , b') = {!!}
-
+ (x , b) 𝕋+ (y , b') = (λ n → upRight (upRight ((x (n +pos 2)) + (y (n +pos 2))))) , {!!}
+ -}
+ {-
  _𝕋*_ : 𝕋 → 𝕋 → 𝕋
  (x , b) 𝕋* (y , b') = {!!}
-
+ -}
 \end{code}
 
 We also require the same operations for Dyadic Reals.
 
 \begin{code}
-
+ {-
  ℝd- : ℝ-d → ℝ-d
  ℝd- x = (L , R) , {!!}
   where
@@ -475,18 +391,18 @@ We also require the same operations for Dyadic Reals.
 
  _ℝd*_ : ℝ-d → ℝ-d → ℝ-d
  x ℝd* y = {!!}
-
+ -}
 \end{code}
 
 The result we are now interested in is proving that these operations
 on TBR and Dedekind reals correlate.
 
 \begin{code}
-
+ {-
  ℤ[1/2]<-swap : (x y : ℤ[1/2]) → (x < y) ⇔ (ℤ[1/2]- y) < (ℤ[1/2]- x)
  ℤ[1/2]<-swap = {!!}
+ -}
 
- open import UF-Base
 
  {-
  negation-commutes-lemma₁ : (k : 𝕋) → (n : ℤ)
