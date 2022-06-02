@@ -1,4 +1,7 @@
-Tom de Jong, 25 & 26 January 2022
+Tom de Jong, 25 & 26 January 2022.
+
+We show that 𝟙 + X is a small compact basis for the pointed dcpo 𝓛 X. In
+particular, this dcpo is algebraic.
 
 \begin{code}
 
@@ -68,7 +71,7 @@ locally small.
 
 \end{code}
 
-TODO: Write comments
+A small compact basis for 𝓛 X will be given by [⊥ , η] : 𝟙 + X → 𝓛 X.
 
 \begin{code}
 
@@ -154,7 +157,7 @@ TODO: Write comments
    α : I → 𝓛 X
    α = add-⊥ (𝓛-DCPO⊥ X-is-set) (η ∘ φ)
    δ : is-Directed (𝓛-DCPO X-is-set) α
-   -- TODO: This is where we use --experimental-lossy-unification
+   -- NB: This is where we use --experimental-lossy-unification
    δ = add-⊥-is-directed (𝓛-DCPO⊥ X-is-set) σ
     where
      σ : is-semidirected _⊑'_ (η ∘ φ)

@@ -1,5 +1,12 @@
 Tom de Jong, 9 February 2022
 
+We describe how to freely add a least element to a dcpo. This is done by lifting
+the underlying set, but when ordering the lifting, we have to take the order on
+the original dcpo into account.
+
+We also show that taking the free dcpo on a set X coincides with freely adding a
+least element to X when viewed as a discretely-ordered dcpo.
+
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe #-}
@@ -17,15 +24,13 @@ module DcpoLiftingGeneralized
         (pe : propext 𝓥)
        where
 
-open PropositionalTruncation pt
-
 open import UF-Equiv
-
+open import UF-ImageAndSurjection
 open import UF-Miscelanea
 open import UF-Subsingletons-FunExt
 
-open import UF-ImageAndSurjection
 open ImageAndSurjection pt
+open PropositionalTruncation pt
 
 open import Lifting 𝓥 hiding (⊥)
 open import LiftingIdentityViaSIP 𝓥
@@ -34,13 +39,18 @@ open import LiftingMiscelanea-PropExt-FunExt 𝓥 pe fe
                                              renaming ( ⊑'-to-⊑ to ⊑'-to-⊑''
                                                       ; ⊑-to-⊑' to ⊑''-to-⊑')
 
+open import Poset fe
 open import Dcpo pt fe 𝓥
 open import DcpoMiscelanea pt fe 𝓥
 open import DcpoPointed pt fe 𝓥
-open import DcpoLifting pt fe 𝓥 pe renaming ( 𝓛-DCPO  to 𝓛-DCPO-from-set
-                                            ; 𝓛-DCPO⊥ to 𝓛-DCPO⊥-from-set)
+open import DcpoLifting pt fe 𝓥 pe renaming ( 𝓛-DCPO  to 𝓛-DCPO-on-set
+                                            ; 𝓛-DCPO⊥ to 𝓛-DCPO⊥-on-set)
 
-open import Poset fe
+\end{code}
+
+We first construct the pointed dcpo.
+
+\begin{code}
 
 module freely-add-⊥
         (𝓓 : DCPO {𝓤} {𝓣})
@@ -161,6 +171,13 @@ module freely-add-⊥
  𝓛-DCPO⊥ = (𝓛-DCPO , (𝟘 , 𝟘-elim , 𝟘-is-prop)
                    , (λ l → 𝟘-elim , 𝟘-induction))
 
+\end{code}
+
+Of course, the map η from the dcpo to the lifted dcpo should be Scott
+continuous.
+
+\begin{code}
+
  η-is-continuous : is-continuous 𝓓 𝓛-DCPO η
  η-is-continuous I α δ = (ub , lb-of-ubs)
   where
@@ -189,13 +206,20 @@ module freely-add-⊥
    claim : k ⊑'' l
    claim = ⊑'-to-⊑'' k-below-l
 
+\end{code}
+
+We now prove that the construction above freely adds a least element to the
+dcpo.
+
+\begin{code}
+
  module _
          (𝓔 : DCPO⊥ {𝓤'} {𝓣'})
          (f : ⟨ 𝓓 ⟩ → ⟪ 𝓔 ⟫)
          (f-is-continuous : is-continuous 𝓓 (𝓔 ⁻) f)
         where
 
-  open lifting-is-free-dcpo-on-set (sethood 𝓓) 𝓔 f
+  open lifting-is-free-pointed-dcpo-on-set (sethood 𝓓) 𝓔 f
 
   f̃-is-monotone : is-monotone 𝓛-DCPO (𝓔 ⁻) f̃
   f̃-is-monotone k l k-below-l = ∐ˢˢ-is-lowerbound-of-upperbounds 𝓔 (f ∘ value k)
@@ -256,7 +280,7 @@ module freely-add-⊥
   f̃-after-η-is-f' = f̃-after-η-is-f
 
   𝓛-DCPOₛ : DCPO
-  𝓛-DCPOₛ = 𝓛-DCPO-from-set (sethood 𝓓)
+  𝓛-DCPOₛ = 𝓛-DCPO-on-set (sethood 𝓓)
 
   𝓛-monotone-lemma : (g : 𝓛D → ⟪ 𝓔 ⟫)
                    → is-monotone 𝓛-DCPO  (𝓔 ⁻) g
@@ -345,7 +369,7 @@ module freely-add-⊥
                → g ∼ f̃
   f̃-is-unique' g g-cont = f̃-is-unique g g-cont'
    where
-    g-cont' : is-continuous (𝓛-DCPO-from-set (sethood 𝓓)) (𝓔 ⁻) g
+    g-cont' : is-continuous (𝓛-DCPO-on-set (sethood 𝓓)) (𝓔 ⁻) g
     g-cont' = 𝓛-continuity-lemma g g-cont
 
   𝓛-gives-the-free-pointed-dcpo-on-a-dcpo :
@@ -368,6 +392,15 @@ module freely-add-⊥
                              (≃-funext fe (h ∘ η) f)
                              (Π-is-prop fe (λ _ → sethood (𝓔 ⁻)))))
                            ((dfunext fe (f̃-is-unique' g cont str eq)) ⁻¹)
+
+\end{code}
+
+Finally, we show that taking the free dcpo on a set X coincides with freely
+adding a least element to X when viewed as a discretely-ordered dcpo. This also
+follows abstractly from the fact that we can compose adjunctions, but we give a
+direct proof.
+
+\begin{code}
 
 module _
         {X : 𝓤 ̇ }
@@ -409,14 +442,13 @@ module _
 
  open freely-add-⊥
 
- -- TODO: Rename?
- 𝓛X̃-≃-𝓛X : 𝓛-DCPO⊥ X̃ ≃ᵈᶜᵖᵒ⊥ 𝓛-DCPO⊥-from-set X-is-set
- 𝓛X̃-≃-𝓛X = ≃ᵈᶜᵖᵒ-to-≃ᵈᶜᵖᵒ⊥ (𝓛-DCPO⊥ X̃) 𝓛-DCPO⊥-X
+ liftings-coincide : 𝓛-DCPO⊥ X̃ ≃ᵈᶜᵖᵒ⊥ 𝓛-DCPO⊥-on-set X-is-set
+ liftings-coincide = ≃ᵈᶜᵖᵒ-to-≃ᵈᶜᵖᵒ⊥ (𝓛-DCPO⊥ X̃) 𝓛-DCPO⊥-X
                            (id , id , (λ _ → refl) , (λ _ → refl) ,
                             cont₁ , cont₂)
   where
    𝓛-DCPO⊥-X : DCPO⊥
-   𝓛-DCPO⊥-X = 𝓛-DCPO⊥-from-set X-is-set
+   𝓛-DCPO⊥-X = 𝓛-DCPO⊥-on-set X-is-set
    cont₁ : is-continuous (𝓛-DCPO⊥ X̃ ⁻) (𝓛-DCPO⊥-X ⁻) id
    cont₁ I α δ = (ub , lb-of-ubs)
     where

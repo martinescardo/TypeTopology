@@ -1,6 +1,15 @@
 Tom de Jong, 27 May 2019.
 Refactored 29 April 2020.
 
+We show that lifting (cf. Escardó-Knapp) a set gives the free pointed dcpo on
+that set.
+
+When we start with a small set, then the lifting yields an algebraic pointed
+dcpo as formalized in LiftingAlgebraic.lagda.
+
+The construction that freely adds a least element to a dcpo is described in
+DcpoLiftingGeneralized.lagda.
+
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe #-}
@@ -38,6 +47,12 @@ open import DcpoMiscelanea pt fe 𝓣
 open import DcpoPointed pt fe 𝓣
 
 open import Poset fe
+
+\end{code}
+
+We start by showing that the lifting of a set is indeed a pointed dcpo.
+
+\begin{code}
 
 module _ {𝓤 : Universe}
          {X : 𝓤 ̇ }
@@ -201,9 +216,14 @@ module _ {𝓤 : Universe}
 
 \end{code}
 
+Finally we show that the lifting of a set gives the free pointed dcpo on that
+set. The main technical tool in proving this is the use of subsingleton suprema,
+cf. DcpoPointed.lagda, and the fact that every partial element can be expressed
+as such a supremum.
+
 \begin{code}
 
-module lifting-is-free-dcpo-on-set
+module lifting-is-free-pointed-dcpo-on-set
          {X : 𝓤 ̇ }
          (X-is-set : is-set X)
          (𝓓 : DCPO⊥ {𝓥} {𝓦})
@@ -327,7 +347,11 @@ module lifting-is-free-dcpo-on-set
 
 \end{code}
 
-TODO: Write comment
+In general, the lifting of a set is only directed complete and does not have all
+(small) sups, but if we lift propositions, then we do get all small suprema.
+
+As an application, we use this to prove that 𝓓∞ is algebraic in
+DcpoDinfinity.lagda.
 
 \begin{code}
 
