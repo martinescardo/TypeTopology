@@ -10,6 +10,7 @@ aim is to provide specific implementations of these postulates.
 open import SpartanMLTT renaming (_+_ to _∔_) -- TypeTopology
 
 open import IntegersB
+open import IntegersAbs
 open import IntegersAddition renaming (_+_ to _+ℤ_)
 open import IntegersMultiplication 
 open import IntegersNegation
@@ -42,6 +43,44 @@ negsucc x /2' = - (pos (succ x /2))
 
 2^ : ℕ → ℕ
 2^ = 2 ℕ^_
+
+zero-base : (a : ℕ) → a ℕ^ 0 ≡ 1
+zero-base a = refl
+
+prod-of-powers : (n a b : ℕ) → n ℕ^ a ℕ* n ℕ^ b ≡ n ℕ^ (a + b)
+prod-of-powers n a zero     = refl
+prod-of-powers n a (succ b) = I
+ where
+  I : n ℕ^ a ℕ* n ℕ^ succ b ≡ n ℕ^ (a + succ b)
+  I = n ℕ^ a ℕ* n ℕ^ succ b   ≡⟨ refl ⟩
+      n ℕ^ a ℕ* (n ℕ* n ℕ^ b) ≡⟨ mult-associativity (n ℕ^ a) n (n ℕ^ b) ⁻¹ ⟩
+      n ℕ^ a ℕ* n ℕ* n ℕ^ b   ≡⟨ ap (_ℕ* n ℕ^ b) (mult-commutativity (n ℕ^ a) n) ⟩
+      n ℕ* n ℕ^ a ℕ* n ℕ^ b   ≡⟨ mult-associativity n (n ℕ^ a) (n ℕ^ b) ⟩
+      n ℕ* (n ℕ^ a ℕ* n ℕ^ b) ≡⟨ ap (n ℕ*_) (prod-of-powers n a b) ⟩
+      n ℕ* n ℕ^ (a + b)       ≡⟨ refl ⟩
+      n ℕ^ succ (a + b)       ≡⟨ refl ⟩
+      n ℕ^ (a + succ b)       ∎
+
+raise-again : (n a b : ℕ) → (n ℕ^ a) ℕ^ b ≡ n ℕ^ (a ℕ* b)
+raise-again n a zero     = refl
+raise-again n a (succ b) = I
+ where
+  IH : n ℕ^ a ℕ^ b ≡ n ℕ^ (a ℕ* b)
+  IH = raise-again n a b
+  
+  I : n ℕ^ a ℕ^ succ b ≡ n ℕ^ (a ℕ* succ b)
+  I = n ℕ^ a ℕ^ succ b        ≡⟨ refl ⟩
+      n ℕ^ a ℕ* (n ℕ^ a) ℕ^ b ≡⟨ ap (n ℕ^ a ℕ*_) IH ⟩
+      n ℕ^ a ℕ* n ℕ^ (a ℕ* b) ≡⟨ prod-of-powers n a (a ℕ* b) ⟩
+      n ℕ^ (a + a ℕ* b)       ≡⟨ refl ⟩
+      n ℕ^ (a ℕ* succ b)      ∎
+
+power-of-pos-positive : ∀ n → greater-than-zero (pos (2^ n))
+power-of-pos-positive 0 = ⋆
+power-of-pos-positive (succ n) = transport greater-than-zero (pos-multiplication-equiv-to-ℕ 2 (2^ n)) I
+ where
+  I : greater-than-zero (pos 2 * pos (2^ n))
+  I = greater-than-zero-mult-trans (pos 2) (pos (2^ n)) ⋆ (power-of-pos-positive n) 
 
 negsucc-lemma : (x : ℕ) → negsucc x +ℤ negsucc x ≡ negsucc (x + succ x)
 negsucc-lemma x = negsucc x +ℤ negsucc x           ≡⟨ refl ⟩
@@ -170,21 +209,7 @@ normalise-pos' x (succ a) with even-or-odd? x
                   (x /2') * pos 2          ≡⟨ even-lemma x even-k ⟩ 
                   x ∎)
                   , ap succ e₂)
- 
-{-
- where
 
-  I : let (k , δ) , p = normalise-pos (x /2') a in
-     (pos (2^ m) * k ≡ x /2') × (δ + m ≡ a)
-    → pos (2^ (succ m)) * k , δ + succ m ≡ x , succ a
-  I (e₁ , e₂) = let (k , δ) , p = normalise-pos (x /2') a in
-                    to-×-≡ II III
-   where
-    II : pos (2^ (succ m)) * {!!} ≡ x
-    II = {!!}
-    III : {!δ!} + succ m ≡ succ a
-    III = {!!}
--}
 normalise : ℤ × ℤ → ℤ[1/2]
 normalise (k , pos     n) = normalise-pos k n
 normalise (k , negsucc n) = normalise-neg k n

@@ -13,6 +13,7 @@ open import IntegersAddition
 open import IntegersOrder
 open import IntegersMultiplication
 open import NaturalsAddition renaming (_+_ to _+ℕ_)
+open import NaturalsMultiplication renaming (_*_ to _*ℕ_)
 open import IntegersNegation
 open import UF-Base
 open import UF-FunExt
@@ -253,42 +254,44 @@ The intuition behind the map is that ...
  ... | inr (inr δ<δ) = 𝟘-elim (ℤ-equal-not-less-than (pos δ) δ<δ)
  ... | inr (inl δ≡δ) = to-subtype-≡ (λ (z , n) → ℤ[1/2]-cond-is-prop z n) (ap pr₁ (lowest-terms-normalised ((k , δ) , p)))
 
- normalise-pos-lemma : {!!}
- normalise-pos-lemma = {!!}
-
- {-
- normalise-< : (((k₁ , δ₁) , p₁) ((k₂ , δ₂) , p₂) : ℤ[1/2])
-             → ((k₁ , δ₁) , p₁) < ((k₂ , δ₂) , p₂)
-             → normalise (k₁ , pos δ₁) < normalise (k₂ , pos δ₂)
- normalise-< ((k₁ , δ₁) , p₁) ((k₂ , δ₂) , p₂) = {!!}
-
- normalise-≤ : (((k₁ , δ₁) , p₁) ((k₂ , δ₂) , p₂) : ℤ[1/2])
-             → ((k₁ , δ₁) , p₁) ≤ ((k₂ , δ₂) , p₂)
-             → normalise (k₁ , pos δ₁) ≤ normalise (k₂ , pos δ₂)
- normalise-≤ ((k₁ , δ₁) , p₁) ((k₂ , δ₂) , p₂) = {!!}
- -}
-
  normalise-≤ : ((k , δ) : ℤ × ℕ) → ((m , ε) : ℤ × ℕ)
              → k * pos (2^ ε) ≤ m * pos (2^ δ)
              → normalise (k , pos δ) ≤ normalise (m , pos ε)
- normalise-≤ (k , 0) (m , 0) l = l
- normalise-≤ (k , 0) (m , succ ε) l with even-or-odd? m
- ... | inl m-even = {!!}
- ... | inr m-odd = l
- normalise-≤ (k , succ δ) (m , 0) l with even-or-odd? k
- ... | inl k-even = {!!}
- ... | inr k-odd = l
- normalise-≤ (k , succ δ) (m , succ ε) l = {!!}
-
- needed : {!!}
- needed = {!!}
+ normalise-≤ (k , δ) (m , ε) l with normalise-pos' k δ , normalise-pos' m ε
+ ... | (n₁ , e₁) , (n₂ , e₂) = let (((k' , δ') , p) , ((m' , ε') , p')) = (normalise-pos k δ , normalise-pos m ε) in 
+  ℤ≤-ordering-right-cancellable
+   (k' * pos (2^ ε'))
+    (m' * pos (2^ δ'))
+     (pos (2^ (n₁ +ℕ n₂)))
+      (power-of-pos-positive (n₁ +ℕ n₂))
+       (transport₂ _≤_ (I k ε k' ε' n₁ n₂ (pr₁ (from-×-≡' e₁) ⁻¹) (pr₂ (from-×-≡' e₂) ⁻¹))
+                       ((I m δ m' δ' n₂ n₁ (pr₁ (from-×-≡' e₂) ⁻¹) (pr₂ (from-×-≡' e₁) ⁻¹))
+                        ∙ ap (λ z → m' * pos (2^ δ') * pos (2^ z)) (addition-commutativity n₂ n₁)) l)
+   where
+    k' = pr₁ (pr₁ (normalise-pos k δ))
+    δ' = pr₂ (pr₁ (normalise-pos k δ))
+    m' = pr₁ (pr₁ (normalise-pos m ε))
+    ε' = pr₂ (pr₁ (normalise-pos m ε))
+    I : (k : ℤ) (ε : ℕ) (k' : ℤ) (ε' : ℕ) (n₁ n₂ : ℕ) → k ≡ pos (2^ n₁) * k' → ε ≡ ε' +ℕ n₂ → k * pos (2^ ε) ≡ k' * pos (2^ ε') * pos (2^ (n₁ +ℕ n₂))
+    I k ε k' ε' n₁ n₂ e₁ e₂ =
+        k * pos (2^ ε)                            ≡⟨ ap (_* pos (2^ ε)) e₁ ⟩
+        pos (2^ n₁) * k' * pos (2^ ε)             ≡⟨ ap (_* pos (2^ ε)) (ℤ*-comm (pos (2^ n₁)) k') ⟩
+        k' * pos (2^ n₁) * pos (2^ ε)             ≡⟨ ap (λ z → k' * pos (2^ n₁) * pos (2^ z)) e₂ ⟩
+        k' * pos (2^ n₁) * pos (2^ (ε' +ℕ n₂))    ≡⟨ ℤ*-assoc k' (pos (2^ n₁)) (pos (2^ (ε' +ℕ n₂))) ⟩
+        k' * (pos (2^ n₁) * pos (2^ (ε' +ℕ n₂)))  ≡⟨ ap (k' *_) (pos-multiplication-equiv-to-ℕ (2^ n₁) (2^ (ε' +ℕ n₂))) ⟩
+        k' * pos ((2^ n₁) *ℕ 2^ (ε' +ℕ n₂))       ≡⟨ ap (λ z →  k' * pos ((2^ n₁) *ℕ z)) (prod-of-powers 2 ε' n₂ ⁻¹) ⟩
+        k' * pos (2^ n₁ *ℕ (2^ ε' *ℕ 2^ n₂))      ≡⟨ ap (λ z → k' * pos z) (mult-associativity (2^ n₁) (2^ ε') (2^ n₂) ⁻¹) ⟩
+        k' * pos (2^ n₁ *ℕ 2^ ε' *ℕ 2^ n₂)        ≡⟨ ap (λ z → k' * pos (z *ℕ 2^ n₂)) (mult-commutativity (2^ n₁) (2^ ε')) ⟩
+        k' * pos (2^ ε' *ℕ 2^ n₁ *ℕ 2^ n₂)        ≡⟨ ap (λ z → k' * pos z) (mult-associativity (2^ ε') (2^ n₁) (2^ n₂)) ⟩
+        k' * pos (2^ ε' *ℕ (2^ n₁ *ℕ 2^ n₂))      ≡⟨ ap (λ z → k' * z) (pos-multiplication-equiv-to-ℕ (2^ ε') (2^ n₁ *ℕ 2^ n₂) ⁻¹) ⟩
+        k' * (pos (2^ ε') * pos (2^ n₁ *ℕ 2^ n₂)) ≡⟨ ap (λ z → k' * (pos (2^ ε') * pos z)) (prod-of-powers 2 n₁ n₂) ⟩
+        k' * (pos (2^ ε') * pos (2^ (n₁ +ℕ n₂)))  ≡⟨ ℤ*-assoc k' (pos (2^ ε')) (pos (2^ (n₁ +ℕ n₂))) ⁻¹ ⟩
+        k' * pos (2^ ε') * pos (2^ (n₁ +ℕ n₂))    ∎
 
  left-interval-monotonic' : (t : 𝕋) → (n : ℤ) → lb t n ≤ lb t (succℤ n)
- left-interval-monotonic' (x , b) n = {!!}
+ left-interval-monotonic' (x , b) (pos n) = normalise-≤ ((x (pos n)) , n) (x (pos (succ n)) , succ n) {!!}
+ left-interval-monotonic' (x , b) (negsucc n) = {!!}
  -- goal : normalise ((x n) , n) ≤ normalise (x (succℤ n) , succℤ n)
-  where
-   I : x n + x n ≤ x (succℤ n)
-   I = pr₁ (b n) 
  
  left-interval-monotonic : (x : ℤ[1/2]) → (n : ℤ) → lb (map x) n ≤ lb (map x) (succℤ n)
  left-interval-monotonic x n = let (f , b) = map x
