@@ -1,13 +1,20 @@
 Tom de Jong, late February, early March 2022.
 
-TODO: Describe contents.
+We use single step functions to construct a small compact basis on the
+exponential of dcpos Eᴰ where D and E have small compact bases and E is
+sup-complete. This is used in DcpoDinfinity.lagda to show that 𝓓∞ has a small
+compact basis, and hence is algebraic.
 
-The flag --experimental-lossy-unification roughly reduces the timechecking time
-by 50%.
+We can prove a similar result for dcpos with a small bases that are not
+necessarily algebraic, but the formalization of this argument is not entirely
+complete, as it depends on a lemma on the sup-completeness of the ideal
+completion, see below for details.
 
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe --experimental-lossy-unification #-}
+-- The flag --experimental-lossy-unification roughly reduces the timechecking
+-- time by 50%.
 
 open import SpartanMLTT hiding (J)
 open import UF-FunExt
@@ -334,11 +341,28 @@ Now we are in position to show that the exponential has a small compact basis.
 
 \end{code}
 
-TODO: Write comment on proof strategy
+The fact that sup-complete (algebraic) dcpos with small compact bases are closed
+under exponentials can be used to show that the same holds for sup-complete
+(continuous) dcpos with small bases.
 
-TODO: Finish
+The proof outline, which Martín Escardó explained to me, is as follows:
 
-Exponentials of dcpos with small bases...
+Start with dcpos 𝓓 and 𝓔 with small bases βᴰ : Bᴰ → 𝓓 and βᴱ : Bᴱ → 𝓔. Then
+𝓓 and 𝓔 are continuous retracts of dcpos 𝓓' and 𝓔' respectively both with small
+compact bases, using the ideal completions of the bases.
+
+Moreover, these retracts induce a continuous retract of the exponentials:
+(𝓓 ⟹ᵈᶜᵖᵒ 𝓔) is a continuous retract of (𝓓' ⟹ᵈᶜᵖᵒ 𝓔')
+and the latter is algebraic with a small compact basis by the above. Finally, we
+can use the continuous retract to give a small basis on (𝓓 ⟹ᵈᶜᵖᵒ 𝓔).
+
+NB: The above proof outline depends on the fact that 𝓔' and (hence)
+(𝓓' ⟹ᵈᶜᵖᵒ 𝓔') are sup-complete. This can be shown by using the concrete
+definition of 𝓔' as the ideal completion of βᴱ. This step has not been
+formalized (yet), but all the other steps in the outline have.
+
+TODO: Formalize the proof that Idl(βᴱ,⊑) is is sup-complete. It looks like it
+will be helpful to prove separately that we can close bases under finite joins.
 
 \begin{code}
 
