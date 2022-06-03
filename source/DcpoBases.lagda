@@ -394,6 +394,12 @@ module _
     ↓ᴮ-≃-↡ᴮ : (x : ⟨ 𝓓 ⟩) → ↓ᴮ x ≃ ↡ᴮ 𝓓 β x
     ↓ᴮ-≃-↡ᴮ x = Σ-cong (λ b → lemma b)
 
+ locally-small-if-small-compact-basis : is-small-compact-basis
+                                      → is-locally-small 𝓓
+ locally-small-if-small-compact-basis scb =
+  locally-small-if-small-basis 𝓓 β (compact-basis-is-basis scb)
+
+
 \end{code}
 
 \begin{code}
