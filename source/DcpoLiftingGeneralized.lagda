@@ -9,7 +9,7 @@ least element to X when viewed as a discretely-ordered dcpo.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import SpartanMLTT hiding (J)
 

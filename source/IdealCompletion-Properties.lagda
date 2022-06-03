@@ -5,7 +5,7 @@ TODO: Minor updates on 28 January 2022;
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --experimental-lossy-unification #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline --experimental-lossy-unification #-}
 
 open import SpartanMLTT hiding (J)
 

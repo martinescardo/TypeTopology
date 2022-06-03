@@ -6,7 +6,7 @@ a continuous dcpo without any compact elements. Hence, it cannot be algebraic.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import SpartanMLTT
 open import UF-FunExt

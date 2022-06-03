@@ -12,7 +12,7 @@ and that these are preserved by maps that are both strict and Scott continuous.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import SpartanMLTT
 open import UF-FunExt
