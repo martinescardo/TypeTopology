@@ -4,7 +4,7 @@ Interface to code from my MGS 2019 lecture notes.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 module UF-Lower-FunExt where
 

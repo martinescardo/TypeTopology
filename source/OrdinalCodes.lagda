@@ -82,7 +82,7 @@
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 module OrdinalCodes where
 
@@ -176,14 +176,14 @@ without universes or W-types or impredicativity etc.
 
 \begin{code}
 
-ω₁ : {X : 𝓤₀ ̇ } → O X
-ω₁ = exp ω ω
+ω^ω : {X : 𝓤₀ ̇ } → O X
+ω^ω = exp ω ω
 
-ω₂ : {X : 𝓤₀ ̇ } → O X
-ω₂ = exp ω ω₁
+ω^ω^ω : {X : 𝓤₀ ̇ } → O X
+ω^ω^ω = exp ω ω^ω
 
-ω₃ : {X : 𝓤₀ ̇ } → O X
-ω₃ = exp ω ω₂
+ω^ω^ω^ω : {X : 𝓤₀ ̇ } → O X
+ω^ω^ω^ω = exp ω ω^ω^ω
 
 \end{code}
 

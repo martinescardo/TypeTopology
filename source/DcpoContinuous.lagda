@@ -827,7 +827,7 @@ module _
            ⦅⇐⦆ x-below-∐τ = η-reflects-order σ τ lem
             where
              lem : η σ ≤ η τ
-             lem = back-transport (λ - → - ≤ η τ) p lem'
+             lem = transport⁻¹ (λ - → - ≤ η τ) p lem'
               where
                lem' : L' x ≤ η τ
                lem' = rl-implication (L'-is-left-adjoint x (η τ))

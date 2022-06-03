@@ -6,7 +6,7 @@ convention here is that propositions are at level zero (apologies).
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import SpartanMLTT
 open import UF-Univalence
@@ -46,7 +46,7 @@ hlevels-closed-under-Σ {𝓤} zero X Y l m = Σ-is-prop l m
 hlevels-closed-under-Σ {𝓤} (succ n) X Y l m = γ
  where
   γ : (σ τ : Σ Y) → (σ ≡ τ) is-of-hlevel n
-  γ σ τ = back-transport (_is-of-hlevel n) a IH
+  γ σ τ = transport⁻¹ (_is-of-hlevel n) a IH
    where
     a : (σ ≡ τ) ≡ (Σ p ꞉ pr₁ σ ≡ pr₁ τ , transport Y p (pr₂ σ) ≡ pr₂ τ)
     a = eqtoid (ua 𝓤) _ _ Σ-≡-≃
@@ -65,7 +65,7 @@ hlevels-closed-under-Π {𝓤} zero X Y m = Π-is-prop (fe 𝓤 𝓤) m
 hlevels-closed-under-Π {𝓤} (succ n) X Y m = γ
  where
   γ : (f g : Π Y) → (f ≡ g) is-of-hlevel n
-  γ f g = back-transport (_is-of-hlevel n) a IH
+  γ f g = transport⁻¹ (_is-of-hlevel n) a IH
    where
     a : (f ≡ g) ≡ (f ∼ g)
     a = eqtoid (ua 𝓤) (f ≡ g) (f ∼ g) (≃-funext (fe 𝓤 𝓤) f g)

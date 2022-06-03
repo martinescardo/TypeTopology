@@ -51,7 +51,7 @@ from which we borrow other techniques in the development below.
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe #-}
+{-# OPTIONS --without-K --safe --auto-inline #-}
 
 open import SpartanMLTT
 open import UF-PropTrunc
@@ -82,7 +82,7 @@ fe = Univalence-gives-Fun-Ext ua
 pe : Prop-Ext
 pe = Univalence-gives-Prop-Ext ua
 
-open import UF-Quotient pt fe pe
+open import UF-Large-Quotient pt fe pe
 open FreeGroupInterface pt fe pe
 
 \end{code}

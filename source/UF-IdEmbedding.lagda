@@ -47,7 +47,7 @@ idea (*) in the weakened form discussed above.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 module UF-IdEmbedding where
 

@@ -11,7 +11,7 @@ even on (Σ x ꞉ X , Y x) if Y and S depend on X.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 module LexicographicOrder where
 
@@ -59,20 +59,20 @@ follows.
 
 \begin{code}
 
-module commutation
+module lexicographic-commutation
          {X : 𝓤 ̇ }
          {Y : X → 𝓥 ̇ }
          (_<_ : X → X → 𝓦 ̇ )
          (_≺_ : {x : X} → Y x → Y x → 𝓣 ̇ )
-         (R : 𝓤₀ ̇ )
+         (R : 𝓣 ̇ )
  where
-  not : ∀ {𝓤} → 𝓤 ̇ → 𝓤 ̇
+  not : ∀ {𝓤} → 𝓤 ̇ → 𝓣 ⊔ 𝓤 ̇
   not A = A → R
 
   _⊏_ : Σ Y → Σ Y → 𝓣 ⊔ 𝓤 ⊔ 𝓦 ̇
   _⊏_ = slex-order _<_ _≺_
 
-  _≤_ : X → X → 𝓦 ̇
+  _≤_ : X → X → 𝓦 ⊔ 𝓣 ̇
   x ≤ x' = not (x' < x)
 
   _≼_ : {x : X} → Y x → Y x → 𝓣 ̇

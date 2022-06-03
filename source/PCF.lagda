@@ -5,7 +5,7 @@ Includes (reflexive transitive closure of) operational semantics.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import UF-PropTrunc
 

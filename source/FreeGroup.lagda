@@ -22,7 +22,7 @@ way to do it is already present in the module Fin.lagda.)
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe #-} -- --exact-split
+{-# OPTIONS --without-K --safe --auto-inline #-} -- --exact-split
 
 \end{code}
 
@@ -562,7 +562,7 @@ higher-inductive types other than propositional truncation:
 
 \begin{code}
 
-   open import UF-Quotient pt fe pe
+   open import UF-Large-Quotient pt fe pe
    open psrt pt _▷_ public
 
 \end{code}

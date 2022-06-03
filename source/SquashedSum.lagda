@@ -6,22 +6,20 @@ See remarks below for an explanation.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import SpartanMLTT
 open import UF-FunExt
 
 module SquashedSum (fe : FunExt) where
 
-fe₀ : funext 𝓤₀ 𝓤₀
-fe₀ = fe 𝓤₀ 𝓤₀
+private
+ fe₀ : funext 𝓤₀ 𝓤₀
+ fe₀ = fe 𝓤₀ 𝓤₀
 
 open import Two-Properties
 open import Plus-Properties
-open import UF-Base
-open import UF-Subsingletons
-open import UF-Equiv
-open import UF-Embeddings
+open import Density
 open import GenericConvergentSequence
 open import CompactTypes
 open import ConvergentSequenceCompact fe₀
@@ -29,6 +27,13 @@ open import InjectiveTypes fe
 open import ExtendedSumCompact fe
 open import DiscreteAndSeparated
 open import CanonicalMapNotation
+open import SigmaDiscreteAndTotallySeparated
+open import PairFun
+
+open import UF-Base
+open import UF-Subsingletons
+open import UF-Equiv
+open import UF-Embeddings
 open import UF-Miscelanea
 
 \end{code}
@@ -58,11 +63,10 @@ X n is compact then so is its squashed sum Σ¹ X.
             → ((n : ℕ) → compact∙(X n))
             → compact∙(Σ¹ X)
 Σ¹-compact∙ X ε = extended-sum-compact∙
-                     ι
-                     (ι-embedding fe₀)
-                     ε
-                     ℕ∞-compact∙
-
+                   ℕ-to-ℕ∞
+                   (ℕ-to-ℕ∞-is-embedding fe₀)
+                   ε
+                   ℕ∞-compact∙
 \end{code}
 
 Added 26 July 2018 (implementing ideas of several years ago).
@@ -110,19 +114,17 @@ over-is-discrete X d (inr *) = retract-is-discrete {𝓤₀}
 Σ₁-is-discrete X d = Σ-is-discrete
                        (+-is-discrete ℕ-is-discrete 𝟙-is-discrete)
                        (over-is-discrete X d)
-
 \end{code}
 
-The type (X / over) z is densely embedded into the type
-(X / ι) (ι𝟙 z):
+The type (X / over) z is densely embedded into the type (X / ι) (ι𝟙 z):
 
 \begin{code}
 
 over-ι : (X : ℕ → 𝓤 ̇ ) (z : ℕ + 𝟙)
-           → (X / over) z ↪ᵈ (X / ι) (ι𝟙 z)
+       → (X / over) z ↪ᵈ (X / ι) (ι𝟙 z)
 over-ι X (inl n) = equiv-dense-embedding (
  (X / over) (over n)   ≃⟨ Π-extension-property X over over-embedding n ⟩
- X n                   ≃⟨ ≃-sym (Π-extension-property X ι (ι-embedding fe₀) n) ⟩
+ X n                   ≃⟨ ≃-sym (Π-extension-property X ℕ-to-ℕ∞ (ℕ-to-ℕ∞-is-embedding fe₀) n) ⟩
  (X / ι) (ι n) ■)
 over-ι X (inr *) = equiv-dense-embedding (
  (X / over) (inr *) ≃⟨ Π-extension-out-of-range X over (inr *) (λ x → +disjoint ) ⟩
@@ -146,8 +148,8 @@ over-ι-map-left X n φ =
   (λ - → over-ι-map X (inl n) φ (n , refl)
        ≡ transport (λ - → X (pr₁ -)) - (φ (n , refl)))
   (props-are-sets
-    (ι-embedding fe₀ (ι n))
-    (ι-embedding fe₀ (ι n) (n , refl) (n , refl))
+    (ℕ-to-ℕ∞-is-embedding fe₀ (ι n))
+    (ℕ-to-ℕ∞-is-embedding fe₀ (ι n) (n , refl) (n , refl))
     refl)
   (f (n , refl))
  where
@@ -155,7 +157,7 @@ over-ι-map-left X n φ =
   f : (t : fiber ι (ι n))
     → over-ι-map X (inl n) φ t
     ≡ transport (λ - → X (pr₁ -))
-                 (ι-embedding fe₀ (ι n) (n , refl) t)
+                 (ℕ-to-ℕ∞-is-embedding fe₀ (ι n) (n , refl) t)
                  (φ (n , refl))
   f t = refl
 

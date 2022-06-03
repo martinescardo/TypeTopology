@@ -5,7 +5,7 @@ UF-SIP-Examples.
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe --exact-split #-}
+{-# OPTIONS --without-K --safe --auto-inline --exact-split #-}
 
 module Groups where
 open import SpartanMLTT

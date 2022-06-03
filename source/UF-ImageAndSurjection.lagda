@@ -1,6 +1,6 @@
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 module UF-ImageAndSurjection where
 
@@ -89,10 +89,22 @@ module ImageAndSurjection (pt : propositional-truncations-exist) where
       ρ = ap (restriction f) (p (corestriction f x) (f'' ∣ x ∣))
 
  is-surjection : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
- is-surjection f = ∀ y → ∃ x ꞉ domain f , f x ≡ y
+ is-surjection f = ∀ y → y ∈image f
+
+ id-is-surjection : {X : 𝓤 ̇ } → is-surjection (𝑖𝑑 X)
+ id-is-surjection = λ y → ∣ y , refl ∣
 
  _↠_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
  X ↠ Y = Σ f ꞉ (X → Y) , is-surjection f
+
+ ⌞_⌟ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X ↠ Y) → (X → Y)
+ ⌞ (f , i) ⌟ = f
+
+ ⌞⌟-is-surjection : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (𝓯 : X ↠ Y) → is-surjection ⌞ 𝓯 ⌟
+ ⌞⌟-is-surjection (f , i) = i
+
+ _is-image-of_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
+ Y is-image-of X = X ↠ Y
 
  image-is-set : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
               → (f : X → Y)

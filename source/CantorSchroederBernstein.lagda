@@ -42,7 +42,7 @@ assumption beyond MLTT is explicit in each claim).
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 module CantorSchroederBernstein where
 
@@ -860,7 +860,7 @@ types with decidable equality (which are necessarily sets) only. Such
 types are called discrete.
 
 We adapt an argument in Johnstone's Sketches of an Elephant Volume 2
-(Lemma D.4.1.2).
+(Lemma D.4.1.12).
 
 See also van Atten
 https://www.sciencedirect.com/science/article/pii/S0019357718303276

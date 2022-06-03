@@ -14,7 +14,7 @@ searchable, which amounts to Theorem-3·6 of the paper
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import SpartanMLTT
 open import UF-FunExt
@@ -72,11 +72,11 @@ This is the main theorem proved in this module.
 
   Dagger₀ (succ n) r = p (ι (succ n))          ≡⟨ w ⁻¹ ⟩
                        α (succ n)              ≡⟨ ap (λ - → ι - (succ n)) r ⟩
-                       ι (ι (succ n)) (succ n) ≡⟨ ι-diagonal₀ n ⟩
+                       ι (ι (succ n)) (succ n) ≡⟨ ℕ-to-ℕ∞-diagonal₀ n ⟩
                        ₀                       ∎
    where
     t = α n              ≡⟨ ap (λ - → ι - n) r  ⟩
-        ι (ι (succ n)) n ≡⟨ ι-diagonal₁ n ⟩
+        ι (ι (succ n)) n ≡⟨ ℕ-to-ℕ∞-diagonal₁ n ⟩
         ₁                ∎
 
     w = α (succ n)              ≡⟨ ap (λ - → min𝟚 - (p (ι (succ n)))) t ⟩
@@ -133,7 +133,7 @@ Corollaries:
 ℕ∞-compact = compact∙-gives-compact ℕ∞-compact∙
 
 ℕ∞-Compact : Compact ℕ∞ {𝓤}
-ℕ∞-Compact = compact-gives-Compact ℕ∞ ℕ∞-compact
+ℕ∞-Compact = compact-gives-Compact ℕ∞-compact
 
 ℕ∞→ℕ-is-discrete : is-discrete (ℕ∞ → ℕ)
 ℕ∞→ℕ-is-discrete = compact-discrete-discrete fe ℕ∞-compact (λ u → ℕ-is-discrete)

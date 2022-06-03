@@ -7,7 +7,7 @@ the lifting of a set as a pointed dcpo.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 module PCFModules where
 

@@ -11,7 +11,7 @@ the univalence of the universe U, namely
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 module UF-Knapp-UA where
 
@@ -112,12 +112,13 @@ knapps-funext-criterion {𝓤} H D {𝓥} {X} {Y} {f₁} {f₂} h = γ
   transport-isPIE : ∀ {𝓤 𝓥} {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {x y : X} (p : x ≡ y) → isPIE (transport A p)
   transport-isPIE refl = refl , refl
 
-  back-transport-isPIE : ∀ {𝓤 𝓥} {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {x y : X} (p : x ≡ y) → isPIE (back-transport A p)
+  back-transport-isPIE : ∀ {𝓤 𝓥} {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {x y : X} (p : x ≡ y)
+                       → isPIE (transport⁻¹ A p)
   back-transport-isPIE p = transport-isPIE (p ⁻¹)
 
   back-transport-is-pre-comp'' : ∀ {𝓤} {X X' Y : 𝓤 ̇ } (e : X ⋍ X') (g : X' → Y)
-                               → back-transport (λ - → - → Y) (pietoid e) g ≡ g ∘ pr₁ e
-  back-transport-is-pre-comp'' {𝓤} {X} {X'} e g = back-transport-is-pre-comp (pietoid e) g ∙ q ∙ r
+                               → transport⁻¹ (λ - → - → Y) (pietoid e) g ≡ g ∘ pr₁ e
+  back-transport-is-pre-comp'' {𝓤} {X} {X'} e g = transport⁻¹-is-pre-comp (pietoid e) g ∙ q ∙ r
    where
     φ : ∀ {𝓤} (X Y : 𝓤 ̇ ) (p : X ≡ Y) → Idtofun p ≡ pr₁ (idtopie p)
     φ X .X refl = refl

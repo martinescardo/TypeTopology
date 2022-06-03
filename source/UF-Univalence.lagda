@@ -6,7 +6,7 @@ universe. Univalence, when used, is taken as an explicit hypothesis.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 module UF-Univalence where
 
@@ -67,8 +67,8 @@ module _
  univalence-≃ X Y = idtoeq X Y , ua X Y
 
  back-transport-is-pre-comp' : {X X' Y : 𝓤 ̇ } (e : X ≃ X') (g : X' → Y)
-                             → back-transport (λ - → - → Y) (eqtoid X X' e) g ≡ g ∘ ⌜ e ⌝
- back-transport-is-pre-comp' {X} {X'} e g = back-transport-is-pre-comp (eqtoid X X' e) g ∙ q
+                             → transport⁻¹ (λ - → - → Y) (eqtoid X X' e) g ≡ g ∘ ⌜ e ⌝
+ back-transport-is-pre-comp' {X} {X'} e g = transport⁻¹-is-pre-comp (eqtoid X X' e) g ∙ q
   where
    q : g ∘ Idtofun (eqtoid X X' e) ≡ g ∘ ⌜ e ⌝
    q = ap (g ∘_) (ap ⌜_⌝ (idtoeq'-eqtoid X X' e))

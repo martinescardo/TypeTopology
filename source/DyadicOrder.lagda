@@ -6,7 +6,7 @@ The (usual) order on the dyadic rationals
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import SpartanMLTT
 open import Dyadic

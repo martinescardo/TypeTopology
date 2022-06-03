@@ -4,7 +4,7 @@ Type-class for notation for strict orders.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 module OrderNotation where
 

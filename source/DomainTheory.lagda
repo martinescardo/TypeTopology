@@ -6,7 +6,7 @@ Overview module for the theory of (pointed) directed complete posets.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 module DomainTheory where
 

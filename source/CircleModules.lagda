@@ -6,7 +6,7 @@ and Shulman (doi:10.1016/j.jpaa.2021.106687).
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 module CircleModules where
 

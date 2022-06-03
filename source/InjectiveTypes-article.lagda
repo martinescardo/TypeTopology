@@ -193,9 +193,11 @@ this module.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import SpartanMLTT
+open import PairFun
+
 open import UF-Univalence
 open import UF-PropTrunc
 
@@ -405,7 +407,8 @@ automatic-functoriality-∘ f refl refl = refl
 _≼_ : {X : 𝓤 ̇ } → (X → 𝓥 ̇ ) → (X → 𝓦 ̇ ) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
 f ≼ g = (x : domain f) → f x → g x
 
-automatic-naturality : {X : 𝓤 ̇ } (f : X → 𝓥 ̇ ) (f' : X → 𝓦' ̇ ) (τ : f ≼ f') {x y : X} (p : Id x y)
+automatic-naturality : {X : 𝓤 ̇ } (f : X → 𝓥 ̇ ) (f' : X → 𝓦' ̇ )
+                       (τ : f ≼ f') {x y : X} (p : Id x y)
                      → τ y ∘ f [ p ] ≡ f' [ p ] ∘ τ x
 automatic-naturality f f' τ refl = refl
 
@@ -448,7 +451,9 @@ embedding are themselves embeddings.
 
 \begin{code}
 
-↓-extension-is-embedding : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) (j : X → Y) → is-embedding j → is-embedding (_↓ j)
+↓-extension-is-embedding : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) (j : X → Y)
+                         → is-embedding j
+                         → is-embedding (_↓ j)
 ↓-extension-is-embedding {𝓤} {𝓥} X Y j i = s-is-embedding
  where
   s : (X → 𝓤 ⊔ 𝓥 ̇ ) → (Y → 𝓤 ⊔ 𝓥 ̇ )
@@ -499,8 +504,10 @@ embedding are themselves embeddings.
 
   φγ : ∀ m → φ (γ m) ≡ m
   φγ (g , e) = to-Σ-≡
-                (dfunext (fe 𝓥 ((𝓤 ⊔ 𝓥)⁺)) (λ y → eqtoid (ua (𝓤 ⊔ 𝓥)) (s (r g) y) (g y) (κ g y , e y)) ,
-                 Π-is-prop (fe 𝓥 (𝓤 ⊔ 𝓥)) (λ y → being-equiv-is-prop'' (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)) (κ g y)) _ e)
+                (dfunext (fe 𝓥 ((𝓤 ⊔ 𝓥)⁺))
+                  (λ y → eqtoid (ua (𝓤 ⊔ 𝓥)) (s (r g) y) (g y) (κ g y , e y)) ,
+                 Π-is-prop (fe 𝓥 (𝓤 ⊔ 𝓥))
+                  (λ y → being-equiv-is-prop'' (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)) (κ g y)) _ e)
 
   γφ : ∀ f → γ (φ f) ≡ f
   γφ = rs
@@ -524,7 +531,9 @@ embedding are themselves embeddings.
   s-is-embedding = ∘-is-embedding φ-is-embedding ψ-is-embedding
 
 
-↑-extension-is-embedding : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) (j : X → Y) → is-embedding j → is-embedding (_↑ j)
+↑-extension-is-embedding : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) (j : X → Y)
+                         → is-embedding j
+                         → is-embedding (_↑ j)
 ↑-extension-is-embedding {𝓤} {𝓥} X Y j i = s-is-embedding
  where
   s : (X → 𝓤 ⊔ 𝓥 ̇ ) → (Y → 𝓤 ⊔ 𝓥 ̇ )
@@ -540,7 +549,7 @@ embedding are themselves embeddings.
   sr g = refl
 
   κ : (g : Y → 𝓤 ⊔ 𝓥 ̇ ) → g ≼ s (r g)
-  κ g y C (x , p) = back-transport g p C
+  κ g y C (x , p) = transport⁻¹ g p C
 
   M : (𝓤 ⊔ 𝓥)⁺ ̇
   M = Σ g ꞉ (Y → 𝓤 ⊔ 𝓥 ̇ ), ((y : Y) → is-equiv (κ g y))
@@ -575,8 +584,10 @@ embedding are themselves embeddings.
 
   φγ : ∀ m → φ (γ m) ≡ m
   φγ (g , e) = to-Σ-≡
-                (dfunext (fe 𝓥 ((𝓤 ⊔ 𝓥)⁺)) (λ y → eqtoid (ua (𝓤 ⊔ 𝓥)) (s (r g) y) (g y) (≃-sym (κ g y , e y))) ,
-                 Π-is-prop (fe 𝓥 (𝓤 ⊔ 𝓥)) (λ y → being-equiv-is-prop'' (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)) (κ g y)) _ e)
+                (dfunext (fe 𝓥 ((𝓤 ⊔ 𝓥)⁺))
+                  (λ y → eqtoid (ua (𝓤 ⊔ 𝓥)) (s (r g) y) (g y) (≃-sym (κ g y , e y))) ,
+                 Π-is-prop (fe 𝓥 (𝓤 ⊔ 𝓥))
+                  (λ y → being-equiv-is-prop'' (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)) (κ g y)) _ e)
 
   γφ : ∀ f → γ (φ f) ≡ f
   γφ = rs
@@ -591,7 +602,9 @@ embedding are themselves embeddings.
   ψ = pr₁
 
   ψ-is-embedding : is-embedding ψ
-  ψ-is-embedding = pr₁-is-embedding (λ g → Π-is-prop (fe 𝓥 (𝓤 ⊔ 𝓥)) (λ y → being-equiv-is-prop'' (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)) (κ g y)))
+  ψ-is-embedding = pr₁-is-embedding
+                    (λ g → Π-is-prop (fe 𝓥 (𝓤 ⊔ 𝓥))
+                    (λ y → being-equiv-is-prop'' (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)) (κ g y)))
 
   s-is-comp : s ≡ ψ ∘ φ
   s-is-comp = refl
@@ -607,9 +620,11 @@ article). Their proofs are routine.
 
 \begin{code}
 
-iterated-↑ : {𝓤 𝓥 𝓦 : Universe} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (f : X → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇ ) (j : X → Y) (k : Y → Z)
+iterated-↑ : {𝓤 𝓥 𝓦 : Universe} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (f : X → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇ )
+             (j : X → Y) (k : Y → Z)
            → (f ↑ j) ↑ k ∼ f ↑ (k ∘ j)
-iterated-↑ {𝓤} {𝓥} {𝓦} f j k z = eqtoid (ua (𝓤 ⊔ 𝓥 ⊔ 𝓦)) (((f ↑ j) ↑ k) z) ((f ↑ (k ∘ j)) z)
+iterated-↑ {𝓤} {𝓥} {𝓦} f j k z = eqtoid (ua (𝓤 ⊔ 𝓥 ⊔ 𝓦))
+                                      (((f ↑ j) ↑ k) z) ((f ↑ (k ∘ j)) z)
                                       (blackboard.iterated-extension j k z)
 
 
@@ -722,7 +737,8 @@ of powers of universes:
 ainjective-is-retract-of-power-of-universe : (D : 𝓤 ̇ )
                                            → ainjective-type D 𝓤 (𝓤 ⁺)
                                            → retract D of (D → 𝓤 ̇ )
-ainjective-is-retract-of-power-of-universe {𝓤} D i = ainjective-retract-of-subtype D i (D → 𝓤 ̇ )
+ainjective-is-retract-of-power-of-universe {𝓤} D i = ainjective-retract-of-subtype D i
+                                                        (D → 𝓤 ̇ )
                                                         (Id , Id-is-embedding)
 
 \end{code}
@@ -745,12 +761,16 @@ ainjective-resizing₀ {𝓤} D i = c d
  where
   a : ainjective-type (𝓤 ̇ ) 𝓤 𝓤
   a = universes-are-ainjective-Π
+
   b : ainjective-type (D → 𝓤 ̇ ) 𝓤 𝓤
   b = power-of-ainjective a
+
   c : retract D of (D → 𝓤 ̇ ) → ainjective-type D 𝓤 𝓤
   c = retract-of-ainjective D (D → 𝓤 ̇ ) b
+
   d : retract D of (D → 𝓤 ̇ )
   d = ainjective-is-retract-of-power-of-universe D i
+
 \end{code}
 
 This is resizing down and so is not surprising.
@@ -809,8 +829,10 @@ aflabby-types-are-ainjective D φ {X} {Y} j e f = f' , p
  where
   g : (y : Y) → Σ d ꞉ D , ((w : fiber j y) → d ≡ (f ∘ pr₁) w)
   g y = φ (fiber j y) (e y) (f ∘ pr₁)
+
   f' : Y → D
   f' y = pr₁ (g y)
+
   p : (x : X) → f' (j x) ≡ f x
   p x = q (x , refl)
    where
@@ -829,6 +851,7 @@ ainjective-resizing₁ {𝓦} {𝓤} {𝓣} {𝓥} D i = b
  where
   a : aflabby D (𝓤 ⊔ 𝓣)
   a = ainjective-types-are-aflabby D i
+
   b : ainjective-type D 𝓤 𝓣
   b = aflabby-types-are-ainjective D a
 
@@ -875,17 +898,22 @@ subuniverse-aflabby-Σ {𝓤} {𝓣} A φ α κ P i f = (X , a) , c
  where
   g : P → 𝓤 ̇
   g = pr₁ ∘ f
+
   h : (p : P) → A (g p)
   h = pr₂ ∘ f
+
   X : 𝓤 ̇
   X = Σ p ꞉ P , g p
+
   a : A X
   a = κ P g (α P i) h
+
   c : (p : P) → (X , a) ≡ f p
   c p = to-Σ-≡ (q , r)
    where
      q : X ≡ g p
      q = eqtoid (ua 𝓤) X (g p) (prop-indexed-sum i p)
+
      r : transport A q a ≡ h p
      r = φ (g p) (transport A q a) (h p)
 
@@ -907,13 +935,16 @@ subuniverse-aflabby-Π {𝓤} {𝓣} A φ α κ P i f = (X , a) , c
  where
   X : 𝓤 ̇
   X = Π (pr₁ ∘ f)
+
   a : A X
   a = κ P (pr₁ ∘ f) (α P i) (pr₂ ∘ f)
+
   c : (p : P) → (X , a) ≡ f p
   c p = to-Σ-≡ (q , r)
    where
      q : X ≡ pr₁ (f p)
      q = eqtoid (ua 𝓤) X (pr₁ (f p)) (prop-indexed-product (fe 𝓤 𝓤) i p)
+
      r : transport A q a ≡ pr₂ (f p)
      r = φ (pr₁ (f p)) (transport A q a) (pr₂ (f p))
 
@@ -1011,16 +1042,22 @@ aflabbiness-resizing D 𝓤 𝓥 R φ P i f = d , h
  where
   Q : 𝓥 ̇
   Q = resize R P i
+
   j : is-prop Q
   j = resize-is-prop R P i
+
   α : P → Q
   α = to-resize R P i
+
   β : Q → P
   β = from-resize R P i
+
   d : D
   d = pr₁ (φ Q j (f ∘ β))
+
   k : (q : Q) → d ≡ f (β q)
   k = pr₂ (φ Q j (f ∘ β))
+
   h : (p : P) → d ≡ f p
   h p = d           ≡⟨ k (α p) ⟩
         f (β (α p)) ≡⟨ ap f (i (β (α p)) p) ⟩
@@ -1040,8 +1077,10 @@ ainjective-resizing {𝓤'} {𝓥'} {𝓤} {𝓦} {𝓥} R D i = c
  where
   a : aflabby D 𝓤
   a = ainjective-types-are-aflabby D i
+
   b : aflabby D (𝓤' ⊔ 𝓥')
   b = aflabbiness-resizing D (𝓤' ⊔ 𝓥') 𝓤 R a
+
   c :  ainjective-type D 𝓤' 𝓥'
   c = aflabby-types-are-ainjective D b
 
@@ -1064,11 +1103,14 @@ universe-retract R 𝓤 𝓥 = ρ , Lift-is-embedding ua
  where
   a : ainjective-type (𝓤 ̇ ) 𝓤 𝓤
   a = universes-are-ainjective-Π {𝓤} {𝓤}
+
   b : ainjective-type (𝓤 ̇ ) (𝓤 ⁺) ((𝓤 ⊔ 𝓥)⁺)
   b = ainjective-resizing R (𝓤 ̇ ) a
+
   c : ainjective-type (𝓤 ̇ ) (𝓤 ⁺) ((𝓤 ⊔ 𝓥 )⁺)
     → retract 𝓤 ̇ of (𝓤 ⊔ 𝓥 ̇ )
   c i = ainjective-retract-of-subtype (𝓤 ̇ ) i (𝓤 ⊔ 𝓥 ̇ ) (Lift 𝓥 , Lift-is-embedding ua)
+
   ρ : retract 𝓤 ̇ of (𝓤 ⊔ 𝓥 ̇ )
   ρ = c b
 
@@ -1093,35 +1135,49 @@ universe-retract-unfolded R 𝓤 𝓥 = (r , Lift 𝓥 , rs) , Lift-is-embedding
  where
   s : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
   s = Lift 𝓥
+
   e : is-embedding s
   e = Lift-is-embedding ua
+
   F : 𝓤 ⊔ 𝓥 ̇ → 𝓤 ̇
   F Y = resize R (fiber s Y) (e Y)
+
   f : (Y : 𝓤 ⊔ 𝓥 ̇ ) → F Y → fiber s Y
   f Y = from-resize R (fiber s Y) (e Y)
+
   r : 𝓤 ⊔ 𝓥 ̇ → 𝓤 ̇
   r Y = (p : F Y) → pr₁ (f Y p)
+
   rs : (X : 𝓤 ̇ ) → r (s X) ≡ X
   rs X = γ
    where
     g : (Y : 𝓤 ⊔ 𝓥 ̇ ) → fiber s Y → F Y
     g Y = to-resize R (fiber s Y) (e Y)
+
     u : F (s X)
     u = g (s X) (X , refl)
+
     v : fiber s (s X)
     v = f (s X) u
+
     i : (Y : 𝓤 ⊔ 𝓥 ̇ ) → is-prop (F Y)
     i Y = resize-is-prop R (fiber s Y) (e Y)
+
     X' : 𝓤 ̇
     X' = pr₁ v
+
     a : r (s X) ≃ X'
     a = prop-indexed-product (fe 𝓤 𝓤) (i (s X)) u
+
     b : s X' ≡ s X
     b = pr₂ v
+
     c : X' ≡ X
     c = embeddings-are-lc s e b
+
     d : r (s X) ≃ X
     d = transport (λ - → r (s X) ≃ -) c a
+
     γ : r (s X) ≡ X
     γ = eqtoid (ua 𝓤) (r (s X)) X d
 
@@ -1142,8 +1198,10 @@ reflective-subuniverse-Σ {𝓤} {𝓣} R A φ α κ = ainjective-retract-of-sub
  where
   c : ainjective-type (Σ A) (𝓤 ⁺ ⊔ 𝓣) (𝓤 ⁺)
   c = ainjective-resizing R (Σ A) (subuniverse-ainjective-Σ A φ α κ)
+
   j : Σ A → 𝓤 ̇
   j = pr₁
+
   e : is-embedding j
   e = pr₁-is-embedding φ
 
@@ -1157,8 +1215,10 @@ reflective-subuniverse-Π {𝓤} {𝓣} R A φ α κ = ainjective-retract-of-sub
  where
   c : ainjective-type (Σ A) (𝓤 ⁺ ⊔ 𝓣) (𝓤 ⁺)
   c = ainjective-resizing R (Σ A) (subuniverse-ainjective-Π A φ α κ)
+
   j : Σ A → 𝓤 ̇
   j = pr₁
+
   e : is-embedding j
   e = pr₁-is-embedding φ
 
@@ -1198,7 +1258,8 @@ propositional resizing:
 \begin{code}
 
 ainjective-characterization : propositional-resizing (𝓤 ⁺) 𝓤
-                            → (D : 𝓤 ̇ ) → ainjective-type D 𝓤 𝓤 ⇔ (Σ X ꞉ 𝓤 ̇ , retract D of (X → 𝓤 ̇ ))
+                            → (D : 𝓤 ̇ ) → ainjective-type D 𝓤 𝓤
+                                        ⇔ (Σ X ꞉ 𝓤 ̇ , retract D of (X → 𝓤 ̇ ))
 ainjective-characterization {𝓤} R D = a , b
  where
   a : ainjective-type D 𝓤 𝓤 → Σ X ꞉ 𝓤 ̇ , retract D of (X → 𝓤 ̇ )
@@ -1206,6 +1267,7 @@ ainjective-characterization {𝓤} R D = a , b
    where
     c : ainjective-type D 𝓤 (𝓤 ⁺)
     c = ainjective-resizing R D i
+
     d : retract D of (D → 𝓤 ̇ )
     d = ainjective-is-retract-of-power-of-universe D c
 
@@ -1214,6 +1276,7 @@ ainjective-characterization {𝓤} R D = a , b
    where
     c : ainjective-type (X → 𝓤 ̇ ) 𝓤 𝓤
     c = power-of-ainjective universes-are-ainjective-Π
+
     d : ainjective-type D 𝓤 𝓤
     d = retract-of-ainjective D (X → 𝓤 ̇ ) c r
 
@@ -1240,18 +1303,25 @@ ainjective-retract-sub {𝓤} {𝓣} R A φ X β i = ainjective-retract-of-subty
  where
   j : Σ A → 𝓤 ̇
   j = pr₁
+
   a : is-embedding j
   a = pr₁-is-embedding φ
+
   k : (X → Σ A) → (X → 𝓤 ̇ )
   k = j ∘_
+
   b : is-embedding k
   b = embedding-exponential fe j a
+
   l : X → (X → Σ A)
   l x x' = (x ≡ x') , β x x'
+
   p : k ∘ l ≡ Id
   p = refl
+
   c : is-embedding l
   c = factor-is-embedding l k Id-is-embedding b
+
   d : ainjective-type X 𝓤 (𝓤 ⁺ ⊔ 𝓣)
   d = ainjective-resizing R X i
 
@@ -1267,7 +1337,8 @@ ainjective-ntype-characterization : Propositional-resizing
                                   → (n : ℕ)
                                   → D is-of-hlevel (succ n)
                                   → ainjective-type D 𝓤 𝓤
-                                     ⇔ (Σ X ꞉ 𝓤 ̇ , retract D of (X → Σ X ꞉ 𝓤 ̇  , X is-of-hlevel n))
+                                  ⇔ (Σ X ꞉ 𝓤 ̇ , retract D of
+                                                 (X → Σ X ꞉ 𝓤 ̇  , X is-of-hlevel n))
 ainjective-ntype-characterization {𝓤} R D n h = (a , b)
  where
   a : ainjective-type D 𝓤 𝓤 → Σ X ꞉ 𝓤 ̇ , retract D of (X → ℍ n 𝓤 )
@@ -1278,8 +1349,10 @@ ainjective-ntype-characterization {𝓤} R D n h = (a , b)
    where
     e : ainjective-type (ℍ n 𝓤) 𝓤 𝓤
     e = ℍ-ainjective n
+
     c : ainjective-type (X → ℍ n 𝓤) 𝓤 𝓤
     c = power-of-ainjective e
+
     d : ainjective-type D 𝓤 𝓤
     d = retract-of-ainjective D (X → ℍ n 𝓤) c r
 
@@ -1292,7 +1365,8 @@ In particular, the injective sets are the retracts of powersets.
 ainjective-set-characterization : Propositional-resizing
                                 → (D : 𝓤 ̇ )
                                 → is-set D
-                                → ainjective-type D 𝓤 𝓤 ⇔ (Σ X ꞉ 𝓤 ̇ , retract D of (X → Ω 𝓤))
+                                → ainjective-type D 𝓤 𝓤 ⇔ (Σ X ꞉ 𝓤 ̇ , retract D of
+                                                                        (X → Ω 𝓤))
 ainjective-set-characterization {𝓤} R D s = ainjective-ntype-characterization R D zero (λ x x' → s {x} {x'})
 
 \end{code}
@@ -1315,7 +1389,7 @@ The following is routine, using the fact that propositions are closed under prod
 \begin{code}
 
 injectivity-is-prop : (D : 𝓦 ̇ ) (𝓤 𝓥 : Universe)
-                      → is-prop (injective-type D 𝓤 𝓥)
+                    → is-prop (injective-type D 𝓤 𝓥)
 injectivity-is-prop = blackboard.injective.injectivity-is-prop pt
 
 \end{code}
@@ -1326,7 +1400,9 @@ From this we get the following.
 
 \begin{code}
 
-∥ainjective∥-gives-injective : (D : 𝓦 ̇ ) → ∥ ainjective-type D 𝓤 𝓥  ∥ → injective-type D 𝓤 𝓥
+∥ainjective∥-gives-injective : (D : 𝓦 ̇ )
+                             → ∥ ainjective-type D 𝓤 𝓥  ∥
+                             → injective-type D 𝓤 𝓥
 ∥ainjective∥-gives-injective {𝓦} {𝓤} {𝓥} D = ∥∥-rec (injectivity-is-prop D 𝓤 𝓥)
                                                     (ainjective-gives-injective D)
 
@@ -1359,8 +1435,10 @@ retract-of-injective D' D i (r , (s , rs)) {X} {Y} j e f = γ
   where
    i' : ∃ f' ꞉ (Y → D), f' ∘ j ∼ s ∘ f
    i' = i j e (s ∘ f)
+
    φ : (Σ f' ꞉ (Y → D) , f' ∘ j ∼ s ∘ f) → Σ f'' ꞉ (Y → D') , f'' ∘ j ∼ f
    φ (f' , h) = r ∘ f' , (λ x → ap r (h x) ∙ rs (f x))
+
    γ : ∃ f'' ꞉ (Y → D') , f'' ∘ j ∼ f
    γ = ∥∥-functor φ i'
 
@@ -1371,14 +1449,19 @@ power-of-injective {𝓣} {𝓦} {𝓤} {𝓥} {A} {D} i {X} {Y} j e f = γ
   where
    g : X × A → D
    g = uncurry f
+
    k : X × A → Y × A
    k (x , a) = j x , a
+
    c : is-embedding k
    c = pair-fun-is-embedding j (λ x a → a) e (λ x → id-is-embedding)
+
    ψ : ∃ g' ꞉ (Y × A → D), g' ∘ k ∼ g
    ψ = i k c g
+
    φ : (Σ g' ꞉ (Y × A → D) , g' ∘ k ∼ g) → (Σ f' ꞉ (Y → (A → D)), f' ∘ j ∼ f)
    φ (g' , h) = curry g' , (λ x → dfunext (fe 𝓣 𝓦) (λ a → h (x , a)))
+
    γ : ∃ f' ꞉ (Y → (A → D)), f' ∘ j ∼ f
    γ = ∥∥-functor φ ψ
 
@@ -1426,11 +1509,13 @@ Injectivity in terms of algebraic injectivity in the presence of resizing I
 \begin{code}
 
 injectivity-in-terms-of-ainjectivity' : propositional-resizing (𝓤 ⁺) 𝓤
-                                      → (D : 𝓤  ̇ ) → injective-type D 𝓤 (𝓤 ⁺) ⇔ ∥ ainjective-type D 𝓤 (𝓤 ⁺) ∥
+                                      → (D : 𝓤  ̇ ) → injective-type D 𝓤 (𝓤 ⁺)
+                                                   ⇔ ∥ ainjective-type D 𝓤 (𝓤 ⁺) ∥
 injectivity-in-terms-of-ainjectivity' {𝓤} R D = a , b
   where
    a : injective-type D 𝓤 (𝓤 ⁺) → ∥ ainjective-type D 𝓤 (𝓤 ⁺) ∥
    a = ∥∥-functor (ainjective-resizing R D) ∘ injective-gives-∥ainjective∥ D
+
    b : ∥ ainjective-type D 𝓤 (𝓤 ⁺) ∥ → injective-type D 𝓤 (𝓤 ⁺)
    b = ∥ainjective∥-gives-injective D
 
@@ -1456,7 +1541,8 @@ import LiftingEmbeddingViaSIP
 𝓛-unit X x = 𝟙 , (λ _ → x) , 𝟙-is-prop
 
 𝓛-unit-is-embedding : (X : 𝓤 ̇ ) → is-embedding (𝓛-unit {𝓣} X)
-𝓛-unit-is-embedding {𝓤} {𝓣} X = LiftingEmbeddingViaSIP.η-is-embedding' 𝓣 𝓤 X (ua 𝓣) (fe 𝓣 𝓤)
+𝓛-unit-is-embedding {𝓤} {𝓣} X = LiftingEmbeddingViaSIP.η-is-embedding' 𝓣 𝓤 X
+                                   (ua 𝓣) (fe 𝓣 𝓤)
 
 𝓛-alg-aflabby : {𝓣 𝓤 : Universe} {A : 𝓤 ̇ } → 𝓛-alg 𝓣 A → aflabby A 𝓣
 𝓛-alg-aflabby {𝓣} {𝓤} (∐ , κ , ι) P i f = ∐ i f , γ
@@ -1479,7 +1565,9 @@ free algebras:
 
 \begin{code}
 
-ainjective-is-retract-of-free-𝓛-algebra : (D : 𝓣 ̇ ) → ainjective-type D 𝓣 (𝓣 ⁺) → retract D of (𝓛 {𝓣} D)
+ainjective-is-retract-of-free-𝓛-algebra : (D : 𝓣 ̇ )
+                                        → ainjective-type D 𝓣 (𝓣 ⁺)
+                                        → retract D of (𝓛 {𝓣} D)
 ainjective-is-retract-of-free-𝓛-algebra D i = ainjective-retract-of-subtype D i (𝓛 D)
                                                 (𝓛-unit D , 𝓛-unit-is-embedding D)
 \end{code}
@@ -1490,12 +1578,15 @@ the lifting monad:
 `
 \begin{code}
 
-ainjectives-in-terms-of-free-𝓛-algebras : (D : 𝓣 ̇ ) → propositional-resizing (𝓣 ⁺) 𝓣
-                                        → ainjective-type D 𝓣 𝓣 ⇔ (Σ X ꞉ 𝓣 ̇ , retract D of (𝓛 {𝓣} X))
+ainjectives-in-terms-of-free-𝓛-algebras : (D : 𝓣 ̇ )
+                                        → propositional-resizing (𝓣 ⁺) 𝓣
+                                        → ainjective-type D 𝓣 𝓣
+                                        ⇔ (Σ X ꞉ 𝓣 ̇ , retract D of (𝓛 {𝓣} X))
 ainjectives-in-terms-of-free-𝓛-algebras {𝓣} D R =  a , b
   where
    a : ainjective-type D 𝓣 𝓣 → Σ X ꞉ 𝓣 ̇ , retract D of (𝓛 X)
    a i = D , ainjective-is-retract-of-free-𝓛-algebra D (ainjective-resizing R D i)
+
    b : (Σ X ꞉ 𝓣 ̇ , retract D of (𝓛 X)) → ainjective-type D 𝓣 𝓣
    b (X , r) = retract-of-ainjective D (𝓛 X) (free-𝓛-algebra-ainjective X) r
 
@@ -1515,7 +1606,8 @@ UF-Size). We refer to this kind of impredicativity as Ω-resizing.
 \begin{code}
 
 injectivity-in-terms-of-ainjectivity : Ω-resizing 𝓤
-                                     → (D  : 𝓤 ̇ ) → injective-type D 𝓤 𝓤 ⇔ ∥ ainjective-type D 𝓤 𝓤 ∥
+                                     → (D  : 𝓤 ̇ ) → injective-type D 𝓤 𝓤
+                                                  ⇔ ∥ ainjective-type D 𝓤 𝓤 ∥
 injectivity-in-terms-of-ainjectivity {𝓤} ω D = γ , ∥ainjective∥-gives-injective D
  where
   open import LiftingSize 𝓤
@@ -1562,8 +1654,10 @@ injective-resizing {𝓤} ω₀ 𝓥 𝓦 R D i = c
   where
    a : ∥ ainjective-type D 𝓤 𝓤 ∥
    a = pr₁ (injectivity-in-terms-of-ainjectivity ω₀ D) i
+
    b : ∥ ainjective-type D 𝓥 𝓦 ∥
    b = ∥∥-functor (ainjective-resizing R D) a
+
    c : injective-type D 𝓥 𝓦
    c = ∥ainjective∥-gives-injective D b
 
@@ -1597,19 +1691,26 @@ aflabby-decidability-lemma : (P : 𝓦 ̇ ) → is-prop P → aflabby ((P + ¬ P
 aflabby-decidability-lemma {𝓦} P i φ = γ
  where
   D = (P + ¬ P) + 𝟙 {𝓦}
+
   f : P + ¬ P → D
   f (inl p) = inl (inl p)
   f (inr n) = inl (inr n)
+
   l : Σ d ꞉ D , ((z : P + ¬ P) → d ≡ f z)
   l = φ (P + ¬ P) (decidability-of-prop-is-prop (fe 𝓦 𝓤₀) i) f
+
   d : D
   d = pr₁ l
+
   κ : (z : P + ¬ P) → d ≡ f z
   κ = pr₂ l
+
   a : (p : P) → d ≡ inl (inl p)
   a p = κ (inl p)
+
   b : (n : ¬ P) → d ≡ inl (inr n)
   b n = κ (inr n)
+
   δ : (d' : D) → d ≡ d' → P + ¬ P
   δ (inl (inl p)) r = inl p
   δ (inl (inr n)) r = inr n
@@ -1619,6 +1720,7 @@ aflabby-decidability-lemma {𝓦} P i φ = γ
     n p = 𝟘-elim (+disjoint ((a p)⁻¹ ∙ r))
     m : ¬¬ P
     m n = 𝟘-elim (+disjoint ((b n)⁻¹ ∙ r))
+
   γ : P + ¬ P
   γ = δ d refl
 
@@ -1630,7 +1732,8 @@ excluded middle holds:
 \begin{code}
 
 pointed-types-aflabby-gives-EM : ((D : 𝓦 ̇ ) → D → aflabby D 𝓦) → EM 𝓦
-pointed-types-aflabby-gives-EM {𝓦} α P i = aflabby-decidability-lemma P i (α ((P + ¬ P) + 𝟙) (inr ⋆))
+pointed-types-aflabby-gives-EM {𝓦} α P i = aflabby-decidability-lemma P i
+                                              (α ((P + ¬ P) + 𝟙) (inr ⋆))
 
 \end{code}
 
@@ -1640,7 +1743,8 @@ by reduction to algebraic flabbiness:
 \begin{code}
 
 EM-gives-pointed-types-ainjective : EM (𝓤 ⊔ 𝓥) → (D : 𝓦 ̇ ) → D → ainjective-type D 𝓤 𝓥
-EM-gives-pointed-types-ainjective em D d = aflabby-types-are-ainjective D (EM-gives-pointed-types-aflabby D em d)
+EM-gives-pointed-types-ainjective em D d = aflabby-types-are-ainjective D
+                                            (EM-gives-pointed-types-aflabby D em d)
 
 pointed-types-ainjective-gives-EM : ((D : 𝓦 ̇ ) → D → ainjective-type D 𝓦 𝓤) → EM 𝓦
 pointed-types-ainjective-gives-EM α = pointed-types-aflabby-gives-EM
@@ -1653,24 +1757,30 @@ And with injective types:
 \begin{code}
 
 EM-gives-pointed-types-injective : EM (𝓤 ⊔ 𝓥) → (D : 𝓦 ̇ ) → D → injective-type D 𝓤 𝓥
-EM-gives-pointed-types-injective {𝓦} {𝓤} {𝓥} em D d = ainjective-gives-injective D
-                                                        (EM-gives-pointed-types-ainjective em D d)
+EM-gives-pointed-types-injective {𝓦} {𝓤} {𝓥} em D d =
+  ainjective-gives-injective D (EM-gives-pointed-types-ainjective em D d)
 
 pointed-types-injective-gives-EM : ((D : 𝓦 ̇ ) → D → injective-type D 𝓦 (𝓦 ⁺)) → EM 𝓦
 pointed-types-injective-gives-EM {𝓦} β P i = e
   where
    a : injective-type ((P + ¬ P) + 𝟙 {𝓦}) 𝓦 (𝓦 ⁺)
    a = β ((P + ¬ P) + 𝟙) (inr ⋆)
+
    b : ∥ ainjective-type ((P + ¬ P) + 𝟙) 𝓦 𝓦 ∥
    b = injective-gives-∥ainjective∥ ((P + ¬ P) + 𝟙) a
+
    c : ∥ aflabby ((P + ¬ P) + 𝟙) 𝓦 ∥
    c = ∥∥-functor (ainjective-types-are-aflabby ((P + ¬ P) + 𝟙)) b
+
    d : ∥ P + ¬ P ∥
    d = ∥∥-functor (aflabby-decidability-lemma P i) c
+
    e : P + ¬ P
    e =  ∥∥-rec (decidability-of-prop-is-prop (fe 𝓦 𝓤₀) i) id d
 
-pointed-types-injective-gives-EM' : ((𝓤 𝓥 : Universe) → (D : 𝓦 ̇ ) → D → injective-type D 𝓤 𝓥) → EM 𝓦
+pointed-types-injective-gives-EM' : ((𝓤 𝓥 : Universe)
+                                  → (D : 𝓦 ̇ ) → D → injective-type D 𝓤 𝓥)
+                                  → EM 𝓦
 pointed-types-injective-gives-EM' {𝓦} β = pointed-types-injective-gives-EM (β 𝓦 (𝓦 ⁺))
 
 \end{code}
@@ -1681,17 +1791,22 @@ Alternative, assuming resizing, we can be more parimonius with the injectivity a
 
 
 pointed-types-injective-gives-EM'' : Ω-resizing 𝓤
-                                 → ((D : 𝓤 ̇ ) → D → injective-type D 𝓤 𝓤) → EM 𝓤
+                                 → ((D : 𝓤 ̇ ) → D → injective-type D 𝓤 𝓤)
+                                 → EM 𝓤
 pointed-types-injective-gives-EM'' {𝓤} ω β P i = e
   where
    a : injective-type ((P + ¬ P) + 𝟙) 𝓤 𝓤
    a = β ((P + ¬ P) + 𝟙) (inr ⋆)
+
    b : ∥ ainjective-type ((P + ¬ P) + 𝟙) 𝓤 𝓤 ∥
    b = pr₁ (injectivity-in-terms-of-ainjectivity ω ((P + ¬ P) + 𝟙)) a
+
    c : ∥ aflabby ((P + ¬ P) + 𝟙) 𝓤 ∥
    c = ∥∥-functor (ainjective-types-are-aflabby ((P + ¬ P) + 𝟙)) b
+
    d : ∥ P + ¬ P ∥
    d = ∥∥-functor (aflabby-decidability-lemma P i) c
+
    e : P + ¬ P
    e =  ∥∥-rec (decidability-of-prop-is-prop (fe 𝓤 𝓤₀) i) id d
 

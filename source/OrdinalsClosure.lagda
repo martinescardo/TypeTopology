@@ -4,33 +4,13 @@ Closure properties of some ordinal constructions.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import UF-FunExt
 
 module OrdinalsClosure
         (fe : FunExt)
        where
-
-open import SpartanMLTT
-open import Two-Properties
-open import AlternativePlus
-open import ToppedOrdinalsType fe
-open import OrdinalArithmetic fe
-open import ToppedOrdinalArithmetic fe
-open import CompactTypes
-open import GenericConvergentSequence
-open import SquashedSum fe
-open import SquashedCantor fe
-open import LexicographicOrder
-open import LexicographicCompactness
-open import ConvergentSequenceHasLeast
-open import PropInfTychonoff
-open import DiscreteAndSeparated
-open import BinaryNaturals hiding (_+_ ; L ; R)
-open import LeastElementProperty
-open import Plus-Properties
-open import CanonicalMapNotation
 
 open import UF-Base
 open import UF-Equiv
@@ -39,6 +19,33 @@ open import InjectiveTypes fe
 open import UF-Retracts
 open import UF-Embeddings
 open import UF-Miscelanea
+
+open import SpartanMLTT
+open import Two-Properties
+open import AlternativePlus
+open import OrdinalsToppedType fe
+open import OrdinalArithmetic fe
+open import OrdinalsType-Injectivity
+open import OrdinalToppedArithmetic fe
+open import CompactTypes
+open import GenericConvergentSequence
+open import SquashedSum fe
+open import SquashedCantor fe
+open import LexicographicOrder
+open import LexicographicCompactness
+open import ConvergentSequenceHasInf
+open import PropInfTychonoff
+open import DiscreteAndSeparated
+open import BinaryNaturals hiding (_+_ ; L ; R)
+open import InfProperty
+open import Plus-Properties
+open import CanonicalMapNotation
+open import SigmaDiscreteAndTotallySeparated
+open import PairFun
+
+private
+ fe₀ : funext 𝓤₀ 𝓤₀
+ fe₀ = fe 𝓤₀ 𝓤₀
 
 \end{code}
 
@@ -89,10 +96,10 @@ following construction is performed in the module SquashedCantor.
   e = transport (λ - → retract ⟪ τ +ᵒ υ ⟫ of (Σ -)) (dfunext (fe 𝓤₀ 𝓤₁) l) h
    where
     f : 𝟚 → 𝟙 + 𝟙
-    f = pr₁ retract-𝟙+𝟙-of-𝟚
+    f = retraction retract-𝟙+𝟙-of-𝟚
 
     h : retract ⟪ τ +ᵒ υ ⟫ of (Σ i ꞉ 𝟚 , ⟪ cases (λ _ → τ) (λ _ → υ) (f i) ⟫)
-    h = Σ-reindex-retract f (pr₂ retract-𝟙+𝟙-of-𝟚)
+    h = Σ-reindex-retract f (retraction-has-section retract-𝟙+𝟙-of-𝟚)
 
     l : (i : 𝟚) → ⟪ cases (λ _ → τ) (λ _ → υ) (f i) ⟫
                 ≡ 𝟚-cases ⟪ τ ⟫ ⟪ υ ⟫ i
@@ -202,28 +209,30 @@ pair-fun-is-order-preserving : (τ υ : Ordᵀ)
                              → ((x : ⟪ τ ⟫) → is-order-preserving (A x) (B (f x)) (g x))
                              → is-order-preserving (∑ τ A) (∑ υ B) (pair-fun f g)
 
-pair-fun-is-order-preserving τ υ A B f g φ γ (x , a) (y , b) (inl l) = inl (φ x y l)
+pair-fun-is-order-preserving τ υ A B f g φ γ (x , a) (y , b) (inl l)          = inl (φ x y l)
 pair-fun-is-order-preserving τ υ A B f g φ γ (x , a) (x , b) (inr (refl , l)) = inr (refl , γ x a b l)
 
-ι𝟙ᵒ : ⟪ succₒ ℕₒ ⟫ → ⟪ ℕ∞ᵒ ⟫
+ι𝟙ᵒ : ⟪ succₒ ω ⟫ → ⟪ ℕ∞ᵒ ⟫
 ι𝟙ᵒ = ι𝟙
 
-ι𝟙ᵒ-is-order-preserving : is-order-preserving (succₒ ℕₒ) ℕ∞ᵒ ι𝟙ᵒ
-ι𝟙ᵒ-is-order-preserving (inl n) (inl m) l = ι-order-preserving n m l
+ι𝟙ᵒ-is-order-preserving : is-order-preserving (succₒ ω) ℕ∞ᵒ ι𝟙ᵒ
+ι𝟙ᵒ-is-order-preserving (inl n) (inl m) l = ℕ-to-ℕ∞-order-preserving n m l
 ι𝟙ᵒ-is-order-preserving (inl n) (inr *) * = n , (refl , refl)
 ι𝟙ᵒ-is-order-preserving (inr *) (inl m) l = 𝟘-elim l
 ι𝟙ᵒ-is-order-preserving (inr *) (inr *) l = 𝟘-elim l
 
+open topped-ordinals-injectivity fe
+
 over-ι-map-is-order-preserving  : (τ : ℕ → Ordᵀ) (z : ℕ + 𝟙)
-                                    → is-order-preserving
-                                        ((τ ↗ (over , over-embedding)) z)
-                                        ((τ ↗ (ι , ι-embedding fe₀)) (ι𝟙 z))
-                                        (over-ι-map (λ n → ⟪ τ n ⟫) z)
+                                     → is-order-preserving
+                                         ((τ ↗ (over , over-embedding)) z)
+                                         ((τ ↗ embedding-ℕ-to-ℕ∞ fe₀) (ι𝟙 z))
+                                         (over-ι-map (λ n → ⟪ τ n ⟫) z)
 over-ι-map-is-order-preserving τ (inl n) x y ((.n , refl) , l) = (n , refl) , γ
  where
   γ : over-ι-map (λ n → ⟪ τ n ⟫) (inl n) x (n , refl) ≺⟪ τ n ⟫
       over-ι-map (λ n → ⟪ τ n ⟫) (inl n) y (n , refl)
-  γ = back-transport₂
+  γ = transport₂⁻¹
         (λ a b → a ≺⟪ τ n ⟫ b)
         (over-ι-map-left (λ n → ⟪ τ n ⟫) n x)
         (over-ι-map-left (λ n → ⟪ τ n ⟫) n y)
@@ -236,14 +245,14 @@ over-ι-map-is-order-preserving τ (inr *) x y ((n , p) , l) = 𝟘-elim (+disjo
 ∑-up-is-order-preserving : (τ : ℕ → Ordᵀ)
                          → is-order-preserving (∑₁ τ) (∑¹ τ) (∑-up τ)
 ∑-up-is-order-preserving τ  = pair-fun-is-order-preserving
-                            (succₒ ℕₒ)
-                            ℕ∞ᵒ
-                            (τ ↗ (over , over-embedding))
-                            (τ  ↗ (ι , ι-embedding fe₀))
-                            ι𝟙ᵒ
-                            (over-ι-map (λ n → ⟪ τ n ⟫))
-                            ι𝟙ᵒ-is-order-preserving
-                            (over-ι-map-is-order-preserving τ)
+                               (succₒ ω)
+                               ℕ∞ᵒ
+                               (τ ↗ (over , over-embedding))
+                               (τ  ↗ embedding-ℕ-to-ℕ∞ fe₀)
+                               ι𝟙ᵒ
+                               (over-ι-map (λ n → ⟪ τ n ⟫))
+                               ι𝟙ᵒ-is-order-preserving
+                               (over-ι-map-is-order-preserving τ)
 
 ∑↑ : (τ υ : ℕ → Ordᵀ) (f : (n : ℕ) → ⟪ τ n ⟫ → ⟪ υ n ⟫)
    → ⟪ ∑₁ τ ⟫ → ⟪ ∑¹ υ ⟫
@@ -256,44 +265,43 @@ Overᵒ τ υ = Over (λ n → ⟪ τ n ⟫) (λ n → ⟪ υ n ⟫)
 Overᵒ-is-order-preserving : (τ υ : ℕ → Ordᵀ) (f : (n : ℕ) → ⟪ τ n ⟫ → ⟪ υ n ⟫)
                           → ((n : ℕ) → is-order-preserving (τ n) (υ n) (f n))
                           → (z : ℕ + 𝟙) → is-order-preserving
-                                             ((τ ↗ (over , over-embedding)) z)
-                                             ((υ ↗ (over , over-embedding)) z)
-                                             (Overᵒ τ υ f z)
+                                            ((τ ↗ (over , over-embedding)) z)
+                                            ((υ ↗ (over , over-embedding)) z)
+                                            (Overᵒ τ υ f z)
 Overᵒ-is-order-preserving τ υ f p (inl n) x y ((.n , refl) , l) = (n , refl) , p n _ _ l
-Overᵒ-is-order-preserving τ υ f p (inr *) x y ((n , q) , l) = 𝟘-elim (+disjoint q)
+Overᵒ-is-order-preserving τ υ f p (inr *) x y ((n , q) , l)     = 𝟘-elim (+disjoint q)
 
 ∑₁-functor : (τ υ : ℕ → Ordᵀ) (f : (n : ℕ) → ⟪ τ n ⟫ → ⟪ υ n ⟫)
            → ⟪ ∑₁ τ ⟫ → ⟪ ∑₁ υ ⟫
 ∑₁-functor τ ν = Σ₁-functor (λ n → ⟪ τ n ⟫) (λ n → ⟪ ν n ⟫)
 
 ∑₁-functor-is-order-preserving : (τ υ : ℕ → Ordᵀ) (f : (n : ℕ) → ⟪ τ n ⟫ → ⟪ υ n ⟫)
-                            → ((n : ℕ) → is-order-preserving (τ n) (υ n) (f n))
-                            → is-order-preserving (∑₁ τ) (∑₁ υ) (∑₁-functor τ υ f)
-∑₁-functor-is-order-preserving τ υ f p =
- pair-fun-is-order-preserving
-  (succₒ ℕₒ)
-  (succₒ ℕₒ)
-  (τ ↗ (over , over-embedding))
-  (υ ↗ (over , over-embedding))
-  id
-  (Over (λ n → ⟪ τ n ⟫) (λ n → ⟪ υ n ⟫) f)
-  (λ x y l → l)
-  (Overᵒ-is-order-preserving τ υ f p)
+                               → ((n : ℕ) → is-order-preserving (τ n) (υ n) (f n))
+                               → is-order-preserving (∑₁ τ) (∑₁ υ) (∑₁-functor τ υ f)
+∑₁-functor-is-order-preserving τ υ f p = pair-fun-is-order-preserving
+                                          (succₒ ω)
+                                          (succₒ ω)
+                                          (τ ↗ (over , over-embedding))
+                                          (υ ↗ (over , over-embedding))
+                                          id
+                                          (Over (λ n → ⟪ τ n ⟫) (λ n → ⟪ υ n ⟫) f)
+                                          (λ x y l → l)
+                                          (Overᵒ-is-order-preserving τ υ f p)
 
 ∑↑-is-order-preserving : (τ υ : ℕ → Ordᵀ) (f : (n : ℕ) → ⟪ τ n ⟫ → ⟪ υ n ⟫)
-                    → ((n : ℕ) → is-order-preserving (τ n) (υ n) (f n))
-                    → is-order-preserving (∑₁ τ) (∑¹ υ) (∑↑ τ υ f)
+                       → ((n : ℕ) → is-order-preserving (τ n) (υ n) (f n))
+                       → is-order-preserving (∑₁ τ) (∑¹ υ) (∑↑ τ υ f)
 ∑↑-is-order-preserving τ υ f p = comp-is-order-preserving
-                                (∑₁ τ)
-                                (∑₁ υ )
-                                (∑¹ υ)
-                                (Σ₁-functor
-                                   (λ n → ⟪ τ n ⟫)
-                                   (λ n → ⟪ υ n ⟫)
-                                   f)
-                                (∑-up υ)
-                                (∑₁-functor-is-order-preserving τ υ f p)
-                                (∑-up-is-order-preserving υ)
+                                  (∑₁ τ)
+                                  (∑₁ υ )
+                                  (∑¹ υ)
+                                  (Σ₁-functor
+                                     (λ n → ⟪ τ n ⟫)
+                                     (λ n → ⟪ υ n ⟫)
+                                     f)
+                                  (∑-up υ)
+                                  (∑₁-functor-is-order-preserving τ υ f p)
+                                  (∑-up-is-order-preserving υ)
 \end{code}
 
 And now order reflection.
@@ -314,27 +322,27 @@ pair-fun-is-order-reflecting : (τ υ : Ordᵀ) (A : ⟪ τ ⟫ → Ordᵀ) (B :
                              → ((x : ⟪ τ ⟫) → is-order-reflecting (A x) (B (f x)) (g x))
                              → is-order-reflecting (∑ τ A) (∑ υ B) (pair-fun f g)
 
-pair-fun-is-order-reflecting τ υ A B f g φ e γ (x , a) (y , b) (inl l) = inl (φ x y l)
+pair-fun-is-order-reflecting τ υ A B f g φ e γ (x , a) (y , b) (inl l)       = inl (φ x y l)
 pair-fun-is-order-reflecting τ υ A B f g φ e γ (x , a) (y , b) (inr (r , l)) = inr (c r , p)
  where
   e' : is-equiv (ap f)
   e' = embedding-embedding' f e x y
 
   c : f x ≡ f y → x ≡ y
-  c = pr₁ (pr₁ e')
+  c = inverse (ap f) e'
 
   η : (q : f x ≡ f y) → ap f (c q) ≡ q
-  η = pr₂ (pr₁ e')
+  η = retract-condition (ap f , equivs-have-sections (ap f) e')
 
   i : transport (λ - → ⟪ B (f -) ⟫) (c r) (g x a)
     ≡ transport (λ - → ⟪ B - ⟫) (ap f (c r)) (g x a)
   i = transport-ap (λ - → ⟪ B - ⟫) f (c r)
 
   j : transport (λ - → ⟪ B - ⟫) (ap f (c r)) (g x a) ≺⟪ B (f y) ⟫ (g y b)
-  j = back-transport (λ - → transport (λ - → ⟪ B - ⟫) - (g x a) ≺⟪ B (f y) ⟫ (g y b)) (η r) l
+  j = transport⁻¹ (λ - → transport (λ - → ⟪ B - ⟫) - (g x a) ≺⟪ B (f y) ⟫ (g y b)) (η r) l
 
   k : transport (λ - → ⟪ B (f -) ⟫) (c r) (g x a) ≺⟪ B (f y) ⟫ (g y b)
-  k = back-transport (λ - → - ≺⟪ B (f y) ⟫ (g y b)) i j
+  k = transport⁻¹ (λ - → - ≺⟪ B (f y) ⟫ (g y b)) i j
 
   h : {x y : ⟪ τ ⟫} (s : x ≡ y) {a : ⟪ A x ⟫} {b : ⟪ A y ⟫}
     → transport (λ - → ⟪ B (f -) ⟫) s (g x a) ≺⟪ B (f y) ⟫ (g y b)
@@ -344,17 +352,17 @@ pair-fun-is-order-reflecting τ υ A B f g φ e γ (x , a) (y , b) (inr (r , l))
   p : transport (λ - → ⟪ A - ⟫) (c r) a ≺⟪ A y ⟫ b
   p = h (c r) k
 
-ι𝟙ᵒ-is-order-reflecting : is-order-reflecting (succₒ ℕₒ) ℕ∞ᵒ ι𝟙ᵒ
-ι𝟙ᵒ-is-order-reflecting (inl n) (inl m) l             = ι-order-reflecting n m l
+ι𝟙ᵒ-is-order-reflecting : is-order-reflecting (succₒ ω) ℕ∞ᵒ ι𝟙ᵒ
+ι𝟙ᵒ-is-order-reflecting (inl n) (inl m) l             = ℕ-to-ℕ∞-order-reflecting n m l
 ι𝟙ᵒ-is-order-reflecting (inl n) (inr *) l             = *
 ι𝟙ᵒ-is-order-reflecting (inr *) (inl m) (n , (p , l)) = 𝟘-elim (∞-is-not-finite n p)
 ι𝟙ᵒ-is-order-reflecting (inr *) (inr *) (n , (p , l)) = 𝟘-elim (∞-is-not-finite n p)
 
 over-ι-map-is-order-reflecting  : (τ : ℕ → Ordᵀ) (z : ℕ + 𝟙)
-                                    → is-order-reflecting
-                                        ((τ ↗ (over , over-embedding)) z)
-                                        ((τ ↗ (ι , ι-embedding fe₀)) (ι𝟙 z))
-                                        (over-ι-map (λ n → ⟪ τ n ⟫) z)
+                                → is-order-reflecting
+                                    ((τ ↗ (over , over-embedding)) z)
+                                    ((τ ↗ embedding-ℕ-to-ℕ∞ fe₀) (ι𝟙 z))
+                                    (over-ι-map (λ n → ⟪ τ n ⟫) z)
 over-ι-map-is-order-reflecting τ (inl n) x y ((m , p) , l) = (n , refl) , q
  where
   x' : ⟪ τ n ⟫
@@ -364,7 +372,7 @@ over-ι-map-is-order-reflecting τ (inl n) x y ((m , p) , l) = (n , refl) , q
   y' = over-ι-map (λ n → ⟪ τ n ⟫) (inl n) y (n , refl)
 
   r : n , refl ≡ m , p
-  r = ι-embedding fe₀ (ι n) (n , refl) (m , p)
+  r = ℕ-to-ℕ∞-is-embedding fe₀ (ι n) (n , refl) (m , p)
 
   t : ⟪ τ n ⟫ → ⟪ τ m ⟫
   t = transport (λ - → ⟪ τ (pr₁ -) ⟫) r
@@ -380,7 +388,7 @@ over-ι-map-is-order-reflecting τ (inl n) x y ((m , p) , l) = (n , refl) , q
   b = apd (over-ι-map (λ n → ⟪ τ n ⟫) (inl n) y) r
 
   c : t x' ≺⟪ τ m ⟫ t y'
-  c = back-transport₂ (λ a b → a ≺⟪ τ m ⟫ b) a b l
+  c = transport₂⁻¹ (λ a b → a ≺⟪ τ m ⟫ b) a b l
 
   d : x' ≺⟪ τ n ⟫ y'
   d = tr r _ _ c
@@ -396,10 +404,10 @@ over-ι-map-is-order-reflecting τ (inr *) x y ((m , p) , l) = 𝟘-elim (∞-is
 ∑-up-is-order-reflecting : (τ : ℕ → Ordᵀ)
                          → is-order-reflecting (∑₁ τ) (∑¹ τ) (∑-up τ)
 ∑-up-is-order-reflecting τ  = pair-fun-is-order-reflecting
-                               (succₒ ℕₒ)
+                               (succₒ ω)
                                ℕ∞ᵒ
                                (τ ↗ (over , over-embedding))
-                               (τ  ↗ (ι , ι-embedding fe₀))
+                               (τ  ↗ embedding-ℕ-to-ℕ∞ fe₀)
                                ι𝟙ᵒ
                                (over-ι-map (λ n → ⟪ τ n ⟫))
                                ι𝟙ᵒ-is-order-reflecting
@@ -420,8 +428,8 @@ Overᵒ-is-order-reflecting τ υ f p (inr *) x y ((n , q) , l) = 𝟘-elim (+di
                                → is-order-reflecting (∑₁ τ) (∑₁ υ) (∑₁-functor τ υ f)
 ∑₁-functor-is-order-reflecting τ υ f p =
  pair-fun-is-order-reflecting
-  (succₒ ℕₒ)
-  (succₒ ℕₒ)
+  (succₒ ω)
+  (succₒ ω)
   (τ ↗ (over , over-embedding))
   (υ ↗ (over , over-embedding))
   id
@@ -446,12 +454,12 @@ Overᵒ-is-order-reflecting τ υ f p (inr *) x y ((n , q) , l) = 𝟘-elim (+di
                                  (∑-up-is-order-reflecting υ)
 \end{code}
 
-28 July 2018. Least element property.
+28 July 2018. Inf property.
 
 \begin{code}
 
-𝟙ᵒ-has-least-element-property : has-least-element-property 𝟙ᵒ
-𝟙ᵒ-has-least-element-property p = ⋆ , f , g , h
+𝟙ᵒ-has-infs-of-complemented-subsets : has-infs-of-complemented-subsets (𝟙ᵒ {𝓤})
+𝟙ᵒ-has-infs-of-complemented-subsets p = ⋆ , f , g , h
  where
   f : (Σ x ꞉ 𝟙 , p x ≡ ₀) → p ⋆ ≡ ₀
   f (⋆ , r) = r
@@ -461,8 +469,8 @@ Overᵒ-is-order-reflecting τ υ f p (inr *) x y ((n , q) , l) = 𝟘-elim (+di
     → x ≼⟪ 𝟙ᵒ ⟫ ⋆
   h ⋆ φ a = 𝟘-elim a
 
-𝟚ᵒ-has-least-element-property : has-least-element-property 𝟚ᵒ
-𝟚ᵒ-has-least-element-property p = 𝟚-equality-cases φ γ
+𝟚ᵒ-has-infs-of-complemented-subsets : has-infs-of-complemented-subsets 𝟚ᵒ
+𝟚ᵒ-has-infs-of-complemented-subsets p = 𝟚-equality-cases φ γ
  where
   _≤_ : 𝟙 + 𝟙 → 𝟙 + 𝟙 → 𝓤₀ ̇
   x ≤ y = x ≼⟪ 𝟚ᵒ ⟫ y
@@ -500,17 +508,17 @@ Overᵒ-is-order-reflecting τ υ f p (inr *) x y ((n , q) , l) = 𝟘-elim (+di
 
 It is not necessary to use propositional extensionality to prove the
 following, but it is simpler to do so given that we have already
-proved the has-least-element-propertyness of various types using different,
-logically equivalent orders.
+proved has-infs-of-complemented-subsetsness for various types using
+different, logically equivalent orders.
 
 \begin{code}
 
-∑-has-least-element-property : propext 𝓤₀
-              → (τ : Ordᵀ) (υ : ⟪ τ ⟫ → Ordᵀ)
-              → has-least-element-property τ
-              → ((x : ⟪ τ ⟫) → has-least-element-property (υ x))
-              → has-least-element-property (∑ τ υ)
-∑-has-least-element-property pe τ υ ε δ = γ
+∑-has-infs-of-complemented-subsets : propext 𝓤₀
+                                   → (τ : Ordᵀ) (υ : ⟪ τ ⟫ → Ordᵀ)
+                                   → has-infs-of-complemented-subsets τ
+                                   → ((x : ⟪ τ ⟫) → has-infs-of-complemented-subsets (υ x))
+                                   → has-infs-of-complemented-subsets (∑ τ υ)
+∑-has-infs-of-complemented-subsets pe τ υ ε δ = γ
  where
   _≤_ : ⟪ ∑ τ υ ⟫ → ⟪ ∑ τ υ ⟫ → 𝓤₀ ̇
   _≤_ = lex-order (λ x y → x ≼⟪ τ ⟫ y) (λ {x} a b → a ≼⟪ υ x ⟫ b)
@@ -521,9 +529,15 @@ logically equivalent orders.
      (≼-prop-valued τ x y p q ,
      dfunext fe₀ (λ r → ≼-prop-valued (υ y) _ _ _ _))
 
-  φ : has-least _≤_
-  φ = Σ-has-least ((λ x y → x ≼⟪ τ ⟫ y)) ((λ {x} a b → a ≼⟪ υ x ⟫ b)) ε δ
-  open commutation (tunderlying-order τ) (λ {x} → tunderlying-order (υ x)) (𝟘 {𝓤₀}) hiding (_≤_)
+  φ : has-inf _≤_
+  φ = Σ-has-inf ((λ x y → x ≼⟪ τ ⟫ y)) ((λ {x} a b → a ≼⟪ υ x ⟫ b)) ε δ
+
+  open lexicographic-commutation
+         (tunderlying-order τ)
+         (λ {x} → tunderlying-order (υ x))
+         (𝟘 {𝓤₀})
+       hiding (_≤_)
+
   i : (z t : ⟪ ∑ τ υ ⟫) → z ≤ t → z ≼⟪ ∑ τ υ ⟫ t
   i (x , a) (y , b) = back y x b a
 
@@ -536,11 +550,11 @@ logically equivalent orders.
   l : _≤_ ≡ (λ z t → z ≼⟪ ∑ τ υ ⟫ t)
   l = dfunext (fe 𝓤₀ 𝓤₁) λ z → dfunext (fe 𝓤₀ 𝓤₁) (k z)
 
-  γ : has-least-element-property (∑ τ υ)
-  γ = transport has-least l φ
+  γ : has-infs-of-complemented-subsets (∑ τ υ)
+  γ = transport has-inf l φ
 
-ℕ∞ᵒ-has-least-element-property : propext 𝓤₀ → has-least-element-property ℕ∞ᵒ
-ℕ∞ᵒ-has-least-element-property pe = transport has-least p (ℕ∞-has-least fe₀)
+ℕ∞ᵒ-has-infs-of-complemented-subsets : propext 𝓤₀ → has-infs-of-complemented-subsets ℕ∞ᵒ
+ℕ∞ᵒ-has-infs-of-complemented-subsets pe = transport has-inf p (ℕ∞-has-inf fe₀)
  where
   p : _≼ℕ∞_ ≡ tunderlying-rorder ℕ∞ᵒ
   p = dfunext (fe 𝓤₀ 𝓤₁)
@@ -551,19 +565,20 @@ logically equivalent orders.
                           (not-≺-≼ fe₀ u v)))
 
 
-∑₁-has-least-element-property : propext 𝓤₀
-               → (τ : ℕ → Ordᵀ)
-               → ((n : ℕ) → has-least-element-property (τ n))
-               → has-least-element-property (∑¹ τ)
-∑₁-has-least-element-property pe τ ε = ∑-has-least-element-property pe
-                            ℕ∞ᵒ
-                            (λ (x : ℕ∞) → (τ ↗ (ι , ι-embedding fe₀)) x)
-                            (ℕ∞ᵒ-has-least-element-property pe)
-                            a
+∑₁-has-infs-of-complemented-subsets : propext 𝓤₀
+                                    → (τ : ℕ → Ordᵀ)
+                                    → ((n : ℕ) → has-infs-of-complemented-subsets (τ n))
+                                    → has-infs-of-complemented-subsets (∑¹ τ)
+∑₁-has-infs-of-complemented-subsets pe τ ε = ∑-has-infs-of-complemented-subsets pe
+                                              ℕ∞ᵒ
+                                              (λ (x : ℕ∞) → (τ ↗ embedding-ℕ-to-ℕ∞ fe₀) x)
+                                              (ℕ∞ᵒ-has-infs-of-complemented-subsets pe)
+                                              a
  where
-  a : (x : ⟪ ℕ∞ᵒ ⟫) → has-least-element-property ((τ ↗ (ι , ι-embedding fe₀)) x)
+  a : (x : ⟪ ℕ∞ᵒ ⟫) → has-infs-of-complemented-subsets
+                       ((τ ↗ embedding-ℕ-to-ℕ∞ fe₀) x)
   a x = prop-inf-tychonoff fe
-         (ι-embedding fe₀ x)
+         (ℕ-to-ℕ∞-is-embedding fe₀ x)
          (λ {w} x y → x ≺⟪ τ (pr₁ w) ⟫ y)
          (λ w → ε (pr₁ w))
 

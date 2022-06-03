@@ -14,11 +14,17 @@ a Cantor retract.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import UF-FunExt
 
 module SquashedCantor (fe : FunExt) where
+
+open import UF-Base
+open import UF-Subsingletons
+open import UF-Equiv
+open import UF-Embeddings
+open import UF-Retracts
 
 open import SpartanMLTT
 open import Two-Properties
@@ -29,11 +35,10 @@ open import CoNaturals fe
 open import Sequence fe renaming (head to head' ; tail to tail' ; _∶∶_ to _∶∶'_)
 open import InjectiveTypes fe
 open import CanonicalMapNotation
-open import UF-Base
-open import UF-Subsingletons
-open import UF-Equiv
-open import UF-Embeddings
-open import UF-Retracts
+
+private
+ fe₀ : funext 𝓤₀ 𝓤₀
+ fe₀ = fe 𝓤₀ 𝓤₀
 
 \end{code}
 
@@ -81,7 +86,7 @@ transport-finite : {u v : ℕ∞} (p : u ≡ v) → is-finite u → is-finite v
 transport-finite = transport is-finite
 
 back-transport-finite : {u v : ℕ∞} (p : u ≡ v) → is-finite v → is-finite u
-back-transport-finite = back-transport is-finite
+back-transport-finite = transport⁻¹ is-finite
 
 ap-Cantor : {X : 𝓤 ̇ } (f : (u : ℕ∞) → Cantor[ u ] → X)
             {u v : ℕ∞} (p : u ≡ v) {φ : Cantor[ u ]}
@@ -342,20 +347,20 @@ Cons (ι n , φ) we get the sequence φ (ι-is-finite n):
 \begin{code}
 
 tail-Cons-ι : (n : ℕ) (φ : Cantor[ ι n ])
-            → Cons (ι n , φ) ∘ (λ k → k ∔ succ n) ≡ φ (ι-is-finite n)
+            → Cons (ι n , φ) ∘ (λ k → k ∔ succ n) ≡ φ (ℕ-to-ℕ∞-is-finite n)
 tail-Cons-ι zero φ     = ap tail (Cons₀ φ)
 tail-Cons-ι (succ n) φ = γ
  where
   IH : Cons (ι n , φ ∘ is-finite-up (ι n)) ∘ (λ k → k ∔ succ n)
-     ≡ φ (is-finite-up (ι n) (ι-is-finite n))
+     ≡ φ (is-finite-up (ι n) (ℕ-to-ℕ∞-is-finite n))
   IH = tail-Cons-ι n (φ ∘ is-finite-up (ι n))
 
   γ : Cons (ι (succ n) , φ) ∘ (λ k → k ∔ succ (succ n))
-    ≡ φ (ι-is-finite (succ n))
+    ≡ φ (ℕ-to-ℕ∞-is-finite (succ n))
   γ = Cons (ι (succ n) , φ) ∘ (λ k → k ∔ succ (succ n))        ≡⟨ I ⟩
       Cons (ι n , φ ∘ is-finite-up (ι n)) ∘ (λ k → k ∔ succ n) ≡⟨ IH ⟩
-      φ (is-finite-up (ι n) (ι-is-finite n))                   ≡⟨ II ⟩
-      φ (ι-is-finite (succ n))                                 ∎
+      φ (is-finite-up (ι n) (ℕ-to-ℕ∞-is-finite n))             ≡⟨ II ⟩
+      φ (ℕ-to-ℕ∞-is-finite (succ n))                           ∎
    where
     I  = ap (λ - → - ∘ (λ k → k ∔ succ (succ n))) (Cons₁ (ι n) φ)
     II = ap φ (being-finite-is-prop fe₀ (ι (succ n)) _ _)
@@ -501,7 +506,7 @@ Tail-Cons u φ = dfunext fe₀ (γ u φ)
          Tail (₁ ∶∶ Cons (ι n , φ ∘ t')) k        ≡⟨ III ⟩
          Cons (ι n , φ ∘ t') ∘ (λ l → l ∔ size k) ≡⟨ IV ⟩
          Cons (ι n , φ ∘ t') ∘ (λ l → l ∔ succ n) ≡⟨ V ⟩
-         φ (t' (ι-is-finite n))                   ≡⟨ VI ⟩
+         φ (t' (ℕ-to-ℕ∞-is-finite n))             ≡⟨ VI ⟩
          φ (Head-finite u φ (succ n , r))         ∎
       where
        I   = ap₂-Tail (succ n , r) q

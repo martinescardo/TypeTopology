@@ -30,7 +30,7 @@ choice where X is a proposition (see https://arxiv.org/abs/1610.03346).
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import SpartanMLTT
 

@@ -4,7 +4,7 @@ UF things that depend on non-UF things.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 module UF-Miscelanea where
 
@@ -17,29 +17,39 @@ open import UF-Subsingletons renaming (⊤Ω to ⊤ ; ⊥Ω to ⊥)
 open import UF-FunExt
 open import UF-Lower-FunExt
 open import UF-Subsingletons-FunExt
+open import UF-Equiv
 open import UF-Embeddings
+open import DiscreteAndSeparated
 
 decidable-is-collapsible : {X : 𝓤 ̇ } → decidable X → collapsible X
 decidable-is-collapsible (inl x) = pointed-types-are-collapsible x
 decidable-is-collapsible (inr u) = empty-types-are-collapsible u
 
-open import DiscreteAndSeparated
-
 discrete-is-Id-collapsible : {X : 𝓤 ̇ } → is-discrete X → Id-collapsible X
 discrete-is-Id-collapsible d = decidable-is-collapsible (d _ _)
 
 discrete-types-are-sets : {X : 𝓤 ̇ } → is-discrete X → is-set X
-discrete-types-are-sets d = Id-collapsibles-are-sets(discrete-is-Id-collapsible d)
+discrete-types-are-sets d = Id-collapsibles-are-sets (discrete-is-Id-collapsible d)
 
 being-isolated-is-prop : FunExt → {X : 𝓤 ̇ } (x : X) → is-prop (is-isolated x)
-being-isolated-is-prop {𝓤} fe x i = γ i
+being-isolated-is-prop {𝓤} fe x = prop-criterion γ
  where
-  γ : is-prop (is-isolated x)
-  γ = Π-is-prop (fe 𝓤 𝓤)
-        (λ x → sum-of-contradictory-props
-                (local-hedberg _ (λ y → decidable-is-collapsible (i y)) x)
-                (negations-are-props (fe 𝓤 𝓤₀))
-                (λ p n → n p))
+  γ : is-isolated x → is-prop (is-isolated x)
+  γ i = Π-is-prop (fe 𝓤 𝓤)
+         (λ x → sum-of-contradictory-props
+                 (local-hedberg _ (λ y → decidable-is-collapsible (i y)) x)
+                 (negations-are-props (fe 𝓤 𝓤₀))
+                 (λ p n → n p))
+
+being-isolated'-is-prop : FunExt → {X : 𝓤 ̇ } (x : X) → is-prop (is-isolated' x)
+being-isolated'-is-prop {𝓤} fe x = prop-criterion γ
+ where
+  γ : is-isolated' x → is-prop (is-isolated' x)
+  γ i = Π-is-prop (fe 𝓤 𝓤)
+         (λ x → sum-of-contradictory-props
+                 (local-hedberg' _ (λ y → decidable-is-collapsible (i y)) x)
+                 (negations-are-props (fe 𝓤 𝓤₀))
+                 (λ p n → n p))
 
 being-discrete-is-prop : FunExt → {X : 𝓤 ̇ } → is-prop (is-discrete X)
 being-discrete-is-prop {𝓤} fe {X} = Π-is-prop (fe 𝓤 𝓤) (being-isolated-is-prop fe)
@@ -114,6 +124,13 @@ embeddings-reflect-isolatedness : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
 embeddings-reflect-isolatedness f e x i y = lc-maps-reflect-isolatedness f
                                               (embeddings-are-lc f e) x i y
 
+equivs-reflect-isolatedness : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                            → is-equiv f
+                            → (x : X) → is-isolated (f x)
+                            → is-isolated x
+equivs-reflect-isolatedness f e = embeddings-reflect-isolatedness f
+                                   (equivs-are-embeddings f e)
+
 embeddings-reflect-discreteness : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                                 → is-embedding f
                                 → is-discrete Y
@@ -139,41 +156,8 @@ equiv-to-discrete : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                   → is-discrete Y
 equiv-to-discrete (f , e) = equivs-preserve-discreteness f e
 
-Σ-is-discrete : {X : 𝓤 ̇ } → {Y : X → 𝓥 ̇ }
-              → is-discrete X
-              → ((x : X) → is-discrete (Y x))
-              → is-discrete (Σ Y)
-Σ-is-discrete {𝓤} {𝓥} {X} {Y} d e (x , y) (x' , y') = g (d x x')
- where
-  g : decidable (x ≡ x') → decidable ((x , y) ≡ (x' , y'))
-  g (inl p) = f (e x' (transport Y p y) y')
-   where
-    f : decidable (transport Y p y ≡ y') → decidable ((x , y) ≡ (x' , y'))
-    f (inl q) = inl (to-Σ-≡ (p , q))
-    f (inr ψ) = inr c
-     where
-      c : x , y ≡ x' , y' → 𝟘
-      c r = ψ q
-       where
-        p' : x ≡ x'
-        p' = ap pr₁ r
-
-        q' : transport Y p' y ≡ y'
-        q' = from-Σ-≡' r
-
-        s : p' ≡ p
-        s = discrete-types-are-sets d p' p
-
-        q : transport Y p y ≡ y'
-        q = transport (λ - → transport Y - y ≡ y') s q'
-
-  g (inr φ) = inr (λ q → φ (ap pr₁ q))
-
-×-is-discrete : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-              → is-discrete X
-              → is-discrete Y
-              → is-discrete (X × Y)
-×-is-discrete d e = Σ-is-discrete d (λ _ → e)
+𝟙-is-set : is-set (𝟙 {𝓤})
+𝟙-is-set = discrete-types-are-sets 𝟙-is-discrete
 
 𝟚-is-set : is-set 𝟚
 𝟚-is-set = discrete-types-are-sets 𝟚-is-discrete

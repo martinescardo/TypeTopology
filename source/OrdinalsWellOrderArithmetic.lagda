@@ -6,7 +6,7 @@ still use the terminology "ordinal" here.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 module OrdinalsWellOrderArithmetic where
 
@@ -46,13 +46,16 @@ module prop
  transitive x y z a = 𝟘-elim a
 
  well-founded : is-well-founded _<_
- well-founded x = next x (λ y a → 𝟘-elim a)
+ well-founded x = step (λ y a → 𝟘-elim a)
 
  well-order : is-well-order _<_
  well-order = prop-valued , well-founded , extensional , transitive
 
  topped : P → has-top _<_
  topped p = p , λ q l → 𝟘-elim l
+
+ trichotomous : is-trichotomous-order _<_
+ trichotomous x y = inr (inl (isp x y))
 
 \end{code}
 
@@ -122,14 +125,14 @@ and then adapt the following definitions.
  well-founded w w' = g
   where
    φ : (x : X) → is-accessible _<_ x → is-accessible _⊏_ (inl x)
-   φ x (next x σ) = next (inl x) τ
+   φ x (step σ) = step τ
     where
      τ : (s : X + Y) → s ⊏ inl x → is-accessible _⊏_ s
      τ (inl x') l = φ x' (σ x' l)
      τ (inr y') l = 𝟘-elim l
 
    γ : (y : Y) → is-accessible _≺_ y → is-accessible _⊏_ (inr y)
-   γ y (next .y σ) = next (inr y) τ
+   γ y (step σ) = step τ
     where
      τ : (s : X + Y) → s ⊏ inr y → is-accessible _⊏_ s
      τ (inl x)  l = φ x (w x)
@@ -153,6 +156,37 @@ and then adapt the following definitions.
    g : (z : X + Y) → ¬ (inr y ⊏ z)
    g (inl x)  l = 𝟘-elim l
    g (inr y') l = f y' l
+
+ tricho-left : (x : X)
+             → is-trichotomous-element _<_ x
+             → is-trichotomous-element _⊏_ (inl x)
+ tricho-left x t (inl x') = lemma (t x')
+  where
+   lemma : (x < x') + (x ≡ x') + (x' < x)
+         → inl x ⊏ inl x' + (inl x ≡ inl x') + inl x' ⊏ inl x
+   lemma (inl l)       = inl l
+   lemma (inr (inl e)) = inr (inl (ap inl e))
+   lemma (inr (inr k)) = inr (inr k)
+
+ tricho-left x t (inr y)  = inl ⋆
+
+ tricho-right : (y : Y)
+              → is-trichotomous-element _≺_ y
+              → is-trichotomous-element _⊏_ (inr y)
+ tricho-right y u (inl x)  = inr (inr ⋆)
+ tricho-right y u (inr y') = lemma (u y')
+  where
+   lemma : (y ≺ y') + (y ≡ y') + (y' ≺ y)
+         → inr y ⊏ inr y' + (inr y ≡ inr y') + inr y' ⊏ inr y
+   lemma (inl l)       = inl l
+   lemma (inr (inl e)) = inr (inl (ap inr e))
+   lemma (inr (inr k)) = inr (inr k)
+
+ trichotomy-preservation : is-trichotomous-order _<_
+                         → is-trichotomous-order _≺_
+                         → is-trichotomous-order _⊏_
+ trichotomy-preservation t u (inl x) = tricho-left  x (t x)
+ trichotomy-preservation t u (inr y) = tricho-right y (u y)
 
 \end{code}
 
@@ -214,11 +248,11 @@ module times
    P = is-accessible _⊏_
 
    γ : (x : X) → ((x' : X) → x' < x → (y' : Y) → P (x' , y')) → (y : Y) → P (x , y)
-   γ x step = transfinite-induction _≺_ w' (λ y → P (x , y)) (λ y f → next (x , y) (ψ y f))
+   γ x s = transfinite-induction _≺_ w' (λ y → P (x , y)) (λ y f → step (ψ y f))
     where
      ψ : (y : Y) → ((y' : Y) → y' ≺ y → P (x , y')) → (z' : X × Y) → z' ⊏ (x , y) → P z'
-     ψ y f (x' , y') (inl l) = step x' l y'
-     ψ y f (x' , y') (inr (r , m)) = back-transport P p α
+     ψ y f (x' , y') (inl l) = s x' l y'
+     ψ y f (x' , y') (inr (r , m)) = transport⁻¹ P p α
       where
        α : P (x , y')
        α = f y' m
@@ -237,7 +271,7 @@ module times
    f : (a , b) ⊏ (x , y) → (x , y) ⊏ (u , v) → (a , b) ⊏ (u , v)
    f (inl l)       (inl m)          = inl (t _ _ _ l m)
    f (inl l)       (inr (q , m))    = inl (transport (λ - → a < -) q l)
-   f (inr (r , l)) (inl m)          = inl (back-transport (λ - → - < u) r m)
+   f (inr (r , l)) (inl m)          = inl (transport⁻¹ (λ - → - < u) r m)
    f (inr (r , l)) (inr (refl , m)) = inr (r , (t' _ _ _ l m))
 
  extensional : is-well-founded _<_
@@ -310,7 +344,32 @@ module times
    h (x' , y') (inl l) = f x' l
    h (x' , y') (inr (r , l)) = g y' l
 
+ tricho : {x : X} {y : Y}
+        → is-trichotomous-element _<_ x
+        → is-trichotomous-element _≺_ y
+        → is-trichotomous-element _⊏_ (x , y)
+ tricho {x} {y} t u (x' , y') =
+  Cases (t x')
+   (λ (l : x < x') → inl (inl l))
+   (cases
+     (λ (p : x ≡ x')
+        → Cases (u y')
+           (λ (l : y ≺ y')
+              → inl (inr (p , l)))
+           (cases
+             (λ (q : y ≡ y')
+                → inr (inl (to-×-≡ p q)))
+             (λ (l : y' ≺ y) → inr (inr (inr ((p ⁻¹) , l))))))
+     (λ (l : x' < x) → inr (inr (inl l))))
+
+ trichotomy-preservation : is-trichotomous-order _<_
+                         → is-trichotomous-order _≺_
+                         → is-trichotomous-order _⊏_
+ trichotomy-preservation t u (x , y) = tricho (t x) (u y)
+
 \end{code}
+
+Above trichotomy preservation added 20th April 2022.
 
 Added 27 June 2018. A product of ordinals indexed by a prop is
 an ordinal. Here "is" is used to indicate a construction, not a
@@ -330,7 +389,7 @@ retract-accessible _<_ _≺_ r s η φ = transfinite-induction' _<_ P γ
   P = λ x → is-accessible _≺_ (r x)
 
   γ : ∀ x → (∀ x' → x' < x → is-accessible _≺_ (r x')) → is-accessible _≺_ (r x)
-  γ x τ = next (r x) σ
+  γ x τ = step σ
    where
     σ : ∀ y → y ≺ r x → is-accessible _≺_ y
     σ y l = transport (is-accessible _≺_) (η y) m
@@ -429,7 +488,7 @@ that φ is a retraction.
    f' p x l = transport (λ - → - < φ p v) (ε p x) n'
     where
      l' : φ p (ψ p x) < φ p u
-     l' = back-transport (λ - → - < φ p u) (ε p x) l
+     l' = transport⁻¹ (λ - → - < φ p u) (ε p x) l
 
      a : ψ p x ≺ u
      a = p , l'
@@ -450,7 +509,7 @@ that φ is a retraction.
    g' p x l = transport (λ - → - < φ p u) (ε p x) n'
     where
      l' : φ p (ψ p x) < φ p v
-     l' = back-transport (λ - → - < φ p v) (ε p x) l
+     l' = transport⁻¹ (λ - → - < φ p v) (ε p x) l
 
      a : ψ p x ≺ v
      a = p , l'
@@ -503,13 +562,13 @@ lemma.
 
  well-founded : ((p : P) → is-well-founded (_<_ {p}))
               → is-well-founded _≺_
- well-founded w u = next u σ
+ well-founded w u = step σ
   where
    σ : (v : Π X) → v ≺ u → is-accessible _≺_ v
    σ v (p , l) = d
     where
      b : is-accessible _<_ (φ p v)
-     b = prev _<_ (φ p u) (w p (φ p u)) (φ p v) l
+     b = prev _<_ (w p (φ p u)) (φ p v) l
 
      c : is-accessible _≺_ (ψ p (φ p v))
      c = retract-accessible _<_ _≺_ (ψ p) (φ p) (η p) f (φ p v) b
@@ -589,15 +648,15 @@ module sum
    γ : (x : X)
      → ((x' : X) → x' < x → (y' : Y x') → P (x' , y'))
      → (y : Y x) → P (x , y)
-   γ x step = transfinite-induction _≺_ (w' x)
-               (λ y → P (x , y))
-               (λ y f → next (x , y) (ψ y f))
+   γ x s = transfinite-induction _≺_ (w' x)
+            (λ y → P (x , y))
+            (λ y f → step (ψ y f))
     where
      ψ : (y : Y x)
        → ((y' : Y x) → y' ≺ y → P (x , y'))
        → (z' : Σ Y) → z' ⊏ (x , y) → P z'
-     ψ y f (x' , y') (inl l) = step x' l y'
-     ψ y f (x' , y') (inr (r , m)) = back-transport P p α
+     ψ y f (x' , y') (inl l) = s x' l y'
+     ψ y f (x' , y') (inr (r , m)) = transport⁻¹ P p α
       where
        α : P (x , transport Y r y')
        α = f (transport Y r y') m
@@ -616,7 +675,7 @@ module sum
    f : (a , b) ⊏ (x , y) → (x , y) ⊏ (u , v) → (a , b) ⊏ (u , v)
    f (inl l)       (inl m)          = inl (t _ _ _ l m)
    f (inl l)       (inr (q , m))    = inl (transport (λ - → a < -) q l)
-   f (inr (r , l)) (inl m)          = inl (back-transport (λ - → - < u) r m)
+   f (inr (r , l)) (inl m)          = inl (transport⁻¹ (λ - → - < u) r m)
    f (inr (r , l)) (inr (refl , m)) = inr (r , (t' x _ _ _ l m))
 
  prop-valued : FunExt
@@ -635,7 +694,36 @@ module sum
    ap inr (to-Σ-≡ (extensionally-ordered-types-are-sets _<_ fe p e r s ,
                      (f x (transport Y s b) y _ m)))
 
+ tricho : {x : X} {y : Y x}
+        → is-trichotomous-element _<_ x
+        → is-trichotomous-element _≺_ y
+        → is-trichotomous-element _⊏_ (x , y)
+ tricho {x} {y} t u (x' , y') =
+  Cases (t x')
+   (λ (l : x < x') → inl (inl l))
+   (cases
+     (λ (p : x ≡ x')
+        → Cases (u (transport⁻¹ Y p y'))
+           (λ (l : y ≺ transport⁻¹ Y p y')
+              → inl (inr (p , transport⁻¹-right-rel _≺_ x' x y' y p l)))
+           (cases
+             (λ (q : y ≡ transport⁻¹ Y p y')
+                → inr (inl (to-Σ-≡
+                             (p , (transport Y p y                    ≡⟨ ap (transport Y p) q ⟩
+                                   transport Y p (transport⁻¹ Y p y') ≡⟨ back-and-forth-transport p ⟩
+                                   y'                                 ∎
+                                      )))))
+             (λ (l : transport⁻¹ Y p y' ≺ y) → inr (inr (inr ((p ⁻¹) , l))))))
+     (λ (l : x' < x) → inr (inr (inl l))))
+
+ trichotomy-preservation : is-trichotomous-order _<_
+                         → ((x : X) → is-trichotomous-order (_≺_ {x}))
+                         → is-trichotomous-order _⊏_
+ trichotomy-preservation t u (x , y) = tricho (t x) (u x y)
+
 \end{code}
+
+The above trichotomy preservation added 19th April 2022.
 
 We know how to prove extensionality either assuming top elements or
 assuming cotransitivity. We do this in the following two modules.
@@ -685,7 +773,7 @@ module sum-top
    p =  e a x f' g'
 
    f'' : (v : Y x) → v ≺ transport Y p b → v ≺ y
-   f'' v l = Cases (f (x , v) (inr ((p ⁻¹) , transport-rel _≺_ a x b v p l)))
+   f'' v l = Cases (f (x , v) (inr ((p ⁻¹) , transport-right-rel _≺_ a x b v p l)))
               (λ (l : x < x)
                  → 𝟘-elim (irreflexive _<_ x (w x) l))
               (λ (σ : Σ r ꞉ x ≡ x , transport Y r v ≺ y)
@@ -705,7 +793,7 @@ module sum-top
                  → transport
                      (λ - → u ≺ transport Y - b)
                      (extensionally-ordered-types-are-sets _<_ fe ispv e ((pr₁ σ)⁻¹) p)
-                     (transport-rel' _≺_ a x b u (pr₁ σ) (pr₂ σ)))
+                     (transport-left-rel _≺_ a x b u (pr₁ σ) (pr₂ σ)))
 
    q : transport Y p b ≡ y
    q = e' x (transport Y p b) y f'' g''
@@ -781,7 +869,7 @@ module sum-cotransitive
    p =  e a x f' g'
 
    f'' : (v : Y x) → v ≺ transport Y p b → v ≺ y
-   f'' v l = Cases (f (x , v) (inr ((p ⁻¹) , transport-rel _≺_ a x b v p l)))
+   f'' v l = Cases (f (x , v) (inr ((p ⁻¹) , transport-right-rel _≺_ a x b v p l)))
               (λ (l : x < x)
                  → 𝟘-elim (irreflexive _<_ x (w x) l))
               (λ (σ : Σ r ꞉ x ≡ x , transport Y r v ≺ y)
@@ -803,7 +891,7 @@ module sum-cotransitive
                      (λ - → u ≺ transport Y - b)
                      (extensionally-ordered-types-are-sets _<_ fe
                        ispv e ((pr₁ σ)⁻¹) p)
-                     (transport-rel' _≺_ a x b u (pr₁ σ) (pr₂ σ)))
+                     (transport-left-rel _≺_ a x b u (pr₁ σ) (pr₂ σ)))
 
    q : transport Y p b ≡ y
    q = e' x (transport Y p b) y f'' g''

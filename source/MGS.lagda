@@ -9,7 +9,7 @@ It is not integrated with the other TypeTopology files yet.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 module MGS where
 

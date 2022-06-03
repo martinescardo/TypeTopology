@@ -2,7 +2,7 @@ Negation (and emptiness).
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 module Negation where
 
@@ -12,6 +12,10 @@ open import Id
 open import Pi
 open import Plus
 open import Sigma
+
+private
+ _⇔_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
+ A ⇔ B = (A → B) × (B → A)
 
 ¬_ : 𝓤 ̇ → 𝓤 ̇
 ¬ A = A → 𝟘 {𝓤₀}
@@ -26,6 +30,9 @@ is-empty = ¬_
 
 ¬¬_ : 𝓤 ̇ → 𝓤 ̇
 ¬¬ A = ¬ (¬ A)
+
+¬¬¬_ : 𝓤 ̇ → 𝓤 ̇
+¬¬¬ A = ¬ (¬¬ A)
 
 is-nonempty : 𝓤 ̇ → 𝓤 ̇
 is-nonempty = ¬¬_
@@ -48,19 +55,28 @@ double-contrapositive = contrapositive ∘ contrapositive
 decidable : 𝓤 ̇ → 𝓤 ̇
 decidable A = A + ¬ A
 
-double-negation-intro : {A : 𝓤 ̇ } → A → ¬¬ A
-double-negation-intro x u = u x
+map-decidable : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → (A → B) → (B → A) → decidable A → decidable B
+map-decidable f g (inl x) = inl (f x)
+map-decidable f g (inr h) = inr (λ y → h (g y))
 
-three-negations-imply-one : {A : 𝓤 ̇ } → ¬ (¬¬ A) → ¬ A
-three-negations-imply-one = contrapositive double-negation-intro
+map-decidable-corollary : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → (A ⇔ B) → (decidable A ⇔ decidable B)
+map-decidable-corollary (f , g) = map-decidable f g , map-decidable g f
+
+map-decidable' : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → (A → ¬ B) → (¬ A → B) → decidable A → decidable B
+map-decidable' f g (inl x) = inr (f x)
+map-decidable' f g (inr h) = inl (g h)
+
+¬¬-intro : {A : 𝓤 ̇ } → A → ¬¬ A
+¬¬-intro x u = u x
+
+three-negations-imply-one : {A : 𝓤 ̇ } → ¬¬¬ A → ¬ A
+three-negations-imply-one = contrapositive ¬¬-intro
 
 dne' : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → (A → B) → (¬¬ B → B) → ¬¬ A → B
 dne' f h ϕ = h (λ g → ϕ (λ a → g (f a)))
 
 dne : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → (A → ¬ B) → ¬¬ A → ¬ B
 dne f ϕ b = ϕ (λ a → f a b)
-
-
 
 double-negation-unshift : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } → ¬¬ ((x : X) → A x) → (x : X) → ¬¬ (A x)
 double-negation-unshift f x g = f (λ h → g (h x))
@@ -161,6 +177,7 @@ Fixities:
 
 infix  50 ¬_
 infix  50 ¬¬_
+infix  50 ¬¬¬_
 infix  0 _≢_
 
 \end{code}

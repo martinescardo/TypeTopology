@@ -25,7 +25,7 @@ which seems to be a new result.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 module UF-Size where
 
@@ -834,5 +834,63 @@ Id⟦ ls ⟧ x y = x ≡⟦ ls ⟧ y
 
 ⟦_⟧-refl : {X : 𝓤 ⁺ ̇ } (ls : is-locally-small X) (x : X) → x ≡⟦ ls ⟧ x
 ⟦ ls ⟧-refl x = ⌜ ≃-sym (pr₂ (ls x x)) ⌝ refl
+
+\end{code}
+
+Added 5 April 2022 by Tom de Jong, after discussion with Martín.
+(Refactoring an earlier addition dated 15 March 2022.)
+
+Set Replacement is what we call the following principle:
+given X : 𝓤 and Y a locally 𝓥-small *set*, the image of a map f : X → Y is
+(𝓤 ⊔ 𝓥)-small.
+
+In particular, if 𝓤 and 𝓥 are the same, then the image is 𝓤-small.
+
+The name "Set Replacement" is inspired by [Section 2.19, Bezem+2022], but is
+different in two ways:
+(1) In [Bezem+2022] replacement is not restriced to maps into sets, hence our
+    name *Set* Replacement
+(2) In [Bezem+2022] the universe parameters 𝓤 and 𝓥 are taken to be the same.
+
+[Rijke2017] shows that the replacement of [Bezem+2022] is provable in the
+presence of a univalent universes 𝓤 closed under pushouts.
+
+In UF-Quotient.lagda, we prove that Set Replacement is provable if we assume
+that for every X : 𝓤 and 𝓥-valued equivalence relation ≈, the set quotient X / ≈
+exists in 𝓤 ⊔ 𝓥.
+
+In UF-Quotient.lagda we prove the converse using a specific construction of
+quotients, similar to [Corollary 5.1, Rijke2017].
+
+Thus, Set Replacement is equivalent to having set quotients in 𝓤 ⊔ 𝓥 for every
+type in 𝓤 with a 𝓥-valued equivalence relation (which is what you would have
+when adding set quotients as higher inductive types).
+
+[Rijke2017]  Egbert Rijke. The join construction.
+             https://arxiv.org/abs/1701.07538, January 2017.
+
+[Bezem+2022] Marc Bezem, Ulrik Buchholtz, Pierre Cagne, Bj‌ørn Ian Dundas and
+             Daniel R. Grayson
+             Symmetry
+             https://unimath.github.io/SymmetryBook/book.pdf
+             https://github.com/UniMath/SymmetryBook
+             Book version: 2722568 (2022-03-31)
+
+\begin{code}
+
+_is-locally_small : 𝓤 ̇  → (𝓥 : Universe) → 𝓥 ⁺ ⊔ 𝓤 ̇
+X is-locally 𝓥 small = (x y : X) → (x ≡ y) is 𝓥 small
+
+module _ (pt : propositional-truncations-exist) where
+
+ open import UF-ImageAndSurjection
+ open ImageAndSurjection pt
+
+ Set-Replacement : 𝓤ω
+ Set-Replacement = {𝓦 𝓣 𝓤 𝓥 : Universe} {X : 𝓣 ̇  } {Y : 𝓦 ̇  } (f : X → Y)
+                 → X is 𝓤 small
+                 → Y is-locally 𝓥 small
+                 → is-set Y
+                 → image f is (𝓤 ⊔ 𝓥) small
 
 \end{code}

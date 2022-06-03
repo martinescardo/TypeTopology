@@ -7,22 +7,22 @@ witnesses can be found.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import UF-FunExt
 open import SpartanMLTT
 
-module ConvergentSequenceHasLeast (fe₀ : funext 𝓤₀ 𝓤₀) where
+module ConvergentSequenceHasInf (fe₀ : funext 𝓤₀ 𝓤₀) where
 
 
 open import Two-Properties
-open import LeastElementProperty
+open import InfProperty
 open import GenericConvergentSequence
 open import OrderNotation
 open import CanonicalMapNotation
 
-ℕ∞-has-least : has-least _≼_
-ℕ∞-has-least p = a , putative-root-lemma , lower-bound-lemma , uborlb-lemma
+ℕ∞-has-inf : has-inf _≼_
+ℕ∞-has-inf p = a , putative-root-lemma , lower-bound-lemma , uborlb-lemma
  where
   α : ℕ → 𝟚
   α 0       = p (ι 0)
@@ -38,10 +38,10 @@ open import CanonicalMapNotation
                        ₀              ∎
    where
     s : α n ≡ ₁
-    s = ap (λ - → ι - n) r ∙ ι-diagonal₁ n
+    s = ap (λ - → ι - n) r ∙ ℕ-to-ℕ∞-diagonal₁ n
 
     t = α (succ n)              ≡⟨ ap (λ - → ι - (succ n)) r ⟩
-        ι (ι (succ n)) (succ n) ≡⟨ ι-diagonal₀ n ⟩
+        ι (ι (succ n)) (succ n) ≡⟨ ℕ-to-ℕ∞-diagonal₀ n ⟩
         ₀                       ∎
 
     w : p (ι (succ n)) ≡ α (succ n)

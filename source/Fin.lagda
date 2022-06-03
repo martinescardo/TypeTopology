@@ -4,7 +4,7 @@ See also the file Fin-Properties.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 module Fin where
 

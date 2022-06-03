@@ -6,17 +6,16 @@ For any function f : ℕ∞ → ℕ, it is decidable whether f is non-continuous
 
 Based on the paper
 
- "Constructive decidability of classical continuity".
-  http://www.cs.bham.ac.uk/~mhe/papers/wlpo-and-continuity-revised.pdf
-
-which is published in MSCS.
+    Mathematical Structures in Computer Science , Volume 25,
+    October 2015 , pp. 1578 - 1589
+    DOI: https://doi.org/10.1017/S096012951300042X
 
 The title of this paper is a bit misleading. It should have been
 called "Decidability of non-continuity".
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import SpartanMLTT
 open import UF-FunExt
