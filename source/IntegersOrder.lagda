@@ -349,6 +349,11 @@ positive-multiplication-preserves-order a b (negsucc x)    p l = 𝟘-elim p
 positive-multiplication-preserves-order a b (pos 0)        p l = 𝟘-elim p
 positive-multiplication-preserves-order a b (pos (succ x)) p l = pmpo-lemma a b x l
 
+positive-multiplication-preserves-order' : (a b c : ℤ) → greater-than-zero c → a ≤ b → a * c ≤ b * c
+positive-multiplication-preserves-order' a b c p l with ℤ≤-split a b l
+... | (inl a<b) = <-is-≤ _ _ (positive-multiplication-preserves-order a b c p a<b)
+... | (inr a≡b) = transport (a * c ≤_) (ap (_* c) a≡b) (ℤ≤-refl (a * c)) 
+
 nmco-lemma : (a b : ℤ) → (c : ℕ) → a < b → b * (negsucc c) < a * (negsucc c)
 nmco-lemma a b = induction base step
  where

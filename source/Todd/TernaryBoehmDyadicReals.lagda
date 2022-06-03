@@ -27,6 +27,7 @@ module Todd.TernaryBoehmDyadicReals
   (pe : PropExt)
  where
 
+open import Todd.BelowAndAbove fe using (below-implies-below' ; _below'_)
 open import Todd.DyadicReals pt fe
 open import Todd.RationalsDyadic fe
 open import Todd.TernaryBoehmRealsPrelude fe
@@ -254,6 +255,7 @@ The intuition behind the map is that ...
  ... | inr (inr δ<δ) = 𝟘-elim (ℤ-equal-not-less-than (pos δ) δ<δ)
  ... | inr (inl δ≡δ) = to-subtype-≡ (λ (z , n) → ℤ[1/2]-cond-is-prop z n) (ap pr₁ (lowest-terms-normalised ((k , δ) , p)))
 
+ -- normalise-pos
  normalise-≤ : ((k , δ) : ℤ × ℕ) → ((m , ε) : ℤ × ℕ)
              → k * pos (2^ ε) ≤ m * pos (2^ δ)
              → normalise (k , pos δ) ≤ normalise (m , pos ε)
@@ -288,20 +290,77 @@ The intuition behind the map is that ...
         k' * (pos (2^ ε') * pos (2^ (n₁ +ℕ n₂)))  ≡⟨ ℤ*-assoc k' (pos (2^ ε')) (pos (2^ (n₁ +ℕ n₂))) ⁻¹ ⟩
         k' * pos (2^ ε') * pos (2^ (n₁ +ℕ n₂))    ∎
 
+ normalise-neg' : (x : ℤ) (a : ℕ) → let ((k , δ) , p) = normalise-neg x a
+                                    in (k , δ) ≡ pos (2^ (succ a)) * x , 0
+ normalise-neg' x 0        = to-×-≡ (ℤ*-comm x (pos 2)) refl
+ normalise-neg' x (succ a) with from-×-≡' (normalise-neg' (x + x) a)
+ ... | e₁ , e₂ = to-×-≡ I e₂
+  where
+   I : pr₁ (pr₁ (normalise-neg (x + x) a)) ≡ pos (2^ (succ (succ a))) * x
+   I = pr₁ (pr₁ (normalise-neg (x + x) a)) ≡⟨ e₁ ⟩
+       pos (2^ (succ a)) * (x * pos 2)     ≡⟨ ap (pos (2^ (succ a)) *_) (ℤ*-comm x (pos 2)) ⟩
+       pos (2^ (succ a)) * (pos 2 * x)     ≡⟨ ℤ*-assoc (pos (2^ (succ a))) (pos 2) x ⁻¹ ⟩
+       pos (2^ (succ a)) * pos 2 * x       ≡⟨ ap (_* x) (pos-multiplication-equiv-to-ℕ (2^ (succ a)) 2) ⟩
+       pos (2^ (succ a) *ℕ 2) * x          ≡⟨ ap (λ z → pos z * x) (mult-commutativity (2^ (succ a)) 2) ⟩
+       pos (2^ (succ (succ a))) * x ∎
+ 
+ -- normalise-neg
+ normalise-≤' : ((k , δ) : ℤ × ℕ) → ((m , ε) : ℤ × ℕ)
+             → k * pos (2^ (succ δ)) ≤ m * pos (2^ (succ ε))
+             → normalise (k , negsucc δ) ≤ normalise (m , negsucc ε)
+ normalise-≤' (k , δ) (m , ε) with (from-×-≡' (normalise-neg' k δ) , from-×-≡' (normalise-neg' m ε))
+ ... | ((e₁ , e₂) , e₃ , e₄) = transport₂ _≤_
+                                (ℤ*-comm k (pos (2^ (succ δ))) ∙ ap₂ (λ z z' → z * pos (2^ z')) (e₁ ⁻¹) (e₄ ⁻¹))
+                                 (ℤ*-comm m (pos (2^ (succ ε))) ∙ ap₂ (λ z z' → z * pos (2^ z')) (e₃ ⁻¹) (e₂ ⁻¹))
+
+ lim₁ : (x : ℤ) → (n : ℕ) → x * pos (2^ (succ n)) ≤ (x * pos 2) * pos (2^ n) 
+ lim₁ x n = 0 , (x * pos (2^ (succ n))    ≡⟨ ap (x *_) (pos-multiplication-equiv-to-ℕ 2 (2^ n) ⁻¹) ⟩
+                 x * (pos 2 * pos (2^ n)) ≡⟨ ℤ*-assoc x (pos 2) (pos (2^ n)) ⁻¹ ⟩
+                 x * pos 2 * pos (2^ n)   ∎)
+
+ lim₂ : (x : ℤ) → (n : ℕ) → x * pos (2^ (succ n)) ≤ (x * pos 2 + pos 1) * pos (2^ n) 
+ lim₂ x n = ℤ≤-trans _ _ _ (lim₁ x n) (positive-multiplication-preserves-order' _ _ (pos (2^ n)) (power-of-pos-positive n) (≤-incrℤ (x * pos 2)))
+
+ lim₃ : (x : ℤ) → (n : ℕ) → x * pos (2^ (succ n)) ≤ (x * pos 2 + pos 2) * pos (2^ n) 
+ lim₃ x n = ℤ≤-trans _ _ _ (lim₂ x n) (positive-multiplication-preserves-order' _ _ (pos (2^ n)) (power-of-pos-positive n) (≤-incrℤ (succℤ (x * pos 2))))
+
+ lim₄ : (x' x : ℤ) (n : ℕ) → x' below' x → x * pos (2^ (succ n)) ≤ x' * pos (2^ n)
+ lim₄ x' x n (inl x'≡2x)         = transport (λ z → x * pos (2^ (succ n)) ≤ z * pos (2^ n)) (x'≡2x ⁻¹) (lim₁ x n) 
+ lim₄ x' x n (inr (inl x'≡2x+1)) = transport (λ z → x * pos (2^ (succ n)) ≤ z * pos (2^ n)) (x'≡2x+1 ⁻¹) (lim₂ x n)
+ lim₄ x' x n (inr (inr x'≡2x+2)) = transport (λ z → x * pos (2^ (succ n)) ≤ z * pos (2^ n)) (x'≡2x+2 ⁻¹) (lim₃ x n)
+
  left-interval-monotonic' : (t : 𝕋) → (n : ℤ) → lb t n ≤ lb t (succℤ n)
- left-interval-monotonic' (x , b) (pos n) = normalise-≤ ((x (pos n)) , n) (x (pos (succ n)) , succ n) {!!}
- left-interval-monotonic' (x , b) (negsucc n) = {!!}
- -- goal : normalise ((x n) , n) ≤ normalise (x (succℤ n) , succℤ n)
+ left-interval-monotonic' (x , b) (pos n) = normalise-≤ ((x (pos n)) , n) (x (pos (succ n)) , succ n)
+                                   (lim₄ (x (pos (succ n))) (x (pos n)) n
+                                    (below-implies-below' (x (pos (succ n))) (x (pos n)) (b (pos n))))
+ left-interval-monotonic' (x , b) (negsucc 0) with below-implies-below' (x (pos 0)) (x (negsucc 0)) (b (negsucc 0))
+ ... | inl e = 0 , (e ⁻¹)
+ ... | inr (inl e) = 1 , (e ⁻¹)
+ ... | inr (inr e) = 2 , (e ⁻¹)
+ left-interval-monotonic' (x , b) (negsucc (succ n)) = normalise-≤' (x (negsucc (succ n)) , (succ n)) (x (negsucc n) , n)
+                                                        (lim₄ (x (negsucc n)) (x (negsucc (succ n))) (succ n)
+                                                         (below-implies-below' (x (negsucc n)) (x (negsucc (succ n))) (b (negsucc (succ n)))))
  
  left-interval-monotonic : (x : ℤ[1/2]) → (n : ℤ) → lb (map x) n ≤ lb (map x) (succℤ n)
- left-interval-monotonic x n = let (f , b) = map x
-                               in left-interval-monotonic' (map x) n
+ left-interval-monotonic x n = left-interval-monotonic' (map x) n
+                               
+ left-interval-is-minimum-lemma : (x : ℤ[1/2]) → (n : ℤ) (m : ℕ) → succℤ n + pos m ≡ pos (layer x) → lb (map x) n ≤ x 
+ left-interval-is-minimum-lemma x n 0 e = transport (lb (map x) n ≤_) I II
+  where
+   I : lb (map x) (succℤ n) ≡ x
+   I = map-lemma-≤ x (succℤ n) (0 , (e ⁻¹))
+   II : lb (map x) n ≤ lb (map x) (succℤ n)
+   II = left-interval-monotonic x n
+ left-interval-is-minimum-lemma x n (succ m) e = trans' (lb (map x) n) (lb (map x) (succℤ n)) x (left-interval-monotonic x n) I
+  where
+   I : lb (map x) (succℤ n) ≤ x
+   I = left-interval-is-minimum-lemma x (succℤ n) m (ℤ-left-succ (succℤ n) (pos m) ∙ e) 
 
  left-interval-is-minimum : (x : ℤ[1/2]) → (n : ℤ) → lb (map x) n ≤ x
  left-interval-is-minimum ((x , δ) , p) n with ℤ-trichotomous (pos δ) n
  ... | inl δ<n = transport (_≤ ((x , δ) , p)) (map-lemma ((x , δ) , p) n δ<n ⁻¹) (≤-refl ((x , δ) , p))
  ... | inr (inl refl) = transport (_≤ ((x , δ) , p)) (map-lemma-≤ (((x , δ) , p)) n (ℤ≤-refl (pos δ)) ⁻¹) (≤-refl ((x , δ) , p))
- ... | inr (inr n<δ) = {!!}
+ ... | inr (inr (m , e)) = left-interval-is-minimum-lemma (((x , δ) , p)) n m e
 
  encodings-agree-with-reals : (x : ℤ[1/2]) → ⟦ map x ⟧ ≡ ι x
  encodings-agree-with-reals x = ℝ-d-equality-from-left-cut left right
