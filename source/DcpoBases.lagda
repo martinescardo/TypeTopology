@@ -108,13 +108,14 @@ module _
   open is-small-basis sb
 
   structurally-continuous-if-equiped-with-small-basis : structurally-continuous 𝓓
-  structurally-continuous-if-equiped-with-small-basis = record {
-    index-of-approximating-family     = ↡ᴮₛ ;
-    approximating-family              = ↡ιₛ ;
-    approximating-family-is-directed  = ↡ᴮₛ-is-directed ;
-    approximating-family-is-way-below = ↡ᴮₛ-is-way-below ;
-    approximating-family-∐-≡          = ↡ᴮₛ-∐-≡
-   }
+  structurally-continuous-if-equiped-with-small-basis =
+   record
+    { index-of-approximating-family     = ↡ᴮₛ
+    ; approximating-family              = ↡ιₛ
+    ; approximating-family-is-directed  = ↡ᴮₛ-is-directed
+    ; approximating-family-is-way-below = ↡ᴮₛ-is-way-below
+    ; approximating-family-∐-≡          = ↡ᴮₛ-∐-≡
+    }
 
   ⊑-in-terms-of-≪ᴮ : {x y : ⟨ 𝓓 ⟩}
                    → (x ⊑⟨ 𝓓 ⟩ y) ≃ (∀ (b : B) → β b ≪⟨ 𝓓 ⟩ x → β b ≪⟨ 𝓓 ⟩ y)
@@ -279,11 +280,12 @@ module _
     where
      open is-small-basis sb
    g : is-small-basis-Σ → is-small-basis
-   g sb = record {
-     ≪ᴮ-is-small = λ x → pr₁ (sb x);
-     ↡ᴮ-is-directed = λ x → pr₁ (pr₂ (sb x));
-     ↡ᴮ-is-sup  = λ x → pr₂ (pr₂ (sb x))
-    }
+   g sb =
+    record
+     { ≪ᴮ-is-small = λ x → pr₁ (sb x)
+     ; ↡ᴮ-is-directed = λ x → pr₁ (pr₂ (sb x))
+     ; ↡ᴮ-is-sup  = λ x → pr₂ (pr₂ (sb x))
+     }
 
  being-small-basis-is-prop : Prop-Ext → is-prop is-small-basis
  being-small-basis-is-prop pe = equiv-to-prop is-small-basis-≃
@@ -377,16 +379,17 @@ module _
 
  compact-basis-is-basis : is-small-compact-basis
                         → is-small-basis 𝓓 β
- compact-basis-is-basis scb = record {
-   ≪ᴮ-is-small    = λ x b → ( b ⊑ᴮₛ x
+ compact-basis-is-basis scb =
+  record
+   { ≪ᴮ-is-small    = λ x b → ( b ⊑ᴮₛ x
                             , ((b ⊑ᴮₛ x)      ≃⟨ ⊑ᴮₛ-≃-⊑ᴮ ⟩
                                (β b ⊑⟨ 𝓓 ⟩ x) ≃⟨ lemma b  ⟩
-                               (β b ≪⟨ 𝓓 ⟩ x) ■));
-   ↡ᴮ-is-directed = λ x → reindexed-family-is-directed 𝓓
-                           (↓ᴮ-≃-↡ᴮ x) (↓ι x) (↓ᴮ-is-directed x);
-   ↡ᴮ-is-sup      = λ x → reindexed-family-sup 𝓓 (↓ᴮ-≃-↡ᴮ x) (↓ι x)
-                           x (↓ᴮ-is-sup x)
-  }
+                               (β b ≪⟨ 𝓓 ⟩ x) ■))
+   ; ↡ᴮ-is-directed = λ x → reindexed-family-is-directed 𝓓
+                             (↓ᴮ-≃-↡ᴮ x) (↓ι x) (↓ᴮ-is-directed x)
+   ; ↡ᴮ-is-sup      = λ x → reindexed-family-sup 𝓓 (↓ᴮ-≃-↡ᴮ x) (↓ι x)
+                             x (↓ᴮ-is-sup x)
+   }
    where
     open is-small-compact-basis scb
     lemma : (b : B) {x : ⟨ 𝓓 ⟩} → (β b ⊑⟨ 𝓓 ⟩ x) ≃ (β b ≪⟨ 𝓓 ⟩ x)
@@ -412,13 +415,14 @@ module _
     {B : 𝓥 ̇  } (β : B → ⟨ 𝓓 ⟩)
   → is-small-compact-basis 𝓓 β
   → structurally-algebraic 𝓓
- structurally-algebraic-if-equiped-with-small-compact-basis β scb = record {
-   index-of-compact-family    = ↓ᴮₛ;
-   compact-family             = ↓ιₛ;
-   compact-family-is-directed = ↓ᴮₛ-is-directed;
-   compact-family-is-compact  = ↓ᴮₛ-compact;
-   compact-family-∐-≡         = ↓ᴮₛ-∐-≡
-  }
+ structurally-algebraic-if-equiped-with-small-compact-basis β scb =
+  record
+   { index-of-compact-family    = ↓ᴮₛ
+   ; compact-family             = ↓ιₛ
+   ; compact-family-is-directed = ↓ᴮₛ-is-directed
+   ; compact-family-is-compact  = ↓ᴮₛ-compact
+   ; compact-family-∐-≡         = ↓ᴮₛ-∐-≡
+   }
    where
     open is-small-compact-basis scb
 
@@ -451,12 +455,13 @@ small-and-compact-basis : (𝓓 : DCPO {𝓤} {𝓣}) {B : 𝓥 ̇  } (β : B �
                         → is-small-basis 𝓓 β
                         → ((b : B) → is-compact 𝓓 (β b))
                         → is-small-compact-basis 𝓓 β
-small-and-compact-basis 𝓓 {B} β β-is-small-basis κ = record {
-   basis-is-compact = κ
-  ; ⊑ᴮ-is-small     = I
-  ; ↓ᴮ-is-directed  = II
-  ; ↓ᴮ-is-sup       = III
- }
+small-and-compact-basis 𝓓 {B} β β-is-small-basis κ =
+ record
+  { basis-is-compact = κ
+  ; ⊑ᴮ-is-small      = I
+  ; ↓ᴮ-is-directed   = II
+  ; ↓ᴮ-is-sup        = III
+  }
   where
    open is-small-basis β-is-small-basis
    module _
@@ -553,57 +558,57 @@ module _
                                      → is-small-basis 𝓓 (r ∘ β)
  small-basis-from-continuous-retract pe {B} β sb =
   record
-    { ≪ᴮ-is-small    = lemma₁
-    ; ↡ᴮ-is-directed = lemma₂
-    ; ↡ᴮ-is-sup      = lemma₃
-    }
+   { ≪ᴮ-is-small    = lemma₁
+   ; ↡ᴮ-is-directed = lemma₂
+   ; ↡ᴮ-is-sup      = lemma₃
+   }
+   where
+    open is-small-basis sb
+
+    lemma₁ : (x : ⟨ 𝓓 ⟩) (b : B) → is-small (r (β b) ≪⟨ 𝓓 ⟩ x)
+    lemma₁ x b = ≪-is-small-valued 𝓓 pe 𝓓-cont 𝓓-loc-small (r (β b)) x
      where
-      open is-small-basis sb
+      𝓓-loc-small : is-locally-small 𝓓
+      𝓓-loc-small = (local-smallness-preserved-by-continuous-retract
+                      𝓓 𝓔 ρ (locally-small-if-small-basis 𝓔 β sb))
+      𝓓-cont : is-continuous-dcpo 𝓓
+      𝓓-cont = continuity-of-dcpo-preserved-by-continuous-retract 𝓓 𝓔 ρ
+                ∣ structurally-continuous-if-specified-small-basis
+                   𝓔 (B , (β , sb)) ∣
 
-      lemma₁ : (x : ⟨ 𝓓 ⟩) (b : B) → is-small (r (β b) ≪⟨ 𝓓 ⟩ x)
-      lemma₁ x b = ≪-is-small-valued 𝓓 pe 𝓓-cont 𝓓-loc-small (r (β b)) x
+    σ : (x : ⟨ 𝓓 ⟩) → ↡ᴮₛ (s x) → ↡ᴮ 𝓓 (r ∘ β) x
+    σ x (b , b-way-below-sx) =
+     (b , continuous-retraction-≪-criterion 𝓓 𝓔 ρ (β b) x
+           (≪ᴮₛ-to-≪ᴮ b-way-below-sx))
+
+    ε : (x : ⟨ 𝓓 ⟩) → is-Directed 𝓔 (↡ιₛ (s x))
+    ε x = ↡ᴮₛ-is-directed (s x)
+
+    eq-lemma : (x : ⟨ 𝓓 ⟩) → r (∐ 𝓔 (ε x)) ≡ x
+    eq-lemma x = r (∐ 𝓔 (ε x)) ≡⟨ ap r (↡ᴮₛ-∐-≡ (s x)) ⟩
+                 r (s x)       ≡⟨ s-section-of-r x     ⟩
+                 x             ∎
+
+    lemma₂ : (x : ⟨ 𝓓 ⟩) → is-Directed 𝓓 (↡ι 𝓓 (r ∘ β) x)
+    lemma₂ x = ↡ᴮ-directedness-criterion 𝓓 (r ∘ β) x (σ x) ε' h
+     where
+      ε' : is-Directed 𝓓 (r ∘ ↡ιₛ (s x))
+      ε' = image-is-directed' 𝓔 𝓓 𝕣 (ε x)
+      h : x ⊑⟨ 𝓓 ⟩ ∐ 𝓓 ε'
+      h = transport (λ - → - ⊑⟨ 𝓓 ⟩ ∐ 𝓓 ε') (eq-lemma x) claim
        where
-        𝓓-loc-small : is-locally-small 𝓓
-        𝓓-loc-small = (local-smallness-preserved-by-continuous-retract
-                        𝓓 𝓔 ρ (locally-small-if-small-basis 𝓔 β sb))
-        𝓓-cont : is-continuous-dcpo 𝓓
-        𝓓-cont = continuity-of-dcpo-preserved-by-continuous-retract 𝓓 𝓔 ρ
-                  ∣ structurally-continuous-if-specified-small-basis
-                     𝓔 (B , (β , sb)) ∣
+        claim : r (∐ 𝓔 (ε x)) ⊑⟨ 𝓓 ⟩ ∐ 𝓓 ε'
+        claim = continuous-∐-⊑ 𝓔 𝓓 𝕣 (ε x)
 
-      σ : (x : ⟨ 𝓓 ⟩) → ↡ᴮₛ (s x) → ↡ᴮ 𝓓 (r ∘ β) x
-      σ x (b , b-way-below-sx) =
-       (b , continuous-retraction-≪-criterion 𝓓 𝓔 ρ (β b) x
-             (≪ᴮₛ-to-≪ᴮ b-way-below-sx))
-
-      ε : (x : ⟨ 𝓓 ⟩) → is-Directed 𝓔 (↡ιₛ (s x))
-      ε x = ↡ᴮₛ-is-directed (s x)
-
-      eq-lemma : (x : ⟨ 𝓓 ⟩) → r (∐ 𝓔 (ε x)) ≡ x
-      eq-lemma x = r (∐ 𝓔 (ε x)) ≡⟨ ap r (↡ᴮₛ-∐-≡ (s x)) ⟩
-                   r (s x)       ≡⟨ s-section-of-r x     ⟩
-                   x             ∎
-
-      lemma₂ : (x : ⟨ 𝓓 ⟩) → is-Directed 𝓓 (↡ι 𝓓 (r ∘ β) x)
-      lemma₂ x = ↡ᴮ-directedness-criterion 𝓓 (r ∘ β) x (σ x) ε' h
+    lemma₃ : (x : ⟨ 𝓓 ⟩) → is-sup (underlying-order 𝓓) x (↡ι 𝓓 (r ∘ β) x)
+    lemma₃ x = ↡ᴮ-sup-criterion 𝓓 (r ∘ β) x (σ x) h
+     where
+      h : is-sup (underlying-order 𝓓) x (r ∘ ↡ιₛ (s x))
+      h = transport (λ - → is-sup (underlying-order 𝓓) - (r ∘ ↡ιₛ (s x)))
+           (eq-lemma x) claim
        where
-        ε' : is-Directed 𝓓 (r ∘ ↡ιₛ (s x))
-        ε' = image-is-directed' 𝓔 𝓓 𝕣 (ε x)
-        h : x ⊑⟨ 𝓓 ⟩ ∐ 𝓓 ε'
-        h = transport (λ - → - ⊑⟨ 𝓓 ⟩ ∐ 𝓓 ε') (eq-lemma x) claim
-         where
-          claim : r (∐ 𝓔 (ε x)) ⊑⟨ 𝓓 ⟩ ∐ 𝓓 ε'
-          claim = continuous-∐-⊑ 𝓔 𝓓 𝕣 (ε x)
-
-      lemma₃ : (x : ⟨ 𝓓 ⟩) → is-sup (underlying-order 𝓓) x (↡ι 𝓓 (r ∘ β) x)
-      lemma₃ x = ↡ᴮ-sup-criterion 𝓓 (r ∘ β) x (σ x) h
-       where
-        h : is-sup (underlying-order 𝓓) x (r ∘ ↡ιₛ (s x))
-        h = transport (λ - → is-sup (underlying-order 𝓓) - (r ∘ ↡ιₛ (s x)))
-             (eq-lemma x) claim
-         where
-          claim : is-sup (underlying-order 𝓓) (r (∐ 𝓔 (ε x))) (r ∘ ↡ιₛ (s x))
-          claim = r-is-continuous (↡ᴮₛ (s x)) (↡ιₛ (s x)) (ε x)
+        claim : is-sup (underlying-order 𝓓) (r (∐ 𝓔 (ε x))) (r ∘ ↡ιₛ (s x))
+        claim = r-is-continuous (↡ᴮₛ (s x)) (↡ιₛ (s x)) (ε x)
 
 \end{code}
 

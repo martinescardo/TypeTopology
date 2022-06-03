@@ -1046,13 +1046,14 @@ because this seems to need instances of the axiom of choice in general.
 
  𝓓∞-structurally-continuous : ((i : I) → structurally-continuous (𝓓 i))
                             → structurally-continuous 𝓓∞
- 𝓓∞-structurally-continuous 𝓒 = record
-  { index-of-approximating-family     = J∞⁺
-  ; approximating-family              = α∞⁺
-  ; approximating-family-is-directed  = α∞⁺-is-directed
-  ; approximating-family-is-way-below = α∞⁺-is-way-below
-  ; approximating-family-∐-≡          = α∞⁺-∐-≡
-  }
+ 𝓓∞-structurally-continuous 𝓒 =
+  record
+   { index-of-approximating-family     = J∞⁺
+   ; approximating-family              = α∞⁺
+   ; approximating-family-is-directed  = α∞⁺-is-directed
+   ; approximating-family-is-way-below = α∞⁺-is-way-below
+   ; approximating-family-∐-≡          = α∞⁺-∐-≡
+   }
    where
     open structurally-continuous
     J : (i : I) → ⟨ 𝓓 i ⟩ → 𝓥 ̇
@@ -1100,13 +1101,14 @@ Similarly, if each 𝓓ᵢ is structurally algebraic then so is its bilimit 𝓓
 
  𝓓∞-structurally-algebraic : ((i : I) → structurally-algebraic (𝓓 i))
                            → structurally-algebraic 𝓓∞
- 𝓓∞-structurally-algebraic 𝓐 = record
-  { index-of-compact-family    = index-of-approximating-family C∞
-  ; compact-family             = approximating-family C∞
-  ; compact-family-is-directed = approximating-family-is-directed C∞
-  ; compact-family-is-compact  = γ
-  ; compact-family-∐-≡         = approximating-family-∐-≡ C∞
-  }
+ 𝓓∞-structurally-algebraic 𝓐 =
+  record
+   { index-of-compact-family    = index-of-approximating-family C∞
+   ; compact-family             = approximating-family C∞
+   ; compact-family-is-directed = approximating-family-is-directed C∞
+   ; compact-family-is-compact  = γ
+   ; compact-family-∐-≡         = approximating-family-∐-≡ C∞
+   }
    where
     open structurally-continuous
     open structurally-algebraic
@@ -1157,11 +1159,12 @@ small (compact) basis, then the bilimit 𝓓∞ does too.
      (B i , β i , β-is-small-basis i)
 
    β∞-is-small-basis : is-small-basis 𝓓∞ β∞
-   β∞-is-small-basis = record {
-       ≪ᴮ-is-small    = lemma₁
+   β∞-is-small-basis =
+    record
+     { ≪ᴮ-is-small    = lemma₁
      ; ↡ᴮ-is-directed = lemma₂
      ; ↡ᴮ-is-sup      = lemma₃
-    }
+     }
      where
       open is-small-basis
 

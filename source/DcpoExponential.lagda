@@ -323,10 +323,10 @@ module _
 
  exponential-is-sup-complete : is-sup-complete (𝓓 ⟹ᵈᶜᵖᵒ 𝓔)
  exponential-is-sup-complete =
-  record {
-     ⋁        = λ {I} α → sup-of-continuous-functions α
+  record
+   { ⋁        = λ {I} α → sup-of-continuous-functions α
    ; ⋁-is-sup = λ {I} → lemma
-  }
+   }
    where
     lemma : {I : 𝓥 ̇  } (α : I → DCPO[ 𝓓 , 𝓔 ])
           → is-sup (underlying-order (𝓓 ⟹ᵈᶜᵖᵒ 𝓔))

@@ -192,13 +192,14 @@ compact-if-Kuratowski-finite-subset A k = lemma (A , k)
            (λ A B → ∪-is-compact (pr₁ A) (pr₁ B))
 
 κ-is-small-compact-basis : is-small-compact-basis 𝓟-DCPO κ
-κ-is-small-compact-basis = record {
-  basis-is-compact = λ l → compact-if-Kuratowski-finite-subset (κ l)
-                            (κ-of-list-is-Kuratowski-finite-subset l);
-  ⊑ᴮ-is-small      = λ A l → (κ l ⊆ A , ≃-refl (κ l ⊆ A));
-  ↓ᴮ-is-directed   = κ⁺-is-directed;
-  ↓ᴮ-is-sup        = κ⁺-sup
- }
+κ-is-small-compact-basis =
+ record
+  { basis-is-compact = λ l → compact-if-Kuratowski-finite-subset (κ l)
+                            (κ-of-list-is-Kuratowski-finite-subset l)
+  ; ⊑ᴮ-is-small      = λ A l → (κ l ⊆ A , ≃-refl (κ l ⊆ A))
+  ; ↓ᴮ-is-directed   = κ⁺-is-directed
+  ; ↓ᴮ-is-sup        = κ⁺-sup
+  }
 
 𝓟-has-specified-small-compact-basis : has-specified-small-compact-basis 𝓟-DCPO
 𝓟-has-specified-small-compact-basis = (List X , κ , κ-is-small-compact-basis)

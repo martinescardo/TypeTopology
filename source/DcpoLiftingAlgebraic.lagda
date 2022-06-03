@@ -179,14 +179,15 @@ A small compact basis for 𝓛 X will be given by [⊥ , η] : 𝟙 + X → 𝓛
     (inr (φ p) , ((lᵢ p) ⁻¹))
 
  κ-is-small-compact-basis : is-small-compact-basis (𝓛-DCPO X-is-set) κ
- κ-is-small-compact-basis = record {
-   basis-is-compact = λ b → compact-if-in-image-of-κ (κ b) ∣ b , refl ∣;
-   ⊑ᴮ-is-small      = λ l b → ⌜ local-smallness-equivalent-definitions
+ κ-is-small-compact-basis =
+  record
+   { basis-is-compact = λ b → compact-if-in-image-of-κ (κ b) ∣ b , refl ∣
+   ; ⊑ᴮ-is-small      = λ l b → ⌜ local-smallness-equivalent-definitions
                                  (𝓛-DCPO X-is-set) ⌝
-                              𝓛-is-locally-small (κ b) l;
-   ↓ᴮ-is-directed   = κ⁺-is-directed  ;
-   ↓ᴮ-is-sup        = κ⁺-sup
-  }
+                              𝓛-is-locally-small (κ b) l
+   ; ↓ᴮ-is-directed   = κ⁺-is-directed
+   ; ↓ᴮ-is-sup        = κ⁺-sup
+   }
 
  𝓛-has-specified-small-compact-basis : has-specified-small-compact-basis
                                          (𝓛-DCPO X-is-set)

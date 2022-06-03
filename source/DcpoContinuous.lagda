@@ -289,13 +289,14 @@ structurally-continuous-prime 𝓓 C x =
 structurally-continuous-unprime : (𝓓 : DCPO {𝓤} {𝓣})
                                 → structurally-continuous' 𝓓
                                 → structurally-continuous 𝓓
-structurally-continuous-unprime 𝓓 C' = record {
-  index-of-approximating-family     = λ x → pr₁ (C' x);
-  approximating-family              = λ x → pr₁ (pr₂ (C' x));
-  approximating-family-is-directed  = λ x → pr₁ (pr₂ (pr₂ (pr₂ (C' x))));
-  approximating-family-is-way-below = λ x → pr₁ (pr₂ (pr₂ (C' x)));
-  approximating-family-∐-≡          = λ x → pr₂ (pr₂ (pr₂ (pr₂ (C' x))))
- }
+structurally-continuous-unprime 𝓓 C' =
+ record
+  { index-of-approximating-family     = λ x → pr₁ (C' x)
+  ; approximating-family              = λ x → pr₁ (pr₂ (C' x))
+  ; approximating-family-is-directed  = λ x → pr₁ (pr₂ (pr₂ (pr₂ (C' x))))
+  ; approximating-family-is-way-below = λ x → pr₁ (pr₂ (pr₂ (C' x)))
+  ; approximating-family-∐-≡          = λ x → pr₂ (pr₂ (pr₂ (pr₂ (C' x))))
+  }
 
 structurally-continuous-≃ : (𝓓 : DCPO {𝓤} {𝓣})
                           → structurally-continuous 𝓓
@@ -331,13 +332,14 @@ module _
 
  Johnstone-Joyal₁ : ∐-map-has-specified-left-adjoint
                   → structurally-continuous 𝓓
- Johnstone-Joyal₁ (L , L-left-adjoint) = record {
-   index-of-approximating-family     = λ x → pr₁ (L x);
-   approximating-family              = λ x → pr₁ (pr₂ (L x));
-   approximating-family-is-directed  = λ x → pr₂ (pr₂ (L x));
-   approximating-family-is-way-below = λ x → pr₂ (crit x);
-   approximating-family-∐-≡          = λ x → pr₁ (crit x)
-  }
+ Johnstone-Joyal₁ (L , L-left-adjoint) =
+  record
+   { index-of-approximating-family     = λ x → pr₁ (L x)
+   ; approximating-family              = λ x → pr₁ (pr₂ (L x))
+   ; approximating-family-is-directed  = λ x → pr₂ (pr₂ (L x))
+   ; approximating-family-is-way-below = λ x → pr₂ (crit x)
+   ; approximating-family-∐-≡          = λ x → pr₁ (crit x)
+   }
    where
     crit : left-adjoint-to-∐-map-criterion L
     crit = ⌜ left-adjoint-to-∐-map-characterization L ⌝⁻¹ L-left-adjoint
@@ -939,13 +941,14 @@ is-algebraic-dcpo 𝓓 = ∥ structurally-algebraic 𝓓 ∥
 structurally-continuous-if-structurally-algebraic :
    (𝓓 : DCPO {𝓤} {𝓣})
  → structurally-algebraic 𝓓 → structurally-continuous 𝓓
-structurally-continuous-if-structurally-algebraic 𝓓 sa = record {
-  index-of-approximating-family     = index-of-compact-family;
-  approximating-family              = compact-family;
-  approximating-family-is-directed  = compact-family-is-directed;
-  approximating-family-is-way-below = γ;
-  approximating-family-∐-≡          = compact-family-∐-≡
- }
+structurally-continuous-if-structurally-algebraic 𝓓 sa =
+ record
+  { index-of-approximating-family     = index-of-compact-family
+  ; approximating-family              = compact-family
+  ; approximating-family-is-directed  = compact-family-is-directed
+  ; approximating-family-is-way-below = γ
+  ; approximating-family-∐-≡          = compact-family-∐-≡
+  }
   where
    open structurally-algebraic sa
    γ : (x : ⟨ 𝓓 ⟩) → is-way-upperbound 𝓓 x (compact-family x)
@@ -983,56 +986,55 @@ module _
   → structurally-continuous 𝓓
  structural-continuity-of-dcpo-preserved-by-continuous-retract C =
   record
-    { index-of-approximating-family =
-       λ x → index-of-approximating-family (s x)
-    ; approximating-family =
-       λ x → r ∘ approximating-family (s x)
-    ; approximating-family-is-directed = lemma₁
-    ; approximating-family-is-way-below = lemma₂
-    ; approximating-family-∐-≡ = lemma₃
-    }
-  where
-   open structurally-continuous C
-   α : (y : ⟨ 𝓔 ⟩) → index-of-approximating-family y → ⟨ 𝓔 ⟩
-   α = approximating-family
-   lemma₁ : (x : ⟨ 𝓓 ⟩) → is-Directed 𝓓 (r ∘ α (s x))
-   lemma₁ x = image-is-directed' 𝓔 𝓓 𝕣
-               (approximating-family-is-directed (s x))
-   lemma₂ : (x : ⟨ 𝓓 ⟩) → is-way-upperbound 𝓓 x (r ∘ α (s x))
-   lemma₂ x i J β δ x-below-∐β =
-    ∥∥-functor h (approximating-family-is-way-below (s x) i J (s ∘ β) ε l)
+   { index-of-approximating-family     = λ x → index-of-approximating-family
+                                                (s x)
+   ; approximating-family              = λ x → r ∘ approximating-family (s x)
+   ; approximating-family-is-directed  = lemma₁
+   ; approximating-family-is-way-below = lemma₂
+   ; approximating-family-∐-≡          = lemma₃
+   }
+   where
+    open structurally-continuous C
+    α : (y : ⟨ 𝓔 ⟩) → index-of-approximating-family y → ⟨ 𝓔 ⟩
+    α = approximating-family
+    lemma₁ : (x : ⟨ 𝓓 ⟩) → is-Directed 𝓓 (r ∘ α (s x))
+    lemma₁ x = image-is-directed' 𝓔 𝓓 𝕣
+                (approximating-family-is-directed (s x))
+    lemma₂ : (x : ⟨ 𝓓 ⟩) → is-way-upperbound 𝓓 x (r ∘ α (s x))
+    lemma₂ x i J β δ x-below-∐β =
+     ∥∥-functor h (approximating-family-is-way-below (s x) i J (s ∘ β) ε l)
+      where
+       h : (Σ j ꞉ J , α (s x) i ⊑⟨ 𝓔 ⟩ s (β j))
+         → Σ j ꞉ J , r (α (s x) i) ⊑⟨ 𝓓 ⟩ β j
+       h (j , u) = (j , v)
+        where
+         v = r (α (s x) i) ⊑⟨ 𝓓 ⟩[ ⦅1⦆ ]
+             r (s (β j))   ⊑⟨ 𝓓 ⟩[ ⦅2⦆ ]
+             β j           ∎⟨ 𝓓 ⟩
+          where
+           ⦅1⦆ = monotone-if-continuous 𝓔 𝓓 𝕣
+                 (α (s x) i) (s (β j)) u
+           ⦅2⦆ = ≡-to-⊑ 𝓓 (s-section-of-r (β j))
+       ε : is-Directed 𝓔 (s ∘ β)
+       ε = image-is-directed' 𝓓 𝓔 𝕤 δ
+       l = s x       ⊑⟨ 𝓔 ⟩[ ⦅1⦆ ]
+           s (∐ 𝓓 δ) ⊑⟨ 𝓔 ⟩[ ⦅2⦆ ]
+           ∐ 𝓔 ε     ∎⟨ 𝓔 ⟩
+        where
+         ⦅1⦆ = monotone-if-continuous 𝓓 𝓔 𝕤
+               x (∐ 𝓓 δ) x-below-∐β
+         ⦅2⦆ = continuous-∐-⊑ 𝓓 𝓔 𝕤 δ
+    lemma₃ : (x : ⟨ 𝓓 ⟩) → ∐ 𝓓 (lemma₁ x) ≡ x
+    lemma₃ x = ∐ 𝓓 (lemma₁ x) ≡⟨ ⦅1⦆ ⟩
+               r (∐ 𝓔 δ)      ≡⟨ ⦅2⦆ ⟩
+               r (s x)        ≡⟨ ⦅3⦆ ⟩
+               x              ∎
      where
-      h : (Σ j ꞉ J , α (s x) i ⊑⟨ 𝓔 ⟩ s (β j))
-        → Σ j ꞉ J , r (α (s x) i) ⊑⟨ 𝓓 ⟩ β j
-      h (j , u) = (j , v)
-       where
-        v = r (α (s x) i) ⊑⟨ 𝓓 ⟩[ ⦅1⦆ ]
-            r (s (β j))   ⊑⟨ 𝓓 ⟩[ ⦅2⦆ ]
-            β j           ∎⟨ 𝓓 ⟩
-         where
-          ⦅1⦆ = monotone-if-continuous 𝓔 𝓓 𝕣
-                (α (s x) i) (s (β j)) u
-          ⦅2⦆ = ≡-to-⊑ 𝓓 (s-section-of-r (β j))
-      ε : is-Directed 𝓔 (s ∘ β)
-      ε = image-is-directed' 𝓓 𝓔 𝕤 δ
-      l = s x       ⊑⟨ 𝓔 ⟩[ ⦅1⦆ ]
-          s (∐ 𝓓 δ) ⊑⟨ 𝓔 ⟩[ ⦅2⦆ ]
-          ∐ 𝓔 ε     ∎⟨ 𝓔 ⟩
-       where
-        ⦅1⦆ = monotone-if-continuous 𝓓 𝓔 𝕤
-              x (∐ 𝓓 δ) x-below-∐β
-        ⦅2⦆ = continuous-∐-⊑ 𝓓 𝓔 𝕤 δ
-   lemma₃ : (x : ⟨ 𝓓 ⟩) → ∐ 𝓓 (lemma₁ x) ≡ x
-   lemma₃ x = ∐ 𝓓 (lemma₁ x) ≡⟨ ⦅1⦆ ⟩
-              r (∐ 𝓔 δ)      ≡⟨ ⦅2⦆ ⟩
-              r (s x)        ≡⟨ ⦅3⦆ ⟩
-              x              ∎
-    where
-     δ : is-Directed 𝓔 (α (s x))
-     δ = approximating-family-is-directed (s x)
-     ⦅1⦆ = (continuous-∐-≡ 𝓔 𝓓 𝕣 δ) ⁻¹
-     ⦅2⦆ = ap r (approximating-family-∐-≡ (s x))
-     ⦅3⦆ = s-section-of-r x
+      δ : is-Directed 𝓔 (α (s x))
+      δ = approximating-family-is-directed (s x)
+      ⦅1⦆ = (continuous-∐-≡ 𝓔 𝓓 𝕣 δ) ⁻¹
+      ⦅2⦆ = ap r (approximating-family-∐-≡ (s x))
+      ⦅3⦆ = s-section-of-r x
 
  continuity-of-dcpo-preserved-by-continuous-retract : is-continuous-dcpo 𝓔
                                                     → is-continuous-dcpo 𝓓

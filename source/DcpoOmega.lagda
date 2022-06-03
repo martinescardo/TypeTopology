@@ -159,12 +159,13 @@ in-image-of-κ-if-compact P P-cpt = ∥∥-functor goal claim
   goal (inr p , u) = (inr ⋆ , ⊑-is-antisymmetric ⊤ P (λ _ → p) u)
 
 κ-is-small-compact-basis : is-small-compact-basis Ω-DCPO κ
-κ-is-small-compact-basis = record {
-  basis-is-compact = λ b → compact-if-in-image-of-κ (κ b) ∣ b , refl ∣
- ; ⊑ᴮ-is-small     = λ P b → (κ b ⊑ P , ≃-refl (κ b ⊑ P))
- ; ↓ᴮ-is-directed  = κ⁺-is-directed
- ; ↓ᴮ-is-sup       = κ⁺-sup
- }
+κ-is-small-compact-basis =
+ record
+  { basis-is-compact = λ b → compact-if-in-image-of-κ (κ b) ∣ b , refl ∣
+  ; ⊑ᴮ-is-small      = λ P b → (κ b ⊑ P , ≃-refl (κ b ⊑ P))
+  ; ↓ᴮ-is-directed   = κ⁺-is-directed
+  ; ↓ᴮ-is-sup        = κ⁺-sup
+  }
 
 Ω-has-specified-small-compact-basis : has-specified-small-compact-basis Ω-DCPO
 Ω-has-specified-small-compact-basis = (Bool , κ , κ-is-small-compact-basis)

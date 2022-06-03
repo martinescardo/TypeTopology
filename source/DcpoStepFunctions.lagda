@@ -292,12 +292,13 @@ Now we are in position to show that the exponential has a small compact basis.
 
    exponential-has-small-compact-basis : Prop-Ext
                                        → is-small-compact-basis (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻)) β
-   exponential-has-small-compact-basis pe = record {
-      basis-is-compact = ⦅1⦆
-    ; ⊑ᴮ-is-small      = ⦅2⦆
-    ; ↓ᴮ-is-directed   = ⦅3⦆
-    ; ↓ᴮ-is-sup        = ⦅4⦆
-    }
+   exponential-has-small-compact-basis pe =
+    record
+     { basis-is-compact = ⦅1⦆
+     ; ⊑ᴮ-is-small      = ⦅2⦆
+     ; ↓ᴮ-is-directed   = ⦅3⦆
+     ; ↓ᴮ-is-sup        = ⦅4⦆
+     }
      where
       ⦅1⦆ : (b : B) → is-compact (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻)) (β b)
       ⦅1⦆ = directify-is-compact single-step-functions
@@ -395,13 +396,14 @@ module _
    𝓔-continuous-retract-of-𝓔' = Idl-continuous-retract
 
   exp-continuous-retract : (𝓓 ⟹ᵈᶜᵖᵒ 𝓔) continuous-retract-of (𝓓' ⟹ᵈᶜᵖᵒ 𝓔')
-  exp-continuous-retract = record {
-     s               = s
-   ; r               = r
-   ; s-section-of-r    = s-section-of-r
-   ; s-is-continuous = s-is-cts
-   ; r-is-continuous = r-is-cts
-   }
+  exp-continuous-retract =
+   record
+    { s               = s
+    ; r               = r
+    ; s-section-of-r    = s-section-of-r
+    ; s-is-continuous = s-is-cts
+    ; r-is-continuous = r-is-cts
+    }
     where
      module _ where
       open _continuous-retract-of_ 𝓓-continuous-retract-of-𝓓'
