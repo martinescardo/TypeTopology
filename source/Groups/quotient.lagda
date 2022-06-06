@@ -165,26 +165,22 @@ closer to general facts about equivalence relations.
         is-set-X≈ = quotient-is-set (_≈_ , ≈p , ≈r , ≈s , ≈t)
 
         assoc≈ : associative _·_
-        assoc≈ = /-induction ≋ (λ x → ∀ y z → (x · y) · z ≡ x · (y · z)) 
-                             (λ x → Π₂-is-prop fe (λ y z  → quotient-is-set ≋))
-                             (λ s  → /-induction ≋ (λ y → ∀ z → (π≈ s · y) · z ≡ π≈ s · (y · z))
-                                                (λ y → Π-is-prop fe (λ z → quotient-is-set ≋))
-                                                (λ t → /-induction ≋ (λ z → (π≈ s · π≈ t) · z ≡ π≈ s · (π≈ t · z))
-                                                       (λ z → quotient-is-set ≋) (γ s t)))
-                             where
+        assoc≈ = /-induction₃ ≋ (λ x' y' z' → is-set-X≈) γ
+          where
                                γ : (s t z : ⟨ X ⟩) → ((π≈ s · π≈ t) · π≈ z) ≡ (π≈ s · (π≈ t · π≈ z))
                                γ s t z = ((π≈ s · π≈ t) · π≈ z)   ≡⟨ ap (λ v → v · π≈ z) (·-natural s t) ⟩
                                          π≈ (s ·⟨ X ⟩ t) · π≈ z    ≡⟨ ·-natural (s ·⟨ X ⟩ t) z ⟩
                                          π≈ ((s ·⟨ X ⟩ t) ·⟨ X ⟩ z) ≡⟨ ap π≈ (assoc X s t z) ⟩
                                          π≈ (s ·⟨ X ⟩ (t ·⟨ X ⟩ z)) ≡⟨ ·-natural s (t ·⟨ X ⟩ z) ⁻¹ ⟩
                                          π≈ s · π≈ (t ·⟨ X ⟩ z)    ≡⟨ ap (λ v → π≈ s · v) (·-natural t  z ⁻¹) ⟩
-                                         (π≈ s · (π≈ t · π≈ z)) ∎
+                                         (π≈ s · (π≈ t · π≈ z)) ∎ 
+            
 
         e≈ : X≈
         e≈ = π≈ (unit X)
 
         ln≈ : left-neutral e≈ _·_
-        ln≈ = /-induction ≋ (λ x → e≈ · x ≡ x) (λ x → quotient-is-set ≋) γ
+        ln≈ = /-induction' ≋ (λ x → quotient-is-set ≋) γ
           where
             γ : (x : ⟨ X ⟩) → π≈ (unit X) · π≈ x ≡ π≈ x
             γ x = π≈ (unit X) · π≈ x     ≡⟨ ·-natural (unit X) x ⟩
@@ -192,7 +188,7 @@ closer to general facts about equivalence relations.
                   π≈ x ∎
 
         rn≈ : right-neutral e≈ _·_
-        rn≈ = /-induction ≋ (λ x → x · e≈ ≡ x) (λ x → quotient-is-set ≋) γ
+        rn≈ = /-induction' ≋ (λ x → quotient-is-set ≋) γ
           where
             γ : (x : ⟨ X ⟩) → π≈ x · π≈ (unit X) ≡ π≈ x
             γ x = π≈ x · π≈ (unit X)     ≡⟨ ·-natural x (unit X) ⟩
