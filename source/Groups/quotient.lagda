@@ -199,7 +199,7 @@ closer to general facts about equivalence relations.
         inv≈ = extension₁/ ≋ (inv X) inv-cong
 
         inv-left≈ : (x : X≈) → (inv≈ x · x) ≡ e≈
-        inv-left≈ = /-induction ≋ (λ x → (inv≈ x · x) ≡ e≈) (λ x → quotient-is-set ≋) γ
+        inv-left≈ = /-induction' ≋ (λ x → quotient-is-set ≋) γ
           where
             γ : (x : ⟨ X ⟩) → (inv≈ (π≈ x) · π≈ x) ≡ e≈
             γ x = inv≈ (π≈ x) · π≈ x   ≡⟨ ap (λ v → v · π≈ x) (naturality/ ≋ (inv X) inv-cong x) ⟩
@@ -208,7 +208,7 @@ closer to general facts about equivalence relations.
                   e≈ ∎
 
         inv-right≈ : (x : X≈) → (x · inv≈ x) ≡ e≈
-        inv-right≈ = /-induction ≋ (λ x → (x · inv≈ x) ≡ e≈) (λ x → quotient-is-set ≋) γ
+        inv-right≈ = /-induction' ≋ (λ x → quotient-is-set ≋) γ
           where
             γ : (x : ⟨ X ⟩) → (π≈ x · inv≈ (π≈ x)) ≡ e≈
             γ x = π≈ x · inv≈ (π≈ x)   ≡⟨ ap (λ v → π≈ x · v) (naturality/ ≋ (inv X) inv-cong x) ⟩
@@ -217,7 +217,7 @@ closer to general facts about equivalence relations.
                   e≈ ∎
 \end{code}
 
-We record that the quotient map π≈ is a homomorphism.  
+The quotient map π≈ is a homomorphism.  
 
 FIXME: This fact has been already proven within the definition of the
 quotient, so we just repeat that. We should rewrite this in a more
