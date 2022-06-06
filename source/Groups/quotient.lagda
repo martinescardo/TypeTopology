@@ -221,3 +221,15 @@ closer to general facts about equivalence relations.
                   e≈ ∎
 \end{code}
 
+We record that the quotient map π≈ is a homomorphism.  
+
+FIXME: This fact has been already proven within the definition of the
+quotient, so we just repeat that. We should rewrite this in a more
+economical/elegant way, without repeating the proof.
+
+\begin{code}
+
+    quotient-map-is-hom : is-hom X quotient-gr π≈
+    quotient-map-is-hom {x} {y} = (naturality₂/ ≋ (multiplication X) binop-cong x y ) ⁻¹
+
+\end{code}
