@@ -233,3 +233,46 @@ economical/elegant way, without repeating the proof.
     quotient-map-is-hom {x} {y} = (naturality₂/ ≋ (multiplication X) binop-cong x y ) ⁻¹
 
 \end{code}
+
+On possible formulation of the universal property of quotients is that
+if
+
+φ : X → G
+
+is a homomorphism such that φ (x) ≡ φ (y) whenever x ≈ y, then there
+is a unique factorization with a homomorphism
+
+φ≈ : X≈ → G
+
+So we prove the map in the universality triangle is a homomorphism.
+
+\begin{code}
+
+    module _ {𝓦 : Universe}
+             (G : Group 𝓦) 
+             (φ : ⟨ X ⟩ → ⟨ G ⟩)
+             (i : is-hom X G φ)
+             (p : identifies-related-points ≋ φ)
+             where
+
+      φ≈ : X≈ → ⟨ G ⟩
+      φ≈ = mediating-map/ ≋ (group-is-set G) φ p
+
+      mediating-map-is-hom : is-hom quotient-gr G φ≈
+      mediating-map-is-hom {x} {y} = δ x y
+        where
+          β : (s : ⟨ X ⟩) → φ≈ (π≈ s) ≡ φ (s)
+          β s = universality-triangle/ ≋ _ φ _ s
+
+          γ : (s t : ⟨ X ⟩) → φ≈ ((π≈ s) ·⟨ quotient-gr ⟩ (π≈ t)) ≡ (φ≈ (π≈ s) ·⟨ G ⟩ φ≈ (π≈ t))
+          γ s t = φ≈ ((π≈ s) ·⟨ quotient-gr ⟩ (π≈ t))   ≡⟨ ap φ≈ (quotient-map-is-hom) ⁻¹ ⟩
+                  φ≈ (π≈ (s ·⟨ X ⟩ t))                  ≡⟨ β _ ⟩
+                  φ (s ·⟨ X ⟩ t)                        ≡⟨ i ⟩
+                  φ (s) ·⟨ G ⟩ φ (t)                    ≡⟨ ap (λ v → v ·⟨ G ⟩ φ (t)) (β s) ⁻¹ ⟩
+                  φ≈ (π≈ s) ·⟨ G ⟩ φ (t)                ≡⟨ ap (λ v → φ≈ (π≈ s) ·⟨ G ⟩ v) (β t) ⁻¹ ⟩
+                  φ≈ (π≈ s) ·⟨ G ⟩ φ≈ (π≈ t) ∎
+
+          δ : (x y : X≈) → φ≈ (x ·⟨ quotient-gr ⟩ y) ≡ (φ≈ x) ·⟨ G ⟩ (φ≈ y)
+          δ = /-induction₂ ≋ (λ x' y' → group-is-set G) γ 
+
+\end{code}
