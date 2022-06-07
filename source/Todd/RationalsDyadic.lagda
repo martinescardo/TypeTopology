@@ -269,6 +269,7 @@ record OrderProperties : 𝓤₁ ̇ where
   ≤-refl : (x : ℤ[1/2]) → x ≤ x
   <-is-≤ℤ[1/2] : (x y : ℤ[1/2]) → x < y → x ≤ y
   diff-positive : (x y : ℤ[1/2]) → x < y → 0ℤ[1/2] < (y ℤ[1/2]- x)
+  <-swap : (x y : ℤ[1/2]) → x < y → (ℤ[1/2]- y) < (ℤ[1/2]- x)
 
  trans₂ : (w x y z : ℤ[1/2]) → w < x → x < y → y < z → w < z
  trans₂ w x y z w<x x<y y<z = trans w x z w<x (trans x y z x<y y<z)

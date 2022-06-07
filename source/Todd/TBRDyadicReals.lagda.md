@@ -1,7 +1,7 @@
 This file proves that the ternary Boehm reals are embedded in the
 Dedekind reals defined using subsets of dyadic rationals.
 
-\begin{code}
+```agda
 
 {-# OPTIONS --allow-unsolved-metas #-}
 
@@ -21,13 +21,13 @@ open import UF-Powerset hiding (𝕋)
 open import UF-PropTrunc
 open import UF-Subsingletons
 
-module Todd.TernaryBoehmDyadicReals
+module Todd.TBRDyadicReals
   (pt : propositional-truncations-exist)
   (fe : FunExt)
   (pe : PropExt)
  where
 
-open import Todd.BelowAndAbove fe using (below-implies-below' ; _below'_)
+open import Todd.BelowAndAbove fe using (below-implies-below' ; _below'_ ; below'-implies-below)
 open import Todd.DyadicReals pt fe
 open import Todd.RationalsDyadic fe
 open import Todd.TernaryBoehmRealsPrelude fe
@@ -41,12 +41,12 @@ module _
  open OrderProperties DyOrPr
  open DyadicProperties Dp
 
-\end{code}
+```
 
 The following defines machinery to obtain the interval representations
 of a ternary Boehm object at each layer n.
 
-\begin{code}
+```agda
 
  brick_on-level_ : ℤ → ℤ → ℤ[1/2] × ℤ[1/2]
  brick k on-level n = (normalise (k , n)) , (normalise (succℤ (succℤ k) , n))
@@ -77,7 +77,7 @@ of a ternary Boehm object at each layer n.
 --                     → (encoding x at-level (succℤ n)) ⊂ (encoding x at-level n)
 -- encoding-structural (x , b) n = {!!}
 
-\end{code}
+```
 
 A dyadic rational p is on the left of the dyadic real K if there
 exists some level k for which the rational is below the left side of
@@ -99,7 +99,7 @@ Locatedness is fairly trivial since the intervals defined by the TBR
 get smaller on higher levels, and it easy to locate intervals of
 different sizes.
 
-\begin{code}
+```agda
 
  ⟦_⟧ : 𝕋 → ℝ-d
  ⟦ x , b ⟧ = (L , R) , inhabited-L , inhabited-R , rounded-L , rounded-R , is-disjoint , is-located
@@ -187,14 +187,14 @@ different sizes.
      ... | inl p<l = ∣ inl ∣ k , p<l ∣ ∣
      ... | inr r<q = ∣ inr ∣ k , r<q ∣ ∣
                         
-\end{code}
+```
 
 want to prove that (x : ℤ[1/2]) → ⟦ map x ⟧ ≡ ι x
 
 We now wish to introduce the map from encodings to TBR's : ℤ[1/2] → 𝕋.
 The intuition behind the map is that ... 
 
-\begin{code}
+```agda
 
  layer : ℤ[1/2] → ℕ
  layer ((_ , n) , _) = n
@@ -370,7 +370,7 @@ The intuition behind the map is that ...
    right : (y : ℤ[1/2]) → y < x → ∃ n ꞉ ℤ , y < lb (map x) n
    right y y<x = ∣ (pos (layer x) , (transport (y <_) (map-lemma-≤ x (pos (layer x) ) (ℤ≤-refl (pos (layer x))) ⁻¹) y<x)) ∣
 
-\end{code}
+```
 
 Now, we define negation, addition and multiplication of ternary Boehm reals.
 
@@ -394,7 +394,7 @@ where k = x (δ) for t : 𝕋 , t = (x , b).
 If we define subtraction at (λ n → - x n), then we obtain that
 ⟪ 𝕋- (x , b) , δ ⟫ = (- k / 2^{δ - 1} , - k - 2 / 2^{δ - 1})
 
-\begin{code}
+```agda
 
  𝕋- : 𝕋 → 𝕋
  𝕋- (x , b) = (λ n → predℤ (predℤ (- x n))) , below-proof
@@ -422,21 +422,155 @@ If we define subtraction at (λ n → - x n), then we obtain that
           (- x δ) - pos 2 + ((- x δ) + ((- pos 2) + pos 2)) ≡⟨ ap (λ z → (- x δ) - pos 2 + z) (ℤ+-assoc (- x δ) (- pos 2) (pos 2) ⁻¹) ⟩
           (- x δ) - pos 2 + ((- x δ) - pos 2 + pos 2)       ≡⟨ ℤ+-assoc ((- x δ) - pos 2) ((- x δ) - pos 2) (pos 2) ⁻¹ ⟩
           (- x δ) - pos 2 + ((- x δ) - pos 2) + pos 2       ∎
-          
- {-
+
+ UU : ℤ → ℤ
+ UU (pos x)     = (pos x /2') /2'
+ UU (negsucc x) = - (((pos x + pos 4) /2') /2')
+
+ below-upRight-lem₁ : (z : ℤ) → upRight (upRight z) ≡ UU z
+ below-upRight-lem₁ (pos x) = refl
+ below-upRight-lem₁ (negsucc x) = refl
+
+ below-upRight-lem₃ : (a b : ℤ) → a * pos 2 + b * pos 2 ≡ pos 2 * (a + b)
+ below-upRight-lem₃ a b = (distributivity-mult-over-ℤ a b (pos 2) ⁻¹ ∙ ℤ*-comm (a + b) (pos 2))
+ 
+ below-upRight-lem₂ : ((x , b) (y , b') : 𝕋) → (n : ℤ) → (x (succℤ n) + y (succℤ n) ≡ pos 2 * (x n + y n))
+                                                       ∔ (x (succℤ n) + y (succℤ n) ≡ pos 2 * (x n + y n) + pos 1)
+                                                       ∔ (x (succℤ n) + y (succℤ n) ≡ pos 2 * (x n + y n) + pos 2)
+                                                       ∔ (x (succℤ n) + y (succℤ n) ≡ pos 2 * (x n + y n) + pos 3)
+                                                       ∔ (x (succℤ n) + y (succℤ n) ≡ pos 2 * (x n + y n) + pos 4) 
+ below-upRight-lem₂ (x , b) (y , b') n with below-implies-below' (x (succℤ n)) (x n) (b n) , below-implies-below' (y (succℤ n)) (y n) (b' n)
+ ... | inl a , inl b
+  = inl (ap₂ _+_ a b ∙ distributivity-mult-over-ℤ (x n) (y n) (pos 2) ⁻¹ ∙ ℤ*-comm (x n + y n) (pos 2))
+ ... | inl a , inr (inl b)
+  = inr (inl (ap₂ _+_ a b ∙ ℤ-right-succ (x n * pos 2) (y n * pos 2) ∙ ap succℤ (below-upRight-lem₃ (x n) (y n))))
+ ... | inl a , inr (inr b)
+  = inr (inr (inl (ap₂ _+_ a b ∙ ℤ-right-succ (x n * pos 2) (succℤ (y n * pos 2)) ∙ ap succℤ (ℤ-right-succ (x n * pos 2) (y n * pos 2)) ∙ ap (_+ pos 2) (below-upRight-lem₃ (x n) (y n)))))
+ ... | inr (inl a) , inl b
+  = inr (inl (ap₂ _+_ a b ∙ ℤ-left-succ (x n * pos 2) (y n * pos 2) ∙ ap succℤ (below-upRight-lem₃ (x n) (y n))))
+ ... | inr (inr a) , inl b
+  = inr (inr (inl (ap₂ _+_ a b ∙ ℤ-left-succ (succℤ (x n * pos 2)) (y n * pos 2) ∙ ap succℤ (ℤ-left-succ (x n * pos 2) (y n * pos 2)) ∙ ap (_+ pos 2) (below-upRight-lem₃ (x n) (y n)))))
+ ... | inr (inl a) , inr (inl b)
+  = inr (inr (inl (ap₂ _+_ a b ∙ ℤ-left-succ (x n * pos 2) (succℤ (y n * pos 2)) ∙ ap succℤ (ℤ-right-succ (x n * pos 2) (y n * pos 2)) ∙ ap (_+ pos 2) (below-upRight-lem₃ (x n) (y n)))))
+ ... | inr (inr a) , inr (inl b)
+   = inr (inr (inr (inl (ap₂ _+_ a b ∙ ℤ-right-succ (succℤ (succℤ (x n * pos 2))) (y n * pos 2) ∙ ap succℤ (ℤ-left-succ (succℤ (x n * pos 2)) (y n * pos 2)) ∙ ap (_+ pos 2) (ℤ-left-succ (x n * pos 2) (y n * pos 2)) ∙ ap (_+ pos 3) (below-upRight-lem₃ (x n) (y n))))))
+ ... | inr (inl a) , inr (inr b)
+  = inr (inr (inr (inl (ap₂ _+_ a b ∙ ℤ-left-succ (x n * pos 2) (y n * pos 2 + pos 2) ∙ ap succℤ (ℤ-right-succ (x n * pos 2) (y n * pos 2 + pos 1)) ∙ ap (_+ pos 2) (ℤ-right-succ (x n * pos 2) (y n * pos 2)) ∙ ap (_+ pos 3) (below-upRight-lem₃ (x n) (y n))))))
+ ... | inr (inr a) , inr (inr b)
+  = inr (inr (inr (inr (ap₂ _+_ a b ∙ ℤ-left-succ (succℤ (x n * pos 2)) (y n * pos 2 + pos 2) ∙ ap succℤ (ℤ-left-succ (x n * pos 2) (y n * pos 2 + pos 2)) ∙ ap (_+ pos 2) (ℤ-right-succ (x n * pos 2) (succℤ (y n * pos 2))) ∙ ap (_+ pos 3) (ℤ-right-succ (x n * pos 2) (y n * pos 2)) ∙ ap (_+ pos 4) (below-upRight-lem₃ (x n) (y n))))))
+
+ really'' : (x : ℤ) → UU (pos 8 + x) ≡ pos 2 + UU x
+ really'' (pos 0) = refl
+ really'' (pos 1) = refl
+ really'' (pos 2) = refl
+ really'' (pos 3) = refl
+ really'' (pos (succ (succ (succ (succ x))))) = UU (pos 8 + pos (succ (succ (succ (succ x)))))         ≡⟨ ap UU (ℤ+-comm (pos 8) (pos (succ (succ (succ (succ x)))))) ⟩
+                                                UU (pos (succ (succ (succ (succ x)))) + pos 8)         ≡⟨ refl ⟩
+                                                succℤ (succℤ (UU (pos (succ (succ (succ (succ x))))))) ≡⟨ ℤ+-comm (UU (pos (succ (succ (succ (succ x)))))) (pos 2) ⟩
+                                                pos 2 + UU (pos (succ (succ (succ (succ x))))) ∎
+ really'' (negsucc 0) = refl
+ really'' (negsucc 1) = refl
+ really'' (negsucc 2) = refl
+ really'' (negsucc 3) = refl
+ really'' (negsucc 4) = refl
+ really'' (negsucc 5) = refl
+ really'' (negsucc 6) = refl
+ really'' (negsucc 7) = refl
+ really'' (negsucc (succ (succ (succ (succ (succ (succ (succ (succ x)))))))))
+  = UU (pos 8 + negsucc (x +ℕ 8))        ≡⟨ refl ⟩
+    UU (pos 8 + (negsucc x - pos 8))     ≡⟨ ap (λ z → UU (pos 8 + z)) (ℤ+-comm (negsucc x) (- pos 8)) ⟩
+    UU (pos 8 + ((- pos 8) + negsucc x)) ≡⟨ ap UU (ℤ+-assoc (pos 8) (- pos 8) (negsucc x) ⁻¹) ⟩
+    UU (pos 0 + negsucc x)               ≡⟨ ap UU (ℤ+-comm (pos 0) (negsucc x)) ⟩
+    UU (negsucc x)                       ≡⟨ refl ⟩
+    negsucc (x /2 /2)                                 ≡⟨ predsuccℤ (negsucc (x /2 /2)) ⁻¹ ⟩
+    predℤ (succℤ (negsucc (x /2 /2)))                 ≡⟨ ap predℤ (predsuccℤ (succℤ (negsucc (x /2 /2))) ⁻¹) ⟩
+    predℤ (predℤ (succℤ (succℤ (negsucc (x /2 /2))))) ≡⟨ ap (λ z → predℤ (predℤ z)) (ℤ+-comm (negsucc ((x /2) /2)) (pos 2)) ⟩
+    predℤ (predℤ (pos 2 + negsucc ((x /2) /2)))       ≡⟨ refl ⟩
+    pos 2 + UU (negsucc (x +ℕ 8))                     ∎
+
+ really' : (x : ℕ) (y : ℤ) → UU y below pos x → UU (pos 8 + y) below pos (succ x)
+ really' x y b with below-implies-below' (UU y) (pos x) b
+ ... | inl UUy2x
+  = below'-implies-below (UU (pos 8 + y)) (pos (succ x))
+     (inl (really'' y
+           ∙ ap (pos 2 +_) UUy2x
+            ∙ ℤ+-comm (pos 2) (pos x * pos 2)
+             ∙ ℤ-left-succ (pos x) (pos (succ x)) ⁻¹))
+ ... | inr (inl UUy2x+1)
+  = below'-implies-below (UU (pos 8 + y)) (pos (succ x))
+     (inr (inl (really'' y
+                ∙ ap (pos 2 +_) UUy2x+1
+                 ∙ ℤ+-assoc (pos 1) (pos 1) (succℤ (pos x * pos 2))
+                  ∙ ℤ+-comm (pos 1) (pos 1 + succℤ (pos x * pos 2))
+                   ∙ ap succℤ (ℤ+-comm (pos 1) (succℤ (pos x * pos 2)))
+                    ∙ ap succℤ (ℤ-left-succ (pos x) (pos (succ x)) ⁻¹))))
+ ... | inr (inr UUy2x+2)
+  = below'-implies-below (UU (pos 8 + y)) (pos (succ x))
+    (inr (inr (really'' y
+               ∙ ap (pos 2 +_) UUy2x+2
+                ∙ ℤ+-comm (pos 2) (succℤ (succℤ (pos x * pos 2)))
+                 ∙ ap (_+ pos 2) (ℤ-left-succ (pos x) (pos (succ x))) ⁻¹)))
+ 
+ really : (x : ℕ) → UU (pos 8 + pos 2 * pos x) below succℤ (UU (pos x))
+ really 0 = (0 , refl) , (2 , refl)
+ really 1 = (0 , refl) , (2 , refl)
+ really 2 = (1 , refl) , (1 , refl)
+ really 3 = (1 , refl) , (1 , refl)
+ really (succ (succ (succ (succ x)))) = really' (succ (x /2 /2)) (pos 2 + (pos 2 + (pos 2 + (pos 2 + pos 2 * pos x)))) (transport (_below pos (succ ((x /2) /2))) (ap UU I) (really x))
+  where
+   I : pos 8 + pos 2 * pos x ≡ pos 2 + (pos 2 + (pos 2 + (pos 2 + pos 2 * pos x)))
+   I = ℤ+-assoc (pos 6) (pos 2) (pos 2 * pos x) ∙ ℤ+-assoc (pos 4) (pos 2) (pos 2 + pos 2 * pos x) ∙ ℤ+-assoc (pos 2) (pos 2) (pos 2 + (pos 2 + pos 2 * pos x))
+
+ now1 : (z : ℤ) → UU (pos 2 * z) below UU z
+ now1 (pos 0) = (0 , refl) , (2 , refl)
+ now1 (pos 1) = (0 , refl) , (2 , refl)
+ now1 (pos 2) = (1 , refl) , (1 , refl)
+ now1 (pos 3) = (1 , refl) , (1 , refl)
+ now1 (pos (succ (succ (succ (succ x))))) = transport (_below succℤ (UU (pos x))) I (really x)
+  where
+   I : UU (pos 8 + pos 2 * pos x) ≡  UU (pos 2 + (pos 2 + (pos 2 + (pos 2 + pos 2 * pos x))))
+   I = ap UU (ℤ+-assoc (pos 6) (pos 2) (pos 2 * pos x) ∙ ℤ+-assoc (pos 4) (pos 2) (pos 2 + pos 2 * pos x) ∙ ℤ+-assoc (pos 2) (pos 2) (pos 2 + (pos 2 + pos 2 * pos x)))
+ now1 (negsucc x) = {!!}
+
+ now2 : (z : ℤ) → UU (pos 2 * z + pos 1) below UU z
+ now2 = {!!}
+
+ now3 : (z : ℤ) → UU (pos 2 * z + pos 2) below UU z
+ now3 = {!!}
+
+ now4 : (z : ℤ) → UU (pos 2 * z + pos 3) below UU z
+ now4 = {!!}
+
+ now5 : (z : ℤ) → UU (pos 2 * z + pos 4) below UU z
+ now5 = {!!}
+
+ below-upRight : ((x , b) (y , b) : 𝕋) → (n : ℤ) → upRight (upRight (x (succℤ n) + y (succℤ n))) below upRight (upRight (x n + y n))
+ below-upRight (x , b) (y , b') n with below-upRight-lem₂ (x , b) (y , b') n
+ ... | inl case₁
+  = transport₂ _below_ (below-upRight-lem₁ (pos 2 * (x n + y n)) ⁻¹ ∙ ap (λ z → upRight (upRight z)) (case₁ ⁻¹)) (below-upRight-lem₁ (x n + y n) ⁻¹) (now1 (x n + y n))
+ ... | inr (inl case₂)
+  = transport₂ _below_ (below-upRight-lem₁ (pos 2 * (x n + y n) + pos 1) ⁻¹ ∙ ap (λ z → upRight (upRight z)) (case₂ ⁻¹)) (below-upRight-lem₁ (x n + y n) ⁻¹) (now2 (x n + y n))
+ ... | inr (inr (inl case₃))
+  = transport₂ _below_ (below-upRight-lem₁ (pos 2 * (x n + y n) + pos 2) ⁻¹ ∙ ap (λ z → upRight (upRight z)) (case₃ ⁻¹)) (below-upRight-lem₁ (x n + y n) ⁻¹) (now3 (x n + y n))
+ ... | inr (inr (inr (inl case₄)))
+  = transport₂ _below_ (below-upRight-lem₁ (pos 2 * (x n + y n) + pos 3) ⁻¹ ∙ ap (λ z → upRight (upRight z)) (case₄ ⁻¹)) (below-upRight-lem₁ (x n + y n) ⁻¹) (now4 (x n + y n))
+ ... | inr (inr (inr (inr case₅)))
+  = transport₂ _below_ (below-upRight-lem₁ (pos 2 * (x n + y n) + pos 4) ⁻¹ ∙ ap (λ z → upRight (upRight z)) (case₅ ⁻¹)) (below-upRight-lem₁ (x n + y n) ⁻¹) (now5 (x n + y n))
+
  _𝕋+_ : 𝕋 → 𝕋 → 𝕋
- (x , b) 𝕋+ (y , b') = (λ n → upRight (upRight ((x (n +pos 2)) + (y (n +pos 2))))) , {!!}
- -}
+ (x , b) 𝕋+ (y , b') = (λ n → upRight (upRight ((x (n +pos 2)) + (y (n +pos 2))))) , λ δ → below-upRight (x , b) (y , b') (δ + pos 2)
+ 
  {-
  _𝕋*_ : 𝕋 → 𝕋 → 𝕋
  (x , b) 𝕋* (y , b') = {!!}
  -}
-\end{code}
+ 
+```
 
 We also require the same operations for Dyadic Reals.
 
-\begin{code}
- {-
+```agda
+ 
  ℝd- : ℝ-d → ℝ-d
  ℝd- x = (L , R) , {!!}
   where
@@ -444,63 +578,88 @@ We also require the same operations for Dyadic Reals.
    L p = x < (ℤ[1/2]- p) , ∈-is-prop (upper-cut-of x) (ℤ[1/2]- p) 
    R q = (ℤ[1/2]- q) < x , ∈-is-prop (lower-cut-of x) (ℤ[1/2]- q) 
 
+ 
  _ℝd+_ : ℝ-d → ℝ-d → ℝ-d
  x ℝd+ y = (L , R) , {!!}
   where
    L R : 𝓟 ℤ[1/2]
    L p = (∃ (r , s) ꞉ ℤ[1/2] × ℤ[1/2] , r ∈ lower-cut-of x × s ∈ lower-cut-of y × (p ≡ r ℤ[1/2]+ s)) , ∃-is-prop
    R q = (∃ (r , s) ꞉ ℤ[1/2] × ℤ[1/2] , r ∈ upper-cut-of x × s ∈ upper-cut-of y × (q ≡ r ℤ[1/2]+ s)) , ∃-is-prop
-
+   
+ {-
  _ℝd*_ : ℝ-d → ℝ-d → ℝ-d
  x ℝd* y = {!!}
  -}
-\end{code}
+```
 
 The result we are now interested in is proving that these operations
 on TBR and Dedekind reals correlate.
 
-\begin{code}
- {-
- ℤ[1/2]<-swap : (x y : ℤ[1/2]) → (x < y) ⇔ (ℤ[1/2]- y) < (ℤ[1/2]- x)
- ℤ[1/2]<-swap = {!!}
- -}
+For example, in the case of negation, we want to prove that the encoding of the negation of an tbr is equal to negation of the encoding.
 
+![NegationAgreesProof](TestProof.PNG)
 
- {-
- negation-commutes-lemma₁ : (k : 𝕋) → (n : ℤ)
-                          → pr₂ (encoding k at-level n) ≡ (ℤ[1/2]- pr₁ (encoding 𝕋- k at-level n))
- negation-commutes-lemma₁ = {!!}
+```agda
 
- negation-commutes-lemma₂ : (k : 𝕋) → (n : ℤ)
-                          → ℤ[1/2]- (pr₂ (encoding k at-level n)) ≡ pr₁ (encoding 𝕋- k at-level n)
- negation-commutes-lemma₂ = {!!}
- 
- negation-commutes : (x : 𝕋) → ⟦ 𝕋- x ⟧ ≡ ℝd- ⟦ x ⟧
- negation-commutes z = ℝ-d-equality-from-left-cut Ll⊆Lr Lr⊆Ll
+ postulate
+  negation : (x k : ℤ) → ℤ[1/2]- (normalise (x , k)) ≡ normalise (- x , k) 
+  
+ bound-flip₁ : (x : 𝕋) → (k : ℤ) → ℤ[1/2]- lb (𝕋- x) k ≡ rb x k
+ bound-flip₁ (x , b) k = II
   where
-   Ll⊆Lr : lower-cut-of ⟦ 𝕋- z ⟧ ⊆ lower-cut-of (ℝd- ⟦ z ⟧)
-   Ll⊆Lr p = ∥∥-functor I
+   I : - ((- x k) - pos 2) ≡ x k + pos 2
+   I = - ((- x k) - pos 2)         ≡⟨ negation-dist (- x k) (- pos 2) ⁻¹ ⟩
+       (- (- x k)) + (- (- pos 2)) ≡⟨ ap₂ _+_ (minus-minus-is-plus (x k)) (minus-minus-is-plus (pos 2)) ⟩
+       x k + pos 2 ∎
+
+   II : ℤ[1/2]- normalise ((- x k) - pos 2 , k) ≡ normalise (x k + pos 2 , k)
+   II = (ℤ[1/2]- normalise ((- x k) - pos 2 , k)) ≡⟨ negation ((- x k) - pos 2) k ⟩
+        normalise (- ((- x k) - pos 2) , k)       ≡⟨ ap (λ z → normalise (z , k)) I ⟩
+        normalise (x k + (pos 2) , k)             ∎
+ 
+ bound-flip₂ : (x : 𝕋) → (k : ℤ) → ℤ[1/2]- rb x k ≡ lb (𝕋- x) k
+ bound-flip₂ x k = (ℤ[1/2]- rb x k)                ≡⟨ ap ℤ[1/2]-_ (bound-flip₁ x k ⁻¹) ⟩
+                   (ℤ[1/2]- (ℤ[1/2]- lb (𝕋- x) k)) ≡⟨ ℤ[1/2]-negation-involutive (lb (𝕋- x) k) ⁻¹ ⟩
+                   lb (𝕋- x) k                     ∎
+
+ tbr-negation-agrees : (x : 𝕋) → ⟦ 𝕋- x ⟧ ≡ ℝd- ⟦ x ⟧
+ tbr-negation-agrees x = ℝ-d-equality-from-left-cut left right
+  where
+   left : (p : ℤ[1/2]) → ∃ k ꞉ ℤ  , p < lb (𝕋- x) k → ∃ k ꞉ ℤ , (rb x k) < (ℤ[1/2]- p)
+   left p = ∥∥-functor I
     where
-     I : Σ n ꞉ ℤ , p < pr₁ (encoding 𝕋- z at-level n)
-       → Σ n ꞉ ℤ , pr₂ (encoding z at-level n) < (ℤ[1/2]- p)
-     I (n , p<l) = let (left-imp , right-imp) = ℤ[1/2]<-swap p (pr₁ (encoding 𝕋- z at-level n))
-                   in n , transport (_< (ℤ[1/2]- p)) II (left-imp p<l)
-      where
-       II : ℤ[1/2]- pr₁ (encoding 𝕋- z at-level n) ≡ pr₂ (encoding z at-level n)
-       II = negation-commutes-lemma₁ z n ⁻¹                 
- 
-   Lr⊆Ll : lower-cut-of (ℝd- ⟦ z ⟧) ⊆ lower-cut-of ⟦ 𝕋- z ⟧
-   Lr⊆Ll p = ∥∥-functor I
+     I : Σ k ꞉ ℤ  , p < lb (𝕋- x) k
+       → Σ k ꞉ ℤ , (rb x k) < (ℤ[1/2]- p)
+     I (k , p<l) = k , transport
+                        (_< (ℤ[1/2]- p))
+                         (bound-flip₁ x k)
+                          (<-swap p (lb (𝕋- x) k) p<l) 
+
+   right : (p : ℤ[1/2]) → ∃ k ꞉ ℤ , (rb x k) < (ℤ[1/2]- p) → ∃ k ꞉ ℤ  , p < lb (𝕋- x) k
+   right p = ∥∥-functor I
     where
-     I : Σ n ꞉ ℤ , pr₂ (encoding z at-level n) < (ℤ[1/2]- p)
-       → Σ n ꞉ ℤ , p < pr₁ (encoding 𝕋- z at-level n)
-     I (n , r<-p) = let (left-imp , right-imp) = ℤ[1/2]<-swap (pr₂ (encoding z at-level n)) (ℤ[1/2]- p)
-                    in n , (transport₂ _<_ (ℤ[1/2]-negation-involutive p ⁻¹) II (left-imp r<-p))
-      where
-       II : ℤ[1/2]- (pr₂ (encoding z at-level n)) ≡ pr₁ (encoding 𝕋- z at-level n)
-       II = negation-commutes-lemma₂ z n
- 
- 
+     I : Σ k ꞉ ℤ , (rb x k) < (ℤ[1/2]- p) → Σ k ꞉ ℤ  , p < lb (𝕋- x) k
+     I (k , r<-p) = k , transport₂
+                         _<_
+                          (ℤ[1/2]-negation-involutive p ⁻¹)
+                           (bound-flip₂ x k)
+                            (<-swap (rb x k) (ℤ[1/2]- p) r<-p)
+
+ addition-commutes : (x y : 𝕋) → ⟦ x 𝕋+ y ⟧ ≡ ⟦ x ⟧ ℝd+ ⟦ y ⟧
+ addition-commutes x y = ℝ-d-equality-from-left-cut left right
+  where
+   left : (p : ℤ[1/2])
+        → ∃ k ꞉ ℤ , p < lb (x 𝕋+ y) k
+        → ∃ (r , s) ꞉ ℤ[1/2] × ℤ[1/2] , r < ⟦ x ⟧ × s < ⟦ y ⟧ × (p ≡ (r ℤ[1/2]+ s))
+   left p = ∥∥-functor I
+    where
+     I : Σ k ꞉ ℤ , p < lb (x 𝕋+ y) k
+       → Σ (r , s) ꞉ ℤ[1/2] × ℤ[1/2] , r < ⟦ x ⟧ × s < ⟦ y ⟧ × (p ≡ (r ℤ[1/2]+ s))
+     I (k , p<lb) = {!!}
+
+   right : lower-cut-of (⟦ x ⟧ ℝd+ ⟦ y ⟧) ⊆ lower-cut-of ⟦ x 𝕋+ y ⟧
+   right = {!!}
+ {-
  addition-commutes : (x y : 𝕋) → ⟦ x 𝕋+ y ⟧ ≡ (⟦ x ⟧ ℝd+ ⟦ y ⟧)
  addition-commutes x y = ℝ-d-equality-from-left-cut Ll⊆Lr Lr⊆Ll
   where
@@ -522,13 +681,14 @@ on TBR and Dedekind reals correlate.
           × (Σ k' ꞉ ℤ , s < li y k')
           → Σ n ꞉ ℤ , (p < li (x 𝕋+ y) n) 
        II = {!!}
-   
+
+ 
  multiplication-commutes : (x y : 𝕋) → ⟦ x 𝕋* y ⟧ ≡ (⟦ x ⟧ ℝd* ⟦ y ⟧)
  multiplication-commutes = {!!}
 
  -}
 
-\end{code}
+```
 
 
 
