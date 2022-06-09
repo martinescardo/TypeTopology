@@ -566,7 +566,7 @@ module _
     open is-small-basis sb
 
     lemma₁ : (x : ⟨ 𝓓 ⟩) (b : B) → is-small (r (β b) ≪⟨ 𝓓 ⟩ x)
-    lemma₁ x b = ≪-is-small-valued 𝓓 pe 𝓓-cont 𝓓-loc-small (r (β b)) x
+    lemma₁ x b = ≪-is-small-valued pe 𝓓 𝓓-cont 𝓓-loc-small (r (β b)) x
      where
       𝓓-loc-small : is-locally-small 𝓓
       𝓓-loc-small = (local-smallness-preserved-by-continuous-retract

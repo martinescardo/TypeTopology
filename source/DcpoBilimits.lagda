@@ -1085,7 +1085,7 @@ because this seems to need instances of the axiom of choice in general.
      α∞⁺-is-directed : is-Directed 𝓓∞ α∞⁺
      α∞⁺-is-directed = α∞-is-directed-criterion σ
                         (λ i → δ i (⦅ σ ⦆ i))
-                        (λ i → approximating-family-∐-⊒ (𝓓 i) (𝓒 i) (⦅ σ ⦆ i))
+                        (λ i → approximating-family-∐-⊒ (𝓒 i) (⦅ σ ⦆ i))
                         (λ i → approximating-family-is-way-below (𝓒 i) (⦅ σ ⦆ i))
      α∞⁺-∐-≡ : ∐ 𝓓∞ α∞⁺-is-directed ≡ σ
      α∞⁺-∐-≡ = α∞-∐-≡ σ
