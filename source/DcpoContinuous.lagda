@@ -1,6 +1,12 @@
 Tom de Jong, early January 2022.
 
-TODO: Describe contents.
+We define when a dcpo is (structurally) continuous/algebraic and prove the
+nullary, unary and binary interpolation properties of the way-below relation in
+a continuous dcpo.
+
+We also show that in a continuous dcpo being locally small is equivalent to the
+way-below relation having small truth values. Further, being (structurally)
+continuous is preserved by taking continuous retracts.
 
 \begin{code}
 
@@ -308,7 +314,8 @@ module _
 
 \end{code}
 
-Local smallness...
+We show that in a (structurally) continuous dcpo local smallness is logically
+equivalent to the way-below relation having small values.
 
 \begin{code}
 
@@ -349,12 +356,6 @@ module _
         where
          x-below-αᵢ : x ⊑⟨ 𝓓 ⟩ α i
          x-below-αᵢ = ⊑ₛ-to-⊑ x-belowₛ-αᵢ
-
- ≪-is-small-valued-str' : is-locally-small 𝓓
-                        → Σ _≪ₛ_ ꞉ (⟨ 𝓓 ⟩ → ⟨ 𝓓 ⟩ → 𝓥 ̇  )
-                        , ((x y : ⟨ 𝓓 ⟩) → (x ≪ₛ y) ≃ (x ≪⟨ 𝓓 ⟩ y))
- ≪-is-small-valued-str' ls =
-  ⌜ small-binary-relation-equivalence ⌝ (≪-is-small-valued-str ls)
 
  ≪-is-small-valued-str-converse : ((x y : ⟨ 𝓓 ⟩) → is-small (x ≪⟨ 𝓓 ⟩ y))
                                 → is-locally-small 𝓓
@@ -410,12 +411,6 @@ module _
    p = prop-being-small-is-prop (λ _ → pe) (λ _ _ → fe)
         (x ≪⟨ 𝓓 ⟩ y) (≪-is-prop-valued 𝓓) 𝓥
 
- ≪-is-small-valued' : is-locally-small 𝓓
-                    → Σ _≪ₛ_ ꞉ (⟨ 𝓓 ⟩ → ⟨ 𝓓 ⟩ → 𝓥 ̇  )
-                    , ((x y : ⟨ 𝓓 ⟩) → (x ≪ₛ y) ≃ (x ≪⟨ 𝓓 ⟩ y))
- ≪-is-small-valued' ls =
-  ⌜ small-binary-relation-equivalence ⌝ (≪-is-small-valued ls)
-
  ≪-is-small-valued-converse : ((x y : ⟨ 𝓓 ⟩) → is-small (x ≪⟨ 𝓓 ⟩ y))
                             → is-locally-small 𝓓
  ≪-is-small-valued-converse ws =
@@ -424,7 +419,8 @@ module _
 
 \end{code}
 
-TO DO
+Finally, we prove that (structural) continuity is preserved by continuous
+retracts.
 
 \begin{code}
 
@@ -455,6 +451,17 @@ module _
     lemma₁ : (x : ⟨ 𝓓 ⟩) → is-Directed 𝓓 (r ∘ α (s x))
     lemma₁ x = image-is-directed' 𝓔 𝓓 𝕣
                 (approximating-family-is-directed (s x))
+    lemma₃ : (x : ⟨ 𝓓 ⟩) → ∐ 𝓓 (lemma₁ x) ≡ x
+    lemma₃ x = ∐ 𝓓 (lemma₁ x) ≡⟨ ⦅1⦆ ⟩
+               r (∐ 𝓔 δ)      ≡⟨ ⦅2⦆ ⟩
+               r (s x)        ≡⟨ ⦅3⦆ ⟩
+               x              ∎
+     where
+      δ : is-Directed 𝓔 (α (s x))
+      δ = approximating-family-is-directed (s x)
+      ⦅1⦆ = (continuous-∐-≡ 𝓔 𝓓 𝕣 δ) ⁻¹
+      ⦅2⦆ = ap r (approximating-family-∐-≡ (s x))
+      ⦅3⦆ = s-section-of-r x
     lemma₂ : (x : ⟨ 𝓓 ⟩) → is-way-upperbound 𝓓 x (r ∘ α (s x))
     lemma₂ x i J β δ x-below-∐β =
      ∥∥-functor h (approximating-family-is-way-below (s x) i J (s ∘ β) ε l)
@@ -479,17 +486,6 @@ module _
          ⦅1⦆ = monotone-if-continuous 𝓓 𝓔 𝕤
                x (∐ 𝓓 δ) x-below-∐β
          ⦅2⦆ = continuous-∐-⊑ 𝓓 𝓔 𝕤 δ
-    lemma₃ : (x : ⟨ 𝓓 ⟩) → ∐ 𝓓 (lemma₁ x) ≡ x
-    lemma₃ x = ∐ 𝓓 (lemma₁ x) ≡⟨ ⦅1⦆ ⟩
-               r (∐ 𝓔 δ)      ≡⟨ ⦅2⦆ ⟩
-               r (s x)        ≡⟨ ⦅3⦆ ⟩
-               x              ∎
-     where
-      δ : is-Directed 𝓔 (α (s x))
-      δ = approximating-family-is-directed (s x)
-      ⦅1⦆ = (continuous-∐-≡ 𝓔 𝓓 𝕣 δ) ⁻¹
-      ⦅2⦆ = ap r (approximating-family-∐-≡ (s x))
-      ⦅3⦆ = s-section-of-r x
 
  continuity-of-dcpo-preserved-by-continuous-retract : is-continuous-dcpo 𝓔
                                                     → is-continuous-dcpo 𝓓
