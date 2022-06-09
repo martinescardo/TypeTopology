@@ -32,13 +32,12 @@ open import DcpoWayBelow pt fe 𝓥
 
 \end{code}
 
-\begin{code}
+We first define an untruncated, non-propositional, version of continuity for
+dcpos, which we call structural continuity. The notion of a continuous dcpo will
+then be given by truncating the type expressing its structural continuity.
 
-is-way-upperbound : (𝓓 : DCPO {𝓤} {𝓣}) {I : 𝓥 ̇  } (x : ⟨ 𝓓 ⟩) (α : I → ⟨ 𝓓 ⟩)
-                  → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
-is-way-upperbound 𝓓 {I} x α = (i : I) → α i ≪⟨ 𝓓 ⟩ x
-
-\end{code}
+The motivation for our definition of continuity is discussed in
+DcpoContinuousDiscussion.lagda.
 
 We use record syntax to have descriptively named projections available without
 having to add them as boilerplate.
@@ -58,10 +57,6 @@ record structurally-continuous (𝓓 : DCPO {𝓤} {𝓣}) : 𝓥 ⁺ ⊔ 𝓤 �
   approximating-family-∐-≡ : (x : ⟨ 𝓓 ⟩)
                            → ∐ 𝓓 (approximating-family-is-directed x) ≡ x
 
-\end{code}
-
-\begin{code}
-
  approximating-family-∐-⊑ : (x : ⟨ 𝓓 ⟩)
                           → ∐ 𝓓 (approximating-family-is-directed x) ⊑⟨ 𝓓 ⟩ x
  approximating-family-∐-⊑ x = ≡-to-⊑ 𝓓 (approximating-family-∐-≡ x)
@@ -70,7 +65,65 @@ record structurally-continuous (𝓓 : DCPO {𝓤} {𝓣}) : 𝓥 ⁺ ⊔ 𝓤 �
                           → x ⊑⟨ 𝓓 ⟩ ∐ 𝓓 (approximating-family-is-directed x)
  approximating-family-∐-⊒ x = ≡-to-⊒ 𝓓 (approximating-family-∐-≡ x)
 
+is-continuous-dcpo : DCPO {𝓤} {𝓣} → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
+is-continuous-dcpo 𝓓 = ∥ structurally-continuous 𝓓 ∥
+
+being-continuous-dcpo-is-prop : (𝓓 : DCPO {𝓤} {𝓣})
+                              → is-prop (is-continuous-dcpo 𝓓)
+being-continuous-dcpo-is-prop 𝓓 = ∥∥-is-prop
+
 \end{code}
+
+Similarly, we define when a dcpo is (structurally) algebraic where the
+approximating family is required to consist of compact elements.
+
+\begin{code}
+
+record structurally-algebraic (𝓓 : DCPO {𝓤} {𝓣}) : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇  where
+ field
+  index-of-compact-family : ⟨ 𝓓 ⟩ → 𝓥 ̇
+  compact-family : (x : ⟨ 𝓓 ⟩) → (index-of-compact-family x) → ⟨ 𝓓 ⟩
+  compact-family-is-directed : (x : ⟨ 𝓓 ⟩) → is-Directed 𝓓 (compact-family x)
+  compact-family-is-compact : (x : ⟨ 𝓓 ⟩) (i : index-of-compact-family x)
+                            → is-compact 𝓓 (compact-family x i)
+  compact-family-∐-≡ : (x : ⟨ 𝓓 ⟩) → ∐ 𝓓 (compact-family-is-directed x) ≡ x
+
+is-algebraic-dcpo : (𝓓 : DCPO {𝓤} {𝓣}) → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
+is-algebraic-dcpo 𝓓 = ∥ structurally-algebraic 𝓓 ∥
+
+structurally-continuous-if-structurally-algebraic :
+   (𝓓 : DCPO {𝓤} {𝓣})
+ → structurally-algebraic 𝓓 → structurally-continuous 𝓓
+structurally-continuous-if-structurally-algebraic 𝓓 sa =
+ record
+  { index-of-approximating-family     = index-of-compact-family
+  ; approximating-family              = compact-family
+  ; approximating-family-is-directed  = compact-family-is-directed
+  ; approximating-family-is-way-below = γ
+  ; approximating-family-∐-≡          = compact-family-∐-≡
+  }
+  where
+   open structurally-algebraic sa
+   γ : (x : ⟨ 𝓓 ⟩) → is-way-upperbound 𝓓 x (compact-family x)
+   γ x i = ≪-⊑-to-≪ 𝓓 (compact-family-is-compact x i) l
+    where
+     l = compact-family x i                 ⊑⟨ 𝓓 ⟩[ ⦅1⦆ ]
+         ∐ 𝓓 (compact-family-is-directed x) ⊑⟨ 𝓓 ⟩[ ⦅2⦆ ]
+         x                                  ∎⟨ 𝓓 ⟩
+      where
+       ⦅1⦆ = ∐-is-upperbound 𝓓 (compact-family-is-directed x) i
+       ⦅2⦆ = ≡-to-⊑ 𝓓 (compact-family-∐-≡ x)
+
+is-continuous-dcpo-if-algebraic-dcpo : (𝓓 : DCPO {𝓤} {𝓣})
+                                     → is-algebraic-dcpo 𝓓
+                                     → is-continuous-dcpo 𝓓
+is-continuous-dcpo-if-algebraic-dcpo 𝓓 =
+ ∥∥-functor (structurally-continuous-if-structurally-algebraic 𝓓)
+
+\end{code}
+
+We set out to prove nullary, unary and binary interpolation for (structurally)
+continuous dcpos.
 
 \begin{code}
 
@@ -91,17 +144,26 @@ module _
     γ : ∐ 𝓓 (approximating-family-is-directed x) ⊑⟨ 𝓓 ⟩ y
     γ = ∐-is-lowerbound-of-upperbounds 𝓓 (approximating-family-is-directed x) y l
 
- str-≪-nullary-interpolation : (x : ⟨ 𝓓 ⟩) → ∃ y ꞉ ⟨ 𝓓 ⟩ , y ≪⟨ 𝓓 ⟩ x
- str-≪-nullary-interpolation x =
+ ≪-nullary-interpolation-str : (x : ⟨ 𝓓 ⟩) → ∃ y ꞉ ⟨ 𝓓 ⟩ , y ≪⟨ 𝓓 ⟩ x
+ ≪-nullary-interpolation-str x =
   ∥∥-functor γ (inhabited-if-Directed 𝓓 (approximating-family x)
                                         (approximating-family-is-directed x))
    where
     γ : index-of-approximating-family x → Σ y ꞉ ⟨ 𝓓 ⟩ , y ≪⟨ 𝓓 ⟩ x
     γ i = (approximating-family x i , approximating-family-is-way-below x i)
 
- str-≪-unary-interpolation : {x y : ⟨ 𝓓 ⟩} → x ≪⟨ 𝓓 ⟩ y
+\end{code}
+
+Our proof of the unary interpolation property is inspired by Proposition 2.12 of
+"Continuous categories and Exponentiable Toposes" by Peter Johnstone and André
+Joyal. The idea is to approximate y by a family αᵢ, approximate each αᵢ by
+another family βᵢⱼ, and finally to approximate y as the "sum" of the βᵢⱼs.
+
+\begin{code}
+
+ ≪-unary-interpolation-str : {x y : ⟨ 𝓓 ⟩} → x ≪⟨ 𝓓 ⟩ y
                            → ∃ d ꞉ ⟨ 𝓓 ⟩ , (x ≪⟨ 𝓓 ⟩ d) × (d ≪⟨ 𝓓 ⟩ y)
- str-≪-unary-interpolation {x} {y} x-way-below-y = goal
+ ≪-unary-interpolation-str {x} {y} x-way-below-y = interpol
   where
    Iʸ : 𝓥 ̇
    Iʸ = index-of-approximating-family y
@@ -160,8 +222,8 @@ module _
    x-below-γ : ∃ k ꞉ K , x ⊑⟨ 𝓓 ⟩ γ k
    x-below-γ = x-way-below-y K γ γ-is-directed y-below-∐-of-γ
 
-   goal : ∃ d ꞉ ⟨ 𝓓 ⟩ , (x ≪⟨ 𝓓 ⟩ d) × (d ≪⟨ 𝓓 ⟩ y)
-   goal = ∥∥-functor r lemma
+   interpol : ∃ d ꞉ ⟨ 𝓓 ⟩ , (x ≪⟨ 𝓓 ⟩ d) × (d ≪⟨ 𝓓 ⟩ y)
+   interpol = ∥∥-functor r lemma
     where
      r : (Σ i ꞉ Iʸ , Σ j ꞉ J i , (x ⊑⟨ 𝓓 ⟩ β i j)
                                × (β i j ≪⟨ 𝓓 ⟩ αʸ i)
@@ -181,18 +243,25 @@ module _
                           approximating-family-is-way-below (αʸ i) j ,
                           approximating-family-is-way-below y i)
 
--- TODO: Comment on use of do-notation
+\end{code}
 
- str-≪-binary-interpolation : {x y z : ⟨ 𝓓 ⟩} → x ≪⟨ 𝓓 ⟩ z → y ≪⟨ 𝓓 ⟩ z
+From the unary interpolation property, one quickly derives the binary version,
+although the proof involves eliminating several propositional truncations. For
+that reason, we use so-called do-notation (which is possible because ∥-∥ is a
+monad) to shorten the proof below. If we write x ← t, then x : X and t : ∥ X ∥.
+
+\begin{code}
+
+ ≪-binary-interpolation-str : {x y z : ⟨ 𝓓 ⟩} → x ≪⟨ 𝓓 ⟩ z → y ≪⟨ 𝓓 ⟩ z
                             → ∃ d ꞉ ⟨ 𝓓 ⟩ , (x ≪⟨ 𝓓 ⟩ d)
                                           × (y ≪⟨ 𝓓 ⟩ d)
                                           × (d ≪⟨ 𝓓 ⟩ z)
- str-≪-binary-interpolation {x} {y} {z} x-way-below-z y-way-below-z = do
+ ≪-binary-interpolation-str {x} {y} {z} x-way-below-z y-way-below-z = do
   let δ = approximating-family-is-directed z
   let l = approximating-family-∐-⊒ z
-  (d₁ , x-way-below-d₁ , d₁-way-below-z) ← str-≪-unary-interpolation
+  (d₁ , x-way-below-d₁ , d₁-way-below-z) ← ≪-unary-interpolation-str
                                             x-way-below-z
-  (d₂ , y-way-below-d₂ , d₂-way-below-z) ← str-≪-unary-interpolation
+  (d₂ , y-way-below-d₂ , d₂-way-below-z) ← ≪-unary-interpolation-str
                                             y-way-below-z
 
   (i₁ , d₁-below-zⁱ₁)                    ← d₁-way-below-z _ _ δ l
@@ -212,18 +281,7 @@ module _
 
 \end{code}
 
-Continuity and pseudocontinuity (for comparison)
-
-\begin{code}
-
-is-continuous-dcpo : DCPO {𝓤} {𝓣} → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
-is-continuous-dcpo 𝓓 = ∥ structurally-continuous 𝓓 ∥
-
-being-continuous-dcpo-is-prop : (𝓓 : DCPO {𝓤} {𝓣})
-                              → is-prop (is-continuous-dcpo 𝓓)
-being-continuous-dcpo-is-prop 𝓓 = ∥∥-is-prop
-
-\end{code}
+The interpolation properties for continuous dcpos now follow immediately.
 
 \begin{code}
 
@@ -234,19 +292,19 @@ module _
 
  ≪-nullary-interpolation : (x : ⟨ 𝓓 ⟩) → ∃ y ꞉ ⟨ 𝓓 ⟩ , y ≪⟨ 𝓓 ⟩ x
  ≪-nullary-interpolation x =
-  ∥∥-rec ∥∥-is-prop (λ C → str-≪-nullary-interpolation 𝓓 C x) c
+  ∥∥-rec ∥∥-is-prop (λ C → ≪-nullary-interpolation-str 𝓓 C x) c
 
  ≪-unary-interpolation : {x y : ⟨ 𝓓 ⟩} → x ≪⟨ 𝓓 ⟩ y
                        → ∃ d ꞉ ⟨ 𝓓 ⟩ , (x ≪⟨ 𝓓 ⟩ d) × (d ≪⟨ 𝓓 ⟩ y)
  ≪-unary-interpolation x-way-below-y =
-  ∥∥-rec ∥∥-is-prop (λ C → str-≪-unary-interpolation 𝓓 C x-way-below-y) c
+  ∥∥-rec ∥∥-is-prop (λ C → ≪-unary-interpolation-str 𝓓 C x-way-below-y) c
 
  ≪-binary-interpolation : {x y z : ⟨ 𝓓 ⟩} → x ≪⟨ 𝓓 ⟩ z → y ≪⟨ 𝓓 ⟩ z
                         → ∃ d ꞉ ⟨ 𝓓 ⟩ , (x ≪⟨ 𝓓 ⟩ d)
                                       × (y ≪⟨ 𝓓 ⟩ d)
                                       × (d ≪⟨ 𝓓 ⟩ z)
  ≪-binary-interpolation {x} {y} {z} u v =
-  ∥∥-rec ∥∥-is-prop (λ C → str-≪-binary-interpolation 𝓓 C u v) c
+  ∥∥-rec ∥∥-is-prop (λ C → ≪-binary-interpolation-str 𝓓 C u v) c
 
 \end{code}
 
@@ -363,53 +421,6 @@ module _
  ≪-is-small-valued-converse ws =
   ∥∥-rec (being-locally-small-is-prop 𝓓 (λ _ → pe))
    (λ C → ≪-is-small-valued-str-converse 𝓓 C ws) c
-
-\end{code}
-
-TODO: Write comment
-
-\begin{code}
-
-record structurally-algebraic (𝓓 : DCPO {𝓤} {𝓣}) : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇  where
- field
-  index-of-compact-family : ⟨ 𝓓 ⟩ → 𝓥 ̇
-  compact-family : (x : ⟨ 𝓓 ⟩) → (index-of-compact-family x) → ⟨ 𝓓 ⟩
-  compact-family-is-directed : (x : ⟨ 𝓓 ⟩) → is-Directed 𝓓 (compact-family x)
-  compact-family-is-compact : (x : ⟨ 𝓓 ⟩) (i : index-of-compact-family x)
-                            → is-compact 𝓓 (compact-family x i)
-  compact-family-∐-≡ : (x : ⟨ 𝓓 ⟩) → ∐ 𝓓 (compact-family-is-directed x) ≡ x
-
-is-algebraic-dcpo : (𝓓 : DCPO {𝓤} {𝓣}) → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
-is-algebraic-dcpo 𝓓 = ∥ structurally-algebraic 𝓓 ∥
-
-structurally-continuous-if-structurally-algebraic :
-   (𝓓 : DCPO {𝓤} {𝓣})
- → structurally-algebraic 𝓓 → structurally-continuous 𝓓
-structurally-continuous-if-structurally-algebraic 𝓓 sa =
- record
-  { index-of-approximating-family     = index-of-compact-family
-  ; approximating-family              = compact-family
-  ; approximating-family-is-directed  = compact-family-is-directed
-  ; approximating-family-is-way-below = γ
-  ; approximating-family-∐-≡          = compact-family-∐-≡
-  }
-  where
-   open structurally-algebraic sa
-   γ : (x : ⟨ 𝓓 ⟩) → is-way-upperbound 𝓓 x (compact-family x)
-   γ x i = ≪-⊑-to-≪ 𝓓 (compact-family-is-compact x i) l
-    where
-     l = compact-family x i                 ⊑⟨ 𝓓 ⟩[ ⦅1⦆ ]
-         ∐ 𝓓 (compact-family-is-directed x) ⊑⟨ 𝓓 ⟩[ ⦅2⦆ ]
-         x                                  ∎⟨ 𝓓 ⟩
-      where
-       ⦅1⦆ = ∐-is-upperbound 𝓓 (compact-family-is-directed x) i
-       ⦅2⦆ = ≡-to-⊑ 𝓓 (compact-family-∐-≡ x)
-
-is-continuous-dcpo-if-algebraic-dcpo : (𝓓 : DCPO {𝓤} {𝓣})
-                                     → is-algebraic-dcpo 𝓓
-                                     → is-continuous-dcpo 𝓓
-is-continuous-dcpo-if-algebraic-dcpo 𝓓 =
- ∥∥-functor (structurally-continuous-if-structurally-algebraic 𝓓)
 
 \end{code}
 
