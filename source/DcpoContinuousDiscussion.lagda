@@ -31,6 +31,10 @@ open import DcpoIndCompletion pt fe 𝓥
 open import DcpoMiscelanea pt fe 𝓥
 open import DcpoWayBelow pt fe 𝓥
 
+\end{code}
+
+\begin{code}
+
 structurally-continuous-Σ : (𝓓 : DCPO {𝓤} {𝓣}) → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
 structurally-continuous-Σ 𝓓 =
    (x : ⟨ 𝓓 ⟩)
@@ -186,9 +190,9 @@ is-pseudocontinuous-dcpo 𝓓 =
  → ∥ Σ I ꞉ 𝓥 ̇  , Σ α ꞉ (I → ⟨ 𝓓 ⟩) , (is-way-upperbound 𝓓 x α)
                                    × (Σ δ ꞉ is-Directed 𝓓 α , ∐ 𝓓 δ ≡ x) ∥
 
-being-psuedocontinuous-dcpo-is-prop : (𝓓 : DCPO {𝓤} {𝓣})
+being-pseudocontinuous-dcpo-is-prop : (𝓓 : DCPO {𝓤} {𝓣})
                                    → is-prop (is-pseudocontinuous-dcpo 𝓓)
-being-psuedocontinuous-dcpo-is-prop 𝓓 = Π-is-prop fe (λ x → ∥∥-is-prop)
+being-pseudocontinuous-dcpo-is-prop 𝓓 = Π-is-prop fe (λ x → ∥∥-is-prop)
 
 continuous-dcpo-hierarchy₁ : (𝓓 : DCPO {𝓤} {𝓣})
                            → structurally-continuous 𝓓
@@ -219,64 +223,17 @@ module _
        where
 
  open Ind-completion 𝓓
-
- open import PosetReflection pt fe pe
- open poset-reflection Ind _≲_ ≲-is-prop-valued ≲-is-reflexive ≲-is-transitive
-
- Ind' : 𝓥 ⁺ ⊔ 𝓣 ⁺ ⊔ 𝓤 ̇
- Ind' = poset-reflection-carrier
-
- Ind'-is-set : is-set Ind'
- Ind'-is-set = poset-reflection-is-set
-
- ∐-map'-specification :
-   Σ f̃ ꞉ (Ind' → ⟨ 𝓓 ⟩) , ((σ' τ' : Ind') → σ' ≤ τ'
-                                          → f̃ σ' ⊑⟨ 𝓓 ⟩ f̃ τ')
-                        × (f̃ ∘ η ∼ ∐-map)
- ∐-map'-specification =
-  center (universal-property (underlying-order 𝓓) (sethood 𝓓) (prop-valuedness 𝓓)
-                             (reflexivity 𝓓) (transitivity 𝓓) (antisymmetry 𝓓)
-                             ∐-map ∐-map-is-monotone)
-
- ∐-map' : Ind' → ⟨ 𝓓 ⟩
- ∐-map' = pr₁ ∐-map'-specification
-
- left-adjoint-to-∐-map' : (⟨ 𝓓 ⟩ → Ind')
-                        → 𝓥 ⁺ ⊔ 𝓣 ⁺ ⊔ 𝓤 ̇
- left-adjoint-to-∐-map' L' =
-  (x : ⟨ 𝓓 ⟩) (α' : Ind') → (L' x ≤ α') ⇔ (x ⊑⟨ 𝓓 ⟩ ∐-map' α')
-
- being-left-adjoint-to-∐-map'-is-prop : (L' : ⟨ 𝓓 ⟩ → Ind')
-                                      → is-prop (left-adjoint-to-∐-map' L')
- being-left-adjoint-to-∐-map'-is-prop L' =
-  Π₂-is-prop fe (λ x α' → ×-is-prop
-                           (Π-is-prop fe (λ _ → prop-valuedness 𝓓 x (∐-map' α')))
-                           (Π-is-prop fe (λ _ → ≤-is-prop-valued (L' x) α')))
-
- ∐-map'-has-specified-left-adjoint : 𝓥 ⁺ ⊔ 𝓣 ⁺ ⊔ 𝓤 ̇
- ∐-map'-has-specified-left-adjoint = Σ left-adjoint-to-∐-map'
-
- ∐-map'-having-left-adjoint-is-prop : is-prop ∐-map'-has-specified-left-adjoint
- ∐-map'-having-left-adjoint-is-prop
-  (L , L-is-left-adjoint) (L' , L'-is-left-adjoint) =
-   to-subtype-≡ being-left-adjoint-to-∐-map'-is-prop
-                (dfunext fe (λ x → ≤-is-antisymmetric (L x) (L' x)
-                  (rl-implication (L-is-left-adjoint x (L' x))
-                                  (lr-implication (L'-is-left-adjoint x (L' x))
-                                    (≤-is-reflexive (L' x))))
-                  (rl-implication (L'-is-left-adjoint x (L x))
-                                  (lr-implication (L-is-left-adjoint x (L x))
-                                    (≤-is-reflexive (L x))))))
+ open Ind-completion-poset-reflection pe 𝓓
 
  pseudo₁ : is-pseudocontinuous-dcpo 𝓓
-         → ∐-map'-has-specified-left-adjoint
+         → ∐-map/-has-specified-left-adjoint
  pseudo₁ pc = L' , ladj
   where
    module construction (x : ⟨ 𝓓 ⟩) where
     dom : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
     dom = (Σ I ꞉ 𝓥 ̇  , Σ α ꞉ (I → ⟨ 𝓓 ⟩) , is-way-upperbound 𝓓 x α
                                          × (Σ δ ꞉ is-Directed 𝓓 α , ∐ 𝓓 δ ≡ x))
-    κ : dom → Ind'
+    κ : dom → Ind/≈
     κ = η ∘ (λ (I , α , _ , (δ , _)) → I , α , δ)
     κ-wconstant : wconstant κ
     κ-wconstant σ@(I , α , α-way-below-x , (δ , x-sup-of-α))
@@ -287,27 +244,27 @@ module _
       (η-preserves-order (J , β , ε) (I , α , δ)
         (λ j → β-way-below-x j I α δ (≡-to-⊒ 𝓓 x-sup-of-α)))
 
-    ω : Σ ϕ ꞉ (∥ dom ∥ → Ind') , κ ∼ ϕ ∘ ∣_∣
+    ω : Σ ϕ ꞉ (∥ dom ∥ → Ind/≈) , κ ∼ ϕ ∘ ∣_∣
     ω = wconstant-map-to-set-factors-through-truncation-of-domain
-         Ind'-is-set κ κ-wconstant
-   L' : ⟨ 𝓓 ⟩ → Ind'
+         Ind/≈-is-set κ κ-wconstant
+   L' : ⟨ 𝓓 ⟩ → Ind/≈
    L' x = pr₁ ω (pc x)
     where
      open construction x
 
-   ladj : left-adjoint-to-∐-map' L'
+   ladj : left-adjoint-to-∐-map/ L'
    ladj x α' = ∥∥-rec goal-is-prop r (η-is-surjection α')
     where
      open construction x
-     goal-is-prop : is-prop ((L' x ≤ α') ⇔ (x ⊑⟨ 𝓓 ⟩ ∐-map' α'))
+     goal-is-prop : is-prop ((L' x ≤ α') ⇔ (x ⊑⟨ 𝓓 ⟩ ∐-map/ α'))
      goal-is-prop = (×-is-prop
-                     (Π-is-prop fe (λ _ → prop-valuedness 𝓓 x (∐-map' α')))
+                     (Π-is-prop fe (λ _ → prop-valuedness 𝓓 x (∐-map/ α')))
                      (Π-is-prop fe (λ _ → ≤-is-prop-valued (L' x) α')))
      r : (Σ α ꞉ Ind , η α ≡ α')
-       → (L' x ≤ α') ⇔ (x ⊑⟨ 𝓓 ⟩ ∐-map' α')
+       → (L' x ≤ α') ⇔ (x ⊑⟨ 𝓓 ⟩ ∐-map/ α')
      r (α , refl) = ∥∥-rec goal-is-prop ρ (pc x)
       where
-       ρ : dom → (L' x ≤ α') ⇔ (x ⊑⟨ 𝓓 ⟩ ∐-map' α')
+       ρ : dom → (L' x ≤ α') ⇔ (x ⊑⟨ 𝓓 ⟩ ∐-map/ α')
        ρ τ@(J , β , β-way-below-x , ε , x-sup-of-β) = ⇔-trans claim₁ claim₂
         where
          claim₁ : (L' x ≤ η α) ⇔ (η (J , β , ε) ≤ η α)
@@ -317,15 +274,15 @@ module _
                  pr₁ ω (pc x)  ≡⟨ ap (pr₁ ω) (∥∥-is-prop (pc x) ∣ τ ∣) ⟩
                  pr₁ ω ∣ τ ∣   ≡⟨ (pr₂ ω τ) ⁻¹                         ⟩
                  η (J , β , ε) ∎
-           lemma₁ : {σ τ : Ind'} → σ ≡ τ → σ ≤ η α ⇔ τ ≤ η α
+           lemma₁ : {σ τ : Ind/≈} → σ ≡ τ → σ ≤ η α ⇔ τ ≤ η α
            lemma₁ refl = ⇔-refl
-         claim₂ : (η (J , β , ε) ≤ η α) ⇔ x ⊑⟨ 𝓓 ⟩ ∐-map' (η α)
+         claim₂ : (η (J , β , ε) ≤ η α) ⇔ x ⊑⟨ 𝓓 ⟩ ∐-map/ (η α)
          claim₂ = ⇔-trans ((η-reflects-order  (J , β , ε) α) ,
                            (η-preserves-order (J , β , ε) α))
                           (⇔-trans claim₂' (lemma₂ (eq₂ ⁻¹)))
           where
-           eq₂ : ∐-map' (η α) ≡ ∐-map α
-           eq₂ = pr₂ (pr₂ ∐-map'-specification) α
+           eq₂ : ∐-map/ (η α) ≡ ∐-map α
+           eq₂ = ∐-map/-triangle α
            lemma₂ : {d e : ⟨ 𝓓 ⟩} → d ≡ e
                   → x ⊑⟨ 𝓓 ⟩ d ⇔ x ⊑⟨ 𝓓 ⟩ e
            lemma₂ refl = ⇔-refl
@@ -334,7 +291,7 @@ module _
                         x (J , β , ε) ⌝
                      (x-sup-of-β , β-way-below-x) α
 
- pseudo₂ : ∐-map'-has-specified-left-adjoint
+ pseudo₂ : ∐-map/-has-specified-left-adjoint
          → is-pseudocontinuous-dcpo 𝓓
  pseudo₂ (L' , L'-is-left-adjoint) x =
   ∥∥-rec ∥∥-is-prop r (η-is-surjection (L' x))
@@ -351,11 +308,11 @@ module _
         ladj-local : left-adjoint-to-∐-map-local x (I , α , δ)
         ladj-local τ = ⦅⇒⦆ , ⦅⇐⦆
          where
-          comm-eq : ∐-map' (η τ) ≡ ∐-map τ
-          comm-eq = pr₂ (pr₂ ∐-map'-specification) τ
+          comm-eq : ∐-map/ (η τ) ≡ ∐-map τ
+          comm-eq = ∐-map/-triangle τ
           ⦅⇒⦆ : σ ≲ τ → x ⊑⟨ 𝓓 ⟩ ∐-map τ
           ⦅⇒⦆ σ-cofinal-in-τ = x           ⊑⟨ 𝓓 ⟩[ ⦅1⦆ ]
-                              ∐-map' (η τ) ⊑⟨ 𝓓 ⟩[ ⦅2⦆ ]
+                              ∐-map/ (η τ) ⊑⟨ 𝓓 ⟩[ ⦅2⦆ ]
                               ∐-map      τ ∎⟨ 𝓓 ⟩
            where
             ⦅2⦆ = ≡-to-⊑ 𝓓 comm-eq
@@ -376,6 +333,13 @@ module _
               lem' = rl-implication (L'-is-left-adjoint x (η τ))
                       (x            ⊑⟨ 𝓓 ⟩[ x-below-∐τ       ]
                        ∐-map τ      ⊑⟨ 𝓓 ⟩[ ≡-to-⊒ 𝓓 comm-eq ]
-                       ∐-map' (η τ) ∎⟨ 𝓓 ⟩)
+                       ∐-map/ (η τ) ∎⟨ 𝓓 ⟩)
+
+ pseudo-≃ : ∐-map/-has-specified-left-adjoint
+          ≃ is-pseudocontinuous-dcpo 𝓓
+ pseudo-≃ = logically-equivalent-props-are-equivalent
+             ∐-map/-having-left-adjoint-is-prop
+             (being-pseudocontinuous-dcpo-is-prop 𝓓)
+             pseudo₂ pseudo₁
 
 \end{code}

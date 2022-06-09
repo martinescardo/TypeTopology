@@ -291,7 +291,7 @@ adjoint, as we explain in DcpoContinuousDiscussion.lagda.
 
 \begin{code}
 
-module _
+module Ind-completion-poset-reflection
         (pe : Prop-Ext)
         (𝓓 : DCPO {𝓤} {𝓣})
        where
@@ -299,7 +299,7 @@ module _
  open Ind-completion 𝓓
 
  open import PosetReflection pt fe pe
- open poset-reflection Ind _≲_ ≲-is-prop-valued ≲-is-reflexive ≲-is-transitive
+ open poset-reflection Ind _≲_ ≲-is-prop-valued ≲-is-reflexive ≲-is-transitive public
 
  Ind/≈ : 𝓥 ⁺ ⊔ 𝓣 ⁺ ⊔ 𝓤 ̇
  Ind/≈ = poset-reflection-carrier
@@ -317,6 +317,9 @@ module _
 
  ∐-map/ : Ind/≈ → ⟨ 𝓓 ⟩
  ∐-map/ = ∃!-witness ∐-map/-specification
+
+ ∐-map/-triangle : (α : Ind) → ∐-map/ (η α) ≡ ∐-map α
+ ∐-map/-triangle = pr₂ (∃!-is-witness ∐-map/-specification)
 
  left-adjoint-to-∐-map/ : (⟨ 𝓓 ⟩ → Ind/≈)
                         → 𝓥 ⁺ ⊔ 𝓣 ⁺ ⊔ 𝓤 ̇
