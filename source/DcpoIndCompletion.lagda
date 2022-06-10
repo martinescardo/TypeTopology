@@ -279,7 +279,7 @@ and the way-below relation.
 \end{code}
 
 Because Ind is a preorder and not a poset, the type expressing that ∐-map has a
-(specified) left adjoint is not a proposition, as the supposed left adjoint can
+specified left adjoint is not a proposition, as the supposed left adjoint can
 map elements of 𝓓 to bicofinal (but nonequal) directed families.
 
 We could take the poset reflection Ind/≈ of Ind and ask that the map Ind/≈ → 𝓓

@@ -1,6 +1,38 @@
 Tom de Jong, early January 2022.
 
-TODO: Describe contents.
+Inspired by the paper "Continuous categories and exponentiable toposes" by Peter
+Johnstone and André Joyal, we discuss the notions
+
+(1) structural continuity of a dcpo;
+(2) continuity of a dcpo;
+(3) pseudocontinuity of a dcpo.
+
+(1) and (2) are defined in DcpoContinuous.lagda and (3) is defined and examined here.
+The notions (1)-(3) have the following shapes:
+
+(1)   Π (x : D) →   Σ I : 𝓥 ̇  , Σ α : I → D , α is-directed × ... × ...
+(2) ∥ Π (x : D) →   Σ I : 𝓥 ̇  , Σ α : I → D , α is-directed × ... × ... ∥
+(3)   Π (x : D) → ∥ Σ I : 𝓥 ̇  , Σ α : I → D , α is-directed × ... × ... ∥
+
+So (2) and (3) are propositions, but (1) isn't. We illustrate (1)-(3) by
+discussion them in terms of left adjoints. In these discussions, the
+Ind-completion, as defined in DcpoIndCompletion.lagda plays an important role.
+
+We show that (1) for a dcpo D is equivalent to asserting that the map
+∐ : Ind(D) → D (which takes a directed family to its supremum) has a specified
+left adjoint.
+
+It follows directly that (2) is equivalent to asking that ∐-map has an
+*unspecified* left adjoint.
+
+Because Ind is a preorder and not a poset, the type expressing that ∐-map has a
+specified left adjoint is not a proposition, as the supposed left adjoint can
+map elements of D to bicofinal (but nonequal) directed families.
+
+We could take the poset reflection Ind(D)/≈ of Ind(D) and ask that the map
+∐-map/ : Ind(D)/≈ → D induced by ∐ : Ind(D) → D has a left adjoint to obtain a
+type that is a proposition. We show that this amounts precisely to
+pseudocontinuity.
 
 \begin{code}
 
@@ -16,14 +48,15 @@ module DcpoContinuousDiscussion
         (𝓥 : Universe) -- where the index types for directed completeness live
        where
 
-open PropositionalTruncation pt
-
 open import UF-Base hiding (_≈_)
 open import UF-Equiv
 open import UF-EquivalenceExamples
-
+open import UF-ImageAndSurjection
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
+
+open ImageAndSurjection pt
+open PropositionalTruncation pt
 
 open import Dcpo pt fe 𝓥
 open import DcpoContinuous pt fe 𝓥
@@ -32,6 +65,10 @@ open import DcpoMiscelanea pt fe 𝓥
 open import DcpoWayBelow pt fe 𝓥
 
 \end{code}
+
+Because we'll want to apply some standard equivalences later on, we first show
+that our record-based definition of structural continuity is equivalent to one
+using Σ-types.
 
 \begin{code}
 
@@ -75,6 +112,17 @@ structurally-continuous-≃ 𝓓 = qinveq (structurally-continuous-to-Σ 𝓓)
 
 \end{code}
 
+In "Continuous categories and exponentiable toposes", Peter Johnstone and André
+Joyal show in Lemma 2.1 that a dcpo D is continuous if and only if the map
+∐ : Ind(D) → D that takes a directed family in the Ind-completion of D to its
+supremum has a (specified) left adjoint.
+
+We show that the type expressing that the ∐-map has a left adjoint is equivalent
+to the type expressing structural continuity of D.
+
+The proof below is fairly short, but only because we already characterized when
+∐-map has a left adjoint in DcpoIndCompletion.lagda.
+
 \begin{code}
 
 module _
@@ -83,9 +131,10 @@ module _
 
  open Ind-completion 𝓓
 
- Johnstone-Joyal₁ : ∐-map-has-specified-left-adjoint
-                  → structurally-continuous 𝓓
- Johnstone-Joyal₁ (L , L-left-adjoint) =
+ structurally-continuous-if-specified-left-adjoint :
+    ∐-map-has-specified-left-adjoint
+  → structurally-continuous 𝓓
+ structurally-continuous-if-specified-left-adjoint (L , L-left-adjoint) =
   record
    { index-of-approximating-family     = λ x → pr₁ (L x)
    ; approximating-family              = λ x → pr₁ (pr₂ (L x))
@@ -97,9 +146,10 @@ module _
     crit : left-adjoint-to-∐-map-criterion L
     crit = ⌜ left-adjoint-to-∐-map-characterization L ⌝⁻¹ L-left-adjoint
 
- Johnstone-Joyal₂ : structurally-continuous 𝓓
-                  → ∐-map-has-specified-left-adjoint
- Johnstone-Joyal₂ C = L , L-is-left-adjoint
+ specified-left-adjoint-if-structurally-continuous :
+    structurally-continuous 𝓓
+  → ∐-map-has-specified-left-adjoint
+ specified-left-adjoint-if-structurally-continuous C = L , L-is-left-adjoint
   where
    open structurally-continuous C
    L : ⟨ 𝓓 ⟩ → Ind
@@ -117,12 +167,12 @@ module _
      ⦅2⦆ : x ⊑⟨ 𝓓 ⟩ ∐ 𝓓 δ → L x ≲ (I , α , δ)
      ⦅2⦆ x-below-∐α j = approximating-family-is-way-below x j I α δ x-below-∐α
 
- Johnstone-Joyal-≃ : ∐-map-has-specified-left-adjoint
-                   ≃ structurally-continuous 𝓓
- Johnstone-Joyal-≃ = qinveq f (g , σ , τ)
+ specified-left-adjoint-structurally-continuous-≃ :
+  ∐-map-has-specified-left-adjoint ≃ structurally-continuous 𝓓
+ specified-left-adjoint-structurally-continuous-≃ = qinveq f (g , σ , τ)
   where
-   f = Johnstone-Joyal₁
-   g = Johnstone-Joyal₂
+   f = structurally-continuous-if-specified-left-adjoint
+   g = specified-left-adjoint-if-structurally-continuous
    σ : g ∘ f ∼ id
    σ (L , L-left-adjoint) =
     to-subtype-≡ being-left-adjoint-to-∐-map-is-prop refl
@@ -140,31 +190,48 @@ module _
           (λ x → to-Σ-≡ (refl , (to-Σ-≡ (refl ,
                   (to-×-≡ refl  (to-Σ-≡ (refl , (sethood 𝓓 _ _)))))))))
 
- -- TODO: Comment further on this.
- -- In turns out that monotonicity of L need not be required, as it follows from
- -- the "hom-set" condition.
-
- left-adjoint-to-∐-map-is-monotone : (L : ⟨ 𝓓 ⟩ → Ind)
-                                   → left-adjoint-to-∐-map L
-                                   → (x y  : ⟨ 𝓓 ⟩)
-                                   → x ⊑⟨ 𝓓 ⟩ y
-                                   → L x ≲ L y
- left-adjoint-to-∐-map-is-monotone L L-left-adjoint x y x-below-y i = goal
-  where
-   C = Johnstone-Joyal₁ (L , L-left-adjoint)
-   open structurally-continuous C
-   goal = ≪-⊑-to-≪ 𝓓 (approximating-family-is-way-below x i) x-below-y
-           (index-of-approximating-family y)
-           (approximating-family y) (approximating-family-is-directed y)
-           (approximating-family-∐-⊒ y)
-
 \end{code}
 
-Continuity and pseudocontinuity (for comparison)
+One may observe that ∐-map-has-specified-left-adjoint does not require the
+specified left adjoint to be functorial/monotone, as would normally be required
+for an adjoint/Galois connection. But this actually follows from the "hom-set"
+condition, as we show now.
+
+The proof works because the approximating families are given by the left
+adjoint, by definition of structurally-continuous-if-specified-left-adjoint.
 
 \begin{code}
 
--- A truncated version of Johnstone-Joyal-≃
+ left-adjoint-to-∐-map-is-monotone : (L : ⟨ 𝓓 ⟩ → Ind)
+                                   → left-adjoint-to-∐-map L
+                                   → (x y : ⟨ 𝓓 ⟩)
+                                   → x ⊑⟨ 𝓓 ⟩ y
+                                   → L x ≲ L y
+ left-adjoint-to-∐-map-is-monotone L L-left-adjoint x y x-below-y = γ
+  where
+   C = structurally-continuous-if-specified-left-adjoint (L , L-left-adjoint)
+   open structurally-continuous C
+   I : 𝓥 ̇
+   I = index-of-approximating-family x
+   J : 𝓥 ̇
+   J = index-of-approximating-family y
+   xi-way-below-y : (i : I) → approximating-family x i ≪⟨ 𝓓 ⟩ y
+   xi-way-below-y i = ≪-⊑-to-≪ 𝓓 (approximating-family-is-way-below x i)
+                                 x-below-y
+   γ : (i : I) → ∃ j ꞉ J , approximating-family x i ⊑⟨ 𝓓 ⟩
+                           approximating-family y j
+   γ i = xi-way-below-y i (index-of-approximating-family y)
+                          (approximating-family y)
+                          (approximating-family-is-directed y)
+                          (approximating-family-∐-⊒ y)
+
+\end{code}
+
+It follows immediately that a dcpo is continuous if and only if ∐-map has an
+unspecified left adjoint.
+
+\begin{code}
+
 
 module _
         (𝓓 : DCPO {𝓤} {𝓣})
@@ -178,9 +245,22 @@ module _
  is-continuous-dcpo-iff-∐-map-has-unspecified-left-adjoint :
    ∐-map-has-unspecified-left-adjoint ≃ is-continuous-dcpo 𝓓
  is-continuous-dcpo-iff-∐-map-has-unspecified-left-adjoint =
-  ∥∥-cong pt (Johnstone-Joyal-≃ 𝓓)
+  ∥∥-cong pt (specified-left-adjoint-structurally-continuous-≃ 𝓓)
 
 \end{code}
+
+Finall, we consider pseudocontinuity. It is similar to structural continuity,
+but instead of asking that for every x : D, we have a specified directed family
+approximating x, we merely ask there exists an unspecified directed family
+approximating x.
+
+On first sight, pseudocontinuity is arguably how one would expect us to define
+contuinity of a dcpo while ensuring the notion is property as opposed to
+structure. It is however weaker than continuity (as defined in
+DcpoContinuous.lagda) and structural continuity. More importantly, with
+pseudocontinuity we would need some instances of the axiom of choice when
+proving the interpolation properties for the way-below relation, at least when
+trying to mimick the proof in DcpoContinuous.lagda.
 
 \begin{code}
 
@@ -191,7 +271,7 @@ is-pseudocontinuous-dcpo 𝓓 =
                                    × (Σ δ ꞉ is-Directed 𝓓 α , ∐ 𝓓 δ ≡ x) ∥
 
 being-pseudocontinuous-dcpo-is-prop : (𝓓 : DCPO {𝓤} {𝓣})
-                                   → is-prop (is-pseudocontinuous-dcpo 𝓓)
+                                    → is-prop (is-pseudocontinuous-dcpo 𝓓)
 being-pseudocontinuous-dcpo-is-prop 𝓓 = Π-is-prop fe (λ x → ∥∥-is-prop)
 
 continuous-dcpo-hierarchy₁ : (𝓓 : DCPO {𝓤} {𝓣})
@@ -207,15 +287,16 @@ continuous-dcpo-hierarchy₂ 𝓓 c x =
 
 \end{code}
 
-Quotienting Ind and pseudocontinuity
+Of course, one way to obtain a propositional-valued definition of continuity is
+to ensure that we're asking for left adjoints between posets. That is, we take
+the poset reflection Ind/≈ of Ind and ask that ∐-map/ : Ind/≈ → D has a left
+adjoint.
 
-TODO: Write some more
+We show that this is exactly the same as pseudocontinuity. This also illustrates
+the discussion above on the need for the axiom of choice, as it boils down to
+choosing representatives of equivalence classes.
 
 \begin{code}
-
-open import UF-ImageAndSurjection
-
-open ImageAndSurjection pt
 
 module _
         (pe : Prop-Ext)
@@ -225,9 +306,9 @@ module _
  open Ind-completion 𝓓
  open Ind-completion-poset-reflection pe 𝓓
 
- pseudo₁ : is-pseudocontinuous-dcpo 𝓓
-         → ∐-map/-has-specified-left-adjoint
- pseudo₁ pc = L' , ladj
+ specified-left-adjoint-if-pseudocontinuous : is-pseudocontinuous-dcpo 𝓓
+                                            → ∐-map/-has-specified-left-adjoint
+ specified-left-adjoint-if-pseudocontinuous pc = L , ladj
   where
    module construction (x : ⟨ 𝓓 ⟩) where
     dom : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
@@ -247,30 +328,30 @@ module _
     ω : Σ ϕ ꞉ (∥ dom ∥ → Ind/≈) , κ ∼ ϕ ∘ ∣_∣
     ω = wconstant-map-to-set-factors-through-truncation-of-domain
          Ind/≈-is-set κ κ-wconstant
-   L' : ⟨ 𝓓 ⟩ → Ind/≈
-   L' x = pr₁ ω (pc x)
+   L : ⟨ 𝓓 ⟩ → Ind/≈
+   L x = pr₁ ω (pc x)
     where
      open construction x
 
-   ladj : left-adjoint-to-∐-map/ L'
-   ladj x α' = ∥∥-rec goal-is-prop r (η-is-surjection α')
+   ladj : left-adjoint-to-∐-map/ L
+   ladj x α' = ∥∥-rec adj-condition-is-prop r (η-is-surjection α')
     where
      open construction x
-     goal-is-prop : is-prop ((L' x ≤ α') ⇔ (x ⊑⟨ 𝓓 ⟩ ∐-map/ α'))
-     goal-is-prop = (×-is-prop
-                     (Π-is-prop fe (λ _ → prop-valuedness 𝓓 x (∐-map/ α')))
-                     (Π-is-prop fe (λ _ → ≤-is-prop-valued (L' x) α')))
+     adj-condition-is-prop : is-prop ((L x ≤ α') ⇔ (x ⊑⟨ 𝓓 ⟩ ∐-map/ α'))
+     adj-condition-is-prop =
+      (×-is-prop (Π-is-prop fe (λ _ → prop-valuedness 𝓓 x (∐-map/ α')))
+                 (Π-is-prop fe (λ _ → ≤-is-prop-valued (L x) α')))
      r : (Σ α ꞉ Ind , η α ≡ α')
-       → (L' x ≤ α') ⇔ (x ⊑⟨ 𝓓 ⟩ ∐-map/ α')
-     r (α , refl) = ∥∥-rec goal-is-prop ρ (pc x)
+       → (L x ≤ α') ⇔ (x ⊑⟨ 𝓓 ⟩ ∐-map/ α')
+     r (α , refl) = ∥∥-rec adj-condition-is-prop ρ (pc x)
       where
-       ρ : dom → (L' x ≤ α') ⇔ (x ⊑⟨ 𝓓 ⟩ ∐-map/ α')
+       ρ : dom → (L x ≤ α') ⇔ (x ⊑⟨ 𝓓 ⟩ ∐-map/ α')
        ρ τ@(J , β , β-way-below-x , ε , x-sup-of-β) = ⇔-trans claim₁ claim₂
         where
-         claim₁ : (L' x ≤ η α) ⇔ (η (J , β , ε) ≤ η α)
+         claim₁ : (L x ≤ η α) ⇔ (η (J , β , ε) ≤ η α)
          claim₁ = lemma₁ eq₁
           where
-           eq₁ = L' x          ≡⟨ refl                                 ⟩
+           eq₁ = L x          ≡⟨ refl                                 ⟩
                  pr₁ ω (pc x)  ≡⟨ ap (pr₁ ω) (∥∥-is-prop (pc x) ∣ τ ∣) ⟩
                  pr₁ ω ∣ τ ∣   ≡⟨ (pr₂ ω τ) ⁻¹                         ⟩
                  η (J , β , ε) ∎
@@ -291,12 +372,12 @@ module _
                         x (J , β , ε) ⌝
                      (x-sup-of-β , β-way-below-x) α
 
- pseudo₂ : ∐-map/-has-specified-left-adjoint
-         → is-pseudocontinuous-dcpo 𝓓
- pseudo₂ (L' , L'-is-left-adjoint) x =
-  ∥∥-rec ∥∥-is-prop r (η-is-surjection (L' x))
+ pseudocontinuous-if-specified-left-adjoint : ∐-map/-has-specified-left-adjoint
+                                            → is-pseudocontinuous-dcpo 𝓓
+ pseudocontinuous-if-specified-left-adjoint (L , L-is-left-adjoint) x =
+  ∥∥-rec ∥∥-is-prop r (η-is-surjection (L x))
    where
-    r : (Σ σ ꞉ Ind , η σ ≡ L' x)
+    r : (Σ σ ꞉ Ind , η σ ≡ L x)
       → ∥ Σ I ꞉ 𝓥 ̇  , Σ α ꞉ (I → ⟨ 𝓓 ⟩) , is-way-upperbound 𝓓 x α
                                         × (Σ δ ꞉ is-Directed 𝓓 α , ∐ 𝓓 δ ≡ x) ∥
     r (σ@(I , α , δ) , p) = ∣ I , α , pr₂ claim , (δ , pr₁ claim) ∣
@@ -316,8 +397,8 @@ module _
                               ∐-map      τ ∎⟨ 𝓓 ⟩
            where
             ⦅2⦆ = ≡-to-⊑ 𝓓 comm-eq
-            ⦅1⦆ = lr-implication (L'-is-left-adjoint x (η τ))
-                  (≤-is-transitive (L' x) (η σ) (η τ)
+            ⦅1⦆ = lr-implication (L-is-left-adjoint x (η τ))
+                  (≤-is-transitive (L x) (η σ) (η τ)
                     (transport (λ - → - ≤ η σ) p (≤-is-reflexive (η σ)))
                     ησ-less-than-ητ)
              where
@@ -329,17 +410,19 @@ module _
             lem : η σ ≤ η τ
             lem = transport⁻¹ (λ - → - ≤ η τ) p lem'
              where
-              lem' : L' x ≤ η τ
-              lem' = rl-implication (L'-is-left-adjoint x (η τ))
+              lem' : L x ≤ η τ
+              lem' = rl-implication (L-is-left-adjoint x (η τ))
                       (x            ⊑⟨ 𝓓 ⟩[ x-below-∐τ       ]
                        ∐-map τ      ⊑⟨ 𝓓 ⟩[ ≡-to-⊒ 𝓓 comm-eq ]
                        ∐-map/ (η τ) ∎⟨ 𝓓 ⟩)
 
- pseudo-≃ : ∐-map/-has-specified-left-adjoint
-          ≃ is-pseudocontinuous-dcpo 𝓓
- pseudo-≃ = logically-equivalent-props-are-equivalent
-             ∐-map/-having-left-adjoint-is-prop
-             (being-pseudocontinuous-dcpo-is-prop 𝓓)
-             pseudo₂ pseudo₁
+ specified-left-adjoint-pseudo-continuous-≃ : ∐-map/-has-specified-left-adjoint
+                                            ≃ is-pseudocontinuous-dcpo 𝓓
+ specified-left-adjoint-pseudo-continuous-≃ =
+  logically-equivalent-props-are-equivalent
+    ∐-map/-having-left-adjoint-is-prop
+    (being-pseudocontinuous-dcpo-is-prop 𝓓)
+    pseudocontinuous-if-specified-left-adjoint
+    specified-left-adjoint-if-pseudocontinuous
 
 \end{code}
