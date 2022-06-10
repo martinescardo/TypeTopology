@@ -161,68 +161,22 @@ module _
 
   small-basis-unary-interpolation : {x y : ⟨ 𝓓 ⟩} → x ≪⟨ 𝓓 ⟩ y
                                   → ∃ b ꞉ B , (x ≪⟨ 𝓓 ⟩ β b) × (β b ≪⟨ 𝓓 ⟩ y)
-  small-basis-unary-interpolation {x} {y} x-way-below-y = goal
-   where
-    I : 𝓥 ̇
-    I = Σ b ꞉ B , Σ c ꞉ B , (b ≪ᴮₛ β c) × (c ≪ᴮₛ y)
-    π : I → ⟨ 𝓓 ⟩
-    π (b , _ , _ , _) = β b
-    I-inhabited : ∥ I ∥
-    I-inhabited = ∥∥-rec ∥∥-is-prop h (small-basis-nullary-interpolationₛ y)
-     where
-      h : (Σ c ꞉ B , c ≪ᴮₛ y) → ∥ I ∥
-      h (c , c-way-below-y) =
-       ∥∥-functor k (small-basis-nullary-interpolationₛ (β c))
-        where
-         k : (Σ b ꞉ B , b ≪ᴮₛ β c) → I
-         k (b , b-way-below-c) = (b , c , b-way-below-c , c-way-below-y)
-    δ : is-Directed 𝓓 π
-    δ = I-inhabited , σ
-     where
-      σ : is-semidirected (underlying-order 𝓓) π
-      σ (b₁ , c₁ , b₁-way-below-c₁ , c₁-way-below-y)
-        (b₂ , c₂ , b₂-way-below-c₂ , c₂-way-below-y) =
-       ∥∥-rec ∥∥-is-prop h (semidirected-if-Directed 𝓓 (↡ιₛ y) (↡ᴮₛ-is-directed y)
-                             (c₁ , c₁-way-below-y)
-                             (c₂ , c₂-way-below-y))
-        where
-         h : (Σ j ꞉ ↡ᴮₛ y , (β c₁ ⊑⟨ 𝓓 ⟩ β (pr₁ j)) × (β c₂ ⊑⟨ 𝓓 ⟩ β (pr₁ j)))
-           → ∃ i ꞉ I , (β b₁ ⊑⟨ 𝓓 ⟩ π i) × (β b₂ ⊑⟨ 𝓓 ⟩ π i)
-         h ((c , c-way-below-y) , c₁-below-c , c₂-below-c) =
-          ∥∥-functor k
-           (semidirected-if-Directed 𝓓 (↡ιₛ (β c)) (↡ᴮₛ-is-directed (β c))
-             (b₁ , ⌜ φ ⌝⁻¹ (≪-⊑-to-≪ 𝓓 (⌜ φ ⌝ b₁-way-below-c₁) c₁-below-c))
-             (b₂ , ⌜ φ ⌝⁻¹ (≪-⊑-to-≪ 𝓓 (⌜ φ ⌝ b₂-way-below-c₂) c₂-below-c)))
-           where
-            φ : {b : B} {x : ⟨ 𝓓 ⟩} → (b ≪ᴮₛ x) ≃ (β b ≪⟨ 𝓓 ⟩ x)
-            φ = ≪ᴮₛ-≃-≪ᴮ
-            k : Σ j ꞉ ↡ᴮₛ (β c) , (β b₁ ⊑⟨ 𝓓 ⟩ β (pr₁ j))
-                                × (β b₂ ⊑⟨ 𝓓 ⟩ β (pr₁ j))
-              → Σ i ꞉ I , (β b₁ ⊑⟨ 𝓓 ⟩ π i) × (β b₂ ⊑⟨ 𝓓 ⟩ π i)
-            k ((b , b-way-below-c) , b₁-below-b , b₂-below-b) =
-             ((b , c , b-way-below-c , c-way-below-y) , (b₁-below-b , b₂-below-b))
-    y-below-sup-of-π : y ⊑⟨ 𝓓 ⟩ ∐ 𝓓 δ
-    y-below-sup-of-π = sup-is-lowerbound-of-upperbounds (underlying-order 𝓓)
-                        (↡ᴮ-is-sup y) (∐ 𝓓 δ)
-                        (λ (c , c-way-below-y) →
-                          sup-is-lowerbound-of-upperbounds (underlying-order 𝓓)
-                           (↡ᴮ-is-sup (β c)) (∐ 𝓓 δ)
-                            (λ (b , b-way-below-c) →
-                              ∐-is-upperbound 𝓓 δ
-                               (b , c , ≪ᴮ-to-≪ᴮₛ b-way-below-c
-                                      , ≪ᴮ-to-≪ᴮₛ c-way-below-y)))
-
-    claim : ∃ i ꞉ I , x ⊑⟨ 𝓓 ⟩ π i
-    claim = x-way-below-y I π δ y-below-sup-of-π
-
-    goal : ∃ b ꞉ B , (x ≪⟨ 𝓓 ⟩ β b) × (β b ≪⟨ 𝓓 ⟩ y)
-    goal = ∥∥-functor γ claim
-     where
-      γ : (Σ i ꞉ I , x ⊑⟨ 𝓓 ⟩ π i)
-        → Σ b ꞉ B , (x ≪⟨ 𝓓 ⟩ β b) × (β b ≪⟨ 𝓓 ⟩ y)
-      γ ((b , c , b-way-below-c , c-way-below-y) , x-below-b) =
-       (c , ⊑-≪-to-≪ 𝓓 x-below-b (≪ᴮₛ-to-≪ᴮ b-way-below-c)
-          , ≪ᴮₛ-to-≪ᴮ c-way-below-y)
+  small-basis-unary-interpolation {x} {y} x-way-below-y =
+   ∥∥-rec ∃-is-prop γ (≪-unary-interpolation-str 𝓓 C x-way-below-y)
+    where
+     C : structurally-continuous 𝓓
+     C = structurally-continuous-if-equiped-with-small-basis
+     open structurally-continuous C
+     γ : (Σ d ꞉ ⟨ 𝓓 ⟩ , x ≪⟨ 𝓓 ⟩ d × d ≪⟨ 𝓓 ⟩ y)
+       → ∃ b ꞉ B , x ≪⟨ 𝓓 ⟩ (β b) × β b ≪⟨ 𝓓 ⟩ y
+     γ (d , x-wb-d , d-wb-y) =
+      ∥∥-functor σ (d-wb-y (↡ᴮₛ y) (↡ιₛ y) (↡ᴮₛ-is-directed y) (↡ᴮₛ-∐-⊒ y))
+       where
+        σ : (Σ b ꞉ ↡ᴮₛ y , d ⊑⟨ 𝓓 ⟩ ↡ιₛ y b)
+          → Σ b ꞉ B , x ≪⟨ 𝓓 ⟩ (β b) × β b ≪⟨ 𝓓 ⟩ y
+        σ ((b , b-wb-y) , d-below-b) =
+         b , ≪-⊑-to-≪ 𝓓 x-wb-d d-below-b
+           , ≪ᴮₛ-to-≪ᴮ b-wb-y
 
   -- TODO: Explain use of do-notation
   small-basis-binary-interpolation : {x y z : ⟨ 𝓓 ⟩} → x ≪⟨ 𝓓 ⟩ z → y ≪⟨ 𝓓 ⟩ z
@@ -256,7 +210,7 @@ module _
 
 
 
-
+{-
  is-small-basis-Σ : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
  is-small-basis-Σ = (x : ⟨ 𝓓 ⟩) → ((b : B) → is-small (β b ≪⟨ 𝓓 ⟩ x))
                                 × is-Directed 𝓓 (↡ι x)
@@ -290,7 +244,7 @@ module _
  being-small-basis-is-prop : Prop-Ext → is-prop is-small-basis
  being-small-basis-is-prop pe = equiv-to-prop is-small-basis-≃
                                  (being-small-basis-Σ-is-prop pe)
-
+-}
 
 
 
