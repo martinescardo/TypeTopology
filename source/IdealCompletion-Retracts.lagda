@@ -1,9 +1,5 @@
-Tom de Jong, 8 March 2020
+Tom de Jong, 31 January - 4 February 2022.
 
-TODO:
-
-Minor updates on 28 January 2022.
-Major updates 31 January - 4 February 2022.
 Material moved to separate file on 11 June 2022.
 
 \begin{code}
@@ -25,6 +21,7 @@ module IdealCompletion-Retracts
        where
 
 open import UF-Equiv
+open import UF-Retracts
 open import UF-Powerset
 
 open import Dcpo pt fe 𝓥
@@ -223,8 +220,6 @@ module Idl-algebraic -- TODO: Rethink module name
  from-Idl : Idl → ⟨ 𝓓 ⟩
  from-Idl I = Idl-mediating-map I
 
- open import UF-Retracts
-
  Idl-retract : retract ⟨ 𝓓 ⟩ of Idl
  Idl-retract = (r , s , γ)
   where
@@ -399,8 +394,6 @@ module Idl-algebraic' -- TODO: Rename
 
  open is-small-compact-basis β-is-small-compact-basis
  open Idl-algebraic 𝓓 β (compact-basis-is-basis 𝓓 β β-is-small-compact-basis)
-
- open import UF-Retracts
 
  Idl-≃ : 𝓓 ≃ᵈᶜᵖᵒ Idl-DCPO
  Idl-≃ = (to-Idl , from-Idl , retract-condition Idl-retract , γ ,
