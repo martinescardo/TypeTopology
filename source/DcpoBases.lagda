@@ -1,8 +1,21 @@
 Tom de Jong, early January 2022.
 
-TODO: Describe contents.
+We define small (compact) basis for dcpos. Our notion of a small basis is almost
+like in classical domain theory [1,2], but includes an additional smallness
+condition, that is similar but different to Aczel's [3] notion of a
+set-generated dcpo. A similar smallness criterion in the context of category
+theory also appears in [Proposition 2.16, 4].
 
-set-generated, JJ: similarities
+A notable feature of dcpos with small bases is that they and their exponentials
+are locally small.
+
+In IdealCompletion-Properties, we show that having a small basis is equivalent
+to being presented by ideals.
+
+[1] Definition III-4.1 in "Continuous lattices and domains" by Gierz. et al.
+[2] Section 2.2.2 of "Domain Theory" by Abramsky and Jung
+[3] "Aspects of general topology in constructive set theory" by Aczel
+[4] "Continuous categories and exponentiable toposes" by Johnstone and Joyal
 
 \begin{code}
 
@@ -503,7 +516,7 @@ suprema of the collection Σ b : B , β b ≪⟨ 𝓓 ⟩ x.
 
 Essentially they say that it is sufficient for a subset of ↡ᴮ x to be directed
 and have suprema x. So the results are type-theoretic versions of Proposition
-2.2.4 of "Domain Theory" by Jung and Abramsky and Proposition III-4.2 of
+2.2.4 of "Domain Theory" by Abramsky and Jung, and Proposition III-4.2 of
 "Continuous lattices and domains" by Gierz et al.
 
 \begin{code}
