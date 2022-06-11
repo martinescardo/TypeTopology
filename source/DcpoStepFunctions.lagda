@@ -379,7 +379,7 @@ module _
         (𝓔-is-sup-complete : is-sup-complete 𝓔)
        where
 
- open import IdealCompletion-Properties pt fe pe 𝓥
+ open import IdealCompletion-Retracts pt fe pe 𝓥
 
  private
   module _ where
