@@ -235,7 +235,7 @@ later directify by taking finite joins.
            v = rl-implication
                 (below-single-step-function-criterion (βᴰ d) (βᴱ e)
                   (is-small-compact-basis.basis-is-compact κᴰ d) 𝕗)
-                (⌜ ⊑ᴮₛ-≃-⊑ᴮ ⌝ u)
+                (⊑ᴮₛ-to-⊑ᴮ u)
         claim₂ : (d : Bᴰ) → f (βᴰ d) ⊑⟪ 𝓔 ⟫ g (βᴰ d)
         claim₂ d = f (βᴰ d)                             ⊑⟪ 𝓔 ⟫[ ⦅1⦆ ]
                    ∐ (𝓔 ⁻) (↓ᴮₛ-is-directed (f (βᴰ d))) ⊑⟪ 𝓔 ⟫[ ⦅2⦆ ]
@@ -266,7 +266,7 @@ later directify by taking finite joins.
                        g (βᴰ d) ⊑⟪ 𝓔 ⟫[ v        ]
                        g x      ∎⟪ 𝓔 ⟫
             where
-             v = monotone-if-continuous 𝓓 (𝓔 ⁻) 𝕘 (βᴰ d) x (⌜ ⊑ᴮₛ-≃-⊑ᴮ ⌝ u)
+             v = monotone-if-continuous 𝓓 (𝓔 ⁻) 𝕘 (βᴰ d) x (⊑ᴮₛ-to-⊑ᴮ u)
 
 \end{code}
 

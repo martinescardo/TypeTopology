@@ -2,6 +2,8 @@ Tom de Jong, early January 2022.
 
 TODO: Describe contents.
 
+set-generated, JJ: similarities
+
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
@@ -9,8 +11,6 @@ TODO: Describe contents.
 open import SpartanMLTT hiding (J)
 open import UF-FunExt
 open import UF-PropTrunc
-
-open import UF-Subsingletons
 
 module DcpoBases
         (pt : propositional-truncations-exist)
@@ -23,6 +23,8 @@ open PropositionalTruncation pt
 open import UF-Base
 open import UF-Equiv
 open import UF-EquivalenceExamples
+open import UF-Size hiding (is-small ; is-locally-small)
+open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
 
 open import Dcpo pt fe 𝓥
@@ -30,7 +32,14 @@ open import DcpoContinuous pt fe 𝓥
 open import DcpoMiscelanea pt fe 𝓥
 open import DcpoWayBelow pt fe 𝓥
 
-open import UF-Size hiding (is-small ; is-locally-small)
+\end{code}
+
+The idea of a small basis is that we have a small-indexed family β : B → D into
+a dcpo such that for every x : D, the collection of b : B such that β b ≪ x is
+small, directed and has supremum x. Thus, if we wish to approximate an element
+of D, we only need the elements of B to do so.
+
+\begin{code}
 
 module _
         (𝓓 : DCPO {𝓤} {𝓣})
@@ -46,9 +55,16 @@ module _
 
  record is-small-basis : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇  where
   field
-   ≪ᴮ-is-small : (x : ⟨ 𝓓 ⟩) → ((b : B) → is-small (β b ≪⟨ 𝓓 ⟩ x))
+   ≪ᴮ-is-small : (x : ⟨ 𝓓 ⟩) (b : B) → is-small (β b ≪⟨ 𝓓 ⟩ x)
    ↡ᴮ-is-directed : (x : ⟨ 𝓓 ⟩) → is-Directed 𝓓 (↡-inclusion x)
    ↡ᴮ-is-sup : (x : ⟨ 𝓓 ⟩) → is-sup (underlying-order 𝓓) x (↡-inclusion x)
+
+\end{code}
+
+Notice how we required β b ≪ x to be a small type for every b : B and x : D. We
+write some boiler plate around that.
+
+\begin{code}
 
   _≪ᴮₛ_ : (b : B) (x : ⟨ 𝓓 ⟩) → 𝓥 ̇
   b ≪ᴮₛ x = pr₁ (≪ᴮ-is-small x b)
@@ -100,6 +116,9 @@ module _
 
 \end{code}
 
+We prove that being a small basis is a property, for which we first show that
+our record-based definition is equivalent to one using Σ-types.
+
 \begin{code}
 
 module _
@@ -145,6 +164,10 @@ module _
 
 \end{code}
 
+It follows almost immediately that a dcpo that comes equipped with a small basis
+is structurally continuous and this in turn implies that a dcpo with some
+unspecified small basis must be continuous.
+
 \begin{code}
 
 module _
@@ -176,6 +199,9 @@ module _
   ∥∥-functor structurally-continuous-if-specified-small-basis
 
 \end{code}
+
+A useful consequence of having a small basis is that the dcpo in question must
+be locally small, as we show now.
 
 \begin{code}
 
@@ -221,6 +247,9 @@ module _
         III = ≃-sym (⊑-in-terms-of-≪ᴮ)
 
 \end{code}
+
+If a dcpo comes equipped with a small basis B, then the interpolants for the
+way-below relation can be found in B.
 
 \begin{code}
 
@@ -272,6 +301,13 @@ module _
 
 \end{code}
 
+Now that we have established the basics of small bases, we introduce and study
+small compact basis. The idea of a small compact basis is that we have a
+small-indexed family β : B → D into a dcpo such that for β b is compact for
+every b : B, and for every x : D, the collection of b : B such that β b ⊑ x is
+small, directed and has supremum x. Thus, if we wish to approximate an element
+of D, we can do so using compact elements from B.
+
 \begin{code}
 
 module _
@@ -289,7 +325,7 @@ module _
  record is-small-compact-basis : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇  where
   field
    basis-is-compact : (b : B) → is-compact 𝓓 (β b)
-   ⊑ᴮ-is-small : (x : ⟨ 𝓓 ⟩) → ((b : B) → is-small (β b ⊑⟨ 𝓓 ⟩ x))
+   ⊑ᴮ-is-small : (x : ⟨ 𝓓 ⟩) (b : B) → is-small (β b ⊑⟨ 𝓓 ⟩ x)
    ↓ᴮ-is-directed : (x : ⟨ 𝓓 ⟩) → is-Directed 𝓓 (↓-inclusion x)
    ↓ᴮ-is-sup : (x : ⟨ 𝓓 ⟩) → is-sup (underlying-order 𝓓) x (↓-inclusion x)
 
@@ -298,6 +334,12 @@ module _
 
   ⊑ᴮₛ-≃-⊑ᴮ : {b : B} {x : ⟨ 𝓓 ⟩} → (b ⊑ᴮₛ x) ≃ (β b ⊑⟨ 𝓓 ⟩ x)
   ⊑ᴮₛ-≃-⊑ᴮ {b} {x} = pr₂ (⊑ᴮ-is-small x b)
+
+  ⊑ᴮₛ-to-⊑ᴮ : {b : B} {x : ⟨ 𝓓 ⟩} → (b ⊑ᴮₛ x) → (β b ⊑⟨ 𝓓 ⟩ x)
+  ⊑ᴮₛ-to-⊑ᴮ {b} {x} = ⌜ ⊑ᴮₛ-≃-⊑ᴮ ⌝
+
+  ⊑ᴮ-to-⊑ᴮₛ : {b : B} {x : ⟨ 𝓓 ⟩} → (β b ⊑⟨ 𝓓 ⟩ x) → (b ⊑ᴮₛ x)
+  ⊑ᴮ-to-⊑ᴮₛ {b} {x} = ⌜ ⊑ᴮₛ-≃-⊑ᴮ ⌝⁻¹
 
   ↓ᴮₛ : ⟨ 𝓓 ⟩ → 𝓥 ̇
   ↓ᴮₛ x = Σ b ꞉ B , (b ⊑ᴮₛ x)
@@ -316,12 +358,12 @@ module _
     ⦅1⦆ : ∐ 𝓓 (↓ᴮₛ-is-directed x) ⊑⟨ 𝓓 ⟩ x
     ⦅1⦆ = ∐-is-lowerbound-of-upperbounds 𝓓 (↓ᴮₛ-is-directed x) x
           (λ (b , u) → sup-is-upperbound (underlying-order 𝓓) (↓ᴮ-is-sup x)
-                        (b , (⌜ ⊑ᴮₛ-≃-⊑ᴮ ⌝ u)))
+                        (b , ⊑ᴮₛ-to-⊑ᴮ u))
     ⦅2⦆ : x ⊑⟨ 𝓓 ⟩ ∐ 𝓓 (↓ᴮₛ-is-directed x)
     ⦅2⦆ = sup-is-lowerbound-of-upperbounds (underlying-order 𝓓) (↓ᴮ-is-sup x)
           (∐ 𝓓 (↓ᴮₛ-is-directed x))
           (λ (b , v) → ∐-is-upperbound 𝓓 (↓ᴮₛ-is-directed x)
-                        (b , (⌜ ⊑ᴮₛ-≃-⊑ᴮ ⌝⁻¹ v)))
+                        (b , ⊑ᴮ-to-⊑ᴮₛ v))
 
   ↓ᴮₛ-∐-⊑ : (x : ⟨ 𝓓 ⟩) → ∐ 𝓓 (↓ᴮₛ-is-directed x) ⊑⟨ 𝓓 ⟩ x
   ↓ᴮₛ-∐-⊑ x = ≡-to-⊑ 𝓓 (↓ᴮₛ-∐-≡ x)
@@ -333,6 +375,10 @@ module _
   ↓ᴮₛ-compact x (b , u) = basis-is-compact b
 
 \end{code}
+
+Of course, every small compact basis is a small basis, and alternatively, we
+could have defined a small compact basis as a small basis such that every basis
+element is compact.
 
 \begin{code}
 
@@ -361,8 +407,61 @@ module _
  locally-small-if-small-compact-basis scb =
   locally-small-if-small-basis 𝓓 β (compact-basis-is-basis scb)
 
+ small-and-compact-basis : is-small-basis 𝓓 β
+                         → ((b : B) → is-compact 𝓓 (β b))
+                         → is-small-compact-basis
+ small-and-compact-basis β-is-small-basis κ =
+  record
+   { basis-is-compact = κ
+   ; ⊑ᴮ-is-small      = I
+   ; ↓ᴮ-is-directed   = II
+   ; ↓ᴮ-is-sup        = III
+   }
+   where
+    open is-small-basis β-is-small-basis
+    module _
+            (x : ⟨ 𝓓 ⟩)
+           where
+     ↡-and-↓-coincide : ↡ᴮ 𝓓 β x ≃ ↓ᴮ x
+     ↡-and-↓-coincide = Σ-cong (λ b → ≃-sym (compact-⊑-≃-≪ 𝓓 (κ b)))
+     I : (b : B) → is-small (β b ⊑⟨ 𝓓 ⟩ x)
+     I b = ⌜ local-smallness-equivalent-definitions 𝓓 ⌝
+            (locally-small-if-small-basis 𝓓 β β-is-small-basis)
+            (β b) x
+     II : is-Directed 𝓓 (↓-inclusion x)
+     II = reindexed-family-is-directed 𝓓 ↡-and-↓-coincide (↡-inclusion 𝓓 β x)
+           (↡ᴮ-is-directed x)
+     III : is-sup (underlying-order 𝓓) x (↓-inclusion x)
+     III = reindexed-family-sup 𝓓 ↡-and-↓-coincide (↡-inclusion 𝓓 β x)
+                                                   x (↡ᴮ-is-sup x)
 
 \end{code}
+
+In fact, a small compact basis must contain every compact element.
+
+\begin{code}
+
+ small-compact-basis-contains-all-compact-elements : is-small-compact-basis
+                                                   → (x : ⟨ 𝓓 ⟩)
+                                                   → is-compact 𝓓 x
+                                                   → ∃ b ꞉ B , β b ≡ x
+ small-compact-basis-contains-all-compact-elements scb x x-is-compact =
+  ∥∥-functor γ (x-is-compact (↓ᴮₛ x) (↓-inclusionₛ x)
+                             (↓ᴮₛ-is-directed x) (↓ᴮₛ-∐-⊒ x))
+   where
+    open is-small-compact-basis scb
+    γ : (Σ (b , b-below-x) ꞉ ↓ᴮₛ x , x ⊑⟨ 𝓓 ⟩ β b)
+      → (Σ b ꞉ B , β b ≡ x)
+    γ ((b , b-below-x) , x-below-b) = (b , e)
+     where
+      e : β b ≡ x
+      e = antisymmetry 𝓓 (β b) x (⊑ᴮₛ-to-⊑ᴮ b-below-x) x-below-b
+
+\end{code}
+
+As one may expect, a dcpo that comes equipped with a small compact basis is
+structurally algebraic and this in turn implies that a dcpo with some
+unspecified small compact basis must be algebraic.
 
 \begin{code}
 
@@ -399,46 +498,13 @@ module _
 
 \end{code}
 
-TODO: Write comment
+The following technical lemmas give us criteria for directedness and calculating
+suprema of the collection Σ b : B , β b ≪⟨ 𝓓 ⟩ x.
 
-\begin{code}
-
-small-and-compact-basis : (𝓓 : DCPO {𝓤} {𝓣}) {B : 𝓥 ̇  } (β : B → ⟨ 𝓓 ⟩)
-                        → is-small-basis 𝓓 β
-                        → ((b : B) → is-compact 𝓓 (β b))
-                        → is-small-compact-basis 𝓓 β
-small-and-compact-basis 𝓓 {B} β β-is-small-basis κ =
- record
-  { basis-is-compact = κ
-  ; ⊑ᴮ-is-small      = I
-  ; ↓ᴮ-is-directed   = II
-  ; ↓ᴮ-is-sup        = III
-  }
-  where
-   open is-small-basis β-is-small-basis
-   module _
-           (x : ⟨ 𝓓 ⟩)
-          where
-    ↡-and-↓-coincide : ↡ᴮ 𝓓 β x ≃ ↓ᴮ 𝓓 β x
-    ↡-and-↓-coincide = Σ-cong (λ b → ≃-sym (compact-⊑-≃-≪ 𝓓 (κ b)))
-    I : (b : B) → is-small (β b ⊑⟨ 𝓓 ⟩ x)
-    I b = ⌜ local-smallness-equivalent-definitions 𝓓 ⌝
-           (locally-small-if-small-basis 𝓓 β β-is-small-basis)
-           (β b) x
-    II : is-Directed 𝓓 (↓-inclusion 𝓓 β x)
-    II = reindexed-family-is-directed 𝓓 ↡-and-↓-coincide (↡-inclusion 𝓓 β x)
-          (↡ᴮ-is-directed x)
-    III : is-sup (underlying-order 𝓓) x (↓-inclusion 𝓓 β x)
-    III = reindexed-family-sup 𝓓 ↡-and-↓-coincide (↡-inclusion 𝓓 β x)
-                                                  x (↡ᴮ-is-sup x)
-
-
-\end{code}
-
-TODO: Split here?
-
-TODO: Move this somewhere and explain
-       (ref. Abramsky-Jung, compendium, subset of basis...)
+Essentially they say that it is sufficient for a subset of ↡ᴮ x to be directed
+and have suprema x. So the results are type-theoretic versions of Proposition
+2.2.4 of "Domain Theory" by Jung and Abramsky and Proposition III-4.2 of
+"Continuous lattices and domains" by Gierz et al.
 
 \begin{code}
 
@@ -497,7 +563,9 @@ module _
 
 \end{code}
 
-TODO
+The above criteria comes in useful when proving that if we have a continuous
+retraction r : 𝓔 → 𝓓 and a small basis β : B → 𝓔 for 𝓔, then r ∘ β is a small
+basis for 𝓓.
 
 \begin{code}
 
@@ -571,8 +639,11 @@ module _
 
 \end{code}
 
-TODO: Write some more...
-Criterion for locally small exponentials
+Finally, a nice use of dcpos with small bases is that they yield locally small
+exponentials. More precisely, if 𝓔 is locally small and 𝓓 has an unspecified
+small basis, then the exponential 𝓓 ⟹ᵈᶜᵖᵒ 𝓔 is locally small, because when
+ordering the exponential we can quantify just over the basis elements, rather
+than over all elements of 𝓓.
 
 \begin{code}
 
@@ -582,8 +653,8 @@ locally-small-exponential-criterion : Prop-Ext
                                     → (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
                                     → has-unspecified-small-basis 𝓓
                                     → is-locally-small 𝓔
-                                    → is-locally-small (𝓓 ⟹ᵈᶜᵖᵒ 𝓔) -- TODO: Change ⟹?
-locally-small-exponential-criterion pe 𝓓 𝓔 𝓓-sb ls =
+                                    → is-locally-small (𝓓 ⟹ᵈᶜᵖᵒ 𝓔)
+locally-small-exponential-criterion {𝓤} {𝓣} {𝓤'} {𝓣'} pe 𝓓 𝓔 𝓓-sb ls =
  ∥∥-rec (being-locally-small-is-prop (𝓓 ⟹ᵈᶜᵖᵒ 𝓔) (λ _ → pe)) lemma 𝓓-sb
   where
    open is-locally-small ls
@@ -593,11 +664,14 @@ locally-small-exponential-criterion pe 𝓓 𝓔 𝓓-sb ls =
      where
       open is-small-basis β-is-small-basis
       γ : is-locally-small' (𝓓 ⟹ᵈᶜᵖᵒ 𝓔)
-      γ 𝕗@(f , f-cont) 𝕘@(g , g-cont) = (order , order-lemma)
+      γ 𝕗@(f , f-cont) 𝕘@(g , g-cont) = (order-using-basis , order-lemma)
        where
-        order : 𝓥 ̇
-        order = (b : B) → f (β b) ⊑ₛ g (β b)
-        order-lemma : order ≃ ((x : ⟨ 𝓓 ⟩) → f x ⊑⟨ 𝓔 ⟩ g x)
+        order-using-basis : 𝓥 ̇
+        order-using-basis = (b : B) → f (β b) ⊑ₛ g (β b)
+        ptwise-order : 𝓤 ⊔ 𝓣' ̇
+        ptwise-order = ((x : ⟨ 𝓓 ⟩) → f x ⊑⟨ 𝓔 ⟩ g x)
+
+        order-lemma : order-using-basis ≃ ptwise-order
         order-lemma =
          logically-equivalent-props-are-equivalent
           (Π-is-prop fe (λ b → equiv-to-prop ⊑ₛ-≃-⊑
@@ -605,9 +679,9 @@ locally-small-exponential-criterion pe 𝓓 𝓔 𝓓-sb ls =
           (Π-is-prop fe (λ x → prop-valuedness 𝓔 (f x) (g x)))
           ⦅⇒⦆ ⦅⇐⦆
           where
-           ⦅⇐⦆ : ((x : ⟨ 𝓓 ⟩) → f x ⊑⟨ 𝓔 ⟩ g x) → order
+           ⦅⇐⦆ : ptwise-order → order-using-basis
            ⦅⇐⦆ f-below-g b = ⊑-to-⊑ₛ (f-below-g (β b))
-           ⦅⇒⦆ : order → ((x : ⟨ 𝓓 ⟩) → f x ⊑⟨ 𝓔 ⟩ g x)
+           ⦅⇒⦆ : order-using-basis → ptwise-order
            ⦅⇒⦆ f-below-g x = transport (λ - → f - ⊑⟨ 𝓔 ⟩ g -)
                               (↡ᴮₛ-∐-≡ x) f-below-g'
             where
@@ -631,34 +705,5 @@ locally-small-exponential-criterion pe 𝓓 𝓔 𝓓-sb ls =
                   where
                    ⦅†⦆ = ⊑ₛ-to-⊑ (f-below-g b)
                    ⦅‡⦆ = ∐-is-upperbound 𝓔 εᵍ (b , i)
-
-\end{code}
-
-TODO: Put this somewhere else in this file
-
-\begin{code}
-
-module _
-        (𝓓 : DCPO {𝓤} {𝓣})
-        {B : 𝓥 ̇  }
-        (β : B → ⟨ 𝓓 ⟩)
-        (β-is-small-compact-basis : is-small-compact-basis 𝓓 β)
-       where
-
- open is-small-compact-basis β-is-small-compact-basis
-
- small-compact-basis-contains-all-compact-elements : (x : ⟨ 𝓓 ⟩)
-                                                   → is-compact 𝓓 x
-                                                   → ∃ b ꞉ B , β b ≡ x
- small-compact-basis-contains-all-compact-elements x x-is-compact =
-  ∥∥-functor γ (x-is-compact (↓ᴮₛ x) (↓-inclusionₛ x)
-                             (↓ᴮₛ-is-directed x) (↓ᴮₛ-∐-⊒ x))
-   where
-    γ : (Σ (b , b-below-x) ꞉ ↓ᴮₛ x , x ⊑⟨ 𝓓 ⟩ β b)
-      → (Σ b ꞉ B , β b ≡ x)
-    γ ((b , b-below-x) , x-below-b) = (b , e)
-     where
-      e : β b ≡ x
-      e = antisymmetry 𝓓 (β b) x (⌜ ⊑ᴮₛ-≃-⊑ᴮ ⌝ b-below-x) x-below-b
 
 \end{code}
