@@ -12,6 +12,10 @@ are locally small.
 In IdealCompletion-Properties, we show that having a small basis is equivalent
 to being presented by ideals.
 
+If a dcpo has a small basis, then it continuous. In fact, all our examples of
+continuous and algebraic dcpos are actually examples of dcpos with small
+(compact) bases.
+
 [1] Definition III-4.1 in "Continuous lattices and domains" by Gierz. et al.
 [2] Section 2.2.2 of "Domain Theory" by Abramsky and Jung
 [3] "Aspects of general topology in constructive set theory" by Aczel
