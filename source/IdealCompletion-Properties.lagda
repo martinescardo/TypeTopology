@@ -126,6 +126,10 @@ module SmallIdeals
  open Ideals {𝓥} {𝓥} {X} _≺_ ≺-prop-valued INT₂ INT₀ ≺-trans public
  open Idl-Properties {𝓥} {𝓥} {X} _≺_ ≺-prop-valued INT₂ INT₀ ≺-trans public
 
+\end{code}
+
+\begin{code}
+
  ↓-of-ideal : (I : Idl) → 𝕋 (carrier I) → Idl
  ↓-of-ideal I (i , _) = ↓ i
 
@@ -170,6 +174,10 @@ module SmallIdeals
      γ ((j , q) , m) = ideals-are-lowersets (carrier I) (ideality I)
                            i j m q
 
+\end{code}
+
+\begin{code}
+
  Idl-≪-in-terms-of-⊑ : (I J : Idl) → I ≪⟨ Idl-DCPO ⟩ J
                      → ∃ x ꞉ X , x ∈ᵢ J × I ⊑⟨ Idl-DCPO ⟩ ↓ x
  Idl-≪-in-terms-of-⊑ I J u = ∥∥-functor γ g
@@ -180,6 +188,25 @@ module SmallIdeals
    g : ∃ j ꞉ 𝕋 (carrier J) , I ⊑⟨ Idl-DCPO ⟩ (↓-of-ideal J j)
    g = u (𝕋 (carrier J)) (↓-of-ideal J) (↓-of-ideal-is-directed J)
        (≡-to-⊑ Idl-DCPO (Idl-∐-≡ J))
+
+ Idl-≪-in-terms-of-⊑-converse : (I J : Idl)
+                              → ∃ x ꞉ X , x ∈ᵢ J × I ⊑⟨ Idl-DCPO ⟩ ↓ x
+                              → I ≪⟨ Idl-DCPO ⟩ J
+ Idl-≪-in-terms-of-⊑-converse I J = ∥∥-rec (≪-is-prop-valued Idl-DCPO {I} {J}) γ
+  where
+   γ : (Σ x ꞉ X , x ∈ᵢ J × I ⊑⟨ Idl-DCPO ⟩ ↓ x)
+     → I ≪⟨ Idl-DCPO ⟩ J
+   γ (x , xJ , s) 𝓐 α δ t = ∥∥-functor g (t x xJ)
+    where
+     g : (Σ a ꞉ 𝓐 , x ∈ᵢ α a)
+       → Σ a ꞉ 𝓐 , I ⊑⟨ Idl-DCPO ⟩ α a
+     g (a , xa) = a , r
+      where
+       r : I ⊑⟨ Idl-DCPO ⟩ α a
+       r = transitivity Idl-DCPO I (↓ x) (α a) s q
+        where
+         q : ↓ x ⊑⟨ Idl-DCPO ⟩ α a
+         q y l = ideals-are-lowersets (carrier (α a)) (ideality (α a)) y x l xa
 
  Idl-≪-in-terms-of-⊑₂ : (I J : Idl) → I ≪⟨ Idl-DCPO ⟩ J
                       → ∃ x ꞉ X , Σ y ꞉ X , x ≺ y
@@ -207,32 +234,13 @@ module SmallIdeals
        r : ↓ y ⊑⟨ Idl-DCPO ⟩ J
        r z m = ideals-are-lowersets (carrier J) (ideality J) z y m yJ
 
- Idl-≪-in-terms-of-⊑' : (I J : Idl)
-                      → ∃ x ꞉ X , x ∈ᵢ J × I ⊑⟨ Idl-DCPO ⟩ ↓ x
-                      → I ≪⟨ Idl-DCPO ⟩ J
- Idl-≪-in-terms-of-⊑' I J = ∥∥-rec (≪-is-prop-valued Idl-DCPO {I} {J}) γ
-  where
-   γ : (Σ x ꞉ X , x ∈ᵢ J × I ⊑⟨ Idl-DCPO ⟩ ↓ x)
-     → I ≪⟨ Idl-DCPO ⟩ J
-   γ (x , xJ , s) 𝓐 α δ t = ∥∥-functor g (t x xJ)
-    where
-     g : (Σ a ꞉ 𝓐 , x ∈ᵢ α a)
-       → Σ a ꞉ 𝓐 , I ⊑⟨ Idl-DCPO ⟩ α a
-     g (a , xa) = a , r
-      where
-       r : I ⊑⟨ Idl-DCPO ⟩ α a
-       r = transitivity Idl-DCPO I (↓ x) (α a) s q
-        where
-         q : ↓ x ⊑⟨ Idl-DCPO ⟩ α a
-         q y l = ideals-are-lowersets (carrier (α a)) (ideality (α a)) y x l xa
-
- Idl-≪-in-terms-of-⊑₂' : (I J : Idl)
-                       → ∃ x ꞉ X , Σ y ꞉ X , x ≺ y
-                                 × I ⊑⟨ Idl-DCPO ⟩ ↓ x
-                                 × ↓ x ⊑⟨ Idl-DCPO ⟩ ↓ y
-                                 × ↓ y ⊑⟨ Idl-DCPO ⟩ J
-                       → I ≪⟨ Idl-DCPO ⟩ J
- Idl-≪-in-terms-of-⊑₂' I J = ∥∥-rec (≪-is-prop-valued Idl-DCPO {I} {J}) γ
+ Idl-≪-in-terms-of-⊑₂-converse : (I J : Idl)
+                               → ∃ x ꞉ X , Σ y ꞉ X , x ≺ y
+                                                   × I ⊑⟨ Idl-DCPO ⟩ ↓ x
+                                                   × ↓ x ⊑⟨ Idl-DCPO ⟩ ↓ y
+                                                   × ↓ y ⊑⟨ Idl-DCPO ⟩ J
+                               → I ≪⟨ Idl-DCPO ⟩ J
+ Idl-≪-in-terms-of-⊑₂-converse I J = ∥∥-rec (≪-is-prop-valued Idl-DCPO {I} {J}) γ
   where
    γ : (Σ x ꞉ X , Σ y ꞉ X , x ≺ y
                 × I ⊑⟨ Idl-DCPO ⟩ ↓ x
@@ -250,6 +258,179 @@ module SmallIdeals
         where
          s' : ↓ x ⊑⟨ Idl-DCPO ⟩ α a
          s' z n = ideals-are-lowersets (carrier (α a)) (ideality (α a)) z x n xa
+
+ ↓≪-criterion : (I : Idl) (x : X)
+              → x ∈ᵢ I → ↓ x ≪⟨ Idl-DCPO ⟩ I
+ ↓≪-criterion I x x-in-I =
+  Idl-≪-in-terms-of-⊑-converse (↓ x) I ∣ x , x-in-I , reflexivity Idl-DCPO (↓ x) ∣
+
+ ↓⊑-criterion : (I : Idl) (x : X)
+              → x ∈ᵢ I → ↓ x ⊑ I
+ ↓⊑-criterion I x x-in-I = ≪-to-⊑ Idl-DCPO {↓ x} {I} (↓≪-criterion I x x-in-I)
+
+ ↓⊑-criterion-converse : reflexive _≺_
+                       → (I : Idl) (x : X) → ↓ x ⊑ I → x ∈ᵢ I
+ ↓⊑-criterion-converse r I x ↓x-below-I = ↓x-below-I x (r x)
+
+\end{code}
+
+\begin{code}
+
+ ↓-Idl-inclusion : (I : Idl) → (Σ x ꞉ X , ↓ x ≪⟨ Idl-DCPO ⟩ I) → Idl
+ ↓-Idl-inclusion I = ↓_ ∘ pr₁
+
+ ↓-Idl-inclusion-is-directed : (I : Idl)
+                             → is-Directed (Idl-DCPO) (↓-Idl-inclusion I)
+ ↓-Idl-inclusion-is-directed I = inh , semidir
+  where
+   inh : ∥ domain (↓-Idl-inclusion I) ∥
+   inh = ∥∥-functor h (directed-sets-are-inhabited (carrier I)
+                     (ideals-are-directed-sets (carrier I) (ideality I)))
+    where
+     h : 𝕋 (carrier I) → domain (↓-Idl-inclusion I)
+     h (x , x-in-I) = (x , ↓≪-criterion I x x-in-I)
+   semidir : is-semidirected _⊑_ (↓-Idl-inclusion I)
+   semidir (x , ↓x-way-below-I) (y , ↓y-way-below-I) =
+    ∥∥-rec₂ ∃-is-prop f
+           (Idl-≪-in-terms-of-⊑ (↓ x) I ↓x-way-below-I)
+           (Idl-≪-in-terms-of-⊑ (↓ y) I ↓y-way-below-I)
+     where
+      f : (Σ x' ꞉ X , x' ∈ᵢ I × ↓ x ⊑ ↓ x')
+        → (Σ y' ꞉ X , y' ∈ᵢ I × ↓ y ⊑ ↓ y')
+        → ∃ k ꞉ domain (↓-Idl-inclusion I) , (↓ x ⊑ ↓-Idl-inclusion I k)
+                                           × (↓ y ⊑ ↓-Idl-inclusion I k)
+      f (x' , x'-in-I , ↓x-below-↓x') (y' , y'-in-I , ↓y-below-↓y') =
+       ∥∥-functor g (directed-sets-are-semidirected
+                        (carrier I)
+                        (ideals-are-directed-sets (carrier I) (ideality I))
+                        x' y' x'-in-I y'-in-I)
+        where
+         g : (Σ z ꞉ X , z ∈ᵢ I × (x' ≺ z) × (y' ≺ z))
+           → Σ k ꞉ domain (↓-Idl-inclusion I) , (↓ x ⊑ ↓-Idl-inclusion I k)
+                                              × (↓ y ⊑ ↓-Idl-inclusion I k)
+         g (z , z-in-I , x'-below-z , y'-below-z) =
+          (z , ↓≪-criterion I z z-in-I) , (u , v)
+           where
+            u : ↓ x ⊑ ↓ z
+            u = transitivity Idl-DCPO (↓ x) (↓ x') (↓ z)
+                 ↓x-below-↓x' (↓-is-monotone x'-below-z)
+            v : ↓ y ⊑ ↓ z
+            v = transitivity Idl-DCPO (↓ y) (↓ y') (↓ z)
+                 ↓y-below-↓y' (↓-is-monotone y'-below-z)
+
+ ↓-Idl-inclusion-sup : (I : Idl) → is-sup _⊑_ I (↓-Idl-inclusion I)
+ ↓-Idl-inclusion-sup I = ub , lb-of-ubs
+  where
+   ub : is-upperbound _⊑_ I (↓-Idl-inclusion I)
+   ub (x , ↓x-way-below-I) y y-below-x = s y y-below-x
+    where
+     s : ↓ x ⊑ I
+     s = ≪-to-⊑ Idl-DCPO {↓ x} {I} ↓x-way-below-I
+   lb-of-ubs : is-lowerbound-of-upperbounds _⊑_ I (↓-Idl-inclusion I)
+   lb-of-ubs J J-is-ub x x-in-I = ∥∥-rec (∈-is-prop (carrier J) x) h
+                                         (roundedness I x-in-I)
+    where
+     h : (Σ y ꞉ X , y ∈ᵢ I × x ≺ y) → x ∈ᵢ J
+     h (y , y-in-I , x-below-y) = J-is-ub (y , lem) x x-below-y
+      where
+       lem : ↓ y ≪⟨ Idl-DCPO ⟩ I
+       lem = ↓≪-criterion I y y-in-I
+
+ ↓-is-small-basis : is-small-basis Idl-DCPO ↓_
+ ↓-is-small-basis = record {
+   ≪ᴮ-is-small    = λ I x → (↓ x ≪ₛ I) , e (↓ x) I;
+   ↡ᴮ-is-directed = ↓-Idl-inclusion-is-directed;
+   ↡ᴮ-is-sup      = ↓-Idl-inclusion-sup
+  }
+   where
+    _≪ₛ_ : Idl → Idl → 𝓥 ̇
+    I ≪ₛ J = ∃ x ꞉ X , (x ∈ᵢ J) × I ⊑⟨ Idl-DCPO ⟩ ↓ x
+    e : (I J : Idl) → I ≪ₛ J ≃ I ≪⟨ Idl-DCPO ⟩ J
+    e I J = logically-equivalent-props-are-equivalent
+             ∃-is-prop (≪-is-prop-valued Idl-DCPO {I} {J})
+             (Idl-≪-in-terms-of-⊑-converse I J)
+             (Idl-≪-in-terms-of-⊑ I J)
+
+ Idl-has-specified-small-basis : has-specified-small-basis Idl-DCPO
+ Idl-has-specified-small-basis = (X , ↓_ , ↓-is-small-basis)
+
+ Idl-structurally-continuous : structurally-continuous Idl-DCPO
+ Idl-structurally-continuous = structurally-continuous-if-specified-small-basis
+  Idl-DCPO Idl-has-specified-small-basis
+
+ Idl-is-continuous-dcpo : is-continuous-dcpo Idl-DCPO
+ Idl-is-continuous-dcpo = ∣ Idl-structurally-continuous ∣
+
+
+\end{code}
+
+\begin{code}
+
+ module _
+         (≺-is-reflexive : (x : X) → x ≺ x)
+        where
+
+  private
+   κ : (I : Idl) → (Σ x ꞉ X , ↓ x ⊑ I) → Idl
+   κ I = ↓_ ∘ pr₁
+
+   κ-is-directed : (I : Idl) → is-Directed Idl-DCPO (κ I)
+   κ-is-directed I = inh , semidir
+    where
+     inh : ∥ domain (κ I) ∥
+     inh = ∥∥-functor h (directed-sets-are-inhabited (carrier I)
+                         (ideals-are-directed-sets (carrier I) (ideality I)))
+      where
+       h : 𝕋 (carrier I) → domain (κ I)
+       h (x , x-in-I) = (x , ↓⊑-criterion I x x-in-I)
+     semidir : is-semidirected _⊑_ (κ I)
+     semidir (x , ↓x-below-I) (y , ↓y-below-I) =
+      ∥∥-functor h (directed-sets-are-semidirected (carrier I)
+                       (ideals-are-directed-sets (carrier I) (ideality I))
+                       x y (↓⊑-criterion-converse ≺-is-reflexive I x ↓x-below-I)
+                           (↓⊑-criterion-converse ≺-is-reflexive I y ↓y-below-I))
+       where
+        h : (Σ z ꞉ X , z ∈ᵢ I × (x ≺ z) × (y ≺ z))
+          → Σ k ꞉ domain (κ I) , (↓ x ⊑ κ I k) × (↓ y ⊑ κ I k)
+        h (z , z-in-I , x-below-z , y-below-z) =
+         (z , ↓⊑-criterion I z z-in-I) , (↓-is-monotone x-below-z) ,
+                                         (↓-is-monotone y-below-z)
+
+   κ-sup : (I : Idl) → is-sup _⊑_ I (κ I)
+   κ-sup I = ub , lb-of-ubs
+    where
+     ub : is-upperbound _⊑_ I (κ I)
+     ub (x , ↓x-below-I) y y-below-x = ↓x-below-I y y-below-x
+     lb-of-ubs : is-lowerbound-of-upperbounds _⊑_ I (κ I)
+     lb-of-ubs J J-is-ub x x-in-I =
+      J-is-ub (x , ↓⊑-criterion I x x-in-I) x (≺-is-reflexive x)
+
+  ↓-is-compact : (x : X) → is-compact Idl-DCPO (↓ x)
+  ↓-is-compact x 𝓘 α δ x-below-∐α =
+   ∥∥-functor h (x-below-∐α x (≺-is-reflexive x))
+    where
+     h : (Σ i ꞉ 𝓘 , x ∈ᵢ α i)
+       → Σ i ꞉ 𝓘 , ↓ x ⊑ α i
+     h (i , x-in-αᵢ) = (i , ↓⊑-criterion (α i) x x-in-αᵢ)
+
+  ↓-is-small-compact-basis : is-small-compact-basis Idl-DCPO ↓_
+  ↓-is-small-compact-basis = record {
+    basis-is-compact = ↓-is-compact;
+    ⊑ᴮ-is-small      = λ I x → (↓ x ⊑ I) , (≃-refl (↓ x ⊑ I));
+    ↓ᴮ-is-directed   = κ-is-directed;
+    ↓ᴮ-is-sup        = κ-sup
+   }
+
+  Idl-has-specified-small-compact-basis : has-specified-small-compact-basis Idl-DCPO
+  Idl-has-specified-small-compact-basis = (X , ↓_ , ↓-is-small-compact-basis)
+
+  Idl-structurally-algebraic : structurally-algebraic Idl-DCPO
+  Idl-structurally-algebraic =
+   structurally-algebraic-if-specified-small-compact-basis
+    Idl-DCPO Idl-has-specified-small-compact-basis
+
+  Idl-is-algebraic-dcpo : is-algebraic-dcpo Idl-DCPO
+  Idl-is-algebraic-dcpo = ∣ Idl-structurally-algebraic ∣
 
 \end{code}
 
@@ -314,6 +495,10 @@ module SmallIdeals
                     f' (α a) ⊑⟨ 𝓓 ⟩[ u a ]
                     d        ∎⟨ 𝓓 ⟩
 
+\end{code}
+
+\begin{code}
+
   Idl-mediating-map-commutes : ({x : X} → x ≺ x)
                              → Idl-mediating-map ∘ ↓_ ∼ f
   Idl-mediating-map-commutes ρ x = γ
@@ -331,189 +516,5 @@ module SmallIdeals
         g (y , l) = f-is-monotone l
       b : f x ⊑⟨ 𝓓 ⟩ ∐ 𝓓 δ
       b = ∐-is-upperbound 𝓓 δ (x , ρ)
-
-\end{code}
-
-\begin{code}
-
- -- TODO: Move elsewhere?
- ↓≪-criterion : (I : Idl) (x : X)
-              → x ∈ᵢ I → ↓ x ≪⟨ Idl-DCPO ⟩ I
- ↓≪-criterion I x x-in-I =
-  Idl-≪-in-terms-of-⊑' (↓ x) I ∣ x , x-in-I , reflexivity Idl-DCPO (↓ x) ∣
-
- ↓⊑-criterion : (I : Idl) (x : X)
-              → x ∈ᵢ I → ↓ x ⊑ I
- ↓⊑-criterion I x x-in-I = ≪-to-⊑ Idl-DCPO {↓ x} {I} (↓≪-criterion I x x-in-I)
-
-
- ι : (I : Idl) → (Σ x ꞉ X , ↓ x ≪⟨ Idl-DCPO ⟩ I) → Idl
- ι I = ↓_ ∘ pr₁
-
- ι-is-directed : (I : Idl) → is-Directed (Idl-DCPO) (ι I)
- ι-is-directed I = inh , semidir
-  where
-   inh : ∥ domain (ι I) ∥
-   inh = ∥∥-functor h (directed-sets-are-inhabited (carrier I)
-                     (ideals-are-directed-sets (carrier I) (ideality I)))
-    where
-     h : 𝕋 (carrier I) → domain (ι I)
-     h (x , x-in-I) = (x , ↓≪-criterion I x x-in-I)
-   semidir : is-semidirected _⊑_ (ι I)
-   semidir (x , ↓x-way-below-I) (y , ↓y-way-below-I) =
-    ∥∥-rec₂ ∃-is-prop f
-           (Idl-≪-in-terms-of-⊑ (↓ x) I ↓x-way-below-I)
-           (Idl-≪-in-terms-of-⊑ (↓ y) I ↓y-way-below-I)
-     where
-      f : (Σ x' ꞉ X , x' ∈ᵢ I × ↓ x ⊑ ↓ x')
-        → (Σ y' ꞉ X , y' ∈ᵢ I × ↓ y ⊑ ↓ y')
-        → ∃ k ꞉ domain (ι I) , (↓ x ⊑ ι I k) × (↓ y ⊑ ι I k)
-      f (x' , x'-in-I , ↓x-below-↓x') (y' , y'-in-I , ↓y-below-↓y') =
-       ∥∥-functor g (directed-sets-are-semidirected
-                        (carrier I)
-                        (ideals-are-directed-sets (carrier I) (ideality I))
-                        x' y' x'-in-I y'-in-I)
-        where
-         g : (Σ z ꞉ X , z ∈ᵢ I × (x' ≺ z) × (y' ≺ z))
-           → Σ k ꞉ domain (ι I) , (↓ x ⊑ ι I k) × (↓ y ⊑ ι I k)
-         g (z , z-in-I , x'-below-z , y'-below-z) =
-          (z , ↓≪-criterion I z z-in-I) , (u , v)
-           where
-            u : ↓ x ⊑ ↓ z
-            u = transitivity Idl-DCPO (↓ x) (↓ x') (↓ z)
-                 ↓x-below-↓x' (↓-is-monotone x'-below-z)
-            v : ↓ y ⊑ ↓ z
-            v = transitivity Idl-DCPO (↓ y) (↓ y') (↓ z)
-                 ↓y-below-↓y' (↓-is-monotone y'-below-z)
-
- ι-sup : (I : Idl) → is-sup _⊑_ I (ι I)
- ι-sup I = ub , lb-of-ubs
-  where
-   ub : is-upperbound _⊑_ I (ι I)
-   ub (x , ↓x-way-below-I) y y-below-x = s y y-below-x
-    where
-     s : ↓ x ⊑ I
-     s = ≪-to-⊑ Idl-DCPO {↓ x} {I} ↓x-way-below-I
-   lb-of-ubs : is-lowerbound-of-upperbounds _⊑_ I (ι I)
-   lb-of-ubs J J-is-ub x x-in-I = ∥∥-rec (∈-is-prop (carrier J) x) h
-                                        (roundedness I x-in-I)
-    where
-     h : (Σ y ꞉ X , y ∈ᵢ I × x ≺ y) → x ∈ᵢ J
-     h (y , y-in-I , x-below-y) = J-is-ub (y , lem) x x-below-y
-      where
-       lem : ↓ y ≪⟨ Idl-DCPO ⟩ I
-       lem = ↓≪-criterion I y y-in-I
-
- ↓-is-small-basis : is-small-basis Idl-DCPO ↓_
- ↓-is-small-basis = record {
-   ≪ᴮ-is-small    = λ I x → (↓ x ≪ₛ I) , e (↓ x) I;
-   ↡ᴮ-is-directed = ι-is-directed;
-   ↡ᴮ-is-sup      = ι-sup
-  }
-   where
-    _≪ₛ_ : Idl → Idl → 𝓥 ̇
-    I ≪ₛ J = ∃ x ꞉ X , (x ∈ᵢ J) × I ⊑⟨ Idl-DCPO ⟩ ↓ x
-    e : (I J : Idl) → I ≪ₛ J ≃ I ≪⟨ Idl-DCPO ⟩ J
-    e I J = logically-equivalent-props-are-equivalent
-             ∃-is-prop (≪-is-prop-valued Idl-DCPO {I} {J})
-             (Idl-≪-in-terms-of-⊑' I J)
-             (Idl-≪-in-terms-of-⊑ I J)
-
- Idl-has-specified-small-basis : has-specified-small-basis Idl-DCPO
- Idl-has-specified-small-basis = (X , ↓_ , ↓-is-small-basis)
-
- Idl-structurally-continuous : structurally-continuous Idl-DCPO
- Idl-structurally-continuous = structurally-continuous-if-specified-small-basis
-  Idl-DCPO Idl-has-specified-small-basis
-
- Idl-is-continuous-dcpo : is-continuous-dcpo Idl-DCPO
- Idl-is-continuous-dcpo = ∣ Idl-structurally-continuous ∣
-
-
-\end{code}
-
-\begin{code}
-
- module _
-         (≺-is-reflexive : (x : X) → x ≺ x)
-        where
-
-  ↓⊑-criterion-converse : (I : Idl) (x : X) → ↓ x ⊑ I → x ∈ᵢ I
-  ↓⊑-criterion-converse I x ↓x-below-I = ↓x-below-I x (≺-is-reflexive x)
-
-  private
-   κ : (I : Idl) → (Σ x ꞉ X , ↓ x ⊑ I) → Idl
-   κ I = ↓_ ∘ pr₁
-
-   κ-is-directed : (I : Idl) → is-Directed Idl-DCPO (κ I)
-   κ-is-directed I = inh , semidir
-    where
-     inh : ∥ domain (κ I) ∥
-     inh = ∥∥-functor h (directed-sets-are-inhabited (carrier I)
-                         (ideals-are-directed-sets (carrier I) (ideality I)))
-      where
-       h : 𝕋 (carrier I) → domain (κ I)
-       h (x , x-in-I) = (x , ↓⊑-criterion I x x-in-I)
-     semidir : is-semidirected _⊑_ (κ I)
-     semidir (x , ↓x-below-I) (y , ↓y-below-I) =
-      ∥∥-functor h (directed-sets-are-semidirected (carrier I)
-                       (ideals-are-directed-sets (carrier I) (ideality I))
-                       x y (↓⊑-criterion-converse I x ↓x-below-I)
-                           (↓⊑-criterion-converse I y ↓y-below-I))
-       where
-        h : (Σ z ꞉ X , z ∈ᵢ I × (x ≺ z) × (y ≺ z))
-          → Σ k ꞉ domain (κ I) , (↓ x ⊑ κ I k) × (↓ y ⊑ κ I k)
-        h (z , z-in-I , x-below-z , y-below-z) =
-         (z , ↓⊑-criterion I z z-in-I) , (↓-is-monotone x-below-z) ,
-                                         (↓-is-monotone y-below-z)
-
-   κ-sup : (I : Idl) → is-sup _⊑_ I (κ I)
-   κ-sup I = ub , lb-of-ubs
-    where
-     ub : is-upperbound _⊑_ I (κ I)
-     ub (x , ↓x-below-I) y y-below-x = ↓x-below-I y y-below-x
-     lb-of-ubs : is-lowerbound-of-upperbounds _⊑_ I (κ I)
-     lb-of-ubs J J-is-ub x x-in-I =
-      J-is-ub (x , ↓⊑-criterion I x x-in-I) x (≺-is-reflexive x)
-
-  ↓-is-compact : (x : X) → is-compact Idl-DCPO (↓ x)
-  ↓-is-compact x 𝓘 α δ x-below-∐α =
-   ∥∥-functor h (x-below-∐α x (≺-is-reflexive x))
-    where
-     h : (Σ i ꞉ 𝓘 , x ∈ᵢ α i)
-       → Σ i ꞉ 𝓘 , ↓ x ⊑ α i
-     h (i , x-in-αᵢ) = (i , ↓⊑-criterion (α i) x x-in-αᵢ)
-
-  ↓-if-compact : (I : Idl) → is-compact Idl-DCPO I
-               → ∃ x ꞉ X , ↓ x ≡ I
-  ↓-if-compact I c =
-   ∥∥-functor h (c (𝕋 (carrier I))
-                     (↓-of-ideal I)
-                     (↓-of-ideal-is-directed I)
-                     (≡-to-⊑ Idl-DCPO (Idl-∐-≡ I)))
-    where
-     h : (Σ i ꞉ 𝕋 (carrier I) , I ⊑ ↓ pr₁ i)
-       → Σ x ꞉ X , ↓ x ≡ I
-     h ((x , x-in-I) , I-below-↓x ) =
-      (x , antisymmetry Idl-DCPO (↓ x) I (↓⊑-criterion I x x-in-I) I-below-↓x)
-
-  ↓-is-small-compact-basis : is-small-compact-basis Idl-DCPO ↓_
-  ↓-is-small-compact-basis = record {
-    basis-is-compact = ↓-is-compact;
-    ⊑ᴮ-is-small      = λ I x → (↓ x ⊑ I) , (≃-refl (↓ x ⊑ I));
-    ↓ᴮ-is-directed   = κ-is-directed;
-    ↓ᴮ-is-sup        = κ-sup
-   }
-
-  Idl-has-specified-small-compact-basis : has-specified-small-compact-basis Idl-DCPO
-  Idl-has-specified-small-compact-basis = (X , ↓_ , ↓-is-small-compact-basis)
-
-  Idl-structurally-algebraic : structurally-algebraic Idl-DCPO
-  Idl-structurally-algebraic =
-   structurally-algebraic-if-specified-small-compact-basis
-    Idl-DCPO Idl-has-specified-small-compact-basis
-
-  Idl-is-algebraic-dcpo : is-algebraic-dcpo Idl-DCPO
-  Idl-is-algebraic-dcpo = ∣ Idl-structurally-algebraic ∣
 
 \end{code}
