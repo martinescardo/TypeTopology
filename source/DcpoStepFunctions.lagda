@@ -246,9 +246,9 @@ later directify by taking finite joins.
                  (g (βᴰ d)) (λ (e , v) → claim₁ d e v)
 
        open is-small-compact-basis κᴰ
-       δ : is-Directed 𝓓 (↓ιₛ x)
+       δ : is-Directed 𝓓 (↓-inclusionₛ x)
        δ = ↓ᴮₛ-is-directed x
-       ε : is-Directed (𝓔 ⁻) (f ∘ ↓ιₛ x)
+       ε : is-Directed (𝓔 ⁻) (f ∘ ↓-inclusionₛ x)
        ε = image-is-directed' 𝓓 (𝓔 ⁻) 𝕗 δ
 
        fx-below-gx : f x ⊑⟪ 𝓔 ⟫ g x
@@ -261,7 +261,7 @@ later directify by taking finite joins.
          ⦅2⦆ = continuous-∐-⊑ 𝓓 (𝓔 ⁻) 𝕗 δ
          ⦅3⦆ = ∐-is-lowerbound-of-upperbounds (𝓔 ⁻) ε (g x) γ
           where
-           γ : is-upperbound (underlying-order (𝓔 ⁻)) (g x) (f ∘ ↓ιₛ x)
+           γ : is-upperbound (underlying-order (𝓔 ⁻)) (g x) (f ∘ ↓-inclusionₛ x)
            γ (d , u) = f (βᴰ d) ⊑⟪ 𝓔 ⟫[ claim₂ d ]
                        g (βᴰ d) ⊑⟪ 𝓔 ⟫[ v        ]
                        g x      ∎⟪ 𝓔 ⟫
@@ -316,11 +316,11 @@ Now we are in position to show that the exponential has a small compact basis.
           ∣ Bᴰ , βᴰ , compact-basis-is-basis 𝓓 βᴰ κᴰ ∣
           (locally-small-if-small-compact-basis (𝓔 ⁻) βᴱ κᴱ)
       ⦅3⦆ : (f : ⟨ 𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻) ⟩)
-          → is-Directed (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻)) (↓ι (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻)) β f)
+          → is-Directed (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻)) (↓-inclusion (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻)) β f)
       ⦅3⦆ f = directify-↓-is-directed single-step-functions {f}
       ⦅4⦆ : (f : ⟨ 𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻) ⟩)
           → is-sup (underlying-order (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻))) f
-             (↓ι (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻)) β f)
+             (↓-inclusion (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻)) β f)
       ⦅4⦆ (f , f-is-cts) =
        directify-↓-sup single-step-functions {f , f-is-cts}
         (single-step-functions-below-function-sup 𝓔-is-sup-complete

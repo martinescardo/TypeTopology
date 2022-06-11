@@ -1182,7 +1182,7 @@ small (compact) basis, then the bilimit 𝓓∞ does too.
        ↡ᴮₛ⁺ : (i : I) → 𝓥 ̇
        ↡ᴮₛ⁺ i = ↡ᴮₛ (β-is-small-basis i) (⦅ σ ⦆ i)
        ↡ιₛ⁺ : (i : I) → ↡ᴮₛ⁺ i → ⟨ 𝓓 i ⟩
-       ↡ιₛ⁺ i = ↡ιₛ (β-is-small-basis i) (⦅ σ ⦆ i)
+       ↡ιₛ⁺ i = ↡-inclusionₛ (β-is-small-basis i) (⦅ σ ⦆ i)
        open 𝓓∞-family ↡ᴮₛ⁺ ↡ιₛ⁺
 
        ι : J∞ → ↡ᴮ 𝓓∞ β∞ σ
@@ -1197,7 +1197,7 @@ small (compact) basis, then the bilimit 𝓓∞ does too.
                 ε∞-section-of-π∞ ε∞π∞-deflation
                 (β i b) (⦅ σ ⦆ i) (≪ᴮₛ-to-≪ᴮ (β-is-small-basis i) u)
 
-       sublemma₁ : is-Directed 𝓓∞ (↡ι 𝓓∞ β∞ σ ∘ ι)
+       sublemma₁ : is-Directed 𝓓∞ (↡-inclusion 𝓓∞ β∞ σ ∘ ι)
        sublemma₁ = α∞-is-directed-criterion σ
                     (λ i → ↡ᴮₛ-is-directed (β-is-small-basis i) (⦅ σ ⦆ i))
                     (λ i → ↡ᴮₛ-∐-⊒ (β-is-small-basis i) (⦅ σ ⦆ i))
@@ -1206,21 +1206,21 @@ small (compact) basis, then the bilimit 𝓓∞ does too.
        sublemma₂ : σ ≡ ∐ 𝓓∞ sublemma₁
        sublemma₂ = (α∞-∐-≡ σ δs es sublemma₁) ⁻¹
         where
-         δs : (i : I) → is-Directed (𝓓 i) (↡ιₛ (β-is-small-basis i) (⦅ σ ⦆ i))
+         δs : (i : I) → is-Directed (𝓓 i) (↡-inclusionₛ (β-is-small-basis i) (⦅ σ ⦆ i))
          δs i = ↡ᴮₛ-is-directed (β-is-small-basis i) (⦅ σ ⦆ i)
          es : (i : I) → ∐ (𝓓 i) (δs i) ≡ ⦅ σ ⦆ i
          es i = ↡ᴮₛ-∐-≡ (β-is-small-basis i) (⦅ σ ⦆ i)
 
-       lemma₂ : is-Directed 𝓓∞ (↡ι 𝓓∞ β∞ σ)
+       lemma₂ : is-Directed 𝓓∞ (↡-inclusion 𝓓∞ β∞ σ)
        lemma₂ = ↡ᴮ-directedness-criterion 𝓓∞ β∞ σ ι
                  sublemma₁ (≡-to-⊑ 𝓓∞ sublemma₂)
 
-       lemma₃ : is-sup (underlying-order 𝓓∞) σ (↡ι 𝓓∞ β∞ σ)
+       lemma₃ : is-sup (underlying-order 𝓓∞) σ (↡-inclusion 𝓓∞ β∞ σ)
        lemma₃ = ↡ᴮ-sup-criterion 𝓓∞ β∞ σ ι claim
         where
-         claim : is-sup (underlying-order 𝓓∞) σ (↡ι 𝓓∞ β∞ σ ∘ ι)
+         claim : is-sup (underlying-order 𝓓∞) σ (↡-inclusion 𝓓∞ β∞ σ ∘ ι)
          claim =
-          transport (λ - → is-sup (underlying-order 𝓓∞) - (↡ι 𝓓∞ β∞ σ ∘ ι))
+          transport (λ - → is-sup (underlying-order 𝓓∞) - (↡-inclusion 𝓓∞ β∞ σ ∘ ι))
                     (sublemma₂ ⁻¹)
                     (∐-is-sup 𝓓∞ sublemma₁)
 

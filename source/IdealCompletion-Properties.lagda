@@ -526,7 +526,7 @@ module Idl-common -- TODO: Rethink module name
  ↡ᴮ-subset x = (λ b → (b ≪ᴮₛ x , ≪ᴮₛ-is-prop-valued))
 
  ↡ᴮ-subset-is-inhabited : (x : ⟨ 𝓓 ⟩) → ∥ 𝕋 (↡ᴮ-subset x) ∥
- ↡ᴮ-subset-is-inhabited x = inhabited-if-Directed 𝓓 (↡ιₛ x) (↡ᴮₛ-is-directed x)
+ ↡ᴮ-subset-is-inhabited x = inhabited-if-Directed 𝓓 (↡-inclusionₛ x) (↡ᴮₛ-is-directed x)
 
  ↡ᴮ-is-monotone : (x y : ⟨ 𝓓 ⟩) → x ⊑⟨ 𝓓 ⟩ y → ↡ᴮ-subset x ⊆ ↡ᴮ-subset y
  ↡ᴮ-is-monotone x y x-below-y b b-way-below-x =
@@ -545,7 +545,7 @@ module Idl-common -- TODO: Rethink module name
     ∥∥-rec (∈-is-prop S b) lemma₁ claim₁
      where
       claim₁ : ∃ c ꞉ B , (β b ≪⟨ 𝓓 ⟩ β c) × (β c ≪⟨ 𝓓 ⟩ (∐ 𝓓 δ))
-      claim₁ = small-basis-unary-interpolation 𝓓 β β-is-small-basis
+      claim₁ = ≪-unary-interpolation-basis 𝓓 β β-is-small-basis
                 (≪ᴮₛ-to-≪ᴮ b-way-below-∐α)
       lemma₁ : (Σ c ꞉ B , (β b ≪⟨ 𝓓 ⟩ β c) × (β c ≪⟨ 𝓓 ⟩ (∐ 𝓓 δ)))
              → b ∈ S
@@ -564,13 +564,13 @@ module Idl-common -- TODO: Rethink module name
  ∐-of-directed-subset I δ = ∐ 𝓓 δ
 
  -- TODO: Swap ↡ᴮ and ∐?
- ↡ᴮ-∐-retract : (x : ⟨ 𝓓 ⟩) (δ : is-Directed 𝓓 (↡ιₛ x))
+ ↡ᴮ-∐-retract : (x : ⟨ 𝓓 ⟩) (δ : is-Directed 𝓓 (↡-inclusionₛ x))
               → ∐-of-directed-subset (↡ᴮ-subset x) δ ≡ x
  ↡ᴮ-∐-retract x δ = ∐ 𝓓 δ ≡⟨ ⦅1⦆ ⟩
                     ∐ 𝓓 ε ≡⟨ ⦅2⦆ ⟩
                     x     ∎
   where
-   ε : is-Directed 𝓓 (↡ιₛ x)
+   ε : is-Directed 𝓓 (↡-inclusionₛ x)
    ε = ↡ᴮₛ-is-directed x
    ⦅1⦆ = ∐-independent-of-directedness-witness 𝓓 δ ε
    ⦅2⦆ = ↡ᴮₛ-∐-≡ x
@@ -623,7 +623,7 @@ module Idl-common -- TODO: Rethink module name
                                 → (a b : B) → a ∈ ↡ᴮ-subset x → b ∈ ↡ᴮ-subset x
                                 → ∃ c ꞉ B , c ∈ ↡ᴮ-subset x × (a ≺ c) × (b ≺ c)
   ↡ᴮ-semidirected-set-criterion x β-mon a b a-way-below-x b-way-below-x =
-   ∥∥-functor h (small-basis-binary-interpolation 𝓓 β β-is-small-basis
+   ∥∥-functor h (≪-binary-interpolation-basis 𝓓 β β-is-small-basis
                  (≪ᴮₛ-to-≪ᴮ a-way-below-x)
                  (≪ᴮₛ-to-≪ᴮ b-way-below-x))
     where
@@ -774,7 +774,7 @@ module Idl-continuous
 
  ≺-INT₀ : (b : B) → ∃ c ꞉ B , c ≺ b
  ≺-INT₀ b = ∥∥-functor h
-             (small-basis-nullary-interpolation 𝓓 β β-is-small-basis (β b))
+             (≪-nullary-interpolation-basis 𝓓 β β-is-small-basis (β b))
   where
    h : (Σ c ꞉ B , β c ≪⟨ 𝓓 ⟩ β b) → (Σ c ꞉ B , c ≺ b)
    h (c , c-way-below-b) = (c , ⌜ ≺-≃-≪ ⌝⁻¹ c-way-below-b)
@@ -782,7 +782,7 @@ module Idl-continuous
  ≺-INT₂ : {b₁ b₂ b : B} → b₁ ≺ b → b₂ ≺ b
         → ∃ c ꞉ B , (b₁ ≺ c) × (b₂ ≺ c) × (c ≺ b)
  ≺-INT₂ {b₁} {b₂} {b} b₁-below-b b₂-below-b =
-  ∥∥-functor h (small-basis-binary-interpolation 𝓓 β β-is-small-basis
+  ∥∥-functor h (≪-binary-interpolation-basis 𝓓 β β-is-small-basis
                 (⌜ ≺-≃-≪ ⌝ b₁-below-b) (⌜ ≺-≃-≪ ⌝ b₂-below-b))
    where
     h : (Σ c ꞉ B , (β b₁ ≪⟨ 𝓓 ⟩ β c)
