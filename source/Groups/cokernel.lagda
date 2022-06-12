@@ -326,8 +326,61 @@ group quotient for an invariant equivalence relation.
     cokernel-gr = quotient-gr
 
 \end{code}
-          
 
+Stating the obvious, f : X → Y has trivial cokernel if the latter is
+isomorphic via the terminal morphism to the trivial group.
+
+Then having a trivial cokernel is equivalent to f : X → Y being
+surjective.
+
+\begin{code}
+    has-triv-coker : _
+    has-triv-coker = is-iso (cokernel-gr) (triv {𝓤 ⊔ 𝓥 ⁺}) (triv-terminal cokernel-gr)
+
+    triv-coker-implies-surj-hom : has-triv-coker → is-surjective-hom X Y f isf pt
+    triv-coker-implies-surj-hom i y = do
+                                 x , p ← lemma1 y
+                                 let
+                                   q = y                 ≡⟨ p ⟩
+                                       e⟨ Y ⟩ ·⟨ Y ⟩ (f x) ≡⟨ unit-left Y _ ⟩
+                                       f x               ∎
+                                   in ∣ (x , (q ⁻¹)) ∣
+      where
+        Y≈ : _
+        Y≈ = ⟨ cokernel-gr ⟩
+
+        π≈ : _
+        π≈ = η/ ≋
+
+        e≈ : Y≈
+        e≈ = unit (cokernel-gr)
+
+        u : Y≈ → ⟨ triv {𝓤 ⊔ 𝓥 ⁺} ⟩ 
+        u = triv-terminal cokernel-gr
+
+        is-equiv-u : _
+        is-equiv-u = pr₁ i
+
+        is-hom-u : _
+        is-hom-u = pr₂ i
+
+        v : ⟨ triv {𝓤 ⊔ 𝓥 ⁺} ⟩ → Y≈
+        v = inverse u is-equiv-u
+        
+        lemma3 : (y≈ : Y≈) → y≈ ≡ e≈
+        lemma3 y≈ = y≈         ≡⟨ (inverses-are-retractions u is-equiv-u y≈) ⁻¹ ⟩
+                    v (u (y≈)) ≡⟨ ap v refl ⟩
+                    v (⋆)      ≡⟨ homs-preserve-unit (triv {𝓤 ⊔ 𝓥 ⁺}) cokernel-gr v (inverses-are-homs cokernel-gr (triv {𝓤 ⊔ 𝓥 ⁺}) u is-equiv-u refl) ⟩
+                    e≈ ∎
+
+        lemma2 : (y : ⟨ Y ⟩) → π≈ (unit Y) ≡ π≈ y
+        lemma2 y = π≈ (unit Y) ≡⟨ refl ⟩
+                   e≈          ≡⟨ (lemma3 (π≈ y)) ⁻¹ ⟩
+                   π≈ y        ∎
+
+        lemma1 : (y : ⟨ Y ⟩) → e⟨ Y ⟩ ≈ y
+        lemma1 y = η/-relates-identified-points ≋ (lemma2 y)
+\end{code}
 
 
 
