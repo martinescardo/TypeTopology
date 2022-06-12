@@ -1,8 +1,19 @@
 Tom de Jong, 8 March 2020.
-
 Minor updates on 28 January 2022.
 
-TODO
+We give the main properties of the ideal completion of an abstract basis,
+cf. Section 2.2.6 of "Domain Theory" by Abramsky and Jung.
+
+In particular, we show that the abstract basis is a small basis for the ideal
+completion, making it a continuous dcpo in particular. Moreover, if the relation
+of the abstract basis is reflexive, then the ideal completion has a small
+compact basis and hence is algebraic.
+
+In proving this, it is helpful to characterize the way-below relation in the
+ideal completion.
+
+Finally, we describe how a monotone map from the abstract basis to a dcpo
+induces a map from the ideal completion to the dcpo.
 
 \begin{code}
 
@@ -37,6 +48,9 @@ open PropositionalTruncation pt
 
 \end{code}
 
+We first prove the basic yet useful fact that reflexivity implies the nullary
+and binary interpolation axioms for abstract bases.
+
 \begin{code}
 
 module _
@@ -52,6 +66,11 @@ module _
  reflexivity-implies-INT₂ r {y₀} {y₁} {x} l m = ∣ x , l , m , r ∣
 
 \end{code}
+
+A few useful facts regarding ideals on abstract bases:
+- the ideals are rounded;
+- the map that maps x : X to its prinicipal ideal is monotone;
+- suprema of ideals are given by unions.
 
 \begin{code}
 
@@ -111,9 +130,12 @@ module Idl-Properties
 
 \end{code}
 
+We are mainly interested in ideals of small abstract basis, i.e. when X : 𝓥 and
+_≺_ takes values in 𝓥.
+
 \begin{code}
 
-module SmallIdeals
+module IdealsOfSmallAbstractBasis
         {X : 𝓥 ̇ }
         (_≺_ : X → X → 𝓥 ̇ )
         (≺-prop-valued : {x y : X} → is-prop (x ≺ y))
@@ -127,6 +149,8 @@ module SmallIdeals
  open Idl-Properties {𝓥} {𝓥} {X} _≺_ ≺-prop-valued INT₂ INT₀ ≺-trans public
 
 \end{code}
+
+We show that every ideal I is the supremum of {↓ x ∣ x ∈ I}.
 
 \begin{code}
 
@@ -175,6 +199,9 @@ module SmallIdeals
                            i j m q
 
 \end{code}
+
+We give two characterizations of the way-below relation in Idl, cf. Proposition
+2.2.22 of "Domain Theory" by Abramsky and Jung.
 
 \begin{code}
 
@@ -259,6 +286,13 @@ module SmallIdeals
          s' : ↓ x ⊑⟨ Idl-DCPO ⟩ α a
          s' z n = ideals-are-lowersets (carrier (α a)) (ideality (α a)) z x n xa
 
+\end{code}
+
+For principal ideals we have the following criteria for being way-below another
+ideal.
+
+\begin{code}
+
  ↓≪-criterion : (I : Idl) (x : X)
               → x ∈ᵢ I → ↓ x ≪⟨ Idl-DCPO ⟩ I
  ↓≪-criterion I x x-in-I =
@@ -273,6 +307,9 @@ module SmallIdeals
  ↓⊑-criterion-converse r I x ↓x-below-I = ↓x-below-I x (r x)
 
 \end{code}
+
+We now work towards showing that ↓_ : X → Idl is a small basis (in the sense of
+DcpoBases.lagda) for Idl. In particular, Idl is a continuous dcpo.
 
 \begin{code}
 
@@ -361,8 +398,10 @@ module SmallIdeals
  Idl-is-continuous-dcpo : is-continuous-dcpo Idl-DCPO
  Idl-is-continuous-dcpo = ∣ Idl-structurally-continuous ∣
 
-
 \end{code}
+
+If _≺_ is reflexive, then Idl is algebraic with ↓_ : X → Idl giving a small
+compact basis, as we prove now.
 
 \begin{code}
 
@@ -434,6 +473,10 @@ module SmallIdeals
 
 \end{code}
 
+Finally, given a monotone map from X to a dcpo D, we construct a continuous map
+from Idl to D. This provides us with a convenient way to define maps out of the
+ideal completion.
+
 \begin{code}
 
  module Idl-mediating
@@ -497,11 +540,13 @@ module SmallIdeals
 
 \end{code}
 
+If _≺_ is reflexive, then the mediating map makes the obvious triangle commute.
+
 \begin{code}
 
-  Idl-mediating-map-commutes : ({x : X} → x ≺ x)
+  Idl-mediating-map-commutes : reflexive _≺_
                              → Idl-mediating-map ∘ ↓_ ∼ f
-  Idl-mediating-map-commutes ρ x = γ
+  Idl-mediating-map-commutes r x = γ
    where
     δ : is-Directed 𝓓 (f ∘ pr₁)
     δ = Idl-mediating-directed (↓ x)
@@ -515,6 +560,6 @@ module SmallIdeals
           → f (pr₁ y) ⊑⟨ 𝓓 ⟩ f x
         g (y , l) = f-is-monotone l
       b : f x ⊑⟨ 𝓓 ⟩ ∐ 𝓓 δ
-      b = ∐-is-upperbound 𝓓 δ (x , ρ)
+      b = ∐-is-upperbound 𝓓 δ (x , r x)
 
 \end{code}

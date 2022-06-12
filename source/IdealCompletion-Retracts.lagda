@@ -194,11 +194,11 @@ module Idl-algebraic -- TODO: Rethink module name
  ⊑ᴮ-is-transitive u v = ⌜ ⊑ᴮ-≃-⊑ ⌝⁻¹
                          (transitivity 𝓓 _ _ _ (⌜ ⊑ᴮ-≃-⊑ ⌝ u) (⌜ ⊑ᴮ-≃-⊑ ⌝ v))
 
- open SmallIdeals {B} _⊑ᴮ_
-                  ⊑ᴮ-is-prop-valued
-                  (reflexivity-implies-INT₂ _⊑ᴮ_ ⊑ᴮ-is-reflexive)
-                  (reflexivity-implies-INT₀ _⊑ᴮ_ ⊑ᴮ-is-reflexive)
-                  ⊑ᴮ-is-transitive
+ open IdealsOfSmallAbstractBasis {B} _⊑ᴮ_
+                                 ⊑ᴮ-is-prop-valued
+                                 (reflexivity-implies-INT₂ _⊑ᴮ_ ⊑ᴮ-is-reflexive)
+                                 (reflexivity-implies-INT₀ _⊑ᴮ_ ⊑ᴮ-is-reflexive)
+                                 ⊑ᴮ-is-transitive
       public
  open Idl-common 𝓓 β β-is-small-basis public
  open Idl-mediating 𝓓 β ⌜ ⊑ᴮ-≃-⊑ ⌝ public
@@ -317,11 +317,11 @@ module Idl-continuous
       → (Σ c ꞉ B , (b₁ ≺ c) × (b₂ ≺ c) × (c ≺ b))
     h (c , u , v , w) = (c , ⌜ ≺-≃-≪ ⌝⁻¹ u , ⌜ ≺-≃-≪ ⌝⁻¹ v , ⌜ ≺-≃-≪ ⌝⁻¹ w)
 
- open SmallIdeals {B}  _≺_
-                  ≺-is-prop-valued
-                  ≺-INT₂
-                  ≺-INT₀
-                  ≺-is-transitive
+ open IdealsOfSmallAbstractBasis {B}  _≺_
+                                 ≺-is-prop-valued
+                                 ≺-INT₂
+                                 ≺-INT₀
+                                 ≺-is-transitive
 
  open Idl-common 𝓓 β β-is-small-basis
  open Idl-mediating 𝓓 β (≪-to-⊑ 𝓓 ∘ ⌜ ≺-≃-≪ ⌝)
