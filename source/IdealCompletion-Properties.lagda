@@ -135,7 +135,7 @@ _≺_ takes values in 𝓥.
 
 \begin{code}
 
-module IdealsOfSmallAbstractBasis
+module Ideals-of-small-abstract-basis
         {X : 𝓥 ̇ }
         (_≺_ : X → X → 𝓥 ̇ )
         (≺-prop-valued : {x y : X} → is-prop (x ≺ y))

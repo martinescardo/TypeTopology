@@ -32,7 +32,7 @@ open import DyadicOrder-PropTrunc pt
 open import IdealCompletion pt fe pe 𝓤₀
 open import IdealCompletion-Properties pt fe pe 𝓤₀
 
-open SmallIdeals
+open Ideals-of-small-abstract-basis
  _≺_
  (λ {x} {y} → ≺-is-prop-valued x y)
  (λ {x} {y} {z} → ≺-interpolation₂ x y z)

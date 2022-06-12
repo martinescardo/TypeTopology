@@ -383,13 +383,13 @@ module _
 
  private
   module _ where
-   open Idl-algebraic 𝓓 βᴰ βᴰ-is-small-basis
+   open Idl-continuous-retract-of-algebraic 𝓓 βᴰ βᴰ-is-small-basis
    𝓓' : DCPO {𝓥 ⁺} {𝓥}
    𝓓' = Idl-DCPO
    𝓓-continuous-retract-of-𝓓' : 𝓓 continuous-retract-of 𝓓'
    𝓓-continuous-retract-of-𝓓' = Idl-continuous-retract
   module _ where
-   open Idl-algebraic 𝓔 βᴱ βᴱ-is-small-basis
+   open Idl-continuous-retract-of-algebraic 𝓔 βᴱ βᴱ-is-small-basis
    𝓔' : DCPO {𝓥 ⁺} {𝓥}
    𝓔' = Idl-DCPO
    𝓔-continuous-retract-of-𝓔' : 𝓔 continuous-retract-of 𝓔'
@@ -469,7 +469,7 @@ argument is fully formalized.
      Bᴰ' Bᴱ' βᴰ' βᴱ' κᴰ' κᴱ' 𝓔'-is-sup-complete pe
       where
        module _ where
-        open Idl-algebraic 𝓓 βᴰ βᴰ-is-small-basis
+        open Idl-continuous-retract-of-algebraic 𝓓 βᴰ βᴰ-is-small-basis
         small-compact-basisᴰ' : has-specified-small-compact-basis 𝓓'
         small-compact-basisᴰ' = Idl-has-specified-small-compact-basis
                                  (λ _ → ⊑ᴮ-is-reflexive)
@@ -480,7 +480,7 @@ argument is fully formalized.
         κᴰ' : is-small-compact-basis 𝓓' βᴰ'
         κᴰ' = pr₂ (pr₂ small-compact-basisᴰ')
        module _ where
-        open Idl-algebraic 𝓔 βᴱ βᴱ-is-small-basis
+        open Idl-continuous-retract-of-algebraic 𝓔 βᴱ βᴱ-is-small-basis
         small-compact-basisᴱ' : has-specified-small-compact-basis 𝓔'
         small-compact-basisᴱ' = Idl-has-specified-small-compact-basis
                                  (λ _ → ⊑ᴮ-is-reflexive)

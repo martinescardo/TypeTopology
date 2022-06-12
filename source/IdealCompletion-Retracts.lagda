@@ -1,6 +1,26 @@
 Tom de Jong, 31 January - 4 February 2022.
-
 Material moved to separate file on 11 June 2022.
+
+Suppose we are given a continuous dcpo D with small basis β : B → D. We show
+that D is a continuous retract of the ideal completion Idl(B,⊑) which is an
+algebraic dpco with a small compact basis. In fact, we even have an
+embedding-projection pair.
+
+We can also consider Idl(B,≪) and we get a continuous dcpo that is isomorphic to
+D, but notice that Idl(B,≪) : 𝓥-DCPO {𝓥 ⁺} {𝓥}, while D : 𝓥-DCPO {𝓤} {𝓣}. Thus,
+a dcpo with a small basis can essentially be parameterized by a single universe
+with a large carrier. Moreover, every dcpo with a small basis can be presented
+using ideals.(†)
+
+Similarly, an algebraic dcpo with small compact basis β : B → D is isomorphic to
+Idl(B,⊑) and analogous remarks apply in this case.
+
+(†) Here, and similarly elsewhere, we really consider Idl(B,≪ₛ), where ≪ₛ is
+    equivalent to ≪ on B, but takes values in 𝓥.
+
+    The size conditions on B and the order are similar to those in Corollary
+    2.17 of "Continuous categories and exponentiable toposes" by Johnstone and
+    Joyal.
 
 \begin{code}
 
@@ -37,11 +57,17 @@ open PropositionalTruncation pt
 
 \end{code}
 
-TODO
+We will consider ideal completions of:
+(1) a small basis ordered by ⊑;
+(2) a small basis ordered by ≪;
+(3) a small compact basis order by ⊑.
+
+All of these share some common ingredients, which we capture in the following
+module so that we can conveniently reuse them.
 
 \begin{code}
 
-module Idl-common -- TODO: Rethink module name
+module Idl-retract-common
         (𝓓 : DCPO {𝓤} {𝓣})
         {B : 𝓥 ̇  }
         (β : B → ⟨ 𝓓 ⟩)
@@ -49,6 +75,14 @@ module Idl-common -- TODO: Rethink module name
        where
 
  open is-small-basis β-is-small-basis
+
+\end{code}
+
+However we choose to order the basis, the map that takes an element x : D to the
+subset {b : B ∣ b ≪ x} is instrumental. We show that this assignment is
+Scott continuous here.
+
+\begin{code}
 
  ↡ᴮ-subset : (x : ⟨ 𝓓 ⟩) → 𝓟 B
  ↡ᴮ-subset x = (λ b → (b ≪ᴮₛ x , ≪ᴮₛ-is-prop-valued))
@@ -70,44 +104,55 @@ module Idl-common -- TODO: Rethink module name
    lb-of-ubs : is-lowerbound-of-upperbounds _⊆_
                 (↡ᴮ-subset (∐ 𝓓 δ)) (↡ᴮ-subset ∘ α)
    lb-of-ubs S S-is-ub b b-way-below-∐α =
-    ∥∥-rec (∈-is-prop S b) lemma₁ claim₁
+    ∥∥-rec (∈-is-prop S b) lemma₁ interpolant
      where
-      claim₁ : ∃ c ꞉ B , (β b ≪⟨ 𝓓 ⟩ β c) × (β c ≪⟨ 𝓓 ⟩ (∐ 𝓓 δ))
-      claim₁ = ≪-unary-interpolation-basis 𝓓 β β-is-small-basis
-                (≪ᴮₛ-to-≪ᴮ b-way-below-∐α)
+      interpolant : ∃ c ꞉ B , (β b ≪⟨ 𝓓 ⟩ β c) × (β c ≪⟨ 𝓓 ⟩ (∐ 𝓓 δ))
+      interpolant = ≪-unary-interpolation-basis 𝓓 β β-is-small-basis
+                     (≪ᴮₛ-to-≪ᴮ b-way-below-∐α)
       lemma₁ : (Σ c ꞉ B , (β b ≪⟨ 𝓓 ⟩ β c) × (β c ≪⟨ 𝓓 ⟩ (∐ 𝓓 δ)))
              → b ∈ S
       lemma₁ (c , b-way-below-c , c-way-below-∐α) =
-       ∥∥-rec (∈-is-prop S b) lemma₂ claim₂
+       ∥∥-rec (∈-is-prop S b) lemma₂ wb-consequence
         where
-         claim₂ : ∃ i ꞉ I , β c ⊑⟨ 𝓓 ⟩ α i
-         claim₂ = c-way-below-∐α I α δ (reflexivity 𝓓 (∐ 𝓓 δ))
+         wb-consequence : ∃ i ꞉ I , β c ⊑⟨ 𝓓 ⟩ α i
+         wb-consequence = c-way-below-∐α I α δ (reflexivity 𝓓 (∐ 𝓓 δ))
          lemma₂ : (Σ i ꞉ I , β c ⊑⟨ 𝓓 ⟩ α i) → b ∈ S
          lemma₂ (i , c-below-αᵢ) =
           S-is-ub i b (≪ᴮ-to-≪ᴮₛ (≪-⊑-to-≪ 𝓓 b-way-below-c c-below-αᵢ))
+
+\end{code}
+
+We show that the supremum of {b : B ∣ b ≪ x} equals x.
+
+\begin{code}
 
  ∐-of-directed-subset : (I : 𝓟 B)
                       → is-Directed 𝓓 (β ∘ 𝕋-to-carrier I)
                       → ⟨ 𝓓 ⟩
  ∐-of-directed-subset I δ = ∐ 𝓓 δ
 
- -- TODO: Swap ↡ᴮ and ∐?
- ↡ᴮ-∐-retract : (x : ⟨ 𝓓 ⟩) (δ : is-Directed 𝓓 (↡-inclusionₛ x))
-              → ∐-of-directed-subset (↡ᴮ-subset x) δ ≡ x
- ↡ᴮ-∐-retract x δ = ∐ 𝓓 δ ≡⟨ ⦅1⦆ ⟩
-                    ∐ 𝓓 ε ≡⟨ ⦅2⦆ ⟩
-                    x     ∎
+ ↡ᴮ-section-of-∐ : (x : ⟨ 𝓓 ⟩) (δ : is-Directed 𝓓 (↡-inclusionₛ x))
+                 → ∐-of-directed-subset (↡ᴮ-subset x) δ ≡ x
+ ↡ᴮ-section-of-∐ x δ = ∐ 𝓓 δ ≡⟨ ⦅1⦆ ⟩
+                       ∐ 𝓓 ε ≡⟨ ⦅2⦆ ⟩
+                       x     ∎
   where
    ε : is-Directed 𝓓 (↡-inclusionₛ x)
    ε = ↡ᴮₛ-is-directed x
    ⦅1⦆ = ∐-independent-of-directedness-witness 𝓓 δ ε
    ⦅2⦆ = ↡ᴮₛ-∐-≡ x
 
- -- TODO: Swap ↡ᴮ and ∐?
- ∐-↡ᴮ-deflation : (I : 𝓟 B) {δ : is-Directed 𝓓 (β ∘ 𝕋-to-carrier I)}
+\end{code}
+
+We present some criteria (which will find application later) for the composition
+of ↡ᴮ-subset and ∐ to be a deflation, inflation and retraction-section.
+
+\begin{code}
+
+ ↡ᴮ-∐-deflation : (I : 𝓟 B) {δ : is-Directed 𝓓 (β ∘ 𝕋-to-carrier I)}
                 → ((b c : B) → β b ⊑⟨ 𝓓 ⟩ β c → c ∈ I → b ∈ I)
                 → ↡ᴮ-subset (∐-of-directed-subset I δ) ⊆ I
- ∐-↡ᴮ-deflation I {δ} I-lowerset b b-way-below-sup =
+ ↡ᴮ-∐-deflation I {δ} I-lowerset b b-way-below-sup =
   ∥∥-rec (∈-is-prop I b) lemma claim
    where
     claim : ∃ i ꞉ 𝕋 I , β b ⊑⟨ 𝓓 ⟩ β ((𝕋-to-carrier I) i)
@@ -117,10 +162,10 @@ module Idl-common -- TODO: Rethink module name
           → b ∈ I
     lemma ((c , c-in-I) , b-below-c) = I-lowerset b c b-below-c c-in-I
 
- ∐-↡ᴮ-inflation : (I : 𝓟 B) {δ : is-Directed 𝓓 (β ∘ 𝕋-to-carrier I)}
+ ↡ᴮ-∐-inflation : (I : 𝓟 B) {δ : is-Directed 𝓓 (β ∘ 𝕋-to-carrier I)}
                 → ((b : B) → b ∈ I → ∃ c ꞉ B , (c ∈ I) × (β b ≪⟨ 𝓓 ⟩ β c))
                 → I ⊆ ↡ᴮ-subset (∐-of-directed-subset I δ)
- ∐-↡ᴮ-inflation I {δ} I-rounded b b-in-I = ∥∥-rec ≪ᴮₛ-is-prop-valued lemma claim
+ ↡ᴮ-∐-inflation I {δ} I-rounded b b-in-I = ∥∥-rec ≪ᴮₛ-is-prop-valued lemma claim
   where
    claim : ∃ c ꞉ B , (c ∈ I) × (β b ≪⟨ 𝓓 ⟩ β c)
    claim = I-rounded b b-in-I
@@ -134,7 +179,15 @@ module Idl-common -- TODO: Rethink module name
               → ((b : B) → b ∈ I → ∃ c ꞉ B , (c ∈ I) × (β b ≪⟨ 𝓓 ⟩ β c))
               → ↡ᴮ-subset (∐-of-directed-subset I δ) ≡ I
  ∐-↡ᴮ-retract I {δ} cond₁ cond₂ =
-  subset-extensionality pe fe (∐-↡ᴮ-deflation I cond₁) (∐-↡ᴮ-inflation I cond₂)
+  subset-extensionality pe fe (↡ᴮ-∐-deflation I cond₁) (↡ᴮ-∐-inflation I cond₂)
+
+\end{code}
+
+If we assume the existence of some binary relation (which we think of as an
+order) on B, then we can give some convenient criteria for ↡ᴮ being a
+semidirected and lower-closed.
+
+\begin{code}
 
  module _
          (_≺_ : B → B → 𝓥 ̇  )
@@ -163,12 +216,13 @@ module Idl-common -- TODO: Rethink module name
 
 \end{code}
 
-Dcpos with a small basis are continuous retracts (in fact, e-p pair...) of
-algebraic dcpos.
+A major application of the theory of rounded ideals is the following: a
+continuous dcpo D with a small basis β : B → D is a continous retract (in fact,
+we have an embedding-projection pair) of an algebraic dcpo, namely of Idl(B,⊑).
 
 \begin{code}
 
-module Idl-algebraic -- TODO: Rethink module name
+module Idl-continuous-retract-of-algebraic
         (𝓓 : DCPO {𝓤} {𝓣})
         {B : 𝓥 ̇  }
         (β : B → ⟨ 𝓓 ⟩)
@@ -194,13 +248,13 @@ module Idl-algebraic -- TODO: Rethink module name
  ⊑ᴮ-is-transitive u v = ⌜ ⊑ᴮ-≃-⊑ ⌝⁻¹
                          (transitivity 𝓓 _ _ _ (⌜ ⊑ᴮ-≃-⊑ ⌝ u) (⌜ ⊑ᴮ-≃-⊑ ⌝ v))
 
- open IdealsOfSmallAbstractBasis {B} _⊑ᴮ_
-                                 ⊑ᴮ-is-prop-valued
-                                 (reflexivity-implies-INT₂ _⊑ᴮ_ ⊑ᴮ-is-reflexive)
-                                 (reflexivity-implies-INT₀ _⊑ᴮ_ ⊑ᴮ-is-reflexive)
-                                 ⊑ᴮ-is-transitive
+ open Ideals-of-small-abstract-basis {B} _⊑ᴮ_
+        ⊑ᴮ-is-prop-valued
+        (reflexivity-implies-INT₂ _⊑ᴮ_ ⊑ᴮ-is-reflexive)
+        (reflexivity-implies-INT₀ _⊑ᴮ_ ⊑ᴮ-is-reflexive)
+        ⊑ᴮ-is-transitive
       public
- open Idl-common 𝓓 β β-is-small-basis public
+ open Idl-retract-common 𝓓 β β-is-small-basis public
  open Idl-mediating 𝓓 β ⌜ ⊑ᴮ-≃-⊑ ⌝ public
 
  to-Idl : ⟨ 𝓓 ⟩ → Idl
@@ -228,10 +282,10 @@ module Idl-algebraic -- TODO: Rethink module name
    r : Idl → ⟨ 𝓓 ⟩
    r = from-Idl
    γ : (x : ⟨ 𝓓 ⟩) → r (s x) ≡ x
-   γ x = ↡ᴮ-∐-retract x (Idl-mediating-directed (s x))
+   γ x = ↡ᴮ-section-of-∐ x (Idl-mediating-directed (s x))
 
  Idl-deflation : (I : Idl) → to-Idl (from-Idl I) ⊑⟨ Idl-DCPO ⟩ I
- Idl-deflation 𝕀@(I , I-is-ideal) = ∐-↡ᴮ-deflation I γ
+ Idl-deflation 𝕀@(I , I-is-ideal) = ↡ᴮ-∐-deflation I γ
   where
    γ : (b c : B) → β b ⊑⟨ 𝓓 ⟩ β c → c ∈ I → b ∈ I
    γ b c b-below-c c-in-I = ideals-are-lowersets I I-is-ideal b c claim c-in-I
@@ -249,9 +303,9 @@ module Idl-algebraic -- TODO: Rethink module name
  Idl-continuous-retract : 𝓓 continuous-retract-of Idl-DCPO
  Idl-continuous-retract =
   record
-   { s = to-Idl
-   ; r = from-Idl
-   ; s-section-of-r = retract-condition Idl-retract
+   { s               = to-Idl
+   ; r               = from-Idl
+   ; s-section-of-r  = retract-condition Idl-retract
    ; s-is-continuous = to-Idl-is-continuous
    ; r-is-continuous = from-Idl-is-continuous
    }
@@ -259,10 +313,10 @@ module Idl-algebraic -- TODO: Rethink module name
  Idl-embedding-projection-pair : embedding-projection-pair-between 𝓓 Idl-DCPO
  Idl-embedding-projection-pair =
   record
-    { e = to-Idl
-    ; p = from-Idl
-    ; e-section-of-p = retract-condition Idl-retract
-    ; e-p-deflation = Idl-deflation
+    { e               = to-Idl
+    ; p               = from-Idl
+    ; e-section-of-p  = retract-condition Idl-retract
+    ; e-p-deflation   = Idl-deflation
     ; e-is-continuous = to-Idl-is-continuous
     ; p-is-continuous = from-Idl-is-continuous
     }
@@ -272,7 +326,8 @@ module Idl-algebraic -- TODO: Rethink module name
 
 \end{code}
 
-D ≅ Idl (B , ≺)
+Of course, given a continuous dcpo D with small basis β : B → D, we can also
+consider Idl(B,≪) which is isomorphic to D.
 
 \begin{code}
 
@@ -317,13 +372,13 @@ module Idl-continuous
       → (Σ c ꞉ B , (b₁ ≺ c) × (b₂ ≺ c) × (c ≺ b))
     h (c , u , v , w) = (c , ⌜ ≺-≃-≪ ⌝⁻¹ u , ⌜ ≺-≃-≪ ⌝⁻¹ v , ⌜ ≺-≃-≪ ⌝⁻¹ w)
 
- open IdealsOfSmallAbstractBasis {B}  _≺_
-                                 ≺-is-prop-valued
-                                 ≺-INT₂
-                                 ≺-INT₀
-                                 ≺-is-transitive
+ open Ideals-of-small-abstract-basis {B}  _≺_
+                                     ≺-is-prop-valued
+                                     ≺-INT₂
+                                     ≺-INT₀
+                                     ≺-is-transitive
 
- open Idl-common 𝓓 β β-is-small-basis
+ open Idl-retract-common 𝓓 β β-is-small-basis
  open Idl-mediating 𝓓 β (≪-to-⊑ 𝓓 ∘ ⌜ ≺-≃-≪ ⌝)
 
  to-Idl : ⟨ 𝓓 ⟩ → Idl
@@ -343,13 +398,19 @@ module Idl-continuous
  from-Idl : Idl → ⟨ 𝓓 ⟩
  from-Idl I = Idl-mediating-map I
 
- -- TODO: Rename
- Idl-iso₁ : from-Idl ∘ to-Idl ∼ id
- Idl-iso₁ x = ↡ᴮ-∐-retract x (Idl-mediating-directed (to-Idl x))
+ to-Idl-is-continuous : is-continuous 𝓓 Idl-DCPO to-Idl
+ to-Idl-is-continuous I α δ =
+  Idl-sups-from-powerset (to-Idl ∘ α) (to-Idl (∐ 𝓓 δ)) (↡ᴮ-is-continuous δ)
 
- -- TODO: Rename
- Idl-iso₂ : to-Idl ∘ from-Idl ∼ id
- Idl-iso₂ 𝕀@(I , I-is-ideal) =
+ from-Idl-is-continuous : is-continuous Idl-DCPO 𝓓 from-Idl
+ from-Idl-is-continuous = Idl-mediating-map-is-continuous
+
+ to-Idl-section-of-from-Idl : from-Idl ∘ to-Idl ∼ id
+ to-Idl-section-of-from-Idl x =
+  ↡ᴮ-section-of-∐ x (Idl-mediating-directed (to-Idl x))
+
+ from-Idl-section-of-to-Idl : to-Idl ∘ from-Idl ∼ id
+ from-Idl-section-of-to-Idl 𝕀@(I , I-is-ideal) =
   to-subtype-≡ (λ J → being-ideal-is-prop J) (∐-↡ᴮ-retract I claim₁ claim₂)
    where
     claim₁ : (b c : B) → β b ⊑⟨ 𝓓 ⟩ β c → c ∈ I → b ∈ I
@@ -368,24 +429,19 @@ module Idl-continuous
         → (Σ c ꞉ B , c ∈ I × β b ≪⟨ 𝓓 ⟩ β c)
       h (c , c-in-I , b-below-c) = (c , c-in-I , ⌜ ≺-≃-≪ ⌝ b-below-c)
 
- to-Idl-is-continuous : is-continuous 𝓓 Idl-DCPO to-Idl
- to-Idl-is-continuous I α δ =
-  Idl-sups-from-powerset (to-Idl ∘ α) (to-Idl (∐ 𝓓 δ)) (↡ᴮ-is-continuous δ)
-
- from-Idl-is-continuous : is-continuous Idl-DCPO 𝓓 from-Idl
- from-Idl-is-continuous = Idl-mediating-map-is-continuous
-
  Idl-≃ : 𝓓 ≃ᵈᶜᵖᵒ Idl-DCPO
- Idl-≃ = (to-Idl , from-Idl , Idl-iso₁ , Idl-iso₂ ,
+ Idl-≃ = (to-Idl , from-Idl , to-Idl-section-of-from-Idl
+                            , from-Idl-section-of-to-Idl ,
           to-Idl-is-continuous , from-Idl-is-continuous)
 
 \end{code}
 
-𝓓 ≃ Idl (B , ⊑ᴮ) where B is a small compact basis for 𝓓
+Finally, if D is an algebraic dpco with small compact basis β : B → D, then
+Idl(B,⊑) is isomorphic to D.
 
 \begin{code}
 
-module Idl-algebraic' -- TODO: Rename
+module Idl-algebraic
         (𝓓 : DCPO {𝓤} {𝓣})
         {B : 𝓥 ̇  }
         (β : B → ⟨ 𝓓 ⟩)
@@ -393,25 +449,28 @@ module Idl-algebraic' -- TODO: Rename
        where
 
  open is-small-compact-basis β-is-small-compact-basis
- open Idl-algebraic 𝓓 β (compact-basis-is-basis 𝓓 β β-is-small-compact-basis)
+ open Idl-continuous-retract-of-algebraic 𝓓 β
+       (compact-basis-is-basis 𝓓 β β-is-small-compact-basis)
 
  Idl-≃ : 𝓓 ≃ᵈᶜᵖᵒ Idl-DCPO
- Idl-≃ = (to-Idl , from-Idl , retract-condition Idl-retract , γ ,
+ Idl-≃ = (to-Idl , from-Idl , retract-condition Idl-retract
+                            , from-Idl-section-of-to-Idl ,
           to-Idl-is-continuous , from-Idl-is-continuous)
   where
    -- This is where we use --experimental-lossy-unification
-   γ : (I : ⟨ Idl-DCPO ⟩) → to-Idl (from-Idl I) ≡ I
-   γ I = antisymmetry Idl-DCPO (to-Idl (from-Idl I)) I ⦅1⦆ ⦅2⦆
+   from-Idl-section-of-to-Idl : (I : ⟨ Idl-DCPO ⟩) → to-Idl (from-Idl I) ≡ I
+   from-Idl-section-of-to-Idl I = antisymmetry Idl-DCPO (to-Idl (from-Idl I)) I
+                                   ineq₁ ineq₂
     where
-     ⦅1⦆ : to-Idl (from-Idl I) ⊑⟨ Idl-DCPO ⟩ I
-     ⦅1⦆ = ∐-↡ᴮ-deflation (carrier I) claim
+     ineq₁ : to-Idl (from-Idl I) ⊑⟨ Idl-DCPO ⟩ I
+     ineq₁ = ↡ᴮ-∐-deflation (carrier I) claim
       where
        claim : (b c : B) → β b ⊑⟨ 𝓓 ⟩ β c → c ∈ᵢ I → b ∈ᵢ I
        claim b c b-below-c c-in-I =
         ideals-are-lowersets (carrier I) (ideality I) b c
          (⌜ ⊑ᴮ-≃-⊑ ⌝⁻¹ b-below-c) c-in-I
-     ⦅2⦆ : I ⊑⟨ Idl-DCPO ⟩ to-Idl (from-Idl I)
-     ⦅2⦆ = ∐-↡ᴮ-inflation (carrier I) claim
+     ineq₂ : I ⊑⟨ Idl-DCPO ⟩ to-Idl (from-Idl I)
+     ineq₂ = ↡ᴮ-∐-inflation (carrier I) claim
       where
        claim : (b : B) → b ∈ᵢ I → ∃ c ꞉ B , c ∈ᵢ I × (β b ≪⟨ 𝓓 ⟩ β c)
        claim b b-in-I = ∥∥-functor h (roundedness I b-in-I)
