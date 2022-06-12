@@ -186,7 +186,7 @@ Hence, Ω 𝓤 is algebraic.
 
 \end{code}
 
-Finally, it follows that the compact elements of Ω 𝓤 are exactly the decidable
+Finally, we show that the compact elements of Ω 𝓤 are exactly the decidable
 propositions.
 
 \begin{code}
