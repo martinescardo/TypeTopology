@@ -143,18 +143,18 @@ closer to general facts about equivalence relations.
 
     open quotient -- pt fe pe ⟨ X ⟩ _≈_ ≈p ≈r ≈s ≈t
 
-    X≈ : _
-    X≈ = ⟨ X ⟩ / ≋
-
-    π≈ : _
-    π≈ = η/ ≋
-
-    π≈-is-surjection : is-surjection π≈
-    π≈-is-surjection = η/-is-surjection ≋
-
     quotient-gr : Group _
     quotient-gr = X≈ , _·_ , is-set-X≈ , assoc≈ , e≈ , ln≈ , rn≈ , λ x → inv≈ x , (inv-left≈ x , inv-right≈ x)
       where
+        X≈ : _
+        X≈ = ⟨ X ⟩ / ≋
+
+        π≈ : _
+        π≈ = η/ ≋
+
+        π≈-is-surjection : is-surjection π≈
+        π≈-is-surjection = η/-is-surjection ≋
+
         _·_ : group-structure X≈
         _·_ = extension₂/ ≋ (multiplication X) binop-cong
 
@@ -225,7 +225,7 @@ economical/elegant way, without repeating the proof.
 
 \begin{code}
 
-    quotient-map-is-hom : is-hom X quotient-gr π≈
+    quotient-map-is-hom : is-hom X quotient-gr (η/ ≋)
     quotient-map-is-hom {x} {y} = (naturality₂/ ≋ (multiplication X) binop-cong x y ) ⁻¹
 
 \end{code}
@@ -251,12 +251,18 @@ So we prove the map in the universality triangle is a homomorphism.
              (p : identifies-related-points ≋ φ)
              where
 
-      φ≈ : X≈ → ⟨ G ⟩
+      φ≈ : ⟨ quotient-gr ⟩ → ⟨ G ⟩
       φ≈ = mediating-map/ ≋ (group-is-set G) φ p
 
       mediating-map-is-hom : is-hom quotient-gr G φ≈
       mediating-map-is-hom {x} {y} = δ x y
         where
+          X≈ : _
+          X≈ = ⟨ quotient-gr ⟩
+
+          π≈ : _
+          π≈ = η/ ≋
+
           β : (s : ⟨ X ⟩) → φ≈ (π≈ s) ≡ φ (s)
           β s = universality-triangle/ ≋ _ φ _ s
 
