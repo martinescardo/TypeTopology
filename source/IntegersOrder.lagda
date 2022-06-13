@@ -60,6 +60,9 @@ instance
 ≤-predℤ : (x : ℤ) → predℤ x ≤ x
 ≤-predℤ x = 1 , succpredℤ x
 
+≤-predℤ' : (x y : ℤ) → x ≤ y → predℤ x ≤ predℤ y
+≤-predℤ' x y (n , e) = n , (ℤ-left-pred x (pos n) ∙ ap predℤ e)
+
 <-predℤ : (x : ℤ) → predℤ x < x
 <-predℤ x = 0 , succpredℤ x
 
