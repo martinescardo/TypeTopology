@@ -3,9 +3,13 @@ Refactored Dec 2021.
 
 Least fixed points of Scott continuous maps.
 
+The flag --experimental-lossy-unification significantly speeds up the
+typechecking.
+(https://agda.readthedocs.io/en/latest/language/lossy-unification.html)
+
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline --experimental-lossy-unification #-}
 
 open import SpartanMLTT
 open import UF-FunExt
