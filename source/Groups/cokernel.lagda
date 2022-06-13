@@ -334,7 +334,7 @@ Then having a trivial cokernel is equivalent to f : X → Y being
 surjective.
 
 \begin{code}
-    has-triv-coker : _
+    has-triv-coker : (𝓤 ⁺) ⊔ (𝓥 ⁺) ̇
     has-triv-coker = is-iso (cokernel-gr) (triv {𝓤 ⊔ 𝓥 ⁺}) (triv-terminal cokernel-gr)
 
     triv-coker-implies-surj-hom : has-triv-coker → is-surjective-hom X Y f isf pt
