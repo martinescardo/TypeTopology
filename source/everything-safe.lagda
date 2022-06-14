@@ -41,15 +41,7 @@ import ConvergentSequenceCompact
 import ConvergentSequenceHasInf
 -- import CountableTychonoff
 -- import CubicalBinarySystem
-import DcpoBilimits
-import DcpoBilimitsSequential
-import DcpoDinfinity
-import DcpoExponential
-import Dcpo
-import DcpoLeastFixedPoint
-import DcpoLifting
-import DcpoMiscelanea
-import DcpoPCFCombinators
+import DomainTheory.index
 import DecidabilityOfNonContinuity
 import DecidableAndDetachable
 import Dedekind
@@ -187,7 +179,6 @@ import PairFun
 import PartialElements
 import PatchLocale
 import PCF
-import PCFModules
 import Pi
 import Plus
 import PlusNotation
@@ -200,7 +191,6 @@ import PropTychonoff
 import QuasiDecidable
 import RicesTheoremForTheUniverse
 import RootsTruncation
-import ScottModelOfPCF
 import SemiDecidable
 import Sequence
 import SigmaDiscreteAndTotallySeparated
