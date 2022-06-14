@@ -50,7 +50,6 @@ import DcpoLeastFixedPoint
 import DcpoLifting
 import DcpoMiscelanea
 import DcpoPCFCombinators
-import Dcpos
 import DecidabilityOfNonContinuity
 import DecidableAndDetachable
 import Dedekind
