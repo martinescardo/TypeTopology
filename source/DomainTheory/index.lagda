@@ -3,7 +3,9 @@ Updated 23 December 2021
 Updated 12 and 14 June 2022
 
 Index for the formalization of domain theory, briefly describing the contents of
-each directory, ordered alphabetically by directory name.
+each directory, ordered almost¹ alphabetically by directory name.
+
+¹ Basics is first
 
 \begin{code}
 
