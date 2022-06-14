@@ -45,8 +45,8 @@ open import UF-Retracts
 open import UF-Powerset
 
 open import Dcpo pt fe 𝓥
-open import DcpoBases pt fe 𝓥
-open import DcpoContinuous pt fe 𝓥
+open import DomainTheory.BasesAndContinuity.Bases pt fe 𝓥
+open import DomainTheory.BasesAndContinuity.Continuity pt fe 𝓥
 open import DcpoMiscelanea pt fe 𝓥
 open import DcpoWayBelow pt fe 𝓥
 

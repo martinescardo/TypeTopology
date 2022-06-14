@@ -42,7 +42,7 @@ open import SpartanMLTT hiding (J)
 open import UF-FunExt
 open import UF-PropTrunc
 
-module DcpoContinuousDiscussion
+module DomainTheory.BasesAndContinuity.ContinuityDiscussion
         (pt : propositional-truncations-exist)
         (fe : Fun-Ext)
         (𝓥 : Universe) -- where the index types for directed completeness live
@@ -59,8 +59,8 @@ open ImageAndSurjection pt
 open PropositionalTruncation pt
 
 open import Dcpo pt fe 𝓥
-open import DcpoContinuous pt fe 𝓥
-open import DcpoIndCompletion pt fe 𝓥
+open import DomainTheory.BasesAndContinuity.Continuity pt fe 𝓥
+open import DomainTheory.BasesAndContinuity.IndCompletion pt fe 𝓥
 open import DcpoMiscelanea pt fe 𝓥
 open import DcpoWayBelow pt fe 𝓥
 

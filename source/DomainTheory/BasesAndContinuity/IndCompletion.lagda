@@ -21,7 +21,7 @@ open import SpartanMLTT hiding (J)
 open import UF-FunExt
 open import UF-PropTrunc
 
-module DcpoIndCompletion
+module DomainTheory.BasesAndContinuity.IndCompletion
         (pt : propositional-truncations-exist)
         (fe : Fun-Ext)
         (𝓥 : Universe) -- where the index types for directed completeness live

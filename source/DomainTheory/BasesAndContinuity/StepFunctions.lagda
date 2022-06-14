@@ -22,7 +22,7 @@ open import UF-PropTrunc
 
 open import UF-Subsingletons
 
-module DcpoStepFunctions
+module DomainTheory.BasesAndContinuity.StepFunctions
         (pt : propositional-truncations-exist)
         (fe : Fun-Ext)
         (𝓥 : Universe) -- where the index types for directed completeness live
@@ -38,8 +38,8 @@ open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
 
 open import Dcpo pt fe 𝓥
-open import DcpoBases pt fe 𝓥
-open import DcpoContinuous pt fe 𝓥
+open import DomainTheory.BasesAndContinuity.Bases pt fe 𝓥
+open import DomainTheory.BasesAndContinuity.Continuity pt fe 𝓥
 open import DcpoExponential pt fe 𝓥
 open import DcpoMiscelanea pt fe 𝓥
 open import DcpoPointed pt fe 𝓥 hiding (⊥ ; ⊥-is-least)
@@ -379,7 +379,7 @@ module _
         (𝓔-is-sup-complete : is-sup-complete 𝓔)
        where
 
- open import IdealCompletion-Retracts pt fe pe 𝓥
+ open import DomainTheory.IdealCompletion.Retracts pt fe pe 𝓥
 
  private
   module _ where
