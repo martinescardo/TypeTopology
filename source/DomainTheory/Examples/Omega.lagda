@@ -16,7 +16,7 @@ open import UF-FunExt
 open import UF-PropTrunc
 open import UF-Subsingletons
 
-module DcpoOmega
+module DomainTheory.Examples.Omega
         (pt : propositional-truncations-exist)
         (fe : Fun-Ext)
         (pe : Prop-Ext)

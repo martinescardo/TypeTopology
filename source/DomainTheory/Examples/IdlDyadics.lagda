@@ -1,5 +1,5 @@
 Tom de Jong, 9 March 2020
-Refactored 9 February 2022
+Refactored 9 February 2022.
 
 Taking the rounded ideal copmletion of the dyadics (𝔻,≺) we obtain an example of
 a continuous dcpo without any compact elements. Hence, it cannot be algebraic.
@@ -13,7 +13,7 @@ open import UF-FunExt
 open import UF-PropTrunc
 open import UF-Subsingletons
 
-module DyadicIdealCompletion
+module DomainTheory.Examples.IdlDyadics
         (pt : propositional-truncations-exist)
         (fe : Fun-Ext)
         (pe : Prop-Ext)
@@ -25,6 +25,7 @@ open import Dyadic
 open import DyadicOrder
 
 open import Dcpo pt fe 𝓤₀
+open import DcpoBases pt fe 𝓤₀
 open import DcpoContinuous pt fe 𝓤₀
 open import DcpoWayBelow pt fe 𝓤₀
 open import DyadicOrder-PropTrunc pt
@@ -44,6 +45,9 @@ Idl-𝔻 = Idl-DCPO
 
 Idl-𝔻-is-continuous : is-continuous-dcpo Idl-𝔻
 Idl-𝔻-is-continuous = Idl-is-continuous-dcpo
+
+Idl-𝔻-has-small-basis : has-specified-small-basis Idl-𝔻
+Idl-𝔻-has-small-basis = 𝔻 , ↓_ , ↓-is-small-basis
 
 Idl-𝔻-has-no-compact-elements : (I : Idl) → ¬ (is-compact Idl-DCPO I)
 Idl-𝔻-has-no-compact-elements I κ = ∥∥-rec 𝟘-is-prop γ g

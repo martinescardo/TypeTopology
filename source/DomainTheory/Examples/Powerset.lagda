@@ -18,7 +18,7 @@ open import UF-FunExt
 open import UF-PropTrunc
 open import UF-Subsingletons
 
-module DcpoPowerset
+module DomainTheory.Examples.Powerset
         (pt : propositional-truncations-exist)
         (fe : Fun-Ext)
         (pe : Prop-Ext)
