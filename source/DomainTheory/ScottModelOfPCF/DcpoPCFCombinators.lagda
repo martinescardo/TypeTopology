@@ -15,7 +15,7 @@ open import SpartanMLTT
 open import UF-FunExt
 open import UF-PropTrunc
 
-module DcpoPCFCombinators
+module DomainTheory.ScottModelOfPCF.DcpoPCFCombinators
         (pt : propositional-truncations-exist)
         (fe : Fun-Ext)
         (𝓥 : Universe)
@@ -242,7 +242,7 @@ module IfZeroDenotationalSemantics
  open import LiftingMiscelanea-PropExt-FunExt 𝓥 pe fe
  open import LiftingMonad 𝓥
 
- open import DcpoLifting pt fe 𝓥 pe
+ open import DomainTheory.Lifting.LiftingSet pt fe 𝓥 pe
 
  open import UF-Miscelanea
 

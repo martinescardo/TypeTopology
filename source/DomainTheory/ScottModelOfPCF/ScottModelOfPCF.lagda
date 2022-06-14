@@ -15,7 +15,7 @@ open import UF-PropTrunc
 open import UF-FunExt
 open import UF-Subsingletons
 
-module ScottModelOfPCF
+module DomainTheory.ScottModelOfPCF.ScottModelOfPCF
         (pt : propositional-truncations-exist)
         (fe : Fun-Ext)
         (pe : propext 𝓤₀)
@@ -33,11 +33,11 @@ open import DcpoExponential pt fe 𝓤₀
 open import DcpoMiscelanea pt fe 𝓤₀
 open import DcpoPointed pt fe 𝓤₀
 
-open import DcpoPCFCombinators pt fe 𝓤₀
+open import DomainTheory.ScottModelOfPCF.DcpoPCFCombinators pt fe 𝓤₀
 open IfZeroDenotationalSemantics pe
 
 open import DcpoLeastFixedPoint pt fe
-open import DcpoLifting pt fe 𝓤₀ pe
+open import DomainTheory.Lifting.LiftingSet pt fe 𝓤₀ pe
 
 open import Lifting 𝓤₀
 open import LiftingMonad 𝓤₀ hiding (μ)
