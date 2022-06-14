@@ -10,7 +10,7 @@ open import SpartanMLTT
 open import UF-PropTrunc
 open import UF-FunExt
 
-module DcpoBilimitsSequential
+module DomainTheory.Bilimits.Sequential
         (pt : propositional-truncations-exist)
         (fe : Fun-Ext)
         (𝓤 𝓣 : Universe)
@@ -19,7 +19,7 @@ module DcpoBilimitsSequential
 open PropositionalTruncation pt
 
 open import Dcpo pt fe 𝓤₀
-open import DcpoBilimits pt fe 𝓤₀ 𝓤 𝓣
+open import DomainTheory.Bilimits.Directed pt fe 𝓤₀ 𝓤 𝓣
 open import DcpoMiscelanea pt fe 𝓤₀
 
 open import NaturalsAddition renaming (_+_ to _+'_)

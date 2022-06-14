@@ -35,7 +35,7 @@ open import UF-FunExt
 open import UF-PropTrunc
 open import UF-Subsingletons
 
-module DcpoDinfinity
+module DomainTheory.Bilimits.Dinfinity
         (pt : propositional-truncations-exist)
         (fe : Fun-Ext)
         (pe : Prop-Ext)
@@ -46,9 +46,9 @@ open PropositionalTruncation pt
 open import UF-Base
 
 open import Dcpo pt fe 𝓤₀
-open import DcpoBilimitsSequential pt fe 𝓤₁ 𝓤₁
+open import DomainTheory.Bilimits.Sequential pt fe 𝓤₁ 𝓤₁
 open import DcpoExponential pt fe 𝓤₀
-open import DcpoLifting pt fe 𝓤₀ pe
+open import DomainTheory.Lifting.LiftingSet pt fe 𝓤₀ pe
 open import DcpoMiscelanea pt fe 𝓤₀
 open import DcpoPointed pt fe 𝓤₀
 
@@ -924,7 +924,7 @@ under taking exponentials.
 
 open import DcpoBases pt fe 𝓤₀
 open import DcpoContinuous pt fe 𝓤₀
-open import DcpoLiftingAlgebraic pt pe fe 𝓤₀
+open import DomainTheory.Lifting.LiftingSetAlgebraic pt pe fe 𝓤₀
 open import DcpoStepFunctions pt fe 𝓤₀
 open import DcpoSupComplete pt fe 𝓤₀
 
