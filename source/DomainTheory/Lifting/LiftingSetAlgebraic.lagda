@@ -13,22 +13,20 @@ open import UF-FunExt
 open import UF-PropTrunc
 open import UF-Subsingletons
 
-module DcpoLiftingAlgebraic
+module DomainTheory.Lifting.LiftingSetAlgebraic
         (pt : propositional-truncations-exist)
         (pe : Prop-Ext)
         (fe : Fun-Ext)
         (𝓤 : Universe)
        where
 
-open PropositionalTruncation pt
-
 open import UF-Equiv
-
 open import UF-Miscelanea
+open import UF-ImageAndSurjection
 open import UF-Subsingletons-FunExt
 
-open import UF-ImageAndSurjection
 open ImageAndSurjection pt
+open PropositionalTruncation pt
 
 open import Lifting 𝓤 hiding (⊥)
 open import LiftingMiscelanea 𝓤
@@ -38,7 +36,7 @@ open import LiftingMonad 𝓤
 open import Dcpo pt fe 𝓤
 open import DcpoBases pt fe 𝓤
 open import DcpoContinuous pt fe 𝓤
-open import DcpoLifting pt fe 𝓤 pe
+open import DomainTheory.Lifting.LiftingSet pt fe 𝓤 pe
 open import DcpoMiscelanea pt fe 𝓤
 open import DcpoPointed pt fe 𝓤
 open import DcpoWayBelow pt fe 𝓤

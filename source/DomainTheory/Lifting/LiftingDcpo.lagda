@@ -17,7 +17,7 @@ open import UF-FunExt
 open import UF-PropTrunc
 open import UF-Subsingletons
 
-module DcpoLiftingGeneralized
+module DomainTheory.Lifting.LiftingDcpo
         (pt : propositional-truncations-exist)
         (fe : Fun-Ext)
         (𝓥 : Universe)
@@ -43,8 +43,8 @@ open import Poset fe
 open import Dcpo pt fe 𝓥
 open import DcpoMiscelanea pt fe 𝓥
 open import DcpoPointed pt fe 𝓥
-open import DcpoLifting pt fe 𝓥 pe renaming ( 𝓛-DCPO  to 𝓛-DCPO-on-set
-                                            ; 𝓛-DCPO⊥ to 𝓛-DCPO⊥-on-set)
+open import DomainTheory.Lifting.LiftingSet pt fe 𝓥 pe
+             renaming ( 𝓛-DCPO  to 𝓛-DCPO-on-set ; 𝓛-DCPO⊥ to 𝓛-DCPO⊥-on-set)
 
 \end{code}
 

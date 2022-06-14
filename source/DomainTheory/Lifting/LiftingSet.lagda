@@ -1,4 +1,4 @@
-Tom de Jong, 27 May 2019.
+sTom de Jong, 27 May 2019.
 Refactored 29 April 2020.
 
 We show that lifting (cf. Escardó-Knapp) a set gives the free pointed dcpo on
@@ -20,22 +20,20 @@ open import UF-FunExt
 open import UF-PropTrunc
 open import UF-Subsingletons
 
-module DcpoLifting
+module DomainTheory.Lifting.LiftingSet
         (pt : propositional-truncations-exist)
         (fe : Fun-Ext)
         (𝓣 : Universe)
         (pe : propext 𝓣)
        where
 
-open PropositionalTruncation pt
-
 open import UF-Equiv
-
+open import UF-ImageAndSurjection
 open import UF-Miscelanea
 open import UF-Subsingletons-FunExt
 
-open import UF-ImageAndSurjection
 open ImageAndSurjection pt
+open PropositionalTruncation pt
 
 open import Lifting 𝓣 hiding (⊥)
 open import LiftingMiscelanea 𝓣
