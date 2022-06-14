@@ -15,7 +15,7 @@ open import SpartanMLTT
 open import UF-FunExt
 open import UF-PropTrunc
 
-module DomainTheory.ScottModelOfPCF.DcpoPCFCombinators
+module DomainTheory.ScottModelOfPCF.PCFCombinators
         (pt : propositional-truncations-exist)
         (fe : Fun-Ext)
         (𝓥 : Universe)

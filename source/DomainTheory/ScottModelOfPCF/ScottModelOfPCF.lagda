@@ -34,7 +34,7 @@ open import DomainTheory.Basics.LeastFixedPoint pt fe
 open import DomainTheory.Basics.Miscelanea pt fe 𝓤₀
 open import DomainTheory.Basics.Pointed pt fe 𝓤₀
 
-open import DomainTheory.ScottModelOfPCF.DcpoPCFCombinators pt fe 𝓤₀
+open import DomainTheory.ScottModelOfPCF.PCFCombinators pt fe 𝓤₀
 open IfZeroDenotationalSemantics pe
 
 open import DomainTheory.Lifting.LiftingSet pt fe 𝓤₀ pe
