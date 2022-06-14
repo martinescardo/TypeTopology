@@ -16,7 +16,7 @@ open import UF-FunExt
 open import UF-PropTrunc
 open import UF-Subsingletons
 
-module IdealCompletion
+module DomainTheory.IdealCompletion.IdealCompletion
         (pt : propositional-truncations-exist)
         (fe : Fun-Ext)
         (pe : Prop-Ext)

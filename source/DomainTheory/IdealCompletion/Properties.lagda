@@ -25,7 +25,7 @@ open import UF-FunExt
 open import UF-PropTrunc
 open import UF-Subsingletons
 
-module IdealCompletion-Properties
+module DomainTheory.IdealCompletion.Properties
         (pt : propositional-truncations-exist)
         (fe : Fun-Ext)
         (pe : Prop-Ext)
@@ -42,7 +42,7 @@ open import DcpoContinuous pt fe 𝓥
 open import DcpoMiscelanea pt fe 𝓥
 open import DcpoWayBelow pt fe 𝓥
 
-open import IdealCompletion pt fe pe 𝓥
+open import DomainTheory.IdealCompletion.IdealCompletion pt fe pe 𝓥
 
 open PropositionalTruncation pt
 

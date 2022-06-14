@@ -32,7 +32,7 @@ open import UF-FunExt
 open import UF-PropTrunc
 open import UF-Subsingletons
 
-module IdealCompletion-Retracts
+module DomainTheory.IdealCompletion.Retracts
         (pt : propositional-truncations-exist)
         (fe : Fun-Ext)
         (pe : Prop-Ext)
@@ -50,8 +50,8 @@ open import DcpoContinuous pt fe 𝓥
 open import DcpoMiscelanea pt fe 𝓥
 open import DcpoWayBelow pt fe 𝓥
 
-open import IdealCompletion pt fe pe 𝓥
-open import IdealCompletion-Properties pt fe pe 𝓥
+open import DomainTheory.IdealCompletion.IdealCompletion pt fe pe 𝓥
+open import DomainTheory.IdealCompletion.Properties pt fe pe 𝓥
 
 open PropositionalTruncation pt
 
