@@ -926,7 +926,7 @@ open import DomainTheory.Basics.SupComplete pt fe 𝓤₀
 open import DomainTheory.BasesAndContinuity.Bases pt fe 𝓤₀
 open import DomainTheory.BasesAndContinuity.Continuity pt fe 𝓤₀
 open import DomainTheory.BasesAndContinuity.StepFunctions pt fe 𝓤₀
-open import DomainTheory.Lifting.LiftingSetAlgebraic pt pe fe 𝓤
+open import DomainTheory.Lifting.LiftingSetAlgebraic pt pe fe 𝓤₀
 
 𝓓s-are-sup-complete : (n : ℕ) → is-sup-complete (𝓓 n)
 𝓓s-are-sup-complete zero     = lifting-of-prop-is-sup-complete 𝟙-is-prop
