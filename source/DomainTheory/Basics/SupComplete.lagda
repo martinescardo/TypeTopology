@@ -15,7 +15,7 @@ open import SpartanMLTT
 open import UF-FunExt
 open import UF-PropTrunc
 
-module DcpoSupComplete
+module DomainTheory.Basics.SupComplete
         (pt : propositional-truncations-exist)
         (fe : Fun-Ext)
         (𝓥 : Universe)
@@ -26,9 +26,9 @@ open PropositionalTruncation pt hiding (_∨_)
 open import UF-Equiv
 open import UF-EquivalenceExamples
 
-open import Dcpo pt fe 𝓥
-open import DcpoMiscelanea pt fe 𝓥
-open import DcpoWayBelow pt fe 𝓥
+open import DomainTheory.Basics.Dcpo pt fe 𝓥
+open import DomainTheory.Basics.Miscelanea pt fe 𝓥
+open import DomainTheory.Basics.WayBelow pt fe 𝓥
 
 module _
         (𝓓 : DCPO {𝓤} {𝓣})

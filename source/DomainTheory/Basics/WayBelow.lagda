@@ -19,7 +19,7 @@ open import SpartanMLTT
 open import UF-FunExt
 open import UF-PropTrunc
 
-module DcpoWayBelow
+module DomainTheory.Basics.WayBelow
         (pt : propositional-truncations-exist)
         (fe : Fun-Ext)
         (𝓥 : Universe) -- where the index types for directed completeness live
@@ -31,8 +31,8 @@ open import UF-Equiv
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
 
-open import Dcpo pt fe 𝓥
-open import DcpoMiscelanea pt fe 𝓥
+open import DomainTheory.Basics.Dcpo pt fe 𝓥
+open import DomainTheory.Basics.Miscelanea pt fe 𝓥
 
 way-below : (𝓓 : DCPO {𝓤} {𝓣}) → ⟨ 𝓓 ⟩ → ⟨ 𝓓 ⟩ → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
 way-below 𝓓 x y = (I : 𝓥 ̇ ) (α : I → ⟨ 𝓓 ⟩) (δ : is-Directed 𝓓 α)
@@ -144,7 +144,7 @@ The compact elements are closed under existing finite joins.
 \begin{code}
 
 module _ where
- open import DcpoPointed pt fe 𝓥
+ open import DomainTheory.Basics.Pointed pt fe 𝓥
 
  ⊥-is-compact : (𝓓 : DCPO⊥ {𝓤} {𝓣}) → is-compact (𝓓 ⁻) (⊥ 𝓓)
  ⊥-is-compact 𝓓 I α δ _ = ∥∥-functor h (inhabited-if-Directed (𝓓 ⁻) α δ)

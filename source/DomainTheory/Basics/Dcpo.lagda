@@ -17,7 +17,7 @@ open import SpartanMLTT
 open import UF-FunExt
 open import UF-PropTrunc
 
-module Dcpo
+module DomainTheory.Basics.Dcpo
         (pt : propositional-truncations-exist)
         (fe : Fun-Ext)
         (𝓥 : Universe) -- where the index types for directed completeness live

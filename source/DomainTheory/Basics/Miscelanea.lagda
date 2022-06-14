@@ -24,7 +24,7 @@ open import SpartanMLTT
 open import UF-FunExt
 open import UF-PropTrunc
 
-module DcpoMiscelanea
+module DomainTheory.Basics.Miscelanea
         (pt : propositional-truncations-exist)
         (fe : Fun-Ext)
         (𝓥 : Universe)
@@ -42,7 +42,7 @@ open import UF-Size hiding (is-small ; is-locally-small)
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
 
-open import Dcpo pt fe 𝓥
+open import DomainTheory.Basics.Dcpo pt fe 𝓥
 
 \end{code}
 

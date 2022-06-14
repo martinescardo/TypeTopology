@@ -18,7 +18,7 @@ open import SpartanMLTT
 open import UF-FunExt
 open import UF-PropTrunc
 
-module DcpoPointed
+module DomainTheory.Basics.Pointed
         (pt : propositional-truncations-exist)
         (fe : Fun-Ext)
         (𝓥 : Universe)
@@ -28,8 +28,8 @@ open PropositionalTruncation pt hiding (_∨_)
 
 open import UF-Subsingletons
 
-open import Dcpo pt fe 𝓥
-open import DcpoMiscelanea pt fe 𝓥
+open import DomainTheory.Basics.Dcpo pt fe 𝓥
+open import DomainTheory.Basics.Miscelanea pt fe 𝓥
 
 module _ {𝓤 𝓣 : Universe} where
 

@@ -15,7 +15,7 @@ open import SpartanMLTT hiding (J)
 open import UF-FunExt
 open import UF-PropTrunc
 
-module DcpoExponential
+module DomainTheory.Basics.Exponential
         (pt : propositional-truncations-exist)
         (fe : Fun-Ext)
         (𝓥 : Universe)
@@ -26,10 +26,10 @@ open PropositionalTruncation pt
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
 
-open import Dcpo pt fe 𝓥
-open import DcpoMiscelanea pt fe 𝓥
-open import DcpoPointed pt fe 𝓥
-open import DcpoSupComplete pt fe 𝓥
+open import DomainTheory.Basics.Dcpo pt fe 𝓥
+open import DomainTheory.Basics.Miscelanea pt fe 𝓥
+open import DomainTheory.Basics.Pointed pt fe 𝓥
+open import DomainTheory.Basics.SupComplete pt fe 𝓥
 
 open import Poset fe
 
