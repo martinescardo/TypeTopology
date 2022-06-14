@@ -688,7 +688,7 @@ And in particular, the successor universe 𝓤 ⁺ is not equivalent to 𝓤:
 
 \end{code}
 
-Added 23 December 2020, modified 26th December after a suggestion by
+Added 23rd December 2020, simplified 26th December after a suggestion by
 Mike Shulman.
 
 \begin{code}
@@ -921,3 +921,6 @@ Gylterud's PhD thesis (Multisets in Type Theory, 2016).
 
 Tonny Hurkens has a different way to get a contradiction from
 type-in-type, that maybe can be adapted to get what we want.
+
+Some of these questions are answered in the module BuraliForti
+(December 2020).
