@@ -91,10 +91,10 @@ import Ordinals
 import LawvereFPT
 import PartialElements
 import Types2019
-import MGS           -- Modular version of https://github.com/martinescardo/HoTT-UF-Agda-Lecture-Notes
-import PCFModules    -- By Tom de Jong
-import Dyadics       -- By Tom de Jong
-import CircleModules -- By Tom de Jong
+import MGS                -- Modular version of https://github.com/martinescardo/HoTT-UF-Agda-Lecture-Notes
+import DomainTheory.index -- By Tom de Jong (started with Martin Escardo)
+import Dyadics            -- By Tom de Jong
+import CircleModules      -- By Tom de Jong
 
 \end{code}
 
@@ -126,7 +126,6 @@ import CoNaturals
 import ConvergentSequenceCompact
 import ConvergentSequenceHasInf
 -- import CubicalBinarySystem -- works with Agda 2.6.2 only and need the Cubical Library. By Martin Escardo and Alex Rice
-import DcpoDinfinity                   -- By Tom de Jong
 import DecidabilityOfNonContinuity
 import DecidableAndDetachable
 import Dedekind
