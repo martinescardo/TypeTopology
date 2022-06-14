@@ -7,7 +7,7 @@ Johnstone and André Joyal, we discuss the notions
 (2) continuity of a dcpo;
 (3) pseudocontinuity of a dcpo.
 
-(1) and (2) are defined in DcpoContinuous.lagda and (3) is defined and examined here.
+(1) and (2) are defined in Continuity.lagda and (3) is defined and examined here.
 The notions (1)-(3) have the following shapes:
 
 (1)   Π (x : D) →   Σ I : 𝓥 ̇  , Σ α : I → D , α is-directed × ... × ...
@@ -16,7 +16,7 @@ The notions (1)-(3) have the following shapes:
 
 So (2) and (3) are propositions, but (1) isn't. We illustrate (1)-(3) by
 discussion them in terms of left adjoints. In these discussions, the
-Ind-completion, as defined in DcpoIndCompletion.lagda plays an important role.
+Ind-completion, as defined in IndCompletion.lagda plays an important role.
 
 We show that (1) for a dcpo D is equivalent to asserting that the map
 ∐ : Ind(D) → D (which takes a directed family to its supremum) has a specified
@@ -122,7 +122,7 @@ We show that the type expressing that the ∐-map has a left adjoint is equivale
 to the type expressing structural continuity of D.
 
 The proof below is fairly short, but only because we already characterized when
-∐-map has a left adjoint in DcpoIndCompletion.lagda.
+∐-map has a left adjoint in IndCompletion.lagda.
 
 \begin{code}
 
@@ -258,10 +258,10 @@ approximating x.
 On first sight, pseudocontinuity is arguably how one would expect us to define
 contuinity of a dcpo while ensuring the notion is property as opposed to
 structure. It is however weaker than continuity (as defined in
-DcpoContinuous.lagda) and structural continuity. More importantly, with
+Continuity.lagda) and structural continuity. More importantly, with
 pseudocontinuity we would need some instances of the axiom of choice when
 proving the interpolation properties for the way-below relation, at least when
-trying to mimick the proof in DcpoContinuous.lagda.
+trying to mimick the proof in Continuity.lagda.
 
 \begin{code}
 

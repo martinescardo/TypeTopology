@@ -7,7 +7,7 @@ This formalization is based on Scott's "Continuous lattices"
 (doi:10.1007/BFB0073967), specifically pages 124--126, but generalizes it from
 ℕ-indexed diagrams to diagrams indexed by a directed poset.
 
-We specialize to ℕ-indexed diagrams in DcpoBilimitsSequential.lagda.
+We specialize to ℕ-indexed diagrams in Sequential.lagda.
 
 We also prove that taking the bilmit preserves local smallness and that it is
 closed under structural continuity/algebraicity and having a small (compact) basis.
@@ -773,7 +773,7 @@ We now show that 𝓓∞ is the colimit of the diagram.
 \end{code}
 
 Finally, we consider a curried version of ε∞-family, which will prove useful
-(see DcpoDinfinity.lagda) in the construction of Scott's D∞ for which D∞ is
+(see Dinfinity.lagda) in the construction of Scott's D∞ for which D∞ is
 isomorphic to its own self-exponential.
 
 \begin{code}

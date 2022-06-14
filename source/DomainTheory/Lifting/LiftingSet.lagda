@@ -5,10 +5,10 @@ We show that lifting (cf. Escardó-Knapp) a set gives the free pointed dcpo on
 that set.
 
 When we start with a small set, then the lifting yields an algebraic pointed
-dcpo as formalized in LiftingAlgebraic.lagda.
+dcpo as formalized in LiftingSetAlgebraic.lagda.
 
 The construction that freely adds a least element to a dcpo is described in
-DcpoLiftingGeneralized.lagda.
+LiftingDcpo.lagda.
 
 \begin{code}
 
@@ -216,8 +216,8 @@ module _ {𝓤 : Universe}
 
 Finally we show that the lifting of a set gives the free pointed dcpo on that
 set. The main technical tool in proving this is the use of subsingleton suprema,
-cf. DcpoPointed.lagda, and the fact that every partial element can be expressed
-as such a supremum.
+cf. DomainTheory.Basics.Pointed.lagda, and the fact that every partial element
+can be expressed as such a supremum.
 
 \begin{code}
 
@@ -349,7 +349,7 @@ In general, the lifting of a set is only directed complete and does not have all
 (small) sups, but if we lift propositions, then we do get all small suprema.
 
 As an application, we use this to prove that 𝓓∞ is algebraic in
-DcpoDinfinity.lagda.
+DomainTheory.Bilimits.Dinfinity.lagda.
 
 \begin{code}
 

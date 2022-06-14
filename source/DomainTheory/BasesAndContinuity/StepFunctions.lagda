@@ -2,8 +2,8 @@ Tom de Jong, late February, early March 2022.
 
 We use single step functions to construct a small compact basis on the
 exponential of dcpos Eᴰ where D and E have small compact bases and E is
-sup-complete. This is used in DcpoDinfinity.lagda to show that 𝓓∞ has a small
-compact basis, and hence is algebraic.
+sup-complete. This is used in DomainTheory.Bilimits.Dinfinity.lagda to show that
+Scott's D∞ has a small compact basis, and hence is algebraic.
 
 We can prove a similar result for dcpos with a small bases that are not
 necessarily algebraic, but the formalization of this argument is not entirely

@@ -10,7 +10,7 @@ have a left adjoint. We also consider the poset reflection Ind/≈ of Ind and
 define what it means for the induced map Ind/≈ → 𝓓 to have a left adjoint.
 
 This development is used in exploring possible notions of continuous dcpo in
-DcpoContinuousDiscussion.lagda. In particular, the observation that the
+ContinuityDiscussion.lagda. In particular, the observation that the
 Ind-completion is a preorder and not a poset is seen to be important there.
 
 \begin{code}
@@ -174,7 +174,7 @@ also have a map in the other direction which comes in useful at times.
 \end{code}
 
 In our discussions on the notion of continuous dcpo we will be interested in
-∐-map having a left adjoint, see DcpoContiuousDiscussion.lagda.
+∐-map having a left adjoint, see ContinuityDiscussion.lagda.
 
 We define what that means here and note that it is helpful to also consider a
 "local" variation of the adjoint condition.
@@ -287,7 +287,7 @@ induced by the supremum-map Ind → 𝓓 has a left adjoint to obtain a type tha
 a proposition. We describe that process here.
 
 This is *not* the same as asking that ∐-map : Ind → 𝓓 has an unspecified left
-adjoint, as we explain in DcpoContinuousDiscussion.lagda.
+adjoint, as we explain in ContinuityDiscussion.lagda.
 
 \begin{code}
 

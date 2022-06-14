@@ -164,7 +164,8 @@ _⟹ᵈᶜᵖᵒ⊥'_ : DCPO {𝓤} {𝓣} → DCPO⊥ {𝓤'} {𝓣'}
 Now that we have constructed exponentials, we can state and prove additional
 continuity results regarding composition of continuous functions.
 
-(These results are used in constructing Scott's D∞ in DcpoDinfinity.lagda.)
+(These results are used in constructing Scott's D∞ in
+DomainTheory.Bilimits.Dinfinity.lagda.)
 
 \begin{code}
 

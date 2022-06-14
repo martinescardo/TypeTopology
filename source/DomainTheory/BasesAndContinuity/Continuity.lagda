@@ -44,7 +44,7 @@ dcpos, which we call structural continuity. The notion of a continuous dcpo will
 then be given by truncating the type expressing its structural continuity.
 
 The motivation for our definition of continuity is discussed in
-DcpoContinuousDiscussion.lagda.
+ContinuityDiscussion.lagda.
 
 We use record syntax to have descriptively named projections available without
 having to add them as boilerplate.

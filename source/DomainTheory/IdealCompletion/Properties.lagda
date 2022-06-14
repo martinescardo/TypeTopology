@@ -310,7 +310,8 @@ ideal.
 \end{code}
 
 We now work towards showing that ↓_ : X → Idl is a small basis (in the sense of
-DcpoBases.lagda) for Idl. In particular, Idl is a continuous dcpo.
+DomainTheory.BasesAndContinuity.Bases.lagda) for Idl. In particular, Idl is a
+continuous dcpo.
 
 \begin{code}
 

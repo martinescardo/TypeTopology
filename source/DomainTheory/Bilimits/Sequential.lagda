@@ -1,6 +1,6 @@
 Tom de Jong, 12 & 13 May 2020.
 
-We specialize the work of DcpoBilimits.lagda to ℕ-indexed diagrams.
+We specialize the work of Directed.lagda to ℕ-indexed diagrams.
 
 \begin{code}
 
