@@ -40,9 +40,9 @@ open import LiftingMiscelanea-PropExt-FunExt 𝓥 pe fe
                                                       ; ⊑-to-⊑' to ⊑''-to-⊑')
 
 open import Poset fe
-open import Dcpo pt fe 𝓥
-open import DcpoMiscelanea pt fe 𝓥
-open import DcpoPointed pt fe 𝓥
+open import DomainTheory.Basics.Dcpo pt fe 𝓥
+open import DomainTheory.Basics.Miscelanea pt fe 𝓥
+open import DomainTheory.Basics.Pointed pt fe 𝓥
 open import DomainTheory.Lifting.LiftingSet pt fe 𝓥 pe
              renaming ( 𝓛-DCPO  to 𝓛-DCPO-on-set ; 𝓛-DCPO⊥ to 𝓛-DCPO⊥-on-set)
 

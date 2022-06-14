@@ -28,15 +28,15 @@ open import UF-Miscelanea
 
 open import PCF pt
 
-open import Dcpo pt fe 𝓤₀
-open import DcpoExponential pt fe 𝓤₀
-open import DcpoMiscelanea pt fe 𝓤₀
-open import DcpoPointed pt fe 𝓤₀
+open import DomainTheory.Basics.Dcpo pt fe 𝓤₀
+open import DomainTheory.Basics.Exponential pt fe 𝓤₀
+open import DomainTheory.Basics.LeastFixedPoint pt fe
+open import DomainTheory.Basics.Miscelanea pt fe 𝓤₀
+open import DomainTheory.Basics.Pointed pt fe 𝓤₀
 
 open import DomainTheory.ScottModelOfPCF.DcpoPCFCombinators pt fe 𝓤₀
 open IfZeroDenotationalSemantics pe
 
-open import DcpoLeastFixedPoint pt fe
 open import DomainTheory.Lifting.LiftingSet pt fe 𝓤₀ pe
 
 open import Lifting 𝓤₀

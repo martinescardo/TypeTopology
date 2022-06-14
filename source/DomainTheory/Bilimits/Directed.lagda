@@ -58,12 +58,13 @@ open PropositionalTruncation pt
 
 open import Poset fe
 
-open import Dcpo pt fe 𝓥
-open import DcpoBases pt fe 𝓥
-open import DcpoContinuous pt fe 𝓥
-open import DcpoExponential pt fe 𝓥
-open import DcpoMiscelanea pt fe 𝓥
-open import DcpoWayBelow pt fe 𝓥
+open import DomainTheory.Basics.Dcpo pt fe 𝓥
+open import DomainTheory.Basics.Exponential pt fe 𝓥
+open import DomainTheory.Basics.Miscelanea pt fe 𝓥
+open import DomainTheory.Basics.WayBelow pt fe 𝓥
+
+open import DomainTheory.BasesAndContinuity.Bases pt fe 𝓥
+open import DomainTheory.BasesAndContinuity.Continuity pt fe 𝓥
 
 module Diagram
         {I : 𝓥 ̇ }

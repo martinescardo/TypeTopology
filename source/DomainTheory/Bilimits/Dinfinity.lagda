@@ -45,12 +45,12 @@ open PropositionalTruncation pt
 
 open import UF-Base
 
-open import Dcpo pt fe 𝓤₀
+open import DomainTheory.Basics.Dcpo pt fe 𝓤₀
+open import DomainTheory.Basics.Exponential pt fe 𝓤₀
+open import DomainTheory.Basics.Miscelanea pt fe 𝓤₀
+open import DomainTheory.Basics.Pointed pt fe 𝓤₀
 open import DomainTheory.Bilimits.Sequential pt fe 𝓤₁ 𝓤₁
-open import DcpoExponential pt fe 𝓤₀
 open import DomainTheory.Lifting.LiftingSet pt fe 𝓤₀ pe
-open import DcpoMiscelanea pt fe 𝓤₀
-open import DcpoPointed pt fe 𝓤₀
 
 open import NaturalsOrder
 open import NaturalsAddition renaming (_+_ to _+'_)
@@ -922,11 +922,11 @@ under taking exponentials.
 
 \begin{code}
 
-open import DcpoBases pt fe 𝓤₀
-open import DcpoContinuous pt fe 𝓤₀
-open import DomainTheory.Lifting.LiftingSetAlgebraic pt pe fe 𝓤₀
-open import DcpoStepFunctions pt fe 𝓤₀
-open import DcpoSupComplete pt fe 𝓤₀
+open import DomainTheory.Basics.SupComplete pt fe 𝓤₀
+open import DomainTheory.BasesAndContinuity.Bases pt fe 𝓤₀
+open import DomainTheory.BasesAndContinuity.Continuity pt fe 𝓤₀
+open import DomainTheory.BasesAndContinuity.StepFunctions pt fe 𝓤₀
+open import DomainTheory.Lifting.LiftingSetAlgebraic pt pe fe 𝓤
 
 𝓓s-are-sup-complete : (n : ℕ) → is-sup-complete (𝓓 n)
 𝓓s-are-sup-complete zero     = lifting-of-prop-is-sup-complete 𝟙-is-prop

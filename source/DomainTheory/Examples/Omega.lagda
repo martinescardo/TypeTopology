@@ -35,12 +35,13 @@ open PropositionalTruncation pt
 
 open import Poset fe
 
-open import Dcpo pt fe 𝓤
-open import DcpoBases pt fe 𝓤
-open import DcpoContinuous pt fe 𝓤
-open import DcpoMiscelanea pt fe 𝓤
-open import DcpoPointed pt fe 𝓤
-open import DcpoWayBelow pt fe 𝓤
+open import DomainTheory.Basics.Dcpo pt fe 𝓤
+open import DomainTheory.Basics.Miscelanea pt fe 𝓤
+open import DomainTheory.Basics.Pointed pt fe 𝓤
+open import DomainTheory.Basics.WayBelow pt fe 𝓤
+
+open import DomainTheory.BasesAndContinuity.Bases pt fe 𝓤
+open import DomainTheory.BasesAndContinuity.Continuity pt fe 𝓤
 
 _⊑_ : Ω 𝓤 → Ω 𝓤 → 𝓤 ̇
 P ⊑ Q = P holds → Q holds

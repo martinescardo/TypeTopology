@@ -37,14 +37,14 @@ open import UF-EquivalenceExamples
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
 
-open import Dcpo pt fe 𝓥
+open import DomainTheory.Basics.Dcpo pt fe 𝓥
 open import DomainTheory.BasesAndContinuity.Bases pt fe 𝓥
 open import DomainTheory.BasesAndContinuity.Continuity pt fe 𝓥
-open import DcpoExponential pt fe 𝓥
-open import DcpoMiscelanea pt fe 𝓥
-open import DcpoPointed pt fe 𝓥 hiding (⊥ ; ⊥-is-least)
-open import DcpoSupComplete pt fe 𝓥
-open import DcpoWayBelow pt fe 𝓥
+open import DomainTheory.Basics.Exponential pt fe 𝓥
+open import DomainTheory.Basics.Miscelanea pt fe 𝓥
+open import DomainTheory.Basics.Pointed pt fe 𝓥 hiding (⊥ ; ⊥-is-least)
+open import DomainTheory.Basics.SupComplete pt fe 𝓥
+open import DomainTheory.Basics.WayBelow pt fe 𝓥
 
 \end{code}
 

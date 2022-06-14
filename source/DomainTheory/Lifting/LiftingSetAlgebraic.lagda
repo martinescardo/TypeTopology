@@ -33,13 +33,15 @@ open import LiftingMiscelanea 𝓤
 open import LiftingMiscelanea-PropExt-FunExt 𝓤 pe fe
 open import LiftingMonad 𝓤
 
-open import Dcpo pt fe 𝓤
-open import DcpoBases pt fe 𝓤
-open import DcpoContinuous pt fe 𝓤
+open import DomainTheory.Basics.Dcpo pt fe 𝓤
+open import DomainTheory.Basics.Miscelanea pt fe 𝓤
+open import DomainTheory.Basics.Pointed pt fe 𝓤
+open import DomainTheory.Basics.WayBelow pt fe 𝓤
+
+open import DomainTheory.BasesAndContinuity.Bases pt fe 𝓤
+open import DomainTheory.BasesAndContinuity.Continuity pt fe 𝓤
+
 open import DomainTheory.Lifting.LiftingSet pt fe 𝓤 pe
-open import DcpoMiscelanea pt fe 𝓤
-open import DcpoPointed pt fe 𝓤
-open import DcpoWayBelow pt fe 𝓤
 
 open import Poset fe
 

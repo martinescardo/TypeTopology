@@ -44,11 +44,12 @@ open import UF-Equiv
 open import UF-Retracts
 open import UF-Powerset
 
-open import Dcpo pt fe 𝓥
+open import DomainTheory.Basics.Dcpo pt fe 𝓥
+open import DomainTheory.Basics.Miscelanea pt fe 𝓥
+open import DomainTheory.Basics.WayBelow pt fe 𝓥
+
 open import DomainTheory.BasesAndContinuity.Bases pt fe 𝓥
 open import DomainTheory.BasesAndContinuity.Continuity pt fe 𝓥
-open import DcpoMiscelanea pt fe 𝓥
-open import DcpoWayBelow pt fe 𝓥
 
 open import DomainTheory.IdealCompletion.IdealCompletion pt fe pe 𝓥
 open import DomainTheory.IdealCompletion.Properties pt fe pe 𝓥

@@ -23,15 +23,16 @@ open PropositionalTruncation pt
 
 open import Dyadic
 open import DyadicOrder
-
-open import Dcpo pt fe 𝓤₀
-open import DcpoBases pt fe 𝓤₀
-open import DcpoContinuous pt fe 𝓤₀
-open import DcpoWayBelow pt fe 𝓤₀
 open import DyadicOrder-PropTrunc pt
 
-open import IdealCompletion pt fe pe 𝓤₀
-open import IdealCompletion-Properties pt fe pe 𝓤₀
+open import DomainTheory.Basics.Dcpo pt fe 𝓤₀
+open import DomainTheory.Basics.WayBelow pt fe 𝓤₀
+
+open import DomainTheory.BasesAndContinuity.Bases pt fe 𝓤₀
+open import DomainTheory.BasesAndContinuity.Continuity pt fe 𝓤₀
+
+open import DomainTheory.IdealCompletion.IdealCompletion pt fe pe 𝓤₀
+open import DomainTheory.IdealCompletion.Properties pt fe pe 𝓤₀
 
 open Ideals-of-small-abstract-basis
  _≺_

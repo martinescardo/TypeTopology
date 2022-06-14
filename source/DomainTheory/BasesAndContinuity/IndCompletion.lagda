@@ -35,9 +35,9 @@ open import UF-EquivalenceExamples
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
 
-open import Dcpo pt fe 𝓥
-open import DcpoMiscelanea pt fe 𝓥
-open import DcpoWayBelow pt fe 𝓥
+open import DomainTheory.Basics.Dcpo pt fe 𝓥
+open import DomainTheory.Basics.Miscelanea pt fe 𝓥
+open import DomainTheory.Basics.WayBelow pt fe 𝓥
 
 module Ind-completion
         (𝓓 : DCPO {𝓤} {𝓣})

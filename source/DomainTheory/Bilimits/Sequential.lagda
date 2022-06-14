@@ -18,9 +18,9 @@ module DomainTheory.Bilimits.Sequential
 
 open PropositionalTruncation pt
 
-open import Dcpo pt fe 𝓤₀
+open import DomainTheory.Basics.Dcpo pt fe 𝓤₀
+open import DomainTheory.Basics.Miscelanea pt fe 𝓤₀
 open import DomainTheory.Bilimits.Directed pt fe 𝓤₀ 𝓤 𝓣
-open import DcpoMiscelanea pt fe 𝓤₀
 
 open import NaturalsAddition renaming (_+_ to _+'_)
 open import NaturalNumbers-Properties

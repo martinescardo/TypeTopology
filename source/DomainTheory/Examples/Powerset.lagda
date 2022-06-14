@@ -46,8 +46,8 @@ module _
         (𝓥 : Universe)
        where
 
- open import Dcpo pt fe 𝓥
- open import DcpoPointed pt fe 𝓥
+ open import DomainTheory.Basics.Dcpo pt fe 𝓥
+ open import DomainTheory.Basics.Pointed pt fe 𝓥
 
  open unions-of-small-families pt 𝓥 𝓥 X
 
@@ -73,12 +73,13 @@ we prove that lists on X give a small compact basis for the powerset.
 
 \begin{code}
 
-open import Dcpo pt fe 𝓤
-open import DcpoBases pt fe 𝓤
-open import DcpoContinuous pt fe 𝓤
-open import DcpoMiscelanea pt fe 𝓤
-open import DcpoPointed pt fe 𝓤
-open import DcpoWayBelow pt fe 𝓤
+open import DomainTheory.Basics.Dcpo pt fe 𝓤
+open import DomainTheory.Basics.Miscelanea pt fe 𝓤
+open import DomainTheory.Basics.Pointed pt fe 𝓤
+open import DomainTheory.Basics.WayBelow pt fe 𝓤
+
+open import DomainTheory.BasesAndContinuity.Bases pt fe 𝓤
+open import DomainTheory.BasesAndContinuity.Continuity pt fe 𝓤
 
 open unions-of-small-families pt 𝓤 𝓤 X
 

@@ -44,10 +44,11 @@ open import UF-Size hiding (is-small ; is-locally-small)
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
 
-open import Dcpo pt fe 𝓥
+open import DomainTheory.Basics.Dcpo pt fe 𝓥
+open import DomainTheory.Basics.Miscelanea pt fe 𝓥
+open import DomainTheory.Basics.WayBelow pt fe 𝓥
+
 open import DomainTheory.BasesAndContinuity.Continuity pt fe 𝓥
-open import DcpoMiscelanea pt fe 𝓥
-open import DcpoWayBelow pt fe 𝓥
 
 \end{code}
 
@@ -664,7 +665,7 @@ than over all elements of 𝓓.
 
 \begin{code}
 
-open import DcpoExponential pt fe 𝓥
+open import DomainTheory.Basics.Exponential pt fe 𝓥
 
 locally-small-exponential-criterion : Prop-Ext
                                     → (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})

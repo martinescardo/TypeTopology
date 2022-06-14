@@ -40,9 +40,9 @@ open import LiftingMiscelanea 𝓣
 open import LiftingMiscelanea-PropExt-FunExt 𝓣 pe fe
 open import LiftingMonad 𝓣
 
-open import Dcpo pt fe 𝓣
-open import DcpoMiscelanea pt fe 𝓣
-open import DcpoPointed pt fe 𝓣
+open import DomainTheory.Basics.Dcpo pt fe 𝓣
+open import DomainTheory.Basics.Miscelanea pt fe 𝓣
+open import DomainTheory.Basics.Pointed pt fe 𝓣
 
 open import Poset fe
 
@@ -353,7 +353,7 @@ DcpoDinfinity.lagda.
 
 \begin{code}
 
-open import DcpoSupComplete pt fe 𝓣
+open import DomainTheory.Basics.SupComplete pt fe 𝓣
 
 module _
         {P : 𝓤 ̇  }
