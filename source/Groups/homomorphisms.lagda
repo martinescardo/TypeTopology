@@ -132,6 +132,8 @@ inj-hom-is-embedding is = lc-maps-into-sets-are-embeddings
                         (inj-hom-is-lc is)
                         (group-is-set Y)
 
+embedding-carrier-implies-inj-hom : is-embedding f → is-injective-hom
+embedding-carrier-implies-inj-hom is = lc-hom-is-inj (embeddings-are-lc f is)
 \end{code}
 
 
