@@ -129,8 +129,8 @@ is-continuous-dcpo-if-algebraic-dcpo 𝓓 =
 
 \end{code}
 
-We set out to prove nullary, unary and binary interpolation for (structurally)
-continuous dcpos.
+We characterize the order in a structurally continuous dcpo using approximating
+families.
 
 \begin{code}
 
@@ -150,6 +150,60 @@ module _
    where
     γ : ∐ 𝓓 (approximating-family-is-directed x) ⊑⟨ 𝓓 ⟩ y
     γ = ∐-is-lowerbound-of-upperbounds 𝓓 (approximating-family-is-directed x) y l
+
+ structurally-continuous-⊑-criterion' :
+    {x y : ⟨ 𝓓 ⟩}
+  → ((i : index-of-approximating-family x) → approximating-family x i ≪⟨ 𝓓 ⟩ y)
+  → x ⊑⟨ 𝓓 ⟩ y
+ structurally-continuous-⊑-criterion' {x} {y} l =
+  structurally-continuous-⊑-criterion (λ i → ≪-to-⊑ 𝓓 (l i))
+
+ structurally-continuous-⊑-criterion'-converse :
+    {x y : ⟨ 𝓓 ⟩}
+  → x ⊑⟨ 𝓓 ⟩ y
+  → ((i : index-of-approximating-family x) → approximating-family x i ≪⟨ 𝓓 ⟩ y)
+ structurally-continuous-⊑-criterion'-converse {x} {y} l i =
+  ≪-⊑-to-≪ 𝓓 (approximating-family-is-way-below x i) l
+
+ structurally-continuous-⊑-criterion-converse :
+    {x y : ⟨ 𝓓 ⟩}
+  → x ⊑⟨ 𝓓 ⟩ y
+  → ((i : index-of-approximating-family x) → approximating-family x i ⊑⟨ 𝓓 ⟩ y)
+ structurally-continuous-⊑-criterion-converse {x} {y} l i =
+  ≪-to-⊑ 𝓓 (structurally-continuous-⊑-criterion'-converse l i)
+
+\end{code}
+
+We also characterize the way-below relation in terms of the order and
+approximating families.
+
+\begin{code}
+
+ structurally-continuous-≪-criterion :
+    {x y : ⟨ 𝓓 ⟩}
+  → (∃ i ꞉ index-of-approximating-family y , x ⊑⟨ 𝓓 ⟩ approximating-family y i)
+  → x ≪⟨ 𝓓 ⟩ y
+ structurally-continuous-≪-criterion {x} {y} = ∥∥-rec (≪-is-prop-valued 𝓓) γ
+  where
+   γ : (Σ i ꞉ index-of-approximating-family y
+            , x ⊑⟨ 𝓓 ⟩ approximating-family y i)
+     → x ≪⟨ 𝓓 ⟩ y
+   γ (i , l) = ⊑-≪-to-≪ 𝓓 l (approximating-family-is-way-below y i)
+
+ structurally-continuous-≪-criterion-converse :
+    {x y : ⟨ 𝓓 ⟩}
+  → x ≪⟨ 𝓓 ⟩ y
+  → (∃ i ꞉ index-of-approximating-family y , x ⊑⟨ 𝓓 ⟩ approximating-family y i)
+ structurally-continuous-≪-criterion-converse {x} {y} wb =
+  wb (index-of-approximating-family y) (approximating-family y)
+     (approximating-family-is-directed y) (approximating-family-∐-⊒ y)
+
+\end{code}
+
+We set out to prove nullary, unary and binary interpolation for (structurally)
+continuous dcpos.
+
+\begin{code}
 
  ≪-nullary-interpolation-str : (x : ⟨ 𝓓 ⟩) → ∃ y ꞉ ⟨ 𝓓 ⟩ , y ≪⟨ 𝓓 ⟩ x
  ≪-nullary-interpolation-str x =
@@ -336,27 +390,13 @@ module _
    I = index-of-approximating-family y
    α : I → ⟨ 𝓓 ⟩
    α = approximating-family y
-   ψ : (∃ i ꞉ I , x ⊑ₛ α i) ≃ (x ≪⟨ 𝓓 ⟩ y)
-   ψ = logically-equivalent-props-are-equivalent ∥∥-is-prop (≪-is-prop-valued 𝓓)
-        ⦅⇒⦆ ⦅⇐⦆
+   ψ = (∃ i ꞉ I , x ⊑ₛ      α i) ≃⟨ ∃-cong pt (λ i → ⊑ₛ-≃-⊑) ⟩
+       (∃ i ꞉ I , x ⊑⟨ 𝓓 ⟩  α i) ≃⟨ e ⟩
+       x ≪⟨ 𝓓 ⟩ y                ■
     where
-     ⦅⇐⦆ : x ≪⟨ 𝓓 ⟩ y → ∃ i ꞉ I , x ⊑ₛ α i
-     ⦅⇐⦆ x-way-below-y = ∥∥-functor r (x-way-below-y I α
-                                      (approximating-family-is-directed y)
-                                      (approximating-family-∐-⊒ y))
-      where
-       r : (Σ i ꞉ I , x ⊑⟨ 𝓓 ⟩ α i) → Σ i ꞉ I , x ⊑ₛ α i
-       r (i , x-below-αᵢ) = (i , ⊑-to-⊑ₛ x-below-αᵢ)
-     ⦅⇒⦆ : (∃ i ꞉ I , x ⊑ₛ α i) → x ≪⟨ 𝓓 ⟩ y
-     ⦅⇒⦆ h J β ε y-below-∐β = ∥∥-rec ∥∥-is-prop r h
-      where
-       r : (Σ i ꞉ I , x ⊑ₛ α i) → ∃ j ꞉ J , x ⊑⟨ 𝓓 ⟩ β j
-       r (i , x-belowₛ-αᵢ) = ⊑-≪-to-≪ 𝓓 x-below-αᵢ
-                                         (approximating-family-is-way-below y i)
-                                         J β ε y-below-∐β
-        where
-         x-below-αᵢ : x ⊑⟨ 𝓓 ⟩ α i
-         x-below-αᵢ = ⊑ₛ-to-⊑ x-belowₛ-αᵢ
+     e = logically-equivalent-props-are-equivalent ∃-is-prop (≪-is-prop-valued 𝓓)
+          (structurally-continuous-≪-criterion 𝓓 C)
+          (structurally-continuous-≪-criterion-converse 𝓓 C)
 
  ≪-is-small-valued-str-converse : ((x y : ⟨ 𝓓 ⟩) → is-small (x ≪⟨ 𝓓 ⟩ y))
                                 → is-locally-small 𝓓
@@ -365,8 +405,8 @@ module _
    where
     _≪ₛ_ : ⟨ 𝓓 ⟩ → ⟨ 𝓓 ⟩ → 𝓥 ̇
     x ≪ₛ y = pr₁ (≪-is-small-valued x y)
-    φ : (x y : ⟨ 𝓓 ⟩) → x ≪ₛ y ≃ x ≪⟨ 𝓓 ⟩ y
-    φ x y = pr₂ (≪-is-small-valued x y)
+    ≪ₛ-≃-≪ : {x y : ⟨ 𝓓 ⟩} → x ≪ₛ y ≃ x ≪⟨ 𝓓 ⟩ y
+    ≪ₛ-≃-≪ {x} {y} = pr₂ (≪-is-small-valued x y)
     γ : (x y : ⟨ 𝓓 ⟩) → is-small (x ⊑⟨ 𝓓 ⟩ y)
     γ x y = (∀ (i : I) → α i ≪ₛ y) , ψ
      where
@@ -374,27 +414,14 @@ module _
       I = index-of-approximating-family x
       α : I → ⟨ 𝓓 ⟩
       α = approximating-family x
-      ψ : (∀ (i : I) → α i ≪ₛ y) ≃ x ⊑⟨ 𝓓 ⟩ y
-      ψ = logically-equivalent-props-are-equivalent
-           (Π-is-prop fe (λ i → equiv-to-prop (φ (α i) y) (≪-is-prop-valued 𝓓)))
-           (prop-valuedness 𝓓 x y)
-           ⦅⇒⦆ ⦅⇐⦆
+      ψ = (∀ (i : I) → α i ≪ₛ     y) ≃⟨ Π-cong fe fe I _ _ (λ i → ≪ₛ-≃-≪) ⟩
+          (∀ (i : I) → α i ≪⟨ 𝓓 ⟩ y) ≃⟨ e ⟩
+          x ⊑⟨ 𝓓 ⟩ y                 ■
        where
-        ⦅⇐⦆ : x ⊑⟨ 𝓓 ⟩ y → (∀ (i : I) → α i ≪ₛ y)
-        ⦅⇐⦆ x-below-y i =
-         ⌜ φ (α i) y ⌝⁻¹ (≪-⊑-to-≪ 𝓓 (approximating-family-is-way-below x i)
-                                      x-below-y)
-        ⦅⇒⦆ : (∀ (i : I) → α i ≪ₛ y) → x ⊑⟨ 𝓓 ⟩ y
-        ⦅⇒⦆ α-way-below-y = x     ⊑⟨ 𝓓 ⟩[ ⦅1⦆ ]
-                            ∐ 𝓓 δ ⊑⟨ 𝓓 ⟩[ ⦅2⦆ ]
-                            y     ∎⟨ 𝓓 ⟩
-         where
-          δ : is-Directed 𝓓 α
-          δ = approximating-family-is-directed x
-          ⦅1⦆ = approximating-family-∐-⊒ x
-          ⦅2⦆ = ∐-is-lowerbound-of-upperbounds 𝓓 δ y
-                (λ i → ≪-to-⊑ 𝓓 (⌜ φ (α i) y ⌝ (α-way-below-y i)))
-
+        e = logically-equivalent-props-are-equivalent
+             (Π-is-prop fe (λ i → ≪-is-prop-valued 𝓓)) (prop-valuedness 𝓓 x y)
+             (structurally-continuous-⊑-criterion' 𝓓 C)
+             (structurally-continuous-⊑-criterion'-converse 𝓓 C)
 
 module _
         (pe : Prop-Ext)
