@@ -153,12 +153,13 @@ module _ (pt : propositional-truncations-exist) where
 
     --
     -- Shorten notation in the following
-    -- 
-    I : Group _
-    I = group-image pt X Y f isf
+    --
+    private
+      I : Group _
+      I = group-image pt X Y f isf
 
-    inj : ⟨ I ⟩ → ⟨ Y ⟩
-    inj = group-image-inj pt X Y f isf
+      inj : ⟨ I ⟩ → ⟨ Y ⟩
+      inj = group-image-inj pt X Y f isf
     --
     -- ---------------------------------
     --
