@@ -140,12 +140,12 @@ module _
    { index-of-approximating-family     = λ x → pr₁ (L x)
    ; approximating-family              = λ x → pr₁ (pr₂ (L x))
    ; approximating-family-is-directed  = λ x → pr₂ (pr₂ (L x))
-   ; approximating-family-is-way-below = λ x → pr₂ (crit x)
-   ; approximating-family-∐-≡          = λ x → pr₁ (crit x)
+   ; approximating-family-is-way-below = λ x → pr₂ (L-is-approximating x)
+   ; approximating-family-∐-≡          = λ x → pr₁ (L-is-approximating x)
    }
    where
-    crit : left-adjoint-to-∐-map-criterion L
-    crit = ⌜ left-adjoint-to-∐-map-characterization L ⌝⁻¹ L-left-adjoint
+    L-is-approximating : is-approximating L
+    L-is-approximating = ⌜ left-adjoint-to-∐-map-characterization L ⌝⁻¹ L-left-adjoint
 
  specified-left-adjoint-if-structurally-continuous :
     structurally-continuous 𝓓
@@ -307,115 +307,97 @@ module _
  open Ind-completion 𝓓
  open Ind-completion-poset-reflection pe 𝓓
 
+ ⊑-∐-map/-lemma : {x : ⟨ 𝓓 ⟩} {σ : Ind}
+               → (x ⊑⟨ 𝓓 ⟩ ∐-map σ) ⇔ (x ⊑⟨ 𝓓 ⟩ ∐-map/ (η σ))
+ ⊑-∐-map/-lemma {x} {σ} = transport (λ - → x ⊑⟨ 𝓓 ⟩ -) ((∐-map/-triangle σ) ⁻¹)
+                       , transport (λ - → x ⊑⟨ 𝓓 ⟩ -) (∐-map/-triangle σ)
+
  specified-left-adjoint-if-pseudocontinuous : is-pseudocontinuous-dcpo 𝓓
                                             → ∐-map/-has-specified-left-adjoint
- specified-left-adjoint-if-pseudocontinuous pc = L , ladj
+ specified-left-adjoint-if-pseudocontinuous pc = L , L-is-ladj
   where
    module construction (x : ⟨ 𝓓 ⟩) where
-    dom : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
-    dom = (Σ I ꞉ 𝓥 ̇  , Σ α ꞉ (I → ⟨ 𝓓 ⟩) , is-way-upperbound 𝓓 x α
-                                         × (Σ δ ꞉ is-Directed 𝓓 α , ∐ 𝓓 δ ≡ x))
-    κ : dom → Ind/≈
-    κ = η ∘ (λ (I , α , _ , (δ , _)) → I , α , δ)
-    κ-wconstant : wconstant κ
-    κ-wconstant σ@(I , α , α-way-below-x , (δ , x-sup-of-α))
-                τ@(J , β , β-way-below-x , (ε , x-sup-of-β)) =
-     ≤-is-antisymmetric (κ σ) (κ τ)
-      (η-preserves-order (I , α , δ) (J , β , ε)
-        (λ i → α-way-below-x i J β ε (≡-to-⊒ 𝓓 x-sup-of-β)))
-      (η-preserves-order (J , β , ε) (I , α , δ)
-        (λ j → β-way-below-x j I α δ (≡-to-⊒ 𝓓 x-sup-of-α)))
+    str-cont : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
+    str-cont = (Σ I ꞉ 𝓥 ̇  , Σ α ꞉ (I → ⟨ 𝓓 ⟩)
+                          , is-way-upperbound 𝓓 x α
+                          × (Σ δ ꞉ is-Directed 𝓓 α , ∐ 𝓓 δ ≡ x))
+    κ : str-cont → Ind
+    κ (I , α , _ , (δ , _)) = I , α , δ
+    κ-gives-approximating-family : (σ : str-cont) → κ σ approximates x
+    κ-gives-approximating-family (I , α , α-wb-x , (δ , ∐α-is-x)) =
+     ∐α-is-x , α-wb-x
 
-    ω : Σ ϕ ꞉ (∥ dom ∥ → Ind/≈) , κ ∼ ϕ ∘ ∣_∣
+    ladj : (σ : str-cont) (τ : Ind) → (κ σ ≲ τ) ⇔ (x ⊑⟨ 𝓓 ⟩ ∐-map τ)
+    ladj σ τ = left-adjunct-to-if-approximates
+                (κ σ) x (κ-gives-approximating-family σ) τ
+
+    κ/ : str-cont → Ind/≈
+    κ/ = η ∘ κ
+    κ/-wconstant : wconstant κ/
+    κ/-wconstant σ@(I , α , α-way-below-x , (δ , x-sup-of-α))
+                 τ@(J , β , β-way-below-x , (ε , x-sup-of-β)) =
+     ≤-is-antisymmetric (κ/ σ) (κ/ τ)
+      (η-preserves-order (λ i → α-way-below-x i J β ε (≡-to-⊒ 𝓓 x-sup-of-β)))
+      (η-preserves-order (λ j → β-way-below-x j I α δ (≡-to-⊒ 𝓓 x-sup-of-α)))
+
+    ω : Σ ϕ ꞉ (∥ str-cont ∥ → Ind/≈) , κ/ ∼ ϕ ∘ ∣_∣
     ω = wconstant-map-to-set-factors-through-truncation-of-domain
-         Ind/≈-is-set κ κ-wconstant
+         Ind/≈-is-set κ/ κ/-wconstant
+
    L : ⟨ 𝓓 ⟩ → Ind/≈
    L x = pr₁ ω (pc x)
     where
      open construction x
 
-   ladj : left-adjoint-to-∐-map/ L
-   ladj x α' = ∥∥-rec adj-condition-is-prop r (η-is-surjection α')
+   L-is-ladj : left-adjoint-to-∐-map/ L
+   L-is-ladj x = ∥∥-rec (Π-is-prop fe adj-condition-is-prop) lemma (pc x)
     where
      open construction x
-     adj-condition-is-prop : is-prop ((L x ≤ α') ⇔ (x ⊑⟨ 𝓓 ⟩ ∐-map/ α'))
-     adj-condition-is-prop =
-      (×-is-prop (Π-is-prop fe (λ _ → prop-valuedness 𝓓 x (∐-map/ α')))
-                 (Π-is-prop fe (λ _ → ≤-is-prop-valued (L x) α')))
-     r : (Σ α ꞉ Ind , η α ≡ α')
-       → (L x ≤ α') ⇔ (x ⊑⟨ 𝓓 ⟩ ∐-map/ α')
-     r (α , refl) = ∥∥-rec adj-condition-is-prop ρ (pc x)
+     adj-condition-is-prop : (τ' : Ind/≈)
+                           → is-prop ((L x ≤ τ') ⇔ (x ⊑⟨ 𝓓 ⟩ ∐-map/ τ'))
+     adj-condition-is-prop τ' =
+      (×-is-prop (Π-is-prop fe (λ _ → prop-valuedness 𝓓 x (∐-map/ τ')))
+                 (Π-is-prop fe (λ _ → ≤-is-prop-valued (L x) τ')))
+     lemma : (σ : str-cont) (τ' : Ind/≈) → ((L x ≤ τ') ⇔ (x ⊑⟨ 𝓓 ⟩ ∐-map/ τ'))
+     lemma σ = /-induction adj-condition-is-prop L-is-ladj'
       where
-       ρ : dom → (L x ≤ α') ⇔ (x ⊑⟨ 𝓓 ⟩ ∐-map/ α')
-       ρ τ@(J , β , β-way-below-x , ε , x-sup-of-β) = ⇔-trans claim₁ claim₂
+       L-is-ladj' : (τ : Ind)
+                  → (L x ≤ η τ) ⇔ (x ⊑⟨ 𝓓 ⟩ ∐-map/ (η τ))
+       L-is-ladj' τ = ⇔-trans ⦅1⦆ ⦅2⦆
         where
-         claim₁ : (L x ≤ η α) ⇔ (η (J , β , ε) ≤ η α)
-         claim₁ = lemma₁ eq₁
+         ⦅2⦆ : (κ σ ≲ τ) ⇔ (x ⊑⟨ 𝓓 ⟩ ∐-map/ (η τ))
+         ⦅2⦆ = ⇔-trans (ladj σ τ) (⊑-∐-map/-lemma)
+         ⦅1⦆ : (L x ≤ η τ) ⇔ (κ σ ≲ τ)
+         ⦅1⦆ = ⇔-trans s (⇔-sym η-⇔-order)
           where
-           eq₁ = L x          ≡⟨ refl                                 ⟩
-                 pr₁ ω (pc x)  ≡⟨ ap (pr₁ ω) (∥∥-is-prop (pc x) ∣ τ ∣) ⟩
-                 pr₁ ω ∣ τ ∣   ≡⟨ (pr₂ ω τ) ⁻¹                         ⟩
-                 η (J , β , ε) ∎
-           lemma₁ : {σ τ : Ind/≈} → σ ≡ τ → σ ≤ η α ⇔ τ ≤ η α
-           lemma₁ refl = ⇔-refl
-         claim₂ : (η (J , β , ε) ≤ η α) ⇔ x ⊑⟨ 𝓓 ⟩ ∐-map/ (η α)
-         claim₂ = ⇔-trans ((η-reflects-order  (J , β , ε) α) ,
-                           (η-preserves-order (J , β , ε) α))
-                          (⇔-trans claim₂' (lemma₂ (eq₂ ⁻¹)))
-          where
-           eq₂ : ∐-map/ (η α) ≡ ∐-map α
-           eq₂ = ∐-map/-triangle α
-           lemma₂ : {d e : ⟨ 𝓓 ⟩} → d ≡ e
-                  → x ⊑⟨ 𝓓 ⟩ d ⇔ x ⊑⟨ 𝓓 ⟩ e
-           lemma₂ refl = ⇔-refl
-           claim₂' : ((J , β , ε) ≲ α) ⇔ (x ⊑⟨ 𝓓 ⟩ ∐-map α)
-           claim₂' = ⌜ left-adjoint-to-∐-map-characterization-local
-                        x (J , β , ε) ⌝
-                     (x-sup-of-β , β-way-below-x) α
+           s : (L x ≤ η τ) ⇔ (η (κ σ) ≤ η τ)
+           s = transport (_≤ η τ) e , transport (_≤ η τ) (e ⁻¹)
+            where
+             e : L x ≡ η (κ σ)
+             e = L x          ≡⟨ refl                                 ⟩
+                 pr₁ ω (pc x) ≡⟨ ap (pr₁ ω) (∥∥-is-prop (pc x) ∣ σ ∣) ⟩
+                 pr₁ ω ∣ σ ∣  ≡⟨ (pr₂ ω σ) ⁻¹                         ⟩
+                 η (κ σ)      ∎
 
  pseudocontinuous-if-specified-left-adjoint : ∐-map/-has-specified-left-adjoint
                                             → is-pseudocontinuous-dcpo 𝓓
  pseudocontinuous-if-specified-left-adjoint (L , L-is-left-adjoint) x =
-  ∥∥-rec ∥∥-is-prop r (η-is-surjection (L x))
+  ∥∥-rec ∥∥-is-prop lemma (η-is-surjection (L x))
    where
-    r : (Σ σ ꞉ Ind , η σ ≡ L x)
-      → ∥ Σ I ꞉ 𝓥 ̇  , Σ α ꞉ (I → ⟨ 𝓓 ⟩) , is-way-upperbound 𝓓 x α
-                                        × (Σ δ ꞉ is-Directed 𝓓 α , ∐ 𝓓 δ ≡ x) ∥
-    r (σ@(I , α , δ) , p) = ∣ I , α , pr₂ claim , (δ , pr₁ claim) ∣
+    T : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
+    T = Σ I ꞉ 𝓥 ̇  , Σ α ꞉ (I → ⟨ 𝓓 ⟩) , is-way-upperbound 𝓓 x α
+                                      × (Σ δ ꞉ is-Directed 𝓓 α , ∐ 𝓓 δ ≡ x)
+    lemma : (Σ σ ꞉ Ind , η σ ≡ L x) → ∥ T ∥
+    lemma (σ@(I , α , δ) , e) = ∣ I , α , pr₂ approx , (δ , pr₁ approx) ∣
      where
-      claim : (∐ 𝓓 δ ≡ x) × is-way-upperbound 𝓓 x α
-      claim = ⌜ left-adjoint-to-∐-map-characterization-local x σ ⌝⁻¹
-               ladj-local
+      ladj : (τ : Ind) → (σ ≲ τ) ⇔ (x ⊑⟨ 𝓓 ⟩ ∐-map τ)
+      ladj τ = ⇔-trans (⇔-trans η-⇔-order ladj') (⇔-sym ⊑-∐-map/-lemma)
        where
-        ladj-local : left-adjoint-to-∐-map-local x (I , α , δ)
-        ladj-local τ = ⦅⇒⦆ , ⦅⇐⦆
-         where
-          comm-eq : ∐-map/ (η τ) ≡ ∐-map τ
-          comm-eq = ∐-map/-triangle τ
-          ⦅⇒⦆ : σ ≲ τ → x ⊑⟨ 𝓓 ⟩ ∐-map τ
-          ⦅⇒⦆ σ-cofinal-in-τ = x           ⊑⟨ 𝓓 ⟩[ ⦅1⦆ ]
-                              ∐-map/ (η τ) ⊑⟨ 𝓓 ⟩[ ⦅2⦆ ]
-                              ∐-map      τ ∎⟨ 𝓓 ⟩
-           where
-            ⦅2⦆ = ≡-to-⊑ 𝓓 comm-eq
-            ⦅1⦆ = lr-implication (L-is-left-adjoint x (η τ))
-                  (≤-is-transitive (L x) (η σ) (η τ)
-                    (transport (λ - → - ≤ η σ) p (≤-is-reflexive (η σ)))
-                    ησ-less-than-ητ)
-             where
-              ησ-less-than-ητ : η σ ≤ η τ
-              ησ-less-than-ητ = η-preserves-order σ τ σ-cofinal-in-τ
-          ⦅⇐⦆ : x ⊑⟨ 𝓓 ⟩ ∐-map τ → σ ≲ τ
-          ⦅⇐⦆ x-below-∐τ = η-reflects-order σ τ lem
-           where
-            lem : η σ ≤ η τ
-            lem = transport⁻¹ (λ - → - ≤ η τ) p lem'
-             where
-              lem' : L x ≤ η τ
-              lem' = rl-implication (L-is-left-adjoint x (η τ))
-                      (x            ⊑⟨ 𝓓 ⟩[ x-below-∐τ       ]
-                       ∐-map τ      ⊑⟨ 𝓓 ⟩[ ≡-to-⊒ 𝓓 comm-eq ]
-                       ∐-map/ (η τ) ∎⟨ 𝓓 ⟩)
+        ladj' : (η σ ≤ η τ) ⇔ x ⊑⟨ 𝓓 ⟩ ∐-map/ (η τ)
+        ladj' = transport (λ - → (- ≤ η τ) ⇔ x ⊑⟨ 𝓓 ⟩ ∐-map/ (η τ)) (e ⁻¹)
+                 (L-is-left-adjoint x (η τ))
+      approx : (∐ 𝓓 δ ≡ x) × is-way-upperbound 𝓓 x α
+      approx = approximates-if-left-adjunct-to σ x ladj
 
  specified-left-adjoint-pseudo-continuous-≃ : ∐-map/-has-specified-left-adjoint
                                             ≃ is-pseudocontinuous-dcpo 𝓓

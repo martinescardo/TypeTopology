@@ -176,27 +176,29 @@ also have a map in the other direction which comes in useful at times.
 In our discussions on the notion of continuous dcpo we will be interested in
 ∐-map having a left adjoint, see ContinuityDiscussion.lagda.
 
-We define what that means here and note that it is helpful to also consider a
-"local" variation of the adjoint condition.
+We define what that means here and note that it is helpful to consider an
+auxilliary relation between Ind(D) and D that we call "being left adjunct to",
+because a map L : D → Ind(D) is a left adjoint to ∐-map precisely when L(x) is
+left adjunct to x for every x : D.
 
 \begin{code}
 
- left-adjoint-to-∐-map-local : ⟨ 𝓓 ⟩ → Ind → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
- left-adjoint-to-∐-map-local x α = (β : Ind) → (α ≲ β) ⇔ (x ⊑⟨ 𝓓 ⟩ ∐-map β)
+ _is-left-adjunct-to_ : Ind → ⟨ 𝓓 ⟩ → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
+ α is-left-adjunct-to x = (β : Ind) → (α ≲ β) ⇔ (x ⊑⟨ 𝓓 ⟩ ∐-map β)
 
- left-adjoint-to-∐-map-local-is-prop : (x : ⟨ 𝓓 ⟩) (σ : Ind)
-                                     → is-prop (left-adjoint-to-∐-map-local x σ)
- left-adjoint-to-∐-map-local-is-prop x σ =
+ being-left-adjunct-to-is-prop : (σ : Ind) (x : ⟨ 𝓓 ⟩)
+                               → is-prop (σ is-left-adjunct-to x)
+ being-left-adjunct-to-is-prop σ x =
   Π-is-prop fe (λ τ → ⇔-is-prop fe fe (≲-is-prop-valued σ τ)
                                       (prop-valuedness 𝓓 x (∐-map τ)))
 
  left-adjoint-to-∐-map : (⟨ 𝓓 ⟩ → Ind) → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
- left-adjoint-to-∐-map L = (x : ⟨ 𝓓 ⟩) → left-adjoint-to-∐-map-local x (L x)
+ left-adjoint-to-∐-map L = (x : ⟨ 𝓓 ⟩) → L x is-left-adjunct-to x
 
  being-left-adjoint-to-∐-map-is-prop : (L : ⟨ 𝓓 ⟩ → Ind)
                                      → is-prop (left-adjoint-to-∐-map L)
  being-left-adjoint-to-∐-map-is-prop L =
-  Π-is-prop fe (λ x → left-adjoint-to-∐-map-local-is-prop x (L x))
+  Π-is-prop fe (λ x → being-left-adjunct-to-is-prop (L x) x)
 
  ∐-map-has-specified-left-adjoint : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
  ∐-map-has-specified-left-adjoint = Σ left-adjoint-to-∐-map
@@ -208,73 +210,63 @@ and the way-below relation.
 
 \begin{code}
 
- left-adjoint-to-∐-map-local-criterion : ⟨ 𝓓 ⟩ → Ind → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
- left-adjoint-to-∐-map-local-criterion x (I , α , δ) =
-  (∐ 𝓓 δ ≡ x) × ((i : I) → α i ≪⟨ 𝓓 ⟩ x)
+ _approximates_ : Ind → ⟨ 𝓓 ⟩ → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
+ (I , α , δ) approximates x = (∐ 𝓓 δ ≡ x) × ((i : I) → α i ≪⟨ 𝓓 ⟩ x)
 
- left-adjoint-to-∐-map-local-criterion-is-prop :
-    (x : ⟨ 𝓓 ⟩) (σ : Ind)
-  → is-prop (left-adjoint-to-∐-map-local-criterion x σ)
- left-adjoint-to-∐-map-local-criterion-is-prop x σ =
+ approximates-is-prop : (σ : Ind) (x : ⟨ 𝓓 ⟩) → is-prop (σ approximates x)
+ approximates-is-prop σ x =
   ×-is-prop (sethood 𝓓) (Π-is-prop fe (λ i → ≪-is-prop-valued 𝓓))
 
- left-adjoint-to-∐-map-criterion : (⟨ 𝓓 ⟩ → Ind)
-                                 → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
- left-adjoint-to-∐-map-criterion L =
-  (x : ⟨ 𝓓 ⟩) → left-adjoint-to-∐-map-local-criterion x (L x)
+ is-approximating : (⟨ 𝓓 ⟩ → Ind) → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
+ is-approximating L = (x : ⟨ 𝓓 ⟩) → (L x) approximates x
 
- left-adjoint-to-∐-map-characterization-local :
-    (x : ⟨ 𝓓 ⟩) (σ : Ind)
-  → left-adjoint-to-∐-map-local-criterion x σ
-  ≃ left-adjoint-to-∐-map-local x σ
- left-adjoint-to-∐-map-characterization-local x σ@(I , α , δ) =
-  logically-equivalent-props-are-equivalent
-   (left-adjoint-to-∐-map-local-criterion-is-prop x σ)
-   (left-adjoint-to-∐-map-local-is-prop x σ)
-   ⦅⇒⦆ ⦅⇐⦆
+ left-adjunct-to-if-approximates : (σ : Ind) (x : ⟨ 𝓓 ⟩)
+                                 → σ approximates x → σ is-left-adjunct-to x
+ left-adjunct-to-if-approximates σ@(I , α , δ) x (x-sup-of-α , α-way-below-x)
+                                 τ@(J , β , ε) = ⦅⇒⦆ , ⦅⇐⦆
+  where
+   ⦅⇒⦆ : σ ≲ τ → x ⊑⟨ 𝓓 ⟩ ∐-map τ
+   ⦅⇒⦆ α-cofinal-in-β = transport (λ - → - ⊑⟨ 𝓓 ⟩ ∐-map τ) x-sup-of-α
+                        (≲-to-⊑-of-∐ δ ε α-cofinal-in-β)
+   ⦅⇐⦆ : x ⊑⟨ 𝓓 ⟩ ∐-map τ → σ ≲ τ
+   ⦅⇐⦆ x-below-∐β i = α-way-below-x i J β ε x-below-∐β
+
+ approximates-if-left-adjunct-to : (σ : Ind) (x : ⟨ 𝓓 ⟩)
+                                 → σ is-left-adjunct-to x
+                                 → σ approximates x
+ approximates-if-left-adjunct-to σ@(I , α , δ) x ladj =
+  x-is-sup-of-α , α-way-below-x
    where
-    ⦅⇒⦆ : left-adjoint-to-∐-map-local-criterion x σ
-        → left-adjoint-to-∐-map-local x σ
-    ⦅⇒⦆ (x-sup-of-α , α-way-below-x) τ@(J , β , ε) = lr , rl
+    α-way-below-x : (i : I) → α i ≪⟨ 𝓓 ⟩ x
+    α-way-below-x i J β ε x-below-∐β = h i
      where
-      lr : σ ≲ τ → x ⊑⟨ 𝓓 ⟩ ∐-map τ
-      lr α-cofinal-in-β = transport (λ - → - ⊑⟨ 𝓓 ⟩ ∐-map τ) x-sup-of-α
-                           (≲-to-⊑-of-∐ δ ε α-cofinal-in-β)
-      rl : x ⊑⟨ 𝓓 ⟩ ∐-map τ → σ ≲ τ
-      rl x-below-∐β i = α-way-below-x i J β ε x-below-∐β
-    ⦅⇐⦆ : left-adjoint-to-∐-map-local x σ
-        → left-adjoint-to-∐-map-local-criterion x σ
-    ⦅⇐⦆ ladj = ⦅1⦆ , ⦅2⦆
+      h : (I , α , δ) ≲ (J , β , ε)
+      h = rl-implication (ladj (J , β , ε)) x-below-∐β
+    x-is-sup-of-α : ∐ 𝓓 δ ≡ x
+    x-is-sup-of-α = antisymmetry 𝓓 (∐ 𝓓 δ) x ⦅1⦆ ⦅2⦆
      where
-      ⦅2⦆ : (i : I) → α i ≪⟨ 𝓓 ⟩ x
-      ⦅2⦆ i J β ε x-below-∐β = h i
-       where
-        h : (I , α , δ) ≲ (J , β , ε)
-        h = rl-implication (ladj (J , β , ε)) x-below-∐β
-      ⦅1⦆ : ∐ 𝓓 δ ≡ x
-      ⦅1⦆ = antisymmetry 𝓓 (∐ 𝓓 δ) x u v
-       where
-        v : x ⊑⟨ 𝓓 ⟩ ∐ 𝓓 δ
-        v = lr-implication (ladj (I , α , δ)) (≲-is-reflexive (I , α , δ))
-        u : ∐ 𝓓 δ ⊑⟨ 𝓓 ⟩ x
-        u = ∐ 𝓓 δ ⊑⟨ 𝓓 ⟩[ ⦅a⦆ ]
-            ∐ 𝓓 ε ⊑⟨ 𝓓 ⟩[ ⦅b⦆ ]
-            x     ∎⟨ 𝓓 ⟩
-         where
-          ε : is-Directed 𝓓 ⌞ x ⌟
-          ε = ⌞⌟-is-directed x
-          ⦅a⦆ = ≲-to-⊑-of-∐ δ ε
-                (rl-implication (ladj (ι x)) (∐-is-upperbound 𝓓 ε ⋆))
-          ⦅b⦆ = ∐-is-lowerbound-of-upperbounds 𝓓 ε x (λ _ → reflexivity 𝓓 x)
+      ⦅1⦆ : ∐ 𝓓 δ ⊑⟨ 𝓓 ⟩ x
+      ⦅1⦆ = ∐-is-lowerbound-of-upperbounds 𝓓 δ x
+            (λ i → ≪-to-⊑ 𝓓 (α-way-below-x i))
+      ⦅2⦆ : x ⊑⟨ 𝓓 ⟩ ∐ 𝓓 δ
+      ⦅2⦆ = lr-implication (ladj σ) (≲-is-reflexive σ)
+
+ approximate-left-adjunct-to-≃ : (σ : Ind) (x : ⟨ 𝓓 ⟩)
+                               → σ approximates x ≃ σ is-left-adjunct-to x
+ approximate-left-adjunct-to-≃ σ x = logically-equivalent-props-are-equivalent
+                                      (approximates-is-prop σ x)
+                                      (being-left-adjunct-to-is-prop σ x)
+                                      (left-adjunct-to-if-approximates σ x)
+                                      (approximates-if-left-adjunct-to σ x)
 
  left-adjoint-to-∐-map-characterization : (L : ⟨ 𝓓 ⟩ → Ind)
-                                        → left-adjoint-to-∐-map-criterion L
+                                        → is-approximating L
                                         ≃ left-adjoint-to-∐-map L
  left-adjoint-to-∐-map-characterization L =
   Π-cong fe fe ⟨ 𝓓 ⟩
-   (λ x → left-adjoint-to-∐-map-local-criterion x (L x))
-   (λ x → left-adjoint-to-∐-map-local x (L x))
-   (λ x → left-adjoint-to-∐-map-characterization-local x (L x))
+   (λ x → (L x) approximates x)
+   (λ x → (L x) is-left-adjunct-to x)
+   (λ x → approximate-left-adjunct-to-≃ (L x) x)
 
 \end{code}
 

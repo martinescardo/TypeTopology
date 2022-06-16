@@ -19,7 +19,7 @@ module PosetReflection
        where
 
 open import UF-Base hiding (_≈_)
-open import UF-Large-Quotient pt fe pe
+open import UF-Large-Quotient pt fe pe hiding (/-induction)
 open import UF-ImageAndSurjection
 open import UF-Subsingletons-FunExt
 
@@ -81,32 +81,41 @@ module poset-reflection
  η-is-surjection : is-surjection η
  η-is-surjection = η/-is-surjection ≋
 
- η-reflects-order : (x y : X) → η x ≤ η y → x ≲ y
- η-reflects-order x y =
+ η-reflects-order : {x y : X} → η x ≤ η y → x ≲ y
+ η-reflects-order {x} {y} =
   Idtofun (ap pr₁ (extension-rel-triangle₂ ≋ _≲Ω_ ≲-congruence x y))
 
- η-preserves-order : (x y : X) → x ≲ y → η x ≤ η y
- η-preserves-order x y =
+ η-preserves-order : {x y : X} → x ≲ y → η x ≤ η y
+ η-preserves-order {x} {y} =
   Idtofun (ap pr₁ ((extension-rel-triangle₂ ≋ _≲Ω_ ≲-congruence x y) ⁻¹))
 
+ η-⇔-order : {x y : X} → x ≲ y ⇔ η x ≤ η y
+ η-⇔-order = η-preserves-order , η-reflects-order
+
+ /-induction : ∀ {𝓦} {P : X / ≋ → 𝓦 ̇ }
+             → ((x' : X / ≋) → is-prop (P x'))
+             → ((x : X) → P (η x))
+             → (x' : X / ≋) → P x'
+ /-induction = /-induction' ≋
+
  ≤-is-reflexive : (x' : X / ≋) → x' ≤ x'
- ≤-is-reflexive = /-induction' ≋ (λ x' → ≤-is-prop-valued x' x')
-                                 (λ x → η-preserves-order x x (≲-is-reflexive x))
+ ≤-is-reflexive = /-induction (λ x' → ≤-is-prop-valued x' x')
+                              (λ x → η-preserves-order (≲-is-reflexive x))
 
  ≤-is-transitive : (x' y' z' : X / ≋) → x' ≤ y' → y' ≤ z' → x' ≤ z'
  ≤-is-transitive =
   /-induction₃ ≋ (λ x' y' z' → Π₂-is-prop fe (λ _ _ → ≤-is-prop-valued x' z'))
-                 (λ x y z k l → η-preserves-order x z
+                 (λ x y z k l → η-preserves-order
                                  (≲-is-transitive x y z
-                                   (η-reflects-order x y k)
-                                   (η-reflects-order y z l)))
+                                   (η-reflects-order k)
+                                   (η-reflects-order l)))
 
  ≤-is-antisymmetric : (x' y' : X / ≋) → x' ≤ y' → y' ≤ x' → x' ≡ y'
  ≤-is-antisymmetric =
   /-induction₂ ≋ (λ x' q → Π₂-is-prop fe (λ _ _ → quotient-is-set ≋))
                  (λ x y k l → η/-identifies-related-points ≋
-                               ( η-reflects-order x y k
-                               , η-reflects-order y x l))
+                               ( η-reflects-order k
+                               , η-reflects-order l))
 
 \end{code}
 
@@ -142,7 +151,7 @@ it is convenient to assume it (for now) anyway.
     f̃-mon = /-induction₂ ≋
              (λ x' y' → Π-is-prop fe (λ _ → ⊑-prop (f̃ x') (f̃ y')))
              (λ x y l → transport₂ _⊑_ ((f̃-eq x) ⁻¹) ((f̃-eq y) ⁻¹)
-                         (f-mon x y (η-reflects-order x y l)))
+                         (f-mon x y (η-reflects-order l)))
     f̃-is-unique : (g : X / ≋ → Q)
                 → ((x' y' : X / ≋) → x' ≤ y' → g x' ⊑ g y')
                 → (g ∘ η ∼ f)
