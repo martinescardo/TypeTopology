@@ -382,13 +382,12 @@ module _
  pseudocontinuous-if-specified-left-adjoint : ∐-map/-has-specified-left-adjoint
                                             → is-pseudocontinuous-dcpo 𝓓
  pseudocontinuous-if-specified-left-adjoint (L , L-is-left-adjoint) x =
-  ∥∥-rec ∥∥-is-prop lemma (η-is-surjection (L x))
+  ∥∥-functor lemma (η-is-surjection (L x))
    where
-    T : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
-    T = Σ I ꞉ 𝓥 ̇  , Σ α ꞉ (I → ⟨ 𝓓 ⟩) , is-way-upperbound 𝓓 x α
-                                      × (Σ δ ꞉ is-Directed 𝓓 α , ∐ 𝓓 δ ≡ x)
-    lemma : (Σ σ ꞉ Ind , η σ ≡ L x) → ∥ T ∥
-    lemma (σ@(I , α , δ) , e) = ∣ I , α , pr₂ approx , (δ , pr₁ approx) ∣
+    lemma : (Σ σ ꞉ Ind , η σ ≡ L x)
+          → Σ I ꞉ 𝓥 ̇  , Σ α ꞉ (I → ⟨ 𝓓 ⟩) , is-way-upperbound 𝓓 x α
+                                          × (Σ δ ꞉ is-Directed 𝓓 α , ∐ 𝓓 δ ≡ x)
+    lemma (σ@(I , α , δ) , e) = I , α , pr₂ approx , (δ , pr₁ approx)
      where
       ladj : (τ : Ind) → (σ ≲ τ) ⇔ (x ⊑⟨ 𝓓 ⟩ ∐-map τ)
       ladj τ = ⇔-trans (⇔-trans η-⇔-order ladj') (⇔-sym ⊑-∐-map/-lemma)
