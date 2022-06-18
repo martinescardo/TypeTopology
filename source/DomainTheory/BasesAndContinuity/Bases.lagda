@@ -431,27 +431,21 @@ element is compact.
  small-and-compact-basis β-is-small-basis κ =
   record
    { basis-is-compact = κ
-   ; ⊑ᴮ-is-small      = I
-   ; ↓ᴮ-is-directed   = II
-   ; ↓ᴮ-is-sup        = III
+   ; ⊑ᴮ-is-small      = λ x b → ( b ≪ᴮₛ x
+                              , ((b ≪ᴮₛ x)    ≃⟨ ≪ᴮₛ-≃-≪ᴮ ⟩
+                                 β b ≪⟨ 𝓓 ⟩ x ≃⟨ lemma b ⟩
+                                 β b ⊑⟨ 𝓓 ⟩ x ■))
+   ; ↓ᴮ-is-directed   = λ x → reindexed-family-is-directed 𝓓
+                               (↡ᴮ-≃-↓ᴮ x) (↡-inclusion 𝓓 β x) (↡ᴮ-is-directed x)
+   ; ↓ᴮ-is-sup        = λ x → reindexed-family-sup 𝓓
+                               (↡ᴮ-≃-↓ᴮ x) (↡-inclusion 𝓓 β x) x (↡ᴮ-is-sup x)
    }
    where
     open is-small-basis β-is-small-basis
-    module _
-            (x : ⟨ 𝓓 ⟩)
-           where
-     ↡-and-↓-coincide : ↡ᴮ 𝓓 β x ≃ ↓ᴮ x
-     ↡-and-↓-coincide = Σ-cong (λ b → ≃-sym (compact-⊑-≃-≪ 𝓓 (κ b)))
-     I : (b : B) → is-small (β b ⊑⟨ 𝓓 ⟩ x)
-     I b = ⌜ local-smallness-equivalent-definitions 𝓓 ⌝
-            (locally-small-if-small-basis 𝓓 β β-is-small-basis)
-            (β b) x
-     II : is-Directed 𝓓 (↓-inclusion x)
-     II = reindexed-family-is-directed 𝓓 ↡-and-↓-coincide (↡-inclusion 𝓓 β x)
-           (↡ᴮ-is-directed x)
-     III : is-sup (underlying-order 𝓓) x (↓-inclusion x)
-     III = reindexed-family-sup 𝓓 ↡-and-↓-coincide (↡-inclusion 𝓓 β x)
-                                                   x (↡ᴮ-is-sup x)
+    lemma : (b : B) {x : ⟨ 𝓓 ⟩} → (β b ≪⟨ 𝓓 ⟩ x) ≃ (β b ⊑⟨ 𝓓 ⟩ x)
+    lemma b = ≃-sym (compact-⊑-≃-≪ 𝓓 (κ b))
+    ↡ᴮ-≃-↓ᴮ : (x : ⟨ 𝓓 ⟩) → ↡ᴮ 𝓓 β x ≃ ↓ᴮ x
+    ↡ᴮ-≃-↓ᴮ x = Σ-cong (λ b → lemma b)
 
 \end{code}
 
