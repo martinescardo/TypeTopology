@@ -193,41 +193,6 @@ module _
 
 \end{code}
 
-One may observe that ∐-map-has-specified-left-adjoint does not require the
-specified left adjoint to be functorial/monotone, as would normally be required
-for an adjoint/Galois connection. But this actually follows from the "hom-set"
-condition, as we show now.
-
-The proof works because the approximating families are given by the left
-adjoint, by definition of structurally-continuous-if-specified-left-adjoint.
-
-\begin{code}
-
- left-adjoint-to-∐-map-is-monotone : (L : ⟨ 𝓓 ⟩ → Ind)
-                                   → left-adjoint-to-∐-map L
-                                   → (x y : ⟨ 𝓓 ⟩)
-                                   → x ⊑⟨ 𝓓 ⟩ y
-                                   → L x ≲ L y
- left-adjoint-to-∐-map-is-monotone L L-left-adjoint x y x-below-y = γ
-  where
-   C = structurally-continuous-if-specified-left-adjoint (L , L-left-adjoint)
-   open structurally-continuous C
-   I : 𝓥 ̇
-   I = index-of-approximating-family x
-   J : 𝓥 ̇
-   J = index-of-approximating-family y
-   xi-way-below-y : (i : I) → approximating-family x i ≪⟨ 𝓓 ⟩ y
-   xi-way-below-y i = ≪-⊑-to-≪ 𝓓 (approximating-family-is-way-below x i)
-                                 x-below-y
-   γ : (i : I) → ∃ j ꞉ J , approximating-family x i ⊑⟨ 𝓓 ⟩
-                           approximating-family y j
-   γ i = xi-way-below-y i (index-of-approximating-family y)
-                          (approximating-family y)
-                          (approximating-family-is-directed y)
-                          (approximating-family-∐-⊒ y)
-
-\end{code}
-
 It follows immediately that a dcpo is continuous if and only if ∐-map has an
 unspecified left adjoint.
 

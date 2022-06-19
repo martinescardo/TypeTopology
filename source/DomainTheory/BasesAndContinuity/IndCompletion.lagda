@@ -270,6 +270,32 @@ and the way-below relation.
 
 \end{code}
 
+One may observe that the type (left-to-adjoint-to-∐-map L) does not require L to
+be functorial/monotone, as would normally be required for an adjoint/Galois
+connection. But this actually follows from the "hom-set" condition, as we show
+now.
+
+\begin{code}
+
+ left-adjoint-to-∐-map-is-monotone : (L : ⟨ 𝓓 ⟩ → Ind)
+                                   → left-adjoint-to-∐-map L
+                                   → (x y : ⟨ 𝓓 ⟩)
+                                   → x ⊑⟨ 𝓓 ⟩ y
+                                   → L x ≲ L y
+ left-adjoint-to-∐-map-is-monotone L L-left-adjoint x y x-below-y = γ
+  where
+   γ : L x ≲ L y
+   γ = rl-implication (L-left-adjoint x (L y)) x-below-∐-Ly
+    where
+     x-below-∐-Ly = x           ⊑⟨ 𝓓 ⟩[ x-below-y             ]
+                    y           ⊑⟨ 𝓓 ⟩[ ≡-to-⊒ 𝓓 (pr₁ approx) ]
+                    ∐-map (L y) ∎⟨ 𝓓 ⟩
+      where
+       approx : L y approximates y
+       approx = approximates-if-left-adjunct-to (L y) y (L-left-adjoint y)
+
+\end{code}
+
 Because Ind is a preorder and not a poset, the type expressing that ∐-map has a
 specified left adjoint is not a proposition, as the supposed left adjoint can
 map elements of 𝓓 to bicofinal (but nonequal) directed families.
