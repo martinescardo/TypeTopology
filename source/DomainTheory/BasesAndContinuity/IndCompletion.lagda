@@ -46,6 +46,12 @@ module Ind-completion
  Ind : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
  Ind = Σ I ꞉ 𝓥 ̇  , Σ α ꞉ (I → ⟨ 𝓓 ⟩) , is-Directed 𝓓 α
 
+ index-of-underlying-family : Ind → 𝓥 ̇
+ index-of-underlying-family = pr₁
+
+ underlying-family : (α : Ind) → index-of-underlying-family α → ⟨ 𝓓 ⟩
+ underlying-family α = pr₁ (pr₂ α)
+
  _≲_ : Ind → Ind → 𝓥 ⊔ 𝓣 ̇
  (I , α , _) ≲ (J , β , _) = (i : I) → ∃ j ꞉ J , α i ⊑⟨ 𝓓 ⟩ β j
 
@@ -120,6 +126,10 @@ We now construct directed suprema of 𝓥-small families in Ind.
                                , (β (i₂ , j₂)  ⊑⟨ 𝓓 ⟩[ v₂ ]
                                   β (i  , jⁱ₂) ⊑⟨ 𝓓 ⟩[ w₂ ]
                                   β (i  , j)   ∎⟨ 𝓓 ⟩))
+
+ Ind-∐-is-directed : {I : 𝓥 ̇  } (𝓐 : I → Ind) (δ : is-directed _≲_ 𝓐)
+                   → is-Directed 𝓓 (underlying-family (Ind-∐ 𝓐 δ))
+ Ind-∐-is-directed 𝓐 δ = pr₂ (pr₂ (Ind-∐ 𝓐 δ))
 
  Ind-∐-is-upperbound : {I : 𝓥 ̇  } (𝓐 : I → Ind) (δ : is-directed _≲_ 𝓐)
                      → is-upperbound _≲_ (Ind-∐ 𝓐 δ) 𝓐
