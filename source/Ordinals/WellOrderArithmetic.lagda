@@ -952,7 +952,7 @@ module extension
         (a : A)
        where
 
- open import InjectiveTypes fe
+ open import InjectiveTypes.Blackboard fe
 
  private
   _≺_ : (Y / j) a → (Y / j) a → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇

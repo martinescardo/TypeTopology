@@ -86,7 +86,6 @@ import MLTT.index
 import UF.index
 import Notation.index
 import BooleanCompactness.index
-import InjectiveTypes-article
 import TheTopologyOfTheUniverse
 import RicesTheoremForTheUniverse
 import Ordinals.index
@@ -148,8 +147,7 @@ import FreeSupLattice                  -- By Tom de Jong
 import HiggsInvolutionTheorem
 import InitialBinarySystem    -- More work than needed!
 import InitialBinarySystem2   -- No need to work with subtype of normal elements.
-import InjectiveTypes-article
-import InjectiveTypes
+import InjectiveTypes.index
 import JoinSemiLattices                -- By Tom de Jong
 import LawvereFPT
 import LexicographicOrder
@@ -391,7 +389,7 @@ universes:
 
 \begin{code}
 
-import InjectiveTypes
+import InjectiveTypes.Blackboard
 
 \end{code}
 

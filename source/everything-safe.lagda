@@ -67,8 +67,6 @@ import HiggsInvolutionTheorem
 import InitialBinarySystem2
 import InitialBinarySystem
 import InitialFrame
-import InjectiveTypes-article
-import InjectiveTypes
 import Integers
 import Integers-Properties
 import Integers-SymmetricInduction

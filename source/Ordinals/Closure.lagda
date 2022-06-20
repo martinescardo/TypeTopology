@@ -40,7 +40,7 @@ open import Ordinals.ToppedArithmetic fe
 
 open import CoNaturals.GenericConvergentSequence
 
-open import InjectiveTypes fe
+open import InjectiveTypes.Blackboard fe
 
 open import LexicographicOrder
 open import DiscreteAndSeparated

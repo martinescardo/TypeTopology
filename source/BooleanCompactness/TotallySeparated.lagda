@@ -477,7 +477,7 @@ proper extension).
 
 module _ (fe : FunExt)  where
 
- open import InjectiveTypes fe
+ open import InjectiveTypes.Blackboard fe
 
  /-is-totally-separated : (fe : FunExt)
                           {X : 𝓤 ̇ } {A : 𝓥 ̇ }

@@ -21,7 +21,7 @@ open import Ordinals.WellOrderArithmetic
 
 module ordinals-injectivity (fe : FunExt) where
 
- open import InjectiveTypes fe
+ open import InjectiveTypes.Blackboard fe
 
  _↗_ : {I : 𝓤  ̇ } {J : 𝓥 ̇ }
      → (I → Ordinal 𝓦)
@@ -80,7 +80,7 @@ module ordinals-injectivity (fe : FunExt) where
 
 module topped-ordinals-injectivity (fe : FunExt) where
 
- open import InjectiveTypes fe
+ open import InjectiveTypes.Blackboard fe
  open import Ordinals.ToppedType fe
 
  _↗_ : {I : 𝓤  ̇ } {J : 𝓥 ̇ }

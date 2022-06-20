@@ -13,7 +13,7 @@ module BooleanCompactness.ExtendedSumCompact (fe : FunExt) where
 open import BooleanCompactness.CompactTypes
 open import BooleanCompactness.PropTychonoff fe
 
-open import InjectiveTypes fe
+open import InjectiveTypes.Blackboard fe
 
 extended-sum-compact∙ : {X : 𝓤 ̇ } {K : 𝓥 ̇ } {Y : X → 𝓦 ̇ } (j : X → K) → is-embedding j
                       → ((x : X) → compact∙ (Y x)) → compact∙ K → compact∙ (Σ (Y / j))

@@ -123,7 +123,7 @@ module TheTopologyOfTheUniverse (fe : FunExt) where
 open import MLTT.Spartan
 open import UF.Equiv
 open import CoNaturals.GenericConvergentSequence
-open import InjectiveTypes fe
+open import InjectiveTypes.Blackboard fe
 open import Notation.CanonicalMap
 
 \end{code}

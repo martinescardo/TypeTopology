@@ -25,7 +25,7 @@ open import BooleanCompactness.CompactTypes
 open import BooleanCompactness.GenericConvergentSequence fe₀
 open import BooleanCompactness.SigmaDiscreteAndTotallySeparated
 open import BooleanCompactness.ExtendedSumCompact fe
-open import InjectiveTypes fe
+open import InjectiveTypes.Blackboard fe
 open import DiscreteAndSeparated
 open import Notation.CanonicalMap
 open import PairFun
