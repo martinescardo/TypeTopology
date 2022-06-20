@@ -989,7 +989,7 @@ also is not a successor ordinal unless LPO holds:
      VII : f ∞ ≺⟨ ω ⟩ f ∞
      VII = VI (f ∞) V
 
- open import LPO fe
+ open import Taboos.LPO fe
 
  ℕ∞-successor-gives-LPO : (Σ α ꞉ Ordinal 𝓤₀ , (ℕ∞ₒ ≡ (α +ₒ 𝟙ₒ))) → LPO
  ℕ∞-successor-gives-LPO (α , p) = IV

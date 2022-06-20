@@ -25,7 +25,7 @@ constructively, well, taboos!
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module WLPO where
+module Taboos.WLPO where
 
 open import MLTT.Spartan
 open import CoNaturals.GenericConvergentSequence

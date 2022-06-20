@@ -58,8 +58,8 @@ open import UF.Miscelanea
 open import DiscreteAndSeparated
 open import BinaryNaturals hiding (_+_)
 open import MLTT.Two-Properties
-open import WLPO
-open import LPO fe
+open import Taboos.WLPO
+open import Taboos.LPO fe
 open import Density
 open import PairFun
 

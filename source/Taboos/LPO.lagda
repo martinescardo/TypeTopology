@@ -28,7 +28,7 @@ GenericConvergentSequence)
 
 open import UF.FunExt
 
-module LPO (fe : FunExt) where
+module Taboos.LPO (fe : FunExt) where
 
 open import MLTT.Spartan
 open import UF.Base

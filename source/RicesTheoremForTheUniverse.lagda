@@ -74,8 +74,8 @@ open import UF.Equiv
 open import UF.EquivalenceExamples
 open import TheTopologyOfTheUniverse fe
 open import CoNaturals.GenericConvergentSequence
-open import WLPO
-open import BasicDiscontinuityTaboo fe
+open import Taboos.WLPO
+open import Taboos.BasicDiscontinuity fe
 open import Notation.CanonicalMap
 
 \end{code}

@@ -110,7 +110,7 @@ All modules in alphabetical order:
 import ADecidableQuantificationOverTheNaturals -- Proved by Martin Escardo, formalized by Chuangjie Xu.
 import ArithmeticViaEquivalence
 import BanachFixedPointTheorem -- By Todd Waugh Ambridge
-import BasicDiscontinuityTaboo
+import Taboos.index
 import BinaryNaturals
 import CantorSchroederBernstein
 import CantorSchroederBernstein-TheoryLabLunch
@@ -155,7 +155,6 @@ import LawvereFPT
 import LexicographicOrder
 import Lifting.index
 import List
-import LPO
 import Lumsdaine
 import NaturalsAddition
 import NaturalsOrder
@@ -185,7 +184,6 @@ import TheTopologyOfTheUniverse
 import UnivalenceFromScratch
 import W
 import W-Properties
-import WLPO
 
 \end{code}
 
@@ -264,7 +262,7 @@ that the function type LPO→ℕ is compact:
 
 \begin{code}
 
-import LPO
+import Taboos.LPO
 
 \end{code}
 
@@ -272,7 +270,7 @@ See also:
 
 \begin{code}
 
-import WLPO
+import Taboos.WLPO
 
 \end{code}
 
@@ -385,7 +383,7 @@ Theorem mentioned above:
 
 \begin{code}
 
-import BasicDiscontinuityTaboo
+import Taboos.BasicDiscontinuity
 
 \end{code}
 

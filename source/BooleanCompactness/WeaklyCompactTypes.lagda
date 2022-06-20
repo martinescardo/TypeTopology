@@ -19,7 +19,7 @@ open import MLTT.Plus-Properties
 
 open import DisconnectedTypes
 open import DiscreteAndSeparated
-open import WLPO
+open import Taboos.WLPO
 open import Notation.Order
 
 open import UF.Base

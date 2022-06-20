@@ -19,7 +19,6 @@ import AdjointFunctorTheoremForFrames
 -- import AllModulesIndex
 import ArithmeticViaEquivalence
 import BanachFixedPointTheorem
-import BasicDiscontinuityTaboo
 import BinaryNaturals
 import Notation.CanonicalMap
 -- import CantorCompact
@@ -77,7 +76,6 @@ import JoinSemiLattices
 import LawvereFPT
 import LexicographicOrder
 import Lifting.index
-import LPO
 import Lumsdaine
 import NaturalsAddition
 import NaturalsOrder
@@ -159,7 +157,6 @@ import UF.Yoneda
 import UnivalenceFromScratch
 -- import UnsafeModulesIndex
 import W
-import WLPO
 import W-Properties
 
 \end{code}

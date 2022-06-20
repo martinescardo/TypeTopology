@@ -15,7 +15,7 @@ module BooleanCompactness.SigmaDiscreteAndTotallySeparated where
 open import MLTT.Spartan
 
 open import DiscreteAndSeparated
-open import WLPO
+open import Taboos.WLPO
 open import CoNaturals.GenericConvergentSequence
 open import BooleanCompactness.CompactTypes
 open import BooleanCompactness.TotallySeparated

@@ -14,13 +14,13 @@ be eventually constant (which we don't postulate).
 open import MLTT.Spartan
 open import UF.FunExt
 
-module BasicDiscontinuityTaboo (fe : FunExt) where
+module Taboos.BasicDiscontinuity (fe : FunExt) where
 
 
 open import MLTT.Two-Properties
 open import MLTT.Plus-Properties
 open import CoNaturals.GenericConvergentSequence
-open import WLPO
+open import Taboos.WLPO
 open import Notation.CanonicalMap
 
 basic-discontinuity : (ℕ∞ → 𝟚) → 𝓤₀ ̇
