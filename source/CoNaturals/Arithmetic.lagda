@@ -26,7 +26,7 @@ codistances) is minimum.
 open import SpartanMLTT
 open import UF-FunExt
 
-module CoNaturals.CoNaturalsArithmetic (fe : FunExt) where
+module CoNaturals.Arithmetic (fe : FunExt) where
 
 private
  fe₀ : funext 𝓤₀ 𝓤₀
@@ -34,7 +34,7 @@ private
 
 open import Two-Properties
 open import CoNaturals.GenericConvergentSequence renaming (min to min')
-open import CoNaturals.CoNaturals fe
+open import CoNaturals.UniversalProperty fe
 open import Notation.Order
 open import Notation.CanonicalMap
 open import UF-Base

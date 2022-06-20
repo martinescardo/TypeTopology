@@ -12,7 +12,7 @@ module BanachFixedPointTheorem (fe : FunExt) where
 
 open import SpartanMLTT
 open import CoNaturals.GenericConvergentSequence hiding (min)
-open import CoNaturals.CoNaturalsArithmetic fe
+open import CoNaturals.Arithmetic fe
 open import Closeness fe
 open import NaturalsOrder
 open import UF-Miscelanea

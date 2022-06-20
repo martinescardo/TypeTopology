@@ -31,7 +31,7 @@ open import Two-Properties
 open import CoNaturals.GenericConvergentSequence
 open import NaturalsAddition renaming (_+_ to _∔_)
 open import BooleanCompactness.SquashedSum fe
-open import CoNaturals.CoNaturals fe
+open import CoNaturals.UniversalProperty fe
 open import Sequence fe renaming (head to head' ; tail to tail' ; _∶∶_ to _∶∶'_)
 open import InjectiveTypes fe
 open import Notation.CanonicalMap

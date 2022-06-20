@@ -4,9 +4,9 @@
 
 module CoNaturals.index where
 
-import CoNaturals.CoNaturals
-import CoNaturals.CoNaturalsArithmetic
-import CoNaturals.CoNaturalsExercise
+import CoNaturals.UniversalProperty
+import CoNaturals.UniversalPropertyArithmetic
+import CoNaturals.UniversalPropertyExercise
 import CoNaturals.GenericConvergentSequence
 
 \end{code}

@@ -420,8 +420,8 @@ illustrative example:
 
 \begin{code}
 
-import CoNaturals.CoNaturals
-import CoNaturals.CoNaturalsExercise
+import CoNaturals.UniversalProperty
+import CoNaturals.Exercise
 
 \end{code}
 
