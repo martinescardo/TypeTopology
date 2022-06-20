@@ -6,7 +6,7 @@ Martin Escardo, 18 January 2021.
 
 open import UF-Univalence
 
-module OrdinalArithmetic-Properties
+module Ordinals.Arithmetic-Properties
        (ua : Univalence)
        where
 
@@ -31,11 +31,12 @@ private
  pe = Univalence-gives-PropExt ua
 
 open import SpartanMLTT
-open import OrdinalsType
-open import OrdinalNotions
-open import OrdinalOfOrdinals ua
-open import OrdinalArithmetic fe
 open import Plus-Properties
+
+open import Ordinals.Type
+open import Ordinals.Notions
+open import Ordinals.OrdinalOfOrdinals ua
+open import Ordinals.Arithmetic fe
 
 𝟘ₒ-left-neutral : (α : Ordinal 𝓤) → 𝟘ₒ +ₒ α ≡ α
 𝟘ₒ-left-neutral α = eqtoidₒ (𝟘ₒ +ₒ α) α h
@@ -546,7 +547,7 @@ equivalent order _⊴_.
 
 module _ {𝓤 : Universe} where
 
- open import OrdinalOfTruthValues fe 𝓤 (pe 𝓤)
+ open import Ordinals.OrdinalOfTruthValues fe 𝓤 (pe 𝓤)
 
  open import DiscreteAndSeparated
  open import UF-Miscelanea
@@ -772,7 +773,7 @@ module _ (pt : propositional-truncations-exist)
          (sr : Set-Replacement pt)
        where
 
- open import OrdinalOfOrdinalsSuprema ua
+ open import Ordinals.OrdinalOfOrdinalsSuprema ua
  open suprema pt sr
 
 \end{code}
@@ -1024,8 +1025,8 @@ Added 4th May 2022.
 
 \begin{code}
 
-open import OrdinalsToppedType fe
-open import OrdinalToppedArithmetic fe
+open import Ordinals.ToppedType fe
+open import Ordinals.ToppedArithmetic fe
 
 alternative-plusₒ : (τ₀ τ₁ : Ordinalᵀ 𝓤)
                  → [ τ₀ +ᵒ τ₁ ] ≃ₒ ([ τ₀ ] +ₒ [ τ₁ ])

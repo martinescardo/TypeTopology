@@ -8,10 +8,10 @@ still use the terminology "ordinal" here.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module OrdinalsWellOrderArithmetic where
+module Ordinals.WellOrderArithmetic where
 
 open import SpartanMLTT hiding (transitive)
-open import OrdinalNotions
+open import Ordinals.Notions
 
 open import UF-Base
 open import UF-Subsingletons

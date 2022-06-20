@@ -32,7 +32,7 @@ notably doesn't use set quotients.
 open import UF-Quotient
 open import UF-Univalence
 
-module OrdinalOfOrdinalsSuprema
+module Ordinals.OrdinalOfOrdinalsSuprema
         (ua : Univalence)
        where
 
@@ -47,9 +47,9 @@ open import UF-Size
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
 
-open import OrdinalNotions hiding (is-prop-valued)
-open import OrdinalOfOrdinals ua
-open import OrdinalsType
+open import Ordinals.Notions hiding (is-prop-valued)
+open import Ordinals.OrdinalOfOrdinals ua
+open import Ordinals.Type
 
 private
  fe : FunExt
@@ -64,7 +64,7 @@ private
  pe' : Prop-Ext
  pe' {𝓤} = pe 𝓤
 
-open import OrdinalsWellOrderTransport fe
+open import Ordinals.WellOrderTransport fe
 
 \end{code}
 

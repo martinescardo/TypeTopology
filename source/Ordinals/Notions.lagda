@@ -19,7 +19,7 @@ open import UF-ExcludedMiddle
 open import UF-PropTrunc
 open import Plus-Properties using (+-commutative)
 
-module OrdinalNotions
+module Ordinals.Notions
         {𝓤 𝓥 : Universe}
         {X : 𝓤 ̇ }
         (_<_ : X → X → 𝓥 ̇ )

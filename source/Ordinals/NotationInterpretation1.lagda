@@ -35,7 +35,7 @@ https://www.cs.bham.ac.uk/~mhe/TypeTopology/OrdinalNotationInterpretation.pdf
 open import SpartanMLTT
 open import UF-FunExt
 
-module OrdinalNotationInterpretation1 (fe : FunExt) where
+module Ordinals.NotationInterpretation1 (fe : FunExt) where
 
 \end{code}
 
@@ -120,16 +120,17 @@ the theorems and constructions to be performed here:
 
 \begin{code}
 
-open import OrdinalsType
-open import OrdinalsToppedType fe
-open import OrdinalArithmetic fe
-open import OrdinalToppedArithmetic fe
-open import OrdinalsClosure fe
-open import OrdinalCodes
+open import Ordinals.Type
+open import Ordinals.ToppedType fe
+open import Ordinals.Arithmetic fe
+open import Ordinals.ToppedArithmetic fe
+open import Ordinals.Closure fe
+open import Ordinals.Codes
+open import Ordinals.SquashedSum fe
+open import Ordinals.SquashedCantor fe hiding (Κ)
+
 open import CompactTypes
 open import TotallySeparated
-open import SquashedSum fe
-open import SquashedCantor fe hiding (Κ)
 open import DiscreteAndSeparated
 open import Density
 open import PairFun
@@ -466,10 +467,10 @@ module _ (pt : propositional-truncations-exist)
  pe : Prop-Ext
  pe = Univalence-gives-Prop-Ext ua
 
- open import OrdinalOfOrdinalsSuprema ua
- open import OrdinalsType-Injectivity
- open import OrdinalOfOrdinals ua
- open import OrdinalArithmetic-Properties ua
+ open import Ordinals.OrdinalOfOrdinals ua
+ open import Ordinals.OrdinalOfOrdinalsSuprema ua
+ open import Ordinals.Injectivity
+ open import Ordinals.Arithmetic-Properties ua
 
  open import UF-ImageAndSurjection
  open ImageAndSurjection pt

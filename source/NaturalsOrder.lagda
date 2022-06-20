@@ -8,8 +8,8 @@ module NaturalsOrder where
 
 open import SpartanMLTT
 
+open import Ordinals.Notions
 open import UF-Subsingletons
-open import OrdinalNotions
 open import NaturalsAddition renaming (_+_ to _+'_)
 open import NaturalNumbers-Properties
 open import OrderNotation

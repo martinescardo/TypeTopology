@@ -123,7 +123,7 @@ As discussed above, we assume univalence as a hypothesis:
 
 open import UF-Univalence
 
-module BuraliForti
+module Ordinals.BuraliForti
        (ua : Univalence)
        where
 
@@ -142,11 +142,11 @@ private
  fe = Univalence-gives-FunExt ua
 
 open import SpartanMLTT
-open import OrdinalNotions
-open import OrdinalsType
-open import OrdinalsWellOrderTransport
-open import OrdinalOfOrdinals ua
-open import OrdinalArithmetic fe
+open import Ordinals.Notions
+open import Ordinals.Type
+open import Ordinals.WellOrderTransport
+open import Ordinals.OrdinalOfOrdinals ua
+open import Ordinals.Arithmetic fe
 
 \end{code}
 
@@ -526,7 +526,7 @@ Monoids:
 
 \begin{code}
 
- open import OrdinalArithmetic-Properties ua
+ open import Ordinals.Arithmetic-Properties ua
 
  monoid-structure : 𝓤 ̇ → 𝓤 ̇
  monoid-structure X = (X → X → X) × X

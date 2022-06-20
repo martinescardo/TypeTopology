@@ -12,13 +12,13 @@ univalence axiom is needed.
 
 open import UF-Univalence
 
-module OrdinalOfOrdinals
+module Ordinals.OrdinalOfOrdinals
         (ua : Univalence)
        where
 
 open import SpartanMLTT
-open import OrdinalNotions
-open import OrdinalsType
+open import Ordinals.Notions
+open import Ordinals.Type
 open import CanonicalMapNotation
 
 open import UF-Base
@@ -888,7 +888,7 @@ other direction is equivalent to LPO.
 module ℕ∞-in-Ord where
 
  open import LPO fe
- open import OrdinalArithmetic fe
+ open import Ordinals.Arithmetic fe
  open import GenericConvergentSequence
  open import NaturalsOrder
 

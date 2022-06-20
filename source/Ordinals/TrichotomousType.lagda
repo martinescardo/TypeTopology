@@ -8,13 +8,13 @@ The subtype Ordinal₃ 𝓤 of Ordinal 𝓤 consisting of trichotomous ordinals.
 
 open import UF-FunExt
 
-module OrdinalsTrichotomousType
+module Ordinals.TrichotomousType
         (fe : FunExt)
        where
 
 open import SpartanMLTT
-open import OrdinalNotions
-open import OrdinalsType
+open import Ordinals.Notions
+open import Ordinals.Type
 
 open import UF-Base
 open import UF-Subsingletons

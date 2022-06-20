@@ -8,7 +8,7 @@ The type of ordinals is (algebraically) injective.
 
 open import UF-FunExt
 
-module OrdinalsType-Injectivity where
+module Ordinals.Injectivity where
 
 open import SpartanMLTT
 
@@ -16,8 +16,8 @@ open import UF-Base
 open import UF-Equiv
 open import UF-Embeddings
 
-open import OrdinalsType
-open import OrdinalsWellOrderArithmetic
+open import Ordinals.Type
+open import Ordinals.WellOrderArithmetic
 
 module ordinals-injectivity (fe : FunExt) where
 
@@ -81,7 +81,7 @@ module ordinals-injectivity (fe : FunExt) where
 module topped-ordinals-injectivity (fe : FunExt) where
 
  open import InjectiveTypes fe
- open import OrdinalsToppedType fe
+ open import Ordinals.ToppedType fe
 
  _↗_ : {I : 𝓤  ̇ } {J : 𝓥 ̇ }
      → (I → Ordinalᵀ 𝓦)
@@ -117,7 +117,7 @@ open import UF-Univalence
 
 module ordinals-injectivity-order (ua : Univalence) where
 
- open import OrdinalOfOrdinals ua
+ open import Ordinals.OrdinalOfOrdinals ua
  open import UF-UA-FunExt
  open import UF-Subsingletons
 
@@ -209,8 +209,8 @@ module topped-ordinals-injectivity-order (ua : Univalence) where
  fe : FunExt
  fe = Univalence-gives-FunExt ua
 
- open import OrdinalsToppedType fe
- open import OrdinalOfOrdinals ua
+ open import Ordinals.ToppedType fe
+ open import Ordinals.OrdinalOfOrdinals ua
  open import UF-Subsingletons
 
  open topped-ordinals-injectivity fe

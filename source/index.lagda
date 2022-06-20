@@ -112,7 +112,6 @@ import ArithmeticViaEquivalence
 import BanachFixedPointTheorem -- By Todd Waugh Ambridge
 import BasicDiscontinuityTaboo
 import BinaryNaturals
-import BuraliForti
 import CanonicalMapNotation
 import CantorSchroederBernstein
 import CantorSchroederBernstein-TheoryLabLunch
@@ -192,30 +191,7 @@ import NonCollapsibleFamily
 import NonSpartanMLTTTypes
 import SigmaDiscreteAndTotallySeparated
 import SRTclosure
-import OrdinalArithmetic
-import OrdinalArithmetic-Properties
-import OrdinalCodes
-import OrdinalNotationInterpretation
-import OrdinalNotationInterpretation0
-import OrdinalNotationInterpretation1
-import OrdinalNotationInterpretation2
-import OrdinalNotions
-import OrdinalOfOrdinals
-import OrdinalOfOrdinalsSuprema        -- By Tom de Jong
-import OrdinalOfTruthValues
-import OrdinalToppedArithmetic
-import OrdinalTaboos                   -- By Tom de Jong
-import OrdinalTrichotomousArithmetic
 import Ordinals
-import OrdinalsClosure
-import OrdinalsFreeGroup
-import OrdinalsSupSum
-import OrdinalsToppedType
-import OrdinalsTrichotomousType
-import OrdinalsType
-import OrdinalsType-Injectivity
-import OrdinalsWellOrderArithmetic
-import OrdinalsWellOrderTransport
 import P2
 import PairFun
 import PartialElements
@@ -240,8 +216,6 @@ import Slice
 import SliceMonad
 import SpartanMLTT
 import SpartanMLTT-List
-import SquashedCantor
-import SquashedSum
 import OrderNotation
 import Swap
 import sigma-sup-lattice
@@ -255,7 +229,6 @@ import Unit
 import Unit-Properties
 import Universes
 import WeaklyCompactTypes
-import WellOrderingTaboo -- By Tom de Jong, based on a theorem by Andrew Swan
 import W
 import W-Properties
 import WLPO
@@ -454,8 +427,8 @@ increasingly complex compact ordinals.
 
 \begin{code}
 
-import SquashedSum
-import OrdinalNotationInterpretation
+import Ordinals.SquashedSum
+import Ordinals.NotationInterpretation
 import LexicographicCompactness
 import ConvergentSequenceHasInf
 

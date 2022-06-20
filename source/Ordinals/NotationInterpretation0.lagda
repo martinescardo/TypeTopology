@@ -13,7 +13,7 @@ open import SpartanMLTT
 open import UF-Univalence
 open import UF-PropTrunc
 
-module OrdinalNotationInterpretation0
+module Ordinals.NotationInterpretation0
         (ua : Univalence)
         (pt : propositional-truncations-exist)
        where
@@ -39,23 +39,24 @@ open import UF-ImageAndSurjection
 open import UF-Embeddings
 open import UF-Size
 
+open import Ordinals.Codes
+open import Ordinals.Type
+open import Ordinals.Arithmetic fe
+open import Ordinals.Arithmetic-Properties ua
+open import Ordinals.OrdinalOfOrdinalsSuprema ua
+open import Ordinals.OrdinalOfOrdinals ua
+open import Ordinals.Injectivity
+open import Ordinals.ToppedArithmetic fe
+open import Ordinals.ToppedType fe
+open import Ordinals.TrichotomousType fe
+open import Ordinals.TrichotomousArithmetic fe
+
 open import ConvergentSequenceCompact
 open import CompactTypes
 open import GenericConvergentSequence
-open import OrdinalCodes
-open import OrdinalsType
-open import OrdinalArithmetic fe
-open import OrdinalArithmetic-Properties ua
-open import OrdinalOfOrdinalsSuprema ua
-open import OrdinalOfOrdinals ua
-open import OrdinalsType-Injectivity
 open import Plus-Properties
 open import PropTychonoff
-open import SquashedSum fe
-open import OrdinalToppedArithmetic fe
-open import OrdinalsToppedType fe
-open import OrdinalsTrichotomousType fe
-open import OrdinalTrichotomousArithmetic fe
+open import Ordinals.SquashedSum fe
 open ImageAndSurjection pt
 open ordinals-injectivity fe
 
@@ -132,7 +133,7 @@ is if excluded middle holds.
 \begin{code}
 
  open import UF-ExcludedMiddle
- open import OrdinalsSupSum ua
+ open import Ordinals.SupSum ua
 
  comparison₀₁ : Excluded-Middle → (b : B) → ⟦ b ⟧₀ ⊴ ⁅ ⟦ b ⟧₁ ⁆
  comparison₀₁ em Z     = ⊴-refl 𝟘ₒ

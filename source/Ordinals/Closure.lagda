@@ -8,29 +8,24 @@ Closure properties of some ordinal constructions.
 
 open import UF-FunExt
 
-module OrdinalsClosure
+module Ordinals.Closure
         (fe : FunExt)
        where
 
 open import UF-Base
 open import UF-Equiv
 open import UF-Subsingletons
-open import InjectiveTypes fe
 open import UF-Retracts
 open import UF-Embeddings
 open import UF-Miscelanea
 
+open import InjectiveTypes fe
+
 open import SpartanMLTT
 open import Two-Properties
 open import AlternativePlus
-open import OrdinalsToppedType fe
-open import OrdinalArithmetic fe
-open import OrdinalsType-Injectivity
-open import OrdinalToppedArithmetic fe
 open import CompactTypes
 open import GenericConvergentSequence
-open import SquashedSum fe
-open import SquashedCantor fe
 open import LexicographicOrder
 open import LexicographicCompactness
 open import ConvergentSequenceHasInf
@@ -42,6 +37,14 @@ open import Plus-Properties
 open import CanonicalMapNotation
 open import SigmaDiscreteAndTotallySeparated
 open import PairFun
+
+open import Ordinals.SquashedSum fe
+open import Ordinals.SquashedCantor fe
+
+open import Ordinals.ToppedType fe
+open import Ordinals.Arithmetic fe
+open import Ordinals.Injectivity
+open import Ordinals.ToppedArithmetic fe
 
 private
  fe₀ : funext 𝓤₀ 𝓤₀

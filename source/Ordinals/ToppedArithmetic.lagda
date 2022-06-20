@@ -21,21 +21,22 @@ cumbersome and (2) requires much work in other modules.
 
 open import UF-FunExt
 
-module OrdinalToppedArithmetic
+module Ordinals.ToppedArithmetic
         (fe : FunExt)
        where
 
 open import UF-Subsingletons
 
 open import SpartanMLTT
-open import OrdinalsType
-open import OrdinalArithmetic fe
-open import OrdinalsWellOrderArithmetic
-open import OrdinalsToppedType fe
-open import OrdinalsType-Injectivity
 open import GenericConvergentSequence
-open import SquashedSum fe
+open import Ordinals.SquashedSum fe
 open import CanonicalMapNotation
+
+open import Ordinals.Type
+open import Ordinals.Arithmetic fe
+open import Ordinals.WellOrderArithmetic
+open import Ordinals.ToppedType fe
+open import Ordinals.Injectivity
 
 Ordᵀ = Ordinalᵀ 𝓤₀
 
@@ -141,8 +142,8 @@ Added 4th May 2022.
 \begin{code}
 
 module Omega {𝓤} (pe : propext 𝓤) where
- open import OrdinalOfTruthValues fe 𝓤 pe
- open import OrdinalNotions
+ open import Ordinals.OrdinalOfTruthValues fe 𝓤 pe
+ open import Ordinals.Notions
  open import UF-Subsingletons-FunExt
 
  Ωᵒ : Ordinalᵀ (𝓤 ⁺)

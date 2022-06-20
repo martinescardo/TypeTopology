@@ -25,7 +25,7 @@ The master file is
 
 \begin{code}
 
-import OrdinalNotationInterpretation
+import Ordinals.NotationInterpretation
 
 \end{code}
 
@@ -51,21 +51,9 @@ import InfProperty
 import LexicographicCompactness
 import LexicographicOrder
 import LPO
-import OrdinalArithmetic
-import OrdinalCodes
-import OrdinalNotationInterpretation
-import OrdinalNotions
-import OrdinalOfOrdinals
-import OrdinalOfTruthValues
-import OrdinalsClosure
 import Ordinals
-import OrdinalsShulmanTaboo
-import OrdinalsType
-import OrdinalsWellOrderArithmetic
 import PropInfTychonoff
 import PropTychonoff
-import SquashedCantor
-import SquashedSum
 import TotallySeparated
 import WeaklyCompactTypes
 import WLPO

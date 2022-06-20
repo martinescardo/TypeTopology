@@ -21,7 +21,6 @@ import ArithmeticViaEquivalence
 import BanachFixedPointTheorem
 import BasicDiscontinuityTaboo
 import BinaryNaturals
-import BuraliForti
 import CanonicalMapNotation
 -- import CantorCompact
 import CantorSchroederBernstein
@@ -120,31 +119,7 @@ import NonCollapsibleFamily
 import NonSpartanMLTTTypes
 import Nucleus
 import OrderNotation
-import OrdinalArithmetic
-import OrdinalArithmetic-Properties
-import OrdinalCodes
-import OrdinalNotationInterpretation0
-import OrdinalNotationInterpretation1
-import OrdinalNotationInterpretation2
-import OrdinalNotationInterpretation
-import OrdinalNotions
-import OrdinalOfOrdinals
-import OrdinalOfOrdinalsSuprema
-import OrdinalOfTruthValues
-import OrdinalsClosure
-import OrdinalsFreeGroup
 import Ordinals
-import OrdinalsShulmanTaboo
-import OrdinalsSupSum
-import OrdinalsToppedType
-import OrdinalsType-Injectivity
-import OrdinalsTrichotomousType
-import OrdinalsType
-import OrdinalsWellOrderArithmetic
-import OrdinalsWellOrderTransport
-import OrdinalTaboos
-import OrdinalTrichotomousArithmetic
-import OrdinalToppedArithmetic
 import P2
 import PairFun
 import PartialElements
@@ -177,8 +152,6 @@ import Slice
 import SliceMonad
 import SpartanMLTT
 import SpartanMLTT-List
-import SquashedCantor
-import SquashedSum
 import SRTclosure
 import Swap
 import TheTopologyOfTheUniverse
@@ -242,7 +215,6 @@ import UnivalenceFromScratch
 import Universes
 -- import UnsafeModulesIndex
 import WeaklyCompactTypes
-import WellOrderingTaboo
 import W
 import WLPO
 import W-Properties

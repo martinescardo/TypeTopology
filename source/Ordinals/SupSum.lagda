@@ -23,14 +23,14 @@ Other local assumptions belonging to HoTT/UF are discussed below.
 
 open import UF-Univalence
 
-module OrdinalsSupSum
+module Ordinals.SupSum
         (ua : Univalence)
        where
 
 open import SpartanMLTT
-open import OrdinalsType
-open import OrdinalOfOrdinals ua
-open import OrdinalOfOrdinalsSuprema ua
+open import Ordinals.Type
+open import Ordinals.OrdinalOfOrdinals ua
+open import Ordinals.OrdinalOfOrdinalsSuprema ua
 
 open import UF-FunExt
 open import UF-UA-FunExt
@@ -49,7 +49,7 @@ private
  pe : PropExt
  pe = Univalence-gives-PropExt ua
 
-open import OrdinalArithmetic fe
+open import Ordinals.Arithmetic fe
 
 \end{code}
 
@@ -101,8 +101,8 @@ universe 𝓤, that is, the ordinals that have a largest element.
 
 \begin{code}
 
- open import OrdinalsToppedType fe
- open import OrdinalToppedArithmetic fe renaming (∑ to ∑ᵀ)
+ open import Ordinals.ToppedType fe
+ open import Ordinals.ToppedArithmetic fe renaming (∑ to ∑ᵀ)
 
  sup-bounded-by-sumᵀ : (τ : Ordinalᵀ 𝓤) (υ : ⟪ τ ⟫ → Ordinalᵀ 𝓤)
                      → sup (λ x → [ υ x ]) ⊴ [ ∑ᵀ τ υ ]
@@ -127,8 +127,8 @@ module _ {𝓤 : Universe}
          (sr : Set-Replacement pt)
        where
 
- open import OrdinalsToppedType fe
- open import OrdinalToppedArithmetic fe
+ open import Ordinals.ToppedType fe
+ open import Ordinals.ToppedArithmetic fe
  open suprema pt sr
 
  sup-bounded-by-sum-gives-WEM : ({𝓤 : Universe} (τ : Ordinalᵀ 𝓤) (υ : ⟪ τ ⟫ → Ordinalᵀ 𝓤)
@@ -137,9 +137,9 @@ module _ {𝓤 : Universe}
                               → {𝓤 : Universe} → WEM 𝓤
  sup-bounded-by-sum-gives-WEM ϕ {𝓤} = γ
   where
-   open import OrdinalOfTruthValues fe 𝓤 (pe 𝓤)
+   open import Ordinals.OrdinalOfTruthValues fe 𝓤 (pe 𝓤)
    open Omega (pe 𝓤)
-   open import OrdinalArithmetic-Properties ua
+   open import Ordinals.Arithmetic-Properties ua
 
    τ = 𝟚ᵒ
 
@@ -184,8 +184,8 @@ module _ {𝓤 : Universe}
 
  open suprema pt sr
 
- open import OrdinalsToppedType fe
- open import OrdinalToppedArithmetic fe
+ open import Ordinals.ToppedType fe
+ open import Ordinals.ToppedArithmetic fe
 
  sup-bounded-by-sumᵀ : (τ : Ordinalᵀ 𝓤) (υ : ⟪ τ ⟫ → Ordinalᵀ 𝓤)
                      → sup (λ x → [ υ x ]) ⊴ [ ∑ τ υ ]
@@ -206,8 +206,8 @@ module _ {𝓤 : Universe}
    γ : sup (λ x → [ υ x ]) ⊴ [ ∑ τ υ ]
    γ = sup-is-lower-bound-of-upper-bounds (λ x → [ υ x ]) [ ∑ τ υ ] bound
 
- open import OrdinalsTrichotomousType fe
- open import OrdinalTrichotomousArithmetic fe
+ open import Ordinals.TrichotomousType fe
+ open import Ordinals.TrichotomousArithmetic fe
 
  sup-bounded-by-sum₃ : (τ : Ordinal₃ 𝓤) (υ : ⦅ τ ⦆ → Ordinal₃ 𝓤)
                      → sup (λ x → ⁅ υ x ⁆) ⊴ ⁅ ∑³ τ υ ⁆

@@ -8,13 +8,13 @@ The subtype Ordinalsᵀ of ordinals with a top element.
 
 open import UF-FunExt
 
-module OrdinalsToppedType
+module Ordinals.ToppedType
         (fe : FunExt)
        where
 
 open import SpartanMLTT
-open import OrdinalNotions
-open import OrdinalsType
+open import Ordinals.Notions
+open import Ordinals.Type
 
 open import UF-Base
 open import UF-Subsingletons

@@ -18,7 +18,7 @@ a Cantor retract.
 
 open import UF-FunExt
 
-module SquashedCantor (fe : FunExt) where
+module Ordinals.SquashedCantor (fe : FunExt) where
 
 open import UF-Base
 open import UF-Subsingletons
@@ -30,7 +30,7 @@ open import SpartanMLTT
 open import Two-Properties
 open import GenericConvergentSequence
 open import NaturalsAddition renaming (_+_ to _∔_)
-open import SquashedSum fe
+open import Ordinals.SquashedSum fe
 open import CoNaturals fe
 open import Sequence fe renaming (head to head' ; tail to tail' ; _∶∶_ to _∶∶'_)
 open import InjectiveTypes fe

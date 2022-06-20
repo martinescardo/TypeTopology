@@ -8,16 +8,17 @@ Some operations and constructions on ordinals.
 
 open import UF-FunExt
 
-module OrdinalArithmetic
+module Ordinals.Arithmetic
         (fe : FunExt)
        where
 
 open import SpartanMLTT
-open import OrdinalNotions
-open import OrdinalsType
-open import OrdinalsWellOrderArithmetic
 open import GenericConvergentSequence
 open import NaturalsOrder
+
+open import Ordinals.Notions
+open import Ordinals.Type
+open import Ordinals.WellOrderArithmetic
 
 open import UF-Subsingletons
 

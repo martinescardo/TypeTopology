@@ -11,7 +11,7 @@ See remarks below for an explanation.
 open import SpartanMLTT
 open import UF-FunExt
 
-module SquashedSum (fe : FunExt) where
+module Ordinals.SquashedSum (fe : FunExt) where -- move this to compact types
 
 private
  fe₀ : funext 𝓤₀ 𝓤₀

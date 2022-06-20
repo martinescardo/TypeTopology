@@ -44,7 +44,7 @@ open import UF-PropTrunc
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
 
-module WellOrderingTaboo
+module Ordinals.WellOrderingTaboo
         (fe  : Fun-Ext)
         (pe  : Prop-Ext)
        where
@@ -208,7 +208,7 @@ module InductiveWellOrder
 
  open PropositionalTruncation pt
 
- open import OrdinalNotions
+ open import Ordinals.Notions
 
  irreflexive-minimally-extensional-order-on-every-set : (𝓤 𝓣 : Universe)
                                                       → (𝓤 ⊔ 𝓣) ⁺ ̇
@@ -427,7 +427,7 @@ module ClassicalWellOrder
          (_≺_ : X → X → 𝓣 ̇ )
        where
 
-  open import OrdinalNotions _≺_
+  open import Ordinals.Notions _≺_
 
   is-uniquely-trichotomous : 𝓤 ⊔ 𝓣 ̇
   is-uniquely-trichotomous =
@@ -671,7 +671,7 @@ classical well-order, then every set admits some inducive well-order.
 
 \begin{code}
 
- open import OrdinalNotions
+ open import Ordinals.Notions
  open InductiveWellOrder pt
 
  classical-well-ordering-implies-inductive-well-ordering :

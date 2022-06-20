@@ -10,11 +10,12 @@ be done with univalence when the types live in different universes.
 open import SpartanMLTT
 open import UF-FunExt
 
-module OrdinalsWellOrderTransport (fe : FunExt) where
+module Ordinals.WellOrderTransport (fe : FunExt) where
 
-open import OrdinalNotions
-open import OrdinalsType
-open import OrdinalsWellOrderArithmetic
+open import Ordinals.Notions
+open import Ordinals.Type
+open import Ordinals.WellOrderArithmetic
+
 open import UF-Base
 open import UF-Subsingletons
 open import UF-Retracts

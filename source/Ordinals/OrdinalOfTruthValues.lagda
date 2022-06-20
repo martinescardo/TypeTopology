@@ -9,7 +9,7 @@ open import SpartanMLTT
 open import UF-FunExt
 open import UF-Subsingletons renaming (⊤Ω to ⊤ ; ⊥Ω to ⊥)
 
-module OrdinalOfTruthValues
+module Ordinals.OrdinalOfTruthValues
        (fe : FunExt)
        (𝓤  : Universe)
        (pe : propext 𝓤)
@@ -17,10 +17,10 @@ module OrdinalOfTruthValues
 
 open import UF-Subsingletons-FunExt
 
-open import OrdinalArithmetic fe
-open import OrdinalsType
-open import OrdinalNotions
-open import OrdinalsType
+open import Ordinals.Arithmetic fe
+open import Ordinals.Type
+open import Ordinals.Notions
+open import Ordinals.Type
 
 Ωₒ : Ordinal (𝓤 ⁺)
 Ωₒ = Ω 𝓤 , _≺_ , pv , w , e , t
@@ -70,7 +70,7 @@ open import UF-Univalence
 
 module _ (ua : Univalence) where
 
- open import OrdinalOfOrdinals ua
+ open import Ordinals.OrdinalOfOrdinals ua
 
  𝟚ₒ-leq-Ωₒ : 𝟚ₒ {𝓤} ⊴ Ωₒ
  𝟚ₒ-leq-Ωₒ = f , i , p

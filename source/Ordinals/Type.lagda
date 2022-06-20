@@ -9,7 +9,7 @@ ordinals with a top element.
 
 open import SpartanMLTT
 
-open import OrdinalNotions
+open import Ordinals.Notions
 
 open import UF-Base
 open import UF-FunExt
@@ -17,7 +17,7 @@ open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
 open import UF-Embeddings
 
-module OrdinalsType where
+module Ordinals.Type where
 
 \end{code}
 

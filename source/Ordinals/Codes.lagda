@@ -84,7 +84,7 @@
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module OrdinalCodes where
+module Ordinals.Codes where
 
 open import SpartanMLTT
 

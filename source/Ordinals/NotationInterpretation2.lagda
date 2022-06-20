@@ -42,7 +42,7 @@ This is a draft version that needs polishing and more explanation.
 open import SpartanMLTT
 open import UF-FunExt
 
-module OrdinalNotationInterpretation2 (fe : FunExt) where
+module Ordinals.NotationInterpretation2 (fe : FunExt) where
 
 private
  fe₀ = fe 𝓤₀ 𝓤₀
@@ -55,13 +55,7 @@ open import UF-Equiv
 open import UF-Subsingletons-FunExt
 open import UF-Miscelanea
 
-open import OrdinalsType
-open import OrdinalsType-Injectivity
 open import SigmaDiscreteAndTotallySeparated
-open import OrdinalsToppedType fe
-open import OrdinalArithmetic fe
-open import OrdinalToppedArithmetic fe
-open import OrdinalsClosure fe
 open import DiscreteAndSeparated
 open import GenericConvergentSequence
 open import ConvergentSequenceHasInf
@@ -75,6 +69,13 @@ open import WLPO
 open import LPO fe
 open import Density
 open import PairFun
+
+open import Ordinals.Type
+open import Ordinals.Injectivity
+open import Ordinals.ToppedType fe
+open import Ordinals.Arithmetic fe
+open import Ordinals.ToppedArithmetic fe
+open import Ordinals.Closure fe
 
 \end{code}
 

@@ -4,14 +4,14 @@ Tom de Jong, 1 and 4 April 2022.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module OrdinalTaboos where
+module Ordinals.Taboos where
 
 open import DiscreteAndSeparated hiding (𝟚-is-discrete)
 open import SpartanMLTT hiding (𝟚 ; ₀ ; ₁)
 open import Plus-Properties
 
-open import OrdinalNotions
-open import OrdinalsType
+open import Ordinals.Notions
+open import Ordinals.Type
 
 open import UF-Equiv
 open import UF-EquivalenceExamples
@@ -48,7 +48,7 @@ module suprema-of-ordinals-assumptions
         (ua : Univalence)
        where
 
- open import OrdinalOfOrdinalsSuprema ua
+ open import Ordinals.OrdinalOfOrdinalsSuprema ua
  open suprema pt sr public
 
  Sups-Of-Discretely-Indexed-Trichotomous-Ordinals-Are-Discrete :
@@ -198,8 +198,8 @@ module _
         (fe : FunExt)
        where
 
- open import OrdinalArithmetic fe
- open import OrdinalsWellOrderArithmetic
+ open import Ordinals.Arithmetic fe
+ open import Ordinals.WellOrderArithmetic
 
  module discrete-sup-taboo-construction-I
          (P : 𝓤 ̇  )
@@ -236,9 +236,10 @@ module _
   fe = Univalence-gives-FunExt ua
 
  open import DecidableAndDetachable
- open import OrdinalArithmetic fe
- open import OrdinalOfOrdinals ua
- open import OrdinalsWellOrderArithmetic
+
+ open import Ordinals.Arithmetic fe
+ open import Ordinals.OrdinalOfOrdinals ua
+ open import Ordinals.WellOrderArithmetic
 
  open import UF-Embeddings
  open import UF-ImageAndSurjection

@@ -8,18 +8,18 @@ Arithmetic for trichotomous ordinals.
 
 open import UF-FunExt
 
-module OrdinalTrichotomousArithmetic
+module Ordinals.TrichotomousArithmetic
         (fe : FunExt)
        where
 
 open import UF-Subsingletons
 
 open import SpartanMLTT
-open import OrdinalsType
-open import OrdinalNotions
-open import OrdinalArithmetic fe
-open import OrdinalsWellOrderArithmetic
-open import OrdinalsTrichotomousType fe
+open import Ordinals.Type
+open import Ordinals.Notions
+open import Ordinals.Arithmetic fe
+open import Ordinals.WellOrderArithmetic
+open import Ordinals.TrichotomousType fe
 
 _+₃_ : Ordinal₃ 𝓤 → Ordinal₃ 𝓤 → Ordinal₃ 𝓤
 τ +₃ υ = (⁅ τ ⁆ +ₒ ⁅ υ ⁆) , +ₒ-is-trichotomous ⁅ τ ⁆ ⁅ υ ⁆
