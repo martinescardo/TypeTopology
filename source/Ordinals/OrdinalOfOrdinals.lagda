@@ -19,7 +19,7 @@ module Ordinals.OrdinalOfOrdinals
 open import SpartanMLTT
 open import Ordinals.Notions
 open import Ordinals.Type
-open import CanonicalMapNotation
+open import Notation.CanonicalMap
 
 open import UF-Base
 open import UF-Subsingletons

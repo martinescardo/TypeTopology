@@ -35,7 +35,7 @@ open import SpartanMLTT
 open import UF-Subsingletons renaming (⊤Ω to ⊤)
 open import Plus-Properties
 open import Fin
-open import OrderNotation
+open import Notation.Order
 
 \end{code}
 
@@ -458,7 +458,7 @@ mirror {succ n} (suc k) = n ╱ mirror {n} k
 TODO. Show that the above coersions are left cancellable (easy).
 
 TODO. Rewrite above code to use the notation ι for all coersions,
-defined in the module CanonicalMapNotation.
+defined in the module Notation.CanonicalMap.
 
 \begin{code}
 

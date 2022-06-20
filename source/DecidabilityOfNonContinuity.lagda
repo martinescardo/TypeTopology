@@ -27,7 +27,7 @@ open import DiscreteAndSeparated
 open import CoNaturals.GenericConvergentSequence
 open import ADecidableQuantificationOverTheNaturals fe
 open import DecidableAndDetachable
-open import CanonicalMapNotation
+open import Notation.CanonicalMap
 
 Lemma-3·1 : (q : ℕ∞ → ℕ∞ → 𝟚)
           → decidable ((m : ℕ) → ¬ ((n : ℕ) → q (ι m) (ι n) ≡ ₁))

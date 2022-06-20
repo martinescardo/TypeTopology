@@ -27,7 +27,7 @@ module RootsTruncation (𝓤 : Universe)
 
 open import Plus-Properties
 open import NaturalsOrder
-open import OrderNotation
+open import Notation.Order
 
 open import UF-Subsingletons
 open import UF-KrausLemma

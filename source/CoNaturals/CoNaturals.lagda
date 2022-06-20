@@ -75,7 +75,7 @@ module CoNaturals.CoNaturals (fe : FunExt) where
 
 open import SpartanMLTT
 open import CoNaturals.GenericConvergentSequence
-open import CanonicalMapNotation
+open import Notation.CanonicalMap
 
 open import Two-Properties
 open import Plus-Properties

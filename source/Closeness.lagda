@@ -35,8 +35,8 @@ open import CoNaturals.GenericConvergentSequence renaming (min to min')
 open import DiscreteAndSeparated
 open import UF-Miscelanea
 open import Two-Properties
-open import OrderNotation
-open import CanonicalMapNotation
+open import Notation.Order
+open import Notation.CanonicalMap
 
 module sequences
         {𝓤 : Universe}

@@ -46,7 +46,7 @@ open import CoNaturals.GenericConvergentSequence
 open import BasicDiscontinuityTaboo
 open import WLPO
 open import UF-Base
-open import CanonicalMapNotation
+open import Notation.CanonicalMap
 
 \end{code}
 

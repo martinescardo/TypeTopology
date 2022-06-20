@@ -25,7 +25,7 @@ open import Two-Properties
 open import UF-PropTrunc
 open import CoNaturals.GenericConvergentSequence
 open import DiscreteAndSeparated
-open import CanonicalMapNotation
+open import Notation.CanonicalMap
 open import BooleanCompactness.CompactTypes
 
 \end{code}

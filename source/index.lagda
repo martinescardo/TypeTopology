@@ -82,6 +82,7 @@ Some of the main modules and module clusters:
 
 \begin{code}
 
+import Notation.index
 import BooleanCompactness.index
 import InjectiveTypes-article
 import TheTopologyOfTheUniverse
@@ -90,7 +91,7 @@ import Ordinals.index
 import LawvereFPT
 import PartialElements
 import Types2019
-import MGS                -- Modular version of https://github.com/martinescardo/HoTT-UF-Agda-Lecture-Notes
+import MGS.index          -- Modular version of https://github.com/martinescardo/HoTT-UF-Agda-Lecture-Notes
 import DomainTheory.index -- By Tom de Jong (started with Martin Escardo)
 import Dyadics            -- By Tom de Jong
 import CircleModules      -- By Tom de Jong
@@ -111,7 +112,6 @@ import ArithmeticViaEquivalence
 import BanachFixedPointTheorem -- By Todd Waugh Ambridge
 import BasicDiscontinuityTaboo
 import BinaryNaturals
-import CanonicalMapNotation
 import CantorSchroederBernstein
 import CantorSchroederBernstein-TheoryLabLunch
 import CantorSearch
@@ -146,7 +146,6 @@ import FreeGroup                       -- By Marc Bezem, Thierry Coquand, Dybjer
 import FreeGroupOfLargeLocallySmallSet -- By Marc Bezem, Thierry Coquand, Dybjer, and Martin Escardo.
 import FreeJoinSemiLattice             -- By Tom de Jong
 import FreeSupLattice                  -- By Tom de Jong
-import GeneralNotation
 import HiggsInvolutionTheorem
 import Id
 import InitialBinarySystem    -- More work than needed!
@@ -168,7 +167,6 @@ import LiftingUnivalentPrecategory
 import List
 import LPO
 import Lumsdaine
-import MGS.TypeTopology-Interface
 import NaturalNumbers
 import NaturalNumbers-Properties
 import NaturalsAddition
@@ -200,7 +198,6 @@ import Slice
 import SliceMonad
 import SpartanMLTT
 import SpartanMLTT-List
-import OrderNotation
 import Swap
 import sigma-sup-lattice
 import sigma-frame

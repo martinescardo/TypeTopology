@@ -24,7 +24,7 @@ import BanachFixedPointTheorem
 import BasicDiscontinuityTaboo
 import BinaryNaturals
 import BuraliForti
-import CanonicalMapNotation
+import Notation.CanonicalMap
 import CantorCompact
 import CantorSchroederBernstein-TheoryLabLunch
 import CantorSchroederBernstein
@@ -81,7 +81,7 @@ import FreeGroupOfLargeLocallySmallSet
 import FreeJoinSemiLattice
 import FreeSupLattice
 import GaloisConnection
-import GeneralNotation
+import Notation.General
 import GenericConvergentSequence
 import Groups
 import HeytingImplication
@@ -155,7 +155,7 @@ import NaturalsOrder
 import Negation
 import NonCollapsibleFamily
 import NonSpartanMLTTTypes
-import OrderNotation
+import Notation.Order
 import OrdinalArithmetic-Properties
 import OrdinalArithmetic
 import OrdinalCodes

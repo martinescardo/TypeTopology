@@ -124,7 +124,7 @@ open import SpartanMLTT
 open import UF-Equiv
 open import CoNaturals.GenericConvergentSequence
 open import InjectiveTypes fe
-open import CanonicalMapNotation
+open import Notation.CanonicalMap
 
 \end{code}
 

@@ -30,7 +30,7 @@ open import UF-Subsingletons
 open import SpartanMLTT
 open import CoNaturals.GenericConvergentSequence
 open import BooleanCompactness.SquashedSum fe
-open import CanonicalMapNotation
+open import Notation.CanonicalMap
 
 open import Ordinals.Type
 open import Ordinals.Arithmetic fe

@@ -76,7 +76,7 @@ open import TheTopologyOfTheUniverse fe
 open import CoNaturals.GenericConvergentSequence
 open import WLPO
 open import BasicDiscontinuityTaboo fe
-open import CanonicalMapNotation
+open import Notation.CanonicalMap
 
 \end{code}
 

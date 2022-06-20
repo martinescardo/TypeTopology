@@ -371,7 +371,7 @@ equality-of-¬¬stable-propositions fe pe p q f g a = γ
 Added by Tom de Jong in January 2022.
 
 Another logical place for these three lemmas would be Negation.lagda, but
-(1) the first lemma needs _⇔_ which is defined in GeneralNotation.lagda, which
+(1) the first lemma needs _⇔_ which is defined in Notation.General.lagda, which
     imports Negation.lagda;
 (2) the second lemma needs _≃_ which is only defined in UF-Equiv.lagda;
 (3) the third lemma needs funext, which is only defined in UF-FunExt.lagda.

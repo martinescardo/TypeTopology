@@ -11,7 +11,7 @@ module Two-Properties where
 
 open import SpartanMLTT
 open import Unit-Properties
-open import OrderNotation
+open import Notation.Order
 
 open import UF-Subsingletons
 

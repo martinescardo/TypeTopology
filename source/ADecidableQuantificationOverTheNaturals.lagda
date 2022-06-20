@@ -23,7 +23,7 @@ open import BooleanCompactness.GenericConvergentSequence fe
 open import Two-Properties
 open import DecidableAndDetachable
 open import DiscreteAndSeparated
-open import CanonicalMapNotation
+open import Notation.CanonicalMap
 open import UF-PropTrunc
 
 Lemma-8·1 : (p : ℕ∞ → 𝟚) → (Σ x ꞉ ℕ∞ , (x ≢ ∞) × (p x ≡ ₀))

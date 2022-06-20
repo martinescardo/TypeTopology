@@ -35,8 +35,8 @@ private
 open import Two-Properties
 open import CoNaturals.GenericConvergentSequence renaming (min to min')
 open import CoNaturals.CoNaturals fe
-open import OrderNotation
-open import CanonicalMapNotation
+open import Notation.Order
+open import Notation.CanonicalMap
 open import UF-Base
 
 \end{code}

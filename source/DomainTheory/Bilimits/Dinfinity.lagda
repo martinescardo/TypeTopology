@@ -54,7 +54,7 @@ open import DomainTheory.Lifting.LiftingSet pt fe 𝓤₀ pe
 
 open import NaturalsOrder
 open import NaturalsAddition renaming (_+_ to _+'_)
-open import OrderNotation
+open import Notation.Order
 
 \end{code}
 

@@ -29,7 +29,7 @@ open import UF-Subsingletons-FunExt
 open import NaturalsAddition renaming (_+_ to _+'_)
 open import NaturalsOrder
 open import NaturalNumbers-Properties
-open import OrderNotation
+open import Notation.Order
 
 module _ {𝓥 : Universe} where
 

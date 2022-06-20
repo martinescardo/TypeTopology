@@ -80,7 +80,7 @@ open import DecidableAndDetachable
 open import DiscreteAndSeparated
 open import Fin-Properties
 open import NaturalsOrder
-open import OrderNotation
+open import Notation.Order
 open import Two-Properties
 
 \end{code}
@@ -369,7 +369,7 @@ where
 
 open import UF-Embeddings
 
-open import CanonicalMapNotation
+open import Notation.CanonicalMap
 
 Ω¬¬-to-Ω : Ω¬¬ 𝓤 → Ω 𝓤
 Ω¬¬-to-Ω = pr₁

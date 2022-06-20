@@ -20,8 +20,8 @@ open import NaturalsAddition renaming (_+_ to _∔_)
 open import NaturalsOrder hiding (max)
 open import NaturalNumbers-Properties
 open import DiscreteAndSeparated
-open import OrderNotation
-open import CanonicalMapNotation
+open import Notation.Order
+open import Notation.CanonicalMap
 open import Density
 
 open import UF-Base

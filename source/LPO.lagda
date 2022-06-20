@@ -41,8 +41,8 @@ open import Two-Properties
 open import CoNaturals.GenericConvergentSequence
 open import BooleanCompactness.CompactTypes
 open import NaturalsOrder
-open import OrderNotation
-open import CanonicalMapNotation
+open import Notation.Order
+open import Notation.CanonicalMap
 
 private
  fe₀ = fe 𝓤₀ 𝓤₀

@@ -37,8 +37,8 @@ See also the discussion at https://twitter.com/EscardoMartin/status/147339326101
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import SpartanMLTT
-open import CanonicalMapNotation
-open import OrderNotation
+open import Notation.CanonicalMap
+open import Notation.Order
 open import Plus-Properties
 open import BooleanCompactness.CompactTypes
 open import NaturalsOrder

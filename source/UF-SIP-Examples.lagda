@@ -41,7 +41,7 @@ notes:
 module UF-SIP-Examples where
 
 open import SpartanMLTT
-open import OrderNotation
+open import Notation.Order
 
 open import UF-Base
 open import UF-SIP

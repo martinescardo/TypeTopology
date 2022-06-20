@@ -21,7 +21,7 @@ import ArithmeticViaEquivalence
 import BanachFixedPointTheorem
 import BasicDiscontinuityTaboo
 import BinaryNaturals
-import CanonicalMapNotation
+import Notation.CanonicalMap
 -- import CantorCompact
 import CantorSchroederBernstein
 import CantorSchroederBernstein-TheoryLabLunch
@@ -62,7 +62,7 @@ import FreeGroupOfLargeLocallySmallSet
 import FreeJoinSemiLattice
 import FreeSupLattice
 import GaloisConnection
-import GeneralNotation
+import Notation.General
 import Groups
 import HeytingImplication
 import HiggsInvolutionTheorem
@@ -95,7 +95,6 @@ import LiftingUnivalentPrecategory
 import List
 import LPO
 import Lumsdaine
-import MGS
 import NaturalNumbers
 import NaturalNumbers-Properties
 import Natural-Numbers-Type
@@ -106,7 +105,7 @@ import Negation
 import NonCollapsibleFamily
 import NonSpartanMLTTTypes
 import Nucleus
-import OrderNotation
+import Notation.Order
 import Ordinals
 import P2
 import PairFun
@@ -115,7 +114,6 @@ import PatchLocale
 import PCF
 import Pi
 import Plus
-import PlusNotation
 import PlusOneLC
 import Plus-Properties
 import Plus-Type

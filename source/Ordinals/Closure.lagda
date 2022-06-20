@@ -45,7 +45,7 @@ open import DiscreteAndSeparated
 open import BinaryNaturals hiding (_+_ ; L ; R)
 open import Plus-Properties
 open import PairFun
-open import CanonicalMapNotation
+open import Notation.CanonicalMap
 
 private
  fe₀ : funext 𝓤₀ 𝓤₀

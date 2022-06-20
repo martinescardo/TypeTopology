@@ -12,7 +12,7 @@ open import Ordinals.Notions
 open import UF-Subsingletons
 open import NaturalsAddition renaming (_+_ to _+'_)
 open import NaturalNumbers-Properties
-open import OrderNotation
+open import Notation.Order
 
 _≤ℕ_ : ℕ → ℕ → 𝓤₀ ̇
 zero ≤ℕ n        = 𝟙

@@ -27,7 +27,7 @@ open import BooleanCompactness.SigmaDiscreteAndTotallySeparated
 open import BooleanCompactness.ExtendedSumCompact fe
 open import InjectiveTypes fe
 open import DiscreteAndSeparated
-open import CanonicalMapNotation
+open import Notation.CanonicalMap
 open import PairFun
 
 open import UF-Base

@@ -19,7 +19,7 @@ open import DisconnectedTypes
 open import DiscreteAndSeparated
 open import WLPO
 open import Plus-Properties
-open import OrderNotation
+open import Notation.Order
 
 open import UF-Base
 open import UF-Subsingletons

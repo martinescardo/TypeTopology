@@ -18,8 +18,8 @@ module BooleanCompactness.ConvergentSequenceHasInf (fe₀ : funext 𝓤₀ 𝓤�
 open import Two-Properties
 open import BooleanCompactness.InfProperty
 open import CoNaturals.GenericConvergentSequence
-open import OrderNotation
-open import CanonicalMapNotation
+open import Notation.Order
+open import Notation.CanonicalMap
 
 ℕ∞-has-inf : has-inf _≼_
 ℕ∞-has-inf p = a , putative-root-lemma , lower-bound-lemma , uborlb-lemma

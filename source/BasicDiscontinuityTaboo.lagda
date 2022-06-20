@@ -21,7 +21,7 @@ open import Two-Properties
 open import Plus-Properties
 open import CoNaturals.GenericConvergentSequence
 open import WLPO
-open import CanonicalMapNotation
+open import Notation.CanonicalMap
 
 basic-discontinuity : (ℕ∞ → 𝟚) → 𝓤₀ ̇
 basic-discontinuity p = ((n : ℕ) → p (ι n) ≡ ₀) × (p ∞ ≡ ₁)

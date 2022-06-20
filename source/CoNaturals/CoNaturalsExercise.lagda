@@ -31,7 +31,7 @@ open import Two-Properties
 open import CoNaturals.CoNaturals fe
 open import CoNaturals.GenericConvergentSequence
 open import Sequence fe
-open import CanonicalMapNotation
+open import Notation.CanonicalMap
 
 ℕ∞-to-ℕ→𝟚-is-a-section : Σ ρ ꞉ ((ℕ → 𝟚) → ℕ∞) , ρ ∘ ι ≡ id
 ℕ∞-to-ℕ→𝟚-is-a-section  = ρ , dfunext (fe 𝓤₀ 𝓤₀) lemma

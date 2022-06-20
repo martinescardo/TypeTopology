@@ -17,8 +17,8 @@ open import Closeness fe
 open import NaturalsOrder
 open import UF-Miscelanea
 open import NaturalNumbers-Properties
-open import OrderNotation
-open import CanonicalMapNotation
+open import Notation.Order
+open import Notation.CanonicalMap
 
 \end{code}
 

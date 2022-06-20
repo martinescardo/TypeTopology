@@ -59,7 +59,7 @@ Right-fails-gives-left-holds (inr q) u = 𝟘-elim (u q)
 
 open import Unit
 open import Sigma
-open import GeneralNotation
+open import Notation.General
 
 inl-preservation : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X + 𝟙 {𝓦}  → Y + 𝟙 {𝓣})
                  → f (inr ⋆) ≡ inr ⋆
