@@ -37,7 +37,7 @@ open import UF.FunExt
 
 open import BooleanCompactness.SigmaDiscreteAndTotallySeparated
 
-module Games.FiniteHistoryDependentGames (fe : Fun-Ext) where
+module Games.FiniteHistoryDependent (fe : Fun-Ext) where
 
 \end{code}
 

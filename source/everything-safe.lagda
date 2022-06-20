@@ -48,7 +48,7 @@ import Dyadics
 import Escardo-Simpson-LICS2001
 -- import everything
 -- import everything-safe
-import FiniteHistoryDependentGames
+import Games.index
 import Finiteness-Universe-Invariance
 import Fin
 import Fin-Properties
