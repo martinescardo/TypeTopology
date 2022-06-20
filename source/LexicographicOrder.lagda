@@ -16,8 +16,8 @@ even on (Σ x ꞉ X , Y x) if Y and S depend on X.
 module LexicographicOrder where
 
 open import MLTT.Spartan
-open import UF-Base
-open import UF-Subsingletons
+open import UF.Base
+open import UF.Subsingletons
 
 lex-order : ∀ {𝓣} {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
           →  (X → X → 𝓦 ̇ )

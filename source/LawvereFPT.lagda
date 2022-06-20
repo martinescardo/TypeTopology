@@ -26,13 +26,13 @@ open import MLTT.Spartan
 open import MLTT.Two-Properties
 open import MLTT.NaturalNumbers-Properties
 
-open import UF-Base
-open import UF-Subsingletons
-open import UF-Subsingletons-FunExt
-open import UF-Retracts
-open import UF-Equiv
-open import UF-Miscelanea
-open import UF-FunExt
+open import UF.Base
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
+open import UF.Retracts
+open import UF.Equiv
+open import UF.Miscelanea
+open import UF.FunExt
 
 designated-fixed-point-property : 𝓤 ̇ → 𝓤 ̇
 designated-fixed-point-property X = (f : X → X) → Σ x ꞉ X , x ≡ f x
@@ -171,8 +171,8 @@ As a simple application, it follows that negation doesn't have fixed points:
 
  \begin{code}
 
- open import UF-Subsingletons
- open import UF-Subsingletons-FunExt
+ open import UF.Subsingletons
+ open import UF.Subsingletons-FunExt
 
  not-no-fp : (fe : funext 𝓤 𝓤₀) → ¬ (Σ P ꞉ Ω 𝓤 , P ≡ not fe P)
  not-no-fp {𝓤} fe (P , p) = ¬-no-fp (P holds , q)
@@ -200,8 +200,8 @@ module. This time a pointwise weakening of surjection is not enough.
 
 \begin{code}
 
-open import UF-PropTrunc
-open import UF-ImageAndSurjection
+open import UF.PropTrunc
+open import UF.ImageAndSurjection
 
 module surjection-version (pt : propositional-truncations-exist) where
 

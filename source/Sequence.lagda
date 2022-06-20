@@ -4,13 +4,13 @@ Martin Escardo 2011.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import UF-FunExt
+open import UF.FunExt
 
 module Sequence (fe : FunExt) where
 
 open import MLTT.Spartan hiding (_+_)
-open import UF-Base
-open import UF-Retracts
+open import UF.Base
+open import UF.Retracts
 open import NaturalsAddition
 
 _∶∶_ : {X : ℕ → 𝓤 ̇ } → X 0 → ((n : ℕ) → X (succ n)) → ((n : ℕ) → X n)

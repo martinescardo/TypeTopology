@@ -25,14 +25,14 @@ open import Notation.Order
 open import Notation.CanonicalMap
 open import Density
 
-open import UF-Base
-open import UF-Subsingletons
-open import UF-Subsingletons-FunExt
-open import UF-FunExt
-open import UF-Embeddings
-open import UF-Equiv
-open import UF-Retracts
-open import UF-Miscelanea
+open import UF.Base
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
+open import UF.FunExt
+open import UF.Embeddings
+open import UF.Equiv
+open import UF.Retracts
+open import UF.Miscelanea
 
 funext₀ : 𝓤₁ ̇
 funext₀ = funext 𝓤₀ 𝓤₀

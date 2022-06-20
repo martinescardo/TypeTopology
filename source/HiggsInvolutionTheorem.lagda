@@ -24,10 +24,10 @@ the topos theory community.
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import MLTT.Spartan
-open import UF-Base
-open import UF-Subsingletons renaming (Ω to Ω' ; ⊤Ω to ⊤ ; ⊥Ω to ⊥)
-open import UF-FunExt
-open import UF-Subsingletons-FunExt
+open import UF.Base
+open import UF.Subsingletons renaming (Ω to Ω' ; ⊤Ω to ⊤ ; ⊥Ω to ⊥)
+open import UF.FunExt
+open import UF.Subsingletons-FunExt
 
 \end{code}
 
@@ -123,7 +123,7 @@ assuming in this module. We introduce friendlier notation for it:
 ⇁⇁_ : Ω → Ω
 ⇁⇁ p = ⇁(⇁ p)
 
-open import UF-ExcludedMiddle
+open import UF.ExcludedMiddle
 
 lc-monoid-structure-on-Ω-gives-EM : (O : Ω)
                                     (_⊕_ : Ω → Ω → Ω)

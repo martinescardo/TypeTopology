@@ -34,7 +34,7 @@
      Our lecture notes develop HoTT/UF in Agda in a more principled
      way, and offers better approaches to some constructions and
      simpler proofs of some (previously) difficult theorems.
-     (https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/)
+     (https://www.cs.bham.ac.uk/~mhe/HoTT-UF.in-Agda-Lecture-Notes/)
 
      Our philosophy, here and in the lecture notes, is to work with a
      minimal Martin-Löf type theory, and use principles from HoTT/UF
@@ -83,6 +83,7 @@ Some of the main modules and module clusters:
 \begin{code}
 
 import MLTT.index
+import UF.index
 import Notation.index
 import BooleanCompactness.index
 import InjectiveTypes-article
@@ -92,7 +93,7 @@ import Ordinals.index
 import LawvereFPT
 import PartialElements
 import Types2019
-import MGS.index          -- Modular version of https://github.com/martinescardo/HoTT-UF-Agda-Lecture-Notes
+import MGS.index          -- Modular version of https://github.com/martinescardo/HoTT-UF.Agda-Lecture-Notes
 import DomainTheory.index -- By Tom de Jong (started with Martin Escardo)
 import Dyadics            -- By Tom de Jong
 import CircleModules      -- By Tom de Jong
@@ -101,7 +102,7 @@ import CircleModules      -- By Tom de Jong
 
 The UF module (univalent foundations) has been developed, on demand,
 for use in the preceding modules (and the modules below, too). The
-modules UF-Yoneda and UF-IdEmbedding contain new results.
+modules UF.Yoneda and UF-IdEmbedding contain new results.
 
 All modules in alphabetical order:
 
@@ -195,53 +196,6 @@ import UnivalenceFromScratch
 import W
 import W-Properties
 import WLPO
-import UF-Base
-import UF-Choice
-import UF-Classifiers
-import UF-Classifiers-Old
-import UF-Connected
-import UF-Embeddings
-import UF-EquivalenceExamples
-import UF-Equiv-FunExt
-import UF-Equiv
-import UF-ExcludedMiddle
-import UF-Factorial
-import UF-FunExt-from-Naive-FunExt -- By Cory Knapp
-import UF-FunExt-Properties
-import UF-Lower-FunExt
-import UF-FunExt
-import UF-hlevels
-import UF-IdEmbedding
-import UF-ImageAndSurjection
-import UF-ImageAndSurjection-F
-import UF-Knapp-UA
-import UF-KrausLemma
-import UF-LeftCancellable
-import UF-Miscelanea
-import UF-Powerset
-import UF-Powerset-Fin                 -- By Tom de Jong
-import UF-PropIndexedPiSigma
-import UF-PropTrunc
-import UF-PropTrunc-F
-import UF-Quotient                     -- By Tom de Jong
-import UF-Large-Quotient
-import UF-Quotient-F
-import UF-Quotient-Replacement         -- By Tom de Jong
-import UF-Retracts-FunExt
-import UF-Retracts
-import UF-Section-Embedding
-import UF-Size
-import UF-StructureIdentityPrinciple  -- Old, probably delete.
-import UF-SIP                         -- New, better, version.
-import UF-SIP-Examples
-import UF-SIP-IntervalObject
-import UF-Subsingletons-FunExt
-import UF-Subsingletons
-import UF-Subsingleton-Combinators
-import UF-UA-FunExt
-import UF-Univalence
-import UF-UniverseEmbedding
-import UF-Yoneda
 
 \end{code}
 
@@ -460,7 +414,7 @@ first that it is isomorphic to any of its factors:
 
 \begin{code}
 
-import UF-PropIndexedPiSigma
+import UF.PropIndexedPiSigma
 
 \end{code}
 
@@ -478,7 +432,7 @@ sense of univalent mathematics, where Id is the identity type former:
 
 \begin{code}
 
-import UF-IdEmbedding
+import UF.IdEmbedding
 
 \end{code}
 

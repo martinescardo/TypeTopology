@@ -26,16 +26,16 @@ GenericConvergentSequence)
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import UF-FunExt
+open import UF.FunExt
 
 module LPO (fe : FunExt) where
 
 open import MLTT.Spartan
-open import UF-Base
-open import UF-Subsingletons
-open import UF-Subsingletons-FunExt
-open import UF-Embeddings
-open import UF-Equiv
+open import UF.Base
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
+open import UF.Embeddings
+open import UF.Equiv
 
 open import MLTT.Two-Properties
 open import CoNaturals.GenericConvergentSequence

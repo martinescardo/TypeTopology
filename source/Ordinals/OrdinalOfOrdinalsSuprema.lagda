@@ -29,8 +29,8 @@ notably doesn't use set quotients.
 {-# OPTIONS --without-K --exact-split --safe --auto-inline --experimental-lossy-unification #-}
 
 
-open import UF-Quotient
-open import UF-Univalence
+open import UF.Quotient
+open import UF.Univalence
 
 module Ordinals.OrdinalOfOrdinalsSuprema
         (ua : Univalence)
@@ -38,14 +38,14 @@ module Ordinals.OrdinalOfOrdinalsSuprema
 
 open import MLTT.Spartan
 
-open import UF-Base hiding (_≈_)
-open import UF-Equiv
-open import UF-FunExt
-open import UF-UA-FunExt
-open import UF-PropTrunc
-open import UF-Size
-open import UF-Subsingletons
-open import UF-Subsingletons-FunExt
+open import UF.Base hiding (_≈_)
+open import UF.Equiv
+open import UF.FunExt
+open import UF.UA-FunExt
+open import UF.PropTrunc
+open import UF.Size
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
 
 open import Ordinals.Notions hiding (is-prop-valued)
 open import Ordinals.OrdinalOfOrdinals ua
@@ -585,15 +585,15 @@ This completes the formalization of the approach based on the HoTT Book
 
 We now formalize an alternative construction due to Martín Escardó that doesn't
 use set quotients, but instead relies on Set Replacement (as defined and
-explained in UF-Size.lagda) to obtain a small ordinal at the end.
+explained in UF.Size.lagda) to obtain a small ordinal at the end.
 
-(As proved in UF-Quotient.lagda and UF-Quotient-Replacement.lagda, Set
+(As proved in UF.Quotient.lagda and UF-Quotient-Replacement.lagda, Set
 Replacement is equivalent to having small set quotients.)
 
 \begin{code}
 
-open import UF-EquivalenceExamples
-open import UF-ImageAndSurjection
+open import UF.EquivalenceExamples
+open import UF.ImageAndSurjection
 
 module construction-using-image
         (pt : propositional-truncations-exist)
@@ -891,7 +891,7 @@ equivalent to one with values in 𝓤.
 \end{code}
 
 Next, we resize α⁺ using:
-(1) Set Replacement, as defined and explained in UF-Size.lagda.
+(1) Set Replacement, as defined and explained in UF.Size.lagda.
 (2) Martín's machinery developed in OrdinalsWellOrderTransport to transport the
     well order along the supposed equivalence.
 
@@ -954,7 +954,7 @@ module _ (pt : propositional-truncations-exist) where
 
 \end{code}
 
-As proved in UF-Quotient.lagda and UF-Quotient-Replacement.lagda, Set
+As proved in UF.Quotient.lagda and UF-Quotient-Replacement.lagda, Set
 Replacement is equivalent to having small set quotients, so it follows
 immediately that (just as above) Ordinal 𝓤 has small suprema if we assume the
 existence of (small) set quotients.

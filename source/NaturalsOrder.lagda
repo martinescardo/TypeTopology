@@ -9,7 +9,7 @@ module NaturalsOrder where
 open import MLTT.Spartan
 
 open import Ordinals.Notions
-open import UF-Subsingletons
+open import UF.Subsingletons
 open import NaturalsAddition renaming (_+_ to _+'_)
 open import MLTT.NaturalNumbers-Properties
 open import Notation.Order
@@ -28,8 +28,8 @@ instance
 ≤-is-prop-valued (succ m) zero     = 𝟘-is-prop
 ≤-is-prop-valued (succ m) (succ n) = ≤-is-prop-valued m n
 
-open import UF-Base
-open import UF-Miscelanea
+open import UF.Base
+open import UF.Miscelanea
 
 right-addition-is-embedding : (m n : ℕ) → is-prop (Σ k ꞉ ℕ , k +' m ≡ n)
 right-addition-is-embedding zero n (.n , refl) (.n , refl) = refl

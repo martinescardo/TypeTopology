@@ -15,16 +15,16 @@ holds (Tychonoff Theorem).)
 open import MLTT.Spartan
 open import DisconnectedTypes
 
-open import UF-FunExt
-open import UF-PropTrunc
+open import UF.FunExt
+open import UF.PropTrunc
 
 module BooleanCompactness.SimpleTypes
         (fe : FunExt)
         (pt : propositional-truncations-exist)
        where
 
-open import UF-Retracts
-open import UF-Retracts-FunExt
+open import UF.Retracts
+open import UF.Retracts-FunExt
 
 data simple-type : 𝓤₀ ̇ → 𝓤₁ ̇ where
  base : simple-type ℕ

@@ -5,8 +5,8 @@ Martin Escardo 29 April 2014.
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import MLTT.Spartan
-open import UF-FunExt
-open import UF-Embeddings
+open import UF.FunExt
+open import UF.Embeddings
 
 module BooleanCompactness.ExtendedSumCompact (fe : FunExt) where
 

@@ -10,8 +10,8 @@ TypeTopology. This will grow as the need arises.
 module MGS.TypeTopology-Interface where
 
 open import MLTT.Spartan
-open import UF-Base
-open import UF-Equiv
+open import UF.Base
+open import UF.Equiv
 
 import MGS.Equivalences
 import MGS.FunExt-from-Univalence

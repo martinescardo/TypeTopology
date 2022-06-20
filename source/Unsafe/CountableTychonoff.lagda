@@ -9,7 +9,7 @@ indication of termination.
 
 {-# OPTIONS --without-K --exact-split #-}
 
-open import UF-FunExt
+open import UF.FunExt
 
 module Unsafe.CountableTychonoff (fe : FunExt) where
 

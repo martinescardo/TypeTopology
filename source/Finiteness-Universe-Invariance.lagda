@@ -15,16 +15,16 @@ open import Fin
 open import Fin-Properties
 open import PairFun
 
-open import UF-Subsingletons renaming (⊤Ω to ⊤)
-open import UF-Equiv
-open import UF-EquivalenceExamples
-open import UF-PropTrunc
-open import UF-ImageAndSurjection
-open import UF-Embeddings
-open import UF-UniverseEmbedding
-open import UF-FunExt
-open import UF-Univalence
-open import UF-UA-FunExt
+open import UF.Subsingletons renaming (⊤Ω to ⊤)
+open import UF.Equiv
+open import UF.EquivalenceExamples
+open import UF.PropTrunc
+open import UF.ImageAndSurjection
+open import UF.Embeddings
+open import UF.UniverseEmbedding
+open import UF.FunExt
+open import UF.Univalence
+open import UF.UA-FunExt
 
 module Finiteness-Universe-Invariance
         (pt : propositional-truncations-exist)

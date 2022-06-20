@@ -12,10 +12,10 @@ module Density where
 open import MLTT.Spartan
 open import DiscreteAndSeparated
 
-open import UF-Base
-open import UF-Equiv
-open import UF-Retracts
-open import UF-Embeddings
+open import UF.Base
+open import UF.Equiv
+open import UF.Retracts
+open import UF.Embeddings
 
 is-dense : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 is-dense {𝓤} {𝓥} {X} {Y} f = ¬ (Σ y ꞉ Y , ¬ (Σ x ꞉ X , f x ≡ y))

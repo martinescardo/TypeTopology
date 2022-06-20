@@ -20,8 +20,8 @@ open import MLTT.Spartan hiding (_^_)
 
 module SRTclosure where
 
-open import UF-Subsingletons
-open import UF-PropTrunc
+open import UF.Subsingletons
+open import UF.PropTrunc
 
 open import NaturalsAddition renaming (_+_ to right-addition)
 

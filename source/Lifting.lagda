@@ -11,7 +11,7 @@ open import MLTT.Spartan
 
 module Lifting (𝓣 : Universe) where
 
-open import UF-Subsingletons
+open import UF.Subsingletons
 
 𝓛 : 𝓤 ̇ → 𝓣 ⁺ ⊔  𝓤 ̇
 𝓛 X = Σ P ꞉ 𝓣 ̇ , (P → X) × is-prop P

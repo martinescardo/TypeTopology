@@ -13,7 +13,7 @@ The theorem says that, for any p : ℕ∞ → 𝟚, the proposition
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import MLTT.Spartan
-open import UF-FunExt
+open import UF.FunExt
 
 module ADecidableQuantificationOverTheNaturals (fe : funext 𝓤₀ 𝓤₀) where
 
@@ -24,7 +24,7 @@ open import MLTT.Two-Properties
 open import DecidableAndDetachable
 open import DiscreteAndSeparated
 open import Notation.CanonicalMap
-open import UF-PropTrunc
+open import UF.PropTrunc
 
 Lemma-8·1 : (p : ℕ∞ → 𝟚) → (Σ x ꞉ ℕ∞ , (x ≢ ∞) × (p x ≡ ₀))
                          + ((n : ℕ) → p (ι n) ≡ ₁)

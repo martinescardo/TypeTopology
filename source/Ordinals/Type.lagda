@@ -11,11 +11,11 @@ open import MLTT.Spartan
 
 open import Ordinals.Notions
 
-open import UF-Base
-open import UF-FunExt
-open import UF-Subsingletons
-open import UF-Subsingletons-FunExt
-open import UF-Embeddings
+open import UF.Base
+open import UF.FunExt
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
+open import UF.Embeddings
 
 module Ordinals.Type where
 
@@ -170,8 +170,8 @@ principle:
 
 \begin{code}
 
-open import UF-Equiv
-open import UF-Univalence
+open import UF.Equiv
+open import UF.Univalence
 
 Ordinal-≡ : FunExt
           → is-univalent 𝓤
@@ -184,7 +184,7 @@ Ordinal-≡ {𝓤} fe = generalized-metric-space.characterization-of-M-≡ (𝓤
                     (λ _ → is-well-order)
                     (λ X _<_ → being-well-order-is-prop _<_ fe)
  where
-  open import UF-SIP-Examples
+  open import UF.SIP-Examples
 
 \end{code}
 

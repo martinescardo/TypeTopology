@@ -68,18 +68,18 @@ open import MLTT.Two-Properties
 
 open import DecidableAndDetachable
 open import DiscreteAndSeparated hiding (tight)
-open import UF-Base
-open import UF-Subsingletons
-open import UF-Subsingletons-FunExt
-open import UF-Retracts
-open import UF-Equiv
-open import UF-LeftCancellable
-open import UF-Embeddings
-open import UF-FunExt
-open import UF-Lower-FunExt
-open import UF-PropTrunc
-open import UF-ImageAndSurjection
-open import UF-Miscelanea
+open import UF.Base
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
+open import UF.Retracts
+open import UF.Equiv
+open import UF.LeftCancellable
+open import UF.Embeddings
+open import UF.FunExt
+open import UF.Lower-FunExt
+open import UF.PropTrunc
+open import UF.ImageAndSurjection
+open import UF.Miscelanea
 
 \end{code}
 
@@ -258,7 +258,7 @@ already implies excluded middle:
 
 \begin{code}
 
-open import UF-ExcludedMiddle
+open import UF.ExcludedMiddle
 
 Ω-separated-gives-DNE : propext 𝓤
                       → funext 𝓤 𝓤

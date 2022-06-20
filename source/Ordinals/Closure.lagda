@@ -6,7 +6,7 @@ Closure properties of some ordinal constructions.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import UF-FunExt
+open import UF.FunExt
 
 module Ordinals.Closure
         (fe : FunExt)
@@ -17,12 +17,12 @@ open import MLTT.Two-Properties
 open import MLTT.AlternativePlus
 open import MLTT.Plus-Properties
 
-open import UF-Base
-open import UF-Equiv
-open import UF-Subsingletons
-open import UF-Retracts
-open import UF-Embeddings
-open import UF-Miscelanea
+open import UF.Base
+open import UF.Equiv
+open import UF.Subsingletons
+open import UF.Retracts
+open import UF.Embeddings
+open import UF.Miscelanea
 
 open import BooleanCompactness.CompactTypes
 open import BooleanCompactness.Lexicographic

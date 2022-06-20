@@ -18,7 +18,7 @@ called "Decidability of non-continuity".
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import MLTT.Spartan
-open import UF-FunExt
+open import UF.FunExt
 
 module DecidabilityOfNonContinuity (fe : funext 𝓤₀ 𝓤₀) where
 

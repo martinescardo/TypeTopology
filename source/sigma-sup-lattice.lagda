@@ -8,16 +8,16 @@ hence finite joins).
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import MLTT.Spartan
-open import UF-FunExt
-open import UF-Subsingletons
+open import UF.FunExt
+open import UF.Subsingletons
 
 module sigma-sup-lattice (fe : Fun-Ext) where
 
-open import UF-Base
-open import UF-SIP
-open import UF-Equiv hiding (_≅_)
-open import UF-Univalence
-open import UF-Subsingletons-FunExt
+open import UF.Base
+open import UF.SIP
+open import UF.Equiv hiding (_≅_)
+open import UF.Univalence
+open import UF.Subsingletons-FunExt
 
 σ-suplat-structure : 𝓤 ̇ → 𝓤 ̇
 σ-suplat-structure X = X × ((ℕ → X) → X)

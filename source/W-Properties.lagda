@@ -8,11 +8,11 @@ module W-Properties where
 
 open import MLTT.Spartan
 open import W
-open import UF-Base
-open import UF-Subsingletons
-open import UF-Retracts
-open import UF-FunExt
-open import UF-Subsingletons-FunExt
+open import UF.Base
+open import UF.Subsingletons
+open import UF.Retracts
+open import UF.FunExt
+open import UF.Subsingletons-FunExt
 
 W-≡-fold : funext 𝓥 (𝓤 ⊔ 𝓥)
          → {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }

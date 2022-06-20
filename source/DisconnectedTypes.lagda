@@ -25,8 +25,8 @@ open import MLTT.Spartan
 open import MLTT.Two-Properties
 open import MLTT.NaturalNumbers-Properties
 open import DiscreteAndSeparated
-open import UF-Retracts
-open import UF-Equiv
+open import UF.Retracts
+open import UF.Equiv
 
 \end{code}
 
@@ -179,11 +179,11 @@ various equivalent ways.
 \begin{code}
 
 open import BooleanCompactness.TotallySeparated
-open import UF-Base
-open import UF-FunExt
-open import UF-Subsingletons
-open import UF-Subsingletons-FunExt
-open import UF-Miscelanea
+open import UF.Base
+open import UF.FunExt
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
+open import UF.Miscelanea
 
 is-connected₀ : 𝓤 ̇ → 𝓤 ̇
 is-connected₀ X = (f : X → 𝟚) → wconstant f

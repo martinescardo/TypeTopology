@@ -32,7 +32,7 @@ using the corresponding properties for (finite) types.
 module Fin-Properties where
 
 open import MLTT.Spartan
-open import UF-Subsingletons renaming (⊤Ω to ⊤)
+open import UF.Subsingletons renaming (⊤Ω to ⊤)
 open import MLTT.Plus-Properties
 open import Fin
 open import Notation.Order
@@ -88,7 +88,7 @@ defined in the module PlusOneLC.lagda.
 \begin{code}
 
 open import PlusOneLC
-open import UF-Equiv
+open import UF.Equiv
 
 Fin-lc : (m n : ℕ) → Fin m ≃ Fin n → m ≡ n
 Fin-lc 0           0       p = refl
@@ -123,7 +123,7 @@ Fin-is-discrete : {n : ℕ} → is-discrete (Fin n)
 Fin-is-discrete {0     } = 𝟘-is-discrete
 Fin-is-discrete {succ n} = +-is-discrete (Fin-is-discrete {n}) 𝟙-is-discrete
 
-open import UF-Miscelanea
+open import UF.Miscelanea
 
 Fin-is-set : {n : ℕ} → is-set (Fin n)
 Fin-is-set = discrete-types-are-sets Fin-is-discrete
@@ -159,7 +159,7 @@ difference between the embedding property and left cancellability.
 \begin{code}
 
 open import Swap
-open import UF-LeftCancellable
+open import UF.LeftCancellable
 
 +𝟙-cancel-lemma : {X Y : 𝓤 ̇ }
                 → (𝒇 : X + 𝟙 ↣ Y + 𝟙)
@@ -212,7 +212,7 @@ open import UF-LeftCancellable
   a = +𝟙-cancel-lemma (f' , e') p
 
 open import NaturalsOrder
-open import UF-EquivalenceExamples
+open import UF.EquivalenceExamples
 
 \end{code}
 
@@ -406,7 +406,7 @@ open import MLTT.NaturalNumbers-Properties
 ⟦⟧-property : {n : ℕ} (k : Fin n) → ⟦ k ⟧ < n
 ⟦⟧-property {n} k = pr₂ (Fin-prime n k)
 
-open import UF-Embeddings
+open import UF.Embeddings
 
 ⟦_⟧-is-embedding : (n : ℕ) → is-embedding (⟦_⟧ {n})
 ⟦_⟧-is-embedding n = ∘-is-embedding
@@ -601,9 +601,9 @@ inf-is-attained A δ = pr₂ (pr₂ (inf-construction A δ))
 is-prop-valued : {X : 𝓤 ̇ } → (X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
 is-prop-valued A = ∀ x → is-prop (A x)
 
-open import UF-FunExt
-open import UF-Subsingletons-FunExt
-open import UF-Base
+open import UF.FunExt
+open import UF.Subsingletons-FunExt
+open import UF.Base
 
 Σₘᵢₙ-is-prop : FunExt
              → {n : ℕ} (A : Fin n → 𝓤 ̇ )
@@ -666,10 +666,10 @@ elsewhere in TypeTopology).
 
 \begin{code}
 
-open import UF-Univalence
-open import UF-Equiv-FunExt
-open import UF-UniverseEmbedding
-open import UF-UA-FunExt
+open import UF.Univalence
+open import UF.Equiv-FunExt
+open import UF.UniverseEmbedding
+open import UF.UA-FunExt
 
 type-of-linear-orders-is-ℕ : Univalence → (Σ X ꞉ 𝓤 ̇ , finite-linear-order X) ≃ ℕ
 type-of-linear-orders-is-ℕ {𝓤} ua =
@@ -694,7 +694,7 @@ property rather than structure:
 
 \begin{code}
 
-open import UF-PropTrunc
+open import UF.PropTrunc
 
 module finiteness (pt : propositional-truncations-exist) where
 
@@ -789,7 +789,7 @@ But function extensionality is not needed:
    γ : P
    γ = ∥∥-rec i (λ 𝕗 → ⌜ 𝕗 ⌝⁻¹ 𝟎) s
 
- open import UF-ExcludedMiddle
+ open import UF.ExcludedMiddle
 
  summands-of-finite-sum-always-finite-gives-EM :
 
@@ -1159,7 +1159,7 @@ Added 8th April 2021.
 module Kuratowski-finiteness (pt : propositional-truncations-exist) where
 
  open finiteness pt
- open import UF-ImageAndSurjection
+ open import UF.ImageAndSurjection
  open ImageAndSurjection pt
  open CompactTypesPT pt
 
@@ -1455,7 +1455,7 @@ is a set).
    (ϕ (doubleton x₀ x₁)
    (doubletons-are-Kuratowki-finite x₀ x₁))
 
- open import UF-ExcludedMiddle
+ open import UF.ExcludedMiddle
 
  all-K-finite-types-finite-gives-EM :
 
@@ -1545,7 +1545,7 @@ The following no-selection lemma is contributed by Tom de Jong:
    ε 𝟎 = refl
    ε 𝟏 = refl
 
- open import UF-UA-FunExt
+ open import UF.UA-FunExt
 
  no-orderability-of-finite-types :
 

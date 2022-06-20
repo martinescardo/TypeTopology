@@ -23,11 +23,11 @@ open import BooleanCompactness.GenericConvergentSequence
 open import BooleanCompactness.PropTychonoff
 open import BooleanCompactness.FailureOfTotalSeparatedness
 
-open import UF-Base
-open import UF-Subsingletons renaming (⊤Ω to ⊤ ; ⊥Ω to ⊥)
-open import UF-FunExt
-open import UF-Equiv
-open import UF-Miscelanea
+open import UF.Base
+open import UF.Subsingletons renaming (⊤Ω to ⊤ ; ⊥Ω to ⊥)
+open import UF.FunExt
+open import UF.Equiv
+open import UF.Miscelanea
 
 Σ-isolated : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {x : X} {y : Y x}
            → is-isolated x

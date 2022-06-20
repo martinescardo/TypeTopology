@@ -43,15 +43,15 @@ open import MLTT.Plus-Properties
 open import BooleanCompactness.CompactTypes
 open import NaturalsOrder
 
-open import UF-Base
-open import UF-Embeddings
-open import UF-Equiv
-open import UF-FunExt
-open import UF-Powerset
-open import UF-PropTrunc
-open import UF-Size
-open import UF-Subsingletons
-open import UF-Subsingletons-FunExt
+open import UF.Base
+open import UF.Embeddings
+open import UF.Equiv
+open import UF.FunExt
+open import UF.Powerset
+open import UF.PropTrunc
+open import UF.Size
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
 
 module Dedekind
         (pt  : propositional-truncations-exist)

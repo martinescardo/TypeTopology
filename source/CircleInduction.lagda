@@ -14,11 +14,11 @@ development below offers an alternative proof for 𝕊¹.
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import MLTT.Spartan
-open import UF-Base
+open import UF.Base
 
-open import UF-Equiv
-open import UF-FunExt
-open import UF-Subsingletons
+open import UF.Equiv
+open import UF.FunExt
+open import UF.Subsingletons
 
 
 module CircleInduction where
@@ -385,7 +385,7 @@ closed under retracts, the claim follows.
   open import Integers
   open import Integers-Properties
 
-  open import UF-Univalence
+  open import UF.Univalence
 
   module _
           (ua : is-univalent 𝓤₀)
@@ -511,7 +511,7 @@ closed under retracts, the claim follows.
            (fe : funext 𝓤₀ 𝓤)
           where
 
-    open import UF-Lower-FunExt
+    open import UF.Lower-FunExt
 
     loops-lemma : (_∙ loop) ∘ loops ∘ pred-ℤ ≡ loops
     loops-lemma = dfunext fe h
@@ -593,7 +593,7 @@ closed under retracts, the claim follows.
        I  = happly 𝕊¹-induction-on-base (ℤ-to-code-base 𝟎)
        II = ap loops (Idtofun-retraction code-on-base 𝟎)
 
-    open import UF-Retracts
+    open import UF.Retracts
 
     Ω𝕊¹-is-set : is-set (base ≡ base)
     Ω𝕊¹-is-set = subtypes-of-sets-are-sets (encode base)

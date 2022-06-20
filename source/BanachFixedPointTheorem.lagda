@@ -6,7 +6,7 @@ A version of the Banach fixed-point theorem for ultracloseness spaces.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import UF-FunExt
+open import UF.FunExt
 
 module BanachFixedPointTheorem (fe : FunExt) where
 
@@ -15,7 +15,7 @@ open import CoNaturals.GenericConvergentSequence hiding (min)
 open import CoNaturals.Arithmetic fe
 open import Closeness fe
 open import NaturalsOrder
-open import UF-Miscelanea
+open import UF.Miscelanea
 open import MLTT.NaturalNumbers-Properties
 open import Notation.Order
 open import Notation.CanonicalMap

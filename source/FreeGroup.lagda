@@ -42,15 +42,15 @@ open import MLTT.Two-Properties
 open import Groups
 open import List
 
-open import UF-PropTrunc
-open import UF-Univalence
-open import UF-Base
-open import UF-Subsingletons
-open import UF-Subsingletons-FunExt
-open import UF-Embeddings
-open import UF-Equiv
-open import UF-UA-FunExt
-open import UF-FunExt
+open import UF.PropTrunc
+open import UF.Univalence
+open import UF.Base
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
+open import UF.Embeddings
+open import UF.Equiv
+open import UF.UA-FunExt
+open import UF.FunExt
 
 \end{code}
 
@@ -557,13 +557,13 @@ extensionality.
 
 \end{code}
 
-We work with quotients constructed in the module UF-Quotient using
+We work with quotients constructed in the module UF.Quotient using
 functional extensionality and propositional extensionality, and no
 higher-inductive types other than propositional truncation:
 
 \begin{code}
 
-   open import UF-Large-Quotient pt fe pe
+   open import UF.Large-Quotient pt fe pe
    open psrt pt _▷_ public
 
 \end{code}
@@ -667,7 +667,7 @@ One can think of elements of FA/∾ as equivalence classes, and of η/∾ s
 as the equivalence class of s. Then quotient induction says that in
 order to prove a property of equivalence classes, it is enough to
 prove it for all equivalence classes of given elements (this is proved
-in the module UF-Quotient).
+in the module UF.Quotient).
 
 The following proofs rely on the above naturality conditions:
 

@@ -11,7 +11,7 @@ No endpoints, density and binary interpolation for (𝔻 , ≺) formulated using
 open import MLTT.Spartan
 open import Dyadic
 open import DyadicOrder
-open import UF-PropTrunc
+open import UF.PropTrunc
 
 module DyadicOrder-PropTrunc (pt : propositional-truncations-exist) where
 

@@ -12,9 +12,9 @@ Further properties and developments are in the file IdealCompletion-Properties.
 
 open import MLTT.Spartan hiding (J)
 
-open import UF-FunExt
-open import UF-PropTrunc
-open import UF-Subsingletons
+open import UF.FunExt
+open import UF.PropTrunc
+open import UF.Subsingletons
 
 module DomainTheory.IdealCompletion.IdealCompletion
         (pt : propositional-truncations-exist)
@@ -24,8 +24,8 @@ module DomainTheory.IdealCompletion.IdealCompletion
                        -- completeness live
        where
 
-open import UF-Powerset
-open import UF-Subsingletons-FunExt
+open import UF.Powerset
+open import UF.Subsingletons-FunExt
 
 open import DomainTheory.Basics.Dcpo pt fe 𝓥
 open import Poset fe

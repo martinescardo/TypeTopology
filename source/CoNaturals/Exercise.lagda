@@ -22,7 +22,7 @@ this took.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import UF-FunExt
+open import UF.FunExt
 
 module CoNaturals.Exercise (fe : FunExt) where
 

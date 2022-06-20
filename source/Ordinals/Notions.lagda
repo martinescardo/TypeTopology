@@ -11,12 +11,12 @@ Ordinals like in the HoTT book and variations.
 open import MLTT.Spartan
 open import DiscreteAndSeparated
 
-open import UF-Base
-open import UF-Subsingletons
-open import UF-FunExt
-open import UF-Subsingletons-FunExt
-open import UF-ExcludedMiddle
-open import UF-PropTrunc
+open import UF.Base
+open import UF.Subsingletons
+open import UF.FunExt
+open import UF.Subsingletons-FunExt
+open import UF.ExcludedMiddle
+open import UF.PropTrunc
 open import MLTT.Plus-Properties using (+-commutative)
 
 module Ordinals.Notions
@@ -593,7 +593,7 @@ module _
    fe : FunExt
    fe 𝓤 𝓥 = f-e
 
-   open import UF-PropTrunc
+   open import UF.PropTrunc
    open PropositionalTruncation pt
 
    lem-consequence : is-well-order → (u v : X) → (∃ i ꞉ X , ((i < u) × ¬ (i < v))) + (u ≼ v)
@@ -666,7 +666,7 @@ module _
         (em : Excluded-Middle)
        where
 
- open import UF-PropTrunc
+ open import UF.PropTrunc
  open PropositionalTruncation (fem-proptrunc (λ 𝓤 𝓥 → fe {𝓤} {𝓥}) em)
 
  nonempty-has-minimal : is-well-order
@@ -772,7 +772,7 @@ is-well-founded₂ = (p : X → 𝟚) → ((x : X) → ((y : X) → y < x → p 
 well-founded-Wellfounded₂ : is-well-founded → is-well-founded₂
 well-founded-Wellfounded₂ w p = transfinite-induction w (λ x → p x ≡ ₁)
 
-open import UF-Miscelanea
+open import UF.Miscelanea
 
 being-well-founded₂-is-prop : FunExt → is-prop is-well-founded₂
 being-well-founded₂-is-prop fe = Π₃-is-prop (λ {𝓤} {𝓥} → fe 𝓤 𝓥)

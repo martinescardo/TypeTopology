@@ -23,18 +23,18 @@ did with σ-sup-lattices. Perhaps it would be better to define a
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import MLTT.Spartan
-open import UF-FunExt
-open import UF-Subsingletons
+open import UF.FunExt
+open import UF.Subsingletons
 
 module sigma-frame (fe : Fun-Ext) where
 
-open import UF-Base
-open import UF-SIP
-open import UF-SIP-Examples
-open import UF-Equiv hiding (_≅_)
-open import UF-Univalence
-open import UF-Subsingletons-FunExt
-open import UF-UA-FunExt
+open import UF.Base
+open import UF.SIP
+open import UF.SIP-Examples
+open import UF.Equiv hiding (_≅_)
+open import UF.Univalence
+open import UF.Subsingletons-FunExt
+open import UF.UA-FunExt
 
 σ-frame-structure : 𝓤 ̇ → 𝓤 ̇
 σ-frame-structure X = X × (X → X → X) × X × ((ℕ → X) → X)
@@ -325,7 +325,7 @@ frames-are-sigma-frames (X , (⊤ , _∧_ , ⋁) , i , ii , iii , iv , v , vi , 
                         (λ x → viii unique-from-𝟘 x (λ (n : 𝟘) → 𝟘-elim n)) ,
                         v , (λ x y → vi x {ℕ} y) , vii {ℕ} , viii {ℕ})
 
-open import UF-PropTrunc
+open import UF.PropTrunc
 
 module _ (pe : Prop-Ext)
          (pt  : propositional-truncations-exist)

@@ -14,11 +14,11 @@ module LiftingSet
   (𝓣 : Universe) -- fix a universe for the propositions
   where
 
-open import UF-Subsingletons
-open import UF-Base
-open import UF-Retracts
-open import UF-FunExt
-open import UF-Subsingletons-FunExt
+open import UF.Subsingletons
+open import UF.Base
+open import UF.Retracts
+open import UF.FunExt
+open import UF.Subsingletons-FunExt
 open import Lifting 𝓣
 
 lifting-of-set-is-set : funext 𝓣 𝓤

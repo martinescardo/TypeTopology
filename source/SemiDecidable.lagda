@@ -62,17 +62,17 @@ References
 
 open import MLTT.Spartan
 
-open import UF-Equiv
-open import UF-Equiv-FunExt
-open import UF-EquivalenceExamples
-open import UF-FunExt
-open import UF-ImageAndSurjection
-open import UF-Miscelanea
-open import UF-Powerset
-open import UF-PropTrunc
-open import UF-Subsingletons
-open import UF-Subsingletons-FunExt
-open import UF-UniverseEmbedding
+open import UF.Equiv
+open import UF.Equiv-FunExt
+open import UF.EquivalenceExamples
+open import UF.FunExt
+open import UF.ImageAndSurjection
+open import UF.Miscelanea
+open import UF.Powerset
+open import UF.PropTrunc
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
+open import UF.UniverseEmbedding
 
 open import BinaryNaturals hiding (_+_)
 open import BooleanCompactness.CompactTypes
@@ -367,7 +367,7 @@ where
 
 \begin{code}
 
-open import UF-Embeddings
+open import UF.Embeddings
 
 open import Notation.CanonicalMap
 
@@ -701,7 +701,7 @@ fact that EM ≃ BKS⁺ × MP.
 LPO→MP : LPO → MP
 LPO→MP lpo α = ¬¬-stable-if-decidable (∃ n ꞉ ℕ , α n ≡ ₁) (lpo α)
 
-open import UF-ExcludedMiddle
+open import UF.ExcludedMiddle
 
 BKS⁺→LPO→EM : BKS⁺ 𝓤 → LPO' 𝓤 → EM 𝓤
 BKS⁺→LPO→EM {𝓤} bks lpo X X-is-prop = lpo X (bks X X-is-prop)
@@ -720,7 +720,7 @@ EM-is-conjunction-of-BKS⁺-and-LPO =
   (λ em → (EM→BKS⁺ em , EM→LPO em))
   (λ (bks , lpo) → BKS⁺→LPO→EM bks lpo)
 
-open import UF-Size
+open import UF.Size
 
 BKS⁺-gives-Propositional-Resizing : BKS⁺ 𝓤
                                   → propositional-resizing 𝓤 𝓤₀

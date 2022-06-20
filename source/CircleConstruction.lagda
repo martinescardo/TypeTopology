@@ -15,20 +15,20 @@ universal property.
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import MLTT.Spartan
-open import UF-Base
+open import UF.Base
 
-open import UF-Embeddings
-open import UF-Equiv hiding (_≅_)
-open import UF-EquivalenceExamples
-open import UF-Equiv-FunExt
-open import UF-FunExt
-open import UF-Lower-FunExt
-open import UF-SIP
-open import UF-Subsingletons
-open import UF-Subsingletons-FunExt
-open import UF-PropTrunc
-open import UF-Univalence
-open import UF-UA-FunExt
+open import UF.Embeddings
+open import UF.Equiv hiding (_≅_)
+open import UF.EquivalenceExamples
+open import UF.Equiv-FunExt
+open import UF.FunExt
+open import UF.Lower-FunExt
+open import UF.SIP
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
+open import UF.PropTrunc
+open import UF.Univalence
+open import UF.UA-FunExt
 
 open import Integers
 open import Integers-Properties

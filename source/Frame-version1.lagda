@@ -13,18 +13,18 @@ relation coinciding with the binary meet order.
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import MLTT.Spartan
-open import UF-FunExt
-open import UF-Subsingletons hiding (Ω₀)
+open import UF.FunExt
+open import UF.Subsingletons hiding (Ω₀)
 
 module Frame-version1 (fe : Fun-Ext) where
 
-open import UF-Base
-open import UF-SIP
-open import UF-SIP-Examples
-open import UF-Equiv hiding (_≅_)
-open import UF-Univalence
-open import UF-Subsingletons-FunExt
-open import UF-UA-FunExt
+open import UF.Base
+open import UF.SIP
+open import UF.SIP-Examples
+open import UF.Equiv hiding (_≅_)
+open import UF.Univalence
+open import UF.Subsingletons-FunExt
+open import UF.UA-FunExt
 
 
 module _ (𝓤 𝓥 : Universe) where
@@ -106,7 +106,7 @@ Example.
 
 \begin{code}
 
-open import UF-PropTrunc
+open import UF.PropTrunc
 
 module _ (pe : Prop-Ext)
          (pt  : propositional-truncations-exist)

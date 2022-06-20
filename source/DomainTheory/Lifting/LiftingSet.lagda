@@ -16,9 +16,9 @@ LiftingDcpo.lagda.
 
 open import MLTT.Spartan
 
-open import UF-FunExt
-open import UF-PropTrunc
-open import UF-Subsingletons
+open import UF.FunExt
+open import UF.PropTrunc
+open import UF.Subsingletons
 
 module DomainTheory.Lifting.LiftingSet
         (pt : propositional-truncations-exist)
@@ -27,10 +27,10 @@ module DomainTheory.Lifting.LiftingSet
         (pe : propext 𝓣)
        where
 
-open import UF-Equiv
-open import UF-ImageAndSurjection
-open import UF-Miscelanea
-open import UF-Subsingletons-FunExt
+open import UF.Equiv
+open import UF.ImageAndSurjection
+open import UF.Miscelanea
+open import UF.Subsingletons-FunExt
 
 open ImageAndSurjection pt
 open PropositionalTruncation pt

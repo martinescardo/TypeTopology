@@ -54,7 +54,7 @@ c : ℕ∞ → ℕ∞ → ℕ∞ such that c u v ≡ ∞ ⇔ u ≡ v.
 
 \begin{code}
 
-open import UF-FunExt
+open import UF.FunExt
 
 WLPO-gives-ℕ∞-discrete : FunExt → WLPO → is-discrete ℕ∞
 WLPO-gives-ℕ∞-discrete fe wlpo u v =

@@ -124,9 +124,9 @@ vecη : (n : ℕ) {X : Fin n → 𝓤 ̇ } → xedni n {X} ∘ index n {X} ∼ i
 vecη zero     ⟨⟩       = refl
 vecη (succ n) (x :: xs) = ap (x ::_) (vecη n xs)
 
-open import UF-FunExt
-open import UF-Base
-open import UF-Equiv
+open import UF.FunExt
+open import UF.Base
+open import UF.Equiv
 
 module _ {𝓤} (fe : funext 𝓤₀ 𝓤) where
 

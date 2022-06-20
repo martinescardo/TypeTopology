@@ -8,12 +8,12 @@ We construct the free 𝓥-sup-lattice on a set X : 𝓥 as the (𝓥-)powerset 
 
 open import MLTT.Spartan
 
-open import UF-FunExt
-open import UF-Lower-FunExt
-open import UF-Powerset
-open import UF-PropTrunc
-open import UF-Subsingletons
-open import UF-Subsingletons-FunExt
+open import UF.FunExt
+open import UF.Lower-FunExt
+open import UF.Powerset
+open import UF.PropTrunc
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
 
 module FreeSupLattice
         (pt : propositional-truncations-exist)

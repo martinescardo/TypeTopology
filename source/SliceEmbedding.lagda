@@ -5,8 +5,8 @@ Martin Escardo 6th December 2018.
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import MLTT.Spartan
-open import UF-Univalence
-open import UF-FunExt
+open import UF.Univalence
+open import UF.FunExt
 
 module SliceEmbedding
         (𝓤 𝓣 : Universe)
@@ -14,11 +14,11 @@ module SliceEmbedding
         (fe : funext 𝓣 𝓤)
        where
 
-open import UF-Subsingletons
-open import UF-Embeddings
-open import UF-Equiv
-open import UF-EquivalenceExamples
-open import UF-UA-FunExt
+open import UF.Subsingletons
+open import UF.Embeddings
+open import UF.Equiv
+open import UF.EquivalenceExamples
+open import UF.UA-FunExt
 
 open import Slice 𝓣
 open import SliceIdentityViaSIP 𝓣

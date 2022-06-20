@@ -11,10 +11,10 @@ open import MLTT.Spartan
 
 module LiftingMonadVariation where
 
-open import UF-Subsingletons
-open import UF-Embeddings
-open import UF-Equiv
-open import UF-FunExt
+open import UF.Subsingletons
+open import UF.Embeddings
+open import UF.Equiv
+open import UF.FunExt
 
 open import Lifting
 open import LiftingEmbeddingDirectly

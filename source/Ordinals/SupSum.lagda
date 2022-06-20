@@ -21,7 +21,7 @@ Other local assumptions belonging to HoTT/UF are discussed below.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import UF-Univalence
+open import UF.Univalence
 
 module Ordinals.SupSum
         (ua : Univalence)
@@ -32,12 +32,12 @@ open import Ordinals.Type
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.OrdinalOfOrdinalsSuprema ua
 
-open import UF-FunExt
-open import UF-UA-FunExt
-open import UF-ExcludedMiddle
-open import UF-Size
-open import UF-PropTrunc
-open import UF-Subsingletons
+open import UF.FunExt
+open import UF.UA-FunExt
+open import UF.ExcludedMiddle
+open import UF.Size
+open import UF.PropTrunc
+open import UF.Subsingletons
 
 private
  fe : FunExt

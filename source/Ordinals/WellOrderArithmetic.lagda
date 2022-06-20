@@ -13,9 +13,9 @@ module Ordinals.WellOrderArithmetic where
 open import MLTT.Spartan hiding (transitive)
 open import Ordinals.Notions
 
-open import UF-Base
-open import UF-Subsingletons
-open import UF-FunExt
+open import UF.Base
+open import UF.Subsingletons
+open import UF.FunExt
 
 \end{code}
 
@@ -429,12 +429,12 @@ module pip
 \end{code}
 
 We have the following families of equivalences indexed by P,
-constructed in the module UF-PropIndexedPiSigma:
+constructed in the module UF.PropIndexedPiSigma:
 
 \begin{code}
 
- open import UF-Equiv
- open import UF-PropIndexedPiSigma
+ open import UF.Equiv
+ open import UF.PropIndexedPiSigma
 
  private
   φ : (p : P) → Π X → X p
@@ -937,8 +937,8 @@ but the constructions still work.
 
 \begin{code}
 
-open import UF-Embeddings
-open import UF-Equiv
+open import UF.Embeddings
+open import UF.Equiv
 
 module extension
         (fe : FunExt)

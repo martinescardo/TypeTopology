@@ -85,15 +85,15 @@ open import MLTT.AlternativePlus
 open import DiscreteAndSeparated
 open import DecidableAndDetachable public
 
-open import UF-Base
-open import UF-Subsingletons renaming (⊤Ω to ⊤ ; ⊥Ω to ⊥)
-open import UF-Subsingletons-FunExt
-open import UF-FunExt
-open import UF-Retracts
-open import UF-Equiv
-open import UF-PropTrunc
-open import UF-ImageAndSurjection
-open import UF-Miscelanea
+open import UF.Base
+open import UF.Subsingletons renaming (⊤Ω to ⊤ ; ⊥Ω to ⊥)
+open import UF.Subsingletons-FunExt
+open import UF.FunExt
+open import UF.Retracts
+open import UF.Equiv
+open import UF.PropTrunc
+open import UF.ImageAndSurjection
+open import UF.Miscelanea
 
 \end{code}
 
@@ -1128,7 +1128,7 @@ Added 26th April 2022. All types are compact iff global choice holds:
 
 \begin{code}
 
-open import UF-ExcludedMiddle
+open import UF.ExcludedMiddle
 
 all-types-compact-gives-global-choice : ((X : 𝓤 ̇ ) → Compact X {𝓤})
                                       → Global-Choice 𝓤

@@ -12,8 +12,8 @@ In particular, (η ∘ f) ♯ is pointwise equal to 𝓛̇ f.
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import MLTT.Spartan
-open import UF-FunExt
-open import UF-Subsingletons
+open import UF.FunExt
+open import UF.Subsingletons
 
 module LiftingMiscelanea-PropExt-FunExt
         (𝓣 : Universe)
@@ -21,10 +21,10 @@ module LiftingMiscelanea-PropExt-FunExt
         (fe : Fun-Ext)
        where
 
-open import UF-Base
-open import UF-Equiv
-open import UF-Retracts
-open import UF-Subsingletons-FunExt
+open import UF.Base
+open import UF.Equiv
+open import UF.Retracts
+open import UF.Subsingletons-FunExt
 
 open import Lifting 𝓣
 open import LiftingIdentityViaSIP 𝓣

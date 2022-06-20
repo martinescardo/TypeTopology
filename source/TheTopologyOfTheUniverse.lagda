@@ -116,12 +116,12 @@ them, so to speak. This is Rice's Theorem for the universe U.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import UF-FunExt
+open import UF.FunExt
 
 module TheTopologyOfTheUniverse (fe : FunExt) where
 
 open import MLTT.Spartan
-open import UF-Equiv
+open import UF.Equiv
 open import CoNaturals.GenericConvergentSequence
 open import InjectiveTypes fe
 open import Notation.CanonicalMap

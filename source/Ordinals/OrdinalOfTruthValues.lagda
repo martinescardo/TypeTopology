@@ -6,8 +6,8 @@ The ordinal of truth values in a universe 𝓤.
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import MLTT.Spartan
-open import UF-FunExt
-open import UF-Subsingletons renaming (⊤Ω to ⊤ ; ⊥Ω to ⊥)
+open import UF.FunExt
+open import UF.Subsingletons renaming (⊤Ω to ⊤ ; ⊥Ω to ⊥)
 
 module Ordinals.OrdinalOfTruthValues
        (fe : FunExt)
@@ -15,7 +15,7 @@ module Ordinals.OrdinalOfTruthValues
        (pe : propext 𝓤)
        where
 
-open import UF-Subsingletons-FunExt
+open import UF.Subsingletons-FunExt
 
 open import Ordinals.Arithmetic fe
 open import Ordinals.Type
@@ -66,7 +66,7 @@ open import Ordinals.Type
                      → (q ≾⟨ Ωₒ ⟩ p)
 ¬¬-dense-is-largest' .⊥ .⊤ f (refl , refl) = f 𝟘-elim
 
-open import UF-Univalence
+open import UF.Univalence
 
 module _ (ua : Univalence) where
 

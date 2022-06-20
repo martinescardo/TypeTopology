@@ -15,12 +15,12 @@ open import MLTT.Two-Properties
 open import MLTT.Plus-Properties
 open import MLTT.NaturalNumbers-Properties
 open import DecidableAndDetachable
-open import UF-Base
-open import UF-Subsingletons renaming (⊤Ω to ⊤ ; ⊥Ω to ⊥)
-open import UF-Subsingletons-FunExt
-open import UF-Equiv
-open import UF-Retracts
-open import UF-FunExt
+open import UF.Base
+open import UF.Subsingletons renaming (⊤Ω to ⊤ ; ⊥Ω to ⊥)
+open import UF.Subsingletons-FunExt
+open import UF.Equiv
+open import UF.Retracts
+open import UF.FunExt
 
 is-isolated : {X : 𝓤 ̇ } → X → 𝓤 ̇
 is-isolated x = ∀ y → decidable (x ≡ y)
@@ -104,7 +104,7 @@ inr-is-isolated {𝓤} {𝓥} {X} {Y} y i = γ
 \end{code}
 
 The closure of discrete types under Σ is proved in the module
-UF-Miscelanea (as this requires to first prove that discrete types
+UF.Miscelanea (as this requires to first prove that discrete types
 are sets).
 
 General properties:
@@ -373,8 +373,8 @@ Added by Tom de Jong in January 2022.
 Another logical place for these three lemmas would be Negation.lagda, but
 (1) the first lemma needs _⇔_ which is defined in Notation.General.lagda, which
     imports Negation.lagda;
-(2) the second lemma needs _≃_ which is only defined in UF-Equiv.lagda;
-(3) the third lemma needs funext, which is only defined in UF-FunExt.lagda.
+(2) the second lemma needs _≃_ which is only defined in UF.Equiv.lagda;
+(3) the third lemma needs funext, which is only defined in UF.FunExt.lagda.
 
 \begin{code}
 

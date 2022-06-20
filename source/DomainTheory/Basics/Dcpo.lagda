@@ -14,8 +14,8 @@ dcpos.
 
 open import MLTT.Spartan
 
-open import UF-FunExt
-open import UF-PropTrunc
+open import UF.FunExt
+open import UF.PropTrunc
 
 module DomainTheory.Basics.Dcpo
         (pt : propositional-truncations-exist)
@@ -25,8 +25,8 @@ module DomainTheory.Basics.Dcpo
 
 open PropositionalTruncation pt hiding (is-inhabited; being-inhabited-is-prop)
 
-open import UF-Subsingletons
-open import UF-Subsingletons-FunExt
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
 
 open import Poset fe
 
@@ -190,7 +190,7 @@ module _ {𝓤 𝓣 : Universe} where
 \end{code}
 
 We introduce pretty syntax for chain reasoning with inequalities.
-(Cf. ≡⟨_⟩ and ∎ in Id.lagda, ≃⟨_⟩ and ■ in UF-Equiv.lagda)
+(Cf. ≡⟨_⟩ and ∎ in Id.lagda, ≃⟨_⟩ and ■ in UF.Equiv.lagda)
 
 For example, given (a b c d : ⟨ 𝓓 ⟩) and
 u : a ⊑⟨ 𝓓 ⟩ b

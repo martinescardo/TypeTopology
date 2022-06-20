@@ -8,7 +8,7 @@ be done with univalence when the types live in different universes.
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import MLTT.Spartan
-open import UF-FunExt
+open import UF.FunExt
 
 module Ordinals.WellOrderTransport (fe : FunExt) where
 
@@ -16,11 +16,11 @@ open import Ordinals.Notions
 open import Ordinals.Type
 open import Ordinals.WellOrderArithmetic
 
-open import UF-Base
-open import UF-Subsingletons
-open import UF-Retracts
-open import UF-Equiv
-open import UF-Univalence
+open import UF.Base
+open import UF.Subsingletons
+open import UF.Retracts
+open import UF.Equiv
+open import UF.Univalence
 
 \end{code}
 

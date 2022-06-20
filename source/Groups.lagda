@@ -1,7 +1,7 @@
 Martin Escardo, 13th February. Group basics.
 
 There is another equivalent definition of group in the file
-UF-SIP-Examples.
+UF.SIP-Examples.
 
 \begin{code}
 
@@ -9,11 +9,11 @@ UF-SIP-Examples.
 
 module Groups where
 open import MLTT.Spartan
-open import UF-Base
-open import UF-Subsingletons
-open import UF-FunExt
-open import UF-Subsingletons-FunExt
-open import UF-Equiv hiding (_≅_ ; ≅-refl)
+open import UF.Base
+open import UF.Subsingletons
+open import UF.FunExt
+open import UF.Subsingletons-FunExt
+open import UF.Equiv hiding (_≅_ ; ≅-refl)
 
 \end{code}
 
@@ -343,7 +343,7 @@ resized-group {𝓤} {𝓥} G (Y , f , f-is-equiv) = γ
   γ : codomain δ
   γ = δ (transport-Group-structure G Y f f-is-equiv)
 
-open import UF-UniverseEmbedding
+open import UF.UniverseEmbedding
 
 transport-Group-structure₁ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                           → X ≃ Y

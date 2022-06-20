@@ -7,12 +7,12 @@ Based on `ayberkt/formal-topology-in-UF`.
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import MLTT.Spartan
-open import UF-Base
-open import UF-PropTrunc
-open import UF-FunExt
-open import UF-Univalence
-open import UF-UA-FunExt
-open import UF-EquivalenceExamples
+open import UF.Base
+open import UF.PropTrunc
+open import UF.FunExt
+open import UF.Univalence
+open import UF.UA-FunExt
+open import UF.EquivalenceExamples
 open import List hiding ([_])
 
 \end{code}
@@ -24,9 +24,9 @@ module PatchLocale
         (fe : Fun-Ext)
        where
 
-open import UF-Subsingletons
-open import UF-Subsingleton-Combinators
-open import UF-Equiv using (_≃_; logically-equivalent-props-give-is-equiv)
+open import UF.Subsingletons
+open import UF.Subsingleton-Combinators
+open import UF.Equiv using (_≃_; logically-equivalent-props-give-is-equiv)
 open import Frame pt fe hiding (is-directed)
 
 open AllCombinators pt fe

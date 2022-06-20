@@ -12,8 +12,8 @@ Refactored December 2021.
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import MLTT.Spartan
-open import UF-FunExt
-open import UF-PropTrunc
+open import UF.FunExt
+open import UF.PropTrunc
 
 module DomainTheory.ScottModelOfPCF.PCFCombinators
         (pt : propositional-truncations-exist)
@@ -23,8 +23,8 @@ module DomainTheory.ScottModelOfPCF.PCFCombinators
 
 open PropositionalTruncation pt
 
-open import UF-Subsingletons
-open import UF-Subsingletons-FunExt
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
 
 open import Poset fe
 open import DomainTheory.Basics.Dcpo pt fe 𝓥
@@ -244,7 +244,7 @@ module IfZeroDenotationalSemantics
 
  open import DomainTheory.Lifting.LiftingSet pt fe 𝓥 pe
 
- open import UF-Miscelanea
+ open import UF.Miscelanea
 
  open import MLTT.NaturalNumbers-Properties
 

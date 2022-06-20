@@ -43,17 +43,17 @@ we had a convoluted path to this supposedly natural way).
 
 open import MLTT.Spartan
 
-open import UF-FunExt
+open import UF.FunExt
 
 module BooleanCompactness.PropTychonoff (fe : FunExt) where
 
 open import BooleanCompactness.CompactTypes
 open import MLTT.Two-Properties
-open import UF-Base
-open import UF-Subsingletons
-open import UF-PropIndexedPiSigma
-open import UF-Equiv
-open import UF-EquivalenceExamples
+open import UF.Base
+open import UF.Subsingletons
+open import UF.PropIndexedPiSigma
+open import UF.Equiv
+open import UF.EquivalenceExamples
 
 \end{code}
 
@@ -317,7 +317,7 @@ proposition P, which is weak excluded middle, which is not provable.
 
 \begin{code}
 
-open import UF-ExcludedMiddle
+open import UF.ExcludedMiddle
 
 compact-prop-tychonoff-gives-WEM : ((X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ )
                                        → is-prop X

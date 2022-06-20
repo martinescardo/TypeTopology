@@ -97,7 +97,7 @@ All this dualizes with Π replaced by Σ and right replaced by left.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline  #-}
 
-open import UF-FunExt
+open import UF.FunExt
 
 module InjectiveTypes (fe : FunExt) where
 
@@ -105,21 +105,21 @@ open import MLTT.Spartan
 open import MLTT.Plus-Properties
 open import PairFun
 
-open import UF-Base
-open import UF-Equiv
-open import UF-Embeddings
-open import UF-Retracts
-open import UF-EquivalenceExamples
-open import UF-Univalence
-open import UF-IdEmbedding
-open import UF-PropIndexedPiSigma
-open import UF-Subsingletons
-open import UF-Subsingletons-FunExt
-open import UF-Size
-open import UF-PropTrunc
-open import UF-UniverseEmbedding
-open import UF-ExcludedMiddle
-open import UF-Lower-FunExt
+open import UF.Base
+open import UF.Equiv
+open import UF.Embeddings
+open import UF.Retracts
+open import UF.EquivalenceExamples
+open import UF.Univalence
+open import UF.IdEmbedding
+open import UF.PropIndexedPiSigma
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
+open import UF.Size
+open import UF.PropTrunc
+open import UF.UniverseEmbedding
+open import UF.ExcludedMiddle
+open import UF.Lower-FunExt
 
 \end{code}
 
@@ -699,8 +699,8 @@ module /-extension-is-embedding-special-case
          (ua : is-univalent 𝓤)
        where
 
- open import UF-Equiv-FunExt
- open import UF-UA-FunExt
+ open import UF.Equiv-FunExt
+ open import UF.UA-FunExt
 
  feuu : funext 𝓤 𝓤
  feuu = univalence-gives-funext ua
@@ -776,8 +776,8 @@ module ∖-extension-is-embedding-special-case
          (ua : is-univalent 𝓤)
        where
 
- open import UF-PropIndexedPiSigma
- open import UF-Equiv-FunExt
+ open import UF.PropIndexedPiSigma
+ open import UF.Equiv-FunExt
 
  s : (P → 𝓤 ̇ ) → 𝓤 ̇
  s = Σ
@@ -851,10 +851,10 @@ module /-extension-is-embedding
          (ua : is-univalent 𝓤)
        where
 
- open import UF-PropIndexedPiSigma
- open import UF-Equiv-FunExt
- open import UF-Subsingletons-FunExt
- open import UF-UA-FunExt
+ open import UF.PropIndexedPiSigma
+ open import UF.Equiv-FunExt
+ open import UF.Subsingletons-FunExt
+ open import UF.UA-FunExt
 
  feuu : funext 𝓤 𝓤
  feuu = univalence-gives-funext ua
@@ -947,10 +947,10 @@ module ∖-extension-is-embedding
          (ua : is-univalent 𝓤)
        where
 
- open import UF-PropIndexedPiSigma
- open import UF-Equiv-FunExt
- open import UF-Subsingletons-FunExt
- open import UF-UA-FunExt
+ open import UF.PropIndexedPiSigma
+ open import UF.Equiv-FunExt
+ open import UF.Subsingletons-FunExt
+ open import UF.UA-FunExt
 
  feuu : funext 𝓤 𝓤
  feuu = univalence-gives-funext ua
@@ -1270,7 +1270,7 @@ universe-retract ua R 𝓤 𝓥 = ρ , (Lift-is-embedding ua)
 
 \end{code}
 
-And unfolding of the above construction is in the module UF-Size.
+And unfolding of the above construction is in the module UF.Size.
 
 Added 25th January 2019. From this we get the following
 characterization of injective types (as a logical equivalence, not a
@@ -1315,7 +1315,7 @@ module ainjectivity-of-Lifting (𝓤 : Universe) where
  open import LiftingAlgebras 𝓤
  open import LiftingEmbeddingViaSIP 𝓤 public
 
- open import UF-UA-FunExt
+ open import UF.UA-FunExt
 
 \end{code}
 

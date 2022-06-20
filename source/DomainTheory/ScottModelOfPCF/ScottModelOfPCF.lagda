@@ -23,9 +23,9 @@ https://github.com/BrendanHart/Investigating-Properties-of-PCF/blob/master/Inves
 {-# OPTIONS --without-K --exact-split --safe --auto-inline --experimental-lossy-unification #-}
 
 open import MLTT.Spartan
-open import UF-PropTrunc
-open import UF-FunExt
-open import UF-Subsingletons
+open import UF.PropTrunc
+open import UF.FunExt
+open import UF.Subsingletons
 
 module DomainTheory.ScottModelOfPCF.ScottModelOfPCF
         (pt : propositional-truncations-exist)
@@ -36,7 +36,7 @@ module DomainTheory.ScottModelOfPCF.ScottModelOfPCF
 open PropositionalTruncation pt
 
 open import MLTT.NaturalNumbers-Properties
-open import UF-Miscelanea
+open import UF.Miscelanea
 
 open import PCF pt
 

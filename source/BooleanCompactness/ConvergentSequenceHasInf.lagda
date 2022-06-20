@@ -9,7 +9,7 @@ witnesses can be found.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import UF-FunExt
+open import UF.FunExt
 open import MLTT.Spartan
 
 module BooleanCompactness.ConvergentSequenceHasInf (fe₀ : funext 𝓤₀ 𝓤₀) where

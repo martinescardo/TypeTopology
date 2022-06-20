@@ -12,7 +12,7 @@ be eventually constant (which we don't postulate).
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import MLTT.Spartan
-open import UF-FunExt
+open import UF.FunExt
 
 module BasicDiscontinuityTaboo (fe : FunExt) where
 

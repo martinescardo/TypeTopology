@@ -12,9 +12,9 @@ module PairFun where
 open import MLTT.Spartan
 open import Density
 
-open import UF-Subsingletons
-open import UF-Equiv
-open import UF-Embeddings
+open import UF.Subsingletons
+open import UF.Equiv
+open import UF.Embeddings
 
 module _ {𝓤 𝓥 𝓦 𝓣}
          {X : 𝓤 ̇ }
@@ -108,8 +108,8 @@ module _ {𝓤 𝓥 𝓦 𝓣}
        l : ¬ fiber (g x) b
        l (a , refl) = n ((x , a) , refl)
 
- open import UF-PropTrunc
- open import UF-ImageAndSurjection
+ open import UF.PropTrunc
+ open import UF.ImageAndSurjection
 
  module pair-fun-surjection (pt : propositional-truncations-exist) where
 

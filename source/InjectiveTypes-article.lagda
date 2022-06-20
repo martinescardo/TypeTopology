@@ -198,8 +198,8 @@ this module.
 open import MLTT.Spartan
 open import PairFun
 
-open import UF-Univalence
-open import UF-PropTrunc
+open import UF.Univalence
+open import UF.PropTrunc
 
 module InjectiveTypes-article
         (ua : Univalence)
@@ -217,19 +217,19 @@ imported later.
 \begin{code}
 
 open import MLTT.Plus-Properties
-open import UF-Base
-open import UF-Subsingletons
-open import UF-Subsingletons-FunExt
-open import UF-FunExt
-open import UF-UA-FunExt
-open import UF-Embeddings
-open import UF-Retracts
-open import UF-Equiv
-open import UF-Equiv-FunExt
-open import UF-EquivalenceExamples
-open import UF-UniverseEmbedding
-open import UF-PropIndexedPiSigma
-open import UF-IdEmbedding
+open import UF.Base
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
+open import UF.FunExt
+open import UF.UA-FunExt
+open import UF.Embeddings
+open import UF.Retracts
+open import UF.Equiv
+open import UF.Equiv-FunExt
+open import UF.EquivalenceExamples
+open import UF.UniverseEmbedding
+open import UF.PropIndexedPiSigma
+open import UF.IdEmbedding
 
 \end{code}
 
@@ -727,7 +727,7 @@ Id-is-embedding {𝓤} = UA-Id-embedding (ua 𝓤) fe
 The proof explained in the article submitted for publication is
 implemented at
 
-https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/HoTT-UF-Agda.html#yoneda
+https://www.cs.bham.ac.uk/~mhe/HoTT-UF.in-Agda-Lecture-Notes/HoTT-UF-Agda.html#yoneda
 
 From this we conclude that algebraically injective types are retracts
 of powers of universes:
@@ -981,7 +981,7 @@ choice is based on the fact that we get more uniform proofs.
 
 \begin{code}
 
-open import UF-hlevels ua
+open import UF.hlevels ua
 
 ℍ-aflabby : (n : ℕ) → aflabby (Σ X ꞉ 𝓤 ̇ , X is-of-hlevel n) 𝓤
 ℍ-aflabby n = subuniverse-aflabby-Π
@@ -1034,7 +1034,7 @@ resizing:
 
 \begin{code}
 
-open import UF-Size
+open import UF.Size
 
 aflabbiness-resizing : (D : 𝓦 ̇ ) (𝓤 𝓥 : Universe) → propositional-resizing 𝓤 𝓥
                      → aflabby D 𝓥 → aflabby D 𝓤
@@ -1601,7 +1601,7 @@ impredicativity of the universe 𝓤, which says that the type of
 propositions in 𝓤, which lives in the next universe 𝓤 ⁺, has an
 equivalent copy in 𝓤 (for the relationship between propositional
 resizing and propositional impredicativity, see the module
-UF-Size). We refer to this kind of impredicativity as Ω-resizing.
+UF.Size). We refer to this kind of impredicativity as Ω-resizing.
 
 \begin{code}
 
@@ -1671,7 +1671,7 @@ types are (algebraically) injective iff excluded middle holds.
 
 \begin{code}
 
-open import UF-ExcludedMiddle
+open import UF.ExcludedMiddle
 
 EM-gives-pointed-types-aflabby : (D : 𝓦 ̇ ) → EM 𝓤 → D → aflabby D 𝓤
 EM-gives-pointed-types-aflabby {𝓦} {𝓤} D em d P i f = h (em P i)

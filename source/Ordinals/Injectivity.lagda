@@ -6,15 +6,15 @@ The type of ordinals is (algebraically) injective.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import UF-FunExt
+open import UF.FunExt
 
 module Ordinals.Injectivity where
 
 open import MLTT.Spartan
 
-open import UF-Base
-open import UF-Equiv
-open import UF-Embeddings
+open import UF.Base
+open import UF.Equiv
+open import UF.Embeddings
 
 open import Ordinals.Type
 open import Ordinals.WellOrderArithmetic
@@ -113,13 +113,13 @@ Added 11th May 2022. But we still need to clean it up.
 
 \begin{code}
 
-open import UF-Univalence
+open import UF.Univalence
 
 module ordinals-injectivity-order (ua : Univalence) where
 
  open import Ordinals.OrdinalOfOrdinals ua
- open import UF-UA-FunExt
- open import UF-Subsingletons
+ open import UF.UA-FunExt
+ open import UF.Subsingletons
 
  fe : FunExt
  fe = Univalence-gives-FunExt ua
@@ -204,14 +204,14 @@ module ordinals-injectivity-order (ua : Univalence) where
 
 module topped-ordinals-injectivity-order (ua : Univalence) where
 
- open import UF-UA-FunExt
+ open import UF.UA-FunExt
 
  fe : FunExt
  fe = Univalence-gives-FunExt ua
 
  open import Ordinals.ToppedType fe
  open import Ordinals.OrdinalOfOrdinals ua
- open import UF-Subsingletons
+ open import UF.Subsingletons
 
  open topped-ordinals-injectivity fe
 

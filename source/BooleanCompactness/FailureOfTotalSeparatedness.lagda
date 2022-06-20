@@ -35,7 +35,7 @@ a theorem rather than a metatheorem.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import UF-FunExt
+open import UF.FunExt
 
 module BooleanCompactness.FailureOfTotalSeparatedness (fe : FunExt) where
 
@@ -45,7 +45,7 @@ open import MLTT.Two-Properties
 open import CoNaturals.GenericConvergentSequence
 open import BasicDiscontinuityTaboo
 open import WLPO
-open import UF-Base
+open import UF.Base
 open import Notation.CanonicalMap
 
 \end{code}

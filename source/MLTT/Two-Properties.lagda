@@ -13,7 +13,7 @@ open import MLTT.Spartan
 open import MLTT.Unit-Properties
 open import Notation.Order
 
-open import UF-Subsingletons
+open import UF.Subsingletons
 
 𝟚-Cases : {A : 𝓤 ̇ } → 𝟚 → A → A → A
 𝟚-Cases a b c = 𝟚-cases b c a

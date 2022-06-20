@@ -10,11 +10,11 @@ open import MLTT.Spartan
 
 module Slice (𝓣 : Universe) where
 
-open import UF-Base
-open import UF-Equiv
-open import UF-EquivalenceExamples
-open import UF-FunExt
-open import UF-Subsingletons
+open import UF.Base
+open import UF.Equiv
+open import UF.EquivalenceExamples
+open import UF.FunExt
+open import UF.Subsingletons
 
 𝓕 : 𝓤 ̇ → 𝓤 ⊔ 𝓣 ⁺ ̇
 𝓕 X = Σ I ꞉ 𝓣 ̇ , (I → X)
@@ -112,22 +112,22 @@ pbf f (Y , γ) = pullback f γ , ppr₁
   l : B → C
   l (τ , H) = (φ ∘ τ , H)
 
-open import UF-Classifiers
-open import UF-Equiv
-open import UF-FunExt
-open import UF-Univalence
+open import UF.Classifiers
+open import UF.Equiv
+open import UF.FunExt
+open import UF.Univalence
 
 𝓕-equiv-particular : is-univalent 𝓣
                    → funext 𝓣 (𝓣 ⁺)
                    → (X : 𝓣 ̇ ) → 𝓕 X ≃ (X → 𝓣 ̇ )
 𝓕-equiv-particular = map-classification
 
-open import UF-Size
-open import UF-Base
-open import UF-Equiv-FunExt
-open import UF-UA-FunExt
-open import UF-UniverseEmbedding
-open import UF-EquivalenceExamples
+open import UF.Size
+open import UF.Base
+open import UF.Equiv-FunExt
+open import UF.UA-FunExt
+open import UF.UniverseEmbedding
+open import UF.EquivalenceExamples
 
 𝓕-equiv : Univalence →  (X : 𝓤 ̇ ) → 𝓕 X ≃ (Σ A ꞉ (X → 𝓣 ⊔ 𝓤 ̇ ), (Σ A) has-size 𝓣)
 𝓕-equiv {𝓤} ua X = qinveq φ (ψ , ψφ , φψ)

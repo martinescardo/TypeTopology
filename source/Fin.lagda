@@ -9,7 +9,7 @@ See also the file Fin-Properties.
 module Fin where
 
 open import MLTT.Spartan
-open import UF-Subsingletons renaming (⊤Ω to ⊤)
+open import UF.Subsingletons renaming (⊤Ω to ⊤)
 open import MLTT.Plus-Properties
 
 Fin : ℕ → 𝓤₀ ̇

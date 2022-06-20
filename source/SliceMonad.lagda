@@ -8,14 +8,14 @@ open import MLTT.Spartan
 
 module SliceMonad (𝓣 : Universe) where
 
-open import UF-Base
-open import UF-Subsingletons
-open import UF-Subsingletons-FunExt
-open import UF-Equiv
-open import UF-EquivalenceExamples
-open import UF-FunExt
-open import UF-Univalence
-open import UF-UA-FunExt
+open import UF.Base
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
+open import UF.Equiv
+open import UF.EquivalenceExamples
+open import UF.FunExt
+open import UF.Univalence
+open import UF.UA-FunExt
 
 open import Slice 𝓣
 open import SliceIdentityViaSIP 𝓣

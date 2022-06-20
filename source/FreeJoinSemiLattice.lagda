@@ -17,21 +17,21 @@ open import Fin
 open import Fin-Properties
 open import JoinSemiLattices
 
-open import UF-Base
-open import UF-Equiv
-open import UF-FunExt
-open import UF-Lower-FunExt
-open import UF-ImageAndSurjection
-open import UF-Powerset
-open import UF-PropTrunc
-open import UF-Subsingletons
-open import UF-Subsingletons-FunExt
+open import UF.Base
+open import UF.Equiv
+open import UF.FunExt
+open import UF.Lower-FunExt
+open import UF.ImageAndSurjection
+open import UF.Powerset
+open import UF.PropTrunc
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
 
 module FreeJoinSemiLattice
         (pt : propositional-truncations-exist)
        where
 
-open import UF-Powerset-Fin pt
+open import UF.Powerset-Fin pt
 
 open binary-unions-of-subsets pt
 
@@ -44,7 +44,7 @@ open PropositionalTruncation pt hiding (_∨_)
 
 The proof that the Kuratowski finite subsets of X denoted by 𝓚 X and ordered by
 subset inclusion is a join-semilattice (with joins given by unions) is given in
-UF-Powerset-Fin.lagda.
+UF.Powerset-Fin.lagda.
 
 So we proceed directly to showing that 𝓚 X is the *free* join-semilattice on a
 set X. Concretely, if L is a join-semilattice and f : X → L is any function,
@@ -331,7 +331,7 @@ We show (ii) and then (i) now.
 
 Finally we prove that f♭ is the unique map with the above properties (i) & (ii).
 We do so by using the induction principle for Kuratowski finite subsets, which
-is proved in UF-Powerset-Fin.lagda.
+is proved in UF.Powerset-Fin.lagda.
 
 \begin{code}
 
@@ -417,27 +417,27 @@ Added 17th March 2021 by Martin Escardo. Alternative definition of 𝓚:
 
 \begin{code}
 
-open import UF-Embeddings
+open import UF.Embeddings
 
 𝓚' : 𝓤 ̇ → 𝓤 ⁺ ̇
 𝓚' {𝓤} X = Σ A ꞉ 𝓤 ̇ , (A ↪ X) × is-Kuratowski-finite A
 
 \end{code}
 
-TODO. Show that 𝓚' X is equivalent to 𝓚 X (using UF-Classifiers).
+TODO. Show that 𝓚' X is equivalent to 𝓚 X (using UF.Classifiers).
 
 Tom de Jong, 27 August 2021. We implement this TODO.
 
 \begin{code}
 
-open import UF-Univalence
+open import UF.Univalence
 
 module _
         (ua : Univalence)
        where
 
- open import UF-Classifiers hiding (𝕋)
- open import UF-EquivalenceExamples
+ open import UF.Classifiers hiding (𝕋)
+ open import UF.EquivalenceExamples
 
  𝓚-is-equivalent-to-𝓚' : (X : 𝓤 ̇ ) →  𝓚 X ≃ 𝓚' X
  𝓚-is-equivalent-to-𝓚' {𝓤} X = γ

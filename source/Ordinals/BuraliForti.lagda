@@ -121,21 +121,21 @@ As discussed above, we assume univalence as a hypothesis:
 
 \begin{code}
 
-open import UF-Univalence
+open import UF.Univalence
 
 module Ordinals.BuraliForti
        (ua : Univalence)
        where
 
-open import UF-Base
-open import UF-Subsingletons
-open import UF-Retracts
-open import UF-Equiv hiding (_≅_)
-open import UF-EquivalenceExamples
-open import UF-UniverseEmbedding
-open import UF-UA-FunExt
-open import UF-FunExt
-open import UF-Size
+open import UF.Base
+open import UF.Subsingletons
+open import UF.Retracts
+open import UF.Equiv hiding (_≅_)
+open import UF.EquivalenceExamples
+open import UF.UniverseEmbedding
+open import UF.UA-FunExt
+open import UF.FunExt
+open import UF.Size
 
 private
  fe : FunExt
@@ -189,7 +189,7 @@ difficulties are explained.
 As discussed above, the type OO 𝓤 of ordinals in the
 universe 𝓤 lives in the next universe 𝓤⁺. We say that a type in the
 universe 𝓤⁺ is small if it is equivalent to some type in 𝓤, and large
-otherwise. This is defined in the module UF-Size.
+otherwise. This is defined in the module UF.Size.
 
 Our first corollary of Burali-Forti is that the type of ordinals is
 large, as expected:
@@ -226,7 +226,7 @@ that there is at most one universe embedding.
 
 Moreover, universe embeddings are automatically type embeddings
 (meaning that they have subsingleton fibers), as shown in the module
-UF-UniverseEmbeddings.
+UF.UniverseEmbeddings.
 
 So the following says that the universe 𝓤⁺ is strictly larger than the
 universe 𝓤:
@@ -265,7 +265,7 @@ In particular, we have the following, where
   Lift {𝓤} (𝓤 ⁺) : 𝓤 → 𝓤⁺
 
 is the canonical embedding of the universe 𝓤 into the successor
-universe 𝓤⁺, defined in the module UF-UniverseEmbedding:
+universe 𝓤⁺, defined in the module UF.UniverseEmbedding:
 
 \begin{code}
 
@@ -604,7 +604,7 @@ the-type-of-ordinals-is-locally-small α β = (α ≃ₒ β) , ≃-sym (UAₒ-�
 
 open import FreeGroupOfLargeLocallySmallSet
 open import Groups
-open import UF-PropTrunc
+open import UF.PropTrunc
 
 module _ (pt : propositional-truncations-exist) where
 

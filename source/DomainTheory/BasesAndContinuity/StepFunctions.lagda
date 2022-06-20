@@ -17,10 +17,10 @@ completion, see below for details.
 -- time by 50%.
 
 open import MLTT.Spartan hiding (J)
-open import UF-FunExt
-open import UF-PropTrunc
+open import UF.FunExt
+open import UF.PropTrunc
 
-open import UF-Subsingletons
+open import UF.Subsingletons
 
 module DomainTheory.BasesAndContinuity.StepFunctions
         (pt : propositional-truncations-exist)
@@ -30,12 +30,12 @@ module DomainTheory.BasesAndContinuity.StepFunctions
 
 open PropositionalTruncation pt hiding (_∨_)
 
-open import UF-Base hiding (_≈_)
-open import UF-Equiv
-open import UF-EquivalenceExamples
+open import UF.Base hiding (_≈_)
+open import UF.Equiv
+open import UF.EquivalenceExamples
 
-open import UF-Subsingletons
-open import UF-Subsingletons-FunExt
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
 
 open import DomainTheory.Basics.Dcpo pt fe 𝓥
 open import DomainTheory.BasesAndContinuity.Bases pt fe 𝓥

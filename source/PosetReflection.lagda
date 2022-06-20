@@ -1,16 +1,16 @@
 Tom de Jong, 3 June 2022
 
 The poset reflection of a preorder, using (large) set quotients as constructed
-in UF-Large-Quotient.
+in UF.Large-Quotient.
 
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import MLTT.Spartan
-open import UF-FunExt
-open import UF-PropTrunc
-open import UF-Subsingletons
+open import UF.FunExt
+open import UF.PropTrunc
+open import UF.Subsingletons
 
 module PosetReflection
         (pt : propositional-truncations-exist)
@@ -18,10 +18,10 @@ module PosetReflection
         (pe : Prop-Ext)
        where
 
-open import UF-Base hiding (_≈_)
-open import UF-Large-Quotient pt fe pe hiding (/-induction)
-open import UF-ImageAndSurjection
-open import UF-Subsingletons-FunExt
+open import UF.Base hiding (_≈_)
+open import UF.Large-Quotient pt fe pe hiding (/-induction)
+open import UF.ImageAndSurjection
+open import UF.Subsingletons-FunExt
 
 open ImageAndSurjection pt
 

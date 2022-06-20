@@ -17,10 +17,10 @@ Convention:
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import MLTT.Spartan
-open import UF-Equiv
-open import UF-Subsingletons
-open import UF-Subsingletons-FunExt
-open import UF-FunExt
+open import UF.Equiv
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
+open import UF.FunExt
 
 module Dominance where
 

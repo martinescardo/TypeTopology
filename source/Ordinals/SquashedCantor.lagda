@@ -16,15 +16,15 @@ a Cantor retract.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import UF-FunExt
+open import UF.FunExt
 
 module Ordinals.SquashedCantor (fe : FunExt) where
 
-open import UF-Base
-open import UF-Subsingletons
-open import UF-Equiv
-open import UF-Embeddings
-open import UF-Retracts
+open import UF.Base
+open import UF.Subsingletons
+open import UF.Equiv
+open import UF.Embeddings
+open import UF.Retracts
 
 open import MLTT.Spartan
 open import MLTT.Two-Properties
@@ -537,7 +537,7 @@ Snoc α = (Head α , Tail α)
 Snoc-Cons : (d : D Cantor) → Snoc (Cons d) ≡ d
 Snoc-Cons (u , φ) = to-Σ-≡ (Head-Cons u φ , Tail-Cons' u φ)
 
-open import UF-Retracts
+open import UF.Retracts
 
 D-Cantor-retract-of-Cantor : retract (D Cantor) of Cantor
 D-Cantor-retract-of-Cantor = Snoc , Cons , Snoc-Cons
@@ -574,7 +574,7 @@ pair-seq-retract : {X : 𝓤 ̇ }
 pair-seq-retract {𝓤} {X} fe = retracts-compose (retracts-compose c d) b
  where
   open import BinaryNaturals
-  open import UF-Retracts-FunExt
+  open import UF.Retracts-FunExt
 
   a : retract (ℕ → X) of (𝔹 → X)
   a = retract-covariance fe (unary , binary , unary-binary)

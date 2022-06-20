@@ -6,13 +6,13 @@ Arithmetic for trichotomous ordinals.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import UF-FunExt
+open import UF.FunExt
 
 module Ordinals.TrichotomousArithmetic
         (fe : FunExt)
        where
 
-open import UF-Subsingletons
+open import UF.Subsingletons
 
 open import MLTT.Spartan
 open import Ordinals.Type

@@ -32,8 +32,8 @@ infinite games instead.
 {-# OPTIONS --without-K --safe --auto-inline #-} -- --exact-split
 
 open import MLTT.Spartan hiding (J)
-open import UF-Base
-open import UF-FunExt
+open import UF.Base
+open import UF.FunExt
 
 open import BooleanCompactness.SigmaDiscreteAndTotallySeparated
 
@@ -647,9 +647,9 @@ tic-tac-toe₁ : Game
 tic-tac-toe₁ = build-Game draw Board transition 9 board₀
  where
   open import BooleanCompactness.CompactTypes
-  open import UF-Subsingletons
+  open import UF.Subsingletons
   open import DiscreteAndSeparated
-  open import UF-Miscelanea
+  open import UF.Miscelanea
 
   open import NonSpartanMLTTTypes hiding (Fin ; 𝟎 ; 𝟏 ; 𝟐 ; 𝟑 ; 𝟒 ; 𝟓 ; 𝟔 ; 𝟕 ; 𝟖 ; 𝟗)
   open import Fin

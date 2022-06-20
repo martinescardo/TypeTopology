@@ -5,9 +5,9 @@ Ayberk Tosun, 28 February 2022.
 {-# OPTIONS --without-K --safe --auto-inline #-}
 
 open import MLTT.Spartan
-open import UF-Base
-open import UF-PropTrunc
-open import UF-FunExt
+open import UF.Base
+open import UF.PropTrunc
+open import UF.FunExt
 
 module GaloisConnection
          (pt : propositional-truncations-exist)
@@ -15,9 +15,9 @@ module GaloisConnection
          where
 
 open import Frame pt fe
-open import UF-Subsingletons
+open import UF.Subsingletons
 
-open import UF-Subsingleton-Combinators
+open import UF.Subsingleton-Combinators
 open AllCombinators pt fe
 
 \end{code}

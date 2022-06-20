@@ -3,7 +3,7 @@ Tom de Jong (adapted from Martin's MGS lecture notes)
 
 We show that the type of natural numbers enjoys the universal property of a
 natural numbers object. We generalize
-https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/HoTT-UF-Agda.html#ℕ-is-nno
+https://www.cs.bham.ac.uk/~mhe/HoTT-UF.in-Agda-Lecture-Notes/HoTT-UF-Agda.html#ℕ-is-nno
 here from nondependent functions to dependent functions.
 
 \begin{code}
@@ -15,11 +15,11 @@ module MLTT.NaturalNumbers-UniversalProperty where
 open import MLTT.NaturalNumbers
 
 open import MLTT.Spartan
-open import UF-Base
-open import UF-Equiv
-open import UF-FunExt
-open import UF-Retracts
-open import UF-Subsingletons
+open import UF.Base
+open import UF.Equiv
+open import UF.FunExt
+open import UF.Retracts
+open import UF.Subsingletons
 
 ℕ-induction-retract : funext 𝓤₀ 𝓤
                     → (Y : ℕ → 𝓤 ̇ ) (y₀ : Y 0) (g : (n : ℕ) → Y n → Y (succ n))

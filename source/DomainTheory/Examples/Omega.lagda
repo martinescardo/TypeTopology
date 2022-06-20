@@ -12,9 +12,9 @@ characterize the compact elements of Ω 𝓤 as the decidable propositions.
 
 open import MLTT.Spartan
 
-open import UF-FunExt
-open import UF-PropTrunc
-open import UF-Subsingletons
+open import UF.FunExt
+open import UF.PropTrunc
+open import UF.Subsingletons
 
 module DomainTheory.Examples.Omega
         (pt : propositional-truncations-exist)
@@ -25,10 +25,10 @@ module DomainTheory.Examples.Omega
 
 open import DecidableAndDetachable
 
-open import UF-Equiv
-open import UF-EquivalenceExamples
-open import UF-ImageAndSurjection
-open import UF-Subsingletons-FunExt
+open import UF.Equiv
+open import UF.EquivalenceExamples
+open import UF.ImageAndSurjection
+open import UF.Subsingletons-FunExt
 
 open ImageAndSurjection pt
 open PropositionalTruncation pt

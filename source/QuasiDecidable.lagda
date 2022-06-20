@@ -64,9 +64,9 @@ We have:
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import MLTT.Spartan
-open import UF-PropTrunc
-open import UF-FunExt
-open import UF-Subsingletons
+open import UF.PropTrunc
+open import UF.FunExt
+open import UF.Subsingletons
 
 \end{code}
 
@@ -81,7 +81,7 @@ module QuasiDecidable
         (pt  : propositional-truncations-exist)
        where
 
-open import UF-Size
+open import UF.Size
 
 import Frame-version1
 import sigma-frame
@@ -221,17 +221,17 @@ types other than propositional truncation?
 open PropositionalTruncation pt
 
 open import DecidableAndDetachable
-open import UF-Base
-open import UF-Subsingletons-FunExt
+open import UF.Base
+open import UF.Subsingletons-FunExt
 open import Dominance
-open import UF-Equiv
-open import UF-Equiv-FunExt
-open import UF-Univalence
-open import UF-UA-FunExt
-open import UF-EquivalenceExamples
-open import UF-Yoneda
-open import UF-Embeddings
-open import UF-Powerset
+open import UF.Equiv
+open import UF.Equiv-FunExt
+open import UF.Univalence
+open import UF.UA-FunExt
+open import UF.EquivalenceExamples
+open import UF.Yoneda
+open import UF.Embeddings
+open import UF.Powerset
 
 \end{code}
 
@@ -853,7 +853,7 @@ propositional resizing is available:
 
 \begin{code}
 
-open import UF-Size
+open import UF.Size
 
 module quasidecidability-construction-from-resizing
         (𝓣 𝓚 : Universe)
@@ -870,7 +870,7 @@ The crucial fact exploited here is that intersections of collections
 of subcollections 𝓐 : 𝓟 (𝓟 X) exist under propositional resizing. We
 prove this generalizing the type of 𝓐 (the double powerset of X) as
 follows, where the membership relation defined in the module
-UF-Powerset has type
+UF.Powerset has type
 
   _∈_ : {X : 𝓤 ̇ } → X → (X → Ω 𝓥) → 𝓥 ̇
 

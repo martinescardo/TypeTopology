@@ -7,8 +7,8 @@ We specialize the work of Directed.lagda to ℕ-indexed diagrams.
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import MLTT.Spartan
-open import UF-PropTrunc
-open import UF-FunExt
+open import UF.PropTrunc
+open import UF.FunExt
 
 module DomainTheory.Bilimits.Sequential
         (pt : propositional-truncations-exist)
@@ -27,10 +27,10 @@ open import MLTT.NaturalNumbers-Properties
 open import NaturalsOrder
 open import Notation.Order
 
-open import UF-Equiv
-open import UF-EquivalenceExamples
-open import UF-Miscelanea
-open import UF-Subsingletons
+open import UF.Equiv
+open import UF.EquivalenceExamples
+open import UF.Miscelanea
+open import UF.Subsingletons
 
 module SequentialDiagram
         (𝓓 : ℕ → DCPO {𝓤} {𝓣})

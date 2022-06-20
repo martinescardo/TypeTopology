@@ -10,7 +10,7 @@ The (usual) order on the dyadic rationals
 
 open import MLTT.Spartan
 open import Dyadic
-open import UF-Subsingletons
+open import UF.Subsingletons
 
 \end{code}
 

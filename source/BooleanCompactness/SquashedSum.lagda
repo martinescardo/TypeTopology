@@ -9,7 +9,7 @@ See remarks below for an explanation.
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import MLTT.Spartan
-open import UF-FunExt
+open import UF.FunExt
 
 module BooleanCompactness.SquashedSum (fe : FunExt) where -- move this to compact types
 
@@ -30,11 +30,11 @@ open import DiscreteAndSeparated
 open import Notation.CanonicalMap
 open import PairFun
 
-open import UF-Base
-open import UF-Subsingletons
-open import UF-Equiv
-open import UF-Embeddings
-open import UF-Miscelanea
+open import UF.Base
+open import UF.Subsingletons
+open import UF.Equiv
+open import UF.Embeddings
+open import UF.Miscelanea
 
 \end{code}
 
@@ -519,7 +519,7 @@ module original-version-and-equivalence-with-new-version where
 
 \begin{code}
 
- open import UF-EquivalenceExamples
+ open import UF.EquivalenceExamples
 
  agreement-lemma : (X : ℕ → 𝓤₀ ̇ ) (u : ℕ∞)
                  → (X / ι) u ≃ Π (λ x → ι x ≡ u → X x)

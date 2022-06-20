@@ -43,7 +43,7 @@ r (η x) = η (right x)
 𝕄-eq-lr : l R ≡ r L
 𝕄-eq-lr = refl
 
-open import UF-Subsingletons hiding (center)
+open import UF.Subsingletons hiding (center)
 
 𝕄-inductive : (P : 𝕄 → 𝓤 ̇ )
              → P L
@@ -177,7 +177,7 @@ right-lc x x refl = refl
                               (λ (p : x ≡ y) → inl (ap η p))
                               (λ (ν : x ≢ y) → inr (contrapositive (η-lc x y) ν))
 
-open import UF-Miscelanea
+open import UF.Miscelanea
 
 𝕄-is-set : is-set 𝕄
 𝕄-is-set = discrete-types-are-sets 𝕄-is-discrete
@@ -194,7 +194,7 @@ BS 𝓤 = Σ A ꞉ 𝓤 ̇ , Σ s ꞉ binary-system-structure A , binary-system-
 𝓜 : BS 𝓤₀
 𝓜 = (𝕄 , (L , R , l , r) , (𝕄-is-set , 𝕄-eq-l , 𝕄-eq-lr , 𝕄-eq-r))
 
-open import UF-SIP
+open import UF.SIP
 open sip
 
 is-hom : (𝓐 : BS 𝓤) (𝓐' : BS 𝓥) → (⟨ 𝓐 ⟩ → ⟨ 𝓐' ⟩) → 𝓤 ⊔ 𝓥 ̇
@@ -769,9 +769,9 @@ We now need to assume function extensionality.
 
 \begin{code}
 
-open import UF-Base
-open import UF-FunExt
-open import UF-Subsingletons-FunExt
+open import UF.Base
+open import UF.FunExt
+open import UF.Subsingletons-FunExt
 
 module _ (fe  : Fun-Ext) where
 

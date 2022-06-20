@@ -147,9 +147,9 @@ open import MLTT.Spartan hiding (_^_)
 
 module ArithmeticViaEquivalence where
 
-open import UF-Subsingletons
-open import UF-Equiv
-open import UF-EquivalenceExamples
+open import UF.Subsingletons
+open import UF.Equiv
+open import UF.EquivalenceExamples
 open import Fin
 open import Fin-Properties
 
@@ -295,7 +295,7 @@ and function extensionality.
 
 \begin{code}
 
-open import UF-FunExt
+open import UF.FunExt
 
 module exponentiation-and-factorial (fe : FunExt) where
 
@@ -366,11 +366,11 @@ module exponentiation-and-factorial (fe : FunExt) where
 
 Added 25t November 2019: Numerical factorial from the type theoretical
 factorial, which also uses function extensionality (which is not
-actually necessary - see the comments in the module UF-Factorial).
+actually necessary - see the comments in the module UF.Factorial).
 
 \begin{code}
 
- open import UF-Factorial fe public
+ open import UF.Factorial fe public
 
  !construction : (n : ℕ) → Σ k ꞉ ℕ , Fin k ≃ Aut (Fin n)
  !construction zero = 1 ,
@@ -426,7 +426,7 @@ Recall that a type X is finite if there is n : ℕ with X ≃ Fin n.
 
 \begin{code}
 
-open import UF-PropTrunc
+open import UF.PropTrunc
 
 module _ (pt : propositional-truncations-exist)
          (fe : FunExt)
@@ -436,7 +436,7 @@ module _ (pt : propositional-truncations-exist)
 
  open finiteness pt
  open exponentiation-and-factorial fe
- open import UF-Equiv-FunExt
+ open import UF.Equiv-FunExt
 
  Aut-finite : is-finite X → is-finite (Aut X)
  Aut-finite (n , α) = n ! , γ
@@ -489,7 +489,7 @@ spartan MLTT are Π and Σ.
 
 \begin{code}
 
-open import UF-PropIndexedPiSigma
+open import UF.PropIndexedPiSigma
 
 Σconstruction : (n : ℕ) (a : Fin n → ℕ)
               → Σ k ꞉ ℕ , Fin k ≃ (Σ i ꞉ Fin n , Fin (a i))

@@ -13,15 +13,15 @@ open import MLTT.Plus-Properties
 open import Ordinals.Notions
 open import Ordinals.Type
 
-open import UF-Equiv
-open import UF-EquivalenceExamples
-open import UF-ExcludedMiddle
-open import UF-FunExt
-open import UF-PropTrunc
-open import UF-Size
-open import UF-Subsingletons
-open import UF-UA-FunExt
-open import UF-Univalence
+open import UF.Equiv
+open import UF.EquivalenceExamples
+open import UF.ExcludedMiddle
+open import UF.FunExt
+open import UF.PropTrunc
+open import UF.Size
+open import UF.Subsingletons
+open import UF.UA-FunExt
+open import UF.Univalence
 
 \end{code}
 
@@ -241,8 +241,8 @@ module _
  open import Ordinals.OrdinalOfOrdinals ua
  open import Ordinals.WellOrderArithmetic
 
- open import UF-Embeddings
- open import UF-ImageAndSurjection
+ open import UF.Embeddings
+ open import UF.ImageAndSurjection
  open ImageAndSurjection pt
 
  module discrete-sup-taboo-construction-II

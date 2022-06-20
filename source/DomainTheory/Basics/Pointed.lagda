@@ -15,8 +15,8 @@ and that these are preserved by maps that are both strict and Scott continuous.
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import MLTT.Spartan
-open import UF-FunExt
-open import UF-PropTrunc
+open import UF.FunExt
+open import UF.PropTrunc
 
 module DomainTheory.Basics.Pointed
         (pt : propositional-truncations-exist)
@@ -26,7 +26,7 @@ module DomainTheory.Basics.Pointed
 
 open PropositionalTruncation pt hiding (_∨_)
 
-open import UF-Subsingletons
+open import UF.Subsingletons
 
 open import DomainTheory.Basics.Dcpo pt fe 𝓥
 open import DomainTheory.Basics.Miscelanea pt fe 𝓥

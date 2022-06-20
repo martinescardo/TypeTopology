@@ -37,8 +37,8 @@ https://github.com/agda/agda/issues/1625
 \begin{code}
 
 open import MLTT.Spartan hiding (J)
-open import UF-FunExt
-open import UF-PropTrunc
+open import UF.FunExt
+open import UF.PropTrunc
 
 module DomainTheory.Bilimits.Directed
         (pt : propositional-truncations-exist)
@@ -47,11 +47,11 @@ module DomainTheory.Bilimits.Directed
         (𝓤 𝓣 : Universe)
        where
 
-open import UF-Equiv
-open import UF-EquivalenceExamples
-open import UF-ImageAndSurjection
-open import UF-Subsingletons
-open import UF-Subsingletons-FunExt
+open import UF.Equiv
+open import UF.EquivalenceExamples
+open import UF.ImageAndSurjection
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
 
 open ImageAndSurjection pt
 open PropositionalTruncation pt

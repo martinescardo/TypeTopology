@@ -6,7 +6,7 @@ The subtype Ordinalsᵀ of ordinals with a top element.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import UF-FunExt
+open import UF.FunExt
 
 module Ordinals.ToppedType
         (fe : FunExt)
@@ -16,8 +16,8 @@ open import MLTT.Spartan
 open import Ordinals.Notions
 open import Ordinals.Type
 
-open import UF-Base
-open import UF-Subsingletons
+open import UF.Base
+open import UF.Subsingletons
 
 \end{code}
 

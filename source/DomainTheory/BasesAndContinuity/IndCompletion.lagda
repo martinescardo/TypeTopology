@@ -18,8 +18,8 @@ Ind-completion is a preorder and not a poset is seen to be important there.
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import MLTT.Spartan hiding (J)
-open import UF-FunExt
-open import UF-PropTrunc
+open import UF.FunExt
+open import UF.PropTrunc
 
 module DomainTheory.BasesAndContinuity.IndCompletion
         (pt : propositional-truncations-exist)
@@ -29,11 +29,11 @@ module DomainTheory.BasesAndContinuity.IndCompletion
 
 open PropositionalTruncation pt
 
-open import UF-Base hiding (_≈_)
-open import UF-Equiv
-open import UF-EquivalenceExamples
-open import UF-Subsingletons
-open import UF-Subsingletons-FunExt
+open import UF.Base hiding (_≈_)
+open import UF.Equiv
+open import UF.EquivalenceExamples
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
 
 open import DomainTheory.Basics.Dcpo pt fe 𝓥
 open import DomainTheory.Basics.Miscelanea pt fe 𝓥

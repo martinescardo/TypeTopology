@@ -267,7 +267,7 @@ first universe 𝓤₀.
 
 \begin{code}
 
-open import UF-Subsingletons hiding (center) renaming (⊥Ω to ⊥ ; ⊤Ω to ⊤)
+open import UF.Subsingletons hiding (center) renaming (⊥Ω to ⊥ ; ⊤Ω to ⊤)
 
 χ : 𝔹 → 𝔹 → Ω₀
 χ L    L      = ⊤
@@ -473,7 +473,7 @@ BS 𝓤 = Σ A ꞉ 𝓤 ̇ , Σ s ꞉ binary-system-structure A , binary-system-
 𝓜 : BS 𝓤₀
 𝓜 = (𝕄 , (Left , Right , left , right) , (𝕄-is-set , 𝕄-eq-l , 𝕄-eq-lr , 𝕄-eq-r))
 
-open import UF-SIP
+open import UF.SIP
 open sip
 
 \end{code}
@@ -1144,9 +1144,9 @@ We now need to assume function extensionality.
 
 \begin{code}
 
-open import UF-Base
-open import UF-FunExt
-open import UF-Subsingletons-FunExt
+open import UF.Base
+open import UF.FunExt
+open import UF.Subsingletons-FunExt
 
 module _ (fe  : Fun-Ext) where
 

@@ -22,16 +22,16 @@ open import DiscreteAndSeparated
 open import WLPO
 open import Notation.Order
 
-open import UF-Base
-open import UF-Subsingletons
-open import UF-Subsingletons-FunExt
-open import UF-FunExt
-open import UF-PropTrunc
-open import UF-Retracts
-open import UF-Retracts-FunExt
-open import UF-ImageAndSurjection
-open import UF-Equiv
-open import UF-Miscelanea
+open import UF.Base
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
+open import UF.FunExt
+open import UF.PropTrunc
+open import UF.Retracts
+open import UF.Retracts-FunExt
+open import UF.ImageAndSurjection
+open import UF.Equiv
+open import UF.Miscelanea
 
 module BooleanCompactness.WeaklyCompactTypes
         (fe : FunExt)

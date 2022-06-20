@@ -10,13 +10,13 @@ open import MLTT.Spartan
 
 module LiftingSize (𝓣 : Universe) where
 
-open import UF-Subsingletons
-open import UF-Size
-open import UF-Equiv
-open import UF-Univalence
-open import UF-FunExt
-open import UF-UA-FunExt
-open import UF-EquivalenceExamples
+open import UF.Subsingletons
+open import UF.Size
+open import UF.Equiv
+open import UF.Univalence
+open import UF.FunExt
+open import UF.UA-FunExt
+open import UF.EquivalenceExamples
 open import Lifting 𝓣
 open import LiftingIdentityViaSIP
 

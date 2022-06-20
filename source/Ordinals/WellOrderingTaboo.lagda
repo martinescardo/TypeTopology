@@ -35,14 +35,14 @@ implies choice.
 
 open import MLTT.Spartan
 
-open import UF-Base hiding (_≈_)
-open import UF-Equiv
-open import UF-EquivalenceExamples
-open import UF-ExcludedMiddle
-open import UF-FunExt
-open import UF-PropTrunc
-open import UF-Subsingletons
-open import UF-Subsingletons-FunExt
+open import UF.Base hiding (_≈_)
+open import UF.Equiv
+open import UF.EquivalenceExamples
+open import UF.ExcludedMiddle
+open import UF.FunExt
+open import UF.PropTrunc
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
 
 module Ordinals.WellOrderingTaboo
         (fe  : Fun-Ext)
@@ -301,9 +301,9 @@ module swan'
 
  open import MLTT.Two-Properties
 
- open import UF-Large-Quotient pt fe pe
+ open import UF.Large-Quotient pt fe pe
 
- open import UF-ImageAndSurjection
+ open import UF.ImageAndSurjection
  open ImageAndSurjection pt
 
  open PropositionalTruncation pt
@@ -607,9 +607,9 @@ with a fairly direct proof.
 
 \begin{code}
 
- open import UF-Miscelanea
+ open import UF.Miscelanea
  open import MLTT.Two-Properties
- open import UF-UniverseEmbedding
+ open import UF.UniverseEmbedding
 
  classical-well-order-on-every-set : (𝓤 𝓣 : Universe) → (𝓤 ⊔ 𝓣) ⁺ ̇
  classical-well-order-on-every-set 𝓤 𝓣 =
@@ -768,8 +768,8 @@ module _
         (pt : propositional-truncations-exist)
        where
 
- open import UF-Retracts
- open import UF-Choice
+ open import UF.Retracts
+ open import UF.Choice
 
  open UnivalentChoice (λ _ _ → fe) pt
 

@@ -10,18 +10,18 @@ them.
 {-# OPTIONS --without-K --exact-split --safe --auto-inline --experimental-lossy-unification #-}
 
 open import MLTT.Spartan
-open import UF-Univalence
-open import UF-PropTrunc
+open import UF.Univalence
+open import UF.PropTrunc
 
 module Ordinals.NotationInterpretation0
         (ua : Univalence)
         (pt : propositional-truncations-exist)
        where
 
-open import UF-Equiv
-open import UF-FunExt
-open import UF-Subsingletons
-open import UF-UA-FunExt
+open import UF.Equiv
+open import UF.FunExt
+open import UF.Subsingletons
+open import UF.UA-FunExt
 
 private
  fe : FunExt
@@ -35,9 +35,9 @@ private
 
 open PropositionalTruncation pt
 
-open import UF-ImageAndSurjection
-open import UF-Embeddings
-open import UF-Size
+open import UF.ImageAndSurjection
+open import UF.Embeddings
+open import UF.Size
 
 open import Ordinals.Codes
 open import Ordinals.Type
@@ -134,7 +134,7 @@ is if excluded middle holds.
 
 \begin{code}
 
- open import UF-ExcludedMiddle
+ open import UF.ExcludedMiddle
  open import Ordinals.SupSum ua
 
  comparison₀₁ : Excluded-Middle → (b : B) → ⟦ b ⟧₀ ⊴ ⁅ ⟦ b ⟧₁ ⁆

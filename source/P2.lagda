@@ -5,17 +5,17 @@ Martin Escardo, 24th March 2022
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import MLTT.Spartan
-open import UF-FunExt
+open import UF.FunExt
 
 module P2 (fe : FunExt) where
 
 fe₀ : {𝓤 : Universe} → DN-funext 𝓤 𝓤₀
 fe₀ {𝓤} = dfunext (fe 𝓤 𝓤₀)
 
-open import UF-Subsingletons
-open import UF-Subsingletons-FunExt
-open import UF-Retracts
-open import UF-Equiv
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
+open import UF.Retracts
+open import UF.Equiv
 
 open import MLTT.Two
 open import MLTT.Two-Properties
@@ -183,7 +183,7 @@ pseudo-inhabitedness-wem-lemma Q h = b
   b : ¬ Q + ¬¬ Q
   b = a (inverse (κ P) h f) refl
 
-open import UF-ExcludedMiddle
+open import UF.ExcludedMiddle
 
 irrefutable-pseudo-inhabited-taboo :
 
@@ -253,8 +253,8 @@ _♯ {𝓤} {𝓥} {X} {Y} h (r , rκ) = q
 μ : (X : 𝓤 ̇ ) → is-pseudo-inhabited' (is-pseudo-inhabited' X) → is-pseudo-inhabited' X
 μ X = id ♯
 
-open import UF-Base
-open import UF-Equiv-FunExt
+open import UF.Base
+open import UF.Equiv-FunExt
 
 being-pseudo-inhabited'-is-prop : {X : 𝓤 ̇ } → is-prop X → is-prop (is-pseudo-inhabited' X)
 being-pseudo-inhabited'-is-prop {𝓤} {X} i = prop-criterion

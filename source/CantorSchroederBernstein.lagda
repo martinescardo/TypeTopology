@@ -38,7 +38,7 @@ assumption beyond MLTT is explicit in each claim).
 
     This part is the Agda version of https://arxiv.org/abs/2002.07079.
     Check our lecture notes to learn HoTT/UF with Agda:
-    https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/
+    https://www.cs.bham.ac.uk/~mhe/HoTT-UF.in-Agda-Lecture-Notes/
 
 \begin{code}
 
@@ -54,17 +54,17 @@ open import DiscreteAndSeparated
 open import CoNaturals.GenericConvergentSequence
 open import MLTT.NaturalNumbers-Properties
 open import MLTT.Plus-Properties
-open import UF-Base
-open import UF-Equiv
-open import UF-Embeddings
-open import UF-ExcludedMiddle
-open import UF-FunExt
-open import UF-Lower-FunExt
-open import UF-Miscelanea
-open import UF-PropTrunc
-open import UF-Retracts
-open import UF-Subsingletons
-open import UF-Subsingletons-FunExt
+open import UF.Base
+open import UF.Equiv
+open import UF.Embeddings
+open import UF.ExcludedMiddle
+open import UF.FunExt
+open import UF.Lower-FunExt
+open import UF.Miscelanea
+open import UF.PropTrunc
+open import UF.Retracts
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
 
 \end{code}
 
@@ -648,8 +648,8 @@ surjective. But a surjective embedding is an equivalence.
 module CSB-for-connected-types-without-EM (pt : propositional-truncations-exist) where
 
  open PropositionalTruncation pt public
- open import UF-Connected pt
- open import UF-ImageAndSurjection
+ open import UF.Connected pt
+ open import UF.ImageAndSurjection
  open ImageAndSurjection pt
 
 \end{code}

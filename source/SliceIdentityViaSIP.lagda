@@ -12,15 +12,15 @@ module SliceIdentityViaSIP
         {X : 𝓤 ̇ }
        where
 
-open import UF-Base
-open import UF-Subsingletons
-open import UF-Subsingletons-FunExt
-open import UF-Equiv
-open import UF-EquivalenceExamples
-open import UF-FunExt
-open import UF-Univalence
-open import UF-UA-FunExt
-open import UF-StructureIdentityPrinciple
+open import UF.Base
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
+open import UF.Equiv
+open import UF.EquivalenceExamples
+open import UF.FunExt
+open import UF.Univalence
+open import UF.UA-FunExt
+open import UF.StructureIdentityPrinciple
 
 open import Slice 𝓣
 

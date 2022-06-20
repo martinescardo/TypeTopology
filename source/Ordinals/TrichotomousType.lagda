@@ -6,7 +6,7 @@ The subtype Ordinal₃ 𝓤 of Ordinal 𝓤 consisting of trichotomous ordinals.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import UF-FunExt
+open import UF.FunExt
 
 module Ordinals.TrichotomousType
         (fe : FunExt)
@@ -16,8 +16,8 @@ open import MLTT.Spartan
 open import Ordinals.Notions
 open import Ordinals.Type
 
-open import UF-Base
-open import UF-Subsingletons
+open import UF.Base
+open import UF.Subsingletons
 
 Ordinal₃ : ∀ 𝓤 → 𝓤 ⁺ ̇
 Ordinal₃ 𝓤 = Σ α ꞉ Ordinal 𝓤 , is-trichotomous-order (underlying-order α)

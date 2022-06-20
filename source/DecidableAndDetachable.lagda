@@ -12,8 +12,8 @@ open import MLTT.Spartan
 
 open import MLTT.Plus-Properties
 open import MLTT.Two-Properties
-open import UF-Subsingletons
-open import UF-PropTrunc
+open import UF.Subsingletons
+open import UF.PropTrunc
 
 ¬¬-elim : {A : 𝓤 ̇ } → decidable A → ¬¬ A → A
 ¬¬-elim (inl a) f = a
@@ -38,7 +38,7 @@ Digression: https://twitter.com/EgbertRijke/status/1429443868450295810
 
 module EgbertRijkeTwitterDiscussion-22-August-2021-not-a-monad where
 
-  open import UF-Equiv
+  open import UF.Equiv
 
   T : 𝓤 ̇ → 𝓤 ̇
   T = decidable
@@ -339,10 +339,10 @@ private
  ⟨_⟩ : Ωᵈ 𝓤 → 𝓤 ̇
  ⟨ (P , i) , δ ⟩ = P
 
-open import UF-Equiv
-open import UF-Subsingletons-FunExt
-open import UF-FunExt
-open import UF-Lower-FunExt
+open import UF.Equiv
+open import UF.Subsingletons-FunExt
+open import UF.FunExt
+open import UF.Lower-FunExt
 
 module _
         {𝓤 : Universe}
@@ -400,8 +400,8 @@ equivalences.
 
 \begin{code}
 
-open import UF-Powerset
-open import UF-EquivalenceExamples
+open import UF.Powerset
+open import UF.EquivalenceExamples
 
 is-complemented-subset : {X : 𝓤 ̇  } → (X → Ω 𝓣) → 𝓤 ⊔ 𝓣 ̇
 is-complemented-subset {𝓤} {𝓣} {X} A = (x : X) → decidable (x ∈ A)

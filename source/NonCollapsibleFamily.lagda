@@ -8,9 +8,9 @@ module NonCollapsibleFamily where
 
 open import MLTT.Spartan
 
-open import UF-Base
-open import UF-Subsingletons
-open import UF-KrausLemma
+open import UF.Base
+open import UF.Subsingletons
+open import UF.KrausLemma
 open import DiscreteAndSeparated
 
 decidable-equality-criterion : (X : 𝓤 ̇ )

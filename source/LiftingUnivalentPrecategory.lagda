@@ -19,18 +19,18 @@ module LiftingUnivalentPrecategory
         (X : 𝓤 ̇ )
        where
 
-open import UF-Base
-open import UF-Subsingletons
-open import UF-Subsingletons-FunExt
-open import UF-Embeddings
-open import UF-Equiv
-open import UF-Equiv-FunExt
-open import UF-EquivalenceExamples
-open import UF-FunExt
-open import UF-Lower-FunExt
-open import UF-Univalence
-open import UF-UA-FunExt
-open import UF-StructureIdentityPrinciple
+open import UF.Base
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
+open import UF.Embeddings
+open import UF.Equiv
+open import UF.Equiv-FunExt
+open import UF.EquivalenceExamples
+open import UF.FunExt
+open import UF.Lower-FunExt
+open import UF.Univalence
+open import UF.UA-FunExt
+open import UF.StructureIdentityPrinciple
 
 open import Lifting 𝓣
 open import LiftingIdentityViaSIP 𝓣
@@ -562,7 +562,7 @@ module univalence-of-𝓛 (ua : is-univalent 𝓣)
                       (central-point-is-universal (l ≃⟨𝓛⟩_) (l , 𝓛-refl l)
                         (singletons-are-props (𝓛-is-univalent' l) (l , 𝓛-refl l)))
   where
-   open import UF-Yoneda
+   open import UF.Yoneda
 
  \end{code}
 

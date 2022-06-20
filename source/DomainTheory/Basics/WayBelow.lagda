@@ -16,8 +16,8 @@ Contents
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import MLTT.Spartan
-open import UF-FunExt
-open import UF-PropTrunc
+open import UF.FunExt
+open import UF.PropTrunc
 
 module DomainTheory.Basics.WayBelow
         (pt : propositional-truncations-exist)
@@ -27,9 +27,9 @@ module DomainTheory.Basics.WayBelow
 
 open PropositionalTruncation pt
 
-open import UF-Equiv
-open import UF-Subsingletons
-open import UF-Subsingletons-FunExt
+open import UF.Equiv
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
 
 open import DomainTheory.Basics.Dcpo pt fe 𝓥
 open import DomainTheory.Basics.Miscelanea pt fe 𝓥

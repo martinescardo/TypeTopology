@@ -7,14 +7,14 @@ Includes (reflexive transitive closure of) operational semantics.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import UF-PropTrunc
+open import UF.PropTrunc
 
 module PCF (pt : propositional-truncations-exist) where
 
 open PropositionalTruncation pt
 
 open import MLTT.Spartan
-open import UF-Subsingletons
+open import UF.Subsingletons
 
 data type : 𝓤₀ ̇ where
   ι   : type

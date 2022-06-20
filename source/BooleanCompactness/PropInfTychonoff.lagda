@@ -8,18 +8,18 @@ file PropTychonoff has many comments, but this one doesn't.
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import MLTT.Spartan
-open import UF-FunExt
+open import UF.FunExt
 
 module BooleanCompactness.PropInfTychonoff (fe : FunExt) where
 
 open import MLTT.Two-Properties
 open import BooleanCompactness.CompactTypes
 open import BooleanCompactness.InfProperty
-open import UF-Base
-open import UF-Subsingletons
-open import UF-PropIndexedPiSigma
-open import UF-Equiv
-open import UF-EquivalenceExamples
+open import UF.Base
+open import UF.Subsingletons
+open import UF.PropIndexedPiSigma
+open import UF.Equiv
+open import UF.EquivalenceExamples
 
 prop-inf-tychonoff : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
                    → is-prop X

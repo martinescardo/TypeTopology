@@ -14,9 +14,9 @@ finite subsets.
 
 open import MLTT.Spartan
 
-open import UF-FunExt
-open import UF-PropTrunc
-open import UF-Subsingletons
+open import UF.FunExt
+open import UF.PropTrunc
+open import UF.Subsingletons
 
 module DomainTheory.Examples.Powerset
         (pt : propositional-truncations-exist)
@@ -28,11 +28,11 @@ module DomainTheory.Examples.Powerset
 
 open import List
 
-open import UF-Equiv
-open import UF-ImageAndSurjection
-open import UF-Powerset
-open import UF-Powerset-Fin pt
-open import UF-Subsingletons-FunExt
+open import UF.Equiv
+open import UF.ImageAndSurjection
+open import UF.Powerset
+open import UF.Powerset-Fin pt
+open import UF.Subsingletons-FunExt
 
 open import Poset fe
 

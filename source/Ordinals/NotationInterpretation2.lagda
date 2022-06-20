@@ -40,20 +40,20 @@ This is a draft version that needs polishing and more explanation.
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import MLTT.Spartan
-open import UF-FunExt
+open import UF.FunExt
 
 module Ordinals.NotationInterpretation2 (fe : FunExt) where
 
 private
  fe₀ = fe 𝓤₀ 𝓤₀
 
-open import UF-Base
-open import UF-Subsingletons
-open import UF-Retracts
-open import UF-Embeddings
-open import UF-Equiv
-open import UF-Subsingletons-FunExt
-open import UF-Miscelanea
+open import UF.Base
+open import UF.Subsingletons
+open import UF.Retracts
+open import UF.Embeddings
+open import UF.Equiv
+open import UF.Subsingletons-FunExt
+open import UF.Miscelanea
 
 open import DiscreteAndSeparated
 open import BinaryNaturals hiding (_+_)

@@ -13,9 +13,9 @@ least element to X when viewed as a discretely-ordered dcpo.
 
 open import MLTT.Spartan hiding (J)
 
-open import UF-FunExt
-open import UF-PropTrunc
-open import UF-Subsingletons
+open import UF.FunExt
+open import UF.PropTrunc
+open import UF.Subsingletons
 
 module DomainTheory.Lifting.LiftingDcpo
         (pt : propositional-truncations-exist)
@@ -24,10 +24,10 @@ module DomainTheory.Lifting.LiftingDcpo
         (pe : propext 𝓥)
        where
 
-open import UF-Equiv
-open import UF-ImageAndSurjection
-open import UF-Miscelanea
-open import UF-Subsingletons-FunExt
+open import UF.Equiv
+open import UF.ImageAndSurjection
+open import UF.Miscelanea
+open import UF.Subsingletons-FunExt
 
 open ImageAndSurjection pt
 open PropositionalTruncation pt

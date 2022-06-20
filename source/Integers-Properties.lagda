@@ -9,10 +9,10 @@ Earlier version: 18 September 2020
 open import Integers
 
 open import MLTT.Spartan
-open import UF-Base
-open import UF-Equiv
-open import UF-Miscelanea
-open import UF-Subsingletons
+open import UF.Base
+open import UF.Equiv
+open import UF.Miscelanea
+open import UF.Subsingletons
 
 module Integers-Properties where
 

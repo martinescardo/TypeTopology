@@ -69,7 +69,7 @@ bisimulations. This gives a technique for establishing equalities on
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import UF-FunExt
+open import UF.FunExt
 
 module CoNaturals.UniversalProperty (fe : FunExt) where
 
@@ -415,9 +415,9 @@ of a Σ type (added 13th July 2018):
 
 \begin{code}
 
-open import UF-Base
-open import UF-Subsingletons
-open import UF-Subsingletons-FunExt
+open import UF.Base
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
 
 PRED-is-the-homotopy-final-coalgebra : {X : 𝓤 ̇ } (κ : X → 𝟙 + X)
                                      → ∃! h ꞉ (X → ℕ∞), is-homomorphism κ h

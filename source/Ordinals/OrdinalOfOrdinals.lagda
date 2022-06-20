@@ -10,7 +10,7 @@ univalence axiom is needed.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import UF-Univalence
+open import UF.Univalence
 
 module Ordinals.OrdinalOfOrdinals
         (ua : Univalence)
@@ -21,16 +21,16 @@ open import Ordinals.Notions
 open import Ordinals.Type
 open import Notation.CanonicalMap
 
-open import UF-Base
-open import UF-Subsingletons
-open import UF-Subsingletons-FunExt
-open import UF-Embeddings
-open import UF-FunExt
-open import UF-Equiv
-open import UF-Equiv-FunExt
-open import UF-UA-FunExt
-open import UF-Yoneda
-open import UF-EquivalenceExamples
+open import UF.Base
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
+open import UF.Embeddings
+open import UF.FunExt
+open import UF.Equiv
+open import UF.Equiv-FunExt
+open import UF.UA-FunExt
+open import UF.Yoneda
+open import UF.EquivalenceExamples
 
 private
  fe : FunExt
@@ -1306,7 +1306,7 @@ order-preserving-gives-not-⊲ {𝓤} α β σ (x₀ , refl) = γ σ
     κ = no-minimal-is-empty' (underlying-order α) (Well-foundedness α)
          A d (x₀ , 0 , refl)
 
-open import UF-ExcludedMiddle
+open import UF.ExcludedMiddle
 
 order-preserving-gives-≼ : EM (𝓤 ⁺)
                          → (α β : Ordinal 𝓤)
@@ -1342,7 +1342,7 @@ original one.
 
 \begin{code}
 
-open import UF-PropTrunc
+open import UF.PropTrunc
 
 module _ (pt : propositional-truncations-exist) where
 

@@ -33,7 +33,7 @@ https://www.cs.bham.ac.uk/~mhe/TypeTopology/OrdinalNotationInterpretation.pdf
 {-# OPTIONS --without-K --exact-split --safe --auto-inline --experimental-lossy-unification #-}
 
 open import MLTT.Spartan
-open import UF-FunExt
+open import UF.FunExt
 
 module Ordinals.NotationInterpretation1 (fe : FunExt) where
 
@@ -120,9 +120,9 @@ the theorems and constructions to be performed here:
 
 \begin{code}
 
-open import UF-Subsingletons
-open import UF-Retracts
-open import UF-Embeddings
+open import UF.Subsingletons
+open import UF.Retracts
+open import UF.Embeddings
 
 open import Ordinals.Type
 open import Ordinals.ToppedType fe
@@ -447,10 +447,10 @@ Added 4th April 2022. A third interpretation of ordinal expressions.
 
 \begin{code}
 
-open import UF-PropTrunc
-open import UF-Univalence
-open import UF-Equiv
-open import UF-Size
+open import UF.PropTrunc
+open import UF.Univalence
+open import UF.Equiv
+open import UF.Size
 
 open import CoNaturals.GenericConvergentSequence
 open import BooleanCompactness.GenericConvergentSequence
@@ -473,7 +473,7 @@ module _ (pt : propositional-truncations-exist)
  open import Ordinals.Injectivity
  open import Ordinals.Arithmetic-Properties ua
 
- open import UF-ImageAndSurjection
+ open import UF.ImageAndSurjection
  open ImageAndSurjection pt
  open ordinals-injectivity fe
 

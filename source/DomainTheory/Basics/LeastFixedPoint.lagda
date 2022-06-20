@@ -12,8 +12,8 @@ typechecking.
 {-# OPTIONS --without-K --exact-split --safe --auto-inline --experimental-lossy-unification #-}
 
 open import MLTT.Spartan
-open import UF-FunExt
-open import UF-PropTrunc
+open import UF.FunExt
+open import UF.PropTrunc
 
 module DomainTheory.Basics.LeastFixedPoint
         (pt : propositional-truncations-exist)
@@ -22,9 +22,9 @@ module DomainTheory.Basics.LeastFixedPoint
 
 open PropositionalTruncation pt
 
-open import UF-Miscelanea
-open import UF-Subsingletons
-open import UF-Subsingletons-FunExt
+open import UF.Miscelanea
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
 
 open import MLTT.NaturalNumbers-Properties
 open import NaturalsAddition renaming (_+_ to _+'_)

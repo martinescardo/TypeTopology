@@ -5,7 +5,7 @@ We prove the known (constructive) fact that
   X + 𝟙 ≃ Y + 𝟙 → X ≃ Y.
 
 The new proof from 1st December 2019 is extracted from the module
-UF-Factorial and doesn't use function extensionality. The old proof
+UF.Factorial and doesn't use function extensionality. The old proof
 from 21 March 2018 is included at the end.
 
 \begin{code}
@@ -15,9 +15,9 @@ from 21 March 2018 is included at the end.
 module PlusOneLC where
 
 open import MLTT.Spartan
-open import UF-Equiv
+open import UF.Equiv
 open import MLTT.Plus-Properties
-open import UF-Retracts
+open import UF.Retracts
 open import Swap
 open import DiscreteAndSeparated
 
@@ -104,12 +104,12 @@ extensionality:
 _∖_ : (X : 𝓤 ̇ ) (a : X) → 𝓤 ̇
 X ∖ a = Σ x ꞉ X , x ≢ a
 
-open import UF-FunExt
+open import UF.FunExt
 
 module old (fe : FunExt) where
 
- open import UF-Base
- open import UF-Subsingletons-FunExt
+ open import UF.Base
+ open import UF.Subsingletons-FunExt
 
  add-and-remove-point : {X : 𝓤 ̇ } →  X ≃ (X + 𝟙) ∖ (inr ⋆)
  add-and-remove-point {𝓤} {X} = qinveq f (g , ε , η)
@@ -204,7 +204,7 @@ Added 16th April 2021.
 
 \begin{code}
 
-open import UF-Subsingletons-FunExt
+open import UF.Subsingletons-FunExt
 
 remove-and-add-isolated-point : funext 𝓤 𝓤₀
                               → {X : 𝓤 ̇ } (x₀ : X)

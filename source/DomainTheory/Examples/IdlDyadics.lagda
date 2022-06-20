@@ -9,9 +9,9 @@ a continuous dcpo without any compact elements. Hence, it cannot be algebraic.
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import MLTT.Spartan
-open import UF-FunExt
-open import UF-PropTrunc
-open import UF-Subsingletons
+open import UF.FunExt
+open import UF.PropTrunc
+open import UF.Subsingletons
 
 module DomainTheory.Examples.IdlDyadics
         (pt : propositional-truncations-exist)

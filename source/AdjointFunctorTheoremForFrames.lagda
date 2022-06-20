@@ -5,9 +5,9 @@ Ayberk Tosun, 1 March 2022.
 {-# OPTIONS --without-K --safe --auto-inline #-}
 
 open import MLTT.Spartan
-open import UF-Base
-open import UF-PropTrunc
-open import UF-FunExt
+open import UF.Base
+open import UF.PropTrunc
+open import UF.FunExt
 
 module AdjointFunctorTheoremForFrames
          (pt : propositional-truncations-exist)
@@ -16,9 +16,9 @@ module AdjointFunctorTheoremForFrames
 
 open import Frame pt fe
 open import GaloisConnection pt fe
-open import UF-Subsingletons
+open import UF.Subsingletons
 
-open import UF-Subsingleton-Combinators
+open import UF.Subsingleton-Combinators
 
 open AllCombinators pt fe
 open PropositionalTruncation pt

@@ -7,19 +7,19 @@ Based on `ayberkt/formal-topology-in-UF`.
 {-# OPTIONS --without-K --exact-split --safe #-}
 
 open import MLTT.Spartan
-open import UF-Base
-open import UF-PropTrunc
-open import UF-FunExt
-open import UF-PropTrunc
+open import UF.Base
+open import UF.PropTrunc
+open import UF.FunExt
+open import UF.PropTrunc
 
 module Nucleus
         (pt : propositional-truncations-exist)
         (fe : Fun-Ext)
        where
 
-open import UF-Subsingletons
-open import UF-Subsingleton-Combinators
-open import UF-Subsingletons-FunExt
+open import UF.Subsingletons
+open import UF.Subsingleton-Combinators
+open import UF.Subsingletons-FunExt
 
 open import Frame pt fe
 

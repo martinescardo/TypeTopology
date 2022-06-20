@@ -9,9 +9,9 @@ particular, this dcpo is algebraic.
 
 open import MLTT.Spartan
 
-open import UF-FunExt
-open import UF-PropTrunc
-open import UF-Subsingletons
+open import UF.FunExt
+open import UF.PropTrunc
+open import UF.Subsingletons
 
 module DomainTheory.Lifting.LiftingSetAlgebraic
         (pt : propositional-truncations-exist)
@@ -20,10 +20,10 @@ module DomainTheory.Lifting.LiftingSetAlgebraic
         (𝓤 : Universe)
        where
 
-open import UF-Equiv
-open import UF-Miscelanea
-open import UF-ImageAndSurjection
-open import UF-Subsingletons-FunExt
+open import UF.Equiv
+open import UF.Miscelanea
+open import UF.ImageAndSurjection
+open import UF.Subsingletons-FunExt
 
 open ImageAndSurjection pt
 open PropositionalTruncation pt

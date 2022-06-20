@@ -16,7 +16,7 @@ equality with any other point of the type is decidable.
 
 open import MLTT.Spartan
 
-open import UF-Base
+open import UF.Base
 open import DiscreteAndSeparated
 
 module RootsTruncation (𝓤 : Universe)
@@ -29,9 +29,9 @@ open import MLTT.Plus-Properties
 open import NaturalsOrder
 open import Notation.Order
 
-open import UF-Subsingletons
-open import UF-KrausLemma
-open import UF-Miscelanea
+open import UF.Subsingletons
+open import UF.KrausLemma
+open import UF.Miscelanea
 
 \end{code}
 
@@ -173,7 +173,7 @@ root truncations using the above technique.
 
 \begin{code}
 
-open import UF-PropTrunc
+open import UF.PropTrunc
 
 module ExitRootTruncations (pt : propositional-truncations-exist) where
 

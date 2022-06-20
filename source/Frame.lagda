@@ -11,10 +11,10 @@ Ported from `ayberkt/formal-topology-in-UF`.
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import MLTT.Spartan hiding (𝟚)
-open import UF-Base
-open import UF-PropTrunc
-open import UF-FunExt
-open import UF-PropTrunc
+open import UF.Base
+open import UF.PropTrunc
+open import UF.FunExt
+open import UF.PropTrunc
 open import List hiding ([_])
 
 module Frame
@@ -22,9 +22,9 @@ module Frame
         (fe : Fun-Ext)
        where
 
-open import UF-Subsingletons
-open import UF-Subsingleton-Combinators
-open import UF-Subsingletons-FunExt
+open import UF.Subsingletons
+open import UF.Subsingleton-Combinators
+open import UF.Subsingletons-FunExt
 
 open AllCombinators pt fe
 

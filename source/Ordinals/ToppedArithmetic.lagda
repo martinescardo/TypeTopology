@@ -19,13 +19,13 @@ cumbersome and (2) requires much work in other modules.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import UF-FunExt
+open import UF.FunExt
 
 module Ordinals.ToppedArithmetic
         (fe : FunExt)
        where
 
-open import UF-Subsingletons
+open import UF.Subsingletons
 
 open import MLTT.Spartan
 open import CoNaturals.GenericConvergentSequence
@@ -113,7 +113,7 @@ _×ᵒ_ : Ordinalᵀ 𝓤 → Ordinalᵀ 𝓤 → Ordinalᵀ 𝓤
 
 Extension of a family X → Ordᵀ along an embedding j : X → A to get a
 family A → Ordᵀ. (This can also be done for Ord-valued families.)
-This uses the module UF-InjectiveTypes to calculate Y / j.
+This uses the module UF.InjectiveTypes to calculate Y / j.
 
 Sum of a countable family with an added non-isolated top element. We
 first extend the family to ℕ∞ and then take the ordinal-indexed sum of
@@ -144,7 +144,7 @@ Added 4th May 2022.
 module Omega {𝓤} (pe : propext 𝓤) where
  open import Ordinals.OrdinalOfTruthValues fe 𝓤 pe
  open import Ordinals.Notions
- open import UF-Subsingletons-FunExt
+ open import UF.Subsingletons-FunExt
 
  Ωᵒ : Ordinalᵀ (𝓤 ⁺)
  Ωᵒ = Ωₒ , ⊤Ω , h

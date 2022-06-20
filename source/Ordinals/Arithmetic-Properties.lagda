@@ -4,21 +4,21 @@ Martin Escardo, 18 January 2021.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline --experimental-lossy-unification #-}
 
-open import UF-Univalence
+open import UF.Univalence
 
 module Ordinals.Arithmetic-Properties
        (ua : Univalence)
        where
 
-open import UF-Base
-open import UF-Subsingletons
-open import UF-Subsingletons-FunExt
-open import UF-Equiv
-open import UF-UA-FunExt
-open import UF-FunExt
-open import UF-EquivalenceExamples
-open import UF-Embeddings
-open import UF-ExcludedMiddle
+open import UF.Base
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
+open import UF.Equiv
+open import UF.UA-FunExt
+open import UF.FunExt
+open import UF.EquivalenceExamples
+open import UF.Embeddings
+open import UF.ExcludedMiddle
 
 private
  fe : FunExt
@@ -513,7 +513,7 @@ to (ω +ₒ 𝟙ₒ) to get ℕ∞ₒ, unless LPO holds.
 
 \begin{code}
 
-open import UF-Retracts
+open import UF.Retracts
 
 retract-Ω-of-Ordinal : retract (Ω 𝓤) of (Ordinal 𝓤)
 retract-Ω-of-Ordinal {𝓤} = r , s , η
@@ -550,7 +550,7 @@ module _ {𝓤 : Universe} where
  open import Ordinals.OrdinalOfTruthValues fe 𝓤 (pe 𝓤)
 
  open import DiscreteAndSeparated
- open import UF-Miscelanea
+ open import UF.Miscelanea
 
  ⊴-add-taboo : Ωₒ ⊴ (𝟙ₒ +ₒ Ωₒ) → WEM 𝓤
  ⊴-add-taboo (f , s) = V
@@ -766,8 +766,8 @@ can construct suprema of families of ordinals.
 
 \begin{code}
 
-open import UF-PropTrunc
-open import UF-Size
+open import UF.PropTrunc
+open import UF.Size
 
 module _ (pt : propositional-truncations-exist)
          (sr : Set-Replacement pt)

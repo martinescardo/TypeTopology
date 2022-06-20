@@ -6,7 +6,7 @@ Some operations and constructions on ordinals.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import UF-FunExt
+open import UF.FunExt
 
 module Ordinals.Arithmetic
         (fe : FunExt)
@@ -20,7 +20,7 @@ open import Ordinals.Notions
 open import Ordinals.Type
 open import Ordinals.WellOrderArithmetic
 
-open import UF-Subsingletons
+open import UF.Subsingletons
 
 prop-ordinal : (P : 𝓤 ̇ ) → is-prop P → Ordinal 𝓤
 prop-ordinal P i = P , prop.order P i , prop.well-order P i
@@ -154,7 +154,7 @@ cotransitivity are implied by excluded middle.
 
 \begin{code}
 
-open import UF-ExcludedMiddle
+open import UF.ExcludedMiddle
 
 module sums-assuming-EM (em : EM 𝓤) where
 

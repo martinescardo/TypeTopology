@@ -31,9 +31,9 @@ https://github.com/agda/agda/issues/1625
 \begin{code}
 
 open import MLTT.Spartan
-open import UF-FunExt
-open import UF-PropTrunc
-open import UF-Subsingletons
+open import UF.FunExt
+open import UF.PropTrunc
+open import UF.Subsingletons
 
 module DomainTheory.Bilimits.Dinfinity
         (pt : propositional-truncations-exist)
@@ -43,7 +43,7 @@ module DomainTheory.Bilimits.Dinfinity
 
 open PropositionalTruncation pt
 
-open import UF-Base
+open import UF.Base
 
 open import DomainTheory.Basics.Dcpo pt fe 𝓤₀
 open import DomainTheory.Basics.Exponential pt fe 𝓤₀

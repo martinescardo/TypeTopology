@@ -17,11 +17,11 @@ https://www.cs.bham.ac.uk/~mhe/.talks/map2011/
 
 open import MLTT.Spartan
 open import NaturalsAddition renaming (_+_ to _+ℕ_)
-open import UF-FunExt
+open import UF.FunExt
 
 module Escardo-Simpson-LICS2001 (fe : FunExt) where
 
-open import UF-Subsingletons public
+open import UF.Subsingletons public
 open import Sequence fe
 
 \end{code}

@@ -16,8 +16,8 @@ open import DiscreteAndSeparated
 open import NaturalsOrder
 open import Notation.Order
 
-open import UF-FunExt
-open import UF-Base
+open import UF.FunExt
+open import UF.Base
 
 module CantorSearch (fe : funext 𝓤₀ 𝓤₀) where
 
