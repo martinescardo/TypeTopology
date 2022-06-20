@@ -109,7 +109,7 @@ disagreement-taboo p q f g = basic-discontinuity-taboo r (r-lemma , r-lemma∞)
   r-lemma∞ : r ∞ ≡ ₁
   r-lemma∞ = Lemma[b≢c→b⊕c≡₁] g
 
-open import DiscreteAndSeparated
+open import TypeTopology.DiscreteAndSeparated
 
 agreement-cotaboo :  ¬ WLPO → (p q : ℕ∞ → 𝟚) → ((n : ℕ) → p (ι n) ≡ q (ι n)) → p ∞ ≡ q ∞
 agreement-cotaboo φ p q f = 𝟚-is-¬¬-separated (p ∞) (q ∞) (contrapositive (disagreement-taboo p q f) φ)

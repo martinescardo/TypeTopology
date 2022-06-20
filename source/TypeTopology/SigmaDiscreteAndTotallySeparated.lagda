@@ -14,7 +14,7 @@ module TypeTopology.SigmaDiscreteAndTotallySeparated where
 
 open import MLTT.Spartan
 
-open import DiscreteAndSeparated
+open import TypeTopology.DiscreteAndSeparated
 open import Taboos.WLPO
 open import CoNaturals.GenericConvergentSequence
 open import TypeTopology.CompactTypes

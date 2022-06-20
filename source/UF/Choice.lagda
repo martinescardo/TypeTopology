@@ -261,7 +261,7 @@ module AC-renders-all-sets-discrete
  open PropositionalTruncation pt
  open UnivalentChoice fe pt 𝓤 public
  open ImageAndSurjection pt
- open import DiscreteAndSeparated
+ open import TypeTopology.DiscreteAndSeparated
  open import UF.Miscelanea
 
  lemma₁ : {X : 𝓤 ̇ } (a : 𝟚 → X)
@@ -366,7 +366,7 @@ module Observation (𝓤 : Universe)
                    where
 
  open PropositionalTruncation pt
- open import DiscreteAndSeparated
+ open import TypeTopology.DiscreteAndSeparated
  open import UF.Miscelanea
 
  observation : {X : 𝓤 ̇ } (a : 𝟚 → X)

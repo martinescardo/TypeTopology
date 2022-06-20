@@ -13,7 +13,7 @@ holds (Tychonoff Theorem).)
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import MLTT.Spartan
-open import DisconnectedTypes
+open import TypeTopology.DisconnectedTypes
 
 open import UF.FunExt
 open import UF.PropTrunc
@@ -32,7 +32,7 @@ data simple-type : 𝓤₀ ̇ → 𝓤₁ ̇ where
 
 open import TypeTopology.TotallySeparated
 open import TypeTopology.WeaklyCompactTypes fe pt renaming (Π-compact to compact)
-open import DiscreteAndSeparated
+open import TypeTopology.DiscreteAndSeparated
 
 simple-types-are-totally-separated : {X : 𝓤₀ ̇ }
                                    → simple-type X

@@ -24,8 +24,8 @@ module TypeTopology.GenericConvergentSequence (fe : funext 𝓤₀ 𝓤₀) wher
 open import MLTT.Two-Properties
 open import UF.PropTrunc
 open import CoNaturals.GenericConvergentSequence
-open import DiscreteAndSeparated
 open import Notation.CanonicalMap
+open import TypeTopology.DiscreteAndSeparated
 open import TypeTopology.CompactTypes
 
 \end{code}

@@ -19,12 +19,12 @@ and
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module DisconnectedTypes where
+module TypeTopology.DisconnectedTypes where
 
 open import MLTT.Spartan
 open import MLTT.Two-Properties
 open import MLTT.NaturalNumbers-Properties
-open import DiscreteAndSeparated
+open import TypeTopology.DiscreteAndSeparated
 open import UF.Retracts
 open import UF.Equiv
 

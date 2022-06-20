@@ -17,7 +17,7 @@ equality with any other point of the type is decidable.
 open import MLTT.Spartan
 
 open import UF.Base
-open import DiscreteAndSeparated
+open import TypeTopology.DiscreteAndSeparated
 
 module RootsTruncation (𝓤 : Universe)
                        (Z : 𝓤 ̇ )

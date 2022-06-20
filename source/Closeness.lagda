@@ -32,7 +32,7 @@ open import Sequence fe
 open import CoNaturals.UniversalProperty fe
 open import CoNaturals.Arithmetic fe
 open import CoNaturals.GenericConvergentSequence renaming (min to min')
-open import DiscreteAndSeparated
+open import TypeTopology.DiscreteAndSeparated
 open import UF.Miscelanea
 open import MLTT.Two-Properties
 open import Notation.Order

@@ -6,7 +6,7 @@ Tom de Jong, 1 and 4 April 2022.
 
 module Ordinals.Taboos where
 
-open import DiscreteAndSeparated hiding (𝟚-is-discrete)
+open import TypeTopology.DiscreteAndSeparated hiding (𝟚-is-discrete)
 open import MLTT.Spartan hiding (𝟚 ; ₀ ; ₁)
 open import MLTT.Plus-Properties
 

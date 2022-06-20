@@ -19,7 +19,7 @@ open import UF.Equiv
 open import MLTT.Plus-Properties
 open import UF.Retracts
 open import Swap
-open import DiscreteAndSeparated
+open import TypeTopology.DiscreteAndSeparated
 
 +𝟙-cancellable : {X : 𝓤 ̇ } {Y : 𝓥 ̇}
                → (X + 𝟙 {𝓦} ≃ Y + 𝟙 {𝓣})

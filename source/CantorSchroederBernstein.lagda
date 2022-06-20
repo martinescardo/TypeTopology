@@ -47,13 +47,13 @@ assumption beyond MLTT is explicit in each claim).
 module CantorSchroederBernstein where
 
 open import MLTT.Spartan
-open import TypeTopology.CompactTypes
-open import TypeTopology.GenericConvergentSequence
-open import DecidableAndDetachable
-open import DiscreteAndSeparated
-open import CoNaturals.GenericConvergentSequence
 open import MLTT.NaturalNumbers-Properties
 open import MLTT.Plus-Properties
+open import TypeTopology.CompactTypes
+open import TypeTopology.GenericConvergentSequence
+open import TypeTopology.DiscreteAndSeparated
+open import DecidableAndDetachable
+open import CoNaturals.GenericConvergentSequence
 open import UF.Base
 open import UF.Equiv
 open import UF.Embeddings

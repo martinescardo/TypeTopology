@@ -15,14 +15,14 @@ The theorem says that, for any p : ℕ∞ → 𝟚, the proposition
 open import MLTT.Spartan
 open import UF.FunExt
 
-module ADecidableQuantificationOverTheNaturals (fe : funext 𝓤₀ 𝓤₀) where
+module TypeTopology.ADecidableQuantificationOverTheNaturals (fe : funext 𝓤₀ 𝓤₀) where
 
 open import CoNaturals.GenericConvergentSequence
 open import TypeTopology.CompactTypes
 open import TypeTopology.GenericConvergentSequence fe
+open import TypeTopology.DiscreteAndSeparated
 open import MLTT.Two-Properties
 open import DecidableAndDetachable
-open import DiscreteAndSeparated
 open import Notation.CanonicalMap
 open import UF.PropTrunc
 

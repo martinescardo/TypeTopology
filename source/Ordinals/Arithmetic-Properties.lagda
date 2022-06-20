@@ -549,7 +549,7 @@ module _ {𝓤 : Universe} where
 
  open import Ordinals.OrdinalOfTruthValues fe 𝓤 (pe 𝓤)
 
- open import DiscreteAndSeparated
+ open import TypeTopology.DiscreteAndSeparated
  open import UF.Miscelanea
 
  ⊴-add-taboo : Ωₒ ⊴ (𝟙ₒ +ₒ Ωₒ) → WEM 𝓤

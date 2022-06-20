@@ -10,7 +10,7 @@ A function is dense if the complement of its image is empty. Maybe
 module TypeTopology.Density where
 
 open import MLTT.Spartan
-open import DiscreteAndSeparated
+open import TypeTopology.DiscreteAndSeparated
 
 open import UF.Base
 open import UF.Equiv

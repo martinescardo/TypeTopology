@@ -648,7 +648,7 @@ tic-tac-toe₁ = build-Game draw Board transition 9 board₀
  where
   open import TypeTopology.CompactTypes
   open import UF.Subsingletons
-  open import DiscreteAndSeparated
+  open import TypeTopology.DiscreteAndSeparated
   open import UF.Miscelanea
 
   open import NonSpartanMLTTTypes hiding (Fin ; 𝟎 ; 𝟏 ; 𝟐 ; 𝟑 ; 𝟒 ; 𝟓 ; 𝟔 ; 𝟕 ; 𝟖 ; 𝟗)

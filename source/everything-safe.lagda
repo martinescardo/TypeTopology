@@ -14,7 +14,6 @@ excluded manually.
 module everything-safe where
 
 import MLTT.index
-import ADecidableQuantificationOverTheNaturals
 import AdjointFunctorTheoremForFrames
 -- import AllModulesIndex
 import ArithmeticViaEquivalence
@@ -24,17 +23,13 @@ import Notation.CanonicalMap
 -- import CantorCompact
 import CantorSchroederBernstein
 import CantorSchroederBernstein-TheoryLabLunch
-import CantorSearch
 import Closeness
 import CompactRegular
 -- import CountableTychonoff
 -- import CubicalBinarySystem
 import DomainTheory.index
-import DecidabilityOfNonContinuity
 import DecidableAndDetachable
 import Dedekind
-import DisconnectedTypes
-import DiscreteAndSeparated
 import Dominance
 import DummettDisjunction
 import Escardo-Simpson-LICS2001

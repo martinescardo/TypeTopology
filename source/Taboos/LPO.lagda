@@ -183,7 +183,7 @@ Feb 2020):
 
 \begin{code}
 
-open import DiscreteAndSeparated
+open import TypeTopology.DiscreteAndSeparated
 open import MLTT.NaturalNumbers-Properties
 
 [LPO→ℕ]-discrete-gives-¬LPO-decidable : is-discrete (LPO → ℕ) → decidable (¬ LPO)

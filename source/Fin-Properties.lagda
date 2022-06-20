@@ -117,7 +117,7 @@ Recall that a type is discrete if it has decidable equality.
 
 \begin{code}
 
-open import DiscreteAndSeparated
+open import TypeTopology.DiscreteAndSeparated
 
 Fin-is-discrete : {n : ℕ} → is-discrete (Fin n)
 Fin-is-discrete {0     } = 𝟘-is-discrete

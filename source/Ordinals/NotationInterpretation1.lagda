@@ -138,7 +138,7 @@ open import TypeTopology.TotallySeparated
 open import TypeTopology.SigmaDiscreteAndTotallySeparated
 open import TypeTopology.Density
 
-open import DiscreteAndSeparated
+open import TypeTopology.DiscreteAndSeparated
 open import PairFun
 
 private

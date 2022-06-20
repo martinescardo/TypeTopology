@@ -115,7 +115,7 @@ module concrete-example where
      claim : (r : ι n ≡ ∞) → (λ r → ₀) r ≡ (λ r → ₁) r
      claim s = 𝟘-elim (∞-is-not-finite n (s ⁻¹))
 
- open import DiscreteAndSeparated
+ open import TypeTopology.DiscreteAndSeparated
 
  𝟚-indistinguishability : ¬ WLPO → (p : X → 𝟚) → p ∞₀ ≡ p ∞₁
  𝟚-indistinguishability nwlpo p = 𝟚-is-¬¬-separated (p ∞₀) (p ∞₁)

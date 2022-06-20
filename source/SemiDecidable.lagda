@@ -76,8 +76,8 @@ open import UF.UniverseEmbedding
 
 open import BinaryNaturals hiding (_+_)
 open import TypeTopology.CompactTypes
+open import TypeTopology.DiscreteAndSeparated
 open import DecidableAndDetachable
-open import DiscreteAndSeparated
 open import Fin-Properties
 open import NaturalsOrder
 open import Notation.Order

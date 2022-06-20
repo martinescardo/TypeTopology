@@ -10,7 +10,7 @@ module Swap where
 
 open import MLTT.Spartan
 open import MLTT.Plus-Properties
-open import DiscreteAndSeparated
+open import TypeTopology.DiscreteAndSeparated
 open import UF.Equiv
 open import UF.Miscelanea
 

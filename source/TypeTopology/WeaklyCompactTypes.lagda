@@ -17,8 +17,8 @@ open import CoNaturals.GenericConvergentSequence
 open import MLTT.Two-Properties
 open import MLTT.Plus-Properties
 
-open import DisconnectedTypes
-open import DiscreteAndSeparated
+open import TypeTopology.DisconnectedTypes
+open import TypeTopology.DiscreteAndSeparated
 open import Taboos.WLPO
 open import Notation.Order
 

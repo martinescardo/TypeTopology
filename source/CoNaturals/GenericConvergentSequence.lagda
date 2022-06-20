@@ -20,10 +20,11 @@ open import MLTT.NaturalNumbers-Properties
 
 open import NaturalsAddition renaming (_+_ to _∔_)
 open import NaturalsOrder hiding (max)
-open import DiscreteAndSeparated
 open import Notation.Order
 open import Notation.CanonicalMap
+
 open import TypeTopology.Density
+open import TypeTopology.DiscreteAndSeparated
 
 open import UF.Base
 open import UF.Subsingletons

@@ -9,7 +9,7 @@ Ordinals like in the HoTT book and variations.
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import MLTT.Spartan
-open import DiscreteAndSeparated
+open import TypeTopology.DiscreteAndSeparated
 
 open import UF.Base
 open import UF.Subsingletons

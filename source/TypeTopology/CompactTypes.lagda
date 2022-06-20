@@ -82,7 +82,7 @@ open import MLTT.Two-Properties
 open import MLTT.Plus-Properties
 open import MLTT.AlternativePlus
 
-open import DiscreteAndSeparated
+open import TypeTopology.DiscreteAndSeparated
 open import DecidableAndDetachable public
 
 open import UF.Base

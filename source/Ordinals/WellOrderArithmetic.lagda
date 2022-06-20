@@ -822,7 +822,7 @@ module sum-top
 
 \begin{code}
 
-open import DiscreteAndSeparated
+open import TypeTopology.DiscreteAndSeparated
 
 module sum-cotransitive
         (fe : FunExt)

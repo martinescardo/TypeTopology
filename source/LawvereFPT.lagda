@@ -321,7 +321,7 @@ module Blechschmidt (pt : propositional-truncations-exist) where
 
  open PropositionalTruncation pt
  open ImageAndSurjection pt
- open import DiscreteAndSeparated
+ open import TypeTopology.DiscreteAndSeparated
 
  Π-projection-has-section : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
                             (x₀ : X)
@@ -419,7 +419,7 @@ module Blechschmidt' (pt : propositional-truncations-exist) where
 
  open PropositionalTruncation pt
  open ImageAndSurjection pt
- open import DiscreteAndSeparated
+ open import TypeTopology.DiscreteAndSeparated
 
  Π-projection-has-section : funext 𝓥 ((𝓤 ⊔ 𝓦)⁺)
                           → funext (𝓤 ⊔ 𝓦) (𝓤 ⊔ 𝓦)

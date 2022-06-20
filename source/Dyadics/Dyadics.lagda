@@ -11,8 +11,8 @@ Dyadic rationals (https://en.wikipedia.org/wiki/Dyadic_rational)
 module Dyadics.Dyadics where
 
 open import MLTT.Spartan
-open import DiscreteAndSeparated
 open import MLTT.Unit-Properties
+open import TypeTopology.DiscreteAndSeparated
 
 open import UF.Miscelanea
 open import UF.Subsingletons

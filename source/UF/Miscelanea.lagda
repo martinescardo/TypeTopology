@@ -19,7 +19,7 @@ open import UF.Lower-FunExt
 open import UF.Subsingletons-FunExt
 open import UF.Equiv
 open import UF.Embeddings
-open import DiscreteAndSeparated
+open import TypeTopology.DiscreteAndSeparated
 
 decidable-is-collapsible : {X : 𝓤 ̇ } → decidable X → collapsible X
 decidable-is-collapsible (inl x) = pointed-types-are-collapsible x

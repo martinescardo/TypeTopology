@@ -67,7 +67,7 @@ open import MLTT.Spartan
 open import MLTT.Two-Properties
 
 open import DecidableAndDetachable
-open import DiscreteAndSeparated hiding (tight)
+open import TypeTopology.DiscreteAndSeparated hiding (tight)
 open import UF.Base
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt

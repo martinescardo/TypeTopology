@@ -25,8 +25,8 @@ open import TypeTopology.CompactTypes
 open import TypeTopology.GenericConvergentSequence fe₀
 open import TypeTopology.SigmaDiscreteAndTotallySeparated
 open import TypeTopology.ExtendedSumCompact fe
+open import TypeTopology.DiscreteAndSeparated
 open import InjectiveTypes.Blackboard fe
-open import DiscreteAndSeparated
 open import Notation.CanonicalMap
 open import PairFun
 

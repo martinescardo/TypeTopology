@@ -33,7 +33,7 @@ open import CoNaturals.GenericConvergentSequence
 WLPO : 𝓤₀ ̇
 WLPO = (u : ℕ∞) → (u ≡ ∞) + (u ≢ ∞)
 
-open import DiscreteAndSeparated
+open import TypeTopology.DiscreteAndSeparated
 
 \end{code}
 
