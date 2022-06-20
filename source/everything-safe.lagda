@@ -37,10 +37,6 @@ import DisconnectedTypes
 import DiscreteAndSeparated
 import Dominance
 import DummettDisjunction
-import Dyadic
-import DyadicOrder
-import DyadicOrder-PropTrunc
-import Dyadics
 import Escardo-Simpson-LICS2001
 -- import everything
 -- import everything-safe

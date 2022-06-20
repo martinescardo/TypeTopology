@@ -9,7 +9,7 @@ The (usual) order on the dyadic rationals
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import MLTT.Spartan
-open import Dyadic
+open import Dyadics.Dyadics
 open import UF.Subsingletons
 
 \end{code}
@@ -26,7 +26,7 @@ prove the Σ-versions for two reasons:
 
 \begin{code}
 
-module DyadicOrder where
+module Dyadics.DyadicOrder where
 
 \end{code}
 

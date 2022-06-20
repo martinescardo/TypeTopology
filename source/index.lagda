@@ -91,7 +91,7 @@ import LawvereFPT
 import Types2019
 import MGS.index          -- Modular version of https://github.com/martinescardo/HoTT-UF.Agda-Lecture-Notes
 import DomainTheory.index -- By Tom de Jong (started with Martin Escardo)
-import Dyadics            -- By Tom de Jong
+import Dyadics.index      -- By Tom de Jong
 import Circle.index       -- By Tom de Jong
 
 \end{code}
@@ -119,9 +119,6 @@ import DecidableAndDetachable
 import Dedekind
 import DisconnectedTypes
 import DiscreteAndSeparated
-import Dyadic
-import DyadicOrder
-import Dyadics
 import Dominance
 import DummettDisjunction
 import Escardo-Simpson-LICS2001        -- By Todd Waugh Ambridge

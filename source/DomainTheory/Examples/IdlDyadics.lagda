@@ -21,9 +21,9 @@ module DomainTheory.Examples.IdlDyadics
 
 open PropositionalTruncation pt
 
-open import Dyadic
-open import DyadicOrder
-open import DyadicOrder-PropTrunc pt
+open import Dyadics.Dyadics
+open import Dyadics.DyadicOrder
+open import Dyadics.DyadicOrder-PropTrunc pt
 
 open import DomainTheory.Basics.Dcpo pt fe 𝓤₀
 open import DomainTheory.Basics.WayBelow pt fe 𝓤₀
