@@ -88,6 +88,7 @@ import Notation.index
 import TypeTopology.index
 import Ordinals.index
 import Groups.index
+import CantorSchroederBernstein.index
 import LawvereFPT
 import Types2019
 import MGS.index          -- Modular version of https://github.com/martinescardo/HoTT-UF.Agda-Lecture-Notes
@@ -108,8 +109,6 @@ import ArithmeticViaEquivalence
 import BanachFixedPointTheorem -- By Todd Waugh Ambridge
 import Taboos.index
 import BinaryNaturals
-import CantorSchroederBernstein
-import CantorSchroederBernstein-TheoryLabLunch
 import Closeness              -- By Todd Waugh Ambridge and Martin Escardo
 -- import CubicalBinarySystem -- works with Agda 2.6.2 only and need the Cubical Library. By Martin Escardo and Alex Rice
 import DecidableAndDetachable
