@@ -7,7 +7,10 @@ This formalization is based on Scott's "Continuous lattices"
 (doi:10.1007/BFB0073967), specifically pages 124--126, but generalizes it from
 ℕ-indexed diagrams to diagrams indexed by a directed poset.
 
-We specialize to ℕ-indexed diagrams in DcpoBilimitsSequential.lagda.
+We specialize to ℕ-indexed diagrams in Sequential.lagda.
+
+We also prove that taking the bilmit preserves local smallness and that it is
+closed under structural continuity/algebraicity and having a small (compact) basis.
 
 \begin{code}
 
@@ -33,26 +36,35 @@ https://github.com/agda/agda/issues/1625
 
 \begin{code}
 
-open import SpartanMLTT
+open import SpartanMLTT hiding (J)
 open import UF-FunExt
 open import UF-PropTrunc
 
-module DcpoBilimits
+module DomainTheory.Bilimits.Directed
         (pt : propositional-truncations-exist)
-        (fe : ∀ {𝓤 𝓥} → funext 𝓤 𝓥)
+        (fe : Fun-Ext)
         (𝓥 : Universe)
         (𝓤 𝓣 : Universe)
        where
 
-open PropositionalTruncation pt
+open import UF-Equiv
+open import UF-EquivalenceExamples
+open import UF-ImageAndSurjection
+open import UF-Subsingletons
+open import UF-Subsingletons-FunExt
 
-open import Dcpo pt fe 𝓥
-open import DcpoMiscelanea pt fe 𝓥
+open ImageAndSurjection pt
+open PropositionalTruncation pt
 
 open import Poset fe
 
-open import UF-Subsingletons
-open import UF-Subsingletons-FunExt
+open import DomainTheory.Basics.Dcpo pt fe 𝓥
+open import DomainTheory.Basics.Exponential pt fe 𝓥
+open import DomainTheory.Basics.Miscelanea pt fe 𝓥
+open import DomainTheory.Basics.WayBelow pt fe 𝓥
+
+open import DomainTheory.BasesAndContinuity.Bases pt fe 𝓥
+open import DomainTheory.BasesAndContinuity.Continuity pt fe 𝓥
 
 module Diagram
         {I : 𝓥 ̇ }
@@ -176,9 +188,6 @@ module Diagram
  π∞-commutes-with-πs : (i j : I) (l : i ⊑ j) → π l ∘ π∞ j ∼ π∞ i
  π∞-commutes-with-πs i j l σ = π-equality σ l
 
- open import UF-ImageAndSurjection
- open ImageAndSurjection pt
-
  κ : {i j : I} → ⟨ 𝓓 i ⟩ → (Σ k ꞉ I , i ⊑ k × j ⊑ k) → ⟨ 𝓓 j ⟩
  κ x (k , lᵢ , lⱼ) = π lⱼ (ε lᵢ x)
 
@@ -297,7 +306,7 @@ module Diagram
                       ⦅ σ ⦆ j                      ∎⟨ 𝓓 j ⟩
      where
       u₁ = ≡-to-⊑ (𝓓 j) (ρ-in-terms-of-κ lᵢ lⱼ (⦅ σ ⦆ i))
-      u₂ = ≡-to-⊑ (𝓓 j) (ap (π lⱼ ∘ ε lᵢ) ((π-equality σ lᵢ) ⁻¹))
+      u₂ = ≡-to-⊒ (𝓓 j) (ap (π lⱼ ∘ ε lᵢ) (π-equality σ lᵢ))
       u₃ = monotone-if-continuous (𝓓 k) (𝓓 j) (π lⱼ , π-is-continuous lⱼ)
             (ε lᵢ (π lᵢ (⦅ σ ⦆ k))) (⦅ σ ⦆ k) (επ-deflation lᵢ (⦅ σ ⦆ k))
       u₄ = ≡-to-⊑ (𝓓 j) (π-equality σ lⱼ)
@@ -352,7 +361,7 @@ module Diagram
          mπ = monotone-if-continuous (𝓓 k) (𝓓 j)
                ((π lⱼ) , (π-is-continuous lⱼ))
        u₅ = reflexivity (𝓓 j) (π lⱼ (ε lᵢ y))
-       u₆ = ≡-to-⊑ (𝓓 j) ((ρ-in-terms-of-κ lᵢ lⱼ y) ⁻¹)
+       u₆ = ≡-to-⊒ (𝓓 j) (ρ-in-terms-of-κ lᵢ lⱼ y)
        u₇ = reflexivity (𝓓 j) (ρ i j y)
 
  ε∞-is-continuous : (i : I) → is-continuous (𝓓 i) 𝓓∞ (ε∞ i)
@@ -497,8 +506,8 @@ are preliminaries for doing so.
         u₁ = reflexivity (𝓓 k) (⦅ ε∞-family σ i ⦆ k)
         u₂ = ≡-to-⊑ (𝓓 k) (ρ-in-terms-of-κ (⊑-trans l lⱼ) lₖ (⦅ σ ⦆ i))
         u₃ = reflexivity (𝓓 k) (κ (⦅ σ ⦆ i) (m , ⊑-trans l lⱼ , lₖ))
-        u₄ = ≡-to-⊑ (𝓓 k) (ap (π lₖ) ((ε-comp l lⱼ (⦅ σ ⦆ i)) ⁻¹))
-        u₅ = ≡-to-⊑ (𝓓 k) (ap (π lₖ ∘ ε lⱼ ∘ ε l) ((π-equality σ l) ⁻¹))
+        u₄ = ≡-to-⊒ (𝓓 k) (ap (π lₖ) (ε-comp l lⱼ (⦅ σ ⦆ i)))
+        u₅ = ≡-to-⊒ (𝓓 k) (ap (π lₖ ∘ ε lⱼ ∘ ε l) (π-equality σ l))
         u₆ = mon (ε l (π l (⦅ σ ⦆ j))) (⦅ σ ⦆ j) (επ-deflation l (⦅ σ ⦆ j))
          where
           mon : is-monotone (𝓓 j) (𝓓 k) (π lₖ ∘ ε lⱼ)
@@ -507,7 +516,7 @@ are preliminaries for doing so.
                   ∘-is-continuous (𝓓 j) (𝓓 m) (𝓓 k)
                   (ε lⱼ) (π lₖ) (ε-is-continuous lⱼ) (π-is-continuous lₖ))
         u₇ = reflexivity (𝓓 k) (κ (⦅ σ ⦆ j) (m , lⱼ , lₖ))
-        u₈ = ≡-to-⊑ (𝓓 k) ((ρ-in-terms-of-κ lⱼ lₖ (⦅ σ ⦆ j)) ⁻¹)
+        u₈ = ≡-to-⊒ (𝓓 k) (ρ-in-terms-of-κ lⱼ lₖ (⦅ σ ⦆ j))
         u₉ = reflexivity (𝓓 k) (⦅ ε∞-family σ j ⦆ k)
 
  ε∞-family-is-directed : (σ : ⟨ 𝓓∞ ⟩) → is-Directed 𝓓∞ (ε∞-family σ)
@@ -543,10 +552,10 @@ are preliminaries for doing so.
     where
      δ' : is-Directed (𝓓 i) (family-at-ith-component α i)
      δ' = family-at-ith-component-is-directed α δ i
-     u₁ = ≡-to-⊑ (𝓓 i) ((ε-id i (⦅ σ ⦆ i)) ⁻¹)
-     u₂ = ≡-to-⊑ (𝓓 i) ((π-id i (ε ⊑-refl (⦅ σ ⦆ i))) ⁻¹)
+     u₁ = ≡-to-⊒ (𝓓 i) (ε-id i (⦅ σ ⦆ i))
+     u₂ = ≡-to-⊒ (𝓓 i) (π-id i (ε ⊑-refl (⦅ σ ⦆ i)))
      u₃ = reflexivity (𝓓 i) (π ⊑-refl (ε ⊑-refl (⦅ σ ⦆ i)))
-     u₄ = ≡-to-⊑ (𝓓 i) ((ρ-in-terms-of-κ ⊑-refl ⊑-refl (⦅ σ ⦆ i)) ⁻¹)
+     u₄ = ≡-to-⊒ (𝓓 i) (ρ-in-terms-of-κ ⊑-refl ⊑-refl (⦅ σ ⦆ i))
      u₅ = reflexivity (𝓓 i) (ρ i i (⦅ σ ⦆ i))
      u₆ = reflexivity (𝓓 i) (⦅ ε∞ i (⦅ σ ⦆ i) ⦆ i )
      u₇ = ∐-is-upperbound (𝓓 i) δ' i
@@ -572,7 +581,7 @@ are preliminaries for doing so.
          u₂ = reflexivity (𝓓 j) (⦅ ε∞ i (⦅ σ ⦆ i) ⦆ j)
          u₃ = ≡-to-⊑ (𝓓 j) (ρ-in-terms-of-κ lᵢ lⱼ (⦅ σ ⦆ i))
          u₄ = reflexivity (𝓓 j) (κ (⦅ σ ⦆ i) (k , lᵢ , lⱼ))
-         u₅ = ≡-to-⊑ (𝓓 j) (ap (π lⱼ ∘ ε lᵢ) ((π-equality σ lᵢ) ⁻¹))
+         u₅ = ≡-to-⊒ (𝓓 j) (ap (π lⱼ ∘ ε lᵢ) (π-equality σ lᵢ))
          u₆ = mon (ε lᵢ (π lᵢ (⦅ σ ⦆ k))) (⦅ σ ⦆ k) (επ-deflation lᵢ (⦅ σ ⦆ k))
           where
            mon : is-monotone (𝓓 k) (𝓓 j) (π lⱼ)
@@ -604,8 +613,8 @@ We now show that 𝓓∞ is the colimit of the diagram.
    g j (ε l (π l (⦅ σ ⦆ j))) ⊑⟨ 𝓔 ⟩[ w ]
    g j (⦅ σ ⦆ j)             ∎⟨ 𝓔 ⟩
     where
-     u = ≡-to-⊑ 𝓔 (ap (g i) ((π-equality σ l) ⁻¹))
-     v = ≡-to-⊑ 𝓔 ((comm i j l (π l (⦅ σ ⦆ j))) ⁻¹)
+     u = ≡-to-⊒ 𝓔 (ap (g i) (π-equality σ l))
+     v = ≡-to-⊒ 𝓔 (comm i j l (π l (⦅ σ ⦆ j)))
      w = gm (ε l (π l (⦅ σ ⦆ j))) (⦅ σ ⦆ j) (επ-deflation l (⦅ σ ⦆ j))
       where
        gm : is-monotone (𝓓 j) 𝓔 (g j)
@@ -660,7 +669,7 @@ We now show that 𝓓∞ is the colimit of the diagram.
             u₁ = reflexivity 𝓔 (colimit-family (ε∞ i x) j)
             u₂ = ≡-to-⊑ 𝓔 (ap (g j) (ρ-in-terms-of-κ lᵢ lⱼ x))
             u₃ = reflexivity 𝓔 (g j (κ x (k , lᵢ , lⱼ)))
-            u₄ = ≡-to-⊑ 𝓔 ((comm j k lⱼ (π lⱼ (ε lᵢ x))) ⁻¹)
+            u₄ = ≡-to-⊒ 𝓔 (comm j k lⱼ (π lⱼ (ε lᵢ x)))
             u₅ = m (ε lⱼ (π lⱼ (ε lᵢ x))) (ε lᵢ x) (επ-deflation lⱼ (ε lᵢ x))
              where
               m : is-monotone (𝓓 k) 𝓔 (g k)
@@ -676,10 +685,10 @@ We now show that 𝓓∞ is the colimit of the diagram.
          ∐ 𝓔 δ                            ⊑⟨ 𝓔 ⟩[ v₇ ]
          colimit-mediating-arrow (ε∞ i x) ∎⟨ 𝓔 ⟩
       where
-       v₁ = ≡-to-⊑ 𝓔 (ap (g i) ((ε-id i x) ⁻¹))
-       v₂ = ≡-to-⊑ 𝓔 (ap (g i) ((π-id i (ε ⊑-refl x)) ⁻¹))
+       v₁ = ≡-to-⊒ 𝓔 (ap (g i) (ε-id i x))
+       v₂ = ≡-to-⊒ 𝓔 (ap (g i) (π-id i (ε ⊑-refl x)))
        v₃ = reflexivity 𝓔 (g i (π ⊑-refl (ε ⊑-refl x)))
-       v₄ = ≡-to-⊑ 𝓔 (ap (g i) ((ρ-in-terms-of-κ ⊑-refl ⊑-refl x) ⁻¹))
+       v₄ = ≡-to-⊒ 𝓔 (ap (g i) (ρ-in-terms-of-κ ⊑-refl ⊑-refl x))
        v₅ = reflexivity 𝓔 (g i (ρ i i x))
        v₆ = ∐-is-upperbound 𝓔 δ i
        v₇ = reflexivity 𝓔 (∐ 𝓔 δ)
@@ -764,12 +773,10 @@ We now show that 𝓓∞ is the colimit of the diagram.
 \end{code}
 
 Finally, we consider a curried version of ε∞-family, which will prove useful
-(see DcpoDinfinity.lagda) in the construction of Scott's D∞ for which D∞ is
+(see Dinfinity.lagda) in the construction of Scott's D∞ for which D∞ is
 isomorphic to its own self-exponential.
 
 \begin{code}
-
- open import DcpoExponential pt fe 𝓥
 
  ε∞π∞-family : I → ⟨ 𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞ ⟩
  ε∞π∞-family i = DCPO-∘ 𝓓∞ (𝓓 i) 𝓓∞ (π∞' i) (ε∞' i)
@@ -808,5 +815,415 @@ isomorphic to its own self-exponential.
      δ₂ = ε∞-family-is-directed σ
      e₁ = ∐-independent-of-directedness-witness 𝓓∞ δ₁ δ₂
      e₂ = (∐-of-ε∞s σ) ⁻¹
+
+\end{code}
+
+Added 9 February 2022.
+
+If every dcpo in the diagram is locally small, then so is its bilimit.
+
+\begin{code}
+
+ 𝓓∞-is-locally-small : ((i : I) → is-locally-small (𝓓 i))
+                     → is-locally-small 𝓓∞
+ 𝓓∞-is-locally-small ls = record { _⊑ₛ_ = _⊑ₛ⟨∞⟩_ ; ⊑ₛ-≃-⊑ = γ }
+  where
+   small-order : (i : I) → ⟨ 𝓓 i ⟩ → ⟨ 𝓓 i ⟩ → 𝓥 ̇
+   small-order i = _⊑ₛ_ where open is-locally-small (ls i)
+   syntax small-order i x y = x ⊑ₛ⟨ i ⟩ y
+   ⊑ₛ-≃-⊑-at : (i : I) {x y : ⟨ 𝓓 i ⟩} → x ⊑ₛ⟨ i ⟩ y ≃ x ⊑⟨ 𝓓 i ⟩ y
+   ⊑ₛ-≃-⊑-at i = ⊑ₛ-≃-⊑ where open is-locally-small (ls i)
+   _⊑ₛ⟨∞⟩_ : ⟨ 𝓓∞ ⟩ → ⟨ 𝓓∞ ⟩ → 𝓥 ̇
+   σ ⊑ₛ⟨∞⟩ τ = (i : I) → ⦅ σ ⦆ i ⊑ₛ⟨ i ⟩ ⦅ τ ⦆ i
+   γ : {σ τ : ⟨ 𝓓∞ ⟩} → (σ ⊑ₛ⟨∞⟩ τ) ≃ (σ ⊑⟨ 𝓓∞ ⟩ τ)
+   γ {σ} {τ} = Π-cong fe fe I (λ i → ⦅ σ ⦆ i ⊑ₛ⟨ i ⟩ ⦅ τ ⦆ i)
+                              (λ i → ⦅ σ ⦆ i ⊑⟨ 𝓓 i ⟩ ⦅ τ ⦆ i)
+                              (λ i → ⊑ₛ-≃-⊑-at i)
+
+\end{code}
+
+Next we are going to show that taking the bilimit is closed under structural
+continuity/algebraicity and having a small (compact) basis.
+
+To ease the development we first develop some generalities. Given I-indexed
+families αᵢ from Jᵢ into 𝓓ᵢ, we construct a family α∞ from Σ J to 𝓓∞ and present
+criteria for calculating its supremum and for it being directed.
+
+\begin{code}
+
+ module 𝓓∞-family
+         (J : (i : I) → 𝓥 ̇  )
+         (α : (i : I) → J i → ⟨ 𝓓 i ⟩)
+        where
+
+  J∞ : 𝓥 ̇
+  J∞ = Σ i ꞉ I , J i
+
+  J∞-is-inhabited : ((i : I) → ∥ J i ∥) → ∥ J∞ ∥
+  J∞-is-inhabited J-inh =
+   ∥∥-rec ∥∥-is-prop (λ i → ∥∥-functor (λ j → (i , j)) (J-inh i)) I-inhabited
+
+  α∞ : J∞ → ⟨ 𝓓∞ ⟩
+  α∞ (i , j) = ε∞ i (α i j)
+
+  α∞-is-sup-lemma : (σ : ⟨ 𝓓∞ ⟩) (δ : ((i : I) → is-Directed (𝓓 i) (α i)))
+                  → ((i : I) → ∐ (𝓓 i) (δ i) ≡ ⦅ σ ⦆ i)
+                  → is-sup _≼_ σ α∞
+  α∞-is-sup-lemma σ δ e =
+   transport (λ - → is-sup _≼_ - α∞) (σ-is-sup ⁻¹) (ub , lb-of-ubs)
+    where
+     δ' : (i : I) → is-Directed 𝓓∞ (ε∞ i ∘ α i)
+     δ' i = image-is-directed' (𝓓 i) 𝓓∞ (ε∞' i) (δ i)
+     e₁ : ε∞-family σ ≡ (λ i → ε∞ i (∐ (𝓓 i) (δ i)))
+     e₁ = dfunext fe (λ i → ap (ε∞ i) (e i) ⁻¹)
+     e₂ : (λ i → ε∞ i (∐ (𝓓 i) (δ i))) ≡ (λ i → ∐ 𝓓∞ (δ' i))
+     e₂ = dfunext fe (λ i → continuous-∐-≡ (𝓓 i) 𝓓∞ (ε∞' i) (δ i))
+
+     δ₁ : is-Directed 𝓓∞ (λ (i : I) → ε∞ i (∐ (𝓓 i) (δ i)))
+     δ₁ = transport (is-Directed 𝓓∞) e₁ (ε∞-family-is-directed σ)
+     δ₂ : is-Directed 𝓓∞ (λ i → ∐ 𝓓∞ (δ' i))
+     δ₂ = transport (is-Directed 𝓓∞) e₂ δ₁
+
+     σ-is-sup = σ                              ≡⟨ ∐-of-ε∞s σ ⟩
+                ∐ 𝓓∞ (ε∞-family-is-directed σ) ≡⟨ ⦅1⦆ ⟩
+                ∐ 𝓓∞ δ₁                        ≡⟨ ⦅2⦆ ⟩
+                ∐ 𝓓∞ δ₂                        ∎
+      where
+       ⦅1⦆ = ∐-family-≡ 𝓓∞ e₁ (ε∞-family-is-directed σ)
+       ⦅2⦆ = ∐-family-≡ 𝓓∞ e₂ δ₁
+
+     ub : (k : J∞) → α∞ k ≼ ∐ 𝓓∞ δ₂
+     ub (i , j) = transitivity 𝓓∞ (α∞ (i , j)) (∐ 𝓓∞ (δ' i)) (∐ 𝓓∞ δ₂) ⦅1⦆ ⦅2⦆
+      where
+       ⦅1⦆ : α∞ (i , j) ⊑⟨ 𝓓∞ ⟩ ∐ 𝓓∞ (δ' i)
+       ⦅1⦆ = ∐-is-upperbound 𝓓∞ (δ' i) j
+       ⦅2⦆ : ∐ 𝓓∞ (δ' i) ⊑⟨ 𝓓∞ ⟩ ∐ 𝓓∞ δ₂
+       ⦅2⦆ = ∐-is-upperbound 𝓓∞ δ₂ i
+
+     lb-of-ubs : is-lowerbound-of-upperbounds _≼_ (∐ 𝓓∞ δ₂) α∞
+     lb-of-ubs τ τ-is-ub = ∐-is-lowerbound-of-upperbounds 𝓓∞ δ₂ τ
+                            (λ i → ∐-is-lowerbound-of-upperbounds 𝓓∞ (δ' i) τ
+                                    (λ j → τ-is-ub (i , j)))
+
+  α∞-is-directed-sup-lemma : (σ : ⟨ 𝓓∞ ⟩)
+                             (δ : ((i : I) → is-Directed (𝓓 i) (α i)))
+                           → ((i : I) → ∐ (𝓓 i) (δ i) ≡ ⦅ σ ⦆ i)
+                           → (δ∞ : is-Directed 𝓓∞ α∞) → ∐ 𝓓∞ δ∞ ≡ σ
+  α∞-is-directed-sup-lemma σ δ e δ∞ =
+   antisymmetry 𝓓∞ (∐ 𝓓∞ δ∞) σ
+                (∐-is-lowerbound-of-upperbounds 𝓓∞ δ∞ σ
+                  (sup-is-upperbound _≼_ σ-is-sup))
+                (sup-is-lowerbound-of-upperbounds _≼_ σ-is-sup (∐ 𝓓∞ δ∞)
+                  (∐-is-upperbound 𝓓∞ δ∞))
+    where
+     σ-is-sup : is-sup _≼_ σ α∞
+     σ-is-sup = α∞-is-sup-lemma σ δ e
+
+  α∞-is-directed-lemma : (σ : ⟨ 𝓓∞ ⟩) (δ : ((i : I) → is-Directed (𝓓 i) (α i)))
+                       → ((i : I) → ∐ (𝓓 i) (δ i) ≡ ⦅ σ ⦆ i)
+                       → ((i : I) (j : J i) → α i j ≪⟨ 𝓓 i ⟩ ⦅ σ ⦆ i)
+                       → is-Directed 𝓓∞ α∞
+  α∞-is-directed-lemma σ δ sup αs-wb = Ind-∐-is-directed ε∞-after-α dir
+   where
+    open import DomainTheory.BasesAndContinuity.IndCompletion pt fe 𝓥
+    open Ind-completion 𝓓∞
+    δ' : (i : I) → is-Directed 𝓓∞ (ε∞ i ∘ α i)
+    δ' i = image-is-directed' (𝓓 i) 𝓓∞ (ε∞' i) (δ i)
+    ε∞-after-α : I → Ind
+    ε∞-after-α i = J i , ε∞ i ∘ α i , δ' i
+    dir : is-directed _≲_ ε∞-after-α
+    dir = I-inhabited , semidir
+     where
+      semidir : is-semidirected _≲_ ε∞-after-α
+      semidir i₁ i₂ =
+       ∥∥-functor (λ (i , l₁ , l₂) → i , cofinality-lemma l₁
+                                       , cofinality-lemma l₂)
+                  (I-semidirected i₁ i₂)
+       where
+        cofinality-lemma : {i i' : I} → i ⊑ i' → ε∞-after-α i ≲ ε∞-after-α i'
+        cofinality-lemma {i} {i'} l j =
+         ∥∥-functor lem (wb (J i') (α i') (δ i') (≡-to-⊒ (𝓓 i') (sup i')))
+          where
+           lem : (Σ j' ꞉ J i' , ε l (α i j) ⊑⟨ 𝓓 i' ⟩ α i' j')
+               → (Σ j' ꞉ J i' , ε∞ i (α i j) ⊑⟨ 𝓓∞ ⟩ ε∞ i' (α i' j'))
+           lem (j' , u) = j' , transitivity 𝓓∞ (ε∞ i (α i j))
+                                               (ε∞ i' (ε l (α i j)))
+                                               (ε∞ i' (α i' j'))
+                                               ⦅1⦆ ⦅2⦆
+            where
+             ⦅1⦆ : ε∞ i (α i j) ⊑⟨ 𝓓∞ ⟩ ε∞ i' (ε l (α i j))
+             ⦅1⦆ = ≡-to-⊑ 𝓓∞ ((ε∞-commutes-with-εs i i' l (α i j)) ⁻¹)
+             ⦅2⦆ : ε∞ i' (ε l (α i j)) ⊑⟨ 𝓓∞ ⟩ ε∞ i' (α i' j')
+             ⦅2⦆ = monotone-if-continuous (𝓓 i') 𝓓∞ (ε∞' i')
+                    (ε l (α i j)) (α i' j') u
+           wb : ε l (α i j) ≪⟨ 𝓓 i' ⟩ ⦅ σ ⦆ i'
+           wb = ≪-⊑-to-≪ (𝓓 i') wb' ineq
+            where
+             wb' : ε l (α i j) ≪⟨ 𝓓 i' ⟩ ε l (⦅ σ ⦆ i)
+             wb' = embeddings-preserve-≪ (𝓓 i) (𝓓 i')
+                                         (ε l) (ε-is-continuous l)
+                                         (π l) (π-is-continuous l)
+                                         (ε-section-of-π l) (επ-deflation l)
+                                         (α i j) (⦅ σ ⦆ i) (αs-wb i j)
+             ineq = ε l (π∞ i σ)        ⊑⟨ 𝓓 i' ⟩[ ⦅1⦆ ]
+                    ε l (π l (π∞ i' σ)) ⊑⟨ 𝓓 i' ⟩[ ⦅2⦆ ]
+                    ⦅ σ ⦆ i'            ∎⟨ 𝓓 i' ⟩
+              where
+               ⦅1⦆ = ≡-to-⊑ (𝓓 i') (ap (ε l) ((π∞-commutes-with-πs i i' l σ) ⁻¹))
+               ⦅2⦆ = επ-deflation l (π∞ i' σ)
+
+\end{code}
+
+The construction that defines the family α∞ into 𝓓∞ preserves the way-below
+relation and compactness in a sense made precise below.
+
+\begin{code}
+
+  α∞-is-way-below : (σ : ⟨ 𝓓∞ ⟩)
+                  → ((i : I) (j : J i) → α i j ≪⟨ 𝓓 i ⟩ ⦅ σ ⦆ i)
+                  → (j : J∞) → α∞ j ≪⟨ 𝓓∞ ⟩ σ
+  α∞-is-way-below σ wb (i , j) = ≪-⊑-to-≪ 𝓓∞ lem (ε∞π∞-deflation σ)
+   where
+    lem : ε∞ i (α i j) ≪⟨ 𝓓∞ ⟩ ε∞ i (π∞ i σ)
+    lem = embeddings-preserve-≪ (𝓓 i) 𝓓∞
+           (ε∞ i) (ε∞-is-continuous i)
+           (π∞ i) (π∞-is-continuous i)
+           ε∞-section-of-π∞ ε∞π∞-deflation
+           (α i j) (π∞ i σ)
+           (wb i j)
+
+  α∞-is-compact : ((i : I) (j : J i) → is-compact (𝓓 i) (α i j))
+                → (j : J∞) → is-compact 𝓓∞ (α∞ j)
+  α∞-is-compact κ (i , j) = embeddings-preserve-compactness (𝓓 i) 𝓓∞
+                             (ε∞ i) (ε∞-is-continuous i)
+                             (π∞ i) (π∞-is-continuous i)
+                             ε∞-section-of-π∞ ε∞π∞-deflation
+                             (α i j) (κ i j)
+
+\end{code}
+
+It is now fairly straightforward to prove that if each 𝓓ᵢ is structurally
+continuous, then so is its bilimit 𝓓∞.
+
+Note how we don't expect to have a similar result for ordinary continuity,
+because this seems to need instances of the axiom of choice in general.
+
+\begin{code}
+
+ 𝓓∞-structurally-continuous : ((i : I) → structurally-continuous (𝓓 i))
+                            → structurally-continuous 𝓓∞
+ 𝓓∞-structurally-continuous 𝓒 =
+  record
+   { index-of-approximating-family     = J∞⁺
+   ; approximating-family              = α∞⁺
+   ; approximating-family-is-directed  = α∞⁺-is-directed
+   ; approximating-family-is-way-below = α∞⁺-is-way-below
+   ; approximating-family-∐-≡          = α∞⁺-∐-≡
+   }
+   where
+    open structurally-continuous
+    J : (i : I) → ⟨ 𝓓 i ⟩ → 𝓥 ̇
+    J i = index-of-approximating-family (𝓒 i)
+    α : (i : I) (x : ⟨ 𝓓 i ⟩) → J i x → ⟨ 𝓓 i ⟩
+    α i = approximating-family (𝓒 i)
+    δ : (i : I) (x : ⟨ 𝓓 i ⟩) → is-Directed (𝓓 i) (α i x)
+    δ i = approximating-family-is-directed (𝓒 i)
+
+    J⁺ : (σ : ⟨ 𝓓∞ ⟩) → I → 𝓥 ̇
+    J⁺ σ i = J i (⦅ σ ⦆ i)
+    α⁺ : (σ : ⟨ 𝓓∞ ⟩) (i : I) → J⁺ σ i → ⟨ 𝓓 i ⟩
+    α⁺ σ i = α i (⦅ σ ⦆ i)
+
+    module _
+            (σ : ⟨ 𝓓∞ ⟩)
+           where
+
+     open 𝓓∞-family (J⁺ σ) (α⁺ σ)
+
+     J∞⁺ :  𝓥 ̇
+     J∞⁺ = J∞
+     α∞⁺ : J∞⁺ → ⟨ 𝓓∞ ⟩
+     α∞⁺ = α∞
+     α∞⁺-is-way-below : is-way-upperbound 𝓓∞ σ α∞⁺
+     α∞⁺-is-way-below = α∞-is-way-below σ
+                         (λ i j → approximating-family-is-way-below (𝓒 i)
+                                   (⦅ σ ⦆ i) j)
+     α∞⁺-is-directed : is-Directed 𝓓∞ α∞⁺
+     α∞⁺-is-directed = α∞-is-directed-lemma σ
+                        (λ i → δ i (⦅ σ ⦆ i))
+                        (λ i → approximating-family-∐-≡ (𝓒 i) (⦅ σ ⦆ i))
+                        (λ i → approximating-family-is-way-below (𝓒 i) (⦅ σ ⦆ i))
+     α∞⁺-∐-≡ : ∐ 𝓓∞ α∞⁺-is-directed ≡ σ
+     α∞⁺-∐-≡ = α∞-is-directed-sup-lemma σ
+                (λ i → δ i (⦅ σ ⦆ i))
+                (λ i → approximating-family-∐-≡ (𝓒 i) (⦅ σ ⦆ i))
+                α∞⁺-is-directed
+
+\end{code}
+
+Similarly, if each 𝓓ᵢ is structurally algebraic then so is its bilimit 𝓓∞.
+
+\begin{code}
+
+ 𝓓∞-structurally-algebraic : ((i : I) → structurally-algebraic (𝓓 i))
+                           → structurally-algebraic 𝓓∞
+ 𝓓∞-structurally-algebraic 𝓐 =
+  record
+   { index-of-compact-family    = index-of-approximating-family C∞
+   ; compact-family             = approximating-family C∞
+   ; compact-family-is-directed = approximating-family-is-directed C∞
+   ; compact-family-is-compact  = γ
+   ; compact-family-∐-≡         = approximating-family-∐-≡ C∞
+   }
+   where
+    open structurally-continuous
+    open structurally-algebraic
+    𝓒 : (i : I) → structurally-continuous (𝓓 i)
+    𝓒 i = structurally-continuous-if-structurally-algebraic (𝓓 i) (𝓐 i)
+    C∞ : structurally-continuous 𝓓∞
+    C∞ = 𝓓∞-structurally-continuous 𝓒
+    J∞ : ⟨ 𝓓∞ ⟩ → 𝓥 ̇
+    J∞ = index-of-approximating-family C∞
+    α∞ : (σ : ⟨ 𝓓∞ ⟩) → J∞ σ → ⟨ 𝓓∞ ⟩
+    α∞ = approximating-family C∞
+    γ : (σ : ⟨ 𝓓∞ ⟩) (j : J∞ σ) → is-compact 𝓓∞ (α∞ σ j)
+    γ σ (i , j) = embeddings-preserve-compactness (𝓓 i) 𝓓∞
+                   (ε∞ i) (ε∞-is-continuous i) (π∞ i) (π∞-is-continuous i)
+                   ε∞-section-of-π∞ ε∞π∞-deflation
+                   (compact-family (𝓐 i) (⦅ σ ⦆ i) j)
+                   (compact-family-is-compact (𝓐 i) (⦅ σ ⦆ i) j)
+
+\end{code}
+
+With a little bit more work, we can show that if each 𝓓ᵢ comes equipped with a
+small (compact) basis, then the bilimit 𝓓∞ does too.
+
+\begin{code}
+
+ 𝓓∞-has-small-basis : ((i : I) → has-specified-small-basis (𝓓 i))
+                    → has-specified-small-basis 𝓓∞
+ 𝓓∞-has-small-basis 𝓑 = (B∞ , β∞ , β∞-is-small-basis)
+  where
+   B : I → 𝓥 ̇
+   B i = pr₁ (𝓑 i)
+   β : (i : I) → B i → ⟨ 𝓓 i ⟩
+   β i = pr₁ (pr₂ (𝓑 i))
+   β-is-small-basis : (i : I) → is-small-basis (𝓓 i) (β i)
+   β-is-small-basis i = pr₂ (pr₂ (𝓑 i))
+   B∞ : 𝓥 ̇
+   B∞ = Σ i ꞉ I , B i
+   β∞ : B∞ → ⟨ 𝓓∞ ⟩
+   β∞ (i , b) = ε∞ i (β i b)
+
+   𝓓s-are-locally-small : (i : I) → is-locally-small (𝓓 i)
+   𝓓s-are-locally-small i = locally-small-if-small-basis (𝓓 i) (β i)
+                             (β-is-small-basis i)
+
+   𝓓s-are-structurally-continuous : (i : I) → structurally-continuous (𝓓 i)
+   𝓓s-are-structurally-continuous i =
+    structurally-continuous-if-specified-small-basis (𝓓 i)
+     (B i , β i , β-is-small-basis i)
+
+   β∞-is-small-basis : is-small-basis 𝓓∞ β∞
+   β∞-is-small-basis =
+    record
+     { ≪ᴮ-is-small    = lemma₁
+     ; ↡ᴮ-is-directed = lemma₂
+     ; ↡ᴮ-is-sup      = lemma₃
+     }
+     where
+      open is-small-basis
+
+      lemma₁ : (σ : ⟨ 𝓓∞ ⟩) (b : B∞) → is-small (β∞ b ≪⟨ 𝓓∞ ⟩ σ)
+      lemma₁ σ (i , b) =
+       ≪-is-small-valued-str 𝓓∞
+        (𝓓∞-structurally-continuous 𝓓s-are-structurally-continuous)
+        (𝓓∞-is-locally-small 𝓓s-are-locally-small)
+        (β∞ (i , b)) σ
+
+      module _
+              (σ : ⟨ 𝓓∞ ⟩)
+             where
+
+       ↡ᴮₛ⁺ : (i : I) → 𝓥 ̇
+       ↡ᴮₛ⁺ i = ↡ᴮₛ (β-is-small-basis i) (⦅ σ ⦆ i)
+       ↡ιₛ⁺ : (i : I) → ↡ᴮₛ⁺ i → ⟨ 𝓓 i ⟩
+       ↡ιₛ⁺ i = ↡-inclusionₛ (β-is-small-basis i) (⦅ σ ⦆ i)
+       open 𝓓∞-family ↡ᴮₛ⁺ ↡ιₛ⁺
+
+       ι : J∞ → ↡ᴮ 𝓓∞ β∞ σ
+       ι (i , b , u) = ((i , b) , v)
+        where
+         v : ε∞ i (β i b) ≪⟨ 𝓓∞ ⟩ σ
+         v = ≪-⊑-to-≪ 𝓓∞ w (ε∞π∞-deflation σ)
+          where
+           w : ε∞ i (β i b) ≪⟨ 𝓓∞ ⟩ ε∞ i (⦅ σ ⦆ i)
+           w = embeddings-preserve-≪ (𝓓 i) 𝓓∞
+                (ε∞ i) (ε∞-is-continuous i) (π∞ i) (π∞-is-continuous i)
+                ε∞-section-of-π∞ ε∞π∞-deflation
+                (β i b) (⦅ σ ⦆ i) (≪ᴮₛ-to-≪ᴮ (β-is-small-basis i) u)
+
+       sublemma₁ : is-Directed 𝓓∞ (↡-inclusion 𝓓∞ β∞ σ ∘ ι)
+       sublemma₁ = α∞-is-directed-lemma σ
+                    (λ i → ↡ᴮₛ-is-directed (β-is-small-basis i) (⦅ σ ⦆ i))
+                    (λ i → ↡ᴮₛ-∐-≡ (β-is-small-basis i) (⦅ σ ⦆ i))
+                    (λ i → ↡ᴮₛ-is-way-below (β-is-small-basis i) (⦅ σ ⦆ i))
+
+       sublemma₂ : σ ≡ ∐ 𝓓∞ sublemma₁
+       sublemma₂ = (α∞-is-directed-sup-lemma σ δs es sublemma₁) ⁻¹
+        where
+         δs : (i : I) → is-Directed (𝓓 i) (↡-inclusionₛ (β-is-small-basis i) (⦅ σ ⦆ i))
+         δs i = ↡ᴮₛ-is-directed (β-is-small-basis i) (⦅ σ ⦆ i)
+         es : (i : I) → ∐ (𝓓 i) (δs i) ≡ ⦅ σ ⦆ i
+         es i = ↡ᴮₛ-∐-≡ (β-is-small-basis i) (⦅ σ ⦆ i)
+
+       lemma₂ : is-Directed 𝓓∞ (↡-inclusion 𝓓∞ β∞ σ)
+       lemma₂ = ↡ᴮ-directedness-criterion 𝓓∞ β∞ σ ι
+                 sublemma₁ (≡-to-⊑ 𝓓∞ sublemma₂)
+
+       lemma₃ : is-sup (underlying-order 𝓓∞) σ (↡-inclusion 𝓓∞ β∞ σ)
+       lemma₃ = ↡ᴮ-sup-criterion 𝓓∞ β∞ σ ι claim
+        where
+         claim : is-sup (underlying-order 𝓓∞) σ (↡-inclusion 𝓓∞ β∞ σ ∘ ι)
+         claim =
+          transport (λ - → is-sup (underlying-order 𝓓∞) - (↡-inclusion 𝓓∞ β∞ σ ∘ ι))
+                    (sublemma₂ ⁻¹)
+                    (∐-is-sup 𝓓∞ sublemma₁)
+
+ 𝓓∞-has-small-compact-basis :
+    ((i : I) → has-specified-small-compact-basis (𝓓 i))
+  → has-specified-small-compact-basis 𝓓∞
+ 𝓓∞-has-small-compact-basis κ = (B∞ , β∞ , γ)
+  where
+   B : (i : I) → 𝓥 ̇
+   B i = pr₁ (κ i)
+   β : (i : I) → B i → ⟨ 𝓓 i ⟩
+   β i = pr₁ (pr₂ (κ i))
+   β-is-small-compact-basis : (i : I) → is-small-compact-basis (𝓓 i) (β i)
+   β-is-small-compact-basis i = pr₂ (pr₂ (κ i))
+   β-is-small-basis : (i : I) → is-small-basis (𝓓 i) (β i)
+   β-is-small-basis i = compact-basis-is-basis (𝓓 i) (β i)
+                         (β-is-small-compact-basis i)
+
+   𝔹 : has-specified-small-basis 𝓓∞
+   𝔹 = 𝓓∞-has-small-basis (λ i → (B i , β i , β-is-small-basis i))
+   B∞ : 𝓥 ̇
+   B∞ = pr₁ 𝔹
+   β∞ : B∞ → ⟨ 𝓓∞ ⟩
+   β∞ = pr₁ (pr₂ 𝔹)
+   β∞-is-small-basis : is-small-basis 𝓓∞ β∞
+   β∞-is-small-basis = pr₂ (pr₂ 𝔹)
+
+   γ : is-small-compact-basis 𝓓∞ β∞
+   γ = small-and-compact-basis 𝓓∞ β∞ β∞-is-small-basis β∞-is-compact
+    where
+     open is-small-compact-basis
+     β∞-is-compact : (b : B∞) → is-compact 𝓓∞ (β∞ b)
+     β∞-is-compact (i , b) = embeddings-preserve-compactness (𝓓 i) 𝓓∞
+                              (ε∞ i) (ε∞-is-continuous i)
+                              (π∞ i) (π∞-is-continuous i)
+                              ε∞-section-of-π∞ ε∞π∞-deflation
+                              (β i b)
+                              (basis-is-compact (β-is-small-compact-basis i) b)
 
 \end{code}

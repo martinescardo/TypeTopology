@@ -1,6 +1,6 @@
 Tom de Jong, 12 & 13 May 2020.
 
-We specialize the work of DcpoBilimits.lagda to ℕ-indexed diagrams.
+We specialize the work of Directed.lagda to ℕ-indexed diagrams.
 
 \begin{code}
 
@@ -10,17 +10,17 @@ open import SpartanMLTT
 open import UF-PropTrunc
 open import UF-FunExt
 
-module DcpoBilimitsSequential
+module DomainTheory.Bilimits.Sequential
         (pt : propositional-truncations-exist)
-        (fe : ∀ {𝓤 𝓥} → funext 𝓤 𝓥)
+        (fe : Fun-Ext)
         (𝓤 𝓣 : Universe)
        where
 
 open PropositionalTruncation pt
 
-open import Dcpo pt fe 𝓤₀
-open import DcpoBilimits pt fe 𝓤₀ 𝓤 𝓣
-open import DcpoMiscelanea pt fe 𝓤₀
+open import DomainTheory.Basics.Dcpo pt fe 𝓤₀
+open import DomainTheory.Basics.Miscelanea pt fe 𝓤₀
+open import DomainTheory.Bilimits.Directed pt fe 𝓤₀ 𝓤 𝓣
 
 open import NaturalsAddition renaming (_+_ to _+'_)
 open import NaturalNumbers-Properties

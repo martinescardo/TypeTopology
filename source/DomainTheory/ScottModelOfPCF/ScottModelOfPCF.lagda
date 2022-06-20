@@ -1,15 +1,21 @@
 Tom de Jong, 31 May 2019
 
+The denotational semantics of PCF based on pointed directed complete posets.
+
+The flag --experimental-lossy-unification significantly speeds up the
+typechecking of the line ⟦ S {ρ} {σ} {τ} ⟧ₑ = Sᵈᶜᵖᵒ⊥ ⟦ ρ ⟧ ⟦ σ ⟧ ⟦ τ ⟧ below.
+(https://agda.readthedocs.io/en/latest/language/lossy-unification.html)
+
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline --experimental-lossy-unification #-}
 
 open import SpartanMLTT
 open import UF-PropTrunc
 open import UF-FunExt
 open import UF-Subsingletons
 
-module ScottModelOfPCF
+module DomainTheory.ScottModelOfPCF.ScottModelOfPCF
         (pt : propositional-truncations-exist)
         (fe : Fun-Ext)
         (pe : propext 𝓤₀)
@@ -22,16 +28,16 @@ open import UF-Miscelanea
 
 open import PCF pt
 
-open import Dcpo pt fe 𝓤₀
-open import DcpoExponential pt fe 𝓤₀
-open import DcpoMiscelanea pt fe 𝓤₀
+open import DomainTheory.Basics.Dcpo pt fe 𝓤₀
+open import DomainTheory.Basics.Exponential pt fe 𝓤₀
+open import DomainTheory.Basics.LeastFixedPoint pt fe
+open import DomainTheory.Basics.Miscelanea pt fe 𝓤₀
+open import DomainTheory.Basics.Pointed pt fe 𝓤₀
 
-open import DcpoPCFCombinators pt fe 𝓤₀
+open import DomainTheory.ScottModelOfPCF.PCFCombinators pt fe 𝓤₀
 open IfZeroDenotationalSemantics pe
 
-open import DcpoLeastFixedPoint pt fe
-
-open import DcpoLifting pt fe 𝓤₀ pe
+open import DomainTheory.Lifting.LiftingSet pt fe 𝓤₀ pe
 
 open import Lifting 𝓤₀
 open import LiftingMonad 𝓤₀ hiding (μ)

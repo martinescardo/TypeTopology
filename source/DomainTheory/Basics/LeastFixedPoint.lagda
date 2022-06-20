@@ -3,17 +3,21 @@ Refactored Dec 2021.
 
 Least fixed points of Scott continuous maps.
 
+The flag --experimental-lossy-unification significantly speeds up the
+typechecking.
+(https://agda.readthedocs.io/en/latest/language/lossy-unification.html)
+
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline --experimental-lossy-unification #-}
 
 open import SpartanMLTT
 open import UF-FunExt
 open import UF-PropTrunc
 
-module DcpoLeastFixedPoint
+module DomainTheory.Basics.LeastFixedPoint
         (pt : propositional-truncations-exist)
-        (fe : ∀ {𝓤 𝓥} → funext 𝓤 𝓥)
+        (fe : Fun-Ext)
        where
 
 open PropositionalTruncation pt
@@ -29,9 +33,10 @@ open import OrderNotation
 
 module _ {𝓥 : Universe} where
 
- open import Dcpo pt fe 𝓥
- open import DcpoMiscelanea pt fe 𝓥
- open import DcpoExponential pt fe 𝓥
+ open import DomainTheory.Basics.Dcpo pt fe 𝓥
+ open import DomainTheory.Basics.Exponential pt fe 𝓥
+ open import DomainTheory.Basics.Miscelanea pt fe 𝓥
+ open import DomainTheory.Basics.Pointed pt fe 𝓥
 
  module _ (𝓓 : DCPO⊥ {𝓤} {𝓣}) where
 
@@ -222,9 +227,10 @@ don't have a practical use for it anyway (at the time of writing).
 
 module _ where
 
- open import Dcpo pt fe 𝓤₀
- open import DcpoMiscelanea pt fe 𝓤₀
- open import DcpoExponential pt fe 𝓤₀
+ open import DomainTheory.Basics.Dcpo pt fe 𝓤₀
+ open import DomainTheory.Basics.Exponential pt fe 𝓤₀
+ open import DomainTheory.Basics.Miscelanea pt fe 𝓤₀
+ open import DomainTheory.Basics.Pointed pt fe 𝓤₀
 
  module _ (𝓓 : DCPO⊥ {𝓤} {𝓣}) where
 

@@ -1,8 +1,11 @@
 Tom de Jong, May 2019.
 Major additions January 2020.
+Added sup-complete exponentials somewhere in February - March 2022.
 
 We construct the exponential (pointed) dcpos (𝓓 ⟹ᵈᶜᵖᵒ 𝓔) and (𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓔) for
-(pointed) dcpos 𝓓 and 𝓔.
+(pointed) dcpos 𝓓 and 𝓔. We also show that if 𝓔 is sup-complete, then the
+exponential (𝓓 ⟹ᵈᶜᵖᵒ 𝓔) is also sup-complete (even if 𝓓 isn't). This comes in
+useful when proving that exponentials of sup-complete dcpos are algebraic.
 
 \begin{code}
 
@@ -12,9 +15,9 @@ open import SpartanMLTT hiding (J)
 open import UF-FunExt
 open import UF-PropTrunc
 
-module DcpoExponential
+module DomainTheory.Basics.Exponential
         (pt : propositional-truncations-exist)
-        (fe : ∀ {𝓤 𝓥} → funext 𝓤 𝓥)
+        (fe : Fun-Ext)
         (𝓥 : Universe)
        where
 
@@ -23,8 +26,10 @@ open PropositionalTruncation pt
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
 
-open import Dcpo pt fe 𝓥
-open import DcpoMiscelanea pt fe 𝓥
+open import DomainTheory.Basics.Dcpo pt fe 𝓥
+open import DomainTheory.Basics.Miscelanea pt fe 𝓥
+open import DomainTheory.Basics.Pointed pt fe 𝓥
+open import DomainTheory.Basics.SupComplete pt fe 𝓥
 
 open import Poset fe
 
@@ -133,6 +138,7 @@ _⟹ᵈᶜᵖᵒ_ : DCPO {𝓤} {𝓣} → DCPO {𝓤'} {𝓣'}
                      (pointwise-family-is-directed 𝓓 𝓔 α δ d)
                      (g d) (λ (i : I) → l i d)
 
+
 infixr 20 _⟹ᵈᶜᵖᵒ⊥_
 
 _⟹ᵈᶜᵖᵒ⊥_ : DCPO⊥ {𝓤} {𝓣} → DCPO⊥ {𝓤'} {𝓣'}
@@ -141,15 +147,25 @@ _⟹ᵈᶜᵖᵒ⊥_ : DCPO⊥ {𝓤} {𝓣} → DCPO⊥ {𝓤'} {𝓣'}
  where
   h : has-least (underlying-order ((𝓓 ⁻) ⟹ᵈᶜᵖᵒ (𝓔 ⁻)))
   h = ((λ _ → ⊥ 𝓔) ,
-      constant-functions-are-continuous (𝓓 ⁻) (𝓔 ⁻) (⊥ 𝓔)) ,
+      constant-functions-are-continuous (𝓓 ⁻) (𝓔 ⁻)) ,
       (λ g d → ⊥-is-least 𝓔 (underlying-function (𝓓 ⁻) (𝓔 ⁻) g d))
+
+_⟹ᵈᶜᵖᵒ⊥'_ : DCPO {𝓤} {𝓣} → DCPO⊥ {𝓤'} {𝓣'}
+          → DCPO⊥ {(𝓥 ⁺) ⊔ 𝓤 ⊔ 𝓣 ⊔ 𝓤' ⊔ 𝓣'} {𝓤 ⊔ 𝓣'}
+𝓓 ⟹ᵈᶜᵖᵒ⊥' 𝓔 = 𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻) , h
+ where
+  h : has-least (underlying-order (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻)))
+  h = ((λ _ → ⊥ 𝓔) ,
+      constant-functions-are-continuous 𝓓 (𝓔 ⁻)) ,
+      (λ g d → ⊥-is-least 𝓔 (underlying-function 𝓓 (𝓔 ⁻) g d))
 
 \end{code}
 
 Now that we have constructed exponentials, we can state and prove additional
 continuity results regarding composition of continuous functions.
 
-(These results are used in constructing Scott's D∞ in DcpoDinfinity.lagda.)
+(These results are used in constructing Scott's D∞ in
+DomainTheory.Bilimits.Dinfinity.lagda.)
 
 \begin{code}
 
@@ -244,5 +260,87 @@ DCPO-∘₃-is-continuous₂ 𝓓₁ 𝓓₂ 𝓓₃ 𝓓₄ f h =
  ∘-is-continuous (𝓓₂ ⟹ᵈᶜᵖᵒ 𝓓₃) (𝓓₂ ⟹ᵈᶜᵖᵒ 𝓓₄) (𝓓₁ ⟹ᵈᶜᵖᵒ 𝓓₄)
   (λ g → DCPO-∘ 𝓓₂ 𝓓₃ 𝓓₄ g h) (DCPO-∘ 𝓓₁ 𝓓₂ 𝓓₄ f)
   (DCPO-∘-is-continuous₂ 𝓓₂ 𝓓₃ 𝓓₄ h) (DCPO-∘-is-continuous₁ 𝓓₁ 𝓓₂ 𝓓₄ f)
+
+\end{code}
+
+When 𝓔 is sup-complete, then the exponential (𝓓 ⟹ᵈᶜᵖᵒ 𝓔) is also sup-complete
+(even if 𝓓 isn't). This comes in useful when proving that exponentials of
+sup-complete dcpos are algebraic.
+
+\begin{code}
+
+module _
+        (𝓓 : DCPO {𝓤} {𝓣})
+        (𝓔 : DCPO {𝓤'} {𝓣'})
+        (𝓔-is-sup-complete : is-sup-complete 𝓔)
+       where
+
+ open is-sup-complete 𝓔-is-sup-complete
+
+ sup-of-continuous-functions : {I : 𝓥 ̇  } → (I → DCPO[ 𝓓 , 𝓔 ]) → DCPO[ 𝓓 , 𝓔 ]
+ sup-of-continuous-functions {I} α = (f , c)
+  where
+   f : ⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩
+   f x = ⋁ (pointwise-family 𝓓 𝓔 α x)
+   c : is-continuous 𝓓 𝓔 f
+   c J β δ = (ub , lb-of-ubs)
+    where
+     ub : is-upperbound (underlying-order 𝓔) (f (∐ 𝓓 δ)) (f ∘ β)
+     ub i = ⋁-is-lowerbound-of-upperbounds
+             (pointwise-family 𝓓 𝓔 α (β i)) (f (∐ 𝓓 δ)) γ
+      where
+       γ : is-upperbound (underlying-order 𝓔) (f (∐ 𝓓 δ))
+            (pointwise-family 𝓓 𝓔 α (β i))
+       γ j = [ 𝓓 , 𝓔 ]⟨ α j ⟩ (β i)   ⊑⟨ 𝓔 ⟩[ ⦅1⦆ ]
+             [ 𝓓 , 𝓔 ]⟨ α j ⟩ (∐ 𝓓 δ) ⊑⟨ 𝓔 ⟩[ ⦅2⦆ ]
+             f (∐ 𝓓 δ)                 ∎⟨ 𝓔 ⟩
+        where
+         ⦅1⦆ = monotone-if-continuous 𝓓 𝓔 (α j) (β i) (∐ 𝓓 δ)
+               (∐-is-upperbound 𝓓 δ i)
+         ⦅2⦆ = ⋁-is-upperbound (pointwise-family 𝓓 𝓔 α (∐ 𝓓 δ)) j
+     lb-of-ubs : is-lowerbound-of-upperbounds (underlying-order 𝓔) (f (∐ 𝓓 δ))
+                  (f ∘ β)
+     lb-of-ubs y y-is-ub =
+      ⋁-is-lowerbound-of-upperbounds (pointwise-family 𝓓 𝓔 α (∐ 𝓓 δ))
+       y γ
+        where
+         γ : is-upperbound (underlying-order 𝓔) y
+              (pointwise-family 𝓓 𝓔 α (∐ 𝓓 δ))
+         γ i = [ 𝓓 , 𝓔 ]⟨ α i ⟩ (∐ 𝓓 δ) ⊑⟨ 𝓔 ⟩[ ⦅1⦆ ]
+               ∐ 𝓔 ε                    ⊑⟨ 𝓔 ⟩[ ⦅2⦆ ]
+               y                        ∎⟨ 𝓔 ⟩
+          where
+           ε : is-Directed 𝓔 ([ 𝓓 , 𝓔 ]⟨ α i ⟩ ∘ β)
+           ε = image-is-directed' 𝓓 𝓔 (α i) δ
+           ⦅1⦆ = continuous-∐-⊑ 𝓓 𝓔 (α i) δ
+           ⦅2⦆ = ∐-is-lowerbound-of-upperbounds 𝓔 ε y h
+            where
+             h : is-upperbound (underlying-order 𝓔) y ([ 𝓓 , 𝓔 ]⟨ α i ⟩ ∘ β)
+             h j = [ 𝓓 , 𝓔 ]⟨ α i ⟩ (β j) ⊑⟨ 𝓔 ⟩[ ⦅†⦆ ]
+                   f (β j)                 ⊑⟨ 𝓔 ⟩[ y-is-ub j ]
+                   y                       ∎⟨ 𝓔 ⟩
+              where
+               ⦅†⦆ = ⋁-is-upperbound (pointwise-family 𝓓 𝓔 α (β j)) i
+
+ exponential-is-sup-complete : is-sup-complete (𝓓 ⟹ᵈᶜᵖᵒ 𝓔)
+ exponential-is-sup-complete =
+  record
+   { ⋁        = λ {I} α → sup-of-continuous-functions α
+   ; ⋁-is-sup = λ {I} → lemma
+   }
+   where
+    lemma : {I : 𝓥 ̇  } (α : I → DCPO[ 𝓓 , 𝓔 ])
+          → is-sup (underlying-order (𝓓 ⟹ᵈᶜᵖᵒ 𝓔))
+             (sup-of-continuous-functions α) α
+    lemma {I} α = (ub , lb-of-ubs)
+     where
+      ub : is-upperbound (underlying-order (𝓓 ⟹ᵈᶜᵖᵒ 𝓔))
+            (sup-of-continuous-functions α) α
+      ub i x = ⋁-is-upperbound (pointwise-family 𝓓 𝓔 α x) i
+      lb-of-ubs : is-lowerbound-of-upperbounds (underlying-order (𝓓 ⟹ᵈᶜᵖᵒ 𝓔))
+                   (sup-of-continuous-functions α) α
+      lb-of-ubs g g-is-ub x =
+       ⋁-is-lowerbound-of-upperbounds (pointwise-family 𝓓 𝓔 α x)
+                                      ([ 𝓓 , 𝓔 ]⟨ g ⟩ x) (λ i → g-is-ub i x)
 
 \end{code}

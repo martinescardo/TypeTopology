@@ -15,9 +15,9 @@ open import SpartanMLTT
 open import UF-FunExt
 open import UF-PropTrunc
 
-module DcpoPCFCombinators
+module DomainTheory.ScottModelOfPCF.PCFCombinators
         (pt : propositional-truncations-exist)
-        (fe : ∀ {𝓤 𝓥} → funext 𝓤 𝓥)
+        (fe : Fun-Ext)
         (𝓥 : Universe)
        where
 
@@ -27,9 +27,10 @@ open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
 
 open import Poset fe
-open import Dcpo pt fe 𝓥
-open import DcpoMiscelanea pt fe 𝓥
-open import DcpoExponential pt fe 𝓥
+open import DomainTheory.Basics.Dcpo pt fe 𝓥
+open import DomainTheory.Basics.Exponential pt fe 𝓥
+open import DomainTheory.Basics.Miscelanea pt fe 𝓥
+open import DomainTheory.Basics.Pointed pt fe 𝓥
 
 \end{code}
 
@@ -52,7 +53,7 @@ module _ (𝓓 : DCPO {𝓤} {𝓣})
  Kᵈᶜᵖᵒ : DCPO[ 𝓓 , 𝓔 ⟹ᵈᶜᵖᵒ 𝓓 ]
  Kᵈᶜᵖᵒ = k , c where
   k : ⟨ 𝓓 ⟩ → DCPO[ 𝓔 , 𝓓 ]
-  k x = (λ _ → x) , (constant-functions-are-continuous 𝓔 𝓓 x)
+  k x = ((λ _ → x) , constant-functions-are-continuous 𝓔 𝓓)
   c : (I : 𝓥 ̇ ) (α : I → ⟨ 𝓓 ⟩) (δ : is-Directed 𝓓 α)
     → is-sup (underlying-order (𝓔 ⟹ᵈᶜᵖᵒ 𝓓)) (k (∐ 𝓓 δ)) (λ (i : I) → k (α i))
   c I α δ = u , v where
@@ -226,10 +227,8 @@ module _ (𝓓 : DCPO⊥ {𝓤} {𝓣})
 
 \end{code}
 
-TODO: Revise comments
-
-Finally, we construct the continuous ifZero function, specific to the lifting of
-ℕ. This will then be used to interpret the ifZero combinator of PCF in
+Finally, we construct the continuous ifZero function, specific to the lifting
+of ℕ. This will then be used to interpret the ifZero combinator of PCF in
 ScottModelOfPCF.lagda.
 
 \begin{code}
@@ -243,7 +242,7 @@ module IfZeroDenotationalSemantics
  open import LiftingMiscelanea-PropExt-FunExt 𝓥 pe fe
  open import LiftingMonad 𝓥
 
- open import DcpoLifting pt fe 𝓥 pe
+ open import DomainTheory.Lifting.LiftingSet pt fe 𝓥 pe
 
  open import UF-Miscelanea
 
@@ -434,7 +433,7 @@ We are now ready to give the final continuity proof.
               (⦅ifZero⦆₂ b) (α i) (∐ (𝓛ᵈℕ ⁻) δ)
               (∐-is-upperbound (𝓛ᵈℕ ⁻) δ i))
              l'
-       ⦅3⦆ = ≡-to-⊑ (𝓛ᵈℕ ⁻) ((ifZero♯-flip-equation (∐ (𝓛ᵈℕ ⁻) δ) b l) ⁻¹)
+       ⦅3⦆ = ≡-to-⊒ (𝓛ᵈℕ ⁻) (ifZero♯-flip-equation (∐ (𝓛ᵈℕ ⁻) δ) b l)
 
      v : ((f , _) : DCPO⊥[ 𝓛ᵈℕ , 𝓛ᵈℕ ⟹ᵈᶜᵖᵒ⊥ 𝓛ᵈℕ ])
        → ((i : I) (b : 𝓛 ℕ) → ⦅ifZero⦆₁ (α i) b ⊑⟪ 𝓛ᵈℕ ⟹ᵈᶜᵖᵒ⊥ 𝓛ᵈℕ ⟫ f b)

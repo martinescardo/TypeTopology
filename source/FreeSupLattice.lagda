@@ -88,14 +88,14 @@ as a union of singletons (this will come in useful later).
 
 \begin{code}
 
-open unions-of-small-families pt
-
 module _
         (pe : propext 𝓥)
         (fe : funext 𝓥 (𝓥 ⁺))
         (X : 𝓥 ̇ )
         (X-is-set : is-set X)
        where
+
+ open unions-of-small-families pt 𝓥 𝓥 X
 
  𝓟-lattice : SupLattice 𝓥 (𝓥 ⁺) 𝓥
  SupLattice.L 𝓟-lattice                              = 𝓟 X
@@ -112,7 +112,7 @@ module _
  open singleton-subsets X-is-set
 
  express-subset-as-union-of-singletons :
-  (A : 𝓟 X) → A ≡ ⋃ {𝓥} {X} {𝕋 A} (❴_❵ ∘ (𝕋-to-carrier A))
+  (A : 𝓟 X) → A ≡ ⋃ (❴_❵ ∘ (𝕋-to-carrier A))
  express-subset-as-union-of-singletons A = subset-extensionality pe fe u v
   where
    u : A ⊆ ⋃ (❴_❵ ∘ (𝕋-to-carrier A))
@@ -159,6 +159,8 @@ module _
         where
 
   open singleton-subsets X-is-set
+
+  open unions-of-small-families pt 𝓥 𝓥 X
 
   f̃ : (A : 𝓟 X) → 𝕋 A → L
   f̃ A = f ∘ (𝕋-to-carrier A)

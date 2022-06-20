@@ -1,9 +1,9 @@
 Tom de Jong, 12 May 2020 - 9 June 2020.
 
 We construct Scott's famous nontrivial pointed dcpo D∞ for which D∞ is
-isomorphic to its own function space.
+isomorphic to its own function space and prove that it is algebraic.
 
-This formalization is based on Scott's "Continuous lattices"
+The construction of D∞ is based on Scott's "Continuous lattices"
 (doi:10.1007/BFB0073967), specifically pages 126--128.
 
 \begin{code}
@@ -35,22 +35,22 @@ open import UF-FunExt
 open import UF-PropTrunc
 open import UF-Subsingletons
 
-module DcpoDinfinity
+module DomainTheory.Bilimits.Dinfinity
         (pt : propositional-truncations-exist)
-        (fe : ∀ {𝓤 𝓥} → funext 𝓤 𝓥)
-        (pe : propext 𝓤₀)
+        (fe : Fun-Ext)
+        (pe : Prop-Ext)
        where
 
 open PropositionalTruncation pt
 
 open import UF-Base
 
-open import Dcpo pt fe 𝓤₀
-open import DcpoExponential pt fe 𝓤₀
-open import DcpoLifting pt fe 𝓤₀ pe
-open import DcpoMiscelanea pt fe 𝓤₀
-
-open import DcpoBilimitsSequential pt fe 𝓤₁ 𝓤₁
+open import DomainTheory.Basics.Dcpo pt fe 𝓤₀
+open import DomainTheory.Basics.Exponential pt fe 𝓤₀
+open import DomainTheory.Basics.Miscelanea pt fe 𝓤₀
+open import DomainTheory.Basics.Pointed pt fe 𝓤₀
+open import DomainTheory.Bilimits.Sequential pt fe 𝓤₁ 𝓤₁
+open import DomainTheory.Lifting.LiftingSet pt fe 𝓤₀ pe
 
 open import NaturalsOrder
 open import NaturalsAddition renaming (_+_ to _+'_)
@@ -75,7 +75,7 @@ We start by defining the ℕ-indexed diagram of iterated exponentials.
 𝓓-diagram zero = (e₀ , e₀-continuity) , p₀ , p₀-continuity
  where
   e₀ : ⟨ 𝓓 0 ⟩ → ⟨ 𝓓 1 ⟩
-  e₀ x = (λ y → x) , (constant-functions-are-continuous (𝓓 0) (𝓓 0) x)
+  e₀ x = (λ y → x) , (constant-functions-are-continuous (𝓓 0) (𝓓 0))
   e₀-continuity : is-continuous (𝓓 0) (𝓓 1) e₀
   e₀-continuity I α δ = ub , lb-of-ubs
    where
@@ -623,7 +623,7 @@ of π-exp∞.
        γ : is-upperbound (underlying-order 𝓓∞) (∐ 𝓓∞ δ₄) (ε∞-family σ)
        γ n i =
         ⦅ ε∞-family σ n        ⦆ i ⊑⟨ 𝓓 i ⟩[ u i                           ]
-        ⦅ ε∞-family σ (succ n) ⦆ i ⊑⟨ 𝓓 i ⟩[ ≡-to-⊑ 𝓓∞ ((r n) ⁻¹) i        ]
+        ⦅ ε∞-family σ (succ n) ⦆ i ⊑⟨ 𝓓 i ⟩[ ≡-to-⊒ 𝓓∞ (r n) i             ]
         ⦅ f n n                ⦆ i ⊑⟨ 𝓓 i ⟩[ ∐-is-upperbound 𝓓∞ (δ₃ n) n i ]
         ⦅ ∐ 𝓓∞ (δ₃ n)          ⦆ i ⊑⟨ 𝓓 i ⟩[ ∐-is-upperbound 𝓓∞ δ₄ n i     ]
         ⦅ ∐ 𝓓∞ δ₄              ⦆ i ∎⟨ 𝓓 i ⟩
@@ -886,8 +886,8 @@ the pointed exponential (𝓓∞⊥ ⟹ᵈᶜᵖᵒ⊥ 𝓓∞⊥), which we pro
 
 \end{code}
 
-Finally, we show that 𝓓∞ is nontrivial, i.e. it has an element σ₀ such that σ₀
-is not the least element.
+Of course, for the above to be interesting, we want 𝓓∞ to be nontrivial, i.e. it
+has an element σ₀ such that σ₀ is not the least element, which we prove now.
 
 \begin{code}
 
@@ -913,5 +913,50 @@ is not the least element.
   e₀ = ap (λ - → ⦅ - ⦆ 0) e
   γ : 𝟙 ≡ 𝟘
   γ = ap pr₁ e₀
+
+\end{code}
+
+Finally, we prove that 𝓓∞ is an algebraic dcpo. We use that our starting dcpo is
+sup-complete and has a small compact basis, and that both these things are closed
+under taking exponentials.
+
+\begin{code}
+
+open import DomainTheory.Basics.SupComplete pt fe 𝓤₀
+open import DomainTheory.BasesAndContinuity.Bases pt fe 𝓤₀
+open import DomainTheory.BasesAndContinuity.Continuity pt fe 𝓤₀
+open import DomainTheory.BasesAndContinuity.StepFunctions pt fe 𝓤₀
+open import DomainTheory.Lifting.LiftingSetAlgebraic pt pe fe 𝓤₀
+
+𝓓s-are-sup-complete : (n : ℕ) → is-sup-complete (𝓓 n)
+𝓓s-are-sup-complete zero     = lifting-of-prop-is-sup-complete 𝟙-is-prop
+𝓓s-are-sup-complete (succ n) = exponential-is-sup-complete (𝓓 n) (𝓓 n)
+                                (𝓓s-are-sup-complete n)
+
+𝓓∞-has-specified-small-compact-basis : has-specified-small-compact-basis 𝓓∞
+𝓓∞-has-specified-small-compact-basis = 𝓓∞-has-small-compact-basis γ
+ where
+  γ : (n : ℕ) → has-specified-small-compact-basis (𝓓 n)
+  γ zero     = 𝓛-has-specified-small-compact-basis (props-are-sets 𝟙-is-prop)
+  γ (succ n) = exponential-has-specified-small-compact-basis
+                (𝓓 n) (𝓓⊥ n)
+                (locally-small-if-small-compact-basis
+                  (𝓓 n) β β-is-compact-small-basis)
+                B B β β β-is-compact-small-basis β-is-compact-small-basis
+                (𝓓s-are-sup-complete n) pe
+   where
+    IH : has-specified-small-compact-basis (𝓓 n)
+    IH = γ n
+    B : 𝓤₀ ̇
+    B = pr₁ IH
+    β : B → ⟨ 𝓓 n ⟩
+    β = pr₁ (pr₂ IH)
+    β-is-compact-small-basis : is-small-compact-basis (𝓓 n) β
+    β-is-compact-small-basis = pr₂ (pr₂ IH)
+
+𝓓∞-is-algebraic-dcpo : is-algebraic-dcpo 𝓓∞
+𝓓∞-is-algebraic-dcpo =
+ is-algebraic-dcpo-if-unspecified-small-compact-basis 𝓓∞
+  ∣ 𝓓∞-has-specified-small-compact-basis ∣
 
 \end{code}

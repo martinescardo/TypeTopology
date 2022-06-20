@@ -33,7 +33,7 @@ open import UF-Powerset
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
 
-open binary-union-of-subsets pt
+open binary-unions-of-subsets pt
 open ImageAndSurjection pt
 open Kuratowski-finiteness pt
 
@@ -329,7 +329,7 @@ that its image is exactly the type of Kuratowski finite powersets of X.
 
 \begin{code}
 
-module _
+module canonical-map-from-lists-to-subsets
         {X : 𝓤 ̇  }
         (X-is-set : is-set X)
        where

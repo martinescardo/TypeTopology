@@ -1,5 +1,14 @@
-Tom de Jong, 27 May 2019.
+sTom de Jong, 27 May 2019.
 Refactored 29 April 2020.
+
+We show that lifting (cf. Escardó-Knapp) a set gives the free pointed dcpo on
+that set.
+
+When we start with a small set, then the lifting yields an algebraic pointed
+dcpo as formalized in LiftingSetAlgebraic.lagda.
+
+The construction that freely adds a least element to a dcpo is described in
+LiftingDcpo.lagda.
 
 \begin{code}
 
@@ -11,32 +20,37 @@ open import UF-FunExt
 open import UF-PropTrunc
 open import UF-Subsingletons
 
-module DcpoLifting
+module DomainTheory.Lifting.LiftingSet
         (pt : propositional-truncations-exist)
-        (fe : ∀ {𝓤 𝓥} → funext 𝓤 𝓥)
+        (fe : Fun-Ext)
         (𝓣 : Universe)
         (pe : propext 𝓣)
        where
 
-open PropositionalTruncation pt
-
 open import UF-Equiv
-
+open import UF-ImageAndSurjection
 open import UF-Miscelanea
 open import UF-Subsingletons-FunExt
 
-open import UF-ImageAndSurjection
 open ImageAndSurjection pt
+open PropositionalTruncation pt
 
 open import Lifting 𝓣 hiding (⊥)
 open import LiftingMiscelanea 𝓣
 open import LiftingMiscelanea-PropExt-FunExt 𝓣 pe fe
 open import LiftingMonad 𝓣
 
-open import Dcpo pt fe 𝓣 -- hiding (⊥)
-open import DcpoMiscelanea pt fe 𝓣
+open import DomainTheory.Basics.Dcpo pt fe 𝓣
+open import DomainTheory.Basics.Miscelanea pt fe 𝓣
+open import DomainTheory.Basics.Pointed pt fe 𝓣
 
 open import Poset fe
+
+\end{code}
+
+We start by showing that the lifting of a set is indeed a pointed dcpo.
+
+\begin{code}
 
 module _ {𝓤 : Universe}
          {X : 𝓤 ̇ }
@@ -200,9 +214,14 @@ module _ {𝓤 : Universe}
 
 \end{code}
 
+Finally we show that the lifting of a set gives the free pointed dcpo on that
+set. The main technical tool in proving this is the use of subsingleton suprema,
+cf. DomainTheory.Basics.Pointed.lagda, and the fact that every partial element
+can be expressed as such a supremum.
+
 \begin{code}
 
-module _
+module lifting-is-free-pointed-dcpo-on-set
          {X : 𝓤 ̇ }
          (X-is-set : is-set X)
          (𝓓 : DCPO⊥ {𝓥} {𝓦})
@@ -261,7 +280,7 @@ module _
                    y                                 ∎⟪ 𝓓 ⟫
         where
          ⦅1⦆ = ≡-to-⊑ (𝓓 ⁻) (ap f (value-is-constant s q ∣ i , p ∣))
-         ⦅2⦆ = ≡-to-⊑ (𝓓 ⁻) (ap f (lemma i p ⁻¹))
+         ⦅2⦆ = ≡-to-⊒ (𝓓 ⁻) (ap f (lemma i p))
          ⦅3⦆ = ∐ˢˢ-is-upperbound 𝓓 (f ∘ value (α i)) (being-defined-is-prop (α i)) p
 
  f̃-after-η-is-f : f̃ ∘ η ∼ f
@@ -323,5 +342,54 @@ module _
                                       (≃-funext fe (h ∘ η) f)
                                       (Π-is-prop fe (λ _ → sethood (𝓓 ⁻)))))
                                     ((dfunext fe (f̃-is-unique g cont str eq)) ⁻¹)
+
+\end{code}
+
+In general, the lifting of a set is only directed complete and does not have all
+(small) sups, but if we lift propositions, then we do get all small suprema.
+
+As an application, we use this to prove that 𝓓∞ is algebraic in
+DomainTheory.Bilimits.Dinfinity.lagda.
+
+\begin{code}
+
+open import DomainTheory.Basics.SupComplete pt fe 𝓣
+
+module _
+        {P : 𝓤 ̇  }
+        (P-is-prop : is-prop P)
+       where
+
+ private
+  𝓛P :  DCPO {𝓣 ⁺ ⊔ 𝓤} {𝓣 ⁺ ⊔ 𝓤}
+  𝓛P = 𝓛-DCPO (props-are-sets (P-is-prop))
+
+ lifting-of-prop-is-sup-complete : is-sup-complete 𝓛P
+ lifting-of-prop-is-sup-complete = record { ⋁ = sup ; ⋁-is-sup = lemma }
+  where
+   sup-map : {I : 𝓣 ̇  } (α : I → ⟨ 𝓛P ⟩) → (∃ i ꞉ I , is-defined (α i)) → P
+   sup-map α = ∥∥-rec P-is-prop (λ (i , q) → value (α i) q)
+   sup : {I : 𝓣 ̇  } (α : I → ⟨ 𝓛P ⟩) → ⟨ 𝓛P ⟩
+   sup {I} α = ((∃ i ꞉ I , is-defined (α i)) , sup-map α , ∃-is-prop)
+   lemma : {I : 𝓣 ̇  } (α : I → ⟨ 𝓛P ⟩) → is-sup _⊑'_ (sup α) α
+   lemma {I} α = (ub , lb-of-ubs)
+    where
+     ub : (i : I) → α i ⊑' sup α
+     ub i = ⊑-to-⊑' (f , g)
+      where
+       f : is-defined (α i) → ∃ i ꞉ I , is-defined (α i)
+       f p = ∣ i , p ∣
+       g : value (α i) ∼ (λ q → sup-map α ∣ i , q ∣)
+       g q = P-is-prop (value (α i) q) (sup-map α ∣ i , q ∣)
+     lb-of-ubs : is-lowerbound-of-upperbounds _⊑'_ (sup α) α
+     lb-of-ubs l l-is-ub = ⊑-to-⊑' (f , g)
+      where
+       f : (∃ i ꞉ I , is-defined (α i)) → is-defined l
+       f = ∥∥-rec (being-defined-is-prop l) h
+        where
+         h : (Σ i ꞉ I , is-defined (α i)) → is-defined l
+         h (i , q) = ≡-to-is-defined (l-is-ub i q) q
+       g : sup-map α ∼ (λ q → value l (f q))
+       g q = P-is-prop (sup-map α q) (value l (f q))
 
 \end{code}

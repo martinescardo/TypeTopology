@@ -2,7 +2,7 @@ Tom de Jong, 30 January 2020.
 Refactored December 2021.
 
 Separate file for poset axioms.
-This used to be part of Dcpo.lagda.
+This used to be part of DomainTheory.Basics.Dcpo.lagda.
 
 \begin{code}
 
@@ -15,7 +15,7 @@ open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
 
 module Poset
-        (fe : ∀ {𝓤 𝓥} → funext 𝓤 𝓥)
+        (fe : Fun-Ext)
        where
 
  module PosetAxioms

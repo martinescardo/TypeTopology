@@ -6,6 +6,7 @@ General terminology and notation.
 
 module GeneralNotation where
 
+open import Pi
 open import Sigma
 open import Universes
 open import Id
@@ -58,6 +59,16 @@ lr-implication = pr₁
 
 rl-implication : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X ⇔ Y) → (Y → X)
 rl-implication = pr₂
+
+⇔-sym : {X : 𝓤' ̇  } {Y : 𝓥' ̇  } → X ⇔ Y → Y ⇔ X
+⇔-sym (f , g) = (g , f)
+
+⇔-trans : {X : 𝓤' ̇  } {Y : 𝓥' ̇  } {Z : 𝓦' ̇  }
+        → X ⇔ Y → Y ⇔ Z → X ⇔ Z
+⇔-trans (f , g) (h , k) = (h ∘ f , g ∘ k)
+
+⇔-refl : {X : 𝓤' ̇  } → X ⇔ X
+⇔-refl = (id , id)
 
 \end{code}
 
