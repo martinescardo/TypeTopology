@@ -131,7 +131,7 @@ import DummettDisjunction
 import Escardo-Simpson-LICS2001        -- By Todd Waugh Ambridge
 import Fin
 import Fin-Properties
-import FiniteHistoryDependentGames     -- By Martin Escardo and Paulo Oliva
+import Games.index     -- By Martin Escardo and Paulo Oliva
 import Finiteness-Universe-Invariance
 import Frame-version1
 import Frame                           -- By Ayberk Tosun
