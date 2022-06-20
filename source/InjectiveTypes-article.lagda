@@ -1530,9 +1530,9 @@ the lifting monad in conjunction with resizing.
 
 \begin{code}
 
-import Lifting
-open import LiftingAlgebras
-import LiftingEmbeddingViaSIP
+import Lifting.Lifting
+open import Lifting.Algebras
+import Lifting.EmbeddingViaSIP
 
 𝓛 : {𝓣 𝓤 : Universe} → 𝓤 ̇ → 𝓣 ⁺ ⊔ 𝓤 ̇
 𝓛 {𝓣} {𝓤} X = Σ P ꞉ 𝓣 ̇ , (P → X) × is-prop P
@@ -1541,22 +1541,22 @@ import LiftingEmbeddingViaSIP
 𝓛-unit X x = 𝟙 , (λ _ → x) , 𝟙-is-prop
 
 𝓛-unit-is-embedding : (X : 𝓤 ̇ ) → is-embedding (𝓛-unit {𝓣} X)
-𝓛-unit-is-embedding {𝓤} {𝓣} X = LiftingEmbeddingViaSIP.η-is-embedding' 𝓣 𝓤 X
+𝓛-unit-is-embedding {𝓤} {𝓣} X = Lifting.EmbeddingViaSIP.η-is-embedding' 𝓣 𝓤 X
                                    (ua 𝓣) (fe 𝓣 𝓤)
 
 𝓛-alg-aflabby : {𝓣 𝓤 : Universe} {A : 𝓤 ̇ } → 𝓛-alg 𝓣 A → aflabby A 𝓣
 𝓛-alg-aflabby {𝓣} {𝓤} (∐ , κ , ι) P i f = ∐ i f , γ
  where
   γ : (p : P) → ∐ i f ≡ f p
-  γ p = LiftingAlgebras.𝓛-alg-Law₀-gives₀' 𝓣 (pe 𝓣) (fe 𝓣 𝓣) (fe 𝓣 𝓤) ∐ κ P i f p
+  γ p = Lifting.Algebras.𝓛-alg-Law₀-gives₀' 𝓣 (pe 𝓣) (fe 𝓣 𝓣) (fe 𝓣 𝓤) ∐ κ P i f p
 
 𝓛-alg-ainjective : (A : 𝓤 ̇ ) → 𝓛-alg 𝓣 A → ainjective-type A 𝓣 𝓣
 𝓛-alg-ainjective A α = aflabby-types-are-ainjective A (𝓛-alg-aflabby α)
 
 free-𝓛-algebra-ainjective : (X : 𝓣 ̇ ) → ainjective-type (𝓛 {𝓣} X) 𝓣 𝓣
 free-𝓛-algebra-ainjective {𝓣} X = 𝓛-alg-ainjective (𝓛 X)
-                                    (LiftingAlgebras.𝓛-algebra-gives-alg 𝓣
-                                    (LiftingAlgebras.free-𝓛-algebra 𝓣 (ua 𝓣) X))
+                                    (Lifting.Algebras.𝓛-algebra-gives-alg 𝓣
+                                    (Lifting.Algebras.free-𝓛-algebra 𝓣 (ua 𝓣) X))
 \end{code}
 
 Because the unit of the lifting monad is an embedding, it follows that
@@ -1610,7 +1610,7 @@ injectivity-in-terms-of-ainjectivity : Ω-resizing 𝓤
                                                   ⇔ ∥ ainjective-type D 𝓤 𝓤 ∥
 injectivity-in-terms-of-ainjectivity {𝓤} ω D = γ , ∥ainjective∥-gives-injective D
  where
-  open import LiftingSize 𝓤
+  open import Lifting.Size 𝓤
   L : 𝓤 ̇
   L = pr₁ (𝓛-resizing ω D)
 

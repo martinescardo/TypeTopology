@@ -1311,9 +1311,9 @@ Added 23rd January 2019:
 
 module ainjectivity-of-Lifting (𝓤 : Universe) where
 
- open import Lifting 𝓤 public
- open import LiftingAlgebras 𝓤
- open import LiftingEmbeddingViaSIP 𝓤 public
+ open import Lifting.Lifting 𝓤 public
+ open import Lifting.Algebras 𝓤
+ open import Lifting.EmbeddingViaSIP 𝓤 public
 
  open import UF.UA-FunExt
 
@@ -1595,7 +1595,7 @@ Added 8th Feb. Solves a problem formulated above.
                                                    ⇔ ∥ ainjective-type D 𝓤 𝓤 ∥
  injectivity-in-terms-of-ainjectivity {𝓤} ω₀ ua D = γ , ∥ainjective∥-gives-injective D
   where
-   open import LiftingSize 𝓤
+   open import Lifting.Size 𝓤
    open ainjectivity-of-Lifting 𝓤
 
    L : 𝓤 ̇

@@ -13,7 +13,7 @@ category.
 
 open import MLTT.Spartan
 
-module LiftingUnivalentPrecategory
+module Lifting.UnivalentPrecategory
         (𝓣 : Universe)
         {𝓤 : Universe}
         (X : 𝓤 ̇ )
@@ -32,8 +32,8 @@ open import UF.Univalence
 open import UF.UA-FunExt
 open import UF.StructureIdentityPrinciple
 
-open import Lifting 𝓣
-open import LiftingIdentityViaSIP 𝓣
+open import Lifting.Lifting 𝓣
+open import Lifting.IdentityViaSIP 𝓣
 \end{code}
 
 We define l ⊑ m to mean that if l is defined than so is m with the
@@ -140,7 +140,7 @@ We can now establish the promised fact:
 
 \begin{code}
 
-open import LiftingEmbeddingDirectly 𝓣
+open import Lifting.EmbeddingDirectly 𝓣
 
 η-fiber-same-as-is-defined : propext 𝓣
                            → funext 𝓣 𝓣

@@ -32,10 +32,10 @@ open import UF.Subsingletons-FunExt
 open ImageAndSurjection pt
 open PropositionalTruncation pt
 
-open import Lifting 𝓥 hiding (⊥)
-open import LiftingIdentityViaSIP 𝓥
-open import LiftingMiscelanea 𝓥
-open import LiftingMiscelanea-PropExt-FunExt 𝓥 pe fe
+open import Lifting.Lifting 𝓥 hiding (⊥)
+open import Lifting.IdentityViaSIP 𝓥
+open import Lifting.Miscelanea 𝓥
+open import Lifting.Miscelanea-PropExt-FunExt 𝓥 pe fe
                                              renaming ( ⊑'-to-⊑ to ⊑'-to-⊑''
                                                       ; ⊑-to-⊑' to ⊑''-to-⊑')
 
@@ -202,7 +202,7 @@ continuous.
  𝓛-order-lemma : {k l : 𝓛D} → k ⊑' l → k ⊑ l
  𝓛-order-lemma {k} {l} k-below-l = (pr₁ claim , (λ p → ≡-to-⊑ 𝓓 (pr₂ claim p)))
   where
-   open import LiftingUnivalentPrecategory 𝓥 ⟨ 𝓓 ⟩ renaming (_⊑_ to _⊑''_)
+   open import Lifting.UnivalentPrecategory 𝓥 ⟨ 𝓓 ⟩ renaming (_⊑_ to _⊑''_)
    claim : k ⊑'' l
    claim = ⊑'-to-⊑'' k-below-l
 

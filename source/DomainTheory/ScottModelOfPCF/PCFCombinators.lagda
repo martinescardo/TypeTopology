@@ -237,10 +237,10 @@ module IfZeroDenotationalSemantics
         (pe : propext 𝓥)
        where
 
- open import Lifting 𝓥
- open import LiftingMiscelanea 𝓥
- open import LiftingMiscelanea-PropExt-FunExt 𝓥 pe fe
- open import LiftingMonad 𝓥
+ open import Lifting.Lifting 𝓥
+ open import Lifting.Miscelanea 𝓥
+ open import Lifting.Miscelanea-PropExt-FunExt 𝓥 pe fe
+ open import Lifting.Monad 𝓥
 
  open import DomainTheory.Lifting.LiftingSet pt fe 𝓥 pe
 

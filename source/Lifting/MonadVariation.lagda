@@ -9,15 +9,15 @@ a different universe level:
 
 open import MLTT.Spartan
 
-module LiftingMonadVariation where
+module Lifting.MonadVariation where
 
 open import UF.Subsingletons
 open import UF.Embeddings
 open import UF.Equiv
 open import UF.FunExt
 
-open import Lifting
-open import LiftingEmbeddingDirectly
+open import Lifting.Lifting
+open import Lifting.EmbeddingDirectly
 
 𝓛* : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) → is-embedding f → 𝓛 𝓣 Y → 𝓛 (𝓤 ⊔ 𝓥 ⊔ 𝓣) X
 𝓛* f e (Q , ψ , j) = (Σ q ꞉ Q , fiber f (ψ q)) ,

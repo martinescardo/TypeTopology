@@ -15,7 +15,7 @@ open import MLTT.Spartan
 open import UF.FunExt
 open import UF.Subsingletons
 
-module LiftingMiscelanea-PropExt-FunExt
+module Lifting.Miscelanea-PropExt-FunExt
         (𝓣 : Universe)
         (pe : propext 𝓣)
         (fe : Fun-Ext)
@@ -26,10 +26,10 @@ open import UF.Equiv
 open import UF.Retracts
 open import UF.Subsingletons-FunExt
 
-open import Lifting 𝓣
-open import LiftingIdentityViaSIP 𝓣
-open import LiftingMiscelanea 𝓣
-open import LiftingMonad 𝓣
+open import Lifting.Lifting 𝓣
+open import Lifting.IdentityViaSIP 𝓣
+open import Lifting.Miscelanea 𝓣
+open import Lifting.Monad 𝓣
 
 \end{code}
 
@@ -42,7 +42,7 @@ module _ {𝓤 : Universe}
          {X : 𝓤 ̇ }
        where
 
- open import LiftingUnivalentPrecategory 𝓣 X
+ open import Lifting.UnivalentPrecategory 𝓣 X
 
  lifting-of-set-is-set : is-set X → is-set (𝓛 X)
  lifting-of-set-is-set i {l} {m} p q  = retract-of-prop r j p q
@@ -148,7 +148,7 @@ module _ {𝓤 : Universe}
   (f ♯) (η (value l d)) ≡⟨ ⋍-to-≡ (Kleisli-Law₁ f (value l d)) ⟩
   f (value l d)         ∎
 
- open import LiftingUnivalentPrecategory 𝓣 Y
+ open import Lifting.UnivalentPrecategory 𝓣 Y
 
  𝓛̇-♯-∼ : (f : X → Y) → (η ∘ f) ♯ ∼ 𝓛̇ f
  𝓛̇-♯-∼ f l = ⊑-anti pe fe fe (a , b)

@@ -8,7 +8,7 @@ We have a look at the algebras of the lifting monad.
 
 open import MLTT.Spartan
 
-module LiftingAlgebras
+module Lifting.Algebras
         (𝓣 : Universe)
        where
 
@@ -21,9 +21,9 @@ open import UF.FunExt
 open import UF.Univalence
 open import UF.UA-FunExt
 
-open import Lifting 𝓣
-open import LiftingIdentityViaSIP 𝓣
-open import LiftingMonad 𝓣
+open import Lifting.Lifting 𝓣
+open import Lifting.IdentityViaSIP 𝓣
+open import Lifting.Monad 𝓣
 
 \end{code}
 

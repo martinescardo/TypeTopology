@@ -51,8 +51,8 @@ open IfZeroDenotationalSemantics pe
 
 open import DomainTheory.Lifting.LiftingSet pt fe 𝓤₀ pe
 
-open import Lifting 𝓤₀
-open import LiftingMonad 𝓤₀ hiding (μ)
+open import Lifting.Lifting 𝓤₀
+open import Lifting.Monad 𝓤₀ hiding (μ)
 
 ⟦_⟧ : type → DCPO⊥ {𝓤₁} {𝓤₁}
 ⟦ ι ⟧     = 𝓛-DCPO⊥ ℕ-is-set

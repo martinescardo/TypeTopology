@@ -14,7 +14,7 @@ or univalence).
 
 open import MLTT.Spartan
 
-module LiftingMonad
+module Lifting.Monad
         (𝓣 : Universe)
        where
 
@@ -27,8 +27,8 @@ open import UF.FunExt
 open import UF.Univalence
 open import UF.UA-FunExt
 
-open import Lifting 𝓣
-open import LiftingIdentityViaSIP 𝓣
+open import Lifting.Lifting 𝓣
+open import Lifting.IdentityViaSIP 𝓣
 
 \end{code}
 

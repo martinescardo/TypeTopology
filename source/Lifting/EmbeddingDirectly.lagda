@@ -1,7 +1,7 @@
 Martin Escardo 25th October 2018.
 
 We show that the natural map into the lifting is an embedding.  See
-the module LiftingEmbeddingViaSIP for an alternative approach via the
+the module Lifting.EmbeddingViaSIP for an alternative approach via the
 structure identity principle.
 
 \begin{code}
@@ -10,7 +10,7 @@ structure identity principle.
 
 open import MLTT.Spartan
 
-module LiftingEmbeddingDirectly (𝓣 : Universe) where
+module Lifting.EmbeddingDirectly (𝓣 : Universe) where
 
 open import UF.Base
 open import UF.Subsingletons
@@ -19,7 +19,7 @@ open import UF.Embeddings
 open import UF.Equiv
 open import UF.FunExt
 
-open import Lifting 𝓣
+open import Lifting.Lifting 𝓣
 
 \end{code}
 

@@ -91,7 +91,6 @@ import TheTopologyOfTheUniverse
 import RicesTheoremForTheUniverse
 import Ordinals.index
 import LawvereFPT
-import PartialElements
 import Types2019
 import MGS.index          -- Modular version of https://github.com/martinescardo/HoTT-UF.Agda-Lecture-Notes
 import DomainTheory.index -- By Tom de Jong (started with Martin Escardo)
@@ -154,15 +153,7 @@ import InjectiveTypes
 import JoinSemiLattices                -- By Tom de Jong
 import LawvereFPT
 import LexicographicOrder
-import LiftingAlgebras
-import LiftingEmbeddingDirectly
-import LiftingEmbeddingViaSIP
-import LiftingIdentityViaSIP
-import Lifting
-import LiftingMonad
-import LiftingMonadVariation
-import LiftingSize
-import LiftingUnivalentPrecategory
+import Lifting.index
 import List
 import LPO
 import Lumsdaine
@@ -175,7 +166,6 @@ import SRTclosure
 import Ordinals
 import P2
 import PairFun
-import PartialElements
 import PlusOneLC
 import QuasiDecidable
 import FreeGroupOfLargeLocallySmallSet

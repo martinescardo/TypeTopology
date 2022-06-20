@@ -28,10 +28,10 @@ open import UF.Subsingletons-FunExt
 open ImageAndSurjection pt
 open PropositionalTruncation pt
 
-open import Lifting 𝓤 hiding (⊥)
-open import LiftingMiscelanea 𝓤
-open import LiftingMiscelanea-PropExt-FunExt 𝓤 pe fe
-open import LiftingMonad 𝓤
+open import Lifting.Lifting 𝓤 hiding (⊥)
+open import Lifting.Miscelanea 𝓤
+open import Lifting.Miscelanea-PropExt-FunExt 𝓤 pe fe
+open import Lifting.Monad 𝓤
 
 open import DomainTheory.Basics.Dcpo pt fe 𝓤
 open import DomainTheory.Basics.Miscelanea pt fe 𝓤
@@ -50,7 +50,7 @@ module _
         (X-is-set : is-set X)
        where
 
- open import LiftingUnivalentPrecategory 𝓤 X
+ open import Lifting.UnivalentPrecategory 𝓤 X
 
 \end{code}
 

@@ -9,7 +9,7 @@ identity principle.
 
 open import MLTT.Spartan
 
-module LiftingIdentityViaSIP
+module Lifting.IdentityViaSIP
         (𝓣 : Universe)
         {𝓤 : Universe}
         {X : 𝓤 ̇ }
@@ -25,7 +25,7 @@ open import UF.Univalence
 open import UF.UA-FunExt
 open import UF.StructureIdentityPrinciple
 
-open import Lifting 𝓣
+open import Lifting.Lifting 𝓣
 
 _⋍_ : 𝓛 X → 𝓛 X → 𝓣 ⊔ 𝓤 ̇
 l ⋍ m = Σ e ꞉ is-defined l ≃ is-defined m , value l ≡ value m ∘ ⌜ e ⌝

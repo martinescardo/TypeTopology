@@ -10,7 +10,7 @@ propositions and two instances of function extensionality.
 
 open import MLTT.Spartan
 
-module LiftingSet
+module Lifting.Set
   (𝓣 : Universe) -- fix a universe for the propositions
   where
 
@@ -19,7 +19,7 @@ open import UF.Base
 open import UF.Retracts
 open import UF.FunExt
 open import UF.Subsingletons-FunExt
-open import Lifting 𝓣
+open import Lifting.Lifting 𝓣
 
 lifting-of-set-is-set : funext 𝓣 𝓤
                       → funext 𝓣 𝓣
