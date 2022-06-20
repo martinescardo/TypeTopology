@@ -182,7 +182,7 @@ import LiftingUnivalentPrecategory
 import List
 import LPO
 import Lumsdaine
-import MGS-TypeTopology-Interface
+import MGS.TypeTopology-Interface
 import NaturalNumbers
 import NaturalNumbers-Properties
 import NaturalsAddition
