@@ -86,8 +86,6 @@ import MLTT.index
 import UF.index
 import Notation.index
 import TypeTopology.index
-import TheTopologyOfTheUniverse
-import RicesTheoremForTheUniverse
 import Ordinals.index
 import LawvereFPT
 import Types2019
@@ -119,7 +117,6 @@ import Closeness              -- By Todd Waugh Ambridge and Martin Escardo
 import DecidabilityOfNonContinuity
 import DecidableAndDetachable
 import Dedekind
-import Density
 import DisconnectedTypes
 import DiscreteAndSeparated
 import Dyadic
@@ -166,7 +163,6 @@ import PairFun
 import PlusOneLC
 import QuasiDecidable
 import FreeGroupOfLargeLocallySmallSet
-import RicesTheoremForTheUniverse
 import RootsTruncation
 import Sequence
 import SemiDecidable                   -- By Tom de Jong
@@ -178,7 +174,6 @@ import SliceMonad
 import Swap
 import sigma-sup-lattice
 import sigma-frame
-import TheTopologyOfTheUniverse
 import UnivalenceFromScratch
 
 \end{code}
@@ -354,8 +349,8 @@ corollary:
 
 \begin{code}
 
-import TheTopologyOfTheUniverse
-import RicesTheoremForTheUniverse
+import TypeTopology.TheTopologyOfTheUniverse
+import TypeTopology.RicesTheoremForTheUniverse
 
 \end{code}
 

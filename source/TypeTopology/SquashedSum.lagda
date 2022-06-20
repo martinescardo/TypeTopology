@@ -19,8 +19,8 @@ private
 
 open import MLTT.Two-Properties
 open import MLTT.Plus-Properties
-open import Density
 open import CoNaturals.GenericConvergentSequence
+open import TypeTopology.Density
 open import TypeTopology.CompactTypes
 open import TypeTopology.GenericConvergentSequence fe₀
 open import TypeTopology.SigmaDiscreteAndTotallySeparated

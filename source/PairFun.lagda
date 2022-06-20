@@ -10,7 +10,7 @@ the resulting function.
 module PairFun where
 
 open import MLTT.Spartan
-open import Density
+open import TypeTopology.Density
 
 open import UF.Subsingletons
 open import UF.Equiv

@@ -23,7 +23,7 @@ open import NaturalsOrder hiding (max)
 open import DiscreteAndSeparated
 open import Notation.Order
 open import Notation.CanonicalMap
-open import Density
+open import TypeTopology.Density
 
 open import UF.Base
 open import UF.Subsingletons

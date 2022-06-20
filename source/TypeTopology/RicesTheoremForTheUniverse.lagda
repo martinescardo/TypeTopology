@@ -66,13 +66,13 @@ that module (or in fact any axiom other than extensionality).
 
 open import UF.FunExt
 
-module RicesTheoremForTheUniverse (fe : FunExt) where
+module TypeTopology.RicesTheoremForTheUniverse (fe : FunExt) where
 
 open import MLTT.Spartan
 
 open import UF.Equiv
 open import UF.EquivalenceExamples
-open import TheTopologyOfTheUniverse fe
+open import TypeTopology.TheTopologyOfTheUniverse fe
 open import CoNaturals.GenericConvergentSequence
 open import Taboos.WLPO
 open import Taboos.BasicDiscontinuity fe

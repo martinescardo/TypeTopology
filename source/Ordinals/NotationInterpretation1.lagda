@@ -136,9 +136,9 @@ open import TypeTopology.SquashedSum fe
 open import TypeTopology.CompactTypes
 open import TypeTopology.TotallySeparated
 open import TypeTopology.SigmaDiscreteAndTotallySeparated
+open import TypeTopology.Density
 
 open import DiscreteAndSeparated
-open import Density
 open import PairFun
 
 private

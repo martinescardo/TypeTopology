@@ -118,7 +118,7 @@ them, so to speak. This is Rice's Theorem for the universe U.
 
 open import UF.FunExt
 
-module TheTopologyOfTheUniverse (fe : FunExt) where
+module TypeTopology.TheTopologyOfTheUniverse (fe : FunExt) where
 
 open import MLTT.Spartan
 open import UF.Equiv

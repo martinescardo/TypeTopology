@@ -7,7 +7,7 @@ A function is dense if the complement of its image is empty. Maybe
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module Density where
+module TypeTopology.Density where
 
 open import MLTT.Spartan
 open import DiscreteAndSeparated

@@ -60,7 +60,6 @@ open import BinaryNaturals hiding (_+_)
 open import MLTT.Two-Properties
 open import Taboos.WLPO
 open import Taboos.LPO fe
-open import Density
 open import PairFun
 
 open import CoNaturals.GenericConvergentSequence
@@ -71,6 +70,7 @@ open import TypeTopology.PropTychonoff fe
 open import TypeTopology.PropInfTychonoff fe
 open import TypeTopology.CompactTypes
 open import TypeTopology.InfProperty
+open import TypeTopology.Density
 
 open import Ordinals.Type
 open import Ordinals.Injectivity

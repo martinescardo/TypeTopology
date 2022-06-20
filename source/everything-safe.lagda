@@ -36,7 +36,6 @@ import DomainTheory.index
 import DecidabilityOfNonContinuity
 import DecidableAndDetachable
 import Dedekind
-import Density
 import DisconnectedTypes
 import DiscreteAndSeparated
 import Dominance
@@ -88,7 +87,6 @@ import PCF
 import PlusOneLC
 import Poset
 import QuasiDecidable
-import RicesTheoremForTheUniverse
 import RootsTruncation
 import SemiDecidable
 import Sequence
@@ -102,7 +100,6 @@ import SliceMonad
 import SpartanMLTT-List
 import SRTclosure
 import Swap
-import TheTopologyOfTheUniverse
 -- import Type-in-Type-False
 import Types2019
 import UF.Base
