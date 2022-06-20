@@ -30,11 +30,11 @@ open import UF.PropTrunc
 open import UF.Univalence
 open import UF.UA-FunExt
 
-open import Integers
-open import Integers-Properties
-open import Integers-SymmetricInduction
+open import Circle.Integers
+open import Circle.Integers-Properties
+open import Circle.Integers-SymmetricInduction
 
-module CircleConstruction
+module Circle.CircleConstruction
         (pt : propositional-truncations-exist)
         (ua : is-univalent 𝓤₀)
        where
@@ -588,7 +588,7 @@ principle.
 
 \begin{code}
 
-open import CircleInduction
+open import Circle.CircleInduction
 
 module _
         (fe : FunExt)

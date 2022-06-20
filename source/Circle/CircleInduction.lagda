@@ -21,7 +21,7 @@ open import UF.FunExt
 open import UF.Subsingletons
 
 
-module CircleInduction where
+module Circle.CircleInduction where
 
 \end{code}
 
@@ -382,8 +382,8 @@ closed under retracts, the claim follows.
 
 \begin{code}
 
-  open import Integers
-  open import Integers-Properties
+  open import Circle.Integers
+  open import Circle.Integers-Properties
 
   open import UF.Univalence
 

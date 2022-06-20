@@ -8,13 +8,13 @@ and Shulman (doi:10.1016/j.jpaa.2021.106687).
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module CircleModules where
+module Circle.index where
 
-import Integers
-import Integers-Properties
-import Integers-SymmetricInduction
+import Circle.Integers
+import Circle.Integers-Properties
+import Circle.Integers-SymmetricInduction
 
-import CircleConstruction
-import CircleInduction
+import Circle.CircleConstruction
+import Circle.CircleInduction
 
 \end{code}

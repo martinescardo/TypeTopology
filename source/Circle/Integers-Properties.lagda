@@ -6,7 +6,7 @@ Earlier version: 18 September 2020
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import Integers
+open import Circle.Integers
 
 open import MLTT.Spartan
 open import UF.Base
@@ -14,7 +14,7 @@ open import UF.Equiv
 open import UF.Miscelanea
 open import UF.Subsingletons
 
-module Integers-Properties where
+module Circle.Integers-Properties where
 
 ℤ-is-set : is-set ℤ
 ℤ-is-set = +-is-set 𝟙 (ℕ + ℕ) (props-are-sets 𝟙-is-prop)

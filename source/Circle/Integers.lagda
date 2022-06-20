@@ -17,7 +17,7 @@ the type of integers.
 open import MLTT.Spartan
 open import UF.Base
 
-module Integers where
+module Circle.Integers where
 
 ℤ : 𝓤₀ ̇
 ℤ = 𝟙 + ℕ + ℕ

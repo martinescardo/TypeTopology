@@ -14,8 +14,8 @@ UniMath" by Bezem, Buchholtz, Grayson and Shulman
 
 open import MLTT.NaturalNumbers-UniversalProperty
 
-open import Integers
-open import Integers-Properties
+open import Circle.Integers
+open import Circle.Integers-Properties
 
 open import MLTT.Spartan
 open import UF.Base
@@ -25,7 +25,7 @@ open import UF.EquivalenceExamples
 open import UF.FunExt
 open import UF.Subsingletons
 
-module Integers-SymmetricInduction where
+module Circle.Integers-SymmetricInduction where
 
 ℤ-symmetric-induction : {𝓤 : Universe}
                       → funext 𝓤₀ 𝓤
