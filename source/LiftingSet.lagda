@@ -8,7 +8,7 @@ propositions and two instances of function extensionality.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import SpartanMLTT
+open import MLTT.Spartan
 
 module LiftingSet
   (𝓣 : Universe) -- fix a universe for the propositions

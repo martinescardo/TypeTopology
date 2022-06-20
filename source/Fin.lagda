@@ -8,9 +8,9 @@ See also the file Fin-Properties.
 
 module Fin where
 
-open import SpartanMLTT
+open import MLTT.Spartan
 open import UF-Subsingletons renaming (⊤Ω to ⊤)
-open import Plus-Properties
+open import MLTT.Plus-Properties
 
 Fin : ℕ → 𝓤₀ ̇
 Fin 0        = 𝟘

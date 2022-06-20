@@ -15,7 +15,7 @@ principle that every subsingleton type is inhabited or empty.
 
 module UF-ExcludedMiddle where
 
-open import SpartanMLTT
+open import MLTT.Spartan
 
 open import UF-Base
 open import UF-Subsingletons

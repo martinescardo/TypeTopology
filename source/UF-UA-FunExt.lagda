@@ -15,7 +15,7 @@ depend on univalence.
 
 module UF-UA-FunExt where
 
-open import SpartanMLTT
+open import MLTT.Spartan
 open import UF-Base
 open import UF-Equiv
 open import UF-Univalence

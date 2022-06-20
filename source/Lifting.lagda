@@ -7,7 +7,7 @@ properties of lifting are discussed in other modules.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import SpartanMLTT
+open import MLTT.Spartan
 
 module Lifting (𝓣 : Universe) where
 

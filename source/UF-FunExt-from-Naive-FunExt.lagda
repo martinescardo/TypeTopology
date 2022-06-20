@@ -19,7 +19,7 @@ Point 2. is already proved in UF-Equiv-Funext.lagda
 
 module UF-FunExt-from-Naive-FunExt where
 
-open import SpartanMLTT
+open import MLTT.Spartan
 open import UF-Base
 open import UF-FunExt
 open import UF-Equiv

@@ -21,10 +21,10 @@ written.
 
 module LawvereFPT where
 
-open import SpartanMLTT
+open import MLTT.Spartan
 
-open import Two-Properties
-open import NaturalNumbers-Properties
+open import MLTT.Two-Properties
+open import MLTT.NaturalNumbers-Properties
 
 open import UF-Base
 open import UF-Subsingletons
@@ -289,7 +289,7 @@ module surjection-version (pt : propositional-truncations-exist) where
 
  \begin{code}
 
- open import Two
+ open import MLTT.Two
 
  cantor-uncountable : ¬ (Σ φ ꞉ (ℕ → (ℕ → 𝟚)), is-surjection φ)
  cantor-uncountable (φ , s) = γ

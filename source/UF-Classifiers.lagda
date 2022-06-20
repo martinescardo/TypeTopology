@@ -19,7 +19,7 @@ This version is ported from the Midlands Graduate School 2019 lecture notes
 
 module UF-Classifiers where
 
-open import SpartanMLTT
+open import MLTT.Spartan
 open import UF-Base
 open import UF-Embeddings
 open import UF-Equiv

@@ -30,14 +30,14 @@ open import UF-FunExt
 
 module LPO (fe : FunExt) where
 
-open import SpartanMLTT
+open import MLTT.Spartan
 open import UF-Base
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
 open import UF-Embeddings
 open import UF-Equiv
 
-open import Two-Properties
+open import MLTT.Two-Properties
 open import CoNaturals.GenericConvergentSequence
 open import BooleanCompactness.CompactTypes
 open import NaturalsOrder
@@ -184,7 +184,7 @@ Feb 2020):
 \begin{code}
 
 open import DiscreteAndSeparated
-open import NaturalNumbers-Properties
+open import MLTT.NaturalNumbers-Properties
 
 [LPO→ℕ]-discrete-gives-¬LPO-decidable : is-discrete (LPO → ℕ) → decidable (¬ LPO)
 [LPO→ℕ]-discrete-gives-¬LPO-decidable =

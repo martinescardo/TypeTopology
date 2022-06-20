@@ -12,12 +12,12 @@ UniMath" by Bezem, Buchholtz, Grayson and Shulman
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import NaturalNumbers-UniversalProperty
+open import MLTT.NaturalNumbers-UniversalProperty
 
 open import Integers
 open import Integers-Properties
 
-open import SpartanMLTT
+open import MLTT.Spartan
 open import UF-Base
 open import UF-Embeddings
 open import UF-Equiv

@@ -30,7 +30,7 @@ https://github.com/agda/agda/issues/1625
 
 \begin{code}
 
-open import SpartanMLTT
+open import MLTT.Spartan
 open import UF-FunExt
 open import UF-PropTrunc
 open import UF-Subsingletons

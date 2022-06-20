@@ -4,7 +4,7 @@ Martin Escardo 31 Jan 2019
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import SpartanMLTT
+open import MLTT.Spartan
 
 module SliceAlgebras
         (𝓣 : Universe)

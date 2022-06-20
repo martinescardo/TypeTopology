@@ -39,7 +39,7 @@ This is a draft version that needs polishing and more explanation.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import SpartanMLTT
+open import MLTT.Spartan
 open import UF-FunExt
 
 module Ordinals.NotationInterpretation2 (fe : FunExt) where
@@ -57,7 +57,7 @@ open import UF-Miscelanea
 
 open import DiscreteAndSeparated
 open import BinaryNaturals hiding (_+_)
-open import Two-Properties
+open import MLTT.Two-Properties
 open import WLPO
 open import LPO fe
 open import Density

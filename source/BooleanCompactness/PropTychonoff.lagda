@@ -41,14 +41,14 @@ we had a convoluted path to this supposedly natural way).
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import SpartanMLTT
+open import MLTT.Spartan
 
 open import UF-FunExt
 
 module BooleanCompactness.PropTychonoff (fe : FunExt) where
 
 open import BooleanCompactness.CompactTypes
-open import Two-Properties
+open import MLTT.Two-Properties
 open import UF-Base
 open import UF-Subsingletons
 open import UF-PropIndexedPiSigma

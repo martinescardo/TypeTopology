@@ -30,8 +30,8 @@ private
  pe : PropExt
  pe = Univalence-gives-PropExt ua
 
-open import SpartanMLTT
-open import Plus-Properties
+open import MLTT.Spartan
+open import MLTT.Plus-Properties
 
 open import Ordinals.Type
 open import Ordinals.Notions

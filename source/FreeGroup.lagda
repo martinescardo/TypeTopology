@@ -35,10 +35,11 @@ church-rosser. This seems to be a bug, but we are not sure.
 
 module FreeGroup where
 
-open import SpartanMLTT
+open import MLTT.Spartan
+open import MLTT.Two
+open import MLTT.Two-Properties
+
 open import Groups
-open import Two
-open import Two-Properties
 open import List
 
 open import UF-PropTrunc

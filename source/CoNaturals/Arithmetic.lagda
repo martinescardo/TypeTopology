@@ -23,7 +23,7 @@ codistances) is minimum.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import SpartanMLTT
+open import MLTT.Spartan
 open import UF-FunExt
 
 module CoNaturals.Arithmetic (fe : FunExt) where
@@ -32,7 +32,7 @@ private
  fe₀ : funext 𝓤₀ 𝓤₀
  fe₀ = fe 𝓤₀ 𝓤₀
 
-open import Two-Properties
+open import MLTT.Two-Properties
 open import CoNaturals.GenericConvergentSequence renaming (min to min')
 open import CoNaturals.UniversalProperty fe
 open import Notation.Order

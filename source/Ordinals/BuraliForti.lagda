@@ -141,7 +141,7 @@ private
  fe : FunExt
  fe = Univalence-gives-FunExt ua
 
-open import SpartanMLTT
+open import MLTT.Spartan
 
 open import Ordinals.Notions
 open import Ordinals.Type

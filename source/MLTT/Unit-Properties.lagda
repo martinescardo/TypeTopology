@@ -4,13 +4,13 @@ One-element type properties.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module Unit-Properties where
+module MLTT.Unit-Properties where
 
-open import Universes
-open import Unit
-open import Empty
-open import Id
-open import Negation
+open import MLTT.Universes
+open import MLTT.Unit
+open import MLTT.Empty
+open import MLTT.Id
+open import MLTT.Negation
 
 𝟙-all-⋆ : (x : 𝟙 {𝓤}) → x ≡ ⋆
 𝟙-all-⋆ {𝓤} ⋆ = refl {𝓤}

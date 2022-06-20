@@ -23,7 +23,7 @@ We then discuss further codistance axioms.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import SpartanMLTT
+open import MLTT.Spartan
 open import UF-FunExt
 
 module Closeness (fe : FunExt) where
@@ -34,7 +34,7 @@ open import CoNaturals.Arithmetic fe
 open import CoNaturals.GenericConvergentSequence renaming (min to min')
 open import DiscreteAndSeparated
 open import UF-Miscelanea
-open import Two-Properties
+open import MLTT.Two-Properties
 open import Notation.Order
 open import Notation.CanonicalMap
 

@@ -14,7 +14,7 @@ module Ordinals.TrichotomousArithmetic
 
 open import UF-Subsingletons
 
-open import SpartanMLTT
+open import MLTT.Spartan
 open import Ordinals.Type
 open import Ordinals.Notions
 open import Ordinals.Arithmetic fe

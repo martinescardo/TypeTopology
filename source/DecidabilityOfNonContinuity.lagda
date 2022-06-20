@@ -17,12 +17,12 @@ called "Decidability of non-continuity".
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import SpartanMLTT
+open import MLTT.Spartan
 open import UF-FunExt
 
 module DecidabilityOfNonContinuity (fe : funext 𝓤₀ 𝓤₀) where
 
-open import Two-Properties
+open import MLTT.Two-Properties
 open import DiscreteAndSeparated
 open import CoNaturals.GenericConvergentSequence
 open import ADecidableQuantificationOverTheNaturals fe

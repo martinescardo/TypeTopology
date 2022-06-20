@@ -4,15 +4,15 @@ Natural numbers
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module NaturalNumbers-Properties where
+module MLTT.NaturalNumbers-Properties where
 
-open import Universes
-open import NaturalNumbers
-open import Negation
-open import Id
-open import Empty
-open import Unit
-open import Unit-Properties
+open import MLTT.Universes
+open import MLTT.NaturalNumbers
+open import MLTT.Negation
+open import MLTT.Id
+open import MLTT.Empty
+open import MLTT.Unit
+open import MLTT.Unit-Properties
 
 pred : ℕ → ℕ
 pred 0 = 0

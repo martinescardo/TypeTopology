@@ -8,10 +8,10 @@ We look at decidable propositions, detachable families, and complemented subsets
 
 module DecidableAndDetachable where
 
-open import SpartanMLTT
+open import MLTT.Spartan
 
-open import Plus-Properties
-open import Two-Properties
+open import MLTT.Plus-Properties
+open import MLTT.Two-Properties
 open import UF-Subsingletons
 open import UF-PropTrunc
 

@@ -6,7 +6,7 @@ Cf. The lifting monad.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import SpartanMLTT
+open import MLTT.Spartan
 
 module Slice (𝓣 : Universe) where
 

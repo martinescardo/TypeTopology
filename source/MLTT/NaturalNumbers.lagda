@@ -4,10 +4,10 @@ Natural numbers
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module NaturalNumbers where
+module MLTT.NaturalNumbers where
 
-open import Universes
-open import Natural-Numbers-Type public
+open import MLTT.Universes
+open import MLTT.Natural-Numbers-Type public
 
 rec : {X : 𝓤 ̇ } → X → (X → X) → (ℕ → X)
 rec x f zero = x

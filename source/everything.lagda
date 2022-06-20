@@ -147,14 +147,14 @@ import MGS-Yoneda
 import MGS-hlevels
 import MGS
 import Natural-Numbers-Type
-import NaturalNumbers-Properties
+import MLTT.NaturalNumbers-Properties
 import NaturalNumbers-UniversalProperty
 import NaturalNumbers
 import NaturalsAddition
 import NaturalsOrder
 import Negation
 import NonCollapsibleFamily
-import NonSpartanMLTTTypes
+import NonMLTT.SpartanTypes
 import Notation.Order
 import OrdinalArithmetic-Properties
 import OrdinalArithmetic
@@ -182,7 +182,7 @@ import PCFModules
 import PairFun
 import PartialElements
 import Pi
-import Plus-Properties
+import MLTT.Plus-Properties
 import Plus-Type
 import Plus
 import PlusNotation
@@ -206,8 +206,8 @@ import SliceAlgebras
 import SliceEmbedding
 import SliceIdentityViaSIP
 import SliceMonad
-import SpartanMLTT-List
-import SpartanMLTT
+import MLTT.Spartan-List
+import MLTT.Spartan
 import SquashedCantor
 import SquashedSum
 import Swap
@@ -216,7 +216,7 @@ import ToppedOrdinalArithmetic
 import ToppedOrdinalsType
 import TotalSeparatedness
 import TotallySeparated
-import Two-Properties
+import MLTT.Two-Properties
 import Two
 import Type-in-Type-False
 import Types2019
@@ -267,7 +267,7 @@ import UF-Univalence
 import UF-UniverseEmbedding
 import UF-Yoneda
 import UF-hlevels
-import Unit-Properties
+import MLTT.Unit-Properties
 import Unit-Type
 import Unit
 import UnivalenceFromScratch

@@ -14,7 +14,7 @@ motivation coming from univalent type theory is also discussed.)
 
 module DummettDisjunction where
 
-open import SpartanMLTT
+open import MLTT.Spartan
 
 _⊞_ : Type → Type → Type
 P ⊞ Q = ((P → Q) → Q) × ((Q → P) → P)

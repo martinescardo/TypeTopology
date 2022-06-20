@@ -15,7 +15,7 @@ Escardo, Thierry Coquand, and Thorsten Altenkirch.
 
 module UF-KrausLemma where
 
-open import SpartanMLTT
+open import MLTT.Spartan
 open import UF-Base
 open import UF-Subsingletons
 

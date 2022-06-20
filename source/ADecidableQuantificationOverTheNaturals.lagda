@@ -12,7 +12,7 @@ The theorem says that, for any p : ℕ∞ → 𝟚, the proposition
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import SpartanMLTT
+open import MLTT.Spartan
 open import UF-FunExt
 
 module ADecidableQuantificationOverTheNaturals (fe : funext 𝓤₀ 𝓤₀) where
@@ -20,7 +20,7 @@ module ADecidableQuantificationOverTheNaturals (fe : funext 𝓤₀ 𝓤₀) whe
 open import CoNaturals.GenericConvergentSequence
 open import BooleanCompactness.CompactTypes
 open import BooleanCompactness.GenericConvergentSequence fe
-open import Two-Properties
+open import MLTT.Two-Properties
 open import DecidableAndDetachable
 open import DiscreteAndSeparated
 open import Notation.CanonicalMap

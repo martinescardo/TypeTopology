@@ -4,7 +4,7 @@
 
 module UF-Retracts-FunExt where
 
-open import SpartanMLTT
+open import MLTT.Spartan
 open import UF-Base
 open import UF-Retracts
 open import UF-FunExt

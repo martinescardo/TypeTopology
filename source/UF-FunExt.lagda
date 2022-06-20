@@ -10,7 +10,7 @@ is used explicitly as a hypothesis each time it is needed.
 
 module UF-FunExt where
 
-open import SpartanMLTT
+open import MLTT.Spartan
 open import UF-Base
 open import UF-Equiv
 open import UF-LeftCancellable

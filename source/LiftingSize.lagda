@@ -6,7 +6,7 @@ Size matters.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import SpartanMLTT
+open import MLTT.Spartan
 
 module LiftingSize (𝓣 : Universe) where
 

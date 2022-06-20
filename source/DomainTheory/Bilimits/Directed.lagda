@@ -36,7 +36,7 @@ https://github.com/agda/agda/issues/1625
 
 \begin{code}
 
-open import SpartanMLTT hiding (J)
+open import MLTT.Spartan hiding (J)
 open import UF-FunExt
 open import UF-PropTrunc
 

@@ -14,11 +14,12 @@ lemmas. More additions after that date.
 
 module CoNaturals.GenericConvergentSequence where
 
-open import SpartanMLTT
-open import Two-Properties
+open import MLTT.Spartan
+open import MLTT.Two-Properties
+open import MLTT.NaturalNumbers-Properties
+
 open import NaturalsAddition renaming (_+_ to _∔_)
 open import NaturalsOrder hiding (max)
-open import NaturalNumbers-Properties
 open import DiscreteAndSeparated
 open import Notation.Order
 open import Notation.CanonicalMap

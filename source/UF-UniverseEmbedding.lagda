@@ -18,7 +18,7 @@ propositions, or subsingletons, as in HoTT/UF.)
 
 module UF-UniverseEmbedding where
 
-open import SpartanMLTT
+open import MLTT.Spartan
 open import PairFun
 
 open import UF-Subsingletons

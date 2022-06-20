@@ -6,7 +6,7 @@ Martin Escardo, 27 April 2014
 
 module UF-PropIndexedPiSigma where
 
-open import SpartanMLTT
+open import MLTT.Spartan
 open import UF-Base
 open import UF-Subsingletons
 open import UF-FunExt

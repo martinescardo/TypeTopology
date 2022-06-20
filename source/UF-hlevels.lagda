@@ -8,7 +8,7 @@ convention here is that propositions are at level zero (apologies).
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import SpartanMLTT
+open import MLTT.Spartan
 open import UF-Univalence
 
 module UF-hlevels (ua : Univalence) where

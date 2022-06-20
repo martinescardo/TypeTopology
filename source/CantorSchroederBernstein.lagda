@@ -46,14 +46,14 @@ assumption beyond MLTT is explicit in each claim).
 
 module CantorSchroederBernstein where
 
-open import SpartanMLTT
+open import MLTT.Spartan
 open import BooleanCompactness.CompactTypes
 open import BooleanCompactness.GenericConvergentSequence
 open import DecidableAndDetachable
 open import DiscreteAndSeparated
 open import CoNaturals.GenericConvergentSequence
-open import NaturalNumbers-Properties
-open import Plus-Properties
+open import MLTT.NaturalNumbers-Properties
+open import MLTT.Plus-Properties
 open import UF-Base
 open import UF-Equiv
 open import UF-Embeddings

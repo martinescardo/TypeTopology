@@ -82,6 +82,7 @@ Some of the main modules and module clusters:
 
 \begin{code}
 
+import MLTT.index
 import Notation.index
 import BooleanCompactness.index
 import InjectiveTypes-article
@@ -107,7 +108,6 @@ All modules in alphabetical order:
 \begin{code}
 
 import ADecidableQuantificationOverTheNaturals -- Proved by Martin Escardo, formalized by Chuangjie Xu.
-import AlternativePlus
 import ArithmeticViaEquivalence
 import BanachFixedPointTheorem -- By Todd Waugh Ambridge
 import BasicDiscontinuityTaboo
@@ -128,7 +128,6 @@ import DyadicOrder
 import Dyadics
 import Dominance
 import DummettDisjunction
-import Empty
 import Escardo-Simpson-LICS2001        -- By Todd Waugh Ambridge
 import Fin
 import Fin-Properties
@@ -147,7 +146,6 @@ import FreeGroupOfLargeLocallySmallSet -- By Marc Bezem, Thierry Coquand, Dybjer
 import FreeJoinSemiLattice             -- By Tom de Jong
 import FreeSupLattice                  -- By Tom de Jong
 import HiggsInvolutionTheorem
-import Id
 import InitialBinarySystem    -- More work than needed!
 import InitialBinarySystem2   -- No need to work with subtype of normal elements.
 import InjectiveTypes-article
@@ -167,11 +165,8 @@ import LiftingUnivalentPrecategory
 import List
 import LPO
 import Lumsdaine
-import NaturalNumbers
-import NaturalNumbers-Properties
 import NaturalsAddition
 import NaturalsOrder
-import Negation
 import NonCollapsibleFamily
 import NonSpartanMLTTTypes
 
@@ -180,34 +175,23 @@ import Ordinals
 import P2
 import PairFun
 import PartialElements
-import Pi
-import Plus
 import PlusOneLC
-import Plus-Properties
 import QuasiDecidable
 import FreeGroupOfLargeLocallySmallSet
 import RicesTheoremForTheUniverse
 import RootsTruncation
 import Sequence
 import SemiDecidable                   -- By Tom de Jong
-import Sigma
 import SliceAlgebras
 import SliceEmbedding
 import SliceIdentityViaSIP
 import Slice
 import SliceMonad
-import SpartanMLTT
-import SpartanMLTT-List
 import Swap
 import sigma-sup-lattice
 import sigma-frame
 import TheTopologyOfTheUniverse
-import Two
-import Two-Properties
 import UnivalenceFromScratch
-import Unit
-import Unit-Properties
-import Universes
 import W
 import W-Properties
 import WLPO

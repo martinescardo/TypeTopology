@@ -9,7 +9,7 @@ A function is dense if the complement of its image is empty. Maybe
 
 module Density where
 
-open import SpartanMLTT
+open import MLTT.Spartan
 open import DiscreteAndSeparated
 
 open import UF-Base

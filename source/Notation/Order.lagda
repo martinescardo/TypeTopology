@@ -8,7 +8,7 @@ Type-class for notation for strict orders.
 
 module Notation.Order where
 
-open import SpartanMLTT
+open import MLTT.Spartan
 
 record Strict-Order {𝓤} {𝓥} {𝓦} (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) : (𝓤 ⊔ 𝓥 ⊔ 𝓦)⁺ ̇  where
  field

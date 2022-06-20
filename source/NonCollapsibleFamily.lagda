@@ -6,7 +6,7 @@ Martin Escardo, 1st April 2013
 
 module NonCollapsibleFamily where
 
-open import SpartanMLTT
+open import MLTT.Spartan
 
 open import UF-Base
 open import UF-Subsingletons

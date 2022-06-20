@@ -33,7 +33,7 @@ implies choice.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import SpartanMLTT
+open import MLTT.Spartan
 
 open import UF-Base hiding (_≈_)
 open import UF-Equiv
@@ -299,7 +299,7 @@ module swan'
         (P-is-not-false : ¬¬ P)
        where
 
- open import Two-Properties
+ open import MLTT.Two-Properties
 
  open import UF-Large-Quotient pt fe pe
 
@@ -502,7 +502,7 @@ A remark on well-order-gives-minimal (see below) is in order.
           (em : excluded-middle (𝓤 ⊔ 𝓣))
          where
 
-   open import Plus-Properties
+   open import MLTT.Plus-Properties
 
    well-order-gives-minimal : is-well-order
                             → inhabited-has-minimal
@@ -608,7 +608,7 @@ with a fairly direct proof.
 \begin{code}
 
  open import UF-Miscelanea
- open import Two-Properties
+ open import MLTT.Two-Properties
  open import UF-UniverseEmbedding
 
  classical-well-order-on-every-set : (𝓤 𝓣 : Universe) → (𝓤 ⊔ 𝓣) ⁺ ̇

@@ -8,7 +8,7 @@ Properties of function extensionality.
 
 module UF-FunExt-Properties where
 
-open import SpartanMLTT
+open import MLTT.Spartan
 open import UF-Base
 open import UF-FunExt
 open import UF-Equiv

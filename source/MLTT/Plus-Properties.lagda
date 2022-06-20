@@ -4,15 +4,15 @@ Properties of the disjoint sum _+_ of types.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module Plus-Properties where
+module MLTT.Plus-Properties where
 
-open import Plus
-open import Universes
-open import Negation
-open import Id
-open import Empty
-open import Unit
-open import Unit-Properties
+open import MLTT.Plus
+open import MLTT.Universes
+open import MLTT.Negation
+open import MLTT.Id
+open import MLTT.Empty
+open import MLTT.Unit
+open import MLTT.Unit-Properties
 
 +-commutative : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → A + B → B + A
 +-commutative = cases inr inl
@@ -57,8 +57,8 @@ Right-fails-gives-left-holds : {P : 𝓤 ̇ } {Q : 𝓥 ̇ } → P + Q → ¬ Q 
 Right-fails-gives-left-holds (inl p) u = p
 Right-fails-gives-left-holds (inr q) u = 𝟘-elim (u q)
 
-open import Unit
-open import Sigma
+open import MLTT.Unit
+open import MLTT.Sigma
 open import Notation.General
 
 inl-preservation : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X + 𝟙 {𝓦}  → Y + 𝟙 {𝓣})

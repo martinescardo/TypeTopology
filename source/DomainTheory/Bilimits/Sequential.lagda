@@ -6,7 +6,7 @@ We specialize the work of Directed.lagda to ℕ-indexed diagrams.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import SpartanMLTT
+open import MLTT.Spartan
 open import UF-PropTrunc
 open import UF-FunExt
 
@@ -23,7 +23,7 @@ open import DomainTheory.Basics.Miscelanea pt fe 𝓤₀
 open import DomainTheory.Bilimits.Directed pt fe 𝓤₀ 𝓤 𝓣
 
 open import NaturalsAddition renaming (_+_ to _+'_)
-open import NaturalNumbers-Properties
+open import MLTT.NaturalNumbers-Properties
 open import NaturalsOrder
 open import Notation.Order
 

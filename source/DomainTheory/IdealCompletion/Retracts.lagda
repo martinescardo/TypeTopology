@@ -26,7 +26,7 @@ Idl(B,⊑) and analogous remarks apply in this case.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline --experimental-lossy-unification #-}
 
-open import SpartanMLTT hiding (J)
+open import MLTT.Spartan hiding (J)
 
 open import UF-FunExt
 open import UF-PropTrunc

@@ -6,11 +6,11 @@ General terminology and notation.
 
 module Notation.General where
 
-open import Pi
-open import Sigma
-open import Universes
-open import Id
-open import Negation public
+open import MLTT.Pi
+open import MLTT.Sigma
+open import MLTT.Universes
+open import MLTT.Id
+open import MLTT.Negation public
 
 Type  = Set
 Type₁ = Set₁

@@ -28,7 +28,7 @@ module UF-Quotient-Replacement
         (pe : Prop-Ext)
        where
 
-open import SpartanMLTT
+open import MLTT.Spartan
 
 open import UF-Base hiding (_≈_)
 open import UF-Subsingletons-FunExt

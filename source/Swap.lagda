@@ -8,8 +8,8 @@ The swap automorphism.
 
 module Swap where
 
-open import SpartanMLTT
-open import Plus-Properties
+open import MLTT.Spartan
+open import MLTT.Plus-Properties
 open import DiscreteAndSeparated
 open import UF-Equiv
 open import UF-Miscelanea

@@ -11,7 +11,7 @@ Refactored December 2021.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import SpartanMLTT
+open import MLTT.Spartan
 open import UF-FunExt
 open import UF-PropTrunc
 
@@ -246,7 +246,7 @@ module IfZeroDenotationalSemantics
 
  open import UF-Miscelanea
 
- open import NaturalNumbers-Properties
+ open import MLTT.NaturalNumbers-Properties
 
  𝓛ᵈℕ : DCPO⊥ {𝓥 ⁺} {𝓥 ⁺}
  𝓛ᵈℕ = 𝓛-DCPO⊥ ℕ-is-set

@@ -13,7 +13,7 @@ J'-comp) with a "propositional computation rule" J'-comp for J'.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import Universes
+open import MLTT.Universes
 
 module Lumsdaine
         {𝓤}

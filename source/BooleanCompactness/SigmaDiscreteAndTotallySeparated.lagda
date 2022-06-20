@@ -12,7 +12,7 @@ ordinals.
 
 module BooleanCompactness.SigmaDiscreteAndTotallySeparated where
 
-open import SpartanMLTT
+open import MLTT.Spartan
 
 open import DiscreteAndSeparated
 open import WLPO

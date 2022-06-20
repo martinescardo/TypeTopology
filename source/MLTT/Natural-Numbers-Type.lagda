@@ -2,7 +2,7 @@
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module Natural-Numbers-Type where
+module MLTT.Natural-Numbers-Type where
 
 data ℕ : Set₀  where
  zero : ℕ

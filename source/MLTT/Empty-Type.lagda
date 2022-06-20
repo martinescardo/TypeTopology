@@ -2,9 +2,9 @@
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module Empty-Type where
+module MLTT.Empty-Type where
 
-open import Universes public
+open import MLTT.Universes public
 
 data 𝟘 {𝓤} : 𝓤 ̇ where
 

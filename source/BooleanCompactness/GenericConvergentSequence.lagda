@@ -16,12 +16,12 @@ searchable, which amounts to Theorem-3·6 of the paper
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import SpartanMLTT
+open import MLTT.Spartan
 open import UF-FunExt
 
 module BooleanCompactness.GenericConvergentSequence (fe : funext 𝓤₀ 𝓤₀) where
 
-open import Two-Properties
+open import MLTT.Two-Properties
 open import UF-PropTrunc
 open import CoNaturals.GenericConvergentSequence
 open import DiscreteAndSeparated

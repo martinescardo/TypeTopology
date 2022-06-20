@@ -7,18 +7,19 @@ the module CompactTypes for the strong notion.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import SpartanMLTT
+open import MLTT.Spartan
 
 open import BooleanCompactness.CompactTypes
 open import BooleanCompactness.TotallySeparated
 
 open import CoNaturals.GenericConvergentSequence
 
-open import Two-Properties
+open import MLTT.Two-Properties
+open import MLTT.Plus-Properties
+
 open import DisconnectedTypes
 open import DiscreteAndSeparated
 open import WLPO
-open import Plus-Properties
 open import Notation.Order
 
 open import UF-Base

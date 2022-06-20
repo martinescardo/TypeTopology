@@ -13,7 +13,7 @@ open import UF-FunExt
 
 module Unsafe.CountableTychonoff (fe : FunExt) where
 
-open import SpartanMLTT
+open import MLTT.Spartan
 open import BooleanCompactness.CompactTypes
 open import Sequence fe
 

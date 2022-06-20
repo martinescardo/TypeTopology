@@ -4,12 +4,10 @@
 
 {-# OPTIONS --without-K --safe --auto-inline #-}
 
-open import Universes
-open import SpartanMLTT
+open import MLTT.Spartan
 open import UF-Base
 open import UF-PropTrunc
 open import UF-FunExt
-open import Sigma
 
 module HeytingImplication
          (pt : propositional-truncations-exist)

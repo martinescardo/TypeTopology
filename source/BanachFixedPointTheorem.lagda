@@ -10,13 +10,13 @@ open import UF-FunExt
 
 module BanachFixedPointTheorem (fe : FunExt) where
 
-open import SpartanMLTT
+open import MLTT.Spartan
 open import CoNaturals.GenericConvergentSequence hiding (min)
 open import CoNaturals.Arithmetic fe
 open import Closeness fe
 open import NaturalsOrder
 open import UF-Miscelanea
-open import NaturalNumbers-Properties
+open import MLTT.NaturalNumbers-Properties
 open import Notation.Order
 open import Notation.CanonicalMap
 

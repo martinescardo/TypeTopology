@@ -13,10 +13,10 @@ excluded manually.
 
 module everything-safe where
 
+import MLTT.index
 import ADecidableQuantificationOverTheNaturals
 import AdjointFunctorTheoremForFrames
 -- import AllModulesIndex
-import AlternativePlus
 import ArithmeticViaEquivalence
 import BanachFixedPointTheorem
 import BasicDiscontinuityTaboo
@@ -46,8 +46,6 @@ import Dyadic
 import DyadicOrder
 import DyadicOrder-PropTrunc
 import Dyadics
-import Empty
-import Empty-Type
 import Escardo-Simpson-LICS2001
 -- import everything
 -- import everything-safe
@@ -66,8 +64,6 @@ import Notation.General
 import Groups
 import HeytingImplication
 import HiggsInvolutionTheorem
-import Identity-Type
-import Id
 -- import index
 import InitialBinarySystem2
 import InitialBinarySystem
@@ -95,15 +91,9 @@ import LiftingUnivalentPrecategory
 import List
 import LPO
 import Lumsdaine
-import NaturalNumbers
-import NaturalNumbers-Properties
-import Natural-Numbers-Type
-import NaturalNumbers-UniversalProperty
 import NaturalsAddition
 import NaturalsOrder
-import Negation
 import NonCollapsibleFamily
-import NonSpartanMLTTTypes
 import Nucleus
 import Notation.Order
 import Ordinals
@@ -112,11 +102,7 @@ import PairFun
 import PartialElements
 import PatchLocale
 import PCF
-import Pi
-import Plus
 import PlusOneLC
-import Plus-Properties
-import Plus-Type
 import Poset
 import QuasiDecidable
 import RicesTheoremForTheUniverse
@@ -124,21 +110,16 @@ import RootsTruncation
 import SemiDecidable
 import Sequence
 import sigma-frame
-import Sigma
 import sigma-sup-lattice
-import Sigma-Type
 import SliceAlgebras
 import SliceEmbedding
 import SliceIdentityViaSIP
 import Slice
 import SliceMonad
-import SpartanMLTT
 import SpartanMLTT-List
 import SRTclosure
 import Swap
 import TheTopologyOfTheUniverse
-import Two
-import Two-Properties
 -- import Type-in-Type-False
 import Types2019
 import UF-Base
@@ -188,11 +169,7 @@ import UF-UA-FunExt
 import UF-Univalence
 import UF-UniverseEmbedding
 import UF-Yoneda
-import Unit
-import Unit-Properties
-import Unit-Type
 import UnivalenceFromScratch
-import Universes
 -- import UnsafeModulesIndex
 import W
 import WLPO

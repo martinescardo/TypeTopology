@@ -12,6 +12,11 @@ module Ordinals.Closure
         (fe : FunExt)
        where
 
+open import MLTT.Spartan
+open import MLTT.Two-Properties
+open import MLTT.AlternativePlus
+open import MLTT.Plus-Properties
+
 open import UF-Base
 open import UF-Equiv
 open import UF-Subsingletons
@@ -37,13 +42,9 @@ open import CoNaturals.GenericConvergentSequence
 
 open import InjectiveTypes fe
 
-open import SpartanMLTT
-open import Two-Properties
-open import AlternativePlus
 open import LexicographicOrder
 open import DiscreteAndSeparated
 open import BinaryNaturals hiding (_+_ ; L ; R)
-open import Plus-Properties
 open import PairFun
 open import Notation.CanonicalMap
 
@@ -73,7 +74,7 @@ that the ordinal 𝟚ᵒ has underlying set 𝟙+𝟙 rather than 𝟚, and that
 as a co-product. This saved lots of code elsewhere, but adds labour
 here (and in some helper lemmas/constructions that we added in other
 modules for this purpose). Notice that +' is the sum indexed by 𝟚,
-defined in the module SpartanMLTT. The bulk of the work for the
+defined in the module MLTT.Spartan. The bulk of the work for the
 following construction is performed in the module SquashedCantor.
 
 \begin{code}

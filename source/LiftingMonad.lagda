@@ -12,7 +12,7 @@ or univalence).
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import SpartanMLTT
+open import MLTT.Spartan
 
 module LiftingMonad
         (𝓣 : Universe)

@@ -31,9 +31,9 @@ using the corresponding properties for (finite) types.
 
 module Fin-Properties where
 
-open import SpartanMLTT
+open import MLTT.Spartan
 open import UF-Subsingletons renaming (⊤Ω to ⊤)
-open import Plus-Properties
+open import MLTT.Plus-Properties
 open import Fin
 open import Notation.Order
 
@@ -62,7 +62,7 @@ Fin0-is-prop i = 𝟘-elim i
 Fin1-is-prop : is-prop (Fin 1)
 Fin1-is-prop 𝟎 𝟎 = refl
 
-open import Unit-Properties
+open import MLTT.Unit-Properties
 
 positive-not-𝟎 : {n : ℕ} {x : Fin n} → fsucc x ≢ 𝟎
 positive-not-𝟎 {0}      {x} p = 𝟘-elim x
@@ -398,7 +398,7 @@ manifestation of the type Fin n.
 
 \begin{code}
 
-open import NaturalNumbers-Properties
+open import MLTT.NaturalNumbers-Properties
 
 ⟦_⟧ : {n : ℕ} → Fin n → ℕ
 ⟦_⟧ {n} = pr₁ ∘ Fin-prime n
@@ -1495,7 +1495,7 @@ The following no-selection lemma is contributed by Tom de Jong:
 
 \begin{code}
 
- open import Two-Properties
+ open import MLTT.Two-Properties
 
  no-selection : is-univalent 𝓤₀ → ¬ ((X : 𝓤₀ ̇ ) → ∥ X ≃ 𝟚 ∥ → X)
  no-selection ua ϕ = γ

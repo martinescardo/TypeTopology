@@ -9,7 +9,7 @@ background for this file.
 
 module InitialBinarySystem2 where
 
-open import SpartanMLTT
+open import MLTT.Spartan
 
 data 𝔹 :  𝓤₀ ̇ where
  center : 𝔹

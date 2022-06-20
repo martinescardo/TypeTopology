@@ -13,7 +13,7 @@ development below offers an alternative proof for 𝕊¹.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import SpartanMLTT
+open import MLTT.Spartan
 open import UF-Base
 
 open import UF-Equiv

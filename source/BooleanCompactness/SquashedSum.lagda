@@ -8,7 +8,7 @@ See remarks below for an explanation.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import SpartanMLTT
+open import MLTT.Spartan
 open import UF-FunExt
 
 module BooleanCompactness.SquashedSum (fe : FunExt) where -- move this to compact types
@@ -17,8 +17,8 @@ private
  fe₀ : funext 𝓤₀ 𝓤₀
  fe₀ = fe 𝓤₀ 𝓤₀
 
-open import Two-Properties
-open import Plus-Properties
+open import MLTT.Two-Properties
+open import MLTT.Plus-Properties
 open import Density
 open import CoNaturals.GenericConvergentSequence
 open import BooleanCompactness.CompactTypes

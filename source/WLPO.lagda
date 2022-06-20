@@ -27,7 +27,7 @@ constructively, well, taboos!
 
 module WLPO where
 
-open import SpartanMLTT
+open import MLTT.Spartan
 open import CoNaturals.GenericConvergentSequence
 
 WLPO : 𝓤₀ ̇

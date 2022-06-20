@@ -26,8 +26,8 @@ open import UF-FunExt
 
 module CoNaturals.Exercise (fe : FunExt) where
 
-open import SpartanMLTT
-open import Two-Properties
+open import MLTT.Spartan
+open import MLTT.Two-Properties
 open import CoNaturals.UniversalProperty fe
 open import CoNaturals.GenericConvergentSequence
 open import Sequence fe

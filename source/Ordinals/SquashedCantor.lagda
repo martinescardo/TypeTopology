@@ -26,8 +26,8 @@ open import UF-Equiv
 open import UF-Embeddings
 open import UF-Retracts
 
-open import SpartanMLTT
-open import Two-Properties
+open import MLTT.Spartan
+open import MLTT.Two-Properties
 open import CoNaturals.GenericConvergentSequence
 open import NaturalsAddition renaming (_+_ to _∔_)
 open import BooleanCompactness.SquashedSum fe

@@ -16,7 +16,7 @@ Martin Escardo, 3 February 2021.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import SpartanMLTT hiding (_^_)
+open import MLTT.Spartan hiding (_^_)
 
 module SRTclosure where
 

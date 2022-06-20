@@ -63,9 +63,9 @@ apartness relation is a set, and so this reflection is always a set.
 
 module BooleanCompactness.TotallySeparated where
 
-open import SpartanMLTT
+open import MLTT.Spartan
+open import MLTT.Two-Properties
 
-open import Two-Properties
 open import DecidableAndDetachable
 open import DiscreteAndSeparated hiding (tight)
 open import UF-Base

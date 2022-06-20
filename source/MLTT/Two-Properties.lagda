@@ -7,10 +7,10 @@ in the module SpartanMLTT. Here we develop some general machinery.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module Two-Properties where
+module MLTT.Two-Properties where
 
-open import SpartanMLTT
-open import Unit-Properties
+open import MLTT.Spartan
+open import MLTT.Unit-Properties
 open import Notation.Order
 
 open import UF-Subsingletons

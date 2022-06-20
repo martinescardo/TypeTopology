@@ -6,9 +6,9 @@ Expanded on demand whenever a general equivalence is needed.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import SpartanMLTT
-open import Two-Properties
-open import Plus-Properties
+open import MLTT.Spartan
+open import MLTT.Two-Properties
+open import MLTT.Plus-Properties
 open import UF-Base
 open import UF-Equiv
 open import UF-FunExt

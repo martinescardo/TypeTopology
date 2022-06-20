@@ -16,7 +16,7 @@ completion, see below for details.
 -- The flag --experimental-lossy-unification roughly reduces the timechecking
 -- time by 50%.
 
-open import SpartanMLTT hiding (J)
+open import MLTT.Spartan hiding (J)
 open import UF-FunExt
 open import UF-PropTrunc
 

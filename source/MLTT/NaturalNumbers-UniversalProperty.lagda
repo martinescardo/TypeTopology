@@ -10,11 +10,11 @@ here from nondependent functions to dependent functions.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module NaturalNumbers-UniversalProperty where
+module MLTT.NaturalNumbers-UniversalProperty where
 
-open import NaturalNumbers
+open import MLTT.NaturalNumbers
 
-open import SpartanMLTT
+open import MLTT.Spartan
 open import UF-Base
 open import UF-Equiv
 open import UF-FunExt

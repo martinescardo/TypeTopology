@@ -15,7 +15,7 @@ the univalence of the universe U, namely
 
 module UF-Knapp-UA where
 
-open import SpartanMLTT
+open import MLTT.Spartan
 open import UF-Base
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt

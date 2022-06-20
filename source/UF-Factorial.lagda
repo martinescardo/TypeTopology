@@ -55,8 +55,8 @@ extensionality or univalence).
 
 module UF-Factorial (fe : FunExt) where
 
-open import SpartanMLTT
-open import Plus-Properties
+open import MLTT.Spartan
+open import MLTT.Plus-Properties
 open import DiscreteAndSeparated
 open import Swap
 open import UF-Base

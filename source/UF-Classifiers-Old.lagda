@@ -12,7 +12,7 @@ generalization.
 
 module UF-Classifiers-Old where
 
-open import SpartanMLTT
+open import MLTT.Spartan
 open import UF-Subsingletons
 open import UF-Equiv
 open import UF-EquivalenceExamples

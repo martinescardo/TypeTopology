@@ -86,7 +86,7 @@
 
 module Ordinals.Codes where
 
-open import SpartanMLTT
+open import MLTT.Spartan
 
 \end{code}
 

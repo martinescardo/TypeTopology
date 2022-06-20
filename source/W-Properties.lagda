@@ -6,7 +6,7 @@ Martin Escardo, 19th December 2020
 
 module W-Properties where
 
-open import SpartanMLTT
+open import MLTT.Spartan
 open import W
 open import UF-Base
 open import UF-Subsingletons

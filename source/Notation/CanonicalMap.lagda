@@ -9,7 +9,7 @@ that a canonical map is something we decide to call a canonical map.
 
 module Notation.CanonicalMap where
 
-open import SpartanMLTT
+open import MLTT.Spartan
 
 record Canonical-Map {𝓤} {𝓥} (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) : 𝓤 ⊔ 𝓥 ̇  where
  field

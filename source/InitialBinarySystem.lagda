@@ -23,7 +23,7 @@ quotients - it just happens to have the quotient we want.
 
 module InitialBinarySystem where
 
-open import SpartanMLTT
+open import MLTT.Spartan
 
 data 𝔹 : 𝓤₀ ̇ where
  L R : 𝔹

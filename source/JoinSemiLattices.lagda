@@ -11,7 +11,7 @@ the least element and binary joins.
 
 module JoinSemiLattices where
 
-open import SpartanMLTT
+open import MLTT.Spartan
 
 open import Fin
 

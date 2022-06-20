@@ -14,9 +14,9 @@ from 21 March 2018 is included at the end.
 
 module PlusOneLC where
 
-open import SpartanMLTT
+open import MLTT.Spartan
 open import UF-Equiv
-open import Plus-Properties
+open import MLTT.Plus-Properties
 open import UF-Retracts
 open import Swap
 open import DiscreteAndSeparated

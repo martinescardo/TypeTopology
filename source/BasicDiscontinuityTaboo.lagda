@@ -11,14 +11,14 @@ be eventually constant (which we don't postulate).
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import SpartanMLTT
+open import MLTT.Spartan
 open import UF-FunExt
 
 module BasicDiscontinuityTaboo (fe : FunExt) where
 
 
-open import Two-Properties
-open import Plus-Properties
+open import MLTT.Two-Properties
+open import MLTT.Plus-Properties
 open import CoNaturals.GenericConvergentSequence
 open import WLPO
 open import Notation.CanonicalMap

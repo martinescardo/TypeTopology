@@ -9,11 +9,11 @@ For more comments and explanations, see the original files.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import SpartanMLTT
+open import MLTT.Spartan
 
 module UF-PropTrunc-F (F : Universe → Universe) where
 
-open import Plus-Properties
+open import MLTT.Plus-Properties
 open import UF-Base
 open import UF-Subsingletons
 open import UF-FunExt

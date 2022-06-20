@@ -8,7 +8,7 @@ No endpoints, density and binary interpolation for (𝔻 , ≺) formulated using
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import SpartanMLTT
+open import MLTT.Spartan
 open import Dyadic
 open import DyadicOrder
 open import UF-PropTrunc

@@ -6,7 +6,7 @@ Based in part on `ayberkt/formal-topology-in-UF`.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import SpartanMLTT
+open import MLTT.Spartan
 open import UF-Base
 open import UF-PropTrunc
 open import UF-FunExt

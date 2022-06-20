@@ -14,7 +14,7 @@ and that these are preserved by maps that are both strict and Scott continuous.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import SpartanMLTT
+open import MLTT.Spartan
 open import UF-FunExt
 open import UF-PropTrunc
 

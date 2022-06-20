@@ -6,7 +6,7 @@ W-types.
 
 module W where
 
-open import SpartanMLTT
+open import MLTT.Spartan
 
 data W {𝓤 𝓥 : Universe} (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) : 𝓤 ⊔ 𝓥 ̇ where
  sup : (x : X) → (A x → W X A) → W X A

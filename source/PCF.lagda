@@ -13,7 +13,7 @@ module PCF (pt : propositional-truncations-exist) where
 
 open PropositionalTruncation pt
 
-open import SpartanMLTT
+open import MLTT.Spartan
 open import UF-Subsingletons
 
 data type : 𝓤₀ ̇ where

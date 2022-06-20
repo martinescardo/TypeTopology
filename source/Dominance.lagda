@@ -16,7 +16,7 @@ Convention:
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import SpartanMLTT
+open import MLTT.Spartan
 open import UF-Equiv
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt

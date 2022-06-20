@@ -10,7 +10,7 @@ Ported from `ayberkt/formal-topology-in-UF`.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import SpartanMLTT hiding (𝟚)
+open import MLTT.Spartan hiding (𝟚)
 open import UF-Base
 open import UF-PropTrunc
 open import UF-FunExt

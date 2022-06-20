@@ -9,7 +9,7 @@ extensionality as the equivalence of happly for suitable parameters.)
 
 module UF-Equiv-FunExt where
 
-open import SpartanMLTT
+open import MLTT.Spartan
 open import UF-Base
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
@@ -270,7 +270,7 @@ prop-univalent-≃' pe fe X P i = (P ≡ X) ≃⟨ ≡-flip ⟩
 \end{code}
 
 The so-called type-theoretic axiom of choice (already defined in
-SpartanMLTT with another name - TODO):
+MLTT.Spartan with another name - TODO):
 
 \begin{code}
 

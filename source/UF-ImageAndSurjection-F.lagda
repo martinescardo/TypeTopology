@@ -9,7 +9,7 @@ For more comments and explanations, see the original files.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import SpartanMLTT
+open import MLTT.Spartan
 
 module UF-ImageAndSurjection-F (F : Universe → Universe) where
 

@@ -8,9 +8,7 @@ Non-spartan types in MLTT, which are definable from spartan MLTT, but we include
 
 module NonSpartanMLTTTypes where
 
-open import SpartanMLTT
-
-open import Universes
+open import MLTT.Spartan
 
 data Maybe {𝓤 : Universe} (A : 𝓤 ̇ ) : 𝓤 ̇ where
  Nothing : Maybe A

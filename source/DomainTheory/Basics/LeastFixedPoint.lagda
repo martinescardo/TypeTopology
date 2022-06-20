@@ -11,7 +11,7 @@ typechecking.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline --experimental-lossy-unification #-}
 
-open import SpartanMLTT
+open import MLTT.Spartan
 open import UF-FunExt
 open import UF-PropTrunc
 
@@ -26,9 +26,9 @@ open import UF-Miscelanea
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
 
+open import MLTT.NaturalNumbers-Properties
 open import NaturalsAddition renaming (_+_ to _+'_)
 open import NaturalsOrder
-open import NaturalNumbers-Properties
 open import Notation.Order
 
 module _ {𝓥 : Universe} where

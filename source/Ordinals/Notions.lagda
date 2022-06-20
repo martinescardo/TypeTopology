@@ -8,7 +8,7 @@ Ordinals like in the HoTT book and variations.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import SpartanMLTT
+open import MLTT.Spartan
 open import DiscreteAndSeparated
 
 open import UF-Base
@@ -17,7 +17,7 @@ open import UF-FunExt
 open import UF-Subsingletons-FunExt
 open import UF-ExcludedMiddle
 open import UF-PropTrunc
-open import Plus-Properties using (+-commutative)
+open import MLTT.Plus-Properties using (+-commutative)
 
 module Ordinals.Notions
         {𝓤 𝓥 : Universe}
@@ -800,7 +800,7 @@ equivalent to a proposition (has split support).
 
 \begin{code}
 
-open import Two-Properties
+open import MLTT.Two-Properties
 
 _≺₂_ : X → X → 𝓤 ⊔ 𝓥 ̇
 x ≺₂ y = Σ p ꞉ (X → 𝟚) , (p x <₂ p y)

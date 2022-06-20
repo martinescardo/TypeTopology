@@ -8,7 +8,7 @@ This module is mainly for use in the module CompactOrdinals.
 
 module BooleanCompactness.Lexicographic where
 
-open import SpartanMLTT
+open import MLTT.Spartan
 open import LexicographicOrder
 open import BooleanCompactness.InfProperty
 

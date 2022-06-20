@@ -2,7 +2,7 @@
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module Universes where
+module MLTT.Universes where
 
 open import Agda.Primitive public
   using (_⊔_)

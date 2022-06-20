@@ -7,7 +7,7 @@ particular, this dcpo is algebraic.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline --experimental-lossy-unification #-}
 
-open import SpartanMLTT
+open import MLTT.Spartan
 
 open import UF-FunExt
 open import UF-PropTrunc

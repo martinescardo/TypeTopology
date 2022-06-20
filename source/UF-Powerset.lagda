@@ -16,7 +16,7 @@ type into X, or, equivalently, a map of X into the subtype classifier
 
 module UF-Powerset where
 
-open import SpartanMLTT
+open import MLTT.Spartan
 open import UF-Subsingletons
 open import UF-Equiv
 open import UF-Univalence

@@ -15,7 +15,7 @@ About (sub)singletons using function extensionality.
 
 module UF-Subsingletons-FunExt where
 
-open import SpartanMLTT
+open import MLTT.Spartan
 
 open import UF-Base
 open import UF-Subsingletons renaming (⊤Ω to ⊤ ; ⊥Ω to ⊥)

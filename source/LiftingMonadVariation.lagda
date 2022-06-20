@@ -7,7 +7,7 @@ a different universe level:
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import SpartanMLTT
+open import MLTT.Spartan
 
 module LiftingMonadVariation where
 

@@ -6,7 +6,7 @@ Chuangjie Xu 2011, with changes by Martin Escardo later.
 
 module NaturalsAddition where
 
-open import SpartanMLTT hiding (_+_)
+open import MLTT.Spartan hiding (_+_)
 
 infixl 31 _+_
 

@@ -40,7 +40,7 @@ notes:
 
 module UF-SIP-Examples where
 
-open import SpartanMLTT
+open import MLTT.Spartan
 open import Notation.Order
 
 open import UF-Base

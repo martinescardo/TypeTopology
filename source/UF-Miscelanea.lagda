@@ -8,10 +8,10 @@ UF things that depend on non-UF things.
 
 module UF-Miscelanea where
 
-open import SpartanMLTT
+open import MLTT.Spartan
 
-open import Plus-Properties
-open import NaturalNumbers-Properties
+open import MLTT.Plus-Properties
+open import MLTT.NaturalNumbers-Properties
 open import UF-Base
 open import UF-Subsingletons renaming (⊤Ω to ⊤ ; ⊥Ω to ⊥)
 open import UF-FunExt

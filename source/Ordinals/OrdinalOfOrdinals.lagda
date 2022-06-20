@@ -16,7 +16,7 @@ module Ordinals.OrdinalOfOrdinals
         (ua : Univalence)
        where
 
-open import SpartanMLTT
+open import MLTT.Spartan
 open import Ordinals.Notions
 open import Ordinals.Type
 open import Notation.CanonicalMap

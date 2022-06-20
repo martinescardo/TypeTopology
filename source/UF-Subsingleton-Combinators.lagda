@@ -9,7 +9,7 @@ Based in part by the `Cubical.Functions.Logic` module of
 
 module UF-Subsingleton-Combinators where
 
-open import SpartanMLTT
+open import MLTT.Spartan
 open import UF-Subsingletons
 open import UF-PropTrunc
 open import UF-FunExt

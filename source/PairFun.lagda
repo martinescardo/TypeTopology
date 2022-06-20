@@ -9,7 +9,7 @@ the resulting function.
 
 module PairFun where
 
-open import SpartanMLTT
+open import MLTT.Spartan
 open import Density
 
 open import UF-Subsingletons

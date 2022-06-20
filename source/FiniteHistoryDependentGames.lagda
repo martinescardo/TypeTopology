@@ -31,7 +31,7 @@ infinite games instead.
 
 {-# OPTIONS --without-K --safe --auto-inline #-} -- --exact-split
 
-open import SpartanMLTT hiding (J)
+open import MLTT.Spartan hiding (J)
 open import UF-Base
 open import UF-FunExt
 

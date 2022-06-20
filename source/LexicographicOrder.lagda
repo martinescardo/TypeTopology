@@ -15,7 +15,7 @@ even on (Σ x ꞉ X , Y x) if Y and S depend on X.
 
 module LexicographicOrder where
 
-open import SpartanMLTT
+open import MLTT.Spartan
 open import UF-Base
 open import UF-Subsingletons
 

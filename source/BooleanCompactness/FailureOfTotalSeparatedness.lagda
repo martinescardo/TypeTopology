@@ -39,9 +39,9 @@ open import UF-FunExt
 
 module BooleanCompactness.FailureOfTotalSeparatedness (fe : FunExt) where
 
-open import SpartanMLTT
+open import MLTT.Spartan
 
-open import Two-Properties
+open import MLTT.Two-Properties
 open import CoNaturals.GenericConvergentSequence
 open import BasicDiscontinuityTaboo
 open import WLPO

@@ -4,7 +4,7 @@ Martin Escardo, 24th March 2022
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import SpartanMLTT
+open import MLTT.Spartan
 open import UF-FunExt
 
 module P2 (fe : FunExt) where
@@ -17,9 +17,10 @@ open import UF-Subsingletons-FunExt
 open import UF-Retracts
 open import UF-Equiv
 
+open import MLTT.Two
+open import MLTT.Two-Properties
+
 open import DiscreteAndSeparated
-open import Two
-open import Two-Properties
 
 κ : (P : 𝓤 ̇ ) → 𝟚 → (P → 𝟚)
 κ P n = λ _ → n

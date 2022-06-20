@@ -25,7 +25,7 @@ continuous and algebraic dcpos are actually examples of dcpos with small
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import SpartanMLTT hiding (J)
+open import MLTT.Spartan hiding (J)
 open import UF-FunExt
 open import UF-PropTrunc
 

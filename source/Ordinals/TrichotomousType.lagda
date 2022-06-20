@@ -12,7 +12,7 @@ module Ordinals.TrichotomousType
         (fe : FunExt)
        where
 
-open import SpartanMLTT
+open import MLTT.Spartan
 open import Ordinals.Notions
 open import Ordinals.Type
 

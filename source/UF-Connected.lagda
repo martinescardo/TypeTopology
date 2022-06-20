@@ -10,7 +10,7 @@ but increases universe levels. We start with that formulation.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import SpartanMLTT
+open import MLTT.Spartan
 open import UF-PropTrunc
 
 module UF-Connected (pt : propositional-truncations-exist) where

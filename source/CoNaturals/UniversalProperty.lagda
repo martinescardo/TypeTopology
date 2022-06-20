@@ -73,12 +73,12 @@ open import UF-FunExt
 
 module CoNaturals.UniversalProperty (fe : FunExt) where
 
-open import SpartanMLTT
+open import MLTT.Spartan
 open import CoNaturals.GenericConvergentSequence
 open import Notation.CanonicalMap
 
-open import Two-Properties
-open import Plus-Properties
+open import MLTT.Two-Properties
+open import MLTT.Plus-Properties
 
 private
  fe₀ : funext 𝓤₀ 𝓤₀

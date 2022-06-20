@@ -53,7 +53,7 @@ from which we borrow other techniques in the development below.
 
 {-# OPTIONS --without-K --safe --auto-inline #-}
 
-open import SpartanMLTT
+open import MLTT.Spartan
 open import UF-PropTrunc
 open import UF-Univalence
 

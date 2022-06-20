@@ -17,7 +17,7 @@ for the structure.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import SpartanMLTT
+open import MLTT.Spartan
 open import UF-FunExt
 
 module UF-SIP-IntervalObject {𝓤 : Universe} (fe' : FunExt) where

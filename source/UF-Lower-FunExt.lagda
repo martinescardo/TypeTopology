@@ -8,7 +8,7 @@ Interface to code from my MGS 2019 lecture notes.
 
 module UF-Lower-FunExt where
 
-open import SpartanMLTT
+open import MLTT.Spartan
 open import UF-Base
 open import UF-Equiv
 open import UF-FunExt

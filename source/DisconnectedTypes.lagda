@@ -21,9 +21,9 @@ and
 
 module DisconnectedTypes where
 
-open import SpartanMLTT
-open import Two-Properties
-open import NaturalNumbers-Properties
+open import MLTT.Spartan
+open import MLTT.Two-Properties
+open import MLTT.NaturalNumbers-Properties
 open import DiscreteAndSeparated
 open import UF-Retracts
 open import UF-Equiv

@@ -4,9 +4,9 @@ One element type.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module Unit where
+module MLTT.Unit where
 
-open import Universes
+open import MLTT.Universes
 
 record 𝟙 {𝓤} : 𝓤 ̇ where
  constructor

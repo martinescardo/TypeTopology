@@ -195,7 +195,7 @@ this module.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import SpartanMLTT
+open import MLTT.Spartan
 open import PairFun
 
 open import UF-Univalence
@@ -216,7 +216,7 @@ imported later.
 
 \begin{code}
 
-open import Plus-Properties
+open import MLTT.Plus-Properties
 open import UF-Base
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt

@@ -27,7 +27,7 @@ module Ordinals.ToppedArithmetic
 
 open import UF-Subsingletons
 
-open import SpartanMLTT
+open import MLTT.Spartan
 open import CoNaturals.GenericConvergentSequence
 open import BooleanCompactness.SquashedSum fe
 open import Notation.CanonicalMap

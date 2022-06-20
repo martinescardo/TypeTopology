@@ -31,7 +31,7 @@ is postulated - any non-MLTT axiom has to be an explicit assumption
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import SpartanMLTT
+open import MLTT.Spartan
 
 open import UF-FunExt
 open import UF-PropTrunc

@@ -8,7 +8,7 @@ open import UF-FunExt
 
 module Sequence (fe : FunExt) where
 
-open import SpartanMLTT hiding (_+_)
+open import MLTT.Spartan hiding (_+_)
 open import UF-Base
 open import UF-Retracts
 open import NaturalsAddition

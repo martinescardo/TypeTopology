@@ -4,9 +4,9 @@ Two-point type.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module Two where
+module MLTT.Two where
 
-open import Universes
+open import MLTT.Universes
 
 data 𝟚 : 𝓤₀ ̇ where
  ₀ : 𝟚

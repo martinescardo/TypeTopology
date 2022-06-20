@@ -8,7 +8,7 @@ The (usual) order on the dyadic rationals
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import SpartanMLTT
+open import MLTT.Spartan
 open import Dyadic
 open import UF-Subsingletons
 

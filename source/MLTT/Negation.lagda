@@ -4,14 +4,14 @@ Negation (and emptiness).
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module Negation where
+module MLTT.Negation where
 
-open import Universes
-open import Empty
-open import Id
-open import Pi
-open import Plus
-open import Sigma
+open import MLTT.Universes
+open import MLTT.Empty
+open import MLTT.Id
+open import MLTT.Pi
+open import MLTT.Plus
+open import MLTT.Sigma
 
 private
  _⇔_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇

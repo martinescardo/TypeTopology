@@ -6,7 +6,7 @@ A few basic lemmas for working with partial elements of a type.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import SpartanMLTT
+open import MLTT.Spartan
 
 module LiftingMiscelanea (𝓣 : Universe) where
 

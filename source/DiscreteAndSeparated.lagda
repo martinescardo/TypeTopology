@@ -9,11 +9,11 @@ Martin Escardo 2011.
 
 module DiscreteAndSeparated where
 
-open import SpartanMLTT
+open import MLTT.Spartan
 
-open import Two-Properties
-open import Plus-Properties
-open import NaturalNumbers-Properties
+open import MLTT.Two-Properties
+open import MLTT.Plus-Properties
+open import MLTT.NaturalNumbers-Properties
 open import DecidableAndDetachable
 open import UF-Base
 open import UF-Subsingletons renaming (⊤Ω to ⊤ ; ⊥Ω to ⊥)

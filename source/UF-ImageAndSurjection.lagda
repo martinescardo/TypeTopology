@@ -4,7 +4,7 @@
 
 module UF-ImageAndSurjection where
 
-open import SpartanMLTT
+open import MLTT.Spartan
 open import UF-Base
 open import UF-Equiv
 open import UF-EquivalenceExamples

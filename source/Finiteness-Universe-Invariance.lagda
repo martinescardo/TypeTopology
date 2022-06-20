@@ -10,7 +10,7 @@ There is also a proof in Egbert Rijke's book (to appear).
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import SpartanMLTT
+open import MLTT.Spartan
 open import Fin
 open import Fin-Properties
 open import PairFun

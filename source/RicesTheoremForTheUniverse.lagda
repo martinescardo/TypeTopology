@@ -68,7 +68,7 @@ open import UF-FunExt
 
 module RicesTheoremForTheUniverse (fe : FunExt) where
 
-open import SpartanMLTT
+open import MLTT.Spartan
 
 open import UF-Equiv
 open import UF-EquivalenceExamples

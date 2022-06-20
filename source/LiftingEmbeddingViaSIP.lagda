@@ -8,7 +8,7 @@ is in the module LiftingEmbeddingDirectly.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import SpartanMLTT
+open import MLTT.Spartan
 
 module LiftingEmbeddingViaSIP
         (𝓣 𝓤 : Universe)

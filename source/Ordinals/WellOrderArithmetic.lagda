@@ -10,7 +10,7 @@ still use the terminology "ordinal" here.
 
 module Ordinals.WellOrderArithmetic where
 
-open import SpartanMLTT hiding (transitive)
+open import MLTT.Spartan hiding (transitive)
 open import Ordinals.Notions
 
 open import UF-Base

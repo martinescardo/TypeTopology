@@ -10,12 +10,12 @@ witnesses can be found.
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import UF-FunExt
-open import SpartanMLTT
+open import MLTT.Spartan
 
 module BooleanCompactness.ConvergentSequenceHasInf (fe₀ : funext 𝓤₀ 𝓤₀) where
 
 
-open import Two-Properties
+open import MLTT.Two-Properties
 open import BooleanCompactness.InfProperty
 open import CoNaturals.GenericConvergentSequence
 open import Notation.Order

@@ -7,7 +7,7 @@ ordinals with a top element.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import SpartanMLTT
+open import MLTT.Spartan
 
 open import Ordinals.Notions
 

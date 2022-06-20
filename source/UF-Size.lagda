@@ -29,7 +29,7 @@ which seems to be a new result.
 
 module UF-Size where
 
-open import SpartanMLTT
+open import MLTT.Spartan
 
 open import UF-Base
 open import UF-FunExt

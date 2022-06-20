@@ -4,7 +4,7 @@
 
 module UF-Yoneda where
 
-open import SpartanMLTT
+open import MLTT.Spartan
 open import UF-Base
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
@@ -573,7 +573,7 @@ Yoneda-const = yoneda-const
 \end{code}
 
 The following is traditionally proved by induction on the identity
-type (as articulated by Jbased or J in the module SpartanMLTT), but
+type (as articulated by Jbased or J in the module MLTT.Spartan), but
 here we use the Yoneda machinery instead, again for the sake of
 illustration.
 

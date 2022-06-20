@@ -2,9 +2,9 @@
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module Sigma-Type where
+module MLTT.Sigma-Type where
 
-open import Universes
+open import MLTT.Universes
 
 record Σ {𝓤 𝓥} {X : 𝓤 ̇ } (Y : X → 𝓥 ̇ ) : 𝓤 ⊔ 𝓥 ̇  where
   constructor

@@ -11,7 +11,7 @@ https://lmcs.episciences.org/2027
 
 module UF-Section-Embedding where
 
-open import SpartanMLTT
+open import MLTT.Spartan
 
 open import UF-Base
 open import UF-Subsingletons renaming (⊤Ω to ⊤ ; ⊥Ω to ⊥)

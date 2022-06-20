@@ -4,12 +4,10 @@ Ayberk Tosun, 1 March 2022.
 
 {-# OPTIONS --without-K --safe --auto-inline #-}
 
-open import Universes
-open import SpartanMLTT
+open import MLTT.Spartan
 open import UF-Base
 open import UF-PropTrunc
 open import UF-FunExt
-open import Sigma
 
 module AdjointFunctorTheoremForFrames
          (pt : propositional-truncations-exist)

@@ -143,7 +143,7 @@ foundations in Agda notation).
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import SpartanMLTT hiding (_^_)
+open import MLTT.Spartan hiding (_^_)
 
 module ArithmeticViaEquivalence where
 

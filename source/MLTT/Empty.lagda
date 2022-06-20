@@ -4,9 +4,9 @@ Empty type.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module Empty where
+module MLTT.Empty where
 
-open import Empty-Type public
+open import MLTT.Empty-Type public
 
 \end{code}
 

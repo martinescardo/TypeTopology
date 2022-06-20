@@ -4,9 +4,9 @@ The disjoint sum X + Y of two types X and Y.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module Plus where
+module MLTT.Plus where
 
-open import Plus-Type renaming (_+_ to infixr 1 _+_) public
+open import MLTT.Plus-Type renaming (_+_ to infixr 1 _+_) public
 
 dep-cases : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : X + Y → 𝓦 ̇ }
           → ((x : X) → A (inl x))

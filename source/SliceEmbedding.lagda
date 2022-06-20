@@ -4,7 +4,7 @@ Martin Escardo 6th December 2018.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import SpartanMLTT
+open import MLTT.Spartan
 open import UF-Univalence
 open import UF-FunExt
 

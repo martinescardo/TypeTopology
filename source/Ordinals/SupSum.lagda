@@ -27,7 +27,7 @@ module Ordinals.SupSum
         (ua : Univalence)
        where
 
-open import SpartanMLTT
+open import MLTT.Spartan
 open import Ordinals.Type
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.OrdinalOfOrdinalsSuprema ua

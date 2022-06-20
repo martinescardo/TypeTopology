@@ -6,7 +6,7 @@ We have a look at the algebras of the lifting monad.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import SpartanMLTT
+open import MLTT.Spartan
 
 module LiftingAlgebras
         (𝓣 : Universe)

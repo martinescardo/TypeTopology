@@ -7,12 +7,12 @@ file PropTychonoff has many comments, but this one doesn't.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import SpartanMLTT
+open import MLTT.Spartan
 open import UF-FunExt
 
 module BooleanCompactness.PropInfTychonoff (fe : FunExt) where
 
-open import Two-Properties
+open import MLTT.Two-Properties
 open import BooleanCompactness.CompactTypes
 open import BooleanCompactness.InfProperty
 open import UF-Base

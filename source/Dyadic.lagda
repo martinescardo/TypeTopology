@@ -10,9 +10,9 @@ Dyadic rationals (https://en.wikipedia.org/wiki/Dyadic_rational)
 
 module Dyadic where
 
-open import SpartanMLTT
+open import MLTT.Spartan
 open import DiscreteAndSeparated
-open import Unit-Properties
+open import MLTT.Unit-Properties
 
 open import UF-Miscelanea
 open import UF-Subsingletons

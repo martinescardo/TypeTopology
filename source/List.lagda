@@ -10,7 +10,7 @@ Athenian in this respect.
 
 module List where
 
-open import SpartanMLTT
+open import MLTT.Spartan
 
 data List {𝓤} (X : 𝓤 ̇ ) : 𝓤 ̇  where
  [] : List X

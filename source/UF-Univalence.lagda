@@ -10,7 +10,7 @@ universe. Univalence, when used, is taken as an explicit hypothesis.
 
 module UF-Univalence where
 
-open import SpartanMLTT
+open import MLTT.Spartan
 open import UF-Base
 open import UF-Subsingletons
 open import UF-Equiv

@@ -60,7 +60,7 @@ References
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import SpartanMLTT
+open import MLTT.Spartan
 
 open import UF-Equiv
 open import UF-Equiv-FunExt
@@ -81,7 +81,7 @@ open import DiscreteAndSeparated
 open import Fin-Properties
 open import NaturalsOrder
 open import Notation.Order
-open import Two-Properties
+open import MLTT.Two-Properties
 
 \end{code}
 

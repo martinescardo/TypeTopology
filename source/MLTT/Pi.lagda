@@ -6,9 +6,9 @@ Built-in, with the notation (x : X) → A x for Π A.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module Pi where
+module MLTT.Pi where
 
-open import Universes
+open import MLTT.Universes
 
 Π : {X : 𝓤 ̇ } (Y : X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
 Π {𝓤} {𝓥} {X} Y = (x : X) → Y x

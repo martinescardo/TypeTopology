@@ -10,8 +10,8 @@ and other modules.
 
 {-# OPTIONS --without-K --exact-split #-}
 
-open import SpartanMLTT
-open import Two-Properties
+open import MLTT.Spartan
+open import MLTT.Two-Properties
 open import UF-FunExt
 
 module Unsafe.CantorCompact (fe : FunExt) where

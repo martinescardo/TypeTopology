@@ -7,7 +7,7 @@ identity principle.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import SpartanMLTT
+open import MLTT.Spartan
 
 module LiftingIdentityViaSIP
         (𝓣 : Universe)

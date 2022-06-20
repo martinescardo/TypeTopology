@@ -4,10 +4,10 @@
 
 module UF-Retracts where
 
-open import SpartanMLTT
+open import MLTT.Spartan
+open import MLTT.AlternativePlus
 open import UF-Base
 open import UF-Subsingletons
-open import AlternativePlus
 
 has-section : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 has-section r = Σ s ꞉ (codomain r → domain r), r ∘ s ∼ id

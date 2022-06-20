@@ -4,8 +4,8 @@ Martin Escardo 20-21 December 2012
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import SpartanMLTT
-open import Two-Properties
+open import MLTT.Spartan
+open import MLTT.Two-Properties
 open import BooleanCompactness.CompactTypes
 
 module BooleanCompactness.InfProperty {𝓤 𝓥} {X : 𝓤 ̇ } (_≤_ : X → X → 𝓥 ̇ ) where

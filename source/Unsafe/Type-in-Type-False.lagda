@@ -24,7 +24,7 @@ module Unsafe.Type-in-Type-False where
 
 module coquand where
 
- open import SpartanMLTT
+ open import MLTT.Spartan
  open import LawvereFPT
 
  Y : {X : Set} → (X → X) → X

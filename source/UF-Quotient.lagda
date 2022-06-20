@@ -10,7 +10,7 @@ Assuming set quotients, we
 
 module UF-Quotient where
 
-open import SpartanMLTT
+open import MLTT.Spartan
 
 open import UF-Base hiding (_≈_)
 open import UF-Equiv

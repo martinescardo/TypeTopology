@@ -2,9 +2,9 @@
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module Sigma where
+module MLTT.Sigma where
 
-open import Universes
+open import MLTT.Universes
 
 \end{code}
 
@@ -15,7 +15,7 @@ such cases.
 
 \begin{code}
 
-open import Sigma-Type renaming (_,_ to infixr 4 _,_) public
+open import MLTT.Sigma-Type renaming (_,_ to infixr 4 _,_) public
 
 open Σ public
 

@@ -7,7 +7,7 @@ be done with univalence when the types live in different universes.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import SpartanMLTT
+open import MLTT.Spartan
 open import UF-FunExt
 
 module Ordinals.WellOrderTransport (fe : FunExt) where

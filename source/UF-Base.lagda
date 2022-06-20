@@ -6,7 +6,7 @@ This file needs reorganization and clean-up.
 
 module UF-Base where
 
-open import SpartanMLTT
+open import MLTT.Spartan
 
 Nat : {X : 𝓤 ̇ } → (X → 𝓥 ̇ ) → (X → 𝓦 ̇ ) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
 Nat A B = ∀ x → A x → B x

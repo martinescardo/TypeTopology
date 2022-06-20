@@ -77,11 +77,11 @@ topologically compact, when one reasons constructively.
 
 module BooleanCompactness.CompactTypes where
 
-open import SpartanMLTT
+open import MLTT.Spartan
+open import MLTT.Two-Properties
+open import MLTT.Plus-Properties
+open import MLTT.AlternativePlus
 
-open import Two-Properties
-open import Plus-Properties
-open import AlternativePlus
 open import DiscreteAndSeparated
 open import DecidableAndDetachable public
 

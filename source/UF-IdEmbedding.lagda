@@ -51,7 +51,7 @@ idea (*) in the weakened form discussed above.
 
 module UF-IdEmbedding where
 
-open import SpartanMLTT
+open import MLTT.Spartan
 open import UF-Base
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt

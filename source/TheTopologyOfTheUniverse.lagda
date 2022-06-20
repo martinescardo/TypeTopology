@@ -120,7 +120,7 @@ open import UF-FunExt
 
 module TheTopologyOfTheUniverse (fe : FunExt) where
 
-open import SpartanMLTT
+open import MLTT.Spartan
 open import UF-Equiv
 open import CoNaturals.GenericConvergentSequence
 open import InjectiveTypes fe

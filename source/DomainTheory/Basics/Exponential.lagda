@@ -11,7 +11,7 @@ useful when proving that exponentials of sup-complete dcpos are algebraic.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import SpartanMLTT hiding (J)
+open import MLTT.Spartan hiding (J)
 open import UF-FunExt
 open import UF-PropTrunc
 

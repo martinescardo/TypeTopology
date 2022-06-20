@@ -41,8 +41,8 @@ Applications:
 
 module BinaryNaturals where
 
-open import SpartanMLTT renaming (_+_ to _∔_)
-open import NaturalNumbers-Properties
+open import MLTT.Spartan renaming (_+_ to _∔_)
+open import MLTT.NaturalNumbers-Properties
 open import UF-Equiv
 open import UF-Base
 open import UF-EquivalenceExamples

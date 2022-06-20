@@ -9,7 +9,7 @@ TypeTopology. This will grow as the need arises.
 
 module MGS.TypeTopology-Interface where
 
-open import SpartanMLTT
+open import MLTT.Spartan
 open import UF-Base
 open import UF-Equiv
 

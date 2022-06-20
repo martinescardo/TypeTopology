@@ -7,17 +7,17 @@ identity types _≡_, and universes 𝓤, 𝓥, 𝓦, ....
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module SpartanMLTT where
+module MLTT.Spartan where
 
-open import Empty           public
-open import Unit            public
-open import Two             public
-open import NaturalNumbers  public
-open import Plus            public
-open import Pi              public
-open import Sigma           public
-open import Universes       public
-open import Id              public
+open import MLTT.Empty           public
+open import MLTT.Unit            public
+open import MLTT.Two             public
+open import MLTT.NaturalNumbers  public
+open import MLTT.Plus            public
+open import MLTT.Pi              public
+open import MLTT.Sigma           public
+open import MLTT.Universes       public
+open import MLTT.Id              public
 
 open import Notation.General public
 

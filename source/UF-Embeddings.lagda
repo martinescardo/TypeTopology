@@ -6,9 +6,9 @@ Martin Escardo
 
 module UF-Embeddings where
 
-open import SpartanMLTT
+open import MLTT.Spartan
 
-open import Plus-Properties
+open import MLTT.Plus-Properties
 open import UF-Base
 open import UF-Subsingletons
 open import UF-Equiv

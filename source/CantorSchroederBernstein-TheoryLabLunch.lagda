@@ -164,12 +164,12 @@ The Pradic-Brown argument rendered in HoTT/UF
 
 module CantorSchroederBernstein-TheoryLabLunch where
 
-open import SpartanMLTT
+open import MLTT.Spartan
 open import DecidableAndDetachable
 open import BooleanCompactness.CompactTypes
 open import BooleanCompactness.GenericConvergentSequence
 open import CoNaturals.GenericConvergentSequence
-open import Plus-Properties
+open import MLTT.Plus-Properties
 open import UF-Subsingletons
 open import UF-Retracts
 open import UF-Equiv

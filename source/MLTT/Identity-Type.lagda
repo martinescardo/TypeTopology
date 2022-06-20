@@ -2,9 +2,9 @@
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module Identity-Type where
+module MLTT.Identity-Type where
 
-open import Universes
+open import MLTT.Universes
 
 data _≡_ {𝓤} {X : 𝓤 ̇ } : X → X → 𝓤 ̇ where
   refl : {x : X} → x ≡ x

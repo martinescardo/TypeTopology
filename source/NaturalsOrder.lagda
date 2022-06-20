@@ -6,12 +6,12 @@ Martin Escardo, started 5th May 2018
 
 module NaturalsOrder where
 
-open import SpartanMLTT
+open import MLTT.Spartan
 
 open import Ordinals.Notions
 open import UF-Subsingletons
 open import NaturalsAddition renaming (_+_ to _+'_)
-open import NaturalNumbers-Properties
+open import MLTT.NaturalNumbers-Properties
 open import Notation.Order
 
 _≤ℕ_ : ℕ → ℕ → 𝓤₀ ̇

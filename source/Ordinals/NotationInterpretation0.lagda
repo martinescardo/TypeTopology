@@ -9,7 +9,7 @@ them.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline --experimental-lossy-unification #-}
 
-open import SpartanMLTT
+open import MLTT.Spartan
 open import UF-Univalence
 open import UF-PropTrunc
 
@@ -57,7 +57,7 @@ open import BooleanCompactness.PropTychonoff
 open import BooleanCompactness.SquashedSum fe
 
 open import CoNaturals.GenericConvergentSequence
-open import Plus-Properties
+open import MLTT.Plus-Properties
 
 open ImageAndSurjection pt
 open ordinals-injectivity fe
