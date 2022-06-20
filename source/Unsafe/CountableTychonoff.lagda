@@ -14,7 +14,7 @@ open import UF.FunExt
 module Unsafe.CountableTychonoff (fe : FunExt) where
 
 open import MLTT.Spartan
-open import BooleanCompactness.CompactTypes
+open import TypeTopology.CompactTypes
 open import Sequence fe
 
 binary-Tychonoff' :{X : ℕ → 𝓤 ̇ } →

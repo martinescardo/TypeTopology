@@ -10,18 +10,18 @@ ordinals.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module BooleanCompactness.SigmaDiscreteAndTotallySeparated where
+module TypeTopology.SigmaDiscreteAndTotallySeparated where
 
 open import MLTT.Spartan
 
 open import DiscreteAndSeparated
 open import Taboos.WLPO
 open import CoNaturals.GenericConvergentSequence
-open import BooleanCompactness.CompactTypes
-open import BooleanCompactness.TotallySeparated
-open import BooleanCompactness.GenericConvergentSequence
-open import BooleanCompactness.PropTychonoff
-open import BooleanCompactness.FailureOfTotalSeparatedness
+open import TypeTopology.CompactTypes
+open import TypeTopology.TotallySeparated
+open import TypeTopology.GenericConvergentSequence
+open import TypeTopology.PropTychonoff
+open import TypeTopology.FailureOfTotalSeparatedness
 
 open import UF.Base
 open import UF.Subsingletons renaming (⊤Ω to ⊤ ; ⊥Ω to ⊥)

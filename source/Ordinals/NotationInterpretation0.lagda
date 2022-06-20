@@ -51,10 +51,10 @@ open import Ordinals.ToppedType fe
 open import Ordinals.TrichotomousType fe
 open import Ordinals.TrichotomousArithmetic fe
 
-open import BooleanCompactness.GenericConvergentSequence
-open import BooleanCompactness.CompactTypes
-open import BooleanCompactness.PropTychonoff
-open import BooleanCompactness.SquashedSum fe
+open import TypeTopology.GenericConvergentSequence
+open import TypeTopology.CompactTypes
+open import TypeTopology.PropTychonoff
+open import TypeTopology.SquashedSum fe
 
 open import CoNaturals.GenericConvergentSequence
 open import MLTT.Plus-Properties

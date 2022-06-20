@@ -33,7 +33,7 @@ The other files include
 
 \begin{code}
 
-import BooleanCompactness.index
+import TypeTopology.index
 import Ordinals.index
 
 \end{code}

@@ -47,8 +47,8 @@ assumption beyond MLTT is explicit in each claim).
 module CantorSchroederBernstein where
 
 open import MLTT.Spartan
-open import BooleanCompactness.CompactTypes
-open import BooleanCompactness.GenericConvergentSequence
+open import TypeTopology.CompactTypes
+open import TypeTopology.GenericConvergentSequence
 open import DecidableAndDetachable
 open import DiscreteAndSeparated
 open import CoNaturals.GenericConvergentSequence

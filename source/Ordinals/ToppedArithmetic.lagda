@@ -29,7 +29,7 @@ open import UF.Subsingletons
 
 open import MLTT.Spartan
 open import CoNaturals.GenericConvergentSequence
-open import BooleanCompactness.SquashedSum fe
+open import TypeTopology.SquashedSum fe
 open import Notation.CanonicalMap
 
 open import Ordinals.Type

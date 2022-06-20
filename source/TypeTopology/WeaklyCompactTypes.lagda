@@ -9,8 +9,8 @@ the module CompactTypes for the strong notion.
 
 open import MLTT.Spartan
 
-open import BooleanCompactness.CompactTypes
-open import BooleanCompactness.TotallySeparated
+open import TypeTopology.CompactTypes
+open import TypeTopology.TotallySeparated
 
 open import CoNaturals.GenericConvergentSequence
 
@@ -33,7 +33,7 @@ open import UF.ImageAndSurjection
 open import UF.Equiv
 open import UF.Miscelanea
 
-module BooleanCompactness.WeaklyCompactTypes
+module TypeTopology.WeaklyCompactTypes
         (fe : FunExt)
         (pt : propositional-truncations-exist)
        where

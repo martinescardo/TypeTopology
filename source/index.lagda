@@ -85,7 +85,7 @@ Some of the main modules and module clusters:
 import MLTT.index
 import UF.index
 import Notation.index
-import BooleanCompactness.index
+import TypeTopology.index
 import TheTopologyOfTheUniverse
 import RicesTheoremForTheUniverse
 import Ordinals.index
@@ -284,8 +284,8 @@ compactness as a corollary:
 
 \begin{code}
 
-import BooleanCompactness.CompactTypes
-import BooleanCompactness.GenericConvergentSequence
+import TypeTopology.CompactTypes
+import TypeTopology.GenericConvergentSequence
 
 \end{code}
 
@@ -328,9 +328,9 @@ increasingly complex compact ordinals.
 
 \begin{code}
 
-import BooleanCompactness.SquashedSum
-import BooleanCompactness.Lexicographic
-import BooleanCompactness.ConvergentSequenceHasInf
+import TypeTopology.SquashedSum
+import TypeTopology.Lexicographic
+import TypeTopology.ConvergentSequenceHasInf
 
 import Ordinals.NotationInterpretation
 
@@ -407,7 +407,7 @@ univalent proposition is itself compact:
 
 \begin{code}
 
-import BooleanCompactness.PropTychonoff
+import TypeTopology.PropTychonoff
 
 \end{code}
 
@@ -425,7 +425,7 @@ and proof, using the injectivity of the universe and the Prop-Tychonoff theorem:
 
 \begin{code}
 
-import BooleanCompactness.ExtendedSumCompact
+import TypeTopology.ExtendedSumCompact
 
 \end{code}
 
@@ -437,9 +437,9 @@ results.
 
 \begin{code}
 
-import BooleanCompactness.TotallySeparated
-import BooleanCompactness.CompactTypes
-import BooleanCompactness.SimpleTypes
-import BooleanCompactness.FailureOfTotalSeparatedness
+import TypeTopology.TotallySeparated
+import TypeTopology.CompactTypes
+import TypeTopology.SimpleTypes
+import TypeTopology.FailureOfTotalSeparatedness
 
 \end{code}

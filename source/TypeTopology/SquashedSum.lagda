@@ -11,7 +11,7 @@ See remarks below for an explanation.
 open import MLTT.Spartan
 open import UF.FunExt
 
-module BooleanCompactness.SquashedSum (fe : FunExt) where -- move this to compact types
+module TypeTopology.SquashedSum (fe : FunExt) where -- move this to compact types
 
 private
  fe₀ : funext 𝓤₀ 𝓤₀
@@ -21,10 +21,10 @@ open import MLTT.Two-Properties
 open import MLTT.Plus-Properties
 open import Density
 open import CoNaturals.GenericConvergentSequence
-open import BooleanCompactness.CompactTypes
-open import BooleanCompactness.GenericConvergentSequence fe₀
-open import BooleanCompactness.SigmaDiscreteAndTotallySeparated
-open import BooleanCompactness.ExtendedSumCompact fe
+open import TypeTopology.CompactTypes
+open import TypeTopology.GenericConvergentSequence fe₀
+open import TypeTopology.SigmaDiscreteAndTotallySeparated
+open import TypeTopology.ExtendedSumCompact fe
 open import InjectiveTypes.Blackboard fe
 open import DiscreteAndSeparated
 open import Notation.CanonicalMap

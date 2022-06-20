@@ -135,7 +135,7 @@ searchable.
 
 \begin{code}
 
-open import BooleanCompactness.CompactTypes
+open import TypeTopology.CompactTypes
 
 Fin-Compact : {n : ℕ} → Compact (Fin n) {𝓤}
 Fin-Compact {𝓤} {0}      = 𝟘-Compact

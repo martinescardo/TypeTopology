@@ -132,7 +132,7 @@ Cantor-is-¬¬-separated fe = Π-is-¬¬-separated fe (λ _ → 𝟚-is-¬¬-sep
 ℕ∞-is-set : funext₀ → is-set ℕ∞
 ℕ∞-is-set fe = ¬¬-separated-types-are-sets fe (ℕ∞-is-¬¬-separated fe)
 
-open import BooleanCompactness.TotallySeparated
+open import TypeTopology.TotallySeparated
 
 ℕ∞-is-totally-separated : funext₀ → is-totally-separated ℕ∞
 ℕ∞-is-totally-separated fe = retract-of-totally-separated

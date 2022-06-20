@@ -40,7 +40,7 @@ open import MLTT.Spartan
 open import Notation.CanonicalMap
 open import Notation.Order
 open import MLTT.Plus-Properties
-open import BooleanCompactness.CompactTypes
+open import TypeTopology.CompactTypes
 open import NaturalsOrder
 
 open import UF.Base

@@ -19,14 +19,14 @@ searchable, which amounts to Theorem-3·6 of the paper
 open import MLTT.Spartan
 open import UF.FunExt
 
-module BooleanCompactness.GenericConvergentSequence (fe : funext 𝓤₀ 𝓤₀) where
+module TypeTopology.GenericConvergentSequence (fe : funext 𝓤₀ 𝓤₀) where
 
 open import MLTT.Two-Properties
 open import UF.PropTrunc
 open import CoNaturals.GenericConvergentSequence
 open import DiscreteAndSeparated
 open import Notation.CanonicalMap
-open import BooleanCompactness.CompactTypes
+open import TypeTopology.CompactTypes
 
 \end{code}
 
@@ -143,7 +143,7 @@ Corollaries:
 
 module _ (fe' : FunExt) (pt : propositional-truncations-exist) where
 
- open import BooleanCompactness.WeaklyCompactTypes fe' pt
+ open import TypeTopology.WeaklyCompactTypes fe' pt
 
  ℕ∞-is-∃-compact : ∃-compact ℕ∞
  ℕ∞-is-∃-compact = compact-types-are-∃-compact ℕ∞-compact

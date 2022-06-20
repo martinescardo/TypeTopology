@@ -39,7 +39,7 @@ open import UF.Equiv
 
 open import MLTT.Two-Properties
 open import CoNaturals.GenericConvergentSequence
-open import BooleanCompactness.CompactTypes
+open import TypeTopology.CompactTypes
 open import NaturalsOrder
 open import Notation.Order
 open import Notation.CanonicalMap
@@ -161,7 +161,7 @@ knowing whether LPO holds or not!
 
 \begin{code}
 
-open import BooleanCompactness.PropTychonoff
+open import TypeTopology.PropTychonoff
 
 [LPO→ℕ]-compact∙ : compact∙ (LPO → ℕ)
 [LPO→ℕ]-compact∙ = prop-tychonoff-corollary' fe LPO-is-prop f

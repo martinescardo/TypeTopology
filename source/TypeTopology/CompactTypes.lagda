@@ -75,7 +75,7 @@ topologically compact, when one reasons constructively.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module BooleanCompactness.CompactTypes where
+module TypeTopology.CompactTypes where
 
 open import MLTT.Spartan
 open import MLTT.Two-Properties
@@ -1038,7 +1038,7 @@ discrete-to-the-power-Compact-is-discrete {𝓤} {𝓥} fe {X} {Y} c d f g = γ
   γ : decidable (f ≡ g)
   γ = φ b
 
-open import BooleanCompactness.TotallySeparated
+open import TypeTopology.TotallySeparated
 
 compact-power-of-𝟚-has-discrete-exponent : {X : 𝓤 ̇ }
                                          → is-totally-separated X

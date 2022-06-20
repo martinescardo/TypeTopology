@@ -178,7 +178,7 @@ various equivalent ways.
 
 \begin{code}
 
-open import BooleanCompactness.TotallySeparated
+open import TypeTopology.TotallySeparated
 open import UF.Base
 open import UF.FunExt
 open import UF.Subsingletons

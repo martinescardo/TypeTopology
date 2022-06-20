@@ -35,7 +35,7 @@ open import MLTT.Spartan hiding (J)
 open import UF.Base
 open import UF.FunExt
 
-open import BooleanCompactness.SigmaDiscreteAndTotallySeparated
+open import TypeTopology.SigmaDiscreteAndTotallySeparated
 
 module Games.FiniteHistoryDependent (fe : Fun-Ext) where
 
@@ -646,7 +646,7 @@ Example: Tic-tac-toe. We have two versions.
 tic-tac-toe₁ : Game
 tic-tac-toe₁ = build-Game draw Board transition 9 board₀
  where
-  open import BooleanCompactness.CompactTypes
+  open import TypeTopology.CompactTypes
   open import UF.Subsingletons
   open import DiscreteAndSeparated
   open import UF.Miscelanea

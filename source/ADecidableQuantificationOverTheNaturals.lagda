@@ -18,8 +18,8 @@ open import UF.FunExt
 module ADecidableQuantificationOverTheNaturals (fe : funext 𝓤₀ 𝓤₀) where
 
 open import CoNaturals.GenericConvergentSequence
-open import BooleanCompactness.CompactTypes
-open import BooleanCompactness.GenericConvergentSequence fe
+open import TypeTopology.CompactTypes
+open import TypeTopology.GenericConvergentSequence fe
 open import MLTT.Two-Properties
 open import DecidableAndDetachable
 open import DiscreteAndSeparated

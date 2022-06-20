@@ -37,7 +37,7 @@ a theorem rather than a metatheorem.
 
 open import UF.FunExt
 
-module BooleanCompactness.FailureOfTotalSeparatedness (fe : FunExt) where
+module TypeTopology.FailureOfTotalSeparatedness (fe : FunExt) where
 
 open import MLTT.Spartan
 
@@ -161,7 +161,7 @@ module concrete-example where
 
 \begin{code}
 
- open import BooleanCompactness.TotallySeparated
+ open import TypeTopology.TotallySeparated
 
  Failure : is-totally-separated X → ¬¬ WLPO
  Failure ts nwlpo = g (𝟚-indistinguishability nwlpo)

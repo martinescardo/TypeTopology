@@ -8,10 +8,10 @@ open import MLTT.Spartan
 open import UF.FunExt
 open import UF.Embeddings
 
-module BooleanCompactness.ExtendedSumCompact (fe : FunExt) where
+module TypeTopology.ExtendedSumCompact (fe : FunExt) where
 
-open import BooleanCompactness.CompactTypes
-open import BooleanCompactness.PropTychonoff fe
+open import TypeTopology.CompactTypes
+open import TypeTopology.PropTychonoff fe
 
 open import InjectiveTypes.Blackboard fe
 

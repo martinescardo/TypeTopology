@@ -12,11 +12,11 @@ witnesses can be found.
 open import UF.FunExt
 open import MLTT.Spartan
 
-module BooleanCompactness.ConvergentSequenceHasInf (fe₀ : funext 𝓤₀ 𝓤₀) where
+module TypeTopology.ConvergentSequenceHasInf (fe₀ : funext 𝓤₀ 𝓤₀) where
 
 
 open import MLTT.Two-Properties
-open import BooleanCompactness.InfProperty
+open import TypeTopology.InfProperty
 open import CoNaturals.GenericConvergentSequence
 open import Notation.Order
 open import Notation.CanonicalMap

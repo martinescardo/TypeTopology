@@ -61,7 +61,7 @@ apartness relation is a set, and so this reflection is always a set.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module BooleanCompactness.TotallySeparated where
+module TypeTopology.TotallySeparated where
 
 open import MLTT.Spartan
 open import MLTT.Two-Properties

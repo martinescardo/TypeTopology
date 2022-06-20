@@ -7,10 +7,10 @@ They are also investigated in relation to compact types.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module BooleanCompactness.TotalSeparatedness where
+module TypeTopology.TotalSeparatedness where
 
-import BooleanCompactness.TotallySeparated
-import BooleanCompactness.FailureOfTotalSeparatedness
-import BooleanCompactness.SimpleTypes
+import TypeTopology.TotallySeparated
+import TypeTopology.FailureOfTotalSeparatedness
+import TypeTopology.SimpleTypes
 
 \end{code}

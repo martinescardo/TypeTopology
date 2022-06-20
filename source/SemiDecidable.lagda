@@ -75,7 +75,7 @@ open import UF.Subsingletons-FunExt
 open import UF.UniverseEmbedding
 
 open import BinaryNaturals hiding (_+_)
-open import BooleanCompactness.CompactTypes
+open import TypeTopology.CompactTypes
 open import DecidableAndDetachable
 open import DiscreteAndSeparated
 open import Fin-Properties

@@ -65,12 +65,12 @@ open import PairFun
 
 open import CoNaturals.GenericConvergentSequence
 
-open import BooleanCompactness.SigmaDiscreteAndTotallySeparated
-open import BooleanCompactness.ConvergentSequenceHasInf
-open import BooleanCompactness.PropTychonoff fe
-open import BooleanCompactness.PropInfTychonoff fe
-open import BooleanCompactness.CompactTypes
-open import BooleanCompactness.InfProperty
+open import TypeTopology.SigmaDiscreteAndTotallySeparated
+open import TypeTopology.ConvergentSequenceHasInf
+open import TypeTopology.PropTychonoff fe
+open import TypeTopology.PropInfTychonoff fe
+open import TypeTopology.CompactTypes
+open import TypeTopology.InfProperty
 
 open import Ordinals.Type
 open import Ordinals.Injectivity

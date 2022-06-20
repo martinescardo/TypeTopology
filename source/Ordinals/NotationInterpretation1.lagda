@@ -132,10 +132,10 @@ open import Ordinals.Closure fe
 open import Ordinals.Codes
 open import Ordinals.SquashedCantor fe hiding (Κ)
 
-open import BooleanCompactness.SquashedSum fe
-open import BooleanCompactness.CompactTypes
-open import BooleanCompactness.TotallySeparated
-open import BooleanCompactness.SigmaDiscreteAndTotallySeparated
+open import TypeTopology.SquashedSum fe
+open import TypeTopology.CompactTypes
+open import TypeTopology.TotallySeparated
+open import TypeTopology.SigmaDiscreteAndTotallySeparated
 
 open import DiscreteAndSeparated
 open import Density
@@ -453,8 +453,8 @@ open import UF.Equiv
 open import UF.Size
 
 open import CoNaturals.GenericConvergentSequence
-open import BooleanCompactness.GenericConvergentSequence
-open import BooleanCompactness.PropTychonoff
+open import TypeTopology.GenericConvergentSequence
+open import TypeTopology.PropTychonoff
 
 module _ (pt : propositional-truncations-exist)
          (ua : Univalence)

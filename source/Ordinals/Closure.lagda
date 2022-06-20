@@ -24,13 +24,13 @@ open import UF.Retracts
 open import UF.Embeddings
 open import UF.Miscelanea
 
-open import BooleanCompactness.CompactTypes
-open import BooleanCompactness.Lexicographic
-open import BooleanCompactness.ConvergentSequenceHasInf
-open import BooleanCompactness.PropInfTychonoff
-open import BooleanCompactness.InfProperty
-open import BooleanCompactness.SigmaDiscreteAndTotallySeparated
-open import BooleanCompactness.SquashedSum fe
+open import TypeTopology.CompactTypes
+open import TypeTopology.Lexicographic
+open import TypeTopology.ConvergentSequenceHasInf
+open import TypeTopology.PropInfTychonoff
+open import TypeTopology.InfProperty
+open import TypeTopology.SigmaDiscreteAndTotallySeparated
+open import TypeTopology.SquashedSum fe
 
 open import Ordinals.SquashedCantor fe
 open import Ordinals.ToppedType fe

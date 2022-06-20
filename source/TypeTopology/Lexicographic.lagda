@@ -6,11 +6,11 @@ This module is mainly for use in the module CompactOrdinals.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module BooleanCompactness.Lexicographic where
+module TypeTopology.Lexicographic where
 
 open import MLTT.Spartan
 open import LexicographicOrder
-open import BooleanCompactness.InfProperty
+open import TypeTopology.InfProperty
 
 Σ-has-inf : ∀ {𝓣} {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
           → (_≤_ : X → X → 𝓦 ̇ )

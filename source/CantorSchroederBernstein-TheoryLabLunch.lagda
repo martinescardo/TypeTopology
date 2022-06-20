@@ -166,8 +166,8 @@ module CantorSchroederBernstein-TheoryLabLunch where
 
 open import MLTT.Spartan
 open import DecidableAndDetachable
-open import BooleanCompactness.CompactTypes
-open import BooleanCompactness.GenericConvergentSequence
+open import TypeTopology.CompactTypes
+open import TypeTopology.GenericConvergentSequence
 open import CoNaturals.GenericConvergentSequence
 open import MLTT.Plus-Properties
 open import UF.Subsingletons
