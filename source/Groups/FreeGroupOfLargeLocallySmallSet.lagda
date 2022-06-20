@@ -57,7 +57,7 @@ open import MLTT.Spartan
 open import UF.PropTrunc
 open import UF.Univalence
 
-module FreeGroupOfLargeLocallySmallSet
+module Groups.FreeGroupOfLargeLocallySmallSet
         (pt : propositional-truncations-exist)
         (ua : Univalence)
        where
@@ -73,8 +73,8 @@ open import UF.Size
 
 open import List
 open import SRTclosure
-open import Groups
-open import FreeGroup
+open import Groups.Groups
+open import Groups.FreeGroup
 
 fe : Fun-Ext
 fe = Univalence-gives-Fun-Ext ua

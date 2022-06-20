@@ -33,13 +33,13 @@ church-rosser. This seems to be a bug, but we are not sure.
 
 \begin{code}
 
-module FreeGroup where
+module Groups.FreeGroup where
 
 open import MLTT.Spartan
 open import MLTT.Two
 open import MLTT.Two-Properties
 
-open import Groups
+open import Groups.Groups
 open import List
 
 open import UF.PropTrunc

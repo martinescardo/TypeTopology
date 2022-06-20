@@ -602,8 +602,8 @@ We need to assume that propositional truncations exist.
 the-type-of-ordinals-is-locally-small : is-locally-small (Ordinal 𝓤)
 the-type-of-ordinals-is-locally-small α β = (α ≃ₒ β) , ≃-sym (UAₒ-≃ α β)
 
-open import FreeGroupOfLargeLocallySmallSet
-open import Groups
+open import Groups.FreeGroupOfLargeLocallySmallSet
+open import Groups.Groups
 open import UF.PropTrunc
 
 module _ (pt : propositional-truncations-exist) where

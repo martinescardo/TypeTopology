@@ -7,7 +7,7 @@ UF.SIP-Examples.
 
 {-# OPTIONS --without-K --safe --auto-inline --exact-split #-}
 
-module Groups where
+module Groups.Groups where
 open import MLTT.Spartan
 open import UF.Base
 open import UF.Subsingletons

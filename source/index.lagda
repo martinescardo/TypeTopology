@@ -87,13 +87,13 @@ import UF.index
 import Notation.index
 import TypeTopology.index
 import Ordinals.index
+import Groups.index
 import LawvereFPT
 import Types2019
 import MGS.index          -- Modular version of https://github.com/martinescardo/HoTT-UF.Agda-Lecture-Notes
 import DomainTheory.index -- By Tom de Jong (started with Martin Escardo)
 import Dyadics.index      -- By Tom de Jong
 import Circle.index       -- By Tom de Jong
-
 \end{code}
 
 The UF module (univalent foundations) has been developed, on demand,
@@ -129,8 +129,6 @@ import GaloisConnection                -- By Ayberk Tosun
 import AdjointFunctorTheoremForFrames  -- By Ayberk Tosun
 import HeytingImplication              -- By Ayberk Tosun
 import PatchLocale                     -- By Ayberk Tosun
-import FreeGroup                       -- By Marc Bezem, Thierry Coquand, Dybjer, and Martin Escardo.
-import FreeGroupOfLargeLocallySmallSet -- By Marc Bezem, Thierry Coquand, Dybjer, and Martin Escardo.
 import FreeJoinSemiLattice             -- By Tom de Jong
 import FreeSupLattice                  -- By Tom de Jong
 import HiggsInvolutionTheorem
@@ -154,7 +152,6 @@ import P2
 import PairFun
 import PlusOneLC
 import QuasiDecidable
-import FreeGroupOfLargeLocallySmallSet
 import RootsTruncation
 import Sequence
 import SemiDecidable                   -- By Tom de Jong
