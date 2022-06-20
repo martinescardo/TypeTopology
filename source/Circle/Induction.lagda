@@ -21,7 +21,7 @@ open import UF.FunExt
 open import UF.Subsingletons
 
 
-module Circle.CircleInduction where
+module Circle.Induction where
 
 \end{code}
 

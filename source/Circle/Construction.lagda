@@ -34,7 +34,7 @@ open import Circle.Integers
 open import Circle.Integers-Properties
 open import Circle.Integers-SymmetricInduction
 
-module Circle.CircleConstruction
+module Circle.Construction
         (pt : propositional-truncations-exist)
         (ua : is-univalent 𝓤₀)
        where
@@ -588,7 +588,7 @@ principle.
 
 \begin{code}
 
-open import Circle.CircleInduction
+open import Circle.Induction
 
 module _
         (fe : FunExt)
