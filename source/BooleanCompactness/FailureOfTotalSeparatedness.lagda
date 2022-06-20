@@ -37,12 +37,12 @@ a theorem rather than a metatheorem.
 
 open import UF-FunExt
 
-module FailureOfTotalSeparatedness (fe : FunExt) where
+module BooleanCompactness.FailureOfTotalSeparatedness (fe : FunExt) where
 
 open import SpartanMLTT
 
 open import Two-Properties
-open import GenericConvergentSequence
+open import CoNaturals.GenericConvergentSequence
 open import BasicDiscontinuityTaboo
 open import WLPO
 open import UF-Base
@@ -161,7 +161,7 @@ module concrete-example where
 
 \begin{code}
 
- open import TotallySeparated
+ open import BooleanCompactness.TotallySeparated
 
  Failure : is-totally-separated X → ¬¬ WLPO
  Failure ts nwlpo = g (𝟚-indistinguishability nwlpo)

@@ -38,8 +38,8 @@ open import UF-Embeddings
 open import UF-Equiv
 
 open import Two-Properties
-open import GenericConvergentSequence
-open import CompactTypes
+open import CoNaturals.GenericConvergentSequence
+open import BooleanCompactness.CompactTypes
 open import NaturalsOrder
 open import OrderNotation
 open import CanonicalMapNotation
@@ -161,7 +161,7 @@ knowing whether LPO holds or not!
 
 \begin{code}
 
-open import PropTychonoff
+open import BooleanCompactness.PropTychonoff
 
 [LPO→ℕ]-compact∙ : compact∙ (LPO → ℕ)
 [LPO→ℕ]-compact∙ = prop-tychonoff-corollary' fe LPO-is-prop f

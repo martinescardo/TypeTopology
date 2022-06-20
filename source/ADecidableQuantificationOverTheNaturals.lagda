@@ -17,11 +17,10 @@ open import UF-FunExt
 
 module ADecidableQuantificationOverTheNaturals (fe : funext 𝓤₀ 𝓤₀) where
 
+open import CoNaturals.GenericConvergentSequence
+open import BooleanCompactness.CompactTypes
+open import BooleanCompactness.GenericConvergentSequence fe
 open import Two-Properties
-open import GenericConvergentSequence
-open import CompactTypes
-open import GenericConvergentSequence
-open import ConvergentSequenceCompact fe
 open import DecidableAndDetachable
 open import DiscreteAndSeparated
 open import CanonicalMapNotation

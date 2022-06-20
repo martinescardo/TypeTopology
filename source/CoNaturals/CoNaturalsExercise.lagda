@@ -24,12 +24,12 @@ this took.
 
 open import UF-FunExt
 
-module CoNaturalsExercise (fe : FunExt) where
+module CoNaturals.CoNaturalsExercise (fe : FunExt) where
 
 open import SpartanMLTT
 open import Two-Properties
-open import CoNaturals fe
-open import GenericConvergentSequence
+open import CoNaturals.CoNaturals fe
+open import CoNaturals.GenericConvergentSequence
 open import Sequence fe
 open import CanonicalMapNotation
 

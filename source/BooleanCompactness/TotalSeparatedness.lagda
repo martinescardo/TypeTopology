@@ -7,8 +7,10 @@ They are also investigated in relation to compact types.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-import TotallySeparated
-import FailureOfTotalSeparatedness
-import SimpleTypes
+module BooleanCompactness.TotalSeparatedness where
+
+import BooleanCompactness.TotallySeparated
+import BooleanCompactness.FailureOfTotalSeparatedness
+import BooleanCompactness.SimpleTypes
 
 \end{code}

@@ -9,12 +9,14 @@ the module CompactTypes for the strong notion.
 
 open import SpartanMLTT
 
-open import CompactTypes
-open import TotallySeparated
+open import BooleanCompactness.CompactTypes
+open import BooleanCompactness.TotallySeparated
+
+open import CoNaturals.GenericConvergentSequence
+
 open import Two-Properties
 open import DisconnectedTypes
 open import DiscreteAndSeparated
-open import GenericConvergentSequence
 open import WLPO
 open import Plus-Properties
 open import OrderNotation
@@ -30,7 +32,7 @@ open import UF-ImageAndSurjection
 open import UF-Equiv
 open import UF-Miscelanea
 
-module WeaklyCompactTypes
+module BooleanCompactness.WeaklyCompactTypes
         (fe : FunExt)
         (pt : propositional-truncations-exist)
        where

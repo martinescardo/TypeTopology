@@ -28,7 +28,7 @@ constructively, well, taboos!
 module WLPO where
 
 open import SpartanMLTT
-open import GenericConvergentSequence
+open import CoNaturals.GenericConvergentSequence
 
 WLPO : 𝓤₀ ̇
 WLPO = (u : ℕ∞) → (u ≡ ∞) + (u ≢ ∞)

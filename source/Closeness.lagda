@@ -29,9 +29,9 @@ open import UF-FunExt
 module Closeness (fe : FunExt) where
 
 open import Sequence fe
-open import CoNaturals fe
-open import CoNaturalsArithmetic fe
-open import GenericConvergentSequence renaming (min to min')
+open import CoNaturals.CoNaturals fe
+open import CoNaturals.CoNaturalsArithmetic fe
+open import CoNaturals.GenericConvergentSequence renaming (min to min')
 open import DiscreteAndSeparated
 open import UF-Miscelanea
 open import Two-Properties

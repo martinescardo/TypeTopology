@@ -893,7 +893,7 @@ also is not a successor ordinal unless LPO holds:
 \begin{code}
 
  open import CanonicalMapNotation
- open import GenericConvergentSequence
+ open import CoNaturals.GenericConvergentSequence
  open import OrderNotation
  open import NaturalsOrder
 

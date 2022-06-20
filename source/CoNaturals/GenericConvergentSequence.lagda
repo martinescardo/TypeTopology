@@ -12,7 +12,7 @@ lemmas. More additions after that date.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module GenericConvergentSequence where
+module CoNaturals.GenericConvergentSequence where
 
 open import SpartanMLTT
 open import Two-Properties
@@ -131,7 +131,7 @@ Cantor-is-¬¬-separated fe = Π-is-¬¬-separated fe (λ _ → 𝟚-is-¬¬-sep
 ℕ∞-is-set : funext₀ → is-set ℕ∞
 ℕ∞-is-set fe = ¬¬-separated-types-are-sets fe (ℕ∞-is-¬¬-separated fe)
 
-open import TotallySeparated
+open import BooleanCompactness.TotallySeparated
 
 ℕ∞-is-totally-separated : funext₀ → is-totally-separated ℕ∞
 ℕ∞-is-totally-separated fe = retract-of-totally-separated

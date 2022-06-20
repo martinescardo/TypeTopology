@@ -71,10 +71,10 @@ bisimulations. This gives a technique for establishing equalities on
 
 open import UF-FunExt
 
-module CoNaturals (fe : FunExt) where
+module CoNaturals.CoNaturals (fe : FunExt) where
 
 open import SpartanMLTT
-open import GenericConvergentSequence
+open import CoNaturals.GenericConvergentSequence
 open import CanonicalMapNotation
 
 open import Two-Properties

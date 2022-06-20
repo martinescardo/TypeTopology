@@ -61,7 +61,7 @@ apartness relation is a set, and so this reflection is always a set.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module TotallySeparated where
+module BooleanCompactness.TotallySeparated where
 
 open import SpartanMLTT
 

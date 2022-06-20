@@ -14,12 +14,12 @@ open import SpartanMLTT
 open import Two-Properties
 open import UF-FunExt
 
-module CantorCompact (fe : FunExt) where
+module BooleanCompactness.CantorCompact (fe : FunExt) where
 
-open import CompactTypes
-open import CountableTychonoff fe
-open import CompactTypes
-open import WeaklyCompactTypes
+open import BooleanCompactness.CompactTypes
+open import BooleanCompactness.CountableTychonoff fe
+open import BooleanCompactness.CompactTypes
+open import BooleanCompactness.WeaklyCompactTypes
 
 cantor-compact∙ : compact∙ (ℕ → 𝟚)
 cantor-compact∙ = countable-Tychonoff (λ i → 𝟚-compact∙)

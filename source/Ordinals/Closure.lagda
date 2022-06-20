@@ -19,32 +19,33 @@ open import UF-Retracts
 open import UF-Embeddings
 open import UF-Miscelanea
 
+open import BooleanCompactness.CompactTypes
+open import BooleanCompactness.Lexicographic
+open import BooleanCompactness.ConvergentSequenceHasInf
+open import BooleanCompactness.PropInfTychonoff
+open import BooleanCompactness.InfProperty
+open import BooleanCompactness.SigmaDiscreteAndTotallySeparated
+open import BooleanCompactness.SquashedSum fe
+
+open import Ordinals.SquashedCantor fe
+open import Ordinals.ToppedType fe
+open import Ordinals.Arithmetic fe
+open import Ordinals.Injectivity
+open import Ordinals.ToppedArithmetic fe
+
+open import CoNaturals.GenericConvergentSequence
+
 open import InjectiveTypes fe
 
 open import SpartanMLTT
 open import Two-Properties
 open import AlternativePlus
-open import CompactTypes
-open import GenericConvergentSequence
 open import LexicographicOrder
-open import LexicographicCompactness
-open import ConvergentSequenceHasInf
-open import PropInfTychonoff
 open import DiscreteAndSeparated
 open import BinaryNaturals hiding (_+_ ; L ; R)
-open import InfProperty
 open import Plus-Properties
-open import CanonicalMapNotation
-open import SigmaDiscreteAndTotallySeparated
 open import PairFun
-
-open import Ordinals.SquashedSum fe
-open import Ordinals.SquashedCantor fe
-
-open import Ordinals.ToppedType fe
-open import Ordinals.Arithmetic fe
-open import Ordinals.Injectivity
-open import Ordinals.ToppedArithmetic fe
+open import CanonicalMapNotation
 
 private
  fe₀ : funext 𝓤₀ 𝓤₀

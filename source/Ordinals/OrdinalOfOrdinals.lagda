@@ -888,9 +888,9 @@ other direction is equivalent to LPO.
 module ℕ∞-in-Ord where
 
  open import LPO fe
- open import Ordinals.Arithmetic fe
- open import GenericConvergentSequence
  open import NaturalsOrder
+ open import Ordinals.Arithmetic fe
+ open import CoNaturals.GenericConvergentSequence
 
  fact : (ω +ₒ 𝟙ₒ) ⊴ ℕ∞ₒ
  fact = ι𝟙 , i , p

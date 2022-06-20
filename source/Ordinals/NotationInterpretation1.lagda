@@ -120,25 +120,26 @@ the theorems and constructions to be performed here:
 
 \begin{code}
 
+open import UF-Subsingletons
+open import UF-Retracts
+open import UF-Embeddings
+
 open import Ordinals.Type
 open import Ordinals.ToppedType fe
 open import Ordinals.Arithmetic fe
 open import Ordinals.ToppedArithmetic fe
 open import Ordinals.Closure fe
 open import Ordinals.Codes
-open import Ordinals.SquashedSum fe
 open import Ordinals.SquashedCantor fe hiding (Κ)
 
-open import CompactTypes
-open import TotallySeparated
+open import BooleanCompactness.SquashedSum fe
+open import BooleanCompactness.CompactTypes
+open import BooleanCompactness.TotallySeparated
+open import BooleanCompactness.SigmaDiscreteAndTotallySeparated
+
 open import DiscreteAndSeparated
 open import Density
 open import PairFun
-open import SigmaDiscreteAndTotallySeparated
-
-open import UF-Subsingletons
-open import UF-Retracts
-open import UF-Embeddings
 
 private
  fe₀ : funext 𝓤₀ 𝓤₀
@@ -446,14 +447,14 @@ Added 4th April 2022. A third interpretation of ordinal expressions.
 
 \begin{code}
 
-open import GenericConvergentSequence
-open import ConvergentSequenceCompact
-open import PropTychonoff
-
 open import UF-PropTrunc
 open import UF-Univalence
 open import UF-Equiv
 open import UF-Size
+
+open import CoNaturals.GenericConvergentSequence
+open import BooleanCompactness.GenericConvergentSequence
+open import BooleanCompactness.PropTychonoff
 
 module _ (pt : propositional-truncations-exist)
          (ua : Univalence)

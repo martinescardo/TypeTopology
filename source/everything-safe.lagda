@@ -30,14 +30,7 @@ import CircleConstruction
 import CircleInduction
 import CircleModules
 import Closeness
-import Compactness
 import CompactRegular
-import CompactTypes
-import CoNaturalsArithmetic
-import CoNaturalsExercise
-import CoNaturals
-import ConvergentSequenceCompact
-import ConvergentSequenceHasInf
 -- import CountableTychonoff
 -- import CubicalBinarySystem
 import DomainTheory.index
@@ -58,8 +51,6 @@ import Empty-Type
 import Escardo-Simpson-LICS2001
 -- import everything
 -- import everything-safe
-import ExtendedSumCompact
-import FailureOfTotalSeparatedness
 import FiniteHistoryDependentGames
 import Finiteness-Universe-Invariance
 import Fin
@@ -72,14 +63,12 @@ import FreeJoinSemiLattice
 import FreeSupLattice
 import GaloisConnection
 import GeneralNotation
-import GenericConvergentSequence
 import Groups
 import HeytingImplication
 import HiggsInvolutionTheorem
 import Identity-Type
 import Id
 -- import index
-import InfProperty
 import InitialBinarySystem2
 import InitialBinarySystem
 import InitialFrame
@@ -90,7 +79,6 @@ import Integers-Properties
 import Integers-SymmetricInduction
 import JoinSemiLattices
 import LawvereFPT
-import LexicographicCompactness
 import LexicographicOrder
 import LiftingAlgebras
 import LiftingEmbeddingDirectly
@@ -132,19 +120,15 @@ import PlusOneLC
 import Plus-Properties
 import Plus-Type
 import Poset
-import PropInfTychonoff
-import PropTychonoff
 import QuasiDecidable
 import RicesTheoremForTheUniverse
 import RootsTruncation
 import SemiDecidable
 import Sequence
-import SigmaDiscreteAndTotallySeparated
 import sigma-frame
 import Sigma
 import sigma-sup-lattice
 import Sigma-Type
-import SimpleTypes
 import SliceAlgebras
 import SliceEmbedding
 import SliceIdentityViaSIP
@@ -155,8 +139,6 @@ import SpartanMLTT-List
 import SRTclosure
 import Swap
 import TheTopologyOfTheUniverse
-import TotallySeparated
-import TotalSeparatedness
 import Two
 import Two-Properties
 -- import Type-in-Type-False
@@ -214,7 +196,6 @@ import Unit-Type
 import UnivalenceFromScratch
 import Universes
 -- import UnsafeModulesIndex
-import WeaklyCompactTypes
 import W
 import WLPO
 import W-Properties

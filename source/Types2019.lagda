@@ -33,29 +33,7 @@ The other files include
 
 \begin{code}
 
-import ADecidableQuantificationOverTheNaturals
-import BasicDiscontinuityTaboo
-import Compactness
-import CompactTypes
-import CoNaturalsArithmetic
-import CoNaturalsExercise
-import CoNaturals
-import ConvergentSequenceCompact
-import ConvergentSequenceHasInf
-import DecidabilityOfNonContinuity
-import ExtendedSumCompact
-import FailureOfTotalSeparatedness
-import GenericConvergentSequence
-import InjectiveTypes
-import InfProperty
-import LexicographicCompactness
-import LexicographicOrder
-import LPO
-import Ordinals
-import PropInfTychonoff
-import PropTychonoff
-import TotallySeparated
-import WeaklyCompactTypes
-import WLPO
+import BooleanCompactness.index
+import Ordinals.index
 
 \end{code}

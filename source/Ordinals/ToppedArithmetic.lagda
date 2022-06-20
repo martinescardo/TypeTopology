@@ -28,8 +28,8 @@ module Ordinals.ToppedArithmetic
 open import UF-Subsingletons
 
 open import SpartanMLTT
-open import GenericConvergentSequence
-open import Ordinals.SquashedSum fe
+open import CoNaturals.GenericConvergentSequence
+open import BooleanCompactness.SquashedSum fe
 open import CanonicalMapNotation
 
 open import Ordinals.Type

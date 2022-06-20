@@ -40,7 +40,7 @@ open import SpartanMLTT
 open import CanonicalMapNotation
 open import OrderNotation
 open import Plus-Properties
-open import CompactTypes
+open import BooleanCompactness.CompactTypes
 open import NaturalsOrder
 
 open import UF-Base
@@ -1972,7 +1972,7 @@ Limits of sequences, but using the topological, rather than metric, structure of
                  → x∞ ∈ ⦅ p , q ⦆
                  → ∃ n ꞉ ℕ , ((k : ℕ) → k ≥ n → x k ∈ ⦅ p , q ⦆)
 
- open import GenericConvergentSequence
+ open import CoNaturals.GenericConvergentSequence
 
  is-continuous-ℕ∞-ℝ : (ℕ∞ → ℝ) → 𝓤 ̇
  is-continuous-ℕ∞-ℝ x = (𝓃 : ℕ∞) (p q : ℚ)

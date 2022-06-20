@@ -11,10 +11,10 @@ indication of termination.
 
 open import UF-FunExt
 
-module CountableTychonoff (fe : FunExt) where
+module BooleanCompactness.CountableTychonoff (fe : FunExt) where
 
 open import SpartanMLTT
-open import CompactTypes
+open import BooleanCompactness.CompactTypes
 open import Sequence fe
 
 binary-Tychonoff' :{X : ℕ → 𝓤 ̇ } →

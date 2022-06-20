@@ -76,7 +76,7 @@ top-is-top (α , (x , i)) = i
 tis-well-ordered : (τ : Ordinalᵀ 𝓤) → is-well-order (tunderlying-order τ)
 tis-well-ordered ((X , _<_ , o) , t) = o
 
-open import InfProperty
+open import BooleanCompactness.InfProperty
 
 has-infs-of-complemented-subsets : Ordinalᵀ 𝓤 → 𝓤 ̇
 has-infs-of-complemented-subsets α = has-inf (λ x y → x ≼⟪ α ⟫ y)

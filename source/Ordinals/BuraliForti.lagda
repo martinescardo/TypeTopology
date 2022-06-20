@@ -142,6 +142,7 @@ private
  fe = Univalence-gives-FunExt ua
 
 open import SpartanMLTT
+
 open import Ordinals.Notions
 open import Ordinals.Type
 open import Ordinals.WellOrderTransport

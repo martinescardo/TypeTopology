@@ -55,20 +55,22 @@ open import UF-Equiv
 open import UF-Subsingletons-FunExt
 open import UF-Miscelanea
 
-open import SigmaDiscreteAndTotallySeparated
 open import DiscreteAndSeparated
-open import GenericConvergentSequence
-open import ConvergentSequenceHasInf
-open import PropTychonoff fe
-open import PropInfTychonoff fe
 open import BinaryNaturals hiding (_+_)
 open import Two-Properties
-open import CompactTypes
-open import InfProperty
 open import WLPO
 open import LPO fe
 open import Density
 open import PairFun
+
+open import CoNaturals.GenericConvergentSequence
+
+open import BooleanCompactness.SigmaDiscreteAndTotallySeparated
+open import BooleanCompactness.ConvergentSequenceHasInf
+open import BooleanCompactness.PropTychonoff fe
+open import BooleanCompactness.PropInfTychonoff fe
+open import BooleanCompactness.CompactTypes
+open import BooleanCompactness.InfProperty
 
 open import Ordinals.Type
 open import Ordinals.Injectivity

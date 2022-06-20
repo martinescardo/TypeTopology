@@ -42,14 +42,14 @@ open import SpartanMLTT
 open import UF-FunExt
 open import UF-Subsingletons renaming (⊤Ω to ⊤ ; ⊥Ω to ⊥)
 
-module OrdinalsShulmanTaboo
+module Ordinals.ShulmanTaboo
        (fe : FunExt)
        (pe : propext 𝓤₀)
        where
 
-open import OrdinalsType
-open import OrdinalOfTruthValues fe 𝓤₀ pe
-open import OrdinalNotions
+open import Ordinals.Type
+open import Ordinals.OrdinalOfTruthValues fe 𝓤₀ pe
+open import Ordinals.Notions
 
 open import UF-Base
 open import UF-Subsingletons-FunExt

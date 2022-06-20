@@ -51,12 +51,14 @@ open import Ordinals.ToppedType fe
 open import Ordinals.TrichotomousType fe
 open import Ordinals.TrichotomousArithmetic fe
 
-open import ConvergentSequenceCompact
-open import CompactTypes
-open import GenericConvergentSequence
+open import BooleanCompactness.GenericConvergentSequence
+open import BooleanCompactness.CompactTypes
+open import BooleanCompactness.PropTychonoff
+open import BooleanCompactness.SquashedSum fe
+
+open import CoNaturals.GenericConvergentSequence
 open import Plus-Properties
-open import PropTychonoff
-open import Ordinals.SquashedSum fe
+
 open ImageAndSurjection pt
 open ordinals-injectivity fe
 

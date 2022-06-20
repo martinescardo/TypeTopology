@@ -26,15 +26,15 @@ codistances) is minimum.
 open import SpartanMLTT
 open import UF-FunExt
 
-module CoNaturalsArithmetic (fe : FunExt) where
+module CoNaturals.CoNaturalsArithmetic (fe : FunExt) where
 
 private
  fe₀ : funext 𝓤₀ 𝓤₀
  fe₀ = fe 𝓤₀ 𝓤₀
 
 open import Two-Properties
-open import GenericConvergentSequence renaming (min to min')
-open import CoNaturals fe
+open import CoNaturals.GenericConvergentSequence renaming (min to min')
+open import CoNaturals.CoNaturals fe
 open import OrderNotation
 open import CanonicalMapNotation
 open import UF-Base

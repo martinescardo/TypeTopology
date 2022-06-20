@@ -28,10 +28,10 @@ open import UF-Retracts
 
 open import SpartanMLTT
 open import Two-Properties
-open import GenericConvergentSequence
+open import CoNaturals.GenericConvergentSequence
 open import NaturalsAddition renaming (_+_ to _∔_)
-open import Ordinals.SquashedSum fe
-open import CoNaturals fe
+open import BooleanCompactness.SquashedSum fe
+open import CoNaturals.CoNaturals fe
 open import Sequence fe renaming (head to head' ; tail to tail' ; _∶∶_ to _∶∶'_)
 open import InjectiveTypes fe
 open import CanonicalMapNotation

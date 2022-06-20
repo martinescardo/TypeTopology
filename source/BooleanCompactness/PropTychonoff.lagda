@@ -45,9 +45,9 @@ open import SpartanMLTT
 
 open import UF-FunExt
 
-module PropTychonoff (fe : FunExt) where
+module BooleanCompactness.PropTychonoff (fe : FunExt) where
 
-open import CompactTypes
+open import BooleanCompactness.CompactTypes
 open import Two-Properties
 open import UF-Base
 open import UF-Subsingletons

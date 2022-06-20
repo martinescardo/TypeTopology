@@ -10,11 +10,11 @@ file PropTychonoff has many comments, but this one doesn't.
 open import SpartanMLTT
 open import UF-FunExt
 
-module PropInfTychonoff (fe : FunExt) where
+module BooleanCompactness.PropInfTychonoff (fe : FunExt) where
 
 open import Two-Properties
-open import CompactTypes
-open import InfProperty
+open import BooleanCompactness.CompactTypes
+open import BooleanCompactness.InfProperty
 open import UF-Base
 open import UF-Subsingletons
 open import UF-PropIndexedPiSigma

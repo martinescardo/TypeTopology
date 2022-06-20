@@ -18,7 +18,7 @@ open import DisconnectedTypes
 open import UF-FunExt
 open import UF-PropTrunc
 
-module SimpleTypes
+module BooleanCompactness.SimpleTypes
         (fe : FunExt)
         (pt : propositional-truncations-exist)
        where
@@ -30,8 +30,8 @@ data simple-type : 𝓤₀ ̇ → 𝓤₁ ̇ where
  base : simple-type ℕ
  step : {X Y : 𝓤₀ ̇ } → simple-type X → simple-type Y → simple-type (X → Y)
 
-open import TotallySeparated
-open import WeaklyCompactTypes fe pt renaming (Π-compact to compact)
+open import BooleanCompactness.TotallySeparated
+open import BooleanCompactness.WeaklyCompactTypes fe pt renaming (Π-compact to compact)
 open import DiscreteAndSeparated
 
 simple-types-are-totally-separated : {X : 𝓤₀ ̇ }

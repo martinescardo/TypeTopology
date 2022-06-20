@@ -32,7 +32,6 @@ import Ordinals.Injectivity
 import Ordinals.WellOrderArithmetic
 import Ordinals.WellOrderTransport
 import Ordinals.SquashedCantor
-import Ordinals.SquashedSum
 import Ordinals.WellOrderingTaboo -- By Tom de Jong, based on a theorem by Andrew Swan
 
 \end{code}

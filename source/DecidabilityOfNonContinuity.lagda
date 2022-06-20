@@ -24,7 +24,7 @@ module DecidabilityOfNonContinuity (fe : funext 𝓤₀ 𝓤₀) where
 
 open import Two-Properties
 open import DiscreteAndSeparated
-open import GenericConvergentSequence
+open import CoNaturals.GenericConvergentSequence
 open import ADecidableQuantificationOverTheNaturals fe
 open import DecidableAndDetachable
 open import CanonicalMapNotation

@@ -19,7 +19,7 @@ module BasicDiscontinuityTaboo (fe : FunExt) where
 
 open import Two-Properties
 open import Plus-Properties
-open import GenericConvergentSequence
+open import CoNaturals.GenericConvergentSequence
 open import WLPO
 open import CanonicalMapNotation
 

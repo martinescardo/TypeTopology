@@ -13,9 +13,9 @@ module Ordinals.Arithmetic
        where
 
 open import SpartanMLTT
-open import GenericConvergentSequence
 open import NaturalsOrder
 
+open import CoNaturals.GenericConvergentSequence
 open import Ordinals.Notions
 open import Ordinals.Type
 open import Ordinals.WellOrderArithmetic

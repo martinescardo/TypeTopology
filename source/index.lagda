@@ -82,12 +82,11 @@ Some of the main modules and module clusters:
 
 \begin{code}
 
-import Compactness
-import TotalSeparatedness
+import BooleanCompactness.index
 import InjectiveTypes-article
 import TheTopologyOfTheUniverse
 import RicesTheoremForTheUniverse
-import Ordinals
+import Ordinals.index
 import LawvereFPT
 import PartialElements
 import Types2019
@@ -117,13 +116,6 @@ import CantorSchroederBernstein
 import CantorSchroederBernstein-TheoryLabLunch
 import CantorSearch
 import Closeness              -- By Todd Waugh Ambridge and Martin Escardo
-import Compactness
-import CompactTypes
-import CoNaturalsArithmetic
-import CoNaturalsExercise
-import CoNaturals
-import ConvergentSequenceCompact
-import ConvergentSequenceHasInf
 -- import CubicalBinarySystem -- works with Agda 2.6.2 only and need the Cubical Library. By Martin Escardo and Alex Rice
 import DecidabilityOfNonContinuity
 import DecidableAndDetachable
@@ -138,12 +130,10 @@ import Dominance
 import DummettDisjunction
 import Empty
 import Escardo-Simpson-LICS2001        -- By Todd Waugh Ambridge
-import ExtendedSumCompact
 import Fin
 import Fin-Properties
 import FiniteHistoryDependentGames     -- By Martin Escardo and Paulo Oliva
 import Finiteness-Universe-Invariance
-import FailureOfTotalSeparatedness
 import Frame-version1
 import Frame                           -- By Ayberk Tosun
 import InitialFrame                    -- By Ayberk Tosun
@@ -157,17 +147,14 @@ import FreeGroupOfLargeLocallySmallSet -- By Marc Bezem, Thierry Coquand, Dybjer
 import FreeJoinSemiLattice             -- By Tom de Jong
 import FreeSupLattice                  -- By Tom de Jong
 import GeneralNotation
-import GenericConvergentSequence
 import HiggsInvolutionTheorem
 import Id
-import InfProperty
 import InitialBinarySystem    -- More work than needed!
 import InitialBinarySystem2   -- No need to work with subtype of normal elements.
 import InjectiveTypes-article
 import InjectiveTypes
 import JoinSemiLattices                -- By Tom de Jong
 import LawvereFPT
-import LexicographicCompactness
 import LexicographicOrder
 import LiftingAlgebras
 import LiftingEmbeddingDirectly
@@ -189,7 +176,7 @@ import NaturalsOrder
 import Negation
 import NonCollapsibleFamily
 import NonSpartanMLTTTypes
-import SigmaDiscreteAndTotallySeparated
+
 import SRTclosure
 import Ordinals
 import P2
@@ -199,8 +186,6 @@ import Pi
 import Plus
 import PlusOneLC
 import Plus-Properties
-import PropInfTychonoff
-import PropTychonoff
 import QuasiDecidable
 import FreeGroupOfLargeLocallySmallSet
 import RicesTheoremForTheUniverse
@@ -208,7 +193,6 @@ import RootsTruncation
 import Sequence
 import SemiDecidable                   -- By Tom de Jong
 import Sigma
-import SimpleTypes
 import SliceAlgebras
 import SliceEmbedding
 import SliceIdentityViaSIP
@@ -221,14 +205,12 @@ import Swap
 import sigma-sup-lattice
 import sigma-frame
 import TheTopologyOfTheUniverse
-import TotallySeparated
 import Two
 import Two-Properties
 import UnivalenceFromScratch
 import Unit
 import Unit-Properties
 import Universes
-import WeaklyCompactTypes
 import W
 import W-Properties
 import WLPO
@@ -374,7 +356,7 @@ classical logic) is ℕ ∪ { ∞ }, defined in the following module:
 
 \begin{code}
 
-import GenericConvergentSequence
+import CoNaturals.GenericConvergentSequence
 
 \end{code}
 
@@ -383,8 +365,8 @@ compactness as a corollary:
 
 \begin{code}
 
-import CompactTypes
-import ConvergentSequenceCompact
+import BooleanCompactness.CompactTypes
+import BooleanCompactness.GenericConvergentSequence
 
 \end{code}
 
@@ -427,10 +409,11 @@ increasingly complex compact ordinals.
 
 \begin{code}
 
-import Ordinals.SquashedSum
+import BooleanCompactness.SquashedSum
+import BooleanCompactness.Lexicographic
+import BooleanCompactness.ConvergentSequenceHasInf
+
 import Ordinals.NotationInterpretation
-import LexicographicCompactness
-import ConvergentSequenceHasInf
 
 \end{code}
 
@@ -440,8 +423,8 @@ illustrative example:
 
 \begin{code}
 
-import CoNaturals
-import CoNaturalsExercise
+import CoNaturals.CoNaturals
+import CoNaturals.CoNaturalsExercise
 
 \end{code}
 
@@ -505,7 +488,7 @@ univalent proposition is itself compact:
 
 \begin{code}
 
-import PropTychonoff
+import BooleanCompactness.PropTychonoff
 
 \end{code}
 
@@ -523,7 +506,7 @@ and proof, using the injectivity of the universe and the Prop-Tychonoff theorem:
 
 \begin{code}
 
-import ExtendedSumCompact
+import BooleanCompactness.ExtendedSumCompact
 
 \end{code}
 
@@ -535,9 +518,9 @@ results.
 
 \begin{code}
 
-import TotallySeparated
-import CompactTypes
-import SimpleTypes
-import FailureOfTotalSeparatedness
+import BooleanCompactness.TotallySeparated
+import BooleanCompactness.CompactTypes
+import BooleanCompactness.SimpleTypes
+import BooleanCompactness.FailureOfTotalSeparatedness
 
 \end{code}

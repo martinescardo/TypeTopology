@@ -73,7 +73,7 @@ open import SpartanMLTT
 open import UF-Equiv
 open import UF-EquivalenceExamples
 open import TheTopologyOfTheUniverse fe
-open import GenericConvergentSequence
+open import CoNaturals.GenericConvergentSequence
 open import WLPO
 open import BasicDiscontinuityTaboo fe
 open import CanonicalMapNotation
