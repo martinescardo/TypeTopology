@@ -11,7 +11,7 @@ indication of termination.
 
 open import UF-FunExt
 
-module BooleanCompactness.CountableTychonoff (fe : FunExt) where
+module Unsafe.CountableTychonoff (fe : FunExt) where
 
 open import SpartanMLTT
 open import BooleanCompactness.CompactTypes

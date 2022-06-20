@@ -14,10 +14,11 @@ open import SpartanMLTT
 open import Two-Properties
 open import UF-FunExt
 
-module BooleanCompactness.CantorCompact (fe : FunExt) where
+module Unsafe.CantorCompact (fe : FunExt) where
+
+open import Unsafe.CountableTychonoff fe
 
 open import BooleanCompactness.CompactTypes
-open import BooleanCompactness.CountableTychonoff fe
 open import BooleanCompactness.CompactTypes
 open import BooleanCompactness.WeaklyCompactTypes
 

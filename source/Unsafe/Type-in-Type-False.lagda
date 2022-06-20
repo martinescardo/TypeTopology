@@ -20,7 +20,7 @@ Blechschmidt. See also the module LawvereFPT.
 
 {-# OPTIONS --without-K --type-in-type --exact-split #-}
 
-module Type-in-Type-False where
+module Unsafe.Type-in-Type-False where
 
 module coquand where
 

@@ -4,8 +4,6 @@
 
 module BooleanCompactness.index where
 
--- import BooleanCompactness.CantorCompact -- unsafe - move to another directory `Unsafe`
--- import BooleanCompactness.CountableTychonoff -- unsafe - move to another directory `Unsafe`
 import BooleanCompactness.CompactTypes
 import BooleanCompactness.ExtendedSumCompact
 import BooleanCompactness.FailureOfTotalSeparatedness

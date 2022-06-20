@@ -6,8 +6,8 @@ Martin Escardo
 
 module UnsafeModulesIndex where
 
-import BooleanCompactness.CountableTychonoff    -- uses TERMINATING
+import BooleanCompactness.CountableTychonoff
 import BooleanCompactness.CantorCompact         -- uses CountableTychonoff
-import Type-in-Type-False    -- uses --type-in-type
+import Type-in-Type-False
 
 \end{code}
