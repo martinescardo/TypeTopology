@@ -25,9 +25,6 @@ import Notation.CanonicalMap
 import CantorSchroederBernstein
 import CantorSchroederBernstein-TheoryLabLunch
 import CantorSearch
-import CircleConstruction
-import CircleInduction
-import CircleModules
 import Closeness
 import CompactRegular
 -- import CountableTychonoff
@@ -66,9 +63,6 @@ import HiggsInvolutionTheorem
 import InitialBinarySystem2
 import InitialBinarySystem
 import InitialFrame
-import Integers
-import Integers-Properties
-import Integers-SymmetricInduction
 import JoinSemiLattices
 import LawvereFPT
 import LexicographicOrder
