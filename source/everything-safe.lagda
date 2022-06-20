@@ -156,7 +156,5 @@ import UF.UniverseEmbedding
 import UF.Yoneda
 import UnivalenceFromScratch
 -- import UnsafeModulesIndex
-import W
-import W-Properties
 
 \end{code}

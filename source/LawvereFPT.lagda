@@ -570,7 +570,7 @@ module GeneralizedCoquand where
         → 𝟘
  Lemma₀ {𝓤} A T S ρ σ η = γ
   where
-   open import W
+   open import MLTT.W
 
    𝕎 : 𝓤 ̇
    𝕎 = W A T
@@ -726,7 +726,7 @@ Further generalization, where we intend to use P = is-set.
 
 \begin{code}
 
-open import W
+open import MLTT.W
 
 module Coquand-further-generalized (𝓤 𝓥 : Universe)
          (P : 𝓤 ̇ → 𝓥 ̇ )
@@ -854,7 +854,7 @@ extensionality:
 
 \begin{code}
 
-open import W-Properties
+open import MLTT.W-Properties
 
 silly-theorem : funext 𝓤 𝓤 → ¬ (Σ A ꞉ 𝓤 ̇ , is-set A × (hSet 𝓤 ≃ A))
 silly-theorem {𝓤} fe (A , A-is-set , e) =

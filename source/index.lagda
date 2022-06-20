@@ -182,8 +182,6 @@ import sigma-sup-lattice
 import sigma-frame
 import TheTopologyOfTheUniverse
 import UnivalenceFromScratch
-import W
-import W-Properties
 
 \end{code}
 

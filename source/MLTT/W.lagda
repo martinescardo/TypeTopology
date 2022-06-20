@@ -4,7 +4,7 @@ W-types.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module W where
+module MLTT.W where
 
 open import MLTT.Spartan
 

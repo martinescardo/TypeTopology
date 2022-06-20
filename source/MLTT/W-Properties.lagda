@@ -4,10 +4,10 @@ Martin Escardo, 19th December 2020
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module W-Properties where
+module MLTT.W-Properties where
 
 open import MLTT.Spartan
-open import W
+open import MLTT.W
 open import UF.Base
 open import UF.Subsingletons
 open import UF.Retracts
