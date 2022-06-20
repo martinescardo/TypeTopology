@@ -4,7 +4,7 @@ General terminology and notation.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module GeneralNotation where
+module Notation.GeneralNotation where
 
 open import Pi
 open import Sigma

@@ -19,6 +19,6 @@ open import Sigma           public
 open import Universes       public
 open import Id              public
 
-open import GeneralNotation public
+open import Notation.GeneralNotation public
 
 \end{code}

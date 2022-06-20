@@ -10,7 +10,7 @@ _∔_ (\dotplus) here. An alternative is ⧾ ("C-x 8 RET TINY").
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module PlusNotation where
+module Notation.PlusNotation where
 
 open import Universes
 

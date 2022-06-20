@@ -6,7 +6,7 @@ Type-class for notation for strict orders.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module OrderNotation where
+module Notation.OrderNotation where
 
 open import SpartanMLTT
 
