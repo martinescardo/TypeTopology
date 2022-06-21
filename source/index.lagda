@@ -82,30 +82,32 @@ Some of the main modules and module clusters:
 
 \begin{code}
 
-import MLTT.index
-import UF.index
-import InjectiveTypes.index
-import TypeTopology.index
-import Ordinals.index
+import BinarySystems.index
 import CantorSchroederBernstein.index
+import Circle.index                   -- By Tom de Jong
+import CoNaturals.index
+import DomainTheory.index             -- By Tom de Jong
+import Dyadics.index                  -- By Tom de Jong
+import Games.index                    -- By Martin Escardo and Paulo OLiva
 import Groups.index
-import Uncatalogued.index
+import InjectiveTypes.index
 import Lifting.index
+import Locales.index                  -- By Ayberk Tosun
+import MGS.index                      -- Modular version of https://github.com/martinescardo/HoTT-UF-Agda-Lecture-Notes
+import MLTT.index
 import Naturals.index
-import Slice.index
-import Taboos.index
-import Utilities.index
 import Notation.index
-import MGS.index                    -- Modular version of
-                                    -- https://github.com/martinescardo/HoTT-UF.Agda-Lecture-Notes
-import Circle.index                 -- By Tom de Jong
-import DomainTheory.index           -- By Tom de Jong
-import Dyadics.index                -- By Tom de Jong
-import Posets.index                 -- By Tom de Jong and Martin Escardo
-import NotionsOfDecidability.index  -- By Tom de Jong and Martin Escardo
-import Locales.index                -- By Ayberk Tosun
-import TWA.index                    -- Todd Waugh Ambridge
-import Games.index                  -- By Martin Escardo and Paulo Oliva
+import NotionsOfDecidability.index    -- By Tom de Jong and Martin Escardo
+import Ordinals.index
+import Posets.index                   -- By Tom de Jong and Martin Escardo
+import Published.index
+import Slice.index
+import TWA.index                      -- Todd Waugh Ambridge
+import Taboos.index
+import TypeTopology.index
+import UF.index
+import Uncatalogued.index
+import Utilities.index
 
 \end{code}
 

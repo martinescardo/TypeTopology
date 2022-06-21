@@ -23,7 +23,7 @@
 {-# OPTIONS --without-K --exact-split #-}
 
 import index
-import Unindexed.index
+import Published.index
 import Unsafe.index
 
 \end{code}

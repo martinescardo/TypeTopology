@@ -2,7 +2,7 @@
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module Unindexed.index where
+module Published.index where
 
 import Types2019
 import InjectiveTypes-article
