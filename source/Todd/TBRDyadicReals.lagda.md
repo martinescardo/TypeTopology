@@ -891,6 +891,34 @@ For example, in the case of negation, we want to prove that the encoding of the 
                            (bound-flip₂ x k)
                             (<-swap (rb x k) (ℤ[1/2]- p) r<-p)
 
+
+ -- We want to have machinery to build operations defined on TBR's.
+
+
+ prove-belowness : (f g : ℤ → ℤ)
+                 → (_⊕_ : ℤ → ℤ → ℤ)
+                 → Σ k ꞉ ℤ , {!!}
+ prove-belowness = {!!}
+
+ operation-builder : ((f , b) (g , b') : 𝕋)
+                   → (_⊕_ : ℤ → ℤ → ℤ)
+                   → ((n : ℤ) → (f (succℤ n) ⊕ g (succℤ n)) below (f n ⊕ g n))
+                   → 𝕋 
+ operation-builder (f , b) (g , b') _⊕_ is-below = (λ δ → f δ ⊕ g δ) , is-below
+
+ conclusion : ((f , b) (g , b') : 𝕋)
+            → (_⊕_ : ℤ → ℤ → ℤ)
+            → (is-below : (((n : ℤ) → (f (succℤ n) ⊕ g (succℤ n)) below (f n ⊕ g n))))
+            → (_⊕'_ : ℝ-d → ℝ-d → ℝ-d)
+            → {!!}
+            → ⟦ operation-builder (f , b) (g , b') _⊕_ is-below ⟧ ≡ ⟦ (f  , b) ⟧ ⊕' ⟦ (g , b') ⟧
+ conclusion = {!!}
+
+ think : (_⊙_ : ℤ → ℤ → ℤ)
+       → Σ k ꞉ ℤ , upRight ^ {!!} ≡ {!!} 
+ think = {!!}
+
+
 -- _covers_ : ℤ[1/2] → ℤ[1/2] → 𝓤₀ ̇
 -- (a , p) covers (b , q) = (lb (a , p) ≤ lb (b , q))
 --                        × (rb (b , q) ≤ rb (a , p))
@@ -906,12 +934,15 @@ For example, in the case of negation, we want to prove that the encoding of the 
 --         → and if this ensures belowness property
 --         → (x y : 𝕋) → ⟦ (λ n → (upRight ^ i) (f x(p) y(p))) ⟧ ≡ ι (f' ⟦ x ⟧ ⟦ y ⟧)
 
- addition-commutes : (x y : 𝕋) → ⟦ x 𝕋+ y ⟧ ≡ ⟦ x ⟧ ℝd+ ⟦ y ⟧
- addition-commutes x y = ℝ-d-equality-from-left-cut left right
+ {-
+ addition-agrees : (x y : 𝕋) → ⟦ x 𝕋+ y ⟧ ≡ ⟦ x ⟧ ℝd+ ⟦ y ⟧
+ addition-agrees x y = ℝ-d-equality-from-left-cut left right
   where
    left : (p : ℤ[1/2])
         → ∃ k ꞉ ℤ , p < lb (x 𝕋+ y) k
-        → ∃ (r , s) ꞉ ℤ[1/2] × ℤ[1/2] , r < ⟦ x ⟧ × s < ⟦ y ⟧ × (p ≡ (r ℤ[1/2]+ s))
+        → ∃ (r , s) ꞉ ℤ[1/2] × ℤ[1/2] , (∃ k ꞉ ℤ , r < lb x k)
+                                      × (∃ k' ꞉ ℤ , s < lb y k')
+                                      × (p ≡ r ℤ[1/2]+ s)
    left p = ∥∥-functor I
     where
      I : Σ k ꞉ ℤ , p < lb (x 𝕋+ y) k
@@ -920,29 +951,6 @@ For example, in the case of negation, we want to prove that the encoding of the 
 
    right : lower-cut-of (⟦ x ⟧ ℝd+ ⟦ y ⟧) ⊆ lower-cut-of ⟦ x 𝕋+ y ⟧
    right = {!!}
- {-
- addition-commutes : (x y : 𝕋) → ⟦ x 𝕋+ y ⟧ ≡ (⟦ x ⟧ ℝd+ ⟦ y ⟧)
- addition-commutes x y = ℝ-d-equality-from-left-cut Ll⊆Lr Lr⊆Ll
-  where
-   Ll⊆Lr : lower-cut-of ⟦ x 𝕋+ y ⟧ ⊆ lower-cut-of (⟦ x ⟧ ℝd+ ⟦ y ⟧)
-   Ll⊆Lr p = ∥∥-functor I
-    where
-     I : Σ n ꞉ ℤ , (p < li (x 𝕋+ y) n)
-       → Σ (r , s) ꞉ ℤ[1/2] × ℤ[1/2] , r < ⟦ x ⟧ × s < ⟦ y ⟧ × (p ≡ r ℤ[1/2]+ s)
-     I (n , p<x+y) = {!!}
-
-   Lr⊆Ll : lower-cut-of (⟦ x ⟧ ℝd+ ⟦ y ⟧) ⊆ lower-cut-of ⟦ x 𝕋+ y ⟧
-   Lr⊆Ll p p∈x'+y' = ∥∥-rec ∃-is-prop I p∈x'+y'
-    where
-     I : Σ (r , s) ꞉ ℤ[1/2] × ℤ[1/2] , r < ⟦ x ⟧ × s < ⟦ y ⟧ × (p ≡ r ℤ[1/2]+ s)
-       → ∃ n ꞉ ℤ , (p < li (x 𝕋+ y) n)      
-     I ((r , s) , r<x' , s<y' , e) = ∥∥-functor II (binary-choice r<x' s<y') 
-      where
-       II : (Σ k  ꞉ ℤ , r < li x k)
-          × (Σ k' ꞉ ℤ , s < li y k')
-          → Σ n ꞉ ℤ , (p < li (x 𝕋+ y) n) 
-       II = {!!}
-
  
  multiplication-commutes : (x y : 𝕋) → ⟦ x 𝕋* y ⟧ ≡ (⟦ x ⟧ ℝd* ⟦ y ⟧)
  multiplication-commutes = {!!}

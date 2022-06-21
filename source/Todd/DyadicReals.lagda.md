@@ -1,6 +1,12 @@
-This files defines Dedekind reals using Dyadic Rationals.
+This file defines Dedekind reals using Dyadic Rationals.
 
-\begin{code}
+The code is this file is based upon the work in the DedekindReals.lagda file, in most cases simply changing ℚ to ℤ[1/2] is all that is necessary.
+
+http://math.andrej.com/wp-content/uploads/2008/08/abstract-cca2008.pdf
+
+"The rationals may be replaced by any dense Archimedean subring of R with decidable order", and as in "Efficient Computation with Dedekind Reals" we implement Dedekind reals using dyadic rationals.
+
+```agda
 
 {-# OPTIONS --allow-unsolved-metas #-}
 
@@ -19,6 +25,12 @@ module Todd.DyadicReals
 
  open PropositionalTruncation pt
  open import Todd.RationalsDyadic fe
+
+```
+
+The definition of the reals follows, by first defining the 4 properties that a real satisfies.
+
+```agda
 
  inhabited-left : (L : 𝓟 ℤ[1/2]) → 𝓤₀ ̇
  inhabited-left L = ∃ p ꞉ ℤ[1/2] , p ∈ L
@@ -49,6 +61,13 @@ module Todd.DyadicReals
  ℝ-d : 𝓤₁  ̇
  ℝ-d = Σ (L , R) ꞉ 𝓟 ℤ[1/2] × 𝓟 ℤ[1/2] , isCut L R
 
+```
+
+Now we can introduce notation to obtain specific cuts, or refer to a
+rational inhabiting a cut. This is useful for readability purposes.
+
+```agda
+
  lower-cut-of : ℝ-d → 𝓟 ℤ[1/2]
  lower-cut-of ((L , R) , _) = L
 
@@ -61,18 +80,28 @@ module Todd.DyadicReals
  in-upper-cut : ℤ[1/2] → ℝ-d → 𝓤₀ ̇
  in-upper-cut q ((L , R) , _) = q ∈ R
 
- ℝ-d-equality-from-left-cut : {x y : ℝ-d}
-                            → lower-cut-of x ⊆ lower-cut-of y
-                            → lower-cut-of y ⊆ lower-cut-of x
-                            → x ≡ y
- ℝ-d-equality-from-left-cut { x } { y } Lx⊆Ly Ly⊆Lx = {!!}
-
  instance
   Strict-Order-ℤ[1/2]-ℝ-d : Strict-Order ℤ[1/2] ℝ-d
   _<_ {{Strict-Order-ℤ[1/2]-ℝ-d}} = in-lower-cut
 
   Strict-Order-ℝ-d-ℤ[1/2] : Strict-Order ℝ-d ℤ[1/2]
   _<_ {{Strict-Order-ℝ-d-ℤ[1/2]}} = λ y q → in-upper-cut q y
+
+```
+
+The following proofs are incomplete, but can be completed easily by
+modelling the proofs in the DedekindReals.lagda file which uses usual
+rationals.
+
+```agda
+
+ -- TODO : FINISH PROOF
+
+ ℝ-d-equality-from-left-cut : {x y : ℝ-d}
+                            → lower-cut-of x ⊆ lower-cut-of y
+                            → lower-cut-of y ⊆ lower-cut-of x
+                            → x ≡ y
+ ℝ-d-equality-from-left-cut { x } { y } Lx⊆Ly Ly⊆Lx = {!!}
 
  embedding-ℤ[1/2]-to-ℝ-d : ℤ[1/2] → ℝ-d
  embedding-ℤ[1/2]-to-ℝ-d z = (L , R) , {!!}
@@ -86,4 +115,4 @@ module Todd.DyadicReals
   canonical-map-ℤ[1/2]-to-ℝ-d : Canonical-Map ℤ[1/2] ℝ-d
   ι {{canonical-map-ℤ[1/2]-to-ℝ-d}} = embedding-ℤ[1/2]-to-ℝ-d
 
-\end{code}
+```

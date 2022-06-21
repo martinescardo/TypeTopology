@@ -3,7 +3,7 @@ number of operations, relations and properties of the
 postulates. These are well known, commonly accepted results, but the
 aim is to provide specific implementations of these postulates.
 
-\begin{code}
+```agda
 
 {-# OPTIONS --without-K --exact-split --allow-unsolved-metas #-}
 
@@ -161,14 +161,14 @@ even-lemma : (x : ℤ) → even x → (x /2') * pos 2 ≡ x
 even-lemma (pos x) = even-lemma-pos x
 even-lemma (negsucc x) = even-lemma-neg x
 
-\end{code}
+```
 
 The definition of dyadic rationals follow.
 The dyadic rational ((k , δ) , p), to illustrate, refers to the dyadic rational (k / 2ᵟ).
 We could use integers values for δ, but negative values of δ are simply integer valued dyadic rationals.
 For example, (3 / 2⁻⁶) = 192 = (192 / 2⁰).
 
-\begin{code}
+```agda
 
 ℤ[1/2] : 𝓤₀ ̇
 ℤ[1/2] = Σ (z , n) ꞉ ℤ × ℕ , (n ≡ 0) ∔ ((n ≢ 0) × odd z)
@@ -214,11 +214,11 @@ normalise : ℤ × ℤ → ℤ[1/2]
 normalise (k , pos     n) = normalise-pos k n
 normalise (k , negsucc n) = normalise-neg k n
 
-\end{code}
+```
 
 It is easy to define order of dyadic rationals.
 
-\begin{code}
+```agda
 
 _<ℤ[1/2]_ _≤ℤ[1/2]_ : ℤ[1/2] → ℤ[1/2] → 𝓤₀ ̇
 ((x , n) , _) <ℤ[1/2] ((y , m) , _) = x * pos (2^ m) < y * pos (2^ n)
@@ -236,6 +236,24 @@ instance
 
  Strict-Order-ℤ[1/2]-ℤ[1/2] : Strict-Order ℤ[1/2] ℤ[1/2]
  _<_ {{Strict-Order-ℤ[1/2]-ℤ[1/2]}} = _<ℤ[1/2]_
+
+_𝔻+_ : ℤ[1/2] → ℤ[1/2] → ℤ[1/2]
+((k , n) , e) 𝔻+ ((h , m) , e') = normalise ((k * pos m +ℤ h * pos n) , (pos n * pos m))
+
+𝔻+-comm : commutative _𝔻+_
+𝔻+-comm ((k , n) , e) ((h , m) , e') = ap normalise (to-×-≡' (I , II)) 
+ where
+  I : k * pos m +ℤ h * pos n ≡ h * pos n +ℤ k * pos m
+  I = ℤ+-comm (k * pos m) (h * pos n)
+
+  II : pos n * pos m ≡ pos m * pos n
+  II = ℤ*-comm (pos n) (pos m)
+
+normalise-𝔻+ : ∀ x y → normalise x 𝔻+ normalise y ≡ normalise {!!}
+normalise-𝔻+ = {!!}
+
+D+-assoc : associative _𝔻+_
+D+-assoc x y z = {!!}
 
 record DyadicProperties : 𝓤₁ ̇ where
  field
@@ -274,7 +292,7 @@ record OrderProperties : 𝓤₁ ̇ where
  trans₂ : (w x y z : ℤ[1/2]) → w < x → x < y → y < z → w < z
  trans₂ w x y z w<x x<y y<z = trans w x z w<x (trans x y z x<y y<z)
 
-\end{code}
+```
 
 {-
 ℕ-even ℕ-odd : ℕ → 𝓤₀ ̇
@@ -326,6 +344,6 @@ instance
  canonical-map-ℤ[1/2]-to-ℚ : Canonical-Map ℤ[1/2] ℚ
  ι {{canonical-map-ℤ[1/2]-to-ℚ}} = ℤ[1/2]-to-ℚ
 -}
-\end{code}
+```
 
 
