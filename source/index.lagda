@@ -104,6 +104,8 @@ import Games.index                  -- By Martin Escardo and Paulo Oliva
 import Locales.index                -- By Ayberk Tosun
 import Posets.index                 -- By Tom de Jong and Martin Escardo
 import NotionsOfDecidability.index  -- By Tom de Jong and Martin Escardo
+import Utilities.index
+import Naturals.index
 
 \end{code}
 
@@ -127,12 +129,9 @@ import HiggsInvolutionTheorem
 import LawvereFPT
 import LexicographicOrder
 import Lumsdaine
-import NaturalsAddition
-import NaturalsOrder
 import NonCollapsibleFamily
 import NonSpartanMLTTTypes
 import UnivalenceFromScratch
-import RootsTruncation
 
 
 \end{code}

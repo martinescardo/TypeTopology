@@ -19,7 +19,7 @@ propositions, or subsingletons, as in HoTT/UF.)
 module UF.UniverseEmbedding where
 
 open import MLTT.Spartan
-open import PairFun
+open import Utilities.PairFun
 
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt

@@ -10,7 +10,7 @@ here from nondependent functions to dependent functions.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module MLTT.NaturalNumbers-UniversalProperty where
+module Naturals.UniversalProperty where
 
 open import MLTT.NaturalNumbers
 

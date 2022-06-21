@@ -11,7 +11,7 @@ module UF.Miscelanea where
 open import MLTT.Spartan
 
 open import MLTT.Plus-Properties
-open import MLTT.NaturalNumbers-Properties
+open import Naturals.Properties
 open import UF.Base
 open import UF.Subsingletons renaming (⊤Ω to ⊤ ; ⊥Ω to ⊥)
 open import UF.FunExt

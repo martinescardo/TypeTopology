@@ -13,8 +13,6 @@ import MLTT.Id
 import MLTT.Identity-Type
 import MLTT.List
 import MLTT.Natural-Numbers-Type
-import MLTT.NaturalNumbers-Properties
-import MLTT.NaturalNumbers-UniversalProperty
 import MLTT.NaturalNumbers
 import MLTT.Negation
 import MLTT.Pi

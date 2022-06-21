@@ -4,7 +4,7 @@ Natural numbers
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module MLTT.NaturalNumbers-Properties where
+module Naturals.Properties where
 
 open import MLTT.Universes
 open import MLTT.NaturalNumbers

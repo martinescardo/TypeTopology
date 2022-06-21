@@ -19,14 +19,15 @@ open import MLTT.Spartan
 open import UF.Base
 open import TypeTopology.DiscreteAndSeparated
 
-module RootsTruncation (𝓤 : Universe)
-                       (Z : 𝓤 ̇ )
-                       (z : Z)
-                       (z-is-isolated : is-isolated' z)
-                       where
+module Naturals.RootsTruncation
+        (𝓤 : Universe)
+        (Z : 𝓤 ̇ )
+        (z : Z)
+        (z-is-isolated : is-isolated' z)
+       where
 
 open import MLTT.Plus-Properties
-open import NaturalsOrder
+open import Naturals.Order
 open import Notation.Order
 
 open import UF.Subsingletons
