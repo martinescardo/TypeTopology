@@ -11,7 +11,7 @@ module Utilities.Sequence (fe : FunExt) where
 open import MLTT.Spartan hiding (_+_)
 open import UF.Base
 open import UF.Retracts
-open import NaturalsAddition
+open import Naturals.Addition
 
 _∶∶_ : {X : ℕ → 𝓤 ̇ } → X 0 → ((n : ℕ) → X (succ n)) → ((n : ℕ) → X n)
 (x ∶∶ α) 0 = x

@@ -45,7 +45,7 @@ open import InjectiveTypes.Blackboard fe
 open import LexicographicOrder
 open import TypeTopology.DiscreteAndSeparated
 open import BinaryNaturals hiding (_+_ ; L ; R)
-open import PairFun
+open import Utilities.PairFun
 open import Notation.CanonicalMap
 
 private

@@ -196,7 +196,7 @@ this module.
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import MLTT.Spartan
-open import PairFun
+open import Utilities.PairFun
 
 open import UF.Univalence
 open import UF.PropTrunc

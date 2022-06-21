@@ -28,7 +28,7 @@ open import UF.FunExt
 
 module Closeness (fe : FunExt) where
 
-open import Sequence fe
+open import Utilities.Sequence fe
 open import CoNaturals.UniversalProperty fe
 open import CoNaturals.Arithmetic fe
 open import CoNaturals.GenericConvergentSequence renaming (min to min')
@@ -210,7 +210,7 @@ Ultra property:
    (λ h≢ → 𝟘-elim (zero-is-not-one
     (is-Zero-Zero ⁻¹ ∙ ap (λ - → ι - 0) (closeness-eq₀ α β h≢ ⁻¹) ∙ p)))
 
- open import NaturalsOrder
+ open import Naturals.Order
 
  closeness-conceptually₁ : (α β : 𝓢) (n : ℕ)
                          → ((k : ℕ) → k ≤ n → α k ≡ β k)

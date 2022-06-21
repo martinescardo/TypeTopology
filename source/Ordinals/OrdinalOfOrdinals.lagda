@@ -888,7 +888,7 @@ other direction is equivalent to LPO.
 module ℕ∞-in-Ord where
 
  open import Taboos.LPO fe
- open import NaturalsOrder
+ open import Naturals.Order
  open import Ordinals.Arithmetic fe
  open import CoNaturals.GenericConvergentSequence
 

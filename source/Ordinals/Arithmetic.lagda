@@ -13,7 +13,7 @@ module Ordinals.Arithmetic
        where
 
 open import MLTT.Spartan
-open import NaturalsOrder
+open import Naturals.Order
 
 open import CoNaturals.GenericConvergentSequence
 open import Ordinals.Notions

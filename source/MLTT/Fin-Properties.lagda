@@ -88,7 +88,7 @@ defined in the module PlusOneLC.lagda.
 
 \begin{code}
 
-open import PlusOneLC
+open import Utilities.PlusOneLC
 open import UF.Equiv
 
 Fin-lc : (m n : ℕ) → Fin m ≃ Fin n → m ≡ n
@@ -159,7 +159,7 @@ difference between the embedding property and left cancellability.
 
 \begin{code}
 
-open import Swap
+open import Utilities.Swap
 open import UF.LeftCancellable
 
 +𝟙-cancel-lemma : {X Y : 𝓤 ̇ }
@@ -212,7 +212,7 @@ open import UF.LeftCancellable
   a : X ↣ Y
   a = +𝟙-cancel-lemma (f' , e') p
 
-open import NaturalsOrder
+open import Naturals.Order
 open import UF.EquivalenceExamples
 
 \end{code}
@@ -399,7 +399,7 @@ manifestation of the type Fin n.
 
 \begin{code}
 
-open import MLTT.NaturalNumbers-Properties
+open import Naturals.Properties
 
 ⟦_⟧ : {n : ℕ} → Fin n → ℕ
 ⟦_⟧ {n} = pr₁ ∘ Fin-prime n

@@ -23,7 +23,7 @@ module Groups.SRTclosure where
 open import UF.Subsingletons
 open import UF.PropTrunc
 
-open import NaturalsAddition renaming (_+_ to right-addition)
+open import Naturals.Addition renaming (_+_ to right-addition)
 
 \end{code}
 

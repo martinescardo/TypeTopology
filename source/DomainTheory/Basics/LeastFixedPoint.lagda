@@ -26,9 +26,9 @@ open import UF.Miscelanea
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
-open import MLTT.NaturalNumbers-Properties
-open import NaturalsAddition renaming (_+_ to _+'_)
-open import NaturalsOrder
+open import Naturals.Properties
+open import Naturals.Addition renaming (_+_ to _+'_)
+open import Naturals.Order
 open import Notation.Order
 
 module _ {𝓥 : Universe} where

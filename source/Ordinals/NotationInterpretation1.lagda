@@ -139,7 +139,7 @@ open import TypeTopology.SigmaDiscreteAndTotallySeparated
 open import TypeTopology.Density
 
 open import TypeTopology.DiscreteAndSeparated
-open import PairFun
+open import Utilities.PairFun
 
 private
  fe₀ : funext 𝓤₀ 𝓤₀

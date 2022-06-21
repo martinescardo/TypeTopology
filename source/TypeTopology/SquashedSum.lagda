@@ -28,7 +28,7 @@ open import TypeTopology.ExtendedSumCompact fe
 open import TypeTopology.DiscreteAndSeparated
 open import InjectiveTypes.Blackboard fe
 open import Notation.CanonicalMap
-open import PairFun
+open import Utilities.PairFun
 
 open import UF.Base
 open import UF.Subsingletons

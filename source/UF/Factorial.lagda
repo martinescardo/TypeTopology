@@ -58,7 +58,7 @@ module UF.Factorial (fe : FunExt) where
 open import MLTT.Spartan
 open import MLTT.Plus-Properties
 open import TypeTopology.DiscreteAndSeparated
-open import Swap
+open import Utilities.Swap
 open import UF.Base
 open import UF.Retracts
 open import UF.Equiv

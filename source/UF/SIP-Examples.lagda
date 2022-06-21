@@ -1072,7 +1072,7 @@ module ring {𝓤 : Universe} (ua : Univalence) where
 
   open propositional-truncations-exist pt public
   open PropositionalTruncation pt
-  open import NaturalsOrder
+  open import Naturals.Order
 
   is-noetherian : (𝓡 : Rng) → 𝓤 ⁺ ̇
   is-noetherian 𝓡 = (I : ℕ → 𝓟 ⟨ 𝓡 ⟩)

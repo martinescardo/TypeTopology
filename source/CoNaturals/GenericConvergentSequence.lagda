@@ -16,10 +16,10 @@ module CoNaturals.GenericConvergentSequence where
 
 open import MLTT.Spartan
 open import MLTT.Two-Properties
-open import MLTT.NaturalNumbers-Properties
 
-open import NaturalsAddition renaming (_+_ to _∔_)
-open import NaturalsOrder hiding (max)
+open import Naturals.Properties
+open import Naturals.Addition renaming (_+_ to _∔_)
+open import Naturals.Order hiding (max)
 open import Notation.Order
 open import Notation.CanonicalMap
 
@@ -613,7 +613,7 @@ finite-≺-Succ a (n , p) = transport (_≺ Succ a) p
 ≺-Succ : (a b : ℕ∞) → a ≺ b → Succ a ≺ Succ b
 ≺-Succ a b (n , p , q) = n ∔ 1 , ap Succ p , q
 
-open import NaturalsOrder
+open import Naturals.Order
 
 <-gives-⊏ : (m n : ℕ) → m < n →  m ⊏ ι n
 <-gives-⊏ zero     zero     l = 𝟘-elim l

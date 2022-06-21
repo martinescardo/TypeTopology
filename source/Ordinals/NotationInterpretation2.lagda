@@ -60,7 +60,7 @@ open import BinaryNaturals hiding (_+_)
 open import MLTT.Two-Properties
 open import Taboos.WLPO
 open import Taboos.LPO fe
-open import PairFun
+open import Utilities.PairFun
 
 open import CoNaturals.GenericConvergentSequence
 

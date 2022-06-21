@@ -42,7 +42,7 @@ Applications:
 module BinaryNaturals where
 
 open import MLTT.Spartan renaming (_+_ to _∔_)
-open import MLTT.NaturalNumbers-Properties
+open import Naturals.Properties
 open import UF.Equiv
 open import UF.Base
 open import UF.EquivalenceExamples

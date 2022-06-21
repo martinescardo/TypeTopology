@@ -13,7 +13,7 @@ There is also a proof in Egbert Rijke's book (to appear).
 open import MLTT.Spartan
 open import MLTT.Fin
 open import MLTT.Fin-Properties
-open import PairFun
+open import Utilities.PairFun
 
 open import UF.Subsingletons renaming (⊤Ω to ⊤)
 open import UF.Equiv

@@ -35,7 +35,7 @@ module DomainTheory.ScottModelOfPCF.ScottModelOfPCF
 
 open PropositionalTruncation pt
 
-open import MLTT.NaturalNumbers-Properties
+open import Naturals.Properties
 open import UF.Miscelanea
 
 open import PCF pt

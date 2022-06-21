@@ -12,7 +12,7 @@ UniMath" by Bezem, Buchholtz, Grayson and Shulman
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import MLTT.NaturalNumbers-UniversalProperty
+open import Naturals.UniversalProperty
 
 open import Circle.Integers
 open import Circle.Integers-Properties

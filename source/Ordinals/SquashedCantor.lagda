@@ -29,10 +29,10 @@ open import UF.Retracts
 open import MLTT.Spartan
 open import MLTT.Two-Properties
 open import CoNaturals.GenericConvergentSequence
-open import NaturalsAddition renaming (_+_ to _∔_)
+open import Naturals.Addition renaming (_+_ to _∔_)
 open import TypeTopology.SquashedSum fe
 open import CoNaturals.UniversalProperty fe
-open import Sequence fe renaming (head to head' ; tail to tail' ; _∶∶_ to _∶∶'_)
+open import Utilities.Sequence fe renaming (head to head' ; tail to tail' ; _∶∶_ to _∶∶'_)
 open import InjectiveTypes.Blackboard fe
 open import Notation.CanonicalMap
 

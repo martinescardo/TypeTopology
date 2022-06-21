@@ -103,7 +103,7 @@ module InjectiveTypes.Blackboard (fe : FunExt) where
 
 open import MLTT.Spartan
 open import MLTT.Plus-Properties
-open import PairFun
+open import Utilities.PairFun
 
 open import UF.Base
 open import UF.Equiv

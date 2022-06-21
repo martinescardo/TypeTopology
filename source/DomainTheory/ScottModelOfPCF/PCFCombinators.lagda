@@ -243,10 +243,8 @@ module IfZeroDenotationalSemantics
  open import Lifting.Monad 𝓥
 
  open import DomainTheory.Lifting.LiftingSet pt fe 𝓥 pe
-
  open import UF.Miscelanea
-
- open import MLTT.NaturalNumbers-Properties
+ open import Naturals.Properties
 
  𝓛ᵈℕ : DCPO⊥ {𝓥 ⁺} {𝓥 ⁺}
  𝓛ᵈℕ = 𝓛-DCPO⊥ ℕ-is-set

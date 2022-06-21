@@ -4,7 +4,7 @@ Chuangjie Xu 2011, with changes by Martin Escardo later.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module NaturalsAddition where
+module Naturals.Addition where
 
 open import MLTT.Spartan hiding (_+_)
 

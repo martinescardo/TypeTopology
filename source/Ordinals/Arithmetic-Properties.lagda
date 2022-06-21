@@ -895,7 +895,7 @@ also is not a successor ordinal unless LPO holds:
  open import Notation.CanonicalMap
  open import CoNaturals.GenericConvergentSequence
  open import Notation.Order
- open import NaturalsOrder
+ open import Naturals.Order
 
  ⌊⌋-of-ℕ∞ : ⌊ ℕ∞ₒ ⌋ ≡ ω
  ⌊⌋-of-ℕ∞ = c

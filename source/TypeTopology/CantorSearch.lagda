@@ -13,7 +13,7 @@ higher-type computation".
 open import MLTT.Spartan
 open import MLTT.Two-Properties
 open import TypeTopology.DiscreteAndSeparated
-open import NaturalsOrder
+open import Naturals.Order
 open import Notation.Order
 
 open import UF.FunExt

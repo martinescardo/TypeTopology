@@ -40,7 +40,7 @@ open import UF.Equiv
 open import MLTT.Two-Properties
 open import CoNaturals.GenericConvergentSequence
 open import TypeTopology.CompactTypes
-open import NaturalsOrder
+open import Naturals.Order
 open import Notation.Order
 open import Notation.CanonicalMap
 
@@ -184,7 +184,7 @@ Feb 2020):
 \begin{code}
 
 open import TypeTopology.DiscreteAndSeparated
-open import MLTT.NaturalNumbers-Properties
+open import Naturals.Properties
 
 [LPO→ℕ]-discrete-gives-¬LPO-decidable : is-discrete (LPO → ℕ) → decidable (¬ LPO)
 [LPO→ℕ]-discrete-gives-¬LPO-decidable =
