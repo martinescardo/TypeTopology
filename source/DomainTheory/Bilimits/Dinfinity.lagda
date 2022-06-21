@@ -30,10 +30,10 @@ https://github.com/agda/agda/issues/1625
 
 \begin{code}
 
-open import SpartanMLTT
-open import UF-FunExt
-open import UF-PropTrunc
-open import UF-Subsingletons
+open import MLTT.Spartan
+open import UF.FunExt
+open import UF.PropTrunc
+open import UF.Subsingletons
 
 module DomainTheory.Bilimits.Dinfinity
         (pt : propositional-truncations-exist)
@@ -43,7 +43,7 @@ module DomainTheory.Bilimits.Dinfinity
 
 open PropositionalTruncation pt
 
-open import UF-Base
+open import UF.Base
 
 open import DomainTheory.Basics.Dcpo pt fe 𝓤₀
 open import DomainTheory.Basics.Exponential pt fe 𝓤₀
@@ -52,9 +52,9 @@ open import DomainTheory.Basics.Pointed pt fe 𝓤₀
 open import DomainTheory.Bilimits.Sequential pt fe 𝓤₁ 𝓤₁
 open import DomainTheory.Lifting.LiftingSet pt fe 𝓤₀ pe
 
-open import NaturalsOrder
-open import NaturalsAddition renaming (_+_ to _+'_)
-open import OrderNotation
+open import Naturals.Order
+open import Naturals.Addition renaming (_+_ to _+'_)
+open import Notation.Order
 
 \end{code}
 

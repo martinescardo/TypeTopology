@@ -20,9 +20,9 @@ Table of contents
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import SpartanMLTT
-open import UF-FunExt
-open import UF-PropTrunc
+open import MLTT.Spartan
+open import UF.FunExt
+open import UF.PropTrunc
 
 module DomainTheory.Basics.Miscelanea
         (pt : propositional-truncations-exist)
@@ -36,11 +36,11 @@ private
 
 open PropositionalTruncation pt
 
-open import UF-Equiv
-open import UF-EquivalenceExamples
-open import UF-Size hiding (is-small ; is-locally-small)
-open import UF-Subsingletons
-open import UF-Subsingletons-FunExt
+open import UF.Equiv
+open import UF.EquivalenceExamples
+open import UF.Size hiding (is-small ; is-locally-small)
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
 
 open import DomainTheory.Basics.Dcpo pt fe 𝓥
 

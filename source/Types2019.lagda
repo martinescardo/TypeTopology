@@ -25,7 +25,7 @@ The master file is
 
 \begin{code}
 
-import OrdinalNotationInterpretation
+import Ordinals.NotationInterpretation
 
 \end{code}
 
@@ -33,41 +33,7 @@ The other files include
 
 \begin{code}
 
-import ADecidableQuantificationOverTheNaturals
-import BasicDiscontinuityTaboo
-import Compactness
-import CompactTypes
-import CoNaturalsArithmetic
-import CoNaturalsExercise
-import CoNaturals
-import ConvergentSequenceCompact
-import ConvergentSequenceHasInf
-import DecidabilityOfNonContinuity
-import ExtendedSumCompact
-import FailureOfTotalSeparatedness
-import GenericConvergentSequence
-import InjectiveTypes
-import InfProperty
-import LexicographicCompactness
-import LexicographicOrder
-import LPO
-import OrdinalArithmetic
-import OrdinalCodes
-import OrdinalNotationInterpretation
-import OrdinalNotions
-import OrdinalOfOrdinals
-import OrdinalOfTruthValues
-import OrdinalsClosure
-import Ordinals
-import OrdinalsShulmanTaboo
-import OrdinalsType
-import OrdinalsWellOrderArithmetic
-import PropInfTychonoff
-import PropTychonoff
-import SquashedCantor
-import SquashedSum
-import TotallySeparated
-import WeaklyCompactTypes
-import WLPO
+import TypeTopology.index
+import Ordinals.index
 
 \end{code}

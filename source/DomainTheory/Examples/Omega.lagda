@@ -10,11 +10,11 @@ characterize the compact elements of Ω 𝓤 as the decidable propositions.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import SpartanMLTT
+open import MLTT.Spartan
 
-open import UF-FunExt
-open import UF-PropTrunc
-open import UF-Subsingletons
+open import UF.FunExt
+open import UF.PropTrunc
+open import UF.Subsingletons
 
 module DomainTheory.Examples.Omega
         (pt : propositional-truncations-exist)
@@ -23,17 +23,17 @@ module DomainTheory.Examples.Omega
         (𝓤 : Universe)
        where
 
-open import DecidableAndDetachable
+open import NotionsOfDecidability.DecidableAndDetachable
 
-open import UF-Equiv
-open import UF-EquivalenceExamples
-open import UF-ImageAndSurjection
-open import UF-Subsingletons-FunExt
+open import UF.Equiv
+open import UF.EquivalenceExamples
+open import UF.ImageAndSurjection
+open import UF.Subsingletons-FunExt
 
 open ImageAndSurjection pt
 open PropositionalTruncation pt
 
-open import Poset fe
+open import Posets.Poset fe
 
 open import DomainTheory.Basics.Dcpo pt fe 𝓤
 open import DomainTheory.Basics.Miscelanea pt fe 𝓤

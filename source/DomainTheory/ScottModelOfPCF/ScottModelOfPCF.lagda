@@ -6,14 +6,26 @@ The flag --experimental-lossy-unification significantly speeds up the
 typechecking of the line ⟦ S {ρ} {σ} {τ} ⟧ₑ = Sᵈᶜᵖᵒ⊥ ⟦ ρ ⟧ ⟦ σ ⟧ ⟦ τ ⟧ below.
 (https://agda.readthedocs.io/en/latest/language/lossy-unification.html)
 
+
+We consider the combinatory version of PCF here. This development was extended
+to PCF with variables and λ-abstraction by Brendan Hart in a final year project
+supervised by Martín Escardó and myself. Notably, Brendan's extension contains
+an Agda formalization of soundness and computational adequacy.
+
+Brendan's code, using a previous version of our library, can be found
+here: https://github.com/BrendanHart/Investigating-Properties-of-PCF.
+
+The repository also contains Brendan's report describing the project:
+https://github.com/BrendanHart/Investigating-Properties-of-PCF/blob/master/InvestigatingPropertiesOfPCFInAgda.pdf.
+
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline --experimental-lossy-unification #-}
 
-open import SpartanMLTT
-open import UF-PropTrunc
-open import UF-FunExt
-open import UF-Subsingletons
+open import MLTT.Spartan
+open import UF.PropTrunc
+open import UF.FunExt
+open import UF.Subsingletons
 
 module DomainTheory.ScottModelOfPCF.ScottModelOfPCF
         (pt : propositional-truncations-exist)
@@ -23,11 +35,10 @@ module DomainTheory.ScottModelOfPCF.ScottModelOfPCF
 
 open PropositionalTruncation pt
 
-open import NaturalNumbers-Properties
-open import UF-Miscelanea
+open import Naturals.Properties
+open import UF.Miscelanea
 
-open import PCF pt
-
+open import DomainTheory.ScottModelOfPCF.PCF pt
 open import DomainTheory.Basics.Dcpo pt fe 𝓤₀
 open import DomainTheory.Basics.Exponential pt fe 𝓤₀
 open import DomainTheory.Basics.LeastFixedPoint pt fe
@@ -39,8 +50,8 @@ open IfZeroDenotationalSemantics pe
 
 open import DomainTheory.Lifting.LiftingSet pt fe 𝓤₀ pe
 
-open import Lifting 𝓤₀
-open import LiftingMonad 𝓤₀ hiding (μ)
+open import Lifting.Lifting 𝓤₀
+open import Lifting.Monad 𝓤₀ hiding (μ)
 
 ⟦_⟧ : type → DCPO⊥ {𝓤₁} {𝓤₁}
 ⟦ ι ⟧     = 𝓛-DCPO⊥ ℕ-is-set

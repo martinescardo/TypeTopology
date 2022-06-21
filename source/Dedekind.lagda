@@ -36,22 +36,22 @@ See also the discussion at https://twitter.com/EscardoMartin/status/147339326101
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import SpartanMLTT
-open import CanonicalMapNotation
-open import OrderNotation
-open import Plus-Properties
-open import CompactTypes
-open import NaturalsOrder
+open import MLTT.Spartan
+open import Notation.CanonicalMap
+open import Notation.Order
+open import MLTT.Plus-Properties
+open import TypeTopology.CompactTypes
+open import Naturals.Order
 
-open import UF-Base
-open import UF-Embeddings
-open import UF-Equiv
-open import UF-FunExt
-open import UF-Powerset
-open import UF-PropTrunc
-open import UF-Size
-open import UF-Subsingletons
-open import UF-Subsingletons-FunExt
+open import UF.Base
+open import UF.Embeddings
+open import UF.Equiv
+open import UF.FunExt
+open import UF.Powerset
+open import UF.PropTrunc
+open import UF.Size
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
 
 module Dedekind
         (pt  : propositional-truncations-exist)
@@ -1972,7 +1972,7 @@ Limits of sequences, but using the topological, rather than metric, structure of
                  → x∞ ∈ ⦅ p , q ⦆
                  → ∃ n ꞉ ℕ , ((k : ℕ) → k ≥ n → x k ∈ ⦅ p , q ⦆)
 
- open import GenericConvergentSequence
+ open import CoNaturals.GenericConvergentSequence
 
  is-continuous-ℕ∞-ℝ : (ℕ∞ → ℝ) → 𝓤 ̇
  is-continuous-ℕ∞-ℝ x = (𝓃 : ℕ∞) (p q : ℚ)

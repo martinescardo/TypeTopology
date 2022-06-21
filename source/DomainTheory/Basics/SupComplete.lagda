@@ -11,9 +11,9 @@ sup-complete dcpo to directed families.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import SpartanMLTT
-open import UF-FunExt
-open import UF-PropTrunc
+open import MLTT.Spartan
+open import UF.FunExt
+open import UF.PropTrunc
 
 module DomainTheory.Basics.SupComplete
         (pt : propositional-truncations-exist)
@@ -23,8 +23,8 @@ module DomainTheory.Basics.SupComplete
 
 open PropositionalTruncation pt hiding (_∨_)
 
-open import UF-Equiv
-open import UF-EquivalenceExamples
+open import UF.Equiv
+open import UF.EquivalenceExamples
 
 open import DomainTheory.Basics.Dcpo pt fe 𝓥
 open import DomainTheory.Basics.Miscelanea pt fe 𝓥
@@ -62,7 +62,7 @@ module sup-complete-dcpo
 
  open is-sup-complete 𝓓-is-sup-complete
 
- open import List
+ open import MLTT.List
 
  ⊥ : ⟨ 𝓓 ⟩
  ⊥ = ⋁ 𝟘-elim

@@ -21,18 +21,18 @@ written.
 
 module LawvereFPT where
 
-open import SpartanMLTT
+open import MLTT.Spartan
 
-open import Two-Properties
-open import NaturalNumbers-Properties
+open import MLTT.Two-Properties
+open import Naturals.Properties
 
-open import UF-Base
-open import UF-Subsingletons
-open import UF-Subsingletons-FunExt
-open import UF-Retracts
-open import UF-Equiv
-open import UF-Miscelanea
-open import UF-FunExt
+open import UF.Base
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
+open import UF.Retracts
+open import UF.Equiv
+open import UF.Miscelanea
+open import UF.FunExt
 
 designated-fixed-point-property : 𝓤 ̇ → 𝓤 ̇
 designated-fixed-point-property X = (f : X → X) → Σ x ꞉ X , x ≡ f x
@@ -171,8 +171,8 @@ As a simple application, it follows that negation doesn't have fixed points:
 
  \begin{code}
 
- open import UF-Subsingletons
- open import UF-Subsingletons-FunExt
+ open import UF.Subsingletons
+ open import UF.Subsingletons-FunExt
 
  not-no-fp : (fe : funext 𝓤 𝓤₀) → ¬ (Σ P ꞉ Ω 𝓤 , P ≡ not fe P)
  not-no-fp {𝓤} fe (P , p) = ¬-no-fp (P holds , q)
@@ -200,8 +200,8 @@ module. This time a pointwise weakening of surjection is not enough.
 
 \begin{code}
 
-open import UF-PropTrunc
-open import UF-ImageAndSurjection
+open import UF.PropTrunc
+open import UF.ImageAndSurjection
 
 module surjection-version (pt : propositional-truncations-exist) where
 
@@ -289,7 +289,7 @@ module surjection-version (pt : propositional-truncations-exist) where
 
  \begin{code}
 
- open import Two
+ open import MLTT.Two
 
  cantor-uncountable : ¬ (Σ φ ꞉ (ℕ → (ℕ → 𝟚)), is-surjection φ)
  cantor-uncountable (φ , s) = γ
@@ -321,7 +321,7 @@ module Blechschmidt (pt : propositional-truncations-exist) where
 
  open PropositionalTruncation pt
  open ImageAndSurjection pt
- open import DiscreteAndSeparated
+ open import TypeTopology.DiscreteAndSeparated
 
  Π-projection-has-section : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
                             (x₀ : X)
@@ -419,7 +419,7 @@ module Blechschmidt' (pt : propositional-truncations-exist) where
 
  open PropositionalTruncation pt
  open ImageAndSurjection pt
- open import DiscreteAndSeparated
+ open import TypeTopology.DiscreteAndSeparated
 
  Π-projection-has-section : funext 𝓥 ((𝓤 ⊔ 𝓦)⁺)
                           → funext (𝓤 ⊔ 𝓦) (𝓤 ⊔ 𝓦)
@@ -570,7 +570,7 @@ module GeneralizedCoquand where
         → 𝟘
  Lemma₀ {𝓤} A T S ρ σ η = γ
   where
-   open import W
+   open import MLTT.W
 
    𝕎 : 𝓤 ̇
    𝕎 = W A T
@@ -726,7 +726,7 @@ Further generalization, where we intend to use P = is-set.
 
 \begin{code}
 
-open import W
+open import MLTT.W
 
 module Coquand-further-generalized (𝓤 𝓥 : Universe)
          (P : 𝓤 ̇ → 𝓥 ̇ )
@@ -854,7 +854,7 @@ extensionality:
 
 \begin{code}
 
-open import W-Properties
+open import MLTT.W-Properties
 
 silly-theorem : funext 𝓤 𝓤 → ¬ (Σ A ꞉ 𝓤 ̇ , is-set A × (hSet 𝓤 ≃ A))
 silly-theorem {𝓤} fe (A , A-is-set , e) =

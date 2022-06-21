@@ -12,9 +12,9 @@ continuous is preserved by taking continuous retracts.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import SpartanMLTT hiding (J)
-open import UF-FunExt
-open import UF-PropTrunc
+open import MLTT.Spartan hiding (J)
+open import UF.FunExt
+open import UF.PropTrunc
 
 module DomainTheory.BasesAndContinuity.Continuity
         (pt : propositional-truncations-exist)
@@ -24,12 +24,12 @@ module DomainTheory.BasesAndContinuity.Continuity
 
 open PropositionalTruncation pt
 
-open import UF-Base hiding (_≈_)
-open import UF-Equiv
-open import UF-EquivalenceExamples
+open import UF.Base hiding (_≈_)
+open import UF.Equiv
+open import UF.EquivalenceExamples
 
-open import UF-Subsingletons
-open import UF-Subsingletons-FunExt
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
 
 open import DomainTheory.Basics.Dcpo pt fe 𝓥
 open import DomainTheory.Basics.Miscelanea pt fe 𝓥
@@ -429,7 +429,7 @@ module _
         (c : is-continuous-dcpo 𝓓)
        where
 
- open import UF-Size hiding (is-small ; is-locally-small)
+ open import UF.Size hiding (is-small ; is-locally-small)
 
  ≪-is-small-valued : is-locally-small 𝓓
                    → (x y : ⟨ 𝓓 ⟩) → is-small (x ≪⟨ 𝓓 ⟩ y)

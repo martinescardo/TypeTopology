@@ -6,9 +6,9 @@ We specialize the work of Directed.lagda to ℕ-indexed diagrams.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import SpartanMLTT
-open import UF-PropTrunc
-open import UF-FunExt
+open import MLTT.Spartan
+open import UF.PropTrunc
+open import UF.FunExt
 
 module DomainTheory.Bilimits.Sequential
         (pt : propositional-truncations-exist)
@@ -22,15 +22,15 @@ open import DomainTheory.Basics.Dcpo pt fe 𝓤₀
 open import DomainTheory.Basics.Miscelanea pt fe 𝓤₀
 open import DomainTheory.Bilimits.Directed pt fe 𝓤₀ 𝓤 𝓣
 
-open import NaturalsAddition renaming (_+_ to _+'_)
-open import NaturalNumbers-Properties
-open import NaturalsOrder
-open import OrderNotation
+open import Naturals.Addition renaming (_+_ to _+'_)
+open import Naturals.Properties
+open import Naturals.Order
+open import Notation.Order
 
-open import UF-Equiv
-open import UF-EquivalenceExamples
-open import UF-Miscelanea
-open import UF-Subsingletons
+open import UF.Equiv
+open import UF.EquivalenceExamples
+open import UF.Miscelanea
+open import UF.Subsingletons
 
 module SequentialDiagram
         (𝓓 : ℕ → DCPO {𝓤} {𝓣})

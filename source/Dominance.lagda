@@ -16,11 +16,11 @@ Convention:
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import SpartanMLTT
-open import UF-Equiv
-open import UF-Subsingletons
-open import UF-Subsingletons-FunExt
-open import UF-FunExt
+open import MLTT.Spartan
+open import UF.Equiv
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
+open import UF.FunExt
 
 module Dominance where
 
@@ -127,7 +127,7 @@ Example: the decidable propositions form a dominance.
 
 module DecidableDominance where
 
- open import DecidableAndDetachable
+ open import NotionsOfDecidability.DecidableAndDetachable
 
  decidable-dominance : Fun-Ext → Dominance {𝓤} {𝓤}
  decidable-dominance fe = (λ P → is-prop P × decidable P) ,

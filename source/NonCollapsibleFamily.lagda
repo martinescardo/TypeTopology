@@ -6,12 +6,12 @@ Martin Escardo, 1st April 2013
 
 module NonCollapsibleFamily where
 
-open import SpartanMLTT
+open import MLTT.Spartan
 
-open import UF-Base
-open import UF-Subsingletons
-open import UF-KrausLemma
-open import DiscreteAndSeparated
+open import UF.Base
+open import UF.Subsingletons
+open import UF.KrausLemma
+open import TypeTopology.DiscreteAndSeparated
 
 decidable-equality-criterion : (X : 𝓤 ̇ )
                                (a : 𝟚 → X) → ((x : X) → collapsible(Σ i ꞉ 𝟚 , a i ≡ x))

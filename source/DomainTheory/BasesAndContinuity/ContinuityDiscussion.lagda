@@ -38,9 +38,9 @@ pseudocontinuity.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import SpartanMLTT hiding (J)
-open import UF-FunExt
-open import UF-PropTrunc
+open import MLTT.Spartan hiding (J)
+open import UF.FunExt
+open import UF.PropTrunc
 
 module DomainTheory.BasesAndContinuity.ContinuityDiscussion
         (pt : propositional-truncations-exist)
@@ -48,12 +48,12 @@ module DomainTheory.BasesAndContinuity.ContinuityDiscussion
         (𝓥 : Universe) -- where the index types for directed completeness live
        where
 
-open import UF-Base hiding (_≈_)
-open import UF-Equiv
-open import UF-EquivalenceExamples
-open import UF-ImageAndSurjection
-open import UF-Subsingletons
-open import UF-Subsingletons-FunExt
+open import UF.Base hiding (_≈_)
+open import UF.Equiv
+open import UF.EquivalenceExamples
+open import UF.ImageAndSurjection
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
 
 open ImageAndSurjection pt
 open PropositionalTruncation pt

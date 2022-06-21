@@ -19,11 +19,11 @@ induces a map from the ideal completion to the dcpo.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import SpartanMLTT hiding (J)
+open import MLTT.Spartan hiding (J)
 
-open import UF-FunExt
-open import UF-PropTrunc
-open import UF-Subsingletons
+open import UF.FunExt
+open import UF.PropTrunc
+open import UF.Subsingletons
 
 module DomainTheory.IdealCompletion.Properties
         (pt : propositional-truncations-exist)
@@ -33,8 +33,8 @@ module DomainTheory.IdealCompletion.Properties
                        -- completeness live
        where
 
-open import UF-Equiv
-open import UF-Powerset
+open import UF.Equiv
+open import UF.Powerset
 
 open import DomainTheory.Basics.Dcpo pt fe 𝓥
 open import DomainTheory.Basics.Miscelanea pt fe 𝓥

@@ -11,11 +11,11 @@ least element to X when viewed as a discretely-ordered dcpo.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import SpartanMLTT hiding (J)
+open import MLTT.Spartan hiding (J)
 
-open import UF-FunExt
-open import UF-PropTrunc
-open import UF-Subsingletons
+open import UF.FunExt
+open import UF.PropTrunc
+open import UF.Subsingletons
 
 module DomainTheory.Lifting.LiftingDcpo
         (pt : propositional-truncations-exist)
@@ -24,22 +24,22 @@ module DomainTheory.Lifting.LiftingDcpo
         (pe : propext 𝓥)
        where
 
-open import UF-Equiv
-open import UF-ImageAndSurjection
-open import UF-Miscelanea
-open import UF-Subsingletons-FunExt
+open import UF.Equiv
+open import UF.ImageAndSurjection
+open import UF.Miscelanea
+open import UF.Subsingletons-FunExt
 
 open ImageAndSurjection pt
 open PropositionalTruncation pt
 
-open import Lifting 𝓥 hiding (⊥)
-open import LiftingIdentityViaSIP 𝓥
-open import LiftingMiscelanea 𝓥
-open import LiftingMiscelanea-PropExt-FunExt 𝓥 pe fe
+open import Lifting.Lifting 𝓥 hiding (⊥)
+open import Lifting.IdentityViaSIP 𝓥
+open import Lifting.Miscelanea 𝓥
+open import Lifting.Miscelanea-PropExt-FunExt 𝓥 pe fe
                                              renaming ( ⊑'-to-⊑ to ⊑'-to-⊑''
                                                       ; ⊑-to-⊑' to ⊑''-to-⊑')
 
-open import Poset fe
+open import Posets.Poset fe
 open import DomainTheory.Basics.Dcpo pt fe 𝓥
 open import DomainTheory.Basics.Miscelanea pt fe 𝓥
 open import DomainTheory.Basics.Pointed pt fe 𝓥
@@ -202,7 +202,7 @@ continuous.
  𝓛-order-lemma : {k l : 𝓛D} → k ⊑' l → k ⊑ l
  𝓛-order-lemma {k} {l} k-below-l = (pr₁ claim , (λ p → ≡-to-⊑ 𝓓 (pr₂ claim p)))
   where
-   open import LiftingUnivalentPrecategory 𝓥 ⟨ 𝓓 ⟩ renaming (_⊑_ to _⊑''_)
+   open import Lifting.UnivalentPrecategory 𝓥 ⟨ 𝓓 ⟩ renaming (_⊑_ to _⊑''_)
    claim : k ⊑'' l
    claim = ⊑'-to-⊑'' k-below-l
 

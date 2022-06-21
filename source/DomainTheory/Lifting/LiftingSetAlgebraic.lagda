@@ -7,11 +7,11 @@ particular, this dcpo is algebraic.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline --experimental-lossy-unification #-}
 
-open import SpartanMLTT
+open import MLTT.Spartan
 
-open import UF-FunExt
-open import UF-PropTrunc
-open import UF-Subsingletons
+open import UF.FunExt
+open import UF.PropTrunc
+open import UF.Subsingletons
 
 module DomainTheory.Lifting.LiftingSetAlgebraic
         (pt : propositional-truncations-exist)
@@ -20,18 +20,18 @@ module DomainTheory.Lifting.LiftingSetAlgebraic
         (𝓤 : Universe)
        where
 
-open import UF-Equiv
-open import UF-Miscelanea
-open import UF-ImageAndSurjection
-open import UF-Subsingletons-FunExt
+open import UF.Equiv
+open import UF.Miscelanea
+open import UF.ImageAndSurjection
+open import UF.Subsingletons-FunExt
 
 open ImageAndSurjection pt
 open PropositionalTruncation pt
 
-open import Lifting 𝓤 hiding (⊥)
-open import LiftingMiscelanea 𝓤
-open import LiftingMiscelanea-PropExt-FunExt 𝓤 pe fe
-open import LiftingMonad 𝓤
+open import Lifting.Lifting 𝓤 hiding (⊥)
+open import Lifting.Miscelanea 𝓤
+open import Lifting.Miscelanea-PropExt-FunExt 𝓤 pe fe
+open import Lifting.Monad 𝓤
 
 open import DomainTheory.Basics.Dcpo pt fe 𝓤
 open import DomainTheory.Basics.Miscelanea pt fe 𝓤
@@ -43,14 +43,14 @@ open import DomainTheory.BasesAndContinuity.Continuity pt fe 𝓤
 
 open import DomainTheory.Lifting.LiftingSet pt fe 𝓤 pe
 
-open import Poset fe
+open import Posets.Poset fe
 
 module _
         {X : 𝓤 ̇ }
         (X-is-set : is-set X)
        where
 
- open import LiftingUnivalentPrecategory 𝓤 X
+ open import Lifting.UnivalentPrecategory 𝓤 X
 
 \end{code}
 

@@ -26,11 +26,11 @@ Idl(B,⊑) and analogous remarks apply in this case.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline --experimental-lossy-unification #-}
 
-open import SpartanMLTT hiding (J)
+open import MLTT.Spartan hiding (J)
 
-open import UF-FunExt
-open import UF-PropTrunc
-open import UF-Subsingletons
+open import UF.FunExt
+open import UF.PropTrunc
+open import UF.Subsingletons
 
 module DomainTheory.IdealCompletion.Retracts
         (pt : propositional-truncations-exist)
@@ -40,9 +40,9 @@ module DomainTheory.IdealCompletion.Retracts
                        -- completeness live
        where
 
-open import UF-Equiv
-open import UF-Retracts
-open import UF-Powerset
+open import UF.Equiv
+open import UF.Retracts
+open import UF.Powerset
 
 open import DomainTheory.Basics.Dcpo pt fe 𝓥
 open import DomainTheory.Basics.Miscelanea pt fe 𝓥

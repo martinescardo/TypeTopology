@@ -11,9 +11,9 @@ Refactored December 2021.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import SpartanMLTT
-open import UF-FunExt
-open import UF-PropTrunc
+open import MLTT.Spartan
+open import UF.FunExt
+open import UF.PropTrunc
 
 module DomainTheory.ScottModelOfPCF.PCFCombinators
         (pt : propositional-truncations-exist)
@@ -23,10 +23,10 @@ module DomainTheory.ScottModelOfPCF.PCFCombinators
 
 open PropositionalTruncation pt
 
-open import UF-Subsingletons
-open import UF-Subsingletons-FunExt
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
 
-open import Poset fe
+open import Posets.Poset fe
 open import DomainTheory.Basics.Dcpo pt fe 𝓥
 open import DomainTheory.Basics.Exponential pt fe 𝓥
 open import DomainTheory.Basics.Miscelanea pt fe 𝓥
@@ -237,16 +237,14 @@ module IfZeroDenotationalSemantics
         (pe : propext 𝓥)
        where
 
- open import Lifting 𝓥
- open import LiftingMiscelanea 𝓥
- open import LiftingMiscelanea-PropExt-FunExt 𝓥 pe fe
- open import LiftingMonad 𝓥
+ open import Lifting.Lifting 𝓥
+ open import Lifting.Miscelanea 𝓥
+ open import Lifting.Miscelanea-PropExt-FunExt 𝓥 pe fe
+ open import Lifting.Monad 𝓥
 
  open import DomainTheory.Lifting.LiftingSet pt fe 𝓥 pe
-
- open import UF-Miscelanea
-
- open import NaturalNumbers-Properties
+ open import UF.Miscelanea
+ open import Naturals.Properties
 
  𝓛ᵈℕ : DCPO⊥ {𝓥 ⁺} {𝓥 ⁺}
  𝓛ᵈℕ = 𝓛-DCPO⊥ ℕ-is-set

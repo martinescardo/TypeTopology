@@ -12,11 +12,11 @@ finite subsets.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import SpartanMLTT
+open import MLTT.Spartan
 
-open import UF-FunExt
-open import UF-PropTrunc
-open import UF-Subsingletons
+open import UF.FunExt
+open import UF.PropTrunc
+open import UF.Subsingletons
 
 module DomainTheory.Examples.Powerset
         (pt : propositional-truncations-exist)
@@ -26,15 +26,15 @@ module DomainTheory.Examples.Powerset
         (X-is-set : is-set X)
        where
 
-open import List
+open import MLTT.List
 
-open import UF-Equiv
-open import UF-ImageAndSurjection
-open import UF-Powerset
-open import UF-Powerset-Fin pt
-open import UF-Subsingletons-FunExt
+open import UF.Equiv
+open import UF.ImageAndSurjection
+open import UF.Powerset
+open import UF.Powerset-Fin pt
+open import UF.Subsingletons-FunExt
 
-open import Poset fe
+open import Posets.Poset fe
 
 open binary-unions-of-subsets pt
 open canonical-map-from-lists-to-subsets X-is-set

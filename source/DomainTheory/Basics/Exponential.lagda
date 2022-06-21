@@ -11,9 +11,9 @@ useful when proving that exponentials of sup-complete dcpos are algebraic.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import SpartanMLTT hiding (J)
-open import UF-FunExt
-open import UF-PropTrunc
+open import MLTT.Spartan hiding (J)
+open import UF.FunExt
+open import UF.PropTrunc
 
 module DomainTheory.Basics.Exponential
         (pt : propositional-truncations-exist)
@@ -23,15 +23,15 @@ module DomainTheory.Basics.Exponential
 
 open PropositionalTruncation pt
 
-open import UF-Subsingletons
-open import UF-Subsingletons-FunExt
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
 
 open import DomainTheory.Basics.Dcpo pt fe 𝓥
 open import DomainTheory.Basics.Miscelanea pt fe 𝓥
 open import DomainTheory.Basics.Pointed pt fe 𝓥
 open import DomainTheory.Basics.SupComplete pt fe 𝓥
 
-open import Poset fe
+open import Posets.Poset fe
 
 module _ (𝓓 : DCPO {𝓤} {𝓣})
          (𝓔 : DCPO {𝓤'} {𝓣'})

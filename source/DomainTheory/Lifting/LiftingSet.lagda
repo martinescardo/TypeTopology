@@ -14,11 +14,11 @@ LiftingDcpo.lagda.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import SpartanMLTT
+open import MLTT.Spartan
 
-open import UF-FunExt
-open import UF-PropTrunc
-open import UF-Subsingletons
+open import UF.FunExt
+open import UF.PropTrunc
+open import UF.Subsingletons
 
 module DomainTheory.Lifting.LiftingSet
         (pt : propositional-truncations-exist)
@@ -27,24 +27,24 @@ module DomainTheory.Lifting.LiftingSet
         (pe : propext 𝓣)
        where
 
-open import UF-Equiv
-open import UF-ImageAndSurjection
-open import UF-Miscelanea
-open import UF-Subsingletons-FunExt
+open import UF.Equiv
+open import UF.ImageAndSurjection
+open import UF.Miscelanea
+open import UF.Subsingletons-FunExt
 
 open ImageAndSurjection pt
 open PropositionalTruncation pt
 
-open import Lifting 𝓣 hiding (⊥)
-open import LiftingMiscelanea 𝓣
-open import LiftingMiscelanea-PropExt-FunExt 𝓣 pe fe
-open import LiftingMonad 𝓣
+open import Lifting.Lifting 𝓣 hiding (⊥)
+open import Lifting.Miscelanea 𝓣
+open import Lifting.Miscelanea-PropExt-FunExt 𝓣 pe fe
+open import Lifting.Monad 𝓣
 
 open import DomainTheory.Basics.Dcpo pt fe 𝓣
 open import DomainTheory.Basics.Miscelanea pt fe 𝓣
 open import DomainTheory.Basics.Pointed pt fe 𝓣
 
-open import Poset fe
+open import Posets.Poset fe
 
 \end{code}
 
