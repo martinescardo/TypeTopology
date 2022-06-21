@@ -629,7 +629,7 @@ module sum
         (_≺_ : {x : X} → Y x → Y x → 𝓣 ̇ )
       where
 
- open import LexicographicOrder
+ open import Ordinals.LexicographicOrder
 
  private
   _⊏_ : Σ Y → Σ Y → 𝓤 ⊔ 𝓦 ⊔ 𝓣 ̇

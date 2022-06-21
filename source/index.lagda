@@ -123,7 +123,6 @@ import Dominance
 import DummettDisjunction
 import HiggsInvolutionTheorem
 import LawvereFPT
-import LexicographicOrder
 import Lumsdaine
 import NonCollapsibleFamily
 import UnivalenceFromScratch

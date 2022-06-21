@@ -42,7 +42,7 @@ open import CoNaturals.GenericConvergentSequence
 
 open import InjectiveTypes.Blackboard fe
 
-open import LexicographicOrder
+open import Ordinals.LexicographicOrder
 open import TypeTopology.DiscreteAndSeparated
 open import Naturals.Binary hiding (_+_ ; L ; R)
 open import Utilities.PairFun

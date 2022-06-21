@@ -9,7 +9,7 @@ This module is mainly for use in the module CompactOrdinals.
 module TypeTopology.Lexicographic where
 
 open import MLTT.Spartan
-open import LexicographicOrder
+open import Ordinals.LexicographicOrder
 open import TypeTopology.InfProperty
 
 Σ-has-inf : ∀ {𝓣} {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }

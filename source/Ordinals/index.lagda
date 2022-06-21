@@ -10,6 +10,7 @@ import Ordinals.BuraliForti
 import Ordinals.Closure
 import Ordinals.Codes
 import Ordinals.Injectivity
+import Ordinals.LexicographicOrder
 import Ordinals.NotationInterpretation
 import Ordinals.NotationInterpretation0
 import Ordinals.NotationInterpretation1
