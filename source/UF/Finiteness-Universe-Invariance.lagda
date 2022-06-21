@@ -26,7 +26,7 @@ open import UF.FunExt
 open import UF.Univalence
 open import UF.UA-FunExt
 
-module Finiteness-Universe-Invariance
+module UF.Finiteness-Universe-Invariance
         (pt : propositional-truncations-exist)
         (ua : Univalence)
        where

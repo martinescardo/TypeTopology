@@ -110,7 +110,6 @@ import BanachFixedPointTheorem -- By Todd Waugh Ambridge
 import Taboos.index
 import BinaryNaturals
 import Closeness              -- By Todd Waugh Ambridge and Martin Escardo
--- import CubicalBinarySystem -- works with Agda 2.6.2 only and need the Cubical Library. By Martin Escardo and Alex Rice
 import DecidableAndDetachable
 import Dedekind
 import Dominance
@@ -119,14 +118,11 @@ import Escardo-Simpson-LICS2001        -- By Todd Waugh Ambridge
 import Fin
 import Fin-Properties
 import Games.index                     -- By Martin Escardo and Paulo Oliva
-import Finiteness-Universe-Invariance
 import Frame-version1
 import Locales.index                   -- By Ayberk Tosun
 import FreeJoinSemiLattice             -- By Tom de Jong
 import FreeSupLattice                  -- By Tom de Jong
 import HiggsInvolutionTheorem
-import InitialBinarySystem    -- More work than needed!
-import InitialBinarySystem2   -- No need to work with subtype of normal elements.
 import InjectiveTypes.index
 import JoinSemiLattices                -- By Tom de Jong
 import LawvereFPT
@@ -147,6 +143,7 @@ import PlusOneLC
 import QuasiDecidable
 import RootsTruncation
 import Sequence
+import Slice.index
 import SemiDecidable                   -- By Tom de Jong
 import sigma-sup-lattice
 import sigma-frame

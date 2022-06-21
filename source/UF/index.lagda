@@ -15,6 +15,7 @@ import UF.Equiv
 import UF.EquivalenceExamples
 import UF.ExcludedMiddle
 import UF.Factorial
+import UF.Finiteness-Universe-Invariance
 import UF.FunExt-Properties
 import UF.FunExt-from-Naive-FunExt
 import UF.FunExt
