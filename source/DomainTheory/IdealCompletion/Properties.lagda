@@ -411,41 +411,6 @@ compact basis, as we prove now.
          (≺-is-reflexive : (x : X) → x ≺ x)
         where
 
-  private
-   κ : (I : Idl) → (Σ x ꞉ X , ↓ x ⊑ I) → Idl
-   κ I = ↓_ ∘ pr₁
-
-   κ-is-directed : (I : Idl) → is-Directed Idl-DCPO (κ I)
-   κ-is-directed I = inh , semidir
-    where
-     inh : ∥ domain (κ I) ∥
-     inh = ∥∥-functor h (directed-sets-are-inhabited (carrier I)
-                         (ideals-are-directed-sets (carrier I) (ideality I)))
-      where
-       h : 𝕋 (carrier I) → domain (κ I)
-       h (x , x-in-I) = (x , ↓⊑-criterion I x x-in-I)
-     semidir : is-semidirected _⊑_ (κ I)
-     semidir (x , ↓x-below-I) (y , ↓y-below-I) =
-      ∥∥-functor h (directed-sets-are-semidirected (carrier I)
-                       (ideals-are-directed-sets (carrier I) (ideality I))
-                       x y (↓⊑-criterion-converse ≺-is-reflexive I x ↓x-below-I)
-                           (↓⊑-criterion-converse ≺-is-reflexive I y ↓y-below-I))
-       where
-        h : (Σ z ꞉ X , z ∈ᵢ I × (x ≺ z) × (y ≺ z))
-          → Σ k ꞉ domain (κ I) , (↓ x ⊑ κ I k) × (↓ y ⊑ κ I k)
-        h (z , z-in-I , x-below-z , y-below-z) =
-         (z , ↓⊑-criterion I z z-in-I) , (↓-is-monotone x-below-z) ,
-                                         (↓-is-monotone y-below-z)
-
-   κ-sup : (I : Idl) → is-sup _⊑_ I (κ I)
-   κ-sup I = ub , lb-of-ubs
-    where
-     ub : is-upperbound _⊑_ I (κ I)
-     ub (x , ↓x-below-I) y y-below-x = ↓x-below-I y y-below-x
-     lb-of-ubs : is-lowerbound-of-upperbounds _⊑_ I (κ I)
-     lb-of-ubs J J-is-ub x x-in-I =
-      J-is-ub (x , ↓⊑-criterion I x x-in-I) x (≺-is-reflexive x)
-
   ↓-is-compact : (x : X) → is-compact Idl-DCPO (↓ x)
   ↓-is-compact x 𝓘 α δ x-below-∐α =
    ∥∥-functor h (x-below-∐α x (≺-is-reflexive x))
@@ -455,12 +420,8 @@ compact basis, as we prove now.
      h (i , x-in-αᵢ) = (i , ↓⊑-criterion (α i) x x-in-αᵢ)
 
   ↓-is-small-compact-basis : is-small-compact-basis Idl-DCPO ↓_
-  ↓-is-small-compact-basis = record {
-    basis-is-compact = ↓-is-compact;
-    ⊑ᴮ-is-small      = λ I x → (↓ x ⊑ I) , (≃-refl (↓ x ⊑ I));
-    ↓ᴮ-is-directed   = κ-is-directed;
-    ↓ᴮ-is-sup        = κ-sup
-   }
+  ↓-is-small-compact-basis =
+   small-and-compact-basis Idl-DCPO ↓_ ↓-is-small-basis ↓-is-compact
 
   Idl-has-specified-small-compact-basis : has-specified-small-compact-basis Idl-DCPO
   Idl-has-specified-small-compact-basis = (X , ↓_ , ↓-is-small-compact-basis)
