@@ -6,7 +6,7 @@ Martin Escardo, 6th December 2018
 
 open import MLTT.Spartan
 
-module SliceMonad (𝓣 : Universe) where
+module Slice.Monad (𝓣 : Universe) where
 
 open import UF.Base
 open import UF.Subsingletons
@@ -17,8 +17,8 @@ open import UF.FunExt
 open import UF.Univalence
 open import UF.UA-FunExt
 
-open import Slice 𝓣
-open import SliceIdentityViaSIP 𝓣
+open import Slice.Slice 𝓣
+open import Slice.IdentityViaSIP 𝓣
 
 \end{code}
 

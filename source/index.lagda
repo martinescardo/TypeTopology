@@ -148,14 +148,9 @@ import QuasiDecidable
 import RootsTruncation
 import Sequence
 import SemiDecidable                   -- By Tom de Jong
-import SliceAlgebras
-import SliceEmbedding
-import SliceIdentityViaSIP
-import Slice
-import SliceMonad
-import Swap
 import sigma-sup-lattice
 import sigma-frame
 import UnivalenceFromScratch
+import Swap
 
 \end{code}

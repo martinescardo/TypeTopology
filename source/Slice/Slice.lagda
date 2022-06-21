@@ -8,7 +8,7 @@ Cf. The lifting monad.
 
 open import MLTT.Spartan
 
-module Slice (𝓣 : Universe) where
+module Slice.Slice (𝓣 : Universe) where
 
 open import UF.Base
 open import UF.Equiv
