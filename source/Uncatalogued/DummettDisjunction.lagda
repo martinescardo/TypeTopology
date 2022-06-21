@@ -12,7 +12,7 @@ motivation coming from univalent type theory is also discussed.)
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module DummettDisjunction where
+module Uncatalogued.DummettDisjunction where
 
 open import MLTT.Spartan
 

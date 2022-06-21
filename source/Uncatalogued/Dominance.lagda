@@ -22,7 +22,7 @@ open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.FunExt
 
-module Dominance where
+module Uncatalogued.Dominance where
 
 module _ {𝓣 𝓚 : Universe} where
 

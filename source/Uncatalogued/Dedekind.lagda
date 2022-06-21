@@ -53,7 +53,7 @@ open import UF.Size
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
-module Dedekind
+module Uncatalogued.Dedekind
         (pt  : propositional-truncations-exist)
         (fe  : Fun-Ext)
         (pe  : Prop-Ext)

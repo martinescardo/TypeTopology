@@ -17,7 +17,7 @@ module UF.Powerset-Fin
 
 open PropositionalTruncation pt
 
-open import ArithmeticViaEquivalence
+open import Uncatalogued.ArithmeticViaEquivalence
 open import MLTT.Fin
 open import MLTT.Fin-Properties
 open import MLTT.List

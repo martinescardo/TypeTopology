@@ -89,6 +89,7 @@ import TypeTopology.index
 import Ordinals.index
 import CantorSchroederBernstein.index
 import Groups.index
+import Uncatalogued.index
 import Lifting.index
 import Naturals.index
 import Slice.index
@@ -117,14 +118,5 @@ Lone files:
 \begin{code}
 
 import Types2019
-import ArithmeticViaEquivalence
-import Dedekind
-import Dominance
-import DummettDisjunction
-import HiggsInvolutionTheorem
-import LawvereFPT
-import Lumsdaine
-import NonCollapsibleFamily
-import UnivalenceFromScratch
 
 \end{code}

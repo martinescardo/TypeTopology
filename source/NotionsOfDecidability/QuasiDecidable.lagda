@@ -220,10 +220,8 @@ types other than propositional truncation?
 
 open PropositionalTruncation pt
 
-open import NotionsOfDecidability.DecidableAndDetachable
 open import UF.Base
 open import UF.Subsingletons-FunExt
-open import Dominance
 open import UF.Equiv
 open import UF.Equiv-FunExt
 open import UF.Univalence
@@ -232,6 +230,9 @@ open import UF.EquivalenceExamples
 open import UF.Yoneda
 open import UF.Embeddings
 open import UF.Powerset
+
+open import NotionsOfDecidability.DecidableAndDetachable
+open import Uncatalogued.Dominance
 
 \end{code}
 
