@@ -85,32 +85,32 @@ Some of the main modules and module clusters:
 import MLTT.index
 import UF.index
 import InjectiveTypes.index
-import Notation.index
 import TypeTopology.index
 import Ordinals.index
 import CantorSchroederBernstein.index
 import Groups.index
 import Lifting.index
+import Naturals.index
 import Slice.index
 import Taboos.index
 import Utilities.index
-import Naturals.index
-import MGS.index               -- Modular version of
-                               -- https://github.com/martinescardo/HoTT-UF.Agda-Lecture-Notes
+import Notation.index
+import MGS.index                    -- Modular version of
+                                    -- https://github.com/martinescardo/HoTT-UF.Agda-Lecture-Notes
 import Circle.index                 -- By Tom de Jong
-import DomainTheory.index           -- By Tom de Jong (started with Martin Escardo)
+import DomainTheory.index           -- By Tom de Jong
 import Dyadics.index                -- By Tom de Jong
-import Games.index                  -- By Martin Escardo and Paulo Oliva
-import Locales.index                -- By Ayberk Tosun
 import Posets.index                 -- By Tom de Jong and Martin Escardo
 import NotionsOfDecidability.index  -- By Tom de Jong and Martin Escardo
+import Locales.index                -- By Ayberk Tosun
 import TWA.index                    -- Todd Waugh Ambridge
+import Games.index                  -- By Martin Escardo and Paulo Oliva
 
 \end{code}
 
-The UF modules (univalent foundations) has been developed, on demand,
-for use in the preceding modules (and the modules below, too). The
-modules UF.Yoneda, UF.IdEmbedding and UF.Factorial contain new results.
+The UF modules (univalent foundations) have been developed, on demand,
+for use in the other modules. The modules UF.Yoneda, UF.IdEmbedding
+and UF.Factorial contain new results.
 
 Lone files:
 

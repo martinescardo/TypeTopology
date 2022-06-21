@@ -19,7 +19,7 @@ module TypeTopology.ADecidableQuantificationOverTheNaturals (fe : funext 𝓤₀
 
 open import CoNaturals.GenericConvergentSequence
 open import TypeTopology.CompactTypes
-open import TypeTopology.GenericConvergentSequence fe
+open import TypeTopology.GenericConvergentSequenceCompactness fe
 open import TypeTopology.DiscreteAndSeparated
 open import MLTT.Two-Properties
 open import NotionsOfDecidability.DecidableAndDetachable

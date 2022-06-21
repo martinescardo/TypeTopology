@@ -14,9 +14,9 @@ import TypeTopology.DisconnectedTypes
 import TypeTopology.DiscreteAndSeparated
 import TypeTopology.ExtendedSumCompact
 import TypeTopology.FailureOfTotalSeparatedness
-import TypeTopology.GenericConvergentSequence
+import TypeTopology.GenericConvergentSequenceCompactness
 import TypeTopology.InfProperty
-import TypeTopology.Lexicographic
+import TypeTopology.LexicographicCompactness
 import TypeTopology.PropInfTychonoff
 import TypeTopology.PropTychonoff
 import TypeTopology.RicesTheoremForTheUniverse

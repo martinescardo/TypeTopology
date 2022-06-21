@@ -25,7 +25,7 @@ open import UF.Embeddings
 open import UF.Miscelanea
 
 open import TypeTopology.CompactTypes
-open import TypeTopology.Lexicographic
+open import TypeTopology.LexicographicCompactness
 open import TypeTopology.ConvergentSequenceHasInf
 open import TypeTopology.PropInfTychonoff
 open import TypeTopology.InfProperty
