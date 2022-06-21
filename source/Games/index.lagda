@@ -1,3 +1,5 @@
+Martin Escardo and Paulo Oliva
+
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}

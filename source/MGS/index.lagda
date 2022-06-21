@@ -1,3 +1,7 @@
+Martin Escardo
+
+Modular version of https://github.com/martinescardo/HoTT-UF-Agda-Lecture-Notes
+
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}

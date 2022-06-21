@@ -1,6 +1,8 @@
 Martin Escardo, 22nd and 24th January 2020, with further additions
 after that.
 
+Parts of this file have been published as https://doi.org/10.1007/s40062-021-00284-6
+
 The Cantor-Schröder-Bernstein for homotopy types, or ∞-groupoids, in Agda
 -------------------------------------------------------------------------
 

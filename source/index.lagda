@@ -78,25 +78,25 @@ module index where
 
 import BinarySystems.index
 import CantorSchroederBernstein.index
-import Circle.index                   -- By Tom de Jong
+import Circle.index                   -- by Tom de Jong
 import CoNaturals.index
-import DomainTheory.index             -- By Tom de Jong
-import Dyadics.index                  -- By Tom de Jong
-import Games.index                    -- By Martin Escardo and Paulo OLiva
+import DomainTheory.index             -- by Tom de Jong
+import Dyadics.index                  -- by Tom de Jong
+import Games.index                    -- by Martin Escardo and Paulo Oliva
 import Groups.index
 import InjectiveTypes.index
 import Lifting.index
-import Locales.index                  -- By Ayberk Tosun
+import Locales.index                  -- by Ayberk Tosun
 import MGS.index                      -- Modular version of https://github.com/martinescardo/HoTT-UF-Agda-Lecture-Notes
 import MLTT.index
 import Naturals.index
 import Notation.index
-import NotionsOfDecidability.index    -- By Tom de Jong and Martin Escardo
+import NotionsOfDecidability.index    -- by Tom de Jong and Martin Escardo
 import Ordinals.index
-import Posets.index                   -- By Tom de Jong and Martin Escardo
+import Posets.index                   -- by Tom de Jong and Martin Escardo
 import Published.index
 import Slice.index
-import TWA.index                      -- Todd Waugh Ambridge
+import TWA.index                      -- by Todd Waugh Ambridge
 import Taboos.index
 import TypeTopology.index
 import UF.index

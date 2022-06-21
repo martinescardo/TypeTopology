@@ -4,13 +4,13 @@
 
 module Posets.index where
 
-import Posets.Frame
-import Posets.FreeJoinSemiLattice             -- By Tom de Jong
-import Posets.FreeSupLattice                  -- By Tom de Jong
-import Posets.JoinSemiLattices                -- By Tom de Jong
-import Posets.Poset                           -- By Tom de Jong
-import Posets.PosetReflection                 -- By Tom de Jong
-import Posets.sigma-frame
-import Posets.sigma-sup-lattice
+import Posets.Frame                           -- by Martin Escardo
+import Posets.FreeJoinSemiLattice             -- by Tom de Jong
+import Posets.FreeSupLattice                  -- by Tom de Jong
+import Posets.JoinSemiLattices                -- by Tom de Jong
+import Posets.Poset                           -- by Tom de Jong
+import Posets.PosetReflection                 -- by Tom de Jong
+import Posets.sigma-frame                     -- by Martin Escardo
+import Posets.sigma-sup-lattice               -- by Martin Escardo
 
 \end{code}

@@ -1,3 +1,5 @@
+Martin Escardo
+
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
@@ -24,7 +26,6 @@ import TypeTopology.SigmaDiscreteAndTotallySeparated
 import TypeTopology.SimpleTypes
 import TypeTopology.SquashedSum
 import TypeTopology.TheTopologyOfTheUniverse
-import TypeTopology.TotalSeparatedness
 import TypeTopology.TotallySeparated
 import TypeTopology.WeaklyCompactTypes
 
