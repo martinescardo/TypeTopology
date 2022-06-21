@@ -15,7 +15,7 @@ open import UF.Base
 open import UF.PropTrunc
 open import UF.FunExt
 open import UF.PropTrunc
-open import List hiding ([_])
+open import MLTT.List hiding ([_])
 
 module Locales.Frame
         (pt : propositional-truncations-exist)

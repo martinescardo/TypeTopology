@@ -62,7 +62,7 @@ module sup-complete-dcpo
 
  open is-sup-complete 𝓓-is-sup-complete
 
- open import List
+ open import MLTT.List
 
  ⊥ : ⟨ 𝓓 ⟩
  ⊥ = ⋁ 𝟘-elim

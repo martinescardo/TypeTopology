@@ -652,8 +652,8 @@ tic-tac-toe₁ = build-Game draw Board transition 9 board₀
   open import UF.Miscelanea
 
   open import NonSpartanMLTTTypes hiding (Fin ; 𝟎 ; 𝟏 ; 𝟐 ; 𝟑 ; 𝟒 ; 𝟓 ; 𝟔 ; 𝟕 ; 𝟖 ; 𝟗)
-  open import Fin
-  open import Fin-Properties
+  open import MLTT.Fin
+  open import MLTT.Fin-Properties
 
   data Player : Type where
    X O : Player

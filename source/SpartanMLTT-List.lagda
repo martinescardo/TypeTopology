@@ -10,7 +10,7 @@ Vectors with a different type for each entry (vec), usual vectors
 module SpartanMLTT-List where
 
 open import MLTT.Spartan
-open import Fin
+open import MLTT.Fin
 
 vec : (n : ℕ) → (Fin n → 𝓤 ̇ ) → 𝓤 ̇
 vec 0        X = 𝟙

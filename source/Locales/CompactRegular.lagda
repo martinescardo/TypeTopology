@@ -12,7 +12,7 @@ open import UF.PropTrunc
 open import UF.FunExt
 open import UF.Univalence
 open import UF.UA-FunExt
-open import List hiding ([_])
+open import MLTT.List hiding ([_])
 
 module Locales.CompactRegular
         (pt : propositional-truncations-exist)

@@ -8,7 +8,7 @@ open import MLTT.Spartan
 open import UF.Univalence
 open import UF.FunExt
 
-module SliceEmbedding
+module Slice.Embedding
         (𝓤 𝓣 : Universe)
         (ua : is-univalent 𝓣)
         (fe : funext 𝓣 𝓤)
@@ -20,8 +20,8 @@ open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.UA-FunExt
 
-open import Slice 𝓣
-open import SliceIdentityViaSIP 𝓣
+open import Slice.Slice 𝓣
+open import Slice.IdentityViaSIP 𝓣
 
 η-is-embedding : {X : 𝓤 ̇ } → is-embedding (η {𝓤} {X})
 η-is-embedding {X} = embedding-criterion' η c

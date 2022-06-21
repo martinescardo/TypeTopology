@@ -18,7 +18,7 @@ Martin Escardo, 3 February 2021.
 
 open import MLTT.Spartan hiding (_^_)
 
-module SRTclosure where
+module Groups.SRTclosure where
 
 open import UF.Subsingletons
 open import UF.PropTrunc

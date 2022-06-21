@@ -84,66 +84,56 @@ Some of the main modules and module clusters:
 
 import MLTT.index
 import UF.index
+import InjectiveTypes.index
 import Notation.index
 import TypeTopology.index
 import Ordinals.index
-import Groups.index
 import CantorSchroederBernstein.index
+import Groups.index
 import LawvereFPT
+import Lifting.index
+import Slice.index
 import Types2019
+import Taboos.index
 import MGS.index          -- Modular version of https://github.com/martinescardo/HoTT-UF.Agda-Lecture-Notes
+import Circle.index       -- By Tom de Jong
 import DomainTheory.index -- By Tom de Jong (started with Martin Escardo)
 import Dyadics.index      -- By Tom de Jong
-import Circle.index       -- By Tom de Jong
+import Games.index        -- By Martin Escardo and Paulo Oliva
+import Locales.index      -- By Ayberk Tosun
+
 \end{code}
 
-The UF module (univalent foundations) has been developed, on demand,
+The UF modules (univalent foundations) has been developed, on demand,
 for use in the preceding modules (and the modules below, too). The
-modules UF.Yoneda and UF-IdEmbedding contain new results.
+modules UF.Yoneda, UF.IdEmbedding and UF.Factorial contain new results.
 
-All modules in alphabetical order:
+TODO. The following files need to be organized in directories:
 
 \begin{code}
 
 import ArithmeticViaEquivalence
 import BanachFixedPointTheorem -- By Todd Waugh Ambridge
-import Taboos.index
 import BinaryNaturals
-import Closeness              -- By Todd Waugh Ambridge and Martin Escardo
+import Closeness               -- Now mostly by Todd Waugh Ambridge, originally Martin Escardo
 import DecidableAndDetachable
 import Dedekind
 import Dominance
 import DummettDisjunction
 import Escardo-Simpson-LICS2001        -- By Todd Waugh Ambridge
-import Fin
-import Fin-Properties
-import Games.index                     -- By Martin Escardo and Paulo Oliva
-import Frame-version1
-import Locales.index                   -- By Ayberk Tosun
-import FreeJoinSemiLattice             -- By Tom de Jong
-import FreeSupLattice                  -- By Tom de Jong
 import HiggsInvolutionTheorem
-import InjectiveTypes.index
-import JoinSemiLattices                -- By Tom de Jong
 import LawvereFPT
 import LexicographicOrder
-import Lifting.index
-import List
 import Lumsdaine
 import NaturalsAddition
 import NaturalsOrder
 import NonCollapsibleFamily
 import NonSpartanMLTTTypes
-
-import SRTclosure
-import Ordinals
-import P2
 import PairFun
 import PlusOneLC
 import QuasiDecidable
 import RootsTruncation
 import Sequence
-import Slice.index
 import SemiDecidable                   -- By Tom de Jong
 import sigma-sup-lattice
 import sigma-frame

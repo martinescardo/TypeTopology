@@ -40,7 +40,7 @@ open import MLTT.Two
 open import MLTT.Two-Properties
 
 open import Groups.Groups
-open import List
+open import MLTT.List
 
 open import UF.PropTrunc
 open import UF.Univalence
@@ -270,7 +270,7 @@ consequences of the Church-Rosser property in a general setting.
 
 \begin{code}
 
- open import SRTclosure
+ open import Groups.SRTclosure
  open Church-Rosser-consequences {𝓤} {𝓤} _▷_ public
 
 \end{code}

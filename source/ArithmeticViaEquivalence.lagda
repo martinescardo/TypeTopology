@@ -150,8 +150,8 @@ module ArithmeticViaEquivalence where
 open import UF.Subsingletons
 open import UF.Equiv
 open import UF.EquivalenceExamples
-open import Fin
-open import Fin-Properties
+open import MLTT.Fin
+open import MLTT.Fin-Properties
 
 \end{code}
 

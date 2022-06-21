@@ -7,7 +7,7 @@ Martin Escardo, 24th March 2022
 open import MLTT.Spartan
 open import UF.FunExt
 
-module P2 (fe : FunExt) where
+module Taboos.P2 (fe : FunExt) where
 
 fe₀ : {𝓤 : Universe} → DN-funext 𝓤 𝓤₀
 fe₀ {𝓤} = dfunext (fe 𝓤 𝓤₀)

@@ -29,12 +29,13 @@ using the corresponding properties for (finite) types.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module Fin-Properties where
+module MLTT.Fin-Properties where
+
+open import UF.Subsingletons renaming (⊤Ω to ⊤)
 
 open import MLTT.Spartan
-open import UF.Subsingletons renaming (⊤Ω to ⊤)
 open import MLTT.Plus-Properties
-open import Fin
+open import MLTT.Fin
 open import Notation.Order
 
 \end{code}

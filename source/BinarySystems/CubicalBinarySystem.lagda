@@ -26,7 +26,7 @@ definitions of the initial binary system.
 
 {-# OPTIONS --safe --auto-inline --cubical #-}
 
-module CubicalBinarySystem where
+module BinarySystems.CubicalBinarySystem where
 
 open import Cubical.Foundations.Prelude
 open import Cubical.Foundations.Function

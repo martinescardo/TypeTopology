@@ -12,8 +12,7 @@ the least element and binary joins.
 module JoinSemiLattices where
 
 open import MLTT.Spartan
-
-open import Fin
+open import MLTT.Fin
 
 open import UF.Subsingletons
 

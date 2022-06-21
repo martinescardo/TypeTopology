@@ -7,7 +7,7 @@ background for this file.
 
 {-# OPTIONS --without-K --safe --auto-inline --exact-split #-}
 
-module InitialBinarySystem2 where
+module BinarySystems.InitialBinarySystem2 where
 
 open import MLTT.Spartan
 

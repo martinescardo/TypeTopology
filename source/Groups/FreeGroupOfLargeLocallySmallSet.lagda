@@ -71,8 +71,8 @@ open import UF.Equiv hiding (_≅_)
 open import UF.EquivalenceExamples
 open import UF.Size
 
-open import List
-open import SRTclosure
+open import MLTT.List
+open import Groups.SRTclosure
 open import Groups.Groups
 open import Groups.FreeGroup
 

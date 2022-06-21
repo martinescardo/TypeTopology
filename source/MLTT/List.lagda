@@ -8,7 +8,7 @@ Athenian in this respect.
 
 {-# OPTIONS --without-K --safe --auto-inline --exact-split #-}
 
-module List where
+module MLTT.List where
 
 open import MLTT.Spartan
 

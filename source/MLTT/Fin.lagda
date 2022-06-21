@@ -6,10 +6,11 @@ See also the file Fin-Properties.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module Fin where
+module MLTT.Fin where
+
+open import UF.Subsingletons renaming (⊤Ω to ⊤)
 
 open import MLTT.Spartan
-open import UF.Subsingletons renaming (⊤Ω to ⊤)
 open import MLTT.Plus-Properties
 
 Fin : ℕ → 𝓤₀ ̇

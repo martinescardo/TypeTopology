@@ -13,8 +13,8 @@ subsets of X.
 open import MLTT.Spartan
 
 open import ArithmeticViaEquivalence
-open import Fin
-open import Fin-Properties
+open import MLTT.Fin
+open import MLTT.Fin-Properties
 open import JoinSemiLattices
 
 open import UF.Base

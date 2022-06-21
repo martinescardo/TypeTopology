@@ -11,8 +11,8 @@ There is also a proof in Egbert Rijke's book (to appear).
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import MLTT.Spartan
-open import Fin
-open import Fin-Properties
+open import MLTT.Fin
+open import MLTT.Fin-Properties
 open import PairFun
 
 open import UF.Subsingletons renaming (⊤Ω to ⊤)

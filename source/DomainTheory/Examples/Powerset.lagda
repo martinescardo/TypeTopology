@@ -26,7 +26,7 @@ module DomainTheory.Examples.Powerset
         (X-is-set : is-set X)
        where
 
-open import List
+open import MLTT.List
 
 open import UF.Equiv
 open import UF.ImageAndSurjection

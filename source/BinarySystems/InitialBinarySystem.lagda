@@ -21,7 +21,7 @@ quotients - it just happens to have the quotient we want.
 
 {-# OPTIONS --without-K --safe --auto-inline --exact-split #-}
 
-module InitialBinarySystem where
+module BinarySystems.InitialBinarySystem where
 
 open import MLTT.Spartan
 

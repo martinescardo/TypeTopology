@@ -78,9 +78,9 @@ open import BinaryNaturals hiding (_+_)
 open import TypeTopology.CompactTypes
 open import TypeTopology.DiscreteAndSeparated
 open import DecidableAndDetachable
-open import Fin-Properties
 open import NaturalsOrder
 open import Notation.Order
+open import MLTT.Fin-Properties
 open import MLTT.Two-Properties
 
 \end{code}
