@@ -38,8 +38,7 @@ open PropositionalTruncation pt
 open import Naturals.Properties
 open import UF.Miscelanea
 
-open import PCF pt
-
+open import DomainTheory.ScottModelOfPCF.PCF pt
 open import DomainTheory.Basics.Dcpo pt fe 𝓤₀
 open import DomainTheory.Basics.Exponential pt fe 𝓤₀
 open import DomainTheory.Basics.LeastFixedPoint pt fe

@@ -9,7 +9,7 @@ Includes (reflexive transitive closure of) operational semantics.
 
 open import UF.PropTrunc
 
-module PCF (pt : propositional-truncations-exist) where
+module DomainTheory.ScottModelOfPCF.PCF (pt : propositional-truncations-exist) where
 
 open PropositionalTruncation pt
 
