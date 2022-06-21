@@ -112,11 +112,3 @@ import Games.index                  -- By Martin Escardo and Paulo Oliva
 The UF modules (univalent foundations) have been developed, on demand,
 for use in the other modules. The modules UF.Yoneda, UF.IdEmbedding
 and UF.Factorial contain new results.
-
-Lone files:
-
-\begin{code}
-
-import Types2019
-
-\end{code}

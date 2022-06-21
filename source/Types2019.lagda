@@ -1,5 +1,7 @@
 Martin Escardo
 
+*** Please do not move this file. It is linked from a published abstract. ***
+
 The following imported files implement the ideas advertised at the
 Types 2019 meeting
 
