@@ -92,7 +92,6 @@ import CantorSchroederBernstein.index
 import Groups.index
 import Lifting.index
 import Slice.index
-import Types2019
 import Taboos.index
 import Utilities.index
 import Naturals.index
@@ -117,6 +116,7 @@ Lone files:
 
 \begin{code}
 
+import Types2019
 import ArithmeticViaEquivalence
 import Dedekind
 import Dominance
@@ -127,6 +127,5 @@ import LexicographicOrder
 import Lumsdaine
 import NonCollapsibleFamily
 import UnivalenceFromScratch
-
 
 \end{code}

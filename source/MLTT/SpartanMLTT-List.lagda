@@ -7,7 +7,7 @@ Vectors with a different type for each entry (vec), usual vectors
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module SpartanMLTT-List where
+module MLTT.SpartanMLTT-List where
 
 open import MLTT.Spartan
 open import MLTT.Fin

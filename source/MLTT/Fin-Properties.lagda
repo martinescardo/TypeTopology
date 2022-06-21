@@ -1092,7 +1092,7 @@ If the type X i is compact for every i : Fin n, then the product type
 
 \begin{code}
 
-open import SpartanMLTT-List
+open import MLTT.SpartanMLTT-List
 
 finite-product-compact : (n : ℕ) (X : Fin n → 𝓤 ̇ )
                        → ((i : Fin n) → Compact (X i) {𝓤})
