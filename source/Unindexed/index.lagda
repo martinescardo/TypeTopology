@@ -7,5 +7,6 @@ module Unindexed.index where
 import Types2019
 import InjectiveTypes-article
 import InjectiveTypes
+import CantorSchroederBernstein
 
 \end{code}
