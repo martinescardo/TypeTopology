@@ -39,7 +39,6 @@ import UF.Quotient
 import UF.Retracts-FunExt
 import UF.Retracts
 import UF.SIP-Examples
-import UF.SIP-IntervalObject
 import UF.SIP
 import UF.Section-Embedding
 import UF.Size

@@ -19,7 +19,7 @@ open import MLTT.Spartan
 open import Naturals.Addition renaming (_+_ to _+ℕ_)
 open import UF.FunExt
 
-module Escardo-Simpson-LICS2001 (fe : FunExt) where
+module TWA.Escardo-Simpson-LICS2001 (fe : FunExt) where
 
 open import UF.Subsingletons public
 open import Utilities.Sequence fe

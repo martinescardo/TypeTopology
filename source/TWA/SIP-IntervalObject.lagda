@@ -20,7 +20,7 @@ for the structure.
 open import MLTT.Spartan
 open import UF.FunExt
 
-module UF.SIP-IntervalObject {𝓤 : Universe} (fe' : FunExt) where
+module TWA.SIP-IntervalObject {𝓤 : Universe} (fe' : FunExt) where
 
 fe : funext 𝓥 𝓦
 fe {𝓥} {𝓦} = fe' 𝓥 𝓦
@@ -31,7 +31,7 @@ open import UF.Equiv
 open import UF.Subsingletons-FunExt
 open import UF.SIP
 open import UF.SIP-Examples
-open import Escardo-Simpson-LICS2001 fe'
+open import TWA.Escardo-Simpson-LICS2001 fe'
 
 open sip
 open sip-with-axioms

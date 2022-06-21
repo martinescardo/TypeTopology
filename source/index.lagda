@@ -90,11 +90,12 @@ import TypeTopology.index
 import Ordinals.index
 import CantorSchroederBernstein.index
 import Groups.index
-import LawvereFPT
 import Lifting.index
 import Slice.index
 import Types2019
 import Taboos.index
+import Utilities.index
+import Naturals.index
 import MGS.index               -- Modular version of
                                -- https://github.com/martinescardo/HoTT-UF.Agda-Lecture-Notes
 import Circle.index                 -- By Tom de Jong
@@ -104,8 +105,7 @@ import Games.index                  -- By Martin Escardo and Paulo Oliva
 import Locales.index                -- By Ayberk Tosun
 import Posets.index                 -- By Tom de Jong and Martin Escardo
 import NotionsOfDecidability.index  -- By Tom de Jong and Martin Escardo
-import Utilities.index
-import Naturals.index
+import TWA.index                    -- Todd Waugh Ambridge
 
 \end{code}
 
@@ -113,24 +113,19 @@ The UF modules (univalent foundations) has been developed, on demand,
 for use in the preceding modules (and the modules below, too). The
 modules UF.Yoneda, UF.IdEmbedding and UF.Factorial contain new results.
 
-TODO. The following files need to be organized in directories:
+Lone files:
 
 \begin{code}
 
 import ArithmeticViaEquivalence
-import BanachFixedPointTheorem -- By Todd Waugh Ambridge
-import BinaryNaturals
-import Closeness               -- Now mostly by Todd Waugh Ambridge, originally Martin Escardo
 import Dedekind
 import Dominance
 import DummettDisjunction
-import Escardo-Simpson-LICS2001        -- By Todd Waugh Ambridge
 import HiggsInvolutionTheorem
 import LawvereFPT
 import LexicographicOrder
 import Lumsdaine
 import NonCollapsibleFamily
-import NonSpartanMLTTTypes
 import UnivalenceFromScratch
 
 

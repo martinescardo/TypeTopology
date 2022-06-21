@@ -56,7 +56,7 @@ open import UF.Subsingletons-FunExt
 open import UF.Miscelanea
 
 open import TypeTopology.DiscreteAndSeparated
-open import BinaryNaturals hiding (_+_)
+open import Naturals.Binary hiding (_+_)
 open import MLTT.Two-Properties
 open import Taboos.WLPO
 open import Taboos.LPO fe

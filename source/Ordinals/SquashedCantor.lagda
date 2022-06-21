@@ -573,7 +573,7 @@ pair-seq-retract : {X : 𝓤 ̇ }
                  → retract ((ℕ → X) × (ℕ → X)) of (ℕ → X)
 pair-seq-retract {𝓤} {X} fe = retracts-compose (retracts-compose c d) b
  where
-  open import BinaryNaturals
+  open import Naturals.Binary
   open import UF.Retracts-FunExt
 
   a : retract (ℕ → X) of (𝔹 → X)

@@ -8,15 +8,15 @@ A version of the Banach fixed-point theorem for ultracloseness spaces.
 
 open import UF.FunExt
 
-module BanachFixedPointTheorem (fe : FunExt) where
+module TWA.BanachFixedPointTheorem (fe : FunExt) where
 
 open import MLTT.Spartan
 open import CoNaturals.GenericConvergentSequence hiding (min)
 open import CoNaturals.Arithmetic fe
-open import Closeness fe
-open import NaturalsOrder
+open import TWA.Closeness fe
+open import Naturals.Order
 open import UF.Miscelanea
-open import MLTT.NaturalNumbers-Properties
+open import Naturals.Properties
 open import Notation.Order
 open import Notation.CanonicalMap
 

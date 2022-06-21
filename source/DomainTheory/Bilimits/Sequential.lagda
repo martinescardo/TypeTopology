@@ -22,9 +22,9 @@ open import DomainTheory.Basics.Dcpo pt fe 𝓤₀
 open import DomainTheory.Basics.Miscelanea pt fe 𝓤₀
 open import DomainTheory.Bilimits.Directed pt fe 𝓤₀ 𝓤 𝓣
 
-open import NaturalsAddition renaming (_+_ to _+'_)
-open import MLTT.NaturalNumbers-Properties
-open import NaturalsOrder
+open import Naturals.Addition renaming (_+_ to _+'_)
+open import Naturals.Properties
+open import Naturals.Order
 open import Notation.Order
 
 open import UF.Equiv

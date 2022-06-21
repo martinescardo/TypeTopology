@@ -26,7 +26,7 @@ We then discuss further codistance axioms.
 open import MLTT.Spartan
 open import UF.FunExt
 
-module Closeness (fe : FunExt) where
+module TWA.Closeness (fe : FunExt) where
 
 open import Utilities.Sequence fe
 open import CoNaturals.UniversalProperty fe

@@ -6,7 +6,7 @@ Non-spartan types in MLTT, which are definable from spartan MLTT, but we include
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module NonSpartanMLTTTypes where
+module MLTT.NonSpartanMLTTTypes where
 
 open import MLTT.Spartan
 

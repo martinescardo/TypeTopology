@@ -39,7 +39,7 @@ Applications:
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module BinaryNaturals where
+module Naturals.Binary where
 
 open import MLTT.Spartan renaming (_+_ to _∔_)
 open import Naturals.Properties

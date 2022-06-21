@@ -15,6 +15,7 @@ import MLTT.List
 import MLTT.Natural-Numbers-Type
 import MLTT.NaturalNumbers
 import MLTT.Negation
+import MLTT.NonSpartanMLTTTypes
 import MLTT.Pi
 import MLTT.Plus-Properties
 import MLTT.Plus-Type

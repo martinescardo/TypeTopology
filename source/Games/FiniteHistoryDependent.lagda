@@ -540,7 +540,7 @@ Incomplete example:
 
 module permutations-example where
 
- open import NonSpartanMLTTTypes
+ open import MLTT.NonSpartanMLTTTypes
 
  no-repetitions : (n : ℕ) (X : Type) → DTT
  no-repetitions 0        X = []
@@ -651,7 +651,7 @@ tic-tac-toe₁ = build-Game draw Board transition 9 board₀
   open import TypeTopology.DiscreteAndSeparated
   open import UF.Miscelanea
 
-  open import NonSpartanMLTTTypes hiding (Fin ; 𝟎 ; 𝟏 ; 𝟐 ; 𝟑 ; 𝟒 ; 𝟓 ; 𝟔 ; 𝟕 ; 𝟖 ; 𝟗)
+  open import MLTT.NonSpartanMLTTTypes hiding (Fin ; 𝟎 ; 𝟏 ; 𝟐 ; 𝟑 ; 𝟒 ; 𝟓 ; 𝟔 ; 𝟕 ; 𝟖 ; 𝟗)
   open import MLTT.Fin
   open import MLTT.Fin-Properties
 
@@ -782,7 +782,7 @@ tic-tac-toe₂J = build-GameJ draw Board transition 9 board₀
   data Player : Type where
    O X : Player
 
-  open import NonSpartanMLTTTypes
+  open import MLTT.NonSpartanMLTTTypes
   open list-util
 
   Cell = Fin 9
@@ -948,7 +948,7 @@ More tests.
 
 module test where
 
- open import NonSpartanMLTTTypes
+ open import MLTT.NonSpartanMLTTTypes
 
  ε₂ : J Bool Bool
  ε₂ p = p true

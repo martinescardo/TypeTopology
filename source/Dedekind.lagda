@@ -41,7 +41,7 @@ open import Notation.CanonicalMap
 open import Notation.Order
 open import MLTT.Plus-Properties
 open import TypeTopology.CompactTypes
-open import NaturalsOrder
+open import Naturals.Order
 
 open import UF.Base
 open import UF.Embeddings

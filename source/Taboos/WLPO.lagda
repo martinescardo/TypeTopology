@@ -64,7 +64,7 @@ WLPO-gives-ℕ∞-discrete fe wlpo u v =
   (λ (n : ℕ∞-closeness u v ≢ ∞)
         → inr (contrapositive (λ (q : u ≡ v) → ℕ∞-equal-are-infinitely-close u v q) n))
  where
-  open import Closeness fe
+  open import TWA.Closeness fe
 
 \end{code}
 
