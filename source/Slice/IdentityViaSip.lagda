@@ -6,7 +6,7 @@ Martin Escardo, 6th December 2018
 
 open import MLTT.Spartan
 
-module SliceIdentityViaSIP
+module Slice.IdentityViaSIP
         (𝓣 : Universe)
         {𝓤 : Universe}
         {X : 𝓤 ̇ }
@@ -22,7 +22,7 @@ open import UF.Univalence
 open import UF.UA-FunExt
 open import UF.StructureIdentityPrinciple
 
-open import Slice 𝓣
+open import Slice.Slice 𝓣
 
 _⋍_ : 𝓕 X → 𝓕 X → 𝓣 ⊔ 𝓤 ̇
 l ⋍ m = Σ e ꞉ source l ≃ source m , family l ≡ family m ∘ ⌜ e ⌝
