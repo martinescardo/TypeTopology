@@ -76,12 +76,6 @@ Click at the imported module names to navigate to them:
 
 module index where
 
-\end{code}
-
-Some of the main modules and module clusters:
-
-\begin{code}
-
 import BinarySystems.index
 import CantorSchroederBernstein.index
 import Circle.index                   -- By Tom de Jong
