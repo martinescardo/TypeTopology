@@ -83,9 +83,9 @@ module QuasiDecidable
 
 open import UF.Size
 
-import Frame-version1
-import sigma-frame
-import sigma-sup-lattice
+import Posets.Frame
+import Posets.sigma-frame
+import Posets.sigma-sup-lattice
 
 \end{code}
 
@@ -155,7 +155,7 @@ record initial-σ-frame-exists (𝓣 : Universe) : 𝓤ω where
  constructor
   initial-σ-frame
 
- open sigma-frame fe
+ open Posets.sigma-frame fe
  field
   𝓐 : σ-Frame 𝓣
   𝓐-is-initial : {𝓤 : Universe} (𝓑 : σ-Frame 𝓤) → ∃! f ꞉ (⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩), is-σ-frame-hom 𝓐 𝓑 f
@@ -170,7 +170,7 @@ record free-σ-SupLat-on-one-generator-exists (𝓣 𝓚 : Universe) : 𝓤ω wh
  constructor
   free-σ-SupLat-on-one-generator
 
- open sigma-sup-lattice fe
+ open Posets.sigma-sup-lattice fe
 
  field
   𝓐 : σ-SupLat 𝓣 𝓚
@@ -621,7 +621,7 @@ propositions:
 
 \begin{code}
 
- open import sigma-sup-lattice fe
+ open import Posets.sigma-sup-lattice fe
 
  QD : σ-SupLat (𝓣 ⁺ ⊔ 𝓚) 𝓣
  QD = 𝓠 ,
@@ -1041,7 +1041,7 @@ quasidecidable propositions to the above hypothetical development.
 
 \begin{code}
 
- open sigma-sup-lattice fe
+ open Posets.sigma-sup-lattice fe
 
  free-σ-suplat-on-one-generator-exists :
 
@@ -1092,7 +1092,7 @@ free σ-sup-lattice on one generator ⊤.
 
 module hypothetical-free-σ-SupLat-on-one-generator where
 
- open import sigma-sup-lattice fe
+ open import Posets.sigma-sup-lattice fe
 
  module assumption
         {𝓣 𝓚 : Universe}
@@ -1455,7 +1455,7 @@ We now show that the initial σ-suplat is also the initial σ-frame. The
 following renaming is annoying.
 
 \begin{code}
-  open sigma-frame fe
+  open Posets.sigma-frame fe
         hiding (order)
         renaming
          (⟨_⟩ to ⟨_⟩' ;
@@ -1564,10 +1564,10 @@ We now regard the type of propositions as a σ-sup-lattice:
 \begin{code}
 
   Ω-qua-σ-Frame : σ-Frame (𝓣 ⁺)
-  Ω-qua-σ-Frame = sigma-frame.Ω-qua-σ-frame fe pe pt
+  Ω-qua-σ-Frame = Posets.sigma-frame.Ω-qua-σ-frame fe pe pt
 
   Ω-qua-σ-SupLat : σ-SupLat (𝓣 ⁺) (𝓣 ⁺)
-  Ω-qua-σ-SupLat = sigma-frame.Ω-qua-σ-suplat fe pe pt
+  Ω-qua-σ-SupLat = Posets.sigma-frame.Ω-qua-σ-suplat fe pe pt
 
   private
    ⊥'   = ⊥⟨ Ω-qua-σ-SupLat ⟩
@@ -1773,7 +1773,7 @@ a set:
   τ-order-lc a b l = iv
    where
     i : τ a holds → τ b holds
-    i = Frame-version1.from-≤Ω fe pe pt {𝓣} {τ a} {τ b} l
+    i = Posets.Frame.from-≤Ω fe pe pt {𝓣} {τ a} {τ b} l
 
     ii : τ a ≡ ⊤' → τ b ≡ ⊤'
     ii p = holds-gives-equal-⊤ pe fe (τ b) (i (equal-⊤-gives-holds (τ a) p))

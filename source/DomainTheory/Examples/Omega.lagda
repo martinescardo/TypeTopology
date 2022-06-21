@@ -33,7 +33,7 @@ open import UF.Subsingletons-FunExt
 open ImageAndSurjection pt
 open PropositionalTruncation pt
 
-open import Poset fe
+open import Posets.Poset fe
 
 open import DomainTheory.Basics.Dcpo pt fe 𝓤
 open import DomainTheory.Basics.Miscelanea pt fe 𝓤

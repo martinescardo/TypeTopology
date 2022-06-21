@@ -43,7 +43,7 @@ open import DomainTheory.BasesAndContinuity.Continuity pt fe 𝓤
 
 open import DomainTheory.Lifting.LiftingSet pt fe 𝓤 pe
 
-open import Poset fe
+open import Posets.Poset fe
 
 module _
         {X : 𝓤 ̇ }

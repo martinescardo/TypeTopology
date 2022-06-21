@@ -16,7 +16,7 @@ open import MLTT.Spartan
 open import UF.FunExt
 open import UF.Subsingletons hiding (Ω₀)
 
-module Posets.Frame-version1 (fe : Fun-Ext) where
+module Posets.Frame (fe : Fun-Ext) where
 
 open import UF.Base
 open import UF.SIP

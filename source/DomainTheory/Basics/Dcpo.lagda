@@ -28,7 +28,7 @@ open PropositionalTruncation pt hiding (is-inhabited; being-inhabited-is-prop)
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
-open import Poset fe
+open import Posets.Poset fe
 
 module _ {𝓤 𝓣 : Universe}
          {D : 𝓤 ̇ }

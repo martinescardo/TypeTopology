@@ -15,7 +15,7 @@ open import UF.PropTrunc
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
-module FreeSupLattice
+module Posets.FreeSupLattice
         (pt : propositional-truncations-exist)
        where
 

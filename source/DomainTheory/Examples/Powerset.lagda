@@ -34,7 +34,7 @@ open import UF.Powerset
 open import UF.Powerset-Fin pt
 open import UF.Subsingletons-FunExt
 
-open import Poset fe
+open import Posets.Poset fe
 
 open binary-unions-of-subsets pt
 open canonical-map-from-lists-to-subsets X-is-set

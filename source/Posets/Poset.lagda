@@ -14,7 +14,7 @@ open import UF.FunExt
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
-module Poset
+module Posets.Poset
         (fe : Fun-Ext)
        where
 

@@ -28,7 +28,7 @@ open import UF.Powerset
 open import UF.Subsingletons-FunExt
 
 open import DomainTheory.Basics.Dcpo pt fe 𝓥
-open import Poset fe
+open import Posets.Poset fe
 open PosetAxioms
 
 open PropositionalTruncation pt

@@ -135,8 +135,6 @@ import QuasiDecidable
 import RootsTruncation
 import Sequence
 import SemiDecidable                   -- By Tom de Jong
-import sigma-sup-lattice
-import sigma-frame
 import UnivalenceFromScratch
 import Swap
 

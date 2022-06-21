@@ -15,7 +15,7 @@ open import MLTT.Spartan
 open import ArithmeticViaEquivalence
 open import MLTT.Fin
 open import MLTT.Fin-Properties
-open import JoinSemiLattices
+open import Posets.JoinSemiLattices
 
 open import UF.Base
 open import UF.Equiv
@@ -27,7 +27,7 @@ open import UF.PropTrunc
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
-module FreeJoinSemiLattice
+module Posets.FreeJoinSemiLattice
         (pt : propositional-truncations-exist)
        where
 
