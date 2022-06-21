@@ -235,7 +235,7 @@ module _
   fe : FunExt
   fe = Univalence-gives-FunExt ua
 
- open import DecidableAndDetachable
+ open import NotionsOfDecidability.DecidableAndDetachable
 
  open import Ordinals.Arithmetic fe
  open import Ordinals.OrdinalOfOrdinals ua

@@ -22,7 +22,7 @@ open import TypeTopology.CompactTypes
 open import TypeTopology.GenericConvergentSequence fe
 open import TypeTopology.DiscreteAndSeparated
 open import MLTT.Two-Properties
-open import DecidableAndDetachable
+open import NotionsOfDecidability.DecidableAndDetachable
 open import Notation.CanonicalMap
 open import UF.PropTrunc
 

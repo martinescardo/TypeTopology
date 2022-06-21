@@ -83,7 +83,7 @@ open import MLTT.Plus-Properties
 open import MLTT.AlternativePlus
 
 open import TypeTopology.DiscreteAndSeparated
-open import DecidableAndDetachable public
+open import NotionsOfDecidability.DecidableAndDetachable public
 
 open import UF.Base
 open import UF.Subsingletons renaming (⊤Ω to ⊤ ; ⊥Ω to ⊥)

@@ -52,7 +52,7 @@ open import MLTT.Plus-Properties
 open import TypeTopology.CompactTypes
 open import TypeTopology.GenericConvergentSequence
 open import TypeTopology.DiscreteAndSeparated
-open import DecidableAndDetachable
+open import NotionsOfDecidability.DecidableAndDetachable
 open import CoNaturals.GenericConvergentSequence
 open import UF.Base
 open import UF.Equiv

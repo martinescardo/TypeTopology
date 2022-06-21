@@ -23,7 +23,7 @@ module DomainTheory.Examples.Omega
         (𝓤 : Universe)
        where
 
-open import DecidableAndDetachable
+open import NotionsOfDecidability.DecidableAndDetachable
 
 open import UF.Equiv
 open import UF.EquivalenceExamples

@@ -12,13 +12,13 @@ from 21 March 2018 is included at the end.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module PlusOneLC where
+module Utilities.PlusOneLC where
 
 open import MLTT.Spartan
 open import UF.Equiv
 open import MLTT.Plus-Properties
 open import UF.Retracts
-open import Swap
+open import Utilities.Swap
 open import TypeTopology.DiscreteAndSeparated
 
 +𝟙-cancellable : {X : 𝓤 ̇ } {Y : 𝓥 ̇}

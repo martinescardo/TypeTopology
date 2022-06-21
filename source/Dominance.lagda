@@ -127,7 +127,7 @@ Example: the decidable propositions form a dominance.
 
 module DecidableDominance where
 
- open import DecidableAndDetachable
+ open import NotionsOfDecidability.DecidableAndDetachable
 
  decidable-dominance : Fun-Ext → Dominance {𝓤} {𝓤}
  decidable-dominance fe = (λ P → is-prop P × decidable P) ,

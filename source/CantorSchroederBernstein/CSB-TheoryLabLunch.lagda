@@ -165,7 +165,7 @@ The Pradic-Brown argument rendered in HoTT/UF
 module CantorSchroederBernstein.CSB-TheoryLabLunch where
 
 open import MLTT.Spartan
-open import DecidableAndDetachable
+open import NotionsOfDecidability.DecidableAndDetachable
 open import TypeTopology.CompactTypes
 open import TypeTopology.GenericConvergentSequence
 open import CoNaturals.GenericConvergentSequence

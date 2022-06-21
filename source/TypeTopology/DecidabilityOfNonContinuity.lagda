@@ -26,7 +26,7 @@ open import MLTT.Two-Properties
 open import TypeTopology.DiscreteAndSeparated
 open import TypeTopology.ADecidableQuantificationOverTheNaturals fe
 open import CoNaturals.GenericConvergentSequence
-open import DecidableAndDetachable
+open import NotionsOfDecidability.DecidableAndDetachable
 open import Notation.CanonicalMap
 
 Lemma-3·1 : (q : ℕ∞ → ℕ∞ → 𝟚)

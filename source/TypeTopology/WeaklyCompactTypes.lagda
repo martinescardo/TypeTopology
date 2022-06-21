@@ -39,7 +39,7 @@ module TypeTopology.WeaklyCompactTypes
        where
 
 open PropositionalTruncation pt
-open import DecidableAndDetachable
+open import NotionsOfDecidability.DecidableAndDetachable
 
 ∃-compact : 𝓤 ̇ → 𝓤 ̇
 ∃-compact X = (p : X → 𝟚) → decidable (∃ x ꞉ X , p x ≡ ₀)

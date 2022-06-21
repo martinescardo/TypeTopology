@@ -95,12 +95,15 @@ import Lifting.index
 import Slice.index
 import Types2019
 import Taboos.index
-import MGS.index          -- Modular version of https://github.com/martinescardo/HoTT-UF.Agda-Lecture-Notes
-import Circle.index       -- By Tom de Jong
-import DomainTheory.index -- By Tom de Jong (started with Martin Escardo)
-import Dyadics.index      -- By Tom de Jong
-import Games.index        -- By Martin Escardo and Paulo Oliva
-import Locales.index      -- By Ayberk Tosun
+import MGS.index               -- Modular version of
+                               -- https://github.com/martinescardo/HoTT-UF.Agda-Lecture-Notes
+import Circle.index                 -- By Tom de Jong
+import DomainTheory.index           -- By Tom de Jong (started with Martin Escardo)
+import Dyadics.index                -- By Tom de Jong
+import Games.index                  -- By Martin Escardo and Paulo Oliva
+import Locales.index                -- By Ayberk Tosun
+import Posets.index                 -- By Tom de Jong and Martin Escardo
+import NotionsOfDecidability.index  -- By Tom de Jong and Martin Escardo
 
 \end{code}
 
@@ -116,7 +119,6 @@ import ArithmeticViaEquivalence
 import BanachFixedPointTheorem -- By Todd Waugh Ambridge
 import BinaryNaturals
 import Closeness               -- Now mostly by Todd Waugh Ambridge, originally Martin Escardo
-import DecidableAndDetachable
 import Dedekind
 import Dominance
 import DummettDisjunction
@@ -129,13 +131,8 @@ import NaturalsAddition
 import NaturalsOrder
 import NonCollapsibleFamily
 import NonSpartanMLTTTypes
-import PairFun
-import PlusOneLC
-import QuasiDecidable
-import RootsTruncation
-import Sequence
-import SemiDecidable                   -- By Tom de Jong
 import UnivalenceFromScratch
-import Swap
+import RootsTruncation
+
 
 \end{code}

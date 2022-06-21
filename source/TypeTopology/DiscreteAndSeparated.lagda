@@ -14,7 +14,7 @@ open import MLTT.Spartan
 open import MLTT.Two-Properties
 open import MLTT.Plus-Properties
 open import MLTT.NaturalNumbers-Properties
-open import DecidableAndDetachable
+open import NotionsOfDecidability.DecidableAndDetachable
 open import UF.Base
 open import UF.Subsingletons renaming (⊤Ω to ⊤ ; ⊥Ω to ⊥)
 open import UF.Subsingletons-FunExt

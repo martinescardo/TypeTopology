@@ -242,7 +242,7 @@ Added December 2019.
 
 \begin{code}
 
-open import DecidableAndDetachable
+open import NotionsOfDecidability.DecidableAndDetachable
 
 ≤-decidable : (m n : ℕ ) → decidable (m ≤ n)
 ≤-decidable zero     n        = inl (zero-least n)
