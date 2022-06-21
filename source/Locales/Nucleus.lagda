@@ -12,7 +12,7 @@ open import UF.PropTrunc
 open import UF.FunExt
 open import UF.PropTrunc
 
-module Nucleus
+module Locales.Nucleus
         (pt : propositional-truncations-exist)
         (fe : Fun-Ext)
        where
@@ -21,7 +21,7 @@ open import UF.Subsingletons
 open import UF.Subsingleton-Combinators
 open import UF.Subsingletons-FunExt
 
-open import Frame pt fe
+open import Locales.Frame pt fe
 
 open AllCombinators pt fe
 

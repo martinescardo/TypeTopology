@@ -9,13 +9,13 @@ open import UF.Base
 open import UF.PropTrunc
 open import UF.FunExt
 
-module HeytingImplication
+module Locales.HeytingImplication
          (pt : propositional-truncations-exist)
          (fe : Fun-Ext)
          where
 
-open import Frame pt fe
-open import GaloisConnection pt fe
+open import Locales.Frame pt fe
+open import Locales.GaloisConnection pt fe
 open import UF.Subsingletons
 
 open import UF.Subsingleton-Combinators
@@ -23,7 +23,7 @@ open import UF.Subsingleton-Combinators
 open AllCombinators pt fe
 open PropositionalTruncation pt
 
-open import AdjointFunctorTheoremForFrames pt fe
+open import Locales.AdjointFunctorTheoremForFrames pt fe
 
 open Locale
 

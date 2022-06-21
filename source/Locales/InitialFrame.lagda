@@ -13,7 +13,7 @@ open import UF.FunExt
 open import UF.Univalence
 open import UF.UA-FunExt
 
-module InitialFrame
+module Locales.InitialFrame
         (pt : propositional-truncations-exist)
         (fe : Fun-Ext)
        where
@@ -22,7 +22,7 @@ open import UF.Subsingletons
 open import UF.Subsingleton-Combinators
 open import UF.Subsingletons-FunExt
 open import UF.Equiv
-open import Frame pt fe
+open import Locales.Frame pt fe
 open AllCombinators pt fe
 
 \end{code}

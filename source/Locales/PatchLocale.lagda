@@ -19,7 +19,7 @@ open import List hiding ([_])
 
 \begin{code}
 
-module PatchLocale
+module Locales.PatchLocale
         (pt : propositional-truncations-exist)
         (fe : Fun-Ext)
        where
@@ -27,12 +27,12 @@ module PatchLocale
 open import UF.Subsingletons
 open import UF.Subsingleton-Combinators
 open import UF.Equiv using (_≃_; logically-equivalent-props-give-is-equiv)
-open import Frame pt fe hiding (is-directed)
+open import Locales.Frame pt fe hiding (is-directed)
 
 open AllCombinators pt fe
 open PropositionalTruncation pt
-open import Nucleus pt fe
-open import CompactRegular pt fe
+open import Locales.Nucleus pt fe
+open import Locales.CompactRegular pt fe
 
 \end{code}
 

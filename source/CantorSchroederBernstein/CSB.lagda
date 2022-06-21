@@ -44,7 +44,7 @@ assumption beyond MLTT is explicit in each claim).
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module CantorSchroederBernstein where
+module CantorSchroederBernstein.CSB where
 
 open import MLTT.Spartan
 open import MLTT.NaturalNumbers-Properties

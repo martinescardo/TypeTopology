@@ -17,7 +17,7 @@ open import UF.FunExt
 open import UF.PropTrunc
 open import List hiding ([_])
 
-module Frame
+module Locales.Frame
         (pt : propositional-truncations-exist)
         (fe : Fun-Ext)
        where
@@ -1283,7 +1283,7 @@ family is directed.
 
 \begin{code}
 
-has-directed-basis₀ : (F : Frame 𝓤 𝓥 𝓦) → (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺) ̇ 
+has-directed-basis₀ : (F : Frame 𝓤 𝓥 𝓦) → (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺) ̇
 has-directed-basis₀ {𝓦 = 𝓦} F =
  Σ ℬ ꞉ Fam 𝓦 ⟨ F ⟩ ,
   Σ b ꞉ is-basis-for F ℬ ,

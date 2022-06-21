@@ -14,7 +14,7 @@ open import UF.Univalence
 open import UF.UA-FunExt
 open import List hiding ([_])
 
-module CompactRegular
+module Locales.CompactRegular
         (pt : propositional-truncations-exist)
         (fe : Fun-Ext)
        where
@@ -22,12 +22,12 @@ module CompactRegular
 open import UF.Subsingletons
 open import UF.Subsingleton-Combinators
 open import UF.Equiv using (_≃_; logically-equivalent-props-give-is-equiv)
-open import Frame pt fe hiding (is-directed)
+open import Locales.Frame pt fe hiding (is-directed)
 
 open AllCombinators pt fe
 open PropositionalTruncation pt
 
-open import InitialFrame pt fe
+open import Locales.InitialFrame pt fe
 
 \end{code}
 

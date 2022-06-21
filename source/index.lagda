@@ -118,16 +118,10 @@ import DummettDisjunction
 import Escardo-Simpson-LICS2001        -- By Todd Waugh Ambridge
 import Fin
 import Fin-Properties
-import Games.index     -- By Martin Escardo and Paulo Oliva
+import Games.index                     -- By Martin Escardo and Paulo Oliva
 import Finiteness-Universe-Invariance
 import Frame-version1
-import Frame                           -- By Ayberk Tosun
-import InitialFrame                    -- By Ayberk Tosun
-import CompactRegular                  -- By Ayberk Tosun
-import GaloisConnection                -- By Ayberk Tosun
-import AdjointFunctorTheoremForFrames  -- By Ayberk Tosun
-import HeytingImplication              -- By Ayberk Tosun
-import PatchLocale                     -- By Ayberk Tosun
+import Locales.index                   -- By Ayberk Tosun
 import FreeJoinSemiLattice             -- By Tom de Jong
 import FreeSupLattice                  -- By Tom de Jong
 import HiggsInvolutionTheorem

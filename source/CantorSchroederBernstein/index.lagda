@@ -4,7 +4,7 @@
 
 module CantorSchroederBernstein.index where
 
-import CantorSchroederBernstein
-import CantorSchroederBernstein-TheoryLabLunch.lagda
+import CantorSchroederBernstein.CSB
+import CantorSchroederBernstein.CSB-TheoryLabLunch
 
 \end{code}

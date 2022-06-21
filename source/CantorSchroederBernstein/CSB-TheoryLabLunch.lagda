@@ -162,7 +162,7 @@ The Pradic-Brown argument rendered in HoTT/UF
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module CantorSchroederBernstein-TheoryLabLunch where
+module CantorSchroederBernstein.CSB-TheoryLabLunch where
 
 open import MLTT.Spartan
 open import DecidableAndDetachable

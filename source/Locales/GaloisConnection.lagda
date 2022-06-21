@@ -9,12 +9,12 @@ open import UF.Base
 open import UF.PropTrunc
 open import UF.FunExt
 
-module GaloisConnection
+module Locales.GaloisConnection
          (pt : propositional-truncations-exist)
          (fe : Fun-Ext)
          where
 
-open import Frame pt fe
+open import Locales.Frame pt fe
 open import UF.Subsingletons
 
 open import UF.Subsingleton-Combinators
