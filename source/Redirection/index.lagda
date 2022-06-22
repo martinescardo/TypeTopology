@@ -11,5 +11,6 @@ module Redirection.index where
 
 import InjectiveTypes-article
 import InjectiveTypes
+import Redirection.Types2019
 
 \end{code}
