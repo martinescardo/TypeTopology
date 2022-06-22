@@ -14,10 +14,9 @@
 
 {-# OPTIONS --without-K --exact-split #-}
 
-import index
+import index -- of safe modules
 import Unsafe.index
-import Published.index
-import Cited.index
+import Redirection.index
 
 \end{code}
 

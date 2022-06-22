@@ -94,7 +94,6 @@ import Notation.index
 import NotionsOfDecidability.index    -- by Tom de Jong and Martin Escardo
 import Ordinals.index
 import Posets.index                   -- by Tom de Jong and Martin Escardo
-import Published.index
 import Slice.index
 import TWA.index                      -- by Todd Waugh Ambridge
 import Taboos.index
