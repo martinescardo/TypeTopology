@@ -4,7 +4,7 @@ A few Agda files in this directory are links to Agda files in subdirectories. Th
 
 At the moment these files are [InjectiveTypes.lagda](InjectiveTypes.lagda) and [InjectiveTypes-article.lagda](InjectiveTypes-article.lagda).
 
-To add more such files, create them, and import them in `Redirection/index.lagda`.
+To add more such files, create them, and import them in [Redirection/index.lagda](Redirection/index.lagda).
 
 To check that everything is fine, typecheck AllModulesIndex, which includes the index files in `Published` and `Cited`.
 
