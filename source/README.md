@@ -7,4 +7,4 @@ At the moment these files are [InjectiveTypes.lagda](InjectiveTypes.lagda) and [
 To add more such files, create them, and import them in [Redirection/index.lagda](Redirection/index.lagda).
 To check that everything is fine, typecheck [AllModulesIndex.lagda](AllModulesIndex.lagda), which imports [Redirection/index.lagda](Redirection/index.lagda).
 
-The script [updateurl](../updateurl) also implements, in a different way, such a redirection for external links that point to the html rendering. For links to html files, it is enough to update the file this script.
+The script [updateurl](../updateurl) also implements, in a different way, such a redirection for external links that point to the html rendering. For links to html files, it is enough to update this script.
