@@ -8,7 +8,7 @@ rm -rf html
 agda --highlight-occurrences --html AllModulesIndex.lagda
 rm -rf ~/public_html/TypeTopology/*.html # do not delete Agda.css, as it is a modified version
 mv html/*.html ~/public_html/TypeTopology/
-chmod a+r ~/public_html/TypeTopology/*
+chmod a+r ~/public_html/TypeTopology/*.html
 
 # Now create symlinks for files that have been moved to other places
 # but are linked from published papers, blogs etc.
