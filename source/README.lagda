@@ -2,6 +2,10 @@
 
 A few Agda files in this directory are links to Agda files in subdirectories. This is done to avoid breaking links in published papers after the files were moved to suitable directories. Please do not move or remove them.
 
-To add more such files, create them, and import them in either `Published/index.lagda` (if the file is cited in a paper by a contributor) or `Cited/index.lagda` (if the file is cited by other authors).
+At the moment these files are [InjectiveTypes.lagda](InjectiveTypes.lagda) and [InjectiveTypes-article.lagda](InjectiveTypes-article.lagda).
+
+To add more such files, create them, and import them in `Redirection/index.lagda`.
 
 To check that everything is fine, typecheck AllModulesIndex, which includes the index files in `Published` and `Cited`.
+
+The script [updateurl](../updateurl) also implements, in a different way, such a redirection for external links that point to the html rendering.

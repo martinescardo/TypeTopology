@@ -17,7 +17,7 @@ Types 2019 meeting
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module Uncatalogued.Types2019 where
+module Redirection.Types2019 where
 
 \end{code}
 
