@@ -1,6 +1,8 @@
 Martin Escardo, 22nd and 24th January 2020, with further additions
 after that.
 
+Parts of this file have been published as https://doi.org/10.1007/s40062-021-00284-6
+
 The Cantor-Schröder-Bernstein for homotopy types, or ∞-groupoids, in Agda
 -------------------------------------------------------------------------
 
@@ -46,14 +48,6 @@ assumption beyond MLTT is explicit in each claim).
 
 module CantorSchroederBernstein.CSB where
 
-open import MLTT.Spartan
-open import MLTT.Plus-Properties
-open import TypeTopology.CompactTypes
-open import TypeTopology.GenericConvergentSequence
-open import TypeTopology.DiscreteAndSeparated
-open import Naturals.Properties
-open import NotionsOfDecidability.DecidableAndDetachable
-open import CoNaturals.GenericConvergentSequence
 open import UF.Base
 open import UF.Equiv
 open import UF.Embeddings
@@ -65,6 +59,17 @@ open import UF.PropTrunc
 open import UF.Retracts
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
+
+open import MLTT.Spartan
+open import MLTT.Plus-Properties
+
+open import Naturals.Properties
+open import NotionsOfDecidability.DecidableAndDetachable
+open import CoNaturals.GenericConvergentSequence
+
+open import TypeTopology.CompactTypes
+open import TypeTopology.GenericConvergentSequenceCompactness
+open import TypeTopology.DiscreteAndSeparated
 
 \end{code}
 

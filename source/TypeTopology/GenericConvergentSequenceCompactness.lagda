@@ -19,7 +19,7 @@ searchable, which amounts to Theorem-3·6 of the paper
 open import MLTT.Spartan
 open import UF.FunExt
 
-module TypeTopology.GenericConvergentSequence (fe : funext 𝓤₀ 𝓤₀) where
+module TypeTopology.GenericConvergentSequenceCompactness (fe : funext 𝓤₀ 𝓤₀) where
 
 open import MLTT.Two-Properties
 open import UF.PropTrunc

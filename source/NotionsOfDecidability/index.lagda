@@ -4,8 +4,8 @@
 
 module NotionsOfDecidability.index where
 
-import NotionsOfDecidability.DecidableAndDetachable
-import NotionsOfDecidability.QuasiDecidable
-import NotionsOfDecidability.SemiDecidable           -- By Tom de Jong
+import NotionsOfDecidability.DecidableAndDetachable    -- by Martin Escardo
+import NotionsOfDecidability.QuasiDecidable            -- by Martin Escardo
+import NotionsOfDecidability.SemiDecidable             -- by Tom de Jong
 
 \end{code}

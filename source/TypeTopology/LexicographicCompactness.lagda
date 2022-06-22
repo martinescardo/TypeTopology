@@ -1,12 +1,12 @@
 Martin Escardo, 20-21 December 2012.
 
-This module is mainly for use in the module CompactOrdinals.
+This module is mainly for use in connection with ordinals.
 
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module TypeTopology.Lexicographic where
+module TypeTopology.LexicographicCompactness where
 
 open import MLTT.Spartan
 open import Ordinals.LexicographicOrder

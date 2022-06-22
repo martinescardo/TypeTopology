@@ -19,7 +19,7 @@ open import Taboos.WLPO
 open import CoNaturals.GenericConvergentSequence
 open import TypeTopology.CompactTypes
 open import TypeTopology.TotallySeparated
-open import TypeTopology.GenericConvergentSequence
+open import TypeTopology.GenericConvergentSequenceCompactness
 open import TypeTopology.PropTychonoff
 open import TypeTopology.FailureOfTotalSeparatedness
 

@@ -76,55 +76,34 @@ Click at the imported module names to navigate to them:
 
 module index where
 
-\end{code}
-
-Some of the main modules and module clusters:
-
-\begin{code}
-
-import MLTT.index
-import UF.index
-import InjectiveTypes.index
-import Notation.index
-import TypeTopology.index
-import Ordinals.index
+import BinarySystems.index
 import CantorSchroederBernstein.index
+import Circle.index                   -- by Tom de Jong
+import CoNaturals.index
+import DomainTheory.index             -- by Tom de Jong
+import Dyadics.index                  -- by Tom de Jong
+import Games.index                    -- by Martin Escardo and Paulo Oliva
 import Groups.index
+import InjectiveTypes.index
 import Lifting.index
-import Slice.index
-import Taboos.index
-import Utilities.index
+import Locales.index                  -- by Ayberk Tosun
+import MGS.index                      -- Modular version of https://github.com/martinescardo/HoTT-UF-Agda-Lecture-Notes
+import MLTT.index
 import Naturals.index
-import MGS.index               -- Modular version of
-                               -- https://github.com/martinescardo/HoTT-UF.Agda-Lecture-Notes
-import Circle.index                 -- By Tom de Jong
-import DomainTheory.index           -- By Tom de Jong (started with Martin Escardo)
-import Dyadics.index                -- By Tom de Jong
-import Games.index                  -- By Martin Escardo and Paulo Oliva
-import Locales.index                -- By Ayberk Tosun
-import Posets.index                 -- By Tom de Jong and Martin Escardo
-import NotionsOfDecidability.index  -- By Tom de Jong and Martin Escardo
-import TWA.index                    -- Todd Waugh Ambridge
+import Notation.index
+import NotionsOfDecidability.index    -- by Tom de Jong and Martin Escardo
+import Ordinals.index
+import Posets.index                   -- by Tom de Jong and Martin Escardo
+import Slice.index
+import TWA.index                      -- by Todd Waugh Ambridge
+import Taboos.index
+import TypeTopology.index
+import UF.index
+import Uncatalogued.index
+import Utilities.index
 
 \end{code}
 
-The UF modules (univalent foundations) has been developed, on demand,
-for use in the preceding modules (and the modules below, too). The
-modules UF.Yoneda, UF.IdEmbedding and UF.Factorial contain new results.
-
-Lone files:
-
-\begin{code}
-
-import Types2019
-import ArithmeticViaEquivalence
-import Dedekind
-import Dominance
-import DummettDisjunction
-import HiggsInvolutionTheorem
-import LawvereFPT
-import Lumsdaine
-import NonCollapsibleFamily
-import UnivalenceFromScratch
-
-\end{code}
+The UF modules (univalent foundations) have been developed, on demand,
+for use in the other modules. The modules UF.Yoneda, UF.IdEmbedding
+and UF.Factorial contain new results.

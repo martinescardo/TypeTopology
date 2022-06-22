@@ -22,7 +22,7 @@ open import MLTT.Plus-Properties
 open import CoNaturals.GenericConvergentSequence
 open import TypeTopology.Density
 open import TypeTopology.CompactTypes
-open import TypeTopology.GenericConvergentSequence fe₀
+open import TypeTopology.GenericConvergentSequenceCompactness fe₀
 open import TypeTopology.SigmaDiscreteAndTotallySeparated
 open import TypeTopology.ExtendedSumCompact fe
 open import TypeTopology.DiscreteAndSeparated

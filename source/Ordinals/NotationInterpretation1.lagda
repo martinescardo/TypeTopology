@@ -453,7 +453,7 @@ open import UF.Equiv
 open import UF.Size
 
 open import CoNaturals.GenericConvergentSequence
-open import TypeTopology.GenericConvergentSequence
+open import TypeTopology.GenericConvergentSequenceCompactness
 open import TypeTopology.PropTychonoff
 
 module _ (pt : propositional-truncations-exist)

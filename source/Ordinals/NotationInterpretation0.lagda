@@ -51,7 +51,7 @@ open import Ordinals.ToppedType fe
 open import Ordinals.TrichotomousType fe
 open import Ordinals.TrichotomousArithmetic fe
 
-open import TypeTopology.GenericConvergentSequence
+open import TypeTopology.GenericConvergentSequenceCompactness
 open import TypeTopology.CompactTypes
 open import TypeTopology.PropTychonoff
 open import TypeTopology.SquashedSum fe

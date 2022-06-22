@@ -161,14 +161,8 @@ module UnivalentChoice (fe : FunExt)
  ACAC' : AC → AC'
  ACAC' ac X Y isx isy f = h
   where
-   -- NB. We use the type x ≡ x rather than the type 𝟙 because 𝟙 is in
-   -- the first universe 𝓤₀ and we don't have cumulativity. This works
-   -- because X is a set by assumption, so that x ≡ x is a
-   -- proposition. Any inhabited type that is a proposition will do,
-   -- of course.
-
-   g : ∃ f ꞉ Π Y , ((x : X) → x ≡ x)
-   g = ac X Y (λ x a → x ≡ x) isx isy (λ x a → isx) (λ x → ∥∥-functor (λ y → y , refl) (f x))
+   g : ∃ f ꞉ Π Y , (X → 𝟙)
+   g = ac X Y (λ x a → 𝟙) isx isy (λ x a → 𝟙-is-prop) (λ x → ∥∥-functor (λ z → z , ⋆) (f x))
 
    h : ∥ Π Y ∥
    h = ∥∥-functor pr₁ g

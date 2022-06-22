@@ -1,3 +1,5 @@
+Martin Escardo
+
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
@@ -14,9 +16,9 @@ import TypeTopology.DisconnectedTypes
 import TypeTopology.DiscreteAndSeparated
 import TypeTopology.ExtendedSumCompact
 import TypeTopology.FailureOfTotalSeparatedness
-import TypeTopology.GenericConvergentSequence
+import TypeTopology.GenericConvergentSequenceCompactness
 import TypeTopology.InfProperty
-import TypeTopology.Lexicographic
+import TypeTopology.LexicographicCompactness
 import TypeTopology.PropInfTychonoff
 import TypeTopology.PropTychonoff
 import TypeTopology.RicesTheoremForTheUniverse
@@ -24,7 +26,6 @@ import TypeTopology.SigmaDiscreteAndTotallySeparated
 import TypeTopology.SimpleTypes
 import TypeTopology.SquashedSum
 import TypeTopology.TheTopologyOfTheUniverse
-import TypeTopology.TotalSeparatedness
 import TypeTopology.TotallySeparated
 import TypeTopology.WeaklyCompactTypes
 

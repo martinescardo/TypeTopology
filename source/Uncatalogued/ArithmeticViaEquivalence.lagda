@@ -145,7 +145,7 @@ foundations in Agda notation).
 
 open import MLTT.Spartan hiding (_^_)
 
-module ArithmeticViaEquivalence where
+module Uncatalogued.ArithmeticViaEquivalence where
 
 open import UF.Subsingletons
 open import UF.Equiv

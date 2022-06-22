@@ -1,3 +1,5 @@
+Martin Escardo
+
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
@@ -30,5 +32,7 @@ import MLTT.Unit-Properties
 import MLTT.Unit-Type
 import MLTT.Unit
 import MLTT.Universes
+import MLTT.W
+import MLTT.W-Properties
 
 \end{code}
