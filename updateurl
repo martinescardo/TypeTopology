@@ -23,7 +23,10 @@ ln -s Locales.CompactRegular.html CompactRegular.html
 ln -s Locales.Frame.html Frame.html
 ln -s Locales.GaloisConnection.html GaloisConnection.html
 ln -s Locales.HeytingImplication.html HeytingImplication.html
+ln -s MLTT/Fin.html Fin.html
+ln -s MLTT/Fin-Properties.html Fin-Properties.html
 ln -s NotionsOfDecidability.SemiDecidable.html SemiDecidable.html
+ln -s Ordinals.index.html Ordinals.html
 ln -s Ordinals.Arithmetic-Properties.html OrdinalArithmetic-Properties.html
 ln -s Ordinals.BuraliForti.html BuraliForti.html
 ln -s Ordinals.Notions.html Ordinal-Notions.html
@@ -34,9 +37,12 @@ ln -s Redirection.Types2019.html Types2019.html
 ln -s Slice.Slice.html Slice.html
 ln -s TypeTopology.DiscreteAndSeparated.html DiscreteAndSeparated.html
 ln -s UF.Choice.html UF-Choice.html
+ln -s UF.Factorial.html UF-Factorial.html
 ln -s UF.Size.html UF-Size.html
 ln -s UF.UniverseEmbedding.html UniverseEmbedding.html
+ln -s UF.Yoneda.html UF-Yoneda.html
 ln -s UF.index.html UF.html
+ln -s Uncatalogued/ArithmeticViaEquivalence.html ArithmeticViaEquivalence.html
 ln -s Uncatalogued.Dedekind.html Dedekind.html
 ln -s Uncatalogued.HiggsInvolutionTheorem.html HiggsInvolutionTheorem.html
 ln -s Uncatalogued.LawvereFPT.html LawvereFPT.html
