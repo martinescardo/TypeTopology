@@ -1,4 +1,5 @@
 Tom de Jong, 31 May 2019
+Updated comments on 21 June 2022.
 
 The denotational semantics of PCF based on pointed directed complete posets.
 
