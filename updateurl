@@ -13,7 +13,7 @@ chmod a+r ~/public_html/TypeTopology/*
 # Now create symlinks for files that have been moved to other places
 # but are linked from published papers, blogs etc.
 
-cd ~/public_html/TypeTopology/source
+cd ~/public_html/TypeTopology/
 
 ln -s CantorSchroederBernstein.CSB.html CantorSchroederBernstein.html
 ln -s Groups.FreeGroup.html FreeGroup.html
@@ -29,7 +29,7 @@ ln -s Ordinals.BuraliForti.html BuraliForti.html
 ln -s Ordinals.Notions.html Ordinal-Notions.html
 ln -s Ordinals.OrdinalOfOrdinals.html OrdinalOfOrdinals.html
 ln -s Ordinals.WellOrderTransport.html OrdinalsWellOrderTransport.html
-ln -s PCFModules DomainTheory.ScottModelOfPCF.ScottModelOfPCF.html PCFModules
+ln -s DomainTheory.ScottModelOfPCF.ScottModelOfPCF.html PCFModules.html
 ln -s Redirection.Types2019.html Types2019.html
 ln -s Slice.Slice.html Slice.html
 ln -s TypeTopology.DiscreteAndSeparated.html DiscreteAndSeparated.html
