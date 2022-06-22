@@ -4,8 +4,8 @@ A few Agda files in this directory are links to Agda files in subdirectories. Th
 
 At the moment these files are [InjectiveTypes.lagda](InjectiveTypes.lagda) and [InjectiveTypes-article.lagda](InjectiveTypes-article.lagda).
 
-To add more such files, create them, and import them in [Redirection/index.lagda](Redirection/index.lagda).
+To add more such files, create them, and import them in `Redirection/index.lagda`.
 
 To check that everything is fine, typecheck AllModulesIndex, which includes the index files in `Published` and `Cited`.
 
-The script [updateurl](../updateurl) also implements, in a different way, such a redirection for external links that point to the html rendering.
+The script [updateurl](../updateurl) also implements, in a different way, such a redirection for external links that point to the html rendering. For links to html files, it is enough to update the file this script.
