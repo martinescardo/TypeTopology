@@ -460,27 +460,13 @@ module Idl-algebraic
   where
    -- This is where we use --experimental-lossy-unification
    from-Idl-section-of-to-Idl : (I : ⟨ Idl-DCPO ⟩) → to-Idl (from-Idl I) ≡ I
-   from-Idl-section-of-to-Idl I = antisymmetry Idl-DCPO (to-Idl (from-Idl I)) I
-                                   ineq₁ ineq₂
-    where
-     ineq₁ : to-Idl (from-Idl I) ⊑⟨ Idl-DCPO ⟩ I
-     ineq₁ = ↡ᴮ-∐-deflation (carrier I) claim
-      where
-       claim : (b c : B) → β b ⊑⟨ 𝓓 ⟩ β c → c ∈ᵢ I → b ∈ᵢ I
-       claim b c b-below-c c-in-I =
-        ideals-are-lowersets (carrier I) (ideality I) b c
-         (⌜ ⊑ᴮ-≃-⊑ ⌝⁻¹ b-below-c) c-in-I
-     ineq₂ : I ⊑⟨ Idl-DCPO ⟩ to-Idl (from-Idl I)
-     ineq₂ = ↡ᴮ-∐-inflation (carrier I) claim
-      where
-       claim : (b : B) → b ∈ᵢ I → ∃ c ꞉ B , c ∈ᵢ I × (β b ≪⟨ 𝓓 ⟩ β c)
-       claim b b-in-I = ∥∥-functor h (roundedness I b-in-I)
-        where
-         h : (Σ c ꞉ B , c ∈ᵢ I × b ⊑ᴮ c)
-           → (Σ c ꞉ B , c ∈ᵢ I × (β b ≪⟨ 𝓓 ⟩ β c))
-         h (c , c-in-I , b-below-c) = (c , c-in-I , lem)
-          where
-           lem : β b ≪⟨ 𝓓 ⟩ β c
-           lem = ≪-⊑-to-≪ 𝓓 (basis-is-compact b) (⌜ ⊑ᴮ-≃-⊑ ⌝ b-below-c)
+   from-Idl-section-of-to-Idl I =
+    antisymmetry Idl-DCPO (to-Idl (from-Idl I)) I (Idl-deflation I) inflationary
+     where
+      inflationary : I ⊑⟨ Idl-DCPO ⟩ to-Idl (from-Idl I)
+      inflationary = ↡ᴮ-∐-inflation (carrier I) condition
+       where
+        condition : (b : B) → b ∈ᵢ I → ∃ c ꞉ B , c ∈ᵢ I × (β b ≪⟨ 𝓓 ⟩ β c)
+        condition b b-in-I = ∣ b , b-in-I , basis-is-compact b ∣
 
 \end{code}
