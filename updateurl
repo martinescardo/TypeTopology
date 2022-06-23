@@ -16,6 +16,7 @@ chmod a+r ~/public_html/TypeTopology/*.html
 cd ~/public_html/TypeTopology/
 
 ln -s CantorSchroederBernstein.CSB.html CantorSchroederBernstein.html
+ln -s CoNaturals.GenericConvergentSequence.html GenericConvergentSequence.html
 ln -s Groups.FreeGroup.html FreeGroup.html
 ln -s Groups.FreeGroupOfLargeLocallySmallSet.html FreeGroupOfLargeLocallySmallSet.html
 ln -s Locales.AdjointFunctorTheoremForFrames.html AdjointFunctorTheoremForFrames.html
@@ -36,6 +37,7 @@ ln -s DomainTheory.ScottModelOfPCF.ScottModelOfPCF.html PCFModules.html
 ln -s Redirection.Types2019.html Types2019.html
 ln -s Slice.Slice.html Slice.html
 ln -s TypeTopology.DiscreteAndSeparated.html DiscreteAndSeparated.html
+ln -s TypeTopology.GenericConvergentSequenceCompactness.html ConvergentSequenceCompac.html
 ln -s UF.Choice.html UF-Choice.html
 ln -s UF.Factorial.html UF-Factorial.html
 ln -s UF.Size.html UF-Size.html
