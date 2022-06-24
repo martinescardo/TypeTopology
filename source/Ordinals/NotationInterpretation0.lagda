@@ -39,7 +39,7 @@ open import UF.ImageAndSurjection
 open import UF.Embeddings
 open import UF.Size
 
-open import Ordinals.Codes
+open import Ordinals.Brouwer
 open import Ordinals.Type
 open import Ordinals.Arithmetic fe
 open import Ordinals.Arithmetic-Properties ua

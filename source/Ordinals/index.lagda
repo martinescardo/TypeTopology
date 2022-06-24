@@ -8,6 +8,7 @@ module Ordinals.index where
 
 import Ordinals.Arithmetic-Properties
 import Ordinals.Arithmetic
+import Ordinals.Brouwer
 import Ordinals.BuraliForti                   -- by Bezem, Coquand, Dybjer and Escardo.
 import Ordinals.Closure
 import Ordinals.Codes
