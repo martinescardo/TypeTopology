@@ -27,7 +27,7 @@ group structure to the one-point type in the universe.
 
 \begin{code}
 
-module Groups.triv where
+module Groups.Triv where
 
 triv : Group 𝓤
 triv = 𝟙 , (group-structure-t ,

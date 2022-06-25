@@ -29,7 +29,7 @@ UF-ImageAndSurjection.
 
 \begin{code}
 
-module Groups.image (pt : propositional-truncations-exist) where
+module Groups.Image (pt : propositional-truncations-exist) where
 
 open ImageAndSurjection pt
 open PropositionalTruncation pt

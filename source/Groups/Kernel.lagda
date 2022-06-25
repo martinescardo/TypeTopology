@@ -25,7 +25,7 @@ We define the kernel of a group homomorphism $f : A → B$ as the fiber of f at 
 
 \begin{code}
 
-module Groups.kernel where
+module Groups.Kernel where
 
 module _ (A : Group 𝓤) (B : Group 𝓥) 
          (f : ⟨ A ⟩ → ⟨ B ⟩) (isf : is-hom A B f) where

@@ -33,7 +33,7 @@ open import UF-FunExt
 open import UF-PropTrunc
 open import UF-Subsingletons-FunExt
 
-module Groups.quotient
+module Groups.Quotient
         (pt  : propositional-truncations-exist)
         (fe  : Fun-Ext)
         (pe  : Prop-Ext)

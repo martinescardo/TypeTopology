@@ -20,9 +20,9 @@ open import Groups renaming (_≅_ to _≣_)
 open import UF-PropTrunc
 open import UF-ImageAndSurjection
 
-open import Groups.triv
-open import Groups.kernel
-open import Groups.image
+open import Groups.Triv
+open import Groups.Kernel
+open import Groups.Image
 
 
 \end{code}
@@ -40,7 +40,7 @@ Here are the definitions:
 
 \begin{code}
 
-module Groups.homomorphisms
+module Groups.Homomorphisms
          (X : Group 𝓤) (Y : Group 𝓥)
          (f : ⟨ X ⟩ → ⟨ Y ⟩) (isf : is-hom X Y f)
          where

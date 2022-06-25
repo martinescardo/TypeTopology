@@ -31,7 +31,7 @@ open import UF-Embeddings
 open import UF-FunExt
 open import UF-PropTrunc
 
-module Groups.cokernel
+module Groups.Cokernel
         (pt  : propositional-truncations-exist)
         (fe  : Fun-Ext)
         (pe  : Prop-Ext)
@@ -41,11 +41,11 @@ open import UF-ImageAndSurjection
 open import UF-Large-Quotient pt fe pe
 
 open import Groups renaming (_≅_ to _≣_)
-open import Groups.triv
-open import Groups.kernel
-open import Groups.image
-open import Groups.homomorphisms
-open import Groups.quotient pt fe pe
+open import Groups.Triv
+open import Groups.Kernel
+open import Groups.Image
+open import Groups.Homomorphisms
+open import Groups.Quotient pt fe pe
 
 \end{code}
 
