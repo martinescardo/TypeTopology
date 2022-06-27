@@ -37,7 +37,7 @@ module _ (fe : funext 𝓤 𝓤) (X : 𝓤 ̇) (i : is-set X) where
 
 
   group-structure-Aut : Aut X → Aut X → Aut X
-  group-structure-Aut f g = f ● g
+  group-structure-Aut f g = g ● f
 
   private
     _·_ = group-structure-Aut
@@ -58,17 +58,17 @@ being-equiv-is-prop.
   group-axioms-Aut = is-set-Aut , assoc-Aut , e , ln-e , rn-e , φ
     where
       assoc-Aut : associative _·_
-      assoc-Aut (f , i) (g , j) (h , k) = to-Σ-≡ (p , (q ⁻¹))
+      assoc-Aut (f , i) (g , j) (h , k) = to-Σ-≡ (p , q)
         where
-          p : (h ∘ g) ∘ f ≡ h ∘ (g ∘ f)
+          p : (f ∘ g) ∘ h ≡ f ∘ (g ∘ h)
           p = refl
 
-          d e : is-equiv (h ∘ g ∘ f)
-          d = ∘-is-equiv i (∘-is-equiv j k)
-          e = ∘-is-equiv (∘-is-equiv i j) k
+          d e : is-equiv (f ∘ g ∘ h)
+          d = ∘-is-equiv k (∘-is-equiv j i)
+          e = ∘-is-equiv (∘-is-equiv k j) i
 
           q : transport is-equiv p d ≡ e
-          q = being-equiv-is-prop'' fe (h ∘ g ∘ f) _ _
+          q = being-equiv-is-prop'' fe (f ∘ g ∘ h) _ _
 
       e : Aut X
       e = id , id-is-equiv X
@@ -82,14 +82,14 @@ being-equiv-is-prop.
       φ : (f : Aut X) →
           (Σ f' ꞉ Aut X , (f' · f ≡ e) × (f · f' ≡ e))
       pr₁ (φ f) = ≃-sym f
-      pr₁ (pr₂ (φ (∣f∣ , is))) = to-Σ-≡ (p , being-equiv-is-prop'' fe _ _ _)
-        where
-          p : ∣f∣ ∘ inverse ∣f∣ is ≡ id
-          p = dfunext fe (inverses-are-sections ∣f∣ is)
-      pr₂ (pr₂ (φ (∣f∣ , is))) = to-Σ-≡ (p , being-equiv-is-prop'' fe _ _ _)
+      pr₁ (pr₂ (φ (∣f∣ , is))) = to-Σ-≡ (p  , being-equiv-is-prop'' fe _ _ _)
         where
           p : inverse ∣f∣ is ∘ ∣f∣ ≡ id
           p = dfunext fe (inverses-are-retractions ∣f∣ is)
+      pr₂ (pr₂ (φ (∣f∣ , is))) = to-Σ-≡ (p , being-equiv-is-prop'' fe _ _ _)
+        where
+          p : ∣f∣ ∘ inverse ∣f∣ is ≡ id
+          p = dfunext fe (inverses-are-sections ∣f∣ is)
 
   Group-structure-Aut : Group-structure (Aut X)
   Group-structure-Aut = _·_ , group-axioms-Aut
@@ -121,17 +121,17 @@ module _ (fe : FunExt)
      gr-s-Y = Group-structure-Aut {𝓥} (fe 𝓥 𝓥) Y j
 
    is-hom-𝓐ut : is-hom (Aut X , gr-s-X) (Aut Y , gr-s-Y) (𝓐ut φ)
-   is-hom-𝓐ut {f} {g} = (≃-sym φ ● (f ● g )) ● φ                   ≡⟨  ap (_● φ) (ap (≃-sym φ ●_) p) ⟩
-                         (≃-sym φ ● ((f ● φ) ● (≃-sym φ ● g))) ● φ ≡⟨  ap (_● φ) (≃-assoc fe (≃-sym φ) (f ● φ) (≃-sym φ ● g)) ⟩
-                         ((≃-sym φ ● (f ● φ)) ● (≃-sym φ ● g)) ● φ ≡⟨  (≃-assoc fe (≃-sym φ ● (f ● φ)) (≃-sym φ ● g) φ) ⁻¹ ⟩
-                         (≃-sym φ ● (f ● φ)) ● ((≃-sym φ ● g) ● φ) ≡⟨  ap (_● ((≃-sym φ ● g) ● φ)) (≃-assoc fe (≃-sym φ) f φ) ⟩
-                         ((≃-sym φ ● f) ● φ) ● ((≃-sym φ ● g) ● φ) ∎
+   is-hom-𝓐ut {f} {g} = (≃-sym φ ● (g ● f )) ● φ                   ≡⟨  ap (_● φ) (ap (≃-sym φ ●_) p) ⟩
+                         (≃-sym φ ● ((g ● φ) ● (≃-sym φ ● f))) ● φ ≡⟨  ap (_● φ) (≃-assoc fe (≃-sym φ) (g ● φ) (≃-sym φ ● f)) ⟩
+                         ((≃-sym φ ● (g ● φ)) ● (≃-sym φ ● f)) ● φ ≡⟨  (≃-assoc fe (≃-sym φ ● (g ● φ)) (≃-sym φ ● f) φ) ⁻¹ ⟩
+                         (≃-sym φ ● (g ● φ)) ● ((≃-sym φ ● f) ● φ) ≡⟨  ap (_● ((≃-sym φ ● f) ● φ)) (≃-assoc fe (≃-sym φ) g φ) ⟩
+                         ((≃-sym φ ● g) ● φ) ● ((≃-sym φ ● f) ● φ) ∎
      where
-       p = f ● g                    ≡⟨ ap (_● g) (≃-refl-right fe f) ⁻¹ ⟩
-           (f ● ≃-refl X) ● g       ≡⟨ ap (_● g) (ap (f ●_) (≃-sym-right-inverse fe φ) ⁻¹) ⟩
-           (f ● (φ ● ≃-sym φ)) ● g  ≡⟨ ap (_● g) (≃-assoc fe f φ (≃-sym φ) ) ⟩
-           ((f ● φ) ● ≃-sym φ) ● g  ≡⟨ (≃-assoc fe (f ● φ) (≃-sym φ) g) ⁻¹   ⟩
-           (f ● φ) ● (≃-sym φ ● g) ∎ 
+       p = g ● f                    ≡⟨ ap (_● f) (≃-refl-right fe g) ⁻¹ ⟩
+           (g ● ≃-refl X) ● f       ≡⟨ ap (_● f) (ap (g ●_) (≃-sym-right-inverse fe φ) ⁻¹) ⟩
+           (g ● (φ ● ≃-sym φ)) ● f  ≡⟨ ap (_● f) (≃-assoc fe g φ (≃-sym φ) ) ⟩
+           ((g ● φ) ● ≃-sym φ) ● f  ≡⟨ (≃-assoc fe (g ● φ) (≃-sym φ) f) ⁻¹   ⟩
+           (g ● φ) ● (≃-sym φ ● f) ∎ 
 
 \end{code}
 
