@@ -17,6 +17,7 @@ cd ~/public_html/TypeTopology/
 
 ln -s CantorSchroederBernstein.CSB.html CantorSchroederBernstein.html
 ln -s CoNaturals.GenericConvergentSequence.html GenericConvergentSequence.html
+ln -s Games/FiniteHistoryDependent.lagda FiniteHistoryDependentGames.lagda
 ln -s Groups.FreeGroup.html FreeGroup.html
 ln -s Groups.FreeGroupOfLargeLocallySmallSet.html FreeGroupOfLargeLocallySmallSet.html
 ln -s Locales.AdjointFunctorTheoremForFrames.html AdjointFunctorTheoremForFrames.html
