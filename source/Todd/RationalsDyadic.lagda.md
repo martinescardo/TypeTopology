@@ -32,6 +32,14 @@ module Todd.RationalsDyadic
  
 open import Todd.TernaryBoehmRealsPrelude fe
 
+```
+
+Rational dyadics clearly rely on powers of two, so it is useful to
+introduce power notation.  Some simple properties of powers are also
+proved.
+
+```agda
+
 _ℕ^_ : ℕ → ℕ → ℕ
 a ℕ^ b = ((a ℕ*_) ^ b) 1
 
@@ -81,6 +89,8 @@ power-of-pos-positive (succ n) = transport greater-than-zero (pos-multiplication
  where
   I : greater-than-zero (pos 2 * pos (2^ n))
   I = greater-than-zero-mult-trans (pos 2) (pos (2^ n)) ⋆ (power-of-pos-positive n) 
+
+-- TODO : Move following proofs into relevant files/places.
 
 negsucc-lemma : (x : ℕ) → negsucc x +ℤ negsucc x ≡ negsucc (x + succ x)
 negsucc-lemma x = negsucc x +ℤ negsucc x           ≡⟨ refl ⟩
@@ -163,10 +173,11 @@ even-lemma (negsucc x) = even-lemma-neg x
 
 ```
 
-The definition of dyadic rationals follow.
-The dyadic rational ((k , δ) , p), to illustrate, refers to the dyadic rational (k / 2ᵟ).
-We could use integers values for δ, but negative values of δ are simply integer valued dyadic rationals.
-For example, (3 / 2⁻⁶) = 192 = (192 / 2⁰).
+The definition of dyadic rationals follow.  The dyadic rational ((k ,
+δ) , p), to illustrate, refers to the dyadic rational (k / 2ᵟ).  We
+could use integers values for δ, but negative values of δ are simply
+integer valued dyadic rationals.  For example, (3 / 2⁻⁶) = 192 = (192
+/ 2⁰).
 
 ```agda
 
@@ -182,6 +193,20 @@ For example, (3 / 2⁻⁶) = 192 = (192 / 2⁰).
 
 1ℤ[1/2] : ℤ[1/2]
 1ℤ[1/2] = (pos 1 , 0) , inl refl
+
+```
+
+We must now introduce a function to reduce an arbitrary dyadic
+rational into it's canonical form (i.e with a positive power
+denominator, which is either coprime to an odd denominator or is (2⁰ ≡
+1).
+
+As is usual with integers, we split into positive and negative
+cases. In the negative case, simply recursively multiply by two to
+obtain an integer. In the positive case, we must check if the top is
+even or odd, and then recursively divide by two as necessary.
+
+```agda
 
 normalise-pos normalise-neg : ℤ → ℕ → ℤ[1/2]
 normalise-pos z 0        = (z , 0) , inl refl
@@ -216,7 +241,9 @@ normalise (k , negsucc n) = normalise-neg k n
 
 ```
 
-It is easy to define order of dyadic rationals.
+Order is easily defined. There are many ways one could define order,
+but this definition aligns with the standard definition of order of
+rationals.
 
 ```agda
 
@@ -237,23 +264,11 @@ instance
  Strict-Order-ℤ[1/2]-ℤ[1/2] : Strict-Order ℤ[1/2] ℤ[1/2]
  _<_ {{Strict-Order-ℤ[1/2]-ℤ[1/2]}} = _<ℤ[1/2]_
 
-_𝔻+_ : ℤ[1/2] → ℤ[1/2] → ℤ[1/2]
-((k , n) , e) 𝔻+ ((h , m) , e') = normalise ((k * pos m +ℤ h * pos n) , (pos n * pos m))
+```
+The following records define all the properties of dyadic rationals we
+need in this development.
 
-𝔻+-comm : commutative _𝔻+_
-𝔻+-comm ((k , n) , e) ((h , m) , e') = ap normalise (to-×-≡' (I , II)) 
- where
-  I : k * pos m +ℤ h * pos n ≡ h * pos n +ℤ k * pos m
-  I = ℤ+-comm (k * pos m) (h * pos n)
-
-  II : pos n * pos m ≡ pos m * pos n
-  II = ℤ*-comm (pos n) (pos m)
-
-normalise-𝔻+ : ∀ x y → normalise x 𝔻+ normalise y ≡ normalise {!!}
-normalise-𝔻+ = {!!}
-
-D+-assoc : associative _𝔻+_
-D+-assoc x y z = {!!}
+```agda
 
 record DyadicProperties : 𝓤₁ ̇ where
  field
@@ -294,7 +309,72 @@ record OrderProperties : 𝓤₁ ̇ where
 
 ```
 
-{-
+The following code begins the process of directly implementing the
+above postulates. They are all commonly accepted results, but time
+consuming to prove and so are deferred to a later time.
+
+```agda
+
+_𝔻+_ : ℤ[1/2] → ℤ[1/2] → ℤ[1/2]
+((k , n) , e) 𝔻+ ((h , m) , e') = normalise ((k * pos m +ℤ h * pos n) , (pos n * pos m))
+
+𝔻+-comm : commutative _𝔻+_
+𝔻+-comm ((k , n) , e) ((h , m) , e') = ap normalise (to-×-≡' (I , II)) 
+ where
+  I : k * pos m +ℤ h * pos n ≡ h * pos n +ℤ k * pos m
+  I = ℤ+-comm (k * pos m) (h * pos n)
+
+  II : pos n * pos m ≡ pos m * pos n
+  II = ℤ*-comm (pos n) (pos m)
+
+normalise-𝔻+ : ∀ x y → normalise x 𝔻+ normalise y ≡ normalise {!!}
+normalise-𝔻+ = {!!}
+
+D+-assoc : associative _𝔻+_
+D+-assoc x y z = {!!}
+
+```
+
+The following code may be necessary at some point. Unfortunately,
+there was an error in assuming that even and odd numbers are coprime,
+so thought is required as to how to define the embedding of dyadic
+rationals into rationals.
+
+```agda
+
+open import CanonicalMapNotation
+open import NaturalsDivision
+open import ncRationals
+open import Rationals
+open import RationalsMultiplication renaming (_*_ to _ℚ*_)
+
+```
+Proof that any integer is in lowest terms. 
+```agda
+zero-denom-lt : (x : ℤ) → is-in-lowest-terms (x , 0)
+zero-denom-lt x = (1-divides-all (abs x) , (1 , refl)) , (λ f (k , e) → e)
+
+```
+Now we have the inclusion of the dyadic rationals into the rationals,
+and the usual canonical map notational.
+```agda
+
+
+--Not ideal, should probably use previously considered method
+ℤ[1/2]-to-ℚ' : (a : ℤ) (n : ℕ) → (p : (n ≡ 0) ∔ ¬ (n ≡ 0) × odd a) → ℚ
+ℤ[1/2]-to-ℚ' a 0 p        = (a , 0) , (zero-denom-lt a)
+ℤ[1/2]-to-ℚ' a (succ n) (inr (nz , a-odd))
+ = ℤ[1/2]-to-ℚ' a n (Cases (ℕ-is-discrete n 0) (λ e → inl e) (λ nz → inr (nz , a-odd))) ℚ* 1/2
+
+ℤ[1/2]-to-ℚ : ℤ[1/2] → ℚ
+ℤ[1/2]-to-ℚ ((a , n) , p) = ℤ[1/2]-to-ℚ' a n p
+
+instance
+ canonical-map-ℤ[1/2]-to-ℚ : Canonical-Map ℤ[1/2] ℚ
+ ι {{canonical-map-ℤ[1/2]-to-ℚ}} = ℤ[1/2]-to-ℚ
+
+```
+
 ℕ-even ℕ-odd : ℕ → 𝓤₀ ̇
 ℕ-odd 0 = 𝟘
 ℕ-odd 1 = 𝟙
@@ -327,23 +407,7 @@ times-two-even : (n : ℕ) → ℕ-even (2 * n)
 times-two-even 0 ()
 times-two-even (succ n) = succ-succ-even (2 * n) (times-two-even n)
 
-zero-denom-lt : (x : ℤ) → is-in-lowest-terms (x , 0)
-zero-denom-lt x = (1-divides-all (abs x) , 1 , refl) , λ f → pr₂
--}
 -- incorrect, odd-even-gives-hcf-1 not true
 
-{-
-ℤ[1/2]-to-ℚ : ℤ[1/2] → ℚ
-ℤ[1/2]-to-ℚ ((a , 0)      , p)                = (a , 0) , zero-denom-lt a
-ℤ[1/2]-to-ℚ ((a , succ n) , inr (nz , odd-a)) = (a , (pred (2^ (succ n)))) , odd-even-gives-hcf-1 (abs a) (succ (pred (2^ (succ n)))) (odd→ℕ-odd a odd-a) even-denom
- where
-  even-denom : ℕ-even (succ (pred (2^ (succ n))))
-  even-denom = transport (λ - → ℕ-even -) (succ-pred' (2^ (succ n)) (positive-powers-of-two-not-zero n) ⁻¹) (times-two-even (2^ n))
-
-instance
- canonical-map-ℤ[1/2]-to-ℚ : Canonical-Map ℤ[1/2] ℚ
- ι {{canonical-map-ℤ[1/2]-to-ℚ}} = ℤ[1/2]-to-ℚ
--}
-```
 
 

@@ -31,7 +31,7 @@ open import Todd.BelowAndAbove fe using (below-implies-below' ; _below'_ ; below
 open import Todd.DyadicReals pt fe
 open import Todd.RationalsDyadic fe
 open import Todd.TernaryBoehmRealsPrelude fe
-open import Todd.TernaryBoehmReals fe pe hiding (ι)
+open import Todd.TernaryBoehmReals fe pe hiding (ι ; _≤_≤_)
 
 open PropositionalTruncation pt
 module _
@@ -68,10 +68,6 @@ of a ternary Boehm object at each layer n.
  located-lemma₂ : (t : 𝕋) → (p : ℤ[1/2]) → 0ℤ[1/2] < p
                 → ∃ k ꞉ ℤ , (rb t k ℤ[1/2]- lb t k) < p
  located-lemma₂ = {!!}
-
- _⊂_ : ℤ[1/2] × ℤ[1/2] → ℤ[1/2] × ℤ[1/2] → 𝓤₀ ̇ 
- (a , b) ⊂ (c , d) = ((c ≤ a) × (d < b))
-                   ∔ ((c < a) × (d ≤ b))
 
 -- encoding-structural : (x : 𝕋) → (n : ℤ)
 --                     → (encoding x at-level (succℤ n)) ⊂ (encoding x at-level n)
@@ -189,10 +185,14 @@ different sizes.
                         
 ```
 
-want to prove that (x : ℤ[1/2]) → ⟦ map x ⟧ ≡ ι x
+We now define a map from dyadic rationals to TBRs. We wish to show
+that for any TBR, the embedding of the dyadic rational into the
+Dedekind reals is equivalent to the embedding of the TBR defined by
+mapping the dyadic rational to a TBR.
 
-We now wish to introduce the map from encodings to TBR's : ℤ[1/2] → 𝕋.
-The intuition behind the map is that ... 
+More succintly, we prove that (x : ℤ[1/2]) → ⟦ map x ⟧ ≡ ι x. This
+requires numerous lemmas regarding normalise, the map, and the bounds
+on each level of a TBR.
 
 ```agda
 
@@ -361,6 +361,15 @@ The intuition behind the map is that ...
  ... | inl δ<n = transport (_≤ ((x , δ) , p)) (map-lemma ((x , δ) , p) n δ<n ⁻¹) (≤-refl ((x , δ) , p))
  ... | inr (inl refl) = transport (_≤ ((x , δ) , p)) (map-lemma-≤ (((x , δ) , p)) n (ℤ≤-refl (pos δ)) ⁻¹) (≤-refl ((x , δ) , p))
  ... | inr (inr (m , e)) = left-interval-is-minimum-lemma (((x , δ) , p)) n m e
+
+```
+
+With these lemmas, we can finally prove that the encodings agree with the reals.
+Recall that proving that two reals are equal can be reduced to proving
+that the left cut of each real is equal, and proving that two sets are
+equals means proving that (z ∈ Lx ⇔ z ∈ Ly) for any z ∈ Lx ∪ Ly.
+
+```agda
 
  encodings-agree-with-reals : (x : ℤ[1/2]) → ⟦ map x ⟧ ≡ ι x
  encodings-agree-with-reals x = ℝ-d-equality-from-left-cut left right
@@ -892,8 +901,165 @@ For example, in the case of negation, we want to prove that the encoding of the 
                             (<-swap (rb x k) (ℤ[1/2]- p) r<-p)
 
 
- -- We want to have machinery to build operations defined on TBR's.
+```
+Attempts to generalise operations on TBR
 
+```agda
+
+ monotonic : (f : ℤ[1/2] → ℤ[1/2] → ℤ[1/2]) → 𝓤₀ ̇ -- May need to be commutative? Probably not though
+ monotonic f = ∀ x y z → (y < z → f x y ≤ f x z)   -- Unless I have defined this wrong, multiplication does not satisfy monotonicity.
+                       ∔ (y < z → f x z ≤ f x y)
+
+ _⊂_ : ℤ[1/2] × ℤ[1/2] → ℤ[1/2] × ℤ[1/2] → 𝓤₀ ̇ 
+ (a , b) ⊂ (c , d) = ((c ≤ a) × (d < b))
+                   ∔ ((c < a) × (d ≤ b))
+
+ -- Why not be more specific than monotonicity?
+
+ _≤_≤_ : (x y z : ℤ) → 𝓤₀ ̇
+ x ≤ y ≤ z = (x ≤ y) × (y ≤ z)
+
+```
+Define the type of functions which are monotonic on intervals.
+```agda
+ {-
+ preserves-bounds : (f : ℤ[1/2] → ℤ[1/2] → ℤ[1/2]) → 𝓤₀ ̇
+ preserves-bounds f = ∀ lb rb z → lb < rb → (∀ x → lb ≤ x ≤ rb → f lb z ≤ f x z ≤ f rb z)
+                                          ∔ (∀ x → lb ≤ x ≤ rb → f rb z ≤ f x z ≤ f lb z)
+ -}
+ preserves-bounds' : (f : ℤ → ℤ → ℤ) → 𝓤₀ ̇
+ preserves-bounds' f = ∀ lb rb z → lb < rb → (∀ x → lb ≤ x ≤ rb → f lb z ≤ f x z ≤ f rb z)
+                                           ∔ (∀ x → lb ≤ x ≤ rb → f rb z ≤ f x z ≤ f lb z) 
+
+```
+There are four interesting values for two tbr reals at an arbitrary
+level, the bounds.  Since we are using functions which are monotonic
+on intervals, we know that for two intervals, the maximum and minuinum
+values of the interval operation is achieved by applying the function
+to one of the bounds from each interval.
+
+For example, addition may look like the following on some arbitrary
+level n:
+
+a  a+2    c   c+2
+(   )     (    )
+
+
+ a+c          a+c+4
+  (             )
+
+For multiplication, the min and max values can be attained at any of
+a * c , a * d , b * c , b * d.
+
+Importantly, note that on same arbitrary level above, if our new
+ternary Boehm real returns a+c as the integer value, it may not be
+correct, since a + c on this interval means our real is located in
+(a + c , a + c + 2), but it's possible that the real is located at
+a + c + 3, for example.
+
+To find our real value on this level in the correct interval, we must
+find the real at a higher level of precision in both intervals, and
+then reconstruct an interval on the level we are interested in.
+
+As proved above, addition is solved by finding the real to level n + 2,
+when suitably bounds the interval, and by performing the upRight operation
+twice, we find an interval on level n which is guaranteed to contain our real.
+
+In the general case, we may need to find our real to much higher
+degrees of precision to account for the much wider bounds when
+applying operations. For example consider multiplication:
+
+          101  103            10   12        
+          (    )       x        (    )
+=  
+        1010                           1236
+          (                             )
+
+We want to find the real in some width two interval on this level, but
+the operation gives us a width of 226.  Intuitively, the idea is to
+find the same real to a much higher degree of precision, so that we
+find it to an interval of width 2.
+
+To answer the question of which level is necessary to achieve the
+correct accuracy, we need to consider the maximum width an operation
+gives. Addition gives width 4.
+
+TODO: Ask Todd, understand that sometimes double upRight is necessary,
+but cannot see why mathematically. Probably because of negative
+upRight being slightly off. Suppose I can account for this by adding 1
+to max width.
+
+Multiplication gives a maximum width dependent on the values being
+multiplied. In the example above, we need to go level n + 8.
+
+
+
+
+
+```agda
+ {-
+ difference : (f : ℤ[1/2] → ℤ[1/2] → ℤ[1/2])             -- Given a dyadic rational function
+            → (((x , n) , p₁) ((y , n) , p₂) : ℤ[1/2])   -- and two bounds
+            → ℕ                                          -- find the integer difference 
+ difference f lb rb = {!!}
+
+ operation-builder : (_⊕_ : ℤ[1/2] → ℤ[1/2] → ℤ[1/2])          -- Given a function on dyadic rationals
+                   → preserves-bounds _⊕_                      -- where function applied at bounds give new bounds
+                   → ((lb rb : ℤ[1/2]) → (Σ k ꞉ ℕ , {!!}))     -- 
+                   → 𝕋 → 𝕋 → 𝕋 -- We get an operation on TBR
+ operation-builder _⊕_ ⊕-monotic k (f , b) (g , b') = {!!} , {!!}
+ -}
+
+ max : ℤ → ℤ → ℤ
+ max = {!!}
+
+ max₂ : ℤ → ℤ → ℤ → ℤ
+ max₂ x y z = max (max x y) z
+
+ max₃ : ℤ → ℤ → ℤ → ℤ → ℤ
+ max₃ w x y z = max (max₂ w x y) z
+
+ min : ℤ → ℤ → ℤ
+ min = {!!}
+
+ min₂ : ℤ → ℤ → ℤ → ℤ
+ min₂ x y z = min (min x y) z
+
+ min₃ : ℤ → ℤ → ℤ → ℤ → ℤ
+ min₃ w x y z = min (min₂ w x y) z
+
+ open import IntegersAbs
+
+ difference : (f : ℤ → ℤ → ℤ)             -- Given an integer functions
+            → (x y : ℤ)                   -- and two bounds
+            → ℤ                           -- find the integer difference 
+ difference f lb rb = max₃ (f lb rb) (f lb (rb + pos 2)) (f (lb + pos 2) rb) (f (lb + pos 2) (rb + pos 2))
+                    - min₃ (f lb rb) (f lb (rb + pos 2)) (f (lb + pos 2) rb) (f (lb + pos 2) (rb + pos 2))
+
+ operation-builder : (_⊕_ : ℤ → ℤ → ℤ)                                       -- Given a function on dyadic rationals
+                   → preserves-bounds' _⊕_                                   -- where function applied at bounds give new bounds
+                   → (∀ x y → (Σ k ꞉ ℕ , difference _⊕_ x y < pos (2^ k)))   -- if we can find a bound for each post-operation interval 
+                   → 𝕋 → 𝕋 → 𝕋                                                -- then we get an operation on TBR     
+ operation-builder _⊕_ ⊕-monotic width (f , b) (g , b') = h , h-gives-below
+  where
+   h : ℤ → ℤ
+   h n with width (f n) (g n) 
+   ... | (k , l) = (upRight ^ k) (f (n + pos k) ⊕ g (n + pos k))
+
+   h-gives-below : (δ : ℤ) → h (succℤ δ) below h δ
+   h-gives-below δ with (width (f δ) (g δ) , width (f (succℤ δ)) (g (succℤ δ)))
+   ... | ((k₁ , l₁) , k₂ , l₂) = {!!}
+ 
+   
+ 
+```
+
+ -- Is the idea that we have (f g : ℤ → ℤ → ℤ
+
+ -- We want to have machinery to build operations defined on TBR's,
+ -- which agree with operations defined on reals.
+
+ {- 
 
  prove-belowness : (f g : ℤ → ℤ)
                  → (_⊕_ : ℤ → ℤ → ℤ)
@@ -914,11 +1080,13 @@ For example, in the case of negation, we want to prove that the encoding of the 
             → ⟦ operation-builder (f , b) (g , b') _⊕_ is-below ⟧ ≡ ⟦ (f  , b) ⟧ ⊕' ⟦ (g , b') ⟧
  conclusion = {!!}
 
+ -- Some condition (e.g monotonicity, or something else) which guarantees that we only need to consider the endpoints
+
  think : (_⊙_ : ℤ → ℤ → ℤ)
        → Σ k ꞉ ℤ , upRight ^ {!!} ≡ {!!} 
  think = {!!}
 
-
+ -}
 -- _covers_ : ℤ[1/2] → ℤ[1/2] → 𝓤₀ ̇
 -- (a , p) covers (b , q) = (lb (a , p) ≤ lb (b , q))
 --                        × (rb (b , q) ≤ rb (a , p))
