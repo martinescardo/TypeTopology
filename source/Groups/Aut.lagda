@@ -96,17 +96,45 @@ being-equiv-is-prop.
 \end{code}
 
 If φ is an equivalence between X and Y, then it induces a morphism
-from Aut X to Aut Y. This morphism is a homomorphism for the group
+from Aut X to Aut Y. 
+
+\begin{code}
+
+𝓐ut : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (X ≃ Y) → Aut X → Aut Y
+𝓐ut φ = λ f → (≃-sym φ ● f ) ● φ
+
+\end{code}
+
+This morphism is a homomorphism for the group
 structures defined above.
 
 \begin{code}
 
-module _ (fe : funext 𝓤 𝓤) (fe' : funext 𝓥 𝓥)
+module _ (fe : FunExt)
          (X : 𝓤 ̇) (i : is-set X)
          (Y : 𝓥 ̇) (j : is-set Y)
          (φ : X ≃ Y)  where
 
-  a : Aut X → Aut Y
-  a f = (≃-sym φ ● f ) ● φ
+   private
+     gr-s-X  gr-s-Y : _
+     gr-s-X = Group-structure-Aut {𝓤} (fe 𝓤 𝓤) X i
+     gr-s-Y = Group-structure-Aut {𝓥} (fe 𝓥 𝓥) Y j
+
+   is-hom-𝓐ut : is-hom (Aut X , gr-s-X) (Aut Y , gr-s-Y) (𝓐ut φ)
+   is-hom-𝓐ut {f} {g} = (≃-sym φ ● (f ● g )) ● φ                   ≡⟨  ap (_● φ) (ap (≃-sym φ ●_) p) ⟩
+                         (≃-sym φ ● ((f ● φ) ● (≃-sym φ ● g))) ● φ ≡⟨  ap (_● φ) (≃-assoc fe (≃-sym φ) (f ● φ) (≃-sym φ ● g)) ⟩
+                         ((≃-sym φ ● (f ● φ)) ● (≃-sym φ ● g)) ● φ ≡⟨  (≃-assoc fe (≃-sym φ ● (f ● φ)) (≃-sym φ ● g) φ) ⁻¹ ⟩
+                         (≃-sym φ ● (f ● φ)) ● ((≃-sym φ ● g) ● φ) ≡⟨  ap (_● ((≃-sym φ ● g) ● φ)) (≃-assoc fe (≃-sym φ) f φ) ⟩
+                         ((≃-sym φ ● f) ● φ) ● ((≃-sym φ ● g) ● φ) ∎
+     where
+       p = f ● g                    ≡⟨ ap (_● g) (≃-refl-right fe f) ⁻¹ ⟩
+           (f ● ≃-refl X) ● g       ≡⟨ ap (_● g) (ap (f ●_) (≃-sym-right-inverse fe φ) ⁻¹) ⟩
+           (f ● (φ ● ≃-sym φ)) ● g  ≡⟨ ap (_● g) (≃-assoc fe f φ (≃-sym φ) ) ⟩
+           ((f ● φ) ● ≃-sym φ) ● g  ≡⟨ (≃-assoc fe (f ● φ) (≃-sym φ) g) ⁻¹   ⟩
+           (f ● φ) ● (≃-sym φ ● g) ∎ 
 
 \end{code}
+
+
+
+
