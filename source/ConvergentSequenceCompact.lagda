@@ -72,11 +72,11 @@ This is the main theorem proved in this module.
 
   Dagger₀ (succ n) r = p (ι (succ n))          ≡⟨ w ⁻¹ ⟩
                        α (succ n)              ≡⟨ ap (λ - → ι - (succ n)) r ⟩
-                       ι (ι (succ n)) (succ n) ≡⟨ ι-diagonal₀ n ⟩
+                       ι (ι (succ n)) (succ n) ≡⟨ ℕ-to-ℕ∞-diagonal₀ n ⟩
                        ₀                       ∎
    where
     t = α n              ≡⟨ ap (λ - → ι - n) r  ⟩
-        ι (ι (succ n)) n ≡⟨ ι-diagonal₁ n ⟩
+        ι (ι (succ n)) n ≡⟨ ℕ-to-ℕ∞-diagonal₁ n ⟩
         ₁                ∎
 
     w = α (succ n)              ≡⟨ ap (λ - → min𝟚 - (p (ι (succ n)))) t ⟩

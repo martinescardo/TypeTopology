@@ -21,7 +21,7 @@ cumbersome and (2) requires much work in other modules.
 
 open import UF-FunExt
 
-module ToppedOrdinalArithmetic
+module OrdinalToppedArithmetic
         (fe : FunExt)
        where
 
@@ -31,29 +31,31 @@ open import SpartanMLTT
 open import OrdinalsType
 open import OrdinalArithmetic fe
 open import OrdinalsWellOrderArithmetic
-open import ToppedOrdinalsType fe
-open import OrdinalsType-Injectivity fe
+open import OrdinalsToppedType fe
+open import OrdinalsType-Injectivity
 open import GenericConvergentSequence
 open import SquashedSum fe
 open import CanonicalMapNotation
 
 Ordᵀ = Ordinalᵀ 𝓤₀
 
-succₒ : Ord → Ordᵀ
+succₒ : Ordinal 𝓤 → Ordinalᵀ 𝓤
 succₒ α = α +ₒ 𝟙ₒ  ,
           plus.top-preservation
            (underlying-order α)
            (underlying-order 𝟙ₒ)
            (prop.topped 𝟙 𝟙-is-prop ⋆)
 
-succₒ-is-trichotomous : (α : Ord)
+succₒ-is-trichotomous : (α : Ordinal 𝓤)
                       → is-trichotomous α
                       → is-trichotomous [ succₒ α ]
 succₒ-is-trichotomous α t = +ₒ-is-trichotomous α 𝟙ₒ t 𝟙ₒ-is-trichotomous
 
-𝟙ᵒ 𝟚ᵒ ℕ∞ᵒ : Ordᵀ
-𝟙ᵒ  = 𝟙ₒ , prop.topped 𝟙 𝟙-is-prop ⋆
-𝟚ᵒ  = succₒ 𝟙ₒ
+𝟙ᵒ 𝟚ᵒ : Ordinalᵀ 𝓤
+𝟙ᵒ = 𝟙ₒ , prop.topped 𝟙 𝟙-is-prop ⋆
+𝟚ᵒ = succₒ 𝟙ₒ
+
+ℕ∞ᵒ : Ordᵀ
 ℕ∞ᵒ = (ℕ∞ₒ , ∞ , ∞-top)
 
 \end{code}
@@ -62,18 +64,18 @@ Sum of an ordinal-indexed family of ordinals:
 
 \begin{code}
 
-∑ : (τ : Ordᵀ) → (⟪ τ ⟫ → Ordᵀ) → Ordᵀ
-∑ ((X , _<_ , o) , t) υ = ((Σ x ꞉ X , ⟪ υ x ⟫) ,
+∑ : (τ : Ordinalᵀ 𝓤) → (⟪ τ ⟫ → Ordinalᵀ 𝓤) → Ordinalᵀ 𝓤
+∑ {𝓤} ((X , _<_ , o) , t) υ = ((Σ x ꞉ X , ⟪ υ x ⟫) ,
                               Sum.order ,
                               Sum.well-order o (λ x → tis-well-ordered (υ x))) ,
                           Sum.top-preservation t
  where
-  _≺_ : {x : X} → ⟪ υ x ⟫ → ⟪ υ x ⟫ → 𝓤₀ ̇
+  _≺_ : {x : X} → ⟪ υ x ⟫ → ⟪ υ x ⟫ → 𝓤 ̇
   y ≺ z = y ≺⟪ υ _ ⟫ z
 
   module Sum = sum-top fe _<_ _≺_ (λ x → top (υ x)) (λ x → top-is-top (υ x))
 
-∑-is-trichotomous : (τ : Ordᵀ) (υ : ⟪ τ ⟫ → Ordᵀ)
+∑-is-trichotomous : (τ : Ordinalᵀ 𝓤) (υ : ⟪ τ ⟫ → Ordinalᵀ 𝓤)
                   → is-trichotomous [ τ ]
                   → ((x : ⟪ τ ⟫) → is-trichotomous [ υ x ])
                   → is-trichotomous [ ∑ τ υ ]
@@ -86,10 +88,10 @@ defined above:
 
 \begin{code}
 
-_+ᵒ_ : Ordᵀ → Ordᵀ → Ordᵀ
+_+ᵒ_ : Ordinalᵀ 𝓤 → Ordinalᵀ 𝓤 → Ordinalᵀ 𝓤
 τ +ᵒ υ = ∑ 𝟚ᵒ (cases (λ _ → τ) (λ _ → υ))
 
-+ᵒ-is-trichotomous : (τ υ : Ordᵀ)
++ᵒ-is-trichotomous : (τ υ : Ordinalᵀ 𝓤)
                    → is-trichotomous [ τ ]
                    → is-trichotomous [ υ ]
                    → is-trichotomous [ τ +ᵒ υ ]
@@ -97,10 +99,10 @@ _+ᵒ_ : Ordᵀ → Ordᵀ → Ordᵀ
                               𝟚ₒ-is-trichotomous
                               (dep-cases (λ _ → t) (λ _ → u))
 
-_×ᵒ_ : Ordᵀ → Ordᵀ → Ordᵀ
+_×ᵒ_ : Ordinalᵀ 𝓤 → Ordinalᵀ 𝓤 → Ordinalᵀ 𝓤
 τ ×ᵒ υ = ∑ τ  (λ (_ : ⟪ τ ⟫) → υ)
 
-×ᵒ-is-trichotomous : (τ υ : Ordᵀ)
+×ᵒ-is-trichotomous : (τ υ : Ordinalᵀ 𝓤)
                    → is-trichotomous [ τ ]
                    → is-trichotomous [ υ ]
                    → is-trichotomous [ τ ×ᵒ υ ]
@@ -118,7 +120,7 @@ ordinals defined above.
 
 \begin{code}
 
-open topped-ordinals-injectivity
+open topped-ordinals-injectivity fe
 
 ∑¹ : (ℕ → Ordᵀ) → Ordᵀ
 ∑¹ τ = ∑ ℕ∞ᵒ (τ ↗ embedding-ℕ-to-ℕ∞ (fe 𝓤₀ 𝓤₀))
@@ -131,5 +133,22 @@ And now with an isolated top element:
 
 ∑₁ : (ℕ → Ordᵀ) → Ordᵀ
 ∑₁ τ = ∑ (succₒ ω) (τ ↗ (over , over-embedding))
+
+\end{code}
+
+Added 4th May 2022.
+
+\begin{code}
+
+module Omega {𝓤} (pe : propext 𝓤) where
+ open import OrdinalOfTruthValues fe 𝓤 pe
+ open import OrdinalNotions
+ open import UF-Subsingletons-FunExt
+
+ Ωᵒ : Ordinalᵀ (𝓤 ⁺)
+ Ωᵒ = Ωₒ , ⊤Ω , h
+  where
+   h : is-top (underlying-order Ωₒ) ⊤Ω
+   h y (p , _) = ⊥-is-not-⊤ (p ⁻¹)
 
 \end{code}

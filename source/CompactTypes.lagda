@@ -704,7 +704,7 @@ compact-gives-Compact {𝓤} {𝓥} {X} c A d = iii
   iii : decidable (Σ A)
   iii = ii (c p)
 
-Compact-gives-compact : {X : 𝓤 ̇ } → Σ-Compact X → Σ-compact X
+Compact-gives-compact : {X : 𝓤 ̇ } → Compact X → compact X
 Compact-gives-compact {𝓤} {X} C p = iv
  where
   A : X → 𝓤₀ ̇
@@ -723,7 +723,7 @@ Compact-gives-compact {𝓤} {X} C p = iv
   iv : (Σ x ꞉ X , p x ≡ ₀) + (Π x ꞉ X , p x ≡ ₁)
   iv = iii (i ii)
 
-Compact-resizeup : {X : 𝓤 ̇ } → Σ-Compact X {𝓤₀} → Σ-Compact X {𝓥}
+Compact-resizeup : {X : 𝓤 ̇ } → Compact X {𝓤₀} → Compact X {𝓥}
 Compact-resizeup C = compact-gives-Compact (Compact-gives-compact C)
 
 \end{code}
@@ -1123,3 +1123,84 @@ compact-gives-Σ+Π X A B κ q = III II
   III (inr ϕ)       = inr (λ x → pr₂ (I x) (ϕ x))
 
 \end{code}
+
+Added 26th April 2022. All types are compact iff global choice holds:
+
+\begin{code}
+
+open import UF-ExcludedMiddle
+
+all-types-compact-gives-global-choice : ((X : 𝓤 ̇ ) → Compact X {𝓤})
+                                      → Global-Choice 𝓤
+all-types-compact-gives-global-choice {𝓤} α X =
+ Cases (α X (λ (_ : X) → 𝟙 {𝓤}) (λ (_ : X) → 𝟙-decidable))
+   (λ (x , _) → inl x)
+   (λ ν       → inr (λ (x : X) → ν (x , ⋆)))
+
+global-choice-gives-all-types-compact : Global-Choice 𝓤
+                                      → ((X : 𝓤 ̇ ) → Compact X {𝓤})
+global-choice-gives-all-types-compact gc X A δ = gc (Σ A)
+
+\end{code}
+
+Added 6th June 2022. Why didn't we require the family A to be
+prop-valued? We could have if we wanted to.
+
+\begin{code}
+
+Σ-Compact' : 𝓤 ̇ → {𝓥 : Universe} → 𝓤 ⊔ (𝓥 ⁺) ̇
+Σ-Compact' {𝓤} X {𝓥} = (A : X → 𝓥 ̇ )
+                     → ((x : X) → is-prop (A x))
+                     → detachable A
+                     → decidable (Σ A)
+
+Compact' = Σ-Compact'
+
+compact-gives-Compact' : {X : 𝓤 ̇ } → compact X → Compact' X {𝓥}
+compact-gives-Compact' {𝓤} {𝓥} {X} c A _ d = iii
+ where
+  i : Σ p ꞉ (X → 𝟚) , ((x : X) → (p x ≡ ₀ → A x) × (p x ≡ ₁ → ¬ (A x)))
+  i = characteristic-function d
+
+  p : X → 𝟚
+  p = pr₁ i
+
+  ii : (Σ x ꞉ X , p x ≡ ₀) + (Π x ꞉ X , p x ≡ ₁) → decidable (Σ A)
+  ii (inl (x , r)) = inl (x , pr₁ (pr₂ i x) r)
+  ii (inr u)       = inr φ
+   where
+    φ : ¬ Σ A
+    φ (x , a) = pr₂ (pr₂ i x) (u x) a
+
+  iii : decidable (Σ A)
+  iii = ii (c p)
+
+Compact'-gives-compact : {X : 𝓤 ̇ } → Compact' X → compact X
+Compact'-gives-compact {𝓤} {X} C p = iv
+ where
+  A : X → 𝓤₀ ̇
+  A x = p x ≡ ₀
+
+  i : detachable (λ x → p x ≡ ₀) → decidable (Σ x ꞉ X , p x ≡ ₀)
+  i = C A (λ x → 𝟚-is-set)
+
+  ii : detachable (λ x → p x ≡ ₀)
+  ii x = 𝟚-is-discrete (p x) ₀
+
+  iii : decidable (Σ x ꞉ X , p x ≡ ₀) → (Σ x ꞉ X , p x ≡ ₀) + (Π x ꞉ X , p x ≡ ₁)
+  iii (inl σ) = inl σ
+  iii (inr u) = inr (λ x → different-from-₀-equal-₁ (λ r → u (x , r)))
+
+  iv : (Σ x ꞉ X , p x ≡ ₀) + (Π x ꞉ X , p x ≡ ₁)
+  iv = iii (i ii)
+
+Compact'-gives-Compact : {X : 𝓤 ̇ } → Compact' X → Compact X {𝓦}
+Compact'-gives-Compact C = compact-gives-Compact (Compact'-gives-compact C)
+
+Compact-gives-Compact' : {X : 𝓤 ̇ } → Compact X {𝓥} → Compact' X {𝓥}
+Compact-gives-Compact' C A _ = C A
+
+\end{code}
+
+TODO. (1) Compact' X ≃ compact X.
+      (2) Compact' X is a retract of Compact X.

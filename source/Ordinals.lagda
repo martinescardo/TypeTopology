@@ -1,4 +1,4 @@
-Martin Escardo 2010-2021
+Martin Escardo 2010-2022.
 
 Some files have coauthors.
 
@@ -12,24 +12,27 @@ OrdinalNotationInterpretation.
 
 import BuraliForti
 import LexicographicOrder
-import OrdinalArithmetic
-import OrdinalArithmetic-Properties
-import OrdinalCodes
 import OrdinalNotationInterpretation
+import OrdinalNotationInterpretation0
+import OrdinalNotationInterpretation1
+import OrdinalNotationInterpretation2
 import OrdinalNotions
 import OrdinalOfOrdinals
-import OrdinalOfOrdinalsSuprema
+import OrdinalOfOrdinalsSuprema        -- By Tom de Jong
 import OrdinalOfTruthValues
-import OrdinalTaboos
+import OrdinalToppedArithmetic
+import OrdinalTaboos                   -- By Tom de Jong
+import OrdinalTrichotomousArithmetic
 import OrdinalsClosure
 import OrdinalsFreeGroup
-import OrdinalsShulmanTaboo
+import OrdinalsSupSum
+import OrdinalsToppedType
+import OrdinalsTrichotomousType
 import OrdinalsType
+import OrdinalsType-Injectivity
 import OrdinalsWellOrderArithmetic
 import OrdinalsWellOrderTransport
 import SquashedCantor
 import SquashedSum
-import ToppedOrdinalArithmetic
-import ToppedOrdinalsType
 
 \end{code}

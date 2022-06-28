@@ -185,7 +185,7 @@ module swan
     γ = ap pr₁ (all-elements-are-equal 𝟙-in-S P-in-S)
      where
       P-in-S : S
-      P-in-S = (P , P-is-prop , double-negation-intro refl)
+      P-in-S = (P , P-is-prop , ¬¬-intro refl)
       𝟙-in-S : S
       𝟙-in-S = (𝟙 , 𝟙-is-prop , h)
        where
@@ -574,7 +574,7 @@ A remark on well-order-gives-minimal (see below) is in order.
        x-minimal : (y : X) → B y → ¬ (y ≺ x)
        x-minimal = pr₂ (pr₂ m)
        x-acc : is-accessible x
-       x-acc = next x ϕ
+       x-acc = step ϕ
         where
          ε : (y : X) → y ≺ x → ¬¬ (is-accessible y)
          ε y l y-not-acc = x-minimal y y-not-acc l
@@ -628,7 +628,7 @@ with a fairly direct proof.
     ι : 𝟚 → 𝟚'
     ι = lift 𝓤
     ρ : is-prop (P + ¬ P)
-    ρ = +-is-prop P-is-prop (negations-are-props fe) double-negation-intro
+    ρ = +-is-prop P-is-prop (negations-are-props fe) ¬¬-intro
     γ : (Σ _≺_ ꞉ (𝟚' → 𝟚' → 𝓣 ̇ ) , (is-classical-well-order _≺_)) → P + ¬ P
     γ (_≺_ , trans , trich , min) = κ (center (trich (ι ₀) (ι ₁)))
      where

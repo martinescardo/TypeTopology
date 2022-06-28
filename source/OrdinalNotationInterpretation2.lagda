@@ -56,11 +56,11 @@ open import UF-Subsingletons-FunExt
 open import UF-Miscelanea
 
 open import OrdinalsType
-open import OrdinalsType-Injectivity fe
+open import OrdinalsType-Injectivity
 open import SigmaDiscreteAndTotallySeparated
-open import ToppedOrdinalsType fe
+open import OrdinalsToppedType fe
 open import OrdinalArithmetic fe
-open import ToppedOrdinalArithmetic fe
+open import OrdinalToppedArithmetic fe
 open import OrdinalsClosure fe
 open import DiscreteAndSeparated
 open import GenericConvergentSequence
@@ -175,7 +175,7 @@ See the files ToppedOrdinalArithmetic and InjectiveTypes for details.
 
 \begin{code}
 
-open topped-ordinals-injectivity
+open topped-ordinals-injectivity fe
 
 𝓚 : (ν : E) → (⟪ Δ ν ⟫ → E) → ⟪ Κ ν ⟫ → Ordᵀ
 𝓚 ν A = (Κ ∘ A) ↗ (ι ν , ι-is-embedding ν)

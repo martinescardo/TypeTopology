@@ -457,7 +457,7 @@ existence-of-subtraction : (𝓤 : Universe) → 𝓤 ⁺ ̇
 existence-of-subtraction 𝓤 = (α β : Ordinal 𝓤) → α ≼ β → Σ γ ꞉ Ordinal 𝓤 , α +ₒ γ ≡ β
 
 existence-of-subtraction-is-prop : is-prop (existence-of-subtraction 𝓤)
-existence-of-subtraction-is-prop = Π₃-is-prop (λ {𝓤} {𝓥} → fe 𝓤 𝓥)
+existence-of-subtraction-is-prop = Π₃-is-prop fe'
                                      (λ α β l → left-+ₒ-is-embedding α β)
 
 
@@ -503,11 +503,12 @@ ordinal-subtraction-gives-excluded-middle {𝓤} ϕ P P-is-prop = g
 
 \end{code}
 
-Another example where subtraction doesn't exist is (ω +ₒ 𝟙ₒ) ≼ ℕ∞ₒ,
-discussed in the module OrdinalOfOrdinals. The types ω +ₒ 𝟙ₒ and ℕ∞ₒ
-are equal if and only if LPO holds. Without assuming LPO, the image of
-the inclusion (ω +ₒ 𝟙ₒ) → ℕ∞ₒ, has empty complement, and so there is
-nothing that can be added to (ω +ₒ 𝟙ₒ) to get ℕ∞ₒ, unless LPO holds.
+Another example where subtraction doesn't necessarily exist is the
+situation (ω +ₒ 𝟙ₒ) ≼ ℕ∞ₒ, discussed in the module
+OrdinalOfOrdinals. The types ω +ₒ 𝟙ₒ and ℕ∞ₒ are equal if and only if
+LPO holds. Without assuming LPO, the image of the inclusion (ω +ₒ 𝟙ₒ)
+→ ℕ∞ₒ, has empty complement, and so there is nothing that can be added
+to (ω +ₒ 𝟙ₒ) to get ℕ∞ₒ, unless LPO holds.
 
 \begin{code}
 
@@ -520,19 +521,19 @@ retract-Ω-of-Ordinal {𝓤} = r , s , η
   s (P , i) = prop-ordinal P i
 
   r : Ordinal 𝓤 → Ω 𝓤
-  r α = has-bottom α , having-bottom-is-prop fe' α
+  r α = has-least α , having-least-is-prop fe' α
 
   η : r ∘ s ∼ id
   η (P , i) = to-subtype-≡ (λ _ → being-prop-is-prop fe') t
    where
-    f : P → has-bottom (prop-ordinal P i)
+    f : P → has-least (prop-ordinal P i)
     f p = p , (λ x u → id)
 
-    g : has-bottom (prop-ordinal P i) → P
+    g : has-least (prop-ordinal P i) → P
     g (p , _) = p
 
-    t : has-bottom (prop-ordinal P i) ≡ P
-    t = pe 𝓤 (having-bottom-is-prop fe' (prop-ordinal P i)) i g f
+    t : has-least (prop-ordinal P i) ≡ P
+    t = pe 𝓤 (having-least-is-prop fe' (prop-ordinal P i)) i g f
 
 \end{code}
 
@@ -551,34 +552,31 @@ module _ {𝓤 : Universe} where
  open import UF-Miscelanea
 
  ⊴-add-taboo : Ωₒ ⊴ (𝟙ₒ +ₒ Ωₒ) → WEM 𝓤
- ⊴-add-taboo (f , s) = VI
+ ⊴-add-taboo (f , s) = V
   where
-   I : is-least Ωₒ ⊥Ω
-   I (P , i) (𝟘 , 𝟘-is-prop) (refl , q) = 𝟘-elim (equal-⊤-is-true 𝟘 𝟘-is-prop q)
+   I : is-least (𝟙ₒ +ₒ Ωₒ) (inl ⋆)
+   I (inl ⋆) u       l = l
+   I (inr x) (inl ⋆) l = 𝟘-elim l
+   I (inr x) (inr y) l = 𝟘-elim l
 
-   II : is-least (𝟙ₒ +ₒ Ωₒ) (inl ⋆)
-   II (inl ⋆) u       l = l
-   II (inr x) (inl ⋆) l = 𝟘-elim l
-   II (inr x) (inr y) l = 𝟘-elim l
+   II : f ⊥Ω ≡ inl ⋆
+   II = simulations-preserve-least Ωₒ (𝟙ₒ +ₒ Ωₒ) ⊥Ω (inl ⋆) f s ⊥-is-least I
 
-   III : f ⊥Ω ≡ inl ⋆
-   III = simulations-preserve-least Ωₒ (𝟙ₒ +ₒ Ωₒ) ⊥Ω (inl ⋆) f s I II
+   III : is-isolated (f ⊥Ω)
+   III = transport⁻¹ is-isolated II (inl-is-isolated ⋆ (𝟙-is-discrete ⋆))
 
-   IV : is-isolated (f ⊥Ω)
-   IV = transport⁻¹ is-isolated III (inl-is-isolated ⋆ (𝟙-is-discrete ⋆))
+   IV : is-isolated ⊥Ω
+   IV = lc-maps-reflect-isolatedness f (simulations-are-lc Ωₒ (𝟙ₒ +ₒ Ωₒ) f s) ⊥Ω III
 
-   V : is-isolated ⊥Ω
-   V = lc-maps-reflect-isolatedness f (simulations-are-lc Ωₒ (𝟙ₒ +ₒ Ωₒ) f s) ⊥Ω IV
-
-   VI : ∀ P → is-prop P → ¬ P + ¬¬ P
-   VI P i = Cases (V (P , i))
-             (λ (e : ⊥Ω ≡ (P , i))
-                   → inl (equal-𝟘-is-empty (ap pr₁ (e ⁻¹))))
-             (λ (ν : ⊥Ω ≢ (P , i))
-                   → inr (contrapositive
-                           (λ (u : ¬ P)
-                                 → to-subtype-≡ (λ _ → being-prop-is-prop fe')
-                                    (empty-types-are-≡-𝟘 fe' (pe 𝓤) u)⁻¹) ν))
+   V : ∀ P → is-prop P → ¬ P + ¬¬ P
+   V P i = Cases (IV (P , i))
+            (λ (e : ⊥Ω ≡ (P , i))
+                  → inl (equal-𝟘-is-empty (ap pr₁ (e ⁻¹))))
+            (λ (ν : ⊥Ω ≢ (P , i))
+                  → inr (contrapositive
+                          (λ (u : ¬ P)
+                                → to-subtype-≡ (λ _ → being-prop-is-prop fe')
+                                   (empty-types-are-≡-𝟘 fe' (pe 𝓤) u)⁻¹) ν))
 \end{code}
 
 Added 4th April 2022.
@@ -743,7 +741,7 @@ succ-monotone em α β l = II I
 
 \end{code}
 
-TODO. EM (𝓤 ⁺) is sufficient, because we can work with the resized order _⊲⁻_.
+TODO. EM 𝓤 is sufficient, because we can work with the resized order _⊲⁻_.
 
 Added 21st April 2022.
 
@@ -1021,3 +1019,56 @@ also is not a successor ordinal unless LPO holds:
 
 Therefore, constructively, it is not necessarily the case that every
 ordinal is either a successor or a limit.
+
+Added 4th May 2022.
+
+\begin{code}
+
+open import OrdinalsToppedType fe
+open import OrdinalToppedArithmetic fe
+
+alternative-plusₒ : (τ₀ τ₁ : Ordinalᵀ 𝓤)
+                 → [ τ₀ +ᵒ τ₁ ] ≃ₒ ([ τ₀ ] +ₒ [ τ₁ ])
+alternative-plusₒ τ₀ τ₁ = e
+ where
+  υ = cases (λ ⋆ → τ₀) (λ ⋆ → τ₁)
+
+  f : ⟪ ∑ 𝟚ᵒ υ ⟫ → ⟨ [ τ₀ ] +ₒ [ τ₁ ] ⟩
+  f (inl ⋆ , x) = inl x
+  f (inr ⋆ , y) = inr y
+
+  g : ⟨ [ τ₀ ] +ₒ [ τ₁ ] ⟩ → ⟪ ∑ 𝟚ᵒ υ ⟫
+  g (inl x) = (inl ⋆ , x)
+  g (inr y) = (inr ⋆ , y)
+
+  η : g ∘ f ∼ id
+  η (inl ⋆ , x) = refl
+  η (inr ⋆ , y) = refl
+
+  ε : f ∘ g ∼ id
+  ε (inl x) = refl
+  ε (inr y) = refl
+
+  f-is-equiv : is-equiv f
+  f-is-equiv = qinvs-are-equivs f (g , η , ε)
+  f-is-op : is-order-preserving [ ∑ 𝟚ᵒ υ ] ([ τ₀ ] +ₒ [ τ₁ ]) f
+
+  f-is-op (inl ⋆ , _) (inl ⋆ , _) (inr (refl , l)) = l
+  f-is-op (inl ⋆ , _) (inr ⋆ , _) (inl ⋆)          = ⋆
+  f-is-op (inr ⋆ , _) (inl ⋆ , _) (inl l)          = l
+  f-is-op (inr ⋆ , _) (inr ⋆ , _) (inr (refl , l)) = l
+
+  g-is-op : is-order-preserving ([ τ₀ ] +ₒ [ τ₁ ]) [ ∑ 𝟚ᵒ υ ] g
+  g-is-op (inl _) (inl _) l = inr (refl , l)
+  g-is-op (inl _) (inr _) ⋆ = inl ⋆
+  g-is-op (inr _) (inl _) ()
+  g-is-op (inr _) (inr _) l = inr (refl , l)
+
+  e : [ ∑ 𝟚ᵒ υ ] ≃ₒ ([ τ₀ ] +ₒ [ τ₁ ])
+  e = f , f-is-op , f-is-equiv , g-is-op
+
+alternative-plus : (τ₀ τ₁ : Ordinalᵀ 𝓤)
+                 → [ τ₀ +ᵒ τ₁ ] ≡ ([ τ₀ ] +ₒ [ τ₁ ])
+alternative-plus τ₀ τ₁ = eqtoidₒ _ _ (alternative-plusₒ τ₀ τ₁)
+
+\end{code}

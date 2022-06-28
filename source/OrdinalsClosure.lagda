@@ -23,10 +23,10 @@ open import UF-Miscelanea
 open import SpartanMLTT
 open import Two-Properties
 open import AlternativePlus
-open import ToppedOrdinalsType fe
+open import OrdinalsToppedType fe
 open import OrdinalArithmetic fe
-open import OrdinalsType-Injectivity fe
-open import ToppedOrdinalArithmetic fe
+open import OrdinalsType-Injectivity
+open import OrdinalToppedArithmetic fe
 open import CompactTypes
 open import GenericConvergentSequence
 open import SquashedSum fe
@@ -216,12 +216,12 @@ pair-fun-is-order-preserving τ υ A B f g φ γ (x , a) (x , b) (inr (refl , l)
 ι𝟙ᵒ = ι𝟙
 
 ι𝟙ᵒ-is-order-preserving : is-order-preserving (succₒ ω) ℕ∞ᵒ ι𝟙ᵒ
-ι𝟙ᵒ-is-order-preserving (inl n) (inl m) l = ι-order-preserving n m l
+ι𝟙ᵒ-is-order-preserving (inl n) (inl m) l = ℕ-to-ℕ∞-order-preserving n m l
 ι𝟙ᵒ-is-order-preserving (inl n) (inr *) * = n , (refl , refl)
 ι𝟙ᵒ-is-order-preserving (inr *) (inl m) l = 𝟘-elim l
 ι𝟙ᵒ-is-order-preserving (inr *) (inr *) l = 𝟘-elim l
 
-open topped-ordinals-injectivity
+open topped-ordinals-injectivity fe
 
 over-ι-map-is-order-preserving  : (τ : ℕ → Ordᵀ) (z : ℕ + 𝟙)
                                      → is-order-preserving
@@ -353,7 +353,7 @@ pair-fun-is-order-reflecting τ υ A B f g φ e γ (x , a) (y , b) (inr (r , l))
   p = h (c r) k
 
 ι𝟙ᵒ-is-order-reflecting : is-order-reflecting (succₒ ω) ℕ∞ᵒ ι𝟙ᵒ
-ι𝟙ᵒ-is-order-reflecting (inl n) (inl m) l             = ι-order-reflecting n m l
+ι𝟙ᵒ-is-order-reflecting (inl n) (inl m) l             = ℕ-to-ℕ∞-order-reflecting n m l
 ι𝟙ᵒ-is-order-reflecting (inl n) (inr *) l             = *
 ι𝟙ᵒ-is-order-reflecting (inr *) (inl m) (n , (p , l)) = 𝟘-elim (∞-is-not-finite n p)
 ι𝟙ᵒ-is-order-reflecting (inr *) (inr *) (n , (p , l)) = 𝟘-elim (∞-is-not-finite n p)
@@ -458,7 +458,7 @@ Overᵒ-is-order-reflecting τ υ f p (inr *) x y ((n , q) , l) = 𝟘-elim (+di
 
 \begin{code}
 
-𝟙ᵒ-has-infs-of-complemented-subsets : has-infs-of-complemented-subsets 𝟙ᵒ
+𝟙ᵒ-has-infs-of-complemented-subsets : has-infs-of-complemented-subsets (𝟙ᵒ {𝓤})
 𝟙ᵒ-has-infs-of-complemented-subsets p = ⋆ , f , g , h
  where
   f : (Σ x ꞉ 𝟙 , p x ≡ ₀) → p ⋆ ≡ ₀

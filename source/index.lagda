@@ -55,7 +55,7 @@
      compactness of the Cantor type using countable Tychonoff.
      (https://www.cs.bham.ac.uk/~mhe/TypeTopology/UnsafeModulesIndex.html)
 
-   * In our last count, this development has 95000 lines, including
+   * In our last count, this development has 97000 lines, including
      comments and blank lines.
 
    * A module dependency graph is available, updated manually from
@@ -204,11 +204,15 @@ import OrdinalNotions
 import OrdinalOfOrdinals
 import OrdinalOfOrdinalsSuprema        -- By Tom de Jong
 import OrdinalOfTruthValues
+import OrdinalToppedArithmetic
 import OrdinalTaboos                   -- By Tom de Jong
+import OrdinalTrichotomousArithmetic
 import Ordinals
 import OrdinalsClosure
-import Ordinals
 import OrdinalsFreeGroup
+import OrdinalsSupSum
+import OrdinalsToppedType
+import OrdinalsTrichotomousType
 import OrdinalsType
 import OrdinalsType-Injectivity
 import OrdinalsWellOrderArithmetic
@@ -245,8 +249,6 @@ import sigma-sup-lattice
 import sigma-frame
 import TheTopologyOfTheUniverse
 import TotallySeparated
-import ToppedOrdinalArithmetic
-import ToppedOrdinalsType
 import Two
 import Two-Properties
 import UnivalenceFromScratch

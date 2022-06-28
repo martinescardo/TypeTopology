@@ -56,6 +56,9 @@ structure (X , s) = s
 underlying-order : (α : Ordinal 𝓤) → ⟨ α ⟩ → ⟨ α ⟩ → 𝓤 ̇
 underlying-order (X , _<_ , o) = _<_
 
+is-trichotomous : Ordinal 𝓤 → 𝓤 ̇
+is-trichotomous α = is-trichotomous-order (underlying-order α)
+
 underlying-weak-order : (α : Ordinal 𝓤) → ⟨ α ⟩ → ⟨ α ⟩ → 𝓤 ̇
 underlying-weak-order α x y = ¬ (underlying-order α y x)
 
@@ -78,9 +81,6 @@ Reflexivity α = ≼-refl (underlying-order α)
 Transitivity : (α : Ordinal 𝓤) → is-transitive (underlying-order α)
 Transitivity α = transitivity (underlying-order α) (is-well-ordered α)
 
-Antisymmetry : (α : Ordinal 𝓤) → is-extensional (underlying-order α)
-Antisymmetry α = extensionality (underlying-order α) (is-well-ordered α)
-
 Well-foundedness : (α : Ordinal 𝓤) (x : ⟨ α ⟩) → is-accessible (underlying-order α) x
 Well-foundedness α = well-foundedness (underlying-order α) (is-well-ordered α)
 
@@ -95,6 +95,9 @@ Transfinite-induction α = transfinite-induction
 Extensionality : (α : Ordinal 𝓤) → is-extensional (underlying-order α)
 Extensionality α = extensionality (underlying-order α) (is-well-ordered α)
 
+Antisymmetry : (α : Ordinal 𝓤) (x y : ⟨ α ⟩) → x ≼⟨ α ⟩ y → y ≼⟨ α ⟩ x → x ≡ y
+Antisymmetry = Extensionality
+
 underlying-type-is-set : FunExt
                        → (α : Ordinal 𝓤)
                        → is-set ⟨ α ⟩
@@ -105,14 +108,47 @@ underlying-type-is-set fe α =
   (Prop-valuedness α)
   (Extensionality α)
 
-has-bottom : Ordinal 𝓤 → 𝓤 ̇
-has-bottom α = Σ ⊥ ꞉ ⟨ α ⟩ , ((x : ⟨ α ⟩) → ⊥ ≼⟨ α ⟩ x)
+is-least : (α : Ordinal 𝓤) → ⟨ α ⟩ → 𝓤 ̇
+is-least α x = (y : ⟨ α ⟩) → x ≼⟨ α ⟩ y
 
-having-bottom-is-prop : Fun-Ext → (α : Ordinal 𝓤) → is-prop (has-bottom α)
-having-bottom-is-prop fe α (⊥ , l) (⊥' , l') =
+being-least-is-prop : Fun-Ext → (α : Ordinal 𝓤) (x : ⟨ α ⟩) → is-prop (is-least α x)
+being-least-is-prop fe α x = Π₃-is-prop fe (λ y u _ → Prop-valuedness α u y)
+
+at-most-one-least : (α : Ordinal 𝓤) (x y : ⟨ α ⟩)
+                  → is-least α x
+                  → is-least α y
+                  → x ≡ y
+at-most-one-least α x y l l' = Antisymmetry α x y (l y) (l' x)
+
+has-least : Ordinal 𝓤 → 𝓤 ̇
+has-least α = Σ ⊥ ꞉ ⟨ α ⟩ , is-least α ⊥
+
+having-least-is-prop : Fun-Ext → (α : Ordinal 𝓤) → is-prop (has-least α)
+having-least-is-prop fe α (⊥ , l) (⊥' , l') =
   to-subtype-≡
-    (λ _ → Π₃-is-prop fe (λ x y _ → Prop-valuedness α y x))
-    (Extensionality α ⊥ ⊥' (l ⊥') (l' ⊥))
+    (being-least-is-prop fe α)
+    (at-most-one-least α ⊥ ⊥' l l')
+
+is-largest : (α : Ordinal 𝓤) → ⟨ α ⟩ → 𝓤 ̇
+is-largest α x = (y : ⟨ α ⟩) → y ≼⟨ α ⟩ x
+
+being-largest-is-prop : Fun-Ext → (α : Ordinal 𝓤) (x : ⟨ α ⟩) → is-prop (is-largest α x)
+being-largest-is-prop fe α x = Π₃-is-prop fe (λ y u _ → Prop-valuedness α u x)
+
+at-most-one-largest : (α : Ordinal 𝓤) (x y : ⟨ α ⟩)
+                    → is-largest α x
+                    → is-largest α y
+                    → x ≡ y
+at-most-one-largest α x y l l' = Antisymmetry α x y (l' x) (l y)
+
+has-largest : Ordinal 𝓤 → 𝓤 ̇
+has-largest α = Σ ⊤ ꞉ ⟨ α ⟩ , is-largest α ⊤
+
+having-largest-is-prop : Fun-Ext → (α : Ordinal 𝓤) → is-prop (has-largest α)
+having-largest-is-prop fe α (⊥ , l) (⊥' , l') =
+  to-subtype-≡
+    (being-largest-is-prop fe α)
+    (at-most-one-largest α ⊥ ⊥' l l')
 
 \end{code}
 
@@ -289,9 +325,6 @@ inverses-of-order-equivs-are-order-equivs α β {f} (p , e , q) =
                      → is-equiv (≃ₒ-to-fun⁻¹ α β e)
 ≃ₒ-to-fun⁻¹-is-equiv α β e = inverses-are-equivs (≃ₒ-to-fun α β e)
                                 (≃ₒ-to-fun-is-equiv α β e)
-
-is-largest : (α : Ordinal 𝓤) → ⟨ α ⟩ → 𝓤 ̇
-is-largest α x = (y : ⟨ α ⟩) → y ≼⟨ α ⟩ x
 
 order-equivs-preserve-largest : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
                               → (f : ⟨ α ⟩ → ⟨ β ⟩)

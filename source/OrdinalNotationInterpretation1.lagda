@@ -121,9 +121,9 @@ the theorems and constructions to be performed here:
 \begin{code}
 
 open import OrdinalsType
-open import ToppedOrdinalsType fe
+open import OrdinalsToppedType fe
 open import OrdinalArithmetic fe
-open import ToppedOrdinalArithmetic fe
+open import OrdinalToppedArithmetic fe
 open import OrdinalsClosure fe
 open import OrdinalCodes
 open import CompactTypes
@@ -467,13 +467,13 @@ module _ (pt : propositional-truncations-exist)
  pe = Univalence-gives-Prop-Ext ua
 
  open import OrdinalOfOrdinalsSuprema ua
- open import OrdinalsType-Injectivity fe
+ open import OrdinalsType-Injectivity
  open import OrdinalOfOrdinals ua
  open import OrdinalArithmetic-Properties ua
 
  open import UF-ImageAndSurjection
  open ImageAndSurjection pt
- open ordinals-injectivity
+ open ordinals-injectivity fe
 
  module _ (sr : Set-Replacement pt) where
 

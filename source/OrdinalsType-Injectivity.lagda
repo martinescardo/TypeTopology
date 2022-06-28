@@ -8,7 +8,7 @@ The type of ordinals is (algebraically) injective.
 
 open import UF-FunExt
 
-module OrdinalsType-Injectivity (fe : FunExt) where
+module OrdinalsType-Injectivity where
 
 open import SpartanMLTT
 
@@ -18,9 +18,10 @@ open import UF-Embeddings
 
 open import OrdinalsType
 open import OrdinalsWellOrderArithmetic
-open import InjectiveTypes fe
 
-module ordinals-injectivity where
+module ordinals-injectivity (fe : FunExt) where
+
+ open import InjectiveTypes fe
 
  _↗_ : {I : 𝓤  ̇ } {J : 𝓥 ̇ }
      → (I → Ordinal 𝓦)
@@ -77,9 +78,10 @@ module ordinals-injectivity where
    γ = g , g-is-order-preserving , g-is-equiv , g⁻¹-is-order-preserving
 
 
-module topped-ordinals-injectivity where
+module topped-ordinals-injectivity (fe : FunExt) where
 
- open import ToppedOrdinalsType fe
+ open import InjectiveTypes fe
+ open import OrdinalsToppedType fe
 
  _↗_ : {I : 𝓤  ̇ } {J : 𝓥 ̇ }
      → (I → Ordinalᵀ 𝓦)
@@ -98,7 +100,7 @@ module topped-ordinals-injectivity where
               (𝓮@(e , e-is-embedding) : I ↪ J)
               (i : I)
             → [ (α ↗ 𝓮) (e i) ] ≃ₒ [ α i ]
- ↗-property α = ordinals-injectivity.↗-property (λ i → [ α i ])
+ ↗-property α = ordinals-injectivity.↗-property fe (λ i → [ α i ])
 
 \end{code}
 
@@ -106,3 +108,118 @@ TODO. The type of compact∙ ordinals is injective. The type of ordinals
 that have infs of complemented subsets is injective. These two results
 are already proved in other modules, but these results are not
 explicitly stated. We should refactor that code.
+
+Added 11th May 2022. But we still need to clean it up.
+
+\begin{code}
+
+open import UF-Univalence
+
+module ordinals-injectivity-order (ua : Univalence) where
+
+ open import OrdinalOfOrdinals ua
+ open import UF-UA-FunExt
+ open import UF-Subsingletons
+
+ fe : FunExt
+ fe = Univalence-gives-FunExt ua
+
+ open ordinals-injectivity fe
+
+ ↗-preserves-⊴ : {I J : 𝓤  ̇ } (𝓮 : I ↪ J)
+                 (α β : I → Ordinal 𝓤)
+               → ((i : I) → α i ⊴ β i)
+               → (j : J) → (α ↗ 𝓮) j ⊴ (β ↗ 𝓮) j
+ ↗-preserves-⊴ {𝓤} {I} {J} 𝓮@(e , e-is-embedding) α β ℓ j = f , fi , fop
+  where
+   h : (i : I) → ⟨ α i ⟩ → ⟨ β i ⟩
+   h i = pr₁ (ℓ i)
+
+   hi : (i : I) → is-initial-segment (α i) (β i) (h i)
+   hi i = pr₁ (pr₂ (ℓ i))
+
+   hop : (i : I) → is-order-preserving (α i) (β i) (h i)
+   hop i = pr₂ (pr₂ (ℓ i))
+
+   f : ⟨ (α ↗ 𝓮) j ⟩ → ⟨ (β ↗ 𝓮) j ⟩
+   f ϕ (i , refl) = h i (ϕ (i , refl))
+
+   fi : is-initial-segment ((α ↗ 𝓮) j) ((β ↗ 𝓮) j) f
+   fi ϕ γ ((i , refl) , m) = ⦅b⦆ ⦅a⦆
+    where
+     g⁻¹ : ⟨ α i ⟩ → ⟨ (α ↗ 𝓮) (e i) ⟩
+     g⁻¹ = case (↗-property α 𝓮 i) of (λ (g , gop , geq , g⁻¹op) → inverse g geq)
+
+     w : fiber e (e i)
+     w = (i , refl)
+
+     u : w ≡ w
+     u = e-is-embedding (e i) w w
+
+     v : u ≡ 𝓻𝓮𝒻𝓵 w
+     v = props-are-sets (e-is-embedding (e i)) _ _
+
+     ⦅a⦆ : Σ x ꞉ ⟨ α i ⟩ , (x ≺⟨ α i ⟩ ϕ (i , refl)) × (h i x ≡ γ (i , refl))
+     ⦅a⦆ = hi i (ϕ (i , refl)) (γ (i , refl)) m
+
+     ⦅b⦆ : type-of ⦅a⦆
+         → Σ ϕ' ꞉ ⟨ (α ↗ 𝓮) (e i) ⟩ , (ϕ' ≺⟨ (α ↗ 𝓮) (e i) ⟩ ϕ) × (f ϕ' ≡ γ)
+     ⦅b⦆ (x , n , t) = g⁻¹ x , (w , l) , dfunext (fe 𝓤 𝓤) H
+      where
+       p : g⁻¹ x w ≡ x
+       p = g⁻¹ x w                                     ≡⟨ refl ⟩
+           transport (λ - → ⟨ α (pr₁ -) ⟩) u x         ≡⟨ ⦅0⦆ ⟩
+           transport (λ - → ⟨ α (pr₁ -) ⟩) (𝓻𝓮𝒻𝓵 w) x ≡⟨ refl ⟩
+           x                                           ∎
+        where
+         ⦅0⦆ = ap (λ - → transport (λ - → ⟨ α (pr₁ -) ⟩) - x) v
+
+       l : g⁻¹ x w ≺⟨ α i ⟩ ϕ w
+       l = transport (λ - → - ≺⟨ α i ⟩ ϕ w) (p ⁻¹) n
+
+       H : f (g⁻¹ x) ∼ γ
+       H (i' , r) =
+         f (g⁻¹ x) (i' , r)                              ≡⟨ ⦅1⦆ ⟩
+         transport (λ - → ⟨ β (pr₁ -) ⟩) q (f (g⁻¹ x) w) ≡⟨ ⦅3⦆ ⟩
+         transport (λ - → ⟨ β (pr₁ -) ⟩) q (γ w)         ≡⟨ ⦅4⦆ ⟩
+         γ (i' , r)                                      ∎
+         where
+          q : w ≡ (i' , r)
+          q = e-is-embedding (e i) w (i' , r)
+
+          ⦅1⦆ = (apd ( f (g⁻¹ x)) q)⁻¹
+
+          ⦅2⦆ = f (g⁻¹ x) w   ≡⟨ refl ⟩
+                h i (g⁻¹ x w) ≡⟨ ap (h i) p ⟩
+                h i x         ≡⟨ t ⟩
+                γ w           ∎
+
+          ⦅3⦆ = ap (transport (λ - → ⟨ β (pr₁ -) ⟩) q) ⦅2⦆
+
+          ⦅4⦆ = apd γ q
+
+   fop : is-order-preserving ((α ↗ 𝓮) j) ((β ↗ 𝓮) j) f
+   fop ϕ γ ((i , refl) , m) = (i , refl) , hop i (ϕ (i , refl)) (γ (i , refl)) m
+
+
+module topped-ordinals-injectivity-order (ua : Univalence) where
+
+ open import UF-UA-FunExt
+
+ fe : FunExt
+ fe = Univalence-gives-FunExt ua
+
+ open import OrdinalsToppedType fe
+ open import OrdinalOfOrdinals ua
+ open import UF-Subsingletons
+
+ open topped-ordinals-injectivity fe
+
+ ↗-preserves-⊴ : {I J : 𝓤  ̇ } (𝓮 : I ↪ J)
+                 (α β : I → Ordinalᵀ 𝓤)
+               → ((i : I) → [ α i ] ⊴ [ β i ])
+               → (j : J) → [ (α ↗ 𝓮) j ] ⊴ [ (β ↗ 𝓮) j ]
+ ↗-preserves-⊴ 𝓮 α β =
+   ordinals-injectivity-order.↗-preserves-⊴ ua 𝓮 (λ i → [ α i ]) (λ i → [ β i ])
+
+\end{code}

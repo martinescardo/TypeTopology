@@ -71,9 +71,9 @@ succ-order-injective m n l = l
             → ((n : ℕ) → P zero n (zero-least n))
             → ((m n : ℕ) (l : m ≤ n) → P m n l → P (succ m) (succ n) (succ-monotone m n l))
             → (m n : ℕ) (l : m ≤ n) → P m n l
-≤-induction P base step zero n ⋆            = base n
-≤-induction P base step (succ m) zero l     = 𝟘-elim l
-≤-induction P base step (succ m) (succ n) l = step m n l (≤-induction P base step m n l)
+≤-induction P b f zero n ⋆            = b n
+≤-induction P b f (succ m) zero l     = 𝟘-elim l
+≤-induction P b f (succ m) (succ n) l = f m n l (≤-induction P b f m n l)
 
 succ≤≡ : (m n : ℕ) → (succ m ≤ succ n) ≡ (m ≤ n)
 succ≤≡ m n = refl
@@ -143,7 +143,7 @@ not-less-than-itself (succ n) l = not-less-than-itself n l
 
 not-less-bigger-or-equal : (m n : ℕ) → ¬ (n < m) → n ≥ m
 not-less-bigger-or-equal zero n u = zero-least n
-not-less-bigger-or-equal (succ m) zero = double-negation-intro (zero-least m)
+not-less-bigger-or-equal (succ m) zero = ¬¬-intro (zero-least m)
 not-less-bigger-or-equal (succ m) (succ n) = not-less-bigger-or-equal m n
 
 bigger-or-equal-not-less : (m n : ℕ) → n ≥ m → ¬ (n < m)
@@ -196,11 +196,11 @@ regress P ρ (succ n) m l p = cases (λ (l' : m ≤ n) → IH m l' (ρ n p))
   IH = regress P ρ n
 
 <-is-well-founded : (m : ℕ) → is-accessible _<_ m
-<-is-well-founded zero     = next zero     (λ y l → unique-from-𝟘 l)
-<-is-well-founded (succ m) = next (succ m) (τ (<-is-well-founded m))
+<-is-well-founded zero     = step (λ y l → unique-from-𝟘 l)
+<-is-well-founded (succ m) = step (τ (<-is-well-founded m))
  where
   τ : is-accessible _<_ m → (n : ℕ) → n < succ m → is-accessible _<_ n
-  τ a n u = cases (λ (v : n < m) → prev _<_ m a n v)
+  τ a n u = cases (λ (v : n < m) → prev _<_ a n v)
                   (λ (p : n ≡ m) → transport⁻¹ (is-accessible _<_) p a)
                   (<-split n m u)
 

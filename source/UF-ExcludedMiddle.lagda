@@ -72,7 +72,7 @@ DNE : ∀ 𝓤 → 𝓤 ⁺ ̇
 DNE 𝓤 = (P : 𝓤 ̇ ) → is-prop P → ¬¬ P → P
 
 EM-gives-DNE : EM 𝓤 → DNE 𝓤
-EM-gives-DNE em P isp φ = cases (λ p → p) (λ u → 𝟘-elim (φ u)) (em P isp)
+EM-gives-DNE em P isp φ = cases id (λ u → 𝟘-elim (φ u)) (em P isp)
 
 double-negation-elim : EM 𝓤 → DNE 𝓤
 double-negation-elim = EM-gives-DNE
@@ -94,12 +94,24 @@ de-Morgan em em' {A} {B} i j n = Cases (em A i)
                                           inr)
                                   inl
 
-fem-proptrunc : FunExt → Excluded-Middle → propositional-truncations-exist
-fem-proptrunc fe em = record {
+fe-and-em-give-propositional-truncations : FunExt
+                                         → Excluded-Middle
+                                         → propositional-truncations-exist
+fe-and-em-give-propositional-truncations fe em =
+ record {
   ∥_∥          = λ X → ¬¬ X ;
   ∥∥-is-prop   = Π-is-prop (fe _ _) (λ _ → 𝟘-is-prop) ;
   ∣_∣         = λ x u → u x ;
-  ∥∥-rec       = λ i u φ → EM-gives-DNE em _ i (¬¬-functor u φ) }
+  ∥∥-rec       = λ i u φ → EM-gives-DNE em _ i (¬¬-functor u φ)
+  }
+
+\end{code}
+
+Old, bad name for the above (TODO: get rid of it):
+
+\begin{code}
+
+fem-proptrunc = fe-and-em-give-propositional-truncations
 
 module _ (pt : propositional-truncations-exist) where
 
@@ -108,6 +120,15 @@ module _ (pt : propositional-truncations-exist) where
  double-negation-is-truncation-gives-DNE : ((X : 𝓤 ̇ ) → ¬¬ X → ∥ X ∥) → DNE 𝓤
  double-negation-is-truncation-gives-DNE {𝓤} f P isp u = ∥∥-rec isp id (f P u)
 
+ ∃¬-gives-∀ : EM (𝓤 ⊔ 𝓥)
+         → {X : 𝓤 ̇ }
+         → (A : X → 𝓥 ̇ )
+         → ((x : X) → is-prop (A x))
+         → (∃ x ꞉ X , ¬ (A x)) + (Π A)
+ ∃¬-gives-∀ {𝓤} {𝓥} em {X} A is-prop-valued = Cases (em (∃ x ꞉ X , ¬ (A x)) ∥∥-is-prop)
+   inl
+   λ notExists → inr (λ x → EM-gives-DNE (lower-EM (𝓤 ⊔ 𝓥) em) (A x) (is-prop-valued x)
+     λ notAx → notExists ∣ (x , notAx) ∣)
 \end{code}
 
 Added by Tom de Jong in August 2021.
@@ -125,3 +146,23 @@ Added by Tom de Jong in August 2021.
     γ g = f (λ x a → g ∣ x , a ∣)
 
 \end{code}
+
+Added by Martin Escardo 26th April 2022. We can find a point of every non-empty type.
+
+\begin{code}
+
+Global-Choice' : ∀ 𝓤 → 𝓤 ⁺ ̇
+Global-Choice' 𝓤 = (X : 𝓤 ̇ ) → is-nonempty X → X
+
+Global-Choice : ∀ 𝓤 → 𝓤 ⁺ ̇
+Global-Choice 𝓤 = (X : 𝓤 ̇ ) → X + ¬ X
+
+Global-Choice-gives-Global-Choice' : Global-Choice 𝓤 → Global-Choice' 𝓤
+Global-Choice-gives-Global-Choice' gc X φ = cases id (λ u → 𝟘-elim (φ u)) (gc X)
+
+Global-Choice'-gives-Global-Choice : Global-Choice' 𝓤 → Global-Choice 𝓤
+Global-Choice'-gives-Global-Choice gc X = gc (X + ¬ X)
+                                             (λ u → u (inr (λ p → u (inl p))))
+\end{code}
+
+Global choice contradicts univalence.

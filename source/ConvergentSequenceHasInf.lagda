@@ -38,10 +38,10 @@ open import CanonicalMapNotation
                        ₀              ∎
    where
     s : α n ≡ ₁
-    s = ap (λ - → ι - n) r ∙ ι-diagonal₁ n
+    s = ap (λ - → ι - n) r ∙ ℕ-to-ℕ∞-diagonal₁ n
 
     t = α (succ n)              ≡⟨ ap (λ - → ι - (succ n)) r ⟩
-        ι (ι (succ n)) (succ n) ≡⟨ ι-diagonal₀ n ⟩
+        ι (ι (succ n)) (succ n) ≡⟨ ℕ-to-ℕ∞-diagonal₀ n ⟩
         ₀                       ∎
 
     w : p (ι (succ n)) ≡ α (succ n)

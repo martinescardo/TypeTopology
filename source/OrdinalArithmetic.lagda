@@ -21,11 +21,6 @@ open import NaturalsOrder
 
 open import UF-Subsingletons
 
-is-trichotomous : {𝓤 : Universe} → Ordinal 𝓤 → 𝓤 ̇
-is-trichotomous α = ∀ x y → (x < y) + (x ≡ y) + (y < x)
- where
-  _<_ = underlying-order α
-
 prop-ordinal : (P : 𝓤 ̇ ) → is-prop P → Ordinal 𝓤
 prop-ordinal P i = P , prop.order P i , prop.well-order P i
 
@@ -148,3 +143,36 @@ right-is-not-smaller α (inl a) l = 𝟘-elim l
 right-is-not-smaller α (inr ⋆) l = 𝟘-elim l
 
 \end{code}
+
+Added 3rd May 2022. Sums of ordinals indexed by ordinals don't always
+exist. See the module OrdinalsShulmanTaboo. They do exist for
+trichotomous and cotransitive ordinals. See the module
+OrdinalsWellOrderArithmetic. Notice that trichotomy implies
+cotransitivity. See the module OrdinalNotions. Both trichotomy and
+cotransitivity are implied by excluded middle.
+
+\begin{code}
+
+open import UF-ExcludedMiddle
+
+module sums-assuming-EM (em : EM 𝓤) where
+
+ ∑ : (α : Ordinal 𝓤) → (⟨ α ⟩ → Ordinal 𝓤) → Ordinal 𝓤
+ ∑ α@(X , _<_ , o) β = (Σ x ꞉ X , ⟨ β x ⟩) ,
+                       Sum.order  ,
+                       Sum.well-order o (λ x → is-well-ordered (β x))
+  where
+   _≺_ : {x : X} → ⟨ β x ⟩ → ⟨ β x ⟩ → 𝓤  ̇
+   y ≺ z = y ≺⟨ β _ ⟩ z
+
+   module Sum = sum-cotransitive fe _<_ _≺_ (em-gives-cotrans _<_ fe em (is-well-ordered α))
+
+\end{code}
+
+Added 23rd May 2022.
+
+TODO. It is not in general possible to find a least element of an
+inhabited ordinal. In fact, consider the ordinal P + 𝟙 where P is a
+proposition. Then if we can find a least element of this ordinal, we
+can decide whether P or ¬ P. Similarly, we can't find a top element,
+unless excluded middle holds, by considering the ordinal 𝟙 + P.
