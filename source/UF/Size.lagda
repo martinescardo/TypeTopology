@@ -129,8 +129,11 @@ excluded middle, which is consistent (with or without univalence):
 
 \begin{code}
 
-EM-gives-PR : EM 𝓤 → propositional-resizing 𝓤 𝓥
-EM-gives-PR {𝓤} {𝓥} em P i = Q (em P i) , e
+decidable-propositions-have-any-size : (P : 𝓤  ̇ )
+                                     → is-prop P
+                                     → decidable P
+                                     → P has-size 𝓥
+decidable-propositions-have-any-size {𝓤} {𝓥} P i d = Q d , e d
  where
    Q : decidable P → 𝓥 ̇
    Q (inl p) = 𝟙
@@ -148,9 +151,12 @@ EM-gives-PR {𝓤} {𝓥} em P i = Q (em P i) , e
    g (inl p) q = p
    g (inr n) q = 𝟘-elim q
 
-   e : Q (em P i) ≃ P
-   e = logically-equivalent-props-are-equivalent
-        (j (em P i)) i (g (em P i)) (f (em P i))
+   e : (d : decidable P) → Q d ≃ P
+   e d = logically-equivalent-props-are-equivalent
+          (j d) i (g d) (f d)
+
+EM-gives-PR : EM 𝓤 → propositional-resizing 𝓤 𝓥
+EM-gives-PR em P i = decidable-propositions-have-any-size P i (em P i)
 
 \end{code}
 
