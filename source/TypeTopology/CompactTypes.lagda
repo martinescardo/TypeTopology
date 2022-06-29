@@ -188,17 +188,17 @@ checking the two possibilities, we can always take x₀ = p ₀.
 𝟚-compact∙ : compact∙ 𝟚
 𝟚-compact∙ p = x₀ , (λ r → 𝟚-induction (lemma₀ r) (lemma₁ r))
  where
-    x₀ : 𝟚
-    x₀ = p ₀
+  x₀ : 𝟚
+  x₀ = p ₀
 
-    claim : p x₀ ≡ ₁ → p ₀ ≡ ₀ → p ₀ ≡ ₁
-    claim r s = transport (λ - → p - ≡ ₁) s r
+  claim : p x₀ ≡ ₁ → p ₀ ≡ ₀ → p ₀ ≡ ₁
+  claim r s = transport (λ - → p - ≡ ₁) s r
 
-    lemma₀ : p x₀ ≡ ₁ → p ₀ ≡ ₁
-    lemma₀ r = 𝟚-equality-cases (claim r) (λ s → s)
+  lemma₀ : p x₀ ≡ ₁ → p ₀ ≡ ₁
+  lemma₀ r = 𝟚-equality-cases (claim r) (λ s → s)
 
-    lemma₁ : p x₀ ≡ ₁ → p ₁ ≡ ₁
-    lemma₁ r = transport (λ - → p - ≡ ₁) (lemma₀ r) r
+  lemma₁ : p x₀ ≡ ₁ → p ₁ ≡ ₁
+  lemma₁ r = transport (λ - → p - ≡ ₁) (lemma₀ r) r
 
 𝟚-compact : compact 𝟚
 𝟚-compact = compact∙-gives-compact 𝟚-compact∙
