@@ -214,16 +214,16 @@ propositional extensionality, which are consequences of univalence:
 Ω-compact∙ : funext 𝓤 𝓤 → propext 𝓤 → compact∙ (Ω 𝓤)
 Ω-compact∙ {𝓤} fe pe p = γ
   where
-    A = Σ x₀ ꞉ Ω 𝓤 , (p x₀ ≡ ₁ → (x : Ω 𝓤) → p x ≡ ₁)
+   A = Σ x₀ ꞉ Ω 𝓤 , (p x₀ ≡ ₁ → (x : Ω 𝓤) → p x ≡ ₁)
 
-    a : p ⊥ ≡ ₀ → A
-    a r = ⊥ , λ s → 𝟘-elim (zero-is-not-one (r ⁻¹ ∙ s))
+   a : p ⊥ ≡ ₀ → A
+   a r = ⊥ , λ s → 𝟘-elim (zero-is-not-one (r ⁻¹ ∙ s))
 
-    b : p ⊥ ≡ ₁ → A
-    b r = ⊤ , ⊥-⊤-density fe pe p r
+   b : p ⊥ ≡ ₁ → A
+   b r = ⊤ , ⊥-⊤-density fe pe p r
 
-    γ : A
-    γ = 𝟚-equality-cases a b
+   γ : A
+   γ = 𝟚-equality-cases a b
 
 𝟙-compact∙ : compact∙ (𝟙 {𝓤})
 𝟙-compact∙ p = ⋆ , f
