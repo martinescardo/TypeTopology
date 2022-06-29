@@ -804,6 +804,9 @@ consists-of-compact-opens F U = Ɐ i ∶ index U , is-compact-open F (U [ i ])
 contains-top : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦)
 contains-top F U = Ǝ t ∶ index U , is-top F (U [ t ]) holds
 
+contains-bottom : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦)
+contains-bottom F U =  Ǝ i ∶ index U , is-bottom F (U [ i ]) holds
+
 closed-under-binary-meets : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦)
 closed-under-binary-meets F 𝒮 =
  Ɐ i ∶ index 𝒮 , Ɐ j ∶ index 𝒮 ,
@@ -811,14 +814,35 @@ closed-under-binary-meets F 𝒮 =
    where
     open Meets (λ x y → x ≤[ poset-of F ] y)
 
+closed-under-binary-joins : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦)
+closed-under-binary-joins {𝓦 = 𝓦} F S =
+ Ɐ i ∶ index S , Ɐ j ∶ index S ,
+  Ǝ k ∶ index S , ((S [ k ]) is-lub-of (binary-family 𝓦 (S [ i ]) (S [ j ]))) holds
+   where
+    open Joins (λ x y → x ≤[ poset-of F ] y)
+
 closed-under-finite-meets : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦)
 closed-under-finite-meets F S = contains-top F S ∧ closed-under-binary-meets F S
+
+closed-under-finite-joins : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦)
+closed-under-finite-joins F S =
+ (contains-bottom F S) ∧ closed-under-binary-joins F S
+
+\end{code}
+
+We now define the notion of spectrality. Note that closure under finite joins is
+not an essential part of the definition. However, it can be assumed *without
+loss of generality* and we assume it in the definition for the sake of
+convenience.
+
+\begin{code}
 
 spectralᴰ : Frame 𝓤 𝓥 𝓦 → (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺) ̇
 spectralᴰ {𝓤 = 𝓤} {𝓥} {𝓦} F =
  Σ ℬ ꞉ Fam 𝓦 ⟨ F ⟩ , is-basis-for F ℬ
                    × consists-of-compact-opens F ℬ holds
                    × closed-under-finite-meets F ℬ holds
+                   × closed-under-finite-joins F ℬ holds
 
 basisₛ : (F : Frame 𝓤 𝓥 𝓦) → spectralᴰ F → Fam 𝓦 ⟨ F ⟩
 basisₛ F (ℬ , _) = ℬ

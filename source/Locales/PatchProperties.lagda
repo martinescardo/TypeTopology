@@ -6,34 +6,34 @@ Based on `ayberkt/formal-topology-in-UF`.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline --experimental-lossy-unification #-}
 
-open import SpartanMLTT
-open import UF-Base
-open import UF-PropTrunc
-open import UF-FunExt
-open import UF-Univalence
-open import UF-UA-FunExt
-open import UF-EquivalenceExamples
-open import List hiding ([_])
+open import MLTT.Spartan
+open import UF.Base
+open import UF.PropTrunc
+open import UF.FunExt
+open import UF.Univalence
+open import UF.UA-FunExt
+open import UF.EquivalenceExamples
+open import MLTT.List hiding ([_])
 
 \end{code}
 
 \begin{code}[hide]
 
-module PatchProperties
+module Locales.PatchProperties
         (pt : propositional-truncations-exist)
         (fe : Fun-Ext) where
 
-open import UF-Subsingletons
-open import UF-Subsingleton-Combinators
-open import UF-Equiv using (_≃_; logically-equivalent-props-give-is-equiv)
-open import Frame pt fe hiding (is-directed)
+open import UF.Subsingletons
+open import UF.Subsingleton-Combinators
+open import UF.Equiv using (_≃_; logically-equivalent-props-give-is-equiv)
+open import Locales.Frame pt fe hiding (is-directed)
 
 open AllCombinators pt fe
 open PropositionalTruncation pt
-open import Nucleus pt fe
-open import CompactRegular pt fe
-open import PatchLocale pt fe
-open import HeytingImplication pt fe
+open import Locales.Nucleus pt fe
+open import Locales.CompactRegular pt fe
+open import Locales.PatchLocale pt fe
+open import Locales.HeytingImplication pt fe
 
 open Locale
 
@@ -161,16 +161,34 @@ module OpenNucleus (X : Locale 𝓤 𝓥 𝓥) (σ : is-spectral (𝒪 X) holds)
  opn-perfect (K , κ) =
   characterisation-of-continuity (𝒪 X) (𝒪 X) σ (opn K) (opn-monotone K) γ
    where
+    open PosetReasoning (poset-of (𝒪 X))
 
     γ : continuity-condition (𝒪 X) (𝒪 X) (opn K) holds
-    γ K′ U κ p = ∣ (K ∧[ 𝒪 X ] K′) , κ′ , {!!} , {!!} ∣
+    γ K′ U κ p = ∣ (K ∧[ 𝒪 X ] K′) , κ′ , ♠ , ♥ ∣
      where
+      β : {!!}
+      β = {!!}
+
       δ : spectralᴰ (𝒪 X) → is-compact-open (𝒪 X) (K ∧[ 𝒪 X ] K′) holds
-      δ (ℬ , ψ) = {!!}
+      δ (ℬ , _ , φ , ψ , _) = ∥∥-rec₂ {!!} {!!} {!!} {!!}
 
       κ′ : is-compact-open (𝒪 X) (K ∧[ 𝒪 X ] K′) holds
       κ′ = ∥∥-rec
             (holds-is-prop (is-compact-open (𝒪 X) (K ∧[ 𝒪 X ] K′))) δ σ
+
+      ♠ : ((K ∧[ 𝒪 X ] K′) ≤[ poset-of (𝒪 X) ] U) holds
+      ♠ = K ∧[ 𝒪 X ] K′          ≤⟨ i  ⟩
+          K ∧[ 𝒪 X ] (K ==> U)   ≤⟨ ii ⟩
+          U                      ■
+           where
+            i  = ∧[ 𝒪 X ]-right-monotone p
+            ii = mp-left K U
+
+      ♣ : ((K′ ∧[ 𝒪 X ] K) ≤[ poset-of (𝒪 X) ] (K ∧[ 𝒪 X ] K′)) holds
+      ♣ = reflexivity+ (poset-of (𝒪 X)) (∧[ 𝒪 X ]-is-commutative K′ K)
+
+      ♥ : (K′ ≤[ poset-of (𝒪 X) ] opn K (K ∧[ 𝒪 X ] K′)) holds
+      ♥ = heyting-implication₁ K (K ∧[ 𝒪 X ] K′) K′ ♣
 
  opn-is-nucleus : (U : ⟨ 𝒪 X ⟩) → is-nucleus (𝒪 X) (opn U) holds
  opn-is-nucleus U = opn-is-inflationary U

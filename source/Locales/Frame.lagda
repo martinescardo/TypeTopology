@@ -585,6 +585,9 @@ map.
 𝟎[_] : (F : Frame 𝓤 𝓥 𝓦) → ⟨ F ⟩
 𝟎[ F ] = ⋁[ F ] 𝟘 , λ ()
 
+is-bottom : (F : Frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥)
+is-bottom F b = Ɐ x ∶ ⟨ F ⟩ , (b ≤[ poset-of F ] x)
+
 𝟎-is-bottom : (F : Frame 𝓤 𝓥 𝓦)
             → (x : ⟨ F ⟩) → (𝟎[ F ] ≤[ poset-of F ] x) holds
 𝟎-is-bottom F x = ⋁[ F ]-least (𝟘 , λ ()) (x , λ ())
