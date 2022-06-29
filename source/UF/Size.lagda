@@ -57,11 +57,18 @@ equivalent to a type in the universe 𝓥:
 
 \begin{code}
 
-_has-size_ : 𝓤 ̇ → (𝓥 : Universe) → 𝓥 ⁺  ⊔ 𝓤 ̇
-X has-size 𝓥 = Σ Y ꞉ 𝓥 ̇ , Y ≃ X
-
 _is_small : 𝓤 ̇ → (𝓥 : Universe) → 𝓥 ⁺  ⊔ 𝓤 ̇
-X is 𝓥 small = X has-size 𝓥
+X is 𝓥 small = Σ Y ꞉ 𝓥 ̇ , Y ≃ X
+
+\end{code}
+
+Obsolete notation used in some publications:
+
+\begin{code}
+
+private
+  _has-size_ : 𝓤 ̇ → (𝓥 : Universe) → 𝓥 ⁺  ⊔ 𝓤 ̇
+  X has-size 𝓥 = X is 𝓥 small
 
 \end{code}
 
@@ -132,7 +139,7 @@ excluded middle, which is consistent (with or without univalence):
 decidable-propositions-have-any-size : (P : 𝓤  ̇ )
                                      → is-prop P
                                      → decidable P
-                                     → P has-size 𝓥
+                                     → P is 𝓥 small
 decidable-propositions-have-any-size {𝓤} {𝓥} P i d = Q d , e d
  where
    Q : decidable P → 𝓥 ̇
@@ -684,8 +691,9 @@ Obsolete notation used in some publications:
 
 \begin{code}
 
-_Has-size_ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → (𝓦 : Universe) → 𝓤 ⊔ 𝓥 ⊔ (𝓦 ⁺) ̇
-f Has-size 𝓦 = f is 𝓦 small-map
+private
+ _Has-size_ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → (𝓦 : Universe) → 𝓤 ⊔ 𝓥 ⊔ (𝓦 ⁺) ̇
+ f Has-size 𝓦 = f is 𝓦 small-map
 
 \end{code}
 
