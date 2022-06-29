@@ -1600,9 +1600,9 @@ is equal to the empty type 𝟘, but not definitionally:
 
   Ω-non-trivial : ⊥' ≢ ⊤'
   Ω-non-trivial q = 𝟘-is-not-𝟙 r
-     where
-      r : 𝟘 ≡ 𝟙
-      r = (⊥-holds-is-𝟘)⁻¹ ∙ ap _holds q
+   where
+    r : 𝟘 ≡ 𝟙
+    r = (⊥-holds-is-𝟘)⁻¹ ∙ ap _holds q
 
 \end{code}
 

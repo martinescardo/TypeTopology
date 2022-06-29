@@ -142,25 +142,25 @@ decidable-propositions-have-any-size : (P : 𝓤  ̇ )
                                      → P is 𝓥 small
 decidable-propositions-have-any-size {𝓤} {𝓥} P i d = Q d , e d
  where
-   Q : decidable P → 𝓥 ̇
-   Q (inl p) = 𝟙
-   Q (inr n) = 𝟘
+  Q : decidable P → 𝓥 ̇
+  Q (inl p) = 𝟙
+  Q (inr n) = 𝟘
 
-   j : (d : decidable P) → is-prop (Q d)
-   j (inl p) = 𝟙-is-prop
-   j (inr n) = 𝟘-is-prop
+  j : (d : decidable P) → is-prop (Q d)
+  j (inl p) = 𝟙-is-prop
+  j (inr n) = 𝟘-is-prop
 
-   f : (d : decidable P) → P → Q d
-   f (inl p) p' = ⋆
-   f (inr n) p  = 𝟘-elim (n p)
+  f : (d : decidable P) → P → Q d
+  f (inl p) p' = ⋆
+  f (inr n) p  = 𝟘-elim (n p)
 
-   g : (d : decidable P) → Q d → P
-   g (inl p) q = p
-   g (inr n) q = 𝟘-elim q
+  g : (d : decidable P) → Q d → P
+  g (inl p) q = p
+  g (inr n) q = 𝟘-elim q
 
-   e : (d : decidable P) → Q d ≃ P
-   e d = logically-equivalent-props-are-equivalent
-          (j d) i (g d) (f d)
+  e : (d : decidable P) → Q d ≃ P
+  e d = logically-equivalent-props-are-equivalent
+         (j d) i (g d) (f d)
 
 EM-gives-PR : EM 𝓤 → propositional-resizing 𝓤 𝓥
 EM-gives-PR em P i = decidable-propositions-have-any-size P i (em P i)

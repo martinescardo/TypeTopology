@@ -129,19 +129,19 @@ open import UF.UA-FunExt
 open import UF.UniverseEmbedding
 open import UF.EquivalenceExamples
 
-𝓕-equiv : Univalence →  (X : 𝓤 ̇ ) → 𝓕 X ≃ (Σ A ꞉ (X → 𝓣 ⊔ 𝓤 ̇ ), (Σ A) has-size 𝓣)
+𝓕-equiv : Univalence →  (X : 𝓤 ̇ ) → 𝓕 X ≃ (Σ A ꞉ (X → 𝓣 ⊔ 𝓤 ̇ ), (Σ A) is 𝓣 small)
 𝓕-equiv {𝓤} ua X = qinveq φ (ψ , ψφ , φψ)
  where
   fe : FunExt
   fe = Univalence-gives-FunExt ua
 
-  φ : 𝓕 X → Σ A ꞉ (X → 𝓣 ⊔ 𝓤 ̇ ), (Σ A) has-size 𝓣
+  φ : 𝓕 X → Σ A ꞉ (X → 𝓣 ⊔ 𝓤 ̇ ), (Σ A) is 𝓣 small
   φ (I , φ) = fiber φ , I , ≃-sym (total-fiber-is-domain φ)
 
-  ψ : (Σ A ꞉ (X → 𝓣 ⊔ 𝓤 ̇ ), (Σ A) has-size 𝓣) → 𝓕 X
+  ψ : (Σ A ꞉ (X → 𝓣 ⊔ 𝓤 ̇ ), (Σ A) is 𝓣 small) → 𝓕 X
   ψ (A , I , (f , e)) = I , pr₁ ∘ f
 
-  φψ : (σ : Σ A ꞉ (X → 𝓣 ⊔ 𝓤 ̇ ), (Σ A) has-size 𝓣) → φ (ψ σ) ≡ σ
+  φψ : (σ : Σ A ꞉ (X → 𝓣 ⊔ 𝓤 ̇ ), (Σ A) is 𝓣 small) → φ (ψ σ) ≡ σ
   φψ (A , I , (f , e)) = p
    where
     h : (x : X) → fiber (pr₁ ∘ f) x ≃ A x

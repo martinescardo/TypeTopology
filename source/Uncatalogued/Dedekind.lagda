@@ -1371,7 +1371,7 @@ the type (x ≤ y) × (y ≤ x).
          (λ a → ×-is-prop (≤₀-is-prop-valued x y) (≤₀-is-prop-valued y x) (g (f a)) a) ,
          (λ b → ℝ-is-set (f (g b)) b))
 
-   γ : (x ≡ y) has-size 𝓤
+   γ : (x ≡ y) is 𝓤 small
    γ = ((x ≤ y) × (y ≤ x)) , e
 
 \end{code}

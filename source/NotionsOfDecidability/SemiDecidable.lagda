@@ -727,7 +727,7 @@ BKS⁺-gives-Propositional-Resizing : BKS⁺ 𝓤
 BKS⁺-gives-Propositional-Resizing bks X X-is-prop =
  ∥∥-rec (prop-being-small-is-prop (λ _ → pe) fe' X X-is-prop 𝓤₀) γ (bks X X-is-prop)
   where
-   γ : semidecidability-structure X → X has-size 𝓤₀
+   γ : semidecidability-structure X → X is 𝓤₀ small
    γ (α , e) = (∃ n ꞉ ℕ , α n ≡ ₁) , (≃-sym e)
 
 \end{code}

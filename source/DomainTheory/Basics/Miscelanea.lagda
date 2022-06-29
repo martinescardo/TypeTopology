@@ -387,7 +387,7 @@ relations.
 \begin{code}
 
 is-small : (X : 𝓤 ̇  ) → 𝓥 ⁺ ⊔ 𝓤 ̇
-is-small X = X has-size 𝓥
+is-small X = X is 𝓥 small
 
 small-binary-relation-equivalence : {X : 𝓤 ̇  } {Y : 𝓦 ̇  } {R : X → Y → 𝓣 ̇  }
                                   → ((x : X) (y : Y) → is-small (R x y))

@@ -386,7 +386,7 @@ FA/∾, which lives in the higher universe 𝓤⁺⁺.
  native-universe-of-free-group : universe-of ⟨ free-group A ⟩ ≡ 𝓤 ⁺⁺
  native-universe-of-free-group = refl
 
- resized-free-group-carrier : ⟨ free-group A ⟩ has-size 𝓤⁺
+ resized-free-group-carrier : ⟨ free-group A ⟩ is 𝓤⁺ small
  resized-free-group-carrier = γ
   where
    γ : Σ F ꞉ 𝓤⁺ ̇ , F ≃ ⟨ free-group A ⟩
@@ -439,7 +439,7 @@ suffices to prove it for elements of the form η/∾ s with s : FA.
 \begin{code}
 
  ηᴳʳᵖ-is-medium : ηᴳʳᵖ is 𝓤⁺ small-map
- ηᴳʳᵖ-is-medium = /-induction -∾- (λ y → fiber ηᴳʳᵖ y has-size 𝓤⁺)
+ ηᴳʳᵖ-is-medium = /-induction -∾- (λ y → fiber ηᴳʳᵖ y is 𝓤⁺ small)
                    (λ y → being-small-is-prop ua (fiber ηᴳʳᵖ y) 𝓤⁺) γ
   where
    e : (a : A) (s : FA) → (η/∾ (η a) ≡ η/∾ s) ≃ (η a ∥≏∥ s)
@@ -458,7 +458,7 @@ suffices to prove it for elements of the form η/∾ s with s : FA.
    d s = (Σ a ꞉ A , η/∾ (η a) ≡ η/∾ s) ≃⟨ Σ-cong (λ a → e a s) ⟩
          (Σ a ꞉ A , η a ∥≏∥ s)          ■
 
-   γ : (s : FA) → fiber ηᴳʳᵖ (η/∾ s) has-size 𝓤⁺
+   γ : (s : FA) → fiber ηᴳʳᵖ (η/∾ s) is 𝓤⁺ small
    γ s = (Σ a ꞉ A , η a ∥≏∥ s) , ≃-sym (d s)
     where
      notice : universe-of (fiber ηᴳʳᵖ (η/∾ s)) ≡ 𝓤⁺⁺
@@ -592,7 +592,7 @@ With this we can further reduce the size of the universal map ηᴳʳᵖ:
 \begin{code}
 
  ηᴳʳᵖ-is-small : ηᴳʳᵖ is 𝓤 small-map
- ηᴳʳᵖ-is-small = /-induction -∾- (λ y → fiber ηᴳʳᵖ y has-size 𝓤)
+ ηᴳʳᵖ-is-small = /-induction -∾- (λ y → fiber ηᴳʳᵖ y is 𝓤 small)
                   (λ y → being-small-is-prop ua (fiber ηᴳʳᵖ y) 𝓤) γ
   where
    e : (a : A) (s : FA) → (η/∾ (η a) ≡ η/∾ s) ≃ (η a ∾ s)
@@ -607,7 +607,7 @@ With this we can further reduce the size of the universal map ηᴳʳᵖ:
          (Σ a ꞉ A , η a ∾ s)           ≃⟨ ∾-fiber-η-lemma s ⟩
          is-generator s                ■
 
-   γ : (s : FA) → fiber ηᴳʳᵖ (η/∾ s) has-size 𝓤
+   γ : (s : FA) → fiber ηᴳʳᵖ (η/∾ s) is 𝓤 small
    γ s = is-generator s , ≃-sym (d s)
 
 \end{code}
@@ -619,8 +619,8 @@ if also its codomain has size 𝓥, then so does its domain.
 
 \begin{code}
 
- free-group-small-gives-generating-set-small : ⟨ free-group A ⟩ has-size 𝓤
-                                             → A has-size 𝓤
+ free-group-small-gives-generating-set-small : ⟨ free-group A ⟩ is 𝓤 small
+                                             → A is 𝓤 small
  free-group-small-gives-generating-set-small h = size-contravariance ηᴳʳᵖ ηᴳʳᵖ-is-small h
 
 
@@ -648,7 +648,7 @@ large-group-with-no-small-copy {𝓤} (A , A-is-set , A-is-large , A-ls) = δ
     β : (G : Group 𝓤) → G ≅ F → 𝟘
     β G (g , g-is-equiv , g-is-hom) = α
      where
-      h : ⟨ free-group A ⟩ has-size 𝓤
+      h : ⟨ free-group A ⟩ is 𝓤 small
       h = ⟨ G ⟩ , f ∘ g , ∘-is-equiv g-is-equiv f-is-equiv
 
       α : 𝟘
