@@ -403,32 +403,32 @@ generalize to get closure of compact types under Σ.
 
 module warmup {𝓤} {𝓥} {R : 𝓥 ̇ } where
 
-  quantifier : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
-  quantifier X = (X → R) → R
+ quantifier : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
+ quantifier X = (X → R) → R
 
-  quant-prod : {X : 𝓤 ̇ } {Y : X → 𝓤 ̇ }
-             → quantifier X
-             → ((x : X)  → quantifier (Y x))
-             → quantifier (Σ Y)
-  quant-prod φ γ p = φ (λ x → γ x (λ y → p (x , y)))
+ quant-prod : {X : 𝓤 ̇ } {Y : X → 𝓤 ̇ }
+            → quantifier X
+            → ((x : X)  → quantifier (Y x))
+            → quantifier (Σ Y)
+ quant-prod φ γ p = φ (λ x → γ x (λ y → p (x , y)))
 
-  selection : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
-  selection X = (X → R) → X
+ selection : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
+ selection X = (X → R) → X
 
-  sel-prod : {X : 𝓤 ̇ } {Y : X → 𝓤 ̇ }
-           → selection X
-           → ((x : X) → selection (Y x))
-           → selection (Σ Y)
-  sel-prod {X} {Y} ε δ p = (x₀ , y₀)
-    where
-     next : (x : X) → Y x
-     next x = δ x (λ y → p (x , y))
+ sel-prod : {X : 𝓤 ̇ } {Y : X → 𝓤 ̇ }
+          → selection X
+          → ((x : X) → selection (Y x))
+          → selection (Σ Y)
+ sel-prod {X} {Y} ε δ p = (x₀ , y₀)
+   where
+    next : (x : X) → Y x
+    next x = δ x (λ y → p (x , y))
 
-     x₀ : X
-     x₀ = ε (λ x → p (x , next x))
+    x₀ : X
+    x₀ = ε (λ x → p (x , next x))
 
-     y₀ : Y x₀
-     y₀ = next x₀
+    y₀ : Y x₀
+    y₀ = next x₀
 
 \end{code}
 
@@ -436,20 +436,20 @@ module warmup {𝓤} {𝓥} {R : 𝓥 ̇ } where
 
 \begin{code}
 
-  overline : {X : 𝓤 ̇ } → selection X → quantifier X
-  overline ε p = p (ε p)
+ overline : {X : 𝓤 ̇ } → selection X → quantifier X
+ overline ε p = p (ε p)
 
-  sel-prod' : {X : 𝓤 ̇ } {Y : X → 𝓤 ̇ }
-            → selection X
-            → ((x : X) → selection (Y x))
-            → selection (Σ Y)
-  sel-prod' {X} {Y} ε δ p = (x₀ , y₀)
-   where
-    x₀ : X
-    x₀ = ε (λ x → overline (δ x) (λ y → p (x , y)))
+ sel-prod' : {X : 𝓤 ̇ } {Y : X → 𝓤 ̇ }
+           → selection X
+           → ((x : X) → selection (Y x))
+           → selection (Σ Y)
+ sel-prod' {X} {Y} ε δ p = (x₀ , y₀)
+  where
+   x₀ : X
+   x₀ = ε (λ x → overline (δ x) (λ y → p (x , y)))
 
-    y₀ : Y x₀
-    y₀ = δ x₀ (λ y → p (x₀ , y))
+   y₀ : Y x₀
+   y₀ = δ x₀ (λ y → p (x₀ , y))
 
 \end{code}
 
