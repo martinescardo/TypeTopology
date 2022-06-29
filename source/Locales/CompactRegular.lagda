@@ -839,10 +839,9 @@ convenience.
 
 spectralᴰ : Frame 𝓤 𝓥 𝓦 → (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺) ̇
 spectralᴰ {𝓤 = 𝓤} {𝓥} {𝓦} F =
- Σ ℬ ꞉ Fam 𝓦 ⟨ F ⟩ , is-basis-for F ℬ
+ Σ ℬ ꞉ Fam 𝓦 ⟨ F ⟩ , is-directed-basis F ℬ
                    × consists-of-compact-opens F ℬ holds
                    × closed-under-finite-meets F ℬ holds
-                   × closed-under-finite-joins F ℬ holds
 
 basisₛ : (F : Frame 𝓤 𝓥 𝓦) → spectralᴰ F → Fam 𝓦 ⟨ F ⟩
 basisₛ F (ℬ , _) = ℬ
@@ -855,7 +854,7 @@ spectral-frames-have-bases : (F : Frame 𝓤 𝓥 𝓦)
 spectral-frames-have-bases F σ = ∥∥-rec ∥∥-is-prop γ σ
  where
   γ : spectralᴰ F → ∥ Σ ℬ ꞉ Fam _ ⟨ F ⟩ , is-basis-for F ℬ ∥
-  γ (ℬ , p) = ∣ ℬ , pr₁ p ∣
+  γ (ℬ , p) = ∣ ℬ , pr₁ (pr₁ p) ∣
 
 finite-meet : (F : Frame 𝓤 𝓥 𝓦) → (ℬ : Fam 𝓦 ⟨ F ⟩) → List (index ℬ) → ⟨ F ⟩
 finite-meet F ℬ []       = 𝟏[ F ]
@@ -1005,10 +1004,10 @@ spectral-yoneda {𝓦 = 𝓦} F σ U V χ =
     V                            ■
     where
      ℐ : Fam 𝓦 (index ℬ)
-     ℐ = pr₁ (υ U)
+     ℐ = covering-index-family F ℬ (pr₁ υ) U
 
      I : U ≡ ⋁[ F ] ⁅ ℬ [ i ] ∣ i ε ℐ ⁆
-     I = ⋁[ F ]-unique ⁅ ℬ [ i ] ∣ i ε ℐ ⁆ U (pr₂ (υ U))
+     I = ⋁[ F ]-unique ⁅ ℬ [ i ] ∣ i ε ℐ ⁆ U (pr₂ (pr₁ υ U))
 
      ϑ : (i : index ℐ) → ((ℬ [ ℐ [ i ] ]) ≤[ poset-of F ] U) holds
      ϑ i = ℬ [ ℐ [ i ] ]               ≤⟨ ⋁[ F ]-upper ⁅ ℬ [ i ] ∣ i ε ℐ ⁆ i ⟩

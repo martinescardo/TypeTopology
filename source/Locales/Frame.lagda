@@ -1286,11 +1286,18 @@ family is directed.
 
 \begin{code}
 
+is-directed-basis : (F : Frame 𝓤 𝓥 𝓦) (ℬ : Fam 𝓦 ⟨ F ⟩)
+                  → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺ ̇
+is-directed-basis {𝓦 = 𝓦} F ℬ =
+ Σ b ꞉ is-basis-for F ℬ ,
+  Π x ꞉ ⟨ F ⟩ , let
+                 𝒥 = covering-index-family F ℬ b x
+                in
+                 is-directed F ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆ holds
+
 has-directed-basis₀ : (F : Frame 𝓤 𝓥 𝓦) → (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺) ̇
 has-directed-basis₀ {𝓦 = 𝓦} F =
- Σ ℬ ꞉ Fam 𝓦 ⟨ F ⟩ ,
-  Σ b ꞉ is-basis-for F ℬ ,
-   Π x ꞉ ⟨ F ⟩ , is-directed F (⁅ ℬ [ i ] ∣ i ε pr₁ (b x) ⁆) holds
+ Σ ℬ ꞉ Fam 𝓦 ⟨ F ⟩ , is-directed-basis F ℬ
 
 has-directed-basis : (F : Frame 𝓤 𝓥 𝓦) → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
 has-directed-basis {𝓦 = 𝓦} F = ∥ has-directed-basis₀ F ∥Ω
