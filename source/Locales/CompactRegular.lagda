@@ -1033,10 +1033,39 @@ compacts-are-basic-in-spectralᴰ-frames : (F : Frame 𝓤 𝓥 𝓦)
                                           I  = index ℬ
                                          in
                                           ∥ Σ i ꞉ I , U ≡ ℬ [ i ] ∥
-compacts-are-basic-in-spectralᴰ-frames {𝓦 = 𝓦} F (_ , β , _) U κ =
- {!!}
+compacts-are-basic-in-spectralᴰ-frames {𝓦 = 𝓦} F σ@(_ , β , _) U κ =
+ ∥∥-rec ∥∥-is-prop γ (κ ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆ d p₁)
   where
-   S = pr₁ (β U)
+   open PosetReasoning (poset-of F)
+
+   ℬ = basisₛ F σ
+
+   𝒥 : Fam 𝓦 (index ℬ)
+   𝒥 = pr₁ (pr₁ β U)
+
+   p : U ≡ ⋁[ F ] ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆
+   p = covers F ℬ (pr₁ β) U
+
+   p₁ : (U ≤[ poset-of F ] (⋁[ F ] ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆)) holds
+   p₁ = reflexivity+ (poset-of F) p
+
+   p₂ : ((⋁[ F ] ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆) ≤[ poset-of F ] U) holds
+   p₂ = reflexivity+ (poset-of F) (p ⁻¹)
+
+   d : is-directed (poset-of F) ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆ holds
+   d = pr₂ β U
+
+   γ : Σ k ꞉ index 𝒥 , (U ≤[ poset-of F ] (ℬ [ 𝒥 [ k ] ])) holds
+     → ∥ Σ i ꞉ index ℬ , U ≡ ℬ [ i ] ∥
+   γ (k , q) = ∣ 𝒥 [ k ] , ≤-is-antisymmetric (poset-of F) δ ϵ ∣
+    where
+     δ : (U ≤[ poset-of F ] (ℬ [ 𝒥 [ k ] ])) holds
+     δ = q
+
+     ϵ : ((ℬ [ 𝒥 [ k ] ]) ≤[ poset-of F ] U) holds
+     ϵ = ℬ [ 𝒥 [ k ] ]                ≤⟨ ⋁[ F ]-upper ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆ k ⟩
+         ⋁[ F ] ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆   ≤⟨ p₂                                 ⟩
+         U                            ■
 
 -- compacts-closed-under-∧-in-spectral-frames : (F : Frame 𝓤 𝓥 𝓦)
 --                                            → is-spectral F holds
