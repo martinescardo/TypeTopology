@@ -7,7 +7,7 @@ propositions are decidable).
 
 The definition of compactness (or exhaustive searchability) is
 
-    compact∙ A = (p : A → 𝟚) → Σ a₀ ꞉ A , p a₀ ≡ ₁ → (a : A) → p a ≡ ₁
+    compact∙ A = (p : A → 𝟚) → Σ a₀ ꞉ A , p a₀ ＝ ₁ → (a : A) → p a ＝ ₁
 
 With excluded middle for propositions, the above claim is not
 surprising, because
@@ -70,7 +70,7 @@ With this observation, the following proof should be self-contained,
 if we recall again the definition of compact set from the module
 CompacTypes:
 
-    compact∙ A = (p : A → 𝟚) → Σ a₀ ꞉ A , p a₀ ≡ ₁ → (a : A) → p a ≡ ₁
+    compact∙ A = (p : A → 𝟚) → Σ a₀ ꞉ A , p a₀ ＝ ₁ → (a : A) → p a ＝ ₁
 
 Recall also that such an a₀ is called a universal witness for the predicate p.
 
@@ -82,8 +82,8 @@ prop-tychonoff : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
                → compact∙ (Π Y)
 prop-tychonoff {𝓤} {𝓥} {X} {Y} X-is-prop ε p = γ
  where
-  have : (type-of ε ≡ ((x : X) → compact∙(Y x)))
-       × (type-of p ≡ (Π Y → 𝟚))
+  have : (type-of ε ＝ ((x : X) → compact∙(Y x)))
+       × (type-of p ＝ (Π Y → 𝟚))
   have = refl , refl
 
   hip : (x : X) → Π Y ≃ Y x
@@ -116,7 +116,7 @@ The following is what we get from prop-indexed-product, abstractly:
   h : (x : X) → Y x → Π Y
   h x = pr₁ (hrf x)
 
-  hf : (x : X) (φ : Π Y) → h x (f x φ) ≡ φ
+  hf : (x : X) (φ : Π Y) → h x (f x φ) ＝ φ
   hf x = pr₂ (hrf x)
 
 \end{code}
@@ -145,7 +145,7 @@ By hypothesis, it satisfies:
 
 \begin{code}
 
-  φ₀-spec : (x : X) → q x (φ₀ x) ≡ ₁ → (y : Y x) → q x y ≡ ₁
+  φ₀-spec : (x : X) → q x (φ₀ x) ＝ ₁ → (y : Y x) → q x y ＝ ₁
   φ₀-spec x = pr₂ (ε x (q x))
 
 \end{code}
@@ -154,7 +154,7 @@ By expanding the definitions, this amounts to:
 
 \begin{code}
 
-  φ₀-spec₀ : (x : X) → p (h x (φ₀ x)) ≡ ₁ → (y : Y x) → p (h x y) ≡ ₁
+  φ₀-spec₀ : (x : X) → p (h x (φ₀ x)) ＝ ₁ → (y : Y x) → p (h x y) ＝ ₁
   φ₀-spec₀ = φ₀-spec
 
 \end{code}
@@ -163,7 +163,7 @@ By the definition of f in prop-indexed-product (namely f x φ = φ x):
 
 \begin{code}
 
-  φ₀-spec₁ : (x : X) → p (h x (f x φ₀)) ≡ ₁ → (y : Y x) → p (h x y) ≡ ₁
+  φ₀-spec₁ : (x : X) → p (h x (f x φ₀)) ＝ ₁ → (y : Y x) → p (h x y) ＝ ₁
   φ₀-spec₁ = φ₀-spec₀
 
 \end{code}
@@ -176,8 +176,8 @@ In particular, with y = f x φ, we get:
 \begin{code}
 
   φ₀-spec₁-particular-case : (x : X)
-                           → p (h x (f x φ₀)) ≡ ₁
-                           → (φ : Π Y) → p (h x (f x φ)) ≡ ₁
+                           → p (h x (f x φ₀)) ＝ ₁
+                           → (φ : Π Y) → p (h x (f x φ)) ＝ ₁
   φ₀-spec₁-particular-case x r φ = φ₀-spec₁ x r (f x φ)
 
 \end{code}
@@ -186,14 +186,14 @@ Using the fact that g x (f x φ) = φ for any x:X, we get:
 
 \begin{code}
 
-  φ₀-is-universal-witness-assuming-X : X → p φ₀ ≡ ₁ → (φ : Π Y) → p φ ≡ ₁
+  φ₀-is-universal-witness-assuming-X : X → p φ₀ ＝ ₁ → (φ : Π Y) → p φ ＝ ₁
   φ₀-is-universal-witness-assuming-X x r φ =
-     p φ             ≡⟨ ap p ((hf x φ)⁻¹) ⟩
-     p (h x (f x φ)) ≡⟨ φ₀-spec₁-particular-case x s φ ⟩
+     p φ             ＝⟨ ap p ((hf x φ)⁻¹) ⟩
+     p (h x (f x φ)) ＝⟨ φ₀-spec₁-particular-case x s φ ⟩
      ₁               ∎
    where
-    s = p (h x (f x φ₀)) ≡⟨ ap p (hf x φ₀) ⟩
-        p φ₀             ≡⟨ r ⟩
+    s = p (h x (f x φ₀)) ＝⟨ ap p (hf x φ₀) ⟩
+        p φ₀             ＝⟨ r ⟩
         ₁                ∎
 
 \end{code}
@@ -206,13 +206,13 @@ We get the same conclusion if X is empty:
 
 \begin{code}
 
-  φ₀-is-universal-witness-assuming-X→𝟘 : (X → 𝟘) → p φ₀ ≡ ₁ → (φ : Π Y) → p φ ≡ ₁
-  φ₀-is-universal-witness-assuming-X→𝟘 u r φ = p φ  ≡⟨ ap p claim ⟩
-                                               p φ₀ ≡⟨ r ⟩
+  φ₀-is-universal-witness-assuming-X→𝟘 : (X → 𝟘) → p φ₀ ＝ ₁ → (φ : Π Y) → p φ ＝ ₁
+  φ₀-is-universal-witness-assuming-X→𝟘 u r φ = p φ  ＝⟨ ap p claim ⟩
+                                               p φ₀ ＝⟨ r ⟩
                                                ₁    ∎
 
    where
-    claim : φ ≡ φ₀
+    claim : φ ＝ φ₀
     claim = dfunext (fe 𝓤 𝓥) (λ x → unique-from-𝟘 (u x))
 \end{code}
 
@@ -224,18 +224,18 @@ needed.
 We shuffle the arguments of φ₀-is-universal-witness-assuming-X:
 
 \begin{code}
-  claim₀ : p φ₀ ≡ ₁ → (φ : Π Y) → X → p φ ≡ ₁
+  claim₀ : p φ₀ ＝ ₁ → (φ : Π Y) → X → p φ ＝ ₁
   claim₀ r φ x = φ₀-is-universal-witness-assuming-X x r φ
 
 \end{code}
 
-We then take the contrapositive of the conclusion X → p φ ≡ ₁, and
+We then take the contrapositive of the conclusion X → p φ ＝ ₁, and
 use the fact that if a point of the two-point type 𝟚 is ₀, then it is
 not ₁:
 
 \begin{code}
 
-  Claim₁ : p φ₀ ≡ ₁ → (φ : Π Y) → p φ ≡ ₀ → (X → 𝟘)
+  Claim₁ : p φ₀ ＝ ₁ → (φ : Π Y) → p φ ＝ ₀ → (X → 𝟘)
   Claim₁ r φ = contrapositive(claim₀ r φ) ∘ equal-₀-different-from-₁
 
 \end{code}
@@ -246,7 +246,7 @@ We now shuffle the arguments of φ₀-is-universal-witness-assuming-X→𝟘:
 
 \begin{code}
 
-  Claim₂ : p φ₀ ≡ ₁ → (φ : Π Y) → (X → 𝟘) → p φ ≡ ₁
+  Claim₂ : p φ₀ ＝ ₁ → (φ : Π Y) → (X → 𝟘) → p φ ＝ ₁
   Claim₂ r φ u = φ₀-is-universal-witness-assuming-X→𝟘 u r φ
 
 \end{code}
@@ -255,7 +255,7 @@ Combining the two last claims, we get:
 
 \begin{code}
 
-  Claim₃ : p φ₀ ≡ ₁ → (φ : Π Y) → p φ ≡ ₀ → p φ ≡ ₁
+  Claim₃ : p φ₀ ＝ ₁ → (φ : Π Y) → p φ ＝ ₀ → p φ ＝ ₁
   Claim₃ r φ = Claim₂ r φ ∘ Claim₁ r φ
 
 \end{code}
@@ -264,10 +264,10 @@ Finally, we do case analysis on the value of p φ:
 
 \begin{code}
 
-  φ₀-is-universal-witness : p φ₀ ≡ ₁ → (φ : Π Y) → p φ ≡ ₁
+  φ₀-is-universal-witness : p φ₀ ＝ ₁ → (φ : Π Y) → p φ ＝ ₁
   φ₀-is-universal-witness r φ = 𝟚-equality-cases (Claim₃ r φ) id
 
-  γ : Σ φ₀ ꞉ Π Y , (p φ₀ ≡ ₁ → (φ : Π Y) → p φ ≡ ₁)
+  γ : Σ φ₀ ꞉ Π Y , (p φ₀ ＝ ₁ → (φ : Π Y) → p φ ＝ ₁)
   γ = φ₀ , φ₀-is-universal-witness
 
 \end{code}

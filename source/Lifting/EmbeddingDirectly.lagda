@@ -43,12 +43,12 @@ of which is actually an equivalence).
 
 η-composite : funext 𝓣 𝓣
             → funext 𝓤 (𝓣 ⁺ ⊔ 𝓤)
-            → {X : 𝓤 ̇ } → η ≡ 𝓚→𝓛 X ∘ κ
+            → {X : 𝓤 ̇ } → η ＝ 𝓚→𝓛 X ∘ κ
 η-composite fe fe' {X} = dfunext fe' h
  where
   h : (x : X) → (𝟙 , (λ _ → x) , 𝟙-is-prop)
-              ≡ (𝟙 , (λ _ → x) , singletons-are-props (𝟙-is-singleton))
-  h x = to-Σ-≡ (refl , to-×-≡ refl (being-prop-is-prop fe _ _))
+              ＝ (𝟙 , (λ _ → x) , singletons-are-props (𝟙-is-singleton))
+  h x = to-Σ-＝ (refl , to-×-＝ refl (being-prop-is-prop fe _ _))
 
 \end{code}
 
@@ -92,30 +92,30 @@ itself.
  where
   ρ : {X : 𝓤 ̇ } → 𝓚 X → X
   ρ (P , φ , i) = φ (center i)
-  ρκ : {X : 𝓤 ̇ } (x : X) → ρ (κ x) ≡ x
+  ρκ : {X : 𝓤 ̇ } (x : X) → ρ (κ x) ＝ x
   ρκ x = refl
-  κρ : (m : 𝓚 X) → κ (ρ m) ≡ m
+  κρ : (m : 𝓚 X) → κ (ρ m) ＝ m
   κρ (P , φ , i) = u
    where
-    t : 𝟙 ≡ P
+    t : 𝟙 ＝ P
     t = pe 𝟙-is-prop (singletons-are-props i)
                      (λ _ → center i)
                      unique-to-𝟙
-    s : (t : 𝟙 ≡ P)
+    s : (t : 𝟙 ＝ P)
       → transport (λ - → (- → X) × is-singleton -)
                   t ((λ _ → φ (center i)),
         𝟙-is-singleton)
-      ≡ φ , i
-    s refl = to-×-≡ a b
+      ＝ φ , i
+    s refl = to-×-＝ a b
      where
-      a : (λ x → φ (center i)) ≡ φ
+      a : (λ x → φ (center i)) ＝ φ
       a = dfunext fe' (λ x → ap φ (𝟙-is-prop (center i) x))
-      b : 𝟙-is-singleton ≡ i
+      b : 𝟙-is-singleton ＝ i
       b = (singletons-are-props (pointed-props-are-singletons
                                    𝟙-is-singleton (being-singleton-is-prop fe))
                                  𝟙-is-singleton i)
-    u : 𝟙 , (λ _ → φ (center i)) , 𝟙-is-singleton ≡ P , φ , i
-    u = to-Σ-≡ (t , s t)
+    u : 𝟙 , (λ _ → φ (center i)) , 𝟙-is-singleton ＝ P , φ , i
+    u = to-Σ-＝ (t , s t)
 
 κ-is-embedding : propext 𝓣 → funext 𝓣 𝓣 → funext 𝓣 𝓤
                → {X : 𝓤 ̇ } → is-embedding (κ {𝓤} {X})

@@ -35,7 +35,7 @@ open import UF.Miscelanea
 open import UF.FunExt
 
 designated-fixed-point-property : 𝓤 ̇ → 𝓤 ̇
-designated-fixed-point-property X = (f : X → X) → Σ x ꞉ X , x ≡ f x
+designated-fixed-point-property X = (f : X → X) → Σ x ꞉ X , x ＝ f x
 
 module retract-version where
 
@@ -52,7 +52,7 @@ that r has a pointwise section).
 \begin{code}
 
  has-section· : {A : 𝓤 ̇ } {X : 𝓥 ̇ } → (A → (A → X)) → 𝓤 ⊔ 𝓥 ̇
- has-section· r = Σ s ꞉ (codomain r → domain r) , ∀ g a → r (s g) a ≡ g a
+ has-section· r = Σ s ꞉ (codomain r → domain r) , ∀ g a → r (s g) a ＝ g a
 
  section-gives-section· : {A : 𝓤 ̇ }
                           {X : 𝓥 ̇ }
@@ -85,10 +85,10 @@ that r has a pointwise section).
    x : X
    x = r a a
 
-   p : x ≡ f x
-   p = x         ≡⟨ refl ⟩
-       r (s g) a ≡⟨ rs g a ⟩
-       g a       ≡⟨ refl ⟩
+   p : x ＝ f x
+   p = x         ＝⟨ refl ⟩
+       r (s g) a ＝⟨ rs g a ⟩
+       g a       ＝⟨ refl ⟩
        f x       ∎
 
  LFPT : {A : 𝓤 ̇ }
@@ -103,10 +103,10 @@ that r has a pointwise section).
         → designated-fixed-point-property X
  LFPT-≃ p = LFPT (≃-gives-▷ p)
 
- LFPT-≡ : {A : 𝓤 ⊔ 𝓥 ̇ } {X : 𝓤 ̇ }
-        → A ≡ (A → X)
+ LFPT-＝ : {A : 𝓤 ⊔ 𝓥 ̇ } {X : 𝓤 ̇ }
+        → A ＝ (A → X)
         → designated-fixed-point-property X
- LFPT-≡ p = LFPT (Id-retract-r p)
+ LFPT-＝ p = LFPT (Id-retract-r p)
 
  \end{code}
 
@@ -114,17 +114,17 @@ As a simple application, it follows that negation doesn't have fixed points:
 
  \begin{code}
 
- ¬-no-fp : ¬ (Σ X ꞉ 𝓤 ̇ , X ≡ ¬ X)
+ ¬-no-fp : ¬ (Σ X ꞉ 𝓤 ̇ , X ＝ ¬ X)
  ¬-no-fp {𝓤} (X , p) = pr₁ (γ id)
   where
    γ : designated-fixed-point-property 𝟘
-   γ = LFPT-≡ p
+   γ = LFPT-＝ p
 
  \end{code}
 
  We apply LFPT twice to get the following: first every function
  𝓤 ̇ → 𝓤 ̇ has a fixed point, from which for any type X we get a type B
- with B ≡ (B → X), and hence with (B → X) a retract of B, for which we
+ with B ＝ (B → X), and hence with (B → X) a retract of B, for which we
  apply LFPT again to get that every X → X has a fixed point.
 
  \begin{code}
@@ -133,12 +133,12 @@ As a simple application, it follows that negation doesn't have fixed points:
                                 (r : A → (A → 𝓤 ̇ ))
                               → has-section· r
                               → (X : 𝓤 ̇ ) → designated-fixed-point-property X
- cantor-theorem-for-universes {𝓥} {𝓤} A r h X = LFPT-≡ {𝓤} {𝓤} p
+ cantor-theorem-for-universes {𝓥} {𝓤} A r h X = LFPT-＝ {𝓤} {𝓤} p
   where
    B : 𝓤 ̇
    B = pr₁ (LFPT· r h (λ B → B → X))
 
-   p : B ≡ (B → X)
+   p : B ＝ (B → X)
    p = pr₂ (LFPT· r h (λ B → B → X))
 
  \end{code}
@@ -174,10 +174,10 @@ As a simple application, it follows that negation doesn't have fixed points:
  open import UF.Subsingletons
  open import UF.Subsingletons-FunExt
 
- not-no-fp : (fe : funext 𝓤 𝓤₀) → ¬ (Σ P ꞉ Ω 𝓤 , P ≡ not fe P)
+ not-no-fp : (fe : funext 𝓤 𝓤₀) → ¬ (Σ P ꞉ Ω 𝓤 , P ＝ not fe P)
  not-no-fp {𝓤} fe (P , p) = ¬-no-fp (P holds , q)
   where
-   q : P holds ≡ ¬ (P holds)
+   q : P holds ＝ ¬ (P holds)
    q = ap _holds p
 
  cantor-theorem : funext 𝓤 𝓤₀
@@ -186,7 +186,7 @@ As a simple application, it follows that negation doesn't have fixed points:
                 → ¬ has-section· r
  cantor-theorem {𝓤} fe A r (s , rs) = not-no-fp fe not-fp
   where
-   not-fp : Σ B ꞉ Ω 𝓤 , B ≡ not fe B
+   not-fp : Σ B ꞉ Ω 𝓤 , B ＝ not fe B
    not-fp = LFPT· r (s , rs) (not fe)
 
 \end{code}
@@ -209,7 +209,7 @@ module surjection-version (pt : propositional-truncations-exist) where
  open ImageAndSurjection pt
 
  existential-fixed-point-property : 𝓤 ̇ → 𝓤 ̇
- existential-fixed-point-property X = (f : X → X) → ∃ x ꞉ X , x ≡ f x
+ existential-fixed-point-property X = (f : X → X) → ∃ x ꞉ X , x ＝ f x
 
 
  LFPT : {A : 𝓤 ̇ } {X : 𝓥 ̇ } (φ : A → (A → X))
@@ -220,19 +220,19 @@ module surjection-version (pt : propositional-truncations-exist) where
    g : A → X
    g a = f (φ a a)
 
-   e : ∃ a ꞉ A , φ a ≡ g
+   e : ∃ a ꞉ A , φ a ＝ g
    e = s g
 
-   γ : (Σ a ꞉ A , φ a ≡ g) → Σ x ꞉ X , x ≡ f x
+   γ : (Σ a ꞉ A , φ a ＝ g) → Σ x ꞉ X , x ＝ f x
    γ (a , q) = x , p
     where
      x : X
      x = φ a a
 
-     p : x ≡ f x
-     p = x         ≡⟨ refl ⟩
-         φ a a     ≡⟨ ap (λ - → - a) q ⟩
-         g a       ≡⟨ refl ⟩
+     p : x ＝ f x
+     p = x         ＝⟨ refl ⟩
+         φ a a     ＝⟨ ap (λ - → - a) q ⟩
+         g a       ＝⟨ refl ⟩
          f x       ∎
 
 \end{code}
@@ -253,18 +253,18 @@ module surjection-version (pt : propositional-truncations-exist) where
                               → (X : 𝓤 ̇ ) → existential-fixed-point-property X
  cantor-theorem-for-universes {𝓥} {𝓤} A φ s X f = ∥∥-functor g t
   where
-   t : ∃ B ꞉ 𝓤 ̇  , B ≡ (B → X)
+   t : ∃ B ꞉ 𝓤 ̇  , B ＝ (B → X)
    t = LFPT φ s (λ B → B → X)
 
-   g : (Σ B ꞉ 𝓤 ̇ , B ≡ (B → X)) → Σ x ꞉ X , x ≡ f x
-   g (B , p) = retract-version.LFPT-≡ {𝓤} {𝓤} p f
+   g : (Σ B ꞉ 𝓤 ̇ , B ＝ (B → X)) → Σ x ꞉ X , x ＝ f x
+   g (B , p) = retract-version.LFPT-＝ {𝓤} {𝓤} p f
 
  Cantor-theorem-for-universes : (A : 𝓥 ̇ )
                               → (φ : A → (A → 𝓤 ̇ ))
                               → ¬ is-surjection φ
  Cantor-theorem-for-universes A r h = γ
   where
-   c : ∃ x ꞉ 𝟘 , x ≡ x
+   c : ∃ x ꞉ 𝟘 , x ＝ x
    c = cantor-theorem-for-universes A r h 𝟘 id
 
    γ : 𝟘
@@ -276,7 +276,7 @@ module surjection-version (pt : propositional-truncations-exist) where
                 → ¬ is-surjection φ
  cantor-theorem {𝓤} {𝓥} fe A φ s = γ
   where
-   t : ∃ B ꞉ Ω 𝓤 , B ≡ not fe B
+   t : ∃ B ꞉ Ω 𝓤 , B ＝ not fe B
    t = LFPT φ s (not fe)
 
    γ : 𝟘
@@ -294,7 +294,7 @@ module surjection-version (pt : propositional-truncations-exist) where
  cantor-uncountable : ¬ (Σ φ ꞉ (ℕ → (ℕ → 𝟚)), is-surjection φ)
  cantor-uncountable (φ , s) = γ
   where
-   t : ∃ n ꞉ 𝟚 , n ≡ complement n
+   t : ∃ n ꞉ 𝟚 , n ＝ complement n
    t = LFPT φ s complement
 
    γ : 𝟘
@@ -303,7 +303,7 @@ module surjection-version (pt : propositional-truncations-exist) where
  baire-uncountable : ¬ (Σ φ ꞉ (ℕ → (ℕ → ℕ)), is-surjection φ)
  baire-uncountable (φ , s) = ∥∥-rec 𝟘-is-prop (uncurry succ-no-fp) t
   where
-   t : ∃ n ꞉ ℕ , n ≡ succ n
+   t : ∃ n ꞉ ℕ , n ＝ succ n
    t = LFPT φ s succ
 
 \end{code}
@@ -332,13 +332,13 @@ module Blechschmidt (pt : propositional-truncations-exist) where
   where
    s : Y x₀ → Π Y
    s y x = Cases (i x)
-            (λ (p : x₀ ≡ x) → transport Y p y)
+            (λ (p : x₀ ＝ x) → transport Y p y)
             (λ (_ : x₀ ≢ x) → g x)
 
-   rs : (y : Y x₀) → s y x₀ ≡ y
+   rs : (y : Y x₀) → s y x₀ ＝ y
    rs y = ap (λ - → Cases - _ _) a
     where
-     a : i x₀ ≡ inl refl
+     a : i x₀ ＝ inl refl
      a = isolated-inl x₀ i x₀ refl
 
  udr-lemma : {A : 𝓤 ̇ } (X : A → 𝓥 ̇ ) (B : 𝓦 ̇ )
@@ -399,10 +399,10 @@ module Blechschmidt (pt : propositional-truncations-exist) where
    φ : ∀ a → X a ≢ B
    φ = pr₂ (universe-discretely-regular {𝓤} {𝓥} {A} X d)
 
-   e : ∃ a ꞉ A , X a ≡ B
+   e : ∃ a ꞉ A , X a ＝ B
    e = s B
 
-   n : ¬ (Σ a ꞉ A , X a ≡ B)
+   n : ¬ (Σ a ꞉ A , X a ＝ B)
    n = uncurry φ
 
  Universe-uncountable : {𝓤 : Universe} → ¬ (Σ X ꞉ (ℕ → 𝓤 ̇ ), is-surjection X)
@@ -432,28 +432,28 @@ module Blechschmidt' (pt : propositional-truncations-exist) where
  Π-projection-has-section {𝓥} {𝓤} {𝓦} fe fe' pe {A} {X} a₀ ish = s , rs
   where
    s : (X a₀ → Ω (𝓤 ⊔ 𝓦)) → ((a : A) → X a → Ω (𝓤 ⊔ 𝓦))
-   s φ a x = (∃ p ꞉ a ≡ a₀ , φ (transport X p x) holds) , ∥∥-is-prop
+   s φ a x = (∃ p ꞉ a ＝ a₀ , φ (transport X p x) holds) , ∥∥-is-prop
 
-   rs : (φ : X a₀ → Ω (𝓤 ⊔ 𝓦)) → s φ a₀ ≡ φ
+   rs : (φ : X a₀ → Ω (𝓤 ⊔ 𝓦)) → s φ a₀ ＝ φ
    rs φ = dfunext fe γ
     where
-     a : (x₀ : X a₀) → (∃ p ꞉ a₀ ≡ a₀ , φ (transport X p x₀) holds) → φ x₀ holds
+     a : (x₀ : X a₀) → (∃ p ꞉ a₀ ＝ a₀ , φ (transport X p x₀) holds) → φ x₀ holds
      a x₀ = ∥∥-rec (holds-is-prop (φ x₀)) f
       where
-       f : (Σ p ꞉ a₀ ≡ a₀ , φ (transport X p x₀) holds) → φ x₀ holds
+       f : (Σ p ꞉ a₀ ＝ a₀ , φ (transport X p x₀) holds) → φ x₀ holds
        f (p , h) = transport _holds t h
         where
-         r : p ≡ refl
+         r : p ＝ refl
          r = ish p refl
 
-         t : φ (transport X p x₀) ≡ φ x₀
+         t : φ (transport X p x₀) ＝ φ x₀
          t = ap (λ - → φ (transport X - x₀)) r
 
-     b : (x₀ : X a₀) → φ x₀ holds → ∃ p ꞉ a₀ ≡ a₀ , φ (transport X p x₀) holds
+     b : (x₀ : X a₀) → φ x₀ holds → ∃ p ꞉ a₀ ＝ a₀ , φ (transport X p x₀) holds
      b x₀ h = ∣ refl , h ∣
 
-     γ : (x₀ : X a₀) → (∃ p ꞉ a₀ ≡ a₀ , φ (transport X p x₀) holds) , ∥∥-is-prop ≡ φ x₀
-     γ x₀ = to-Σ-≡ (pe ∥∥-is-prop (holds-is-prop (φ x₀)) (a x₀) (b x₀) ,
+     γ : (x₀ : X a₀) → (∃ p ꞉ a₀ ＝ a₀ , φ (transport X p x₀) holds) , ∥∥-is-prop ＝ φ x₀
+     γ x₀ = to-Σ-＝ (pe ∥∥-is-prop (holds-is-prop (φ x₀)) (a x₀) (b x₀) ,
                     being-prop-is-prop fe' (holds-is-prop _) (holds-is-prop (φ x₀)))
 
  usr-lemma : funext 𝓥 ((𝓤 ⊔ 𝓦)⁺)
@@ -524,7 +524,7 @@ NB. If 𝓥 is 𝓤 or 𝓤', then X : A → 𝓤 ⁺ ̇.
     φ : ∀ a → X a ≢ B
     φ = pr₂ universe-set-regular
 
-    e : ∃ a ꞉ A , X a ≡ B
+    e : ∃ a ꞉ A , X a ＝ B
     e = s B
 
     γ : 𝟘
@@ -566,7 +566,7 @@ module GeneralizedCoquand where
           (S : 𝓤 ̇ → A)
           (ρ : {X : 𝓤 ̇ } → T (S X) → X)
           (σ : {X : 𝓤 ̇ } → X → T (S X))
-          (η : {X : 𝓤 ̇ } (x : X) → ρ (σ x) ≡ x)
+          (η : {X : 𝓤 ̇ } (x : X) → ρ (σ x) ＝ x)
         → 𝟘
  Lemma₀ {𝓤} A T S ρ σ η = γ
   where
@@ -595,11 +595,11 @@ module GeneralizedCoquand where
      s : (B → X) → B
      s f = σ (R , f) , ap pr₁ (η (R , f))
 
-     rs : (f : B → X) → r (s f) ≡ f
-     rs f = r (s f)                                      ≡⟨ refl ⟩
-            transport H (ap pr₁ (η Rf)) (pr₂ (ρ (σ Rf))) ≡⟨ i ⟩
-            transport (H ∘ pr₁) (η Rf)  (pr₂ (ρ (σ Rf))) ≡⟨ ii ⟩
-            pr₂ Rf                                       ≡⟨ refl ⟩
+     rs : (f : B → X) → r (s f) ＝ f
+     rs f = r (s f)                                      ＝⟨ refl ⟩
+            transport H (ap pr₁ (η Rf)) (pr₂ (ρ (σ Rf))) ＝⟨ i ⟩
+            transport (H ∘ pr₁) (η Rf)  (pr₂ (ρ (σ Rf))) ＝⟨ ii ⟩
+            pr₂ Rf                                       ＝⟨ refl ⟩
             f                                            ∎
           where
            Rf : Σ H
@@ -646,7 +646,7 @@ And because identitities are equivalences, it follows that
 \begin{code}
 
  Lemma₃ : (A : 𝓤 ̇ ) (T : A → 𝓤 ̇ ) (S : 𝓤 ̇ → A)
-        → ¬ ((X : 𝓤 ̇ ) → T (S X) ≡ X)
+        → ¬ ((X : 𝓤 ̇ ) → T (S X) ＝ X)
  Lemma₃ A T S p = Lemma₂ A T S (λ X → idtoeq (T (S X)) X (p X))
 
 \end{code}
@@ -750,7 +750,7 @@ module Coquand-further-generalized (𝓤 𝓥 : Universe)
            (S : (X : 𝓤 ̇ ) (p : P X) → A)
            (ρ : {X : 𝓤 ̇ } (p : P X) → T (S X p) → X)
            (σ : {X : 𝓤 ̇ } (p : P X) → X → T (S X p))
-           (η : {X : 𝓤 ̇ } (p : P X) (x : X) → ρ p (σ p x) ≡ x)
+           (η : {X : 𝓤 ̇ } (p : P X) (x : X) → ρ p (σ p x) ＝ x)
          → 𝟘
   lemma₀ A A-is-P T S ρ σ η = γ
    where
@@ -782,11 +782,11 @@ module Coquand-further-generalized (𝓤 𝓥 : Universe)
       s : (B → X) → B
       s f = σ p (R , f) , ap pr₁ (η p (R , f))
 
-      rs : (f : B → X) → r (s f) ≡ f
-      rs f = r (s f)                                            ≡⟨ refl ⟩
-             transport H (ap pr₁ (η p Rf)) (pr₂ (ρ p (σ p Rf))) ≡⟨ i ⟩
-             transport (H ∘ pr₁) (η p Rf)  (pr₂ (ρ p (σ p Rf))) ≡⟨ ii ⟩
-             pr₂ Rf                                             ≡⟨ refl ⟩
+      rs : (f : B → X) → r (s f) ＝ f
+      rs f = r (s f)                                            ＝⟨ refl ⟩
+             transport H (ap pr₁ (η p Rf)) (pr₂ (ρ p (σ p Rf))) ＝⟨ i ⟩
+             transport (H ∘ pr₁) (η p Rf)  (pr₂ (ρ p (σ p Rf))) ＝⟨ ii ⟩
+             pr₂ Rf                                             ＝⟨ refl ⟩
              f                                                  ∎
            where
             Rf : Σ H
@@ -823,7 +823,7 @@ module Coquand-further-generalized (𝓤 𝓥 : Universe)
          → P A
          → (T : A → 𝓤 ̇ )
          → (S : (X : 𝓤 ̇ ) → P X → A)
-         → ¬ ((X : 𝓤 ̇ ) (p : P X) → T (S X p) ≡ X)
+         → ¬ ((X : 𝓤 ̇ ) (p : P X) → T (S X p) ＝ X)
   lemma₃ A A-is-P T S e = lemma₂ A A-is-P T S (λ X p → idtoeq (T (S X p)) X (e X p))
 
   lemma₄ : ¬ (Σ (A , A-is-P) ꞉ Σ P , retract (Σ P) of A)
@@ -838,7 +838,7 @@ module Coquand-further-generalized (𝓤 𝓥 : Universe)
     S : (X : 𝓤 ̇ ) → P X → A
     S X p = s (X , p)
 
-    TS : (X : 𝓤 ̇ ) (p : P X) → T (S X p) ≡ X
+    TS : (X : 𝓤 ̇ ) (p : P X) → T (S X p) ＝ X
     TS X p = ap pr₁ (rs (X , p))
 
   theorem : ¬ (Σ (A , A-is-P) ꞉ Σ P , Σ P ≃ A)

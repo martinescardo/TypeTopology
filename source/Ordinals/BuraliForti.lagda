@@ -75,7 +75,7 @@ Equivalence of ordinals,
 means that that there is an equivalence of the underlying types that
 preserves and reflects order.
 
-For ordinals α and β in the *same* universe, their identity type α ≡ β
+For ordinals α and β in the *same* universe, their identity type α ＝ β
 is canonically equivalent to the ordinal-equivalence type α ≃ₒ β,
 by univalence.
 
@@ -87,7 +87,7 @@ an ordinal in the successor universe 𝓤⁺, denoted by
 
 Its order relation is denoted by _⊲_ and is defined by
 
-    α ⊲ β = Σ b ꞉ ⟨ β ⟩ , α ≡ (β ↓ b).
+    α ⊲ β = Σ b ꞉ ⟨ β ⟩ , α ＝ (β ↓ b).
 
 This order has type
 
@@ -168,7 +168,7 @@ Burali-Forti {𝓤} (α , 𝕗) = γ
   c : OO 𝓤 ≃ₒ (OO 𝓤 ↓ α)
   c = ≃ₒ-trans (OO 𝓤) α (OO 𝓤 ↓ α) a b
 
-  d : OO 𝓤 ≡ (OO 𝓤 ↓ α)
+  d : OO 𝓤 ＝ (OO 𝓤 ↓ α)
   d = eqtoidₒ (OO 𝓤) (OO 𝓤 ↓ α) c
 
   e : OO 𝓤 ⊲ OO 𝓤
@@ -241,7 +241,7 @@ successive-universe-embeddings-dont-have-sections {𝓤} f i (s , η) = γ
   X : 𝓤 ̇
   X = s (Ordinal 𝓤)
 
-  p : f X ≡ Ordinal 𝓤
+  p : f X ＝ Ordinal 𝓤
   p = η (Ordinal 𝓤)
 
   e : X ≃ Ordinal 𝓤
@@ -327,10 +327,10 @@ Lift-hSet-doesnt-have-section {𝓤} (s , η) = γ
   X : 𝓤 ̇
   X = pr₁ 𝕏
 
-  have : (Lift (𝓤 ⁺) X , _) ≡ 𝕐
+  have : (Lift (𝓤 ⁺) X , _) ＝ 𝕐
   have = η 𝕐
 
-  p : Lift (𝓤 ⁺) X ≡ Ordinal 𝓤
+  p : Lift (𝓤 ⁺) X ＝ Ordinal 𝓤
   p = ap pr₁ (η 𝕐)
 
   d : X ≃ Lift (𝓤 ⁺) X
@@ -406,10 +406,10 @@ module _ (A : {𝓤 : Universe} → 𝓤 ̇ → 𝓤 ̇ )
    X : 𝓤 ̇
    X = pr₁ 𝕏
 
-   have : (Lift (𝓤 ⁺) X , _) ≡ 𝕐
+   have : (Lift (𝓤 ⁺) X , _) ＝ 𝕐
    have = η 𝕐
 
-   p : Lift (𝓤 ⁺) X ≡ Ordinal 𝓤
+   p : Lift (𝓤 ⁺) X ＝ Ordinal 𝓤
    p = ap pr₁ (η 𝕐)
 
    d : X ≃ Lift (𝓤 ⁺) X
@@ -637,7 +637,7 @@ equivalence:
       F' : Group (𝓤 ⁺)
       F' = Lift-Group (𝓤 ⁺) G
 
-      p : F' ≡ F
+      p : F' ＝ F
       p = inverses-are-sections (Lift-Group (𝓤 ⁺)) e F
 
       j : G ≅ F'

@@ -133,15 +133,15 @@ We show that the supremum of {b : B ∣ b ≪ x} equals x.
  ∐-of-directed-subset I δ = ∐ 𝓓 δ
 
  ↡ᴮ-section-of-∐ : (x : ⟨ 𝓓 ⟩) (δ : is-Directed 𝓓 (↡-inclusionₛ x))
-                 → ∐-of-directed-subset (↡ᴮ-subset x) δ ≡ x
- ↡ᴮ-section-of-∐ x δ = ∐ 𝓓 δ ≡⟨ ⦅1⦆ ⟩
-                       ∐ 𝓓 ε ≡⟨ ⦅2⦆ ⟩
+                 → ∐-of-directed-subset (↡ᴮ-subset x) δ ＝ x
+ ↡ᴮ-section-of-∐ x δ = ∐ 𝓓 δ ＝⟨ ⦅1⦆ ⟩
+                       ∐ 𝓓 ε ＝⟨ ⦅2⦆ ⟩
                        x     ∎
   where
    ε : is-Directed 𝓓 (↡-inclusionₛ x)
    ε = ↡ᴮₛ-is-directed x
    ⦅1⦆ = ∐-independent-of-directedness-witness 𝓓 δ ε
-   ⦅2⦆ = ↡ᴮₛ-∐-≡ x
+   ⦅2⦆ = ↡ᴮₛ-∐-＝ x
 
 \end{code}
 
@@ -178,7 +178,7 @@ of ↡ᴮ-subset and ∐ to be a deflation, inflation and retraction-section.
  ∐-↡ᴮ-retract : (I : 𝓟 B) {δ : is-Directed 𝓓 (β ∘ 𝕋-to-carrier I)}
               → ((b c : B) → β b ⊑⟨ 𝓓 ⟩ β c → c ∈ I → b ∈ I)
               → ((b : B) → b ∈ I → ∃ c ꞉ B , (c ∈ I) × (β b ≪⟨ 𝓓 ⟩ β c))
-              → ↡ᴮ-subset (∐-of-directed-subset I δ) ≡ I
+              → ↡ᴮ-subset (∐-of-directed-subset I δ) ＝ I
  ∐-↡ᴮ-retract I {δ} cond₁ cond₂ =
   subset-extensionality pe fe (↡ᴮ-∐-deflation I cond₁) (↡ᴮ-∐-inflation I cond₂)
 
@@ -282,7 +282,7 @@ module Idl-continuous-retract-of-algebraic
    s = to-Idl
    r : Idl → ⟨ 𝓓 ⟩
    r = from-Idl
-   γ : (x : ⟨ 𝓓 ⟩) → r (s x) ≡ x
+   γ : (x : ⟨ 𝓓 ⟩) → r (s x) ＝ x
    γ x = ↡ᴮ-section-of-∐ x (Idl-mediating-directed (s x))
 
  Idl-deflation : (I : Idl) → to-Idl (from-Idl I) ⊑⟨ Idl-DCPO ⟩ I
@@ -412,7 +412,7 @@ module Idl-continuous
 
  from-Idl-section-of-to-Idl : to-Idl ∘ from-Idl ∼ id
  from-Idl-section-of-to-Idl 𝕀@(I , I-is-ideal) =
-  to-subtype-≡ (λ J → being-ideal-is-prop J) (∐-↡ᴮ-retract I claim₁ claim₂)
+  to-subtype-＝ (λ J → being-ideal-is-prop J) (∐-↡ᴮ-retract I claim₁ claim₂)
    where
     claim₁ : (b c : B) → β b ⊑⟨ 𝓓 ⟩ β c → c ∈ I → b ∈ I
     claim₁ b c b-below-c c-in-I = ∥∥-rec (∈-is-prop I b) h (roundedness 𝕀 c-in-I)
@@ -459,7 +459,7 @@ module Idl-algebraic
           to-Idl-is-continuous , from-Idl-is-continuous)
   where
    -- This is where we use --experimental-lossy-unification
-   from-Idl-section-of-to-Idl : (I : ⟨ Idl-DCPO ⟩) → to-Idl (from-Idl I) ≡ I
+   from-Idl-section-of-to-Idl : (I : ⟨ Idl-DCPO ⟩) → to-Idl (from-Idl I) ＝ I
    from-Idl-section-of-to-Idl I =
     antisymmetry Idl-DCPO (to-Idl (from-Idl I)) I (Idl-deflation I) inflationary
      where

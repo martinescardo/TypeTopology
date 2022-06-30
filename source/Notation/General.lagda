@@ -22,16 +22,16 @@ symmetric : {X : 𝓤 ̇ } → (X → X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
 symmetric R = ∀ x y → R x y → R y x
 
 antisymmetric : {X : 𝓤 ̇ } → (X → X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
-antisymmetric R = ∀ x y → R x y → R y x → x ≡ y
+antisymmetric R = ∀ x y → R x y → R y x → x ＝ y
 
 transitive : {X : 𝓤 ̇ } → (X → X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
 transitive R = ∀ x y z → R x y → R y z → R x z
 
 idempotent-map : {X : 𝓥 ̇ } → (f : X → X) → 𝓥 ̇
-idempotent-map f = ∀ x → f (f x) ≡ f x
+idempotent-map f = ∀ x → f (f x) ＝ f x
 
 involutive : {X : 𝓥 ̇ } → (f : X → X) → 𝓥 ̇
-involutive f = ∀ x → f (f x) ≡ x
+involutive f = ∀ x → f (f x) ＝ x
 
 left-neutral : {X : 𝓤 ̇ } → X → (X → X → X) → 𝓤 ̇
 left-neutral e _·_ = ∀ x → e · x ＝ x

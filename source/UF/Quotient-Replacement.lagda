@@ -59,15 +59,15 @@ module _
      where
       S : 𝓤 ⊔ 𝓥 ̇
       S = (x : X) → f x holds ⇔ g x holds
-      e : (f ≡ g) ≃ S
-      e = (f ≡ g) ≃⟨ ≃-funext fe f g ⟩
+      e : (f ＝ g) ≃ S
+      e = (f ＝ g) ≃⟨ ≃-funext fe f g ⟩
           f ∼ g   ≃⟨ I ⟩
           S       ■
        where
         I : (f ∼ g) ≃ S
-        I = Π-cong fe fe X (λ x → f x ≡ g x) (λ x → f x holds ⇔ g x holds) II
+        I = Π-cong fe fe X (λ x → f x ＝ g x) (λ x → f x holds ⇔ g x holds) II
          where
-          II : (x : X) → (f x ≡ g x) ≃ (f x holds ⇔ g x holds)
+          II : (x : X) → (f x ＝ g x) ≃ (f x holds ⇔ g x holds)
           II x = logically-equivalent-props-are-equivalent
                   (Ω-is-set fe pe)
                   (×-is-prop (Π-is-prop fe (λ _ → holds-is-prop (g x)))
@@ -103,7 +103,7 @@ UF.Quotient.lagda.
    P' = P ∘ ⌜ φ ⌝⁻¹
    γ : (y : X / ≋) → P' y
    γ = /-induction' ≋ (λ y → i (⌜ φ ⌝⁻¹ y)) h
-   e : ⌜ φ ⌝⁻¹ (⌜ φ ⌝ x') ≡ x'
+   e : ⌜ φ ⌝⁻¹ (⌜ φ ⌝ x') ＝ x'
    e = ≃-sym-is-linv φ x'
  /ₛ-universality : {A : 𝓦 ̇  } → is-set A
                  → (f : X → A)
@@ -112,7 +112,7 @@ UF.Quotient.lagda.
  /ₛ-universality {𝓦} {A} i f p =
   equiv-to-singleton (≃-sym e) (universal-property/ ≋ i f p)
    where
-    e = (Σ f' ꞉ (X / ≋ → A)  , f' ∘ η/ ≋ ≡ f)        ≃⟨ ⦅1⦆ ⟩
+    e = (Σ f' ꞉ (X / ≋ → A)  , f' ∘ η/ ≋ ＝ f)        ≃⟨ ⦅1⦆ ⟩
         (Σ f' ꞉ (X / ≋ → A)  , f' ∘ η/ ≋ ∼ f)        ≃⟨ ⦅2⦆ ⟩
         (Σ f' ꞉ (X / ≋ → A)  , f' ∘ ⌜ φ ⌝ ∘ η/ₛ ∼ f) ≃⟨ ⦅3⦆ ⟩
         (Σ f' ꞉ (X/ₛ≈ → A) , f' ∘ η/ₛ ∼ f)         ■
@@ -120,7 +120,7 @@ UF.Quotient.lagda.
       ⦅1⦆ = Σ-cong (λ f' → ≃-funext fe (f' ∘ η/ ≋) f)
       ⦅2⦆ = Σ-cong
             (λ f' → Π-cong fe fe X _ _
-                    (λ x → ≡-cong-l (f' (η/ ≋ x)) (f x)
+                    (λ x → ＝-cong-l (f' (η/ ≋ x)) (f x)
                                     (ap f' ((≃-sym-is-rinv φ (η/ ≋ x)) ⁻¹))))
       ⦅3⦆ = Σ-change-of-variable _ (_∘ ⌜ φ ⌝)
             (qinvs-are-equivs (_∘ ⌜ φ ⌝)

@@ -54,15 +54,15 @@ retract-of-prop (r , s , rs) = subtype-of-prop-is-prop s (sections-are-lc s (r ,
          → is-set (Σ A)
 Σ-is-set {𝓤} {𝓥} {X} {A} i j {σ} {τ} = γ
  where
-  S = Σ p ꞉ pr₁ σ ≡ pr₁ τ , transport A p (pr₂ σ) ≡ pr₂ τ
+  S = Σ p ꞉ pr₁ σ ＝ pr₁ τ , transport A p (pr₂ σ) ＝ pr₂ τ
 
   a : is-prop S
   a = Σ-is-prop i (λ p → j (pr₁ τ))
 
-  b : retract (σ ≡ τ) of S
-  b = to-Σ-≡ , from-Σ-≡ , tofrom-Σ-≡
+  b : retract (σ ＝ τ) of S
+  b = to-Σ-＝ , from-Σ-＝ , tofrom-Σ-＝
 
-  γ : is-prop (σ ≡ τ)
+  γ : is-prop (σ ＝ τ)
   γ = retract-of-prop b a
 
 identity-retraction : {X : 𝓤 ̇ } → retract X of X
@@ -73,7 +73,7 @@ has-section-closed-under-∼ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f g : X → Y)
                            → g ∼ f
                            → has-section g
 has-section-closed-under-∼ {𝓤} {𝓥} {X} {Y} f g (s , fs) h =
- (s , λ y → g (s y) ≡⟨ h (s y) ⟩ f (s y) ≡⟨ fs y ⟩ y ∎)
+ (s , λ y → g (s y) ＝⟨ h (s y) ⟩ f (s y) ＝⟨ fs y ⟩ y ∎)
 
 has-section-closed-under-∼' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f g : X → Y}
                             → has-section f
@@ -86,8 +86,8 @@ is-section-closed-under-∼ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f g : X → Y)
                           →  g ∼ f
                           → is-section g
 is-section-closed-under-∼ {𝓤} {𝓥} {X} {Y} f g (r , rf) h =
-  (r , λ x → r (g x) ≡⟨ ap r (h x) ⟩
-             r (f x) ≡⟨ rf x ⟩
+  (r , λ x → r (g x) ＝⟨ ap r (h x) ⟩
+             r (f x) ＝⟨ rf x ⟩
              x       ∎)
 
 is-section-closed-under-∼' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f g : X → Y}
@@ -103,7 +103,7 @@ Surjection expressed in Curry-Howard logic amounts to retraction.
 \begin{code}
 
 has-section' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) → 𝓤 ⊔ 𝓥 ̇
-has-section' f = (y : codomain f) → Σ x ꞉ domain f , f x ≡ y
+has-section' f = (y : codomain f) → Σ x ꞉ domain f , f x ＝ y
 
 retract_Of_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
 retract Y Of X = Σ f ꞉ (X → Y) , has-section' f
@@ -111,7 +111,7 @@ retract Y Of X = Σ f ꞉ (X → Y) , has-section' f
 retract-of-gives-retract-Of : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → retract Y of X → retract Y Of X
 retract-of-gives-retract-Of {𝓤} {𝓥} {X} {Y} ρ = (retraction ρ , hass)
  where
-  hass : (y : Y) → Σ x ꞉ X , retraction ρ x ≡ y
+  hass : (y : Y) → Σ x ꞉ X , retraction ρ x ＝ y
   hass y = section ρ y , retract-condition ρ y
 
 retract-Of-gives-retract-of : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → retract Y Of X → retract Y of X
@@ -125,8 +125,8 @@ retracts-compose : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
                  → retract Z of Y
                  → retract Z of X
 retracts-compose (r , s , rs) (r' , s' , rs') =
-  r' ∘ r , s ∘ s' , λ z → r' (r (s (s' z))) ≡⟨ ap r' (rs (s' z)) ⟩
-                          r' (s' z)         ≡⟨ rs' z ⟩
+  r' ∘ r , s ∘ s' , λ z → r' (r (s (s' z))) ＝⟨ ap r' (rs (s' z)) ⟩
+                          r' (s' z)         ＝⟨ rs' z ⟩
                           z                 ∎
 
 ×-retract : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } {B : 𝓣 ̇ }
@@ -141,8 +141,8 @@ retracts-compose (r , s , rs) (r' , s' , rs') =
   g : X × Y → A × B
   g (x , y) = s x , u y
 
-  fg : (z : X × Y) → f (g z) ≡ z
-  fg (x , y) = to-×-≡ (rs x) (tu y)
+  fg : (z : X × Y) → f (g z) ＝ z
+  fg (x , y) = to-×-＝ (rs x) (tu y)
 
 +-retract : {X : 𝓤 ̇ } {Y : 𝓦 ̇ } {A : 𝓥 ̇ } {B : 𝓣 ̇ }
           → retract X of A
@@ -158,7 +158,7 @@ retracts-compose (r , s , rs) (r' , s' , rs') =
   g (inl x) = inl (s x)
   g (inr y) = inr (u y)
 
-  fg : (p : X + Y) → f (g p) ≡ p
+  fg : (p : X + Y) → f (g p) ＝ p
   fg (inl x) = ap inl (rs x)
   fg (inr y) = ap inr (tu y)
 
@@ -174,7 +174,7 @@ retracts-compose (r , s , rs) (r' , s' , rs') =
   g (₀ , x) = inl x
   g (₁ , y) = inr y
 
-  fg : (z : X +' Y) → f (g z) ≡ z
+  fg : (z : X +' Y) → f (g z) ＝ z
   fg (₀ , x) = refl
   fg (₁ , y) = refl
 
@@ -190,7 +190,7 @@ retracts-compose (r , s , rs) (r' , s' , rs') =
   g (₀ , x) = inl x
   g (₁ , y) = inr y
 
-  gf : (z : X + Y) → g (f z) ≡ z
+  gf : (z : X + Y) → g (f z) ＝ z
   gf (inl x) = refl
   gf (inr y) = refl
 
@@ -208,7 +208,7 @@ retracts-compose (r , s , rs) (r' , s' , rs') =
   g (₀ , x) = ₀ , s x
   g (₁ , y) = ₁ , u y
 
-  fg : (p : X +' Y) → f (g p) ≡ p
+  fg : (p : X +' Y) → f (g p) ＝ p
   fg (₀ , x) = ap (λ - → (₀ , -)) (rs x)
   fg (₁ , y) = ap (λ - → (₁ , -)) (tu y)
 
@@ -222,10 +222,10 @@ retracts-compose (r , s , rs) (r' , s' , rs') =
   φ : Σ A → Σ y ꞉ Y , A (r y)
   φ (x , a) = (s x , transport⁻¹ A (rs x) a)
 
-  γφ : (σ : Σ A) → γ (φ σ) ≡ σ
-  γφ (x , a) = to-Σ-≡ (rs x , p)
+  γφ : (σ : Σ A) → γ (φ σ) ＝ σ
+  γφ (x , a) = to-Σ-＝ (rs x , p)
    where
-    p : transport A (rs x) (transport⁻¹ A (rs x) a) ≡ a
+    p : transport A (rs x) (transport⁻¹ A (rs x) a) ＝ a
     p = back-and-forth-transport (rs x)
 
 Σ-reindex-retract' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : X → 𝓦 ̇ }
@@ -244,11 +244,11 @@ retracts-compose (r , s , rs) (r' , s' , rs') =
   S : (x : X) → A x → B x
   S x = section (ρ x)
 
-  RS : (x : X) (a : A x) → R x (S x a) ≡ a
+  RS : (x : X) (a : A x) → R x (S x a) ＝ a
   RS x = retract-condition (ρ x)
 
-  rs : (σ : Σ A) → NatΣ R (NatΣ S σ) ≡ σ
-  rs (x , a) = to-Σ-≡' (RS x a)
+  rs : (σ : Σ A) → NatΣ R (NatΣ S σ) ＝ σ
+  rs (x , a) = to-Σ-＝' (RS x a)
 
 retract-𝟙+𝟙-of-𝟚 : retract 𝟙 + 𝟙 of 𝟚
 retract-𝟙+𝟙-of-𝟚 = f , (g , fg)
@@ -259,7 +259,7 @@ retract-𝟙+𝟙-of-𝟚 = f , (g , fg)
   g : 𝟙 + 𝟙 → 𝟚
   g = cases (λ x → ₀) (λ x → ₁)
 
-  fg : (x : 𝟙 + 𝟙) → f (g x) ≡ x
+  fg : (x : 𝟙 + 𝟙) → f (g x) ＝ x
   fg (inl ⋆) = refl
   fg (inr ⋆) = refl
 
@@ -286,7 +286,7 @@ developments, and (2) work over many years with uncontrolled growth.
   γ : (x : X) → Y x → B
   γ x = section (R x)
 
-  φγ : (x : X) → (y : Y x) → φ x (γ x y) ≡ y
+  φγ : (x : X) → (y : Y x) → φ x (γ x y) ＝ y
   φγ x = retract-condition (R x)
 
   f : A × B → Σ Y
@@ -295,10 +295,10 @@ developments, and (2) work over many years with uncontrolled growth.
   g : Σ Y → A × B
   g (x , y) = s x , γ x y
 
-  gf : (z : Σ Y) → f (g z) ≡ z
-  gf (x , y) = to-Σ-≡ (rs x , l (rs x))
+  gf : (z : Σ Y) → f (g z) ＝ z
+  gf (x , y) = to-Σ-＝ (rs x , l (rs x))
    where
-    l : {x' : X} (p : x' ≡ x) → transport Y p (φ x' (γ x y)) ≡ y
+    l : {x' : X} (p : x' ＝ x) → transport Y p (φ x' (γ x y)) ＝ y
     l refl = φγ x y
 
 retract-𝟙+𝟙-of-ℕ : retract 𝟙 + 𝟙 of ℕ
@@ -312,7 +312,7 @@ retract-𝟙+𝟙-of-ℕ = r , s , rs
   s (inl ⋆) = zero
   s (inr ⋆) = succ zero
 
-  rs : (z : 𝟙 {𝓤₀} + 𝟙 {𝓤₀}) → r (s z) ≡ z
+  rs : (z : 𝟙 {𝓤₀} + 𝟙 {𝓤₀}) → r (s z) ＝ z
   rs (inl ⋆) = refl
   rs (inr ⋆) = refl
 
@@ -357,18 +357,18 @@ ap-of-section-is-section : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (s : X → Y)
                          → (x x' : X) → is-section (ap s {x} {x'})
 ap-of-section-is-section {𝓤} {𝓥} {X} {Y} s (r , rs) x x' = ρ , ρap
  where
-  ρ : s x ≡ s x' → x ≡ x'
-  ρ q = x        ≡⟨ (rs x) ⁻¹ ⟩
-        r (s x)  ≡⟨ ap r q ⟩
-        r (s x') ≡⟨ rs x' ⟩
+  ρ : s x ＝ s x' → x ＝ x'
+  ρ q = x        ＝⟨ (rs x) ⁻¹ ⟩
+        r (s x)  ＝⟨ ap r q ⟩
+        r (s x') ＝⟨ rs x' ⟩
         x'       ∎
 
-  ρap : (p : x ≡ x') → ρ (ap s p) ≡ p
-  ρap p = ρ (ap s p)                          ≡⟨ by-definition ⟩
-          (rs x) ⁻¹ ∙ (ap r (ap s p) ∙ rs x') ≡⟨ i ⟩
-          (rs x) ⁻¹ ∙ ap r (ap s p) ∙ rs x'   ≡⟨ ii ⟩
-          (rs x) ⁻¹ ∙ ap (r ∘ s) p ∙  rs x'   ≡⟨ iii ⟩
-          ap id p                             ≡⟨ (ap-id-is-id' p)⁻¹ ⟩
+  ρap : (p : x ＝ x') → ρ (ap s p) ＝ p
+  ρap p = ρ (ap s p)                          ＝⟨ by-definition ⟩
+          (rs x) ⁻¹ ∙ (ap r (ap s p) ∙ rs x') ＝⟨ i ⟩
+          (rs x) ⁻¹ ∙ ap r (ap s p) ∙ rs x'   ＝⟨ ii ⟩
+          (rs x) ⁻¹ ∙ ap (r ∘ s) p ∙  rs x'   ＝⟨ iii ⟩
+          ap id p                             ＝⟨ (ap-id-is-id' p)⁻¹ ⟩
           p                                   ∎
    where
     i   = ∙assoc ((rs x) ⁻¹) (ap r (ap s p)) (rs x') ⁻¹
@@ -384,21 +384,21 @@ imports this file.
 
 Σ-section-retract : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (ρ : Y ◁ Z) (g : X → Y)
                   → (y : Y)
-                  → (Σ x ꞉ X , g x ≡ y)
-                  ◁ (Σ x ꞉ X , section ρ (g x) ≡ section ρ y)
+                  → (Σ x ꞉ X , g x ＝ y)
+                  ◁ (Σ x ꞉ X , section ρ (g x) ＝ section ρ y)
 Σ-section-retract {𝓤} {𝓥} {𝓦} {X} {Y} {Z} (r , s , rs) g y =
- Σ-retract (λ x → g x ≡ y) (λ x → s (g x) ≡ s y) γ
+ Σ-retract (λ x → g x ＝ y) (λ x → s (g x) ＝ s y) γ
   where
-   γ : (x : X) → (g x ≡ y) ◁ (s (g x) ≡ s y)
+   γ : (x : X) → (g x ＝ y) ◁ (s (g x) ＝ s y)
    γ x = ρ , (σ , ρσ)
     where
-     σ : g x ≡ y → s (g x) ≡ s y
+     σ : g x ＝ y → s (g x) ＝ s y
      σ = ap s
 
-     ρ : s (g x) ≡ s y → g x ≡ y
+     ρ : s (g x) ＝ s y → g x ＝ y
      ρ = pr₁ (ap-of-section-is-section s (r , rs) (g x) y)
 
-     ρσ : (p : g x ≡ y) → ρ (σ p) ≡ p
+     ρσ : (p : g x ＝ y) → ρ (σ p) ＝ p
      ρσ = pr₂ (ap-of-section-is-section s ((r , rs)) (g x) y)
 
 \end{code}

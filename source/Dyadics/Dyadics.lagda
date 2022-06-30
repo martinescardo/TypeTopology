@@ -79,7 +79,7 @@ left-is-not-right p = 𝟙-is-not-𝟘 (ap f p)
   f (left x)  = 𝟙
   f (right x) = 𝟘
 
-left-lc : {x y : 𝔻} → left x ≡ left y → x ≡ y
+left-lc : {x y : 𝔻} → left x ＝ left y → x ＝ y
 left-lc = ap f
  where
   f : 𝔻 → 𝔻
@@ -87,7 +87,7 @@ left-lc = ap f
   f (left x)  = x
   f (right x) = right x
 
-right-lc : {x y : 𝔻} → right x ≡ right y → x ≡ y
+right-lc : {x y : 𝔻} → right x ＝ right y → x ＝ y
 right-lc = ap f
  where
   f : 𝔻 → 𝔻
@@ -102,18 +102,18 @@ right-lc = ap f
 𝔻-is-discrete (left x)  middle    = inr (λ p → middle-is-not-left (p ⁻¹))
 𝔻-is-discrete (left x)  (left y)  = cases a b (𝔻-is-discrete x y)
  where
-  a : x ≡ y → decidable (left x ≡ left y)
+  a : x ＝ y → decidable (left x ＝ left y)
   a = inl ∘ ap left
-  b : ¬ (x ≡ y) → decidable (left x ≡ left y)
+  b : ¬ (x ＝ y) → decidable (left x ＝ left y)
   b = inr ∘ contrapositive left-lc
 𝔻-is-discrete (left x)  (right y) = inr left-is-not-right
 𝔻-is-discrete (right x) middle    = inr (λ p → middle-is-not-right (p ⁻¹))
 𝔻-is-discrete (right x) (left y)  = inr (λ p → left-is-not-right (p ⁻¹))
 𝔻-is-discrete (right x) (right y) = cases a b (𝔻-is-discrete x y)
  where
-  a : x ≡ y → decidable (right x ≡ right y)
+  a : x ＝ y → decidable (right x ＝ right y)
   a = inl ∘ ap right
-  b : ¬ (x ≡ y) → decidable (right x ≡ right y)
+  b : ¬ (x ＝ y) → decidable (right x ＝ right y)
   b = inr ∘ contrapositive right-lc
 
 𝔻-is-set : is-set 𝔻

@@ -42,7 +42,7 @@ mc-gives-sc {𝓤} s P Y = γ
     b = Σ-change-of-variable (λ A → Π (P ∘ A)) (χ Y) (s Y)
     c = ΠΣ-distr-≃
 
-  observation : χ-special P Y ≡ ⌜ e ⌝
+  observation : χ-special P Y ＝ ⌜ e ⌝
   observation = refl _
 
   γ : is-equiv (χ-special P Y)
@@ -91,10 +91,10 @@ the-singletons-form-a-singleton {𝓤} pe fe = c , φ
   c : 𝓢 𝓤
   c = Lift 𝓤 𝟙 , i
 
-  φ : (x : 𝓢 𝓤) → c ≡ x
-  φ (S , s) = to-subtype-≡ (λ _ → being-singleton-is-subsingleton fe) p
+  φ : (x : 𝓢 𝓤) → c ＝ x
+  φ (S , s) = to-subtype-＝ (λ _ → being-singleton-is-subsingleton fe) p
    where
-    p : Lift 𝓤 𝟙 ≡ S
+    p : Lift 𝓤 𝟙 ＝ S
     p = pe (singletons-are-subsingletons (Lift 𝓤 𝟙) i)
            (singletons-are-subsingletons S s)
            (λ _ → center S s) (λ _ → center (Lift 𝓤 𝟙) i)

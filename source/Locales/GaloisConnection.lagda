@@ -63,7 +63,7 @@ Definition of a pair of opposing monotonic maps forming an adjoint pair:
  has-right-adjoint-is-prop : (f : P ─m→ Q)
                            → is-prop (Σ g ꞉ Q ─m→ P , ((f ⊣ g) holds))
  has-right-adjoint-is-prop 𝒻 (ℊ₁@(g₁ , _) , p₁) (ℊ₂@(g₂ , _) , p₂) =
-  to-subtype-≡ υ (to-subtype-≡ ϕ (dfunext fe γ))
+  to-subtype-＝ υ (to-subtype-＝ ϕ (dfunext fe γ))
    where
     υ : (g : Q ─m→ P) → is-prop ((𝒻 ⊣ g) holds)
     υ ℊ = holds-is-prop (𝒻 ⊣ ℊ)
@@ -83,7 +83,7 @@ Definition of a pair of opposing monotonic maps forming an adjoint pair:
  has-left-adjoint-is-prop : (g : Q ─m→ P)
                           → is-prop (Σ f ꞉ P ─m→ Q , (f ⊣ g) holds)
  has-left-adjoint-is-prop ℊ (𝒻₁@(f₁ , _) , p₁) (𝒻₂@(f₂ , _) , p₂) =
-  to-subtype-≡ υ (to-subtype-≡ ϕ (dfunext fe γ))
+  to-subtype-＝ υ (to-subtype-＝ ϕ (dfunext fe γ))
    where
     υ : (𝒻 : P ─m→ Q) → is-prop ((𝒻 ⊣ ℊ) holds)
     υ 𝒻 = holds-is-prop (𝒻 ⊣ ℊ)
@@ -105,13 +105,13 @@ Definition of a pair of opposing monotonic maps forming an adjoint pair:
 \begin{code}
 
  right-adjoints-are-unique : (f : P ─m→ Q) (g₁ g₂ : Q ─m→ P)
-                           → (f ⊣ g₁) holds → (f ⊣ g₂) holds → g₁ ≡ g₂
+                           → (f ⊣ g₁) holds → (f ⊣ g₂) holds → g₁ ＝ g₂
  right-adjoints-are-unique f g₁ g₂ p₁ p₂ =
-  pr₁ (from-Σ-≡ (has-right-adjoint-is-prop f (g₁ , p₁) (g₂ , p₂)))
+  pr₁ (from-Σ-＝ (has-right-adjoint-is-prop f (g₁ , p₁) (g₂ , p₂)))
 
  left-adjoints-are-unique : (f₁ f₂ : P ─m→ Q) (g : Q ─m→ P)
-                          → (f₁ ⊣ g) holds → (f₂ ⊣ g) holds → f₁ ≡ f₂
+                          → (f₁ ⊣ g) holds → (f₂ ⊣ g) holds → f₁ ＝ f₂
  left-adjoints-are-unique f₁ f₂ g p₁ p₂ =
-  pr₁ (from-Σ-≡ (has-left-adjoint-is-prop g (f₁ , p₁) (f₂ , p₂)))
+  pr₁ (from-Σ-＝ (has-left-adjoint-is-prop g (f₁ , p₁) (f₂ , p₂)))
 
 \end{code}

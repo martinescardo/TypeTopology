@@ -31,7 +31,7 @@ module Circle.Integers-SymmetricInduction where
                       → funext 𝓤₀ 𝓤
                       → (A : ℤ → 𝓤 ̇ )
                         (f : (z : ℤ) → A z ≃ A (succ-ℤ z))
-                      → (Σ h ꞉ Π A , ((z : ℤ) → h (succ-ℤ z) ≡ ⌜ f z ⌝ (h z)))
+                      → (Σ h ꞉ Π A , ((z : ℤ) → h (succ-ℤ z) ＝ ⌜ f z ⌝ (h z)))
                       ≃ A 𝟎
 ℤ-symmetric-induction {𝓤} fe A f =
  (Σ h ꞉ Π A , Q₁ h)                                               ≃⟨ I    ⟩
@@ -56,7 +56,7 @@ module Circle.Integers-SymmetricInduction where
    ⌜𝟎⌝ : 𝟙 {𝓤₀} → ℤ
    ⌜𝟎⌝ _ = 𝟎
    Q₁ : Π A → 𝓤 ̇
-   Q₁ h = (z : ℤ) → h (succ-ℤ z) ≡ ⌜ f z ⌝ (h z)
+   Q₁ h = (z : ℤ) → h (succ-ℤ z) ＝ ⌜ f z ⌝ (h z)
    g₁ : Π (A ∘ ⌜𝟎⌝) × Π (A ∘ inr) → Π A
    g₁ = ⌜ Π×+ fe ⌝
    Q₂ : Π (A ∘ ⌜𝟎⌝) → Π (A ∘ inr) → 𝓤 ̇
@@ -64,14 +64,14 @@ module Circle.Integers-SymmetricInduction where
    g₂ : Π (A ∘ pos) × Π (A ∘ neg) → Π (A ∘ inr)
    g₂ = ⌜ Π×+ fe ⌝
    Qₚ : A 𝟎 → Π (A ∘ pos) → 𝓤 ̇
-   Qₚ aₒ hₚ = (hₚ 0 ≡ ⌜ f 𝟎 ⌝ aₒ)
-            × ((n : ℕ) → hₚ (succ n) ≡ ⌜ f (pos n) ⌝ (hₚ n))
+   Qₚ aₒ hₚ = (hₚ 0 ＝ ⌜ f 𝟎 ⌝ aₒ)
+            × ((n : ℕ) → hₚ (succ n) ＝ ⌜ f (pos n) ⌝ (hₚ n))
    Qₙ' : A 𝟎 → Π (A ∘ neg) → 𝓤 ̇
-   Qₙ' a₀ hₙ = (a₀ ≡ ⌜ f (neg 0) ⌝ (hₙ 0))
-             × ((n : ℕ) → hₙ n ≡ ⌜ f (neg (succ n)) ⌝ (hₙ (succ n)))
+   Qₙ' a₀ hₙ = (a₀ ＝ ⌜ f (neg 0) ⌝ (hₙ 0))
+             × ((n : ℕ) → hₙ n ＝ ⌜ f (neg (succ n)) ⌝ (hₙ (succ n)))
    Qₙ : A 𝟎 → Π (A ∘ neg) → 𝓤 ̇
-   Qₙ aₒ hₙ = (hₙ 0 ≡ ⌜ (f (neg 0)) ⌝⁻¹ aₒ)
-            × ((n : ℕ) → hₙ (succ n) ≡ ⌜ (f (neg (succ n))) ⌝⁻¹ (hₙ n))
+   Qₙ aₒ hₙ = (hₙ 0 ＝ ⌜ (f (neg 0)) ⌝⁻¹ aₒ)
+            × ((n : ℕ) → hₙ (succ n) ＝ ⌜ (f (neg (succ n))) ⌝⁻¹ (hₙ n))
    I    = ≃-sym (Σ-change-of-variable Q₁ g₁ (⌜⌝-is-equiv (Π×+ fe)))
    II   = Σ-assoc
    III  = Σ-cong
@@ -98,7 +98,7 @@ module Circle.Integers-SymmetricInduction where
        η : ψ ∘ φ ∼ id
        η q = dfunext fe c
         where
-         c : (z : ℤ) → (ψ (φ q)) z ≡ q (z)
+         c : (z : ℤ) → (ψ (φ q)) z ＝ q (z)
          c 𝟎              = refl
          c (pos n)        = refl
          c (neg zero)     = refl
@@ -140,15 +140,15 @@ module Circle.Integers-SymmetricInduction where
        f₀⁻¹ = ⌜ (f (neg 0)) ⌝⁻¹
        e₀ : is-equiv f₀
        e₀ = ⌜⌝-is-equiv (f (neg 0))
-       γ₀ : (hₒ ⋆ ≡ f₀ (hₙ 0))
-          ≃ (hₙ 0 ≡ f₀⁻¹ (hₒ ⋆))
-       γ₀ = (hₒ ⋆ ≡ f₀ (hₙ 0))             ≃⟨ I₀   ⟩
-            (f₀ (hₙ 0) ≡ hₒ ⋆)             ≃⟨ II₀  ⟩
-            (f₀ (hₙ 0) ≡ f₀ (f₀⁻¹ (hₒ ⋆))) ≃⟨ III₀ ⟩
-            (hₙ 0 ≡ f₀⁻¹ (hₒ ⋆)) ■
+       γ₀ : (hₒ ⋆ ＝ f₀ (hₙ 0))
+          ≃ (hₙ 0 ＝ f₀⁻¹ (hₒ ⋆))
+       γ₀ = (hₒ ⋆ ＝ f₀ (hₙ 0))             ≃⟨ I₀   ⟩
+            (f₀ (hₙ 0) ＝ hₒ ⋆)             ≃⟨ II₀  ⟩
+            (f₀ (hₙ 0) ＝ f₀ (f₀⁻¹ (hₒ ⋆))) ≃⟨ III₀ ⟩
+            (hₙ 0 ＝ f₀⁻¹ (hₒ ⋆)) ■
         where
-         I₀   = ≡-flip
-         II₀  = ≡-cong-r (f₀ (hₙ 0)) (hₒ ⋆)
+         I₀   = ＝-flip
+         II₀  = ＝-cong-r (f₀ (hₙ 0)) (hₒ ⋆)
                  ((inverses-are-sections f₀ e₀ (hₒ ⋆)) ⁻¹)
          III₀ = embedding-criterion-converse f₀
                  (equivs-are-embeddings f₀ e₀)
@@ -160,15 +160,15 @@ module Circle.Integers-SymmetricInduction where
        fₙ⁻¹ : (n : ℕ) → A (neg n) → A (neg (succ n))
        fₙ⁻¹ n = ⌜ (f (neg (succ n))) ⌝⁻¹
        γₙ : (n : ℕ)
-          → (hₙ n ≡ fₙ n (hₙ (succ n)))
-          ≃ (hₙ (succ n) ≡ fₙ⁻¹ n (hₙ n))
-       γₙ n = (hₙ n ≡ fₙ n (hₙ (succ n)))                 ≃⟨ Iₙ ⟩
-              (fₙ n (hₙ (succ n)) ≡ hₙ n)                 ≃⟨ IIₙ ⟩
-              (fₙ n (hₙ (succ n)) ≡ fₙ n (fₙ⁻¹ n (hₙ n))) ≃⟨ IIIₙ ⟩
-              (hₙ (succ n) ≡ fₙ⁻¹ n (hₙ n))               ■
+          → (hₙ n ＝ fₙ n (hₙ (succ n)))
+          ≃ (hₙ (succ n) ＝ fₙ⁻¹ n (hₙ n))
+       γₙ n = (hₙ n ＝ fₙ n (hₙ (succ n)))                 ≃⟨ Iₙ ⟩
+              (fₙ n (hₙ (succ n)) ＝ hₙ n)                 ≃⟨ IIₙ ⟩
+              (fₙ n (hₙ (succ n)) ＝ fₙ n (fₙ⁻¹ n (hₙ n))) ≃⟨ IIIₙ ⟩
+              (hₙ (succ n) ＝ fₙ⁻¹ n (hₙ n))               ■
         where
-         Iₙ   = ≡-flip
-         IIₙ  = ≡-cong-r (fₙ n (hₙ (succ n))) (hₙ n)
+         Iₙ   = ＝-flip
+         IIₙ  = ＝-cong-r (fₙ n (hₙ (succ n))) (hₙ n)
                  ((inverses-are-sections (fₙ n) (eₙ n) (hₙ n)) ⁻¹)
          IIIₙ = embedding-criterion-converse (fₙ n)
                  (equivs-are-embeddings (fₙ n) (eₙ n))

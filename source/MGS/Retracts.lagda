@@ -42,8 +42,8 @@ _◁∘_ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } → X ◁ Y → Y ◁ Z 
 
 (r , s , η) ◁∘ (r' , s' , η') = (r ∘ r' , s' ∘ s , η'')
  where
-  η'' = λ x → r (r' (s' (s x))) ≡⟨ ap r (η' (s x)) ⟩
-              r (s x)           ≡⟨ η x ⟩
+  η'' = λ x → r (r' (s' (s x))) ＝⟨ ap r (η' (s x)) ⟩
+              r (s x)           ＝⟨ η x ⟩
               x                 ∎
 
 _◁⟨_⟩_ : (X : 𝓤 ̇ ) {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } → X ◁ Y → Y ◁ Z → X ◁ Z
@@ -63,19 +63,19 @@ X ◀ = id-◁ X
   s : (x : X) → A x → B x
   s x = section (ρ x)
 
-  η : (x : X) (a : A x) → r x (s x a) ≡ a
+  η : (x : X) (a : A x) → r x (s x a) ＝ a
   η x = retract-equation (ρ x)
 
-  η' : (σ : Σ A) → NatΣ r (NatΣ s σ) ≡ σ
-  η' (x , a) = x , r x (s x a) ≡⟨ to-Σ-≡' (η x a) ⟩
+  η' : (σ : Σ A) → NatΣ r (NatΣ s σ) ＝ σ
+  η' (x , a) = x , r x (s x a) ＝⟨ to-Σ-＝' (η x a) ⟩
                x , a           ∎
 
-transport-is-retraction : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) {x y : X} (p : x ≡ y)
+transport-is-retraction : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) {x y : X} (p : x ＝ y)
                         → transport A p ∘ transport A (p ⁻¹) ∼ 𝑖𝑑 (A y)
 
 transport-is-retraction A (refl x) = refl
 
-transport-is-section : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) {x y : X} (p : x ≡ y)
+transport-is-section : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) {x y : X} (p : x ＝ y)
                      → transport A (p ⁻¹) ∘ transport A p ∼ 𝑖𝑑 (A x)
 
 transport-is-section A (refl x) = refl
@@ -92,20 +92,20 @@ transport-is-section A (refl x) = refl
   φ : Σ A → Σ (A ∘ r)
   φ (x , a) = (s x , transport A ((η x)⁻¹) a)
 
-  γφ : (σ : Σ A) → γ (φ σ) ≡ σ
+  γφ : (σ : Σ A) → γ (φ σ) ＝ σ
   γφ (x , a) = p
    where
-    p : (r (s x) , transport A ((η x)⁻¹) a) ≡ (x , a)
-    p = to-Σ-≡ (η x , transport-is-retraction A (η x) a)
+    p : (r (s x) , transport A ((η x)⁻¹) a) ＝ (x , a)
+    p = to-Σ-＝ (η x , transport-is-retraction A (η x) a)
 
 singleton-type : {X : 𝓤 ̇ } → X → 𝓤 ̇
-singleton-type {𝓤} {X} x = Σ y ꞉ X , y ≡ x
+singleton-type {𝓤} {X} x = Σ y ꞉ X , y ＝ x
 
 singleton-type-center : {X : 𝓤 ̇ } (x : X) → singleton-type x
 singleton-type-center x = (x , refl x)
 
 singleton-type-centered : {X : 𝓤 ̇ } (x : X) (σ : singleton-type x)
-                        → singleton-type-center x ≡ σ
+                        → singleton-type-center x ＝ σ
 
 singleton-type-centered x (x , refl x) = refl (x , refl x)
 
@@ -120,18 +120,18 @@ retract-of-singleton : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
 
 retract-of-singleton (r , s , η) (c , φ) = r c , γ
  where
-  γ = λ y → r c     ≡⟨ ap r (φ (s y)) ⟩
-            r (s y) ≡⟨ η y ⟩
+  γ = λ y → r c     ＝⟨ ap r (φ (s y)) ⟩
+            r (s y) ＝⟨ η y ⟩
             y       ∎
 
 singleton-type' : {X : 𝓤 ̇ } → X → 𝓤 ̇
-singleton-type' {𝓤} {X} x = Σ y ꞉ X , x ≡ y
+singleton-type' {𝓤} {X} x = Σ y ꞉ X , x ＝ y
 
 singleton-type'-center : {X : 𝓤 ̇ } (x : X) → singleton-type' x
 singleton-type'-center x = (x , refl x)
 
 singleton-type'-centered : {X : 𝓤 ̇ } (x : X) (σ : singleton-type' x)
-                         → singleton-type'-center x ≡ σ
+                         → singleton-type'-center x ＝ σ
 
 singleton-type'-centered x (x , refl x) = refl (x , refl x)
 

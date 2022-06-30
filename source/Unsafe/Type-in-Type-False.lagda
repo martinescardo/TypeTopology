@@ -33,7 +33,7 @@ module coquand where
    data 𝕎 : Set where
     sup : (T : Set) → (T → 𝕎) → 𝕎
    e : 𝕎 → 𝕎 → Set
-   e (sup T φ) w = Σ t ꞉ T , φ t ≡ w
+   e (sup T φ) w = Σ t ꞉ T , φ t ＝ w
 
    R : 𝕎
    R = sup (Σ w ꞉ 𝕎 , (e w w → X)) pr₁
@@ -47,10 +47,10 @@ module coquand where
    s : (A → X) → A
    s f = (R , f) , refl
 
-   rs : (f : A → X) → r (s f) ≡ f
+   rs : (f : A → X) → r (s f) ＝ f
    rs f = refl
 
-   γ : (f : X → X) → Σ x ꞉ X , x ≡ f x
+   γ : (f : X → X) → Σ x ꞉ X , x ＝ f x
    γ = retract-version.LFPT (r , s , rs)
 
 \end{code}
@@ -60,7 +60,7 @@ s is a definitional section of the function r):
 
 \begin{code}
 
- Y-is-fp-combinator : {X : Set} (f : X → X) → f (Y f) ≡ Y f
+ Y-is-fp-combinator : {X : Set} (f : X → X) → f (Y f) ＝ Y f
  Y-is-fp-combinator f = refl
 
  Contradiction : 𝟘
@@ -82,8 +82,8 @@ NB. We use the option without-K but then postulate K, so that the uses
 of K can be seen explicitly.
 
 postulate K-axiom : (X : Set) → is-set X
-postulate funext  : {X : Set} {A : X → Set} {f g : Π A} → f ∼ g → f ≡ g
-postulate propext : {P Q : Set} → is-prop P → is-prop Q → (P → Q) → (Q → P) → P ≡ Q
+postulate funext  : {X : Set} {A : X → Set} {f g : Π A} → f ∼ g → f ＝ g
+postulate propext : {P Q : Set} → is-prop P → is-prop Q → (P → Q) → (Q → P) → P ＝ Q
 
 NB. The universe of types is called Set in Agda. This terminology is
 consistent with the K axiom.
@@ -98,7 +98,7 @@ module blechschmidt where
 
 \end{code}
 
- We first define 𝟘, Σ and the identity type (written _≡_), and name
+ We first define 𝟘, Σ and the identity type (written _＝_), and name
  the predefined construction Π:
 
  \begin{code}
@@ -130,8 +130,8 @@ module blechschmidt where
  _×_ : Set → Set → Set
  X × Y = Σ x ꞉ X , Y
 
- data _≡_ {X : Set} : X → X → Set where
-   refl : {x : X} → x ≡ x
+ data _＝_ {X : Set} : X → X → Set where
+   refl : {x : X} → x ＝ x
 
  \end{code}
 
@@ -160,25 +160,25 @@ module blechschmidt where
  \begin{code}
 
  transport : {X : Set} (A : X → Set) {x y : X}
-           → x ≡ y → A x → A y
+           → x ＝ y → A x → A y
  transport A refl = id
 
- ap : {X Y : Set} (f : X → Y) {x x' : X} → x ≡ x' → f x ≡ f x'
- ap f p = transport (λ - → f _ ≡ f -) p refl
+ ap : {X Y : Set} (f : X → Y) {x x' : X} → x ＝ x' → f x ＝ f x'
+ ap f p = transport (λ - → f _ ＝ f -) p refl
 
- _⁻¹ : {X : Set} → {x y : X} → x ≡ y → y ≡ x
- p ⁻¹ = transport (λ - → - ≡ _) p refl
+ _⁻¹ : {X : Set} → {x y : X} → x ＝ y → y ＝ x
+ p ⁻¹ = transport (λ - → - ＝ _) p refl
 
- _∙_ : {X : Set} {x y z : X} → x ≡ y → y ≡ z → x ≡ z
- p ∙ q = transport (λ x → _ ≡ x) q p
+ _∙_ : {X : Set} {x y z : X} → x ＝ y → y ＝ z → x ＝ z
+ p ∙ q = transport (λ x → _ ＝ x) q p
 
- to-Σ-≡ : {X : Set} {A : X → Set} {σ τ : Σ A}
-        → (Σ p ꞉ pr₁ σ ≡ pr₁ τ , transport A p (pr₂ σ) ≡ pr₂ τ)
-        → σ ≡ τ
- to-Σ-≡ (refl , refl) = refl
+ to-Σ-＝ : {X : Set} {A : X → Set} {σ τ : Σ A}
+        → (Σ p ꞉ pr₁ σ ＝ pr₁ τ , transport A p (pr₂ σ) ＝ pr₂ τ)
+        → σ ＝ τ
+ to-Σ-＝ (refl , refl) = refl
 
  _∼_ : {X : Set} {A : X → Set} → Π A → Π A → Set
- f ∼ g = (x : _) → f x ≡ g x
+ f ∼ g = (x : _) → f x ＝ g x
 
  \end{code}
 
@@ -186,7 +186,7 @@ module blechschmidt where
 
  \begin{code}
 
- postulate funext : {X : Set} {A : X → Set} {f g : Π A} → f ∼ g → f ≡ g
+ postulate funext : {X : Set} {A : X → Set} {f g : Π A} → f ∼ g → f ＝ g
 
  \end{code}
 
@@ -195,10 +195,10 @@ module blechschmidt where
  \begin{code}
 
  is-prop : Set → Set
- is-prop X = (x y : X) → x ≡ y
+ is-prop X = (x y : X) → x ＝ y
 
  is-set : Set → Set
- is-set X = {x y : X} → is-prop (x ≡ y)
+ is-set X = {x y : X} → is-prop (x ＝ y)
 
  postulate K-axiom : (X : Set) → is-set X
 
@@ -214,7 +214,7 @@ module blechschmidt where
  being-prop-is-prop : {X : Set} → is-prop (is-prop X)
  being-prop-is-prop {X} f g = funext (λ x → funext (c x))
   where
-   c : (x y : X) → f x y ≡ g x y
+   c : (x y : X) → f x y ＝ g x y
    c x y = K-axiom X (f x y) (g x y)
 
  Π-is-prop : {X : Set} {A : X → Set}
@@ -227,7 +227,7 @@ module blechschmidt where
 
  \begin{code}
 
- postulate propext : {P Q : Set} → is-prop P → is-prop Q → (P → Q) → (Q → P) → P ≡ Q
+ postulate propext : {P Q : Set} → is-prop P → is-prop Q → (P → Q) → (Q → P) → P ＝ Q
 
  \end{code}
 
@@ -283,7 +283,7 @@ module blechschmidt where
                                                    (s ∘ s' ,
                                                    λ z → ap r' (η (s' z)) ∙ η' z)
 
- Id-retract : {X Y : Set} → X ≡ Y → retract Y of X
+ Id-retract : {X Y : Set} → X ＝ Y → retract Y of X
  Id-retract refl = id , id , (λ y → refl)
 
  is-section : {X Y : Set} → (X → Y) → Set
@@ -295,7 +295,7 @@ module blechschmidt where
  _≃_ : Set → Set → Set
  X ≃ Y = Σ f ꞉ (X → Y) , is-equiv f
 
- idtoeq : (X Y : Set) → X ≡ Y → X ≃ Y
+ idtoeq : (X Y : Set) → X ＝ Y → X ≃ Y
  idtoeq X Y refl = id , (id , (λ (x : X) → refl)) , id , (λ (y : Y) → refl)
 
  equiv-retract : {X Y : Set} → X ≃ Y → retract Y of X
@@ -315,7 +315,7 @@ module blechschmidt where
 
  LFPT : {A : Set} {X : Set}
       → retract (A → X) of A
-      → (f : X → X) → Σ x ꞉ X , x ≡ f x
+      → (f : X → X) → Σ x ꞉ X , x ＝ f x
  LFPT {A} {X} (r , (s , η)) f = x , p
   where
    g : A → X
@@ -324,13 +324,13 @@ module blechschmidt where
    x : X
    x = r (s g) (s g)
 
-   p : x ≡ f x
+   p : x ＝ f x
    p = ap (λ - → - (s g)) (η g)
 
- LFPT-≡ : {A : Set} {X : Set}
-        → A ≡ (A → X)
-        → (f : X → X) → Σ x ꞉ X , x ≡ f x
- LFPT-≡ p = LFPT (Id-retract p)
+ LFPT-＝ : {A : Set} {X : Set}
+        → A ＝ (A → X)
+        → (f : X → X) → Σ x ꞉ X , x ＝ f x
+ LFPT-＝ p = LFPT (Id-retract p)
 
  \end{code}
 
@@ -339,14 +339,14 @@ module blechschmidt where
 
  \begin{code}
 
- not-no-fp : ¬ (Σ P ꞉ Ω , P ≡ not P)
+ not-no-fp : ¬ (Σ P ꞉ Ω , P ＝ not P)
  not-no-fp (P , p) = pr₁ (γ id)
   where
-   q : P holds ≡ ¬ (P holds)
+   q : P holds ＝ ¬ (P holds)
    q = ap _holds p
 
-   γ : (f : 𝟘 → 𝟘) → Σ x ꞉ 𝟘 , x ≡ f x
-   γ = LFPT-≡ q
+   γ : (f : 𝟘 → 𝟘) → Σ x ꞉ 𝟘 , x ＝ f x
+   γ = LFPT-＝ q
 
  \end{code}
 
@@ -360,28 +360,28 @@ module blechschmidt where
  Π-projection-has-section {A} {X} A₀ = s , η
   where
    s : (X A₀ → Ω) → ((A : A) → X A → Ω)
-   s φ A x = ∥ (Σ p ꞉ A ≡ A₀ , φ (transport X p x) holds)∥ , ∥∥-is-prop
+   s φ A x = ∥ (Σ p ꞉ A ＝ A₀ , φ (transport X p x) holds)∥ , ∥∥-is-prop
 
-   η : (φ : X A₀ → Ω) → s φ A₀ ≡ φ
+   η : (φ : X A₀ → Ω) → s φ A₀ ＝ φ
    η φ = funext γ
     where
-     a : (x₀ : X A₀) → ∥(Σ p ꞉ A₀ ≡ A₀ , φ (transport X p x₀) holds)∥ → φ x₀ holds
+     a : (x₀ : X A₀) → ∥(Σ p ꞉ A₀ ＝ A₀ , φ (transport X p x₀) holds)∥ → φ x₀ holds
      a x₀ = ∥∥-rec (holds-is-prop (φ x₀)) f
       where
-       f : (Σ p ꞉ A₀ ≡ A₀ , φ (transport X p x₀) holds) → φ x₀ holds
+       f : (Σ p ꞉ A₀ ＝ A₀ , φ (transport X p x₀) holds) → φ x₀ holds
        f (p , h) = transport _holds t h
         where
-         r : p ≡ refl
+         r : p ＝ refl
          r = K-axiom A p refl
 
-         t : φ (transport X p x₀) ≡ φ x₀
+         t : φ (transport X p x₀) ＝ φ x₀
          t = ap (λ - → φ (transport X - x₀)) r
 
-     b : (x₀ : X A₀) → φ x₀ holds → ∥(Σ p ꞉ A₀ ≡ A₀ , φ (transport X p x₀) holds)∥
+     b : (x₀ : X A₀) → φ x₀ holds → ∥(Σ p ꞉ A₀ ＝ A₀ , φ (transport X p x₀) holds)∥
      b x₀ h = ∣ refl , h ∣
 
-     γ : (x₀ : X A₀) → (∥(Σ p ꞉ A₀ ≡ A₀ , φ (transport X p x₀) holds)∥ , ∥∥-is-prop) ≡ φ x₀
-     γ x₀ = to-Σ-≡ (propext ∥∥-is-prop (holds-is-prop (φ x₀)) (a x₀) (b x₀) ,
+     γ : (x₀ : X A₀) → (∥(Σ p ꞉ A₀ ＝ A₀ , φ (transport X p x₀) holds)∥ , ∥∥-is-prop) ＝ φ x₀
+     γ x₀ = to-Σ-＝ (propext ∥∥-is-prop (holds-is-prop (φ x₀)) (a x₀) (b x₀) ,
                     being-prop-is-prop (holds-is-prop _) (holds-is-prop (φ x₀)) )
 
  \end{code}
@@ -393,7 +393,7 @@ module blechschmidt where
  usr-lemma : {A : Set} (X : A → Set)
            → (a₀ : A)
            → retract ((a : A) → X a → Ω) of X a₀
-           → (f : Ω → Ω) → Σ P ꞉ Ω , P ≡ f P
+           → (f : Ω → Ω) → Σ P ꞉ Ω , P ＝ f P
  usr-lemma {A} X a₀ retr = LFPT retr'
   where
    retr' : retract (X a₀ → Ω) of X a₀
@@ -420,14 +420,14 @@ module blechschmidt where
       retr : retract B of (X a)
       retr = equiv-retract p
 
-      γ : (f : Ω → Ω) → Σ P ꞉ Ω , P ≡ f P
+      γ : (f : Ω → Ω) → Σ P ꞉ Ω , P ＝ f P
       γ = usr-lemma {A} X a retr
 
- universe-regular : (A : Set) (X : A → Set) → Σ B ꞉ Set , ((a : A) → ¬ (X a ≡ B))
+ universe-regular : (A : Set) (X : A → Set) → Σ B ꞉ Set , ((a : A) → ¬ (X a ＝ B))
  universe-regular A X = γ (universe-regular-≃ A X)
   where
    γ : (Σ B ꞉ Set , ((a : A) → ¬ (X a ≃ B)))
-     → (Σ B ꞉ Set , ((a : A) → ¬ (X a ≡ B)))
+     → (Σ B ꞉ Set , ((a : A) → ¬ (X a ＝ B)))
    γ (B , φ) = B , (λ a p → φ a (idtoeq (X a) B p))
 
  \end{code}
@@ -442,7 +442,7 @@ module blechschmidt where
    B : Set
    B = pr₁ (universe-regular A X)
 
-   φ : ∀ a → ¬ (X a ≡ B)
+   φ : ∀ a → ¬ (X a ＝ B)
    φ = pr₂ (universe-regular A X)
 
  \end{code}
@@ -468,7 +468,7 @@ module blechschmidt where
  infixl 5 _∘_
  infixr 4 _,_
  infixr 2 _×_
- infix  0 _≡_
+ infix  0 _＝_
  infix  4  _∼_
  infix  50 ¬_
 

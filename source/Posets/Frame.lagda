@@ -36,14 +36,14 @@ module _ (𝓤 𝓥 : Universe) where
  frame-axioms X (⊤ , _∧_ , ⋁) = I × II × III × IV × V × VI × VII × VIII
   where
    _≤_ : X → X → 𝓤 ̇
-   x ≤ y = x ∧ y ≡ x
+   x ≤ y = x ∧ y ＝ x
 
    I    = is-set X
-   II   = (x : X) → x ∧ x ≡ x
-   III  = (x y : X) → x ∧ y ≡ y ∧ x
-   IV   = (x y z : X) → x ∧ (y ∧ z) ≡ (x ∧ y) ∧ z
-   V    = (x : X) → x ∧ ⊤ ≡ x
-   VI   = (x : X) {N : 𝓥 ̇ } (y : N → X) → x ∧ (⋁ y) ≡ ⋁ (n ↦ (x ∧ y n))
+   II   = (x : X) → x ∧ x ＝ x
+   III  = (x y : X) → x ∧ y ＝ y ∧ x
+   IV   = (x y z : X) → x ∧ (y ∧ z) ＝ (x ∧ y) ∧ z
+   V    = (x : X) → x ∧ ⊤ ＝ x
+   VI   = (x : X) {N : 𝓥 ̇ } (y : N → X) → x ∧ (⋁ y) ＝ ⋁ (n ↦ (x ∧ y n))
    VII  = {N : 𝓥 ̇ } (x : N → X) (n : N) → x n ≤ ⋁ x
    VIII = {N : 𝓥 ̇ } (x : N → X) (u : X) → ((n : N) → x n ≤ u) → ⋁ x ≤ u
  \end{code}
@@ -82,15 +82,15 @@ module _ (𝓤 𝓥 : Universe) where
 
                          Σ f ꞉ (A → A')
                              , is-equiv f
-                             × (f ⊤ ≡ ⊤')
-                             × ((λ a b → f (a ∧ b)) ≡ (λ a b → f a ∧' f b))
-                             × ((λ {N} (𝕒 : N → A) → f (⋁ 𝕒)) ≡ (λ {N} 𝕒 → ⋁' (n ↦ f (𝕒 n))))
+                             × (f ⊤ ＝ ⊤')
+                             × ((λ a b → f (a ∧ b)) ＝ (λ a b → f a ∧' f b))
+                             × ((λ {N} (𝕒 : N → A) → f (⋁ 𝕒)) ＝ (λ {N} 𝕒 → ⋁' (n ↦ f (𝕒 n))))
 
- characterization-of-Frame-≡ : is-univalent 𝓤
+ characterization-of-Frame-＝ : is-univalent 𝓤
                              → (A B : Frame)
-                             → (A ≡ B) ≃ (A ≅[Frame] B)
- characterization-of-Frame-≡ ua =
-   sip.characterization-of-≡ ua
+                             → (A ＝ B) ≃ (A ≅[Frame] B)
+ characterization-of-Frame-＝ ua =
+   sip.characterization-of-＝ ua
     (sip-with-axioms.add-axioms
        frame-axioms
        frame-axioms-is-prop
@@ -118,12 +118,12 @@ module _ (pe : Prop-Ext)
  (P , i) ∧Ω (Q , j) = (P × Q) , ×-is-prop i j
 
  _≤Ω_ : Ω 𝓤 → Ω 𝓤 → 𝓤 ⁺ ̇
- 𝕡 ≤Ω 𝕢 = 𝕡 ∧Ω 𝕢 ≡ 𝕡
+ 𝕡 ≤Ω 𝕢 = 𝕡 ∧Ω 𝕢 ＝ 𝕡
 
  from-≤Ω : {𝕡 𝕢 : Ω 𝓤} → 𝕡 ≤Ω 𝕢 → (𝕡 holds → 𝕢 holds)
  from-≤Ω {𝓤} {P , i} {Q , j} l p = γ
   where
-   r : P × Q ≡ P
+   r : P × Q ＝ P
    r = ap _holds l
 
    g : P → P × Q
@@ -135,11 +135,11 @@ module _ (pe : Prop-Ext)
  to-≤Ω : {𝕡 𝕢 : Ω 𝓤} → (𝕡 holds → 𝕢 holds) → 𝕡 ≤Ω 𝕢
  to-≤Ω {𝓤} {P , i} {Q , j} f = γ
   where
-   r : P × Q ≡ P
+   r : P × Q ＝ P
    r = pe (×-is-prop i j) i pr₁ (λ p → (p , f p))
 
-   γ : ((P × Q) , _) ≡ (P , _)
-   γ = to-subtype-≡ (λ _ → being-prop-is-prop fe) r
+   γ : ((P × Q) , _) ＝ (P , _)
+   γ = to-subtype-＝ (λ _ → being-prop-is-prop fe) r
 
  ⋁Ω : {N : 𝓤 ̇ } → (N → Ω 𝓥) → Ω (𝓤 ⊔ 𝓥)
  ⋁Ω {𝓤} {𝓥} {N} 𝕡 = (∃ n ꞉ N , (𝕡 n holds)) , ∃-is-prop
@@ -159,53 +159,53 @@ module _ (pe : Prop-Ext)
    Ω₀ = Ω (𝓤 ⊔ 𝓥)
 
 
-   ∧-is-idempotent : (𝕡 : Ω₀) → 𝕡 ∧Ω 𝕡 ≡ 𝕡
+   ∧-is-idempotent : (𝕡 : Ω₀) → 𝕡 ∧Ω 𝕡 ＝ 𝕡
    ∧-is-idempotent (P , i) = γ
     where
-     r : P × P ≡ P
+     r : P × P ＝ P
      r = pe (×-is-prop i i) i pr₁ (λ p → (p , p))
 
-     γ : ((P × P) , _) ≡ (P , _)
-     γ = to-subtype-≡ (λ _ → being-prop-is-prop fe) r
+     γ : ((P × P) , _) ＝ (P , _)
+     γ = to-subtype-＝ (λ _ → being-prop-is-prop fe) r
 
 
-   ∧-is-commutative : (𝕡 𝕢 : Ω₀) → 𝕡 ∧Ω 𝕢 ≡ 𝕢 ∧Ω 𝕡
+   ∧-is-commutative : (𝕡 𝕢 : Ω₀) → 𝕡 ∧Ω 𝕢 ＝ 𝕢 ∧Ω 𝕡
    ∧-is-commutative (P , i) (Q , j) = γ
     where
-     r : P × Q ≡ Q × P
+     r : P × Q ＝ Q × P
      r = pe (×-is-prop i j)
             (×-is-prop j i)
             (λ (p , q) → (q , p))
             (λ (q , p) → (p , q))
 
-     γ : ((P × Q) , _) ≡ ((Q × P) , _)
-     γ = to-subtype-≡ (λ _ → being-prop-is-prop fe) r
+     γ : ((P × Q) , _) ＝ ((Q × P) , _)
+     γ = to-subtype-＝ (λ _ → being-prop-is-prop fe) r
 
-   ∧-is-associative : (𝕡 𝕢 𝕣 : Ω₀) → 𝕡 ∧Ω (𝕢 ∧Ω 𝕣) ≡ (𝕡 ∧Ω 𝕢) ∧Ω 𝕣
+   ∧-is-associative : (𝕡 𝕢 𝕣 : Ω₀) → 𝕡 ∧Ω (𝕢 ∧Ω 𝕣) ＝ (𝕡 ∧Ω 𝕢) ∧Ω 𝕣
    ∧-is-associative (P , i) (Q , j) (R , k) = γ
     where
-     r : P × (Q × R) ≡ (P × Q) × R
+     r : P × (Q × R) ＝ (P × Q) × R
      r = pe (×-is-prop i (×-is-prop j k))
             (×-is-prop (×-is-prop i j) k)
             (λ (p , (q , r)) → ((p , q) , r))
             (λ ((p , q) , r) → (p , (q , r)))
 
-     γ : ((P × (Q × R)) , _) ≡ (((P × Q) × R) , _)
-     γ = to-subtype-≡ (λ _ → being-prop-is-prop fe) r
+     γ : ((P × (Q × R)) , _) ＝ (((P × Q) × R) , _)
+     γ = to-subtype-＝ (λ _ → being-prop-is-prop fe) r
 
    ⊤-is-maximum : (𝕡 : Ω₀) → 𝕡 ≤Ω ⊤Ω
    ⊤-is-maximum (P , i) = γ
     where
-     r : P × 𝟙 ≡ P
+     r : P × 𝟙 ＝ P
      r = pe (×-is-prop i 𝟙-is-prop)
             i
             (λ (p , _) → p)
             (λ p → (p , ⋆))
 
-     γ : ((P × 𝟙) , _) ≡ (P , _)
-     γ = to-subtype-≡ (λ _ → being-prop-is-prop fe) r
+     γ : ((P × 𝟙) , _) ＝ (P , _)
+     γ = to-subtype-＝ (λ _ → being-prop-is-prop fe) r
 
-   ∧-⋁-distributivity : (𝕡 : Ω₀) {N : 𝓤 ̇ } (𝕢 : N → Ω₀) → 𝕡 ∧Ω (⋁Ω 𝕢) ≡ ⋁Ω (n ↦ 𝕡 ∧Ω 𝕢 n)
+   ∧-⋁-distributivity : (𝕡 : Ω₀) {N : 𝓤 ̇ } (𝕢 : N → Ω₀) → 𝕡 ∧Ω (⋁Ω 𝕢) ＝ ⋁Ω (n ↦ 𝕡 ∧Ω 𝕢 n)
    ∧-⋁-distributivity (P , i) {N} 𝕢 = γ
     where
      Q : N → 𝓤 ⊔ 𝓥 ̇
@@ -221,12 +221,12 @@ module _ (pe : Prop-Ext)
      β e = ∥∥-rec i (λ (n , p , q) → p) e ,
            ∥∥-rec ∃-is-prop (λ (n , p , q) → ∣ n , q ∣) e
 
-     r : P × (∃ n ꞉ N , Q n) ≡ (∃ n ꞉ N , P × Q n)
+     r : P × (∃ n ꞉ N , Q n) ＝ (∃ n ꞉ N , P × Q n)
      r = pe (×-is-prop i ∃-is-prop) ∃-is-prop α β
 
 
-     γ : ((P × (∃ n ꞉ N , Q n)) , _) ≡ ((∃ n ꞉ N , P × Q n) , _)
-     γ = to-subtype-≡ (λ _ → being-prop-is-prop fe) r
+     γ : ((P × (∃ n ꞉ N , Q n)) , _) ＝ ((∃ n ꞉ N , P × Q n) , _)
+     γ = to-subtype-＝ (λ _ → being-prop-is-prop fe) r
 
 
    ⋁-is-ub : {N : 𝓤 ̇ } (𝕡 : N → Ω₀) → (n : N) → 𝕡 n ≤Ω ⋁Ω 𝕡

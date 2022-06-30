@@ -95,7 +95,7 @@ Transfinite-induction α = transfinite-induction
 Extensionality : (α : Ordinal 𝓤) → is-extensional (underlying-order α)
 Extensionality α = extensionality (underlying-order α) (is-well-ordered α)
 
-Antisymmetry : (α : Ordinal 𝓤) (x y : ⟨ α ⟩) → x ≼⟨ α ⟩ y → y ≼⟨ α ⟩ x → x ≡ y
+Antisymmetry : (α : Ordinal 𝓤) (x y : ⟨ α ⟩) → x ≼⟨ α ⟩ y → y ≼⟨ α ⟩ x → x ＝ y
 Antisymmetry = Extensionality
 
 underlying-type-is-set : FunExt
@@ -117,7 +117,7 @@ being-least-is-prop fe α x = Π₃-is-prop fe (λ y u _ → Prop-valuedness α 
 at-most-one-least : (α : Ordinal 𝓤) (x y : ⟨ α ⟩)
                   → is-least α x
                   → is-least α y
-                  → x ≡ y
+                  → x ＝ y
 at-most-one-least α x y l l' = Antisymmetry α x y (l y) (l' x)
 
 has-least : Ordinal 𝓤 → 𝓤 ̇
@@ -125,7 +125,7 @@ has-least α = Σ ⊥ ꞉ ⟨ α ⟩ , is-least α ⊥
 
 having-least-is-prop : Fun-Ext → (α : Ordinal 𝓤) → is-prop (has-least α)
 having-least-is-prop fe α (⊥ , l) (⊥' , l') =
-  to-subtype-≡
+  to-subtype-＝
     (being-least-is-prop fe α)
     (at-most-one-least α ⊥ ⊥' l l')
 
@@ -138,7 +138,7 @@ being-largest-is-prop fe α x = Π₃-is-prop fe (λ y u _ → Prop-valuedness �
 at-most-one-largest : (α : Ordinal 𝓤) (x y : ⟨ α ⟩)
                     → is-largest α x
                     → is-largest α y
-                    → x ≡ y
+                    → x ＝ y
 at-most-one-largest α x y l l' = Antisymmetry α x y (l' x) (l y)
 
 has-largest : Ordinal 𝓤 → 𝓤 ̇
@@ -146,7 +146,7 @@ has-largest α = Σ ⊤ ꞉ ⟨ α ⟩ , is-largest α ⊤
 
 having-largest-is-prop : Fun-Ext → (α : Ordinal 𝓤) → is-prop (has-largest α)
 having-largest-is-prop fe α (⊥ , l) (⊥' , l') =
-  to-subtype-≡
+  to-subtype-＝
     (being-largest-is-prop fe α)
     (at-most-one-largest α ⊥ ⊥' l l')
 
@@ -173,14 +173,14 @@ principle:
 open import UF.Equiv
 open import UF.Univalence
 
-Ordinal-≡ : FunExt
+Ordinal-＝ : FunExt
           → is-univalent 𝓤
           → (α β : Ordinal 𝓤)
-          → (α ≡ β)
+          → (α ＝ β)
           ≃ (Σ f ꞉ (⟨ α ⟩ → ⟨ β ⟩) ,
                  is-equiv f
-               × ((λ x x' → x ≺⟨ α ⟩ x') ≡ (λ x x' → f x ≺⟨ β ⟩ f x')))
-Ordinal-≡ {𝓤} fe = generalized-metric-space.characterization-of-M-≡ (𝓤 ̇ )
+               × ((λ x x' → x ≺⟨ α ⟩ x') ＝ (λ x x' → f x ≺⟨ β ⟩ f x')))
+Ordinal-＝ {𝓤} fe = generalized-metric-space.characterization-of-M-＝ (𝓤 ̇ )
                     (λ _ → is-well-order)
                     (λ X _<_ → being-well-order-is-prop _<_ fe)
  where
@@ -218,7 +218,7 @@ _≃ₒ_ : Ordinal 𝓤 → Ordinal 𝓥 → 𝓤 ⊔ 𝓥 ̇
 \end{code}
 
 See the module for a proof that α ≃ₒ β is canonically equivalent to
-α ≡ β. (For historical reasons, that proof doesn't use the structure
+α ＝ β. (For historical reasons, that proof doesn't use the structure
 identity principle.)
 
 \begin{code}

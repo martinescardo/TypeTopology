@@ -110,8 +110,8 @@ write some boiler plate around that.
                        (Σ-cong (λ b → ≃-sym ≪ᴮₛ-≃-≪ᴮ))
                        (↡-inclusion x) (↡ᴮ-is-directed x)
 
-  ↡ᴮₛ-∐-≡ : (x : ⟨ 𝓓 ⟩) → ∐ 𝓓 (↡ᴮₛ-is-directed x) ≡ x
-  ↡ᴮₛ-∐-≡ x = antisymmetry 𝓓 (∐ 𝓓 (↡ᴮₛ-is-directed x)) x ⦅1⦆ ⦅2⦆
+  ↡ᴮₛ-∐-＝ : (x : ⟨ 𝓓 ⟩) → ∐ 𝓓 (↡ᴮₛ-is-directed x) ＝ x
+  ↡ᴮₛ-∐-＝ x = antisymmetry 𝓓 (∐ 𝓓 (↡ᴮₛ-is-directed x)) x ⦅1⦆ ⦅2⦆
    where
     ⦅1⦆ : ∐ 𝓓 (↡ᴮₛ-is-directed x) ⊑⟨ 𝓓 ⟩ x
     ⦅1⦆ = ∐-is-lowerbound-of-upperbounds 𝓓 (↡ᴮₛ-is-directed x) x
@@ -124,10 +124,10 @@ write some boiler plate around that.
                         (b , ≪ᴮ-to-≪ᴮₛ v))
 
   ↡ᴮₛ-∐-⊑ : (x : ⟨ 𝓓 ⟩) → ∐ 𝓓 (↡ᴮₛ-is-directed x) ⊑⟨ 𝓓 ⟩ x
-  ↡ᴮₛ-∐-⊑ x = ≡-to-⊑ 𝓓 (↡ᴮₛ-∐-≡ x)
+  ↡ᴮₛ-∐-⊑ x = ＝-to-⊑ 𝓓 (↡ᴮₛ-∐-＝ x)
 
   ↡ᴮₛ-∐-⊒ : (x : ⟨ 𝓓 ⟩) → x ⊑⟨ 𝓓 ⟩ ∐ 𝓓 (↡ᴮₛ-is-directed x)
-  ↡ᴮₛ-∐-⊒ x = ≡-to-⊒ 𝓓 (↡ᴮₛ-∐-≡ x)
+  ↡ᴮₛ-∐-⊒ x = ＝-to-⊒ 𝓓 (↡ᴮₛ-∐-＝ x)
 
   ↡ᴮₛ-is-way-below : (x : ⟨ 𝓓 ⟩) (b : ↡ᴮₛ x) → ↡-inclusionₛ x b ≪⟨ 𝓓 ⟩ x
   ↡ᴮₛ-is-way-below x (b , u) = ≪ᴮₛ-to-≪ᴮ u
@@ -206,7 +206,7 @@ module _
    ; approximating-family              = ↡-inclusionₛ
    ; approximating-family-is-directed  = ↡ᴮₛ-is-directed
    ; approximating-family-is-way-below = ↡ᴮₛ-is-way-below
-   ; approximating-family-∐-≡          = ↡ᴮₛ-∐-≡
+   ; approximating-family-∐-＝          = ↡ᴮₛ-∐-＝
    }
     where
      open is-small-basis sb
@@ -370,8 +370,8 @@ module _
                        (Σ-cong (λ b → ≃-sym ⊑ᴮₛ-≃-⊑ᴮ))
                        (↓-inclusion x) (↓ᴮ-is-directed x)
 
-  ↓ᴮₛ-∐-≡ : (x : ⟨ 𝓓 ⟩) → ∐ 𝓓 (↓ᴮₛ-is-directed x) ≡ x
-  ↓ᴮₛ-∐-≡ x = antisymmetry 𝓓 (∐ 𝓓 (↓ᴮₛ-is-directed x)) x ⦅1⦆ ⦅2⦆
+  ↓ᴮₛ-∐-＝ : (x : ⟨ 𝓓 ⟩) → ∐ 𝓓 (↓ᴮₛ-is-directed x) ＝ x
+  ↓ᴮₛ-∐-＝ x = antisymmetry 𝓓 (∐ 𝓓 (↓ᴮₛ-is-directed x)) x ⦅1⦆ ⦅2⦆
    where
     ⦅1⦆ : ∐ 𝓓 (↓ᴮₛ-is-directed x) ⊑⟨ 𝓓 ⟩ x
     ⦅1⦆ = ∐-is-lowerbound-of-upperbounds 𝓓 (↓ᴮₛ-is-directed x) x
@@ -384,10 +384,10 @@ module _
                         (b , ⊑ᴮ-to-⊑ᴮₛ v))
 
   ↓ᴮₛ-∐-⊑ : (x : ⟨ 𝓓 ⟩) → ∐ 𝓓 (↓ᴮₛ-is-directed x) ⊑⟨ 𝓓 ⟩ x
-  ↓ᴮₛ-∐-⊑ x = ≡-to-⊑ 𝓓 (↓ᴮₛ-∐-≡ x)
+  ↓ᴮₛ-∐-⊑ x = ＝-to-⊑ 𝓓 (↓ᴮₛ-∐-＝ x)
 
   ↓ᴮₛ-∐-⊒ : (x : ⟨ 𝓓 ⟩) → x ⊑⟨ 𝓓 ⟩ ∐ 𝓓 (↓ᴮₛ-is-directed x)
-  ↓ᴮₛ-∐-⊒ x = ≡-to-⊒ 𝓓 (↓ᴮₛ-∐-≡ x)
+  ↓ᴮₛ-∐-⊒ x = ＝-to-⊒ 𝓓 (↓ᴮₛ-∐-＝ x)
 
   ↓ᴮₛ-compact : (x : ⟨ 𝓓 ⟩) (b : ↓ᴮₛ x) → is-compact 𝓓 (↓-inclusionₛ x b)
   ↓ᴮₛ-compact x (b , u) = basis-is-compact b
@@ -456,17 +456,17 @@ In fact, a small compact basis must contain every compact element.
  small-compact-basis-contains-all-compact-elements : is-small-compact-basis
                                                    → (x : ⟨ 𝓓 ⟩)
                                                    → is-compact 𝓓 x
-                                                   → ∃ b ꞉ B , β b ≡ x
+                                                   → ∃ b ꞉ B , β b ＝ x
  small-compact-basis-contains-all-compact-elements scb x x-is-compact =
   ∥∥-functor γ (x-is-compact (↓ᴮₛ x) (↓-inclusionₛ x)
                              (↓ᴮₛ-is-directed x) (↓ᴮₛ-∐-⊒ x))
    where
     open is-small-compact-basis scb
     γ : (Σ (b , b-below-x) ꞉ ↓ᴮₛ x , x ⊑⟨ 𝓓 ⟩ β b)
-      → (Σ b ꞉ B , β b ≡ x)
+      → (Σ b ꞉ B , β b ＝ x)
     γ ((b , b-below-x) , x-below-b) = (b , e)
      where
-      e : β b ≡ x
+      e : β b ＝ x
       e = antisymmetry 𝓓 (β b) x (⊑ᴮₛ-to-⊑ᴮ b-below-x) x-below-b
 
 \end{code}
@@ -497,7 +497,7 @@ module _
    ; compact-family             = ↓-inclusionₛ
    ; compact-family-is-directed = ↓ᴮₛ-is-directed
    ; compact-family-is-compact  = ↓ᴮₛ-compact
-   ; compact-family-∐-≡         = ↓ᴮₛ-∐-≡
+   ; compact-family-∐-＝         = ↓ᴮₛ-∐-＝
    }
    where
     open is-small-compact-basis scb
@@ -620,9 +620,9 @@ module _
     ε : (x : ⟨ 𝓓 ⟩) → is-Directed 𝓔 (↡-inclusionₛ (s x))
     ε x = ↡ᴮₛ-is-directed (s x)
 
-    ∐-section-of-r : (x : ⟨ 𝓓 ⟩) → r (∐ 𝓔 (ε x)) ≡ x
-    ∐-section-of-r x = r (∐ 𝓔 (ε x)) ≡⟨ ap r (↡ᴮₛ-∐-≡ (s x)) ⟩
-                       r (s x)       ≡⟨ s-section-of-r x     ⟩
+    ∐-section-of-r : (x : ⟨ 𝓓 ⟩) → r (∐ 𝓔 (ε x)) ＝ x
+    ∐-section-of-r x = r (∐ 𝓔 (ε x)) ＝⟨ ap r (↡ᴮₛ-∐-＝ (s x)) ⟩
+                       r (s x)       ＝⟨ s-section-of-r x     ⟩
                        x             ∎
 
     ≪ʳᴮ-is-directed : (x : ⟨ 𝓓 ⟩) → is-Directed 𝓓 (↡-inclusion 𝓓 (r ∘ β) x)
@@ -695,7 +695,7 @@ locally-small-exponential-criterion {𝓤} {𝓣} {𝓤'} {𝓣'} pe 𝓓 𝓔 �
            ⦅⇐⦆ f-below-g b = ⊑-to-⊑ₛ (f-below-g (β b))
            ⦅⇒⦆ : order-using-basis → ptwise-order
            ⦅⇒⦆ f-below-g x = transport (λ - → f - ⊑⟨ 𝓔 ⟩ g -)
-                              (↡ᴮₛ-∐-≡ x) f-below-g'
+                              (↡ᴮₛ-∐-＝ x) f-below-g'
             where
              f-below-g' = f (∐ 𝓓 (↡ᴮₛ-is-directed x)) ⊑⟨ 𝓔 ⟩[ ⦅1⦆ ]
                           ∐ 𝓔 εᶠ                      ⊑⟨ 𝓔 ⟩[ ⦅2⦆ ]

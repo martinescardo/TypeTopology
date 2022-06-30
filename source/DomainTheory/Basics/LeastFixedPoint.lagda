@@ -78,7 +78,7 @@ module _ {𝓥 : Universe} where
                    (n : ℕ)
                  → ∐ (𝓓 ⁻) (pointwise-family-is-directed (𝓓 ⁻) (𝓓 ⁻) α δ
                            (∐ (𝓓 ⁻) (n-family-is-directed α δ n)))
-                   ≡ ∐ (𝓓 ⁻) (n-family-is-directed α δ (succ n))
+                   ＝ ∐ (𝓓 ⁻) (n-family-is-directed α δ (succ n))
   double-∐-lemma {I} α δ n = antisymmetry (𝓓 ⁻) x y a b
    where
     ε : is-Directed (𝓓 ⁻) (pointwise-family (𝓓 ⁻) (𝓓 ⁻) α
@@ -159,18 +159,18 @@ module _ {𝓥 : Universe} where
           (∐ (𝓓 ⁻) (n-family-is-directed α δ (succ n)))
           (iter (succ n) ∘ α)
       k = ∐-is-sup (𝓓 ⁻) (n-family-is-directed α δ (succ n))
-      h = iter (succ n) s                                           ≡⟨ refl ⟩
-          [ 𝓓 ⁻ , 𝓓 ⁻ ]⟨ s ⟩ (iter n s)                             ≡⟨ ⦅1⦆  ⟩
-          [ 𝓓 ⁻ , 𝓓 ⁻ ]⟨ s ⟩ (∐ (𝓓 ⁻) (n-family-is-directed α δ n)) ≡⟨ refl ⟩
+      h = iter (succ n) s                                           ＝⟨ refl ⟩
+          [ 𝓓 ⁻ , 𝓓 ⁻ ]⟨ s ⟩ (iter n s)                             ＝⟨ ⦅1⦆  ⟩
+          [ 𝓓 ⁻ , 𝓓 ⁻ ]⟨ s ⟩ (∐ (𝓓 ⁻) (n-family-is-directed α δ n)) ＝⟨ refl ⟩
           ∐ (𝓓 ⁻) (pointwise-family-is-directed (𝓓 ⁻) (𝓓 ⁻) α δ
-            (∐ (𝓓 ⁻) (n-family-is-directed α δ n)))                 ≡⟨ ⦅2⦆  ⟩
+            (∐ (𝓓 ⁻) (n-family-is-directed α δ n)))                 ＝⟨ ⦅2⦆  ⟩
           ∐ (𝓓 ⁻) (n-family-is-directed α δ (succ n))               ∎
        where
         s = (∐ ((𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓) ⁻) {I} {α} δ)
         ⦅2⦆ = double-∐-lemma α δ n
         ⦅1⦆ = ap ([ 𝓓 ⁻ , 𝓓 ⁻ ]⟨ s ⟩) e
          where
-          e : iter n s ≡ ∐ (𝓓 ⁻) (n-family-is-directed α δ n)
+          e : iter n s ＝ ∐ (𝓓 ⁻) (n-family-is-directed α δ n)
           e = antisymmetry (𝓓 ⁻) (iter n s) (∐ (𝓓 ⁻)
                (n-family-is-directed α δ n)) l m
            where
@@ -206,7 +206,7 @@ module _ {𝓥 : Universe} where
                                    (reflexivity (𝓓 ⁻) (iter zero f))
   iter-increases n (succ m) l f = h (≤-split n m l)
    where
-    h : (n ≤ m) + (n ≡ succ m) → (iter n f) ⊑⟪ 𝓓 ⟫ iter (succ m) f
+    h : (n ≤ m) + (n ＝ succ m) → (iter n f) ⊑⟪ 𝓓 ⟫ iter (succ m) f
     h (inl l') = iter n f        ⊑⟪ 𝓓 ⟫[ iter-increases n m l' f ]
                  iter m f        ⊑⟪ 𝓓 ⟫[ iter-is-ω-chain m f     ]
                  iter (succ m) f ∎⟪ 𝓓 ⟫
@@ -253,7 +253,7 @@ module _ where
 
   μ-gives-a-fixed-point : (f : DCPO[ (𝓓 ⁻) , (𝓓 ⁻) ])
                         → [ (𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓) ⁻ , 𝓓 ⁻ ]⟨ μ ⟩ f
-                          ≡ [ 𝓓 ⁻ , 𝓓 ⁻ ]⟨ f ⟩
+                          ＝ [ 𝓓 ⁻ , 𝓓 ⁻ ]⟨ f ⟩
                              ([ (𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓) ⁻ , 𝓓 ⁻ ]⟨ μ ⟩ f)
   μ-gives-a-fixed-point fc = antisymmetry (𝓓 ⁻) (ν fc) (f (ν fc)) l m
    where

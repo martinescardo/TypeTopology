@@ -257,7 +257,7 @@ later directify by taking finite joins.
                      ∐ (𝓔 ⁻) ε ⊑⟪ 𝓔 ⟫[ ⦅3⦆ ]
                      g x       ∎⟪ 𝓔 ⟫
         where
-         ⦅1⦆ = ≡-to-⊒ (𝓔 ⁻) (ap f (↓ᴮₛ-∐-≡ x))
+         ⦅1⦆ = ＝-to-⊒ (𝓔 ⁻) (ap f (↓ᴮₛ-∐-＝ x))
          ⦅2⦆ = continuous-∐-⊑ 𝓓 (𝓔 ⁻) 𝕗 δ
          ⦅3⦆ = ∐-is-lowerbound-of-upperbounds (𝓔 ⁻) ε (g x) γ
           where
@@ -424,11 +424,11 @@ module _
      r : ⟨ 𝓓' ⟹ᵈᶜᵖᵒ 𝓔' ⟩ → ⟨ 𝓓 ⟹ᵈᶜᵖᵒ 𝓔 ⟩
      r g = DCPO-∘₃ 𝓓 𝓓' 𝓔' 𝓔 (sᴰ , sᴰ-is-cts) g (rᴱ , rᴱ-is-cts)
      s-section-of-r : r ∘ s ∼ id
-     s-section-of-r (f , _) = to-continuous-function-≡ 𝓓 𝓔 γ
+     s-section-of-r (f , _) = to-continuous-function-＝ 𝓓 𝓔 γ
       where
        γ : rᴱ ∘ sᴱ ∘ f ∘ rᴰ ∘ sᴰ ∼ f
-       γ x = (rᴱ ∘ sᴱ ∘ f ∘ rᴰ ∘ sᴰ) x ≡⟨ rᴱ-sᴱ-equation ((f ∘ rᴰ ∘ sᴰ) x) ⟩
-             (f ∘ rᴰ ∘ sᴰ) x           ≡⟨ ap f (rᴰ-sᴰ-equation x) ⟩
+       γ x = (rᴱ ∘ sᴱ ∘ f ∘ rᴰ ∘ sᴰ) x ＝⟨ rᴱ-sᴱ-equation ((f ∘ rᴰ ∘ sᴰ) x) ⟩
+             (f ∘ rᴰ ∘ sᴰ) x           ＝⟨ ap f (rᴰ-sᴰ-equation x) ⟩
              f x                       ∎
      s-is-cts : is-continuous (𝓓 ⟹ᵈᶜᵖᵒ 𝓔) (𝓓' ⟹ᵈᶜᵖᵒ 𝓔') s
      s-is-cts = DCPO-∘₃-is-continuous₂ 𝓓' 𝓓 𝓔 𝓔'

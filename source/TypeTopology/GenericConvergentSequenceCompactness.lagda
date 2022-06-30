@@ -37,9 +37,9 @@ We recall the main notions defined in the above imported modules:
 private
  module recall {X : 𝓤 ̇ } where
 
-  recall₀ : compact∙ X    ≡ (Π p ꞉ (X → 𝟚) , Σ x₀ ꞉ X , (p x₀ ≡ ₁ → Π x ꞉ X , p x ≡ ₁))
-  recall₁ : compact  X    ≡ (Π p ꞉ (X → 𝟚) , (Σ x ꞉ X , p x ≡ ₀) + (Π x ꞉ X , p x ≡ ₁))
-  recall₂ : is-discrete X ≡ ((x y : X) → (x ≡ y) + (x ≢ y))
+  recall₀ : compact∙ X    ＝ (Π p ꞉ (X → 𝟚) , Σ x₀ ꞉ X , (p x₀ ＝ ₁ → Π x ꞉ X , p x ＝ ₁))
+  recall₁ : compact  X    ＝ (Π p ꞉ (X → 𝟚) , (Σ x ꞉ X , p x ＝ ₀) + (Π x ꞉ X , p x ＝ ₁))
+  recall₂ : is-discrete X ＝ ((x y : X) → (x ＝ y) + (x ≢ y))
 
   recall₀ = by-definition
   recall₁ = by-definition
@@ -64,63 +64,63 @@ This is the main theorem proved in this module.
   a : ℕ∞
   a = (α , d)
 
-  Dagger₀ : (n : ℕ) → a ≡ ι n → p (ι n) ≡ ₀
-  Dagger₀ 0 r =  p (ι 0)   ≡⟨ refl ⟩
-                 α 0       ≡⟨ ap (λ - → ι - 0) r ⟩
-                 ι (ι 0) 0 ≡⟨ refl ⟩
+  Dagger₀ : (n : ℕ) → a ＝ ι n → p (ι n) ＝ ₀
+  Dagger₀ 0 r =  p (ι 0)   ＝⟨ refl ⟩
+                 α 0       ＝⟨ ap (λ - → ι - 0) r ⟩
+                 ι (ι 0) 0 ＝⟨ refl ⟩
                  ₀         ∎
 
-  Dagger₀ (succ n) r = p (ι (succ n))          ≡⟨ w ⁻¹ ⟩
-                       α (succ n)              ≡⟨ ap (λ - → ι - (succ n)) r ⟩
-                       ι (ι (succ n)) (succ n) ≡⟨ ℕ-to-ℕ∞-diagonal₀ n ⟩
+  Dagger₀ (succ n) r = p (ι (succ n))          ＝⟨ w ⁻¹ ⟩
+                       α (succ n)              ＝⟨ ap (λ - → ι - (succ n)) r ⟩
+                       ι (ι (succ n)) (succ n) ＝⟨ ℕ-to-ℕ∞-diagonal₀ n ⟩
                        ₀                       ∎
    where
-    t = α n              ≡⟨ ap (λ - → ι - n) r  ⟩
-        ι (ι (succ n)) n ≡⟨ ℕ-to-ℕ∞-diagonal₁ n ⟩
+    t = α n              ＝⟨ ap (λ - → ι - n) r  ⟩
+        ι (ι (succ n)) n ＝⟨ ℕ-to-ℕ∞-diagonal₁ n ⟩
         ₁                ∎
 
-    w = α (succ n)              ≡⟨ ap (λ - → min𝟚 - (p (ι (succ n)))) t ⟩
-        min𝟚 ₁ (p (ι (succ n))) ≡⟨ refl ⟩
+    w = α (succ n)              ＝⟨ ap (λ - → min𝟚 - (p (ι (succ n)))) t ⟩
+        min𝟚 ₁ (p (ι (succ n))) ＝⟨ refl ⟩
         p (ι (succ n))          ∎
 
-  Dagger₁ : a ≡ ∞ → (n : ℕ) → p (ι n) ≡ ₁
-  Dagger₁ r 0 = p (ι 0) ≡⟨ refl ⟩
-                α 0     ≡⟨ ap (λ - → ι - 0) r ⟩
-                ι ∞ 0   ≡⟨ refl ⟩
+  Dagger₁ : a ＝ ∞ → (n : ℕ) → p (ι n) ＝ ₁
+  Dagger₁ r 0 = p (ι 0) ＝⟨ refl ⟩
+                α 0     ＝⟨ ap (λ - → ι - 0) r ⟩
+                ι ∞ 0   ＝⟨ refl ⟩
                 ₁       ∎
-  Dagger₁ r (succ n) = p (ι (succ n)) ≡⟨ w ⁻¹ ⟩
-                       α (succ n)     ≡⟨ ap (λ - → ι - (succ n)) r ⟩
-                       ι ∞ (succ n)   ≡⟨ refl ⟩
+  Dagger₁ r (succ n) = p (ι (succ n)) ＝⟨ w ⁻¹ ⟩
+                       α (succ n)     ＝⟨ ap (λ - → ι - (succ n)) r ⟩
+                       ι ∞ (succ n)   ＝⟨ refl ⟩
                        ₁              ∎
    where
-    s : α n ≡ ₁
+    s : α n ＝ ₁
     s = ap (λ - → ι - n) r
 
-    w : α (succ n) ≡ p (ι (succ n))
-    w = α (succ n)              ≡⟨ ap (λ - → min𝟚 - (p (ι (succ n)))) s ⟩
-        min𝟚 ₁ (p (ι (succ n))) ≡⟨ refl ⟩
+    w : α (succ n) ＝ p (ι (succ n))
+    w = α (succ n)              ＝⟨ ap (λ - → min𝟚 - (p (ι (succ n)))) s ⟩
+        min𝟚 ₁ (p (ι (succ n))) ＝⟨ refl ⟩
         p (ι (succ n))          ∎
 
-  Lemma₀ : (n : ℕ) → a ≡ ι n → p a ≡ ₀
-  Lemma₀ n t = p a     ≡⟨ ap p t ⟩
-               p (ι n) ≡⟨ Dagger₀ n t ⟩
+  Lemma₀ : (n : ℕ) → a ＝ ι n → p a ＝ ₀
+  Lemma₀ n t = p a     ＝⟨ ap p t ⟩
+               p (ι n) ＝⟨ Dagger₀ n t ⟩
                ₀       ∎
 
-  Claim₀ : p a ≡ ₁ → (n : ℕ) → a ≢ ι n
+  Claim₀ : p a ＝ ₁ → (n : ℕ) → a ≢ ι n
   Claim₀ r n s = equal-₁-different-from-₀ r (Lemma₀ n s)
 
-  Claim₁ : p a ≡ ₁ → a ≡ ∞
+  Claim₁ : p a ＝ ₁ → a ＝ ∞
   Claim₁ r = not-finite-is-∞ fe (Claim₀ r)
 
-  Claim₂ : p a ≡ ₁ → (n : ℕ) → p (ι n) ≡ ₁
+  Claim₂ : p a ＝ ₁ → (n : ℕ) → p (ι n) ＝ ₁
   Claim₂ r = Dagger₁ (Claim₁ r)
 
-  Claim₃ : p a ≡ ₁ → p ∞ ≡ ₁
-  Claim₃ r = p ∞ ≡⟨ (ap p (Claim₁ r))⁻¹ ⟩
-             p a ≡⟨ r ⟩
+  Claim₃ : p a ＝ ₁ → p ∞ ＝ ₁
+  Claim₃ r = p ∞ ＝⟨ (ap p (Claim₁ r))⁻¹ ⟩
+             p a ＝⟨ r ⟩
              ₁   ∎
 
-  Lemma : p a ≡ ₁ → (v : ℕ∞) → p v ≡ ₁
+  Lemma : p a ＝ ₁ → (v : ℕ∞) → p v ＝ ₁
   Lemma r = ℕ∞-𝟚-density fe (Claim₂ r) (Claim₃ r)
 
 \end{code}

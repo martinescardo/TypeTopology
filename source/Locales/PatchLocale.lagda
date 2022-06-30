@@ -92,8 +92,8 @@ A nucleus is called perfect iff it is Scott-continuous:
 
 \begin{code}
 
- perfect-nuclei-eq : (𝒿 𝓀 : Perfect-Nucleus) → 𝒿 $_ ≡ 𝓀 $_ → 𝒿 ≡ 𝓀
- perfect-nuclei-eq 𝒿 𝓀 = to-subtype-≡ γ
+ perfect-nuclei-eq : (𝒿 𝓀 : Perfect-Nucleus) → 𝒿 $_ ＝ 𝓀 $_ → 𝒿 ＝ 𝓀
+ perfect-nuclei-eq 𝒿 𝓀 = to-subtype-＝ γ
   where
    γ : (j : ⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩)
      → is-prop ((is-nucleus (𝒪 X) j ∧ is-perfect j) holds)
@@ -177,10 +177,10 @@ Nuclei are ordered pointwise.
                → is-idempotent (𝒪 X) k holds
                → is-idempotent (𝒪 X) (j ⋏₀ k) holds
  ⋏₀-idempotent j k ζj ζk ϑj ϑk U =
-  (j ⋏₀ k) ((j ⋏₀ k) U)                                          ≡⟨ refl ⟩ₚ
-  (j ⋏₀ k) (j U ∧[ 𝒪 X ] k U)                                    ≡⟨ refl ⟩ₚ
-  j (j U ∧[ 𝒪 X ] k U) ∧[ 𝒪 X ] k (j U ∧[ 𝒪 X ] k U)             ≡⟨ i    ⟩ₚ
-  (j (j U) ∧[ 𝒪 X ] j (k U)) ∧[ 𝒪 X ] k (j U ∧[ 𝒪 X ] k U)       ≡⟨ ii   ⟩ₚ
+  (j ⋏₀ k) ((j ⋏₀ k) U)                                          ＝⟨ refl ⟩ₚ
+  (j ⋏₀ k) (j U ∧[ 𝒪 X ] k U)                                    ＝⟨ refl ⟩ₚ
+  j (j U ∧[ 𝒪 X ] k U) ∧[ 𝒪 X ] k (j U ∧[ 𝒪 X ] k U)             ＝⟨ i    ⟩ₚ
+  (j (j U) ∧[ 𝒪 X ] j (k U)) ∧[ 𝒪 X ] k (j U ∧[ 𝒪 X ] k U)       ＝⟨ ii   ⟩ₚ
   (j (j U) ∧[ 𝒪 X ] j (k U)) ∧[ 𝒪 X ] (k (j U) ∧[ 𝒪 X ] k (k U)) ≤⟨ iii  ⟩
   j (j U) ∧[ 𝒪 X ] (k (j U) ∧[ 𝒪 X ] k (k U))                    ≤⟨ iv   ⟩
   j (j U) ∧[ 𝒪 X ] k (k U)                                       ≤⟨ v    ⟩
@@ -201,22 +201,22 @@ Nuclei are ordered pointwise.
                        → preserves-binary-meets (𝒪 X) (𝒪 X) k holds
                        → preserves-binary-meets (𝒪 X) (𝒪 X) (j ⋏₀ k) holds
  ⋏₀-is-meet-preserving j k ζⱼ ζₖ U V =
-  (j ⋏₀ k) (U ∧[ 𝒪 X ] V)                        ≡⟨ refl  ⟩
-  j (U ∧[ 𝒪 X ] V) ∧[ 𝒪 X ] k (U ∧[ 𝒪 X ] V)     ≡⟨ i     ⟩
-  (j U ∧[ 𝒪 X ] j V) ∧[ 𝒪 X ] k (U ∧[ 𝒪 X ] V)   ≡⟨ ii    ⟩
-  (j U ∧[ 𝒪 X ] j V) ∧[ 𝒪 X ] (k U ∧[ 𝒪 X ] k V) ≡⟨ iii   ⟩
-  j U ∧[ 𝒪 X ] ((j V ∧[ 𝒪 X ] k U) ∧[ 𝒪 X ] k V) ≡⟨ iv    ⟩
-  j U ∧[ 𝒪 X ] ((k U ∧[ 𝒪 X ] j V) ∧[ 𝒪 X ] k V) ≡⟨ v     ⟩
-  j U ∧[ 𝒪 X ] (k U ∧[ 𝒪 X ] (j V ∧[ 𝒪 X ] k V)) ≡⟨ vi     ⟩
-  (j U ∧[ 𝒪 X ] k U) ∧[ 𝒪 X ] (j V ∧[ 𝒪 X ] k V) ≡⟨ refl  ⟩
+  (j ⋏₀ k) (U ∧[ 𝒪 X ] V)                        ＝⟨ refl  ⟩
+  j (U ∧[ 𝒪 X ] V) ∧[ 𝒪 X ] k (U ∧[ 𝒪 X ] V)     ＝⟨ i     ⟩
+  (j U ∧[ 𝒪 X ] j V) ∧[ 𝒪 X ] k (U ∧[ 𝒪 X ] V)   ＝⟨ ii    ⟩
+  (j U ∧[ 𝒪 X ] j V) ∧[ 𝒪 X ] (k U ∧[ 𝒪 X ] k V) ＝⟨ iii   ⟩
+  j U ∧[ 𝒪 X ] ((j V ∧[ 𝒪 X ] k U) ∧[ 𝒪 X ] k V) ＝⟨ iv    ⟩
+  j U ∧[ 𝒪 X ] ((k U ∧[ 𝒪 X ] j V) ∧[ 𝒪 X ] k V) ＝⟨ v     ⟩
+  j U ∧[ 𝒪 X ] (k U ∧[ 𝒪 X ] (j V ∧[ 𝒪 X ] k V)) ＝⟨ vi     ⟩
+  (j U ∧[ 𝒪 X ] k U) ∧[ 𝒪 X ] (j V ∧[ 𝒪 X ] k V) ＝⟨ refl  ⟩
   ((j ⋏₀ k) U) ∧[ 𝒪 X ] ((j ⋏₀ k) V)             ∎
    where
     †   = ∧[ 𝒪 X ]-is-associative (j U) (j V) (k U ∧[ 𝒪 X ] k V) ⁻¹
     ‡   = ap (λ - → j U ∧[ 𝒪 X ] -) (∧[ 𝒪 X ]-is-associative (j V) (k U) (k V))
     i   = ap (λ - → - ∧[ 𝒪 X ] k (U ∧[ 𝒪 X ] V)) (ζⱼ U V)
     ii  = ap (λ - → (j U ∧[ 𝒪 X ] j V) ∧[ 𝒪 X ] -) (ζₖ U V)
-    iii = (j U ∧[ 𝒪 X ] j V) ∧[ 𝒪 X ] (k U ∧[ 𝒪 X ] k V)  ≡⟨ † ⟩
-          j U ∧[ 𝒪 X ] (j V ∧[ 𝒪 X ] (k U ∧[ 𝒪 X ] k V))  ≡⟨ ‡ ⟩
+    iii = (j U ∧[ 𝒪 X ] j V) ∧[ 𝒪 X ] (k U ∧[ 𝒪 X ] k V)  ＝⟨ † ⟩
+          j U ∧[ 𝒪 X ] (j V ∧[ 𝒪 X ] (k U ∧[ 𝒪 X ] k V))  ＝⟨ ‡ ⟩
           j U ∧[ 𝒪 X ] ((j V ∧[ 𝒪 X ] k U) ∧[ 𝒪 X ] k V)  ∎
     iv  = ap
            (λ - → j U ∧[ 𝒪 X ] (- ∧[ 𝒪 X ] k V))
@@ -245,10 +245,10 @@ Nuclei are ordered pointwise.
    open JoinNotation (λ S → ⋁[ 𝒪 X ] S)
 
    β : ((j ⋏₀ k) (⋁[ 𝒪 X ] S) is-an-upper-bound-of ⁅ (j ⋏₀ k) s ∣ s ε S ⁆) holds
-   β l = (j ⋏₀ k) (S [ l ])                       ≡⟨ refl ⟩ₚ
+   β l = (j ⋏₀ k) (S [ l ])                       ＝⟨ refl ⟩ₚ
          j (S [ l ]) ∧[ 𝒪 X ] k (S [ l ])         ≤⟨ i    ⟩
          j (⋁[ 𝒪 X ] S) ∧[ 𝒪 X ] k (S [ l ])      ≤⟨ ii   ⟩
-         j (⋁[ 𝒪 X ] S) ∧[ 𝒪 X ] k (⋁[ 𝒪 X ] S)   ≡⟨ refl ⟩ₚ
+         j (⋁[ 𝒪 X ] S) ∧[ 𝒪 X ] k (⋁[ 𝒪 X ] S)   ＝⟨ refl ⟩ₚ
          (j ⋏₀ k) (⋁[ 𝒪 X ] S)                    ■
           where
            †  = ⋁[ 𝒪 X ]-upper S l
@@ -259,10 +259,10 @@ Nuclei are ordered pointwise.
    γ : (Ɐ (u , _) ∶ upper-bound ⁅ (j ⋏₀ k) s ∣ s ε S ⁆ ,
          (j ⋏₀ k) (⋁[ 𝒪 X ] S) ≤[ poset-of (𝒪 X) ] u) holds
    γ 𝓊@(u , _) =
-    (j ⋏₀ k) (⋁[ 𝒪 X ] S)                                           ≡⟨ refl ⟩ₚ
+    (j ⋏₀ k) (⋁[ 𝒪 X ] S)                                           ＝⟨ refl ⟩ₚ
     j (⋁[ 𝒪 X ] S) ∧[ 𝒪 X ] k (⋁[ 𝒪 X ] S)                          ≤⟨ i    ⟩
     (⋁[ 𝒪 X ] ⁅ j s ∣ s ε S ⁆) ∧[ 𝒪 X ] k (⋁[ 𝒪 X ] S)              ≤⟨ ii   ⟩
-    (⋁[ 𝒪 X ] ⁅ j s ∣ s ε S ⁆) ∧[ 𝒪 X ] (⋁[ 𝒪 X ] ⁅ k s ∣ s ε S ⁆)  ≡⟨ iii  ⟩ₚ
+    (⋁[ 𝒪 X ] ⁅ j s ∣ s ε S ⁆) ∧[ 𝒪 X ] (⋁[ 𝒪 X ] ⁅ k s ∣ s ε S ⁆)  ＝⟨ iii  ⟩ₚ
     ⋁[ 𝒪 X ] ⁅ 𝒮 m n ∣ (m , n) ∶ I × I ⁆                            ≤⟨ iv   ⟩
     ⋁⟨ i ∶ I ⟩ j (S [ i ]) ∧[ 𝒪 X ] k (S [ i ])                     ≤⟨ v    ⟩
     u                                                               ■
@@ -272,10 +272,10 @@ Nuclei are ordered pointwise.
       𝒮 : I → I → ⟨ 𝒪 X ⟩
       𝒮 m n = j (S [ m ]) ∧[ 𝒪 X ] k (S [ n ])
 
-      † : j (⋁[ 𝒪 X ] S) ≡ ⋁[ 𝒪 X ] ⁅ j s ∣ s ε S ⁆
+      † : j (⋁[ 𝒪 X ] S) ＝ ⋁[ 𝒪 X ] ⁅ j s ∣ s ε S ⁆
       † = scott-continuous-join-eq (𝒪 X) (𝒪 X) j ζj S δ
 
-      ‡ : k (⋁[ 𝒪 X ] S) ≡ ⋁[ 𝒪 X ] ⁅ k s ∣ s ε S ⁆
+      ‡ : k (⋁[ 𝒪 X ] S) ＝ ⋁[ 𝒪 X ] ⁅ k s ∣ s ε S ⁆
       ‡ = scott-continuous-join-eq (𝒪 X) (𝒪 X) k ζk S δ
 
       ※ : ((⋁⟨ i ∶ I ⟩ j (S [ i ]) ∧[ 𝒪 X ] k (S [ i ]))
@@ -292,7 +292,7 @@ Nuclei are ordered pointwise.
                     ∧ ((S [ n ]) ≤[ poset-of (𝒪 X) ] (S [ i ]))) holds
           → P holds
         ε (i , p , q) =
-         𝒮 m n                                        ≡⟨ refl ⟩ₚ
+         𝒮 m n                                        ＝⟨ refl ⟩ₚ
          j (S [ m ]) ∧[ 𝒪 X ] k (S [ n ])             ≤⟨ ♢    ⟩
          j (S [ i ]) ∧[ 𝒪 X ] k (S [ n ])             ≤⟨ ♥    ⟩
          j (S [ i ]) ∧[ 𝒪 X ] k (S [ i ])             ≤⟨ ♠    ⟩
@@ -328,7 +328,7 @@ Nuclei are ordered pointwise.
 \section{Construction of the join}
 
 The construction of the join is the nontrivial component of this development.
-Given a family `S ∶≡ { fᵢ : A → A | i ∶ I }` of endofunctions on some type `A`,
+Given a family `S ∶＝ { fᵢ : A → A | i ∶ I }` of endofunctions on some type `A`,
 and a list `i₀, …, iₙ` of indices (of type `I`), the function `sequence gives
 the composition of all `fᵢₙ ∘ ⋯ ∘ fᵢ₀`:
 
@@ -353,7 +353,7 @@ a given family:
 The first lemma we prove about `𝔡𝔦𝔯` is the fact that, given a family
 
 ```
-S ∶≡ { jᵢ : 𝒪 X → 𝒪 X ∣ i ∶ I }
+S ∶＝ { jᵢ : 𝒪 X → 𝒪 X ∣ i ∶ I }
 ```
 
 of prenuclei, `sequence S is` is a prenuclei for any given list `is : List I` of
@@ -374,16 +374,16 @@ indices.
    n₁ : is-inflationary (𝒪 X) (𝔡𝔦𝔯 K [ j ∷ js ]) holds
    n₁ x = x                             ≤⟨ i    ⟩
           (K [ j ]) x                   ≤⟨ ii   ⟩
-          (𝔡𝔦𝔯 K [ js ]) ((K [ j ]) x)  ≡⟨ refl ⟩ₚ
+          (𝔡𝔦𝔯 K [ js ]) ((K [ j ]) x)  ＝⟨ refl ⟩ₚ
           (𝔡𝔦𝔯 K [ j ∷ js ]) x          ■
            where
             i  = pr₁ (ϑ j) x
             ii = pr₁ IH ((K [ j ]) x)
 
    n₂ : preserves-binary-meets (𝒪 X) (𝒪 X) (𝔡𝔦𝔯 K [ j ∷ js ]) holds
-   n₂ x y = (𝔡𝔦𝔯 K [ j ∷ js ]) (x ∧[ 𝒪 X ] y)                   ≡⟨ refl ⟩
-            (𝔡𝔦𝔯 K [ js ]) ((K [ j ]) (x ∧[ 𝒪 X ] y))           ≡⟨ i    ⟩
-            (𝔡𝔦𝔯 K [ js ]) ((K [ j ]) x ∧[ 𝒪 X ] (K [ j ]) y)   ≡⟨ ii   ⟩
+   n₂ x y = (𝔡𝔦𝔯 K [ j ∷ js ]) (x ∧[ 𝒪 X ] y)                   ＝⟨ refl ⟩
+            (𝔡𝔦𝔯 K [ js ]) ((K [ j ]) (x ∧[ 𝒪 X ] y))           ＝⟨ i    ⟩
+            (𝔡𝔦𝔯 K [ js ]) ((K [ j ]) x ∧[ 𝒪 X ] (K [ j ]) y)   ＝⟨ ii   ⟩
             (𝔡𝔦𝔯 K [ j ∷ js ]) x ∧[ 𝒪 X ] (𝔡𝔦𝔯 K [ j ∷ js ]) y  ∎
              where
               i   = ap (𝔡𝔦𝔯 K [ js ]) (pr₂ (ϑ j) x y)
@@ -433,7 +433,7 @@ indices.
 
    β : (((K ^*) [ is ]) ≼₁ (K ^* [ is ++ js ])) holds
    β U = K ^* [ is ] $ₚ U                 ≤⟨ i  ⟩
-         K ^* [ js ] $ₚ K ^* [ is ] $ₚ U  ≡⟨ ii ⟩ₚ
+         K ^* [ js ] $ₚ K ^* [ is ] $ₚ U  ＝⟨ ii ⟩ₚ
          K ^* [ is ++ js ] $ₚ U           ■
           where
            i  = prenucleus-property₂ (𝒪 X) (K ^* [ js ]) (K ^* [ is ]) U
@@ -441,7 +441,7 @@ indices.
 
    γ : ((K ^* [ js ]) ≼₁ (K ^* [ is ++ js ])) holds
    γ U = K ^* [ js ] $ₚ U                 ≤⟨ i  ⟩
-         K ^* [ js ] $ₚ K ^* [ is ] $ₚ U  ≡⟨ ii ⟩ₚ
+         K ^* [ js ] $ₚ K ^* [ is ] $ₚ U  ＝⟨ ii ⟩ₚ
          K ^* [ is ++ js ] $ₚ U           ■
           where
            i  = prenucleus-property₁ (𝒪 X) (K ^* [ js ]) (K ^* [ is ]) U
@@ -469,11 +469,11 @@ indices.
 
  joins-commute : (J : Fam 𝓦 (⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩)) (S : Fam 𝓦 ⟨ 𝒪 X ⟩)
                → ⋁ ⁅ ⋁ ⁅ α U ∣ α ε 𝔡𝔦𝔯 J ⁆ ∣ U ε S ⁆
-               ≡ ⋁ ⁅ ⋁ ⁅ α U ∣ U ε S ⁆ ∣ α ε 𝔡𝔦𝔯 J ⁆
+               ＝ ⋁ ⁅ ⋁ ⁅ α U ∣ U ε S ⁆ ∣ α ε 𝔡𝔦𝔯 J ⁆
  joins-commute J S =
-  ⋁ ⁅ ⋁ ⁅ α U ∣ α ε 𝔡𝔦𝔯 J ⁆ ∣ U ε S ⁆                                ≡⟨ i   ⟩
-  ⋁ ⁅ (𝔡𝔦𝔯 J [ j ]) (S [ i ]) ∣ (i , j) ∶ index S × index (𝔡𝔦𝔯 J) ⁆  ≡⟨ ii  ⟩
-  ⋁ ⁅ (𝔡𝔦𝔯 J [ j ]) (S [ i ]) ∣ (j , i) ∶ index (𝔡𝔦𝔯 J) × index S ⁆  ≡⟨ iii ⟩
+  ⋁ ⁅ ⋁ ⁅ α U ∣ α ε 𝔡𝔦𝔯 J ⁆ ∣ U ε S ⁆                                ＝⟨ i   ⟩
+  ⋁ ⁅ (𝔡𝔦𝔯 J [ j ]) (S [ i ]) ∣ (i , j) ∶ index S × index (𝔡𝔦𝔯 J) ⁆  ＝⟨ ii  ⟩
+  ⋁ ⁅ (𝔡𝔦𝔯 J [ j ]) (S [ i ]) ∣ (j , i) ∶ index (𝔡𝔦𝔯 J) × index S ⁆  ＝⟨ iii ⟩
   ⋁ ⁅ ⋁ ⁅ α U ∣ U ε S ⁆ ∣ α ε 𝔡𝔦𝔯 J ⁆                                ∎
    where
     T = ⁅ (𝔡𝔦𝔯 J [ j ]) (S [ i ]) ∣ (i , j) ∶ index S × index (𝔡𝔦𝔯 J) ⁆
@@ -521,9 +521,9 @@ The definition of the join:
 
    n₂ : is-idempotent (𝒪 X) (join K₀) holds
    n₂ U =
-    join K₀ (join K₀ U)                                             ≡⟨ refl ⟩ₚ
-    ⋁ ⁅ α (⋁ ⁅ β U ∣ β ε 𝔡𝔦𝔯 K₀ ⁆) ∣ α ε 𝔡𝔦𝔯 K₀ ⁆                   ≡⟨ i    ⟩ₚ
-    ⋁ ⁅ ⋁ ⁅ α (β U) ∣ β ε 𝔡𝔦𝔯 K₀ ⁆ ∣ α ε 𝔡𝔦𝔯 K₀ ⁆                   ≡⟨ ii   ⟩ₚ
+    join K₀ (join K₀ U)                                             ＝⟨ refl ⟩ₚ
+    ⋁ ⁅ α (⋁ ⁅ β U ∣ β ε 𝔡𝔦𝔯 K₀ ⁆) ∣ α ε 𝔡𝔦𝔯 K₀ ⁆                   ＝⟨ i    ⟩ₚ
+    ⋁ ⁅ ⋁ ⁅ α (β U) ∣ β ε 𝔡𝔦𝔯 K₀ ⁆ ∣ α ε 𝔡𝔦𝔯 K₀ ⁆                   ＝⟨ ii   ⟩ₚ
     ⋁ ⁅ (𝔡𝔦𝔯 K₀ [ js ]) ((𝔡𝔦𝔯 K₀ [ is ]) U) ∣ (js , is) ∶ (_ × _) ⁆ ≤⟨ iii  ⟩
     join K₀ U                                                       ■
      where
@@ -563,10 +563,10 @@ The definition of the join:
 
    n₃ : preserves-binary-meets (𝒪 X) (𝒪 X) (join K₀) holds
    n₃ U V =
-    join K₀ (U ∧[ 𝒪 X ] V)                                                 ≡⟨ refl ⟩
-    ⋁ ⁅ α (U ∧[ 𝒪 X ] V) ∣ α ε 𝔡𝔦𝔯 K₀ ⁆                                    ≡⟨ i    ⟩
-    ⋁ ⁅ (α U) ∧[ 𝒪 X ] (α V) ∣ α ε 𝔡𝔦𝔯 K₀ ⁆                                ≡⟨ ii   ⟩
-    ⋁ ⁅ (𝔡𝔦𝔯 K₀ [ is ]) U ∧[ 𝒪 X ] (𝔡𝔦𝔯 K₀ [ js ]) V ∣ (is , js) ∶ _ × _ ⁆ ≡⟨ iii  ⟩
+    join K₀ (U ∧[ 𝒪 X ] V)                                                 ＝⟨ refl ⟩
+    ⋁ ⁅ α (U ∧[ 𝒪 X ] V) ∣ α ε 𝔡𝔦𝔯 K₀ ⁆                                    ＝⟨ i    ⟩
+    ⋁ ⁅ (α U) ∧[ 𝒪 X ] (α V) ∣ α ε 𝔡𝔦𝔯 K₀ ⁆                                ＝⟨ ii   ⟩
+    ⋁ ⁅ (𝔡𝔦𝔯 K₀ [ is ]) U ∧[ 𝒪 X ] (𝔡𝔦𝔯 K₀ [ js ]) V ∣ (is , js) ∶ _ × _ ⁆ ＝⟨ iii  ⟩
     join K₀ U ∧[ 𝒪 X ] join K₀ V                                           ∎
      where
       S = ⁅ (𝔡𝔦𝔯 K₀ [ is ]) U ∧[ 𝒪 X ] (𝔡𝔦𝔯 K₀ [ js ]) V ∣ (is , js) ∶ _ × _ ⁆
@@ -581,7 +581,7 @@ The definition of the join:
 
       ψ : ((⋁ ⁅ (α U) ∧[ 𝒪 X ] (α V) ∣ α ε 𝔡𝔦𝔯 K₀ ⁆) is-an-upper-bound-of S) holds
       ψ (is , js) =
-       S [ is , js ]                                  ≡⟨ refl ⟩ₚ
+       S [ is , js ]                                  ＝⟨ refl ⟩ₚ
        (𝔡𝔦𝔯 K₀ [ is ]) U ∧[ 𝒪 X ] (𝔡𝔦𝔯 K₀ [ js ]) V   ≤⟨ ♠    ⟩
        (𝔡𝔦𝔯 K₀ [ ks ]) U ∧[ 𝒪 X ] (𝔡𝔦𝔯 K₀ [ js ]) V   ≤⟨ ♣    ⟩
        (𝔡𝔦𝔯 K₀ [ ks ]) U ∧[ 𝒪 X ] (𝔡𝔦𝔯 K₀ [ ks ]) V   ≤⟨ ♦    ⟩
@@ -611,10 +611,10 @@ The definition of the join:
             (⋁[ 𝒪 X ]-upper T , ⋁[ 𝒪 X ]-least T)
     where
      T = ⁅ join K₀ s ∣ s ε S ⁆
-     ※ : join K₀ (⋁ S) ≡ ⋁ ⁅ join K₀ s ∣ s ε S ⁆
-     ※ = join K₀ (⋁ S)                         ≡⟨ refl ⟩
-         ⋁ ⁅ α (⋁ S) ∣ α ε 𝔡𝔦𝔯 K₀ ⁆            ≡⟨ i    ⟩
-         ⋁ ⁅ ⋁ ⁅ α s ∣ s ε S ⁆ ∣ α ε 𝔡𝔦𝔯 K₀ ⁆  ≡⟨ ii   ⟩
+     ※ : join K₀ (⋁ S) ＝ ⋁ ⁅ join K₀ s ∣ s ε S ⁆
+     ※ = join K₀ (⋁ S)                         ＝⟨ refl ⟩
+         ⋁ ⁅ α (⋁ S) ∣ α ε 𝔡𝔦𝔯 K₀ ⁆            ＝⟨ i    ⟩
+         ⋁ ⁅ ⋁ ⁅ α s ∣ s ε S ⁆ ∣ α ε 𝔡𝔦𝔯 K₀ ⁆  ＝⟨ ii   ⟩
          ⋁ ⁅ join K₀ s ∣ s ε S ⁆               ∎
           where
            †  = dfunext fe λ is →
@@ -711,9 +711,9 @@ when proving distributivity.
          → ((⁅ j ⋏₁ k ∣ k ε K ⁆ ^* [ is ]) ≼₁ nucleus-pre (𝒪 X) j) holds
  lemma-δ 𝒿@(j , n₁ , n₂ , n₃) K []       U = n₁ U
  lemma-δ 𝒿@(j , n₁ , n₂ , n₃) K (i ∷ is) U =
-  (⁅ 𝒿 ⋏₁ 𝓀 ∣ 𝓀 ε K ⁆ ^** [ i ∷ is ]) U                            ≡⟨ refl ⟩ₚ
+  (⁅ 𝒿 ⋏₁ 𝓀 ∣ 𝓀 ε K ⁆ ^** [ i ∷ is ]) U                            ＝⟨ refl ⟩ₚ
   (⁅ 𝒿 ⋏₁ 𝓀 ∣ 𝓀 ε K ⁆ ^** [ is ]) (j U ∧[ 𝒪 X ] (K [ i ]) .pr₁ U)  ≤⟨ ♠    ⟩
-  j ((j U) ∧[ 𝒪 X ] ((K [ i ]) .pr₁ U))                            ≡⟨ ♥    ⟩ₚ
+  j ((j U) ∧[ 𝒪 X ] ((K [ i ]) .pr₁ U))                            ＝⟨ ♥    ⟩ₚ
   j (j U) ∧[ 𝒪 X ] j ((K [ i ]) .pr₁ U)                            ≤⟨ ♣    ⟩
   j (j U)                                                          ≤⟨ n₂ U ⟩
   j U                                                              ■
@@ -730,7 +730,7 @@ when proving distributivity.
  lemma-γ j         K []       U = ≤-is-reflexive (poset-of (𝒪 X)) U
  lemma-γ 𝒿@(j , _) K (i ∷ is) U =
   _                                                     ≤⟨ ih ⟩
-  (K ^** [ is ]) (j U ⊓ (K₀ [ i ]) U)                   ≡⟨ †  ⟩ₚ
+  (K ^** [ is ]) (j U ⊓ (K₀ [ i ]) U)                   ＝⟨ †  ⟩ₚ
   (K ^** [ is ]) (j U) ⊓ (K ^** [ is ]) ((K₀ [ i ]) U)  ≤⟨ ‡  ⟩
   (K ^** [ i ∷ is ]) U                                  ■
    where
@@ -810,24 +810,24 @@ when proving distributivity.
       ♣ = ap (λ - → - ∧[ 𝒪 X ] (α (j U ⊓ Kᵢ U))) (n₃ (j U) (Kᵢ U) ⁻¹)
 
       ※ = (j U) ∧[ 𝒪 X ] α (Kᵢ U)                                            ≤⟨ ♥ ⟩
-          ((j (j U) ∧[ 𝒪 X ] j (Kᵢ U))) ∧[ 𝒪 X ] (α (j U) ∧[ 𝒪 X ] α (Kᵢ U)) ≡⟨ ♠ ⟩ₚ
-          ((j (j U) ∧[ 𝒪 X ] j (Kᵢ U))) ∧[ 𝒪 X ] α (j U ∧[ 𝒪 X ] Kᵢ U)       ≡⟨ ♣ ⟩ₚ
+          ((j (j U) ∧[ 𝒪 X ] j (Kᵢ U))) ∧[ 𝒪 X ] (α (j U) ∧[ 𝒪 X ] α (Kᵢ U)) ＝⟨ ♠ ⟩ₚ
+          ((j (j U) ∧[ 𝒪 X ] j (Kᵢ U))) ∧[ 𝒪 X ] α (j U ∧[ 𝒪 X ] Kᵢ U)       ＝⟨ ♣ ⟩ₚ
           (j (j U ∧[ 𝒪 X ] (Kᵢ U))) ∧[ 𝒪 X ] α (j U ∧[ 𝒪 X ] Kᵢ U)           ≤⟨ ϑ ⟩
           ((𝔡𝔦𝔯 ⁅ pr₁ (𝒿 ⋏ 𝓀) ∣ 𝓀 ε 𝒦 ⁆) [ i ∷ js ]) U                       ■
 
  distributivityₚ : (𝒿 : Perfect-Nucleus) (𝒦 : Fam 𝓦 Perfect-Nucleus)
-                 → 𝒿 ⋏ (⋁ₙ 𝒦) ≡ ⋁ₙ ⁅ 𝒿 ⋏ 𝓀 ∣ 𝓀 ε 𝒦 ⁆
+                 → 𝒿 ⋏ (⋁ₙ 𝒦) ＝ ⋁ₙ ⁅ 𝒿 ⋏ 𝓀 ∣ 𝓀 ε 𝒦 ⁆
  distributivityₚ 𝒿 𝒦 =
   perfect-nuclei-eq (𝒿 ⋏ ⋁ₙ 𝒦) (⋁ₙ ⁅ 𝒿 ⋏ 𝓀 ∣ 𝓀 ε 𝒦 ⁆) (dfunext fe γ)
    where
     𝒦₀ : Fam 𝓦 (⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩)
     𝒦₀ = ⁅ pr₁ j ∣ j ε 𝒦 ⁆
 
-    γ : (U : ⟨ 𝒪 X ⟩) → (𝒿 ⋏ (⋁ₙ 𝒦)) $ U ≡ (⋁ₙ ⁅ 𝒿 ⋏ 𝓀 ∣ 𝓀 ε 𝒦 ⁆) $ U
-    γ U = ((𝒿 ⋏ (⋁ₙ 𝒦)) $ U)                               ≡⟨ refl ⟩
-          (𝒿 $ U) ∧[ 𝒪 X ] ((⋁ₙ 𝒦) $ U)                    ≡⟨ refl ⟩
-          (𝒿 $ U) ∧[ 𝒪 X ] (⋁[ 𝒪 X ] ⁅ α U ∣ α ε 𝔡𝔦𝔯 𝒦₀ ⁆) ≡⟨ i    ⟩
-          ⋁[ 𝒪 X ] ⁅ (𝒿 $ U) ∧[ 𝒪 X ] α U ∣ α ε 𝔡𝔦𝔯 𝒦₀ ⁆   ≡⟨ ii   ⟩
+    γ : (U : ⟨ 𝒪 X ⟩) → (𝒿 ⋏ (⋁ₙ 𝒦)) $ U ＝ (⋁ₙ ⁅ 𝒿 ⋏ 𝓀 ∣ 𝓀 ε 𝒦 ⁆) $ U
+    γ U = ((𝒿 ⋏ (⋁ₙ 𝒦)) $ U)                               ＝⟨ refl ⟩
+          (𝒿 $ U) ∧[ 𝒪 X ] ((⋁ₙ 𝒦) $ U)                    ＝⟨ refl ⟩
+          (𝒿 $ U) ∧[ 𝒪 X ] (⋁[ 𝒪 X ] ⁅ α U ∣ α ε 𝔡𝔦𝔯 𝒦₀ ⁆) ＝⟨ i    ⟩
+          ⋁[ 𝒪 X ] ⁅ (𝒿 $ U) ∧[ 𝒪 X ] α U ∣ α ε 𝔡𝔦𝔯 𝒦₀ ⁆   ＝⟨ ii   ⟩
           (⋁ₙ ⁅ 𝒿 ⋏ 𝓀 ∣ 𝓀 ε 𝒦 ⁆) $ U                       ∎
            where
 

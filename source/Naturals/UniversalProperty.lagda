@@ -23,57 +23,57 @@ open import UF.Subsingletons
 
 ℕ-induction-retract : funext 𝓤₀ 𝓤
                     → (Y : ℕ → 𝓤 ̇ ) (y₀ : Y 0) (g : (n : ℕ) → Y n → Y (succ n))
-                    → (Σ h ꞉ (Π Y) , (h 0 ≡ y₀) ×
-                                     ((n : ℕ) → h (succ n) ≡ g n (h n)))
-                    ◁ (Σ h ꞉ (Π Y) , h ≡ induction y₀ g)
+                    → (Σ h ꞉ (Π Y) , (h 0 ＝ y₀) ×
+                                     ((n : ℕ) → h (succ n) ＝ g n (h n)))
+                    ◁ (Σ h ꞉ (Π Y) , h ＝ induction y₀ g)
 ℕ-induction-retract fe Y y₀ g = Σ-retract _ _ γ
  where
   γ : (h : Π Y)
-    → (h 0 ≡ y₀) × ((n : ℕ) → h (succ n) ≡ g n (h n))
-    ◁ (h ≡ induction y₀ g)
-  γ h =  (h 0 ≡ y₀) × ((n : ℕ) → h (succ n) ≡ g n (h n)) ◁⟨ i  ⟩
+    → (h 0 ＝ y₀) × ((n : ℕ) → h (succ n) ＝ g n (h n))
+    ◁ (h ＝ induction y₀ g)
+  γ h =  (h 0 ＝ y₀) × ((n : ℕ) → h (succ n) ＝ g n (h n)) ◁⟨ i  ⟩
          (h ∼ induction y₀ g)                            ◁⟨ ii ⟩
-         (h ≡ induction y₀ g)                            ◀
+         (h ＝ induction y₀ g)                            ◀
    where
     ii = ≃-gives-◁ (≃-sym (≃-funext fe h (induction y₀ g)))
     i  = r , s , η
      where
       r : h ∼ induction y₀ g
-        → (h 0 ≡ y₀) × ((n : ℕ) → h (succ n) ≡ g n (h n))
-      r H = H 0 , (λ n → h (succ n)              ≡⟨ H (succ n)          ⟩
-                         induction y₀ g (succ n) ≡⟨ refl                ⟩
-                         g n (induction y₀ g n)  ≡⟨ ap (g n) ((H n) ⁻¹) ⟩
+        → (h 0 ＝ y₀) × ((n : ℕ) → h (succ n) ＝ g n (h n))
+      r H = H 0 , (λ n → h (succ n)              ＝⟨ H (succ n)          ⟩
+                         induction y₀ g (succ n) ＝⟨ refl                ⟩
+                         g n (induction y₀ g n)  ＝⟨ ap (g n) ((H n) ⁻¹) ⟩
                          g n (h n)               ∎)
-      s : (h 0 ≡ y₀) × ((n : ℕ) → h (succ n) ≡ g n (h n))
+      s : (h 0 ＝ y₀) × ((n : ℕ) → h (succ n) ＝ g n (h n))
         → h ∼ induction y₀ g
       s (p , K) 0 = p
-      s (p , K) (succ n) = h (succ n)              ≡⟨ K n                    ⟩
-                           g n (h n)               ≡⟨ ap (g n) (s (p , K) n) ⟩
-                           g n (induction y₀ g n)  ≡⟨ refl                   ⟩
+      s (p , K) (succ n) = h (succ n)              ＝⟨ K n                    ⟩
+                           g n (h n)               ＝⟨ ap (g n) (s (p , K) n) ⟩
+                           g n (induction y₀ g n)  ＝⟨ refl                   ⟩
                            induction y₀ g (succ n) ∎
       η : r ∘ s ∼ id
       η (p , K) =
-       r (s (p , K))                                      ≡⟨ refl ⟩
+       r (s (p , K))                                      ＝⟨ refl ⟩
        (p , λ n → s (p , K) (succ n)
-                  ∙ (refl ∙ ap (g n) ((s (p , K) n) ⁻¹))) ≡⟨ φ    ⟩
+                  ∙ (refl ∙ ap (g n) ((s (p , K) n) ⁻¹))) ＝⟨ φ    ⟩
        (p , K)                                            ∎
          where
           φ = ap (p ,_) (dfunext fe ψ)
            where
             ψ : (n : ℕ)
               → s (p , K) (succ n) ∙ (refl ∙ ap (g n) (s (p , K) n ⁻¹))
-              ≡ K n
+              ＝ K n
             ψ n = s (p , K) (succ n)
-                    ∙ (refl ∙ ap (g n) (s (p , K) n ⁻¹))   ≡⟨ refl ⟩
+                    ∙ (refl ∙ ap (g n) (s (p , K) n ⁻¹))   ＝⟨ refl ⟩
                   K n ∙ ap (g n) (s (p , K) n)
-                    ∙ (refl ∙ ap (g n) ((s (p , K) n) ⁻¹)) ≡⟨ I    ⟩
+                    ∙ (refl ∙ ap (g n) ((s (p , K) n) ⁻¹)) ＝⟨ I    ⟩
                   K n ∙ ap (g n) (s (p , K) n)
-                    ∙ ap (g n) ((s (p , K) n) ⁻¹)          ≡⟨ II   ⟩
+                    ∙ ap (g n) ((s (p , K) n) ⁻¹)          ＝⟨ II   ⟩
                   K n ∙ (ap (g n) (s (p , K) n)
-                    ∙ ap (g n) ((s (p , K) n) ⁻¹))         ≡⟨ III  ⟩
+                    ∙ ap (g n) ((s (p , K) n) ⁻¹))         ＝⟨ III  ⟩
                   K n ∙ (ap (g n) (s (p , K) n)
-                    ∙ (ap (g n) (s (p , K) n)) ⁻¹)         ≡⟨ IV   ⟩
-                  K n ∙ refl                               ≡⟨ refl ⟩
+                    ∙ (ap (g n) (s (p , K) n)) ⁻¹)         ＝⟨ IV   ⟩
+                  K n ∙ refl                               ＝⟨ refl ⟩
                   K n                                      ∎
              where
               I   = ap (K n ∙ ap (g n) (s (p , K) n) ∙_)
@@ -90,11 +90,11 @@ open import UF.Subsingletons
 
 ℕ-is-nno-dep : funext 𝓤₀ 𝓤
              → (Y : ℕ → 𝓤 ̇ ) (y₀ : Y 0) (g : (n : ℕ) → Y n → Y (succ n))
-             → ∃! h ꞉ (Π Y) , ((h 0 ≡ y₀) × ((n : ℕ) → h (succ n) ≡ g n (h n)))
+             → ∃! h ꞉ (Π Y) , ((h 0 ＝ y₀) × ((n : ℕ) → h (succ n) ＝ g n (h n)))
 ℕ-is-nno-dep {𝓤} fe Y y₀ g = γ
  where
   γ : is-singleton
-       (Σ h ꞉ (Π Y) , (h 0 ≡ y₀) × ((n : ℕ) → h (succ n) ≡ g n (h n)))
+       (Σ h ꞉ (Π Y) , (h 0 ＝ y₀) × ((n : ℕ) → h (succ n) ＝ g n (h n)))
   γ = retract-of-singleton (ℕ-induction-retract fe Y y₀ g)
        (singleton-types'-are-singletons (induction {𝓤} {Y} y₀ g))
 

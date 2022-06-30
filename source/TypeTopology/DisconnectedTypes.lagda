@@ -56,23 +56,23 @@ disconnected-eq : (X : 𝓤 ̇ )
 disconnected-eq {𝓤} X = (f , g , h , k)
  where
   f : (Σ p ꞉ (X → 𝟚) , Σ s ꞉ (𝟚 → X) , p ∘ s ∼ id)
-    → Σ p ꞉ (X → 𝟚) , (Σ x ꞉ X , p x ≡ ₀) × (Σ x ꞉ X , p x ≡ ₁)
+    → Σ p ꞉ (X → 𝟚) , (Σ x ꞉ X , p x ＝ ₀) × (Σ x ꞉ X , p x ＝ ₁)
   f (p , s , e) = p , (s ₀ , e ₀) , (s ₁ , e ₁)
 
-  g : (Σ p ꞉ (X → 𝟚) , (Σ x ꞉ X , p x ≡ ₀) × (Σ x ꞉ X , p x ≡ ₁))
+  g : (Σ p ꞉ (X → 𝟚) , (Σ x ꞉ X , p x ＝ ₀) × (Σ x ꞉ X , p x ＝ ₁))
     → Σ X₀ ꞉ 𝓤 ̇ , Σ X₁ ꞉ 𝓤 ̇ , X₀ × X₁ × (X ≃ X₀ + X₁)
-  g (p , (x₀ , e₀) , (x₁ , e₁)) = (Σ x ꞉ X , p x ≡ ₀) ,
-                                  (Σ x ꞉ X , p x ≡ ₁) ,
+  g (p , (x₀ , e₀) , (x₁ , e₁)) = (Σ x ꞉ X , p x ＝ ₀) ,
+                                  (Σ x ꞉ X , p x ＝ ₁) ,
                                   (x₀ , e₀) ,
                                   (x₁ , e₁) ,
                                   qinveq ϕ (γ , γϕ , ϕγ)
    where
-    ϕ : X → (Σ x ꞉ X , p x ≡ ₀) + (Σ x ꞉ X , p x ≡ ₁)
+    ϕ : X → (Σ x ꞉ X , p x ＝ ₀) + (Σ x ꞉ X , p x ＝ ₁)
     ϕ x = 𝟚-equality-cases
-           (λ (r₀ : p x ≡ ₀) → inl (x , r₀))
-           (λ (r₁ : p x ≡ ₁) → inr (x , r₁))
+           (λ (r₀ : p x ＝ ₀) → inl (x , r₀))
+           (λ (r₁ : p x ＝ ₁) → inr (x , r₁))
 
-    γ : (Σ x ꞉ X , p x ≡ ₀) + (Σ x ꞉ X , p x ≡ ₁) → X
+    γ : (Σ x ꞉ X , p x ＝ ₀) + (Σ x ꞉ X , p x ＝ ₁) → X
     γ (inl (x , r₀)) = x
     γ (inr (x , r₁)) = x
 
@@ -82,8 +82,8 @@ disconnected-eq {𝓤} X = (f , g , h , k)
 
     γϕ : γ ∘ ϕ ∼ id
     γϕ x = 𝟚-equality-cases
-           (λ (r₀ : p x ≡ ₀) → ap γ (𝟚-equality-cases₀ r₀))
-           (λ (r₁ : p x ≡ ₁) → ap γ (𝟚-equality-cases₁ r₁))
+           (λ (r₀ : p x ＝ ₀) → ap γ (𝟚-equality-cases₀ r₀))
+           (λ (r₁ : p x ＝ ₁) → ap γ (𝟚-equality-cases₁ r₁))
 
   h : (Σ X₀ ꞉ 𝓤 ̇ , Σ X₁ ꞉ 𝓤 ̇ , X₀ × X₁ × (X ≃ X₀ + X₁))
     → (Σ X₀ ꞉ 𝓤 ̇ , Σ X₁ ꞉ 𝓤 ̇ , X₀ × X₁ × (retract (X₀ + X₁) of X))
@@ -134,7 +134,7 @@ Some examples:
   s ₀ = zero
   s ₁ = succ zero
 
-  rs : (n : 𝟚) → r (s n) ≡ n
+  rs : (n : 𝟚) → r (s n) ＝ n
   rs ₀ = refl
   rs ₁ = refl
 
@@ -189,7 +189,7 @@ is-connected₀ : 𝓤 ̇ → 𝓤 ̇
 is-connected₀ X = (f : X → 𝟚) → wconstant f
 
 is-connected₁ : 𝓤 ̇ → 𝓤 ̇
-is-connected₁ X = (x y : X) → x ≡₂ y
+is-connected₁ X = (x y : X) → x ＝₂ y
 
 is-connected₂ : 𝓤 ̇ → 𝓤 ̇
 is-connected₂ X = ¬ disconnected X
@@ -205,9 +205,9 @@ is-connected₀-gives-is-connected₂ : {X : 𝓤 ̇ } → is-connected₀ X →
 is-connected₀-gives-is-connected₂ c (r , s , rs) = n (c r)
  where
   n : ¬ wconstant r
-  n κ = zero-is-not-one (₀       ≡⟨ (rs ₀)⁻¹ ⟩
-                         r (s ₀) ≡⟨ κ (s ₀) (s ₁) ⟩
-                         r (s ₁) ≡⟨ rs ₁ ⟩
+  n κ = zero-is-not-one (₀       ＝⟨ (rs ₀)⁻¹ ⟩
+                         r (s ₀) ＝⟨ κ (s ₀) (s ₁) ⟩
+                         r (s ₁) ＝⟨ rs ₁ ⟩
                          ₁       ∎)
 
 disconnected-types-are-not-connected : {X : 𝓤 ̇ } → disconnected X → ¬ is-connected₀ X
@@ -216,37 +216,37 @@ disconnected-types-are-not-connected c d = is-connected₀-gives-is-connected₂
 is-connected₂-gives-is-connected₀ : {X : 𝓤 ̇ } → is-connected₂ X → is-connected₀ X
 is-connected₂-gives-is-connected₀ {𝓤} {X} n f x y = 𝟚-is-¬¬-separated (f x) (f y) ϕ
  where
-  ϕ : ¬¬ (f x ≡ f y)
+  ϕ : ¬¬ (f x ＝ f y)
   ϕ u = n (f , s , fs)
    where
     s : 𝟚 → X
     s ₀ = 𝟚-equality-cases
-           (λ (p₀ : f x ≡ ₀) → x)
-           (λ (p₁ : f x ≡ ₁) → y)
+           (λ (p₀ : f x ＝ ₀) → x)
+           (λ (p₁ : f x ＝ ₁) → y)
     s ₁ = 𝟚-equality-cases
-           (λ (p₀ : f x ≡ ₀) → y)
-           (λ (p₁ : f x ≡ ₁) → x)
+           (λ (p₀ : f x ＝ ₀) → y)
+           (λ (p₁ : f x ＝ ₁) → x)
 
-    a : f x ≡ ₁ → f y ≡ ₀
-    a p = different-from-₁-equal-₀ (λ (q : f y ≡ ₁) → u (p ∙ (q ⁻¹)))
+    a : f x ＝ ₁ → f y ＝ ₀
+    a p = different-from-₁-equal-₀ (λ (q : f y ＝ ₁) → u (p ∙ (q ⁻¹)))
 
-    b : f x ≡ ₀ → f y ≡ ₁
-    b p = different-from-₀-equal-₁ (λ (q : f y ≡ ₀) → u (p ∙ q ⁻¹))
+    b : f x ＝ ₀ → f y ＝ ₁
+    b p = different-from-₀-equal-₁ (λ (q : f y ＝ ₀) → u (p ∙ q ⁻¹))
 
     fs : f ∘ s ∼ id
     fs ₀ = 𝟚-equality-cases
-           (λ (p₀ : f x ≡ ₀) → f (s ₀) ≡⟨ ap f (𝟚-equality-cases₀ p₀) ⟩
-                               f x     ≡⟨ p₀ ⟩
+           (λ (p₀ : f x ＝ ₀) → f (s ₀) ＝⟨ ap f (𝟚-equality-cases₀ p₀) ⟩
+                               f x     ＝⟨ p₀ ⟩
                                ₀       ∎)
-           (λ (p₁ : f x ≡ ₁) → f (s ₀) ≡⟨ ap f (𝟚-equality-cases₁ p₁) ⟩
-                               f y     ≡⟨ a p₁ ⟩
+           (λ (p₁ : f x ＝ ₁) → f (s ₀) ＝⟨ ap f (𝟚-equality-cases₁ p₁) ⟩
+                               f y     ＝⟨ a p₁ ⟩
                                ₀       ∎)
     fs ₁ = 𝟚-equality-cases
-           (λ (p₀ : f x ≡ ₀) → f (s ₁) ≡⟨ ap f (𝟚-equality-cases₀ p₀) ⟩
-                               f y     ≡⟨ b p₀ ⟩
+           (λ (p₀ : f x ＝ ₀) → f (s ₁) ＝⟨ ap f (𝟚-equality-cases₀ p₀) ⟩
+                               f y     ＝⟨ b p₀ ⟩
                                ₁       ∎)
-           (λ (p₁ : f x ≡ ₁) → f (s ₁) ≡⟨ ap f (𝟚-equality-cases₁ p₁) ⟩
-                               f x     ≡⟨ p₁ ⟩
+           (λ (p₁ : f x ＝ ₁) → f (s ₁) ＝⟨ ap f (𝟚-equality-cases₁ p₁) ⟩
+                               f x     ＝⟨ p₁ ⟩
                                ₁       ∎)
 
 is-connected : 𝓤 ̇ → 𝓤 ̇

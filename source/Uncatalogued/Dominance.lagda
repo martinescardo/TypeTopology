@@ -70,7 +70,7 @@ and condition D5' below is easier to check:
    m : is-prop Q'
    m = Σ-is-prop k l
 
-   n : (p : P) → Q p ≡ Q'
+   n : (p : P) → Q p ＝ Q'
    n p = pe (l p) m (λ q        → (p , q))
                     (λ (p' , q) → transport Q (k p' p) q)
 
@@ -80,7 +80,7 @@ and condition D5' below is easier to check:
    u : d (P × Q')
    u = d5' P Q' i j'
 
-   v : P × Q' ≡ Σ Q
+   v : P × Q' ＝ Σ Q
    v = pe (×-is-prop k m) m (λ (p , p' , q) → (p' , q))
                             (λ (p' , q)     → (p' , p' , q))
    w : d (Σ Q)

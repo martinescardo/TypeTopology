@@ -296,7 +296,7 @@ is-sgpe : {Xt : DTT} {R : Type} → 𝓚 R Xt → (Path Xt → R) → Strategy X
 is-sgpe {[]}     ⟨⟩        q ⟨⟩         = 𝟙
 is-sgpe {X ∷ Xf} (ϕ :: ϕf) q (x₀ :: σf) =
 
-      (q (x₀ :: strategic-path (σf x₀)) ≡ ϕ (λ x → q (x :: strategic-path (σf x))))
+      (q (x₀ :: strategic-path (σf x₀)) ＝ ϕ (λ x → q (x :: strategic-path (σf x))))
     ×
       ((x : X) → is-sgpe {Xf x} (ϕf x) (λ (xs : Path (Xf x)) → q (x :: xs)) (σf x))
 
@@ -315,7 +315,7 @@ In the above definition:
 
    So the first part
 
-     q (x₀ :: strategic-path (σf x₀)) ≡ ϕ (λ x → q (x :: strategic-path (σf x)))
+     q (x₀ :: strategic-path (σf x₀)) ＝ ϕ (λ x → q (x :: strategic-path (σf x)))
 
    of the definition is as in the comment above, but with a partial
    play of length k=0, and the second (inductive) part, says that the
@@ -344,18 +344,18 @@ The following is Theorem 3.1 of reference [1].
 
 sgpe-lemma : (Xt : DTT) {R : Type} (ϕt : 𝓚 R Xt) (q : Path Xt → R) (σ : Strategy Xt)
            → is-sgpe ϕt q σ
-           → K-sequence ϕt q ≡ q (strategic-path σ)
+           → K-sequence ϕt q ＝ q (strategic-path σ)
 sgpe-lemma []       ⟨⟩        q ⟨⟩        ⟨⟩       = refl
 sgpe-lemma (X ∷ Xf) (ϕ :: ϕt) q (a :: σf) (h :: t) = γ
  where
-  observation-t : type-of t ≡ ((x : X) → is-sgpe (ϕt x) (λ xs → q (x :: xs)) (σf x))
+  observation-t : type-of t ＝ ((x : X) → is-sgpe (ϕt x) (λ xs → q (x :: xs)) (σf x))
   observation-t = refl
 
-  IH : (x : X) → K-sequence (ϕt x) (λ xs → q (x :: xs)) ≡ q (x :: strategic-path (σf x))
+  IH : (x : X) → K-sequence (ϕt x) (λ xs → q (x :: xs)) ＝ q (x :: strategic-path (σf x))
   IH x = sgpe-lemma (Xf x) (ϕt x) (λ (xs : Path (Xf x)) → q (x :: xs)) (σf x) (t x)
 
-  γ = ϕ (λ x → K-sequence (ϕt x) (λ xs → q (x :: xs))) ≡⟨ ap ϕ (dfunext fe IH) ⟩
-      ϕ (λ x → q (x :: strategic-path (σf x)))         ≡⟨ h ⁻¹ ⟩
+  γ = ϕ (λ x → K-sequence (ϕt x) (λ xs → q (x :: xs))) ＝⟨ ap ϕ (dfunext fe IH) ⟩
+      ϕ (λ x → q (x :: strategic-path (σf x)))         ＝⟨ h ⁻¹ ⟩
       q (a :: strategic-path (σf a))                   ∎
 
 \end{code}
@@ -366,7 +366,7 @@ This can be reformulated as follows in terms of the type of games:
 
 equilibrium-theorem : (G : Game) (σ : Strategy (Xt G))
                     → is-optimal G σ
-                    → optimal-outcome G ≡ q G (strategic-path σ)
+                    → optimal-outcome G ＝ q G (strategic-path σ)
 equilibrium-theorem (game Xt R ϕt q) = sgpe-lemma Xt q ϕt
 
 \end{code}
@@ -433,32 +433,32 @@ _are-selections-of_ {X ∷ Xf} (ε :: εf) (ϕ :: ϕf) = (ε is-a-selection-of �
 
 observation : {Xt : DTT} {R : Type} (εt : 𝓙 R Xt) (ϕt : 𝓚 R Xt)
             → εt are-selections-of ϕt
-            → Overline εt ≡ ϕt
+            → Overline εt ＝ ϕt
 observation {[]}     ⟨⟩        ⟨⟩        ⟨⟩        = refl
 observation {X ∷ Xf} (ε :: εf) (ϕ :: ϕf) (a :: af) = γ
  where
-  IH : (x : X) → Overline (εf x) ≡ ϕf x
+  IH : (x : X) → Overline (εf x) ＝ ϕf x
   IH x = observation {Xf x} (εf x) (ϕf x) (af x)
 
-  I : overline ε ≡ ϕ
+  I : overline ε ＝ ϕ
   I = dfunext fe a
 
-  II : (λ x → Overline (εf x)) ≡ ϕf
+  II : (λ x → Overline (εf x)) ＝ ϕf
   II = dfunext fe IH
 
-  γ : overline ε :: (λ x → Overline (εf x)) ≡ ϕ :: ϕf
+  γ : overline ε :: (λ x → Overline (εf x)) ＝ ϕ :: ϕf
   γ = ap₂ _::_ I II
 
 \end{code}
 
-Notice that the converse is also true, that is, if Overline εt ≡ ϕt
+Notice that the converse is also true, that is, if Overline εt ＝ ϕt
 then εt are selections of ϕt, but we don't need this fact here.
 
 \begin{code}
 
 crucial-lemma : {Xt : DTT} {R : Type} (εt : 𝓙 R Xt) (q : Path Xt → R)
               → J-sequence εt q
-              ≡ strategic-path (selection-strategy εt q)
+              ＝ strategic-path (selection-strategy εt q)
 crucial-lemma {[]}     ⟨⟩           q = refl
 crucial-lemma {X ∷ Xf} εt@(ε :: εf) q = γ
  where
@@ -468,16 +468,16 @@ crucial-lemma {X ∷ Xf} εt@(ε :: εf) q = γ
   x₀ : X
   x₀ = path-head (J-sequence εt q)
 
-  remark-used-implicitly : x₀ ≡ ε (λ x → q (x :: t x))
+  remark-used-implicitly : x₀ ＝ ε (λ x → q (x :: t x))
   remark-used-implicitly = refl
 
   σf : (x : X) → Strategy (Xf x)
   σf x = selection-strategy {Xf x} (εf x) (λ xs → q (x :: xs))
 
-  IH : t x₀ ≡ strategic-path (σf x₀)
+  IH : t x₀ ＝ strategic-path (σf x₀)
   IH = crucial-lemma (εf x₀) (λ xs → q (x₀ :: xs))
 
-  γ : x₀ :: t x₀ ≡ x₀ :: strategic-path (σf x₀)
+  γ : x₀ :: t x₀ ＝ x₀ :: strategic-path (σf x₀)
   γ = ap (x₀ ::_) IH
 
 selection-strategy-lemma : {Xt : DTT} {R : Type} (εt : 𝓙 R Xt) (q : Path Xt → R)
@@ -490,13 +490,13 @@ selection-strategy-lemma {X ∷ Xf} {R} (ε :: εf) q = h :: t
   g x = q (x :: strategic-path (selection-strategy (εf x) (λ xs → q (x :: xs))))
 
   I : (x : X) → J-sequence (εf x) (λ xs → q (x :: xs))
-              ≡ strategic-path (selection-strategy (εf x) (λ xs → q (x :: xs)))
+              ＝ strategic-path (selection-strategy (εf x) (λ xs → q (x :: xs)))
   I x = crucial-lemma (εf x) (λ xs → q (x :: xs))
 
-  II : f ≡ g
+  II : f ＝ g
   II = dfunext fe (λ x → ap (λ - → q (x :: -)) (I x))
 
-  h : g (ε f) ≡ g (ε g)
+  h : g (ε f) ＝ g (ε g)
   h = ap (g ∘ ε) II
 
   t : (x : X) → is-sgpe
@@ -517,7 +517,7 @@ selection-strategy-theorem : {Xt : DTT} {R : Type} (εt : 𝓙 R Xt) (ϕt : 𝓚
                            → is-sgpe ϕt q (selection-strategy εt q)
 selection-strategy-theorem εt ϕt q a = III
  where
-  I : Overline εt ≡ ϕt
+  I : Overline εt ＝ ϕt
   I = observation εt ϕt a
 
   II : is-sgpe (Overline εt) q (selection-strategy εt q)
@@ -621,7 +621,7 @@ build-GameJ {R} draw Board transition n b = h n b
   h 0        b = leaf draw
   h (succ n) b = g (transition b) refl
    where
-    g : (f : R + (Σ M ꞉ Type , (M → Board) × J R M)) → transition b ≡ f → GameJ R
+    g : (f : R + (Σ M ꞉ Type , (M → Board) × J R M)) → transition b ＝ f → GameJ R
     g (inl r)              p = leaf r
     g (inr (M , play , ε)) p = branch M Xf ε
      where
@@ -688,11 +688,11 @@ Convention: in a board (p , A), p is the opponent of the the current player.
   board₀ = X , (λ _ → Nothing)
 
   Move : Board → Type
-  Move (_ , A) = Σ g ꞉ Grid , A g ≡ Nothing
+  Move (_ , A) = Σ g ꞉ Grid , A g ＝ Nothing
 
   Move-decidable : (b : Board) → decidable (Move b)
   Move-decidable (_ , A) = Grid-compact
-                            (λ g → A g ≡ Nothing)
+                            (λ g → A g ＝ Nothing)
                             (λ g → Nothing-is-isolated' (A g))
 
   Move-compact : (b : Board) → Compact (Move b)
@@ -736,7 +736,7 @@ Convention: in a board (p , A), p is the opponent of the the current player.
          → Move (p , A) → Matrix
   update p A (m , _) m' = f (Grid-is-discrete m m')
    where
-    f : decidable (m ≡ m') → Maybe Player
+    f : decidable (m ＝ m') → Maybe Player
     f (inl _) = Just p
     f (inr _) = A m'
 
@@ -746,7 +746,7 @@ Convention: in a board (p , A), p is the opponent of the the current player.
   transition : Board → 𝟛 + (Σ M ꞉ Type , (M → Board) × J 𝟛 M)
   transition (p , A) = f p A (wins p A) refl
    where
-    f : (p : Player) (A : Matrix) (b : Bool) → wins p A ≡ b
+    f : (p : Player) (A : Matrix) (b : Bool) → wins p A ＝ b
       → 𝟛 + (Σ M ꞉ Type , (M → Board) × J 𝟛 M)
     f X A true e  = inl X-wins
     f O A true e  = inl O-wins
@@ -821,7 +821,7 @@ tic-tac-toe₂J = build-GameJ draw Board transition 9 board₀
   board₀ = board X (list-Fin 9) [] []
 
   Move : List Cell → Type
-  Move xs = Σ c ꞉ Cell , ((c is-in xs) ≡ true)
+  Move xs = Σ c ꞉ Cell , ((c is-in xs) ＝ true)
 
 \end{code}
 
@@ -832,22 +832,22 @@ predicate q:
 \begin{code}
 
   argmax : (m : Cell) (ms : List Cell) → 𝟛 → (Move (m ∷ ms) → 𝟛) → Move (m ∷ ms)
-  argmax m ms       X-wins  q = m , need m == m || (m is-in ms) ≡ true
+  argmax m ms       X-wins  q = m , need m == m || (m is-in ms) ＝ true
                                     which-is-given-by ||-left-intro _ (==-refl m)
 
-  argmax m []       r       q = m , need m == m || (m is-in []) ≡ true
+  argmax m []       r       q = m , need m == m || (m is-in []) ＝ true
                                     which-is-given-by ||-left-intro _ (==-refl m)
 
   argmax m (x ∷ xs) O-wins  q = ι γ
    where
     ι : Move (x ∷ xs) → Move (m ∷ x ∷ xs)
-    ι (c , e) = c , need c == m || (c is-in (x ∷ xs)) ≡ true
+    ι (c , e) = c , need c == m || (c is-in (x ∷ xs)) ＝ true
                     which-is-given-by ||-right-intro {c == m} _ e
 
     q' : Move (x ∷ xs) → 𝟛
     q' m = q (ι m)
 
-    a : (x == m) || ((x == x) || (x is-in xs)) ≡ true
+    a : (x == m) || ((x == x) || (x is-in xs)) ＝ true
     a = ||-right-intro {x == m} _ (||-left-intro _ (==-refl x))
 
     γ : Move (x ∷ xs)
@@ -855,19 +855,19 @@ predicate q:
 
   argmax m us@(x ∷ ms) draw q = g us c
    where
-    c : ((x == x) || (x is-in ms)) && (ms contained-in (x ∷ ms)) ≡ true
+    c : ((x == x) || (x is-in ms)) && (ms contained-in (x ∷ ms)) ＝ true
     c = &&-intro (||-left-intro _ (==-refl x)) (contained-lemma₁ x ms)
 
-    g : (vs : List Cell) → vs contained-in us ≡ true → Move (m ∷ us)
-    g []       c = m , need m == m || (m is-in (x ∷ ms)) ≡ true
+    g : (vs : List Cell) → vs contained-in us ＝ true → Move (m ∷ us)
+    g []       c = m , need m == m || (m is-in (x ∷ ms)) ＝ true
                        which-is-given-by ||-left-intro _ (==-refl m)
 
     g (y ∷ vs) c = k (q (y , a))
      where
-      a : (y == m) || ((y == x) || (y is-in ms)) ≡ true
+      a : (y == m) || ((y == x) || (y is-in ms)) ＝ true
       a = ||-right-intro {y == m} _ (pr₁ (&&-gives-× c))
 
-      b : (vs contained-in (x ∷ ms)) ≡ true
+      b : (vs contained-in (x ∷ ms)) ＝ true
       b = pr₂ (&&-gives-× c)
 
       k : 𝟛 → Move (m ∷ us)
@@ -877,7 +877,7 @@ predicate q:
   argmin : (m : Cell) (ms : List Cell) → 𝟛 → (Move (m ∷ ms) → 𝟛) → Move (m ∷ ms)
   argmin m ms r q = argmax m ms (flip r) (λ xs → flip (q xs))
 
-  arg : Player → (ms : List Cell) → empty ms ≡ false →  J 𝟛 (Move ms)
+  arg : Player → (ms : List Cell) → empty ms ＝ false →  J 𝟛 (Move ms)
   arg _ []       e q = 𝟘-elim (true-is-not-false e)
   arg X (m ∷ ms) e q = argmax m ms (q (m , ||-left-intro (m is-in ms) (==-refl m))) q
   arg O (m ∷ ms) e q = argmin m ms (q (m , ||-left-intro (m is-in ms) (==-refl m))) q
@@ -891,8 +891,8 @@ predicate q:
    if wins b
    then inl (opponent-wins next)
    else Bool-equality-cases (empty as)
-         (λ (_ : empty as ≡ true)  → inl draw)
-         (λ (e : empty as ≡ false) → inr (Move as , play b , arg next as e))
+         (λ (_ : empty as ＝ true)  → inl draw)
+         (λ (e : empty as ＝ false) → inr (Move as , play b , arg next as e))
 
 tic-tac-toe₂ : Game
 tic-tac-toe₂ = Game-from-GameJ tic-tac-toe₂J
@@ -911,14 +911,14 @@ l₂ = plength s₂
 
 {- Slow
 
-t₂-test : t₂ ≡ draw
+t₂-test : t₂ ＝ draw
 t₂-test = refl
 
 -}
 
 {- Slow:
 
-l₂-test : l₂ ≡ 9
+l₂-test : l₂ ＝ 9
 l₂-test = refl
 
 -}
@@ -927,7 +927,7 @@ l₂-test = refl
 
 open import NonSpartanMLTTTypes
 
-u₂-test : s₂ ≡ (𝟎 :: refl)
+u₂-test : s₂ ＝ (𝟎 :: refl)
            :: ((𝟒 :: refl)
            :: ((𝟏 :: refl)
            :: ((𝟐 :: refl)

@@ -99,8 +99,8 @@ A small compact basis for 𝓛 X will be given by [⊥ , η] : 𝟙 + X → 𝓛
    semidir (inr x , u) (inr y , v) = ∣ (inr x , u)
                                      , ⊑'-is-reflexive , (λ _ → e) ∣
     where
-     e = η y ≡⟨ v ⋆      ⟩
-         l   ≡⟨ (u ⋆) ⁻¹ ⟩
+     e = η y ＝⟨ v ⋆      ⟩
+         l   ＝⟨ (u ⋆) ⁻¹ ⟩
          η x ∎
 
  κ⁺-sup : (l : 𝓛 X) → is-sup _⊑'_ l (κ⁺ l)
@@ -109,13 +109,13 @@ A small compact basis for 𝓛 X will be given by [⊥ , η] : 𝟙 + X → 𝓛
    ub : (i : domain (κ⁺ l)) → κ⁺ l i ⊑' l
    ub (i , u) = u
    lb-of-ubs : is-lowerbound-of-upperbounds _⊑'_ l (κ⁺ l)
-   lb-of-ubs m m-is-ub l-is-def = l                    ≡⟨ ⦅1⦆ ⟩
-                                  η (value l l-is-def) ≡⟨ ⦅2⦆ ⟩
+   lb-of-ubs m m-is-ub l-is-def = l                    ＝⟨ ⦅1⦆ ⟩
+                                  η (value l l-is-def) ＝⟨ ⦅2⦆ ⟩
                                   m                    ∎
     where
-     ⦅1⦆ : l ≡ η (value l l-is-def)
-     ⦅1⦆ = is-defined-η-≡ l-is-def
-     ⦅2⦆ : η (value l l-is-def) ≡ m
+     ⦅1⦆ : l ＝ η (value l l-is-def)
+     ⦅1⦆ = is-defined-η-＝ l-is-def
+     ⦅2⦆ : η (value l l-is-def) ＝ m
      ⦅2⦆ = m-is-ub (inr (value l l-is-def) , v) ⋆
       where
        v : κ (inr (value l l-is-def)) ⊑' l
@@ -123,18 +123,18 @@ A small compact basis for 𝓛 X will be given by [⊥ , η] : 𝟙 + X → 𝓛
 
  ηs-are-compact : (x : X) → is-compact (𝓛-DCPO X-is-set) (η x)
  ηs-are-compact x I α δ ηx-below-∐α =
-  ∥∥-functor h (≡-to-is-defined (ηx-below-∐α ⋆) ⋆)
+  ∥∥-functor h (＝-to-is-defined (ηx-below-∐α ⋆) ⋆)
    where
     h : (Σ i ꞉ I , is-defined (α i))
       → (Σ i ꞉ I , η x ⊑' α i)
     h (i , pᵢ) = i , (λ _ → e)
      where
-      e : η x ≡ α i
-      e = η x                      ≡⟨ ηx-below-∐α ⋆ ⟩
-          lifting-sup X-is-set α δ ≡⟨ e'            ⟩
+      e : η x ＝ α i
+      e = η x                      ＝⟨ ηx-below-∐α ⋆ ⟩
+          lifting-sup X-is-set α δ ＝⟨ e'            ⟩
           α i                      ∎
        where
-        e' = (family-defined-somewhere-sup-≡ X-is-set δ i pᵢ) ⁻¹
+        e' = (family-defined-somewhere-sup-＝ X-is-set δ i pᵢ) ⁻¹
 
  compact-if-in-image-of-κ : (l : 𝓛 X)
                           → l ∈image κ
@@ -142,7 +142,7 @@ A small compact basis for 𝓛 X will be given by [⊥ , η] : 𝟙 + X → 𝓛
  compact-if-in-image-of-κ l l-in-image-of-κ =
   ∥∥-rec (being-compact-is-prop (𝓛-DCPO X-is-set) l) γ l-in-image-of-κ
    where
-    γ : (Σ i ꞉ domain κ , κ i ≡ l)
+    γ : (Σ i ꞉ domain κ , κ i ＝ l)
       → is-compact (𝓛-DCPO X-is-set) l
     γ (inl ⋆ , refl) = ⊥-is-compact (𝓛-DCPO⊥ X-is-set)
     γ (inr x , refl) = ηs-are-compact x
@@ -163,16 +163,16 @@ A small compact basis for 𝓛 X will be given by [⊥ , η] : 𝟙 + X → 𝓛
      σ : is-semidirected _⊑'_ (η ∘ φ)
      σ = subsingleton-indexed-is-semidirected (𝓛-DCPO X-is-set) (η ∘ φ) P-is-prop
    l-below-∐α : l ⊑' ∐ (𝓛-DCPO X-is-set) δ
-   l-below-∐α p = l                      ≡⟨ ⦅1⦆ ⟩
-                  η (φ p)                ≡⟨ ⦅2⦆ ⟩
+   l-below-∐α p = l                      ＝⟨ ⦅1⦆ ⟩
+                  η (φ p)                ＝⟨ ⦅2⦆ ⟩
                   ∐ (𝓛-DCPO X-is-set) δ ∎
     where
-     ⦅1⦆ = is-defined-η-≡ p
+     ⦅1⦆ = is-defined-η-＝ p
      ⦅2⦆ = ∐-is-upperbound (𝓛-DCPO X-is-set) δ (inr p) ⋆
    claim : ∃ i ꞉ I , l ⊑' α i
    claim = l-cpt I α δ l-below-∐α
    goal : (Σ i ꞉ I , l ⊑' α i)
-        → (Σ k ꞉ domain κ , κ k ≡ l)
+        → (Σ k ꞉ domain κ , κ k ＝ l)
    goal (inl ⋆ , lᵢ) =
     (inl ⋆ , ⊑'-is-antisymmetric (⊥-is-least (𝓛-DCPO⊥ X-is-set) l) lᵢ)
    goal (inr p , lᵢ) =

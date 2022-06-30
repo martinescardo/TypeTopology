@@ -15,13 +15,13 @@ open import MGS.Univalence public
 open import MGS.Solved-Exercises public
 
 equiv-singleton-lemma : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (x : X)
-                        (f : (y : X) → x ≡ y → A y)
+                        (f : (y : X) → x ＝ y → A y)
                       → ((y : X) → is-equiv (f y))
                       → is-singleton (Σ A)
 
 equiv-singleton-lemma {𝓤} {𝓥} {X} {A} x f i = γ
  where
-  e : (y : X) → (x ≡ y) ≃ A y
+  e : (y : X) → (x ＝ y) ≃ A y
   e y = (f y , i y)
 
   d : singleton-type' x ≃ Σ A
@@ -32,7 +32,7 @@ equiv-singleton-lemma {𝓤} {𝓥} {X} {A} x f i = γ
    γ = equiv-to-singleton (≃-sym d) (singleton-types'-are-singletons X x)
 
 singleton-equiv-lemma : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (x : X)
-                        (f : (y : X) → x ≡ y → A y)
+                        (f : (y : X) → x ＝ y → A y)
                       → is-singleton (Σ A)
                       → (y : X) → is-equiv (f y)
 
@@ -79,28 +79,28 @@ univalence→ ua X = singletons-are-subsingletons
   t : Σ Y ꞉ 𝓤 ̇ , X ≃ Y
   t = (X , id-≃ X)
 
-  p : t ≡ (Y , e)
+  p : t ＝ (Y , e)
   p = univalence→ {𝓤} ua X t (Y , e)
 
 𝔾-≃-equation : (ua : is-univalent 𝓤)
              → (X : 𝓤 ̇ ) (A : (Σ Y ꞉ 𝓤 ̇ , X ≃ Y) → 𝓥 ̇ ) (a : A (X , id-≃ X))
-             → 𝔾-≃ ua X A a X (id-≃ X) ≡ a
+             → 𝔾-≃ ua X A a X (id-≃ X) ＝ a
 
 𝔾-≃-equation {𝓤} {𝓥} ua X A a =
 
-  𝔾-≃ ua X A a X (id-≃ X) ≡⟨ refl _ ⟩
-  transport A p a         ≡⟨ ap (λ - → transport A - a) q ⟩
-  transport A (refl t) a  ≡⟨ refl _ ⟩
+  𝔾-≃ ua X A a X (id-≃ X) ＝⟨ refl _ ⟩
+  transport A p a         ＝⟨ ap (λ - → transport A - a) q ⟩
+  transport A (refl t) a  ＝⟨ refl _ ⟩
   a                       ∎
 
  where
   t : Σ Y ꞉ 𝓤 ̇ , X ≃ Y
   t = (X , id-≃ X)
 
-  p : t ≡ t
+  p : t ＝ t
   p = univalence→ {𝓤} ua X t t
 
-  q : p ≡ refl t
+  q : p ＝ refl t
   q = subsingletons-are-sets (Σ Y ꞉ 𝓤 ̇ , X ≃ Y)
        (univalence→ {𝓤} ua X) t t p (refl t)
 
@@ -112,7 +112,7 @@ univalence→ ua X = singletons-are-subsingletons
 
 ℍ-≃-equation : (ua : is-univalent 𝓤)
              → (X : 𝓤 ̇ ) (A : (Y : 𝓤 ̇ ) → X ≃ Y → 𝓥 ̇ ) (a : A X  (id-≃ X))
-             → ℍ-≃ ua X A a X (id-≃ X) ≡ a
+             → ℍ-≃ ua X A a X (id-≃ X) ＝ a
 
 ℍ-≃-equation ua X A = 𝔾-≃-equation ua X (Σ-induction A)
 
@@ -126,7 +126,7 @@ univalence→ ua X = singletons-are-subsingletons
 𝕁-≃-equation : (ua : is-univalent 𝓤)
              → (A : (X Y : 𝓤 ̇ ) → X ≃ Y → 𝓥 ̇ )
              → (φ : (X : 𝓤 ̇ ) → A X X (id-≃ X))
-             → (X : 𝓤 ̇ ) → 𝕁-≃ ua A φ X X (id-≃ X) ≡ φ X
+             → (X : 𝓤 ̇ ) → 𝕁-≃ ua A φ X X (id-≃ X) ＝ φ X
 
 𝕁-≃-equation ua A φ X = ℍ-≃-equation ua X (A X) (φ X)
 
@@ -163,41 +163,41 @@ automatic-equiv-functoriality :
 
       (F : 𝓤 ̇ → 𝓤 ̇ )
       (𝓕 : {X Y : 𝓤 ̇ }  → (X → Y) → F X → F Y)
-      (𝓕-id : {X : 𝓤 ̇ } → 𝓕 (𝑖𝑑 X) ≡ 𝑖𝑑 (F X))
+      (𝓕-id : {X : 𝓤 ̇ } → 𝓕 (𝑖𝑑 X) ＝ 𝑖𝑑 (F X))
       {X Y Z : 𝓤 ̇ }
       (f : X → Y)
       (g : Y → Z)
 
-    → is-univalent 𝓤 → is-equiv f + is-equiv g → 𝓕 (g ∘ f) ≡ 𝓕 g ∘ 𝓕 f
+    → is-univalent 𝓤 → is-equiv f + is-equiv g → 𝓕 (g ∘ f) ＝ 𝓕 g ∘ 𝓕 f
 
 automatic-equiv-functoriality {𝓤} F 𝓕 𝓕-id {X} {Y} {Z} f g ua = γ
   where
-   γ :  is-equiv f + is-equiv g → 𝓕 (g ∘ f) ≡ 𝓕 g ∘ 𝓕 f
+   γ :  is-equiv f + is-equiv g → 𝓕 (g ∘ f) ＝ 𝓕 g ∘ 𝓕 f
    γ (inl i) = ℍ-equiv ua X A a Y f i g
     where
      A : (Y : 𝓤 ̇ ) → (X → Y) → 𝓤 ̇
-     A Y f = (g : Y → Z) → 𝓕 (g ∘ f) ≡ 𝓕 g ∘ 𝓕 f
+     A Y f = (g : Y → Z) → 𝓕 (g ∘ f) ＝ 𝓕 g ∘ 𝓕 f
 
-     a : (g : X → Z) → 𝓕 g ≡ 𝓕 g ∘ 𝓕 id
+     a : (g : X → Z) → 𝓕 g ＝ 𝓕 g ∘ 𝓕 id
      a g = ap (𝓕 g ∘_) (𝓕-id ⁻¹)
 
    γ (inr j) = ℍ-equiv ua Y B b Z g j f
     where
      B : (Z : 𝓤 ̇ ) → (Y → Z) → 𝓤 ̇
-     B Z g = (f : X → Y) → 𝓕 (g ∘ f) ≡ 𝓕 g ∘ 𝓕 f
+     B Z g = (f : X → Y) → 𝓕 (g ∘ f) ＝ 𝓕 g ∘ 𝓕 f
 
-     b : (f : X → Y) → 𝓕 f ≡ 𝓕 (𝑖𝑑 Y) ∘ 𝓕 f
+     b : (f : X → Y) → 𝓕 f ＝ 𝓕 (𝑖𝑑 Y) ∘ 𝓕 f
      b f = ap (_∘ 𝓕 f) (𝓕-id ⁻¹)
 
 Σ-change-of-variable' : is-univalent 𝓤
                       → {X : 𝓤 ̇ } {Y : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (f : X → Y)
                       → (i : is-equiv f)
-                      → (Σ x ꞉ X , A x) ≡ (Σ y ꞉ Y , A (inverse f i y))
+                      → (Σ x ꞉ X , A x) ＝ (Σ y ꞉ Y , A (inverse f i y))
 
 Σ-change-of-variable' {𝓤} {𝓥} ua {X} {Y} A f i = ℍ-≃ ua X B b Y (f , i)
  where
    B : (Y : 𝓤 ̇ ) → X ≃ Y →  (𝓤 ⊔ 𝓥)⁺ ̇
-   B Y (f , i) = Σ A ≡ (Σ (A ∘ inverse f i))
+   B Y (f , i) = Σ A ＝ (Σ (A ∘ inverse f i))
 
    b : B X (id-≃ X)
    b = refl (Σ A)
@@ -205,35 +205,35 @@ automatic-equiv-functoriality {𝓤} F 𝓕 𝓕-id {X} {Y} {Z} f g ua = γ
 Σ-change-of-variable'' : is-univalent 𝓤
                        → {X : 𝓤 ̇ } {Y : 𝓤 ̇ } (A : Y → 𝓥 ̇ ) (f : X → Y)
                        → is-equiv f
-                       → (Σ y ꞉ Y , A y) ≡ (Σ x ꞉ X , A (f x))
+                       → (Σ y ꞉ Y , A y) ＝ (Σ x ꞉ X , A (f x))
 
 Σ-change-of-variable'' ua A f i = Σ-change-of-variable' ua A
                                   (inverse f i)
                                   (inverses-are-equivs f i)
 
-transport-map-along-≡ : {X Y Z : 𝓤 ̇ }
-                        (p : X ≡ Y) (g : X → Z)
+transport-map-along-＝ : {X Y Z : 𝓤 ̇ }
+                        (p : X ＝ Y) (g : X → Z)
                       → transport (λ - → - → Z) p g
-                      ≡ g ∘ Id→fun (p ⁻¹)
+                      ＝ g ∘ Id→fun (p ⁻¹)
 
-transport-map-along-≡ (refl X) = refl
+transport-map-along-＝ (refl X) = refl
 
 transport-map-along-≃ : (ua : is-univalent 𝓤) {X Y Z : 𝓤 ̇ }
                         (e : X ≃ Y) (g : X → Z)
                       → transport (λ - → - → Z) (Eq→Id ua X Y e) g
-                      ≡ g ∘ ⌜ ≃-sym e ⌝
+                      ＝ g ∘ ⌜ ≃-sym e ⌝
 
 transport-map-along-≃ {𝓤} ua {X} {Y} {Z} = 𝕁-≃ ua A a X Y
  where
   A : (X Y : 𝓤 ̇ ) → X ≃ Y → 𝓤 ̇
   A X Y e = (g : X → Z) → transport (λ - → - → Z) (Eq→Id ua X Y e) g
-                        ≡ g ∘ ⌜ ≃-sym e ⌝
+                        ＝ g ∘ ⌜ ≃-sym e ⌝
   a : (X : 𝓤 ̇ ) → A X X (id-≃ X)
-  a X g = transport (λ - → - → Z) (Eq→Id ua X X (id-≃ X)) g ≡⟨ q ⟩
-          transport (λ - → - → Z) (refl X) g                ≡⟨ refl _ ⟩
+  a X g = transport (λ - → - → Z) (Eq→Id ua X X (id-≃ X)) g ＝⟨ q ⟩
+          transport (λ - → - → Z) (refl X) g                ＝⟨ refl _ ⟩
           g                                                 ∎
     where
-     p : Eq→Id ua X X (id-≃ X) ≡ refl X
+     p : Eq→Id ua X X (id-≃ X) ＝ refl X
      p = inverses-are-retractions (Id→Eq X X) (ua X X) (refl X)
 
      q = ap (λ - → transport (λ - → - → Z) - g) p

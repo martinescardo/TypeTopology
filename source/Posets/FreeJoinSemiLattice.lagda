@@ -124,8 +124,8 @@ the choice of enumeration is irrelevant, i.e. fₛ A is weakly constant.
       ψ : (k : Fin n) → (f' ∘ e) k ⊑ ∨ⁿ (f' ∘ e')
       ψ k = ∥∥-rec (⊑-is-prop-valued _ _) ϕ (σ' (e k))
        where
-        ϕ : (Σ k' ꞉ Fin n' , e' k' ≡ e k) → (f' ∘ e) k ⊑ ∨ⁿ (f' ∘ e')
-        ϕ (k' , p) = (f' ∘ e) k   ⊑⟨ ≡-to-⊒ (ap f' p)              ⟩
+        ϕ : (Σ k' ꞉ Fin n' , e' k' ＝ e k) → (f' ∘ e) k ⊑ ∨ⁿ (f' ∘ e')
+        ϕ (k' , p) = (f' ∘ e) k   ⊑⟨ ＝-to-⊒ (ap f' p)              ⟩
                      (f' ∘ e') k' ⊑⟨ ∨ⁿ-is-upperbound (f' ∘ e') k' ⟩
                      ∨ⁿ (f' ∘ e') ⊑∎
     v : ∨ⁿ (f' ∘ e') ⊑ ∨ⁿ (f' ∘ e)
@@ -134,8 +134,8 @@ the choice of enumeration is irrelevant, i.e. fₛ A is weakly constant.
       ψ : (k' : Fin n') → (f' ∘ e') k' ⊑ ∨ⁿ (f' ∘ e)
       ψ k' = ∥∥-rec (⊑-is-prop-valued _ _) ϕ (σ (e' k'))
        where
-        ϕ : (Σ k ꞉ Fin n , e k ≡ e' k') → (f' ∘ e') k' ⊑ ∨ⁿ (f' ∘ e)
-        ϕ (k , p) = (f' ∘ e') k' ⊑⟨ ≡-to-⊒ (ap f' p)            ⟩
+        ϕ : (Σ k ꞉ Fin n , e k ＝ e' k') → (f' ∘ e') k' ⊑ ∨ⁿ (f' ∘ e)
+        ϕ (k , p) = (f' ∘ e') k' ⊑⟨ ＝-to-⊒ (ap f' p)            ⟩
                     (f' ∘ e) k   ⊑⟨ ∨ⁿ-is-upperbound (f' ∘ e) k ⟩
                     ∨ⁿ (f' ∘ e)  ⊑∎
 
@@ -152,9 +152,9 @@ We now use the theorem by Kraus et al. to construct the map f♭ from fₛ.
 
   f♭-in-terms-of-fₛ : (A : 𝓟 X) {n : ℕ} {e : (Fin n → 𝕋 A)} (σ : is-surjection e)
                       (κ : is-Kuratowski-finite-subset A)
-                    → f♭ (A , κ) ≡ fₛ A (n , e , σ)
-  f♭-in-terms-of-fₛ A {n} {e} σ κ = f♭ (A , κ)             ≡⟨ I  ⟩
-                                    f♭ (A , ∣ n , e , σ ∣) ≡⟨ II ⟩
+                    → f♭ (A , κ) ＝ fₛ A (n , e , σ)
+  f♭-in-terms-of-fₛ A {n} {e} σ κ = f♭ (A , κ)             ＝⟨ I  ⟩
+                                    f♭ (A , ∣ n , e , σ ∣) ＝⟨ II ⟩
                                     fₛ A (n , e , σ)       ∎
    where
     I  = ap (λ - → f♭ (A , -)) (∥∥-is-prop κ ∣ n , e , σ ∣)
@@ -185,8 +185,8 @@ We show (ii) and then (i) now.
 \begin{code}
 
   f♭-after-η-is-f : f♭ ∘ η ∼ f
-  f♭-after-η-is-f x = f♭ (η x)             ≡⟨ I  ⟩
-                      fₛ ❴ x ❵ (1 , e , σ) ≡⟨ II ⟩
+  f♭-after-η-is-f x = f♭ (η x)             ＝⟨ I  ⟩
+                      fₛ ❴ x ❵ (1 , e , σ) ＝⟨ II ⟩
                       f x                  ∎
    where
     e : Fin 1 → 𝕋 ❴ x ❵
@@ -199,7 +199,7 @@ We show (ii) and then (i) now.
            (⊥-is-least (f x)) (⊑-is-reflexive (f x)))
           (∨-is-upperbound₂ _ _)
 
-  f♭-preserves-⊥ : f♭ ∅[𝓚] ≡ ⊥
+  f♭-preserves-⊥ : f♭ ∅[𝓚] ＝ ⊥
   f♭-preserves-⊥ = ⊑-is-antisymmetric _ _ u v
    where
     u : f♭ ∅[𝓚] ⊑ ⊥
@@ -211,7 +211,7 @@ We show (ii) and then (i) now.
       e = 𝟘-elim
       σ : is-surjection e
       σ (x , x-in-emptyset) = 𝟘-elim x-in-emptyset
-      u₁ = ≡-to-⊑ (f♭-in-terms-of-fₛ ∅ σ ∅-is-Kuratowski-finite-subset)
+      u₁ = ＝-to-⊑ (f♭-in-terms-of-fₛ ∅ σ ∅-is-Kuratowski-finite-subset)
       u₂ = ⊑-is-reflexive ⊥
     v : ⊥ ⊑ f♭ ∅[𝓚]
     v = ⊥-is-least (f♭ ∅[𝓚])
@@ -231,8 +231,8 @@ We show (ii) and then (i) now.
       ∨ⁿ (f ∘ 𝕋-to-carrier B ∘ e') ⊑⟨ u₃ ⟩
       f♭ 𝔹                         ⊑∎
        where
-        u₁ = ≡-to-⊑ (f♭-in-terms-of-fₛ A e-surj κ₁)
-        u₃ = ≡-to-⊒ (f♭-in-terms-of-fₛ B e'-surj κ₂)
+        u₁ = ＝-to-⊑ (f♭-in-terms-of-fₛ A e-surj κ₁)
+        u₃ = ＝-to-⊒ (f♭-in-terms-of-fₛ B e'-surj κ₂)
         u₂ = ∨ⁿ-is-lowerbound-of-upperbounds (f ∘ 𝕋-to-carrier A ∘ e)
                                              (∨ⁿ (f ∘ 𝕋-to-carrier B ∘ e')) γ₁
          where
@@ -246,21 +246,21 @@ We show (ii) and then (i) now.
             a = 𝕋-to-membership A (e k)
             b : x ∈ B
             b = s x a
-            t : ∃ k' ꞉ Fin n' , e' k' ≡ (x , b)
+            t : ∃ k' ꞉ Fin n' , e' k' ＝ (x , b)
             t = e'-surj (x , b)
-            γ₂ : (Σ k' ꞉ Fin n' , e' k' ≡ (x , b))
+            γ₂ : (Σ k' ꞉ Fin n' , e' k' ＝ (x , b))
                → (f ∘ pr₁ ∘ e) k ⊑ ∨ⁿ (f ∘ pr₁ ∘ e')
             γ₂ (k' , p) = (f ∘ 𝕋-to-carrier A) (e k)   ⊑⟨ v₁ ⟩
                           (f ∘ 𝕋-to-carrier B) (e' k') ⊑⟨ v₂ ⟩
                           ∨ⁿ (f ∘ 𝕋-to-carrier B ∘ e') ⊑∎
              where
-              v₁ = ≡-to-⊑ (ap f q)
+              v₁ = ＝-to-⊑ (ap f q)
                where
-                q : 𝕋-to-carrier A (e k) ≡ 𝕋-to-carrier B (e' k')
+                q : 𝕋-to-carrier A (e k) ＝ 𝕋-to-carrier B (e' k')
                 q = ap pr₁ (p ⁻¹)
               v₂ = ∨ⁿ-is-upperbound (f ∘ 𝕋-to-carrier B ∘ e') k'
 
-  f♭-preserves-∨ : (A B : 𝓚 X) → f♭ (A ∪[𝓚] B) ≡ f♭ A ∨ f♭ B
+  f♭-preserves-∨ : (A B : 𝓚 X) → f♭ (A ∪[𝓚] B) ＝ f♭ A ∨ f♭ B
   f♭-preserves-∨ A B = ⊑-is-antisymmetric _ _ u v
    where
     v : (f♭ A ∨ f♭ B) ⊑ f♭ (A ∪[𝓚] B)
@@ -286,9 +286,9 @@ We show (ii) and then (i) now.
           [e,e'] = (∪-enum ⟨ A ⟩ ⟨ B ⟩ e e')
           τ : is-surjection [e,e']
           τ = ∪-enum-is-surjection ⟨ A ⟩ ⟨ B ⟩ e e' σ σ'
-          l₁ = ≡-to-⊑ p
+          l₁ = ＝-to-⊑ p
            where
-            p : f♭ (A ∪[𝓚] B) ≡ fₛ (⟨ A ⟩ ∪ ⟨ B ⟩) (n +' n' , [e,e'] , τ)
+            p : f♭ (A ∪[𝓚] B) ＝ fₛ (⟨ A ⟩ ∪ ⟨ B ⟩) (n +' n' , [e,e'] , τ)
             p = f♭-in-terms-of-fₛ (⟨ A ⟩ ∪ ⟨ B ⟩) τ ⟨ A ∪[𝓚] B ⟩₂
           l₂ = ∨ⁿ-is-lowerbound-of-upperbounds (f' ∘ [e,e']) (f♭ A ∨ f♭ B) ϕ
            where
@@ -312,7 +312,7 @@ We show (ii) and then (i) now.
                 u₁ = ⊑-is-reflexive ((f ∘ 𝕋-to-carrier ⟨ A ⟩ ∘ e) k)
                 u₂ = ∨ⁿ-is-upperbound (f ∘ 𝕋-to-carrier ⟨ A ⟩ ∘ e) k
                 u₃ = ⊑-is-reflexive (∨ⁿ (f ∘ 𝕋-to-carrier ⟨ A ⟩ ∘ e))
-                u₄ = ≡-to-⊒ (f♭-in-terms-of-fₛ ⟨ A ⟩ σ ⟨ A ⟩₂)
+                u₄ = ＝-to-⊒ (f♭-in-terms-of-fₛ ⟨ A ⟩ σ ⟨ A ⟩₂)
                 u₅ = ∨-is-upperbound₁ (f♭ A) (f♭ B)
               ψ (inr k) = (f' ∘ ∪-enum' ⟨ A ⟩ ⟨ B ⟩ e e') (inr k) ⊑⟨ u₁' ⟩
                           (f ∘ 𝕋-to-carrier ⟨ B ⟩ ∘ e') k         ⊑⟨ u₂' ⟩
@@ -324,7 +324,7 @@ We show (ii) and then (i) now.
                 u₁' = ⊑-is-reflexive ((f ∘ 𝕋-to-carrier ⟨ B ⟩ ∘ e') k)
                 u₂' = ∨ⁿ-is-upperbound (f ∘ 𝕋-to-carrier ⟨ B ⟩ ∘ e') k
                 u₃' = ⊑-is-reflexive (∨ⁿ (f ∘ 𝕋-to-carrier ⟨ B ⟩ ∘ e'))
-                u₄' = ≡-to-⊒ (f♭-in-terms-of-fₛ ⟨ B ⟩ σ' ⟨ B ⟩₂)
+                u₄' = ＝-to-⊒ (f♭-in-terms-of-fₛ ⟨ B ⟩ σ' ⟨ B ⟩₂)
                 u₅' = ∨-is-upperbound₂ (f♭ A) (f♭ B)
 
 \end{code}
@@ -341,31 +341,31 @@ is proved in UF.Powerset-Fin.lagda.
          where
 
    f♭-is-unique : (h : 𝓚 X → L)
-                → h ∅[𝓚] ≡ ⊥
-                → ((A B : 𝓚 X) → h (A ∪[𝓚] B) ≡ h A ∨ h B)
+                → h ∅[𝓚] ＝ ⊥
+                → ((A B : 𝓚 X) → h (A ∪[𝓚] B) ＝ h A ∨ h B)
                 → (h ∘ η ∼ f)
                 → h ∼ f♭
    f♭-is-unique h p₁ p₂ p₃ = Kuratowski-finite-subset-induction pe fe
                              X X-is-set
-                             (λ A → h A ≡ f♭ A)
+                             (λ A → h A ＝ f♭ A)
                              (λ _ → L-is-set)
                              q₁ q₂ q₃
     where
-     q₁ : h ∅[𝓚] ≡ f♭ ∅[𝓚]
-     q₁ = h ∅[𝓚]  ≡⟨ p₁                ⟩
-          ⊥       ≡⟨ f♭-preserves-⊥ ⁻¹ ⟩
+     q₁ : h ∅[𝓚] ＝ f♭ ∅[𝓚]
+     q₁ = h ∅[𝓚]  ＝⟨ p₁                ⟩
+          ⊥       ＝⟨ f♭-preserves-⊥ ⁻¹ ⟩
           f♭ ∅[𝓚] ∎
-     q₂ : (x : X) → h (η x) ≡ f♭ (η x)
-     q₂ x = h (η x)  ≡⟨ p₃ x                   ⟩
-            f x      ≡⟨ (f♭-after-η-is-f x) ⁻¹ ⟩
+     q₂ : (x : X) → h (η x) ＝ f♭ (η x)
+     q₂ x = h (η x)  ＝⟨ p₃ x                   ⟩
+            f x      ＝⟨ (f♭-after-η-is-f x) ⁻¹ ⟩
             f♭ (η x) ∎
      q₃ : (A B : 𝓚 X)
-        → h A ≡ f♭ A
-        → h B ≡ f♭ B
-        → h (A ∪[𝓚] B) ≡ f♭ (A ∪[𝓚] B)
-     q₃ A B r₁ r₂ = h (A ∪[𝓚] B)  ≡⟨ p₂ A B                  ⟩
-                    h A ∨ h B     ≡⟨ ap₂ _∨_ r₁ r₂           ⟩
-                    f♭ A ∨ f♭ B   ≡⟨ (f♭-preserves-∨ A B) ⁻¹ ⟩
+        → h A ＝ f♭ A
+        → h B ＝ f♭ B
+        → h (A ∪[𝓚] B) ＝ f♭ (A ∪[𝓚] B)
+     q₃ A B r₁ r₂ = h (A ∪[𝓚] B)  ＝⟨ p₂ A B                  ⟩
+                    h A ∨ h B     ＝⟨ ap₂ _∨_ r₁ r₂           ⟩
+                    f♭ A ∨ f♭ B   ＝⟨ (f♭-preserves-∨ A B) ⁻¹ ⟩
                     f♭ (A ∪[𝓚] B) ∎
 
 \end{code}
@@ -383,17 +383,17 @@ subsingletons (as L is a set).
          where
 
    homotopy-uniqueness-of-f♭ :
-    ∃! h ꞉ (𝓚 X → L) , (h ∅[𝓚] ≡ ⊥)
-                     × ((A B : 𝓚 X) → h (A ∪[𝓚] B) ≡ h A ∨ h B)
+    ∃! h ꞉ (𝓚 X → L) , (h ∅[𝓚] ＝ ⊥)
+                     × ((A B : 𝓚 X) → h (A ∪[𝓚] B) ＝ h A ∨ h B)
                      × h ∘ η ∼ f
    homotopy-uniqueness-of-f♭ =
     (f♭ , f♭-preserves-⊥ , f♭-preserves-∨ , f♭-after-η-is-f) , γ
      where
-      γ : (t : (Σ h ꞉ (𝓚 X → L) , (h ∅[𝓚] ≡ ⊥)
-                                × ((A B : 𝓚 X) → h (A ∪[𝓚] B) ≡ h A ∨ h B)
+      γ : (t : (Σ h ꞉ (𝓚 X → L) , (h ∅[𝓚] ＝ ⊥)
+                                × ((A B : 𝓚 X) → h (A ∪[𝓚] B) ＝ h A ∨ h B)
                                 × h ∘ η ∼ f))
-        → (f♭ , f♭-preserves-⊥ , f♭-preserves-∨ , f♭-after-η-is-f) ≡ t
-      γ (h , p₁ , p₂ , p₃) = to-subtype-≡ ψ
+        → (f♭ , f♭-preserves-⊥ , f♭-preserves-∨ , f♭-after-η-is-f) ＝ t
+      γ (h , p₁ , p₂ , p₃) = to-subtype-＝ ψ
                              (dfunext (lower-funext (𝓤 ⁺) (𝓤 ⁺) fe)
                                (λ A → (f♭-is-unique
                                          pe
@@ -401,8 +401,8 @@ subsingletons (as L is a set).
                                          h p₁ p₂ p₃ A) ⁻¹))
        where
         ψ : (k : 𝓚 X → L)
-          → is-prop ((k ∅[𝓚] ≡ ⊥)
-                    × ((A B : 𝓚 X) → k (A ∪[𝓚] B) ≡ (k A ∨ k B))
+          → is-prop ((k ∅[𝓚] ＝ ⊥)
+                    × ((A B : 𝓚 X) → k (A ∪[𝓚] B) ＝ (k A ∨ k B))
                     × k ∘ η ∼ f)
         ψ k = ×-is-prop L-is-set (×-is-prop
                                    (Π-is-prop fe
@@ -466,7 +466,7 @@ module _
          A' : 𝓤 ̇
          A' = 𝕋 (⌜ φ ⌝ (A , e))
          lemma = A'                                   ≃⟨ ≃-refl _ ⟩
-                 (Σ x ꞉ X , Σ a ꞉ A , etofun e a ≡ x) ≃⟨ τ        ⟩
+                 (Σ x ꞉ X , Σ a ꞉ A , etofun e a ＝ x) ≃⟨ τ        ⟩
                  A                                    ■
           where
            τ = total-fiber-is-domain (etofun e)

@@ -101,7 +101,7 @@ equipment with an antisymmetric order so they are not sets a priori.
 \begin{code}
 
 is-antisymmetric : {A : 𝓤 ̇} → (A → A → Ω 𝓥) → (𝓤 ⊔ 𝓥) ̇
-is-antisymmetric {A = A} _≤_ = {x y : A} → (x ≤ y) holds → (y ≤ x) holds → x ≡ y
+is-antisymmetric {A = A} _≤_ = {x y : A} → (x ≤ y) holds → (y ≤ x) holds → x ＝ y
 
 being-antisymmetric-is-prop : {A : 𝓤 ̇} (_≤_ : A → A → Ω 𝓥)
                             → is-set A
@@ -164,7 +164,7 @@ syntax poset-eq-syntax P x y = x ≣[ P ] y
 ≤-is-reflexive (_ , _ , ((r , _) , _)) = r
 
 reflexivity+ : (P : Poset 𝓤 𝓥)
-             → {x y : pr₁ P} → x ≡ y → (x ≤[ P ] y) holds
+             → {x y : pr₁ P} → x ＝ y → (x ≤[ P ] y) holds
 reflexivity+ P {x} {y} p =
  transport (λ - → (x ≤[ P ] -) holds) p (≤-is-reflexive P x)
 
@@ -208,21 +208,21 @@ module PosetReasoning (P : Poset 𝓤 𝓥) where
         → (x ≤ y) holds → (y ≤ z) holds → (x ≤ z) holds
  x ≤⟨ p ⟩ q = ≤-is-transitive P _ _ _ p q
 
- _≡⟨_⟩ₚ_ : (x : ∣ P ∣ₚ) {y z : ∣ P ∣ₚ}
-         → x ≡ y → (y ≤ z) holds → (x ≤ z) holds
- x ≡⟨ p ⟩ₚ q = transport (λ - → (- ≤ _) holds) (p ⁻¹) q
+ _＝⟨_⟩ₚ_ : (x : ∣ P ∣ₚ) {y z : ∣ P ∣ₚ}
+         → x ＝ y → (y ≤ z) holds → (x ≤ z) holds
+ x ＝⟨ p ⟩ₚ q = transport (λ - → (- ≤ _) holds) (p ⁻¹) q
 
  _■ : (x : ∣ P ∣ₚ) → (x ≤ x) holds
  _■ = ≤-is-reflexive P
 
  infixr 0 _≤⟨_⟩_
- infixr 0 _≡⟨_⟩ₚ_
+ infixr 0 _＝⟨_⟩ₚ_
  infix  1 _■
 
-infix 1 _≡[_]≡_
+infix 1 _＝[_]＝_
 
-_≡[_]≡_ : {A : 𝓤 ̇} → A → is-set A → A → Ω 𝓤
-x ≡[ iss ]≡ y = (x ≡ y) , iss
+_＝[_]＝_ : {A : 𝓤 ̇} → A → is-set A → A → Ω 𝓤
+x ＝[ iss ]＝ y = (x ＝ y) , iss
 
 \end{code}
 
@@ -317,7 +317,7 @@ satisfies-frame-laws {𝓤 = 𝓤} {𝓥} {𝓦} {A = A}  (_≤_ , 𝟏 , _⊓_ 
     γ = Ɐ (x , y) ∶ (A × A) , ((x ⊓ y) is-glb-of (x , y))
     δ = Ɐ U ∶ Fam 𝓦 A , (⊔ U) is-lub-of U
     ε = Ɐ (x , U) ∶ A × Fam 𝓦 A ,
-        (x ⊓ (⋁⟨ i ⟩ U [ i ]) ≡[ iss ]≡ ⋁⟨ i ⟩ x ⊓ (U [ i ]))
+        (x ⊓ (⋁⟨ i ⟩ U [ i ]) ＝[ iss ]＝ ⋁⟨ i ⟩ x ⊓ (U [ i ]))
 
 frame-structure : (𝓥 𝓦 : Universe) → 𝓤 ̇ → 𝓤 ⊔ 𝓥 ⁺ ⊔ 𝓦 ⁺ ̇
 frame-structure 𝓥 𝓦 A =
@@ -359,7 +359,7 @@ is-top F t = Ɐ x ∶ ⟨ F ⟩ , x ≤[ poset-of F ] t
 𝟏-is-top : (F : Frame 𝓤 𝓥 𝓦) → (is-top F 𝟏[ F ]) holds
 𝟏-is-top (A , _ , _ , p , _) = p
 
-𝟏-is-unique : (F : Frame 𝓤 𝓥 𝓦) → (t : ⟨ F ⟩) → is-top F t holds → t ≡ 𝟏[ F ]
+𝟏-is-unique : (F : Frame 𝓤 𝓥 𝓦) → (t : ⟨ F ⟩) → is-top F t holds → t ＝ 𝟏[ F ]
 𝟏-is-unique F t t-top = ≤-is-antisymmetric (poset-of F) β γ
  where
   β : (t ≤[ poset-of F ] 𝟏[ F ]) holds
@@ -369,7 +369,7 @@ is-top F t = Ɐ x ∶ ⟨ F ⟩ , x ≤[ poset-of F ] t
   γ = t-top 𝟏[ F ]
 
 only-𝟏-is-above-𝟏 : (F : Frame 𝓤 𝓥 𝓦) (x : ⟨ F ⟩)
-                  → (𝟏[ F ] ≤[ poset-of F ] x) holds → x ≡ 𝟏[ F ]
+                  → (𝟏[ F ] ≤[ poset-of F ] x) holds → x ＝ 𝟏[ F ]
 only-𝟏-is-above-𝟏 F x p =
  𝟏-is-unique F x λ y → y ≤⟨ 𝟏-is-top F y ⟩ 𝟏[ F ] ≤⟨ p ⟩ x ■
   where
@@ -414,7 +414,7 @@ syntax join-of F U = ⋁[ F ] U
 \begin{code}
 
 𝟏-right-unit-of-∧ : (F : Frame 𝓤 𝓥 𝓦)
-                  → (x : ⟨ F ⟩) → x ∧[ F ] 𝟏[ F ] ≡ x
+                  → (x : ⟨ F ⟩) → x ∧[ F ] 𝟏[ F ] ＝ x
 𝟏-right-unit-of-∧ F x = ≤-is-antisymmetric (poset-of F) β γ
  where
   β : ((x ∧[ F ] 𝟏[ F ]) ≤[ poset-of F ] x) holds
@@ -460,7 +460,7 @@ fmap-binary-family : {A : 𝓤 ̇ } {B : 𝓥 ̇ }
                    → (f : A → B)
                    → (x y : A)
                    → ⁅ f z ∣ z ε (binary-family 𝓦 x y) ⁆
-                   ≡ binary-family 𝓦 (f x) (f y)
+                   ＝ binary-family 𝓦 (f x) (f y)
 fmap-binary-family 𝓦 f x y = ap (λ - → 𝟚 𝓦 , -) (dfunext fe γ)
  where
   γ : ⁅ f z ∣ z ε binary-family 𝓦 x y ⁆ [_] ∼ binary-family 𝓦 (f x) (f y) [_]
@@ -499,7 +499,7 @@ syntax binary-join F x y = x ∨[ F ] y
 
 ∨[_]-is-commutative : (F : Frame 𝓤 𝓥 𝓦)
                     → (x y : ⟨ F ⟩)
-                    → (x ∨[ F ] y) ≡ (y ∨[ F ] x)
+                    → (x ∨[ F ] y) ＝ (y ∨[ F ] x)
 ∨[_]-is-commutative F x y =
  ≤-is-antisymmetric (poset-of F) β γ
   where
@@ -514,7 +514,7 @@ syntax binary-join F x y = x ∨[ F ] y
 
 ∨[_]-assoc : (F : Frame 𝓤 𝓥 𝓦)
            → (x y z : ⟨ F ⟩)
-           → (x ∨[ F ] y) ∨[ F ] z ≡ x ∨[ F ] (y ∨[ F ] z)
+           → (x ∨[ F ] y) ∨[ F ] z ＝ x ∨[ F ] (y ∨[ F ] z)
 ∨[_]-assoc F x y z =
  ≤-is-antisymmetric (poset-of F) (∨[ F ]-least β γ) (∨[ F ]-least δ ε)
  where
@@ -571,9 +571,9 @@ map.
                 → (x ≤[ poset-of F ] y) holds
                 → ((z ∨[ F ] x) ≤[ poset-of F ] (z ∨[ F ] y)) holds
 ∨[_]-right-monotone F {x} {y} {z} p =
- z ∨[ F ] x  ≡⟨ ∨[ F ]-is-commutative z x ⟩ₚ
+ z ∨[ F ] x  ＝⟨ ∨[ F ]-is-commutative z x ⟩ₚ
  x ∨[ F ] z  ≤⟨ ∨[ F ]-left-monotone p    ⟩
- y ∨[ F ] z  ≡⟨ ∨[ F ]-is-commutative y z ⟩ₚ
+ y ∨[ F ] z  ＝⟨ ∨[ F ]-is-commutative y z ⟩ₚ
  z ∨[ F ] y  ■
   where
    open PosetReasoning (poset-of F)
@@ -590,15 +590,15 @@ map.
 𝟎-is-bottom F x = ⋁[ F ]-least (𝟘 , λ ()) (x , λ ())
 
 only-𝟎-is-below-𝟎 : (F : Frame 𝓤 𝓥 𝓦) (x : ⟨ F ⟩)
-                  → (x ≤[ poset-of F ] 𝟎[ F ]) holds → x ≡ 𝟎[ F ]
+                  → (x ≤[ poset-of F ] 𝟎[ F ]) holds → x ＝ 𝟎[ F ]
 only-𝟎-is-below-𝟎 F x p =
  ≤-is-antisymmetric (poset-of F) p (𝟎-is-bottom F x)
 
 𝟎-is-unique : (F : Frame 𝓤 𝓥 𝓦) (b : ⟨ F ⟩)
-            → ((x : ⟨ F ⟩) → (b ≤[ poset-of F ] x) holds) → b ≡ 𝟎[ F ]
+            → ((x : ⟨ F ⟩) → (b ≤[ poset-of F ] x) holds) → b ＝ 𝟎[ F ]
 𝟎-is-unique F b φ = only-𝟎-is-below-𝟎 F b (φ 𝟎[ F ])
 
-𝟎-right-unit-of-∨ : (F : Frame 𝓤 𝓥 𝓦) (x : ⟨ F ⟩) → 𝟎[ F ] ∨[ F ] x ≡ x
+𝟎-right-unit-of-∨ : (F : Frame 𝓤 𝓥 𝓦) (x : ⟨ F ⟩) → 𝟎[ F ] ∨[ F ] x ＝ x
 𝟎-right-unit-of-∨ {𝓦 = 𝓦} F x = ≤-is-antisymmetric (poset-of F) β γ
  where
   open PosetNotation (poset-of F)
@@ -609,10 +609,10 @@ only-𝟎-is-below-𝟎 F x p =
   γ : (x ≤ (𝟎[ F ] ∨[ F ] x)) holds
   γ = ⋁[ F ]-upper (binary-family 𝓦 𝟎[ F ] x) (inr ⋆)
 
-𝟎-left-unit-of-∨ : (F : Frame 𝓤 𝓥 𝓦) (x : ⟨ F ⟩) → x ∨[ F ] 𝟎[ F ] ≡ x
+𝟎-left-unit-of-∨ : (F : Frame 𝓤 𝓥 𝓦) (x : ⟨ F ⟩) → x ∨[ F ] 𝟎[ F ] ＝ x
 𝟎-left-unit-of-∨ {𝓦 = 𝓦} F x =
- x ∨[ F ] 𝟎[ F ]  ≡⟨ ∨[ F ]-is-commutative x 𝟎[ F ] ⟩
- 𝟎[ F ] ∨[ F ] x  ≡⟨ 𝟎-right-unit-of-∨ F x          ⟩
+ x ∨[ F ] 𝟎[ F ]  ＝⟨ ∨[ F ]-is-commutative x 𝟎[ F ] ⟩
+ 𝟎[ F ] ∨[ F ] x  ＝⟨ 𝟎-right-unit-of-∨ F x          ⟩
  x                ∎
 
 \end{code}
@@ -624,7 +624,7 @@ distributivity : (F : Frame 𝓤 𝓥 𝓦)
                → (U : Fam 𝓦 ⟨ F ⟩)
                → let open JoinNotation (λ - → ⋁[ F ] -) in
                  x ∧[ F ] (⋁⟨ i ⟩ (U [ i ]))
-               ≡ ⋁⟨ i ⟩ (x ∧[ F ] (U [ i ]))
+               ＝ ⋁⟨ i ⟩ (x ∧[ F ] (U [ i ]))
 distributivity (_ , _ , _ , (_ , _ , _ , d)) x U = d (x , U)
 
 \end{code}
@@ -662,7 +662,7 @@ id-is-scott-continuous F S δ = ⋁[ F ]-upper S , ⋁[ F ]-least S
 preserves-binary-meets : (F : Frame 𝓤 𝓥 𝓦) (G : Frame 𝓤′ 𝓥′ 𝓦)
                 → (⟨ F ⟩ → ⟨ G ⟩) → Ω (𝓤 ⊔ 𝓤′)
 preserves-binary-meets F G h =
- Ɐ x ∶ ⟨ F ⟩ , Ɐ y ∶ ⟨ F ⟩ , (h (x ∧[ F ] y) ≡[ ψ ]≡ h x ∧[ G ] h y)
+ Ɐ x ∶ ⟨ F ⟩ , Ɐ y ∶ ⟨ F ⟩ , (h (x ∧[ F ] y) ＝[ ψ ]＝ h x ∧[ G ] h y)
   where
    ψ : is-set ⟨ G ⟩
    ψ = carrier-of-[ poset-of G ]-is-set
@@ -680,7 +680,7 @@ is-a-frame-homomorphism {𝓦 = 𝓦} F G f = α ∧ β ∧ γ
 
   open Joins (λ x y → x ≤[ P ] y)
 
-  α = f 𝟏[ F ] ≡[ iss ]≡ 𝟏[ G ]
+  α = f 𝟏[ F ] ＝[ iss ]＝ 𝟏[ G ]
   β = preserves-binary-meets F G f
   γ = Ɐ U ∶ Fam 𝓦 ⟨ F ⟩ , f (⋁[ F ] U) is-lub-of ⁅ f x ∣ x ε U ⁆
 
@@ -726,7 +726,7 @@ monotone-image-on-directed-family-is-directed F G S (ι , υ) f μ = ι , γ
 is-join-preserving : (F : Frame 𝓤 𝓥 𝓦) (G : Frame 𝓤' 𝓥' 𝓦)
                    → (⟨ F ⟩ → ⟨ G ⟩) → Ω (𝓤 ⊔ 𝓤' ⊔ 𝓦 ⁺)
 is-join-preserving {𝓦 = 𝓦} F G f =
- Ɐ S ∶ Fam 𝓦 ⟨ F ⟩ , f (⋁[ F ] S) ≡[ iss ]≡ ⋁[ G ] ⁅ f s ∣ s ε S ⁆
+ Ɐ S ∶ Fam 𝓦 ⟨ F ⟩ , f (⋁[ F ] S) ＝[ iss ]＝ ⋁[ G ] ⁅ f s ∣ s ε S ⁆
   where
    iss = carrier-of-[ poset-of G ]-is-set
 
@@ -752,7 +752,7 @@ join-preserving-implies-scott-continuous F G f φ S _ = γ
 
 ∧[_]-unique : (F : Frame 𝓤 𝓥 𝓦) {x y z : ⟨ F ⟩}
             → let open Meets (λ x y → x ≤[ poset-of F ] y) in
-              (z is-glb-of (x , y)) holds → z ≡ (x ∧[ F ] y)
+              (z is-glb-of (x , y)) holds → z ＝ (x ∧[ F ] y)
 ∧[ F ]-unique {x} {y} {z} (p , q) = ≤-is-antisymmetric (poset-of F) β γ
  where
   β : (z ≤[ poset-of F ] (x ∧[ F ] y)) holds
@@ -767,7 +767,7 @@ join-preserving-implies-scott-continuous F G f φ S _ = γ
 
 ⋁[_]-unique : (F : Frame 𝓤 𝓥 𝓦) (U : Fam 𝓦 ⟨ F ⟩) (u : ⟨ F ⟩)
          → let open Joins (λ x y → x ≤[ poset-of F ] y) in
-           (u is-lub-of U) holds → u ≡ ⋁[ F ] U
+           (u is-lub-of U) holds → u ＝ ⋁[ F ] U
 ⋁[_]-unique F U u (p , q) = ≤-is-antisymmetric (poset-of F) γ β
  where
   open PosetNotation (poset-of F)
@@ -780,7 +780,7 @@ join-preserving-implies-scott-continuous F G f φ S _ = γ
 
 connecting-lemma₁ : (F : Frame 𝓤 𝓥 𝓦) {x y : ⟨ F ⟩}
                   → (x ≤[ poset-of F ] y) holds
-                  → x ≡ x ∧[ F ] y
+                  → x ＝ x ∧[ F ] y
 connecting-lemma₁ F {x} {y} p = ∧[ F ]-unique (β , γ)
  where
   open Meets (λ x y → x ≤[ poset-of F ] y)
@@ -792,23 +792,23 @@ connecting-lemma₁ F {x} {y} p = ∧[ F ]-unique (β , γ)
   γ (z , q , _) = q
 
 connecting-lemma₂ : (F : Frame 𝓤 𝓥 𝓦) {x y : ⟨ F ⟩}
-                  → x ≡ x ∧[ F ] y
+                  → x ＝ x ∧[ F ] y
                   → (x ≤[ poset-of F ] y) holds
-connecting-lemma₂ F {x} {y} p = x ≡⟨ p ⟩ₚ x ∧[ F ] y ≤⟨ ∧[ F ]-lower₂ x y ⟩ y ■
+connecting-lemma₂ F {x} {y} p = x ＝⟨ p ⟩ₚ x ∧[ F ] y ≤⟨ ∧[ F ]-lower₂ x y ⟩ y ■
  where
   open PosetReasoning (poset-of F)
 
 connecting-lemma₃ : (F : Frame 𝓤 𝓥 𝓦) {x y : ⟨ F ⟩}
-                  → y ≡ x ∨[ F ] y
+                  → y ＝ x ∨[ F ] y
                   → (x ≤[ poset-of F ] y) holds
 connecting-lemma₃ F {x} {y} p =
- x ≤⟨ ∨[ F ]-upper₁ x y ⟩ x ∨[ F ] y ≡⟨ p ⁻¹ ⟩ₚ y ■
+ x ≤⟨ ∨[ F ]-upper₁ x y ⟩ x ∨[ F ] y ＝⟨ p ⁻¹ ⟩ₚ y ■
   where
    open PosetReasoning (poset-of F)
 
 connecting-lemma₄ : (F : Frame 𝓤 𝓥 𝓦) {x y : ⟨ F ⟩}
                   → (x ≤[ poset-of F ] y) holds
-                  → y ≡ x ∨[ F ] y
+                  → y ＝ x ∨[ F ] y
 connecting-lemma₄ F {x} {y} p = ≤-is-antisymmetric (poset-of F) β γ
  where
   β : (y ≤[ poset-of F ] (x ∨[ F ] y)) holds
@@ -839,9 +839,9 @@ scott-continuous-implies-monotone : (F : Frame 𝓤 𝓥 𝓦) (G : Frame 𝓤�
                                   → is-monotonic (poset-of F) (poset-of G) f holds
 scott-continuous-implies-monotone {𝓦 = 𝓦} F G f φ (x , y) p =
  f x                                       ≤⟨ i   ⟩
- f x ∨[ G ] f y                            ≡⟨ ii  ⟩ₚ
- ⋁[ G ] ⁅ f z ∣ z ε binary-family 𝓦 x y ⁆  ≡⟨ iii ⟩ₚ
- f (x ∨[ F ] y)                            ≡⟨ iv  ⟩ₚ
+ f x ∨[ G ] f y                            ＝⟨ ii  ⟩ₚ
+ ⋁[ G ] ⁅ f z ∣ z ε binary-family 𝓦 x y ⁆  ＝⟨ iii ⟩ₚ
+ f (x ∨[ F ] y)                            ＝⟨ iv  ⟩ₚ
  f y                                       ■
   where
    open PosetReasoning (poset-of G)
@@ -876,8 +876,8 @@ meet-preserving-implies-monotone : (F : Frame 𝓤 𝓥 𝓦) (G : Frame 𝓤′
                                  → preserves-binary-meets F G h holds
                                  → is-monotonic (poset-of F) (poset-of G) h holds
 meet-preserving-implies-monotone F G h μ (x , y) p =
- h x              ≡⟨ i   ⟩ₚ
- h (x ∧[ F ] y)   ≡⟨ ii  ⟩ₚ
+ h x              ＝⟨ i   ⟩ₚ
+ h (x ∧[ F ] y)   ＝⟨ ii  ⟩ₚ
  h x ∧[ G ] h y   ≤⟨ iii ⟩
  h y              ■
   where
@@ -893,7 +893,7 @@ scott-continuous-join-eq : (F : Frame 𝓤  𝓥  𝓦)
                          → is-scott-continuous F G f holds
                          → (S : Fam 𝓦 ⟨ F ⟩)
                          → is-directed F S holds
-                         → f (⋁[ F ] S) ≡ ⋁[ G ] ⁅ f s ∣ s ε S ⁆
+                         → f (⋁[ F ] S) ＝ ⋁[ G ] ⁅ f s ∣ s ε S ⁆
 scott-continuous-join-eq F G f ζ S δ =
  ⋁[ G ]-unique ⁅ f s ∣ s ε S ⁆ (f (⋁[ F ] S)) (ζ S δ)
 
@@ -923,7 +923,7 @@ scott-continuous-join-eq F G f ζ S δ =
    β : (g (f (⋁[ F ] S)) is-an-upper-bound-of ⁅ g (f s) ∣ s ε S ⁆) holds
    β k = g (f (S [ k ]))              ≤⟨ i   ⟩
          ⋁[ H ] ⁅ g (f s) ∣ s ε S ⁆   ≤⟨ ii  ⟩
-         g (⋁[ G ] ⁅ f s ∣ s ε S ⁆)   ≡⟨ iii ⟩ₚ
+         g (⋁[ G ] ⁅ f s ∣ s ε S ⁆)   ＝⟨ iii ⟩ₚ
          g (f (⋁[ F ] S))             ■
           where
            i   = ⋁[ H ]-upper ⁅ g (f s) ∣ s ε S ⁆ k
@@ -935,7 +935,7 @@ scott-continuous-join-eq F G f ζ S δ =
    γ : (Ɐ (u , _) ∶ upper-bound ⁅ g (f s) ∣ s ε S ⁆ ,
          (g (f (⋁[ F ] S)) ≤[ poset-of H ] u)) holds
    γ (u , p) = g (f (⋁[ F ] S))              ≤⟨ i   ⟩
-               g (⋁[ G ] ⁅ f s ∣ s ε S ⁆)    ≡⟨ ii  ⟩ₚ
+               g (⋁[ G ] ⁅ f s ∣ s ε S ⁆)    ＝⟨ ii  ⟩ₚ
                ⋁[ H ] ⁅ g (f s) ∣ s ε S ⁆    ≤⟨ iii ⟩
                u                             ■
                 where
@@ -952,7 +952,7 @@ scott-continuous-join-eq F G f ζ S δ =
 \begin{code}
 
 ∧[_]-is-commutative : (F : Frame 𝓤 𝓥 𝓦) (x y : ⟨ F ⟩)
-                 → x ∧[ F ] y ≡ y ∧[ F ] x
+                 → x ∧[ F ] y ＝ y ∧[ F ] x
 ∧[ F ]-is-commutative x y = ∧[ F ]-unique (β , γ)
  where
   open Meets (λ x y → x ≤[ poset-of F ] y)
@@ -965,7 +965,7 @@ scott-continuous-join-eq F G f ζ S δ =
   γ (l , p , q) = ∧[ F ]-greatest x y l q p
 
 ∧[_]-is-associative : (F : Frame 𝓤 𝓥 𝓦) (x y z : ⟨ F ⟩)
-                    → x ∧[ F ] (y ∧[ F ] z) ≡ (x ∧[ F ] y) ∧[ F ] z
+                    → x ∧[ F ] (y ∧[ F ] z) ＝ (x ∧[ F ] y) ∧[ F ] z
 ∧[ F ]-is-associative x y z = ≤-is-antisymmetric (poset-of F) β γ
  where
   open PosetReasoning (poset-of F)
@@ -1032,9 +1032,9 @@ scott-continuous-join-eq F G f ζ S δ =
                     → (x ≤[ poset-of F ] y) holds
                     → ((z ∧[ F ] x) ≤[ poset-of F ] (z ∧[ F ] y)) holds
 ∧[ F ]-right-monotone {x} {y} {z} p =
- z ∧[ F ] x  ≡⟨ ∧[ F ]-is-commutative z x ⟩ₚ
+ z ∧[ F ] x  ＝⟨ ∧[ F ]-is-commutative z x ⟩ₚ
  x ∧[ F ] z  ≤⟨ ∧[ F ]-left-monotone p    ⟩
- y ∧[ F ] z  ≡⟨ ∧[ F ]-is-commutative y z ⟩ₚ
+ y ∧[ F ] z  ＝⟨ ∧[ F ]-is-commutative y z ⟩ₚ
  z ∧[ F ] y  ■
   where
    open PosetReasoning (poset-of F)
@@ -1044,27 +1044,27 @@ scott-continuous-join-eq F G f ζ S δ =
 \begin{code}
 
 𝟎-right-annihilator-for-∧ : (F : Frame 𝓤 𝓥 𝓦) (x : ⟨ F ⟩)
-                          → x ∧[ F ] 𝟎[ F ] ≡ 𝟎[ F ]
+                          → x ∧[ F ] 𝟎[ F ] ＝ 𝟎[ F ]
 𝟎-right-annihilator-for-∧ F x =
  only-𝟎-is-below-𝟎 F (x ∧[ F ] 𝟎[ F ]) (∧[ F ]-lower₂ x 𝟎[ F ])
 
 𝟎-left-annihilator-for-∧ : (F : Frame 𝓤 𝓥 𝓦) (x : ⟨ F ⟩)
-                         → 𝟎[ F ] ∧[ F ] x ≡ 𝟎[ F ]
+                         → 𝟎[ F ] ∧[ F ] x ＝ 𝟎[ F ]
 𝟎-left-annihilator-for-∧ F x =
- 𝟎[ F ] ∧[ F ] x  ≡⟨ ∧[ F ]-is-commutative 𝟎[ F ] x ⟩
- x ∧[ F ] 𝟎[ F ]  ≡⟨ 𝟎-right-annihilator-for-∧ F x  ⟩
+ 𝟎[ F ] ∧[ F ] x  ＝⟨ ∧[ F ]-is-commutative 𝟎[ F ] x ⟩
+ x ∧[ F ] 𝟎[ F ]  ＝⟨ 𝟎-right-annihilator-for-∧ F x  ⟩
  𝟎[ F ]           ∎
 
 𝟏-right-annihilator-for-∨ : (F : Frame 𝓤 𝓥 𝓦) (x : ⟨ F ⟩)
-                          → x ∨[ F ] 𝟏[ F ] ≡ 𝟏[ F ]
+                          → x ∨[ F ] 𝟏[ F ] ＝ 𝟏[ F ]
 𝟏-right-annihilator-for-∨ F x =
  only-𝟏-is-above-𝟏 F (x ∨[ F ] 𝟏[ F ]) (∨[ F ]-upper₂ x 𝟏[ F ])
 
 𝟏-left-annihilator-for-∨ : (F : Frame 𝓤 𝓥 𝓦) (x : ⟨ F ⟩)
-                         → 𝟏[ F ] ∨[ F ] x ≡ 𝟏[ F ]
+                         → 𝟏[ F ] ∨[ F ] x ＝ 𝟏[ F ]
 𝟏-left-annihilator-for-∨ F x =
- 𝟏[ F ] ∨[ F ] x  ≡⟨ ∨[ F ]-is-commutative 𝟏[ F ] x ⟩
- x ∨[ F ] 𝟏[ F ]  ≡⟨ 𝟏-right-annihilator-for-∨ F x  ⟩
+ 𝟏[ F ] ∨[ F ] x  ＝⟨ ∨[ F ]-is-commutative 𝟏[ F ] x ⟩
+ x ∨[ F ] 𝟏[ F ]  ＝⟨ 𝟏-right-annihilator-for-∨ F x  ⟩
  𝟏[ F ] ∎
 
 \end{code}
@@ -1076,10 +1076,10 @@ distributivity′ : (F : Frame 𝓤 𝓥 𝓦)
                 → (S : Fam 𝓦 ⟨ F ⟩)
                 → let open JoinNotation (λ - → ⋁[ F ] -) in
                   x ∧[ F ] (⋁⟨ i ⟩ (S [ i ]))
-                ≡ ⋁⟨ i ⟩ ((S [ i ]) ∧[ F ] x)
+                ＝ ⋁⟨ i ⟩ ((S [ i ]) ∧[ F ] x)
 distributivity′ F x S =
- x ∧[ F ] (⋁⟨ i ⟩ S [ i ])    ≡⟨ distributivity F x S ⟩
- ⋁⟨ i ⟩ (x ∧[ F ] (S [ i ]))  ≡⟨ †                    ⟩
+ x ∧[ F ] (⋁⟨ i ⟩ S [ i ])    ＝⟨ distributivity F x S ⟩
+ ⋁⟨ i ⟩ (x ∧[ F ] (S [ i ]))  ＝⟨ †                    ⟩
  ⋁⟨ i ⟩ (S [ i ]) ∧[ F ] x    ∎
   where
    open PosetReasoning (poset-of F)
@@ -1089,7 +1089,7 @@ distributivity′ F x S =
    † = ap (λ - → join-of F (index S , -)) (dfunext fe ‡)
 
 absorption-right : (F : Frame 𝓤 𝓥 𝓦) (x y : ⟨ F ⟩)
-                 → x ∨[ F ] (x ∧[ F ] y) ≡ x
+                 → x ∨[ F ] (x ∧[ F ] y) ＝ x
 absorption-right F x y = ≤-is-antisymmetric (poset-of F) β γ
  where
   β : ((x ∨[ F ] (x ∧[ F ] y)) ≤[ poset-of F ] x) holds
@@ -1099,13 +1099,13 @@ absorption-right F x y = ≤-is-antisymmetric (poset-of F) β γ
   γ = ∨[ F ]-upper₁ x (x ∧[ F ] y)
 
 absorption-left : (F : Frame 𝓤 𝓥 𝓦) (x y : ⟨ F ⟩)
-                → x ∨[ F ] (y ∧[ F ] x) ≡ x
+                → x ∨[ F ] (y ∧[ F ] x) ＝ x
 absorption-left F x y =
- x ∨[ F ] (y ∧[ F ] x) ≡⟨ ap (λ - → x ∨[ F ] -) (∧[ F ]-is-commutative y x) ⟩
- x ∨[ F ] (x ∧[ F ] y) ≡⟨ absorption-right F x y                            ⟩
+ x ∨[ F ] (y ∧[ F ] x) ＝⟨ ap (λ - → x ∨[ F ] -) (∧[ F ]-is-commutative y x) ⟩
+ x ∨[ F ] (x ∧[ F ] y) ＝⟨ absorption-right F x y                            ⟩
  x                     ∎
 
-absorptionᵒᵖ-right : (F : Frame 𝓤 𝓥 𝓦) → (x y : ⟨ F ⟩) → x ∧[ F ] (x ∨[ F ] y) ≡ x
+absorptionᵒᵖ-right : (F : Frame 𝓤 𝓥 𝓦) → (x y : ⟨ F ⟩) → x ∧[ F ] (x ∨[ F ] y) ＝ x
 absorptionᵒᵖ-right F x y = ≤-is-antisymmetric (poset-of F) β γ
  where
   β : ((x ∧[ F ] (x ∨[ F ] y)) ≤[ poset-of F ] x) holds
@@ -1117,32 +1117,32 @@ absorptionᵒᵖ-right F x y = ≤-is-antisymmetric (poset-of F) β γ
        (∨[ F ]-upper₁ x y)
 
 absorptionᵒᵖ-left : (F : Frame 𝓤 𝓥 𝓦) (x y : ⟨ F ⟩)
-                  → x ∧[ F ] (y ∨[ F ] x) ≡ x
+                  → x ∧[ F ] (y ∨[ F ] x) ＝ x
 absorptionᵒᵖ-left F x y =
- x ∧[ F ] (y ∨[ F ] x)  ≡⟨ ap (λ - → x ∧[ F ] -) (∨[ F ]-is-commutative y x) ⟩
- x ∧[ F ] (x ∨[ F ] y)  ≡⟨ absorptionᵒᵖ-right F x y                          ⟩
+ x ∧[ F ] (y ∨[ F ] x)  ＝⟨ ap (λ - → x ∧[ F ] -) (∨[ F ]-is-commutative y x) ⟩
+ x ∧[ F ] (x ∨[ F ] y)  ＝⟨ absorptionᵒᵖ-right F x y                          ⟩
  x                      ∎
 
 binary-distributivity : (F : Frame 𝓤 𝓥 𝓦)
                       → (x y z : ⟨ F ⟩)
-                      → x ∧[ F ] (y ∨[ F ] z) ≡ (x ∧[ F ] y) ∨[ F ] (x ∧[ F ] z)
+                      → x ∧[ F ] (y ∨[ F ] z) ＝ (x ∧[ F ] y) ∨[ F ] (x ∧[ F ] z)
 binary-distributivity {𝓦 = 𝓦} F x y z =
- x ∧[ F ] (y ∨[ F ] z)                            ≡⟨ † ⟩
- ⋁[ F ] ⁅ x ∧[ F ] w ∣ w ε binary-family 𝓦 y z ⁆  ≡⟨ ‡ ⟩
+ x ∧[ F ] (y ∨[ F ] z)                            ＝⟨ † ⟩
+ ⋁[ F ] ⁅ x ∧[ F ] w ∣ w ε binary-family 𝓦 y z ⁆  ＝⟨ ‡ ⟩
  (x ∧[ F ] y) ∨[ F ] (x ∧[ F ] z)                 ∎
   where
    † = distributivity F x (binary-family 𝓦 y z)
    ‡ = ap (λ - → join-of F -) (fmap-binary-family 𝓦 (λ - → x ∧[ F ] -) y z)
 
 binary-distributivity-op : (F : Frame 𝓤 𝓥 𝓦) (x y z : ⟨ F ⟩)
-                         → x ∨[ F ] (y ∧[ F ] z) ≡ (x ∨[ F ] y) ∧[ F ] (x ∨[ F ] z)
+                         → x ∨[ F ] (y ∧[ F ] z) ＝ (x ∨[ F ] y) ∧[ F ] (x ∨[ F ] z)
 binary-distributivity-op F x y z =
- x ∨[ F ] (y ∧[ F ] z)                                   ≡⟨ †    ⟩
- x ∨[ F ] ((z ∧[ F ] x) ∨[ F ] (z ∧[ F ] y))             ≡⟨ I    ⟩
- x ∨[ F ] (z ∧[ F ] (x ∨[ F ] y))                        ≡⟨ II   ⟩
- x ∨[ F ] ((x ∨[ F ] y) ∧[ F ] z)                        ≡⟨ III  ⟩
- (x ∧[ F ] (x ∨[ F ] y)) ∨[ F ] ((x ∨[ F ] y) ∧[ F ] z)  ≡⟨ IV   ⟩
- ((x ∨[ F ] y) ∧[ F ] x) ∨[ F ] ((x ∨[ F ] y) ∧[ F ] z)  ≡⟨ V    ⟩
+ x ∨[ F ] (y ∧[ F ] z)                                   ＝⟨ †    ⟩
+ x ∨[ F ] ((z ∧[ F ] x) ∨[ F ] (z ∧[ F ] y))             ＝⟨ I    ⟩
+ x ∨[ F ] (z ∧[ F ] (x ∨[ F ] y))                        ＝⟨ II   ⟩
+ x ∨[ F ] ((x ∨[ F ] y) ∧[ F ] z)                        ＝⟨ III  ⟩
+ (x ∧[ F ] (x ∨[ F ] y)) ∨[ F ] ((x ∨[ F ] y) ∧[ F ] z)  ＝⟨ IV   ⟩
+ ((x ∨[ F ] y) ∧[ F ] x) ∨[ F ] ((x ∨[ F ] y) ∧[ F ] z)  ＝⟨ V    ⟩
  (x ∨[ F ] y) ∧[ F ] (x ∨[ F ] z)                        ∎
   where
    w   = (x ∨[ F ] y) ∧[ F ] z
@@ -1153,10 +1153,10 @@ binary-distributivity-op F x y z =
    IV  = ap (λ - → - ∨[ F ] w) (∧[ F ]-is-commutative x (x ∨[ F ] y))
    V   = (binary-distributivity F (x ∨[ F ] y) x z) ⁻¹
 
-   † : x ∨[ F ] (y ∧[ F ] z) ≡ x ∨[ F ] ((z ∧[ F ] x) ∨[ F ] (z ∧[ F ] y))
-   † = x ∨[ F ] (y ∧[ F ] z)                        ≡⟨ i    ⟩
-       (x ∨[ F ] (z ∧[ F ] x)) ∨[ F ] (y ∧[ F ] z)  ≡⟨ ii   ⟩
-       (x ∨[ F ] (z ∧[ F ] x)) ∨[ F ] (z ∧[ F ] y)  ≡⟨ iii  ⟩
+   † : x ∨[ F ] (y ∧[ F ] z) ＝ x ∨[ F ] ((z ∧[ F ] x) ∨[ F ] (z ∧[ F ] y))
+   † = x ∨[ F ] (y ∧[ F ] z)                        ＝⟨ i    ⟩
+       (x ∨[ F ] (z ∧[ F ] x)) ∨[ F ] (y ∧[ F ] z)  ＝⟨ ii   ⟩
+       (x ∨[ F ] (z ∧[ F ] x)) ∨[ F ] (z ∧[ F ] y)  ＝⟨ iii  ⟩
        x ∨[ F ] ((z ∧[ F ] x) ∨[ F ] (z ∧[ F ] y))  ∎
         where
          i   = ap (λ - → - ∨[ F ] (y ∧[ F ] z)) (absorption-left F x z) ⁻¹
@@ -1170,7 +1170,7 @@ binary-distributivity-op F x y z =
 ⋁[_]-iterated-join : (F : Frame 𝓤 𝓥 𝓦) (I : 𝓦 ̇) (J : I → 𝓦 ̇)
                 → (f : (i : I) → J i → ⟨ F ⟩)
                 → ⋁[ F ] ((Σ i ꞉ I , J i) , uncurry f)
-                ≡ ⋁[ F ] ⁅ ⋁[ F ] ⁅ f i j ∣ j ∶ J i ⁆ ∣ i ∶ I ⁆
+                ＝ ⋁[ F ] ⁅ ⋁[ F ] ⁅ f i j ∣ j ∶ J i ⁆ ∣ i ∶ I ⁆
 ⋁[ F ]-iterated-join I J f = ⋁[ F ]-unique _ _ (β , γ)
  where
   open Joins (λ x y → x ≤[ poset-of F ] y)
@@ -1195,7 +1195,7 @@ binary-distributivity-op F x y z =
 \begin{code}
 
 ∧[_]-is-idempotent : (F : Frame 𝓤 𝓥 𝓦)
-                   → (x : ⟨ F ⟩) → x ≡ x ∧[ F ] x
+                   → (x : ⟨ F ⟩) → x ＝ x ∧[ F ] x
 ∧[ F ]-is-idempotent x = ≤-is-antisymmetric (poset-of F) β γ
  where
   α : (x ≤[ poset-of F ] x) holds
@@ -1215,13 +1215,13 @@ distributivity+ : (F : Frame 𝓤 𝓥 𝓦)
                 → let open JoinNotation (λ - → ⋁[ F ] -) in
                   (U@(I , _) V@(J , _) : Fam 𝓦 ⟨ F ⟩)
                 → (⋁⟨ i ⟩ (U [ i ])) ∧[ F ] (⋁⟨ j ⟩ (V [ j ]))
-                ≡ (⋁⟨ (i , j) ∶ (I × J)  ⟩ ((U [ i ]) ∧[ F ] (V [ j ])))
+                ＝ (⋁⟨ (i , j) ∶ (I × J)  ⟩ ((U [ i ]) ∧[ F ] (V [ j ])))
 distributivity+ F U@(I , _) V@(J , _) =
- (⋁⟨ i ⟩ (U [ i ])) ∧[ F ] (⋁⟨ j ⟩ (V [ j ]))     ≡⟨ i   ⟩
- (⋁⟨ j ⟩ (V [ j ])) ∧[ F ] (⋁⟨ i ⟩ (U [ i ]))     ≡⟨ ii  ⟩
- (⋁⟨ i ⟩ (⋁⟨ j ⟩ (V [ j ])) ∧[ F ] (U [ i ]))     ≡⟨ iii ⟩
- (⋁⟨ i ⟩ (U [ i ] ∧[ F ] (⋁⟨ j ⟩ (V [ j ]))))     ≡⟨ iv  ⟩
- (⋁⟨ i ⟩ (⋁⟨ j ⟩ (U [ i ] ∧[ F ] V [ j ])))       ≡⟨ v   ⟩
+ (⋁⟨ i ⟩ (U [ i ])) ∧[ F ] (⋁⟨ j ⟩ (V [ j ]))     ＝⟨ i   ⟩
+ (⋁⟨ j ⟩ (V [ j ])) ∧[ F ] (⋁⟨ i ⟩ (U [ i ]))     ＝⟨ ii  ⟩
+ (⋁⟨ i ⟩ (⋁⟨ j ⟩ (V [ j ])) ∧[ F ] (U [ i ]))     ＝⟨ iii ⟩
+ (⋁⟨ i ⟩ (U [ i ] ∧[ F ] (⋁⟨ j ⟩ (V [ j ]))))     ＝⟨ iv  ⟩
+ (⋁⟨ i ⟩ (⋁⟨ j ⟩ (U [ i ] ∧[ F ] V [ j ])))       ＝⟨ v   ⟩
  (⋁⟨ (i , j) ∶ I × J  ⟩ (U [ i ] ∧[ F ] V [ j ])) ∎
  where
   open JoinNotation (λ - → ⋁[ F ] -)
@@ -1271,7 +1271,7 @@ covers : (F : Frame 𝓤 𝓥 𝓦) (ℬ : Fam 𝓦 ⟨ F ⟩) (b : is-basis-for
        → (x : ⟨ F ⟩) → let
                          ℐ = covering-index-family F ℬ b x
                        in
-                         x ≡ ⋁[ F ] ⁅ ℬ [ i ] ∣ i ε ℐ ⁆
+                         x ＝ ⋁[ F ] ⁅ ℬ [ i ] ∣ i ε ℐ ⁆
 covers F ℬ b x = ⋁[ F ]-unique ⁅ ℬ [ i ] ∣ i ε ℐ ⁆ x (pr₂ (b x))
  where
   ℐ = covering-index-family F ℬ b x
@@ -1313,22 +1313,22 @@ to (_∨_, 𝟎).
 directify-functorial : (F : Frame 𝓤 𝓥 𝓦) (S : Fam 𝓦 ⟨ F ⟩)
                      → (is js : List (index S))
                      → directify F S [ is ++ js ]
-                     ≡ directify F S [ is ] ∨[ F ] directify F S [ js ]
+                     ＝ directify F S [ is ] ∨[ F ] directify F S [ js ]
 directify-functorial F S@(I , α) = γ
  where
   γ : (is js : List I)
     → directify F S [ is ++ js ]
-    ≡ directify F S [ is ] ∨[ F ] directify F S [ js ]
-  γ []       js = directify F S [ [] ++ js ]          ≡⟨ refl ⟩
-                  directify F S [ js ]                ≡⟨ †    ⟩
+    ＝ directify F S [ is ] ∨[ F ] directify F S [ js ]
+  γ []       js = directify F S [ [] ++ js ]          ＝⟨ refl ⟩
+                  directify F S [ js ]                ＝⟨ †    ⟩
                   𝟎[ F ]  ∨[ F ] directify F S [ js ] ∎
                    where
                     † = 𝟎-right-unit-of-∨ F (directify F S [ js ]) ⁻¹
   γ (i ∷ is) js =
-   directify F S [ (i ∷ is) ++ js ]                              ≡⟨ refl ⟩
-   α i ∨[ F ] directify F S [ is ++ js ]                         ≡⟨ †    ⟩
-   α i ∨[ F ] (directify F S [ is ] ∨[ F ] directify F S [ js ]) ≡⟨ ‡    ⟩
-   (α i ∨[ F ] directify F S [ is ]) ∨[ F ] directify F S [ js ] ≡⟨ refl ⟩
+   directify F S [ (i ∷ is) ++ js ]                              ＝⟨ refl ⟩
+   α i ∨[ F ] directify F S [ is ++ js ]                         ＝⟨ †    ⟩
+   α i ∨[ F ] (directify F S [ is ] ∨[ F ] directify F S [ js ]) ＝⟨ ‡    ⟩
+   (α i ∨[ F ] directify F S [ is ]) ∨[ F ] directify F S [ js ] ＝⟨ refl ⟩
    directify F S [ i ∷ is ] ∨[ F ] directify F S [ js ]          ∎
     where
      † = ap (λ - → binary-join F (α i) -) (γ is js)
@@ -1361,14 +1361,14 @@ directify-is-directed F S@(I , α) = ∣ [] ∣ , υ
 
      β : (directify F S [ is ] ≤ directify F S [ is ++ js ]) holds
      β = directify F S [ is ]                             ≤⟨ † ⟩
-         directify F S [ is ] ∨[ F ] directify F S [ js ] ≡⟨ ‡ ⟩ₚ
+         directify F S [ is ] ∨[ F ] directify F S [ js ] ＝⟨ ‡ ⟩ₚ
          directify F S [ is ++ js ]                       ■
           where
            † = ∨[ F ]-upper₁ (directify F S [ is ]) (directify F S [ js ])
 
      γ : (directify F S [ js ] ≤ directify F S [ is ++ js ]) holds
      γ = directify F S [ js ]                             ≤⟨ † ⟩
-         directify F S [ is ] ∨[ F ] directify F S [ js ] ≡⟨ ‡ ⟩ₚ
+         directify F S [ is ] ∨[ F ] directify F S [ js ] ＝⟨ ‡ ⟩ₚ
          directify F S [ is ++ js ] ■
           where
            † = ∨[ F ]-upper₂ (directify F S [ is ]) (directify F S [ js ])
@@ -1381,7 +1381,7 @@ do.
 \begin{code}
 
 directify-preserves-joins : (F : Frame 𝓤 𝓥 𝓦) (S : Fam 𝓦 ⟨ F ⟩)
-                          → ⋁[ F ] S ≡ ⋁[ F ] directify F S
+                          → ⋁[ F ] S ＝ ⋁[ F ] directify F S
 directify-preserves-joins F S = ≤-is-antisymmetric (poset-of F) β γ
  where
   open PosetNotation  (poset-of F)
@@ -1392,9 +1392,9 @@ directify-preserves-joins F S = ≤-is-antisymmetric (poset-of F) β γ
    where
     ν : (i : index S) → (S [ i ] ≤ (⋁[ F ] directify F S)) holds
     ν i =
-     S [ i ]                   ≡⟨ 𝟎-right-unit-of-∨ F (S [ i ]) ⁻¹       ⟩ₚ
-     𝟎[ F ] ∨[ F ] S [ i ]     ≡⟨ ∨[ F ]-is-commutative 𝟎[ F ] (S [ i ]) ⟩ₚ
-     S [ i ] ∨[ F ] 𝟎[ F ]     ≡⟨ refl                                   ⟩ₚ
+     S [ i ]                   ＝⟨ 𝟎-right-unit-of-∨ F (S [ i ]) ⁻¹       ⟩ₚ
+     𝟎[ F ] ∨[ F ] S [ i ]     ＝⟨ ∨[ F ]-is-commutative 𝟎[ F ] (S [ i ]) ⟩ₚ
+     S [ i ] ∨[ F ] 𝟎[ F ]     ＝⟨ refl                                   ⟩ₚ
      directify F S [ i ∷ [] ]  ≤⟨ ⋁[ F ]-upper (directify F S) (i ∷ [])  ⟩
      ⋁[ F ] directify F S      ■
 
@@ -1418,9 +1418,9 @@ directify-preserves-joins₀ F S x p =
  where
   open Joins (λ x y → x ≤[ poset-of F ] y)
 
-  q : x ≡ ⋁[ F ] directify F S
-  q = x                    ≡⟨ ⋁[ F ]-unique S x p           ⟩
-      ⋁[ F ] S             ≡⟨ directify-preserves-joins F S ⟩
+  q : x ＝ ⋁[ F ] directify F S
+  q = x                    ＝⟨ ⋁[ F ]-unique S x p           ⟩
+      ⋁[ F ] S             ＝⟨ directify-preserves-joins F S ⟩
       ⋁[ F ] directify F S ∎
 
 \end{code}
@@ -1447,13 +1447,13 @@ directified-basis-is-basis {𝓦 = 𝓦} F ℬ β = β↑
   φ : (x : ⟨ F ⟩)
     → (is : List (index (𝒥 x)))
     → directify F ℬ [ (λ - → 𝒥 x [ - ]) <$> is ]
-    ≡ directify F ⁅ ℬ [ j ] ∣ j ε 𝒥 x ⁆ [ is ]
+    ＝ directify F ⁅ ℬ [ j ] ∣ j ε 𝒥 x ⁆ [ is ]
   φ x []       = refl
   φ x (i ∷ is) = ap (λ - → (_ ∨[ F ] -)) (φ x is)
 
   ψ : (x : ⟨ F ⟩)
-    → ⁅ directify F ℬ [ is ] ∣ is ε 𝒦 x ⁆ ≡ directify F ⁅ ℬ [ j ] ∣ j ε 𝒥 x ⁆
-  ψ x = to-Σ-≡ (refl , dfunext fe (φ x))
+    → ⁅ directify F ℬ [ is ] ∣ is ε 𝒦 x ⁆ ＝ directify F ⁅ ℬ [ j ] ∣ j ε 𝒥 x ⁆
+  ψ x = to-Σ-＝ (refl , dfunext fe (φ x))
 
   β↑ : (x : ⟨ F ⟩)
      → Σ J ꞉ Fam 𝓦 (index ℬ↑) , (x is-lub-of ⁅ ℬ↑ [ j ] ∣ j ε J ⁆) holds
@@ -1491,12 +1491,12 @@ covers-of-directified-basis-are-directed {𝓦 = 𝓦} F ℬ β x =
 
    φ : (is : List (index 𝒥))
      → directify F ℬ [ (λ - → 𝒥 [ - ]) <$> is ]
-     ≡ directify F ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆ [ is ]
+     ＝ directify F ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆ [ is ]
    φ []       = refl
    φ (i ∷ is) = ap (λ - → (_ ∨[ F ] -)) (φ is)
 
-   ψ : ⁅ directify F ℬ [ is ] ∣ is ε 𝒦 ⁆ ≡ directify F ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆
-   ψ = to-Σ-≡ (refl , dfunext fe φ)
+   ψ : ⁅ directify F ℬ [ is ] ∣ is ε 𝒦 ⁆ ＝ directify F ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆
+   ψ = to-Σ-＝ (refl , dfunext fe φ)
 
    ε = directify-is-directed F ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆
 
@@ -1520,13 +1520,13 @@ directify-basis {𝓦 = 𝓦} F = ∥∥-rec (holds-is-prop (has-directed-basis 
     φ : (x : ⟨ F ⟩)
       → (is : List (index (𝒥 x)))
       → directify F ℬ [ (λ - → 𝒥 x [ - ]) <$> is ]
-      ≡ directify F ⁅ ℬ [ j ] ∣ j ε 𝒥 x ⁆ [ is ]
+      ＝ directify F ⁅ ℬ [ j ] ∣ j ε 𝒥 x ⁆ [ is ]
     φ x []       = refl
     φ x (i ∷ is) = ap (λ - → (_ ∨[ F ] -)) (φ x is)
 
     ψ : (x : ⟨ F ⟩)
-      → ⁅ directify F ℬ [ is ] ∣ is ε 𝒦 x ⁆ ≡ directify F ⁅ ℬ [ j ] ∣ j ε 𝒥 x ⁆
-    ψ x = to-Σ-≡ (refl , dfunext fe (φ x))
+      → ⁅ directify F ℬ [ is ] ∣ is ε 𝒦 x ⁆ ＝ directify F ⁅ ℬ [ j ] ∣ j ε 𝒥 x ⁆
+    ψ x = to-Σ-＝ (refl , dfunext fe (φ x))
 
     δ : (x : ⟨ F ⟩)
       → is-directed F ⁅ directify F ℬ [ is ] ∣ is ε 𝒦 x ⁆ holds

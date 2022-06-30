@@ -56,11 +56,11 @@ Functoriality holds definitionally:
 \begin{code}
 
 𝓛̇-id : {X : 𝓤 ̇ }
-      → 𝓛̇ id ≡ id
+      → 𝓛̇ id ＝ id
 𝓛̇-id {𝓤} {X} = refl {𝓤 ⊔ (𝓣 ⁺)} {𝓛 X → 𝓛 X}
 
 𝓛̇-∘ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (f : X → Y) (g : Y → Z)
-     → 𝓛̇ (g ∘ f) ≡ 𝓛̇ g ∘ 𝓛̇ f
+     → 𝓛̇ (g ∘ f) ＝ 𝓛̇ g ∘ 𝓛̇ f
 𝓛̇-∘ f g = refl
 
 \end{code}
@@ -72,7 +72,7 @@ but not definitionally.
 \begin{code}
 
 η-natural : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-          → η ∘ f ≡ 𝓛̇ f ∘ η
+          → η ∘ f ＝ 𝓛̇ f ∘ η
 η-natural f = refl
 
 η-natural∼ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
@@ -85,7 +85,7 @@ but not definitionally.
 
 μ-natural : funext (𝓣 ⁺ ⊔ 𝓤) (𝓣 ⁺ ⊔ 𝓥)
           → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-          → 𝓛̇ f ∘ μ ≡ μ ∘ 𝓛̇ (𝓛̇ f)
+          → 𝓛̇ f ∘ μ ＝ μ ∘ 𝓛̇ (𝓛̇ f)
 μ-natural fe f = dfunext fe (μ-natural∼ f)
 
 \end{code}
@@ -110,11 +110,11 @@ We unit laws amount to the laws P × 𝟙 ≃ P and 𝟙 × P ≃ P:
 
 𝓛-unit-right∼ : is-univalent 𝓣 → {X : 𝓤 ̇ }
               → μ ∘ 𝓛̇ η ∼ id
-𝓛-unit-right∼ {𝓤} ua {X} l = ⋍-gives-≡ ua (𝓛-unit-right⋍ {𝓤} {X} l)
+𝓛-unit-right∼ {𝓤} ua {X} l = ⋍-gives-＝ ua (𝓛-unit-right⋍ {𝓤} {X} l)
 
 𝓛-unit-left∼ : is-univalent 𝓣 → {X : 𝓤 ̇ }
               → μ ∘ η ∼ id
-𝓛-unit-left∼ {𝓤} ua {X} l = ⋍-gives-≡ ua (𝓛-unit-left⋍ {𝓤} {X} l)
+𝓛-unit-left∼ {𝓤} ua {X} l = ⋍-gives-＝ ua (𝓛-unit-left⋍ {𝓤} {X} l)
 
 \end{code}
 
@@ -126,7 +126,7 @@ The associativity of multiplication amounts to the associativity of Σ:
 𝓛-assoc⋍ (P , φ) = Σ-assoc , refl
 
 𝓛-assoc∼ : is-univalent 𝓣 → {X : 𝓤 ̇ } → μ ∘ μ ∼ μ ∘ 𝓛̇ μ
-𝓛-assoc∼ {𝓤} ua {X} l = ⋍-gives-≡ ua (𝓛-assoc⋍ {𝓤} {X} l)
+𝓛-assoc∼ {𝓤} ua {X} l = ⋍-gives-＝ ua (𝓛-assoc⋍ {𝓤} {X} l)
 
 \end{code}
 

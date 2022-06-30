@@ -91,7 +91,7 @@ over-embedding = inl-is-embedding ℕ 𝟙
 Σ₁ :(ℕ → 𝓤 ̇ ) → 𝓤 ̇
 Σ₁ X = Σ (X / over)
 
-ι𝟙-over : (n : ℕ) → ι𝟙 (over n) ≡ ι n
+ι𝟙-over : (n : ℕ) → ι𝟙 (over n) ＝ ι n
 ι𝟙-over n = refl
 
 over-is-discrete : (X : ℕ → 𝓤 ̇ )
@@ -142,11 +142,11 @@ over-ι-map-dense X z = is-dense-detofun (over-ι X z)
 over-ι-map-left : (X : ℕ → 𝓤 ̇ ) (n : ℕ)
                       (φ : (w : fiber over (inl n)) → X (pr₁ w))
                     → over-ι-map X (inl n) φ (n , refl)
-                    ≡ φ (n , refl)
+                    ＝ φ (n , refl)
 over-ι-map-left X n φ =
  transport
   (λ - → over-ι-map X (inl n) φ (n , refl)
-       ≡ transport (λ - → X (pr₁ -)) - (φ (n , refl)))
+       ＝ transport (λ - → X (pr₁ -)) - (φ (n , refl)))
   (props-are-sets
     (ℕ-to-ℕ∞-is-embedding fe₀ (ι n))
     (ℕ-to-ℕ∞-is-embedding fe₀ (ι n) (n , refl) (n , refl))
@@ -156,7 +156,7 @@ over-ι-map-left X n φ =
   -- We define this for the sake of clarity only:
   f : (t : fiber ι (ι n))
     → over-ι-map X (inl n) φ t
-    ≡ transport (λ - → X (pr₁ -))
+    ＝ transport (λ - → X (pr₁ -))
                  (ℕ-to-ℕ∞-is-embedding fe₀ (ι n) (n , refl) t)
                  (φ (n , refl))
   f t = refl
@@ -212,14 +212,14 @@ Over X Y f (inr *) =
 
 Over-inl : (X : ℕ → 𝓤 ̇ ) (Y : ℕ → 𝓤 ̇ ) (f : (n : ℕ) → X n → Y n)
          → (n : ℕ) → Over X Y f (inl n)
-         ≡ λ (φ : (X / over) (inl n)) (w : fiber over (inl n)) →
+         ＝ λ (φ : (X / over) (inl n)) (w : fiber over (inl n)) →
              transport (λ - → Y (pr₁ -))
                        (inl-is-embedding ℕ 𝟙 (inl n) (n , refl) w)
                        (f n (φ (n , refl)))
 Over-inl X Y f n = refl
 
 Over-inr : (X : ℕ → 𝓤 ̇ ) (Y : ℕ → 𝓤 ̇ ) (f : (n : ℕ) → X n → Y n)
-         → Over X Y f (inr ⋆) ≡ λ φ w → 𝟘-elim (+disjoint (pr₂ w))
+         → Over X Y f (inr ⋆) ＝ λ φ w → 𝟘-elim (+disjoint (pr₂ w))
 Over-inr X Y f = refl
 
 \end{code}
@@ -354,7 +354,7 @@ Given a countable family of sets.
 extend it to a ℕ∞-indexed family of sets as follows
 
   _[_] : (ℕ → 𝓤₀ ̇ ) → (ℕ∞ → 𝓤₀ ̇ )
-  X [ u ] = (k : ℕ) → ι k ≡ u → X k
+  X [ u ] = (k : ℕ) → ι k ＝ u → X k
 
 where u ranges over ℕ∞, the one-point compactification of the natural
 numbers ℕ, defined in the module GenericConvergentSequence.
@@ -381,7 +381,7 @@ within intensional MLTT with function extensionality as a postulate
 module original-version-and-equivalence-with-new-version where
 
  _[_] : (ℕ → 𝓤₀ ̇ ) → (ℕ∞ → 𝓤₀ ̇ )
- X [ u ] = (k : ℕ) → ι k ≡ u → X k
+ X [ u ] = (k : ℕ) → ι k ＝ u → X k
 
  Σᴵ : (ℕ → 𝓤₀ ̇ ) → 𝓤₀ ̇
  Σᴵ X = Σ u ꞉ ℕ∞ , X [ u ]
@@ -395,63 +395,63 @@ module original-version-and-equivalence-with-new-version where
 
 \begin{code}
 
- H : {X : ℕ → 𝓤₀ ̇ } → (u : ℕ∞) → u ≡ ∞ → (y y' : X [ u ]) → y ≡ y'
+ H : {X : ℕ → 𝓤₀ ̇ } → (u : ℕ∞) → u ＝ ∞ → (y y' : X [ u ]) → y ＝ y'
  H {X} u r y y' = dfunext fe₀ (λ k → dfunext fe₀ (λ s → lemma k s))
   where
-   lemma : (k : ℕ) (s : ι k ≡ u) → y k s ≡ y' k s
+   lemma : (k : ℕ) (s : ι k ＝ u) → y k s ＝ y' k s
    lemma k s = 𝟘-elim(∞-is-not-finite k (r ⁻¹ ∙ s ⁻¹))
 
 \end{code}
 
- Next we have an isomorphism X [ u ] ≅ X n if ι n ≡ u:
+ Next we have an isomorphism X [ u ] ≅ X n if ι n ＝ u:
 
 \begin{code}
 
- F : {X : ℕ → 𝓤₀ ̇ } (n : ℕ) (u : ℕ∞) → ι n ≡ u → X n → X [ u ]
+ F : {X : ℕ → 𝓤₀ ̇ } (n : ℕ) (u : ℕ∞) → ι n ＝ u → X n → X [ u ]
  F {X} n u r x k s = transport X (ℕ-to-ℕ∞-lc (r ∙ s ⁻¹)) x
 
- G : {X : ℕ → 𝓤₀ ̇ } (n : ℕ) (u : ℕ∞) → ι n ≡ u → X [ u ] → X n
+ G : {X : ℕ → 𝓤₀ ̇ } (n : ℕ) (u : ℕ∞) → ι n ＝ u → X [ u ] → X n
  G n u r y = y n r
 
- FG : {X : ℕ → 𝓤₀ ̇ } (n : ℕ) (u : ℕ∞) (r : ι n ≡ u) (y : (k : ℕ)
-   → ι k ≡ u → X k) → F n u r (G n u r y) ≡ y
+ FG : {X : ℕ → 𝓤₀ ̇ } (n : ℕ) (u : ℕ∞) (r : ι n ＝ u) (y : (k : ℕ)
+   → ι k ＝ u → X k) → F n u r (G n u r y) ＝ y
  FG {X} n u r y = dfunext fe₀ (λ k → dfunext fe₀ (λ s → lemma k s))
   where
-   f : {m n : ℕ} → m ≡ n → X m → X n
+   f : {m n : ℕ} → m ＝ n → X m → X n
    f = transport X
 
-   t : (k : ℕ) → ι k ≡ u → n ≡ k
+   t : (k : ℕ) → ι k ＝ u → n ＝ k
    t k s = ℕ-to-ℕ∞-lc (r ∙ s ⁻¹)
 
-   A :  (n k : ℕ) → n ≡ k → 𝓤₀ ̇
-   A n k t = (u : ℕ∞) (r : ι n ≡ u) (s : ι k ≡ u) (y : X [ u ]) → f t (y n r) ≡ y k s
+   A :  (n k : ℕ) → n ＝ k → 𝓤₀ ̇
+   A n k t = (u : ℕ∞) (r : ι n ＝ u) (s : ι k ＝ u) (y : X [ u ]) → f t (y n r) ＝ y k s
 
    φ : (n : ℕ) → A n n refl
    φ n = λ u r s y → ap (y n) (ℕ∞-is-set fe₀ r s)
 
-   lemma : (k : ℕ) (s : ι k ≡ u) → f (ℕ-to-ℕ∞-lc (r ∙ s ⁻¹)) (y n r) ≡ y k s
+   lemma : (k : ℕ) (s : ι k ＝ u) → f (ℕ-to-ℕ∞-lc (r ∙ s ⁻¹)) (y n r) ＝ y k s
    lemma k s = J A φ {n} {k} (t k s) u r s y
 
- GF : {X : ℕ → 𝓤₀ ̇ } (n : ℕ) (u : ℕ∞) (r : ι n ≡ u) (x : X n) → G {X} n u r (F n u r x) ≡ x
+ GF : {X : ℕ → 𝓤₀ ̇ } (n : ℕ) (u : ℕ∞) (r : ι n ＝ u) (x : X n) → G {X} n u r (F n u r x) ＝ x
  GF {X} n u r x = s
   where
-   f : {m n : ℕ} → m ≡ n → X m → X n
+   f : {m n : ℕ} → m ＝ n → X m → X n
    f = transport X
 
-   claim₀ : f (ℕ-to-ℕ∞-lc (r ∙ r ⁻¹)) x ≡ f (ℕ-to-ℕ∞-lc refl) x
+   claim₀ : f (ℕ-to-ℕ∞-lc (r ∙ r ⁻¹)) x ＝ f (ℕ-to-ℕ∞-lc refl) x
    claim₀ = ap (λ - → f (ℕ-to-ℕ∞-lc -) x) (trans-sym' r)
 
-   claim₁ : f (ℕ-to-ℕ∞-lc refl) x ≡ x
+   claim₁ : f (ℕ-to-ℕ∞-lc refl) x ＝ x
    claim₁ = ap (λ - → f - x) (ℕ-to-ℕ∞-lc-refl n)
 
-   s : f (ℕ-to-ℕ∞-lc (r ∙ r ⁻¹)) x ≡ x
+   s : f (ℕ-to-ℕ∞-lc (r ∙ r ⁻¹)) x ＝ x
    s = claim₀ ∙ claim₁
 
 \end{code}
 
  We now can show that the type X [ u ] is compact for every u : ℕ∞
  provided the type X n is compact for every n : ℕ. This is tricky,
- because a priory it is not enough to consider the cases ι n ≡ u and u ≡ ∞.
+ because a priory it is not enough to consider the cases ι n ＝ u and u ＝ ∞.
 
  The above isomorphism is used to prove the correctness of the witness
  y₀ below, which is easily defined (using one direction of the
@@ -471,31 +471,31 @@ module original-version-and-equivalence-with-new-version where
    y₀ : Y
    y₀ n r = pr₁(ε n (p ∘ (F n u r)))
 
-   lemma₁ : (n : ℕ) → ι n ≡ u → p y₀ ≡ ₁ → (y : Y) → p y ≡ ₁
+   lemma₁ : (n : ℕ) → ι n ＝ u → p y₀ ＝ ₁ → (y : Y) → p y ＝ ₁
    lemma₁ n r e = claim₃
     where
-     claim₀ : (y : Y) → p (F n u r (G n u r y)) ≡ p y
+     claim₀ : (y : Y) → p (F n u r (G n u r y)) ＝ p y
      claim₀ y = ap p (FG n u r y)
 
-     claim₁ : p (F n u r (G n u r y₀)) ≡ ₁ → (x : X n) → p (F n u r x) ≡ ₁
+     claim₁ : p (F n u r (G n u r y₀)) ＝ ₁ → (x : X n) → p (F n u r x) ＝ ₁
      claim₁ =  pr₂(ε n (p ∘ (F n u r)))
 
-     claim₂ : (x : X n) → p (F n u r x) ≡ ₁
+     claim₂ : (x : X n) → p (F n u r x) ＝ ₁
      claim₂ = claim₁ (claim₀ y₀ ∙ e)
 
-     claim₃ : (y : Y) → p y ≡ ₁
+     claim₃ : (y : Y) → p y ＝ ₁
      claim₃ y = (claim₀ y)⁻¹ ∙ claim₂ (G n u r y)
 
-   lemma₂ : u ≡ ∞ → p y₀ ≡ ₁ → (y : Y) → p y ≡ ₁
+   lemma₂ : u ＝ ∞ → p y₀ ＝ ₁ → (y : Y) → p y ＝ ₁
    lemma₂ r e y = ap p (H u r y y₀) ∙ e
 
-   lemma₁' : p y₀ ≡ ₁ → (y : Y) → p y ≡ ₀ → (n : ℕ) → ι n ≢ u
+   lemma₁' : p y₀ ＝ ₁ → (y : Y) → p y ＝ ₀ → (n : ℕ) → ι n ≢ u
    lemma₁' e y s n r = zero-is-not-one (s ⁻¹ ∙ lemma₁ n r e y)
 
-   lemma₂' : p y₀ ≡ ₁ → (y : Y) → p y ≡ ₀ → u ≢ ∞
+   lemma₂' : p y₀ ＝ ₁ → (y : Y) → p y ＝ ₀ → u ≢ ∞
    lemma₂' e y s r = zero-is-not-one (s ⁻¹ ∙ lemma₂ r e y)
 
-   lemma : p y₀ ≡ ₁ → (y : Y) → p y ≡ ₁
+   lemma : p y₀ ＝ ₁ → (y : Y) → p y ＝ ₁
    lemma r y = different-from-₀-equal-₁
                 (λ s → lemma₂' r y s
                         (not-finite-is-∞ fe₀
@@ -522,7 +522,7 @@ module original-version-and-equivalence-with-new-version where
  open import UF.EquivalenceExamples
 
  agreement-lemma : (X : ℕ → 𝓤₀ ̇ ) (u : ℕ∞)
-                 → (X / ι) u ≃ Π (λ x → ι x ≡ u → X x)
+                 → (X / ι) u ≃ Π (λ x → ι x ＝ u → X x)
  agreement-lemma X = 2nd-Π-extension-formula X ι
 
  agreement : (X : ℕ → 𝓤₀ ̇ ) → Σ¹ X ≃ Σᴵ X

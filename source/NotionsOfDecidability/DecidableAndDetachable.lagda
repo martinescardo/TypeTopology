@@ -185,10 +185,10 @@ End of digression.
 
 which-of : {A : 𝓤 ̇ } {B : 𝓥 ̇ }
          → A + B
-         → Σ b ꞉ 𝟚 , (b ≡ ₀ → A)
-                   × (b ≡ ₁ → B)
-which-of (inl a) = ₀ , (λ (r : ₀ ≡ ₀) → a) , λ (p : ₀ ≡ ₁) → 𝟘-elim (zero-is-not-one p)
-which-of (inr b) = ₁ , (λ (p : ₁ ≡ ₀) → 𝟘-elim (zero-is-not-one (p ⁻¹))) , (λ (r : ₁ ≡ ₁) → b)
+         → Σ b ꞉ 𝟚 , (b ＝ ₀ → A)
+                   × (b ＝ ₁ → B)
+which-of (inl a) = ₀ , (λ (r : ₀ ＝ ₀) → a) , λ (p : ₀ ＝ ₁) → 𝟘-elim (zero-is-not-one p)
+which-of (inr b) = ₁ , (λ (p : ₁ ＝ ₀) → 𝟘-elim (zero-is-not-one (p ⁻¹))) , (λ (r : ₁ ＝ ₁) → b)
 
 \end{code}
 
@@ -198,8 +198,8 @@ The following is a special case we are interested in:
 
 boolean-value : {A : 𝓤 ̇ }
               → decidable A
-              → Σ b ꞉ 𝟚 , (b ≡ ₀ →   A)
-                        × (b ≡ ₁ → ¬ A)
+              → Σ b ꞉ 𝟚 , (b ＝ ₀ →   A)
+                        × (b ＝ ₁ → ¬ A)
 boolean-value = which-of
 
 \end{code}
@@ -215,14 +215,14 @@ requires choice, which holds in BHK-style constructive mathematics:
 
 indicator : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {B : X → 𝓦 ̇ }
           → ((x : X) → A x + B x)
-          → Σ p ꞉ (X → 𝟚) , ((x : X) → (p x ≡ ₀ → A x)
-                                     × (p x ≡ ₁ → B x))
+          → Σ p ꞉ (X → 𝟚) , ((x : X) → (p x ＝ ₀ → A x)
+                                     × (p x ＝ ₁ → B x))
 indicator {𝓤} {𝓥} {𝓦} {X} {A} {B} h = (λ x → pr₁(lemma₁ x)) , (λ x → pr₂(lemma₁ x))
  where
-  lemma₀ : (x : X) → (A x + B x) → Σ b ꞉ 𝟚 , (b ≡ ₀ → A x) × (b ≡ ₁ → B x)
+  lemma₀ : (x : X) → (A x + B x) → Σ b ꞉ 𝟚 , (b ＝ ₀ → A x) × (b ＝ ₁ → B x)
   lemma₀ x = which-of
 
-  lemma₁ : (x : X) → Σ b ꞉ 𝟚 , (b ≡ ₀ → A x) × (b ≡ ₁ → B x)
+  lemma₁ : (x : X) → Σ b ꞉ 𝟚 , (b ＝ ₀ → A x) × (b ＝ ₁ → B x)
   lemma₁ = λ x → lemma₀ x (h x)
 
 \end{code}
@@ -239,14 +239,14 @@ detachable A = ∀ x → decidable(A x)
 
 characteristic-function : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
                         → detachable A
-                        → Σ p ꞉ (X → 𝟚) , ((x : X) → (p x ≡ ₀ →   A x)
-                                                   × (p x ≡ ₁ → ¬ (A x)))
+                        → Σ p ꞉ (X → 𝟚) , ((x : X) → (p x ＝ ₀ →   A x)
+                                                   × (p x ＝ ₁ → ¬ (A x)))
 characteristic-function = indicator
 
 co-characteristic-function : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
                            → detachable A
-                           → Σ p ꞉ (X → 𝟚) , ((x : X) → (p x ≡ ₀ → ¬ (A x))
-                                                      × (p x ≡ ₁ →   A x))
+                           → Σ p ꞉ (X → 𝟚) , ((x : X) → (p x ＝ ₀ → ¬ (A x))
+                                                      × (p x ＝ ₁ →   A x))
 co-characteristic-function d = indicator(λ x → +-commutative(d x))
 
 decidable-closed-under-Σ : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
@@ -282,24 +282,24 @@ module _ (pt : propositional-truncations-exist) where
  open PropositionalTruncation pt
 
  not-exists₀-implies-forall₁ : {X : 𝓤 ̇ } (p : X → 𝟚)
-                            → ¬ (∃ x ꞉ X , p x ≡ ₀)
-                            → ∀ (x : X) → p x ≡ ₁
+                            → ¬ (∃ x ꞉ X , p x ＝ ₀)
+                            → ∀ (x : X) → p x ＝ ₁
  not-exists₀-implies-forall₁ p u x = different-from-₀-equal-₁ (not-Σ-implies-Π-not (u ∘ ∣_∣) x)
 
  forall₁-implies-not-exists₀ : {X : 𝓤 ̇ } (p : X → 𝟚)
-                            → (∀ (x : X) → p x ≡ ₁)
-                            → ¬ (∃ x ꞉ X , p x ≡ ₀)
+                            → (∀ (x : X) → p x ＝ ₁)
+                            → ¬ (∃ x ꞉ X , p x ＝ ₀)
  forall₁-implies-not-exists₀ {𝓤} {X} p α = ∥∥-rec 𝟘-is-prop h
   where
-   h : (Σ x ꞉ X , p x ≡ ₀) → 𝟘
+   h : (Σ x ꞉ X , p x ＝ ₀) → 𝟘
    h (x , r) = zero-is-not-one (r ⁻¹ ∙ α x)
 
  forall₀-implies-not-exists₁ : {X : 𝓤 ̇ } (p : X → 𝟚)
-                            → (∀ (x : X) → p x ≡ ₀)
-                            → ¬ (∃ x ꞉ X , p x ≡ ₁)
+                            → (∀ (x : X) → p x ＝ ₀)
+                            → ¬ (∃ x ꞉ X , p x ＝ ₁)
  forall₀-implies-not-exists₁ {𝓤} {X} p α = ∥∥-rec 𝟘-is-prop h
   where
-   h : (Σ x ꞉ X , p x ≡ ₁) → 𝟘
+   h : (Σ x ꞉ X , p x ＝ ₁) → 𝟘
    h (x , r) = one-is-not-zero (r ⁻¹ ∙ α x)
 
 \end{code}
@@ -315,20 +315,20 @@ universe 𝓤 and we show that 𝟚 ≃ Ωᵈ 𝓤 (for any universe 𝓤).
 
 boolean-value' : {A : 𝓤 ̇ }
                → decidable A
-               → Σ b ꞉ 𝟚 , (b ≡ ₀ ⇔ ¬ A)
-                         × (b ≡ ₁ ⇔   A)
+               → Σ b ꞉ 𝟚 , (b ＝ ₀ ⇔ ¬ A)
+                         × (b ＝ ₁ ⇔   A)
 boolean-value' {𝓤} {A} (inl a ) = (₁ , ϕ , ψ)
  where
-  ϕ : ₁ ≡ ₀ ⇔ ¬ A
+  ϕ : ₁ ＝ ₀ ⇔ ¬ A
   ϕ = (λ p → 𝟘-elim (one-is-not-zero p))
     , (λ na → 𝟘-elim (na a))
-  ψ : ₁ ≡ ₁ ⇔ A
+  ψ : ₁ ＝ ₁ ⇔ A
   ψ = (λ _ → a) , (λ _ → refl)
 boolean-value' {𝓤} {A} (inr na) = ₀ , ϕ , ψ
  where
-  ϕ : ₀ ≡ ₀ ⇔ ¬ A
+  ϕ : ₀ ＝ ₀ ⇔ ¬ A
   ϕ = (λ _ → na) , (λ _ → refl)
-  ψ : ₀ ≡ ₁ ⇔ A
+  ψ : ₀ ＝ ₁ ⇔ A
   ψ = (λ p → 𝟘-elim (zero-is-not-one p))
     , (λ a → 𝟘-elim (na a))
 
@@ -353,9 +353,9 @@ module _
  to-Ωᵈ-equality : (P Q : Ωᵈ 𝓤)
                 → (⟨ P ⟩ → ⟨ Q ⟩)
                 → (⟨ Q ⟩ → ⟨ P ⟩)
-                → P ≡ Q
+                → P ＝ Q
  to-Ωᵈ-equality ((P , i) , δ) ((Q , j) , ε) α β =
-  to-subtype-≡ σ (to-subtype-≡ τ (pe i j α β))
+  to-subtype-＝ σ (to-subtype-＝ τ (pe i j α β))
   where
    σ : (P : Ω 𝓤) → is-prop (decidable (P holds))
    σ P = decidability-of-prop-is-prop (lower-funext 𝓤 𝓤 fe) (holds-is-prop P)
@@ -376,16 +376,16 @@ module _
    ε : f ∘ g ∼ id
    ε P = 𝟚-equality-cases ε₀ ε₁
     where
-     lemma : (g P ≡ ₀ ⇔ ¬ ⟨ P ⟩)
-           × (g P ≡ ₁ ⇔   ⟨ P ⟩)
+     lemma : (g P ＝ ₀ ⇔ ¬ ⟨ P ⟩)
+           × (g P ＝ ₁ ⇔   ⟨ P ⟩)
      lemma = pr₂ (boolean-value' (pr₂ P))
-     ε₀ : g P ≡ ₀
-        → (f ∘ g) P ≡ P
+     ε₀ : g P ＝ ₀
+        → (f ∘ g) P ＝ P
      ε₀ e = to-Ωᵈ-equality (f (g P)) P
              (λ (q : ⟨ f (g P) ⟩) → 𝟘-elim (transport (λ b → ⟨ f b ⟩) e q))
              (λ (p : ⟨ P ⟩) → 𝟘-elim (lr-implication (pr₁ lemma) e p))
-     ε₁ : g P ≡ ₁
-        → (f ∘ g) P ≡ P
+     ε₁ : g P ＝ ₁
+        → (f ∘ g) P ＝ P
      ε₁ e = to-Ωᵈ-equality (f (g P)) P
              (λ _ → lr-implication (pr₂ lemma) e)
              (λ _ → transport⁻¹ (λ (b : 𝟚) → ⟨ f b ⟩) e ⋆)
@@ -428,14 +428,14 @@ module _
    (A : X → Ω 𝓣)
    (δ : is-complemented-subset A)
    (x : X)
-   → ((⌜ 𝟚-classifies-decidable-subsets ⌝⁻¹ (A , δ) x ≡ ₀) ⇔ ¬ (x ∈ A))
-   × ((⌜ 𝟚-classifies-decidable-subsets ⌝⁻¹ (A , δ) x ≡ ₁) ⇔   (x ∈ A))
+   → ((⌜ 𝟚-classifies-decidable-subsets ⌝⁻¹ (A , δ) x ＝ ₀) ⇔ ¬ (x ∈ A))
+   × ((⌜ 𝟚-classifies-decidable-subsets ⌝⁻¹ (A , δ) x ＝ ₁) ⇔   (x ∈ A))
  𝟚-classifies-decidable-subsets-values {X} A δ x = γ
   where
    χ : (Σ A ꞉ (X → Ω 𝓣) , is-complemented-subset A) → (X → 𝟚)
    χ = ⌜ 𝟚-classifies-decidable-subsets ⌝⁻¹
-   γ : (χ (A , δ) x ≡ ₀ ⇔ ¬ (x ∈ A))
-     × (χ (A , δ) x ≡ ₁ ⇔   (x ∈ A))
+   γ : (χ (A , δ) x ＝ ₀ ⇔ ¬ (x ∈ A))
+     × (χ (A , δ) x ＝ ₁ ⇔   (x ∈ A))
    γ = pr₂ (boolean-value' (δ x))
 
 \end{code}

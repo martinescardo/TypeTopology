@@ -57,7 +57,7 @@ module _
  extensionality-for-minimal-elements = (x y : X)
                                      → ((a : X) → ¬ (a ≺ x))
                                      → ((a : X) → ¬ (a ≺ y))
-                                     → ((a : X) → a ≺ x ⇔ a ≺ y) → x ≡ y
+                                     → ((a : X) → a ≺ x ⇔ a ≺ y) → x ＝ y
 
 \end{code}
 
@@ -81,9 +81,9 @@ explicit.
  extensionality-for-minimal-elts-if-at-most-one-minimal-elt
   at-most-one-min x y x-min y-min x-y-ext = goal
    where
-    claim : (x , x-min ≡ y , y-min)
+    claim : (x , x-min ＝ y , y-min)
     claim = at-most-one-min (x , x-min) (y , y-min)
-    goal : x ≡ y
+    goal : x ＝ y
     goal =  ap pr₁ claim
 
  at-most-one-minimal-elt-if-extensionality-for-minimal-elts :
@@ -98,12 +98,12 @@ explicit.
       I p = 𝟘-elim (x-min a p)
       II : a ≺ y → a ≺ x
       II q = 𝟘-elim (y-min a q)
-    goal : (x , x-min) ≡ (y , y-min)
-    goal = to-subtype-≡ I II
+    goal : (x , x-min) ＝ (y , y-min)
+    goal = to-subtype-＝ I II
      where
       I : (b : X) → is-prop ((a : X) → ¬ (a ≺ b))
       I b = Π-is-prop fe (λ a → negations-are-props fe)
-      II : x ≡ y
+      II : x ＝ y
       II = ext x y x-min y-min claim
 
 \end{code}
@@ -129,25 +129,25 @@ module swan
        where
 
  S : 𝓤 ⁺ ̇
- S = Σ Q ꞉ 𝓤 ̇ , is-prop Q × ¬¬ (Q ≡ P)
+ S = Σ Q ꞉ 𝓤 ̇ , is-prop Q × ¬¬ (Q ＝ P)
 
  S-is-set : is-set S
  S-is-set = equiv-to-set (≃-sym Σ-assoc) S'-is-set
   where
    S' : 𝓤 ⁺ ̇
-   S' = Σ Q ꞉ Ω 𝓤 , ¬¬ (Q holds ≡ P)
+   S' = Σ Q ꞉ Ω 𝓤 , ¬¬ (Q holds ＝ P)
    S'-is-set : is-set S'
    S'-is-set = subtypes-of-sets-are-sets pr₁ (pr₁-lc (negations-are-props fe))
                 (Ω-is-set fe pe)
 
- all-elements-are-¬¬-equal : (x y : S) → ¬¬ (x ≡ y)
+ all-elements-are-¬¬-equal : (x y : S) → ¬¬ (x ＝ y)
  all-elements-are-¬¬-equal (Q , i , t) (Q' , i' , t') = ¬¬-kleisli γ t
   where
-   γ : Q ≡ P → ¬¬ ((Q , i , t) ≡ (Q' , i' , t'))
+   γ : Q ＝ P → ¬¬ ((Q , i , t) ＝ (Q' , i' , t'))
    γ refl = ¬¬-functor h t'
     where
-     h : Q' ≡ P → (P , i , t) ≡ (Q' , i' , t')
-     h refl = to-subtype-≡
+     h : Q' ＝ P → (P , i , t) ＝ (Q' , i' , t')
+     h refl = to-subtype-＝
                 (λ _ → ×-is-prop
                         (being-prop-is-prop fe)
                         (negations-are-props fe))
@@ -162,26 +162,26 @@ module swan
   all-elements-are-minimal : (x y : S) → ¬ (x ≺ y)
   all-elements-are-minimal x y = contrapositive γ (all-elements-are-¬¬-equal x y)
    where
-    γ : x ≺ y → ¬ (x ≡ y)
+    γ : x ≺ y → ¬ (x ＝ y)
     γ l refl = ≺-irreflexive x l
 
-  all-elements-are-equal : (x y : S) → x ≡ y
+  all-elements-are-equal : (x y : S) → x ＝ y
   all-elements-are-equal x y = goal
    where
     x-min : (a : S) → ¬ (a ≺ x)
     x-min a = all-elements-are-minimal a x
     y-min : (a : S) → ¬ (a ≺ y)
     y-min a = all-elements-are-minimal a y
-    claim : (x , x-min) ≡ (y , y-min)
+    claim : (x , x-min) ＝ (y , y-min)
     claim = at-most-one-minimal-elt-if-extensionality-for-minimal-elts
              _≺_ ≺-minimally-extensional (x , x-min) (y , y-min)
-    goal : x ≡ y
+    goal : x ＝ y
     goal = ap pr₁ claim
 
   P-must-hold : P
   P-must-hold = Idtofun γ ⋆
    where
-    γ : 𝟙 ≡ P
+    γ : 𝟙 ＝ P
     γ = ap pr₁ (all-elements-are-equal 𝟙-in-S P-in-S)
      where
       P-in-S : S
@@ -189,7 +189,7 @@ module swan
       𝟙-in-S : S
       𝟙-in-S = (𝟙 , 𝟙-is-prop , h)
        where
-        h : ¬¬ (𝟙 ≡ P)
+        h : ¬¬ (𝟙 ＝ P)
         h = ¬¬-functor
              (λ p → pe 𝟙-is-prop P-is-prop (λ _ → p) (λ _ → ⋆))
              P-is-not-false
@@ -309,7 +309,7 @@ module swan'
  open PropositionalTruncation pt
 
  _≈_ : 𝟚 → 𝟚 → 𝓤 ̇
- x ≈ y = (x ≡ y) ∨ P
+ x ≈ y = (x ＝ y) ∨ P
 
  ≈-is-prop-valued : is-prop-valued _≈_
  ≈-is-prop-valued x y = ∨-is-prop
@@ -320,17 +320,17 @@ module swan'
  ≈-is-symmetric : symmetric _≈_
  ≈-is-symmetric x y = ∥∥-functor γ
   where
-   γ : (x ≡ y) + P → (y ≡ x) + P
+   γ : (x ＝ y) + P → (y ＝ x) + P
    γ (inl e) = inl (e ⁻¹)
    γ (inr p) = inr p
 
  ≈-is-transitive : transitive _≈_
  ≈-is-transitive x y z = ∥∥-rec (Π-is-prop fe (λ _ → ≈-is-prop-valued x z)) γ
   where
-   γ : (x ≡ y) + P → y ≈ z → x ≈ z
+   γ : (x ＝ y) + P → y ≈ z → x ≈ z
    γ (inl e₁) = ∥∥-functor ϕ
     where
-     ϕ : (y ≡ z) + P → (x ≡ z) + P
+     ϕ : (y ＝ z) + P → (x ＝ z) + P
      ϕ (inl e₂) = inl (e₁ ∙ e₂)
      ϕ (inr p)  = inr p
    γ (inr p) _ = ∣ inr p ∣
@@ -350,54 +350,54 @@ module swan'
   S-is-set : is-set S
   S-is-set = X/≈-is-set
 
-  quotient-lemma : (x : S) → (x ≡ η ₀) ∨ (x ≡ η ₁)
+  quotient-lemma : (x : S) → (x ＝ η ₀) ∨ (x ＝ η ₁)
   quotient-lemma x = ∥∥-functor γ (η-surjection x)
    where
-    γ : (Σ i ꞉ 𝟚 , η i ≡ x)
-      → (x ≡ η ₀) + (x ≡ η ₁)
+    γ : (Σ i ꞉ 𝟚 , η i ＝ x)
+      → (x ＝ η ₀) + (x ＝ η ₁)
     γ (₀ , e) = inl (e ⁻¹)
     γ (₁ , e) = inr (e ⁻¹)
 
   η₀-minimal : (x : S) → ¬ (x ≺ η ₀)
   η₀-minimal x h = ∥∥-rec 𝟘-is-prop γ (quotient-lemma x)
    where
-    γ : (x ≡ η ₀) + (x ≡ η ₁) → 𝟘
+    γ : (x ＝ η ₀) + (x ＝ η ₁) → 𝟘
     γ (inl refl) = ≺-irreflexive (η ₀) h
     γ (inr refl) = P-is-not-false ϕ
      where
       ϕ : ¬ P
       ϕ p = ≺-irreflexive (η ₀) (transport (_≺ (η ₀)) claim h)
        where
-        claim : η ₁ ≡ η ₀
+        claim : η ₁ ＝ η ₀
         claim = η-equiv-equal ∣ inr p ∣
 
   η₁-minimal : (x : S) → ¬ (x ≺ η ₁)
   η₁-minimal x h = ∥∥-rec 𝟘-is-prop γ (quotient-lemma x)
    where
-    γ : (x ≡ η ₀) + (x ≡ η ₁) → 𝟘
+    γ : (x ＝ η ₀) + (x ＝ η ₁) → 𝟘
     γ (inr refl) = ≺-irreflexive (η ₁) h
     γ (inl refl) = P-is-not-false ϕ
      where
       ϕ : ¬ P
       ϕ p = ≺-irreflexive (η ₁) (transport (_≺ (η ₁)) claim h)
        where
-        claim : η ₀ ≡ η ₁
+        claim : η ₀ ＝ η ₁
         claim = η-equiv-equal ∣ inr p ∣
 
-  ≈-identifies-₀-and-₁ : η ₀ ≡ η ₁
+  ≈-identifies-₀-and-₁ : η ₀ ＝ η ₁
   ≈-identifies-₀-and-₁ = goal
    where
-    claim : (η ₀ , η₀-minimal) ≡ (η ₁ , η₁-minimal)
+    claim : (η ₀ , η₀-minimal) ＝ (η ₁ , η₁-minimal)
     claim = at-most-one-minimal-elt-if-extensionality-for-minimal-elts
              _≺_ ≺-minimally-extensional (η ₀ , η₀-minimal) (η ₁ , η₁-minimal)
-    goal : η ₀ ≡ η ₁
+    goal : η ₀ ＝ η ₁
     goal = ap pr₁ claim
 
   P-must-hold : P
   P-must-hold =
    ∥∥-rec P-is-prop γ (η-equal-equiv ≈-identifies-₀-and-₁)
     where
-     γ : (₀ ≡ ₁) + P → P
+     γ : (₀ ＝ ₁) + P → P
      γ (inl e) = 𝟘-elim (zero-is-not-one e)
      γ (inr p) = p
 
@@ -431,7 +431,7 @@ module ClassicalWellOrder
 
   is-uniquely-trichotomous : 𝓤 ⊔ 𝓣 ̇
   is-uniquely-trichotomous =
-   (x y : X) → is-singleton ((x ≺ y) + (x ≡ y) + (y ≺ x))
+   (x y : X) → is-singleton ((x ≺ y) + (x ＝ y) + (y ≺ x))
 
   inhabited-has-minimal : (𝓤 ⊔ 𝓣) ⁺ ̇
   inhabited-has-minimal = (A : X → (𝓤 ⊔ 𝓣) ̇ )
@@ -466,14 +466,14 @@ module ClassicalWellOrder
                   → ((x : X) → is-prop (A x))
                   → is-prop (Σ x ꞉ X , A x × ((y : X) → A y → ¬ (y ≺ x)))
   minimal-is-prop trich A A-is-prop-valued (x , a , f) (x' , a' , f') =
-   to-subtype-≡ i q
+   to-subtype-＝ i q
     where
      i : (x : X) → is-prop (A x × ((y : X) → A y → ¬ (y ≺ x)))
      i x = ×-is-prop (A-is-prop-valued x) (Π₃-is-prop fe (λ x a l → 𝟘-is-prop))
-     q : x ≡ x'
+     q : x ＝ x'
      q = κ (trich x x')
       where
-       κ : (x ≺ x') + (x ≡ x') + (x' ≺ x) → x ≡ x'
+       κ : (x ≺ x') + (x ＝ x') + (x' ≺ x) → x ＝ x'
        κ (inl k)       = 𝟘-elim (f' x a k)
        κ (inr (inl p)) = p
        κ (inr (inr l)) = 𝟘-elim (f x' a' l)
@@ -540,14 +540,14 @@ A remark on well-order-gives-minimal (see below) is in order.
    inductive-well-order-is-classical iwo =
     (transitivity iwo , uniq-trich , well-order-gives-minimal iwo)
      where
-      trich-prop : (x y : X) → is-prop ((x ≺ y) + (x ≡ y) + (y ≺ x))
+      trich-prop : (x y : X) → is-prop ((x ≺ y) + (x ＝ y) + (y ≺ x))
       trich-prop x y = +-is-prop (prop-valuedness iwo x y)
                         (+-is-prop (well-ordered-types-are-sets (λ _ _ → fe) iwo)
                                    (prop-valuedness iwo y x) σ) τ
          where
-          σ : x ≡ y → ¬ (y ≺ x)
+          σ : x ＝ y → ¬ (y ≺ x)
           σ refl = irreflexive x (well-foundedness iwo x)
-          τ : x ≺ y → ¬ ((x ≡ y) + (y ≺ x))
+          τ : x ≺ y → ¬ ((x ＝ y) + (y ≺ x))
           τ k (inl refl) = irreflexive x (well-foundedness iwo x) k
           τ k (inr l)    = irreflexive x (well-foundedness iwo x)
                             (transitivity iwo x y x k l)
@@ -595,7 +595,7 @@ A remark on well-order-gives-minimal (see below) is in order.
       ext : is-extensional
       ext x y u v = κ (center (trich x y))
        where
-        κ : (x ≺ y) + (x ≡ y) + (y ≺ x) → x ≡ y
+        κ : (x ≺ y) + (x ＝ y) + (y ≺ x) → x ＝ y
         κ (inl k)       = 𝟘-elim (irreflexive x (wf x) (v x k))
         κ (inr (inl e)) = e
         κ (inr (inr l)) = 𝟘-elim (irreflexive y (wf y) (u y l))
@@ -632,7 +632,7 @@ with a fairly direct proof.
     γ : (Σ _≺_ ꞉ (𝟚' → 𝟚' → 𝓣 ̇ ) , (is-classical-well-order _≺_)) → P + ¬ P
     γ (_≺_ , trans , trich , min) = κ (center (trich (ι ₀) (ι ₁)))
      where
-      κ : (ι ₀ ≺ ι ₁) + (ι ₀ ≡ ι ₁) + (ι ₁ ≺ ι ₀)
+      κ : (ι ₀ ≺ ι ₁) + (ι ₀ ＝ ι ₁) + (ι ₁ ≺ ι ₀)
         → P + ¬ P
       κ (inr (inl e)) = 𝟘-elim (zero-is-not-one (equivs-are-lc ι lift-is-equiv e))
       κ (inl k)       = f (min A A-is-prop-valued A-is-inhabited)
@@ -795,12 +795,12 @@ module _
        f (_≺_ , _ , _ , min) x y = transport Y x'-is-x y'
         where
          S : Σ Y → 𝓤 ⊔ 𝓣 ̇
-         S (x' , _) = x' ≡ x
+         S (x' , _) = x' ＝ x
          m : Σ σ ꞉ (Σ Y) , S σ × ((τ : Σ Y) → S τ → ¬ (τ ≺ σ))
          m = min S (λ _ → X-is-set) (∥∥-functor (λ y' → (x , y') , refl) y)
          x' : X
          x' = pr₁ (pr₁ m)
-         x'-is-x : x' ≡ x
+         x'-is-x : x' ＝ x
          x'-is-x = pr₁ (pr₂ m)
          y' : Y x'
          y' = pr₂ (pr₁ m)

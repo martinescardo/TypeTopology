@@ -191,7 +191,7 @@ the file InjectiveTypes:
 \begin{code}
 
 underlying-set-of-𝓚 : (ν : E) (A : ⟪ Δ ν ⟫ → E) (y : ⟪ Κ ν ⟫)
-                    → ⟪ 𝓚 ν A y ⟫ ≡ (Π (x , _) ꞉ fiber (ι ν) y , ⟪ Κ (A x) ⟫)
+                    → ⟪ 𝓚 ν A y ⟫ ＝ (Π (x , _) ꞉ fiber (ι ν) y , ⟪ Κ (A x) ⟫)
 underlying-set-of-𝓚 ν A y = refl
 
 \end{code}
@@ -455,7 +455,7 @@ We define limit points as follows:
 
 private
  recall-notion-of-isolatedness  : {X : 𝓤 ̇ } (x : X)
-                                → is-isolated x ≡ ((y : X) → decidable (x ≡ y))
+                                → is-isolated x ＝ ((y : X) → decidable (x ＝ y))
  recall-notion-of-isolatedness x = refl
 
 is-limit-point : {X : 𝓤 ̇ } → X → 𝓤 ̇
@@ -482,7 +482,7 @@ Non-limit points are isolated in the Κ interpretation:
 
 \begin{code}
 
-ℓ-isolated : (ν : E) (x : ⟪ Δ ν ⟫) → ℓ ν x ≡ ₀ → is-isolated (ι ν x)
+ℓ-isolated : (ν : E) (x : ⟪ Δ ν ⟫) → ℓ ν x ＝ ₀ → is-isolated (ι ν x)
 ℓ-isolated ⌜𝟙⌝         ⋆            p    = 𝟙-is-discrete ⋆
 ℓ-isolated ⌜ω+𝟙⌝       (inl n)      refl = finite-isolated fe₀ n
 ℓ-isolated (ν₀ ⌜+⌝ ν₁) (inl ⋆ , x₀) p    = Σ-isolated
@@ -518,7 +518,7 @@ The function ℓ really does detect limit points:
 
 module _ (pe : propext 𝓤₀) where
 
- ℓ-limit : (ν : E) (x : ⟪ Δ ν ⟫) → ℓ ν x ≡ ₁ → is-limit-point (ι ν x)
+ ℓ-limit : (ν : E) (x : ⟪ Δ ν ⟫) → ℓ ν x ＝ ₁ → is-limit-point (ι ν x)
  ℓ-limit ⌜ω+𝟙⌝       (inr ⋆)      p i = is-isolated-gives-is-isolated' ∞ i
  ℓ-limit (ν₀ ⌜+⌝ ν₁) (inl ⋆ , x₀) p i = ℓ-limit ν₀ x₀ p
                                          (Σ-isolated-right
@@ -528,13 +528,13 @@ module _ (pe : propext 𝓤₀) where
                                            (underlying-type-is-setᵀ fe 𝟚ᵒ) i)
  ℓ-limit (ν₀ ⌜×⌝ ν₁) (x₀ , x₁)    p i =
    Cases (max𝟚-lemma p)
-    (λ (p₀ : ℓ ν₀ x₀ ≡ ₁) → ℓ-limit ν₀ x₀ p₀ (×-isolated-left i))
-    (λ (p₁ : ℓ ν₁ x₁ ≡ ₁) → ℓ-limit ν₁ x₁ p₁ (×-isolated-right i))
+    (λ (p₀ : ℓ ν₀ x₀ ＝ ₁) → ℓ-limit ν₀ x₀ p₀ (×-isolated-left i))
+    (λ (p₁ : ℓ ν₁ x₁ ＝ ₁) → ℓ-limit ν₁ x₁ p₁ (×-isolated-right i))
  ℓ-limit (⌜Σ⌝ ν A)   (x , y)      p i =
    Cases (max𝟚-lemma p)
-    (λ (p₀ : ℓ ν x ≡ ₁)
+    (λ (p₀ : ℓ ν x ＝ ₁)
            → ℓ-limit ν x p₀ (Σ-isolated-left (𝓚-Compact pe ν A) i))
-    (λ (p₁ : ℓ (A x) y ≡ ₁)
+    (λ (p₁ : ℓ (A x) y ＝ ₁)
            → ℓ-limit (A x) y p₁
               (equivs-reflect-isolatedness (γ x)
                 (γ-is-equiv x)
@@ -547,8 +547,8 @@ module _ (pe : propext 𝓤₀) where
  isolatedness-decision : (ν : E) (x : ⟪ Δ ν ⟫)
                        → is-isolated (ι ν x) + is-limit-point (ι ν x)
  isolatedness-decision ν x = 𝟚-equality-cases
-                              (λ (p : ℓ ν x ≡ ₀) → inl (ℓ-isolated ν x p))
-                              (λ (p : ℓ ν x ≡ ₁) → inr (ℓ-limit ν x p))
+                              (λ (p : ℓ ν x ＝ ₀) → inl (ℓ-isolated ν x p))
+                              (λ (p : ℓ ν x ＝ ₁) → inr (ℓ-limit ν x p))
 
  isolatedness-decision' : ¬ WLPO → (ν : E) (x : ⟪ Δ ν ⟫)
                         → decidable (is-isolated (ι ν x))
@@ -633,13 +633,13 @@ TODO. Do we have (ν : E) → [ Δ ν ] ⊴ [ Κ ν ]? Notice that we do have
 (ω +ₒ 𝟙ₒ) ⊴ ℕ∞ₒ, proved in OrdinalOfOrdinals, submodule ℕ∞-in-Ord.
 
 TODO. Define an element x of an ordinal to be trisolated if for every
-y we have that y ≺ x or x ≡ y or x ≺ y.  Notice that trisolated
+y we have that y ≺ x or x ＝ y or x ≺ y.  Notice that trisolated
 elements are isolated. Define an ordinal to be trichotomous if every
 element is trisolated. (1) Δ ν should be trichotomous. (2) We should have:
 
-ℓ-trisolated : (ν : E) (x : ⟪ Δ ν ⟫) → ℓ ν x ≡ ₀ → is-trisolated (ι ν x)
+ℓ-trisolated : (ν : E) (x : ⟪ Δ ν ⟫) → ℓ ν x ＝ ₀ → is-trisolated (ι ν x)
 
-We don't need to discuss the case ℓ ν x ≡ ₁ because this is already
+We don't need to discuss the case ℓ ν x ＝ ₁ because this is already
 covered by ℓ-limit as trisolated points are isolated.
 
 TODO. An element x of α is trisolated iff there are ordinals αₕ and αₜ

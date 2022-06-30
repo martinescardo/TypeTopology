@@ -82,11 +82,11 @@ following two laws:
 \begin{code}
 
 𝓛-alg-Law₀ : {X : 𝓤 ̇ } → joinop X → 𝓤 ̇
-𝓛-alg-Law₀ {𝓤} {X} ∐ = (x : X) → ∐ 𝟙-is-prop (λ (p : 𝟙) → x) ≡ x
+𝓛-alg-Law₀ {𝓤} {X} ∐ = (x : X) → ∐ 𝟙-is-prop (λ (p : 𝟙) → x) ＝ x
 
 𝓛-alg-Law₁ : {X : 𝓤 ̇ } → joinop X → 𝓣 ⁺ ⊔ 𝓤 ̇
 𝓛-alg-Law₁ {𝓤} {X} ∐ = (P : 𝓣 ̇ ) (Q : P → 𝓣 ̇ ) (i : is-prop P) (j : (p : P) → is-prop (Q p)) (f : Σ Q → X)
-                          → ∐ (Σ-is-prop i j) f ≡ ∐ i (λ p → ∐ (j p) (λ q → f (p , q)))
+                          → ∐ (Σ-is-prop i j) f ＝ ∐ i (λ p → ∐ (j p) (λ q → f (p , q)))
 
 \end{code}
 
@@ -138,7 +138,7 @@ The algebra morphisms are the maps that preserve joins. Omitting the
 first argument of ⋁, the following says that the morphisms are the
 maps h : X → Y with
 
-  h (⋁ f) ≡ ⋁ h (f p)
+  h (⋁ f) ＝ ⋁ h (f p)
             p:P
 
 for all f:P→X.
@@ -150,7 +150,7 @@ for all f:P→X.
                     (h : X → Y)
 
                   → (h ∘ s ∼ t ∘ 𝓛̇ h)
-                  ≃ ({P : 𝓣 ̇ } (i : is-prop P) (f : P → X) → h (⋁ s i f) ≡ ⋁ t i (λ p → h (f p)))
+                  ≃ ({P : 𝓣 ̇ } (i : is-prop P) (f : P → X) → h (⋁ s i f) ＝ ⋁ t i (λ p → h (f p)))
 𝓛-morphism-charac s t h = qinveq (λ H {P} i f → H (P , f , i))
                                  ((λ {π (P , f , i) → π {P} i f}) ,
                                  (λ _ → refl) ,
@@ -162,13 +162,13 @@ We name the other two projections of 𝓛-alg:
 
 \begin{code}
 
-𝓛-alg-const : {X : 𝓤 ̇ } (A : 𝓛-alg X) → (x : X) → ∐ A 𝟙-is-prop (λ (p : 𝟙) → x) ≡ x
+𝓛-alg-const : {X : 𝓤 ̇ } (A : 𝓛-alg X) → (x : X) → ∐ A 𝟙-is-prop (λ (p : 𝟙) → x) ＝ x
 𝓛-alg-const (∐ , κ , ι) = κ
 
 𝓛-alg-iterated : {X : 𝓤 ̇ } (A : 𝓛-alg X)
                  (P : 𝓣 ̇ ) (Q : P → 𝓣 ̇ ) (i : is-prop P) (j : (p : P) → is-prop (Q p))
                  (f : Σ Q → X)
-               → ∐ A (Σ-is-prop i j) f ≡ ∐ A i (λ p → ∐ A (j p) (λ q → f (p , q)))
+               → ∐ A (Σ-is-prop i j) f ＝ ∐ A i (λ p → ∐ A (j p) (λ q → f (p , q)))
 𝓛-alg-iterated (∐ , κ , ι) = ι
 
 \end{code}
@@ -207,7 +207,7 @@ type injectivity purposes).
 \begin{code}
 
 𝓛-alg-Law₀' : {X : 𝓤 ̇ } → joinop X → 𝓣 ⁺ ⊔ 𝓤 ̇
-𝓛-alg-Law₀' {𝓤} {X} ∐ = (P : 𝓣 ̇ ) (i : is-prop P) (f : P → X) (p : P) → ∐ i f ≡ f p
+𝓛-alg-Law₀' {𝓤} {X} ∐ = (P : 𝓣 ̇ ) (i : is-prop P) (f : P → X) (p : P) → ∐ i f ＝ f p
 
 
 𝓛-alg-Law₀-gives₀' : propext 𝓣
@@ -217,15 +217,15 @@ type injectivity purposes).
                    → 𝓛-alg-Law₀ ∐ → 𝓛-alg-Law₀' ∐
 𝓛-alg-Law₀-gives₀' pe fe fe' {X} ∐ κ P i f p = γ
  where
-  r : f ≡ λ (_ : P) → f p
+  r : f ＝ λ (_ : P) → f p
   r = dfunext fe' (λ p' → ap f (i p' p))
-  s : P ≡ 𝟙 → ∐ {P} i f ≡ ∐ {𝟙} 𝟙-is-prop (λ (_ : 𝟙) → f p)
+  s : P ＝ 𝟙 → ∐ {P} i f ＝ ∐ {𝟙} 𝟙-is-prop (λ (_ : 𝟙) → f p)
   s refl = ap₂ ∐ (being-prop-is-prop fe i 𝟙-is-prop) r
-  t : P ≡ 𝟙
+  t : P ＝ 𝟙
   t = pe i 𝟙-is-prop unique-to-𝟙 (λ _ → p)
-  γ : ∐ i f ≡ f p
-  γ = ∐ {P} i f                   ≡⟨ s t ⟩
-      ∐ 𝟙-is-prop (f ∘ (λ _ → p)) ≡⟨ κ (f p) ⟩
+  γ : ∐ i f ＝ f p
+  γ = ∐ {P} i f                   ＝⟨ s t ⟩
+      ∐ 𝟙-is-prop (f ∘ (λ _ → p)) ＝⟨ κ (f p) ⟩
       f p                         ∎
 
 𝓛-alg-Law₀'-gives₀ : {X : 𝓤 ̇ } (∐ : joinop X)
@@ -241,7 +241,7 @@ equivalent to 𝓛-alg-Law₁:
 
 𝓛-alg-Law₁' : {X : 𝓤 ̇ } → joinop X → 𝓣 ⁺ ⊔ 𝓤 ̇
 𝓛-alg-Law₁' {𝓤} {X} ∐ = (P Q : 𝓣 ̇ ) (i : is-prop P) (j : is-prop Q) (f : P × Q → X)
-                             → ∐ (×-is-prop i j) f ≡ ∐ i (λ p → ∐ j (λ q → f (p , q)))
+                             → ∐ (×-is-prop i j) f ＝ ∐ i (λ p → ∐ j (λ q → f (p , q)))
 
 \end{code}
 
@@ -265,7 +265,7 @@ One direction of the logical equivalence is trivial:
 To establish the converse we need the following lemma for joins, which
 is interesting on its own right,
 
-  ∐  f p ≡ ∐  f (k q),
+  ∐  f p ＝ ∐  f (k q),
  p:P      q:Q
 
 and also gives self-distributivity of joins:
@@ -281,15 +281,15 @@ change-of-variables-in-join : {X : 𝓤 ̇ } (∐ : joinop X)
                               (Q : 𝓣 ̇ ) (j : is-prop Q)
                               (h : P → Q) (k : Q → P) (f : P → X)
                             → is-univalent 𝓣
-                            → ∐ i f ≡ ∐ j (f ∘ k)
+                            → ∐ i f ＝ ∐ j (f ∘ k)
 
 change-of-variables-in-join ∐ P i Q j h k f ua = cd (eqtoid ua Q P e) ∙ ap (λ - → ∐ j (f ∘ -)) a
  where
-  cd : (r : Q ≡ P) → ∐ i f ≡ ∐ j (f ∘ Idtofun r)
+  cd : (r : Q ＝ P) → ∐ i f ＝ ∐ j (f ∘ Idtofun r)
   cd refl = ap (λ - → ∐ - f) (being-prop-is-prop (univalence-gives-funext ua) i j)
   e : Q ≃ P
   e = qinveq k (h , ((λ q → j (h (k q)) q) , λ p → i (k (h p)) p))
-  a : Idtofun (eqtoid ua Q P e) ≡ k
+  a : Idtofun (eqtoid ua Q P e) ＝ k
   a = ap ⌜_⌝ (idtoeq'-eqtoid ua Q P e)
 
 𝓛-alg-self-distr : {X : 𝓤 ̇ } (∐ : joinop X)
@@ -298,11 +298,11 @@ change-of-variables-in-join ∐ P i Q j h k f ua = cd (eqtoid ua Q P e) ∙ ap (
                  → is-univalent 𝓣
                  → 𝓛-alg-Law₁' ∐
                  → (f : P × Q → X) → ∐ i (λ p → ∐ j (λ q → f (p , q)))
-                                   ≡ ∐ j (λ q → ∐ i (λ p → f (p , q)))
+                                   ＝ ∐ j (λ q → ∐ i (λ p → f (p , q)))
 
-𝓛-alg-self-distr ∐ P i Q j ua l₁' f = ∐ i (λ p → ∐ j (λ q → f (p , q)))                     ≡⟨ a ⟩
-                                      ∐ (Σ-is-prop i (λ p → j)) f                           ≡⟨ b ⟩
-                                      ∐ (Σ-is-prop j (λ p → i)) (f ∘ (λ t → pr₂ t , pr₁ t)) ≡⟨ c ⟩
+𝓛-alg-self-distr ∐ P i Q j ua l₁' f = ∐ i (λ p → ∐ j (λ q → f (p , q)))                     ＝⟨ a ⟩
+                                      ∐ (Σ-is-prop i (λ p → j)) f                           ＝⟨ b ⟩
+                                      ∐ (Σ-is-prop j (λ p → i)) (f ∘ (λ t → pr₂ t , pr₁ t)) ＝⟨ c ⟩
                                       ∐ j (λ q → ∐ i (λ p → f (p , q)))                     ∎
  where
   a = (l₁' P Q i j f)⁻¹
@@ -321,10 +321,10 @@ Using this we can prove the other direction of the logical equivalence claimed a
                     → funext 𝓣 𝓤
                     → 𝓛-alg-Law₁' ∐ → 𝓛-alg-Law₁ ∐
 𝓛-alg-Law₁'-gives₁ {𝓤} {X} ∐ ua fe a P Q i j f =
- ∐ {Σ Q} (Σ-is-prop i j) f                                         ≡⟨ b ⟩
- ∐ {Σ Q} (Σ-is-prop i j) (f' ∘ k')                                 ≡⟨ c ⟩
- ∐ {P × Σ Q} (×-is-prop i (Σ-is-prop i j)) f'                      ≡⟨ d ⟩
- ∐ {P} i (λ p → ∐ {Σ Q} (Σ-is-prop i j) ((λ σ → f (p , σ)) ∘ k p)) ≡⟨ e ⟩
+ ∐ {Σ Q} (Σ-is-prop i j) f                                         ＝⟨ b ⟩
+ ∐ {Σ Q} (Σ-is-prop i j) (f' ∘ k')                                 ＝⟨ c ⟩
+ ∐ {P × Σ Q} (×-is-prop i (Σ-is-prop i j)) f'                      ＝⟨ d ⟩
+ ∐ {P} i (λ p → ∐ {Σ Q} (Σ-is-prop i j) ((λ σ → f (p , σ)) ∘ k p)) ＝⟨ e ⟩
  ∐ {P} i (λ p → ∐ {Q p} (j p) (λ q → f (p , q)))                   ∎
 
  where
@@ -358,14 +358,14 @@ operations. More generally:
  where
   ∐· : {P : 𝓣 ̇ } → is-prop P → (P → Π A) → Π A
   ∐· i f x = ∐ (α x) i (λ p → f p x)
-  l₀ : (φ : Π A) → ∐· 𝟙-is-prop (λ p → φ) ≡ φ
+  l₀ : (φ : Π A) → ∐· 𝟙-is-prop (λ p → φ) ＝ φ
   l₀ φ = dfunext fe (λ x → law₀ (α x) (φ x))
   l₁ : (P : 𝓣 ̇ ) (Q : P → 𝓣 ̇ )
        (i : is-prop P) (j : (p : P) → is-prop (Q p))
        (f : Σ Q → Π A)
       →
         ∐· (Σ-is-prop i j) f
-      ≡ ∐· i (λ p → ∐· (j p) (λ q → f (p , q)))
+      ＝ ∐· i (λ p → ∐· (j p) (λ q → f (p , q)))
   l₁ P Q i j f = dfunext fe (λ x → law₁ (α x) P Q i j (λ σ → f σ x))
 
 \end{code}
@@ -385,11 +385,11 @@ universe-is-algebra-Σ ua = sum , k , ι
  where
   sum : {P : 𝓣 ̇ } → is-prop P → (P → 𝓣 ̇ ) → 𝓣 ̇
   sum {P} i = Σ
-  k : (X : 𝓣 ̇ ) → Σ (λ p → X) ≡ X
+  k : (X : 𝓣 ̇ ) → Σ (λ p → X) ＝ X
   k X = eqtoid ua (𝟙 × X) X 𝟙-lneutral
   ι : (P : 𝓣 ̇ ) (Q : P → 𝓣 ̇ ) (i : is-prop P)
       (j : (p : P) → is-prop (Q p)) (f : Σ Q → 𝓣 ̇ )
-    → Σ f ≡ Σ (λ p → Σ (λ q → f (p , q)))
+    → Σ f ＝ Σ (λ p → Σ (λ q → f (p , q)))
   ι P Q i j f = eqtoid ua _ _ Σ-assoc
 
 universe-is-algebra-Π : is-univalent 𝓣 → 𝓛-alg (𝓣 ̇ )
@@ -399,11 +399,11 @@ universe-is-algebra-Π ua = prod , k , ι
   fe = univalence-gives-funext ua
   prod : {P : 𝓣 ̇ } → is-prop P → (P → 𝓣 ̇ ) → 𝓣 ̇
   prod {P} i = Π
-  k : (X : 𝓣 ̇ ) → Π (λ p → X) ≡ X
+  k : (X : 𝓣 ̇ ) → Π (λ p → X) ＝ X
   k X = eqtoid ua (𝟙 → X) X (≃-sym (𝟙→ (univalence-gives-funext ua)))
   ι : (P : 𝓣 ̇ ) (Q : P → 𝓣 ̇ ) (i : is-prop P)
       (j : (p : P) → is-prop (Q p)) (f : Σ Q → 𝓣 ̇ )
-    → Π f ≡ Π (λ p → Π (λ q → f (p , q)))
+    → Π f ＝ Π (λ p → Π (λ q → f (p , q)))
   ι P Q i j f = eqtoid ua _ _ (curry-uncurry' fe fe)
 
 \end{code}

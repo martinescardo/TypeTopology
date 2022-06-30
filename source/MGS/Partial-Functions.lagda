@@ -31,9 +31,9 @@ being-defined-is-subsingleton (R , σ) x = σ x
 _[_,_] :  {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (f : Πₚ A) (x : X) → is-defined f x → A x
 (R , s) [ x , (a , r)] = a
 
-_≡ₖ_ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } → Πₚ A → Πₚ A → 𝓤 ⊔ 𝓥 ̇
-f ≡ₖ g = ∀ x → (is-defined f x ⇔ is-defined g x)
-             × ((i : is-defined f x) (j : is-defined g x) → f [ x , i ] ≡ g [ x , j ])
+_＝ₖ_ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } → Πₚ A → Πₚ A → 𝓤 ⊔ 𝓥 ̇
+f ＝ₖ g = ∀ x → (is-defined f x ⇔ is-defined g x)
+             × ((i : is-defined f x) (j : is-defined g x) → f [ x , i ] ＝ g [ x , j ])
 
 module μ-operator (fe : dfunext 𝓤₀ 𝓤₀) where
 
@@ -53,18 +53,18 @@ module μ-operator (fe : dfunext 𝓤₀ 𝓤₀) where
                               → is-subsingleton (minimal-root f)
 
  minimal-root-is-subsingleton f (m , p , φ) (m' , p' , φ') =
-   to-subtype-≡
+   to-subtype-＝
     (being-minimal-root-is-subsingleton f)
     (at-most-one-minimal-root f m m' (p , φ) (p' , φ'))
 
  μ : (ℕ → ℕ) ⇀ ℕ
  μ = is-minimal-root , minimal-root-is-subsingleton
 
- μ-property₀ : (f : ℕ → ℕ) → (Σ n ꞉ ℕ , f n ≡ 0) → is-defined μ f
+ μ-property₀ : (f : ℕ → ℕ) → (Σ n ꞉ ℕ , f n ＝ 0) → is-defined μ f
  μ-property₀ = root-gives-minimal-root
 
  μ-property₁ : (f : ℕ → ℕ) (i : is-defined μ f)
-             → (f (μ [ f , i ]) ≡ 0)
+             → (f (μ [ f , i ]) ＝ 0)
              × ((n : ℕ) → n < μ [ f , i ] → f n ≢ 0)
 
  μ-property₁ f = pr₂

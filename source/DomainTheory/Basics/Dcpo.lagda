@@ -105,7 +105,7 @@ module _ {𝓤 𝓣 : Universe}
 
  sups-are-unique : poset-axioms
                  → {I : 𝓦 ̇ } (α : I → D) {x y : D}
-                 → is-sup x α → is-sup y α → x ≡ y
+                 → is-sup x α → is-sup y α → x ＝ y
  sups-are-unique (s , p , r , t , a) {I} α {x} {y} x-is-sup y-is-sup =
   a x y
    (sup-is-lowerbound-of-upperbounds x-is-sup y (sup-is-upperbound y-is-sup))
@@ -114,7 +114,7 @@ module _ {𝓤 𝓣 : Universe}
  having-sup-is-prop : poset-axioms → {I : 𝓦 ̇ } (α : I → D)
                     → is-prop (has-sup α)
  having-sup-is-prop ax {I} α σ τ =
-  to-subtype-≡ (λ x → is-sup-is-prop ax x α)
+  to-subtype-＝ (λ x → is-sup-is-prop ax x α)
                (sups-are-unique ax α (pr₂ σ) (pr₂ τ))
 
  dcpo-axioms : 𝓤 ⊔ (𝓥 ⁺) ⊔ 𝓣 ̇
@@ -190,7 +190,7 @@ module _ {𝓤 𝓣 : Universe} where
 \end{code}
 
 We introduce pretty syntax for chain reasoning with inequalities.
-(Cf. ≡⟨_⟩ and ∎ in Id.lagda, ≃⟨_⟩ and ■ in UF.Equiv.lagda)
+(Cf. ＝⟨_⟩ and ∎ in Id.lagda, ≃⟨_⟩ and ■ in UF.Equiv.lagda)
 
 For example, given (a b c d : ⟨ 𝓓 ⟩) and
 u : a ⊑⟨ 𝓓 ⟩ b

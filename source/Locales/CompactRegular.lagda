@@ -149,7 +149,7 @@ clopen.
 
 well-inside₀ : (F : Frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → ⟨ F ⟩ → 𝓤 ̇
 well-inside₀ F U V =
- Σ W ꞉ ⟨ F ⟩ , (U ∧[ F ] W ≡ 𝟎[ F ]) × (V ∨[ F ] W ≡ 𝟏[ F ])
+ Σ W ꞉ ⟨ F ⟩ , (U ∧[ F ] W ＝ 𝟎[ F ]) × (V ∨[ F ] W ＝ 𝟏[ F ])
 
 infix 4 well-inside₀
 
@@ -174,32 +174,32 @@ well-inside₀-is-not-prop ua = IF , ε
   γ₂ = 𝟏[ IF ] , (β , γ)
         where
          abstract
-          β : 𝟎[ IF ] ∧[ IF ] 𝟏[ IF ] ≡ 𝟎[ IF ]
+          β : 𝟎[ IF ] ∧[ IF ] 𝟏[ IF ] ＝ 𝟎[ IF ]
           β = 𝟎-left-annihilator-for-∧ IF 𝟏[ IF ]
 
-          γ : 𝟏[ IF ] ∨[ IF ] 𝟏[ IF ] ≡ 𝟏[ IF ]
+          γ : 𝟏[ IF ] ∨[ IF ] 𝟏[ IF ] ＝ 𝟏[ IF ]
           γ = 𝟏-right-annihilator-for-∨ IF 𝟏[ IF ]
 
   γ₁ : 𝟎[ IF ] ⋜₀[ IF ] 𝟏[ IF ]
   γ₁ = 𝟎[ IF ] , (β , γ)
         where
          abstract
-          β : 𝟎[ IF ] ∧[ IF ] 𝟎[ IF ] ≡ 𝟎[ IF ]
+          β : 𝟎[ IF ] ∧[ IF ] 𝟎[ IF ] ＝ 𝟎[ IF ]
           β = 𝟎-right-annihilator-for-∧ IF 𝟎[ IF ]
 
-          γ : 𝟏[ IF ] ∨[ IF ] 𝟎[ IF ] ≡ 𝟏[ IF ]
+          γ : 𝟏[ IF ] ∨[ IF ] 𝟎[ IF ] ＝ 𝟏[ IF ]
           γ = 𝟏-left-annihilator-for-∨ IF 𝟎[ IF ]
 
-  𝟎-is-not-𝟏 : ¬ (𝟎[ IF ] ≡ 𝟏[ IF ])
+  𝟎-is-not-𝟏 : ¬ (𝟎[ IF ] ＝ 𝟏[ IF ])
   𝟎-is-not-𝟏 p = γ
    where
     γ : ⊥Ω holds
-    γ = transport _holds (𝟏[ IF ] ≡⟨ p ⁻¹ ⟩ 𝟎[ IF ] ≡⟨ 𝟎-of-IF-is-⊥ ua ⟩ ⊥Ω ∎) ⋆
+    γ = transport _holds (𝟏[ IF ] ＝⟨ p ⁻¹ ⟩ 𝟎[ IF ] ＝⟨ 𝟎-of-IF-is-⊥ ua ⟩ ⊥Ω ∎) ⋆
 
   ε : ¬ ((U V : ⟨ IF ⟩) → is-prop (well-inside₀ IF U V))
-  ε ψ = 𝟎-is-not-𝟏 (pr₁ (from-Σ-≡ δ))
+  ε ψ = 𝟎-is-not-𝟏 (pr₁ (from-Σ-＝ δ))
    where
-    δ : γ₁ ≡ γ₂
+    δ : γ₁ ＝ γ₂
     δ = ψ 𝟎[ IF ] 𝟏[ IF ] γ₁ γ₂
 
 \end{code}
@@ -230,12 +230,12 @@ well-inside-implies-below F U V = ∥∥-rec (holds-is-prop (U ≤[ poset-of F ]
   γ : U ⋜₀[ F ] V → (U ≤[ poset-of F ] V) holds
   γ (W , c₁ , c₂) = connecting-lemma₂ F δ
    where
-    δ : U ≡ U ∧[ F ] V
-    δ = U                        ≡⟨ 𝟏-right-unit-of-∧ F U ⁻¹              ⟩
-        U ⊓ 𝟏[ F ]               ≡⟨ ap (U ⊓_) (c₂ ⁻¹)                     ⟩
-        U ⊓ (V ∨[ F ] W)         ≡⟨ binary-distributivity F U V W         ⟩
-        (U ⊓ V) ∨[ F ] (U ⊓ W)   ≡⟨ ap (λ - → binary-join F (U ⊓ V) -) c₁ ⟩
-        (U ⊓ V) ∨[ F ] 𝟎[ F ]    ≡⟨ 𝟎-left-unit-of-∨ F (U ⊓ V)            ⟩
+    δ : U ＝ U ∧[ F ] V
+    δ = U                        ＝⟨ 𝟏-right-unit-of-∧ F U ⁻¹              ⟩
+        U ⊓ 𝟏[ F ]               ＝⟨ ap (U ⊓_) (c₂ ⁻¹)                     ⟩
+        U ⊓ (V ∨[ F ] W)         ＝⟨ binary-distributivity F U V W         ⟩
+        (U ⊓ V) ∨[ F ] (U ⊓ W)   ＝⟨ ap (λ - → binary-join F (U ⊓ V) -) c₁ ⟩
+        (U ⊓ V) ∨[ F ] 𝟎[ F ]    ＝⟨ 𝟎-left-unit-of-∨ F (U ⊓ V)            ⟩
         U ⊓ V                    ∎
 
 \end{code}
@@ -256,11 +256,11 @@ well-inside-implies-below F U V = ∥∥-rec (holds-is-prop (U ≤[ poset-of F ]
    γ (T , c₁ , c₂) = ∣ T , c₁ , d₂ ∣
     where
      β : (𝟏[ F ] ≤[ poset-of F ] (W ∨[ F ] T)) holds
-     β = 𝟏[ F ]      ≡⟨ c₂ ⁻¹                  ⟩ₚ
+     β = 𝟏[ F ]      ＝⟨ c₂ ⁻¹                  ⟩ₚ
          V ∨[ F ] T  ≤⟨ ∨[ F ]-left-monotone q ⟩
          W ∨[ F ] T  ■
 
-     d₂ : W ∨[ F ] T ≡ 𝟏[ F ]
+     d₂ : W ∨[ F ] T ＝ 𝟏[ F ]
      d₂ = only-𝟏-is-above-𝟏 F (W ∨[ F ] T) β
 
 ↓↓-is-downwards-closed : (F : Frame 𝓤 𝓥 𝓦)
@@ -277,7 +277,7 @@ well-inside-implies-below F U V = ∥∥-rec (holds-is-prop (U ≤[ poset-of F ]
    where
     β : ((U ∧[ F ] T) ≤[ poset-of F ] 𝟎[ F ]) holds
     β = U ∧[ F ] T  ≤⟨ ∧[ F ]-left-monotone q ⟩
-        V ∧[ F ] T  ≡⟨ c₁                     ⟩ₚ
+        V ∧[ F ] T  ＝⟨ c₁                     ⟩ₚ
         𝟎[ F ]      ■
 
 \end{code}
@@ -287,28 +287,28 @@ An open _U_ in a frame _A_ is *clopen* iff it is well-inside itself.
 \begin{code}
 
 is-clopen₀ : (F : Frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → 𝓤 ̇
-is-clopen₀ F U = Σ W ꞉ ⟨ F ⟩ , (U ∧[ F ] W ≡ 𝟎[ F ]) × (U ∨[ F ] W ≡ 𝟏[ F ])
+is-clopen₀ F U = Σ W ꞉ ⟨ F ⟩ , (U ∧[ F ] W ＝ 𝟎[ F ]) × (U ∨[ F ] W ＝ 𝟏[ F ])
 
 is-clopen₀-is-prop : (F : Frame 𝓤 𝓥 𝓦) → (U : ⟨ F ⟩) → is-prop (is-clopen₀ F U)
-is-clopen₀-is-prop F U (W₁ , p₁ , q₁) (W₂ , p₂ , q₂) = to-subtype-≡ β γ
+is-clopen₀-is-prop F U (W₁ , p₁ , q₁) (W₂ , p₂ , q₂) = to-subtype-＝ β γ
  where
   P = poset-of F -- we refer to the underlying poset of F as P.
 
-  β : (W : ⟨ F ⟩) → is-prop ((U ∧[ F ] W ≡ 𝟎[ F ]) × (U ∨[ F ] W ≡ 𝟏[ F ]))
+  β : (W : ⟨ F ⟩) → is-prop ((U ∧[ F ] W ＝ 𝟎[ F ]) × (U ∨[ F ] W ＝ 𝟏[ F ]))
   β W = ×-is-prop carrier-of-[ P ]-is-set carrier-of-[ P ]-is-set
 
-  γ : W₁ ≡ W₂
-  γ = W₁                                  ≡⟨ (𝟏-right-unit-of-∧ F W₁) ⁻¹       ⟩
-      W₁ ∧[ F ] 𝟏[ F ]                    ≡⟨ ap (λ - → meet-of F W₁ -) (q₂ ⁻¹) ⟩
-      W₁ ∧[ F ] (U ∨[ F ] W₂)             ≡⟨ binary-distributivity F W₁ U W₂   ⟩
-      (W₁ ∧[ F ] U) ∨[ F ] (W₁ ∧[ F ] W₂) ≡⟨ i                                 ⟩
-      (U ∧[ F ] W₁) ∨[ F ] (W₁ ∧[ F ] W₂) ≡⟨ ii                                ⟩
-      𝟎[ F ] ∨[ F ] (W₁ ∧[ F ] W₂)        ≡⟨ iii                               ⟩
-      (U ∧[ F ] W₂) ∨[ F ] (W₁ ∧[ F ] W₂) ≡⟨ iv                                ⟩
-      (W₂ ∧[ F ] U) ∨[ F ] (W₁ ∧[ F ] W₂) ≡⟨ v                                 ⟩
-      (W₂ ∧[ F ] U) ∨[ F ] (W₂ ∧[ F ] W₁) ≡⟨ vi                                ⟩
-      W₂ ∧[ F ] (U ∨[ F ] W₁)             ≡⟨ vii                               ⟩
-      W₂ ∧[ F ] 𝟏[ F ]                    ≡⟨ viii                              ⟩
+  γ : W₁ ＝ W₂
+  γ = W₁                                  ＝⟨ (𝟏-right-unit-of-∧ F W₁) ⁻¹       ⟩
+      W₁ ∧[ F ] 𝟏[ F ]                    ＝⟨ ap (λ - → meet-of F W₁ -) (q₂ ⁻¹) ⟩
+      W₁ ∧[ F ] (U ∨[ F ] W₂)             ＝⟨ binary-distributivity F W₁ U W₂   ⟩
+      (W₁ ∧[ F ] U) ∨[ F ] (W₁ ∧[ F ] W₂) ＝⟨ i                                 ⟩
+      (U ∧[ F ] W₁) ∨[ F ] (W₁ ∧[ F ] W₂) ＝⟨ ii                                ⟩
+      𝟎[ F ] ∨[ F ] (W₁ ∧[ F ] W₂)        ＝⟨ iii                               ⟩
+      (U ∧[ F ] W₂) ∨[ F ] (W₁ ∧[ F ] W₂) ＝⟨ iv                                ⟩
+      (W₂ ∧[ F ] U) ∨[ F ] (W₁ ∧[ F ] W₂) ＝⟨ v                                 ⟩
+      (W₂ ∧[ F ] U) ∨[ F ] (W₂ ∧[ F ] W₁) ＝⟨ vi                                ⟩
+      W₂ ∧[ F ] (U ∨[ F ] W₁)             ＝⟨ vii                               ⟩
+      W₂ ∧[ F ] 𝟏[ F ]                    ＝⟨ viii                              ⟩
       W₂                                  ∎
        where
         i    = ap (λ - → - ∨[ F ] (W₁ ∧[ F ] W₂)) (∧[ F ]-is-commutative W₁ U)
@@ -353,10 +353,10 @@ clopenness-equivalent-to-well-inside-itself F U =
 𝟎-is-clopen : (F : Frame 𝓤 𝓥 𝓦) → 𝟎[ F ] ⋜₀[ F ] 𝟎[ F ]
 𝟎-is-clopen F = 𝟏[ F ] , β , γ
  where
-  β : 𝟎[ F ] ∧[ F ] 𝟏[ F ] ≡ 𝟎[ F ]
+  β : 𝟎[ F ] ∧[ F ] 𝟏[ F ] ＝ 𝟎[ F ]
   β = 𝟎-left-annihilator-for-∧ F 𝟏[ F ]
 
-  γ : 𝟎[ F ] ∨[ F ] 𝟏[ F ] ≡ 𝟏[ F ]
+  γ : 𝟎[ F ] ∨[ F ] 𝟏[ F ] ＝ 𝟏[ F ]
   γ = 𝟏-right-annihilator-for-∨ F 𝟎[ F ]
 
 \end{code}
@@ -384,32 +384,32 @@ well-inside-is-join-stable F {U₁} {U₂} {V} =
    γ : U₁ ⋜₀[ F ] V → U₂ ⋜₀[ F ] V → ((U₁ ∨[ F ] U₂) ⋜[ F ] V) holds
    γ (W₁ , c₁ , d₁) (W₂ , c₂ , d₂) = ∣ (W₁ ∧[ F ] W₂) , c , d ∣
     where
-     δ : (W₁ ∧[ F ] W₂) ∧[ F ] U₂ ≡ 𝟎[ F ]
-     δ = (W₁ ∧[ F ] W₂) ∧[ F ] U₂  ≡⟨ (∧[ F ]-is-associative W₁ W₂ U₂) ⁻¹ ⟩
-         W₁ ∧[ F ] (W₂ ∧[ F ] U₂)  ≡⟨ †                                   ⟩
-         W₁ ∧[ F ] (U₂ ∧[ F ] W₂)  ≡⟨ ap (λ - → meet-of F W₁ -) c₂        ⟩
-         W₁ ∧[ F ] 𝟎[ F ]          ≡⟨ 𝟎-right-annihilator-for-∧ F W₁      ⟩
+     δ : (W₁ ∧[ F ] W₂) ∧[ F ] U₂ ＝ 𝟎[ F ]
+     δ = (W₁ ∧[ F ] W₂) ∧[ F ] U₂  ＝⟨ (∧[ F ]-is-associative W₁ W₂ U₂) ⁻¹ ⟩
+         W₁ ∧[ F ] (W₂ ∧[ F ] U₂)  ＝⟨ †                                   ⟩
+         W₁ ∧[ F ] (U₂ ∧[ F ] W₂)  ＝⟨ ap (λ - → meet-of F W₁ -) c₂        ⟩
+         W₁ ∧[ F ] 𝟎[ F ]          ＝⟨ 𝟎-right-annihilator-for-∧ F W₁      ⟩
          𝟎[ F ]                    ∎
           where
            † = ap (λ - → W₁ ∧[ F ] -) (∧[ F ]-is-commutative W₂ U₂)
 
-     ε : ((W₁ ∧[ F ] W₂) ∧[ F ] U₁) ≡ 𝟎[ F ]
-     ε = (W₁ ∧[ F ] W₂) ∧[ F ] U₁  ≡⟨ †                                   ⟩
-         (W₂ ∧[ F ] W₁) ∧[ F ] U₁  ≡⟨ (∧[ F ]-is-associative W₂ W₁ U₁) ⁻¹ ⟩
-         W₂ ∧[ F ] (W₁ ∧[ F ] U₁)  ≡⟨ ‡                                   ⟩
-         W₂ ∧[ F ] (U₁ ∧[ F ] W₁)  ≡⟨ ap (λ - → W₂ ∧[ F ] -) c₁           ⟩
-         W₂ ∧[ F ] 𝟎[ F ]          ≡⟨ 𝟎-right-annihilator-for-∧ F W₂      ⟩
+     ε : ((W₁ ∧[ F ] W₂) ∧[ F ] U₁) ＝ 𝟎[ F ]
+     ε = (W₁ ∧[ F ] W₂) ∧[ F ] U₁  ＝⟨ †                                   ⟩
+         (W₂ ∧[ F ] W₁) ∧[ F ] U₁  ＝⟨ (∧[ F ]-is-associative W₂ W₁ U₁) ⁻¹ ⟩
+         W₂ ∧[ F ] (W₁ ∧[ F ] U₁)  ＝⟨ ‡                                   ⟩
+         W₂ ∧[ F ] (U₁ ∧[ F ] W₁)  ＝⟨ ap (λ - → W₂ ∧[ F ] -) c₁           ⟩
+         W₂ ∧[ F ] 𝟎[ F ]          ＝⟨ 𝟎-right-annihilator-for-∧ F W₂      ⟩
          𝟎[ F ]                    ∎
           where
            † = ap (λ - → - ∧[ F ] U₁) (∧[ F ]-is-commutative W₁ W₂)
            ‡ = ap (λ - → W₂ ∧[ F ] -) (∧[ F ]-is-commutative W₁ U₁)
 
-     c : ((U₁ ∨[ F ] U₂) ∧[ F ] (W₁ ∧[ F ] W₂)) ≡ 𝟎[ F ]
-     c = (U₁ ∨[ F ] U₂) ∧[ F ] (W₁ ∧[ F ] W₂)                          ≡⟨ i    ⟩
-         (W₁ ∧[ F ] W₂) ∧[ F ] (U₁ ∨[ F ] U₂)                          ≡⟨ ii   ⟩
-         ((W₁ ∧[ F ] W₂) ∧[ F ] U₁) ∨[ F ] ((W₁ ∧[ F ] W₂) ∧[ F ] U₂)  ≡⟨ iii  ⟩
-         ((W₁ ∧[ F ] W₂) ∧[ F ] U₁) ∨[ F ] 𝟎[ F ]                      ≡⟨ iv   ⟩
-         (W₁ ∧[ F ] W₂) ∧[ F ] U₁                                      ≡⟨ ε    ⟩
+     c : ((U₁ ∨[ F ] U₂) ∧[ F ] (W₁ ∧[ F ] W₂)) ＝ 𝟎[ F ]
+     c = (U₁ ∨[ F ] U₂) ∧[ F ] (W₁ ∧[ F ] W₂)                          ＝⟨ i    ⟩
+         (W₁ ∧[ F ] W₂) ∧[ F ] (U₁ ∨[ F ] U₂)                          ＝⟨ ii   ⟩
+         ((W₁ ∧[ F ] W₂) ∧[ F ] U₁) ∨[ F ] ((W₁ ∧[ F ] W₂) ∧[ F ] U₂)  ＝⟨ iii  ⟩
+         ((W₁ ∧[ F ] W₂) ∧[ F ] U₁) ∨[ F ] 𝟎[ F ]                      ＝⟨ iv   ⟩
+         (W₁ ∧[ F ] W₂) ∧[ F ] U₁                                      ＝⟨ ε    ⟩
          𝟎[ F ]                                                        ∎
           where
            i   = ∧[ F ]-is-commutative (U₁ ∨[ F ] U₂) (W₁ ∧[ F ] W₂)
@@ -417,11 +417,11 @@ well-inside-is-join-stable F {U₁} {U₂} {V} =
            iii = ap (λ - → ((W₁ ∧[ F ] W₂) ∧[ F ] U₁) ∨[ F ] -) δ
            iv  = 𝟎-left-unit-of-∨ F ((W₁ ∧[ F ] W₂) ∧[ F ] U₁)
 
-     d : V ∨[ F ] (W₁ ∧[ F ] W₂) ≡ 𝟏[ F ]
-     d = V ∨[ F ] (W₁ ∧[ F ] W₂)            ≡⟨ i   ⟩
-         (V ∨[ F ] W₁) ∧[ F ] (V ∨[ F ] W₂) ≡⟨ ii  ⟩
-         𝟏[ F ] ∧[ F ] (V ∨[ F ] W₂)        ≡⟨ iii ⟩
-         𝟏[ F ] ∧[ F ] 𝟏[ F ]               ≡⟨ iv  ⟩
+     d : V ∨[ F ] (W₁ ∧[ F ] W₂) ＝ 𝟏[ F ]
+     d = V ∨[ F ] (W₁ ∧[ F ] W₂)            ＝⟨ i   ⟩
+         (V ∨[ F ] W₁) ∧[ F ] (V ∨[ F ] W₂) ＝⟨ ii  ⟩
+         𝟏[ F ] ∧[ F ] (V ∨[ F ] W₂)        ＝⟨ iii ⟩
+         𝟏[ F ] ∧[ F ] 𝟏[ F ]               ＝⟨ iv  ⟩
          𝟏[ F ] ∎
           where
            i   = binary-distributivity-op F V W₁ W₂
@@ -471,7 +471,7 @@ well-inside-is-join-stable F {U₁} {U₂} {V} =
                          → (U : ⟨ F ⟩)
                          → (S : Fam 𝓦 ⟨ F ⟩)
                          → (is-directed (poset-of F) S) holds
-                         → U ∨[ F ] (⋁[ F ] S) ≡ ⋁[ F ] ⁅ U ∨[ F ] Sᵢ ∣ Sᵢ ε S ⁆
+                         → U ∨[ F ] (⋁[ F ] S) ＝ ⋁[ F ] ⁅ U ∨[ F ] Sᵢ ∣ Sᵢ ε S ⁆
 ∨-is-scott-continuous-eq F U S dir =
  ⋁[ F ]-unique ⁅ U ∨[ F ] Sᵢ ∣ Sᵢ ε S ⁆ (U ∨[ F ] (⋁[ F ] S)) (γ , δ)
   where
@@ -493,10 +493,10 @@ well-inside-is-join-stable F {U₁} {U₂} {V} =
    T = ⁅ W ∨[ F ] Sᵢ ∣ Sᵢ ε S ⁆
 
    δ : (𝟏[ F ] ≤ (⋁[ F ] T)) holds
-   δ = 𝟏[ F ]                           ≡⟨ c₂ ⁻¹                              ⟩ₚ
+   δ = 𝟏[ F ]                           ＝⟨ c₂ ⁻¹                              ⟩ₚ
        V ∨[ F ] W                       ≤⟨ ∨[ F ]-left-monotone q             ⟩
-       (⋁[ F ] S) ∨[ F ] W              ≡⟨ ∨[ F ]-is-commutative (⋁[ F ] S) W ⟩ₚ
-       W ∨[ F ] (⋁[ F ] S)              ≡⟨ ∨-is-scott-continuous-eq F W S d   ⟩ₚ
+       (⋁[ F ] S) ∨[ F ] W              ＝⟨ ∨[ F ]-is-commutative (⋁[ F ] S) W ⟩ₚ
+       W ∨[ F ] (⋁[ F ] S)              ＝⟨ ∨-is-scott-continuous-eq F W S d   ⟩ₚ
        ⋁[ F ] ⁅ W ∨[ F ] Sᵢ ∣ Sᵢ ε S ⁆  ■
 
    ε : ((W ∨[ F ] (⋁[ F ] S)) ≤ (⋁[ F ] T)) holds
@@ -531,7 +531,7 @@ The family `T` we defined is also directed by the directedness of `S`.
    θ (i , p) = ∣ i , well-inside-implies-below F U (S [ i ]) ∣ W , c₁ , ι ∣ ∣
     where
      η = 𝟏[ F ]              ≤⟨ p                                 ⟩
-         W ∨[ F ] (S [ i ])  ≡⟨ ∨[ F ]-is-commutative W (S [ i ]) ⟩ₚ
+         W ∨[ F ] (S [ i ])  ＝⟨ ∨[ F ]-is-commutative W (S [ i ]) ⟩ₚ
          (S [ i ]) ∨[ F ] W  ■
 
      ι = only-𝟏-is-above-𝟏 F ((S [ i ]) ∨[ F ] W) η
@@ -857,7 +857,7 @@ cofinal-implies-join-covered F R S φ = ⋁[ F ]-least R ((⋁[ F ] S) , β)
 bicofinal-implies-same-join : (F : Frame 𝓤 𝓥 𝓦) (R S : Fam 𝓦 ⟨ F ⟩)
                             → cofinal-in F R S holds
                             → cofinal-in F S R holds
-                            → ⋁[ F ] R ≡ ⋁[ F ] S
+                            → ⋁[ F ] R ＝ ⋁[ F ] S
 bicofinal-implies-same-join F R S φ ψ =
  ≤-is-antisymmetric
   (poset-of F)
@@ -881,19 +881,19 @@ spectral-yoneda {𝓦 = 𝓦} F σ U V χ =
 
    γ : spectralᴰ F → (U ≤[ poset-of F ] V) holds
    γ (ℬ , υ , φ , ψ) =
-    U                            ≡⟨ I  ⟩ₚ
+    U                            ＝⟨ I  ⟩ₚ
     ⋁[ F ] ⁅ ℬ [ i ] ∣ i ε ℐ ⁆   ≤⟨ ii ⟩
     V                            ■
     where
      ℐ : Fam 𝓦 (index ℬ)
      ℐ = pr₁ (υ U)
 
-     I : U ≡ ⋁[ F ] ⁅ ℬ [ i ] ∣ i ε ℐ ⁆
+     I : U ＝ ⋁[ F ] ⁅ ℬ [ i ] ∣ i ε ℐ ⁆
      I = ⋁[ F ]-unique ⁅ ℬ [ i ] ∣ i ε ℐ ⁆ U (pr₂ (υ U))
 
      ϑ : (i : index ℐ) → ((ℬ [ ℐ [ i ] ]) ≤[ poset-of F ] U) holds
      ϑ i = ℬ [ ℐ [ i ] ]               ≤⟨ ⋁[ F ]-upper ⁅ ℬ [ i ] ∣ i ε ℐ ⁆ i ⟩
-           ⋁[ F ] ⁅ ℬ [ i ] ∣ i ε ℐ ⁆  ≡⟨ I ⁻¹                               ⟩ₚ
+           ⋁[ F ] ⁅ ℬ [ i ] ∣ i ε ℐ ⁆  ＝⟨ I ⁻¹                               ⟩ₚ
            U                           ■
 
      ξ : (V is-an-upper-bound-of ⁅ ℬ [ i ] ∣ i ε ℐ ⁆) holds
@@ -915,7 +915,7 @@ compacts-are-basic-in-spectralᴰ-frames : (F : Frame 𝓤 𝓥 𝓦)
                                           ℬ↑ = directify F ℬ
                                           I  = index ℬ↑
                                          in
-                                          ∥ Σ i ꞉ I , U ≡ ℬ↑ [ i ] ∥
+                                          ∥ Σ i ꞉ I , U ＝ ℬ↑ [ i ] ∥
 compacts-are-basic-in-spectralᴰ-frames {𝓦 = 𝓦} F σ U κ =
  ∥∥-rec ∥∥-is-prop γ (κ ⁅ ℬ↑ [ i ] ∣ i ε ℐ ⁆ δ c)
   where
@@ -942,12 +942,12 @@ compacts-are-basic-in-spectralᴰ-frames {𝓦 = 𝓦} F σ U κ =
    c = reflexivity+ (poset-of F) (covers F ℬ↑ b↑ U)
 
    γ : (Σ k ꞉ index ℐ , (U ≤[ poset-of F ] (ℬ↑ [ ℐ [ k ] ])) holds)
-     → ∥ Σ i ꞉ index ℬ↑ , U ≡ ℬ↑ [ i ] ∥
+     → ∥ Σ i ꞉ index ℬ↑ , U ＝ ℬ↑ [ i ] ∥
    γ (k , p) = ∣ ℐ [ k ] , ≤-is-antisymmetric (poset-of F) p β ∣
     where
      β : ((ℬ↑ [ ℐ [ k ] ]) ≤[ poset-of F ] U) holds
      β = ℬ↑ [ ℐ [ k ] ]              ≤⟨ ⋁[ F ]-upper ⁅ ℬ↑ [ i ] ∣ i ε ℐ ⁆ k ⟩
-         ⋁[ F ] ⁅ ℬ↑ [ i ] ∣ i ε ℐ ⁆ ≡⟨ covers F ℬ↑ b↑ U ⁻¹                 ⟩ₚ
+         ⋁[ F ] ⁅ ℬ↑ [ i ] ∣ i ε ℐ ⁆ ＝⟨ covers F ℬ↑ b↑ U ⁻¹                 ⟩ₚ
          U                           ■
 
 -- TODO: it's not clear if this lemma will be needed. Think more about this and

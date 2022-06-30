@@ -178,9 +178,9 @@ We show that every ideal I is the supremum of {↓ x ∣ x ∈ I}.
        v : ↓-of-ideal (I , ι) (j , q) ⊑ ↓-of-ideal (I , ι) (x , xI)
        v y m = ≺-trans m lⱼ
 
- Idl-∐-≡ : (I : Idl)
-         → I ≡ ∐ Idl-DCPO {_} {↓-of-ideal I} (↓-of-ideal-is-directed I)
- Idl-∐-≡ I = antisymmetry Idl-DCPO I (∐ Idl-DCPO {_} {α} δ) l₁ l₂
+ Idl-∐-＝ : (I : Idl)
+         → I ＝ ∐ Idl-DCPO {_} {↓-of-ideal I} (↓-of-ideal-is-directed I)
+ Idl-∐-＝ I = antisymmetry Idl-DCPO I (∐ Idl-DCPO {_} {α} δ) l₁ l₂
   where
    α : 𝕋 (carrier I) → Idl
    α = ↓-of-ideal I
@@ -215,7 +215,7 @@ We give two characterizations of the way-below relation in Idl, cf. Proposition
    γ ((j , p) , l) = j , (p , l)
    g : ∃ j ꞉ 𝕋 (carrier J) , I ⊑⟨ Idl-DCPO ⟩ (↓-of-ideal J j)
    g = u (𝕋 (carrier J)) (↓-of-ideal J) (↓-of-ideal-is-directed J)
-       (≡-to-⊑ Idl-DCPO (Idl-∐-≡ J))
+       (＝-to-⊑ Idl-DCPO (Idl-∐-＝ J))
 
  Idl-≪-in-terms-of-⊑-converse : (I J : Idl)
                               → ∃ x ꞉ X , x ∈ᵢ J × I ⊑⟨ Idl-DCPO ⟩ ↓ x
@@ -513,7 +513,7 @@ If _≺_ is reflexive, then the mediating map makes the obvious triangle commute
    where
     δ : is-Directed 𝓓 (f ∘ pr₁)
     δ = Idl-mediating-directed (↓ x)
-    γ : ∐ 𝓓 δ ≡ f x
+    γ : ∐ 𝓓 δ ＝ f x
     γ = antisymmetry 𝓓 (∐ 𝓓 δ) (f x) a b
      where
       a : ∐ 𝓓 δ ⊑⟨ 𝓓 ⟩ f x

@@ -107,7 +107,7 @@ following construction is performed in the module SquashedCantor.
     h = Σ-reindex-retract f (retraction-has-section retract-𝟙+𝟙-of-𝟚)
 
     l : (i : 𝟚) → ⟪ cases (λ _ → τ) (λ _ → υ) (f i) ⟫
-                ≡ 𝟚-cases ⟪ τ ⟫ ⟪ υ ⟫ i
+                ＝ 𝟚-cases ⟪ τ ⟫ ⟪ υ ⟫ i
     l ₀ = refl
     l ₁ = refl
 
@@ -163,14 +163,14 @@ More Cantor-retract properties are in the module SquashedCantor.
     s : (z : ℕ + 𝟙) → ((λ _ → ℕ) / inl) z → ℕ
     s (inl n) φ = φ (n , refl)
     s (inr *) φ = 0 -- Any natural number will do here.
-    rs : (z : ℕ + 𝟙) (φ : ((λ _ → ℕ) / inl) z) → r z (s z φ) ≡ φ
+    rs : (z : ℕ + 𝟙) (φ : ((λ _ → ℕ) / inl) z) → r z (s z φ) ＝ φ
     rs (inl n) φ = dfunext fe₀ g
      where
-      g : (w : fiber inl (inl n)) → r (inl n) (s (inl n) φ) w ≡ φ w
+      g : (w : fiber inl (inl n)) → r (inl n) (s (inl n) φ) w ＝ φ w
       g (n , refl) = refl
     rs (inr *) φ = dfunext fe₀ g
      where
-      g : (w : fiber inl (inr *)) → r (inr *) (s (inr *) φ) w ≡ φ w
+      g : (w : fiber inl (inr *)) → r (inr *) (s (inr *) φ) w ＝ φ w
       g (k , p) = 𝟘-elim (+disjoint p)
 
 \end{code}
@@ -333,14 +333,14 @@ pair-fun-is-order-reflecting τ υ A B f g φ e γ (x , a) (y , b) (inr (r , l))
   e' : is-equiv (ap f)
   e' = embedding-embedding' f e x y
 
-  c : f x ≡ f y → x ≡ y
+  c : f x ＝ f y → x ＝ y
   c = inverse (ap f) e'
 
-  η : (q : f x ≡ f y) → ap f (c q) ≡ q
+  η : (q : f x ＝ f y) → ap f (c q) ＝ q
   η = retract-condition (ap f , equivs-have-sections (ap f) e')
 
   i : transport (λ - → ⟪ B (f -) ⟫) (c r) (g x a)
-    ≡ transport (λ - → ⟪ B - ⟫) (ap f (c r)) (g x a)
+    ＝ transport (λ - → ⟪ B - ⟫) (ap f (c r)) (g x a)
   i = transport-ap (λ - → ⟪ B - ⟫) f (c r)
 
   j : transport (λ - → ⟪ B - ⟫) (ap f (c r)) (g x a) ≺⟪ B (f y) ⟫ (g y b)
@@ -349,7 +349,7 @@ pair-fun-is-order-reflecting τ υ A B f g φ e γ (x , a) (y , b) (inr (r , l))
   k : transport (λ - → ⟪ B (f -) ⟫) (c r) (g x a) ≺⟪ B (f y) ⟫ (g y b)
   k = transport⁻¹ (λ - → - ≺⟪ B (f y) ⟫ (g y b)) i j
 
-  h : {x y : ⟪ τ ⟫} (s : x ≡ y) {a : ⟪ A x ⟫} {b : ⟪ A y ⟫}
+  h : {x y : ⟪ τ ⟫} (s : x ＝ y) {a : ⟪ A x ⟫} {b : ⟪ A y ⟫}
     → transport (λ - → ⟪ B (f -) ⟫) s (g x a) ≺⟪ B (f y) ⟫ (g y b)
     → transport (λ - → ⟪ A - ⟫) s a ≺⟪ A y ⟫ b
   h {x} refl {a} {b} = γ x a b
@@ -376,20 +376,20 @@ over-ι-map-is-order-reflecting τ (inl n) x y ((m , p) , l) = (n , refl) , q
   y' : ⟪ τ n ⟫
   y' = over-ι-map (λ n → ⟪ τ n ⟫) (inl n) y (n , refl)
 
-  r : n , refl ≡ m , p
+  r : n , refl ＝ m , p
   r = ℕ-to-ℕ∞-is-embedding fe₀ (ι n) (n , refl) (m , p)
 
   t : ⟪ τ n ⟫ → ⟪ τ m ⟫
   t = transport (λ - → ⟪ τ (pr₁ -) ⟫) r
 
-  tr : {w t : fiber ι (ι n)} (r : w ≡ t)
+  tr : {w t : fiber ι (ι n)} (r : w ＝ t)
      → is-order-reflecting (τ (pr₁ w)) (τ (pr₁ t)) ((transport (λ - → ⟪ τ (pr₁ -) ⟫) r))
   tr refl x y l = l
 
-  a : t x' ≡ over-ι-map (λ n → ⟪ τ n ⟫) (inl n) x (m , p)
+  a : t x' ＝ over-ι-map (λ n → ⟪ τ n ⟫) (inl n) x (m , p)
   a = apd (over-ι-map (λ n → ⟪ τ n ⟫) (inl n) x) r
 
-  b : t y' ≡ over-ι-map (λ n → ⟪ τ n ⟫) (inl n) y (m , p)
+  b : t y' ＝ over-ι-map (λ n → ⟪ τ n ⟫) (inl n) y (m , p)
   b = apd (over-ι-map (λ n → ⟪ τ n ⟫) (inl n) y) r
 
   c : t x' ≺⟪ τ m ⟫ t y'
@@ -466,9 +466,9 @@ Overᵒ-is-order-reflecting τ υ f p (inr *) x y ((n , q) , l) = 𝟘-elim (+di
 𝟙ᵒ-has-infs-of-complemented-subsets : has-infs-of-complemented-subsets (𝟙ᵒ {𝓤})
 𝟙ᵒ-has-infs-of-complemented-subsets p = ⋆ , f , g , h
  where
-  f : (Σ x ꞉ 𝟙 , p x ≡ ₀) → p ⋆ ≡ ₀
+  f : (Σ x ꞉ 𝟙 , p x ＝ ₀) → p ⋆ ＝ ₀
   f (⋆ , r) = r
-  g : (x : 𝟙) → p x ≡ ₀ → ⋆ ≼⟪ 𝟙ᵒ ⟫ x
+  g : (x : 𝟙) → p x ＝ ₀ → ⋆ ≼⟪ 𝟙ᵒ ⟫ x
   g ⋆ r a = 𝟘-elim a
   h : (x : 𝟙) → root-lower-bound (λ x y → x ≼⟪ 𝟙ᵒ ⟫ y) p x
     → x ≼⟪ 𝟙ᵒ ⟫ ⋆
@@ -479,14 +479,14 @@ Overᵒ-is-order-reflecting τ υ f p (inr *) x y ((n , q) , l) = 𝟘-elim (+di
  where
   _≤_ : 𝟙 + 𝟙 → 𝟙 + 𝟙 → 𝓤₀ ̇
   x ≤ y = x ≼⟪ 𝟚ᵒ ⟫ y
-  φ : (r : p (inl ⋆) ≡ ₀) → Σ x ꞉ 𝟙 + 𝟙 , conditional-root _≤_ p x × roots-infimum _≤_ p x
+  φ : (r : p (inl ⋆) ＝ ₀) → Σ x ꞉ 𝟙 + 𝟙 , conditional-root _≤_ p x × roots-infimum _≤_ p x
   φ r = inl ⋆ , f , g , h
    where
-    f : (Σ x ꞉ 𝟙 + 𝟙 , p x ≡ ₀) → p (inl ⋆) ≡ ₀
+    f : (Σ x ꞉ 𝟙 + 𝟙 , p x ＝ ₀) → p (inl ⋆) ＝ ₀
     f (inl ⋆ , s) = s
     f (inr ⋆ , s) = r
 
-    g : (x : 𝟙 + 𝟙) → p x ≡ ₀ → inl ⋆ ≤ x
+    g : (x : 𝟙 + 𝟙) → p x ＝ ₀ → inl ⋆ ≤ x
     g (inl ⋆) s l = 𝟘-elim l
     g (inr ⋆) s l = 𝟘-elim l
 
@@ -494,14 +494,14 @@ Overᵒ-is-order-reflecting τ υ f p (inr *) x y ((n , q) , l) = 𝟘-elim (+di
     h (inl ⋆) φ l = 𝟘-elim l
     h (inr ⋆) φ ⋆ = φ (inl ⋆) r ⋆
 
-  γ : (r : p (inl ⋆) ≡ ₁) → Σ x ꞉ 𝟙 + 𝟙 , conditional-root _≤_ p x × roots-infimum _≤_ p x
+  γ : (r : p (inl ⋆) ＝ ₁) → Σ x ꞉ 𝟙 + 𝟙 , conditional-root _≤_ p x × roots-infimum _≤_ p x
   γ r = inr ⋆ , f , g , h
    where
-    f : (Σ x ꞉ 𝟙 + 𝟙 , p x ≡ ₀) → p (inr ⋆) ≡ ₀
+    f : (Σ x ꞉ 𝟙 + 𝟙 , p x ＝ ₀) → p (inr ⋆) ＝ ₀
     f (inl ⋆ , s) = 𝟘-elim (zero-is-not-one (s ⁻¹ ∙ r))
     f (inr ⋆ , s) = s
 
-    g : (x : 𝟙 + 𝟙) → p x ≡ ₀ → inr ⋆ ≤ x
+    g : (x : 𝟙 + 𝟙) → p x ＝ ₀ → inr ⋆ ≤ x
     g (inl ⋆) s l = 𝟘-elim (zero-is-not-one (s ⁻¹ ∙ r))
     g (inr ⋆) s l = 𝟘-elim l
 
@@ -530,7 +530,7 @@ different, logically equivalent orders.
 
   ≤-prop-valued : (z t : ⟪ ∑ τ υ ⟫) → is-prop (z ≤ t)
   ≤-prop-valued (x , a) (y , b) (p , u) (q , v) =
-   to-Σ-≡
+   to-Σ-＝
      (≼-prop-valued τ x y p q ,
      dfunext fe₀ (λ r → ≼-prop-valued (υ y) _ _ _ _))
 
@@ -549,10 +549,10 @@ different, logically equivalent orders.
   j : (z t : ⟪ ∑ τ υ ⟫) → z ≼⟪ ∑ τ υ ⟫ t → z ≤ t
   j (x , a) (y , b) = forth y x b a
 
-  k : (z t : ⟪ ∑ τ υ ⟫) → z ≤ t ≡ z ≼⟪ ∑ τ υ ⟫ t
+  k : (z t : ⟪ ∑ τ υ ⟫) → z ≤ t ＝ z ≼⟪ ∑ τ υ ⟫ t
   k z t = pe (≤-prop-valued z t) (≼-prop-valued (∑ τ υ) z t) (i z t) (j z t)
 
-  l : _≤_ ≡ (λ z t → z ≼⟪ ∑ τ υ ⟫ t)
+  l : _≤_ ＝ (λ z t → z ≼⟪ ∑ τ υ ⟫ t)
   l = dfunext (fe 𝓤₀ 𝓤₁) λ z → dfunext (fe 𝓤₀ 𝓤₁) (k z)
 
   γ : has-infs-of-complemented-subsets (∑ τ υ)
@@ -561,7 +561,7 @@ different, logically equivalent orders.
 ℕ∞ᵒ-has-infs-of-complemented-subsets : propext 𝓤₀ → has-infs-of-complemented-subsets ℕ∞ᵒ
 ℕ∞ᵒ-has-infs-of-complemented-subsets pe = transport has-inf p (ℕ∞-has-inf fe₀)
  where
-  p : _≼ℕ∞_ ≡ tunderlying-rorder ℕ∞ᵒ
+  p : _≼ℕ∞_ ＝ tunderlying-rorder ℕ∞ᵒ
   p = dfunext (fe 𝓤₀ 𝓤₁)
        (λ u → dfunext (fe 𝓤₀ 𝓤₁)
                 (λ v → pe (≼-is-prop-valued fe₀ u v)
