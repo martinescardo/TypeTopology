@@ -34,22 +34,22 @@ involutive : {X : 𝓥 ̇ } → (f : X → X) → 𝓥 ̇
 involutive f = ∀ x → f (f x) ≡ x
 
 left-neutral : {X : 𝓤 ̇ } → X → (X → X → X) → 𝓤 ̇
-left-neutral e _·_ = ∀ x → e · x ≡ x
+left-neutral e _·_ = ∀ x → e · x ＝ x
 
 right-neutral : {X : 𝓤 ̇ } → X → (X → X → X) → 𝓤 ̇
-right-neutral e _·_ = ∀ x → x · e ≡ x
+right-neutral e _·_ = ∀ x → x · e ＝ x
 
 associative : {X : 𝓤 ̇ } → (X → X → X) → 𝓤 ̇
-associative _·_ = ∀ x y z → (x · y) · z ≡ x · (y · z)
+associative _·_ = ∀ x y z → (x · y) · z ＝ x · (y · z)
 
 commutative : {X : 𝓤 ̇ } → (X → X → X) → 𝓤 ̇
-commutative _·_ = ∀ x y → (x · y) ≡ (y · x)
+commutative _·_ = ∀ x y → (x · y) ＝ (y · x)
 
 left-cancellable : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
-left-cancellable f = ∀ {x x'} → f x ≡ f x' → x ≡ x'
+left-cancellable f = ∀ {x x'} → f x ＝ f x' → x ＝ x'
 
 left-cancellable' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
-left-cancellable' f = ∀ x x' → f x ≡ f x' → x ≡ x'
+left-cancellable' f = ∀ x x' → f x ＝ f x' → x ＝ x'
 
 _⇔_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
 A ⇔ B = (A → B) × (B → A)
@@ -100,7 +100,7 @@ This is used for efficiency as a substitute for lazy "let" (or "where"):
 case_of_ : {A : 𝓤 ̇ } {B : A → 𝓥 ̇ } → (a : A) → ((a : A) → B a) → B a
 case x of f = f x
 
-Case_of_ : {A : 𝓤 ̇ } {B : A → 𝓥 ̇ } → (a : A) → ((x : A) → a ≡ x → B a) → B a
+Case_of_ : {A : 𝓤 ̇ } {B : A → 𝓥 ̇ } → (a : A) → ((x : A) → a ＝ x → B a) → B a
 Case x of f = f x refl
 
 {-# NOINLINE case_of_ #-}
@@ -163,7 +163,7 @@ Get rid of this:
 \begin{code}
 
 Σ! : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
-Σ! {𝓤} {𝓥} {X} A = (Σ x ꞉ X , A x) × ((x x' : X) → A x → A x' → x ≡ x')
+Σ! {𝓤} {𝓥} {X} A = (Σ x ꞉ X , A x) × ((x x' : X) → A x → A x' → x ＝ x')
 
 Sigma! : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
 Sigma! X A = Σ! A

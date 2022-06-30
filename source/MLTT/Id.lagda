@@ -9,7 +9,7 @@ module MLTT.Id where
 open import MLTT.Universes
 open import MLTT.Pi
 
-open import MLTT.Identity-Type renaming (_≡_ to infix 0 _≡_) public
+open import MLTT.Identity-Type renaming (_＝_ to infix 0 _＝_) public
 
 𝓻𝓮𝒻𝓵 : {X : 𝓤 ̇ } (x : X) → x ≡ x
 𝓻𝓮𝒻𝓵 x = refl {_} {_} {x}
