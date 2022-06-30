@@ -1067,30 +1067,19 @@ compacts-are-basic-in-spectralᴰ-frames {𝓦 = 𝓦} F σ@(_ , β , _) U κ =
          ⋁[ F ] ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆   ≤⟨ p₂                                 ⟩
          U                            ■
 
--- compacts-closed-under-∧-in-spectral-frames : (F : Frame 𝓤 𝓥 𝓦)
---                                            → is-spectral F holds
---                                            → (K₁ K₂ : ⟨ F ⟩)
---                                            → is-compact-open F K₁ holds
---                                            → is-compact-open F K₂ holds
---                                            → is-compact-open F (K₁ ∧[ F ] K₂) holds
--- compacts-closed-under-∧-in-spectral-frames F σ K₁ K₂ κ₁ κ₂ = ∥∥-rec † γ σ
---   where
---    † : is-prop (is-compact-open F (K₁ ∧[ F ] K₂) holds)
---    † = holds-is-prop (is-compact-open F (K₁ ∧[ F ] K₂))
+compacts-closed-under-∧-in-spectral-frames : (F : Frame 𝓤 𝓥 𝓦)
+                                           → is-spectral F holds
+                                           → (K₁ K₂ : ⟨ F ⟩)
+                                           → is-compact-open F K₁ holds
+                                           → is-compact-open F K₂ holds
+                                           → is-compact-open F (K₁ ∧[ F ] K₂) holds
+compacts-closed-under-∧-in-spectral-frames F σ K₁ K₂ κ₁ κ₂ = ∥∥-rec † γ σ
+  where
+   † : is-prop (is-compact-open F (K₁ ∧[ F ] K₂) holds)
+   † = holds-is-prop (is-compact-open F (K₁ ∧[ F ] K₂))
 
---    γ : spectralᴰ F → is-compact-open F (K₁ ∧[ F ] K₂) holds
---    γ σᴰ@(ℬ , φ , _ , ψ) = ∥∥-rec₂ † β ι₁ ι₂
---     where
---      ι₁ : ∥ Σ i ꞉ index (directify F ℬ) , K₁ ≡ directify F ℬ [ i ] ∥
---      ι₁ = compacts-are-basic-in-spectralᴰ-frames F σᴰ K₁ κ₁
-
---      ι₂ : ∥ Σ i ꞉ index (directify F ℬ) , K₂ ≡ directify F ℬ [ i ] ∥
---      ι₂ = compacts-are-basic-in-spectralᴰ-frames F σᴰ K₂ κ₂
-
---      β : (Σ i ꞉ (index (directify F ℬ)) , K₁ ≡ directify F ℬ [ i ])
---        → (Σ i ꞉ (index (directify F ℬ)) , K₂ ≡ directify F ℬ [ i ])
---        → is-compact-open F (K₁ ∧[ F ] K₂) holds
---      β (is , p) (js , q) = {!!}
+   γ : spectralᴰ F → is-compact-open F (K₁ ∧[ F ] K₂) holds
+   γ σᴰ@(ℬ , φ , _ , ψ) = ?
 
 -- TODO: it's not clear if this lemma will be needed. Think more about this and
 -- remove it if it turns out that it won't be needed.
