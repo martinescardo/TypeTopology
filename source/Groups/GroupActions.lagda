@@ -95,6 +95,11 @@ module _ (G : Group 𝓤) where
   action-to-Aut : {𝕏 : Action} (g : ⟨ G ⟩) → Aut ⟨ 𝕏 ⟩
   action-to-Aut {𝕏} g = (action-to-fun {𝕏} g) , action-to-fun-is-equiv {𝕏} g
 
+  -- same as in UniMath
+  left-mult = action-to-fun
+  right-mult : {𝕏 : Action} (x : ⟨ 𝕏 ⟩) → ⟨ G ⟩ → ⟨ 𝕏 ⟩
+  right-mult {𝕏} x = λ g → g ◂⟨ 𝕏 ⟩ x
+
 \end{code}
 
 In this submodule we prove that an action as defined above induces a
