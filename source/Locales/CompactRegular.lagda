@@ -1075,11 +1075,42 @@ compacts-closed-under-∧-in-spectral-frames : (F : Frame 𝓤 𝓥 𝓦)
                                            → is-compact-open F (K₁ ∧[ F ] K₂) holds
 compacts-closed-under-∧-in-spectral-frames F σ K₁ K₂ κ₁ κ₂ = ∥∥-rec † γ σ
   where
+   open Meets (λ x y → x ≤[ poset-of F ] y)
+
    † : is-prop (is-compact-open F (K₁ ∧[ F ] K₂) holds)
    † = holds-is-prop (is-compact-open F (K₁ ∧[ F ] K₂))
 
    γ : spectralᴰ F → is-compact-open F (K₁ ∧[ F ] K₂) holds
-   γ σᴰ@(ℬ , φ , _ , ψ) = ?
+   γ σᴰ@(ℬ , φ , Κ , _ , ψ) =
+    ∥∥-rec₂ (holds-is-prop (is-compact-open F (K₁ ∧[ F ] K₂))) δ K₁b K₂b
+     where
+      K₁b : ∥ Σ i ꞉ index ℬ , K₁ ≡ ℬ [ i ] ∥
+      K₁b = compacts-are-basic-in-spectralᴰ-frames F σᴰ K₁ κ₁
+
+      K₂b : ∥ Σ k ꞉ index ℬ , K₂ ≡ ℬ [ k ] ∥
+      K₂b = compacts-are-basic-in-spectralᴰ-frames F σᴰ K₂ κ₂
+
+      δ : Σ j ꞉ index ℬ , K₁ ≡ ℬ [ j ]
+        → Σ k ꞉ index ℬ , K₂ ≡ ℬ [ k ]
+        → is-compact-open F (K₁ ∧[ F ] K₂) holds
+      δ (j , pⱼ) (k , pₖ) =
+       transport (λ - → is-compact-open F - holds) (q ⁻¹) ϵ
+        where
+         q : K₁ ∧[ F ] K₂ ≡ ℬ [ j ] ∧[ F ] ℬ [ k ]
+         q = K₁ ∧[ F ] K₂             ≡⟨ i  ⟩
+             ℬ [ j ] ∧[ F ] K₂        ≡⟨ ii ⟩
+             ℬ [ j ] ∧[ F ] ℬ [ k ]   ∎
+              where
+               i  = ap (λ - → -       ∧[ F ] K₂) pⱼ
+               ii = ap (λ - → ℬ [ j ] ∧[ F ]  -)  pₖ
+
+         ζ : Σ l ꞉ index ℬ , ((ℬ [ l ]) is-glb-of (ℬ [ j ] , ℬ [ k ])) holds
+           → is-compact-open F (ℬ [ j ] ∧[ F ] ℬ [ k ]) holds
+         ζ (l , θ) =
+          transport (λ - → is-compact-open F - holds) (∧[ F ]-unique θ) (Κ l)
+
+         ϵ : is-compact-open F (ℬ [ j ] ∧[ F ] ℬ [ k ]) holds
+         ϵ = ∥∥-rec (holds-is-prop (is-compact-open F _)) ζ (ψ j k)
 
 -- TODO: it's not clear if this lemma will be needed. Think more about this and
 -- remove it if it turns out that it won't be needed.
