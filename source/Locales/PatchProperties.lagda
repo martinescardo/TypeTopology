@@ -266,9 +266,24 @@ module OpenNucleus (X : Locale 𝓤 𝓥 𝓥) (σ : is-spectral (𝒪 X) holds)
 
 \begin{code}
 
-module PatchStone (X : Locale 𝓤 𝓥 𝓦) where
+module PatchStone (X : Locale 𝓤 𝓥 𝓥) (σ : is-spectral (𝒪 X) holds) where
 
- patch-is-stone : {!!}
- patch-is-stone = {!!}
+ open ClosedNucleus X σ
+ open OpenNucleus   X σ
+ open PatchConstruction X σ renaming (Patch to Patch-X)
+
+ -- open-is-∧-complement-of-closed : (K@(K₀ , _) : 𝒦)
+ --                                → ‘ K₀ ’ ∧[ 𝒪 Patch-X ] ¬‘ K ’ ≡ 𝟎[ 𝒪 Patch-X ]
+ -- open-is-∧-complement-of-closed K@(K₀ , _) =
+ --  only-𝟎-is-below-𝟎 (𝒪 Patch-X) (‘ K₀ ’ ∧[ 𝒪 Patch-X ] ¬‘ K ’) †
+ --   where
+ --    † : ((‘ K₀ ’ ∧[ 𝒪 Patch-X ] ¬‘ K ’)
+ --          ≤[ poset-of (𝒪 Patch-X) ]
+ --         𝟎[ 𝒪 Patch-X ])
+ --        holds
+ --    † U = {!!}
+
+ -- patch-is-stone : {!!}
+ -- patch-is-stone = {!!}
 
 \end{code}
