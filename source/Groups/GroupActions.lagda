@@ -121,11 +121,9 @@ set.
       gr-s-X = Group-structure-Aut fe X i
 
     is-hom-action-to-fun : is-hom G (Aut X , gr-s-X) (action-to-Aut {𝕏})
-    is-hom-action-to-fun {g} {h} = 
-     to-Σ-≡ (dfunext fe (λ x → ((g ·⟨ G ⟩ h) · x ≡⟨  action-assoc 𝕏 g h x ⟩
-                                 g · (h · x) ∎ )) ,
-            being-equiv-is-prop'' fe (λ x → g · (h · x)) _ _)
-
+    is-hom-action-to-fun {g} {h} =
+                         to-Σ-≡ ((dfunext fe (action-assoc 𝕏 g h)) ,
+                           (being-equiv-is-prop'' fe (λ x → g · (h · x)) _ _))
     
 \end{code}
 
@@ -233,7 +231,70 @@ equivariant (hence same carrier) are the same.
                        (Action-Map 𝕏 𝕐) → (Action-Map 𝕐 ℤ) →
                        (Action-Map 𝕏 ℤ)
   compose-Action-Map {𝕏} {𝕐} {ℤ} (p , i) (q , j) =
-    (q ∘ p) , (is-equivariant-comp {𝕏} {𝕐} {ℤ} p i q j)
+                     (q ∘ p) , (is-equivariant-comp {𝕏} {𝕐} {ℤ} p i q j)
+
+  Action-Iso : (𝕏 𝕐 : Action) → 𝓤 ̇
+  Action-Iso 𝕏 𝕐 = Σ f ꞉ ⟨ 𝕏 ⟩ ≃ ⟨ 𝕐 ⟩ , is-equivariant {𝕏} {𝕐} (eqtofun f)
+
+  Action-Iso-is-set : funext 𝓤 𝓤 →
+                      (𝕏 𝕐 : Action) →
+                      is-set (Action-Iso 𝕏 𝕐)
+  Action-Iso-is-set fe 𝕏 𝕐 {s} = γ {s}
+    where
+      γ : is-set (Action-Iso 𝕏 𝕐)
+      γ = Σ-is-set (Σ-is-set (Π-is-set fe (λ _ → carrier-is-set 𝕐))
+                             λ f → props-are-sets (being-equiv-is-prop'' fe f))
+                   λ u → props-are-sets (is-equivariant-is-prop fe {𝕏} {𝕐} (pr₁ u))
+
+  underlying-iso : {𝕏 𝕐 : Action} → Action-Iso 𝕏 𝕐 → ⟨ 𝕏 ⟩ ≃ ⟨ 𝕐 ⟩
+  underlying-iso u = pr₁ u
+                   
+  underlying-iso-is-embedding : funext 𝓤 𝓤 →
+                                {𝕏 𝕐 : Action} →
+                                is-embedding (underlying-iso {𝕏} {𝕐} )
+  underlying-iso-is-embedding fe {𝕏} {𝕐} =
+    pr₁-is-embedding (λ f → is-equivariant-is-prop fe {𝕏} {𝕐} (pr₁ f))
+                           
+  underlying-iso-injectivity : funext 𝓤 𝓤 → 
+                               {𝕏 𝕐 : Action} →
+                               (u v : Action-Iso 𝕏 𝕐) →
+                               (u ≡ v) ≃ (underlying-iso {𝕏} {𝕐} u ≡ underlying-iso {𝕏} {𝕐} v)
+  underlying-iso-injectivity fe {𝕏} {𝕐} u v =
+    ≃-sym (embedding-criterion-converse
+             (underlying-iso {𝕏} {𝕐})
+             (underlying-iso-is-embedding fe {𝕏} {𝕐}) u v) 
+
+  
+  underlying-Action-Map : {𝕏 𝕐 : Action} → Action-Iso 𝕏 𝕐 →
+                          Action-Map 𝕏 𝕐
+  underlying-Action-Map ((f , _) , is) = f , is
+
+  id-Action-Iso : (𝕏 : Action) → Action-Iso 𝕏 𝕏
+  id-Action-Iso 𝕏 = (id , (id-is-equiv ⟨ 𝕏 ⟩)) , (λ g x → refl)
+
+  ≡-to-Action-Iso : {𝕏 𝕐 : Action} →
+                    𝕏 ≡ 𝕐 → Action-Iso 𝕏 𝕐
+  ≡-to-Action-Iso {𝕏} {.𝕏} refl = id-Action-Iso 𝕏
+
+  compose-Action-Iso : {𝕏 𝕐 ℤ : Action} →
+                       Action-Iso 𝕏 𝕐 → Action-Iso 𝕐 ℤ →
+                       Action-Iso 𝕏 ℤ
+  compose-Action-Iso {𝕏} {𝕐} {ℤ} (f , i) (g , j) =
+                     (f ● g) , (is-equivariant-comp {𝕏} {𝕐} {ℤ} (pr₁ f) i (pr₁ g) j)
+
+  compose-Action-Iso-id : funext 𝓤 𝓤 → 
+                          {𝕏 𝕐 : Action} → (u : Action-Iso 𝕏 𝕐) →
+                          compose-Action-Iso {𝕏} {𝕐} {𝕐} u (id-Action-Iso 𝕐) ≡ u
+  compose-Action-Iso-id fe {𝕏} {𝕐} u = to-subtype-≡
+                           (λ f → is-equivariant-is-prop fe {𝕏} {𝕐} (eqtofun f))
+                           (≃-refl-right' fe fe fe (pr₁ u))
+
+  compose-id-Action-Iso : funext 𝓤 𝓤 →
+                          {𝕏 𝕐 : Action} → (u : Action-Iso 𝕏 𝕐) →
+                          compose-Action-Iso {𝕏} {𝕏} {𝕐} (id-Action-Iso 𝕏) u ≡ u
+  compose-id-Action-Iso fe {𝕏} {𝕐} u = to-subtype-≡
+                           (λ f → is-equivariant-is-prop fe {𝕏} {𝕐} (eqtofun f))
+                           (≃-refl-left' fe fe fe (pr₁ u))
 
 \end{code}
 
