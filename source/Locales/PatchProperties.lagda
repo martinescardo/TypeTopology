@@ -164,31 +164,24 @@ module OpenNucleus (X : Locale 𝓤 𝓥 𝓥) (σ : is-spectral (𝒪 X) holds)
     open PosetReasoning (poset-of (𝒪 X))
 
     γ : continuity-condition (𝒪 X) (𝒪 X) (opn K) holds
-    γ K′ U κ p = ∣ (K ∧[ 𝒪 X ] K′) , κ′ , ♠ , ♥ ∣
+    γ K₂ U κ₂ p = ∣ (K ∧[ 𝒪 X ] K₂) , κ′ , ♠ , ♥ ∣
      where
-      β : {!!}
-      β = {!!}
+      κ′ : is-compact-open (𝒪 X) (K ∧[ 𝒪 X ] K₂) holds
+      κ′ = compacts-closed-under-∧-in-spectral-frames (𝒪 X) σ K K₂ κ κ₂
 
-      δ : spectralᴰ (𝒪 X) → is-compact-open (𝒪 X) (K ∧[ 𝒪 X ] K′) holds
-      δ (ℬ , _ , φ , ψ , _) = ∥∥-rec₂ {!!} {!!} {!!} {!!}
-
-      κ′ : is-compact-open (𝒪 X) (K ∧[ 𝒪 X ] K′) holds
-      κ′ = ∥∥-rec
-            (holds-is-prop (is-compact-open (𝒪 X) (K ∧[ 𝒪 X ] K′))) δ σ
-
-      ♠ : ((K ∧[ 𝒪 X ] K′) ≤[ poset-of (𝒪 X) ] U) holds
-      ♠ = K ∧[ 𝒪 X ] K′          ≤⟨ i  ⟩
+      ♠ : ((K ∧[ 𝒪 X ] K₂) ≤[ poset-of (𝒪 X) ] U) holds
+      ♠ = K ∧[ 𝒪 X ] K₂          ≤⟨ i  ⟩
           K ∧[ 𝒪 X ] (K ==> U)   ≤⟨ ii ⟩
           U                      ■
            where
             i  = ∧[ 𝒪 X ]-right-monotone p
             ii = mp-left K U
 
-      ♣ : ((K′ ∧[ 𝒪 X ] K) ≤[ poset-of (𝒪 X) ] (K ∧[ 𝒪 X ] K′)) holds
-      ♣ = reflexivity+ (poset-of (𝒪 X)) (∧[ 𝒪 X ]-is-commutative K′ K)
+      ♣ : ((K₂ ∧[ 𝒪 X ] K) ≤[ poset-of (𝒪 X) ] (K ∧[ 𝒪 X ] K₂)) holds
+      ♣ = reflexivity+ (poset-of (𝒪 X)) (∧[ 𝒪 X ]-is-commutative K₂ K)
 
-      ♥ : (K′ ≤[ poset-of (𝒪 X) ] opn K (K ∧[ 𝒪 X ] K′)) holds
-      ♥ = heyting-implication₁ K (K ∧[ 𝒪 X ] K′) K′ ♣
+      ♥ : (K₂ ≤[ poset-of (𝒪 X) ] opn K (K ∧[ 𝒪 X ] K₂)) holds
+      ♥ = heyting-implication₁ K (K ∧[ 𝒪 X ] K₂) K₂ ♣
 
  opn-is-nucleus : (U : ⟨ 𝒪 X ⟩) → is-nucleus (𝒪 X) (opn U) holds
  opn-is-nucleus U = opn-is-inflationary U
