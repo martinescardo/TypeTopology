@@ -84,7 +84,7 @@ module _ {𝓤 : Universe}
        where
 
  iteration : ℕ → X → X → 𝓤 ̇
- iteration 0        x y = x ≡ y
+ iteration 0        x y = x ＝ y
  iteration (succ n) x y = Σ z ꞉ X , B x z × iteration n z y
 
  iteration-reflexive : (x : X) → iteration 0 x x
@@ -354,7 +354,7 @@ module Church-Rosser-consequences
   module _ (Church-Rosser : (x y₀ y₁ : X)
                           → x ▷ y₀
                           → x ▷ y₁
-                          → (y₀ ≡ y₁) + (Σ y ꞉ X , (y₀ ▷ y) × (y₁ ▷ y)))
+                          → (y₀ ＝ y₁) + (Σ y ꞉ X , (y₀ ▷ y) × (y₁ ▷ y)))
          where
 
    Church-Rosser⋆ : (x y₀ y₁ : X)
@@ -370,7 +370,7 @@ module Church-Rosser-consequences
      f 0        x x  y₁ refl        e = y₁ , rt-extension _▷_ x y₁ e , rt-reflexive _▷_ y₁
      f (succ m) x y₀ y₁ (t , d , i) e = γ c
       where
-       c : (y₁ ≡ t) + (Σ y ꞉ X , (y₁ ▷ y) × (t ▷ y))
+       c : (y₁ ＝ t) + (Σ y ꞉ X , (y₁ ▷ y) × (t ▷ y))
        c = Church-Rosser x y₁ t e d
 
        γ : type-of c → Σ u ꞉ X , (y₀ ▷⋆ u) × (y₁ ▷⋆ u)

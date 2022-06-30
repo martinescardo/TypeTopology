@@ -116,23 +116,23 @@ right-monotone = id
 \end{code}
 
 Discreteness of 𝔻 and linearity of ≺ imply that ≺ is trichotomous, i.e. for
-every x y : 𝔻 , x ≺ y or x ≡ y or y ≺ x holds. The lemmas after
+every x y : 𝔻 , x ≺ y or x ＝ y or y ≺ x holds. The lemmas after
 ≺-is-trichotomous show that exactly one of these is the case, as witnessed by
 trichotomy-is-a-singleton.
 
 \begin{code}
 
-≺-is-trichotomous : (x y : 𝔻) → x ≺ y + (x ≡ y) + (y ≺ x)
+≺-is-trichotomous : (x y : 𝔻) → x ≺ y + (x ＝ y) + (y ≺ x)
 ≺-is-trichotomous x y = cases a b (𝔻-is-discrete x y)
  where
-  a : x ≡ y → (x ≺ y) + (x ≡ y) + (y ≺ x)
+  a : x ＝ y → (x ≺ y) + (x ＝ y) + (y ≺ x)
   a = inr ∘ inl
-  b : (x ≢ y) → (x ≺ y) + (x ≡ y) + (y ≺ x)
+  b : (x ≢ y) → (x ≺ y) + (x ＝ y) + (y ≺ x)
   b n = cases c d (≺-is-linear x y n)
    where
-    c : x ≺ y → (x ≺ y) + (x ≡ y) + (y ≺ x)
+    c : x ≺ y → (x ≺ y) + (x ＝ y) + (y ≺ x)
     c = inl
-    d : y ≺ x → (x ≺ y) + (x ≡ y) + (y ≺ x)
+    d : y ≺ x → (x ≺ y) + (x ＝ y) + (y ≺ x)
     d = inr ∘ inr
 
 ≺-to-≢ : {x y : 𝔻} → x ≺ y → x ≢ y
@@ -149,11 +149,11 @@ trichotomy-is-a-singleton.
 ≺-to-≢' : {x y : 𝔻} → y ≺ x → x ≢ y
 ≺-to-≢' l e = ≺-to-≢ l (e ⁻¹)
 
-≡-to-¬≺ : {x y : 𝔻} → x ≡ y → ¬ (x ≺ y)
-≡-to-¬≺ e l = ≺-to-≢ l e
+＝-to-¬≺ : {x y : 𝔻} → x ＝ y → ¬ (x ≺ y)
+＝-to-¬≺ e l = ≺-to-≢ l e
 
-≡-to-¬≺' : {x y : 𝔻} → x ≡ y → ¬ (y ≺ x)
-≡-to-¬≺' e l = ≺-to-≢ l (e ⁻¹)
+＝-to-¬≺' : {x y : 𝔻} → x ＝ y → ¬ (y ≺ x)
+＝-to-¬≺' e l = ≺-to-≢ l (e ⁻¹)
 
 ≺-to-¬≺ : (x y : 𝔻) → x ≺ y → ¬ (y ≺ x)
 ≺-to-¬≺ middle    middle      = 𝟘-induction
@@ -166,16 +166,16 @@ trichotomy-is-a-singleton.
 ≺-to-¬≺ (right x) (left y)    = 𝟘-induction
 ≺-to-¬≺ (right x) (right y)   = ≺-to-¬≺ x y
 
-trichotomy-is-a-singleton : {x y : 𝔻} → is-singleton (x ≺ y + (x ≡ y) + y ≺ x)
+trichotomy-is-a-singleton : {x y : 𝔻} → is-singleton (x ≺ y + (x ＝ y) + y ≺ x)
 trichotomy-is-a-singleton {x} {y} =
  pointed-props-are-singletons (≺-is-trichotomous x y) γ
   where
-   γ : is-prop (x ≺ y + (x ≡ y) + y ≺ x)
+   γ : is-prop (x ≺ y + (x ＝ y) + y ≺ x)
    γ = +-is-prop (≺-is-prop-valued x y) h g
     where
-     h : is-prop ((x ≡ y) + y ≺ x)
-     h = +-is-prop 𝔻-is-set (≺-is-prop-valued y x) ≡-to-¬≺'
-     g : x ≺ y → ¬ ((x ≡ y) + y ≺ x)
+     h : is-prop ((x ＝ y) + y ≺ x)
+     h = +-is-prop 𝔻-is-set (≺-is-prop-valued y x) ＝-to-¬≺'
+     g : x ≺ y → ¬ ((x ＝ y) + y ≺ x)
      g l = cases a b
       where
        a : x ≢ y
@@ -240,7 +240,7 @@ We will need this property to construct the (rounded) ideal completion of
    where
     γ : (Σ z ꞉ 𝔻 , x₂ ≺ z × z ≺ y) → Σ z ꞉ 𝔻 , x₁ ≺ z × x₂ ≺ z × z ≺ y
     γ (z , m , n) = z , ≺-is-transitive x₁ x₂ z k m , m , n
-  b : x₁ ≡ x₂ → Σ z ꞉ 𝔻 , x₁ ≺ z × x₂ ≺ z × z ≺ y
+  b : x₁ ＝ x₂ → Σ z ꞉ 𝔻 , x₁ ≺ z × x₂ ≺ z × z ≺ y
   b refl = γ (≺-is-dense-Σ x₁ y l₁)
    where
     γ : (Σ z ꞉ 𝔻 , x₁ ≺ z × z ≺ y) → Σ z ꞉ 𝔻 , x₁ ≺ z × x₂ ≺ z × z ≺ y

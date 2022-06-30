@@ -31,23 +31,23 @@ instance
 open import UF.Base
 open import UF.Miscelanea
 
-right-addition-is-embedding : (m n : ℕ) → is-prop (Σ k ꞉ ℕ , k +' m ≡ n)
+right-addition-is-embedding : (m n : ℕ) → is-prop (Σ k ꞉ ℕ , k +' m ＝ n)
 right-addition-is-embedding zero n (.n , refl) (.n , refl) = refl
 right-addition-is-embedding (succ m) zero (k , p) (k' , p') = 𝟘-elim (positive-not-zero (k +' m) p)
-right-addition-is-embedding (succ m) (succ n) (k , p) (k' , p') = to-Σ-≡ (ap pr₁ IH , ℕ-is-set _ _)
+right-addition-is-embedding (succ m) (succ n) (k , p) (k' , p') = to-Σ-＝ (ap pr₁ IH , ℕ-is-set _ _)
  where
-  IH : k , succ-lc p ≡ k' , succ-lc p'
+  IH : k , succ-lc p ＝ k' , succ-lc p'
   IH = right-addition-is-embedding m n (k , succ-lc p) (k' , succ-lc p')
 
-subtraction : (m n : ℕ) → m ≤ n → Σ k ꞉ ℕ , k +' m ≡ n
+subtraction : (m n : ℕ) → m ≤ n → Σ k ꞉ ℕ , k +' m ＝ n
 subtraction zero n l = n , refl
 subtraction (succ m) zero l = 𝟘-elim l
 subtraction (succ m) (succ n) l = pr₁ IH , ap succ (pr₂ IH)
  where
-  IH : Σ k ꞉ ℕ , k +' m ≡ n
+  IH : Σ k ꞉ ℕ , k +' m ＝ n
   IH = subtraction m n l
 
-cosubtraction : (m n : ℕ) → (Σ k ꞉ ℕ , k +' m ≡ n) → m ≤ n
+cosubtraction : (m n : ℕ) → (Σ k ꞉ ℕ , k +' m ＝ n) → m ≤ n
 cosubtraction zero n (.n , refl) = ⋆
 cosubtraction (succ m) zero (k , p) = positive-not-zero (k +' m) p
 cosubtraction (succ m) (succ .(k +' m)) (k , refl) = cosubtraction m (k +' m) (k , refl)
@@ -58,7 +58,7 @@ zero-least n = ⋆
 zero-least' : (n : ℕ) → ¬ (succ n ≤ zero)
 zero-least' n l = l
 
-zero-least'' : (n : ℕ) → n ≤ zero → n ≡ zero
+zero-least'' : (n : ℕ) → n ≤ zero → n ＝ zero
 zero-least'' zero l = refl
 
 succ-monotone : (m n : ℕ) → m ≤ n → succ m ≤ succ n
@@ -75,8 +75,8 @@ succ-order-injective m n l = l
 ≤-induction P b f (succ m) zero l     = 𝟘-elim l
 ≤-induction P b f (succ m) (succ n) l = f m n l (≤-induction P b f m n l)
 
-succ≤≡ : (m n : ℕ) → (succ m ≤ succ n) ≡ (m ≤ n)
-succ≤≡ m n = refl
+succ≤＝ : (m n : ℕ) → (succ m ≤ succ n) ＝ (m ≤ n)
+succ≤＝ m n = refl
 
 ≤-refl : (n : ℕ) → n ≤ n
 ≤-refl zero     = ⋆
@@ -88,7 +88,7 @@ succ≤≡ m n = refl
 ≤-trans (succ l) (succ m) zero p q = 𝟘-elim q
 ≤-trans (succ l) (succ m) (succ n) p q = ≤-trans l m n p q
 
-≤-anti : (m n : ℕ) → m ≤ n → n ≤ m → m ≡ n
+≤-anti : (m n : ℕ) → m ≤ n → n ≤ m → m ＝ n
 ≤-anti zero zero p q = refl
 ≤-anti zero (succ n) p q = 𝟘-elim q
 ≤-anti (succ m) zero p q = 𝟘-elim p
@@ -98,16 +98,16 @@ succ≤≡ m n = refl
 ≤-succ zero     = ⋆
 ≤-succ (succ n) = ≤-succ n
 
-unique-least : (n : ℕ) → n ≤ zero → n ≡ zero
+unique-least : (n : ℕ) → n ≤ zero → n ＝ zero
 unique-least zero l = refl
 unique-least (succ n) l = 𝟘-elim l
 
-≤-split : (m n : ℕ) → m ≤ succ n → (m ≤ n) + (m ≡ succ n)
+≤-split : (m n : ℕ) → m ≤ succ n → (m ≤ n) + (m ＝ succ n)
 ≤-split zero n l = inl l
 ≤-split (succ m) zero l = inr (ap succ (unique-least m l))
 ≤-split (succ m) (succ n) l = cases inl (inr ∘ (ap succ)) (≤-split m n l)
 
-≤-join : (m n : ℕ) → (m ≤ n) + (m ≡ succ n) → m ≤ succ n
+≤-join : (m n : ℕ) → (m ≤ n) + (m ＝ succ n) → m ≤ succ n
 ≤-join m n (inl l) = ≤-trans m n (succ n) l (≤-succ n)
 ≤-join .(succ n) n (inr refl) = ≤-refl n
 
@@ -124,7 +124,7 @@ unique-least (succ n) l = 𝟘-elim l
 ≤-+' : (m n : ℕ) → (n ≤ m +' n)
 ≤-+' m n = transport (λ k → n ≤ k) γ (≤-+ n m)
  where
-  γ : n +' m ≡ m +' n
+  γ : n +' m ＝ m +' n
   γ = addition-commutativity n m
 
 _<ℕ_ : ℕ → ℕ → 𝓤₀ ̇
@@ -158,11 +158,11 @@ bounded-∀-next : (A : ℕ → 𝓤 ̇ ) (k : ℕ)
                → (n : ℕ) → n < succ k → A n
 bounded-∀-next A k a φ n l = cases f g s
  where
-  s : (n < k) + (succ n ≡ succ k)
+  s : (n < k) + (succ n ＝ succ k)
   s = ≤-split (succ n) k l
   f : n < k → A n
   f = φ n
-  g : succ n ≡ succ k → A n
+  g : succ n ＝ succ k → A n
   g p = transport⁻¹ A (succ-lc p) a
 
 \end{code}
@@ -180,7 +180,7 @@ Added 20th June 2018:
 <-trans : (l m n : ℕ) → l < m → m < n → l < n
 <-trans l m n u v = ≤-trans (succ l) m n u (<-coarser-than-≤ m n v)
 
-<-split : (m n : ℕ) → m < succ n → (m < n) + (m ≡ n)
+<-split : (m n : ℕ) → m < succ n → (m < n) + (m ＝ n)
 <-split m zero     l = inr (unique-least m l)
 <-split m (succ n) l = ≤-split m n l
 
@@ -189,7 +189,7 @@ regress : (P : ℕ → 𝓤 ̇ )
         → (n m : ℕ) → m ≤ n → P n → P m
 regress P ρ zero m l p = transport⁻¹ P (unique-least m l) p
 regress P ρ (succ n) m l p = cases (λ (l' : m ≤ n) → IH m l' (ρ n p))
-                                   (λ (r : m ≡ succ n) → transport⁻¹ P r p)
+                                   (λ (r : m ＝ succ n) → transport⁻¹ P r p)
                                    (≤-split m n l)
  where
   IH : (m : ℕ) → m ≤ n → P n → P m
@@ -201,7 +201,7 @@ regress P ρ (succ n) m l p = cases (λ (l' : m ≤ n) → IH m l' (ρ n p))
  where
   τ : is-accessible _<_ m → (n : ℕ) → n < succ m → is-accessible _<_ n
   τ a n u = cases (λ (v : n < m) → prev _<_ a n v)
-                  (λ (p : n ≡ m) → transport⁻¹ (is-accessible _<_) p a)
+                  (λ (p : n ＝ m) → transport⁻¹ (is-accessible _<_) p a)
                   (<-split n m u)
 
 course-of-values-induction : (P : ℕ → 𝓤 ̇ )
@@ -281,7 +281,7 @@ Bounded minimization (added 14th December 2019):
       ψ : (n : ℕ) → A n → succ k ≤ n
       ψ 0 a = 𝟘-elim (v a)
        where
-        p : k ≡ 0
+        p : k ＝ 0
         p = zero-least'' k (φ 0 a)
         v : ¬ A 0
         v = transport (λ - → ¬ A -) p u
@@ -330,28 +330,28 @@ max zero     n        = n
 max (succ m) zero     = succ m
 max (succ m) (succ n) = succ (max m n)
 
-max-idemp : (x : ℕ) → max x x ≡ x
+max-idemp : (x : ℕ) → max x x ＝ x
 max-idemp zero     = refl
 max-idemp (succ x) = ap succ (max-idemp x)
 
-max-comm : (m n : ℕ) → max m n ≡ max n m
+max-comm : (m n : ℕ) → max m n ＝ max n m
 max-comm zero     zero     = refl
 max-comm zero     (succ n) = refl
 max-comm (succ m) zero     = refl
 max-comm (succ m) (succ n) = ap succ (max-comm m n)
 
-max-assoc : (x y z : ℕ) → max (max x y) z ≡ max x (max y z)
+max-assoc : (x y z : ℕ) → max (max x y) z ＝ max x (max y z)
 max-assoc zero     y        z        = refl
 max-assoc (succ x) zero     z        = refl
 max-assoc (succ x) (succ y) zero     = refl
 max-assoc (succ x) (succ y) (succ z) = ap succ (max-assoc x y z)
 
-max-ord→ : (x y : ℕ) → x ≤ y → max x y ≡ y
+max-ord→ : (x y : ℕ) → x ≤ y → max x y ＝ y
 max-ord→ zero     y        le = refl
 max-ord→ (succ x) zero     le = 𝟘-elim le
 max-ord→ (succ x) (succ y) le = ap succ (max-ord→ x y le)
 
-max-ord← : (x y : ℕ) → max x y ≡ y → x ≤ y
+max-ord← : (x y : ℕ) → max x y ＝ y → x ≤ y
 max-ord← zero     y        p = ⋆
 max-ord← (succ x) zero     p = 𝟘-elim (positive-not-zero x p)
 max-ord← (succ x) (succ y) p = max-ord← x y (succ-lc p)
@@ -366,12 +366,12 @@ minus zero     n        le = zero
 minus (succ m) zero     ⋆  = succ m
 minus (succ m) (succ n) le = minus m n le
 
-minus-property : (m n : ℕ) (le : n ≤ m) → minus m n le ∔ n ≡ m
+minus-property : (m n : ℕ) (le : n ≤ m) → minus m n le ∔ n ＝ m
 minus-property zero     zero     ⋆  = refl
 minus-property (succ m) zero     ⋆  = refl
 minus-property (succ m) (succ n) le = ap succ (minus-property m n le)
 
-max-minus-property : (m n : ℕ) → minus (max m n) m (max-≤-upper-bound m n) ∔ m ≡ max m n
+max-minus-property : (m n : ℕ) → minus (max m n) m (max-≤-upper-bound m n) ∔ m ＝ max m n
 max-minus-property m n = minus-property (max m n) m (max-≤-upper-bound m n)
 
 \end{code}
@@ -380,19 +380,19 @@ Tom de Jong, 5 November 2021.
 
 \begin{code}
 
-<-trichotomous : (n m : ℕ) → n < m + (n ≡ m) + m < n
+<-trichotomous : (n m : ℕ) → n < m + (n ＝ m) + m < n
 <-trichotomous zero     zero     = inr (inl refl)
 <-trichotomous zero     (succ m) = inl ⋆
 <-trichotomous (succ n) zero     = inr (inr ⋆)
 <-trichotomous (succ n) (succ m) = γ IH
  where
-  γ : (n < m) + (n ≡ m) + (m < n)
-    → (succ n < succ m) + (succ n ≡ succ m) + (succ m < succ n)
+  γ : (n < m) + (n ＝ m) + (m < n)
+    → (succ n < succ m) + (succ n ＝ succ m) + (succ m < succ n)
   γ (inl k)       = inl k
   γ (inr (inl e)) = inr (inl (ap succ e))
   γ (inr (inr l)) = inr (inr l)
 
-  IH : (n < m) + (n ≡ m) + (m < n)
+  IH : (n < m) + (n ＝ m) + (m < n)
   IH = <-trichotomous n m
 
 \end{code}

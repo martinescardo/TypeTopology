@@ -42,7 +42,7 @@ open PropositionalTruncation pt
 open import NotionsOfDecidability.DecidableAndDetachable
 
 ∃-compact : 𝓤 ̇ → 𝓤 ̇
-∃-compact X = (p : X → 𝟚) → decidable (∃ x ꞉ X , p x ≡ ₀)
+∃-compact X = (p : X → 𝟚) → decidable (∃ x ꞉ X , p x ＝ ₀)
 
 ∃-compactness-is-prop : {X : 𝓤 ̇ } → is-prop (∃-compact X)
 ∃-compactness-is-prop {𝓤} {X} = Π-is-prop (fe 𝓤 𝓤)
@@ -52,11 +52,11 @@ open import NotionsOfDecidability.DecidableAndDetachable
 ∃-compactness-gives-Markov : {X : 𝓤 ̇ }
                            → ∃-compact X
                            → (p : X → 𝟚)
-                           → ¬¬ (∃ x ꞉ X , p x ≡ ₀)
-                           → ∃ x ꞉ X , p x ≡ ₀
+                           → ¬¬ (∃ x ꞉ X , p x ＝ ₀)
+                           → ∃ x ꞉ X , p x ＝ ₀
 ∃-compactness-gives-Markov {𝓤} {X} c p φ = g (c p)
  where
-  g : decidable (∃ x ꞉ X , p x ≡ ₀) → ∃ x ꞉ X , p x ≡ ₀
+  g : decidable (∃ x ꞉ X , p x ＝ ₀) → ∃ x ꞉ X , p x ＝ ₀
   g (inl e) = e
   g (inr u) = 𝟘-elim (φ u)
 
@@ -68,7 +68,7 @@ LPO with WLPO.
 \begin{code}
 
 Π-compact : 𝓤 ̇ → 𝓤 ̇
-Π-compact X = (p : X → 𝟚) → decidable ((x : X) → p x ≡ ₁)
+Π-compact X = (p : X → 𝟚) → decidable ((x : X) → p x ＝ ₁)
 
 Π-compactness-is-prop : {X : 𝓤 ̇ } → is-prop (Π-compact X)
 Π-compactness-is-prop {𝓤} = Π-is-prop (fe 𝓤 𝓤)
@@ -78,10 +78,10 @@ LPO with WLPO.
 ∃-compact-gives-Π-compact : {X : 𝓤 ̇ } → ∃-compact X → Π-compact X
 ∃-compact-gives-Π-compact {𝓤} {X} c p = f (c p)
  where
-  f : decidable (∃ x ꞉ X , p x ≡ ₀) → decidable (Π x ꞉ X , p x ≡ ₁)
+  f : decidable (∃ x ꞉ X , p x ＝ ₀) → decidable (Π x ꞉ X , p x ＝ ₁)
   f (inl s) = inr (λ α → ∥∥-rec 𝟘-is-prop (g α) s)
    where
-    g : ((x : X) → p x ≡ ₁) → ¬ (Σ x ꞉ X , p x ≡ ₀)
+    g : ((x : X) → p x ＝ ₁) → ¬ (Σ x ꞉ X , p x ＝ ₀)
     g α (x , r) = zero-is-not-one (r ⁻¹ ∙ α x)
   f (inr u) = inl (not-exists₀-implies-forall₁ pt p u)
 
@@ -101,7 +101,7 @@ of ℕ∞, for example):
 compact-types-are-∃-compact : {X : 𝓤 ̇ } → compact X → ∃-compact X
 compact-types-are-∃-compact {𝓤} {X} φ p = g (φ p)
  where
-  g : ((Σ x ꞉ X , p x ≡ ₀) + ((x : X) → p x ≡ ₁)) → decidable (∃ x ꞉ X , p x ≡ ₀)
+  g : ((Σ x ꞉ X , p x ＝ ₀) + ((x : X) → p x ＝ ₁)) → decidable (∃ x ꞉ X , p x ＝ ₀)
   g (inl (x , r)) = inl ∣ x , r ∣
   g (inr α)       = inr (forall₁-implies-not-exists₀ pt p α)
 
@@ -129,14 +129,14 @@ predicate λ x → ₁:
 Π-compact'-gives-Π-compact : {X : 𝓤 ̇ } → Π-compact' X → Π-compact X
 Π-compact'-gives-Π-compact {𝓤} {X} c' p = g (c' p)
  where
-  g : decidable (p ≡ λ x → ₁) → decidable ((x : X) → p x ≡ ₁)
+  g : decidable (p ＝ λ x → ₁) → decidable ((x : X) → p x ＝ ₁)
   g (inl r) = inl (happly r)
   g (inr u) = inr (contrapositive (dfunext (fe 𝓤 𝓤₀)) u)
 
 Π-compact-gives-Π-compact' : {X : 𝓤 ̇ } → Π-compact X → Π-compact' X
 Π-compact-gives-Π-compact' {𝓤} {X} c p = g (c p)
  where
-  g : decidable ((x : X) → p x ≡ ₁) → decidable (p ≡ λ x → ₁)
+  g : decidable ((x : X) → p x ＝ ₁) → decidable (p ＝ λ x → ₁)
   g (inl α) = inl (dfunext (fe 𝓤 𝓤₀) α)
   g (inr u) = inr (contrapositive happly u)
 
@@ -163,20 +163,20 @@ discrete-to-the-power-Π-compact-is-discrete {𝓤} {𝓥} {X} {Y} c d f g = δ
   p : X → 𝟚
   p = pr₁ (co-characteristic-function (λ x → d (f x) (g x)))
 
-  r : (x : X) → (p x ≡ ₀ → ¬ (f x ≡ g x)) × (p x ≡ ₁ → f x ≡ g x)
+  r : (x : X) → (p x ＝ ₀ → ¬ (f x ＝ g x)) × (p x ＝ ₁ → f x ＝ g x)
   r = pr₂ (co-characteristic-function λ x → d (f x) (g x))
 
-  φ : ((x : X) → p x ≡ ₁) → f ≡ g
+  φ : ((x : X) → p x ＝ ₁) → f ＝ g
   φ α = (dfunext (fe 𝓤 𝓥) (λ x → pr₂ (r x) (α x)))
 
-  γ : f ≡ g → (x : X) → p x ≡ ₁
+  γ : f ＝ g → (x : X) → p x ＝ ₁
   γ t x = different-from-₀-equal-₁ (λ u → pr₁ (r x) u (happly t x))
 
-  h : decidable ((x : X) → p x ≡ ₁) → decidable (f ≡ g)
+  h : decidable ((x : X) → p x ＝ ₁) → decidable (f ＝ g)
   h (inl α) = inl (φ α)
   h (inr u) = inr (contrapositive γ u)
 
-  δ : decidable (f ≡ g)
+  δ : decidable (f ＝ g)
   δ = h (c p)
 
 \end{code}
@@ -184,7 +184,7 @@ discrete-to-the-power-Π-compact-is-discrete {𝓤} {𝓥} {X} {Y} c d f g = δ
 If an exponential with discrete base is discrete, then its exponent is
 compact, provided the base has at least two points.
 
-First, to decide Π (p : X → 𝟚), p x ≡ 1, decide p ≡ λ x → ₁:
+First, to decide Π (p : X → 𝟚), p x ＝ 1, decide p ＝ λ x → ₁:
 
 \begin{code}
 
@@ -238,16 +238,16 @@ surjection-∃-compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                      → ∃-compact Y
 surjection-∃-compact {𝓤} {𝓥} {X} {Y} f su c q = g (c (q ∘ f))
  where
-  h : (Σ x ꞉ X , q (f x) ≡ ₀) → Σ y ꞉ Y , q y ≡ ₀
+  h : (Σ x ꞉ X , q (f x) ＝ ₀) → Σ y ꞉ Y , q y ＝ ₀
   h (x , r) = (f x , r)
 
-  l : (y : Y) → q y ≡ ₀ → (Σ x ꞉ X , f x ≡ y) → Σ x ꞉ X , q (f x) ≡ ₀
+  l : (y : Y) → q y ＝ ₀ → (Σ x ꞉ X , f x ＝ y) → Σ x ꞉ X , q (f x) ＝ ₀
   l y r (x , s) = (x , (ap q s ∙ r))
 
-  k : (Σ y ꞉ Y , q y ≡ ₀) → ∃ x ꞉ X , q (f x) ≡ ₀
+  k : (Σ y ꞉ Y , q y ＝ ₀) → ∃ x ꞉ X , q (f x) ＝ ₀
   k (y , r) = ∥∥-functor (l y r) (su y)
 
-  g : decidable (∃ x ꞉ X , q (f x) ≡ ₀) → decidable (∃ y ꞉ Y , q y ≡ ₀)
+  g : decidable (∃ x ꞉ X , q (f x) ＝ ₀) → decidable (∃ y ꞉ Y , q y ＝ ₀)
   g (inl s) = inl (∥∥-functor h s)
   g (inr u) = inr (contrapositive (∥∥-rec ∥∥-is-prop k) u)
 
@@ -262,8 +262,8 @@ surjection-Π-compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                      → Π-compact Y
 surjection-Π-compact {𝓤} {𝓥} {X} {Y} f su c q = g (c (q ∘ f))
  where
-  g : decidable ((x : X) → q (f x) ≡ ₁) → decidable ((x : Y) → q x ≡ ₁)
-  g (inl s) = inl (surjection-induction f su (λ y → q y ≡ ₁) (λ _ → 𝟚-is-set) s)
+  g : decidable ((x : X) → q (f x) ＝ ₁) → decidable ((x : Y) → q x ＝ ₁)
+  g (inl s) = inl (surjection-induction f su (λ y → q y ＝ ₁) (λ _ → 𝟚-is-set) s)
   g (inr u) = inr (contrapositive (λ φ x → φ (f x)) u)
 
 retract-∃-compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
@@ -328,7 +328,7 @@ module _ (X : 𝓤 ̇ ) where
   extension : (X → 𝟚) → (𝕋 X → 𝟚)
   extension p = pr₁ (pr₁ (totally-separated-reflection 𝟚-is-totally-separated p))
 
-  extension-property : (p : X → 𝟚) (x : X) → extension p (η x) ≡ p x
+  extension-property : (p : X → 𝟚) (x : X) → extension p (η x) ＝ p x
   extension-property p = happly (pr₂ (pr₁ (totally-separated-reflection 𝟚-is-totally-separated p)))
 
  ∃-compact-gives-∃-compact-𝕋 : ∃-compact X → ∃-compact (𝕋 X)
@@ -337,16 +337,16 @@ module _ (X : 𝓤 ̇ ) where
  ∃-compact-𝕋-gives-∃-compact : ∃-compact (𝕋 X) → ∃-compact X
  ∃-compact-𝕋-gives-∃-compact c p = h (c (extension p))
   where
-   f : (Σ x' ꞉ 𝕋 X , extension p x' ≡ ₀) → ∃ x ꞉ X , p x ≡ ₀
+   f : (Σ x' ꞉ 𝕋 X , extension p x' ＝ ₀) → ∃ x ꞉ X , p x ＝ ₀
    f (x' , r) = ∥∥-functor f' (η-is-surjection x')
     where
-     f' : (Σ x ꞉ X , η x ≡ x') → Σ x ꞉ X , p x ≡ ₀
+     f' : (Σ x ꞉ X , η x ＝ x') → Σ x ꞉ X , p x ＝ ₀
      f' (x , s) = x , ((extension-property p x) ⁻¹ ∙ ap (extension p) s ∙ r)
 
-   g : (Σ x ꞉ X , p x ≡ ₀) → Σ x' ꞉ 𝕋 X , extension p x' ≡ ₀
+   g : (Σ x ꞉ X , p x ＝ ₀) → Σ x' ꞉ 𝕋 X , extension p x' ＝ ₀
    g (x , r) = η x , (extension-property p x ∙ r)
 
-   h : decidable (∃ x' ꞉ 𝕋 X , extension p x' ≡ ₀) → decidable (∃ x ꞉ X , p x ≡ ₀)
+   h : decidable (∃ x' ꞉ 𝕋 X , extension p x' ＝ ₀) → decidable (∃ x ꞉ X , p x ＝ ₀)
    h (inl x) = inl (∥∥-rec ∥∥-is-prop f x)
    h (inr u) = inr (contrapositive (∥∥-functor g) u)
 
@@ -356,16 +356,16 @@ module _ (X : 𝓤 ̇ ) where
  Π-compact-𝕋-gives-Π-compact : Π-compact (𝕋 X) → Π-compact X
  Π-compact-𝕋-gives-Π-compact c p = h (c (extension p))
   where
-   f : ((x' : 𝕋 X) → extension p x' ≡ ₁) → ((x : X) → p x ≡ ₁)
+   f : ((x' : 𝕋 X) → extension p x' ＝ ₁) → ((x : X) → p x ＝ ₁)
    f α x = (extension-property p x)⁻¹ ∙ α (η x)
 
-   g : (α : (x : X) → p x ≡ ₁) → ((x' : 𝕋 X) → extension p x' ≡ ₁)
-   g α = η-induction (λ x' → extension p x' ≡ ₁) (λ _ → 𝟚-is-set) g'
+   g : (α : (x : X) → p x ＝ ₁) → ((x' : 𝕋 X) → extension p x' ＝ ₁)
+   g α = η-induction (λ x' → extension p x' ＝ ₁) (λ _ → 𝟚-is-set) g'
      where
-      g' : (x : X) → extension p (η x) ≡ ₁
+      g' : (x : X) → extension p (η x) ＝ ₁
       g' x = extension-property p x ∙ α x
 
-   h : decidable ((x' : 𝕋 X) → extension p x' ≡ ₁) → decidable ((x : X) → p x ≡ ₁)
+   h : decidable ((x' : 𝕋 X) → extension p x' ＝ ₁) → decidable ((x : X) → p x ＝ ₁)
    h (inl α) = inl (f α)
    h (inr u) = inr (contrapositive g u)
 
@@ -395,23 +395,23 @@ tscd {𝓤} {X} ts c x y = g (a s)
   q : (X → 𝟚) → 𝟚
   q = pr₁ (co-characteristic-function (λ p → 𝟚-is-discrete (p x) (p y)))
 
-  r : (p : X → 𝟚) → (q p ≡ ₀ → p x ≢ p y) × (q p ≡ ₁ → p x ≡ p y)
+  r : (p : X → 𝟚) → (q p ＝ ₀ → p x ≢ p y) × (q p ＝ ₁ → p x ＝ p y)
   r = pr₂ (co-characteristic-function (λ p → 𝟚-is-discrete (p x) (p y)))
 
-  s : decidable ((p : X → 𝟚) → q p ≡ ₁)
+  s : decidable ((p : X → 𝟚) → q p ＝ ₁)
   s = c q
 
-  b : (p : X → 𝟚) → p x ≡ p y → q p ≡ ₁
+  b : (p : X → 𝟚) → p x ＝ p y → q p ＝ ₁
   b p u = different-from-₀-equal-₁ (λ v → pr₁ (r p) v u)
 
-  a : decidable ((p : X → 𝟚) → q p ≡ ₁) → decidable ((p : X → 𝟚) → p x ≡ p y)
+  a : decidable ((p : X → 𝟚) → q p ＝ ₁) → decidable ((p : X → 𝟚) → p x ＝ p y)
   a (inl f) = inl (λ p → pr₂ (r p) (f p))
   a (inr φ) = inr h
    where
-    h : ¬ ((p : X → 𝟚) → p x ≡ p y)
+    h : ¬ ((p : X → 𝟚) → p x ＝ p y)
     h α = φ (λ p → b p (α p))
 
-  g : decidable ((p : X → 𝟚) → p x ≡ p y) → decidable (x ≡ y)
+  g : decidable ((p : X → 𝟚) → p x ＝ p y) → decidable (x ＝ y)
   g (inl α) = inl (ts α)
   g (inr u) = inr (contrapositive (λ e p → ap p e) u)
 
@@ -484,29 +484,29 @@ Closure of compactness under sums (and hence binary products):
                          → Π-compact (Σ Y)
 Π-compact-closed-under-Σ {𝓤} {𝓥} {X} {Y} c d p = g e
  where
-  f : ∀ x → decidable (∀ y → p (x , y) ≡ ₁)
+  f : ∀ x → decidable (∀ y → p (x , y) ＝ ₁)
   f x = d x (λ y → p (x , y))
 
   q : X → 𝟚
   q = pr₁ (co-characteristic-function f)
 
-  q₀ : (x : X) → q x ≡ ₀ → ¬ ((y : Y x) → p (x , y) ≡ ₁)
+  q₀ : (x : X) → q x ＝ ₀ → ¬ ((y : Y x) → p (x , y) ＝ ₁)
   q₀ x = pr₁ (pr₂ (co-characteristic-function f) x)
 
-  q₁ : (x : X) → q x ≡ ₁ → (y : Y x) → p (x , y) ≡ ₁
+  q₁ : (x : X) → q x ＝ ₁ → (y : Y x) → p (x , y) ＝ ₁
   q₁ x = pr₂ (pr₂ (co-characteristic-function f) x)
 
-  e : decidable (∀ x → q x ≡ ₁)
+  e : decidable (∀ x → q x ＝ ₁)
   e = c q
 
-  g : decidable (∀ x → q x ≡ ₁) → decidable (∀ σ → p σ ≡ ₁)
+  g : decidable (∀ x → q x ＝ ₁) → decidable (∀ σ → p σ ＝ ₁)
   g (inl α) = inl h
    where
-    h : (σ : Σ Y) → p σ ≡ ₁
+    h : (σ : Σ Y) → p σ ＝ ₁
     h (x , y) = q₁ x (α x) y
   g (inr u) = inr (contrapositive h u)
    where
-    h : ((σ : Σ Y) → p σ ≡ ₁) → (x : X) → q x ≡ ₁
+    h : ((σ : Σ Y) → p σ ＝ ₁) → (x : X) → q x ＝ ₁
     h β x = different-from-₀-equal-₁ (λ r → q₀ x r (λ y → β (x , y)))
 
 \end{code}
@@ -526,10 +526,10 @@ information for the moment.
                                      → decidable X
 ∃-compact-propositions-are-decidable X isp c = f a
  where
-  a : decidable ∥ X × (₀ ≡ ₀) ∥
+  a : decidable ∥ X × (₀ ＝ ₀) ∥
   a = c (λ x → ₀)
 
-  f : decidable ∥ X × (₀ ≡ ₀) ∥ → decidable X
+  f : decidable ∥ X × (₀ ＝ ₀) ∥ → decidable X
   f (inl s) = inl (∥∥-rec isp pr₁ s)
   f (inr u) = inr (λ x → u ∣ x , refl ∣)
 
@@ -556,17 +556,17 @@ decidable-propositions-are-∃-compact : (X : 𝓤 ̇ )
                                      → ∃-compact X
 decidable-propositions-are-∃-compact X isp d p = g d
  where
-  g : decidable X → decidable (∃ x ꞉ X , p x ≡ ₀)
+  g : decidable X → decidable (∃ x ꞉ X , p x ＝ ₀)
   g (inl x) = 𝟚-equality-cases b c
    where
-    b : p x ≡ ₀ → decidable (∃ x ꞉ X , p x ≡ ₀)
+    b : p x ＝ ₀ → decidable (∃ x ꞉ X , p x ＝ ₀)
     b r = inl ∣ x , r ∣
 
-    c : p x ≡ ₁ → decidable (∃ x ꞉ X , p x ≡ ₀)
+    c : p x ＝ ₁ → decidable (∃ x ꞉ X , p x ＝ ₀)
     c r = inr (∥∥-rec (𝟘-is-prop) f)
      where
-      f : ¬ (Σ y ꞉ X , p y ≡ ₀)
-      f (y , q) = zero-is-not-one (transport (λ - → p - ≡ ₀) (isp y x) q ⁻¹ ∙ r)
+      f : ¬ (Σ y ꞉ X , p y ＝ ₀)
+      f (y , q) = zero-is-not-one (transport (λ - → p - ＝ ₀) (isp y x) q ⁻¹ ∙ r)
 
   g (inr u) = inr (∥∥-rec 𝟘-is-prop (λ σ → u (pr₁ σ)))
 
@@ -576,10 +576,10 @@ negations-of-Π-compact-propositions-are-decidable : (X : 𝓤 ̇ )
                                                   → decidable (¬ X)
 negations-of-Π-compact-propositions-are-decidable X isp c = f a
  where
-  a : decidable (X → ₀ ≡ ₁)
+  a : decidable (X → ₀ ＝ ₁)
   a = c (λ x → ₀)
 
-  f : decidable (X → ₀ ≡ ₁) → decidable (¬ X)
+  f : decidable (X → ₀ ＝ ₁) → decidable (¬ X)
   f (inl u) = inl (zero-is-not-one  ∘ u)
   f (inr φ) = inr (λ u → φ (λ x → 𝟘-elim (u x)))
 
@@ -596,17 +596,17 @@ negations-of-propositions-whose-decidability-is-Π-compact-are-decidable X isp c
   p (inl x) = ₀
   p (inr u) = ₁
 
-  a : decidable ((z : X + ¬ X) → p z ≡ ₁)
+  a : decidable ((z : X + ¬ X) → p z ＝ ₁)
   a = c p
 
-  l : ((z : X + ¬ X) → p z ≡ ₁) → ¬ X + ¬¬ X
+  l : ((z : X + ¬ X) → p z ＝ ₁) → ¬ X + ¬¬ X
   l α = inl (λ x → 𝟘-elim (zero-is-not-one (α (inl x))))
 
-  α : (u : X → 𝟘) (z : X + ¬ X) → p z ≡ ₁
+  α : (u : X → 𝟘) (z : X + ¬ X) → p z ＝ ₁
   α u (inl x) = 𝟘-elim (u x)
   α u (inr v) = refl
 
-  m : ¬ ((z : X + ¬ X) → p z ≡ ₁) → ¬ X + ¬¬ X
+  m : ¬ ((z : X + ¬ X) → p z ＝ ₁) → ¬ X + ¬¬ X
   m φ = inr (λ u → φ (α u))
 
 \end{code}
@@ -619,36 +619,36 @@ module.
 \begin{code}
 
 detachable-subset-retract : {X : 𝓤 ̇ } {A : X → 𝟚}
-                          → (Σ x ꞉ X , A x ≡ ₀)
-                          → retract (Σ x ꞉ X , A x ≡ ₀) of X
+                          → (Σ x ꞉ X , A x ＝ ₀)
+                          → retract (Σ x ꞉ X , A x ＝ ₀) of X
 detachable-subset-retract {𝓤} {X} {A} (x₀ , e₀) = r , pr₁ , rs
  where
-  r : X → Σ x ꞉ X , A x ≡ ₀
-  r x = 𝟚-equality-cases (λ (e : A x ≡ ₀) → (x , e)) (λ (e : A x ≡ ₁) → (x₀ , e₀))
+  r : X → Σ x ꞉ X , A x ＝ ₀
+  r x = 𝟚-equality-cases (λ (e : A x ＝ ₀) → (x , e)) (λ (e : A x ＝ ₁) → (x₀ , e₀))
 
-  rs : (σ : Σ x ꞉ X , A x ≡ ₀) → r (pr₁ σ) ≡ σ
+  rs : (σ : Σ x ꞉ X , A x ＝ ₀) → r (pr₁ σ) ＝ σ
   rs (x , e) = w
    where
-    s : (b : 𝟚) → b ≡ ₀ → 𝟚-equality-cases (λ (_ : b ≡ ₀) → (x , e))
-                                             (λ (_ : b ≡ ₁) → (x₀ , e₀)) ≡ (x , e)
+    s : (b : 𝟚) → b ＝ ₀ → 𝟚-equality-cases (λ (_ : b ＝ ₀) → (x , e))
+                                             (λ (_ : b ＝ ₁) → (x₀ , e₀)) ＝ (x , e)
     s ₀ refl = refl
     s ₁ r = 𝟘-elim (one-is-not-zero r)
 
     t : 𝟚-equality-cases
-         (λ (_ : A x ≡ ₀) → x , e)
-         (λ (_ : A x ≡ ₁) → x₀ , e₀)
-      ≡ (x , e)
+         (λ (_ : A x ＝ ₀) → x , e)
+         (λ (_ : A x ＝ ₁) → x₀ , e₀)
+      ＝ (x , e)
     t = s (A x) e
 
-    u : (λ e' → x , e') ≡ (λ _ → x , e)
+    u : (λ e' → x , e') ＝ (λ _ → x , e)
     u = dfunext (fe 𝓤₀ 𝓤) λ e' → ap (λ - → (x , -)) (𝟚-is-set e' e)
 
-    v : r x ≡ 𝟚-equality-cases
-               (λ (_ : A x ≡ ₀) → x , e)
-               (λ (_ : A x ≡ ₁) → x₀ , e₀)
-    v = ap (λ - → 𝟚-equality-cases - (λ (_ : A x ≡ ₁) → x₀ , e₀)) u
+    v : r x ＝ 𝟚-equality-cases
+               (λ (_ : A x ＝ ₀) → x , e)
+               (λ (_ : A x ＝ ₁) → x₀ , e₀)
+    v = ap (λ - → 𝟚-equality-cases - (λ (_ : A x ＝ ₁) → x₀ , e₀)) u
 
-    w : r x ≡ x , e
+    w : r x ＝ x , e
     w = v ∙ t
 
 \end{code}
@@ -661,10 +661,10 @@ allows us to decide inhabitedness, and ∃-compactness is a proposition.
 
 detachable-subset-∃-compact : {X : 𝓤 ̇ } (A : X → 𝟚)
                             → ∃-compact X
-                            → ∃-compact (Σ x ꞉ X , A x ≡ ₀)
+                            → ∃-compact (Σ x ꞉ X , A x ＝ ₀)
 detachable-subset-∃-compact {𝓤} {X} A c = g (c A)
  where
-  g : decidable (∃ x ꞉ X , A x ≡ ₀) → ∃-compact (Σ x ꞉ X , A (x) ≡ ₀)
+  g : decidable (∃ x ꞉ X , A x ＝ ₀) → ∃-compact (Σ x ꞉ X , A (x) ＝ ₀)
   g (inl e) = retract-∃-compact' (∥∥-functor detachable-subset-retract e) c
   g (inr u) = empty-types-are-∃-compact (contrapositive ∣_∣ u)
 
@@ -678,59 +678,59 @@ ingredients (and with a longer proof (is there a shorter one?)).
 
 detachable-subset-Π-compact : {X : 𝓤 ̇ } (A : X → 𝟚)
                             → Π-compact X
-                            → Π-compact (Σ x ꞉ X , A x ≡ ₁)
+                            → Π-compact (Σ x ꞉ X , A x ＝ ₁)
 detachable-subset-Π-compact {𝓤} {X} A c q = g (c p)
  where
-  p₀ : (x : X) → A x ≡ ₀ → 𝟚
+  p₀ : (x : X) → A x ＝ ₀ → 𝟚
   p₀ x e = ₁
 
-  p₁ : (x : X) → A x ≡ ₁ → 𝟚
+  p₁ : (x : X) → A x ＝ ₁ → 𝟚
   p₁ x e = q (x , e)
 
   p : X → 𝟚
   p x = 𝟚-equality-cases (p₀ x) (p₁ x)
 
-  p-spec₀ : (x : X) → A x ≡ ₀ → p x ≡ ₁
+  p-spec₀ : (x : X) → A x ＝ ₀ → p x ＝ ₁
   p-spec₀ x e = s (A x) e (p₁ x)
    where
-    s : (b : 𝟚) → b ≡ ₀ → (f₁ : b ≡ ₁ → 𝟚)
-      → 𝟚-equality-cases (λ (_ : b ≡ ₀) → ₁) f₁ ≡ ₁
+    s : (b : 𝟚) → b ＝ ₀ → (f₁ : b ＝ ₁ → 𝟚)
+      → 𝟚-equality-cases (λ (_ : b ＝ ₀) → ₁) f₁ ＝ ₁
     s ₀ refl = λ f₁ → refl
     s ₁ r = 𝟘-elim (one-is-not-zero r)
 
-  p-spec₁ : (x : X) (e : A x ≡ ₁) → p x ≡ q (x , e)
+  p-spec₁ : (x : X) (e : A x ＝ ₁) → p x ＝ q (x , e)
   p-spec₁ x e = u ∙ t
    where
-    y : A x ≡ ₁ → 𝟚
+    y : A x ＝ ₁ → 𝟚
     y _ = q (x , e)
 
-    r : p₁ x ≡ y
+    r : p₁ x ＝ y
     r = dfunext (fe 𝓤₀ 𝓤₀) (λ e' → ap (p₁ x) (𝟚-is-set e' e))
 
     s : (b : 𝟚)
-      → b ≡ ₁
+      → b ＝ ₁
       → 𝟚-equality-cases
-         (λ (_ : b ≡ ₀) → ₁)
-         (λ (_ : b ≡ ₁) → q (x , e))
-      ≡ q (x , e)
+         (λ (_ : b ＝ ₀) → ₁)
+         (λ (_ : b ＝ ₁) → q (x , e))
+      ＝ q (x , e)
     s ₀ r = 𝟘-elim (zero-is-not-one r)
     s ₁ refl = refl
 
-    t : 𝟚-equality-cases (p₀ x) y ≡ q (x , e)
+    t : 𝟚-equality-cases (p₀ x) y ＝ q (x , e)
     t = s (A x) e
 
-    u : p x ≡ 𝟚-equality-cases (p₀ x) y
+    u : p x ＝ 𝟚-equality-cases (p₀ x) y
     u = ap (𝟚-equality-cases (p₀ x)) r
 
-  g : decidable ((x : X) → p x ≡ ₁)
-    → decidable ((σ : Σ x ꞉ X , A x ≡ ₁) → q σ ≡ ₁)
+  g : decidable ((x : X) → p x ＝ ₁)
+    → decidable ((σ : Σ x ꞉ X , A x ＝ ₁) → q σ ＝ ₁)
   g (inl α) = inl h
    where
-    h : (σ : Σ x ꞉ X , A x ≡ ₁) → q σ ≡ ₁
+    h : (σ : Σ x ꞉ X , A x ＝ ₁) → q σ ＝ ₁
     h (x , e) = (p-spec₁ x e) ⁻¹ ∙ α x
   g (inr u) = inr (contrapositive h u)
    where
-    h : ((σ : Σ x ꞉ X , A x ≡ ₁) → q σ ≡ ₁) → (x : X) → p x ≡ ₁
+    h : ((σ : Σ x ꞉ X , A x ＝ ₁) → q σ ＝ ₁) → (x : X) → p x ＝ ₁
     h β x = 𝟚-equality-cases (p-spec₀ x) (λ e → p-spec₁ x e ∙ β (x , e))
 
 \end{code}
@@ -743,7 +743,7 @@ module CompactTypes).
 \begin{code}
 
 ∃-compact∙ : 𝓤 ̇ → 𝓤 ̇
-∃-compact∙ X = (p : X → 𝟚) → ∃ x₀ ꞉ X , (p x₀ ≡ ₁ → (x : X) → p x ≡ ₁)
+∃-compact∙ X = (p : X → 𝟚) → ∃ x₀ ꞉ X , (p x₀ ＝ ₁ → (x : X) → p x ＝ ₁)
 
 ∃-compactness∙-is-prop : {X : 𝓤 ̇ } → is-prop (∃-compact∙ X)
 ∃-compactness∙-is-prop {𝓤} = Π-is-prop (fe 𝓤 𝓤) (λ _ → ∥∥-is-prop)
@@ -760,18 +760,18 @@ replaced by non-emptiness in the following results:
                                        → ∥ X ∥ × ∃-compact X
 ∃-compact∙-gives-inhabited-and-compact {𝓤} {X} c = γ
  where
-  g₁ : ∥ Σ (λ x₀ → ₀ ≡ ₁ → (x : X) → ₀ ≡ ₁) ∥
+  g₁ : ∥ Σ (λ x₀ → ₀ ＝ ₁ → (x : X) → ₀ ＝ ₁) ∥
   g₁ = c (λ x → ₀)
 
   g₂ : (p : X → 𝟚)
-     → (Σ x₀ ꞉ X , (p x₀ ≡ ₁ → (x : X) → p x ≡ ₁))
-     → decidable (∃ x ꞉ X , p x ≡ ₀)
+     → (Σ x₀ ꞉ X , (p x₀ ＝ ₁ → (x : X) → p x ＝ ₁))
+     → decidable (∃ x ꞉ X , p x ＝ ₀)
   g₂ p (x₀ , φ) = h (𝟚-is-discrete (p x₀) ₁)
    where
-    h : decidable (p x₀ ≡ ₁) → decidable (∃ x ꞉ X , p x ≡ ₀)
+    h : decidable (p x₀ ＝ ₁) → decidable (∃ x ꞉ X , p x ＝ ₀)
     h (inl r) = inr (∥∥-rec 𝟘-is-prop f)
      where
-      f : ¬ (Σ x ꞉ X , p x ≡ ₀)
+      f : ¬ (Σ x ꞉ X , p x ＝ ₀)
       f (x , s) = zero-is-not-one (s ⁻¹ ∙ φ r x)
     h (inr u) = inl ∣ x₀ , (different-from-₁-equal-₀ u) ∣
 
@@ -785,20 +785,20 @@ inhabited-and-compact-gives-∃-compact∙ : {X : 𝓤 ̇ }
                                        → ∃-compact∙ X
 inhabited-and-compact-gives-∃-compact∙ {𝓤} {X} (t , c) p = γ
  where
-  f : X → ∃ x₀ ꞉ X , (p x₀ ≡ ₁ → (x : X) → p x ≡ ₁)
+  f : X → ∃ x₀ ꞉ X , (p x₀ ＝ ₁ → (x : X) → p x ＝ ₁)
   f x₀ = g (𝟚-is-discrete (p x₀) ₀) (c p)
    where
-    g : decidable (p x₀ ≡ ₀)
-      → decidable (∃ x ꞉ X , p x ≡ ₀)
-      → ∃ x₀ ꞉ X , (p x₀ ≡ ₁ → (x : X) → p x ≡ ₁)
+    g : decidable (p x₀ ＝ ₀)
+      → decidable (∃ x ꞉ X , p x ＝ ₀)
+      → ∃ x₀ ꞉ X , (p x₀ ＝ ₁ → (x : X) → p x ＝ ₁)
     g (inl r) _       = ∣ x₀ , (λ s _ → 𝟘-elim (zero-is-not-one (r ⁻¹ ∙ s))) ∣
     g (inr _) (inl t) = ∥∥-functor h t
      where
-      h : (Σ x ꞉ X , p x ≡ ₀) → Σ x₀ ꞉ X , (p x₀ ≡ ₁ → (x : X) → p x ≡ ₁)
+      h : (Σ x ꞉ X , p x ＝ ₀) → Σ x₀ ꞉ X , (p x₀ ＝ ₁ → (x : X) → p x ＝ ₁)
       h (x , r) = x , λ s _ → 𝟘-elim (zero-is-not-one (r ⁻¹ ∙ s))
     g (inr _) (inr v) = ∣ x₀ , (λ _ → not-exists₀-implies-forall₁ pt p v) ∣
 
-  γ : ∃ x₀ ꞉ X , (p x₀ ≡ ₁ → (x : X) → p x ≡ ₁)
+  γ : ∃ x₀ ꞉ X , (p x₀ ＝ ₁ → (x : X) → p x ＝ ₁)
   γ = ∥∥-rec ∥∥-is-prop f t
 
 \end{code}
@@ -831,7 +831,7 @@ being-∃-compact∙-and-empty-is-prop {𝓤} {X} =
                                     → ∃-compact∙ X + is-empty X
 ∃-compact-gives-∃-compact∙-or-empty {𝓤} {X} c = g
  where
-  h : decidable (∃ x ꞉ X , ₀ ≡ ₀) → ∃-compact∙ X + is-empty X
+  h : decidable (∃ x ꞉ X , ₀ ＝ ₀) → ∃-compact∙ X + is-empty X
   h (inl t) = inl (inhabited-and-compact-gives-∃-compact∙ (∥∥-functor pr₁ t , c))
   h (inr u) = inr (contrapositive (λ x → ∣ x , refl ∣) u)
 
@@ -848,15 +848,15 @@ _has-inf_ : {X : 𝓤 ̇ } → (X → 𝟚) → 𝟚 → 𝓤 ̇
 p has-inf n = (∀ x → n ≤ p x) × (∀ (m : 𝟚) → (∀ x → m ≤ p x) → m ≤ n)
 
 having-inf-is-prop : {X : 𝓤 ̇ } (p : X → 𝟚) (n : 𝟚) → is-prop (p has-inf n)
-having-inf-is-prop {𝓤} {X} p n (f , g) (f' , g') = to-×-≡ r s
+having-inf-is-prop {𝓤} {X} p n (f , g) (f' , g') = to-×-＝ r s
  where
-  r : f ≡ f'
+  r : f ＝ f'
   r = dfunext (fe 𝓤 𝓤₀) (λ x → ≤₂-is-prop-valued (f x) (f' x))
-  s : g ≡ g'
+  s : g ＝ g'
   s = dfunext (fe 𝓤₀ 𝓤) (λ m → dfunext (fe 𝓤 𝓤₀) (λ ϕ → ≤₂-is-prop-valued (g m ϕ) (g' m ϕ)))
 
 at-most-one-inf : {X : 𝓤 ̇ } (p : X → 𝟚) → is-prop (Σ n ꞉ 𝟚 , p has-inf n)
-at-most-one-inf p (n , f , g) (n' , f' , g') = to-Σ-≡ (≤₂-anti (g' n f) (g n' f') , having-inf-is-prop p n' _ _)
+at-most-one-inf p (n , f , g) (n' , f' , g') = to-Σ-＝ (≤₂-anti (g' n f) (g n' f') , having-inf-is-prop p n' _ _)
 
 has-infs : 𝓤 ̇ → 𝓤 ̇
 has-infs X = ∀ (p : X → 𝟚) → Σ n ꞉ 𝟚 , p has-inf n
@@ -867,30 +867,30 @@ having-infs-is-prop {𝓤} {X} = Π-is-prop (fe 𝓤 𝓤) at-most-one-inf
 Π-compact-has-infs : {X : 𝓤 ̇ } → Π-compact X → has-infs X
 Π-compact-has-infs c p = g (c p)
  where
-  g : decidable (∀ x → p x ≡ ₁) → Σ n ꞉ 𝟚 , p has-inf n
+  g : decidable (∀ x → p x ＝ ₁) → Σ n ꞉ 𝟚 , p has-inf n
   g (inl α) = ₁ , (λ x → transport⁻¹ (₁ ≤₂_) (α x) (≤₂-refl {₀})) , λ m ϕ → ₁-top
   g (inr u) = ₀ , (λ _ → ₀-bottom {₀}) , h
    where
     h : (m : 𝟚) → (∀ x → m ≤ p x) → m ≤ ₀
     h m φ = ≤₂-criterion f
      where
-      f : m ≡ ₁ → ₀ ≡ ₁
+      f : m ＝ ₁ → ₀ ＝ ₁
       f r = 𝟘-elim (u α)
        where
-        α : ∀ x → p x ≡ ₁
+        α : ∀ x → p x ＝ ₁
         α x = ₁-maximal (transport (_≤ p x) r (φ x))
 
 has-infs-Π-compact : {X : 𝓤 ̇ } → has-infs X → Π-compact X
 has-infs-Π-compact h p = f (h p)
  where
-  f : (Σ n ꞉ 𝟚 , p has-inf n) → decidable (∀ x → p x ≡ ₁)
+  f : (Σ n ꞉ 𝟚 , p has-inf n) → decidable (∀ x → p x ＝ ₁)
   f (₀ , _ , l) = inr u
    where
-    u : ¬ ∀ x → p x ≡ ₁
+    u : ¬ ∀ x → p x ＝ ₁
     u α = l ₁ (λ x → ≤₂-criterion (λ _ → α x))
   f (₁ , g , _) = inl α
    where
-    α : ∀ x → p x ≡ ₁
+    α : ∀ x → p x ＝ ₁
     α x = ₁-maximal (g x)
 
 \end{code}
@@ -909,11 +909,11 @@ inf-property : {X : 𝓤 ̇ } → (c : Π-compact X) (p : X → 𝟚) → p has-
 inf-property c p = pr₂ (Π-compact-has-infs c p)
 
 inf₁ : {X : 𝓤 ̇ } (c : Π-compact X) {p : X → 𝟚}
-     → inf c p ≡ ₁ → ∀ x → p x ≡ ₁
+     → inf c p ＝ ₁ → ∀ x → p x ＝ ₁
 inf₁ c {p} r x = ≤₂-criterion-converse (pr₁ (inf-property c p) x) r
 
 inf₁-converse : {X : 𝓤 ̇ } (c : Π-compact X) {p : X → 𝟚}
-              → (∀ x → p x ≡ ₁) → inf c p ≡ ₁
+              → (∀ x → p x ＝ ₁) → inf c p ＝ ₁
 inf₁-converse c {p} α = ₁-maximal (h g)
  where
   h : (∀ x → ₁ ≤ p x) → ₁ ≤ inf c p
@@ -974,13 +974,13 @@ Right adjoints to Κ are characterized as follows:
 \begin{code}
 
 Κ⊣-charac : {X : 𝓤 ̇ } → (A : (X → 𝟚) → 𝟚)
-          → Κ⊣ A ⇔ ((p : X → 𝟚) → A p ≡ ₁ ⇔ p ≡ (λ x → ₁))
+          → Κ⊣ A ⇔ ((p : X → 𝟚) → A p ＝ ₁ ⇔ p ＝ (λ x → ₁))
 Κ⊣-charac {𝓤} {X} A = f , g
  where
-  f : Κ⊣ A → (p : X → 𝟚) → A p ≡ ₁ ⇔ p ≡ (λ x → ₁)
+  f : Κ⊣ A → (p : X → 𝟚) → A p ＝ ₁ ⇔ p ＝ (λ x → ₁)
   f φ p = f₀ , f₁
    where
-    f₀ : A p ≡ ₁ → p ≡ (λ x → ₁)
+    f₀ : A p ＝ ₁ → p ＝ (λ x → ₁)
     f₀ r = dfunext (fe 𝓤 𝓤₀) l₃
      where
       l₀ : ₁ ≤ A p → Κ ₁ ≤̇ p
@@ -989,12 +989,12 @@ Right adjoints to Κ are characterized as follows:
       l₁ = l₀ (₁-maximal-converse r)
       l₂ : (x : X) → ₁ ≤ p x
       l₂ = l₁
-      l₃ : (x : X) → p x ≡ ₁
+      l₃ : (x : X) → p x ＝ ₁
       l₃ x = ≤₂-criterion-converse (l₂ x) refl
-    f₁ : p ≡ (λ x → ₁) → A p ≡ ₁
+    f₁ : p ＝ (λ x → ₁) → A p ＝ ₁
     f₁ s = ≤₂-criterion-converse l₀ refl
      where
-      l₃ : (x : X) → p x ≡ ₁
+      l₃ : (x : X) → p x ＝ ₁
       l₃ = happly s
       l₂ : (x : X) → ₁ ≤ p x
       l₂ x = ₁-maximal-converse (l₃ x)
@@ -1002,25 +1002,25 @@ Right adjoints to Κ are characterized as follows:
       l₁ = l₂
       l₀ : ₁ ≤ A p
       l₀ = pr₁ (φ ₁ p) l₁
-  g : ((p : X → 𝟚) → A p ≡ ₁ ⇔ p ≡ (λ x → ₁)) → Κ⊣ A
+  g : ((p : X → 𝟚) → A p ＝ ₁ ⇔ p ＝ (λ x → ₁)) → Κ⊣ A
   g γ n p = (g₀ n refl , g₁ n refl)
    where
-    g₀ : ∀ m → m ≡ n → Κ m ≤̇ p → m ≤ A p
+    g₀ : ∀ m → m ＝ n → Κ m ≤̇ p → m ≤ A p
     g₀ ₀ r l = ₀-bottom {₀}
     g₀ ₁ refl l = ₁-maximal-converse (pr₂ (γ p) l₁)
      where
-      l₀ : (x : X) → p x ≡ ₁
+      l₀ : (x : X) → p x ＝ ₁
       l₀ x = ₁-maximal (l x)
-      l₁ : p ≡ (λ x → ₁)
+      l₁ : p ＝ (λ x → ₁)
       l₁ = dfunext (fe 𝓤 𝓤₀) l₀
 
-    g₁ : ∀ m → m ≡ n → m ≤ A p → Κ m ≤̇ p
+    g₁ : ∀ m → m ＝ n → m ≤ A p → Κ m ≤̇ p
     g₁ ₀ r l x = ₀-bottom {₀}
     g₁ ₁ refl l x = ₁-maximal-converse (l₀ x)
      where
-      l₁ : p ≡ (λ x → ₁)
+      l₁ : p ＝ (λ x → ₁)
       l₁ = pr₁ (γ p) (₁-maximal l)
-      l₀ : (x : X) → p x ≡ ₁
+      l₀ : (x : X) → p x ＝ ₁
       l₀ = happly l₁
 
 \end{code}
@@ -1038,24 +1038,24 @@ the dominance 𝟚.
   f : Π-compact X → Σ A ꞉ ((X → 𝟚) → 𝟚), Κ⊣ A
   f c = (A , pr₂ (Κ⊣-charac A) l₁)
    where
-    c' : (p : X → 𝟚) → decidable (p ≡ (λ x → ₁))
+    c' : (p : X → 𝟚) → decidable (p ＝ (λ x → ₁))
     c' = Π-compact-gives-Π-compact' c
-    l₀ : (p : X → 𝟚) → decidable (p ≡ (λ x → ₁)) → Σ n ꞉ 𝟚 , (n ≡ ₁ ⇔ p ≡ (λ x → ₁))
+    l₀ : (p : X → 𝟚) → decidable (p ＝ (λ x → ₁)) → Σ n ꞉ 𝟚 , (n ＝ ₁ ⇔ p ＝ (λ x → ₁))
     l₀ p (inl r) = (₁ , ((λ _ → r) , λ _ → refl))
     l₀ p (inr u) = (₀ , ((λ s → 𝟘-elim (zero-is-not-one s)) , λ r → 𝟘-elim (u r)))
     A : (X → 𝟚) → 𝟚
     A p = pr₁ (l₀ p (c' p))
-    l₁ : (p : X → 𝟚) → A p ≡ ₁ ⇔ p ≡ (λ x → ₁)
+    l₁ : (p : X → 𝟚) → A p ＝ ₁ ⇔ p ＝ (λ x → ₁)
     l₁ p = pr₂ (l₀ p (c' p))
   g : ((Σ A ꞉ ((X → 𝟚) → 𝟚), Κ⊣ A)) → Π-compact X
   g (A , φ) = Π-compact'-gives-Π-compact c'
    where
-    l₁ : (p : X → 𝟚) → A p ≡ ₁ ⇔ p ≡ (λ x → ₁)
+    l₁ : (p : X → 𝟚) → A p ＝ ₁ ⇔ p ＝ (λ x → ₁)
     l₁ = pr₁ (Κ⊣-charac A) φ
-    l₀ : (p : X → 𝟚) → decidable (A p ≡ ₁) → decidable (p ≡ (λ x → ₁))
+    l₀ : (p : X → 𝟚) → decidable (A p ＝ ₁) → decidable (p ＝ (λ x → ₁))
     l₀ p (inl r) = inl (pr₁ (l₁ p) r)
     l₀ p (inr u) = inr (contrapositive (pr₂ (l₁ p)) u)
-    c' : (p : X → 𝟚) → decidable (p ≡ (λ x → ₁))
+    c' : (p : X → 𝟚) → decidable (p ＝ (λ x → ₁))
     c' p = l₀ p (𝟚-is-discrete (A p) ₁)
 
 \end{code}
@@ -1070,17 +1070,17 @@ and hence so is the type (X → 𝟚) with the pointwise operations.
 𝟚-DeMorgan-dual φ = λ p → complement (φ (λ x → complement (p x)))
 
 𝟚-DeMorgan-dual-involutive : {X : 𝓤 ̇ } → (φ : (X → 𝟚) → 𝟚)
-                           → 𝟚-DeMorgan-dual (𝟚-DeMorgan-dual φ) ≡ φ
+                           → 𝟚-DeMorgan-dual (𝟚-DeMorgan-dual φ) ＝ φ
 𝟚-DeMorgan-dual-involutive {𝓤} φ = dfunext (fe 𝓤 𝓤₀) h
  where
   f : ∀ p → complement (complement (φ (λ x → complement (complement (p x)))))
-          ≡ φ (λ x → complement (complement (p x)))
+          ＝ φ (λ x → complement (complement (p x)))
   f p = complement-involutive (φ (λ x → complement (complement (p x))))
 
-  g : ∀ p → φ (λ x → complement (complement (p x))) ≡ φ p
+  g : ∀ p → φ (λ x → complement (complement (p x))) ＝ φ p
   g p = ap φ (dfunext (fe 𝓤 𝓤₀) (λ x → complement-involutive (p x)))
 
-  h : ∀ p → 𝟚-DeMorgan-dual (𝟚-DeMorgan-dual φ) p ≡ φ p
+  h : ∀ p → 𝟚-DeMorgan-dual (𝟚-DeMorgan-dual φ) p ＝ φ p
   h p = f p ∙ g p
 
 Π-compact-is-𝟚-overt : {X : 𝓤 ̇ } → (A : (X → 𝟚) → 𝟚)
@@ -1192,7 +1192,7 @@ is 𝟚-overt:
 
 TODO. We get as a corollary that
 
-      E ⊣Κ ⇔ ((p : X → 𝟚) → E p ≡ ₀ ⇔ p ≡ (λ x → ₀)).
+      E ⊣Κ ⇔ ((p : X → 𝟚) → E p ＝ ₀ ⇔ p ＝ (λ x → ₀)).
 
 TODO. Find the appropriate place in this file to remark that decidable
 propositions are closed under Π-compact/overt meets and joins. And
@@ -1223,11 +1223,11 @@ Images with upper case:
 
 Image : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
      → (X → Y) → (X → 𝓦 ̇ ) → (Y → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇ )
-Image f A = λ y → ∃ x ꞉ domain f , A x × (f x ≡ y)
+Image f A = λ y → ∃ x ꞉ domain f , A x × (f x ＝ y)
 
 is-clopen-map : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 is-clopen-map {𝓤} {𝓥} {X} {Y} f = (p : X → 𝟚) (y : Y)
-                                → decidable (Image f (λ x → p x ≡ ₀) y)
+                                → decidable (Image f (λ x → p x ＝ ₀) y)
 
 being-clopen-map-is-prop : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                            → (f : X → Y) → is-prop (is-clopen-map f)
@@ -1244,31 +1244,31 @@ fst _ _ = pr₁
                              → (∀ {𝓥} (A : 𝓥 ̇ ) → is-clopen-map (fst A X))
 ∃-compact-clopen-projections X c A p a = g (c (λ x → p (a , x)))
  where
-  g : decidable (∃ x ꞉ X , p (a , x) ≡ ₀)
-    → decidable (∃ z ꞉ A × X , (p z ≡ ₀) × (pr₁ z ≡ a))
+  g : decidable (∃ x ꞉ X , p (a , x) ＝ ₀)
+    → decidable (∃ z ꞉ A × X , (p z ＝ ₀) × (pr₁ z ＝ a))
   g (inl e) = inl ((∥∥-functor h) e)
    where
-    h : (Σ x ꞉ X , p (a , x) ≡ ₀) → Σ z ꞉ A × X , (p z ≡ ₀) × (pr₁ z ≡ a)
+    h : (Σ x ꞉ X , p (a , x) ＝ ₀) → Σ z ꞉ A × X , (p z ＝ ₀) × (pr₁ z ＝ a)
     h (x , r) =  (a , x) , (r , refl)
   g (inr u) = inr (contrapositive (∥∥-functor h) u)
    where
-    h : (Σ z ꞉ A × X , (p z ≡ ₀) × (pr₁ z ≡ a)) → Σ x ꞉ X , p (a , x) ≡ ₀
-    h ((a' , x) , (r , s)) = x , transport (λ - → p (- , x) ≡ ₀) s r
+    h : (Σ z ꞉ A × X , (p z ＝ ₀) × (pr₁ z ＝ a)) → Σ x ꞉ X , p (a , x) ＝ ₀
+    h ((a' , x) , (r , s)) = x , transport (λ - → p (- , x) ＝ ₀) s r
 
 clopen-projections-∃-compact : ∀ {𝓤 𝓦} (X : 𝓤 ̇ )
                              → (∀ {𝓥} (A : 𝓥 ̇ ) → is-clopen-map (fst A X))
                              → ∃-compact X
 clopen-projections-∃-compact {𝓤} {𝓦} X κ p = g (κ 𝟙 (λ z → p (pr₂ z)) ⋆)
  where
-  g : decidable (∃ z ꞉ 𝟙 {𝓦} × X , (p (pr₂ z) ≡ ₀) × (pr₁ z ≡ ⋆))
-    → decidable (∃ x ꞉ X , p x ≡ ₀)
+  g : decidable (∃ z ꞉ 𝟙 {𝓦} × X , (p (pr₂ z) ＝ ₀) × (pr₁ z ＝ ⋆))
+    → decidable (∃ x ꞉ X , p x ＝ ₀)
   g (inl e) = inl (∥∥-functor h e)
    where
-    h : (Σ z ꞉ 𝟙 × X , (p (pr₂ z) ≡ ₀) × (pr₁ z ≡ ⋆)) → Σ x ꞉ X , p x ≡ ₀
+    h : (Σ z ꞉ 𝟙 × X , (p (pr₂ z) ＝ ₀) × (pr₁ z ＝ ⋆)) → Σ x ꞉ X , p x ＝ ₀
     h ((⋆ , x) , r , _) = x , r
   g (inr u) = inr (contrapositive (∥∥-functor h) u)
    where
-    h : (Σ x ꞉ X , p x ≡ ₀) → Σ z ꞉ 𝟙 × X , (p (pr₂ z) ≡ ₀) × (pr₁ z ≡ ⋆)
+    h : (Σ x ꞉ X , p x ＝ ₀) → Σ z ꞉ 𝟙 × X , (p (pr₂ z) ＝ ₀) × (pr₁ z ＝ ⋆)
     h (x , r) = (⋆ , x) , (r , refl)
 
 

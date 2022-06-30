@@ -96,16 +96,16 @@ module _ (𝓓 : DCPO {𝓤} {𝓣})
         γ = transport (λ - → [ 𝓔 , 𝓕  ]⟨ f (∐ 𝓓 δ) ⟩ - ⊑⟨ 𝓕 ⟩ y)
             e₀ γ₀
          where
-          e₀ : ∐ 𝓔 (image-is-directed' 𝓓 𝓔 (g , cg) δ) ≡ g (∐ 𝓓 δ)
-          e₀ = (continuous-∐-≡ 𝓓 𝓔 (g , cg) δ) ⁻¹
+          e₀ : ∐ 𝓔 (image-is-directed' 𝓓 𝓔 (g , cg) δ) ＝ g (∐ 𝓓 δ)
+          e₀ = (continuous-∐-＝ 𝓓 𝓔 (g , cg) δ) ⁻¹
           ε₀ : is-Directed 𝓔 (g ∘ α)
           ε₀ = image-is-directed' 𝓓 𝓔 (g , cg) δ
           γ₀ : [ 𝓔 , 𝓕 ]⟨ f (∐ 𝓓 δ) ⟩ (∐ 𝓔 ε₀) ⊑⟨ 𝓕 ⟩ y
           γ₀ = transport (λ - → - ⊑⟨ 𝓕 ⟩ y) e₁ γ₁
            where
-            e₁ : ∐ 𝓕 (image-is-directed' 𝓔 𝓕 (f (∐ 𝓓 δ)) ε₀) ≡
+            e₁ : ∐ 𝓕 (image-is-directed' 𝓔 𝓕 (f (∐ 𝓓 δ)) ε₀) ＝
                  [ 𝓔 , 𝓕 ]⟨ f (∐ 𝓓 δ) ⟩ (∐ 𝓔 ε₀)
-            e₁ = (continuous-∐-≡ 𝓔 𝓕 (f (∐ 𝓓 δ)) ε₀) ⁻¹
+            e₁ = (continuous-∐-＝ 𝓔 𝓕 (f (∐ 𝓓 δ)) ε₀) ⁻¹
             ε₁ : is-Directed 𝓕 ([ 𝓔 , 𝓕 ]⟨ f (∐ 𝓓 δ) ⟩ ∘ (g ∘ α))
             ε₁ = image-is-directed' 𝓔 𝓕 (f (∐ 𝓓 δ)) ε₀
             γ₁ : (∐ 𝓕 ε₁) ⊑⟨ 𝓕 ⟩ y
@@ -116,8 +116,8 @@ module _ (𝓓 : DCPO {𝓤} {𝓣})
                where
                 ε₂ : is-Directed (𝓔 ⟹ᵈᶜᵖᵒ 𝓕) (f ∘ α)
                 ε₂ = image-is-directed' 𝓓 (𝓔 ⟹ᵈᶜᵖᵒ 𝓕) (f , cf) δ
-                e₂ : ∐ (𝓔 ⟹ᵈᶜᵖᵒ 𝓕) {I} {f ∘ α} ε₂ ≡ f (∐ 𝓓 δ)
-                e₂ = (continuous-∐-≡ 𝓓 (𝓔 ⟹ᵈᶜᵖᵒ 𝓕) (f , cf) δ) ⁻¹
+                e₂ : ∐ (𝓔 ⟹ᵈᶜᵖᵒ 𝓕) {I} {f ∘ α} ε₂ ＝ f (∐ 𝓓 δ)
+                e₂ = (continuous-∐-＝ 𝓓 (𝓔 ⟹ᵈᶜᵖᵒ 𝓕) (f , cf) δ) ⁻¹
                 γ₃ : [ 𝓔 , 𝓕 ]⟨ ∐ (𝓔 ⟹ᵈᶜᵖᵒ 𝓕) {I} {f ∘ α} ε₂ ⟩ (g (α i)) ⊑⟨ 𝓕 ⟩ y
                 γ₃ = ∐-is-lowerbound-of-upperbounds 𝓕
                       (pointwise-family-is-directed 𝓔 𝓕 (f ∘ α) ε₂ (g (α i)))
@@ -167,8 +167,8 @@ module _ (𝓓 : DCPO {𝓤} {𝓣})
         ε : is-Directed 𝓔 (pointwise-family 𝓓 𝓔 α d)
         ε = pointwise-family-is-directed 𝓓 𝓔 α δ d
         e : ∐ 𝓕 (image-is-directed' 𝓔 𝓕 (f d) ε)
-            ≡ [ 𝓓 , 𝓕 ]⟨ h (∐ (𝓓 ⟹ᵈᶜᵖᵒ 𝓔) {I} {α} δ) ⟩ d
-        e = (continuous-∐-≡ 𝓔 𝓕 (f d) ε) ⁻¹
+            ＝ [ 𝓓 , 𝓕 ]⟨ h (∐ (𝓓 ⟹ᵈᶜᵖᵒ 𝓔) {I} {α} δ) ⟩ d
+        e = (continuous-∐-＝ 𝓔 𝓕 (f d) ε) ⁻¹
         φ : is-Directed 𝓕
             ([ 𝓔 , 𝓕 ]⟨ f d ⟩ ∘ (pointwise-family 𝓓 𝓔 α d))
         φ = image-is-directed' 𝓔 𝓕 (f d) ε
@@ -264,10 +264,10 @@ module IfZeroDenotationalSemantics
    c I α δ = u , v
     where
      u : (i : I) (l : 𝓛 ℕ) (d : is-defined (((⦅ifZero⦆₀ a (α i)) ♯) l))
-       → ((⦅ifZero⦆₀ a (α i)) ♯) l ≡ ((⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ)) ♯) l
-     u i l d = ((⦅ifZero⦆₀ a (α i)) ♯) l             ≡⟨ q₁ ⟩
-               ⦅ifZero⦆₀ a (α i) (value l e)         ≡⟨ q₂ ⟩
-               ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) (value l e) ≡⟨ q₃ ⟩
+       → ((⦅ifZero⦆₀ a (α i)) ♯) l ＝ ((⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ)) ♯) l
+     u i l d = ((⦅ifZero⦆₀ a (α i)) ♯) l             ＝⟨ q₁ ⟩
+               ⦅ifZero⦆₀ a (α i) (value l e)         ＝⟨ q₂ ⟩
+               ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) (value l e) ＝⟨ q₃ ⟩
                ((⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ)) ♯) l     ∎
       where
        e : is-defined l
@@ -275,98 +275,98 @@ module IfZeroDenotationalSemantics
        q₁ = ♯-on-total-element (⦅ifZero⦆₀ a (α i)) e
        q₃ = (♯-on-total-element (⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ)) {l} e) ⁻¹
        q₂ = ℕ-cases {𝓥 ⁺} {λ (n : ℕ) → ⦅ifZero⦆₀ a (α i) n
-                                     ≡ ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) n} (value l e) p₀ pₛ
+                                     ＝ ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) n} (value l e) p₀ pₛ
         where
-         p₀ : value l e ≡ zero
-            → ⦅ifZero⦆₀ a (α i) (value l e) ≡ ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) (value l e)
-         p₀ q = ⦅ifZero⦆₀ a (α i) (value l e)         ≡⟨ ap (⦅ifZero⦆₀ a (α i)) q  ⟩
-                ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) zero        ≡⟨ ap (⦅ifZero⦆₀ a _) (q ⁻¹) ⟩
+         p₀ : value l e ＝ zero
+            → ⦅ifZero⦆₀ a (α i) (value l e) ＝ ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) (value l e)
+         p₀ q = ⦅ifZero⦆₀ a (α i) (value l e)         ＝⟨ ap (⦅ifZero⦆₀ a (α i)) q  ⟩
+                ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) zero        ＝⟨ ap (⦅ifZero⦆₀ a _) (q ⁻¹) ⟩
                 ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) (value l e) ∎
-         pₛ : (n : ℕ) → value l e ≡ succ n
-            → ⦅ifZero⦆₀ a (α i) (value l e) ≡ ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) (value l e)
-         pₛ n q = ⦅ifZero⦆₀ a (α i) (value l e)         ≡⟨ ⦅1⦆  ⟩
-                  ⦅ifZero⦆₀ a (α i) (succ n)            ≡⟨ refl ⟩
-                  α i                                   ≡⟨ ⦅2⦆  ⟩
-                  ∐ (𝓛ᵈℕ ⁻) δ                           ≡⟨ refl ⟩
-                  ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) (succ n)    ≡⟨ ⦅3⦆  ⟩
+         pₛ : (n : ℕ) → value l e ＝ succ n
+            → ⦅ifZero⦆₀ a (α i) (value l e) ＝ ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) (value l e)
+         pₛ n q = ⦅ifZero⦆₀ a (α i) (value l e)         ＝⟨ ⦅1⦆  ⟩
+                  ⦅ifZero⦆₀ a (α i) (succ n)            ＝⟨ refl ⟩
+                  α i                                   ＝⟨ ⦅2⦆  ⟩
+                  ∐ (𝓛ᵈℕ ⁻) δ                           ＝⟨ refl ⟩
+                  ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) (succ n)    ＝⟨ ⦅3⦆  ⟩
                   ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) (value l e) ∎
           where
            ⦅1⦆ = ap (⦅ifZero⦆₀ a (α i)) q
            ⦅3⦆ = ap (⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ)) (q ⁻¹)
-           ⦅2⦆ = family-defined-somewhere-sup-≡ ℕ-is-set δ i eᵢ
+           ⦅2⦆ = family-defined-somewhere-sup-＝ ℕ-is-set δ i eᵢ
             where
              eᵢ : is-defined (α i)
-             eᵢ = ≡-to-is-defined (ap (⦅ifZero⦆₀ a (α i)) q)
-                   (≡-to-is-defined
+             eᵢ = ＝-to-is-defined (ap (⦅ifZero⦆₀ a (α i)) q)
+                   (＝-to-is-defined
                      (♯-on-total-element (⦅ifZero⦆₀ a (α i)) {l} e) d)
 
      v : (f : DCPO⊥[ 𝓛ᵈℕ , 𝓛ᵈℕ ])
        → ((i : I) → ⦅ifZero⦆₁ a (α i) ⊑⟪ 𝓛ᵈℕ ⟹ᵈᶜᵖᵒ⊥ 𝓛ᵈℕ ⟫ f)
        → (l : 𝓛 ℕ) (d : is-defined (((⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ)) ♯) l))
-       → ((⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ)) ♯) l ≡ [ 𝓛ᵈℕ ⁻ , 𝓛ᵈℕ ⁻ ]⟨ f ⟩ l
-     v (f , _) ineqs l d = ((⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ)) ♯) l     ≡⟨ q₁ ⟩
-                           ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) (value l e) ≡⟨ q₂ ⟩
+       → ((⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ)) ♯) l ＝ [ 𝓛ᵈℕ ⁻ , 𝓛ᵈℕ ⁻ ]⟨ f ⟩ l
+     v (f , _) ineqs l d = ((⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ)) ♯) l     ＝⟨ q₁ ⟩
+                           ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) (value l e) ＝⟨ q₂ ⟩
                            f l                                  ∎
       where
        e : is-defined l
        e = ♯-is-defined (⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ)) l d
        q₁ = ♯-on-total-element (⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ)) {l} e
-       q₂ = ℕ-cases {𝓥 ⁺} {λ (n : ℕ) → ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) n ≡ f l}
+       q₂ = ℕ-cases {𝓥 ⁺} {λ (n : ℕ) → ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) n ＝ f l}
              (value l e) p₀ pₛ
         where
-         p₀ : value l e ≡ zero
-            → ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) (value l e) ≡ f l
-         p₀ q = ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) (value l e) ≡⟨ ⦅1⦆  ⟩
-                ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) zero        ≡⟨ refl ⟩
-                a                                     ≡⟨ ⦅2⦆  ⟩
+         p₀ : value l e ＝ zero
+            → ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) (value l e) ＝ f l
+         p₀ q = ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) (value l e) ＝⟨ ⦅1⦆  ⟩
+                ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) zero        ＝⟨ refl ⟩
+                a                                     ＝⟨ ⦅2⦆  ⟩
                 f l                                   ∎
           where
            ⦅1⦆ = ap (⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ)) q
            ⦅2⦆ = ∥∥-rec (lifting-of-set-is-set ℕ-is-set)
                   h (inhabited-if-Directed (𝓛ᵈℕ ⁻) α δ)
             where
-             h : (i : I) → a ≡ f l
-             h i = a                             ≡⟨ ⦅1'⦆ ⟩
-                   ⦅ifZero⦆₀ a (α i) (value l e) ≡⟨ ⦅2'⦆ ⟩
-                   ((⦅ifZero⦆₀ a (α i)) ♯) l     ≡⟨ ⦅3'⦆ ⟩
+             h : (i : I) → a ＝ f l
+             h i = a                             ＝⟨ ⦅1'⦆ ⟩
+                   ⦅ifZero⦆₀ a (α i) (value l e) ＝⟨ ⦅2'⦆ ⟩
+                   ((⦅ifZero⦆₀ a (α i)) ♯) l     ＝⟨ ⦅3'⦆ ⟩
                    f l                           ∎
               where
                ⦅1'⦆ = ap (⦅ifZero⦆₀ a (α i)) (q ⁻¹)
                ⦅2'⦆ = (♯-on-total-element (⦅ifZero⦆₀ a (α i)) e) ⁻¹
-               ⦅3'⦆ = ineqs i l (≡-to-is-defined r d)
+               ⦅3'⦆ = ineqs i l (＝-to-is-defined r d)
                 where
                  r : ((⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ)) ♯) l
-                   ≡ ((⦅ifZero⦆₀ a (α i)) ♯) l
+                   ＝ ((⦅ifZero⦆₀ a (α i)) ♯) l
                  r = q₁ ∙ ⦅1⦆ ∙ ⦅1'⦆ ∙ ⦅2'⦆
 
-         pₛ : (m : ℕ) → value l e ≡ succ m
-            → ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) (value l e) ≡ f l
+         pₛ : (m : ℕ) → value l e ＝ succ m
+            → ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) (value l e) ＝ f l
          pₛ m q = ∥∥-rec (lifting-of-set-is-set ℕ-is-set) h e'
           where
            ⦅1⦆ : (⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) ♯) l
-               ≡ ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) (value l e)
+               ＝ ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) (value l e)
            ⦅1⦆ = ♯-on-total-element (⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ)) {l} e
-           ⦅2⦆ : ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) (value l e) ≡ ∐ (𝓛ᵈℕ ⁻) δ
+           ⦅2⦆ : ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) (value l e) ＝ ∐ (𝓛ᵈℕ ⁻) δ
            ⦅2⦆ = ap (⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ)) q
            e' : is-defined (∐ (𝓛ᵈℕ ⁻) δ)
-           e' = ≡-to-is-defined (⦅1⦆ ∙ ⦅2⦆) d
+           e' = ＝-to-is-defined (⦅1⦆ ∙ ⦅2⦆) d
            h : (Σ i ꞉ I , is-defined (α i))
-             → ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) (value l e) ≡ f l
-           h (i , dᵢ) = ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) (value l e) ≡⟨ ⦅1'⦆ ⟩
-                        ∐ (𝓛ᵈℕ ⁻) δ                           ≡⟨ ⦅2'⦆ ⟩
-                        α i                                   ≡⟨ ⦅3'⦆ ⟩
-                        ((⦅ifZero⦆₀ a (α i)) ♯) l             ≡⟨ ⦅4'⦆ ⟩
+             → ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) (value l e) ＝ f l
+           h (i , dᵢ) = ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) (value l e) ＝⟨ ⦅1'⦆ ⟩
+                        ∐ (𝓛ᵈℕ ⁻) δ                           ＝⟨ ⦅2'⦆ ⟩
+                        α i                                   ＝⟨ ⦅3'⦆ ⟩
+                        ((⦅ifZero⦆₀ a (α i)) ♯) l             ＝⟨ ⦅4'⦆ ⟩
                         f l                                   ∎
             where
              ⦅1'⦆ = ⦅2⦆
-             ⦅2'⦆ = (family-defined-somewhere-sup-≡ ℕ-is-set δ i dᵢ) ⁻¹
+             ⦅2'⦆ = (family-defined-somewhere-sup-＝ ℕ-is-set δ i dᵢ) ⁻¹
              ⦅3'⦆ = (♯-on-total-element (⦅ifZero⦆₀ a (α i)) e
                      ∙ ap (⦅ifZero⦆₀ a (α i)) q) ⁻¹
-             ⦅4'⦆ = ineqs i l (≡-to-is-defined ⦅3'⦆ dᵢ)
+             ⦅4'⦆ = ineqs i l (＝-to-is-defined ⦅3'⦆ dᵢ)
 
 \end{code}
 
-We can exploit the fact that ifZero a b 0 ≡ ifZero b a 1, to reduce the proof
+We can exploit the fact that ifZero a b 0 ＝ ifZero b a 1, to reduce the proof
 that ifZero is continuous in its first argument to continuity in its second
 argument. The "flip"-code below prepares for this.
 
@@ -377,7 +377,7 @@ argument. The "flip"-code below prepares for this.
  ℕ-flip (succ n) = zero
 
  ifZero-flip-equation : (a b : 𝓛 ℕ) (n : ℕ)
-                      → ⦅ifZero⦆₀ a b n ≡ ⦅ifZero⦆₀ b a (ℕ-flip n)
+                      → ⦅ifZero⦆₀ a b n ＝ ⦅ifZero⦆₀ b a (ℕ-flip n)
  ifZero-flip-equation a b zero     = refl
  ifZero-flip-equation a b (succ n) = refl
 
@@ -385,16 +385,16 @@ argument. The "flip"-code below prepares for this.
  𝓛ℕ-flip (P , ϕ , ρ) = (P , ℕ-flip ∘ ϕ , ρ)
 
  ifZero♯-flip-equation : (a b : 𝓛 ℕ) (l : 𝓛 ℕ)
-                      → ((⦅ifZero⦆₀ a b) ♯) l ≡ ((⦅ifZero⦆₀ b a) ♯) (𝓛ℕ-flip l)
+                      → ((⦅ifZero⦆₀ a b) ♯) l ＝ ((⦅ifZero⦆₀ b a) ♯) (𝓛ℕ-flip l)
  ifZero♯-flip-equation a b l = ⊑'-is-antisymmetric u v
   where
    l' : 𝓛 ℕ
    l' = 𝓛ℕ-flip l
    lemma : (p : is-defined l)
-         → (⦅ifZero⦆₀ a b ♯) l ≡ (⦅ifZero⦆₀ b a ♯) l'
-   lemma p = (⦅ifZero⦆₀ a b ♯) l        ≡⟨ ⦅1⦆ ⟩
-             ⦅ifZero⦆₀ a b (value l  p) ≡⟨ ⦅2⦆ ⟩
-             ⦅ifZero⦆₀ b a (value l' p) ≡⟨ ⦅3⦆ ⟩
+         → (⦅ifZero⦆₀ a b ♯) l ＝ (⦅ifZero⦆₀ b a ♯) l'
+   lemma p = (⦅ifZero⦆₀ a b ♯) l        ＝⟨ ⦅1⦆ ⟩
+             ⦅ifZero⦆₀ a b (value l  p) ＝⟨ ⦅2⦆ ⟩
+             ⦅ifZero⦆₀ b a (value l' p) ＝⟨ ⦅3⦆ ⟩
              (⦅ifZero⦆₀ b a ♯) l'       ∎
     where
      ⦅1⦆ = ♯-on-total-element (⦅ifZero⦆₀ a b) p
@@ -426,12 +426,12 @@ We are now ready to give the final continuity proof.
       where
        l' : 𝓛 ℕ
        l' = 𝓛ℕ-flip l
-       ⦅1⦆ = ≡-to-⊑ (𝓛ᵈℕ ⁻) (ifZero♯-flip-equation (α i) b l)
+       ⦅1⦆ = ＝-to-⊑ (𝓛ᵈℕ ⁻) (ifZero♯-flip-equation (α i) b l)
        ⦅2⦆ = (monotone-if-continuous (𝓛ᵈℕ ⁻) ((𝓛ᵈℕ ⟹ᵈᶜᵖᵒ⊥ 𝓛ᵈℕ) ⁻)
               (⦅ifZero⦆₂ b) (α i) (∐ (𝓛ᵈℕ ⁻) δ)
               (∐-is-upperbound (𝓛ᵈℕ ⁻) δ i))
              l'
-       ⦅3⦆ = ≡-to-⊒ (𝓛ᵈℕ ⁻) (ifZero♯-flip-equation (∐ (𝓛ᵈℕ ⁻) δ) b l)
+       ⦅3⦆ = ＝-to-⊒ (𝓛ᵈℕ ⁻) (ifZero♯-flip-equation (∐ (𝓛ᵈℕ ⁻) δ) b l)
 
      v : ((f , _) : DCPO⊥[ 𝓛ᵈℕ , 𝓛ᵈℕ ⟹ᵈᶜᵖᵒ⊥ 𝓛ᵈℕ ])
        → ((i : I) (b : 𝓛 ℕ) → ⦅ifZero⦆₁ (α i) b ⊑⟪ 𝓛ᵈℕ ⟹ᵈᶜᵖᵒ⊥ 𝓛ᵈℕ ⟫ f b)
@@ -456,18 +456,18 @@ We are now ready to give the final continuity proof.
           ε = image-is-directed' (𝓛ᵈℕ ⁻) ((𝓛ᵈℕ ⟹ᵈᶜᵖᵒ⊥ 𝓛ᵈℕ) ⁻) (⦅ifZero⦆₂ b) δ
         α'' : (i : I) → ⟪ 𝓛ᵈℕ ⟫
         α'' i = ((⦅ifZero⦆₀ (α i) b) ♯) l
-        e : α' ≡ α''
+        e : α' ＝ α''
         e = dfunext fe (λ i → (ifZero♯-flip-equation (α i) b l) ⁻¹)
         δ'' : is-Directed (𝓛ᵈℕ ⁻) α''
         δ'' = transport (is-Directed (𝓛ᵈℕ ⁻)) e δ'
 
-        ⦅1⦆ = ≡-to-⊑ (𝓛ᵈℕ ⁻) (ifZero♯-flip-equation (∐ (𝓛ᵈℕ ⁻) δ) b l)
+        ⦅1⦆ = ＝-to-⊑ (𝓛ᵈℕ ⁻) (ifZero♯-flip-equation (∐ (𝓛ᵈℕ ⁻) δ) b l)
         ⦅2⦆ = reflexivity (𝓛ᵈℕ ⁻) _
-        ⦅3⦆ = ≡-to-⊑ (𝓛ᵈℕ ⁻)
+        ⦅3⦆ = ＝-to-⊑ (𝓛ᵈℕ ⁻)
               (ap (λ - → [ 𝓛ᵈℕ ⁻ , 𝓛ᵈℕ ⁻ ]⟨ - ⟩ l')
-                  (continuous-∐-≡ (𝓛ᵈℕ ⁻) ((𝓛ᵈℕ ⟹ᵈᶜᵖᵒ⊥ 𝓛ᵈℕ) ⁻)
+                  (continuous-∐-＝ (𝓛ᵈℕ ⁻) ((𝓛ᵈℕ ⟹ᵈᶜᵖᵒ⊥ 𝓛ᵈℕ) ⁻)
                     (⦅ifZero⦆₂ b) {I} {α} δ))
-        ⦅4⦆ = ≡-to-⊑ (𝓛ᵈℕ ⁻) (∐-family-≡ (𝓛ᵈℕ ⁻) e δ')
+        ⦅4⦆ = ＝-to-⊑ (𝓛ᵈℕ ⁻) (∐-family-＝ (𝓛ᵈℕ ⁻) e δ')
         ⦅5⦆ = ∐-is-lowerbound-of-upperbounds (𝓛ᵈℕ ⁻) δ''
               ([ 𝓛ᵈℕ ⁻ , 𝓛ᵈℕ ⁻ ]⟨ f b ⟩ l) (λ i → ineqs i b l)
 

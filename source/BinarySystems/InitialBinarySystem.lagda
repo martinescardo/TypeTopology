@@ -198,7 +198,7 @@ analysis.
 
 \begin{code}
 
-𝕣r-equation : (x : 𝔹) → is-normal (r x) → 𝕣 (r x) ≡ r (r x)
+𝕣r-equation : (x : 𝔹) → is-normal (r x) → 𝕣 (r x) ＝ r (r x)
 𝕣r-equation L     i = 𝟘-elim i
 𝕣r-equation R     i = 𝟘-elim i
 𝕣r-equation (l x) i = refl
@@ -211,8 +211,8 @@ function, we need to simultaneously prove two lemmas by induction:
 
 \begin{code}
 
-nfp-lemma-l : (x : 𝔹) → is-normal (l x) → 𝕝 (normalize x) ≡ l x
-nfp-lemma-r : (x : 𝔹) → is-normal (r x) → 𝕣 (normalize x) ≡ r x
+nfp-lemma-l : (x : 𝔹) → is-normal (l x) → 𝕝 (normalize x) ＝ l x
+nfp-lemma-r : (x : 𝔹) → is-normal (r x) → 𝕣 (normalize x) ＝ r x
 
 nfp-lemma-l L     i = 𝟘-elim i
 nfp-lemma-l R     ⋆ = refl
@@ -222,8 +222,8 @@ nfp-lemma-l (r x) i = ap 𝕝 (nfp-lemma-r x i)
 nfp-lemma-r L     i = 𝟘-elim i
 nfp-lemma-r R     i = 𝟘-elim i
 nfp-lemma-r (l x) i = ap 𝕣 (nfp-lemma-l x i)
-nfp-lemma-r (r x) i = 𝕣 (𝕣 (normalize x)) ≡⟨ ap 𝕣 (nfp-lemma-r x i) ⟩
-                      𝕣 (r x)             ≡⟨ 𝕣r-equation x i ⟩
+nfp-lemma-r (r x) i = 𝕣 (𝕣 (normalize x)) ＝⟨ ap 𝕣 (nfp-lemma-r x i) ⟩
+                      𝕣 (r x)             ＝⟨ 𝕣r-equation x i ⟩
                       r (r x)             ∎
 \end{code}
 
@@ -232,7 +232,7 @@ using the above two lemmas.
 
 \begin{code}
 
-normals-are-fixed-points : (x : 𝔹) → is-normal x → normalize x ≡ x
+normals-are-fixed-points : (x : 𝔹) → is-normal x → normalize x ＝ x
 normals-are-fixed-points L     ⋆ = refl
 normals-are-fixed-points R     ⋆ = refl
 normals-are-fixed-points (l x) i = nfp-lemma-l x i
@@ -244,10 +244,10 @@ We have the following two corollaries:
 
 \begin{code}
 
-fixed-points-are-normal : (x : 𝔹) → normalize x ≡ x → is-normal x
+fixed-points-are-normal : (x : 𝔹) → normalize x ＝ x → is-normal x
 fixed-points-are-normal x p = transport is-normal p (normalize-is-normal x)
 
-normalization-idemp : (x : 𝔹) → normalize (normalize x) ≡ normalize x
+normalization-idemp : (x : 𝔹) → normalize (normalize x) ＝ normalize x
 normalization-idemp x = normals-are-fixed-points (normalize x) (normalize-is-normal x)
 
 \end{code}
@@ -287,13 +287,13 @@ open import UF.Subsingletons hiding (center) renaming (⊥Ω to ⊥ ; ⊤Ω to �
 χ (r x) (l y) = ⊥
 χ (r x) (r y) = χ x y
 
-_≡[𝔹]_ : 𝔹 → 𝔹 → 𝓤₀ ̇
-x ≡[𝔹] y = χ x y holds
+_＝[𝔹]_ : 𝔹 → 𝔹 → 𝓤₀ ̇
+x ＝[𝔹] y = χ x y holds
 
-≡[𝔹]-is-prop-valued : (x y : 𝔹) → is-prop (x ≡[𝔹] y)
-≡[𝔹]-is-prop-valued x y = holds-is-prop (χ x y)
+＝[𝔹]-is-prop-valued : (x y : 𝔹) → is-prop (x ＝[𝔹] y)
+＝[𝔹]-is-prop-valued x y = holds-is-prop (χ x y)
 
-refl[𝔹] : (x : 𝔹) → x ≡[𝔹] x
+refl[𝔹] : (x : 𝔹) → x ＝[𝔹] x
 refl[𝔹] L     = ⋆
 refl[𝔹] R     = ⋆
 refl[𝔹] (l x) = refl[𝔹] x
@@ -305,8 +305,8 @@ The induction principle for our notion of equality:
 
 \begin{code}
 
-J𝔹 : (x : 𝔹) (A : (y : 𝔹) → x ≡[𝔹] y → 𝓥 ̇ )
-    → A x (refl[𝔹] x) → (y : 𝔹) (r : x ≡[𝔹] y) → A y r
+J𝔹 : (x : 𝔹) (A : (y : 𝔹) → x ＝[𝔹] y → 𝓥 ̇ )
+    → A x (refl[𝔹] x) → (y : 𝔹) (r : x ＝[𝔹] y) → A y r
 J𝔹 L     A b L     ⋆ = b
 J𝔹 L     A b R     p = 𝟘-elim p
 J𝔹 L     A b (l y) p = 𝟘-elim p
@@ -332,15 +332,15 @@ principle for MLTT equality.
 
 \begin{code}
 
-from-≡[𝔹] : (x y : 𝔹) → x ≡[𝔹] y → x ≡ y
-from-≡[𝔹] x = J𝔹 x (λ y p → x ≡ y) refl
+from-＝[𝔹] : (x y : 𝔹) → x ＝[𝔹] y → x ＝ y
+from-＝[𝔹] x = J𝔹 x (λ y p → x ＝ y) refl
 
-to-≡[𝔹] : (x y : 𝔹) → x ≡ y → x ≡[𝔹] y
-to-≡[𝔹] x = Jbased x (λ y p → x ≡[𝔹] y) (refl[𝔹] x)
+to-＝[𝔹] : (x y : 𝔹) → x ＝ y → x ＝[𝔹] y
+to-＝[𝔹] x = Jbased x (λ y p → x ＝[𝔹] y) (refl[𝔹] x)
 
 \end{code}
 
-To show that 𝔹is a set, it is enough to prove that the type x ≡ y has
+To show that 𝔹is a set, it is enough to prove that the type x ＝ y has
 a constant endomap. We construct it as the composition of our forth
 and back conversions. It is constant because our notion of equality is
 truth valued (any two elements of our equality type are equal).
@@ -350,17 +350,17 @@ truth valued (any two elements of our equality type are equal).
 𝔹-is-set : is-set 𝔹
 𝔹-is-set = Id-collapsibles-are-sets (f , κ)
  where
-  f : {x y : 𝔹} → x ≡ y → x ≡ y
-  f {x} {y} p = from-≡[𝔹] x y (to-≡[𝔹] x y p)
+  f : {x y : 𝔹} → x ＝ y → x ＝ y
+  f {x} {y} p = from-＝[𝔹] x y (to-＝[𝔹] x y p)
 
-  κ : {x y : 𝔹} (p q : x ≡ y) → f p ≡ f q
+  κ : {x y : 𝔹} (p q : x ＝ y) → f p ＝ f q
   κ {x} {y} p q = u
    where
-    t : to-≡[𝔹] x y p ≡ to-≡[𝔹] x y q
-    t = ≡[𝔹]-is-prop-valued x y (to-≡[𝔹] x y p) (to-≡[𝔹] x y q)
+    t : to-＝[𝔹] x y p ＝ to-＝[𝔹] x y q
+    t = ＝[𝔹]-is-prop-valued x y (to-＝[𝔹] x y p) (to-＝[𝔹] x y q)
 
-    u : from-≡[𝔹] x y (to-≡[𝔹] x y p) ≡ from-≡[𝔹] x y (to-≡[𝔹] x y q)
-    u = ap (from-≡[𝔹] x y) t
+    u : from-＝[𝔹] x y (to-＝[𝔹] x y p) ＝ from-＝[𝔹] x y (to-＝[𝔹] x y q)
+    u = ap (from-＝[𝔹] x y) t
 
 \end{code}
 
@@ -370,35 +370,35 @@ Hedberg's Theorem.
 
 \begin{code}
 
-≡[𝔹]-is-decidable : (x y : 𝔹) → (x ≡[𝔹] y) + ¬ (x ≡[𝔹] y)
-≡[𝔹]-is-decidable L     L     = inl ⋆
-≡[𝔹]-is-decidable L     R     = inr id
-≡[𝔹]-is-decidable L     (l y) = inr id
-≡[𝔹]-is-decidable L     (r y) = inr id
-≡[𝔹]-is-decidable R     L     = inr id
-≡[𝔹]-is-decidable R     R     = inl ⋆
-≡[𝔹]-is-decidable R     (l y) = inr id
-≡[𝔹]-is-decidable R     (r y) = inr id
-≡[𝔹]-is-decidable (l x) L     = inr id
-≡[𝔹]-is-decidable (l x) R     = inr id
-≡[𝔹]-is-decidable (l x) (l y) = ≡[𝔹]-is-decidable x y
-≡[𝔹]-is-decidable (l x) (r y) = inr id
-≡[𝔹]-is-decidable (r x) L     = inr id
-≡[𝔹]-is-decidable (r x) R     = inr id
-≡[𝔹]-is-decidable (r x) (l y) = inr id
-≡[𝔹]-is-decidable (r x) (r y) = ≡[𝔹]-is-decidable x y
+＝[𝔹]-is-decidable : (x y : 𝔹) → (x ＝[𝔹] y) + ¬ (x ＝[𝔹] y)
+＝[𝔹]-is-decidable L     L     = inl ⋆
+＝[𝔹]-is-decidable L     R     = inr id
+＝[𝔹]-is-decidable L     (l y) = inr id
+＝[𝔹]-is-decidable L     (r y) = inr id
+＝[𝔹]-is-decidable R     L     = inr id
+＝[𝔹]-is-decidable R     R     = inl ⋆
+＝[𝔹]-is-decidable R     (l y) = inr id
+＝[𝔹]-is-decidable R     (r y) = inr id
+＝[𝔹]-is-decidable (l x) L     = inr id
+＝[𝔹]-is-decidable (l x) R     = inr id
+＝[𝔹]-is-decidable (l x) (l y) = ＝[𝔹]-is-decidable x y
+＝[𝔹]-is-decidable (l x) (r y) = inr id
+＝[𝔹]-is-decidable (r x) L     = inr id
+＝[𝔹]-is-decidable (r x) R     = inr id
+＝[𝔹]-is-decidable (r x) (l y) = inr id
+＝[𝔹]-is-decidable (r x) (r y) = ＝[𝔹]-is-decidable x y
 
-𝔹-has-decidable-equality : (x y : 𝔹) → (x ≡ y) + ¬ (x ≡ y)
-𝔹-has-decidable-equality x y = δ (≡[𝔹]-is-decidable x y)
+𝔹-has-decidable-equality : (x y : 𝔹) → (x ＝ y) + ¬ (x ＝ y)
+𝔹-has-decidable-equality x y = δ (＝[𝔹]-is-decidable x y)
  where
-  δ : (x ≡[𝔹] y) + ¬ (x ≡[𝔹] y) → (x ≡ y) + ¬ (x ≡ y)
-  δ (inl p) = inl (from-≡[𝔹] x y p)
-  δ (inr ν) = inr (contrapositive (to-≡[𝔹] x y) ν)
+  δ : (x ＝[𝔹] y) + ¬ (x ＝[𝔹] y) → (x ＝ y) + ¬ (x ＝ y)
+  δ (inl p) = inl (from-＝[𝔹] x y p)
+  δ (inr ν) = inr (contrapositive (to-＝[𝔹] x y) ν)
 
 \end{code}
 
 So we get an alternative proof that normality is decidable: an element
-x of 𝔹 is normal if and only if normalize x ≡ x.
+x of 𝔹 is normal if and only if normalize x ＝ x.
 
 But we actually don't need the normalization procedure to construct
 the initial binary system, whose underlying type will be called 𝕄.
@@ -434,25 +434,25 @@ left right : 𝕄 → 𝕄
 left  (x , i) = 𝕝 x , 𝕝-preserves-normality x i
 right (x , i) = 𝕣 x , 𝕣-preserves-normality x i
 
-𝕄-eq-lR-C : left Right ≡ Center
+𝕄-eq-lR-C : left Right ＝ Center
 𝕄-eq-lR-C = refl
 
-𝕄-eq-rL-C : right Left ≡ Center
+𝕄-eq-rL-C : right Left ＝ Center
 𝕄-eq-rL-C = refl
 
-𝕄-eq-l : Left ≡ left Left
+𝕄-eq-l : Left ＝ left Left
 𝕄-eq-l = refl
 
-𝕄-eq-r : Right ≡ right Right
+𝕄-eq-r : Right ＝ right Right
 𝕄-eq-r = refl
 
-𝕄-eq-lr : left Right ≡ right Left
+𝕄-eq-lr : left Right ＝ right Left
 𝕄-eq-lr = refl
 
-𝕄-eq-lm : left Right ≡ Center
+𝕄-eq-lm : left Right ＝ Center
 𝕄-eq-lm = refl
 
-𝕄-eq-rm : right Left ≡ Center
+𝕄-eq-rm : right Left ＝ Center
 𝕄-eq-rm = refl
 
 \end{code}
@@ -465,7 +465,7 @@ binary-system-structure : 𝓤 ̇ → 𝓤 ̇
 binary-system-structure A = A × A × (A → A) × (A → A)
 
 binary-system-axioms : (A : 𝓤 ̇ ) → binary-system-structure A → 𝓤 ̇
-binary-system-axioms A (a , b , f , g) = is-set A × (a ≡ f a) × (f b ≡ g a) × (b ≡ g b)
+binary-system-axioms A (a , b , f , g) = is-set A × (a ＝ f a) × (f b ＝ g a) × (b ＝ g b)
 
 BS : (𝓤 : Universe) → 𝓤 ⁺ ̇
 BS 𝓤 = Σ A ꞉ 𝓤 ̇ , Σ s ꞉ binary-system-structure A , binary-system-axioms A s
@@ -484,8 +484,8 @@ The notion of homomorphism of binary systems is the expected one:
 
 is-hom : (𝓐 : BS 𝓤) (𝓐' : BS 𝓥) → (⟨ 𝓐 ⟩ → ⟨ 𝓐' ⟩) → 𝓤 ⊔ 𝓥 ̇
 is-hom (A , (a , b , f , g) , _) (A' , (a' , b' , f' , g') , _) h =
-   (h a ≡ a')
- × (h b ≡ b')
+   (h a ＝ a')
+ × (h b ＝ b')
  × (h ∘ f ∼ f' ∘ h)
  × (h ∘ g ∼ g' ∘ h)
 
@@ -504,9 +504,9 @@ perhaps unexpected proof):
             → ((x : 𝕄) → P x → P (right x))
             → 𝓤 ̇
 𝕄-inductive P a b f g = ((x : 𝕄) → is-set (P x))
-                       × (a ≡ f Left a)
-                       × (f Right b ≡ g Left a)
-                       × (b ≡ g Right b)
+                       × (a ＝ f Left a)
+                       × (f Right b ＝ g Left a)
+                       × (b ＝ g Right b)
 
 
 𝕄-induction : (P : 𝕄 → 𝓤 ̇ )
@@ -541,7 +541,7 @@ are the expected ones.
                       (f : (x : 𝕄) → P x → P (left x))
                       (g : (x : 𝕄) → P x → P (right x))
                       (ι : 𝕄-inductive P a b f g)
-                    → 𝕄-induction P a b f g ι Left ≡ a
+                    → 𝕄-induction P a b f g ι Left ＝ a
 
 𝕄-induction-eq-Left P a b f g _ = refl
 
@@ -552,14 +552,14 @@ are the expected ones.
                       (f : (x : 𝕄) → P x → P (left x))
                       (g : (x : 𝕄) → P x → P (right x))
                       (ι : 𝕄-inductive P a b f g)
-                     → 𝕄-induction P a b f g ι Right ≡ b
+                     → 𝕄-induction P a b f g ι Right ＝ b
 
 𝕄-induction-eq-Right P a b f g _ = refl
 
 \end{code}
 
 For the next equation for the induction principle, we need the
-assumption a ≡ f Left a:
+assumption a ＝ f Left a:
 
 \begin{code}
 
@@ -569,7 +569,7 @@ assumption a ≡ f Left a:
                       (f : (x : 𝕄) → P x → P (left x))
                       (g : (x : 𝕄) → P x → P (right x))
                     → (ι : 𝕄-inductive P a b f g)
-                    → (x : 𝕄) → 𝕄-induction P a b f g ι (left x) ≡ f x (𝕄-induction P a b f g ι x)
+                    → (x : 𝕄) → 𝕄-induction P a b f g ι (left x) ＝ f x (𝕄-induction P a b f g ι x)
 
 𝕄-induction-eq-left P a b f g ι (L ,   ⋆) = pr₁ (pr₂ ι)
 𝕄-induction-eq-left P a b f g ι (R ,   ⋆) = refl
@@ -579,7 +579,7 @@ assumption a ≡ f Left a:
 \end{code}
 
 And for the last equation for the induction principle, we need the two
-equations f Right b ≡ g Left a and b ≡ g Right b as assumptions:
+equations f Right b ＝ g Left a and b ＝ g Right b as assumptions:
 
 \begin{code}
 
@@ -589,7 +589,7 @@ equations f Right b ≡ g Left a and b ≡ g Right b as assumptions:
                       (f : (x : 𝕄) → P x → P (left x))
                       (g : (x : 𝕄) → P x → P (right x))
                     → (ι : 𝕄-inductive P a b f g)
-                    → (x : 𝕄) → 𝕄-induction P a b f g ι (right x) ≡ g x (𝕄-induction P a b f g ι x)
+                    → (x : 𝕄) → 𝕄-induction P a b f g ι (right x) ＝ g x (𝕄-induction P a b f g ι x)
 
 𝕄-induction-eq-right P a b f g ι (L ,       ⋆) = pr₁ (pr₂ (pr₂ ι))
 𝕄-induction-eq-right P a b f g ι (R ,       ⋆) = pr₂ (pr₂ (pr₂ ι))
@@ -625,16 +625,16 @@ constructs a homomorphism:
  where
   𝓐 = (A , (a , b , f , g) , ι)
 
-  i : 𝓜-rec 𝓐 Left ≡ a
+  i : 𝓜-rec 𝓐 Left ＝ a
   i = 𝕄-induction-eq-Left (λ _ → A) a b (λ _ → f) (λ _ → g) ((λ _ → pr₁ ι) , pr₂ ι)
 
-  ii : 𝓜-rec 𝓐 Right ≡ b
+  ii : 𝓜-rec 𝓐 Right ＝ b
   ii = 𝕄-induction-eq-Right (λ _ → A) a b (λ _ → f) (λ _ → g) ((λ _ → pr₁ ι) , pr₂ ι)
 
-  iii : (x : 𝕄) → 𝓜-rec 𝓐 (left x) ≡ f (𝓜-rec 𝓐 x)
+  iii : (x : 𝕄) → 𝓜-rec 𝓐 (left x) ＝ f (𝓜-rec 𝓐 x)
   iii = 𝕄-induction-eq-left (λ _ → A) a b (λ _ → f) (λ _ → g) ((λ _ → pr₁ ι) , pr₂ ι)
 
-  iv : (x : 𝕄) → 𝓜-rec 𝓐 (right x) ≡ g (𝓜-rec 𝓐 x)
+  iv : (x : 𝕄) → 𝓜-rec 𝓐 (right x) ＝ g (𝓜-rec 𝓐 x)
   iv = 𝕄-induction-eq-right (λ _ → A) a b (λ _ → f) (λ _ → g) ((λ _ → pr₁ ι) , pr₂ ι)
 
 \end{code}
@@ -663,12 +663,12 @@ Some boiler plate code to name the projections follows:
 
 
 is-hom-L : (𝓐 : BS 𝓤) (𝓑 : BS 𝓥) (h : ⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩)
-            → is-hom 𝓐 𝓑 h → h (⟨ 𝓐 ⟩-Left) ≡ ⟨ 𝓑 ⟩-Left
+            → is-hom 𝓐 𝓑 h → h (⟨ 𝓐 ⟩-Left) ＝ ⟨ 𝓑 ⟩-Left
 is-hom-L 𝓐 𝓑 h (i , ii , iii , iv) = i
 
 
 is-hom-R : (𝓐 : BS 𝓤) (𝓑 : BS 𝓥) (h : ⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩)
-             → is-hom 𝓐 𝓑 h → h (⟨ 𝓐 ⟩-Right) ≡ ⟨ 𝓑 ⟩-Right
+             → is-hom 𝓐 𝓑 h → h (⟨ 𝓐 ⟩-Right) ＝ ⟨ 𝓑 ⟩-Right
 is-hom-R 𝓐 𝓑 h (i , ii , iii , iv) = ii
 
 
@@ -695,30 +695,30 @@ system.
                  → is-hom 𝓜 𝓐 h
                  → is-hom 𝓜 𝓐 k
                  → h ∼ k
-𝓜-at-most-one-hom 𝓐 h k u v = 𝕄-induction (λ x → h x ≡ k x) α β ϕ γ
+𝓜-at-most-one-hom 𝓐 h k u v = 𝕄-induction (λ x → h x ＝ k x) α β ϕ γ
                                  ((λ x → props-are-sets ⟨ 𝓐 ⟩-is-set) ,
                                   ⟨ 𝓐 ⟩-is-set α (ϕ Left α) ,
                                   ⟨ 𝓐 ⟩-is-set (ϕ Right β) (γ Left α) ,
                                   ⟨ 𝓐 ⟩-is-set β (γ Right β))
  where
-  α = h Left       ≡⟨ is-hom-L 𝓜 𝓐 h u ⟩
-      ⟨ 𝓐 ⟩-Left   ≡⟨ (is-hom-L 𝓜 𝓐 k v)⁻¹ ⟩
+  α = h Left       ＝⟨ is-hom-L 𝓜 𝓐 h u ⟩
+      ⟨ 𝓐 ⟩-Left   ＝⟨ (is-hom-L 𝓜 𝓐 k v)⁻¹ ⟩
       k Left ∎
 
-  β = h Right       ≡⟨ is-hom-R 𝓜 𝓐 h u ⟩
-       ⟨ 𝓐 ⟩-Right   ≡⟨ (is-hom-R 𝓜 𝓐 k v)⁻¹ ⟩
+  β = h Right       ＝⟨ is-hom-R 𝓜 𝓐 h u ⟩
+       ⟨ 𝓐 ⟩-Right   ＝⟨ (is-hom-R 𝓜 𝓐 k v)⁻¹ ⟩
        k Right ∎
 
-  ϕ : (x : 𝕄) → h x ≡ k x → h (left x) ≡ k (left x)
-  ϕ x p = h (left x)       ≡⟨ is-hom-l 𝓜 𝓐 h u x ⟩
-          ⟨ 𝓐 ⟩-left (h x) ≡⟨ ap ⟨ 𝓐 ⟩-left p ⟩
-          ⟨ 𝓐 ⟩-left (k x) ≡⟨ (is-hom-l 𝓜 𝓐 k v x)⁻¹ ⟩
+  ϕ : (x : 𝕄) → h x ＝ k x → h (left x) ＝ k (left x)
+  ϕ x p = h (left x)       ＝⟨ is-hom-l 𝓜 𝓐 h u x ⟩
+          ⟨ 𝓐 ⟩-left (h x) ＝⟨ ap ⟨ 𝓐 ⟩-left p ⟩
+          ⟨ 𝓐 ⟩-left (k x) ＝⟨ (is-hom-l 𝓜 𝓐 k v x)⁻¹ ⟩
           k (left x)       ∎
 
-  γ : (x : 𝕄) → h x ≡ k x → h (right x) ≡ k (right x)
-  γ x p =  h (right x)       ≡⟨ is-hom-r 𝓜 𝓐 h u x ⟩
-           ⟨ 𝓐 ⟩-right (h x) ≡⟨ ap ⟨ 𝓐 ⟩-right p ⟩
-           ⟨ 𝓐 ⟩-right (k x) ≡⟨ (is-hom-r 𝓜 𝓐 k v x)⁻¹ ⟩
+  γ : (x : 𝕄) → h x ＝ k x → h (right x) ＝ k (right x)
+  γ x p =  h (right x)       ＝⟨ is-hom-r 𝓜 𝓐 h u x ⟩
+           ⟨ 𝓐 ⟩-right (h x) ＝⟨ ap ⟨ 𝓐 ⟩-right p ⟩
+           ⟨ 𝓐 ⟩-right (k x) ＝⟨ (is-hom-r 𝓜 𝓐 k v x)⁻¹ ⟩
            k (right x)       ∎
 
 
@@ -743,10 +743,10 @@ case:
 primitive-recursive : {A : 𝓤 ̇ } → A → A → (𝕄 → A → A) → (𝕄 → A → A) → (𝕄 → A) → 𝓤 ̇
 primitive-recursive a b f g h =
 
-         (h Left  ≡ a)
-       × (h Right ≡ b)
-       × ((x : 𝕄) → h (left x)  ≡ f x (h x))
-       × ((x : 𝕄) → h (right x) ≡ g x (h x))
+         (h Left  ＝ a)
+       × (h Right ＝ b)
+       × ((x : 𝕄) → h (left x)  ＝ f x (h x))
+       × ((x : 𝕄) → h (right x) ＝ g x (h x))
 
 
 
@@ -780,40 +780,40 @@ primitive-recursive a b f g h =
   A-is-set : is-set A
   A-is-set = ι₁ arbitrary-element-of-𝕄
 
-  α = h Left ≡⟨ hL ⟩
-      a      ≡⟨ kL ⁻¹ ⟩
+  α = h Left ＝⟨ hL ⟩
+      a      ＝⟨ kL ⁻¹ ⟩
       k Left ∎
 
-  β = h Right ≡⟨ hR ⟩
-      b       ≡⟨ kR ⁻¹ ⟩
+  β = h Right ＝⟨ hR ⟩
+      b       ＝⟨ kR ⁻¹ ⟩
       k Right ∎
 
-  ϕ : (x : 𝕄) → h x ≡ k x → h (left x) ≡ k (left x)
-  ϕ x p = h (left x) ≡⟨ hl x ⟩
-          f x (h x)  ≡⟨ ap (f x) p ⟩
-          f x (k x)  ≡⟨ (kl x)⁻¹ ⟩
+  ϕ : (x : 𝕄) → h x ＝ k x → h (left x) ＝ k (left x)
+  ϕ x p = h (left x) ＝⟨ hl x ⟩
+          f x (h x)  ＝⟨ ap (f x) p ⟩
+          f x (k x)  ＝⟨ (kl x)⁻¹ ⟩
           k (left x) ∎
 
-  γ : (x : 𝕄) → h x ≡ k x → h (right x) ≡ k (right x)
-  γ x p =  h (right x) ≡⟨ hr x ⟩
-           g x (h x)   ≡⟨ ap (g x) p ⟩
-           g x (k x)   ≡⟨ (kr x)⁻¹ ⟩
+  γ : (x : 𝕄) → h x ＝ k x → h (right x) ＝ k (right x)
+  γ x p =  h (right x) ＝⟨ hr x ⟩
+           g x (h x)   ＝⟨ ap (g x) p ⟩
+           g x (k x)   ＝⟨ (kr x)⁻¹ ⟩
            k (right x) ∎
 
-  set-condition : (x : 𝕄) → is-set (h x ≡ k x)
+  set-condition : (x : 𝕄) → is-set (h x ＝ k x)
   set-condition x = props-are-sets A-is-set
 
-  eql : α ≡ ϕ Left α
+  eql : α ＝ ϕ Left α
   eql = A-is-set α (ϕ Left α)
 
-  eqlr : ϕ Right β ≡ γ Left α
+  eqlr : ϕ Right β ＝ γ Left α
   eqlr = A-is-set (ϕ Right β) (γ Left α)
 
-  eqr : β ≡ γ Right β
+  eqr : β ＝ γ Right β
   eqr = A-is-set β (γ Right β)
 
   δ : h ∼ k
-  δ = 𝕄-induction (λ x → h x ≡ k x) α β ϕ γ (set-condition , eql , eqlr , eqr)
+  δ = 𝕄-induction (λ x → h x ＝ k x) α β ϕ γ (set-condition , eql , eqlr , eqr)
 
 
 𝕄-primrec-uniqueness : {A : 𝓤 ̇ }
@@ -836,8 +836,8 @@ remove the "base" case in the uniqueness theorem.
 \begin{code}
 
 is-wprimrec : {A : 𝓤 ̇ } → (𝕄 → A → A) → (𝕄 → A → A) → (𝕄 → A) → 𝓤 ̇
-is-wprimrec f g h = ((x : 𝕄) → h (left x)  ≡ f x (h x))
-                  × ((x : 𝕄) → h (right x) ≡ g x (h x))
+is-wprimrec f g h = ((x : 𝕄) → h (left x)  ＝ f x (h x))
+                  × ((x : 𝕄) → h (right x) ＝ g x (h x))
 
 
 primrec-is-wprimrec : {A : 𝓤 ̇ } (a b : A) (f g : 𝕄 → A → A) (h : 𝕄 → A)
@@ -846,22 +846,22 @@ primrec-is-wprimrec a b f g h (hL , hR , hl , hr) = (hl , hr)
 
 
 fixed-point-conditions : {A : 𝓤 ̇ } → A → A → (𝕄 → A → A) → (𝕄 → A → A) → 𝓤 ̇
-fixed-point-conditions a b f g = (∀ a' → a' ≡ f Left  a' → a' ≡ a)
-                              × (∀ b' → b' ≡ g Right b' → b' ≡ b)
+fixed-point-conditions a b f g = (∀ a' → a' ＝ f Left  a' → a' ＝ a)
+                              × (∀ b' → b' ＝ g Right b' → b' ＝ b)
 
 wprimrec-primitive-recursive : {A : 𝓤 ̇ } (a b : A) (f g : 𝕄 → A → A) (h : 𝕄 → A)
                              → fixed-point-conditions a b f g
                              → is-wprimrec f g h → primitive-recursive a b f g h
 wprimrec-primitive-recursive a b f g h (fixa , fixb) (hl , hr) = (hL , hR , hl , hr)
  where
-  hL' = h Left          ≡⟨ refl ⟩
-        h (left Left)   ≡⟨ hl Left ⟩
+  hL' = h Left          ＝⟨ refl ⟩
+        h (left Left)   ＝⟨ hl Left ⟩
         f Left (h Left) ∎
 
-  hL = h Left ≡⟨ fixa (h Left) hL' ⟩
+  hL = h Left ＝⟨ fixa (h Left) hL' ⟩
        a      ∎
 
-  hR : h Right ≡ b
+  hR : h Right ＝ b
   hR = fixb (h Right) (hr Right)
 
 
@@ -904,24 +904,24 @@ parametric recursion.
 Given a b : A and f g : 𝕄 → A, we want to define h : 𝕄 → A by cases as
 follows:
 
-      h Left      ≡ a
-      h Right     ≡ b
+      h Left      ＝ a
+      h Right     ＝ b
       h (left x)  = f x
       h (right x) = g x
 
 For this to be well defined we need the following endpoint agreement
 conditions:
 
-  (1) a ≡ f Left,
-  (2) f Right ≡ g Left,
-  (3) b ≡ g Right.
+  (1) a ＝ f Left,
+  (2) f Right ＝ g Left,
+  (3) b ＝ g Right.
 
 If we take a = f Left and b = g Left, so that (1) and (2) hold, we are
 left with condition (3) as the only assumption, and the condition on h
 becomes
 
-      h Left      ≡ f Left,
-      h Right     ≡ g Right,
+      h Left      ＝ f Left,
+      h Right     ＝ g Right,
       h (left x)  = f x,
       h (right x) = g x.
 
@@ -951,7 +951,7 @@ those for 𝕄-primrec.
 \begin{code}
 
 𝕄-caseable : (A : 𝓤 ̇ ) → (𝕄 → A) → (𝕄 → A) → 𝓤 ̇
-𝕄-caseable A f g = is-set A × (f Right ≡ g Left)
+𝕄-caseable A f g = is-set A × (f Right ＝ g Left)
 
 𝕄-caseable-gives-pinductive : (A : 𝓤 ̇ ) (f g : 𝕄 → A)
                              → 𝕄-caseable A f g
@@ -969,8 +969,8 @@ case-equations f g h = (h ∘ left  ∼ f)
 𝕄-cases-redundant-equations : {A : 𝓤 ̇ }
                     (f g : 𝕄 → A)
                   → (p : 𝕄-caseable A f g)
-                  → (𝕄-cases f g p Left    ≡ f Left)
-                  × (𝕄-cases f g p Right   ≡ g Right)
+                  → (𝕄-cases f g p Left    ＝ f Left)
+                  × (𝕄-cases f g p Right   ＝ g Right)
                   × (𝕄-cases f g p ∘ left  ∼ f)
                   × (𝕄-cases f g p ∘ right ∼ g)
 
@@ -1005,10 +1005,10 @@ case-equations f g h = (h ∘ left  ∼ f)
                               (𝕄-caseable-gives-pinductive _ f g ι)
                               (u , v)
   where
-   u : ∀ a' → a' ≡ f Left → a' ≡ f Left
+   u : ∀ a' → a' ＝ f Left → a' ＝ f Left
    u a' p = p
 
-   v : ∀ b' → b' ≡ g Right → b' ≡ g Right
+   v : ∀ b' → b' ＝ g Right → b' ＝ g Right
    v a' p = p
 
 𝕄-cases-uniqueness : {A : 𝓤 ̇ }
@@ -1021,11 +1021,11 @@ case-equations f g h = (h ∘ left  ∼ f)
 𝕄-cases-uniqueness f g p h he = 𝕄-at-most-one-cases f g p h (𝕄-cases f g p) he (𝕄-cases-equations f g p)
 
 𝕄-cases-L : {A : 𝓤 ̇ } (f g : 𝕄 → A) (p : 𝕄-caseable A f g)
-          → 𝕄-cases f g p Left ≡ f Left
+          → 𝕄-cases f g p Left ＝ f Left
 𝕄-cases-L f g p = pr₁ (𝕄-cases-redundant-equations f g p)
 
 𝕄-cases-R : {A : 𝓤 ̇ } (f g : 𝕄 → A) (p : 𝕄-caseable A f g)
-          → 𝕄-cases f g p Right ≡ g Right
+          → 𝕄-cases f g p Right ＝ g Right
 𝕄-cases-R f g p = pr₁ (pr₂ (𝕄-cases-redundant-equations f g p))
 
 𝕄-cases-l : {A : 𝓤 ̇ } (f g : 𝕄 → A) (p : 𝕄-caseable A f g)
@@ -1043,7 +1043,7 @@ We now specialize to A = 𝕄 for notational convenience:
 \begin{code}
 
 𝕄𝕄-caseable : (f g : 𝕄 → 𝕄) → 𝓤₀ ̇
-𝕄𝕄-caseable f g = f Right ≡ g Left
+𝕄𝕄-caseable f g = f Right ＝ g Left
 
 𝕄𝕄-cases : (f g : 𝕄 → 𝕄) → 𝕄𝕄-caseable f g → (𝕄 → 𝕄)
 𝕄𝕄-cases f g p = 𝕄-cases f g (𝕄-is-set , p)
@@ -1057,10 +1057,10 @@ Here are some examples:
 center : 𝕄 → 𝕄
 center = 𝕄𝕄-cases (left ∘ right) (right ∘ left) refl
 
-center-l : (x : 𝕄) → center (left x) ≡ left (right x)
+center-l : (x : 𝕄) → center (left x) ＝ left (right x)
 center-l = 𝕄-cases-l _ _ (𝕄-is-set , refl)
 
-center-r : (x : 𝕄) → center (right x) ≡ right (left x)
+center-r : (x : 𝕄) → center (right x) ＝ right (left x)
 center-r = 𝕄-cases-r _ _ (𝕄-is-set , refl)
 
 left-by-cases : left ∼ 𝕄𝕄-cases (left ∘ left) (center ∘ left) refl
@@ -1093,34 +1093,34 @@ is-𝓡-function f = 𝕄𝕄-caseable (center ∘ f) (right ∘ f)
 
 preservation-𝓛𝓛 : (f : 𝕄 → 𝕄) (𝓵 : is-𝓛-function f) (𝓻 : is-𝓡-function f) → is-𝓛-function (𝓛 f 𝓵)
 preservation-𝓛𝓛 f 𝓵 𝓻 =
-  left (𝓛 f 𝓵 Right)      ≡⟨ ap left (𝕄-cases-R (left ∘ f) (center ∘ f) (𝕄-is-set , 𝓵)) ⟩
-  left (center (f Right)) ≡⟨ ap left 𝓻 ⟩
-  left (right (f Left))   ≡⟨ (center-l (f Left))⁻¹ ⟩
-  center (left (f Left))  ≡⟨ (ap center (𝕄-cases-L (left ∘ f) (center ∘ f) (𝕄-is-set , 𝓵)))⁻¹ ⟩
+  left (𝓛 f 𝓵 Right)      ＝⟨ ap left (𝕄-cases-R (left ∘ f) (center ∘ f) (𝕄-is-set , 𝓵)) ⟩
+  left (center (f Right)) ＝⟨ ap left 𝓻 ⟩
+  left (right (f Left))   ＝⟨ (center-l (f Left))⁻¹ ⟩
+  center (left (f Left))  ＝⟨ (ap center (𝕄-cases-L (left ∘ f) (center ∘ f) (𝕄-is-set , 𝓵)))⁻¹ ⟩
   center (𝓛 f 𝓵 Left)     ∎
 
 preservation-𝓛𝓡 : (f : 𝕄 → 𝕄) (𝓵 : is-𝓛-function f) (𝓻 : is-𝓡-function f) → is-𝓡-function (𝓛 f 𝓵)
 preservation-𝓛𝓡 f 𝓵 𝓻 =
-  center (𝓛 f 𝓵 Right)      ≡⟨ ap center (𝕄-cases-R (left ∘ f) (center ∘ f) (𝕄-is-set , 𝓵)) ⟩
-  center (center (f Right)) ≡⟨ ap center 𝓻 ⟩
-  center (right (f Left))   ≡⟨ center-r (f Left) ⟩
-  right (left (f Left))     ≡⟨ ap right ((𝕄-cases-L (left ∘ f) (center ∘ f) (𝕄-is-set , 𝓵))⁻¹) ⟩
+  center (𝓛 f 𝓵 Right)      ＝⟨ ap center (𝕄-cases-R (left ∘ f) (center ∘ f) (𝕄-is-set , 𝓵)) ⟩
+  center (center (f Right)) ＝⟨ ap center 𝓻 ⟩
+  center (right (f Left))   ＝⟨ center-r (f Left) ⟩
+  right (left (f Left))     ＝⟨ ap right ((𝕄-cases-L (left ∘ f) (center ∘ f) (𝕄-is-set , 𝓵))⁻¹) ⟩
   right (𝓛 f 𝓵 Left)        ∎
 
 preservation-𝓡𝓛 : (f : 𝕄 → 𝕄) (𝓵 : is-𝓛-function f) (𝓻 : is-𝓡-function f) → is-𝓛-function (𝓡 f 𝓻)
 preservation-𝓡𝓛 f 𝓵 𝓻 =
-  left (𝓡 f 𝓻 Right)       ≡⟨ ap left (𝕄-cases-R (center ∘ f) (right ∘ f) (𝕄-is-set , 𝓻)) ⟩
-  left (right (f Right))   ≡⟨ (center-l (f Right))⁻¹ ⟩
-  center (left (f Right))  ≡⟨ ap center 𝓵 ⟩
-  center (center (f Left)) ≡⟨ ap center ((𝕄-cases-L (center ∘ f) (right ∘ f) (𝕄-is-set , 𝓻))⁻¹) ⟩
+  left (𝓡 f 𝓻 Right)       ＝⟨ ap left (𝕄-cases-R (center ∘ f) (right ∘ f) (𝕄-is-set , 𝓻)) ⟩
+  left (right (f Right))   ＝⟨ (center-l (f Right))⁻¹ ⟩
+  center (left (f Right))  ＝⟨ ap center 𝓵 ⟩
+  center (center (f Left)) ＝⟨ ap center ((𝕄-cases-L (center ∘ f) (right ∘ f) (𝕄-is-set , 𝓻))⁻¹) ⟩
   center (𝓡 f 𝓻 Left)      ∎
 
 preservation-𝓡𝓡 : (f : 𝕄 → 𝕄) (𝓵 : is-𝓛-function f) (𝓻 : is-𝓡-function f) → is-𝓡-function (𝓡 f 𝓻)
 preservation-𝓡𝓡 f 𝓵 𝓻 =
-  center (𝓡 f 𝓻 Right)     ≡⟨ ap center (𝕄-cases-R (center ∘ f) (right ∘ f) (𝕄-is-set , 𝓻)) ⟩
-  center (right (f Right)) ≡⟨ 𝕄-cases-r (left ∘ right) (right ∘ left) (𝕄-is-set , refl) (f Right) ⟩
-  right (left (f Right))   ≡⟨ ap right 𝓵 ⟩
-  right (center (f Left))  ≡⟨ ap right ((𝕄-cases-L (center ∘ f) (right ∘ f) (𝕄-is-set , 𝓻))⁻¹) ⟩
+  center (𝓡 f 𝓻 Right)     ＝⟨ ap center (𝕄-cases-R (center ∘ f) (right ∘ f) (𝕄-is-set , 𝓻)) ⟩
+  center (right (f Right)) ＝⟨ 𝕄-cases-r (left ∘ right) (right ∘ left) (𝕄-is-set , refl) (f Right) ⟩
+  right (left (f Right))   ＝⟨ ap right 𝓵 ⟩
+  right (center (f Left))  ＝⟨ ap right ((𝕄-cases-L (center ∘ f) (right ∘ f) (𝕄-is-set , 𝓻))⁻¹) ⟩
   right (𝓡 f 𝓻 Left)       ∎
 
 is-𝓛𝓡-function : (𝕄 → 𝕄) → 𝓤₀ ̇
@@ -1163,25 +1163,25 @@ module _ (fe  : Fun-Ext) where
  𝐿𝑒𝑓𝑡  = left , refl , refl
  𝑅𝑖𝑔ℎ𝑡 = right , refl , refl
 
- F-eq-l : 𝐿𝑒𝑓𝑡 ≡ 𝑙𝑒𝑓𝑡 𝐿𝑒𝑓𝑡
- F-eq-l = to-subtype-≡ being-𝓛𝓡-function-is-prop γ
+ F-eq-l : 𝐿𝑒𝑓𝑡 ＝ 𝑙𝑒𝑓𝑡 𝐿𝑒𝑓𝑡
+ F-eq-l = to-subtype-＝ being-𝓛𝓡-function-is-prop γ
   where
    δ : left ∼ 𝓛 left refl
    δ = left-by-cases
 
-   γ : left ≡ 𝓛 left refl
+   γ : left ＝ 𝓛 left refl
    γ = dfunext fe δ
 
 
- F-eq-lr : 𝑙𝑒𝑓𝑡 𝑅𝑖𝑔ℎ𝑡 ≡ 𝑟𝑖𝑔ℎ𝑡 𝐿𝑒𝑓𝑡
- F-eq-lr = to-subtype-≡ being-𝓛𝓡-function-is-prop v
+ F-eq-lr : 𝑙𝑒𝑓𝑡 𝑅𝑖𝑔ℎ𝑡 ＝ 𝑟𝑖𝑔ℎ𝑡 𝐿𝑒𝑓𝑡
+ F-eq-lr = to-subtype-＝ being-𝓛𝓡-function-is-prop v
   where
-   i = λ (x : 𝕄) → 𝕄𝕄-cases (left ∘ right) (center ∘ right) refl (left x) ≡⟨ 𝕄-cases-l _ _ (𝕄-is-set , refl) x ⟩
-                   left (right x)                                           ≡⟨ (center-l x)⁻¹ ⟩
+   i = λ (x : 𝕄) → 𝕄𝕄-cases (left ∘ right) (center ∘ right) refl (left x) ＝⟨ 𝕄-cases-l _ _ (𝕄-is-set , refl) x ⟩
+                   left (right x)                                           ＝⟨ (center-l x)⁻¹ ⟩
                    center (left x)                                          ∎
 
-   ii =  λ (x : 𝕄) → 𝕄𝕄-cases (left ∘ right) (center ∘ right) refl (right x)   ≡⟨ 𝕄-cases-r _ _ (𝕄-is-set , refl) x ⟩
-                     center (right x)                                          ≡⟨ center-r x ⟩
+   ii =  λ (x : 𝕄) → 𝕄𝕄-cases (left ∘ right) (center ∘ right) refl (right x)   ＝⟨ 𝕄-cases-r _ _ (𝕄-is-set , refl) x ⟩
+                     center (right x)                                          ＝⟨ center-r x ⟩
                      right (left x)                                            ∎
 
    iii : 𝕄𝕄-cases (left ∘ right)  (center ∘ right) refl
@@ -1191,17 +1191,17 @@ module _ (fe  : Fun-Ext) where
    iv : 𝓛 right refl ∼ 𝓡 left refl
    iv = iii
 
-   v : 𝓛 right refl ≡ 𝓡 left refl
+   v : 𝓛 right refl ＝ 𝓡 left refl
    v = dfunext fe iv
 
 
- F-eq-r : 𝑅𝑖𝑔ℎ𝑡 ≡ 𝑟𝑖𝑔ℎ𝑡 𝑅𝑖𝑔ℎ𝑡
- F-eq-r = to-subtype-≡ being-𝓛𝓡-function-is-prop γ
+ F-eq-r : 𝑅𝑖𝑔ℎ𝑡 ＝ 𝑟𝑖𝑔ℎ𝑡 𝑅𝑖𝑔ℎ𝑡
+ F-eq-r = to-subtype-＝ being-𝓛𝓡-function-is-prop γ
   where
    δ : right ∼ 𝓡 right refl
    δ = right-by-cases
 
-   γ : right ≡ 𝓡 right refl
+   γ : right ＝ 𝓡 right refl
    γ = dfunext fe δ
 
 
@@ -1215,38 +1215,38 @@ module _ (fe  : Fun-Ext) where
  x ⊕ y = pr₁ (mid x) y
 
  ⊕-property : (x : 𝕄)
-            → (left   (x ⊕ Right) ≡ center (x ⊕ Left))
-            × (center (x ⊕ Right) ≡ right  (x ⊕ Left))
+            → (left   (x ⊕ Right) ＝ center (x ⊕ Left))
+            × (center (x ⊕ Right) ＝ right  (x ⊕ Left))
  ⊕-property x = pr₂ (mid x)
 
  mid-is-hom : is-hom 𝓜 𝓕 (𝓜-rec 𝓕)
  mid-is-hom = 𝓜-rec-is-hom 𝓕
 
- mid-is-hom-L : mid Left ≡ 𝐿𝑒𝑓𝑡
+ mid-is-hom-L : mid Left ＝ 𝐿𝑒𝑓𝑡
  mid-is-hom-L = is-hom-L 𝓜 𝓕 mid mid-is-hom
 
- mid-is-hom-L' : (y : 𝕄) → Left ⊕ y ≡ left y
+ mid-is-hom-L' : (y : 𝕄) → Left ⊕ y ＝ left y
  mid-is-hom-L' y = ap (λ - → pr₁ - y) mid-is-hom-L
 
- mid-is-hom-R : mid Right ≡ 𝑅𝑖𝑔ℎ𝑡
+ mid-is-hom-R : mid Right ＝ 𝑅𝑖𝑔ℎ𝑡
  mid-is-hom-R = is-hom-R 𝓜 𝓕 mid mid-is-hom
 
- mid-is-hom-R' : (y : 𝕄) → Right ⊕ y ≡ right y
+ mid-is-hom-R' : (y : 𝕄) → Right ⊕ y ＝ right y
  mid-is-hom-R' y = ap (λ - → pr₁ - y) mid-is-hom-R
 
- mid-is-hom-l : (x : 𝕄) → mid (left x) ≡ 𝑙𝑒𝑓𝑡 (mid x)
+ mid-is-hom-l : (x : 𝕄) → mid (left x) ＝ 𝑙𝑒𝑓𝑡 (mid x)
  mid-is-hom-l = is-hom-l 𝓜 𝓕 mid mid-is-hom
 
  mid-is-hom-l' : (x y : 𝕄)
-               → (left x ⊕ Left    ≡ left   (x ⊕ Left))
-               × (left x ⊕ Right   ≡ center (x ⊕ Right))
-               × (left x ⊕ left y  ≡ left   (x ⊕ y))
-               × (left x ⊕ right y ≡ center (x ⊕ y))
+               → (left x ⊕ Left    ＝ left   (x ⊕ Left))
+               × (left x ⊕ Right   ＝ center (x ⊕ Right))
+               × (left x ⊕ left y  ＝ left   (x ⊕ y))
+               × (left x ⊕ right y ＝ center (x ⊕ y))
  mid-is-hom-l' x y = u , v , w , t
   where
-   α = λ y → left x ⊕ y           ≡⟨ refl ⟩
-             pr₁ (mid (left x)) y ≡⟨ happly (ap pr₁ (mid-is-hom-l x)) y ⟩
-             pr₁ (𝑙𝑒𝑓𝑡 (mid x)) y   ≡⟨ refl ⟩
+   α = λ y → left x ⊕ y           ＝⟨ refl ⟩
+             pr₁ (mid (left x)) y ＝⟨ happly (ap pr₁ (mid-is-hom-l x)) y ⟩
+             pr₁ (𝑙𝑒𝑓𝑡 (mid x)) y   ＝⟨ refl ⟩
              𝕄𝕄-cases (left ∘ (x ⊕_)) (center ∘ (x ⊕_)) (pr₁ (⊕-property x)) y ∎
 
    u = α Left      ∙ 𝕄-cases-L (left ∘ (x ⊕_)) (center ∘ (x ⊕_)) (𝕄-is-set , pr₁ (⊕-property x))
@@ -1254,19 +1254,19 @@ module _ (fe  : Fun-Ext) where
    w = α (left y)  ∙ 𝕄-cases-l (left ∘ (x ⊕_)) (center ∘ (x ⊕_)) (𝕄-is-set , pr₁ (⊕-property x)) y
    t = α (right y) ∙ 𝕄-cases-r (left ∘ (x ⊕_)) (center ∘ (x ⊕_)) (𝕄-is-set , pr₁ (⊕-property x)) y
 
- mid-is-hom-r : (x : 𝕄) → mid (right x) ≡ 𝑟𝑖𝑔ℎ𝑡 (mid x)
+ mid-is-hom-r : (x : 𝕄) → mid (right x) ＝ 𝑟𝑖𝑔ℎ𝑡 (mid x)
  mid-is-hom-r = is-hom-r 𝓜 𝓕 mid mid-is-hom
 
  mid-is-hom-r' : (x y : 𝕄)
-               → (right x ⊕ Right   ≡ right  (x ⊕ Right))
-               × (right x ⊕ Left    ≡ center (x ⊕ Left))
-               × (right x ⊕ left y  ≡ center (x ⊕ y))
-               × (right x ⊕ right y ≡ right  (x ⊕ y))
+               → (right x ⊕ Right   ＝ right  (x ⊕ Right))
+               × (right x ⊕ Left    ＝ center (x ⊕ Left))
+               × (right x ⊕ left y  ＝ center (x ⊕ y))
+               × (right x ⊕ right y ＝ right  (x ⊕ y))
  mid-is-hom-r' x y = u , v , w , t
   where
-   α = λ y → right x ⊕ y           ≡⟨ refl ⟩
-             pr₁ (mid (right x)) y ≡⟨ happly (ap pr₁ (mid-is-hom-r x)) y ⟩
-             pr₁ (𝑟𝑖𝑔ℎ𝑡 (mid x)) y   ≡⟨ refl ⟩
+   α = λ y → right x ⊕ y           ＝⟨ refl ⟩
+             pr₁ (mid (right x)) y ＝⟨ happly (ap pr₁ (mid-is-hom-r x)) y ⟩
+             pr₁ (𝑟𝑖𝑔ℎ𝑡 (mid x)) y   ＝⟨ refl ⟩
              𝕄𝕄-cases (center ∘ (x ⊕_)) (right ∘ (x ⊕_)) (pr₂ (⊕-property x)) y ∎
 
    u = α Right ∙ 𝕄-cases-R (center ∘ (x ⊕_)) (right ∘ (x ⊕_)) (𝕄-is-set , pr₂ (⊕-property x))
@@ -1279,19 +1279,19 @@ module _ (fe  : Fun-Ext) where
 So, the set of defining equations is the following, where it can be
 seen that there is some redundancy:
 
-     (  left   (x ⊕ Right) ≡ center (x ⊕ Left)  )
-   × (  center (x ⊕ Right) ≡ right  (x ⊕ Left)  )
+     (  left   (x ⊕ Right) ＝ center (x ⊕ Left)  )
+   × (  center (x ⊕ Right) ＝ right  (x ⊕ Left)  )
 
-   × (  Left    ⊕ y        ≡ left y             )
-   × (  Right   ⊕ y        ≡ right y            )
-   × (  left x  ⊕ Left     ≡ left (x ⊕ Left)    )
-   × (  left x  ⊕ Right    ≡ center (x ⊕ Right) )
-   × (  left x  ⊕ left y   ≡ left (x ⊕ y)       )
-   × (  left x  ⊕ right y  ≡ center (x ⊕ y)     )
-   × (  right x ⊕ Right    ≡ right (x ⊕ Right)  )
-   × (  right x ⊕ Left     ≡ center (x ⊕ Left)  )
-   × (  right x ⊕ left y   ≡ center (x ⊕ y)     )
-   × (  right x ⊕ right y  ≡ right (x ⊕ y)      )
+   × (  Left    ⊕ y        ＝ left y             )
+   × (  Right   ⊕ y        ＝ right y            )
+   × (  left x  ⊕ Left     ＝ left (x ⊕ Left)    )
+   × (  left x  ⊕ Right    ＝ center (x ⊕ Right) )
+   × (  left x  ⊕ left y   ＝ left (x ⊕ y)       )
+   × (  left x  ⊕ right y  ＝ center (x ⊕ y)     )
+   × (  right x ⊕ Right    ＝ right (x ⊕ Right)  )
+   × (  right x ⊕ Left     ＝ center (x ⊕ Left)  )
+   × (  right x ⊕ left y   ＝ center (x ⊕ y)     )
+   × (  right x ⊕ right y  ＝ right (x ⊕ y)      )
 
 The first two come from the binary system F and the remaining ones from the homomorphism condition and cases analysis.
 
@@ -1303,9 +1303,9 @@ makes the initial binary system into the free midpoint algebra over
 two generators (taken to be Left and Right, as expected), where the
 midpoint axioms are
 
-   (idempotency)    x ⊕ x ≡ x,
-   (commutativity)  x ⊕ y ≡ y ⊕ x,
-   (transposition)  (u ⊕ v) ⊕ (x ⊕ y) ≡ (u ⊕ x) ⊕ (v ⊕ y).
+   (idempotency)    x ⊕ x ＝ x,
+   (commutativity)  x ⊕ y ＝ y ⊕ x,
+   (transposition)  (u ⊕ v) ⊕ (x ⊕ y) ＝ (u ⊕ x) ⊕ (v ⊕ y).
 
 In fact, in the initial binary system, there is a unique midpoint
 operation _⊕_ such that

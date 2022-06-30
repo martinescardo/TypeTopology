@@ -205,10 +205,10 @@ characterizing equations from Peano arithmetic:
 
 \begin{code}
 
-+base : {m : ℕ} → m +' zero ≡ m
++base : {m : ℕ} → m +' zero ＝ m
 +base = refl
 
-+step : {m n : ℕ} → m +' (succ n) ≡ succ(m +' n)
++step : {m n : ℕ} → m +' (succ n) ＝ succ(m +' n)
 +step = refl
 
 \end{code}
@@ -231,7 +231,7 @@ addition:
 
 \begin{code}
 
-+'-comm : (m n : ℕ) → m +' n ≡ n +' m
++'-comm : (m n : ℕ) → m +' n ＝ n +' m
 +'-comm m n = Fin-lc (m +' n) (n +' m)
  (Fin (m +' n)   ≃⟨ Fin+homo m n ⟩
   Fin m + Fin n  ≃⟨ +comm ⟩
@@ -270,16 +270,16 @@ m ×' n = pr₁(×construction m n)
 
 infixl 22 _×'_
 
-×base : {m : ℕ} → m ×' zero ≡ zero
+×base : {m : ℕ} → m ×' zero ＝ zero
 ×base = refl
 
-×step : {m n : ℕ} → m ×' (succ n) ≡ m ×' n +' m
+×step : {m n : ℕ} → m ×' (succ n) ＝ m ×' n +' m
 ×step = refl
 
 Fin×homo : (m n : ℕ) → Fin(m ×' n) ≃ Fin m × Fin n
 Fin×homo m n = pr₂(×construction m n)
 
-×'-comm : (m n : ℕ) → m ×' n ≡ n ×' m
+×'-comm : (m n : ℕ) → m ×' n ＝ n ×' m
 ×'-comm m n = Fin-lc (m ×' n) (n ×' m)
  (Fin (m ×' n)   ≃⟨ Fin×homo m n ⟩
   Fin m × Fin n  ≃⟨ ×comm ⟩
@@ -329,10 +329,10 @@ module exponentiation-and-factorial (fe : FunExt) where
 
  infixl 23 _^_
 
- ^base : {n : ℕ} → n ^ zero ≡ succ zero
+ ^base : {n : ℕ} → n ^ zero ＝ succ zero
  ^base = refl
 
- ^step : {m n : ℕ} → n ^ (succ m) ≡ (n ^ m) ×' n
+ ^step : {m n : ℕ} → n ^ (succ m) ＝ (n ^ m) ×' n
  ^step = refl
 
  Fin^homo : (m n : ℕ) → Fin(n ^ m) ≃ (Fin m → Fin n)
@@ -344,7 +344,7 @@ module exponentiation-and-factorial (fe : FunExt) where
 
 \begin{code}
 
- ^+homo : (k m n : ℕ) → k ^ (m +' n) ≡ (k ^ m) ×' (k ^ n)
+ ^+homo : (k m n : ℕ) → k ^ (m +' n) ＝ (k ^ m) ×' (k ^ n)
  ^+homo k m n = Fin-lc (k ^ (m +' n)) (k ^ m ×' k ^ n)
   (Fin (k ^ (m +' n))                ≃⟨ Fin^homo (m +' n) k ⟩
   (Fin (m +' n) → Fin k)             ≃⟨ →cong fe₀ fe₀ (Fin+homo m n) (≃-refl (Fin k)) ⟩
@@ -353,7 +353,7 @@ module exponentiation-and-factorial (fe : FunExt) where
    Fin (k ^ m) × Fin (k ^ n)         ≃⟨ ≃-sym (Fin×homo (k ^ m) (k ^ n)) ⟩
    Fin (k ^ m ×' k ^ n)              ■)
 
- iterated^ : (k m n : ℕ) → k ^ (m ×' n) ≡ (k ^ n) ^ m
+ iterated^ : (k m n : ℕ) → k ^ (m ×' n) ＝ (k ^ n) ^ m
  iterated^ k m n = Fin-lc (k ^ (m ×' n)) (k ^ n ^ m)
     (Fin (k ^ (m ×' n))        ≃⟨ Fin^homo (m ×' n) k ⟩
     (Fin (m ×' n) → Fin k)     ≃⟨ →cong fe₀ fe₀ (Fin×homo m n) (≃-refl (Fin k)) ⟩
@@ -412,10 +412,10 @@ The following are theorems rather than definitions:
 
 \sbegin{code}
 
- !-base : 0 ! ≡ 1
+ !-base : 0 ! ＝ 1
  !-base = refl
 
- !-step : (n : ℕ) → (n +' 1)! ≡ (n +' 1) ×' n !
+ !-step : (n : ℕ) → (n +' 1)! ＝ (n +' 1) ×' n !
  !-step n = refl
 
 \end{code}
@@ -484,7 +484,7 @@ module _ (pt : propositional-truncations-exist)
 \end{code}
 
 We have accounted for the type constructors +, ×, →, and ≃ (and hence
-≡ if we assume univalence). The last two types to account for in our
+＝ if we assume univalence). The last two types to account for in our
 spartan MLTT are Π and Σ.
 
 \begin{code}
@@ -534,11 +534,11 @@ Which is characterized by its usual inductive definition:
 \begin{code}
 
 ∑-base : (a : Fin 0 → ℕ)
-       → ∑ a ≡ 0
+       → ∑ a ＝ 0
 ∑-base a = refl
 
 ∑-step : {n : ℕ} (a : Fin (succ n) → ℕ)
-       → ∑ a ≡ a 𝟎 +' ∑ (a ∘ suc)
+       → ∑ a ＝ a 𝟎 +' ∑ (a ∘ suc)
 ∑-step {n} a = refl
 
 \end{code}
@@ -588,11 +588,11 @@ module _ (fe : funext 𝓤₀ 𝓤₀) where
  ∏ {n} a = pr₁ (Πconstruction n a)
 
  ∏-base : (a : Fin 0 → ℕ)
-        → ∏ a ≡ 1
+        → ∏ a ＝ 1
  ∏-base a = refl
 
  ∏-step : {n : ℕ} (a : Fin (succ n) → ℕ)
-        → ∏ a ≡ a 𝟎 ×' ∏ (a ∘ suc)
+        → ∏ a ＝ a 𝟎 ×' ∏ (a ∘ suc)
  ∏-step {n} a = refl
 
 \end{code}

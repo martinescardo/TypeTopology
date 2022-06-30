@@ -290,7 +290,7 @@ U is-an-upper-section-of L = is-lower-open U × are-ordered L U × are-located L
 any-two-upper-sections-are-equal : (L U U' : 𝓟 ℚ)
                                  → U  is-an-upper-section-of L
                                  → U' is-an-upper-section-of L
-                                 → U ≡ U'
+                                 → U ＝ U'
 any-two-upper-sections-are-equal L U U' (a , b , c) (u , v , w) = γ
  where
   i : U ⊆ U'
@@ -299,7 +299,7 @@ any-two-upper-sections-are-equal L U U' (a , b , c) (u , v , w) = γ
   j : U ⊇ U'
   j = order-lemma L U  L U' u c v (⊆-refl' L)
 
-  γ : U ≡ U'
+  γ : U ＝ U'
   γ = subset-extensionality'' pe fe fe i j
 
 \end{code}
@@ -325,15 +325,15 @@ We use the above auxiliary definition and lemma to establish the following:
 at-most-one-upper-section : (l : ℝᴸ) (u₀ u₁ : ℝᵁ)
                           → u₀ is-upper-section-of l
                           → u₁ is-upper-section-of l
-                          → u₀ ≡ u₁
+                          → u₀ ＝ u₁
 at-most-one-upper-section (L , _)
                           u₀@(U₀ , _ , _ , U₀-is-lower-open)
                           u₁@(U₁ , _ , _ , U₁-is-lower-open)
                           (lu₀-ordered , lu₀-located)
                           (lu₁-ordered , lu₁-located)      = γ
  where
-  γ : u₀ ≡ u₁
-  γ = to-subtype-≡
+  γ : u₀ ＝ u₁
+  γ = to-subtype-＝
         being-upper-real-is-prop
         (any-two-upper-sections-are-equal L U₀ U₁
             (U₀-is-lower-open , lu₀-ordered , lu₀-located)
@@ -348,7 +348,7 @@ is-dedekind : ℝᴸ → 𝓤⁺ ̇
 is-dedekind l = Σ u ꞉ ℝᵁ , (u is-upper-section-of l)
 
 being-dedekind-is-prop : (l : ℝᴸ) → is-prop (is-dedekind l)
-being-dedekind-is-prop l (u₀ , p₀) (u₁ , p₁) = to-subtype-≡
+being-dedekind-is-prop l (u₀ , p₀) (u₁ , p₁) = to-subtype-＝
                                                  (being-upper-section-is-prop l)
                                                  (at-most-one-upper-section l u₀ u₁ p₀ p₁)
 \end{code}
@@ -465,12 +465,12 @@ NB₂ = qinveq (λ ((L , Li , _ , Lo) , (U , Ui , _ , Uo) , o , l)
                  o , l)) ,
 
              (λ ((L , Li , Ll , Lo) , (U , Ui , Uu , Uo) , o , l)
-              → to-subtype-≡ being-dedekind-is-prop
-                  (to-subtype-≡ being-lower-real-is-prop
+              → to-subtype-＝ being-dedekind-is-prop
+                  (to-subtype-＝ being-lower-real-is-prop
                      refl)) ,
 
              (λ ((L , U) , Li , Lo , Ui , Uo , o , l)
-              → to-subtype-≡ (λ (L , U) → ×₆-is-prop
+              → to-subtype-＝ (λ (L , U) → ×₆-is-prop
                                            (being-inhabited-is-prop L)
                                            (being-upper-open-is-prop L)
                                            (being-inhabited-is-prop U)
@@ -501,7 +501,7 @@ module _ (ℚ-density         : (p r : ℚ) → p < r → Σ q ꞉ ℚ , (p < q)
          (ℚ-transitivity    : (p q r : ℚ) → p < q → q < r → p < r)
          (ℚ-order-criterion : (p q : ℚ) → q ≮ p → p ≢ q → p < q)
          (ℚ-cotransitivity  : (p q r : ℚ) → p < r → (p < q) ∨ (q < r))
-         (ℚ-tightness       : (p q : ℚ) → q ≮ p → p ≮ q → p ≡ q)
+         (ℚ-tightness       : (p q : ℚ) → q ≮ p → p ≮ q → p ＝ q)
          (ℚ-is-lower-open   : (q : ℚ) → ∃ p ꞉ ℚ , (p < q))
          (ℚ-is-upper-open   : (p : ℚ) → ∃ q ꞉ ℚ , (p < q))
          (𝟎 ½ 𝟏             : ℚ)
@@ -516,24 +516,24 @@ module _ (ℚ-density         : (p r : ℚ) → p < r → Σ q ꞉ ℚ , (p < q)
   order-ℚ-ℚ : Order ℚ ℚ
   _≤_ {{order-ℚ-ℚ}} p q = (r : ℚ) → r < p → r < q
 
- ℚ-≤-antisym : (p q : ℚ) → p ≤ q → q ≤ p → p ≡ q
+ ℚ-≤-antisym : (p q : ℚ) → p ≤ q → q ≤ p → p ＝ q
  ℚ-≤-antisym p q i j = ℚ-tightness p q (λ ℓ → <-ℚ-ℚ-irrefl q (i q ℓ))
                                        (λ ℓ → <-ℚ-ℚ-irrefl p (j p ℓ))
 
- <-or-≡-gives-≤-on-ℚ : (p q : ℚ) → (p < q) + (p ≡ q) → p ≤ q
- <-or-≡-gives-≤-on-ℚ p q (inl ℓ)    r m = ℚ-transitivity r p q m ℓ
- <-or-≡-gives-≤-on-ℚ p q (inr refl) r ℓ = ℓ
+ <-or-＝-gives-≤-on-ℚ : (p q : ℚ) → (p < q) + (p ＝ q) → p ≤ q
+ <-or-＝-gives-≤-on-ℚ p q (inl ℓ)    r m = ℚ-transitivity r p q m ℓ
+ <-or-＝-gives-≤-on-ℚ p q (inr refl) r ℓ = ℓ
 
- ℚ-trichotomy = (p q : ℚ) → (p < q) + (p ≡ q) + (p > q)
+ ℚ-trichotomy = (p q : ℚ) → (p < q) + (p ＝ q) + (p > q)
 
- ≤-on-ℚ-gives-≡-or-< : ℚ-trichotomy
-                     → (p q : ℚ) → p ≤ q → (p < q) + (p ≡ q)
- ≤-on-ℚ-gives-≡-or-< τ p q ℓ = γ (τ p q)
+ ≤-on-ℚ-gives-＝-or-< : ℚ-trichotomy
+                     → (p q : ℚ) → p ≤ q → (p < q) + (p ＝ q)
+ ≤-on-ℚ-gives-＝-or-< τ p q ℓ = γ (τ p q)
   where
    I : q ≮ p
    I m = <-ℚ-ℚ-irrefl q (ℓ q m)
 
-   γ : (p < q) + (p ≡ q) + (p > q) → (p < q) + (p ≡ q)
+   γ : (p < q) + (p ＝ q) + (p > q) → (p < q) + (p ＝ q)
    γ (inl i)       = inl i
    γ (inr (inl e)) = inr e
    γ (inr (inr j)) = 𝟘-elim (I j)
@@ -577,12 +577,12 @@ found in the literature:
                   ordered-criterion L U Ll d , l)) ,
 
               (λ ((L , Li , Ll , Lo) , (U , Ui , Uu , Uo) , o , l)
-               → to-subtype-≡ being-dedekind-is-prop
-                   (to-subtype-≡ being-lower-real-is-prop
+               → to-subtype-＝ being-dedekind-is-prop
+                   (to-subtype-＝ being-lower-real-is-prop
                       refl)) ,
 
               (λ ((L , U) , Li , Lo , Ui , Uo , o , l)
-               → to-subtype-≡ (λ (L , U) → ×₈-is-prop
+               → to-subtype-＝ (λ (L , U) → ×₈-is-prop
                                             (being-inhabited-is-prop L)
                                             (being-lower-is-prop L)
                                             (being-upper-open-is-prop L)
@@ -748,7 +748,7 @@ sense:
 \begin{code}
 
  unique-candidate : (L U : 𝓟 ℚ)
-                  → is-dedekind-section (L , U) → U ≡ candidate-upper-section L
+                  → is-dedekind-section (L , U) → U ＝ candidate-upper-section L
  unique-candidate L U (Li , Ll , Lo , Ui , Uu , Uo , ordered , located) = γ
   where
    l : ℝᴸ
@@ -768,7 +768,7 @@ sense:
          candidate-upper-section-is-ordered L Ll II ,
          candidate-upper-section-is-located L II
 
-   γ : U ≡ candidate-upper-section L
+   γ : U ＝ candidate-upper-section L
    γ = any-two-upper-sections-are-equal L U
         (candidate-upper-section L)
         (Uo , ordered , located)
@@ -823,8 +823,8 @@ universe lifting help? I haven't thought about this.
 
    γ : ℝ ≃ ℝᵀ
    γ = qinveq f (g ,
-                (λ (l , h) → to-subtype-≡ being-dedekind-is-prop refl) ,
-                (λ (l , k) → to-subtype-≡ being-troelstra-is-prop refl))
+                (λ (l , h) → to-subtype-＝ being-dedekind-is-prop refl) ,
+                (λ (l , k) → to-subtype-＝ being-troelstra-is-prop refl))
 \end{code}
 
 We now consider consequences of excluded middle. Notice that if A is a
@@ -885,7 +885,7 @@ agree with the bounded lower reals if we assume excluded middle:
 
 \begin{code}
 
- ℝᵀ-and-ℝᴮᴸ-agree-under-LEM : LEM → ℝᵀ ≡ ℝᴮᴸ
+ ℝᵀ-and-ℝᴮᴸ-agree-under-LEM : LEM → ℝᵀ ＝ ℝᴮᴸ
  ℝᵀ-and-ℝᴮᴸ-agree-under-LEM lem = ap Σ γ
   where
    δ : is-troelstra ∼ λ (L , _) → is-bounded-above L
@@ -894,7 +894,7 @@ agree with the bounded lower reals if we assume excluded middle:
                     pr₁
                     (λ β → β , LEM-gives-locatedness lem l)
 
-   γ : is-troelstra ≡ (λ (L , _) → is-bounded-above L)
+   γ : is-troelstra ＝ (λ (L , _) → is-bounded-above L)
    γ = dfunext fe δ
 
 \end{code}
@@ -1028,14 +1028,14 @@ The canonical embedding of the rationals into the reals:
  ℚ-to-ℝᴸ-is-embedding : is-embedding ℚ-to-ℝᴸ
  ℚ-to-ℝᴸ-is-embedding l (p , a) (q , b) = γ
   where
-   I = ℚ-to-ℝᴸ p ≡⟨ a ⟩
-       l         ≡⟨ b ⁻¹ ⟩
+   I = ℚ-to-ℝᴸ p ＝⟨ a ⟩
+       l         ＝⟨ b ⁻¹ ⟩
        ℚ-to-ℝᴸ q ∎
 
-   II : (λ r → (r < p) , _) ≡ (λ r → (r < q) , _)
+   II : (λ r → (r < p) , _) ＝ (λ r → (r < q) , _)
    II = ap pr₁ I
 
-   III : (λ r → r < p) ≡ (λ r → r < q)
+   III : (λ r → r < p) ＝ (λ r → r < q)
    III = ap (λ f r → pr₁ (f r)) II
 
    A : (r : ℚ) → r < p → r < q
@@ -1044,11 +1044,11 @@ The canonical embedding of the rationals into the reals:
    B : (r : ℚ) → r < q → r < p
    B r = idtofun (r < q) (r < p) (happly (III ⁻¹) r)
 
-   V : p ≡ q
+   V : p ＝ q
    V =  ℚ-≤-antisym p q A B
 
-   γ : (p , a) ≡ (q , b)
-   γ = to-subtype-≡ (λ _ → ℝᴸ-is-set) V
+   γ : (p , a) ＝ (q , b)
+   γ = to-subtype-＝ (λ _ → ℝᴸ-is-set) V
 
  instance
   canonical-map-ℚ-to-ℝ : Canonical-Map ℚ ℝ
@@ -1061,11 +1061,11 @@ The canonical embedding of the rationals into the reals:
                         ℚ-to-ℝᴸ-is-embedding
                         ℝ-to-ℝᴸ-is-embedding
   where
-   notice-that : ℝ-to-ℝᴸ ∘ ℚ-to-ℝ ≡ ℚ-to-ℝᴸ
+   notice-that : ℝ-to-ℝᴸ ∘ ℚ-to-ℝ ＝ ℚ-to-ℝᴸ
    notice-that = refl
 
  is-rational : ℝ → 𝓤⁺ ̇
- is-rational x = Σ q ꞉ ℚ , ι q ≡ x
+ is-rational x = Σ q ꞉ ℚ , ι q ＝ x
 
  being-rational-is-prop : (x : ℝ) → is-prop (is-rational x)
  being-rational-is-prop = ℚ-to-ℝ-is-embedding
@@ -1156,11 +1156,11 @@ embeddings, as the types under consideration are all sets).
 
 \begin{code}
 
- lowercut-lc : (x y : ℝ) → lowercut x ≡ lowercut y → x ≡ y
- lowercut-lc x y e = to-subtype-≡ being-dedekind-is-prop
-                       (to-subtype-≡ being-lower-real-is-prop e)
+ lowercut-lc : (x y : ℝ) → lowercut x ＝ lowercut y → x ＝ y
+ lowercut-lc x y e = to-subtype-＝ being-dedekind-is-prop
+                       (to-subtype-＝ being-lower-real-is-prop e)
 
- uppercut-lc : (x y : ℝ) → uppercut x ≡ uppercut y → x ≡ y
+ uppercut-lc : (x y : ℝ) → uppercut x ＝ uppercut y → x ＝ y
  uppercut-lc x y p = lowercut-lc x y III
   where
    I : lowercut x ⊆ lowercut y
@@ -1173,7 +1173,7 @@ embeddings, as the types under consideration are all sets).
          (lowercut-is-upper-open y) (cuts-are-located x) (cuts-are-ordered y)
          (transport (uppercut x ⊆_) p (⊆-refl (uppercut x)))
 
-   III : lowercut x ≡ lowercut y
+   III : lowercut x ＝ lowercut y
    III = subset-extensionality'' pe fe fe I II
 
 \end{code}
@@ -1340,16 +1340,16 @@ in the case of the reals.
  ≤-ℝ-ℝ-trans : (x y z : ℝ) → x ≤ y → y ≤ z → x ≤ z
  ≤-ℝ-ℝ-trans x y z l m p i = m p (l p i)
 
- ≤-ℝ-ℝ-antisym : (x y : ℝ) → x ≤ y → y ≤ x → x ≡ y
+ ≤-ℝ-ℝ-antisym : (x y : ℝ) → x ≤ y → y ≤ x → x ＝ y
  ≤-ℝ-ℝ-antisym x y l m = lowercut-lc x y γ
   where
-   γ : lowercut x ≡ lowercut y
+   γ : lowercut x ＝ lowercut y
    γ = subset-extensionality'' pe fe fe l m
 
 \end{code}
 
 The type ℝ is large, in the sense that it lives in 𝓤⁺ rather than 𝓤,
-but it is locally small, in the sense that each identity type x ≡ y
+but it is locally small, in the sense that each identity type x ＝ y
 with x,y:ℝ, which also lives in 𝓤⁺, has copy in the universe 𝓤, namely
 the type (x ≤ y) × (y ≤ x).
 
@@ -1358,20 +1358,20 @@ the type (x ≤ y) × (y ≤ x).
  ℝ-is-locally-small : is-locally-small ℝ
  ℝ-is-locally-small x y = γ
   where
-   f : (x ≤ y) × (y ≤ x) → x ≡ y
+   f : (x ≤ y) × (y ≤ x) → x ＝ y
    f = uncurry (≤-ℝ-ℝ-antisym x y)
 
-   g : x ≡ y → (x ≤ y) × (y ≤ x)
+   g : x ＝ y → (x ≤ y) × (y ≤ x)
    g refl = ≤-ℝ-refl x , ≤-ℝ-refl x
 
-   e : ((x ≤ y) × (y ≤ x)) ≃ (x ≡ y)
+   e : ((x ≤ y) × (y ≤ x)) ≃ (x ＝ y)
    e = qinveq
         f
         (g ,
          (λ a → ×-is-prop (≤₀-is-prop-valued x y) (≤₀-is-prop-valued y x) (g (f a)) a) ,
          (λ b → ℝ-is-set (f (g b)) b))
 
-   γ : (x ≡ y) is 𝓤 small
+   γ : (x ＝ y) is 𝓤 small
    γ = ((x ≤ y) × (y ≤ x)) , e
 
 \end{code}
@@ -1388,7 +1388,7 @@ Relationship between the orders of ℚ and ℝ:
                            (<-ℚ-ℚ-is-prop-valued p q)
                            (λ (r , i , j) → ℚ-transitivity p r q i j)
 
- ≤-on-ℚ-agrees-with-≤-on-ℝ : (p q : ℚ) → (p ≤ q) ≡ (ι p ≤ ι q)
+ ≤-on-ℚ-agrees-with-≤-on-ℝ : (p q : ℚ) → (p ≤ q) ＝ (ι p ≤ ι q)
  ≤-on-ℚ-agrees-with-≤-on-ℝ p q = refl
 
  ≤-on-ℚ-is-prop-valued : (p q : ℚ) → is-prop (ι p ≤ ι q)
@@ -1541,7 +1541,7 @@ Apartness of real numbers and its basic properties:
                                     (λ (ℓ : z < x) → inl (inr ℓ)))
                              (<-cotrans y x ℓ z)
 
- ♯-tight : (x y : ℝ) → ¬ (x ♯ y) → x ≡ y
+ ♯-tight : (x y : ℝ) → ¬ (x ♯ y) → x ＝ y
  ♯-tight x y ν = ≤-ℝ-ℝ-antisym x y III IV
   where
    I : x ≮ y
@@ -1556,10 +1556,10 @@ Apartness of real numbers and its basic properties:
    IV : y ≤ x
    IV = ≤₂-gives-≤ y x I
 
- ℝ-is-¬¬-separated : (x y : ℝ) → ¬¬ (x ≡ y) → x ≡ y
+ ℝ-is-¬¬-separated : (x y : ℝ) → ¬¬ (x ＝ y) → x ＝ y
  ℝ-is-¬¬-separated x y ϕ = ♯-tight x y (c ϕ)
   where
-   c : ¬¬ (x ≡ y) → ¬ (x ♯ y)
+   c : ¬¬ (x ＝ y) → ¬ (x ♯ y)
    c = contrapositive (♯-gives-≢ x y)
 
  ℝ-order-criterion : (x y : ℝ) → x ≤ y → x ♯ y → x < y
@@ -1567,7 +1567,7 @@ Apartness of real numbers and its basic properties:
  ℝ-order-criterion x y ℓ (inr m) = 𝟘-elim (≤-gives-≤₂ x y ℓ m)
 
  is-irrational : ℝ → 𝓤⁺ ̇
- is-irrational x = ¬ (Σ q ꞉ ℚ , ι q ≡ x)
+ is-irrational x = ¬ (Σ q ꞉ ℚ , ι q ＝ x)
 
  is-strongly-irrational : ℝ → 𝓤 ̇
  is-strongly-irrational x = (q : ℚ) → ι q ♯ x
@@ -1635,11 +1635,11 @@ upper bound of the family x.
   having-a-lub-is-prop : (x : F) → is-prop (x has-a-lub)
   having-a-lub-is-prop x (y , a , b) (y' , a' , b') = γ
    where
-    I : y ≡ y'
+    I : y ＝ y'
     I = ≤-ℝ-ℝ-antisym y y' (b y' a') (b' y a)
 
-    γ : (y , a , b) ≡ (y' , a' , b')
-    γ = to-subtype-≡ (having-lub-is-prop x) I
+    γ : (y , a , b) ＝ (y' , a' , b')
+    γ = to-subtype-＝ (having-lub-is-prop x) I
 
   instance
    strict-order-ℚ-F : Strict-Order ℚ F
@@ -1833,10 +1833,10 @@ locatedness condition from the Dedekind reals.
  ℝ-to-𝓡-is-embedding : is-embedding (canonical-map ℝ 𝓡)
  ℝ-to-𝓡-is-embedding ((x , y) , o) ((x , y , o , l) , refl) ((x , y , o , m) , refl) = γ
   where
-   δ : l ≡ m
+   δ : l ＝ m
    δ = being-located-is-prop (ι x) (ι y) l m
 
-   γ : ((x , y , o , l) , refl) ≡ ((x , y , o , m) , refl)
+   γ : ((x , y , o , l) , refl) ＝ ((x , y , o , m) , refl)
    γ = ap (λ - → (x , y , o , -) , refl) δ
 
 \end{code}
@@ -1867,7 +1867,7 @@ If we drop the inhabitation conditions, the endpoints can be ±∞:
  𝓡-to-𝓡∞-is-embedding ((L , U) , (Ll , Lo) , (Uu , Uo) , o)
                         ((((L , i , Ll , Lo) , U , k , Uu , Uo) , o) , refl)
                         ((((L , j , Ll , Lo) , U , l , Uu , Uo) , o) , refl)
-   = (((L , i , Ll , Lo) , U , k , Uu , Uo) , o) , refl ≡⟨ I ⟩
+   = (((L , i , Ll , Lo) , U , k , Uu , Uo) , o) , refl ＝⟨ I ⟩
      (((L , j , Ll , Lo) , U , l , Uu , Uo) , o) , refl ∎
   where
    I = ap₂ (λ i k → (((L , i , Ll , Lo) , U , k , Uu , Uo) , o) , refl)
@@ -1990,16 +1990,16 @@ Some (overlapping) problems:
  Problem₁ = (x : ℕ → ℝ) (x∞ : ℝ)
           → x has-limit x∞
           → Σ x̂ ꞉ (ℕ∞ → ℝ)
-                 , ((n : ℕ) → x̂ (ι n) ≡ x n)
-                 × (x̂ ∞ ≡ x∞)
+                 , ((n : ℕ) → x̂ (ι n) ＝ x n)
+                 × (x̂ ∞ ＝ x∞)
 
  Problem₂ = (x : ℕ → ℝ) (x∞ : ℝ)
           → ((n : ℕ) → locator (x n))
           → locator x∞
           → x has-limit x∞
           → Σ x̂ ꞉ (ℕ∞ → ℝ)
-                 , ((n : ℕ) → x̂ (ι n) ≡ x n)
-                 × (x̂ ∞ ≡ x∞)
+                 , ((n : ℕ) → x̂ (ι n) ＝ x n)
+                 × (x̂ ∞ ＝ x∞)
                  × ((𝓃 : ℕ∞) → locator (x̂ 𝓃))
 
  Problem₃ = (x : ℕ∞ → ℝ)

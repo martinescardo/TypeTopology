@@ -3,14 +3,14 @@ Martin Escardo, December 2017 (but done much earlier on paper)
 As discussed in the module CompactTypes, Bishop's "limited principle
 of omniscience" amount to the compactness of the type ℕ, that is,
 
-  Π p ꞉ ℕ → 𝟚 , (Σ n ꞉ ℕ , p n ≡ ₀) + (Π n ꞉ ℕ , p n ≡ ₁),
+  Π p ꞉ ℕ → 𝟚 , (Σ n ꞉ ℕ , p n ＝ ₀) + (Π n ꞉ ℕ , p n ＝ ₁),
 
 which fails in contructive mathematics (here in the sense that it is
 independent - it is not provable, and its negation is also not
 provable).
 
 This is in general not a univalent proposition, because there may be
-many n:ℕ with p n ≡ ₀. In univalent mathematics, we may get a
+many n:ℕ with p n ＝ ₀. In univalent mathematics, we may get a
 proposition by truncating the Σ to get the existential quantifier ∃
 (see the Homotopy Type Theory book). Here instead we construct the
 truncation directly, and call it LPO.
@@ -48,15 +48,15 @@ private
  fe₀ = fe 𝓤₀ 𝓤₀
 
 LPO : 𝓤₀ ̇
-LPO = (x : ℕ∞) → decidable (Σ n ꞉ ℕ , x ≡ ι n)
+LPO = (x : ℕ∞) → decidable (Σ n ꞉ ℕ , x ＝ ι n)
 
 LPO-is-prop : is-prop LPO
 LPO-is-prop = Π-is-prop fe₀ f
  where
-  a : (x : ℕ∞) → is-prop (Σ n ꞉ ℕ , x ≡ ι n)
-  a x (n , p) (m , q) = to-Σ-≡ (ℕ-to-ℕ∞-lc (p ⁻¹ ∙ q) , ℕ∞-is-set fe₀ _ _)
+  a : (x : ℕ∞) → is-prop (Σ n ꞉ ℕ , x ＝ ι n)
+  a x (n , p) (m , q) = to-Σ-＝ (ℕ-to-ℕ∞-lc (p ⁻¹ ∙ q) , ℕ∞-is-set fe₀ _ _)
 
-  f : (x : ℕ∞) → is-prop (decidable (Σ n ꞉ ℕ , x ≡ ι n))
+  f : (x : ℕ∞) → is-prop (decidable (Σ n ꞉ ℕ , x ＝ ι n))
   f x = decidability-of-prop-is-prop fe₀ (a x)
 
 \end{code}
@@ -71,7 +71,7 @@ sense of UF) to our formulation.
 LPO-gives-compact-ℕ : LPO → compact ℕ
 LPO-gives-compact-ℕ ℓ β = γ
   where
-    A = (Σ n ꞉ ℕ , β n ≡ ₀) + (Π n ꞉ ℕ , β n ≡ ₁)
+    A = (Σ n ꞉ ℕ , β n ＝ ₀) + (Π n ꞉ ℕ , β n ＝ ₁)
 
     α : ℕ → 𝟚
     α = force-decreasing β
@@ -79,31 +79,31 @@ LPO-gives-compact-ℕ ℓ β = γ
     x : ℕ∞
     x = (α , force-decreasing-is-decreasing β)
 
-    d : decidable(Σ n ꞉ ℕ , x ≡ ι n)
+    d : decidable(Σ n ꞉ ℕ , x ＝ ι n)
     d = ℓ x
 
-    a : (Σ n ꞉ ℕ , x ≡ ι n) → A
+    a : (Σ n ꞉ ℕ , x ＝ ι n) → A
     a (n , p) = inl (force-decreasing-is-not-much-smaller β n c)
       where
-        c : α n ≡ ₀
+        c : α n ＝ ₀
         c = ap (λ - → ι - n) p ∙ ℕ-to-ℕ∞-diagonal₀ n
 
-    b : (¬ (Σ n ꞉ ℕ , x ≡ ι n)) → A
+    b : (¬ (Σ n ꞉ ℕ , x ＝ ι n)) → A
     b u = inr g
       where
-        v : (n : ℕ) → x ≡ ι n → 𝟘
+        v : (n : ℕ) → x ＝ ι n → 𝟘
         v = curry u
 
-        g : (n : ℕ) → β n ≡ ₁
+        g : (n : ℕ) → β n ＝ ₁
         g n = ≤₂-criterion-converse (force-decreasing-is-smaller β n) e
           where
-            c : x ≡ ι n → 𝟘
+            c : x ＝ ι n → 𝟘
             c = v n
 
-            l : x ≡ ∞
+            l : x ＝ ∞
             l = not-finite-is-∞ fe₀ v
 
-            e : α n ≡ ₁
+            e : α n ＝ ₁
             e = ap (λ - → ι - n) l
 
     γ : A
@@ -112,36 +112,36 @@ LPO-gives-compact-ℕ ℓ β = γ
 compact-ℕ-gives-LPO : compact ℕ → LPO
 compact-ℕ-gives-LPO κ x = γ
   where
-    A = decidable (Σ n ꞉ ℕ , x ≡ ι n)
+    A = decidable (Σ n ꞉ ℕ , x ＝ ι n)
 
     β : ℕ → 𝟚
     β = ι x
 
-    d : (Σ n ꞉ ℕ , β n ≡ ₀) + (Π n ꞉ ℕ , β n ≡ ₁)
+    d : (Σ n ꞉ ℕ , β n ＝ ₀) + (Π n ꞉ ℕ , β n ＝ ₁)
     d = κ β
 
-    a : (Σ n ꞉ ℕ , β n ≡ ₀) → A
+    a : (Σ n ꞉ ℕ , β n ＝ ₀) → A
     a (n , p) = inl (pr₁ g , pr₂(pr₂ g))
       where
-        g : Σ m ꞉ ℕ , (m ≤ n) × (x ≡ ι m)
+        g : Σ m ꞉ ℕ , (m ≤ n) × (x ＝ ι m)
         g = ℕ-to-ℕ∞-lemma fe₀ x n p
 
-    b : (Π n ꞉ ℕ , β n ≡ ₁) → A
+    b : (Π n ꞉ ℕ , β n ＝ ₁) → A
     b φ = inr g
       where
-        ψ : ¬ (Σ n ꞉ ℕ , β n ≡ ₀)
+        ψ : ¬ (Σ n ꞉ ℕ , β n ＝ ₀)
         ψ = uncurry (λ n → equal-₁-different-from-₀(φ n))
 
-        f : (Σ n ꞉ ℕ , x ≡ ι n) → Σ n ꞉ ℕ , β n ≡ ₀
+        f : (Σ n ꞉ ℕ , x ＝ ι n) → Σ n ꞉ ℕ , β n ＝ ₀
         f (n , p) = (n , (ap (λ - → ι - n) p ∙ ℕ-to-ℕ∞-diagonal₀ n))
           where
-           l : ι x n ≡ ι (ι n) n
+           l : ι x n ＝ ι (ι n) n
            l = ap (λ - → ι - n) p
 
-        g : ¬ (Σ n ꞉ ℕ , x ≡ ι n)
+        g : ¬ (Σ n ꞉ ℕ , x ＝ ι n)
         g = contrapositive f ψ
 
-    γ : decidable (Σ n ꞉ ℕ , x ≡ ι n)
+    γ : decidable (Σ n ꞉ ℕ , x ＝ ι n)
     γ = cases a b d
 
 \end{code}
@@ -202,22 +202,22 @@ embedding ι𝟙 : ℕ + 𝟙 → ℕ∞ has a section:
 ι𝟙-has-section-gives-LPO : (Σ s ꞉ (ℕ∞ → ℕ + 𝟙) , ι𝟙 ∘ s ∼ id) → LPO
 ι𝟙-has-section-gives-LPO (s , ε) u = ψ (s u) refl
  where
-  ψ : (z : ℕ + 𝟙) → s u ≡ z → decidable (Σ n ꞉ ℕ , u ≡ ι n)
-  ψ (inl n) p = inl (n , (u        ≡⟨ (ε u) ⁻¹ ⟩
-                          ι𝟙 (s u) ≡⟨ ap ι𝟙 p ⟩
+  ψ : (z : ℕ + 𝟙) → s u ＝ z → decidable (Σ n ꞉ ℕ , u ＝ ι n)
+  ψ (inl n) p = inl (n , (u        ＝⟨ (ε u) ⁻¹ ⟩
+                          ι𝟙 (s u) ＝⟨ ap ι𝟙 p ⟩
                           ι n      ∎))
   ψ (inr *) p = inr γ
    where
-    γ : ¬ (Σ n ꞉ ℕ , u ≡ ι n)
-    γ (n , q) = ∞-is-not-finite n (∞        ≡⟨ (ap ι𝟙 p)⁻¹ ⟩
-                                   ι𝟙 (s u) ≡⟨ ε u ⟩
-                                   u        ≡⟨ q ⟩
+    γ : ¬ (Σ n ꞉ ℕ , u ＝ ι n)
+    γ (n , q) = ∞-is-not-finite n (∞        ＝⟨ (ap ι𝟙 p)⁻¹ ⟩
+                                   ι𝟙 (s u) ＝⟨ ε u ⟩
+                                   u        ＝⟨ q ⟩
                                    ι n      ∎)
 
 ι𝟙-is-equiv-gives-LPO : is-equiv ι𝟙 → LPO
 ι𝟙-is-equiv-gives-LPO i = ι𝟙-has-section-gives-LPO (equivs-have-sections ι𝟙 i)
 
-ι𝟙-inverse : (u : ℕ∞) → decidable (Σ n ꞉ ℕ , u ≡ ι n) → ℕ + 𝟙 {𝓤₀}
+ι𝟙-inverse : (u : ℕ∞) → decidable (Σ n ꞉ ℕ , u ＝ ι n) → ℕ + 𝟙 {𝓤₀}
 ι𝟙-inverse .(ι n) (inl (n , refl)) = inl n
 ι𝟙-inverse u (inr g) = inr ⋆
 
@@ -227,7 +227,7 @@ LPO-gives-has-section-ι𝟙 lpo = s , ε
   s : ℕ∞ → ℕ + 𝟙
   s u = ι𝟙-inverse u (lpo u)
 
-  φ : (u : ℕ∞) (d : decidable (Σ n ꞉ ℕ , u ≡ ι n)) → ι𝟙 (ι𝟙-inverse u d) ≡ u
+  φ : (u : ℕ∞) (d : decidable (Σ n ꞉ ℕ , u ＝ ι n)) → ι𝟙 (ι𝟙-inverse u d) ＝ u
   φ .(ι n) (inl (n , refl)) = refl
   φ u (inr g) = (not-finite-is-∞ fe₀ (curry g))⁻¹
 

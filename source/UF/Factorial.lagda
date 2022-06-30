@@ -75,7 +75,7 @@ We refer to set of isolated points as the co derived set (for
 complement of the derived set, in the sense of Cantor, consisting of
 the limit points, i.e. non-isolated points).
 
-Recall that a point x : X is isolated if the identity type x ≡ y is
+Recall that a point x : X is isolated if the identity type x ＝ y is
 decidable for every y : X.
 
 \begin{code}
@@ -112,12 +112,12 @@ perfect-coderived-empty X i (x , j) = i (x , j)
 perfect-coderived-singleton : (X : 𝓤 ̇ ) → is-perfect X → is-singleton (co-derived-set (X + 𝟙 {𝓥}))
 perfect-coderived-singleton X i = (inr ⋆ , new-point-is-isolated) , γ
  where
-  γ : (c : co-derived-set (X + 𝟙)) → inr ⋆ , new-point-is-isolated ≡ c
+  γ : (c : co-derived-set (X + 𝟙)) → inr ⋆ , new-point-is-isolated ＝ c
   γ (inl x , j) = 𝟘-elim (i (x , a))
    where
     a : is-isolated x
     a = embeddings-reflect-isolatedness inl (inl-is-embedding X 𝟙) x j
-  γ (inr ⋆ , j) = to-Σ-≡' (being-isolated-is-prop fe (inr ⋆) new-point-is-isolated j)
+  γ (inr ⋆ , j) = to-Σ-＝' (being-isolated-is-prop fe (inr ⋆) new-point-is-isolated j)
 
 \end{code}
 
@@ -138,16 +138,16 @@ The claim is that the above map is an equivalence.
 We construct/prove this in four steps:
 
 (1)  (X ≃ Y)
-    ≃ Σ f ꞉ X + 𝟙 ≃ Y + 𝟙 , f (inr ⋆) ≡ inr ⋆
+    ≃ Σ f ꞉ X + 𝟙 ≃ Y + 𝟙 , f (inr ⋆) ＝ inr ⋆
 
 Hence
 
 (2) (Y + 𝟙)' × (X ≃ Y)
-  ≃ (Y + 𝟙)' × Σ f ꞉ X + 𝟙 ≃ Y + 𝟙 , f (inr ⋆) ≡ inr ⋆
+  ≃ (Y + 𝟙)' × Σ f ꞉ X + 𝟙 ≃ Y + 𝟙 , f (inr ⋆) ＝ inr ⋆
 
 Also
 
-(3) (Y + 𝟙)' × (Σ f ꞉ X + 𝟙 ≃ Y + 𝟙 , f (inr ⋆) ≡ inr ⋆)
+(3) (Y + 𝟙)' × (Σ f ꞉ X + 𝟙 ≃ Y + 𝟙 , f (inr ⋆) ＝ inr ⋆)
   ≃ (X + 𝟙 ≃ Y + 𝟙)
 
 And therefore
@@ -172,14 +172,14 @@ module factorial-steps
 
 \end{code}
 
-In the following, we use the fact that if f (inr ⋆) ≡ inr ⋆ for a
+In the following, we use the fact that if f (inr ⋆) ＝ inr ⋆ for a
 function, f : X+𝟙 → Y+𝟙, then f (inl x) is of the form inl y
 (inl-preservation).
 
 \begin{code}
 
  lemma : (f : X+𝟙 → Y+𝟙)
-       → f (inr ⋆) ≡ inr ⋆
+       → f (inr ⋆) ＝ inr ⋆
        → is-equiv f
        → Σ f' ꞉ (X → Y), is-equiv f' × (f ∼ +functor f' unique-to-𝟙)
  lemma f p i = γ (equivs-are-qinvs f i)
@@ -190,36 +190,36 @@ function, f : X+𝟙 → Y+𝟙, then f (inl x) is of the form inl y
      f' : X → Y
      f' x = pr₁ (inl-preservation f p (sections-are-lc f (g , η)) x)
 
-     a : (x : X) → f (inl x) ≡ inl (f' x)
+     a : (x : X) → f (inl x) ＝ inl (f' x)
      a x = pr₂ (inl-preservation f p (sections-are-lc f (g , η)) x)
 
-     q = g (inr ⋆)     ≡⟨ (ap g p)⁻¹ ⟩
-         g (f (inr ⋆)) ≡⟨ η (inr ⋆) ⟩
+     q = g (inr ⋆)     ＝⟨ (ap g p)⁻¹ ⟩
+         g (f (inr ⋆)) ＝⟨ η (inr ⋆) ⟩
          inr ⋆         ∎
 
      g' : Y → X
      g' x = pr₁ (inl-preservation g q (sections-are-lc g (f , ε)) x)
 
-     b : (y : Y) → g (inl y) ≡ inl (g' y)
+     b : (y : Y) → g (inl y) ＝ inl (g' y)
      b y = pr₂ (inl-preservation g q (sections-are-lc g (f , ε)) y)
 
      η' : g' ∘ f' ∼ id
-     η' x = inl-lc (inl (g' (f' x)) ≡⟨ (b (f' x))⁻¹ ⟩
-                    g (inl (f' x))  ≡⟨ (ap g (a x))⁻¹ ⟩
-                    g (f (inl x))   ≡⟨ η (inl x) ⟩
+     η' x = inl-lc (inl (g' (f' x)) ＝⟨ (b (f' x))⁻¹ ⟩
+                    g (inl (f' x))  ＝⟨ (ap g (a x))⁻¹ ⟩
+                    g (f (inl x))   ＝⟨ η (inl x) ⟩
                     inl x           ∎)
 
      ε' : f' ∘ g' ∼ id
-     ε' y = inl-lc (inl (f' (g' y)) ≡⟨ (a (g' y))⁻¹ ⟩
-                    f (inl (g' y))  ≡⟨ (ap f (b y))⁻¹ ⟩
-                    f (g (inl y))   ≡⟨ ε (inl y) ⟩
+     ε' y = inl-lc (inl (f' (g' y)) ＝⟨ (a (g' y))⁻¹ ⟩
+                    f (inl (g' y))  ＝⟨ (ap f (b y))⁻¹ ⟩
+                    f (g (inl y))   ＝⟨ ε (inl y) ⟩
                     inl y           ∎)
 
      h : f ∼ +functor f' unique-to-𝟙
      h (inl x) = a x
      h (inr ⋆) = p
 
- step₁ : (X ≃ Y) ≃ (Σ f ꞉ X+𝟙 ≃ Y+𝟙 , ⌜ f ⌝ (inr ⋆) ≡ inr ⋆)
+ step₁ : (X ≃ Y) ≃ (Σ f ꞉ X+𝟙 ≃ Y+𝟙 , ⌜ f ⌝ (inr ⋆) ＝ inr ⋆)
  step₁ = qinveq φ (γ , η , ε)
   where
    a : (g : X → Y) → qinv g → Y+𝟙 → X+𝟙
@@ -236,18 +236,18 @@ function, f : X+𝟙 → Y+𝟙, then f (inl x) is of the form inl y
    d : (g : X → Y) → qinv g → is-equiv (+functor g unique-to-𝟙)
    d g q = qinvs-are-equivs (+functor g unique-to-𝟙) (a g q , b g q , c g q)
 
-   φ : (X ≃ Y) → Σ e ꞉ X+𝟙 ≃ Y+𝟙 , ⌜ e ⌝ (inr ⋆) ≡ inr ⋆
+   φ : (X ≃ Y) → Σ e ꞉ X+𝟙 ≃ Y+𝟙 , ⌜ e ⌝ (inr ⋆) ＝ inr ⋆
    φ (g , i) = (+functor g unique-to-𝟙 , d g (equivs-are-qinvs g i)) , refl
 
-   γ : (Σ e ꞉ X+𝟙 ≃ Y+𝟙 , ⌜ e ⌝ (inr ⋆) ≡ inr ⋆) → (X ≃ Y)
+   γ : (Σ e ꞉ X+𝟙 ≃ Y+𝟙 , ⌜ e ⌝ (inr ⋆) ＝ inr ⋆) → (X ≃ Y)
    γ ((f , i) , p) = pr₁ (lemma f p i) , pr₁ (pr₂ (lemma f p i))
 
    η : γ ∘ φ ∼ id
-   η (g , i) = to-Σ-≡ (refl , being-equiv-is-prop fe g _ i)
+   η (g , i) = to-Σ-＝ (refl , being-equiv-is-prop fe g _ i)
 
    ε : φ ∘ γ ∼ id
-   ε ((f , i) , p) = to-Σ-≡
-                      (to-subtype-≡ (being-equiv-is-prop fe) r ,
+   ε ((f , i) , p) = to-Σ-＝
+                      (to-subtype-＝ (being-equiv-is-prop fe) r ,
                       isolated-is-h-isolated (f (inr ⋆))
                        (equivs-preserve-isolatedness f i (inr ⋆) new-point-is-isolated) _ p)
     where
@@ -255,20 +255,20 @@ function, f : X+𝟙 → Y+𝟙, then f (inl x) is of the form inl y
      s (inl x) = pr₂ (pr₂ (lemma f p i)) (inl x)
      s (inr ⋆) = p
 
-     r : pr₁ (pr₁ ((φ ∘ γ) ((f , i) , p))) ≡ f
+     r : pr₁ (pr₁ ((φ ∘ γ) ((f , i) , p))) ＝ f
      r = dfunext (fe _ _) (λ z → (s z)⁻¹)
 
 
  step₂ : co-derived-set (Y+𝟙) × (X ≃ Y)
-       ≃ co-derived-set (Y+𝟙) × (Σ e ꞉ X+𝟙 ≃ Y+𝟙 , ⌜ e ⌝ (inr ⋆) ≡ inr ⋆)
+       ≃ co-derived-set (Y+𝟙) × (Σ e ꞉ X+𝟙 ≃ Y+𝟙 , ⌜ e ⌝ (inr ⋆) ＝ inr ⋆)
  step₂ = ×-cong (≃-refl (co-derived-set (Y+𝟙))) step₁
 
 
- step₃ : (co-derived-set (Y+𝟙) × (Σ e ꞉ X+𝟙 ≃ Y+𝟙 , ⌜ e ⌝ (inr ⋆) ≡ inr ⋆))
+ step₃ : (co-derived-set (Y+𝟙) × (Σ e ꞉ X+𝟙 ≃ Y+𝟙 , ⌜ e ⌝ (inr ⋆) ＝ inr ⋆))
        ≃ (X+𝟙 ≃ Y+𝟙)
  step₃ = qinveq φ (γ , η , ε)
   where
-   A = co-derived-set (Y+𝟙) × (Σ e ꞉ X+𝟙 ≃ Y+𝟙 , ⌜ e ⌝ (inr ⋆) ≡ inr ⋆)
+   A = co-derived-set (Y+𝟙) × (Σ e ꞉ X+𝟙 ≃ Y+𝟙 , ⌜ e ⌝ (inr ⋆) ＝ inr ⋆)
    B = X+𝟙 ≃ Y+𝟙
 
    φ : A → B
@@ -295,7 +295,7 @@ function, f : X+𝟙 → Y+𝟙, then f (inl x) is of the form inl y
      j : is-equiv f
      j = ∘-is-equiv-abstract k (swap-is-equiv t (inr ⋆) i new-point-is-isolated)
 
-     p : f (inr ⋆) ≡ inr ⋆
+     p : f (inr ⋆) ＝ inr ⋆
      p = swap-equation₀ t (inr ⋆) i new-point-is-isolated
 
    η : γ ∘ φ ∼ id
@@ -313,16 +313,16 @@ function, f : X+𝟙 → Y+𝟙, then f (inl x) is of the form inl y
      i' : is-isolated t'
      i' = equivs-preserve-isolatedness g k (inr ⋆) new-point-is-isolated
 
-     q : t' ≡ t
-     q = g (inr ⋆)                                      ≡⟨ a ⟩
-         swap t (inr ⋆) i new-point-is-isolated (inr ⋆) ≡⟨ b ⟩
+     q : t' ＝ t
+     q = g (inr ⋆)                                      ＝⟨ a ⟩
+         swap t (inr ⋆) i new-point-is-isolated (inr ⋆) ＝⟨ b ⟩
          t                                              ∎
       where
        a = ap (swap t (inr ⋆) i new-point-is-isolated) p
        b = swap-equation₁ t (inr ⋆) i new-point-is-isolated
 
-     r : (t' , i') ≡ (t , i)
-     r = to-subtype-≡ (being-isolated-is-prop fe) q
+     r : (t' , i') ＝ (t , i)
+     r = to-subtype-＝ (being-isolated-is-prop fe) q
 
      f' : X+𝟙 → Y+𝟙
      f' = swap t' (inr ⋆) i' new-point-is-isolated ∘ g
@@ -332,10 +332,10 @@ function, f : X+𝟙 → Y+𝟙, then f (inl x) is of the form inl y
 
      h : f' ∼ f
      h z = swap t' (inr ⋆) i' new-point-is-isolated
-            (swap t (inr ⋆) i new-point-is-isolated (f z))    ≡⟨ a ⟩
+            (swap t (inr ⋆) i new-point-is-isolated (f z))    ＝⟨ a ⟩
 
            swap t (inr ⋆) i new-point-is-isolated
-            (swap t (inr ⋆) i new-point-is-isolated (f z))    ≡⟨ b ⟩
+            (swap t (inr ⋆) i new-point-is-isolated (f z))    ＝⟨ b ⟩
 
            f z                                                ∎
       where
@@ -348,19 +348,19 @@ function, f : X+𝟙 → Y+𝟙, then f (inl x) is of the form inl y
      m : is-isolated (f (inr ⋆))
      m = equivs-preserve-isolatedness f j (inr ⋆) new-point-is-isolated
 
-     n : {t : Y+𝟙} → is-prop (f (inr ⋆) ≡ t)
+     n : {t : Y+𝟙} → is-prop (f (inr ⋆) ＝ t)
      n = isolated-is-h-isolated (f (inr ⋆)) m
 
-     o : f' , j' ≡ f , j
-     o = to-subtype-≡ (being-equiv-is-prop fe) (dfunext (fe _ _) h)
+     o : f' , j' ＝ f , j
+     o = to-subtype-＝ (being-equiv-is-prop fe) (dfunext (fe _ _) h)
 
-     p' : f' (inr ⋆) ≡ inr ⋆
+     p' : f' (inr ⋆) ＝ inr ⋆
      p' = swap-equation₀ t' (inr ⋆) i' new-point-is-isolated
 
-     s : ((t' , i') , ((f' , j') , p')) ≡ ((t , i) , ((f , j) , p))
-     s = to-×-≡ r (to-Σ-≡ (o , n top' p))
+     s : ((t' , i') , ((f' , j') , p')) ＝ ((t , i) , ((f , j) , p))
+     s = to-×-＝ r (to-Σ-＝ (o , n top' p))
       where
-       top' = transport (λ - → ⌜ - ⌝ (inr ⋆) ≡ inr ⋆) o p'
+       top' = transport (λ - → ⌜ - ⌝ (inr ⋆) ＝ inr ⋆) o p'
 
    ε : φ ∘ γ ∼ id
    ε (g , k) = r
@@ -377,8 +377,8 @@ function, f : X+𝟙 → Y+𝟙, then f (inl x) is of the form inl y
        ∼ g
      h = swap-involutive z (inr ⋆) i new-point-is-isolated ∘ g
 
-     r : φ (γ (g , k)) ≡ (g , k)
-     r = to-Σ-≡ (dfunext (fe _ _) h , being-equiv-is-prop fe g _ k)
+     r : φ (γ (g , k)) ＝ (g , k)
+     r = to-Σ-＝ (dfunext (fe _ _) h , being-equiv-is-prop fe g _ k)
 
 
  step₄ : co-derived-set (Y+𝟙) × (X ≃ Y) ≃ (X+𝟙 ≃ Y+𝟙)
@@ -436,10 +436,10 @@ factorial-base = f , ((g , η) , (g , ε))
   g : Aut 𝟘 → 𝟙
   g = unique-to-𝟙
 
-  η : (e : Aut 𝟘) → f (g e) ≡ e
-  η _ = to-subtype-≡ (being-equiv-is-prop fe) (dfunext (fe _ _) (λ y → 𝟘-elim y))
+  η : (e : Aut 𝟘) → f (g e) ＝ e
+  η _ = to-subtype-＝ (being-equiv-is-prop fe) (dfunext (fe _ _) (λ y → 𝟘-elim y))
 
-  ε : (x : 𝟙) → g (f x) ≡ x
+  ε : (x : 𝟙) → g (f x) ＝ x
   ε ⋆ = refl
 
 \end{code}

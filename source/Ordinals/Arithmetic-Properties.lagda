@@ -38,7 +38,7 @@ open import Ordinals.Notions
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.Arithmetic fe
 
-𝟘ₒ-left-neutral : (α : Ordinal 𝓤) → 𝟘ₒ +ₒ α ≡ α
+𝟘ₒ-left-neutral : (α : Ordinal 𝓤) → 𝟘ₒ +ₒ α ＝ α
 𝟘ₒ-left-neutral α = eqtoidₒ (𝟘ₒ +ₒ α) α h
  where
   f : 𝟘 + ⟨ α ⟩ → ⟨ α ⟩
@@ -55,7 +55,7 @@ open import Ordinals.Arithmetic fe
   h = f , order-preserving-reflecting-equivs-are-order-equivs (𝟘ₒ +ₒ α) α f
            (⌜⌝-is-equiv 𝟘-lneutral) f-preserves-order f-reflects-order
 
-𝟘ₒ-right-neutral : (α : Ordinal 𝓤) → α  +ₒ 𝟘ₒ ≡ α
+𝟘ₒ-right-neutral : (α : Ordinal 𝓤) → α  +ₒ 𝟘ₒ ＝ α
 𝟘ₒ-right-neutral α = eqtoidₒ (α +ₒ 𝟘ₒ) α h
  where
   f : ⟨ α ⟩ + 𝟘 → ⟨ α ⟩
@@ -72,7 +72,7 @@ open import Ordinals.Arithmetic fe
   h = f , order-preserving-reflecting-equivs-are-order-equivs (α +ₒ 𝟘ₒ) α f
            (⌜⌝-is-equiv 𝟘-rneutral') f-preserves-order f-reflects-order
 
-+ₒ-assoc : (α β γ : Ordinal 𝓤) → (α  +ₒ β) +ₒ γ ≡ α  +ₒ (β +ₒ γ)
++ₒ-assoc : (α β γ : Ordinal 𝓤) → (α  +ₒ β) +ₒ γ ＝ α  +ₒ (β +ₒ γ)
 +ₒ-assoc α β γ = eqtoidₒ ((α  +ₒ β) +ₒ γ) (α  +ₒ (β +ₒ γ)) h
  where
   f : ⟨ (α +ₒ β) +ₒ γ ⟩ → ⟨ α +ₒ (β +ₒ γ) ⟩
@@ -104,7 +104,7 @@ open import Ordinals.Arithmetic fe
            f (⌜⌝-is-equiv +assoc) f-preserves-order f-reflects-order
 
 +ₒ-↓-left : {α β : Ordinal 𝓤} (a : ⟨ α ⟩)
-          → (α ↓ a) ≡ ((α +ₒ β) ↓ inl a)
+          → (α ↓ a) ＝ ((α +ₒ β) ↓ inl a)
 +ₒ-↓-left {𝓤} {α} {β} a = h
  where
   γ = α ↓ a
@@ -132,12 +132,12 @@ open import Ordinals.Arithmetic fe
   g-is-order-preserving : is-order-preserving δ γ g
   g-is-order-preserving (inl x , _) (inl x' , _) l = l
 
-  h : γ ≡ δ
+  h : γ ＝ δ
   h = eqtoidₒ γ δ (f , f-is-order-preserving , f-is-equiv , g-is-order-preserving)
 
 
 +ₒ-↓-right : {α β : Ordinal 𝓤} (b : ⟨ β ⟩)
-           → (α +ₒ (β ↓ b)) ≡ ((α +ₒ β) ↓ inr b)
+           → (α +ₒ (β ↓ b)) ＝ ((α +ₒ β) ↓ inr b)
 +ₒ-↓-right {𝓤} {α} {β} b = h
  where
   γ = α  +ₒ (β ↓ b)
@@ -172,7 +172,7 @@ open import Ordinals.Arithmetic fe
   g-is-order-preserving (inl _ , _) (inr _ , _) l = l
   g-is-order-preserving (inr _ , _) (inr _ , _) l = l
 
-  h : γ ≡ δ
+  h : γ ＝ δ
   h = eqtoidₒ γ δ (f , f-is-order-preserving , f-is-equiv , g-is-order-preserving)
 
 +ₒ-⊲-left : {α β : Ordinal 𝓤} (a : ⟨ α ⟩)
@@ -188,8 +188,8 @@ open import Ordinals.Arithmetic fe
                        → (α +ₒ β) ⊲ (α +ₒ γ)
 +ₒ-increasing-on-right {𝓤} {α} {β} {γ} (c , p) = inr c , q
  where
-  q =  (α +ₒ β)           ≡⟨ ap (α +ₒ_) p ⟩
-       (α +ₒ (γ ↓ c))     ≡⟨ +ₒ-↓-right c ⟩
+  q =  (α +ₒ β)           ＝⟨ ap (α +ₒ_) p ⟩
+       (α +ₒ (γ ↓ c))     ＝⟨ +ₒ-↓-right c ⟩
        ((α +ₒ γ) ↓ inr c) ∎
 
 +ₒ-right-monotone : (α β γ : Ordinal 𝓤)
@@ -215,7 +215,7 @@ open import Ordinals.Arithmetic fe
     p : (α +ₒ (β ↓ b)) ⊲ (α +ₒ γ)
     p = +ₒ-increasing-on-right o
 
-    q : α +ₒ (β ↓ b) ≡ (α +ₒ β) ↓ inr b
+    q : α +ₒ (β ↓ b) ＝ (α +ₒ β) ↓ inr b
     q = +ₒ-↓-right b
 
     s : ((α +ₒ β) ↓ inr b) ⊲ (α +ₒ γ)
@@ -235,7 +235,7 @@ lemma₀ : {α β : Ordinal 𝓤}
        → α ≼ (α +ₒ β)
 lemma₀ {𝓤} {α} {β} = to-≼ ϕ
  where
-  ϕ : (a : ⟨ α ⟩) → Σ z ꞉ ⟨ α +ₒ β ⟩ , (α ↓ a) ≡ ((α +ₒ β) ↓ z)
+  ϕ : (a : ⟨ α ⟩) → Σ z ꞉ ⟨ α +ₒ β ⟩ , (α ↓ a) ＝ ((α +ₒ β) ↓ z)
   ϕ a = inl a , (+ₒ-↓-left a)
 
 lemma₁ : {α β : Ordinal 𝓤}
@@ -250,27 +250,27 @@ lemma₁ {𝓤} {α} {β} a p = irrefl (OO 𝓤) (α +ₒ β) m
   m = lemma₀ (α +ₒ β) l
 
 lemma₂ : {α β : Ordinal 𝓤} (a : ⟨ α ⟩)
-       → α ≡ β
-       → Σ b ꞉ ⟨ β ⟩ , (α ↓ a) ≡ (β ↓ b)
+       → α ＝ β
+       → Σ b ꞉ ⟨ β ⟩ , (α ↓ a) ＝ (β ↓ b)
 lemma₂ a refl = a , refl
 
 lemma₃ : {α β γ : Ordinal 𝓤} (b : ⟨ β ⟩) (z : ⟨ α +ₒ γ ⟩)
-       → ((α +ₒ β) ↓ inr b) ≡ ((α +ₒ γ) ↓ z)
-       → Σ c ꞉ ⟨ γ ⟩ , z ≡ inr c
+       → ((α +ₒ β) ↓ inr b) ＝ ((α +ₒ γ) ↓ z)
+       → Σ c ꞉ ⟨ γ ⟩ , z ＝ inr c
 lemma₃ {𝓤} {α} {β} {γ} b (inl a) p = 𝟘-elim (lemma₁ a q)
  where
-  q : (α +ₒ (β ↓ b)) ≡ (α ↓ a)
+  q : (α +ₒ (β ↓ b)) ＝ (α ↓ a)
   q = +ₒ-↓-right b ∙ p ∙ (+ₒ-↓-left a)⁻¹
 
 lemma₃ b (inr c) p = c , refl
 
 +ₒ-left-cancellable : (α β γ : Ordinal 𝓤)
-                    → (α +ₒ β) ≡ (α +ₒ γ)
-                    → β ≡ γ
+                    → (α +ₒ β) ＝ (α +ₒ γ)
+                    → β ＝ γ
 +ₒ-left-cancellable {𝓤} α = g
  where
   P : Ordinal 𝓤 → 𝓤 ⁺ ̇
-  P β = ∀ γ → (α +ₒ β) ≡ (α +ₒ γ) → β ≡ γ
+  P β = ∀ γ → (α +ₒ β) ＝ (α +ₒ γ) → β ＝ γ
 
   ϕ : ∀ β
     → (∀ b → P (β ↓ b))
@@ -283,22 +283,22 @@ lemma₃ b (inr c) p = c , refl
       z : ⟨ α +ₒ γ ⟩
       z = pr₁ (lemma₂ (inr b) p)
 
-      r : ((α +ₒ β) ↓ inr b) ≡ ((α +ₒ γ) ↓ z)
+      r : ((α +ₒ β) ↓ inr b) ＝ ((α +ₒ γ) ↓ z)
       r = pr₂ (lemma₂ (inr b) p)
 
       c : ⟨ γ ⟩
       c = pr₁ (lemma₃ b z r)
 
-      s : z ≡ inr c
+      s : z ＝ inr c
       s = pr₂ (lemma₃ b z r)
 
-      q = (α +ₒ (β ↓ b))     ≡⟨ +ₒ-↓-right b ⟩
-          ((α +ₒ β) ↓ inr b) ≡⟨ r ⟩
-          ((α +ₒ γ) ↓ z)     ≡⟨ ap ((α +ₒ γ) ↓_) s ⟩
-          ((α +ₒ γ) ↓ inr c) ≡⟨ (+ₒ-↓-right c)⁻¹ ⟩
+      q = (α +ₒ (β ↓ b))     ＝⟨ +ₒ-↓-right b ⟩
+          ((α +ₒ β) ↓ inr b) ＝⟨ r ⟩
+          ((α +ₒ γ) ↓ z)     ＝⟨ ap ((α +ₒ γ) ↓_) s ⟩
+          ((α +ₒ γ) ↓ inr c) ＝⟨ (+ₒ-↓-right c)⁻¹ ⟩
           (α +ₒ (γ ↓ c))     ∎
 
-      t : (β ↓ b) ≡ (γ ↓ c)
+      t : (β ↓ b) ＝ (γ ↓ c)
       t = f b (γ ↓ c) q
 
     v : (c : ⟨ γ ⟩) → (γ ↓ c) ⊲ β
@@ -307,22 +307,22 @@ lemma₃ b (inr c) p = c , refl
       z : ⟨ α +ₒ β ⟩
       z = pr₁ (lemma₂ (inr c) (p ⁻¹))
 
-      r : ((α +ₒ γ) ↓ inr c) ≡ ((α +ₒ β) ↓ z)
+      r : ((α +ₒ γ) ↓ inr c) ＝ ((α +ₒ β) ↓ z)
       r = pr₂ (lemma₂ (inr c) (p ⁻¹))
 
       b : ⟨ β ⟩
       b = pr₁ (lemma₃ c z r)
 
-      s : z ≡ inr b
+      s : z ＝ inr b
       s = pr₂ (lemma₃ c z r)
 
-      q = (α +ₒ (γ ↓ c))     ≡⟨ +ₒ-↓-right c ⟩
-          ((α +ₒ γ) ↓ inr c) ≡⟨ r ⟩
-          ((α +ₒ β) ↓ z)     ≡⟨ ap ((α +ₒ β) ↓_) s ⟩
-          ((α +ₒ β) ↓ inr b) ≡⟨ (+ₒ-↓-right b)⁻¹ ⟩
+      q = (α +ₒ (γ ↓ c))     ＝⟨ +ₒ-↓-right c ⟩
+          ((α +ₒ γ) ↓ inr c) ＝⟨ r ⟩
+          ((α +ₒ β) ↓ z)     ＝⟨ ap ((α +ₒ β) ↓_) s ⟩
+          ((α +ₒ β) ↓ inr b) ＝⟨ (+ₒ-↓-right b)⁻¹ ⟩
           (α +ₒ (β ↓ b))     ∎
 
-      t : (β ↓ b) ≡ (γ ↓ c)
+      t : (β ↓ b) ＝ (γ ↓ c)
       t = f b (γ ↓ c) (q ⁻¹)
 
   g : (β : Ordinal 𝓤) → P β
@@ -345,15 +345,15 @@ This implies that the function α +ₒ_ reflects the _⊲_ ordering:
                    → β ⊲ γ
 +ₒ-left-reflects-⊲ α β γ (inl a , p) = 𝟘-elim (lemma₁ a q)
    where
-    q : (α +ₒ β) ≡ (α ↓ a)
+    q : (α +ₒ β) ＝ (α ↓ a)
     q = p ∙ (+ₒ-↓-left a)⁻¹
 
 +ₒ-left-reflects-⊲ α β γ (inr c , p) = l
    where
-    q : (α +ₒ β) ≡ (α +ₒ (γ ↓ c))
+    q : (α +ₒ β) ＝ (α +ₒ (γ ↓ c))
     q = p ∙ (+ₒ-↓-right c)⁻¹
 
-    r : β ≡ (γ ↓ c)
+    r : β ＝ (γ ↓ c)
     r = +ₒ-left-cancellable α β (γ ↓ c) q
 
     l : β ⊲ γ
@@ -388,7 +388,7 @@ partial ordering:
 \end{code}
 
 Classically, if α ≼ β then there is (a necessarily unique) γ with α +ₒ
-γ ≡ β. But this not necessarily the case constructively. For that
+γ ＝ β. But this not necessarily the case constructively. For that
 purpose, we first characterize the order of subsingleton ordinals.
 
 \begin{code}
@@ -407,7 +407,7 @@ module _ {𝓤 : Universe}
  fact₀ : p ⊲ q → ¬ P × Q
  fact₀ (y , r) = u , y
   where
-   s : P ≡ (Q × 𝟘)
+   s : P ＝ (Q × 𝟘)
    s = ap ⟨_⟩ r
 
    u : ¬ P
@@ -416,16 +416,16 @@ module _ {𝓤 : Universe}
  fact₀-converse : ¬ P × Q → p ⊲ q
  fact₀-converse (u , y) = (y , g)
   where
-   r : P ≡ Q × 𝟘
+   r : P ＝ Q × 𝟘
    r = univalence-gives-propext (ua 𝓤)
         P-is-prop
         ×-𝟘-is-prop
         (λ p → 𝟘-elim (u p))
         (λ (q , z) → 𝟘-elim z)
 
-   g : p ≡ (q ↓ y)
-   g = to-Σ-≡ (r ,
-       to-Σ-≡ (dfunext fe' (λ (y , z) → 𝟘-elim z) ,
+   g : p ＝ (q ↓ y)
+   g = to-Σ-＝ (r ,
+       to-Σ-＝ (dfunext fe' (λ (y , z) → 𝟘-elim z) ,
                being-well-order-is-prop (underlying-order (q ↓ y)) fe _ _))
 
  fact₁ : p ≼ q → (P → Q)
@@ -434,7 +434,7 @@ module _ {𝓤 : Universe}
  fact₁-converse : (P → Q) → p ≼ q
  fact₁-converse f = to-≼ {𝓤} {p} {q} ϕ
   where
-   r : P × 𝟘 ≡ Q × 𝟘
+   r : P × 𝟘 ＝ Q × 𝟘
    r = univalence-gives-propext (ua 𝓤)
         ×-𝟘-is-prop
         ×-𝟘-is-prop
@@ -444,9 +444,9 @@ module _ {𝓤 : Universe}
    ϕ : (x : ⟨ p ⟩) → (p ↓ x) ⊲ q
    ϕ x = f x , s
     where
-     s : ((P × 𝟘) , (λ x x' → 𝟘) , _) ≡ ((Q × 𝟘) , (λ y y' → 𝟘) , _)
-     s = to-Σ-≡ (r ,
-         to-Σ-≡ (dfunext fe' (λ z → 𝟘-elim (pr₂ z)) ,
+     s : ((P × 𝟘) , (λ x x' → 𝟘) , _) ＝ ((Q × 𝟘) , (λ y y' → 𝟘) , _)
+     s = to-Σ-＝ (r ,
+         to-Σ-＝ (dfunext fe' (λ z → 𝟘-elim (pr₂ z)) ,
                  being-well-order-is-prop (underlying-order (q ↓ f x)) fe _ _))
 \end{code}
 
@@ -455,7 +455,7 @@ The existence of ordinal subtraction implies excluded middle.
 \begin{code}
 
 existence-of-subtraction : (𝓤 : Universe) → 𝓤 ⁺ ̇
-existence-of-subtraction 𝓤 = (α β : Ordinal 𝓤) → α ≼ β → Σ γ ꞉ Ordinal 𝓤 , α +ₒ γ ≡ β
+existence-of-subtraction 𝓤 = (α β : Ordinal 𝓤) → α ≼ β → Σ γ ꞉ Ordinal 𝓤 , α +ₒ γ ＝ β
 
 existence-of-subtraction-is-prop : is-prop (existence-of-subtraction 𝓤)
 existence-of-subtraction-is-prop = Π₃-is-prop fe'
@@ -472,10 +472,10 @@ ordinal-subtraction-gives-excluded-middle {𝓤} ϕ P P-is-prop = g
   γ : Ordinal 𝓤
   γ = pr₁ σ
 
-  r : α +ₒ γ ≡ β
+  r : α +ₒ γ ＝ β
   r = pr₂ σ
 
-  s : P + ⟨ γ ⟩ ≡ 𝟙
+  s : P + ⟨ γ ⟩ ＝ 𝟙
   s = ap ⟨_⟩ r
 
   t : P + ⟨ γ ⟩
@@ -525,7 +525,7 @@ retract-Ω-of-Ordinal {𝓤} = r , s , η
   r α = has-least α , having-least-is-prop fe' α
 
   η : r ∘ s ∼ id
-  η (P , i) = to-subtype-≡ (λ _ → being-prop-is-prop fe') t
+  η (P , i) = to-subtype-＝ (λ _ → being-prop-is-prop fe') t
    where
     f : P → has-least (prop-ordinal P i)
     f p = p , (λ x u → id)
@@ -533,7 +533,7 @@ retract-Ω-of-Ordinal {𝓤} = r , s , η
     g : has-least (prop-ordinal P i) → P
     g (p , _) = p
 
-    t : has-least (prop-ordinal P i) ≡ P
+    t : has-least (prop-ordinal P i) ＝ P
     t = pe 𝓤 (having-least-is-prop fe' (prop-ordinal P i)) i g f
 
 \end{code}
@@ -560,7 +560,7 @@ module _ {𝓤 : Universe} where
    I (inr x) (inl ⋆) l = 𝟘-elim l
    I (inr x) (inr y) l = 𝟘-elim l
 
-   II : f ⊥Ω ≡ inl ⋆
+   II : f ⊥Ω ＝ inl ⋆
    II = simulations-preserve-least Ωₒ (𝟙ₒ +ₒ Ωₒ) ⊥Ω (inl ⋆) f s ⊥-is-least I
 
    III : is-isolated (f ⊥Ω)
@@ -571,13 +571,13 @@ module _ {𝓤 : Universe} where
 
    V : ∀ P → is-prop P → ¬ P + ¬¬ P
    V P i = Cases (IV (P , i))
-            (λ (e : ⊥Ω ≡ (P , i))
+            (λ (e : ⊥Ω ＝ (P , i))
                   → inl (equal-𝟘-is-empty (ap pr₁ (e ⁻¹))))
             (λ (ν : ⊥Ω ≢ (P , i))
                   → inr (contrapositive
                           (λ (u : ¬ P)
-                                → to-subtype-≡ (λ _ → being-prop-is-prop fe')
-                                   (empty-types-are-≡-𝟘 fe' (pe 𝓤) u)⁻¹) ν))
+                                → to-subtype-＝ (λ _ → being-prop-is-prop fe')
+                                   (empty-types-are-＝-𝟘 fe' (pe 𝓤) u)⁻¹) ν))
 \end{code}
 
 Added 4th April 2022.
@@ -601,7 +601,7 @@ Successor reflects order:
 succₒ-reflects-⊴ : (α : Ordinal 𝓤) (β : Ordinal 𝓥) → (α +ₒ 𝟙ₒ) ⊴ (β +ₒ 𝟙ₒ) → α ⊴ β
 succₒ-reflects-⊴ α β (f , i , p) = g , j , q
  where
-  k : (x : ⟨ α ⟩) (t : ⟨ β ⟩ + 𝟙) → f (inl x) ≡ t → Σ y ꞉ ⟨ β ⟩ , f (inl x) ≡ inl y
+  k : (x : ⟨ α ⟩) (t : ⟨ β ⟩ + 𝟙) → f (inl x) ＝ t → Σ y ꞉ ⟨ β ⟩ , f (inl x) ＝ inl y
   k x (inl y) e = y , e
   k x (inr ⋆) e = 𝟘-elim (III (f (inr ⋆)) II)
    where
@@ -615,13 +615,13 @@ succₒ-reflects-⊴ α β (f , i , p) = g , j , q
     III (inl y) l = 𝟘-elim l
     III (inr ⋆) l = 𝟘-elim l
 
-  h : (x : ⟨ α ⟩) → Σ y ꞉ ⟨ β ⟩ , f (inl x) ≡ inl y
+  h : (x : ⟨ α ⟩) → Σ y ꞉ ⟨ β ⟩ , f (inl x) ＝ inl y
   h x = k x (f (inl x)) refl
 
   g : ⟨ α ⟩ → ⟨ β ⟩
   g x = pr₁ (h x)
 
-  ϕ : (x : ⟨ α ⟩) → f (inl x) ≡ inl (g x)
+  ϕ : (x : ⟨ α ⟩) → f (inl x) ＝ inl (g x)
   ϕ x = pr₂ (h x)
 
   j : is-initial-segment α β g
@@ -630,12 +630,12 @@ succₒ-reflects-⊴ α β (f , i , p) = g , j , q
     m : inl y ≺⟨ β +ₒ 𝟙ₒ ⟩ f (inl x)
     m = transport⁻¹ (λ - → inl y ≺⟨ β +ₒ 𝟙ₒ ⟩ -) (ϕ x) l
 
-    I : Σ z ꞉ ⟨ α +ₒ 𝟙ₒ ⟩ , (z ≺⟨ α +ₒ 𝟙ₒ ⟩ inl x) × (f z ≡ inl y)
+    I : Σ z ꞉ ⟨ α +ₒ 𝟙ₒ ⟩ , (z ≺⟨ α +ₒ 𝟙ₒ ⟩ inl x) × (f z ＝ inl y)
     I = i (inl x) (inl y) m
 
-    II : type-of I → Σ x' ꞉ ⟨ α ⟩ , (x' ≺⟨ α ⟩ x) × (g x' ≡ y)
-    II (inl x' , n , e) = x' , n , inl-lc (inl (g x') ≡⟨ (ϕ x')⁻¹ ⟩
-                                           f (inl x') ≡⟨ e ⟩
+    II : type-of I → Σ x' ꞉ ⟨ α ⟩ , (x' ≺⟨ α ⟩ x) × (g x' ＝ y)
+    II (inl x' , n , e) = x' , n , inl-lc (inl (g x') ＝⟨ (ϕ x')⁻¹ ⟩
+                                           f (inl x') ＝⟨ e ⟩
                                            inl y      ∎)
 
   q : is-order-preserving α β g
@@ -681,7 +681,7 @@ succ-not-necessarily-monotone {𝓤} ϕ P isp = II I
   II : type-of I → ¬ P + ¬¬ P
   II (f , f-is-initial , f-is-order-preserving) = III (f (inr ⋆)) refl
    where
-    III : (y : ⟨ 𝟚ₒ ⟩) → f (inr ⋆) ≡ y → ¬ P + ¬¬ P
+    III : (y : ⟨ 𝟚ₒ ⟩) → f (inr ⋆) ＝ y → ¬ P + ¬¬ P
     III (inl ⋆) e = inl VII
      where
       IV : (p : P) → f (inl p) ≺⟨ 𝟚ₒ ⟩ f (inr ⋆)
@@ -698,7 +698,7 @@ succ-not-necessarily-monotone {𝓤} ϕ P isp = II I
       VII p = VI (f (inl p)) (V p)
     III (inr ⋆) e = inr IX
      where
-      VIII : Σ x' ꞉ ⟨ α +ₒ 𝟙ₒ ⟩ , (x' ≺⟨ α +ₒ 𝟙ₒ ⟩ inr ⋆) × (f x' ≡ inl ⋆)
+      VIII : Σ x' ꞉ ⟨ α +ₒ 𝟙ₒ ⟩ , (x' ≺⟨ α +ₒ 𝟙ₒ ⟩ inr ⋆) × (f x' ＝ inl ⋆)
       VIII = f-is-initial (inr ⋆) (inl ⋆) (transport⁻¹ (λ - → inl ⋆ ≺⟨ 𝟚ₒ ⟩ -) e ⋆)
 
       IX : ¬¬ P
@@ -720,7 +720,7 @@ TODO. Also the implication α ⊲ β → (α +ₒ 𝟙ₒ) ⊲ (β +ₒ 𝟙ₒ)
 succ-monotone : EM (𝓤 ⁺) → (α β : Ordinal 𝓤) → α ⊴ β → (α +ₒ 𝟙ₒ) ⊴ (β +ₒ 𝟙ₒ)
 succ-monotone em α β l = II I
  where
-  I : ((α +ₒ 𝟙ₒ) ⊲ (β +ₒ 𝟙ₒ)) + ((α +ₒ 𝟙ₒ) ≡ (β +ₒ 𝟙ₒ)) + ((β +ₒ 𝟙ₒ) ⊲ (α +ₒ 𝟙ₒ))
+  I : ((α +ₒ 𝟙ₒ) ⊲ (β +ₒ 𝟙ₒ)) + ((α +ₒ 𝟙ₒ) ＝ (β +ₒ 𝟙ₒ)) + ((β +ₒ 𝟙ₒ) ⊲ (α +ₒ 𝟙ₒ))
   I = trichotomy _⊲_ fe' em ⊲-is-well-order (α +ₒ 𝟙ₒ) (β +ₒ 𝟙ₒ)
 
   II : type-of I → (α +ₒ 𝟙ₒ) ⊴ (β +ₒ 𝟙ₒ)
@@ -734,10 +734,10 @@ succ-monotone em α β l = II I
     IV : β ⊴ α
     IV = succₒ-reflects-⊴ β α III
 
-    V : α ≡ β
+    V : α ＝ β
     V = ⊴-antisym _ _ l IV
 
-    VI : (α +ₒ 𝟙ₒ) ≡ (β +ₒ 𝟙ₒ)
+    VI : (α +ₒ 𝟙ₒ) ＝ (β +ₒ 𝟙ₒ)
     VI = ap (_+ₒ 𝟙ₒ) V
 
 \end{code}
@@ -795,7 +795,7 @@ its predecessors:
 
  is-limit-ordinal-fact : (α : Ordinal 𝓤)
                        → is-limit-ordinal α
-                       ⇔ α ≡ ⌊ α ⌋
+                       ⇔ α ＝ ⌊ α ⌋
  is-limit-ordinal-fact α = (λ ℓ → ⊴-antisym _ _ ℓ (⌊⌋-lower-bound α)) ,
                            (λ p → transport (α ⊴_) p (⊴-refl α))
 
@@ -805,25 +805,25 @@ its predecessors:
      I : (α ↓ x) ⊴ α
      I = segment-⊴ α x
 
-     II : (α ↓ x) ≡ ((α +ₒ 𝟙ₒ) ↓ inl x)
+     II : (α ↓ x) ＝ ((α +ₒ 𝟙ₒ) ↓ inl x)
      II = +ₒ-↓-left x
 
      III : ((α +ₒ 𝟙ₒ) ↓ inl x) ⊴ α
      III = transport (_⊴ α) II I
 
- successor-lemma-right : (α : Ordinal 𝓤) → (α +ₒ 𝟙ₒ) ↓ inr ⋆ ≡ α
+ successor-lemma-right : (α : Ordinal 𝓤) → (α +ₒ 𝟙ₒ) ↓ inr ⋆ ＝ α
  successor-lemma-right α  = III
   where
    I : (𝟙ₒ ↓ ⋆) ⊴ 𝟘ₒ
    I = (λ x → 𝟘-elim (pr₂ x)) , (λ x → 𝟘-elim (pr₂ x)) , (λ x → 𝟘-elim (pr₂ x))
 
-   II : (𝟙ₒ ↓ ⋆) ≡ 𝟘ₒ
+   II : (𝟙ₒ ↓ ⋆) ＝ 𝟘ₒ
    II = ⊴-antisym _ _ I (𝟘ₒ-least-⊴ (𝟙ₒ ↓ ⋆))
 
-   III : (α +ₒ 𝟙ₒ) ↓ inr ⋆ ≡ α
-   III = (α +ₒ 𝟙ₒ) ↓ inr ⋆ ≡⟨ (+ₒ-↓-right ⋆)⁻¹ ⟩
-         α +ₒ (𝟙ₒ ↓ ⋆) ≡⟨ ap (α +ₒ_) II ⟩
-         α +ₒ 𝟘ₒ       ≡⟨ 𝟘ₒ-right-neutral α ⟩
+   III : (α +ₒ 𝟙ₒ) ↓ inr ⋆ ＝ α
+   III = (α +ₒ 𝟙ₒ) ↓ inr ⋆ ＝⟨ (+ₒ-↓-right ⋆)⁻¹ ⟩
+         α +ₒ (𝟙ₒ ↓ ⋆) ＝⟨ ap (α +ₒ_) II ⟩
+         α +ₒ 𝟘ₒ       ＝⟨ 𝟘ₒ-right-neutral α ⟩
          α             ∎
 
  ⌊⌋-of-successor : (α : Ordinal 𝓤)
@@ -835,7 +835,7 @@ its predecessors:
    h (inr ⋆) = transport⁻¹ (_⊴ α) (successor-lemma-right α) (⊴-refl α)
 
  ⌊⌋-of-successor' : (α : Ordinal 𝓤)
-                  → ⌊ α +ₒ 𝟙ₒ ⌋ ≡ α
+                  → ⌊ α +ₒ 𝟙ₒ ⌋ ＝ α
  ⌊⌋-of-successor' α = III
   where
    I : ((α +ₒ 𝟙ₒ) ↓ inr ⋆) ⊴ ⌊ α +ₒ 𝟙ₒ ⌋
@@ -844,7 +844,7 @@ its predecessors:
    II : α ⊴ ⌊ α +ₒ 𝟙ₒ ⌋
    II = transport (_⊴ ⌊ α +ₒ 𝟙ₒ ⌋) (successor-lemma-right α) I
 
-   III : ⌊ α +ₒ 𝟙ₒ ⌋ ≡ α
+   III : ⌊ α +ₒ 𝟙ₒ ⌋ ＝ α
    III = ⊴-antisym _ _ (⌊⌋-of-successor α) II
 
  successor-increasing : (α : Ordinal 𝓤) → α ⊲ (α +ₒ 𝟙ₒ)
@@ -876,7 +876,7 @@ is-limit-ordinal α.
    II : (x : ⟨ α ⟩) → (α ↓ x) ⊲ β
    II x = ⊴-gives-≼ _ _ le (α ↓ x) (x , refl)
 
-   III : (x : ⟨ α ⟩) → Σ y ꞉ ⟨ β ⟩ , (α ↓ x) ≡ (β ↓ y)
+   III : (x : ⟨ α ⟩) → Σ y ꞉ ⟨ β ⟩ , (α ↓ x) ＝ (β ↓ y)
    III = II
 
    IV : (x : ⟨ α ⟩) → (α ↓ x) ⊴ ⌊ β ⌋
@@ -897,7 +897,7 @@ also is not a successor ordinal unless LPO holds:
  open import Notation.Order
  open import Naturals.Order
 
- ⌊⌋-of-ℕ∞ : ⌊ ℕ∞ₒ ⌋ ≡ ω
+ ⌊⌋-of-ℕ∞ : ⌊ ℕ∞ₒ ⌋ ＝ ω
  ⌊⌋-of-ℕ∞ = c
   where
    a : ⌊ ℕ∞ₒ ⌋ ⊴ ω
@@ -912,7 +912,7 @@ also is not a successor ordinal unless LPO holds:
          III : ι n ≺ u
          III = n , refl , p
 
-         IV : ((ℕ∞ₒ ↓ u) ↓ (ι n , n , refl , p)) ≡ ℕ∞ₒ ↓ ι n
+         IV : ((ℕ∞ₒ ↓ u) ↓ (ι n , n , refl , p)) ＝ ℕ∞ₒ ↓ ι n
          IV = iterated-↓ ℕ∞ₒ u (ι n) III
 
          V : (ℕ∞ₒ ↓ ι n) ≃ₒ (ω ↓ n)
@@ -925,15 +925,15 @@ also is not a successor ordinal unless LPO holds:
            g (k , l) = (ι k , k , refl , <-gives-⊏ _ _ l)
 
            fg : f ∘ g ∼ id
-           fg (k , l) = to-subtype-≡ (λ k → <-is-prop-valued k n) refl
+           fg (k , l) = to-subtype-＝ (λ k → <-is-prop-valued k n) refl
 
            gf : g ∘ f ∼ id
-           gf (.(ι k) , k , refl , q) = to-subtype-≡ (λ u → ≺-prop-valued fe' u (ι n)) refl
+           gf (.(ι k) , k , refl , q) = to-subtype-＝ (λ u → ≺-prop-valued fe' u (ι n)) refl
 
            fop : is-order-preserving (ℕ∞ₒ ↓ ι n) (ω ↓ n) f
            fop (.(ι k) , k , refl , q) (.(ι k') , k' , refl , q') (m , r , cc) = VIII
             where
-             VI : k ≡ m
+             VI : k ＝ m
              VI = ℕ-to-ℕ∞-lc r
 
              VII : m < k'
@@ -945,7 +945,7 @@ also is not a successor ordinal unless LPO holds:
            gop : is-order-preserving (ω ↓ n) (ℕ∞ₒ ↓ ι n)  g
            gop (k , l) (k' , l') ℓ = k , refl , <-gives-⊏ _ _ ℓ
 
-         IX : ℕ∞ₒ ↓ ι n ≡ ω ↓ n
+         IX : ℕ∞ₒ ↓ ι n ＝ ω ↓ n
          IX = eqtoidₒ _ _ V
 
          X : (ℕ∞ₒ ↓ (ι n)) ⊲ ω
@@ -960,14 +960,14 @@ also is not a successor ordinal unless LPO holds:
      I : ⌊ ω +ₒ 𝟙ₒ ⌋ ⊴ ⌊ ℕ∞ₒ ⌋
      I = ⌊⌋-monotone (ω +ₒ 𝟙ₒ) ℕ∞ₒ ℕ∞-in-Ord.fact
 
-   c : ⌊ ℕ∞ₒ ⌋ ≡ ω
+   c : ⌊ ℕ∞ₒ ⌋ ＝ ω
    c = ⊴-antisym _ _ a b
 
  ℕ∞-is-not-limit : ¬ is-limit-ordinal ℕ∞ₒ
  ℕ∞-is-not-limit ℓ = III II
   where
-   I = ℕ∞ₒ     ≡⟨ lr-implication (is-limit-ordinal-fact ℕ∞ₒ) ℓ ⟩
-       ⌊ ℕ∞ₒ ⌋ ≡⟨ ⌊⌋-of-ℕ∞  ⟩
+   I = ℕ∞ₒ     ＝⟨ lr-implication (is-limit-ordinal-fact ℕ∞ₒ) ℓ ⟩
+       ⌊ ℕ∞ₒ ⌋ ＝⟨ ⌊⌋-of-ℕ∞  ⟩
        ω       ∎
 
    II : ℕ∞ₒ ≃ₒ ω
@@ -991,16 +991,16 @@ also is not a successor ordinal unless LPO holds:
 
  open import Taboos.LPO fe
 
- ℕ∞-successor-gives-LPO : (Σ α ꞉ Ordinal 𝓤₀ , (ℕ∞ₒ ≡ (α +ₒ 𝟙ₒ))) → LPO
+ ℕ∞-successor-gives-LPO : (Σ α ꞉ Ordinal 𝓤₀ , (ℕ∞ₒ ＝ (α +ₒ 𝟙ₒ))) → LPO
  ℕ∞-successor-gives-LPO (α , p) = IV
   where
-   I = α           ≡⟨ (⌊⌋-of-successor' α)⁻¹ ⟩
-       ⌊ α +ₒ 𝟙ₒ ⌋ ≡⟨ ap ⌊_⌋ (p ⁻¹) ⟩
-       ⌊ ℕ∞ₒ ⌋     ≡⟨ ⌊⌋-of-ℕ∞ ⟩
+   I = α           ＝⟨ (⌊⌋-of-successor' α)⁻¹ ⟩
+       ⌊ α +ₒ 𝟙ₒ ⌋ ＝⟨ ap ⌊_⌋ (p ⁻¹) ⟩
+       ⌊ ℕ∞ₒ ⌋     ＝⟨ ⌊⌋-of-ℕ∞ ⟩
        ω           ∎
 
-   II : ℕ∞ₒ ≡ (ω +ₒ 𝟙ₒ)
-   II = transport (λ - → ℕ∞ₒ ≡ (- +ₒ 𝟙ₒ)) I p
+   II : ℕ∞ₒ ＝ (ω +ₒ 𝟙ₒ)
+   II = transport (λ - → ℕ∞ₒ ＝ (- +ₒ 𝟙ₒ)) I p
 
    III : ℕ∞ₒ ⊴ (ω +ₒ 𝟙ₒ)
    III = transport (ℕ∞ₒ ⊴_) II (⊴-refl ℕ∞ₒ)
@@ -1010,10 +1010,10 @@ also is not a successor ordinal unless LPO holds:
 
  open PropositionalTruncation pt
 
- ℕ∞-successor-gives-LPO' : (∃ α ꞉ Ordinal 𝓤₀ , (ℕ∞ₒ ≡ (α +ₒ 𝟙ₒ))) → LPO
+ ℕ∞-successor-gives-LPO' : (∃ α ꞉ Ordinal 𝓤₀ , (ℕ∞ₒ ＝ (α +ₒ 𝟙ₒ))) → LPO
  ℕ∞-successor-gives-LPO' = ∥∥-rec LPO-is-prop ℕ∞-successor-gives-LPO
 
- LPO-gives-ℕ∞-successor : LPO → (Σ α ꞉ Ordinal 𝓤₀ , (ℕ∞ₒ ≡ (α +ₒ 𝟙ₒ)))
+ LPO-gives-ℕ∞-successor : LPO → (Σ α ꞉ Ordinal 𝓤₀ , (ℕ∞ₒ ＝ (α +ₒ 𝟙ₒ)))
  LPO-gives-ℕ∞-successor lpo = ω , ℕ∞-in-Ord.corollary₃ lpo
 
 \end{code}
@@ -1069,7 +1069,7 @@ alternative-plusₒ τ₀ τ₁ = e
   e = f , f-is-op , f-is-equiv , g-is-op
 
 alternative-plus : (τ₀ τ₁ : Ordinalᵀ 𝓤)
-                 → [ τ₀ +ᵒ τ₁ ] ≡ ([ τ₀ ] +ₒ [ τ₁ ])
+                 → [ τ₀ +ᵒ τ₁ ] ＝ ([ τ₀ ] +ₒ [ τ₁ ])
 alternative-plus τ₀ τ₁ = eqtoidₒ _ _ (alternative-plusₒ τ₀ τ₁)
 
 \end{code}

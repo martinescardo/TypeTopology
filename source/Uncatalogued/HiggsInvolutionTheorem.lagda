@@ -52,50 +52,50 @@ We work with Ω of universe 𝓤:
 
 \end{code}
 
-Recall that a map f is left-cancellable if f p ≡ f q → p ≡ q, and
-involutive if f (f p) ≡ p.
+Recall that a map f is left-cancellable if f p ＝ f q → p ＝ q, and
+involutive if f (f p) ＝ p.
 
 \begin{code}
 
 higgs : (f : Ω → Ω) → left-cancellable f → involutive f
 higgs f lc = VIII
   where
-   I : (p : Ω) → f p ≡ ⊤ → p ≡ ⊤ → f ⊤ ≡ ⊤
-   I p r s = transport (λ - → f - ≡ ⊤) s r
+   I : (p : Ω) → f p ＝ ⊤ → p ＝ ⊤ → f ⊤ ＝ ⊤
+   I p r s = transport (λ - → f - ＝ ⊤) s r
 
-   II : (p : Ω) → f p ≡ ⊤ → f ⊤ ≡ ⊤ → p ≡ ⊤
-   II p r s = lc (f p ≡⟨ r ⟩
-                  ⊤   ≡⟨ s ⁻¹ ⟩
+   II : (p : Ω) → f p ＝ ⊤ → f ⊤ ＝ ⊤ → p ＝ ⊤
+   II p r s = lc (f p ＝⟨ r ⟩
+                  ⊤   ＝⟨ s ⁻¹ ⟩
                   f ⊤ ∎)
 
-   III : (p : Ω) → f p ≡ ⊤ → p ≡ f ⊤
+   III : (p : Ω) → f p ＝ ⊤ → p ＝ f ⊤
    III p r = Ω-ext pe fe (I p r) (II p r)
 
-   IV : (p : Ω) → f (f p) ≡ ⊤ → p ≡ ⊤
+   IV : (p : Ω) → f (f p) ＝ ⊤ → p ＝ ⊤
    IV p r = lc (III (f p) r)
 
-   V : (p : Ω) → f (f (f p)) ≡ ⊤ → f p ≡ ⊤
+   V : (p : Ω) → f (f (f p)) ＝ ⊤ → f p ＝ ⊤
    V p = IV (f p)
 
-   VI : (p : Ω) → f p ≡ ⊤ → f (f (f p)) ≡ ⊤
+   VI : (p : Ω) → f p ＝ ⊤ → f (f (f p)) ＝ ⊤
    VI p r = iv ∙ r
     where
-     i : f (f p) ≡ f ⊤
+     i : f (f p) ＝ f ⊤
      i = ap f r
 
-     ii : f ⊤ ≡ p
+     ii : f ⊤ ＝ p
      ii = (III p r)⁻¹
 
-     iii : f (f p) ≡ p
+     iii : f (f p) ＝ p
      iii = i ∙ ii
 
-     iv : f (f (f p)) ≡ f p
+     iv : f (f (f p)) ＝ f p
      iv = ap f iii
 
-   VII : (p : Ω) → f (f (f p)) ≡ f p
+   VII : (p : Ω) → f (f (f p)) ＝ f p
    VII p = Ω-ext pe fe (V p) (VI p)
 
-   VIII : (p : Ω) → f (f p) ≡ p
+   VIII : (p : Ω) → f (f p) ＝ p
    VIII p = lc (VII p)
 
 \end{code}
@@ -137,61 +137,61 @@ lc-monoid-structure-on-Ω-gives-EM O _⊕_ left-neutral right-neutral assoc lc =
   invol : (p : Ω) → involutive (p ⊕_)
   invol p = higgs (p ⊕_) (lc p)
 
-  own-inv : (p : Ω) → p ⊕ p ≡ O
-  own-inv p = p ⊕ p       ≡⟨ (right-neutral (p ⊕ p))⁻¹ ⟩
-              (p ⊕ p) ⊕ O ≡⟨ assoc p p O ⟩
-              p ⊕ (p ⊕ O) ≡⟨ invol p O ⟩
+  own-inv : (p : Ω) → p ⊕ p ＝ O
+  own-inv p = p ⊕ p       ＝⟨ (right-neutral (p ⊕ p))⁻¹ ⟩
+              (p ⊕ p) ⊕ O ＝⟨ assoc p p O ⟩
+              p ⊕ (p ⊕ O) ＝⟨ invol p O ⟩
               O           ∎
 
-  to-≡ : {p q : Ω} → p ⊕ q ≡ O → p ≡ q
-  to-≡ {p} {q} e = p           ≡⟨ (right-neutral p)⁻¹ ⟩
-                   p ⊕ O       ≡⟨ ap (p ⊕_) (e ⁻¹) ⟩
-                   p ⊕ (p ⊕ q) ≡⟨ (assoc p p q)⁻¹ ⟩
-                   (p ⊕ p) ⊕ q ≡⟨ ap (_⊕ q) (own-inv p) ⟩
-                   O ⊕ q       ≡⟨ left-neutral q ⟩
+  to-＝ : {p q : Ω} → p ⊕ q ＝ O → p ＝ q
+  to-＝ {p} {q} e = p           ＝⟨ (right-neutral p)⁻¹ ⟩
+                   p ⊕ O       ＝⟨ ap (p ⊕_) (e ⁻¹) ⟩
+                   p ⊕ (p ⊕ q) ＝⟨ (assoc p p q)⁻¹ ⟩
+                   (p ⊕ p) ⊕ q ＝⟨ ap (_⊕ q) (own-inv p) ⟩
+                   O ⊕ q       ＝⟨ left-neutral q ⟩
                    q           ∎
 
   f : Ω → Ω
   f p = p ⊕ (⊥ ⊕ ⊤)
 
   f-invol : involutive f
-  f-invol p = f (f p)                 ≡⟨ refl ⟩
-              (p ⊕ (⊥ ⊕ ⊤)) ⊕ (⊥ ⊕ ⊤) ≡⟨ assoc p (⊥ ⊕ ⊤) (⊥ ⊕ ⊤) ⟩
-              p ⊕ ((⊥ ⊕ ⊤) ⊕ (⊥ ⊕ ⊤)) ≡⟨ ap (p ⊕_) (own-inv (⊥ ⊕ ⊤)) ⟩
-              p ⊕ O                   ≡⟨ right-neutral p ⟩
+  f-invol p = f (f p)                 ＝⟨ refl ⟩
+              (p ⊕ (⊥ ⊕ ⊤)) ⊕ (⊥ ⊕ ⊤) ＝⟨ assoc p (⊥ ⊕ ⊤) (⊥ ⊕ ⊤) ⟩
+              p ⊕ ((⊥ ⊕ ⊤) ⊕ (⊥ ⊕ ⊤)) ＝⟨ ap (p ⊕_) (own-inv (⊥ ⊕ ⊤)) ⟩
+              p ⊕ O                   ＝⟨ right-neutral p ⟩
               p                       ∎
 
-  α : (p : Ω) → f p ≡ ⊤ → p ≡ ⊥
-  α p e = to-≡ (p ⊕ ⊥             ≡⟨ (right-neutral (p ⊕ ⊥))⁻¹ ⟩
-                (p ⊕ ⊥) ⊕ O       ≡⟨ ap ((p ⊕ ⊥) ⊕_) ((own-inv ⊤)⁻¹) ⟩
-                (p ⊕ ⊥) ⊕ (⊤ ⊕ ⊤) ≡⟨ (assoc (p ⊕ ⊥) ⊤ ⊤)⁻¹ ⟩
-                ((p ⊕ ⊥) ⊕ ⊤) ⊕ ⊤ ≡⟨ ap (_⊕ ⊤) (assoc p ⊥ ⊤) ⟩
-                (p ⊕ (⊥ ⊕ ⊤)) ⊕ ⊤ ≡⟨ refl ⟩
-                f p ⊕ ⊤           ≡⟨ ap (_⊕ ⊤) e ⟩
-                ⊤ ⊕ ⊤             ≡⟨ own-inv ⊤ ⟩
+  α : (p : Ω) → f p ＝ ⊤ → p ＝ ⊥
+  α p e = to-＝ (p ⊕ ⊥             ＝⟨ (right-neutral (p ⊕ ⊥))⁻¹ ⟩
+                (p ⊕ ⊥) ⊕ O       ＝⟨ ap ((p ⊕ ⊥) ⊕_) ((own-inv ⊤)⁻¹) ⟩
+                (p ⊕ ⊥) ⊕ (⊤ ⊕ ⊤) ＝⟨ (assoc (p ⊕ ⊥) ⊤ ⊤)⁻¹ ⟩
+                ((p ⊕ ⊥) ⊕ ⊤) ⊕ ⊤ ＝⟨ ap (_⊕ ⊤) (assoc p ⊥ ⊤) ⟩
+                (p ⊕ (⊥ ⊕ ⊤)) ⊕ ⊤ ＝⟨ refl ⟩
+                f p ⊕ ⊤           ＝⟨ ap (_⊕ ⊤) e ⟩
+                ⊤ ⊕ ⊤             ＝⟨ own-inv ⊤ ⟩
                 O                 ∎)
 
-  β : (p : Ω) → p ≡ ⊥ → f p ≡ ⊤
-  β p e = f p         ≡⟨ refl ⟩
-          p ⊕ (⊥ ⊕ ⊤) ≡⟨ (assoc p ⊥ ⊤)⁻¹ ⟩
-          (p ⊕ ⊥) ⊕ ⊤ ≡⟨ ap (λ - → (- ⊕ ⊥) ⊕ ⊤) e ⟩
-          (⊥ ⊕ ⊥) ⊕ ⊤ ≡⟨ ap (_⊕ ⊤) (own-inv ⊥) ⟩
-          O ⊕ ⊤       ≡⟨ left-neutral ⊤ ⟩
+  β : (p : Ω) → p ＝ ⊥ → f p ＝ ⊤
+  β p e = f p         ＝⟨ refl ⟩
+          p ⊕ (⊥ ⊕ ⊤) ＝⟨ (assoc p ⊥ ⊤)⁻¹ ⟩
+          (p ⊕ ⊥) ⊕ ⊤ ＝⟨ ap (λ - → (- ⊕ ⊥) ⊕ ⊤) e ⟩
+          (⊥ ⊕ ⊥) ⊕ ⊤ ＝⟨ ap (_⊕ ⊤) (own-inv ⊥) ⟩
+          O ⊕ ⊤       ＝⟨ left-neutral ⊤ ⟩
           ⊤           ∎
 
-  characterization-of-f : (p : Ω) → f p ≡ ⇁ p
+  characterization-of-f : (p : Ω) → f p ＝ ⇁ p
   characterization-of-f p = Ω-ext pe fe a b
    where
-    a : f p ≡ ⊤ → (⇁ p) ≡ ⊤
+    a : f p ＝ ⊤ → (⇁ p) ＝ ⊤
     a e = equal-⊥-gives-not-equal-⊤ fe pe p (α p e)
 
-    b : (⇁ p) ≡ ⊤ → f p ≡ ⊤
+    b : (⇁ p) ＝ ⊤ → f p ＝ ⊤
     b e = β p (not-equal-⊤-gives-equal-⊥ fe pe p e)
 
-  ν : (p : Ω) → (⇁⇁ p) ≡ p
-  ν p = ⇁⇁ p      ≡⟨ ap ⇁_ ((characterization-of-f p)⁻¹) ⟩
-        (⇁ (f p)) ≡⟨ (characterization-of-f (f p))⁻¹ ⟩
-        f (f p)   ≡⟨ f-invol p ⟩
+  ν : (p : Ω) → (⇁⇁ p) ＝ p
+  ν p = ⇁⇁ p      ＝⟨ ap ⇁_ ((characterization-of-f p)⁻¹) ⟩
+        (⇁ (f p)) ＝⟨ (characterization-of-f (f p))⁻¹ ⟩
+        f (f p)   ＝⟨ f-invol p ⟩
         p         ∎
 
   δ : (P : 𝓤 ̇ ) → is-prop P → ¬¬ P → P
@@ -206,26 +206,26 @@ Additional facts that are not needed to conclude excluded middle:
 
 \begin{code}
 
-  from-≡ : (p q : Ω) → p ≡ q → p ⊕ q ≡ O
-  from-≡ p q e = p ⊕ q ≡⟨ ap (_⊕ q) e ⟩
-                 q ⊕ q ≡⟨ own-inv q ⟩
+  from-＝ : (p q : Ω) → p ＝ q → p ⊕ q ＝ O
+  from-＝ p q e = p ⊕ q ＝⟨ ap (_⊕ q) e ⟩
+                 q ⊕ q ＝⟨ own-inv q ⟩
                  O     ∎
 
-  abelian : (p q : Ω) → p ⊕ q ≡ q ⊕ p
-  abelian p q = to-≡ ((p ⊕ q) ⊕ (q ⊕ p) ≡⟨ assoc p q (q ⊕ p) ⟩
-                      p ⊕ (q ⊕ (q ⊕ p)) ≡⟨ ap (p ⊕_) ((assoc q q p)⁻¹) ⟩
-                      p ⊕ ((q ⊕ q) ⊕ p) ≡⟨ ap (λ - → p ⊕ (- ⊕ p)) (own-inv q) ⟩
-                      p ⊕ (O ⊕ p)       ≡⟨ ap (p ⊕_) (left-neutral p) ⟩
-                      p ⊕ p             ≡⟨ own-inv p ⟩
+  abelian : (p q : Ω) → p ⊕ q ＝ q ⊕ p
+  abelian p q = to-＝ ((p ⊕ q) ⊕ (q ⊕ p) ＝⟨ assoc p q (q ⊕ p) ⟩
+                      p ⊕ (q ⊕ (q ⊕ p)) ＝⟨ ap (p ⊕_) ((assoc q q p)⁻¹) ⟩
+                      p ⊕ ((q ⊕ q) ⊕ p) ＝⟨ ap (λ - → p ⊕ (- ⊕ p)) (own-inv q) ⟩
+                      p ⊕ (O ⊕ p)       ＝⟨ ap (p ⊕_) (left-neutral p) ⟩
+                      p ⊕ p             ＝⟨ own-inv p ⟩
                       O                 ∎)
 
-  charac₂-of-f : (p : Ω) → f p ≡ (⊥ ⊕ ⊤) ⊕ p
+  charac₂-of-f : (p : Ω) → f p ＝ (⊥ ⊕ ⊤) ⊕ p
   charac₂-of-f p = abelian p (⊥ ⊕ ⊤)
 
   f-invol' : involutive f
-  f-invol' p = f (f p)                   ≡⟨ charac₂-of-f (f p) ⟩
-               ((⊥ ⊕ ⊤) ⊕ f p)           ≡⟨ ap ((⊥ ⊕ ⊤) ⊕_) (charac₂-of-f p) ⟩
-               ((⊥ ⊕ ⊤) ⊕ ((⊥ ⊕ ⊤) ⊕ p)) ≡⟨ higgs ((⊥ ⊕ ⊤) ⊕_) (lc (⊥ ⊕ ⊤)) p ⟩
+  f-invol' p = f (f p)                   ＝⟨ charac₂-of-f (f p) ⟩
+               ((⊥ ⊕ ⊤) ⊕ f p)           ＝⟨ ap ((⊥ ⊕ ⊤) ⊕_) (charac₂-of-f p) ⟩
+               ((⊥ ⊕ ⊤) ⊕ ((⊥ ⊕ ⊤) ⊕ p)) ＝⟨ higgs ((⊥ ⊕ ⊤) ⊕_) (lc (⊥ ⊕ ⊤)) p ⟩
                p ∎
 
 \end{code}

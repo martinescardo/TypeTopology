@@ -20,9 +20,9 @@ retract-variance {𝓤} {𝓥} {𝓦} {𝓣} {X} {Y} {X'} {Y'} fe (rx , sx , rsx
   r f x = ry (f (sx x))
   s : (X → Y') → X' → Y
   s f' x' = sy (f' (rx x'))
-  rs' : (f' : X → Y') (x : X) → ry (sy (f' (rx (sx x)))) ≡ f' x
+  rs' : (f' : X → Y') (x : X) → ry (sy (f' (rx (sx x)))) ＝ f' x
   rs' f' x = rsy (f' (rx (sx x))) ∙ ap f' (rsx x)
-  rs : (f' : X → Y') → r (s f') ≡ f'
+  rs : (f' : X → Y') → r (s f') ＝ f'
   rs f' = dfunext fe (rs' f')
 
 retract-contravariance : funext 𝓤 𝓦

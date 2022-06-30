@@ -57,7 +57,7 @@ is-order-embedding  α β f = is-order-preserving α β f × is-order-reflecting
 
 is-initial-segment  α β f = (x : ⟨ α ⟩) (y : ⟨ β ⟩)
                           → y ≺⟨ β ⟩ f x
-                          → Σ x' ꞉ ⟨ α ⟩ , (x' ≺⟨ α ⟩ x) × (f x' ≡ y)
+                          → Σ x' ꞉ ⟨ α ⟩ , (x' ≺⟨ α ⟩ x) × (f x' ＝ y)
 
 is-simulation       α β f = is-initial-segment α β f × is-order-preserving α β f
 
@@ -129,8 +129,8 @@ simulations-are-lc α β f (i , p) = γ
   φ : ∀ x y
     → is-accessible (underlying-order α) x
     → is-accessible (underlying-order α) y
-    → f x ≡ f y
-    → x ≡ y
+    → f x ＝ f y
+    → x ＝ y
   φ x y (step s) (step t) r = Extensionality α x y g h
    where
     g : (u : ⟨ α ⟩) → u ≺⟨ α ⟩ x → u ≺⟨ α ⟩ y
@@ -139,10 +139,10 @@ simulations-are-lc α β f (i , p) = γ
       a : f u ≺⟨ β ⟩ f y
       a = transport (λ - → f u ≺⟨ β ⟩ -) r (p u x l)
 
-      b : Σ v ꞉ ⟨ α ⟩ , (v ≺⟨ α ⟩ y) × (f v ≡ f u)
+      b : Σ v ꞉ ⟨ α ⟩ , (v ≺⟨ α ⟩ y) × (f v ＝ f u)
       b = i y (f u) a
 
-      c : u ≡ pr₁ b
+      c : u ＝ pr₁ b
       c = φ u (pr₁ b) (s u l) (t (pr₁ b) (pr₁ (pr₂ b))) ((pr₂ (pr₂ b))⁻¹)
 
       d : u ≺⟨ α ⟩ y
@@ -154,10 +154,10 @@ simulations-are-lc α β f (i , p) = γ
       a : f u ≺⟨ β ⟩ f x
       a = transport (λ - → f u ≺⟨ β ⟩ -) (r ⁻¹) (p u y l)
 
-      b : Σ v ꞉ ⟨ α ⟩ , (v ≺⟨ α ⟩ x) × (f v ≡ f u)
+      b : Σ v ꞉ ⟨ α ⟩ , (v ≺⟨ α ⟩ x) × (f v ＝ f u)
       b = i x (f u) a
 
-      c : pr₁ b ≡ u
+      c : pr₁ b ＝ u
       c = φ (pr₁ b) u (s (pr₁ b) (pr₁ (pr₂ b))) (t u l) (pr₂ (pr₂ b))
 
       d : u ≺⟨ α ⟩ x
@@ -175,24 +175,24 @@ being-initial-segment-is-prop {𝓤} {𝓥} α β f p = prop-criterion γ
    γ : is-initial-segment α β f → is-prop (is-initial-segment α β f)
    γ i = Π₃-is-prop fe' (λ x z l → φ x z l)
     where
-     φ : ∀ x y → y ≺⟨ β ⟩ f x → is-prop (Σ x' ꞉ ⟨ α ⟩ , (x' ≺⟨ α ⟩ x) × (f x' ≡ y))
-     φ x y l (x' , (m , r)) (x'' , (m' , r')) = to-Σ-≡ (a , b)
+     φ : ∀ x y → y ≺⟨ β ⟩ f x → is-prop (Σ x' ꞉ ⟨ α ⟩ , (x' ≺⟨ α ⟩ x) × (f x' ＝ y))
+     φ x y l (x' , (m , r)) (x'' , (m' , r')) = to-Σ-＝ (a , b)
       where
-       c : f x' ≡ f x''
+       c : f x' ＝ f x''
        c = r ∙ r' ⁻¹
 
        j : is-simulation α β f
        j = (i , p)
 
-       a : x' ≡ x''
+       a : x' ＝ x''
        a = simulations-are-lc α β f j c
 
-       k : is-prop ((x'' ≺⟨ α ⟩ x) × (f x'' ≡ y))
+       k : is-prop ((x'' ≺⟨ α ⟩ x) × (f x'' ＝ y))
        k = ×-is-prop
             (Prop-valuedness α x'' x)
             (underlying-type-is-set fe β)
 
-       b : transport (λ - →  (- ≺⟨ α ⟩ x) × (f - ≡ y)) a (m , r) ≡ m' , r'
+       b : transport (λ - →  (- ≺⟨ α ⟩ x) × (f - ＝ y)) a (m , r) ＝ m' , r'
        b = k _ _
 
 \end{code}
@@ -217,16 +217,16 @@ at-most-one-simulation α β f f' (i , p) (i' , p') x = γ
  where
   φ : ∀ x
     → is-accessible (underlying-order α) x
-    → f x ≡ f' x
+    → f x ＝ f' x
   φ x (step u) = Extensionality β (f x) (f' x) a b
    where
-    IH : ∀ y → y ≺⟨ α ⟩ x → f y ≡ f' y
+    IH : ∀ y → y ≺⟨ α ⟩ x → f y ＝ f' y
     IH y l = φ y (u y l)
 
     a : (z : ⟨ β ⟩) → z ≺⟨ β ⟩ f x → z ≺⟨ β ⟩ f' x
     a z l = transport (λ - → - ≺⟨ β ⟩ f' x) t m
      where
-      s : Σ y ꞉ ⟨ α ⟩ , (y ≺⟨ α ⟩ x) × (f y ≡ z)
+      s : Σ y ꞉ ⟨ α ⟩ , (y ≺⟨ α ⟩ x) × (f y ＝ z)
       s = i x z l
 
       y : ⟨ α ⟩
@@ -235,15 +235,15 @@ at-most-one-simulation α β f f' (i , p) (i' , p') x = γ
       m : f' y ≺⟨ β ⟩ f' x
       m = p' y x (pr₁ (pr₂ s))
 
-      t : f' y ≡ z
-      t = f' y  ≡⟨ (IH y (pr₁ (pr₂ s)))⁻¹ ⟩
-          f y   ≡⟨ pr₂ (pr₂ s) ⟩
+      t : f' y ＝ z
+      t = f' y  ＝⟨ (IH y (pr₁ (pr₂ s)))⁻¹ ⟩
+          f y   ＝⟨ pr₂ (pr₂ s) ⟩
           z     ∎
 
     b : (z : ⟨ β ⟩) → z ≺⟨ β ⟩ f' x → z ≺⟨ β ⟩ f x
     b z l = transport (λ - → - ≺⟨ β ⟩ f x) t m
      where
-      s : Σ y ꞉ ⟨ α ⟩ , (y ≺⟨ α ⟩ x) × (f' y ≡ z)
+      s : Σ y ꞉ ⟨ α ⟩ , (y ≺⟨ α ⟩ x) × (f' y ＝ z)
       s = i' x z l
 
       y : ⟨ α ⟩
@@ -252,12 +252,12 @@ at-most-one-simulation α β f f' (i , p) (i' , p') x = γ
       m : f y ≺⟨ β ⟩ f x
       m = p y x (pr₁ (pr₂ s))
 
-      t : f y ≡ z
-      t = f y  ≡⟨ IH y (pr₁ (pr₂ s)) ⟩
-          f' y ≡⟨ pr₂ (pr₂ s) ⟩
+      t : f y ＝ z
+      t = f y  ＝⟨ IH y (pr₁ (pr₂ s)) ⟩
+          f' y ＝⟨ pr₂ (pr₂ s) ⟩
           z    ∎
 
-  γ : f x ≡ f' x
+  γ : f x ＝ f' x
   γ = φ x (Well-foundedness α x)
 
 _⊴_ : Ordinal 𝓤 → Ordinal 𝓥 → 𝓤 ⊔ 𝓥 ̇
@@ -265,7 +265,7 @@ _⊴_ : Ordinal 𝓤 → Ordinal 𝓥 → 𝓤 ⊔ 𝓥 ̇
 
 ⊴-is-prop-valued : (α : Ordinal 𝓤) (β : Ordinal 𝓥) → is-prop (α ⊴ β)
 ⊴-is-prop-valued {𝓤} {𝓥} α β (f , s) (g , t) =
-  to-subtype-≡ (being-simulation-is-prop α β)
+  to-subtype-＝ (being-simulation-is-prop α β)
                (dfunext fe' (at-most-one-simulation α β f g s t))
 
 ⊴-refl : (α : Ordinal 𝓤) → α ⊴ α
@@ -280,16 +280,16 @@ _⊴_ : Ordinal 𝓤 → Ordinal 𝓥 → 𝓤 ⊔ 𝓥 ̇
                                         (λ x y l → q (f x) (f y) (p x y l))
  where
   k : (x : ⟨ α ⟩) (z : ⟨ γ ⟩) →  z ≺⟨ γ ⟩ (g (f x))
-    → Σ x' ꞉ ⟨ α ⟩ , (x' ≺⟨ α ⟩ x) × (g (f x') ≡ z)
+    → Σ x' ꞉ ⟨ α ⟩ , (x' ≺⟨ α ⟩ x) × (g (f x') ＝ z)
   k x z l = pr₁ b , pr₁ (pr₂ b) , (ap g (pr₂ (pr₂ b)) ∙ pr₂ (pr₂ a))
    where
-    a : Σ y ꞉ ⟨ β ⟩ , (y ≺⟨ β ⟩ f x) × (g y ≡ z)
+    a : Σ y ꞉ ⟨ β ⟩ , (y ≺⟨ β ⟩ f x) × (g y ＝ z)
     a = j (f x) z l
 
     y : ⟨ β ⟩
     y = pr₁ a
 
-    b : Σ x' ꞉ ⟨ α ⟩ , (x' ≺⟨ α ⟩ x) × (f x' ≡ y)
+    b : Σ x' ꞉ ⟨ α ⟩ , (x' ≺⟨ α ⟩ x) × (f x' ＝ y)
     b = i x y (pr₁ (pr₂ a))
 
 ≃ₒ-gives-≃ : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
@@ -305,8 +305,8 @@ _⊴_ : Ordinal 𝓤 → Ordinal 𝓥 → 𝓤 ⊔ 𝓥 ̇
         (order-equivs-are-simulations α β f  (p  , e ,  q ))
         (order-equivs-are-simulations α β f' (p' , e' , q'))
 
-   γ : (f , p , e , q) ≡ (f' , p' , e' , q')
-   γ = to-subtype-≡
+   γ : (f , p , e , q) ＝ (f' , p' , e' , q')
+   γ = to-subtype-＝
          (being-order-equiv-is-prop α β)
          (dfunext fe' r)
 
@@ -339,50 +339,50 @@ bisimilarity-gives-ordinal-equiv α β (f , s) (g , t) = γ
   ηs : is-simulation β β (f ∘ g)
   ηs = pr₂ (⊴-trans β α β (g , t) (f , s))
 
-  η : (y : ⟨ β ⟩) → f (g y) ≡ y
+  η : (y : ⟨ β ⟩) → f (g y) ＝ y
   η = at-most-one-simulation β β (f ∘ g) id ηs (pr₂ (⊴-refl β))
 
   εs : is-simulation α α (g ∘ f)
   εs = pr₂ (⊴-trans α β α (f , s) (g , t))
 
-  ε : (x : ⟨ α ⟩) → g (f x) ≡ x
+  ε : (x : ⟨ α ⟩) → g (f x) ＝ x
   ε = at-most-one-simulation α α (g ∘ f) id εs (pr₂ (⊴-refl α))
 
   γ : α ≃ₒ β
   γ =  f , pr₂ s , qinvs-are-equivs f (g , ε , η) , pr₂ t
 
-idtoeqₒ : (α β : Ordinal 𝓤) → α ≡ β → α ≃ₒ β
+idtoeqₒ : (α β : Ordinal 𝓤) → α ＝ β → α ≃ₒ β
 idtoeqₒ α α refl = ≃ₒ-refl α
 
-eqtoidₒ : (α β : Ordinal 𝓤) → α ≃ₒ β → α ≡ β
+eqtoidₒ : (α β : Ordinal 𝓤) → α ≃ₒ β → α ＝ β
 eqtoidₒ {𝓤} α β (f , p , e , q) = γ
  where
   A : (Y : 𝓤 ̇ ) → ⟨ α ⟩ ≃ Y → 𝓤 ⁺ ̇
   A Y e = (σ : OrdinalStructure Y)
         → is-order-preserving α (Y , σ) ⌜ e ⌝
         → is-order-preserving (Y , σ) α ⌜ e ⌝⁻¹
-        → α ≡ (Y , σ)
+        → α ＝ (Y , σ)
 
   a : A ⟨ α ⟩ (≃-refl ⟨ α ⟩)
   a σ φ ψ = g
    where
-    b : ∀ x x' → (x ≺⟨ α ⟩ x') ≡ (x ≺⟨ ⟨ α ⟩ , σ ⟩ x')
+    b : ∀ x x' → (x ≺⟨ α ⟩ x') ＝ (x ≺⟨ ⟨ α ⟩ , σ ⟩ x')
     b x x' = univalence-gives-propext (ua 𝓤)
               (Prop-valuedness α x x')
               (Prop-valuedness (⟨ α ⟩ , σ) x x')
               (φ x x')
               (ψ x x')
 
-    c : underlying-order α ≡ underlying-order (⟨ α ⟩ , σ)
+    c : underlying-order α ＝ underlying-order (⟨ α ⟩ , σ)
     c = dfunext fe' (λ x → dfunext fe' (b x))
 
-    d : structure α ≡ σ
+    d : structure α ＝ σ
     d = pr₁-lc (λ {_<_} → being-well-order-is-prop _<_ fe) c
 
-    g : α ≡ (⟨ α ⟩ , σ)
-    g = to-Σ-≡' d
+    g : α ＝ (⟨ α ⟩ , σ)
+    g = to-Σ-＝' d
 
-  γ : α ≡ β
+  γ : α ＝ β
   γ = JEq (ua 𝓤) ⟨ α ⟩ A a ⟨ β ⟩ (f , e) (structure β) p q
 
 UAₒ : (α β : Ordinal 𝓤) → is-equiv (idtoeqₒ α β)
@@ -391,7 +391,7 @@ UAₒ {𝓤} α = nats-with-sections-are-equivs α
              (λ β → eqtoidₒ α β , η β)
  where
   η : (β : Ordinal 𝓤) (e : α ≃ₒ β)
-    → idtoeqₒ α β (eqtoidₒ α β e) ≡ e
+    → idtoeqₒ α β (eqtoidₒ α β e) ＝ e
   η β e = ≃ₒ-is-prop-valued α β (idtoeqₒ α β (eqtoidₒ α β e)) e
 
 the-type-of-ordinals-is-a-set : is-set (Ordinal 𝓤)
@@ -399,7 +399,7 @@ the-type-of-ordinals-is-a-set {𝓤} {α} {β} = equiv-to-prop
                                               (idtoeqₒ α β , UAₒ α β)
                                               (≃ₒ-is-prop-valued α β)
 
-UAₒ-≃ : (α β : Ordinal 𝓤) → (α ≡ β) ≃ (α ≃ₒ β)
+UAₒ-≃ : (α β : Ordinal 𝓤) → (α ＝ β) ≃ (α ≃ₒ β)
 UAₒ-≃ α β = idtoeqₒ α β , UAₒ α β
 
 \end{code}
@@ -416,7 +416,7 @@ antisymmetric.
 ⊴-antisym : (α β : Ordinal 𝓤)
           → α ⊴ β
           → β ⊴ α
-          → α ≡ β
+          → α ＝ β
 ⊴-antisym α β l m = eqtoidₒ α β (bisimilarity-gives-ordinal-equiv α β l m)
 
 \end{code}
@@ -442,7 +442,7 @@ _↓_ : (α : Ordinal 𝓤) → ⟨ α ⟩ → Ordinal 𝓤
 
   e : is-extensional _<_
   e (x , l) (y , m) f g =
-    to-subtype-≡
+    to-subtype-＝
       (λ z → Prop-valuedness α z a)
       (Extensionality α x y
         (λ u n → f (u , Transitivity α u x a n l) n)
@@ -492,14 +492,14 @@ segment-⊴ α a = segment-inclusion α a , segment-inclusion-is-simulation α a
   m : v ≺⟨ α ⟩ b
   m = segment-inclusion-bound α b (f (u , l))
 
-  q : u ≡ v
+  q : u ＝ v
   q = h (u , l)
 
   n : u ≺⟨ α ⟩ b
   n = transport⁻¹ (λ - → - ≺⟨ α ⟩ b) q m
 
 ↓-lc : (α : Ordinal 𝓤) (a b : ⟨ α ⟩)
-     → α ↓ a ≡ α ↓ b → a ≡ b
+     → α ↓ a ＝ α ↓ b → a ＝ b
 ↓-lc α a b p =
  Extensionality α a b
   (↓-⊴-lc α a b (transport      (λ - → (α ↓ a) ⊴ -) p (⊴-refl (α ↓ a))))
@@ -512,20 +512,20 @@ We are now ready to make the type of ordinals into an ordinal.
 \begin{code}
 
 _⊲_ : Ordinal 𝓤 → Ordinal 𝓤 → 𝓤 ⁺ ̇
-α ⊲ β = Σ b ꞉ ⟨ β ⟩ , α ≡ (β ↓ b)
+α ⊲ β = Σ b ꞉ ⟨ β ⟩ , α ＝ (β ↓ b)
 
 ⊲-is-prop-valued : (α β : Ordinal 𝓤) → is-prop (α ⊲ β)
 ⊲-is-prop-valued {𝓤} α β (b , p) (b' , p') = γ
  where
-  q = (β ↓ b)  ≡⟨ p ⁻¹ ⟩
-       α       ≡⟨ p' ⟩
+  q = (β ↓ b)  ＝⟨ p ⁻¹ ⟩
+       α       ＝⟨ p' ⟩
       (β ↓ b') ∎
 
-  r : b ≡ b'
+  r : b ＝ b'
   r = ↓-lc β b b' q
 
-  γ : (b , p) ≡ (b' , p')
-  γ = to-subtype-≡ (λ x → the-type-of-ordinals-is-a-set) r
+  γ : (b , p) ＝ (b' , p')
+  γ = to-subtype-＝ (λ x → the-type-of-ordinals-is-a-set) r
 
 \end{code}
 
@@ -555,7 +555,7 @@ A lower set of a lower set is a lower set:
 \begin{code}
 
 iterated-↓ : (α : Ordinal 𝓤) (a b : ⟨ α ⟩) (l : b ≺⟨ α ⟩ a)
-           → ((α ↓ a ) ↓ (b , l)) ≡ (α ↓ b)
+           → ((α ↓ a ) ↓ (b , l)) ＝ (α ↓ b)
 iterated-↓ α a b l = ⊴-antisym ((α ↓ a) ↓ (b , l)) (α ↓ b)
                       (φ α a b l) (ψ α a b l)
  where
@@ -568,7 +568,7 @@ iterated-↓ α a b l = ⊴-antisym ((α ↓ a) ↓ (b , l)) (α ↓ b)
 
     i : (w : ⟨ (α ↓ b) ↓ (u , l) ⟩) (t : ⟨ α ↓ u ⟩)
       → t ≺⟨ α ↓ u ⟩ f w
-      → Σ w' ꞉ ⟨ (α ↓ b) ↓ (u , l) ⟩ , (w' ≺⟨ (α ↓ b) ↓ (u , l) ⟩ w) × (f w' ≡ t)
+      → Σ w' ꞉ ⟨ (α ↓ b) ↓ (u , l) ⟩ , (w' ≺⟨ (α ↓ b) ↓ (u , l) ⟩ w) × (f w' ＝ t)
     i ((x , m) , n) (x' , m') n' = ((x' , Transitivity α x' u b m' l) , m') ,
                                     (n' , refl)
 
@@ -586,10 +586,10 @@ iterated-↓ α a b l = ⊴-antisym ((α ↓ a) ↓ (b , l)) (α ↓ b)
     i : (t : ⟨ α ↓ u ⟩)
         (w : ⟨ (α ↓ b) ↓ (u , l) ⟩)
       → w ≺⟨ (α ↓ b) ↓ (u , l) ⟩ f t
-      → Σ t' ꞉ ⟨ α ↓ u ⟩ , (t' ≺⟨ α ↓ u ⟩ t) × (f t' ≡ w)
+      → Σ t' ꞉ ⟨ α ↓ u ⟩ , (t' ≺⟨ α ↓ u ⟩ t) × (f t' ＝ w)
     i (x , n) ((x' , m') , n') o = (x' , n') , (o , r)
      where
-      r : ((x' , Transitivity α x' u b n' l) , n') ≡ (x' , m') , n'
+      r : ((x' , Transitivity α x' u b n' l) , n') ＝ (x' , m') , n'
       r = ap (λ - → ((x' , -) , n'))
              (Prop-valuedness α x' b (Transitivity α x' u b n' l) m')
 
@@ -607,15 +607,15 @@ Therefore the map (α ↓ -) reflects and preserves order:
                  → a ≺⟨ α ⟩ b
 ↓-reflects-order α a b ((u , l) , p) = γ
  where
-  have : type-of l ≡ (u ≺⟨ α ⟩ b)
+  have : type-of l ＝ (u ≺⟨ α ⟩ b)
   have = refl
 
-  q : (α ↓ a) ≡ (α ↓ u)
-  q = (α ↓ a)             ≡⟨ p ⟩
-      ((α ↓ b) ↓ (u , l)) ≡⟨ iterated-↓ α b u l ⟩
+  q : (α ↓ a) ＝ (α ↓ u)
+  q = (α ↓ a)             ＝⟨ p ⟩
+      ((α ↓ b) ↓ (u , l)) ＝⟨ iterated-↓ α b u l ⟩
       (α ↓ u)             ∎
 
-  r : a ≡ u
+  r : a ＝ u
   r = ↓-lc α a u q
 
   γ : a ≺⟨ α ⟩ b
@@ -647,7 +647,7 @@ It remains to show that _⊲_ is a well-order:
     g : (β : Ordinal 𝓤) → β ⊲ (α ↓ a) → is-accessible _⊲_ β
     g β ((b , l) , p) = transport⁻¹ (is-accessible _⊲_) q (IH b l)
      where
-      q : β ≡ (α ↓ b)
+      q : β ＝ (α ↓ b)
       q = p ∙ iterated-↓ α a b l
 
 ⊲-is-well-founded : is-well-founded (_⊲_ {𝓤})
@@ -661,22 +661,22 @@ It remains to show that _⊲_ is a well-order:
                            ((λ x → pr₁ (φ x)) , i , p)
                            ((λ y → pr₁ (γ y)) , j , q)
  where
-  φ : (x : ⟨ α ⟩) → Σ y ꞉ ⟨ β ⟩ , α ↓ x ≡ β ↓ y
+  φ : (x : ⟨ α ⟩) → Σ y ꞉ ⟨ β ⟩ , α ↓ x ＝ β ↓ y
   φ x = f (α ↓ x) (x , refl)
 
-  γ : (y : ⟨ β ⟩) → Σ x ꞉ ⟨ α ⟩ , β ↓ y ≡ α ↓ x
+  γ : (y : ⟨ β ⟩) → Σ x ꞉ ⟨ α ⟩ , β ↓ y ＝ α ↓ x
   γ y = g (β ↓ y) (y , refl)
 
-  η : (x : ⟨ α ⟩) → pr₁ (γ (pr₁ (φ x))) ≡ x
+  η : (x : ⟨ α ⟩) → pr₁ (γ (pr₁ (φ x))) ＝ x
   η x = (↓-lc α x (pr₁ (γ (pr₁ (φ x)))) a)⁻¹
    where
-    a : (α ↓ x) ≡ (α ↓ pr₁ (γ (pr₁ (φ x))))
+    a : (α ↓ x) ＝ (α ↓ pr₁ (γ (pr₁ (φ x))))
     a = pr₂ (φ x) ∙ pr₂ (γ (pr₁ (φ x)))
 
-  ε : (y : ⟨ β ⟩) → pr₁ (φ (pr₁ (γ y))) ≡ y
+  ε : (y : ⟨ β ⟩) → pr₁ (φ (pr₁ (γ y))) ＝ y
   ε y = (↓-lc β y (pr₁ (φ (pr₁ (γ y)))) a)⁻¹
    where
-    a : (β ↓ y) ≡ (β ↓ pr₁ (φ (pr₁ (γ y))))
+    a : (β ↓ y) ＝ (β ↓ pr₁ (φ (pr₁ (γ y))))
     a = pr₂ (γ y) ∙ pr₂ (φ (pr₁ (γ y)))
 
   p : is-order-preserving α β (λ x → pr₁ (φ x))
@@ -712,7 +712,7 @@ It remains to show that _⊲_ is a well-order:
 ⊲-is-transitive : is-transitive (_⊲_ {𝓤})
 ⊲-is-transitive {𝓤} α β φ (a , p) (b , q) = γ
  where
-  t : (q : β ≡ (φ ↓ b)) → (β ↓ a) ≡ ((φ ↓ b) ↓ transport ⟨_⟩ q a)
+  t : (q : β ＝ (φ ↓ b)) → (β ↓ a) ＝ ((φ ↓ b) ↓ transport ⟨_⟩ q a)
   t refl = refl
 
   u : ⟨ φ ↓ b ⟩
@@ -724,13 +724,13 @@ It remains to show that _⊲_ is a well-order:
   l : c ≺⟨ φ ⟩ b
   l = pr₂ u
 
-  r : α ≡ (φ ↓ c)
-  r = α             ≡⟨ p ⟩
-      (β ↓ a)       ≡⟨ t q ⟩
-      ((φ ↓ b) ↓ u) ≡⟨ iterated-↓ φ b c l ⟩
+  r : α ＝ (φ ↓ c)
+  r = α             ＝⟨ p ⟩
+      (β ↓ a)       ＝⟨ t q ⟩
+      ((φ ↓ b) ↓ u) ＝⟨ iterated-↓ φ b c l ⟩
       (φ ↓ c)       ∎
 
-  γ : Σ c ꞉ ⟨ φ ⟩ , α ≡ (φ ↓ c)
+  γ : Σ c ꞉ ⟨ φ ⟩ , α ＝ (φ ↓ c)
   γ = c , r
 
 ⊲-is-well-order : is-well-order (_⊲_ {𝓤})
@@ -778,10 +778,10 @@ ordinals-in-OO-are-lowersets-of-OO {𝓤} α = f , p , ((g , η) , (g , ε)) , q
   g : ⟨ OO 𝓤 ↓ α ⟩ → ⟨ α ⟩
   g (β , x , r) = x
 
-  η : (σ : ⟨ OO 𝓤 ↓ α ⟩) → f (g σ) ≡ σ
+  η : (σ : ⟨ OO 𝓤 ↓ α ⟩) → f (g σ) ＝ σ
   η (.(α ↓ x) , x , refl) = refl
 
-  ε : (x : ⟨ α ⟩) → g (f x) ≡ x
+  ε : (x : ⟨ α ⟩) → g (f x) ＝ x
   ε x = refl
 
   q : is-order-preserving (OO 𝓤 ↓ α) α g
@@ -801,7 +801,7 @@ lc-initial-segments-are-order-reflecting : (α β : Ordinal 𝓤)
                                          → is-order-reflecting α β f
 lc-initial-segments-are-order-reflecting α β f i c x y l = m
  where
-  a : Σ x' ꞉ ⟨ α ⟩ , (x' ≺⟨ α ⟩ y) × (f x' ≡ f x)
+  a : Σ x' ꞉ ⟨ α ⟩ , (x' ≺⟨ α ⟩ y) × (f x' ＝ f x)
   a = i y (f x) l
 
   m : x ≺⟨ α ⟩ y
@@ -840,7 +840,7 @@ order-embeddings-are-lc α β f (p , r) {x} {y} s = γ
     j = transport⁻¹ (λ - → f u ≺⟨ β ⟩ -) s i
 
 
-  γ : x ≡ y
+  γ : x ＝ y
   γ = Extensionality α x y a b
 
 order-embedings-are-embeddings : (α β : Ordinal 𝓤) (f : ⟨ α ⟩ → ⟨ β ⟩)
@@ -868,7 +868,7 @@ simulations-are-monotone α β f (i , p) = φ
     a : z ≺⟨ α ⟩ x
     a = pr₁ (pr₂ (i x t l))
 
-    b : f z ≡ t
+    b : f z ＝ t
     b = pr₂ (pr₂ (i x t l))
 
     c : z ≺⟨ α ⟩ y
@@ -897,7 +897,7 @@ module ℕ∞-in-Ord where
   where
    i : (x : ⟨ ω +ₒ 𝟙ₒ ⟩) (y : ⟨ ℕ∞ₒ ⟩)
      → y ≺⟨ ℕ∞ₒ ⟩ ι𝟙 x
-     → Σ x' ꞉ ⟨ ω +ₒ 𝟙ₒ ⟩ , (x' ≺⟨ ω +ₒ 𝟙ₒ ⟩ x) × (ι𝟙 x' ≡ y)
+     → Σ x' ꞉ ⟨ ω +ₒ 𝟙ₒ ⟩ , (x' ≺⟨ ω +ₒ 𝟙ₒ ⟩ x) × (ι𝟙 x' ＝ y)
    i (inl m) y (n , r , l) = inl n , ⊏-gives-< n m l , (r ⁻¹)
    i (inr *) y (n , r , l) = inl n , * , (r ⁻¹)
 
@@ -926,14 +926,14 @@ module ℕ∞-in-Ord where
                                               (λ x → i x (lpo x)) ,
                                               (λ x y → p x y (lpo x) (lpo y))
   where
-   ι𝟙-inverse-inl : (u : ℕ∞) (d : decidable (Σ n ꞉ ℕ , u ≡ ι n))
-                      → (m : ℕ) → u ≡ ι m → ι𝟙-inverse u d ≡ inl m
+   ι𝟙-inverse-inl : (u : ℕ∞) (d : decidable (Σ n ꞉ ℕ , u ＝ ι n))
+                      → (m : ℕ) → u ＝ ι m → ι𝟙-inverse u d ＝ inl m
    ι𝟙-inverse-inl . (ι n) (inl (n , refl)) m q = ap inl (ℕ-to-ℕ∞-lc q)
    ι𝟙-inverse-inl u          (inr g)          m q = 𝟘-elim (g (m , q))
 
-   i : (x : ℕ∞) (d : decidable (Σ n ꞉ ℕ , x ≡ ι n)) (y : ℕ + 𝟙)
+   i : (x : ℕ∞) (d : decidable (Σ n ꞉ ℕ , x ＝ ι n)) (y : ℕ + 𝟙)
      → y ≺⟨ ω +ₒ 𝟙ₒ ⟩ ι𝟙-inverse x d
-     → Σ x' ꞉ ℕ∞ , (x' ≺⟨ ℕ∞ₒ ⟩ x) × (ι𝟙-inverse x' (lpo x') ≡ y)
+     → Σ x' ꞉ ℕ∞ , (x' ≺⟨ ℕ∞ₒ ⟩ x) × (ι𝟙-inverse x' (lpo x') ＝ y)
    i .(ι n) (inl (n , refl)) (inl m) l =
      ι m ,
      ℕ-to-ℕ∞-order-preserving m n l ,
@@ -947,7 +947,7 @@ module ℕ∞-in-Ord where
      ι𝟙-inverse-inl (ι n) (lpo (ι n)) n refl
    i x (inr g) (inr *) l = 𝟘-elim l
 
-   p : (x y : ℕ∞)  (d : decidable (Σ n ꞉ ℕ , x ≡ ι n)) (e : decidable (Σ m ꞉ ℕ , y ≡ ι m))
+   p : (x y : ℕ∞)  (d : decidable (Σ n ꞉ ℕ , x ＝ ι n)) (e : decidable (Σ m ꞉ ℕ , y ＝ ι m))
      →  x ≺⟨ ℕ∞ₒ ⟩ y
      → ι𝟙-inverse x d ≺⟨ ω +ₒ 𝟙ₒ ⟩ ι𝟙-inverse y e
    p .(ι n) .(ι m) (inl (n , refl)) (inl (m , refl)) (k , r , l) =
@@ -964,10 +964,10 @@ module ℕ∞-in-Ord where
  corollary₂ : LPO → ℕ∞ ≃ (ℕ + 𝟙)
  corollary₂ lpo = ≃ₒ-gives-≃ ℕ∞ₒ (ω +ₒ 𝟙ₒ) (corollary₁ lpo)
 
- corollary₃ : LPO → ℕ∞ₒ ≡ (ω +ₒ 𝟙ₒ)
+ corollary₃ : LPO → ℕ∞ₒ ＝ (ω +ₒ 𝟙ₒ)
  corollary₃ lpo = eqtoidₒ ℕ∞ₒ (ω +ₒ 𝟙ₒ) (corollary₁ lpo)
 
- corollary₄ : LPO → ℕ∞ ≡ (ℕ + 𝟙)
+ corollary₄ : LPO → ℕ∞ ＝ (ℕ + 𝟙)
  corollary₄ lpo = eqtoid (ua 𝓤₀) ℕ∞ (ℕ + 𝟙) (corollary₂ lpo)
 
 \end{code}
@@ -1017,30 +1017,30 @@ from-≼ {𝓤} {α} {β} l a = l (α ↓ a) m
   h : ⟨ β ↓ f a ⟩ → ⟨ α ↓ a ⟩
   h (y , m) = pr₁ σ , pr₁ (pr₂ σ)
    where
-    σ : Σ x ꞉ ⟨ α ⟩ , (x ≺⟨ α ⟩ a) × (f x ≡ y)
+    σ : Σ x ꞉ ⟨ α ⟩ , (x ≺⟨ α ⟩ a) × (f x ＝ y)
     σ = f-is-initial-segment a y m
 
   η : h ∘ g ∼ id
-  η (x , l) = to-subtype-≡ (λ - → Prop-valuedness α - a) r
+  η (x , l) = to-subtype-＝ (λ - → Prop-valuedness α - a) r
    where
-    σ : Σ x' ꞉ ⟨ α ⟩ , (x' ≺⟨ α ⟩ a) × (f x' ≡ f x)
+    σ : Σ x' ꞉ ⟨ α ⟩ , (x' ≺⟨ α ⟩ a) × (f x' ＝ f x)
     σ = f-is-initial-segment a (f x) (f-is-order-preserving x a l)
 
     x' = pr₁ σ
 
-    have : pr₁ (h (g (x , l))) ≡ x'
+    have : pr₁ (h (g (x , l))) ＝ x'
     have = refl
 
-    s : f x' ≡ f x
+    s : f x' ＝ f x
     s = pr₂ (pr₂ σ)
 
-    r : x' ≡ x
+    r : x' ＝ x
     r = simulations-are-lc α β f f-is-simulation s
 
   ε : g ∘ h ∼ id
-  ε (y , m) = to-subtype-≡ (λ - → Prop-valuedness β - (f a)) r
+  ε (y , m) = to-subtype-＝ (λ - → Prop-valuedness β - (f a)) r
    where
-    r : f (pr₁ (f-is-initial-segment a y m)) ≡ y
+    r : f (pr₁ (f-is-initial-segment a y m)) ＝ y
     r = pr₂ (pr₂ (f-is-initial-segment a y m))
 
   g-is-order-preserving : is-order-preserving (α ↓ a) (β ↓ f a) g
@@ -1058,10 +1058,10 @@ from-≼ {𝓤} {α} {β} l a = l (α ↓ a) m
     x  = pr₁ σ
     x' = pr₁ σ'
 
-    s : f x ≡ y
+    s : f x ＝ y
     s = pr₂ (pr₂ σ)
 
-    s' : f x' ≡ y'
+    s' : f x' ＝ y'
     s' = pr₂ (pr₂ σ')
 
     t : f x ≺⟨ β ⟩ f x'
@@ -1070,7 +1070,7 @@ from-≼ {𝓤} {α} {β} l a = l (α ↓ a) m
     o : x ≺⟨ α ⟩ x'
     o = simulations-are-order-reflecting α β f f-is-simulation x x' t
 
-  q : (α ↓ a) ≡ (β ↓ f a)
+  q : (α ↓ a) ＝ (β ↓ f a)
   q = eqtoidₒ (α ↓ a) (β ↓ f a)
         (g ,
          g-is-order-preserving ,
@@ -1094,7 +1094,7 @@ to-⊴ α β ϕ = g
   f : ⟨ α ⟩ → ⟨ β ⟩
   f a = pr₁ (ϕ a)
 
-  f-property : (a : ⟨ α ⟩) → (α ↓ a) ≡ (β ↓ f a)
+  f-property : (a : ⟨ α ⟩) → (α ↓ a) ＝ (β ↓ f a)
   f-property a = pr₂ (ϕ a)
 
   f-is-order-preserving : is-order-preserving α β f
@@ -1111,7 +1111,7 @@ to-⊴ α β ϕ = g
 
   f-is-initial-segment : (x : ⟨ α ⟩) (y : ⟨ β ⟩)
                        → y ≺⟨ β ⟩ f x
-                       → Σ x' ꞉ ⟨ α ⟩ , (x' ≺⟨ α ⟩ x) × (f x' ≡ y)
+                       → Σ x' ꞉ ⟨ α ⟩ , (x' ≺⟨ α ⟩ x) × (f x' ＝ y)
   f-is-initial-segment x y l = x' , o , (q ⁻¹)
    where
     m : (β ↓ y) ⊲ (β ↓ f x)
@@ -1126,12 +1126,12 @@ to-⊴ α β ϕ = g
     o : x' ≺⟨ α ⟩ x
     o = pr₂ (pr₁ n)
 
-    p = (β ↓ y)              ≡⟨ pr₂ n ⟩
-        ((α ↓ x) ↓ (x' , o)) ≡⟨ iterated-↓ α x x' o ⟩
-        (α ↓ x')             ≡⟨ f-property x' ⟩
+    p = (β ↓ y)              ＝⟨ pr₂ n ⟩
+        ((α ↓ x) ↓ (x' , o)) ＝⟨ iterated-↓ α x x' o ⟩
+        (α ↓ x')             ＝⟨ f-property x' ⟩
         (β ↓ f x')           ∎
 
-    q : y ≡ f x'
+    q : y ＝ f x'
     q = ↓-lc β y (f x') p
 
   g : α ⊴ β
@@ -1236,7 +1236,7 @@ initial-segments-preserve-least : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
                                 → is-initial-segment α β f
                                 → is-least α x
                                 → is-least β y
-                                → f x ≡ y
+                                → f x ＝ y
 initial-segments-preserve-least α β x y f i m n = c
  where
   a : f x ≼⟨ β ⟩ y
@@ -1260,7 +1260,7 @@ initial-segments-preserve-least α β x y f i m n = c
   b : y ≼⟨ β ⟩ f x
   b = n (f x)
 
-  c : f x ≡ y
+  c : f x ＝ y
   c = Antisymmetry β (f x) y a b
 
 simulations-preserve-least : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
@@ -1269,7 +1269,7 @@ simulations-preserve-least : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
                            → is-simulation α β f
                            → is-least α x
                            → is-least β y
-                           → f x ≡ y
+                           → f x ＝ y
 simulations-preserve-least α β x y f (i , _) = initial-segments-preserve-least α β x y f i
 
 \end{code}
@@ -1297,7 +1297,7 @@ order-preserving-gives-not-⊲ {𝓤} α β σ (x₀ , refl) = γ σ
     δ (succ n) = fop _ _ (δ n)
 
     A : ⟨ α ⟩ → 𝓤 ̇
-    A x = Σ n ꞉ ℕ , (g ^ n) x₀ ≡ x
+    A x = Σ n ꞉ ℕ , (g ^ n) x₀ ＝ x
 
     d : (x : ⟨ α ⟩) → A x → Σ y ꞉ ⟨ α ⟩ , (y ≺⟨ α ⟩ x) × A y
     d x (n , refl) = g x , δ n , succ n , refl
@@ -1328,7 +1328,7 @@ Added in March 2022 by Tom de Jong:
 
 Notice that we defined "is-initial-segment" using Σ (rather than ∃). This is
 fine, because if f is a simulation from α to β, then for every x : ⟨ α ⟩ and
-y : ⟨ β ⟩ with y ≺⟨ β ⟩ f x, the type (Σ x' ꞉ ⟨ α ⟩ , (x' ≺⟨ α ⟩ x) × (f x' ≡ y))
+y : ⟨ β ⟩ with y ≺⟨ β ⟩ f x, the type (Σ x' ꞉ ⟨ α ⟩ , (x' ≺⟨ α ⟩ x) × (f x' ＝ y))
 is a proposition. It follows (see the proof above) that being a simulation is
 property.
 
@@ -1351,7 +1351,7 @@ module _ (pt : propositional-truncations-exist) where
  is-initial-segment' : (α : Ordinal 𝓤) (β : Ordinal 𝓥) → (⟨ α ⟩ → ⟨ β ⟩) → 𝓤 ⊔ 𝓥 ̇
  is-initial-segment' α β f = (x : ⟨ α ⟩) (y : ⟨ β ⟩)
                            → y ≺⟨ β ⟩ f x
-                           → ∃ x' ꞉ ⟨ α ⟩ , (x' ≺⟨ α ⟩ x) × (f x' ≡ y)
+                           → ∃ x' ꞉ ⟨ α ⟩ , (x' ≺⟨ α ⟩ x) × (f x' ＝ y)
 
  is-simulation' : (α : Ordinal 𝓤) (β : Ordinal 𝓥) → (⟨ α ⟩ → ⟨ β ⟩) → 𝓤 ⊔ 𝓥 ̇
  is-simulation' α β f = is-initial-segment' α β f × is-order-preserving α β f
@@ -1365,8 +1365,8 @@ module _ (pt : propositional-truncations-exist) where
    φ : ∀ x y
      → is-accessible (underlying-order α) x
      → is-accessible (underlying-order α) y
-     → f x ≡ f y
-     → x ≡ y
+     → f x ＝ f y
+     → x ＝ y
    φ x y (step s) (step t) r = Extensionality α x y g h
     where
      g : (u : ⟨ α ⟩) → u ≺⟨ α ⟩ x → u ≺⟨ α ⟩ y
@@ -1374,22 +1374,22 @@ module _ (pt : propositional-truncations-exist) where
       where
        a : f u ≺⟨ β ⟩ f y
        a = transport (λ - → f u ≺⟨ β ⟩ -) r (p u x l)
-       b : (Σ v ꞉ ⟨ α ⟩ , (v ≺⟨ α ⟩ y) × (f v ≡ f u))
+       b : (Σ v ꞉ ⟨ α ⟩ , (v ≺⟨ α ⟩ y) × (f v ＝ f u))
          → u ≺⟨ α ⟩ y
        b (v , k , e) = transport (λ - → - ≺⟨ α ⟩ y) (c ⁻¹) k
         where
-         c : u ≡ v
+         c : u ＝ v
          c = φ u v (s u l) (t v k) (e ⁻¹)
      h : (u : ⟨ α ⟩) → u ≺⟨ α ⟩ y → u ≺⟨ α ⟩ x
      h u l = ∥∥-rec (Prop-valuedness α u x) b (i x (f u) a)
       where
        a : f u ≺⟨ β ⟩ f x
        a = transport (λ - → f u ≺⟨ β ⟩ -) (r ⁻¹) (p u y l)
-       b : (Σ v ꞉ ⟨ α ⟩ , (v ≺⟨ α ⟩ x) × (f v ≡ f u))
+       b : (Σ v ꞉ ⟨ α ⟩ , (v ≺⟨ α ⟩ x) × (f v ＝ f u))
          → u ≺⟨ α ⟩ x
        b (v , k , e) = transport (λ - → - ≺⟨ α ⟩ x) c k
         where
-         c : v ≡ u
+         c : v ＝ u
          c = φ v u (s v k) (t u l) e
    γ : left-cancellable f
    γ {x} {y} = φ x y (Well-foundedness α x) (Well-foundedness α y)
@@ -1412,11 +1412,11 @@ module _ (pt : propositional-truncations-exist) where
    j : is-initial-segment α β f
    j x y l = ∥∥-rec prp id (i x y l)
     where
-     prp : is-prop (Σ x' ꞉ ⟨ α ⟩ , (x' ≺⟨ α ⟩ x) × (f x' ≡ y))
-     prp (z , l , e) (z' , l' , e') = to-subtype-≡ ⦅1⦆ ⦅2⦆
+     prp : is-prop (Σ x' ꞉ ⟨ α ⟩ , (x' ≺⟨ α ⟩ x) × (f x' ＝ y))
+     prp (z , l , e) (z' , l' , e') = to-subtype-＝ ⦅1⦆ ⦅2⦆
       where
-       ⦅1⦆ : (x' : ⟨ α ⟩) → is-prop ((x' ≺⟨ α ⟩ x) × (f x' ≡ y))
+       ⦅1⦆ : (x' : ⟨ α ⟩) → is-prop ((x' ≺⟨ α ⟩ x) × (f x' ＝ y))
        ⦅1⦆ x' = ×-is-prop (Prop-valuedness α x' x) (underlying-type-is-set fe β)
-       ⦅2⦆ : z ≡ z'
+       ⦅2⦆ : z ＝ z'
        ⦅2⦆ = simulations-are-lc' α β f (i , p) (e ∙ e' ⁻¹)
 \end{code}

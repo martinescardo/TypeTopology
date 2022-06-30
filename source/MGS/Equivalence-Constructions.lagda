@@ -16,26 +16,26 @@ open import MGS.More-FunExt-Consequences public
 id-≃-left : dfunext 𝓥 (𝓤 ⊔ 𝓥)
           → dfunext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
           → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (α : X ≃ Y)
-          → id-≃ X ● α ≡ α
+          → id-≃ X ● α ＝ α
 
-id-≃-left fe fe' α = to-subtype-≡ (being-equiv-is-subsingleton fe fe') (refl _)
+id-≃-left fe fe' α = to-subtype-＝ (being-equiv-is-subsingleton fe fe') (refl _)
 
 ≃-sym-left-inverse : dfunext 𝓥 𝓥
                    → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (α : X ≃ Y)
-                   → ≃-sym α ● α ≡ id-≃ Y
+                   → ≃-sym α ● α ＝ id-≃ Y
 
-≃-sym-left-inverse fe (f , e) = to-subtype-≡ (being-equiv-is-subsingleton fe fe) p
+≃-sym-left-inverse fe (f , e) = to-subtype-＝ (being-equiv-is-subsingleton fe fe) p
  where
-  p : f ∘ inverse f e ≡ id
+  p : f ∘ inverse f e ＝ id
   p = fe (inverses-are-sections f e)
 
 ≃-sym-right-inverse : dfunext 𝓤 𝓤
                     → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (α : X ≃ Y)
-                    → α ● ≃-sym α ≡ id-≃ X
+                    → α ● ≃-sym α ＝ id-≃ X
 
-≃-sym-right-inverse fe (f , e) = to-subtype-≡ (being-equiv-is-subsingleton fe fe) p
+≃-sym-right-inverse fe (f , e) = to-subtype-＝ (being-equiv-is-subsingleton fe fe) p
  where
-  p : inverse f e ∘ f ≡ id
+  p : inverse f e ∘ f ＝ id
   p = fe (inverses-are-retractions f e)
 
 ≃-Sym : dfunext 𝓥 (𝓤 ⊔ 𝓥) → dfunext 𝓤 (𝓤 ⊔ 𝓥) → dfunext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
@@ -53,14 +53,14 @@ id-≃-left fe fe' α = to-subtype-≡ (being-equiv-is-subsingleton fe fe') (ref
 ≃-cong' fe₀ fe₁ fe₂ fe₃ fe₄ fe₅ Z α = invertibility-gives-≃ (α ●_)
                                       ((≃-sym α ●_) , p , q)
  where
-  p = λ β → ≃-sym α ● (α ● β) ≡⟨ ●-assoc fe₀ fe₁ (≃-sym α) α β ⟩
-            (≃-sym α ● α) ● β ≡⟨ ap (_● β) (≃-sym-left-inverse fe₂ α) ⟩
-            id-≃ _ ● β        ≡⟨ id-≃-left fe₀ fe₁ _ ⟩
+  p = λ β → ≃-sym α ● (α ● β) ＝⟨ ●-assoc fe₀ fe₁ (≃-sym α) α β ⟩
+            (≃-sym α ● α) ● β ＝⟨ ap (_● β) (≃-sym-left-inverse fe₂ α) ⟩
+            id-≃ _ ● β        ＝⟨ id-≃-left fe₀ fe₁ _ ⟩
             β                 ∎
 
-  q = λ γ → α ● (≃-sym α ● γ) ≡⟨ ●-assoc fe₃ fe₄ α (≃-sym α) γ ⟩
-            (α ● ≃-sym α) ● γ ≡⟨ ap (_● γ) (≃-sym-right-inverse fe₅ α) ⟩
-            id-≃ _ ● γ        ≡⟨ id-≃-left fe₃ fe₄ _ ⟩
+  q = λ γ → α ● (≃-sym α ● γ) ＝⟨ ●-assoc fe₃ fe₄ α (≃-sym α) γ ⟩
+            (α ● ≃-sym α) ● γ ＝⟨ ap (_● γ) (≃-sym-right-inverse fe₅ α) ⟩
+            id-≃ _ ● γ        ＝⟨ id-≃-left fe₃ fe₄ _ ⟩
             γ                 ∎
 
 Eq-Eq-cong' : dfunext 𝓥 (𝓤 ⊔ 𝓥) → dfunext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥) → dfunext 𝓤 𝓤

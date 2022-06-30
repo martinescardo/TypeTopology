@@ -24,7 +24,7 @@ record JoinSemiLattice (𝓥 𝓣 : Universe) : 𝓤ω where
     ⊑-is-prop-valued : (x y : L) → is-prop (x ⊑ y)
     ⊑-is-reflexive : (x : L) → x ⊑ x
     ⊑-is-transitive : (x y z : L) → x ⊑ y → y ⊑ z → x ⊑ z
-    ⊑-is-antisymmetric : (x y : L) → x ⊑ y → y ⊑ x → x ≡ y
+    ⊑-is-antisymmetric : (x y : L) → x ⊑ y → y ⊑ x → x ＝ y
     ⊥ : L
     ⊥-is-least : (x : L) → ⊥ ⊑ x
     _∨_ : L → L → L
@@ -45,11 +45,11 @@ record JoinSemiLattice (𝓥 𝓣 : Universe) : 𝓤ω where
   syntax reflexivity' x = x ⊑∎
   infix 1 reflexivity'
 
-  ≡-to-⊑ : {x y : L} → x ≡ y → x ⊑ y
-  ≡-to-⊑ {x} {x} refl = reflexivity' x
+  ＝-to-⊑ : {x y : L} → x ＝ y → x ⊑ y
+  ＝-to-⊑ {x} {x} refl = reflexivity' x
 
-  ≡-to-⊒ : {x y : L} → y ≡ x → x ⊑ y
-  ≡-to-⊒ p = ≡-to-⊑ (p ⁻¹)
+  ＝-to-⊒ : {x y : L} → y ＝ x → x ⊑ y
+  ＝-to-⊒ p = ＝-to-⊑ (p ⁻¹)
 
   ∨ⁿ : {n : ℕ} → (Fin n → L) → L
   ∨ⁿ {zero}   e = ⊥

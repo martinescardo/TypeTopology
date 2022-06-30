@@ -27,7 +27,7 @@ universe strictly higher than that of X in general:
 
 \begin{code}
 
-the-universe-of-𝓛 : {X : 𝓤 ̇ } → universe-of (𝓛 X) ≡ 𝓣 ⁺ ⊔ 𝓤
+the-universe-of-𝓛 : {X : 𝓤 ̇ } → universe-of (𝓛 X) ＝ 𝓣 ⁺ ⊔ 𝓤
 the-universe-of-𝓛 = refl
 
 \end{code}
@@ -37,7 +37,7 @@ increase:
 
 \begin{code}
 
-𝓛-universe-preservation : {X : 𝓣 ⁺ ⊔ 𝓤 ̇ } → universe-of (𝓛 X) ≡ universe-of X
+𝓛-universe-preservation : {X : 𝓣 ⁺ ⊔ 𝓤 ̇ } → universe-of (𝓛 X) ＝ universe-of X
 𝓛-universe-preservation = refl
 
 \end{code}
@@ -47,7 +47,7 @@ don't increase the size:
 
 \begin{code}
 
-the-universe-of-𝓛𝓛 : {X : 𝓤 ̇ } → universe-of (𝓛 (𝓛 X)) ≡ universe-of (𝓛 X)
+the-universe-of-𝓛𝓛 : {X : 𝓤 ̇ } → universe-of (𝓛 (𝓛 X)) ＝ universe-of (𝓛 X)
 the-universe-of-𝓛𝓛 = refl
 
 \end{code}
@@ -57,7 +57,7 @@ then the first application of 𝓛 has its result in the next universe 𝓣⁺.
 
 \begin{code}
 
-the-universe-of-𝓛' : {X : 𝓣 ̇ } → universe-of (𝓛 X) ≡ 𝓣 ⁺
+the-universe-of-𝓛' : {X : 𝓣 ̇ } → universe-of (𝓛 X) ＝ 𝓣 ⁺
 the-universe-of-𝓛' = refl
 
 \end{code}
@@ -66,7 +66,7 @@ But if 𝓤 is taken to be the successor 𝓣 ⁺ of 𝓣 then it is preserved b
 
 \begin{code}
 
-the-universe-of-𝓛⁺ : {X : 𝓣 ⁺ ̇ } → universe-of (𝓛 X) ≡ universe-of X
+the-universe-of-𝓛⁺ : {X : 𝓣 ⁺ ̇ } → universe-of (𝓛 X) ＝ universe-of X
 the-universe-of-𝓛⁺ = refl
 
 \end{code}
@@ -90,25 +90,25 @@ universes except the first, i.e., all successor universes 𝓤 ⁺.
     φ (P , f , i) = resize ρ P i , f ∘ from-resize ρ P i , resize-is-prop ρ P i
     γ : 𝓛 X → L
     γ (Q , g , j) = resize ρ Q j , g ∘ from-resize ρ Q j , resize-is-prop ρ Q j
-    φγ : (l : 𝓛 X) → φ (γ l) ≡ l
-    φγ (Q , g , j) = ⋍-gives-≡ 𝓣 ua (a , b)
+    φγ : (l : 𝓛 X) → φ (γ l) ＝ l
+    φγ (Q , g , j) = ⋍-gives-＝ 𝓣 ua (a , b)
      where
       a : resize ρ (resize ρ Q j) (resize-is-prop ρ Q j) ≃ Q
       a = qinveq (from-resize ρ Q j ∘ from-resize ρ (resize ρ Q j) (resize-is-prop ρ Q j))
                  (to-resize ρ (resize ρ Q j) (resize-is-prop ρ Q j) ∘ to-resize ρ Q j ,
                  (λ r → resize-is-prop ρ (resize ρ Q j) (resize-is-prop ρ Q j) _ r) ,
                  (λ q → j _ q))
-      b : g ∘ from-resize ρ Q j ∘ from-resize ρ (resize ρ Q j) (resize-is-prop ρ Q j) ≡ g ∘ ⌜ a ⌝
+      b : g ∘ from-resize ρ Q j ∘ from-resize ρ (resize ρ Q j) (resize-is-prop ρ Q j) ＝ g ∘ ⌜ a ⌝
       b = ap (g ∘_) (dfunext (univalence-gives-funext ua) (λ r → j _ (⌜ a ⌝ r)))
-    γφ : (m : L) → γ (φ m) ≡ m
-    γφ (P , f , i) = ⋍-gives-≡ 𝓤 ua' (a , b)
+    γφ : (m : L) → γ (φ m) ＝ m
+    γφ (P , f , i) = ⋍-gives-＝ 𝓤 ua' (a , b)
      where
       a : resize ρ (resize ρ P i) (resize-is-prop ρ P i) ≃ P
       a = qinveq (from-resize ρ P i ∘ from-resize ρ (resize ρ P i) (resize-is-prop ρ P i))
                  (to-resize ρ (resize ρ P i) (resize-is-prop ρ P i) ∘ to-resize ρ P i ,
                  (λ r → resize-is-prop ρ (resize ρ P i) (resize-is-prop ρ P i) _ r) ,
                  (λ q → i _ q))
-      b : f ∘ from-resize ρ P i ∘ from-resize ρ (resize ρ P i) (resize-is-prop ρ P i) ≡ f ∘ ⌜ a ⌝
+      b : f ∘ from-resize ρ P i ∘ from-resize ρ (resize ρ P i) (resize-is-prop ρ P i) ＝ f ∘ ⌜ a ⌝
       b = ap (f ∘_) (dfunext (univalence-gives-funext ua') (λ r → i _ (⌜ a ⌝ r)))
 
 \end{code}

@@ -92,7 +92,7 @@ A ⊇ B = B ⊆ A
 ⊆-trans = ⊆-trans'
 
 ⊆-refl-consequence : {X : 𝓤 ̇ } (A B : 𝓟 X)
-                   → A ≡ B → (A ⊆ B) × (B ⊆ A)
+                   → A ＝ B → (A ⊆ B) × (B ⊆ A)
 
 ⊆-refl-consequence {X} A A (refl) = ⊆-refl A , ⊆-refl A
 
@@ -100,12 +100,12 @@ subset-extensionality'' : propext 𝓥
                         → funext 𝓤 (𝓥 ⁺)
                         → funext 𝓥 𝓥
                         → {X : 𝓤 ̇ } {A B : X → Ω 𝓥}
-                        → A ⊆ B → B ⊆ A → A ≡ B
+                        → A ⊆ B → B ⊆ A → A ＝ B
 
 subset-extensionality'' {𝓥} {𝓤} pe fe fe' {X} {A} {B} h k = dfunext fe φ
  where
-  φ : (x : X) → A x ≡ B x
-  φ x = to-subtype-≡
+  φ : (x : X) → A x ＝ B x
+  φ x = to-subtype-＝
            (λ _ → being-prop-is-prop fe')
            (pe (holds-is-prop (A x)) (holds-is-prop (B x))
                (h x) (k x))
@@ -113,13 +113,13 @@ subset-extensionality'' {𝓥} {𝓤} pe fe fe' {X} {A} {B} h k = dfunext fe φ
 subset-extensionality : propext 𝓤
                       → funext 𝓤 (𝓤 ⁺)
                       → {X : 𝓤 ̇ } {A B : 𝓟 X}
-                      → A ⊆ B → B ⊆ A → A ≡ B
+                      → A ⊆ B → B ⊆ A → A ＝ B
 
 subset-extensionality {𝓤} pe fe = subset-extensionality'' pe fe (lower-funext 𝓤 (𝓤 ⁺) fe)
 
 subset-extensionality' : Univalence
                        → {X : 𝓤 ̇ } {A B : 𝓟 X}
-                       → A ⊆ B → B ⊆ A → A ≡ B
+                       → A ⊆ B → B ⊆ A → A ＝ B
 
 subset-extensionality' {𝓤} ua = subset-extensionality
                                  (univalence-gives-propext (ua 𝓤))
@@ -163,7 +163,7 @@ module singleton-subsets
        where
 
  ❴_❵ : X → 𝓟 X
- ❴ x ❵ = λ y → ((x ≡ y) , X-is-set)
+ ❴ x ❵ = λ y → ((x ＝ y) , X-is-set)
 
  ∈-❴❵ : {x : X} → x ∈ ❴ x ❵
  ∈-❴❵ {x} = refl
@@ -235,7 +235,7 @@ module binary-unions-of-subsets
   ∅-left-neutral-for-∪' : propext 𝓥
                         → funext 𝓤 (𝓥 ⁺)
                         → funext 𝓥 𝓥
-                        → (A : X → Ω 𝓥) → ∅ ∪ A ≡ A
+                        → (A : X → Ω 𝓥) → ∅ ∪ A ＝ A
   ∅-left-neutral-for-∪' pe fe fe' A =
    subset-extensionality'' pe fe fe' s (∪-is-upperbound₂ ∅ A)
     where
@@ -248,14 +248,14 @@ module binary-unions-of-subsets
 
   ∅-left-neutral-for-∪ : propext 𝓤
                        → funext 𝓤 (𝓤 ⁺)
-                       → (A : 𝓟 X) → ∅ ∪ A ≡ A
+                       → (A : 𝓟 X) → ∅ ∪ A ＝ A
   ∅-left-neutral-for-∪ pe fe =
    ∅-left-neutral-for-∪' pe fe (lower-funext 𝓤 (𝓤 ⁺) fe)
 
   ∅-right-neutral-for-∪' : propext 𝓥
                          → funext 𝓤 (𝓥 ⁺)
                          → funext 𝓥 𝓥
-                         → (A : X → Ω 𝓥) → A ≡ A ∪ ∅
+                         → (A : X → Ω 𝓥) → A ＝ A ∪ ∅
   ∅-right-neutral-for-∪' pe fe fe' A =
    subset-extensionality'' pe fe fe' (∪-is-upperbound₁ A ∅) s
     where
@@ -268,7 +268,7 @@ module binary-unions-of-subsets
 
   ∅-right-neutral-for-∪ : propext 𝓤
                         → funext 𝓤 (𝓤 ⁺)
-                        → (A : 𝓟 X) → A ≡ A ∪ ∅
+                        → (A : 𝓟 X) → A ＝ A ∪ ∅
   ∅-right-neutral-for-∪ pe fe =
    ∅-right-neutral-for-∪' pe fe (lower-funext 𝓤 (𝓤 ⁺) fe)
 

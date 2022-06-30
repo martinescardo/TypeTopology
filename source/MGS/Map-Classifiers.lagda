@@ -21,16 +21,16 @@ total-fiber-is-domain : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
 
 total-fiber-is-domain {𝓤} {𝓥} {X} {Y} f = invertibility-gives-≃ g (h , η , ε)
  where
-  g : (Σ y ꞉ Y , Σ x ꞉ X , f x ≡ y) → X
+  g : (Σ y ꞉ Y , Σ x ꞉ X , f x ＝ y) → X
   g (y , x , p) = x
 
-  h : X → Σ y ꞉ Y , Σ x ꞉ X , f x ≡ y
+  h : X → Σ y ꞉ Y , Σ x ꞉ X , f x ＝ y
   h x = (f x , x , refl (f x))
 
-  η : ∀ t → h (g t) ≡ t
+  η : ∀ t → h (g t) ＝ t
   η (_ , x , refl _) = refl (f x , x , refl _)
 
-  ε : (x : X) → g (h x) ≡ x
+  ε : (x : X) → g (h x) ＝ x
   ε = refl
 
 χ : (Y : 𝓤 ̇ ) → 𝓤 / Y  → (Y → 𝓤 ̇ )
@@ -43,28 +43,28 @@ is-map-classifier 𝓤 = (Y : 𝓤 ̇ ) → is-equiv (χ Y)
 𝕋 Y A = Σ A , pr₁
 
 χη : is-univalent 𝓤
-   → (Y : 𝓤 ̇ ) (σ : 𝓤 / Y) → 𝕋 Y (χ Y σ) ≡ σ
+   → (Y : 𝓤 ̇ ) (σ : 𝓤 / Y) → 𝕋 Y (χ Y σ) ＝ σ
 
 χη ua Y (X , f) = r
  where
   e : Σ (fiber f) ≃ X
   e = total-fiber-is-domain f
 
-  p : Σ (fiber f) ≡ X
+  p : Σ (fiber f) ＝ X
   p = Eq→Id ua (Σ (fiber f)) X e
 
-  observation : ⌜ ≃-sym e ⌝ ≡ (λ x → f x , x , refl (f x))
+  observation : ⌜ ≃-sym e ⌝ ＝ (λ x → f x , x , refl (f x))
   observation = refl _
 
-  q = transport (λ - → - → Y) p pr₁ ≡⟨ transport-map-along-≃ ua e pr₁ ⟩
-      pr₁ ∘ ⌜ ≃-sym e ⌝             ≡⟨ refl _ ⟩
+  q = transport (λ - → - → Y) p pr₁ ＝⟨ transport-map-along-≃ ua e pr₁ ⟩
+      pr₁ ∘ ⌜ ≃-sym e ⌝             ＝⟨ refl _ ⟩
       f                             ∎
 
-  r : (Σ (fiber f) , pr₁) ≡ (X , f)
-  r = to-Σ-≡ (p , q)
+  r : (Σ (fiber f) , pr₁) ＝ (X , f)
+  r = to-Σ-＝ (p , q)
 
 χε : is-univalent 𝓤 → dfunext 𝓤 (𝓤 ⁺)
-   → (Y : 𝓤 ̇ ) (A : Y → 𝓤 ̇ ) → χ Y (𝕋 Y A) ≡ A
+   → (Y : 𝓤 ̇ ) (A : Y → 𝓤 ̇ ) → χ Y (𝕋 Y A) ＝ A
 
 χε ua fe Y A = fe γ
  where
@@ -74,13 +74,13 @@ is-map-classifier 𝓤 = (Y : 𝓤 ̇ ) → is-equiv (χ Y)
   g : ∀ y → A y → fiber pr₁ y
   g y a = (y , a) , refl y
 
-  η : ∀ y σ → g y (f y σ) ≡ σ
+  η : ∀ y σ → g y (f y σ) ＝ σ
   η y ((y , a) , refl p) = refl ((y , a) , refl p)
 
-  ε : ∀ y a → f y (g y a) ≡ a
+  ε : ∀ y a → f y (g y a) ＝ a
   ε y a = refl a
 
-  γ : ∀ y → fiber pr₁ y ≡ A y
+  γ : ∀ y → fiber pr₁ y ＝ A y
   γ y = Eq→Id ua _ _ (invertibility-gives-≃ (f y) (g y , η y , ε y))
 
 universes-are-map-classifiers : is-univalent 𝓤 → dfunext 𝓤 (𝓤 ⁺)

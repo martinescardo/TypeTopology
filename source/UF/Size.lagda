@@ -182,17 +182,17 @@ being-small-is-prop {𝓤} ua X 𝓥 = c
   fe : FunExt
   fe = Univalence-gives-FunExt ua
 
-  a : (Y : 𝓥 ̇ ) → (Y ≃ X) ≃ (Lift 𝓤 Y ≡ Lift 𝓥 X)
+  a : (Y : 𝓥 ̇ ) → (Y ≃ X) ≃ (Lift 𝓤 Y ＝ Lift 𝓥 X)
   a Y = (Y ≃ X)                ≃⟨ a₀ ⟩
         (Lift 𝓤 Y ≃ Lift 𝓥 X)  ≃⟨ a₁ ⟩
-        (Lift 𝓤 Y ≡ Lift 𝓥 X)  ■
+        (Lift 𝓤 Y ＝ Lift 𝓥 X)  ■
    where
     a₀ = ≃-cong fe
            (≃-sym (Lift-is-universe-embedding 𝓤 Y))
            (≃-sym (Lift-is-universe-embedding 𝓥 X))
     a₁ = ≃-sym (univalence-≃ (ua (𝓤 ⊔ 𝓥)) _ _)
 
-  b : (Σ Y ꞉ 𝓥 ̇ , Y ≃ X) ≃ (Σ Y ꞉ 𝓥 ̇  , Lift 𝓤 Y ≡ Lift 𝓥 X)
+  b : (Σ Y ꞉ 𝓥 ̇ , Y ≃ X) ≃ (Σ Y ꞉ 𝓥 ̇  , Lift 𝓤 Y ＝ Lift 𝓥 X)
   b = Σ-cong a
 
   c : is-prop (Σ Y ꞉ 𝓥 ̇ , Y ≃ X)
@@ -224,10 +224,10 @@ prop-being-small-is-prop {𝓤} pe fe P i 𝓥 = c
   j : is-prop (Lift 𝓥 P)
   j = equiv-to-prop (Lift-is-universe-embedding 𝓥 P) i
 
-  a : (Y : 𝓥 ̇ ) → (Y ≃ P) ≃ (Lift 𝓤 Y ≡ Lift 𝓥 P)
+  a : (Y : 𝓥 ̇ ) → (Y ≃ P) ≃ (Lift 𝓤 Y ＝ Lift 𝓥 P)
   a Y = (Y ≃ P)                ≃⟨ a₀ ⟩
         (Lift 𝓤 Y ≃ Lift 𝓥 P)  ≃⟨ a₁ ⟩
-        (Lift 𝓤 Y ≡ Lift 𝓥 P)  ■
+        (Lift 𝓤 Y ＝ Lift 𝓥 P)  ■
    where
     a₀ = ≃-cong fe
            (≃-sym (Lift-is-universe-embedding 𝓤 Y))
@@ -236,7 +236,7 @@ prop-being-small-is-prop {𝓤} pe fe P i 𝓥 = c
     a₁ = ≃-sym (prop-univalent-≃
            (pe (𝓤 ⊔ 𝓥))(fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)) (Lift 𝓤 Y) (Lift 𝓥 P) j)
 
-  b : (Σ Y ꞉ 𝓥 ̇ , Y ≃ P) ≃ (Σ Y ꞉ 𝓥 ̇  , Lift 𝓤 Y ≡ Lift 𝓥 P)
+  b : (Σ Y ꞉ 𝓥 ̇ , Y ≃ P) ≃ (Σ Y ꞉ 𝓥 ̇  , Lift 𝓤 Y ＝ Lift 𝓥 P)
   b = Σ-cong a
 
   c : is-prop (Σ Y ꞉ 𝓥 ̇ , Y ≃ P)
@@ -272,14 +272,14 @@ universe (i.e. in all universes except the first).
   ψ : Ω 𝓤 → Ω 𝓥
   ψ (P , i) = resize ρ P i , resize-is-prop ρ P i
 
-  φψ : (p : Ω 𝓤) → φ (ψ p) ≡ p
+  φψ : (p : Ω 𝓤) → φ (ψ p) ＝ p
   φψ (P , i) = Ω-extensionality (fe 𝓤 𝓤) (pe 𝓤)
                (from-resize ρ P i ∘
                 from-resize ρ (resize ρ P i) (resize-is-prop ρ P i))
                (to-resize ρ (resize ρ P i) (resize-is-prop ρ P i) ∘
                 to-resize ρ P i)
 
-  ψφ : (q : Ω 𝓥) → ψ (φ q) ≡ q
+  ψφ : (q : Ω 𝓥) → ψ (φ q) ＝ q
   ψφ (Q , j) = Ω-extensionality (fe 𝓥 𝓥) (pe 𝓥)
                (from-resize ρ Q j ∘
                 from-resize ρ (resize ρ Q j) (resize-is-prop ρ Q j))
@@ -339,13 +339,13 @@ universe, and of all other universes, of course:
   ψ p (inl h) = inr ⋆
   ψ p (inr n) = inl ⋆
 
-  ψφ : (z : 𝟙 + 𝟙) (d : decidable ((φ z) holds)) → ψ (φ z) d ≡ z
+  ψφ : (z : 𝟙 + 𝟙) (d : decidable ((φ z) holds)) → ψ (φ z) d ＝ z
   ψφ (inl x) (inl h) = 𝟘-elim h
   ψφ (inl x) (inr n) = ap inl (𝟙-is-prop ⋆ x)
   ψφ (inr y) (inl h) = ap inr (𝟙-is-prop ⋆ y)
   ψφ (inr y) (inr n) = 𝟘-elim (n ⋆)
 
-  φψ : (p : Ω 𝓤) (d : decidable (p holds)) → φ (ψ p d) ≡ p
+  φψ : (p : Ω 𝓤) (d : decidable (p holds)) → φ (ψ p d) ＝ p
   φψ p (inl h) = (true-is-equal-⊤  pe fe (p holds) (holds-is-prop p) h)⁻¹
   φψ p (inr n) = (false-is-equal-⊥ pe fe (p holds) (holds-is-prop p) n)⁻¹
 
@@ -376,7 +376,7 @@ universes:
   O-is-set = equiv-to-set e (Ω-is-set fe pe)
 
   Q : 𝓥 ̇
-  Q = down ⊤ ≡ down (P , i)
+  Q = down ⊤ ＝ down (P , i)
 
   j : is-prop Q
   j = O-is-set
@@ -385,7 +385,7 @@ universes:
   φ q = idtofun 𝟙 P (ap pr₁ (equivs-are-lc down (⌜⌝-is-equiv (≃-sym e)) q)) ⋆
 
   ψ : P → Q
-  ψ p = ap down (to-Σ-≡ (pe 𝟙-is-prop i (λ _ → p) (λ _ → ⋆) ,
+  ψ p = ap down (to-Σ-＝ (pe 𝟙-is-prop i (λ _ → p) (λ _ → ⋆) ,
                          being-prop-is-prop fe _ _))
 
   ε : Q ≃ P
@@ -427,7 +427,7 @@ the second universe 𝓤₁:
 Ω-resizing₁-≃-from-pr-pe-fe {𝓤} ρ pe fe =
   ≃-sym (pr₂ (Ω-resizing₁-from-pr-pe-fe {𝓤} ρ pe fe))
 
-Ω-𝓤₀-lives-in-𝓤₁ : universe-of (Ω 𝓤₀) ≡ 𝓤₁
+Ω-𝓤₀-lives-in-𝓤₁ : universe-of (Ω 𝓤₀) ＝ 𝓤₁
 Ω-𝓤₀-lives-in-𝓤₁ = refl
 
 \end{code}
@@ -458,7 +458,7 @@ Lift-is-section ua R 𝓤 𝓥 = (r , rs)
   r : 𝓤 ⊔ 𝓥 ̇ → 𝓤 ̇
   r Y = (p : F Y) → pr₁ (f Y p)
 
-  rs : (X : 𝓤 ̇ ) → r (s X) ≡ X
+  rs : (X : 𝓤 ̇ ) → r (s X) ＝ X
   rs X = γ
    where
     g : (Y : 𝓤 ⊔ 𝓥 ̇ ) → fiber s Y → F Y
@@ -479,16 +479,16 @@ Lift-is-section ua R 𝓤 𝓥 = (r , rs)
     a : r (s X) ≃ X'
     a = prop-indexed-product (Univalence-gives-FunExt ua 𝓤 𝓤) (i (s X)) u
 
-    b : s X' ≡ s X
+    b : s X' ＝ s X
     b = pr₂ v
 
-    c : X' ≡ X
+    c : X' ＝ X
     c = embeddings-are-lc s e b
 
     d : r (s X) ≃ X
     d = transport (λ - → r (s X) ≃ -) c a
 
-    γ : r (s X) ≡ X
+    γ : r (s X) ＝ X
     γ = eqtoid (ua 𝓤) (r (s X)) X d
 
 \end{code}
@@ -572,7 +572,7 @@ module Image
  open PropositionalTruncation (resizing-truncation fe R)
 
  image : (X → Y) → 𝓥 ̇
- image f = Σ y ꞉ Y , resize (R {𝓤 ⊔ 𝓥} {𝓥}) (∃ x ꞉ X , f x ≡ y) ∥∥-is-prop
+ image f = Σ y ꞉ Y , resize (R {𝓤 ⊔ 𝓥} {𝓥}) (∃ x ꞉ X , f x ＝ y) ∥∥-is-prop
 
  restriction : (f : X → Y) → image f → Y
  restriction f (y , _) = y
@@ -657,10 +657,10 @@ being-small-is-idempotent-≃ ua 𝓤 𝓥 Y i =
    (being-small-is-idempotent ua 𝓤 𝓥 Y i)
    (being-small-is-idempotent-converse ua 𝓤 𝓥 Y)
 
-being-small-is-idempotent-≡ : (ua : Univalence) (𝓤 𝓥 : Universe) (Y : 𝓤 ̇ )
+being-small-is-idempotent-＝ : (ua : Univalence) (𝓤 𝓥 : Universe) (Y : 𝓤 ̇ )
                             → is-prop Y
-                            → ((Y is 𝓥 small) is 𝓥 small) ≡ (Y is 𝓥 small)
-being-small-is-idempotent-≡ ua 𝓤 𝓥 Y i =
+                            → ((Y is 𝓥 small) is 𝓥 small) ＝ (Y is 𝓥 small)
+being-small-is-idempotent-＝ ua 𝓤 𝓥 Y i =
   eqtoid (ua (𝓤 ⊔ 𝓥 ⁺))
     ((Y is 𝓥 small) is 𝓥 small)
     (Y is 𝓥 small)
@@ -748,13 +748,13 @@ size-of-section-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (s : X → Y)
                           → s is 𝓥 small-map
 size-of-section-embedding {𝓤} {𝓥} {X} {Y} s (r , η) e y = γ
  where
-  c : (x : Y) → collapsible (s (r x) ≡ x)
+  c : (x : Y) → collapsible (s (r x) ＝ x)
   c = section-embedding-gives-collapsible r s η e
 
-  κ : s (r y) ≡ y → s (r y) ≡ y
+  κ : s (r y) ＝ y → s (r y) ＝ y
   κ = pr₁ (c y)
 
-  κ-constant : (p p' : s (r y) ≡ y) → κ p ≡ κ p'
+  κ-constant : (p p' : s (r y) ＝ y) → κ p ＝ κ p'
   κ-constant = pr₂ (c y)
 
   B : 𝓥 ̇
@@ -767,9 +767,9 @@ size-of-section-embedding {𝓤} {𝓥} {X} {Y} s (r , η) e y = γ
   α = (λ p → r y , p) ∘ from-fix κ
 
   β : fiber s y → B
-  β = to-fix κ κ-constant ∘ λ (x , p) → s (r y)     ≡⟨ ap (s ∘ r) (p ⁻¹) ⟩
-                                        s (r (s x)) ≡⟨ ap s (η x) ⟩
-                                        s x         ≡⟨ p ⟩
+  β = to-fix κ κ-constant ∘ λ (x , p) → s (r y)     ＝⟨ ap (s ∘ r) (p ⁻¹) ⟩
+                                        s (r (s x)) ＝⟨ ap s (η x) ⟩
+                                        s x         ＝⟨ p ⟩
                                         y           ∎
 
   δ : B ≃ fiber s y
@@ -791,8 +791,8 @@ section-embedding-size-contravariance {𝓤} {𝓥} {𝓦} {X} {Y} f e (g , η) 
   f' : X → Y'
   f' = h⁻¹ ∘ f
 
-  η' = λ x → g (h (h⁻¹ (f x))) ≡⟨ ap g (inverses-are-sections h i (f x)) ⟩
-             g (f x)           ≡⟨ η x ⟩
+  η' = λ x → g (h (h⁻¹ (f x))) ＝⟨ ap g (inverses-are-sections h i (f x)) ⟩
+             g (f x)           ＝⟨ η x ⟩
              x                 ∎
 
   δ : f' is 𝓦 small-map
@@ -828,7 +828,7 @@ join-construction paper https://arxiv.org/abs/1701.07538.
 \begin{code}
 
 is-locally-small : 𝓤 ⁺ ̇ → 𝓤 ⁺ ̇
-is-locally-small X = (x y : X) → is-small (x ≡ y)
+is-locally-small X = (x y : X) → is-small (x ＝ y)
 
 \end{code}
 
@@ -837,16 +837,16 @@ For example, by univalence, universes are locally small, and so is the
 
 \begin{code}
 
-_≡⟦_⟧_ : {X : 𝓤 ⁺ ̇ } → X → is-locally-small X → X → 𝓤 ̇
-x ≡⟦ ls ⟧ y = pr₁ (ls x y)
+_＝⟦_⟧_ : {X : 𝓤 ⁺ ̇ } → X → is-locally-small X → X → 𝓤 ̇
+x ＝⟦ ls ⟧ y = pr₁ (ls x y)
 
 Id⟦_⟧ : {X : 𝓤 ⁺ ̇ } → is-locally-small X → X → X → 𝓤 ̇
-Id⟦ ls ⟧ x y = x ≡⟦ ls ⟧ y
+Id⟦ ls ⟧ x y = x ＝⟦ ls ⟧ y
 
-≡⟦_⟧-gives-≡ : {X : 𝓤 ⁺ ̇ } (ls : is-locally-small X) (x y : X) → x ≡⟦ ls ⟧ y → x ≡ y
-≡⟦ ls ⟧-gives-≡ x y = ⌜ pr₂ (ls x y) ⌝
+＝⟦_⟧-gives-＝ : {X : 𝓤 ⁺ ̇ } (ls : is-locally-small X) (x y : X) → x ＝⟦ ls ⟧ y → x ＝ y
+＝⟦ ls ⟧-gives-＝ x y = ⌜ pr₂ (ls x y) ⌝
 
-⟦_⟧-refl : {X : 𝓤 ⁺ ̇ } (ls : is-locally-small X) (x : X) → x ≡⟦ ls ⟧ x
+⟦_⟧-refl : {X : 𝓤 ⁺ ̇ } (ls : is-locally-small X) (x : X) → x ＝⟦ ls ⟧ x
 ⟦ ls ⟧-refl x = ⌜ ≃-sym (pr₂ (ls x x)) ⌝ refl
 
 \end{code}
@@ -893,7 +893,7 @@ when adding set quotients as higher inductive types).
 \begin{code}
 
 _is-locally_small : 𝓤 ̇  → (𝓥 : Universe) → 𝓥 ⁺ ⊔ 𝓤 ̇
-X is-locally 𝓥 small = (x y : X) → (x ≡ y) is 𝓥 small
+X is-locally 𝓥 small = (x y : X) → (x ＝ y) is 𝓥 small
 
 module _ (pt : propositional-truncations-exist) where
 

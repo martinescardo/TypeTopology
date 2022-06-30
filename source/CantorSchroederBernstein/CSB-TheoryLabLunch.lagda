@@ -120,11 +120,11 @@ Main differences between HoTT/UF and MLTT
 
        also written
 
-         x ≡ y
+         x ＝ y
 
        here, collects all the ways in which x and y are identified.
 
-     * The type x ≡ y has (provably) multiple elements in general.
+     * The type x ＝ y has (provably) multiple elements in general.
 
      * In the homotopical understanding, the identifications are paths.
 
@@ -199,17 +199,17 @@ We begin by recalling some definitions.
 
 \begin{code}
 
-recall-decidable : {A : 𝓤 ̇ } → decidable A ≡ (A + ¬ A)
+recall-decidable : {A : 𝓤 ̇ } → decidable A ＝ (A + ¬ A)
 recall-decidable = by-definition
 
 
 recall-Compact : {X : 𝓤 ̇ }
-               → Compact X {𝓥} ≡ ((A : X → 𝓥 ̇ ) → ((x : X) → decidable (A x))
+               → Compact X {𝓥} ＝ ((A : X → 𝓥 ̇ ) → ((x : X) → decidable (A x))
                                                 → decidable (Σ x ꞉ X , A x))
 recall-Compact = by-definition
 
 
-recall-ℕ∞ : ℕ∞ ≡ (Σ α ꞉ (ℕ → 𝟚) , is-decreasing α)
+recall-ℕ∞ : ℕ∞ ＝ (Σ α ꞉ (ℕ → 𝟚) , is-decreasing α)
 recall-ℕ∞ = by-definition
 
 
@@ -230,13 +230,13 @@ Pradic-Brown-lemma : {X : 𝓤 ̇ } {A : 𝓥 ̇ }
 Pradic-Brown-lemma {𝓤} {𝓥} {X} {A} (r , s , η) c = γ e
  where
   P : X → 𝓤 ⊔ 𝓥 ̇
-  P x = Σ a ꞉ A , r x ≡ inl a
+  P x = Σ a ꞉ A , r x ＝ inl a
 
   d : (x : X) → decidable (P x)
   d x = equality-cases (r x)
-         (λ (a : A) (u : r x ≡ inl a) → inl (a , u))
-         (λ (y : X) (v : r x ≡ inr y) → inr (λ (a , u) → +disjoint (inl a ≡⟨ u ⁻¹ ⟩
-                                                                    r x   ≡⟨ v ⟩
+         (λ (a : A) (u : r x ＝ inl a) → inl (a , u))
+         (λ (y : X) (v : r x ＝ inr y) → inr (λ (a , u) → +disjoint (inl a ＝⟨ u ⁻¹ ⟩
+                                                                    r x   ＝⟨ v ⟩
                                                                     inr y ∎)))
 
   e : decidable (Σ x ꞉ X , P x)
@@ -256,7 +256,7 @@ that ℕ∞ is a set, and once to know that it is compact.
 
 \begin{code}
 
-recall-EM : EM 𝓤 ≡ ((P : 𝓤 ̇ ) → is-prop P → P + ¬ P)
+recall-EM : EM 𝓤 ＝ ((P : 𝓤 ̇ ) → is-prop P → P + ¬ P)
 recall-EM = by-definition
 
 \end{code}
@@ -292,7 +292,7 @@ CSB-gives-EM fe P i csb = γ
   b = lc-maps-into-sets-are-embeddings Succ Succ-lc (ℕ∞-is-set fe)
 
   c : disjoint-images z Succ
-  c = λ (p : P) (x : ℕ∞) (q : Zero ≡ Succ x) → Zero-not-Succ q
+  c = λ (p : P) (x : ℕ∞) (q : Zero ＝ Succ x) → Zero-not-Succ q
 
   k : is-embedding g
   k = disjoint-cases-embedding z Succ a b c
@@ -353,14 +353,14 @@ Now:
   * But, for (homotopy) types X and Y that are not sets, this notion
     is too weak.
 
-  * Moreover, is not a proposition as the identity type x ≡ x' has
+  * Moreover, is not a proposition as the identity type x ＝ x' has
     multiple elements in general.
 
 The appropriate notion of embedding for a function f of arbitrary
 types X and Y is given by any of the following two equivalent
 conditions:
 
-  1. The map ap f x x' : x ≡ x' → f x ≡ f x' is an equivalence for any x , x' : X.
+  1. The map ap f x x' : x ＝ x' → f x ＝ f x' is an equivalence for any x , x' : X.
 
   2. The fibers of f are all subsingletons.
 
@@ -405,12 +405,12 @@ together with the identification datum:
 \begin{code}
 
 recall-fiber : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (y : Y)
-             → fiber f y ≡ (Σ x ꞉ X , f x ≡ y)
+             → fiber f y ＝ (Σ x ꞉ X , f x ＝ y)
 recall-fiber f x = by-definition
 
 
 recall-is-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                    → is-embedding f ≡ ((y : Y) → is-prop (fiber f y))
+                    → is-embedding f ＝ ((y : Y) → is-prop (fiber f y))
 recall-is-embedding f = by-definition
 
 \end{code}
@@ -420,7 +420,7 @@ The type (X ↪ Y) collects all embeddings of the type X into the type Y:
 \begin{code}
 
 recall-type-of-embeddings : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-                          → (X ↪ Y) ≡ (Σ f ꞉ (X → Y) , is-embedding f)
+                          → (X ↪ Y) ＝ (Σ f ꞉ (X → Y) , is-embedding f)
 recall-type-of-embeddings = by-definition
 
 \end{code}
@@ -439,10 +439,10 @@ EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe excluded-middle
 
  where
 
-  remark-f : type-of (f , f-is-emb) ≡ (X ↪ Y)
+  remark-f : type-of (f , f-is-emb) ＝ (X ↪ Y)
   remark-f = by-assumption
 
-  remark-g : type-of (g , g-is-emb) ≡ (Y ↪ X)
+  remark-g : type-of (g , g-is-emb) ＝ (Y ↪ X)
   remark-g = by-assumption
 
 \end{code}
@@ -452,7 +452,7 @@ In order to define 𝒽 : X ≃ Y, we use a notion of g-point.
 \begin{code}
 
   is-g-point : (x : X) → 𝓤 ⊔ 𝓥 ̇
-  is-g-point x = (x₀ : X) (n : ℕ) → ((g ∘ f) ^ n) x₀ ≡ x → fiber g x₀
+  is-g-point x = (x₀ : X) (n : ℕ) → ((g ∘ f) ^ n) x₀ ＝ x → fiber g x₀
 
 \end{code}
 
@@ -468,18 +468,18 @@ requires function extensionality:
   being-g-point-is-prop x =
    Π-is-prop fe (λ (x₀ : X                   ) →
    Π-is-prop fe (λ (n  : ℕ                   ) →
-   Π-is-prop fe (λ (p  : ((g ∘ f) ^ n) x₀ ≡ x) → need is-prop (fiber g x₀)
+   Π-is-prop fe (λ (p  : ((g ∘ f) ^ n) x₀ ＝ x) → need is-prop (fiber g x₀)
                                                  which-is-given-by (g-is-emb x₀))))
 \end{code}
 
 By construction, considering x₀ = x and n = 0, we have that g is
 invertible at g-points, because, by definition, we have that
-((g ∘ f) ^ 0) x ≡ x).
+((g ∘ f) ^ 0) x ＝ x).
 
 \begin{code}
 
   g-is-invertible-at-g-points : (x : X) → is-g-point x → fiber g x
-  g-is-invertible-at-g-points x γ = γ x 0 (by-definition ∶ ((g ∘ f) ^ 0) x ≡ x)
+  g-is-invertible-at-g-points x γ = γ x 0 (by-definition ∶ ((g ∘ f) ^ 0) x ＝ x)
 
 \end{code}
 
@@ -525,7 +525,7 @@ taking the fiber path, which is given by the second projection:
 
 \begin{code}
 
-  g⁻¹-is-rinv : (x : X) (γ : is-g-point x) → g (g⁻¹ x γ) ≡ x
+  g⁻¹-is-rinv : (x : X) (γ : is-g-point x) → g (g⁻¹ x γ) ＝ x
   g⁻¹-is-rinv x γ = fiber-identification (g-is-invertible-at-g-points x γ)
 
 \end{code}
@@ -535,8 +535,8 @@ being an embedding, is left-cancellable:
 
 \begin{code}
 
-  g⁻¹-is-linv : (y : Y) (γ : is-g-point (g y)) → g⁻¹ (g y) γ ≡ y
-  g⁻¹-is-linv y γ = have (g (g⁻¹ (g y) γ) ≡⟨ g⁻¹-is-rinv (g y) γ ⟩
+  g⁻¹-is-linv : (y : Y) (γ : is-g-point (g y)) → g⁻¹ (g y) γ ＝ y
+  g⁻¹-is-linv y γ = have (g (g⁻¹ (g y) γ) ＝⟨ g⁻¹-is-rinv (g y) γ ⟩
                           g y             ∎)
                     so-apply embeddings-are-lc g g-is-emb
 
@@ -552,26 +552,26 @@ left-cancellability of h:
           which-is-given-by
            assume x₀ ∶ X                    and
            assume n  ∶ ℕ                    and
-           assume p  ∶ ((g ∘ f) ^ n) x₀ ≡ x then
+           assume p  ∶ ((g ∘ f) ^ n) x₀ ＝ x then
             (need fiber g x₀
              which-is-given-by
-              have ap (g ∘ f) p ∶ ((g ∘ f) ^ (succ n)) x₀ ≡ g (f x)
+              have ap (g ∘ f) p ∶ ((g ∘ f) ^ (succ n)) x₀ ＝ g (f x)
               so-apply γ x₀ (succ n))
 
   f-g⁻¹-disjoint-images : (x x' : X)
                         → ¬ is-g-point x
                         → (γ : is-g-point x')
                         → f x ≢ g⁻¹ x' γ
-  f-g⁻¹-disjoint-images x x' ν γ p = have p ∶ f x ≡ g⁻¹ x' γ
+  f-g⁻¹-disjoint-images x x' ν γ p = have p ∶ f x ＝ g⁻¹ x' γ
                                      so need contradiction
                                         which-is-given-by
                                          have γ ∶ is-g-point x'
                                          which-is-impossible-by (v ∶ ¬ is-g-point x')
    where
-    q : g (f x) ≡ x'
-    q = have p ∶ f x ≡ g⁻¹ x' γ
-        so-use (g (f x)      ≡⟨ ap g p ⟩
-                g (g⁻¹ x' γ) ≡⟨ g⁻¹-is-rinv x' γ ⟩
+    q : g (f x) ＝ x'
+    q = have p ∶ f x ＝ g⁻¹ x' γ
+        so-use (g (f x)      ＝⟨ ap g p ⟩
+                g (g⁻¹ x' γ) ＝⟨ g⁻¹-is-rinv x' γ ⟩
                 x'           ∎)
     u : ¬ is-g-point (g (f x))
     u = have ν ∶ ¬ is-g-point x
@@ -591,27 +591,27 @@ prove properties of H and then specialize them to h:
            (γ ꞉   is-g-point x ↦ g⁻¹ x γ)
            (ν ꞉ ¬ is-g-point x ↦ f x)
 
-  notice-that : h ≡ x ↦ H x (δ x)
+  notice-that : h ＝ x ↦ H x (δ x)
   notice-that = by-definition
 
   h-lc : left-cancellable h
   h-lc {x} {x'} = l (δ x) (δ x')
    where
-    l : (d : decidable (is-g-point x)) (d' : decidable (is-g-point x')) → H x d ≡ H x' d' → x ≡ x'
+    l : (d : decidable (is-g-point x)) (d' : decidable (is-g-point x')) → H x d ＝ H x' d' → x ＝ x'
 
-    l (inl γ) (inl γ') p = have p ∶ g⁻¹ x γ  ≡ g⁻¹ x'  γ'
-                           so (x             ≡⟨ (g⁻¹-is-rinv x γ)⁻¹ ⟩
-                               g (g⁻¹ x  γ ) ≡⟨ ap g p ⟩
-                               g (g⁻¹ x' γ') ≡⟨ g⁻¹-is-rinv x' γ' ⟩
+    l (inl γ) (inl γ') p = have p ∶ g⁻¹ x γ  ＝ g⁻¹ x'  γ'
+                           so (x             ＝⟨ (g⁻¹-is-rinv x γ)⁻¹ ⟩
+                               g (g⁻¹ x  γ ) ＝⟨ ap g p ⟩
+                               g (g⁻¹ x' γ') ＝⟨ g⁻¹-is-rinv x' γ' ⟩
                                x'            ∎)
 
-    l (inl γ) (inr ν') p = have p ∶ g⁻¹ x γ ≡ f x'
+    l (inl γ) (inr ν') p = have p ∶ g⁻¹ x γ ＝ f x'
                            which-is-impossible-by (- ↦ f-g⁻¹-disjoint-images x' x ν' γ (- ⁻¹))
 
-    l (inr ν) (inl γ') p = have p ∶ f x ≡ g⁻¹ x' γ'
+    l (inr ν) (inl γ') p = have p ∶ f x ＝ g⁻¹ x' γ'
                            which-is-impossible-by f-g⁻¹-disjoint-images x x' ν γ'
 
-    l (inr ν) (inr ν') p = have p ∶ f x ≡ f x'
+    l (inr ν) (inr ν') p = have p ∶ f x ＝ f x'
                            so-apply embeddings-are-lc f f-is-emb
 
 \end{code}
@@ -626,7 +626,7 @@ f-point x, because excluded middle applies only to truth values.)
 \begin{code}
 
   f-point : (x : X) → 𝓤 ⊔ 𝓥 ̇
-  f-point x = Σ x₀ ꞉ X , (Σ n ꞉ ℕ , ((g ∘ f) ^ n) x₀ ≡ x) × ¬ fiber g x₀
+  f-point x = Σ x₀ ꞉ X , (Σ n ꞉ ℕ , ((g ∘ f) ^ n) x₀ ＝ x) × ¬ fiber g x₀
 
 \end{code}
 
@@ -656,14 +656,14 @@ doesn't refer to the notion of f-point.
         so-apply contrapositive (non-f-point-is-g-point (g y))
 
     ii : f-point (g y) → Σ (x , p) ꞉ fiber f y , ¬ is-g-point x
-    ii (x₀ , (0 , p) , u) = have p ∶ x₀ ≡ g y
+    ii (x₀ , (0 , p) , u) = have p ∶ x₀ ＝ g y
                             so have (y , (p ⁻¹)) ∶ fiber g x₀
                                which-is-impossible-by (u ∶ ¬ fiber g x₀)
     ii (x₀ , (succ n , p) , u) = a , b
      where
-      q : f (((g ∘ f) ^ n) x₀) ≡ y
-      q = have p ∶ ((g ∘ f) ^ (succ n)) x₀  ≡ g y
-                 ∶ g (f (((g ∘ f) ^ n) x₀)) ≡ g y
+      q : f (((g ∘ f) ^ n) x₀) ＝ y
+      q = have p ∶ ((g ∘ f) ^ (succ n)) x₀  ＝ g y
+                 ∶ g (f (((g ∘ f) ^ n) x₀)) ＝ g y
           so-apply embeddings-are-lc g g-is-emb
       a : fiber f y
       a = ((g ∘ f) ^ n) x₀ , q
@@ -692,16 +692,16 @@ that this works. As above, we use the auxiliary function H for that
 purpose.
 
 \begin{code}
-  h-split-surjection : (y : Y) → Σ x ꞉ X , h x ≡ y
+  h-split-surjection : (y : Y) → Σ x ꞉ X , h x ＝ y
   h-split-surjection y = x , p
    where
     a : decidable (is-g-point (g y))
-      → Σ x ꞉ X , ((d : decidable (is-g-point x)) → H x d ≡ y)
+      → Σ x ꞉ X , ((d : decidable (is-g-point x)) → H x d ＝ y)
     a (inl γ) = g y , ψ
      where
-      ψ : (d : decidable (is-g-point (g y))) → H (g y) d ≡ y
-      ψ (inl γ') = H (g y) (inl γ') ≡⟨ by-definition ⟩
-                   g⁻¹ (g y) γ'     ≡⟨ g⁻¹-is-linv y γ' ⟩
+      ψ : (d : decidable (is-g-point (g y))) → H (g y) d ＝ y
+      ψ (inl γ') = H (g y) (inl γ') ＝⟨ by-definition ⟩
+                   g⁻¹ (g y) γ'     ＝⟨ g⁻¹-is-linv y γ' ⟩
                    y                ∎
       ψ (inr ν)  = have ν ∶ ¬ is-g-point (g y)
                    which-contradicts (γ ∶ is-g-point (g y))
@@ -712,21 +712,21 @@ purpose.
           so-apply claim y
       x : X
       x = fiber-point (pr₁ w)
-      p : f x ≡ y
+      p : f x ＝ y
       p = fiber-identification (pr₁ w)
-      ψ : (d : decidable (is-g-point x)) → H x d ≡ y
+      ψ : (d : decidable (is-g-point x)) → H x d ＝ y
       ψ (inl γ) = have γ ∶ is-g-point x
                   which-is-impossible-by (pr₂ w ∶ ¬ is-g-point x)
-      ψ (inr ν) = H x (inr ν) ≡⟨ by-definition ⟩
-                  f x         ≡⟨ p ⟩
+      ψ (inr ν) = H x (inr ν) ＝⟨ by-definition ⟩
+                  f x         ＝⟨ p ⟩
                   y           ∎
-    b : Σ x ꞉ X ,((d : decidable (is-g-point x)) → H x d ≡ y)
+    b : Σ x ꞉ X ,((d : decidable (is-g-point x)) → H x d ＝ y)
     b = a (δ (g y))
     x : X
     x = pr₁ b
-    p : h x ≡ y
-    p = h x       ≡⟨ by-construction ⟩
-        H x (δ x) ≡⟨ pr₂ b (δ x) ⟩
+    p : h x ＝ y
+    p = h x       ＝⟨ by-construction ⟩
+        H x (δ x) ＝⟨ pr₂ b (δ x) ⟩
         y         ∎
 
 \end{code}

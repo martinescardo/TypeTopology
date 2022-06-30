@@ -19,13 +19,13 @@ data List {𝓤} (X : 𝓤 ̇ ) : 𝓤 ̇  where
 infixr 3 _∷_
 
 equal-heads : {X : 𝓤 ̇ } {x y : X} {s t : List X}
-            → x ∷ s ≡ y ∷ t
-            → x ≡ y
+            → x ∷ s ＝ y ∷ t
+            → x ＝ y
 equal-heads refl = refl
 
 equal-tails : {X : 𝓤 ̇ } {x y : X} {s t : List X}
-            → x ∷ s ≡ y ∷ t
-            → s ≡ t
+            → x ∷ s ＝ y ∷ t
+            → s ＝ t
 equal-tails {𝓤} {X} refl = refl
 
 [_] : {X : 𝓤 ̇ } → X → List X
@@ -37,7 +37,7 @@ _++_ : {X : 𝓤 ̇ } → List X → List X → List X
 
 infixr 4 _++_
 
-[]-right-neutral : {X : 𝓤 ̇ } (s : List X) → s ≡ s ++ []
+[]-right-neutral : {X : 𝓤 ̇ } (s : List X) → s ＝ s ++ []
 []-right-neutral []      = refl
 []-right-neutral (x ∷ s) = ap (x ∷_) ([]-right-neutral s)
 

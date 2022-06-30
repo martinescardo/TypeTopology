@@ -42,10 +42,10 @@ module _ {𝓤 𝓥 𝓦 𝓣}
    γ : pair-fun-fiber' y b → fiber pair-fun (y , b)
    γ ((x , refl) , (a , refl)) = (x , a) , refl
 
-   γφ : (t : fiber pair-fun (y , b)) → γ (φ t) ≡ t
+   γφ : (t : fiber pair-fun (y , b)) → γ (φ t) ＝ t
    γφ ((x , a) , refl) = refl
 
-   φγ : (s : pair-fun-fiber' y b) → φ (γ s) ≡ s
+   φγ : (s : pair-fun-fiber' y b) → φ (γ s) ＝ s
    φγ ((x , refl) , (a , refl)) = refl
 
 
@@ -77,7 +77,7 @@ module _ {𝓤 𝓥 𝓦 𝓣}
    x : X
    x = fiber-point (center (e y))
 
-   i : f x ≡ y
+   i : f x ＝ y
    i = fiber-identification (center (e y))
 
    w : pair-fun-fiber' y b
@@ -121,7 +121,7 @@ module _ {𝓤 𝓥 𝓦 𝓣}
                          → is-surjection pair-fun
   pair-fun-is-surjection s t (y , b) = γ
    where
-    γ : ∃ (x , a) ꞉ Σ A , (pair-fun (x , a) ≡ y , b)
+    γ : ∃ (x , a) ꞉ Σ A , (pair-fun (x , a) ＝ y , b)
     γ = ∥∥-rec ∃-is-prop
          (λ {(x , refl) → ∥∥-rec ∃-is-prop
                            (λ {(a , refl) → ∣ (x , a) , refl ∣})

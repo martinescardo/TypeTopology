@@ -38,7 +38,7 @@ record SupLattice (𝓥 𝓤 𝓣 : Universe) : 𝓤ω where
     ⊑-is-prop-valued : (x y : L) → is-prop (x ⊑ y)
     ⊑-is-reflexive : (x : L) → x ⊑ x
     ⊑-is-transitive : (x y z : L) → x ⊑ y → y ⊑ z → x ⊑ z
-    ⊑-is-antisymmetric : (x y : L) → x ⊑ y → y ⊑ x → x ≡ y
+    ⊑-is-antisymmetric : (x y : L) → x ⊑ y → y ⊑ x → x ＝ y
     ⋁ : {I : 𝓥 ̇ } → (I → L) → L
     ⋁-is-upperbound : {I : 𝓥 ̇ } (α : I → L) (i : I) → α i ⊑ ⋁ α
     ⋁-is-lowerbound-of-upperbounds : {I : 𝓥 ̇ } (α : I → L) (x : L)
@@ -58,26 +58,26 @@ record SupLattice (𝓥 𝓤 𝓣 : Universe) : 𝓤ω where
   syntax reflexivity' x = x ⊑∎
   infix 1 reflexivity'
 
-  ≡-to-⊑ : {x y : L} → x ≡ y → x ⊑ y
-  ≡-to-⊑ {x} {x} refl = reflexivity' x
+  ＝-to-⊑ : {x y : L} → x ＝ y → x ⊑ y
+  ＝-to-⊑ {x} {x} refl = reflexivity' x
 
   ⋁-transport : {I : 𝓥 ̇ } (α β : I → L)
               → α ∼ β
-              → ⋁ α ≡ ⋁ β
+              → ⋁ α ＝ ⋁ β
   ⋁-transport {I} α β H = ⊑-is-antisymmetric (⋁ α) (⋁ β) u v
    where
     u : ⋁ α ⊑ ⋁ β
     u = ⋁-is-lowerbound-of-upperbounds α (⋁ β) γ
      where
       γ : (i : I) → α i ⊑ ⋁ β
-      γ i = α i  ⊑⟨ ≡-to-⊑ (H i) ⟩
+      γ i = α i  ⊑⟨ ＝-to-⊑ (H i) ⟩
              β i ⊑⟨ ⋁-is-upperbound β i ⟩
              ⋁ β ⊑∎
     v : ⋁ β ⊑ ⋁ α
     v = ⋁-is-lowerbound-of-upperbounds β (⋁ α) γ
      where
       γ : (i : I) → β i ⊑ ⋁ α
-      γ i = β i ⊑⟨ ≡-to-⊑ (H i ⁻¹) ⟩
+      γ i = β i ⊑⟨ ＝-to-⊑ (H i ⁻¹) ⟩
             α i ⊑⟨ ⋁-is-upperbound α i ⟩
             ⋁ α ⊑∎
 
@@ -112,7 +112,7 @@ module _
  open singleton-subsets X-is-set
 
  express-subset-as-union-of-singletons :
-  (A : 𝓟 X) → A ≡ ⋃ (❴_❵ ∘ (𝕋-to-carrier A))
+  (A : 𝓟 X) → A ＝ ⋃ (❴_❵ ∘ (𝕋-to-carrier A))
  express-subset-as-union-of-singletons A = subset-extensionality pe fe u v
   where
    u : A ⊆ ⋃ (❴_❵ ∘ (𝕋-to-carrier A))
@@ -189,7 +189,7 @@ module _
     γ (x , a) = ⋁-is-upperbound (f̃ B) (x , s x a)
 
   f♭-preserves-joins : (I : 𝓥 ̇ ) (α : I → 𝓟 X)
-                     → f♭ (⋃ α) ≡ ⋁ (f♭ ∘ α)
+                     → f♭ (⋃ α) ＝ ⋁ (f♭ ∘ α)
   f♭-preserves-joins I α = ⊑-is-antisymmetric (f♭ (⋃ α)) (⋁ (f♭ ∘ α)) u v
    where
     u : ⋁ (f̃ (⋃ α)) ⊑ ⋁ (λ (i : I) → ⋁ (f̃ (α i)))
@@ -229,14 +229,14 @@ Finally we prove that f♭ is the unique map with the above properties (i) & (ii
          where
 
    f♭-is-unique : (h : 𝓟 X → L)
-                → ((I : 𝓥 ̇ ) (α : I → 𝓟 X) → h (⋃ α) ≡ ⋁ (h ∘ α))
+                → ((I : 𝓥 ̇ ) (α : I → 𝓟 X) → h (⋃ α) ＝ ⋁ (h ∘ α))
                 → (h ∘ η ∼ f)
                 → h ∼ f♭
    f♭-is-unique h p₁ p₂ A =
-    h A               ≡⟨ ap h (express-subset-as-union-of-singletons pe fe X X-is-set A) ⟩
-    h (⋃ (η ∘ pr₁))   ≡⟨ p₁ (𝕋 A) (η ∘ pr₁) ⟩
-    ⋁ (h ∘ η ∘ pr₁)   ≡⟨ ⋁-transport (h ∘ η ∘ pr₁) (f ∘ pr₁) (λ p → p₂ (pr₁ p)) ⟩
-    ⋁ (f ∘ pr₁)       ≡⟨ refl ⟩
+    h A               ＝⟨ ap h (express-subset-as-union-of-singletons pe fe X X-is-set A) ⟩
+    h (⋃ (η ∘ pr₁))   ＝⟨ p₁ (𝕋 A) (η ∘ pr₁) ⟩
+    ⋁ (h ∘ η ∘ pr₁)   ＝⟨ ⋁-transport (h ∘ η ∘ pr₁) (f ∘ pr₁) (λ p → p₂ (pr₁ p)) ⟩
+    ⋁ (f ∘ pr₁)       ＝⟨ refl ⟩
     f♭ A ∎
 
 \end{code}
@@ -254,16 +254,16 @@ subsingletons (as L is a set).
          where
 
    homotopy-uniqueness-of-f♭ :
-    ∃! h ꞉ (𝓟 X → L) , (((I : 𝓥 ̇ ) (α : I → 𝓟 X) → h (⋃ α) ≡ ⋁ (h ∘ α)))
+    ∃! h ꞉ (𝓟 X → L) , (((I : 𝓥 ̇ ) (α : I → 𝓟 X) → h (⋃ α) ＝ ⋁ (h ∘ α)))
                      × (h ∘ η ∼ f)
    homotopy-uniqueness-of-f♭ =
     (f♭ , f♭-preserves-joins , f♭-after-η-is-f) , γ
      where
       γ : (t : (Σ h ꞉ (𝓟 X → L) ,
-                   (((I : 𝓥 ̇ ) (α : I → 𝓟 X) → h (⋃ α) ≡ ⋁ (h ∘ α)))
+                   (((I : 𝓥 ̇ ) (α : I → 𝓟 X) → h (⋃ α) ＝ ⋁ (h ∘ α)))
                  × (h ∘ η ∼ f)))
-        → (f♭ , f♭-preserves-joins , f♭-after-η-is-f) ≡ t
-      γ (h , p₁ , p₂) = to-subtype-≡ ψ
+        → (f♭ , f♭-preserves-joins , f♭-after-η-is-f) ＝ t
+      γ (h , p₁ , p₂) = to-subtype-＝ ψ
                         (dfunext (lower-funext (𝓥 ⁺) (𝓥 ⁺) fe)
                           (λ A → (f♭-is-unique
                                    pe
@@ -271,7 +271,7 @@ subsingletons (as L is a set).
                                    h p₁ p₂ A) ⁻¹))
        where
         ψ : (k : 𝓟 X → L)
-          → is-prop (((I : 𝓥 ̇ ) (α : I → 𝓟 X) → k (⋃ α) ≡ ⋁ (k ∘ α))
+          → is-prop (((I : 𝓥 ̇ ) (α : I → 𝓟 X) → k (⋃ α) ＝ ⋁ (k ∘ α))
                     × k ∘ η ∼ f)
         ψ k = ×-is-prop (Π-is-prop fe
                               (λ _ → Π-is-prop (lower-funext (𝓥 ⁺) (𝓥 ⁺) fe)

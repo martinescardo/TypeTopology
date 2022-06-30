@@ -38,20 +38,20 @@ retraction-of-κ-is-section : {P : 𝓤 ̇ }
                            → κ P ∘ r ∼ id
 retraction-of-κ-is-section {𝓤} {P} i r h f = IV
  where
-  I : (p : P) → r f ≡ f p
-  I p = r f           ≡⟨ ap r III ⟩
-        r (κ P (f p)) ≡⟨ h (f p) ⟩
+  I : (p : P) → r f ＝ f p
+  I p = r f           ＝⟨ ap r III ⟩
+        r (κ P (f p)) ＝⟨ h (f p) ⟩
         f p           ∎
    where
     II : f ∼ κ P (f p)
-    II q = f q         ≡⟨ ap f (i q p) ⟩
-           f p         ≡⟨ refl ⟩
+    II q = f q         ＝⟨ ap f (i q p) ⟩
+           f p         ＝⟨ refl ⟩
            κ P (f p) q ∎
 
-    III : f ≡ κ P (f p)
+    III : f ＝ κ P (f p)
     III = fe₀ II
 
-  IV : κ P (r f) ≡ f
+  IV : κ P (r f) ＝ f
   IV = fe₀ I
 
 pseudo-inhabitedness-criterion : {P : 𝓤 ̇ }
@@ -83,13 +83,13 @@ pseudo-inhabited-gives-irrefutable : {P : 𝓤 ̇ }
                                    → ¬¬ P
 pseudo-inhabited-gives-irrefutable {𝓤} {P} e n = zero-is-not-one II
  where
-  I : inverse (κ P) e (κ P ₀) ≡ inverse (κ P) e (κ P ₁)
-  I = ap (inverse (κ P) e) (κ P ₀ ≡⟨ fe₀ (λ p → 𝟘-elim (n p)) ⟩
+  I : inverse (κ P) e (κ P ₀) ＝ inverse (κ P) e (κ P ₁)
+  I = ap (inverse (κ P) e) (κ P ₀ ＝⟨ fe₀ (λ p → 𝟘-elim (n p)) ⟩
                             κ P ₁ ∎)
 
-  II = ₀                       ≡⟨ (inverses-are-retractions (κ P) e ₀)⁻¹ ⟩
-       inverse (κ P) e (κ P ₀) ≡⟨ I ⟩
-       inverse (κ P) e (κ P ₁) ≡⟨ inverses-are-retractions (κ P) e ₁ ⟩
+  II = ₀                       ＝⟨ (inverses-are-retractions (κ P) e ₀)⁻¹ ⟩
+       inverse (κ P) e (κ P ₀) ＝⟨ I ⟩
+       inverse (κ P) e (κ P ₁) ＝⟨ inverses-are-retractions (κ P) e ₁ ⟩
        ₁                       ∎
 
 pseudo-inhabited-gives-irrefutable-special : {P : 𝓤 ̇ }
@@ -111,25 +111,25 @@ P→𝟚-discreteness-criterion-necessity : {P : 𝓤 ̇ }
                                      → ¬ P + is-pseudo-inhabited P
 P→𝟚-discreteness-criterion-necessity {𝓤} {P} i δ = ϕ (δ (κ P ₀) (κ P ₁))
  where
-  ϕ : decidable (κ P ₀ ≡ κ P ₁) → ¬ P + is-pseudo-inhabited P
+  ϕ : decidable (κ P ₀ ＝ κ P ₁) → ¬ P + is-pseudo-inhabited P
   ϕ (inl e) = inl (fact e)
    where
-    fact : κ P ₀ ≡ κ P ₁ → ¬ P
+    fact : κ P ₀ ＝ κ P ₁ → ¬ P
     fact e p = zero-is-not-one (ap (λ f → f p) e)
   ϕ (inr n) = inr (pseudo-inhabitedness-criterion i (γ , γκ))
    where
-    h : (f : P → 𝟚) → decidable (f ≡ κ P ₀) → 𝟚
+    h : (f : P → 𝟚) → decidable (f ＝ κ P ₀) → 𝟚
     h f (inl _) = ₀
     h f (inr _) = ₁
 
     γ : (P → 𝟚) → 𝟚
     γ f = h f (δ f (κ P ₀))
 
-    h₀ : (d : decidable (κ P ₀ ≡ κ P ₀)) → h (κ P ₀) d ≡ ₀
+    h₀ : (d : decidable (κ P ₀ ＝ κ P ₀)) → h (κ P ₀) d ＝ ₀
     h₀ (inl _) = refl
     h₀ (inr d) = 𝟘-elim (d refl)
 
-    h₁ : (d : decidable (κ P ₁ ≡ κ P ₀)) → h (κ P ₁) d ≡ ₁
+    h₁ : (d : decidable (κ P ₁ ＝ κ P ₀)) → h (κ P ₁) d ＝ ₁
     h₁ (inl e) = 𝟘-elim (n (e ⁻¹))
     h₁ (inr _) = refl
 
@@ -155,29 +155,29 @@ pseudo-inhabitedness-wem-lemma Q h = b
   f (inl _) = ₀
   f (inr _) = ₁
 
-  a : (n : 𝟚) → inverse (κ P) h f ≡ n → ¬ Q + ¬¬ Q
+  a : (n : 𝟚) → inverse (κ P) h f ＝ n → ¬ Q + ¬¬ Q
   a ₀ e = inr ϕ
    where
-    I = f                       ≡⟨ (inverses-are-sections (κ P) h f)⁻¹ ⟩
-        κ P (inverse (κ P) h f) ≡⟨ ap (κ P) e ⟩
+    I = f                       ＝⟨ (inverses-are-sections (κ P) h f)⁻¹ ⟩
+        κ P (inverse (κ P) h f) ＝⟨ ap (κ P) e ⟩
         (λ _ → ₀)               ∎
     ϕ : ¬¬ Q
     ϕ u = zero-is-not-one II
      where
-      II = ₀         ≡⟨ (ap (λ - → - (inr u)) I)⁻¹ ⟩
-           f (inr u) ≡⟨ refl ⟩
+      II = ₀         ＝⟨ (ap (λ - → - (inr u)) I)⁻¹ ⟩
+           f (inr u) ＝⟨ refl ⟩
            ₁         ∎
 
   a ₁ e = inl u
    where
-    I = f                       ≡⟨ (inverses-are-sections (κ P) h f)⁻¹ ⟩
-        κ P (inverse (κ P) h f) ≡⟨ ap (κ P) e ⟩
+    I = f                       ＝⟨ (inverses-are-sections (κ P) h f)⁻¹ ⟩
+        κ P (inverse (κ P) h f) ＝⟨ ap (κ P) e ⟩
         (λ _ → ₁)               ∎
     u : ¬ Q
     u q = zero-is-not-one II
      where
-      II = ₀         ≡⟨ refl ⟩
-           f (inl q) ≡⟨ ap (λ - → - (inl q)) I ⟩
+      II = ₀         ＝⟨ refl ⟩
+           f (inl q) ＝⟨ ap (λ - → - (inl q)) I ⟩
            ₁         ∎
 
   b : ¬ Q + ¬¬ Q
@@ -234,17 +234,17 @@ _♯ {𝓤} {𝓥} {X} {Y} h (r , rκ) = q
   a : X → (Y → 𝟚) → 𝟚
   a x = pr₁ (h x)
 
-  b : (x : X) (n : 𝟚) → a x (κ Y n) ≡ n
+  b : (x : X) (n : 𝟚) → a x (κ Y n) ＝ n
   b x = pr₂ (h x)
 
   u : (Y → 𝟚) → 𝟚
   u g = r (λ x → a x g)
 
   v : u ∘ κ Y ∼ id
-  v n = (u ∘ κ Y) n           ≡⟨ refl ⟩
-        r (λ x → a x (κ Y n)) ≡⟨ ap r (fe₀ (λ x → b x n)) ⟩
-        r (λ _ → n)           ≡⟨ refl ⟩
-        r (κ X n)             ≡⟨ rκ n ⟩
+  v n = (u ∘ κ Y) n           ＝⟨ refl ⟩
+        r (λ x → a x (κ Y n)) ＝⟨ ap r (fe₀ (λ x → b x n)) ⟩
+        r (λ _ → n)           ＝⟨ refl ⟩
+        r (κ X n)             ＝⟨ rκ n ⟩
         n                     ∎
 
   q : is-pseudo-inhabited' Y

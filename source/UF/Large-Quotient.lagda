@@ -136,8 +136,8 @@ is the successor of the universe 𝓥:
 \end{code}
 
 Then η is the universal solution to the problem of transforming
-equivalence _≈_ into equality _≡_ (in Agda the notation for the
-identity type is _≡_ - we can't use _=_ because this is a reserved
+equivalence _≈_ into equality _＝_ (in Agda the notation for the
+identity type is _＝_ - we can't use _=_ because this is a reserved
 symbol for definitional equality).
 
 By construction, η is a surjection, of course:
@@ -168,10 +168,10 @@ points are mapped to equal points:
 
 \begin{code}
 
- η-equiv-equal : {x y : X} → x ≈ y → η x ≡ η y
+ η-equiv-equal : {x y : X} → x ≈ y → η x ＝ η y
  η-equiv-equal {x} {y} e =
-   to-Σ-≡ (dfunext fe
-          (λ z → to-Σ-≡ (pe (≈p x z) (≈p y z) (≈t y x z (≈s x y e)) (≈t x y z e) ,
+   to-Σ-＝ (dfunext fe
+          (λ z → to-Σ-＝ (pe (≈p x z) (≈p y z) (≈t y x z (≈s x y e)) (≈t x y z e) ,
                          being-prop-is-prop fe _ _)) ,
        ∥∥-is-prop _ _)
 
@@ -181,13 +181,13 @@ We also need the fact that η reflects equality into equivalence:
 
 \begin{code}
 
- η-equal-equiv : {x y : X} → η x ≡ η y → x ≈ y
+ η-equal-equiv : {x y : X} → η x ＝ η y → x ≈ y
  η-equal-equiv {x} {y} p = equiv-rel-reflect (ap pr₁ p)
   where
-   equiv-rel-reflect : equiv-rel x ≡ equiv-rel y → x ≈ y
+   equiv-rel-reflect : equiv-rel x ＝ equiv-rel y → x ≈ y
    equiv-rel-reflect q = b (≈r y)
     where
-     a : (y ≈ y) ≡ (x ≈ y)
+     a : (y ≈ y) ＝ (x ≈ y)
      a = ap (λ - → pr₁ (- y)) (q ⁻¹)
      b : (y ≈ y) → (x ≈ y)
      b = Idtofun a
@@ -213,64 +213,64 @@ universe 𝓦.
  universal-property : ∀ {𝓦} (A : 𝓦 ̇ )
                     → is-set A
                     → (f : X → A)
-                    → ({x x' : X} → x ≈ x' → f x ≡ f x')
-                    → ∃! f' ꞉ ( X/≈ → A), f' ∘ η ≡ f
+                    → ({x x' : X} → x ≈ x' → f x ＝ f x')
+                    → ∃! f' ꞉ ( X/≈ → A), f' ∘ η ＝ f
  universal-property {𝓦} A iss f pr = ic
   where
-   φ : (x' : X/≈) → is-prop (Σ a ꞉ A , ∃ x ꞉ X ,  (η x ≡ x') × (f x ≡ a))
+   φ : (x' : X/≈) → is-prop (Σ a ꞉ A , ∃ x ꞉ X ,  (η x ＝ x') × (f x ＝ a))
    φ = quotient-induction _ γ induction-step
      where
-      induction-step : (y : X) → is-prop (Σ a ꞉ A , ∃ x ꞉ X ,  (η x ≡ η y) × (f x ≡ a))
-      induction-step x (a , d) (b , e) = to-Σ-≡ (p , ∥∥-is-prop _ _)
+      induction-step : (y : X) → is-prop (Σ a ꞉ A , ∃ x ꞉ X ,  (η x ＝ η y) × (f x ＝ a))
+      induction-step x (a , d) (b , e) = to-Σ-＝ (p , ∥∥-is-prop _ _)
        where
-        h : (Σ x' ꞉ X , (η x' ≡ η x) × (f x' ≡ a))
-          → (Σ y' ꞉ X , (η y' ≡ η x) × (f y' ≡ b))
-          → a ≡ b
+        h : (Σ x' ꞉ X , (η x' ＝ η x) × (f x' ＝ a))
+          → (Σ y' ꞉ X , (η y' ＝ η x) × (f y' ＝ b))
+          → a ＝ b
         h (x' , r , s) (y' , t , u) = s ⁻¹ ∙ pr (η-equal-equiv (r ∙ t ⁻¹)) ∙ u
 
-        p : a ≡ b
+        p : a ＝ b
         p = ∥∥-rec iss (λ σ → ∥∥-rec iss (h σ) e) d
 
-      γ : (x' : X/≈) → is-prop (is-prop (Σ a ꞉ A , ∃ x ꞉ X , (η x ≡ x') × (f x ≡ a)))
+      γ : (x' : X/≈) → is-prop (is-prop (Σ a ꞉ A , ∃ x ꞉ X , (η x ＝ x') × (f x ＝ a)))
       γ x' = being-prop-is-prop fe
 
-   k : (x' : X/≈) → Σ a ꞉ A , ∃ x ꞉ X , (η x ≡ x') × (f x ≡ a)
+   k : (x' : X/≈) → Σ a ꞉ A , ∃ x ꞉ X , (η x ＝ x') × (f x ＝ a)
    k = quotient-induction _ φ induction-step
     where
-     induction-step : (y : X) → Σ a ꞉ A , ∃ x ꞉ X , (η x ≡ η y) × (f x ≡ a)
+     induction-step : (y : X) → Σ a ꞉ A , ∃ x ꞉ X , (η x ＝ η y) × (f x ＝ a)
      induction-step x = f x , ∣ x , refl , refl ∣
 
    f' : X/≈ → A
    f' x' = pr₁ (k x')
 
-   r : f' ∘ η ≡ f
+   r : f' ∘ η ＝ f
    r = dfunext fe h
     where
-     g : (y : X) → ∃ x ꞉ X , (η x ≡ η y) × (f x ≡ f' (η y))
+     g : (y : X) → ∃ x ꞉ X , (η x ＝ η y) × (f x ＝ f' (η y))
      g y = pr₂ (k (η y))
 
-     j : (y : X) → (Σ x ꞉ X , (η x ≡ η y) × (f x ≡ f' (η y))) → f' (η y) ≡ f y
+     j : (y : X) → (Σ x ꞉ X , (η x ＝ η y) × (f x ＝ f' (η y))) → f' (η y) ＝ f y
      j y (x , p , q) = q ⁻¹ ∙ pr (η-equal-equiv p)
 
-     h : (y : X) → f' (η y) ≡ f y
+     h : (y : X) → f' (η y) ＝ f y
      h y = ∥∥-rec iss (j y) (g y)
 
-   c : (σ : Σ f'' ꞉ (X/≈ → A), f'' ∘ η ≡ f) → (f' , r) ≡ σ
-   c (f'' , s) = to-Σ-≡ (t , v)
+   c : (σ : Σ f'' ꞉ (X/≈ → A), f'' ∘ η ＝ f) → (f' , r) ＝ σ
+   c (f'' , s) = to-Σ-＝ (t , v)
     where
-     w : ∀ x → f' (η x) ≡ f'' (η x)
+     w : ∀ x → f' (η x) ＝ f'' (η x)
      w = happly (r ∙ s ⁻¹)
 
-     t : f' ≡ f''
+     t : f' ＝ f''
      t = dfunext fe (quotient-induction _ (λ _ → iss) w)
 
-     u : f'' ∘ η ≡ f
-     u = transport (λ - → - ∘ η ≡ f) t r
+     u : f'' ∘ η ＝ f
+     u = transport (λ - → - ∘ η ＝ f) t r
 
-     v : u ≡ s
+     v : u ＝ s
      v = Π-is-set fe (λ _ → iss) u s
 
-   ic : ∃! f' ꞉ (X/≈ → A), f' ∘ η ≡ f
+   ic : ∃! f' ꞉ (X/≈ → A), f' ∘ η ＝ f
    ic = (f' , r) , c
 
 \end{code}
@@ -324,13 +324,13 @@ module _ {𝓤 𝓥 : Universe} where
   /-induction' {𝓦} {P} = surjection-induction η/ η/-is-surjection P
 
   identifies-related-points : {A : 𝓦 ̇ } → (X → A) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
-  identifies-related-points f = ∀ {x x'} → x ≈ x' → f x ≡ f x'
+  identifies-related-points f = ∀ {x x'} → x ≈ x' → f x ＝ f x'
 
   η/-identifies-related-points : identifies-related-points η/
   η/-identifies-related-points = η-equiv-equal X _≈_ ≈p ≈r ≈s ≈t
 
   η/-relates-identified-points : {x y : X}
-                               → η/ x ≡ η/ y
+                               → η/ x ＝ η/ y
                                → x ≈ y
   η/-relates-identified-points = η-equal-equiv X _≈_ ≈p ≈r ≈s ≈t
 
@@ -342,7 +342,7 @@ module _ {𝓤 𝓥 : Universe} where
     universal-property/ : is-set A
                         → (f : X → A)
                         → identifies-related-points f
-                        → ∃! f' ꞉ (X / ≋ → A), f' ∘ η/ ≡ f
+                        → ∃! f' ꞉ (X / ≋ → A), f' ∘ η/ ＝ f
     universal-property/ = universal-property X _≈_ ≈p ≈r ≈s ≈t A
 
     mediating-map/ : is-set A
@@ -351,23 +351,23 @@ module _ {𝓤 𝓥 : Universe} where
                    → X / ≋ → A
     mediating-map/ i f p = pr₁ (center (universal-property/ i f p))
 
-    universality-triangle/≡ : (i : is-set A) (f : X → A)
+    universality-triangle/＝ : (i : is-set A) (f : X → A)
                               (p : identifies-related-points f)
-                            → mediating-map/ i f p ∘ η/ ≡ f
-    universality-triangle/≡ i f p = pr₂ (center (universal-property/ i f p))
+                            → mediating-map/ i f p ∘ η/ ＝ f
+    universality-triangle/＝ i f p = pr₂ (center (universal-property/ i f p))
 
 
     universality-triangle/ : (i : is-set A) (f : X → A)
                              (p : identifies-related-points f)
                            → mediating-map/ i f p ∘ η/ ∼ f
-    universality-triangle/ i f p = happly (universality-triangle/≡ i f p)
+    universality-triangle/ i f p = happly (universality-triangle/＝ i f p)
 
 
-    at-most-one-mediating-map/≡ : is-set A
+    at-most-one-mediating-map/＝ : is-set A
                                → (g h : X / ≋ → A)
-                               → g ∘ η/ ≡ h ∘ η/
-                               → g ≡ h
-    at-most-one-mediating-map/≡ i g h p = q ⁻¹ ∙ r
+                               → g ∘ η/ ＝ h ∘ η/
+                               → g ＝ h
+    at-most-one-mediating-map/＝ i g h p = q ⁻¹ ∙ r
      where
       f : X → A
       f = g ∘ η/
@@ -375,23 +375,23 @@ module _ {𝓤 𝓥 : Universe} where
       j : identifies-related-points f
       j e = ap g (η/-identifies-related-points e)
 
-      q : mediating-map/ i f j ≡ g
-      q = witness-uniqueness (λ f' → f' ∘ η/ ≡ f)
+      q : mediating-map/ i f j ＝ g
+      q = witness-uniqueness (λ f' → f' ∘ η/ ＝ f)
            (universal-property/ i f j)
-           (mediating-map/ i f j) g (universality-triangle/≡ i f j)
+           (mediating-map/ i f j) g (universality-triangle/＝ i f j)
            refl
 
-      r : mediating-map/ i f j ≡ h
-      r = witness-uniqueness (λ f' → f' ∘ η/ ≡ f)
+      r : mediating-map/ i f j ＝ h
+      r = witness-uniqueness (λ f' → f' ∘ η/ ＝ f)
            (universal-property/ i f j)
-           (mediating-map/ i f j) h (universality-triangle/≡ i f j)
+           (mediating-map/ i f j) h (universality-triangle/＝ i f j)
            (p ⁻¹)
 
     at-most-one-mediating-map/ : is-set A
                                → (g h : X / ≋ → A)
                                → g ∘ η/ ∼ h ∘ η/
                                → g ∼ h
-    at-most-one-mediating-map/ i g h p = happly (at-most-one-mediating-map/≡ i g h
+    at-most-one-mediating-map/ i g h p = happly (at-most-one-mediating-map/＝ i g h
                                                    (dfunext fe p))
 \end{code}
 
@@ -442,15 +442,15 @@ Extending unary and binary operations to the quotient:
      n/ : (x : X) → f₁ x ∘ η/ ∼ η/ ∘ f x
      n/ x = naturality/ (f x) (p' x)
 
-     δ : {x x' : X} → x ≈ x' → (y : X) → f₁ x (η/ y) ≡ f₁ x' (η/ y)
+     δ : {x x' : X} → x ≈ x' → (y : X) → f₁ x (η/ y) ＝ f₁ x' (η/ y)
      δ {x} {x'} e y =
-       f₁ x (η/ y)   ≡⟨ naturality/ (f x) (p' x) y ⟩
-       η/ (f x y)    ≡⟨ η/-identifies-related-points (p e (≈r y)) ⟩
-       η/ (f x' y)   ≡⟨ (naturality/ (f x') (p' x') y)⁻¹ ⟩
+       f₁ x (η/ y)   ＝⟨ naturality/ (f x) (p' x) y ⟩
+       η/ (f x y)    ＝⟨ η/-identifies-related-points (p e (≈r y)) ⟩
+       η/ (f x' y)   ＝⟨ (naturality/ (f x') (p' x') y)⁻¹ ⟩
        f₁ x' (η/ y)  ∎
 
-     ρ : (b : X / ≋) {x x' : X} → x ≈ x' → f₁ x b ≡ f₁ x' b
-     ρ b {x} {x'} e = /-induction (λ b → f₁ x b ≡ f₁ x' b)
+     ρ : (b : X / ≋) {x x' : X} → x ≈ x' → f₁ x b ＝ f₁ x' b
+     ρ b {x} {x'} e = /-induction (λ b → f₁ x b ＝ f₁ x' b)
                         (λ y → quotient-is-set) (δ e) b
 
      f₂ : X / ≋ → X / ≋ → X / ≋
@@ -460,10 +460,10 @@ Extending unary and binary operations to the quotient:
    extension₂/ = f₂
 
    abstract
-    naturality₂/ : (x y : X) → f₂ (η/ x) (η/ y) ≡ η/ (f x y)
+    naturality₂/ : (x y : X) → f₂ (η/ x) (η/ y) ＝ η/ (f x y)
     naturality₂/ x y =
-     f₂ (η/ x) (η/ y) ≡⟨ extension-triangle/ (λ x → f₁ x (η/ y)) (ρ (η/ y)) x ⟩
-     f₁ x (η/ y)      ≡⟨ naturality/ (f x) (p (≈r x)) y ⟩
+     f₂ (η/ x) (η/ y) ＝⟨ extension-triangle/ (λ x → f₁ x (η/ y)) (ρ (η/ y)) x ⟩
+     f₁ x (η/ y)      ＝⟨ naturality/ (f x) (p (≈r x)) y ⟩
      η/ (f x y)       ∎
 
 \end{code}
@@ -478,7 +478,7 @@ We extend unary and binary prop-valued relations to the quotient.
 \begin{code}
 
   module _ (r : X → Ω 𝓣)
-           (p : {x y : X} → x ≈ y → r x ≡ r y)
+           (p : {x y : X} → x ≈ y → r x ＝ r y)
          where
 
    extension-rel₁ : X / ≋ → Ω 𝓣
@@ -488,45 +488,45 @@ We extend unary and binary prop-valued relations to the quotient.
    extension-rel-triangle₁ = universality-triangle/ (Ω-is-set fe pe) r p
 
   module _ (r : X → X → Ω 𝓣)
-           (p : {x y x' y' : X} → x ≈ x' → y ≈ y' → r x y ≡ r x' y')
+           (p : {x y x' y' : X} → x ≈ x' → y ≈ y' → r x y ＝ r x' y')
          where
 
    abstract
     private
-     p' : (x : X) {y y' : X} → y ≈ y' → r x y ≡ r x y'
+     p' : (x : X) {y y' : X} → y ≈ y' → r x y ＝ r x y'
      p' x {y} {y'} = p (≈r x)
 
      r₁ : X → X / ≋ → Ω 𝓣
      r₁ x = extension-rel₁ (r x) (p' x)
 
-     δ : {x x' : X} → x ≈ x' → (y : X) → r₁ x (η/ y) ≡ r₁ x' (η/ y)
+     δ : {x x' : X} → x ≈ x' → (y : X) → r₁ x (η/ y) ＝ r₁ x' (η/ y)
      δ {x} {x'} e y =
-       r₁ x (η/ y)  ≡⟨ extension-rel-triangle₁ (r x) (p (≈r x)) y        ⟩
-       r  x     y   ≡⟨ p e (≈r y)                                        ⟩
-       r  x'    y   ≡⟨ (extension-rel-triangle₁ (r x') (p (≈r x')) y) ⁻¹ ⟩
+       r₁ x (η/ y)  ＝⟨ extension-rel-triangle₁ (r x) (p (≈r x)) y        ⟩
+       r  x     y   ＝⟨ p e (≈r y)                                        ⟩
+       r  x'    y   ＝⟨ (extension-rel-triangle₁ (r x') (p (≈r x')) y) ⁻¹ ⟩
        r₁ x' (η/ y) ∎
 
-     ρ : (q : X / ≋) {x x' : X} → x ≈ x' → r₁ x q ≡ r₁ x' q
-     ρ q {x} {x'} e = /-induction (λ p → r₁ x p ≡ r₁ x' p)
+     ρ : (q : X / ≋) {x x' : X} → x ≈ x' → r₁ x q ＝ r₁ x' q
+     ρ q {x} {x'} e = /-induction (λ p → r₁ x p ＝ r₁ x' p)
                         (λ q → Ω-is-set fe pe) (δ e) q
 
      r₂ : X / ≋ → X / ≋ → Ω 𝓣
      r₂ = mediating-map/ (Π-is-set fe (λ _ → Ω-is-set fe pe)) r₁
                          (λ {x} {x'} e → dfunext fe (λ q → ρ q e))
 
-     σ : (x : X) → r₂ (η/ x) ≡ r₁ x
+     σ : (x : X) → r₂ (η/ x) ＝ r₁ x
      σ = universality-triangle/ (Π-is-set fe (λ _ → Ω-is-set fe pe)) r₁
                                 (λ {x} {x'} e → dfunext fe (λ q → ρ q e))
 
-     τ : (x y : X) → r₂ (η/ x) (η/ y) ≡ r x y
-     τ x y = r₂ (η/ x) (η/ y) ≡⟨ happly (σ x) (η/ y) ⟩
-             r₁ x      (η/ y) ≡⟨ extension-rel-triangle₁ (r x) (p' x) y ⟩
+     τ : (x y : X) → r₂ (η/ x) (η/ y) ＝ r x y
+     τ x y = r₂ (η/ x) (η/ y) ＝⟨ happly (σ x) (η/ y) ⟩
+             r₁ x      (η/ y) ＝⟨ extension-rel-triangle₁ (r x) (p' x) y ⟩
              r  x          y  ∎
 
    extension-rel₂ : X / ≋ → X / ≋ → Ω 𝓣
    extension-rel₂ = r₂
 
-   extension-rel-triangle₂ : (x y : X) → extension-rel₂ (η/ x) (η/ y) ≡ r x y
+   extension-rel-triangle₂ : (x y : X) → extension-rel₂ (η/ x) (η/ y) ＝ r x y
    extension-rel-triangle₂ = τ
 
 \end{code}
@@ -562,10 +562,10 @@ quotients-equivalent X (_≈_  , ≈p ,  ≈r  , ≈s  , ≈t )
   ≋  = (_≈_  , ≈p ,  ≈r  , ≈s  , ≈t )
   ≋' = (_≈'_ , ≈p' , ≈r' , ≈s' , ≈t')
 
-  i : {x y : X} → x ≈ y → η/ ≋' x ≡ η/ ≋' y
+  i : {x y : X} → x ≈ y → η/ ≋' x ＝ η/ ≋' y
   i e = η/-identifies-related-points ≋' (lr-implication ε e)
 
-  i' : {x y : X} → x ≈' y → η/ ≋ x ≡ η/ ≋ y
+  i' : {x y : X} → x ≈' y → η/ ≋ x ＝ η/ ≋ y
   i' e = η/-identifies-related-points ≋ (rl-implication ε e)
 
   f : X / ≋ → X / ≋'
@@ -574,27 +574,27 @@ quotients-equivalent X (_≈_  , ≈p ,  ≈r  , ≈s  , ≈t )
   f' : X / ≋' → X / ≋
   f' = mediating-map/ ≋' (quotient-is-set ≋) (η/ ≋) i'
 
-  a : (x : X) → f (f' (η/ ≋' x)) ≡ η/ ≋' x
-  a x = f (f' (η/ ≋' x)) ≡⟨ I ⟩
-        f (η/ ≋ x)       ≡⟨ II ⟩
+  a : (x : X) → f (f' (η/ ≋' x)) ＝ η/ ≋' x
+  a x = f (f' (η/ ≋' x)) ＝⟨ I ⟩
+        f (η/ ≋ x)       ＝⟨ II ⟩
         η/ ≋' x          ∎
    where
     I  = ap f (universality-triangle/ ≋' (quotient-is-set ≋) (η/ ≋) i' x)
     II = universality-triangle/ ≋ (quotient-is-set ≋') (η/ ≋') i x
 
   α : f ∘ f' ∼ id
-  α = /-induction ≋' (λ u → f (f' u) ≡ u) (λ u → quotient-is-set ≋') a
+  α = /-induction ≋' (λ u → f (f' u) ＝ u) (λ u → quotient-is-set ≋') a
 
-  a' : (x : X) → f' (f (η/ ≋ x)) ≡ η/ ≋ x
-  a' x = f' (f (η/ ≋ x)) ≡⟨ I ⟩
-        f' (η/ ≋' x)     ≡⟨ II ⟩
+  a' : (x : X) → f' (f (η/ ≋ x)) ＝ η/ ≋ x
+  a' x = f' (f (η/ ≋ x)) ＝⟨ I ⟩
+        f' (η/ ≋' x)     ＝⟨ II ⟩
         η/ ≋ x           ∎
    where
     I  = ap f' (universality-triangle/ ≋ (quotient-is-set ≋') (η/ ≋') i x)
     II = universality-triangle/ ≋' (quotient-is-set ≋) (η/ ≋) i' x
 
   α' : f' ∘ f ∼ id
-  α' = /-induction ≋ (λ u → f' (f u) ≡ u) (λ u → quotient-is-set ≋) a'
+  α' = /-induction ≋ (λ u → f' (f u) ＝ u) (λ u → quotient-is-set ≋) a'
 
 
   γ : (X / ≋) ≃ (X / ≋')

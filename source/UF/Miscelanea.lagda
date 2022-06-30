@@ -57,23 +57,23 @@ being-discrete-is-prop {𝓤} fe {X} = Π-is-prop (fe 𝓤 𝓤) (being-isolated
 isolated-is-h-isolated : {X : 𝓤 ̇ } (x : X) → is-isolated x → is-h-isolated x
 isolated-is-h-isolated {𝓤} {X} x i {y} = local-hedberg x (λ y → γ y (i y)) y
  where
-  γ : (y : X) → decidable (x ≡ y) → Σ f ꞉ (x ≡ y → x ≡ y) , wconstant f
+  γ : (y : X) → decidable (x ＝ y) → Σ f ꞉ (x ＝ y → x ＝ y) , wconstant f
   γ y (inl p) = (λ _ → p) , (λ q r → refl)
   γ y (inr n) = id , (λ q r → 𝟘-elim (n r))
 
-isolated-inl : {X : 𝓤 ̇ } (x : X) (i : is-isolated x) (y : X) (r : x ≡ y) → i y ≡ inl r
+isolated-inl : {X : 𝓤 ̇ } (x : X) (i : is-isolated x) (y : X) (r : x ＝ y) → i y ＝ inl r
 isolated-inl x i y r =
   equality-cases (i y)
-    (λ (p : x ≡ y) (q : i y ≡ inl p) → q ∙ ap inl (isolated-is-h-isolated x i p r))
-    (λ (h : x ≢ y) (q : i y ≡ inr h) → 𝟘-elim(h r))
+    (λ (p : x ＝ y) (q : i y ＝ inl p) → q ∙ ap inl (isolated-is-h-isolated x i p r))
+    (λ (h : x ≢ y) (q : i y ＝ inr h) → 𝟘-elim(h r))
 
 isolated-inr : {X : 𝓤 ̇ }
              → funext 𝓤 𝓤₀
-             → (x : X) (i : is-isolated x) (y : X) (n : x ≢ y) → i y ≡ inr n
+             → (x : X) (i : is-isolated x) (y : X) (n : x ≢ y) → i y ＝ inr n
 isolated-inr fe x i y n =
   equality-cases (i y)
-  (λ (p : x ≡ y) (q : i y ≡ inl p) → 𝟘-elim (n p))
-  (λ (m : x ≢ y) (q : i y ≡ inr m) → q ∙ ap inr (dfunext fe (λ (p : x ≡ y) → 𝟘-elim (m p))))
+  (λ (p : x ＝ y) (q : i y ＝ inl p) → 𝟘-elim (n p))
+  (λ (m : x ≢ y) (q : i y ＝ inr m) → q ∙ ap inr (dfunext fe (λ (p : x ＝ y) → 𝟘-elim (m p))))
 
 \end{code}
 
@@ -82,24 +82,24 @@ The following variation of the above doesn't require function extensionality:
 \begin{code}
 
 isolated-inr' : {X : 𝓤 ̇ }
-              → (x : X) (i : is-isolated x) (y : X) (n : x ≢ y) → Σ m ꞉ x ≢ y , i y ≡ inr m
+              → (x : X) (i : is-isolated x) (y : X) (n : x ≢ y) → Σ m ꞉ x ≢ y , i y ＝ inr m
 isolated-inr' x i y n =
   equality-cases (i y)
-  (λ (p : x ≡ y) (q : i y ≡ inl p) → 𝟘-elim (n p))
-  (λ (m : x ≢ y) (q : i y ≡ inr m) → m , q)
+  (λ (p : x ＝ y) (q : i y ＝ inl p) → 𝟘-elim (n p))
+  (λ (m : x ≢ y) (q : i y ＝ inr m) → m , q)
 
-discrete-inl : {X : 𝓤 ̇ } (d : is-discrete X) (x y : X) (r : x ≡ y) → d x y ≡ inl r
+discrete-inl : {X : 𝓤 ̇ } (d : is-discrete X) (x y : X) (r : x ＝ y) → d x y ＝ inl r
 discrete-inl d x = isolated-inl x (d x)
 
 discrete-inr : funext 𝓤 𝓤₀
              → {X : 𝓤 ̇ }
                (d : is-discrete X)
                (x y : X)
-               (n : ¬ (x ≡ y))
-             → d x y ≡ inr n
+               (n : ¬ (x ＝ y))
+             → d x y ＝ inr n
 discrete-inr fe d x = isolated-inr fe x (d x)
 
-isolated-Id-is-prop : {X : 𝓤 ̇ } (x : X) → is-isolated' x → (y : X) → is-prop (y ≡ x)
+isolated-Id-is-prop : {X : 𝓤 ̇ } (x : X) → is-isolated' x → (y : X) → is-prop (y ＝ x)
 isolated-Id-is-prop x i = local-hedberg' x (λ y → decidable-is-collapsible (i y))
 
 lc-maps-reflect-isolatedness : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
@@ -107,7 +107,7 @@ lc-maps-reflect-isolatedness : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                              → (x : X) → is-isolated (f x) → is-isolated x
 lc-maps-reflect-isolatedness f l x i y = γ (i (f y))
  where
-  γ : (f x ≡ f y) + ¬ (f x ≡ f y) → (x ≡ y) + ¬ (x ≡ y)
+  γ : (f x ＝ f y) + ¬ (f x ＝ f y) → (x ＝ y) + ¬ (x ＝ y)
   γ (inl p) = inl (l p)
   γ (inr n) = inr (contrapositive (ap f) n)
 
@@ -170,10 +170,10 @@ equiv-to-discrete (f , e) = equivs-preserve-discreteness f e
 𝟚inΩ ₁ = ⊤
 
 𝟚inΩ-embedding : funext 𝓤 𝓤 → propext 𝓤 → is-embedding (𝟚inΩ {𝓤})
-𝟚inΩ-embedding fe pe (P , isp) (₀ , p) (₀ , q) = to-Σ-≡ (refl , Ω-is-set fe pe p q)
+𝟚inΩ-embedding fe pe (P , isp) (₀ , p) (₀ , q) = to-Σ-＝ (refl , Ω-is-set fe pe p q)
 𝟚inΩ-embedding fe pe (P , isp) (₀ , p) (₁ , q) = 𝟘-elim (⊥-is-not-⊤ (p ∙ q ⁻¹))
 𝟚inΩ-embedding fe pe (P , isp) (₁ , p) (₀ , q) = 𝟘-elim (⊥-is-not-⊤ (q ∙ p ⁻¹))
-𝟚inΩ-embedding fe pe (P , isp) (₁ , p) (₁ , q) = to-Σ-≡ (refl , Ω-is-set fe pe p q)
+𝟚inΩ-embedding fe pe (P , isp) (₁ , p) (₁ , q) = to-Σ-＝ (refl , Ω-is-set fe pe p q)
 
 nonempty : 𝓤 ̇ → 𝓤 ̇
 nonempty X = is-empty(is-empty X)
@@ -192,13 +192,13 @@ stable-is-collapsible {𝓤} fe {X} s = (f , g)
   f : X → X
   f x = s(λ u → u x)
 
-  claim₀ : (x y : X) → (u : is-empty X) → u x ≡ u y
+  claim₀ : (x y : X) → (u : is-empty X) → u x ＝ u y
   claim₀ x y u = unique-from-𝟘(u x)
 
-  claim₁ : (x y : X) → (λ u → u x) ≡ (λ u → u y)
+  claim₁ : (x y : X) → (λ u → u x) ＝ (λ u → u y)
   claim₁ x y = dfunext fe (claim₀ x y)
 
-  g : (x y : X) → f x ≡ f y
+  g : (x y : X) → f x ＝ f y
   g x y = ap s (claim₁ x y)
 
 ¬¬-separated-is-Id-collapsible : funext 𝓤 𝓤₀ → {X : 𝓤 ̇ }
@@ -243,7 +243,7 @@ C-B-embedding α = 𝟚-ℕ-embedding ∘ α
 C-B-embedding-is-lc : funext 𝓤₀ 𝓤₀ → left-cancellable C-B-embedding
 C-B-embedding-is-lc fe {α} {β} p = dfunext fe h
  where
-  h : (n : ℕ) → α n ≡ β n
+  h : (n : ℕ) → α n ＝ β n
   h n = 𝟚-ℕ-embedding-is-lc (ap (λ - → - n) p)
 
 \end{code}
@@ -258,7 +258,7 @@ maps-of-props-into-h-isolated-points-are-embeddings : {P : 𝓤 ̇ } {X : 𝓥 �
                                                     → is-prop P
                                                     → ((p : P) → is-h-isolated (f p))
                                                     → is-embedding f
-maps-of-props-into-h-isolated-points-are-embeddings f i j q (p , s) (p' , s') = to-Σ-≡ (i p p' , j p' _ s')
+maps-of-props-into-h-isolated-points-are-embeddings f i j q (p , s) (p' , s') = to-Σ-＝ (i p p' , j p' _ s')
 
 maps-of-props-into-isolated-points-are-embeddings : {P : 𝓤 ̇ } {X : 𝓥 ̇ } (f : P → X)
                                                   → is-prop P

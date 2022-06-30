@@ -53,7 +53,7 @@ module ordinals-injectivity (fe : FunExt) where
    g-is-order-preserving : is-order-preserving ((α ↗ 𝓮) (e i)) (α i) g
    g-is-order-preserving u v ((i' , p) , l) = m
     where
-     q : (i' , p) ≡ (i , refl)
+     q : (i' , p) ＝ (i , refl)
      q = e-is-embedding (e i) (i' , p) (i , refl)
 
      m : u (i , refl) ≺⟨ α i ⟩ v (i , refl)
@@ -65,10 +65,10 @@ module ordinals-injectivity (fe : FunExt) where
    g⁻¹-is-order-preserving : is-order-preserving (α i) ((α ↗ 𝓮) (e i)) g⁻¹
    g⁻¹-is-order-preserving x y l = (i , refl) , r
      where
-      p : g⁻¹ x (i , refl) ≡ x
+      p : g⁻¹ x (i , refl) ＝ x
       p = inverses-are-sections g g-is-equiv x
 
-      q : g⁻¹ y (i , refl) ≡ y
+      q : g⁻¹ y (i , refl) ＝ y
       q = inverses-are-sections g g-is-equiv y
 
       r : g⁻¹ x (i , refl) ≺⟨ α i ⟩ g⁻¹ y (i , refl)
@@ -153,23 +153,23 @@ module ordinals-injectivity-order (ua : Univalence) where
      w : fiber e (e i)
      w = (i , refl)
 
-     u : w ≡ w
+     u : w ＝ w
      u = e-is-embedding (e i) w w
 
-     v : u ≡ 𝓻𝓮𝒻𝓵 w
+     v : u ＝ 𝓻𝓮𝒻𝓵 w
      v = props-are-sets (e-is-embedding (e i)) _ _
 
-     ⦅a⦆ : Σ x ꞉ ⟨ α i ⟩ , (x ≺⟨ α i ⟩ ϕ (i , refl)) × (h i x ≡ γ (i , refl))
+     ⦅a⦆ : Σ x ꞉ ⟨ α i ⟩ , (x ≺⟨ α i ⟩ ϕ (i , refl)) × (h i x ＝ γ (i , refl))
      ⦅a⦆ = hi i (ϕ (i , refl)) (γ (i , refl)) m
 
      ⦅b⦆ : type-of ⦅a⦆
-         → Σ ϕ' ꞉ ⟨ (α ↗ 𝓮) (e i) ⟩ , (ϕ' ≺⟨ (α ↗ 𝓮) (e i) ⟩ ϕ) × (f ϕ' ≡ γ)
+         → Σ ϕ' ꞉ ⟨ (α ↗ 𝓮) (e i) ⟩ , (ϕ' ≺⟨ (α ↗ 𝓮) (e i) ⟩ ϕ) × (f ϕ' ＝ γ)
      ⦅b⦆ (x , n , t) = g⁻¹ x , (w , l) , dfunext (fe 𝓤 𝓤) H
       where
-       p : g⁻¹ x w ≡ x
-       p = g⁻¹ x w                                     ≡⟨ refl ⟩
-           transport (λ - → ⟨ α (pr₁ -) ⟩) u x         ≡⟨ ⦅0⦆ ⟩
-           transport (λ - → ⟨ α (pr₁ -) ⟩) (𝓻𝓮𝒻𝓵 w) x ≡⟨ refl ⟩
+       p : g⁻¹ x w ＝ x
+       p = g⁻¹ x w                                     ＝⟨ refl ⟩
+           transport (λ - → ⟨ α (pr₁ -) ⟩) u x         ＝⟨ ⦅0⦆ ⟩
+           transport (λ - → ⟨ α (pr₁ -) ⟩) (𝓻𝓮𝒻𝓵 w) x ＝⟨ refl ⟩
            x                                           ∎
         where
          ⦅0⦆ = ap (λ - → transport (λ - → ⟨ α (pr₁ -) ⟩) - x) v
@@ -179,19 +179,19 @@ module ordinals-injectivity-order (ua : Univalence) where
 
        H : f (g⁻¹ x) ∼ γ
        H (i' , r) =
-         f (g⁻¹ x) (i' , r)                              ≡⟨ ⦅1⦆ ⟩
-         transport (λ - → ⟨ β (pr₁ -) ⟩) q (f (g⁻¹ x) w) ≡⟨ ⦅3⦆ ⟩
-         transport (λ - → ⟨ β (pr₁ -) ⟩) q (γ w)         ≡⟨ ⦅4⦆ ⟩
+         f (g⁻¹ x) (i' , r)                              ＝⟨ ⦅1⦆ ⟩
+         transport (λ - → ⟨ β (pr₁ -) ⟩) q (f (g⁻¹ x) w) ＝⟨ ⦅3⦆ ⟩
+         transport (λ - → ⟨ β (pr₁ -) ⟩) q (γ w)         ＝⟨ ⦅4⦆ ⟩
          γ (i' , r)                                      ∎
          where
-          q : w ≡ (i' , r)
+          q : w ＝ (i' , r)
           q = e-is-embedding (e i) w (i' , r)
 
           ⦅1⦆ = (apd ( f (g⁻¹ x)) q)⁻¹
 
-          ⦅2⦆ = f (g⁻¹ x) w   ≡⟨ refl ⟩
-                h i (g⁻¹ x w) ≡⟨ ap (h i) p ⟩
-                h i x         ≡⟨ t ⟩
+          ⦅2⦆ = f (g⁻¹ x) w   ＝⟨ refl ⟩
+                h i (g⁻¹ x w) ＝⟨ ap (h i) p ⟩
+                h i x         ＝⟨ t ⟩
                 γ w           ∎
 
           ⦅3⦆ = ap (transport (λ - → ⟨ β (pr₁ -) ⟩) q) ⦅2⦆

@@ -54,7 +54,7 @@ Fin0-is-empty i = i
 Fin1-is-singleton : is-singleton (Fin 1)
 Fin1-is-singleton = 𝟎 , γ
  where
-  γ : (i : Fin 1) → 𝟎 ≡ i
+  γ : (i : Fin 1) → 𝟎 ＝ i
   γ 𝟎 = refl
 
 Fin0-is-prop : is-prop (Fin 0)
@@ -73,10 +73,10 @@ positive-not-𝟎 {succ n} {x} p = 𝟙-is-not-𝟘 (g p)
   f 𝟎       = 𝟘
   f (suc x) = 𝟙
 
-  g : suc x ≡ 𝟎 → 𝟙 ≡ 𝟘
+  g : suc x ＝ 𝟎 → 𝟙 ＝ 𝟘
   g = ap f
 
-when-Fin-is-prop : (n : ℕ) → is-prop (Fin n) → (n ≡ 0) + (n ≡ 1)
+when-Fin-is-prop : (n : ℕ) → is-prop (Fin n) → (n ＝ 0) + (n ＝ 1)
 when-Fin-is-prop 0               i = inl refl
 when-Fin-is-prop 1               i = inr refl
 when-Fin-is-prop (succ (succ n)) i = 𝟘-elim (positive-not-𝟎 (i 𝟏 𝟎))
@@ -91,13 +91,13 @@ defined in the module PlusOneLC.lagda.
 open import Utilities.PlusOneLC
 open import UF.Equiv
 
-Fin-lc : (m n : ℕ) → Fin m ≃ Fin n → m ≡ n
+Fin-lc : (m n : ℕ) → Fin m ≃ Fin n → m ＝ n
 Fin-lc 0           0       p = refl
 Fin-lc (succ m)    0       p = 𝟘-elim (⌜ p ⌝ 𝟎)
 Fin-lc 0          (succ n) p = 𝟘-elim (⌜ p ⌝⁻¹ 𝟎)
 Fin-lc (succ m)   (succ n) p = ap succ r
  where
-  IH : Fin m ≃ Fin n → m ≡ n
+  IH : Fin m ≃ Fin n → m ＝ n
   IH = Fin-lc m n
 
   remark : Fin m + 𝟙 ≃ Fin n + 𝟙
@@ -106,7 +106,7 @@ Fin-lc (succ m)   (succ n) p = ap succ r
   q : Fin m ≃ Fin n
   q = +𝟙-cancellable p
 
-  r : m ≡ n
+  r : m ＝ n
   r = IH q
 
 \end{code}
@@ -164,7 +164,7 @@ open import UF.LeftCancellable
 
 +𝟙-cancel-lemma : {X Y : 𝓤 ̇ }
                 → (𝒇 : X + 𝟙 ↣ Y + 𝟙)
-                → ⌈ 𝒇 ⌉ 𝟎 ≡ 𝟎
+                → ⌈ 𝒇 ⌉ 𝟎 ＝ 𝟎
                 → X ↣ Y
 
 +𝟙-cancel-lemma {𝓤} {X} {Y} (f , l) p = g , m
@@ -172,18 +172,18 @@ open import UF.LeftCancellable
   g : X → Y
   g x = pr₁ (inl-preservation {𝓤} {𝓤} {𝓤} {𝓤} f p l x)
 
-  a : (x : X) → f (suc x) ≡ suc (g x)
+  a : (x : X) → f (suc x) ＝ suc (g x)
   a x = pr₂ (inl-preservation f p l x)
 
   m : left-cancellable g
   m {x} {x'} p = q
    where
-    r = f (suc x)  ≡⟨ a x ⟩
-        suc (g x)  ≡⟨ ap suc p ⟩
-        suc (g x') ≡⟨ (a x')⁻¹ ⟩
+    r = f (suc x)  ＝⟨ a x ⟩
+        suc (g x)  ＝⟨ ap suc p ⟩
+        suc (g x') ＝⟨ (a x')⁻¹ ⟩
         f (suc x') ∎
 
-    q : x ≡ x'
+    q : x ＝ x'
     q = inl-lc (l r)
 
 
@@ -206,7 +206,7 @@ open import UF.LeftCancellable
   e' : left-cancellable f'
   e' = left-cancellable-closed-under-∘ f h e d
 
-  p : f' 𝟎 ≡ 𝟎
+  p : f' 𝟎 ＝ 𝟎
   p = swap-equation₀ (f 𝟎) 𝟎 (+-is-discrete i 𝟙-is-discrete (f 𝟎)) new-point-is-isolated
 
   a : X ↣ Y
@@ -248,10 +248,10 @@ canonical-Fin-inclusion-lc 0        n        l {x}     {y}     p = 𝟘-elim x
 canonical-Fin-inclusion-lc (succ m) 0        l {x}     {y}     p = 𝟘-elim l
 canonical-Fin-inclusion-lc (succ m) (succ n) l {suc x} {suc y} p = γ
  where
-  IH : canonical-Fin-inclusion m n l x ≡ canonical-Fin-inclusion m n l y → x ≡ y
+  IH : canonical-Fin-inclusion m n l x ＝ canonical-Fin-inclusion m n l y → x ＝ y
   IH = canonical-Fin-inclusion-lc m n l
 
-  γ : suc x ≡ suc y
+  γ : suc x ＝ suc y
   γ = ap suc (IH (inl-lc p))
 
 canonical-Fin-inclusion-lc (succ m) (succ n) l {𝟎} {𝟎} p = refl
@@ -297,7 +297,7 @@ as the existence of an injection Fin m → Fin n:
 \begin{code}
 
 _has-a-repetition : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
-f has-a-repetition = Σ x ꞉ domain f , Σ x' ꞉ domain f , (x ≢ x') × (f x ≡ f x')
+f has-a-repetition = Σ x ꞉ domain f , Σ x' ꞉ domain f , (x ≢ x') × (f x ＝ f x')
 
 pigeonhole-principle : (m n : ℕ) (f : Fin m → Fin n)
                      → m > n → f has-a-repetition
@@ -309,16 +309,16 @@ pigeonhole-principle m n f g = γ
   b : ¬ left-cancellable f
   b l = a (f , l)
 
-  c : ¬ ((i j : Fin m) → f i ≡ f j → i ≡ j)
+  c : ¬ ((i j : Fin m) → f i ＝ f j → i ＝ j)
   c φ = b (λ {i} {j} → φ i j)
 
   d : ¬¬ (f has-a-repetition)
   d ψ = c δ
    where
-    ε : (i j : Fin m) → f i ≡ f j → ¬ (i ≢ j)
+    ε : (i j : Fin m) → f i ＝ f j → ¬ (i ≢ j)
     ε i j p ν = ψ (i , j , ν , p)
 
-    δ : (i j : Fin m) → f i ≡ f j → i ≡ j
+    δ : (i j : Fin m) → f i ＝ f j → i ＝ j
     δ i j p = ¬¬-elim (Fin-is-discrete i j) (ε i j p)
 
 \end{code}
@@ -328,12 +328,12 @@ need more steps.
 
 \begin{code}
 
-  u : (i j : Fin m) → decidable ((i ≢ j) × (f i ≡ f j))
+  u : (i j : Fin m) → decidable ((i ≢ j) × (f i ＝ f j))
   u i j = ×-preserves-decidability
            (¬-preserves-decidability (Fin-is-discrete i j))
            (Fin-is-discrete (f i) (f j))
 
-  v : (i : Fin m) → decidable (Σ j ꞉ Fin m , (i ≢ j) × (f i ≡ f j))
+  v : (i : Fin m) → decidable (Σ j ꞉ Fin m , (i ≢ j) × (f i ＝ f j))
   v i = Fin-Compact _ (u i)
 
   w : decidable (f has-a-repetition)
@@ -414,7 +414,7 @@ open import UF.Embeddings
                       (equivs-are-embeddings (Fin-prime n) (Fin-prime-is-equiv n))
                       (pr₁-is-embedding (λ i → <-is-prop-valued i n))
 
-⟦⟪⟫⟧-property : {n : ℕ} → ⟦ ⟪ n ⟫ ⟧ ≡ n
+⟦⟪⟫⟧-property : {n : ℕ} → ⟦ ⟪ n ⟫ ⟧ ＝ n
 ⟦⟪⟫⟧-property {0}      = refl
 ⟦⟪⟫⟧-property {succ n} = ap succ (⟦⟪⟫⟧-property {n})
 
@@ -427,7 +427,7 @@ coerce {succ n} {suc i} 𝟎       = 𝟎
 coerce {succ n} {suc i} (suc j) = suc (coerce j)
 
 coerce-lc : {n : ℕ} {i : Fin n} (j k : Fin ⟦ i ⟧)
-          → coerce {n} {i} j ≡ coerce {n} {i} k → j ≡ k
+          → coerce {n} {i} j ＝ coerce {n} {i} k → j ＝ k
 coerce-lc {succ n} {suc i} 𝟎       𝟎       p = refl
 coerce-lc {succ n} {suc i} 𝟎       (suc j) p = 𝟘-elim (+disjoint' p)
 coerce-lc {succ n} {suc i} (suc j) 𝟎       p = 𝟘-elim (+disjoint p)
@@ -438,7 +438,7 @@ incl {succ n} {succ k} l 𝟎 = 𝟎
 incl {succ n} {succ k} l (suc i) = suc (incl l i)
 
 incl-lc : {n : ℕ} {k : ℕ} (l : k ≤ n)
-        → (i j : Fin k) → incl l i ≡ incl l j → i ≡ j
+        → (i j : Fin k) → incl l i ＝ incl l j → i ＝ j
 incl-lc {succ n} {succ k} l 𝟎       𝟎       p = refl
 incl-lc {succ n} {succ k} l 𝟎       (suc j) p = 𝟘-elim (positive-not-𝟎 (p ⁻¹))
 incl-lc {succ n} {succ k} l (suc i) 𝟎       p = 𝟘-elim (positive-not-𝟎 p)
@@ -612,7 +612,7 @@ open import UF.Base
 
 Σₘᵢₙ-is-prop {𝓤} fe {n} A h (i , a , l) (i' , a' , l') = γ
  where
-  p : i ≡ i'
+  p : i ＝ i'
   p = ⟦_⟧-lc n (≤-anti (⟦_⟧ i) (⟦_⟧ i') u v)
    where
     u : i ≤ i'
@@ -628,8 +628,8 @@ open import UF.Base
            (λ k → Π-is-prop (fe 𝓤 𝓤₀)
                    (λ b → ≤-is-prop-valued (⟦_⟧ j) (⟦_⟧ k))))
 
-  γ : i , a , l ≡ i' , a' , l'
-  γ = to-Σ-≡ (p , H _ _ _)
+  γ : i , a , l ＝ i' , a' , l'
+  γ = to-Σ-＝ (p , H _ _ _)
 
 {-
 module _ {𝓤 : Universe}
@@ -677,7 +677,7 @@ type-of-linear-orders-is-ℕ {𝓤} ua =
   (Σ X ꞉ 𝓤 ̇ , Σ n ꞉ ℕ , X ≃ Fin n)          ≃⟨ i ⟩
   (Σ X ꞉ 𝓤 ̇ , Σ n ꞉ ℕ , Fin n ≃ X)          ≃⟨ ii ⟩
   (Σ X ꞉ 𝓤 ̇ , Σ n ꞉ ℕ , Lift 𝓤 (Fin n) ≃ X) ≃⟨ iii ⟩
-  (Σ X ꞉ 𝓤 ̇ , Σ n ꞉ ℕ , Lift 𝓤 (Fin n) ≡ X) ≃⟨ iv ⟩
+  (Σ X ꞉ 𝓤 ̇ , Σ n ꞉ ℕ , Lift 𝓤 (Fin n) ＝ X) ≃⟨ iv ⟩
   ℕ                                         ■
  where
   fe : FunExt
@@ -716,14 +716,14 @@ module finiteness (pt : propositional-truncations-exist) where
  being-finite-is-prop : (X : 𝓤 ̇ ) → is-prop (is-finite X)
  being-finite-is-prop X (m , d) (n , e) = γ
   where
-   α : (m n : ℕ) → X ≃ Fin m → X ≃ Fin n → m ≡ n
+   α : (m n : ℕ) → X ≃ Fin m → X ≃ Fin n → m ＝ n
    α m n d e = Fin-lc m n (≃-sym d ● e)
 
-   β : (m n : ℕ) → ∥ X ≃ Fin m ∥ → ∥ X ≃ Fin n ∥ → m ≡ n
+   β : (m n : ℕ) → ∥ X ≃ Fin m ∥ → ∥ X ≃ Fin n ∥ → m ＝ n
    β m n = ∥∥-rec₂ ℕ-is-set (α m n)
 
-   γ : m , d ≡ n , e
-   γ = to-Σ-≡ (β m n d e , ∥∥-is-prop _ _)
+   γ : m , d ＝ n , e
+   γ = to-Σ-＝ (β m n d e , ∥∥-is-prop _ _)
 
 \end{code}
 
@@ -869,7 +869,7 @@ following form:
        u' : g i ≢ g j
        u' = contrapositive (equivs-are-lc g d) u
 
-       p' : f (g i) ≡ f (g j)
+       p' : f (g i) ＝ f (g j)
        p' = equivs-are-lc h e p
 
    γ : ∥ f has-a-repetition ∥
@@ -944,7 +944,7 @@ We now consider further variations of the finite pigeonhole principle.
 \begin{code}
 
   repeated-values : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → X → 𝓤 ⊔ 𝓥 ̇
-  repeated-values f = λ x → Σ x' ꞉ domain f , (x ≢ x') × (f x ≡ f x')
+  repeated-values f = λ x → Σ x' ꞉ domain f , (x ≢ x') × (f x ＝ f x')
 
   repetitions-detachable : {m : ℕ} {Y : 𝓥 ̇ } (f : Fin m → Y)
                          → is-finite Y
@@ -952,7 +952,7 @@ We now consider further variations of the finite pigeonhole principle.
 
   repetitions-detachable {𝓥} {m} {Y} f (n , t) i =
    Fin-Compact
-    (λ j → (i ≢ j) × (f i ≡ f j))
+    (λ j → (i ≢ j) × (f i ＝ f j))
     (λ j → ×-preserves-decidability
             (¬-preserves-decidability (Fin-is-discrete i j))
             (finite-types-are-discrete fe (n , t) (f i) (f j)))
@@ -980,7 +980,7 @@ We now consider further variations of the finite pigeonhole principle.
     γ' = ∥∥-functor h t
 
     A : Fin m → 𝓥 ̇
-    A i = Σ j ꞉ Fin m , (i ≢ j) × (f i ≡ f j)
+    A i = Σ j ꞉ Fin m , (i ≢ j) × (f i ＝ f j)
 
     γ : f has-a-repetition
     γ = Fin-Σ-from-∃ fe {m} A (repetitions-detachable f (n , t)) γ'
@@ -1046,19 +1046,19 @@ construction.
 
     infixl 3 _↑_
 
-    finite-order : (x : X) → Σ k ꞉ ℕ , x ↑ (succ k) ≡ e
+    finite-order : (x : X) → Σ k ꞉ ℕ , x ↑ (succ k) ＝ e
     finite-order x = c a
      where
-      a : Σ m ꞉ ℕ , Σ n ꞉ ℕ , (m ≢ n) × (x ↑ m ≡ x ↑ n)
+      a : Σ m ꞉ ℕ , Σ n ꞉ ℕ , (m ≢ n) × (x ↑ m ＝ x ↑ n)
       a = ℕ-finite-pigeonhole-principle (x ↑_) φ
 
-      b : (m : ℕ) (n : ℕ) → m ≢ n → x ↑ m ≡ x ↑ n → Σ k ꞉ ℕ , x ↑ (succ k) ≡ e
+      b : (m : ℕ) (n : ℕ) → m ≢ n → x ↑ m ＝ x ↑ n → Σ k ꞉ ℕ , x ↑ (succ k) ＝ e
       b 0        0        ν p = 𝟘-elim (ν refl)
       b 0        (succ n) ν p = n , (p ⁻¹)
       b (succ m) 0        ν p = m , p
-      b (succ m) (succ n) ν p = b m n (λ (q : m ≡ n) → ν (ap succ q)) (lc x p)
+      b (succ m) (succ n) ν p = b m n (λ (q : m ＝ n) → ν (ap succ q)) (lc x p)
 
-      c : type-of a → Σ k ꞉ ℕ , x ↑ (succ k) ≡ e
+      c : type-of a → Σ k ꞉ ℕ , x ↑ (succ k) ＝ e
       c (m , n , ν , p) = b m n ν p
 
 \end{code}
@@ -1068,13 +1068,13 @@ because finite types are discrete:
 
 \begin{code}
 
-    least-finite-order : (x : X) → Σμ λ(k : ℕ) → x ↑ (succ k) ≡ e
+    least-finite-order : (x : X) → Σμ λ(k : ℕ) → x ↑ (succ k) ＝ e
     least-finite-order x = least-from-given A γ (finite-order x)
      where
       A : ℕ → 𝓤 ̇
-      A n = x ↑ (succ n) ≡ e
+      A n = x ↑ (succ n) ＝ e
 
-      γ : (n : ℕ) → decidable (x ↑ succ n ≡ e)
+      γ : (n : ℕ) → decidable (x ↑ succ n ＝ e)
       γ n = finite-types-are-discrete fe φ (x ↑ succ n) e
 
 \end{code}
@@ -1220,7 +1220,7 @@ decidable equality to remove repetitions, as observed by Tom de Jong
    γ X δ (succ n) (f , s) = I Δ
     where
      A : Fin n → 𝓤 ̇
-     A j = f (suc j) ≡ f 𝟎
+     A j = f (suc j) ＝ f 𝟎
 
      Δ : decidable (Σ A)
      Δ = Fin-Compact A (λ j → δ (f (suc j)) (f 𝟎))
@@ -1231,7 +1231,7 @@ decidable equality to remove repetitions, as observed by Tom de Jong
      I : decidable (Σ A) → finite-linear-order X
      I (inl (j , p)) = IH
       where
-       II : (x : X) → (Σ i ꞉ Fin (succ n) , f i ≡ x) → (Σ i ꞉ Fin n , g i ≡ x)
+       II : (x : X) → (Σ i ꞉ Fin (succ n) , f i ＝ x) → (Σ i ꞉ Fin n , g i ＝ x)
        II x (𝟎 ,     q) = j , (p ∙ q)
        II x (suc i , q) = i , q
 
@@ -1249,19 +1249,19 @@ decidable equality to remove repetitions, as observed by Tom de Jong
        δ' = lc-maps-reflect-discreteness pr₁ (pr₁-lc (negations-are-props fe)) δ
 
        g' : Fin n → X'
-       g' i = g i , (λ (p : f (suc i) ≡ f 𝟎) → ν (i , p))
+       g' i = g i , (λ (p : f (suc i) ＝ f 𝟎) → ν (i , p))
 
        IV : is-surjection g'
        IV (x , u) = VII
         where
-         V : ∃ i ꞉ Fin (succ n) , f i ≡ x
+         V : ∃ i ꞉ Fin (succ n) , f i ＝ x
          V = s x
 
-         VI : (Σ i ꞉ Fin (succ n) , f i ≡ x) → (Σ i ꞉ Fin n , g' i ≡ (x , u))
+         VI : (Σ i ꞉ Fin (succ n) , f i ＝ x) → (Σ i ꞉ Fin n , g' i ＝ (x , u))
          VI (𝟎     , p) = 𝟘-elim (u (p ⁻¹))
-         VI (suc i , p) = i , to-subtype-≡ (λ _ → negations-are-props fe) p
+         VI (suc i , p) = i , to-subtype-＝ (λ _ → negations-are-props fe) p
 
-         VII : ∃ i ꞉ Fin n , g' i ≡ (x , u)
+         VII : ∃ i ꞉ Fin n , g' i ＝ (x , u)
          VII = ∥∥-functor VI V
 
        IH : finite-linear-order X'
@@ -1335,13 +1335,13 @@ is a set).
 \begin{code}
 
  doubleton : {X : 𝓤 ̇ } → X → X → 𝓤 ̇
- doubleton {𝓤} {X} x₀ x₁ = Σ x ꞉ X , (x ≡ x₀) ∨ (x ≡ x₁)
+ doubleton {𝓤} {X} x₀ x₁ = Σ x ꞉ X , (x ＝ x₀) ∨ (x ＝ x₁)
 
  doubleton-is-set : {X : 𝓤 ̇ } (x₀ x₁ : X)
                   → is-set X
                   → is-set (doubleton x₀ x₁)
  doubleton-is-set {𝓤} {X} x₀ x₁ i = subsets-of-sets-are-sets
-                                      X (λ x → (x ≡ x₀) ∨ (x ≡ x₁)) i ∨-is-prop
+                                      X (λ x → (x ＝ x₀) ∨ (x ＝ x₁)) i ∨-is-prop
 
  doubleton-map : {X : 𝓤 ̇ } (x₀ x₁ : X) → Fin 2 → doubleton x₀ x₁
  doubleton-map x₀ x₁ 𝟎 = x₀ , ∣ inl refl ∣
@@ -1351,9 +1351,9 @@ is a set).
                              → is-surjection (doubleton-map x₀ x₁)
  doubleton-map-is-surjection {𝓤} {X} {x₀} {x₁} (x , s) = ∥∥-functor γ s
   where
-   γ : (x ≡ x₀) + (x ≡ x₁) → Σ n ꞉ Fin 2 , doubleton-map x₀ x₁ n ≡ (x , s)
-   γ (inl p) = 𝟎 , to-subtype-≡ (λ _ → ∨-is-prop) (p ⁻¹)
-   γ (inr q) = 𝟏 , to-subtype-≡ (λ _ → ∨-is-prop) (q ⁻¹)
+   γ : (x ＝ x₀) + (x ＝ x₁) → Σ n ꞉ Fin 2 , doubleton-map x₀ x₁ n ＝ (x , s)
+   γ (inl p) = 𝟎 , to-subtype-＝ (λ _ → ∨-is-prop) (p ⁻¹)
+   γ (inr q) = 𝟏 , to-subtype-＝ (λ _ → ∨-is-prop) (q ⁻¹)
 
  doubletons-are-Kuratowki-finite : {X : 𝓤 ̇ } (x₀ x₁ : X)
                                  → is-Kuratowski-finite (doubleton x₀ x₁)
@@ -1362,11 +1362,11 @@ is a set).
 
  decidable-equality-gives-doubleton-finite : {X : 𝓤 ̇ } (x₀ x₁ : X)
                                            → is-set X
-                                           → decidable (x₀ ≡ x₁)
-                                           → is-finite (Σ x ꞉ X , (x ≡ x₀) ∨ (x ≡ x₁))
+                                           → decidable (x₀ ＝ x₁)
+                                           → is-finite (Σ x ꞉ X , (x ＝ x₀) ∨ (x ＝ x₁))
  decidable-equality-gives-doubleton-finite x₀ x₁ X-is-set δ = γ δ
   where
-   γ : decidable (x₀ ≡ x₁) → is-finite (doubleton x₀ x₁)
+   γ : decidable (x₀ ＝ x₁) → is-finite (doubleton x₀ x₁)
    γ (inl p) = 1 , ∣ singleton-≃ m l ∣
     where
      l : is-singleton (Fin 1)
@@ -1379,9 +1379,9 @@ is a set).
      m = (doubleton-map x₀ x₁ 𝟎 , c)
       where
        c : is-central (doubleton x₀ x₁) (doubleton-map x₀ x₁ 𝟎)
-       c (y , s) = to-subtype-≡ (λ _ → ∨-is-prop) (∥∥-rec X-is-set α s)
+       c (y , s) = to-subtype-＝ (λ _ → ∨-is-prop) (∥∥-rec X-is-set α s)
         where
-         α : (y ≡ x₀) + (y ≡ x₁) → x₀ ≡ y
+         α : (y ＝ x₀) + (y ＝ x₁) → x₀ ＝ y
          α (inl q) = q ⁻¹
          α (inr q) = p ∙ q ⁻¹
 
@@ -1408,14 +1408,14 @@ is a set).
  doubleton-finite-gives-decidable-equality : funext 𝓤 𝓤₀
                                            → {X : 𝓤 ̇ } (x₀ x₁ : X)
                                            → is-set X
-                                           → is-finite (Σ x ꞉ X , (x ≡ x₀) ∨ (x ≡ x₁))
-                                           → decidable (x₀ ≡ x₁)
+                                           → is-finite (Σ x ꞉ X , (x ＝ x₀) ∨ (x ＝ x₁))
+                                           → decidable (x₀ ＝ x₁)
  doubleton-finite-gives-decidable-equality fe x₀ x₁ X-is-set ϕ = δ
   where
-   γ : is-finite (doubleton x₀ x₁) → decidable (x₀ ≡ x₁)
+   γ : is-finite (doubleton x₀ x₁) → decidable (x₀ ＝ x₁)
    γ (0 , s) = ∥∥-rec (decidability-of-prop-is-prop fe X-is-set) α s
     where
-     α : doubleton x₀ x₁ ≃ 𝟘 → decidable (x₀ ≡ x₁)
+     α : doubleton x₀ x₁ ≃ 𝟘 → decidable (x₀ ＝ x₁)
      α (g , i) = 𝟘-elim (g (x₀ , ∣ inl refl ∣))
 
    γ (1 , s) = inl (∥∥-rec X-is-set β s)
@@ -1423,25 +1423,25 @@ is a set).
      α : is-prop (Fin 1)
      α 𝟎 𝟎 = refl
 
-     β : doubleton x₀ x₁ ≃ Fin 1 → x₀ ≡ x₁
+     β : doubleton x₀ x₁ ≃ Fin 1 → x₀ ＝ x₁
      β (g , i) = ap pr₁ (equivs-are-lc g i (α (g (doubleton-map x₀ x₁ 𝟎)) (g (doubleton-map x₀ x₁ 𝟏))))
 
    γ (succ (succ n) , s) = ∥∥-rec (decidability-of-prop-is-prop fe X-is-set) f s
     where
-     f : doubleton x₀ x₁ ≃ Fin (succ (succ n)) → decidable (x₀ ≡ x₁)
+     f : doubleton x₀ x₁ ≃ Fin (succ (succ n)) → decidable (x₀ ＝ x₁)
      f (g , i) = β
       where
-       h : x₀ ≡ x₁ → doubleton-map x₀ x₁ 𝟎 ≡ doubleton-map x₀ x₁ 𝟏
-       h = to-subtype-≡ (λ _ → ∨-is-prop)
+       h : x₀ ＝ x₁ → doubleton-map x₀ x₁ 𝟎 ＝ doubleton-map x₀ x₁ 𝟏
+       h = to-subtype-＝ (λ _ → ∨-is-prop)
 
-       α : decidable (g (doubleton-map x₀ x₁ 𝟎) ≡ g (doubleton-map x₀ x₁ 𝟏)) → decidable (x₀ ≡ x₁)
+       α : decidable (g (doubleton-map x₀ x₁ 𝟎) ＝ g (doubleton-map x₀ x₁ 𝟏)) → decidable (x₀ ＝ x₁)
        α (inl p) = inl (ap pr₁ (equivs-are-lc g i p))
        α (inr ν) = inr (contrapositive (λ p → ap g (h p)) ν)
 
-       β : decidable (x₀ ≡ x₁)
+       β : decidable (x₀ ＝ x₁)
        β = α (Fin-is-discrete (g (doubleton-map x₀ x₁ 𝟎)) (g (doubleton-map x₀ x₁ 𝟏)))
 
-   δ : decidable (x₀ ≡ x₁)
+   δ : decidable (x₀ ＝ x₁)
    δ = γ ϕ
 
  all-K-finite-types-finite-gives-all-sets-discrete :
@@ -1501,30 +1501,30 @@ The following no-selection lemma is contributed by Tom de Jong:
  no-selection : is-univalent 𝓤₀ → ¬ ((X : 𝓤₀ ̇ ) → ∥ X ≃ 𝟚 ∥ → X)
  no-selection ua ϕ = γ
   where
-   f : {X : 𝓤₀ ̇ } → X ≡ 𝟚 → X ≃ 𝟚
+   f : {X : 𝓤₀ ̇ } → X ＝ 𝟚 → X ≃ 𝟚
    f {X} = idtoeq X 𝟚
 
    n : 𝟚
    n = ϕ 𝟚 ∣ ≃-refl 𝟚 ∣
 
-   α : {X : 𝓤₀ ̇ } (p : X ≡ 𝟚) → ϕ X ∣ f p ∣ ≡  ⌜ f p ⌝⁻¹ n
+   α : {X : 𝓤₀ ̇ } (p : X ＝ 𝟚) → ϕ X ∣ f p ∣ ＝  ⌜ f p ⌝⁻¹ n
    α refl = refl
 
-   p : 𝟚 ≡ 𝟚
+   p : 𝟚 ＝ 𝟚
    p = eqtoid ua 𝟚 𝟚 complement-≃
 
-   q : ∣ f refl ∣ ≡ ∣ f p ∣
+   q : ∣ f refl ∣ ＝ ∣ f p ∣
    q = ∥∥-is-prop ∣ f refl ∣ ∣ f p ∣
 
-   r : f p ≡ complement-≃
+   r : f p ＝ complement-≃
    r = idtoeq-eqtoid ua 𝟚 𝟚 complement-≃
 
-   s = n                     ≡⟨ refl ⟩
-       ⌜ f refl ⌝⁻¹ n        ≡⟨ (α refl)⁻¹ ⟩
-       ϕ 𝟚 ∣ f refl ∣        ≡⟨ ap (ϕ 𝟚) q ⟩
-       ϕ 𝟚 ∣ f p ∣           ≡⟨ α p ⟩
-       ⌜ f p ⌝⁻¹ n           ≡⟨ ap (λ - → ⌜ - ⌝⁻¹ n) r ⟩
-       ⌜ complement-≃ ⌝⁻¹ n  ≡⟨ refl ⟩
+   s = n                     ＝⟨ refl ⟩
+       ⌜ f refl ⌝⁻¹ n        ＝⟨ (α refl)⁻¹ ⟩
+       ϕ 𝟚 ∣ f refl ∣        ＝⟨ ap (ϕ 𝟚) q ⟩
+       ϕ 𝟚 ∣ f p ∣           ＝⟨ α p ⟩
+       ⌜ f p ⌝⁻¹ n           ＝⟨ ap (λ - → ⌜ - ⌝⁻¹ n) r ⟩
+       ⌜ complement-≃ ⌝⁻¹ n  ＝⟨ refl ⟩
        complement n          ∎
 
    γ : 𝟘
@@ -1584,10 +1584,10 @@ The following no-selection lemma is contributed by Tom de Jong:
      𝕘 : X' ≃ Fin n
      𝕘 = pr₂ IV
 
-     V : ∥ X' ≃ Fin n ∥ → ∥ X' ≃ Fin 2 ∥ → n ≡ 2
+     V : ∥ X' ≃ Fin n ∥ → ∥ X' ≃ Fin 2 ∥ → n ＝ 2
      V = ∥∥-rec₂ ℕ-is-set (λ 𝕗 𝕘 → Fin-lc n 2 (≃-sym 𝕗 ● 𝕘))
 
-     VI : n ≡ 2
+     VI : n ＝ 2
      VI = V ∣ 𝕘 ∣ II
 
      VII = X     ≃⟨ ≃-Lift 𝓤 X ⟩
@@ -1716,29 +1716,29 @@ Addendum.
 
    I : z ≢ x₀
    I p = zero-is-not-one
-          (₀        ≡⟨ (inverses-are-retractions g j ₀)⁻¹ ⟩
-           g' (g ₀) ≡⟨ refl ⟩
-           g' x₀    ≡⟨ ap g' (p ⁻¹) ⟩
-           g' z     ≡⟨ refl ⟩
-           g' (g ₁) ≡⟨ inverses-are-retractions g j ₁ ⟩
+          (₀        ＝⟨ (inverses-are-retractions g j ₀)⁻¹ ⟩
+           g' (g ₀) ＝⟨ refl ⟩
+           g' x₀    ＝⟨ ap g' (p ⁻¹) ⟩
+           g' z     ＝⟨ refl ⟩
+           g' (g ₁) ＝⟨ inverses-are-retractions g j ₁ ⟩
            ₁        ∎)
 
-   II : (n : 𝟚) → f n ≡ z → ₁ ≡ n
+   II : (n : 𝟚) → f n ＝ z → ₁ ＝ n
    II ₀ p = 𝟘-elim (I (p ⁻¹))
    II ₁ p = refl
 
-   III : f (f' z) ≡ z
+   III : f (f' z) ＝ z
    III = inverses-are-sections f i z
 
-   IV : y ≡ z
+   IV : y ＝ z
    IV = equivs-are-lc f' (inverses-are-equivs f i)
-         (f' y     ≡⟨ refl ⟩
-          f' (f ₁) ≡⟨ inverses-are-retractions f i ₁ ⟩
-          ₁        ≡⟨ II (f' z) III ⟩
+         (f' y     ＝⟨ refl ⟩
+          f' (f ₁) ＝⟨ inverses-are-retractions f i ₁ ⟩
+          ₁        ＝⟨ II (f' z) III ⟩
           f' z     ∎)
 
-   V : (y , i) ≡ (z , j)
-   V = to-subtype-≡ (λ x₁ → being-equiv-is-prop fe (𝟚-cases x₀ x₁)) IV
+   V : (y , i) ＝ (z , j)
+   V = to-subtype-＝ (λ x₁ → being-equiv-is-prop fe (𝟚-cases x₀ x₁)) IV
 
  select-equiv-with-𝟚-lemma₂ : FunExt
                             → {X : 𝓤 ̇ }
@@ -1746,16 +1746,16 @@ Addendum.
                             → (x₀ : X) → Σ x₁ ꞉ X , is-equiv (𝟚-cases x₀ x₁)
  select-equiv-with-𝟚-lemma₂ fe {X} (f , i) x₀ = γ (f x₀) x₀ refl
   where
-   γ : (n : 𝟚) (x₀ : X) → n ≡ f x₀ → Σ x₁ ꞉ X , is-equiv (𝟚-cases x₀ x₁)
+   γ : (n : 𝟚) (x₀ : X) → n ＝ f x₀ → Σ x₁ ꞉ X , is-equiv (𝟚-cases x₀ x₁)
    γ ₀ x₀ p = (x₁ , j)
     where
      x₁ : X
      x₁ = inverse f i ₁
 
      h : inverse f i ∼ 𝟚-cases x₀ x₁
-     h ₀ = inverse f i ₀      ≡⟨ ap (inverse f i) p ⟩
-           inverse f i (f x₀) ≡⟨ inverses-are-retractions f i x₀ ⟩
-           x₀                 ≡⟨ refl ⟩
+     h ₀ = inverse f i ₀      ＝⟨ ap (inverse f i) p ⟩
+           inverse f i (f x₀) ＝⟨ inverses-are-retractions f i x₀ ⟩
+           x₀                 ＝⟨ refl ⟩
            𝟚-cases x₀ x₁ ₀    ∎
      h ₁ = refl
 
@@ -1768,10 +1768,10 @@ Addendum.
      x₁ = inverse f i ₀
 
      h : inverse f i ∘ complement ∼ 𝟚-cases x₀ x₁
-     h ₀ = inverse f i (complement ₀) ≡⟨ refl ⟩
-           inverse f i ₁              ≡⟨ ap (inverse f i) p ⟩
-           inverse f i (f x₀)         ≡⟨ inverses-are-retractions f i x₀ ⟩
-           x₀                         ≡⟨ refl  ⟩
+     h ₀ = inverse f i (complement ₀) ＝⟨ refl ⟩
+           inverse f i ₁              ＝⟨ ap (inverse f i) p ⟩
+           inverse f i (f x₀)         ＝⟨ inverses-are-retractions f i x₀ ⟩
+           x₀                         ＝⟨ refl  ⟩
            𝟚-cases x₀ x₁ ₀            ∎
      h ₁ = refl
 
@@ -1910,13 +1910,13 @@ compact-argmax : {X : 𝓤  ̇ } {n : ℕ } (p : X → Fin n)
 compact-argmax {𝓤} {X} {n} p κ x₀ = II I
  where
   A : Fin n → 𝓤  ̇
-  A r = Σ x ꞉ X , p x ≡ r
+  A r = Σ x ꞉ X , p x ＝ r
 
   a₀ : A (p x₀)
   a₀ = x₀ , refl
 
   δ : detachable A
-  δ r = κ (λ x → p x ≡ r) (λ x → Fin-is-discrete (p x) r)
+  δ r = κ (λ x → p x ＝ r) (λ x → Fin-is-discrete (p x) r)
 
   I : Σ r ꞉ Fin n , A r × ((s : Fin n) → A s → s ≤ r)
   I = Fin-co-wf A (p x₀) δ a₀
@@ -1931,13 +1931,13 @@ compact-argmin : {X : 𝓤  ̇ } {n : ℕ } (p : X → Fin n)
 compact-argmin {𝓤} {X} {n} p κ x₀ = II I
  where
   A : Fin n → 𝓤  ̇
-  A r = Σ x ꞉ X , p x ≡ r
+  A r = Σ x ꞉ X , p x ＝ r
 
   a₀ : A (p x₀)
   a₀ = x₀ , refl
 
   δ : detachable A
-  δ r = κ (λ x → p x ≡ r) (λ x → Fin-is-discrete (p x) r)
+  δ r = κ (λ x → p x ＝ r) (λ x → Fin-is-discrete (p x) r)
 
   I : Σ r ꞉ Fin n , A r × ((s : Fin n) → A s → r ≤ s)
   I = Fin-wf A (p x₀) δ a₀
@@ -2060,10 +2060,10 @@ argmax'-correct {succ a} p y = h y
        (λ (l : ⟦ p 𝟎 ⟧ ≤ ⟦ p (suc m) ⟧) → suc m)
        (λ otherwise → 𝟎)
 
-  γ₀ : p 𝟎 ≤ p (suc m) → γ ≡ suc m
+  γ₀ : p 𝟎 ≤ p (suc m) → γ ＝ suc m
   γ₀ = {!!}
 
-  γ₁ : ¬ (p 𝟎 ≤ p (suc m)) → γ ≡ 𝟎
+  γ₁ : ¬ (p 𝟎 ≤ p (suc m)) → γ ＝ 𝟎
   γ₁ = {!!}
 
 

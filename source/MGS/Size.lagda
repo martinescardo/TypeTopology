@@ -106,7 +106,7 @@ PR-gives-Impredicativity⁺ {𝓥} {𝓤} pe fe ρ σ = γ
   ψ : Ω 𝓤 → Ω 𝓥
   ψ (P , i) = resize σ P i , resize-is-subsingleton σ P i
 
-  η : (p : Ω 𝓤) → φ (ψ p) ≡ p
+  η : (p : Ω 𝓤) → φ (ψ p) ＝ p
   η (P , i) = Ω-ext fe pe a b
    where
     Q : 𝓥 ̇
@@ -121,7 +121,7 @@ PR-gives-Impredicativity⁺ {𝓥} {𝓤} pe fe ρ σ = γ
     b : P → resize ρ Q j
     b = to-resize ρ Q j ∘ to-resize σ P i
 
-  ε : (q : Ω 𝓥) → ψ (φ q) ≡ q
+  ε : (q : Ω 𝓥) → ψ (φ q) ＝ q
   ε (Q , j) = Ω-ext fe pe a b
    where
     P : 𝓤 ̇
@@ -175,7 +175,7 @@ Impredicativity-gives-PR {𝓤} {𝓥} pe fe (O , e) P i = Q , ε
   O-is-set = equiv-to-set (≃-sym e) (Ω-is-set fe pe)
 
   Q : 𝓥 ̇
-  Q = down (𝟙'' , k) ≡ down (P , i)
+  Q = down (𝟙'' , k) ＝ down (P , i)
 
   j : is-subsingleton Q
   j = O-is-set (down (Lift 𝓤 𝟙 , k)) (down (P , i))
@@ -186,7 +186,7 @@ Impredicativity-gives-PR {𝓤} {𝓥} pe fe (O , e) P i = Q , ε
          (lift ⋆)
 
   γ : P → Q
-  γ p = ap down (to-subtype-≡
+  γ p = ap down (to-subtype-＝
                     (λ _ → being-subsingleton-is-subsingleton fe)
                     (pe k i (λ _ → p) (λ _ → lift ⋆)))
 
@@ -259,7 +259,7 @@ module powerset-union-existence
   (𝓐 : (X → Ω 𝓤) → Ω (𝓤 ⁺))
      → Σ B ꞉ (X → Ω 𝓤) , ((x : X) → (x ∈ B) ⇔ (∃ A ꞉ (X → Ω 𝓤) , (A ∈ 𝓐) × (x ∈ A)))
 
- existence-of-unions-agreement : existence-of-unions 𝓤 ≡ existence-of-unions₂ 𝓤
+ existence-of-unions-agreement : existence-of-unions 𝓤 ＝ existence-of-unions₂ 𝓤
  existence-of-unions-agreement = refl _
 
  existence-of-unions-gives-PR : existence-of-unions 𝓤

@@ -32,14 +32,14 @@ being-singleton-is-subsingleton fe {X} (x , φ) (y , γ) = p
   s : is-set X
   s = subsingletons-are-sets X i
 
-  a : (z : X) → is-subsingleton ((t : X) → z ≡ t)
+  a : (z : X) → is-subsingleton ((t : X) → z ＝ t)
   a z = Π-is-subsingleton fe (s z)
 
-  b : x ≡ y
+  b : x ＝ y
   b = φ y
 
-  p : (x , φ) ≡ (y , γ)
-  p = to-subtype-≡ a b
+  p : (x , φ) ＝ (y , γ)
+  p = to-subtype-＝ a b
 
 being-equiv-is-subsingleton : dfunext 𝓥 (𝓤 ⊔ 𝓥) → dfunext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
                             → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)

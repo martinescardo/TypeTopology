@@ -10,7 +10,7 @@ exponential powers of the universe.)
 
 This works as follows in outline:
 
-If A : X → 𝓤 ̇ then the Id-fiber of A is Σ x ꞉ X , Id x ≡ A.
+If A : X → 𝓤 ̇ then the Id-fiber of A is Σ x ꞉ X , Id x ＝ A.
 
 If the pair (x,p) is in the fiber for x : X and p : Id x = A, then
 
@@ -24,11 +24,11 @@ Next we have (*)
  A x ≃ Nat (Id x) A             (yoneda)
      = (y : X) → Id x y → A y   (definition)
      ≃ (y : X) → Id x y ≃ A y   (because Σ A is contractible (Yoneda corollary))
-     ≃ (y : X) → Id x y ≡ A y   (by univalence)
-     ≃ Id x ≡ A                 (by function extensionality)
+     ≃ (y : X) → Id x y ＝ A y   (by univalence)
+     ≃ Id x ＝ A                 (by function extensionality)
 
-Applying Σ to both sides, Σ A ≃ (Σ x ꞉ X , Id x ≡ A), and because
-the type Σ A is contractible so is Σ x ꞉ X , Id x ≡ A, which shows
+Applying Σ to both sides, Σ A ≃ (Σ x ꞉ X , Id x ＝ A), and because
+the type Σ A is contractible so is Σ x ꞉ X , Id x ＝ A, which shows
 that the map Id : X → (X → U) is an embedding.
 
 2017:
@@ -37,9 +37,9 @@ This relies on univalence. But less than that suffices
 (https://groups.google.com/forum/#!topic/homotopytypetheory/bKti7krHM-c)
 
 First, Evan Cavallo showed that it is enough to assume funext and that
-the canonical map X ≡ Y → X ≃ Y is an embedding. Then, using this idea
+the canonical map X ＝ Y → X ≃ Y is an embedding. Then, using this idea
 and the above proof outline, we further generalized this to assume
-that the canonical map X ≡ Y → (X → Y) is left-cancellable (which is
+that the canonical map X ＝ Y → (X → Y) is left-cancellable (which is
 much weaker than assuming that it is an embedding).
 
 This is what we record next (9th December 2017), using the original
@@ -68,7 +68,7 @@ open import UF.EquivalenceExamples
 \end{code}
 
 The Id Embedding Lemma. The idea is to show that the type
-T := Σ x ꞉ X , Id x ≡ A is a proposition by showing that there is a
+T := Σ x ꞉ X , Id x ＝ A is a proposition by showing that there is a
 left-cancellable map from it to a proposition, namely the contractible
 type Σ A.
 
@@ -81,27 +81,27 @@ Id-Embedding-Lemma : FunExt
                    → is-embedding(Id {𝓤} {X})
 Id-Embedding-Lemma {𝓤} fe {X} iflc A (x₀ , p₀) = h (x₀ , p₀)
  where
-  T = Σ x ꞉ X , Id x ≡ A
-  q : Σ (Id x₀) ≡ Σ A
+  T = Σ x ꞉ X , Id x ＝ A
+  q : Σ (Id x₀) ＝ Σ A
   q = ap Σ p₀
   c : ∃! A
   c = yoneda-nat (singleton-type x₀) is-singleton (singleton-types-are-singletons x₀) (Σ A) q
-  f₀ : (x : X) → Id x ≡ A → (y : X) → Id x y ≡ A y
+  f₀ : (x : X) → Id x ＝ A → (y : X) → Id x y ＝ A y
   f₀ x = happly
-  f₁ : (x : X) → ((y : X) → Id x y ≡ A y) → Nat (Id x) A
+  f₁ : (x : X) → ((y : X) → Id x y ＝ A y) → Nat (Id x) A
   f₁ x = NatΠ (λ y → idtofun (Id x y) (A y))
   f₂ : (x : X) → Nat (Id x) A → A x
   f₂ x = yoneda-elem x A
-  f : (x : X) → Id x ≡ A → A x
+  f : (x : X) → Id x ＝ A → A x
   f x = f₂ x ∘ f₁ x ∘ f₀ x
   f₀-lc : (x : X) → left-cancellable(f₀ x)
   f₀-lc x = happly-lc (fe 𝓤 (𝓤 ⁺)) (Id x) A
   f₁-lc : (x : X) → left-cancellable(f₁ x)
   f₁-lc x = g
     where
-      l : ∀ {φ φ'} → f₁ x φ ≡ f₁ x φ' → (x : X) → φ x ≡ φ' x
+      l : ∀ {φ φ'} → f₁ x φ ＝ f₁ x φ' → (x : X) → φ x ＝ φ' x
       l {φ} {φ'} = NatΠ-lc (λ y → idtofun (Id x y) (A y)) (λ y → iflc x y A)
-      g : ∀ {φ φ'} → f₁ x φ ≡ f₁ x φ' → φ ≡ φ'
+      g : ∀ {φ φ'} → f₁ x φ ＝ f₁ x φ' → φ ＝ φ'
       g p = dfunext (fe 𝓤 (𝓤 ⁺)) (l p)
   f₂-lc : (x : X) → left-cancellable(f₂ x)
   f₂-lc x {η} {η'} p = dfunext (fe 𝓤 𝓤) (λ y → dfunext (fe 𝓤 𝓤) (l y))
@@ -136,9 +136,9 @@ eqtofun-lc : is-univalent 𝓤
            → (X Y : 𝓤 ̇ ) → left-cancellable(Eqtofun X Y)
 eqtofun-lc ua fe X Y {f , jef} {g , jeg} p = γ
  where
-  q : yoneda-nat f is-equiv jef g p ≡ jeg
+  q : yoneda-nat f is-equiv jef g p ＝ jeg
   q = being-equiv-is-prop fe g _ _
-  γ : f , jef ≡ g , jeg
+  γ : f , jef ＝ g , jeg
   γ = to-Σ-Id (p , q)
 
 \end{code}
@@ -192,14 +192,14 @@ Added 7th Feb 2019.
 \begin{code}
 
 Id-set : {X : 𝓤 ̇ } → is-set X → X → (X → Ω 𝓤)
-Id-set i x y = (x ≡ y) , i
+Id-set i x y = (x ＝ y) , i
 
 Id-set-lc : funext  𝓤 (𝓤 ⁺)
           → {X : 𝓤 ̇ } (i : is-set X)
           → left-cancellable (Id-set i)
 Id-set-lc fe {X} i {x} {y} e = Id-lc d
  where
-  d : Id x ≡ Id y
+  d : Id x ＝ Id y
   d = dfunext fe (λ z → ap pr₁ (happly e z))
 
 Id-set-is-embedding : funext  𝓤 (𝓤 ⁺)

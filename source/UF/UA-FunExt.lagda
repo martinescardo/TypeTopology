@@ -27,7 +27,7 @@ open import UF.Equiv-FunExt
 naive-univalence-gives-funext : is-univalent 𝓤 → ∀ {𝓥} → naive-funext 𝓥 𝓤
 naive-univalence-gives-funext {𝓤} ua {𝓥} {X} {Y} {f₀} {f₁} h = γ
  where
-  Δ = Σ y₀ ꞉ Y , Σ y₁ ꞉ Y , y₀ ≡ y₁
+  Δ = Σ y₀ ꞉ Y , Σ y₁ ꞉ Y , y₀ ＝ y₁
 
   δ : Y → Δ
   δ y = (y , y , refl)
@@ -39,12 +39,12 @@ naive-univalence-gives-funext {𝓤} ua {𝓥} {X} {Y} {f₀} {f₁} h = γ
   δ-is-equiv : is-equiv δ
   δ-is-equiv = (π₀ , η) , (π₀ , ε)
    where
-    η : (d : Δ) → δ (π₀ d) ≡ d
+    η : (d : Δ) → δ (π₀ d) ＝ d
     η (y₀ , y₁ , refl) = refl
-    ε : (y : Y) → π₀ (δ y) ≡ y
+    ε : (y : Y) → π₀ (δ y) ＝ y
     ε y = refl
 
-  πδ : π₀ ∘ δ ≡ π₁ ∘ δ
+  πδ : π₀ ∘ δ ＝ π₁ ∘ δ
   πδ = refl
 
   φ : (Δ → Y) → (Y → Y)
@@ -53,15 +53,15 @@ naive-univalence-gives-funext {𝓤} ua {𝓥} {X} {Y} {f₀} {f₁} h = γ
   φ-is-equiv : is-equiv φ
   φ-is-equiv = pre-comp-is-equiv ua δ δ-is-equiv
 
-  π₀-equals-π₁ : π₀ ≡ π₁
+  π₀-equals-π₁ : π₀ ＝ π₁
   π₀-equals-π₁ = is-equiv-lc φ φ-is-equiv πδ
 
-  γ : f₀ ≡ f₁
-  γ = f₀                              ≡⟨ refl ⟩
-      (λ x → f₀ x)                    ≡⟨ refl ⟩
-      (λ x → π₀ (f₀ x , f₁ x , h x))  ≡⟨ ap (λ π x → π (f₀ x , f₁ x , h x)) π₀-equals-π₁ ⟩
-      (λ x → π₁ (f₀ x , f₁ x , h x))  ≡⟨ refl ⟩
-      (λ x → f₁ x)                    ≡⟨ refl ⟩
+  γ : f₀ ＝ f₁
+  γ = f₀                              ＝⟨ refl ⟩
+      (λ x → f₀ x)                    ＝⟨ refl ⟩
+      (λ x → π₀ (f₀ x , f₁ x , h x))  ＝⟨ ap (λ π x → π (f₀ x , f₁ x , h x)) π₀-equals-π₁ ⟩
+      (λ x → π₁ (f₀ x , f₁ x , h x))  ＝⟨ refl ⟩
+      (λ x → f₁ x)                    ＝⟨ refl ⟩
       f₁                              ∎
 
 \end{code}
@@ -100,7 +100,7 @@ open import UF.Subsingletons-FunExt
                       → {p q : Ω 𝓤}
                       → (p holds → q holds)
                       → (q holds → p holds)
-                      → p ≡ q
+                      → p ＝ q
 Ω-ext-from-univalence {𝓤} ua {p} {q} = Ω-extensionality
                                          (univalence-gives-funext ua)
                                          (univalence-gives-propext ua)
@@ -123,7 +123,7 @@ prop-eqtoid : propositional-univalence 𝓤
             → (P : 𝓤 ̇ )
             → is-prop P
             → (Y : 𝓤 ̇ )
-            → P ≃ Y → P ≡ Y
+            → P ≃ Y → P ＝ Y
 prop-eqtoid pu P i Y = inverse (idtoeq P Y) (pu P i Y)
 
 
@@ -137,13 +137,13 @@ propositional-JEq : propositional-univalence 𝓤
                   → (𝓥 : Universe) → propositional-≃-induction 𝓤 𝓥
 propositional-JEq {𝓤} pu 𝓥 P i A b Y e = γ
  where
-  A' : (Y : 𝓤 ̇ ) → P ≡ Y → 𝓥 ̇
+  A' : (Y : 𝓤 ̇ ) → P ＝ Y → 𝓥 ̇
   A' Y q = A Y (idtoeq P Y q)
 
   b' : A' P refl
   b' = b
 
-  f' : (Y : 𝓤 ̇ ) (q : P ≡ Y) → A' Y q
+  f' : (Y : 𝓤 ̇ ) (q : P ＝ Y) → A' Y q
   f' = Jbased P A' b'
 
   g : A Y (idtoeq P Y (prop-eqtoid pu P i Y e))
@@ -179,7 +179,7 @@ propositional-univalence-gives-naive-prop-valued-funext : propositional-univalen
 propositional-univalence-gives-naive-prop-valued-funext {𝓤} {𝓥} pu X Y Y-is-prop f₀ f₁ = γ
  where
   Δ : 𝓤 ̇
-  Δ = Σ y₀ ꞉ Y , Σ y₁ ꞉ Y , y₀ ≡ y₁
+  Δ = Σ y₀ ꞉ Y , Σ y₁ ꞉ Y , y₀ ＝ y₁
 
   δ : Y → Δ
   δ y = (y , y , refl)
@@ -191,13 +191,13 @@ propositional-univalence-gives-naive-prop-valued-funext {𝓤} {𝓥} pu X Y Y-i
   δ-is-equiv : is-equiv δ
   δ-is-equiv = (π₀ , η) , (π₀ , ε)
    where
-    η : (d : Δ) → δ (π₀ d) ≡ d
+    η : (d : Δ) → δ (π₀ d) ＝ d
     η (y₀ , y₁ , refl) = refl
 
-    ε : (y : Y) → π₀ (δ y) ≡ y
+    ε : (y : Y) → π₀ (δ y) ＝ y
     ε y = refl
 
-  πδ : π₀ ∘ δ ≡ π₁ ∘ δ
+  πδ : π₀ ∘ δ ＝ π₁ ∘ δ
   πδ = refl
 
   φ : (Δ → Y) → (Y → Y)
@@ -206,18 +206,18 @@ propositional-univalence-gives-naive-prop-valued-funext {𝓤} {𝓥} pu X Y Y-i
   φ-is-equiv : is-equiv φ
   φ-is-equiv = prop-precomp-is-equiv pu Y Δ Y Y-is-prop δ δ-is-equiv
 
-  π₀-equals-π₁ : π₀ ≡ π₁
+  π₀-equals-π₁ : π₀ ＝ π₁
   π₀-equals-π₁ = equivs-are-lc φ φ-is-equiv πδ
 
-  γ : f₀ ≡ f₁
-  γ = f₀                              ≡⟨ refl ⟩
-      (λ x → f₀ x)                    ≡⟨ refl ⟩
-      (λ x → π₀ (f₀ x , f₁ x , h x))  ≡⟨ ap (λ π x → π (f₀ x , f₁ x , h x)) π₀-equals-π₁ ⟩
-      (λ x → π₁ (f₀ x , f₁ x , h x))  ≡⟨ refl ⟩
-      (λ x → f₁ x)                    ≡⟨ refl ⟩
+  γ : f₀ ＝ f₁
+  γ = f₀                              ＝⟨ refl ⟩
+      (λ x → f₀ x)                    ＝⟨ refl ⟩
+      (λ x → π₀ (f₀ x , f₁ x , h x))  ＝⟨ ap (λ π x → π (f₀ x , f₁ x , h x)) π₀-equals-π₁ ⟩
+      (λ x → π₁ (f₀ x , f₁ x , h x))  ＝⟨ refl ⟩
+      (λ x → f₁ x)                    ＝⟨ refl ⟩
       f₁                              ∎
    where
-    h : (x : X) → f₀ x ≡ f₁ x
+    h : (x : X) → f₀ x ＝ f₁ x
     h x = Y-is-prop (f₀ x) (f₁ x)
 
 \end{code}

@@ -221,7 +221,7 @@ and the way-below relation.
 \begin{code}
 
  _approximates_ : Ind → ⟨ 𝓓 ⟩ → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
- (I , α , δ) approximates x = (∐ 𝓓 δ ≡ x) × ((i : I) → α i ≪⟨ 𝓓 ⟩ x)
+ (I , α , δ) approximates x = (∐ 𝓓 δ ＝ x) × ((i : I) → α i ≪⟨ 𝓓 ⟩ x)
 
  approximates-is-prop : (σ : Ind) (x : ⟨ 𝓓 ⟩) → is-prop (σ approximates x)
  approximates-is-prop σ x =
@@ -252,7 +252,7 @@ and the way-below relation.
      where
       h : (I , α , δ) ≲ (J , β , ε)
       h = rl-implication (ladj (J , β , ε)) x-below-∐β
-    x-is-sup-of-α : ∐ 𝓓 δ ≡ x
+    x-is-sup-of-α : ∐ 𝓓 δ ＝ x
     x-is-sup-of-α = antisymmetry 𝓓 (∐ 𝓓 δ) x ⦅1⦆ ⦅2⦆
      where
       ⦅1⦆ : ∐ 𝓓 δ ⊑⟨ 𝓓 ⟩ x
@@ -298,7 +298,7 @@ now.
    γ = rl-implication (L-left-adjoint x (L y)) x-below-∐-Ly
     where
      x-below-∐-Ly = x           ⊑⟨ 𝓓 ⟩[ x-below-y             ]
-                    y           ⊑⟨ 𝓓 ⟩[ ≡-to-⊒ 𝓓 (pr₁ approx) ]
+                    y           ⊑⟨ 𝓓 ⟩[ ＝-to-⊒ 𝓓 (pr₁ approx) ]
                     ∐-map (L y) ∎⟨ 𝓓 ⟩
       where
        approx : L y approximates y
@@ -346,7 +346,7 @@ module Ind-completion-poset-reflection
  ∐-map/ : Ind/≈ → ⟨ 𝓓 ⟩
  ∐-map/ = ∃!-witness ∐-map/-specification
 
- ∐-map/-triangle : (α : Ind) → ∐-map/ (η α) ≡ ∐-map α
+ ∐-map/-triangle : (α : Ind) → ∐-map/ (η α) ＝ ∐-map α
  ∐-map/-triangle = pr₂ (∃!-is-witness ∐-map/-specification)
 
  left-adjoint-to-∐-map/ : (⟨ 𝓓 ⟩ → Ind/≈)
@@ -367,7 +367,7 @@ module Ind-completion-poset-reflection
  ∐-map/-having-left-adjoint-is-prop : is-prop ∐-map/-has-specified-left-adjoint
  ∐-map/-having-left-adjoint-is-prop
   (L , L-is-left-adjoint) (L' , L'-is-left-adjoint) =
-   to-subtype-≡ being-left-adjoint-to-∐-map/-is-prop
+   to-subtype-＝ being-left-adjoint-to-∐-map/-is-prop
                 (dfunext fe (λ x → ≤-is-antisymmetric (L x) (L' x)
                   (rl-implication (L-is-left-adjoint x (L' x))
                                   (lr-implication (L'-is-left-adjoint x (L' x))

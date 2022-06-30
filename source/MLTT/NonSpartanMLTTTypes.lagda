@@ -17,11 +17,11 @@ data Maybe {𝓤 : Universe} (A : 𝓤 ̇ ) : 𝓤 ̇ where
 Just-is-not-Nothing : {A : 𝓤 ̇ } {a : A} → Just a ≢ Nothing
 Just-is-not-Nothing ()
 
-Nothing-is-isolated : {A : 𝓤 ̇ } (x : Maybe A) → decidable (Nothing ≡ x)
+Nothing-is-isolated : {A : 𝓤 ̇ } (x : Maybe A) → decidable (Nothing ＝ x)
 Nothing-is-isolated Nothing  = inl refl
-Nothing-is-isolated (Just a) = inr (λ (p : Nothing ≡ Just a) → Just-is-not-Nothing (p ⁻¹))
+Nothing-is-isolated (Just a) = inr (λ (p : Nothing ＝ Just a) → Just-is-not-Nothing (p ⁻¹))
 
-Nothing-is-isolated' : {A : 𝓤 ̇ } (x : Maybe A) → decidable (x ≡ Nothing)
+Nothing-is-isolated' : {A : 𝓤 ̇ } (x : Maybe A) → decidable (x ＝ Nothing)
 Nothing-is-isolated' Nothing  = inl refl
 Nothing-is-isolated' (Just a) = inr Just-is-not-Nothing
 
@@ -30,11 +30,11 @@ open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.Subsingletons
 
-Nothing-is-h-isolated : {A : 𝓤 ̇ } (x : Maybe A) → is-prop (Nothing ≡ x)
+Nothing-is-h-isolated : {A : 𝓤 ̇ } (x : Maybe A) → is-prop (Nothing ＝ x)
 Nothing-is-h-isolated x = isolated-is-h-isolated Nothing Nothing-is-isolated
 
-Nothing-is-h-isolated' : {A : 𝓤 ̇ } (x : Maybe A) → is-prop (x ≡ Nothing)
-Nothing-is-h-isolated' x = equiv-to-prop ≡-flip (Nothing-is-h-isolated x)
+Nothing-is-h-isolated' : {A : 𝓤 ̇ } (x : Maybe A) → is-prop (x ＝ Nothing)
+Nothing-is-h-isolated' x = equiv-to-prop ＝-flip (Nothing-is-h-isolated x)
 
 data Bool : 𝓤₀ ̇ where
  true false : Bool
@@ -50,7 +50,7 @@ Bool-induction : (A : Bool → 𝓤 ̇ ) → A true → A false → (b : Bool) �
 Bool-induction A x y true  = x
 Bool-induction A x y false = y
 
-Bool-equality-cases : {A : 𝓤 ̇ } (x : Bool) → (x ≡ true → A) → (x ≡ false → A) → A
+Bool-equality-cases : {A : 𝓤 ̇ } (x : Bool) → (x ＝ true → A) → (x ＝ false → A) → A
 Bool-equality-cases true  f g = f refl
 Bool-equality-cases false f g = g refl
 
@@ -66,25 +66,25 @@ false || y = y
 true  && y = y
 false && y = false
 
-true-right-||-absorptive : (x : Bool) → x || true ≡ true
+true-right-||-absorptive : (x : Bool) → x || true ＝ true
 true-right-||-absorptive true  = refl
 true-right-||-absorptive false = refl
 
-||-left-intro : ({x} y : Bool) → x ≡ true → x || y ≡ true
+||-left-intro : ({x} y : Bool) → x ＝ true → x || y ＝ true
 ||-left-intro {true} y e = refl
 
-||-right-intro : ({x} y : Bool) → y ≡ true → x || y ≡ true
+||-right-intro : ({x} y : Bool) → y ＝ true → x || y ＝ true
 ||-right-intro {true}  true e = refl
 ||-right-intro {false} true e = refl
 
-||-gives-+ : {x y : Bool} → x || y ≡ true → (x ≡ true) + (y ≡ true)
+||-gives-+ : {x y : Bool} → x || y ＝ true → (x ＝ true) + (y ＝ true)
 ||-gives-+ {true}  {y}    _ = inl refl
 ||-gives-+ {false} {true} _ = inr refl
 
-&&-gives-× : {x y : Bool} → x && y ≡ true → (x ≡ true) × (y ≡ true)
+&&-gives-× : {x y : Bool} → x && y ＝ true → (x ＝ true) × (y ＝ true)
 &&-gives-× {true} {true} _ = refl , refl
 
-&&-intro : {x y : Bool} → x ≡ true → y ≡ true → x && y ≡ true
+&&-intro : {x y : Bool} → x ＝ true → y ＝ true → x && y ＝ true
 &&-intro {true} {true} refl refl = refl
 
 infixl 10 _||_
@@ -93,7 +93,7 @@ infixl 20 _&&_
 record Eq {𝓤} (X : 𝓤 ̇ ) : 𝓤 ̇  where
   field
     _==_    : X → X → Bool
-    ==-refl : (x : X) → (x == x) ≡ true
+    ==-refl : (x : X) → (x == x) ＝ true
 
 open Eq {{...}} public
 
@@ -135,46 +135,46 @@ module list-util
   (x ∷ xs) contained-in ys = (x is-in ys) && (xs contained-in ys)
 
   contained-lemma₀ : (x z : X) (xs ys : List X)
-                   → ys contained-in (x ∷ xs) ≡ true
-                   → ys contained-in (x ∷ z ∷ xs) ≡ true
+                   → ys contained-in (x ∷ xs) ＝ true
+                   → ys contained-in (x ∷ z ∷ xs) ＝ true
   contained-lemma₀ x z xs []       e = e
   contained-lemma₀ x z xs (y ∷ ys) e = γ
    where
-    IH : ys contained-in (x ∷ xs) ≡ true → ys contained-in (x ∷ z ∷ xs) ≡ true
+    IH : ys contained-in (x ∷ xs) ＝ true → ys contained-in (x ∷ z ∷ xs) ＝ true
     IH = contained-lemma₀ x z xs ys
 
-    e₁ : (y == x) || (y is-in xs) ≡ true
+    e₁ : (y == x) || (y is-in xs) ＝ true
     e₁ = pr₁ (&&-gives-× e)
 
-    e₂ : ys contained-in (x ∷ xs) ≡ true
+    e₂ : ys contained-in (x ∷ xs) ＝ true
     e₂ = pr₂ (&&-gives-× e)
 
-    a : (y == x) || ((y == z) || (y is-in xs)) ≡ true
+    a : (y == x) || ((y == z) || (y is-in xs)) ＝ true
     a = Cases (||-gives-+ e₁)
-         (λ (e : (y == x) ≡ true)   → ||-left-intro ((y == z) || (y is-in xs)) e)
-         (λ (e : y is-in xs ≡ true) → ||-right-intro {y == x} ((y == z) || (y is-in xs)) (||-right-intro (y is-in xs) e))
+         (λ (e : (y == x) ＝ true)   → ||-left-intro ((y == z) || (y is-in xs)) e)
+         (λ (e : y is-in xs ＝ true) → ||-right-intro {y == x} ((y == z) || (y is-in xs)) (||-right-intro (y is-in xs) e))
 
-    b : ys contained-in (x ∷ z ∷ xs) ≡ true
+    b : ys contained-in (x ∷ z ∷ xs) ＝ true
     b = IH e₂
 
-    γ : ((y == x) || ((y == z) || (y is-in xs))) && (ys contained-in (x ∷ z ∷ xs)) ≡ true
+    γ : ((y == x) || ((y == z) || (y is-in xs))) && (ys contained-in (x ∷ z ∷ xs)) ＝ true
     γ = &&-intro a b
 
   contained-lemma₁ : (x : X) (ys : List X)
-                   → ys contained-in (x ∷ ys) ≡ true
+                   → ys contained-in (x ∷ ys) ＝ true
   contained-lemma₁ x []       = refl
   contained-lemma₁ x (y ∷ ys) = γ
    where
-    IH : ys contained-in (x ∷ ys) ≡ true
+    IH : ys contained-in (x ∷ ys) ＝ true
     IH = contained-lemma₁ x ys
 
-    a : y == x || (y == y || (y is-in ys)) ≡ true
+    a : y == x || (y == y || (y is-in ys)) ＝ true
     a = ||-right-intro {y == x} ((y == y) || (y is-in ys)) (||-left-intro (y is-in ys) (==-refl y))
 
-    b : ys contained-in (x ∷ y ∷ ys) ≡ true
+    b : ys contained-in (x ∷ y ∷ ys) ＝ true
     b = contained-lemma₀ x y ys ys IH
 
-    γ : (y == x || (y == y || (y is-in ys))) && (ys contained-in (x ∷ y ∷ ys)) ≡ true
+    γ : (y == x || (y == y || (y is-in ys))) && (ys contained-in (x ∷ y ∷ ys)) ＝ true
     γ = &&-intro a b
 
   some-contained : List (List X) → List X → Bool
@@ -217,7 +217,7 @@ Fin-== {succ n} (suc x) 𝟎       = false
 Fin-== {succ n} 𝟎       (suc y) = false
 Fin-== {succ n} 𝟎       𝟎       = true
 
-Fin-refl : {n : ℕ} (x : Fin n) → (Fin-== x x) ≡ true
+Fin-refl : {n : ℕ} (x : Fin n) → (Fin-== x x) ＝ true
 Fin-refl {succ n} (suc x) = Fin-refl {n} x
 Fin-refl {succ n} 𝟎       = refl
 

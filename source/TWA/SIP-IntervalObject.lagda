@@ -76,12 +76,12 @@ midpoint-algebra-sns = add-axioms midpoint-algebra-axioms s
 _≊⟨midpoint-algebra⟩_ : midpoint-algebra → midpoint-algebra → 𝓤 ̇
 (X , _⊕_ , _) ≊⟨midpoint-algebra⟩ (Y , _⊗_ , _)
  = Σ f ꞉ (X → Y) , is-equiv f
-                 × ((λ x y → f (x ⊕ y)) ≡ (λ x y → f x ⊗ f y))
+                 × ((λ x y → f (x ⊕ y)) ＝ (λ x y → f x ⊗ f y))
 
-characterization-of-midpoint-algebra-≡ : is-univalent 𝓤
+characterization-of-midpoint-algebra-＝ : is-univalent 𝓤
                                        → (A B : midpoint-algebra)
-                                       → (A ≡ B) ≃ (A ≊⟨midpoint-algebra⟩ B)
-characterization-of-midpoint-algebra-≡ ua = characterization-of-≡ ua
+                                       → (A ＝ B) ≃ (A ≊⟨midpoint-algebra⟩ B)
+characterization-of-midpoint-algebra-＝ ua = characterization-of-＝ ua
                                             midpoint-algebra-sns
 
 \end{code}
@@ -99,9 +99,9 @@ convex-body = Σ (convex-body-structure)
 full-iterative-uniqueness : (A : 𝓤 ̇ ) → (_⊕_ : A → A → A)
                           → is-set A
                           → (F M : iterative _⊕_)
-                          → F ≡ M
+                          → F ＝ M
 full-iterative-uniqueness A _⊕_ i M₁-iterative M₂-iterative
-   = to-subtype-≡
+   = to-subtype-＝
      (λ M → ×-is-prop
              (Π-is-prop fe (λ a → i {M a} {a 0 ⊕ M (a ∘ succ)}))
              (Π-is-prop fe (λ a → Π-is-prop fe
@@ -133,10 +133,10 @@ _≊⟨convex-body⟩_ : convex-body → convex-body → 𝓤 ̇
 (X , _⊕_ , mx , _) ≊⟨convex-body⟩ (Y , _⊗_ , my , _)
  = (X , _⊕_ , mx) ≊⟨midpoint-algebra⟩ (Y , _⊗_ , my)
 
-characterization-of-convex-body-≡ : is-univalent 𝓤
+characterization-of-convex-body-＝ : is-univalent 𝓤
                                   → (A B : convex-body)
-                                  → (A ≡ B) ≃ (A ≊⟨convex-body⟩ B)
-characterization-of-convex-body-≡ ua = characterization-of-≡ ua
+                                  → (A ＝ B) ≃ (A ≊⟨convex-body⟩ B)
+characterization-of-convex-body-＝ ua = characterization-of-＝ ua
                                        convex-body-sns
 
 \end{code}
@@ -185,48 +185,48 @@ _≊⟨interval-object⟩_ : {𝓥 : Universe}
                      → interval-object 𝓥 → interval-object 𝓥 → 𝓤 ̇
 (X , (_⊕_ , u , v) , _)  ≊⟨interval-object⟩ (Y , (_⊗_ , s , t) , _)
  = Σ f ꞉ (X → Y) , is-equiv f
-                 × (((λ x y → f (x ⊕ y)) ≡ (λ x y → f x ⊗ f y)))
-                 × (f u ≡ s) × (f v ≡ t)
+                 × (((λ x y → f (x ⊕ y)) ＝ (λ x y → f x ⊗ f y)))
+                 × (f u ＝ s) × (f v ＝ t)
 
-characterization-of-interval-object-≡ : {𝓥 : Universe} → is-univalent 𝓤
+characterization-of-interval-object-＝ : {𝓥 : Universe} → is-univalent 𝓤
                                       → (A B : interval-object 𝓥)
-                                      → (A ≡ B) ≃ (A ≊⟨interval-object⟩ B)
-characterization-of-interval-object-≡ {𝓥} ua = characterization-of-≡ ua
+                                      → (A ＝ B) ≃ (A ≊⟨interval-object⟩ B)
+characterization-of-interval-object-＝ {𝓥} ua = characterization-of-＝ ua
                                                (interval-object-sns 𝓥)
 
 all-interval-objects-equiv : (A B : interval-object 𝓤) → A ≊⟨interval-object⟩ B
 all-interval-objects-equiv (X , (_⊕_ , u , v) , p , up) (Y , (_⊗_ , s , t) , p' , up')
- = h , ((h' , happly h∘h'≡id) , (h' , happly h'∘h≡id))
+ = h , ((h' , happly h∘h'＝id) , (h' , happly h'∘h＝id))
  , dfunext fe (λ x → dfunext fe (λ y → hᵢ x y)) , hₗ , hᵣ
  where
-  hX→Y! : ∃! (λ h → (h u ≡ s) × (h v ≡ t) × ((a b : X) → h (a ⊕ b) ≡ h a ⊗ h b))
+  hX→Y! : ∃! (λ h → (h u ＝ s) × (h v ＝ t) × ((a b : X) → h (a ⊕ b) ＝ h a ⊗ h b))
   hX→Y! = up (Y , _⊗_ , p') s t
-  hY→X! : ∃! (λ h → (h s ≡ u) × (h t ≡ v) × ((a b : Y) → h (a ⊗ b) ≡ h a ⊕ h b))
+  hY→X! : ∃! (λ h → (h s ＝ u) × (h t ＝ v) × ((a b : Y) → h (a ⊗ b) ＝ h a ⊕ h b))
   hY→X! = up' (X , _⊕_ , p) u v
   h : X → Y
   h = ∃!-witness hX→Y!
-  hₗ : h u ≡ s
+  hₗ : h u ＝ s
   hₗ = pr₁ (∃!-is-witness hX→Y!)
-  hᵣ : h v ≡ t
+  hᵣ : h v ＝ t
   hᵣ = pr₁ (pr₂ (∃!-is-witness hX→Y!))
-  hᵢ : (a b : X) → h (a ⊕ b) ≡ h a ⊗ h b
+  hᵢ : (a b : X) → h (a ⊕ b) ＝ h a ⊗ h b
   hᵢ = pr₂ (pr₂ (∃!-is-witness hX→Y!))
   h' : Y → X
   h' = ∃!-witness hY→X!
-  h'ₗ : h' s ≡ u
+  h'ₗ : h' s ＝ u
   h'ₗ = pr₁ (∃!-is-witness hY→X!)
-  h'ᵣ : h' t ≡ v
+  h'ᵣ : h' t ＝ v
   h'ᵣ = pr₁ (pr₂ (∃!-is-witness hY→X!))
-  h'ᵢ : (a b : Y) → h' (a ⊗ b) ≡ h' a ⊕ h' b
+  h'ᵢ : (a b : Y) → h' (a ⊗ b) ＝ h' a ⊕ h' b
   h'ᵢ = pr₂ (pr₂ (∃!-is-witness hY→X!))
-  h∘h'≡id : h ∘ h' ≡ id
-  h∘h'≡id = ap pr₁ (∃!-uniqueness'' (up' (Y , _⊗_ , p') s t)
+  h∘h'＝id : h ∘ h' ＝ id
+  h∘h'＝id = ap pr₁ (∃!-uniqueness'' (up' (Y , _⊗_ , p') s t)
               (h ∘ h' , (ap h h'ₗ ∙ hₗ) , (ap h h'ᵣ ∙ hᵣ)
                       , λ a b → ap h (h'ᵢ a b) ∙ hᵢ (h' a) (h' b))
               (id     , refl            , refl
                       , λ a b → refl))
-  h'∘h≡id : h' ∘ h ≡ id
-  h'∘h≡id = ap pr₁ (∃!-uniqueness'' (up (X , _⊕_ , p) u v)
+  h'∘h＝id : h' ∘ h ＝ id
+  h'∘h＝id = ap pr₁ (∃!-uniqueness'' (up (X , _⊕_ , p) u v)
               (h' ∘ h , (ap h' hₗ ∙ h'ₗ) , (ap h' hᵣ ∙ h'ᵣ)
                       , λ a b → ap h' (hᵢ a b) ∙ h'ᵢ (h a) (h b))
               (id     , refl            , refl
@@ -235,7 +235,7 @@ all-interval-objects-equiv (X , (_⊕_ , u , v) , p , up) (Y , (_⊗_ , s , t) ,
 interval-object-prop : is-univalent 𝓤 → is-prop (interval-object 𝓤)
 interval-object-prop ua A B = f (all-interval-objects-equiv A B)
  where
-  f : A ≊⟨interval-object⟩ B → A ≡ B
-  f = pr₁ (pr₁ (pr₂ (characterization-of-interval-object-≡ ua A B)))
+  f : A ≊⟨interval-object⟩ B → A ＝ B
+  f = pr₁ (pr₁ (pr₂ (characterization-of-interval-object-＝ ua A B)))
 
 \end{code}

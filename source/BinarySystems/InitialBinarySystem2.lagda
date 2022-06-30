@@ -34,13 +34,13 @@ r L     = C
 r R     = R
 r (η x) = η (right x)
 
-𝕄-eq-l : L ≡ l L
+𝕄-eq-l : L ＝ l L
 𝕄-eq-l = refl
 
-𝕄-eq-r : R ≡ r R
+𝕄-eq-r : R ＝ r R
 𝕄-eq-r = refl
 
-𝕄-eq-lr : l R ≡ r L
+𝕄-eq-lr : l R ＝ r L
 𝕄-eq-lr = refl
 
 open import UF.Subsingletons hiding (center)
@@ -52,9 +52,9 @@ open import UF.Subsingletons hiding (center)
              → ((x : 𝕄) → P x → P (r x))
              → 𝓤 ̇
 𝕄-inductive P a b f g = ((x : 𝕄) → is-set (P x))
-                       × (a ≡ f L a)
-                       × (f R b ≡ g L a)
-                       × (b ≡ g R b)
+                       × (a ＝ f L a)
+                       × (f R b ＝ g L a)
+                       × (b ＝ g R b)
 
 
 𝕄-induction : (P : 𝕄 → 𝓤 ̇ )
@@ -83,7 +83,7 @@ are the expected ones.
                 (f : (x : 𝕄) → P x → P (l x))
                 (g : (x : 𝕄) → P x → P (r x))
                 (ι : 𝕄-inductive P a b f g)
-              → 𝕄-induction P a b f g ι L ≡ a
+              → 𝕄-induction P a b f g ι L ＝ a
 
 𝕄-induction-L P a b f g _ = refl
 
@@ -94,14 +94,14 @@ are the expected ones.
                 (f : (x : 𝕄) → P x → P (l x))
                 (g : (x : 𝕄) → P x → P (r x))
                 (ι : 𝕄-inductive P a b f g)
-               → 𝕄-induction P a b f g ι R ≡ b
+               → 𝕄-induction P a b f g ι R ＝ b
 
 𝕄-induction-R P a b f g _ = refl
 
 \end{code}
 
 For the next equation for the induction principle, we need the
-assumption a ≡ f L a:
+assumption a ＝ f L a:
 
 \begin{code}
 
@@ -111,7 +111,7 @@ assumption a ≡ f L a:
                 (f : (x : 𝕄) → P x → P (l x))
                 (g : (x : 𝕄) → P x → P (r x))
               → (ι : 𝕄-inductive P a b f g)
-              → (x : 𝕄) → 𝕄-induction P a b f g ι (l x) ≡ f x (𝕄-induction P a b f g ι x)
+              → (x : 𝕄) → 𝕄-induction P a b f g ι (l x) ＝ f x (𝕄-induction P a b f g ι x)
 
 𝕄-induction-l P a b f g ι L     = pr₁ (pr₂ ι)
 𝕄-induction-l P a b f g ι R     = refl
@@ -120,7 +120,7 @@ assumption a ≡ f L a:
 \end{code}
 
 And for the last equation for the induction principle, we need the two
-equations f R b ≡ g L a and b ≡ g R b as assumptions:
+equations f R b ＝ g L a and b ＝ g R b as assumptions:
 
 \begin{code}
 
@@ -130,7 +130,7 @@ equations f R b ≡ g L a and b ≡ g R b as assumptions:
                 (f : (x : 𝕄) → P x → P (l x))
                 (g : (x : 𝕄) → P x → P (r x))
               → (ι : 𝕄-inductive P a b f g)
-              → (x : 𝕄) → 𝕄-induction P a b f g ι (r x) ≡ g x (𝕄-induction P a b f g ι x)
+              → (x : 𝕄) → 𝕄-induction P a b f g ι (r x) ＝ g x (𝕄-induction P a b f g ι x)
 
 𝕄-induction-r P a b f g ι L     = pr₁ (pr₂ (pr₂ ι))
 𝕄-induction-r P a b f g ι R     = pr₂ (pr₂ (pr₂ ι))
@@ -140,31 +140,31 @@ equations f R b ≡ g L a and b ≡ g R b as assumptions:
 
 \begin{code}
 
-left-lc : (x y : 𝔹) → left x ≡ left y → x ≡ y
+left-lc : (x y : 𝔹) → left x ＝ left y → x ＝ y
 left-lc x x refl = refl
 
-right-lc : (x y : 𝔹) → right x ≡ right y → x ≡ y
+right-lc : (x y : 𝔹) → right x ＝ right y → x ＝ y
 right-lc x x refl = refl
 
-𝔹-is-discrete : (x y : 𝔹) → (x ≡ y) + (x ≢ y)
+𝔹-is-discrete : (x y : 𝔹) → (x ＝ y) + (x ≢ y)
 𝔹-is-discrete center   center     = inl refl
 𝔹-is-discrete center   (left y)   = inr (λ ())
 𝔹-is-discrete center   (right y)  = inr (λ ())
 𝔹-is-discrete (left x) center     = inr (λ ())
 𝔹-is-discrete (left x) (left y)   = Cases (𝔹-is-discrete x y)
-                                  (λ (p : x ≡ y) → inl (ap left p))
+                                  (λ (p : x ＝ y) → inl (ap left p))
                                   (λ (ν : x ≢ y) → inr (contrapositive (left-lc x y) ν))
 𝔹-is-discrete (left x)  (right y) = inr (λ ())
 𝔹-is-discrete (right x) center    = inr (λ ())
 𝔹-is-discrete (right x) (left y)  = inr (λ ())
 𝔹-is-discrete (right x) (right y) = Cases (𝔹-is-discrete x y)
-                                  (λ (p : x ≡ y) → inl (ap right p))
+                                  (λ (p : x ＝ y) → inl (ap right p))
                                   (λ (ν : x ≢ y) → inr (contrapositive (right-lc x y) ν))
 
-η-lc : (x y : 𝔹) → η x ≡ η y → x ≡ y
+η-lc : (x y : 𝔹) → η x ＝ η y → x ＝ y
 η-lc x x refl = refl
 
-𝕄-is-discrete : (x y : 𝕄) → (x ≡ y) + (x ≢ y)
+𝕄-is-discrete : (x y : 𝕄) → (x ＝ y) + (x ≢ y)
 𝕄-is-discrete L     L     = inl refl
 𝕄-is-discrete L     R     = inr (λ ())
 𝕄-is-discrete L     (η x) = inr (λ ())
@@ -174,7 +174,7 @@ right-lc x x refl = refl
 𝕄-is-discrete (η x) L     = inr (λ ())
 𝕄-is-discrete (η x) R     = inr (λ ())
 𝕄-is-discrete (η x) (η y) = Cases (𝔹-is-discrete x y)
-                              (λ (p : x ≡ y) → inl (ap η p))
+                              (λ (p : x ＝ y) → inl (ap η p))
                               (λ (ν : x ≢ y) → inr (contrapositive (η-lc x y) ν))
 
 open import UF.Miscelanea
@@ -186,7 +186,7 @@ binary-system-structure : 𝓤 ̇ → 𝓤 ̇
 binary-system-structure A = A × A × (A → A) × (A → A)
 
 binary-system-axioms : (A : 𝓤 ̇ ) → binary-system-structure A → 𝓤 ̇
-binary-system-axioms A (a , b , f , g) = is-set A × (a ≡ f a) × (f b ≡ g a) × (b ≡ g b)
+binary-system-axioms A (a , b , f , g) = is-set A × (a ＝ f a) × (f b ＝ g a) × (b ＝ g b)
 
 BS : (𝓤 : Universe) → 𝓤 ⁺ ̇
 BS 𝓤 = Σ A ꞉ 𝓤 ̇ , Σ s ꞉ binary-system-structure A , binary-system-axioms A s
@@ -199,8 +199,8 @@ open sip
 
 is-hom : (𝓐 : BS 𝓤) (𝓐' : BS 𝓥) → (⟨ 𝓐 ⟩ → ⟨ 𝓐' ⟩) → 𝓤 ⊔ 𝓥 ̇
 is-hom (A , (a , b , f , g) , _) (A' , (a' , b' , f' , g') , _) h =
-   (h a ≡ a')
- × (h b ≡ b')
+   (h a ＝ a')
+ × (h b ＝ b')
  × (h ∘ f ∼ f' ∘ h)
  × (h ∘ g ∼ g' ∘ h)
 
@@ -227,16 +227,16 @@ constructs a homomorphism:
  where
   𝓐 = (A , (a , b , f , g) , ι)
 
-  i : 𝓜-rec 𝓐 L ≡ a
+  i : 𝓜-rec 𝓐 L ＝ a
   i = refl
 
-  ii : 𝓜-rec 𝓐 R ≡ b
+  ii : 𝓜-rec 𝓐 R ＝ b
   ii = refl
 
-  iii : (x : 𝕄) → 𝓜-rec 𝓐 (l x) ≡ f (𝓜-rec 𝓐 x)
+  iii : (x : 𝕄) → 𝓜-rec 𝓐 (l x) ＝ f (𝓜-rec 𝓐 x)
   iii = 𝕄-induction-l (λ _ → A) a b (λ _ → f) (λ _ → g) ((λ _ → pr₁ ι) , pr₂ ι)
 
-  iv : (x : 𝕄) → 𝓜-rec 𝓐 (r x) ≡ g (𝓜-rec 𝓐 x)
+  iv : (x : 𝕄) → 𝓜-rec 𝓐 (r x) ＝ g (𝓜-rec 𝓐 x)
   iv = 𝕄-induction-r (λ _ → A) a b (λ _ → f) (λ _ → g) ((λ _ → pr₁ ι) , pr₂ ι)
 
 \end{code}
@@ -265,12 +265,12 @@ Some boiler plate code to name the projections follows:
 
 
 is-hom-L : (𝓐 : BS 𝓤) (𝓑 : BS 𝓥) (h : ⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩)
-            → is-hom 𝓐 𝓑 h → h (⟨ 𝓐 ⟩-L) ≡ ⟨ 𝓑 ⟩-L
+            → is-hom 𝓐 𝓑 h → h (⟨ 𝓐 ⟩-L) ＝ ⟨ 𝓑 ⟩-L
 is-hom-L 𝓐 𝓑 h (i , ii , iii , iv) = i
 
 
 is-hom-R : (𝓐 : BS 𝓤) (𝓑 : BS 𝓥) (h : ⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩)
-             → is-hom 𝓐 𝓑 h → h (⟨ 𝓐 ⟩-R) ≡ ⟨ 𝓑 ⟩-R
+             → is-hom 𝓐 𝓑 h → h (⟨ 𝓐 ⟩-R) ＝ ⟨ 𝓑 ⟩-R
 is-hom-R 𝓐 𝓑 h (i , ii , iii , iv) = ii
 
 
@@ -297,37 +297,37 @@ system.
                  → is-hom 𝓜 𝓐 h
                  → is-hom 𝓜 𝓐 k
                  → h ∼ k
-𝓜-at-most-one-hom 𝓐 h k u v = 𝕄-induction (λ x → h x ≡ k x) α β ϕ γ
+𝓜-at-most-one-hom 𝓐 h k u v = 𝕄-induction (λ x → h x ＝ k x) α β ϕ γ
                                  ((λ x → props-are-sets ⟨ 𝓐 ⟩-is-set) ,
                                   eql , eqlr , eqr)
  where
-  α = h L      ≡⟨ is-hom-L 𝓜 𝓐 h u ⟩
-      ⟨ 𝓐 ⟩-L  ≡⟨ (is-hom-L 𝓜 𝓐 k v)⁻¹ ⟩
+  α = h L      ＝⟨ is-hom-L 𝓜 𝓐 h u ⟩
+      ⟨ 𝓐 ⟩-L  ＝⟨ (is-hom-L 𝓜 𝓐 k v)⁻¹ ⟩
       k L ∎
 
-  β = h R      ≡⟨ is-hom-R 𝓜 𝓐 h u ⟩
-      ⟨ 𝓐 ⟩-R  ≡⟨ (is-hom-R 𝓜 𝓐 k v)⁻¹ ⟩
+  β = h R      ＝⟨ is-hom-R 𝓜 𝓐 h u ⟩
+      ⟨ 𝓐 ⟩-R  ＝⟨ (is-hom-R 𝓜 𝓐 k v)⁻¹ ⟩
       k R ∎
 
-  ϕ : (x : 𝕄) → h x ≡ k x → h (l x) ≡ k (l x)
-  ϕ x p = h (l x)       ≡⟨ is-hom-l 𝓜 𝓐 h u x ⟩
-          ⟨ 𝓐 ⟩-l (h x) ≡⟨ ap ⟨ 𝓐 ⟩-l p ⟩
-          ⟨ 𝓐 ⟩-l (k x) ≡⟨ (is-hom-l 𝓜 𝓐 k v x)⁻¹ ⟩
+  ϕ : (x : 𝕄) → h x ＝ k x → h (l x) ＝ k (l x)
+  ϕ x p = h (l x)       ＝⟨ is-hom-l 𝓜 𝓐 h u x ⟩
+          ⟨ 𝓐 ⟩-l (h x) ＝⟨ ap ⟨ 𝓐 ⟩-l p ⟩
+          ⟨ 𝓐 ⟩-l (k x) ＝⟨ (is-hom-l 𝓜 𝓐 k v x)⁻¹ ⟩
           k (l x)       ∎
 
-  γ : (x : 𝕄) → h x ≡ k x → h (r x) ≡ k (r x)
-  γ x p =  h (r x)       ≡⟨ is-hom-r 𝓜 𝓐 h u x ⟩
-           ⟨ 𝓐 ⟩-r (h x) ≡⟨ ap ⟨ 𝓐 ⟩-r p ⟩
-           ⟨ 𝓐 ⟩-r (k x) ≡⟨ (is-hom-r 𝓜 𝓐 k v x)⁻¹ ⟩
+  γ : (x : 𝕄) → h x ＝ k x → h (r x) ＝ k (r x)
+  γ x p =  h (r x)       ＝⟨ is-hom-r 𝓜 𝓐 h u x ⟩
+           ⟨ 𝓐 ⟩-r (h x) ＝⟨ ap ⟨ 𝓐 ⟩-r p ⟩
+           ⟨ 𝓐 ⟩-r (k x) ＝⟨ (is-hom-r 𝓜 𝓐 k v x)⁻¹ ⟩
            k (r x)       ∎
 
-  eql : α ≡ ϕ L α
+  eql : α ＝ ϕ L α
   eql = ⟨ 𝓐 ⟩-is-set α (ϕ L α)
 
-  eqlr : ϕ R β ≡ γ L α
+  eqlr : ϕ R β ＝ γ L α
   eqlr = ⟨ 𝓐 ⟩-is-set (ϕ R β) (γ L α)
 
-  eqr : β ≡ γ R β
+  eqr : β ＝ γ R β
   eqr = ⟨ 𝓐 ⟩-is-set β (γ R β)
 
 
@@ -352,10 +352,10 @@ case:
 primitive-recursive : {A : 𝓤 ̇ } → A → A → (𝕄 → A → A) → (𝕄 → A → A) → (𝕄 → A) → 𝓤 ̇
 primitive-recursive a b f g h =
 
-         (h L ≡ a)
-       × (h R ≡ b)
-       × ((x : 𝕄) → h (l x) ≡ f x (h x))
-       × ((x : 𝕄) → h (r x) ≡ g x (h x))
+         (h L ＝ a)
+       × (h R ＝ b)
+       × ((x : 𝕄) → h (l x) ＝ f x (h x))
+       × ((x : 𝕄) → h (r x) ＝ g x (h x))
 
 
 
@@ -389,40 +389,40 @@ primitive-recursive a b f g h =
   A-is-set : is-set A
   A-is-set = ι₁ arbitrary-element-of-𝕄
 
-  α = h L ≡⟨ hL ⟩
-      a   ≡⟨ kL ⁻¹ ⟩
+  α = h L ＝⟨ hL ⟩
+      a   ＝⟨ kL ⁻¹ ⟩
       k L ∎
 
-  β = h R ≡⟨ hR ⟩
-      b   ≡⟨ kR ⁻¹ ⟩
+  β = h R ＝⟨ hR ⟩
+      b   ＝⟨ kR ⁻¹ ⟩
       k R ∎
 
-  ϕ : (x : 𝕄) → h x ≡ k x → h (l x) ≡ k (l x)
-  ϕ x p = h (l x)   ≡⟨ hl x ⟩
-          f x (h x) ≡⟨ ap (f x) p ⟩
-          f x (k x) ≡⟨ (kl x)⁻¹ ⟩
+  ϕ : (x : 𝕄) → h x ＝ k x → h (l x) ＝ k (l x)
+  ϕ x p = h (l x)   ＝⟨ hl x ⟩
+          f x (h x) ＝⟨ ap (f x) p ⟩
+          f x (k x) ＝⟨ (kl x)⁻¹ ⟩
           k (l x)   ∎
 
-  γ : (x : 𝕄) → h x ≡ k x → h (r x) ≡ k (r x)
-  γ x p =  h (r x)   ≡⟨ hr x ⟩
-           g x (h x) ≡⟨ ap (g x) p ⟩
-           g x (k x) ≡⟨ (kr x)⁻¹ ⟩
+  γ : (x : 𝕄) → h x ＝ k x → h (r x) ＝ k (r x)
+  γ x p =  h (r x)   ＝⟨ hr x ⟩
+           g x (h x) ＝⟨ ap (g x) p ⟩
+           g x (k x) ＝⟨ (kr x)⁻¹ ⟩
            k (r x)   ∎
 
-  set-condition : (x : 𝕄) → is-set (h x ≡ k x)
+  set-condition : (x : 𝕄) → is-set (h x ＝ k x)
   set-condition x = props-are-sets A-is-set
 
-  eql : α ≡ ϕ L α
+  eql : α ＝ ϕ L α
   eql = A-is-set α (ϕ L α)
 
-  eqlr : ϕ R β ≡ γ L α
+  eqlr : ϕ R β ＝ γ L α
   eqlr = A-is-set (ϕ R β) (γ L α)
 
-  eqr : β ≡ γ R β
+  eqr : β ＝ γ R β
   eqr = A-is-set β (γ R β)
 
   δ : h ∼ k
-  δ = 𝕄-induction (λ x → h x ≡ k x) α β ϕ γ (set-condition , eql , eqlr , eqr)
+  δ = 𝕄-induction (λ x → h x ＝ k x) α β ϕ γ (set-condition , eql , eqlr , eqr)
 
 
 𝕄-primrec-uniqueness : {A : 𝓤 ̇ }
@@ -445,8 +445,8 @@ remove the "base" case in the uniqueness theorem.
 \begin{code}
 
 is-wprimrec : {A : 𝓤 ̇ } → (𝕄 → A → A) → (𝕄 → A → A) → (𝕄 → A) → 𝓤 ̇
-is-wprimrec f g h = ((x : 𝕄) → h (l x) ≡ f x (h x))
-                  × ((x : 𝕄) → h (r x) ≡ g x (h x))
+is-wprimrec f g h = ((x : 𝕄) → h (l x) ＝ f x (h x))
+                  × ((x : 𝕄) → h (r x) ＝ g x (h x))
 
 
 primrec-is-wprimrec : {A : 𝓤 ̇ } (a b : A) (f g : 𝕄 → A → A) (h : 𝕄 → A)
@@ -455,8 +455,8 @@ primrec-is-wprimrec a b f g h (hL , hR , hl , hr) = (hl , hr)
 
 
 fixed-point-conditions : {A : 𝓤 ̇ } → A → A → (𝕄 → A → A) → (𝕄 → A → A) → 𝓤 ̇
-fixed-point-conditions a b f g = (∀ a' → a' ≡ f L a' → a' ≡ a)
-                               × (∀ b' → b' ≡ g R b' → b' ≡ b)
+fixed-point-conditions a b f g = (∀ a' → a' ＝ f L a' → a' ＝ a)
+                               × (∀ b' → b' ＝ g R b' → b' ＝ b)
 
 wprimrec-primitive-recursive : {A : 𝓤 ̇ }
    (a b : A)
@@ -468,14 +468,14 @@ wprimrec-primitive-recursive : {A : 𝓤 ̇ }
 
 wprimrec-primitive-recursive a b f g h (fixa , fixb) (hl , hr) = (hL , hR , hl , hr)
  where
-  hL' = h L       ≡⟨ refl ⟩
-        h (l L)   ≡⟨ hl L ⟩
+  hL' = h L       ＝⟨ refl ⟩
+        h (l L)   ＝⟨ hl L ⟩
         f L (h L) ∎
 
-  hL = h L ≡⟨ fixa (h L) hL' ⟩
+  hL = h L ＝⟨ fixa (h L) hL' ⟩
        a   ∎
 
-  hR : h R ≡ b
+  hR : h R ＝ b
   hR = fixb (h R) (hr R)
 
 
@@ -526,9 +526,9 @@ follows:
 For this to be well defined we need the following endpoint agreement
 conditions:
 
-  (1) a ≡ f L,
-  (2) f R ≡ g L,
-  (3) b ≡ g R.
+  (1) a ＝ f L,
+  (2) f R ＝ g L,
+  (3) b ＝ g R.
 
 If we take a = f L and b = g L, so that (1) and (2) hold, we are left
 with condition (3) as the only assumption, and the condition on h
@@ -565,7 +565,7 @@ those for 𝕄-primrec.
 \begin{code}
 
 𝕄-caseable : (A : 𝓤 ̇ ) → (𝕄 → A) → (𝕄 → A) → 𝓤 ̇
-𝕄-caseable A f g = is-set A × (f R ≡ g L)
+𝕄-caseable A f g = is-set A × (f R ＝ g L)
 
 𝕄-caseable-gives-pinductive : (A : 𝓤 ̇ )
    (f g : 𝕄 → A)
@@ -584,8 +584,8 @@ case-equations f g h = (h ∘ l ∼ f)
 𝕄-cases-redundant-equations : {A : 𝓤 ̇ }
     (f g : 𝕄 → A)
   → (p : 𝕄-caseable A f g)
-  → (𝕄-cases f g p L   ≡ f L)
-  × (𝕄-cases f g p R   ≡ g R)
+  → (𝕄-cases f g p L   ＝ f L)
+  × (𝕄-cases f g p R   ＝ g R)
   × (𝕄-cases f g p ∘ l ∼ f)
   × (𝕄-cases f g p ∘ r ∼ g)
 
@@ -619,10 +619,10 @@ case-equations f g h = (h ∘ l ∼ f)
                               (𝕄-caseable-gives-pinductive _ f g ι)
                               (u , v)
   where
-   u : ∀ a' → a' ≡ f L → a' ≡ f L
+   u : ∀ a' → a' ＝ f L → a' ＝ f L
    u a' p = p
 
-   v : ∀ b' → b' ≡ g R → b' ≡ g R
+   v : ∀ b' → b' ＝ g R → b' ＝ g R
    v a' p = p
 
 𝕄-cases-uniqueness : {A : 𝓤 ̇ }
@@ -636,12 +636,12 @@ case-equations f g h = (h ∘ l ∼ f)
                                   (𝕄-cases f g p) he (𝕄-cases-equations f g p)
 
 𝕄-cases-L : {A : 𝓤 ̇ } (f g : 𝕄 → A) (p : 𝕄-caseable A f g)
-          → 𝕄-cases f g p L ≡ f L
+          → 𝕄-cases f g p L ＝ f L
 
 𝕄-cases-L f g p = refl
 
 𝕄-cases-R : {A : 𝓤 ̇ } (f g : 𝕄 → A) (p : 𝕄-caseable A f g)
-          → 𝕄-cases f g p R ≡ g R
+          → 𝕄-cases f g p R ＝ g R
 
 𝕄-cases-R f g p = refl
 
@@ -662,7 +662,7 @@ We now specialize to A = 𝕄 for notational convenience:
 \begin{code}
 
 𝕄𝕄-caseable : (f g : 𝕄 → 𝕄) → 𝓤₀ ̇
-𝕄𝕄-caseable f g = f R ≡ g L
+𝕄𝕄-caseable f g = f R ＝ g L
 
 𝕄𝕄-cases : (f g : 𝕄 → 𝕄) → 𝕄𝕄-caseable f g → (𝕄 → 𝕄)
 𝕄𝕄-cases f g p = 𝕄-cases f g (𝕄-is-set , p)
@@ -676,16 +676,16 @@ Here are some examples:
 middle : 𝕄 → 𝕄
 middle = 𝕄𝕄-cases (l ∘ r) (r ∘ l) refl
 
-middle-L : middle L ≡ l C
+middle-L : middle L ＝ l C
 middle-L = refl
 
-middle-R : middle R ≡ r C
+middle-R : middle R ＝ r C
 middle-R = refl
 
-middle-l : (x : 𝕄) → middle (l x) ≡ l (r x)
+middle-l : (x : 𝕄) → middle (l x) ＝ l (r x)
 middle-l = 𝕄-cases-l _ _ (𝕄-is-set , refl)
 
-middle-r : (x : 𝕄) → middle (r x) ≡ r (l x)
+middle-r : (x : 𝕄) → middle (r x) ＝ r (l x)
 middle-r = 𝕄-cases-r _ _ (𝕄-is-set , refl)
 
 l-by-cases : l ∼ 𝕄𝕄-cases (l ∘ l) (middle ∘ l) refl
@@ -718,34 +718,34 @@ is-𝓡-function f = 𝕄𝕄-caseable (middle ∘ f) (r ∘ f)
 
 preservation-𝓛𝓛 : (f : 𝕄 → 𝕄) (𝓵 : is-𝓛-function f) (𝓻 : is-𝓡-function f) → is-𝓛-function (𝓛 f 𝓵)
 preservation-𝓛𝓛 f 𝓵 𝓻 =
-  l (𝓛 f 𝓵 R)      ≡⟨ refl ⟩
-  l (middle (f R))  ≡⟨ ap l 𝓻 ⟩
-  l (r (f L))       ≡⟨ (middle-l (f L))⁻¹ ⟩
-  middle (l (f L))  ≡⟨ refl ⟩
+  l (𝓛 f 𝓵 R)      ＝⟨ refl ⟩
+  l (middle (f R))  ＝⟨ ap l 𝓻 ⟩
+  l (r (f L))       ＝⟨ (middle-l (f L))⁻¹ ⟩
+  middle (l (f L))  ＝⟨ refl ⟩
   middle (𝓛 f 𝓵 L) ∎
 
 preservation-𝓛𝓡 : (f : 𝕄 → 𝕄) (𝓵 : is-𝓛-function f) (𝓻 : is-𝓡-function f) → is-𝓡-function (𝓛 f 𝓵)
 preservation-𝓛𝓡 f 𝓵 𝓻 =
-  middle (𝓛 f 𝓵 R)     ≡⟨ refl ⟩
-  middle (middle (f R)) ≡⟨ ap middle 𝓻 ⟩
-  middle (r (f L))      ≡⟨ middle-r (f L) ⟩
-  r (l (f L))           ≡⟨ refl ⟩
+  middle (𝓛 f 𝓵 R)     ＝⟨ refl ⟩
+  middle (middle (f R)) ＝⟨ ap middle 𝓻 ⟩
+  middle (r (f L))      ＝⟨ middle-r (f L) ⟩
+  r (l (f L))           ＝⟨ refl ⟩
   r (𝓛 f 𝓵 L)          ∎
 
 preservation-𝓡𝓛 : (f : 𝕄 → 𝕄) (𝓵 : is-𝓛-function f) (𝓻 : is-𝓡-function f) → is-𝓛-function (𝓡 f 𝓻)
 preservation-𝓡𝓛 f 𝓵 𝓻 =
-  l (𝓡 f 𝓻 R)          ≡⟨ refl ⟩
-  l (r (f R))           ≡⟨ (middle-l (f R))⁻¹ ⟩
-  middle (l (f R))      ≡⟨ ap middle 𝓵 ⟩
-  middle (middle (f L)) ≡⟨ refl ⟩
+  l (𝓡 f 𝓻 R)          ＝⟨ refl ⟩
+  l (r (f R))           ＝⟨ (middle-l (f R))⁻¹ ⟩
+  middle (l (f R))      ＝⟨ ap middle 𝓵 ⟩
+  middle (middle (f L)) ＝⟨ refl ⟩
   middle (𝓡 f 𝓻 L)     ∎
 
 preservation-𝓡𝓡 : (f : 𝕄 → 𝕄) (𝓵 : is-𝓛-function f) (𝓻 : is-𝓡-function f) → is-𝓡-function (𝓡 f 𝓻)
 preservation-𝓡𝓡 f 𝓵 𝓻 =
-  middle (𝓡 f 𝓻 R)  ≡⟨ refl ⟩
-  middle (r (f R))  ≡⟨ 𝕄-cases-r (l ∘ r) (r ∘ l) (𝕄-is-set , refl) (f R) ⟩
-  r (l (f R))       ≡⟨ ap r 𝓵 ⟩
-  r (middle (f L))  ≡⟨ refl ⟩
+  middle (𝓡 f 𝓻 R)  ＝⟨ refl ⟩
+  middle (r (f R))  ＝⟨ 𝕄-cases-r (l ∘ r) (r ∘ l) (𝕄-is-set , refl) (f R) ⟩
+  r (l (f R))       ＝⟨ ap r 𝓵 ⟩
+  r (middle (f L))  ＝⟨ refl ⟩
   r (𝓡 f 𝓻 L)      ∎
 
 is-𝓛𝓡-function : (𝕄 → 𝕄) → 𝓤₀ ̇
@@ -788,25 +788,25 @@ module _ (fe  : Fun-Ext) where
  𝐿𝑒𝑓𝑡  = l , refl , refl
  𝑅𝑖𝑔ℎ𝑡 = r , refl , refl
 
- F-eq-l : 𝐿𝑒𝑓𝑡 ≡ 𝑙𝑒𝑓𝑡 𝐿𝑒𝑓𝑡
- F-eq-l = to-subtype-≡ being-𝓛𝓡-function-is-prop γ
+ F-eq-l : 𝐿𝑒𝑓𝑡 ＝ 𝑙𝑒𝑓𝑡 𝐿𝑒𝑓𝑡
+ F-eq-l = to-subtype-＝ being-𝓛𝓡-function-is-prop γ
   where
    δ : l ∼ 𝓛 l refl
    δ = l-by-cases
 
-   γ : l ≡ 𝓛 l refl
+   γ : l ＝ 𝓛 l refl
    γ = dfunext fe δ
 
 
- F-eq-lr : 𝑙𝑒𝑓𝑡 𝑅𝑖𝑔ℎ𝑡 ≡ 𝑟𝑖𝑔ℎ𝑡 𝐿𝑒𝑓𝑡
- F-eq-lr = to-subtype-≡ being-𝓛𝓡-function-is-prop v
+ F-eq-lr : 𝑙𝑒𝑓𝑡 𝑅𝑖𝑔ℎ𝑡 ＝ 𝑟𝑖𝑔ℎ𝑡 𝐿𝑒𝑓𝑡
+ F-eq-lr = to-subtype-＝ being-𝓛𝓡-function-is-prop v
   where
-   i = λ (x : 𝕄) → 𝕄𝕄-cases (l ∘ r) (middle ∘ r) refl (l x) ≡⟨ 𝕄-cases-l _ _ (𝕄-is-set , refl) x ⟩
-                   l (r x)                                    ≡⟨ (middle-l x)⁻¹ ⟩
+   i = λ (x : 𝕄) → 𝕄𝕄-cases (l ∘ r) (middle ∘ r) refl (l x) ＝⟨ 𝕄-cases-l _ _ (𝕄-is-set , refl) x ⟩
+                   l (r x)                                    ＝⟨ (middle-l x)⁻¹ ⟩
                    middle (l x)                               ∎
 
-   ii = λ (x : 𝕄) → 𝕄𝕄-cases (l ∘ r) (middle ∘ r) refl (r x) ≡⟨ 𝕄-cases-r _ _ (𝕄-is-set , refl) x ⟩
-                    middle (r x)                             ≡⟨ middle-r x ⟩
+   ii = λ (x : 𝕄) → 𝕄𝕄-cases (l ∘ r) (middle ∘ r) refl (r x) ＝⟨ 𝕄-cases-r _ _ (𝕄-is-set , refl) x ⟩
+                    middle (r x)                             ＝⟨ middle-r x ⟩
                     r (l x)                                  ∎
 
    iii : 𝕄𝕄-cases (l ∘ r)      (middle ∘ r) refl
@@ -816,17 +816,17 @@ module _ (fe  : Fun-Ext) where
    iv : 𝓛 r refl ∼ 𝓡 l refl
    iv = iii
 
-   v : 𝓛 r refl ≡ 𝓡 l refl
+   v : 𝓛 r refl ＝ 𝓡 l refl
    v = dfunext fe iv
 
 
- F-eq-r : 𝑅𝑖𝑔ℎ𝑡 ≡ 𝑟𝑖𝑔ℎ𝑡 𝑅𝑖𝑔ℎ𝑡
- F-eq-r = to-subtype-≡ being-𝓛𝓡-function-is-prop γ
+ F-eq-r : 𝑅𝑖𝑔ℎ𝑡 ＝ 𝑟𝑖𝑔ℎ𝑡 𝑅𝑖𝑔ℎ𝑡
+ F-eq-r = to-subtype-＝ being-𝓛𝓡-function-is-prop γ
   where
    δ : r ∼ 𝓡 r refl
    δ = r-by-cases
 
-   γ : r ≡ 𝓡 r refl
+   γ : r ＝ 𝓡 r refl
    γ = dfunext fe δ
 
 
@@ -840,38 +840,38 @@ module _ (fe  : Fun-Ext) where
  x ⊕ y = pr₁ (mid x) y
 
  ⊕-property : (x : 𝕄)
-            → (l (x ⊕ R) ≡ middle (x ⊕ L))
-            × (middle (x ⊕ R) ≡ r  (x ⊕ L))
+            → (l (x ⊕ R) ＝ middle (x ⊕ L))
+            × (middle (x ⊕ R) ＝ r  (x ⊕ L))
  ⊕-property x = pr₂ (mid x)
 
  mid-is-hom : is-hom 𝓜 𝓕 (𝓜-rec 𝓕)
  mid-is-hom = 𝓜-rec-is-hom 𝓕
 
- mid-is-hom-L : mid L ≡ 𝐿𝑒𝑓𝑡
+ mid-is-hom-L : mid L ＝ 𝐿𝑒𝑓𝑡
  mid-is-hom-L = refl
 
- mid-is-hom-L' : (y : 𝕄) → L ⊕ y ≡ l y
+ mid-is-hom-L' : (y : 𝕄) → L ⊕ y ＝ l y
  mid-is-hom-L' y = refl
 
- mid-is-hom-R : mid R ≡ 𝑅𝑖𝑔ℎ𝑡
+ mid-is-hom-R : mid R ＝ 𝑅𝑖𝑔ℎ𝑡
  mid-is-hom-R = refl
 
- mid-is-hom-R' : (y : 𝕄) → R ⊕ y ≡ r y
+ mid-is-hom-R' : (y : 𝕄) → R ⊕ y ＝ r y
  mid-is-hom-R' y = refl
 
- mid-is-hom-l : (x : 𝕄) → mid (l x) ≡ 𝑙𝑒𝑓𝑡 (mid x)
+ mid-is-hom-l : (x : 𝕄) → mid (l x) ＝ 𝑙𝑒𝑓𝑡 (mid x)
  mid-is-hom-l = is-hom-l 𝓜 𝓕 mid mid-is-hom
 
  mid-is-hom-l' : (x y : 𝕄)
-               → (l x ⊕ L   ≡ l   (x ⊕ L))
-               × (l x ⊕ R   ≡ middle (x ⊕ R))
-               × (l x ⊕ l y ≡ l   (x ⊕ y))
-               × (l x ⊕ r y ≡ middle (x ⊕ y))
+               → (l x ⊕ L   ＝ l   (x ⊕ L))
+               × (l x ⊕ R   ＝ middle (x ⊕ R))
+               × (l x ⊕ l y ＝ l   (x ⊕ y))
+               × (l x ⊕ r y ＝ middle (x ⊕ y))
  mid-is-hom-l' x y = u , v , w , t
   where
-   α = λ y → l x ⊕ y             ≡⟨ refl ⟩
-             pr₁ (mid (l x)) y   ≡⟨ happly (ap pr₁ (mid-is-hom-l x)) y ⟩
-             pr₁ (𝑙𝑒𝑓𝑡 (mid x)) y  ≡⟨ refl ⟩
+   α = λ y → l x ⊕ y             ＝⟨ refl ⟩
+             pr₁ (mid (l x)) y   ＝⟨ happly (ap pr₁ (mid-is-hom-l x)) y ⟩
+             pr₁ (𝑙𝑒𝑓𝑡 (mid x)) y  ＝⟨ refl ⟩
              𝕄𝕄-cases (l ∘ (x ⊕_)) (middle ∘ (x ⊕_)) (pr₁ (⊕-property x)) y ∎
 
    u = α L
@@ -879,19 +879,19 @@ module _ (fe  : Fun-Ext) where
    w = α (l y) ∙ 𝕄-cases-l (l ∘ (x ⊕_)) (middle ∘ (x ⊕_)) (𝕄-is-set , pr₁ (⊕-property x)) y
    t = α (r y) ∙ 𝕄-cases-r (l ∘ (x ⊕_)) (middle ∘ (x ⊕_)) (𝕄-is-set , pr₁ (⊕-property x)) y
 
- mid-is-hom-r : (x : 𝕄) → mid (r x) ≡ 𝑟𝑖𝑔ℎ𝑡 (mid x)
+ mid-is-hom-r : (x : 𝕄) → mid (r x) ＝ 𝑟𝑖𝑔ℎ𝑡 (mid x)
  mid-is-hom-r = is-hom-r 𝓜 𝓕 mid mid-is-hom
 
  mid-is-hom-r' : (x y : 𝕄)
-               → (r x ⊕ L   ≡ middle (x ⊕ L))
-               × (r x ⊕ R   ≡ r (x ⊕ R))
-               × (r x ⊕ l y ≡ middle (x ⊕ y))
-               × (r x ⊕ r y ≡ r  (x ⊕ y))
+               → (r x ⊕ L   ＝ middle (x ⊕ L))
+               × (r x ⊕ R   ＝ r (x ⊕ R))
+               × (r x ⊕ l y ＝ middle (x ⊕ y))
+               × (r x ⊕ r y ＝ r  (x ⊕ y))
  mid-is-hom-r' x y = u , v , w , t
   where
-   α = λ y → r x ⊕ y              ≡⟨ refl ⟩
-             pr₁ (mid (r x)) y    ≡⟨ happly (ap pr₁ (mid-is-hom-r x)) y ⟩
-             pr₁ (𝑟𝑖𝑔ℎ𝑡 (mid x)) y ≡⟨ refl ⟩
+   α = λ y → r x ⊕ y              ＝⟨ refl ⟩
+             pr₁ (mid (r x)) y    ＝⟨ happly (ap pr₁ (mid-is-hom-r x)) y ⟩
+             pr₁ (𝑟𝑖𝑔ℎ𝑡 (mid x)) y ＝⟨ refl ⟩
              𝕄𝕄-cases (middle ∘ (x ⊕_)) (r ∘ (x ⊕_)) (pr₂ (⊕-property x)) y ∎
 
    u = α L
@@ -904,19 +904,19 @@ module _ (fe  : Fun-Ext) where
 So, the set of defining equations is the following, where it can be
 seen that there is some redundancy:
 
-     (  l (x ⊕ R) ≡ middle (x ⊕ L)    )
-   × (  middle (x ⊕ R) ≡ r  (x ⊕ L)   )
+     (  l (x ⊕ R) ＝ middle (x ⊕ L)    )
+   × (  middle (x ⊕ R) ＝ r  (x ⊕ L)   )
 
-   × (  L   ⊕ y   ≡ l y               )
-   × (  R   ⊕ y   ≡ r y               )
-   × (  l x ⊕ L   ≡ l (x ⊕ L)         )
-   × (  l x ⊕ R   ≡ middle (x ⊕ R)    )
-   × (  l x ⊕ l y ≡ l (x ⊕ y)         )
-   × (  l x ⊕ r y ≡ middle (x ⊕ y)    )
-   × (  r x ⊕ R   ≡ r (x ⊕ R)         )
-   × (  r x ⊕ L   ≡ middle (x ⊕ L)    )
-   × (  r x ⊕ l y ≡ middle (x ⊕ y)    )
-   × (  r x ⊕ r y ≡ r (x ⊕ y)         )
+   × (  L   ⊕ y   ＝ l y               )
+   × (  R   ⊕ y   ＝ r y               )
+   × (  l x ⊕ L   ＝ l (x ⊕ L)         )
+   × (  l x ⊕ R   ＝ middle (x ⊕ R)    )
+   × (  l x ⊕ l y ＝ l (x ⊕ y)         )
+   × (  l x ⊕ r y ＝ middle (x ⊕ y)    )
+   × (  r x ⊕ R   ＝ r (x ⊕ R)         )
+   × (  r x ⊕ L   ＝ middle (x ⊕ L)    )
+   × (  r x ⊕ l y ＝ middle (x ⊕ y)    )
+   × (  r x ⊕ r y ＝ r (x ⊕ y)         )
 
 The first two come from the binary system F and the remaining ones from the homomorphism condition and cases analysis.
 
@@ -928,9 +928,9 @@ makes the initial binary system into the free midpoint algebra over
 two generators (taken to be L and R, as expected), where the
 midpoint axioms are
 
-   (idempotency)    x ⊕ x ≡ x,
-   (commutativity)  x ⊕ y ≡ y ⊕ x,
-   (transposition)  (u ⊕ v) ⊕ (x ⊕ y) ≡ (u ⊕ x) ⊕ (v ⊕ y).
+   (idempotency)    x ⊕ x ＝ x,
+   (commutativity)  x ⊕ y ＝ y ⊕ x,
+   (transposition)  (u ⊕ v) ⊕ (x ⊕ y) ＝ (u ⊕ x) ⊕ (v ⊕ y).
 
 In fact, in the initial binary system, there is a unique midpoint
 operation _⊕_ such that

@@ -45,39 +45,39 @@ is-map-classifier 𝓤 = (Y : 𝓤 ̇ ) → is-equiv (χ Y)
 𝕋 Y A = Σ A , pr₁
 
 χη : is-univalent 𝓤
-   → (Y : 𝓤 ̇ ) (σ : 𝓤 / Y) → 𝕋 Y (χ Y σ) ≡ σ
+   → (Y : 𝓤 ̇ ) (σ : 𝓤 / Y) → 𝕋 Y (χ Y σ) ＝ σ
 χη ua Y (X , f) = r
  where
   e : Σ (fiber f) ≃ X
   e = total-fiber-is-domain f
 
-  p : Σ (fiber f) ≡ X
+  p : Σ (fiber f) ＝ X
   p = eqtoid ua (Σ (fiber f)) X e
 
-  observation : ⌜ e ⌝⁻¹ ≡ (λ x → f x , x , refl)
+  observation : ⌜ e ⌝⁻¹ ＝ (λ x → f x , x , refl)
   observation = refl
 
-  q = transport (λ - → - → Y) p pr₁ ≡⟨ transport-is-pre-comp' ua e pr₁ ⟩
-      pr₁ ∘ ⌜ e ⌝⁻¹                 ≡⟨ refl ⟩
+  q = transport (λ - → - → Y) p pr₁ ＝⟨ transport-is-pre-comp' ua e pr₁ ⟩
+      pr₁ ∘ ⌜ e ⌝⁻¹                 ＝⟨ refl ⟩
       f                             ∎
 
-  r : (Σ (fiber f) , pr₁) ≡ (X , f)
-  r = to-Σ-≡ (p , q)
+  r : (Σ (fiber f) , pr₁) ＝ (X , f)
+  r = to-Σ-＝ (p , q)
 
 χε : is-univalent 𝓤
    → funext 𝓤 (𝓤 ⁺)
-   → (Y : 𝓤 ̇ ) (A : Y → 𝓤 ̇ ) → χ Y (𝕋 Y A) ≡ A
+   → (Y : 𝓤 ̇ ) (A : Y → 𝓤 ̇ ) → χ Y (𝕋 Y A) ＝ A
 χε ua fe Y A = dfunext fe γ
  where
   f : ∀ y → fiber pr₁ y → A y
   f y ((y , a) , refl) = a
   g : ∀ y → A y → fiber pr₁ y
   g y a = (y , a) , refl
-  η : ∀ y σ → g y (f y σ) ≡ σ
+  η : ∀ y σ → g y (f y σ) ＝ σ
   η y ((y , a) , refl) = refl
-  ε : ∀ y a → f y (g y a) ≡ a
+  ε : ∀ y a → f y (g y a) ＝ a
   ε y a = refl
-  γ : ∀ y → fiber pr₁ y ≡ A y
+  γ : ∀ y → fiber pr₁ y ＝ A y
   γ y = eqtoid ua _ _ (qinveq (f y) (g y , η y , ε y))
 
 universes-are-map-classifiers : is-univalent 𝓤
@@ -113,7 +113,7 @@ mc-gives-sc {𝓤} s P Y = γ
     b = Σ-change-of-variable (λ A → Π (P ∘ A)) (χ Y) (s Y)
     c = ≃-sym ΠΣ-distr-≃
 
-  observation : χ-special P Y ≡ ⌜ e ⌝
+  observation : χ-special P Y ＝ ⌜ e ⌝
   observation = refl
 
   γ : is-equiv (χ-special P Y)

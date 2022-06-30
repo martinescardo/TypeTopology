@@ -21,7 +21,7 @@ module ℕ-order-exercise-solution where
 
   open ℕ-order
 
-  ≤-and-≤'-coincide : (x y : ℕ) → (x ≤ y) ≡ (x ≤' y)
+  ≤-and-≤'-coincide : (x y : ℕ) → (x ≤ y) ＝ (x ≤' y)
   ≤-and-≤'-coincide 0 y = refl _
   ≤-and-≤'-coincide (succ x) 0 = refl _
   ≤-and-≤'-coincide (succ x) (succ y) = ≤-and-≤'-coincide x y
@@ -39,15 +39,15 @@ module ℕ-more where
   ≼-prop-valued : (x y : ℕ) → is-subsingleton (x ≼ y)
   ≼-prop-valued x y (z , p) (z' , p') = γ
    where
-    q : z ≡ z'
-    q = +-lc x z z' (x ∔ z  ≡⟨ p ⟩
-                     y      ≡⟨ p' ⁻¹ ⟩
+    q : z ＝ z'
+    q = +-lc x z z' (x ∔ z  ＝⟨ p ⟩
+                     y      ＝⟨ p' ⁻¹ ⟩
                      x ∔ z' ∎)
 
-    γ : z , p ≡ z' , p'
-    γ = to-subtype-≡ (λ z → ℕ-is-set (x ∔ z) y) q
+    γ : z , p ＝ z' , p'
+    γ = to-subtype-＝ (λ z → ℕ-is-set (x ∔ z) y) q
 
-  ≤-charac : propext 𝓤₀ → (x y : ℕ) → (x ≤ y) ≡ (x ≼ y)
+  ≤-charac : propext 𝓤₀ → (x y : ℕ) → (x ≤ y) ＝ (x ≼ y)
   ≤-charac pe x y = pe (≤-prop-valued x y) (≼-prop-valued x y)
                        (≤-gives-≼ x y) (≼-gives-≤ x y)
 
@@ -64,52 +64,52 @@ the-subsingletons-are-the-subtypes-of-a-singleton X = φ , ψ
   ψ : X ↪ 𝟙 → is-subsingleton X
   ψ (f , e) x y = d
    where
-    a : x ≡ y → f x ≡ f y
+    a : x ＝ y → f x ＝ f y
     a = ap f {x} {y}
 
     b : is-equiv a
     b = embedding-gives-ap-is-equiv f e x y
 
-    c : f x ≡ f y
+    c : f x ＝ f y
     c = 𝟙-is-subsingleton (f x) (f y)
 
-    d : x ≡ y
+    d : x ＝ y
     d = inverse a b c
 
 the-subsingletons-are-the-subtypes-of-a-singleton' : propext 𝓤 → global-dfunext
                                                    → (X : 𝓤 ̇ )
-                                                   → is-subsingleton X ≡ (X ↪ 𝟙)
+                                                   → is-subsingleton X ＝ (X ↪ 𝟙)
 the-subsingletons-are-the-subtypes-of-a-singleton' pe fe X = γ
  where
   a : is-subsingleton X ⇔ (X ↪ 𝟙)
   a = the-subsingletons-are-the-subtypes-of-a-singleton X
 
   b : is-subsingleton (X ↪ 𝟙)
-  b (f , e) (f' , e') = to-subtype-≡
+  b (f , e) (f' , e') = to-subtype-＝
                            (being-embedding-is-subsingleton fe)
                            (fe (λ x → 𝟙-is-subsingleton (f x) (f' x)))
 
-  γ : is-subsingleton X ≡ (X ↪ 𝟙)
+  γ : is-subsingleton X ＝ (X ↪ 𝟙)
   γ = pe (being-subsingleton-is-subsingleton fe) b (pr₁ a) (pr₂ a)
 
 G↑-≃-equation : (ua : is-univalent (𝓤 ⊔ 𝓥))
               → (X : 𝓤 ̇ )
               → (A : (Σ Y ꞉ 𝓤 ⊔ 𝓥 ̇ , X ≃ Y) → 𝓦 ̇ )
               → (a : A (Lift 𝓥 X , ≃-Lift X))
-              → G↑-≃ ua X A a (Lift 𝓥 X) (≃-Lift X) ≡ a
+              → G↑-≃ ua X A a (Lift 𝓥 X) (≃-Lift X) ＝ a
 G↑-≃-equation {𝓤} {𝓥} {𝓦} ua X A a =
-  G↑-≃ ua X A a (Lift 𝓥 X) (≃-Lift X) ≡⟨ refl (transport A p a) ⟩
-  transport A p a                     ≡⟨ ap (λ - → transport A - a) q ⟩
-  transport A (refl t) a              ≡⟨ refl a ⟩
+  G↑-≃ ua X A a (Lift 𝓥 X) (≃-Lift X) ＝⟨ refl (transport A p a) ⟩
+  transport A p a                     ＝⟨ ap (λ - → transport A - a) q ⟩
+  transport A (refl t) a              ＝⟨ refl a ⟩
   a                                   ∎
  where
   t : (Σ Y ꞉ 𝓤 ⊔ 𝓥 ̇ , X ≃ Y)
   t = (Lift 𝓥 X , ≃-Lift X)
 
-  p : t ≡ t
+  p : t ＝ t
   p = univalence→'' {𝓤} {𝓤 ⊔ 𝓥} ua X t t
 
-  q : p ≡ refl t
+  q : p ＝ refl t
   q = subsingletons-are-sets (Σ Y ꞉ 𝓤 ⊔ 𝓥 ̇ , X ≃ Y)
        (univalence→'' {𝓤} {𝓤 ⊔ 𝓥} ua X) t t p (refl t)
 
@@ -117,11 +117,11 @@ H↑-≃-equation : (ua : is-univalent (𝓤 ⊔ 𝓥))
               → (X : 𝓤 ̇ )
               → (A : (Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y → 𝓦 ̇ )
               → (a : A (Lift 𝓥 X) (≃-Lift X))
-              → H↑-≃ ua X A a (Lift 𝓥 X) (≃-Lift X) ≡ a
+              → H↑-≃ ua X A a (Lift 𝓥 X) (≃-Lift X) ＝ a
 H↑-≃-equation ua X A = G↑-≃-equation ua X (Σ-induction A)
 
 has-section-charac : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                   → ((y : Y) → Σ x ꞉ X , f x ≡ y) ≃ has-section f
+                   → ((y : Y) → Σ x ꞉ X , f x ＝ y) ≃ has-section f
 has-section-charac f = ΠΣ-distr-≃
 
 retractions-into : 𝓤 ̇ → 𝓤 ⁺ ̇
@@ -134,7 +134,7 @@ retraction-classifier : Univalence
                       → (Y : 𝓤 ̇ ) → retractions-into Y ≃ (Y → pointed-types 𝓤)
 retraction-classifier {𝓤} ua Y =
  retractions-into Y                                              ≃⟨ i ⟩
- (Σ X ꞉ 𝓤 ̇ , Σ f ꞉ (X → Y) , ((y : Y) → Σ x ꞉ X , f x ≡ y))     ≃⟨ id-≃ _ ⟩
+ (Σ X ꞉ 𝓤 ̇ , Σ f ꞉ (X → Y) , ((y : Y) → Σ x ꞉ X , f x ＝ y))     ≃⟨ id-≃ _ ⟩
  ((𝓤 /[ id ] Y))                                                 ≃⟨ ii ⟩
  (Y → pointed-types 𝓤)                                           ■
  where
@@ -171,11 +171,11 @@ module surjection-classifier
 
 positive-cantors-diagonal : (e : ℕ → (ℕ → ℕ)) → Σ α ꞉ (ℕ → ℕ), ((n : ℕ) → α ≢ e n)
 
-cantors-diagonal : ¬ (Σ e ꞉ (ℕ → (ℕ → ℕ)) , ((α : ℕ → ℕ) → Σ n ꞉ ℕ , α ≡ e n))
+cantors-diagonal : ¬ (Σ e ꞉ (ℕ → (ℕ → ℕ)) , ((α : ℕ → ℕ) → Σ n ꞉ ℕ , α ＝ e n))
 
 𝟚-has-𝟚-automorphisms : dfunext 𝓤₀ 𝓤₀ → (𝟚 ≃ 𝟚) ≃ 𝟚
 
-lifttwo : is-univalent 𝓤₀ → is-univalent 𝓤₁ → (𝟚 ≡ 𝟚) ≡ Lift 𝓤₁ 𝟚
+lifttwo : is-univalent 𝓤₀ → is-univalent 𝓤₁ → (𝟚 ＝ 𝟚) ＝ Lift 𝓤₁ 𝟚
 
 DNE : ∀ 𝓤 → 𝓤 ⁺ ̇
 DNE 𝓤 = (P : 𝓤 ̇ ) → is-subsingleton P → ¬¬ P → P
@@ -214,13 +214,13 @@ positive-cantors-diagonal = sol
     φ : (n : ℕ) → α ≢ e n
     φ n p = succ-no-fixed-point (e n n) q
      where
-      q = succ (e n n)  ≡⟨ refl (α n) ⟩
-          α n           ≡⟨ ap (λ - → - n) p ⟩
+      q = succ (e n n)  ＝⟨ refl (α n) ⟩
+          α n           ＝⟨ ap (λ - → - n) p ⟩
           e n n         ∎
 
 cantors-diagonal = sol
  where
-  sol : ¬ (Σ e ꞉ (ℕ → (ℕ → ℕ)) , ((α : ℕ → ℕ) → Σ n ꞉ ℕ , α ≡ e n))
+  sol : ¬ (Σ e ꞉ (ℕ → (ℕ → ℕ)) , ((α : ℕ → ℕ) → Σ n ꞉ ℕ , α ＝ e n))
   sol (e , γ) = c
    where
     α : ℕ → ℕ
@@ -229,7 +229,7 @@ cantors-diagonal = sol
     φ : (n : ℕ) → α ≢ e n
     φ = pr₂ (positive-cantors-diagonal e)
 
-    b : Σ n ꞉ ℕ , α ≡ e n
+    b : Σ n ꞉ ℕ , α ＝ e n
     b = γ α
 
     c : 𝟘
@@ -247,55 +247,55 @@ cantors-diagonal = sol
     g ₀ = id , id-is-equiv 𝟚
     g ₁ = swap₂ , swap₂-is-equiv
 
-    η : (e : 𝟚 ≃ 𝟚) → g (f e) ≡ e
+    η : (e : 𝟚 ≃ 𝟚) → g (f e) ＝ e
     η (h , e) = γ (h ₀) (h ₁) (refl (h ₀)) (refl (h ₁))
      where
-      γ : (m n : 𝟚) → h ₀ ≡ m → h ₁ ≡ n → g (h ₀) ≡ (h , e)
+      γ : (m n : 𝟚) → h ₀ ＝ m → h ₁ ＝ n → g (h ₀) ＝ (h , e)
 
-      γ ₀ ₀ p q = !𝟘 (g (h ₀) ≡ (h , e))
-                     (₁-is-not-₀ (equivs-are-lc h e (h ₁ ≡⟨ q ⟩
-                                                     ₀   ≡⟨ p ⁻¹ ⟩
+      γ ₀ ₀ p q = !𝟘 (g (h ₀) ＝ (h , e))
+                     (₁-is-not-₀ (equivs-are-lc h e (h ₁ ＝⟨ q ⟩
+                                                     ₀   ＝⟨ p ⁻¹ ⟩
                                                      h ₀ ∎)))
 
-      γ ₀ ₁ p q = to-subtype-≡
+      γ ₀ ₁ p q = to-subtype-＝
                      (being-equiv-is-subsingleton fe fe)
-                     (fe (𝟚-induction (λ n → pr₁ (g (h ₀)) n ≡ h n)
-                               (pr₁ (g (h ₀)) ₀ ≡⟨ ap (λ - → pr₁ (g -) ₀) p ⟩
-                                pr₁ (g ₀) ₀     ≡⟨ refl ₀ ⟩
-                                ₀               ≡⟨ p ⁻¹ ⟩
+                     (fe (𝟚-induction (λ n → pr₁ (g (h ₀)) n ＝ h n)
+                               (pr₁ (g (h ₀)) ₀ ＝⟨ ap (λ - → pr₁ (g -) ₀) p ⟩
+                                pr₁ (g ₀) ₀     ＝⟨ refl ₀ ⟩
+                                ₀               ＝⟨ p ⁻¹ ⟩
                                 h ₀             ∎)
-                               (pr₁ (g (h ₀)) ₁ ≡⟨ ap (λ - → pr₁ (g -) ₁) p ⟩
-                                pr₁ (g ₀) ₁     ≡⟨ refl ₁ ⟩
-                                ₁               ≡⟨ q ⁻¹ ⟩
+                               (pr₁ (g (h ₀)) ₁ ＝⟨ ap (λ - → pr₁ (g -) ₁) p ⟩
+                                pr₁ (g ₀) ₁     ＝⟨ refl ₁ ⟩
+                                ₁               ＝⟨ q ⁻¹ ⟩
                                 h ₁             ∎)))
 
-      γ ₁ ₀ p q = to-subtype-≡
+      γ ₁ ₀ p q = to-subtype-＝
                      (being-equiv-is-subsingleton fe fe)
-                     (fe (𝟚-induction (λ n → pr₁ (g (h ₀)) n ≡ h n)
-                               (pr₁ (g (h ₀)) ₀ ≡⟨ ap (λ - → pr₁ (g -) ₀) p ⟩
-                                pr₁ (g ₁) ₀     ≡⟨ refl ₁ ⟩
-                                ₁               ≡⟨ p ⁻¹ ⟩
+                     (fe (𝟚-induction (λ n → pr₁ (g (h ₀)) n ＝ h n)
+                               (pr₁ (g (h ₀)) ₀ ＝⟨ ap (λ - → pr₁ (g -) ₀) p ⟩
+                                pr₁ (g ₁) ₀     ＝⟨ refl ₁ ⟩
+                                ₁               ＝⟨ p ⁻¹ ⟩
                                 h ₀             ∎)
-                               (pr₁ (g (h ₀)) ₁ ≡⟨ ap (λ - → pr₁ (g -) ₁) p ⟩
-                                pr₁ (g ₁) ₁     ≡⟨ refl ₀ ⟩
-                                ₀               ≡⟨ q ⁻¹ ⟩
+                               (pr₁ (g (h ₀)) ₁ ＝⟨ ap (λ - → pr₁ (g -) ₁) p ⟩
+                                pr₁ (g ₁) ₁     ＝⟨ refl ₀ ⟩
+                                ₀               ＝⟨ q ⁻¹ ⟩
                                 h ₁             ∎)))
 
-      γ ₁ ₁ p q = !𝟘 (g (h ₀) ≡ (h , e))
-                     (₁-is-not-₀ (equivs-are-lc h e (h ₁ ≡⟨ q ⟩
-                                                     ₁   ≡⟨ p ⁻¹ ⟩
+      γ ₁ ₁ p q = !𝟘 (g (h ₀) ＝ (h , e))
+                     (₁-is-not-₀ (equivs-are-lc h e (h ₁ ＝⟨ q ⟩
+                                                     ₁   ＝⟨ p ⁻¹ ⟩
                                                      h ₀ ∎)))
 
-    ε : (n : 𝟚) → f (g n) ≡ n
+    ε : (n : 𝟚) → f (g n) ＝ n
     ε ₀ = refl ₀
     ε ₁ = refl ₁
 
 lifttwo = sol
  where
-  sol : is-univalent 𝓤₀ → is-univalent 𝓤₁ → (𝟚 ≡ 𝟚) ≡ Lift 𝓤₁ 𝟚
-  sol ua₀ ua₁ = Eq→Id ua₁ (𝟚 ≡ 𝟚) (Lift 𝓤₁ 𝟚) e
+  sol : is-univalent 𝓤₀ → is-univalent 𝓤₁ → (𝟚 ＝ 𝟚) ＝ Lift 𝓤₁ 𝟚
+  sol ua₀ ua₁ = Eq→Id ua₁ (𝟚 ＝ 𝟚) (Lift 𝓤₁ 𝟚) e
    where
-    e = (𝟚 ≡ 𝟚)   ≃⟨ Id→Eq 𝟚 𝟚 , ua₀ 𝟚 𝟚 ⟩
+    e = (𝟚 ＝ 𝟚)   ≃⟨ Id→Eq 𝟚 𝟚 , ua₀ 𝟚 𝟚 ⟩
         (𝟚 ≃ 𝟚)   ≃⟨ 𝟚-has-𝟚-automorphisms (univalence-gives-dfunext ua₀) ⟩
         𝟚         ≃⟨ ≃-sym (Lift-≃ 𝟚) ⟩
         Lift 𝓤₁ 𝟚 ■
@@ -306,10 +306,10 @@ hde-is-subsingleton : dfunext 𝓤 𝓤₀
                     → is-subsingleton (has-decidable-equality X)
 hde-is-subsingleton fe₀ fe X h h' = c h h'
  where
-  a : (x y : X) → is-subsingleton (decidable (x ≡ y))
+  a : (x y : X) → is-subsingleton (decidable (x ＝ y))
   a x y = +-is-subsingleton' fe₀ b
    where
-    b : is-subsingleton (x ≡ y)
+    b : is-subsingleton (x ＝ y)
     b = hedberg h x y
 
   c : is-subsingleton (has-decidable-equality X)

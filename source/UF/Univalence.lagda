@@ -22,55 +22,55 @@ is-univalent 𝓤 = (X Y : 𝓤 ̇ ) → is-equiv(idtoeq X Y)
 Univalence : 𝓤ω
 Univalence = (𝓤 : Universe) → is-univalent 𝓤
 
-idtoeq' : (X Y : 𝓤 ̇ ) → X ≡ Y → X ≃ Y
+idtoeq' : (X Y : 𝓤 ̇ ) → X ＝ Y → X ≃ Y
 idtoeq' X Y p = (Idtofun p , transports-are-equivs p)
 
 idtoEqs-agree : (X Y : 𝓤 ̇ ) → idtoeq' X Y ∼ idtoeq X Y
 idtoEqs-agree X _ refl = refl
 
-Idtofun-is-equiv : (X Y : 𝓤 ̇ ) (p : X ≡ Y) → is-equiv(idtofun X Y p)
+Idtofun-is-equiv : (X Y : 𝓤 ̇ ) (p : X ＝ Y) → is-equiv(idtofun X Y p)
 Idtofun-is-equiv X Y p = pr₂(idtoeq X Y p)
 
 module _
         (ua : is-univalent 𝓤)
        where
 
- eqtoid : (X Y : 𝓤 ̇ ) → X ≃ Y → X ≡ Y
+ eqtoid : (X Y : 𝓤 ̇ ) → X ≃ Y → X ＝ Y
  eqtoid X Y = pr₁(pr₁(ua X Y))
 
- idtoeq-eqtoid : (X Y : 𝓤 ̇ ) (e : X ≃ Y) → idtoeq X Y (eqtoid X Y e) ≡ e
+ idtoeq-eqtoid : (X Y : 𝓤 ̇ ) (e : X ≃ Y) → idtoeq X Y (eqtoid X Y e) ＝ e
  idtoeq-eqtoid X Y = pr₂(pr₁(ua X Y))
 
- eqtoid-idtoeq : (X Y : 𝓤 ̇ ) (p : X ≡ Y) →  eqtoid X Y (idtoeq X Y p) ≡ p
+ eqtoid-idtoeq : (X Y : 𝓤 ̇ ) (p : X ＝ Y) →  eqtoid X Y (idtoeq X Y p) ＝ p
  eqtoid-idtoeq X Y = pr₁(pr₂ (equivs-are-qinvs (idtoeq X Y) (ua X Y)))
 
- eqtoid-refl : (X : 𝓤 ̇ ) → eqtoid X X (≃-refl X) ≡ refl
+ eqtoid-refl : (X : 𝓤 ̇ ) → eqtoid X X (≃-refl X) ＝ refl
  eqtoid-refl X = eqtoid-idtoeq X X refl
 
  idtoeq'-eqtoid : (X Y : 𝓤 ̇ ) → idtoeq' X Y ∘ eqtoid X Y ∼ id
  idtoeq'-eqtoid X Y e = idtoEqs-agree X Y (eqtoid X Y e) ∙ idtoeq-eqtoid X Y e
 
  idtofun-eqtoid : {X Y : 𝓤 ̇ } (e : X ≃ Y)
-                → idtofun X Y (eqtoid X Y e) ≡ ⌜ e ⌝
+                → idtofun X Y (eqtoid X Y e) ＝ ⌜ e ⌝
  idtofun-eqtoid {X} {Y} e = ap pr₁ (idtoeq-eqtoid X Y e)
 
  Idtofun-eqtoid : {X Y : 𝓤 ̇ } (e : X ≃ Y)
-                → Idtofun (eqtoid X Y e) ≡ ⌜ e ⌝
+                → Idtofun (eqtoid X Y e) ＝ ⌜ e ⌝
  Idtofun-eqtoid {X} {Y} e =
   (idtofun-agreement X Y (eqtoid X Y e)) ⁻¹ ∙ idtofun-eqtoid e
 
- Idtofun-∙ : {X Y Z : 𝓤 ̇ } (p : X ≡ Y) (q : Y ≡ Z)
-           → Idtofun (p ∙ q) ≡ Idtofun q ∘ Idtofun p
+ Idtofun-∙ : {X Y Z : 𝓤 ̇ } (p : X ＝ Y) (q : Y ＝ Z)
+           → Idtofun (p ∙ q) ＝ Idtofun q ∘ Idtofun p
  Idtofun-∙ refl refl = refl
 
- univalence-≃ : (X Y : 𝓤 ̇ ) → (X ≡ Y) ≃ (X ≃ Y)
+ univalence-≃ : (X Y : 𝓤 ̇ ) → (X ＝ Y) ≃ (X ≃ Y)
  univalence-≃ X Y = idtoeq X Y , ua X Y
 
  back-transport-is-pre-comp' : {X X' Y : 𝓤 ̇ } (e : X ≃ X') (g : X' → Y)
-                             → transport⁻¹ (λ - → - → Y) (eqtoid X X' e) g ≡ g ∘ ⌜ e ⌝
+                             → transport⁻¹ (λ - → - → Y) (eqtoid X X' e) g ＝ g ∘ ⌜ e ⌝
  back-transport-is-pre-comp' {X} {X'} e g = transport⁻¹-is-pre-comp (eqtoid X X' e) g ∙ q
   where
-   q : g ∘ Idtofun (eqtoid X X' e) ≡ g ∘ ⌜ e ⌝
+   q : g ∘ Idtofun (eqtoid X X' e) ＝ g ∘ ⌜ e ⌝
    q = ap (g ∘_) (ap ⌜_⌝ (idtoeq'-eqtoid X X' e))
 
  pre-comp-is-equiv : {X Y Z : 𝓤 ̇ } (f : X → Y)
@@ -95,47 +95,47 @@ private
  JEq' : is-univalent 𝓤 → ∀ {𝓥} → ≃-induction 𝓤 𝓥
  JEq' {𝓤} ua {𝓥} X A b Y e = transport (A Y) (idtoeq-eqtoid ua X Y e) g
   where
-   A' : (Y : 𝓤 ̇ ) → X ≡ Y → 𝓥 ̇
+   A' : (Y : 𝓤 ̇ ) → X ＝ Y → 𝓥 ̇
    A' Y p = A Y (idtoeq X Y p)
    b' : A' X refl
    b' = b
-   f' : (Y : 𝓤 ̇ ) (p : X ≡ Y) → A' Y p
+   f' : (Y : 𝓤 ̇ ) (p : X ＝ Y) → A' Y p
    f' = Jbased X A' b'
    g : A Y (idtoeq X Y (eqtoid ua X Y e))
    g = f' Y (eqtoid ua X Y e)
 
 eqtoid-inverse : (ua : is-univalent 𝓤) {X X' : 𝓤 ̇ } (e : X ≃ X')
-               → (eqtoid ua X X' e)⁻¹ ≡ eqtoid ua X' X (≃-sym e)
-eqtoid-inverse ua {X} {X'} = JEq' ua X (λ X' e → (eqtoid ua X X' e)⁻¹ ≡ eqtoid ua X' X (≃-sym e)) p X'
+               → (eqtoid ua X X' e)⁻¹ ＝ eqtoid ua X' X (≃-sym e)
+eqtoid-inverse ua {X} {X'} = JEq' ua X (λ X' e → (eqtoid ua X X' e)⁻¹ ＝ eqtoid ua X' X (≃-sym e)) p X'
  where
-  p : (eqtoid ua X X (≃-refl X))⁻¹ ≡ eqtoid ua X X (≃-sym (≃-refl X))
+  p : (eqtoid ua X X (≃-refl X))⁻¹ ＝ eqtoid ua X X (≃-sym (≃-refl X))
   p = ap _⁻¹ (eqtoid-refl ua X) ∙ (eqtoid-refl ua X)⁻¹
 
 idtofun-eqtoid-⁻¹ : (ua : is-univalent 𝓤) {X Y : 𝓤 ̇ } (e : X ≃ Y)
-                  → idtofun Y X ((eqtoid ua X Y e) ⁻¹) ≡ ⌜ e ⌝⁻¹
+                  → idtofun Y X ((eqtoid ua X Y e) ⁻¹) ＝ ⌜ e ⌝⁻¹
 idtofun-eqtoid-⁻¹ ua {X} {Y} e =
- idtofun Y X ((eqtoid ua X Y e) ⁻¹)    ≡⟨ I  ⟩
- idtofun Y X (eqtoid ua Y X (≃-sym e)) ≡⟨ II ⟩
+ idtofun Y X ((eqtoid ua X Y e) ⁻¹)    ＝⟨ I  ⟩
+ idtofun Y X (eqtoid ua Y X (≃-sym e)) ＝⟨ II ⟩
  ⌜ e ⌝⁻¹                               ∎
   where
    I  = ap (idtofun Y X) (eqtoid-inverse ua e)
    II = idtofun-eqtoid ua (≃-sym e)
 
 Idtofun-eqtoid-⁻¹ : (ua : is-univalent 𝓤) {X Y : 𝓤 ̇ } (e : X ≃ Y)
-                  → Idtofun ((eqtoid ua X Y e) ⁻¹) ≡ ⌜ e ⌝⁻¹
+                  → Idtofun ((eqtoid ua X Y e) ⁻¹) ＝ ⌜ e ⌝⁻¹
 Idtofun-eqtoid-⁻¹ ua {X} {Y} e =
  (idtofun-agreement Y X ((eqtoid ua X Y e) ⁻¹)) ⁻¹ ∙ idtofun-eqtoid-⁻¹ ua e
 
 transport-is-pre-comp' : (ua : is-univalent 𝓤)
                        → {X X' Y : 𝓤 ̇ } (e : X ≃ X') (g : X → Y)
-                       → transport (λ - → - → Y) (eqtoid ua X X' e) g ≡ g ∘ ⌜ e ⌝⁻¹
+                       → transport (λ - → - → Y) (eqtoid ua X X' e) g ＝ g ∘ ⌜ e ⌝⁻¹
 transport-is-pre-comp' ua {X} {X'} e g = transport-is-pre-comp (eqtoid ua X X' e) g ∙ q
  where
-  b : Idtofun ((eqtoid ua X X' e)⁻¹) ≡ Idtofun (eqtoid ua X' X (≃-sym e))
+  b : Idtofun ((eqtoid ua X X' e)⁻¹) ＝ Idtofun (eqtoid ua X' X (≃-sym e))
   b = ap Idtofun (eqtoid-inverse ua e)
-  c : Idtofun (eqtoid ua X' X (≃-sym e)) ≡ pr₁ (≃-sym e)
+  c : Idtofun (eqtoid ua X' X (≃-sym e)) ＝ pr₁ (≃-sym e)
   c = ap pr₁ (idtoeq'-eqtoid ua X' X (≃-sym e))
-  q : g ∘ Idtofun ((eqtoid ua X X' e)⁻¹) ≡ g ∘ pr₁ (≃-sym e)
+  q : g ∘ Idtofun ((eqtoid ua X X' e)⁻¹) ＝ g ∘ pr₁ (≃-sym e)
   q = ap (g ∘_) (b ∙ c)
 
 \end{code}
@@ -168,7 +168,7 @@ considered here.
 JEq-improve : ∀ {𝓤 𝓥}
             → (jeq' : ≃-induction 𝓤 𝓥)
             → Σ jeq ꞉ ≃-induction 𝓤 𝓥 , ((X : 𝓤 ̇ ) (A : (Y : 𝓤 ̇ ) → X ≃ Y → 𝓥 ̇ ) (b : A X (≃-refl X))
-                                      → jeq X A b X (≃-refl X) ≡ b)
+                                      → jeq X A b X (≃-refl X) ＝ b)
 JEq-improve {𝓤} {𝓥} jeq' = jeq , jeq-comp
  where
   module _ (X : 𝓤 ̇ ) (A : (Y : 𝓤 ̇ ) → X ≃ Y → 𝓥 ̇ ) where
@@ -183,16 +183,16 @@ JEq-improve {𝓤} {𝓥} jeq' = jeq , jeq-comp
      b = jeq' X C ((λ a → a) , λ p → p) _ p
 
    h : (b : A X (≃-refl X)) {Y : 𝓤 ̇ } (p : X ≃ Y)
-     → Σ a ꞉ A Y p , pr₁ (g p p) a ≡ pr₁ (g (≃-refl X) p) b
+     → Σ a ꞉ A Y p , pr₁ (g p p) a ＝ pr₁ (g (≃-refl X) p) b
    h b p = jeq' X B (b , refl) _ p
     where
      B : (Y : 𝓤 ̇ ) (p : X ≃ Y) → 𝓥 ̇
-     B Y p = Σ a ꞉ A Y p , pr₁ (g p p) a ≡ pr₁ (g (≃-refl X) p) b
+     B Y p = Σ a ꞉ A Y p , pr₁ (g p p) a ＝ pr₁ (g (≃-refl X) p) b
 
    jeq : A X (≃-refl X) → (Y : 𝓤 ̇ ) (p : X ≃ Y) → A Y p
    jeq b Y p = pr₁ (h b p)
 
-   jeq-comp : (b : A X (≃-refl X)) → jeq b X (≃-refl X) ≡ b
+   jeq-comp : (b : A X (≃-refl X)) → jeq b X (≃-refl X) ＝ b
    jeq-comp b = pr₂ (g (≃-refl X) (≃-refl X)) (pr₂ (h b (≃-refl X)))
 
 \end{code}
@@ -208,15 +208,15 @@ JEq-converse {𝓤} jeq' X = γ
   jeq : ∀ {𝓥} → ≃-induction 𝓤 𝓥
   jeq {𝓥} = pr₁ (JEq-improve (jeq' {𝓥}))
   jeq-comp : ∀ {𝓥} (X : 𝓤 ̇ ) (A : (Y : 𝓤 ̇ ) → X ≃ Y → 𝓥 ̇ ) (b : A X (≃-refl X))
-          → jeq X A b X (≃-refl X) ≡ b
+          → jeq X A b X (≃-refl X) ＝ b
   jeq-comp {𝓥} = pr₂ (JEq-improve (jeq' {𝓥}))
-  φ : (Y : 𝓤 ̇ ) → X ≃ Y → X ≡ Y
-  φ = jeq X (λ Y p → X ≡ Y) refl
-  φc : φ X (≃-refl X) ≡ refl
-  φc = jeq-comp X (λ Y p → X ≡ Y) refl
-  idtoeqφ : (Y : 𝓤 ̇ ) (e : X ≃ Y) → idtoeq X Y (φ Y e) ≡ e
-  idtoeqφ = jeq X (λ Y e → idtoeq X Y (φ Y e) ≡ e) (ap (idtoeq X X) φc)
-  φidtoeq : (Y : 𝓤 ̇ ) (p : X ≡ Y) → φ Y (idtoeq X Y p) ≡ p
+  φ : (Y : 𝓤 ̇ ) → X ≃ Y → X ＝ Y
+  φ = jeq X (λ Y p → X ＝ Y) refl
+  φc : φ X (≃-refl X) ＝ refl
+  φc = jeq-comp X (λ Y p → X ＝ Y) refl
+  idtoeqφ : (Y : 𝓤 ̇ ) (e : X ≃ Y) → idtoeq X Y (φ Y e) ＝ e
+  idtoeqφ = jeq X (λ Y e → idtoeq X Y (φ Y e) ＝ e) (ap (idtoeq X X) φc)
+  φidtoeq : (Y : 𝓤 ̇ ) (p : X ＝ Y) → φ Y (idtoeq X Y p) ＝ p
   φidtoeq X refl = φc
   γ : (Y : 𝓤 ̇ ) → is-equiv(idtoeq X Y)
   γ Y =  (φ Y , idtoeqφ Y) , (φ Y , φidtoeq Y)
@@ -233,7 +233,7 @@ JEq : is-univalent 𝓤 → ∀ {𝓥} → ≃-induction 𝓤 𝓥
 JEq ua = pr₁ (JEq-improve (JEq' ua))
 
 JEq-comp : (ua : is-univalent 𝓤) (X : 𝓤 ̇ ) (A : (Y : 𝓤 ̇ ) → X ≃ Y → 𝓥 ̇ ) (b : A X (≃-refl X))
-         → JEq ua X A b X (≃-refl X) ≡ b
+         → JEq ua X A b X (≃-refl X) ＝ b
 JEq-comp ua = pr₂ (JEq-improve (JEq' ua))
 
 \end{code}
