@@ -870,3 +870,45 @@ when proving distributivity.
                 }
 
 \end{code}
+
+\section{Small version of Patch}
+
+\begin{code}
+
+module SmallPatchConstruction (X : Locale 𝓤 𝓥 𝓦) (σᴰ : spectralᴰ (𝒪 X)) where
+
+ ℬ : Fam 𝓦 ⟨ 𝒪 X ⟩
+ ℬ = basisₛ (𝒪 X) σᴰ
+
+ ℬ-is-basis : is-basis-for (𝒪 X) ℬ
+ ℬ-is-basis = pr₁ (pr₁ (pr₂ σᴰ))
+
+ open PatchConstruction X ∣ σᴰ ∣
+
+ _≼ᵏ₀_ : (⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩) → (⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩) → Ω (𝓥 ⊔ 𝓦)
+ _≼ᵏ₀_ j k = Ɐ i ∶ index ℬ , j (ℬ [ i ]) ≤[ poset-of (𝒪 X) ] k (ℬ [ i ])
+
+ ≼₀-iff-≼ᵏ₀ : (j k : ⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩) → ((j ≼₀ k) ↔ (j ≼ᵏ₀ k)) holds
+ ≼₀-iff-≼ᵏ₀ j k = † , ‡
+  where
+   † : (j ≼₀ k ⇒ j ≼ᵏ₀ k) holds
+   † p i = p (ℬ [ i ])
+
+   ‡ : (j ≼ᵏ₀ k ⇒ j ≼₀ k) holds
+   ‡ p U = j U                               ≡⟨ i ⟩ₚ
+           j (⋁[ 𝒪 X ] ⁅ ℬ [ i ] ∣ i ε 𝒥 ⁆)  ≤⟨ ii ⟩
+           ⋁[ 𝒪 X ] ⁅ j (ℬ [ i ]) ∣ i ε 𝒥 ⁆  ≤⟨ {!!} ⟩
+           ⋁[ 𝒪 X ] ⁅ k (ℬ [ i ]) ∣ i ε 𝒥 ⁆  ≤⟨ {!!} ⟩
+           k (⋁[ 𝒪 X ] ⁅ ℬ [ i ] ∣ i ε 𝒥 ⁆)  ≤⟨ {!!} ⟩
+           k U ■
+    where
+     open PosetReasoning (poset-of (𝒪 X))
+
+     𝒥 : Fam 𝓦 (index ℬ)
+     𝒥 = covering-index-family (𝒪 X) ℬ (pr₁ (pr₁ (pr₂ σᴰ))) U
+
+     i   = ap j (covers (𝒪 X) ℬ ℬ-is-basis U)
+     ii  = {!!}
+     iii = {!!}
+
+\end{code}
