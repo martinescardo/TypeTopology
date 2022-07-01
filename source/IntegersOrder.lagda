@@ -271,6 +271,14 @@ trich-locate x y = (x < y) ∔ (x ≡ y) ∔ (y < x)
     II (inl l) = inr (inr l)
     II (inr r) = inr (inl (r ⁻¹))
 
+ℤ-dichotomous' : (x y : ℤ) → x < y ∔ y ≤ x
+ℤ-dichotomous' x y = I (ℤ-trichotomous x y)
+ where
+  I : (x < y) ∔ (x ≡ y) ∔ (y < x) → x < y ∔ y ≤ x 
+  I (inl x<y) = inl x<y
+  I (inr (inl x≡y)) = inr (transport (_≤ x) x≡y (ℤ≤-refl x))
+  I (inr (inr y<x)) = inr (<-is-≤ y x y<x)
+
 ℤ-trichotomous-is-prop : (x y : ℤ) → is-prop ((x < y) ∔ (x ≡ y) ∔ (y < x))
 ℤ-trichotomous-is-prop x y
  = +-is-prop (ℤ<-is-prop x y)
@@ -355,7 +363,7 @@ positive-multiplication-preserves-order a b (pos (succ x)) p l = pmpo-lemma a b 
 positive-multiplication-preserves-order' : (a b c : ℤ) → greater-than-zero c → a ≤ b → a * c ≤ b * c
 positive-multiplication-preserves-order' a b c p l with ℤ≤-split a b l
 ... | (inl a<b) = <-is-≤ _ _ (positive-multiplication-preserves-order a b c p a<b)
-... | (inr a≡b) = transport (a * c ≤_) (ap (_* c) a≡b) (ℤ≤-refl (a * c)) 
+... | (inr a≡b) = transport (a * c ≤_) (ap (_* c) a≡b) (ℤ≤-refl (a * c))
 
 nmco-lemma : (a b : ℤ) → (c : ℕ) → a < b → b * (negsucc c) < a * (negsucc c)
 nmco-lemma a b = induction base step
@@ -395,6 +403,14 @@ nmco-lemma a b = induction base step
 negative-multiplication-changes-order : (a b c : ℤ) → negative c → a < b → b * c < a * c
 negative-multiplication-changes-order a b (pos c)     g l = 𝟘-elim g
 negative-multiplication-changes-order a b (negsucc c) g l = nmco-lemma a b c l
+
+negative-multiplication-changes-order' : (a b c : ℤ) → negative c → a ≤ b → b * c ≤ a * c
+negative-multiplication-changes-order' a b (pos x) g l = 𝟘-elim g
+negative-multiplication-changes-order' a b (negsucc x) g l = I (ℤ≤-split a b l)
+ where
+  I : a < b ∔ (a ≡ b) → b * negsucc x ≤ a * negsucc x
+  I (inl a<b) = <-is-≤ (b * negsucc x) (a * negsucc x) (negative-multiplication-changes-order a b (negsucc x) ⋆ a<b)
+  I (inr a≡b) = transport (b * negsucc x ≤ℤ_) (ap (_* negsucc x) (a≡b ⁻¹)) (ℤ≤-refl (b * negsucc x))
 
 ℤ-mult-right-cancellable : (x y z : ℤ) → not-zero z → x * z ≡ y * z → x ≡ y
 ℤ-mult-right-cancellable x y (pos 0)        nz e = 𝟘-elim (nz ⋆)
