@@ -11,8 +11,17 @@
 
 open import SpartanMLTT hiding ( ₀ ; ₁)
 open import Groups
+open import Groups.cokernel
+open import UF-PropTrunc
+open import Groups.homomorphisms
+open import Groups.kernel
+open import UF-ImageAndSurjection
+open import Groups.image
+open import UF-FunExt
+open import UF-Subsingletons
 
-module CrossedModules.CrossedModules where
+module CrossedModules.CrossedModule2
+  where
 
 \end{code}
 
@@ -38,6 +47,8 @@ Equivariant G H (ρ , _) δ _ = ∀ {g h} → (δ (ρ g h) ·⟨ G ⟩ g ≡ (g 
 Peiffer-identity : (G : Group 𝓤) (H : Group 𝓥) → G ◂ H → (δ : ⟨ H ⟩ → ⟨ G ⟩) → (is-hom H G δ) → 𝓥 ̇
 Peiffer-identity _ H (ρ , _) δ _ = ∀ {h₁ h₂} → (((ρ (δ h₁) h₂) ·⟨ H ⟩ h₁) ≡ h₁ ·⟨ H ⟩ h₂)
 
+Equivariant' : (G : Group 𝓤) (H : Group 𝓥) → G ◂ H → (δ : ⟨ H ⟩ → ⟨ G ⟩) → (is-hom H G δ) → 𝓤 ⊔ 𝓥 ̇
+Equivariant' G H (ρ , _) δ _ = (g : ⟨ G ⟩) (h : ⟨ H ⟩)  → (δ (ρ g h) ≡ (g ·⟨ G ⟩ (δ h)) ·⟨ G ⟩ (inv G g))
 
 action-carrier : {G : Group 𝓤}{H : Group 𝓥} → G ◂ H → ⟨ G ⟩ → ⟨ H ⟩ → ⟨ H ⟩
 action-carrier ρ g h = (pr₁ ρ) g h
@@ -58,8 +69,10 @@ record CrossedModule : (𝓤 ⊔ 𝓥) ⁺ ̇ where
     ∂ : ⟨ _₁ ⟩ → ⟨ _₀ ⟩
     is-∂ : is-hom _₁ _₀ ∂
     ρ : _₀ ◂ _₁
-    equivariant : Equivariant _₀ _₁ ρ ∂ is-∂
+    equivariant : Equivariant' _₀ _₁ ρ ∂ is-∂
     peiffer : Peiffer-identity _₀ _₁ ρ ∂ is-∂
+
+
 
 
 module _ {G : CrossedModule {𝓤} {𝓥}}
@@ -86,10 +99,12 @@ CrossedModule.
 -- It is convenient (?) to have a different definition for the
 -- morphisms
 
-  is-CrossMod-hom : (f₀ : ⟨ G ₀ ⟩ → ⟨ H ₀ ⟩) → is-hom ( G ₀) (H ₀) f₀ →
-                    (f₁ : ⟨ G ₁ ⟩ → ⟨ H ₁ ⟩) → is-hom (G ₁) (H ₁) f₁ → (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓣) ̇
+  is-CrossMod-hom : (f₀ : ⟨ G ₀ ⟩ → ⟨ H ₀ ⟩) → is-hom ( G ₀) (H ₀) f₀ → (f₁ : ⟨ G ₁ ⟩ → ⟨ H ₁ ⟩) → is-hom (G ₁) (H ₁) f₁ → (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓣) ̇
   is-CrossMod-hom f₀ _ f₁ _ = ( ∀ {g} → f₀ (∂ G g) ≡ ∂ H (f₁ g) ) 
                             × ( ∀ {g h} → f₁ ((pr₁ (ρ G)) g h) ≡ (pr₁ (ρ H)) (f₀ g) (f₁ h) )
+
+
+
 
 \end{code}
 
@@ -148,4 +163,38 @@ as the formal analogue of a chain homotopy.
                      × (∀ {a x} → g₁ a ·⟨ H ₁ ⟩ θ x ≡ θ (∂ G a ·⟨ G ₀ ⟩ x) ·⟨ H ₁ ⟩ f₁ a)
                      × (∀ {x x'} → θ (x ·⟨ G ₀ ⟩ x') ≡ (θ x) ·⟨ H ₁ ⟩ (pr₁ (ρ H) (f₀ x)  (θ x')))
 
+
+
+module homotopygroups {G : CrossedModule {𝓤} {𝓥}} (pt : propositional-truncations-exist) (fe : Fun-Ext) (pe : Prop-Ext)
+  where
+  open CrossedModule
+  open Groups.homomorphisms (_₁ G) (_₀ G) (∂ G) (is-∂ G)
+  open PropositionalTruncation pt
+  open Groups.kernel 
+  open Groups.cokernel
+  open Groups.cokernel.cokernel pt fe pe
+  
+
+  γ : (G : Group 𝓥) → (x y g : ⟨ G ⟩) → (x ≡ y) → (((g ·⟨ G ⟩ x) ·⟨ G ⟩ (inv G g)) ≡ ((g ·⟨ G ⟩ y) ·⟨ G ⟩ (inv G g)))
+  γ G x y g p = ap (λ v → ((g ·⟨ G ⟩ v) ·⟨ G ⟩ (inv G g))) p
+
+
+  ∂-has-norm-im : Groups.homomorphisms.has-normal-image (G ₁) (G ₀) (∂ G) (is-∂ G) pt
+  ∂-has-norm-im g (g' , p) = do
+    x , p' ← p
+    ∣ (pr₁ (ρ G)) g x , ((equivariant G g x) ∙ (γ (G ₀) (∂ G x) g' g p')) ∣
+
+
+
+  π₀ : Group (𝓤 ⊔ 𝓥)
+  π₀ = kernel (G ₁) (G ₀) (∂ G) (is-∂ G)
+
+
+  π₁ : Group _
+  π₁ = cokernel-gr (G ₁) (G ₀) (∂ G) (is-∂ G) ∂-has-norm-im
+
+
+ 
+
 \end{code}
+
