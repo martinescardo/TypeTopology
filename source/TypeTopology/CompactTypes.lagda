@@ -704,7 +704,7 @@ compact-gives-Compact {𝓤} {𝓥} {X} c A d = iii
   iii : decidable (Σ A)
   iii = ii (c p)
 
-Compact-gives-compact : {X : 𝓤 ̇ } → Compact X → compact X
+Compact-gives-compact : {X : 𝓤 ̇ } → Compact X {𝓤₀} → compact X
 Compact-gives-compact {𝓤} {X} C p = iv
  where
   A : X → 𝓤₀ ̇
@@ -723,8 +723,8 @@ Compact-gives-compact {𝓤} {X} C p = iv
   iv : (Σ x ꞉ X , p x ＝ ₀) + (Π x ꞉ X , p x ＝ ₁)
   iv = iii (i ii)
 
-Compact-resizeup : {X : 𝓤 ̇ } → Compact X {𝓤₀} → Compact X {𝓥}
-Compact-resizeup C = compact-gives-Compact (Compact-gives-compact C)
+Compact-resize-up : {X : 𝓤 ̇ } → Compact X {𝓤₀} → Compact X {𝓥}
+Compact-resize-up C = compact-gives-Compact (Compact-gives-compact C)
 
 \end{code}
 
