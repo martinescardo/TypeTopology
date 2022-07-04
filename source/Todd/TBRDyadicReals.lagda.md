@@ -28,7 +28,7 @@ module Todd.TBRDyadicReals
  where
 
 open import Todd.BelowAndAbove fe using (below-implies-below' ; _below'_ ; below'-implies-below)
-open import Todd.DyadicReals pt fe
+open import Todd.DyadicReals pe pt fe
 open import Todd.RationalsDyadic fe
 open import Todd.TernaryBoehmRealsPrelude fe
 open import Todd.TernaryBoehmReals fe pe hiding (ι ; _≤_≤_)
@@ -40,10 +40,23 @@ open OrderProperties DyOrPr
 open DyadicProperties Dp
 open PropositionalTruncation pt
 
+
 ```
 
 The following defines machinery to obtain the interval representations
-of a ternary Boehm object at each layer n.
+of a TBR at each layer n.
+
+The function encoding t at-level n finds the interval representation
+of a TBR at level n. For example, consider the TBR which defines the
+real number 1, we have:
+
+encoding 1𝕋 at-level (negsucc 0) = brick (pos 0) at-level (negsucc 0) = [0 , 4]
+encoding 1𝕋 at-level (pos 0)     = brick (pos 1) at-level (pos 0)     = [1 , 3] 
+encoding 1𝕋 at-level (pos 1)     = brick (pos 2) at-level (pos 1)     = [1 , 2]
+encoding 1𝕋 at-level (pos 2)     = brick (pos 4) at-level (pos 2)     = [1 , 1.5]
+
+We also have notation which grabs the left or right bound of an
+encoding at some level.
 
 ```agda
 --level 0 width 2
@@ -54,15 +67,62 @@ encoding_at-level_ : 𝕋 → ℤ → ℤ[1/2] × ℤ[1/2]
 encoding (x , _) at-level n = brick (x n) on-level n
 
 lb rb : 𝕋 → ℤ → ℤ[1/2]
-lb t n = pr₁ (encoding t at-level n)
-rb t n = pr₂ (encoding t at-level n)
+lb x n = pr₁ (encoding x at-level n)
+rb x n = pr₂ (encoding x at-level n)
 
-disjoint-lemma : (t : 𝕋) → (i j : ℤ) → lb t i < rb t j
-disjoint-lemma t i j = {!!}
+```
+The following proofs are needed to define the injection of TBR's into
+Dedekind reals. The function disjoint-lemma is the proof that for any
+TBR, the left bound of the TBR is always less than the right
+bound. The is true since on any specific level, the two bounds are
+apart, with the left bound smaller than the right bound. On successive
+levels, one or both of the bounds move closer to the other, forever or
+until one of the bounds is the same as the real number defined by the
+TBR. At this point this bound remains the same; it cannot change
+otherwise the real number would be "chopped out" of the
+interval. Hence the other point gets increasingly closer the other. A
+pictorial example:
+
+  (                                        |                                                                                        )
+  (                                        |                        )
+                                  (        |                        )
+                                          (|                )
+                                          (|        )
+                                          (|    )
+                                          (|  )
+                                          (| )
+                                          (|)
+
+```agda
+
+disjoint-lemma : (x : 𝕋) → (n m : ℤ) → lb x n < rb x m
+disjoint-lemma x n m = {!!}
+
+```
+The function located-lemma is a simple order proof
+
+r - l < q - p
+
+By trichotomy, p < l or l ≤ p.
+
+If p < l, then we are done.
+
+If l ≤ p, then  r ≤ r + (p - l) < q, so r < q and we are done.
+ 
+
+```agda
 
 located-lemma₁ : (p q l r : ℤ[1/2]) → (r ℤ[1/2]- l) < (q ℤ[1/2]- p)
                → (p < l) ∔ (r < q)
 located-lemma₁ = {!!}
+
+```
+
+The next lemma for located simply relies on the fact the the intervals
+are successively smaller. We can always locate a TBR to an arbitrary
+degree.
+
+```agda
 
 located-lemma₂ : (t : 𝕋) → (p : ℤ[1/2]) → 0ℤ[1/2] < p
                → ∃ k ꞉ ℤ , (rb t k ℤ[1/2]- lb t k) < p
@@ -1080,53 +1140,11 @@ min₃ w x y z = min (min₂ w x y) z
 
 open import IntegersAbs
 
-difference : (f : ℤ → ℤ → ℤ)             -- Given an integer functions
+difference : (f : ℤ → ℤ → ℤ)             -- Given an integer function
            → (x y : ℤ)                   -- and two bounds
            → ℤ                           -- find the integer difference 
-difference f lb rb = max₃ (f lb rb) (f lb (rb + pos 2)) (f (lb + pos 2) rb) (f (lb + pos 2) (rb + pos 2))
-                   - min₃ (f lb rb) (f lb (rb + pos 2)) (f (lb + pos 2) rb) (f (lb + pos 2) (rb + pos 2))
-
-operation-builder : (_⊕_ : ℤ → ℤ → ℤ)                                       -- Given a function on integers
-                  → interval-monotonic _⊕_                                   -- where function applied at bounds give new bounds
-                  → (∀ x y → (Σ k ꞉ ℕ , difference _⊕_ x y < pos (2^ k)))   -- if we can find a bound for each post-operation interval 
-                  → 𝕋 → 𝕋 → 𝕋                                                -- then we get an operation on TBR     
-operation-builder _⊕_ ⊕-monotic width (f , b) (g , b') = h , h-gives-below
- where
-  h : ℤ → ℤ
-  h n with width (f n) (g n) 
-  ... | (k , l) = (upRight ^ k) (f (n + pos k) ⊕ g (n + pos k))
-
-  h-gives-below : (δ : ℤ) → h (succℤ δ) below h δ
-  h-gives-below δ with (width (f δ) (g δ) , width (f (succℤ δ)) (g (succℤ δ)))
-  ... | ((k₁ , l₁) , k₂ , l₂) = {!!}
-
-```
-Proving that multiplication is monotonic on intervals is simple. The
-monotonic direction depends on the sign of the argument, but in both
-cases reduce to the proofs that order is preserves when multiplying
-integers.
-```agda
-
-multiplication-interval-monotonic : interval-monotonic _*_
-multiplication-interval-monotonic x y (pos 0) x<y = inl I
- where
-  I : (k : ℤ) → x ≤ k ≤ y → (x * pos 0) ≤ k * pos 0 ≤ (y * pos 0)
-  I k (l₁ , l₂) = ℤ≤-refl (pos 0) , ℤ≤-refl (pos 0)
-multiplication-interval-monotonic x y (pos (succ z)) x<y = inl I 
- where
-  I : (k : ℤ) → x ≤ k ≤ y → x * pos (succ z) ≤ k * pos (succ z) ≤ y * pos (succ z)
-  I k (l₁ , l₂) = positive-multiplication-preserves-order' x k (pos (succ z)) ⋆ l₁
-                , positive-multiplication-preserves-order' k y (pos (succ z)) ⋆ l₂
-multiplication-interval-monotonic x y (negsucc z) x<y = inr I
- where
-  I : (k : ℤ) → x ≤ k ≤ y → y * negsucc z ≤ k * negsucc z ≤ x * negsucc z
-  I k (l₁ , l₂) = negative-multiplication-changes-order' k y (negsucc z) ⋆ l₂
-                , negative-multiplication-changes-order' x k (negsucc z) ⋆ l₁
-
-```
-Proving that multiplication of an interval is bounded by
-multiplication of the old bounds is more difficult. 
-```agda
+difference f l r = max₃ (f l r) (f l (r + pos 2)) (f (l + pos 2) r) (f (l + pos 2) (r + pos 2))
+                  - min₃ (f l r) (f l (r + pos 2)) (f (l + pos 2) r) (f (l + pos 2) (r + pos 2))
 
 open import NaturalsOrder
 
@@ -1152,11 +1170,102 @@ find-next-2-exponent : (z : ℤ) → Σ k ꞉ ℕ , z < pos (2^ k)
 find-next-2-exponent (negsucc x) = 0 , negative-less-than-positive x (2^ 0)
 find-next-2-exponent (pos x)     = let (k , l) = find-next-2-exponent-ℕ x in k , ℕ-order-respects-ℤ-order x (2^ k) l 
 
+operation-builder : (_⊕_ : ℤ → ℤ → ℤ)                                        -- Given a function on integers
+                  → interval-monotonic _⊕_                                   -- where function applied at bounds give new bounds
+                  → (∀ x y → (Σ k ꞉ ℕ , difference _⊕_ x y < pos (2^ k)))    -- if we can find a bound for each post-operation interval 
+                  → 𝕋 → 𝕋 → 𝕋                                                 -- then we get an operation on TBR     
+operation-builder _⊕_ ⊕-monotic width (f , b) (g , b') = h , h-gives-below
+ where
+  h : ℤ → ℤ
+  h n with width (f n) (g n) 
+  ... | k , l = (_/2' ^ (abs n)) ((upRight ^ (k +ℕ k)) (f (n + pos k) ⊕ g (n + pos k))) 
+
+  h-gives-below : (δ : ℤ) → h (succℤ δ) below h δ
+  h-gives-below δ with (width (f δ) (g δ) , width (f (succℤ δ)) (g (succℤ δ)))
+  ... | ((k₁ , l₁) , k₂ , l₂) = {!!}
+
+```
+
+Proving that multiplication is monotonic on intervals is simple. The
+monotonic direction depends on the sign of the argument, but in both
+cases reduce to the proofs that order is preserves when multiplying
+integers.
+
+```agda
+
+multiplication-interval-monotonic : interval-monotonic _*_
+multiplication-interval-monotonic x y (pos 0) x<y = inl I
+ where
+  I : (k : ℤ) → x ≤ k ≤ y → (x * pos 0) ≤ k * pos 0 ≤ (y * pos 0)
+  I k (l₁ , l₂) = ℤ≤-refl (pos 0) , ℤ≤-refl (pos 0)
+multiplication-interval-monotonic x y (pos (succ z)) x<y = inl I 
+ where
+  I : (k : ℤ) → x ≤ k ≤ y → x * pos (succ z) ≤ k * pos (succ z) ≤ y * pos (succ z)
+  I k (l₁ , l₂) = positive-multiplication-preserves-order' x k (pos (succ z)) ⋆ l₁
+                , positive-multiplication-preserves-order' k y (pos (succ z)) ⋆ l₂
+multiplication-interval-monotonic x y (negsucc z) x<y = inr I
+ where
+  I : (k : ℤ) → x ≤ k ≤ y → y * negsucc z ≤ k * negsucc z ≤ x * negsucc z
+  I k (l₁ , l₂) = negative-multiplication-changes-order' k y (negsucc z) ⋆ l₂
+                , negative-multiplication-changes-order' x k (negsucc z) ⋆ l₁
+
+```
+Proving that multiplication of an interval is bounded by
+multiplication of the old bounds is more difficult. 
+```agda
+
+-- Σ k ꞉ ℕ , ((upRight ^ k) (difference _⊕_ (x (n + pos k)) (y (n + pos k))) ≤ pos 2)
+
 interval-multiplication-preserves-bounds : ∀ x y → (Σ k ꞉ ℕ , difference _*_ x y < pos (2^ k))
 interval-multiplication-preserves-bounds x y = find-next-2-exponent (difference _*_ x y)
 
-_𝕋*_ : 𝕋 → 𝕋 → 𝕋
-_𝕋*_ = operation-builder _*_ multiplication-interval-monotonic interval-multiplication-preserves-bounds 
+addition-interval-monotonic : interval-monotonic _+_
+addition-interval-monotonic x y z x<y = inl (λ k (l₁ , l₂) → (ℤ≤-adding' x k z l₁) , ℤ≤-adding' k y z l₂)
+
+interval-addition-preserves-bounds : (x y : ℤ) → Σ k ꞉ ℕ , difference _+_ x y < pos (2^ k)
+interval-addition-preserves-bounds x y = find-next-2-exponent (difference _+_ x y)
+
+_𝕋+'_ : 𝕋 → 𝕋 → 𝕋
+_𝕋+'_ = operation-builder _+_ addition-interval-monotonic interval-addition-preserves-bounds
+
+0𝕋' : 𝕋
+0𝕋' = map (((pos 0) , 0) , {!!})
+
+1𝕋' : 𝕋
+1𝕋' = map ((pos 1 , 0) , {!!})
+
+2𝕋' : 𝕋
+2𝕋' = map ((pos 2 , 0) , {!!})
+
+3𝕋' : 𝕋
+3𝕋' = map ((pos 3 , 0) , {!!})
+
+0𝕋 : 𝕋
+0𝕋 = x , {!!}
+ where
+  x : ℤ → ℤ
+  x (pos 0) = pos 0
+  x (pos (succ n)) = downLeft (x (pos 0))
+  x (negsucc 0) = upRight (pos 0)
+  x (negsucc (succ n)) = upRight (x (negsucc n))
+  
+1𝕋 : 𝕋
+1𝕋 = x , {!!}
+ where
+  x : ℤ → ℤ
+  x (pos 0) = pos 1
+  x (pos (succ n)) = downLeft (x (pos n))
+  x (negsucc 0) = upRight (pos 1)
+  x (negsucc (succ n)) = upRight (x (negsucc n))
+
+2𝕋 : 𝕋
+2𝕋 = x , {!!}
+ where
+  x : ℤ → ℤ
+  x (pos 0) = pos 2
+  x (pos (succ n)) = downLeft (x (pos n))
+  x (negsucc 0) = upRight (pos 2)
+  x (negsucc (succ n)) = upRight (x (negsucc n))
 
 3𝕋 : 𝕋
 3𝕋 = x , {!!}
@@ -1166,6 +1275,9 @@ _𝕋*_ = operation-builder _*_ multiplication-interval-monotonic interval-multi
   x (pos (succ n)) = downLeft (x (pos n))
   x (negsucc 0) = upRight (pos 3)
   x (negsucc (succ n)) = upRight (x (negsucc n))
+
+_𝕋*_ : 𝕋 → 𝕋 → 𝕋
+_𝕋*_ = operation-builder _*_ multiplication-interval-monotonic interval-multiplication-preserves-bounds
 
 8𝕋 : 𝕋
 8𝕋 = x , {!!}
@@ -1180,11 +1292,20 @@ _𝕋*_ = operation-builder _*_ multiplication-interval-monotonic interval-multi
 -2𝕋 = x , {!!}
  where
   x : ℤ → ℤ
+  x (pos 0) = negsucc 1
+  x (pos (succ n)) = downLeft (x (pos n))
+  x (negsucc 0) = upRight (negsucc 1)
+  x (negsucc (succ n)) = upRight (x (negsucc n))
+
+-3𝕋 : 𝕋
+-3𝕋 = x , {!!}
+ where
+  x : ℤ → ℤ
   x (pos 0) = negsucc 2
   x (pos (succ n)) = downLeft (x (pos n))
-  x (negsucc 0) = upRight (negsucc 2)
+  x (negsucc 0) = upRight (negsucc 1)
   x (negsucc (succ n)) = upRight (x (negsucc n))
-  
+
 -5𝕋 : 𝕋
 -5𝕋 = x , {!!}
  where
@@ -1194,12 +1315,9 @@ _𝕋*_ = operation-builder _*_ multiplication-interval-monotonic interval-multi
   x (negsucc 0) = upRight (negsucc 4)
   x (negsucc (succ n)) = upRight (x (negsucc n))
 
-
-
-
 ```
 
--- Is the idea that we have (f g : ℤ → ℤ → ℤ
+-- Is the idea that we have (f g : ℤ → ℤ → ℤ)
 
 -- We want to have machinery to build operations defined on TBR's,
 -- which agree with operations defined on reals.
