@@ -392,7 +392,7 @@ In the worst case, however, A n p runs in time 2ⁿ.
 \end{code}
 
 The xor example works with n=17 in about 25s in a core-i7 machine.
-The time 2^n for this example.
+The is time 2^n for this example.
 
 Another fast example (linear):
 
