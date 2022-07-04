@@ -883,23 +883,35 @@ module SmallPatchConstruction (X : Locale 𝓤 𝓥 𝓦) (σᴰ : spectralᴰ (
  ℬ-is-basis : is-basis-for (𝒪 X) ℬ
  ℬ-is-basis = pr₁ (pr₁ (pr₂ σᴰ))
 
- open PatchConstruction X ∣ σᴰ ∣
+ cover : (U : ⟨ 𝒪 X ⟩) → Fam 𝓦 ⟨ 𝒪 X ⟩
+ cover U =
+  let
+   𝒥 = covering-index-family (𝒪 X) ℬ ℬ-is-basis U
+  in
+   ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆
 
- _≼ᵏ₀_ : (⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩) → (⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩) → Ω (𝓥 ⊔ 𝓦)
- _≼ᵏ₀_ j k = Ɐ i ∶ index ℬ , j (ℬ [ i ]) ≤[ poset-of (𝒪 X) ] k (ℬ [ i ])
+ covers-are-directed : (U : ⟨ 𝒪 X ⟩)
+                     → is-directed (poset-of (𝒪 X)) (cover U) holds
+ covers-are-directed = pr₂ (pr₁ (pr₂ σᴰ))
 
- ≼₀-iff-≼ᵏ₀ : (j k : ⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩) → ((j ≼₀ k) ↔ (j ≼ᵏ₀ k)) holds
- ≼₀-iff-≼ᵏ₀ j k = † , ‡
+ open PatchConstruction X ∣ σᴰ ∣ renaming (Perfect-Nucleus to Perfect-Nucleus-on-X)
+
+ _≼ᵏ_ : Perfect-Nucleus-on-X → Perfect-Nucleus-on-X → Ω (𝓥 ⊔ 𝓦)
+ _≼ᵏ_ (j , ζⱼ) (k , ζₖ) =
+  Ɐ i ∶ index ℬ , j (ℬ [ i ]) ≤[ poset-of (𝒪 X) ] k (ℬ [ i ])
+
+ ≼-iff-≼ᵏ : (𝒿 𝓀 : Perfect-Nucleus-on-X) → (𝒿 ≼ 𝓀 ↔ 𝒿 ≼ᵏ 𝓀) holds
+ ≼-iff-≼ᵏ 𝒿@(j , νⱼ , ζⱼ) 𝓀@(k , νₖ , ζₖ) = † , ‡
   where
-   † : (j ≼₀ k ⇒ j ≼ᵏ₀ k) holds
+   † : (𝒿 ≼ 𝓀 ⇒ 𝒿 ≼ᵏ 𝓀) holds
    † p i = p (ℬ [ i ])
 
-   ‡ : (j ≼ᵏ₀ k ⇒ j ≼₀ k) holds
-   ‡ p U = j U                               ≡⟨ i ⟩ₚ
-           j (⋁[ 𝒪 X ] ⁅ ℬ [ i ] ∣ i ε 𝒥 ⁆)  ≤⟨ ii ⟩
-           ⋁[ 𝒪 X ] ⁅ j (ℬ [ i ]) ∣ i ε 𝒥 ⁆  ≤⟨ {!!} ⟩
-           ⋁[ 𝒪 X ] ⁅ k (ℬ [ i ]) ∣ i ε 𝒥 ⁆  ≤⟨ {!!} ⟩
-           k (⋁[ 𝒪 X ] ⁅ ℬ [ i ] ∣ i ε 𝒥 ⁆)  ≤⟨ {!!} ⟩
+   ‡ : (𝒿 ≼ᵏ 𝓀 ⇒ 𝒿 ≼ 𝓀) holds
+   ‡ p U = j U                                ≡⟨ i   ⟩ₚ
+           j (⋁[ 𝒪 X ] ⁅ ℬ [ i ] ∣ i ε 𝒥 ⁆)   ≡⟨ ii  ⟩ₚ
+           ⋁[ 𝒪 X ] ⁅ j (ℬ [ i ]) ∣ i ε 𝒥 ⁆   ≤⟨ iii ⟩
+           ⋁[ 𝒪 X ] ⁅ k (ℬ [ i ]) ∣ i ε 𝒥 ⁆   ≡⟨ iv  ⟩ₚ
+           k (⋁[ 𝒪 X ] ⁅ ℬ [ i ] ∣ i ε 𝒥 ⁆)   ≡⟨ v   ⟩ₚ
            k U ■
     where
      open PosetReasoning (poset-of (𝒪 X))
@@ -907,8 +919,17 @@ module SmallPatchConstruction (X : Locale 𝓤 𝓥 𝓦) (σᴰ : spectralᴰ (
      𝒥 : Fam 𝓦 (index ℬ)
      𝒥 = covering-index-family (𝒪 X) ℬ (pr₁ (pr₁ (pr₂ σᴰ))) U
 
+     δ : is-directed (poset-of (𝒪 X)) ⁅ ℬ [ i ] ∣ i ε 𝒥 ⁆ holds
+     δ = covers-are-directed U
+
      i   = ap j (covers (𝒪 X) ℬ ℬ-is-basis U)
-     ii  = {!!}
-     iii = {!!}
+     ii  = scott-continuous-join-eq (𝒪 X) (𝒪 X) j ζⱼ ⁅ ℬ [ i ] ∣ i ε 𝒥 ⁆ δ
+     iii = cofinal-implies-join-covered
+            (𝒪 X)
+            ⁅ j (ℬ [ i ]) ∣ i ε 𝒥 ⁆
+            ⁅ k (ℬ [ i ]) ∣ i ε 𝒥 ⁆
+            λ i → ∣ i , p (𝒥 [ i ]) ∣
+     iv  = scott-continuous-join-eq (𝒪 X) (𝒪 X) k ζₖ ⁅ ℬ [ i ] ∣ i ε 𝒥 ⁆ δ ⁻¹
+     v   = ap k (covers (𝒪 X) ℬ ℬ-is-basis U) ⁻¹
 
 \end{code}
