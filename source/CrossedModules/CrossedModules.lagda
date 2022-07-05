@@ -185,12 +185,12 @@ module homotopygroups {G : CrossedModule {𝓤} {𝓥}} (pt : propositional-trun
     ∣ (pr₁ (ρ G)) g x , ((equivariant G g x) ∙ (γ (G ₀) (∂ G x) g' g p')) ∣
 
 
-  π₀ : Group (𝓤 ⊔ 𝓥)
-  π₀ = kernel (G ₁) (G ₀) (∂ G) (is-∂ G)
+  π₁ : Group (𝓤 ⊔ 𝓥)
+  π₁ = kernel (G ₁) (G ₀) (∂ G) (is-∂ G)
 
 
-  π₁ : Group _
-  π₁ = cokernel-gr (G ₁) (G ₀) (∂ G) (is-∂ G) ∂-has-norm-im
+  π₀ : Group _
+  π₀ = cokernel-gr (G ₁) (G ₀) (∂ G) (is-∂ G) ∂-has-norm-im
 
 
 \end{code}
