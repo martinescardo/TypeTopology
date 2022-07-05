@@ -111,7 +111,8 @@ module _ (G : Group 𝓤) where
 
 In this submodule we prove that an action as defined above induces a
 homomorphism from the group ot the automorphism group of the carrier
-set. It requires funext 𝓤 𝓤 because Aut (X) (as a group) does.
+set. It requires funext 𝓤 𝓤 because Aut (X) (as a group)
+does. Conversely, a homomorphism to Aut (X) gives an action.
 
 \begin{code}
   module automorphism (fe : funext 𝓤 𝓤) where
