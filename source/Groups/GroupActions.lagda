@@ -5,7 +5,14 @@ Keri D'Angelo kd349@cornell.edu
 June 2022
 --------------------------------------------------------------------------------
 
-Group actions on sets.
+Group actions on sets and Torsors, following the UniMath blueprint. We
+add a couple of things:
+
+1. actions give homomorphisms into groups of automorphisms and
+   viceversa.
+
+2. pullbacks of actions.
+
 
 \begin{code}
 
@@ -104,35 +111,57 @@ module _ (G : Group 𝓤) where
 
 In this submodule we prove that an action as defined above induces a
 homomorphism from the group ot the automorphism group of the carrier
-set.
+set. It requires funext 𝓤 𝓤 because Aut (X) (as a group) does.
 
 \begin{code}
-  module automorphism (fe : funext 𝓤 𝓤) (𝕏 : Action) where
+  module automorphism (fe : funext 𝓤 𝓤) where
 
     open import Groups.Aut
 
-    private
-      X : 𝓤 ̇
-      X = ⟨ 𝕏 ⟩
-      i : is-set X
-      i = carrier-is-set 𝕏
-      _·_ : ⟨ G ⟩ → X → X
-      _·_ = action-op 𝕏
+    module _ (𝕏 : Action) where
 
-      j : is-set (Aut X)
-      j = is-set-Aut fe X i
+      private
+        X : 𝓤 ̇
+        X = ⟨ 𝕏 ⟩
+        i : is-set X
+        i = carrier-is-set 𝕏
+        _·_ : ⟨ G ⟩ → X → X
+        _·_ = action-op 𝕏
 
-      gr-s-X : _
-      gr-s-X = Group-structure-Aut fe X i
+        j : is-set (Aut X)
+        j = is-set-Aut fe X i
 
-    is-hom-action-to-fun : is-hom G (Aut X , gr-s-X) (action-to-Aut {𝕏})
-    is-hom-action-to-fun {g} {h} =
-                         to-Σ-≡ ((dfunext fe (action-assoc 𝕏 g h)) ,
-                           (being-equiv-is-prop'' fe (λ x → g · (h · x)) _ _))
+        gr-s-X : _
+        gr-s-X = Group-structure-Aut fe X i
+
+      is-hom-action-to-fun : is-hom G (Aut X , gr-s-X) (action-to-Aut {𝕏})
+      is-hom-action-to-fun {g} {h} =
+                           to-Σ-≡ ((dfunext fe (action-assoc 𝕏 g h)) ,
+                             (being-equiv-is-prop'' fe (λ x → g · (h · x)) _ _))
+
+    module _ (X : 𝓤 ̇) (i : is-set X) (σ : ⟨ G ⟩ → Aut X) where
+      
+      private
+        j : is-set (Aut X)
+        j = is-set-Aut fe X i
+
+        gr-s-X : _
+        gr-s-X = Group-structure-Aut fe X i
+
+      hom-to-Aut-gives-action : is-hom G (Aut X , gr-s-X) σ → Action
+      hom-to-Aut-gives-action is = X , ((λ g → pr₁ (σ g)) ,
+                              (i , (λ g h → happly (ap pr₁ (is {g} {h}))) ,
+                               λ x → ( pr₁ (σ (unit G)) x            ≡⟨ happly (ap pr₁ t) x ⟩
+                                       pr₁ (unit (Aut X , gr-s-X)) x ≡⟨ happly' id id refl x ⟩
+                                       x ∎ ) ) )
+        where
+          t : σ (unit G) ≡ unit (Aut X , gr-s-X)
+          t = homs-preserve-unit G (Aut X , gr-s-X) σ is
+
     
 \end{code}
 
-Resume the general theory. The group action axioms form a proposition
+Resuming the general theory, the group action axioms form a proposition
 and the Action-structure is a set.
 
 \begin{code}
@@ -173,9 +202,6 @@ and the Action-structure is a set.
 
 Equivariant maps.
 
-TODO: Prove a SIP as in UniMath: two actions for which the identity is
-equivariant (hence same carrier) are the same.
-
 \begin{code}
 
   is-equivariant : {𝕏 𝕐 : Action} (f : ⟨ 𝕏 ⟩ → ⟨ 𝕐 ⟩) → 𝓤 ̇
@@ -210,6 +236,43 @@ equivariant (hence same carrier) are the same.
       _*_ = action-op 𝕐
       _✵_ = action-op ℤ
 
+\end{code}
+
+The following "fundamental" fact from UniMath is that an
+identification p : ⟨ 𝕏 ⟩ ≡ ⟨ 𝕐 ⟩ between the carriers of two actions
+essentially gives rise to an equivariant map. More precisely,
+equivariance of the identity is the same as the identification of the
+structures.
+
+\begin{code}
+
+  ≡-is-equivariant : funext 𝓤 𝓤 →
+                     {𝕏 𝕐 : Action} →
+                     (p : ⟨ 𝕏 ⟩ ≡ ⟨ 𝕐 ⟩) →
+                     (transport Action-structure p (pr₂ 𝕏)  ≡ pr₂ 𝕐 ) ≃ 
+                     is-equivariant {𝕏} {𝕐} (idtofun ⟨ 𝕏 ⟩ ⟨ 𝕐 ⟩ p)
+  pr₁ (≡-is-equivariant fe {X , as} {.X , .as} refl) refl = λ g x → refl
+  pr₂ (≡-is-equivariant fe {X , as} {.X , as'} refl) =
+    logically-equivalent-props-give-is-equiv
+      is (is-equivariant-is-prop fe {X , as} {X , as'} id)
+        (pr₁ (≡-is-equivariant fe refl))
+        λ i → to-Σ-≡ ((γ i) , action-axioms-is-prop fe X _·'_ _ _)
+      where
+        _·_ _·'_ : action-structure X
+        _·_  = pr₁ as
+        _·'_ = pr₁ as'
+
+        is : is-prop (as ≡ as')
+        is = Action-structure-is-set fe X {as} {as'}
+
+        γ : is-equivariant {X , as} {X , as'} id → _·_ ≡ _·'_
+        γ = λ i → dfunext fe
+                  (λ g → dfunext fe λ x → i g x)
+\end{code}
+
+The above function is called is_equivariant_identity in UniMath.
+
+\begin{code}
 
   Action-Map : (𝕏 𝕐 : Action) → 𝓤  ̇
   Action-Map 𝕏 𝕐 = Σ f ꞉ (⟨ 𝕏 ⟩ → ⟨ 𝕐 ⟩) , is-equivariant {𝕏} {𝕐} f
@@ -279,7 +342,11 @@ equivariant (hence same carrier) are the same.
 
   ≡-to-Action-Iso : {𝕏 𝕐 : Action} →
                     𝕏 ≡ 𝕐 → Action-Iso 𝕏 𝕐
-  ≡-to-Action-Iso {𝕏} {.𝕏} refl = id-Action-Iso 𝕏
+  ≡-to-Action-Iso {𝕏} {𝕐} p = transport (Action-Iso 𝕏) p (id-Action-Iso 𝕏)
+
+  ≡-to-Action-Iso₁ : {𝕏 𝕐 : Action} →
+                     𝕏 ≡ 𝕐 → Action-Iso 𝕏 𝕐
+  ≡-to-Action-Iso₁ {𝕏} {.𝕏} refl = id-Action-Iso 𝕏
 
   compose-Action-Iso : {𝕏 𝕐 ℤ : Action} →
                        Action-Iso 𝕏 𝕐 → Action-Iso 𝕐 ℤ →
@@ -301,14 +368,118 @@ equivariant (hence same carrier) are the same.
                            (λ f → is-equivariant-is-prop fe {𝕏} {𝕐} (eqtofun f))
                            (≃-refl-left' fe fe fe (pr₁ u))
 
+  module _ (ua : is-univalent 𝓤) where
+
+    private
+      fe : funext 𝓤 𝓤
+      fe = univalence-gives-funext ua
+
+    Id-equiv-Action-Iso_prelim : (𝕏 𝕐 : Action) →
+                              (𝕏 ≡ 𝕐) ≃ (Action-Iso 𝕏 𝕐)
+    Id-equiv-Action-Iso_prelim 𝕏 𝕐 = ≃-comp (Φ , ll) (Ψ , ii)
+      where
+        T : (𝕏 𝕐 : Action) → (𝓤 ⁺) ̇
+        T 𝕏 𝕐 = Σ u ꞉ ⟨ 𝕏 ⟩ ≡ ⟨ 𝕐 ⟩ , transport Action-structure u (pr₂ 𝕏) ≡ pr₂ 𝕐
+
+        Φ : (𝕏 ≡ 𝕐) → T 𝕏 𝕐
+        Φ = from-Σ-≡ 
+
+        Φ' : T 𝕏 𝕐 → (𝕏 ≡ 𝕐)
+        Φ' = to-Σ-≡
+
+        Ψ : T 𝕏 𝕐 → Action-Iso 𝕏 𝕐
+        Ψ (p , is) = (idtoeq ⟨ 𝕏 ⟩ ⟨ 𝕐 ⟩ p) , pr₁ (≡-is-equivariant fe {𝕏} {𝕐} p) is
+
+        Ψ' : Action-Iso 𝕏 𝕐 → T 𝕏 𝕐
+        Ψ' (e , is) = p , pr₁ (≃-sym (≡-is-equivariant fe {𝕏} {𝕐} p)) i
+          where
+            p : ⟨ 𝕏 ⟩ ≡ ⟨ 𝕐 ⟩
+            p = eqtoid ua ⟨ 𝕏 ⟩ ⟨ 𝕐 ⟩ e
+            i : is-equivariant {𝕏} {𝕐} (idtofun ⟨ 𝕏 ⟩ ⟨ 𝕐 ⟩ p)
+            i = transport (is-equivariant {𝕏} {𝕐}) (t ⁻¹) is
+              where
+                t : idtofun ⟨ 𝕏 ⟩ ⟨ 𝕐 ⟩ p ≡ eqtofun e
+                t = idtofun-eqtoid ua e
+
+        Ψ'Ψ-id : (σ : T 𝕏 𝕐) → Ψ' (Ψ σ) ≡ σ
+        Ψ'Ψ-id (p , is) = to-Σ-≡ (eqtoid-idtoeq ua ⟨ 𝕏 ⟩ ⟨ 𝕐 ⟩ p ,
+                                 Action-structure-is-set fe _ _ _)
+
+        ΨΨ'-id : (u : Action-Iso 𝕏 𝕐) → Ψ (Ψ' u) ≡ u
+        ΨΨ'-id (e , is) = to-Σ-≡ ((idtoeq-eqtoid ua ⟨ 𝕏 ⟩ ⟨ 𝕐 ⟩ e) ,
+                                 (is-equivariant-is-prop fe {𝕏} {𝕐} _ _ _))
+        ii : is-equiv Ψ
+        ii = qinvs-are-equivs Ψ inv-Ψ
+          where
+            inv-Ψ : invertible Ψ
+            inv-Ψ = Ψ' , (Ψ'Ψ-id , ΨΨ'-id)
+            
+        ll : is-equiv Φ
+        ll = qinvs-are-equivs Φ inv-Φ
+          where
+            inv-Φ : invertible Φ
+            inv-Φ = Φ' , (tofrom-Σ-≡ , fromto-Σ-≡)
+
+
+    ≡-to-Action-Iso-is-equiv : {𝕏 𝕐 : Action} →
+                               is-equiv (≡-to-Action-Iso {𝕏} {𝕐})
+    ≡-to-Action-Iso-is-equiv {𝕏} {𝕐} = equiv-closed-under-∼'
+                             (pr₂ (Id-equiv-Action-Iso_prelim 𝕏 𝕐)) h
+      where
+        f = pr₁ (Id-equiv-Action-Iso 𝕏 prelim 𝕐)
+        g = ≡-to-Action-Iso
+        h : f ∼ g
+        h refl = refl
+
+
+    Id-equiv-Action-Iso : (𝕏 𝕐 : Action) →
+                       (𝕏 ≡ 𝕐) ≃ (Action-Iso 𝕏 𝕐)
+    Id-equiv-Action-Iso 𝕏 𝕐 = ≡-to-Action-Iso , ≡-to-Action-Iso-is-equiv
+
 \end{code}
+
 
 When explicitly expressed in terms of a group G, the type Action is
 just that of G-Sets, so we also use this notation.
 
 \begin{code}
 
-_Sets : ∀ {𝓤} → Group 𝓤 → 𝓤 ⁺ ̇
+_Sets : Group 𝓤 → 𝓤 ⁺ ̇
 G Sets = Action G
+
+\end{code}
+
+For a group homomorphism φ : H → G the action pulls back, because it
+is a functor from the one-object category G[1] to sets.
+
+\begin{code}
+
+action-pullback : {H G : Group 𝓤} →
+                  (f : ⟨ H ⟩ → ⟨ G ⟩) → is-hom H G f →
+                  G Sets → H Sets
+action-pullback {H = H} {G} f i ρ = (action-carrier G ρ) ,
+                (λ h x → (f h) · x) ,
+                  (carrier-is-set G ρ) ,
+                    ((λ h h₁ → λ x → (f (h ·⟨ H ⟩ h₁) · x       ≡⟨ ap (_· x) i ⟩
+                                      ((f h) ·⟨ G ⟩ (f h₁)) · x ≡⟨ action-assoc G ρ _ _ _ ⟩
+                                      (f h · (f h₁ · x)) ∎  )) ,
+                     λ x → (f (unit H) · x ≡⟨ ap (_· x) p ⟩
+                            unit G · x     ≡⟨ action-unit G ρ x ⟩
+                            x  ∎))
+  where
+    _·_ = action-op G ρ
+    p  = homs-preserve-unit H G f i
+\end{code}
+
+TODO: The left adjoint, that is, the map H Sets → G Sets along the
+homomorphism H → G. It uses the quotient module.
+
+TORSORS.
+
+\begin{code}
+
+is-torsor : {G : Group 𝓤} (𝕏 : G Sets) → 𝓤  ̇
+is-torsor {𝓤} {G} (X , a) = is-nonempty X ×
+          ((x : X) → is-equiv (right-mult G {X , a} x))
 
 \end{code}
