@@ -13,16 +13,16 @@
 
 open import SpartanMLTT hiding ( ₀ ; ₁)
 open import Groups
-open import Groups.cokernel
+open import Groups.Cokernel
 open import UF-PropTrunc
-open import Groups.homomorphisms
-open import Groups.kernel
+open import Groups.Homomorphisms
+open import Groups.Kernel
 open import UF-ImageAndSurjection
-open import Groups.image
+open import Groups.Image
 open import UF-FunExt
 open import UF-Subsingletons
 
-module CrossedModules.CrossedModule2
+module CrossedModules.CrossedModules
   where
 
 \end{code}
@@ -170,22 +170,19 @@ as the formal analogue of a chain homotopy.
 module homotopygroups {G : CrossedModule {𝓤} {𝓥}} (pt : propositional-truncations-exist) (fe : Fun-Ext) (pe : Prop-Ext)
   where
   open CrossedModule
-  open Groups.homomorphisms (_₁ G) (_₀ G) (∂ G) (is-∂ G)
+  open Groups.Homomorphisms (G ₁) (G ₀) (∂ G) (is-∂ G)
   open PropositionalTruncation pt
-  open Groups.kernel 
-  open Groups.cokernel
-  open Groups.cokernel.cokernel pt fe pe
+  open Groups.Cokernel.cokernel pt fe pe
   
 
   γ : (G : Group 𝓥) → (x y g : ⟨ G ⟩) → (x ≡ y) → (((g ·⟨ G ⟩ x) ·⟨ G ⟩ (inv G g)) ≡ ((g ·⟨ G ⟩ y) ·⟨ G ⟩ (inv G g)))
   γ G x y g p = ap (λ v → ((g ·⟨ G ⟩ v) ·⟨ G ⟩ (inv G g))) p
 
 
-  ∂-has-norm-im : Groups.homomorphisms.has-normal-image (G ₁) (G ₀) (∂ G) (is-∂ G) pt
+  ∂-has-norm-im : Groups.Homomorphisms.has-normal-image (G ₁) (G ₀) (∂ G) (is-∂ G) pt
   ∂-has-norm-im g (g' , p) = do
     x , p' ← p
     ∣ (pr₁ (ρ G)) g x , ((equivariant G g x) ∙ (γ (G ₀) (∂ G x) g' g p')) ∣
-
 
 
   π₀ : Group (𝓤 ⊔ 𝓥)
@@ -195,8 +192,6 @@ module homotopygroups {G : CrossedModule {𝓤} {𝓥}} (pt : propositional-trun
   π₁ : Group _
   π₁ = cokernel-gr (G ₁) (G ₀) (∂ G) (is-∂ G) ∂-has-norm-im
 
-
- 
 
 \end{code}
 
