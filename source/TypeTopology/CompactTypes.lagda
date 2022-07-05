@@ -6,7 +6,7 @@ of searchability, and we investigate this phenomenon in this module
 and the module WeaklyCompactTypes.
 
 Perhaps surprisingly, there are infinite searchable sets, such as ℕ∞
-(see the module GenericConvergentSequenceCompact).
+(see the module GenericConvergentSequenceCompactness).
 
 It is in general not possible to decide constructively the statement
 
