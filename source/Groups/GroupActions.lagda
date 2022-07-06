@@ -10,8 +10,9 @@ add a couple of things:
 
 1. actions give homomorphisms into groups of automorphisms and
    viceversa.
-
 2. pullbacks of actions.
+3. G Sets
+4. Different (equivalent) definitions of G-torsor
 
 
 \begin{code}
@@ -106,6 +107,13 @@ module _ (G : Group 𝓤) where
   left-mult = action-to-fun
   right-mult : {𝕏 : Action} (x : ⟨ 𝕏 ⟩) → ⟨ G ⟩ → ⟨ 𝕏 ⟩
   right-mult {𝕏} x = λ g → g ◂⟨ 𝕏 ⟩ x
+  ----------------------------------
+
+  -- the total action map is often used, especiall for torsors
+  ------------------------------------------------------------
+  mult : {𝕏 : Action} →
+         ⟨ G ⟩ × ⟨ 𝕏 ⟩ → ⟨ 𝕏 ⟩ × ⟨ 𝕏 ⟩
+  mult {𝕏} (g , x) = g ◂⟨ 𝕏 ⟩ x , x
 
 \end{code}
 
