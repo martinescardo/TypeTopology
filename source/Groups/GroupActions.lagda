@@ -454,7 +454,6 @@ type-checking.
 
 \end{code}
 
-
 When explicitly expressed in terms of a group G, the type Action is
 just that of G-Sets, so we also use this notation.
 
