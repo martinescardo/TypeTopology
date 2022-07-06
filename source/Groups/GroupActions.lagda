@@ -368,6 +368,12 @@ The above function is called is_equivariant_identity in UniMath.
   compose-id-Action-Iso fe {𝕏} {𝕐} u = to-subtype-≡
                            (λ f → is-equivariant-is-prop fe {𝕏} {𝕐} (eqtofun f))
                            (≃-refl-left' fe fe fe (pr₁ u))
+\end{code}
+
+Univalence for group actions. The abstract clause below is to speed up
+type-checking.
+
+\begin{code}
 
   module _ (ua : is-univalent 𝓤) where
 
@@ -391,24 +397,25 @@ The above function is called is_equivariant_identity in UniMath.
         Ψ : T 𝕏 𝕐 → Action-Iso 𝕏 𝕐
         Ψ (p , is) = (idtoeq ⟨ 𝕏 ⟩ ⟨ 𝕐 ⟩ p) , pr₁ (≡-is-equivariant fe {𝕏} {𝕐} p) is
 
-        Ψ' : Action-Iso 𝕏 𝕐 → T 𝕏 𝕐
-        Ψ' (e , is) = p , pr₁ (≃-sym (≡-is-equivariant fe {𝕏} {𝕐} p)) i
-          where
-            p : ⟨ 𝕏 ⟩ ≡ ⟨ 𝕐 ⟩
-            p = eqtoid ua ⟨ 𝕏 ⟩ ⟨ 𝕐 ⟩ e
-            i : is-equivariant {𝕏} {𝕐} (idtofun ⟨ 𝕏 ⟩ ⟨ 𝕐 ⟩ p)
-            i = transport (is-equivariant {𝕏} {𝕐}) (t ⁻¹) is
-              where
-                t : idtofun ⟨ 𝕏 ⟩ ⟨ 𝕐 ⟩ p ≡ eqtofun e
-                t = idtofun-eqtoid ua e
+        abstract
+          Ψ' : Action-Iso 𝕏 𝕐 → T 𝕏 𝕐
+          Ψ' (e , is) = p , pr₁ (≃-sym (≡-is-equivariant fe {𝕏} {𝕐} p)) i
+            where
+              p : ⟨ 𝕏 ⟩ ≡ ⟨ 𝕐 ⟩
+              p = eqtoid ua ⟨ 𝕏 ⟩ ⟨ 𝕐 ⟩ e
+              i : is-equivariant {𝕏} {𝕐} (idtofun ⟨ 𝕏 ⟩ ⟨ 𝕐 ⟩ p)
+              i = transport (is-equivariant {𝕏} {𝕐}) (t ⁻¹) is
+                where
+                  t : idtofun ⟨ 𝕏 ⟩ ⟨ 𝕐 ⟩ p ≡ eqtofun e
+                  t = idtofun-eqtoid ua e
 
-        Ψ'Ψ-id : (σ : T 𝕏 𝕐) → Ψ' (Ψ σ) ≡ σ
-        Ψ'Ψ-id (p , is) = to-Σ-≡ (eqtoid-idtoeq ua ⟨ 𝕏 ⟩ ⟨ 𝕐 ⟩ p ,
-                                 Action-structure-is-set fe _ _ _)
+          Ψ'Ψ-id : (σ : T 𝕏 𝕐) → Ψ' (Ψ σ) ≡ σ
+          Ψ'Ψ-id (p , is) = to-Σ-≡ (eqtoid-idtoeq ua ⟨ 𝕏 ⟩ ⟨ 𝕐 ⟩ p ,
+                                   Action-structure-is-set fe _ _ _)
 
-        ΨΨ'-id : (u : Action-Iso 𝕏 𝕐) → Ψ (Ψ' u) ≡ u
-        ΨΨ'-id (e , is) = to-Σ-≡ ((idtoeq-eqtoid ua ⟨ 𝕏 ⟩ ⟨ 𝕐 ⟩ e) ,
-                                 (is-equivariant-is-prop fe {𝕏} {𝕐} _ _ _))
+          ΨΨ'-id : (u : Action-Iso 𝕏 𝕐) → Ψ (Ψ' u) ≡ u
+          ΨΨ'-id (e , is) = to-Σ-≡ ((idtoeq-eqtoid ua ⟨ 𝕏 ⟩ ⟨ 𝕐 ⟩ e) ,
+                                   (is-equivariant-is-prop fe {𝕏} {𝕐} _ _ _))
         ii : is-equiv Ψ
         ii = qinvs-are-equivs Ψ inv-Ψ
           where
