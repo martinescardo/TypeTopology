@@ -494,8 +494,105 @@ TORSORS.
 
 \begin{code}
 
-is-torsor : {G : Group 𝓤} (𝕏 : G Sets) → 𝓤  ̇
-is-torsor {𝓤} {G} (X , a) = is-nonempty X ×
-          ((x : X) → is-equiv (right-mult G {X , a} x))
+is-torsor : (G : Group 𝓤) (𝕏 : G Sets) → 𝓤  ̇
+is-torsor {𝓤} G (X , a) = is-nonempty X ×
+                     ((x : X) → is-equiv (right-mult G {X , a} x))
+
+is-torsor-is-prop : funext 𝓤 𝓤 → funext 𝓤 𝓤₀ →
+                    (G : Group 𝓤) (𝕏 : G Sets) →
+                    is-prop (is-torsor G 𝕏)
+is-torsor-is-prop fe fe₀ G 𝕏 = ×-is-prop (negations-are-props fe₀)
+          (Π-is-prop fe (λ x → being-equiv-is-prop'' fe (right-mult G {𝕏} x)))
+
+
+is-torsor₁ : (G : Group 𝓤) (𝕏 : G Sets) → 𝓤 ̇
+is-torsor₁ {𝓤} G 𝕏 = is-nonempty ⟨ 𝕏 ⟩ × is-equiv (mult G {𝕏})
+
+is-torsor₁-is-prop : funext 𝓤 𝓤 → funext 𝓤 𝓤₀ →
+                     (G : Group 𝓤) (𝕏 : G Sets) →
+                     is-prop (is-torsor₁ G 𝕏)
+is-torsor₁-is-prop fe fe₀ G 𝕏 = ×-is-prop (negations-are-props fe₀)
+                   (being-equiv-is-prop'' fe (mult G {𝕏}))
+
+
+torsor→torsor₁ : {G : Group 𝓤} (𝕏 : G Sets) →
+                 is-torsor G 𝕏 → is-torsor₁ G 𝕏
+torsor→torsor₁ {𝓤} {G} (X , a) (n , e) = n , ee
+  where
+    ee : is-equiv (mult G {X , a})
+    ee = (u , ε) , v , η
+      where
+        u : X × X → ⟨ G ⟩ × X
+        u ( y , x) = (pr₁ (pr₁ (e x)) y) , x
+
+        ε : (mult G {X , a}) ∘ u ∼ id
+        ε (y , x) = to-×-≡ (pr₂ (pr₁ (e x)) y) refl
+
+        v : X × X → ⟨ G ⟩ × X
+        v (y , x) = pr₁ (pr₂ (e x)) y , x
+
+        η : v ∘ (mult G {X , a}) ∼ id
+        η (g , x) = to-×-≡ (pr₂ (pr₂ (e x)) g) refl
+
+torsor₁→torsor : {G : Group 𝓤} (𝕏 : G Sets) →
+                 is-torsor₁ G 𝕏 → is-torsor G 𝕏
+torsor₁→torsor {𝓤} {G} (X , a) (n , e) = n , ee
+  where
+    ee : (x : X) → is-equiv (right-mult G {X , a} x)
+    ee x = (u , ε) , v , η
+      where
+        m : ⟨ G ⟩ × X → X × X
+        m = mult G {X , a}
+        r : ⟨ G ⟩ → X
+        r = right-mult G {X , a} x
+
+        ri li : X × X → ⟨ G ⟩ × X
+        ri = pr₁ (pr₁ e)
+        li = pr₁ (pr₂ e)
+
+        e-ri : m ∘ ri ∼ id
+        e-ri = pr₂ (pr₁ e)
+
+        li-e : li ∘ m ∼ id
+        li-e = pr₂ (pr₂ e)
+
+        γ : (g : ⟨ G ⟩) → m (g , x) ≡ r g , x
+        γ g = refl
+
+        u : X → ⟨ G ⟩
+        u y = pr₁ (ri (y , x))
+
+        ε : r ∘ u ∼ id
+        ε y = ap pr₁ q ⁻¹
+          where
+            p : pr₂ ( ri (y , x) ) ≡ x
+            p = ap pr₂ (e-ri (y , x))
+
+            q : y , x ≡ r (u y) , x
+            q = y , x                      ≡⟨ e-ri (y , x) ⁻¹ ⟩
+                m (ri (y , x))             ≡⟨ ap m refl ⟩
+                m (u y , pr₂ (ri (y , x))) ≡⟨ ap (λ v → m (u y , v)) p ⟩
+                m (u y , x)                ≡⟨ γ (u y) ⟩
+                r (u y) , x ∎
+
+        v : X → ⟨ G ⟩
+        v y = pr₁ (li (y , x))
+
+        η : v ∘ r ∼ id
+        η g = ap pr₁ q ⁻¹
+          where
+            p : pr₂ (li (r g , x)) ≡ x
+            p = ap pr₂ (li-e (g , x))
+
+            q : g , x ≡ v (r g) , x
+            q = g , x                        ≡⟨ li-e (g , x) ⁻¹ ⟩
+                li (m (g , x))               ≡⟨ ap li (γ g) ⟩
+                li (r g , x)                 ≡⟨ refl ⟩
+                v (r g) , pr₂ (li (r g , x)) ≡⟨ ap (λ z → v (r g) , z) p ⟩
+                v (r g) , x ∎
+
+
 
 \end{code}
+ 
+
