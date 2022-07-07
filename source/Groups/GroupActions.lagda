@@ -491,6 +491,14 @@ homomorphism H → G. It uses the quotient module.
 
 TORSORS.
 
+A torsor is a G-Set with nonempty underlying carrier and such that for
+any x : X the right-multiplication map λ g → g · x is an equivalence.
+
+This can be equivalently formulated by saying that the "shear" map
+⟨ G ⟩ × ⟨ 𝕏 ⟩ → ⟨ 𝕏 ⟩ × ⟨ 𝕏 ⟩ is an equivalence.
+
+Those two formulations are equivalent (both being props).
+
 \begin{code}
 
 is-torsor : (G : Group 𝓤) (𝕏 : G Sets) → 𝓤  ̇
