@@ -9,3 +9,16 @@ contribution.
 An [html rendering of the Agda
 code](http://www.cs.bham.ac.uk/~mhe/TypeTopology/index.html) is hosted at
 Martin Escardo's institutional web page.
+
+## How to cite
+
+You can use the following BibTeX citation to cite `TypeTopology`:
+
+```bibtex
+@misc{type-topology,
+  title    = {{TypeTopology}},
+  author   = {Escard\'{o}, Mart\'{i}n H. and {contributors}},
+  url      = {https://github.com/martinescardo/TypeTopology},
+  note     = {{Agda} development},
+}
+```
