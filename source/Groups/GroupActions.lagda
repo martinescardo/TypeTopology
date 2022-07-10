@@ -502,7 +502,7 @@ Those two formulations are equivalent (both being props).
 \begin{code}
 
 is-torsor : (G : Group 𝓤) (𝕏 : G Sets) → 𝓤  ̇
-is-torsor {𝓤} G (X , a) = is-nonempty X ×
+is-torsor G (X , a) = is-nonempty X ×
                      ((x : X) → is-equiv (right-mult G {X , a} x))
 
 is-torsor-is-prop : funext 𝓤 𝓤 → funext 𝓤 𝓤₀ →
@@ -513,14 +513,13 @@ is-torsor-is-prop fe fe₀ G 𝕏 = ×-is-prop (negations-are-props fe₀)
 
 
 is-torsor₁ : (G : Group 𝓤) (𝕏 : G Sets) → 𝓤 ̇
-is-torsor₁ {𝓤} G 𝕏 = is-nonempty ⟨ 𝕏 ⟩ × is-equiv (mult G {𝕏})
+is-torsor₁ G 𝕏 = is-nonempty ⟨ 𝕏 ⟩ × is-equiv (mult G {𝕏})
 
 is-torsor₁-is-prop : funext 𝓤 𝓤 → funext 𝓤 𝓤₀ →
                      (G : Group 𝓤) (𝕏 : G Sets) →
                      is-prop (is-torsor₁ G 𝕏)
 is-torsor₁-is-prop fe fe₀ G 𝕏 = ×-is-prop (negations-are-props fe₀)
                    (being-equiv-is-prop'' fe (mult G {𝕏}))
-
 
 torsor→torsor₁ : {G : Group 𝓤} (𝕏 : G Sets) →
                  is-torsor G 𝕏 → is-torsor₁ G 𝕏
