@@ -743,14 +743,15 @@ torsor-linv-mult-is-left-inverse G X (g , x) = q ⁻¹
 
 \end{code}
 
-A consequence of axioms is that for two points x y of a G-torsor there
-is a unique g ∈ G bringing x to y.
+For two points x y of a G-torsor there is a unique g ∈ G bringing x to
+y. This is the "quotient map" of the G-torsor. Note that in the proof
+below we need both "inverses" of the shear map (see above).
 
 \begin{code}
 
-torsor-quotient-map : {G : Group 𝓤} (X : Tors G) (y x : ⟨ pr₁ X ⟩) → 
+torsor-is-quotient : (G : Group 𝓤) (X : Tors G) (y x : ⟨ pr₁ X ⟩) → 
                       ∃! g ꞉ ⟨ G ⟩ , action-op G (pr₁ X) g x ≡ y
-torsor-quotient-map {G = G} X y x = (g , ap pr₁ u) ,
+torsor-is-quotient G X y x = (g , ap pr₁ u) ,
                λ { (h , p) → to-Σ-≡ (ap pr₁ (ii h p) , carrier-is-set G (pr₁ X) _ _)}
     where
       gx : ⟨ G ⟩ × ⟨ pr₁ X ⟩
@@ -782,6 +783,12 @@ torsor-quotient-map {G = G} X y x = (g , ap pr₁ u) ,
                    q = torsor-linv-mult-is-left-inverse G X (g , x)
                    r = torsor-linv-mult-is-left-inverse G X (h , x)
 
+torsor-quotient-map : {G : Group 𝓤} {X : Tors G} →
+                      (y x : ⟨ pr₁ X ⟩) → ⟨ G ⟩
+torsor-quotient-map {G = G} {X} y x = pr₁ (pr₁ (torsor-is-quotient G X y x ))
+
+-- type as \ldiv
+syntax torsor-quotient-map y x = y ∕ x
 \end{code}
  
 
