@@ -31,7 +31,6 @@ open import UF-Classifiers
 
 open import Groups renaming (_≅_ to _≣_)
 open import Groups.Groups-Supplement
-open import Groups.Homomorphisms
 
 module Groups.Subgroups
        (𝓤 : Universe)
