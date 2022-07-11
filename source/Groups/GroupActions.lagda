@@ -12,7 +12,10 @@ add a couple of things:
    viceversa.
 2. pullbacks of actions.
 3. G Sets
-4. Different (equivalent) definitions of G-torsor
+
+Torsors are split off to their own file.
+
+TODO: Fix the implicit variables mess.
 
 
 \begin{code}
