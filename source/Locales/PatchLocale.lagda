@@ -977,10 +977,36 @@ module SmallPatchConstruction (X : Locale 𝓤 𝓥 𝓦) (σᴰ : spectralᴰ (
  ⋏-is-meetₖ 𝒿 𝓀 = β , γ
   where
    β : ((𝒿 ⋏ 𝓀) is-a-lower-bound-ofₖ (𝒿 , 𝓀)) holds
-   β = {!!}
+   β = ≼-implies-≼ᵏ (𝒿 ⋏ 𝓀) 𝒿 β₁ , ≼-implies-≼ᵏ (𝒿 ⋏ 𝓀) 𝓀 β₂
+    where
+      β₁ : ((𝒿 ⋏ 𝓀) ≼ 𝒿) holds
+      β₁ = pr₁ (pr₁ (⋏-is-meet (𝒿 , 𝓀)))
 
-   γ : {!!} holds
-   γ = {!!}
+      β₂ : ((𝒿 ⋏ 𝓀) ≼ 𝓀) holds
+      β₂ = pr₂ (pr₁ (⋏-is-meet (𝒿 , 𝓀)))
+
+   γ : (Ɐ (𝒾 , _) ∶ (Meets.lower-bound _≼ᵏ_ (𝒿 , 𝓀)) , 𝒾 ≼ᵏ (𝒿 ⋏ 𝓀)) holds
+   γ (𝒾 , φ , ψ) = ≼-implies-≼ᵏ 𝒾 (𝒿 ⋏ 𝓀) δ
+    where
+     † = pr₂ (⋏-is-meet (𝒿 , 𝓀))
+
+     δ : (𝒾 ≼ (𝒿 ⋏ 𝓀)) holds
+     δ = † (𝒾 , ≼ᵏ-implies-≼ 𝒾 𝒿 φ , ≼ᵏ-implies-≼ 𝒾 𝓀 ψ)
+
+ ⋁ₙ-is-joinₖ : (Ɐ K ∶ Fam 𝓦 Perfect-Nucleus-on-X , Joins._is-lub-of_ _≼ᵏ_ (⋁ₙ K) K) holds
+ ⋁ₙ-is-joinₖ 𝒦 = β , γ
+  where
+   β : (_≼ᵏ_ Joins.is-an-upper-bound-of ⋁ₙ 𝒦) 𝒦 holds
+   β i = ≼-implies-≼ᵏ (𝒦 [ i ] ) (⋁ₙ 𝒦) †
+    where
+     † : ((𝒦 [ i ]) ≼ ⋁ₙ 𝒦) holds
+     † = pr₁ (⋁ₙ-is-join 𝒦) i
+
+   γ : (Ɐ (𝒾 , _) ∶ Joins.upper-bound _≼ᵏ_ 𝒦 , (⋁ₙ 𝒦) ≼ᵏ 𝒾) holds
+   γ (𝒾 , φ) = ≼-implies-≼ᵏ (⋁ₙ 𝒦) 𝒾 (pr₂ (⋁ₙ-is-join 𝒦) (𝒾 , †))
+    where
+     † : (_≼_ Joins.is-an-upper-bound-of 𝒾) 𝒦 holds
+     † j = ≼ᵏ-implies-≼ (𝒦 [ j ]) 𝒾 (φ j)
 
  SmallPatch : Locale (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺) (𝓥 ⊔ 𝓦) 𝓦
  SmallPatch = record { ⟨_⟩ₗ = Perfect-Nucleus-on-X
@@ -988,8 +1014,8 @@ module SmallPatchConstruction (X : Locale 𝓤 𝓥 𝓦) (σᴰ : spectralᴰ (
                      , (≼ᵏ-is-preorder , ≼ᵏ-is-antisymmetric)
                      , 𝟏ₚ-is-topₖ
                      , (λ { (𝒿 , 𝓀) → ⋏-is-meetₖ 𝒿 𝓀 })
-                     , {!!}
-                     , {!!}
+                     , ⋁ₙ-is-joinₖ
+                     , λ { (𝒿 , 𝒦) → distributivityₚ 𝒿 𝒦 }
                      }
 
 \end{code}
