@@ -910,7 +910,8 @@ module SmallPatchConstruction (X : Locale 𝓤 𝓥 𝓦) (σᴰ : spectralᴰ (
   using ()
   renaming (is-top to is-topₖ;
             _is-glb-of_ to _is-glb-ofₖ_;
-            _is-a-lower-bound-of_ to _is-a-lower-bound-ofₖ_)
+            _is-a-lower-bound-of_ to _is-a-lower-bound-ofₖ_;
+            lower-bound to lower-boundₖ)
 
  ≼-implies-≼ᵏ : (𝒿 𝓀 : Perfect-Nucleus-on-X) → (𝒿 ≼ 𝓀 ⇒ 𝒿 ≼ᵏ 𝓀) holds
  ≼-implies-≼ᵏ 𝒿 𝓀 p i = p (ℬ [ i ])
@@ -976,6 +977,8 @@ module SmallPatchConstruction (X : Locale 𝓤 𝓥 𝓦) (σᴰ : spectralᴰ (
             → ((𝒿 ⋏ 𝓀) is-glb-ofₖ (𝒿 , 𝓀)) holds
  ⋏-is-meetₖ 𝒿 𝓀 = β , γ
   where
+   μ = ⋏-is-meet (𝒿 , 𝓀)
+
    β : ((𝒿 ⋏ 𝓀) is-a-lower-bound-ofₖ (𝒿 , 𝓀)) holds
    β = ≼-implies-≼ᵏ (𝒿 ⋏ 𝓀) 𝒿 β₁ , ≼-implies-≼ᵏ (𝒿 ⋏ 𝓀) 𝓀 β₂
     where
