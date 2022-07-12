@@ -4,6 +4,7 @@ illiterator
 clean
 source/compileall
 source/working/*
+source/obsolete/
 *.agdai
 *~
 *.hi
@@ -19,5 +20,4 @@ m
 c
 b
 e
-updateurl
 source/html/*
