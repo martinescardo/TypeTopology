@@ -21,7 +21,7 @@ open import UF-Embeddings
 open import UF-Univalence
 open import UF-Equiv-FunExt
 open import UF-FunExt
-open import UF-UA-FunExt
+--open import UF-UA-FunExt
 open import UF-Subsingletons-FunExt
 open import UF-Retracts
 open import UF-Classifiers
