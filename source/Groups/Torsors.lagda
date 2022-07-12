@@ -5,7 +5,7 @@ Keri D'Angelo kd349@cornell.edu
 July 2022
 --------------------------------------------------------------------------------
 
-TORSORS.
+TORSORS. Split off from GroupActions. 
 
 \begin{code}
 
@@ -284,6 +284,67 @@ torsor-linv-mult-is-left-inverse G X (g , x) = q ⁻¹
         li (r g , x)                 ≡⟨ refl ⟩
         v (r g) , pr₂ (li (r g , x)) ≡⟨ ap (λ z → v (r g) , z) p ⟩
         v (r g) , x ∎
+
+\end{code}
+
+If G is abelian, the underlying action is an equivariant map with
+underlying weak equivalence, i.e. an ActionIso.
+
+\begin{code}
+
+left-mult-gives-ActionIso : (G : Group 𝓤) (i : is-abelian G) (X : Tors G) →
+                      (g : ⟨ G ⟩) → Action-Iso G (pr₁ X) (pr₁ X)
+left-mult-gives-ActionIso G i X g = (action-to-Aut G {pr₁ X} g) ,
+                                      (λ a x → (
+                                           g · (a · x)     ≡⟨ (action-assoc G 𝕏 g a x) ⁻¹ ⟩
+                                           (g ·⟨ G ⟩ a) · x ≡⟨ ap (_· x) (i g a) ⟩
+                                           (a ·⟨ G ⟩ g) · x ≡⟨ action-assoc G 𝕏 a g x ⟩
+                                            a · (g · x) ∎ ))
+  where
+    𝕏 : Action G
+    𝕏 = pr₁ X
+
+    _·_ : ⟨ G ⟩ → ⟨ 𝕏 ⟩ → ⟨ 𝕏 ⟩
+    _·_ = action-op G 𝕏
+
+\end{code}
+
+ 
+Forgetting the torsor axiom is an inclusion into the type of actions.
+
+\begin{code}
+
+underlying-action-is-embedding : funext 𝓤 𝓤 →
+                                 funext 𝓤 𝓤₀ →
+                                 (G : Group 𝓤) → is-embedding (underlying-action {𝓤} {G})
+underlying-action-is-embedding fe fe₀ G = pr₁-is-embedding (λ 𝕏 → is-torsor-is-prop
+                                                    fe fe₀ G 𝕏)
+
+underlying-action-injectivity : funext 𝓤 𝓤 →
+                                 funext 𝓤 𝓤₀ →
+                                 (G : Group 𝓤) (X Y : Tors G) →
+                                 (X ≡ Y) ≃ (underlying-action {𝓤} {G} X ≡ underlying-action {𝓤} {G} Y)
+underlying-action-injectivity fe fe₀ G X Y = ≃-sym
+                              (embedding-criterion-converse
+                                (underlying-action {G = G})
+                                (underlying-action-is-embedding fe fe₀ G) X Y)
+
+underlying-action-injectivity' : funext 𝓤 𝓤 →
+                                 funext 𝓤 𝓤₀ →
+                                 {G : Group 𝓤} {X Y : Tors G} →
+                                 (X ≡ Y) ≃ (underlying-action {𝓤} {G} X ≡ underlying-action {𝓤} {G} Y)
+underlying-action-injectivity' fe fe₀ {G} {X} {Y} = ≃-sym
+                              (embedding-criterion-converse
+                                (underlying-action {G = G})
+                                (underlying-action-is-embedding fe fe₀ G) X Y)
+
+
+underlying-action-injectivity-comp : (fe : funext 𝓤 𝓤) →
+                                     (f₀ : funext 𝓤 𝓤₀) →
+                                     {G : Group 𝓤} {X Y : Tors G} (p : X ≡ Y) →
+                                     pr₁ (underlying-action-injectivity fe f₀ G X Y) p ≡ 
+                                       ap (underlying-action {𝓤} {G})  p
+underlying-action-injectivity-comp fe f0 p = refl
 
 \end{code}
 
