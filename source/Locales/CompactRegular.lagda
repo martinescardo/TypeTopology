@@ -23,6 +23,7 @@ open import UF.Subsingletons
 open import UF.Subsingleton-Combinators
 open import UF.Equiv using (_≃_; logically-equivalent-props-give-is-equiv)
 open import Locales.Frame pt fe hiding (is-directed)
+open import Locales.AdjointFunctorTheoremForFrames
 
 open AllCombinators pt fe
 open PropositionalTruncation pt
@@ -899,6 +900,39 @@ coherence-list F ℬ (φ , ψ) (i ∷ is) = ∥∥-rec ∥∥-is-prop † ih
                     Ⅱ = ap (λ - → meet-of F (ℬ [ i ]) -) (p ⁻¹)
                     Ⅲ = (∧[ F ]-unique (ξ , r)) ⁻¹
 
+\end{code}
+
+\section{Spectral maps}
+
+\begin{code}
+
+is-spectral-map : (F : Frame 𝓤 𝓥 𝓥) (G : Frame 𝓤' 𝓥 𝓥)
+                → (F ─f→ G) → Ω (𝓤 ⊔ 𝓤' ⊔ 𝓥 ⁺)
+is-spectral-map F G (f , _) =
+ Ɐ x ∶ ⟨ F ⟩ , is-compact-open F x  ⇒ is-compact-open G (f x)
+
+\end{code}
+
+\begin{code}
+
+open Locale
+
+module PerfectMaps (X : Locale 𝓤 𝓥 𝓥) (Y : Locale 𝓤' 𝓥 𝓥)
+                                      (𝒷 : has-basis (𝒪 Y) holds) where
+
+ open AdjointFunctorTheorem pt fe X Y 𝒷
+
+\end{code}
+
+A continuous map `f : X → Y` is called *perfect* if its right adjoint is
+Scott-continuous.
+
+\begin{code}
+
+ is-perfect-map : (X ─c→ Y) → Ω (𝓤 ⊔ 𝓤' ⊔ 𝓥 ⁺)
+ is-perfect-map f = is-scott-continuous (𝒪 X) (𝒪 Y) (pr₁ (right-adjoint-of f))
+
+\end{code}
 
 
 -- directification-preserves-coherence : (F : Frame 𝓤 𝓥 𝓦)
