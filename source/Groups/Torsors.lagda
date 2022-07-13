@@ -22,16 +22,21 @@ open import UF.Embeddings
 open import UF.Univalence
 open import UF.Equiv-FunExt
 open import UF.FunExt
---open import UF.UA-FunExt
+open import UF.UA-FunExt
 open import UF.Subsingletons-FunExt
 open import UF.Retracts
 open import UF.Classifiers
+open import UF.PropTrunc
 
 open import Groups.Groups renaming (_≅_ to _≣_)
 open import Groups.Groups-Supplement
 open import Groups.GroupActions
 
-module Groups.Torsors where
+module Groups.Torsors
+--       (ua : is-univalent 𝓤)
+       (fe : funext 𝓤 𝓤)
+       (pt : propositional-truncations-exist)
+     where
 
 \end{code}
 
@@ -39,36 +44,42 @@ module Groups.Torsors where
 A G-torsor is a G-Set with nonempty underlying carrier and such that for
 any x : X the right-multiplication map λ g → g · x is an equivalence.
 
-This can be equivalently formulated by saying that the "shear" map
+\begin{code}
+
+-- fe : funext 𝓤 𝓤
+-- fe = univalence-gives-funext ua
+
+open PropositionalTruncation pt
+
+is-torsor : (G : Group 𝓤) (𝕏 : G Sets) → 𝓤  ̇
+is-torsor G (X , a) = ∥ X ∥ ×
+                    ((x : X) → is-equiv (right-mult G {X , a} x))
+
+is-torsor-is-prop : (G : Group 𝓤) (𝕏 : G Sets) →
+                    is-prop (is-torsor G 𝕏)
+is-torsor-is-prop G 𝕏 = ×-is-prop ∥∥-is-prop
+                          (Π-is-prop fe
+                             (λ x → being-equiv-is-prop'' fe (right-mult G {𝕏} x)))
+
+\end{code}
+
+Alternative formulation: the "shear" map
 (g , x) → (g · x , x) is an equivalence.
 
 Those two formulations are equivalent (both being props).
 
 \begin{code}
-
-is-torsor : (G : Group 𝓤) (𝕏 : G Sets) → 𝓤  ̇
-is-torsor G (X , a) = is-nonempty X ×
-                     ((x : X) → is-equiv (right-mult G {X , a} x))
-
-is-torsor-is-prop : funext 𝓤 𝓤 → funext 𝓤 𝓤₀ →
-                    (G : Group 𝓤) (𝕏 : G Sets) →
-                    is-prop (is-torsor G 𝕏)
-is-torsor-is-prop fe fe₀ G 𝕏 = ×-is-prop (negations-are-props fe₀)
-          (Π-is-prop fe (λ x → being-equiv-is-prop'' fe (right-mult G {𝕏} x)))
-
-
 is-torsor₁ : (G : Group 𝓤) (𝕏 : G Sets) → 𝓤 ̇
-is-torsor₁ G 𝕏 = is-nonempty ⟨ 𝕏 ⟩ × is-equiv (mult G {𝕏})
+is-torsor₁ G 𝕏 = ∥ ⟨ 𝕏 ⟩ ∥ × is-equiv (mult G {𝕏})
 
-is-torsor₁-is-prop : funext 𝓤 𝓤 → funext 𝓤 𝓤₀ →
-                     (G : Group 𝓤) (𝕏 : G Sets) →
+is-torsor₁-is-prop : (G : Group 𝓤) (𝕏 : G Sets) →
                      is-prop (is-torsor₁ G 𝕏)
-is-torsor₁-is-prop fe fe₀ G 𝕏 = ×-is-prop (negations-are-props fe₀)
-                   (being-equiv-is-prop'' fe (mult G {𝕏}))
+is-torsor₁-is-prop G 𝕏 = ×-is-prop (∥∥-is-prop)
+                           (being-equiv-is-prop'' fe (mult G {𝕏}))
 
 torsor→torsor₁ : {G : Group 𝓤} (𝕏 : G Sets) →
                  is-torsor G 𝕏 → is-torsor₁ G 𝕏
-torsor→torsor₁ {𝓤} {G} (X , a) (n , e) = n , ee
+torsor→torsor₁ {G = G } (X , a) (n , e) = n , ee
   where
     ee : is-equiv (mult G {X , a})
     ee = (u , ε) , v , η
@@ -87,7 +98,7 @@ torsor→torsor₁ {𝓤} {G} (X , a) (n , e) = n , ee
 
 torsor₁→torsor : {G : Group 𝓤} (𝕏 : G Sets) →
                  is-torsor₁ G 𝕏 → is-torsor G 𝕏
-torsor₁→torsor {𝓤} {G} (X , a) (n , e) = n , ee
+torsor₁→torsor {G = G} (X , a) (n , e) = n , ee
   where
     ee : (x : X) → is-equiv (right-mult G {X , a} x)
     ee x = (u , ε) , v , η
@@ -143,10 +154,9 @@ torsor₁→torsor {𝓤} {G} (X , a) (n , e) = n , ee
                 v (r g) , x ∎
 \end{code}
 
+-- The type of G-Torsors.
 
-The type of G-Torsors.
-
-\begin{code}
+\begin{code} 
 
 TORS Tors Torsor : (G : Group 𝓤) → (𝓤 ⁺) ̇
 TORS G = Σ 𝕏 ꞉ Action G , is-torsor G 𝕏
@@ -154,7 +164,7 @@ Tors = TORS
 Torsor = TORS
 
 TORS' Tors' Torsor' : (G : Group 𝓤) → (𝓤 ⁺) ̇
-TORS' {𝓤} G = Σ X ꞉ 𝓤 ̇ , Σ a ꞉ Action-structure G X , is-torsor G (X , a)
+TORS' G = Σ X ꞉ 𝓤 ̇ , Σ a ꞉ Action-structure G X , is-torsor G (X , a)
 Tors' = TORS'
 Torsor' = TORS'
 
@@ -171,12 +181,15 @@ torsor-carrier X = ⟨ pr₁ X  ⟩
 torsor-prop : {G : Group 𝓤} (X : Tors G) → is-torsor G (pr₁ X)
 torsor-prop X = pr₂ X
 
+torsor-carrier-prop : {G : Group 𝓤} (X : Tors G) → ∥ (pr₁ (pr₁ X)) ∥
+torsor-carrier-prop {G} X = pr₁ (torsor-prop {G} X)
+
 torsor-nonempty : {G : Group 𝓤} (X : Tors G) → is-nonempty (pr₁ (pr₁ X))
-torsor-nonempty {𝓤} {G} X = pr₁ (torsor-prop {𝓤} {G} X)
+torsor-nonempty {G} X = inhabited-is-nonempty (torsor-carrier-prop {G} X)
 
 torsor-splitting : {G : Group 𝓤} (X : Tors G) → 
                    ((x : ⟨ pr₁ X ⟩) → is-equiv (right-mult G {pr₁ X} x))
-torsor-splitting {𝓤} {G} X = pr₂ (torsor-prop {𝓤} {G} X)
+torsor-splitting {G}  X = pr₂ (torsor-prop {G} X) 
 
 torsor-splitting₁ : {G : Group 𝓤} (X : Tors G) →
                     is-equiv (mult G {pr₁ X})
@@ -315,37 +328,28 @@ Forgetting the torsor axiom is an inclusion into the type of actions.
 
 \begin{code}
 
-underlying-action-is-embedding : funext 𝓤 𝓤 →
-                                 funext 𝓤 𝓤₀ →
-                                 (G : Group 𝓤) → is-embedding (underlying-action {𝓤} {G})
-underlying-action-is-embedding fe fe₀ G = pr₁-is-embedding (λ 𝕏 → is-torsor-is-prop
-                                                    fe fe₀ G 𝕏)
+underlying-action-is-embedding : (G : Group 𝓤) → is-embedding (underlying-action {G})
+underlying-action-is-embedding G = pr₁-is-embedding (λ 𝕏 → is-torsor-is-prop G 𝕏)
 
-underlying-action-injectivity : funext 𝓤 𝓤 →
-                                 funext 𝓤 𝓤₀ →
-                                 (G : Group 𝓤) (X Y : Tors G) →
-                                 (X ＝ Y) ≃ (underlying-action {𝓤} {G} X ＝ underlying-action {𝓤} {G} Y)
-underlying-action-injectivity fe fe₀ G X Y = ≃-sym
+underlying-action-injectivity :  (G : Group 𝓤) (X Y : Tors G) →
+                                 (X ＝ Y) ≃ (underlying-action {G} X ＝ underlying-action  {G} Y)
+underlying-action-injectivity G X Y = ≃-sym
                               (embedding-criterion-converse
                                 (underlying-action {G = G})
-                                (underlying-action-is-embedding fe fe₀ G) X Y)
+                                (underlying-action-is-embedding G) X Y)
 
-underlying-action-injectivity' : funext 𝓤 𝓤 →
-                                 funext 𝓤 𝓤₀ →
-                                 {G : Group 𝓤} {X Y : Tors G} →
-                                 (X ＝ Y) ≃ (underlying-action {𝓤} {G} X ＝ underlying-action {𝓤} {G} Y)
-underlying-action-injectivity' fe fe₀ {G} {X} {Y} = ≃-sym
+underlying-action-injectivity' : {G : Group 𝓤} {X Y : Tors G} →
+                                 (X ＝ Y) ≃ (underlying-action {G} X ＝ underlying-action {G} Y)
+underlying-action-injectivity' {G} {X} {Y} = ≃-sym
                               (embedding-criterion-converse
                                 (underlying-action {G = G})
-                                (underlying-action-is-embedding fe fe₀ G) X Y)
+                                (underlying-action-is-embedding G) X Y)
 
 
-underlying-action-injectivity-comp : (fe : funext 𝓤 𝓤) →
-                                     (f₀ : funext 𝓤 𝓤₀) →
-                                     {G : Group 𝓤} {X Y : Tors G} (p : X ＝ Y) →
-                                     pr₁ (underlying-action-injectivity fe f₀ G X Y) p ＝ 
-                                       ap (underlying-action {𝓤} {G})  p
-underlying-action-injectivity-comp fe f0 p = refl
+underlying-action-injectivity-comp : {G : Group 𝓤} {X Y : Tors G} (p : X ＝ Y) →
+                                     pr₁ (underlying-action-injectivity G X Y) p ＝ 
+                                       ap (underlying-action {G})  p
+underlying-action-injectivity-comp p = refl
 
 \end{code}
 
@@ -396,5 +400,3 @@ torsor-quotient-map {G = G} {X} y x = pr₁ (pr₁ (torsor-is-quotient G X y x )
 -- type as \ldiv
 syntax torsor-quotient-map y x = y ∕ x
 \end{code}
- 
-
