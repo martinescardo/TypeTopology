@@ -22,22 +22,22 @@ TODO: Fix the implicit variables mess.
 
 {-# OPTIONS --without-K --safe --auto-inline --exact-split #-}
 
-open import SpartanMLTT
-open import UF-Base hiding (_≈_)
-open import UF-Subsingletons
-open import UF-Powerset
-open import UF-Equiv
-open import UF-EquivalenceExamples
-open import UF-Embeddings
-open import UF-Univalence
-open import UF-Equiv-FunExt
-open import UF-FunExt
-open import UF-UA-FunExt
-open import UF-Subsingletons-FunExt
-open import UF-Retracts
-open import UF-Classifiers
+open import MLTT.Spartan
+open import UF.Base hiding (_≈_)
+open import UF.Subsingletons
+open import UF.Powerset
+open import UF.Equiv
+open import UF.EquivalenceExamples
+open import UF.Embeddings
+open import UF.Univalence
+open import UF.Equiv-FunExt
+open import UF.FunExt
+open import UF.UA-FunExt
+open import UF.Subsingletons-FunExt
+open import UF.Retracts
+open import UF.Classifiers
 
-open import Groups renaming (_≅_ to _≣_)
+open import Groups.Groups renaming (_≅_ to _≣_)
 open import Groups.Groups-Supplement
 
 module Groups.GroupActions where
@@ -49,8 +49,8 @@ module _ (G : Group 𝓤) where
 
   action-axioms : (X : 𝓤 ̇) → action-structure X → 𝓤 ̇
   action-axioms X _·_ = is-set X ×
-                        ((g h : ⟨ G ⟩)(x : X) → (g ·⟨ G ⟩ h) · x ≡ g · (h · x)) ×
-                        ((x : X) → (unit G) · x ≡ x)
+                        ((g h : ⟨ G ⟩)(x : X) → (g ·⟨ G ⟩ h) · x ＝ g · (h · x)) ×
+                        ((x : X) → (unit G) · x ＝ x)
 
   Action-structure : 𝓤 ̇ → 𝓤 ̇
   Action-structure X = Σ _·_ ꞉ action-structure X , (action-axioms X _·_)
@@ -71,11 +71,11 @@ module _ (G : Group 𝓤) where
   carrier-is-set (X , op , i , _) = i
 
   action-assoc : (𝕏 : Action) (g h : ⟨ G ⟩) (x : ⟨ 𝕏 ⟩) →
-                 (action-op 𝕏) (g ·⟨ G ⟩ h) x ≡ (action-op 𝕏) g ((action-op 𝕏) h x)
+                 (action-op 𝕏) (g ·⟨ G ⟩ h) x ＝ (action-op 𝕏) g ((action-op 𝕏) h x)
   action-assoc (X , op , i , a , u) = a
 
   action-unit : (𝕏 : Action) (x : ⟨ 𝕏 ⟩) →
-                (action-op 𝕏) (unit G) x ≡ x
+                (action-op 𝕏) (unit G) x ＝ x
   action-unit (X , op , i , a , u) = u
 
   action-tofun : {𝕏 : Action} (g : ⟨ G ⟩) → ⟨ 𝕏 ⟩ → ⟨ 𝕏 ⟩
@@ -86,13 +86,13 @@ module _ (G : Group 𝓤) where
   action-tofun-is-equiv : {𝕏 : Action} (g : ⟨ G ⟩) →
                           is-equiv (action-tofun {𝕏} g)
   action-tofun-is-equiv {𝕏} g =
-            (f⁻¹ , λ x → (f (f⁻¹ x)                   ≡⟨ (action-assoc 𝕏 _ _ _) ⁻¹ ⟩
-                          (g ·⟨ G ⟩ (inv G g)) ◂⟨ 𝕏 ⟩ x ≡⟨ ap (λ v → v ◂⟨ 𝕏 ⟩ x) (inv-right G g) ⟩
-                          (unit G) ◂⟨ 𝕏 ⟩ x            ≡⟨ action-unit 𝕏 x  ⟩
+            (f⁻¹ , λ x → (f (f⁻¹ x)                   ＝⟨ (action-assoc 𝕏 _ _ _) ⁻¹ ⟩
+                          (g ·⟨ G ⟩ (inv G g)) ◂⟨ 𝕏 ⟩ x ＝⟨ ap (λ v → v ◂⟨ 𝕏 ⟩ x) (inv-right G g) ⟩
+                          (unit G) ◂⟨ 𝕏 ⟩ x            ＝⟨ action-unit 𝕏 x  ⟩
                            x ∎)) ,
-            (f⁻¹ , λ x → (f⁻¹ (f x)                   ≡⟨ (action-assoc 𝕏 _ _ _) ⁻¹ ⟩
-                          ((inv G g) ·⟨ G ⟩ g) ◂⟨ 𝕏 ⟩ x ≡⟨ ap (λ v → v ◂⟨ 𝕏 ⟩ x) (inv-left G g) ⟩
-                          (unit G) ◂⟨ 𝕏 ⟩ x            ≡⟨ action-unit 𝕏 x ⟩
+            (f⁻¹ , λ x → (f⁻¹ (f x)                   ＝⟨ (action-assoc 𝕏 _ _ _) ⁻¹ ⟩
+                          ((inv G g) ·⟨ G ⟩ g) ◂⟨ 𝕏 ⟩ x ＝⟨ ap (λ v → v ◂⟨ 𝕏 ⟩ x) (inv-left G g) ⟩
+                          (unit G) ◂⟨ 𝕏 ⟩ x            ＝⟨ action-unit 𝕏 x ⟩
                            x  ∎))
     where
       f : ⟨ 𝕏 ⟩ → ⟨ 𝕏 ⟩
@@ -148,7 +148,7 @@ does. Conversely, a homomorphism to Aut (X) gives an action.
 
       is-hom-action-to-fun : is-hom G (Aut X , gr-s-X) (action-to-Aut {𝕏})
       is-hom-action-to-fun {g} {h} =
-                           to-Σ-≡ ((dfunext fe (action-assoc 𝕏 g h)) ,
+                           to-Σ-＝ ((dfunext fe (action-assoc 𝕏 g h)) ,
                              (being-equiv-is-prop'' fe (λ x → g · (h · x)) _ _))
 
     module _ (X : 𝓤 ̇) (i : is-set X) (σ : ⟨ G ⟩ → Aut X) where
@@ -163,11 +163,11 @@ does. Conversely, a homomorphism to Aut (X) gives an action.
       hom-to-Aut-gives-action : is-hom G (Aut X , gr-s-X) σ → Action
       hom-to-Aut-gives-action is = X , ((λ g → pr₁ (σ g)) ,
                               (i , (λ g h → happly (ap pr₁ (is {g} {h}))) ,
-                               λ x → ( pr₁ (σ (unit G)) x            ≡⟨ happly (ap pr₁ t) x ⟩
-                                       pr₁ (unit (Aut X , gr-s-X)) x ≡⟨ happly' id id refl x ⟩
+                               λ x → ( pr₁ (σ (unit G)) x            ＝⟨ happly (ap pr₁ t) x ⟩
+                                       pr₁ (unit (Aut X , gr-s-X)) x ＝⟨ happly' id id refl x ⟩
                                        x ∎ ) ) )
         where
-          t : σ (unit G) ≡ unit (Aut X , gr-s-X)
+          t : σ (unit G) ＝ unit (Aut X , gr-s-X)
           t = homs-preserve-unit G (Aut X , gr-s-X) σ is
 
     
@@ -217,7 +217,7 @@ Equivariant maps.
 \begin{code}
 
   is-equivariant : {𝕏 𝕐 : Action} (f : ⟨ 𝕏 ⟩ → ⟨ 𝕐 ⟩) → 𝓤 ̇
-  is-equivariant {𝕏} {𝕐} f = ∀ g x → f (g · x) ≡ g * (f x)
+  is-equivariant {𝕏} {𝕐} f = ∀ g x → f (g · x) ＝ g * (f x)
     where
       _·_ = action-op 𝕏
       _*_ = action-op 𝕐
@@ -240,8 +240,8 @@ Equivariant maps.
                         (p : ⟨ 𝕏 ⟩ → ⟨ 𝕐 ⟩) (i : is-equivariant {𝕏} {𝕐} p) →
                         (q : ⟨ 𝕐 ⟩ → ⟨ ℤ ⟩) (j : is-equivariant {𝕐} {ℤ} q) → 
                         (is-equivariant {𝕏} {ℤ} (q ∘ p))
-  is-equivariant-comp {𝕏} {𝕐} {ℤ} p i q j g x = q (p (g · x)) ≡⟨ ap q (i g x) ⟩
-                                                q (g * (p x)) ≡⟨ j g (p x) ⟩
+  is-equivariant-comp {𝕏} {𝕐} {ℤ} p i q j g x = q (p (g · x)) ＝⟨ ap q (i g x) ⟩
+                                                q (g * (p x)) ＝⟨ j g (p x) ⟩
                                                 g ✵ (q (p x)) ∎
     where
       _·_ = action-op 𝕏
@@ -251,33 +251,33 @@ Equivariant maps.
 \end{code}
 
 The following "fundamental" fact from UniMath is that an
-identification p : ⟨ 𝕏 ⟩ ≡ ⟨ 𝕐 ⟩ between the carriers of two actions
+identification p : ⟨ 𝕏 ⟩ ＝ ⟨ 𝕐 ⟩ between the carriers of two actions
 essentially gives rise to an equivariant map. More precisely,
 equivariance of the identity is the same as the identification of the
 structures.
 
 \begin{code}
 
-  ≡-is-equivariant : funext 𝓤 𝓤 →
+  ＝-is-equivariant : funext 𝓤 𝓤 →
                      {𝕏 𝕐 : Action} →
-                     (p : ⟨ 𝕏 ⟩ ≡ ⟨ 𝕐 ⟩) →
-                     (transport Action-structure p (pr₂ 𝕏)  ≡ pr₂ 𝕐 ) ≃ 
+                     (p : ⟨ 𝕏 ⟩ ＝ ⟨ 𝕐 ⟩) →
+                     (transport Action-structure p (pr₂ 𝕏)  ＝ pr₂ 𝕐 ) ≃ 
                      is-equivariant {𝕏} {𝕐} (idtofun ⟨ 𝕏 ⟩ ⟨ 𝕐 ⟩ p)
-  pr₁ (≡-is-equivariant fe {X , as} {.X , .as} refl) refl = λ g x → refl
-  pr₂ (≡-is-equivariant fe {X , as} {.X , as'} refl) =
+  pr₁ (＝-is-equivariant fe {X , as} {.X , .as} refl) refl = λ g x → refl
+  pr₂ (＝-is-equivariant fe {X , as} {.X , as'} refl) =
     logically-equivalent-props-give-is-equiv
       is (is-equivariant-is-prop fe {X , as} {X , as'} id)
-        (pr₁ (≡-is-equivariant fe refl))
-        λ i → to-Σ-≡ ((γ i) , action-axioms-is-prop fe X _·'_ _ _)
+        (pr₁ (＝-is-equivariant fe refl))
+        λ i → to-Σ-＝ ((γ i) , action-axioms-is-prop fe X _·'_ _ _)
       where
         _·_ _·'_ : action-structure X
         _·_  = pr₁ as
         _·'_ = pr₁ as'
 
-        is : is-prop (as ≡ as')
+        is : is-prop (as ＝ as')
         is = Action-structure-is-set fe X {as} {as'}
 
-        γ : is-equivariant {X , as} {X , as'} id → _·_ ≡ _·'_
+        γ : is-equivariant {X , as} {X , as'} id → _·_ ＝ _·'_
         γ = λ i → dfunext fe
                   (λ g → dfunext fe λ x → i g x)
 \end{code}
@@ -338,7 +338,7 @@ The above function is called is_equivariant_identity in UniMath.
   underlying-iso-injectivity : funext 𝓤 𝓤 → 
                                {𝕏 𝕐 : Action} →
                                (u v : Action-Iso 𝕏 𝕐) →
-                               (u ≡ v) ≃ (underlying-iso {𝕏} {𝕐} u ≡ underlying-iso {𝕏} {𝕐} v)
+                               (u ＝ v) ≃ (underlying-iso {𝕏} {𝕐} u ＝ underlying-iso {𝕏} {𝕐} v)
   underlying-iso-injectivity fe {𝕏} {𝕐} u v =
     ≃-sym (embedding-criterion-converse
              (underlying-iso {𝕏} {𝕐})
@@ -352,13 +352,13 @@ The above function is called is_equivariant_identity in UniMath.
   id-Action-Iso : (𝕏 : Action) → Action-Iso 𝕏 𝕏
   id-Action-Iso 𝕏 = (id , (id-is-equiv ⟨ 𝕏 ⟩)) , (λ g x → refl)
 
-  ≡-to-Action-Iso : {𝕏 𝕐 : Action} →
-                    𝕏 ≡ 𝕐 → Action-Iso 𝕏 𝕐
-  ≡-to-Action-Iso {𝕏} {𝕐} p = transport (Action-Iso 𝕏) p (id-Action-Iso 𝕏)
+  ＝-to-Action-Iso : {𝕏 𝕐 : Action} →
+                    𝕏 ＝ 𝕐 → Action-Iso 𝕏 𝕐
+  ＝-to-Action-Iso {𝕏} {𝕐} p = transport (Action-Iso 𝕏) p (id-Action-Iso 𝕏)
 
-  ≡-to-Action-Iso₁ : {𝕏 𝕐 : Action} →
-                     𝕏 ≡ 𝕐 → Action-Iso 𝕏 𝕐
-  ≡-to-Action-Iso₁ {𝕏} {.𝕏} refl = id-Action-Iso 𝕏
+  ＝-to-Action-Iso₁ : {𝕏 𝕐 : Action} →
+                     𝕏 ＝ 𝕐 → Action-Iso 𝕏 𝕐
+  ＝-to-Action-Iso₁ {𝕏} {.𝕏} refl = id-Action-Iso 𝕏
 
   compose-Action-Iso : {𝕏 𝕐 ℤ : Action} →
                        Action-Iso 𝕏 𝕐 → Action-Iso 𝕐 ℤ →
@@ -368,15 +368,15 @@ The above function is called is_equivariant_identity in UniMath.
 
   compose-Action-Iso-id : funext 𝓤 𝓤 → 
                           {𝕏 𝕐 : Action} → (u : Action-Iso 𝕏 𝕐) →
-                          compose-Action-Iso {𝕏} {𝕐} {𝕐} u (id-Action-Iso 𝕐) ≡ u
-  compose-Action-Iso-id fe {𝕏} {𝕐} u = to-subtype-≡
+                          compose-Action-Iso {𝕏} {𝕐} {𝕐} u (id-Action-Iso 𝕐) ＝ u
+  compose-Action-Iso-id fe {𝕏} {𝕐} u = to-subtype-＝
                            (λ f → is-equivariant-is-prop fe {𝕏} {𝕐} (eqtofun f))
                            (≃-refl-right' fe fe fe (pr₁ u))
 
   compose-id-Action-Iso : funext 𝓤 𝓤 →
                           {𝕏 𝕐 : Action} → (u : Action-Iso 𝕏 𝕐) →
-                          compose-Action-Iso {𝕏} {𝕏} {𝕐} (id-Action-Iso 𝕏) u ≡ u
-  compose-id-Action-Iso fe {𝕏} {𝕐} u = to-subtype-≡
+                          compose-Action-Iso {𝕏} {𝕏} {𝕐} (id-Action-Iso 𝕏) u ＝ u
+  compose-id-Action-Iso fe {𝕏} {𝕐} u = to-subtype-＝
                            (λ f → is-equivariant-is-prop fe {𝕏} {𝕐} (eqtofun f))
                            (≃-refl-left' fe fe fe (pr₁ u))
 \end{code}
@@ -393,39 +393,39 @@ type-checking.
       fe = univalence-gives-funext ua
 
     Id-equiv-Action-Iso_prelim : (𝕏 𝕐 : Action) →
-                              (𝕏 ≡ 𝕐) ≃ (Action-Iso 𝕏 𝕐)
+                              (𝕏 ＝ 𝕐) ≃ (Action-Iso 𝕏 𝕐)
     Id-equiv-Action-Iso_prelim 𝕏 𝕐 = ≃-comp (Φ , ll) (Ψ , ii)
       where
         T : (𝕏 𝕐 : Action) → (𝓤 ⁺) ̇
-        T 𝕏 𝕐 = Σ u ꞉ ⟨ 𝕏 ⟩ ≡ ⟨ 𝕐 ⟩ , transport Action-structure u (pr₂ 𝕏) ≡ pr₂ 𝕐
+        T 𝕏 𝕐 = Σ u ꞉ ⟨ 𝕏 ⟩ ＝ ⟨ 𝕐 ⟩ , transport Action-structure u (pr₂ 𝕏) ＝ pr₂ 𝕐
 
-        Φ : (𝕏 ≡ 𝕐) → T 𝕏 𝕐
-        Φ = from-Σ-≡ 
+        Φ : (𝕏 ＝ 𝕐) → T 𝕏 𝕐
+        Φ = from-Σ-＝ 
 
-        Φ' : T 𝕏 𝕐 → (𝕏 ≡ 𝕐)
-        Φ' = to-Σ-≡
+        Φ' : T 𝕏 𝕐 → (𝕏 ＝ 𝕐)
+        Φ' = to-Σ-＝
 
         Ψ : T 𝕏 𝕐 → Action-Iso 𝕏 𝕐
-        Ψ (p , is) = (idtoeq ⟨ 𝕏 ⟩ ⟨ 𝕐 ⟩ p) , pr₁ (≡-is-equivariant fe {𝕏} {𝕐} p) is
+        Ψ (p , is) = (idtoeq ⟨ 𝕏 ⟩ ⟨ 𝕐 ⟩ p) , pr₁ (＝-is-equivariant fe {𝕏} {𝕐} p) is
 
         abstract
           Ψ' : Action-Iso 𝕏 𝕐 → T 𝕏 𝕐
-          Ψ' (e , is) = p , pr₁ (≃-sym (≡-is-equivariant fe {𝕏} {𝕐} p)) i
+          Ψ' (e , is) = p , pr₁ (≃-sym (＝-is-equivariant fe {𝕏} {𝕐} p)) i
             where
-              p : ⟨ 𝕏 ⟩ ≡ ⟨ 𝕐 ⟩
+              p : ⟨ 𝕏 ⟩ ＝ ⟨ 𝕐 ⟩
               p = eqtoid ua ⟨ 𝕏 ⟩ ⟨ 𝕐 ⟩ e
               i : is-equivariant {𝕏} {𝕐} (idtofun ⟨ 𝕏 ⟩ ⟨ 𝕐 ⟩ p)
               i = transport (is-equivariant {𝕏} {𝕐}) (t ⁻¹) is
                 where
-                  t : idtofun ⟨ 𝕏 ⟩ ⟨ 𝕐 ⟩ p ≡ eqtofun e
+                  t : idtofun ⟨ 𝕏 ⟩ ⟨ 𝕐 ⟩ p ＝ eqtofun e
                   t = idtofun-eqtoid ua e
 
-          Ψ'Ψ-id : (σ : T 𝕏 𝕐) → Ψ' (Ψ σ) ≡ σ
-          Ψ'Ψ-id (p , is) = to-Σ-≡ (eqtoid-idtoeq ua ⟨ 𝕏 ⟩ ⟨ 𝕐 ⟩ p ,
+          Ψ'Ψ-id : (σ : T 𝕏 𝕐) → Ψ' (Ψ σ) ＝ σ
+          Ψ'Ψ-id (p , is) = to-Σ-＝ (eqtoid-idtoeq ua ⟨ 𝕏 ⟩ ⟨ 𝕐 ⟩ p ,
                                    Action-structure-is-set fe _ _ _)
 
-          ΨΨ'-id : (u : Action-Iso 𝕏 𝕐) → Ψ (Ψ' u) ≡ u
-          ΨΨ'-id (e , is) = to-Σ-≡ ((idtoeq-eqtoid ua ⟨ 𝕏 ⟩ ⟨ 𝕐 ⟩ e) ,
+          ΨΨ'-id : (u : Action-Iso 𝕏 𝕐) → Ψ (Ψ' u) ＝ u
+          ΨΨ'-id (e , is) = to-Σ-＝ ((idtoeq-eqtoid ua ⟨ 𝕏 ⟩ ⟨ 𝕐 ⟩ e) ,
                                    (is-equivariant-is-prop fe {𝕏} {𝕐} _ _ _))
         ii : is-equiv Ψ
         ii = qinvs-are-equivs Ψ inv-Ψ
@@ -437,23 +437,23 @@ type-checking.
         ll = qinvs-are-equivs Φ inv-Φ
           where
             inv-Φ : invertible Φ
-            inv-Φ = Φ' , (tofrom-Σ-≡ , fromto-Σ-≡)
+            inv-Φ = Φ' , (tofrom-Σ-＝ , fromto-Σ-＝)
 
 
-    ≡-to-Action-Iso-is-equiv : {𝕏 𝕐 : Action} →
-                               is-equiv (≡-to-Action-Iso {𝕏} {𝕐})
-    ≡-to-Action-Iso-is-equiv {𝕏} {𝕐} = equiv-closed-under-∼'
+    ＝-to-Action-Iso-is-equiv : {𝕏 𝕐 : Action} →
+                               is-equiv (＝-to-Action-Iso {𝕏} {𝕐})
+    ＝-to-Action-Iso-is-equiv {𝕏} {𝕐} = equiv-closed-under-∼'
                              (pr₂ (Id-equiv-Action-Iso_prelim 𝕏 𝕐)) h
       where
         f = pr₁ (Id-equiv-Action-Iso 𝕏 prelim 𝕐)
-        g = ≡-to-Action-Iso
+        g = ＝-to-Action-Iso
         h : f ∼ g
         h refl = refl
 
 
     Id-equiv-Action-Iso : (𝕏 𝕐 : Action) →
-                       (𝕏 ≡ 𝕐) ≃ (Action-Iso 𝕏 𝕐)
-    Id-equiv-Action-Iso 𝕏 𝕐 = ≡-to-Action-Iso , ≡-to-Action-Iso-is-equiv
+                       (𝕏 ＝ 𝕐) ≃ (Action-Iso 𝕏 𝕐)
+    Id-equiv-Action-Iso 𝕏 𝕐 = ＝-to-Action-Iso , ＝-to-Action-Iso-is-equiv
 
 \end{code}
 
@@ -478,11 +478,11 @@ action-pullback : {H G : Group 𝓤} →
 action-pullback {H = H} {G} f i ρ = (action-carrier G ρ) ,
                 (λ h x → (f h) · x) ,
                   (carrier-is-set G ρ) ,
-                    ((λ h h₁ → λ x → (f (h ·⟨ H ⟩ h₁) · x       ≡⟨ ap (_· x) i ⟩
-                                      ((f h) ·⟨ G ⟩ (f h₁)) · x ≡⟨ action-assoc G ρ _ _ _ ⟩
+                    ((λ h h₁ → λ x → (f (h ·⟨ H ⟩ h₁) · x       ＝⟨ ap (_· x) i ⟩
+                                      ((f h) ·⟨ G ⟩ (f h₁)) · x ＝⟨ action-assoc G ρ _ _ _ ⟩
                                       (f h · (f h₁ · x)) ∎  )) ,
-                     λ x → (f (unit H) · x ≡⟨ ap (_· x) p ⟩
-                            unit G · x     ≡⟨ action-unit G ρ x ⟩
+                     λ x → (f (unit H) · x ＝⟨ ap (_· x) p ⟩
+                            unit G · x     ＝⟨ action-unit G ρ x ⟩
                             x  ∎))
   where
     _·_ = action-op G ρ

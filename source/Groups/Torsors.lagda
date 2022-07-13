@@ -11,22 +11,23 @@ TORSORS. Split off from GroupActions.
 
 {-# OPTIONS --without-K --safe --auto-inline --exact-split #-}
 
-open import SpartanMLTT
-open import UF-Base hiding (_≈_)
-open import UF-Subsingletons
-open import UF-Powerset
-open import UF-Equiv
-open import UF-EquivalenceExamples
-open import UF-Embeddings
-open import UF-Univalence
-open import UF-Equiv-FunExt
-open import UF-FunExt
---open import UF-UA-FunExt
-open import UF-Subsingletons-FunExt
-open import UF-Retracts
-open import UF-Classifiers
 
-open import Groups renaming (_≅_ to _≣_)
+open import MLTT.Spartan
+open import UF.Base hiding (_≈_)
+open import UF.Subsingletons
+open import UF.Powerset
+open import UF.Equiv
+open import UF.EquivalenceExamples
+open import UF.Embeddings
+open import UF.Univalence
+open import UF.Equiv-FunExt
+open import UF.FunExt
+--open import UF.UA-FunExt
+open import UF.Subsingletons-FunExt
+open import UF.Retracts
+open import UF.Classifiers
+
+open import Groups.Groups renaming (_≅_ to _≣_)
 open import Groups.Groups-Supplement
 open import Groups.GroupActions
 
@@ -76,13 +77,13 @@ torsor→torsor₁ {𝓤} {G} (X , a) (n , e) = n , ee
         u ( y , x) = (pr₁ (pr₁ (e x)) y) , x
 
         ε : (mult G {X , a}) ∘ u ∼ id
-        ε (y , x) = to-×-≡ (pr₂ (pr₁ (e x)) y) refl
+        ε (y , x) = to-×-＝ (pr₂ (pr₁ (e x)) y) refl
 
         v : X × X → ⟨ G ⟩ × X
         v (y , x) = pr₁ (pr₂ (e x)) y , x
 
         η : v ∘ (mult G {X , a}) ∼ id
-        η (g , x) = to-×-≡ (pr₂ (pr₂ (e x)) g) refl
+        η (g , x) = to-×-＝ (pr₂ (pr₂ (e x)) g) refl
 
 torsor₁→torsor : {G : Group 𝓤} (𝕏 : G Sets) →
                  is-torsor₁ G 𝕏 → is-torsor G 𝕏
@@ -106,7 +107,7 @@ torsor₁→torsor {𝓤} {G} (X , a) (n , e) = n , ee
         li-e : li ∘ m ∼ id
         li-e = pr₂ (pr₂ e)
 
-        γ : (g : ⟨ G ⟩) → m (g , x) ≡ r g , x
+        γ : (g : ⟨ G ⟩) → m (g , x) ＝ r g , x
         γ g = refl
 
         u : X → ⟨ G ⟩
@@ -115,14 +116,14 @@ torsor₁→torsor {𝓤} {G} (X , a) (n , e) = n , ee
         ε : r ∘ u ∼ id
         ε y = ap pr₁ q ⁻¹
           where
-            p : pr₂ ( ri (y , x) ) ≡ x
+            p : pr₂ ( ri (y , x) ) ＝ x
             p = ap pr₂ (e-ri (y , x))
 
-            q : y , x ≡ r (u y) , x
-            q = y , x                      ≡⟨ e-ri (y , x) ⁻¹ ⟩
-                m (ri (y , x))             ≡⟨ ap m refl ⟩
-                m (u y , pr₂ (ri (y , x))) ≡⟨ ap (λ v → m (u y , v)) p ⟩
-                m (u y , x)                ≡⟨ γ (u y) ⟩
+            q : y , x ＝ r (u y) , x
+            q = y , x                      ＝⟨ e-ri (y , x) ⁻¹ ⟩
+                m (ri (y , x))             ＝⟨ ap m refl ⟩
+                m (u y , pr₂ (ri (y , x))) ＝⟨ ap (λ v → m (u y , v)) p ⟩
+                m (u y , x)                ＝⟨ γ (u y) ⟩
                 r (u y) , x ∎
 
         v : X → ⟨ G ⟩
@@ -131,14 +132,14 @@ torsor₁→torsor {𝓤} {G} (X , a) (n , e) = n , ee
         η : v ∘ r ∼ id
         η g = ap pr₁ q ⁻¹
           where
-            p : pr₂ (li (r g , x)) ≡ x
+            p : pr₂ (li (r g , x)) ＝ x
             p = ap pr₂ (li-e (g , x))
 
-            q : g , x ≡ v (r g) , x
-            q = g , x                        ≡⟨ li-e (g , x) ⁻¹ ⟩
-                li (m (g , x))               ≡⟨ ap li (γ g) ⟩
-                li (r g , x)                 ≡⟨ refl ⟩
-                v (r g) , pr₂ (li (r g , x)) ≡⟨ ap (λ z → v (r g) , z) p ⟩
+            q : g , x ＝ v (r g) , x
+            q = g , x                        ＝⟨ li-e (g , x) ⁻¹ ⟩
+                li (m (g , x))               ＝⟨ ap li (γ g) ⟩
+                li (r g , x)                 ＝⟨ refl ⟩
+                v (r g) , pr₂ (li (r g , x)) ＝⟨ ap (λ z → v (r g) , z) p ⟩
                 v (r g) , x ∎
 \end{code}
 
@@ -193,7 +194,7 @@ an isomorphism. In classical geometry this implies that the inverse
 also has x as its second component. In other words, pr₂ = x.
 
 Not so here, as highligheted by the convoluted proof above where an
-explicit proof that pr₂ ( inverse (mult) (y , x)) ≡ x was needed.  We
+explicit proof that pr₂ ( inverse (mult) (y , x)) ＝ x was needed.  We
 codify this fact, as it will be useful elsewhere.
 
 \begin{code}
@@ -243,14 +244,14 @@ torsor-rinv-mult-is-right-inverse G X (y , x) =  q ⁻¹
     u : ⟨ pr₁ X ⟩ → ⟨ G ⟩
     u y = pr₁ (ri (y , x))
 
-    p : pr₂ ( ri (y , x) ) ≡ x
+    p : pr₂ ( ri (y , x) ) ＝ x
     p = ap pr₂ (e-ri (y , x))
 
-    q : y , x ≡ r (u y) , x
-    q = y , x                      ≡⟨ e-ri (y , x) ⁻¹ ⟩
-        m (ri (y , x))             ≡⟨ ap m refl ⟩
-        m (u y , pr₂ (ri (y , x))) ≡⟨ ap (λ v → m (u y , v)) p ⟩
-        m (u y , x)                ≡⟨ refl ⟩
+    q : y , x ＝ r (u y) , x
+    q = y , x                      ＝⟨ e-ri (y , x) ⁻¹ ⟩
+        m (ri (y , x))             ＝⟨ ap m refl ⟩
+        m (u y , pr₂ (ri (y , x))) ＝⟨ ap (λ v → m (u y , v)) p ⟩
+        m (u y , x)                ＝⟨ refl ⟩
         r (u y) , x ∎
 
 
@@ -275,14 +276,14 @@ torsor-linv-mult-is-left-inverse G X (g , x) = q ⁻¹
     v : ⟨ pr₁ X ⟩ → ⟨ G ⟩
     v y = pr₁ (li (y , x))
 
-    p : pr₂ (li (r g , x)) ≡ x
+    p : pr₂ (li (r g , x)) ＝ x
     p = ap pr₂ (li-e (g , x))
 
-    q : g , x ≡ v (r g) , x
-    q = g , x                        ≡⟨ li-e (g , x) ⁻¹ ⟩
-        li (m (g , x))               ≡⟨ ap li (refl) ⟩
-        li (r g , x)                 ≡⟨ refl ⟩
-        v (r g) , pr₂ (li (r g , x)) ≡⟨ ap (λ z → v (r g) , z) p ⟩
+    q : g , x ＝ v (r g) , x
+    q = g , x                        ＝⟨ li-e (g , x) ⁻¹ ⟩
+        li (m (g , x))               ＝⟨ ap li (refl) ⟩
+        li (r g , x)                 ＝⟨ refl ⟩
+        v (r g) , pr₂ (li (r g , x)) ＝⟨ ap (λ z → v (r g) , z) p ⟩
         v (r g) , x ∎
 
 \end{code}
@@ -296,9 +297,9 @@ left-mult-gives-ActionIso : (G : Group 𝓤) (i : is-abelian G) (X : Tors G) →
                       (g : ⟨ G ⟩) → Action-Iso G (pr₁ X) (pr₁ X)
 left-mult-gives-ActionIso G i X g = (action-to-Aut G {pr₁ X} g) ,
                                       (λ a x → (
-                                           g · (a · x)     ≡⟨ (action-assoc G 𝕏 g a x) ⁻¹ ⟩
-                                           (g ·⟨ G ⟩ a) · x ≡⟨ ap (_· x) (i g a) ⟩
-                                           (a ·⟨ G ⟩ g) · x ≡⟨ action-assoc G 𝕏 a g x ⟩
+                                           g · (a · x)     ＝⟨ (action-assoc G 𝕏 g a x) ⁻¹ ⟩
+                                           (g ·⟨ G ⟩ a) · x ＝⟨ ap (_· x) (i g a) ⟩
+                                           (a ·⟨ G ⟩ g) · x ＝⟨ action-assoc G 𝕏 a g x ⟩
                                             a · (g · x) ∎ ))
   where
     𝕏 : Action G
@@ -323,7 +324,7 @@ underlying-action-is-embedding fe fe₀ G = pr₁-is-embedding (λ 𝕏 → is-t
 underlying-action-injectivity : funext 𝓤 𝓤 →
                                  funext 𝓤 𝓤₀ →
                                  (G : Group 𝓤) (X Y : Tors G) →
-                                 (X ≡ Y) ≃ (underlying-action {𝓤} {G} X ≡ underlying-action {𝓤} {G} Y)
+                                 (X ＝ Y) ≃ (underlying-action {𝓤} {G} X ＝ underlying-action {𝓤} {G} Y)
 underlying-action-injectivity fe fe₀ G X Y = ≃-sym
                               (embedding-criterion-converse
                                 (underlying-action {G = G})
@@ -332,7 +333,7 @@ underlying-action-injectivity fe fe₀ G X Y = ≃-sym
 underlying-action-injectivity' : funext 𝓤 𝓤 →
                                  funext 𝓤 𝓤₀ →
                                  {G : Group 𝓤} {X Y : Tors G} →
-                                 (X ≡ Y) ≃ (underlying-action {𝓤} {G} X ≡ underlying-action {𝓤} {G} Y)
+                                 (X ＝ Y) ≃ (underlying-action {𝓤} {G} X ＝ underlying-action {𝓤} {G} Y)
 underlying-action-injectivity' fe fe₀ {G} {X} {Y} = ≃-sym
                               (embedding-criterion-converse
                                 (underlying-action {G = G})
@@ -341,8 +342,8 @@ underlying-action-injectivity' fe fe₀ {G} {X} {Y} = ≃-sym
 
 underlying-action-injectivity-comp : (fe : funext 𝓤 𝓤) →
                                      (f₀ : funext 𝓤 𝓤₀) →
-                                     {G : Group 𝓤} {X Y : Tors G} (p : X ≡ Y) →
-                                     pr₁ (underlying-action-injectivity fe f₀ G X Y) p ≡ 
+                                     {G : Group 𝓤} {X Y : Tors G} (p : X ＝ Y) →
+                                     pr₁ (underlying-action-injectivity fe f₀ G X Y) p ＝ 
                                        ap (underlying-action {𝓤} {G})  p
 underlying-action-injectivity-comp fe f0 p = refl
 
@@ -355,9 +356,9 @@ below we need both "inverses" of the shear map (see above).
 \begin{code}
 
 torsor-is-quotient : (G : Group 𝓤) (X : Tors G) (y x : ⟨ pr₁ X ⟩) → 
-                      ∃! g ꞉ ⟨ G ⟩ , action-op G (pr₁ X) g x ≡ y
+                      ∃! g ꞉ ⟨ G ⟩ , action-op G (pr₁ X) g x ＝ y
 torsor-is-quotient G X y x = (g , ap pr₁ u) ,
-               λ { (h , p) → to-Σ-≡ (ap pr₁ (ii h p) , carrier-is-set G (pr₁ X) _ _)}
+               λ { (h , p) → to-Σ-＝ (ap pr₁ (ii h p) , carrier-is-set G (pr₁ X) _ _)}
     where
       gx : ⟨ G ⟩ × ⟨ pr₁ X ⟩
       gx = torsor-rinv-mult G X (y , x)
@@ -365,24 +366,24 @@ torsor-is-quotient G X y x = (g , ap pr₁ u) ,
       g : ⟨ G ⟩
       g = pr₁ gx
 
-      u : mult G {pr₁ X} gx ≡ y , x
+      u : mult G {pr₁ X} gx ＝ y , x
       u = torsor-rinv-mult-is-right-inverse G X (y , x)
 
       m : ⟨ G ⟩ × ⟨ pr₁ X ⟩ → ⟨ pr₁ X ⟩ × ⟨ pr₁ X ⟩
       m = mult G {pr₁ X}
 
-      i : (h : ⟨ G ⟩) (p : action-op G (pr₁ X) h x ≡ y) → 
-          m (g , x) ≡ m (h , x)
-      i h p = m (g , x)                   ≡⟨ to-×-≡ (ap pr₁ u) refl ⟩
-              y , x                       ≡⟨ to-×-≡ (p ⁻¹) refl ⟩
-              action-op G (pr₁ X) h x , x ≡⟨ refl ⟩
+      i : (h : ⟨ G ⟩) (p : action-op G (pr₁ X) h x ＝ y) → 
+          m (g , x) ＝ m (h , x)
+      i h p = m (g , x)                   ＝⟨ to-×-＝ (ap pr₁ u) refl ⟩
+              y , x                       ＝⟨ to-×-＝ (p ⁻¹) refl ⟩
+              action-op G (pr₁ X) h x , x ＝⟨ refl ⟩
               m (h , x) ∎
 
-      ii : (h : ⟨ G ⟩) (p : action-op G (pr₁ X) h x ≡ y) →
-           g , x ≡ h , x
-      ii h p = g , x                            ≡⟨ q ⁻¹ ⟩
-               torsor-linv-mult G X (m (g , x)) ≡⟨ ap (torsor-linv-mult G X) (i h p) ⟩
-               torsor-linv-mult G X (m (h , x)) ≡⟨ r ⟩
+      ii : (h : ⟨ G ⟩) (p : action-op G (pr₁ X) h x ＝ y) →
+           g , x ＝ h , x
+      ii h p = g , x                            ＝⟨ q ⁻¹ ⟩
+               torsor-linv-mult G X (m (g , x)) ＝⟨ ap (torsor-linv-mult G X) (i h p) ⟩
+               torsor-linv-mult G X (m (h , x)) ＝⟨ r ⟩
                h , x ∎
                  where
                    q = torsor-linv-mult-is-left-inverse G X (g , x)

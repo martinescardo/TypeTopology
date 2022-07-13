@@ -11,16 +11,17 @@
 
 {-# OPTIONS --without-K --safe #-}
 
-open import SpartanMLTT hiding ( ₀ ; ₁)
-open import Groups
-open import Groups.Cokernel
-open import UF-PropTrunc
+open import MLTT.Spartan hiding ( ₀ ; ₁)
+open import UF.PropTrunc
+open import UF.ImageAndSurjection
+open import UF.FunExt
+open import UF.Subsingletons
+
+open import Groups.Groups
 open import Groups.Homomorphisms
 open import Groups.Kernel
-open import UF-ImageAndSurjection
 open import Groups.Image
-open import UF-FunExt
-open import UF-Subsingletons
+open import Groups.Cokernel
 
 module CrossedModules.CrossedModules
   where
@@ -39,18 +40,18 @@ Group Action:
 
 _◂_ : (G : Group 𝓤) (H : Group 𝓥) → 𝓤 ⊔ 𝓥 ̇
 G ◂ H = Σ ρ ꞉ (⟨ G ⟩ → ⟨ H ⟩ → ⟨ H ⟩) 
-      , (∀ {x y : ⟨ G ⟩} {h : ⟨ H ⟩} → (ρ x (ρ y h) ≡ ρ (x ·⟨ G ⟩ y) h)
-      × ∀ {x} → (ρ (unit G) x ≡ x)
-      × ∀ {g : ⟨ G ⟩} {h h' : ⟨ H ⟩} → ρ g (h ·⟨ H ⟩ h') ≡ (ρ g h) ·⟨ H ⟩ (ρ g h'))
+      , (∀ {x y : ⟨ G ⟩} {h : ⟨ H ⟩} → (ρ x (ρ y h) ＝ ρ (x ·⟨ G ⟩ y) h)
+      × ∀ {x} → (ρ (unit G) x ＝ x)
+      × ∀ {g : ⟨ G ⟩} {h h' : ⟨ H ⟩} → ρ g (h ·⟨ H ⟩ h') ＝ (ρ g h) ·⟨ H ⟩ (ρ g h'))
 
 Equivariant : (G : Group 𝓤) (H : Group 𝓥) → G ◂ H → (δ : ⟨ H ⟩ → ⟨ G ⟩) → (is-hom H G δ) → 𝓤 ⊔ 𝓥 ̇
-Equivariant G H (ρ , _) δ _ = ∀ {g h} → (δ (ρ g h) ·⟨ G ⟩ g ≡ (g ·⟨ G ⟩ (δ h)))
+Equivariant G H (ρ , _) δ _ = ∀ {g h} → (δ (ρ g h) ·⟨ G ⟩ g ＝ (g ·⟨ G ⟩ (δ h)))
 
 Peiffer-identity : (G : Group 𝓤) (H : Group 𝓥) → G ◂ H → (δ : ⟨ H ⟩ → ⟨ G ⟩) → (is-hom H G δ) → 𝓥 ̇
-Peiffer-identity _ H (ρ , _) δ _ = ∀ {h₁ h₂} → (((ρ (δ h₁) h₂) ·⟨ H ⟩ h₁) ≡ h₁ ·⟨ H ⟩ h₂)
+Peiffer-identity _ H (ρ , _) δ _ = ∀ {h₁ h₂} → (((ρ (δ h₁) h₂) ·⟨ H ⟩ h₁) ＝ h₁ ·⟨ H ⟩ h₂)
 
 Equivariant' : (G : Group 𝓤) (H : Group 𝓥) → G ◂ H → (δ : ⟨ H ⟩ → ⟨ G ⟩) → (is-hom H G δ) → 𝓤 ⊔ 𝓥 ̇
-Equivariant' G H (ρ , _) δ _ = (g : ⟨ G ⟩) (h : ⟨ H ⟩)  → (δ (ρ g h) ≡ (g ·⟨ G ⟩ (δ h)) ·⟨ G ⟩ (inv G g))
+Equivariant' G H (ρ , _) δ _ = (g : ⟨ G ⟩) (h : ⟨ H ⟩)  → (δ (ρ g h) ＝ (g ·⟨ G ⟩ (δ h)) ·⟨ G ⟩ (inv G g))
 
 action-carrier : {G : Group 𝓤}{H : Group 𝓥} → G ◂ H → ⟨ G ⟩ → ⟨ H ⟩ → ⟨ H ⟩
 action-carrier ρ g h = (pr₁ ρ) g h
@@ -95,15 +96,15 @@ CrossedModule.
       is_₀ : is-hom (CrossedModule._₀ G) (CrossedModule._₀ H) _₀
       _₁ : ⟨ G ₁ ⟩ → ⟨ H ₁ ⟩
       is_₁ : is-hom (CrossedModule._₁ G) (CrossedModule._₁ H) _₁
-      comm-diag : ∀ {g} → _₀ (∂ G g) ≡ ∂ H (_₁ g)
-      action-equivariant : ∀ {g h} → (_₁ ((pr₁ (ρ G)) g h) ≡ (pr₁ (ρ H)) (_₀ g) (_₁ h))
+      comm-diag : ∀ {g} → _₀ (∂ G g) ＝ ∂ H (_₁ g)
+      action-equivariant : ∀ {g h} → (_₁ ((pr₁ (ρ G)) g h) ＝ (pr₁ (ρ H)) (_₀ g) (_₁ h))
 
 -- It is convenient (?) to have a different definition for the
 -- morphisms
 
   is-CrossMod-hom : (f₀ : ⟨ G ₀ ⟩ → ⟨ H ₀ ⟩) → is-hom ( G ₀) (H ₀) f₀ → (f₁ : ⟨ G ₁ ⟩ → ⟨ H ₁ ⟩) → is-hom (G ₁) (H ₁) f₁ → (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓣) ̇
-  is-CrossMod-hom f₀ _ f₁ _ = ( ∀ {g} → f₀ (∂ G g) ≡ ∂ H (f₁ g) ) 
-                            × ( ∀ {g h} → f₁ ((pr₁ (ρ G)) g h) ≡ (pr₁ (ρ H)) (f₀ g) (f₁ h) )
+  is-CrossMod-hom f₀ _ f₁ _ = ( ∀ {g} → f₀ (∂ G g) ＝ ∂ H (f₁ g) ) 
+                            × ( ∀ {g h} → f₁ ((pr₁ (ρ G)) g h) ＝ (pr₁ (ρ H)) (f₀ g) (f₁ h) )
 
 
 
@@ -122,7 +123,7 @@ This is a map (not necessarily a homomorphism)
 \begin{code}
 
   is-left-homotopy : (f : CrossedModuleHom) → (⟨ G ₀ ⟩ → ⟨ H ₁ ⟩) → _
-  is-left-homotopy f θ = ∀ {x x'} → θ (x ·⟨ G ₀ ⟩ x') ≡ (θ x) ·⟨ H ₁ ⟩ (pr₁ (ρ H) (f₀ x)  (θ x'))
+  is-left-homotopy f θ = ∀ {x x'} → θ (x ·⟨ G ₀ ⟩ x') ＝ (θ x) ·⟨ H ₁ ⟩ (pr₁ (ρ H) (f₀ x)  (θ x'))
     where
       open CrossedModuleHom
       f₀ = f ₀
@@ -132,7 +133,7 @@ This is a map (not necessarily a homomorphism)
                       (f₁ : ⟨ G ₁ ⟩ → ⟨ H ₁ ⟩) → (i₁ : is-hom (G ₁) (H ₁) f₁) →
                       is-CrossMod-hom f₀ i₀ f₁ i₁ → 
                       (⟨ G ₀ ⟩ → ⟨ H ₁ ⟩) → _
-  is-left-homotopy' f₀ _ f₁ _ _ θ = ∀ {x x'} → θ (x ·⟨ G ₀ ⟩ x') ≡ (θ x) ·⟨ H ₁ ⟩ (pr₁ (ρ H) (f₀ x)  (θ x'))
+  is-left-homotopy' f₀ _ f₁ _ _ θ = ∀ {x x'} → θ (x ·⟨ G ₀ ⟩ x') ＝ (θ x) ·⟨ H ₁ ⟩ (pr₁ (ρ H) (f₀ x)  (θ x'))
 
 \end{code}
 
@@ -143,9 +144,9 @@ as the formal analogue of a chain homotopy.
 \begin{code}
 
   is-chain-homotopy : (f g : CrossedModuleHom) → (⟨ G ₀ ⟩ → ⟨ H ₁ ⟩) → _
-  is-chain-homotopy f g θ = (∀ {x} → g₀ x ≡ ((∂ H) (θ x)) ·⟨ H ₀ ⟩ (f₀ x))
-                          × (∀ {a x} → g₁ a ·⟨ H ₁ ⟩ θ x ≡ θ (∂ G a ·⟨ G ₀ ⟩ x) ·⟨ H ₁ ⟩ f₁ a)
-                          × (∀ {x x'} → θ (x ·⟨ G ₀ ⟩ x') ≡ (θ x) ·⟨ H ₁ ⟩ (pr₁ (ρ H) (f₀ x)  (θ x')))
+  is-chain-homotopy f g θ = (∀ {x} → g₀ x ＝ ((∂ H) (θ x)) ·⟨ H ₀ ⟩ (f₀ x))
+                          × (∀ {a x} → g₁ a ·⟨ H ₁ ⟩ θ x ＝ θ (∂ G a ·⟨ G ₀ ⟩ x) ·⟨ H ₁ ⟩ f₁ a)
+                          × (∀ {x x'} → θ (x ·⟨ G ₀ ⟩ x') ＝ (θ x) ·⟨ H ₁ ⟩ (pr₁ (ρ H) (f₀ x)  (θ x')))
                           where
                             open CrossedModuleHom
                             f₀ = f ₀
@@ -161,9 +162,9 @@ as the formal analogue of a chain homotopy.
                        is-CrossMod-hom g₀ j₀ g₁ j₁ → 
                        (⟨ G ₀ ⟩ → ⟨ H ₁ ⟩) → _
   is-chain-homotopy' f₀ _ f₁ _ _ g₀ _ g₁ _ _ θ 
-                     = (∀ {x} → g₀ x ≡ ((∂ H) (θ x)) ·⟨ H ₀ ⟩ (f₀ x))
-                     × (∀ {a x} → g₁ a ·⟨ H ₁ ⟩ θ x ≡ θ (∂ G a ·⟨ G ₀ ⟩ x) ·⟨ H ₁ ⟩ f₁ a)
-                     × (∀ {x x'} → θ (x ·⟨ G ₀ ⟩ x') ≡ (θ x) ·⟨ H ₁ ⟩ (pr₁ (ρ H) (f₀ x)  (θ x')))
+                     = (∀ {x} → g₀ x ＝ ((∂ H) (θ x)) ·⟨ H ₀ ⟩ (f₀ x))
+                     × (∀ {a x} → g₁ a ·⟨ H ₁ ⟩ θ x ＝ θ (∂ G a ·⟨ G ₀ ⟩ x) ·⟨ H ₁ ⟩ f₁ a)
+                     × (∀ {x x'} → θ (x ·⟨ G ₀ ⟩ x') ＝ (θ x) ·⟨ H ₁ ⟩ (pr₁ (ρ H) (f₀ x)  (θ x')))
 
 
 
@@ -175,7 +176,7 @@ module homotopygroups {G : CrossedModule {𝓤} {𝓥}} (pt : propositional-trun
   open Groups.Cokernel.cokernel pt fe pe
   
 
-  γ : (G : Group 𝓥) → (x y g : ⟨ G ⟩) → (x ≡ y) → (((g ·⟨ G ⟩ x) ·⟨ G ⟩ (inv G g)) ≡ ((g ·⟨ G ⟩ y) ·⟨ G ⟩ (inv G g)))
+  γ : (G : Group 𝓥) → (x y g : ⟨ G ⟩) → (x ＝ y) → (((g ·⟨ G ⟩ x) ·⟨ G ⟩ (inv G g)) ＝ ((g ·⟨ G ⟩ y) ·⟨ G ⟩ (inv G g)))
   γ G x y g p = ap (λ v → ((g ·⟨ G ⟩ v) ·⟨ G ⟩ (inv G g))) p
 
 

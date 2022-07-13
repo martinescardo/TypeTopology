@@ -9,16 +9,16 @@ August 28, 2021
 
 {-# OPTIONS --without-K --safe #-}
 
-open import SpartanMLTT
-open import UF-Base
-open import UF-Subsingletons
-open import UF-Equiv
-open import UF-EquivalenceExamples
-open import UF-Retracts
-open import UF-Embeddings
-open import Groups renaming (_≅_ to _≣_)
-open import UF-PropTrunc
-open import UF-ImageAndSurjection
+open import MLTT.Spartan
+open import UF.Base
+open import UF.Subsingletons
+open import UF.Equiv
+open import UF.EquivalenceExamples
+open import UF.Retracts
+open import UF.Embeddings
+open import UF.PropTrunc
+open import UF.ImageAndSurjection
+open import Groups.Groups renaming (_≅_ to _≣_)
 
 open import Groups.Triv
 open import Groups.Kernel
@@ -46,7 +46,7 @@ module Groups.Homomorphisms
          where
 
 is-injective-hom : _
-is-injective-hom = (x : ⟨ X ⟩) → f x ≡ e⟨ Y ⟩ → x ≡ e⟨ X ⟩
+is-injective-hom = (x : ⟨ X ⟩) → f x ＝ e⟨ Y ⟩ → x ＝ e⟨ X ⟩
 
 has-triv-kernel : _
 has-triv-kernel = is-iso (triv {𝓤 ⊔ 𝓥}) (kernel X Y f isf) (triv-initial (kernel X Y f isf))
@@ -60,26 +60,26 @@ Being injective in the naive sense employed above is the same as having a left-c
 lc-hom-is-inj : left-cancellable f → is-injective-hom
 lc-hom-is-inj lc x p = lc {x} {unit X} q
   where
-    q : f x ≡ f (unit X)
+    q : f x ＝ f (unit X)
     q = p ∙ (homs-preserve-unit X Y f isf) ⁻¹
 
 
 inj-hom-is-lc : is-injective-hom → left-cancellable f
-inj-hom-is-lc i {x} {x'} p = x                             ≡⟨ (unit-right X x) ⁻¹ ⟩
-                             x ·⟨ X ⟩ e⟨ X ⟩                 ≡⟨ ap (λ v → x ·⟨ X ⟩ v) (inv-left X x') ⁻¹ ⟩
-                             x ·⟨ X ⟩ ((inv X x') ·⟨ X ⟩ x') ≡⟨ (assoc X _ _ _) ⁻¹  ⟩
-                             (x ·⟨ X ⟩ (inv X x')) ·⟨ X ⟩ x' ≡⟨ ap (λ v → v ·⟨ X ⟩ x') u  ⟩
-                             e⟨ X ⟩ ·⟨ X ⟩ x'                ≡⟨ unit-left X x' ⟩
+inj-hom-is-lc i {x} {x'} p = x                             ＝⟨ (unit-right X x) ⁻¹ ⟩
+                             x ·⟨ X ⟩ e⟨ X ⟩                 ＝⟨ ap (λ v → x ·⟨ X ⟩ v) (inv-left X x') ⁻¹ ⟩
+                             x ·⟨ X ⟩ ((inv X x') ·⟨ X ⟩ x') ＝⟨ (assoc X _ _ _) ⁻¹  ⟩
+                             (x ·⟨ X ⟩ (inv X x')) ·⟨ X ⟩ x' ＝⟨ ap (λ v → v ·⟨ X ⟩ x') u  ⟩
+                             e⟨ X ⟩ ·⟨ X ⟩ x'                ＝⟨ unit-left X x' ⟩
                              x' ∎
                 where  
-                  q : f (x ·⟨ X ⟩ (inv X x')) ≡ e⟨ Y ⟩
-                  q = f (x ·⟨ X ⟩ (inv X x'))     ≡⟨ isf ⟩
-                      f x ·⟨ Y ⟩ f (inv X x')     ≡⟨ ap (λ v → f x ·⟨ Y ⟩ v) (homs-preserve-invs X Y f isf _) ⟩
-                      f x ·⟨ Y ⟩ (inv Y (f x'))   ≡⟨ ap (λ v → v ·⟨ Y ⟩ (inv Y (f x')) ) p ⟩
-                      f x' ·⟨ Y ⟩ (inv Y (f x'))  ≡⟨ inv-right Y _ ⟩
+                  q : f (x ·⟨ X ⟩ (inv X x')) ＝ e⟨ Y ⟩
+                  q = f (x ·⟨ X ⟩ (inv X x'))     ＝⟨ isf ⟩
+                      f x ·⟨ Y ⟩ f (inv X x')     ＝⟨ ap (λ v → f x ·⟨ Y ⟩ v) (homs-preserve-invs X Y f isf _) ⟩
+                      f x ·⟨ Y ⟩ (inv Y (f x'))   ＝⟨ ap (λ v → v ·⟨ Y ⟩ (inv Y (f x')) ) p ⟩
+                      f x' ·⟨ Y ⟩ (inv Y (f x'))  ＝⟨ inv-right Y _ ⟩
                       e⟨ Y ⟩ ∎
 
-                  u : x ·⟨ X ⟩ (inv X x') ≡ e⟨ X ⟩
+                  u : x ·⟨ X ⟩ (inv X x') ＝ e⟨ X ⟩
                   u = i (x ·⟨ X ⟩ (inv X x')) q
 
 \end{code}
@@ -97,13 +97,13 @@ triv-kernel-implies-inj-hom is x p = ap pr₁ u
     k : ⟨ kernel X Y f isf ⟩
     k = x , p
 
-    u : k ≡ unit ( kernel X Y f isf )
-    u = to-Σ-≡ ((ap pr₁ (pr₂ (pr₁ (pr₁ (is))) k) ⁻¹) , (group-is-set Y _ _))
+    u : k ＝ unit ( kernel X Y f isf )
+    u = to-Σ-＝ ((ap pr₁ (pr₂ (pr₁ (pr₁ (is))) k) ⁻¹) , (group-is-set Y _ _))
 
 
 inj-hom-has-triv-kernel : is-injective-hom → has-triv-kernel
 pr₁ (pr₁ (inj-hom-has-triv-kernel is)) = (triv-terminal (kernel X Y f isf)) 
-                                       , (λ { (x , p) → to-Σ-≡ (((is x p) ⁻¹) , group-is-set Y _ _ )})
+                                       , (λ { (x , p) → to-Σ-＝ (((is x p) ⁻¹) , group-is-set Y _ _ )})
 pr₂ (pr₁ (inj-hom-has-triv-kernel is)) = (triv-terminal (kernel X Y f isf)) 
                                        , (λ x → refl)
 pr₂ (inj-hom-has-triv-kernel is) = triv-initial-is-hom {𝓥 = 𝓤 ⊔ 𝓥} (kernel X Y f isf)
@@ -112,7 +112,7 @@ pr₂ (inj-hom-has-triv-kernel is) = triv-initial-is-hom {𝓥 = 𝓤 ⊔ 𝓥} 
 
 inj-hom-has-contractible-kernel : is-injective-hom → is-singleton (⟨ kernel X Y f isf ⟩)
 pr₁ (inj-hom-has-contractible-kernel is) = unit (kernel X Y f isf)
-pr₂ (inj-hom-has-contractible-kernel is) (x , p) = to-Σ-≡ (((is x p) ⁻¹) , (group-is-set Y _ _))
+pr₂ (inj-hom-has-contractible-kernel is) (x , p) = to-Σ-＝ (((is x p) ⁻¹) , (group-is-set Y _ _))
 
 inj-hom-has-triv-kernel₁ : is-injective-hom → has-triv-kernel
 inj-hom-has-triv-kernel₁ is = pr₂ (group-is-singl-is-triv' (kernel X Y f isf) i)
@@ -198,7 +198,7 @@ module _ (pt : propositional-truncations-exist) where
         j : ⟨ Y ⟩ → ⟨ group-image pt X Y f isf ⟩
         j = inverse i e
 
-        u : i (j y) ≡ y
+        u : i (j y) ＝ y
         u = inverses-are-sections i e y
 
     complete-image-implies-surjective-hom : is-iso I Y inj → is-surjective-hom

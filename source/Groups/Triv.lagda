@@ -10,15 +10,15 @@ July 1, 2021
 {-# OPTIONS --without-K --safe #-}
 
 
-open import SpartanMLTT
-open import Unit
-open import Unit-Properties
-open import UF-Subsingletons
-open import Id
-open import UF-Base
-open import UF-Equiv
-open import UF-Retracts
-open import Groups renaming (_≅_ to _≣_)
+open import MLTT.Spartan
+open import MLTT.Unit
+open import MLTT.Unit-Properties
+open import MLTT.Id
+open import UF.Subsingletons
+open import UF.Base
+open import UF.Equiv
+open import UF.Retracts
+open import Groups.Groups renaming (_≅_ to _≣_)
 
 \end{code}
 
@@ -67,7 +67,7 @@ triv-initial : ∀ {𝓤 𝓥} → (G : Group 𝓤) → ⟨ triv {𝓥} ⟩ → 
 triv-initial G = λ _ → e⟨ G ⟩
   
 triv-initial-is-hom : ∀ {𝓤 𝓥} → (G : Group 𝓤) → (is-hom (triv {𝓥}) G (triv-initial G))
-triv-initial-is-hom G = e⟨ G ⟩ ≡⟨ (unit-left G e⟨ G ⟩) ⁻¹ ⟩
+triv-initial-is-hom G = e⟨ G ⟩ ＝⟨ (unit-left G e⟨ G ⟩) ⁻¹ ⟩
                         e⟨ G ⟩ ·⟨ G ⟩  e⟨ G ⟩ ∎
 
 -- trivial group is terminal
@@ -93,7 +93,7 @@ pr₂ (pr₁ (pr₂ (group-is-singl-is-triv G is))) = (triv-initial G) , λ x �
   where
     c : ⟨ G ⟩
     c = pr₁ is
-    p : e⟨ G ⟩ ≡ c
+    p : e⟨ G ⟩ ＝ c
     p = (pr₂ is e⟨ G ⟩) ⁻¹
 pr₂ (pr₂ (group-is-singl-is-triv G is)) {x} {y} = triv-terminal-is-hom G {x} {y}
 
@@ -103,7 +103,7 @@ pr₁ (pr₁ (pr₂ (group-is-singl-is-triv' G is))) = (triv-terminal G) , λ x 
   where
     c : ⟨ G ⟩
     c = pr₁ is
-    p : e⟨ G ⟩ ≡ c
+    p : e⟨ G ⟩ ＝ c
     p = (pr₂ is e⟨ G ⟩) ⁻¹
 pr₂ (pr₁ (pr₂ (group-is-singl-is-triv' G is))) = (triv-terminal G) , (λ { * → refl})
 pr₂ (pr₂ (group-is-singl-is-triv' G is)) {x} {y} = triv-initial-is-hom G {x} {y}

@@ -10,16 +10,16 @@ Aug 18, 2021
 
 {-# OPTIONS --without-K --safe #-}
 
-open import SpartanMLTT
-open import UF-Base
-open import UF-Subsingletons
-open import UF-Equiv
-open import UF-EquivalenceExamples
-open import UF-Retracts
-open import UF-Embeddings
-open import Groups
-open import UF-PropTrunc
-open import UF-ImageAndSurjection
+open import MLTT.Spartan
+open import UF.Base
+open import UF.Subsingletons
+open import UF.Equiv
+open import UF.EquivalenceExamples
+open import UF.Retracts
+open import UF.Embeddings
+open import UF.PropTrunc
+open import UF.ImageAndSurjection
+open import Groups.Groups
 
 \end{code}
 
@@ -35,7 +35,7 @@ open ImageAndSurjection pt
 open PropositionalTruncation pt
 
 private
-     fact : (X : Group 𝓤) → (x y z w : ⟨ X ⟩) → (p : x ≡ y) (q : z ≡ w) → (x ·⟨ X ⟩ z ≡ y ·⟨ X ⟩ w)
+     fact : (X : Group 𝓤) → (x y z w : ⟨ X ⟩) → (p : x ＝ y) (q : z ＝ w) → (x ·⟨ X ⟩ z ＝ y ·⟨ X ⟩ w)
      fact X x y z w p q = (ap (λ v → v ·⟨ X ⟩ z) p) ∙ (ap (λ v → y ·⟨ X ⟩ v) q)
 
 module _ (X : Group 𝓤) (Y : Group 𝓥) (f : ⟨ X ⟩ → ⟨ Y ⟩) (isf : is-hom X Y f) where
@@ -63,16 +63,16 @@ module _ (X : Group 𝓤) (Y : Group 𝓥) (f : ⟨ X ⟩ → ⟨ Y ⟩) (isf : 
          is-set-im = Σ-is-set (group-is-set Y) (λ _ → props-are-sets ∥∥-is-prop)
 
          assoc-im : associative group-structure-im
-         assoc-im (y₀ , p₀) (y₁ , p₁) (y₂ , p₂) = to-Σ-≡ ( (assoc Y y₀ y₁ y₂) , ∥∥-is-prop _ _ )
+         assoc-im (y₀ , p₀) (y₁ , p₁) (y₂ , p₂) = to-Σ-＝ ( (assoc Y y₀ y₁ y₂) , ∥∥-is-prop _ _ )
 
          unit-im : Im
          unit-im = (e⟨ Y ⟩) , ∣ ((e⟨ X ⟩) , homs-preserve-unit X Y f isf) ∣
 
          left-neutral-im : left-neutral unit-im group-structure-im
-         left-neutral-im (y , p) = to-Σ-≡ ((unit-left Y y) , ∥∥-is-prop _ _)
+         left-neutral-im (y , p) = to-Σ-＝ ((unit-left Y y) , ∥∥-is-prop _ _)
 
          right-neutral-im : right-neutral unit-im group-structure-im
-         right-neutral-im (y , p) = to-Σ-≡ ((unit-right Y y) , (∥∥-is-prop _ _))
+         right-neutral-im (y , p) = to-Σ-＝ ((unit-right Y y) , (∥∥-is-prop _ _))
 
          inv-im : Im → Im
          pr₁ (inv-im (y , p)) = inv Y y
@@ -80,11 +80,11 @@ module _ (X : Group 𝓤) (Y : Group 𝓥) (f : ⟨ X ⟩ → ⟨ Y ⟩) (isf : 
                    x , u ← p
                    ∣ (inv X x) , ((homs-preserve-invs X Y f isf x) ∙ (ap (λ v → inv Y v) u)) ∣
 
-         inv-left-im : (u : Im) → group-structure-im (inv-im u) u ≡ unit-im
-         inv-left-im (y , p) = to-Σ-≡ ((inv-left Y y) , (∥∥-is-prop _ _))
+         inv-left-im : (u : Im) → group-structure-im (inv-im u) u ＝ unit-im
+         inv-left-im (y , p) = to-Σ-＝ ((inv-left Y y) , (∥∥-is-prop _ _))
 
-         inv-right-im : (u : Im) → group-structure-im u (inv-im u) ≡ unit-im
-         inv-right-im (y , p) = to-Σ-≡ ((inv-right Y y) , (∥∥-is-prop _ _))
+         inv-right-im : (u : Im) → group-structure-im u (inv-im u) ＝ unit-im
+         inv-right-im (y , p) = to-Σ-＝ ((inv-right Y y) , (∥∥-is-prop _ _))
 
 \end{code}
 
@@ -106,7 +106,7 @@ it is a surjection.
 
      -- Canonical map is left cancellable
      group-image-inj-is-lc : left-cancellable group-image-inj
-     group-image-inj-is-lc u = to-Σ-≡ (u , ∥∥-is-prop _ _)
+     group-image-inj-is-lc u = to-Σ-＝ (u , ∥∥-is-prop _ _)
 
      -- Canonical map is an embedding
      group-image-inj-is-embedding : is-embedding group-image-inj
@@ -123,11 +123,11 @@ it is a surjection.
      group-image-srj = λ {x → (f x) , ∣ (x , refl) ∣}
 
      group-image-srj-is-hom : is-hom X group-image group-image-srj
-     group-image-srj-is-hom {x₁} {x₂} = to-Σ-≡ (isf , ∥∥-is-prop _ _)
+     group-image-srj-is-hom {x₁} {x₂} = to-Σ-＝ (isf , ∥∥-is-prop _ _)
 
      group-image-srj-is-surjection : is-surjection group-image-srj
      group-image-srj-is-surjection (y , p) = do
        x , u ← p
-       ∣ x , to-Σ-≡ (u , (∥∥-is-prop _ _)) ∣
+       ∣ x , to-Σ-＝ (u , (∥∥-is-prop _ _)) ∣
 
 \end{code}
