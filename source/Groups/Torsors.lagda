@@ -400,3 +400,45 @@ torsor-division-map {G = G} {X} y x = pr₁ (pr₁ (torsor-division G X y x ))
 -- type as \ldiv
 syntax torsor-division-map y x = y ∕ x
 \end{code}
+
+
+A map of torsors in just an equivariant map, that is, a morphism of
+the underlying actions.
+
+One of the fundamental facts about torsors is that a map f : X → Y of
+G-torsors is necessarily an isomorphism. In our case, an equivalence.
+
+\begin{code}
+
+torsor-map-is-equiv : {G : Group 𝓤} {X Y : Tors G}
+                      ((f , is) : Action-Map G (pr₁ X) (pr₁ Y)) →
+                      is-equiv f
+torsor-map-is-equiv {G} {𝕏 , tx} {𝕐 , ty} (f , is) = ∥∥-rec (being-equiv-is-prop'' fe f) γ (pr₁ tx)
+  where
+    X Y : 𝓤 ̇
+    X = ⟨ 𝕏 ⟩
+    Y = ⟨ 𝕐 ⟩
+    _·_ : ⟨ G ⟩ → X → X
+    _·_ = action-op G 𝕏
+    _*_ : ⟨ G ⟩ → Y → Y
+    _*_ = action-op G 𝕐
+
+    module _ (x₀ : X) where
+       rx : ⟨ G ⟩ → X
+       rx = right-mult G {𝕏} x₀
+       ry : ⟨ G ⟩ → Y
+       ry = right-mult G {𝕐} (f x₀)
+
+       h : f ∘ rx ∼ ry ∘ id
+       h g = f (rx g)   ＝⟨ refl ⟩
+             f (g · x₀) ＝⟨ is g x₀ ⟩
+             g * (f x₀) ＝⟨ refl ⟩
+             ry g ∎
+
+       i : is-equiv (f ∘ rx)
+       i = equiv-closed-under-∼ ry (f ∘ rx) (pr₂ ty (f x₀)) h
+
+       γ : is-equiv f
+       γ = ≃-2-out-of-3-right (pr₂ tx x₀) i
+\end{code}
+
