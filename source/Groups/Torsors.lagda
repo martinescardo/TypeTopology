@@ -359,9 +359,9 @@ below we need both "inverses" of the shear map (see above).
 
 \begin{code}
 
-torsor-is-quotient : (G : Group 𝓤) (X : Tors G) (y x : ⟨ pr₁ X ⟩) → 
+torsor-division : (G : Group 𝓤) (X : Tors G) (y x : ⟨ pr₁ X ⟩) → 
                       ∃! g ꞉ ⟨ G ⟩ , action-op G (pr₁ X) g x ＝ y
-torsor-is-quotient G X y x = (g , ap pr₁ u) ,
+torsor-division G X y x = (g , ap pr₁ u) ,
                λ { (h , p) → to-Σ-＝ (ap pr₁ (ii h p) , carrier-is-set G (pr₁ X) _ _)}
     where
       gx : ⟨ G ⟩ × ⟨ pr₁ X ⟩
@@ -393,10 +393,10 @@ torsor-is-quotient G X y x = (g , ap pr₁ u) ,
                    q = torsor-linv-mult-is-left-inverse G X (g , x)
                    r = torsor-linv-mult-is-left-inverse G X (h , x)
 
-torsor-quotient-map : {G : Group 𝓤} {X : Tors G} →
+torsor-division-map : {G : Group 𝓤} {X : Tors G} →
                       (y x : ⟨ pr₁ X ⟩) → ⟨ G ⟩
-torsor-quotient-map {G = G} {X} y x = pr₁ (pr₁ (torsor-is-quotient G X y x ))
+torsor-division-map {G = G} {X} y x = pr₁ (pr₁ (torsor-division G X y x ))
 
 -- type as \ldiv
-syntax torsor-quotient-map y x = y ∕ x
+syntax torsor-division-map y x = y ∕ x
 \end{code}
