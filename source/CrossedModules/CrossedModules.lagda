@@ -1,10 +1,10 @@
 --------------------------------------------------------------------------------
--- Ettore Aldrovandi aldrovandi@math.fsu.edu
--- Keri D'Angelo kd349@cornell.edu
+Ettore Aldrovandi ealdrovandi@fsu.edu
+Keri D'Angelo kd349@cornell.edu
 
--- Jul 17, 2021
+Jul 17, 2021
 
---Revision July 1, 2022
+Revision July 1, 2022
 --------------------------------------------------------------------------------
 
 \begin{code}

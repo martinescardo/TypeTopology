@@ -1,5 +1,5 @@
 --------------------------------------------------------------------------------
-Ettore Aldrovandi aldrovandi@math.fsu.edu
+Ettore Aldrovandi ealdrovandifsu.edu
 Keri D'Angelo kd349@cornell.edu
 
 August 28, 2021
