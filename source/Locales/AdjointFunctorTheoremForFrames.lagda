@@ -173,7 +173,37 @@ module AdjointFunctorTheorem (X : Locale 𝓤' 𝓥 𝓥)
    γ : is-join-preserving (𝒪 Y) (𝒪 X) h holds
    γ S = ⋁[ 𝒪 X ]-unique ⁅ h s ∣ s ε S ⁆ (h (⋁[ 𝒪 Y ] S)) (jp S)
 
- _^* : (X ─c→ Y) → ⟨ 𝒪 X ⟩ → ⟨ 𝒪 Y ⟩
- _^* = pr₁ ∘ right-adjoint-of
+ infixl 9 _⁎·_
+
+ _⁎·_ : (X ─c→ Y) → ⟨ 𝒪 X ⟩ → ⟨ 𝒪 Y ⟩
+ _⁎·_ f U = right-adjoint-of f .pr₁ U
+
+ open ContinuousMapNotation X Y
+
+ adjunction-inequality-forward : (𝒻@(f , _) : X ─c→ Y)
+                               → (U : ⟨ 𝒪 X ⟩) (V : ⟨ 𝒪 Y ⟩)
+                               → ((𝒻 ⋆∙ V) ≤[ poset-of (𝒪 X) ] U) holds
+                               → (V ≤[ poset-of (𝒪 Y) ] (𝒻 ⁎· U)) holds
+ adjunction-inequality-forward 𝒻@(f , ϑ@(_ , _ , p)) U V φ =
+  pr₁ (pr₂ (aft-backward 𝒻ₘ γ) V U) φ
+   where
+    𝒻ₘ : poset-of (𝒪 Y) ─m→ poset-of (𝒪 X)
+    𝒻ₘ = f , frame-morphisms-are-monotonic (𝒪 Y) (𝒪 X) f ϑ
+
+    γ : is-join-preserving (𝒪 Y) (𝒪 X) (𝒻ₘ .pr₁) holds
+    γ S = ⋁[ 𝒪 X ]-unique ⁅ f V ∣ V ε S ⁆ (f (⋁[ 𝒪 Y ] S)) (p S)
+
+ adjunction-inequality-backward : (𝒻@(f , _) : X ─c→ Y)
+                                → (U : ⟨ 𝒪 X ⟩) (V : ⟨ 𝒪 Y ⟩)
+                                → (V ≤[ poset-of (𝒪 Y) ] (𝒻 ⁎· U)) holds
+                                → ((𝒻 ⋆∙ V) ≤[ poset-of (𝒪 X) ] U) holds
+ adjunction-inequality-backward 𝒻@(f , ϑ@(_ , _ , p)) U V φ =
+  pr₂ (pr₂ (aft-backward 𝒻ₘ γ) V U) φ
+   where
+    𝒻ₘ : poset-of (𝒪 Y) ─m→ poset-of (𝒪 X)
+    𝒻ₘ = f , frame-morphisms-are-monotonic (𝒪 Y) (𝒪 X) f ϑ
+
+    γ : is-join-preserving (𝒪 Y) (𝒪 X) (𝒻ₘ .pr₁) holds
+    γ S = ⋁[ 𝒪 X ]-unique ⁅ f V ∣ V ε S ⁆ (f (⋁[ 𝒪 Y ] S)) (p S)
 
 \end{code}
