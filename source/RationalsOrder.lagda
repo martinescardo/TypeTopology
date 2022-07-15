@@ -267,7 +267,7 @@ rounded-lemma₀ (succ a) = succ (2 ℕ* pred (succ (succ a))) ≡⟨ ap (λ - �
                    succ (2 ℕ* succ a)                ≡⟨ pred-succ (2 ℕ* succ a) ⁻¹ ⟩
                    pred (succ (succ (2 ℕ* succ a)))  ≡⟨ refl ⟩
                    pred (2 ℕ* succ a ℕ+ 2)           ≡⟨ refl ⟩
-                   pred (2 ℕ* (succ a) ℕ+ 2 ℕ* 1)    ≡⟨ ap pred (distributivity-mult-over-nat 2 (succ a) 1 ⁻¹) ⟩
+                   pred (2 ℕ* (succ a) ℕ+ 2 ℕ* 1)    ≡⟨ ap pred (distributivity-mult-over-addition 2 (succ a) 1 ⁻¹) ⟩
                    pred (2 ℕ+ (2 ℕ* (succ a)))       ≡⟨ refl ⟩
                    pred (2 ℕ* succ (succ a)) ∎
                    

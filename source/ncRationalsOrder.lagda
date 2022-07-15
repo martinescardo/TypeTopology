@@ -82,8 +82,8 @@ p ℚₙ> q = q ℚₙ< p
     i : succ c ℕ* (succ c ℕ* succ n) ≡ succ c ℕ* (succ c ℕ* 0)
     i = succ c ℕ* (succ c ℕ* succ n) ≡⟨ mult-associativity (succ c) (succ c) (succ n) ⁻¹ ⟩
         succ c ℕ* succ c ℕ* succ n   ≡⟨ α                                                ⟩
-        0                            ≡⟨ zero-right-is-zero (succ c) ⁻¹                   ⟩
-        succ c ℕ* 0                  ≡⟨ ap (succ c ℕ*_) (zero-right-is-zero (succ c) ⁻¹) ⟩
+        0                            ≡⟨ zero-right-base (succ c) ⁻¹                      ⟩
+        succ c ℕ* 0                  ≡⟨ ap (succ c ℕ*_) (zero-right-base (succ c) ⁻¹)    ⟩
         succ c ℕ* (succ c ℕ* 0)      ∎
     ii : succ c ℕ* succ n ≡ succ c ℕ* 0
     ii = mult-left-cancellable (succ c ℕ* succ n) (succ c ℕ* 0) c i

@@ -7,6 +7,7 @@ Chuangjie Xu 2011, with changes by Martin Escardo later.
 module NaturalsAddition where
 
 open import SpartanMLTT hiding (_+_)
+open import NaturalNumbers-Properties
 
 infixl 31 _+_
 
@@ -82,9 +83,11 @@ trivial-addition-rearrangement x y z =
 
 Added 12/05/2020 by Andrew Sneap.
 
-\begin{code}
+Some more simple properties of addition. The proofs all use induction,
+apart from addition-right-cancellable which follows from
+addition-left-cancellable and commutativity of addition.
 
-open import NaturalNumbers-Properties
+\begin{code}
 
 succ-right : (x y : ℕ) → x + succ y ≡ succ (x + y)
 succ-right x y = refl
@@ -119,7 +122,7 @@ addition-left-cancellable x y = induction base step
    where
     lemma₁ : succ k + x ≡ succ k + y → succ (k + x) ≡ succ (k + y)
     lemma₁ r = succ (k + x)           ≡⟨ succ-left k x ⁻¹ ⟩
-               succ k + x             ≡⟨ r                         ⟩
+               succ k + x             ≡⟨ r                ⟩
                succ k + y             ≡⟨ succ-left k y    ⟩
                succ (k + y) ∎        
 
@@ -132,6 +135,14 @@ addition-right-cancellable x y z r = addition-left-cancellable x y z lemma₀
            x + z      ≡⟨ r                          ⟩
            y + z      ≡⟨ addition-commutativity y z ⟩ 
            z + y ∎
+
+\end{code}
+
+We also have that if the sum of two numbers are zero, then the right
+argument is zero. The left argument is zero, which can be proved using
+commutativity of addition. This function is needed in the HCF file.
+
+\begin{code}
 
 sum-to-zero-gives-zero : (x y : ℕ) → x + y ≡ 0 → y ≡ 0
 sum-to-zero-gives-zero x 0        e = refl

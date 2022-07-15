@@ -172,7 +172,7 @@ open import ncRationals
 
     iii : q ℕ* succ x ℕ+ succ x ≡ succ x ℕ* (q ℕ+ 1)
     iii = q ℕ* succ x ℕ+ succ x      ≡⟨ ap₂ _ℕ+_ (mult-commutativity q (succ x)) (mult-right-id (succ x) ⁻¹) ⟩
-          succ x ℕ* q ℕ+ succ x ℕ* 1 ≡⟨ distributivity-mult-over-nat (succ x) q 1 ⁻¹                         ⟩
+          succ x ℕ* q ℕ+ succ x ℕ* 1 ≡⟨ distributivity-mult-over-addition (succ x) q 1 ⁻¹                         ⟩
           succ x ℕ* (q ℕ+ 1)         ∎
   ζ : pos (succ a) < pos (succ x ℕ* (q ℕ+ 1))
   ζ = ℕ-order-respects-ℤ-order (succ a) (succ x ℕ* (q ℕ+ 1)) γ

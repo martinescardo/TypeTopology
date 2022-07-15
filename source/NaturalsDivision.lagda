@@ -20,73 +20,104 @@ open import UF-Subsingletons
 
 module NaturalsDivision where
 
+\end{code}
+
+First, we have the definition of division. Division can also be
+defined inductively, but as with most definitions I have instead
+chosen to express division as a Σ type.
+
+\begin{code}
+
 _∣_ : ℕ → ℕ → 𝓤₀ ̇
 x ∣ y = Σ a ꞉ ℕ , (x * a ≡ y)
 
+\end{code}
+
+Notice that we cannot prove that (x y : ℕ) → is-prop (x ∣ y).
+When x ≡ 0, and y ≡ 0, we can choose any factor a and the identity type holds.
+
+On the other hand, for values x > 0, it is a proposition that x | y.
+This is proved using the cancellative property of multiplication of
+factors greater than 0.
+
+\begin{code}
+
 _∣_-is-prop : (x y : ℕ) → is-prop (succ x ∣ y)
-_∣_-is-prop x y (a , p) (b , p') = to-subtype-≡ (λ _ → ℕ-is-set) (mult-left-cancellable a b x (p ∙ p' ⁻¹))
+_∣_-is-prop x y (a , p) (b , p') = to-subtype-≡ (λ _ → ℕ-is-set) II
+ where
+  I : succ x * a ≡ succ x * b
+  I = p ∙ p' ⁻¹
+  
+  II : a ≡ b
+  II = mult-left-cancellable a b x I
+
+\end{code}
+
+Clearly, 1 divides anything, which is easily proved since 1 is the
+multiplicative identity of naturals.
+
+0 does not divide any value greater than 0. If this was the case, then
+we would have that 0 * a ≡ 0 ≡ succ x, which is a contradiction. 
+
+\begin{code}
 
 1-divides-all : (x : ℕ) → 1 ∣ x
 1-divides-all x = x , mult-left-id x
 
 zero-does-not-divide-positive : (x : ℕ) → ¬(0 ∣ succ x)
-zero-does-not-divide-positive x (a , p) = positive-not-zero x (p ⁻¹ ∙ zero-left-is-zero a)
+zero-does-not-divide-positive x (a , p) = positive-not-zero x (p ⁻¹ ∙ zero-left-base a)
+
+\end{code}
+
+For natural numbers, division has the property that if x | y and
+y | x, then x ≡ y.  This property is used to prove that if the
+numerator a of a rational is 0, then the rational is 0.  In order to
+prove this, we first need two lemmas.
+
+The first is that if x < y, and x < z, then x < y * z.
+This follows as a corollary of <-+.
+
+\begin{code}
 
 ∣-anti-lemma : (x y z : ℕ) → x < y → x < z → x < y * z
-∣-anti-lemma x y = induction base step
- where
-  base : x < y
-       → x < zero
-       → x < y * zero
-  base _ = id
+∣-anti-lemma x 0        z        l₁ l₂ = 𝟘-elim (zero-least' z l₁)
+∣-anti-lemma x (succ y) 0        l₁ l₂ = 𝟘-elim (zero-least' y l₂)
+∣-anti-lemma x (succ y) (succ z) l₁ l₂ = <-+ x (succ y) (succ y * z) l₁
 
-  step : (k : ℕ)
-       → (x < y → x < k → x < y * k)
-       → (x < y)
-       → (x < succ k)
-       → x < y * succ k
-  step k IH l₁ _ = <-+ x y (y * k) l₁
+\end{code}
+
+The second is that if the product of two naturals is 1, then the left
+argument is 1. Of course, both arguments are 1 by commutativity of
+multiplication.
+
+The proof is by case analysis. When x ≡ 1, we are done.
+If x ≡ 0, then x * y ≡ 0 ≡ 1, which is a contradiction.
+If x > 0, the consider y. In each case, we find a contradiction.
+
+\begin{code}
 
 product-one-gives-one : (x y : ℕ) → x * y ≡ 1 → x ≡ 1
-product-one-gives-one x y r = tri-split (<-trichotomous x 1)
+product-one-gives-one 0               y               e = 𝟘-elim (zero-not-positive 0 (zero-left-base y ⁻¹ ∙ e))
+product-one-gives-one 1               y               e = refl
+product-one-gives-one (succ (succ x)) 0               e = 𝟘-elim (zero-not-positive 0 e)
+product-one-gives-one (succ (succ x)) 1               e = 𝟘-elim (zero-not-positive x (succ-lc (e ⁻¹)))
+product-one-gives-one (succ (succ x)) (succ (succ y)) e = 𝟘-elim (less-than-not-equal _ _ l (e ⁻¹))
  where
-  tri-split : (x < 1) ∔ (x ≡ 1) ∔ (1 < x) → x ≡ 1
-  tri-split (inl z) = have succ-no-fp 0 which-contradicts I
-    where
-      I : 0 ≡ 1
-      I = 0     ≡⟨ zero-left-is-zero y ⁻¹                    ⟩
-          0 * y ≡⟨ ap (_* y) (less-than-one-is-zero x z ⁻¹ ) ⟩
-          x * y ≡⟨ r                                         ⟩
-          1     ∎
-                                                       
-  tri-split (inr (inl z)) = z
-  tri-split (inr (inr z)) = tri-split' (<-trichotomous y 1)
-   where
-    tri-split' : (y < 1) ∔ (y ≡ 1) ∔ (1 < y) → x ≡ 1
-    tri-split' (inl z')       = have succ-no-fp 0 which-contradicts I
-     where
-      I : 0 ≡ 1
-      I = 0     ≡⟨ zero-right-is-zero x ⁻¹                    ⟩
-          x * 0 ≡⟨ ap (x *_) (less-than-one-is-zero y z' ⁻¹)  ⟩
-          x * y ≡⟨ r                                          ⟩
-          1     ∎
-                                               
-    tri-split' (inr (inl z')) = have less-than-not-equal 1 x z which-contradicts I
-     where
-      I : 1 ≡ x
-      I = 1     ≡⟨ r ⁻¹         ⟩
-          x * y ≡⟨ ap (x *_) z' ⟩
-          x     ∎
-    tri-split' (inr (inr z')) = have I which-contradicts (r ⁻¹)
-     where
-      I : 1 ≡ x * y → 𝟘
-      I = less-than-not-equal 1 (x * y) (∣-anti-lemma 1 x y z z')
+  l : 1 < succ (succ x) * succ (succ y)
+  l = ∣-anti-lemma 1 (succ (succ x)) (succ (succ y)) (zero-least (succ x)) (zero-least (succ y))
+
+\end{code}
+
+And we can finally prove the division anti property, using the two
+lemmas, and case analysis on x.
+
+\begin{code}
 
 ∣-anti : (x y : ℕ) → x ∣ y → y ∣ x → x ≡ y
 ∣-anti 0        y (a , p) (b , q) = δ
  where
   δ : zero ≡ y
-  δ = zero     ≡⟨ zero-left-is-zero a ⁻¹ ⟩
+  δ = zero     ≡⟨ zero-left-base a ⁻¹ ⟩
       zero * a ≡⟨ p                      ⟩
       y        ∎ 
 ∣-anti (succ x) y (a , p) (b , q) = δ
@@ -114,34 +145,22 @@ product-one-gives-one x y r = tri-split (<-trichotomous x 1)
       y * b  ≡⟨ ap (y *_) b-is-1 ⟩
       y      ∎
 
+\end{code}
+
+Division distributes over addition, over multiples, and is
+transitive. The proofs are simple and corollaries of the properties of
+multiplication.
+
+\begin{code}
+
 ∣-respects-addition : (x y z : ℕ) → x ∣ y → x ∣ z → x ∣ (y + z)
 ∣-respects-addition x y z (a , p) (b , q) = (a + b , I)
  where
   I : x * (a + b) ≡ y + z
-  I = x * (a + b)   ≡⟨ distributivity-mult-over-nat x a b ⟩
+  I = x * (a + b)   ≡⟨ distributivity-mult-over-addition x a b ⟩
       x * a + x * b ≡⟨ ap (_+ x * b) p                    ⟩
       y + x * b     ≡⟨ ap (y +_) q                        ⟩
       y + z         ∎
-
-∣-respects-multiples : (a b c k l : ℕ) → a ∣ b → a ∣ c → a ∣ (k * b + l * c)
-∣-respects-multiples a b c k l (x , p) (y , q) = (k * x + l * y , I)
- where
-  I : a * (k * x + l * y) ≡ k * b + l * c
-  I = a * (k * x + l * y)       ≡⟨ distributivity-mult-over-nat a (k * x) (l * y)                                     ⟩
-      a * (k * x) + a * (l * y) ≡⟨ ap₂ _+_ (ap (a *_) (mult-commutativity k x)) (ap (a *_) (mult-commutativity l y))  ⟩
-      a * (x * k) + a * (y * l) ≡⟨ ap₂ _+_ (mult-associativity a x k ⁻¹) (mult-associativity a y l ⁻¹)                ⟩
-      (a * x) * k + (a * y) * l ≡⟨ ap₂ _+_ (ap (_* k) p) (ap (_* l) q)                                                ⟩
-      b * k + c * l             ≡⟨ ap₂ _+_ (mult-commutativity b k) (mult-commutativity c l)                          ⟩
-      k * b + l * c             ∎                                                                                      
-
-∣-trans : (a b c : ℕ) → a ∣ b → b ∣ c → a ∣ c
-∣-trans a b c (x , p) (y , q) = (x * y) , I
- where
-  I : a * (x * y) ≡ c
-  I = a * (x * y)  ≡⟨ mult-associativity a x y ⁻¹ ⟩
-      (a * x) * y  ≡⟨ ap ( _* y) p                ⟩
-      b * y        ≡⟨ q                           ⟩
-      c            ∎
 
 ∣-divisor-divides-multiple : (a b k : ℕ) → a ∣ b → a ∣ k * b
 ∣-divisor-divides-multiple a b k (x , p) = (x * k) , I
@@ -152,10 +171,61 @@ product-one-gives-one x y r = tri-split (<-trichotomous x 1)
       b * k       ≡⟨ mult-commutativity b k ⟩
       k * b       ∎
 
-divisiontheorem : (a d : ℕ) → 𝓤₀ ̇
-divisiontheorem a d = Σ q ꞉ ℕ , Σ r ꞉ ℕ , (a ≡ q * d + r) × (r < d)
+∣-respects-multiples : (a b c k l : ℕ) → a ∣ b → a ∣ c → a ∣ (k * b + l * c)
+∣-respects-multiples a b c k l p₁ p₂ = ∣-respects-addition a (k * b) (l * c) I II
+ where
+  I : a ∣ (k * b)
+  I = ∣-divisor-divides-multiple a b k p₁
+  II : a ∣ (l * c)
+  II = ∣-divisor-divides-multiple a c l p₂
+                                                                            
+∣-trans : (a b c : ℕ) → a ∣ b → b ∣ c → a ∣ c
+∣-trans a b c (x , p) (y , q) = (x * y) , I
+ where
+  I : a * (x * y) ≡ c
+  I = a * (x * y)  ≡⟨ mult-associativity a x y ⁻¹ ⟩
+      (a * x) * y  ≡⟨ ap ( _* y) p                ⟩
+      b * y        ≡⟨ q                           ⟩
+      c            ∎
 
-division : (a d : ℕ) → divisiontheorem a (succ d)
+\end{code}
+
+Now we state the division theorem for natural numbers. This states
+that for a natural number a and d, there exists a quotient q and
+remainder r with a ≡ q * (d + 1) + r, with the remainder r less than
+succ d.
+
+\begin{code}
+
+division-theorem : (a d : ℕ) → 𝓤₀ ̇
+division-theorem a d = Σ q ꞉ ℕ , Σ r ꞉ ℕ , (a ≡ q * succ d + r) × (r < succ d)
+
+\end{code}
+
+There are many ways to compute division on natural numbers. The chosen
+method here (mainly to satisfy the termination checker) is to use
+natural induction.
+
+To compute (succ d) | a, we do induction on a.
+
+Base: If a ≡ 0, then the quotient and remainder are both 0.
+
+Inductive step: Suppose that (succ d) | k, then there exists q , r
+such that k = q * succ d + r, and r < succ d.
+
+We want to show that (succ d) | (succ k).
+Since r < succ d, we have that either r < d or r ≡ d.
+
+If r < d, then the quotient remains the same and the remainder
+increases by 1. Since r < d, (succ r) < (succ d), and we are done.
+
+If r ≡ d, then the quotient increases by 1 and the remainder is 0.
+Clearly, 0 < succ d.  Proving that succ k ≡ succ q + succ q * d
+follows from the inductive hypothesis and r ≡ d.
+
+\begin{code}
+
+division : (a d : ℕ) → division-theorem a d
 division a d = induction base step a
  where
   base : Σ q ꞉ ℕ , Σ r ꞉ ℕ , (0 ≡ q * succ d + r) × (r < succ d)  
@@ -163,11 +233,11 @@ division a d = induction base step a
    where
     I : 0 ≡ 0 * succ d + 0
     I = 0         ≡⟨ refl                               ⟩
-        0 + 0     ≡⟨ ap (0 +_) (zero-left-is-zero d ⁻¹) ⟩
+        0 + 0     ≡⟨ ap (0 +_) (zero-left-base d ⁻¹) ⟩
         0 + 0 * d ∎
 
     II : 0 < succ d
-    II = unique-to-𝟙 (0 < succ d)
+    II = zero-least d
 
   step : (k : ℕ)
        → Σ q ꞉ ℕ , Σ r ꞉ ℕ , (k ≡ q * succ d + r) × (r < succ d)
@@ -188,17 +258,30 @@ division a d = induction base step a
           succ q + (d + d * q)          ≡⟨ ap (succ q +_) (mult-commutativity d (succ q))      ⟩ 
           succ q + succ q * d           ∎
 
-division-is-prop-lemma : (a b c : ℕ) → a ≤ b → b < c → a < c
-division-is-prop-lemma a b c l₀ l₁ = ≤-trans (succ a) (succ b) c l₀ l₁
-
 \end{code}
 
-Proving that division is a proposition guarantees uniqueness -
-division results in a unique output.
+The proofs contained in the division theorem are clearly propositions
+(equality and order of natural numbers).
+
+Proving that the quotient and remainder are unique 
 
 \begin{code}
+{-
+division-is-prop' : (a d q : ℕ) → is-prop (Σ r ꞉ ℕ , (a ≡ q * succ d + r) × r < succ d)
+division-is-prop' a d q (r₀ , α , αₚ) (r₁ , β , βₚ)
+ = to-subtype-≡
+  (λ r → ×-is-prop ℕ-is-set (<-is-prop-valued r (succ d)))
+   (addition-left-cancellable r₀ r₁ (q * succ d) (α ⁻¹ ∙ β))
 
-division-is-prop : (a d : ℕ) → is-prop (divisiontheorem a d)
+division-is-prop : (a d : ℕ) → is-prop (division-theorem a d)
+division-is-prop a d (q₀ , r₀ , α , αₚ) (q₁ , r₁ , β , βₚ) = to-subtype-≡ (λ q → division-is-prop' a d q) II
+ where
+  
+  II : {!!}
+  II = {!!}
+-}
+{-
+division-is-prop : (a d : ℕ) → is-prop (division-theorem a d)
 division-is-prop a d (q₀ , r₀ , α , αₚ) (q₁ , r₁ , β , βₚ) = to-subtype-≡ I II
  where
   I : (q : ℕ) → is-prop (Σ r ꞉ ℕ , (a ≡ q * d + r) × (r < d))
@@ -248,7 +331,7 @@ division-is-prop a d (q₀ , r₀ , α , αₚ) (q₁ , r₁ , β , βₚ) = to-
     v = less-than-pos-mult r d k l₂
     
     vii : d * succ k < d * succ k
-    vii = division-is-prop-lemma (d * succ k) r (d * succ k) iv v
+    vii = ≤-<-trans (d * succ k) r (d * succ k) iv v
 
   II : q₀ ≡ q₁
   II = f (<-trichotomous q₀ q₁)
@@ -257,7 +340,7 @@ division-is-prop a d (q₀ , r₀ , α , αₚ) (q₁ , r₁ , β , βₚ) = to-
     f (inl z)       = II-abstract q₀ q₁ r₀ r₁ assumption z αₚ
     f (inr (inl z)) = z
     f (inr (inr z)) = II-abstract q₁ q₀ r₁ r₀ (assumption ⁻¹) z βₚ ⁻¹
-
+-}
 \end{code}
 
 The following section defines division by using bounded
@@ -265,7 +348,7 @@ maximisation. Also provided is a proof that these two versions of
 division provide the same output, using the proof division is a prop.
 
 \begin{code}
-
+{-
 division' : (a d : ℕ) → Σ q ꞉ ℕ , Σ r ꞉ ℕ , (a ≡ q * (succ d) + r) × (r < (succ d))
 division' 0 d     = 0 , (0 , (I , II))
  where
@@ -318,6 +401,6 @@ division' (succ a) d = f (maximal-from-given' (λ - → - * succ d ≤ succ a) (
 
 division-agrees-with-division' : (x y : ℕ) → division x y ≡ division' x y
 division-agrees-with-division' a d = division-is-prop a (succ d) (division a d) (division' a d)
-
+-}
 \end{code}
 

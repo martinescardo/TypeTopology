@@ -209,6 +209,15 @@ course-of-values-induction : (P : ℕ → 𝓤 ̇ )
                            → (n : ℕ) → P n
 course-of-values-induction = transfinite-induction _<_ <-is-well-founded
 
+course-of-values-induction-modified : (P : ℕ → 𝓤 ̇ )
+                                    → ((n : ℕ) → (Σ m ꞉ ℕ , m < n × (P m → P n)))
+                                    → (n : ℕ) → P n
+course-of-values-induction-modified P step = course-of-values-induction P step'
+ where
+  step' : (n : ℕ) → ((m : ℕ) → m < n → P m) → P n
+  step' n f with step n
+  ... | n , m , ooop = ooop (f n m)
+
 <-is-extensional : is-extensional _<_
 <-is-extensional zero     zero     f g = refl
 <-is-extensional zero     (succ n) f g = unique-from-𝟘 (g zero (zero-least n))
@@ -414,6 +423,12 @@ Following are proofs of common properties of strict and non-strict order of Natu
   I : x < u
   I = <-trans x y u l₁ l₂
 
+≤-<-trans : (x y z : ℕ) → x ≤ y → y < z → x < z
+≤-<-trans x y z l₁ l₂ = ≤-trans (succ x) (succ y) z l₁ l₂
+
+<-≤-trans : (x y z : ℕ) → x < y → y ≤ z → x < z
+<-≤-trans x y z l₁ l₂ = ≤-trans (succ x) y z l₁ l₂
+
 ≤-n-monotone-right : (x y z : ℕ) → x ≤ y → (x +' z) ≤ (y +' z)
 ≤-n-monotone-right x y 0        l = l
 ≤-n-monotone-right x y (succ n) l = ≤-n-monotone-right x y n l
@@ -500,12 +515,6 @@ order-split 0        0        = inr (zero-least 0)
 order-split 0        (succ y) = inl (zero-least (succ y))
 order-split (succ x) 0        = inr (zero-least (succ x))
 order-split (succ x) (succ y) = order-split x y
-
-\end{code}
-
-
-
-\begin{code}
 
 least-element-unique : {A : ℕ → 𝓤 ̇} → (σ : detachable A)
                                      → ((α , αₚ) : Σ k ꞉ ℕ , A k × ((z : ℕ) → A z → k ≤ z))
@@ -631,5 +640,58 @@ maximal-from-given' A b δ (k , a , c) = f (bounded-maximisation' A δ b)
   f (inl x) = x
 
 \end{code}
+
+Multiplication preserves non-strict order, and this is proved by induction.
+
+In the base case, it is required to prove that 0 ≤ 0 which is true by
+definition.  In the inductive case, we need to prove that
+m * succ k ≤ n * succ k, or by definitional equality m + m * k ≤ n + n * k.
+
+By the inductive hypothesis, m * k ≤ n * k, and we have that m ≤ n, so we
+can use the result which says we can combine two order relations into one.
+
+\begin{code}
+
+open import NaturalsMultiplication
+
+multiplication-preserves-order : (m n k : ℕ) → m ≤ n → m * k ≤ n * k
+multiplication-preserves-order m n 0        l = zero-least 0
+multiplication-preserves-order m n (succ k) l = ≤-adding m n (m * k) (n * k) l IH
+ where
+  IH : m * k ≤ n * k
+  IH = multiplication-preserves-order m n k l
+
+\end{code}
+
+For strict order, order is only preserved when multiplying by a value
+greater than 0.  Again by induction, the base case is trivial since we
+are multiplying by 1.  The inductive case is similar to the above
+proof.
+
+\begin{code}
+
+multiplication-preserves-strict-order : (m n k : ℕ) → m < n → m * succ k < n * succ k
+multiplication-preserves-strict-order m n 0        l = l
+multiplication-preserves-strict-order m n (succ k) l = <-adding m n (m * succ k) (n * succ k) l (multiplication-preserves-strict-order m n k l)
+
+\end{code}
+
+If x * (y + 1) ≤ z, then x ≤ z. This is a useful property to have, and
+proof follows from x ≤ x * y + 1 and transitivity of order.
+
+A similar proof for strict order is sometimes useful.
+
+\begin{code}
+
+product-order-cancellable : (x y z : ℕ) → x * (succ y) ≤ z → x ≤ z
+product-order-cancellable x 0        z l = l
+product-order-cancellable x (succ y) z l = ≤-trans x (x * succ (succ y)) z (≤-+ x (x * succ y)) l
+
+less-than-pos-mult : (x y z : ℕ) → x < y → x < y * succ z
+less-than-pos-mult x y z l = <-+ x y (y * z) l
+
+\end{code}
+
+
 
 

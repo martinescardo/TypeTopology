@@ -55,7 +55,7 @@ toℚlemma (pos a , b) = f (divbyhcf a (succ b))
  where
   f : Σ h ꞉ ℕ , Σ x ꞉ ℕ , Σ y ꞉ ℕ , ((h ℕ* x ≡ a) × (h ℕ* y ≡ succ b)) × coprime x y → _
   f (h      , x , zero   , (γ₁ , γ₂) , r) = 𝟘-elim (positive-not-zero b (γ₂ ⁻¹))
-  f (0      , x , succ y , (γ₁ , γ₂) , r) = 𝟘-elim (positive-not-zero b (γ₂ ⁻¹ ∙ zero-left-is-zero (succ y)))
+  f (0      , x , succ y , (γ₁ , γ₂) , r) = 𝟘-elim (positive-not-zero b (γ₂ ⁻¹ ∙ zero-left-base (succ y)))
   f (succ h , x , succ y , (γ₁ , γ₂) , r) = (((pos x) , y) , r) , h , I , (γ₂ ⁻¹)
    where
     I : pos a ≡ pos (succ h) ℤ* pos x
@@ -67,7 +67,7 @@ toℚlemma (negsucc a , b) = f (divbyhcf (succ a) (succ b))
   f : ((Σ h ꞉ ℕ , Σ x ꞉ ℕ , Σ y ꞉ ℕ , ((h ℕ* x ≡ (succ a)) × (h ℕ* y ≡ succ b)) × coprime x y)) → _
   f (h      , x      , 0      , (γ₁ , γ₂) , r) = 𝟘-elim (positive-not-zero b (γ₂ ⁻¹))
   f (h      , 0      , succ y , (γ₁ , γ₂) , r) = 𝟘-elim (positive-not-zero a (γ₁ ⁻¹))
-  f (0      , succ x , succ y , (γ₁ , γ₂) , r) = 𝟘-elim (positive-not-zero b (γ₂ ⁻¹ ∙ zero-left-is-zero (succ y)))
+  f (0      , succ x , succ y , (γ₁ , γ₂) , r) = 𝟘-elim (positive-not-zero b (γ₂ ⁻¹ ∙ zero-left-base (succ y)))
   f (succ h , succ x , succ y , (γ₁ , γ₂) , r) = (((negsucc x) , y) , r) , (h , (I , (γ₂ ⁻¹)))
    where
     i : pos (succ a) ≡ (pos (succ h) ℤ* pos (succ x))

@@ -7,10 +7,10 @@ Andrew Sneap
 module AndrewIndex where
 
 import NaturalsMultiplication
-import NaturalsDivision
+import NaturalsDivision -- In progress
 import HCF
 
-import IntegersB --Commented up to here
+import IntegersB 
 import IntegersAbs
 import IntegersAddition
 import IntegersOrder
@@ -49,7 +49,7 @@ import ContinuousExtensionTheorem
 
 import FieldRationals
 
-import Todd.TernaryBoehmDef
-import Todd.RationalsDyadic
+-- import Todd.TBRDyadicReals
+-- import Todd.RationalsDyadic
 
 \end{code}

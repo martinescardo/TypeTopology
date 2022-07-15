@@ -120,7 +120,7 @@ located-lemma₁ = {!!}
 
 The next lemma for located simply relies on the fact the the intervals
 are successively smaller. We can always locate a TBR to an arbitrary
-degree.
+degree of precision.
 
 ```agda
 
@@ -400,8 +400,40 @@ left-interval-monotonic' (x , b) (negsucc (succ n)) = normalise-≤' (x (negsucc
                                                        (lim₄ (x (negsucc n)) (x (negsucc (succ n))) (succ n)
                                                         (below-implies-below' (x (negsucc n)) (x (negsucc (succ n))) (b (negsucc (succ n)))))
 
+```
+
+With the above lemmas we can prove that for any TBR, the bound
+represented by the left edge of the brick on each precision can only
+increase.
+
+
+```agda
+
 left-interval-monotonic : (x : ℤ[1/2]) → (n : ℤ) → lb (map x) n ≤ lb (map x) (succℤ n)
 left-interval-monotonic x n = left-interval-monotonic' (map x) n
+
+```
+
+We also prove that the left bound on each level is never greater than
+the dyadic rational that the TBR represents, by induction on the layers.
+
+The general idea is this:
+
+n             b
+
+n+1   2b    2b+1    2b+2
+
+On level n+1, 2b, 2b+1 and 2b+2 are below b.
+
+But on level n, the left side of brick b represents b/2ⁿ
+On level n+1, it represents 2b/2ⁿ⁺¹ ≡ b/2ⁿ ≤ b/2ⁿ.
+
+Clearly (b / 2ⁿ) ≤ (2b /2ⁿ⁺¹) < (2b + 1 /2ⁿ⁺¹) < (2b + 2 /2ⁿ⁺¹).
+
+For a precision level n+k, simply prove inductively using the above argument.
+
+
+```agda
 
 left-interval-is-minimum-lemma : (x : ℤ[1/2]) → (n : ℤ) (m : ℕ) → succℤ n + pos m ≡ pos (layer x) → lb (map x) n ≤ x 
 left-interval-is-minimum-lemma x n 0 e = transport (lb (map x) n ≤_) I II
@@ -909,9 +941,7 @@ x ℝd* y = {!!}
 The result we are now interested in is proving that these operations
 on TBR and Dedekind reals correlate.
 
-For example, in the case of negation, we want to prove that the encoding of the negation of an tbr is equal to negation of the encoding.
-
-![NegationAgreesProof](TestProof.PNG)
+For example, in the case of negation, we want to prove that the encoding of the negation of an tbr is equal to negation of the encoding.⌞
 
 ```agda
 
@@ -988,7 +1018,7 @@ preserves-bounds f = ∀ lb rb z → lb < rb → (∀ x → lb ≤ x ≤ rb → 
 -}
 interval-monotonic : (f : ℤ → ℤ → ℤ) → 𝓤₀ ̇
 interval-monotonic f = ∀ lb rb z → lb < rb → (∀ x → lb ≤ x ≤ rb → f lb z ≤ f x z ≤ f rb z)
-                                          ∔ (∀ x → lb ≤ x ≤ rb → f rb z ≤ f x z ≤ f lb z) 
+                                           ∔ (∀ x → lb ≤ x ≤ rb → f rb z ≤ f x z ≤ f lb z) 
 
 ```
 There are four interesting values for two tbr reals at an arbitrary
@@ -1043,65 +1073,60 @@ To answer the question of which level is necessary to achieve the
 correct accuracy, we need to consider the maximum width an operation
 gives. Addition gives width 4.
 
-TODO: Ask Todd, understand that sometimes double upRight is necessary,
-but cannot see why mathematically. Probably because of negative
-upRight being slightly off. Suppose I can account for this by adding 1
-to max width.
-
 Multiplication gives a maximum width dependent on the values being
 multiplied. In the example above, we need to go level n + 8.
 
 
 ```agda
 
-successive-level-bounds : ((f , b) : 𝕋)
+successive-level-bounds : ((x , b) : 𝕋)
                         → (n : ℤ) (k : ℕ)
-                        → pos (2^ (succ k)) * f n ≤ f (succℤ (n + pos k)) ≤ pos (2^ (succ k)) * f n + pos (2^ (succ (succ k))) - pos 2  
-successive-level-bounds (f , b) n 0 with b n
-... | l₁ , l₂ = transport (_≤ f (succℤ n)) (ℤ*-comm (f n) (pos 2)) l₁ , transport (f (succℤ n) ≤_) I l₂
+                        → pos (2^ (succ k)) * x n ≤ x (succℤ (n + pos k)) ≤ pos (2^ (succ k)) * x n + pos (2^ (succ (succ k))) - pos 2  
+successive-level-bounds (x , b) n 0 with b n
+... | l₁ , l₂ = transport (_≤ x (succℤ n)) (ℤ*-comm (x n) (pos 2)) l₁ , transport (x (succℤ n) ≤_) I l₂
  where
-  I : f n * pos 2 + pos 2 ≡ predℤ (predℤ (succℤ (succℤ (succℤ (succℤ (pos 2 * f n))))))
-  I = succℤ (succℤ (f n * pos 2))   ≡⟨ (ap (_+pos 2) (ℤ*-comm (f n) (pos 2))) ⟩
-      pos 2 * f n + (pos 4 - pos 2) ≡⟨ ℤ+-assoc (pos 2 * f n) (pos 4) (- pos 2) ⁻¹ ⟩
-      pos 2 * f n + pos 4 - pos 2 ∎
-successive-level-bounds (f , b) n (succ k) with successive-level-bounds (f , b) n k
+  I : x n * pos 2 + pos 2 ≡ predℤ (predℤ (succℤ (succℤ (succℤ (succℤ (pos 2 * x n))))))
+  I = succℤ (succℤ (x n * pos 2))   ≡⟨ (ap (_+pos 2) (ℤ*-comm (x n) (pos 2))) ⟩
+      pos 2 * x n + (pos 4 - pos 2) ≡⟨ ℤ+-assoc (pos 2 * x n) (pos 4) (- pos 2) ⁻¹ ⟩
+      pos 2 * x n + pos 4 - pos 2 ∎
+successive-level-bounds (x , b) n (succ k) with successive-level-bounds (x , b) n k
 ... | l₃ , l₄ with b (succℤ (n + pos k))
-... | l₅ , l₆ = transport (_≤ f (succℤ (succℤ (n + pos k)))) I l₈
-              , transport (f (succℤ (succℤ (n + pos k))) ≤_) II l₁₀
+... | l₅ , l₆ = transport (_≤ x (succℤ (succℤ (n + pos k)))) I l₈
+              , transport (x (succℤ (succℤ (n + pos k))) ≤_) II l₁₀
  where
-  l₇ : pos (2^ (succ k)) * f n * pos 2 ≤ f (succℤ (n + pos k)) * pos 2
-  l₇ = positive-multiplication-preserves-order' (pos (2^ (succ k)) * f n) (f (succℤ (n +pos k))) (pos 2) ⋆ l₃
+  l₇ : pos (2^ (succ k)) * x n * pos 2 ≤ x (succℤ (n + pos k)) * pos 2
+  l₇ = positive-multiplication-preserves-order' (pos (2^ (succ k)) * x n) (x (succℤ (n +pos k))) (pos 2) ⋆ l₃
 
-  l₈ : pos (2^ (succ k)) * f n * pos 2 ≤ f (succℤ (succℤ (n + pos k)))
-  l₈ = ℤ≤-trans (pos (2^ (succ k)) * f n * pos 2) (f (succℤ (n + pos k)) * pos 2) (f (succℤ (succℤ (n + pos k)))) l₇ l₅
+  l₈ : pos (2^ (succ k)) * x n * pos 2 ≤ x (succℤ (succℤ (n + pos k)))
+  l₈ = ℤ≤-trans (pos (2^ (succ k)) * x n * pos 2) (x (succℤ (n + pos k)) * pos 2) (x (succℤ (succℤ (n + pos k)))) l₇ l₅
 
-  I : pos (2^ (succ k)) * f n * pos 2 ≡ pos (2^ (succ (succ k))) * f n
-  I = pos (2^ (succ k)) * f n * pos 2   ≡⟨ ℤ*-comm (pos (2^ (succ k)) * f n) (pos 2) ⟩
-      pos 2 * (pos (2^ (succ k)) * f n) ≡⟨ ℤ*-assoc (pos 2) (pos (2^ (succ k))) (f n) ⁻¹ ⟩
-      pos 2 * pos (2^ (succ k)) * f n   ≡⟨ ap (_* f n) (pos-multiplication-equiv-to-ℕ 2 (2^ (succ k))) ⟩
-      pos (2 *ℕ 2^ (succ k)) * f n      ≡⟨ refl ⟩
-      pos (2^ (succ (succ k))) * f n ∎
+  I : pos (2^ (succ k)) * x n * pos 2 ≡ pos (2^ (succ (succ k))) * x n
+  I = pos (2^ (succ k)) * x n * pos 2   ≡⟨ ℤ*-comm (pos (2^ (succ k)) * x n) (pos 2) ⟩
+      pos 2 * (pos (2^ (succ k)) * x n) ≡⟨ ℤ*-assoc (pos 2) (pos (2^ (succ k))) (x n) ⁻¹ ⟩
+      pos 2 * pos (2^ (succ k)) * x n   ≡⟨ ap (_* x n) (pos-multiplication-equiv-to-ℕ 2 (2^ (succ k))) ⟩
+      pos (2 *ℕ 2^ (succ k)) * x n      ≡⟨ refl ⟩
+      pos (2^ (succ (succ k))) * x n ∎
 
-  l₉ : f (succℤ (n + pos k)) * pos 2 ≤ (pos (2^ (succ k)) * f n + pos (2^ (succ (succ k))) - pos 2) * pos 2
-  l₉ = positive-multiplication-preserves-order' (f (succℤ (n + pos k))) (pos (2^ (succ k)) * f n + pos (2^ (succ (succ k))) - pos 2) (pos 2) ⋆ l₄
+  l₉ : x (succℤ (n + pos k)) * pos 2 ≤ (pos (2^ (succ k)) * x n + pos (2^ (succ (succ k))) - pos 2) * pos 2
+  l₉ = positive-multiplication-preserves-order' (x (succℤ (n + pos k))) (pos (2^ (succ k)) * x n + pos (2^ (succ (succ k))) - pos 2) (pos 2) ⋆ l₄
 
-  l₉' : f (succℤ (n + pos k)) * pos 2 + pos 2 ≤ (pos (2^ (succ k)) * f n + pos (2^ (succ (succ k))) - pos 2) * pos 2 + pos 2
+  l₉' : x (succℤ (n + pos k)) * pos 2 + pos 2 ≤ (pos (2^ (succ k)) * x n + pos (2^ (succ (succ k))) - pos 2) * pos 2 + pos 2
   l₉' = ℤ≤-adding'
-        (f (succℤ (n + pos k)) * pos 2)
-         ((pos (2^ (succ k)) * f n + pos (2^ (succ (succ k))) - pos 2) * pos 2)
+        (x (succℤ (n + pos k)) * pos 2)
+         ((pos (2^ (succ k)) * x n + pos (2^ (succ (succ k))) - pos 2) * pos 2)
           (pos 2) l₉
 
-  l₁₀ : f (succℤ (succℤ (n + pos k))) ≤ (pos (2^ (succ k)) * f n + pos (2^ (succ (succ k))) - pos 2) * pos 2 + pos 2
-  l₁₀ = ℤ≤-trans (f (succℤ (succℤ (n + pos k)))) (f (succℤ (n + pos k)) * pos 2 + pos 2) ((pos (2^ (succ k)) * f n + pos (2^ (succ (succ k))) - pos 2) * pos 2 + pos 2) l₆ l₉'
+  l₁₀ : x (succℤ (succℤ (n + pos k))) ≤ (pos (2^ (succ k)) * x n + pos (2^ (succ (succ k))) - pos 2) * pos 2 + pos 2
+  l₁₀ = ℤ≤-trans (x (succℤ (succℤ (n + pos k)))) (x (succℤ (n + pos k)) * pos 2 + pos 2) ((pos (2^ (succ k)) * x n + pos (2^ (succ (succ k))) - pos 2) * pos 2 + pos 2) l₆ l₉'
 
-  II : (pos (2^ (succ k)) * f n + pos (2^ (succ (succ k))) - pos 2) * pos 2 + pos 2 ≡ pos (2^ (succ (succ k))) * f n + pos (2^ (succ (succ (succ k)))) - pos 2
-  II = (pos (2^ (succ k)) * f n + pos (2^ (succ (succ k))) - pos 2) * pos 2 + pos 2  ≡⟨ ap (_+ pos 2) (distributivity-mult-over-ℤ (pos (2^ (succ k)) * f n + pos (2^ (succ (succ k)))) (- pos 2) (pos 2)) ⟩
-       (pos (2^ (succ k)) * f n + pos (2^ (succ (succ k)))) * pos 2 - pos 4 + pos 2  ≡⟨ ℤ+-assoc ((pos (2^ (succ k)) * f n + pos (2^ (succ (succ k)))) * pos 2) (- pos 4) (pos 2) ⟩
-       (pos (2^ (succ k)) * f n + pos (2^ (succ (succ k)))) * pos 2 - pos 2          ≡⟨ ap (_- pos 2) (distributivity-mult-over-ℤ (pos (2^ (succ k)) * f n) (pos (2^ (succ (succ k)))) (pos 2)) ⟩
-       pos (2^ (succ k)) * f n * pos 2 + pos (2^ (succ (succ k))) * pos 2 - pos 2    ≡⟨ ap₂ (λ a b → a + b - pos 2) (ℤ*-comm (pos (2^ (succ k)) * f n) (pos 2)) (ℤ*-comm (pos (2^ (succ (succ k)))) (pos 2)) ⟩
-       pos 2 * (pos (2^ (succ k)) * f n) + pos 2 * pos (2^ (succ (succ k))) - pos 2  ≡⟨ ap₂ (λ a b → a + b - pos 2) (ℤ*-assoc (pos 2) (pos (2^ (succ k))) (f n) ⁻¹) (pos-multiplication-equiv-to-ℕ 2 (2^ (succ (succ k)))) ⟩
-       pos 2 * pos (2^ (succ k)) * f n + pos (2^ (succ (succ (succ k)))) - pos 2     ≡⟨ ap (λ a → a * f n + pos (2^ (succ (succ (succ k)))) - pos 2) (pos-multiplication-equiv-to-ℕ 2 (2^ (succ k))) ⟩
-       pos (2^ (succ (succ k))) * f n + pos (2^ (succ (succ (succ k)))) - pos 2      ∎
+  II : (pos (2^ (succ k)) * x n + pos (2^ (succ (succ k))) - pos 2) * pos 2 + pos 2 ≡ pos (2^ (succ (succ k))) * x n + pos (2^ (succ (succ (succ k)))) - pos 2
+  II = (pos (2^ (succ k)) * x n + pos (2^ (succ (succ k))) - pos 2) * pos 2 + pos 2  ≡⟨ ap (_+ pos 2) (distributivity-mult-over-ℤ (pos (2^ (succ k)) * x n + pos (2^ (succ (succ k)))) (- pos 2) (pos 2)) ⟩
+       (pos (2^ (succ k)) * x n + pos (2^ (succ (succ k)))) * pos 2 - pos 4 + pos 2  ≡⟨ ℤ+-assoc ((pos (2^ (succ k)) * x n + pos (2^ (succ (succ k)))) * pos 2) (- pos 4) (pos 2) ⟩
+       (pos (2^ (succ k)) * x n + pos (2^ (succ (succ k)))) * pos 2 - pos 2          ≡⟨ ap (_- pos 2) (distributivity-mult-over-ℤ (pos (2^ (succ k)) * x n) (pos (2^ (succ (succ k)))) (pos 2)) ⟩
+       pos (2^ (succ k)) * x n * pos 2 + pos (2^ (succ (succ k))) * pos 2 - pos 2    ≡⟨ ap₂ (λ a b → a + b - pos 2) (ℤ*-comm (pos (2^ (succ k)) * x n) (pos 2)) (ℤ*-comm (pos (2^ (succ (succ k)))) (pos 2)) ⟩
+       pos 2 * (pos (2^ (succ k)) * x n) + pos 2 * pos (2^ (succ (succ k))) - pos 2  ≡⟨ ap₂ (λ a b → a + b - pos 2) (ℤ*-assoc (pos 2) (pos (2^ (succ k))) (x n) ⁻¹) (pos-multiplication-equiv-to-ℕ 2 (2^ (succ (succ k)))) ⟩
+       pos 2 * pos (2^ (succ k)) * x n + pos (2^ (succ (succ (succ k)))) - pos 2     ≡⟨ ap (λ a → a * x n + pos (2^ (succ (succ (succ k)))) - pos 2) (pos-multiplication-equiv-to-ℕ 2 (2^ (succ k))) ⟩
+       pos (2^ (succ (succ k))) * x n + pos (2^ (succ (succ (succ k)))) - pos 2      ∎
 
 {-
 difference : (f : ℤ[1/2] → ℤ[1/2] → ℤ[1/2])             -- Given a dyadic rational function
@@ -1153,8 +1178,7 @@ power-of-two-grows 0 = ⋆
 power-of-two-grows (succ n) = transport₂ _<_
                                (mult-commutativity (2^ n) 2)
                                 (mult-commutativity (2^ (succ n)) 2)
-                                 (ordering-multiplication-compatible (2^ n)
-                                  (2^ (succ n)) 1 (power-of-two-grows n))
+                                 (multiplication-preserves-strict-order (2^ n) (2^ (succ n)) 1 (power-of-two-grows n))
 
 find-next-2-exponent-ℕ : (n : ℕ) → Σ k ꞉ ℕ , n < 2^ k
 find-next-2-exponent-ℕ 0 = 0 , ⋆
@@ -1183,6 +1207,22 @@ operation-builder _⊕_ ⊕-monotic width (f , b) (g , b') = h , h-gives-below
   h-gives-below : (δ : ℤ) → h (succℤ δ) below h δ
   h-gives-below δ with (width (f δ) (g δ) , width (f (succℤ δ)) (g (succℤ δ)))
   ... | ((k₁ , l₁) , k₂ , l₂) = {!!}
+
+_below''_ : (a b : ℤ) → 𝓤₀ ̇
+a below'' b = Σ n ꞉ ℕ , (pos (2^ (succ n)) * b) ≤ a ≤ pos (2^ (succ n)) * b + pos (succ n) * pos 2
+
+--                        p   x   y   lb   rb  p' 
+operation-builder' : (f : ℤ → ℤ → ℤ → (ℤ × ℤ × ℤ))
+                   → (Σ m ꞉ (ℤ → ℤ) , {!!})
+                   → 𝕋 → 𝕋 → 𝕋 
+operation-builder' f m (x , b) (y , b') = h , h-is-below
+ where
+  h : ℤ → ℤ
+  h p with f p (x p) (y p)
+  ... | x⊕y , p' = {!!}
+
+  h-is-below : {!!}
+  h-is-below = {!!}
 
 ```
 
@@ -1316,6 +1356,23 @@ _𝕋*_ = operation-builder _*_ multiplication-interval-monotonic interval-multi
   x (negsucc (succ n)) = upRight (x (negsucc n))
 
 ```
+
+We can define order of TBR's. We could define it similarly to order of
+Dedekind reals, however for the sake of havingh accessible
+computational content, we can use a modified order which is based on a
+specific level of precision. 
+
+
+```agda
+open import IntegersOrder
+
+--Confirm with Todd... This is sound but not complete
+_<𝕋_on-level_ : 𝕋 → 𝕋 → ℤ → 𝓤₀ ̇
+(x , _) <𝕋 (y , _) on-level n = (x n + pos 2) < y n
+
+```
+
+
 
 -- Is the idea that we have (f g : ℤ → ℤ → ℤ)
 

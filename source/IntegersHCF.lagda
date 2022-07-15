@@ -56,7 +56,7 @@ module IntegersHCF where
         i = (q ℕ* β ℕ+ α) , e₂
          where
           e₂ : h ℕ* (q ℕ* β ℕ+ α) ≡ b
-          e₂ = h ℕ* (q ℕ* β ℕ+ α)       ≡⟨ distributivity-mult-over-nat h (q ℕ* β) α      ⟩ 
+          e₂ = h ℕ* (q ℕ* β ℕ+ α)      ≡⟨ distributivity-mult-over-addition h (q ℕ* β) α      ⟩ 
                h ℕ* (q ℕ* β) ℕ+ h ℕ* α ≡⟨ ap (λ z → h ℕ* (q ℕ* β) ℕ+ z) αₚ                 ⟩
                h ℕ* (q ℕ* β) ℕ+ r      ≡⟨ ap (_ℕ+ r) (mult-associativity h q β) ⁻¹       ⟩
                h ℕ* q ℕ* β ℕ+ r        ≡⟨ ap (λ z → z ℕ* β ℕ+ r) (mult-commutativity h q) ⟩

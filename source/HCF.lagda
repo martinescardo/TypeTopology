@@ -11,7 +11,7 @@ open import SpartanMLTT renaming (_+_ to _∔_)
 open import NaturalsAddition
 open import NaturalsDivision
 open import NaturalsMultiplication
-open import NaturalNumbers-Properties 
+open import NaturalNumbers-Properties
 open import NaturalsOrder 
 open import OrderNotation 
 open import UF-Base 
@@ -72,7 +72,7 @@ hcflemma a b c d e = subtraction-gives-factor (dichotomy-split (≥-dichotomy b 
   subtraction-gives-factor (inl (f , p)) = f , addition-left-cancellable (a * f) d (a * c) I
    where
     I : a * c + a * f ≡ a * c + d
-    I = a * c + a * f ≡⟨ distributivity-mult-over-nat a c f ⁻¹  ⟩
+    I = a * c + a * f ≡⟨ distributivity-mult-over-addition a c f ⁻¹  ⟩
         a * (c + f)   ≡⟨ ap (a *_) (addition-commutativity c f) ⟩
         a * (f + c)   ≡⟨ ap (a *_) p                            ⟩
         a * b         ≡⟨ e                                      ⟩
@@ -81,7 +81,7 @@ hcflemma a b c d e = subtraction-gives-factor (dichotomy-split (≥-dichotomy b 
    where
     I : a * f + d + a * b ≡ 0 + a * b
     I = a * f + d + a * b ≡⟨ trivial-addition-rearrangement (a * f) d (a * b)         ⟩
-        a * f + a * b + d ≡⟨ ap (λ z → z + d) (distributivity-mult-over-nat a f b ⁻¹) ⟩
+        a * f + a * b + d ≡⟨ ap (λ z → z + d) (distributivity-mult-over-addition a f b ⁻¹) ⟩
         a * (f + b) + d   ≡⟨ ap (λ z → a * z + d) p                                   ⟩
         a * c + d         ≡⟨ e ⁻¹                                                     ⟩
         a * b             ≡⟨ zero-left-neutral (a * b) ⁻¹                             ⟩
@@ -107,7 +107,7 @@ HCF = course-of-values-induction (λ n → (b : ℕ) → Σ h ꞉ ℕ , is-hcf h
         i = (q * y + x) , e₁
          where
           e₁ : h * (q * y + x) ≡ b
-          e₁ = h * (q * y + x)         ≡⟨ distributivity-mult-over-nat h (q * y) x      ⟩ 
+          e₁ = h * (q * y + x)         ≡⟨ distributivity-mult-over-addition h (q * y) x      ⟩ 
                h * (q * y) + h * x     ≡⟨ ap (λ z → h * (q * y) + z) xₚ                 ⟩
                h * (q * y) + r         ≡⟨ ap (_+ r) (mult-associativity h q y) ⁻¹       ⟩
                h * q * y + r           ≡⟨ ap (λ z → z * y + r) (mult-commutativity h q) ⟩
