@@ -49,7 +49,7 @@ Forming the opposite is idempotent.
 \begin{code}
 
 opposite-idempotent : (G : Group 𝓤) → G ≣ (G ᵒᵖ) ᵒᵖ
-opposite-idempotent G = id , ((pr₂ (≃-refl ⟨ G ⟩)) , {!!})
+opposite-idempotent G = id , ((pr₂ (≃-refl ⟨ G ⟩)) , refl)
   where
     open import UF.Equiv
 
