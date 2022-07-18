@@ -978,10 +978,9 @@ Scott-continuous.
        † = adjunction-inequality-backward f (S [ k ]) U q
 
 
- -- perfect-implies-spectral : (f : X ─c→ Y)
- --                          → (is-perfect-map f ⇒ is-spectral-map (𝒪 Y) (𝒪 X) f) holds
- -- perfect-implies-spectral 𝒻@(f , _) φ U κ =
- --  perfect-preserves-way-below 𝒻 φ (f U) (f U)
+ perfect-implies-spectral : (f : X ─c→ Y)
+                          → (is-perfect-map f ⇒ is-spectral-map (𝒪 Y) (𝒪 X) f) holds
+ perfect-implies-spectral 𝒻@(f , _) φ U κ = perfect-preserves-way-below 𝒻 φ U U κ
 
  -- perfect-implies-spectral : {!!}
  -- perfect-implies-spectral = {!!}
