@@ -40,7 +40,7 @@ open import Groups.Groups-Supplement
 
 module Groups.GroupActions where
 
-module _ {𝓤 : Universe} (G : Group 𝓤) where
+module _ (G : Group 𝓤) where
 
   action-structure : 𝓤 ̇ → 𝓤 ̇
   action-structure X = ⟨ G ⟩ → X → X
