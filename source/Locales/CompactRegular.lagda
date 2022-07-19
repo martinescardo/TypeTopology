@@ -982,9 +982,6 @@ Scott-continuous.
                           → (is-perfect-map f ⇒ is-spectral-map (𝒪 Y) (𝒪 X) f) holds
  perfect-implies-spectral 𝒻@(f , _) φ U κ = perfect-preserves-way-below 𝒻 φ U U κ
 
- -- perfect-implies-spectral : {!!}
- -- perfect-implies-spectral = {!!}
-
 \end{code}
 
 -- directification-preserves-coherence : (F : Frame 𝓤 𝓥 𝓦)
