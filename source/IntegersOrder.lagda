@@ -505,6 +505,34 @@ ordering-right-cancellable a b (pos (succ x)) p l = orcl' a b x l
   I (inr e)   (inl y<x) = e
   I (inr e)   (inr e')  = e
 
+maxℤ : ℤ → ℤ → ℤ
+maxℤ x y with ℤ-dichotomous x y
+... | inl x≤y = y
+... | inr y≤x = x
+
+max₂ : ℤ → ℤ → ℤ → ℤ
+max₂ x y z = maxℤ (maxℤ x y) z
+
+max₃ : ℤ → ℤ → ℤ → ℤ → ℤ
+max₃ w x y z = maxℤ (max₂ w x y) z
+
+minℤ : ℤ → ℤ → ℤ
+minℤ x y with ℤ-dichotomous x y
+... | inl x≤y = x
+... | inr y≤x = y
+
+min₂ : ℤ → ℤ → ℤ → ℤ
+min₂ x y z = minℤ (minℤ x y) z
+
+min₃ : ℤ → ℤ → ℤ → ℤ → ℤ
+min₃ w x y z = minℤ (min₂ w x y) z
+
+difference : (f : ℤ → ℤ → ℤ)             -- Given an integer function
+           → (x y : ℤ)                   -- and two bounds
+           → ℤ                           -- find the integer difference 
+difference f l r = max₃ (f l r) (f l (r + pos 2)) (f (l + pos 2) r) (f (l + pos 2) (r + pos 2))
+                  - min₃ (f l r) (f l (r + pos 2)) (f (l + pos 2) r) (f (l + pos 2) (r + pos 2))
+
 \end{code}
 
 Added by Todd for paper

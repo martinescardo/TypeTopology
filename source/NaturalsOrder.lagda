@@ -209,15 +209,6 @@ course-of-values-induction : (P : ℕ → 𝓤 ̇ )
                            → (n : ℕ) → P n
 course-of-values-induction = transfinite-induction _<_ <-is-well-founded
 
-course-of-values-induction-modified : (P : ℕ → 𝓤 ̇ )
-                                    → ((n : ℕ) → (Σ m ꞉ ℕ , m < n × (P m → P n)))
-                                    → (n : ℕ) → P n
-course-of-values-induction-modified P step = course-of-values-induction P step'
- where
-  step' : (n : ℕ) → ((m : ℕ) → m < n → P m) → P n
-  step' n f with step n
-  ... | n , m , ooop = ooop (f n m)
-
 <-is-extensional : is-extensional _<_
 <-is-extensional zero     zero     f g = refl
 <-is-extensional zero     (succ n) f g = unique-from-𝟘 (g zero (zero-least n))
@@ -692,6 +683,15 @@ less-than-pos-mult x y z l = <-+ x y (y * z) l
 
 \end{code}
 
-
+{-
+course-of-values-induction-modified : (P : ℕ → 𝓤 ̇ )
+                                    → ((n : ℕ) → (Σ m ꞉ ℕ , m < n × (P m → P n)))
+                                    → (n : ℕ) → P n
+course-of-values-induction-modified P step = course-of-values-induction P step'
+ where
+  step' : (n : ℕ) → ((m : ℕ) → m < n → P m) → P n
+  step' n f with step n
+  ... | n , m , ooop = ooop (f n m)
+-}
 
 

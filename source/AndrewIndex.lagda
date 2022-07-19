@@ -2,13 +2,13 @@ Andrew Sneap
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split #-}
+{-# OPTIONS --without-K --exact-split --safe #-}
 
 module AndrewIndex where
 
 import NaturalsMultiplication
-import NaturalsDivision -- In progress
-import HCF
+import NaturalsDivision 
+import HCF -- In Progress
 
 import IntegersB 
 import IntegersAbs

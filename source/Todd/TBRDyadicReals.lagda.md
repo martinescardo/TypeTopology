@@ -20,18 +20,20 @@ open import UF-FunExt
 open import UF-Powerset hiding (𝕋)
 open import UF-PropTrunc
 open import UF-Subsingletons
+open import UF-Quotient
 
 module Todd.TBRDyadicReals
   (pt : propositional-truncations-exist)
   (fe : FunExt)
   (pe : PropExt)
+  (sq : set-quotients-exist)
  where
 
 open import Todd.BelowAndAbove fe using (below-implies-below' ; _below'_ ; below'-implies-below)
 open import Todd.DyadicReals pe pt fe
 open import Todd.RationalsDyadic fe
 open import Todd.TernaryBoehmRealsPrelude fe
-open import Todd.TernaryBoehmReals fe pe hiding (ι ; _≤_≤_)
+open import Todd.TernaryBoehmReals pt fe pe sq hiding (ι ; _≤_≤_)
 
 DyOrPr : OrderProperties
 DyOrPr = {!!}
@@ -62,6 +64,10 @@ encoding at some level.
 --level 0 width 2
 brick_on-level_ : ℤ → ℤ → ℤ[1/2] × ℤ[1/2]
 brick k on-level n = (normalise (k , n)) , (normalise (succℤ (succℤ k) , n))
+
+lb-of-brick_on-level_ rb-of-brick_on-level_ : ℤ → ℤ → ℤ[1/2]
+lb-of-brick k on-level n = pr₁ (brick k on-level n)
+rb-of-brick k on-level n = pr₂ (brick k on-level n)
 
 encoding_at-level_ : 𝕋 → ℤ → ℤ[1/2] × ℤ[1/2]
 encoding (x , _) at-level n = brick (x n) on-level n
@@ -261,43 +267,6 @@ layer ((_ , n) , _) = n
 map : ℤ[1/2] → 𝕋
 map ((k , δ) , _) = build-via (k , pos δ)
 
-normalise-pos-lemma₁ : (k : ℤ) (δ : ℕ) (p : (δ ≡ 0) ∔ ((δ ≢ 0) × odd k))
-             → normalise-pos ((k + k) /2') δ ≡ (k , δ) , p
-normalise-pos-lemma₁ k 0 (inl refl) = to-subtype-≡ (λ (z , n) → ℤ[1/2]-cond-is-prop z n) (to-×-≡ (div-by-two k) refl)
-normalise-pos-lemma₁ k 0 (inr (δnz , k-odd)) = 𝟘-elim (δnz refl)
-normalise-pos-lemma₁ k (succ δ) (inr p) with even-or-odd? ((k + k) /2')
-normalise-pos-lemma₁ k (succ δ) (inr (δnz , k-odd)) | inl k-even = 𝟘-elim (k-even (transport odd (div-by-two k ⁻¹) k-odd))
-... | inr _ = to-subtype-≡ (λ (z , n) → ℤ[1/2]-cond-is-prop z n) (to-×-≡ (div-by-two k) refl)
-
-normalise-pos-lemma₂ : (k : ℤ) (δ : ℕ) → normalise-pos k δ ≡ normalise-pos (k + k) (succ δ)
-normalise-pos-lemma₂ k δ with even-or-odd? (k + k)
-... | inl _ = ap (λ s → normalise-pos s δ) (div-by-two k ⁻¹)
-... | inr o = 𝟘-elim (times-two-even' k o)
-
-normalise-lemma : (k : ℤ) (δ : ℕ) (n : ℕ) (p : (δ ≡ 0) ∔ ((δ ≢ 0) × odd k))
-                → normalise (rec k downLeft n + rec k downLeft n , (pos (succ δ) + pos n)) ≡ (k , δ) , p
-normalise-lemma k δ 0 p with even-or-odd? (k + k)
-... | inl even = normalise-pos-lemma₁ k δ p
-... | inr odd = 𝟘-elim (times-two-even' k odd)
-normalise-lemma k δ (succ n) p with even-or-odd? (k + k)
-... | inl even = let y = rec k downLeft n 
-                     z = (y + y) in 
-                 normalise (z + z , (succℤ (pos (succ δ) + pos n))) ≡⟨ ap (λ - → normalise (z + z , succℤ -)) (pos-addition-equiv-to-ℕ (succ δ) n) ⟩
-                 normalise (z + z , succℤ (pos (succ δ +ℕ n)))      ≡⟨ refl ⟩
-                 normalise-pos (z + z) (succ (succ δ +ℕ n))         ≡⟨ normalise-pos-lemma₂ z (succ δ +ℕ n) ⁻¹ ⟩
-                 normalise-pos z (succ δ +ℕ n)                      ≡⟨ refl ⟩
-                 normalise (z , pos (succ δ +ℕ n))                  ≡⟨ ap (λ - → normalise (z , -)) (pos-addition-equiv-to-ℕ (succ δ) n ⁻¹) ⟩
-                 normalise (z , pos (succ δ) + pos n)               ≡⟨ normalise-lemma k δ n p ⟩
-                 (k , δ) , p ∎ 
-... | inr odd = 𝟘-elim (times-two-even' k odd)
-
-lowest-terms-normalised : (((k , δ) , p) : ℤ[1/2]) → normalise-pos k δ ≡ ((k , δ) , p)
-lowest-terms-normalised ((k , .0) , inl refl) = refl
-lowest-terms-normalised ((k , zero) , inr (δnz , k-odd)) = 𝟘-elim (δnz refl)
-lowest-terms-normalised ((k , succ δ) , inr (δnz , k-odd)) with even-or-odd? k
-... | inl k-even = 𝟘-elim (k-even k-odd)
-... | inr k-odd = to-subtype-≡ (λ (z , n) → ℤ[1/2]-cond-is-prop z n) refl
-
 map-lemma : (z : ℤ[1/2]) → (i : ℤ) → pos (layer z) < i → lb (map z) i ≡ z
 map-lemma ((k , δ) , p) i δ<i with ℤ-trichotomous i (pos δ)
 ... | inl i<δ       = 𝟘-elim (ℤ-equal-not-less-than i (ℤ<-trans i (pos δ) i i<δ δ<i))
@@ -313,75 +282,6 @@ map-lemma-≤ ((k , δ) , p) i δ≤i with ℤ≤-split (pos δ) i δ≤i
 ... | inl δ<δ = 𝟘-elim (ℤ-equal-not-less-than (pos δ) δ<δ)
 ... | inr (inr δ<δ) = 𝟘-elim (ℤ-equal-not-less-than (pos δ) δ<δ)
 ... | inr (inl δ≡δ) = to-subtype-≡ (λ (z , n) → ℤ[1/2]-cond-is-prop z n) (ap pr₁ (lowest-terms-normalised ((k , δ) , p)))
-
--- normalise-pos
-normalise-≤ : ((k , δ) : ℤ × ℕ) → ((m , ε) : ℤ × ℕ)
-            → k * pos (2^ ε) ≤ m * pos (2^ δ)
-            → normalise (k , pos δ) ≤ normalise (m , pos ε)
-normalise-≤ (k , δ) (m , ε) l with normalise-pos' k δ , normalise-pos' m ε
-... | (n₁ , e₁) , (n₂ , e₂) = let (((k' , δ') , p) , ((m' , ε') , p')) = (normalise-pos k δ , normalise-pos m ε) in 
- ℤ≤-ordering-right-cancellable
-  (k' * pos (2^ ε'))
-   (m' * pos (2^ δ'))
-    (pos (2^ (n₁ +ℕ n₂)))
-     (power-of-pos-positive (n₁ +ℕ n₂))
-      (transport₂ _≤_ (I k ε k' ε' n₁ n₂ (pr₁ (from-×-≡' e₁) ⁻¹) (pr₂ (from-×-≡' e₂) ⁻¹))
-                      ((I m δ m' δ' n₂ n₁ (pr₁ (from-×-≡' e₂) ⁻¹) (pr₂ (from-×-≡' e₁) ⁻¹))
-                       ∙ ap (λ z → m' * pos (2^ δ') * pos (2^ z)) (addition-commutativity n₂ n₁)) l)
-  where
-   k' = pr₁ (pr₁ (normalise-pos k δ))
-   δ' = pr₂ (pr₁ (normalise-pos k δ))
-   m' = pr₁ (pr₁ (normalise-pos m ε))
-   ε' = pr₂ (pr₁ (normalise-pos m ε))
-   I : (k : ℤ) (ε : ℕ) (k' : ℤ) (ε' : ℕ) (n₁ n₂ : ℕ) → k ≡ pos (2^ n₁) * k' → ε ≡ ε' +ℕ n₂ → k * pos (2^ ε) ≡ k' * pos (2^ ε') * pos (2^ (n₁ +ℕ n₂))
-   I k ε k' ε' n₁ n₂ e₁ e₂ =
-       k * pos (2^ ε)                            ≡⟨ ap (_* pos (2^ ε)) e₁ ⟩
-       pos (2^ n₁) * k' * pos (2^ ε)             ≡⟨ ap (_* pos (2^ ε)) (ℤ*-comm (pos (2^ n₁)) k') ⟩
-       k' * pos (2^ n₁) * pos (2^ ε)             ≡⟨ ap (λ z → k' * pos (2^ n₁) * pos (2^ z)) e₂ ⟩
-       k' * pos (2^ n₁) * pos (2^ (ε' +ℕ n₂))    ≡⟨ ℤ*-assoc k' (pos (2^ n₁)) (pos (2^ (ε' +ℕ n₂))) ⟩
-       k' * (pos (2^ n₁) * pos (2^ (ε' +ℕ n₂)))  ≡⟨ ap (k' *_) (pos-multiplication-equiv-to-ℕ (2^ n₁) (2^ (ε' +ℕ n₂))) ⟩
-       k' * pos ((2^ n₁) *ℕ 2^ (ε' +ℕ n₂))       ≡⟨ ap (λ z →  k' * pos ((2^ n₁) *ℕ z)) (prod-of-powers 2 ε' n₂ ⁻¹) ⟩
-       k' * pos (2^ n₁ *ℕ (2^ ε' *ℕ 2^ n₂))      ≡⟨ ap (λ z → k' * pos z) (mult-associativity (2^ n₁) (2^ ε') (2^ n₂) ⁻¹) ⟩
-       k' * pos (2^ n₁ *ℕ 2^ ε' *ℕ 2^ n₂)        ≡⟨ ap (λ z → k' * pos (z *ℕ 2^ n₂)) (mult-commutativity (2^ n₁) (2^ ε')) ⟩
-       k' * pos (2^ ε' *ℕ 2^ n₁ *ℕ 2^ n₂)        ≡⟨ ap (λ z → k' * pos z) (mult-associativity (2^ ε') (2^ n₁) (2^ n₂)) ⟩
-       k' * pos (2^ ε' *ℕ (2^ n₁ *ℕ 2^ n₂))      ≡⟨ ap (λ z → k' * z) (pos-multiplication-equiv-to-ℕ (2^ ε') (2^ n₁ *ℕ 2^ n₂) ⁻¹) ⟩
-       k' * (pos (2^ ε') * pos (2^ n₁ *ℕ 2^ n₂)) ≡⟨ ap (λ z → k' * (pos (2^ ε') * pos z)) (prod-of-powers 2 n₁ n₂) ⟩
-       k' * (pos (2^ ε') * pos (2^ (n₁ +ℕ n₂)))  ≡⟨ ℤ*-assoc k' (pos (2^ ε')) (pos (2^ (n₁ +ℕ n₂))) ⁻¹ ⟩
-       k' * pos (2^ ε') * pos (2^ (n₁ +ℕ n₂))    ∎
-
-normalise-neg' : (x : ℤ) (a : ℕ) → let ((k , δ) , p) = normalise-neg x a
-                                   in (k , δ) ≡ pos (2^ (succ a)) * x , 0
-normalise-neg' x 0        = to-×-≡ (ℤ*-comm x (pos 2)) refl
-normalise-neg' x (succ a) with from-×-≡' (normalise-neg' (x + x) a)
-... | e₁ , e₂ = to-×-≡ I e₂
- where
-  I : pr₁ (pr₁ (normalise-neg (x + x) a)) ≡ pos (2^ (succ (succ a))) * x
-  I = pr₁ (pr₁ (normalise-neg (x + x) a)) ≡⟨ e₁ ⟩
-      pos (2^ (succ a)) * (x * pos 2)     ≡⟨ ap (pos (2^ (succ a)) *_) (ℤ*-comm x (pos 2)) ⟩
-      pos (2^ (succ a)) * (pos 2 * x)     ≡⟨ ℤ*-assoc (pos (2^ (succ a))) (pos 2) x ⁻¹ ⟩
-      pos (2^ (succ a)) * pos 2 * x       ≡⟨ ap (_* x) (pos-multiplication-equiv-to-ℕ (2^ (succ a)) 2) ⟩
-      pos (2^ (succ a) *ℕ 2) * x          ≡⟨ ap (λ z → pos z * x) (mult-commutativity (2^ (succ a)) 2) ⟩
-      pos (2^ (succ (succ a))) * x ∎
-
--- normalise-neg
-normalise-≤' : ((k , δ) : ℤ × ℕ) → ((m , ε) : ℤ × ℕ)
-            → k * pos (2^ (succ δ)) ≤ m * pos (2^ (succ ε))
-            → normalise (k , negsucc δ) ≤ normalise (m , negsucc ε)
-normalise-≤' (k , δ) (m , ε) with (from-×-≡' (normalise-neg' k δ) , from-×-≡' (normalise-neg' m ε))
-... | ((e₁ , e₂) , e₃ , e₄) = transport₂ _≤_
-                               (ℤ*-comm k (pos (2^ (succ δ))) ∙ ap₂ (λ z z' → z * pos (2^ z')) (e₁ ⁻¹) (e₄ ⁻¹))
-                                (ℤ*-comm m (pos (2^ (succ ε))) ∙ ap₂ (λ z z' → z * pos (2^ z')) (e₃ ⁻¹) (e₂ ⁻¹))
-
-lim₁ : (x : ℤ) → (n : ℕ) → x * pos (2^ (succ n)) ≤ (x * pos 2) * pos (2^ n) 
-lim₁ x n = 0 , (x * pos (2^ (succ n))    ≡⟨ ap (x *_) (pos-multiplication-equiv-to-ℕ 2 (2^ n) ⁻¹) ⟩
-                x * (pos 2 * pos (2^ n)) ≡⟨ ℤ*-assoc x (pos 2) (pos (2^ n)) ⁻¹ ⟩
-                x * pos 2 * pos (2^ n)   ∎)
-
-lim₂ : (x : ℤ) → (n : ℕ) → x * pos (2^ (succ n)) ≤ (x * pos 2 + pos 1) * pos (2^ n) 
-lim₂ x n = ℤ≤-trans _ _ _ (lim₁ x n) (positive-multiplication-preserves-order' _ _ (pos (2^ n)) (power-of-pos-positive n) (≤-incrℤ (x * pos 2)))
-
-lim₃ : (x : ℤ) → (n : ℕ) → x * pos (2^ (succ n)) ≤ (x * pos 2 + pos 2) * pos (2^ n) 
-lim₃ x n = ℤ≤-trans _ _ _ (lim₂ x n) (positive-multiplication-preserves-order' _ _ (pos (2^ n)) (power-of-pos-positive n) (≤-incrℤ (succℤ (x * pos 2))))
 
 lim₄ : (x' x : ℤ) (n : ℕ) → x' below' x → x * pos (2^ (succ n)) ≤ x' * pos (2^ n)
 lim₄ x' x n (inl x'≡2x)         = transport (λ z → x * pos (2^ (succ n)) ≤ z * pos (2^ n)) (x'≡2x ⁻¹) (lim₁ x n) 
@@ -523,385 +423,7 @@ If we define subtraction at (λ n → - x n), then we obtain that
          (- x δ) - pos 2 + ((- x δ) - pos 2 + pos 2)       ≡⟨ ℤ+-assoc ((- x δ) - pos 2) ((- x δ) - pos 2) (pos 2) ⁻¹ ⟩
          (- x δ) - pos 2 + ((- x δ) - pos 2) + pos 2       ∎
 
-UU : ℤ → ℤ
-UU (pos x)     = (pos x /2') /2'
-UU (negsucc x) = - (((pos x + pos 4) /2') /2')
-
-below-upRight-lem₁ : (z : ℤ) → upRight (upRight z) ≡ UU z
-below-upRight-lem₁ (pos x) = refl
-below-upRight-lem₁ (negsucc x) = refl
-
-below-upRight-lem₃ : (a b : ℤ) → a * pos 2 + b * pos 2 ≡ pos 2 * (a + b)
-below-upRight-lem₃ a b = (distributivity-mult-over-ℤ a b (pos 2) ⁻¹ ∙ ℤ*-comm (a + b) (pos 2))
-
-below-upRight-lem₂ : ((x , b) (y , b') : 𝕋) → (n : ℤ) → (x (succℤ n) + y (succℤ n) ≡ pos 2 * (x n + y n))
-                                                      ∔ (x (succℤ n) + y (succℤ n) ≡ pos 2 * (x n + y n) + pos 1)
-                                                      ∔ (x (succℤ n) + y (succℤ n) ≡ pos 2 * (x n + y n) + pos 2)
-                                                      ∔ (x (succℤ n) + y (succℤ n) ≡ pos 2 * (x n + y n) + pos 3)
-                                                      ∔ (x (succℤ n) + y (succℤ n) ≡ pos 2 * (x n + y n) + pos 4) 
-below-upRight-lem₂ (x , b) (y , b') n with below-implies-below' (x (succℤ n)) (x n) (b n) , below-implies-below' (y (succℤ n)) (y n) (b' n)
-... | inl a , inl b
- = inl (ap₂ _+_ a b ∙ distributivity-mult-over-ℤ (x n) (y n) (pos 2) ⁻¹ ∙ ℤ*-comm (x n + y n) (pos 2))
-... | inl a , inr (inl b)
- = inr (inl (ap₂ _+_ a b ∙ ℤ-right-succ (x n * pos 2) (y n * pos 2) ∙ ap succℤ (below-upRight-lem₃ (x n) (y n))))
-... | inl a , inr (inr b)
- = inr (inr (inl (ap₂ _+_ a b ∙ ℤ-right-succ (x n * pos 2) (succℤ (y n * pos 2)) ∙ ap succℤ (ℤ-right-succ (x n * pos 2) (y n * pos 2)) ∙ ap (_+ pos 2) (below-upRight-lem₃ (x n) (y n)))))
-... | inr (inl a) , inl b
- = inr (inl (ap₂ _+_ a b ∙ ℤ-left-succ (x n * pos 2) (y n * pos 2) ∙ ap succℤ (below-upRight-lem₃ (x n) (y n))))
-... | inr (inr a) , inl b
- = inr (inr (inl (ap₂ _+_ a b ∙ ℤ-left-succ (succℤ (x n * pos 2)) (y n * pos 2) ∙ ap succℤ (ℤ-left-succ (x n * pos 2) (y n * pos 2)) ∙ ap (_+ pos 2) (below-upRight-lem₃ (x n) (y n)))))
-... | inr (inl a) , inr (inl b)
- = inr (inr (inl (ap₂ _+_ a b ∙ ℤ-left-succ (x n * pos 2) (succℤ (y n * pos 2)) ∙ ap succℤ (ℤ-right-succ (x n * pos 2) (y n * pos 2)) ∙ ap (_+ pos 2) (below-upRight-lem₃ (x n) (y n)))))
-... | inr (inr a) , inr (inl b)
-  = inr (inr (inr (inl (ap₂ _+_ a b ∙ ℤ-right-succ (succℤ (succℤ (x n * pos 2))) (y n * pos 2) ∙ ap succℤ (ℤ-left-succ (succℤ (x n * pos 2)) (y n * pos 2)) ∙ ap (_+ pos 2) (ℤ-left-succ (x n * pos 2) (y n * pos 2)) ∙ ap (_+ pos 3) (below-upRight-lem₃ (x n) (y n))))))
-... | inr (inl a) , inr (inr b)
- = inr (inr (inr (inl (ap₂ _+_ a b ∙ ℤ-left-succ (x n * pos 2) (y n * pos 2 + pos 2) ∙ ap succℤ (ℤ-right-succ (x n * pos 2) (y n * pos 2 + pos 1)) ∙ ap (_+ pos 2) (ℤ-right-succ (x n * pos 2) (y n * pos 2)) ∙ ap (_+ pos 3) (below-upRight-lem₃ (x n) (y n))))))
-... | inr (inr a) , inr (inr b)
- = inr (inr (inr (inr (ap₂ _+_ a b ∙ ℤ-left-succ (succℤ (x n * pos 2)) (y n * pos 2 + pos 2) ∙ ap succℤ (ℤ-left-succ (x n * pos 2) (y n * pos 2 + pos 2)) ∙ ap (_+ pos 2) (ℤ-right-succ (x n * pos 2) (succℤ (y n * pos 2))) ∙ ap (_+ pos 3) (ℤ-right-succ (x n * pos 2) (y n * pos 2)) ∙ ap (_+ pos 4) (below-upRight-lem₃ (x n) (y n))))))
-
-UU-lemma₁ : (x : ℤ) → UU (pos 8 + x) ≡ pos 2 + UU x
-UU-lemma₁ (pos 0) = refl
-UU-lemma₁ (pos 1) = refl
-UU-lemma₁ (pos 2) = refl
-UU-lemma₁ (pos 3) = refl
-UU-lemma₁ (pos (succ (succ (succ (succ x))))) = UU (pos 8 + pos (succ (succ (succ (succ x)))))        ≡⟨ ap UU (ℤ+-comm (pos 8) (pos (succ (succ (succ (succ x)))))) ⟩
-                                               UU (pos (succ (succ (succ (succ x)))) + pos 8)         ≡⟨ refl ⟩
-                                               succℤ (succℤ (UU (pos (succ (succ (succ (succ x))))))) ≡⟨ ℤ+-comm (UU (pos (succ (succ (succ (succ x)))))) (pos 2) ⟩
-                                               pos 2 + UU (pos (succ (succ (succ (succ x))))) ∎
-UU-lemma₁ (negsucc 0) = refl
-UU-lemma₁ (negsucc 1) = refl
-UU-lemma₁ (negsucc 2) = refl
-UU-lemma₁ (negsucc 3) = refl
-UU-lemma₁ (negsucc 4) = refl
-UU-lemma₁ (negsucc 5) = refl
-UU-lemma₁ (negsucc 6) = refl
-UU-lemma₁ (negsucc 7) = refl
-UU-lemma₁ (negsucc (succ (succ (succ (succ (succ (succ (succ (succ x)))))))))
- = UU (pos 8 + negsucc (x +ℕ 8))        ≡⟨ refl ⟩
-   UU (pos 8 + (negsucc x - pos 8))     ≡⟨ ap (λ z → UU (pos 8 + z)) (ℤ+-comm (negsucc x) (- pos 8)) ⟩
-   UU (pos 8 + ((- pos 8) + negsucc x)) ≡⟨ ap UU (ℤ+-assoc (pos 8) (- pos 8) (negsucc x) ⁻¹) ⟩
-   UU (pos 0 + negsucc x)               ≡⟨ ap UU (ℤ+-comm (pos 0) (negsucc x)) ⟩
-   UU (negsucc x)                       ≡⟨ refl ⟩
-   negsucc (x /2 /2)                                 ≡⟨ predsuccℤ (negsucc (x /2 /2)) ⁻¹ ⟩
-   predℤ (succℤ (negsucc (x /2 /2)))                 ≡⟨ ap predℤ (predsuccℤ (succℤ (negsucc (x /2 /2))) ⁻¹) ⟩
-   predℤ (predℤ (succℤ (succℤ (negsucc (x /2 /2))))) ≡⟨ ap (λ z → predℤ (predℤ z)) (ℤ+-comm (negsucc ((x /2) /2)) (pos 2)) ⟩
-   predℤ (predℤ (pos 2 + negsucc ((x /2) /2)))       ≡⟨ refl ⟩
-   pos 2 + UU (negsucc (x +ℕ 8))                     ∎
-
-UU-lemma₂ : (x : ℕ) (y : ℤ) → UU y below pos x → UU (pos 8 + y) below pos (succ x)
-UU-lemma₂ x y b with below-implies-below' (UU y) (pos x) b
-... | inl UUy2x
- = below'-implies-below (UU (pos 8 + y)) (pos (succ x))
-    (inl (UU-lemma₁ y
-          ∙ ap (pos 2 +_) UUy2x
-           ∙ ℤ+-comm (pos 2) (pos x * pos 2)
-            ∙ ℤ-left-succ (pos x) (pos (succ x)) ⁻¹))
-... | inr (inl UUy2x+1)
- = below'-implies-below (UU (pos 8 + y)) (pos (succ x))
-    (inr (inl (UU-lemma₁ y
-               ∙ ap (pos 2 +_) UUy2x+1
-                ∙ ℤ+-assoc (pos 1) (pos 1) (succℤ (pos x * pos 2))
-                 ∙ ℤ+-comm (pos 1) (pos 1 + succℤ (pos x * pos 2))
-                  ∙ ap succℤ (ℤ+-comm (pos 1) (succℤ (pos x * pos 2)))
-                   ∙ ap succℤ (ℤ-left-succ (pos x) (pos (succ x)) ⁻¹))))
-... | inr (inr UUy2x+2)
- = below'-implies-below (UU (pos 8 + y)) (pos (succ x))
-   (inr (inr (UU-lemma₁ y
-              ∙ ap (pos 2 +_) UUy2x+2
-               ∙ ℤ+-comm (pos 2) (succℤ (succℤ (pos x * pos 2)))
-                ∙ ap (_+ pos 2) (ℤ-left-succ (pos x) (pos (succ x))) ⁻¹)))
-
-UU-below : (x : ℕ) → UU (pos 8 + pos 2 * pos x) below succℤ (UU (pos x))
-UU-below 0 = (0 , refl) , (2 , refl)
-UU-below 1 = (0 , refl) , (2 , refl)
-UU-below 2 = (1 , refl) , (1 , refl)
-UU-below 3 = (1 , refl) , (1 , refl)
-UU-below (succ (succ (succ (succ x)))) = UU-lemma₂ (succ (x /2 /2)) (pos 2 + (pos 2 + (pos 2 + (pos 2 + pos 2 * pos x)))) (transport (_below pos (succ ((x /2) /2))) (ap UU I) (UU-below x))
- where
-  I : pos 8 + pos 2 * pos x ≡ pos 2 + (pos 2 + (pos 2 + (pos 2 + pos 2 * pos x)))
-  I = ℤ+-assoc (pos 6) (pos 2) (pos 2 * pos x) ∙ ℤ+-assoc (pos 4) (pos 2) (pos 2 + pos 2 * pos x) ∙ ℤ+-assoc (pos 2) (pos 2) (pos 2 + (pos 2 + pos 2 * pos x))
-
-UU-growth : ∀ x → succℤ (UU x) ≡ UU (x + pos 4)
-UU-growth (pos x) = refl
-UU-growth (negsucc 0) = refl
-UU-growth (negsucc 1) = refl
-UU-growth (negsucc 2) = refl
-UU-growth (negsucc 3) = refl
-UU-growth (negsucc (succ (succ (succ (succ x))))) = refl
-
-UU-neg-lem : (x : ℤ) → UU (negsucc 7 + x) ≡ negsucc 1 + UU x
-UU-neg-lem (pos 0) = refl
-UU-neg-lem (pos 1) = refl
-UU-neg-lem (pos 2) = refl
-UU-neg-lem (pos 3) = refl
-UU-neg-lem (pos (succ (succ (succ (succ x))))) = UU (negsucc 7 + pos (succ (succ (succ (succ x))))) ≡⟨ ap (λ z → UU (negsucc 7 + z)) (pos-addition-equiv-to-ℕ x 4) ⟩
-                                                UU (negsucc 7 + (pos x + pos 4))                   ≡⟨ ap UU (ℤ+-assoc (negsucc 7) (pos x) (pos 4) ⁻¹)  ⟩
-                                                UU (negsucc 7 + pos x + pos 4)                     ≡⟨ UU-growth (negsucc 7 + pos x) ⁻¹ ⟩
-                                                succℤ (UU (negsucc 7 + pos x))                     ≡⟨ refl ⟩
-                                                UU (negsucc 7 + pos x) + pos 1                     ≡⟨ ap (_+ pos 1) (UU-neg-lem (pos x)) ⟩
-                                                negsucc 1 + (UU (pos x)) + pos 1                   ≡⟨ refl ⟩ 
-                                                negsucc 1 + UU (pos (succ (succ (succ (succ x))))) ∎
-UU-neg-lem (negsucc 0) = refl
-UU-neg-lem (negsucc 1) = refl
-UU-neg-lem (negsucc 2) = refl
-UU-neg-lem (negsucc 3) = refl
-UU-neg-lem (negsucc (succ (succ (succ (succ x))))) = UU (negsucc 7 + negsucc (succ (succ (succ (succ x)))))     ≡⟨ refl ⟩
-                                                    UU ((- pos 8) + (- pos (succ x)) - pos 4)                  ≡⟨ ap (λ l → UU (l - pos 4)) (negation-dist (pos 8) (pos (succ x))) ⟩
-                                                    UU ((- (pos 8 + pos (succ x))) - pos 4)                    ≡⟨ ap (λ z → UU ((- z) - pos 4)) (pos-addition-equiv-to-ℕ 8 (succ x)) ⟩
-                                                    UU ((- pos (8 +ℕ (succ x))) - pos 4)                       ≡⟨ refl ⟩
-                                                    predℤ (UU (- pos (8 +ℕ (succ x))))                         ≡⟨ ap (λ l → predℤ (UU (- l))) (pos-addition-equiv-to-ℕ 8 (succ x) ⁻¹) ⟩
-                                                    predℤ (UU (- (pos 8 + pos (succ x))))                      ≡⟨ ap (λ z → predℤ (UU z)) (negation-dist (pos 8) (pos (succ x)) ⁻¹) ⟩
-                                                    predℤ (UU ((- pos 8) - pos (succ x)))                      ≡⟨ refl ⟩
-                                                    UU (negsucc 7 + negsucc x) + negsucc 0                     ≡⟨ ap (_+ negsucc 0) (UU-neg-lem (negsucc x)) ⟩
-                                                    negsucc 1 + UU (negsucc x) + negsucc 0                     ≡⟨ ℤ+-assoc (negsucc 1) (UU (negsucc x)) (negsucc 0) ⟩
-                                                    negsucc 1 + (UU (negsucc x) + negsucc 0)                   ≡⟨ refl ⟩
-                                                    negsucc 1 + UU (negsucc (succ (succ (succ (succ x)))))     ∎
-
-below-pred : (x y : ℤ) → y below x → negsucc 1 + y below predℤ x
-below-pred x y (l₁ , l₂) = first , second
- where
-  first : downLeft (predℤ x) ≤ (negsucc 1 + y)
-  first = transport₂ _≤_ I II (ℤ≤-adding' (downLeft x) y (negsucc 1) l₁)
-   where
-    I : downLeft x - pos 2 ≡ downLeft (predℤ x)
-    I = ap predℤ (ℤ-left-pred x x ⁻¹) ∙ ℤ-right-pred (predℤ x) x ⁻¹
-    II : y + negsucc 1 ≡ negsucc 1 + y
-    II = ℤ+-comm y (negsucc 1)
-  second : negsucc 1 + y ≤ downRight (predℤ x)
-  second = transport₂ _≤_ I II (ℤ≤-adding' y (downRight x) (negsucc 1) l₂)
-   where
-    I : y + negsucc 1 ≡ negsucc 1 + y
-    I = ℤ+-comm y (negsucc 1)
-    II : downRight x + negsucc 1 ≡ downRight (predℤ x)
-    II = predℤ (predℤ (succℤ (succℤ (x + x)))) ≡⟨ ap predℤ (predsuccℤ (succℤ (x + x))) ⟩
-         predℤ (succℤ (x + x))                 ≡⟨ predsuccℤ (x + x) ⟩
-         x + x                                 ≡⟨ succpredℤ (x + x) ⁻¹ ⟩
-         succℤ (predℤ (x + x))                 ≡⟨ ap succℤ (succpredℤ (predℤ (x + x)) ⁻¹) ⟩
-         succℤ (succℤ (predℤ (predℤ (x + x)))) ≡⟨ ap (λ z → succℤ (succℤ (predℤ z))) (ℤ-right-pred x x ⁻¹) ⟩
-         succℤ (succℤ (predℤ (x + predℤ x)))   ≡⟨ ap (λ z → succℤ (succℤ z)) (ℤ-left-pred x (predℤ x) ⁻¹) ⟩
-         succℤ (succℤ ((predℤ x + predℤ x)))   ≡⟨ refl ⟩
-         downRight (predℤ x)                   ∎
-
-UU-below-neg : (x : ℕ) → UU ((- pos 8) + pos 2 * negsucc x) below predℤ (UU (negsucc x))
-UU-below-neg 0 = (1 , refl) , (1 , refl)
-UU-below-neg 1 = (1 , refl) , (1 , refl)
-UU-below-neg 2 = (0 , refl) , (2 , refl)
-UU-below-neg 3 = (0 , refl) , (2 , refl)
-UU-below-neg (succ (succ (succ (succ x)))) =
-  transport
-    (_below negsucc (succ (succ ((x /2) /2))))
-     (UU-neg-lem (negsucc 1 + (negsucc 1 + (negsucc 1 + (negsucc 1 + pos 2 * negsucc x)))) ⁻¹)
-      (below-pred (negsucc (succ (x /2 /2))) (UU (negsucc 1 + (negsucc 1 + (negsucc 1 + (negsucc 1 + pos 2 * negsucc x))))) I)
-  where
-   I : UU (negsucc 1 + (negsucc 1 + (negsucc 1 + (negsucc 1 + pos 2 * negsucc x)))) below negsucc (succ ((x /2) /2))
-   I = transport
-        (_below negsucc (succ ((x /2) /2)))
-         (ap UU (ℤ+-assoc (negsucc 5) (negsucc 1) (pos 2 * negsucc x)
-                 ∙ ℤ+-assoc (negsucc 3) (negsucc 1) (negsucc 1 + pos 2 * negsucc x)
-                  ∙ ℤ+-assoc (negsucc 1) (negsucc 1) (negsucc 1 + (negsucc 1 + pos 2 * negsucc x))))
-          (UU-below-neg x)
-
--- (z : ℤ) (n : ℕ) ∀ a b → (upRight ^ n) (pos {!!} * z            ) below (upRight ^ n) z
--- (z : ℤ) (n : ℕ) ∀ a b → (upRight ^ n) (pos {!!} * z +pos (2^ n)) below (upRight ^ n) z
-
--- (k c : ℤ) → k ≤ c → Σ i ꞉ ℕ , ((n : ℕ) → (lb ((upRight ^ i) k , n - i) ≤ lb (c , n)) × (rb (c , n) ≤ rb ((upRight ^ i) k , n - i)
-
---  [                                   ] = 3
---  [                          ]
---  [                ]
---  [   k    ]             [   c  ]
-
-UU-double-0 : (z : ℤ) → UU (pos 2 * z) below UU z
-UU-double-0 (pos 0) = (0 , refl) , (2 , refl)
-UU-double-0 (pos 1) = (0 , refl) , (2 , refl)
-UU-double-0 (pos 2) = (1 , refl) , (1 , refl)
-UU-double-0 (pos 3) = (1 , refl) , (1 , refl)
-UU-double-0 (pos (succ (succ (succ (succ x))))) = transport (_below succℤ (UU (pos x))) I (UU-below x)
- where
-  I : UU (pos 8 + pos 2 * pos x) ≡  UU (pos 2 + (pos 2 + (pos 2 + (pos 2 + pos 2 * pos x))))
-  I = ap UU (ℤ+-assoc (pos 6) (pos 2) (pos 2 * pos x) ∙ ℤ+-assoc (pos 4) (pos 2) (pos 2 + pos 2 * pos x) ∙ ℤ+-assoc (pos 2) (pos 2) (pos 2 + (pos 2 + pos 2 * pos x)))
-UU-double-0 (negsucc 0) = (1 , refl) , 1 , refl
-UU-double-0 (negsucc 1) = (1 , refl) , 1 , refl
-UU-double-0 (negsucc 2) = (0 , refl) , 2 , refl
-UU-double-0 (negsucc 3) = (0 , refl) , (2 , refl)
-UU-double-0 (negsucc (succ (succ (succ (succ x))))) =
- transport (_below predℤ (UU (negsucc x))) I (UU-below-neg x)
-  where
-   I : UU (negsucc 7 + pos 2 * negsucc x) ≡ UU (negsucc 1 + (negsucc 1 + (negsucc 1 + (negsucc 1 + pos 2 * negsucc x))))
-   I = ap UU (ℤ+-assoc (negsucc 5) (negsucc 1) (pos 2 * negsucc x) ∙ ℤ+-assoc (negsucc 3) (negsucc 1) (negsucc 1 + pos 2 * negsucc x) ∙ ℤ+-assoc (negsucc 1) (negsucc 1) (negsucc 1 + (negsucc 1 + pos 2 * negsucc x)))
-
-UU-mod-behaviour-1 : ∀ x → (UU (x + pos 1) ≡ UU x) ∔ (UU (x + pos 1) ≡ succℤ (UU x))
-UU-mod-behaviour-1 (pos 0) = inl refl
-UU-mod-behaviour-1 (pos 1) = inl refl
-UU-mod-behaviour-1 (pos 2) = inl refl
-UU-mod-behaviour-1 (pos 3) = inr refl
-UU-mod-behaviour-1 (pos (succ (succ (succ (succ x))))) with UU-mod-behaviour-1 (pos x)
-... | inl e = inl (ap succℤ e)
-... | inr e = inr (ap succℤ e)
-UU-mod-behaviour-1 (negsucc 0) = inr refl
-UU-mod-behaviour-1 (negsucc 1) = inl refl
-UU-mod-behaviour-1 (negsucc 2) = inl refl
-UU-mod-behaviour-1 (negsucc 3) = inl refl
-UU-mod-behaviour-1 (negsucc 4) = inr refl
-UU-mod-behaviour-1 (negsucc 5) = inl refl
-UU-mod-behaviour-1 (negsucc 6) = inl refl 
-UU-mod-behaviour-1 (negsucc 7) = inl refl
-UU-mod-behaviour-1 (negsucc (succ (succ (succ (succ (succ (succ (succ (succ x))))))))) with UU-mod-behaviour-1 (negsucc (succ (succ (succ (succ x)))))
-... | inl e = inl (ap predℤ e)
-... | inr e = inr (ap predℤ e)
-
-UU-mod-behaviour-2 :  ∀ x → (UU (x + pos 2) ≡ UU x) ∔ (UU (x + pos 2) ≡ succℤ (UU x))
-UU-mod-behaviour-2 (pos 0) = inl refl
-UU-mod-behaviour-2 (pos 1) = inl refl
-UU-mod-behaviour-2 (pos 2) = inr refl
-UU-mod-behaviour-2 (pos 3) = inr refl
-UU-mod-behaviour-2 (pos (succ (succ (succ (succ x))))) with UU-mod-behaviour-2 (pos x)
-... | inl e = inl (ap succℤ e)
-... | inr e = inr (ap succℤ e)
-UU-mod-behaviour-2 (negsucc 0) = inr refl
-UU-mod-behaviour-2 (negsucc 1) = inr refl
-UU-mod-behaviour-2 (negsucc 2) = inl refl
-UU-mod-behaviour-2 (negsucc 3) = inl refl
-UU-mod-behaviour-2 (negsucc 4) = inr refl
-UU-mod-behaviour-2 (negsucc 5) = inr refl
-UU-mod-behaviour-2 (negsucc 6) = inl refl
-UU-mod-behaviour-2 (negsucc 7) = inl refl
-UU-mod-behaviour-2 (negsucc (succ (succ (succ (succ (succ (succ (succ (succ x))))))))) with UU-mod-behaviour-2 (negsucc (succ (succ (succ (succ x)))))
-... | inl e = inl (ap predℤ e)
-... | inr e = inr (ap predℤ e)
-
-UU-mod-behaviour-3 :  ∀ x → (UU (x + pos 3) ≡ UU x) ∔ (UU (x + pos 3) ≡ succℤ (UU x))
-UU-mod-behaviour-3 (pos 0) = inl refl
-UU-mod-behaviour-3 (pos 1) = inr refl
-UU-mod-behaviour-3 (pos 2) = inr refl
-UU-mod-behaviour-3 (pos 3) = inr refl
-UU-mod-behaviour-3 (pos (succ (succ (succ (succ x))))) with UU-mod-behaviour-3 (pos x)
-... | inl e = inl (ap succℤ e)
-... | inr e = inr (ap succℤ e)
-UU-mod-behaviour-3 (negsucc 0) = inr refl
-UU-mod-behaviour-3 (negsucc 1) = inr refl
-UU-mod-behaviour-3 (negsucc 2) = inr refl
-UU-mod-behaviour-3 (negsucc 3) = inl refl
-UU-mod-behaviour-3 (negsucc 4) = inr refl
-UU-mod-behaviour-3 (negsucc 5) = inr refl
-UU-mod-behaviour-3 (negsucc 6) = inr refl
-UU-mod-behaviour-3 (negsucc 7) = inl refl
-UU-mod-behaviour-3 (negsucc (succ (succ (succ (succ (succ (succ (succ (succ x))))))))) with UU-mod-behaviour-3 (negsucc (succ (succ (succ (succ x)))))
-... | inl e = inl (ap predℤ e)
-... | inr e = inr (ap predℤ e)
-
-UU-double-4 : (z : ℤ) → UU (pos 2 * z + pos 4) below UU z
-UU-double-4 (pos 0) = (1 , refl) , (1 , refl)
-UU-double-4 (pos 1) = (1 , refl) , (1 , refl)
-UU-double-4 (pos 2) = (2 , refl) , (0 , refl)
-UU-double-4 (pos 3) = (2 , refl) , (0 , refl)
-UU-double-4 (pos (succ (succ (succ (succ x))))) with UU-double-4 (pos x)
-... | l₁ , l₂ = first , second
- where
-  first : succℤ (pos (succ ((x /2) /2)) + pos ((x /2) /2)) ≤ℤ UU (succℤ (succℤ (succℤ (succℤ (pos 2 + (pos 2 + (pos 2 + (pos 2 + pos 2 * pos x))))))))
-  first = transport₂ _≤ℤ_ I II (ℤ≤-adding' (pos ((x /2) /2) * pos 2) (UU (succℤ (succℤ (succℤ (succℤ (pos 2 * pos x)))))) (pos 2) l₁)
-   where
-    I : pos ((x /2) /2) * pos 2 + pos 2 ≡ succℤ (pos (succ ((x /2) /2)) + pos ((x /2) /2))
-    I = pos ((x /2) /2) * pos 2 + pos 2                  ≡⟨ refl ⟩
-        succℤ (succℤ (pos ((x /2) /2) +pos ((x /2) /2))) ≡⟨ ap succℤ (ℤ-left-succ (pos (x /2 /2)) (pos (x /2 /2)) ⁻¹) ⟩
-        succℤ (pos (succ ((x /2) /2)) + pos ((x /2) /2)) ∎
-    II : UU (succℤ (succℤ (succℤ (succℤ (pos 2 * pos x))))) + pos 2 ≡ UU (succℤ  (succℤ (succℤ (succℤ (pos 2 + (pos 2 + (pos 2 + (pos 2 + pos 2 * pos x))))))))
-    II = UU (succℤ (succℤ (succℤ (succℤ (pos 2 * pos x))))) + pos 2       ≡⟨ refl ⟩
-         UU (pos 2 * pos x + pos 4) + pos 2                               ≡⟨ ap (_+ pos 2) (UU-growth (pos 2 * pos x) ⁻¹) ⟩
-         succℤ (UU (pos 2 * pos x)) + pos 2                               ≡⟨ ap succℤ (ℤ+-comm (UU (pos 2 * pos x)) (pos 2)) ⟩
-         succℤ (pos 2 + UU (pos 2 * pos x))                               ≡⟨ ap succℤ (UU-lemma₁ (pos 2 * pos x) ⁻¹) ⟩
-         succℤ (UU (pos 8 + pos 2 * pos x))                               ≡⟨ ap (λ z → succℤ (UU z)) (ℤ+-assoc (pos 6) (pos 2) (pos 2 * pos x)) ⟩
-         succℤ (UU (pos 6 + (pos 2 + pos 2 * pos x)))                     ≡⟨ ap (λ z → succℤ (UU z)) (ℤ+-assoc (pos 4) (pos 2) (pos 2 + pos 2 * pos x)) ⟩
-         succℤ (UU (pos 4 + (pos 2 + (pos 2 + pos 2 * pos x))))           ≡⟨ ap (λ z → succℤ (UU z)) (ℤ+-assoc (pos 2) (pos 2) (pos 2 + (pos 2 + (pos 2 * pos x)))) ⟩
-         succℤ (UU (pos 2 + (pos 2 + (pos 2 + (pos 2 + pos 2 * pos x))))) ≡⟨ UU-growth (pos 2 + (pos 2 + (pos 2 + (pos 2 + pos 2 * pos x)))) ⟩
-         UU (succℤ (succℤ (succℤ (succℤ (pos 2 + (pos 2 + (pos 2 + (pos 2 + pos 2 * pos x)))))))) ∎
-  second : UU (succℤ (succℤ (succℤ (succℤ (pos 2 + (pos 2 + (pos 2 + (pos 2 + pos 2 * pos x)))))))) ≤ℤ succℤ (succℤ (succℤ (pos (succ ((x /2) /2)) +pos ((x /2) /2))))
-  second = transport₂ _≤ℤ_ I II (ℤ≤-adding' (UU (succℤ (succℤ (succℤ (succℤ (pos 2 * pos x)))))) (succℤ (succℤ (pos ((x /2) /2) + pos ((x /2) /2)))) (pos 2) l₂)
-   where
-    I : UU (succℤ (succℤ (succℤ (succℤ (pos 2 * pos x))))) + pos 2 ≡ UU (succℤ (succℤ (succℤ (succℤ (pos 2 + (pos 2 + (pos 2 + (pos 2 + pos 2 * pos x))))))))
-    I = UU (succℤ (succℤ (succℤ (succℤ (pos 2 * pos x))))) + pos 2 ≡⟨ ℤ+-comm (UU (succℤ (succℤ (succℤ (succℤ (pos 2 * pos x)))))) (pos 2) ⟩
-        pos 2 + UU (succℤ (succℤ (succℤ (succℤ (pos 2 * pos x))))) ≡⟨ UU-lemma₁ (succℤ (succℤ (succℤ (succℤ (pos 2 * pos x))))) ⁻¹ ⟩
-        UU (pos 8 + succℤ (succℤ (succℤ (succℤ (pos 2 * pos x))))) ≡⟨ refl ⟩
-        UU (pos 8 + (pos 2 * pos x + pos 4))                       ≡⟨ ap UU (ℤ+-assoc (pos 8) (pos 2 * pos x) (pos 4) ⁻¹) ⟩
-        UU (pos 8 + pos 2 * pos x + pos 4)                         ≡⟨ ap (λ z → UU (z + pos 4)) (ℤ+-assoc (pos 6) (pos 2) (pos 2 * pos x)) ⟩
-        UU (pos 6 + (pos 2 + pos 2 * pos x) + pos 4)               ≡⟨ ap (λ z → UU (z + pos 4)) (ℤ+-assoc (pos 4) (pos 2) (pos 2 + pos 2 * pos x)) ⟩
-        UU (pos 4 + (pos 2 + (pos 2 + pos 2 * pos x)) + pos 4)     ≡⟨ ap (λ z → UU (z + pos 4)) (ℤ+-assoc (pos 2) (pos 2) (pos 2 + (pos 2 + pos 2 * pos x))) ⟩
-        UU (pos 2 + (pos 2 + (pos 2 + (pos 2 + pos 2 * pos x))) + pos 4) ∎
-    II : succℤ (succℤ (pos ((x /2) /2) * pos 2)) + pos 2 ≡ succℤ (pos ((x /2) /2)) + pos ((x /2) /2) + pos 3
-    II = succℤ (succℤ (pos ((x /2) /2) * pos 2)) + pos 2 ≡⟨ refl ⟩
-         (pos ((x /2) /2) * pos 2 + pos 2) + pos 2       ≡⟨ ℤ+-assoc (pos ((x /2) /2) * pos 2) (pos 2) (pos 2) ⟩
-         pos ((x /2) /2) * pos 2 + pos 2 + pos 2         ≡⟨ ℤ+-assoc (pos ((x /2) /2) * pos 2 + pos 1) (pos 1) (pos 2) ⟩
-         (pos ((x /2) /2) * pos 2 + pos 1) + pos 3       ≡⟨ ap (_+ pos 3) (ℤ-left-succ (pos (x /2 /2)) (pos (x /2 /2)) ⁻¹) ⟩
-         (pos ((x /2) /2) + pos 1) + pos ((x /2) /2) + pos 3 ∎
-UU-double-4 (negsucc 0) = (2 , refl) , (0 , refl)
-UU-double-4 (negsucc 1) = (2 , refl) , (0 , refl)
-UU-double-4 (negsucc 2) = (1 , refl) , (1 , refl)
-UU-double-4 (negsucc 3) = (1 , refl) , (1 , refl)
-UU-double-4 (negsucc (succ (succ (succ (succ x))))) with UU-double-4 (negsucc x)
-... | l₁ , l₂ = first , second
- where
-  first : predℤ (negsucc (succ ((x /2) /2)) + negsucc ((x /2) /2)) ≤ℤ UU (succℤ (succℤ (succℤ (succℤ (negsucc 1 + (negsucc 1 + (negsucc 1 + (negsucc 1 + pos 2 * negsucc x))))))))
-  first = transport₂ _≤ℤ_ I II (ℤ≤-adding' (UU (negsucc x) * pos 2) (UU (pos 2 * negsucc x + pos 4)) (negsucc 1) l₁)
-   where
-    I : UU (negsucc x) * pos 2 - pos 2 ≡ UU (negsucc x - pos 4) * pos 2
-    I = UU (negsucc x) * pos 2 - pos 2             ≡⟨ refl ⟩
-        UU (negsucc x) * pos 2 + (- pos 1) * pos 2 ≡⟨ distributivity-mult-over-ℤ (UU (negsucc x)) (- pos 1) (pos 2) ⁻¹ ⟩
-        (UU (negsucc x) - pos 1) * pos 2           ≡⟨ refl ⟩
-        UU (negsucc x - pos 4) * pos 2             ∎
-    II : UU (pos 2 * negsucc x + pos 4) + negsucc 1 ≡ UU (negsucc 1 + (negsucc 1 + (negsucc 1 + (negsucc 1 + pos 2 * negsucc x))) + pos 4)
-    II = UU (pos 2 * negsucc x + pos 4) + negsucc 1                             ≡⟨ ℤ+-comm (UU (pos 2 * negsucc x + pos 4)) (negsucc 1) ⟩
-         negsucc 1 + UU (pos 2 * negsucc x + pos 4)                             ≡⟨ UU-neg-lem (pos 2 * negsucc x + pos 4) ⁻¹ ⟩
-         UU (negsucc 7 + (pos 2 * negsucc x + pos 4))                           ≡⟨ ap UU (ℤ+-assoc (negsucc 7) (pos 2 * negsucc x) (pos 4) ⁻¹) ⟩
-         UU (negsucc 7 + pos 2 * negsucc x + pos 4)                             ≡⟨ ap (λ z → UU (z + pos 4)) (ℤ+-assoc (negsucc 5) (negsucc 1) (pos 2 * negsucc x)) ⟩
-         UU (negsucc 5 + (negsucc 1 + pos 2 * negsucc x) + pos 4)               ≡⟨ ap (λ z → UU (z + pos 4)) (ℤ+-assoc (negsucc 3) (negsucc 1) (negsucc 1 + pos 2 * negsucc x)) ⟩
-         UU (negsucc 3 + (negsucc 1 + (negsucc 1 + pos 2 * negsucc x)) + pos 4) ≡⟨ ap (λ z → UU (z + pos 4)) (ℤ+-assoc (negsucc 1) (negsucc 1) (negsucc 1 + (negsucc 1 + pos 2 * negsucc x))) ⟩
-         UU (negsucc 1 + (negsucc 1 + (negsucc 1 + (negsucc 1 + pos 2 * negsucc x))) + pos 4) ∎
-  second : UU (pos 2 * (negsucc x - pos 4) + pos 4) ≤ℤ UU (negsucc x - pos 4) * pos 2 + pos 2
-  second = transport₂ _≤ℤ_ I II (ℤ≤-adding' (UU (pos 2 * negsucc x + pos 4)) (UU (negsucc x) * pos 2 + pos 2) (negsucc 1) l₂)
-   where
-    I : UU (pos 2 * negsucc x + pos 4) + negsucc 1 ≡ UU (pos 2 * (negsucc x - pos 4) + pos 4)
-    I = UU (pos 2 * negsucc x + pos 4) + negsucc 1           ≡⟨ ℤ+-comm (UU (pos 2 * negsucc x + pos 4)) (negsucc 1) ⟩
-        negsucc 1 + UU (pos 2 * negsucc x + pos 4)           ≡⟨ UU-neg-lem (pos 2 * negsucc x + pos 4) ⁻¹ ⟩
-        UU (negsucc 7 + (pos 2 * negsucc x + pos 4))         ≡⟨ refl ⟩
-        UU (pos 2 * negsucc 3 + (pos 2 * negsucc x + pos 4)) ≡⟨ ap UU (ℤ+-assoc (pos 2 * negsucc 3) (pos 2 * negsucc x) (pos 4) ⁻¹) ⟩
-        UU (pos 2 * negsucc 3 + pos 2 * negsucc x + pos 4)   ≡⟨ ap (λ z → UU (z + pos 4)) (distributivity-mult-over-ℤ' (negsucc 3) (negsucc x) (pos 2) ⁻¹) ⟩
-        UU (pos 2 * (negsucc 3 + negsucc x) + pos 4)         ≡⟨ ap (λ z → UU (pos 2 * z + pos 4)) (ℤ+-comm (negsucc 3) (negsucc x)) ⟩
-        UU (pos 2 * (negsucc x - pos 4) + pos 4)             ∎
-    II : UU (negsucc x) * pos 2 + pos 2 + negsucc 1 ≡ UU (negsucc x - pos 4) * pos 2 + pos 2
-    II = UU (negsucc x) * pos 2 + pos 2 - pos 2             ≡⟨ ℤ+-assoc (UU (negsucc x) * pos 2) (pos 2) (- pos 2) ⟩
-         UU (negsucc x) * pos 2 + (pos 2 + (- pos 2))       ≡⟨ ap (UU (negsucc x) * pos 2 +_) (ℤ+-comm (pos 2) (- pos 2)) ⟩
-         UU (negsucc x) * pos 2 + ((- pos 2) + pos 2)       ≡⟨ ℤ+-assoc (UU (negsucc x) * pos 2) (- pos 2) (pos 2) ⁻¹ ⟩
-         UU (negsucc x) * pos 2 - pos 2 + pos 2             ≡⟨ ap (_+ pos 2) (distributivity-mult-over-ℤ (UU (negsucc x)) (- pos 1) (pos 2) ⁻¹) ⟩
-         (UU (negsucc x) - pos 1) * pos 2 + pos 2           ≡⟨ refl ⟩
-         UU (negsucc x - pos 4) * pos 2 + pos 2             ∎
-
-UU-double-1 : (z : ℤ) → UU (pos 2 * z + pos 1) below UU z
-UU-double-1 z with UU-mod-behaviour-1 (pos 2 * z)
-... | inl e = transport (_below (UU z)) (e ⁻¹) (UU-double-0 z)
-... | inr e = transport (_below (UU z)) ((e ∙ UU-growth (pos 2 * z)) ⁻¹) (UU-double-4 z)
-
-UU-double-2 : (z : ℤ) → UU (pos 2 * z + pos 2) below UU z
-UU-double-2 z with UU-mod-behaviour-2 (pos 2 * z)
-... | inl e = transport (_below (UU z)) (e ⁻¹) (UU-double-0 z) 
-... | inr e = transport (_below (UU z)) ((e ∙ UU-growth (pos 2 * z)) ⁻¹) (UU-double-4 z)
-
-UU-double-3 : (z : ℤ) → UU (pos 2 * z + pos 3) below UU z
-UU-double-3 z with UU-mod-behaviour-3 (pos 2 * z)
-... | inl e = transport (_below (UU z)) (e ⁻¹) (UU-double-0 z)
-... | inr e = transport (_below (UU z)) ((e ∙ UU-growth (pos 2 * z)) ⁻¹) (UU-double-4 z)
-
-below-upRight : ((x , b) (y , b) : 𝕋) → (n : ℤ) → upRight (upRight (x (succℤ n) + y (succℤ n))) below upRight (upRight (x n + y n))
-below-upRight (x , b) (y , b') n with below-upRight-lem₂ (x , b) (y , b') n
-... | inl case₁
- = transport₂ _below_ (below-upRight-lem₁ (pos 2 * (x n + y n)) ⁻¹ ∙ ap (λ z → upRight (upRight z)) (case₁ ⁻¹)) (below-upRight-lem₁ (x n + y n) ⁻¹) (UU-double-0 (x n + y n))
-... | inr (inl case₂)
- = transport₂ _below_ (below-upRight-lem₁ (pos 2 * (x n + y n) + pos 1) ⁻¹ ∙ ap (λ z → upRight (upRight z)) (case₂ ⁻¹)) (below-upRight-lem₁ (x n + y n) ⁻¹) (UU-double-1 (x n + y n))
-... | inr (inr (inl case₃))
- = transport₂ _below_ (below-upRight-lem₁ (pos 2 * (x n + y n) + pos 2) ⁻¹ ∙ ap (λ z → upRight (upRight z)) (case₃ ⁻¹)) (below-upRight-lem₁ (x n + y n) ⁻¹) (UU-double-2 (x n + y n))
-... | inr (inr (inr (inl case₄)))
- = transport₂ _below_ (below-upRight-lem₁ (pos 2 * (x n + y n) + pos 3) ⁻¹ ∙ ap (λ z → upRight (upRight z)) (case₄ ⁻¹)) (below-upRight-lem₁ (x n + y n) ⁻¹) (UU-double-3 (x n + y n))
-... | inr (inr (inr (inr case₅)))
- = transport₂ _below_ (below-upRight-lem₁ (pos 2 * (x n + y n) + pos 4) ⁻¹ ∙ ap (λ z → upRight (upRight z)) (case₅ ⁻¹)) (below-upRight-lem₁ (x n + y n) ⁻¹) (UU-double-4 (x n + y n))
+open import Todd.BelowLemmas pt fe pe sq
 
 _𝕋+_ : 𝕋 → 𝕋 → 𝕋
 (x , b) 𝕋+ (y , b') = (λ n → upRight (upRight ((x (n +pos 2)) + (y (n +pos 2))))) , λ δ → below-upRight (x , b) (y , b') (δ + pos 2)
@@ -1141,36 +663,9 @@ operation-builder : (_⊕_ : ℤ[1/2] → ℤ[1/2] → ℤ[1/2])          -- Giv
 operation-builder _⊕_ ⊕-monotic k (f , b) (g , b') = {!!} , {!!}
 -}
 
-max : ℤ → ℤ → ℤ
-max x y with ℤ-dichotomous x y
-... | inl x≤y = y
-... | inr y≤x = x
 
-max₂ : ℤ → ℤ → ℤ → ℤ
-max₂ x y z = max (max x y) z
-
-max₃ : ℤ → ℤ → ℤ → ℤ → ℤ
-max₃ w x y z = max (max₂ w x y) z
-
-min : ℤ → ℤ → ℤ
-min x y with ℤ-dichotomous x y
-... | inl x≤y = x
-... | inr y≤x = y
-
-min₂ : ℤ → ℤ → ℤ → ℤ
-min₂ x y z = min (min x y) z
-
-min₃ : ℤ → ℤ → ℤ → ℤ → ℤ
-min₃ w x y z = min (min₂ w x y) z
 
 open import IntegersAbs
-
-difference : (f : ℤ → ℤ → ℤ)             -- Given an integer function
-           → (x y : ℤ)                   -- and two bounds
-           → ℤ                           -- find the integer difference 
-difference f l r = max₃ (f l r) (f l (r + pos 2)) (f (l + pos 2) r) (f (l + pos 2) (r + pos 2))
-                  - min₃ (f l r) (f l (r + pos 2)) (f (l + pos 2) r) (f (l + pos 2) (r + pos 2))
-
 open import NaturalsOrder
 
 power-of-two-grows : (n : ℕ) → 2^ n < 2^ (succ n)
@@ -1224,6 +719,73 @@ operation-builder' f m (x , b) (y , b') = h , h-is-below
   h-is-below : {!!}
   h-is-below = {!!}
 
+encode : ℤ[1/2] → ℤ × ℤ
+encode ((p , k) , _) = p , pos k
+
+connect : ((c₁ , _) : (ℤ × ℤ)) → ((c₂ , _) : (ℤ × ℤ)) → c₁ ≤ c₂ → ℤ × ℤ --  brick1    brick 2 (smallest brick which contains both) brick 2 always on right
+connect (c₁ , p₁) (c₂ , p₂) l  = {!!}
+ -- if p1 = p2 then call connect-on-same-level (c1 , c2 , p1)
+ -- if p1 > p2 then call connect-on-same-level ((upRight ^ (p1 - p2)) c1  , c2  , p2)
+ -- if p1 < p2 then call connect-on-same-leven (c1 , (upLeft ^ (p2 - p1)) , p1)
+
+record Builder : 𝓤₁ ̇ where
+ field
+  D : ℤ[1/2] × ℤ[1/2] → ℤ[1/2]
+  M : ℤ × ℤ → ℤ → ℕ  
+  F : ℝ-d × ℝ-d → ℝ-d             -- real function
+  ψ : (x y : ℤ[1/2]) → F (ι x , ι y) ≡ ι (D (x , y))
+ ll lr rl rr : (ℤ × ℤ) × (ℤ × ℤ) → ℤ[1/2]
+ ll ((c₁ , p₁) , (c₂ , p₂)) = D ((lb-of-brick c₁ on-level p₁) , (lb-of-brick c₂ on-level p₂))
+ lr ((c₁ , p₁) , (c₂ , p₂)) = D ((lb-of-brick c₁ on-level p₁) , (rb-of-brick c₂ on-level p₂))
+ rl ((c₁ , p₁) , (c₂ , p₂)) = D ((rb-of-brick c₁ on-level p₁) , (lb-of-brick c₂ on-level p₂))
+ rr ((c₁ , p₁) , (c₂ , p₂)) = D ((rb-of-brick c₁ on-level p₁) , (rb-of-brick c₂ on-level p₂))
+ L R : (ℤ × ℤ) × (ℤ × ℤ) → ℤ × ℤ --e.g for addition L ≡ x + y, R ≡ x + y + 2     L(          )R
+ L ((c₁ , p₁) , (c₂ , p₂)) = {!!} -- encode (min {f , o , i , l})
+ R ((c₁ , p₁) , (c₂ , p₂)) = {!!} -- encode (max {f , o , i , l}) - 2
+ -- need proof that L ≤ R
+ I : (ℤ × ℤ) × (ℤ × ℤ) → ℤ × ℤ   -- interval which connects L and R   I  (       L(          )R     )
+ I ((c₁ , p₁) , (c₂ , p₂)) = connect (L ((c₁ , p₁) , (c₂ , p₂))) (R ((c₁ , p₁) , c₂ , p₂)) {!!} -- In general, need to check all extremes
+ E : (ℤ × ℤ) → ℤ → ℤ × ℤ × ℕ     -- two codes, same precision level, returns left and right on same precision - endpoint realiser
+ E (c₁ , c₂) p = l , r , {!!}   -- should be (q - p), which requires q ≥ p.  
+  where
+   lq₁ rq₂ : ℤ × ℤ
+   lq₁ = L ((c₁ , p) , (c₂ , p))
+   rq₂ = R ((c₁ , p) , (c₂ , p))
+   l r q₁ q₂ : ℤ
+   l = pr₁ lq₁
+   r = pr₁ rq₂
+   q₁ = pr₂ lq₁
+   q₂ = pr₂ rq₂ -- Must prove that q₁ ≡ q₂ (for every specific function)
+ F* : 𝕋 × 𝕋 → 𝕋                   -- from F
+ F* ((x , b) , (y , b')) = z , b''
+  where
+   z : ℤ → ℤ
+   z q = (upRight ^ (j +ℕ k)) l
+    where
+     k : ℕ
+     k = M (x q , y q) q
+     lrj : ℤ × ℤ × ℕ
+     lrj = E (x (q + pos k) , y (q + pos k)) (q + pos k)
+
+     l r : ℤ
+     l = pr₁ lrj
+     r = pr₁ (pr₂ lrj)
+     j : ℕ
+     j = pr₂ (pr₂ lrj)
+ 
+   b'' : (δ : ℤ) → z (succℤ δ) below z δ
+   b'' = {!!}
+   -- If (given any a,b,q,a',b' : ℤ such that (a' below a) k and (b' below b)
+   -- then ((upRight ^ (j + k)) l , q) : ℤ × ℤ covers (l , q + j) and (r , q + j)  (q + j ? q + j + k ?)
+   -- where (l,r,j) ≔ E(a',b',q+k) and k ≔ M(a,b,q))
+   -- and (given all our other conditions, e.g. ψ)
+   -- then F (⟦ x ⟧ , ⟦ y ⟧) ≡ ⟦ F* x y  ⟧
+
+   -- ⟦ x ⟧ (p < ⟦ x ⟧ → ∃ q ꞉ ℤ , p < lb x q
+   
+
+   -- for all q : ℤ , 
+ 
 ```
 
 Proving that multiplication is monotonic on intervals is simple. The

@@ -108,7 +108,7 @@ abs-over-mult (pos zero) (negsucc b) = I
  where
   I : abs (pos zero * negsucc b) ≡ abs (pos zero) ℕ* abs (negsucc b)
   I = abs (pos zero * negsucc b) ≡⟨ ap abs (ℤ-zero-left-is-zero (negsucc b)) ⟩
-      abs (pos 0)                ≡⟨ zero-left-is-zero (abs (negsucc b)) ⁻¹ ⟩
+      abs (pos 0)                ≡⟨ zero-left-base (abs (negsucc b)) ⁻¹ ⟩
       abs (pos zero) ℕ* abs (negsucc b) ∎
 abs-over-mult (pos (succ x)) (negsucc b) = I
  where

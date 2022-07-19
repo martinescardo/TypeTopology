@@ -56,7 +56,7 @@ succ-pred' : (x : ℕ) → ¬ (x ≡ 0) → succ (pred x) ≡ x
 succ-pred' zero     nz = 𝟘-elim (nz refl)
 succ-pred' (succ n) _ = refl
 
-pred-succ : (x : ℕ) → pred (succ (succ x)) ≡ succ x
+pred-succ : (x : ℕ) → pred (succ x) ≡ x
 pred-succ x = refl
 
 \end{code}

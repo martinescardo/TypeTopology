@@ -66,7 +66,7 @@ module IntegersHCF where
                b                        ∎
 
         ii : (f : ℕ) → is-common-divisor f (succ n) b → f ℕ∣ h
-        ii f ((μ , μₚ) , ν , νₚ) = γ f ((hcflemma f ν (q ℕ* μ) r e₃) , μ , μₚ)
+        ii f ((μ , μₚ) , ν , νₚ) = γ f ((factor-of-sum-consequence f ν (q ℕ* μ) r e₃) , μ , μₚ)
          where
           e₃ : f ℕ* ν ≡ f ℕ* (q ℕ* μ) ℕ+ r
           e₃ = f ℕ* ν              ≡⟨ νₚ                                             ⟩
@@ -108,7 +108,6 @@ module IntegersHCF where
  where
   I : (Σ h ꞉ ℕ , (is-hcf h a b) × (Σ (x , y) ꞉ ℤ × ℤ , pos h ≡ ((pos a) * x) + ((pos b) * y))) → Σ h ꞉ ℕ , is-hcf h a b
   I (h , is-hcf , bezout) = h , is-hcf
-
 
 coprime-bezout : (a b : ℕ) → coprime a b → Σ (x , y) ꞉ ℤ × ℤ , pos 1 ≡ pos a * x + pos b * y
 coprime-bezout a b = I (ℤ-HCF a b)

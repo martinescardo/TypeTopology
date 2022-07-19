@@ -263,8 +263,8 @@ half-ℚₙ (x , a) = x , (succ (2 ℕ* a))
 
 rounded-lemma₀ : (a : ℕ) → succ (2 ℕ* pred (succ a)) ≡ pred (2 ℕ* (succ a))
 rounded-lemma₀ zero = refl
-rounded-lemma₀ (succ a) = succ (2 ℕ* pred (succ (succ a))) ≡⟨ ap (λ - → succ (2 ℕ* -)) (pred-succ a) ⟩
-                   succ (2 ℕ* succ a)                ≡⟨ pred-succ (2 ℕ* succ a) ⁻¹ ⟩
+rounded-lemma₀ (succ a) = succ (2 ℕ* pred (succ (succ a))) ≡⟨ ap (λ - → succ (2 ℕ* -)) (pred-succ (succ a)) ⟩
+                   succ (2 ℕ* succ a)                ≡⟨ pred-succ (succ (2 ℕ* succ a)) ⁻¹ ⟩
                    pred (succ (succ (2 ℕ* succ a)))  ≡⟨ refl ⟩
                    pred (2 ℕ* succ a ℕ+ 2)           ≡⟨ refl ⟩
                    pred (2 ℕ* (succ a) ℕ+ 2 ℕ* 1)    ≡⟨ ap pred (distributivity-mult-over-addition 2 (succ a) 1 ⁻¹) ⟩

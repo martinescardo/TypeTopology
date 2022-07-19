@@ -125,7 +125,7 @@ pos-div-to-nat-div (succ a) (succ b) (negsucc x , p) = 𝟘-elim (product-positi
    where
     I : succ a ≡ 0
     I = succ a           ≡⟨ e                          ⟩
-        0 ℕ* succ d ℕ+ 0 ≡⟨ zero-left-is-zero (succ d) ⟩
+        0 ℕ* succ d ℕ+ 0 ≡⟨ zero-left-base (succ d) ⟩
         0                ∎
   f (succ q , 0 , e , l) = negsucc q , 0 , I , l
    where
@@ -151,7 +151,7 @@ pos-div-to-nat-div (succ a) (succ b) (negsucc x , p) = 𝟘-elim (product-positi
        where
         IV : succ a ≡ succ r
         IV = succ a                ≡⟨ e₁                                                ⟩
-             0 ℕ* succ d ℕ+ succ r ≡⟨ ap succ (ap (_ℕ+ r) (zero-left-is-zero (succ d))) ⟩
+             0 ℕ* succ d ℕ+ succ r ≡⟨ ap succ (ap (_ℕ+ r) (zero-left-base (succ d))) ⟩
              succ (0 ℕ+ r)         ≡⟨ ap succ (zero-left-neutral r)                     ⟩
              succ r                ∎
      
