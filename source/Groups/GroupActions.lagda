@@ -358,6 +358,11 @@ The above function is called is_equivariant_identity in UniMath.
                      𝕏 ＝ 𝕐 → Action-Iso 𝕏 𝕐
   ＝-to-Action-Iso₁ {𝕏} {.𝕏} refl = id-Action-Iso 𝕏
 
+  ＝-to-Action-Iso-compare : {𝕏 𝕐 : Action} → (u : 𝕏 ＝ 𝕐) →
+                             ＝-to-Action-Iso {𝕏} {𝕐} u ＝ ＝-to-Action-Iso₁ {𝕏} {𝕐} u
+  ＝-to-Action-Iso-compare {𝕏} {.𝕏} refl = refl
+
+
   compose-Action-Iso : {𝕏 𝕐 ℤ : Action} →
                        Action-Iso 𝕏 𝕐 → Action-Iso 𝕐 ℤ →
                        Action-Iso 𝕏 ℤ
