@@ -7,14 +7,14 @@ In this file I define the constructive field axioms.
 {-# OPTIONS --without-K --exact-split --safe #-}
 
 
-open import SpartanMLTT renaming (_+_ to _∔_) -- TypeTopology
+open import MLTT.Spartan renaming (_+_ to _∔_) -- TypeTopology
 
-open import UF-Subsingletons
+open import UF.Subsingletons
 
-module FieldAxioms where
+module DedekindReals.FieldAxioms where
 
 distributive : {X : 𝓤 ̇ } → (X → X → X) → (X → X → X) → 𝓤 ̇
-distributive _⊕_ _⊙_ = ∀ x y z → x ⊙ (y ⊕ z) ≡ ((x ⊙ y) ⊕ (x ⊙ z))
+distributive _⊕_ _⊙_ = ∀ x y z → x ⊙ (y ⊕ z) ＝ ((x ⊙ y) ⊕ (x ⊙ z))
 
 field-structure : 𝓤 ̇ → {𝓥 : Universe}  → 𝓤 ⊔ (𝓥 ⁺) ̇
 field-structure F {𝓥} = (F → F → F) × (F → F → F) × (F → F → 𝓥 ̇)
@@ -37,9 +37,9 @@ field-axioms F { 𝓥 } (_⊕_ , _⊙_ , _#_) = is-set F × associative _⊕_
                                                    × commutative _⊙_
                                                    × distributive _⊕_ _⊙_
                                                    × (Σ (e₀ , e₁) ꞉ F × F , ((e₀ # e₁) × left-neutral e₀ _⊕_
-                                                                                       × ((x : F) → Σ x' ꞉ F , x ⊕ x' ≡ e₀) 
+                                                                                       × ((x : F) → Σ x' ꞉ F , x ⊕ x' ＝ e₀) 
                                                                                        × left-neutral e₁ _⊙_
-                                                                                       × ((x : F) → (x # e₀) → Σ x' ꞉ F , x ⊙ x' ≡ e₁)))
+                                                                                       × ((x : F) → (x # e₀) → Σ x' ꞉ F , x ⊙ x' ＝ e₁)))
 
 Field-structure : 𝓤 ̇ → { 𝓥 : Universe } → 𝓤 ⊔ (𝓥 ⁺) ̇
 Field-structure F  { 𝓥 } = Σ fs ꞉ field-structure F { 𝓥 } , field-axioms F fs
@@ -103,7 +103,7 @@ addition-associative : {𝓥 𝓦 : Universe} → (F : Ordered-Field 𝓤 { 𝓥
 addition-associative ((F , (_+_ , _*_ , _♯_) , F-is-set , +-assoc , *-assoc , +-comm , *-comm , dist , (e₀ , e₁) , e₀♯e₁ , zln , +-inverse , *-left-neutral , *-inverse) , _<_ , <-respects-additions , <-respects-multiplication) = +-assoc
 
 {-
-open import Rationals
+open import DedekindReals.Rationals
 
 ArchimedeanOrderedField : (𝓤 : Universe) → {𝓥 𝓦 : Universe} → (𝓤 ⁺) ⊔ (𝓥 ⁺) ⊔ (𝓦 ⁺) ̇
 ArchimedeanOrderedField 𝓤 {𝓥} {𝓦} = Σ (F , (_<_ , ofa)) ꞉ Ordered-Field 𝓤 {𝓥 } { 𝓦 } , ((embedding : (ℚ → ⟨ (F , (_<_ , ofa)) ⟩)) → (∀ x y → ∃ z ꞉ ℚ , (x < embedding z) × (embedding z < y)))

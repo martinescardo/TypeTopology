@@ -6,22 +6,22 @@ In this file I prove that the rationals are an ordered field.
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import SpartanMLTT renaming (_+_ to _∔_) --TypeTopology
+open import MLTT.Spartan renaming (_+_ to _∔_) --TypeTopology
 
-open import OrderNotation --TypeTopology
-open import UF-FunExt -- TypeTopology
+open import Notation.Order --TypeTopology
+open import UF.FunExt -- TypeTopology
 
-open import FieldAxioms
-open import Rationals
-open import RationalsAddition
-open import RationalsMultiplication
-open import RationalsNegation
-open import RationalsOrder
+open import DedekindReals.FieldAxioms
+open import DedekindReals.Rationals
+open import DedekindReals.RationalsAddition
+open import DedekindReals.RationalsMultiplication
+open import DedekindReals.RationalsNegation
+open import DedekindReals.RationalsOrder
 
-module FieldRationals (fe : Fun-Ext) where
+module DedekindReals.FieldRationals (fe : Fun-Ext) where
 
 _#_ : (x y : ℚ) → 𝓤₀ ̇
-x # y  = ¬ (x ≡ y)
+x # y  = ¬ (x ＝ y)
 
 0ℚ#1ℚ : 0ℚ # 1ℚ
 0ℚ#1ℚ = ℚ-zero-not-one fe

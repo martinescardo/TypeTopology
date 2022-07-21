@@ -8,21 +8,21 @@ towards proving the continuous extension theorem.
 
 {-# OPTIONS --without-K --exact-split --safe --experimental-lossy-unification #-}
 
-open import SpartanMLTT renaming (_+_ to _∔_) --TypeTopology
+open import MLTT.Spartan renaming (_+_ to _∔_) --TypeTopology
 
-open import CanonicalMapNotation
-open import UF-Base
-open import UF-Subsingletons
-open import UF-FunExt
-open import UF-PropTrunc
-open import OrderNotation
+open import Notation.CanonicalMap
+open import UF.Base
+open import UF.Subsingletons
+open import UF.FunExt
+open import UF.PropTrunc
+open import Notation.Order
 
-open import Rationals
-open import RationalsOrder
-open import RationalsMultiplication 
+open import DedekindReals.Rationals
+open import DedekindReals.RationalsOrder
+open import DedekindReals.RationalsMultiplication 
 
 
-module ContinuousExtensionTheorem
+module DedekindReals.ContinuousExtensionTheorem
  (fe : Fun-Ext)
  (pe : Prop-Ext)
  (pt : propositional-truncations-exist)
@@ -30,12 +30,12 @@ module ContinuousExtensionTheorem
 
 open PropositionalTruncation pt
 
-open import DedekindReals pe pt fe
-open import MetricSpaceAltDef pt fe pe
-open import MetricSpaceDedekindReals pt fe pe
-open import MetricSpaceRationals fe pt pe
-open import RationalsLimits fe pt pe
-open import DedekindRealsProperties fe pt pe
+open import DedekindReals.DedekindReals pe pt fe
+open import DedekindReals.MetricSpaceAltDef pt fe pe
+open import DedekindReals.MetricSpaceDedekindReals pt fe pe
+open import DedekindReals.MetricSpaceRationals fe pt pe
+open import DedekindReals.RationalsLimits fe pt pe
+open import DedekindReals.DedekindRealsProperties fe pt pe
 
 \end{code}
 
@@ -45,11 +45,11 @@ open import DedekindRealsProperties fe pt pe
 
 \begin{code}[hide]
 
-open import OrderNotation
-open import NaturalsOrder
+open import Notation.Order
+open import Naturals.Order
 
 {-
-ℚ-converges-to-point-in-ℝ : (x : ℝ) → Σ S ꞉ (ℕ → ℚ) , (c : ?) → (embedding-ℚ-to-ℝ {!!} ≡ x)
+ℚ-converges-to-point-in-ℝ : (x : ℝ) → Σ S ꞉ (ℕ → ℚ) , (c : ?) → (embedding-ℚ-to-ℝ {!!} ＝ x)
 ℚ-converges-to-point-in-ℝ S = {!!}
 -}
 
@@ -88,10 +88,10 @@ continuous→continuous' m₁ m₂ f f-cont (ε , l) = δ , λ c x B → {!!}
   δ : ℚ₊
   δ = {!!}
 -}
-open import RationalsNegation
-open import RationalsMinMax fe renaming (max to ℚ-max ; min to ℚ-min)
-open import RationalsAbs
-open import RationalsAddition
+open import DedekindReals.RationalsNegation
+open import DedekindReals.RationalsMinMax fe renaming (max to ℚ-max ; min to ℚ-min)
+open import DedekindReals.RationalsAbs
+open import DedekindReals.RationalsAddition
 
  -- This needs to be cleaned up, abstract two proofs to chop proof in half
 
@@ -107,40 +107,40 @@ open import RationalsAddition
     → B-ℝ (ι c) (ι x) ε 0<ε
   I x B = ∣ (c - 1/4 * ε , c + 1/4 * ε , x - 1/4 * ε , x + 1/4 * ε) , (l₁ , l₂ , l₃ , l₄ , II (min-to-≤ (c - 1/4 * ε) (x - 1/4 * ε)) (max-to-≤ (c + 1/4 * ε) (x + 1/4 * ε))) ∣
    where
-     general-rearrange : {a b c d : ℚ} → a + b - (c + d) ≡ a - c + (b - d)
-     general-rearrange {a} {b} {c} {d} = a + b - (c + d)         ≡⟨ ℚ+-assoc fe a b (- (c + d)) ⟩
-                                         a + (b + (- (c + d)))   ≡⟨ ap (λ α → a + (b + α)) (ℚ-minus-dist fe c d ⁻¹) ⟩
-                                         a + (b + ((- c) - d))   ≡⟨ ap (a +_) (ℚ+-assoc fe b (- c) (- d) ⁻¹) ⟩
-                                         a + (b - c - d)         ≡⟨ ap (λ α → a + (α - d)) (ℚ+-comm b (- c)) ⟩
-                                         a + ((- c) + b - d)     ≡⟨ ap (a +_) (ℚ+-assoc fe (- c) b (- d)) ⟩
-                                         a + ((- c) + (b - d))   ≡⟨ ℚ+-assoc fe a (- c) (b - d) ⁻¹ ⟩
+     general-rearrange : {a b c d : ℚ} → a + b - (c + d) ＝ a - c + (b - d)
+     general-rearrange {a} {b} {c} {d} = a + b - (c + d)         ＝⟨ ℚ+-assoc fe a b (- (c + d)) ⟩
+                                         a + (b + (- (c + d)))   ＝⟨ ap (λ α → a + (b + α)) (ℚ-minus-dist fe c d ⁻¹) ⟩
+                                         a + (b + ((- c) - d))   ＝⟨ ap (a +_) (ℚ+-assoc fe b (- c) (- d) ⁻¹) ⟩
+                                         a + (b - c - d)         ＝⟨ ap (λ α → a + (α - d)) (ℚ+-comm b (- c)) ⟩
+                                         a + ((- c) + b - d)     ＝⟨ ap (a +_) (ℚ+-assoc fe (- c) b (- d)) ⟩
+                                         a + ((- c) + (b - d))   ＝⟨ ℚ+-assoc fe a (- c) (b - d) ⁻¹ ⟩
                                          a - c + (b - d) ∎
 
-     II : c - 1/4 * ε ≤ x - 1/4 * ε × (ℚ-min (c - 1/4 * ε) (x - 1/4 * ε) ≡ c - 1/4 * ε ) ∔ x - 1/4 * ε ≤ c - 1/4 * ε × (ℚ-min (c - 1/4 * ε) (x - 1/4 * ε) ≡ x - 1/4 * ε)
-        → c + 1/4 * ε ≤ x + 1/4 * ε × (ℚ-max (c + 1/4 * ε) (x + 1/4 * ε) ≡ x + 1/4 * ε ) ∔ x + 1/4 * ε ≤ c + 1/4 * ε × (ℚ-max (c + 1/4 * ε) (x + 1/4 * ε) ≡ c + 1/4 * ε)
+     II : c - 1/4 * ε ≤ x - 1/4 * ε × (ℚ-min (c - 1/4 * ε) (x - 1/4 * ε) ＝ c - 1/4 * ε ) ∔ x - 1/4 * ε ≤ c - 1/4 * ε × (ℚ-min (c - 1/4 * ε) (x - 1/4 * ε) ＝ x - 1/4 * ε)
+        → c + 1/4 * ε ≤ x + 1/4 * ε × (ℚ-max (c + 1/4 * ε) (x + 1/4 * ε) ＝ x + 1/4 * ε ) ∔ x + 1/4 * ε ≤ c + 1/4 * ε × (ℚ-max (c + 1/4 * ε) (x + 1/4 * ε) ＝ c + 1/4 * ε)
         → B-ℚ (ℚ-min (c - 1/4 * ε) (x - 1/4 * ε)) (ℚ-max (c + 1/4 * ε) (x + 1/4 * ε)) ε 0<ε
      II (inl (l₁ , e₁)) (inl (l₂ , e₂)) = transport (_< ε) (ℚ-metric-commutes (ℚ-max (c + 1/4 * ε) (x + 1/4 * ε)) (ℚ-min (c - 1/4 * ε) (x - 1/4 * ε))) i
       where     
        i : B-ℚ (ℚ-max (c + 1/4 * ε) (x + 1/4 * ε)) (ℚ-min (c - 1/4 * ε) (x - 1/4 * ε)) ε 0<ε
        i = transport₂ (λ α β → B-ℚ α β ε 0<ε) (e₂ ⁻¹) (e₁ ⁻¹) (ℚ≤-<-trans fe (ℚ-metric (x + 1/4 * ε) (c - 1/4 * ε)) (abs (x - c) + 1/2 * ε) ε v vi)
         where
-         ii : ℚ-metric (x + 1/4 * ε) (c - 1/4 * ε) ≡ ℚ-metric (x - c) (- 1/2 * ε)
-         ii = ap abs (x + 1/4 * ε - (c - 1/4 * ε)    ≡⟨ general-rearrange ⟩
-                     x - c + (1/4 * ε - (- 1/4 * ε)) ≡⟨ ap (λ α → x - c + (1/4 * ε + α)) (ℚ-minus-minus fe (1/4 * ε) ⁻¹) ⟩ 
-                     x - c + (1/4 * ε + 1/4 * ε)     ≡⟨ ap (x - c +_) (ℚ-distributivity' fe ε 1/4 1/4 ⁻¹) ⟩ 
-                     x - c + (1/4 + 1/4) * ε         ≡⟨ ap (λ α → x - c + α * ε ) (1/4+1/4 fe) ⟩
-                     x - c + 1/2 * ε                 ≡⟨ ap (x - c +_) (ℚ-minus-minus fe (1/2 * ε)) ⟩         
+         ii : ℚ-metric (x + 1/4 * ε) (c - 1/4 * ε) ＝ ℚ-metric (x - c) (- 1/2 * ε)
+         ii = ap abs (x + 1/4 * ε - (c - 1/4 * ε)    ＝⟨ general-rearrange ⟩
+                     x - c + (1/4 * ε - (- 1/4 * ε)) ＝⟨ ap (λ α → x - c + (1/4 * ε + α)) (ℚ-minus-minus fe (1/4 * ε) ⁻¹) ⟩ 
+                     x - c + (1/4 * ε + 1/4 * ε)     ＝⟨ ap (x - c +_) (ℚ-distributivity' fe ε 1/4 1/4 ⁻¹) ⟩ 
+                     x - c + (1/4 + 1/4) * ε         ＝⟨ ap (λ α → x - c + α * ε ) (1/4+1/4 fe) ⟩
+                     x - c + 1/2 * ε                 ＝⟨ ap (x - c +_) (ℚ-minus-minus fe (1/2 * ε)) ⟩         
                      x - c - (- 1/2 * ε)  ∎)
          iii : ℚ-metric (x - c) (- 1/2 * ε) ≤ abs (x - c) + abs (- (- 1/2 * ε))
          iii = ℚ-triangle-inequality fe (x - c) (- (- 1/2 * ε))
-         iv : abs (- (- 1/2 * ε)) ≡ 1/2 * ε
+         iv : abs (- (- 1/2 * ε)) ＝ 1/2 * ε
          iv = ap abs (ℚ-minus-minus fe (1/2 * ε) ⁻¹) ∙ abs-of-pos-is-pos' fe (1/2 * ε) 0<ε'
          v : ℚ-metric (x + 1/4 * ε) (c - 1/4 * ε) ≤ abs (x - c) + 1/2 * ε
          v = transport₂ (λ α β → β ≤ abs (x - c) + α) iv (ii ⁻¹) iii
          vi : abs (x - c) + 1/2 * ε < ε
          vi = transport (abs (x - c) + 1/2 * ε <_) vii (ℚ<-addition-preserves-order (abs (x - c)) (1/2 * ε) (1/2 * ε) (transport (_< 1/2 * ε) (ℚ-metric-commutes c x) B))
           where
-           vii : 1/2 * ε + 1/2 * ε ≡ ε
+           vii : 1/2 * ε + 1/2 * ε ＝ ε
            vii = ap₂ _+_ (ℚ*-comm 1/2 ε) (ℚ*-comm 1/2 ε) ∙ ℚ-into-half fe ε ⁻¹
        
      II (inl (l₁ , e₁)) (inr (l₂ , e₂)) = transport (_< ε) (ℚ-metric-commutes (ℚ-max (c + 1/4 * ε) (x + 1/4 * ε)) (ℚ-min (c - 1/4 * ε) (x - 1/4 * ε))) i
@@ -148,47 +148,47 @@ open import RationalsAddition
        i : B-ℚ (ℚ-max (c + 1/4 * ε) (x + 1/4 * ε)) (ℚ-min (c - 1/4 * ε) (x - 1/4 * ε)) ε 0<ε
        i = transport₂ (λ α β → B-ℚ α β ε 0<ε) (e₂ ⁻¹) (e₁ ⁻¹) (transport (_< ε) (ii ⁻¹) (half-of-pos-is-less fe ε 0<ε))
         where
-         ii : ℚ-metric (c + 1/4 * ε) (c - 1/4 * ε) ≡ 1/2 * ε
-         ii = ap abs (c + 1/4 * ε - (c - 1/4 * ε)       ≡⟨ general-rearrange ⟩
-                      (c - c) + (1/4 * ε - (- 1/4 * ε)) ≡⟨ ap₂ _+_ (ℚ-inverse-sum-to-zero fe c) (ap (1/4 * ε +_) (ℚ-minus-minus fe (1/4 * ε) ⁻¹)) ⟩
-                      0ℚ + (1/4 * ε + 1/4 * ε)          ≡⟨ ℚ-zero-left-neutral fe (1/4 * ε + 1/4 * ε) ⟩
-                      1/4 * ε + 1/4 * ε                 ≡⟨ ℚ-distributivity' fe ε 1/4 1/4 ⁻¹ ⟩
-                      (1/4 + 1/4) * ε                   ≡⟨ ap (_* ε) (1/4+1/4 fe) ⟩
+         ii : ℚ-metric (c + 1/4 * ε) (c - 1/4 * ε) ＝ 1/2 * ε
+         ii = ap abs (c + 1/4 * ε - (c - 1/4 * ε)       ＝⟨ general-rearrange ⟩
+                      (c - c) + (1/4 * ε - (- 1/4 * ε)) ＝⟨ ap₂ _+_ (ℚ-inverse-sum-to-zero fe c) (ap (1/4 * ε +_) (ℚ-minus-minus fe (1/4 * ε) ⁻¹)) ⟩
+                      0ℚ + (1/4 * ε + 1/4 * ε)          ＝⟨ ℚ-zero-left-neutral fe (1/4 * ε + 1/4 * ε) ⟩
+                      1/4 * ε + 1/4 * ε                 ＝⟨ ℚ-distributivity' fe ε 1/4 1/4 ⁻¹ ⟩
+                      (1/4 + 1/4) * ε                   ＝⟨ ap (_* ε) (1/4+1/4 fe) ⟩
                       1/2 * ε ∎) ∙ abs-of-pos-is-pos' fe (1/2 * ε) 0<ε'
      II (inr (l₁ , e₁)) (inl (l₂ , e₂)) = transport (_< ε) (ℚ-metric-commutes (ℚ-max (c + 1/4 * ε) (x + 1/4 * ε)) (ℚ-min (c - 1/4 * ε) (x - 1/4 * ε))) i
       where
        i :  B-ℚ (ℚ-max (c + 1/4 * ε) (x + 1/4 * ε)) (ℚ-min (c - 1/4 * ε) (x - 1/4 * ε)) ε 0<ε
        i = transport₂ (λ α β → B-ℚ α β ε 0<ε) (e₂ ⁻¹) (e₁ ⁻¹) (transport (_< ε) (ii ⁻¹) (half-of-pos-is-less fe ε 0<ε))
         where
-         ii : ℚ-metric (x + 1/4 * ε) (x - 1/4 * ε) ≡ 1/2 * ε
-         ii = ap abs (x + 1/4 * ε - (x - 1/4 * ε)       ≡⟨ general-rearrange ⟩
-                      (x - x) + (1/4 * ε - (- 1/4 * ε)) ≡⟨ ap₂ _+_ (ℚ-inverse-sum-to-zero fe x) (ap (1/4 * ε +_) (ℚ-minus-minus fe (1/4 * ε) ⁻¹)) ⟩
-                      0ℚ + (1/4 * ε + 1/4 * ε)          ≡⟨ ℚ-zero-left-neutral fe (1/4 * ε + 1/4 * ε) ⟩
-                      1/4 * ε + 1/4 * ε                 ≡⟨ ℚ-distributivity' fe ε 1/4 1/4 ⁻¹ ⟩
-                      (1/4 + 1/4) * ε                   ≡⟨ ap (_* ε) (1/4+1/4 fe) ⟩
+         ii : ℚ-metric (x + 1/4 * ε) (x - 1/4 * ε) ＝ 1/2 * ε
+         ii = ap abs (x + 1/4 * ε - (x - 1/4 * ε)       ＝⟨ general-rearrange ⟩
+                      (x - x) + (1/4 * ε - (- 1/4 * ε)) ＝⟨ ap₂ _+_ (ℚ-inverse-sum-to-zero fe x) (ap (1/4 * ε +_) (ℚ-minus-minus fe (1/4 * ε) ⁻¹)) ⟩
+                      0ℚ + (1/4 * ε + 1/4 * ε)          ＝⟨ ℚ-zero-left-neutral fe (1/4 * ε + 1/4 * ε) ⟩
+                      1/4 * ε + 1/4 * ε                 ＝⟨ ℚ-distributivity' fe ε 1/4 1/4 ⁻¹ ⟩
+                      (1/4 + 1/4) * ε                   ＝⟨ ap (_* ε) (1/4+1/4 fe) ⟩
                       1/2 * ε ∎) ∙ abs-of-pos-is-pos' fe (1/2 * ε) 0<ε'
      II (inr (l₁ , e₁)) (inr (l₂ , e₂)) = transport (_< ε) (ℚ-metric-commutes (ℚ-max (c + 1/4 * ε) (x + 1/4 * ε)) (ℚ-min (c - 1/4 * ε) (x - 1/4 * ε))) i
       where
        i : B-ℚ (ℚ-max (c + 1/4 * ε) (x + 1/4 * ε)) (ℚ-min (c - 1/4 * ε) (x - 1/4 * ε)) ε 0<ε
        i = transport₂ (λ α β → B-ℚ α β ε 0<ε) (e₂ ⁻¹) (e₁ ⁻¹) (ℚ≤-<-trans fe (ℚ-metric (c + 1/4 * ε) (x - 1/4 * ε)) (abs (c - x) + 1/2 * ε) ε v vi)
         where
-         ii : ℚ-metric (c + 1/4 * ε) (x - 1/4 * ε) ≡ ℚ-metric (c - x) (- 1/2 * ε)
-         ii = ap abs (c + 1/4 * ε - (x - 1/4 * ε)    ≡⟨ general-rearrange ⟩
-                     c - x + (1/4 * ε - (- 1/4 * ε)) ≡⟨ ap (λ α → c - x + (1/4 * ε + α)) (ℚ-minus-minus fe (1/4 * ε) ⁻¹) ⟩ 
-                     c - x + (1/4 * ε + 1/4 * ε)     ≡⟨ ap (c - x +_) (ℚ-distributivity' fe ε 1/4 1/4 ⁻¹) ⟩ 
-                     c - x + (1/4 + 1/4) * ε         ≡⟨ ap (λ α → c - x + α * ε ) (1/4+1/4 fe) ⟩
-                     c - x + 1/2 * ε                 ≡⟨ ap (c - x +_) (ℚ-minus-minus fe (1/2 * ε)) ⟩         
+         ii : ℚ-metric (c + 1/4 * ε) (x - 1/4 * ε) ＝ ℚ-metric (c - x) (- 1/2 * ε)
+         ii = ap abs (c + 1/4 * ε - (x - 1/4 * ε)    ＝⟨ general-rearrange ⟩
+                     c - x + (1/4 * ε - (- 1/4 * ε)) ＝⟨ ap (λ α → c - x + (1/4 * ε + α)) (ℚ-minus-minus fe (1/4 * ε) ⁻¹) ⟩ 
+                     c - x + (1/4 * ε + 1/4 * ε)     ＝⟨ ap (c - x +_) (ℚ-distributivity' fe ε 1/4 1/4 ⁻¹) ⟩ 
+                     c - x + (1/4 + 1/4) * ε         ＝⟨ ap (λ α → c - x + α * ε ) (1/4+1/4 fe) ⟩
+                     c - x + 1/2 * ε                 ＝⟨ ap (c - x +_) (ℚ-minus-minus fe (1/2 * ε)) ⟩         
                      c - x - (- 1/2 * ε)  ∎)
          iii : ℚ-metric (c - x) (- 1/2 * ε) ≤ abs (c - x) + abs (- (- 1/2 * ε))
          iii = ℚ-triangle-inequality fe (c - x) (- (- 1/2 * ε))
-         iv : abs (- (- 1/2 * ε)) ≡ 1/2 * ε
+         iv : abs (- (- 1/2 * ε)) ＝ 1/2 * ε
          iv = ap abs (ℚ-minus-minus fe (1/2 * ε) ⁻¹) ∙ abs-of-pos-is-pos' fe (1/2 * ε) 0<ε'
          v : ℚ-metric (c + 1/4 * ε) (x - 1/4 * ε) ≤ abs (c - x) + 1/2 * ε
          v = transport₂ (λ α β → β ≤ abs (c - x) + α) iv (ii ⁻¹) iii
          vi : abs (c - x) + 1/2 * ε < ε
          vi = transport (abs (c - x) + 1/2 * ε <_) vii (ℚ<-addition-preserves-order (abs (c - x)) (1/2 * ε) (1/2 * ε) B)
           where
-           vii : 1/2 * ε + 1/2 * ε ≡ ε
+           vii : 1/2 * ε + 1/2 * ε ＝ ε
            vii = ap₂ _+_ (ℚ*-comm 1/2 ε) (ℚ*-comm 1/2 ε) ∙ ℚ-into-half fe ε ⁻¹
            
      abstract       
@@ -205,32 +205,32 @@ open import RationalsAddition
       l₄ = ℚ<-addition-preserves-order'' fe x (1/4 * ε) 0<ε''
 
 {-
-ℚ*-continuous : (y : ℚ) → ¬ (y ≡ 0ℚ) → continuous ℚ-metric-space ℚ-metric-space λ q → y * q
+ℚ*-continuous : (y : ℚ) → ¬ (y ＝ 0ℚ) → continuous ℚ-metric-space ℚ-metric-space λ q → y * q
 ℚ*-continuous y nz q (ε , l) = I (get-inverse)
  where
-  get-inverse : Σ 1/absy ꞉ ℚ , abs y * 1/absy ≡ 1ℚ
+  get-inverse : Σ 1/absy ꞉ ℚ , abs y * 1/absy ＝ 1ℚ
   get-inverse = ℚ*-inverse fe (abs y) {!!}
    
-  I : Σ 1/absy ꞉ ℚ , abs y * 1/absy ≡ 1ℚ →  Σ (δ , l₂) ꞉ ℚ₊ , ((x : ℚ) → B-ℚ q x δ l₂ → B-ℚ (y * q) (y * x) ε l)
+  I : Σ 1/absy ꞉ ℚ , abs y * 1/absy ＝ 1ℚ →  Σ (δ , l₂) ꞉ ℚ₊ , ((x : ℚ) → B-ℚ q x δ l₂ → B-ℚ (y * q) (y * x) ε l)
   I (1/absy , e) = (ε * 1/absy , {!!}) , II
    where
     II : (x : ℚ) → B-ℚ q x (ε * 1/absy) {!!} → B-ℚ (y * q) (y * x) ε l
     II x B = transport₂ _<_ III IV (ℚ<-pos-multiplication-preserves-order' fe (abs (q - x)) (ε * 1/absy) (abs y) B {!!})
      where
-      III : abs (q - x) * abs y ≡ abs (y * q - y * x)
-      III = abs (q - x) * abs y     ≡⟨ abs-mult fe  (q - x) y ⟩
-            abs ((q - x) * y)       ≡⟨ ap abs (ℚ*-comm (q - x) y) ⟩
-            abs (y * (q - x))       ≡⟨ ap abs (ℚ-distributivity fe y q (- x)) ⟩
-            abs (y * q + y * (- x)) ≡⟨ ap (λ α → abs (y * q + α)) (ℚ*-comm y (- x)) ⟩
-            abs (y * q + (- x) * y) ≡⟨ ap (λ α → abs (y * q + α)) (ℚ-subtraction-dist-over-mult fe x y) ⟩
-            abs (y * q - x * y)     ≡⟨ ap (λ α → abs (y * q - α)) (ℚ*-comm x y) ⟩
+      III : abs (q - x) * abs y ＝ abs (y * q - y * x)
+      III = abs (q - x) * abs y     ＝⟨ abs-mult fe  (q - x) y ⟩
+            abs ((q - x) * y)       ＝⟨ ap abs (ℚ*-comm (q - x) y) ⟩
+            abs (y * (q - x))       ＝⟨ ap abs (ℚ-distributivity fe y q (- x)) ⟩
+            abs (y * q + y * (- x)) ＝⟨ ap (λ α → abs (y * q + α)) (ℚ*-comm y (- x)) ⟩
+            abs (y * q + (- x) * y) ＝⟨ ap (λ α → abs (y * q + α)) (ℚ-subtraction-dist-over-mult fe x y) ⟩
+            abs (y * q - x * y)     ＝⟨ ap (λ α → abs (y * q - α)) (ℚ*-comm x y) ⟩
             abs (y * q - y * x)     ∎
       
-      IV : ε * 1/absy * abs y ≡ ε
-      IV = ε * 1/absy * abs y   ≡⟨ ℚ*-assoc fe ε (1/absy) (abs y)     ⟩
-           ε * (1/absy * abs y) ≡⟨ ap (ε *_) (ℚ*-comm 1/absy (abs y)) ⟩
-           ε * (abs y * 1/absy) ≡⟨ ap (ε *_) e                        ⟩
-           ε * 1ℚ               ≡⟨ ℚ-mult-right-id fe ε               ⟩
+      IV : ε * 1/absy * abs y ＝ ε
+      IV = ε * 1/absy * abs y   ＝⟨ ℚ*-assoc fe ε (1/absy) (abs y)     ⟩
+           ε * (1/absy * abs y) ＝⟨ ap (ε *_) (ℚ*-comm 1/absy (abs y)) ⟩
+           ε * (abs y * 1/absy) ＝⟨ ap (ε *_) e                        ⟩
+           ε * 1ℚ               ＝⟨ ℚ-mult-right-id fe ε               ⟩
            ε                    ∎
 -}
 composition-preserves-continuity : {M₁ : 𝓤 ̇} {M₂ : 𝓥 ̇} {M₃ : 𝓦 ̇}
@@ -269,7 +269,7 @@ id-continuous c (ε , 0<ε) = (ε , 0<ε) , λ _ B → B
 
 \begin{code}[hide]
 
-open import DedekindRealsOrder pe pt fe
+open import DedekindReals.DedekindRealsOrder pe pt fe
 -- open import DedekindRealsAddition pe pt fe renaming (_+_ to _ℝ+_)
 {-
 ℝ-no-maximum : (x : ℝ) → Σ y ꞉ ℝ , y < x ∔ x < y
@@ -317,13 +317,13 @@ v    right = {!!}
 
 \begin{code}[hide]
 
-open import RationalsMultiplication
-open import RationalsNegation
-open import UF-Powerset
+open import DedekindReals.RationalsMultiplication
+open import DedekindReals.RationalsNegation
+open import UF.Powerset
 
 {-
 ℚ-continuous-has-inverse :  (f : ℚ → ℚ) → continuous ℚ-metric-space ℚ-metric-space f
-                         → Σ g ꞉ (ℚ → ℚ) , continuous ℚ-metric-space ℚ-metric-space g × (g ∘ f ≡ id)
+                         → Σ g ꞉ (ℚ → ℚ) , continuous ℚ-metric-space ℚ-metric-space g × (g ∘ f ＝ id)
 ℚ-continuous-has-inverse f cont = I , II
  where
   I : ℚ → ℚ
@@ -331,7 +331,7 @@ open import UF-Powerset
    where
     i : {!!}
     i = {!!}
-  II : continuous ℚ-metric-space ℚ-metric-space I × (I ∘ f ≡ id)
+  II : continuous ℚ-metric-space ℚ-metric-space I × (I ∘ f ＝ id)
   II = {!!}
   by-f-continuity : (c : ℚ) → ((ε , 0<ε) : ℚ₊) → Σ (δ , 0<δ) ꞉ ℚ₊ , ((x : ℚ) → B-ℚ c x δ 0<δ → B-ℚ (f c) (f x) ε 0<ε)
   by-f-continuity = cont 
@@ -340,8 +340,8 @@ open import UF-Powerset
 f^ : (f g : ℚ → ℚ)
    → continuous ℚ-metric-space ℚ-metric-space f
    → continuous ℚ-metric-space ℚ-metric-space g
-   → ((k : ℚ) → (f ∘ g) k ≡ k)
-   → ((k : ℚ) → (g ∘ f) k ≡ k)
+   → ((k : ℚ) → (f ∘ g) k ＝ k)
+   → ((k : ℚ) → (g ∘ f) k ＝ k)
    → ℝ → ℝ
 f^ f g f-cont g-cont e₁ e₂ r = z
  where
@@ -354,7 +354,7 @@ f^ f g f-cont g-cont e₁ e₂ r = z
 %So we adopt the same strategy as we used to show that monotonic functions can be extended. Now we have access to some p and q.
 
 %My initial thought is to use the same condition as we used before. The idea is the since we have continuity, this property allows us to extract the reals conditions.
-%Working in reverse, we impose conditions base on (g p) < r, (since we can obtain p' < r → g p' ≡ g (f p') ≡ p').
+%Working in reverse, we impose conditions base on (g p) < r, (since we can obtain p' < r → g p' ＝ g (f p') ＝ p').
 
 %However, I actually think this is not a strong enough condition. We don't know how f p behaves, so some of the conditions are now not automatic.
 %The monotinicity result is extremely strong, since it gives us order on g.
@@ -483,7 +483,7 @@ rationals-extension f = {!!}
   this = {!!}
 -}
 
-open import UF-Subsingletons-FunExt
+open import UF.Subsingletons-FunExt
 
 \end{code}
 
@@ -506,7 +506,7 @@ open import UF-Subsingletons-FunExt
 
 %Motivation for these cuts:
 
-%We want : f̂ (ι p) ≡ ι (f p)
+%We want : f̂ (ι p) ＝ ι (f p)
 %          ∀ ε > 0 , ∃ δ > 0 , | x - a | < δ → | f̂ x - f̂ a | < ε
 
 %In particular, specialising to rationals, we want:
@@ -585,7 +585,7 @@ f^' f f-cont x = z
 
 diagram-commutes : (f : ℚ → ℚ) → (c : continuous ℚ-metric-space ℚ-metric-space f)
                                → (q : ℚ)
-                               → (f^' f c) (ι q) ≡ ι (f q)
+                               → (f^' f c) (ι q) ＝ ι (f q)
 diagram-commutes f c q = ℝ-equality-from-left-cut' (f^' f c (ι q)) (ι (f q)) I II
  where
   I : (p : ℚ)

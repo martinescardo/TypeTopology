@@ -7,23 +7,23 @@ are embedded in the reals.
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import SpartanMLTT renaming (_+_ to _∔_) -- TypeTopology
+open import MLTT.Spartan renaming (_+_ to _∔_) -- TypeTopology
 
-open import CanonicalMapNotation --TypeTopology
-open import OrderNotation --TypeTopology
-open import UF-Base --TypeTopology
-open import UF-FunExt -- TypeTopology
-open import UF-PropTrunc -- TypeTopology
-open import UF-Powerset -- TypeTopology
-open import UF-Retracts --TypeTopology
-open import UF-Subsingletons --TypeTopology
-open import UF-Subsingletons-FunExt --TypeTopology
--- open import UF-Univalence --TypeTopology
+open import Notation.CanonicalMap --TypeTopology
+open import Notation.Order --TypeTopology
+open import UF.Base --TypeTopology
+open import UF.FunExt -- TypeTopology
+open import UF.PropTrunc -- TypeTopology
+open import UF.Powerset -- TypeTopology
+open import UF.Retracts --TypeTopology
+open import UF.Subsingletons --TypeTopology
+open import UF.Subsingletons-FunExt --TypeTopology
+-- open import UF.Univalence --TypeTopology
 
-open import Rationals
-open import RationalsOrder 
+open import DedekindReals.Rationals
+open import DedekindReals.RationalsOrder 
 
-module DedekindReals
+module DedekindReals.DedekindReals
          (pe : Prop-Ext)
          (pt : propositional-truncations-exist)
          (fe : Fun-Ext)
@@ -74,7 +74,7 @@ rounded-left-a L r x y l y-L = II (ℚ≤-split fe x y l)
  where
   I : (∃ p ꞉ ℚ , (x < p) × p ∈ L) → x ∈ L
   I = pr₂ (r x)
-  II : (x < y) ∔ (x ≡ y) → x ∈ L
+  II : (x < y) ∔ (x ＝ y) → x ∈ L
   II (inl l) = I ∣ y , (l , y-L) ∣
   II (inr r) = transport (_∈ L) (r ⁻¹) y-L
 
@@ -89,7 +89,7 @@ rounded-right-a R r x y l x-R = II (ℚ≤-split fe x y l)
  where
   I : (∃ p ꞉ ℚ , (p < y) × p ∈ R) → y ∈ R 
   I = pr₂ (r y)
-  II : (x < y) ∔ (x ≡ y) → y ∈ R
+  II : (x < y) ∔ (x ＝ y) → y ∈ R
   II (inl r) = I ∣ x , (r , x-R) ∣
   II (inr r) = transport (_∈ R) r x-R
 
@@ -159,7 +159,7 @@ rounded-from-real-R ((L , R) , _ , _ , _ , rounded-R , _) = rounded-R
 disjoint-from-real : (((L , R) , i) : ℝ) → disjoint L R
 disjoint-from-real ((L , R) , _ , _ , _ , _ , disjoint , _) = disjoint
 
-open import OrderNotation
+open import Notation.Order
 
 _ℚ<ℝ_  : ℚ → ℝ → 𝓤₀ ̇
 p ℚ<ℝ x = p ∈ lower-cut-of x
@@ -233,7 +233,7 @@ instance
  canonical-map-ℚ-to-ℝ : Canonical-Map ℚ ℝ
  ι {{canonical-map-ℚ-to-ℝ}} = embedding-ℚ-to-ℝ
 
-open import IntegersB
+open import DedekindReals.IntegersB
 ℤ-to-ℝ : ℤ → ℝ
 ℤ-to-ℝ z = ι (ι z)
 
@@ -258,28 +258,28 @@ instance
 1/2ℝ = ι 1/2
 
 ℝ-equality : (((Lx , Rx) , isCutx) ((Ly , Ry) , isCuty) : ℝ)
-           → (Lx ≡ Ly)
-           → (Rx ≡ Ry)
-           → ((Lx , Rx) , isCutx) ≡ ((Ly , Ry) , isCuty)
+           → (Lx ＝ Ly)
+           → (Rx ＝ Ry)
+           → ((Lx , Rx) , isCutx) ＝ ((Ly , Ry) , isCuty)
 
-ℝ-equality ((Lx , Rx) , isCutx) ((Ly , Ry) , isCuty) e₁  e₂ = to-subtype-≡ (λ (L , R) → isCut-is-prop L R) (to-×-≡' (e₁ , e₂))
+ℝ-equality ((Lx , Rx) , isCutx) ((Ly , Ry) , isCuty) e₁  e₂ = to-subtype-＝ (λ (L , R) → isCut-is-prop L R) (to-×-＝' (e₁ , e₂))
 
 ℝ-equality' : (((Lx , Rx) , isCutx) ((Ly , Ry) , isCuty) : ℝ)
            → (Lx ⊆ Ly)
            → (Ly ⊆ Lx)
            → (Rx ⊆ Ry)
            → (Ry ⊆ Rx)
-           → ((Lx , Rx) , isCutx) ≡ ((Ly , Ry) , isCuty)
+           → ((Lx , Rx) , isCutx) ＝ ((Ly , Ry) , isCuty)
 ℝ-equality' x y a b c d = ℝ-equality x y (subset-extensionality pe fe a b) (subset-extensionality pe fe c d)
 
 ℝ-left-cut-equal-gives-right-cut-equal : (((Lx , Rx) , _) ((Ly , Ry) , _) : ℝ)
-                                       → Lx ≡ Ly
-                                       → Rx ≡ Ry
+                                       → Lx ＝ Ly
+                                       → Rx ＝ Ry
 ℝ-left-cut-equal-gives-right-cut-equal ((Lx , Rx) , inhabited-left-x , inhabited-right-x , rounded-left-x , rounded-right-x , disjoint-x , located-x) ((Ly , Ry) , inhabited-left-y , inhabited-right-y , rounded-left-y , rounded-right-y , disjoint-y , located-y) left-cut-equal = I left-subsets
  where
   left-subsets : (Lx ⊆ Ly) × (Ly ⊆ Lx)
   left-subsets = ⊆-refl-consequence Lx Ly left-cut-equal
-  I : (Lx ⊆ Ly) × (Ly ⊆ Lx) → Rx ≡ Ry
+  I : (Lx ⊆ Ly) × (Ly ⊆ Lx) → Rx ＝ Ry
   I (Lx⊆Ly , Ly⊆Lx) = subset-extensionality pe fe Rx⊆Ry Ry⊆Rx
    where
     Rx⊆Ry : Rx ⊆ Ry
@@ -324,17 +324,17 @@ instance
         III (inr q-Rx) = q-Rx
 
 ℝ-equality-from-left-cut : (((Lx , Rx) , isCutx) ((Ly , Ry) , isCuty) : ℝ)
-                         → Lx ≡ Ly
-                         → ((Lx , Rx) , isCutx) ≡ ((Ly , Ry) , isCuty)                         
+                         → Lx ＝ Ly
+                         → ((Lx , Rx) , isCutx) ＝ ((Ly , Ry) , isCuty)                         
 ℝ-equality-from-left-cut x y left-cut-equal = ℝ-equality x y left-cut-equal right-cut-equal
  where
-  right-cut-equal : pr₂ (pr₁ x) ≡ pr₂ (pr₁ y)
+  right-cut-equal : pr₂ (pr₁ x) ＝ pr₂ (pr₁ y)
   right-cut-equal = ℝ-left-cut-equal-gives-right-cut-equal x y left-cut-equal
 
 ℝ-equality-from-left-cut' : (((Lx , Rx) , isCutx) ((Ly , Ry) , isCuty) : ℝ)
                           → Lx ⊆ Ly
                           → Ly ⊆ Lx
-                          → ((Lx , Rx) , isCutx) ≡ ((Ly , Ry) , isCuty)
+                          → ((Lx , Rx) , isCutx) ＝ ((Ly , Ry) , isCuty)
 ℝ-equality-from-left-cut' x y s t = ℝ-equality-from-left-cut x y (subset-extensionality pe fe s t)
 
 type-of-locator-for-reals : 𝓤₁ ̇

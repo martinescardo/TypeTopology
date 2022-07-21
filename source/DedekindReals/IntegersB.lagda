@@ -8,14 +8,14 @@ canonical inclusion of natural numbers in the integers.
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import SpartanMLTT renaming (_+_ to _∔_) --TypeTopology
-open import DiscreteAndSeparated
-open import NaturalNumbers-Properties
-open import Unit-Properties
-open import UF-Subsingletons
-open import UF-Miscelanea
+open import MLTT.Spartan renaming (_+_ to _∔_) --TypeTopology
+open import TypeTopology.DiscreteAndSeparated
+open import Naturals.Properties
+open import MLTT.Unit-Properties
+open import UF.Subsingletons
+open import UF.Miscelanea
 
-module IntegersB where
+module DedekindReals.IntegersB where
 
 
 \end{code}
@@ -48,12 +48,12 @@ succℤ (pos x)            = pos (succ x)
 succℤ (negsucc 0)        = pos 0
 succℤ (negsucc (succ x)) = negsucc x
 
-succpredℤ : (x : ℤ) → succℤ (predℤ x) ≡ x 
+succpredℤ : (x : ℤ) → succℤ (predℤ x) ＝ x 
 succpredℤ (pos 0)        = refl
 succpredℤ (pos (succ x)) = refl
 succpredℤ (negsucc x)    = refl
 
-predsuccℤ : (x : ℤ) → predℤ (succℤ x) ≡ x 
+predsuccℤ : (x : ℤ) → predℤ (succℤ x) ＝ x 
 predsuccℤ (pos x)            = refl
 predsuccℤ (negsucc 0)        = refl
 predsuccℤ (negsucc (succ x)) = refl
@@ -66,8 +66,8 @@ standard induction principle.
 \begin{code}
 
 ℤ-cases : {A : ℤ → 𝓤 ̇} → (x : ℤ)
-                        → ((y : ℤ) → x ≡ succℤ y → A x)
-                        → ((y : ℤ) → x ≡ predℤ y → A x)
+                        → ((y : ℤ) → x ＝ succℤ y → A x)
+                        → ((y : ℤ) → x ＝ predℤ y → A x)
                         → A x
 ℤ-cases (pos x)     cₛ cₚ = cₚ (pos (succ x)) refl
 ℤ-cases (negsucc x) cₛ cₚ = cₛ (negsucc (succ x)) refl
@@ -102,10 +102,10 @@ abs : ℤ → ℕ
 abs (pos x)     = x
 abs (negsucc x) = succ x
 
-pos-lc : {x y : ℕ} → pos x ≡ pos y → x ≡ y
+pos-lc : {x y : ℕ} → pos x ＝ pos y → x ＝ y
 pos-lc {x} {y} = ap abs 
 
-negsucc-lc : {x y : ℕ} → negsucc x ≡ negsucc y → x ≡ y
+negsucc-lc : {x y : ℕ} → negsucc x ＝ negsucc y → x ＝ y
 negsucc-lc {x} {y} p = succ-lc (ap abs p)
 
 \end{code}
@@ -149,7 +149,7 @@ pos-succ-not-zero x p = positive-not-zero x (pos-lc p)
 negsucc-not-zero : (x : ℕ) → negsucc x ≢ pos 0
 negsucc-not-zero x p = pos-not-negsucc (p ⁻¹)
 
-succℤ-no-fp : (x : ℤ) → ¬ (x ≡ succℤ x)
+succℤ-no-fp : (x : ℤ) → ¬ (x ＝ succℤ x)
 succℤ-no-fp (pos x)            e = succ-no-fp x (pos-lc e)
 succℤ-no-fp (negsucc 0)        e = negsucc-not-pos e
 succℤ-no-fp (negsucc (succ x)) e = succ-no-fp x (negsucc-lc (e ⁻¹))
@@ -175,29 +175,29 @@ always equal.
 ℤ-is-discrete : is-discrete ℤ
 ℤ-is-discrete (pos x) (pos y) = f (ℕ-is-discrete x y)
  where
-  f : (x ≡ y) ∔ ¬ (x ≡ y) → decidable (pos x ≡ pos y)
+  f : (x ＝ y) ∔ ¬ (x ＝ y) → decidable (pos x ＝ pos y)
   f (inl e)  = inl (ap pos e)
   f (inr ne) = inr (λ e → ne (pos-lc e))
 ℤ-is-discrete (pos x) (negsucc y) = inr pos-not-negsucc
 ℤ-is-discrete (negsucc x) (pos y) = inr negsucc-not-pos
 ℤ-is-discrete (negsucc x) (negsucc y) = f (ℕ-is-discrete x y)
  where
-  f : (x ≡ y) ∔ ¬ (x ≡ y) → decidable (negsucc x ≡ negsucc y)
+  f : (x ＝ y) ∔ ¬ (x ＝ y) → decidable (negsucc x ＝ negsucc y)
   f (inl e)  = inl (ap negsucc e)
   f (inr ne) = inr (λ e → ne (negsucc-lc e))
 ℤ-is-set : is-set ℤ
 ℤ-is-set = discrete-types-are-sets ℤ-is-discrete
 
-succℤ-lc : {x y : ℤ} → succℤ x ≡ succℤ y → x ≡ y
-succℤ-lc {x} {y} p = x               ≡⟨ predsuccℤ x ⁻¹ ⟩
-                     predℤ (succℤ x) ≡⟨ ap predℤ p     ⟩
-                     predℤ (succℤ y) ≡⟨ predsuccℤ y    ⟩
+succℤ-lc : {x y : ℤ} → succℤ x ＝ succℤ y → x ＝ y
+succℤ-lc {x} {y} p = x               ＝⟨ predsuccℤ x ⁻¹ ⟩
+                     predℤ (succℤ x) ＝⟨ ap predℤ p     ⟩
+                     predℤ (succℤ y) ＝⟨ predsuccℤ y    ⟩
                      y               ∎
 
-predℤ-lc : {x y : ℤ} →  predℤ x ≡ predℤ y → x ≡ y
-predℤ-lc {x} {y} p = x               ≡⟨ succpredℤ x ⁻¹ ⟩
-                     succℤ (predℤ x) ≡⟨ ap succℤ p     ⟩
-                     succℤ (predℤ y) ≡⟨ succpredℤ y    ⟩
+predℤ-lc : {x y : ℤ} →  predℤ x ＝ predℤ y → x ＝ y
+predℤ-lc {x} {y} p = x               ＝⟨ succpredℤ x ⁻¹ ⟩
+                     succℤ (predℤ x) ＝⟨ ap succℤ p     ⟩
+                     succℤ (predℤ y) ＝⟨ succpredℤ y    ⟩
                      y               ∎
 
 \end{code}
@@ -208,7 +208,7 @@ this development, ι is used.
 
 \begin{code}
 
-open import CanonicalMapNotation
+open import Notation.CanonicalMap
 
 instance
  canonical-map-ℕ-to-ℤ : Canonical-Map ℕ ℤ

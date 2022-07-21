@@ -6,11 +6,11 @@ This file defines negation of integers.
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import SpartanMLTT renaming (_+_ to _∔_) --TypeTopology
+open import MLTT.Spartan renaming (_+_ to _∔_) --TypeTopology
 
-open import IntegersB
+open import DedekindReals.IntegersB
 
-module IntegersNegation where
+module DedekindReals.IntegersNegation where
 
 -_ : ℤ → ℤ
 -_ (pos 0)        = pos 0
@@ -25,23 +25,23 @@ These proves are all by definition, however we must consider each case seperatel
 
 \begin{code}
 
-predminus : (x : ℤ) → predℤ (- x) ≡ (- succℤ x)
+predminus : (x : ℤ) → predℤ (- x) ＝ (- succℤ x)
 predminus (pos 0)            = refl
 predminus (pos (succ x))     = refl
 predminus (negsucc 0)        = refl
 predminus (negsucc (succ x)) = refl
 
-negsucctopredℤ : (k : ℕ) → negsucc k ≡ predℤ (- pos k)
+negsucctopredℤ : (k : ℕ) → negsucc k ＝ predℤ (- pos k)
 negsucctopredℤ 0        = refl
 negsucctopredℤ (succ k) = refl
 
-succℤtominuspredℤ : (x : ℤ) → succℤ (- x) ≡ (- predℤ x)
+succℤtominuspredℤ : (x : ℤ) → succℤ (- x) ＝ (- predℤ x)
 succℤtominuspredℤ (pos 0)               = refl
 succℤtominuspredℤ (pos (succ 0))        = refl
 succℤtominuspredℤ (pos (succ (succ x))) = refl
 succℤtominuspredℤ (negsucc x)           = refl
 
-minus-minus-is-plus : (x : ℤ) → - (- x) ≡ x
+minus-minus-is-plus : (x : ℤ) → - (- x) ＝ x
 minus-minus-is-plus (pos 0)        = refl
 minus-minus-is-plus (pos (succ x)) = refl
 minus-minus-is-plus (negsucc x)    = refl

@@ -6,50 +6,50 @@ In this file, I prove that the Reals are arithmetically located.
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import SpartanMLTT renaming (_+_ to _∔_) -- TypeTopology
+open import MLTT.Spartan renaming (_+_ to _∔_) -- TypeTopology
 
-open import OrderNotation --TypeTopology
-open import UF-Base -- TypeTopology
-open import UF-PropTrunc -- TypeTopology
-open import UF-FunExt -- TypeTopology
-open import UF-Powerset -- TypeTopology
-open import UF-Subsingletons -- TypeTopology
-open import NaturalNumbers-Properties --TypeTopology
+open import Notation.Order --TypeTopology
+open import UF.Base -- TypeTopology
+open import UF.PropTrunc -- TypeTopology
+open import UF.FunExt -- TypeTopology
+open import UF.Powerset -- TypeTopology
+open import UF.Subsingletons -- TypeTopology
+open import Naturals.Properties --TypeTopology
 
-open import NaturalsOrder
-open import Rationals
-open import RationalsAbs
-open import RationalsAddition
-open import RationalsLimits
-open import RationalsMultiplication
-open import RationalsNegation
-open import RationalsOrder
+open import Naturals.Order
+open import DedekindReals.Rationals
+open import DedekindReals.RationalsAbs
+open import DedekindReals.RationalsAddition
+open import DedekindReals.RationalsLimits
+open import DedekindReals.RationalsMultiplication
+open import DedekindReals.RationalsNegation
+open import DedekindReals.RationalsOrder
 
-module DedekindRealsProperties
+module DedekindReals.DedekindRealsProperties
         (fe : Fun-Ext)
         (pt : propositional-truncations-exist)
         (pe : Prop-Ext)
       where
-open import DedekindReals pe pt fe
-open import MetricSpaceRationals fe pt pe
+open import DedekindReals.DedekindReals pe pt fe
+open import DedekindReals.MetricSpaceRationals fe pt pe
 open PropositionalTruncation pt
 
- -- Need to generalise this , y - x ≡ a , 0 < a
+ -- Need to generalise this , y - x ＝ a , 0 < a
 exists-2/3-n : (x y p : ℚ) → x < y → 0ℚ < p → Σ n ꞉ ℕ , (((⟨2/3⟩^ n) * (y - x)) < p)
 exists-2/3-n x y (p , α) l₁ l₂ = V use-limit
  where
-  p-convert : p , α ≡ toℚ p
+  p-convert : p , α ＝ toℚ p
   p-convert = toℚ-toℚₙ fe (p , α)
-  I : ¬ (y - x ≡ 0ℚ)
+  I : ¬ (y - x ＝ 0ℚ)
   I e = ℚ<-not-itself x (transport (x <_) δ l₁)
    where
-    δ : y ≡ x
-    δ = y                  ≡⟨ ℚ-zero-right-neutral fe y ⁻¹ ⟩
-        y + 0ℚ             ≡⟨ ap (y +_) (ℚ-inverse-sum-to-zero fe x ⁻¹) ⟩
-        y + (x - x)        ≡⟨ ap (y +_) (ℚ+-comm x (- x)) ⟩
-        y + ((- x) + x)    ≡⟨ ℚ+-assoc fe y (- x) x ⁻¹ ⟩
-        y - x + x          ≡⟨ ap (_+ x) e ⟩
-        0ℚ + x             ≡⟨ ℚ-zero-left-neutral fe x ⟩
+    δ : y ＝ x
+    δ = y                  ＝⟨ ℚ-zero-right-neutral fe y ⁻¹ ⟩
+        y + 0ℚ             ＝⟨ ap (y +_) (ℚ-inverse-sum-to-zero fe x ⁻¹) ⟩
+        y + (x - x)        ＝⟨ ap (y +_) (ℚ+-comm x (- x)) ⟩
+        y + ((- x) + x)    ＝⟨ ℚ+-assoc fe y (- x) x ⁻¹ ⟩
+        y - x + x          ＝⟨ ap (_+ x) e ⟩
+        0ℚ + x             ＝⟨ ℚ-zero-left-neutral fe x ⟩
         x                  ∎
 
   II : 0ℚ < y - x
@@ -75,35 +75,35 @@ exists-2/3-n x y (p , α) l₁ l₂ = V use-limit
      VI = f (succ N) (≤-succ N)
      VII : ℚ-metric  (⟨2/3⟩^ succ N) 0ℚ  * (y - x) <ℚ (toℚ p * multiplicative-inverse fe (y - x) I) * (y - x)
      VII = ℚ<-pos-multiplication-preserves-order' fe (ℚ-metric (⟨2/3⟩^ succ N) 0ℚ) ((toℚ p * multiplicative-inverse fe (y - x) I)) (y - x) VI II
-     VIII : ℚ-metric (⟨2/3⟩^ succ N) 0ℚ * (y - x) ≡ ((⟨2/3⟩^ (succ N)) * (y - x))
+     VIII : ℚ-metric (⟨2/3⟩^ succ N) 0ℚ * (y - x) ＝ ((⟨2/3⟩^ (succ N)) * (y - x))
      VIII = ap (_* (y - x)) i
       where
-       i : ℚ-metric (⟨2/3⟩^ succ N) 0ℚ ≡ (⟨2/3⟩^ (succ N))
-       i = ℚ-metric (⟨2/3⟩^ succ N) 0ℚ ≡⟨ by-definition ⟩
-           abs ((⟨2/3⟩^ succ N) - 0ℚ)     ≡⟨ ap (λ β → abs ((⟨2/3⟩^ succ N) + β) ) (ℚ-minus-zero-is-zero ⁻¹) ⟩
-           abs ((⟨2/3⟩^ succ N) + 0ℚ)     ≡⟨ ap abs (ℚ-zero-right-neutral fe ((⟨2/3⟩^ succ N))) ⟩
-           abs (⟨2/3⟩^ succ N)            ≡⟨ abs-of-pos-is-pos fe (⟨2/3⟩^ succ N) (ℚ<-coarser-than-≤ 0ℚ (⟨2/3⟩^ succ N) (⟨2/3⟩^n-positive fe pt pe (succ N))) ⟩
+       i : ℚ-metric (⟨2/3⟩^ succ N) 0ℚ ＝ (⟨2/3⟩^ (succ N))
+       i = ℚ-metric (⟨2/3⟩^ succ N) 0ℚ ＝⟨ by-definition ⟩
+           abs ((⟨2/3⟩^ succ N) - 0ℚ)     ＝⟨ ap (λ β → abs ((⟨2/3⟩^ succ N) + β) ) (ℚ-minus-zero-is-zero ⁻¹) ⟩
+           abs ((⟨2/3⟩^ succ N) + 0ℚ)     ＝⟨ ap abs (ℚ-zero-right-neutral fe ((⟨2/3⟩^ succ N))) ⟩
+           abs (⟨2/3⟩^ succ N)            ＝⟨ abs-of-pos-is-pos fe (⟨2/3⟩^ succ N) (ℚ<-coarser-than-≤ 0ℚ (⟨2/3⟩^ succ N) (⟨2/3⟩^n-positive fe pt pe (succ N))) ⟩
            (⟨2/3⟩^ succ N) ∎
-     IX : (toℚ p * multiplicative-inverse fe (y - x) I) * (y - x) ≡ (p , α)
-     IX = toℚ p * multiplicative-inverse fe (y - x) I * (y - x)     ≡⟨ ap (λ γ → γ * (multiplicative-inverse fe (y - x) I) * (y - x)) (p-convert ⁻¹) ⟩
-          (p , α) * multiplicative-inverse fe (y - x) I * (y - x)   ≡⟨ ℚ*-assoc fe (p , α) (multiplicative-inverse fe (y - x) I) (y - x) ⟩
-          (p , α) * (multiplicative-inverse fe (y - x) I * (y - x)) ≡⟨ ap ((p , α) *_) (ℚ*-comm ((multiplicative-inverse fe (y - x) I)) (y - x)) ⟩
-          (p , α) * ((y - x) * multiplicative-inverse fe (y - x) I) ≡⟨ ap ((p , α) *_) (ℚ*-inverse-product-is-one fe (y - x) I) ⟩
-          (p , α) * 1ℚ ≡⟨ ℚ-mult-right-id fe (p , α) ⟩
+     IX : (toℚ p * multiplicative-inverse fe (y - x) I) * (y - x) ＝ (p , α)
+     IX = toℚ p * multiplicative-inverse fe (y - x) I * (y - x)     ＝⟨ ap (λ γ → γ * (multiplicative-inverse fe (y - x) I) * (y - x)) (p-convert ⁻¹) ⟩
+          (p , α) * multiplicative-inverse fe (y - x) I * (y - x)   ＝⟨ ℚ*-assoc fe (p , α) (multiplicative-inverse fe (y - x) I) (y - x) ⟩
+          (p , α) * (multiplicative-inverse fe (y - x) I * (y - x)) ＝⟨ ap ((p , α) *_) (ℚ*-comm ((multiplicative-inverse fe (y - x) I)) (y - x)) ⟩
+          (p , α) * ((y - x) * multiplicative-inverse fe (y - x) I) ＝⟨ ap ((p , α) *_) (ℚ*-inverse-product-is-one fe (y - x) I) ⟩
+          (p , α) * 1ℚ ＝⟨ ℚ-mult-right-id fe (p , α) ⟩
           p , α ∎
 
-ral-lemma : (α β : ℚ) → (n : ℕ) → β ≡ 2/3 * α → ((rec 2/3 (λ k → k * 2/3) n * 2/3) * α) ≡ (rec 2/3 (λ k → k * 2/3) n * β)
-ral-lemma α β n e = ((rec 2/3 (λ k → k * 2/3) n * 2/3) * α) ≡⟨ refl ⟩
-               (((⟨2/3⟩^ (succ (succ n))) * α) )            ≡⟨ ap (_* α) (I (succ n)) ⟩
-               (((⟨2/3⟩^ succ n) * 2/3) * α)                ≡⟨ ℚ*-assoc fe (⟨2/3⟩^ (succ n)) 2/3 α ⟩
-               ((⟨2/3⟩^ succ n) * (2/3 * α))                ≡⟨ ap ((⟨2/3⟩^ (succ n)) *_) (e ⁻¹) ⟩
+ral-lemma : (α β : ℚ) → (n : ℕ) → β ＝ 2/3 * α → ((rec 2/3 (λ k → k * 2/3) n * 2/3) * α) ＝ (rec 2/3 (λ k → k * 2/3) n * β)
+ral-lemma α β n e = ((rec 2/3 (λ k → k * 2/3) n * 2/3) * α) ＝⟨ refl ⟩
+               (((⟨2/3⟩^ (succ (succ n))) * α) )            ＝⟨ ap (_* α) (I (succ n)) ⟩
+               (((⟨2/3⟩^ succ n) * 2/3) * α)                ＝⟨ ℚ*-assoc fe (⟨2/3⟩^ (succ n)) 2/3 α ⟩
+               ((⟨2/3⟩^ succ n) * (2/3 * α))                ＝⟨ ap ((⟨2/3⟩^ (succ n)) *_) (e ⁻¹) ⟩
                (rec 2/3 (λ k → k * 2/3) n * β)              ∎
  where
-  I : (n : ℕ) → ⟨2/3⟩^ (succ n) ≡ ((⟨2/3⟩^ n) * 2/3)
+  I : (n : ℕ) → ⟨2/3⟩^ (succ n) ＝ ((⟨2/3⟩^ n) * 2/3)
   I zero = f
    where
     abstract
-     f : ⟨2/3⟩^ (succ 0) ≡ ((⟨2/3⟩^ 0) * 2/3)
+     f : ⟨2/3⟩^ (succ 0) ＝ ((⟨2/3⟩^ 0) * 2/3)
      f = (ℚ-mult-left-id fe 2/3) ⁻¹
   I (succ n) = refl
 
@@ -119,7 +119,7 @@ ral-lemma α β n e = ((rec 2/3 (λ k → k * 2/3) n * 2/3) * α) ≡⟨ refl �
     γ : Sigma ℕ (λ n → ((⟨2/3⟩^ n) * (y - x)) < p)
     γ = exists-2/3-n x y p (disjoint x y (x-L , y-R)) l
     
-    II : (x y : ℚ) → x ∈ L → y ∈ R → (n : ℕ) → (Σ (x' , y') ꞉ ℚ × ℚ , x < x' × x' < y' × y' < y × ((y - x') ≡ (2/3 * (y - x))) × (y' - x ≡ 2/3 * (y - x)))
+    II : (x y : ℚ) → x ∈ L → y ∈ R → (n : ℕ) → (Σ (x' , y') ꞉ ℚ × ℚ , x < x' × x' < y' × y' < y × ((y - x') ＝ (2/3 * (y - x))) × (y' - x ＝ 2/3 * (y - x)))
        → ((⟨2/3⟩^ n) * (y - x)) < p
        → ∃ (x , y) ꞉ ℚ × ℚ , x ∈ L × y ∈ R × (0ℚ < (y - x)) × ((y - x) < p)
     II x y x-L y-R zero ((x' , y') , l₁ , l₂ , l₃ , e₁ , e₂) l₄            = ∣ (x , y) , x-L , y-R , α , β ∣
@@ -167,7 +167,7 @@ trans→disjoint L R dis q (qL , qR) = ℚ<-not-itself q I
 disjoint→trans : (L R : 𝓟 ℚ) → located L R →  ((q : ℚ) → ¬ (q ∈ L × q ∈ R)) → disjoint L R
 disjoint→trans L R loc dis p q (pL , qR) = I (ℚ-trichotomous fe p q)
  where
-  I : p < q ∔ (p ≡ q) ∔ q < p → p < q
+  I : p < q ∔ (p ＝ q) ∔ q < p → p < q
   I (inl l) = l
   I (inr (inl e)) = 𝟘-elim (dis q ((transport (_∈ L) e pL) , qR))
   I (inr (inr r)) = 𝟘-elim (∥∥-rec 𝟘-is-prop III II)

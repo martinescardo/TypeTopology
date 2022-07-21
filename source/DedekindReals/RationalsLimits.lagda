@@ -8,33 +8,33 @@ and that 1/(n+1) converges to 0.
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import SpartanMLTT renaming (_+_ to _∔_)  -- TypeTopology
+open import MLTT.Spartan renaming (_+_ to _∔_)  -- TypeTopology
 
-open import OrderNotation --TypeTopology
-open import UF-Base --TypeTopology
-open import UF-Equiv --TypeTopology
-open import UF-FunExt --TypeTopology
-open import UF-Subsingletons -- TypeTopology
-open import UF-PropTrunc -- TypeTopology
+open import Notation.Order --TypeTopology
+open import UF.Base --TypeTopology
+open import UF.Equiv --TypeTopology
+open import UF.FunExt --TypeTopology
+open import UF.Subsingletons -- TypeTopology
+open import UF.PropTrunc -- TypeTopology
 
-open import Rationals
-open import RationalsAddition
-open import RationalsAbs
-open import RationalsMinMax
-open import RationalsMultiplication
-open import RationalsNegation
-open import RationalsOrder
+open import DedekindReals.Rationals
+open import DedekindReals.RationalsAddition
+open import DedekindReals.RationalsAbs
+open import DedekindReals.RationalsMinMax
+open import DedekindReals.RationalsMultiplication
+open import DedekindReals.RationalsNegation
+open import DedekindReals.RationalsOrder
 
-open import NaturalsOrder renaming (max to ℕ-max ; max-comm to ℕ-max-comm)
+open import Naturals.Order renaming (max to ℕ-max ; max-comm to ℕ-max-comm)
 
-module RationalsLimits
+module DedekindReals.RationalsLimits
         (fe : Fun-Ext)
         (pt : propositional-truncations-exist)
         (pe : Prop-Ext)
  where
 
-open import MetricSpaceRationals fe pt pe
-open import MetricSpaceAltDef pt fe pe
+open import DedekindReals.MetricSpaceRationals fe pt pe
+open import DedekindReals.MetricSpaceAltDef pt fe pe
 
 _limit-of_ : (L : ℚ) → (f : ℕ → ℚ) → 𝓤₀ ̇
 L limit-of f = ∀ (ε : ℚ) → 0ℚ < ε
@@ -104,10 +104,10 @@ sandwich-theorem L f g h (k , k-greater) lim-f lim-h = lim-g
   f-conv : (n : ℕ) → 0 ≤ n → ℚ-metric (0f n) 0ℚ < ε
   f-conv n less = transport (_< ε) I l
    where
-    I : ℚ-metric (0f n) 0ℚ ≡ 0ℚ
-    I = ℚ-metric (0f n) 0ℚ    ≡⟨ by-definition ⟩
-        abs (0ℚ - 0ℚ)         ≡⟨ by-definition ⟩
-        abs 0ℚ                ≡⟨ by-definition ⟩
+    I : ℚ-metric (0f n) 0ℚ ＝ 0ℚ
+    I = ℚ-metric (0f n) 0ℚ    ＝⟨ by-definition ⟩
+        abs (0ℚ - 0ℚ)         ＝⟨ by-definition ⟩
+        abs 0ℚ                ＝⟨ by-definition ⟩
         0ℚ ∎
 
 constant-sequence : (q : ℚ) → (n : ℕ) → ℚ
@@ -116,14 +116,14 @@ constant-sequence q n = q
 constant-sequence-converges : (q : ℚ) → q limit-of (constant-sequence q)
 constant-sequence-converges q ε l = 0 , (λ n l₂ → transport (_< ε) I l)
  where
-  I : 0ℚ ≡ ℚ-metric q q
+  I : 0ℚ ＝ ℚ-metric q q
   I = ℚ-self-dist fe q ⁻¹
 
-open import IntegersB hiding (abs)
-open import ncRationalsOrder
-open import ncRationalsOperations renaming (_*_ to _ℚₙ*_ ; _+_ to _ℚₙ+_ ; -_ to ℚₙ-_ ; abs to ℚₙ-abs) 
+open import DedekindReals.IntegersB hiding (abs)
+open import DedekindReals.ncRationalsOrder
+open import DedekindReals.ncRationalsOperations renaming (_*_ to _ℚₙ*_ ; _+_ to _ℚₙ+_ ; -_ to ℚₙ-_ ; abs to ℚₙ-abs) 
 
-open import CanonicalMapNotation
+open import Notation.CanonicalMap
 
 embedding-ℕ-to-ℚ : ℕ → ℚ
 embedding-ℕ-to-ℚ n = toℚ (pos n , 0)
@@ -131,32 +131,32 @@ embedding-ℕ-to-ℚ n = toℚ (pos n , 0)
 embedding-1/ℕ-to-ℚ : ℕ → ℚ
 embedding-1/ℕ-to-ℚ n = toℚ (pos 1 , n)
 
-open import NaturalsDivision
-open import NaturalsAddition renaming (_+_ to _ℕ+_)
-open import NaturalsMultiplication renaming (_*_ to _ℕ*_)
-open import NaturalNumbers-Properties -- TypeTopology
-open import IntegersMultiplication renaming (_*_ to _ℤ*_)
-open import IntegersAddition renaming (_+_ to _ℤ+_) hiding (_-_)
-open import IntegersOrder
+open import DedekindReals.NaturalsDivision
+open import Naturals.Addition renaming (_+_ to _ℕ+_)
+open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
+open import Naturals.Properties -- TypeTopology
+open import DedekindReals.IntegersMultiplication renaming (_*_ to _ℤ*_)
+open import DedekindReals.IntegersAddition renaming (_+_ to _ℤ+_) hiding (_-_)
+open import DedekindReals.IntegersOrder
 
 positive-order-flip : (m n a b : ℕ) → ((pos (succ m)) , a) ℚₙ< ((pos (succ n)) , b)
                                     → ((pos (succ a)) , m) ℚₙ> ((pos (succ b)) , n)
 positive-order-flip m n a b l = transport₂ _<_ I II l
  where
-  I : pos (succ m) ℤ* pos (succ b) ≡ pos (succ b) ℤ* pos (succ m)
+  I : pos (succ m) ℤ* pos (succ b) ＝ pos (succ b) ℤ* pos (succ m)
   I = (ℤ*-comm (pos (succ m)) (pos (succ b)))
 
-  II : pos (succ n) ℤ* pos (succ a) ≡ pos (succ a) ℤ* pos (succ n)
+  II : pos (succ n) ℤ* pos (succ a) ＝ pos (succ a) ℤ* pos (succ n)
   II = (ℤ*-comm (pos (succ n)) (pos (succ a))) 
 
-open import ncRationals
+open import DedekindReals.ncRationals
 
 ⟨1/sn⟩-converges : 0ℚ limit-of ⟨1/sn⟩
 ⟨1/sn⟩-converges ((pos 0 , a) , ε)        l = 𝟘-elim (ℚ<-not-itself 0ℚ (transport (0ℚ <_) (numerator-zero-is-zero fe ((pos 0 , a) , ε) refl) l))
 ⟨1/sn⟩-converges ((negsucc x , a) , ε)    l = 𝟘-elim (negative-not-greater-than-zero x a l)
 ⟨1/sn⟩-converges ((pos (succ x) , a) , ε) l = q ℕ+ 1 , conclusion 
  where
-  rough-N : Σ q ꞉ ℕ , Σ r ꞉ ℕ , (succ a ≡ q ℕ* succ x ℕ+ r) × r < succ x
+  rough-N : Σ q ꞉ ℕ , Σ r ꞉ ℕ , (succ a ＝ q ℕ* succ x ℕ+ r) × r < succ x
   rough-N = division (succ a) x
   q = pr₁ rough-N
   r = pr₁ (pr₂ rough-N)
@@ -167,12 +167,12 @@ open import ncRationals
     i : q ℕ* succ x ℕ+ r < q ℕ* succ x ℕ+ succ x
     i = <-n-monotone-left r (succ x) (q ℕ* succ x) (pr₂ (pr₂ (pr₂ rough-N)))
 
-    ii : q ℕ* succ x ℕ+ r ≡ succ a 
+    ii : q ℕ* succ x ℕ+ r ＝ succ a 
     ii = pr₁ (pr₂ (pr₂ rough-N)) ⁻¹
 
-    iii : q ℕ* succ x ℕ+ succ x ≡ succ x ℕ* (q ℕ+ 1)
-    iii = q ℕ* succ x ℕ+ succ x      ≡⟨ ap₂ _ℕ+_ (mult-commutativity q (succ x)) (mult-right-id (succ x) ⁻¹) ⟩
-          succ x ℕ* q ℕ+ succ x ℕ* 1 ≡⟨ distributivity-mult-over-addition (succ x) q 1 ⁻¹                         ⟩
+    iii : q ℕ* succ x ℕ+ succ x ＝ succ x ℕ* (q ℕ+ 1)
+    iii = q ℕ* succ x ℕ+ succ x      ＝⟨ ap₂ _ℕ+_ (mult-commutativity q (succ x)) (mult-right-id (succ x) ⁻¹) ⟩
+          succ x ℕ* q ℕ+ succ x ℕ* 1 ＝⟨ distributivity-mult-over-addition (succ x) q 1 ⁻¹                         ⟩
           succ x ℕ* (q ℕ+ 1)         ∎
   ζ : pos (succ a) < pos (succ x ℕ* (q ℕ+ 1))
   ζ = ℕ-order-respects-ℤ-order (succ a) (succ x ℕ* (q ℕ+ 1)) γ
@@ -187,14 +187,14 @@ open import ncRationals
      II : (pos (succ a) , x) ℚₙ< (pos (succ n) , 0)
      II = β (ℤ≤-split (pos (succ q)) (pos (succ n)) I)
       where
-       τ : pos (succ x ℕ* (q ℕ+ 1)) ≡ pos (succ q) ℤ* pos (succ x)
-       τ = pos (succ x ℕ* (q ℕ+ 1))     ≡⟨ pos-multiplication-equiv-to-ℕ (succ x) (q ℕ+ 1) ⁻¹ ⟩
-           pos (succ x) ℤ* pos (q ℕ+ 1) ≡⟨ by-definition                                      ⟩
-           pos (succ x) ℤ* pos (succ q) ≡⟨ ℤ*-comm (pos (succ x)) (pos (succ q))              ⟩
+       τ : pos (succ x ℕ* (q ℕ+ 1)) ＝ pos (succ q) ℤ* pos (succ x)
+       τ = pos (succ x ℕ* (q ℕ+ 1))     ＝⟨ pos-multiplication-equiv-to-ℕ (succ x) (q ℕ+ 1) ⁻¹ ⟩
+           pos (succ x) ℤ* pos (q ℕ+ 1) ＝⟨ by-definition                                      ⟩
+           pos (succ x) ℤ* pos (succ q) ＝⟨ ℤ*-comm (pos (succ x)) (pos (succ q))              ⟩
            pos (succ q) ℤ* pos (succ x) ∎
        α : pos (succ a) ℤ* pos 1 < pos (succ q) ℤ* pos (succ x) 
        α = transport₂ _<_ (ℤ-mult-right-id (pos (succ a))) τ ζ
-       β : pos (succ q) < pos (succ n) ∔ (pos (succ q) ≡ pos (succ n)) → (pos (succ a) , x) ℚₙ< (pos (succ n) , 0)
+       β : pos (succ q) < pos (succ n) ∔ (pos (succ q) ＝ pos (succ n)) → (pos (succ a) , x) ℚₙ< (pos (succ n) , 0)
        β (inl less) = ℚₙ<-trans (pos (succ a) , x) (pos (succ q) , 0) (pos (succ n) , 0) α less
        β (inr equal) = transport (λ - → (pos (succ a) , x) ℚₙ< (- , 0)) equal α
      
@@ -204,18 +204,18 @@ open import ncRationals
      IV : abs (toℚ ((pos 1) , n) - 0ℚ) < ((pos (succ x) , a) , ε)
      IV = transport (_< ((pos (succ x) , a) , ε)) i iv
       where
-       i : toℚ (pos 1 , n) ≡ abs (toℚ ((pos 1) , n) - 0ℚ)
-       i = toℚ (pos 1 , n)                               ≡⟨ by-definition                                                ⟩
-           toℚ (ℚₙ-abs (pos 1 , n))                      ≡⟨ toℚ-abs fe (pos 1 , n) ⁻¹                                     ⟩
-           abs (toℚ (pos 1 , n))                         ≡⟨ ap (λ - → abs (toℚ -)) (ℚₙ-zero-right-neutral (pos 1 , n) ⁻¹) ⟩
-           abs (toℚ ((pos 1 , n) ℚₙ+ (pos 0 , 0)))       ≡⟨ by-definition                                                 ⟩
-           abs (toℚ ((pos 1 , n) ℚₙ+ (ℚₙ- (pos 0 , 0)))) ≡⟨ ap abs (toℚ-subtraction fe (pos 1 , n) (pos 0 , 0) ⁻¹)        ⟩
+       i : toℚ (pos 1 , n) ＝ abs (toℚ ((pos 1) , n) - 0ℚ)
+       i = toℚ (pos 1 , n)                               ＝⟨ by-definition                                                ⟩
+           toℚ (ℚₙ-abs (pos 1 , n))                      ＝⟨ toℚ-abs fe (pos 1 , n) ⁻¹                                     ⟩
+           abs (toℚ (pos 1 , n))                         ＝⟨ ap (λ - → abs (toℚ -)) (ℚₙ-zero-right-neutral (pos 1 , n) ⁻¹) ⟩
+           abs (toℚ ((pos 1 , n) ℚₙ+ (pos 0 , 0)))       ＝⟨ by-definition                                                 ⟩
+           abs (toℚ ((pos 1 , n) ℚₙ+ (ℚₙ- (pos 0 , 0)))) ＝⟨ ap abs (toℚ-subtraction fe (pos 1 , n) (pos 0 , 0) ⁻¹)        ⟩
            abs (toℚ (pos 1 , n) - 0ℚ)                   ∎
 
        ii : toℚ (pos 1 , n) < toℚ (pos (succ x) , a)
        ii = toℚ-< (pos 1 , n) (pos (succ x) , a) III
 
-       iii : (pos (succ x) , a) , ε ≡ toℚ (pos (succ x) , a)
+       iii : (pos (succ x) , a) , ε ＝ toℚ (pos (succ x) , a)
        iii = toℚ-toℚₙ fe ((pos (succ x) , a) , ε)
 
        iv : toℚ (pos 1 , n) < ((pos (succ x) , a) , ε)
@@ -224,20 +224,20 @@ open import ncRationals
 limits-lemma : (k : ℕ) → ((pos 1 , succ k) ℚₙ* (pos 2 , 2)) ℚₙ≤ (pos 1 , succ (succ k))
 limits-lemma k = k , I
  where
-  I : pos 2 ℤ* pos (succ (succ (succ k))) ℤ+ pos k ≡ pos 1 ℤ* pos (succ (pred (succ (succ k) ℕ* 3)))
-  I = pos 2 ℤ* pos (succ (succ (succ k))) ℤ+ pos k ≡⟨ by-definition                                                          ⟩
-      pos 2 ℤ* pos (k ℕ+ 3) ℤ+ pos k                  ≡⟨ ℤ+-comm (pos 2 ℤ* pos (k ℕ+ 3)) (pos k)                                ⟩
-      pos k ℤ+ pos 2 ℤ* pos (k ℕ+ 3)                  ≡⟨ ap (λ z → pos k ℤ+ pos 2 ℤ* z) (distributivity-pos-addition k 3 ⁻¹)        ⟩
-      pos k ℤ+ pos 2 ℤ* (pos k ℤ+ pos 3)              ≡⟨ ap (pos k ℤ+_) (distributivity-mult-over-ℤ' (pos k) (pos 3) (pos 2))   ⟩
-      pos k ℤ+ (pos 2 ℤ* pos k ℤ+ pos 6)              ≡⟨ ℤ+-assoc (pos k) (pos 2 ℤ* pos k) (pos 6) ⁻¹                           ⟩
-      pos k ℤ+ pos 2 ℤ* pos k ℤ+ pos 6                ≡⟨ ap (λ z → z ℤ+ pos 2 ℤ* pos k ℤ+ pos 6) (ℤ-mult-left-id (pos k) ⁻¹)    ⟩
-      pos 1 ℤ* pos k ℤ+ pos 2 ℤ* pos k ℤ+ pos 6       ≡⟨ ap (_ℤ+ pos 6) (distributivity-mult-over-ℤ (pos 1) (pos 2) (pos k) ⁻¹) ⟩
-      (pos 3) ℤ* pos k ℤ+ pos 6                       ≡⟨ ap (_ℤ+ pos 6) (ℤ*-comm (pos 3) (pos k))                               ⟩
-      pos k ℤ* pos 3 ℤ+ pos 6                         ≡⟨ distributivity-mult-over-ℤ (pos k) (pos 2) (pos 3) ⁻¹                  ⟩ 
-      (pos k ℤ+ pos 2) ℤ* pos 3                       ≡⟨ ap (_ℤ* pos 3) (distributivity-pos-addition k 2)                           ⟩ 
-      pos (k ℕ+ 2) ℤ* pos 3                           ≡⟨ by-definition                                                          ⟩
-      pos (succ (succ k)) ℤ* pos 3                    ≡⟨ denom-setup (succ k) 2 ⁻¹                                              ⟩
-      pos (succ (pred (succ (succ k) ℕ* 3)))          ≡⟨ ℤ-mult-left-id (pos (succ (pred (succ (succ k) ℕ* 3)))) ⁻¹             ⟩
+  I : pos 2 ℤ* pos (succ (succ (succ k))) ℤ+ pos k ＝ pos 1 ℤ* pos (succ (pred (succ (succ k) ℕ* 3)))
+  I = pos 2 ℤ* pos (succ (succ (succ k))) ℤ+ pos k ＝⟨ by-definition                                                          ⟩
+      pos 2 ℤ* pos (k ℕ+ 3) ℤ+ pos k                  ＝⟨ ℤ+-comm (pos 2 ℤ* pos (k ℕ+ 3)) (pos k)                                ⟩
+      pos k ℤ+ pos 2 ℤ* pos (k ℕ+ 3)                  ＝⟨ ap (λ z → pos k ℤ+ pos 2 ℤ* z) (distributivity-pos-addition k 3 ⁻¹)        ⟩
+      pos k ℤ+ pos 2 ℤ* (pos k ℤ+ pos 3)              ＝⟨ ap (pos k ℤ+_) (distributivity-mult-over-ℤ' (pos k) (pos 3) (pos 2))   ⟩
+      pos k ℤ+ (pos 2 ℤ* pos k ℤ+ pos 6)              ＝⟨ ℤ+-assoc (pos k) (pos 2 ℤ* pos k) (pos 6) ⁻¹                           ⟩
+      pos k ℤ+ pos 2 ℤ* pos k ℤ+ pos 6                ＝⟨ ap (λ z → z ℤ+ pos 2 ℤ* pos k ℤ+ pos 6) (ℤ-mult-left-id (pos k) ⁻¹)    ⟩
+      pos 1 ℤ* pos k ℤ+ pos 2 ℤ* pos k ℤ+ pos 6       ＝⟨ ap (_ℤ+ pos 6) (distributivity-mult-over-ℤ (pos 1) (pos 2) (pos k) ⁻¹) ⟩
+      (pos 3) ℤ* pos k ℤ+ pos 6                       ＝⟨ ap (_ℤ+ pos 6) (ℤ*-comm (pos 3) (pos k))                               ⟩
+      pos k ℤ* pos 3 ℤ+ pos 6                         ＝⟨ distributivity-mult-over-ℤ (pos k) (pos 2) (pos 3) ⁻¹                  ⟩ 
+      (pos k ℤ+ pos 2) ℤ* pos 3                       ＝⟨ ap (_ℤ* pos 3) (distributivity-pos-addition k 2)                           ⟩ 
+      pos (k ℕ+ 2) ℤ* pos 3                           ＝⟨ by-definition                                                          ⟩
+      pos (succ (succ k)) ℤ* pos 3                    ＝⟨ denom-setup (succ k) 2 ⁻¹                                              ⟩
+      pos (succ (pred (succ (succ k) ℕ* 3)))          ＝⟨ ℤ-mult-left-id (pos (succ (pred (succ (succ k) ℕ* 3)))) ⁻¹             ⟩
       pos 1 ℤ* pos (succ (pred (succ (succ k) ℕ* 3))) ∎
 
 
@@ -286,7 +286,7 @@ limits-lemma k = k , I
         ii = transport (_≤ ⟨1/n⟩ (succ (succ k))) (iii ⁻¹) iv
          where
           abstract
-           iii : (⟨1/n⟩ (succ k)) * 2/3 ≡ toℚ ((pos 1 , succ k) ℚₙ* (pos 2 , 2))
+           iii : (⟨1/n⟩ (succ k)) * 2/3 ＝ toℚ ((pos 1 , succ k) ℚₙ* (pos 2 , 2))
            iii = toℚ-* fe (pos 1 , succ k) (pos 2 , 2) ⁻¹
            iv : toℚ ((pos 1 , succ k) ℚₙ* (pos 2 , 2)) ≤ℚ ⟨1/n⟩ (succ (succ k))
            iv = toℚ-≤ ((pos 1 , succ k) ℚₙ* (pos 2 , 2)) (pos 1 , succ (succ k)) (limits-lemma k)
@@ -302,7 +302,7 @@ limits-lemma k = k , I
   I = ⟨2/3⟩^n-positive n
   II : 0ℚ < (⟨2/3⟩^ n) * 2/3
   II = ℚ<-pos-multiplication-preserves-order (⟨2/3⟩^ n) 2/3 I (1 , refl)
-  III : (⟨2/3⟩^ n) * 2/3 ≡ (⟨2/3⟩^ (succ n))
+  III : (⟨2/3⟩^ n) * 2/3 ＝ (⟨2/3⟩^ (succ n))
   III = ⟨2/3⟩-to-mult fe n ⁻¹
 
 \end{code}
@@ -314,7 +314,7 @@ limits-lemma k = k , I
 dependent-type-universal-property : {X : 𝓤 ̇} → (A B : X → 𝓤 ̇) → ((x : X) → A x × B x) → ((x : X) → A x) × ((x : X) → B x)
 dependent-type-universal-property A B f = (λ x → pr₁ (f x)) , (λ x → pr₂ (f x))
 
-open import UF-Subsingletons-FunExt
+open import UF.Subsingletons-FunExt
 
 dependent-type-universal-property-equivalence : {X : 𝓤 ̇} → (A B : X → 𝓤 ̇) → ((x : X) → A x × B x) ≃ ((x : X) → A x) × ((x : X) → B x)
 dependent-type-universal-property-equivalence A B = dependent-type-universal-property A B , ((I , II) , III , IV)
@@ -337,7 +337,7 @@ generalised-dependent-type-universal-property A P f = (λ x → pr₁ (f x)) , �
 RationalsCauchySequence : (S : ℕ → ℚ) → 𝓤₀ ̇
 RationalsCauchySequence = cauchy-sequence ℚ ℚ-metric-space
 
-open import RationalsAddition
+open import DedekindReals.RationalsAddition
 
 every-point-in-ℚ-is-limit-point : (q : ℚ) → Σ S ꞉ (ℕ → ℚ) , (q limit-of S)
 every-point-in-ℚ-is-limit-point q = (constant-sequence q) , (constant-sequence-converges q)

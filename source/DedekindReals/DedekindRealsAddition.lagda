@@ -6,28 +6,28 @@ show that the Reals are a group with respect to addition.
 \begin{code}[hide]
 {-# OPTIONS --without-K --exact-split --safe --experimental-lossy-unification #-}
 
-open import SpartanMLTT renaming (_+_ to _∔_) -- TypeTopology
-open import UF-Base -- TypeTopology
-open import UF-FunExt -- TypeTopology
-open import UF-Subsingletons -- TypeTopology
-open import UF-PropTrunc -- TypeTopology
-open import OrderNotation -- TypeTopology
+open import MLTT.Spartan renaming (_+_ to _∔_) -- TypeTopology
+open import UF.Base -- TypeTopology
+open import UF.FunExt -- TypeTopology
+open import UF.Subsingletons -- TypeTopology
+open import UF.PropTrunc -- TypeTopology
+open import Notation.Order -- TypeTopology
 
-open import UF-Powerset
-open import DedekindRealsProperties
-open import Rationals
-open import RationalsAddition renaming (_+_ to _ℚ+_)
-open import RationalsNegation renaming (_-_ to _ℚ-_ ; -_ to ℚ-_)
-open import RationalsOrder 
+open import UF.Powerset
+open import DedekindReals.DedekindRealsProperties
+open import DedekindReals.Rationals
+open import DedekindReals.RationalsAddition renaming (_+_ to _ℚ+_)
+open import DedekindReals.RationalsNegation renaming (_-_ to _ℚ-_ ; -_ to ℚ-_)
+open import DedekindReals.RationalsOrder 
 
-module DedekindRealsAddition
+module DedekindReals.DedekindRealsAddition
          (pe : Prop-Ext)
          (pt : propositional-truncations-exist)
          (fe : Fun-Ext)
        where 
 
-open import DedekindReals pe pt fe
-open import DedekindRealsOrder pe pt fe
+open import DedekindReals.DedekindReals pe pt fe
+open import DedekindReals.DedekindRealsOrder pe pt fe
 open PropositionalTruncation pt
 
 _+_ : ℝ → ℝ → ℝ
@@ -38,8 +38,8 @@ _+_ : ℝ → ℝ → ℝ
   x = ((L-x , R-x) , inhabited-left-x , inhabited-right-x , rounded-left-x , rounded-right-x , disjoint-x , located-x)
   
   L-z R-z : 𝓟 ℚ
-  L-z p = (∃ (r , s) ꞉ ℚ × ℚ , r ∈ L-x × s ∈ L-y × (p ≡ r ℚ+ s)) , ∃-is-prop
-  R-z q = (∃ (r , s) ꞉ ℚ × ℚ , r ∈ R-x × s ∈ R-y × (q ≡ r ℚ+ s)) , ∃-is-prop
+  L-z p = (∃ (r , s) ꞉ ℚ × ℚ , r ∈ L-x × s ∈ L-y × (p ＝ r ℚ+ s)) , ∃-is-prop
+  R-z q = (∃ (r , s) ꞉ ℚ × ℚ , r ∈ R-x × s ∈ R-y × (q ＝ r ℚ+ s)) , ∃-is-prop
 
   inhabited-left-z : ∃ q ꞉ ℚ , q ∈ L-z
   inhabited-left-z = ∥∥-rec ∃-is-prop δ (binary-choice inhabited-left-x inhabited-left-y)
@@ -53,17 +53,17 @@ _+_ : ℝ → ℝ → ℝ
     δ : (Σ p ꞉ ℚ , p ∈ R-x) × (Σ q ꞉ ℚ , q ∈ R-y) → ∃ z ꞉ ℚ , z ∈ R-z
     δ ((p , r-x) , q , r-y) = ∣ (p ℚ+ q) , (∣ (p , q) , (r-x , r-y , refl) ∣) ∣
 
-  ψ : (z r t s : ℚ) → t ≡ r ℚ+ s → z ≡ ((r ℚ+ (z ℚ- t)) ℚ+ s)
-  ψ z r t s e = z                                               ≡⟨ ℚ-zero-left-neutral fe z ⁻¹ ⟩
-                (0ℚ ℚ+ z)                                       ≡⟨ ap (_ℚ+ z) (ℚ-inverse-sum-to-zero fe r ⁻¹) ⟩
-                ((r ℚ- r)) ℚ+ z                                 ≡⟨ (ℚ+-assoc fe r (ℚ- r) z) ⟩
-                (r ℚ+ ((ℚ- r) ℚ+ z))                            ≡⟨ ℚ-zero-right-neutral fe (r ℚ+ ((ℚ- r) ℚ+ z)) ⁻¹ ⟩
-                (r ℚ+ ((ℚ- r) ℚ+ z)) ℚ+ 0ℚ                      ≡⟨ ap₂ _ℚ+_ (ap (r ℚ+_) (ℚ+-comm (ℚ- r) z)) (ℚ-inverse-sum-to-zero' fe s ⁻¹) ⟩
-                (r ℚ+ (z ℚ- r)) ℚ+ ((ℚ- s) ℚ+ s)                ≡⟨ ℚ+-assoc fe (r ℚ+ (z ℚ+ (ℚ- r))) (ℚ- s) s ⁻¹ ⟩
-                ((r ℚ+ (z ℚ+ (ℚ- r))) ℚ+ (ℚ- s)) ℚ+ s           ≡⟨ ap (_ℚ+ s) (ℚ+-assoc fe r (z ℚ+ (ℚ- r)) (ℚ- s)) ⟩
-                (r ℚ+ ((z ℚ+ (ℚ- r)) ℚ+ (ℚ- s))) ℚ+ s           ≡⟨ ap (λ - → (r ℚ+ -) ℚ+ s) (ℚ+-assoc fe z (ℚ- r) (ℚ- s)) ⟩
-                (r ℚ+ (z ℚ+ ((ℚ- r) ℚ+ (ℚ- s)))) ℚ+ s           ≡⟨ ap (λ - → (r ℚ+ (z ℚ+ -)) ℚ+ s) (ℚ-minus-dist fe r s) ⟩
-                (r ℚ+ (z ℚ+ (ℚ- (r ℚ+ s)))) ℚ+ s                ≡⟨ ap ((λ - → (r ℚ+ (z ℚ+ (ℚ- -))) ℚ+ s)) (e ⁻¹) ⟩
+  ψ : (z r t s : ℚ) → t ＝ r ℚ+ s → z ＝ ((r ℚ+ (z ℚ- t)) ℚ+ s)
+  ψ z r t s e = z                                               ＝⟨ ℚ-zero-left-neutral fe z ⁻¹ ⟩
+                (0ℚ ℚ+ z)                                       ＝⟨ ap (_ℚ+ z) (ℚ-inverse-sum-to-zero fe r ⁻¹) ⟩
+                ((r ℚ- r)) ℚ+ z                                 ＝⟨ (ℚ+-assoc fe r (ℚ- r) z) ⟩
+                (r ℚ+ ((ℚ- r) ℚ+ z))                            ＝⟨ ℚ-zero-right-neutral fe (r ℚ+ ((ℚ- r) ℚ+ z)) ⁻¹ ⟩
+                (r ℚ+ ((ℚ- r) ℚ+ z)) ℚ+ 0ℚ                      ＝⟨ ap₂ _ℚ+_ (ap (r ℚ+_) (ℚ+-comm (ℚ- r) z)) (ℚ-inverse-sum-to-zero' fe s ⁻¹) ⟩
+                (r ℚ+ (z ℚ- r)) ℚ+ ((ℚ- s) ℚ+ s)                ＝⟨ ℚ+-assoc fe (r ℚ+ (z ℚ+ (ℚ- r))) (ℚ- s) s ⁻¹ ⟩
+                ((r ℚ+ (z ℚ+ (ℚ- r))) ℚ+ (ℚ- s)) ℚ+ s           ＝⟨ ap (_ℚ+ s) (ℚ+-assoc fe r (z ℚ+ (ℚ- r)) (ℚ- s)) ⟩
+                (r ℚ+ ((z ℚ+ (ℚ- r)) ℚ+ (ℚ- s))) ℚ+ s           ＝⟨ ap (λ - → (r ℚ+ -) ℚ+ s) (ℚ+-assoc fe z (ℚ- r) (ℚ- s)) ⟩
+                (r ℚ+ (z ℚ+ ((ℚ- r) ℚ+ (ℚ- s)))) ℚ+ s           ＝⟨ ap (λ - → (r ℚ+ (z ℚ+ -)) ℚ+ s) (ℚ-minus-dist fe r s) ⟩
+                (r ℚ+ (z ℚ+ (ℚ- (r ℚ+ s)))) ℚ+ s                ＝⟨ ap ((λ - → (r ℚ+ (z ℚ+ (ℚ- -))) ℚ+ s)) (e ⁻¹) ⟩
                 (r ℚ+ (z ℚ+ (ℚ- t))) ℚ+ s                       ∎
 
   rounded-left-z : (z : ℚ) → (z ∈ L-z ⇔ (∃ t ꞉ ℚ , (z < t) × t ∈ L-z))
@@ -72,7 +72,7 @@ _+_ : ℝ → ℝ → ℝ
     I : z ∈ L-z → ∃ t ꞉ ℚ , (z < t) × t ∈ L-z
     I zLz = ∥∥-rec ∃-is-prop δ zLz
      where
-      δ : Σ (r , s) ꞉ ℚ × ℚ , r ∈ L-x × s ∈ L-y × (z ≡ r ℚ+ s) → ∃ t ꞉ ℚ , (z < t) × t ∈ L-z
+      δ : Σ (r , s) ꞉ ℚ × ℚ , r ∈ L-x × s ∈ L-y × (z ＝ r ℚ+ s) → ∃ t ꞉ ℚ , (z < t) × t ∈ L-z
       δ ((r , s) , rLx , sLy , e) = γ (rounded-left-b L-x rounded-left-x r rLx) (rounded-left-b L-y rounded-left-y s sLy)
        where
         γ : (∃ p ꞉ ℚ , r < p × p ∈ L-x) → (∃ q ꞉ ℚ , s < q × q ∈ L-y) → ∃ t ꞉ ℚ , z < t × t ∈ L-z 
@@ -95,13 +95,13 @@ _+_ : ℝ → ℝ → ℝ
       δ : Σ t ꞉ ℚ , (z < t) × t ∈ L-z → z ∈ L-z
       δ (t , l , tLz) = ∥∥-functor γ tLz
        where
-        γ : Σ (r , s) ꞉ ℚ × ℚ , r ∈ L-x × s ∈ L-y × (t ≡ r ℚ+ s)
-          → Σ (r' , s') ꞉ ℚ × ℚ , r' ∈ L-x × s' ∈ L-y × (z ≡ r' ℚ+ s')
+        γ : Σ (r , s) ꞉ ℚ × ℚ , r ∈ L-x × s ∈ L-y × (t ＝ r ℚ+ s)
+          → Σ (r' , s') ꞉ ℚ × ℚ , r' ∈ L-x × s' ∈ L-y × (z ＝ r' ℚ+ s')
         γ ((r , s) , rLx , sLy , e) = ((r ℚ+ (z ℚ- t)) , s) , III , sLy , IV
          where
           III : (r ℚ+ (z ℚ- t)) ∈ L-x
           III = rounded-left-c L-x rounded-left-x (r ℚ+ (z ℚ- t)) r (ℚ<-subtraction-preserves-order' fe r (z ℚ- t) (ℚ<-difference-positive' fe z t l) ) rLx
-          IV : z ≡ r ℚ+ (z ℚ- t) ℚ+ s
+          IV : z ＝ r ℚ+ (z ℚ- t) ℚ+ s
           IV = ψ z r t s e
       
   rounded-right-z : (z : ℚ) → (z ∈ R-z) ⇔ (∃ q ꞉ ℚ , ((q < z) × (q ∈ R-z)))
@@ -110,7 +110,7 @@ _+_ : ℝ → ℝ → ℝ
     I : z ∈ R-z → ∃ q ꞉ ℚ , q < z × q ∈ R-z
     I zRz = ∥∥-rec ∃-is-prop δ zRz
      where
-      δ : (Σ (r , s) ꞉ ℚ × ℚ , (r ∈ R-x) × (s ∈ R-y) × (z ≡ (r ℚ+ s))) → (∃ q ꞉ ℚ , (q < z) × q ∈ R-z)
+      δ : (Σ (r , s) ꞉ ℚ × ℚ , (r ∈ R-x) × (s ∈ R-y) × (z ＝ (r ℚ+ s))) → (∃ q ꞉ ℚ , (q < z) × q ∈ R-z)
       δ ((r , s) , rRx , sRy , e) = γ (rounded-right-b R-x rounded-right-x r rRx) (rounded-right-b R-y rounded-right-y s sRy)
        where
         γ : (∃ p ꞉ ℚ , p < r × p ∈ R-x) → (∃ q ꞉ ℚ , q < s × q ∈ R-y) → ∃ t ꞉ ℚ , t < z × t ∈ R-z 
@@ -132,20 +132,20 @@ _+_ : ℝ → ℝ → ℝ
       δ : Σ t ꞉ ℚ , (t < z) × t ∈ R-z → z ∈ R-z
       δ (t , l , tRz) = ∥∥-functor γ tRz
        where
-        γ : Σ (r , s) ꞉ ℚ × ℚ , r ∈ R-x × s ∈ R-y × (t ≡ r ℚ+ s)
-          → Σ (r' , s') ꞉ ℚ × ℚ , r' ∈ R-x × s' ∈ R-y × (z ≡ r' ℚ+ s')
+        γ : Σ (r , s) ꞉ ℚ × ℚ , r ∈ R-x × s ∈ R-y × (t ＝ r ℚ+ s)
+          → Σ (r' , s') ꞉ ℚ × ℚ , r' ∈ R-x × s' ∈ R-y × (z ＝ r' ℚ+ s')
         γ ((r , s) , rRx , sRy , e) = ((r ℚ+ (z ℚ- t)) , s) , III , sRy , IV
          where
           III : (r ℚ+ (z ℚ- t)) ∈ R-x
           III = rounded-right-c R-x rounded-right-x r (r ℚ+ (z ℚ- t)) (ℚ<-addition-preserves-order'' fe r (z ℚ- t) (ℚ<-difference-positive fe t z l)) rRx
-          IV : z ≡ r ℚ+ (z ℚ- t) ℚ+ s
+          IV : z ＝ r ℚ+ (z ℚ- t) ℚ+ s
           IV = ψ z r t s e
           
   disjoint-z : disjoint L-z R-z
   disjoint-z p q (α , β) = ∥∥-rec (ℚ<-is-prop p q) δ (binary-choice α β)
    where
-    δ : (Σ (r , s) ꞉ ℚ × ℚ , r ∈ L-x × s ∈ L-y × (p ≡ r ℚ+ s))
-      × (Σ (r' , s') ꞉ ℚ × ℚ , r' ∈ R-x × s' ∈ R-y × (q ≡ r' ℚ+ s'))
+    δ : (Σ (r , s) ꞉ ℚ × ℚ , r ∈ L-x × s ∈ L-y × (p ＝ r ℚ+ s))
+      × (Σ (r' , s') ꞉ ℚ × ℚ , r' ∈ R-x × s' ∈ R-y × (q ＝ r' ℚ+ s'))
       → p < q
     δ (((r , s) , l-x , l-y , e₁) , ((r' , s') , r-x , r-y , e₂)) = goal
      where
@@ -170,18 +170,18 @@ _+_ : ℝ → ℝ → ℝ
         l₃ : p ℚ- e < q ℚ- t
         l₃ = transport₂ _<_ i ii (ℚ<-addition-preserves-order (t ℚ- e) (q ℚ- p) (p ℚ- t) l₂)
          where
-          i : t ℚ- e ℚ+ (p ℚ- t) ≡ p ℚ- e
-          i = t ℚ- e ℚ+ (p ℚ- t)           ≡⟨ ℚ+-comm (t ℚ- e) (p ℚ- t) ⟩
-              p ℚ- t ℚ+ (t ℚ- e)           ≡⟨ ℚ+-assoc fe p (ℚ- t) (t ℚ- e) ⟩
-              p ℚ+ ((ℚ- t) ℚ+ (t ℚ- e))    ≡⟨ ap (p ℚ+_) (ℚ+-assoc fe (ℚ- t) t (ℚ- e) ⁻¹) ⟩
-              p ℚ+ ((ℚ- t) ℚ+ t ℚ- e)      ≡⟨ ap (λ α → p ℚ+ (α ℚ- e)) (ℚ-inverse-sum-to-zero' fe t) ⟩
-              p ℚ+ (0ℚ ℚ- e)               ≡⟨ ap (p ℚ+_) (ℚ-zero-left-neutral fe (ℚ- e)) ⟩
+          i : t ℚ- e ℚ+ (p ℚ- t) ＝ p ℚ- e
+          i = t ℚ- e ℚ+ (p ℚ- t)           ＝⟨ ℚ+-comm (t ℚ- e) (p ℚ- t) ⟩
+              p ℚ- t ℚ+ (t ℚ- e)           ＝⟨ ℚ+-assoc fe p (ℚ- t) (t ℚ- e) ⟩
+              p ℚ+ ((ℚ- t) ℚ+ (t ℚ- e))    ＝⟨ ap (p ℚ+_) (ℚ+-assoc fe (ℚ- t) t (ℚ- e) ⁻¹) ⟩
+              p ℚ+ ((ℚ- t) ℚ+ t ℚ- e)      ＝⟨ ap (λ α → p ℚ+ (α ℚ- e)) (ℚ-inverse-sum-to-zero' fe t) ⟩
+              p ℚ+ (0ℚ ℚ- e)               ＝⟨ ap (p ℚ+_) (ℚ-zero-left-neutral fe (ℚ- e)) ⟩
               p ℚ- e ∎
-          ii : q ℚ- p ℚ+ (p ℚ- t) ≡ q ℚ- t
-          ii = q ℚ- p ℚ+ (p ℚ- t)           ≡⟨ ℚ+-assoc fe q (ℚ- p) (p ℚ- t) ⟩
-               q ℚ+ ((ℚ- p) ℚ+ (p ℚ- t))    ≡⟨ ap (q ℚ+_) (ℚ+-assoc fe (ℚ- p) p (ℚ- t) ⁻¹) ⟩
-               q ℚ+ ((ℚ- p) ℚ+ p ℚ- t)      ≡⟨ ap (λ α → q ℚ+ (α ℚ- t)) (ℚ-inverse-sum-to-zero' fe p) ⟩
-               q ℚ+ (0ℚ ℚ- t)               ≡⟨ ap (q ℚ+_) (ℚ-zero-left-neutral fe (ℚ- t)) ⟩
+          ii : q ℚ- p ℚ+ (p ℚ- t) ＝ q ℚ- t
+          ii = q ℚ- p ℚ+ (p ℚ- t)           ＝⟨ ℚ+-assoc fe q (ℚ- p) (p ℚ- t) ⟩
+               q ℚ+ ((ℚ- p) ℚ+ (p ℚ- t))    ＝⟨ ap (q ℚ+_) (ℚ+-assoc fe (ℚ- p) p (ℚ- t) ⁻¹) ⟩
+               q ℚ+ ((ℚ- p) ℚ+ p ℚ- t)      ＝⟨ ap (λ α → q ℚ+ (α ℚ- t)) (ℚ-inverse-sum-to-zero' fe p) ⟩
+               q ℚ+ (0ℚ ℚ- t)               ＝⟨ ap (q ℚ+_) (ℚ-zero-left-neutral fe (ℚ- t)) ⟩
                q ℚ- t ∎
                
         II : Σ z ꞉ ℚ , (p ℚ- e < z) × (z < q ℚ- t)
@@ -198,10 +198,10 @@ _+_ : ℝ → ℝ → ℝ
             V : (p ℚ- z) ∈ L-x
             V = rounded-left-c L-x rounded-left-x (p ℚ- z) e (ℚ<-swap' fe p e z l₆) eLx
 
-            VI : p ≡ p ℚ- z ℚ+ z
-            VI = p                  ≡⟨ ℚ-zero-right-neutral fe p ⁻¹ ⟩
-                 p ℚ+ 0ℚ            ≡⟨ ap (p ℚ+_) (ℚ-inverse-sum-to-zero' fe z ⁻¹) ⟩
-                 p ℚ+ ((ℚ- z) ℚ+ z) ≡⟨ ℚ+-assoc fe p (ℚ- z) z ⁻¹ ⟩
+            VI : p ＝ p ℚ- z ℚ+ z
+            VI = p                  ＝⟨ ℚ-zero-right-neutral fe p ⁻¹ ⟩
+                 p ℚ+ 0ℚ            ＝⟨ ap (p ℚ+_) (ℚ-inverse-sum-to-zero' fe z ⁻¹) ⟩
+                 p ℚ+ ((ℚ- z) ℚ+ z) ＝⟨ ℚ+-assoc fe p (ℚ- z) z ⁻¹ ⟩
                  p ℚ- z ℚ+ z        ∎
 
           η (inr yRy) = inr ∣ (t , q ℚ- t) , tRx , V , VI ∣
@@ -209,11 +209,11 @@ _+_ : ℝ → ℝ → ℝ
             V : (q ℚ- t) ∈ R-y
             V = rounded-right-c R-y rounded-right-y y (q ℚ- t) l₅ yRy
 
-            VI : q ≡ t ℚ+ (q ℚ- t)
-            VI = q                  ≡⟨ ℚ-zero-left-neutral fe q ⁻¹ ⟩
-                 0ℚ ℚ+ q            ≡⟨ ap (_ℚ+ q) (ℚ-inverse-sum-to-zero fe t ⁻¹) ⟩
-                 t ℚ+ (ℚ- t) ℚ+ q   ≡⟨ ℚ+-assoc fe t (ℚ- t) q ⟩
-                 t ℚ+ ((ℚ- t) ℚ+ q) ≡⟨ ap (t ℚ+_) (ℚ+-comm (ℚ- t) q) ⟩
+            VI : q ＝ t ℚ+ (q ℚ- t)
+            VI = q                  ＝⟨ ℚ-zero-left-neutral fe q ⁻¹ ⟩
+                 0ℚ ℚ+ q            ＝⟨ ap (_ℚ+ q) (ℚ-inverse-sum-to-zero fe t ⁻¹) ⟩
+                 t ℚ+ (ℚ- t) ℚ+ q   ＝⟨ ℚ+-assoc fe t (ℚ- t) q ⟩
+                 t ℚ+ ((ℚ- t) ℚ+ q) ＝⟨ ap (t ℚ+_) (ℚ+-comm (ℚ- t) q) ⟩
                  t ℚ+ (q ℚ- t)      ∎
 {-
 plus2 : ℝ → ℝ → ℝ
@@ -254,29 +254,29 @@ plus2 x y = z
   
 infixl 35 _+_
 
-ℝ+-comm : ∀ x y → x + y ≡ y + x
+ℝ+-comm : ∀ x y → x + y ＝ y + x
 ℝ+-comm x y = ℝ-equality-from-left-cut' (x + y) (y + x) I II
  where
   I : lower-cut-of (x + y) ⊆ lower-cut-of (y + x)
   I p p<x+y = ∥∥-functor i p<x+y
    where
-    i : Σ (r , s) ꞉ ℚ × ℚ , r < x × s < y × (p ≡ r ℚ+ s)
-      → Σ (r , s) ꞉ ℚ × ℚ , r < y × s < x × (p ≡ r ℚ+ s)
+    i : Σ (r , s) ꞉ ℚ × ℚ , r < x × s < y × (p ＝ r ℚ+ s)
+      → Σ (r , s) ꞉ ℚ × ℚ , r < y × s < x × (p ＝ r ℚ+ s)
     i ((r , s) , rLx , sLy , e) = (s , r) , (sLy , rLx , (e ∙ ℚ+-comm r s))
   II : lower-cut-of (y + x) ⊆ lower-cut-of (x + y)
   II q x+y<q = ∥∥-functor i x+y<q
    where
-    i : Σ (r , s) ꞉ ℚ × ℚ , r < y × s < x × (q ≡ r ℚ+ s)
-      → Σ (r , s) ꞉ ℚ × ℚ , r < x × s < y × (q ≡ r ℚ+ s)
+    i : Σ (r , s) ꞉ ℚ × ℚ , r < y × s < x × (q ＝ r ℚ+ s)
+      → Σ (r , s) ꞉ ℚ × ℚ , r < x × s < y × (q ＝ r ℚ+ s)
     i ((r , s) , rLy , sLx , e) = (s , r) , (sLx , rLy , (e ∙ ℚ+-comm r s))
 
-ℝ-zero-left-neutral : (x : ℝ) → 0ℝ + x ≡ x
+ℝ-zero-left-neutral : (x : ℝ) → 0ℝ + x ＝ x
 ℝ-zero-left-neutral x = ℝ-equality-from-left-cut' (0ℝ + x) x I II
  where
   I : lower-cut-of (0ℝ + x) ⊆ lower-cut-of x
   I p 0+x<x = ∥∥-rec (∈-is-prop (lower-cut-of x) p) i 0+x<x
    where
-    i : Σ (r , s) ꞉ ℚ × ℚ , r < 0ℝ × s < x × (p ≡ r ℚ+ s) → p < x
+    i : Σ (r , s) ꞉ ℚ × ℚ , r < 0ℝ × s < x × (p ＝ r ℚ+ s) → p < x
     i ((r , s) , r<0 , s<x , e) = rounded-left-c (lower-cut-of x) (rounded-from-real-L x) p s iv s<x
      where
       ii : p ℚ+ r < p
@@ -286,55 +286,55 @@ infixl 35 _+_
       iv : p < s
       iv = transport₂ _<_ v vi (ℚ<-addition-preserves-order (p ℚ+ r) (r ℚ+ s) (ℚ- r) iii )
        where
-        v : p ℚ+ r ℚ- r ≡ p
+        v : p ℚ+ r ℚ- r ＝ p
         v = ℚ+-assoc fe p r (ℚ- r) ∙ ℚ-inverse-intro fe p r ⁻¹ 
-        vi : r ℚ+ s ℚ- r ≡ s
-        vi = r ℚ+ s ℚ- r   ≡⟨ ap (_ℚ- r) (ℚ+-comm r s) ⟩
-             s ℚ+ r ℚ- r   ≡⟨ ℚ+-assoc fe s r (ℚ- r) ⟩
-             s ℚ+ (r ℚ- r) ≡⟨ ℚ-inverse-intro fe s r ⁻¹ ⟩
+        vi : r ℚ+ s ℚ- r ＝ s
+        vi = r ℚ+ s ℚ- r   ＝⟨ ap (_ℚ- r) (ℚ+-comm r s) ⟩
+             s ℚ+ r ℚ- r   ＝⟨ ℚ+-assoc fe s r (ℚ- r) ⟩
+             s ℚ+ (r ℚ- r) ＝⟨ ℚ-inverse-intro fe s r ⁻¹ ⟩
              s ∎
   II : lower-cut-of x ⊆ lower-cut-of (0ℝ + x)
   II q q<x = ∥∥-functor i by-rounded-x
    where
     by-rounded-x : ∃ q' ꞉ ℚ , q < q' × q' < x
     by-rounded-x = rounded-left-b (lower-cut-of x) (rounded-from-real-L x) q q<x
-    i : Σ q' ꞉ ℚ , q < q' × q' < x → Σ (r , s) ꞉ ℚ × ℚ , r < 0ℝ × s < x × (q ≡ r ℚ+ s)
+    i : Σ q' ꞉ ℚ , q < q' × q' < x → Σ (r , s) ꞉ ℚ × ℚ , r < 0ℝ × s < x × (q ＝ r ℚ+ s)
     i (q' , l , q'Lx) = (q ℚ- q' , q') , iii , q'Lx , ii
      where
-      ii : q ≡ q ℚ- q' ℚ+ q'
-      ii = q                    ≡⟨ ℚ-inverse-intro fe q q' ⟩
-           q ℚ+ (q' ℚ- q')      ≡⟨ ap (q ℚ+_) (ℚ+-comm q' (ℚ- q')) ⟩
-           q ℚ+ ((ℚ- q') ℚ+ q') ≡⟨ ℚ+-assoc fe q (ℚ- q') q' ⁻¹ ⟩
+      ii : q ＝ q ℚ- q' ℚ+ q'
+      ii = q                    ＝⟨ ℚ-inverse-intro fe q q' ⟩
+           q ℚ+ (q' ℚ- q')      ＝⟨ ap (q ℚ+_) (ℚ+-comm q' (ℚ- q')) ⟩
+           q ℚ+ ((ℚ- q') ℚ+ q') ＝⟨ ℚ+-assoc fe q (ℚ- q') q' ⁻¹ ⟩
            q ℚ- q' ℚ+ q' ∎
       
       iii : q ℚ- q' < 0ℚ
       iii = transport (q ℚ- q' <_) iv (ℚ<-addition-preserves-order q q' (ℚ- q') l)
        where
-        iv : q' ℚ- q' ≡ 0ℚ
+        iv : q' ℚ- q' ＝ 0ℚ
         iv = ℚ-inverse-sum-to-zero fe q'
 
-ℝ-zero-right-neutral : (x : ℝ) → x + 0ℝ ≡ x
+ℝ-zero-right-neutral : (x : ℝ) → x + 0ℝ ＝ x
 ℝ-zero-right-neutral x = ℝ+-comm x 0ℝ ∙ ℝ-zero-left-neutral x
 
-ℝ+-assoc : ∀ x y z → x + y + z ≡ x + (y + z)
+ℝ+-assoc : ∀ x y z → x + y + z ＝ x + (y + z)
 ℝ+-assoc x y z = ℝ-equality-from-left-cut' _ _ ltr rtl 
  where
   ltr : lower-cut-of (x + y + z) ⊆ lower-cut-of (x + (y + z))
   ltr p p<x+y+z = ∥∥-rec ∃-is-prop I p<x+y+z
    where
-    I : Σ (a  , b) ꞉ ℚ × ℚ , a  < (x + y) × b < z        × (p ≡ a ℚ+ b)
-      → ∃ (r  , s) ꞉ ℚ × ℚ , r  < x       × s < (y + z)  × (p ≡ r ℚ+ s)
+    I : Σ (a  , b) ꞉ ℚ × ℚ , a  < (x + y) × b < z        × (p ＝ a ℚ+ b)
+      → ∃ (r  , s) ꞉ ℚ × ℚ , r  < x       × s < (y + z)  × (p ＝ r ℚ+ s)
     I ((a , b) , a<x+y , b<z , e) = ∥∥-rec ∃-is-prop II a<x+y
      where
-      II : Σ (c , d) ꞉ ℚ × ℚ , c < x × d < y        × (a ≡ c ℚ+ d)
-         → ∃ (r , s) ꞉ ℚ × ℚ , r < x × s < (y + z)  × (p ≡ r ℚ+ s)
+      II : Σ (c , d) ꞉ ℚ × ℚ , c < x × d < y        × (a ＝ c ℚ+ d)
+         → ∃ (r , s) ꞉ ℚ × ℚ , r < x × s < (y + z)  × (p ＝ r ℚ+ s)
       II ((c , d) , c<x , d<y , e') = ∣ (c , (b ℚ+ d)) , c<x , III , i ∣
        where
-        i : p ≡ c ℚ+ (b ℚ+ d)
-        i = p             ≡⟨ e ⟩
-            a ℚ+ b        ≡⟨ ap (_ℚ+ b) e' ⟩
-            c ℚ+ d ℚ+ b   ≡⟨ ℚ+-assoc fe c d b ⟩
-            c ℚ+ (d ℚ+ b) ≡⟨ ap (c ℚ+_) (ℚ+-comm d b) ⟩
+        i : p ＝ c ℚ+ (b ℚ+ d)
+        i = p             ＝⟨ e ⟩
+            a ℚ+ b        ＝⟨ ap (_ℚ+ b) e' ⟩
+            c ℚ+ d ℚ+ b   ＝⟨ ℚ+-assoc fe c d b ⟩
+            c ℚ+ (d ℚ+ b) ＝⟨ ap (c ℚ+_) (ℚ+-comm d b) ⟩
             c ℚ+ (b ℚ+ d) ∎
             
         III : (b ℚ+ d) < (y + z)
@@ -342,28 +342,28 @@ infixl 35 _+_
   rtl :  lower-cut-of (x + (y + z)) ⊆ lower-cut-of (x + y + z) 
   rtl p p<x+y+z-r = ∥∥-rec ∃-is-prop I p<x+y+z-r
    where
-    I : Σ (a  , b) ꞉ ℚ × ℚ , a  < x        × b < (y + z)  × (p ≡ a ℚ+ b)
-      → ∃ (r  , s) ꞉ ℚ × ℚ , r  < (x + y)  × s < z        × (p ≡ r ℚ+ s)
+    I : Σ (a  , b) ꞉ ℚ × ℚ , a  < x        × b < (y + z)  × (p ＝ a ℚ+ b)
+      → ∃ (r  , s) ꞉ ℚ × ℚ , r  < (x + y)  × s < z        × (p ＝ r ℚ+ s)
     I ((a , b) , a<x , b<y+z , e) = ∥∥-rec ∃-is-prop II b<y+z
      where
-      II : Σ (c , d) ꞉ ℚ × ℚ , c < y       × d < z  × (b ≡ c ℚ+ d)
-         → ∃ (r , s) ꞉ ℚ × ℚ , r < (x + y) × s < z  × (p ≡ r ℚ+ s)
+      II : Σ (c , d) ꞉ ℚ × ℚ , c < y       × d < z  × (b ＝ c ℚ+ d)
+         → ∃ (r , s) ꞉ ℚ × ℚ , r < (x + y) × s < z  × (p ＝ r ℚ+ s)
       II ((c , d) , c<y , d<z , e') = ∣ ((a ℚ+ c) , d) , III , d<z , i ∣
        where
-        i : p ≡ a ℚ+ c ℚ+ d
+        i : p ＝ a ℚ+ c ℚ+ d
         i = e ∙ (ap (a ℚ+_) e' ∙ ℚ+-assoc fe a c d ⁻¹)
         III : (a ℚ+ c) < (x + y)
         III = ∣ (a , c) , a<x , c<y , refl ∣
 
-open import RationalsMultiplication renaming (_*_ to _ℚ*_)
+open import DedekindReals.RationalsMultiplication renaming (_*_ to _ℚ*_)
 
 -_ : ℝ → ℝ
 -_ x = (L , R) , inhabited-left-z , inhabited-right-z , rounded-left-z , rounded-right-z , disjoint-z , located-z 
  where
   L : 𝓟 ℚ
-  L p = (∃ r ꞉ ℚ , r > x × (p ≡ ℚ- r)) , ∃-is-prop
+  L p = (∃ r ꞉ ℚ , r > x × (p ＝ ℚ- r)) , ∃-is-prop
   R : 𝓟 ℚ
-  R q = (∃ r ꞉ ℚ , r < x × (q ≡ ℚ- r)) , ∃-is-prop
+  R q = (∃ r ꞉ ℚ , r < x × (q ＝ ℚ- r)) , ∃-is-prop
   
   inhabited-left-z : inhabited-left L
   inhabited-left-z = ∥∥-rec ∃-is-prop I (binary-choice (inhabited-from-real-L x) (inhabited-from-real-R x))
@@ -391,7 +391,7 @@ open import RationalsMultiplication renaming (_*_ to _ℚ*_)
     ltr : p ∈ L → ∃ p' ꞉ ℚ , p < p' × p' ∈ L
     ltr p<x = ∥∥-rec ∃-is-prop I p<x
      where
-      I : Σ r ꞉ ℚ , r > x × (p ≡ ℚ- r) → ∃ p' ꞉ ℚ , p < p' × p' ∈ L
+      I : Σ r ꞉ ℚ , r > x × (p ＝ ℚ- r) → ∃ p' ꞉ ℚ , p < p' × p' ∈ L
       I (r , x<r , e) = ∥∥-functor III II
        where
         II : ∃ r' ꞉ ℚ , r' < r × r' > x
@@ -402,16 +402,16 @@ open import RationalsMultiplication renaming (_*_ to _ℚ*_)
     rtl : ∃ p' ꞉ ℚ , p < p' × p' ∈ L → p ∈ L
     rtl exists-p' = ∥∥-rec ∃-is-prop I exists-p'
      where
-      I : Σ p' ꞉ ℚ , p < p' × p' ∈ L → ∃ r ꞉ ℚ , r > x × (p ≡ ℚ- r)
+      I : Σ p' ꞉ ℚ , p < p' × p' ∈ L → ∃ r ꞉ ℚ , r > x × (p ＝ ℚ- r)
       I (p' , l , p<-x) = ∥∥-functor II p<-x
        where
-        II : Σ r ꞉ ℚ , r > x × (p' ≡ ℚ- r) →  Σ r ꞉ ℚ , r > x × (p ≡ ℚ- r)
+        II : Σ r ꞉ ℚ , r > x × (p' ＝ ℚ- r) →  Σ r ꞉ ℚ , r > x × (p ＝ ℚ- r)
         II (r , x<r , e) = (ℚ- p) , (III , (ℚ-minus-minus fe p))
          where
           III : (ℚ- p) > x
           III = rounded-right-c (upper-cut-of x) (rounded-from-real-R x) (ℚ- p') (ℚ- p) (ℚ<-swap fe p p' l) (transport (_> x) i x<r)
            where
-            i : r ≡ ℚ- p'
+            i : r ＝ ℚ- p'
             i = ℚ-minus-minus fe r ∙ ap ℚ-_ e ⁻¹
 
   rounded-right-z : rounded-right R
@@ -420,7 +420,7 @@ open import RationalsMultiplication renaming (_*_ to _ℚ*_)
     ltr : q ∈ R → ∃ q' ꞉ ℚ , q' < q × q' ∈ R
     ltr x<q = ∥∥-rec ∃-is-prop I x<q
      where
-      I : Σ r ꞉ ℚ , r < x × (q ≡ ℚ- r) → ∃ q' ꞉ ℚ , q' < q × q' ∈ R
+      I : Σ r ꞉ ℚ , r < x × (q ＝ ℚ- r) → ∃ q' ꞉ ℚ , q' < q × q' ∈ R
       I (r , r<x , e) = ∥∥-functor III II
        where
         II : ∃ r' ꞉ ℚ , r < r' × r' < x
@@ -430,22 +430,22 @@ open import RationalsMultiplication renaming (_*_ to _ℚ*_)
     rtl : ∃ q' ꞉ ℚ , q' < q × q' ∈ R → q ∈ R
     rtl exists-q' = ∥∥-rec ∃-is-prop I exists-q'
      where
-      I : Σ q' ꞉ ℚ , q' < q × q' ∈ R → ∃ r ꞉ ℚ , r < x × (q ≡ ℚ- r)
+      I : Σ q' ꞉ ℚ , q' < q × q' ∈ R → ∃ r ꞉ ℚ , r < x × (q ＝ ℚ- r)
       I (q' , l , -x<q') = ∥∥-functor II -x<q'
        where
-        II : Σ r ꞉ ℚ , r < x × (q' ≡ ℚ- r) →  Σ r ꞉ ℚ , r < x × (q ≡ ℚ- r)
+        II : Σ r ꞉ ℚ , r < x × (q' ＝ ℚ- r) →  Σ r ꞉ ℚ , r < x × (q ＝ ℚ- r)
         II (r , r<x , e) = (ℚ- q) , (III , (ℚ-minus-minus fe q))
          where
           III : (ℚ- q) < x
           III = rounded-left-c  (lower-cut-of x) (rounded-from-real-L x) (ℚ- q) r (transport ((ℚ- q) <_) i (ℚ<-swap fe q' q l)) r<x
            where
-           i : ℚ- q' ≡ r
+           i : ℚ- q' ＝ r
            i = ap ℚ-_ e ∙ ℚ-minus-minus fe r ⁻¹
 
   disjoint-z : disjoint L R
   disjoint-z p q (p<x , x<q) = ∥∥-rec (ℚ<-is-prop p q) I (binary-choice p<x x<q)
    where
-    I : (Σ p' ꞉ ℚ , p' > x × (p ≡ ℚ- p')) × (Σ q' ꞉ ℚ , q' < x × (q ≡ ℚ- q'))
+    I : (Σ p' ꞉ ℚ , p' > x × (p ＝ ℚ- p')) × (Σ q' ꞉ ℚ , q' < x × (q ＝ ℚ- q'))
       → p < q
     I ((p' , p'<x , e) , q' , x<q' , e') = transport₂ _<_ (e ⁻¹) (e' ⁻¹) (ℚ<-swap fe q' p' II)
      where
@@ -462,34 +462,34 @@ open import RationalsMultiplication renaming (_*_ to _ℚ*_)
 _-_ : ℝ → ℝ → ℝ
 x - y = x + (- y)
 
-ℝ+-inverse-exists : ∀ x → Σ x' ꞉ ℝ , x + x' ≡ 0ℝ
+ℝ+-inverse-exists : ∀ x → Σ x' ꞉ ℝ , x + x' ＝ 0ℝ
 ℝ+-inverse-exists x = (- x) , ℝ-equality-from-left-cut' (x - x) 0ℝ ltr rtl
  where
   ltr : lower-cut-of (x - x) ⊆ lower-cut-of 0ℝ
   ltr p p<x-x = ∥∥-rec (∈-is-prop (lower-cut-of 0ℝ) p) I p<x-x
    where
-    I : Σ (r , s) ꞉ ℚ × ℚ , r < x × s < (- x) × (p ≡ r ℚ+ s)
+    I : Σ (r , s) ꞉ ℚ × ℚ , r < x × s < (- x) × (p ＝ r ℚ+ s)
       → p < 0ℝ 
     I ((r , s) , r<x , s<-x , e) = ∥∥-rec (∈-is-prop (lower-cut-of 0ℝ) p) II s<-x
      where
-      II : Σ k ꞉ ℚ , k > x × (s ≡ ℚ- k) → p < 0ℝ
+      II : Σ k ꞉ ℚ , k > x × (s ＝ ℚ- k) → p < 0ℝ
       II (k , x<k , e') = III (ℚ-trichotomous fe p 0ℚ)
        where
         r<k : r < k
         r<k = disjoint-from-real x r k (r<x , x<k)
-        e'' : p ≡ r ℚ- k
+        e'' : p ＝ r ℚ- k
         e'' = e ∙ ap (r ℚ+_) e'
-        III : p < 0ℚ ∔ (p ≡ 0ℚ) ∔ 0ℚ < p → p < 0ℝ
+        III : p < 0ℚ ∔ (p ＝ 0ℚ) ∔ 0ℚ < p → p < 0ℝ
         III (inl p<0)       = p<0
-        III (inr (inl p≡0)) = 𝟘-elim (ℚ<-not-itself k (transport (_< k) i r<k))
+        III (inr (inl p＝0)) = 𝟘-elim (ℚ<-not-itself k (transport (_< k) i r<k))
          where
-          i : r ≡ k
-          i = r                  ≡⟨ ℚ-inverse-intro fe r k ⟩
-              r ℚ+ (k ℚ- k)      ≡⟨ ap (r ℚ+_) (ℚ+-comm k (ℚ- k)) ⟩
-              r ℚ+ ((ℚ- k) ℚ+ k) ≡⟨ ℚ+-assoc fe r (ℚ- k) k ⁻¹ ⟩
-              r ℚ- k ℚ+ k        ≡⟨ ap (_ℚ+ k) e'' ⁻¹ ⟩
-              p ℚ+ k             ≡⟨ ap (_ℚ+ k) p≡0 ⟩
-              0ℚ ℚ+ k            ≡⟨ ℚ-zero-left-neutral fe k ⟩
+          i : r ＝ k
+          i = r                  ＝⟨ ℚ-inverse-intro fe r k ⟩
+              r ℚ+ (k ℚ- k)      ＝⟨ ap (r ℚ+_) (ℚ+-comm k (ℚ- k)) ⟩
+              r ℚ+ ((ℚ- k) ℚ+ k) ＝⟨ ℚ+-assoc fe r (ℚ- k) k ⁻¹ ⟩
+              r ℚ- k ℚ+ k        ＝⟨ ap (_ℚ+ k) e'' ⁻¹ ⟩
+              p ℚ+ k             ＝⟨ ap (_ℚ+ k) p＝0 ⟩
+              0ℚ ℚ+ k            ＝⟨ ℚ-zero-left-neutral fe k ⟩
               k ∎
         III (inr (inr 0<p)) = 𝟘-elim (ℚ<-not-itself k (ℚ<-trans k r k k<r r<k))
          where
@@ -498,12 +498,12 @@ x - y = x + (- y)
           k<r : k < r
           k<r = transport₂ _<_ iii iv (ℚ<-addition-preserves-order 0ℚ (r ℚ- k) k i)
            where
-            iii : 0ℚ ℚ+ k ≡ k
+            iii : 0ℚ ℚ+ k ＝ k
             iii = ℚ-zero-left-neutral fe k
-            iv : r ℚ- k ℚ+ k ≡ r
-            iv = r ℚ- k ℚ+ k          ≡⟨ ℚ+-assoc fe r (ℚ- k) k  ⟩
-                 r ℚ+ ((ℚ- k) ℚ+ k)   ≡⟨ ap (r ℚ+_) (ℚ+-comm (ℚ- k) k) ⟩
-                 r ℚ+ (k ℚ- k)        ≡⟨ ℚ-inverse-intro fe r k ⁻¹ ⟩
+            iv : r ℚ- k ℚ+ k ＝ r
+            iv = r ℚ- k ℚ+ k          ＝⟨ ℚ+-assoc fe r (ℚ- k) k  ⟩
+                 r ℚ+ ((ℚ- k) ℚ+ k)   ＝⟨ ap (r ℚ+_) (ℚ+-comm (ℚ- k) k) ⟩
+                 r ℚ+ (k ℚ- k)        ＝⟨ ℚ-inverse-intro fe r k ⁻¹ ⟩
                  r ∎
       
   rtl : lower-cut-of 0ℝ ⊆ lower-cut-of (x - x)
@@ -517,26 +517,26 @@ x - y = x + (- y)
       i : (a ℚ- p) > x
       i = rounded-right-c (upper-cut-of x) (rounded-from-real-R x) b (a ℚ- p) (transport₂ _<_ α β (ℚ<-addition-preserves-order (b ℚ- a) (ℚ- p) a b-a<-p)) x<b
        where
-        α : b ℚ- a ℚ+ a ≡ b
-        α = b ℚ- a ℚ+ a          ≡⟨ ℚ+-assoc fe b (ℚ- a) a ⟩
-            b ℚ+ ((ℚ- a) ℚ+ a)   ≡⟨ ap (b ℚ+_) (ℚ+-comm (ℚ- a) a) ⟩
-            b ℚ+ (a ℚ- a)        ≡⟨ ℚ-inverse-intro fe b a ⁻¹ ⟩
+        α : b ℚ- a ℚ+ a ＝ b
+        α = b ℚ- a ℚ+ a          ＝⟨ ℚ+-assoc fe b (ℚ- a) a ⟩
+            b ℚ+ ((ℚ- a) ℚ+ a)   ＝⟨ ap (b ℚ+_) (ℚ+-comm (ℚ- a) a) ⟩
+            b ℚ+ (a ℚ- a)        ＝⟨ ℚ-inverse-intro fe b a ⁻¹ ⟩
             b ∎
-        β : (ℚ- p) ℚ+ a ≡ a ℚ- p
+        β : (ℚ- p) ℚ+ a ＝ a ℚ- p
         β = ℚ+-comm (ℚ- p) a
-      ii : p ℚ- a ≡ ℚ- (a ℚ- p)
-      ii = p ℚ- a                ≡⟨ ℚ+-comm p (ℚ- a) ⟩
-           (ℚ- a) ℚ+ p           ≡⟨ ap ((ℚ- a) ℚ+_) (ℚ-minus-minus fe p) ⟩
-           (ℚ- a) ℚ+ (ℚ- (ℚ- p)) ≡⟨ ℚ-minus-dist fe a (ℚ- p) ⟩
+      ii : p ℚ- a ＝ ℚ- (a ℚ- p)
+      ii = p ℚ- a                ＝⟨ ℚ+-comm p (ℚ- a) ⟩
+           (ℚ- a) ℚ+ p           ＝⟨ ap ((ℚ- a) ℚ+_) (ℚ-minus-minus fe p) ⟩
+           (ℚ- a) ℚ+ (ℚ- (ℚ- p)) ＝⟨ ℚ-minus-dist fe a (ℚ- p) ⟩
            ℚ- (a ℚ- p) ∎
-      iii : p ≡ a ℚ+ (p ℚ- a)
-      iii = p                ≡⟨ ℚ-inverse-intro fe p a ⟩
-            p ℚ+ (a ℚ- a)    ≡⟨ ℚ+-assoc fe p a (ℚ- a) ⁻¹ ⟩
-            p ℚ+ a ℚ+ (ℚ- a) ≡⟨ ap (_ℚ- a) (ℚ+-comm p a) ⟩
-            a ℚ+ p ℚ- a      ≡⟨ ℚ+-assoc fe a p (ℚ- a) ⟩
+      iii : p ＝ a ℚ+ (p ℚ- a)
+      iii = p                ＝⟨ ℚ-inverse-intro fe p a ⟩
+            p ℚ+ (a ℚ- a)    ＝⟨ ℚ+-assoc fe p a (ℚ- a) ⁻¹ ⟩
+            p ℚ+ a ℚ+ (ℚ- a) ＝⟨ ap (_ℚ- a) (ℚ+-comm p a) ⟩
+            a ℚ+ p ℚ- a      ＝⟨ ℚ+-assoc fe a p (ℚ- a) ⟩
             a ℚ+ (p ℚ- a) ∎
 
-open import DedekindRealsOrder pe pt fe
+open import DedekindReals.DedekindRealsOrder pe pt fe
 {-
 ℝ<-addition-preserves-order : ∀ x y z → x < y → x + z < y + z
 ℝ<-addition-preserves-order x y z l = ∥∥-rec ∃-is-prop I l
@@ -574,13 +574,13 @@ open import DedekindRealsOrder pe pt fe
   I (k , x<k , k<y) = {!!}
 -}
 
-ℝ+-inverse-exists' : (x : ℝ) → Σ x' ꞉ ℝ , (x' + x ≡ 0ℝ) × (x + x' ≡ 0ℝ)
+ℝ+-inverse-exists' : (x : ℝ) → Σ x' ꞉ ℝ , (x' + x ＝ 0ℝ) × (x + x' ＝ 0ℝ)
 ℝ+-inverse-exists' x = I (ℝ+-inverse-exists x)
  where
-  I : (Σ x' ꞉ ℝ , (x + x' ≡ 0ℝ)) → Σ x' ꞉ ℝ , (x' + x ≡ 0ℝ) × (x + x' ≡ 0ℝ)
+  I : (Σ x' ꞉ ℝ , (x + x' ＝ 0ℝ)) → Σ x' ꞉ ℝ , (x' + x ＝ 0ℝ) × (x + x' ＝ 0ℝ)
   I (x' , e) = x' , ((ℝ+-comm x' x ∙ e) , e)
 
-open import Groups -- TypeTopology
+open import Groups.Groups -- typetopology
 
 ℝ-additive-group : Group-structure ℝ
 ℝ-additive-group = _+_ , (ℝ-is-set , ℝ+-assoc , 0ℝ , ℝ-zero-left-neutral , ℝ-zero-right-neutral , ℝ+-inverse-exists')

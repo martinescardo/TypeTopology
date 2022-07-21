@@ -6,27 +6,27 @@ some key properties.
 \begin{code}[hide]
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import SpartanMLTT renaming (_+_ to _∔_) -- TypeTopology
+open import MLTT.Spartan renaming (_+_ to _∔_) -- TypeTopology
 
-open import CanonicalMapNotation
-open import OrderNotation
-open import RationalsOrder
+open import Notation.CanonicalMap
+open import Notation.Order
+open import DedekindReals.RationalsOrder
 
-open import UF-FunExt -- TypeTopology
-open import UF-PropTrunc -- TypeTopology
-open import UF-Powerset -- TypeTopology
-open import UF-Subsingletons --TypeTopology
-open import UF-Subsingletons-FunExt --TypeTopology
+open import UF.FunExt -- TypeTopology
+open import UF.PropTrunc -- TypeTopology
+open import UF.Powerset -- TypeTopology
+open import UF.Subsingletons --TypeTopology
+open import UF.Subsingletons-FunExt --TypeTopology
 
-open import Rationals
+open import DedekindReals.Rationals
 
-module DedekindRealsOrder
+module DedekindReals.DedekindRealsOrder
          (pe : Prop-Ext) 
          (pt : propositional-truncations-exist)
          (fe : Fun-Ext)
        where
 
-open import DedekindReals pe pt fe
+open import DedekindReals.DedekindReals pe pt fe
 open PropositionalTruncation pt -- TypeTopology
 
 _<ℝ_ : ℝ → ℝ → 𝓤₀ ̇
@@ -102,7 +102,7 @@ weak-linearity' x y z l = do
 _♯_ : (x y : ℝ) → 𝓤₀ ̇
 x ♯ y = x < y ∨ y < x
 
-apartness-gives-inequality : (x y : ℝ) → x ♯ y → ¬ (x ≡ y)
+apartness-gives-inequality : (x y : ℝ) → x ♯ y → ¬ (x ＝ y)
 apartness-gives-inequality x y apart e = ∥∥-rec 𝟘-is-prop I apart
  where
   I : ¬ (x < y ∔ y < x)

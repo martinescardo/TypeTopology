@@ -6,31 +6,31 @@ Cauchy and convergent sequences.
 \begin{code}[hide]
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import SpartanMLTT renaming (_+_ to _∔_)  -- TypeTopology
+open import MLTT.Spartan renaming (_+_ to _∔_)  -- TypeTopology
 
-open import NaturalsAddition renaming (_+_ to _ℕ+_) -- TypeTopology
-open import NaturalsOrder --TypeTopology
-open import OrderNotation -- TypeTopology
-open import UF-FunExt -- TypeTopology
-open import UF-PropTrunc --TypeTopology
-open import UF-Subsingletons --TypeTopology
+open import Naturals.Addition renaming (_+_ to _ℕ+_) -- TypeTopology
+open import Naturals.Order --TypeTopology
+open import Notation.Order -- TypeTopology
+open import UF.FunExt -- TypeTopology
+open import UF.PropTrunc --TypeTopology
+open import UF.Subsingletons --TypeTopology
 
-open import Rationals
-open import RationalsAddition
-open import RationalsOrder
+open import DedekindReals.Rationals
+open import DedekindReals.RationalsAddition
+open import DedekindReals.RationalsOrder
 
-module MetricSpaceAltDef
+module DedekindReals.MetricSpaceAltDef
   (pt : propositional-truncations-exist)
   (fe : Fun-Ext)
   (pe : Prop-Ext)
  where 
 
 open PropositionalTruncation pt
-open import DedekindReals pe pt fe
-open import DedekindRealsOrder pe pt fe
+open import DedekindReals.DedekindReals pe pt fe
+open import DedekindReals.DedekindRealsOrder pe pt fe
 
 m1a : {𝓤 : Universe} → (X : 𝓤 ̇) → (B : X → X → (ε : ℚ) → 0ℚ < ε → 𝓤₀ ̇) → 𝓤 ̇
-m1a X B = (x y : X) → ((ε : ℚ) → (l : 0ℚ < ε) → B x y ε l) → x ≡ y
+m1a X B = (x y : X) → ((ε : ℚ) → (l : 0ℚ < ε) → B x y ε l) → x ＝ y
 
 m1b : {𝓤 : Universe} → (X : 𝓤 ̇) → (B : X → X → (ε : ℚ) → 0ℚ < ε → 𝓤₀ ̇) → 𝓤 ̇
 m1b X B = (x : X) → ((ε : ℚ) → (l : 0ℚ < ε) → B x x ε l)

@@ -9,26 +9,26 @@ possibility of a zero-denominator.
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import SpartanMLTT renaming (_+_ to _∔_) --TypeTopology
+open import MLTT.Spartan renaming (_+_ to _∔_) --TypeTopology
 
-open import DiscreteAndSeparated --TypeTopology
-open import NaturalNumbers-Properties --TypeToplogy
-open import SigmaDiscreteAndTotallySeparated -- TypeTopology
-open import UF-Base hiding (_≈_)  --TypeTopology
-open import UF-FunExt --TypeTopology
-open import UF-Miscelanea --TypeTopology
-open import UF-Subsingletons --TypeTopology
+open import TypeTopology.DiscreteAndSeparated --TypeTopology
+open import Naturals.Properties --TypeToplogy
+open import TypeTopology.SigmaDiscreteAndTotallySeparated -- TypeTopology
+open import UF.Base hiding (_≈_)  --TypeTopology
+open import UF.FunExt --TypeTopology
+open import UF.Miscelanea --TypeTopology
+open import UF.Subsingletons --TypeTopology
 
-open import IntegersAbs
-open import IntegersB
-open import IntegersHCF
-open import IntegersMultiplication
-open import IntegersOrder
-open import HCF
-open import NaturalsDivision
-open import NaturalsMultiplication renaming (_*_ to _ℕ*_)
+open import DedekindReals.IntegersAbs
+open import DedekindReals.IntegersB
+open import DedekindReals.IntegersHCF
+open import DedekindReals.IntegersMultiplication
+open import DedekindReals.IntegersOrder
+open import DedekindReals.HCF
+open import DedekindReals.NaturalsDivision
+open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
 
-module ncRationals where
+module DedekindReals.ncRationals where
 
 ℚₙ : 𝓤₀ ̇
 ℚₙ = ℤ × ℕ
@@ -46,7 +46,7 @@ is-in-lowest-terms-is-prop fe (x , y) = coprime-is-prop fe (abs x) (succ y)
 ℚₙ-is-set = discrete-types-are-sets ℚₙ-is-discrete
 
 _≈_ : (p q : ℚₙ) → 𝓤₀ ̇
-(x , a) ≈ (y , b) = x * pos (succ b) ≡ y * pos (succ a)
+(x , a) ≈ (y , b) = x * pos (succ b) ＝ y * pos (succ a)
 
 ≈-refl : (q : ℚₙ) → q ≈ q
 ≈-refl q = refl
@@ -61,14 +61,14 @@ _≈_ : (p q : ℚₙ) → 𝓤₀ ̇
   b' = pos (succ b)
   c' = pos (succ c)
 
-  I : b' * (x * c') ≡ b' * (z * a')
-  I = b' * (x * c') ≡⟨ ℤ*-assoc b' x c' ⁻¹           ⟩
-      b' * x * c'   ≡⟨ ap (_* c') (ℤ*-comm b' x)     ⟩
-      x * b' * c'   ≡⟨ ap (_* c') e₁                 ⟩
-      y * a' * c'   ≡⟨ ap (_* c') (ℤ*-comm y a')     ⟩
-      a' * y * c'   ≡⟨ ℤ*-assoc a' y c'              ⟩
-      a' * (y * c') ≡⟨ ap (a' *_) e₂                 ⟩
-      a' * (z * b') ≡⟨ ℤ-mult-rearrangement' z b' a' ⟩
+  I : b' * (x * c') ＝ b' * (z * a')
+  I = b' * (x * c') ＝⟨ ℤ*-assoc b' x c' ⁻¹           ⟩
+      b' * x * c'   ＝⟨ ap (_* c') (ℤ*-comm b' x)     ⟩
+      x * b' * c'   ＝⟨ ap (_* c') e₁                 ⟩
+      y * a' * c'   ＝⟨ ap (_* c') (ℤ*-comm y a')     ⟩
+      a' * y * c'   ＝⟨ ℤ*-assoc a' y c'              ⟩
+      a' * (y * c') ＝⟨ ap (a' *_) e₂                 ⟩
+      a' * (z * b') ＝⟨ ℤ-mult-rearrangement' z b' a' ⟩
       b' * (z * a') ∎
         
   conclusion : (x , a) ≈ (z , c)
@@ -78,35 +78,35 @@ equiv-with-lowest-terms-is-equal : (a b : ℚₙ)
                                  → a ≈ b
                                  → is-in-lowest-terms a
                                  → is-in-lowest-terms b
-                                 → a ≡ b
-equiv-with-lowest-terms-is-equal (x , a) (y , b) e ((m₁ , m₂) , n) ((m₁' , m₂') , n') = to-×-≡ xyequal abequal
+                                 → a ＝ b
+equiv-with-lowest-terms-is-equal (x , a) (y , b) e ((m₁ , m₂) , n) ((m₁' , m₂') , n') = to-×-＝ xyequal abequal
  where
-  e' : x * pos (succ b) ≡ y * pos (succ a)
+  e' : x * pos (succ b) ＝ y * pos (succ a)
   e' = e
 
-  γ : abs (x * pos (succ b)) ≡ abs (y * pos (succ a))
+  γ : abs (x * pos (succ b)) ＝ abs (y * pos (succ a))
   γ = ap abs e'
 
-  δ : abs x ℕ* succ b ≡ abs y ℕ* succ a
-  δ = abs x ℕ* abs (pos (succ b)) ≡⟨ abs-over-mult x (pos (succ b)) ⁻¹ ⟩
-      abs (x * pos (succ b))      ≡⟨ γ                                 ⟩
-      abs (y * pos (succ a))      ≡⟨ abs-over-mult y (pos (succ a))    ⟩
+  δ : abs x ℕ* succ b ＝ abs y ℕ* succ a
+  δ = abs x ℕ* abs (pos (succ b)) ＝⟨ abs-over-mult x (pos (succ b)) ⁻¹ ⟩
+      abs (x * pos (succ b))      ＝⟨ γ                                 ⟩
+      abs (y * pos (succ a))      ＝⟨ abs-over-mult y (pos (succ a))    ⟩
       abs y ℕ* abs (pos (succ a)) ∎
  
   s : (succ a) ∣ (abs x) ℕ* (succ b)
   s = abs y , I
    where
-    I : succ a ℕ* abs y ≡ abs x ℕ* succ b
-    I = succ a ℕ* abs y ≡⟨ mult-commutativity (succ a) (abs y) ⟩
-        abs y ℕ* succ a ≡⟨ δ ⁻¹                                ⟩
+    I : succ a ℕ* abs y ＝ abs x ℕ* succ b
+    I = succ a ℕ* abs y ＝⟨ mult-commutativity (succ a) (abs y) ⟩
+        abs y ℕ* succ a ＝⟨ δ ⁻¹                                ⟩
         abs x ℕ* succ b ∎
 
   s' : succ b ∣ abs y ℕ* succ a
   s' = abs x , I
    where
-    I : succ b ℕ* abs x ≡ abs y ℕ* succ a
-    I = succ b ℕ* abs x ≡⟨ mult-commutativity (succ b) (abs x) ⟩
-        abs x ℕ* succ b ≡⟨ δ                                   ⟩
+    I : succ b ℕ* abs x ＝ abs y ℕ* succ a
+    I = succ b ℕ* abs x ＝⟨ mult-commutativity (succ b) (abs x) ⟩
+        abs x ℕ* succ b ＝⟨ δ                                   ⟩
         abs y ℕ* succ a ∎
 
   a-divides-b : succ a ∣ succ b
@@ -115,18 +115,18 @@ equiv-with-lowest-terms-is-equal (x , a) (y , b) e ((m₁ , m₂) , n) ((m₁' ,
   b-divides-a : succ b ∣ succ a
   b-divides-a = coprime-with-division (succ b) (abs y) (succ a) ((m₂' , m₁') , λ f (h₁ , h₂) → n' f (h₂ , h₁)) s'
 
-  abequal : a ≡ b
+  abequal : a ＝ b
   abequal = succ-lc (∣-anti (succ a) (succ b) a-divides-b b-divides-a)
 
-  e'' : x * pos (succ a) ≡ y * pos (succ a)
-  e'' = x * pos (succ a) ≡⟨ ap (x *_) (ap pos (ap succ abequal)) ⟩
-        x * pos (succ b) ≡⟨ e                                    ⟩
+  e'' : x * pos (succ a) ＝ y * pos (succ a)
+  e'' = x * pos (succ a) ＝⟨ ap (x *_) (ap pos (ap succ abequal)) ⟩
+        x * pos (succ b) ＝⟨ e                                    ⟩
         y * pos (succ a) ∎
 
-  xyequal : x ≡ y
+  xyequal : x ＝ y
   xyequal = ℤ-mult-right-cancellable x y (pos (succ a)) id e''
 
-open import CanonicalMapNotation
+open import Notation.CanonicalMap
 
 ℤ-to-ℚₙ : ℤ → ℚₙ
 ℤ-to-ℚₙ z = z , 0

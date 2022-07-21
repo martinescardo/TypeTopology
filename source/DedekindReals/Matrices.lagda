@@ -4,17 +4,16 @@ Andrew Sneap
 \begin{code}
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import SpartanMLTT renaming (_+_ to _∔_)
+open import MLTT.Spartan renaming (_+_ to _∔_)
 
-open import NaturalNumbers
-open import Fin
-open import Fin-Properties
-open import UF-Subsingletons
+open import MLTT.Fin
+open import MLTT.Fin-Properties
+open import UF.Subsingletons
 
-open import FieldAxioms
+open import DedekindReals.FieldAxioms
 
 
-module Matrices
+module DedekindReals.Matrices
   (Field : Ordered-Field 𝓤 { 𝓥 } { 𝓦 })
   where
 
@@ -30,7 +29,7 @@ e₁ = multiplicative-identity Field
 _+_ : F → F → F
 _+_ = addition Field 
 
-+-comm : (x y : F) → x + y ≡ y + x
++-comm : (x y : F) → x + y ＝ y + x
 +-comm = addition-commutative Field
 
 _*_ : F → F → F
@@ -39,7 +38,7 @@ _*_ = multiplication Field
 F-is-set : is-set F
 F-is-set = underlying-type-is-set Field
 
-F-zero-left-neutral : (x : F) → e₀ + x ≡ x
+F-zero-left-neutral : (x : F) → e₀ + x ＝ x
 F-zero-left-neutral = zero-left-neutral Field
 
 matrix : (n m : ℕ) → 𝓤 ̇
@@ -65,7 +64,7 @@ _*M_ : {n m q : ℕ} → matrix n m → matrix m q → matrix n q
 _*M_ A B i j = inner-product (row i A) (column j B) fzero fzero
 
 _≈_ : {n m : ℕ} → (A B : matrix n m) → 𝓤 ̇
-_≈_ {n} {m} A B = (i : Fin n) → (j : Fin m) → A i j ≡ B i j
+_≈_ {n} {m} A B = (i : Fin n) → (j : Fin m) → A i j ＝ B i j
 
 infix 19 _≈_
 
@@ -81,25 +80,25 @@ _*sM_ s M i j = s * M i j
 ᵗ : {n m : ℕ} → matrix n m → matrix m n
 ᵗ A i j = A j i
 
-transpose-involutive : {n m : ℕ} → (M : matrix n m) → ᵗ (ᵗ M) ≡ M
+transpose-involutive : {n m : ℕ} → (M : matrix n m) → ᵗ (ᵗ M) ＝ M
 transpose-involutive M = refl
 
 transpose-involutive' : {n m : ℕ} → (M : matrix n m) → ᵗ (ᵗ M) ≈ M
-transpose-involutive' M i j = ᵗ (ᵗ M) i j ≡⟨ by-definition ⟩
-                              ᵗ M j i     ≡⟨ by-definition ⟩
+transpose-involutive' M i j = ᵗ (ᵗ M) i j ＝⟨ by-definition ⟩
+                              ᵗ M j i     ＝⟨ by-definition ⟩
                               M i j ∎
 
 +M-zero-left-neutral : {n m : ℕ} → (A : matrix n m) → 0ₘ +M A ≈ A
-+M-zero-left-neutral A i j = (0ₘ +M A) i j    ≡⟨ by-definition ⟩
-                             (0ₘ i j + A i j) ≡⟨ by-definition ⟩
-                             (e₀ + A i j)     ≡⟨ F-zero-left-neutral (A i j) ⟩
++M-zero-left-neutral A i j = (0ₘ +M A) i j    ＝⟨ by-definition ⟩
+                             (0ₘ i j + A i j) ＝⟨ by-definition ⟩
+                             (e₀ + A i j)     ＝⟨ F-zero-left-neutral (A i j) ⟩
                              A i j ∎
 
 
-open import UF-FunExt
-open import UF-Subsingletons-FunExt
+open import UF.FunExt
+open import UF.Subsingletons-FunExt
 
-matrix-equiv→equality : Fun-Ext → {n m : ℕ} → (A B : matrix n m) → A ≈ B → A ≡ B
+matrix-equiv→equality : Fun-Ext → {n m : ℕ} → (A B : matrix n m) → A ≈ B → A ＝ B
 matrix-equiv→equality fe {n} {m} A B equiv = dfunext fe (λ i → dfunext fe (λ j → equiv i j))
 
 

@@ -6,20 +6,20 @@ that the Euclidean Algorithm produces HCF's.
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import SpartanMLTT renaming (_+_ to _∔_) 
+open import MLTT.Spartan renaming (_+_ to _∔_) 
 
-open import NaturalsAddition
-open import NaturalsDivision
-open import NaturalsMultiplication
-open import NaturalNumbers-Properties
-open import NaturalsOrder 
-open import OrderNotation 
-open import UF-Base 
-open import UF-FunExt
-open import UF-Subsingletons 
-open import UF-Subsingletons-FunExt
+open import Naturals.Addition
+open import DedekindReals.NaturalsDivision
+open import Naturals.Multiplication
+open import Naturals.Properties
+open import Naturals.Order 
+open import Notation.Order 
+open import UF.Base 
+open import UF.FunExt
+open import UF.Subsingletons 
+open import UF.Subsingletons-FunExt
 
-module HCF where
+module DedekindReals.HCF where
 
 \end{code}
 
@@ -95,82 +95,82 @@ With an eye towards implement Euclid's algorithm to compute the
 highest common factor, we now prove two lemmas; each direction of the
 following proof:
 
-If x ≡ q * y + r, then is-hcf h x y ⇔ is-hcf y r.
+If x ＝ q * y + r, then is-hcf h x y ⇔ is-hcf y r.
 
 For Euclid's algorithm, we only need the right-to-left implication,
 but both are proved for completeness.
 
 The general idea of the right-to-left implication is as follows:
 
-x ≡ q * y + r, h | y and h | r, with h ≡ hcf(y , r).
+x ＝ q * y + r, h | y and h | r, with h ＝ hcf(y , r).
 
 Now, clearly h | x since h | (q * y + r), and h | y by assumption,
 so h is a common factor of x and y.
 
 To show that h is the highest common factor, assume that d | x,
-d | y, and further that d * u ≡ x , d * v ≡ y for some u , v.
+d | y, and further that d * u ＝ x , d * v ＝ y for some u , v.
 
 If we can show that d | y, and d | r, then d | h since is-hcf h y r.
 First, d | y by assumption.
 
-Now, d * u ≡ q * (d * v) + r, so by the factor-of-sum-consequence,
+Now, d * u ＝ q * (d * v) + r, so by the factor-of-sum-consequence,
 d | r, and we are done.
 
 \begin{code}
 
-euclids-algorithm-lemma : (x y q r h : ℕ) → x ≡ q * y + r → is-hcf h x y → is-hcf h y r
+euclids-algorithm-lemma : (x y q r h : ℕ) → x ＝ q * y + r → is-hcf h x y → is-hcf h y r
 euclids-algorithm-lemma x y q r h e (((a , e₀) , b , e₁) , f) = I , II
  where
   I : is-common-divisor h y r
   I = (b , e₁) , factor-of-sum-consequence h a (q * b) r i
    where
-    i : h * a ≡ h * (q * b) + r
-    i = h * a           ≡⟨ e₀                                            ⟩
-        x               ≡⟨ e                                             ⟩
-        q * y + r       ≡⟨ ap (λ - → q * - + r) (e₁ ⁻¹)                  ⟩
-        q * (h * b) + r ≡⟨ ap (_+ r) (mult-associativity q h b ⁻¹)       ⟩
-        q * h * b + r   ≡⟨ ap (λ - → - * b + r) (mult-commutativity q h) ⟩
-        h * q * b + r   ≡⟨ ap (_+ r) (mult-associativity h q b)          ⟩
+    i : h * a ＝ h * (q * b) + r
+    i = h * a           ＝⟨ e₀                                            ⟩
+        x               ＝⟨ e                                             ⟩
+        q * y + r       ＝⟨ ap (λ - → q * - + r) (e₁ ⁻¹)                  ⟩
+        q * (h * b) + r ＝⟨ ap (_+ r) (mult-associativity q h b ⁻¹)       ⟩
+        q * h * b + r   ＝⟨ ap (λ - → - * b + r) (mult-commutativity q h) ⟩
+        h * q * b + r   ＝⟨ ap (_+ r) (mult-associativity h q b)          ⟩
         h * (q * b) + r ∎
         
   II : (d : ℕ) → is-common-divisor d y r → d ∣ h
   II d ((u , e₁) , v , e₂) = f d ((q * u + v , i) , u , e₁)
    where
-    i : d * (q * u + v) ≡ x
-    i = d * (q * u + v)     ≡⟨ distributivity-mult-over-addition d (q * u) v ⟩
-        d * (q * u) + d * v ≡⟨ ap (d * (q * u) +_) e₂                        ⟩
-        d * (q * u) + r     ≡⟨ ap (_+ r) (mult-associativity d q u ⁻¹)       ⟩
-        d * q * u + r       ≡⟨ ap (λ - → - * u + r) (mult-commutativity d q) ⟩
-        q * d * u + r       ≡⟨ ap (_+ r) (mult-associativity q d u)          ⟩
-        q * (d * u) + r     ≡⟨ ap (λ - → q * - + r) e₁                       ⟩
-        q * y + r           ≡⟨ e ⁻¹                                          ⟩
+    i : d * (q * u + v) ＝ x
+    i = d * (q * u + v)     ＝⟨ distributivity-mult-over-addition d (q * u) v ⟩
+        d * (q * u) + d * v ＝⟨ ap (d * (q * u) +_) e₂                        ⟩
+        d * (q * u) + r     ＝⟨ ap (_+ r) (mult-associativity d q u ⁻¹)       ⟩
+        d * q * u + r       ＝⟨ ap (λ - → - * u + r) (mult-commutativity d q) ⟩
+        q * d * u + r       ＝⟨ ap (_+ r) (mult-associativity q d u)          ⟩
+        q * (d * u) + r     ＝⟨ ap (λ - → q * - + r) e₁                       ⟩
+        q * y + r           ＝⟨ e ⁻¹                                          ⟩
         x                   ∎
 
-euclids-algorithm-lemma' : (x y q r h : ℕ) → x ≡ q * y + r → is-hcf h y r → is-hcf h x y
+euclids-algorithm-lemma' : (x y q r h : ℕ) → x ＝ q * y + r → is-hcf h y r → is-hcf h x y
 euclids-algorithm-lemma' x y q r h e (((a , e₀) , b , e₁) , f) = I , II
  where
   I : is-common-divisor h x y
   I = (q * a + b , i) , (a , e₀)
    where
-    i : h * (q * a + b) ≡ x
-    i = h * (q * a + b)     ≡⟨ distributivity-mult-over-addition h (q * a) b ⟩
-        h * (q * a) + h * b ≡⟨ ap (h * (q * a) +_) e₁                        ⟩
-        h * (q * a) + r     ≡⟨ ap (_+ r) (mult-associativity h q a ⁻¹)       ⟩
-        h * q * a + r       ≡⟨ ap (λ - → - * a + r) (mult-commutativity h q) ⟩
-        q * h * a + r       ≡⟨ ap (_+ r) (mult-associativity q h a)          ⟩
-        q * (h * a) + r     ≡⟨ ap (λ - → q * - + r) e₀                       ⟩
-        q * y + r           ≡⟨ e ⁻¹                                          ⟩
+    i : h * (q * a + b) ＝ x
+    i = h * (q * a + b)     ＝⟨ distributivity-mult-over-addition h (q * a) b ⟩
+        h * (q * a) + h * b ＝⟨ ap (h * (q * a) +_) e₁                        ⟩
+        h * (q * a) + r     ＝⟨ ap (_+ r) (mult-associativity h q a ⁻¹)       ⟩
+        h * q * a + r       ＝⟨ ap (λ - → - * a + r) (mult-commutativity h q) ⟩
+        q * h * a + r       ＝⟨ ap (_+ r) (mult-associativity q h a)          ⟩
+        q * (h * a) + r     ＝⟨ ap (λ - → q * - + r) e₀                       ⟩
+        q * y + r           ＝⟨ e ⁻¹                                          ⟩
         x                   ∎  
   II : (d : ℕ) → is-common-divisor d x y → d ∣ h
   II d ((u , e₂) , v , e₃)  = f d ((v , e₃) , factor-of-sum-consequence d u (q * v) r i)
    where
-    i : d * u ≡ d * (q * v) + r
-    i = d * u           ≡⟨ e₂                                            ⟩
-        x               ≡⟨ e                                             ⟩
-        q * y + r       ≡⟨ ap (λ - → q * - + r) (e₃ ⁻¹)                  ⟩
-        q * (d * v) + r ≡⟨ ap (_+ r) (mult-associativity q d v ⁻¹)       ⟩
-        q * d * v + r   ≡⟨ ap (λ - → - * v + r) (mult-commutativity q d) ⟩
-        d * q * v + r   ≡⟨ ap (_+ r) (mult-associativity d q v)          ⟩
+    i : d * u ＝ d * (q * v) + r
+    i = d * u           ＝⟨ e₂                                            ⟩
+        x               ＝⟨ e                                             ⟩
+        q * y + r       ＝⟨ ap (λ - → q * - + r) (e₃ ⁻¹)                  ⟩
+        q * (d * v) + r ＝⟨ ap (_+ r) (mult-associativity q d v ⁻¹)       ⟩
+        q * d * v + r   ＝⟨ ap (λ - → - * v + r) (mult-commutativity q d) ⟩
+        d * q * v + r   ＝⟨ ap (_+ r) (mult-associativity d q v)          ⟩
         d * (q * v) + r ∎
 
 
@@ -189,7 +189,7 @@ y there exists a highest common factor of x and y. (In the proof I use y in the 
 
 \begin{code}
 {-
-HCF'' : (x y q r : ℕ) → x ≡ q * succ y + r → r < succ y → Σ h ꞉ ℕ , is-hcf h x (succ y)
+HCF'' : (x y q r : ℕ) → x ＝ q * succ y + r → r < succ y → Σ h ꞉ ℕ , is-hcf h x (succ y)
 HCF'' x y q 0        e l = (succ y) , ((q , (mult-commutativity (succ y) q ∙ e ⁻¹)) , ∣-refl) , λ d → pr₂
 HCF'' x y q (succ r) e l with division (succ y) r
 ... | (q' , r' , e' , l') with HCF'' (succ y) r q' r' e' l'
@@ -208,7 +208,7 @@ HCF = course-of-values-induction (λ x → (y : ℕ) → Σ h ꞉ ℕ , is-hcf h
   step 0        IH y = y , (everything-divides-zero , ∣-refl) , (λ d icd → pr₂ icd)
   step (succ x) IH y = I (division y x)
    where
-    I : Σ q ꞉ ℕ , Σ r ꞉ ℕ , (y ≡ q * succ x + r) × (r < succ x) → Σ h ꞉ ℕ , is-hcf h (succ x) y
+    I : Σ q ꞉ ℕ , Σ r ꞉ ℕ , (y ＝ q * succ x + r) × (r < succ x) → Σ h ꞉ ℕ , is-hcf h (succ x) y
     I (q , r , e₀ , l) = II (IH r l (succ x))
      where
       II : Σ h ꞉ ℕ , is-hcf h r (succ x) → Σ h ꞉ ℕ , is-hcf h (succ x) y
@@ -235,43 +235,43 @@ coprime a b = is-hcf 1 a b
 coprime-is-prop : Fun-Ext → (a b : ℕ) → is-prop (coprime a b)
 coprime-is-prop fe a b = is-hcf-is-prop fe 0 a b
 
-divbyhcf : (a b : ℕ) → Σ h ꞉ ℕ , Σ x ꞉ ℕ , Σ y ꞉ ℕ , ((h * x ≡ a) × (h * y ≡ b)) × coprime x y
+divbyhcf : (a b : ℕ) → Σ h ꞉ ℕ , Σ x ꞉ ℕ , Σ y ꞉ ℕ , ((h * x ＝ a) × (h * y ＝ b)) × coprime x y
 divbyhcf 0 b = b , (0 , (1 , ((refl , refl) , (everything-divides-zero , 1-divides-all 1) , λ d → pr₂)))
 divbyhcf (succ a) b = I (HCF (succ a) b)
  where
-  I : Σ c ꞉ ℕ , is-hcf c (succ a) b → Σ h ꞉ ℕ , Σ x ꞉ ℕ , Σ y ꞉ ℕ , ((h * x ≡ succ a) × (h * y ≡ b)) × coprime x y 
+  I : Σ c ꞉ ℕ , is-hcf c (succ a) b → Σ h ꞉ ℕ , Σ x ꞉ ℕ , Σ y ꞉ ℕ , ((h * x ＝ succ a) × (h * y ＝ b)) × coprime x y 
   I (0 , ((x , xₚ) , y , yₚ) , γ) = 𝟘-elim (positive-not-zero a II)
    where
-    II : succ a ≡ 0
-    II = succ a  ≡⟨ xₚ ⁻¹                     ⟩
-         0 * x   ≡⟨ mult-commutativity zero x ⟩
+    II : succ a ＝ 0
+    II = succ a  ＝⟨ xₚ ⁻¹                     ⟩
+         0 * x   ＝⟨ mult-commutativity zero x ⟩
          0       ∎
   I (succ h , ((x , xₚ) , y , yₚ) , γ) = (succ h) , (x , (y , ((xₚ , yₚ) , (((x , mult-commutativity 1 x) , y , (mult-commutativity 1 y)) , II))))
    where
     II : (f' : ℕ) → is-common-divisor f' x y → f' ∣ 1
     II f' ((α , αₚ) , β , βₚ) = III (γ (succ h * f') ((α , αₚ') , β , βₚ'))
      where
-      αₚ' : succ h * f' * α ≡ succ a
-      αₚ' = succ h * f' * α     ≡⟨ mult-associativity (succ h) f' α ⟩
-            succ h * (f' * α)   ≡⟨ ap (succ h *_) αₚ                ⟩
-            succ h * x          ≡⟨ xₚ                               ⟩
+      αₚ' : succ h * f' * α ＝ succ a
+      αₚ' = succ h * f' * α     ＝⟨ mult-associativity (succ h) f' α ⟩
+            succ h * (f' * α)   ＝⟨ ap (succ h *_) αₚ                ⟩
+            succ h * x          ＝⟨ xₚ                               ⟩
             succ a              ∎
 
-      βₚ' : succ h * f' * β ≡ b
-      βₚ' = succ h * f' * β   ≡⟨ mult-associativity (succ h) f' β ⟩
-            succ h * (f' * β) ≡⟨ ap (succ h *_) βₚ                ⟩
-            succ h * y        ≡⟨ yₚ                               ⟩
+      βₚ' : succ h * f' * β ＝ b
+      βₚ' = succ h * f' * β   ＝⟨ mult-associativity (succ h) f' β ⟩
+            succ h * (f' * β) ＝⟨ ap (succ h *_) βₚ                ⟩
+            succ h * y        ＝⟨ yₚ                               ⟩
             b                 ∎
 
       III : (succ h) * f' ∣ (succ h) → f' ∣ 1
       III (δ , δₚ) = 1 , product-one-gives-one f' δ (mult-left-cancellable (f' * δ) 1 h e)
        where
-        e : succ h * (f' * δ) ≡ succ h * 1
-        e = succ h * (f' * δ) ≡⟨ mult-associativity (succ h) f' δ ⁻¹ ⟩
-            succ h * f' * δ   ≡⟨ δₚ ⟩
+        e : succ h * (f' * δ) ＝ succ h * 1
+        e = succ h * (f' * δ) ＝⟨ mult-associativity (succ h) f' δ ⁻¹ ⟩
+            succ h * f' * δ   ＝⟨ δₚ ⟩
             succ h            ∎
 
-hcf-unique : (a b : ℕ) → ((h , p) : Σ h ꞉ ℕ , is-hcf h a b) → ((h' , p') : Σ h' ꞉ ℕ , is-hcf h' a b) → h ≡ h'
+hcf-unique : (a b : ℕ) → ((h , p) : Σ h ꞉ ℕ , is-hcf h a b) → ((h' , p') : Σ h' ꞉ ℕ , is-hcf h' a b) → h ＝ h'
 hcf-unique a b (h , h-icd , f) (h' , h'-icd , f') = ∣-anti h h' I II
  where
   I : h ∣ h'
@@ -301,12 +301,12 @@ has-hcf : (x y : ℕ) → 𝓤₀ ̇
 has-hcf x y = Σ d ꞉ ℕ , is-hcf (succ d) x y
 
 has-hcf-is-prop : Fun-Ext → (x y : ℕ) → is-prop (has-hcf x y)
-has-hcf-is-prop fe x y (h₁ , h₁-cf , f) (h₂ , h₂-cf , g) = to-subtype-≡ I II
+has-hcf-is-prop fe x y (h₁ , h₁-cf , f) (h₂ , h₂-cf , g) = to-subtype-＝ I II
  where
   I : (d : ℕ) → is-prop (is-hcf (succ d) x y)
   I d = is-hcf-is-prop fe d x y
 
-  II : h₁ ≡ h₂
+  II : h₁ ＝ h₂
   II = succ-lc (∣-anti (succ h₁) (succ h₂) α β)
    where
     α : succ h₁ ∣ succ h₂

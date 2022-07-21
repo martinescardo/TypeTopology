@@ -6,19 +6,20 @@ In this file I prove the the rationals are a Field.
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import SpartanMLTT renaming (_+_ to _∔_)
-open import UF-FunExt
+open import MLTT.Spartan renaming (_+_ to _∔_)
+open import UF.FunExt
 
-open import Rationals
-open import RationalsAddition
-open import RationalsNegation
-open import RationalsMultiplication
-open import RationalsOrder
-open import FieldAxioms
+open import DedekindReals.Rationals
+open import DedekindReals.RationalsAddition
+open import DedekindReals.RationalsNegation
+open import DedekindReals.RationalsMultiplication
+open import DedekindReals.RationalsOrder
+open import DedekindReals.FieldAxioms
 
+module DedekindReals.RationalsField where
 
 ℚ-field-structure : field-structure ℚ { 𝓤₀ }
-ℚ-field-structure = _+_ , _*_ , λ p q → ¬ (p ≡ q)
+ℚ-field-structure = _+_ , _*_ , λ p q → ¬ (p ＝ q)
 
 ℚ-field : Fun-Ext → Field-structure ℚ { 𝓤₀ }
 ℚ-field fe = ℚ-field-structure

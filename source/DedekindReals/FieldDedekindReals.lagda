@@ -4,23 +4,23 @@
 
 {-# OPTIONS --without-K --exact-split --safe --experimental-lossy-unification #-}
 
-open import SpartanMLTT renaming (_+_ to _∔_) --TypeTopology
+open import MLTT.Spartan renaming (_+_ to _∔_) --TypeTopology
 
-open import UF-PropTrunc --TypeTopology
-open import UF-FunExt --TypeTopology
-open import UF-Subsingletons --TypeTopology
-open import OrderNotation --TypeTopology
+open import UF.PropTrunc --TypeTopology
+open import UF.FunExt --TypeTopology
+open import UF.Subsingletons --TypeTopology
+open import Notation.Order --TypeTopology
 
-open import FieldAxioms
+open import DedekindReals.FieldAxioms
 
-module FieldDedekindReals
+module DedekindReals.FieldDedekindReals
          (fe : Fun-Ext)
          (pt : propositional-truncations-exist)
          (pe : Prop-Ext)
  where
 
-open import DedekindReals pe pt fe
-open import DedekindRealsOrder pe pt fe
+open import DedekindReals.DedekindReals pe pt fe
+open import DedekindReals.DedekindRealsOrder pe pt fe
 
 DedekindRealsField : Field-structure ℝ { 𝓤₀ }
 DedekindRealsField = ({!!} , {!!} , _♯_) , ℝ-is-set , {!!} , {!!} , {!!} , {!!} , {!!} , (0ℝ , 1ℝ) , ℝ-zero-apart-from-one , {!!} , {!!} , {!!} , {!!}
@@ -32,7 +32,7 @@ DedekindRealsOrderedField' : Ordered-Field 𝓤₁ { 𝓤₀ } { 𝓤₀ }
 DedekindRealsOrderedField' = (ℝ , DedekindRealsField) , DedekindRealsOrderedField
 
 {-
-open import Rationals
+open import DedekindReals.Rationals
 
 DedekindRealsArchimedeanOrderedField : ArchimedeanOrderedField 𝓤₁
 DedekindRealsArchimedeanOrderedField = DedekindRealsOrderedField' , I

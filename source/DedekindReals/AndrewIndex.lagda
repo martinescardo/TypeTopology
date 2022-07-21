@@ -4,50 +4,43 @@ Andrew Sneap
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-module AndrewIndex where
+module DedekindReals.AndrewIndex where
 
-import NaturalsMultiplication
-import NaturalsDivision 
-import HCF 
-
-import IntegersB
-import IntegersNegation
-import IntegersAddition
-import IntegersMultiplication
-import IntegersOrder
-import IntegersDivision 
-import IntegersHCF
-import IntegersAbs
-
-import ncRationals
-import ncRationalsOperations
-import ncRationalsOrder
-import Rationals
-import RationalsAbs
-import RationalsAddition
-import RationalsExtension
-import RationalsField
-import RationalsLimits
-import RationalsMinMax
-import RationalsMultiplication
-import RationalsNegation
-import RationalsOrder
-
-import DedekindReals
-import DedekindRealsAddition 
-import DedekindRealsProperties
-import DedekindRealsOrder
-
-import MetricSpaceAltDef
-import MetricSpaceRationals
-import MetricSpaceDedekindReals
-
-import ContinuousExtensionTheorem
-
-import FieldAxioms
-import FieldRationals
-
--- import Todd.TBRDyadicReals
--- import Todd.RationalsDyadic
+import DedekindReals.ContinuousExtensionTheorem
+import DedekindReals.DedekindReals
+import DedekindReals.DedekindRealsAddition
+-- import DedekindReals.DedekindRealsMultiplication
+import DedekindReals.DedekindRealsOrder
+import DedekindReals.DedekindRealsProperties
+import DedekindReals.FieldAxioms
+-- import DedekindReals.FieldDedekindReals
+import DedekindReals.FieldRationals
+import DedekindReals.HCF
+import DedekindReals.IntegersAbs
+import DedekindReals.IntegersAddition
+import DedekindReals.IntegersB
+import DedekindReals.IntegersDivision
+import DedekindReals.IntegersHCF
+import DedekindReals.IntegersMultiplication
+import DedekindReals.IntegersNegation
+import DedekindReals.IntegersOrder
+import DedekindReals.Matrices
+import DedekindReals.MetricSpaceAltDef
+import DedekindReals.MetricSpaceDedekindReals
+import DedekindReals.MetricSpaceRationals
+import DedekindReals.NaturalsDivision
+import DedekindReals.Rationals
+import DedekindReals.RationalsAbs
+import DedekindReals.RationalsAddition
+import DedekindReals.RationalsExtension
+import DedekindReals.RationalsField
+import DedekindReals.RationalsLimits
+import DedekindReals.RationalsMinMax
+import DedekindReals.RationalsMultiplication
+import DedekindReals.RationalsNegation
+import DedekindReals.RationalsOrder
+import DedekindReals.ncRationals
+import DedekindReals.ncRationalsOperations
+import DedekindReals.ncRationalsOrder
 
 \end{code}
