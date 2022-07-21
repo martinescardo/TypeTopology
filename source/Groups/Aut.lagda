@@ -28,6 +28,12 @@ open import Groups.Groups-Supplement
 
 module Groups.Aut where
 
+\end{code}
+
+In the group structure below the definition matches that of function
+composition.
+
+\begin{code}
 module _ (fe : funext 𝓤 𝓤) (X : 𝓤 ̇) (i : is-set X) where
 
   is-set-Aut : is-set (Aut X)
@@ -37,7 +43,7 @@ module _ (fe : funext 𝓤 𝓤) (X : 𝓤 ̇) (i : is-set X) where
 
 
   group-structure-Aut : Aut X → Aut X → Aut X
-  group-structure-Aut f g = g ● f
+  group-structure-Aut f g = f ● g
 
   private
     _·_ = group-structure-Aut
@@ -60,15 +66,15 @@ being-equiv-is-prop.
       assoc-Aut : associative _·_
       assoc-Aut (f , i) (g , j) (h , k) = to-Σ-＝ (p , q)
         where
-          p : (f ∘ g) ∘ h ＝ f ∘ (g ∘ h)
+          p : (h ∘ g) ∘ f ＝ h ∘ (g ∘ f)
           p = refl
 
-          d e : is-equiv (f ∘ g ∘ h)
-          d = ∘-is-equiv k (∘-is-equiv j i)
-          e = ∘-is-equiv (∘-is-equiv k j) i
+          d e : is-equiv (h ∘ g ∘ f)
+          d = ∘-is-equiv i (∘-is-equiv j k)
+          e = ∘-is-equiv (∘-is-equiv i j) k
 
-          q : transport is-equiv p d ＝ e
-          q = being-equiv-is-prop'' fe (f ∘ g ∘ h) _ _
+          q : transport is-equiv p e ＝ d
+          q = being-equiv-is-prop'' fe (h ∘ g ∘ f) _ _
 
       e : Aut X
       e = id , id-is-equiv X
@@ -84,12 +90,12 @@ being-equiv-is-prop.
       pr₁ (φ f) = ≃-sym f
       pr₁ (pr₂ (φ (∣f∣ , is))) = to-Σ-＝ (p  , being-equiv-is-prop'' fe _ _ _)
         where
-          p : inverse ∣f∣ is ∘ ∣f∣ ＝ id
-          p = dfunext fe (inverses-are-retractions ∣f∣ is)
-      pr₂ (pr₂ (φ (∣f∣ , is))) = to-Σ-＝ (p , being-equiv-is-prop'' fe _ _ _)
-        where
           p : ∣f∣ ∘ inverse ∣f∣ is ＝ id
           p = dfunext fe (inverses-are-sections ∣f∣ is)
+      pr₂ (pr₂ (φ (∣f∣ , is))) = to-Σ-＝ (p , being-equiv-is-prop'' fe _ _ _)
+        where
+          p : inverse ∣f∣ is ∘ ∣f∣ ＝ id
+          p = dfunext fe (inverses-are-retractions ∣f∣ is)
 
   Group-structure-Aut : Group-structure (Aut X)
   Group-structure-Aut = _·_ , group-axioms-Aut
@@ -121,7 +127,7 @@ module _ (fe : FunExt)
      gr-s-Y = Group-structure-Aut {𝓥} (fe 𝓥 𝓥) Y j
 
    is-hom-𝓐ut : is-hom (Aut X , gr-s-X) (Aut Y , gr-s-Y) (𝓐ut φ)
-   is-hom-𝓐ut {f} {g} = (≃-sym φ ● (g ● f )) ● φ                   ＝⟨  ap (_● φ) (ap (≃-sym φ ●_) p) ⟩
+   is-hom-𝓐ut {g} {f} = (≃-sym φ ● (g ● f )) ● φ                   ＝⟨  ap (_● φ) (ap (≃-sym φ ●_) p) ⟩
                          (≃-sym φ ● ((g ● φ) ● (≃-sym φ ● f))) ● φ ＝⟨  ap (_● φ) (≃-assoc fe (≃-sym φ) (g ● φ) (≃-sym φ ● f)) ⟩
                          ((≃-sym φ ● (g ● φ)) ● (≃-sym φ ● f)) ● φ ＝⟨  (≃-assoc fe (≃-sym φ ● (g ● φ)) (≃-sym φ ● f) φ) ⁻¹ ⟩
                          (≃-sym φ ● (g ● φ)) ● ((≃-sym φ ● f) ● φ) ＝⟨  ap (_● ((≃-sym φ ● f) ● φ)) (≃-assoc fe (≃-sym φ) g φ) ⟩
