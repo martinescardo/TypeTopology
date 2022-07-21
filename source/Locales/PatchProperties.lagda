@@ -268,7 +268,7 @@ module OpenNucleus (X : Locale 𝓤 𝓥 𝓥) (σ : is-spectral (𝒪 X) holds)
 
 module Epsilon (X : Locale (𝓤 ⁺) 𝓤 𝓤) (σᴰ : spectralᴰ (𝒪 X)) where
 
- open PatchConstruction X ∣ σᴰ ∣
+ open PatchConstruction X ∣ σᴰ ∣ renaming (Perfect-Nucleus to Perfect-Nucleus-on-X)
  open SmallPatchConstruction X σᴰ renaming (SmallPatch to Patchₛ-X)
  open ClosedNucleus X ∣ σᴰ ∣
 
@@ -302,6 +302,27 @@ module Epsilon (X : Locale (𝓤 ⁺) 𝓤 𝓤) (σᴰ : spectralᴰ (𝒪 X)) 
              iv  = ap
                     (λ - →  (U ∨[ 𝒪 X ] W) ∧[ 𝒪 X ] -)
                     (∨[ 𝒪 X ]-is-commutative W V)
+
+   open Joins (λ x y → x ≤[ poset-of (𝒪 Patchₛ-X) ] y)
+
+   γ : (Ɐ S ∶ Fam 𝓤 ⟨ 𝒪 X ⟩ , ‘ ⋁[ 𝒪 X ] S ’ is-lub-of ⁅ ‘ U ’ ∣ U ε S ⁆) holds
+   γ S = † , ‡
+    where
+     open PosetReasoning (poset-of (𝒪 X))
+
+     † : (‘ ⋁[ 𝒪 X ] S ’ is-an-upper-bound-of ⁅ ‘ U ’ ∣ U ε S ⁆) holds
+     † i j = ∨[ 𝒪 X ]-least ♥ ♠
+      where
+       ♥ : ((S [ i ]) ≤[ poset-of (𝒪 X) ] ‘ ⋁[ 𝒪 X ] S ’ .pr₁ (ℬ [ j ])) holds
+       ♥ = S [ i ]                         ≤⟨ ⋁[ 𝒪 X ]-upper S i ⟩
+           ⋁[ 𝒪 X ] S                      ≤⟨ ∨[ 𝒪 X ]-upper₁ (⋁[ 𝒪 X ] S) (ℬ [ j ]) ⟩
+           (⋁[ 𝒪 X ] S) ∨[ 𝒪 X ] (ℬ [ j ]) ■
+
+       ♠ : ((ℬ [ j ]) ≤[ poset-of (𝒪 X) ] ((⋁[ 𝒪 X ] S) ∨[ 𝒪 X ] (ℬ [ j ]))) holds
+       ♠ = ∨[ 𝒪 X ]-upper₂ (⋁[ 𝒪 X ] S) (ℬ [ j ])
+
+     ‡ : {!!}
+     ‡ = {!!}
 
 \end{code}
 
