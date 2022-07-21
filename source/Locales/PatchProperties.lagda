@@ -266,24 +266,62 @@ module OpenNucleus (X : Locale 𝓤 𝓥 𝓥) (σ : is-spectral (𝒪 X) holds)
 
 \begin{code}
 
-module PatchStone (X : Locale 𝓤 𝓥 𝓥) (σ : is-spectral (𝒪 X) holds) where
+module Epsilon (X : Locale (𝓤 ⁺) 𝓤 𝓤) (σᴰ : spectralᴰ (𝒪 X)) where
 
- open ClosedNucleus X σ
- open OpenNucleus   X σ
- open PatchConstruction X σ renaming (Patch to Patch-X)
+ open PatchConstruction X ∣ σᴰ ∣
+ open SmallPatchConstruction X σᴰ renaming (SmallPatch to Patchₛ-X)
+ open ClosedNucleus X ∣ σᴰ ∣
 
- -- open-is-∧-complement-of-closed : (K@(K₀ , _) : 𝒦)
- --                                → ‘ K₀ ’ ∧[ 𝒪 Patch-X ] ¬‘ K ’ ≡ 𝟎[ 𝒪 Patch-X ]
- -- open-is-∧-complement-of-closed K@(K₀ , _) =
- --  only-𝟎-is-below-𝟎 (𝒪 Patch-X) (‘ K₀ ’ ∧[ 𝒪 Patch-X ] ¬‘ K ’) †
- --   where
- --    † : ((‘ K₀ ’ ∧[ 𝒪 Patch-X ] ¬‘ K ’)
- --          ≤[ poset-of (𝒪 Patch-X) ]
- --         𝟎[ 𝒪 Patch-X ])
- --        holds
- --    † U = {!!}
+ ϵ : Patchₛ-X ─c→ X
+ ϵ = ‘_’ , α , β , {!!}
+  where
+   α : ‘ 𝟏[ 𝒪 X ] ’ ≡ 𝟏[ 𝒪 Patchₛ-X ]
+   α = perfect-nuclei-eq ‘ 𝟏[ 𝒪 X ] ’ 𝟏[ 𝒪 Patchₛ-X ] (dfunext fe †)
+    where
+     † : (U : ⟨ 𝒪 X ⟩) → 𝟏[ 𝒪 X ] ∨[ 𝒪 X ] U ≡ 𝟏[ 𝒪 X ]
+     † U = 𝟏-left-annihilator-for-∨ (𝒪 X) U
 
- -- patch-is-stone : {!!}
- -- patch-is-stone = {!!}
+   β : preserves-binary-meets (𝒪 X) (𝒪 Patchₛ-X) ‘_’ holds
+   β U V = perfect-nuclei-eq
+            ‘ U ∧[ 𝒪 X ] V ’
+            (‘ U ’ ∧[ 𝒪 Patchₛ-X ] ‘ V ’)
+            (dfunext fe †)
+    where
+     † : (W : ⟨ 𝒪 X ⟩) → ‘ U ∧[ 𝒪 X ] V ’ $ W ≡ (‘ U ’ ∧[ 𝒪 Patchₛ-X ] ‘ V ’) $ W
+     † W = (U ∧[ 𝒪 X ] V) ∨[ 𝒪 X ] W                ≡⟨ i   ⟩
+           W ∨[ 𝒪 X ] (U ∧[ 𝒪 X ] V)                ≡⟨ ii  ⟩
+           (W ∨[ 𝒪 X ] U) ∧[ 𝒪 X ] (W ∨[ 𝒪 X ] V)   ≡⟨ iii ⟩
+           (U ∨[ 𝒪 X ] W) ∧[ 𝒪 X ] (W ∨[ 𝒪 X ] V)   ≡⟨ iv  ⟩
+           (U ∨[ 𝒪 X ] W) ∧[ 𝒪 X ] (V ∨[ 𝒪 X ] W)   ∎
+            where
+             i   = ∨[ 𝒪 X ]-is-commutative (U ∧[ 𝒪 X ] V) W
+             ii  = binary-distributivity-op (𝒪 X) W U V
+             iii = ap
+                    (λ - → - ∧[ 𝒪 X ] (W ∨[ 𝒪 X ] V))
+                    (∨[ 𝒪 X ]-is-commutative W U)
+             iv  = ap
+                    (λ - →  (U ∨[ 𝒪 X ] W) ∧[ 𝒪 X ] -)
+                    (∨[ 𝒪 X ]-is-commutative W V)
+
+\end{code}
+
+\begin{code}
+
+module PatchStone (X : Locale (𝓤 ⁺) 𝓤 𝓤) (σᴰ : spectralᴰ (𝒪 X)) where
+
+ open ClosedNucleus X ∣ σᴰ ∣
+ open OpenNucleus   X ∣ σᴰ ∣
+ open SmallPatchConstruction X σᴰ renaming (SmallPatch to Patchₛ-X)
+
+ 𝒷 : has-basis (𝒪 X) holds
+ 𝒷 = spectral-frames-have-bases (𝒪 X) ∣ σᴰ ∣
+
+ open PerfectMaps Patchₛ-X X 𝒷
+
+ patch-is-compact : is-compact (𝒪 Patchₛ-X) holds
+ patch-is-compact = {!perfect-implies-spectral!}
+
+ -- patch-is-zero-dimensional : {!!}
+ -- patch-is-zero-dimensional = {!!}
 
 \end{code}
