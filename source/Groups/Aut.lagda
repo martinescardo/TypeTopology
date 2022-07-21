@@ -31,7 +31,12 @@ module Groups.Aut where
 \end{code}
 
 In the group structure below the definition matches that of function
-composition.
+composition. This notation is used in UF.Equiv.
+
+Note, however, that writing the variables this way introduces an
+"opposite" operation. We define it formally in Groups.Opposite and we
+must take it into account whenever using this group structure on
+Aut(X).
 
 \begin{code}
 module _ (fe : funext 𝓤 𝓤) (X : 𝓤 ̇) (i : is-set X) where
