@@ -1,6 +1,6 @@
 Andrew Sneap
 
-In this file, I define addition of integers, and prove some common properties of addition.
+This file defines addition of integers, and commonly used properties used in proofs, for example commutativity and associativity.
 
 \begin{code}
 
@@ -14,6 +14,13 @@ open import NaturalsAddition renaming (_+_ to _ℕ+_)
 
 module IntegersAddition where
 
+\end{code}
+
+Addition is defined inductively, first on positive and then through
+negatives using auxilliary functions. +pos and +negsucc.
+
+\begin{code} 
+
 _+pos_ : ℤ → ℕ → ℤ 
 x +pos 0      = x
 x +pos succ y = succℤ (x +pos y)
@@ -26,10 +33,25 @@ _+_ : ℤ → ℤ → ℤ
 x + pos y     = x +pos y
 x + negsucc y = x +negsucc y
 
+_-_ : ℤ → ℤ → ℤ
+a - b = a + (- b)
+
+infixl 31 _-_ 
 infixl 31 _+_
 
-pos-addition-equiv-to-ℕ : (x y : ℕ) → pos x + pos y ≡ pos (x ℕ+ y)
-pos-addition-equiv-to-ℕ x = induction base step
+\end{code}
+
+We now have the proof that pos distributes over addition of natural numbers.
+
+Following this, we have the interactions of succℤ and predℤ with
+integer addition, by first considering their interactions with the
+auxilliary functions +pos and +negsucc. These will of course be useful
+in inductive proofs.
+
+\begin{code}
+
+distributivity-pos-addition : (x y : ℕ) → pos x + pos y ≡ pos (x ℕ+ y)
+distributivity-pos-addition x = induction base step
  where
   base : (pos x + pos 0) ≡ pos (x ℕ+ 0)
   base = refl
@@ -40,27 +62,27 @@ pos-addition-equiv-to-ℕ x = induction base step
   step k IH = pos x + pos (succ k)  ≡⟨ ap succℤ IH ⟩
               succℤ (pos (x ℕ+ k))  ∎
 
-ℤ-left-succ-pos : (x : ℤ) → (y : ℕ) → succℤ x +pos y ≡ succℤ (x +pos y)  --cubical
+ℤ-left-succ-pos : (x : ℤ) → (y : ℕ) → succℤ x +pos y ≡ succℤ (x +pos y) 
 ℤ-left-succ-pos x 0        = refl
 ℤ-left-succ-pos x (succ y) = ap succℤ (ℤ-left-succ-pos x y)
 
-ℤ-left-pred-pos : (x : ℤ) → (y : ℕ) → predℤ x +pos y ≡ predℤ (x +pos y) --cubical
+ℤ-left-pred-pos : (x : ℤ) → (y : ℕ) → predℤ x +pos y ≡ predℤ (x +pos y)
 ℤ-left-pred-pos x 0        = refl
-ℤ-left-pred-pos x (succ y) = succℤ (predℤ x +pos y)       ≡⟨ ℤ-left-succ-pos (predℤ x) y ⁻¹ ⟩
-                              (succℤ (predℤ x) +pos y)    ≡⟨ ap (_+pos y) (succpredℤ x)     ⟩
-                              x +pos y                    ≡⟨ predsuccℤ (x +pos y) ⁻¹        ⟩
-                              predℤ (succℤ (x +pos y))    ∎
+ℤ-left-pred-pos x (succ y) = succℤ (predℤ x +pos y)    ≡⟨ ℤ-left-succ-pos (predℤ x) y ⁻¹ ⟩
+                             succℤ (predℤ x) +pos y    ≡⟨ ap (_+pos y) (succpredℤ x)     ⟩
+                             x +pos y                  ≡⟨ predsuccℤ (x +pos y) ⁻¹        ⟩
+                             predℤ (succℤ (x +pos y))  ∎
 
 ℤ-left-pred-negsucc : (x : ℤ) → (y : ℕ) → predℤ x +negsucc y ≡ predℤ (x +negsucc y) 
 ℤ-left-pred-negsucc x 0        = refl
 ℤ-left-pred-negsucc x (succ y) = ap predℤ (ℤ-left-pred-negsucc x y)
 
-ℤ-left-succ-negsucc : (x : ℤ) → (y : ℕ) → succℤ x +negsucc y ≡ succℤ (x +negsucc y) --cubical agda
-ℤ-left-succ-negsucc x 0        = predsuccℤ x ∙ succpredℤ x ⁻¹
-ℤ-left-succ-negsucc x (succ y) = (succℤ x +negsucc succ y)             ≡⟨ ℤ-left-pred-negsucc (succℤ x) y ⁻¹  ⟩
-                                 (predℤ (succℤ x) +negsucc y)          ≡⟨ ap (_+ (negsucc y)) (predsuccℤ x)   ⟩
-                                 (x + negsucc y)                       ≡⟨ succpredℤ (x +negsucc y) ⁻¹         ⟩
-                                 succℤ (x +negsucc succ y)             ∎
+ℤ-left-succ-negsucc : (x : ℤ) → (y : ℕ) → succℤ x +negsucc y ≡ succℤ (x +negsucc y) 
+ℤ-left-succ-negsucc x 0        = predsuccℤ x ∙ (succpredℤ x ⁻¹)
+ℤ-left-succ-negsucc x (succ y) = succℤ x +negsucc succ y      ≡⟨ ℤ-left-pred-negsucc (succℤ x) y ⁻¹  ⟩
+                                 predℤ (succℤ x) +negsucc y   ≡⟨ ap (_+ (negsucc y)) (predsuccℤ x)   ⟩
+                                 x + negsucc y                ≡⟨ succpredℤ (x +negsucc y) ⁻¹         ⟩
+                                 succℤ (x +negsucc succ y)    ∎
 
 ℤ-right-succ : (x y : ℤ) → x + succℤ y ≡ succℤ (x + y)
 ℤ-right-succ x (pos y)            = refl
@@ -80,6 +102,13 @@ pos-addition-equiv-to-ℕ x = induction base step
 ℤ-right-pred x (pos (succ y)) = predsuccℤ (x +pos y) ⁻¹
 ℤ-right-pred x (negsucc y)    = refl
 
+\end{code}
+
+Zero is the left and right base for addition and addition of integers
+is commutative, both proved by induction.
+
+\begin{code}
+
 ℤ-zero-right-neutral : (x : ℤ) → x + pos 0 ≡ x
 ℤ-zero-right-neutral x = refl
 
@@ -88,27 +117,6 @@ pos-addition-equiv-to-ℕ x = induction base step
 ℤ-zero-left-neutral (pos (succ x))     = ap succℤ (ℤ-zero-left-neutral (pos x))
 ℤ-zero-left-neutral (negsucc 0)        = refl
 ℤ-zero-left-neutral (negsucc (succ x)) = ap predℤ (ℤ-zero-left-neutral (negsucc x))
-
-ℤ-pred-is-minus-one : (x : ℤ) → predℤ x ≡ negsucc 0 + x
-ℤ-pred-is-minus-one (pos 0)            = refl
-ℤ-pred-is-minus-one (pos (succ x))     = predℤ (pos (succ x))      ≡⟨ succpredℤ (pos x) ⁻¹                   ⟩
-                                         succℤ (predℤ (pos x))     ≡⟨ ap succℤ (ℤ-pred-is-minus-one (pos x)) ⟩
-                                         negsucc 0 + pos (succ x)  ∎
-ℤ-pred-is-minus-one (negsucc 0)        = refl
-ℤ-pred-is-minus-one (negsucc (succ x)) = predℤ (negsucc (succ x))      ≡⟨ ap predℤ (ℤ-pred-is-minus-one (negsucc x)) ⟩
-                                         predℤ (negsucc 0 + negsucc x) ∎
-
-succℤ-lc : {x y : ℤ} → succℤ x ≡ succℤ y → x ≡ y
-succℤ-lc {x} {y} p = x               ≡⟨ predsuccℤ x ⁻¹ ⟩
-                     predℤ (succℤ x) ≡⟨ ap predℤ p     ⟩
-                     predℤ (succℤ y) ≡⟨ predsuccℤ y    ⟩
-                     y               ∎
-
-predℤ-lc : {x y : ℤ} →  predℤ x ≡ predℤ y → x ≡ y
-predℤ-lc {x} {y} p = x               ≡⟨ succpredℤ x ⁻¹ ⟩
-                     succℤ (predℤ x) ≡⟨ ap succℤ p     ⟩
-                     succℤ (predℤ y) ≡⟨ succpredℤ y    ⟩
-                     y               ∎
 
 ℤ+-comm : (x y : ℤ) → x + y ≡ y + x
 ℤ+-comm x = ℤ-induction base step₁ step₂
@@ -134,6 +142,15 @@ predℤ-lc {x} {y} p = x               ≡⟨ succpredℤ x ⁻¹ ⟩
         x + succℤ k   ≡⟨ IH                  ⟩
         succℤ k + x   ≡⟨ ℤ-left-succ k x     ⟩
         succℤ (k + x) ∎
+
+\end{code}
+
+As a corollary of commutativity, we can prove that predℤ x ≡ -1 + x.
+
+\begin{code}
+
+ℤ-pred-is-minus-one : (x : ℤ) → predℤ x ≡ negsucc 0 + x
+ℤ-pred-is-minus-one x = ℤ+-comm x (negsucc 0)
 
 ℤ+-assoc : (a b c : ℤ) → (a + b) + c ≡ a + (b + c)
 ℤ+-assoc a b = ℤ-induction base step₁ step₂
@@ -167,12 +184,21 @@ predℤ-lc {x} {y} p = x               ≡⟨ succpredℤ x ⁻¹ ⟩
                          a + (c + b) ≡⟨ ap (a +_) (ℤ+-comm c b) ⟩
                          a + (b + c) ∎
 
+\end{code}
+
+Following is the first use of ℤ-induction, which is used to prove that
+integer addition is cancellable. In this case, using the induction
+principle as opposed to pattern matching is preferable, since it
+avoids the use of predℤ in the proof.
+
+\begin{code}
+
 ℤ+-lc : (x y z : ℤ) → z + x ≡ z + y → x ≡ y
 ℤ+-lc x y = ℤ-induction base step₁ step₂
  where
   base : pos 0 + x ≡ pos 0 + y → x ≡ y
-  base l = x           ≡⟨ ℤ-zero-left-neutral x ⁻¹ ⟩
-           pos 0 + x   ≡⟨ l                        ⟩
+  base e = x           ≡⟨ ℤ-zero-left-neutral x ⁻¹ ⟩
+           pos 0 + x   ≡⟨ e                        ⟩
            pos 0 + y   ≡⟨ ℤ-zero-left-neutral y    ⟩
            y           ∎
 
@@ -180,11 +206,11 @@ predℤ-lc {x} {y} p = x               ≡⟨ succpredℤ x ⁻¹ ⟩
         → (k + x ≡ k + y → x ≡ y)
         → succℤ k + x ≡ succℤ k + y
         → x ≡ y
-  step₁ k IH l = IH (succℤ-lc I)
+  step₁ k IH e = IH (succℤ-lc I)
    where
     I : succℤ (k + x) ≡ succℤ (k + y)
     I = succℤ (k + x)  ≡⟨ ℤ-left-succ k x ⁻¹ ⟩
-        succℤ k + x    ≡⟨ l                  ⟩
+        succℤ k + x    ≡⟨ e                  ⟩
         succℤ k + y    ≡⟨ ℤ-left-succ k y    ⟩
         succℤ (k + y)  ∎
 
@@ -192,13 +218,23 @@ predℤ-lc {x} {y} p = x               ≡⟨ succpredℤ x ⁻¹ ⟩
         → (succℤ k + x ≡ succℤ k + y → x ≡ y)
         → k + x ≡ k + y
         → x ≡ y
-  step₂ k IH l = IH I
+  step₂ k IH e = IH I
    where
     I : succℤ k + x ≡ succℤ k + y
     I = succℤ k + x    ≡⟨ ℤ-left-succ k x    ⟩ 
-        succℤ (k + x)  ≡⟨ ap succℤ l         ⟩
+        succℤ (k + x)  ≡⟨ ap succℤ e         ⟩
         succℤ (k + y)  ≡⟨ ℤ-left-succ k y ⁻¹ ⟩
         succℤ k + y    ∎
+
+\end{code}
+
+Proving that negation distributes over addition is proved by induction
+on natural numbers, by considering the positive and negative case in
+one argument. As such, we first have 2 lemmas which are then used to
+conclude that negation distributes over addition. This strategy is
+also used repeatedly in this development of integers.
+
+\begin{code}
 
 negation-dist₀ : (x : ℤ) (y : ℕ) → (- x) + (- pos y) ≡ - (x + pos y)
 negation-dist₀ x = induction base step
@@ -233,6 +269,12 @@ negation-dist : (x y : ℤ) → (- x) + (- y) ≡ - (x + y)
 negation-dist x (pos y)     = negation-dist₀ x y
 negation-dist x (negsucc y) = negation-dist₁ x y
 
+\end{code}
+
+The strategy above is used to prove that x - x ≡ (- x) + x ≡ 0 for all integers.
+
+\begin{code}
+
 ℤ-sum-of-inverse-is-zero₀ : (x : ℕ) → pos x + (- pos x) ≡ pos 0
 ℤ-sum-of-inverse-is-zero₀ = induction base step
  where
@@ -247,7 +289,7 @@ negation-dist x (negsucc y) = negation-dist₁ x y
                      (pos (succ k) + (- pos (succ k)))       ≡⟨ IH                                               ⟩
                      pos 0                                   ∎
 
-ℤ-sum-of-inverse-is-zero₁ : (x : ℕ) → negsucc x + (- (negsucc x)) ≡ pos 0
+ℤ-sum-of-inverse-is-zero₁ : (x : ℕ) → negsucc x - negsucc x ≡ pos 0
 ℤ-sum-of-inverse-is-zero₁ = induction base step
  where
   base : (negsucc 0 + (- negsucc 0)) ≡ pos 0
@@ -266,10 +308,5 @@ negation-dist x (negsucc y) = negation-dist₁ x y
 
 ℤ-sum-of-inverse-is-zero' : (x : ℤ) → (- x) + x ≡ pos 0
 ℤ-sum-of-inverse-is-zero' x = ℤ+-comm (- x) x ∙ ℤ-sum-of-inverse-is-zero x
-
-_-_ : ℤ → ℤ → ℤ
-a - b = a + (- b)
-
-infixl 31 _-_
 
 \end{code}

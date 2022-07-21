@@ -17,6 +17,13 @@ open import IntegersNegation
 
 module IntegersMultiplication where
 
+\end{code}
+
+Instead of defining auxilliary functions with a natural number
+argument, multiplication is defined by pattern matching.
+
+\begin{code}
+
 _*_ : ℤ → ℤ → ℤ
 x * pos 0            = pos 0
 x * pos (succ y)     = x + (x * pos y)
@@ -34,100 +41,38 @@ pos-multiplication-equiv-to-ℕ x = induction base step
     step : (k : ℕ)
          → pos x * pos k ≡ pos (x ℕ* k)
          → pos x * pos (succ k) ≡ pos (x ℕ* succ k)
-    step k IH = pos x * pos (succ k)     ≡⟨ ap (pos x +_) IH                   ⟩
-                pos x + pos (x ℕ* k)     ≡⟨ pos-addition-equiv-to-ℕ x (x ℕ* k) ⟩
+    step k IH = pos x * pos (succ k)     ≡⟨ ap (pos x +_) IH                       ⟩
+                pos x + pos (x ℕ* k)     ≡⟨ distributivity-pos-addition x (x ℕ* k) ⟩
                 pos (x ℕ* succ k)        ∎
+
+
+\end{code}
+
+The following proofs that 0 is the base, and 1 is the identity for
+multiplication exemplify the "induction on positives, and then on
+negatives" strategy.
+
+These properties follow from repeated applications of 
+
+\begin{code}
 
 ℤ-zero-right-is-zero : (x : ℤ) → x * pos 0 ≡ pos 0
 ℤ-zero-right-is-zero x = refl
 
-ℤ-zero-left-is-zero : (x : ℤ) → pos 0 * x ≡ pos 0
-ℤ-zero-left-is-zero = ℤ-induction base step₁ step₂
- where
-  base : pos 0 * pos 0 ≡ pos 0
-  base = refl
-
-  step₁ : (k : ℤ)
-        → pos 0 * k       ≡ pos 0
-        → pos 0 * succℤ k ≡ pos 0
-  step₁ (pos x)            IH = I
-   where
-    I : pos 0 * succℤ (pos x) ≡ pos 0
-    I = pos 0 * succℤ (pos x) ≡⟨ refl             ⟩
-        pos 0 + pos 0 * pos x ≡⟨ ap (pos 0 +_) IH ⟩
-        pos 0 + pos 0         ≡⟨ refl             ⟩
-        pos 0                 ∎
-  step₁ (negsucc 0)        IH = refl
-  step₁ (negsucc (succ x)) IH = I
-   where
-    I : pos 0 * negsucc x ≡ pos 0
-    I = pos 0 * negsucc x            ≡⟨ ℤ-zero-left-neutral (pos 0 * negsucc x) ⁻¹ ⟩
-        pos 0 + pos 0 * negsucc x    ≡⟨ refl                                       ⟩
-        pos 0 * negsucc (succ x)     ≡⟨ IH                                         ⟩
-        pos 0                        ∎
-
-  step₂ : (k : ℤ)
-        → pos 0 * succℤ k ≡ pos 0
-        → pos 0 * k       ≡ pos 0
-  step₂ (pos x)            IH = I
-   where
-    I : pos 0 * pos x ≡ pos 0
-    I = pos 0 * pos x         ≡⟨ ℤ-zero-left-neutral (pos 0 * pos x) ⁻¹ ⟩
-        pos 0 + pos 0 * pos x ≡⟨ IH                                     ⟩
-        pos 0                 ∎
-  step₂ (negsucc 0)        IH = refl
-  step₂ (negsucc (succ x)) IH = I
-   where
-    I : pos 0 + pos 0 * negsucc x ≡ pos 0
-    I = pos 0 + pos 0 * negsucc x ≡⟨ ℤ-zero-left-neutral (pos 0 * negsucc x) ⟩
-        pos 0 * negsucc x         ≡⟨ IH                                      ⟩
-        pos 0                     ∎
+ℤ-zero-left-base : (x : ℤ) → pos 0 * x ≡ pos 0
+ℤ-zero-left-base (pos 0)            = refl
+ℤ-zero-left-base (pos (succ x))     = ℤ-zero-left-neutral (pos 0 * pos x) ∙ ℤ-zero-left-base (pos x)
+ℤ-zero-left-base (negsucc 0)        = refl
+ℤ-zero-left-base (negsucc (succ x)) = ℤ-zero-left-neutral (pos 0 * negsucc x) ∙ ℤ-zero-left-base (negsucc x)
 
 ℤ-mult-right-id : (x : ℤ) → x * pos 1 ≡ x
 ℤ-mult-right-id x = refl
 
 ℤ-mult-left-id : (x : ℤ) → pos 1 * x ≡ x
-ℤ-mult-left-id = ℤ-induction base step₁ step₂
- where
-  base : pos 1 * pos 0 ≡ pos 0
-  base = refl
-
-  step₁ : (k : ℤ)
-        → pos 1 * k       ≡ k
-        → pos 1 * succℤ k ≡ succℤ k
-  step₁ (pos x) IH = I
-   where
-    I : pos 1 * succℤ (pos x) ≡ succℤ (pos x)
-    I = pos 1 * succℤ (pos x) ≡⟨ ap (pos 1 +_) IH        ⟩
-        pos 1 + pos x         ≡⟨ ℤ+-comm (pos 1) (pos x) ⟩
-        succℤ (pos x)         ∎
-  step₁ (negsucc 0)        IH = refl
-  step₁ (negsucc (succ x)) IH = I
-   where
-    I : pos 1 * negsucc x ≡ negsucc x
-    I = ℤ+-lc (pos 1 * negsucc x) (negsucc x) (negsucc 0) II
-     where
-      II : negsucc 0 + pos 1 * negsucc x ≡ negsucc 0 + negsucc x
-      II = negsucc 0 + pos 1 * negsucc x ≡⟨ IH                                 ⟩
-           negsucc (succ x)              ≡⟨ ℤ+-comm (negsucc x) (negsucc 0)    ⟩
-           negsucc 0 + negsucc x         ∎
-
-  step₂ : (k : ℤ)
-        → pos 1 * succℤ k ≡ succℤ k
-        → pos 1 * k       ≡ k
-  step₂ (pos x)            IH = ℤ+-lc (pos 1 * pos x) (pos x) (pos 1) I
-   where
-    I : pos 1 + pos 1 * pos x ≡ pos 1 + pos x
-    I = pos 1 + pos 1 * pos x ≡⟨ IH                      ⟩
-        succℤ (pos x)         ≡⟨ ℤ+-comm (pos x) (pos 1) ⟩
-        pos 1 + pos x         ∎
-  step₂ (negsucc 0)        IH = refl
-  step₂ (negsucc (succ x)) IH = I
-   where
-    I : pos 1 * negsucc (succ x) ≡ negsucc (succ x)
-    I = pos 1 * negsucc (succ x) ≡⟨ ap (negsucc 0 +_) IH            ⟩
-        negsucc 0 + negsucc x    ≡⟨ ℤ+-comm (negsucc 0) (negsucc x) ⟩
-        negsucc (succ x)         ∎
+ℤ-mult-left-id (pos 0)            = refl
+ℤ-mult-left-id (pos (succ x))     = ℤ+-comm (pos 1) (pos 1 * pos x) ∙ ap succℤ (ℤ-mult-left-id (pos x))
+ℤ-mult-left-id (negsucc 0)        = refl
+ℤ-mult-left-id (negsucc (succ x)) = ℤ+-comm (negsucc 0) (pos 1 * negsucc x) ∙ ap predℤ (ℤ-mult-left-id (negsucc x))
 
 distributivity-mult-over-ℤ₀ : (x y : ℤ) → (z : ℕ) → (x + y) * pos z ≡ x * pos z + y * pos z
 distributivity-mult-over-ℤ₀ x y = induction base step
@@ -222,7 +167,7 @@ mult-inverse = ℤ-induction base step₁ step₂
 ℤ*-comm₀ x = induction base step
  where
   base : x * pos 0 ≡ pos 0 * x
-  base = x * pos 0 ≡⟨ ℤ-zero-left-is-zero x ⁻¹ ⟩
+  base = x * pos 0 ≡⟨ ℤ-zero-left-base x ⁻¹ ⟩
          pos 0 * x ∎
 
   step : (k : ℕ)

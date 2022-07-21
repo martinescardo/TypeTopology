@@ -82,7 +82,7 @@ module IntegersHCF where
          where
           e₅ : pos b ≡ pos q * pos (succ n) + (pos r)
           e₅ = pos b ≡⟨ ap pos e₀ ⟩
-               pos (q ℕ* succ n ℕ+ r)     ≡⟨ pos-addition-equiv-to-ℕ (q ℕ* (succ n)) r ⁻¹ ⟩
+               pos (q ℕ* succ n ℕ+ r)     ≡⟨ distributivity-pos-addition (q ℕ* (succ n)) r ⁻¹ ⟩
                pos (q ℕ* succ n) + pos r  ≡⟨ ap (_+ pos r) (pos-multiplication-equiv-to-ℕ q (succ n)) ⁻¹ ⟩
                pos q * pos (succ n) + pos r ∎
                

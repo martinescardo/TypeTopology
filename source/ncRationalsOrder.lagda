@@ -166,7 +166,7 @@ p ℚₙ> q = q ℚₙ< p
       pos 0 ℤ+ pos (succ c)                        ≡⟨ by-definition                                                       ⟩
       pos 0 ℤ+ succℤ (pos c)                       ≡⟨ ℤ-right-succ (pos 0) (pos c)                                        ⟩
       succℤ (pos 0 ℤ+ pos c)                       ≡⟨ ℤ-left-succ (pos 0) (pos c) ⁻¹                                      ⟩
-      succℤ (pos 0) ℤ+ pos c                       ≡⟨ ap (λ - → succℤ - ℤ+ pos c) (ℤ-zero-left-is-zero (pos (succ a)) ⁻¹) ⟩
+      succℤ (pos 0) ℤ+ pos c                       ≡⟨ ap (λ - → succℤ - ℤ+ pos c) (ℤ-zero-left-base (pos (succ a)) ⁻¹) ⟩
       succℤ (pos 0 ℤ* pos (succ a)) ℤ+ pos c       ≡⟨ e₁                                                                  ⟩
       x                                            ∎
 
@@ -175,11 +175,11 @@ p ℚₙ> q = q ℚₙ< p
       pos 0 ℤ+ pos (succ d)                  ≡⟨ by-definition                                                       ⟩
       pos 0 ℤ+ succℤ (pos d)                 ≡⟨ ℤ-right-succ (pos 0) (pos d)                                        ⟩
       succℤ (pos 0 ℤ+ pos d)                 ≡⟨ ℤ-left-succ (pos 0) (pos d) ⁻¹                                      ⟩
-      succℤ (pos 0) ℤ+ pos d                 ≡⟨ ap (λ - → succℤ - ℤ+ pos d) (ℤ-zero-left-is-zero (pos (succ b)) ⁻¹) ⟩
+      succℤ (pos 0) ℤ+ pos d                 ≡⟨ ap (λ - → succℤ - ℤ+ pos d) (ℤ-zero-left-base (pos (succ b)) ⁻¹) ⟩
       succℤ (pos 0 ℤ* pos (succ b)) ℤ+ pos d ≡⟨ e₂                                                                  ⟩
       y                                      ∎
 
-  γ = ap (λ - → succℤ - ℤ+  pos (pred (succ c ℕ* succ d))) (ℤ-zero-left-is-zero (pos (succ (pred (succ a ℕ* succ b)))))
+  γ = ap (λ - → succℤ - ℤ+  pos (pred (succ c ℕ* succ d))) (ℤ-zero-left-base (pos (succ (pred (succ a ℕ* succ b)))))
 
   I : succℤ (pos 0 ℤ* pos (succ (pred (succ a ℕ* succ b)))) ℤ+ pos (pred (succ c ℕ* succ d)) ≡ x ℤ* y ℤ* pos 1
   I = succℤ (pos 0 ℤ* pos (succ (pred (succ a ℕ* succ b)))) ℤ+ pos (pred (succ c ℕ* succ d)) ≡⟨ γ                                                                               ⟩
@@ -196,13 +196,13 @@ p ℚₙ> q = q ℚₙ< p
 ℚₙ≤-pos-multiplication-preserves-order (x , a) (y , b) (c , e₁) (d , e₂) = c ℕ* d , I
  where
   I : pos 0 ℤ* pos (succ (pred (succ a ℕ* succ b))) ℤ+ pos (c ℕ* d) ≡ x ℤ* y ℤ* pos 1
-  I = pos 0 ℤ* pos (succ (pred (succ a ℕ* succ b))) ℤ+ pos (c ℕ* d)        ≡⟨ ap (_ℤ+ pos (c ℕ* d)) (ℤ-zero-left-is-zero (pos (succ (pred (succ a ℕ* succ b)))))                  ⟩
+  I = pos 0 ℤ* pos (succ (pred (succ a ℕ* succ b))) ℤ+ pos (c ℕ* d)        ≡⟨ ap (_ℤ+ pos (c ℕ* d)) (ℤ-zero-left-base (pos (succ (pred (succ a ℕ* succ b)))))                  ⟩
       pos 0 ℤ+ pos (c ℕ* d)                                                ≡⟨ ap (pos 0 ℤ+_) (pos-multiplication-equiv-to-ℕ c d ⁻¹)                                               ⟩
       pos 0 ℤ+ pos c ℤ* pos d                                              ≡⟨ ℤ-zero-left-neutral (pos c ℤ* pos d)                                                                ⟩
       pos c ℤ* pos d                                                       ≡⟨ ap (_ℤ* pos d) (ℤ-zero-left-neutral (pos c) ⁻¹)                                                     ⟩
       (pos 0 ℤ+ pos c) ℤ* pos d                                            ≡⟨ ap ((pos 0 ℤ+ pos c) ℤ*_) (ℤ-zero-left-neutral (pos d) ⁻¹)                                          ⟩
-      (pos 0 ℤ+ pos c) ℤ* (pos 0 ℤ+ pos d)                                 ≡⟨ ap (λ z → (z ℤ+ pos c) ℤ* (pos 0 ℤ+ pos d)) (ℤ-zero-left-is-zero (pos (succ a)) ⁻¹)                 ⟩
-      (pos 0 ℤ* pos (succ a) ℤ+ pos c) ℤ* (pos 0 ℤ+ pos d)                 ≡⟨ ap (λ z → (pos 0 ℤ* pos (succ a) ℤ+ pos c) ℤ* (z ℤ+ pos d)) (ℤ-zero-left-is-zero (pos (succ b)) ⁻¹) ⟩
+      (pos 0 ℤ+ pos c) ℤ* (pos 0 ℤ+ pos d)                                 ≡⟨ ap (λ z → (z ℤ+ pos c) ℤ* (pos 0 ℤ+ pos d)) (ℤ-zero-left-base (pos (succ a)) ⁻¹)                 ⟩
+      (pos 0 ℤ* pos (succ a) ℤ+ pos c) ℤ* (pos 0 ℤ+ pos d)                 ≡⟨ ap (λ z → (pos 0 ℤ* pos (succ a) ℤ+ pos c) ℤ* (z ℤ+ pos d)) (ℤ-zero-left-base (pos (succ b)) ⁻¹) ⟩
       (pos 0 ℤ* pos (succ a) ℤ+ pos c) ℤ* (pos 0 ℤ* pos (succ b) ℤ+ pos d) ≡⟨ ap₂ _ℤ*_ e₁ e₂                                                                                      ⟩
       x ℤ* pos 1 ℤ* (y ℤ* pos 1)                                           ≡⟨ ap (_ℤ* (y ℤ* pos 1)) (ℤ-mult-right-id x ⁻¹)                                                        ⟩
       x ℤ* y ℤ* pos 1                                                      ∎
@@ -217,13 +217,13 @@ p ℚₙ> q = q ℚₙ< p
 2/3ℚₙ≤1 = 1 , refl
 
 negative-not-greater-than-zero : (x a : ℕ) → ¬ ((pos 0 , 0) ℚₙ<( negsucc x , a)) 
-negative-not-greater-than-zero x a (n , l) = neg-not-positive I
+negative-not-greater-than-zero x a (n , l) = negsucc-not-pos I
  where
   I : negsucc x ℤ* pos 1 ≡ pos (succ n)
   I = negsucc x ℤ* pos 1                      ≡⟨ l ⁻¹                                                       ⟩
       succℤ (pos 0 ℤ* pos (succ a)) ℤ+ pos n  ≡⟨ ℤ-left-succ (pos 0 ℤ* pos (succ a)) (pos n)                ⟩
       succℤ (pos 0 ℤ* pos (succ a) ℤ+ pos n)  ≡⟨ ℤ-right-succ (pos 0 ℤ* pos (succ a)) (pos n) ⁻¹            ⟩
-      pos 0 ℤ* pos (succ a) ℤ+ succℤ (pos n)  ≡⟨ ap (_ℤ+ pos (succ n)) (ℤ-zero-left-is-zero (pos (succ a))) ⟩
+      pos 0 ℤ* pos (succ a) ℤ+ succℤ (pos n)  ≡⟨ ap (_ℤ+ pos (succ n)) (ℤ-zero-left-base (pos (succ a))) ⟩
       pos 0 ℤ+ pos (succ n)                   ≡⟨  ℤ-zero-left-neutral (pos (succ n))                        ⟩
       pos (succ n)                            ∎ 
 

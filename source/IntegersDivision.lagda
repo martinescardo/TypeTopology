@@ -37,7 +37,7 @@ product-positive-negative-not-positive 0 0 c e        = 𝟘-elim (positive-not-
 product-positive-negative-not-positive 0 (succ b) c e = 𝟘-elim (positive-not-zero c (pos-lc I ⁻¹))
  where
   I : pos 0 ≡ pos (succ c)
-  I = pos 0                     ≡⟨ ℤ-zero-left-is-zero (negsucc (succ b)) ⁻¹ ⟩
+  I = pos 0                     ≡⟨ ℤ-zero-left-base (negsucc (succ b)) ⁻¹ ⟩
       pos 0 ℤ* negsucc (succ b) ≡⟨ e                                         ⟩
       pos (succ c)              ∎
 product-positive-negative-not-positive (succ a) (succ b) c e₁ = I (pos-mult-is-succ a b)
@@ -46,7 +46,7 @@ product-positive-negative-not-positive (succ a) (succ b) c e₁ = I (pos-mult-is
    I (z , e₂) = II (ppnnp-lemma a z)
     where
      II : ¬ (Σ d ꞉ ℕ , negsucc a + negsucc z ≡ negsucc d)
-     II (d , e₃) = neg-not-positive IV
+     II (d , e₃) = negsucc-not-pos IV
       where
        III : negsucc z ≡ pos (succ a) ℤ* negsucc b
        III = negsucc z                      ≡⟨ refl                                                        ⟩
@@ -101,7 +101,7 @@ pos-div-to-nat-div 0 (succ b) (negsucc x , p) = 𝟘-elim (positive-not-zero b (
  where
   I : pos (succ b) ≡ pos 0
   I = pos (succ b)        ≡⟨ p ⁻¹                            ⟩
-      pos 0 ℤ* negsucc x  ≡⟨ ℤ-zero-left-is-zero (negsucc x) ⟩
+      pos 0 ℤ* negsucc x  ≡⟨ ℤ-zero-left-base (negsucc x) ⟩
       pos 0 ∎
 pos-div-to-nat-div (succ a) (succ b) (negsucc x , p) = 𝟘-elim (product-positive-negative-not-positive (succ a) x b p)
 
@@ -114,7 +114,7 @@ pos-div-to-nat-div (succ a) (succ b) (negsucc x , p) = 𝟘-elim (product-positi
    where
     I : pos a ≡ pos q ℤ* pos (succ d) + pos r
     I = pos a                         ≡⟨ ap pos e                                                    ⟩
-        pos (q ℕ* succ d ℕ+ r)        ≡⟨ pos-addition-equiv-to-ℕ (q ℕ* (succ d)) r ⁻¹                ⟩
+        pos (q ℕ* succ d ℕ+ r)        ≡⟨ distributivity-pos-addition (q ℕ* (succ d)) r ⁻¹                ⟩
         pos (q ℕ* succ d) + pos r     ≡⟨ ap (_+ pos r) (pos-multiplication-equiv-to-ℕ q (succ d) ⁻¹) ⟩
         pos q ℤ* pos (succ d) + pos r ∎
 ℤ-division (negsucc a) d = f (division (succ a) d)
@@ -164,7 +164,7 @@ pos-div-to-nat-div (succ a) (succ b) (negsucc x , p) = 𝟘-elim (product-positi
             (- pos k) + negsucc r + pos k                          ≡⟨ ap (λ z → (z + negsucc r) + pos k) (mult-inverse (pos k))                          ⟩
             negsucc 0 ℤ* pos k + (- pos (succ r)) + pos k          ≡⟨ ap (λ z →  (negsucc 0 ℤ* pos k + z) + pos k) (mult-inverse (pos (succ r)))         ⟩
             negsucc 0 ℤ* pos k + negsucc 0 ℤ* pos (succ r) + pos k ≡⟨ ap (_+ pos k) (distributivity-mult-over-ℤ' (pos k) (pos (succ r)) (negsucc 0) ⁻¹)  ⟩
-            negsucc 0 ℤ* (pos k + pos (succ r)) + pos k            ≡⟨ ap (λ z → negsucc 0 ℤ* z + pos k) (pos-addition-equiv-to-ℕ k (succ r))             ⟩
+            negsucc 0 ℤ* (pos k + pos (succ r)) + pos k            ≡⟨ ap (λ z → negsucc 0 ℤ* z + pos k) (distributivity-pos-addition k (succ r))             ⟩
             negsucc 0 ℤ* pos (k ℕ+ succ r) + pos k                 ≡⟨ ap (λ z → negsucc 0 ℤ* pos z + pos k) e₂                                           ⟩
             negsucc 0 ℤ* pos (succ d) + pos k                      ∎
  
@@ -187,7 +187,7 @@ pos-div-to-nat-div (succ a) (succ b) (negsucc x , p) = 𝟘-elim (product-positi
              pos 0 + negsucc r                  ≡⟨ ap (_+  negsucc r) (ℤ-sum-of-inverse-is-zero (pos k) ⁻¹)  ⟩
              pos k + (- pos k) + negsucc r      ≡⟨ ℤ+-assoc (pos k) (- pos k) (negsucc r)                    ⟩
              pos k + ((- pos k) - pos (succ r)) ≡⟨ ap (pos k +_) (negation-dist (pos k) (pos (succ r)))      ⟩
-             pos k - (pos k + pos (succ r))     ≡⟨ ap (λ z → pos k - z) (pos-addition-equiv-to-ℕ k (succ r)) ⟩
+             pos k - (pos k + pos (succ r))     ≡⟨ ap (λ z → pos k - z) (distributivity-pos-addition k (succ r)) ⟩
              pos k - pos (k ℕ+ succ r)          ≡⟨ ap (λ z → pos k - pos z) e₂ ⟩
              pos k - pos (succ d)               ∎
         V : negsucc a ≡ negsucc (succ q) ℤ* pos (succ d) + pos k
@@ -208,7 +208,7 @@ pos-div-to-nat-div (succ a) (succ b) (negsucc x , p) = 𝟘-elim (product-positi
             (- pos (succ (succ q)) ℤ* pos (succ d)) + pos k                    ≡⟨ xii                ⟩
             negsucc (succ q) ℤ* pos (succ d) + pos k                           ∎
              where
-              i    = ap -_ (pos-addition-equiv-to-ℕ (succ q ℕ* (succ d)) (succ r) ⁻¹)
+              i    = ap -_ (distributivity-pos-addition (succ q ℕ* (succ d)) (succ r) ⁻¹)
               ii   = negation-dist (pos (succ q ℕ* succ d)) (pos (succ r)) ⁻¹
               iii  = ap (λ z → (- z) - pos (succ r)) (pos-multiplication-equiv-to-ℕ (succ q) (succ d) ⁻¹)
               iv   = ap ((- pos (succ q) ℤ* pos (succ d)) +_) IV

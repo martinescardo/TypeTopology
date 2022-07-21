@@ -286,7 +286,7 @@ q-has-qn fe (q , p) = q , (to-subtype-≡ (is-in-lowest-terms-is-prop fe) (equiv
       pos 1          ∎
 
 numerator-zero-is-zero : Fun-Ext → (((x , a) , p) : ℚ) → x ≡ pos zero → (x , a) , p ≡ 0ℚ
-numerator-zero-is-zero fe ((negsucc x , a) , p) e = 𝟘-elim (neg-not-positive e)
+numerator-zero-is-zero fe ((negsucc x , a) , p) e = 𝟘-elim (negsucc-not-pos e)
 numerator-zero-is-zero fe ((pos zero  , a) , (_ , icd) , f) e = to-subtype-≡ (is-in-lowest-terms-is-prop fe) I
  where
   I : pos zero , a ≡ pos zero , 0

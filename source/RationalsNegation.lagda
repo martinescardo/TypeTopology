@@ -123,8 +123,8 @@ toℚ-neg fe (x , a) = IV
       ((ℤ- x) ℤ* pos (succ a) ℤ+ (x ℤ* pos (succ a)))          ≡⟨ distributivity-mult-over-ℤ (ℤ- x) x (pos (succ a)) ⁻¹ ⟩
       ((ℤ- x) ℤ+ x) ℤ* pos (succ a)                            ≡⟨ ap (λ - → - ℤ* pos (succ a)) (ℤ+-comm (ℤ- x) x)  ⟩
       (x ℤ+ (ℤ- x)) ℤ* pos (succ a)                            ≡⟨ ap (λ - → - ℤ* pos (succ a)) (ℤ-sum-of-inverse-is-zero x) ⟩
-      pos 0 ℤ* pos (succ a)                                    ≡⟨ ℤ-zero-left-is-zero (pos (succ a)) ⟩
-      pos 0                                                    ≡⟨ ℤ-zero-left-is-zero (pos (succ (pred (succ a ℕ* succ a)))) ⁻¹  ⟩
+      pos 0 ℤ* pos (succ a)                                    ≡⟨ ℤ-zero-left-base (pos (succ a)) ⟩
+      pos 0                                                    ≡⟨ ℤ-zero-left-base (pos (succ (pred (succ a ℕ* succ a)))) ⁻¹  ⟩
       pos zero ℤ* pos (succ (pred (succ a ℕ* succ a)))         ∎
 
 ℚ-inverse-sum-to-zero : Fun-Ext → (q : ℚ) → q + (- q) ≡ 0ℚ

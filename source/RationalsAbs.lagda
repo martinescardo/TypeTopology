@@ -13,9 +13,9 @@ open import UF-FunExt -- TypeTopology
 open import UF-Base hiding (_≈_) -- TypeTopology
 open import UF-Subsingletons -- TypeTopology
 
-open import IntegersAbs hiding (abs)
+open import IntegersAbs
 open import IntegersAddition renaming (_+_ to _ℤ+_) hiding (_-_)
-open import IntegersB
+open import IntegersB hiding (abs)
 open import IntegersMultiplication renaming (_*_ to _ℤ*_)
 open import IntegersOrder 
 open import NaturalsMultiplication renaming (_*_ to _ℕ*_)
@@ -92,9 +92,9 @@ abs-of-pos-is-pos fe ((negsucc x , a) , α) l = 𝟘-elim (III II)
   I : pos 0 ℤ* pos (succ a) ≤ negsucc x ℤ* pos 1
   I = l
   II : pos 0 ≤ negsucc x
-  II = transport₂ _≤_ (ℤ-zero-left-is-zero (pos (succ a))) (ℤ-zero-right-neutral (negsucc x)) I
+  II = transport₂ _≤_ (ℤ-zero-left-base (pos (succ a))) (ℤ-zero-right-neutral (negsucc x)) I
   III : ¬ (pos 0 ≤ negsucc x) 
-  III (k , e) = pos-not-negative (ℤ-zero-left-neutral (pos k) ⁻¹ ∙ e)
+  III (k , e) = pos-not-negsucc (ℤ-zero-left-neutral (pos k) ⁻¹ ∙ e)
 
 abs-of-pos-is-pos' : Fun-Ext → (p : ℚ) → 0ℚ < p → abs p ≡ p
 abs-of-pos-is-pos' fe p l = abs-of-pos-is-pos fe p (ℚ<-coarser-than-≤ 0ℚ p l)
@@ -146,7 +146,7 @@ abs-of-pos-is-pos' fe p l = abs-of-pos-is-pos fe p (ℚ<-coarser-than-≤ 0ℚ p
                - ((negsucc x , a) , q)      ∎
 
 ℚ-positive-not-zero : Fun-Ext → (x a : ℕ) → ¬ (toℚ (pos (succ x) , a) ≡ 0ℚ)
-ℚ-positive-not-zero fe x a e = pos-int-not-zero x III
+ℚ-positive-not-zero fe x a e = pos-succ-not-zero x III
  where
   I : (pos (succ x) , a) ≈ (pos 0 , 0)
   I = equality→equiv fe (pos (succ x) , a) (pos 0 , 0) e
@@ -157,7 +157,7 @@ abs-of-pos-is-pos' fe p l = abs-of-pos-is-pos fe p (ℚ<-coarser-than-≤ 0ℚ p
   III : pos (succ x) ≡ pos 0
   III = pos (succ x)            ≡⟨ by-definition ⟩
         pos (succ x) ℤ* (pos 1) ≡⟨ II ⟩
-        pos 0 ℤ* pos (succ a)   ≡⟨ ℤ-zero-left-is-zero (pos (succ a))  ⟩
+        pos 0 ℤ* pos (succ a)   ≡⟨ ℤ-zero-left-base (pos (succ a))  ⟩
         pos 0 ∎
 
 

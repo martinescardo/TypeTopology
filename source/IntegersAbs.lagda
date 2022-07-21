@@ -13,7 +13,7 @@ open import DiscreteAndSeparated -- TypeTopology
 open import NaturalNumbers-Properties --TypeTopology
 open import UF-Miscelanea -- TypeTopology
 open import UF-Subsingletons --TypeTopology
-open import Unit-Properties -- TypeTopology
+-- open import Unit-Properties -- TypeTopology
 
 open import NaturalsMultiplication renaming (_*_ to _ℕ*_)
 open import IntegersMultiplication
@@ -23,69 +23,9 @@ open import IntegersB
 
 module IntegersAbs where
 
-abs : ℤ → ℕ
-abs (pos x)     = x
-abs (negsucc x) = succ x
-
 absℤ : ℤ → ℤ
 absℤ (pos x)     = pos x
 absℤ (negsucc x) = pos (succ x)
-
-pos-lc : {x y : ℕ} → pos x ≡ pos y → x ≡ y
-pos-lc = ap abs
-
-negsucc-lc : {x y : ℕ} → negsucc x ≡ negsucc y → x ≡ y
-negsucc-lc {x} {y} p = succ-lc (ap abs p)
-
-positive : ℤ → 𝓤₀ ̇
-positive (pos x)     = 𝟙
-positive (negsucc x) = 𝟘
-
-negative : ℤ → 𝓤₀ ̇
-negative (pos x)     = 𝟘
-negative (negsucc x) = 𝟙
-
-is-zero : ℤ → 𝓤₀ ̇
-is-zero (pos 0)        = 𝟙
-is-zero (pos (succ x)) = 𝟘
-is-zero (negsucc x)    = 𝟘
-
-not-zero : ℤ → 𝓤₀ ̇
-not-zero z = ¬ (is-zero z)
-
-greater-than-zero : ℤ → 𝓤₀ ̇
-greater-than-zero (pos 0)        = 𝟘
-greater-than-zero (pos (succ z)) = 𝟙
-greater-than-zero (negsucc z)    = 𝟘
-
-pos-not-negative : {x y : ℕ} → pos x ≢ negsucc y
-pos-not-negative p = 𝟙-is-not-𝟘 (ap positive p)
-
-neg-not-positive : {x y : ℕ} → negsucc x ≢ pos y
-neg-not-positive p = pos-not-negative (p ⁻¹)
-
-pos-int-not-zero : (x : ℕ) → pos (succ x) ≢ pos 0
-pos-int-not-zero x p = positive-not-zero x (pos-lc p)
-
-neg-int-not-zero : (x : ℕ) → negsucc x ≢ pos 0
-neg-int-not-zero x p = positive-not-zero x (ap abs p)
-
-ℤ-is-discrete : is-discrete ℤ
-ℤ-is-discrete (pos x) (pos y) = f (ℕ-is-discrete x y)
-  where
-    f : (x ≡ y) ∔ ¬ (x ≡ y) → (pos x ≡ pos y) ∔ ¬ (pos x ≡ pos y)
-    f (inl z) = inl (ap pos z)
-    f (inr z) = inr (λ k → z (pos-lc k))
-ℤ-is-discrete (pos x)     (negsucc y) = inr pos-not-negative
-ℤ-is-discrete (negsucc x) (pos y)     = inr neg-not-positive
-ℤ-is-discrete (negsucc x) (negsucc y) = f (ℕ-is-discrete x y)
-  where
-    f : (x ≡ y) ∔ ¬ (x ≡ y) → decidable (negsucc x ≡ negsucc y)
-    f (inl z) = inl (ap negsucc z)
-    f (inr z) = inr (λ k → z (negsucc-lc k) )
-
-ℤ-is-set : is-set ℤ
-ℤ-is-set = discrete-types-are-sets ℤ-is-discrete
 
 abs-removes-neg-sign : (x : ℤ) → abs x ≡ abs (- x)
 abs-removes-neg-sign (pos zero)     = refl
@@ -107,7 +47,7 @@ abs-over-mult (pos x) (pos b) = I
 abs-over-mult (pos zero) (negsucc b) = I
  where
   I : abs (pos zero * negsucc b) ≡ abs (pos zero) ℕ* abs (negsucc b)
-  I = abs (pos zero * negsucc b) ≡⟨ ap abs (ℤ-zero-left-is-zero (negsucc b)) ⟩
+  I = abs (pos zero * negsucc b) ≡⟨ ap abs (ℤ-zero-left-base (negsucc b)) ⟩
       abs (pos 0)                ≡⟨ zero-left-base (abs (negsucc b)) ⁻¹ ⟩
       abs (pos zero) ℕ* abs (negsucc b) ∎
 abs-over-mult (pos (succ x)) (negsucc b) = I
@@ -181,53 +121,43 @@ abs-over-mult' (negsucc x) (negsucc y) = I
       pos (succ x) * pos (succ y)         ≡⟨ by-definition ⟩
       absℤ (negsucc x) * absℤ (negsucc y) ∎
 
-succℤ-no-fp : (x : ℤ) → ¬ (x ≡ succℤ x)
-succℤ-no-fp (pos x) e = succ-no-fp x (pos-lc e)
-succℤ-no-fp (negsucc zero) e = pos-not-negative (e ⁻¹)
-succℤ-no-fp (negsucc (succ x)) e = succ-no-fp x (negsucc-lc (e ⁻¹))
-
-greater-than-zero-succℤ : (x : ℤ) → greater-than-zero x → greater-than-zero (succℤ x)
-greater-than-zero-succℤ (pos 0)        g = 𝟘-elim g
-greater-than-zero-succℤ (pos (succ x)) g = g
-greater-than-zero-succℤ (negsucc x)    g = 𝟘-elim g
-
-gtz₀ : (x : ℤ) → (y : ℕ) → greater-than-zero x → greater-than-zero (pos y) → greater-than-zero (x + (pos y))
+gtz₀ : (x : ℤ) → (y : ℕ) → is-pos-succ x → is-pos-succ (pos y) → is-pos-succ (x + (pos y))
 gtz₀ x = induction base step
  where
-  base : greater-than-zero x
-       → greater-than-zero (pos 0)
-       → greater-than-zero (x + pos 0)
+  base : is-pos-succ x
+       → is-pos-succ (pos 0)
+       → is-pos-succ (x + pos 0)
   base l r = 𝟘-elim r
 
   step : (k : ℕ)
-       → (greater-than-zero x → greater-than-zero (pos k) → greater-than-zero (x + pos k))
-       → greater-than-zero x
-       → greater-than-zero (pos (succ k))
-       → greater-than-zero (x + pos (succ k))
-  step 0        IH l r = greater-than-zero-succℤ x l
-  step (succ k) IH l r = greater-than-zero-succℤ (x + pos (succ k)) (IH l r)
+       → (is-pos-succ x → is-pos-succ (pos k) → is-pos-succ (x + pos k))
+       → is-pos-succ x
+       → is-pos-succ (pos (succ k))
+       → is-pos-succ (x + pos (succ k))
+  step 0        IH l r = is-pos-succ-succℤ x l
+  step (succ k) IH l r = is-pos-succ-succℤ (x + pos (succ k)) (IH l r)
 
-greater-than-zero-trans : (x y : ℤ) → greater-than-zero x → greater-than-zero y → greater-than-zero (x + y)
-greater-than-zero-trans x (pos y)         = gtz₀ x y
-greater-than-zero-trans x (negsucc y) l r = 𝟘-elim r
+is-pos-succ-trans : (x y : ℤ) → is-pos-succ x → is-pos-succ y → is-pos-succ (x + y)
+is-pos-succ-trans x (pos y)         = gtz₀ x y
+is-pos-succ-trans x (negsucc y) l r = 𝟘-elim r
 
-gtzmt₀ : (x : ℤ) → (y : ℕ) → greater-than-zero x → greater-than-zero (pos y) → greater-than-zero (x * pos y)
+gtzmt₀ : (x : ℤ) → (y : ℕ) → is-pos-succ x → is-pos-succ (pos y) → is-pos-succ (x * pos y)
 gtzmt₀ x = induction base step
  where
-  base : greater-than-zero x → greater-than-zero (pos 0) → greater-than-zero (x * pos 0)
+  base : is-pos-succ x → is-pos-succ (pos 0) → is-pos-succ (x * pos 0)
   base l r = 𝟘-elim r
 
   step : (k : ℕ)
-       → (greater-than-zero x → greater-than-zero (pos k) → greater-than-zero (x * pos k))
-       → greater-than-zero x
-       → greater-than-zero (pos (succ k))
-       → greater-than-zero (x * pos (succ k))
+       → (is-pos-succ x → is-pos-succ (pos k) → is-pos-succ (x * pos k))
+       → is-pos-succ x
+       → is-pos-succ (pos (succ k))
+       → is-pos-succ (x * pos (succ k))
   step zero IH l r = l
-  step (succ k) IH l r = greater-than-zero-trans x (x * pos (succ k)) l (IH l r)
+  step (succ k) IH l r = is-pos-succ-trans x (x * pos (succ k)) l (IH l r)
 
-greater-than-zero-mult-trans : (x y : ℤ) → greater-than-zero x → greater-than-zero y → greater-than-zero (x * y)
-greater-than-zero-mult-trans x (negsucc y) l r = 𝟘-elim r
-greater-than-zero-mult-trans x (pos y)     l r = gtzmt₀ x y l r
+is-pos-succ-mult-trans : (x y : ℤ) → is-pos-succ x → is-pos-succ y → is-pos-succ (x * y)
+is-pos-succ-mult-trans x (negsucc y) l r = 𝟘-elim r
+is-pos-succ-mult-trans x (pos y)     l r = gtzmt₀ x y l r
 
 {-
 ℤ-not-equal-to-succ : (x : ℤ) → ¬ (x ≡ succℤ x)

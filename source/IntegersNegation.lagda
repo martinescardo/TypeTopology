@@ -1,6 +1,6 @@
 Andrew Sneap
 
-In this file, I define negation of integers, and prove some common properties of negation.
+This file defines negation of integers.
 
 \begin{code}
 
@@ -18,6 +18,12 @@ module IntegersNegation where
 -_ (negsucc x)    = pos (succ x)
 
 infix 31 -_
+
+\end{code}
+
+These proves are all by definition, however we must consider each case seperately.
+
+\begin{code}
 
 predminus : (x : ℤ) → predℤ (- x) ≡ (- succℤ x)
 predminus (pos 0)            = refl

@@ -92,11 +92,11 @@ toℚ-< (x , a) (y , b) l = ordering-right-cancellable (x' ℤ* pos (succ b')) (
   β' : succ b ≡ (succ h') ℕ* succ b'
   β' = pr₂ (pr₂ (pr₂ II))
 
-  III : greater-than-zero (pos (succ h) ℤ* pos (succ h'))
-  III = greater-than-zero-mult-trans (pos (succ h)) (pos (succ h')) ⋆ ⋆
+  III : is-pos-succ (pos (succ h) ℤ* pos (succ h'))
+  III = is-pos-succ-mult-trans (pos (succ h)) (pos (succ h')) ⋆ ⋆
 
-  IV : greater-than-zero (pos (succ h ℕ* succ h'))
-  IV = transport (λ z → greater-than-zero z) (pos-multiplication-equiv-to-ℕ (succ h) (succ h')) III
+  IV : is-pos-succ (pos (succ h ℕ* succ h'))
+  IV = transport (λ z → is-pos-succ z) (pos-multiplication-equiv-to-ℕ (succ h) (succ h')) III
 
   V : ((x' ℤ* pos (succ b')) ℤ* pos (succ h ℕ* succ h')) < ((y' ℤ* pos (succ a')) ℤ* pos (succ h ℕ* succ h'))
   V = transport₂ (λ z z' → z < z') VI VII l
@@ -155,8 +155,8 @@ toℚ-≤ (x , a) (y , b) l = ℤ≤-ordering-right-cancellable (x' ℤ* pos (su
   β' : succ b ≡ (succ h') ℕ* succ b'
   β' = pr₂ (pr₂ (pr₂ II))
 
-  III : greater-than-zero (pos (succ h ℕ* succ h'))
-  III = transport (λ - → greater-than-zero -) (pos-multiplication-equiv-to-ℕ (succ h) (succ h')) (greater-than-zero-mult-trans (pos (succ h)) (pos (succ h')) ⋆ ⋆)
+  III : is-pos-succ (pos (succ h ℕ* succ h'))
+  III = transport (λ - → is-pos-succ -) (pos-multiplication-equiv-to-ℕ (succ h) (succ h')) (is-pos-succ-mult-trans (pos (succ h)) (pos (succ h')) ⋆ ⋆)
 
   IV : (x' ℤ* pos (succ b') ℤ* pos (succ h ℕ* succ h')) ≤ (y' ℤ* pos (succ a') ℤ* pos (succ h ℕ* succ h'))
   IV = transport₂ (λ z z' → z ≤ z') VI VII l
@@ -275,7 +275,7 @@ rounded-lemma₀ (succ a) = succ (2 ℕ* pred (succ (succ a))) ≡⟨ ap (λ - �
 ℚ-zero-less-than-positive x y = toℚ-< (pos 0 , 0) (pos (succ x) , y) (x , I)
  where
   I : succℤ (pos 0 ℤ* pos (succ y)) ℤ+ pos x ≡ pos (succ x) ℤ* pos 1
-  I = succℤ (pos 0 ℤ* pos (succ y)) ℤ+ pos x ≡⟨ ap (λ α → succℤ α ℤ+ pos x) (ℤ-zero-left-is-zero (pos (succ y))) ⟩
+  I = succℤ (pos 0 ℤ* pos (succ y)) ℤ+ pos x ≡⟨ ap (λ α → succℤ α ℤ+ pos x) (ℤ-zero-left-base (pos (succ y))) ⟩
       succℤ (pos 0) ℤ+ pos x                 ≡⟨ ℤ-left-succ (pos 0) (pos x) ⟩
       succℤ (pos 0 ℤ+ pos x)                 ≡⟨ ap succℤ (ℤ+-comm (pos 0) (pos x)) ⟩
       succℤ (pos x)                          ≡⟨ by-definition ⟩
@@ -515,7 +515,7 @@ multiplicative-inverse-preserves-pos fe ((pos (succ x) , a) , α) l nz = toℚ-<
   I : succℤ (pos 0 ℤ* pos (succ x)) ℤ+ pos a ≡ pos (succ a) ℤ* pos 1
   I = succℤ (pos 0 ℤ* pos (succ x)) ℤ+ pos a ≡⟨ ℤ-left-succ (pos 0 ℤ* pos (succ x)) (pos a) ⟩
       succℤ (pos 0 ℤ* pos (succ x) ℤ+ pos a) ≡⟨ ℤ-right-succ (pos 0 ℤ* pos (succ x)) (pos a) ⁻¹ ⟩
-      pos 0 ℤ* pos (succ x) ℤ+ pos (succ a)  ≡⟨ ap (_ℤ+ pos (succ a)) (ℤ-zero-left-is-zero (pos (succ x))) ⟩
+      pos 0 ℤ* pos (succ x) ℤ+ pos (succ a)  ≡⟨ ap (_ℤ+ pos (succ a)) (ℤ-zero-left-base (pos (succ x))) ⟩
       pos 0 ℤ+ pos (succ a) ≡⟨ ℤ-zero-left-neutral (pos (succ a)) ⟩
       pos (succ a) ≡⟨ ℤ-mult-right-id (pos (succ a)) ⟩
       pos (succ a) ℤ* pos 1 ∎
@@ -532,7 +532,7 @@ multiplicative-inverse-preserves-pos fe ((negsucc x , a) , α) l nz = 𝟘-elim 
             succℤ (negsucc x ℤ* pos 1 ℤ+ pos x) ≡⟨ by-definition ⟩
             negsucc x ℤ* pos 1 ℤ+ pos (succ x)  ≡⟨ ap (_ℤ+ pos (succ x)) (ℤ-mult-right-id (negsucc x)) ⟩
             negsucc x ℤ+ pos (succ x)           ≡⟨ ℤ-sum-of-inverse-is-zero' (pos (succ x)) ⟩
-            pos 0                               ≡⟨ ℤ-zero-left-is-zero (pos (succ a)) ⁻¹ ⟩
+            pos 0                               ≡⟨ ℤ-zero-left-base (pos (succ a)) ⁻¹ ⟩
             pos 0 ℤ* pos (succ a)               ∎
 
 ℚ-equal-or-less-than-is-prop : Fun-Ext → (x y : ℚ) → is-prop ((x ≡ y) ∔ (y < x))

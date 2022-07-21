@@ -166,7 +166,7 @@ multiplicative-inverse fe ((pos (succ x) , a) , p) nz = toℚ ((pos (succ a)) , 
 multiplicative-inverse fe ((negsucc x    , a) , p) nz = toℚ ((negsucc  a) , x)
 
 division-by-self-is-one : Fun-Ext → ((x , a) : ℚₙ) → x ≡ pos (succ a) → toℚ (x , a) ≡ 1ℚ
-division-by-self-is-one fe (negsucc x    , a) e = 𝟘-elim (neg-not-positive e)
+division-by-self-is-one fe (negsucc x    , a) e = 𝟘-elim (negsucc-not-pos e)
 division-by-self-is-one fe (pos 0        , a) e = 𝟘-elim (zero-not-positive a (pos-lc e))
 division-by-self-is-one fe (pos (succ x) , a) e = I II
  where

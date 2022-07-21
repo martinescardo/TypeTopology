@@ -11,8 +11,8 @@ open import NaturalNumbers-Properties -- TypeTopology
 open import UF-Base hiding (_≈_) -- TypeTopology
 open import UF-Subsingletons -- TypeTopology
 
-open import IntegersB
-open import IntegersAbs hiding (abs) 
+open import IntegersB hiding (abs)
+open import IntegersAbs 
 open import IntegersAddition renaming (_+_ to _ℤ+_)
 open import IntegersMultiplication renaming (_*_ to _ℤ*_)
 open import IntegersNegation renaming (-_ to ℤ-_)
@@ -173,8 +173,8 @@ infixl 34 _*_
      
 ℚₙ-zero-left-neutral : (q : ℚₙ) → (pos 0 , 0) * q ≈ (pos 0 , 0)
 ℚₙ-zero-left-neutral (x , a) = pos 0 ℤ* x ℤ* pos 1                      ≡⟨ ℤ*-assoc (pos 0) x (pos 1)                               ⟩
-                               pos 0 ℤ* (x ℤ* pos 1)                    ≡⟨ ℤ-zero-left-is-zero (x ℤ* pos 1)                         ⟩
-                               pos 0                                    ≡⟨ ℤ-zero-left-is-zero (pos (succ (pred (1 ℕ* succ a)))) ⁻¹ ⟩
+                               pos 0 ℤ* (x ℤ* pos 1)                    ≡⟨ ℤ-zero-left-base (x ℤ* pos 1)                         ⟩
+                               pos 0                                    ≡⟨ ℤ-zero-left-base (pos (succ (pred (1 ℕ* succ a)))) ⁻¹ ⟩
                                pos 0 ℤ* pos (succ (pred (1 ℕ* succ a))) ∎
 
 ℚₙ*-comm : (p q : ℚₙ) → p * q ≡ q * p

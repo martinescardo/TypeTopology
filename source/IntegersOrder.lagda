@@ -76,7 +76,7 @@ instance
   I (k , e) = k , II
    where
     II : succℤ (pos m) + pos k ≡ pos n
-    II = succℤ (pos m) + pos k ≡⟨ pos-addition-equiv-to-ℕ (succ m) k         ⟩
+    II = succℤ (pos m) + pos k ≡⟨ distributivity-pos-addition (succ m) k         ⟩
          pos (succ m ℕ+ k)     ≡⟨ ap pos (addition-commutativity (succ m) k) ⟩
          pos (k ℕ+ succ m)     ≡⟨ ap pos (succ-left k m ⁻¹)                  ⟩
          pos (succ k ℕ+ m)     ≡⟨ ap pos e                                   ⟩
@@ -91,7 +91,7 @@ instance
     II : pos (succ k ℕ+ succ m) ≡ pos (succ n)
     II = ap (λ p → pos (succ p)) e
     III : pos (succ k) + pos (succ m) ≡ pos (succ n)
-    III = pos-addition-equiv-to-ℕ (succ k) (succ m) ∙ II
+    III = distributivity-pos-addition (succ k) (succ m) ∙ II
     IV : pos (succ k) + pos (succ m) + (negsucc n + negsucc m) ≡ pos (succ n) + (negsucc n + negsucc m)
     IV = ap (λ p → p + (negsucc n + negsucc m)) III
     conclusion : succℤ (negsucc n) + pos k ≡ negsucc m
@@ -125,10 +125,10 @@ instance
        xiii  = ℤ-zero-left-neutral (negsucc m)
 
 ℤ-bigger-or-equal-not-less : (x y : ℤ) → x ≤ y → ¬ (y < x)
-ℤ-bigger-or-equal-not-less x y (α , p) (β , q) = 𝟘-elim (pos-int-not-zero (α ℕ+ β) II)
+ℤ-bigger-or-equal-not-less x y (α , p) (β , q) = 𝟘-elim (pos-succ-not-zero (α ℕ+ β) II)
  where
   I : x + succℤ (pos (α ℕ+ β)) ≡ x + pos 0
-  I = x + succℤ (pos (α ℕ+ β))    ≡⟨ ap (λ - → x + succℤ -) (pos-addition-equiv-to-ℕ α β ⁻¹) ⟩
+  I = x + succℤ (pos (α ℕ+ β))    ≡⟨ ap (λ - → x + succℤ -) (distributivity-pos-addition α β ⁻¹) ⟩
       x + succℤ (pos α + pos β)   ≡⟨ ℤ-right-succ x (pos α + pos β)                          ⟩
       succℤ (x + (pos α + pos β)) ≡⟨ ap succℤ (ℤ+-assoc x (pos α) (pos β) ⁻¹)                ⟩
       succℤ (x + pos α + pos β)   ≡⟨ ℤ-left-succ (x + pos α) (pos β) ⁻¹                      ⟩
@@ -146,7 +146,7 @@ instance
 ℤ≤-trans x y z (a , p) (b , q) = a ℕ+ b , I
  where
   I : x + pos (a ℕ+ b) ≡ z
-  I = x + pos (a ℕ+ b)        ≡⟨ ap (x +_) (pos-addition-equiv-to-ℕ a b ⁻¹) ⟩
+  I = x + pos (a ℕ+ b)        ≡⟨ ap (x +_) (distributivity-pos-addition a b ⁻¹) ⟩
       x + ((pos a) + (pos b)) ≡⟨ ℤ+-assoc x (pos a) (pos b) ⁻¹              ⟩
       x + pos a + (pos b)     ≡⟨ ap (_+ (pos b)) p                          ⟩
       y + (pos b)             ≡⟨ q                                          ⟩
@@ -163,7 +163,7 @@ instance
 
 ℤ-equal-not-less-than : (x : ℤ) → ¬ (x < x)
 ℤ-equal-not-less-than x (0 , α)      = succℤ-no-fp x (α ⁻¹)
-ℤ-equal-not-less-than x (succ n , α) = pos-int-not-zero (n ℕ+ 1) (ℤ+-lc (succℤ (succℤ (pos n))) (pos 0) x I)
+ℤ-equal-not-less-than x (succ n , α) = pos-succ-not-zero (n ℕ+ 1) (ℤ+-lc (succℤ (succℤ (pos n))) (pos 0) x I)
  where
   I : x + succℤ (succℤ (pos n)) ≡ x + pos 0
   I = x + succℤ (succℤ (pos n)) ≡⟨ ℤ-right-succ x (succℤ (pos n))   ⟩
@@ -180,7 +180,7 @@ negative-less-than-positive : (x y : ℕ) → negsucc x < pos y
 negative-less-than-positive x y = (x ℕ+ y) , I
  where
   I : succℤ (negsucc x) + pos (x ℕ+ y) ≡ pos y
-  I = succℤ (negsucc x) + pos (x ℕ+ y)        ≡⟨ ap (succℤ (negsucc x) +_) (pos-addition-equiv-to-ℕ x y ⁻¹) ⟩
+  I = succℤ (negsucc x) + pos (x ℕ+ y)        ≡⟨ ap (succℤ (negsucc x) +_) (distributivity-pos-addition x y ⁻¹) ⟩
       succℤ (negsucc x) + (pos x + pos y)     ≡⟨ ℤ+-assoc (succℤ (negsucc x)) (pos x) (pos y) ⁻¹            ⟩
       succℤ (negsucc x) + pos x + pos y       ≡⟨ ap (_+ pos y) (ℤ-left-succ (negsucc x) (pos x))            ⟩
       negsucc x + pos (succ x) + pos y        ≡⟨ refl                                                       ⟩
@@ -213,7 +213,7 @@ negative-less-than-positive x y = (x ℕ+ y) , I
   I (k , e) = k , II
    where
     II : pos x + pos k ≡ pos y
-    II = pos x + pos k ≡⟨ pos-addition-equiv-to-ℕ x k         ⟩
+    II = pos x + pos k ≡⟨ distributivity-pos-addition x k         ⟩
          pos (x ℕ+ k)  ≡⟨ ap pos (addition-commutativity x k) ⟩
          pos (k ℕ+ x)  ≡⟨ ap pos e                            ⟩
          pos y         ∎
@@ -292,7 +292,7 @@ trich-locate x y = (x < y) ∔ (x ≡ y) ∔ (y < x)
 ℤ≤-adding a b c d (p , β) (q , β') = (p ℕ+ q) , I
  where
   I : a + c + pos (p ℕ+ q) ≡ b + d
-  I = a + c + pos (p ℕ+ q)        ≡⟨ ap (a + c +_) (pos-addition-equiv-to-ℕ p q ⁻¹) ⟩
+  I = a + c + pos (p ℕ+ q)        ≡⟨ ap (a + c +_) (distributivity-pos-addition p q ⁻¹) ⟩
       a + c + (pos p + pos q)     ≡⟨ ℤ+-assoc (a + c) (pos p) (pos q) ⁻¹            ⟩
       a + c + pos p + pos q       ≡⟨ ap (λ z → z + pos p + pos q) (ℤ+-comm a c)     ⟩
       c + a + pos p + pos q       ≡⟨ ap (_+ pos q) (ℤ+-assoc c a (pos p))           ⟩
@@ -355,12 +355,12 @@ pmpo-lemma a b = induction base step
        → a * pos (succ (succ k)) < b * pos (succ (succ k))
   step k IH l = ℤ<-adding a b (a + (a * pos k)) (b + (b * pos k)) l (IH l)
 
-positive-multiplication-preserves-order : (a b c : ℤ) → greater-than-zero c → a < b → a * c < b * c
+positive-multiplication-preserves-order : (a b c : ℤ) → is-pos-succ c → a < b → a * c < b * c
 positive-multiplication-preserves-order a b (negsucc x)    p l = 𝟘-elim p
 positive-multiplication-preserves-order a b (pos 0)        p l = 𝟘-elim p
 positive-multiplication-preserves-order a b (pos (succ x)) p l = pmpo-lemma a b x l
 
-positive-multiplication-preserves-order' : (a b c : ℤ) → greater-than-zero c → a ≤ b → a * c ≤ b * c
+positive-multiplication-preserves-order' : (a b c : ℤ) → is-pos-succ c → a ≤ b → a * c ≤ b * c
 positive-multiplication-preserves-order' a b c p l with ℤ≤-split a b l
 ... | (inl a<b) = <-is-≤ _ _ (positive-multiplication-preserves-order a b c p a<b)
 ... | (inr a≡b) = transport (a * c ≤_) (ap (_* c) a≡b) (ℤ≤-refl (a * c))
@@ -485,12 +485,12 @@ orcl' a b n l = II (ℤ≤-split a b I)
     III : a * pos (succ n) < a * pos (succ n)
     III = transport (λ - → (a * pos (succ n)) < (- * pos (succ n))) (e ⁻¹) l
 
-ordering-right-cancellable : (a b c : ℤ) → greater-than-zero c → a * c < b * c → a < b
+ordering-right-cancellable : (a b c : ℤ) → is-pos-succ c → a * c < b * c → a < b
 ordering-right-cancellable a b (negsucc x) p l    = 𝟘-elim p
 ordering-right-cancellable a b (pos 0) p l        = 𝟘-elim p
 ordering-right-cancellable a b (pos (succ x)) p l = orcl' a b x l
 
-ℤ≤-ordering-right-cancellable : (a b c : ℤ) → greater-than-zero c → a * c ≤ b * c → a ≤ b
+ℤ≤-ordering-right-cancellable : (a b c : ℤ) → is-pos-succ c → a * c ≤ b * c → a ≤ b
 ℤ≤-ordering-right-cancellable a b (pos zero) p l     = 𝟘-elim p
 ℤ≤-ordering-right-cancellable a b (pos (succ x)) p l = orcl a b x l
 ℤ≤-ordering-right-cancellable a b (negsucc x) p l    = 𝟘-elim p

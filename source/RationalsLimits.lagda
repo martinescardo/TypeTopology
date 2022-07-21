@@ -119,7 +119,7 @@ constant-sequence-converges q ε l = 0 , (λ n l₂ → transport (_< ε) I l)
   I : 0ℚ ≡ ℚ-metric q q
   I = ℚ-self-dist fe q ⁻¹
 
-open import IntegersB
+open import IntegersB hiding (abs)
 open import ncRationalsOrder
 open import ncRationalsOperations renaming (_*_ to _ℚₙ*_ ; _+_ to _ℚₙ+_ ; -_ to ℚₙ-_ ; abs to ℚₙ-abs) 
 
@@ -227,14 +227,14 @@ limits-lemma k = k , I
   I : pos 2 ℤ* pos (succ (succ (succ k))) ℤ+ pos k ≡ pos 1 ℤ* pos (succ (pred (succ (succ k) ℕ* 3)))
   I = pos 2 ℤ* pos (succ (succ (succ k))) ℤ+ pos k ≡⟨ by-definition                                                          ⟩
       pos 2 ℤ* pos (k ℕ+ 3) ℤ+ pos k                  ≡⟨ ℤ+-comm (pos 2 ℤ* pos (k ℕ+ 3)) (pos k)                                ⟩
-      pos k ℤ+ pos 2 ℤ* pos (k ℕ+ 3)                  ≡⟨ ap (λ z → pos k ℤ+ pos 2 ℤ* z) (pos-addition-equiv-to-ℕ k 3 ⁻¹)        ⟩
+      pos k ℤ+ pos 2 ℤ* pos (k ℕ+ 3)                  ≡⟨ ap (λ z → pos k ℤ+ pos 2 ℤ* z) (distributivity-pos-addition k 3 ⁻¹)        ⟩
       pos k ℤ+ pos 2 ℤ* (pos k ℤ+ pos 3)              ≡⟨ ap (pos k ℤ+_) (distributivity-mult-over-ℤ' (pos k) (pos 3) (pos 2))   ⟩
       pos k ℤ+ (pos 2 ℤ* pos k ℤ+ pos 6)              ≡⟨ ℤ+-assoc (pos k) (pos 2 ℤ* pos k) (pos 6) ⁻¹                           ⟩
       pos k ℤ+ pos 2 ℤ* pos k ℤ+ pos 6                ≡⟨ ap (λ z → z ℤ+ pos 2 ℤ* pos k ℤ+ pos 6) (ℤ-mult-left-id (pos k) ⁻¹)    ⟩
       pos 1 ℤ* pos k ℤ+ pos 2 ℤ* pos k ℤ+ pos 6       ≡⟨ ap (_ℤ+ pos 6) (distributivity-mult-over-ℤ (pos 1) (pos 2) (pos k) ⁻¹) ⟩
       (pos 3) ℤ* pos k ℤ+ pos 6                       ≡⟨ ap (_ℤ+ pos 6) (ℤ*-comm (pos 3) (pos k))                               ⟩
       pos k ℤ* pos 3 ℤ+ pos 6                         ≡⟨ distributivity-mult-over-ℤ (pos k) (pos 2) (pos 3) ⁻¹                  ⟩ 
-      (pos k ℤ+ pos 2) ℤ* pos 3                       ≡⟨ ap (_ℤ* pos 3) (pos-addition-equiv-to-ℕ k 2)                           ⟩ 
+      (pos k ℤ+ pos 2) ℤ* pos 3                       ≡⟨ ap (_ℤ* pos 3) (distributivity-pos-addition k 2)                           ⟩ 
       pos (k ℕ+ 2) ℤ* pos 3                           ≡⟨ by-definition                                                          ⟩
       pos (succ (succ k)) ℤ* pos 3                    ≡⟨ denom-setup (succ k) 2 ⁻¹                                              ⟩
       pos (succ (pred (succ (succ k) ℕ* 3)))          ≡⟨ ℤ-mult-left-id (pos (succ (pred (succ (succ k) ℕ* 3)))) ⁻¹             ⟩

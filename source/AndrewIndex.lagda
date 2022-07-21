@@ -8,23 +8,20 @@ module AndrewIndex where
 
 import NaturalsMultiplication
 import NaturalsDivision 
-import HCF -- In Progress
+import HCF 
 
-import IntegersB 
-import IntegersAbs
+import IntegersB
+import IntegersNegation
 import IntegersAddition
+import IntegersMultiplication
 import IntegersOrder
 import IntegersDivision 
 import IntegersHCF
-import IntegersMultiplication
-import IntegersNegation 
+import IntegersAbs
 
 import ncRationals
 import ncRationalsOperations
 import ncRationalsOrder
-
-import FieldAxioms
-
 import Rationals
 import RationalsAbs
 import RationalsAddition
@@ -47,6 +44,7 @@ import MetricSpaceDedekindReals
 
 import ContinuousExtensionTheorem
 
+import FieldAxioms
 import FieldRationals
 
 -- import Todd.TBRDyadicReals
