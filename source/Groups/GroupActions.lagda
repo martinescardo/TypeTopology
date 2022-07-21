@@ -119,7 +119,7 @@ module _ (G : Group 𝓤) where
 \end{code}
 
 In this submodule we prove that an action as defined above induces a
-homomorphism from the group ot the automorphism group of the carrier
+homomorphism from the group G to the automorphism group of the carrier
 set. It requires funext 𝓤 𝓤 because Aut (X) (as a group)
 does. Conversely, a homomorphism to Aut (X) gives an action.
 
@@ -127,6 +127,7 @@ does. Conversely, a homomorphism to Aut (X) gives an action.
   module automorphism (fe : funext 𝓤 𝓤) where
 
     open import Groups.Aut
+    open import Groups.Opposite
 
     module _ (𝕏 : Action) where
 
@@ -144,10 +145,12 @@ does. Conversely, a homomorphism to Aut (X) gives an action.
         gr-s-X : _
         gr-s-X = Group-structure-Aut fe X i
 
-      is-hom-action-to-fun : is-hom G (Aut X , gr-s-X) (action-to-Aut 𝕏)
+      is-hom-action-to-fun : is-hom G ((Aut X , gr-s-X) ᵒᵖ) (action-to-Aut 𝕏)
       is-hom-action-to-fun {g} {h} =
-                           to-Σ-＝ ((dfunext fe (action-assoc 𝕏 g h)) ,
-                             (being-equiv-is-prop'' fe (λ x → g · (h · x)) _ _))
+                           to-Σ-＝ ((dfunext fe (λ x → action-assoc 𝕏 g h x)) ,
+                                    being-equiv-is-prop'' fe (λ x → g · (h · x)) _ _)
+
+
 
     module _ (X : 𝓤 ̇) (i : is-set X) (σ : ⟨ G ⟩ → Aut X) where
       
@@ -158,7 +161,7 @@ does. Conversely, a homomorphism to Aut (X) gives an action.
         gr-s-X : _
         gr-s-X = Group-structure-Aut fe X i
 
-      hom-to-Aut-gives-action : is-hom G (Aut X , gr-s-X) σ → Action
+      hom-to-Aut-gives-action : is-hom G ((Aut X , gr-s-X) ᵒᵖ ) σ → Action
       hom-to-Aut-gives-action is = X , ((λ g → pr₁ (σ g)) ,
                               (i , (λ g h → happly (ap pr₁ (is {g} {h}))) ,
                                λ x → ( pr₁ (σ (unit G)) x            ＝⟨ happly (ap pr₁ t) x ⟩
@@ -166,9 +169,8 @@ does. Conversely, a homomorphism to Aut (X) gives an action.
                                        x ∎ ) ) )
         where
           t : σ (unit G) ＝ unit (Aut X , gr-s-X)
-          t = homs-preserve-unit G (Aut X , gr-s-X) σ is
+          t = homs-preserve-unit G ((Aut X , gr-s-X) ᵒᵖ ) σ is
 
-    
 \end{code}
 
 Resuming the general theory, the group action axioms form a proposition
