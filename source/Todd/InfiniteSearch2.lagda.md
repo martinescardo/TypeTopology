@@ -39,14 +39,14 @@ steps to it as we must prove that everything is continuous.
 ```agda
 {-# OPTIONS --without-K --exact-split #-}
 
-open import SpartanMLTT hiding (decidable)
-open import Two-Properties hiding (zero-is-not-one)
-open import NaturalsOrder
+open import MLTT.Spartan hiding (decidable)
+open import MLTT.Two-Properties hiding (zero-is-not-one)
+open import Naturals.Order
 
-module InfiniteSearch2 (fe : {𝓤 𝓥 : Universe} → {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {f g : Π Y}
-                           → f ∼ g → f ≡ g) where
+module Todd.InfiniteSearch2 (fe : {𝓤 𝓥 : Universe} → {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {f g : Π Y}
+                           → f ∼ g → f ＝ g) where
 
-open import InfiniteSearch1 fe public
+open import Todd.InfiniteSearch1 fe public
   hiding ( _::_ ; head ; tail ; head-tail-eta
          ; build-up
          ; 𝟚-is-c-searchable
@@ -89,7 +89,7 @@ head α = α 0
 tail : {T : ℕ → 𝓤 ̇ } → Π T → Π (T ∘ succ)
 tail α = α ∘ succ
 
-head-tail-eta : {T : ℕ → 𝓤 ̇ } → (α : Π T) → α ≡ head α :: tail α
+head-tail-eta : {T : ℕ → 𝓤 ̇ } → (α : Π T) → α ＝ head α :: tail α
 head-tail-eta α = fe γ where
   γ : α ∼ (head α :: tail α)
   γ 0 = refl
@@ -101,7 +101,7 @@ We want to determine the closeness `c (α , β) : ℕ∞` of two infinite sequen
 It is straightforward to define this where each type `(T n) : 𝓤` is discrete
 (i.e. each closeness function `cₙ : T n × T n → ℕ∞` is the discrete closeness function).
 
-    c (α , β) n ≡ ₁,    if x ≡⟦ n ⟧ y,
+    c (α , β) n ＝ ₁,    if x ＝⟦ n ⟧ y,
                   ₀,    otherwise.
 
 This is the "discrete-sequence" closeness function defined in the previous blog post.
@@ -114,7 +114,7 @@ The following illustrates some potential values of a prefix of these
 closeness functions.
 
 For example, the asterisk `* : 𝟚` is defined `* ≔ c₂ (α  2 , β 2) 3`.
-Of course, `* ≡ ₀`, because the previous value in the sequence is `₀`, and
+Of course, `* ＝ ₀`, because the previous value in the sequence is `₀`, and
 every `ℕ∞` is decreasing.
 
         0  1  2  3  4  5  ⋯
@@ -128,30 +128,30 @@ This 'square' of binary values is infinite in both directions; and we in
 fact use the minimum values of this square's diagonals to determine the
 value `c (α , β) : ℕ∞`.
 
-Using this illustration, `c (α , β) 0 ≡ ₁` as it is the single element of
+Using this illustration, `c (α , β) 0 ＝ ₁` as it is the single element of
 the first diagonal. `c (α , β) 1` and `c (α , β) 2` are also `₁` because the
 second and third diagonals only feature `₁`s. However, `c (α , β) 3` is
 `₀`, because the fourth diagonal features a `₀` ─ we take the minimum value
-of each diagonal. We know that `c (α , β) n ≡ ₀` for all `n > 3`, because
+of each diagonal. We know that `c (α , β) n ＝ ₀` for all `n > 3`, because
 `c₃ (α 3 , β 3)` will appear in every following diagonal, always contributing
 a `₀`. This means that our determined closeness value is decreasing.
 
 Therefore, we can express the closeness value as follows.
 
     c (α , β) 0
-     ≡       c₀ (α 0 , β 0) 0
+     ＝       c₀ (α 0 , β 0) 0
     c (α , β) 1
-     ≡ min𝟚 (c₀ (α 0 , β 0) 1)       (c₁ (α 1 , β 1) 0)
+     ＝ min𝟚 (c₀ (α 0 , β 0) 1)       (c₁ (α 1 , β 1) 0)
     c (α , β) 2
-     ≡ min𝟚 (c₀ (α 0 , β 0) 2) (min𝟚 (c₁ (α 1 , β 1) 1) (c₂ (α 2 , β 2) 0))
+     ＝ min𝟚 (c₀ (α 0 , β 0) 2) (min𝟚 (c₁ (α 1 , β 1) 1) (c₂ (α 2 , β 2) 0))
     ⋯
 
 This can be expressed recursively:
 
     c (α , β) 0
-     ≡ c₀ (α 0 , β 0) 0
+     ＝ c₀ (α 0 , β 0) 0
     c (α , β) (succ n)
-     ≡ min𝟚 (c₀ (α 0 , β 0) (succ n)) (c  (tail α , tail β) n)
+     ＝ min𝟚 (c₀ (α 0 , β 0) (succ n)) (c  (tail α , tail β) n)
 
 ```agda
 Π-clofun' : ((T , cs) : sequence-of-clofun-types 𝓤) → Π T × Π T → (ℕ → 𝟚)
@@ -165,37 +165,37 @@ We prove this is decreasing by induction.
 
 (1) In the base case, we wish to show that,
 
-        min𝟚 (c₀ (α 0 , β 0) 1) (c  (tail α , tail β) 0) ≡ ₁  
-        ⇒  c₀ (α 0 , β 0) 0 ≡ ₁.
+        min𝟚 (c₀ (α 0 , β 0) 1) (c  (tail α , tail β) 0) ＝ ₁  
+        ⇒  c₀ (α 0 , β 0) 0 ＝ ₁.
 
     Assume we have
 
-        r : min𝟚 (c₀ (α 0 , β 0) 1) (c  (tail α , tail β) 0) ≡ ₁.
+        r : min𝟚 (c₀ (α 0 , β 0) 1) (c  (tail α , tail β) 0) ＝ ₁.
 
     From the fact c₀ is decreasing, we construct,
 
-        f : c₀ (α 0 , β 0) 1 ≡ ₁ ⇒ c₀ (α 0 , β 0) 0 ≡ ₁.
+        f : c₀ (α 0 , β 0) 1 ＝ ₁ ⇒ c₀ (α 0 , β 0) 0 ＝ ₁.
 
     We use the following lemma,
 
-        Lemma[min𝟚ab≡₁→a≡₁] : (a b : 𝟚) → min𝟚 a b ≡ ₁ → a ≡ ₁,
+        Lemma[min𝟚ab＝₁→a＝₁] : (a b : 𝟚) → min𝟚 a b ＝ ₁ → a ＝ ₁,
 
     where `a ≔ c₀ (α 0 , β 0) 1`,
       and `b ≔ c  (tail α , tail β) 0`.
            
-    By applying this lemma to `r : min𝟚 a b ≡ ₁`, we
-    construct `s : c₀ (α 0 , β 0) 1 ≡ ₁`.
+    By applying this lemma to `r : min𝟚 a b ＝ ₁`, we
+    construct `s : c₀ (α 0 , β 0) 1 ＝ ₁`.
 
     We apply `f` to `s` to complete the proof.
 
 (2) In the inductive case we wish to show that,
 
-        min𝟚 (c₀ (α 0 , β 0) (succ (succ n)) (c (tail α , tail β) (succ n)) ≡ ₁
-        ⇒ min𝟚 (c₀ (α 0 , β 0) (succ n)) (c  (tail α , tail β) n)  ≡ ₁.
+        min𝟚 (c₀ (α 0 , β 0) (succ (succ n)) (c (tail α , tail β) (succ n)) ＝ ₁
+        ⇒ min𝟚 (c₀ (α 0 , β 0) (succ n)) (c  (tail α , tail β) n)  ＝ ₁.
 
     From the fact `c₀` is decreasing, we construct,
 
-        f : c₀ (α 0 , β 0) (succ (succ n)) ≡ ₁ ⇒ c₀ (α 0 , β 0) (succ n) ≡ ₁.
+        f : c₀ (α 0 , β 0) (succ (succ n)) ＝ ₁ ⇒ c₀ (α 0 , β 0) (succ n) ＝ ₁.
 
     By the inductive hypothesis, we construct,
     
@@ -203,24 +203,24 @@ We prove this is decreasing by induction.
 
     Assume we have
 
-        r : min𝟚 (c₀ (α 0 , β 0) (succ (succ n)) (c (tail α , tail β) (succ n)) ≡ ₁
+        r : min𝟚 (c₀ (α 0 , β 0) (succ (succ n)) (c (tail α , tail β) (succ n)) ＝ ₁
 
     We use the following lemmas,
 
-        Lemma[min𝟚ab≡₁→a≡₁] : (a b : 𝟚) → min𝟚 a b ≡ ₁ → a ≡ ₁,
-        Lemma[min𝟚ab≡₁→b≡₁] : (a b : 𝟚) → min𝟚 a b ≡ ₁ → b ≡ ₁.
+        Lemma[min𝟚ab＝₁→a＝₁] : (a b : 𝟚) → min𝟚 a b ＝ ₁ → a ＝ ₁,
+        Lemma[min𝟚ab＝₁→b＝₁] : (a b : 𝟚) → min𝟚 a b ＝ ₁ → b ＝ ₁.
 
     By applying these to `r`, we construct,
-        `s : c₀ (α 0 , β 0) (succ (succ n)) ≡ ₁`
-    and `t : c (tail α , tail β) (succ n)   ≡ ₁`.
+        `s : c₀ (α 0 , β 0) (succ (succ n)) ＝ ₁`
+    and `t : c (tail α , tail β) (succ n)   ＝ ₁`.
 
     We apply `f` to `s` and `g` to `t` to construct,
-        `u : c₀ (α 0 , β 0) (succ n) ≡ ₁`
-    and `v : c (tail α , tail β) n   ≡ ₁`.
+        `u : c₀ (α 0 , β 0) (succ n) ＝ ₁`
+    and `v : c (tail α , tail β) n   ＝ ₁`.
 
     We use the following lemma,
 
-        Lemma[a≡₁→b≡₁→min𝟚ab≡₁] : (a b : 𝟚) → a ≡ ₁ → b ≡ ₁ → min𝟚 a b ≡ ₁.
+        Lemma[a＝₁→b＝₁→min𝟚ab＝₁] : (a b : 𝟚) → a ＝ ₁ → b ＝ ₁ → min𝟚 a b ＝ ₁.
 
     where `a ≔ c₀ (α 0 , β 0) (succ n)`,
       and `b ≔ c (tail α , tail β) n`.
@@ -232,12 +232,12 @@ We prove this is decreasing by induction.
               → ((A , B) : Π T × Π T)
               → decreasing-binary-seq (Π-clofun' (T , cs) (A , B))
 Π-clofun'-dec (T , cs) (A , B) 0        r =
- pr₂ (cs 0 (A 0 , B 0)) 0 (Lemma[min𝟚ab≡₁→a≡₁] r)
+ pr₂ (cs 0 (A 0 , B 0)) 0 (Lemma[min𝟚ab＝₁→a＝₁] r)
 Π-clofun'-dec (T , cs) (A , B) (succ n) r
- = Lemma[a≡₁→b≡₁→min𝟚ab≡₁]
-     (pr₂ (cs 0 (A 0 , B 0)) (succ n) (Lemma[min𝟚ab≡₁→a≡₁] r))
+ = Lemma[a＝₁→b＝₁→min𝟚ab＝₁]
+     (pr₂ (cs 0 (A 0 , B 0)) (succ n) (Lemma[min𝟚ab＝₁→a＝₁] r))
      (Π-clofun'-dec (T ∘ succ , cs ∘ succ) (A ∘ succ , B ∘ succ) n
-       (Lemma[min𝟚ab≡₁→b≡₁] {pr₁ (cs 0 (A 0 , B 0)) (succ (succ n))} r))
+       (Lemma[min𝟚ab＝₁→b＝₁] {pr₁ (cs 0 (A 0 , B 0)) (succ (succ n))} r))
 
 Π-clofun : ((T , cs) : sequence-of-clofun-types 𝓤) → Π T × Π T → ℕ∞
 Π-clofun (T , cs) (A , B) = Π-clofun'     (T , cs) (A , B)
@@ -256,27 +256,27 @@ following hidden module.
 module hidden-module where
 
  Π-clofun'-eic : ((T , cs) : sequence-of-clofun-types 𝓤)
-               → ((n : ℕ) (α : T n) → cs n (α , α) ≡ ∞)
-               → (A : Π T) → Π-clofun (T , cs) (A , A) ≡ ∞
+               → ((n : ℕ) (α : T n) → cs n (α , α) ＝ ∞)
+               → (A : Π T) → Π-clofun (T , cs) (A , A) ＝ ∞
  Π-clofun'-eic (T , cs) eics A
   = ℕ∞-equals (γ (T , cs) eics A)
   where
     γ : ((T , cs) : sequence-of-clofun-types 𝓤)
-      → ((n : ℕ) (α : T n) → cs n (α , α) ≡ ∞)
+      → ((n : ℕ) (α : T n) → cs n (α , α) ＝ ∞)
       → (A : Π T) → Π-clofun' (T , cs) (A , A) ∼ (λ _ → ₁)
     γ (T , cs) eics A 0 = ap (λ - → pr₁ - 0) (eics 0 (A 0))
     γ (T , cs) eics A (succ i)
-     = Lemma[a≡₁→b≡₁→min𝟚ab≡₁]
+     = Lemma[a＝₁→b＝₁→min𝟚ab＝₁]
          (ap (λ - → pr₁ - (succ i)) (eics 0 (A 0)))
          (γ (T ∘ succ , cs ∘ succ) (eics ∘ succ) (A ∘ succ) i)
 
  Π-clofun'-all : ((T , cs) : sequence-of-clofun-types 𝓤)
                → ((A , B) : Π T × Π T)
-               → Π-clofun (T , cs) (A , B) ≡ ∞
-               → (n : ℕ) → cs n (A n , B n) ≡ ∞
- Π-clofun'-all (T , cs) (A , B) cAB≡∞ n
+               → Π-clofun (T , cs) (A , B) ＝ ∞
+               → (n : ℕ) → cs n (A n , B n) ＝ ∞
+ Π-clofun'-all (T , cs) (A , B) cAB＝∞ n
   = ℕ∞-equals (γ (T , cs) (A , B)
-      (λ i → ap (λ - → pr₁ - i) cAB≡∞) n)
+      (λ i → ap (λ - → pr₁ - i) cAB＝∞) n)
   where
    γ : ((T , cs) : sequence-of-clofun-types 𝓤)
      → ((A , B) : Π T × Π T)
@@ -285,24 +285,24 @@ module hidden-module where
    γ (T , cs) (A , B) cAB∼∞ 0    0
     = cAB∼∞ 0
    γ (T , cs) (A , B) cAB∼∞ 0    (succ i)
-    = Lemma[min𝟚ab≡₁→a≡₁] (cAB∼∞ (succ i))
+    = Lemma[min𝟚ab＝₁→a＝₁] (cAB∼∞ (succ i))
    γ (T , cs) (A , B) cAB∼∞ (succ n)
     = γ (T ∘ succ , cs ∘ succ) (A ∘ succ , B ∘ succ)
-        (λ i → Lemma[min𝟚ab≡₁→b≡₁] (cAB∼∞ (succ i)))
+        (λ i → Lemma[min𝟚ab＝₁→b＝₁] (cAB∼∞ (succ i)))
         n
 
  Π-clofun'-ice : ((T , cs) : sequence-of-clofun-types 𝓤)
-               → ((n : ℕ) ((α , β) : T n × T n) → cs n (α , β) ≡ ∞ → α ≡ β)
+               → ((n : ℕ) ((α , β) : T n × T n) → cs n (α , β) ＝ ∞ → α ＝ β)
                → ((A , B) : Π T × Π T)
-               → Π-clofun (T , cs) (A , B) ≡ ∞
-               → A ≡ B
+               → Π-clofun (T , cs) (A , B) ＝ ∞
+               → A ＝ B
  Π-clofun'-ice (T , cs) ices (A , B) cAB∼∞
   = fe (λ i → ices i (A i , B i) (Π-clofun'-all (T , cs) (A , B) cAB∼∞ i))
 
  Π-clofun'-sym : ((T , cs) : sequence-of-clofun-types 𝓤)
-               → ((n : ℕ) ((α , β) : T n × T n) → cs n (α , β) ≡ cs n (β , α))
+               → ((n : ℕ) ((α , β) : T n × T n) → cs n (α , β) ＝ cs n (β , α))
                → ((A , B) : Π T × Π T)
-               → Π-clofun (T , cs) (A , B) ≡ Π-clofun (T , cs) (B , A)
+               → Π-clofun (T , cs) (A , B) ＝ Π-clofun (T , cs) (B , A)
  Π-clofun'-sym (T , cs) syms (A , B)
   = ℕ∞-equals (γ (T , cs)
       (λ n (α , β) i → ap (λ - → pr₁ - i) (syms n (α , β))) (A , B))
@@ -318,15 +318,15 @@ module hidden-module where
     ∙ ap (λ - → min𝟚 (pr₁ (cs 0 (B 0 , A 0)) (succ i)) -)
         (γ (T ∘ succ , cs ∘ succ) (syms ∘ succ) (A ∘ succ , B ∘ succ) i)
 
- Lemma[min𝟚abcd≡₁→min𝟚ac≡₁] : {a b c d : 𝟚}
-                            → min𝟚 (min𝟚 a b) (min𝟚 c d) ≡ ₁
-                            → min𝟚 a c ≡ ₁
- Lemma[min𝟚abcd≡₁→min𝟚ac≡₁] {₁} {₁} {₁} {₁} e = refl
+ Lemma[min𝟚abcd＝₁→min𝟚ac＝₁] : {a b c d : 𝟚}
+                            → min𝟚 (min𝟚 a b) (min𝟚 c d) ＝ ₁
+                            → min𝟚 a c ＝ ₁
+ Lemma[min𝟚abcd＝₁→min𝟚ac＝₁] {₁} {₁} {₁} {₁} e = refl
  
- Lemma[min𝟚abcd≡₁→min𝟚bd≡₁] : {a b c d : 𝟚}
-                            → min𝟚 (min𝟚 a b) (min𝟚 c d) ≡ ₁
-                            → min𝟚 b d ≡ ₁
- Lemma[min𝟚abcd≡₁→min𝟚bd≡₁] {₁} {₁} {₁} {₁} e = refl
+ Lemma[min𝟚abcd＝₁→min𝟚bd＝₁] : {a b c d : 𝟚}
+                            → min𝟚 (min𝟚 a b) (min𝟚 c d) ＝ ₁
+                            → min𝟚 b d ＝ ₁
+ Lemma[min𝟚abcd＝₁→min𝟚bd＝₁] {₁} {₁} {₁} {₁} e = refl
 
  Π-clofun'-ult : ((T , cs) : sequence-of-clofun-types 𝓤)
                → ((n : ℕ) ((α , β , ζ) : T n × T n × T n)
@@ -337,9 +337,9 @@ module hidden-module where
  Π-clofun'-ult (T , cs) ults (A , B , C) 0        r
   = ults 0 (A 0 , B 0 , C 0) 0 r
  Π-clofun'-ult (T , cs) ults (A , B , C) (succ n) r
-  = Lemma[a≡₁→b≡₁→min𝟚ab≡₁]
+  = Lemma[a＝₁→b＝₁→min𝟚ab＝₁]
       (ults 0 (A 0 , B 0 , C 0) (succ n)
-      (Lemma[min𝟚abcd≡₁→min𝟚ac≡₁]
+      (Lemma[min𝟚abcd＝₁→min𝟚ac＝₁]
          {pr₁ (cs 0 (A 0 , B 0)) (succ n)}
          {Π-clofun' (T ∘ succ , cs ∘ succ) (A ∘ succ , B ∘ succ) n}
          {pr₁ (cs 0 (B 0 , C 0)) (succ n)}
@@ -347,7 +347,7 @@ module hidden-module where
       r))
       (Π-clofun'-ult (T ∘ succ , cs ∘ succ) (ults ∘ succ)
          (A ∘ succ , B ∘ succ , C ∘ succ) n
-      ((Lemma[min𝟚abcd≡₁→min𝟚bd≡₁] 
+      ((Lemma[min𝟚abcd＝₁→min𝟚bd＝₁] 
          {pr₁ (cs 0 (A 0 , B 0)) (succ n)}
          {Π-clofun' (T ∘ succ , cs ∘ succ) (A ∘ succ , B ∘ succ) n}
          {pr₁ (cs 0 (B 0 , C 0)) (succ n)}
@@ -406,7 +406,7 @@ build-up : ((T , cs) : sequence-of-clofun-types 𝓤)
 build-up (T , cs) x y xs ys δ δ≼cxy δ≼cxsys 0 refl
  = δ≼cxy 0 refl
 build-up (T , cs) x y xs ys δ δ≼cxy δ≼cxsys (succ n) r
- = Lemma[a≡₁→b≡₁→min𝟚ab≡₁] (δ≼cxy (succ n) r) (δ≼cxsys n r)
+ = Lemma[a＝₁→b＝₁→min𝟚ab＝₁] (δ≼cxy (succ n) r) (δ≼cxsys n r)
 ```
 
 We also use the following two transports repeatedly, and so
@@ -761,11 +761,11 @@ Therefore, the searcher for `𝟚` is agreeable.
 𝟚-is-c-searchable'-agree-eq : ((p₁ , d₁) (p₂ , d₂) : d-predicate 𝟚)
                             → agree-everywhere (p₁ , d₁) (p₂ , d₂)
                             → pr₁ (𝟚-is-c-searchable' p₁ (d₁ ₁))
-                            ≡ pr₁ (𝟚-is-c-searchable' p₂ (d₂ ₁))
+                            ＝ pr₁ (𝟚-is-c-searchable' p₂ (d₂ ₁))
 𝟚-is-c-searchable'-agree-eq (p₁ , d₁) (p₂ , d₂) (f , g) = γ (d₁ ₁) (d₂ ₁)
  where
    γ : (d₁₁ : decidable (p₁ ₁)) (d₂₁ : decidable (p₂ ₁))
-     → pr₁ (𝟚-is-c-searchable' p₁ d₁₁) ≡ pr₁ (𝟚-is-c-searchable' p₂ d₂₁)
+     → pr₁ (𝟚-is-c-searchable' p₁ d₁₁) ＝ pr₁ (𝟚-is-c-searchable' p₂ d₂₁)
    γ (inl  _ ) (inl  _ ) = refl
    γ (inr  _ ) (inr  _ ) = refl
    γ (inl  p₁) (inr ¬p₁) = 𝟘-elim (¬p₁ (f ₁ p₁))

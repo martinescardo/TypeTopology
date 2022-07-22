@@ -2,24 +2,24 @@
 {-# OPTIONS --without-K --exact-split --allow-unsolved-metas #-}
 
 
-open import SpartanMLTT
-open import UF-FunExt
-open import UF-Subsingletons
+open import MLTT.Spartan
+open import UF.FunExt
+open import UF.Subsingletons
 
 module Todd.SearchableTypes (fe : FunExt) (pe : PropExt) where
 
-open import Two-Properties hiding (zero-is-not-one)
-open import NaturalsOrder
-open import NaturalsAddition renaming (_+_ to _+ℕ_)
-open import IntegersB
-open import IntegersOrder
-open import IntegersAddition renaming (_+_ to _+ℤ_)
-open import IntegersNegation renaming (-_  to  −ℤ_)
-open import UF-Subsingletons
-open import NaturalsOrder
-open import DecidableAndDetachable
-open import UF-Equiv
-open import UF-Subsingletons-FunExt
+open import MLTT.Two-Properties hiding (zero-is-not-one)
+open import Naturals.Order
+open import Naturals.Addition renaming (_+_ to _+ℕ_)
+open import DedekindReals.IntegersB
+open import DedekindReals.IntegersOrder
+open import DedekindReals.IntegersAddition renaming (_+_ to _+ℤ_)
+open import DedekindReals.IntegersNegation renaming (-_  to  −ℤ_)
+open import UF.Subsingletons
+open import Naturals.Order
+open import NotionsOfDecidability.DecidableAndDetachable
+open import UF.Equiv
+open import UF.Subsingletons-FunExt
 open import Todd.TernaryBoehmRealsPrelude fe
 open import Todd.InfiniteSearch1 (dfunext (fe _ _))
   hiding (predicate;everywhere-decidable;decidable;trivial-predicate)
@@ -117,7 +117,7 @@ Trivially, identity informs every predicate.
 
 ```agda
 Identity : (X : 𝓤 ̇ ) → equivalence-relation {𝓤} {𝓤} X
-_≣_     (Identity X)       = _≡_
+_≣_     (Identity X)       = _＝_
 ≣-refl  (Identity X) x     = refl
 ≣-sym   (Identity X) x y   = _⁻¹
 ≣-trans (Identity X) x y z = _∙_
@@ -129,7 +129,7 @@ Id-informs-everything p x x refl = id
 ```
 
 Therefore, decidable predicates on X are equivalent to decidable
-predicates on X informed by identity; the quotienting by _≡_ does not
+predicates on X informed by identity; the quotienting by _＝_ does not
 remove any decidable predicates.
 
 ```agda
@@ -163,8 +163,8 @@ to-subtype-≃' : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {B : X → 𝓥' ̇ }
               → Σ A ≃ Σ B
 to-subtype-≃' f' g' i j
  = f
- , (g , (λ (x , Bx) → to-subtype-≡ j refl))
- , (g , (λ (x , Ax) → to-subtype-≡ i refl))
+ , (g , (λ (x , Bx) → to-subtype-＝ j refl))
+ , (g , (λ (x , Ax) → to-subtype-＝ i refl))
  where
    f = λ (x , Ax) → x , (f' x Ax)
    g = λ (x , Bx) → x , (g' x Bx)
@@ -215,10 +215,10 @@ trivial-not-empty : {𝓦 𝓤 : Universe} {X : 𝓤 ̇ }
                   → nonempty X
                   → trivial-predicate {𝓦} X
                   ≢   empty-predicate {𝓦} X
-trivial-not-empty {𝓦} {𝓤} {X} x t≡e = ¬px ⋆
+trivial-not-empty {𝓦} {𝓤} {X} x t＝e = ¬px ⋆
  where
    ¬px : ¬ pr₁ (trivial-predicate {𝓦} X) x
-   ¬px = transport (λ - → ¬ (pr₁ -) x) (t≡e ⁻¹) λ ()
+   ¬px = transport (λ - → ¬ (pr₁ -) x) (t＝e ⁻¹) λ ()
 ```
 
 In fact, these are the *only* predicates informed by the trivial
@@ -230,7 +230,7 @@ use-propext : {𝓦 𝓤 : Universe} {X : 𝓤 ̇ }
             → everywhere-prop-valued p
             → everywhere-prop-valued p'
             → ((x : X) → p x ⇔ p' x)
-            → p ≡ p'
+            → p ＝ p'
 use-propext {𝓦} p p' i i' γ
  = dfunext (fe _ _) (λ x → pe 𝓦 (i x) (i' x) (pr₁ (γ x)) (pr₂ (γ x)))
 
@@ -257,13 +257,13 @@ everywhere-prop-valued-is-prop : {𝓦 𝓤 : Universe} {X : 𝓤 ̇ }
 everywhere-prop-valued-is-prop p i
  = Π-is-prop (fe _ _) (λ x → is-prop-is-prop (i x))
 
-decidable-predicate-≡
+decidable-predicate-＝
  : {𝓦 𝓤 : Universe} {X : 𝓤 ̇ }
  → ((p , d , i) (p' , d' , i') : decidable-predicate {𝓦} X)
  → ((x : X) → p x ⇔ p' x)
- → (p , d , i) ≡ (p' , d' , i')
-decidable-predicate-≡ (p , d , i) (p' , d' , i') γ
- = to-subtype-≡
+ → (p , d , i) ＝ (p' , d' , i')
+decidable-predicate-＝ (p , d , i) (p' , d' , i') γ
+ = to-subtype-＝
      (λ p (pd , pi) (pd' , pi')
       → ×-is-prop
           (everywhere-decidable-is-prop p pi)
@@ -276,9 +276,9 @@ Any predicate on 𝟘 is empty.
 
 ```agda
 predicate-on-𝟘-is-empty : (p : decidable-predicate {𝓦} (𝟘 {𝓤}))
-                        → p ≡ empty-predicate {𝓦} (𝟘 {𝓤})
+                        → p ＝ empty-predicate {𝓦} (𝟘 {𝓤})
 predicate-on-𝟘-is-empty (p , d , i)
- = decidable-predicate-≡ (p , d , i) (empty-predicate 𝟘) (λ ())
+ = decidable-predicate-＝ (p , d , i) (empty-predicate 𝟘) (λ ())
 
 constant-predicate : {𝓦 𝓤 : Universe} (X : 𝓤 ̇ ) → (𝓦 ⁺) ⊔ 𝓤 ̇
 constant-predicate {𝓦} {𝓤} X
@@ -289,14 +289,14 @@ constant-predicates-are-trivial-or-empty
  : {𝓦 𝓥 𝓤 : Universe} {X : 𝓤 ̇ }
  → ((p , _) : constant-predicate {𝓦} X)
  → (x : X)
- → (p ≡ trivial-predicate {𝓦} X) + (p ≡ empty-predicate {𝓦} X)
+ → (p ＝ trivial-predicate {𝓦} X) + (p ＝ empty-predicate {𝓦} X)
 constant-predicates-are-trivial-or-empty {𝓦} {𝓥} {𝓤} {X}
  ((p , d , i) , (inl f)) x
- = inl (decidable-predicate-≡ (p , d , i) (trivial-predicate X)
+ = inl (decidable-predicate-＝ (p , d , i) (trivial-predicate X)
          (λ x → (λ _ → ⋆) , (λ _ → f x)))
 constant-predicates-are-trivial-or-empty {𝓦} {𝓥} {𝓤} {X}
  ((p , d , i) , (inr g)) x
- = inr (decidable-predicate-≡ (p , d , i) (empty-predicate   X)
+ = inr (decidable-predicate-＝ (p , d , i) (empty-predicate   X)
          (λ x → 𝟘-elim ∘ g x , λ ()))
          
 trivial-no-info
@@ -334,16 +334,16 @@ First, recall our definition of closeness functions.
 record closeness-function (X : 𝓤 ̇ ) : 𝓤 ̇ where
   field
     c : X × X → ℕ∞ 
-    eic : (x     : X) → c (x , x) ≡ ∞
-    ice : (x y   : X) → c (x , y) ≡ ∞ → x ≡ y
-    sym : (x y   : X) → c (x , y) ≡ c (y , x)
+    eic : (x     : X) → c (x , x) ＝ ∞
+    ice : (x y   : X) → c (x , y) ＝ ∞ → x ＝ y
+    sym : (x y   : X) → c (x , y) ＝ c (y , x)
     ult : (x y z : X) → min (c (x , y)) (c (y , z)) ≼ c (x , z)
 
 open closeness-function
 open is-clofun
 
 ≼-min : ∀ x y z → x ≼ y → x ≼ z → x ≼ min y z
-≼-min x y z x≼y x≼z n r = Lemma[a≡₁→b≡₁→min𝟚ab≡₁] (x≼y n r) (x≼z n r)
+≼-min x y z x≼y x≼z n r = Lemma[a＝₁→b＝₁→min𝟚ab＝₁] (x≼y n r) (x≼z n r)
 
 ≼-trans : ∀ x y z → x ≼ y → y ≼ z → x ≼ z
 ≼-trans x y z p q n = q n ∘ p n
@@ -382,12 +382,12 @@ min-preserves-min' : (a b : ℕ)
                    → pr₁ (minℕ a b ↑) ∼ pr₁ (min (a ↑) (b ↑))
 min-preserves-min' 0        0        _ = refl
 min-preserves-min' 0        (succ b) _ = refl
-min-preserves-min' (succ a) 0        _ = Lemma[min𝟚ab≡₀] (inr refl) ⁻¹
+min-preserves-min' (succ a) 0        _ = Lemma[min𝟚ab＝₀] (inr refl) ⁻¹
 min-preserves-min' (succ a) (succ b) 0 = refl
 min-preserves-min' (succ a) (succ b) (succ i)
  = min-preserves-min' a b i
 
-min-preserves-min : (a b : ℕ) → minℕ a b ↑ ≡ min (a ↑) (b ↑)
+min-preserves-min : (a b : ℕ) → minℕ a b ↑ ＝ min (a ↑) (b ↑)
 min-preserves-min a b = ℕ∞-equals (min-preserves-min' a b)
 
 -- not sure about this. maybe we shouldnt have the sigma type in there
@@ -490,9 +490,9 @@ ult (d-closeness ds) = ultrametric     (discrete-is-clofun ds)
 1-close-informs-discrete ds (p , _) x y 1≼cxy
  = transport p (γ (ds x y) 1≼cxy)
  where
-   γ : (q : decidable (x ≡ y)) → (1 ↑) ≼ discrete-c' (x , y) q → x ≡ y
-   γ (inl  x≡y) _ = x≡y
-   γ (inr ¬x≡y) r = 𝟘-elim (zero-is-not-one (r 0 refl))
+   γ : (q : decidable (x ＝ y)) → (1 ↑) ≼ discrete-c' (x , y) q → x ＝ y
+   γ (inl  x＝y) _ = x＝y
+   γ (inr ¬x＝y) r = 𝟘-elim (zero-is-not-one (r 0 refl))
 
 succ-close-informs-discrete
  : {𝓦 𝓤 : Universe} {X : 𝓤 ̇ }
@@ -603,11 +603,11 @@ _≣_     (+-equivalence-relation A B) (inr x) (inr y)         = x ≣⟨ B ⟩ 
 ≣-trans (+-equivalence-relation A B) (inl x) (inl y) (inl z) = ≣-trans A x y z
 ≣-trans (+-equivalence-relation A B) (inr x) (inr y) (inr z) = ≣-trans B x y z
 
-+-equivalence-relation-≡-id
++-equivalence-relation-＝-id
  : {X Y : 𝓤 ̇ }
  → +-equivalence-relation (Identity X) (Identity Y)
- ≡ Identity (X + Y)
-+-equivalence-relation-≡-id
+ ＝ Identity (X + Y)
++-equivalence-relation-＝-id
   = {!refl!}
 
 +-is-searchable : {𝓦 𝓥 𝓤 𝓤' : Universe} {X : 𝓤 ̇ } {Y : 𝓤' ̇ }
@@ -638,7 +638,7 @@ Fin-is-searchable : {𝓦 𝓤 : Universe}
 Fin-is-searchable  {𝓦} {𝓤} 1               _
  = 𝟙-is-searchable {𝓦} {𝓤}
 Fin-is-searchable  {𝓦} {𝓤} (succ (succ n)) _
- = transport Searchable (+-equivalence-relation-≡-id {𝓤})
+ = transport Searchable (+-equivalence-relation-＝-id {𝓤})
      (+-is-searchable (Identity (Fin (succ n))) (Identity 𝟙)
        (Fin-is-searchable (succ n) (Fin-nonempty n))
        (𝟙-is-searchable {𝓦} {𝓤}))
@@ -896,7 +896,7 @@ convert-searchable {𝓦} A B FG 𝓔y pdiϕ
 
 ```agda
 _≈_ : {X : ℕ → 𝓤 ̇ } → ((n : ℕ) → X n) → ((n : ℕ) → X n) → ℕ → 𝓤 ̇
-(α ≈ β) n = (i : ℕ) → i <ℕ n → α i ≡ β i
+(α ≈ β) n = (i : ℕ) → i <ℕ n → α i ＝ β i
 
 sequence-relation-≈' : (X : ℕ → 𝓤 ̇ ) → (δ : ℕ)
                      → equivalence-relation {𝓤} ((n : ℕ) → X n)
@@ -937,10 +937,10 @@ trans-A (split-ℕ→ δ) α (succ i) _ = refl
 trans-B (split-ℕ→ δ) (hα , tα)    = refl , (λ i _ → refl)
 lift-AB (split-ℕ→ δ) α β α≈β
  = α≈β 0 ⋆ , λ i → α≈β (succ i)
-lift-BA (split-ℕ→ δ) (hα , tα) (hβ , tβ) (hα≡hβ , tα≡tβ) 0 _
- = hα≡hβ
-lift-BA (split-ℕ→ δ) (hα , tα) (hβ , tβ) (hα≡hβ , tα≡tβ) (succ i)
- = tα≡tβ i
+lift-BA (split-ℕ→ δ) (hα , tα) (hβ , tβ) (hα＝hβ , tα＝tβ) 0 _
+ = hα＝hβ
+lift-BA (split-ℕ→ δ) (hα , tα) (hβ , tβ) (hα＝hβ , tα＝tβ) (succ i)
+ = tα＝tβ i
 
 ℕ→D-Searchable : {𝓦 𝓤 : Universe} {X : ℕ → 𝓤 ̇ }
                → ((n : ℕ) → Escardó-Searchable {𝓦} (X n))
@@ -968,12 +968,12 @@ lift-BA (split-ℕ→ δ) (hα , tα) (hβ , tβ) (hα≡hβ , tα≡tβ) (succ 
              (sequence-relation-≈' (X ∘ succ) δ)
              (Identity (X 0)) p))))
 
-ℤ[_,_]-searchable : (l u : ℤ) → (n : ℕ) → l +pos n ≡ u
+ℤ[_,_]-searchable : (l u : ℤ) → (n : ℕ) → l +pos n ＝ u
                   → Searchable {𝓦} (Identity ℤ[ l , u ])
 ℤ[ l , l ]-searchable 0 refl ((p , d , i) , ϕ)
  = ((l , ℤ≤-refl l , ℤ≤-refl l) , 0)
  , λ ((z , l≤z≤u) , pz)
-   → transport p (to-subtype-≡ ≤ℤ²-is-prop ((≤ℤ-antisym l z l≤z≤u) ⁻¹)) pz
+   → transport p (to-subtype-＝ ≤ℤ²-is-prop ((≤ℤ-antisym l z l≤z≤u) ⁻¹)) pz
 ℤ[ l , .(succℤ (l +pos n)) ]-searchable (succ n) refl ((p , d , i) , ϕ)
  = Cases (d u*)
      (λ  pu → (u* , 1) , (λ _ → pu))
@@ -982,16 +982,16 @@ lift-BA (split-ℕ→ δ) (hα , tα) (hβ , tβ) (hα≡hβ , tα≡tβ) (succ 
               → Cases (ℤ≤-split z u z≤u)
                 (λ z<u → sol ((z , l≤z
                        , transport (z ≤ℤ_) (predsuccℤ _) (≤ℤ-back z u z<u))
-                       , (transport p (to-subtype-≡ ≤ℤ²-is-prop refl) pz)))
-                (λ z≡u → 𝟘-elim (¬pu
-                         (transport p (to-subtype-≡ ≤ℤ²-is-prop z≡u) pz))))
+                       , (transport p (to-subtype-＝ ≤ℤ²-is-prop refl) pz)))
+                (λ z＝u → 𝟘-elim (¬pu
+                         (transport p (to-subtype-＝ ≤ℤ²-is-prop z＝u) pz))))
  where
    u = succℤ (l +pos n)
    u* = u , (succ n , refl) , ℤ≤-refl u
    ι : ℤ[ l , l +pos n ] → ℤ[ l , u ]
    ι = ℤ[ l , l +pos n ]-succ
    IH = ℤ[ l , l +pos n ]-searchable n refl
-          ((p ∘ ι , d ∘ ι , i ∘ ι) , λ x y x≡y → ϕ (ι x) (ι y) (ap ι x≡y))
+          ((p ∘ ι , d ∘ ι , i ∘ ι) , λ x y x＝y → ϕ (ι x) (ι y) (ap ι x＝y))
    ans = ι (pr₁ (pr₁ IH))
    k = pr₂ (pr₁ IH)
    sol = pr₂ IH

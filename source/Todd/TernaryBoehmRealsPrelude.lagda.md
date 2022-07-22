@@ -1,27 +1,27 @@
 ```agda
 {-# OPTIONS --without-K --exact-split #-}
 
-open import UF-FunExt
-open import SpartanMLTT
+open import UF.FunExt
+open import MLTT.Spartan
 
 module Todd.TernaryBoehmRealsPrelude (fe : FunExt) where
 
-open import Two-Properties hiding (zero-is-not-one)
-open import NaturalsOrder
-open import NaturalsAddition renaming (_+_ to _+ℕ_)
-open import IntegersB
-open import IntegersOrder
-open import IntegersAddition renaming (_+_ to _+ℤ_)
-open import IntegersNegation renaming (-_  to  −ℤ_)
-open import UF-Subsingletons
-open import NaturalsOrder
-open import DecidableAndDetachable
-open import OrderNotation
+open import MLTT.Two-Properties hiding (zero-is-not-one)
+open import Naturals.Order
+open import Naturals.Addition renaming (_+_ to _+ℕ_)
+open import DedekindReals.IntegersB
+open import DedekindReals.IntegersOrder
+open import DedekindReals.IntegersAddition renaming (_+_ to _+ℤ_)
+open import DedekindReals.IntegersNegation renaming (-_  to  −ℤ_)
+open import UF.Subsingletons
+open import Naturals.Order
+open import NotionsOfDecidability.DecidableAndDetachable
+open import Notation.Order
 
-succ-lc : (x y : ℕ) → succ x ≡ succ y → x ≡ y
+succ-lc : (x y : ℕ) → succ x ＝ succ y → x ＝ y
 succ-lc x x refl = refl
 
-ℕ-is-discrete : (x y : ℕ) → decidable (x ≡ y)
+ℕ-is-discrete : (x y : ℕ) → decidable (x ＝ y)
 ℕ-is-discrete zero zero = inl refl
 ℕ-is-discrete zero (succ y) = inr (λ ())
 ℕ-is-discrete (succ x) zero = inr (λ ())
@@ -29,24 +29,6 @@ succ-lc x x refl = refl
  = Cases (ℕ-is-discrete x y)
      (inl ∘ ap succ)
      (inr ∘ λ f g → f (succ-lc x y g))
-
-pos-lc : (x y : ℕ) → pos x ≡ pos y → x ≡ y
-pos-lc x x refl = refl
-
-negsucc-lc : (x y : ℕ) → negsucc x ≡ negsucc y → x ≡ y
-negsucc-lc x x refl = refl
-
-ℤ-is-discrete : (x y : ℤ) → decidable (x ≡ y)
-ℤ-is-discrete (pos     x) (pos     y)
- = Cases (ℕ-is-discrete x y)
-     (inl ∘ ap pos)
-     (inr ∘ (λ f g → f (pos-lc x y g)))
-ℤ-is-discrete (negsucc x) (negsucc y)
- = Cases (ℕ-is-discrete x y)
-     (inl ∘ ap negsucc)
-     (inr ∘ (λ f g → f (negsucc-lc x y g)))
-ℤ-is-discrete (pos     _) (negsucc _) = inr (λ ())
-ℤ-is-discrete (negsucc _) (pos     _) = inr (λ ())
 
 _≤ℤ_≤ℤ_ : ℤ → ℤ → ℤ → 𝓤₀ ̇ 
 x ≤ℤ y ≤ℤ z = (x ≤ℤ y) × (y ≤ℤ z)
@@ -135,12 +117,12 @@ x −ℤ y = x +ℤ (−ℤ y)
 ℤ[_,_]-succ : (l u : ℤ) → ℤ[ l , u ] → ℤ[ l , succℤ u ]
 ℤ[ l , u ]-succ (z , l≤z , z≤u) = z , l≤z , ℤ≤-trans z u (succℤ u) z≤u (1 , refl) 
 
-≤ℤ-antisym : ∀ x y → x ≤ℤ y ≤ℤ x → x ≡ y
+≤ℤ-antisym : ∀ x y → x ≤ℤ y ≤ℤ x → x ＝ y
 ≤ℤ-antisym x y (x≤y , y≤x) with ℤ≤-split x y x≤y | ℤ≤-split y x y≤x
 ... | inl (n , γ) | inl (m , δ)
  = 𝟘-elim (ℤ-equal-not-less-than x (ℤ<-trans x y x (n , γ) (m , δ)))
-... | inl  _  | inr y≡x = y≡x ⁻¹
-... | inr x≡y | _       = x≡y
+... | inl  _  | inr y＝x = y＝x ⁻¹
+... | inr x＝y | _       = x＝y
 
 ≤ℤ-back : ∀ x y → x <ℤ y → x ≤ℤ predℤ y
 ≤ℤ-back x .(succℤ x +ℤ pos n) (n , refl)
@@ -159,16 +141,16 @@ x −ℤ y = x +ℤ (−ℤ y)
 ℤ-dich-succ x y (inr (m , refl)) = inr (succ m , refl)
 
 ℤ-trich-succ : (x y : ℤ) 
-             → ((      x <ℤ y) + (      x ≡ y) + (y <ℤ       x))
-             → ((succℤ x <ℤ y) + (succℤ x ≡ y) + (y <ℤ succℤ x))
-ℤ-trich-succ x y (inl (0           , sn+j≡i))
- = (inr ∘ inl) sn+j≡i
-ℤ-trich-succ x y (inl (succ j      , sn+j≡i))
- = inl (j , (ℤ-left-succ-pos (succℤ x) j ∙ sn+j≡i))
-ℤ-trich-succ x y (inr (inl              n≡i))
- = (inr ∘ inr) (0 , ap succℤ (n≡i ⁻¹))
-ℤ-trich-succ x y (inr (inr (j      , sn+j≡i)))
- = (inr ∘ inr) (succ j , ap succℤ sn+j≡i)
+             → ((      x <ℤ y) + (      x ＝ y) + (y <ℤ       x))
+             → ((succℤ x <ℤ y) + (succℤ x ＝ y) + (y <ℤ succℤ x))
+ℤ-trich-succ x y (inl (0           , sn+j＝i))
+ = (inr ∘ inl) sn+j＝i
+ℤ-trich-succ x y (inl (succ j      , sn+j＝i))
+ = inl (j , (ℤ-left-succ-pos (succℤ x) j ∙ sn+j＝i))
+ℤ-trich-succ x y (inr (inl              n＝i))
+ = (inr ∘ inr) (0 , ap succℤ (n＝i ⁻¹))
+ℤ-trich-succ x y (inr (inr (j      , sn+j＝i)))
+ = (inr ∘ inr) (succ j , ap succℤ sn+j＝i)
 
 ℤ-vert-trich-locate : ℤ → ℤ → ℤ → 𝓤₀ ̇
 ℤ-vert-trich-locate z a b = (z <ℤ a) + (a ≤ℤ z ≤ℤ b) + (b <ℤ z)
@@ -202,17 +184,17 @@ x −ℤ y = x +ℤ (−ℤ y)
 
 ne : (a b c : ℤ)
    → ((n , _) : a ≤ c) → ((n₁ , _) : a ≤ b) → ((n₂ , _) : b ≤ c)
-   → n₁ +ℕ n₂ ≡ n
+   → n₁ +ℕ n₂ ＝ n
 ne a b c a≤c a≤b b≤c = ℤ≤-same-witness a c (ℤ≤-trans a b c a≤b b≤c) a≤c
 
 ye : (a b c : ℤ) → ((n , _) : a ≤ c) → a ≤ b → ((n₂ , _) : b ≤ c) → n₂ <ℕ succ n
 ye a b c (n , q) (n₁ , r) (n₂ , s)
  = transport (n₂ ≤ℕ_) (ne a b c (n , q) (n₁ , r) (n₂ , s)) (≤-+' n₁ n₂)
 
-rec-f-≡ : {X : 𝓤 ̇ } → (f : X → X) (x : X) (n : ℕ)
-        → rec (f x) f n ≡ rec x f (succ n) 
-rec-f-≡ f x zero = refl
-rec-f-≡ f x (succ n) = ap f (rec-f-≡ f x n)
+rec-f-＝ : {X : 𝓤 ̇ } → (f : X → X) (x : X) (n : ℕ)
+        → rec (f x) f n ＝ rec x f (succ n) 
+rec-f-＝ f x zero = refl
+rec-f-＝ f x (succ n) = ap f (rec-f-＝ f x n)
 
 ℤ≤²-refl : (k : ℤ) → k ≤ℤ k ≤ℤ k
 ℤ≤²-refl k = ℤ≤-refl k , ℤ≤-refl k

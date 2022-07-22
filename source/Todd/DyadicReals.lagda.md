@@ -10,14 +10,14 @@ http://math.andrej.com/wp-content/uploads/2008/08/abstract-cca2008.pdf
 
 {-# OPTIONS --allow-unsolved-metas #-}
 
-open import SpartanMLTT renaming (_+_ to _∔_)
+open import MLTT.Spartan renaming (_+_ to _∔_)
 
-open import CanonicalMapNotation
-open import OrderNotation
-open import UF-FunExt
-open import UF-PropTrunc
-open import UF-Powerset
-open import UF-Subsingletons
+open import Notation.CanonicalMap
+open import Notation.Order
+open import UF.FunExt
+open import UF.PropTrunc
+open import UF.Powerset
+open import UF.Subsingletons
 
 module Todd.DyadicReals
   (pe : PropExt)
@@ -112,9 +112,9 @@ rationals.
 ```agda
 
  ℝ-d-left-cut-equal-gives-right-cut-equal : (x y : ℝ-d)
-                                          → lower-cut-of x ≡ lower-cut-of y
-                                          → upper-cut-of x ≡ upper-cut-of y
- ℝ-d-left-cut-equal-gives-right-cut-equal x y lx≡ly with ⊆-refl-consequence (lower-cut-of x) (lower-cut-of y) lx≡ly 
+                                          → lower-cut-of x ＝ lower-cut-of y
+                                          → upper-cut-of x ＝ upper-cut-of y
+ ℝ-d-left-cut-equal-gives-right-cut-equal x y lx＝ly with ⊆-refl-consequence (lower-cut-of x) (lower-cut-of y) lx＝ly 
  ... | (lx⊆ly , ly⊆lx) = subset-extensionality (pe 𝓤₀) (fe 𝓤₀ 𝓤₁) rx⊆ry {!ry⊆rx!}
   where
    rx⊆ry : upper-cut-of x ⊆ upper-cut-of y
@@ -132,7 +132,7 @@ rationals.
  ℝ-d-equality-from-left-cut : {x y : ℝ-d}
                             → lower-cut-of x ⊆ lower-cut-of y
                             → lower-cut-of y ⊆ lower-cut-of x
-                            → x ≡ y
+                            → x ＝ y
  ℝ-d-equality-from-left-cut { x } { y } Lx⊆Ly Ly⊆Lx = {!!}
 
  embedding-ℤ[1/2]-to-ℝ-d : ℤ[1/2] → ℝ-d

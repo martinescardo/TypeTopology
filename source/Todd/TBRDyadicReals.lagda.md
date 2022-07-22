@@ -5,22 +5,22 @@ Dedekind reals defined using subsets of dyadic rationals.
 
 {-# OPTIONS --allow-unsolved-metas #-}
 
-open import SpartanMLTT renaming (_+_ to _∔_)
-open import CanonicalMapNotation
-open import OrderNotation
-open import IntegersB
-open import IntegersAddition
-open import IntegersOrder
-open import IntegersMultiplication
-open import NaturalsAddition renaming (_+_ to _+ℕ_)
-open import NaturalsMultiplication renaming (_*_ to _*ℕ_)
-open import IntegersNegation
-open import UF-Base
-open import UF-FunExt
-open import UF-Powerset hiding (𝕋)
-open import UF-PropTrunc
-open import UF-Subsingletons
-open import UF-Quotient
+open import MLTT.Spartan renaming (_+_ to _∔_)
+open import Notation.CanonicalMap
+open import Notation.Order
+open import DedekindReals.IntegersB
+open import DedekindReals.IntegersAddition
+open import DedekindReals.IntegersOrder
+open import DedekindReals.IntegersMultiplication
+open import Naturals.Addition renaming (_+_ to _+ℕ_)
+open import Naturals.Multiplication renaming (_*_ to _*ℕ_)
+open import DedekindReals.IntegersNegation
+open import UF.Base
+open import UF.FunExt
+open import UF.Powerset hiding (𝕋)
+open import UF.PropTrunc
+open import UF.Subsingletons
+open import UF.Quotient
 
 module Todd.TBRDyadicReals
   (pt : propositional-truncations-exist)
@@ -255,7 +255,7 @@ that for any TBR, the embedding of the dyadic rational into the
 Dedekind reals is equivalent to the embedding of the TBR defined by
 mapping the dyadic rational to a TBR.
 
-More succintly, we prove that (x : ℤ[1/2]) → ⟦ map x ⟧ ≡ ι x. This
+More succintly, we prove that (x : ℤ[1/2]) → ⟦ map x ⟧ ＝ ι x. This
 requires numerous lemmas regarding normalise, the map, and the bounds
 on each level of a TBR.
 
@@ -267,26 +267,26 @@ layer ((_ , n) , _) = n
 map : ℤ[1/2] → 𝕋
 map ((k , δ) , _) = build-via (k , pos δ)
 
-map-lemma : (z : ℤ[1/2]) → (i : ℤ) → pos (layer z) < i → lb (map z) i ≡ z
+map-lemma : (z : ℤ[1/2]) → (i : ℤ) → pos (layer z) < i → lb (map z) i ＝ z
 map-lemma ((k , δ) , p) i δ<i with ℤ-trichotomous i (pos δ)
 ... | inl i<δ       = 𝟘-elim (ℤ-equal-not-less-than i (ℤ<-trans i (pos δ) i i<δ δ<i))
-... | inr (inl i≡δ) = 𝟘-elim (ℤ-equal-not-less-than i (transport (_< i) (i≡δ ⁻¹) δ<i))
+... | inr (inl i＝δ) = 𝟘-elim (ℤ-equal-not-less-than i (transport (_< i) (i＝δ ⁻¹) δ<i))
 ... | inr (inr (n , refl)) with even-or-odd? (downLeft k)
 ... | inr odd-2k = 𝟘-elim (times-two-even' k odd-2k)
 map-lemma ((k , δ) , p) i δ<i | inr (inr (n , refl)) | inl even-2k = normalise-lemma k δ n p
 
-map-lemma-≤ : (z : ℤ[1/2]) → (i : ℤ) → pos (layer z) ≤ i → lb (map z) i ≡ z
+map-lemma-≤ : (z : ℤ[1/2]) → (i : ℤ) → pos (layer z) ≤ i → lb (map z) i ＝ z
 map-lemma-≤ ((k , δ) , p) i δ≤i with ℤ≤-split (pos δ) i δ≤i
 ... | inl δ<i = map-lemma ((k , δ) , p) i δ<i
 ... | inr refl with ℤ-trichotomous (pos δ) (pos δ)
 ... | inl δ<δ = 𝟘-elim (ℤ-equal-not-less-than (pos δ) δ<δ)
 ... | inr (inr δ<δ) = 𝟘-elim (ℤ-equal-not-less-than (pos δ) δ<δ)
-... | inr (inl δ≡δ) = to-subtype-≡ (λ (z , n) → ℤ[1/2]-cond-is-prop z n) (ap pr₁ (lowest-terms-normalised ((k , δ) , p)))
+... | inr (inl δ＝δ) = to-subtype-＝ (λ (z , n) → ℤ[1/2]-cond-is-prop z n) (ap pr₁ (lowest-terms-normalised ((k , δ) , p)))
 
 lim₄ : (x' x : ℤ) (n : ℕ) → x' below' x → x * pos (2^ (succ n)) ≤ x' * pos (2^ n)
-lim₄ x' x n (inl x'≡2x)         = transport (λ z → x * pos (2^ (succ n)) ≤ z * pos (2^ n)) (x'≡2x ⁻¹) (lim₁ x n) 
-lim₄ x' x n (inr (inl x'≡2x+1)) = transport (λ z → x * pos (2^ (succ n)) ≤ z * pos (2^ n)) (x'≡2x+1 ⁻¹) (lim₂ x n)
-lim₄ x' x n (inr (inr x'≡2x+2)) = transport (λ z → x * pos (2^ (succ n)) ≤ z * pos (2^ n)) (x'≡2x+2 ⁻¹) (lim₃ x n)
+lim₄ x' x n (inl x'＝2x)         = transport (λ z → x * pos (2^ (succ n)) ≤ z * pos (2^ n)) (x'＝2x ⁻¹) (lim₁ x n) 
+lim₄ x' x n (inr (inl x'＝2x+1)) = transport (λ z → x * pos (2^ (succ n)) ≤ z * pos (2^ n)) (x'＝2x+1 ⁻¹) (lim₂ x n)
+lim₄ x' x n (inr (inr x'＝2x+2)) = transport (λ z → x * pos (2^ (succ n)) ≤ z * pos (2^ n)) (x'＝2x+2 ⁻¹) (lim₃ x n)
 
 left-interval-monotonic' : (t : 𝕋) → (n : ℤ) → lb t n ≤ lb t (succℤ n)
 left-interval-monotonic' (x , b) (pos n) = normalise-≤ ((x (pos n)) , n) (x (pos (succ n)) , succ n)
@@ -326,7 +326,7 @@ n+1   2b    2b+1    2b+2
 On level n+1, 2b, 2b+1 and 2b+2 are below b.
 
 But on level n, the left side of brick b represents b/2ⁿ
-On level n+1, it represents 2b/2ⁿ⁺¹ ≡ b/2ⁿ ≤ b/2ⁿ.
+On level n+1, it represents 2b/2ⁿ⁺¹ ＝ b/2ⁿ ≤ b/2ⁿ.
 
 Clearly (b / 2ⁿ) ≤ (2b /2ⁿ⁺¹) < (2b + 1 /2ⁿ⁺¹) < (2b + 2 /2ⁿ⁺¹).
 
@@ -335,10 +335,10 @@ For a precision level n+k, simply prove inductively using the above argument.
 
 ```agda
 
-left-interval-is-minimum-lemma : (x : ℤ[1/2]) → (n : ℤ) (m : ℕ) → succℤ n + pos m ≡ pos (layer x) → lb (map x) n ≤ x 
+left-interval-is-minimum-lemma : (x : ℤ[1/2]) → (n : ℤ) (m : ℕ) → succℤ n + pos m ＝ pos (layer x) → lb (map x) n ≤ x 
 left-interval-is-minimum-lemma x n 0 e = transport (lb (map x) n ≤_) I II
  where
-  I : lb (map x) (succℤ n) ≡ x
+  I : lb (map x) (succℤ n) ＝ x
   I = map-lemma-≤ x (succℤ n) (0 , (e ⁻¹))
   II : lb (map x) n ≤ lb (map x) (succℤ n)
   II = left-interval-monotonic x n
@@ -362,7 +362,7 @@ equals means proving that (z ∈ Lx ⇔ z ∈ Ly) for any z ∈ Lx ∪ Ly.
 
 ```agda
 
-encodings-agree-with-reals : (x : ℤ[1/2]) → ⟦ map x ⟧ ≡ ι x
+encodings-agree-with-reals : (x : ℤ[1/2]) → ⟦ map x ⟧ ＝ ι x
 encodings-agree-with-reals x = ℝ-d-equality-from-left-cut left right
  where
   left : (y : ℤ[1/2]) → (∃ n ꞉ ℤ , y < lb (map x) n) → y < x
@@ -405,22 +405,22 @@ If we define subtraction at (λ n → - x n), then we obtain that
   ... | l₁ , l₂ = transport (_≤ℤ predℤ (predℤ (- x (succℤ δ)))) I (ℤ≤-adding' (- succℤ (succℤ (x δ + x δ))) (- x (succℤ δ)) (negsucc 1) l₂) ,
                  (transport(predℤ (predℤ (- x (succℤ δ))) ≤ℤ_) II (ℤ≤-adding' (- x (succℤ δ)) (- (x δ + x δ)) (negsucc 1) l₁))
    where
-    I : (- ((x δ + x δ) + pos 2)) - pos 2 ≡ (- x δ) - pos 2 + ((- x δ) - pos 2)
-    I = (- (x δ + x δ + pos 2)) - pos 2         ≡⟨ ap (λ z → (- z) - pos 2) (ℤ+-assoc (x δ) (x δ) (pos 2)) ⟩
-        (- (x δ + (x δ + pos 2))) - pos 2       ≡⟨ ap (_- pos 2) (negation-dist (x δ) (x δ + pos 2) ⁻¹) ⟩
-        (- x δ) + (- (x δ + pos 2)) - pos 2     ≡⟨ ap (λ z → (- x δ) + (- z) - pos 2) (ℤ+-comm (x δ) (pos 2)) ⟩
-        (- x δ) + (- (pos 2 + x δ)) - pos 2     ≡⟨ ap (λ z → (- x δ) + z - pos 2) (negation-dist (pos 2) (x δ) ⁻¹) ⟩
-        (- x δ) + ((- pos 2) + (- x δ)) - pos 2 ≡⟨ ap (_- pos 2) (ℤ+-assoc (- x δ) (- pos 2) (- x δ) ⁻¹) ⟩
-        (- x δ) - pos 2 + (- x δ) - pos 2       ≡⟨ ℤ+-assoc ((- x δ) - pos 2) (- x δ) (- pos 2) ⟩
+    I : (- ((x δ + x δ) + pos 2)) - pos 2 ＝ (- x δ) - pos 2 + ((- x δ) - pos 2)
+    I = (- (x δ + x δ + pos 2)) - pos 2         ＝⟨ ap (λ z → (- z) - pos 2) (ℤ+-assoc (x δ) (x δ) (pos 2)) ⟩
+        (- (x δ + (x δ + pos 2))) - pos 2       ＝⟨ ap (_- pos 2) (negation-dist (x δ) (x δ + pos 2) ⁻¹) ⟩
+        (- x δ) + (- (x δ + pos 2)) - pos 2     ＝⟨ ap (λ z → (- x δ) + (- z) - pos 2) (ℤ+-comm (x δ) (pos 2)) ⟩
+        (- x δ) + (- (pos 2 + x δ)) - pos 2     ＝⟨ ap (λ z → (- x δ) + z - pos 2) (negation-dist (pos 2) (x δ) ⁻¹) ⟩
+        (- x δ) + ((- pos 2) + (- x δ)) - pos 2 ＝⟨ ap (_- pos 2) (ℤ+-assoc (- x δ) (- pos 2) (- x δ) ⁻¹) ⟩
+        (- x δ) - pos 2 + (- x δ) - pos 2       ＝⟨ ℤ+-assoc ((- x δ) - pos 2) (- x δ) (- pos 2) ⟩
         (- x δ) - pos 2 + ((- x δ) - pos 2)     ∎
-    II : (- (x δ + x δ)) - pos 2 ≡ ((- x δ) - pos 2) + ((- x δ) - pos 2) + pos 2
-    II = (- (x δ + x δ)) - pos 2                           ≡⟨ ap (_- pos 2) (negation-dist (x δ) (x δ) ⁻¹) ⟩
-         (- x δ) + (- x δ) - pos 2                         ≡⟨ ℤ+-assoc (- x δ) (- x δ) (- pos 2) ⟩
-         (- x δ) + ((- x δ) - pos 2)                       ≡⟨ ap ((- x δ) +_) (ℤ+-comm (- x δ) (- pos 2)) ⟩
-         (- x δ) + ((- pos 2) + (- x δ))                   ≡⟨ ℤ+-assoc (- (x δ)) (- pos 2) (- x δ) ⁻¹ ⟩
-         (- x δ) - pos 2 - x δ                             ≡⟨ ap (λ z → (- x δ) - pos 2 + ((- x δ) + z)) (ℤ-sum-of-inverse-is-zero' (pos 2) ⁻¹) ⟩
-         (- x δ) - pos 2 + ((- x δ) + ((- pos 2) + pos 2)) ≡⟨ ap (λ z → (- x δ) - pos 2 + z) (ℤ+-assoc (- x δ) (- pos 2) (pos 2) ⁻¹) ⟩
-         (- x δ) - pos 2 + ((- x δ) - pos 2 + pos 2)       ≡⟨ ℤ+-assoc ((- x δ) - pos 2) ((- x δ) - pos 2) (pos 2) ⁻¹ ⟩
+    II : (- (x δ + x δ)) - pos 2 ＝ ((- x δ) - pos 2) + ((- x δ) - pos 2) + pos 2
+    II = (- (x δ + x δ)) - pos 2                           ＝⟨ ap (_- pos 2) (negation-dist (x δ) (x δ) ⁻¹) ⟩
+         (- x δ) + (- x δ) - pos 2                         ＝⟨ ℤ+-assoc (- x δ) (- x δ) (- pos 2) ⟩
+         (- x δ) + ((- x δ) - pos 2)                       ＝⟨ ap ((- x δ) +_) (ℤ+-comm (- x δ) (- pos 2)) ⟩
+         (- x δ) + ((- pos 2) + (- x δ))                   ＝⟨ ℤ+-assoc (- (x δ)) (- pos 2) (- x δ) ⁻¹ ⟩
+         (- x δ) - pos 2 - x δ                             ＝⟨ ap (λ z → (- x δ) - pos 2 + ((- x δ) + z)) (ℤ-sum-of-inverse-is-zero' (pos 2) ⁻¹) ⟩
+         (- x δ) - pos 2 + ((- x δ) + ((- pos 2) + pos 2)) ＝⟨ ap (λ z → (- x δ) - pos 2 + z) (ℤ+-assoc (- x δ) (- pos 2) (pos 2) ⁻¹) ⟩
+         (- x δ) - pos 2 + ((- x δ) - pos 2 + pos 2)       ＝⟨ ℤ+-assoc ((- x δ) - pos 2) ((- x δ) - pos 2) (pos 2) ⁻¹ ⟩
          (- x δ) - pos 2 + ((- x δ) - pos 2) + pos 2       ∎
 
 open import Todd.BelowLemmas pt fe pe sq
@@ -451,8 +451,8 @@ _ℝd+_ : ℝ-d → ℝ-d → ℝ-d
 x ℝd+ y = (L , R) , {!!}
  where
   L R : 𝓟 ℤ[1/2]
-  L p = (∃ (r , s) ꞉ ℤ[1/2] × ℤ[1/2] , r ∈ lower-cut-of x × s ∈ lower-cut-of y × (p ≡ r ℤ[1/2]+ s)) , ∃-is-prop
-  R q = (∃ (r , s) ꞉ ℤ[1/2] × ℤ[1/2] , r ∈ upper-cut-of x × s ∈ upper-cut-of y × (q ≡ r ℤ[1/2]+ s)) , ∃-is-prop
+  L p = (∃ (r , s) ꞉ ℤ[1/2] × ℤ[1/2] , r ∈ lower-cut-of x × s ∈ lower-cut-of y × (p ＝ r ℤ[1/2]+ s)) , ∃-is-prop
+  R q = (∃ (r , s) ꞉ ℤ[1/2] × ℤ[1/2] , r ∈ upper-cut-of x × s ∈ upper-cut-of y × (q ＝ r ℤ[1/2]+ s)) , ∃-is-prop
 
 {-
 _ℝd*_ : ℝ-d → ℝ-d → ℝ-d
@@ -468,27 +468,27 @@ For example, in the case of negation, we want to prove that the encoding of the 
 ```agda
 
 postulate
- negation : (x k : ℤ) → ℤ[1/2]- (normalise (x , k)) ≡ normalise (- x , k) 
+ negation : (x k : ℤ) → ℤ[1/2]- (normalise (x , k)) ＝ normalise (- x , k) 
 
-bound-flip₁ : (x : 𝕋) → (k : ℤ) → ℤ[1/2]- lb (𝕋- x) k ≡ rb x k
+bound-flip₁ : (x : 𝕋) → (k : ℤ) → ℤ[1/2]- lb (𝕋- x) k ＝ rb x k
 bound-flip₁ (x , b) k = II
  where
-  I : - ((- x k) - pos 2) ≡ x k + pos 2
-  I = - ((- x k) - pos 2)         ≡⟨ negation-dist (- x k) (- pos 2) ⁻¹ ⟩
-      (- (- x k)) + (- (- pos 2)) ≡⟨ ap₂ _+_ (minus-minus-is-plus (x k)) (minus-minus-is-plus (pos 2)) ⟩
+  I : - ((- x k) - pos 2) ＝ x k + pos 2
+  I = - ((- x k) - pos 2)         ＝⟨ negation-dist (- x k) (- pos 2) ⁻¹ ⟩
+      (- (- x k)) + (- (- pos 2)) ＝⟨ ap₂ _+_ (minus-minus-is-plus (x k)) (minus-minus-is-plus (pos 2)) ⟩
       x k + pos 2 ∎
 
-  II : ℤ[1/2]- normalise ((- x k) - pos 2 , k) ≡ normalise (x k + pos 2 , k)
-  II = (ℤ[1/2]- normalise ((- x k) - pos 2 , k)) ≡⟨ negation ((- x k) - pos 2) k ⟩
-       normalise (- ((- x k) - pos 2) , k)       ≡⟨ ap (λ z → normalise (z , k)) I ⟩
+  II : ℤ[1/2]- normalise ((- x k) - pos 2 , k) ＝ normalise (x k + pos 2 , k)
+  II = (ℤ[1/2]- normalise ((- x k) - pos 2 , k)) ＝⟨ negation ((- x k) - pos 2) k ⟩
+       normalise (- ((- x k) - pos 2) , k)       ＝⟨ ap (λ z → normalise (z , k)) I ⟩
        normalise (x k + (pos 2) , k)             ∎
 
-bound-flip₂ : (x : 𝕋) → (k : ℤ) → ℤ[1/2]- rb x k ≡ lb (𝕋- x) k
-bound-flip₂ x k = (ℤ[1/2]- rb x k)                ≡⟨ ap ℤ[1/2]-_ (bound-flip₁ x k ⁻¹) ⟩
-                  (ℤ[1/2]- (ℤ[1/2]- lb (𝕋- x) k)) ≡⟨ ℤ[1/2]-negation-involutive (lb (𝕋- x) k) ⁻¹ ⟩
+bound-flip₂ : (x : 𝕋) → (k : ℤ) → ℤ[1/2]- rb x k ＝ lb (𝕋- x) k
+bound-flip₂ x k = (ℤ[1/2]- rb x k)                ＝⟨ ap ℤ[1/2]-_ (bound-flip₁ x k ⁻¹) ⟩
+                  (ℤ[1/2]- (ℤ[1/2]- lb (𝕋- x) k)) ＝⟨ ℤ[1/2]-negation-involutive (lb (𝕋- x) k) ⁻¹ ⟩
                   lb (𝕋- x) k                     ∎
 
-tbr-negation-agrees : (x : 𝕋) → ⟦ 𝕋- x ⟧ ≡ ℝd- ⟦ x ⟧
+tbr-negation-agrees : (x : 𝕋) → ⟦ 𝕋- x ⟧ ＝ ℝd- ⟦ x ⟧
 tbr-negation-agrees x = ℝ-d-equality-from-left-cut left right
  where
   left : (p : ℤ[1/2]) → ∃ k ꞉ ℤ  , p < lb (𝕋- x) k → ∃ k ꞉ ℤ , (rb x k) < (ℤ[1/2]- p)
@@ -607,9 +607,9 @@ successive-level-bounds : ((x , b) : 𝕋)
 successive-level-bounds (x , b) n 0 with b n
 ... | l₁ , l₂ = transport (_≤ x (succℤ n)) (ℤ*-comm (x n) (pos 2)) l₁ , transport (x (succℤ n) ≤_) I l₂
  where
-  I : x n * pos 2 + pos 2 ≡ predℤ (predℤ (succℤ (succℤ (succℤ (succℤ (pos 2 * x n))))))
-  I = succℤ (succℤ (x n * pos 2))   ≡⟨ (ap (_+pos 2) (ℤ*-comm (x n) (pos 2))) ⟩
-      pos 2 * x n + (pos 4 - pos 2) ≡⟨ ℤ+-assoc (pos 2 * x n) (pos 4) (- pos 2) ⁻¹ ⟩
+  I : x n * pos 2 + pos 2 ＝ predℤ (predℤ (succℤ (succℤ (succℤ (succℤ (pos 2 * x n))))))
+  I = succℤ (succℤ (x n * pos 2))   ＝⟨ (ap (_+pos 2) (ℤ*-comm (x n) (pos 2))) ⟩
+      pos 2 * x n + (pos 4 - pos 2) ＝⟨ ℤ+-assoc (pos 2 * x n) (pos 4) (- pos 2) ⁻¹ ⟩
       pos 2 * x n + pos 4 - pos 2 ∎
 successive-level-bounds (x , b) n (succ k) with successive-level-bounds (x , b) n k
 ... | l₃ , l₄ with b (succℤ (n + pos k))
@@ -622,11 +622,11 @@ successive-level-bounds (x , b) n (succ k) with successive-level-bounds (x , b) 
   l₈ : pos (2^ (succ k)) * x n * pos 2 ≤ x (succℤ (succℤ (n + pos k)))
   l₈ = ℤ≤-trans (pos (2^ (succ k)) * x n * pos 2) (x (succℤ (n + pos k)) * pos 2) (x (succℤ (succℤ (n + pos k)))) l₇ l₅
 
-  I : pos (2^ (succ k)) * x n * pos 2 ≡ pos (2^ (succ (succ k))) * x n
-  I = pos (2^ (succ k)) * x n * pos 2   ≡⟨ ℤ*-comm (pos (2^ (succ k)) * x n) (pos 2) ⟩
-      pos 2 * (pos (2^ (succ k)) * x n) ≡⟨ ℤ*-assoc (pos 2) (pos (2^ (succ k))) (x n) ⁻¹ ⟩
-      pos 2 * pos (2^ (succ k)) * x n   ≡⟨ ap (_* x n) (pos-multiplication-equiv-to-ℕ 2 (2^ (succ k))) ⟩
-      pos (2 *ℕ 2^ (succ k)) * x n      ≡⟨ refl ⟩
+  I : pos (2^ (succ k)) * x n * pos 2 ＝ pos (2^ (succ (succ k))) * x n
+  I = pos (2^ (succ k)) * x n * pos 2   ＝⟨ ℤ*-comm (pos (2^ (succ k)) * x n) (pos 2) ⟩
+      pos 2 * (pos (2^ (succ k)) * x n) ＝⟨ ℤ*-assoc (pos 2) (pos (2^ (succ k))) (x n) ⁻¹ ⟩
+      pos 2 * pos (2^ (succ k)) * x n   ＝⟨ ap (_* x n) (pos-multiplication-equiv-to-ℕ 2 (2^ (succ k))) ⟩
+      pos (2 *ℕ 2^ (succ k)) * x n      ＝⟨ refl ⟩
       pos (2^ (succ (succ k))) * x n ∎
 
   l₉ : x (succℤ (n + pos k)) * pos 2 ≤ (pos (2^ (succ k)) * x n + pos (2^ (succ (succ k))) - pos 2) * pos 2
@@ -641,13 +641,13 @@ successive-level-bounds (x , b) n (succ k) with successive-level-bounds (x , b) 
   l₁₀ : x (succℤ (succℤ (n + pos k))) ≤ (pos (2^ (succ k)) * x n + pos (2^ (succ (succ k))) - pos 2) * pos 2 + pos 2
   l₁₀ = ℤ≤-trans (x (succℤ (succℤ (n + pos k)))) (x (succℤ (n + pos k)) * pos 2 + pos 2) ((pos (2^ (succ k)) * x n + pos (2^ (succ (succ k))) - pos 2) * pos 2 + pos 2) l₆ l₉'
 
-  II : (pos (2^ (succ k)) * x n + pos (2^ (succ (succ k))) - pos 2) * pos 2 + pos 2 ≡ pos (2^ (succ (succ k))) * x n + pos (2^ (succ (succ (succ k)))) - pos 2
-  II = (pos (2^ (succ k)) * x n + pos (2^ (succ (succ k))) - pos 2) * pos 2 + pos 2  ≡⟨ ap (_+ pos 2) (distributivity-mult-over-ℤ (pos (2^ (succ k)) * x n + pos (2^ (succ (succ k)))) (- pos 2) (pos 2)) ⟩
-       (pos (2^ (succ k)) * x n + pos (2^ (succ (succ k)))) * pos 2 - pos 4 + pos 2  ≡⟨ ℤ+-assoc ((pos (2^ (succ k)) * x n + pos (2^ (succ (succ k)))) * pos 2) (- pos 4) (pos 2) ⟩
-       (pos (2^ (succ k)) * x n + pos (2^ (succ (succ k)))) * pos 2 - pos 2          ≡⟨ ap (_- pos 2) (distributivity-mult-over-ℤ (pos (2^ (succ k)) * x n) (pos (2^ (succ (succ k)))) (pos 2)) ⟩
-       pos (2^ (succ k)) * x n * pos 2 + pos (2^ (succ (succ k))) * pos 2 - pos 2    ≡⟨ ap₂ (λ a b → a + b - pos 2) (ℤ*-comm (pos (2^ (succ k)) * x n) (pos 2)) (ℤ*-comm (pos (2^ (succ (succ k)))) (pos 2)) ⟩
-       pos 2 * (pos (2^ (succ k)) * x n) + pos 2 * pos (2^ (succ (succ k))) - pos 2  ≡⟨ ap₂ (λ a b → a + b - pos 2) (ℤ*-assoc (pos 2) (pos (2^ (succ k))) (x n) ⁻¹) (pos-multiplication-equiv-to-ℕ 2 (2^ (succ (succ k)))) ⟩
-       pos 2 * pos (2^ (succ k)) * x n + pos (2^ (succ (succ (succ k)))) - pos 2     ≡⟨ ap (λ a → a * x n + pos (2^ (succ (succ (succ k)))) - pos 2) (pos-multiplication-equiv-to-ℕ 2 (2^ (succ k))) ⟩
+  II : (pos (2^ (succ k)) * x n + pos (2^ (succ (succ k))) - pos 2) * pos 2 + pos 2 ＝ pos (2^ (succ (succ k))) * x n + pos (2^ (succ (succ (succ k)))) - pos 2
+  II = (pos (2^ (succ k)) * x n + pos (2^ (succ (succ k))) - pos 2) * pos 2 + pos 2  ＝⟨ ap (_+ pos 2) (distributivity-mult-over-ℤ (pos (2^ (succ k)) * x n + pos (2^ (succ (succ k)))) (- pos 2) (pos 2)) ⟩
+       (pos (2^ (succ k)) * x n + pos (2^ (succ (succ k)))) * pos 2 - pos 4 + pos 2  ＝⟨ ℤ+-assoc ((pos (2^ (succ k)) * x n + pos (2^ (succ (succ k)))) * pos 2) (- pos 4) (pos 2) ⟩
+       (pos (2^ (succ k)) * x n + pos (2^ (succ (succ k)))) * pos 2 - pos 2          ＝⟨ ap (_- pos 2) (distributivity-mult-over-ℤ (pos (2^ (succ k)) * x n) (pos (2^ (succ (succ k)))) (pos 2)) ⟩
+       pos (2^ (succ k)) * x n * pos 2 + pos (2^ (succ (succ k))) * pos 2 - pos 2    ＝⟨ ap₂ (λ a b → a + b - pos 2) (ℤ*-comm (pos (2^ (succ k)) * x n) (pos 2)) (ℤ*-comm (pos (2^ (succ (succ k)))) (pos 2)) ⟩
+       pos 2 * (pos (2^ (succ k)) * x n) + pos 2 * pos (2^ (succ (succ k))) - pos 2  ＝⟨ ap₂ (λ a b → a + b - pos 2) (ℤ*-assoc (pos 2) (pos (2^ (succ k))) (x n) ⁻¹) (pos-multiplication-equiv-to-ℕ 2 (2^ (succ (succ k)))) ⟩
+       pos 2 * pos (2^ (succ k)) * x n + pos (2^ (succ (succ (succ k)))) - pos 2     ＝⟨ ap (λ a → a * x n + pos (2^ (succ (succ (succ k)))) - pos 2) (pos-multiplication-equiv-to-ℕ 2 (2^ (succ k))) ⟩
        pos (2^ (succ (succ k))) * x n + pos (2^ (succ (succ (succ k)))) - pos 2      ∎
 
 {-
@@ -665,8 +665,8 @@ operation-builder _⊕_ ⊕-monotic k (f , b) (g , b') = {!!} , {!!}
 
 
 
-open import IntegersAbs
-open import NaturalsOrder
+open import DedekindReals.IntegersAbs
+open import Naturals.Order
 
 power-of-two-grows : (n : ℕ) → 2^ n < 2^ (succ n)
 power-of-two-grows 0 = ⋆
@@ -682,7 +682,7 @@ find-next-2-exponent-ℕ (succ n) with find-next-2-exponent-ℕ n
 ... | inl l₂ = k , l₂
 ... | inr l₂ = (succ k) , transport (_< 2^ (succ k)) I (power-of-two-grows k) 
  where
-  I : 2^ k ≡ succ n
+  I : 2^ k ＝ succ n
   I = ≤-anti (2^ k) (succ n) l₂ l
 
 find-next-2-exponent : (z : ℤ) → Σ k ꞉ ℕ , z < pos (2^ k)
@@ -733,13 +733,13 @@ record Builder : 𝓤₁ ̇ where
   D : ℤ[1/2] × ℤ[1/2] → ℤ[1/2]
   M : ℤ × ℤ → ℤ → ℕ  
   F : ℝ-d × ℝ-d → ℝ-d             -- real function
-  ψ : (x y : ℤ[1/2]) → F (ι x , ι y) ≡ ι (D (x , y))
+  ψ : (x y : ℤ[1/2]) → F (ι x , ι y) ＝ ι (D (x , y))
  ll lr rl rr : (ℤ × ℤ) × (ℤ × ℤ) → ℤ[1/2]
  ll ((c₁ , p₁) , (c₂ , p₂)) = D ((lb-of-brick c₁ on-level p₁) , (lb-of-brick c₂ on-level p₂))
  lr ((c₁ , p₁) , (c₂ , p₂)) = D ((lb-of-brick c₁ on-level p₁) , (rb-of-brick c₂ on-level p₂))
  rl ((c₁ , p₁) , (c₂ , p₂)) = D ((rb-of-brick c₁ on-level p₁) , (lb-of-brick c₂ on-level p₂))
  rr ((c₁ , p₁) , (c₂ , p₂)) = D ((rb-of-brick c₁ on-level p₁) , (rb-of-brick c₂ on-level p₂))
- L R : (ℤ × ℤ) × (ℤ × ℤ) → ℤ × ℤ --e.g for addition L ≡ x + y, R ≡ x + y + 2     L(          )R
+ L R : (ℤ × ℤ) × (ℤ × ℤ) → ℤ × ℤ --e.g for addition L ＝ x + y, R ＝ x + y + 2     L(          )R
  L ((c₁ , p₁) , (c₂ , p₂)) = {!!} -- encode (min {f , o , i , l})
  R ((c₁ , p₁) , (c₂ , p₂)) = {!!} -- encode (max {f , o , i , l}) - 2
  -- need proof that L ≤ R
@@ -755,7 +755,7 @@ record Builder : 𝓤₁ ̇ where
    l = pr₁ lq₁
    r = pr₁ rq₂
    q₁ = pr₂ lq₁
-   q₂ = pr₂ rq₂ -- Must prove that q₁ ≡ q₂ (for every specific function)
+   q₂ = pr₂ rq₂ -- Must prove that q₁ ＝ q₂ (for every specific function)
  F* : 𝕋 × 𝕋 → 𝕋                   -- from F
  F* ((x , b) , (y , b')) = z , b''
   where
@@ -779,7 +779,7 @@ record Builder : 𝓤₁ ̇ where
    -- then ((upRight ^ (j + k)) l , q) : ℤ × ℤ covers (l , q + j) and (r , q + j)  (q + j ? q + j + k ?)
    -- where (l,r,j) ≔ E(a',b',q+k) and k ≔ M(a,b,q))
    -- and (given all our other conditions, e.g. ψ)
-   -- then F (⟦ x ⟧ , ⟦ y ⟧) ≡ ⟦ F* x y  ⟧
+   -- then F (⟦ x ⟧ , ⟦ y ⟧) ＝ ⟦ F* x y  ⟧
 
    -- ⟦ x ⟧ (p < ⟦ x ⟧ → ∃ q ꞉ ℤ , p < lb x q
    
@@ -926,7 +926,7 @@ specific level of precision.
 
 
 ```agda
-open import IntegersOrder
+open import DedekindReals.IntegersOrder
 
 --Confirm with Todd... This is sound but not complete
 _<𝕋_on-level_ : 𝕋 → 𝕋 → ℤ → 𝓤₀ ̇
@@ -959,13 +959,13 @@ conclusion : ((f , b) (g , b') : 𝕋)
            → (is-below : (((n : ℤ) → (f (succℤ n) ⊕ g (succℤ n)) below (f n ⊕ g n))))
            → (_⊕'_ : ℝ-d → ℝ-d → ℝ-d)
            → {!!}
-           → ⟦ operation-builder (f , b) (g , b') _⊕_ is-below ⟧ ≡ ⟦ (f  , b) ⟧ ⊕' ⟦ (g , b') ⟧
+           → ⟦ operation-builder (f , b) (g , b') _⊕_ is-below ⟧ ＝ ⟦ (f  , b) ⟧ ⊕' ⟦ (g , b') ⟧
 conclusion = {!!}
 
 -- Some condition (e.g monotonicity, or something else) which guarantees that we only need to consider the endpoints
 
 think : (_⊙_ : ℤ → ℤ → ℤ)
-      → Σ k ꞉ ℤ , upRight ^ {!!} ≡ {!!} 
+      → Σ k ꞉ ℤ , upRight ^ {!!} ＝ {!!} 
 think = {!!}
 
 -}
@@ -973,36 +973,36 @@ think = {!!}
 -- (a , p) covers (b , q) = (lb (a , p) ≤ lb (b , q))
 --                        × (rb (b , q) ≤ rb (a , p))
 
--- (p : ℕ) (x y : ℤ) → lb (x +ℤ y        , p) ≡ lb (x , p) +ℤ[1/2] lb (y , p)
--- (p : ℕ) (x y : ℤ) → rb (x +ℤ y +pos 2 , p) ≡ rb (x , p) +ℤ[1/2] rb (y , p)
+-- (p : ℕ) (x y : ℤ) → lb (x +ℤ y        , p) ＝ lb (x , p) +ℤ[1/2] lb (y , p)
+-- (p : ℕ) (x y : ℤ) → rb (x +ℤ y +pos 2 , p) ＝ rb (x , p) +ℤ[1/2] rb (y , p)
 
 --            (f : ℤ → ℤ → ℤ) (f' : ℤ[1/2] → ℤ[1/2] → ℤ[1/2])
---         → ((p : ℕ) → (a b : ℤ)           → lb (f a b        , p) ≡ f' (lb (a , p)) (lb (b , p)))
---         → ((p : ℕ) → (a b : ℤ) → Σ k ꞉ ℕ , rb (f a b +pos k , p) ≡ f' (rb (a , p)) (rb (b , p)))
+--         → ((p : ℕ) → (a b : ℤ)           → lb (f a b        , p) ＝ f' (lb (a , p)) (lb (b , p)))
+--         → ((p : ℕ) → (a b : ℤ) → Σ k ꞉ ℕ , rb (f a b +pos k , p) ＝ f' (rb (a , p)) (rb (b , p)))
 --         → ((x y : 𝕋) → (p : ℤ) → (i : ℕ) → ((upRight ^ i) (f x(p) y(p)) covers (f x(p) y(p)        , p)
 --                                          × ((upRight ^ i) (f x(p) y(p)) covers (f x(p) y(p) +pos k , p)))
 --         → and if this ensures belowness property
---         → (x y : 𝕋) → ⟦ (λ n → (upRight ^ i) (f x(p) y(p))) ⟧ ≡ ι (f' ⟦ x ⟧ ⟦ y ⟧)
+--         → (x y : 𝕋) → ⟦ (λ n → (upRight ^ i) (f x(p) y(p))) ⟧ ＝ ι (f' ⟦ x ⟧ ⟦ y ⟧)
 
 {-
-addition-agrees : (x y : 𝕋) → ⟦ x 𝕋+ y ⟧ ≡ ⟦ x ⟧ ℝd+ ⟦ y ⟧
+addition-agrees : (x y : 𝕋) → ⟦ x 𝕋+ y ⟧ ＝ ⟦ x ⟧ ℝd+ ⟦ y ⟧
 addition-agrees x y = ℝ-d-equality-from-left-cut left right
  where
   left : (p : ℤ[1/2])
        → ∃ k ꞉ ℤ , p < lb (x 𝕋+ y) k
        → ∃ (r , s) ꞉ ℤ[1/2] × ℤ[1/2] , (∃ k ꞉ ℤ , r < lb x k)
                                      × (∃ k' ꞉ ℤ , s < lb y k')
-                                     × (p ≡ r ℤ[1/2]+ s)
+                                     × (p ＝ r ℤ[1/2]+ s)
   left p = ∥∥-functor I
    where
     I : Σ k ꞉ ℤ , p < lb (x 𝕋+ y) k
-      → Σ (r , s) ꞉ ℤ[1/2] × ℤ[1/2] , r < ⟦ x ⟧ × s < ⟦ y ⟧ × (p ≡ (r ℤ[1/2]+ s))
+      → Σ (r , s) ꞉ ℤ[1/2] × ℤ[1/2] , r < ⟦ x ⟧ × s < ⟦ y ⟧ × (p ＝ (r ℤ[1/2]+ s))
     I (k , p<lb) = {!!}
 
   right : lower-cut-of (⟦ x ⟧ ℝd+ ⟦ y ⟧) ⊆ lower-cut-of ⟦ x 𝕋+ y ⟧
   right = {!!}
 
-multiplication-commutes : (x y : 𝕋) → ⟦ x 𝕋* y ⟧ ≡ (⟦ x ⟧ ℝd* ⟦ y ⟧)
+multiplication-commutes : (x y : 𝕋) → ⟦ x 𝕋* y ⟧ ＝ (⟦ x ⟧ ℝd* ⟦ y ⟧)
 multiplication-commutes = {!!}
 
 -}

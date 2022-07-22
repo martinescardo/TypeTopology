@@ -1,18 +1,18 @@
 ```agda
 {-# OPTIONS --without-K --exact-split --allow-unsolved-metas #-}
 
-open import UF-Equiv
-open import UF-FunExt
-open import UF-Subsingletons
-open import SpartanMLTT
-open import NaturalsOrder
-open import IntegersOrder
-open import IntegersB
-open import NaturalsAddition renaming (_+_ to _+ℕ_)
-open import IntegersAddition renaming (_+_ to _+ℤ_)
-open import OrderNotation
-open import UF-PropTrunc
-open import UF-Quotient
+open import UF.Equiv
+open import UF.FunExt
+open import UF.Subsingletons
+open import MLTT.Spartan
+open import Naturals.Order
+open import DedekindReals.IntegersOrder
+open import DedekindReals.IntegersB
+open import Naturals.Addition renaming (_+_ to _+ℕ_)
+open import DedekindReals.IntegersAddition renaming (_+_ to _+ℤ_)
+open import Notation.Order
+open import UF.PropTrunc
+open import UF.Quotient
 
 module Todd.TernaryBoehmReals
   (pt : propositional-truncations-exist)
@@ -138,24 +138,24 @@ use `upRight` and `downLeft` to construct all other precision-levels.
 
 ```
 build-via' : ((k , i) : ℤ × ℤ) (δ : ℤ) → trich-locate δ i → ℤ
-build-via' (k , i) δ (inl      (n , sδ+n≡i))
+build-via' (k , i) δ (inl      (n , sδ+n＝i))
  = rec k upRight  (succ n)
-build-via' (k , i) δ (inr (inl         δ≡i))
+build-via' (k , i) δ (inr (inl         δ＝i))
  = k
-build-via' (k , i) δ (inr (inr (n , sδ+n≡δ)))
+build-via' (k , i) δ (inr (inr (n , sδ+n＝δ)))
  = rec k downLeft (succ n)
 
 build-via'-below
  : ((k , i) : ℤ × ℤ) (δ : ℤ)
  → (η : trich-locate δ i)
  → build-via' (k , i) (succℤ δ) (ℤ-trich-succ δ i η) below build-via' (k , i) δ η
-build-via'-below (k , i) δ (inl (0           , sδ+n≡i))
+build-via'-below (k , i) δ (inl (0           , sδ+n＝i))
  = above-implies-below _ _ (upRight-above k)
-build-via'-below (k , i) δ (inl (succ n      , sδ+n≡i))
+build-via'-below (k , i) δ (inl (succ n      , sδ+n＝i))
  = above-implies-below _ _ (upRight-above (rec k upRight (succ n)))
-build-via'-below (k , i) δ (inr (inl              δ≡i))
+build-via'-below (k , i) δ (inr (inl              δ＝i))
  = downLeft-below k
-build-via'-below (k , i) δ (inr (inr (n      , sδ+n≡i)))
+build-via'-below (k , i) δ (inr (inr (n      , sδ+n＝i)))
  = downLeft-below (rec k downLeft (succ n))
 
 build-via : ℤ × ℤ → 𝕋
@@ -186,7 +186,7 @@ Given any specific brick on a specific level, i.e. `(k , δ) : ℤ × ℤ` repre
 
 ```
 CompactInterval : ℤ × ℤ → 𝓤₀ ̇
-CompactInterval (k , δ) = Σ (x , _) ꞉ 𝕋 , x(δ) ≡ k
+CompactInterval (k , δ) = Σ (x , _) ꞉ 𝕋 , x(δ) ＝ k
 ```
 
 Any encoding of a real in a compact interval is an encoding of a real, and any
@@ -206,7 +206,7 @@ We can easily build a trivial element of any closed interval using `build-via`.
 ```
 build-via'-correct : ((k , i) : ℤ × ℤ)
                    → (ζ : trich-locate i i)
-                   → build-via' (k , i) i ζ ≡ k
+                   → build-via' (k , i) i ζ ＝ k
 build-via'-correct (k , i) ζ
  = ap (build-via' (k , i) i) (ℤ-trichotomous-is-prop i i ζ (inr (inl refl)))
 
@@ -223,7 +223,7 @@ number.
 
 ```
 replace-right' : (ℤ → ℤ) → (i : ℤ) → (δ : ℤ) → trich-locate δ i → ℤ
-replace-right' x i δ (inl (n , δ+sn≡i)) = (upRight ^ succ n) (x i) 
+replace-right' x i δ (inl (n , δ+sn＝i)) = (upRight ^ succ n) (x i) 
 replace-right' x i δ (inr         i≤δ ) = x δ
 
 replace-right'-correct
@@ -251,7 +251,7 @@ replace-right x i
  where r = replace-right' ⟨ x ⟩ i
 ```
 
-It is the case that for all `α : 𝕋` and `i : ℤ`, `⟦ α ⟧ ≡ ⟦ replace-right α i ⟧`.
+It is the case that for all `α : 𝕋` and `i : ℤ`, `⟦ α ⟧ ＝ ⟦ replace-right α i ⟧`.
 
 What this means is that all information held at `x(δ)` about locating `⟦ x ⟧` is
 also held at `x(δ+1)` -- once you consider a level, levels higher than that can
@@ -379,13 +379,13 @@ At level `n > i`, the lower bound is `(upLeft    ^ (i − n)) k`
 ```
 lower upper : ℤ × ℤ → ℤ → ℤ
 lower (k , i) δ with ℤ-trichotomous i δ
-... | inl      (n , si+n≡δ)  = rec k downLeft (succ n)
+... | inl      (n , si+n＝δ)  = rec k downLeft (succ n)
 ... | inr (inl refl)         = k
-... | inr (inr (n , sδ+n≡i)) = rec k   upLeft (succ n)
+... | inr (inr (n , sδ+n＝i)) = rec k   upLeft (succ n)
 upper (k , i) δ with ℤ-trichotomous i δ
-... | inl      (n , si+n≡δ)  = rec k downRight (succ n)
+... | inl      (n , si+n＝δ)  = rec k downRight (succ n)
 ... | inr (inl refl)         = k
-... | inr (inr (n , sδ+n≡i)) = rec k   upRight (succ n)
+... | inr (inr (n , sδ+n＝i)) = rec k   upRight (succ n)
 
 lower≤upper : ((k , i) : ℤ × ℤ) (δ : ℤ) → lower (k , i) δ ≤ upper (k , i) δ
 lower≤upper (k , i) δ with ℤ-trichotomous i δ
@@ -399,7 +399,7 @@ We now prove that these are in fact the lower and upper bounds.
 ```
 ci-lower-upper-<' : ((k , i) : ℤ × ℤ) → (x : CompactInterval (k , i))
                   → (δ : ℤ)
-                  → (n : ℕ) → succℤ i +pos n ≡ δ
+                  → (n : ℕ) → succℤ i +pos n ＝ δ
                   → rec k downLeft (succ n) ≤ ⟨ ι x ⟩ δ ≤ rec k downRight (succ n) 
 ci-lower-upper-<' (k , i) ((x , γx) , refl) δ 0        refl
  = γx i
@@ -426,7 +426,7 @@ ci-lower-upper-< (k , i) x δ (n , i<δ) = ci-lower-upper-<' (k , i) x δ n i<δ
 
 ci-lower-upper->' : ((k , i) : ℤ × ℤ) → (x : CompactInterval (k , i))
                   → (δ : ℤ)
-                  → (n : ℕ) → succℤ δ +pos n ≡ i
+                  → (n : ℕ) → succℤ δ +pos n ＝ i
                   → rec k upLeft (succ n) ≤ ⟨ ι x ⟩ δ ≤ rec k upRight (succ n) 
 ci-lower-upper->' (k , i) ((x , γx) , refl) δ 0        refl
  = below-implies-above _ _ (γx δ)
@@ -474,15 +474,15 @@ below and above are relegated to the file `BelowAndAbove.lagda.md`.
 
 We define a property on interval encodings `(k , i) , (c , δ) : ℤ × ℤ`
 called "recursively below or above" (`below/above`), which holds if either:
-  * `i + n ≡ δ` and `(c belowⁿ k) n`,
-  * `i ≡ δ` and `k ≡ c`,
-  * `i ≡ δ + n` and `(c aboveⁿ k) n`.
+  * `i + n ＝ δ` and `(c belowⁿ k) n`,
+  * `i ＝ δ` and `k ＝ c`,
+  * `i ＝ δ + n` and `(c aboveⁿ k) n`.
 
 ```
 _below/above_ : ℤ × ℤ → ℤ × ℤ → 𝓤₀ ̇
 ((c , δ) below/above (k , i)) with ℤ-trichotomous i δ
 ... | inl      (n , i<δ)  = (c belowⁿ k) n
-... | inr (inl      i≡δ)  = k ≡ c
+... | inr (inl      i＝δ)  = k ＝ c
 ... | inr (inr (n , i>δ)) = (c aboveⁿ k) n
 ```
 
@@ -495,7 +495,7 @@ interval encodings.
 An interval encoding `(c , δ) : ℤ × ℤ`, where `c` is between the lower and upper
 bounds of the interval encoding `(k , i) : ℤ × ℤ` at precision-level `δ : ℤ` if
 and only if `c` is either (1) below `k` if `i < δ`, (2) above `k` if `i > δ`, or
-(3) equal to `k` if `i ≡ δ`.
+(3) equal to `k` if `i ＝ δ`.
 
 First, we show that left implies right:
 
@@ -522,8 +522,8 @@ The work is shown below:
 
 ```
 upLeft-or-upRight' : (k₁ k₂ c : ℤ) (n m : ℕ)
-                   → k₁ +pos n ≡ c
-                   → c +pos m ≡ k₂
+                   → k₁ +pos n ＝ c
+                   → c +pos m ＝ k₂
                    → k₁ <ℤ k₂
                    → (upRight k₁ ≤ upLeft  c ≤ upLeft k₂)
                    + (upRight k₁ ≤ upRight c ≤ upLeft k₂)
@@ -560,8 +560,8 @@ lower-upper-below k c (succ n) l≤c≤u
    IH-r = lower-upper-below k (upRight c) n
 
 down-choices' : (k₁ k₂ c : ℤ) (n m : ℕ)
-              → k₁ +pos n ≡ c
-              → c +pos m ≡ k₂
+              → k₁ +pos n ＝ c
+              → c +pos m ＝ k₂
               → k₁ <ℤ k₂
               → (downRight k₁ ≤ downLeft  c ≤ downLeft k₂)
               + (downRight k₁ ≤ downRight c ≤ downLeft k₂)
@@ -570,11 +570,11 @@ down-choices' k₁ .((k₁ +pos zero) +pos zero) .(k₁ +pos zero) 0 0 refl refl
 down-choices'
  k₁ .((k₁ +pos zero) +pos succ m) .(k₁ +pos zero) 0 (succ m) refl refl f
  = inr ((zero , refl)
-       , transport (downRight k₁ ≤_) (downRight≡downLeft (k₁ +pos m))
+       , transport (downRight k₁ ≤_) (downRight＝downLeft (k₁ +pos m))
            (downRight-monotone _ _ (m , refl)))
 down-choices'
  k₁ .((k₁ +pos succ n) +pos m) .(k₁ +pos succ n) (succ n) m refl refl f
- = inl (transport (downRight k₁ ≤_) (downRight≡downLeft (k₁ +pos n))
+ = inl (transport (downRight k₁ ≤_) (downRight＝downLeft (k₁ +pos n))
           (downRight-monotone _ _ (n , refl))
       , downLeft-monotone _ _ (m , refl))
 
@@ -595,11 +595,11 @@ down-choices k₁ k₂ c k₁≤k₂ ((m₁ , η₁) , (m₂ , η₂)) with ℤ�
            (above-implies-below c k₁ ((m₁ , η₁) , (m₂ , η₂))))
      (inl ∘ l) (cases (inr ∘ inl ∘ m) (inr ∘ inr ∘ r))
  where
-   l : k₁ ≡ downLeft  c → k₁ ≤ℤ downLeft  c ≤ℤ k₁ 
+   l : k₁ ＝ downLeft  c → k₁ ≤ℤ downLeft  c ≤ℤ k₁ 
    l refl = ℤ≤²-refl (downLeft  c)
-   m : k₁ ≡ downMid   c → k₁ ≤ℤ downMid   c ≤ℤ k₁
+   m : k₁ ＝ downMid   c → k₁ ≤ℤ downMid   c ≤ℤ k₁
    m refl = ℤ≤²-refl (downMid   c)
-   r : k₁ ≡ downRight c → k₁ ≤ℤ downRight c ≤ℤ k₁
+   r : k₁ ＝ downRight c → k₁ ≤ℤ downRight c ≤ℤ k₁
    r refl = ℤ≤²-refl (downRight c)
 
 lower-upper-above k c 0 = id
@@ -623,7 +623,7 @@ below-lower-upper : (k c : ℤ) (n : ℕ)
                   → rec k downLeft (succ n) ≤ c ≤ rec k downRight (succ n)
 
 equal-lower-upper : (k c : ℤ)
-                  → k ≡ c
+                  → k ＝ c
                   → k ≤ c ≤ k
 equal-lower-upper k c refl = ℤ≤-refl k , ℤ≤-refl k
 
@@ -648,12 +648,12 @@ The work is shown below:
 below-lower-upper k c zero = id
 below-lower-upper k c (succ n) (b , η , θ)
  = ℤ≤-trans _ _ _ (transport (_≤ rec k* downLeft (succ n))
-                    (rec-f-≡ downLeft k (succ n))
+                    (rec-f-＝ downLeft k (succ n))
                       (downLeftⁿ-monotone (downLeft k) k* n dLk≤k*))
                     (pr₁ IH₂)
  , ℤ≤-trans _ _ _ (pr₂ IH₂)
                   (transport (rec k* downRight (succ n) ≤_)
-                    (rec-f-≡ downRight k (succ n))
+                    (rec-f-＝ downRight k (succ n))
                     (downRightⁿ-monotone k* (downRight k) n k*≤dRk))
  where
    k* = (below-vec c k (succ n) (b , η , θ) !! succ n) _
@@ -686,26 +686,26 @@ via" `(c , δ) : ℤ × ℤ`.
 replace-below
          : ((k , i) (c , δ) : ℤ × ℤ)
          → ((n , _) : i < δ) → (c belowⁿ k) n
-         → Σ ((x , _) , _) ꞉ CompactInterval (k , i) , x δ ≡ c
+         → Σ ((x , _) , _) ꞉ CompactInterval (k , i) , x δ ＝ c
 
 replace-equal
          : ((k , i) (c , δ) : ℤ × ℤ)
-         → (i ≡ δ) → (k ≡ c)
-         → Σ ((x , _) , _) ꞉ CompactInterval (k , i) , x δ ≡ c
+         → (i ＝ δ) → (k ＝ c)
+         → Σ ((x , _) , _) ꞉ CompactInterval (k , i) , x δ ＝ c
 replace-equal (k , i) (c , δ) refl refl = x , pr₂ x
  where x = build-via-ci (k , i)
 
 replace-above
          : ((k , i) (c , δ) : ℤ × ℤ)
          → ((n , _) : δ < i) → (c aboveⁿ k) n
-         → Σ ((x , _) , _) ꞉ CompactInterval (k , i) , x δ ≡ c
+         → Σ ((x , _) , _) ꞉ CompactInterval (k , i) , x δ ＝ c
 
 replace' : ((k , i) (c , δ) : ℤ × ℤ)
          → (c , δ) below/above (k , i)
-         → Σ ((x , _) , _) ꞉ CompactInterval (k , i) , x δ ≡ c
+         → Σ ((x , _) , _) ꞉ CompactInterval (k , i) , x δ ＝ c
 replace' (k , i) (c , δ) with ℤ-trichotomous i δ
 ... | inl      i<δ  = replace-below (k , i) (c , δ) i<δ
-... | inr (inl i≡δ) = replace-equal (k , i) (c , δ) i≡δ
+... | inr (inl i＝δ) = replace-equal (k , i) (c , δ) i＝δ
 ... | inr (inr i>δ) = replace-above (k , i) (c , δ) i>δ
 ```
 
@@ -717,7 +717,7 @@ determine that, given two interval encodings `(k , i), (c , δ) : ℤ × ℤ` wh
 ```
 replace : ((k , i) (c , δ) : ℤ × ℤ)
         → lower (k , i) δ ≤ c ≤ upper (k , i) δ
-        → Σ ((x , _) , _) ꞉ CompactInterval (k , i) , x δ ≡ c
+        → Σ ((x , _) , _) ꞉ CompactInterval (k , i) , x δ ＝ c
 replace (k , i) (c , δ)
  = replace' (k , i) (c , δ) ∘ (lower/upper-implies-below/above (k , i) (c , δ))
 ```
@@ -766,15 +766,15 @@ replace-below (k , i) (c , j) (n , i<j') b with build-via-ci (k , i)
          (below-vec-!!0 c k n b ⁻¹) (downLeft-below c)
     γ z (inr (inr (n , refl)))
      = downLeft-below (rec c downLeft (succ n))
-    ζ : y i vert-trich-ij-i ≡ k
+    ζ : y i vert-trich-ij-i ＝ k
     ζ = below-vec-!!sn c k n b _
-    θ : y j vert-trich-ij-j ≡ c
+    θ : y j vert-trich-ij-j ＝ c
     θ = below-vec-!!0 c k n b
-    θ* : (η : vert-trich-ij j) → y j η ≡ c
-    θ* η = transport (λ - → y j - ≡ c)
+    θ* : (η : vert-trich-ij j) → y j η ＝ c
+    θ* η = transport (λ - → y j - ＝ c)
              (vert-trich-ij-is-prop j i<j vert-trich-ij-j η) θ
-    ζ* : (η : vert-trich-ij i) → y i η ≡ k
-    ζ* η = transport (λ - → y i - ≡ k)
+    ζ* : (η : vert-trich-ij i) → y i η ＝ k
+    ζ* η = transport (λ - → y i - ＝ k)
              (vert-trich-ij-is-prop i i<j vert-trich-ij-i η) ζ
     γ* : (z : ℤ) → (η : vert-trich-ij z) (η' : vert-trich-ij (succℤ z))
        → y (succℤ z) η' below y z η
@@ -824,7 +824,7 @@ for `x` and `y`.
 
 ```
 _≈'_ : {X : 𝓤 ̇ } → (ℕ → X) → (ℕ → X) → ℕ → 𝓤 ̇
-(α ≈' β) n = (i : ℕ) → i < n → α n ≡ β n
+(α ≈' β) n = (i : ℕ) → i < n → α n ＝ β n
 ```
 
 From the canonical closeness function on `ℕ → ℤ`, we can define one on `𝕋`:
@@ -897,22 +897,16 @@ continuous decidable predicates on Ternary Boehm encodings of any compact
 interval `⟪ k , i ⟫`.
 
 This equivalence relation simply takes a modulus of continuity `δ : ℤ` and asks
-if `⟨ ι x ⟩ δ ≡ ⟨ ι y ⟩ δ` given `x,y : CompactInterval (k , i)`.
+if `⟨ ι x ⟩ δ ＝ ⟨ ι y ⟩ δ` given `x,y : CompactInterval (k , i)`.
 
 ```
 open set-quotients-exist sq
-
-ℤ-is-set : is-set ℤ
-ℤ-is-set
- = type-with-prop-valued-refl-antisym-rel-is-set
-     _≤_ ℤ≤-is-prop ℤ≤-refl
-     (λ x y → curry (≤ℤ-antisym x y))
 
 CompEqRel : (δ : ℤ) ((k , i) : ℤ × ℤ) → EqRel {𝓤₀} {𝓤₀} (CompactInterval (k , i))
 CompEqRel δ (k , i) = _≣≣_ , u , r , s , t
  where
    _≣≣_ : CompactInterval (k , i) → CompactInterval (k , i) → 𝓤₀ ̇ 
-   (x ≣≣ y) = ⟨ ι x ⟩ δ ≡ ⟨ ι y ⟩ δ
+   (x ≣≣ y) = ⟨ ι x ⟩ δ ＝ ⟨ ι y ⟩ δ
    u : is-prop-valued _≣≣_
    u x y = ℤ-is-set
    r : reflexive _≣≣_
@@ -952,7 +946,7 @@ Conv→-identifies-related-points
   → identifies-related-points {𝓤₀} {𝓤₀} {𝓤₀} {CompactInterval (k , i)}
       (CompEqRel δ (k , i)) (Conv→ δ (k , i))
 Conv→-identifies-related-points δ (k , i)
- = to-subtype-≡ {𝓤₀} {𝓤₀} {ℤ} {λ z → lower (k , i) δ ≤ℤ z ≤ℤ upper (k , i) δ}
+ = to-subtype-＝ {𝓤₀} {𝓤₀} {ℤ} {λ z → lower (k , i) δ ≤ℤ z ≤ℤ upper (k , i) δ}
      (λ z → ≤ℤ²-is-prop {lower (k , i) δ} {upper (k , i) δ} z)
 
 ℤ[_,_]-is-set : (a b : ℤ) → is-set (ℤ[ a , b ])
@@ -979,14 +973,14 @@ med-map : (δ : ℤ) ((k , i) : ℤ × ℤ)
 med-map δ (k , i) = med-map/ δ (k , i)
                       (ℤ[ (lower (k , i) δ) , (upper (k , i) δ) ]-is-set)
                       (Conv→ δ (k , i))
-                      (to-subtype-≡ ≤ℤ²-is-prop)
+                      (to-subtype-＝ ≤ℤ²-is-prop)
 
 uni-tri : (δ : ℤ) ((k , i) : ℤ × ℤ)
         → (med-map δ (k , i) ∘ η/ (CompEqRel δ (k , i))) ∼ Conv→ δ (k , i)
 uni-tri δ (k , i) = uni-tri/ δ (k , i)
                       (ℤ[ (lower (k , i) δ) , (upper (k , i) δ) ]-is-set)
                       (Conv→ δ (k , i))
-                      (to-subtype-≡ ≤ℤ²-is-prop)
+                      (to-subtype-＝ ≤ℤ²-is-prop)
            
 compact-equiv : (δ : ℤ) ((k , i) : ℤ × ℤ)
               → CompactInterval (k , i) / CompEqRel δ (k , i)
@@ -1002,7 +996,7 @@ compact-equiv δ (k , i) = f' , ((g' , fg) , (g' , gf))
   fg : f' ∘ g' ∼ id
   fg (z , l≤z≤u)
    = uni-tri δ (k , i) (Conv← δ (k , i) (z , l≤z≤u))
-   ∙ to-subtype-≡ ≤ℤ²-is-prop (pr₂ (replace (k , i) (z , δ) l≤z≤u)) 
+   ∙ to-subtype-＝ ≤ℤ²-is-prop (pr₂ (replace (k , i) (z , δ) l≤z≤u)) 
   gf : g' ∘ f' ∼ id
   gf = /-induction (CompEqRel δ (k , i)) (λ _ → /-is-set (CompEqRel δ (k , i)))
          (λ y → η/-identifies-related-points (CompEqRel δ (k , i))
@@ -1016,12 +1010,12 @@ intervals, because the searcher on finite subsets of `ℤ` does not need to chec
 every element of the `𝕋` sequence.
 
 ```
-ℤ[_,_]-searchable' : (l u : ℤ) → (n : ℕ) → l +pos n ≡ u
+ℤ[_,_]-searchable' : (l u : ℤ) → (n : ℕ) → l +pos n ＝ u
                   → searchable {𝓤₀} {𝓦} (ℤ[ l , u ])
 ℤ[ l , l ]-searchable' 0 refl (p , d)
  = ((l , ℤ≤-refl l , ℤ≤-refl l))
  , λ ((z , l≤z≤u) , pz)
-   → transport (pr₁ ∘ p) (to-subtype-≡ ≤ℤ²-is-prop ((≤ℤ-antisym l z l≤z≤u) ⁻¹)) pz
+   → transport (pr₁ ∘ p) (to-subtype-＝ ≤ℤ²-is-prop ((≤ℤ-antisym l z l≤z≤u) ⁻¹)) pz
 ℤ[ l , .(succℤ (l +pos n)) ]-searchable' (succ n) refl (p , d)
  = Cases (d u*) (λ pu → u* , (λ _ → pu))
     (λ ¬pu → ans ,
@@ -1029,9 +1023,9 @@ every element of the `𝕋` sequence.
         → Cases (ℤ≤-split z u z≤u)
             (λ z<u → sol ((z , l≤z
                    , transport (z ≤_) (predsuccℤ _) (≤ℤ-back z u z<u))
-                   , transport (pr₁ ∘ p) (to-subtype-≡ ≤ℤ²-is-prop refl) pz))
-            (λ z≡u → 𝟘-elim (¬pu (transport (pr₁ ∘ p)
-                                   (to-subtype-≡ ≤ℤ²-is-prop z≡u) pz)))))
+                   , transport (pr₁ ∘ p) (to-subtype-＝ ≤ℤ²-is-prop refl) pz))
+            (λ z＝u → 𝟘-elim (¬pu (transport (pr₁ ∘ p)
+                                   (to-subtype-＝ ≤ℤ²-is-prop z＝u) pz)))))
  where
    u = succℤ (l +pos n)
    u* = u , (succ n , refl) , ℤ≤-refl u

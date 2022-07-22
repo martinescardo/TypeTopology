@@ -16,7 +16,7 @@ Todd Waugh Ambridge, 15th December 2021
 In this blog post I lay the groundwork necessary to safely formalise the Tychonoff 
 theorem for searchable types.
 
-Beginning with a [small constructive type theory](SpartanMLTT.html),
+Beginning with a [small constructive type theory](MLTT.Spartan.html),
 we re-introduce the notion of 'searchable types' [1]. We then introduce the notion 
 of closeness function, our version of a metric in this setting, to allow us to 
 define 'continuously searchable' types. The main result for this first blog post 
@@ -35,19 +35,19 @@ by Martín Escardó with Agda's termination checker turned off.
 ```agda
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import SpartanMLTT hiding (decidable)
-open import Two-Properties hiding (zero-is-not-one)
-open import NaturalsOrder
+open import MLTT.Spartan hiding (decidable)
+open import MLTT.Two-Properties hiding (zero-is-not-one)
+open import Naturals.Order
 
 module Todd.InfiniteSearch1 (fe : {𝓤 𝓥 : Universe} → {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {f g : Π Y}
-                           → f ∼ g → f ≡ g) where
+                           → f ∼ g → f ＝ g) where
 ```
 
 ## Searchable types <a name="searchable"></a>
 
 In [1], a type `X` is called searchable if, given any predicate `p : X → {tt,ff}`,
-we can find some `x : X` such that if there is some x₀ such that `p(x₀) ≡ tt`
-then also `p(x) ≡ tt`.
+we can find some `x : X` such that if there is some x₀ such that `p(x₀) ＝ tt`
+then also `p(x) ＝ tt`.
 
 This definition can be written in constructive type theory by using a boolean type
 or, as we do here, using decidable predicates.
@@ -128,13 +128,13 @@ Searchability of the natural numbers, however, is a constructive taboo and is
 equivalent to the limited principle of omniscience (`LPO`).
 
 `LPO` states that, given any infinite sequence of binary numbers, either all
-are `₀` or we have some `n : ℕ` such that `(f n) ≡ ₁`.
+are `₀` or we have some `n : ℕ` such that `(f n) ＝ ₁`.
 
 We define `LPO'` below, which implies `LPO`.
 
 ```agda
 LPO  : 𝓤₀ ̇
-LPO  = Π f ꞉ (ℕ → 𝟚)             , (Σ n ꞉ ℕ , f n ≡ ₁) + (Π n ꞉ ℕ , f n ≡ ₀)
+LPO  = Π f ꞉ (ℕ → 𝟚)             , (Σ n ꞉ ℕ , f n ＝ ₁) + (Π n ꞉ ℕ , f n ＝ ₀)
 
 LPO' : 𝓤₁ ̇
 LPO' = Π (p , d) ꞉ d-predicate ℕ , (Σ n ꞉ ℕ , p n)     + (Π n ꞉ ℕ , ¬ (p n))
@@ -180,11 +180,11 @@ We instead require a specific definition of a 'uniformly continuous predicate'
 over `ℕ → 𝟚`. This is relatively straightforward:
 
 ```agda
-_≡⟦_⟧_ : {X : 𝓤 ̇ } → (ℕ → X) → ℕ → (ℕ → X) → 𝓤 ̇
-α ≡⟦ m ⟧ β = Π k ꞉ ℕ , (k ≤ℕ m → α k ≡ β k)
+_＝⟦_⟧_ : {X : 𝓤 ̇ } → (ℕ → X) → ℕ → (ℕ → X) → 𝓤 ̇
+α ＝⟦ m ⟧ β = Π k ꞉ ℕ , (k ≤ℕ m → α k ＝ β k)
 
 is-u-continuous-𝟚ᴺ : ((ℕ → 𝟚) → 𝓤₀ ̇ ) → 𝓤₀ ̇
-is-u-continuous-𝟚ᴺ p = Σ m ꞉ ℕ , ((α β : ℕ → 𝟚) → α ≡⟦ m ⟧ β → p α → p β)
+is-u-continuous-𝟚ᴺ p = Σ m ꞉ ℕ , ((α β : ℕ → 𝟚) → α ＝⟦ m ⟧ β → p α → p β)
 ```
 
 Martín Escardó's file [CantorSearch](https://www.cs.bham.ac.uk/~mhe/agda/CantorSearch.html)
@@ -217,7 +217,7 @@ infinity), encoded as decreasing infinitary binary sequences.
 
 ```agda
 _≥₂_ : 𝟚 → 𝟚 → 𝓤₀ ̇
-a ≥₂ b = b ≡ ₁ → a ≡ ₁
+a ≥₂ b = b ＝ ₁ → a ＝ ₁
 
 decreasing-binary-seq : (ℕ → 𝟚) → 𝓤₀ ̇
 decreasing-binary-seq α = Π n ꞉ ℕ , α n ≥₂ α (succ n)
@@ -229,11 +229,11 @@ decreasing-binary-seq α = Π n ꞉ ℕ , α n ≥₂ α (succ n)
 Any natural number `n : ℕ` can be mapped to an extended natural `k ↑ : ℕ∞`,
 which is the sequence with `k`-many `₁`s followed by infinitely-many `₀`s.
 
-  e.g. `5 ↑ ≡ ₁₁₁₁₁₀₀₀₀₀₀₀ ⋯`
+  e.g. `5 ↑ ＝ ₁₁₁₁₁₀₀₀₀₀₀₀ ⋯`
 
 `∞ : ℕ∞` is represented as the sequence with infinitely-many 1s.
 
-  i.e. `∞   ≡ ₁₁₁₁₁₁₁₁₁₁₁₁ ⋯`
+  i.e. `∞   ＝ ₁₁₁₁₁₁₁₁₁₁₁₁ ⋯`
 
 ```agda
 _::_ : {X : 𝓤 ̇ } → X → (ℕ → X) → (ℕ → X)
@@ -244,7 +244,7 @@ repeat : {X : 𝓤 ̇ } → X → (ℕ → X)
 repeat x = λ n → x
 
 _↑ : ℕ → ℕ∞
-0      ↑ = repeat ₀       , (λ n ₀≡₁ → ₀≡₁)
+0      ↑ = repeat ₀       , (λ n ₀＝₁ → ₀＝₁)
 succ n ↑ = ₁ :: pr₁ (n ↑) , γ
  where
    γ : decreasing-binary-seq (₁ :: pr₁ (n ↑))
@@ -252,7 +252,7 @@ succ n ↑ = ₁ :: pr₁ (n ↑) , γ
    γ (succ k) = pr₂ (n ↑) k
    
 ∞ : ℕ∞
-∞ = repeat ₁ , (λ n ₁≡₁ → ₁≡₁)
+∞ = repeat ₁ , (λ n ₁＝₁ → ₁＝₁)
 ```
 
 Given two extended naturals `α , β : ℕ∞`,
@@ -262,13 +262,13 @@ Given any `α : ℕ∞`, clearly `(0 ↑) ≼ α` and `α ≼ ∞`.
 
 ```agda
 _≼_ : ℕ∞ → ℕ∞ → 𝓤₀ ̇
-(α , _) ≼ (β , _) = Π n ꞉ ℕ , (α n ≡ ₁ → β n ≡ ₁)
+(α , _) ≼ (β , _) = Π n ꞉ ℕ , (α n ＝ ₁ → β n ＝ ₁)
 
 0-minimal : (α : ℕ∞) → (0 ↑) ≼ α
 0-minimal α k ()
 
 ∞-maximal : (α : ℕ∞) → α ≼ ∞  
-∞-maximal α k αₖ≡₁ = refl
+∞-maximal α k αₖ＝₁ = refl
 ```
 
 The minimum of two extended naturals is defined below.
@@ -278,12 +278,12 @@ min : ℕ∞ → ℕ∞ → ℕ∞
 min α β = (λ n → min𝟚 (pr₁ α n) (pr₁ β n)) , γ
  where
    γ : decreasing-binary-seq (λ n → min𝟚 (pr₁ α n) (pr₁ β n))
-   γ n q = Lemma[a≡₁→b≡₁→min𝟚ab≡₁] (pr₂ α n r) (pr₂ β n s)
+   γ n q = Lemma[a＝₁→b＝₁→min𝟚ab＝₁] (pr₂ α n r) (pr₂ β n s)
     where
-      r : pr₁ α (succ n) ≡ ₁
-      r = Lemma[min𝟚ab≡₁→a≡₁] q
-      s : pr₁ β (succ n) ≡ ₁
-      s = Lemma[min𝟚ab≡₁→b≡₁] q
+      r : pr₁ α (succ n) ＝ ₁
+      r = Lemma[min𝟚ab＝₁→a＝₁] q
+      s : pr₁ β (succ n) ＝ ₁
+      s = Lemma[min𝟚ab＝₁→b＝₁] q
 ```
 
 Now, a binary function `c : X × X → ℕ∞` is a *closeness function*
@@ -291,13 +291,13 @@ Now, a binary function `c : X × X → ℕ∞` is a *closeness function*
 if it satisfies the following four properties:
 
  (1) A construction is infinitely close to itself
-      `∀ x → c (x , x) ≡ ∞`
+      `∀ x → c (x , x) ＝ ∞`
  
  (2) Constructions that are infinite close are equal
-      `∀ x y → c (x , y) ≡ ∞ → x ≡ y`
+      `∀ x y → c (x , y) ＝ ∞ → x ＝ y`
 
  (3) Symmetricity
-      `∀ x y → c (x , y) ≡ c (y , x)`
+      `∀ x y → c (x , y) ＝ c (y , x)`
 
  (4) Triangle ultrametric property
       `∀ x y z → min (c (x , y)) (c (y , z)) ≼ c (x , z)`
@@ -311,16 +311,16 @@ In fact, an ultrametric (a metric with a strengthened triangle equality
 property) can be defined using a closeness function easily:
 
     m : X × X → ℝ
-    m (x , y) ≡ 1 / (c(x , y) + 1)
+    m (x , y) ＝ 1 / (c(x , y) + 1)
 
-Where, by convention, `1 / ∞ ≡ 0`.
+Where, by convention, `1 / ∞ ＝ 0`.
 
 ```agda
 record is-clofun {X : 𝓤 ̇ } (c : X × X → ℕ∞) : 𝓤 ̇ where
   field
-    equal→inf-close : (x     : X) → c (x , x) ≡ ∞
-    inf-close→equal : (x y   : X) → c (x , y) ≡ ∞ → x ≡ y
-    symmetricity : (x y   : X) → c (x , y) ≡ c (y , x)
+    equal→inf-close : (x     : X) → c (x , x) ＝ ∞
+    inf-close→equal : (x y   : X) → c (x , y) ＝ ∞ → x ＝ y
+    symmetricity : (x y   : X) → c (x , y) ＝ c (y , x)
     ultrametric : (x y z : X) → min (c (x , y)) (c (y , z)) ≼ c (x , z)
 ```
 
@@ -333,17 +333,17 @@ A type is discrete if it has decidable equality.
 
 ```agda
 is-discrete : 𝓤 ̇ → 𝓤 ̇
-is-discrete X = (x y : X) → decidable (x ≡ y)
+is-discrete X = (x y : X) → decidable (x ＝ y)
 ```
 
 The closeness function for a discrete type is defined easily by cases:
                   
-    c (x , y) ≡   ∞    if x ≡ y
+    c (x , y) ＝   ∞    if x ＝ y
                   0 ↑  otherwise
 
 ```agda
-discrete-c' : {X : 𝓤 ̇ } → ((x , y) : X × X) → decidable (x ≡ y) → ℕ∞
-discrete-c' (x , y) (inl x≡y) = ∞
+discrete-c' : {X : 𝓤 ̇ } → ((x , y) : X × X) → decidable (x ＝ y) → ℕ∞
+discrete-c' (x , y) (inl x＝y) = ∞
 discrete-c' (x , y) (inr x≢y) = 0 ↑
 
 discrete-clofun : {X : 𝓤 ̇ } → is-discrete X → (X × X → ℕ∞)
@@ -352,49 +352,49 @@ discrete-clofun d (x , y) = discrete-c' (x , y) (d x y)
 
 Note that we use the helper function `discrete-c'`. This is to allow
 the Agda synthesizer to recognise when a given construction of the
-type `decidable (x ≡ y)` (for some `x,y : X`) is constructed as `inl x≡y`
-(where `x≡y : x ≡ y`) or `inr x≢y` (where `x≢y : ¬ (x ≡ y)`).
+type `decidable (x ＝ y)` (for some `x,y : X`) is constructed as `inl x＝y`
+(where `x＝y : x ＝ y`) or `inr x≢y` (where `x≢y : ¬ (x ＝ y)`).
 
 Using the synthesizer in this way allows us to easily prove the four
 closeness function properties for the helper function, just using
-pattern matching on the given construction of `decidable (x ≡ y)`.
+pattern matching on the given construction of `decidable (x ＝ y)`.
 
 ```agda
 discrete-c'-eic : {X : 𝓤 ̇ } → (x : X)
-                → (dxx : decidable (x ≡ x))
-                → discrete-c' (x , x) dxx ≡ ∞
-discrete-c'-eic x (inl x≡x) = refl
+                → (dxx : decidable (x ＝ x))
+                → discrete-c' (x , x) dxx ＝ ∞
+discrete-c'-eic x (inl x＝x) = refl
 discrete-c'-eic x (inr x≢x) = 𝟘-elim (x≢x refl)
 
 zero-is-not-one : ₀ ≢ ₁
 zero-is-not-one ()
 
 discrete-c'-ice : {X : 𝓤 ̇ } → (x y : X)
-                      → (dxy : decidable (x ≡ y))
-                      → discrete-c' (x , y) dxy ≡ ∞ → x ≡ y
-discrete-c'-ice x y (inl x≡y) cxy≡∞ = x≡y
-discrete-c'-ice x y (inr x≢y) cxy≡∞ = 𝟘-elim (Zero-not-∞ cxy≡∞)
+                      → (dxy : decidable (x ＝ y))
+                      → discrete-c' (x , y) dxy ＝ ∞ → x ＝ y
+discrete-c'-ice x y (inl x＝y) cxy＝∞ = x＝y
+discrete-c'-ice x y (inr x≢y) cxy＝∞ = 𝟘-elim (Zero-not-∞ cxy＝∞)
  where
    Zero-not-∞ : (0 ↑) ≢ ∞
-   Zero-not-∞ 0≡∞ = 𝟘-elim (zero-is-not-one (ap (λ - → pr₁ - 0) 0≡∞))
+   Zero-not-∞ 0＝∞ = 𝟘-elim (zero-is-not-one (ap (λ - → pr₁ - 0) 0＝∞))
                                  
 discrete-c'-sym : {X : 𝓤 ̇ } → (x y : X)
-                → (dxy : decidable (x ≡ y))
-                → (dyx : decidable (y ≡ x))
-                → discrete-c' (x , y) dxy ≡ discrete-c' (y , x) dyx
-discrete-c'-sym x y (inl x≡y) (inl y≡x) = refl
+                → (dxy : decidable (x ＝ y))
+                → (dyx : decidable (y ＝ x))
+                → discrete-c' (x , y) dxy ＝ discrete-c' (y , x) dyx
+discrete-c'-sym x y (inl x＝y) (inl y＝x) = refl
 discrete-c'-sym x y (inr x≢y) (inr y≢x) = refl
-discrete-c'-sym x y (inl x≡y) (inr y≢x) = 𝟘-elim (y≢x (x≡y ⁻¹))
-discrete-c'-sym x y (inr x≢y) (inl y≡x) = 𝟘-elim (x≢y (y≡x ⁻¹))
+discrete-c'-sym x y (inl x＝y) (inr y≢x) = 𝟘-elim (y≢x (x＝y ⁻¹))
+discrete-c'-sym x y (inr x≢y) (inl y＝x) = 𝟘-elim (x≢y (y＝x ⁻¹))
                                            
 discrete-c'-ult : {X : 𝓤 ̇ } → (x y z : X)
-                → (dxy : decidable (x ≡ y))
-                → (dyz : decidable (y ≡ z))
-                → (dxz : decidable (x ≡ z))
+                → (dxy : decidable (x ＝ y))
+                → (dyz : decidable (y ＝ z))
+                → (dxz : decidable (x ＝ z))
                 → min (discrete-c' (x , y) dxy) (discrete-c' (y , z) dyz)
                      ≼ discrete-c' (x , z) dxz
-discrete-c'-ult x  y  z       _          _    (inl x≡z ) _ _ = refl
-discrete-c'-ult x  y  z (inl x≡y ) (inr y≢z ) (inr x≢z ) _   = id
+discrete-c'-ult x  y  z       _          _    (inl x＝z ) _ _ = refl
+discrete-c'-ult x  y  z (inl x＝y ) (inr y≢z ) (inr x≢z ) _   = id
 discrete-c'-ult x  y  z (inr x≢y )       _    (inr x≢z ) _   = id
 discrete-c'-ult x .x .x (inl refl) (inl refl) (inr x≢x )     = 𝟘-elim (x≢x refl)
 ```
@@ -420,37 +420,37 @@ is-clofun.ultrametric     (discrete-is-clofun ds) x y z
 The closeness function for a type `(ℕ → X)` where `X` is discrete is defined
 pointwise by cases as follows:
 
-    c (α , β) n ≡ ₁,    if x ≡⟦ n ⟧ y,
+    c (α , β) n ＝ ₁,    if x ＝⟦ n ⟧ y,
                   ₀,    otherwise.
 
 We again want to use a helper function to allow us to prove properties
 using the Agda synthesizer just by using pattern matching on the type
-`decidable (α ̄≡⟦ n ⟧ β)`.
+`decidable (α ̄＝⟦ n ⟧ β)`.
 
 To do this we first prove the following lemma.
 
 ```agda
 discrete-decidable-seq : {X : 𝓤 ̇ } → is-discrete X
-                       → (α β : ℕ → X) → (n : ℕ) → decidable (α ≡⟦ n ⟧ β)
+                       → (α β : ℕ → X) → (n : ℕ) → decidable (α ＝⟦ n ⟧ β)
 discrete-decidable-seq d α β 0 = Cases (d (α 0) (β 0)) (inl ∘ γₗ) (inr ∘ γᵣ)
  where
-   γₗ :    α 0 ≡ β 0  →    α ≡⟦ 0 ⟧ β
+   γₗ :    α 0 ＝ β 0  →    α ＝⟦ 0 ⟧ β
    γₗ e 0 _ = e
-   γᵣ : ¬ (α 0 ≡ β 0) → ¬ (α ≡⟦ 0 ⟧ β)
-   γᵣ f α≡⟦0⟧β = 𝟘-elim (f (α≡⟦0⟧β 0 ⋆))
+   γᵣ : ¬ (α 0 ＝ β 0) → ¬ (α ＝⟦ 0 ⟧ β)
+   γᵣ f α＝⟦0⟧β = 𝟘-elim (f (α＝⟦0⟧β 0 ⋆))
 discrete-decidable-seq d α β (succ n)
  = Cases (discrete-decidable-seq d α β n) γ₁ (inr ∘ γ₂)
  where
-   γ₁ : α ≡⟦ n ⟧ β → decidable (α ≡⟦ succ n ⟧ β)
+   γ₁ : α ＝⟦ n ⟧ β → decidable (α ＝⟦ succ n ⟧ β)
    γ₁ α≈β = Cases (d (α (succ n)) (β (succ n))) (inl ∘ γₗ) (inr ∘ γᵣ)
     where
-      γₗ :     α (succ n) ≡ β (succ n) →    α ≡⟦ succ n ⟧ β
+      γₗ :     α (succ n) ＝ β (succ n) →    α ＝⟦ succ n ⟧ β
       γₗ e k k≤n = Cases (≤-split k n k≤n)
                      (λ k≤n  → α≈β k k≤n)
-                     (λ k≡sn → transport (λ - → α - ≡ β -) (k≡sn ⁻¹) e)
-      γᵣ : ¬ (α (succ n) ≡ β (succ n)) → ¬ (α ≡⟦ succ n ⟧ β)
-      γᵣ g α≡⟦sn⟧β = g (α≡⟦sn⟧β (succ n) (≤-refl n))
-   γ₂ : ¬ (α ≡⟦ n ⟧ β) → ¬ (α ≡⟦ succ n ⟧ β)
+                     (λ k＝sn → transport (λ - → α - ＝ β -) (k＝sn ⁻¹) e)
+      γᵣ : ¬ (α (succ n) ＝ β (succ n)) → ¬ (α ＝⟦ succ n ⟧ β)
+      γᵣ g α＝⟦sn⟧β = g (α＝⟦sn⟧β (succ n) (≤-refl n))
+   γ₂ : ¬ (α ＝⟦ n ⟧ β) → ¬ (α ＝⟦ succ n ⟧ β)
    γ₂ f = f ∘ (λ α≈β k k≤n → α≈β k (≤-trans k n (succ n) k≤n (≤-succ n)))
 ```
 
@@ -458,19 +458,19 @@ We now define the closeness function using a helper function.
 
 ```agda
 discrete-seq-c' : {X : 𝓤 ̇ } → ((α , β) : (ℕ → X) × (ℕ → X))
-                 → (n : ℕ) → decidable (α ≡⟦ n ⟧ β) → 𝟚
-discrete-seq-c' (α , β) n (inl α≡⟦n⟧β) = ₁
-discrete-seq-c' (α , β) n (inr α≡⟦n⟧β) = ₀
+                 → (n : ℕ) → decidable (α ＝⟦ n ⟧ β) → 𝟚
+discrete-seq-c' (α , β) n (inl α＝⟦n⟧β) = ₁
+discrete-seq-c' (α , β) n (inr α＝⟦n⟧β) = ₀
 
 discrete-seq-c'-dec : {X : 𝓤 ̇ } → ((α , β) : (ℕ → X) × (ℕ → X))
-                    → (n : ℕ) → (d₁ : decidable (α ≡⟦      n ⟧ β))
-                                (d₂ : decidable (α ≡⟦ succ n ⟧ β))
+                    → (n : ℕ) → (d₁ : decidable (α ＝⟦      n ⟧ β))
+                                (d₂ : decidable (α ＝⟦ succ n ⟧ β))
                     → (discrete-seq-c' (α , β) n d₁ ≥₂ discrete-seq-c' (α , β) (succ n) d₂)
-discrete-seq-c'-dec (α , β) n (inl  α≡⟦n⟧β) (inl  α≡⟦sn⟧β) _ = refl
-discrete-seq-c'-dec (α , β) n (inl  α≡⟦n⟧β) (inr ¬α≡⟦sn⟧β) _ = refl
-discrete-seq-c'-dec (α , β) n (inr ¬α≡⟦n⟧β) (inl  α≡⟦sn⟧β) refl
- = 𝟘-elim (¬α≡⟦n⟧β (λ k k<n → α≡⟦sn⟧β k (≤-trans k n (succ n) k<n (≤-succ n))))
-discrete-seq-c'-dec (α , β) n (inr ¬α≡⟦n⟧β) (inr ¬α≡⟦sn⟧β) = 𝟘-elim ∘ zero-is-not-one
+discrete-seq-c'-dec (α , β) n (inl  α＝⟦n⟧β) (inl  α＝⟦sn⟧β) _ = refl
+discrete-seq-c'-dec (α , β) n (inl  α＝⟦n⟧β) (inr ¬α＝⟦sn⟧β) _ = refl
+discrete-seq-c'-dec (α , β) n (inr ¬α＝⟦n⟧β) (inl  α＝⟦sn⟧β) refl
+ = 𝟘-elim (¬α＝⟦n⟧β (λ k k<n → α＝⟦sn⟧β k (≤-trans k n (succ n) k<n (≤-succ n))))
+discrete-seq-c'-dec (α , β) n (inr ¬α＝⟦n⟧β) (inr ¬α＝⟦sn⟧β) = 𝟘-elim ∘ zero-is-not-one
 
 discrete-seq-clofun : {X : 𝓤 ̇ } → is-discrete X → ((ℕ → X) × (ℕ → X) → ℕ∞)
 discrete-seq-clofun ds (α , β)
@@ -482,11 +482,11 @@ discrete-seq-clofun ds (α , β)
 In order to show that the discrete-sequence closeness function satisfies the four
 necessary properties, we first need a way to show that two extended naturals are equal.
 
-Of course, by function extensionality, two sequences `α,β : ℕ → X` are equal `α ≡ β`
-if they are equivalent `α ∼ β ≔ Π i ꞉ ℕ , (α i ≡ β i)`.
+Of course, by function extensionality, two sequences `α,β : ℕ → X` are equal `α ＝ β`
+if they are equivalent `α ∼ β ≔ Π i ꞉ ℕ , (α i ＝ β i)`.
 
 ```agda
-seq-equals : {X : 𝓤 ̇ } {α β : ℕ → X} → α ∼ β → α ≡ β
+seq-equals : {X : 𝓤 ̇ } {α β : ℕ → X} → α ∼ β → α ＝ β
 seq-equals α∼β = fe α∼β
 ```
 
@@ -494,21 +494,21 @@ However, recall that an extended natural consists of both a binary sequence and 
 proof that the sequence is descending.
 
 Therefore, in order to show that, for `(α , α-dec),(β , β-dec) : ℕ∞`,
-`(α , α-dec) ≡ (β , β-dec)` we need to construct objects of types:
+`(α , α-dec) ＝ (β , β-dec)` we need to construct objects of types:
 
- 1. `α     ≡ β`,     for `α,β : ℕ → 𝟚`,
+ 1. `α     ＝ β`,     for `α,β : ℕ → 𝟚`,
  
- 2. `α-dec ≡ β-dec`, for `α-dec : decreasing-binary-seq α` and, by **1.**,
+ 2. `α-dec ＝ β-dec`, for `α-dec : decreasing-binary-seq α` and, by **1.**,
                          `β-dec : decreasing-binary-seq α`.
 
 Constructing an element of **2.** is non-trivial; but, it is a subsingleton.
 
 In homotopy type theory, a type `X` is called a 'prop' or a 'subsingleton' if,
-for any `x,y : X`, `x ≡ x`. This means that the type has at most one element.
+for any `x,y : X`, `x ＝ x`. This means that the type has at most one element.
 
 ```agda
 is-subsingleton : 𝓤 ̇ → 𝓤 ̇
-is-subsingleton X = (x y : X) → x ≡ y
+is-subsingleton X = (x y : X) → x ＝ y
 ```
 
 Given a type family `Y : X → 𝓤` ̇ if, for all `x : X`, `Y x` is a subsingleton,
@@ -521,11 +521,11 @@ then `Π Y` is also a subsingleton.
 Π-is-subsingleton Y-is-prop f g = fe (λ x → Y-is-prop x (f x) (g x))
 ```
 
-A type `X` is called a 'set' if, for any `x,y : X`, the type `x ≡ y` is a subsingleton.
+A type `X` is called a 'set' if, for any `x,y : X`, the type `x ＝ y` is a subsingleton.
 
 ```agda
 is-set : 𝓤 ̇ → 𝓤 ̇
-is-set X = (x y : X) → is-subsingleton (x ≡ y)
+is-set X = (x y : X) → is-subsingleton (x ＝ y)
 ```
 
 `𝟚` is a set, and thus the relation `_≥₂_` is prop-valued. This allows us to prove
@@ -545,13 +545,13 @@ decreasing-prop α = Π-is-subsingleton (λ n → ≥₂-is-prop (α n) (α (suc
 
 sigma-prop-equals : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
                   → {(x₁ , y₁) (x₂ , y₂) : Σ x ꞉ X , Y x}
-                  → x₁ ≡ x₂
+                  → x₁ ＝ x₂
                   → ((x : X) → is-subsingleton (Y x))
-                  → (x₁ , y₁) ≡ (x₂ , y₂)
+                  → (x₁ , y₁) ＝ (x₂ , y₂)
 sigma-prop-equals {𝓤} {𝓥} {X} {Y} {(x₁ , Yx₁)} {(.x₁ , Yx₂)} refl Y-is-prop
  = ap (x₁ ,_) (Y-is-prop x₁ Yx₁ Yx₂)
 
-ℕ∞-equals : {(α , α-dec) (β , β-dec) : ℕ∞} → α ∼ β → (α , α-dec) ≡ (β , β-dec)
+ℕ∞-equals : {(α , α-dec) (β , β-dec) : ℕ∞} → α ∼ β → (α , α-dec) ＝ (β , β-dec)
 ℕ∞-equals α∼β = sigma-prop-equals (fe α∼β) decreasing-prop
 ```
 
@@ -559,45 +559,45 @@ We now prove the four necessary properties using the helper function...
 
 ```agda
 discrete-seq-c'-eic : {X : 𝓤 ̇ } → (α : ℕ → X)
-                     → (n : ℕ) → (d : decidable (α ≡⟦ n ⟧ α))
-                     → discrete-seq-c' (α , α) n d ≡ ₁
-discrete-seq-c'-eic α n (inl  α≡⟦n⟧α) = refl
-discrete-seq-c'-eic α n (inr ¬α≡⟦n⟧α) = 𝟘-elim (¬α≡⟦n⟧α (λ k k≤n → refl))
+                     → (n : ℕ) → (d : decidable (α ＝⟦ n ⟧ α))
+                     → discrete-seq-c' (α , α) n d ＝ ₁
+discrete-seq-c'-eic α n (inl  α＝⟦n⟧α) = refl
+discrete-seq-c'-eic α n (inr ¬α＝⟦n⟧α) = 𝟘-elim (¬α＝⟦n⟧α (λ k k≤n → refl))
 
 discrete-seq-c'-ice : {X : 𝓤 ̇ } → (α β : ℕ → X)
-                     → (n : ℕ) → (d : decidable (α ≡⟦ n ⟧ β))
-                     → discrete-seq-c' (α , β) n d ≡ ₁
-                     → α n ≡ β n
-discrete-seq-c'-ice α β n (inl  α≡⟦n⟧β) cαβn≡₁ = α≡⟦n⟧β n (≤-refl n)
-discrete-seq-c'-ice α β n (inr ¬α≡⟦n⟧β) ()
+                     → (n : ℕ) → (d : decidable (α ＝⟦ n ⟧ β))
+                     → discrete-seq-c' (α , β) n d ＝ ₁
+                     → α n ＝ β n
+discrete-seq-c'-ice α β n (inl  α＝⟦n⟧β) cαβn＝₁ = α＝⟦n⟧β n (≤-refl n)
+discrete-seq-c'-ice α β n (inr ¬α＝⟦n⟧β) ()
 
 discrete-seq-c'-sym : {X : 𝓤 ̇ } (α β : ℕ → X)
-                     → (n : ℕ) → (d₁ : decidable (α ≡⟦ n ⟧ β))
-                                 (d₂ : decidable (β ≡⟦ n ⟧ α))
-                     → discrete-seq-c' (α , β) n d₁ ≡ discrete-seq-c' (β , α) n d₂
-discrete-seq-c'-sym x y n (inl  α≡⟦n⟧β) (inl  β≡⟦n⟧α) = refl
-discrete-seq-c'-sym x y n (inr ¬α≡⟦n⟧β) (inr ¬β≡⟦n⟧α) = refl
-discrete-seq-c'-sym x y n (inl  α≡⟦n⟧β) (inr ¬β≡⟦n⟧α)
- = 𝟘-elim (¬β≡⟦n⟧α (λ k k<n → α≡⟦n⟧β k k<n ⁻¹))
-discrete-seq-c'-sym x y n (inr ¬α≡⟦n⟧β) (inl  β≡⟦n⟧α)
- = 𝟘-elim (¬α≡⟦n⟧β (λ k k<n → β≡⟦n⟧α k k<n ⁻¹))
+                     → (n : ℕ) → (d₁ : decidable (α ＝⟦ n ⟧ β))
+                                 (d₂ : decidable (β ＝⟦ n ⟧ α))
+                     → discrete-seq-c' (α , β) n d₁ ＝ discrete-seq-c' (β , α) n d₂
+discrete-seq-c'-sym x y n (inl  α＝⟦n⟧β) (inl  β＝⟦n⟧α) = refl
+discrete-seq-c'-sym x y n (inr ¬α＝⟦n⟧β) (inr ¬β＝⟦n⟧α) = refl
+discrete-seq-c'-sym x y n (inl  α＝⟦n⟧β) (inr ¬β＝⟦n⟧α)
+ = 𝟘-elim (¬β＝⟦n⟧α (λ k k<n → α＝⟦n⟧β k k<n ⁻¹))
+discrete-seq-c'-sym x y n (inr ¬α＝⟦n⟧β) (inl  β＝⟦n⟧α)
+ = 𝟘-elim (¬α＝⟦n⟧β (λ k k<n → β＝⟦n⟧α k k<n ⁻¹))
 
 discrete-seq-c'-ult : {X : 𝓤 ̇ } (α β η : ℕ → X)
-                     → (n : ℕ) → (d₁ : decidable (α ≡⟦ n ⟧ β))
-                               → (d₂ : decidable (β ≡⟦ n ⟧ η))
-                               → (d₃ : decidable (α ≡⟦ n ⟧ η))
+                     → (n : ℕ) → (d₁ : decidable (α ＝⟦ n ⟧ β))
+                               → (d₂ : decidable (β ＝⟦ n ⟧ η))
+                               → (d₃ : decidable (α ＝⟦ n ⟧ η))
                      → min𝟚 (discrete-seq-c' (α , β) n d₁)
-                            (discrete-seq-c' (β , η) n d₂) ≡ ₁
-                     → discrete-seq-c' (α , η) n d₃ ≡ ₁
-discrete-seq-c'-ult α β η n _             _             (inl  α≡⟦n⟧η) _ = refl
-discrete-seq-c'-ult α β η n (inl α≡⟦n⟧β)  (inl  β≡⟦n⟧η) (inr ¬α≡⟦n⟧η) min≡₁
- = 𝟘-elim (¬α≡⟦n⟧η (λ k k<n → α≡⟦n⟧β k k<n ∙ β≡⟦n⟧η k k<n))
-discrete-seq-c'-ult α β η n (inl  α≡⟦n⟧β) (inr ¬β≡⟦n⟧α) (inr ¬α≡⟦n⟧η) min₁₀≡₁
- = 𝟘-elim (zero-is-not-one min₁₀≡₁)
-discrete-seq-c'-ult α β η n (inr ¬α≡⟦n⟧β) (inl  β≡⟦n⟧α) (inr ¬α≡⟦n⟧η) min₀₁≡₁
- = 𝟘-elim (zero-is-not-one min₀₁≡₁)
-discrete-seq-c'-ult α β η n (inr ¬α≡⟦n⟧β) (inr ¬β≡⟦n⟧α) (inr ¬α≡⟦n⟧η) min₀₀≡₁
- = 𝟘-elim (zero-is-not-one min₀₀≡₁)
+                            (discrete-seq-c' (β , η) n d₂) ＝ ₁
+                     → discrete-seq-c' (α , η) n d₃ ＝ ₁
+discrete-seq-c'-ult α β η n _             _             (inl  α＝⟦n⟧η) _ = refl
+discrete-seq-c'-ult α β η n (inl α＝⟦n⟧β)  (inl  β＝⟦n⟧η) (inr ¬α＝⟦n⟧η) min＝₁
+ = 𝟘-elim (¬α＝⟦n⟧η (λ k k<n → α＝⟦n⟧β k k<n ∙ β＝⟦n⟧η k k<n))
+discrete-seq-c'-ult α β η n (inl  α＝⟦n⟧β) (inr ¬β＝⟦n⟧α) (inr ¬α＝⟦n⟧η) min₁₀＝₁
+ = 𝟘-elim (zero-is-not-one min₁₀＝₁)
+discrete-seq-c'-ult α β η n (inr ¬α＝⟦n⟧β) (inl  β＝⟦n⟧α) (inr ¬α＝⟦n⟧η) min₀₁＝₁
+ = 𝟘-elim (zero-is-not-one min₀₁＝₁)
+discrete-seq-c'-ult α β η n (inr ¬α＝⟦n⟧β) (inr ¬β＝⟦n⟧α) (inr ¬α＝⟦n⟧η) min₀₀＝₁
+ = 𝟘-elim (zero-is-not-one min₀₀＝₁)
 ```
 
 ...and this allows us to show that the discrete-sequence closeness function
@@ -609,11 +609,11 @@ discrete-seq-is-clofun : {X : 𝓤 ̇ } → (ds : is-discrete X)
                            → is-clofun (discrete-seq-clofun ds)
 is-clofun.equal→inf-close (discrete-seq-is-clofun ds) α
  = ℕ∞-equals (λ n → discrete-seq-c'-eic α n (discrete-decidable-seq ds α α n))
-is-clofun.inf-close→equal (discrete-seq-is-clofun ds) α β cαβ≡∞
+is-clofun.inf-close→equal (discrete-seq-is-clofun ds) α β cαβ＝∞
  = fe (λ n → discrete-seq-c'-ice α β n (discrete-decidable-seq ds α β n) (γ n))
  where
-   γ : (n : ℕ) → discrete-seq-c' (α , β) n (discrete-decidable-seq ds α β n) ≡ ₁
-   γ n = ap (λ - → pr₁ - n) cαβ≡∞
+   γ : (n : ℕ) → discrete-seq-c' (α , β) n (discrete-decidable-seq ds α β n) ＝ ₁
+   γ n = ap (λ - → pr₁ - n) cαβ＝∞
 is-clofun.symmetricity    (discrete-seq-is-clofun ds) α β
  = ℕ∞-equals (λ n → discrete-seq-c'-sym α β n (discrete-decidable-seq ds α β n)
                                               (discrete-decidable-seq ds β α n))
@@ -634,30 +634,30 @@ Firstly, there is an obvious relationship between the closeness value
 closeness→equality : {X : 𝓤 ̇ } → (ds : is-discrete X)
                    → (α β : ℕ → X) → (n : ℕ)
                    → (succ n ↑) ≼ discrete-seq-clofun ds (α , β)
-                   → α ≡⟦ n ⟧ β
+                   → α ＝⟦ n ⟧ β
 closeness→equality ds α β n cαβ≼n
  = γ (discrete-decidable-seq ds α β n) (cαβ≼n n (all-n n))
  where
-   γ : (d : decidable (α ≡⟦ n ⟧ β)) → discrete-seq-c' (α , β) n d ≡ ₁ → α ≡⟦ n ⟧ β
-   γ (inl α≡⟦n⟧β) _ = α≡⟦n⟧β
-   all-n : (n : ℕ) → pr₁ (succ n ↑) n ≡ ₁
+   γ : (d : decidable (α ＝⟦ n ⟧ β)) → discrete-seq-c' (α , β) n d ＝ ₁ → α ＝⟦ n ⟧ β
+   γ (inl α＝⟦n⟧β) _ = α＝⟦n⟧β
+   all-n : (n : ℕ) → pr₁ (succ n ↑) n ＝ ₁
    all-n 0        = refl
    all-n (succ n) = all-n n
 
 equality→closeness : {X : 𝓤 ̇ } → (ds : is-discrete X)
                    → (α β : ℕ → X) → (n : ℕ)
-                   → α ≡⟦ n ⟧ β
+                   → α ＝⟦ n ⟧ β
                    → (succ n ↑) ≼ discrete-seq-clofun ds (α , β)
-equality→closeness ds α β n α≡⟦n⟧β k nₖ≡₁
+equality→closeness ds α β n α＝⟦n⟧β k nₖ＝₁
  = γ (discrete-decidable-seq ds α β k)
  where
-   n≼ : (k n : ℕ) → pr₁ (n ↑) k ≡ ₁ → k <ℕ n
-   n≼ 0        (succ n) nₖ≡₁ = ⋆
-   n≼ (succ k) (succ n) nₖ≡₁ = n≼ k n nₖ≡₁
-   γ : (d : decidable (α ≡⟦ k ⟧ β)) → discrete-seq-c' (α , β) k d ≡ ₁
-   γ (inl  α≡⟦k⟧β) = refl
-   γ (inr ¬α≡⟦k⟧β)
-    = 𝟘-elim (¬α≡⟦k⟧β (λ i i≤k → α≡⟦n⟧β i (≤-trans i k n i≤k (n≼ k (succ n) nₖ≡₁))))
+   n≼ : (k n : ℕ) → pr₁ (n ↑) k ＝ ₁ → k <ℕ n
+   n≼ 0        (succ n) nₖ＝₁ = ⋆
+   n≼ (succ k) (succ n) nₖ＝₁ = n≼ k n nₖ＝₁
+   γ : (d : decidable (α ＝⟦ k ⟧ β)) → discrete-seq-c' (α , β) k d ＝ ₁
+   γ (inl  α＝⟦k⟧β) = refl
+   γ (inr ¬α＝⟦k⟧β)
+    = 𝟘-elim (¬α＝⟦k⟧β (λ i i≤k → α＝⟦n⟧β i (≤-trans i k n i≤k (n≼ k (succ n) nₖ＝₁))))
 ```
 
 This relationship helps us to show that,
@@ -674,12 +674,12 @@ build-up {𝓤} {X} ds xs ys δ δ≼cxsys x
  = equality→closeness ds (x :: xs) (x :: ys) δ (γ δ δ≼cxsys)
  where
    γ : (δ : ℕ) → (δ ↑) ≼ discrete-seq-clofun ds (xs , ys)
-     → (x :: xs) ≡⟦ δ ⟧ (x :: ys)
+     → (x :: xs) ＝⟦ δ ⟧ (x :: ys)
    γ δ δ≼cxsys 0        *   = refl
    γ (succ δ) δ≼cxsys (succ k) k≤n = closeness→equality ds xs ys δ δ≼cxsys k k≤n
 ```
 
-Secondly, by function extensionality, `α ≡ (head α :: tail α)`.
+Secondly, by function extensionality, `α ＝ (head α :: tail α)`.
 
 ```agda
 head : {X : 𝓤 ̇ } → (ℕ → X) → X
@@ -688,7 +688,7 @@ head α   = α 0
 tail : {X : 𝓤 ̇ } → (ℕ → X) → (ℕ → X)
 tail α n = α (succ n)
 
-head-tail-eta : {X : 𝓤 ̇ } → (α : ℕ → X) → α ≡ head α :: (tail α)
+head-tail-eta : {X : 𝓤 ̇ } → (α : ℕ → X) → α ＝ head α :: (tail α)
 head-tail-eta α = fe γ where
   γ : α ∼ head α :: (tail α)
   γ 0 = refl
@@ -764,7 +764,7 @@ all-discrete-predicates-are-continuous
 all-discrete-predicates-are-continuous {𝓤} {X} ds (p , d)
  = (p , d) , (1 , λ (x , y) → γ x y (ds x y))
  where
-   γ : (x y : X) → (q : decidable (x ≡ y)) → (1 ↑) ≼ discrete-c' (x , y) q → p x → p y
+   γ : (x y : X) → (q : decidable (x ＝ y)) → (1 ↑) ≼ discrete-c' (x , y) q → p x → p y
    γ x .x (inl refl) 1≼∞ px = px
    γ x  y (inr  _  ) 1≼0 _  = 𝟘-elim (zero-is-not-one (1≼0 0 refl))
 
@@ -958,7 +958,7 @@ by construction of `𝓔xs`, we also have `(pₜ x₀)(𝓔xs x₀)`.
     step₃ = γₜ x₀ (xs₀ , step₂)
 ```
 
-Note that `(pₜ x₀)(𝓔xs x₀) ≡ p(x₀ :: 𝓔xs x₀) ≡ pₕ`.
+Note that `(pₜ x₀)(𝓔xs x₀) ＝ p(x₀ :: 𝓔xs x₀) ＝ pₕ`.
 Therefore, by definition of `pₕ`, we have `pₕ(x₀)` and further,
 by construction of `x`, we also have      `pₕ(x)`.
 
@@ -970,7 +970,7 @@ by construction of `x`, we also have      `pₕ(x)`.
     step₅ = γₕ (x₀ , step₄)
 ```
 
-Note that `pₕ(x) ≡ p (x :: 𝓔xs x)`, giving us our conclusion.
+Note that `pₕ(x) ＝ p (x :: 𝓔xs x)`, giving us our conclusion.
 
 ```agda
     step₆ : p (x :: 𝓔xs x)

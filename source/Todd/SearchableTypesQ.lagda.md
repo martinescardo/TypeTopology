@@ -2,37 +2,37 @@
 {-# OPTIONS --without-K --exact-split --allow-unsolved-metas #-}
 
 
-open import SpartanMLTT
-open import UF-FunExt
-open import UF-Subsingletons
-open import UF-PropTrunc
-open import UF-Quotient
+open import MLTT.Spartan
+open import UF.FunExt
+open import UF.Subsingletons
+open import UF.PropTrunc
+open import UF.Quotient
 
-module SearchableTypesQ
+module Todd.SearchableTypesQ
   (pt : propositional-truncations-exist)
   (fe : FunExt)
   (pe : PropExt)
   (sq : set-quotients-exist)
  where
 
-open import Two-Properties hiding (zero-is-not-one)
-open import NaturalsOrder
-open import NaturalsAddition renaming (_+_ to _+ℕ_)
-open import IntegersB
-open import IntegersOrder
-open import IntegersAddition renaming (_+_ to _+ℤ_)
-open import IntegersNegation renaming (-_  to  −ℤ_)
-open import UF-Subsingletons
-open import NaturalsOrder
-open import DecidableAndDetachable
-open import UF-Equiv
-open import UF-Subsingletons-FunExt
-open import TernaryBoehmRealsPrelude fe
-open import InfiniteSearch1 (dfunext (fe _ _))
+open import MLTT.Two-Properties hiding (zero-is-not-one)
+open import Naturals.Order
+open import Naturals.Addition renaming (_+_ to _+ℕ_)
+open import DedekindReals.IntegersB
+open import DedekindReals.IntegersOrder
+open import DedekindReals.IntegersAddition renaming (_+_ to _+ℤ_)
+open import DedekindReals.IntegersNegation renaming (-_  to  −ℤ_)
+open import UF.Subsingletons
+open import Naturals.Order
+open import NotionsOfDecidability.DecidableAndDetachable
+open import UF.Equiv
+open import UF.Subsingletons-FunExt
+open import Todd.TernaryBoehmRealsPrelude fe
+open import Todd.InfiniteSearch1 (dfunext (fe _ _))
   hiding (predicate;everywhere-decidable;decidable;trivial-predicate
          ;is-set)
-open import UF-ImageAndSurjection
-open import UF-Embeddings
+open import UF.ImageAndSurjection
+open import UF.Embeddings
 open ImageAndSurjection pt
 open propositional-truncations-exist pt
 
@@ -101,19 +101,19 @@ quotient-by-𝟙-equiv : {X : 𝓤 ̇ } → X → 𝟙 {𝓥} ≃ (X /𝟙) 𝓥
 quotient-by-𝟙-equiv = singletons-equiv-to-𝟙 ∘ (_ /𝟙-pointed-is-singleton)
 
 Identity : {X : 𝓤 ̇ } → is-set X → EqRel {𝓤} {𝓤} X
-Identity s = _≡_
+Identity s = _＝_
            , (λ _ _ → s)
            , (λ _     → refl)
            , (λ _ _   → _⁻¹)
            , (λ _ _ _ → _∙_)
 
-_/≡ : {𝓤 : Universe} → (X : 𝓤 ̇ ) → is-set X → 𝓤 ̇
-(X /≡) s = X / (Identity s)
+_/＝ : {𝓤 : Universe} → (X : 𝓤 ̇ ) → is-set X → 𝓤 ̇
+(X /＝) s = X / (Identity s)
 
 ispropfiber : {X : 𝓤 ̇ } → (s : is-set X) → (x : X)
             → is-prop (fiber (η/ (Identity s)) (η/ (Identity s) x))
 ispropfiber s x (_ , a) (_ , b)
- = {!!} {- to-subtype-≡ (λ _ → quotient-is-set (Identity s))
+ = {!!} {- to-subtype-＝ (λ _ → quotient-is-set (Identity s))
      (η/-relates-identified-points (Identity s) (a ∙ b ⁻¹)) 0 -}
 
 embedη/ : {X : 𝓤 ̇ } → (s : is-set X) → is-embedding (η/ (Identity s))
@@ -123,8 +123,8 @@ equivη/ : {X : 𝓤 ̇ } → (s : is-set X) → is-equiv (η/ (Identity s))
 equivη/ s = surjective-embeddings-are-equivs (η/ (Identity s))
               (embedη/ s) {!!} -- (η/-is-surjection (Identity s))
 
-quotient-by-≡-equiv : {X : 𝓤 ̇ } → (s : is-set X) → X ≃ (X /≡) s
-quotient-by-≡-equiv {𝓤} {X} s = η/ (Identity s) , equivη/ s
+quotient-by-＝-equiv : {X : 𝓤 ̇ } → (s : is-set X) → X ≃ (X /＝) s
+quotient-by-＝-equiv {𝓤} {X} s = η/ (Identity s) , equivη/ s
 
 Product : {X : 𝓤 ̇ } {Y : 𝓤' ̇ } → is-set X → is-set Y
         → EqRel {𝓤}  {𝓥}  X
@@ -141,7 +141,7 @@ Product s t (_≈x_ , ≈ix , ≈rx , ≈sx , ≈tx)
     → ≈tx x₁ x₂ x₃ x≈ x'≈ , ≈ty y₁ y₂ y₃ y≈ y'≈
 
 _≈_ : {X : 𝓤 ̇ } → (ℕ → X) → (ℕ → X) → ℕ → 𝓤 ̇
-(α ≈ β) n = (i : ℕ) → i <ℕ n → α i ≡ β i
+(α ≈ β) n = (i : ℕ) → i <ℕ n → α i ＝ β i
 
 Prefix : {X : 𝓤 ̇ } → is-set X → ℕ → EqRel {𝓤} {𝓤} (ℕ → X)
 Prefix s n = (λ α β → (α ≈ β) n)
@@ -157,14 +157,14 @@ Prefix s n = (λ α β → (α ≈ β) n)
                  → is-singleton ((ℕ→ X /≈ 0) s)
 ≈-0-is-singleton x s
  = {!!} {- ((λ _ → ⊤Ω) , ∣ {!!} ∣)
- , (λ (h , i) → to-subtype-≡ {!!} {!!}) -}
+ , (λ (h , i) → to-subtype-＝ {!!} {!!}) -}
 ```
 quotient-by-≈-equiv : {X : 𝓤 ̇ } → X → (s : is-set X)
                     → 𝟙 {𝓤 ⁺} ≃ (ℕ→ X /≈ 0) s
 quotient-by-≈-equiv {𝓤} {X} x s = f , (g , fg) , (g , gf)
  where
    f : 𝟙 → (ℕ→ X /≈ 0) s
-   f ⋆ = (λ _ → ⊤Ω) , ∣ (λ _ → x) , dfunext (fe _ _) (λ _ → to-subtype-≡ {!!} {!!}) ∣
+   f ⋆ = (λ _ → ⊤Ω) , ∣ (λ _ → x) , dfunext (fe _ _) (λ _ → to-subtype-＝ {!!} {!!}) ∣
    g : (ℕ→ X /≈ 0) s → 𝟙
    g _ = ⋆
    fg : f ∘ g ∼ id
@@ -198,11 +198,11 @@ Cons {𝓤} {X} s n
        (γ f))
  where
    γ : {(x , xs) (x' , xs') : X × (ℕ → X)}
-     → ((x ≡ x') × ((i : ℕ) → i <ℕ n → xs i ≡ xs' i))
+     → ((x ＝ x') × ((i : ℕ) → i <ℕ n → xs i ＝ xs' i))
      → (i : ℕ) → i <ℕ succ n
-     → (x :: xs) i ≡ (x' :: xs') i
-   γ (x≡ , xs≈) zero i<sn = x≡
-   γ (x≡ , xs≈) (succ i) i<sn = xs≈ i i<sn
+     → (x :: xs) i ＝ (x' :: xs') i
+   γ (x＝ , xs≈) zero i<sn = x＝
+   γ (x＝ , xs≈) (succ i) i<sn = xs≈ i i<sn
 
 quotient-by-≈-s-equiv : {X : 𝓤 ̇ } → X → (s : is-set X) (n : ℕ)
                       → X × ((ℕ→ X /≈ n) s) ≃ (ℕ→ X /≈ succ n) s
