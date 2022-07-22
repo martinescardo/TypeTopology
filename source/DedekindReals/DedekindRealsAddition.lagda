@@ -38,7 +38,7 @@ _+_ : ℝ → ℝ → ℝ
   x = ((L-x , R-x) , inhabited-left-x , inhabited-right-x , rounded-left-x , rounded-right-x , disjoint-x , located-x)
   
   L-z R-z : 𝓟 ℚ
-  L-z p = (∃ (r , s) ꞉ ℚ × ℚ , r ∈ L-x × s ∈ L-y × {!-t 1!}) , ∃-is-prop
+  L-z p = (∃ (r , s) ꞉ ℚ × ℚ , r ∈ L-x × s ∈ L-y × (p ＝ r ℚ+ s)) , ∃-is-prop
   R-z q = (∃ (r , s) ꞉ ℚ × ℚ , r ∈ R-x × s ∈ R-y × (q ＝ r ℚ+ s)) , ∃-is-prop
 
   inhabited-left-z : ∃ q ꞉ ℚ , q ∈ L-z
