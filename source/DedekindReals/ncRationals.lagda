@@ -19,11 +19,11 @@ open import UF.FunExt
 open import UF.Miscelanea 
 open import UF.Subsingletons 
 
-open import DedekindReals.IntegersAbs
-open import DedekindReals.IntegersB
-open import DedekindReals.IntegersHCF
-open import DedekindReals.IntegersMultiplication
-open import DedekindReals.IntegersOrder
+open import DedekindReals.Integers.Abs
+open import DedekindReals.Integers.Integers
+open import DedekindReals.Integers.HCF
+open import DedekindReals.Integers.Multiplication
+open import DedekindReals.Integers.Order
 open import Naturals.HCF
 open import Naturals.Division
 open import Naturals.Multiplication renaming (_*_ to _ℕ*_)

@@ -8,11 +8,11 @@ This file defines addition of integers, and commonly used properties used in pro
 
 open import MLTT.Spartan renaming (_+_ to _∔_) 
 
-open import DedekindReals.IntegersB
-open import DedekindReals.IntegersNegation
+open import DedekindReals.Integers.Integers
+open import DedekindReals.Integers.Negation
 open import Naturals.Addition renaming (_+_ to _ℕ+_)
 
-module DedekindReals.IntegersAddition where
+module DedekindReals.Integers.Addition where
 
 \end{code}
 

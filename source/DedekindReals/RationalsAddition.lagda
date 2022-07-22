@@ -12,7 +12,7 @@ open import MLTT.Spartan renaming (_+_ to _∔_)
 open import UF.Base hiding (_≈_) 
 open import UF.FunExt 
 
-open import DedekindReals.IntegersB
+open import DedekindReals.Integers.Integers
 open import DedekindReals.ncRationals
 open import DedekindReals.ncRationalsOperations renaming (_+_ to _ℚₙ+_)
 open import DedekindReals.Rationals
@@ -111,8 +111,8 @@ toℚ-+ fe p q = equiv→equality fe (p ℚₙ+ q) (p' ℚₙ+ q') conclusion
 ℚ-zero-right-neutral : Fun-Ext → (q : ℚ) → q + 0ℚ ＝ q
 ℚ-zero-right-neutral fe q = ℚ+-comm q 0ℚ ∙ (ℚ-zero-left-neutral fe q)
 
-open import DedekindReals.IntegersAddition renaming (_+_ to _ℤ+_)
-open import DedekindReals.IntegersMultiplication
+open import DedekindReals.Integers.Addition renaming (_+_ to _ℤ+_)
+open import DedekindReals.Integers.Multiplication
 
 add-same-denom : Fun-Ext → ((x , a) (y , a) : ℚₙ) → toℚ (x , a) + toℚ (y , a) ＝ toℚ (x ℤ+ y , a)
 add-same-denom fe (x , a) (y , b) = I ⁻¹ ∙ equiv→equality fe ((x , b) ℚₙ+ (y , b)) (x ℤ+ y , b) II

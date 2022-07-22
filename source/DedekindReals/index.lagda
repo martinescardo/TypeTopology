@@ -13,15 +13,7 @@ import DedekindReals.DedekindRealsProperties
 import DedekindReals.FieldAxioms
 -- import DedekindReals.FieldDedekindReals
 import DedekindReals.FieldRationals
-import DedekindReals.IntegersAbs
-import DedekindReals.IntegersAddition
-import DedekindReals.IntegersB
-import DedekindReals.IntegersDivision
-import DedekindReals.IntegersHCF
-import DedekindReals.IntegersMultiplication
-import DedekindReals.IntegersNegation
-import DedekindReals.IntegersOrder
-import DedekindReals.Matrices
+import DedekindReals.Integers.index
 import DedekindReals.MetricSpaceAltDef
 import DedekindReals.MetricSpaceDedekindReals
 import DedekindReals.MetricSpaceRationals

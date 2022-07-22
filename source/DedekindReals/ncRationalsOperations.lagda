@@ -11,11 +11,11 @@ open import Naturals.Properties
 open import UF.Base hiding (_≈_) 
 open import UF.Subsingletons 
 
-open import DedekindReals.IntegersB hiding (abs)
-open import DedekindReals.IntegersAbs 
-open import DedekindReals.IntegersAddition renaming (_+_ to _ℤ+_)
-open import DedekindReals.IntegersMultiplication renaming (_*_ to _ℤ*_)
-open import DedekindReals.IntegersNegation renaming (-_ to ℤ-_)
+open import DedekindReals.Integers.Integers hiding (abs)
+open import DedekindReals.Integers.Abs 
+open import DedekindReals.Integers.Addition renaming (_+_ to _ℤ+_)
+open import DedekindReals.Integers.Multiplication renaming (_*_ to _ℤ*_)
+open import DedekindReals.Integers.Negation renaming (-_ to ℤ-_)
 
 open import DedekindReals.ncRationals
 open import Naturals.Multiplication renaming (_*_ to _ℕ*_)

@@ -12,17 +12,17 @@ open import Notation.Order
 open import UF.Base 
 open import UF.Subsingletons 
 
-open import DedekindReals.IntegersB
-open import DedekindReals.IntegersAddition
-open import DedekindReals.IntegersNegation
-open import DedekindReals.IntegersDivision
-open import DedekindReals.IntegersMultiplication
-open import DedekindReals.IntegersAbs
+open import DedekindReals.Integers.Integers
+open import DedekindReals.Integers.Addition
+open import DedekindReals.Integers.Negation
+open import DedekindReals.Integers.Division
+open import DedekindReals.Integers.Multiplication
+open import DedekindReals.Integers.Abs
 open import Naturals.Division renaming (_∣_ to _ℕ∣_)
 open import Naturals.Multiplication renaming (_*_ to _ℕ*_) 
 open import Naturals.HCF
 
-module DedekindReals.IntegersHCF where
+module DedekindReals.Integers.HCF where
 
 ℤ-is-common-divisor : (d x y : ℤ) → 𝓤₀ ̇
 ℤ-is-common-divisor d x y = (d ∣ x) × (d ∣ y)

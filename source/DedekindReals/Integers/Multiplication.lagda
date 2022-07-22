@@ -11,11 +11,11 @@ open import MLTT.Spartan renaming (_+_ to _∔_)
 
 open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
 
-open import DedekindReals.IntegersB
-open import DedekindReals.IntegersAddition
-open import DedekindReals.IntegersNegation
+open import DedekindReals.Integers.Integers
+open import DedekindReals.Integers.Addition
+open import DedekindReals.Integers.Negation
 
-module DedekindReals.IntegersMultiplication where
+module DedekindReals.Integers.Multiplication where
 
 \end{code}
 

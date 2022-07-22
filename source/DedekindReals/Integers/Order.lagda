@@ -11,14 +11,14 @@ open import Notation.Order
 open import UF.Base 
 open import UF.Subsingletons
 
-open import DedekindReals.IntegersAbs
-open import DedekindReals.IntegersB
-open import DedekindReals.IntegersAddition
-open import DedekindReals.IntegersMultiplication
-open import DedekindReals.IntegersNegation
+open import DedekindReals.Integers.Abs
+open import DedekindReals.Integers.Integers
+open import DedekindReals.Integers.Addition
+open import DedekindReals.Integers.Multiplication
+open import DedekindReals.Integers.Negation
 open import Naturals.Addition renaming (_+_ to _ℕ+_)
 
-module DedekindReals.IntegersOrder where
+module DedekindReals.Integers.Order where
 
 \end{code}
 

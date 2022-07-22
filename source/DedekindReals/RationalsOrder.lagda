@@ -16,11 +16,11 @@ open import UF.Base hiding (_≈_)
 open import UF.FunExt 
 open import UF.Subsingletons 
 
-open import DedekindReals.IntegersAbs
-open import DedekindReals.IntegersAddition renaming (_+_ to _ℤ+_) hiding (_-_)
-open import DedekindReals.IntegersB
-open import DedekindReals.IntegersMultiplication renaming (_*_ to _ℤ*_)
-open import DedekindReals.IntegersOrder
+open import DedekindReals.Integers.Abs
+open import DedekindReals.Integers.Addition renaming (_+_ to _ℤ+_) hiding (_-_)
+open import DedekindReals.Integers.Integers
+open import DedekindReals.Integers.Multiplication renaming (_*_ to _ℤ*_)
+open import DedekindReals.Integers.Order
 open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
 open import DedekindReals.ncRationals
 open import DedekindReals.ncRationalsOperations renaming (_+_ to _ℚₙ+_ ; _*_ to _ℚₙ*_) hiding (-_)

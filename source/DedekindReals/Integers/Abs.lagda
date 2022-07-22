@@ -16,12 +16,12 @@ open import UF.Subsingletons
 -- open import MLTT.Unit-Properties 
 
 open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
-open import DedekindReals.IntegersMultiplication
-open import DedekindReals.IntegersNegation
-open import DedekindReals.IntegersAddition
-open import DedekindReals.IntegersB
+open import DedekindReals.Integers.Multiplication
+open import DedekindReals.Integers.Negation
+open import DedekindReals.Integers.Addition
+open import DedekindReals.Integers.Integers
 
-module DedekindReals.IntegersAbs where
+module DedekindReals.Integers.Abs where
 
 absℤ : ℤ → ℤ
 absℤ (pos x)     = pos x

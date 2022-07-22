@@ -11,11 +11,11 @@ open import Notation.Order
 open import UF.Base 
 open import UF.Subsingletons 
 
-open import DedekindReals.IntegersAbs
-open import DedekindReals.IntegersAddition renaming (_+_ to _ℤ+_)
-open import DedekindReals.IntegersB
-open import DedekindReals.IntegersMultiplication renaming (_*_ to _ℤ*_)
-open import DedekindReals.IntegersOrder 
+open import DedekindReals.Integers.Abs
+open import DedekindReals.Integers.Addition renaming (_+_ to _ℤ+_)
+open import DedekindReals.Integers.Integers
+open import DedekindReals.Integers.Multiplication renaming (_*_ to _ℤ*_)
+open import DedekindReals.Integers.Order 
 open import Naturals.Addition renaming (_+_ to _ℕ+_)
 open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
 open import DedekindReals.ncRationals

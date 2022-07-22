@@ -13,9 +13,9 @@ open import UF.Base hiding (_≈_)
 open import UF.FunExt 
 open import Naturals.Properties 
 
-open import DedekindReals.IntegersAbs
-open import DedekindReals.IntegersB
-open import DedekindReals.IntegersMultiplication renaming (_*_ to _ℤ*_)
+open import DedekindReals.Integers.Abs
+open import DedekindReals.Integers.Integers
+open import DedekindReals.Integers.Multiplication renaming (_*_ to _ℤ*_)
 open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
 open import DedekindReals.ncRationals
 open import DedekindReals.ncRationalsOperations renaming (_*_ to _ℚₙ*_ ; _+_ to _ℚₙ+_)

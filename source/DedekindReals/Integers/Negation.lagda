@@ -8,9 +8,9 @@ This file defines negation of integers.
 
 open import MLTT.Spartan renaming (_+_ to _∔_) 
 
-open import DedekindReals.IntegersB
+open import DedekindReals.Integers.Integers
 
-module DedekindReals.IntegersNegation where
+module DedekindReals.Integers.Negation where
 
 -_ : ℤ → ℤ
 -_ (pos 0)        = pos 0

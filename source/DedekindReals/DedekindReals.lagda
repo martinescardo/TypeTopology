@@ -233,7 +233,7 @@ instance
  canonical-map-ℚ-to-ℝ : Canonical-Map ℚ ℝ
  ι {{canonical-map-ℚ-to-ℝ}} = embedding-ℚ-to-ℝ
 
-open import DedekindReals.IntegersB
+open import DedekindReals.Integers.Integers
 ℤ-to-ℝ : ℤ → ℝ
 ℤ-to-ℝ z = ι (ι z)
 

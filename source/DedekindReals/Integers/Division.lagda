@@ -13,16 +13,16 @@ open import Notation.Order
 open import UF.Base 
 open import UF.Subsingletons 
 
-open import DedekindReals.IntegersAddition
-open import DedekindReals.IntegersB
-open import DedekindReals.IntegersAbs
-open import DedekindReals.IntegersNegation
-open import DedekindReals.IntegersOrder
-open import DedekindReals.IntegersMultiplication renaming (_*_ to _ℤ*_) 
+open import DedekindReals.Integers.Addition
+open import DedekindReals.Integers.Integers
+open import DedekindReals.Integers.Abs
+open import DedekindReals.Integers.Negation
+open import DedekindReals.Integers.Order
+open import DedekindReals.Integers.Multiplication renaming (_*_ to _ℤ*_) 
 open import Naturals.Division renaming (_∣_ to _ℕ∣_)
 open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
 
-module DedekindReals.IntegersDivision where
+module DedekindReals.Integers.Division where
 
 ppnnp-lemma : (a b : ℕ) → Σ c ꞉ ℕ , negsucc a + negsucc b ＝ negsucc c
 ppnnp-lemma a = induction base step

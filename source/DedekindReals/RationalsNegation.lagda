@@ -11,10 +11,10 @@ open import MLTT.Spartan renaming (_+_ to _∔_)
 open import UF.Base hiding (_≈_) 
 open import UF.FunExt 
 
-open import DedekindReals.IntegersB
-open import DedekindReals.IntegersAddition renaming (_+_ to _ℤ+_) hiding (_-_)
-open import DedekindReals.IntegersMultiplication renaming (_*_ to _ℤ*_)
-open import DedekindReals.IntegersNegation renaming (-_ to ℤ-_)
+open import DedekindReals.Integers.Integers
+open import DedekindReals.Integers.Addition renaming (_+_ to _ℤ+_) hiding (_-_)
+open import DedekindReals.Integers.Multiplication renaming (_*_ to _ℤ*_)
+open import DedekindReals.Integers.Negation renaming (-_ to ℤ-_)
 open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
 open import Naturals.Properties
 open import DedekindReals.ncRationals

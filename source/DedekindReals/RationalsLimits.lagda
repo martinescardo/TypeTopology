@@ -119,7 +119,7 @@ constant-sequence-converges q ε l = 0 , (λ n l₂ → transport (_< ε) I l)
   I : 0ℚ ＝ ℚ-metric q q
   I = ℚ-self-dist fe q ⁻¹
 
-open import DedekindReals.IntegersB hiding (abs)
+open import DedekindReals.Integers.Integers hiding (abs)
 open import DedekindReals.ncRationalsOrder
 open import DedekindReals.ncRationalsOperations renaming (_*_ to _ℚₙ*_ ; _+_ to _ℚₙ+_ ; -_ to ℚₙ-_ ; abs to ℚₙ-abs) 
 
@@ -135,9 +135,9 @@ open import Naturals.Division
 open import Naturals.Addition renaming (_+_ to _ℕ+_)
 open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
 open import Naturals.Properties 
-open import DedekindReals.IntegersMultiplication renaming (_*_ to _ℤ*_)
-open import DedekindReals.IntegersAddition renaming (_+_ to _ℤ+_) hiding (_-_)
-open import DedekindReals.IntegersOrder
+open import DedekindReals.Integers.Multiplication renaming (_*_ to _ℤ*_)
+open import DedekindReals.Integers.Addition renaming (_+_ to _ℤ+_) hiding (_-_)
+open import DedekindReals.Integers.Order
 
 positive-order-flip : (m n a b : ℕ) → ((pos (succ m)) , a) ℚₙ< ((pos (succ n)) , b)
                                     → ((pos (succ a)) , m) ℚₙ> ((pos (succ b)) , n)
