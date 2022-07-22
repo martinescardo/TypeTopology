@@ -4,7 +4,7 @@ Andrew Sneap
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-module DedekindReals.AndrewIndex where
+module DedekindReals.index where
 
 import DedekindReals.ContinuousExtensionTheorem
 import DedekindReals.DedekindReals
