@@ -15,13 +15,12 @@ open import UF.Subsingletons --TypeTopology
 open import DedekindReals.IntegersB
 open import DedekindReals.IntegersAddition
 open import DedekindReals.IntegersNegation
-
 open import DedekindReals.IntegersDivision
 open import DedekindReals.IntegersMultiplication
 open import DedekindReals.IntegersAbs
 open import DedekindReals.NaturalsDivision renaming (_∣_ to _ℕ∣_)
 open import Naturals.Multiplication renaming (_*_ to _ℕ*_) 
-open import DedekindReals.HCF
+open import Naturals.HCF
 
 module DedekindReals.IntegersHCF where
 

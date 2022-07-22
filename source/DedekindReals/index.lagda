@@ -15,7 +15,6 @@ import DedekindReals.DedekindRealsProperties
 import DedekindReals.FieldAxioms
 -- import DedekindReals.FieldDedekindReals
 import DedekindReals.FieldRationals
-import DedekindReals.HCF
 import DedekindReals.IntegersAbs
 import DedekindReals.IntegersAddition
 import DedekindReals.IntegersB

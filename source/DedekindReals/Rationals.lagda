@@ -17,7 +17,7 @@ open import UF.FunExt -- TypeTopology
 open import UF.Miscelanea --TypeTopology
 open import UF.Subsingletons --TypeTopology
 
-open import DedekindReals.HCF
+open import Naturals.HCF
 open import DedekindReals.IntegersAbs
 open import DedekindReals.IntegersB
 open import DedekindReals.IntegersMultiplication renaming (_*_ to _ℤ*_)

@@ -24,7 +24,7 @@ open import DedekindReals.IntegersB
 open import DedekindReals.IntegersHCF
 open import DedekindReals.IntegersMultiplication
 open import DedekindReals.IntegersOrder
-open import DedekindReals.HCF
+open import Naturals.HCF
 open import DedekindReals.NaturalsDivision
 open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
 
