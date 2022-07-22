@@ -6,10 +6,10 @@ In this file I prove that the rationals are an ordered field.
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import MLTT.Spartan renaming (_+_ to _∔_) --TypeTopology
+open import MLTT.Spartan renaming (_+_ to _∔_) 
 
-open import Notation.Order --TypeTopology
-open import UF.FunExt -- TypeTopology
+open import Notation.Order 
+open import UF.FunExt 
 
 open import DedekindReals.FieldAxioms
 open import DedekindReals.Rationals

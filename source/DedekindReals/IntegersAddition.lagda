@@ -6,7 +6,7 @@ This file defines addition of integers, and commonly used properties used in pro
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import MLTT.Spartan renaming (_+_ to _∔_) --TypeTopology
+open import MLTT.Spartan renaming (_+_ to _∔_) 
 
 open import DedekindReals.IntegersB
 open import DedekindReals.IntegersNegation

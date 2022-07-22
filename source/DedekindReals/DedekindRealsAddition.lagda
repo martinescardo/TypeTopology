@@ -6,12 +6,12 @@ show that the Reals are a group with respect to addition.
 \begin{code}[hide]
 {-# OPTIONS --without-K --exact-split --safe --experimental-lossy-unification #-}
 
-open import MLTT.Spartan renaming (_+_ to _∔_) -- TypeTopology
-open import UF.Base -- TypeTopology
-open import UF.FunExt -- TypeTopology
-open import UF.Subsingletons -- TypeTopology
-open import UF.PropTrunc -- TypeTopology
-open import Notation.Order -- TypeTopology
+open import MLTT.Spartan renaming (_+_ to _∔_) 
+open import UF.Base 
+open import UF.FunExt 
+open import UF.Subsingletons 
+open import UF.PropTrunc 
+open import Notation.Order 
 
 open import UF.Powerset
 open import DedekindReals.DedekindRealsProperties
@@ -38,7 +38,7 @@ _+_ : ℝ → ℝ → ℝ
   x = ((L-x , R-x) , inhabited-left-x , inhabited-right-x , rounded-left-x , rounded-right-x , disjoint-x , located-x)
   
   L-z R-z : 𝓟 ℚ
-  L-z p = (∃ (r , s) ꞉ ℚ × ℚ , r ∈ L-x × s ∈ L-y × (p ＝ r ℚ+ s)) , ∃-is-prop
+  L-z p = (∃ (r , s) ꞉ ℚ × ℚ , r ∈ L-x × s ∈ L-y × {!-t 1!}) , ∃-is-prop
   R-z q = (∃ (r , s) ꞉ ℚ × ℚ , r ∈ R-x × s ∈ R-y × (q ＝ r ℚ+ s)) , ∃-is-prop
 
   inhabited-left-z : ∃ q ꞉ ℚ , q ∈ L-z

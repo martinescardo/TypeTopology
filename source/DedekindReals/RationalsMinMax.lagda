@@ -5,12 +5,12 @@ In this file I define min and max for rationals.
 \begin{code}[hide]
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import MLTT.Spartan renaming (_+_ to _∔_) -- TypeTopology
+open import MLTT.Spartan renaming (_+_ to _∔_) 
 
 open import Notation.Order
 open import UF.Base --Typetopology
-open import UF.FunExt --TypeTopology
-open import MLTT.Plus-Properties --TypeTopology
+open import UF.FunExt 
+open import MLTT.Plus-Properties 
 
 open import DedekindReals.Rationals
 open import DedekindReals.RationalsOrder

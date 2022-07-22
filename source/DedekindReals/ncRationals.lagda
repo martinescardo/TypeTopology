@@ -9,15 +9,15 @@ possibility of a zero-denominator.
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import MLTT.Spartan renaming (_+_ to _∔_) --TypeTopology
+open import MLTT.Spartan renaming (_+_ to _∔_) 
 
-open import TypeTopology.DiscreteAndSeparated --TypeTopology
+open import TypeTopology.DiscreteAndSeparated 
 open import Naturals.Properties --TypeToplogy
-open import TypeTopology.SigmaDiscreteAndTotallySeparated -- TypeTopology
-open import UF.Base hiding (_≈_)  --TypeTopology
-open import UF.FunExt --TypeTopology
-open import UF.Miscelanea --TypeTopology
-open import UF.Subsingletons --TypeTopology
+open import TypeTopology.SigmaDiscreteAndTotallySeparated 
+open import UF.Base hiding (_≈_)  
+open import UF.FunExt 
+open import UF.Miscelanea 
+open import UF.Subsingletons 
 
 open import DedekindReals.IntegersAbs
 open import DedekindReals.IntegersB

@@ -3,17 +3,17 @@ Andrew Sneap
 In this file I define the types of complete metric spaces, along with
 Cauchy and convergent sequences.
 
-\begin{code}[hide]
+\begin{code}
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import MLTT.Spartan renaming (_+_ to _∔_)  -- TypeTopology
+open import MLTT.Spartan renaming (_+_ to _∔_)  
 
-open import Naturals.Addition renaming (_+_ to _ℕ+_) -- TypeTopology
-open import Naturals.Order --TypeTopology
-open import Notation.Order -- TypeTopology
-open import UF.FunExt -- TypeTopology
-open import UF.PropTrunc --TypeTopology
-open import UF.Subsingletons --TypeTopology
+open import Naturals.Addition renaming (_+_ to _ℕ+_) 
+open import Naturals.Order 
+open import Notation.Order 
+open import UF.FunExt 
+open import UF.PropTrunc 
+open import UF.Subsingletons 
 
 open import DedekindReals.Rationals
 open import DedekindReals.RationalsAddition
@@ -59,15 +59,15 @@ metric-space X =
  Σ B ꞉ (X → X → (ε : ℚ) → 0ℚ < ε → 𝓤₀ ̇) , m1a X B × m1b X B × m2 X B × m3 X B × m4 X B
 \end{code}
 
-%A space is a complete metric space if every cauchy sequence in a metric space is also a convergent sequence.
+A space is a complete metric space if every cauchy sequence in a metric space is also a convergent sequence.
 
-%Convergent and Cauchy Sequences are also defined below. In a metric space, all convergent sequences are cauchy sequences.
+Convergent and Cauchy Sequences are also defined below. In a metric space, all convergent sequences are cauchy sequences.
 
-%A definition is also given for what it means for a function to be continous, and what it means for a subspace of a space to be dense.
+A definition is also given for what it means for a function to be continous, and what it means for a subspace of a space to be dense.
 
-%It is also useful to define the type of positive rationals.
+It is also useful to define the type of positive rationals.
 
-\begin{code}[hide]
+\begin{code}
 
 ℚ₊ : 𝓤₀ ̇
 ℚ₊ = Σ ε ꞉ ℚ , 0ℚ < ε
@@ -98,5 +98,6 @@ cauchy→convergent X m S = cauchy-sequence X m S → convergent-sequence X m S
 
 complete-metric-space : {𝓤 : Universe} → (X : 𝓤 ̇) → 𝓤₁ ⊔ 𝓤 ̇
 complete-metric-space X = Σ m ꞉ (metric-space X) , ((S : ℕ → X) → cauchy→convergent X m S)
+
 \end{code}
 

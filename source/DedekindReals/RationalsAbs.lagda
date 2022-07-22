@@ -6,12 +6,12 @@ and prove properties of the absolute value.
 \begin{code}[hide]
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import MLTT.Spartan renaming (_+_ to _∔_) -- TypeTopology
+open import MLTT.Spartan renaming (_+_ to _∔_) 
 
-open import Notation.Order --TypeTopology
-open import UF.FunExt -- TypeTopology
-open import UF.Base hiding (_≈_) -- TypeTopology
-open import UF.Subsingletons -- TypeTopology
+open import Notation.Order 
+open import UF.FunExt 
+open import UF.Base hiding (_≈_) 
+open import UF.Subsingletons 
 
 open import DedekindReals.IntegersAbs
 open import DedekindReals.IntegersAddition renaming (_+_ to _ℤ+_) hiding (_-_)

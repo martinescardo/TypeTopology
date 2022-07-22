@@ -8,7 +8,7 @@ canonical inclusion of natural numbers in the integers.
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import MLTT.Spartan renaming (_+_ to _∔_) --TypeTopology
+open import MLTT.Spartan renaming (_+_ to _∔_) 
 open import TypeTopology.DiscreteAndSeparated
 open import Naturals.Properties
 open import MLTT.Unit-Properties

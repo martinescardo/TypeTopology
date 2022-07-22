@@ -4,10 +4,10 @@ Andrew Sneap
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import MLTT.Spartan renaming (_+_ to _∔_) -- TypeTopology
+open import MLTT.Spartan renaming (_+_ to _∔_) 
 
 open import Naturals.Order 
-open import Notation.Order --TypeTopology
+open import Notation.Order 
 open import UF.Base 
 open import UF.Subsingletons
 

@@ -8,14 +8,14 @@ and that 1/(n+1) converges to 0.
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import MLTT.Spartan renaming (_+_ to _∔_)  -- TypeTopology
+open import MLTT.Spartan renaming (_+_ to _∔_)  
 
-open import Notation.Order --TypeTopology
-open import UF.Base --TypeTopology
-open import UF.Equiv --TypeTopology
-open import UF.FunExt --TypeTopology
-open import UF.Subsingletons -- TypeTopology
-open import UF.PropTrunc -- TypeTopology
+open import Notation.Order 
+open import UF.Base 
+open import UF.Equiv 
+open import UF.FunExt 
+open import UF.Subsingletons 
+open import UF.PropTrunc 
 
 open import DedekindReals.Rationals
 open import DedekindReals.RationalsAddition
@@ -134,7 +134,7 @@ embedding-1/ℕ-to-ℚ n = toℚ (pos 1 , n)
 open import DedekindReals.NaturalsDivision
 open import Naturals.Addition renaming (_+_ to _ℕ+_)
 open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
-open import Naturals.Properties -- TypeTopology
+open import Naturals.Properties 
 open import DedekindReals.IntegersMultiplication renaming (_*_ to _ℤ*_)
 open import DedekindReals.IntegersAddition renaming (_+_ to _ℤ+_) hiding (_-_)
 open import DedekindReals.IntegersOrder

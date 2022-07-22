@@ -6,10 +6,10 @@ In this file I define negation of real numbers.
 
 {-# OPTIONS --without-K --exact-split --safe --experimental-lossy-unification #-}
 
-open import MLTT.Spartan renaming (_+_ to _∔_) --TypeTopology
+open import MLTT.Spartan renaming (_+_ to _∔_) 
 
-open import UF.Base hiding (_≈_) --TypeTopology
-open import UF.FunExt --TypeTopology
+open import UF.Base hiding (_≈_) 
+open import UF.FunExt 
 
 open import DedekindReals.IntegersB
 open import DedekindReals.IntegersAddition renaming (_+_ to _ℤ+_) hiding (_-_)

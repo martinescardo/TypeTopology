@@ -6,15 +6,15 @@ In this file I define order of rationals, and prove many properties of order.
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import MLTT.Spartan renaming (_+_ to _∔_) --TypeTopology
+open import MLTT.Spartan renaming (_+_ to _∔_) 
 
-open import Naturals.Properties --TypeTopology
-open import Notation.Order --TypeTopology
-open import Naturals.Addition renaming (_+_ to _ℕ+_) --TypeTopology
-open import MLTT.Plus-Properties --TypeTopology
-open import UF.Base hiding (_≈_) --TypeTopology
-open import UF.FunExt --TypeTopology
-open import UF.Subsingletons --TypeTopology
+open import Naturals.Properties 
+open import Notation.Order 
+open import Naturals.Addition renaming (_+_ to _ℕ+_) 
+open import MLTT.Plus-Properties 
+open import UF.Base hiding (_≈_) 
+open import UF.FunExt 
+open import UF.Subsingletons 
 
 open import DedekindReals.IntegersAbs
 open import DedekindReals.IntegersAddition renaming (_+_ to _ℤ+_) hiding (_-_)

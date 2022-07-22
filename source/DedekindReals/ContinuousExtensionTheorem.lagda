@@ -8,7 +8,7 @@ towards proving the continuous extension theorem.
 
 {-# OPTIONS --without-K --exact-split --safe --experimental-lossy-unification #-}
 
-open import MLTT.Spartan renaming (_+_ to _∔_) --TypeTopology
+open import MLTT.Spartan renaming (_+_ to _∔_) 
 
 open import Notation.CanonicalMap
 open import UF.Base

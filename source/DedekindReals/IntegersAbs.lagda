@@ -7,13 +7,13 @@ of abs, along with positive and negative properties of integers.
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import MLTT.Spartan renaming (_+_ to _∔_) --TypeTopology
+open import MLTT.Spartan renaming (_+_ to _∔_) 
 
-open import TypeTopology.DiscreteAndSeparated -- TypeTopology
-open import Naturals.Properties --TypeTopology
-open import UF.Miscelanea -- TypeTopology
-open import UF.Subsingletons --TypeTopology
--- open import MLTT.Unit-Properties -- TypeTopology
+open import TypeTopology.DiscreteAndSeparated 
+open import Naturals.Properties 
+open import UF.Miscelanea 
+open import UF.Subsingletons 
+-- open import MLTT.Unit-Properties 
 
 open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
 open import DedekindReals.IntegersMultiplication

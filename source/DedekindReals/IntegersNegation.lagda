@@ -6,7 +6,7 @@ This file defines negation of integers.
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import MLTT.Spartan renaming (_+_ to _∔_) --TypeTopology
+open import MLTT.Spartan renaming (_+_ to _∔_) 
 
 open import DedekindReals.IntegersB
 

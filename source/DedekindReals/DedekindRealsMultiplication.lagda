@@ -3,13 +3,13 @@ Andrew Sneap
 \begin{code}
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import MLTT.Spartan renaming (_+_ to _∔_) -- TypeTopology
+open import MLTT.Spartan renaming (_+_ to _∔_) 
 
 open import Notation.Order
-open import UF.PropTrunc -- TypeTopology
-open import UF.Subsingletons --TypeTopology
-open import UF.FunExt -- TypeTopology
-open import UF.Powerset -- TypeTopology
+open import UF.PropTrunc 
+open import UF.Subsingletons 
+open import UF.FunExt 
+open import UF.Powerset 
 
 open import DedekindReals.Rationals
 open import DedekindReals.RationalsOrder

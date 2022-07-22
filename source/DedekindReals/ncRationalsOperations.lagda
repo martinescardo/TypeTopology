@@ -4,12 +4,12 @@ Andrew Sneap
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import MLTT.Spartan renaming (_+_ to _∔_) --TypeTopology
+open import MLTT.Spartan renaming (_+_ to _∔_) 
 
-open import Naturals.Addition renaming (_+_ to _ℕ+_) -- TypeTopology
-open import Naturals.Properties -- TypeTopology
-open import UF.Base hiding (_≈_) -- TypeTopology
-open import UF.Subsingletons -- TypeTopology
+open import Naturals.Addition renaming (_+_ to _ℕ+_) 
+open import Naturals.Properties 
+open import UF.Base hiding (_≈_) 
+open import UF.Subsingletons 
 
 open import DedekindReals.IntegersB hiding (abs)
 open import DedekindReals.IntegersAbs 

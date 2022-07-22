@@ -7,11 +7,11 @@ properties of multiplication.
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import MLTT.Spartan renaming (_+_ to _∔_) --TypeTopology
+open import MLTT.Spartan renaming (_+_ to _∔_) 
 
-open import UF.Base hiding (_≈_) --TypeTopology
-open import UF.FunExt --TypeTopology
-open import Naturals.Properties -- TypeTopology
+open import UF.Base hiding (_≈_) 
+open import UF.FunExt 
+open import Naturals.Properties 
 
 open import DedekindReals.IntegersAbs
 open import DedekindReals.IntegersB

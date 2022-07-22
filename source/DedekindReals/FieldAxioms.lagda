@@ -7,7 +7,7 @@ In this file I define the constructive field axioms.
 {-# OPTIONS --without-K --exact-split --safe #-}
 
 
-open import MLTT.Spartan renaming (_+_ to _∔_) -- TypeTopology
+open import MLTT.Spartan renaming (_+_ to _∔_) 
 
 open import UF.Subsingletons
 

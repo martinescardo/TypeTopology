@@ -4,12 +4,12 @@
 
 {-# OPTIONS --without-K --exact-split --safe --experimental-lossy-unification #-}
 
-open import MLTT.Spartan renaming (_+_ to _∔_) --TypeTopology
+open import MLTT.Spartan renaming (_+_ to _∔_) 
 
-open import UF.PropTrunc --TypeTopology
-open import UF.FunExt --TypeTopology
-open import UF.Subsingletons --TypeTopology
-open import Notation.Order --TypeTopology
+open import UF.PropTrunc 
+open import UF.FunExt 
+open import UF.Subsingletons 
+open import Notation.Order 
 
 open import DedekindReals.FieldAxioms
 

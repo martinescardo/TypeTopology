@@ -6,16 +6,16 @@ In this file I define rational numbers.
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import MLTT.Spartan renaming (_+_ to _∔_) --TypeTopology
+open import MLTT.Spartan renaming (_+_ to _∔_) 
 
-open import Notation.CanonicalMap --TypeTopology
-open import TypeTopology.DiscreteAndSeparated --TypeTopology
-open import TypeTopology.SigmaDiscreteAndTotallySeparated --TypeTopology
-open import Naturals.Properties --TypeTopology
+open import Notation.CanonicalMap 
+open import TypeTopology.DiscreteAndSeparated 
+open import TypeTopology.SigmaDiscreteAndTotallySeparated 
+open import Naturals.Properties 
 open import UF.Base hiding (_≈_)
-open import UF.FunExt -- TypeTopology
-open import UF.Miscelanea --TypeTopology
-open import UF.Subsingletons --TypeTopology
+open import UF.FunExt 
+open import UF.Miscelanea 
+open import UF.Subsingletons 
 
 open import Naturals.HCF
 open import DedekindReals.IntegersAbs

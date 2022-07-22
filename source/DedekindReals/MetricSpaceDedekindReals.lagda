@@ -6,16 +6,16 @@ The core result (that cauchy sequences converge) requires cleaning.
 \begin{code}[hide]
 {-# OPTIONS --without-K --exact-split --safe --experimental-lossy-unification #-}
 
-open import MLTT.Spartan renaming (_+_ to _∔_) -- TypeTopology
+open import MLTT.Spartan renaming (_+_ to _∔_) 
 
-open import Notation.Order --TypeTopology
-open import UF.Base -- TypeTopology
-open import UF.FunExt -- TypeTopology
-open import UF.Powerset -- TypeTopology
-open import UF.PropTrunc -- TypeTopology
-open import UF.Subsingletons -- TypeTopology
+open import Notation.Order 
+open import UF.Base 
+open import UF.FunExt 
+open import UF.Powerset 
+open import UF.PropTrunc 
+open import UF.Subsingletons 
 
-open import Naturals.Order hiding (max ;  max-comm ;  max-assoc) -- TypeTopology
+open import Naturals.Order hiding (max ;  max-comm ;  max-assoc) 
 open import DedekindReals.RationalsAddition
 open import DedekindReals.Rationals
 open import DedekindReals.RationalsAbs

@@ -7,7 +7,7 @@ properties of multiplication.
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import MLTT.Spartan renaming (_+_ to _∔_) --TypeTopology
+open import MLTT.Spartan renaming (_+_ to _∔_) 
 
 open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
 

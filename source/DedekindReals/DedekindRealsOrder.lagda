@@ -6,17 +6,17 @@ some key properties.
 \begin{code}[hide]
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import MLTT.Spartan renaming (_+_ to _∔_) -- TypeTopology
+open import MLTT.Spartan renaming (_+_ to _∔_) 
 
 open import Notation.CanonicalMap
 open import Notation.Order
 open import DedekindReals.RationalsOrder
 
-open import UF.FunExt -- TypeTopology
-open import UF.PropTrunc -- TypeTopology
-open import UF.Powerset -- TypeTopology
-open import UF.Subsingletons --TypeTopology
-open import UF.Subsingletons-FunExt --TypeTopology
+open import UF.FunExt 
+open import UF.PropTrunc 
+open import UF.Powerset 
+open import UF.Subsingletons 
+open import UF.Subsingletons-FunExt 
 
 open import DedekindReals.Rationals
 
@@ -27,7 +27,7 @@ module DedekindReals.DedekindRealsOrder
        where
 
 open import DedekindReals.DedekindReals pe pt fe
-open PropositionalTruncation pt -- TypeTopology
+open PropositionalTruncation pt 
 
 _<ℝ_ : ℝ → ℝ → 𝓤₀ ̇
 x <ℝ y = ∃ q ꞉ ℚ , (x < q) × (q < y)
