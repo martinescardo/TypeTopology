@@ -11,9 +11,9 @@ open import UF.Subsingletons
 open import UF.FunExt 
 open import UF.Powerset 
 
-open import DedekindReals.Rationals
-open import DedekindReals.RationalsOrder
-open import DedekindReals.RationalsMinMax
+open import DedekindReals.Rationals.
+open import DedekindReals.Rationals.Order
+open import DedekindReals.Rationals.MinMax
 
 module DedekindReals.DedekindRealsMultiplication
          (pe : Prop-Ext) 

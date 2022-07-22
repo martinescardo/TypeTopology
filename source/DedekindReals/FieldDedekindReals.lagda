@@ -32,7 +32,7 @@ DedekindRealsOrderedField' : Ordered-Field 𝓤₁ { 𝓤₀ } { 𝓤₀ }
 DedekindRealsOrderedField' = (ℝ , DedekindRealsField) , DedekindRealsOrderedField
 
 {-
-open import DedekindReals.Rationals
+open import DedekindReals.Rationals.
 
 DedekindRealsArchimedeanOrderedField : ArchimedeanOrderedField 𝓤₁
 DedekindRealsArchimedeanOrderedField = DedekindRealsOrderedField' , I
