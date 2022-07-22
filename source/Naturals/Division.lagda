@@ -18,7 +18,7 @@ open import UF.Base
 open import UF.Miscelanea
 open import UF.Subsingletons
 
-module DedekindReals.NaturalsDivision where
+module Naturals.Division where
 
 \end{code}
 

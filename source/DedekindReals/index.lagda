@@ -1,5 +1,3 @@
-Andrew Sneap
-
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe #-}
@@ -27,7 +25,6 @@ import DedekindReals.Matrices
 import DedekindReals.MetricSpaceAltDef
 import DedekindReals.MetricSpaceDedekindReals
 import DedekindReals.MetricSpaceRationals
-import DedekindReals.NaturalsDivision
 import DedekindReals.Rationals
 import DedekindReals.RationalsAbs
 import DedekindReals.RationalsAddition

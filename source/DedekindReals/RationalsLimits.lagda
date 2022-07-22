@@ -131,7 +131,7 @@ embedding-ℕ-to-ℚ n = toℚ (pos n , 0)
 embedding-1/ℕ-to-ℚ : ℕ → ℚ
 embedding-1/ℕ-to-ℚ n = toℚ (pos 1 , n)
 
-open import DedekindReals.NaturalsDivision
+open import Naturals.Division
 open import Naturals.Addition renaming (_+_ to _ℕ+_)
 open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
 open import Naturals.Properties 

@@ -9,7 +9,7 @@ that the Euclidean Algorithm produces HCF's.
 open import MLTT.Spartan renaming (_+_ to _∔_) 
 
 open import Naturals.Addition
-open import DedekindReals.NaturalsDivision
+open import Naturals.Division
 open import Naturals.Multiplication
 open import Naturals.Properties
 open import Naturals.Order 

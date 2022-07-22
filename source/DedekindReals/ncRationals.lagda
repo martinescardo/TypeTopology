@@ -25,7 +25,7 @@ open import DedekindReals.IntegersHCF
 open import DedekindReals.IntegersMultiplication
 open import DedekindReals.IntegersOrder
 open import Naturals.HCF
-open import DedekindReals.NaturalsDivision
+open import Naturals.Division
 open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
 
 module DedekindReals.ncRationals where

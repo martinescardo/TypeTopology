@@ -23,7 +23,7 @@ open import DedekindReals.IntegersB
 open import DedekindReals.IntegersMultiplication renaming (_*_ to _ℤ*_)
 open import DedekindReals.IntegersNegation
 open import DedekindReals.IntegersOrder
-open import DedekindReals.NaturalsDivision
+open import Naturals.Division
 open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
 open import DedekindReals.ncRationals
 

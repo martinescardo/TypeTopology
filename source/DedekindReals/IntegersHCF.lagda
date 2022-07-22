@@ -18,7 +18,7 @@ open import DedekindReals.IntegersNegation
 open import DedekindReals.IntegersDivision
 open import DedekindReals.IntegersMultiplication
 open import DedekindReals.IntegersAbs
-open import DedekindReals.NaturalsDivision renaming (_∣_ to _ℕ∣_)
+open import Naturals.Division renaming (_∣_ to _ℕ∣_)
 open import Naturals.Multiplication renaming (_*_ to _ℕ*_) 
 open import Naturals.HCF
 
