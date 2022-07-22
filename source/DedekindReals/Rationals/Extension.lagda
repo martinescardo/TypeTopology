@@ -20,10 +20,10 @@ open import UF.Powerset
 open import UF.Subsingletons 
 open import UF.Subsingletons-FunExt 
 
-open import DedekindReals.Rationals
-open import DedekindReals.RationalsOrder
+open import DedekindReals.Rationals.Rationals
+open import DedekindReals.Rationals.Order
 
-module DedekindReals.RationalsExtension
+module DedekindReals.Rationals.Extension
   (pe : Prop-Ext)
   (pt : propositional-truncations-exist)
   (fe : Fun-Ext)
@@ -273,8 +273,8 @@ diagram-commutes f g f-order-preserving f-g-bijective q = ℝ-equality' ((f̂ �
 
 \begin{code}[hide]
 
-open import DedekindReals.RationalsAddition
-open import DedekindReals.RationalsNegation
+open import DedekindReals.Rationals.Addition
+open import DedekindReals.Rationals.Negation
 
 ℚ-succ : ℚ → ℚ
 ℚ-succ q = q + 1ℚ

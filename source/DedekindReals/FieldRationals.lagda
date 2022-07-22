@@ -12,11 +12,11 @@ open import Notation.Order
 open import UF.FunExt 
 
 open import DedekindReals.FieldAxioms
-open import DedekindReals.Rationals
-open import DedekindReals.RationalsAddition
-open import DedekindReals.RationalsMultiplication
-open import DedekindReals.RationalsNegation
-open import DedekindReals.RationalsOrder
+open import DedekindReals.Rationals.Rationals
+open import DedekindReals.Rationals.Addition
+open import DedekindReals.Rationals.Multiplication
+open import DedekindReals.Rationals.Negation
+open import DedekindReals.Rationals.Order
 
 module DedekindReals.FieldRationals (fe : Fun-Ext) where
 
@@ -45,7 +45,6 @@ RationalsOrderedField = _<_ , ℚ<-addition-preserves-order , ℚ<-pos-multiplic
 RationalsOrderedField' : Ordered-Field 𝓤₀ { 𝓤₀ } { 𝓤₀ }
 RationalsOrderedField' = (ℚ , RationalsField) , RationalsOrderedField
 
--- open import Matrices RationalsOrderedField'
 
 
 

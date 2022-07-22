@@ -17,17 +17,17 @@ open import UF.FunExt
 open import UF.Subsingletons 
 open import UF.PropTrunc 
 
-open import DedekindReals.Rationals
-open import DedekindReals.RationalsAddition
-open import DedekindReals.RationalsAbs
-open import DedekindReals.RationalsMinMax
-open import DedekindReals.RationalsMultiplication
-open import DedekindReals.RationalsNegation
-open import DedekindReals.RationalsOrder
+open import DedekindReals.Rationals.Rationals
+open import DedekindReals.Rationals.Addition
+open import DedekindReals.Rationals.Abs
+open import DedekindReals.Rationals.MinMax
+open import DedekindReals.Rationals.Multiplication
+open import DedekindReals.Rationals.Negation
+open import DedekindReals.Rationals.Order
 
 open import Naturals.Order renaming (max to ℕ-max ; max-comm to ℕ-max-comm)
 
-module DedekindReals.RationalsLimits
+module DedekindReals.Rationals.Limits
         (fe : Fun-Ext)
         (pt : propositional-truncations-exist)
         (pe : Prop-Ext)
@@ -120,8 +120,8 @@ constant-sequence-converges q ε l = 0 , (λ n l₂ → transport (_< ε) I l)
   I = ℚ-self-dist fe q ⁻¹
 
 open import DedekindReals.Integers.Integers hiding (abs)
-open import DedekindReals.ncRationalsOrder
-open import DedekindReals.ncRationalsOperations renaming (_*_ to _ℚₙ*_ ; _+_ to _ℚₙ+_ ; -_ to ℚₙ-_ ; abs to ℚₙ-abs) 
+open import DedekindReals.Rationals.FractionsOrder
+open import DedekindReals.Rationals.FractionsOperations renaming (_*_ to _ℚₙ*_ ; _+_ to _ℚₙ+_ ; -_ to ℚₙ-_ ; abs to ℚₙ-abs) 
 
 open import Notation.CanonicalMap
 
@@ -149,7 +149,7 @@ positive-order-flip m n a b l = transport₂ _<_ I II l
   II : pos (succ n) ℤ* pos (succ a) ＝ pos (succ a) ℤ* pos (succ n)
   II = (ℤ*-comm (pos (succ n)) (pos (succ a))) 
 
-open import DedekindReals.ncRationals
+open import DedekindReals.Rationals.Fractions
 
 ⟨1/sn⟩-converges : 0ℚ limit-of ⟨1/sn⟩
 ⟨1/sn⟩-converges ((pos 0 , a) , ε)        l = 𝟘-elim (ℚ<-not-itself 0ℚ (transport (0ℚ <_) (numerator-zero-is-zero fe ((pos 0 , a) , ε) refl) l))
@@ -337,7 +337,7 @@ generalised-dependent-type-universal-property A P f = (λ x → pr₁ (f x)) , �
 RationalsCauchySequence : (S : ℕ → ℚ) → 𝓤₀ ̇
 RationalsCauchySequence = cauchy-sequence ℚ ℚ-metric-space
 
-open import DedekindReals.RationalsAddition
+open import DedekindReals.Rationals.Addition
 
 every-point-in-ℚ-is-limit-point : (q : ℚ) → Σ S ꞉ (ℕ → ℚ) , (q limit-of S)
 every-point-in-ℚ-is-limit-point q = (constant-sequence q) , (constant-sequence-converges q)

@@ -18,10 +18,10 @@ open import DedekindReals.Integers.Multiplication renaming (_*_ to _ℤ*_)
 open import DedekindReals.Integers.Order 
 open import Naturals.Addition renaming (_+_ to _ℕ+_)
 open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
-open import DedekindReals.ncRationals
-open import DedekindReals.ncRationalsOperations
+open import DedekindReals.Rationals.Fractions
+open import DedekindReals.Rationals.FractionsOperations
 
-module DedekindReals.ncRationalsOrder where
+module DedekindReals.Rationals.FractionsOrder where
 
 _ℚₙ≤_ _ℚₙ≥_ : ℚₙ → ℚₙ → 𝓤₀ ̇
 (x , a) ℚₙ≤ (y , b) = x ℤ* pos (succ b) ≤ y ℤ* pos (succ a)

@@ -22,15 +22,15 @@ open import DedekindReals.Integers.Integers
 open import DedekindReals.Integers.Multiplication renaming (_*_ to _ℤ*_)
 open import DedekindReals.Integers.Order
 open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
-open import DedekindReals.ncRationals
-open import DedekindReals.ncRationalsOperations renaming (_+_ to _ℚₙ+_ ; _*_ to _ℚₙ*_) hiding (-_)
-open import DedekindReals.ncRationalsOrder 
-open import DedekindReals.Rationals
-open import DedekindReals.RationalsAddition
-open import DedekindReals.RationalsMultiplication
-open import DedekindReals.RationalsNegation
+open import DedekindReals.Rationals.Fractions
+open import DedekindReals.Rationals.FractionsOperations renaming (_+_ to _ℚₙ+_ ; _*_ to _ℚₙ*_) hiding (-_)
+open import DedekindReals.Rationals.FractionsOrder 
+open import DedekindReals.Rationals.Rationals
+open import DedekindReals.Rationals.Addition
+open import DedekindReals.Rationals.Multiplication
+open import DedekindReals.Rationals.Negation
 
-module DedekindReals.RationalsOrder where
+module DedekindReals.Rationals.Order where
 
 _≤ℚ_ : (p q : ℚ) → 𝓤₀ ̇
 (p , _) ≤ℚ (q , _) = p ℚₙ≤ q

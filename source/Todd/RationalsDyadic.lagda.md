@@ -452,9 +452,9 @@ rationals into rationals.
 
 open import Notation.CanonicalMap
 open import Naturals.Division
-open import DedekindReals.ncRationals
-open import DedekindReals.Rationals
-open import DedekindReals.RationalsMultiplication renaming (_*_ to _ℚ*_)
+open import DedekindReals.Rationals.Fractions
+open import DedekindReals.Rationals.Rationals
+open import DedekindReals.Rationals.Multiplication renaming (_*_ to _ℚ*_)
 
 ```
 Proof that any integer is in lowest terms. 

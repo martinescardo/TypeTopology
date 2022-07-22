@@ -20,8 +20,8 @@ open import UF.Subsingletons
 open import UF.Subsingletons-FunExt 
 -- open import UF.Univalence 
 
-open import DedekindReals.Rationals
-open import DedekindReals.RationalsOrder 
+open import DedekindReals.Rationals.Rationals
+open import DedekindReals.Rationals.Order 
 
 module DedekindReals.DedekindReals
          (pe : Prop-Ext)

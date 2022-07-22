@@ -15,9 +15,9 @@ open import UF.FunExt
 open import UF.PropTrunc 
 open import UF.Subsingletons 
 
-open import DedekindReals.Rationals
-open import DedekindReals.RationalsAddition
-open import DedekindReals.RationalsOrder
+open import DedekindReals.Rationals.Rationals
+open import DedekindReals.Rationals.Addition
+open import DedekindReals.Rationals.Order
 
 module DedekindReals.MetricSpaceAltDef
   (pt : propositional-truncations-exist)

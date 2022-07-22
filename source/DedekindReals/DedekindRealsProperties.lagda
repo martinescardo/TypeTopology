@@ -17,13 +17,13 @@ open import UF.Subsingletons
 open import Naturals.Properties 
 
 open import Naturals.Order
-open import DedekindReals.Rationals
-open import DedekindReals.RationalsAbs
-open import DedekindReals.RationalsAddition
-open import DedekindReals.RationalsLimits
-open import DedekindReals.RationalsMultiplication
-open import DedekindReals.RationalsNegation
-open import DedekindReals.RationalsOrder
+open import DedekindReals.Rationals.Rationals
+open import DedekindReals.Rationals.Abs
+open import DedekindReals.Rationals.Addition
+open import DedekindReals.Rationals.Limits
+open import DedekindReals.Rationals.Multiplication
+open import DedekindReals.Rationals.Negation
+open import DedekindReals.Rationals.Order
 
 module DedekindReals.DedekindRealsProperties
         (fe : Fun-Ext)

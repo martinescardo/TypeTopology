@@ -16,12 +16,12 @@ open import UF.PropTrunc
 open import UF.Subsingletons 
 
 open import Naturals.Order hiding (max ;  max-comm ;  max-assoc) 
-open import DedekindReals.RationalsAddition
-open import DedekindReals.Rationals
-open import DedekindReals.RationalsAbs
-open import DedekindReals.RationalsNegation
-open import DedekindReals.RationalsOrder
-open import DedekindReals.RationalsMultiplication
+open import DedekindReals.Rationals.Addition
+open import DedekindReals.Rationals.Rationals
+open import DedekindReals.Rationals.Abs
+open import DedekindReals.Rationals.Negation
+open import DedekindReals.Rationals.Order
+open import DedekindReals.Rationals.Multiplication
 
 module DedekindReals.MetricSpaceDedekindReals
         (pt : propositional-truncations-exist)
@@ -34,7 +34,7 @@ open PropositionalTruncation pt
 open import DedekindReals.MetricSpaceAltDef pt fe pe 
 open import DedekindReals.DedekindReals pe pt fe
 open import DedekindReals.MetricSpaceRationals fe pt pe
-open import DedekindReals.RationalsMinMax fe
+open import DedekindReals.Rationals.MinMax fe
 open import DedekindReals.DedekindRealsProperties fe pt pe
 
 \end{code}
@@ -310,7 +310,7 @@ B-ℝ-ε-transport x y ε ε' e l₁ l₂ = ∥∥-functor I
 ℝ-metric-space = B-ℝ , ℝ-m1a , ℝ-m1b , ℝ-m2 , ℝ-m3 , ℝ-m4
 
 open import DedekindReals.DedekindRealsOrder pe pt fe
-open import DedekindReals.RationalsMultiplication
+open import DedekindReals.Rationals.Multiplication
 
 cauchy-approximation : 𝓤₁ ̇
 cauchy-approximation
@@ -817,7 +817,7 @@ cauchy-approximation-limit-exists (f , approximation-condition) = y , y-is-limit
         vii : B-ℚ (min u (u - ε - 1/2 * θ)) (max v v) (ε + θ) l₃
         vii = transport₂ (λ α β → B-ℚ α β (ε + θ) l₃) (ii ∙ min-comm (u - ε - 1/2 * θ) u) (i ⁻¹) (transport (_< ε + θ) iv ψ)
 
-open import DedekindReals.RationalsLimits fe pt pe 
+open import DedekindReals.Rationals.Limits fe pt pe 
 
 RealsCauchySequence : (S : ℕ → ℝ) → 𝓤₀ ̇
 RealsCauchySequence = cauchy-sequence ℝ ℝ-metric-space

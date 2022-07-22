@@ -17,18 +17,6 @@ import DedekindReals.Integers.index
 import DedekindReals.MetricSpaceAltDef
 import DedekindReals.MetricSpaceDedekindReals
 import DedekindReals.MetricSpaceRationals
-import DedekindReals.Rationals
-import DedekindReals.RationalsAbs
-import DedekindReals.RationalsAddition
-import DedekindReals.RationalsExtension
-import DedekindReals.RationalsField
-import DedekindReals.RationalsLimits
-import DedekindReals.RationalsMinMax
-import DedekindReals.RationalsMultiplication
-import DedekindReals.RationalsNegation
-import DedekindReals.RationalsOrder
-import DedekindReals.ncRationals
-import DedekindReals.ncRationalsOperations
-import DedekindReals.ncRationalsOrder
+import DedekindReals.Rationals.index
 
 \end{code}

@@ -17,13 +17,13 @@ open import DedekindReals.Integers.Multiplication renaming (_*_ to _ℤ*_)
 open import DedekindReals.Integers.Negation renaming (-_ to ℤ-_)
 open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
 open import Naturals.Properties
-open import DedekindReals.ncRationals
-open import DedekindReals.ncRationalsOperations renaming (-_ to ℚₙ-_ ; _+_ to _ℚₙ+_ ; _*_ to _ℚₙ*_)
-open import DedekindReals.Rationals
-open import DedekindReals.RationalsAddition
-open import DedekindReals.RationalsMultiplication
+open import DedekindReals.Rationals.Fractions
+open import DedekindReals.Rationals.FractionsOperations renaming (-_ to ℚₙ-_ ; _+_ to _ℚₙ+_ ; _*_ to _ℚₙ*_)
+open import DedekindReals.Rationals.Rationals
+open import DedekindReals.Rationals.Addition
+open import DedekindReals.Rationals.Multiplication
 
-module DedekindReals.RationalsNegation where
+module DedekindReals.Rationals.Negation where
 
 -_ : ℚ → ℚ
 - ((x , a) , p) = toℚ (ℚₙ- (x , a))

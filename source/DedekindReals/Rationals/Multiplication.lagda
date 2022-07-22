@@ -17,12 +17,12 @@ open import DedekindReals.Integers.Abs
 open import DedekindReals.Integers.Integers
 open import DedekindReals.Integers.Multiplication renaming (_*_ to _ℤ*_)
 open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
-open import DedekindReals.ncRationals
-open import DedekindReals.ncRationalsOperations renaming (_*_ to _ℚₙ*_ ; _+_ to _ℚₙ+_)
-open import DedekindReals.Rationals
-open import DedekindReals.RationalsAddition
+open import DedekindReals.Rationals.Fractions
+open import DedekindReals.Rationals.FractionsOperations renaming (_*_ to _ℚₙ*_ ; _+_ to _ℚₙ+_)
+open import DedekindReals.Rationals.Rationals
+open import DedekindReals.Rationals.Addition
 
-module DedekindReals.RationalsMultiplication where
+module DedekindReals.Rationals.Multiplication where
 
 _*_ : ℚ → ℚ → ℚ
 (p , _) * (q , _) = toℚ (p ℚₙ* q)

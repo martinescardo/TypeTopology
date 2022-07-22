@@ -15,11 +15,11 @@ open import UF.Base
 open import UF.Subsingletons 
 open import UF.PropTrunc 
 
-open import DedekindReals.Rationals
-open import DedekindReals.RationalsAbs
-open import DedekindReals.RationalsAddition
-open import DedekindReals.RationalsNegation
-open import DedekindReals.RationalsOrder
+open import DedekindReals.Rationals.Rationals
+open import DedekindReals.Rationals.Abs
+open import DedekindReals.Rationals.Addition
+open import DedekindReals.Rationals.Negation
+open import DedekindReals.Rationals.Order
 
 module DedekindReals.MetricSpaceRationals
          (fe : Fun-Ext)
@@ -27,7 +27,7 @@ module DedekindReals.MetricSpaceRationals
          (pe : Prop-Ext)
  where
 
-open import DedekindReals.RationalsMinMax fe
+open import DedekindReals.Rationals.MinMax fe
 
 open import DedekindReals.MetricSpaceAltDef pt fe pe
 

@@ -13,11 +13,11 @@ open import UF.Base hiding (_≈_)
 open import UF.FunExt 
 
 open import DedekindReals.Integers.Integers
-open import DedekindReals.ncRationals
-open import DedekindReals.ncRationalsOperations renaming (_+_ to _ℚₙ+_)
-open import DedekindReals.Rationals
+open import DedekindReals.Rationals.Fractions
+open import DedekindReals.Rationals.FractionsOperations renaming (_+_ to _ℚₙ+_)
+open import DedekindReals.Rationals.Rationals
 
-module DedekindReals.RationalsAddition where
+module DedekindReals.Rationals.Addition where
 
 _+_ : ℚ → ℚ → ℚ
 (p , _) + (q , _) = toℚ (p ℚₙ+ q)

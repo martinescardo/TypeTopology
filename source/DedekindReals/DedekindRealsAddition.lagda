@@ -15,10 +15,10 @@ open import Notation.Order
 
 open import UF.Powerset
 open import DedekindReals.DedekindRealsProperties
-open import DedekindReals.Rationals
-open import DedekindReals.RationalsAddition renaming (_+_ to _ℚ+_)
-open import DedekindReals.RationalsNegation renaming (_-_ to _ℚ-_ ; -_ to ℚ-_)
-open import DedekindReals.RationalsOrder 
+open import DedekindReals.Rationals.Rationals
+open import DedekindReals.Rationals.Addition renaming (_+_ to _ℚ+_)
+open import DedekindReals.Rationals.Negation renaming (_-_ to _ℚ-_ ; -_ to ℚ-_)
+open import DedekindReals.Rationals.Order 
 
 module DedekindReals.DedekindRealsAddition
          (pe : Prop-Ext)
@@ -355,7 +355,7 @@ infixl 35 _+_
         III : (a ℚ+ c) < (x + y)
         III = ∣ (a , c) , a<x , c<y , refl ∣
 
-open import DedekindReals.RationalsMultiplication renaming (_*_ to _ℚ*_)
+open import DedekindReals.Rationals.Multiplication renaming (_*_ to _ℚ*_)
 
 -_ : ℝ → ℝ
 -_ x = (L , R) , inhabited-left-z , inhabited-right-z , rounded-left-z , rounded-right-z , disjoint-z , located-z 

@@ -25,9 +25,9 @@ open import DedekindReals.Integers.Negation
 open import DedekindReals.Integers.Order
 open import Naturals.Division
 open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
-open import DedekindReals.ncRationals
+open import DedekindReals.Rationals.Fractions
 
-module DedekindReals.Rationals where
+module DedekindReals.Rationals.Rationals where
 
 ℚ : 𝓤₀ ̇
 ℚ = Σ q ꞉ ℚₙ , is-in-lowest-terms q

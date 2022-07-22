@@ -17,9 +17,9 @@ open import UF.FunExt
 open import UF.PropTrunc
 open import Notation.Order
 
-open import DedekindReals.Rationals
-open import DedekindReals.RationalsOrder
-open import DedekindReals.RationalsMultiplication 
+open import DedekindReals.Rationals.Rationals
+open import DedekindReals.Rationals.Order
+open import DedekindReals.Rationals.Multiplication 
 
 
 module DedekindReals.ContinuousExtensionTheorem
@@ -34,7 +34,7 @@ open import DedekindReals.DedekindReals pe pt fe
 open import DedekindReals.MetricSpaceAltDef pt fe pe
 open import DedekindReals.MetricSpaceDedekindReals pt fe pe
 open import DedekindReals.MetricSpaceRationals fe pt pe
-open import DedekindReals.RationalsLimits fe pt pe
+open import DedekindReals.Rationals.Limits fe pt pe
 open import DedekindReals.DedekindRealsProperties fe pt pe
 
 \end{code}
@@ -88,10 +88,10 @@ continuous→continuous' m₁ m₂ f f-cont (ε , l) = δ , λ c x B → {!!}
   δ : ℚ₊
   δ = {!!}
 -}
-open import DedekindReals.RationalsNegation
-open import DedekindReals.RationalsMinMax fe renaming (max to ℚ-max ; min to ℚ-min)
-open import DedekindReals.RationalsAbs
-open import DedekindReals.RationalsAddition
+open import DedekindReals.Rationals.Negation
+open import DedekindReals.Rationals.MinMax fe renaming (max to ℚ-max ; min to ℚ-min)
+open import DedekindReals.Rationals.Abs
+open import DedekindReals.Rationals.Addition
 
  -- This needs to be cleaned up, abstract two proofs to chop proof in half
 
@@ -317,8 +317,8 @@ v    right = {!!}
 
 \begin{code}[hide]
 
-open import DedekindReals.RationalsMultiplication
-open import DedekindReals.RationalsNegation
+open import DedekindReals.Rationals.Multiplication
+open import DedekindReals.Rationals.Negation
 open import UF.Powerset
 
 {-

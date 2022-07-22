@@ -19,15 +19,15 @@ open import DedekindReals.Integers.Integers hiding (abs)
 open import DedekindReals.Integers.Multiplication renaming (_*_ to _ℤ*_)
 open import DedekindReals.Integers.Order 
 open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
-open import DedekindReals.ncRationals
-open import DedekindReals.ncRationalsOperations renaming (abs to ℚₙ-abs) renaming (-_ to ℚₙ-_) hiding (_+_) hiding (_*_)
-open import DedekindReals.Rationals
-open import DedekindReals.RationalsAddition
-open import DedekindReals.RationalsNegation
-open import DedekindReals.RationalsOrder
-open import DedekindReals.RationalsMultiplication
+open import DedekindReals.Rationals.Fractions
+open import DedekindReals.Rationals.FractionsOperations renaming (abs to ℚₙ-abs) renaming (-_ to ℚₙ-_) hiding (_+_) hiding (_*_)
+open import DedekindReals.Rationals.Rationals
+open import DedekindReals.Rationals.Addition
+open import DedekindReals.Rationals.Negation
+open import DedekindReals.Rationals.Order
+open import DedekindReals.Rationals.Multiplication
 
-module DedekindReals.RationalsAbs where
+module DedekindReals.Rationals.Abs where
 
 abs : ℚ → ℚ
 abs (q , _) = toℚ (ℚₙ-abs q)

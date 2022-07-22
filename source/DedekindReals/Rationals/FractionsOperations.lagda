@@ -17,10 +17,10 @@ open import DedekindReals.Integers.Addition renaming (_+_ to _ℤ+_)
 open import DedekindReals.Integers.Multiplication renaming (_*_ to _ℤ*_)
 open import DedekindReals.Integers.Negation renaming (-_ to ℤ-_)
 
-open import DedekindReals.ncRationals
+open import DedekindReals.Rationals.Fractions
 open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
 
-module DedekindReals.ncRationalsOperations where
+module DedekindReals.Rationals.FractionsOperations where
 
 \end{code}
 

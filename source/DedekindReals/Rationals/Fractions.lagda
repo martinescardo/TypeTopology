@@ -28,7 +28,7 @@ open import Naturals.HCF
 open import Naturals.Division
 open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
 
-module DedekindReals.ncRationals where
+module DedekindReals.Rationals.Fractions where
 
 ℚₙ : 𝓤₀ ̇
 ℚₙ = ℤ × ℕ

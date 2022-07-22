@@ -10,7 +10,7 @@ open import MLTT.Spartan renaming (_+_ to _∔_)
 
 open import Notation.CanonicalMap
 open import Notation.Order
-open import DedekindReals.RationalsOrder
+open import DedekindReals.Rationals.Order
 
 open import UF.FunExt 
 open import UF.PropTrunc 
@@ -18,7 +18,7 @@ open import UF.Powerset
 open import UF.Subsingletons 
 open import UF.Subsingletons-FunExt 
 
-open import DedekindReals.Rationals
+open import DedekindReals.Rationals.Rationals
 
 module DedekindReals.DedekindRealsOrder
          (pe : Prop-Ext) 

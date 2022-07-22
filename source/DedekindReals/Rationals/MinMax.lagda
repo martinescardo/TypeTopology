@@ -12,10 +12,10 @@ open import UF.Base --Typetopology
 open import UF.FunExt 
 open import MLTT.Plus-Properties 
 
-open import DedekindReals.Rationals
-open import DedekindReals.RationalsOrder
+open import DedekindReals.Rationals.Rationals
+open import DedekindReals.Rationals.Order
 
-module DedekindReals.RationalsMinMax (fe : Fun-Ext) where
+module DedekindReals.Rationals.MinMax (fe : Fun-Ext) where
 
 max' : (x y : ℚ) → x < y ∔ (x ＝ y) ∔ y < x → ℚ
 max' x y (inl _) = y
