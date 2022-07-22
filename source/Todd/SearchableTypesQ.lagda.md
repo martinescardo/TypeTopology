@@ -18,10 +18,10 @@ module Todd.SearchableTypesQ
 open import MLTT.Two-Properties hiding (zero-is-not-one)
 open import Naturals.Order
 open import Naturals.Addition renaming (_+_ to _+ℕ_)
-open import DedekindReals.IntegersB
-open import DedekindReals.IntegersOrder
-open import DedekindReals.IntegersAddition renaming (_+_ to _+ℤ_)
-open import DedekindReals.IntegersNegation renaming (-_  to  −ℤ_)
+open import DedekindReals.Integers.Integers
+open import DedekindReals.Integers.Order
+open import DedekindReals.Integers.Addition renaming (_+_ to _+ℤ_)
+open import DedekindReals.Integers.Negation renaming (-_  to  −ℤ_)
 open import UF.Subsingletons
 open import Naturals.Order
 open import NotionsOfDecidability.DecidableAndDetachable

@@ -9,12 +9,12 @@ aim is to provide specific implementations of these postulates.
 
 open import MLTT.Spartan renaming (_+_ to _∔_) -- TypeTopology
 
-open import DedekindReals.IntegersB
-open import DedekindReals.IntegersAbs
-open import DedekindReals.IntegersAddition renaming (_+_ to _+ℤ_)
-open import DedekindReals.IntegersMultiplication 
-open import DedekindReals.IntegersNegation
-open import DedekindReals.IntegersOrder
+open import DedekindReals.Integers.Integers
+open import DedekindReals.Integers.Abs
+open import DedekindReals.Integers.Addition renaming (_+_ to _+ℤ_)
+open import DedekindReals.Integers.Multiplication 
+open import DedekindReals.Integers.Negation
+open import DedekindReals.Integers.Order
 open import Naturals.Addition
 open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
 open import MLTT.NaturalNumbers
@@ -451,7 +451,7 @@ rationals into rationals.
 ```agda
 
 open import Notation.CanonicalMap
-open import DedekindReals.NaturalsDivision
+open import Naturals.Division
 open import DedekindReals.ncRationals
 open import DedekindReals.Rationals
 open import DedekindReals.RationalsMultiplication renaming (_*_ to _ℚ*_)
