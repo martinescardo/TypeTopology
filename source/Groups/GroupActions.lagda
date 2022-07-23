@@ -63,9 +63,6 @@ module _ (G : Group 𝓤) where
   action-op : (𝕏 : Action) → action-structure ⟨ 𝕏 ⟩
   action-op (X , op , _) = op
 
-  private
-    syntax action-op 𝕏 g x = g ◂⟨ 𝕏 ⟩ x
-
   carrier-is-set : (𝕏 : Action) → is-set (action-carrier 𝕏)
   carrier-is-set (X , op , i , _) = i
 
@@ -93,6 +90,9 @@ module _ (G : Group 𝓤) where
                           (unit G) ◂⟨ 𝕏 ⟩ x            ＝⟨ action-unit 𝕏 x ⟩
                            x  ∎))
     where
+      _◂⟨_⟩_ : ⟨ G ⟩ → (𝕏 : Action) → ⟨ 𝕏 ⟩ → ⟨ 𝕏 ⟩
+      g ◂⟨ 𝕏 ⟩ x = action-op 𝕏 g x
+
       f : ⟨ 𝕏 ⟩ → ⟨ 𝕏 ⟩
       f = action-tofun 𝕏 g
 
@@ -107,14 +107,14 @@ module _ (G : Group 𝓤) where
   -- same names as in UniMath
   left-mult = action-to-fun
   right-mult : (𝕏 : Action) (x : ⟨ 𝕏 ⟩) → ⟨ G ⟩ → ⟨ 𝕏 ⟩
-  right-mult 𝕏 x = λ g → g ◂⟨ 𝕏 ⟩ x
+  right-mult 𝕏 x = λ g → action-op 𝕏 g x
   ----------------------------------
 
   -- the total action map is often used, especiall for torsors
   ------------------------------------------------------------
   mult : (𝕏 : Action) →
          ⟨ G ⟩ × ⟨ 𝕏 ⟩ → ⟨ 𝕏 ⟩ × ⟨ 𝕏 ⟩
-  mult 𝕏 (g , x) = g ◂⟨ 𝕏 ⟩ x , x
+  mult 𝕏 (g , x) = action-op 𝕏 g x , x
 
 \end{code}
 
@@ -448,6 +448,16 @@ type-checking.
     Id-equiv-Action-Iso : (𝕏 𝕐 : Action) →
                        (𝕏 ＝ 𝕐) ≃ (Action-Iso 𝕏 𝕐)
     Id-equiv-Action-Iso 𝕏 𝕐 = ＝-to-Action-Iso , ＝-to-Action-Iso-is-equiv
+
+\end{code}
+
+A shorthand for the action structure. Convenient in function signature types.
+
+\begin{code}
+
+action-op-syntax : (G : Group 𝓤) (𝕏 : Action G) → action-structure G ⟨ 𝕏 ⟩
+action-op-syntax G 𝕏 = action-op G 𝕏 
+syntax action-op-syntax G 𝕏 g x = g ◂⟨ G ∣ 𝕏 ⟩ x
 
 \end{code}
 
