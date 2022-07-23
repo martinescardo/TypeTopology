@@ -104,6 +104,10 @@ being-equiv-is-prop.
 
   Group-structure-Aut : Group-structure (Aut X)
   Group-structure-Aut = _·_ , group-axioms-Aut
+
+  𝔸ut : Group 𝓤
+  𝔸ut = Aut X , Group-structure-Aut
+
 \end{code}
 
 If φ is an equivalence between X and Y, then it induces a morphism
@@ -126,12 +130,7 @@ module _ (fe : FunExt)
          (Y : 𝓥 ̇) (j : is-set Y)
          (φ : X ≃ Y)  where
 
-   private
-     gr-s-X  gr-s-Y : _
-     gr-s-X = Group-structure-Aut {𝓤} (fe 𝓤 𝓤) X i
-     gr-s-Y = Group-structure-Aut {𝓥} (fe 𝓥 𝓥) Y j
-
-   is-hom-𝓐ut : is-hom (Aut X , gr-s-X) (Aut Y , gr-s-Y) (𝓐ut φ)
+   is-hom-𝓐ut : is-hom (𝔸ut (fe 𝓤 𝓤) X i) (𝔸ut (fe 𝓥 𝓥) Y j) (𝓐ut φ)
    is-hom-𝓐ut {g} {f} = (≃-sym φ ● (g ● f )) ● φ                   ＝⟨  ap (_● φ) (ap (≃-sym φ ●_) p) ⟩
                          (≃-sym φ ● ((g ● φ) ● (≃-sym φ ● f))) ● φ ＝⟨  ap (_● φ) (≃-assoc fe (≃-sym φ) (g ● φ) (≃-sym φ ● f)) ⟩
                          ((≃-sym φ ● (g ● φ)) ● (≃-sym φ ● f)) ● φ ＝⟨  (≃-assoc fe (≃-sym φ ● (g ● φ)) (≃-sym φ ● f) φ) ⁻¹ ⟩

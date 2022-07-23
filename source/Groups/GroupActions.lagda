@@ -131,23 +131,13 @@ does. Conversely, a homomorphism to Aut (X) gives an action.
     open import Groups.Aut
     open import Groups.Opposite
 
-    private 
-      X : 𝓤 ̇
-      X = ⟨ 𝕏 ⟩
-      i : is-set X
-      i = carrier-is-set 𝕏
-
-      𝔸utX : Group 𝓤
-      𝔸utX = Aut X , Group-structure-Aut fe X i
-
-    is-hom-action-to-fun : is-hom G (𝔸utX ᵒᵖ) (action-to-Aut 𝕏)
+    is-hom-action-to-fun : is-hom G ((𝔸ut fe ⟨ 𝕏 ⟩ (carrier-is-set 𝕏)) ᵒᵖ) (action-to-Aut 𝕏)
     is-hom-action-to-fun {g} {h} =
                          to-Σ-＝ ((dfunext fe (λ x → action-assoc 𝕏 g h x)) ,
                                   being-equiv-is-prop'' fe (λ x → g · (h · x)) _ _)
                          where
-                                   _·_ : ⟨ G ⟩ → X → X
+                                   _·_ : ⟨ G ⟩ → ⟨ 𝕏 ⟩ → ⟨ 𝕏 ⟩
                                    _·_ = action-op 𝕏
-
 
 
   module from-automorphism (fe : funext 𝓤 𝓤)
@@ -157,19 +147,17 @@ does. Conversely, a homomorphism to Aut (X) gives an action.
     open import Groups.Aut
     open import Groups.Opposite
       
-    private 
-      𝔸utX : Group 𝓤
-      𝔸utX = Aut X , Group-structure-Aut fe X i
-
-    hom-to-Aut-gives-action : is-hom G (𝔸utX ᵒᵖ ) σ → Action
+    hom-to-Aut-gives-action : is-hom G ((𝔸ut fe X i) ᵒᵖ ) σ → Action
     hom-to-Aut-gives-action is = X , ((λ g → pr₁ (σ g)) ,
                             (i , (λ g h → happly (ap pr₁ (is {g} {h}))) ,
                              λ x → ( pr₁ (σ (unit G)) x  ＝⟨ happly (ap pr₁ t) x ⟩
                                      pr₁ (unit 𝔸utX) x    ＝⟨ happly' id id refl x ⟩
                                      x ∎ ) ) )
       where
+        𝔸utX : Group 𝓤
+        𝔸utX = 𝔸ut fe X i
         t : σ (unit G) ＝ unit 𝔸utX
-        t = homs-preserve-unit G (𝔸utX ᵒᵖ ) σ is
+        t = homs-preserve-unit G ((𝔸ut fe X i) ᵒᵖ ) σ is
 
 
 \end{code}
