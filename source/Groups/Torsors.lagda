@@ -460,18 +460,239 @@ trivial-torsor G = (⟨ G ⟩ , ((multiplication G) , ((group-is-set G) , ((asso
                                               a ·⟨ G ⟩ ((inv G x) ·⟨ G ⟩ x) ＝⟨ ap (λ v → a ·⟨ G ⟩ v) (inv-left G x) ⟩
                                               a ·⟨ G ⟩ (unit G)            ＝⟨ unit-right G a ⟩
                                               a ∎)))))
+
+syntax trivial-torsor G = 𝕋 G
+
 \end{code}
 
-A point x in a torsor X determines a map trivial-torsor G → X
+A point x in a torsor X determines a map of G-torsors 𝕋 G → X. (Why is
+this called univ-function in UniMath?) This is the trivialization map
+of the G-torsor X and it is an equivariant map of the underlying
+types.
 
 \begin{code}
 
 univ-function : {G : Group 𝓤} (X : Tors G) (x : ⟨ pr₁ X ⟩) →
-                ⟨ pr₁ (trivial-torsor G) ⟩ → ⟨ pr₁ X ⟩
+                ⟨ pr₁  (𝕋 G)  ⟩ → ⟨ pr₁ X ⟩
 univ-function {G} X x = right-mult G (pr₁ X) x
 
 univ-function-equivariant : {G : Group 𝓤} (X : Tors G) (x : ⟨ pr₁ X ⟩) →
-                            is-equivariant G  (pr₁ (trivial-torsor G)) (pr₁ X) (univ-function {G} X x)
-univ-function-equivariant {G} X x = {!!}
+                            is-equivariant G  (pr₁ (𝕋 G)) (pr₁ X) (univ-function {G} X x)
+univ-function-equivariant {G} X x = λ g a →  (g ·⟨ G ⟩ a) · x ＝⟨  action-assoc G (pr₁ X) g a x ⟩
+                                              g · (a · x)     ∎ 
+  where
+    _·_ : action-structure G (pr₁ (pr₁ X))
+    _·_ = pr₁ (pr₂ (pr₁ X))
+
+triv-map = univ-function
+triv-map-equivariant = univ-function-equivariant
+
+triv-iso : {G : Group 𝓤} (X : Tors G) (x : ⟨ pr₁ X ⟩) →
+           Action-Iso G (pr₁ (𝕋 G)) (pr₁ X)
+triv-iso {G} X x = (t , eq) , eqv
+  where
+    t   = triv-map {G} X x
+    eqv = triv-map-equivariant {G} X x
+    eq  = torsor-map-is-equiv {G} {𝕋 G} {X} (t , eqv)
 
 \end{code}
+
+When applying the trivialization map to the trivial torsor pointed at
+the identity we get the identity of the underlying action map (which
+is an equivalence).
+
+\begin{code}
+
+triv-iso-compute : (G : Group 𝓤) →
+                   triv-iso {G} (𝕋 G) (unit G) ＝ id-Action-Iso G (pr₁ (𝕋 G))
+triv-iso-compute G = pr₁ φ γ
+  where
+    u v : Action-Iso G (pr₁ (𝕋 G)) (pr₁ (𝕋 G))
+    u   = triv-iso {G} (𝕋 G) (unit G)
+    v   = id-Action-Iso G (pr₁ (𝕋 G))
+
+    ∣u∣ ∣v∣ : ⟨ G ⟩ ≃ ⟨ G ⟩
+    ∣u∣     = underlying-iso G (pr₁ (𝕋 G)) (pr₁ (𝕋 G)) u
+    ∣v∣     = underlying-iso G (pr₁ (𝕋 G)) (pr₁ (𝕋 G)) v
+
+    γ : ∣u∣ ＝ ∣v∣
+    γ = to-Σ-＝ (dfunext fe (λ a → unit-right G a) , being-equiv-is-prop'' fe id _ _)
+
+    φ : (∣u∣ ＝ ∣v∣) ≃ (u ＝ v)
+    φ = ≃-sym (underlying-iso-injectivity G fe (pr₁ (𝕋 G)) (pr₁ (𝕋 G)) u v)
+    
+\end{code}
+
+At any other point g, triv-iso (𝕋 G) provides a self-equivalence
+of ⟨ G ⟩. Note this is NOT the one obtained from the (left) action
+multiplication by g.
+
+\begin{code}
+
+triv-torsor-equiv : (G : Group 𝓤) (g : ⟨ pr₁ (𝕋 G) ⟩) → ⟨ pr₁ (𝕋 G) ⟩ ≃ ⟨ pr₁ (𝕋 G) ⟩
+triv-torsor-equiv G g = pr₁ (triv-iso {G} (𝕋 G) g)
+
+triv-torsor-Auto : (G : Group 𝓤) (g : ⟨ G ⟩) →
+                   Action-Iso G (pr₁ (𝕋 G)) (pr₁ (𝕋 G))
+triv-torsor-Auto G g = triv-iso {G} (𝕋 G) g
+
+triv-torsor-Auto' : (G : Group 𝓤) (g : ⟨ G ⟩) →
+                   Action-Iso G (pr₁ (𝕋 G)) (pr₁ (𝕋 G))
+triv-torsor-Auto' G g = triv-torsor-equiv G g , triv-map-equivariant {G} (𝕋 G) g
+
+triv-torsor-Auto-compare : (G : Group 𝓤) (g : ⟨ G ⟩) →
+                       triv-torsor-Auto G g ＝ triv-torsor-Auto' G g
+triv-torsor-Auto-compare G g = refl
+
+\end{code}
+
+The right multiplication map induces an equivalence between G and the
+Action Isomorphism type of the trivial torsor.
+
+Note that the proof boils down to the analyis of the equivariance of
+the underlying right-multiplication map for the trivial torsor, namely
+that:
+
+u (g) ＝ u (g · e) ＝ g · u(e)
+
+\begin{code}
+triv-torsor-right-mult : (G : Group 𝓤) →
+                         ⟨ G ⟩ ≃ Action-Iso G (pr₁ (𝕋 G)) (pr₁ (𝕋 G))
+triv-torsor-right-mult G = qinveq t (r , η , ε)
+  where
+    t : ⟨ G ⟩ → Action-Iso G (pr₁ (𝕋 G)) (pr₁ (𝕋 G))
+    t = triv-torsor-Auto G
+
+    r : Action-Iso G (pr₁ (𝕋 G)) (pr₁ (𝕋 G)) → ⟨ G ⟩
+    r ((u , e) , i) = u (unit G)
+
+    η : r ∘ t ∼ id
+    η = λ g → unit-left G g
+
+    ε : t ∘ r ∼ id
+    ε x = pr₁ φ γ
+      where
+        ∣x∣ ∣x∣' : ⟨ G ⟩ ≃ ⟨ G ⟩
+        ∣x∣      = underlying-iso G (pr₁ (𝕋 G)) (pr₁ (𝕋 G)) x
+        ∣x∣'     = underlying-iso G (pr₁ (𝕋 G)) (pr₁ (𝕋 G)) (t (r x))
+
+        u : ⟨ G ⟩ → ⟨ G ⟩
+        u = pr₁ ∣x∣
+        e : is-equiv u
+        e = pr₂ ∣x∣
+        i : is-equivariant G (pr₁ (𝕋 G)) (pr₁ (𝕋 G)) u
+        i = pr₂ x
+        check : x ＝ ((u , e) , i)
+        check = refl
+
+        φ : (∣x∣' ＝ ∣x∣) ≃ (t (r x) ＝ x)
+        φ = ≃-sym (underlying-iso-injectivity G fe (pr₁ (𝕋 G)) (pr₁ (𝕋 G)) (t (r x)) x)
+
+        γ : ∣x∣' ＝ ∣x∣
+        γ = to-Σ-＝ (dfunext fe (λ a → ( a ·⟨ G ⟩ (u (unit G)) ＝⟨ (i a (unit G)) ⁻¹  ⟩
+                                         u (a ·⟨ G ⟩ (unit G)) ＝⟨ ap u (unit-right G a) ⟩
+                                         u a  ∎ ) ) ,
+                    being-equiv-is-prop'' fe u _ _)
+\end{code}
+
+The above equivalence can be used to transfer the group structure from
+G to Action-Iso G (pr₁ (𝕋 G)) (pr₁ (𝕋 G)). Indeed we prove below that
+the assignment
+
+λ g → triv-torsor-Auto G g
+
+is a homomorphism.  This structure is the opposite of the natural one
+on Aut induced by the composition of maps.  This is the familiar fact
+that the automorphism group of the trivial G-torsor is the opposite
+group of G.
+
+The way Action-Iso is defined hides the opposite and restores the
+natural order of the group operation.
+
+\begin{code}
+
+module _ (G : Group 𝓤) where
+
+  -- Note this is just the right action of G on itself
+  ρ : (a : ⟨ G ⟩) → ⟨ G ⟩ → ⟨ G ⟩
+  ρ a = triv-map {G} (𝕋 G) a
+
+  τ : (a : ⟨ G ⟩) → Action-Iso G (pr₁ (𝕋 G)) (pr₁ (𝕋 G))
+  τ a = triv-torsor-Auto G a
+
+  triv-torsor-map-mult : (a b : ⟨ G ⟩) → (ρ a) ∘ (ρ b) ＝ ρ (b ·⟨ G ⟩ a)
+  triv-torsor-map-mult a b = dfunext fe (λ g → assoc G g b a)
+
+  triv-torsor-Aut-mult : (a b : ⟨ G ⟩) →
+                       compose-Action-Iso G {pr₁ (𝕋 G)} {pr₁ (𝕋 G)} {pr₁ (𝕋 G)} (τ a) (τ b) ＝ τ (a ·⟨ G ⟩ b)
+  triv-torsor-Aut-mult a b = pr₁ φ γ
+    where
+      𝕋G : Action G
+      𝕋G = pr₁ (𝕋 G) 
+
+      τab : Action-Iso G 𝕋G 𝕋G
+      τab = compose-Action-Iso G {𝕋G} {𝕋G} {𝕋G} (τ a) (τ b)
+
+      φ : (pr₁ (τab) ＝ pr₁ (τ (a ·⟨ G ⟩ b))) ≃ (τab ＝ τ (a ·⟨ G ⟩ b))
+      φ = ≃-sym (underlying-iso-injectivity G fe 𝕋G 𝕋G τab (τ (a ·⟨ G ⟩ b)))
+      
+      γ : pr₁ (τab) ＝ pr₁ (τ (a ·⟨ G ⟩ b))
+      γ = to-Σ-＝ (dfunext fe (λ g → assoc G g a b) ,
+                   being-equiv-is-prop'' fe (ρ (a ·⟨ G ⟩ b)) _ _)
+
+  module _ (X : Tors G) where
+
+    𝕏 : Action G
+    𝕏 = pr₁ X 
+
+    t : (x : ⟨ 𝕏 ⟩) → ⟨ pr₁ (𝕋 G) ⟩ → ⟨ 𝕏 ⟩
+    t  x = triv-map {G} X x
+
+    triv-map-right-equivariance : (x : ⟨ 𝕏 ⟩) (a : ⟨ G ⟩) → t (a ◂⟨ G ∣ 𝕏 ⟩ x) ＝ (t x) ∘ (ρ a)
+    triv-map-right-equivariance x a = dfunext fe (λ g → (g · (a · x)     ＝⟨ ( action-assoc G 𝕏 g a x ) ⁻¹ ⟩
+                                                         (g ·⟨ G ⟩ a) · x ∎ ) )
+         where
+           _·_ : action-structure G  ⟨ 𝕏 ⟩
+           _·_ = action-op G 𝕏
+\end{code}
+
+If φ is a torsor map, informally φ (x) = g · x, for any point x, for
+an appropriate g. This is obtained by applying the divison map to φ.
+
+We determine the equivariance properties of j.
+
+\begin{code}
+  
+    j : Hom {G} X X → ⟨ 𝕏 ⟩ → ⟨ G ⟩
+    j φ x = torsor-division-map {G} {X} (pr₁ φ x) x
+
+    j-equivariance : (φ : Hom {G} X X) (a : ⟨ G ⟩) (x : ⟨ 𝕏 ⟩ ) →
+                     j φ (a ◂⟨ G ∣ 𝕏 ⟩ x) ·⟨ G ⟩ a ＝ a ·⟨ G ⟩ (j φ x)
+    j-equivariance φ a x = equivs-are-lc (t x) (pr₂ (pr₁ (triv-iso {G} X x))) q
+      where
+        _·_ : ⟨ G ⟩ → ⟨ 𝕏 ⟩ → ⟨ 𝕏 ⟩
+        _·_ = action-op G 𝕏
+
+        f : ⟨ 𝕏 ⟩ → ⟨ 𝕏 ⟩
+        f = pr₁ φ
+        e : is-equiv f
+        e = torsor-map-is-equiv {G} {X} {X} φ
+        i : is-equivariant G 𝕏 𝕏 f
+        i = pr₂ φ
+
+        q : (j φ (a · x) ·⟨ G ⟩ a ) · x ＝ (a ·⟨ G ⟩ (j φ x)) · x
+        q = (j φ (a · x) ·⟨ G ⟩ a ) · x ＝⟨ action-assoc G 𝕏 _ _ _ ⟩
+            j φ (a · x) · (a · x)      ＝⟨ pr₂ (pr₁ (torsor-division G X (f (a · x)) (a · x)))  ⟩
+            f (a · x)                  ＝⟨ i a x ⟩
+            a · (f x)                  ＝⟨ ap (λ v → a · v) l ⁻¹ ⟩
+            a · ( (j φ x) · x)         ＝⟨ (action-assoc G 𝕏 _ _ _) ⁻¹ ⟩
+            (a ·⟨ G ⟩ (j φ x)) · x      ∎
+              where
+                l : j φ x · x ＝ f x 
+                l = pr₂ (pr₁ (torsor-division G X (f x) x))
+
+
+\end{code}
+
+
+
