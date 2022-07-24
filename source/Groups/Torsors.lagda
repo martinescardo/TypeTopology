@@ -5,7 +5,9 @@ Keri D'Angelo kd349@cornell.edu
 July 2022
 --------------------------------------------------------------------------------
 
-TORSORS. Split off from GroupActions. 
+TORSORS. Split off from GroupActions.
+
+TODO: Variable reorganization.
 
 \begin{code}
 
@@ -15,7 +17,6 @@ TORSORS. Split off from GroupActions.
 open import MLTT.Spartan
 open import UF.Base hiding (_≈_)
 open import UF.Subsingletons
-open import UF.Powerset
 open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.Embeddings
@@ -25,7 +26,6 @@ open import UF.FunExt
 open import UF.UA-FunExt
 open import UF.Subsingletons-FunExt
 open import UF.Retracts
-open import UF.Classifiers
 open import UF.PropTrunc
 
 open import Groups.Groups renaming (_≅_ to _≣_)
@@ -154,7 +154,7 @@ torsor₁→torsor {G = G} (X , a) (n , e) = n , ee
                 v (r g) , x ∎
 \end{code}
 
--- The type of G-Torsors.
+The type of G-Torsors.
 
 \begin{code} 
 
@@ -405,8 +405,8 @@ syntax torsor-division-map y x = y ∕ x
 A map of torsors in just an equivariant map, that is, a morphism of
 the underlying actions.
 
-One of the fundamental facts about torsors is that a map f : X → Y of
-G-torsors is necessarily an isomorphism. In our case, an equivalence.
+As in the classical case, a map f : X → Y of
+G-torsors is necessarily an equivalence.
 
 \begin{code}
 
@@ -441,9 +441,9 @@ torsor-map-is-equiv {G} {𝕏 , tx} {𝕐 , ty} (f , is) = ∥∥-rec (being-equ
        γ : is-equiv f
        γ = ≃-2-out-of-3-right (pr₂ tx x₀) i
 
-torsor-map-to-Action-Iso : {G : Group 𝓤} {(𝕏 , _) (𝕐 , _) : Tors G}
+torsor-map-to-Action-Iso : {G : Group 𝓤} {(𝕏 , i) (𝕐 , j) : Tors G}
                            (f : Action-Map G 𝕏 𝕐) → Action-Iso G 𝕏 𝕐
-torsor-map-to-Action-Iso {G} {X} {Y} f = ((pr₁ f) , (torsor-map-is-equiv {G} {X} {Y} f)) , (pr₂ f)
+torsor-map-to-Action-Iso {G} {X} {Y} (f , is) = (f , (torsor-map-is-equiv {G} {X} {Y} (f , is))) , is
 
 Hom : {G : Group 𝓤} → Tors G → Tors G → 𝓤 ̇
 Hom {G} X Y = Action-Map G (pr₁ X) (pr₁ Y)
