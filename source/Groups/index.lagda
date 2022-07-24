@@ -4,7 +4,7 @@
 
 module Groups.index where
 
-import Groups.Groups
+import Groups.Type
 import Groups.FreeGroup                       -- By Bezem, Coquand, Dybjer and Escardo.
 import Groups.FreeGroupOfLargeLocallySmallSet -- By Bezem, Coquand, Dybjer and Escardo.
 import Groups.SRTclosure

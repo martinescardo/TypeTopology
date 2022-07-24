@@ -39,7 +39,7 @@ open import MLTT.Spartan
 open import MLTT.Two
 open import MLTT.Two-Properties
 
-open import Groups.Groups
+open import Groups.Type
 open import MLTT.List
 
 open import UF.PropTrunc
