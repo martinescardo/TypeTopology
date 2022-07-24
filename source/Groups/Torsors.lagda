@@ -28,8 +28,8 @@ open import UF.Subsingletons-FunExt
 open import UF.Retracts
 open import UF.PropTrunc
 
-open import Groups.Groups renaming (_≅_ to _≣_)
-open import Groups.Groups-Supplement
+open import Groups.Type renaming (_≅_ to _≣_)
+open import Groups.Type-Supplement
 open import Groups.GroupActions
 
 module Groups.Torsors

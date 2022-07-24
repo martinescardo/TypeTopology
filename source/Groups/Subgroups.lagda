@@ -10,7 +10,7 @@ Groups interface. The code is almost literally imported from the
 subgroup module in UF-SIP-Examples with minor adaptations, since the
 interface defined by Groups is different. This relies on the proof
 that the group axioms, as defined in Groups, form a proposition,
-defined in the file Groups.Groups-supplement.
+defined in the file Groups.Type-supplement.
 
 \begin{code}
 
@@ -29,8 +29,8 @@ open import UF.UA-FunExt
 open import UF.Subsingletons-FunExt
 open import UF.Classifiers
 
-open import Groups.Groups renaming (_≅_ to _≣_)
-open import Groups.Groups-Supplement
+open import Groups.Type renaming (_≅_ to _≣_)
+open import Groups.Type-Supplement
 
 module Groups.Subgroups
        (𝓤 : Universe)

@@ -17,7 +17,7 @@ open import UF.Subsingletons
 open import UF.Equiv
 open import UF.Retracts
 open import UF.Embeddings
-open import Groups.Groups
+open import Groups.Type
 
 \end{code}
 

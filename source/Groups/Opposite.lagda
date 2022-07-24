@@ -15,7 +15,7 @@ g ·⟨ G ᵒᵖ ⟩ h = h ·⟨ G ⟩ g
 
 
 open import MLTT.Spartan
-open import Groups.Groups renaming (_≅_ to _≣_)
+open import Groups.Type renaming (_≅_ to _≣_)
 
 
 module Groups.Opposite where

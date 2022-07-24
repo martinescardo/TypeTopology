@@ -18,7 +18,7 @@ open import UF.Retracts
 open import UF.Embeddings
 open import UF.PropTrunc
 open import UF.ImageAndSurjection
-open import Groups.Groups renaming (_≅_ to _≣_)
+open import Groups.Type renaming (_≅_ to _≣_)
 
 open import Groups.Triv
 open import Groups.Kernel

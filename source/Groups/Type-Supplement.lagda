@@ -14,7 +14,7 @@ UF.SIP-Examples.
 
 {-# OPTIONS --without-K --safe --auto-inline --exact-split #-}
 
-module Groups.Groups-Supplement where
+module Groups.Type-Supplement where
 --open import SpartanMLTT
 open import MLTT.Spartan
 open import UF.Base
@@ -22,7 +22,7 @@ open import UF.Subsingletons
 open import UF.FunExt
 open import UF.Subsingletons-FunExt
 open import UF.Equiv hiding (_≅_ ; ≅-refl)
-open import Groups.Groups
+open import Groups.Type
 
 
 

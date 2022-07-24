@@ -19,7 +19,7 @@ open import UF.Retracts
 open import UF.Embeddings
 open import UF.PropTrunc
 open import UF.ImageAndSurjection
-open import Groups.Groups
+open import Groups.Type
 
 \end{code}
 
