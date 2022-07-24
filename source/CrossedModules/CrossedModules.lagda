@@ -17,7 +17,7 @@ open import UF.ImageAndSurjection
 open import UF.FunExt
 open import UF.Subsingletons
 
-open import Groups.Groups
+open import Groups.Type
 open import Groups.Homomorphisms
 open import Groups.Kernel
 open import Groups.Image
