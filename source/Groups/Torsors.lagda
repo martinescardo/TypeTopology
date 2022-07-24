@@ -657,9 +657,12 @@ module _ (G : Group 𝓤) where
 \end{code}
 
 If φ is a torsor map, informally φ (x) = g · x, for any point x, for
-an appropriate g. This is obtained by applying the divison map to φ.
+an appropriate g. This is obtained by applying the divison map to
+φ. Thus, φ corresponds to j : X → G such that f x = (j x) · x.
 
-We determine the equivariance properties of j.
+Informally, the equivariance properties of j is that
+
+j (a · x) ＝ a (j x) a ⁻¹
 
 \begin{code}
   
