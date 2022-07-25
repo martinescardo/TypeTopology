@@ -1,4 +1,5 @@
-Andrew Sneap - 12/05/2022
+Andrew Sneap - October - November 2021
+Updated May - July 2022
 
 This file defines division of natural numbers as a Σ type. Many common
 proofs of properties of division are also provided.

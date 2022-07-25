@@ -1,4 +1,5 @@
-Andrew Sneap
+Andrew Sneap, January-March 2021
+Updated November 2021
 
 In this file I define order of rationals, and prove many properties of order.
 

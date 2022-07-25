@@ -1,4 +1,5 @@
-Andrew Sneap
+Andrew Sneap, 26 November 2021
+Updated 18 July 2022
 
 This file defines addition of integers, and commonly used properties used in proofs, for example commutativity and associativity.
 

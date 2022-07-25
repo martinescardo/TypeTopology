@@ -1,9 +1,9 @@
-Andrew Sneap
+Andrew Sneap, 10 March 2022
 
 In this file, I prove that the Dedekind reals are a complete metric space.
 The core result (that cauchy sequences converge) requires cleaning.
 
-\begin{code}[hide]
+\begin{code}
 {-# OPTIONS --without-K --exact-split --safe --experimental-lossy-unification #-}
 
 open import MLTT.Spartan renaming (_+_ to _∔_) 
@@ -143,7 +143,7 @@ B-ℝ-ε-transport x y ε ε' e l₁ l₂ = ∥∥-functor I
 %It's useful to have the second condition before the first in order to
 %abstract a proof in the first condition.
 
-\begin{code}[hide]
+\begin{code}
 
 ℝ-m2 : m2 ℝ B-ℝ
 ℝ-m2 x y ε l = ∥∥-functor α 

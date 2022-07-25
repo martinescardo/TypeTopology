@@ -1,9 +1,9 @@
-%Andrew Sneap
+Andrew Sneap, 10 March 2022
 
 In this file I define the absolute value for rational numbers,
 and prove properties of the absolute value.
 
-\begin{code}[hide]
+\begin{code}
 {-# OPTIONS --without-K --exact-split --safe #-}
 
 open import MLTT.Spartan renaming (_+_ to _∔_) 

@@ -1,4 +1,5 @@
-Andrew Sneap - 12/05/2021
+Andrew Sneap - October-November 2020
+Updated May 2022
 
 This file defines multiplication of natural numbers, and proves many
 standard properties of multiplication.

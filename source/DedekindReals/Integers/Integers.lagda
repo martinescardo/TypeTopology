@@ -1,4 +1,7 @@
-18/05/22 - Andrew Sneap
+Andrew Sneap, 26 November 2011
+Updated 18 May 2022
+        18 July 2022
+
 
 This file defines Integers using existing natural numbers, the
 successor and predecessor functions, induction on integers and the

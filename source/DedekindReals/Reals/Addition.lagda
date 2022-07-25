@@ -1,9 +1,10 @@
-Andrew Sneap
+Andrew Sneap, February-April 2021
+Updated March 2022
 
 In this file, I define directly addition of the Dedekind reals, and
 show that the Reals are a group with respect to addition.
 
-\begin{code}[hide]
+\begin{code}
 {-# OPTIONS --without-K --exact-split --safe --experimental-lossy-unification #-}
 
 open import MLTT.Spartan renaming (_+_ to _∔_) 

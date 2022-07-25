@@ -1,9 +1,9 @@
-Andrew Sneap
+Andrew Sneap, 10 March 2022
 
 In this file, I prove that the Rationals are metric space, with
 respect to the usual metric.
 
-\begin{code}[hide]
+\begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 

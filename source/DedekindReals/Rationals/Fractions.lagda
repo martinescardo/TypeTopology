@@ -1,4 +1,4 @@
-Andrew Sneap - 26th November 2021
+Andrew Sneap - November 2021
 
 In this file I define the free rationals. They are rationals they may
 not be in the lowest terms, with (a , b) : ℤ × ℕ were ℤ is the

@@ -1,10 +1,10 @@
-Andrew Sneap
+Andrew Sneap, November 2021
 
 In this file I define the limit for sequences of rational numbers,
 and prove that 2/3^n converges by first proving the sandwich theorem,
 and that 1/(n+1) converges to 0.
 
-\begin{code}[hide]
+\begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
@@ -309,7 +309,7 @@ limits-lemma k = k , I
 
 %We want to have a universal property for dependent types
 
-\begin{code}[hide]
+\begin{code}
 {-
 dependent-type-universal-property : {X : 𝓤 ̇} → (A B : X → 𝓤 ̇) → ((x : X) → A x × B x) → ((x : X) → A x) × ((x : X) → B x)
 dependent-type-universal-property A B f = (λ x → pr₁ (f x)) , (λ x → pr₂ (f x))

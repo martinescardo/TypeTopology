@@ -1,8 +1,8 @@
-Andrew Sneap
+Andrew Sneap, February-March 2022
 
 In this file I define min and max for rationals.
 
-\begin{code}[hide]
+\begin{code}
 {-# OPTIONS --without-K --exact-split --safe #-}
 
 open import MLTT.Spartan renaming (_+_ to _∔_) 

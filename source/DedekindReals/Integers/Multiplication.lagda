@@ -1,4 +1,4 @@
-Andrew Sneap
+Andrew Sneap, 26 November 2021
 
 In this file, I define addition of integers, and prove some common
 properties of multiplication.

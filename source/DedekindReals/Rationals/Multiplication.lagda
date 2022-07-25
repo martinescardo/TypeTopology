@@ -1,9 +1,10 @@
-Andrew Sneap
+Andrew Sneap, January-March 2021
+Updated January-March 2022
 
 In this file I define multiplication of rationals, and prove
 properties of multiplication.
 
-\begin{code}[hide]
+\begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 

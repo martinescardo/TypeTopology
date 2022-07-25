@@ -1,4 +1,4 @@
-Andrew Sneap
+Andrew Sneap, 26 November 2021
 
 In this file I define absolute values of integers and some properties
 of abs, along with positive and negative properties of integers.
@@ -13,7 +13,6 @@ open import TypeTopology.DiscreteAndSeparated
 open import Naturals.Properties 
 open import UF.Miscelanea 
 open import UF.Subsingletons 
--- open import MLTT.Unit-Properties 
 
 open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
 open import DedekindReals.Integers.Multiplication

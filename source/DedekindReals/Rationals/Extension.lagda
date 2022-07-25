@@ -1,11 +1,11 @@
-%Andrew Sneap
+Andrew Sneap, November 2021
 
-%This file proves that a rational valued function on the rationals may
-%be extended to rational real valued functions on the reals, provided
-%that the function is strictly monotonic and has a bijection with
-%another rational valued function on the rationals.
+This file proves that a rational valued function on the rationals may
+be extended to rational real valued functions on the reals, provided
+that the function is strictly monotonic and has a bijection with
+another rational valued function on the rationals.
 
-\begin{code}[hide]
+\begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
@@ -35,11 +35,11 @@ open import DedekindReals.Reals.Reals pe pt fe
 
 \end{code}
 
-%We begin by proving a lemma. If f and g are bijective, and f is
-%strictly monotone, then g is strictly monotone.
+We begin by proving a lemma. If f and g are bijective, and f is
+strictly monotone, then g is strictly monotone.
 
-%TODO: Is it true that strictly monotone functions automatically have a
-%bijection?
+TODO: Is it true that strictly monotone functions automatically have a
+bijection?
 
 \begin{code}
 
@@ -99,24 +99,24 @@ bijective-and-monotonic' f g f-preserves-order f-g-bijection = γ
     
 \end{code}
 
-%Now, given a monotonic function f, and a bijective function g, we construct an extension of f, which we call f̂.
+Now, given a monotonic function f, and a bijective function g, we construct an extension of f, which we call f̂.
 
-%Pictorially, we have the following:
+Pictorially, we have the following:
 
-%                      f
-%   ℚ ────────────────────────────────▶ ℚ
-%   │                                   │           We want our extension to satisfy f̂ ∘ ι ＝ ι ∘ f
-%   │                                   │           This means f̂ does not change the behavour of f 
-%   │                                   │           for any point in the rationals.
-% ι │                                   │ ι
-%   │                                   │
-%   │                                   │  
-%   ▼                                   ▼  
-%   ℝ ────────────────────────────────▶ ℝ
-%                      f̂
+                      f
+   ℚ ────────────────────────────────▶ ℚ
+   │                                   │           We want our extension to satisfy f̂ ∘ ι ＝ ι ∘ f
+   │                                   │           This means f̂ does not change the behavour of f 
+   │                                   │           for any point in the rationals.
+ ι │                                   │ ι
+   │                                   │
+   │                                   │  
+   ▼                                   ▼  
+   ℝ ────────────────────────────────▶ ℝ
+                      f̂
 
 
-%The following f→f̂ extends functions, and the is followed by diagram commutes which proves that the above diagram is satisfied.
+The following f→f̂ extends functions, and the is followed by diagram commutes which proves that the above diagram is satisfied.
 
 \begin{code}
 
@@ -268,10 +268,10 @@ diagram-commutes f g f-order-preserving f-g-bijective q = ℝ-equality' ((f̂ �
     ii = pr₁ (f-g-bijective q)
 \end{code}
 
-%With the monotonic extension theorem, here is an example of extending
-%the function which adds 1 to a rational.
+With the monotonic extension theorem, here is an example of extending
+the function which adds 1 to a rational.
 
-\begin{code}[hide]
+\begin{code}
 
 open import DedekindReals.Rationals.Addition
 open import DedekindReals.Rationals.Negation
@@ -318,17 +318,17 @@ open import DedekindReals.Rationals.Negation
 
 \end{code}
 
-%With this, we have a function which adds one to a real number, which
-%agrees with the function that adds one to a rational. Moreover, we
-%didn't have to write the proof that this function produces a real (by
-%proving that the output satisifies the properties of a real, because
-%this is taken care of by the f→f̂ function.
+With this, we have a function which adds one to a real number, which
+agrees with the function that adds one to a rational. Moreover, we
+didn't have to write the proof that this function produces a real (by
+proving that the output satisifies the properties of a real, because
+this is taken care of by the f→f̂ function.
 
-%TODO: I would like to be able to show that the extended function
-%satisfies certain properties. For example, proving that x < x + 1 for
-%any real.
+TODO: I would like to be able to show that the extended function
+satisfies certain properties. For example, proving that x < x + 1 for
+any real.
 
-\begin{code}[hide]
+\begin{code}
 
 open import DedekindReals.Reals.Order pe pt fe
 

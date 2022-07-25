@@ -1,9 +1,10 @@
-Andrew Sneap
+Andrew Sneap, March 2021
+Updated March 2022
 
 In this file I define the Dedekind reals, and prove that the rationals
 are embedded in the reals.
 
-\begin{code}[hide]
+\begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 

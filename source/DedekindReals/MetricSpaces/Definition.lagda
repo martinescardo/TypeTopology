@@ -1,4 +1,4 @@
-Andrew Sneap
+Andrew Sneap, 11 November 2021
 
 In this file I define the types of complete metric spaces, along with
 Cauchy and convergent sequences.

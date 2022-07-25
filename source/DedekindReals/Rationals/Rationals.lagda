@@ -1,4 +1,4 @@
-Andrew Sneap
+Andrew Sneap, November 2020 - March 2021
 
 In this file I define rational numbers.
 

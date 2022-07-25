@@ -1,9 +1,10 @@
-Andrew Sneap
+Andrew Sneap, March 2021
+Updated March 2022
 
 In this file I define order of Dedekind Reals, and prove
 some key properties.
 
-\begin{code}[hide]
+\begin{code}
 {-# OPTIONS --without-K --exact-split --safe #-}
 
 open import MLTT.Spartan renaming (_+_ to _∔_) 

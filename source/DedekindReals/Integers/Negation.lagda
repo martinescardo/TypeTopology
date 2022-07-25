@@ -1,4 +1,4 @@
-Andrew Sneap
+Andrew Sneap, 26 November 2021
 
 This file defines negation of integers.
 

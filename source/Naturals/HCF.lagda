@@ -1,4 +1,5 @@
 Andrew Sneap - 27th April 2021
+Updated July 2022
 
 In this file I define common divisors, and HCF's, along with a proof
 that the Euclidean Algorithm produces HCF's.
@@ -176,8 +177,6 @@ euclids-algorithm-lemma' x y q r h e (((a , e₀) , b , e₁) , f) = I , II
 
 \end{code}
 
-%TODO : Finish this file.
-
 Now we have the function which computes the highest common factor for any two natural numbers x and y.
 This function uses course-of-values induction in order to satisfy the Agda termination checker.
 
@@ -188,19 +187,7 @@ number k there exists a highest common factor of r and k, then for any
 y there exists a highest common factor of x and y. (In the proof I use y in the IH, but this is not necessary.
 
 \begin{code}
-{-
-HCF'' : (x y q r : ℕ) → x ＝ q * succ y + r → r < succ y → Σ h ꞉ ℕ , is-hcf h x (succ y)
-HCF'' x y q 0        e l = (succ y) , ((q , (mult-commutativity (succ y) q ∙ e ⁻¹)) , ∣-refl) , λ d → pr₂
-HCF'' x y q (succ r) e l with division (succ y) r
-... | (q' , r' , e' , l') with HCF'' (succ y) r q' r' e' l'
-... | pr₃ , ddd = pr₃ , {!!}
 
-
-HCF' : (x y : ℕ) → Σ h ꞉ ℕ , is-hcf h x y
-HCF' x 0        = x , (∣-refl , everything-divides-zero) , (λ _ icd → pr₁ icd)
-HCF' x (succ y) with division x y
-... | (q , r , e , l) = HCF'' x y q r e l
--}
 HCF : (x y : ℕ) → Σ h ꞉ ℕ , is-hcf h x y
 HCF = course-of-values-induction (λ x → (y : ℕ) → Σ h ꞉ ℕ , is-hcf h x y) step
  where

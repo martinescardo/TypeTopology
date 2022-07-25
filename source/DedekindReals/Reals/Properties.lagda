@@ -1,8 +1,8 @@
-Andrew Sneap
+Andrew Sneap, April 2021 - January 2022
 
 In this file, I prove that the Reals are arithmetically located.
 
-\begin{code}[hide]
+\begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 

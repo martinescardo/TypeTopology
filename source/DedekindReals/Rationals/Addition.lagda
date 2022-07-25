@@ -1,4 +1,4 @@
-Andrew Sneap
+Andrew Sneap, Jan-July 2021
 
 In this file I define addition of rational numbers, and prove
 properties of addition.

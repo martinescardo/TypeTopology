@@ -1,4 +1,4 @@
-Andrew Sneap 
+Andrew Sneap, January-March 2021
 
 In this file I define negation of real numbers.
 
