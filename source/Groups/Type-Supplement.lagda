@@ -10,6 +10,15 @@ a proposition. This fact is needed in order to have a meaningful
 definition of subgroups. Much of the first part is the same as in
 UF.SIP-Examples.
 
+
+July 2022
+--------------------------------------------------------------------------------
+
+This is vestigial. The proof that group-axioms is prop is in Groups.Type
+
+--------------------------------------------------------------------------------
+
+
 \begin{code}
 
 {-# OPTIONS --without-K --safe --auto-inline --exact-split #-}
@@ -22,7 +31,7 @@ open import UF.Subsingletons
 open import UF.FunExt
 open import UF.Subsingletons-FunExt
 open import UF.Equiv hiding (_≅_ ; ≅-refl)
-open import Groups.Type
+open import Groups.Type hiding (group-axioms-is-prop)
 
 
 
