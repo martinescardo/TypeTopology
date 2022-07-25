@@ -11,14 +11,14 @@ open import MLTT.Spartan renaming (_+_ to _∔_)
 open import Notation.Order 
 open import UF.FunExt 
 
-open import DedekindReals.FieldAxioms
+open import DedekindReals.Field.Axioms
 open import DedekindReals.Rationals.Rationals
 open import DedekindReals.Rationals.Addition
 open import DedekindReals.Rationals.Multiplication
 open import DedekindReals.Rationals.Negation
 open import DedekindReals.Rationals.Order
 
-module DedekindReals.FieldRationals (fe : Fun-Ext) where
+module DedekindReals.Field.Rationals (fe : Fun-Ext) where
 
 _#_ : (x y : ℚ) → 𝓤₀ ̇
 x # y  = ¬ (x ＝ y)

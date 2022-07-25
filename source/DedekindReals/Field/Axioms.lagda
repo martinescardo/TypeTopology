@@ -11,7 +11,7 @@ open import MLTT.Spartan renaming (_+_ to _∔_)
 
 open import UF.Subsingletons
 
-module DedekindReals.FieldAxioms where
+module DedekindReals.Field.Axioms where
 
 distributive : {X : 𝓤 ̇ } → (X → X → X) → (X → X → X) → 𝓤 ̇
 distributive _⊕_ _⊙_ = ∀ x y z → x ⊙ (y ⊕ z) ＝ ((x ⊙ y) ⊕ (x ⊙ z))

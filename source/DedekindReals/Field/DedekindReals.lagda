@@ -11,17 +11,17 @@ open import UF.FunExt
 open import UF.Subsingletons 
 open import Notation.Order 
 
-open import DedekindReals.FieldAxioms
+open import DedekindReals.Field.Axioms
 
-module DedekindReals.FieldDedekindReals
+module DedekindReals.Field.DedekindReals
          (fe : Fun-Ext)
          (pt : propositional-truncations-exist)
          (pe : Prop-Ext)
  where
 
-open import DedekindReals.DedekindReals pe pt fe
-open import DedekindReals.DedekindRealsOrder pe pt fe
-
+open import DedekindReals.Reals.Reals pe pt fe
+open import DedekindReals.Reals.Order pe pt fe
+{-
 DedekindRealsField : Field-structure ℝ { 𝓤₀ }
 DedekindRealsField = ({!!} , {!!} , _♯_) , ℝ-is-set , {!!} , {!!} , {!!} , {!!} , {!!} , (0ℝ , 1ℝ) , ℝ-zero-apart-from-one , {!!} , {!!} , {!!} , {!!}
 
@@ -31,7 +31,7 @@ DedekindRealsOrderedField = _<ℝ_ , {!!} , {!!}
 DedekindRealsOrderedField' : Ordered-Field 𝓤₁ { 𝓤₀ } { 𝓤₀ }
 DedekindRealsOrderedField' = (ℝ , DedekindRealsField) , DedekindRealsOrderedField
 
-{-
+
 open import DedekindReals.Rationals.
 
 DedekindRealsArchimedeanOrderedField : ArchimedeanOrderedField 𝓤₁
