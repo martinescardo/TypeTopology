@@ -32,10 +32,10 @@ module DedekindReals.MetricSpaces.DedekindReals
 open PropositionalTruncation pt
 
 open import DedekindReals.MetricSpaces.Definition pt fe pe 
-open import DedekindReals.DedekindReals pe pt fe
+open import DedekindReals.Reals.Reals pe pt fe
 open import DedekindReals.MetricSpaces.Rationals fe pt pe
 open import DedekindReals.Rationals.MinMax fe
-open import DedekindReals.DedekindRealsProperties fe pt pe
+open import DedekindReals.Reals.Properties fe pt pe
 
 \end{code}
 
@@ -309,7 +309,7 @@ B-ℝ-ε-transport x y ε ε' e l₁ l₂ = ∥∥-functor I
 ℝ-metric-space : metric-space ℝ
 ℝ-metric-space = B-ℝ , ℝ-m1a , ℝ-m1b , ℝ-m2 , ℝ-m3 , ℝ-m4
 
-open import DedekindReals.DedekindRealsOrder pe pt fe
+open import DedekindReals.Reals.Order pe pt fe
 open import DedekindReals.Rationals.Multiplication
 
 cauchy-approximation : 𝓤₁ ̇

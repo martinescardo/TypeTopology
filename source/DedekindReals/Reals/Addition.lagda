@@ -536,7 +536,6 @@ x - y = x + (- y)
             a ℚ+ p ℚ- a      ＝⟨ ℚ+-assoc fe a p (ℚ- a) ⟩
             a ℚ+ (p ℚ- a) ∎
 
-
 {-
 ℝ<-addition-preserves-order : ∀ x y z → x < y → x + z < y + z
 ℝ<-addition-preserves-order x y z l = ∥∥-rec ∃-is-prop I l

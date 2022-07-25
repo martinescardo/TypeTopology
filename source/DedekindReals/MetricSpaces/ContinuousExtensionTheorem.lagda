@@ -30,12 +30,12 @@ module DedekindReals.MetricSpaces.ContinuousExtensionTheorem
 
 open PropositionalTruncation pt
 
-open import DedekindReals.DedekindReals pe pt fe
+open import DedekindReals.Reals.Reals pe pt fe
 open import DedekindReals.MetricSpaces.Definition pt fe pe
 open import DedekindReals.MetricSpaces.DedekindReals pt fe pe
 open import DedekindReals.MetricSpaces.Rationals fe pt pe
 open import DedekindReals.Rationals.Limits fe pt pe
-open import DedekindReals.DedekindRealsProperties fe pt pe
+open import DedekindReals.Reals.Properties fe pt pe
 
 \end{code}
 
@@ -269,8 +269,8 @@ id-continuous c (ε , 0<ε) = (ε , 0<ε) , λ _ B → B
 
 \begin{code}[hide]
 
-open import DedekindReals.DedekindRealsOrder pe pt fe
--- open import DedekindRealsAddition pe pt fe renaming (_+_ to _ℝ+_)
+open import DedekindReals.Reals.Order pe pt fe
+-- open import DedekindReals.Addition pe pt fe renaming (_+_ to _ℝ+_)
 {-
 ℝ-no-maximum : (x : ℝ) → Σ y ꞉ ℝ , y < x ∔ x < y
 ℝ-no-maximum x = {!weak-linearity ? ? ? ?!}

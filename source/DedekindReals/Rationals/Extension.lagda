@@ -31,7 +31,7 @@ module DedekindReals.Rationals.Extension
 
 open PropositionalTruncation pt
 
-open import DedekindReals.DedekindReals pe pt fe
+open import DedekindReals.Reals.Reals pe pt fe
 
 \end{code}
 
@@ -330,7 +330,7 @@ open import DedekindReals.Rationals.Negation
 
 \begin{code}[hide]
 
-open import DedekindReals.DedekindRealsOrder pe pt fe
+open import DedekindReals.Reals.Order pe pt fe
 
 ℚ-succ-preserves-order : (p : ℚ) → p < ℚ-succ p
 ℚ-succ-preserves-order p = ℚ<-addition-preserves-order'' fe p 1ℚ (0 , refl)
@@ -365,7 +365,7 @@ bijection-preserves-monotone-multi-proof f g f-preserves-order f-g-bijection = �
       i : f (g p r) r < f (g q r) r
       i = (lr-implication apply-order-preversation) l
 
-open import DedekindReals.DedekindRealsProperties fe pt pe
+open import DedekindReals.Reals.Properties fe pt pe
 {-
 composition-of-monotonic-functions : (f g : ℚ → ℚ → ℚ)
                                    → ((p q r : ℚ) → p < q ⇔ f p r < f q r)

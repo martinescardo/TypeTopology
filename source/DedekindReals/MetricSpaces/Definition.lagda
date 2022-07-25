@@ -26,8 +26,8 @@ module DedekindReals.MetricSpaces.Definition
  where 
 
 open PropositionalTruncation pt
-open import DedekindReals.DedekindReals pe pt fe
-open import DedekindReals.DedekindRealsOrder pe pt fe
+open import DedekindReals.Reals.Reals pe pt fe
+open import DedekindReals.Reals.Order pe pt fe
 
 m1a : {𝓤 : Universe} → (X : 𝓤 ̇) → (B : X → X → (ε : ℚ) → 0ℚ < ε → 𝓤₀ ̇) → 𝓤 ̇
 m1a X B = (x y : X) → ((ε : ℚ) → (l : 0ℚ < ε) → B x y ε l) → x ＝ y
