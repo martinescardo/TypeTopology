@@ -24,7 +24,6 @@ open import UF.Subsingletons-FunExt
 open import UF.Retracts
 
 open import Groups.Type renaming (_≅_ to _≣_)
-open import Groups.Type-Supplement
 
 module Groups.Aut where
 

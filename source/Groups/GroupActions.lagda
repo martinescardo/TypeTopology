@@ -36,7 +36,6 @@ open import UF.Retracts
 open import UF.Classifiers
 
 open import Groups.Type renaming (_≅_ to _≣_)
-open import Groups.Type-Supplement
 
 module Groups.GroupActions where
 
