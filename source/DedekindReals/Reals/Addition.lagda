@@ -579,9 +579,10 @@ x - y = x + (- y)
   I : (Σ x' ꞉ ℝ , (x + x' ＝ 0ℝ)) → Σ x' ꞉ ℝ , (x' + x ＝ 0ℝ) × (x + x' ＝ 0ℝ)
   I (x' , e) = x' , ((ℝ+-comm x' x ∙ e) , e)
 
-open import Groups.Groups -- typetopology
+open import Groups.Type
 
 ℝ-additive-group : Group-structure ℝ
 ℝ-additive-group = _+_ , (ℝ-is-set , ℝ+-assoc , 0ℝ , ℝ-zero-left-neutral , ℝ-zero-right-neutral , ℝ+-inverse-exists')
+
 \end{code}
 }
