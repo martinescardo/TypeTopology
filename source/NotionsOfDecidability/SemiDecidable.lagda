@@ -1,5 +1,7 @@
-Tom de Jong, October–November 2021.
+Semidecidability: constructive taboos, choice principles and closure properties
+===============================================================================
 
+Tom de Jong, October–November 2021.
 Refactored: January 2022.
 
 We investigate constructive taboos surrounding semidecidability.

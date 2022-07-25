@@ -73,7 +73,7 @@ open import UF.Size
 
 open import MLTT.List
 open import Groups.SRTclosure
-open import Groups.Groups
+open import Groups.Type
 open import Groups.FreeGroup
 
 fe : Fun-Ext
