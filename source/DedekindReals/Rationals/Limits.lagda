@@ -33,8 +33,8 @@ module DedekindReals.Rationals.Limits
         (pe : Prop-Ext)
  where
 
-open import DedekindReals.MetricSpaceRationals fe pt pe
-open import DedekindReals.MetricSpaceAltDef pt fe pe
+open import DedekindReals.MetricSpaces.Rationals fe pt pe
+open import DedekindReals.MetricSpaces.Definition pt fe pe
 
 _limit-of_ : (L : ℚ) → (f : ℕ → ℚ) → 𝓤₀ ̇
 L limit-of f = ∀ (ε : ℚ) → 0ℚ < ε

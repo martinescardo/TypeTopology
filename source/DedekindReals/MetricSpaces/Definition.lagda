@@ -19,7 +19,7 @@ open import DedekindReals.Rationals.Rationals
 open import DedekindReals.Rationals.Addition
 open import DedekindReals.Rationals.Order
 
-module DedekindReals.MetricSpaceAltDef
+module DedekindReals.MetricSpaces.Definition
   (pt : propositional-truncations-exist)
   (fe : Fun-Ext)
   (pe : Prop-Ext)

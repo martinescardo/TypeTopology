@@ -31,7 +31,7 @@ module DedekindReals.DedekindRealsProperties
         (pe : Prop-Ext)
       where
 open import DedekindReals.DedekindReals pe pt fe
-open import DedekindReals.MetricSpaceRationals fe pt pe
+open import DedekindReals.MetricSpaces.Rationals fe pt pe
 open PropositionalTruncation pt
 
  -- Need to generalise this , y - x ＝ a , 0 < a

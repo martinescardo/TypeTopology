@@ -22,7 +22,7 @@ open import DedekindReals.Rationals.Order
 open import DedekindReals.Rationals.Multiplication 
 
 
-module DedekindReals.ContinuousExtensionTheorem
+module DedekindReals.MetricSpaces.ContinuousExtensionTheorem
  (fe : Fun-Ext)
  (pe : Prop-Ext)
  (pt : propositional-truncations-exist)
@@ -31,9 +31,9 @@ module DedekindReals.ContinuousExtensionTheorem
 open PropositionalTruncation pt
 
 open import DedekindReals.DedekindReals pe pt fe
-open import DedekindReals.MetricSpaceAltDef pt fe pe
-open import DedekindReals.MetricSpaceDedekindReals pt fe pe
-open import DedekindReals.MetricSpaceRationals fe pt pe
+open import DedekindReals.MetricSpaces.Definition pt fe pe
+open import DedekindReals.MetricSpaces.DedekindReals pt fe pe
+open import DedekindReals.MetricSpaces.Rationals fe pt pe
 open import DedekindReals.Rationals.Limits fe pt pe
 open import DedekindReals.DedekindRealsProperties fe pt pe
 

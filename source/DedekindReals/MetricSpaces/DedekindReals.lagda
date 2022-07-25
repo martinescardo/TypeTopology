@@ -23,7 +23,7 @@ open import DedekindReals.Rationals.Negation
 open import DedekindReals.Rationals.Order
 open import DedekindReals.Rationals.Multiplication
 
-module DedekindReals.MetricSpaceDedekindReals
+module DedekindReals.MetricSpaces.DedekindReals
         (pt : propositional-truncations-exist)
         (fe : Fun-Ext)
         (pe : Prop-Ext)
@@ -31,9 +31,9 @@ module DedekindReals.MetricSpaceDedekindReals
 
 open PropositionalTruncation pt
 
-open import DedekindReals.MetricSpaceAltDef pt fe pe 
+open import DedekindReals.MetricSpaces.Definition pt fe pe 
 open import DedekindReals.DedekindReals pe pt fe
-open import DedekindReals.MetricSpaceRationals fe pt pe
+open import DedekindReals.MetricSpaces.Rationals fe pt pe
 open import DedekindReals.Rationals.MinMax fe
 open import DedekindReals.DedekindRealsProperties fe pt pe
 

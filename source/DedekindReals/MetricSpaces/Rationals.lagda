@@ -21,7 +21,7 @@ open import DedekindReals.Rationals.Addition
 open import DedekindReals.Rationals.Negation
 open import DedekindReals.Rationals.Order
 
-module DedekindReals.MetricSpaceRationals
+module DedekindReals.MetricSpaces.Rationals
          (fe : Fun-Ext)
          (pt : propositional-truncations-exist)
          (pe : Prop-Ext)
@@ -29,7 +29,7 @@ module DedekindReals.MetricSpaceRationals
 
 open import DedekindReals.Rationals.MinMax fe
 
-open import DedekindReals.MetricSpaceAltDef pt fe pe
+open import DedekindReals.MetricSpaces.Definition pt fe pe
 
 ℚ-metric : ℚ → ℚ → ℚ
 ℚ-metric p q = abs (p - q)

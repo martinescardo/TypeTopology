@@ -324,4 +324,5 @@ instance
  canonical-map-ℕ-to-ℚ : Canonical-Map ℕ ℚ 
  ι {{canonical-map-ℕ-to-ℚ}} = ℕ-to-ℚ
 
+\end{code}
 
