@@ -84,11 +84,6 @@ CUT-Complete C = Π (s , _) ꞉ CUT-CauchySequence C , has-limit s
 
 \end{code}
 
-
-
-
-
-
 Finally, we give the definition of a contractive mapping for CUTs.
 
 A map X → X' of metric spaces (X,d) and (X',d') is contractive if

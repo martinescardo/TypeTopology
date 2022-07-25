@@ -1,4 +1,4 @@
-]\begin{code}
+\begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
