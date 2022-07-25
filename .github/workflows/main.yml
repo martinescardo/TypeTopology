@@ -1,0 +1,21 @@
+on: [push]
+
+jobs:
+  typechecking:
+    runs-on: ubuntu-latest
+    name: Typechecking
+    steps:
+    - name: "Clone repository"
+      uses: actions/checkout@v2
+    - name: Run Agda
+      id: typecheck
+      uses: ayberkt/agda-github-action@v1.1
+      with:
+        main-file: Foo.agda
+        source-dir: src
+    - name: Upload HTML
+      id: html-upload
+      uses: actions/upload-artifact@v1
+      with:
+        name: html
+        path: html
