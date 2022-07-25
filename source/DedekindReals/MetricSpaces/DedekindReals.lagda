@@ -39,9 +39,9 @@ open import DedekindReals.Reals.Properties fe pt pe
 
 \end{code}
 
-%We say that two reals are ε-close if we can find a pair of rationals,
-%one either side of each real such that the the distance between the
-%furthest value on each side is less than ε.
+We say that two reals are ε-close if we can find a pair of rationals,
+one either side of each real such that the the distance between the
+furthest value on each side is less than ε.
 
 \begin{code}
 B-ℝ : (x y : ℝ) → (ε : ℚ) → 0ℚ < ε → 𝓤₀ ̇
@@ -140,8 +140,8 @@ B-ℝ-ε-transport x y ε ε' e l₁ l₂ = ∥∥-functor I
 
 \end{code}
 
-%It's useful to have the second condition before the first in order to
-%abstract a proof in the first condition.
+It's useful to have the second condition before the first in order to
+abstract a proof in the first condition.
 
 \begin{code}
 

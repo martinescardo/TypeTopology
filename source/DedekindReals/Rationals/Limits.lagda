@@ -307,7 +307,7 @@ limits-lemma k = k , I
 
 \end{code}
 
-%We want to have a universal property for dependent types
+We want to have a universal property for dependent types
 
 \begin{code}
 {-
