@@ -54,8 +54,7 @@ group-axioms X _·_ = is-set X
 
 Added by Ettore Aldrovandi (ealdrovandi@fsu.edu), July 25, 2022
 
-Direct proof that the group axioms (as in Groups) are a
-proposition. 
+Direct proof that the "group-axioms" is a proposition.
 
 \begin{code}
 
