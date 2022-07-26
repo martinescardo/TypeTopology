@@ -50,6 +50,67 @@ group-axioms X _·_ = is-set X
                     × right-neutral e _·_
                     × ((x : X) → Σ x' ꞉ X , (x' · x ＝ e) × (x · x' ＝ e)))
 
+\end{code}
+
+Added by Ettore Aldrovandi (ealdrovandi@fsu.edu), July 25, 2022
+
+Direct proof that the "group-axioms" is a proposition.
+
+\begin{code}
+
+group-axioms-is-prop : funext 𝓤 𝓤
+                     → (X : 𝓤 ̇)
+                     → (_·_ : group-structure X)
+                     → is-prop (group-axioms X _·_)
+group-axioms-is-prop fe X _·_ s = γ s
+  where
+    i : is-set X
+    i = pr₁ s
+
+    α : is-prop (associative _·_)
+    α = Π-is-prop fe
+                  (λ x → Π-is-prop fe
+                                   (λ y →  Π-is-prop fe
+                                                     (λ z → i)))
+
+    β : is-prop ( Σ e ꞉ X , left-neutral e _·_ ×
+                            right-neutral e _·_ ×
+                            ((x : X) → Σ x' ꞉ X , (x' · x ＝ e) × (x · x' ＝ e)) )
+    β (e , l , _ , _) (e' , _ , r , _) = to-subtype-＝ η p
+      where
+        p : e ＝ e'
+        p = e      ＝⟨ (r e) ⁻¹ ⟩
+            e · e' ＝⟨ l e' ⟩
+            e' ∎
+
+        η : (x : X) → is-prop (left-neutral x _·_ ×
+                               right-neutral x _·_ ×
+                               ((x₁ : X) → Σ x' ꞉ X , (x' · x₁ ＝ x) × (x₁ · x' ＝ x)))
+        η x t = ε t
+          where
+            ε : is-prop (left-neutral x _·_ ×
+                               right-neutral x _·_ ×
+                               ((x₁ : X) → Σ x' ꞉ X , (x' · x₁ ＝ x) × (x₁ · x' ＝ x)))
+            ε = ×-is-prop (Π-is-prop fe (λ _ → i))
+                (×-is-prop (Π-is-prop fe (λ _ → i))
+                 (Π-is-prop fe ε'))
+                    where
+                      ε' : (x₁ : X) → is-prop (Σ x' ꞉ X , (x' · x₁ ＝ x) × (x₁ · x' ＝ x))
+                      ε' x₁ (u , v) (u' , v') = to-subtype-＝ (λ x₂ → ×-is-prop i i) q
+                        where
+                          q : u ＝ u'
+                          q = u             ＝⟨ (pr₁ (pr₂ t) u) ⁻¹ ⟩
+                              u · x         ＝⟨ ap (λ a → u · a) (pr₂ v') ⁻¹ ⟩
+                              u · (x₁ · u') ＝⟨ (pr₁ (pr₂ s) _ _ _) ⁻¹ ⟩
+                              (u · x₁) · u' ＝⟨ ap (λ a → a · u') (pr₁ v) ⟩
+                              x · u'        ＝⟨ pr₁ t u' ⟩
+                              u' ∎
+
+    γ : is-prop (group-axioms X _·_)
+    γ = ×-is-prop (being-set-is-prop fe)
+        (×-is-prop α β)
+
+
 Group-structure : 𝓤 ̇ → 𝓤 ̇
 Group-structure X = Σ _·_ ꞉ group-structure X , (group-axioms X _·_)
 
