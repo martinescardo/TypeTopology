@@ -346,14 +346,25 @@ module PatchStone (X : Locale (𝓤 ⁺) 𝓤 𝓤) (σᴰ : spectralᴰ (𝒪 X
  open ClosedNucleus X ∣ σᴰ ∣
  open OpenNucleus   X ∣ σᴰ ∣
  open SmallPatchConstruction X σᴰ renaming (SmallPatch to Patchₛ-X)
+ open Epsilon X σᴰ
 
  𝒷 : has-basis (𝒪 X) holds
  𝒷 = spectral-frames-have-bases (𝒪 X) ∣ σᴰ ∣
 
  open PerfectMaps Patchₛ-X X 𝒷
 
+\end{code}
+
+\begin{code}
+
  patch-is-compact : is-compact (𝒪 Patchₛ-X) holds
- patch-is-compact = {!perfect-implies-spectral!}
+ patch-is-compact = γ
+  where
+   δ : (‘ 𝟏[ 𝒪 X ] ’ ≪[ 𝒪 Patchₛ-X ] ‘ 𝟏[ 𝒪 X ] ’) holds
+   δ = perfect-preserves-way-below ϵ {!opn-perfect !} {!!} {!!} {!!}
+
+   γ : (𝟏[ 𝒪 Patchₛ-X ] ≪[ 𝒪 Patchₛ-X ] 𝟏[ 𝒪 Patchₛ-X ]) holds
+   γ = transport (λ - → (- ≪[ 𝒪 Patchₛ-X ] -) holds) ϵ-preserves-𝟏 δ
 
  -- patch-is-zero-dimensional : {!!}
  -- patch-is-zero-dimensional = {!!}
