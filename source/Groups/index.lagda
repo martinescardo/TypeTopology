@@ -21,5 +21,4 @@ import Groups.Triv                            -- by Ettore Aldrovandi and Keri D
 import Groups.Type-Supplement                 -- by Ettore Aldrovandi and Keri D'Angelo
 import Groups.Type                            -- by Martin Escardo
 
-
 \end{code}
