@@ -273,7 +273,7 @@ module Epsilon (X : Locale (𝓤 ⁺) 𝓤 𝓤) (σᴰ : spectralᴰ (𝒪 X)) 
  open ClosedNucleus X ∣ σᴰ ∣
 
  ϵ : Patchₛ-X ─c→ X
- ϵ = ‘_’ , α , β , {!!}
+ ϵ = ‘_’ , α , β , γ
   where
    α : ‘ 𝟏[ 𝒪 X ] ’ ≡ 𝟏[ 𝒪 Patchₛ-X ]
    α = perfect-nuclei-eq ‘ 𝟏[ 𝒪 X ] ’ 𝟏[ 𝒪 Patchₛ-X ] (dfunext fe †)
@@ -321,9 +321,22 @@ module Epsilon (X : Locale (𝓤 ⁺) 𝓤 𝓤) (σᴰ : spectralᴰ (𝒪 X)) 
        ♠ : ((ℬ [ j ]) ≤[ poset-of (𝒪 X) ] ((⋁[ 𝒪 X ] S) ∨[ 𝒪 X ] (ℬ [ j ]))) holds
        ♠ = ∨[ 𝒪 X ]-upper₂ (⋁[ 𝒪 X ] S) (ℬ [ j ])
 
-     ‡ : {!!}
-     ‡ = {!!}
+     ‡ : (Ɐ (𝒿 , _) ∶ upper-bound ⁅ ‘ U ’ ∣ U ε S ⁆ ,
+           ‘ ⋁[ 𝒪 X ] S ’ ≤[ poset-of (𝒪 Patchₛ-X) ] 𝒿) holds
+     ‡ (𝒿@(j , _) , ψ) i =
+      ∨[ 𝒪 X ]-least δ (𝓃₁ (𝒪 X) (nucleus-of 𝒿) (ℬ [ i ]))
+        where
+         δ : ((⋁[ 𝒪 X ] S) ≤[ poset-of (𝒪 X) ] j (ℬ [ i ])) holds
+         δ = ⋁[ 𝒪 X ]-least S (j (ℬ [ i ]) , ε)
+          where
+           open Joins (λ x y → x ≤[ poset-of (𝒪 X) ] y)
+            renaming (_is-an-upper-bound-of_ to _is-an-upper-bound-of₀_)
 
+           ε : (j (ℬ [ i ]) is-an-upper-bound-of₀ S) holds
+           ε l =
+             S [ l ]                      ≤⟨ ∨[ 𝒪 X ]-upper₁ (S [ l ]) (ℬ [ i ]) ⟩
+             (S [ l ]) ∨[ 𝒪 X ] (ℬ [ i ]) ≤⟨ ψ l i                               ⟩
+             j (ℬ [ i ])                  ■
 \end{code}
 
 \begin{code}
