@@ -27,18 +27,18 @@ You can use the following BibTeX citation to cite `TypeTopology`:
 
 ## Current contributors in alphabetical order of given name
 
-Andrew Sneap
-Ayberk Tosun
-Ettore Aldrovandi
-Keri D'Angelo
-Marc Bezem *
-Martin Escardo
-Ohad Kammar
-Paulo Oliva
-Peter Dybjer *
-Thierry Coquand *
-Todd Waugh Ambridge
-Tom de Jong
+* Andrew Sneap
+* Ayberk Tosun
+* Ettore Aldrovandi
+* Keri D'Angelo
+* Marc Bezem *
+* Martin Escardo
+* Ohad Kammar
+* Paulo Oliva
+* Peter Dybjer *
+* Thierry Coquand *
+* Todd Waugh Ambridge
+* Tom de Jong
 
 (*) These authors didn't write any single line of Agda code here, but
 they contributed to constructions, theorems and proofs via the hands
