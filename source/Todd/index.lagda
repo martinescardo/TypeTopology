@@ -14,6 +14,7 @@ import Todd.SearchableTypes
 import Todd.SearchableTypesQ
 import Todd.TBRDyadicReals
 import Todd.TBRFunctions
+import Todd.TBRMultiplication
 import Todd.TernaryBoehmReals
 import Todd.TernaryBoehmRealsPrelude
 
