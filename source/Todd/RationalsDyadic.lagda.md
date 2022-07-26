@@ -13,8 +13,8 @@ open import DedekindReals.Integers.Integers
 open import DedekindReals.Integers.Abs
 open import DedekindReals.Integers.Addition renaming (_+_ to _+ℤ_)
 open import DedekindReals.Integers.Multiplication 
-open import DedekindReals.Integers.Negation
-open import DedekindReals.Integers.Order
+open import DedekindReals.Integers.Negation 
+open import DedekindReals.Integers.Order hiding (min₃ ; max₃)
 open import Naturals.Addition
 open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
 open import MLTT.NaturalNumbers
@@ -345,6 +345,8 @@ record DyadicProperties : 𝓤₁ ̇ where
   ℤ[1/2]*-comm   : commutative _ℤ[1/2]*_
   ℤ[1/2]*-assoc  : associative _ℤ[1/2]*_
   ℤ[1/2]-negation-involutive : (x : ℤ[1/2]) → x ＝ ℤ[1/2]- (ℤ[1/2]- x)
+  min : ℤ[1/2] → ℤ[1/2] → ℤ[1/2]
+  max : ℤ[1/2] → ℤ[1/2] → ℤ[1/2]
   
  infix 20  ℤ[1/2]-_
  infixl 19 _ℤ[1/2]-_
@@ -352,6 +354,18 @@ record DyadicProperties : 𝓤₁ ̇ where
  _ℤ[1/2]-_ : (p q : ℤ[1/2]) → ℤ[1/2]
  p ℤ[1/2]- q = p ℤ[1/2]+ (ℤ[1/2]- q)
 
+ min₃ :  ℤ[1/2] → ℤ[1/2] → ℤ[1/2] → ℤ[1/2]
+ min₃ a b c = min (min a b) c
+
+ min₄ : ℤ[1/2] → ℤ[1/2] → ℤ[1/2] → ℤ[1/2] → ℤ[1/2]
+ min₄ a b c d = min (min₃ a b c) d
+
+ max₃ :  ℤ[1/2] → ℤ[1/2] → ℤ[1/2] → ℤ[1/2]
+ max₃ a b c = max (max a b) c
+
+ max₄ : ℤ[1/2] → ℤ[1/2] → ℤ[1/2] → ℤ[1/2] → ℤ[1/2]
+ max₄ a b c d = max (max₃ a b c) d
+ 
 record OrderProperties : 𝓤₁ ̇ where
  field
   Dp : DyadicProperties
@@ -434,13 +448,13 @@ _𝔻+_ : ℤ[1/2] → ℤ[1/2] → ℤ[1/2]
 
   II : pos n * pos m ＝ pos m * pos n
   II = ℤ*-comm (pos n) (pos m)
-
+{-
 normalise-𝔻+ : ∀ x y → normalise x 𝔻+ normalise y ＝ normalise {!!}
 normalise-𝔻+ = {!!}
 
 D+-assoc : associative _𝔻+_
 D+-assoc x y z = {!!}
-
+-}
 ```
 
 The following code may be necessary at some point. Unfortunately,
