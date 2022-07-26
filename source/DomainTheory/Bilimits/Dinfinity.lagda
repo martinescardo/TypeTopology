@@ -52,7 +52,7 @@ open import DomainTheory.Basics.Pointed pt fe 𝓤₀
 open import DomainTheory.Bilimits.Sequential pt fe 𝓤₁ 𝓤₁
 open import DomainTheory.Lifting.LiftingSet pt fe 𝓤₀ pe
 
-open import Naturals.Order
+open import Naturals.Order hiding (subtraction')
 open import Naturals.Addition renaming (_+_ to _+'_)
 open import Notation.Order
 
