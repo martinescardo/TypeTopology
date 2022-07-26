@@ -1150,6 +1150,20 @@ compacts-are-basic-in-spectralᴰ-frames {𝓦 = 𝓦} F σ@(_ , β , _) U κ =
          ⋁[ F ] ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆   ≤⟨ p₂                                 ⟩
          U                            ■
 
+
+spectral-implies-compact : (F : Frame 𝓤 𝓥 𝓦) → (is-spectral F ⇒ is-compact F) holds
+spectral-implies-compact F σ = ∥∥-rec (holds-is-prop (is-compact F)) γ σ
+ where
+  γ : spectralᴰ F → is-compact F holds
+  γ (ℬ , _ , (ψ , (p , _))) = ∥∥-rec (holds-is-prop (is-compact F)) β p
+   where
+    β : Σ t ꞉ index ℬ , is-top F (ℬ [ t ]) holds
+      → is-compact F holds
+    β (t , φ) = transport (λ - → is-compact-open F - holds) δ (ψ t)
+     where
+      δ : ℬ [ t ] ≡ 𝟏[ F ]
+      δ = only-𝟏-is-above-𝟏 F (ℬ [ t ]) (φ 𝟏[ F ])
+
 compacts-closed-under-∧-in-spectral-frames : (F : Frame 𝓤 𝓥 𝓦)
                                            → is-spectral F holds
                                            → (K₁ K₂ : ⟨ F ⟩)
