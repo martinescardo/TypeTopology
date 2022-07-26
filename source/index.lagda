@@ -80,6 +80,7 @@ import BinarySystems.index
 import CantorSchroederBernstein.index
 import Circle.index                   -- by Tom de Jong
 import CoNaturals.index
+import DedekindReals.index            -- by Andrew Sneap
 import DomainTheory.index             -- by Tom de Jong
 import Dyadics.index                  -- by Tom de Jong
 import Games.index                    -- by Martin Escardo and Paulo Oliva
