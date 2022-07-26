@@ -9,8 +9,8 @@ This only exists to use the subgroups code from UF-SIP-Examples with
 Groups interface. The code is almost literally imported from the
 subgroup module in UF-SIP-Examples with minor adaptations, since the
 interface defined by Groups is different. This relies on the proof
-that the group axioms, as defined in Groups, form a proposition,
-defined in the file Groups.Type-supplement.
+that the group axioms, as defined in Groups, form a proposition.
+
 
 \begin{code}
 
