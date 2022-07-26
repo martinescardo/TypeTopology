@@ -272,15 +272,15 @@ module Epsilon (X : Locale (𝓤 ⁺) 𝓤 𝓤) (σᴰ : spectralᴰ (𝒪 X)) 
  open SmallPatchConstruction X σᴰ renaming (SmallPatch to Patchₛ-X)
  open ClosedNucleus X ∣ σᴰ ∣
 
- ϵ : Patchₛ-X ─c→ X
- ϵ = ‘_’ , α , β , γ
+ ϵ-preserves-𝟏 : ‘ 𝟏[ 𝒪 X ] ’ ≡ 𝟏[ 𝒪 Patchₛ-X ]
+ ϵ-preserves-𝟏 = perfect-nuclei-eq ‘ 𝟏[ 𝒪 X ] ’ 𝟏[ 𝒪 Patchₛ-X ] (dfunext fe †)
   where
-   α : ‘ 𝟏[ 𝒪 X ] ’ ≡ 𝟏[ 𝒪 Patchₛ-X ]
-   α = perfect-nuclei-eq ‘ 𝟏[ 𝒪 X ] ’ 𝟏[ 𝒪 Patchₛ-X ] (dfunext fe †)
-    where
-     † : (U : ⟨ 𝒪 X ⟩) → 𝟏[ 𝒪 X ] ∨[ 𝒪 X ] U ≡ 𝟏[ 𝒪 X ]
-     † U = 𝟏-left-annihilator-for-∨ (𝒪 X) U
+   † : (U : ⟨ 𝒪 X ⟩) → 𝟏[ 𝒪 X ] ∨[ 𝒪 X ] U ≡ 𝟏[ 𝒪 X ]
+   † U = 𝟏-left-annihilator-for-∨ (𝒪 X) U
 
+ ϵ : Patchₛ-X ─c→ X
+ ϵ = ‘_’ , ϵ-preserves-𝟏 , β , γ
+  where
    β : preserves-binary-meets (𝒪 X) (𝒪 Patchₛ-X) ‘_’ holds
    β U V = perfect-nuclei-eq
             ‘ U ∧[ 𝒪 X ] V ’
