@@ -29,6 +29,7 @@ You can use the following BibTeX citation to cite `TypeTopology`:
 
 * Andrew Sneap
 * Ayberk Tosun
+* Cory Knapp
 * Ettore Aldrovandi
 * Keri D'Angelo
 * Marc Bezem *
