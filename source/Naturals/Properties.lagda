@@ -44,3 +44,19 @@ succ-no-fp (succ n) p = succ-no-fp n (succ-lc p)
 ℕ-cases {𝓦} {P} (succ n) c₀ cₛ = cₛ n refl
 
 \end{code}
+
+Added 12/05/2022 by Andrew Sneap.
+
+\begin{code}
+
+succ-pred : (x : ℕ) → succ (pred (succ x)) ＝ succ x
+succ-pred x = refl
+
+succ-pred' : (x : ℕ) → ¬ (x ＝ 0) → succ (pred x) ＝ x
+succ-pred' zero     nz = 𝟘-elim (nz refl)
+succ-pred' (succ n) _ = refl
+
+pred-succ : (x : ℕ) → pred (succ x) ＝ x
+pred-succ x = refl
+
+\end{code}

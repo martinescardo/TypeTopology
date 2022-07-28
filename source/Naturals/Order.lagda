@@ -396,3 +396,302 @@ Tom de Jong, 5 November 2021.
   IH = <-trichotomous n m
 
 \end{code}
+
+Added 12/05/2020 by Andrew Sneap.
+Following are proofs of common properties of strict and non-strict order of Natural Numbers.
+
+\begin{code}
+
+≤-trans₂ : (x y u v : ℕ) → x ≤ y → y ≤ u → u ≤ v → x ≤ v
+≤-trans₂ x y u v l₁ l₂ = ≤-trans x u v I
+ where
+  I : x ≤ u
+  I = ≤-trans x y u l₁ l₂
+
+<-trans₂ : (x y u v : ℕ) → x < y → y < u → u < v → x < v
+<-trans₂ x y u v l₁ l₂ = <-trans x u v I 
+ where
+  I : x < u
+  I = <-trans x y u l₁ l₂
+
+≤-<-trans : (x y z : ℕ) → x ≤ y → y < z → x < z
+≤-<-trans x y z l₁ l₂ = ≤-trans (succ x) (succ y) z l₁ l₂
+
+<-≤-trans : (x y z : ℕ) → x < y → y ≤ z → x < z
+<-≤-trans x y z l₁ l₂ = ≤-trans (succ x) y z l₁ l₂
+
+≤-n-monotone-right : (x y z : ℕ) → x ≤ y → (x +' z) ≤ (y +' z)
+≤-n-monotone-right x y 0        l = l
+≤-n-monotone-right x y (succ n) l = ≤-n-monotone-right x y n l
+
+≤-n-monotone-left : (x y z : ℕ) → x ≤ y → (z +' x) ≤ (z +' y)
+≤-n-monotone-left x y z l
+ = transport₂ _≤_ (addition-commutativity x z) (addition-commutativity y z) (≤-n-monotone-right x y z l)
+
+≤-adding : (x y u v : ℕ) → x ≤ y → u ≤ v → (x +' u) ≤ (y +' v)
+≤-adding x y u v l₁ l₂
+ = ≤-trans (x +' u) (y +' u) (y +' v) (≤-n-monotone-right x y u l₁) (≤-n-monotone-left u v y l₂)
+
+<-succ-monotone : (x y : ℕ) → x < y → succ x < succ y
+<-succ-monotone x y = id
+
+<-n-monotone-right : (x y z : ℕ) → x < y → (x +' z) < (y +' z)
+<-n-monotone-right x y  0       l = l
+<-n-monotone-right x y (succ z) l = <-n-monotone-right x y z l
+    
+<-n-monotone-left : (x y z : ℕ) → x < y → (z +' x) < (z +' y)
+<-n-monotone-left x y z l
+ = transport₂ _<_ (addition-commutativity x z) (addition-commutativity y z) (<-n-monotone-right x y z l)
+
+<-adding : (x y u v : ℕ) → x < y → u < v → (x +' u) < (y +' v)
+<-adding x y u v l₁ l₂
+ = <-trans (x +' u) (y +' u) (y +' v) (<-n-monotone-right x y u l₁) (<-n-monotone-left u v y l₂)
+
+<-+ : (x y z : ℕ) → x < y → x < y +' z
+<-+ x y z l₁ = ≤-trans (succ x) y (y +' z) l₁ l₂
+ where
+  l₂ : y ≤ y +' z
+  l₂ = ≤-+ y z
+
+equal-gives-less-than-or-equal : (x y : ℕ) → x ＝ y → x ≤ y
+equal-gives-less-than-or-equal x y p = transport (_≤ y) (p ⁻¹) (≤-refl y)
+
+less-than-not-equal : (x y : ℕ) → x < y → ¬ (x ＝ y)
+less-than-not-equal x y r p = less-not-bigger-or-equal x y r (equal-gives-less-than-or-equal y x (p ⁻¹))
+
+less-than-one-is-zero : (x : ℕ) → x < 1 → x ＝ 0
+less-than-one-is-zero 0        l = refl
+less-than-one-is-zero (succ x) l = 𝟘-elim l
+
+not-less-or-equal-is-bigger : (x y : ℕ) → ¬(x ≤ y) → y < x
+not-less-or-equal-is-bigger 0        y        l = l (zero-least y)
+not-less-or-equal-is-bigger (succ x) 0        l = zero-least x
+not-less-or-equal-is-bigger (succ x) (succ y) l = not-less-or-equal-is-bigger x y l
+
+≤-dichotomous : (x y : ℕ) → (x ≤ y) + (y ≤ x)
+≤-dichotomous zero     y        = inl ⋆
+≤-dichotomous (succ x) zero     = inr ⋆
+≤-dichotomous (succ x) (succ y) = ≤-dichotomous x y
+
+≥-dichotomy : (x y : ℕ) → (x ≥ y) + (x ≤ y)
+≥-dichotomy 0        y        = inr (zero-least y)
+≥-dichotomy (succ x) 0        = inl (zero-least (succ x))
+≥-dichotomy (succ x) (succ y) = ≥-dichotomy x y
+
+subtraction' : (x y : ℕ) → x < y → Σ z ꞉ ℕ , (z +' x ＝ y)
+subtraction' 0        0        l = 𝟘-induction l
+subtraction' 0        (succ y) l = (succ y) , refl
+subtraction' (succ x) (succ y) l = pr₁ IH , ap succ (pr₂ IH)
+ where
+  IH : Σ z ꞉ ℕ , z +' x ＝ y 
+  IH = subtraction' x y l
+
+subtraction'' : (x y : ℕ) → x < y → Σ z ꞉ ℕ , (succ z +' x ＝ y)
+subtraction'' 0        0        l = 𝟘-elim l
+subtraction'' 0        (succ y) l = y , refl
+subtraction'' (succ x) 0        l = 𝟘-elim l
+subtraction'' (succ x) (succ y) l = z , ap succ e
+ where
+  I : Σ z ꞉ ℕ , succ z +' x ＝ y
+  I = subtraction'' x y l
+
+  z : ℕ
+  z = pr₁ I
+
+  e : succ z +' x ＝ y
+  e = pr₂ I
+
+order-split : (x y : ℕ) → (x < y) + (x ≥ y)
+order-split 0        0        = inr (zero-least 0)
+order-split 0        (succ y) = inl (zero-least (succ y))
+order-split (succ x) 0        = inr (zero-least (succ x))
+order-split (succ x) (succ y) = order-split x y
+
+least-element-unique : {A : ℕ → 𝓤 ̇} → (σ : detachable A)
+                                     → ((α , αₚ) : Σ k ꞉ ℕ , A k × ((z : ℕ) → A z → k ≤ z))
+                                     → ((β , βₚ) : Σ n ꞉ ℕ , A n × ((z : ℕ) → A z → n ≤ z))
+                                     → α ＝ β
+least-element-unique σ (α , α₀ , α₁) (β , β₀ , β₁) = ≤-anti α β I II
+ where
+  I : α ≤ β
+  I = α₁ β β₀
+
+  II : β ≤ α
+  II = β₁ α α₀
+    
+least-element-unique' : {A : ℕ → 𝓤 ̇} → (σ : detachable A)
+                                      → (x y : ℕ)
+                                      → (δ : Σ A) → x ＝ pr₁ (least-from-given A σ δ) → y ＝ pr₁ (least-from-given A σ δ)
+                                      → x ＝ y
+least-element-unique' σ x y δ e₁ e₂ = e₁ ∙ e₂ ⁻¹
+
+\end{code}
+
+The following section provides an algorithm for bounded maximisation
+of decidable propositions on Natural numbers, similar to the algorithm
+for bounded-minimisation above.
+
+The strategy is simple.
+
+
+\begin{code}
+
+bounded-maximisation : (A : ℕ → 𝓤 ̇) → detachable A
+                     → (k : ℕ)
+                     → (Σ m ꞉ ℕ , (m < k × A m × ((n : ℕ) → n < k → A n → n ≤ m))) + ((n : ℕ) → A n → n ≥ k) 
+bounded-maximisation A δ zero = inr (λ n _ → zero-least n)
+bounded-maximisation A δ (succ k) = f (bounded-maximisation A δ k)
+ where
+  conclusion = (Σ m ꞉ ℕ , (m < succ k) × A m × ((n : ℕ) → n < succ k → A n → n ≤ m)) + ((n : ℕ) → A n → n ≥ succ k)
+  
+  f : (Σ m ꞉ ℕ , (m < k) × A m × ((n : ℕ) → n < k → A n → n ≤ m)) + ((n : ℕ) → A n → n ≥ k)
+    → conclusion
+  f (inl (m , l , a , ψ)) = g (δ k)
+   where
+    g : A k + ¬ A k → conclusion 
+    g (inl k-holds) = inl (k , ((<-succ k) , (k-holds , ψ')))
+     where
+       ψ' : (n : ℕ) → n < succ k → A n → n ≤ k
+       ψ' n z a' = z
+    g (inr k-fails) = inl (m , ((<-trans m k (succ k) l (<-succ k)) , a , ψ'))
+     where
+      ψ' : (n : ℕ) → n < succ k → A n → n ≤ m
+      ψ' n z a' = ψ n (ρ (<-split n k z)) a'
+       where
+        ρ : (n < k) + (n ＝ k) → n < k
+        ρ (inl r) = r
+        ρ (inr r) = 𝟘-elim (k-fails (transport (λ - → A -) r a'))
+  f (inr ω) = g (δ k)
+   where
+    g : A k + ¬ A k → conclusion
+    g (inl k-holds) = inl (k , (<-succ k , k-holds , (λ z l a' → l)))
+    g (inr k-fails) = inr ψ
+     where
+      ψ : (n : ℕ) → A n → n ≥ succ k
+      ψ n n-holds = τ (<-split k n (ω n n-holds))
+       where
+        τ : (k < n) + (k ＝ n) → n ≥ succ k
+        τ (inr w) = 𝟘-elim (k-fails (transport (λ - → A -) (w ⁻¹) n-holds))
+        τ (inl w) = w
+
+bounded-maximisation' : (A : ℕ → 𝓤 ̇) → detachable A
+   → (k : ℕ)
+   → (Σ m ꞉ ℕ , (m ≤ k × A m × ((n : ℕ) → n ≤ k → A n → n ≤ m))) + ((n : ℕ) → A n → k < n)
+bounded-maximisation' A δ k = result (bounded-maximisation A δ k) (δ k)
+ where
+  result : (Σ m ꞉ ℕ , (m < k) × A m × ((n : ℕ) → n < k → A n → n ≤ m)) + ((n : ℕ) → A n → n ≥ k) → A k + ¬ A k
+         → (Σ m ꞉ ℕ , (m ≤ k) × A m × ((n : ℕ) → n ≤ k → A n → n ≤ m)) + ((n : ℕ) → A n → k < n)
+  result (inl z) (inl k-holds) = inl (k , (≤-refl k , (k-holds , (λ _ t _ → t))))
+  result (inr z) (inl k-holds) = inl (k , ≤-refl k , k-holds , (λ _ t _ → t))
+  result (inl (m , l , a , ψ)) (inr k-fails) = inl (m , (<-coarser-than-≤ m k l) , a , g)
+   where
+    g : (n : ℕ) → n ≤ k → A n → n ≤ m
+    g n l' a' = ψ n (h (<-split n k l')) a'
+     where
+      h : (n < k) + (n ＝ k) → n < k
+      h (inl j) = j
+      h (inr j) = 𝟘-elim (k-fails (transport (λ - → A -) j a'))
+  result (inr z) (inr k-fails) = inr f
+   where
+    f : (n : ℕ) → A n → k < n
+    f n a = g (<-split k n (z n a)) 
+     where
+      g : (k < n) + (k ＝ n) → k < n
+      g (inl j) = j
+      g (inr j) = 𝟘-elim (k-fails (transport (λ - → A -) (j ⁻¹) a))
+  
+-- type of maximal element m : ℕ such that A m holds, given an upper bound
+
+maximal-element : (A : ℕ → 𝓤 ̇) → (k : ℕ) → 𝓤 ̇
+maximal-element A k = Σ m ꞉ ℕ , (m < k × A m × ((n : ℕ) → n < k → A n → n ≤ m))
+
+maximal-element' : (A : ℕ → 𝓤 ̇) → (k : ℕ) → 𝓤 ̇
+maximal-element' A k = Σ m ꞉ ℕ , (m ≤ k × A m × ((n : ℕ) → n ≤ k → A n → n ≤ m))
+
+\end{code}
+
+With above machinery in mind, we can now produce maximal elements of
+propositions of Natural Numbers, given some initial Natural Number for
+which the property holds. Of course, we must provide an upper bound.
+
+\begin{code}
+
+maximal-from-given : (A : ℕ → 𝓤 ̇) → (b : ℕ) → detachable A → Σ k ꞉ ℕ , A k × k < b → maximal-element A b
+maximal-from-given A b δ (k , a) = f (bounded-maximisation A δ b)
+ where
+  f : (Σ m ꞉ ℕ , (m < b) × A m × ((n : ℕ) → n < b → A n → n ≤ m)) + ((n : ℕ) → A n → n ≥ b) → maximal-element A b
+  f (inl x) = x
+  f (inr x) = 𝟘-elim (less-not-bigger-or-equal k b (pr₂ a) (x k (pr₁ a)))
+
+maximal-from-given' : (A : ℕ → 𝓤 ̇) → (b : ℕ) → detachable A → Σ k ꞉ ℕ , A k × k ≤ b → maximal-element' A b
+maximal-from-given' A b δ (k , a , c) = f (bounded-maximisation' A δ b)
+ where
+  f : (Σ m ꞉ ℕ , (m ≤ b) × A m × ((n : ℕ) → n ≤ b → A n → n ≤ m)) + ((n : ℕ) → A n → b < n) → maximal-element' A b
+  f (inr x) = 𝟘-elim (bigger-or-equal-not-less k b c (x k a))
+  f (inl x) = x
+
+\end{code}
+
+Multiplication preserves non-strict order, and this is proved by induction.
+
+In the base case, it is required to prove that 0 ≤ 0 which is true by
+definition.  In the inductive case, we need to prove that
+m * succ k ≤ n * succ k, or by definitional equality m + m * k ≤ n + n * k.
+
+By the inductive hypothesis, m * k ≤ n * k, and we have that m ≤ n, so we
+can use the result which says we can combine two order relations into one.
+
+\begin{code}
+
+open import Naturals.Multiplication
+
+multiplication-preserves-order : (m n k : ℕ) → m ≤ n → m * k ≤ n * k
+multiplication-preserves-order m n 0        l = zero-least 0
+multiplication-preserves-order m n (succ k) l = ≤-adding m n (m * k) (n * k) l IH
+ where
+  IH : m * k ≤ n * k
+  IH = multiplication-preserves-order m n k l
+
+\end{code}
+
+For strict order, order is only preserved when multiplying by a value
+greater than 0.  Again by induction, the base case is trivial since we
+are multiplying by 1.  The inductive case is similar to the above
+proof.
+
+\begin{code}
+
+multiplication-preserves-strict-order : (m n k : ℕ) → m < n → m * succ k < n * succ k
+multiplication-preserves-strict-order m n 0        l = l
+multiplication-preserves-strict-order m n (succ k) l = <-adding m n (m * succ k) (n * succ k) l (multiplication-preserves-strict-order m n k l)
+
+\end{code}
+
+If x * (y + 1) ≤ z, then x ≤ z. This is a useful property to have, and
+proof follows from x ≤ x * y + 1 and transitivity of order.
+
+A similar proof for strict order is sometimes useful.
+
+\begin{code}
+
+product-order-cancellable : (x y z : ℕ) → x * (succ y) ≤ z → x ≤ z
+product-order-cancellable x 0        z l = l
+product-order-cancellable x (succ y) z l = ≤-trans x (x * succ (succ y)) z (≤-+ x (x * succ y)) l
+
+less-than-pos-mult : (x y z : ℕ) → x < y → x < y * succ z
+less-than-pos-mult x y z l = <-+ x y (y * z) l
+
+\end{code}
+
+{-
+course-of-values-induction-modified : (P : ℕ → 𝓤 ̇ )
+                                    → ((n : ℕ) → (Σ m ꞉ ℕ , m < n × (P m → P n)))
+                                    → (n : ℕ) → P n
+course-of-values-induction-modified P step = course-of-values-induction P step'
+ where
+  step' : (n : ℕ) → ((m : ℕ) → m < n → P m) → P n
+  step' n f with step n
+  ... | n , m , ooop = ooop (f n m)
+-}
+
+

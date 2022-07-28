@@ -10,5 +10,9 @@ import Naturals.Order
 import Naturals.Properties
 import Naturals.RootsTruncation
 import Naturals.UniversalProperty
+import Naturals.Division
+import Naturals.Multiplication
+import Naturals.HCF
+
 
 \end{code}
