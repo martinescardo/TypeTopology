@@ -396,15 +396,6 @@ module PatchStone (X : Locale (𝓤 ⁺) 𝓤 𝓤) (σᴰ : spectralᴰ (𝒪 X
 \begin{code}
 
  patch-is-compact : is-compact (𝒪 Patchₛ-X) holds
- patch-is-compact = γ
-  where
-   δ : (‘ 𝟏[ 𝒪 X ] ’ ≪[ 𝒪 Patchₛ-X ] ‘ 𝟏[ 𝒪 X ] ’) holds
-   δ = perfect-preserves-way-below ϵ {!opn-perfect !} {!!} {!!} {!!}
-
-   γ : (𝟏[ 𝒪 Patchₛ-X ] ≪[ 𝒪 Patchₛ-X ] 𝟏[ 𝒪 Patchₛ-X ]) holds
-   γ = transport (λ - → (- ≪[ 𝒪 Patchₛ-X ] -) holds) ϵ-preserves-𝟏 δ
-
- -- patch-is-zero-dimensional : {!!}
- -- patch-is-zero-dimensional = {!!}
+ patch-is-compact = perfect-map-implies-compactness ϵ {!!} {!!}
 
 \end{code}
