@@ -56,6 +56,7 @@ module BasicProperties (X : Locale 𝓤 𝓥 𝓦) (σ : is-spectral (𝒪 X) ho
   ≤-is-antisymmetric (poset-of (𝒪 X)) β γ
    where
     open Joins (λ x y → x ≤[ poset-of (𝒪 X) ] y)
+    open PosetReasoning (poset-of (𝒪 X))
 
     𝓁𝒽𝓈 = (⋁[ 𝒪 Patch-of-X ] K) $ U
     𝓇𝒽𝓈 = ⋁[ 𝒪 X ] ⁅ k $ U ∣ k ε K ⁆
@@ -66,7 +67,12 @@ module BasicProperties (X : Locale 𝓤 𝓥 𝓦) (σ : is-spectral (𝒪 X) ho
     β = ⋁[ 𝒪 X ]-least ⁅ α U ∣ α ε 𝔡𝔦𝔯 K₀ ⁆ (𝓇𝒽𝓈 , †)
      where
       † : (𝓇𝒽𝓈 is-an-upper-bound-of ⁅ α U ∣ α ε 𝔡𝔦𝔯 K₀ ⁆) holds
-      † []       = {!!}
+      † []       = ∥∥-rec (holds-is-prop (U ≤[ poset-of (𝒪 X) ] 𝓇𝒽𝓈)) ※ (pr₁ δ)
+                    where
+                     ※ : index K → (U ≤[ poset-of (𝒪 X) ] 𝓇𝒽𝓈) holds
+                     ※ l = U               ≤⟨ 𝓃₁ (𝒪 X) (nucleus-of (K [ l ])) U  ⟩
+                           (K [ l ]) $ U   ≤⟨ ⋁[ 𝒪 X ]-upper ⁅ k $ U ∣ k ε K ⁆ l ⟩
+                           𝓇𝒽𝓈             ■
       † (i ∷ is) = {!!}
 
     γ : (𝓇𝒽𝓈 ≤[ poset-of (𝒪 X) ] 𝓁𝒽𝓈) holds
