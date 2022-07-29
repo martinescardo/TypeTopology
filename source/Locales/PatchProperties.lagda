@@ -39,6 +39,44 @@ open Locale
 
 \end{code}
 
+\section{Basic properties}
+
+\begin{code}
+
+module BasicProperties (X : Locale 𝓤 𝓥 𝓦) (σ : is-spectral (𝒪 X) holds) where
+
+ open PatchConstruction X σ renaming (Perfect-Nucleus to Perfect-Nucleus-on-X;
+                                      Patch to Patch-of-X)
+
+ directed-joins-are-computed-pointwise : (K : Fam 𝓦 Perfect-Nucleus-on-X)
+                                       → is-directed (poset-of (𝒪 Patch-of-X)) K holds
+                                       → (U : ⟨ 𝒪 X ⟩)
+                                       → (⋁[ 𝒪 Patch-of-X ] K) $ U ≡ ⋁[ 𝒪 X ] ⁅ k $ U ∣ k ε K ⁆
+ directed-joins-are-computed-pointwise K δ U =
+  ≤-is-antisymmetric (poset-of (𝒪 X)) β γ
+   where
+    open Joins (λ x y → x ≤[ poset-of (𝒪 X) ] y)
+
+    𝓁𝒽𝓈 = (⋁[ 𝒪 Patch-of-X ] K) $ U
+    𝓇𝒽𝓈 = ⋁[ 𝒪 X ] ⁅ k $ U ∣ k ε K ⁆
+
+    K₀ = ⁅ _$_ k ∣ k ε K ⁆
+
+    β : (𝓁𝒽𝓈 ≤[ poset-of (𝒪 X) ] 𝓇𝒽𝓈) holds
+    β = ⋁[ 𝒪 X ]-least ⁅ α U ∣ α ε 𝔡𝔦𝔯 K₀ ⁆ (𝓇𝒽𝓈 , †)
+     where
+      † : (𝓇𝒽𝓈 is-an-upper-bound-of ⁅ α U ∣ α ε 𝔡𝔦𝔯 K₀ ⁆) holds
+      † []       = {!!}
+      † (i ∷ is) = {!!}
+
+    γ : (𝓇𝒽𝓈 ≤[ poset-of (𝒪 X) ] 𝓁𝒽𝓈) holds
+    γ = ⋁[ 𝒪 X ]-least ⁅ k $ U ∣ k ε K ⁆ (𝓁𝒽𝓈 , †)
+     where
+      † : (𝓁𝒽𝓈 is-an-upper-bound-of ⁅ k $ U ∣ k ε K ⁆) holds
+      † i = ⋁[ 𝒪 Patch-of-X ]-upper K i U
+
+\end{code}
+
 \section{Open and closed nuclei}
 
 \begin{code}
