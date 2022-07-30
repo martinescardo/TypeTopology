@@ -642,6 +642,10 @@ is-directed F (I , β) =
  ∧ (Ɐ i ∶ I , Ɐ j ∶ I , (Ǝ k ∶ I , ((β i ≤ β k) ∧ (β j ≤ β k)) holds))
   where open PosetNotation (poset-of F)
 
+directedness-entails-inhabitation : (F : Frame 𝓤 𝓥 𝓦) (S : Fam 𝓦 ⟨ F ⟩)
+                                  → (is-directed F S ⇒ ∥ index S ∥Ω) holds
+directedness-entails-inhabitation F S = pr₁
+
 is-scott-continuous : (F : Frame 𝓤  𝓥  𝓦)
                     → (G : Frame 𝓤′ 𝓥′ 𝓦)
                     → (f : ⟨ F ⟩ → ⟨ G ⟩)
