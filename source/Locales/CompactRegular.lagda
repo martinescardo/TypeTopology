@@ -977,11 +977,11 @@ Scott-continuous.
        † : ((f ⋆∙ U) ≤[ poset-of (𝒪 X) ] (S [ k ])) holds
        † = adjunction-inequality-backward f (S [ k ]) U q
 
- perfect-map-implies-compactness : (𝒻 : X ─c→ Y)
-                                 → is-perfect-map 𝒻 holds
-                                 → is-compact (𝒪 Y) holds
-                                 → is-compact (𝒪 X) holds
- perfect-map-implies-compactness 𝒻@(f , φ , _) p κ = γ
+ compact-codomain-of-perfect-map-implies-compact-domain : (𝒻 : X ─c→ Y)
+                                                        → is-perfect-map 𝒻 holds
+                                                        → is-compact (𝒪 Y) holds
+                                                        → is-compact (𝒪 X) holds
+ compact-codomain-of-perfect-map-implies-compact-domain 𝒻@(f , φ , _) p κ = γ
   where
    β : (f 𝟏[ 𝒪 Y ] ≪[ 𝒪 X ] f 𝟏[ 𝒪 Y ]) holds
    β = perfect-preserves-way-below 𝒻 p 𝟏[ 𝒪 Y ] 𝟏[ 𝒪 Y ] κ

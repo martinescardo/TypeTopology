@@ -563,6 +563,7 @@ module PatchStone (X : Locale (𝓤 ⁺) 𝓤 𝓤) (σᴰ : spectralᴰ (𝒪 X
 \begin{code}
 
  patch-is-compact : is-compact (𝒪 Patchₛ-X) holds
- patch-is-compact = perfect-map-implies-compactness ϵ ϵ-is-a-perfect-map X-is-compact
+ patch-is-compact =
+  compact-codomain-of-perfect-map-implies-compact-domain ϵ ϵ-is-a-perfect-map X-is-compact
 
 \end{code}
