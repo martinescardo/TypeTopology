@@ -27,6 +27,7 @@ open import UF.Subsingletons
 open import UF.Subsingleton-Combinators
 open import UF.Equiv using (_≃_; logically-equivalent-props-give-is-equiv)
 open import Locales.Frame pt fe hiding (is-directed)
+open import Locales.AdjointFunctorTheoremForFrames pt fe
 
 open AllCombinators pt fe
 open PropositionalTruncation pt
@@ -434,6 +435,66 @@ module Epsilon (X : Locale (𝓤 ⁺) 𝓤 𝓤) (σᴰ : spectralᴰ (𝒪 X)) 
              S [ l ]                      ≤⟨ ∨[ 𝒪 X ]-upper₁ (S [ l ]) (ℬ [ i ]) ⟩
              (S [ l ]) ∨[ 𝒪 X ] (ℬ [ i ]) ≤⟨ ψ l i                               ⟩
              j (ℬ [ i ])                  ■
+
+ 𝒷 : has-basis (𝒪 X) holds
+ 𝒷 = spectral-frames-have-bases (𝒪 X) ∣ σᴰ ∣
+
+ open PerfectMaps Patchₛ-X X
+ open AdjointFunctorTheorem Patchₛ-X X 𝒷
+ open BasicProperties X ∣ σᴰ ∣
+ open PatchConstruction X ∣ σᴰ ∣ using () renaming (Patch to Patch-of-X)
+
+\end{code}
+
+The right adjoint `ϵ⁎` of `ϵ` is the function applying a given perfect nucleus
+to the bottom element `𝟎` of the locale in consideration.
+
+\begin{code}
+
+ ϵ⁎-is-application-to-𝟎 : (𝒦 : Fam 𝓦 ⟨ 𝒪 X ⟩)
+                        → {!!}
+ ϵ⁎-is-application-to-𝟎 = {!!}
+
+\end{code}
+
+\begin{code}
+
+ ϵ-is-a-perfect-map : is-perfect-map 𝒷 ϵ holds
+ ϵ-is-a-perfect-map 𝒦 δ = {!!}
+  where
+   open Joins (λ x y → x ≤[ poset-of (𝒪 X) ] y)
+
+   δ′ : is-directed (poset-of (𝒪 Patch-of-X)) 𝒦 holds
+   δ′ = pr₁ δ , ζ
+    where
+     ζ : (Ɐ i ∶ index 𝒦 , Ɐ j ∶ index 𝒦 ,
+           Ǝ k ∶ index 𝒦 , (((𝒦 [ i ]) ≼ (𝒦 [ k ])) holds)
+                         × (((𝒦 [ j ]) ≼ (𝒦 [ k ])) holds)) holds
+     ζ i j = ∥∥-rec ∃-is-prop η (pr₂ δ i j)
+      where
+       η : _
+       η (k , φ , ψ) =
+                     ∣ k
+                     , ≼ᵏ-implies-≼ (𝒦 [ i ]) (𝒦 [ k ]) φ
+                     , ≼ᵏ-implies-≼ (𝒦 [ j ]) (𝒦 [ k ]) ψ
+                     ∣
+
+   † : ((ϵ ⁎· (⋁[ 𝒪 Patchₛ-X ] 𝒦)) is-an-upper-bound-of ⁅ ϵ ⁎· k ∣ k ε 𝒦 ⁆) holds
+   † i = pr₂ (right-adjoint-of ϵ) _ (⋁[ 𝒪 Patchₛ-X ]-upper 𝒦 i)
+
+   ‡ : ((𝓊 , _) : upper-bound ⁅ ϵ ⁎· k ∣ k ε 𝒦 ⁆)
+     → ((ϵ ⁎· (⋁[ 𝒪 Patchₛ-X ] 𝒦)) ≤[ poset-of (𝒪 X) ] 𝓊) holds
+   ‡ (𝓊 , φ) = {!!}
+
+   γ : ϵ ⁎· (⋁[ 𝒪 Patchₛ-X ] 𝒦) ≡ ⋁[ 𝒪 X ] ⁅ ϵ ⁎· k ∣ k ε 𝒦 ⁆
+   γ = ϵ ⁎· (⋁[ 𝒪 Patchₛ-X ] 𝒦)          ≡⟨ i   ⟩
+       (⋁[ 𝒪 Patchₛ-X ] 𝒦) $ 𝟎[ 𝒪 X ]    ≡⟨ ii  ⟩
+       ⋁[ 𝒪 X ] ⁅ k $ 𝟎[ 𝒪 X ] ∣ k ε 𝒦 ⁆ ≡⟨ iii ⟩
+       ⋁[ 𝒪 X ] ⁅ ϵ ⁎· k ∣ k ε 𝒦 ⁆       ∎
+         where
+          i   = {!!}
+          ii  = directed-joins-are-computed-pointwise 𝒦 δ′ 𝟎[ 𝒪 X ]
+          iii = {!!}
 \end{code}
 
 \begin{code}
@@ -445,16 +506,17 @@ module PatchStone (X : Locale (𝓤 ⁺) 𝓤 𝓤) (σᴰ : spectralᴰ (𝒪 X
  open SmallPatchConstruction X σᴰ renaming (SmallPatch to Patchₛ-X)
  open Epsilon X σᴰ
 
- 𝒷 : has-basis (𝒪 X) holds
- 𝒷 = spectral-frames-have-bases (𝒪 X) ∣ σᴰ ∣
-
  open PerfectMaps Patchₛ-X X 𝒷
+
+ X-is-compact : is-compact (𝒪 X) holds
+ X-is-compact = spectral-implies-compact (𝒪 X) ∣ σᴰ ∣
 
 \end{code}
 
 \begin{code}
 
  patch-is-compact : is-compact (𝒪 Patchₛ-X) holds
- patch-is-compact = perfect-map-implies-compactness ϵ {!!} {!!}
+ patch-is-compact =
+  perfect-map-implies-compactness ϵ {!!} X-is-compact
 
 \end{code}
