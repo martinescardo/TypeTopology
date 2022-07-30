@@ -45,7 +45,7 @@ at-most-one-universe-embedding : Univalence
                                → (f g : 𝓤 ̇ → 𝓥 ̇ )
                                → is-universe-embedding f
                                → is-universe-embedding g
-                               → f ≡ g
+                               → f ＝ g
 at-most-one-universe-embedding {𝓤} {𝓥} ua f g i j = p
  where
   h : ∀ X → f X ≃ g X
@@ -54,7 +54,7 @@ at-most-one-universe-embedding {𝓤} {𝓥} ua f g i j = p
   H : f ∼ g
   H X = eqtoid (ua 𝓥) (f X) (g X) (h X)
 
-  p : f ≡ g
+  p : f ＝ g
   p = dfunext (Univalence-gives-Fun-Ext ua) H
 
 universe-embeddings-are-embeddings : Univalence
@@ -63,11 +63,11 @@ universe-embeddings-are-embeddings : Univalence
                                    → is-embedding f
 universe-embeddings-are-embeddings ua 𝓤 𝓥 f i = embedding-criterion' f γ
  where
-  γ : (X X' : 𝓤 ̇ ) → (f X ≡ f X') ≃ (X ≡ X')
-  γ X X' =  (f X ≡ f X')  ≃⟨ a ⟩
+  γ : (X X' : 𝓤 ̇ ) → (f X ＝ f X') ≃ (X ＝ X')
+  γ X X' =  (f X ＝ f X')  ≃⟨ a ⟩
             (f X ≃ f X')  ≃⟨ b ⟩
             (X ≃ X')      ≃⟨ c ⟩
-            (X ≡ X')      ■
+            (X ＝ X')      ■
    where
     a = univalence-≃ (ua 𝓥) (f X) (f X')
     b = ≃-cong (Univalence-gives-FunExt ua) (i X) (i X')
@@ -112,11 +112,11 @@ lower : {X : 𝓤 ̇ } → Lift 𝓥 X → X
 lower (x , ⋆) = x
 
 η-Lift : (𝓥 : Universe) {X : 𝓤 ̇ } (𝔁 : Lift 𝓥 X)
-       → lift 𝓥 (lower 𝔁) ≡ 𝔁
+       → lift 𝓥 (lower 𝔁) ＝ 𝔁
 η-Lift  𝓥 𝔁 = refl
 
 ε-Lift : (𝓥 : Universe) {X : 𝓤 ̇ } (x : X)
-       → lower (lift 𝓥 x) ≡ x
+       → lower (lift 𝓥 x) ＝ x
 ε-Lift  𝓥 x = refl
 
 lower-is-equiv : {X : 𝓤 ̇ } → is-equiv (lower {𝓤} {𝓥} {X})
@@ -161,20 +161,20 @@ prop-fiber-criterion pe fe 𝓤 𝓥 f i Q j (P , r) = d (P , r)
   l : is-prop P
   l = equiv-to-prop (≃-sym (i P)) k
 
-  a : (X : 𝓤 ̇ ) → (f X ≡ f P) ≃ (X ≡ P)
-  a X = (f X ≡ f P)  ≃⟨ prop-univalent-≃ (pe 𝓥) (fe 𝓥 𝓥) (f X) (f P) k ⟩
+  a : (X : 𝓤 ̇ ) → (f X ＝ f P) ≃ (X ＝ P)
+  a X = (f X ＝ f P)  ≃⟨ prop-univalent-≃ (pe 𝓥) (fe 𝓥 𝓥) (f X) (f P) k ⟩
         (f X ≃ f P)  ≃⟨ ≃-cong fe (i X) (i P) ⟩
         (X ≃ P)      ≃⟨ ≃-sym (prop-univalent-≃ (pe 𝓤) (fe 𝓤 𝓤) X P l) ⟩
-        (X ≡ P)      ■
+        (X ＝ P)      ■
 
-  b : (Σ X ꞉ 𝓤 ̇ , f X ≡ f P) ≃ (Σ X ꞉ 𝓤 ̇  , X ≡ P)
+  b : (Σ X ꞉ 𝓤 ̇ , f X ＝ f P) ≃ (Σ X ꞉ 𝓤 ̇  , X ＝ P)
   b = Σ-cong a
 
-  c : is-prop (Σ X ꞉ 𝓤 ̇ , f X ≡ f P)
+  c : is-prop (Σ X ꞉ 𝓤 ̇ , f X ＝ f P)
   c = equiv-to-prop b (singleton-types'-are-props P)
 
-  d : is-prop (Σ X ꞉ 𝓤 ̇ , f X ≡ Q)
-  d = transport (λ - → is-prop (Σ X ꞉ 𝓤 ̇ , f X ≡ -)) r c
+  d : is-prop (Σ X ꞉ 𝓤 ̇ , f X ＝ Q)
+  d = transport (λ - → is-prop (Σ X ꞉ 𝓤 ̇ , f X ＝ -)) r c
 
 prop-fiber-Lift : PropExt
                 → FunExt
@@ -207,10 +207,10 @@ global-≃-ap' {𝓤} {𝓥} ua F A φ X Y e =
       Y        ≃⟨ ≃-sym (Lift-is-universe-embedding 𝓤 Y) ⟩
       Lift 𝓤 Y ■
 
-  p : Lift 𝓥 X ≡ Lift 𝓤 Y
+  p : Lift 𝓥 X ＝ Lift 𝓤 Y
   p = eqtoid (ua (𝓤 ⊔ 𝓥)) (Lift 𝓥 X) (Lift 𝓤 Y) d
 
-  q : A (Lift 𝓥 X) ≡ A (Lift 𝓤 Y)
+  q : A (Lift 𝓥 X) ＝ A (Lift 𝓤 Y)
   q = ap A p
 
 global-property-of-types : 𝓤ω
@@ -278,24 +278,24 @@ at-most-one-hSet-embedding : Univalence
                            → (f g : hSet 𝓤 → hSet 𝓥 )
                            → is-hSet-embedding f
                            → is-hSet-embedding g
-                           → f ≡ g
+                           → f ＝ g
 at-most-one-hSet-embedding {𝓤} {𝓥} ua f g i j = p
  where
   h : ∀ 𝓧 → underlying-set (f 𝓧) ≃ underlying-set (g 𝓧)
   h 𝓧 = i 𝓧 ● ≃-sym (j 𝓧)
 
   H : f ∼ g
-  H 𝓧 = to-subtype-≡
+  H 𝓧 = to-subtype-＝
           (λ 𝓨 → being-set-is-prop (univalence-gives-funext (ua 𝓥)))
           (eqtoid (ua 𝓥) (underlying-set (f 𝓧)) (underlying-set (g 𝓧)) (h 𝓧))
 
-  p : f ≡ g
+  p : f ＝ g
   p = dfunext (Univalence-gives-FunExt ua (𝓤 ⁺) (𝓥 ⁺)) H
 
 the-only-hSet-embedding-is-Lift-hSet : Univalence
                                      → (f : hSet 𝓤 → hSet (𝓤 ⊔ 𝓥 ))
                                      → is-hSet-embedding f
-                                     → f ≡ Lift-hSet 𝓥
+                                     → f ＝ Lift-hSet 𝓥
 the-only-hSet-embedding-is-Lift-hSet {𝓤} {𝓥} ua f i =
    at-most-one-hSet-embedding ua f
      (Lift-hSet 𝓥) i

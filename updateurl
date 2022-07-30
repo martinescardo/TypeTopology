@@ -15,6 +15,7 @@ chmod a+r ~/public_html/TypeTopology/*.html
 
 cd ~/public_html/TypeTopology/
 
+ln -s TypeTopology.ADecidableQuantificationOverTheNaturals.html ADecidableQuantificationOverTheNaturals.html
 ln -s CantorSchroederBernstein.CSB.html CantorSchroederBernstein.html
 ln -s CoNaturals.GenericConvergentSequence.html GenericConvergentSequence.html
 ln -s Games.FiniteHistoryDependent.html FiniteHistoryDependentGames.html

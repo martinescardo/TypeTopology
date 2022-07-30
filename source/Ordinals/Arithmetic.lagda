@@ -133,7 +133,7 @@ Miscelanea:
 
 less-is-left : (α : Ord) (x y : ⟨ α +ₒ 𝟙ₒ ⟩)
              → x ≺⟨ α +ₒ 𝟙ₒ ⟩ y
-             → Σ a ꞉ ⟨ α ⟩ , x ≡ inl a
+             → Σ a ꞉ ⟨ α ⟩ , x ＝ inl a
 less-is-left α (inl a) y l = a , refl
 less-is-left α (inr *) (inl a) l = 𝟘-elim l
 less-is-left α (inr *) (inr *) l = 𝟘-elim l

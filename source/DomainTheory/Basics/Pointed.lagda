@@ -69,8 +69,8 @@ module _ {𝓤 𝓣 : Universe} where
 is-a-non-trivial-pointed-dcpo : (𝓓 : DCPO⊥ {𝓤} {𝓣}) → 𝓤 ̇
 is-a-non-trivial-pointed-dcpo 𝓓 = ∃ x ꞉ ⟪ 𝓓 ⟫ , x ≢ ⊥ 𝓓
 
-≡-to-⊥-criterion : (𝓓 : DCPO⊥ {𝓤} {𝓣}) {x : ⟪ 𝓓 ⟫} → x ⊑⟪ 𝓓 ⟫ ⊥ 𝓓 → x ≡ ⊥ 𝓓
-≡-to-⊥-criterion 𝓓 {x} x-below-⊥ =
+＝-to-⊥-criterion : (𝓓 : DCPO⊥ {𝓤} {𝓣}) {x : ⟪ 𝓓 ⟫} → x ⊑⟪ 𝓓 ⟫ ⊥ 𝓓 → x ＝ ⊥ 𝓓
+＝-to-⊥-criterion 𝓓 {x} x-below-⊥ =
  antisymmetry (𝓓 ⁻) x (⊥ 𝓓) x-below-⊥ (⊥-is-least 𝓓 x)
 
 DCPO⊥[_,_] : DCPO⊥ {𝓤} {𝓣} → DCPO⊥ {𝓤'} {𝓣'} → (𝓥 ⁺) ⊔ 𝓤 ⊔ 𝓣 ⊔ 𝓤' ⊔ 𝓣' ̇
@@ -79,7 +79,7 @@ DCPO⊥[ 𝓓 , 𝓔 ] = DCPO[ 𝓓 ⁻ , 𝓔 ⁻ ]
 is-strict : (𝓓 : DCPO⊥ {𝓤} {𝓣}) (𝓔 : DCPO⊥ {𝓤'} {𝓣'})
           → (⟪ 𝓓 ⟫ → ⟪ 𝓔 ⟫)
           → 𝓤' ̇
-is-strict 𝓓 𝓔 f = f (⊥ 𝓓) ≡ ⊥ 𝓔
+is-strict 𝓓 𝓔 f = f (⊥ 𝓓) ＝ ⊥ 𝓔
 
 being-strict-is-prop : (𝓓 : DCPO⊥ {𝓤} {𝓣}) (𝓔 : DCPO⊥ {𝓤'} {𝓣'})
                        (f : ⟪ 𝓓 ⟫ → ⟪ 𝓔 ⟫)
@@ -102,8 +102,8 @@ dcpos is automatically strict.
 
 _≃ᵈᶜᵖᵒ⊥_ : (𝓓 : DCPO⊥ {𝓤} {𝓣}) (𝓔 : DCPO⊥ {𝓤'} {𝓣'}) → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ⊔ 𝓤' ⊔ 𝓣' ̇
 𝓓 ≃ᵈᶜᵖᵒ⊥ 𝓔 = Σ f ꞉ (⟨ 𝓓 ⁻ ⟩ → ⟨ 𝓔 ⁻ ⟩) , Σ g ꞉ (⟨ 𝓔 ⁻ ⟩ → ⟨ 𝓓 ⁻ ⟩) ,
-                ((d : ⟨ 𝓓 ⁻ ⟩) → g (f d) ≡ d)
-               × ((e : ⟨ 𝓔 ⁻ ⟩) → f (g e) ≡ e)
+                ((d : ⟨ 𝓓 ⁻ ⟩) → g (f d) ＝ d)
+               × ((e : ⟨ 𝓔 ⁻ ⟩) → f (g e) ＝ e)
                × is-continuous (𝓓 ⁻) (𝓔 ⁻) f
                × is-continuous (𝓔 ⁻) (𝓓 ⁻) g
                × is-strict 𝓓 𝓔 f
@@ -123,7 +123,7 @@ _≃ᵈᶜᵖᵒ⊥_ : (𝓓 : DCPO⊥ {𝓤} {𝓣}) (𝓔 : DCPO⊥ {𝓤'} {�
       where
        l₁ = monotone-if-continuous (𝓓 ⁻) (𝓔 ⁻) (f , cf) (⊥ 𝓓) (g (⊥ 𝓔))
              (⊥-is-least 𝓓 (g (⊥ 𝓔)))
-       l₂ = ≡-to-⊑ (𝓔 ⁻) (fg (⊥ 𝓔))
+       l₂ = ＝-to-⊑ (𝓔 ⁻) (fg (⊥ 𝓔))
    sg : is-strict 𝓔 𝓓 g
    sg = antisymmetry (𝓓 ⁻) (g (⊥ 𝓔)) (⊥ 𝓓) γ (⊥-is-least 𝓓 (g (⊥ 𝓔)))
     where
@@ -133,7 +133,7 @@ _≃ᵈᶜᵖᵒ⊥_ : (𝓓 : DCPO⊥ {𝓤} {𝓣}) (𝓔 : DCPO⊥ {𝓤'} {�
       where
        l₁ = monotone-if-continuous (𝓔 ⁻) (𝓓 ⁻) (g , cg) (⊥ 𝓔) (f (⊥ 𝓓))
              (⊥-is-least 𝓔 (f (⊥ 𝓓)))
-       l₂ = ≡-to-⊑ (𝓓 ⁻) (gf (⊥ 𝓓))
+       l₂ = ＝-to-⊑ (𝓓 ⁻) (gf (⊥ 𝓓))
 
 \end{code}
 
@@ -212,7 +212,7 @@ semidirected-complete-if-pointed 𝓓 {I} {α} σ = x , x-is-sup
 
 ∐ˢᵈ-in-terms-of-∐ : (𝓓 : DCPO⊥ {𝓤} {𝓣}) {I : 𝓥 ̇ } {α : I → ⟪ 𝓓 ⟫}
                     (σ : is-semidirected (underlying-order (𝓓 ⁻)) α)
-                  → ∐ˢᵈ 𝓓 σ ≡ ∐ (𝓓 ⁻) (add-⊥-is-directed 𝓓 σ)
+                  → ∐ˢᵈ 𝓓 σ ＝ ∐ (𝓓 ⁻) (add-⊥-is-directed 𝓓 σ)
 ∐ˢᵈ-in-terms-of-∐ 𝓓 {I} {α} σ = refl
 
 preserves-semidirected-sups-if-continuous-and-strict :
@@ -244,7 +244,7 @@ preserves-semidirected-sups-if-continuous-and-strict 𝓓 𝓔 f con str {I} {α
                          claim₂ y h
    where
     h : is-upperbound (underlying-order (𝓔 ⁻)) y (f ∘ add-⊥ 𝓓 α)
-    h (inl ⋆) = f (⊥ 𝓓) ⊑⟪ 𝓔 ⟫[ ≡-to-⊑ (𝓔 ⁻) str ]
+    h (inl ⋆) = f (⊥ 𝓓) ⊑⟪ 𝓔 ⟫[ ＝-to-⊑ (𝓔 ⁻) str ]
                 ⊥ 𝓔     ⊑⟪ 𝓔 ⟫[ ⊥-is-least 𝓔 y ]
                 y       ∎⟪ 𝓔 ⟫
     h (inr i) = y-is-ub i
@@ -276,7 +276,7 @@ subsingleton-complete-if-pointed 𝓓 α ρ =
 ∐ˢˢ-in-terms-of-∐ˢᵈ : (𝓓 : DCPO⊥ {𝓤} {𝓣}) {I : 𝓥 ̇ } {α : I → ⟪ 𝓓 ⟫}
                       (ρ : is-prop I)
                     → ∐ˢˢ 𝓓 α ρ
-                    ≡ ∐ˢᵈ 𝓓
+                    ＝ ∐ˢᵈ 𝓓
                        (subsingleton-indexed-is-semidirected (𝓓 ⁻) α ρ)
 ∐ˢˢ-in-terms-of-∐ˢᵈ 𝓓 {I} {α} σ = refl
 
@@ -319,23 +319,23 @@ preserves-subsingleton-sups-if-continuous-and-strict 𝓓 𝓔 f con str α ρ =
 ∐ˢˢ-is-sup 𝓓 α ρ = ∐ˢˢ-is-upperbound 𝓓 α ρ
                  , ∐ˢˢ-is-lowerbound-of-upperbounds 𝓓 α ρ
 
-∐ˢˢ-≡-if-continuous-and-strict : (𝓓 : DCPO⊥ {𝓤} {𝓣}) (𝓔 : DCPO⊥ {𝓤'} {𝓣'})
+∐ˢˢ-＝-if-continuous-and-strict : (𝓓 : DCPO⊥ {𝓤} {𝓣}) (𝓔 : DCPO⊥ {𝓤'} {𝓣'})
                                  (f : ⟪ 𝓓 ⟫ → ⟪ 𝓔 ⟫)
                                → is-continuous (𝓓 ⁻) (𝓔 ⁻) f
                                → is-strict 𝓓 𝓔 f
                                → {I : 𝓥 ̇ } (α : I → ⟪ 𝓓 ⟫)
                                → (ρ : is-prop I)
-                               → f (∐ˢˢ 𝓓 α ρ) ≡ ∐ˢˢ 𝓔 (f ∘ α) ρ
-∐ˢˢ-≡-if-continuous-and-strict 𝓓 𝓔 f con str α ρ =
+                               → f (∐ˢˢ 𝓓 α ρ) ＝ ∐ˢˢ 𝓔 (f ∘ α) ρ
+∐ˢˢ-＝-if-continuous-and-strict 𝓓 𝓔 f con str α ρ =
  sups-are-unique
   (underlying-order (𝓔 ⁻))
   (pr₁ (axioms-of-dcpo (𝓔 ⁻))) (f ∘ α)
   (preserves-subsingleton-sups-if-continuous-and-strict 𝓓 𝓔 f con str α ρ)
   (∐ˢˢ-is-sup 𝓔 (f ∘ α) ρ)
 
-∐ˢˢ-family-≡ : (𝓓 : DCPO⊥ {𝓤} {𝓣}) {I : 𝓥 ̇ } {α β : I → ⟪ 𝓓 ⟫} (ρ : is-prop I)
-             → α ≡ β
-             → ∐ˢˢ 𝓓 α ρ ≡ ∐ˢˢ 𝓓 β ρ
-∐ˢˢ-family-≡ 𝓓 ρ refl = refl
+∐ˢˢ-family-＝ : (𝓓 : DCPO⊥ {𝓤} {𝓣}) {I : 𝓥 ̇ } {α β : I → ⟪ 𝓓 ⟫} (ρ : is-prop I)
+             → α ＝ β
+             → ∐ˢˢ 𝓓 α ρ ＝ ∐ˢˢ 𝓓 β ρ
+∐ˢˢ-family-＝ 𝓓 ρ refl = refl
 
 \end{code}

@@ -71,16 +71,16 @@ module _ {𝓤 : Universe}
    where
     f : (Σ i ꞉ I , is-defined (α i)) → X
     f = family-value-map α
-    γ : (∃ k ꞉ I , (α i₀ ⊑' α k) × (α i₁ ⊑' α k)) → f (i₀ , d₀) ≡ f (i₁ , d₁)
+    γ : (∃ k ꞉ I , (α i₀ ⊑' α k) × (α i₁ ⊑' α k)) → f (i₀ , d₀) ＝ f (i₁ , d₁)
     γ = ∥∥-rec s g
      where
       g : (Σ k ꞉ I , (α i₀ ⊑' α k)
-                   × (α i₁ ⊑' α k)) → f (i₀ , d₀) ≡ f (i₁ , d₁)
+                   × (α i₁ ⊑' α k)) → f (i₀ , d₀) ＝ f (i₁ , d₁)
       g (k , l , m) =
-       f (i₀ , d₀)                             ≡⟨ refl ⟩
-       value (α i₀) d₀                         ≡⟨ ≡-of-values-from-≡ (l d₀) ⟩
-       value (α k) (≡-to-is-defined (l d₀) d₀) ≡⟨ ≡-of-values-from-≡ ((m d₁) ⁻¹) ⟩
-       value (α i₁) d₁                         ≡⟨ refl ⟩
+       f (i₀ , d₀)                             ＝⟨ refl ⟩
+       value (α i₀) d₀                         ＝⟨ ＝-of-values-from-＝ (l d₀) ⟩
+       value (α k) (＝-to-is-defined (l d₀) d₀) ＝⟨ ＝-of-values-from-＝ ((m d₁) ⁻¹) ⟩
+       value (α i₁) d₁                         ＝⟨ refl ⟩
        f (i₁ , d₁)                             ∎
 
  lifting-sup-value : {I : 𝓣 ̇}
@@ -106,9 +106,9 @@ module _ {𝓤 : Universe}
     where
      f : is-defined (α i) → is-defined (lifting-sup α δ)
      f d = ∣ i , d ∣
-     v : (d : is-defined (α i)) → value (α i) d ≡ value (lifting-sup α δ) (f d)
-     v d = value (α i) d                 ≡⟨ p    ⟩
-           lifting-sup-value α δ (f d)   ≡⟨ refl ⟩
+     v : (d : is-defined (α i)) → value (α i) d ＝ value (lifting-sup α δ) (f d)
+     v d = value (α i) d                 ＝⟨ p    ⟩
+           lifting-sup-value α δ (f d)   ＝⟨ refl ⟩
            value (lifting-sup α δ) (f d) ∎
       where
        p = (pr₂ (wconstant-map-to-set-factors-through-truncation-of-domain
@@ -116,12 +116,12 @@ module _ {𝓤 : Universe}
                   (directed-family-value-map-is-wconstant α δ)))
            (i , d)
 
- family-defined-somewhere-sup-≡ : {I : 𝓣 ̇} {α : I → 𝓛 X}
+ family-defined-somewhere-sup-＝ : {I : 𝓣 ̇} {α : I → 𝓛 X}
                                 → (δ : is-directed _⊑'_ α)
                                 → (i : I)
                                 → is-defined (α i)
-                                → α i ≡ lifting-sup α δ
- family-defined-somewhere-sup-≡ {I} {α} δ i d =
+                                → α i ＝ lifting-sup α δ
+ family-defined-somewhere-sup-＝ {I} {α} δ i d =
   (lifting-sup-is-upperbound α δ i) d
 
  lifting-sup-is-lowerbound-of-upperbounds : {I : 𝓣 ̇}
@@ -135,9 +135,9 @@ module _ {𝓤 : Universe}
    h : lifting-sup α δ ⊑' v
    h d = ∥∥-rec (lifting-of-set-is-set s) g d
     where
-     g : (Σ i ꞉ I , is-defined (α i)) → lifting-sup α δ ≡ v
-     g (i , dᵢ) = lifting-sup α δ ≡⟨ (family-defined-somewhere-sup-≡ δ i dᵢ) ⁻¹ ⟩
-                  α i             ≡⟨ b i dᵢ ⟩
+     g : (Σ i ꞉ I , is-defined (α i)) → lifting-sup α δ ＝ v
+     g (i , dᵢ) = lifting-sup α δ ＝⟨ (family-defined-somewhere-sup-＝ δ i dᵢ) ⁻¹ ⟩
+                  α i             ＝⟨ b i dᵢ ⟩
                   v               ∎
 
  𝓛-DCPO : DCPO {𝓣 ⁺ ⊔ 𝓤} {𝓣 ⁺ ⊔ 𝓤}
@@ -198,13 +198,13 @@ module _ {𝓤 : Universe}
    v m ineqs d =
     ∥∥-rec (lifting-of-set-is-set s₁) g (♯-is-defined f (∐ (𝓛-DCPO s₀) δ) d)
      where
-      g : (Σ i ꞉ I , is-defined (α i)) → (f ♯) (∐ (𝓛-DCPO s₀) δ) ≡ m
-      g (i , dᵢ) = (f ♯) (∐ (𝓛-DCPO s₀) δ) ≡⟨ h i dᵢ ⟩
-                   (f ♯) (α i)             ≡⟨ ineqs i (≡-to-is-defined (h i dᵢ) d) ⟩
+      g : (Σ i ꞉ I , is-defined (α i)) → (f ♯) (∐ (𝓛-DCPO s₀) δ) ＝ m
+      g (i , dᵢ) = (f ♯) (∐ (𝓛-DCPO s₀) δ) ＝⟨ h i dᵢ ⟩
+                   (f ♯) (α i)             ＝⟨ ineqs i (＝-to-is-defined (h i dᵢ) d) ⟩
                    m                       ∎
        where
-        h : (i : I) → is-defined (α i) → (f ♯) (∐ (𝓛-DCPO s₀) δ) ≡ (f ♯) (α i)
-        h i d = ap (f ♯) ((family-defined-somewhere-sup-≡ s₀ δ i d) ⁻¹)
+        h : (i : I) → is-defined (α i) → (f ♯) (∐ (𝓛-DCPO s₀) δ) ＝ (f ♯) (α i)
+        h i d = ap (f ♯) ((family-defined-somewhere-sup-＝ s₀ δ i d) ⁻¹)
 
  𝓛̇-continuous : (f : X → Y) → is-continuous (𝓛-DCPO s₀) (𝓛-DCPO s₁) (𝓛̇ f)
  𝓛̇-continuous f = transport
@@ -249,9 +249,9 @@ module lifting-is-free-pointed-dcpo-on-set
    ρ : (l : 𝓛 X) → is-prop (is-defined l)
    ρ = being-defined-is-prop
    lemma : (i : I) (p : is-defined (α i))
-         → value (α i) p ≡ value s ∣ i , p ∣
-   lemma i p = ≡-of-values-from-≡
-                (family-defined-somewhere-sup-≡ X-is-set δ i p)
+         → value (α i) p ＝ value s ∣ i , p ∣
+   lemma i p = ＝-of-values-from-＝
+                (family-defined-somewhere-sup-＝ X-is-set δ i p)
    ub : (i : I) → f̃ (α i) ⊑⟪ 𝓓 ⟫ f̃ s
    ub i = ∐ˢˢ-is-lowerbound-of-upperbounds 𝓓 (f ∘ value (α i)) (ρ (α i)) (f̃ s) γ
     where
@@ -261,7 +261,7 @@ module lifting-is-free-pointed-dcpo-on-set
            f (value s ∣ i , p ∣) ⊑⟪ 𝓓 ⟫[ ⦅2⦆ ]
            f̃ s                   ∎⟪ 𝓓 ⟫
       where
-       ⦅1⦆ = ≡-to-⊑ (𝓓 ⁻) (ap f (lemma i p))
+       ⦅1⦆ = ＝-to-⊑ (𝓓 ⁻) (ap f (lemma i p))
        ⦅2⦆ = ∐ˢˢ-is-upperbound 𝓓 (f ∘ value s) (ρ s) ∣ i , p ∣
    lb-of-ubs : is-lowerbound-of-upperbounds (underlying-order (𝓓 ⁻))
                 (f̃ s) (f̃ ∘ α)
@@ -279,8 +279,8 @@ module lifting-is-free-pointed-dcpo-on-set
                    ∐ˢˢ 𝓓 (f ∘ value (α i)) (ρ (α i)) ⊑⟪ 𝓓 ⟫[ y-is-ub i ]
                    y                                 ∎⟪ 𝓓 ⟫
         where
-         ⦅1⦆ = ≡-to-⊑ (𝓓 ⁻) (ap f (value-is-constant s q ∣ i , p ∣))
-         ⦅2⦆ = ≡-to-⊒ (𝓓 ⁻) (ap f (lemma i p))
+         ⦅1⦆ = ＝-to-⊑ (𝓓 ⁻) (ap f (value-is-constant s q ∣ i , p ∣))
+         ⦅2⦆ = ＝-to-⊒ (𝓓 ⁻) (ap f (lemma i p))
          ⦅3⦆ = ∐ˢˢ-is-upperbound 𝓓 (f ∘ value (α i)) (being-defined-is-prop (α i)) p
 
  f̃-after-η-is-f : f̃ ∘ η ∼ f
@@ -294,49 +294,49 @@ module lifting-is-free-pointed-dcpo-on-set
 
  all-partial-elements-are-subsingleton-sups :
     (l : ⟪ 𝓛X ⟫)
-  → l ≡ ∐ˢˢ 𝓛X (η ∘ value l) (being-defined-is-prop l)
+  → l ＝ ∐ˢˢ 𝓛X (η ∘ value l) (being-defined-is-prop l)
  all-partial-elements-are-subsingleton-sups (P , ϕ , ρ) =
   antisymmetry (𝓛X ⁻) (P , ϕ , ρ) (∐ˢˢ 𝓛X (η ∘ ϕ) ρ) u v
    where
     v : ∐ˢˢ 𝓛X (η ∘ ϕ) ρ ⊑' (P , ϕ , ρ)
     v = ∐ˢˢ-is-lowerbound-of-upperbounds 𝓛X (η ∘ ϕ) ρ (P , ϕ , ρ)
-         (λ p ⋆ → (is-defined-η-≡ p) ⁻¹)
+         (λ p ⋆ → (is-defined-η-＝ p) ⁻¹)
     u : (P , ϕ , ρ) ⊑' ∐ˢˢ 𝓛X (η ∘ ϕ) ρ
     u p = antisymmetry (𝓛X ⁻) (P , ϕ , ρ) (∐ˢˢ 𝓛X (η ∘ ϕ) ρ)
            u' v
      where
-      u' = (P , ϕ , ρ)      ⊑⟪ 𝓛X ⟫[ ≡-to-⊑ (𝓛X ⁻) (is-defined-η-≡ p) ]
+      u' = (P , ϕ , ρ)      ⊑⟪ 𝓛X ⟫[ ＝-to-⊑ (𝓛X ⁻) (is-defined-η-＝ p) ]
            η (ϕ p)          ⊑⟪ 𝓛X ⟫[ ∐ˢˢ-is-upperbound 𝓛X (η ∘ ϕ) ρ p ]
            ∐ˢˢ 𝓛X (η ∘ ϕ) ρ ∎⟪ 𝓛X ⟫
 
  f̃-is-unique : (g : ⟪ 𝓛X ⟫ → ⟪ 𝓓 ⟫)
              → is-continuous (𝓛X ⁻) (𝓓 ⁻) g
              → is-strict 𝓛X 𝓓 g
-             → g ∘ η ≡ f
+             → g ∘ η ＝ f
              → g ∼ f̃
- f̃-is-unique g con str eq (P , ϕ , ρ) = g (P , ϕ , ρ)        ≡⟨ ⦅1⦆  ⟩
-                                        g (∐ˢˢ 𝓛X (η ∘ ϕ) ρ) ≡⟨ ⦅2⦆  ⟩
-                                        ∐ˢˢ 𝓓 (g ∘ η ∘ ϕ) ρ  ≡⟨ ⦅3⦆  ⟩
-                                        ∐ˢˢ 𝓓 (f ∘ ϕ) ρ      ≡⟨ refl ⟩
+ f̃-is-unique g con str eq (P , ϕ , ρ) = g (P , ϕ , ρ)        ＝⟨ ⦅1⦆  ⟩
+                                        g (∐ˢˢ 𝓛X (η ∘ ϕ) ρ) ＝⟨ ⦅2⦆  ⟩
+                                        ∐ˢˢ 𝓓 (g ∘ η ∘ ϕ) ρ  ＝⟨ ⦅3⦆  ⟩
+                                        ∐ˢˢ 𝓓 (f ∘ ϕ) ρ      ＝⟨ refl ⟩
                                         f̃ (P , ϕ , ρ)        ∎
    where
     ⦅1⦆ = ap g (all-partial-elements-are-subsingleton-sups (P , ϕ , ρ))
-    ⦅2⦆ = ∐ˢˢ-≡-if-continuous-and-strict 𝓛X 𝓓 g con str (η ∘ ϕ) ρ
-    ⦅3⦆ = ∐ˢˢ-family-≡ 𝓓 ρ (ap (_∘ ϕ) eq)
+    ⦅2⦆ = ∐ˢˢ-＝-if-continuous-and-strict 𝓛X 𝓓 g con str (η ∘ ϕ) ρ
+    ⦅3⦆ = ∐ˢˢ-family-＝ 𝓓 ρ (ap (_∘ ϕ) eq)
 
  𝓛-gives-the-free-pointed-dcpo-on-a-set :
   ∃! h ꞉ (⟪ 𝓛X ⟫ → ⟪ 𝓓 ⟫) , is-continuous (𝓛X ⁻) (𝓓 ⁻) h
                           × is-strict 𝓛X 𝓓 h
-                          × (h ∘ η ≡ f)
+                          × (h ∘ η ＝ f)
  𝓛-gives-the-free-pointed-dcpo-on-a-set =
   (f̃ , f̃-is-continuous , f̃-is-strict , (dfunext fe f̃-after-η-is-f)) , γ
    where
     γ : is-central (Σ h ꞉ (⟪ 𝓛X ⟫ → ⟪ 𝓓 ⟫) , is-continuous (𝓛X ⁻) (𝓓 ⁻) h
                                            × is-strict 𝓛X 𝓓 h
-                                           × (h ∘ η ≡ f))
+                                           × (h ∘ η ＝ f))
          (f̃ , f̃-is-continuous , f̃-is-strict , dfunext fe f̃-after-η-is-f)
     γ (g , cont , str , eq) =
-     to-subtype-≡ (λ h → ×₃-is-prop (being-continuous-is-prop (𝓛X ⁻) (𝓓 ⁻) h)
+     to-subtype-＝ (λ h → ×₃-is-prop (being-continuous-is-prop (𝓛X ⁻) (𝓓 ⁻) h)
                                     (being-strict-is-prop 𝓛X 𝓓 h)
                                     (equiv-to-prop
                                       (≃-funext fe (h ∘ η) f)
@@ -388,7 +388,7 @@ module _
        f = ∥∥-rec (being-defined-is-prop l) h
         where
          h : (Σ i ꞉ I , is-defined (α i)) → is-defined l
-         h (i , q) = ≡-to-is-defined (l-is-ub i q) q
+         h (i , q) = ＝-to-is-defined (l-is-ub i q) q
        g : sup-map α ∼ (λ q → value l (f q))
        g q = P-is-prop (sup-map α q) (value l (f q))
 

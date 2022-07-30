@@ -155,7 +155,7 @@ module discrete-trichotomous-taboo-construction
    ⦅⇒⦆ : is-trichotomous-order _≺_ → P
    ⦅⇒⦆ t = lemma (t ₀ ₁)
     where
-     lemma : (₀ ≺ ₁) + (₀ ≡ ₁) + (₁ ≺ ₀) → P
+     lemma : (₀ ≺ ₁) + (₀ ＝ ₁) + (₁ ≺ ₀) → P
      lemma (inl p)       = p
      lemma (inr (inl e)) = 𝟘-elim (+disjoint e)
      lemma (inr (inr l)) = 𝟘-elim l
@@ -290,7 +290,7 @@ e : ⟨ sup α ⟩ → Ordinal 𝓤 and ⟨ sup α ⟩ is discrete by assumption
     g : P → ⟨ α ₀ ↓ ₁ ⟩
     g p = (inl p , ⋆)
     η : g ∘ f ∼ id
-    η (inl p , _) = to-subtype-≡ (λ x → Prop-valuedness P' x ₁) refl
+    η (inl p , _) = to-subtype-＝ (λ x → Prop-valuedness P' x ₁) refl
     ε : f ∘ g ∼ id
     ε p = P-is-prop (f (g p)) p
 
@@ -319,7 +319,7 @@ e : ⟨ sup α ⟩ → Ordinal 𝓤 and ⟨ sup α ⟩ is discrete by assumption
       ε : f ∘ g ∼ id
       ε (inl ⋆ , _) = refl
       η : g ∘ f ∼ id
-      η (inl q , _) = to-subtype-≡ (λ x → Prop-valuedness P' x ₁)
+      η (inl q , _) = to-subtype-＝ (λ x → Prop-valuedness P' x ₁)
                                    (ap inl (P-is-prop p q))
 
   fact-III : (α ₀ ↓ inr ⋆) ≃ₒ (α ₁ ↓ inr ⋆) → P
@@ -346,8 +346,8 @@ e : ⟨ sup α ⟩ → Ordinal 𝓤 and ⟨ sup α ⟩ is discrete by assumption
                     (restriction-embedding (sum-to-ordinals α))
     e-after-f-lemma : e ∘ f ∼ sum-to-ordinals α
     e-after-f-lemma (i , x) =
-     (r ∘ ⌜ φ ⌝ ∘ ⌜ φ ⌝⁻¹ ∘ c) (i , x) ≡⟨ h    ⟩
-     r (c (i , x))                     ≡⟨ refl ⟩
+     (r ∘ ⌜ φ ⌝ ∘ ⌜ φ ⌝⁻¹ ∘ c) (i , x) ＝⟨ h    ⟩
+     r (c (i , x))                     ＝⟨ refl ⟩
      sum-to-ordinals α (i , x)         ∎
       where
        h = ap r (inverses-are-sections ⌜ φ ⌝ (⌜⌝-is-equiv φ) (c (i , x)))
@@ -355,14 +355,14 @@ e : ⟨ sup α ⟩ → Ordinal 𝓤 and ⟨ sup α ⟩ is discrete by assumption
     dec : decidable ((α ₀ ↓ inr ⋆) ≃ₒ (α ₁ ↓ inr ⋆))
     dec = decidable-cong γ (δ (f (₀ , inr ⋆)) (f (₁ , inr ⋆)))
      where
-      γ = (f (₀ , inr ⋆)     ≡  f (₁ , inr ⋆))     ≃⟨ ⦅1⦆ ⟩
-          (e (f (₀ , inr ⋆)) ≡  e (f (₁ , inr ⋆))) ≃⟨ ⦅2⦆ ⟩
-          ((α ₀ ↓ inr ⋆)     ≡  (α ₁ ↓ inr ⋆))     ≃⟨ ⦅3⦆ ⟩
+      γ = (f (₀ , inr ⋆)     ＝  f (₁ , inr ⋆))     ≃⟨ ⦅1⦆ ⟩
+          (e (f (₀ , inr ⋆)) ＝  e (f (₁ , inr ⋆))) ≃⟨ ⦅2⦆ ⟩
+          ((α ₀ ↓ inr ⋆)     ＝  (α ₁ ↓ inr ⋆))     ≃⟨ ⦅3⦆ ⟩
           ((α ₀ ↓ inr ⋆)     ≃ₒ (α ₁ ↓ inr ⋆))     ■
        where
         ⦅1⦆ = ≃-sym (embedding-criterion-converse e e-is-embedding
                       (f (₀ , inr ⋆)) (f (₁ , inr ⋆)))
-        ⦅2⦆ = ≡-cong _ _ (e-after-f-lemma (₀ , inr ⋆))
+        ⦅2⦆ = ＝-cong _ _ (e-after-f-lemma (₀ , inr ⋆))
                          (e-after-f-lemma (₁ , inr ⋆))
         ⦅3⦆ = UAₒ-≃ (α ₀ ↓ inr ⋆) (α ₁ ↓ inr ⋆)
 

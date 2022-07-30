@@ -52,7 +52,7 @@ open import DomainTheory.Basics.Pointed pt fe 𝓤₀
 open import DomainTheory.Bilimits.Sequential pt fe 𝓤₁ 𝓤₁
 open import DomainTheory.Lifting.LiftingSet pt fe 𝓤₀ pe
 
-open import Naturals.Order
+open import Naturals.Order hiding (subtraction')
 open import Naturals.Addition renaming (_+_ to _+'_)
 open import Notation.Order
 
@@ -152,33 +152,33 @@ We start by defining the ℕ-indexed diagram of iterated exponentials.
 ε-is-continuous n = pr₂ (pr₁ (𝓓-diagram n))
 
 π-on-0 : (f : ⟨ 𝓓 0 ⟩ → ⟨ 𝓓 0 ⟩) (c : is-continuous (𝓓 0) (𝓓 0) f)
-       → π 0 (f , c) ≡ f (⊥ (𝓓⊥ 0))
+       → π 0 (f , c) ＝ f (⊥ (𝓓⊥ 0))
 π-on-0 f c = refl
 
 π-on-succ : (n : ℕ) (f : ⟨ 𝓓 (succ n) ⟩ → ⟨ 𝓓 (succ n) ⟩)
             (c : is-continuous (𝓓 (succ n)) (𝓓 (succ n)) f)
-          → [ 𝓓 n , 𝓓 n ]⟨ π (succ n) (f , c) ⟩ ≡ π n ∘ f ∘ ε n
+          → [ 𝓓 n , 𝓓 n ]⟨ π (succ n) (f , c) ⟩ ＝ π n ∘ f ∘ ε n
 π-on-succ n f c = refl
 
 π-on-succ' : (n : ℕ) (f : DCPO[ 𝓓 (succ n) , 𝓓 (succ n) ])
            → [ 𝓓 n , 𝓓 n ]⟨ π (succ n) f ⟩
-           ≡ π n ∘ [ 𝓓 (succ n) , 𝓓 (succ n) ]⟨ f ⟩ ∘ ε n
+           ＝ π n ∘ [ 𝓓 (succ n) , 𝓓 (succ n) ]⟨ f ⟩ ∘ ε n
 π-on-succ' n f = refl
 
-ε-on-0 : (x : ⟨ 𝓓 0 ⟩) → [ 𝓓 0 , 𝓓 0 ]⟨ ε 0 x ⟩ ≡ (λ y → x)
+ε-on-0 : (x : ⟨ 𝓓 0 ⟩) → [ 𝓓 0 , 𝓓 0 ]⟨ ε 0 x ⟩ ＝ (λ y → x)
 ε-on-0 x = refl
 
 ε-on-succ : (n : ℕ) (f : ⟨ 𝓓 n ⟩ → ⟨ 𝓓 n ⟩) (c : is-continuous (𝓓 n) (𝓓 n) f)
-          → [ 𝓓 (succ n) , 𝓓 (succ n) ]⟨ ε (succ n) (f , c) ⟩ ≡ ε n ∘ f ∘ π n
+          → [ 𝓓 (succ n) , 𝓓 (succ n) ]⟨ ε (succ n) (f , c) ⟩ ＝ ε n ∘ f ∘ π n
 ε-on-succ n f c = refl
 
 ε-section-of-π : (n : ℕ) → π n ∘ ε n ∼ id
 ε-section-of-π zero x = refl
-ε-section-of-π (succ n) (f , _) = to-continuous-function-≡ (𝓓 n) (𝓓 n) γ
+ε-section-of-π (succ n) (f , _) = to-continuous-function-＝ (𝓓 n) (𝓓 n) γ
  where
   γ : π n ∘ ε n ∘ f ∘ π n ∘ ε n ∼ f
-  γ x = (π n ∘ ε n ∘ f ∘ π n ∘ ε n) x ≡⟨ IH (f (π n (ε n x))) ⟩
-        (f ∘ π n ∘ ε n) x             ≡⟨ ap f (IH x) ⟩
+  γ x = (π n ∘ ε n ∘ f ∘ π n ∘ ε n) x ＝⟨ IH (f (π n (ε n x))) ⟩
+        (f ∘ π n ∘ ε n) x             ＝⟨ ap f (IH x) ⟩
         f x                           ∎
    where
     IH : π n ∘ ε n ∼ id
@@ -243,18 +243,18 @@ open SequentialDiagram
 π-exp-commutes-with-π : (n : ℕ) → π n ∘ π-exp (succ n) ∼ π-exp n
 π-exp-commutes-with-π zero f = refl
 π-exp-commutes-with-π (succ n) (f , c) =
- to-continuous-function-≡ (𝓓 n) (𝓓 n) γ
+ to-continuous-function-＝ (𝓓 n) (𝓓 n) γ
    where
     h : DCPO[ 𝓓 (succ n) , 𝓓 (succ n) ]
     h = DCPO-∘₃ (𝓓 (succ n)) 𝓓∞ 𝓓∞ (𝓓 (succ n))
          (ε∞' (succ n)) (f , c) (π∞' (succ n))
     γ : ([ 𝓓 n , 𝓓 n ]⟨ π (succ n) h ⟩) ∼ π∞ n ∘ f ∘ ε∞ n
-    γ x = [ 𝓓 n , 𝓓 n ]⟨ (π (succ n) h) ⟩ x                       ≡⟨ e₁   ⟩
-          (π n ∘ [ 𝓓 (succ n) , 𝓓 (succ n) ]⟨ h ⟩ ∘ ε n) x        ≡⟨ refl ⟩
-          (π n ∘ π∞ (succ n) ∘ f') x                              ≡⟨ e₂   ⟩
-          (π⁺ {n} {succ n} (≤-succ n) ∘ π∞ (succ n) ∘ f') x       ≡⟨ e₃   ⟩
-          (π∞ n ∘ f ∘ ε∞ (succ n) ∘ ε n) x                        ≡⟨ e₄   ⟩
-          (π∞ n ∘ f ∘ ε∞ (succ n) ∘ ε⁺ {n} {succ n} (≤-succ n)) x ≡⟨ e₅   ⟩
+    γ x = [ 𝓓 n , 𝓓 n ]⟨ (π (succ n) h) ⟩ x                       ＝⟨ e₁   ⟩
+          (π n ∘ [ 𝓓 (succ n) , 𝓓 (succ n) ]⟨ h ⟩ ∘ ε n) x        ＝⟨ refl ⟩
+          (π n ∘ π∞ (succ n) ∘ f') x                              ＝⟨ e₂   ⟩
+          (π⁺ {n} {succ n} (≤-succ n) ∘ π∞ (succ n) ∘ f') x       ＝⟨ e₃   ⟩
+          (π∞ n ∘ f ∘ ε∞ (succ n) ∘ ε n) x                        ＝⟨ e₄   ⟩
+          (π∞ n ∘ f ∘ ε∞ (succ n) ∘ ε⁺ {n} {succ n} (≤-succ n)) x ＝⟨ e₅   ⟩
           (π∞ n ∘ f ∘ ε∞ n) x                                     ∎
            where
             f' : ⟨ 𝓓 n ⟩ → ⟨ 𝓓∞ ⟩
@@ -310,20 +310,20 @@ isomorphism.
 ε-exp-commutes-with-ε : (n : ℕ) → ε-exp (succ n) ∘ ε n ∼ ε-exp n
 ε-exp-commutes-with-ε zero x = refl
 ε-exp-commutes-with-ε (succ n) (f , c) =
- to-continuous-function-≡ 𝓓∞ 𝓓∞ γ
+ to-continuous-function-＝ 𝓓∞ 𝓓∞ γ
    where
     ε-exp₁ : ⟨ 𝓓∞ ⟩ → ⟨ 𝓓∞ ⟩
     ε-exp₁ = [ 𝓓∞ , 𝓓∞ ]⟨ ε-exp (succ (succ n)) (ε (succ n) (f , c)) ⟩
     ε-exp₂ : ⟨ 𝓓∞ ⟩ → ⟨ 𝓓∞ ⟩
     ε-exp₂ = [ 𝓓∞ , 𝓓∞ ]⟨ ε-exp (succ n) (f , c) ⟩
     γ : ε-exp₁ ∼ ε-exp₂
-    γ σ = ε-exp₁ σ                                                ≡⟨ refl ⟩
-          (ε∞ (succ n) ∘ ε n ∘ h) σ                               ≡⟨ e₁   ⟩
-          (ε∞ (succ n) ∘ ε⁺ {n} {succ n} (≤-succ n) ∘ h) σ        ≡⟨ e₂   ⟩
-          (ε∞ n ∘ h) σ                                            ≡⟨ refl ⟩
-          (ε∞ n ∘ f ∘ π n ∘ π∞ (succ n)) σ                        ≡⟨ e₃ ⟩
-          (ε∞ n ∘ f ∘ π⁺ {n} {succ n} (≤-succ n) ∘ π∞ (succ n)) σ ≡⟨ e₄ ⟩
-          (ε∞ n ∘ f ∘ π∞ n) σ                                     ≡⟨ refl ⟩
+    γ σ = ε-exp₁ σ                                                ＝⟨ refl ⟩
+          (ε∞ (succ n) ∘ ε n ∘ h) σ                               ＝⟨ e₁   ⟩
+          (ε∞ (succ n) ∘ ε⁺ {n} {succ n} (≤-succ n) ∘ h) σ        ＝⟨ e₂   ⟩
+          (ε∞ n ∘ h) σ                                            ＝⟨ refl ⟩
+          (ε∞ n ∘ f ∘ π n ∘ π∞ (succ n)) σ                        ＝⟨ e₃ ⟩
+          (ε∞ n ∘ f ∘ π⁺ {n} {succ n} (≤-succ n) ∘ π∞ (succ n)) σ ＝⟨ e₄ ⟩
+          (ε∞ n ∘ f ∘ π∞ n) σ                                     ＝⟨ refl ⟩
           ε-exp₂ σ                                                ∎
      where
       h : ⟨ 𝓓∞ ⟩ → ⟨ 𝓓 n ⟩
@@ -389,7 +389,7 @@ The map ε-exp∞ : ⟨ 𝓓∞ ⟩ → ⟨ 𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞ ⟩ 
              lₘ lₖ
 
 ε-exp∞-alt : (σ : ⟨ 𝓓∞ ⟩)
-           → ε-exp∞ σ ≡ ∐ (𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞) (ε-exp-family-is-directed σ)
+           → ε-exp∞ σ ＝ ∐ (𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞) (ε-exp-family-is-directed σ)
 ε-exp∞-alt σ = antisymmetry (𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞) (ε-exp∞ σ) (∐ (𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞) δ₂) a b
  where
   δ₁ : is-Directed (𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞) (colimit-family σ)
@@ -473,14 +473,14 @@ that therefore we are really proving that for every i : ℕ we have
        ⦅ π-exp-family φ k ⦆     i ∎⟨ 𝓓 i ⟩
 
 π-exp∞-alt : (φ : ⟨ 𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞ ⟩)
-           → π-exp∞ φ ≡ ∐ 𝓓∞ (π-exp-family-is-directed φ)
-π-exp∞-alt φ = σ                              ≡⟨ ∐-of-ε∞s σ ⟩
-               ∐ 𝓓∞ (ε∞-family-is-directed σ) ≡⟨ γ ⟩
+           → π-exp∞ φ ＝ ∐ 𝓓∞ (π-exp-family-is-directed φ)
+π-exp∞-alt φ = σ                              ＝⟨ ∐-of-ε∞s σ ⟩
+               ∐ 𝓓∞ (ε∞-family-is-directed σ) ＝⟨ γ ⟩
                ∐ 𝓓∞ (π-exp-family-is-directed φ) ∎
  where
   σ : ⟨ 𝓓∞ ⟩
   σ = π-exp∞ φ
-  γ : ∐ 𝓓∞ (ε∞-family-is-directed σ) ≡ ∐ 𝓓∞ (π-exp-family-is-directed φ)
+  γ : ∐ 𝓓∞ (ε∞-family-is-directed σ) ＝ ∐ 𝓓∞ (π-exp-family-is-directed φ)
   γ = antisymmetry 𝓓∞ (∐ 𝓓∞ δ₁) (∐ 𝓓∞ δ₂) a b
    where
     δ₁ : is-Directed 𝓓∞ (ε∞-family σ)
@@ -559,11 +559,11 @@ of π-exp∞.
 
 ε-exp∞-section-of-π-exp∞ : π-exp∞ ∘ ε-exp∞ ∼ id
 ε-exp∞-section-of-π-exp∞ σ =
- π-exp∞ (ε-exp∞ σ)                                 ≡⟨ ap π-exp∞ (ε-exp∞-alt σ) ⟩
- π-exp∞ (∐ (𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞) δ₁)                       ≡⟨ e₁ ⟩
- ∐ 𝓓∞ {ℕ} {λ n → (π-exp∞ ∘ ε-exp-family σ) n} δ₂   ≡⟨ ∐-family-≡ 𝓓∞ p δ₂ ⟩
- ∐ 𝓓∞ {ℕ} {λ n → ∐ 𝓓∞ {ℕ} {λ m → f n m} (δ₃ n)} δ₄ ≡⟨ e₂ ⟩
- ∐ 𝓓∞ {ℕ} {λ n → ε∞ n (⦅ σ ⦆ n)} δ₅                ≡⟨ (∐-of-ε∞s σ) ⁻¹ ⟩
+ π-exp∞ (ε-exp∞ σ)                                 ＝⟨ ap π-exp∞ (ε-exp∞-alt σ) ⟩
+ π-exp∞ (∐ (𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞) δ₁)                       ＝⟨ e₁ ⟩
+ ∐ 𝓓∞ {ℕ} {λ n → (π-exp∞ ∘ ε-exp-family σ) n} δ₂   ＝⟨ ∐-family-＝ 𝓓∞ p δ₂ ⟩
+ ∐ 𝓓∞ {ℕ} {λ n → ∐ 𝓓∞ {ℕ} {λ m → f n m} (δ₃ n)} δ₄ ＝⟨ e₂ ⟩
+ ∐ 𝓓∞ {ℕ} {λ n → ε∞ n (⦅ σ ⦆ n)} δ₅                ＝⟨ (∐-of-ε∞s σ) ⁻¹ ⟩
  σ                                                 ∎
   where
    f : ℕ → ℕ → ⟨ 𝓓∞ ⟩
@@ -574,26 +574,26 @@ of π-exp∞.
    δ₂ = image-is-directed' (𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞) 𝓓∞ π-exp∞' δ₁
    δ₃ : (n : ℕ) → is-Directed 𝓓∞ (π-exp-family (ε-exp-family σ n))
    δ₃ n = π-exp-family-is-directed (ε-exp-family σ n)
-   p : π-exp∞ ∘ ε-exp-family σ ≡ λ n → ∐ 𝓓∞ (δ₃ n)
+   p : π-exp∞ ∘ ε-exp-family σ ＝ λ n → ∐ 𝓓∞ (δ₃ n)
    p = dfunext fe (λ n → π-exp∞-alt (ε-exp-family σ n))
    δ₄ : is-Directed 𝓓∞ (λ n → ∐ 𝓓∞ (δ₃ n))
    δ₄ = transport (is-Directed 𝓓∞) p δ₂
    δ₅ : is-Directed 𝓓∞ (ε∞-family σ)
    δ₅ = ε∞-family-is-directed σ
-   e₁ = continuous-∐-≡ (𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞) 𝓓∞ π-exp∞' δ₁
+   e₁ = continuous-∐-＝ (𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞) 𝓓∞ π-exp∞' δ₁
    e₂ = antisymmetry 𝓓∞ (∐ 𝓓∞ δ₄) (∐ 𝓓∞ δ₅) l₁ l₂
     where
-     r : (n : ℕ) → f n n ≡ ε∞-family σ (succ n)
+     r : (n : ℕ) → f n n ＝ ε∞-family σ (succ n)
      r n = ap (ε∞ (succ n)) γ
       where
-       γ : π-exp (succ n) (ε-exp-family σ n) ≡ ⦅ σ ⦆ (succ n)
-       γ = to-continuous-function-≡ (𝓓 n) (𝓓 n) ψ
+       γ : π-exp (succ n) (ε-exp-family σ n) ＝ ⦅ σ ⦆ (succ n)
+       γ = to-continuous-function-＝ (𝓓 n) (𝓓 n) ψ
         where
          σ' : ⟨ 𝓓 n ⟩ → ⟨ 𝓓 n ⟩
          σ' = [ 𝓓 n , 𝓓 n ]⟨ ⦅ σ ⦆ (succ n) ⟩
          ψ : π∞ n ∘ ε∞ n ∘ σ' ∘ π∞ n ∘ ε∞ n ∼ σ'
-         ψ x = (π∞ n ∘ ε∞ n ∘ σ' ∘ π∞ n ∘ ε∞ n) x ≡⟨ p₁ ⟩
-               (σ' ∘ π∞ n ∘ ε∞ n) x               ≡⟨ p₂ ⟩
+         ψ x = (π∞ n ∘ ε∞ n ∘ σ' ∘ π∞ n ∘ ε∞ n) x ＝⟨ p₁ ⟩
+               (σ' ∘ π∞ n ∘ ε∞ n) x               ＝⟨ p₂ ⟩
                σ' x                               ∎
           where
            p₁ = ε∞-section-of-π∞ (σ' (π∞ n (ε∞ n x)))
@@ -615,7 +615,7 @@ of π-exp∞.
                  (ε-exp-family σ n) (ε-exp-family σ (n +' m))
                  (ε-exp-family-is-monotone σ (≤-+ n m))
            u₂ = π-exp-family-is-monotone (ε-exp-family σ (n +' m)) (≤-+' n m)
-           u₃ = ≡-to-⊑ 𝓓∞ (r (n +' m))
+           u₃ = ＝-to-⊑ 𝓓∞ (r (n +' m))
            u₄ = ∐-is-upperbound 𝓓∞ δ₅ (succ (n +' m))
      l₂ : ∐ 𝓓∞ δ₅ ⊑⟨ 𝓓∞ ⟩ ∐ 𝓓∞ δ₄
      l₂ = ∐-is-lowerbound-of-upperbounds 𝓓∞ δ₅ (∐ 𝓓∞ δ₄) γ
@@ -623,7 +623,7 @@ of π-exp∞.
        γ : is-upperbound (underlying-order 𝓓∞) (∐ 𝓓∞ δ₄) (ε∞-family σ)
        γ n i =
         ⦅ ε∞-family σ n        ⦆ i ⊑⟨ 𝓓 i ⟩[ u i                           ]
-        ⦅ ε∞-family σ (succ n) ⦆ i ⊑⟨ 𝓓 i ⟩[ ≡-to-⊒ 𝓓∞ (r n) i             ]
+        ⦅ ε∞-family σ (succ n) ⦆ i ⊑⟨ 𝓓 i ⟩[ ＝-to-⊒ 𝓓∞ (r n) i             ]
         ⦅ f n n                ⦆ i ⊑⟨ 𝓓 i ⟩[ ∐-is-upperbound 𝓓∞ (δ₃ n) n i ]
         ⦅ ∐ 𝓓∞ (δ₃ n)          ⦆ i ⊑⟨ 𝓓 i ⟩[ ∐-is-upperbound 𝓓∞ δ₄ n i     ]
         ⦅ ∐ 𝓓∞ δ₄              ⦆ i ∎⟨ 𝓓 i ⟩
@@ -632,13 +632,13 @@ of π-exp∞.
 
 π-exp∞-section-of-ε-exp∞ : ε-exp∞ ∘ π-exp∞ ∼ id
 π-exp∞-section-of-ε-exp∞ φ =
- ε-exp∞ (π-exp∞ φ)                                ≡⟨ e₁ ⟩
- ε-exp∞ (∐ 𝓓∞ δ₁)                                 ≡⟨ e₂ ⟩
- ∐ 𝓔 {ℕ} {λ n → (ε-exp∞ ∘ π-exp-family φ) n} δ₂   ≡⟨ e₃ ⟩
- ∐ 𝓔 {ℕ} {λ n → ∐ 𝓔 {ℕ} {λ m → f' n m} (δ₃ n)} δ₄ ≡⟨ e₄ ⟩
- ∐ 𝓔 {ℕ} {λ n → f' n n} δ₅                        ≡⟨ e₅ ⟩
- ∐ 𝓔 {ℕ} {λ n → g' n n} δ₆                        ≡⟨ e₆ ⟩
- DCPO-∘₃ 𝓓∞ 𝓓∞ 𝓓∞ 𝓓∞ s φ s                        ≡⟨ e₇ ⟩
+ ε-exp∞ (π-exp∞ φ)                                ＝⟨ e₁ ⟩
+ ε-exp∞ (∐ 𝓓∞ δ₁)                                 ＝⟨ e₂ ⟩
+ ∐ 𝓔 {ℕ} {λ n → (ε-exp∞ ∘ π-exp-family φ) n} δ₂   ＝⟨ e₃ ⟩
+ ∐ 𝓔 {ℕ} {λ n → ∐ 𝓔 {ℕ} {λ m → f' n m} (δ₃ n)} δ₄ ＝⟨ e₄ ⟩
+ ∐ 𝓔 {ℕ} {λ n → f' n n} δ₅                        ＝⟨ e₅ ⟩
+ ∐ 𝓔 {ℕ} {λ n → g' n n} δ₆                        ＝⟨ e₆ ⟩
+ DCPO-∘₃ 𝓓∞ 𝓓∞ 𝓓∞ 𝓓∞ s φ s                        ＝⟨ e₇ ⟩
  φ                                                ∎
   where
    𝓔 : DCPO {𝓤₁} {𝓤₁}
@@ -672,18 +672,18 @@ of π-exp∞.
            (monotone-if-continuous 𝓓∞ 𝓓∞ φ
             (ε∞ m₁ (π∞ m₁ σ)) (ε∞ m₂ (π∞ m₂ σ))
             (ε∞π∞-family-is-monotone lₘ σ))
-   q : (λ n → f' n n) ≡ (λ n → g' n n)
+   q : (λ n → f' n n) ＝ (λ n → g' n n)
    q = dfunext fe γ
     where
      γ : (λ n → f' n n) ∼ (λ n → g' n n)
-     γ n = to-continuous-function-≡ 𝓓∞ 𝓓∞ γ'
+     γ n = to-continuous-function-＝ 𝓓∞ 𝓓∞ γ'
       where
        γ' : f n n ∼ g n n
        γ' σ =
-        f n n σ                                                        ≡⟨ refl ⟩
-        (ε∞ n ∘ [ 𝓓 n , 𝓓 n ]⟨ π∞ (succ n) (ε∞ (succ n) ψ) ⟩ ∘ π∞ n) σ ≡⟨ q'   ⟩
-        (ε∞ n ∘ [ 𝓓 n , 𝓓 n ]⟨ ψ ⟩ ∘ π∞ n) σ                           ≡⟨ refl ⟩
-        (ε∞ n ∘ π∞ n ∘ ϕ ∘ ε∞ n ∘ π∞ n) σ                              ≡⟨ refl ⟩
+        f n n σ                                                        ＝⟨ refl ⟩
+        (ε∞ n ∘ [ 𝓓 n , 𝓓 n ]⟨ π∞ (succ n) (ε∞ (succ n) ψ) ⟩ ∘ π∞ n) σ ＝⟨ q'   ⟩
+        (ε∞ n ∘ [ 𝓓 n , 𝓓 n ]⟨ ψ ⟩ ∘ π∞ n) σ                           ＝⟨ refl ⟩
+        (ε∞ n ∘ π∞ n ∘ ϕ ∘ ε∞ n ∘ π∞ n) σ                              ＝⟨ refl ⟩
         g n n σ ∎
          where
           ψ : DCPO[ 𝓓 n , 𝓓 n ]
@@ -696,7 +696,7 @@ of π-exp∞.
    δ₂ = image-is-directed' 𝓓∞ 𝓔 ε-exp∞' δ₁
    δ₃ : (n : ℕ) → is-Directed 𝓔 (ε-exp-family (π-exp-family φ n))
    δ₃ n = ε-exp-family-is-directed (π-exp-family φ n)
-   p : ε-exp∞ ∘ π-exp-family φ ≡ (λ n → ∐ 𝓔 (δ₃ n))
+   p : ε-exp∞ ∘ π-exp-family φ ＝ (λ n → ∐ 𝓔 (δ₃ n))
    p = dfunext fe (λ n → ε-exp∞-alt (π-exp-family φ n))
    δ₄ : is-Directed 𝓔 (λ n → ∐ 𝓔 (δ₃ n))
    δ₄ = (transport (is-Directed 𝓔) p δ₂)
@@ -713,9 +713,9 @@ of π-exp∞.
    δ₆ : is-Directed 𝓔 (λ n → g' n n)
    δ₆ = transport (is-Directed 𝓔) q δ₅
    e₁ = ap ε-exp∞ (π-exp∞-alt φ)
-   e₂ = continuous-∐-≡ 𝓓∞ 𝓔 ε-exp∞' δ₁
-   e₃ = ∐-family-≡ 𝓔 p δ₂
-   e₅ = ∐-family-≡ 𝓔 q δ₅
+   e₂ = continuous-∐-＝ 𝓓∞ 𝓔 ε-exp∞' δ₁
+   e₃ = ∐-family-＝ 𝓔 p δ₂
+   e₅ = ∐-family-＝ 𝓔 q δ₅
    e₄ = antisymmetry 𝓔 (∐ 𝓔 δ₄) (∐ 𝓔 δ₅) l₁ l₂
     where
      l₁ : ∐ 𝓔 δ₄ ⊑⟨ 𝓔 ⟩ ∐ 𝓔 δ₅
@@ -735,17 +735,17 @@ of π-exp∞.
        γ n = transitivity 𝓔 (f' n n) (∐ 𝓔 (δ₃ n)) (∐ 𝓔 δ₄)
               (∐-is-upperbound 𝓔 (δ₃ n) n)
               (∐-is-upperbound 𝓔 δ₄ n)
-   e₇ = DCPO-∘₃ 𝓓∞ 𝓓∞ 𝓓∞ 𝓓∞ s φ s ≡⟨ p₁ ⟩
-        DCPO-∘₃ 𝓓∞ 𝓓∞ 𝓓∞ 𝓓∞ ι φ ι ≡⟨ p₂ ⟩
+   e₇ = DCPO-∘₃ 𝓓∞ 𝓓∞ 𝓓∞ 𝓓∞ s φ s ＝⟨ p₁ ⟩
+        DCPO-∘₃ 𝓓∞ 𝓓∞ 𝓓∞ 𝓓∞ ι φ ι ＝⟨ p₂ ⟩
         φ                         ∎
     where
      ι : DCPO[ 𝓓∞ , 𝓓∞ ]
      ι = id , id-is-continuous 𝓓∞
      p₁ = ap₂ (λ -₁ -₂ → DCPO-∘₃ 𝓓∞ 𝓓∞ 𝓓∞ 𝓓∞ -₁ φ -₂) e e
       where
-       e : s ≡ ι
+       e : s ＝ ι
        e = ∐-of-ε∞π∞s-is-id
-     p₂ = to-continuous-function-≡ 𝓓∞ 𝓓∞ (λ σ → 𝓻𝓮𝒻𝓵 (ϕ σ))
+     p₂ = to-continuous-function-＝ 𝓓∞ 𝓓∞ (λ σ → 𝓻𝓮𝒻𝓵 (ϕ σ))
    e₆ = antisymmetry 𝓔 (∐ 𝓔 δ₆) (DCPO-∘₃ 𝓓∞ 𝓓∞ 𝓓∞ 𝓓∞ s φ s) l₁ l₂
     where
      s₁ : ⟨ 𝓓∞ ⟩ → ⟨ 𝓓∞ ⟩
@@ -832,28 +832,28 @@ the pointed exponential (𝓓∞⊥ ⟹ᵈᶜᵖᵒ⊥ 𝓓∞⊥), which we pro
 
 π-is-strict : (n : ℕ) → is-strict (𝓓⊥ (succ n)) (𝓓⊥ n) (π n)
 π-is-strict zero = refl
-π-is-strict (succ n) = to-continuous-function-≡ (𝓓 n) (𝓓 n) γ
+π-is-strict (succ n) = to-continuous-function-＝ (𝓓 n) (𝓓 n) γ
  where
   f' : ⟨ 𝓓 (succ (succ n)) ⟩
   f' = ⊥ (𝓓⊥ (succ (succ n)))
   f : ⟨ 𝓓 (succ n) ⟩ → ⟨ 𝓓 (succ n) ⟩
   f = [ 𝓓 (succ n) , 𝓓 (succ n) ]⟨ f' ⟩
   γ : [ 𝓓 n , 𝓓 n ]⟨ π (succ n) f' ⟩ ∼ [ 𝓓 n , 𝓓 n ]⟨ ⊥ (𝓓⊥ (succ n)) ⟩
-  γ x = [ 𝓓 n , 𝓓 n ]⟨ π (succ n) f' ⟩ x   ≡⟨ refl ⟩
-        (π n ∘ f ∘ ε n) x                  ≡⟨ refl ⟩
-        π n (⊥ (𝓓⊥ (succ n)))              ≡⟨ IH ⟩
+  γ x = [ 𝓓 n , 𝓓 n ]⟨ π (succ n) f' ⟩ x   ＝⟨ refl ⟩
+        (π n ∘ f ∘ ε n) x                  ＝⟨ refl ⟩
+        π n (⊥ (𝓓⊥ (succ n)))              ＝⟨ IH ⟩
         [ 𝓓 n , 𝓓 n ]⟨ ⊥ (𝓓⊥ (succ n)) ⟩ x ∎
    where
-    IH : π n (⊥ (𝓓⊥ (succ n))) ≡ ⊥ (𝓓⊥ n)
+    IH : π n (⊥ (𝓓⊥ (succ n))) ＝ ⊥ (𝓓⊥ n)
     IH = π-is-strict n
 
-π⁺-is-strict-helper : (n m k : ℕ) (p : n +' k ≡ m)
+π⁺-is-strict-helper : (n m k : ℕ) (p : n +' k ＝ m)
                     → is-strict (𝓓⊥ m) (𝓓⊥ n) (π⁺-helper n m k p)
 π⁺-is-strict-helper n n zero refl = refl
 π⁺-is-strict-helper n m (succ k) refl =
- π⁺-helper n m (succ k) refl (⊥ (𝓓⊥ m))              ≡⟨ refl ⟩
- π⁺-helper n (n +' k) k refl (π (n +' k) (⊥ (𝓓⊥ m))) ≡⟨ q    ⟩
- π⁺-helper n (n +' k) k refl (⊥ (𝓓⊥ (n +' k)))       ≡⟨ IH   ⟩
+ π⁺-helper n m (succ k) refl (⊥ (𝓓⊥ m))              ＝⟨ refl ⟩
+ π⁺-helper n (n +' k) k refl (π (n +' k) (⊥ (𝓓⊥ m))) ＝⟨ q    ⟩
+ π⁺-helper n (n +' k) k refl (⊥ (𝓓⊥ (n +' k)))       ＝⟨ IH   ⟩
  ⊥ (𝓓⊥ n)                                            ∎
   where
    q = ap (π⁺-helper n (n +' k) k refl) (π-is-strict (n +' k))
@@ -864,7 +864,7 @@ the pointed exponential (𝓓∞⊥ ⟹ᵈᶜᵖᵒ⊥ 𝓓∞⊥), which we pro
  where
   k : ℕ
   k = pr₁ (subtraction' n m l)
-  p : n +' k ≡ m
+  p : n +' k ＝ m
   p = pr₂ (subtraction' n m l)
 
 𝓓∞-has-least : has-least (underlying-order 𝓓∞)
@@ -872,7 +872,7 @@ the pointed exponential (𝓓∞⊥ ⟹ᵈᶜᵖᵒ⊥ 𝓓∞⊥), which we pro
  where
   σ⊥ : (n : ℕ) → ⟨ 𝓓 n ⟩
   σ⊥ n = ⊥ (𝓓⊥ n)
-  p : (n m : ℕ) (l : n ≤ m) → π⁺ l (σ⊥ m) ≡ σ⊥ n
+  p : (n m : ℕ) (l : n ≤ m) → π⁺ l (σ⊥ m) ＝ σ⊥ n
   p = π⁺-is-strict
   q : is-least (underlying-order 𝓓∞) (σ⊥ , p)
   q τ n = ⊥-is-least (𝓓⊥ n) (⦅ τ ⦆ n)
@@ -898,9 +898,9 @@ has an element σ₀ such that σ₀ is not the least element, which we prove no
   x₀ = 𝟙 , id , 𝟙-is-prop
   σ : (n : ℕ) → ⟨ 𝓓 n ⟩
   σ n = ε⁺ {0} {n} ⋆ x₀
-  p : (n m : ℕ) (l : n ≤ m) → π⁺ l (σ m) ≡ σ n
-  p n m l = π⁺ {n} {m} l (ε⁺ {0} {m} ⋆ x₀)                  ≡⟨ e₁ ⟩
-            (π⁺ {n} {m} l ∘ ε⁺ {n} {m} l ∘ ε⁺ {0} {n} ⋆) x₀ ≡⟨ e₂ ⟩
+  p : (n m : ℕ) (l : n ≤ m) → π⁺ l (σ m) ＝ σ n
+  p n m l = π⁺ {n} {m} l (ε⁺ {0} {m} ⋆ x₀)                  ＝⟨ e₁ ⟩
+            (π⁺ {n} {m} l ∘ ε⁺ {n} {m} l ∘ ε⁺ {0} {n} ⋆) x₀ ＝⟨ e₂ ⟩
             ε⁺ {0} {n} ⋆ x₀                                 ∎
    where
     e₁ = ap (π⁺ {n} {m} l) ((ε⁺-comp ⋆ l x₀) ⁻¹)
@@ -909,9 +909,9 @@ has an element σ₀ such that σ₀ is not the least element, which we prove no
 𝓓∞⊥-is-nontrivial : σ₀ ≢ ⊥ 𝓓∞⊥
 𝓓∞⊥-is-nontrivial e = 𝟘-is-not-𝟙 (γ ⁻¹)
  where
-  e₀ : ⦅ σ₀ ⦆ 0 ≡ ⊥ (𝓓⊥ 0)
+  e₀ : ⦅ σ₀ ⦆ 0 ＝ ⊥ (𝓓⊥ 0)
   e₀ = ap (λ - → ⦅ - ⦆ 0) e
-  γ : 𝟙 ≡ 𝟘
+  γ : 𝟙 ＝ 𝟘
   γ = ap pr₁ e₀
 
 \end{code}

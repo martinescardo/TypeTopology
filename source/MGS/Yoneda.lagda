@@ -22,7 +22,7 @@ open import MGS.Embeddings public
 
 transport-lemma : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (x : X)
                 → (τ : Nat (𝓨 x) A)
-                → (y : X) (p : x ≡ y) → τ y p ≡ transport A p (τ x (refl x))
+                → (y : X) (p : x ＝ y) → τ y p ＝ transport A p (τ x (refl x))
 
 transport-lemma A x τ x (refl x) = refl (τ x (refl x))
 
@@ -38,7 +38,7 @@ yoneda-η : dfunext 𝓤 (𝓤 ⊔ 𝓥) → dfunext 𝓤 𝓥
 
 yoneda-η fe fe' A x = γ
  where
-  γ : (τ : Nat (𝓨 x) A) → (λ y p → transport A p (τ x (refl x))) ≡ τ
+  γ : (τ : Nat (𝓨 x) A) → (λ y p → transport A p (τ x (refl x))) ＝ τ
   γ τ = fe (λ y → fe' (λ p → (transport-lemma A x τ y p)⁻¹))
 
 yoneda-ε : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (x : X)
@@ -46,7 +46,7 @@ yoneda-ε : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (x : X)
 
 yoneda-ε A x = γ
  where
-  γ : (a : A x) → transport A (refl x) a ≡ a
+  γ : (a : A x) → transport A (refl x) a ＝ a
   γ = refl
 
 is-fiberwise-equiv : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {B : X → 𝓦 ̇ } → Nat A B → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
@@ -73,7 +73,7 @@ Yoneda-Lemma : dfunext 𝓤 (𝓤 ⊔ 𝓥) → dfunext 𝓤 𝓥
 Yoneda-Lemma fe fe' A x = 𝓔 A x , 𝓔-is-equiv fe fe' A x
 
 retract-universal-lemma : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (x : X)
-                        → ((y : X) → A y ◁ (x ≡ y))
+                        → ((y : X) → A y ◁ (x ＝ y))
                         → ∃! A
 
 retract-universal-lemma A x ρ = i
@@ -91,7 +91,7 @@ fiberwise-equiv-universal : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
 
 fiberwise-equiv-universal A x τ e = retract-universal-lemma A x ρ
  where
-  ρ : ∀ y → A y ◁ (x ≡ y)
+  ρ : ∀ y → A y ◁ (x ＝ y)
   ρ y = ≃-gives-▷ ((τ y) , e y)
 
 universal-fiberwise-equiv : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
@@ -121,7 +121,7 @@ hfunext→ hfe X A f = fiberwise-equiv-universal (f ∼_) f (happly f) (hfe f)
 
 fiberwise-equiv-criterion : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
                             (x : X)
-                          → ((y : X) → A y ◁ (x ≡ y))
+                          → ((y : X) → A y ◁ (x ＝ y))
                           → (τ : Nat (𝓨 x) A) → is-fiberwise-equiv τ
 
 fiberwise-equiv-criterion A x ρ τ = universal-fiberwise-equiv A
@@ -129,7 +129,7 @@ fiberwise-equiv-criterion A x ρ τ = universal-fiberwise-equiv A
 
 fiberwise-equiv-criterion' : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
                             (x : X)
-                          → ((y : X) → (x ≡ y) ≃ A y)
+                          → ((y : X) → (x ＝ y) ≃ A y)
                           → (τ : Nat (𝓨 x) A) → is-fiberwise-equiv τ
 
 fiberwise-equiv-criterion' A x e = fiberwise-equiv-criterion A x
@@ -157,7 +157,7 @@ universal-representable {𝓤} {𝓥} {X} {A} ((x , a) , p) = x , φ
   e : is-fiberwise-equiv (𝓝 A x a)
   e = universal-fiberwise-equiv A ((x , a) , p) x (𝓝 A x a)
 
-  φ : (y : X) → (x ≡ y) ≃ A y
+  φ : (y : X) → (x ＝ y) ≃ A y
   φ y = (𝓝 A x a y , e y)
 
 fiberwise-retractions-are-equivs : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (x : X)
@@ -167,7 +167,7 @@ fiberwise-retractions-are-equivs : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (x : X)
 
 fiberwise-retractions-are-equivs {𝓤} {𝓥} {X} A x τ s = γ
  where
-  ρ : (y : X) → A y ◁ (x ≡ y)
+  ρ : (y : X) → A y ◁ (x ＝ y)
   ρ y = τ y , s y
 
   i : ∃! A
@@ -177,27 +177,27 @@ fiberwise-retractions-are-equivs {𝓤} {𝓥} {X} A x τ s = γ
   γ = universal-fiberwise-equiv A i x τ
 
 fiberwise-◁-gives-≃ : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) (x : X)
-                    → ((y : X) → A y ◁ (x ≡ y))
-                    → ((y : X) → A y ≃ (x ≡ y))
+                    → ((y : X) → A y ◁ (x ＝ y))
+                    → ((y : X) → A y ≃ (x ＝ y))
 
 fiberwise-◁-gives-≃ X A x ρ = γ
  where
-  f : (y : X) → (x ≡ y) → A y
+  f : (y : X) → (x ＝ y) → A y
   f y = retraction (ρ y)
 
   e : is-fiberwise-equiv f
   e = fiberwise-retractions-are-equivs A x f (λ y → retraction-has-section (ρ y))
 
-  γ : (y : X) → A y ≃ (x ≡ y)
+  γ : (y : X) → A y ≃ (x ＝ y)
   γ y = ≃-sym (f y , e y)
 
 embedding-criterion' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                     → ((x x' : X) → (f x ≡ f x') ◁ (x ≡ x'))
+                     → ((x x' : X) → (f x ＝ f x') ◁ (x ＝ x'))
                      → is-embedding f
 
 embedding-criterion' f ρ = embedding-criterion f
                             (λ x → fiberwise-◁-gives-≃ (domain f)
-                                    (λ - → f x ≡ f -) x (ρ x))
+                                    (λ - → f x ＝ f -) x (ρ x))
 
 being-fiberwise-equiv-is-subsingleton : global-dfunext
                                       → {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {B : X → 𝓦 ̇ }
@@ -234,7 +234,7 @@ being-representable-is-subsingleton fe {X} A r₀ r₁ = γ
   v : is-singleton (is-representable A)
   v = equiv-to-singleton δ u
 
-  γ : r₀ ≡ r₁
+  γ : r₀ ＝ r₁
   γ = singletons-are-subsingletons (is-representable A) v r₀ r₁
 
 𝓨-is-embedding : Univalence → (X : 𝓤 ̇ ) → is-embedding (𝑌 X)
@@ -246,8 +246,8 @@ being-representable-is-subsingleton fe {X} A r₀ r₁ = γ
   dfe : global-dfunext
   dfe = univalence-gives-global-dfunext ua
 
-  p = λ x → (𝓨 x ≡ A)                 ≃⟨ i  x ⟩
-            ((y : X) → 𝓨 x y ≡ A y)   ≃⟨ ii x ⟩
+  p = λ x → (𝓨 x ＝ A)                 ≃⟨ i  x ⟩
+            ((y : X) → 𝓨 x y ＝ A y)   ≃⟨ ii x ⟩
             ((y : X) → 𝓨 x y ≃ A y)   ■
     where
      i  = λ x → (happly (𝓨 x) A , hfe (𝓨 x) A)

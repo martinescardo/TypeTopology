@@ -34,7 +34,7 @@ transport-ordinal-structure : is-univalent 𝓤
                             → OrdinalStructure X ≃ OrdinalStructure Y
 transport-ordinal-structure ua X Y = γ
  where
-  δ : X ≡ Y → OrdinalStructure X ≡ OrdinalStructure Y
+  δ : X ＝ Y → OrdinalStructure X ＝ OrdinalStructure Y
   δ = ap OrdinalStructure
 
   γ : X ≃ Y → OrdinalStructure X ≃ OrdinalStructure Y
@@ -127,10 +127,10 @@ But notice that
 
     private
 
-      NB-< : type-of (is-well-order _<_) ≡ 𝓤 ⊔ 𝓥 ̇
+      NB-< : type-of (is-well-order _<_) ＝ 𝓤 ⊔ 𝓥 ̇
       NB-< = refl
 
-      NB-≺ : type-of (is-well-order _≺_) ≡ 𝓥 ̇
+      NB-≺ : type-of (is-well-order _≺_) ＝ 𝓥 ̇
       NB-≺ = refl
 
 \end{code}
@@ -194,10 +194,10 @@ And now we provide all steps needed to establish transport-well-order.
         b : g (f x) < g y
         b = γ (f x) (transport (_< g y') ((η x)⁻¹) l)
 
-      q : g y ≡ g y'
+      q : g y ＝ g y'
       q = e (g y) (g y') α β
 
-      p : y ≡ y'
+      p : y ＝ y'
       p = sections-are-lc g (f , ε) q
 
     is-extensional← : is-extensional _≺_ → is-extensional _<_
@@ -215,10 +215,10 @@ And now we provide all steps needed to establish transport-well-order.
         b : g y < x
         b = γ (g y) (transport (g y <_) (η x') l)
 
-      q : f x ≡ f x'
+      q : f x ＝ f x'
       q = e (f x) (f x') α β
 
-      p : x ≡ x'
+      p : x ＝ x'
       p = sections-are-lc f (g , η) q
 
     is-transitive→ : is-transitive _<_ → is-transitive _≺_
@@ -291,7 +291,7 @@ module order-transfer-lemma₂
       β : (u : X) → u < y → u < x
       β u l = g (γ u (f l))
 
-      p : x ≡ y
+      p : x ＝ y
       p = e x y α β
 
     is-transitive→ : is-transitive _<_ → is-transitive _≺_

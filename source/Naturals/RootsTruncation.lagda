@@ -38,7 +38,7 @@ open import UF.Miscelanea
 
 We now consider whether there is or there isn't a minimal root
 (strictly) bounded by a number k, where a root of α is an n : ℕ with α
-n ≡ z.
+n ＝ z.
 
 \begin{code}
 
@@ -46,7 +46,7 @@ _has-no-root<_ : (ℕ → Z) → ℕ → 𝓤 ̇
 α has-no-root< k = (n : ℕ) → n < k → α n ≢ z
 
 _has-a-minimal-root<_ : (ℕ → Z) → ℕ → 𝓤 ̇
-α has-a-minimal-root< k = Σ m ꞉ ℕ , (α m ≡ z)
+α has-a-minimal-root< k = Σ m ꞉ ℕ , (α m ＝ z)
                                      × (m < k)
                                      × α has-no-root< m
 
@@ -72,7 +72,7 @@ fpo (succ k) α = cases f g (fpo k α)
   g : α has-no-root< k → FPO (succ k) α
   g φ = cases g₀ g₁ (z-is-isolated (α k))
    where
-    g₀ : α k ≡ z → FPO (succ k) α
+    g₀ : α k ＝ z → FPO (succ k) α
     g₀ p = inl (k , p , ≤-refl k , φ)
 
     g₁ : α k ≢ z → FPO (succ k) α
@@ -84,7 +84,7 @@ Given any root, we can find a minimal root.
 
 \begin{code}
 
-minimal-root : ∀ α n → α n ≡ z → α has-a-minimal-root< (succ n)
+minimal-root : ∀ α n → α n ＝ z → α has-a-minimal-root< (succ n)
 minimal-root α n p = Right-fails-gives-left-holds (fpo (succ n) α) g
  where
   g : ¬ (α has-no-root< (succ n))
@@ -99,7 +99,7 @@ be empty, and still the function is well defined.
 \begin{code}
 
 roots : (ℕ → Z) → 𝓤 ̇
-roots α = Σ n ꞉ ℕ , α n ≡ z
+roots α = Σ n ꞉ ℕ , α n ＝ z
 
 μρ : (α : ℕ → Z) → roots α → roots α
 μρ α (n , p) = pr₁ (minimal-root α n p) , pr₁ (pr₂ (minimal-root α n p))
@@ -107,11 +107,11 @@ roots α = Σ n ꞉ ℕ , α n ≡ z
 μρ-root : (α : ℕ → Z) → roots α → ℕ
 μρ-root α r = pr₁ (μρ α r)
 
-μρ-root-is-root : (α : ℕ → Z) (r : roots α) → α (μρ-root α r) ≡ z
+μρ-root-is-root : (α : ℕ → Z) (r : roots α) → α (μρ-root α r) ＝ z
 μρ-root-is-root α r = pr₂ (μρ α r)
 
-μρ-root-minimal : (α : ℕ → Z) (m : ℕ) (p : α m ≡ z)
-                → (n : ℕ) → α n ≡ z → μρ-root α (m , p) ≤ n
+μρ-root-minimal : (α : ℕ → Z) (m : ℕ) (p : α m ＝ z)
+                → (n : ℕ) → α n ＝ z → μρ-root α (m , p) ≤ n
 μρ-root-minimal α m p n q = not-less-bigger-or-equal (μρ-root α (m , p)) n (f (¬¬-intro q))
  where
   f : ¬ (α n ≢ z) → ¬ (n < μρ-root α (m , p))
@@ -130,11 +130,11 @@ roots α = Σ n ꞉ ℕ , α n ≡ z
   l' : m' ≤ m
   l' = μρ-root-minimal α n' p' m (μρ-root-is-root α (n , p))
 
-  q : m ≡ m'
+  q : m ＝ m'
   q = ≤-anti _ _ l l'
 
-  r : μρ α (n , p) ≡ μρ α (n' , p')
-  r = to-Σ-≡ (q , isolated-Id-is-prop z z-is-isolated _ _ _)
+  r : μρ α (n , p) ＝ μρ α (n' , p')
+  r = to-Σ-＝ (q , isolated-Id-is-prop z z-is-isolated _ _ _)
 
 roots-has-prop-truncation : (α : ℕ → Z) → ∀ 𝓥 → has-prop-truncation 𝓥 (roots α)
 roots-has-prop-truncation α = collapsible-has-prop-truncation (μρ α , μρ-constant α)
@@ -146,7 +146,7 @@ Explicitly (and repeating the construction of roots-has-prop-truncation):
 \begin{code}
 
 roots-truncation : (ℕ → Z) → 𝓤 ̇
-roots-truncation α = Σ r ꞉ roots α , r ≡ μρ α r
+roots-truncation α = Σ r ꞉ roots α , r ＝ μρ α r
 
 roots-truncation-is-prop : (α : ℕ → Z) → is-prop (roots-truncation α)
 roots-truncation-is-prop α = fix-is-prop (μρ α) (μρ-constant α)
@@ -180,16 +180,16 @@ module ExitRootTruncations (pt : propositional-truncations-exist) where
 
  open PropositionalTruncation pt
 
- exit-roots-truncation : (α : ℕ → Z) → (∃ n ꞉ ℕ , α n ≡ z) → Σ n ꞉ ℕ , α n ≡ z
+ exit-roots-truncation : (α : ℕ → Z) → (∃ n ꞉ ℕ , α n ＝ z) → Σ n ꞉ ℕ , α n ＝ z
  exit-roots-truncation α = h ∘ g
   where
-   f : (Σ n ꞉ ℕ , α n ≡ z) → fix (μρ α)
+   f : (Σ n ꞉ ℕ , α n ＝ z) → fix (μρ α)
    f = to-fix (μρ α) (μρ-constant α)
 
-   g : ∥(Σ n ꞉ ℕ , α n ≡ z)∥ → fix (μρ α)
+   g : ∥(Σ n ꞉ ℕ , α n ＝ z)∥ → fix (μρ α)
    g = ∥∥-rec (fix-is-prop (μρ α) (μρ-constant α)) f
 
-   h : fix (μρ α) → Σ n ꞉ ℕ , α n ≡ z
+   h : fix (μρ α) → Σ n ꞉ ℕ , α n ＝ z
    h = from-fix (μρ α)
 
 \end{code}

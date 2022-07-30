@@ -158,7 +158,7 @@ of that used in UniMath [https://github.com/UniMath/UniMath].
 
 * For a type X : 𝓤 and points x,y:X, the identity type Id {𝓤} {X} x y
   of type 𝓤 is abbreviated as Id x y and often written x =_X y or x =   y.
-  (In Agda: x ≡ y.)
+  (In Agda: x ＝ y.)
 
   The elements of the identity type x = y are called identifications or
   paths from x to y.
@@ -397,11 +397,11 @@ implicit arguments made explicit:
 \begin{code}
 
 automatic-functoriality-id : {X : 𝓤 ̇ } (f : X → 𝓥 ̇ ) {x : X}
-                           → f [ 𝓻𝓮𝒻𝓵 x ] ≡ 𝑖𝑑 (f x)
+                           → f [ 𝓻𝓮𝒻𝓵 x ] ＝ 𝑖𝑑 (f x)
 automatic-functoriality-id f = refl
 
 automatic-functoriality-∘ : {X : 𝓤 ̇ } (f : X → 𝓥 ̇ ) {x y z : X} (p : Id x y) (q : Id y z)
-                          → f [ p ∙ q ] ≡ f [ q ] ∘ f [ p ]
+                          → f [ p ∙ q ] ＝ f [ q ] ∘ f [ p ]
 automatic-functoriality-∘ f refl refl = refl
 
 _≼_ : {X : 𝓤 ̇ } → (X → 𝓥 ̇ ) → (X → 𝓦 ̇ ) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
@@ -409,7 +409,7 @@ f ≼ g = (x : domain f) → f x → g x
 
 automatic-naturality : {X : 𝓤 ̇ } (f : X → 𝓥 ̇ ) (f' : X → 𝓦' ̇ )
                        (τ : f ≼ f') {x y : X} (p : Id x y)
-                     → τ y ∘ f [ p ] ≡ f' [ p ] ∘ τ x
+                     → τ y ∘ f [ p ] ＝ f' [ p ] ∘ τ x
 automatic-naturality f f' τ refl = refl
 
 \end{code}
@@ -462,10 +462,10 @@ embedding are themselves embeddings.
   r : (Y → 𝓤 ⊔ 𝓥 ̇ ) → (X → 𝓤 ⊔ 𝓥 ̇ )
   r g = g ∘ j
 
-  rs : ∀ f → r (s f) ≡ f
+  rs : ∀ f → r (s f) ＝ f
   rs f = dfunext (fe 𝓤 ((𝓤 ⊔ 𝓥)⁺)) (↓-is-extension j i f)
 
-  sr : ∀ g → s (r g) ≡ (g ∘ j) ↓ j
+  sr : ∀ g → s (r g) ＝ (g ∘ j) ↓ j
   sr g = refl
 
   κ : (g : Y → 𝓤 ⊔ 𝓥 ̇ ) → s (r g) ≼ g
@@ -483,33 +483,33 @@ embedding are themselves embeddings.
       δ : (Σ (x , _) ꞉ fiber j y , f x)
         → Σ (x' , _) ꞉ fiber j y , Σ (x , _) ꞉ fiber j (j x') , f x
       δ ((x , p) , C) = (x , p) , (x , refl) , C
-      η : (σ : s f y) → κ (s f) y (δ σ) ≡ σ
+      η : (σ : s f y) → κ (s f) y (δ σ) ＝ σ
       η ((x , refl) , C) = refl
-      ε : (τ : Σ (λ w → r (s f) (pr₁ w))) → δ (κ (s f) y τ) ≡ τ
+      ε : (τ : Σ (λ w → r (s f) (pr₁ w))) → δ (κ (s f) y τ) ＝ τ
       ε ((x , refl) , (x' , p') , C) = t x x' (pa x' x p') p' C (appa x x' p')
        where
-         t : (x x' : X) (u : x' ≡ x) (p : j x' ≡ j x) (C : f x') → ap j u ≡ p
+         t : (x x' : X) (u : x' ＝ x) (p : j x' ＝ j x) (C : f x') → ap j u ＝ p
            →  ((x' , p)    , (x' , refl) , C)
-           ≡ (((x  , refl) , (x' , p)    , C) ∶ (Σ (x , _) ꞉ fiber j (j x) , r (s f) x))
+           ＝ (((x  , refl) , (x' , p)    , C) ∶ (Σ (x , _) ꞉ fiber j (j x) , r (s f) x))
          t x x refl p C refl = refl
          q : ∀ x x' → qinv (ap j {x} {x'})
          q x x' = equivs-are-qinvs (ap j) (embedding-embedding' j i x x')
-         pa : ∀ x x' → j x ≡ j x' → x ≡ x'
+         pa : ∀ x x' → j x ＝ j x' → x ＝ x'
          pa x x' = pr₁ (q x x')
-         appa : ∀ x x' p' → ap j (pa x' x p') ≡ p'
+         appa : ∀ x x' p' → ap j (pa x' x p') ＝ p'
          appa x x' = pr₂ (pr₂ (q x' x))
 
   γ : M → (X → 𝓤 ⊔ 𝓥 ̇ )
   γ (g , e) = r g
 
-  φγ : ∀ m → φ (γ m) ≡ m
-  φγ (g , e) = to-Σ-≡
+  φγ : ∀ m → φ (γ m) ＝ m
+  φγ (g , e) = to-Σ-＝
                 (dfunext (fe 𝓥 ((𝓤 ⊔ 𝓥)⁺))
                   (λ y → eqtoid (ua (𝓤 ⊔ 𝓥)) (s (r g) y) (g y) (κ g y , e y)) ,
                  Π-is-prop (fe 𝓥 (𝓤 ⊔ 𝓥))
                   (λ y → being-equiv-is-prop'' (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)) (κ g y)) _ e)
 
-  γφ : ∀ f → γ (φ f) ≡ f
+  γφ : ∀ f → γ (φ f) ＝ f
   γφ = rs
 
   φ-is-equiv : is-equiv φ
@@ -524,7 +524,7 @@ embedding are themselves embeddings.
   ψ-is-embedding : is-embedding ψ
   ψ-is-embedding = pr₁-is-embedding (λ g → Π-is-prop (fe 𝓥 (𝓤 ⊔ 𝓥)) (λ y → being-equiv-is-prop'' (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)) (κ g y)))
 
-  s-is-comp : s ≡ ψ ∘ φ
+  s-is-comp : s ＝ ψ ∘ φ
   s-is-comp = refl
 
   s-is-embedding : is-embedding s
@@ -542,10 +542,10 @@ embedding are themselves embeddings.
   r : (Y → 𝓤 ⊔ 𝓥 ̇ ) → (X → 𝓤 ⊔ 𝓥 ̇ )
   r g = g ∘ j
 
-  rs : ∀ f → r (s f) ≡ f
+  rs : ∀ f → r (s f) ＝ f
   rs f = dfunext (fe 𝓤 ((𝓤 ⊔ 𝓥)⁺)) (↑-is-extension j i f)
 
-  sr : ∀ g → s (r g) ≡ (g ∘ j) ↑ j
+  sr : ∀ g → s (r g) ＝ (g ∘ j) ↑ j
   sr g = refl
 
   κ : (g : Y → 𝓤 ⊔ 𝓥 ̇ ) → g ≼ s (r g)
@@ -562,34 +562,34 @@ embedding are themselves embeddings.
      where
       δ : (((f ↑ j) ∘ j) ↑ j) y → (f ↑ j) y
       δ C (x , p) = C (x , p) (x , refl)
-      η : (C : ((f ↑ j ∘ j) ↑ j) y) → κ (s f) y (δ C) ≡ C
+      η : (C : ((f ↑ j ∘ j) ↑ j) y) → κ (s f) y (δ C) ＝ C
       η C = dfunext (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)) g
        where
-        g : (w : fiber j y) → κ (s f) y (δ C) w ≡ C w
+        g : (w : fiber j y) → κ (s f) y (δ C) w ＝ C w
         g (x , refl) = dfunext (fe (𝓥 ⊔ 𝓤) (𝓥 ⊔ 𝓤)) h
          where
-          h : (t : fiber j (j x)) → C t (pr₁ t , refl) ≡ C (x , refl) t
-          h (x' , p') = transport (λ - → C - (pr₁ - , refl) ≡ C (x , refl) -) q refl
+          h : (t : fiber j (j x)) → C t (pr₁ t , refl) ＝ C (x , refl) t
+          h (x' , p') = transport (λ - → C - (pr₁ - , refl) ＝ C (x , refl) -) q refl
            where
-            q : (x , refl) ≡ (x' , p')
+            q : (x , refl) ＝ (x' , p')
             q = i (j x) (x , refl) (x' , p')
-      ε : (a : (f ↑ j) y) → δ (κ (s f) y a) ≡ a
+      ε : (a : (f ↑ j) y) → δ (κ (s f) y a) ＝ a
       ε a = dfunext (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)) g
        where
-        g : (w : fiber j y) → δ (κ (s f) y a) w ≡ a w
+        g : (w : fiber j y) → δ (κ (s f) y a) w ＝ a w
         g (x , refl) = refl
 
   γ : M → (X → 𝓤 ⊔ 𝓥 ̇ )
   γ (g , e) = r g
 
-  φγ : ∀ m → φ (γ m) ≡ m
-  φγ (g , e) = to-Σ-≡
+  φγ : ∀ m → φ (γ m) ＝ m
+  φγ (g , e) = to-Σ-＝
                 (dfunext (fe 𝓥 ((𝓤 ⊔ 𝓥)⁺))
                   (λ y → eqtoid (ua (𝓤 ⊔ 𝓥)) (s (r g) y) (g y) (≃-sym (κ g y , e y))) ,
                  Π-is-prop (fe 𝓥 (𝓤 ⊔ 𝓥))
                   (λ y → being-equiv-is-prop'' (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)) (κ g y)) _ e)
 
-  γφ : ∀ f → γ (φ f) ≡ f
+  γφ : ∀ f → γ (φ f) ＝ f
   γφ = rs
 
   φ-is-equiv : is-equiv φ
@@ -606,7 +606,7 @@ embedding are themselves embeddings.
                     (λ g → Π-is-prop (fe 𝓥 (𝓤 ⊔ 𝓥))
                     (λ y → being-equiv-is-prop'' (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)) (κ g y)))
 
-  s-is-comp : s ≡ ψ ∘ φ
+  s-is-comp : s ＝ ψ ∘ φ
   s-is-comp = refl
 
   s-is-embedding : is-embedding s
@@ -656,8 +656,8 @@ retract-of-ainjective D' D i (r , (s , rs)) {X} {Y} j e f = φ a
   a : Σ f' ꞉ (Y → D), f' ∘ j ∼ s ∘ f
   a = i j e (s ∘ f)
   φ : (Σ f' ꞉ (Y → D), f' ∘ j ∼ s ∘ f) → Σ f'' ꞉ (Y → D'), f'' ∘ j ∼ f
-  φ (f' , h) = r ∘ f' , (λ x → r (f' (j x)) ≡⟨ ap r (h x) ⟩
-                               r (s (f x))  ≡⟨ rs (f x) ⟩
+  φ (f' , h) = r ∘ f' , (λ x → r (f' (j x)) ＝⟨ ap r (h x) ⟩
+                               r (s (f x))  ＝⟨ rs (f x) ⟩
                                f x          ∎)
 
 equiv-to-ainjective : (D' : 𝓦' ̇ ) (D : 𝓦 ̇ )
@@ -793,7 +793,7 @@ with P ranging over propositions.
 \begin{code}
 
 aflabby : 𝓦 ̇ → (𝓤 : Universe) → 𝓦 ⊔ 𝓤 ⁺ ̇
-aflabby D 𝓤 = (P : 𝓤 ̇ ) → is-prop P → (f : P → D) → Σ d ꞉ D , ((p : P) → d ≡ f p)
+aflabby D 𝓤 = (P : 𝓤 ̇ ) → is-prop P → (f : P → D) → Σ d ꞉ D , ((p : P) → d ＝ f p)
 
 \end{code}
 
@@ -827,16 +827,16 @@ and the we can put any other universe below 𝓤 back, as follows.
 aflabby-types-are-ainjective : (D : 𝓦 ̇ ) → aflabby D (𝓤 ⊔ 𝓥) → ainjective-type D 𝓤 𝓥
 aflabby-types-are-ainjective D φ {X} {Y} j e f = f' , p
  where
-  g : (y : Y) → Σ d ꞉ D , ((w : fiber j y) → d ≡ (f ∘ pr₁) w)
+  g : (y : Y) → Σ d ꞉ D , ((w : fiber j y) → d ＝ (f ∘ pr₁) w)
   g y = φ (fiber j y) (e y) (f ∘ pr₁)
 
   f' : Y → D
   f' y = pr₁ (g y)
 
-  p : (x : X) → f' (j x) ≡ f x
+  p : (x : X) → f' (j x) ＝ f x
   p x = q (x , refl)
    where
-    q : (w : fiber j (j x)) → f' (j x) ≡ f (pr₁ w)
+    q : (w : fiber j (j x)) → f' (j x) ＝ f (pr₁ w)
     q = pr₂ (g (j x))
 
 \end{code}
@@ -908,13 +908,13 @@ subuniverse-aflabby-Σ {𝓤} {𝓣} A φ α κ P i f = (X , a) , c
   a : A X
   a = κ P g (α P i) h
 
-  c : (p : P) → (X , a) ≡ f p
-  c p = to-Σ-≡ (q , r)
+  c : (p : P) → (X , a) ＝ f p
+  c p = to-Σ-＝ (q , r)
    where
-     q : X ≡ g p
+     q : X ＝ g p
      q = eqtoid (ua 𝓤) X (g p) (prop-indexed-sum i p)
 
-     r : transport A q a ≡ h p
+     r : transport A q a ＝ h p
      r = φ (g p) (transport A q a) (h p)
 
 \end{code}
@@ -939,13 +939,13 @@ subuniverse-aflabby-Π {𝓤} {𝓣} A φ α κ P i f = (X , a) , c
   a : A X
   a = κ P (pr₁ ∘ f) (α P i) (pr₂ ∘ f)
 
-  c : (p : P) → (X , a) ≡ f p
-  c p = to-Σ-≡ (q , r)
+  c : (p : P) → (X , a) ＝ f p
+  c p = to-Σ-＝ (q , r)
    where
-     q : X ≡ pr₁ (f p)
+     q : X ＝ pr₁ (f p)
      q = eqtoid (ua 𝓤) X (pr₁ (f p)) (prop-indexed-product (fe 𝓤 𝓤) i p)
 
-     r : transport A q a ≡ pr₂ (f p)
+     r : transport A q a ＝ pr₂ (f p)
      r = φ (pr₁ (f p)) (transport A q a) (pr₂ (f p))
 
 \end{code}
@@ -1055,12 +1055,12 @@ aflabbiness-resizing D 𝓤 𝓥 R φ P i f = d , h
   d : D
   d = pr₁ (φ Q j (f ∘ β))
 
-  k : (q : Q) → d ≡ f (β q)
+  k : (q : Q) → d ＝ f (β q)
   k = pr₂ (φ Q j (f ∘ β))
 
-  h : (p : P) → d ≡ f p
-  h p = d           ≡⟨ k (α p) ⟩
-        f (β (α p)) ≡⟨ ap f (i (β (α p)) p) ⟩
+  h : (p : P) → d ＝ f p
+  h p = d           ＝⟨ k (α p) ⟩
+        f (β (α p)) ＝⟨ ap f (i (β (α p)) p) ⟩
         f p         ∎
 
 \end{code}
@@ -1148,7 +1148,7 @@ universe-retract-unfolded R 𝓤 𝓥 = (r , Lift 𝓥 , rs) , Lift-is-embedding
   r : 𝓤 ⊔ 𝓥 ̇ → 𝓤 ̇
   r Y = (p : F Y) → pr₁ (f Y p)
 
-  rs : (X : 𝓤 ̇ ) → r (s X) ≡ X
+  rs : (X : 𝓤 ̇ ) → r (s X) ＝ X
   rs X = γ
    where
     g : (Y : 𝓤 ⊔ 𝓥 ̇ ) → fiber s Y → F Y
@@ -1169,16 +1169,16 @@ universe-retract-unfolded R 𝓤 𝓥 = (r , Lift 𝓥 , rs) , Lift-is-embedding
     a : r (s X) ≃ X'
     a = prop-indexed-product (fe 𝓤 𝓤) (i (s X)) u
 
-    b : s X' ≡ s X
+    b : s X' ＝ s X
     b = pr₂ v
 
-    c : X' ≡ X
+    c : X' ＝ X
     c = embeddings-are-lc s e b
 
     d : r (s X) ≃ X
     d = transport (λ - → r (s X) ≃ -) c a
 
-    γ : r (s X) ≡ X
+    γ : r (s X) ＝ X
     γ = eqtoid (ua 𝓤) (r (s X)) X d
 
 \end{code}
@@ -1296,7 +1296,7 @@ ainjective-retract-sub : Propositional-resizing
                        → (A : 𝓤 ̇ → 𝓣 ̇ )
                        → ((X : 𝓤 ̇ ) → is-prop (A X))
                        → (X : 𝓤 ̇ )
-                       → ((x x' : X) → A (x ≡ x'))
+                       → ((x x' : X) → A (x ＝ x'))
                        → ainjective-type X 𝓤 𝓤
                        → retract X of (X → Σ A)
 ainjective-retract-sub {𝓤} {𝓣} R A φ X β i = ainjective-retract-of-subtype X d (X → Σ A) (l , c)
@@ -1314,9 +1314,9 @@ ainjective-retract-sub {𝓤} {𝓣} R A φ X β i = ainjective-retract-of-subty
   b = embedding-exponential fe j a
 
   l : X → (X → Σ A)
-  l x x' = (x ≡ x') , β x x'
+  l x x' = (x ＝ x') , β x x'
 
-  p : k ∘ l ≡ Id
+  p : k ∘ l ＝ Id
   p = refl
 
   c : is-embedding l
@@ -1547,7 +1547,7 @@ import Lifting.EmbeddingViaSIP
 𝓛-alg-aflabby : {𝓣 𝓤 : Universe} {A : 𝓤 ̇ } → 𝓛-alg 𝓣 A → aflabby A 𝓣
 𝓛-alg-aflabby {𝓣} {𝓤} (∐ , κ , ι) P i f = ∐ i f , γ
  where
-  γ : (p : P) → ∐ i f ≡ f p
+  γ : (p : P) → ∐ i f ＝ f p
   γ p = Lifting.Algebras.𝓛-alg-Law₀-gives₀' 𝓣 (pe 𝓣) (fe 𝓣 𝓣) (fe 𝓣 𝓤) ∐ κ P i f p
 
 𝓛-alg-ainjective : (A : 𝓤 ̇ ) → 𝓛-alg 𝓣 A → ainjective-type A 𝓣 𝓣
@@ -1676,7 +1676,7 @@ open import UF.ExcludedMiddle
 EM-gives-pointed-types-aflabby : (D : 𝓦 ̇ ) → EM 𝓤 → D → aflabby D 𝓤
 EM-gives-pointed-types-aflabby {𝓦} {𝓤} D em d P i f = h (em P i)
  where
-  h : P + ¬ P → Σ d ꞉ D , ((p : P) → d ≡ f p)
+  h : P + ¬ P → Σ d ꞉ D , ((p : P) → d ＝ f p)
   h (inl p) = f p , (λ q → ap f (i p q))
   h (inr n) = d , (λ p → 𝟘-elim (n p))
 
@@ -1696,22 +1696,22 @@ aflabby-decidability-lemma {𝓦} P i φ = γ
   f (inl p) = inl (inl p)
   f (inr n) = inl (inr n)
 
-  l : Σ d ꞉ D , ((z : P + ¬ P) → d ≡ f z)
+  l : Σ d ꞉ D , ((z : P + ¬ P) → d ＝ f z)
   l = φ (P + ¬ P) (decidability-of-prop-is-prop (fe 𝓦 𝓤₀) i) f
 
   d : D
   d = pr₁ l
 
-  κ : (z : P + ¬ P) → d ≡ f z
+  κ : (z : P + ¬ P) → d ＝ f z
   κ = pr₂ l
 
-  a : (p : P) → d ≡ inl (inl p)
+  a : (p : P) → d ＝ inl (inl p)
   a p = κ (inl p)
 
-  b : (n : ¬ P) → d ≡ inl (inr n)
+  b : (n : ¬ P) → d ＝ inl (inr n)
   b n = κ (inr n)
 
-  δ : (d' : D) → d ≡ d' → P + ¬ P
+  δ : (d' : D) → d ＝ d' → P + ¬ P
   δ (inl (inl p)) r = inl p
   δ (inl (inr n)) r = inr n
   δ (inr ⋆)       r = 𝟘-elim (m n)

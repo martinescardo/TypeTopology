@@ -20,7 +20,7 @@ open import MLTT.Plus-Properties
 open import UF.Base
 
 is-prop : 𝓤 ̇ → 𝓤 ̇
-is-prop X = (x y : X) → x ≡ y
+is-prop X = (x y : X) → x ＝ y
 
 \end{code}
 
@@ -39,7 +39,7 @@ is-subsingleton = is-prop
 Σ-is-prop : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
           → is-prop X → ((x : X) → is-prop (A x)) → is-prop (Σ A)
 Σ-is-prop {𝓤} {𝓥} {X} {A} i j (x , a) (y , b) =
-  to-Σ-≡ (i x y , j y (transport A (i x y) a) b)
+  to-Σ-＝ (i x y , j y (transport A (i x y) a) b)
 
 \end{code}
 
@@ -54,7 +54,7 @@ univalent type theory.
 \begin{code}
 
 is-central : (X : 𝓤 ̇ ) → X → 𝓤 ̇
-is-central X c = (x : X) → c ≡ x
+is-central X c = (x : X) → c ＝ x
 
 is-singleton : 𝓤 ̇ → 𝓤 ̇
 is-singleton X = Σ c ꞉ X , is-central X c
@@ -81,8 +81,8 @@ is-contr = is-singleton
 𝟙-is-singleton = ⋆ , (λ (x : 𝟙) → (𝟙-all-⋆ x)⁻¹)
 
 singletons-are-props : {X : 𝓤 ̇ } → is-singleton X → is-prop X
-singletons-are-props (c , φ) x y = x ≡⟨ (φ x) ⁻¹ ⟩
-                                   c ≡⟨ φ y ⟩
+singletons-are-props (c , φ) x y = x ＝⟨ (φ x) ⁻¹ ⟩
+                                   c ＝⟨ φ y ⟩
                                    y ∎
 
 prop-criterion' : {X : 𝓤 ̇ } → (X → is-singleton X) → is-prop X
@@ -115,7 +115,7 @@ data or structure).
 \begin{code}
 
 is-h-isolated : {X : 𝓤 ̇ } (x : X) → 𝓤 ̇
-is-h-isolated x = ∀ {y} → is-prop (x ≡ y)
+is-h-isolated x = ∀ {y} → is-prop (x ＝ y)
 
 is-set : 𝓤 ̇ → 𝓤 ̇
 is-set X = {x : X} → is-h-isolated x
@@ -130,7 +130,7 @@ underlying-set = pr₁
 𝟘-is-set {𝓤} {x} = 𝟘-elim x
 
 refl-is-set : (X : 𝓤 ̇ )
-            → ((x : X) (p : x ≡ x) → p ≡ refl)
+            → ((x : X) (p : x ＝ x) → p ＝ refl)
             → is-set X
 refl-is-set X r {x} {.x} p refl = r x p
 
@@ -142,7 +142,7 @@ using weakly, or wildly, constant maps:
 \begin{code}
 
 wconstant : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (f : X → Y) → 𝓤 ⊔ 𝓥 ̇
-wconstant f = ∀ x y → f x ≡ f y
+wconstant f = ∀ x y → f x ＝ f y
 
 wconstant-pre-comp : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (f : X → Y) (g : Y → Z)
                    → wconstant f → wconstant (g ∘ f)
@@ -156,7 +156,7 @@ collapsible : 𝓤 ̇ → 𝓤 ̇
 collapsible X = Σ f ꞉ (X → X) , wconstant f
 
 Id-collapsible' : {X : 𝓤 ̇ } → X → 𝓤 ̇
-Id-collapsible' x = ∀ {y} → collapsible (x ≡ y)
+Id-collapsible' x = ∀ {y} → collapsible (x ＝ y)
 
 Id-collapsible : 𝓤 ̇ → 𝓤 ̇
 Id-collapsible X = {x : X} → Id-collapsible' x
@@ -168,19 +168,19 @@ sets-are-Id-collapsible : {X : 𝓤 ̇ } → is-set X → Id-collapsible X
 sets-are-Id-collapsible u = (id , u)
 
 local-hedberg : {X : 𝓤 ̇ } (x : X)
-              → ((y : X) → collapsible (x ≡ y))
-              → (y : X) → is-prop (x ≡ y)
+              → ((y : X) → collapsible (x ＝ y))
+              → (y : X) → is-prop (x ＝ y)
 local-hedberg {𝓤} {X} x pc y p q =
- p                    ≡⟨ c y p ⟩
- f x refl ⁻¹ ∙ f y p  ≡⟨ ap (λ - → (f x refl)⁻¹ ∙ -) (κ y p q) ⟩
- f x refl ⁻¹ ∙ f y q  ≡⟨ (c y q)⁻¹ ⟩
+ p                    ＝⟨ c y p ⟩
+ f x refl ⁻¹ ∙ f y p  ＝⟨ ap (λ - → (f x refl)⁻¹ ∙ -) (κ y p q) ⟩
+ f x refl ⁻¹ ∙ f y q  ＝⟨ (c y q)⁻¹ ⟩
  q                    ∎
  where
-  f : (y : X) → x ≡ y → x ≡ y
+  f : (y : X) → x ＝ y → x ＝ y
   f y = pr₁ (pc y)
-  κ : (y : X) (p q : x ≡ y) → f y p ≡ f y q
+  κ : (y : X) (p q : x ＝ y) → f y p ＝ f y q
   κ y = pr₂ (pc y)
-  c : (y : X) (r : x ≡ y) → r ≡ (f x refl)⁻¹ ∙ f y r
+  c : (y : X) (r : x ＝ y) → r ＝ (f x refl)⁻¹ ∙ f y r
   c _ refl = sym-is-inverse (f x refl)
 
 Id-collapsibles-are-h-isolated : {X : 𝓤 ̇ } (x : X) → Id-collapsible' x → is-h-isolated x
@@ -200,25 +200,25 @@ type-with-prop-valued-refl-antisym-rel-is-set : {X : 𝓤 ̇ }
                                               → (_≤_ : X → X → 𝓥 ̇ )
                                               → ((x y : X) → is-prop (x ≤ y))
                                               → ((x : X) → x ≤ x)
-                                              → ((x y : X) → x ≤ y → y ≤ x → x ≡ y)
+                                              → ((x y : X) → x ≤ y → y ≤ x → x ＝ y)
                                               → is-set X
 type-with-prop-valued-refl-antisym-rel-is-set {𝓤} {𝓥} {X} _≤_ ≤-prop-valued ≤-refl ≤-anti = γ
  where
-  α : ∀ {x y} (l l' : x ≤ y) (m m' : y ≤ x) → ≤-anti x y l m ≡ ≤-anti x y l' m'
+  α : ∀ {x y} (l l' : x ≤ y) (m m' : y ≤ x) → ≤-anti x y l m ＝ ≤-anti x y l' m'
   α {x} {y} l l' m m' = ap₂ (≤-anti x y)
                             (≤-prop-valued x y l l')
                             (≤-prop-valued y x m m')
 
-  g : ∀ {x y} → x ≡ y → x ≤ y
+  g : ∀ {x y} → x ＝ y → x ≤ y
   g {x} p = transport (x ≤_) p (≤-refl x)
 
-  h : ∀ {x y} → x ≡ y → y ≤ x
+  h : ∀ {x y} → x ＝ y → y ≤ x
   h p = g (p ⁻¹)
 
-  f : ∀ {x y} → x ≡ y → x ≡ y
+  f : ∀ {x y} → x ＝ y → x ＝ y
   f {x} {y} p = ≤-anti x y (g p) (h p)
 
-  κ : ∀ {x y} p q → f {x} {y} p ≡ f {x} {y} q
+  κ : ∀ {x y} p q → f {x} {y} p ＝ f {x} {y} q
   κ p q = α (g p) (g q) (h p) (h q)
 
   γ : is-set X
@@ -236,19 +236,19 @@ symmetrizing the proof.
 \begin{code}
 
 local-hedberg' : {X : 𝓤 ̇ } (x : X)
-               → ((y : X) → collapsible (y ≡ x))
-               → (y : X) → is-prop (y ≡ x)
+               → ((y : X) → collapsible (y ＝ x))
+               → (y : X) → is-prop (y ＝ x)
 local-hedberg' {𝓤} {X} x pc y p q =
-  p                     ≡⟨ c y p ⟩
-  f y p ∙ (f x refl)⁻¹  ≡⟨  ap (λ - → - ∙ (f x refl)⁻¹) (κ y p q) ⟩
-  f y q ∙ (f x refl)⁻¹  ≡⟨ (c y q)⁻¹ ⟩
+  p                     ＝⟨ c y p ⟩
+  f y p ∙ (f x refl)⁻¹  ＝⟨  ap (λ - → - ∙ (f x refl)⁻¹) (κ y p q) ⟩
+  f y q ∙ (f x refl)⁻¹  ＝⟨ (c y q)⁻¹ ⟩
   q                     ∎
  where
-  f : (y : X) → y ≡ x → y ≡ x
+  f : (y : X) → y ＝ x → y ＝ x
   f y = pr₁ (pc y)
-  κ : (y : X) (p q : y ≡ x) → f y p ≡ f y q
+  κ : (y : X) (p q : y ＝ x) → f y p ＝ f y q
   κ y = pr₂ (pc y)
-  c : (y : X) (r : y ≡ x) → r ≡  (f y r) ∙ (f x refl)⁻¹
+  c : (y : X) (r : y ＝ x) → r ＝  (f y r) ∙ (f x refl)⁻¹
   c _ refl = sym-is-inverse' (f x refl)
 
 props-are-Id-collapsible : {X : 𝓤 ̇ } → is-prop X → Id-collapsible X
@@ -269,8 +269,8 @@ Under Curry-Howard, the function type X → 𝟘 is understood as the
 negation of X when X is viewed as a proposition. But when X is
 understood as a mathematical object, inhabiting the type X → 𝟘 amounts
 to showing that X is empty. (In fact, assuming univalence, defined
-below, the type X → 𝟘 is equivalent to the type X ≡ 𝟘
-(written (X → 𝟘) ≃ (X ≡ 𝟘)).)
+below, the type X → 𝟘 is equivalent to the type X ＝ 𝟘
+(written (X → 𝟘) ≃ (X ＝ 𝟘)).)
 
 \begin{code}
 
@@ -281,16 +281,16 @@ empty-types-are-collapsible u = (id , (λ x x' → unique-from-𝟘 (u x)))
 𝟘-is-collapsible' = empty-types-are-collapsible id
 
 singleton-type : {X : 𝓤 ̇ } (x : X) → 𝓤 ̇
-singleton-type x = Σ y ꞉ type-of x , x ≡ y
+singleton-type x = Σ y ꞉ type-of x , x ＝ y
 
 singleton-center : {X : 𝓤 ̇ } (x : X) → singleton-type x
 singleton-center x = (x , refl)
 
-singleton-types-are-singletons'' : {X : 𝓤 ̇ } {x x' : X} (r : x ≡ x') → singleton-center x ≡ (x' , r)
+singleton-types-are-singletons'' : {X : 𝓤 ̇ } {x x' : X} (r : x ＝ x') → singleton-center x ＝ (x' , r)
 singleton-types-are-singletons'' {𝓤} {X} = J A (λ x → refl)
  where
-  A : (x x' : X) → x ≡ x' → 𝓤 ̇
-  A x x' r = singleton-center x ≡[ Σ x' ꞉ X , x ≡ x' ] (x' , r)
+  A : (x x' : X) → x ＝ x' → 𝓤 ̇
+  A x x' r = singleton-center x ＝[ Σ x' ꞉ X , x ＝ x' ] (x' , r)
 
 singleton-types-are-singletons : {X : 𝓤 ̇ } (x₀ : X) → is-singleton (singleton-type x₀)
 singleton-types-are-singletons x₀ = singleton-center x₀ , (λ t → singleton-types-are-singletons'' (pr₂ t))
@@ -302,7 +302,7 @@ singleton-types-are-props : {X : 𝓤 ̇ } (x : X) → is-prop (singleton-type x
 singleton-types-are-props x = singletons-are-props (singleton-types-are-singletons x)
 
 singleton-type' : {X : 𝓤 ̇ } → X → 𝓤 ̇
-singleton-type' x = Σ y ꞉ type-of x , y ≡ x
+singleton-type' x = Σ y ꞉ type-of x , y ＝ x
 
 singleton'-center : {X : 𝓤 ̇ } (x : X) → singleton-type' x
 singleton'-center x = (x , refl)
@@ -314,7 +314,7 @@ singleton'-center x = (x , refl)
 
 ×-prop-criterion : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                  → (Y → is-prop X) × (X → is-prop Y) → is-prop (X × Y)
-×-prop-criterion (i , j) (x , y) (x' , y') = to-Σ-≡ (i y x x' , j x _ _)
+×-prop-criterion (i , j) (x , y) (x' , y') = to-Σ-＝ (i y x x' , j x _ _)
 
 ×-𝟘-is-prop : {X : 𝓤 ̇ } → is-prop (X × 𝟘 {𝓥})
 ×-𝟘-is-prop (x , z) _ = 𝟘-elim z
@@ -326,12 +326,12 @@ singleton'-center x = (x , refl)
           → is-prop X → is-prop Y → is-prop (X × Y)
 ×-is-prop i j = ×-prop-criterion ((λ _ → i) , (λ _ → j))
 
-to-subtype-≡ : {X : 𝓦 ̇ } {A : X → 𝓥 ̇ }
+to-subtype-＝ : {X : 𝓦 ̇ } {A : X → 𝓥 ̇ }
                {x y : X} {a : A x} {b : A y}
              → ((x : X) → is-prop (A x))
-             → x ≡ y
-             → (x , a) ≡ (y , b)
-to-subtype-≡ {𝓤} {𝓥} {X} {A} {x} {y} {a} {b} s p = to-Σ-≡ (p , s y (transport A p a) b)
+             → x ＝ y
+             → (x , a) ＝ (y , b)
+to-subtype-＝ {𝓤} {𝓥} {X} {A} {x} {y} {a} {b} s p = to-Σ-＝ (p , s y (transport A p a) b)
 
 subtype-of-prop-is-prop : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (m : X → Y)
                           → left-cancellable m → is-prop Y → is-prop X
@@ -341,14 +341,14 @@ subtypes-of-sets-are-sets : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (m : X → Y)
                           → left-cancellable m → is-set Y → is-set X
 subtypes-of-sets-are-sets {𝓤} {𝓥} {X} m i h = Id-collapsibles-are-sets (f , g)
  where
-  f : {x x' : X} → x ≡ x' → x ≡ x'
+  f : {x x' : X} → x ＝ x' → x ＝ x'
   f r = i (ap m r)
-  g : {x x' : X} (r s : x ≡ x') → f r ≡ f s
+  g : {x x' : X} (r s : x ＝ x') → f r ＝ f s
   g r s = ap i (h (ap m r) (ap m s))
 
 pr₁-lc : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } → ({x : X} → is-prop (Y x))
        → left-cancellable (pr₁ {𝓤} {𝓥} {X} {Y})
-pr₁-lc f p = to-Σ-≡ (p , (f _ _))
+pr₁-lc f p = to-Σ-＝ (p , (f _ _))
 
 subsets-of-sets-are-sets : (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ )
                          → is-set X
@@ -356,38 +356,38 @@ subsets-of-sets-are-sets : (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ )
                          → is-set (Σ x ꞉ X , Y x)
 subsets-of-sets-are-sets X Y h p = subtypes-of-sets-are-sets pr₁ (pr₁-lc p) h
 
-inl-lc-is-section : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {x x' : X} → (p : inl {𝓤} {𝓥} {X} {Y} x ≡ inl x') → p ≡ ap inl (inl-lc p)
+inl-lc-is-section : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {x x' : X} → (p : inl {𝓤} {𝓥} {X} {Y} x ＝ inl x') → p ＝ ap inl (inl-lc p)
 inl-lc-is-section refl = refl
 
-inr-lc-is-section : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {y y' : Y} → (p : inr {𝓤} {𝓥} {X} {Y} y ≡ inr y') → p ≡ ap inr (inr-lc p)
+inr-lc-is-section : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {y y' : Y} → (p : inr {𝓤} {𝓥} {X} {Y} y ＝ inr y') → p ＝ ap inr (inr-lc p)
 inr-lc-is-section refl = refl
 
 +-is-set : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) → is-set X → is-set Y → is-set (X + Y)
 +-is-set X Y i j {inl x} {inl x'} p q = inl-lc-is-section p ∙ r ∙ (inl-lc-is-section q)⁻¹
  where
-  r : ap inl (inl-lc p) ≡ ap inl (inl-lc q)
+  r : ap inl (inl-lc p) ＝ ap inl (inl-lc q)
   r = ap (ap inl) (i (inl-lc p) (inl-lc q))
 +-is-set X Y i j {inl x} {inr y} p q = 𝟘-elim (+disjoint  p)
 +-is-set X Y i j {inr y} {inl x} p q = 𝟘-elim (+disjoint' p)
 +-is-set X Y i j {inr y} {inr y'} p q = inr-lc-is-section p ∙ r ∙ (inr-lc-is-section q)⁻¹
  where
-  r : ap inr (inr-lc p) ≡ ap inr (inr-lc q)
+  r : ap inr (inr-lc p) ＝ ap inr (inr-lc q)
   r = ap (ap inr) (j (inr-lc p) (inr-lc q))
 
 ×-is-set : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → is-set X → is-set Y → is-set (X × Y)
 ×-is-set i j {(x , y)} {(x' , y')} p q =
- p            ≡⟨ tofrom-×-≡ p ⟩
- to-×-≡ p₀ p₁ ≡⟨ ap₂ (λ -₀ -₁ → to-×-≡ -₀ -₁) (i p₀ q₀) (j p₁ q₁) ⟩
- to-×-≡ q₀ q₁ ≡⟨ (tofrom-×-≡ q)⁻¹ ⟩
+ p            ＝⟨ tofrom-×-＝ p ⟩
+ to-×-＝ p₀ p₁ ＝⟨ ap₂ (λ -₀ -₁ → to-×-＝ -₀ -₁) (i p₀ q₀) (j p₁ q₁) ⟩
+ to-×-＝ q₀ q₁ ＝⟨ (tofrom-×-＝ q)⁻¹ ⟩
  q            ∎ where
-  p₀ : x ≡ x'
-  p₀ = pr₁ (from-×-≡' p)
-  p₁ : y ≡ y'
-  p₁ = pr₂ (from-×-≡' p)
-  q₀ : x ≡ x'
-  q₀ = pr₁ (from-×-≡' q)
-  q₁ : y ≡ y'
-  q₁ = pr₂ (from-×-≡' q)
+  p₀ : x ＝ x'
+  p₀ = pr₁ (from-×-＝' p)
+  p₁ : y ＝ y'
+  p₁ = pr₂ (from-×-＝' p)
+  q₀ : x ＝ x'
+  q₀ = pr₁ (from-×-＝' q)
+  q₁ : y ＝ y'
+  q₁ = pr₂ (from-×-＝' q)
 
 \end{code}
 
@@ -405,7 +405,7 @@ Formulation of propositional extensionality:
 \begin{code}
 
 propext : ∀ 𝓤 → 𝓤 ⁺ ̇
-propext 𝓤 = {P Q : 𝓤 ̇ } → is-prop P → is-prop Q → (P → Q) → (Q → P) → P ≡ Q
+propext 𝓤 = {P Q : 𝓤 ̇ } → is-prop P → is-prop Q → (P → Q) → (Q → P) → P ＝ Q
 
 PropExt : 𝓤ω
 PropExt = ∀ 𝓤 → propext 𝓤
@@ -425,7 +425,7 @@ sum-of-contradictory-props : {P : 𝓤 ̇ } {Q : 𝓥 ̇ }
                            → is-prop P → is-prop Q → (P → Q → 𝟘 {𝓦}) → is-prop (P + Q)
 sum-of-contradictory-props {𝓤} {𝓥} {𝓦} {P} {Q} i j f = γ
  where
-  γ : (x y : P + Q) → x ≡ y
+  γ : (x y : P + Q) → x ＝ y
   γ (inl p) (inl p') = ap inl (i p p')
   γ (inl p) (inr q)  = 𝟘-elim {𝓤 ⊔ 𝓥} {𝓦} (f p q)
   γ (inr q) (inl p)  = 𝟘-elim (f p q)
@@ -444,12 +444,12 @@ no-props-other-than-𝟘-or-𝟙 pe (P , i , f , g) = 𝟘-elim (φ u)
    u : ¬ P
    u p = g l
      where
-       l : P ≡ 𝟙
+       l : P ＝ 𝟙
        l = pe i 𝟙-is-prop unique-to-𝟙 (λ _ → p)
    φ : ¬¬ P
    φ u = f l
      where
-       l : P ≡ 𝟘
+       l : P ＝ 𝟘
        l = pe i 𝟘-is-prop (λ p → 𝟘-elim (u p)) 𝟘-elim
 
 \end{code}
@@ -480,12 +480,12 @@ syntax existsUnique X (λ x → b) = ∃! x ꞉ X , b
 
 witness-uniqueness : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
                    → (∃! x ꞉ X , A x)
-                   → (x y : X) → A x → A y → x ≡ y
+                   → (x y : X) → A x → A y → x ＝ y
 witness-uniqueness A e x y a b = ap pr₁ (singletons-are-props e (x , a) (y , b))
 
 infixr -1 existsUnique
 
-∃!-intro : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (x : X) (a : A x) → ((σ : Σ A) → (x , a) ≡ σ) → ∃! A
+∃!-intro : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (x : X) (a : A x) → ((σ : Σ A) → (x , a) ＝ σ) → ∃! A
 ∃!-intro x a o = (x , a) , o
 
 ∃!-witness : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } → ∃! A → X
@@ -497,13 +497,13 @@ infixr -1 existsUnique
 description : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } → ∃! A → Σ A
 description (σ , o) = σ
 
-∃!-uniqueness' : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (u : ∃! A) → (σ : Σ A) → description u ≡ σ
+∃!-uniqueness' : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (u : ∃! A) → (σ : Σ A) → description u ＝ σ
 ∃!-uniqueness' ((x , a) , o) = o
 
-∃!-uniqueness : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (u : ∃! A) → (x : X) (a : A x) → description u ≡ (x , a)
+∃!-uniqueness : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (u : ∃! A) → (x : X) (a : A x) → description u ＝ (x , a)
 ∃!-uniqueness u x a = ∃!-uniqueness' u (x , a)
 
-∃!-uniqueness'' : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (u : ∃! A) → (σ ω : Σ A) → σ ≡ ω
+∃!-uniqueness'' : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (u : ∃! A) → (σ ω : Σ A) → σ ＝ ω
 ∃!-uniqueness'' u σ ω = ∃!-uniqueness' u σ ⁻¹ ∙ ∃!-uniqueness' u ω
 
 \end{code}

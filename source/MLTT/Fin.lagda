@@ -29,7 +29,7 @@ fzero = inr ⋆
 fsucc : {n : ℕ} → Fin n → Fin (succ n)
 fsucc = inl
 
-suc-lc : {n : ℕ} {j k : Fin n} → fsucc j ≡ fsucc k → j ≡ k
+suc-lc : {n : ℕ} {j k : Fin n} → fsucc j ＝ fsucc k → j ＝ k
 suc-lc = inl-lc
 
 \end{code}

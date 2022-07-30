@@ -61,31 +61,31 @@ Some preliminary basic lemmas.
         β i   ⊑⟨ 𝓓 ⟩[ ∐-is-upperbound 𝓓 ε i ]
         ∐ 𝓓 ε ∎⟨ 𝓓 ⟩
 
-∐-family-≡ : (𝓓 : DCPO {𝓤} {𝓣}) {I : 𝓥 ̇ } {α β : I → ⟨ 𝓓 ⟩}
-             (p : α ≡ β) (δ : is-Directed 𝓓 α)
-           → ∐ 𝓓 {I} {α} δ ≡ ∐ 𝓓 {I} {β} (transport (is-Directed 𝓓) p δ)
-∐-family-≡ 𝓓 {I} {α} {α} refl δ = refl
+∐-family-＝ : (𝓓 : DCPO {𝓤} {𝓣}) {I : 𝓥 ̇ } {α β : I → ⟨ 𝓓 ⟩}
+             (p : α ＝ β) (δ : is-Directed 𝓓 α)
+           → ∐ 𝓓 {I} {α} δ ＝ ∐ 𝓓 {I} {β} (transport (is-Directed 𝓓) p δ)
+∐-family-＝ 𝓓 {I} {α} {α} refl δ = refl
 
-to-continuous-function-≡ : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
+to-continuous-function-＝ : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
                            {f g : DCPO[ 𝓓 , 𝓔 ]}
                          → [ 𝓓 , 𝓔 ]⟨ f ⟩ ∼ [ 𝓓 , 𝓔 ]⟨ g ⟩
-                         → f ≡ g
-to-continuous-function-≡ 𝓓 𝓔 h =
- to-subtype-≡ (being-continuous-is-prop 𝓓 𝓔) (dfunext fe h)
+                         → f ＝ g
+to-continuous-function-＝ 𝓓 𝓔 h =
+ to-subtype-＝ (being-continuous-is-prop 𝓓 𝓔) (dfunext fe h)
 
-≡-to-⊑ : (𝓓 : DCPO {𝓤} {𝓣}) {x y : ⟨ 𝓓 ⟩} → x ≡ y → x ⊑⟨ 𝓓 ⟩ y
-≡-to-⊑ 𝓓 {x} {x} refl = reflexivity 𝓓 x
+＝-to-⊑ : (𝓓 : DCPO {𝓤} {𝓣}) {x y : ⟨ 𝓓 ⟩} → x ＝ y → x ⊑⟨ 𝓓 ⟩ y
+＝-to-⊑ 𝓓 {x} {x} refl = reflexivity 𝓓 x
 
-≡-to-⊒ : (𝓓 : DCPO {𝓤} {𝓣}) {x y : ⟨ 𝓓 ⟩} → y ≡ x → x ⊑⟨ 𝓓 ⟩ y
-≡-to-⊒ 𝓓 p = ≡-to-⊑ 𝓓 (p ⁻¹)
+＝-to-⊒ : (𝓓 : DCPO {𝓤} {𝓣}) {x y : ⟨ 𝓓 ⟩} → y ＝ x → x ⊑⟨ 𝓓 ⟩ y
+＝-to-⊒ 𝓓 p = ＝-to-⊑ 𝓓 (p ⁻¹)
 
 ∐-independent-of-directedness-witness : (𝓓 : DCPO {𝓤} {𝓣})
                                         {I : 𝓥 ̇ } {α : I → ⟨ 𝓓 ⟩}
                                         (δ ε : is-Directed 𝓓 α)
-                                      → ∐ 𝓓 δ ≡ ∐ 𝓓 ε
+                                      → ∐ 𝓓 δ ＝ ∐ 𝓓 ε
 ∐-independent-of-directedness-witness 𝓓 {I} {α} δ ε = ap (∐ 𝓓) p
  where
-  p : δ ≡ ε
+  p : δ ＝ ε
   p = being-directed-is-prop (underlying-order 𝓓) α δ ε
 
 is-monotone : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
@@ -162,7 +162,7 @@ monotone-if-continuous 𝓓 𝓔 (f , cts) x y l = γ
      ε (inl ⋆) (inr ⋆) = ∣ inr ⋆ , l , reflexivity 𝓓 y ∣
      ε (inr ⋆) (inl ⋆) = ∣ inr ⋆ , reflexivity 𝓓 y , l ∣
      ε (inr ⋆) (inr ⋆) = ∣ inr ⋆ , reflexivity 𝓓 y , reflexivity 𝓓 y ∣
-   a : y ≡ ∐ 𝓓 δ
+   a : y ＝ ∐ 𝓓 δ
    a = antisymmetry 𝓓 y (∐ 𝓓 δ)
            (∐-is-upperbound 𝓓 δ (inr ⋆))
            (∐-is-lowerbound-of-upperbounds 𝓓 δ y h)
@@ -209,11 +209,11 @@ continuous-∐-⊒ 𝓓 𝓔 (f , c) {I} {α} δ =
    u : (i : I) → f (α i) ⊑⟨ 𝓔 ⟩ f (∐ 𝓓 δ)
    u i = sup-is-upperbound (underlying-order 𝓔) (c I α δ) i
 
-continuous-∐-≡ : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
+continuous-∐-＝ : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
                  (f : DCPO[ 𝓓 , 𝓔 ]) {I : 𝓥 ̇} {α : I → ⟨ 𝓓 ⟩}
                  (δ : is-Directed 𝓓 α)
-               → [ 𝓓 , 𝓔 ]⟨ f ⟩ (∐ 𝓓 δ) ≡ ∐ 𝓔 (image-is-directed' 𝓓 𝓔 f δ)
-continuous-∐-≡ 𝓓 𝓔 (f , c) {I} {α} δ =
+               → [ 𝓓 , 𝓔 ]⟨ f ⟩ (∐ 𝓓 δ) ＝ ∐ 𝓔 (image-is-directed' 𝓓 𝓔 f δ)
+continuous-∐-＝ 𝓓 𝓔 (f , c) {I} {α} δ =
  antisymmetry 𝓔 (f (∐ 𝓓 δ)) (∐ 𝓔 ε) a b
   where
    ε : is-Directed 𝓔 (f ∘ α)
@@ -246,7 +246,7 @@ id-is-continuous 𝓓 = continuity-criterion 𝓓 𝓓 id (id-is-monotone 𝓓) 
  where
   γ : (I : 𝓥 ̇) (α : I → ⟨ 𝓓 ⟩) (δ : is-Directed 𝓓 α)
     → ∐ 𝓓 δ ⊑⟨ 𝓓 ⟩ ∐ 𝓓 (image-is-directed 𝓓 𝓓 (λ x y l → l) δ)
-  γ I α δ = ≡-to-⊑ 𝓓 (∐-independent-of-directedness-witness 𝓓
+  γ I α δ = ＝-to-⊑ 𝓓 (∐-independent-of-directedness-witness 𝓓
              δ (image-is-directed 𝓓 𝓓 (λ x y l → l) δ))
 
 ∘-is-continuous : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'}) (𝓔' : DCPO {𝓦} {𝓦'})
@@ -280,7 +280,7 @@ id-is-continuous 𝓓 = continuity-criterion 𝓓 𝓓 id (id-is-monotone 𝓓) 
       h : f (∐ 𝓓 δ) ⊑⟨ 𝓔 ⟩ ∐ 𝓔 εf
       h = continuous-∐-⊑ 𝓓 𝓔 (f , cf) δ
     l₂ = continuous-∐-⊑ 𝓔 𝓔' (g , cg) εf
-    l₃ = ≡-to-⊑ 𝓔' (∐-independent-of-directedness-witness 𝓔' εg ε)
+    l₃ = ＝-to-⊑ 𝓔' (∐-independent-of-directedness-witness 𝓔' εg ε)
 
 ∘-is-continuous₃ : {𝓦₁ 𝓣₁ 𝓦₂ 𝓣₂ 𝓦₃ 𝓣₃ 𝓦₄ 𝓣₄ : Universe}
                    (𝓓₁ : DCPO {𝓦₁} {𝓣₁}) (𝓓₂ : DCPO {𝓦₂} {𝓣₂})
@@ -314,8 +314,8 @@ Defining isomorphisms of (pointed) dcpos.
 
 _≃ᵈᶜᵖᵒ_ : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'}) → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ⊔ 𝓤' ⊔ 𝓣' ̇
 𝓓 ≃ᵈᶜᵖᵒ 𝓔 = Σ f ꞉ (⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩) , Σ g ꞉ (⟨ 𝓔 ⟩ → ⟨ 𝓓 ⟩) ,
-                ((d : ⟨ 𝓓 ⟩) → g (f d) ≡ d)
-              × ((e : ⟨ 𝓔 ⟩) → f (g e) ≡ e)
+                ((d : ⟨ 𝓓 ⟩) → g (f d) ＝ d)
+              × ((e : ⟨ 𝓔 ⟩) → f (g e) ＝ e)
               × is-continuous 𝓓 𝓔 f
               × is-continuous 𝓔 𝓓 g
 
@@ -326,7 +326,7 @@ is-continuous-retract : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'}
                       → DCPO[ 𝓓 , 𝓔 ]
                       → DCPO[ 𝓔 , 𝓓 ]
                       → 𝓤 ̇
-is-continuous-retract 𝓓 𝓔 (σ , _) (ρ , _) = (x : ⟨ 𝓓 ⟩) → ρ (σ x) ≡ x
+is-continuous-retract 𝓓 𝓔 (σ , _) (ρ , _) = (x : ⟨ 𝓓 ⟩) → ρ (σ x) ＝ x
 
 record _continuous-retract-of_
         (𝓓 : DCPO {𝓤} {𝓣})
@@ -387,7 +387,7 @@ relations.
 \begin{code}
 
 is-small : (X : 𝓤 ̇  ) → 𝓥 ⁺ ⊔ 𝓤 ̇
-is-small X = X has-size 𝓥
+is-small X = X is 𝓥 small
 
 small-binary-relation-equivalence : {X : 𝓤 ̇  } {Y : 𝓦 ̇  } {R : X → Y → 𝓣 ̇  }
                                   → ((x : X) (y : Y) → is-small (R x y))
@@ -514,9 +514,9 @@ local-smallness-preserved-by-continuous-retract 𝓓 𝓔 ρ ls =
               r (s y) ⊑⟨ 𝓓 ⟩[ ⦅3⦆ ]
               y       ∎⟨ 𝓓 ⟩
         where
-         ⦅1⦆ = ≡-to-⊒ 𝓓 (s-section-of-r x)
+         ⦅1⦆ = ＝-to-⊒ 𝓓 (s-section-of-r x)
          ⦅2⦆ = monotone-if-continuous 𝓔 𝓓 𝕣 (s x) (s y) (⊑ₛ-to-⊑ l)
-         ⦅3⦆ = ≡-to-⊑ 𝓓 (s-section-of-r y)
+         ⦅3⦆ = ＝-to-⊑ 𝓓 (s-section-of-r y)
        ⦅⇐⦆ : (x ⊑⟨ 𝓓 ⟩ y) → (s x ⊑ₛ s y)
        ⦅⇐⦆ l = ⊑-to-⊑ₛ (monotone-if-continuous 𝓓 𝓔 𝕤 x y l)
 
@@ -589,14 +589,14 @@ directed-if-bicofinal 𝓓 {I} {J} {α} {β} κ₁ κ₂ δ =
                  β j   ⊑⟨ 𝓓 ⟩[ ∐-is-upperbound 𝓓 ε j ]
                  ∐ 𝓓 ε ∎⟨ 𝓓 ⟩
 
-∐-≡-if-bicofinal : (𝓓 : DCPO {𝓤} {𝓣}) {I J : 𝓥 ̇  }
+∐-＝-if-bicofinal : (𝓓 : DCPO {𝓤} {𝓣}) {I J : 𝓥 ̇  }
                    {α : I → ⟨ 𝓓 ⟩} {β : J → ⟨ 𝓓 ⟩}
                  → ((i : I) → ∃ j ꞉ J , α i ⊑⟨ 𝓓 ⟩ β j)
                  → ((j : J) → ∃ i ꞉ I , β j ⊑⟨ 𝓓 ⟩ α i)
                  → (δ : is-Directed 𝓓 α)
                  → (ε : is-Directed 𝓓 β)
-                 → ∐ 𝓓 δ ≡ ∐ 𝓓 ε
-∐-≡-if-bicofinal 𝓓 κ₁ κ₂ δ ε =
+                 → ∐ 𝓓 δ ＝ ∐ 𝓓 ε
+∐-＝-if-bicofinal 𝓓 κ₁ κ₂ δ ε =
  antisymmetry 𝓓 (∐ 𝓓 δ) (∐ 𝓓 ε) (∐-⊑-if-cofinal 𝓓 κ₁ δ ε)
                                 (∐-⊑-if-cofinal 𝓓 κ₂ ε δ)
 
@@ -640,7 +640,7 @@ module _
                            α i                     ⊑⟨ 𝓓 ⟩[ k ]
                            (α ∘ ⌜ ρ ⌝⁻¹ ∘ ⌜ ρ ⌝) i ∎⟨ 𝓓 ⟩))
        where
-        k = ≡-to-⊒ 𝓓
+        k = ＝-to-⊒ 𝓓
              (ap α (inverses-are-retractions ⌜ ρ ⌝ (⌜⌝-is-equiv ρ) i))
 
  reindexed-family-sup : (x : ⟨ 𝓓 ⟩)
@@ -661,7 +661,7 @@ module _
                β (⌜ ρ ⌝ i) ⊑⟨ 𝓓 ⟩[ ⦅2⦆ ]
                y           ∎⟨ 𝓓 ⟩
       where
-       ⦅1⦆ = ≡-to-⊒ 𝓓
+       ⦅1⦆ = ＝-to-⊒ 𝓓
              (ap α (inverses-are-retractions ⌜ ρ ⌝ (⌜⌝-is-equiv ρ) i))
        ⦅2⦆ = y-is-ub (⌜ ρ ⌝ i)
 

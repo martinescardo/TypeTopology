@@ -39,17 +39,17 @@ structure identity principle:
 η-is-embedding' ua fe = embedding-criterion' η c
  where
   a = (𝟙 ≃ 𝟙) ≃⟨ ≃-sym (univalence-≃ ua 𝟙 𝟙) ⟩
-      (𝟙 ≡ 𝟙) ≃⟨ 𝟙-≡-≃ 𝟙 (univalence-gives-funext ua)
+      (𝟙 ＝ 𝟙) ≃⟨ 𝟙-＝-≃ 𝟙 (univalence-gives-funext ua)
                          (univalence-gives-propext ua) 𝟙-is-prop ⟩
       𝟙       ■
 
-  b = λ x y → ((λ _ → x) ≡ (λ _ → y)) ≃⟨ ≃-funext fe (λ _ → x) (λ _ → y) ⟩
-              (𝟙 → x ≡ y)             ≃⟨ ≃-sym (𝟙→ fe) ⟩
-              (x ≡ y)                 ■
+  b = λ x y → ((λ _ → x) ＝ (λ _ → y)) ≃⟨ ≃-funext fe (λ _ → x) (λ _ → y) ⟩
+              (𝟙 → x ＝ y)             ≃⟨ ≃-sym (𝟙→ fe) ⟩
+              (x ＝ y)                 ■
 
-  c = λ x y → (η x ≡ η y)                       ≃⟨ 𝓛-Id ua (η x) (η y) ⟩
-              (𝟙 ≃ 𝟙) × ((λ _ → x) ≡ (λ _ → y)) ≃⟨ ×-cong a (b x y) ⟩
-              𝟙 × (x ≡ y)                       ≃⟨ 𝟙-lneutral ⟩
-              (x ≡ y)                           ■
+  c = λ x y → (η x ＝ η y)                       ≃⟨ 𝓛-Id ua (η x) (η y) ⟩
+              (𝟙 ≃ 𝟙) × ((λ _ → x) ＝ (λ _ → y)) ≃⟨ ×-cong a (b x y) ⟩
+              𝟙 × (x ＝ y)                       ≃⟨ 𝟙-lneutral ⟩
+              (x ＝ y)                           ■
 
 \end{code}

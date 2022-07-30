@@ -61,7 +61,7 @@ fe₀ = fe 𝓤₀ 𝓤₀
 \end{code}
 
 The type of truth values is Ω, following topos-theoretic notation, and
-the ordinal of truth values, ordered by p < q iff p ≡ ⊥ and q ≡ ⊤, is
+the ordinal of truth values, ordered by p < q iff p ＝ ⊥ and q ＝ ⊤, is
 denoted by Ωₒ (the subscript is the letter "o", for "ordinal", and not
 the number zero). This is parametrized by an arbitrary universe, which
 in this module is instantiated to 𝓤₀.
@@ -69,7 +69,7 @@ in this module is instantiated to 𝓤₀.
 \begin{code}
 
 X : 𝓤₁ ̇
-X = Σ p ꞉ ⟨ Ωₒ ⟩ , ¬ (p ≡ ⊥)
+X = Σ p ꞉ ⟨ Ωₒ ⟩ , ¬ (p ＝ ⊥)
 
 recall-that : is-extensional (underlying-order Ωₒ)
 recall-that = Extensionality Ωₒ
@@ -107,10 +107,10 @@ shulmans-taboo e = DNE-gives-EM fe₀ δ
     q = (P , j) ,
         (λ r → φ (Idtofun (ap pr₁ r)))
 
-    r : p ≡ q
+    r : p ＝ q
     r = i p q
 
-    s : ¬¬ P ≡ P
+    s : ¬¬ P ＝ P
     s = ap (pr₁ ∘ pr₁) r
 
 \end{code}

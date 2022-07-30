@@ -102,7 +102,7 @@ syntax way-below 𝓓 x y = x ≪⟨ 𝓓 ⟩ y
 ≪-is-prop-valued 𝓓 = Π₄-is-prop fe (λ I α δ u → ∥∥-is-prop)
 
 ≪-is-antisymmetric : (𝓓 : DCPO {𝓤} {𝓣}) {x y : ⟨ 𝓓 ⟩}
-                   → x ≪⟨ 𝓓 ⟩ y → y ≪⟨ 𝓓 ⟩ x → x ≡ y
+                   → x ≪⟨ 𝓓 ⟩ y → y ≪⟨ 𝓓 ⟩ x → x ＝ y
 ≪-is-antisymmetric 𝓓 {x} {y} u v =
  antisymmetry 𝓓 x y (≪-to-⊑ 𝓓 u) (≪-to-⊑ 𝓓 v)
 
@@ -199,7 +199,7 @@ module _
         (ε-is-continuous : is-continuous 𝓓 𝓔 ε)
         (π : ⟨ 𝓔 ⟩ → ⟨ 𝓓 ⟩)
         (π-is-continuous : is-continuous 𝓔 𝓓 π)
-        (π-ε-retraction : (x : ⟨ 𝓓 ⟩) → π (ε x) ≡ x)
+        (π-ε-retraction : (x : ⟨ 𝓓 ⟩) → π (ε x) ＝ x)
         (ε-π-deflation : (y : ⟨ 𝓔 ⟩) → ε (π y) ⊑⟨ 𝓔 ⟩ y)
        where
 
@@ -214,7 +214,7 @@ module _
                   π (∐ 𝓔 δ) ⊑⟨ 𝓓 ⟩[ ⦅3⦆ ]
                   ∐ 𝓓 δ'    ∎⟨ 𝓓 ⟩
      where
-      ⦅1⦆ = ≡-to-⊑ 𝓓 ((π-ε-retraction y) ⁻¹)
+      ⦅1⦆ = ＝-to-⊑ 𝓓 ((π-ε-retraction y) ⁻¹)
       ⦅2⦆ = monotone-if-continuous 𝓔 𝓓 (π , π-is-continuous) (ε y) (∐ 𝓔 δ)
              εx-below-∐α
       ⦅3⦆ = continuous-∐-⊑ 𝓔 𝓓 (π , π-is-continuous) δ
@@ -250,9 +250,9 @@ module _
                       π (ε (α i)) ⊑⟨ 𝓓 ⟩[ ⦅3⦆ ]
                       α i         ∎⟨ 𝓓 ⟩))
      where
-      ⦅1⦆ = ≡-to-⊑ 𝓓 ((π-ε-retraction x) ⁻¹)
+      ⦅1⦆ = ＝-to-⊑ 𝓓 ((π-ε-retraction x) ⁻¹)
       ⦅2⦆ = monotone-if-continuous 𝓔 𝓓 (π , π-is-continuous) (ε x) (ε (α i)) u
-      ⦅3⦆ = ≡-to-⊑ 𝓓 (π-ε-retraction (α i))
+      ⦅3⦆ = ＝-to-⊑ 𝓓 (π-ε-retraction (α i))
 
  embeddings-reflect-compactness : (x : ⟨ 𝓓 ⟩)
                                 → is-compact 𝓔 (ε x)
@@ -291,7 +291,7 @@ module _
     h (i , u) = (i , v)
      where
       v = r y         ⊑⟨ 𝓓 ⟩[ monotone-if-continuous 𝓔 𝓓 𝕣 y (s (α i)) u ]
-          r (s (α i)) ⊑⟨ 𝓓 ⟩[ ≡-to-⊑ 𝓓 (s-section-of-r (α i)) ]
+          r (s (α i)) ⊑⟨ 𝓓 ⟩[ ＝-to-⊑ 𝓓 (s-section-of-r (α i)) ]
           α i         ∎⟨ 𝓓 ⟩
 
 \end{code}

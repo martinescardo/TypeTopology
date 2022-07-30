@@ -61,16 +61,16 @@ record structurally-continuous (𝓓 : DCPO {𝓤} {𝓣}) : 𝓥 ⁺ ⊔ 𝓤 �
   approximating-family-is-way-below : (x : ⟨ 𝓓 ⟩)
                                     → is-way-upperbound 𝓓 x
                                        (approximating-family x)
-  approximating-family-∐-≡ : (x : ⟨ 𝓓 ⟩)
-                           → ∐ 𝓓 (approximating-family-is-directed x) ≡ x
+  approximating-family-∐-＝ : (x : ⟨ 𝓓 ⟩)
+                           → ∐ 𝓓 (approximating-family-is-directed x) ＝ x
 
  approximating-family-∐-⊑ : (x : ⟨ 𝓓 ⟩)
                           → ∐ 𝓓 (approximating-family-is-directed x) ⊑⟨ 𝓓 ⟩ x
- approximating-family-∐-⊑ x = ≡-to-⊑ 𝓓 (approximating-family-∐-≡ x)
+ approximating-family-∐-⊑ x = ＝-to-⊑ 𝓓 (approximating-family-∐-＝ x)
 
  approximating-family-∐-⊒ : (x : ⟨ 𝓓 ⟩)
                           → x ⊑⟨ 𝓓 ⟩ ∐ 𝓓 (approximating-family-is-directed x)
- approximating-family-∐-⊒ x = ≡-to-⊒ 𝓓 (approximating-family-∐-≡ x)
+ approximating-family-∐-⊒ x = ＝-to-⊒ 𝓓 (approximating-family-∐-＝ x)
 
 is-continuous-dcpo : DCPO {𝓤} {𝓣} → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
 is-continuous-dcpo 𝓓 = ∥ structurally-continuous 𝓓 ∥
@@ -93,7 +93,7 @@ record structurally-algebraic (𝓓 : DCPO {𝓤} {𝓣}) : 𝓥 ⁺ ⊔ 𝓤 �
   compact-family-is-directed : (x : ⟨ 𝓓 ⟩) → is-Directed 𝓓 (compact-family x)
   compact-family-is-compact : (x : ⟨ 𝓓 ⟩) (i : index-of-compact-family x)
                             → is-compact 𝓓 (compact-family x i)
-  compact-family-∐-≡ : (x : ⟨ 𝓓 ⟩) → ∐ 𝓓 (compact-family-is-directed x) ≡ x
+  compact-family-∐-＝ : (x : ⟨ 𝓓 ⟩) → ∐ 𝓓 (compact-family-is-directed x) ＝ x
 
 is-algebraic-dcpo : (𝓓 : DCPO {𝓤} {𝓣}) → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
 is-algebraic-dcpo 𝓓 = ∥ structurally-algebraic 𝓓 ∥
@@ -107,7 +107,7 @@ structurally-continuous-if-structurally-algebraic 𝓓 sa =
   ; approximating-family              = compact-family
   ; approximating-family-is-directed  = compact-family-is-directed
   ; approximating-family-is-way-below = γ
-  ; approximating-family-∐-≡          = compact-family-∐-≡
+  ; approximating-family-∐-＝          = compact-family-∐-＝
   }
   where
    open structurally-algebraic sa
@@ -119,7 +119,7 @@ structurally-continuous-if-structurally-algebraic 𝓓 sa =
          x                                  ∎⟨ 𝓓 ⟩
       where
        ⦅1⦆ = ∐-is-upperbound 𝓓 (compact-family-is-directed x) i
-       ⦅2⦆ = ≡-to-⊑ 𝓓 (compact-family-∐-≡ x)
+       ⦅2⦆ = ＝-to-⊑ 𝓓 (compact-family-∐-＝ x)
 
 is-continuous-dcpo-if-algebraic-dcpo : (𝓓 : DCPO {𝓤} {𝓣})
                                      → is-algebraic-dcpo 𝓓
@@ -146,7 +146,7 @@ module _
   → ((i : index-of-approximating-family x) → approximating-family x i ⊑⟨ 𝓓 ⟩ y)
   → x ⊑⟨ 𝓓 ⟩ y
  structurally-continuous-⊑-criterion {x} {y} l =
-  transport (λ - → - ⊑⟨ 𝓓 ⟩ y) (approximating-family-∐-≡ x) γ
+  transport (λ - → - ⊑⟨ 𝓓 ⟩ y) (approximating-family-∐-＝ x) γ
    where
     γ : ∐ 𝓓 (approximating-family-is-directed x) ⊑⟨ 𝓓 ⟩ y
     γ = ∐-is-lowerbound-of-upperbounds 𝓓 (approximating-family-is-directed x) y l
@@ -470,7 +470,7 @@ module _
    ; approximating-family              = λ x → r ∘ approximating-family (s x)
    ; approximating-family-is-directed  = lemma₁
    ; approximating-family-is-way-below = lemma₂
-   ; approximating-family-∐-≡          = lemma₃
+   ; approximating-family-∐-＝          = lemma₃
    }
    where
     open structurally-continuous C
@@ -482,16 +482,16 @@ module _
     lemma₂ : (x : ⟨ 𝓓 ⟩) → is-way-upperbound 𝓓 x (r ∘ α (s x))
     lemma₂ x i = continuous-retraction-≪-criterion 𝓓 𝓔 ρ (α (s x) i) x
                   (approximating-family-is-way-below (s x) i)
-    lemma₃ : (x : ⟨ 𝓓 ⟩) → ∐ 𝓓 (lemma₁ x) ≡ x
-    lemma₃ x = ∐ 𝓓 (lemma₁ x) ≡⟨ ⦅1⦆ ⟩
-               r (∐ 𝓔 δ)      ≡⟨ ⦅2⦆ ⟩
-               r (s x)        ≡⟨ ⦅3⦆ ⟩
+    lemma₃ : (x : ⟨ 𝓓 ⟩) → ∐ 𝓓 (lemma₁ x) ＝ x
+    lemma₃ x = ∐ 𝓓 (lemma₁ x) ＝⟨ ⦅1⦆ ⟩
+               r (∐ 𝓔 δ)      ＝⟨ ⦅2⦆ ⟩
+               r (s x)        ＝⟨ ⦅3⦆ ⟩
                x              ∎
      where
       δ : is-Directed 𝓔 (α (s x))
       δ = approximating-family-is-directed (s x)
-      ⦅1⦆ = (continuous-∐-≡ 𝓔 𝓓 𝕣 δ) ⁻¹
-      ⦅2⦆ = ap r (approximating-family-∐-≡ (s x))
+      ⦅1⦆ = (continuous-∐-＝ 𝓔 𝓓 𝕣 δ) ⁻¹
+      ⦅2⦆ = ap r (approximating-family-∐-＝ (s x))
       ⦅3⦆ = s-section-of-r x
 
  continuity-of-dcpo-preserved-by-continuous-retract : is-continuous-dcpo 𝓔

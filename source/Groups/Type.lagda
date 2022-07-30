@@ -7,7 +7,7 @@ UF.SIP-Examples.
 
 {-# OPTIONS --without-K --safe --auto-inline --exact-split #-}
 
-module Groups.Groups where
+module Groups.Type where
 open import MLTT.Spartan
 open import UF.Base
 open import UF.Subsingletons
@@ -48,7 +48,68 @@ group-axioms X _·_ = is-set X
                    × (Σ e ꞉ X
                     , left-neutral  e _·_
                     × right-neutral e _·_
-                    × ((x : X) → Σ x' ꞉ X , (x' · x ≡ e) × (x · x' ≡ e)))
+                    × ((x : X) → Σ x' ꞉ X , (x' · x ＝ e) × (x · x' ＝ e)))
+
+\end{code}
+
+Added by Ettore Aldrovandi (ealdrovandi@fsu.edu), July 25, 2022
+
+Direct proof that the "group-axioms" is a proposition.
+
+\begin{code}
+
+group-axioms-is-prop : funext 𝓤 𝓤
+                     → (X : 𝓤 ̇)
+                     → (_·_ : group-structure X)
+                     → is-prop (group-axioms X _·_)
+group-axioms-is-prop fe X _·_ s = γ s
+  where
+    i : is-set X
+    i = pr₁ s
+
+    α : is-prop (associative _·_)
+    α = Π-is-prop fe
+                  (λ x → Π-is-prop fe
+                                   (λ y →  Π-is-prop fe
+                                                     (λ z → i)))
+
+    β : is-prop ( Σ e ꞉ X , left-neutral e _·_ ×
+                            right-neutral e _·_ ×
+                            ((x : X) → Σ x' ꞉ X , (x' · x ＝ e) × (x · x' ＝ e)) )
+    β (e , l , _ , _) (e' , _ , r , _) = to-subtype-＝ η p
+      where
+        p : e ＝ e'
+        p = e      ＝⟨ (r e) ⁻¹ ⟩
+            e · e' ＝⟨ l e' ⟩
+            e' ∎
+
+        η : (x : X) → is-prop (left-neutral x _·_ ×
+                               right-neutral x _·_ ×
+                               ((x₁ : X) → Σ x' ꞉ X , (x' · x₁ ＝ x) × (x₁ · x' ＝ x)))
+        η x t = ε t
+          where
+            ε : is-prop (left-neutral x _·_ ×
+                               right-neutral x _·_ ×
+                               ((x₁ : X) → Σ x' ꞉ X , (x' · x₁ ＝ x) × (x₁ · x' ＝ x)))
+            ε = ×-is-prop (Π-is-prop fe (λ _ → i))
+                (×-is-prop (Π-is-prop fe (λ _ → i))
+                 (Π-is-prop fe ε'))
+                    where
+                      ε' : (x₁ : X) → is-prop (Σ x' ꞉ X , (x' · x₁ ＝ x) × (x₁ · x' ＝ x))
+                      ε' x₁ (u , v) (u' , v') = to-subtype-＝ (λ x₂ → ×-is-prop i i) q
+                        where
+                          q : u ＝ u'
+                          q = u             ＝⟨ (pr₁ (pr₂ t) u) ⁻¹ ⟩
+                              u · x         ＝⟨ ap (λ a → u · a) (pr₂ v') ⁻¹ ⟩
+                              u · (x₁ · u') ＝⟨ (pr₁ (pr₂ s) _ _ _) ⁻¹ ⟩
+                              (u · x₁) · u' ＝⟨ ap (λ a → a · u') (pr₁ v) ⟩
+                              x · u'        ＝⟨ pr₁ t u' ⟩
+                              u' ∎
+
+    γ : is-prop (group-axioms X _·_)
+    γ = ×-is-prop (being-set-is-prop fe)
+        (×-is-prop α β)
+
 
 Group-structure : 𝓤 ̇ → 𝓤 ̇
 Group-structure X = Σ _·_ ꞉ group-structure X , (group-axioms X _·_)
@@ -66,17 +127,17 @@ monoid-axioms-of (X , _·_ , i , a , e , l , r , ι) = i , l , r , a
 inv-lemma : (X : 𝓤 ̇ ) (_·_ : X → X → X) (e : X)
           → monoid-axioms X (_·_ , e)
           → (x y z : X)
-          → (y · x) ≡ e
-          → (x · z) ≡ e
-          → y ≡ z
+          → (y · x) ＝ e
+          → (x · z) ＝ e
+          → y ＝ z
 
 inv-lemma X _·_  e (s , l , r , a) x y z q p =
 
-   y             ≡⟨ (r y)⁻¹ ⟩
-   (y · e)       ≡⟨ ap (y ·_) (p ⁻¹) ⟩
-   (y · (x · z)) ≡⟨ (a y x z)⁻¹ ⟩
-   ((y · x) · z) ≡⟨ ap (_· z) q ⟩
-   (e · z)       ≡⟨ l z ⟩
+   y             ＝⟨ (r y)⁻¹ ⟩
+   (y · e)       ＝⟨ ap (y ·_) (p ⁻¹) ⟩
+   (y · (x · z)) ＝⟨ (a y x z)⁻¹ ⟩
+   ((y · x) · z) ＝⟨ ap (_· z) q ⟩
+   (e · z)       ＝⟨ l z ⟩
    z             ∎
 
 multiplication : (G : Group 𝓤) → ⟨ G ⟩ → ⟨ G ⟩ → ⟨ G ⟩
@@ -93,32 +154,32 @@ unit (X , _·_ , i , a , e , l , r , u) = e
 syntax unit G = e⟨ G ⟩
 
 unit-left : (G : Group 𝓤) (x : ⟨ G ⟩)
-          → unit G ·⟨ G ⟩ x ≡ x
+          → unit G ·⟨ G ⟩ x ＝ x
 unit-left (X , _·_ , i , a , e , l , r , u) = l
 
 
 unit-right : (G : Group 𝓤) (x : ⟨ G ⟩)
-           → x ·⟨ G ⟩ unit G ≡ x
+           → x ·⟨ G ⟩ unit G ＝ x
 unit-right (X , _·_ , i , a , e , l , r , u) = r
 
 
 assoc : (G : Group 𝓤) (x y z : ⟨ G ⟩)
-      → (x ·⟨ G ⟩ y) ·⟨ G ⟩ z ≡ x ·⟨ G ⟩ (y ·⟨ G ⟩ z)
+      → (x ·⟨ G ⟩ y) ·⟨ G ⟩ z ＝ x ·⟨ G ⟩ (y ·⟨ G ⟩ z)
 assoc (X , _·_ , i , a , e , l , r , ι) = a
 
 inv : (G : Group 𝓤) → ⟨ G ⟩ → ⟨ G ⟩
 inv (X , _·_ , i , a , e , l , r , ι) x = pr₁ (ι x)
 
 inv-left : (G : Group 𝓤) (x : ⟨ G ⟩)
-         → inv G x ·⟨ G ⟩ x ≡ unit G
+         → inv G x ·⟨ G ⟩ x ＝ unit G
 inv-left (X , _·_ , i , a , e , l , r , ι) x = pr₁ (pr₂ (ι x))
 
 inv-right : (G : Group 𝓤) (x : ⟨ G ⟩)
-          → x ·⟨ G ⟩ inv G x ≡ unit G
+          → x ·⟨ G ⟩ inv G x ＝ unit G
 inv-right (X , _·_ , i , a , e , l , r , ι) x = pr₂ (pr₂ (ι x))
 
 is-hom : (G : Group 𝓤) (H : Group 𝓥) → (⟨ G ⟩ → ⟨ H ⟩) → 𝓤 ⊔ 𝓥 ̇
-is-hom G H f = ∀ {x y} → f (x ·⟨ G ⟩ y) ≡ f x ·⟨ H ⟩ f y
+is-hom G H f = ∀ {x y} → f (x ·⟨ G ⟩ y) ＝ f x ·⟨ H ⟩ f y
 
 id-is-hom : (G : Group 𝓤) → is-hom G G id
 id-is-hom G = refl
@@ -126,8 +187,8 @@ id-is-hom G = refl
 ∘-is-hom : (F : Group 𝓤) (G : Group 𝓥) (H : Group 𝓦)
            (f : ⟨ F ⟩ → ⟨ G ⟩) (g : ⟨ G ⟩ → ⟨ H ⟩)
          → is-hom F G f → is-hom G H g → is-hom F H (g ∘ f)
-∘-is-hom F G H f g h k {x} {y} = g (f (x ·⟨ F ⟩ y))     ≡⟨ ap g h ⟩
-                                 g (f x ·⟨ G ⟩ f y)     ≡⟨ k ⟩
+∘-is-hom F G H f g h k {x} {y} = g (f (x ·⟨ F ⟩ y))     ＝⟨ ap g h ⟩
+                                 g (f x ·⟨ G ⟩ f y)     ＝⟨ k ⟩
                                  g (f x) ·⟨ H ⟩ g (f y) ∎
 
 being-hom-is-prop : Fun-Ext
@@ -138,20 +199,20 @@ being-hom-is-prop fe G H f = Π-is-prop' fe
                                       (λ y → group-is-set H))
 
 preserves-unit : (G : Group 𝓤) (H : Group 𝓥) → (⟨ G ⟩ → ⟨ H ⟩) → 𝓥 ̇
-preserves-unit G H f = f (unit G) ≡ unit H
+preserves-unit G H f = f (unit G) ＝ unit H
 
 idempotent-is-unit : (G : Group 𝓤) (x : ⟨ G ⟩)
-                   → x ·⟨ G ⟩ x ≡ x
-                   → x ≡ unit G
+                   → x ·⟨ G ⟩ x ＝ x
+                   → x ＝ unit G
 
 idempotent-is-unit G x p = γ
  where
   x' = inv G x
-  γ = x                        ≡⟨ (unit-left G x)⁻¹ ⟩
-      unit G ·⟨ G ⟩ x          ≡⟨ (ap (λ - → - ·⟨ G ⟩ x) (inv-left G x))⁻¹ ⟩
-      (x' ·⟨ G ⟩ x) ·⟨ G ⟩ x   ≡⟨ assoc G x' x x ⟩
-      x' ·⟨ G ⟩ (x ·⟨ G ⟩ x)   ≡⟨ ap (λ - → x' ·⟨ G ⟩ -) p ⟩
-      x' ·⟨ G ⟩ x              ≡⟨ inv-left G x ⟩
+  γ = x                        ＝⟨ (unit-left G x)⁻¹ ⟩
+      unit G ·⟨ G ⟩ x          ＝⟨ (ap (λ - → - ·⟨ G ⟩ x) (inv-left G x))⁻¹ ⟩
+      (x' ·⟨ G ⟩ x) ·⟨ G ⟩ x   ＝⟨ assoc G x' x x ⟩
+      x' ·⟨ G ⟩ (x ·⟨ G ⟩ x)   ＝⟨ ap (λ - → x' ·⟨ G ⟩ -) p ⟩
+      x' ·⟨ G ⟩ x              ＝⟨ inv-left G x ⟩
       unit G                   ∎
 
 homs-preserve-unit : (G : Group 𝓤) (H : Group 𝓥) (f : ⟨ G ⟩ → ⟨ H ⟩)
@@ -162,43 +223,43 @@ homs-preserve-unit G H f m = idempotent-is-unit H e p
  where
   e = f (unit G)
 
-  p = e ·⟨ H ⟩ e               ≡⟨ m ⁻¹ ⟩
-      f (unit G ·⟨ G ⟩ unit G) ≡⟨ ap f (unit-left G (unit G)) ⟩
+  p = e ·⟨ H ⟩ e               ＝⟨ m ⁻¹ ⟩
+      f (unit G ·⟨ G ⟩ unit G) ＝⟨ ap f (unit-left G (unit G)) ⟩
       e                        ∎
 
 inv-Lemma : (G : Group 𝓤) (x y z : ⟨ G ⟩)
-          → (y ·⟨ G ⟩ x) ≡ unit G
-          → (x ·⟨ G ⟩ z) ≡ unit G
-          → y ≡ z
+          → (y ·⟨ G ⟩ x) ＝ unit G
+          → (x ·⟨ G ⟩ z) ＝ unit G
+          → y ＝ z
 inv-Lemma G = inv-lemma ⟨ G ⟩ (multiplication G) (unit G) (monoid-axioms-of G)
 
 
 one-left-inv : (G : Group 𝓤) (x x' : ⟨ G ⟩)
-             → (x' ·⟨ G ⟩ x) ≡ unit G
-             → x' ≡ inv G x
+             → (x' ·⟨ G ⟩ x) ＝ unit G
+             → x' ＝ inv G x
 
 one-left-inv G x x' p = inv-Lemma G x x' (inv G x) p (inv-right G x)
 
 one-right-inv : (G : Group 𝓤) (x x' : ⟨ G ⟩)
-              → (x ·⟨ G ⟩ x') ≡ unit G
-              → x' ≡ inv G x
+              → (x ·⟨ G ⟩ x') ＝ unit G
+              → x' ＝ inv G x
 
 one-right-inv G x x' p = (inv-Lemma G x (inv G x) x' (inv-left G x) p)⁻¹
 
 preserves-inv : (G : Group 𝓤) (H : Group 𝓥) → (⟨ G ⟩ → ⟨ H ⟩) → 𝓤 ⊔ 𝓥 ̇
-preserves-inv G H f = (x : ⟨ G ⟩) → f (inv G x) ≡ inv H (f x)
+preserves-inv G H f = (x : ⟨ G ⟩) → f (inv G x) ＝ inv H (f x)
 
 homs-preserve-invs : (G : Group 𝓤) (H : Group 𝓥) (f : ⟨ G ⟩ → ⟨ H ⟩)
                    → is-hom G H f
                    → preserves-inv G H f
 homs-preserve-invs G H f m x = γ
  where
-  p = f (inv G x) ·⟨ H ⟩ f x ≡⟨ m ⁻¹ ⟩
-      f (inv G x ·⟨ G ⟩ x)   ≡⟨ ap f (inv-left G x) ⟩
-      f (unit G)             ≡⟨ homs-preserve-unit G H f m ⟩
+  p = f (inv G x) ·⟨ H ⟩ f x ＝⟨ m ⁻¹ ⟩
+      f (inv G x ·⟨ G ⟩ x)   ＝⟨ ap f (inv-left G x) ⟩
+      f (unit G)             ＝⟨ homs-preserve-unit G H f m ⟩
       unit H                 ∎
 
-  γ : f (inv G x) ≡ inv H (f x)
+  γ : f (inv G x) ＝ inv H (f x)
   γ = one-left-inv H (f x) (f (inv G x)) p
 
 
@@ -220,9 +281,9 @@ inverses-are-homs G H f i h {x} {y} = γ
   ε : g ∘ f ∼ id
   ε = inverses-are-retractions f i
 
-  γ = g (x ·⟨ H ⟩ y)             ≡⟨ ap₂ (λ x y → g (x ·⟨ H ⟩ y)) ((η x)⁻¹) ((η y)⁻¹) ⟩
-      g (f (g x) ·⟨ H ⟩ f (g y)) ≡⟨ ap g (h ⁻¹) ⟩
-      g (f (g x ·⟨ G ⟩ g y))     ≡⟨ ε _ ⟩
+  γ = g (x ·⟨ H ⟩ y)             ＝⟨ ap₂ (λ x y → g (x ·⟨ H ⟩ y)) ((η x)⁻¹) ((η y)⁻¹) ⟩
+      g (f (g x) ·⟨ H ⟩ f (g y)) ＝⟨ ap g (h ⁻¹) ⟩
+      g (f (g x ·⟨ G ⟩ g y))     ＝⟨ ε _ ⟩
       g x ·⟨ G ⟩ g y             ∎
 
 \end{code}
@@ -280,7 +341,7 @@ transport-Group-structure {𝓤} {𝓥} (X , _·_ , i , a , e , l , r , ι)
    ε : g ∘ f ∼ id
    ε = inverses-are-retractions f f-is-equiv
 
-  f-is-hom : {y y' : Y} → f (g (f y · f y')) ≡ f y · f y'
+  f-is-hom : {y y' : Y} → f (g (f y · f y')) ＝ f y · f y'
   f-is-hom {y} {y'} = η (f y · f y')
 
   _•_ : Y → Y → Y
@@ -293,35 +354,35 @@ transport-Group-structure {𝓤} {𝓥} (X , _·_ , i , a , e , l , r , ι)
   e' = g e
 
   a' : associative _•_
-  a' y₀ y₁ y₂ = g (f (g (f y₀ · f y₁)) · f y₂)         ≡⟨ ap g (f-is-hom ⁻¹) ⟩
-                g (f (g (f (g (f y₀ · f y₁)) · f y₂))) ≡⟨ ε _ ⟩
-                g (f (g (f y₀ · f y₁)) · f y₂)         ≡⟨ ap (λ - → g (- · f y₂)) (η _) ⟩
-                g ((f y₀ · f y₁) · f y₂)               ≡⟨ ap g (a _ _ _) ⟩
-                g (f y₀ · (f y₁ · f y₂))               ≡⟨ ap (λ - → g (f y₀ · -)) ((η _)⁻¹) ⟩
+  a' y₀ y₁ y₂ = g (f (g (f y₀ · f y₁)) · f y₂)         ＝⟨ ap g (f-is-hom ⁻¹) ⟩
+                g (f (g (f (g (f y₀ · f y₁)) · f y₂))) ＝⟨ ε _ ⟩
+                g (f (g (f y₀ · f y₁)) · f y₂)         ＝⟨ ap (λ - → g (- · f y₂)) (η _) ⟩
+                g ((f y₀ · f y₁) · f y₂)               ＝⟨ ap g (a _ _ _) ⟩
+                g (f y₀ · (f y₁ · f y₂))               ＝⟨ ap (λ - → g (f y₀ · -)) ((η _)⁻¹) ⟩
                 g (f y₀ · f (g (f y₁ · f y₂)))         ∎
 
   l' : left-neutral e' _•_
-  l' y = g (f (g e) · f y) ≡⟨ ap (λ - → g (- · f y)) (η e) ⟩
-         g (e · f y)       ≡⟨ ap g (l (f y)) ⟩
-         g (f y)           ≡⟨ ε y ⟩
+  l' y = g (f (g e) · f y) ＝⟨ ap (λ - → g (- · f y)) (η e) ⟩
+         g (e · f y)       ＝⟨ ap g (l (f y)) ⟩
+         g (f y)           ＝⟨ ε y ⟩
          y                 ∎
 
   r' : right-neutral e' _•_
-  r' y = g (f y · f (g e)) ≡⟨ ap (λ - → g (f y · -)) (η e) ⟩
-         g (f y · e)       ≡⟨ ap g (r (f y)) ⟩
-         g (f y)           ≡⟨ ε y ⟩
+  r' y = g (f y · f (g e)) ＝⟨ ap (λ - → g (f y · -)) (η e) ⟩
+         g (f y · e)       ＝⟨ ap g (r (f y)) ⟩
+         g (f y)           ＝⟨ ε y ⟩
          y                 ∎
 
 
-  ι' : (y : Y) → Σ y' ꞉ Y , (y' • y ≡ e') × (y • y' ≡ e')
+  ι' : (y : Y) → Σ y' ꞉ Y , (y' • y ＝ e') × (y • y' ＝ e')
   ι' y = g (pr₁ (ι (f y))) ,
 
-        (g (f (g (pr₁ (ι (f y)))) · f y) ≡⟨ ap (λ - → g (- · f y)) (η _) ⟩
-         g (pr₁ (ι (f y)) · f y)         ≡⟨ ap g (pr₁ (pr₂ (ι (f y)))) ⟩
+        (g (f (g (pr₁ (ι (f y)))) · f y) ＝⟨ ap (λ - → g (- · f y)) (η _) ⟩
+         g (pr₁ (ι (f y)) · f y)         ＝⟨ ap g (pr₁ (pr₂ (ι (f y)))) ⟩
          g e                             ∎) ,
 
-        (g (f y · f (g (pr₁ (ι (f y))))) ≡⟨ ap (λ - → g (f y · -)) (η _) ⟩
-         g (f y · id (pr₁ (ι (f y))))    ≡⟨ ap g (pr₂ (pr₂ (ι (f y)))) ⟩
+        (g (f y · f (g (pr₁ (ι (f y))))) ＝⟨ ap (λ - → g (f y · -)) (η _) ⟩
+         g (f y · id (pr₁ (ι (f y))))    ＝⟨ ap g (pr₂ (pr₂ (ι (f y)))) ⟩
          g e                             ∎)
 
 
@@ -372,20 +433,20 @@ boolean-groups-are-abelian' : {X : 𝓤 ̇ } (_·_ : X → X → X) (e : X)
                             → associative _·_
                             → left-neutral e _·_
                             → right-neutral e _·_
-                            → ((x : X) → x · x ≡ e)
+                            → ((x : X) → x · x ＝ e)
                             → commutative _·_
 boolean-groups-are-abelian' _·_  e a ln rn b x y =
-  xy                  ≡⟨ ap (x ·_) ((ln y)⁻¹) ⟩
-  x · (e · y)         ≡⟨ ap (λ - → x · (- · y)) ((b xy)⁻¹) ⟩
-  x · ((xy · xy) · y) ≡⟨ (a x (xy · xy) y)⁻¹ ⟩
-  (x · (xy · xy)) · y ≡⟨ ap (_· y) ((a x xy xy)⁻¹) ⟩
-  ((x · xy) · xy) · y ≡⟨ ap (λ - → (- · xy) · y) ((a x x y)⁻¹) ⟩
-  ((xx · y) · xy) · y ≡⟨ ap (λ - → (( - · y) · xy) · y) (b x) ⟩
-  ((e · y) · xy) · y  ≡⟨ ap (λ - → (- · xy) · y) (ln y) ⟩
-  (y · xy) · y        ≡⟨ a y xy y ⟩
-  y · (xy · y)        ≡⟨ ap (y ·_) (a x y y) ⟩
-  y · (x · yy)        ≡⟨ ap (λ - → y · (x · -)) (b y) ⟩
-  y · (x · e)         ≡⟨ ap (y ·_) (rn x) ⟩
+  xy                  ＝⟨ ap (x ·_) ((ln y)⁻¹) ⟩
+  x · (e · y)         ＝⟨ ap (λ - → x · (- · y)) ((b xy)⁻¹) ⟩
+  x · ((xy · xy) · y) ＝⟨ (a x (xy · xy) y)⁻¹ ⟩
+  (x · (xy · xy)) · y ＝⟨ ap (_· y) ((a x xy xy)⁻¹) ⟩
+  ((x · xy) · xy) · y ＝⟨ ap (λ - → (- · xy) · y) ((a x x y)⁻¹) ⟩
+  ((xx · y) · xy) · y ＝⟨ ap (λ - → (( - · y) · xy) · y) (b x) ⟩
+  ((e · y) · xy) · y  ＝⟨ ap (λ - → (- · xy) · y) (ln y) ⟩
+  (y · xy) · y        ＝⟨ a y xy y ⟩
+  y · (xy · y)        ＝⟨ ap (y ·_) (a x y y) ⟩
+  y · (x · yy)        ＝⟨ ap (λ - → y · (x · -)) (b y) ⟩
+  y · (x · e)         ＝⟨ ap (y ·_) (rn x) ⟩
   yx                  ∎
 
  where
@@ -395,10 +456,10 @@ boolean-groups-are-abelian' _·_  e a ln rn b x y =
   yy = y · y
 
 is-boolean : Group 𝓤 → 𝓤 ̇
-is-boolean G = (x : ⟨ G ⟩) → x ·⟨ G ⟩ x ≡ e⟨ G ⟩
+is-boolean G = (x : ⟨ G ⟩) → x ·⟨ G ⟩ x ＝ e⟨ G ⟩
 
 is-abelian : Group 𝓤 → 𝓤 ̇
-is-abelian G = (x y : ⟨ G ⟩) → x ·⟨ G ⟩ y ≡ y ·⟨ G ⟩ x
+is-abelian G = (x y : ⟨ G ⟩) → x ·⟨ G ⟩ y ＝ y ·⟨ G ⟩ x
 
 boolean-groups-are-abelian : (G : Group 𝓤)
                            → is-boolean G

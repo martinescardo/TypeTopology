@@ -27,7 +27,7 @@ abstract
   DN-funext-gives-funext : {𝓤 𝓥 : Universe} → DN-funext 𝓤 𝓥 → funext 𝓤 𝓥
   DN-funext-gives-funext dnfe {X} {A} f g = γ
    where
-    h : f ≡ g → f ∼ g
+    h : f ＝ g → f ∼ g
     h = MGS.FunExt-from-Univalence.happly f g
 
     a : is-equiv h

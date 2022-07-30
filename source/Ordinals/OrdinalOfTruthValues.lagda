@@ -26,7 +26,7 @@ open import Ordinals.Type
 Ωₒ = Ω 𝓤 , _≺_ , pv , w , e , t
  where
   _≺_ : Ω 𝓤 → Ω 𝓤 → 𝓤 ⁺ ̇
-  p ≺ q = (p ≡ ⊥) × (q ≡ ⊤)
+  p ≺ q = (p ＝ ⊥) × (q ＝ ⊤)
 
   pv : is-prop-valued _≺_
   pv p q = ×-is-prop (Ω-is-set (fe 𝓤 𝓤) pe) (Ω-is-set (fe 𝓤 𝓤) pe)
@@ -46,10 +46,10 @@ open import Ordinals.Type
   e : is-extensional _≺_
   e p q f g = Ω-ext pe (fe 𝓤 𝓤) φ ψ
    where
-    φ : p ≡ ⊤ → q ≡ ⊤
+    φ : p ＝ ⊤ → q ＝ ⊤
     φ a = pr₂ (f ⊥ (refl , a))
 
-    ψ : q ≡ ⊤ → p ≡ ⊤
+    ψ : q ＝ ⊤ → p ＝ ⊤
     ψ b = pr₂ (g ⊥ (refl , b))
 
   t : is-transitive _≺_

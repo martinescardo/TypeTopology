@@ -93,7 +93,7 @@ Ordinal-Of-Ordinals-Has-Small-Suprema-is-prop =
                                 × ((γ : Ordinal 𝓤) → ((i : I) → α i ⊴ γ)
                                                    → β ⊴ γ))
    h I α (β , β-is-ub , β-is-lb) (β' , β'-is-ub , β'-is-lb) =
-    to-subtype-≡ (λ β → ×-is-prop
+    to-subtype-＝ (λ β → ×-is-prop
                          (Π-is-prop  fe' (λ i   → ⊴-is-prop-valued (α i) β))
                          (Π₂-is-prop fe' (λ γ _ → ⊴-is-prop-valued β     γ)))
                  (⊴-antisym β β' (β-is-lb β' β'-is-ub) (β'-is-lb β β-is-ub))
@@ -127,7 +127,7 @@ unquotiented type Σ i ꞉ I , ⟨ α i ⟩.
   Σα = Σ i ꞉ I , ⟨ α i ⟩
 
   _≈_ : Σα → Σα → 𝓤 ⁺ ̇
-  (i , x) ≈ (j , y) = (α i ↓ x) ≡ (α j ↓ y)
+  (i , x) ≈ (j , y) = (α i ↓ x) ＝ (α j ↓ y)
 
   _≺_ : Σα → Σα → 𝓤 ⁺ ̇
   (i , x) ≺ (j , y) = (α i ↓ x) ⊲ (α j ↓ y)
@@ -146,7 +146,7 @@ unquotiented type Σ i ꞉ I , ⟨ α i ⟩.
     wf P IH (i , x) = lemma (α i ↓ x) i x refl
      where
       P̃ : Ordinal 𝓤 → 𝓤 ⁺ ̇
-      P̃ β = (i : I) (x : ⟨ α i ⟩) → β ≡ (α i ↓ x) → P (i , x)
+      P̃ β = (i : I) (x : ⟨ α i ⟩) → β ＝ (α i ↓ x) → P (i , x)
       lemma : (β : Ordinal 𝓤) → P̃ β
       lemma = transfinite-induction _⊲_ ⊲-is-well-founded P̃ claim
        where
@@ -168,7 +168,7 @@ The following lemma makes it clear why we eventually pass to the quotient.
                            → p ≈ q
   ≺-is-extensional-up-to-≈ (i , x) (j , y) hyp₁ hyp₂ = e
    where
-    e : (α i ↓ x) ≡ (α j ↓ y)
+    e : (α i ↓ x) ＝ (α j ↓ y)
     e = ⊲-is-extensional (α i ↓ x) (α j ↓ y) ⦅1⦆ ⦅2⦆
      where
       ⦅1⦆ : (β : Ordinal 𝓤) → β ⊲ (α i ↓ x) → β ⊲ (α j ↓ y)
@@ -183,7 +183,7 @@ The following lemma makes it clear why we eventually pass to the quotient.
           l = pr₂ p
           claim₁ : (α i ↓ x') ⊲ (α j ↓ y)
           claim₁ = hyp₁ (i , x') (↓-preserves-order (α i) x' x l)
-          claim₂ : ((α i ↓ x) ↓ p) ≡ (α i ↓ x')
+          claim₂ : ((α i ↓ x) ↓ p) ＝ (α i ↓ x')
           claim₂ = iterated-↓ (α i) x x' l
       ⦅2⦆ : (β : Ordinal 𝓤) → β ⊲ (α j ↓ y) → β ⊲ (α i ↓ x)
       ⦅2⦆ β (p , refl) = v
@@ -197,7 +197,7 @@ The following lemma makes it clear why we eventually pass to the quotient.
           l = pr₂ p
           claim₁ : (α j ↓ y') ⊲ (α i ↓ x)
           claim₁ = hyp₂ (j , y') (↓-preserves-order (α j) y' y l)
-          claim₂ : ((α j ↓ y) ↓ p) ≡ (α j ↓ y')
+          claim₂ : ((α j ↓ y) ↓ p) ＝ (α j ↓ y')
           claim₂ = iterated-↓ (α j) y y' l
 
 \end{code}
@@ -224,9 +224,9 @@ prepare to prove that it will be the supremum of α.
     x' = pr₁ p
     l : x' ≺⟨ α i ⟩ x
     l = pr₂ p
-    eq : (α j ↓ y) ≡ (α i ↓ x')
-    eq = (α j ↓ y)       ≡⟨ e ⟩
-         ((α i ↓ x) ↓ p) ≡⟨ iterated-↓ (α i) x x' l ⟩
+    eq : (α j ↓ y) ＝ (α i ↓ x')
+    eq = (α j ↓ y)       ＝⟨ e ⟩
+         ((α i ↓ x) ↓ p) ＝⟨ iterated-↓ (α i) x x' l ⟩
          (α i ↓ x')      ∎
 
 
@@ -238,7 +238,7 @@ prepare to prove that it will be the supremum of α.
    f : (i : I) → ⟨ α i ⟩ → ⟨ β ⟩
    f i x = pr₁ (β-is-upper-bound i) x
 
-   f-key-property : (i : I) (x : ⟨ α i ⟩) → α i ↓ x ≡ β ↓ (f i x)
+   f-key-property : (i : I) (x : ⟨ α i ⟩) → α i ↓ x ＝ β ↓ (f i x)
    f-key-property i x =
     pr₂ (⊴-gives-≼ (α i) β (β-is-upper-bound i) (α i ↓ x) (x , refl))
 
@@ -248,12 +248,12 @@ prepare to prove that it will be the supremum of α.
    β-is-upper-bound-≼ : (i : I) → α i ≼ β
    β-is-upper-bound-≼ i = ⊴-gives-≼ (α i) β (β-is-upper-bound i)
 
-   f̃-respects-≈ : {p q : Σα} → p ≈ q → f̃ p ≡ f̃ q
+   f̃-respects-≈ : {p q : Σα} → p ≈ q → f̃ p ＝ f̃ q
    f̃-respects-≈ {(i , x)} {(j , y)} e = ↓-lc β (f̃ (i , x)) (f̃ (j , y)) eq
     where
-     eq = (β ↓ f̃ (i , x)) ≡⟨ (f-key-property i x) ⁻¹ ⟩
-          (α i ↓ x)       ≡⟨ e ⟩
-          (α j ↓ y)       ≡⟨ f-key-property j y ⟩
+     eq = (β ↓ f̃ (i , x)) ＝⟨ (f-key-property i x) ⁻¹ ⟩
+          (α i ↓ x)       ＝⟨ e ⟩
+          (α j ↓ y)       ＝⟨ f-key-property j y ⟩
           (β ↓ f̃ (j , y)) ∎
 
    f̃-is-order-preserving : (p q : Σα) → p ≺ q → f̃ p ≺⟨ β ⟩ f̃ q
@@ -265,10 +265,10 @@ prepare to prove that it will be the supremum of α.
 
    f̃-is-initial-segment : (p : Σα) (b : ⟨ β ⟩)
                         → b ≺⟨ β ⟩ f̃ p
-                        → Σ q ꞉ Σα , (q ≺ p) × (f̃ q ≡ b)
+                        → Σ q ꞉ Σα , (q ≺ p) × (f̃ q ＝ b)
    f̃-is-initial-segment (i , x) b l = (i , x') , u , v
     where
-     lemma : Σ x' ꞉ ⟨ α i ⟩ , (x' ≺⟨ α i ⟩ x) × (f i x' ≡ b)
+     lemma : Σ x' ꞉ ⟨ α i ⟩ , (x' ≺⟨ α i ⟩ x) × (f i x' ＝ b)
      lemma = simulations-are-initial-segments (α i) β
               (f i) (pr₂ (β-is-upper-bound i))
               x b l
@@ -279,7 +279,7 @@ prepare to prove that it will be the supremum of α.
 
      u : (α i ↓ x') ⊲ (α i ↓ x)
      u = ↓-preserves-order (α i) x' x x'-below-x
-     v : f̃ (i , x') ≡ b
+     v : f̃ (i , x') ＝ b
      v = pr₂ (pr₂ lemma)
 
 \end{code}
@@ -303,7 +303,7 @@ induced order on Σα.
   p ≺[Ω] q = (p ≺ q , ≺-is-prop-valued p q)
 
   ≺-congruence : {p q p' q' : Σα} → p ≈ p' → q ≈ q'
-               → (p ≺[Ω] q) ≡ (p' ≺[Ω] q')
+               → (p ≺[Ω] q) ＝ (p' ≺[Ω] q')
   ≺-congruence {(i , x)} {(j , y)} {(i' , x')} {(j' , y')} e₁ e₂ =
    Ω-extensionality fe' pe' ⦅1⦆ ⦅2⦆
     where
@@ -322,14 +322,14 @@ induced order on Σα.
  _≺/_ : α/ → α/ → 𝓤 ⁺ ̇
  x ≺/ y = (x ≺/[Ω] y) holds
 
- ≺/-≡-≺ : {p q : Σα} → [ p ] ≺/ [ q ] ≡ p ≺ q
- ≺/-≡-≺ {p} {q} = ap pr₁ (extension-rel-triangle₂ ≋ _≺[Ω]_ ≺-congruence p q)
+ ≺/-＝-≺ : {p q : Σα} → [ p ] ≺/ [ q ] ＝ p ≺ q
+ ≺/-＝-≺ {p} {q} = ap pr₁ (extension-rel-triangle₂ ≋ _≺[Ω]_ ≺-congruence p q)
 
  ≺/-to-≺ : {p q : Σα} → [ p ] ≺/ [ q ] → p ≺ q
- ≺/-to-≺ = Idtofun ≺/-≡-≺
+ ≺/-to-≺ = Idtofun ≺/-＝-≺
 
  ≺-to-≺/ : {p q : Σα} → p ≺ q → [ p ] ≺/ [ q ]
- ≺-to-≺/ = back-Idtofun ≺/-≡-≺
+ ≺-to-≺/ = back-Idtofun ≺/-＝-≺
 
  ≺/-is-prop-valued : is-prop-valued _≺/_
  ≺/-is-prop-valued x y = holds-is-prop (x ≺/[Ω] y)
@@ -350,7 +350,7 @@ induced order on Σα.
    γ : (p q : Σα)
      → ((z : α/) → z ≺/ [ p ] → z ≺/ [ q ])
      → ((z : α/) → z ≺/ [ q ] → z ≺/ [ p ])
-     → [ p ] ≡ [ q ]
+     → [ p ] ＝ [ q ]
    γ p q u v = η/-identifies-related-points ≋ e
     where
      e : p ≈ q
@@ -406,7 +406,7 @@ Next, we show that the quotient α/ is the least upper bound of α.
      init-seg x = /-induction ≋ (λ y → Π-is-prop fe' λ _ → ∃-is-prop) claim
       where
        claim : (p : Σα) → [ p ] ≺/ [ i , x ]
-             → ∃ y ꞉ ⟨ α i ⟩ , (y ≺⟨ α i ⟩ x) × ([ i , y ] ≡ [ p ])
+             → ∃ y ꞉ ⟨ α i ⟩ , (y ≺⟨ α i ⟩ x) × ([ i , y ] ＝ [ p ])
        claim p l = ∣ y , k , η/-identifies-related-points ≋ e ∣
         where
          abstract
@@ -427,8 +427,8 @@ Next, we show that the quotient α/ is the least upper bound of α.
    open lower-bound-of-upper-bounds-proof β β-is-ub
    f/ : α/ → ⟨ β ⟩
    f/ = mediating-map/ ≋ (underlying-type-is-set fe β) f̃ f̃-respects-≈
-   f/-≡-f̃ : {p : Σα} → f/ [ p ] ≡ f̃ p
-   f/-≡-f̃ {p} = universality-triangle/ ≋ (underlying-type-is-set fe β)
+   f/-＝-f̃ : {p : Σα} → f/ [ p ] ＝ f̃ p
+   f/-＝-f̃ {p} = universality-triangle/ ≋ (underlying-type-is-set fe β)
                  f̃ f̃-respects-≈ p
    f/-is-order-preserving : is-order-preserving α/-Ord β f/
    f/-is-order-preserving =
@@ -438,7 +438,7 @@ Next, we show that the quotient α/ is the least upper bound of α.
       prp x y = Π-is-prop fe' (λ _ → Prop-valuedness β (f/ x) (f/ y))
       ρ : (p q : Σα) → [ p ] ≺/ [ q ] → f/ [ p ] ≺⟨ β ⟩ f/ [ q ]
       ρ p q l = transport₂⁻¹ (λ -₁ -₂ → -₁ ≺⟨ β ⟩ -₂)
-                 f/-≡-f̃ f/-≡-f̃
+                 f/-＝-f̃ f/-＝-f̃
                  (f̃-is-order-preserving p q (≺/-to-≺ l))
    f/-is-simulation : is-simulation α/-Ord β f/
    f/-is-simulation = simulation-unprime pt α/-Ord β f/ σ
@@ -451,24 +451,24 @@ Next, we show that the quotient α/ is the least upper bound of α.
         where
          prp : (x : α/)
              → is-prop ((y : ⟨ β ⟩) → y ≺⟨ β ⟩ f/ x
-                                    → ∃ x' ꞉ α/ , (x' ≺/ x) × (f/ x' ≡ y))
+                                    → ∃ x' ꞉ α/ , (x' ≺/ x) × (f/ x' ＝ y))
          prp x = Π₂-is-prop fe' (λ _ _ → ∃-is-prop)
          ρ : (p : Σα) (y : ⟨ β ⟩)
            → y ≺⟨ β ⟩ f/ [ p ]
-           → ∃ x' ꞉ α/ , (x' ≺/ [ p ]) × (f/ x' ≡ y)
+           → ∃ x' ꞉ α/ , (x' ≺/ [ p ]) × (f/ x' ＝ y)
          ρ p y l = ∣ [ q ] , k , e ∣
           where
            abstract
-            lem : Σ q ꞉ Σα , (q ≺ p) × (f̃ q ≡ y)
+            lem : Σ q ꞉ Σα , (q ≺ p) × (f̃ q ＝ y)
             lem = f̃-is-initial-segment p y
-                   (transport (λ - → y ≺⟨ β ⟩ -) f/-≡-f̃ l)
+                   (transport (λ - → y ≺⟨ β ⟩ -) f/-＝-f̃ l)
             q : Σα
             q = pr₁ lem
             k : [ q ] ≺/ [ p ]
             k = ≺-to-≺/ {q} {p} (pr₁ (pr₂ lem))
-            e : f/ [ q ] ≡ y
-            e = f/ [ q ] ≡⟨ f/-≡-f̃ {q}    ⟩
-                f̃    q   ≡⟨ pr₂ (pr₂ lem) ⟩
+            e : f/ [ q ] ＝ y
+            e = f/ [ q ] ＝⟨ f/-＝-f̃ {q}    ⟩
+                f̃    q   ＝⟨ pr₂ (pr₂ lem) ⟩
                 y        ∎
 
 \end{code}
@@ -494,7 +494,7 @@ equivalent to one with values in 𝓤.
    /-induction₂ fe' ≋
     (λ x y → being-small-is-prop ua (x ≺/ y) 𝓤)
     (λ p q → p ≺⁻ q , (p ≺⁻ q         ≃⟨ ≃-sym (≺-≃-≺⁻ p q)     ⟩
-                       p ≺ q          ≃⟨ idtoeq _ _ (≺/-≡-≺ ⁻¹) ⟩
+                       p ≺ q          ≃⟨ idtoeq _ _ (≺/-＝-≺ ⁻¹) ⟩
                        [ p ] ≺/ [ q ] ■))
 
   _≺/⁻_ : α/ → α/ → 𝓤 ̇
@@ -506,7 +506,7 @@ equivalent to one with values in 𝓤.
 \end{code}
 
 Next, we resize α/ using:
-(1) The fact that, by univalence, (α i ↓ x) ≡ (α j ↓ y) is equivalent to
+(1) The fact that, by univalence, (α i ↓ x) ＝ (α j ↓ y) is equivalent to
     (α i ↓ x) ≃ₒ (α j ↓ y), which means that ≈ is equivalent to a 𝓤-valued
     equivalence relation, yielding an equivalent quotient in 𝓤.
 (2) Martín's machinery developed in OrdinalsWellOrderTransport to transport the
@@ -611,12 +611,12 @@ module construction-using-image
  image-σ-≃ = Σ-cong ϕ
   where
    ϕ : (β : Ordinal 𝓤) → β ∈image σ ≃ (∃ i ꞉ I , β ⊲ α i)
-   ϕ β = ∥ Σ p ꞉ domain σ , σ p ≡ β ∥              ≃⟨ ∥∥-cong pt Σ-assoc ⟩
-         ∥ Σ i ꞉ I , Σ x ꞉ ⟨ α i ⟩ , α i ↓ x ≡ β ∥ ≃⟨ ∥∥-cong pt ψ       ⟩
+   ϕ β = ∥ Σ p ꞉ domain σ , σ p ＝ β ∥              ≃⟨ ∥∥-cong pt Σ-assoc ⟩
+         ∥ Σ i ꞉ I , Σ x ꞉ ⟨ α i ⟩ , α i ↓ x ＝ β ∥ ≃⟨ ∥∥-cong pt ψ       ⟩
          (∃ i ꞉ I , β ⊲ α i)                       ■
     where
-     ψ : (Σ i ꞉ I , Σ x ꞉ ⟨ α i ⟩ , α i ↓ x ≡ β) ≃ (Σ i ꞉ I , β ⊲ α i)
-     ψ = Σ-cong (λ i → Σ-cong (λ x → ≡-flip))
+     ψ : (Σ i ꞉ I , Σ x ꞉ ⟨ α i ⟩ , α i ↓ x ＝ β) ≃ (Σ i ꞉ I , β ⊲ α i)
+     ψ = Σ-cong (λ i → Σ-cong (λ x → ＝-flip))
 
 \end{code}
 
@@ -641,9 +641,9 @@ The ordinal structure on the image of σ will be the one induced from Ordinal �
  ≺-is-transitive (β , _) (γ , _) (δ , _) = ⊲-is-transitive β γ δ
 
  ≺-is-extensional : is-extensional _≺_
- ≺-is-extensional (β , s) (γ , t) u v = to-subtype-≡ (λ _ → ∃-is-prop) goal
+ ≺-is-extensional (β , s) (γ , t) u v = to-subtype-＝ (λ _ → ∃-is-prop) goal
   where
-   goal : β ≡ γ
+   goal : β ＝ γ
    goal = ⊲-is-extensional β γ u' v'
     where
      u' : (δ : Ordinal 𝓤) → δ ⊲ β → δ ⊲ γ
@@ -708,10 +708,10 @@ the given family α.
      goal = (x , l) , ((iterated-↓ (α i) y x l) ⁻¹)
    f-is-initial-segment : is-initial-segment (α i) α⁺-Ord f
    f-is-initial-segment x (β , _) ((x' , l) , e) =
-    (x' , l , to-subtype-≡ (λ _ → ∃-is-prop) (e' ⁻¹))
+    (x' , l , to-subtype-＝ (λ _ → ∃-is-prop) (e' ⁻¹))
      where
-      e' = β                      ≡⟨ e ⟩
-           ((α i ↓ x) ↓ (x' , l)) ≡⟨ iterated-↓ (α i) x x' l ⟩
+      e' = β                      ＝⟨ e ⟩
+           ((α i ↓ x) ↓ (x' , l)) ＝⟨ iterated-↓ (α i) x x' l ⟩
            (α i ↓ x')             ∎
 
  module lower-bound-of-upper-bounds-proof
@@ -723,7 +723,7 @@ the given family α.
    f : (i : I) → ⟨ α i ⟩ → ⟨ β ⟩
    f i x = pr₁ (β-is-upper-bound i) x
 
-   f-key-property : (i : I) (x : ⟨ α i ⟩) → α i ↓ x ≡ β ↓ (f i x)
+   f-key-property : (i : I) (x : ⟨ α i ⟩) → α i ↓ x ＝ β ↓ (f i x)
    f-key-property i x =
     pr₂ (⊴-gives-≼ (α i) β (β-is-upper-bound i) (α i ↓ x) (x , refl))
 
@@ -742,7 +742,7 @@ canonical map
 is a constant map to a set and therefore by [Theorem 5.4, KECA2017] factors
 through the truncation of its domain yielding a map
 
-    f̅ : α⁺ ≡ (Σ γ : Ordinal 𝓤 , ∃ i ꞉ I , γ ⊲ α i) → ⟨ β ⟩
+    f̅ : α⁺ ＝ (Σ γ : Ordinal 𝓤 , ∃ i ꞉ I , γ ⊲ α i) → ⟨ β ⟩
 
 which can be shown to be a simulation by proving related properties of f̃.
 
@@ -760,13 +760,13 @@ which can be shown to be a simulation by proving related properties of f̃.
     f̃ : (Σ i ꞉ I , γ ⊲ α i) → ⟨ β ⟩
     f̃ (i , x , _) = f i x
 
-    f̃-is-constant : (p q : domain f̃) → f̃ p ≡ f̃ q
+    f̃-is-constant : (p q : domain f̃) → f̃ p ＝ f̃ q
     f̃-is-constant (i , x , e) (i' , x' , e') = ↓-lc β (f i x) (f i' x') p
      where
-      p = β ↓ f i x   ≡⟨ (f-key-property i x) ⁻¹ ⟩
-          α i ↓ x     ≡⟨ e ⁻¹                    ⟩
-          γ           ≡⟨ e'                      ⟩
-          α i' ↓ x'   ≡⟨ f-key-property i' x'    ⟩
+      p = β ↓ f i x   ＝⟨ (f-key-property i x) ⁻¹ ⟩
+          α i ↓ x     ＝⟨ e ⁻¹                    ⟩
+          γ           ＝⟨ e'                      ⟩
+          α i' ↓ x'   ＝⟨ f-key-property i' x'    ⟩
           β ↓ f i' x' ∎
 
    f̃-is-order-preserving : {γ γ' : Ordinal 𝓤}
@@ -783,7 +783,7 @@ which can be shown to be a simulation by proving related properties of f̃.
    f̃-is-initial-segment : {γ : Ordinal 𝓤} (s : Σ i ꞉ I , γ ⊲ α i) (y : ⟨ β ⟩)
                         → y ≺⟨ β ⟩ f̃ γ s
                         → Σ γ' ꞉ Ordinal 𝓤 , Σ s' ꞉ (Σ j ꞉ I , γ' ⊲ α j)
-                                           , (γ' ⊲ γ) × (f̃ γ' s' ≡ y)
+                                           , (γ' ⊲ γ) × (f̃ γ' s' ＝ y)
    f̃-is-initial-segment {γ} (i , x , e) y l =
     (β ↓ y , (i , x' , e₁) , transport⁻¹ ((β ↓ y) ⊲_) e m , (e₂ ⁻¹))
      where
@@ -793,12 +793,12 @@ which can be shown to be a simulation by proving related properties of f̃.
       m = transport⁻¹ ((β ↓ y) ⊲_) (f-key-property i x) k
       x' : ⟨ α i ⟩
       x' = pr₁ (pr₁ m)
-      e₁ : β ↓ y ≡ α i ↓ x'
+      e₁ : β ↓ y ＝ α i ↓ x'
       e₁ = pr₂ m ∙ iterated-↓ (α i) x x' (pr₂ (pr₁ m))
-      e₂ : y ≡ f i x'
+      e₂ : y ＝ f i x'
       e₂ = ↓-lc β y (f i x')
-            (β   ↓ y      ≡⟨ e₁ ⟩
-             α i ↓ x'     ≡⟨ f-key-property i x' ⟩
+            (β   ↓ y      ＝⟨ e₁ ⟩
+             α i ↓ x'     ＝⟨ f-key-property i x' ⟩
              β   ↓ f i x' ∎)
 
    f̅-setup : (γ : Ordinal 𝓤)
@@ -811,10 +811,10 @@ which can be shown to be a simulation by proving related properties of f̃.
 
   f̅-key-property : (γ : Ordinal 𝓤) (s : Σ i ꞉ I , γ ⊲ α i)
                    (t : ∃ i ꞉ I , γ ⊲ α i)
-                 → f̃ γ s ≡ f̅ (γ , t)
+                 → f̃ γ s ＝ f̅ (γ , t)
   f̅-key-property γ s t =
-   f̃ γ s         ≡⟨ pr₂ (f̅-setup γ) s                        ⟩
-   f̅ (γ , ∣ s ∣) ≡⟨ ap (λ - → f̅ (γ , -)) (∃-is-prop ∣ s ∣ t) ⟩
+   f̃ γ s         ＝⟨ pr₂ (f̅-setup γ) s                        ⟩
+   f̅ (γ , ∣ s ∣) ＝⟨ ap (λ - → f̅ (γ , -)) (∃-is-prop ∣ s ∣ t) ⟩
    f̅ (γ , t)     ∎
 
   f̅-is-order-preserving : is-order-preserving α⁺-Ord β f̅
@@ -833,33 +833,33 @@ which can be shown to be a simulation by proving related properties of f̃.
    where
     claim : 𝓤 ⁺ ̇
     claim = ((β ↓ y) ⊲ γ) × (Σ r ꞉ (∃ i ꞉ I , (β ↓ y) ⊲ α i)
-                                            , f̅ ((β ↓ y) , r) ≡ y)
+                                            , f̅ ((β ↓ y) , r) ＝ y)
     claim-is-prop : is-prop claim
     claim-is-prop = ×-is-prop (⊲-is-prop-valued (β ↓ y) γ)
                               (Σ-is-prop ∃-is-prop
                                          (λ k → underlying-type-is-set fe β))
     proof-of-claim : ((β ↓ y) ⊲ γ) × (Σ r ꞉ (∃ i ꞉ I , (β ↓ y) ⊲ α i)
-                                                     , f̅ ((β ↓ y) , r) ≡ y)
+                                                     , f̅ ((β ↓ y) , r) ＝ y)
     proof-of-claim = ∥∥-rec claim-is-prop h s
      where
       h : (Σ i ꞉ I , γ ⊲ α i) → claim
       h u = pr₁ (pr₂ lem) , ∣ v ∣ , e'
        where
         lem : Σ v ꞉ (Σ j ꞉ I , (β ↓ y) ⊲ α j)
-                             , ((β ↓ y) ⊲ γ) × (f̃ (β ↓ y) v ≡ y)
+                             , ((β ↓ y) ⊲ γ) × (f̃ (β ↓ y) v ＝ y)
         lem = pr₂ (f̃-is-initial-segment u y l')
          where
           l' : y ≺⟨ β ⟩ f̃ γ u
           l' = transport⁻¹ (λ - → y ≺⟨ β ⟩ -) (f̅-key-property γ u s) l
         v : Σ j ꞉ I , (β ↓ y) ⊲ α j
         v = pr₁ lem
-        e' : f̅ ((β ↓ y) , ∣ v ∣) ≡ y
+        e' : f̅ ((β ↓ y) , ∣ v ∣) ＝ y
         e' = (f̅-key-property (β ↓ y) v ∣ v ∣) ⁻¹ ∙ pr₂ (pr₂ lem)
     t : ∃ i ꞉ I , (β ↓ y) ⊲ α i
     t = pr₁ (pr₂ proof-of-claim)
     k : (β ↓ y) ⊲ γ
     k = pr₁ proof-of-claim
-    e : f̅ ((β ↓ y) , t) ≡ y
+    e : f̅ ((β ↓ y) , t) ＝ y
     e = pr₂ (pr₂ proof-of-claim)
 
  α⁺-is-lower-bound-of-upper-bounds : (β : Ordinal 𝓤)

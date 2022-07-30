@@ -94,17 +94,17 @@ module Diagram
 
  𝓓∞-carrier : 𝓥 ⊔ 𝓤 ⊔ 𝓦 ̇
  𝓓∞-carrier =
-  Σ σ ꞉ ((i : I) → ⟨ 𝓓 i ⟩) , ((i j : I) (l : i ⊑ j) → π l (σ j) ≡ σ i)
+  Σ σ ꞉ ((i : I) → ⟨ 𝓓 i ⟩) , ((i j : I) (l : i ⊑ j) → π l (σ j) ＝ σ i)
 
  ⦅_⦆ : 𝓓∞-carrier → (i : I) → ⟨ 𝓓 i ⟩
  ⦅_⦆ = pr₁
 
- π-equality : (σ : 𝓓∞-carrier) {i j : I} (l : i ⊑ j) → π l (⦅ σ ⦆ j) ≡ ⦅ σ ⦆ i
+ π-equality : (σ : 𝓓∞-carrier) {i j : I} (l : i ⊑ j) → π l (⦅ σ ⦆ j) ＝ ⦅ σ ⦆ i
  π-equality σ {i} {j} l = pr₂ σ i j l
 
- to-𝓓∞-≡ : {σ τ : 𝓓∞-carrier} → ((i : I) → ⦅ σ ⦆ i ≡ ⦅ τ ⦆ i) → σ ≡ τ
- to-𝓓∞-≡ h =
-  to-subtype-≡ (λ σ → Π₃-is-prop fe (λ i j l → sethood (𝓓 i))) (dfunext fe h)
+ to-𝓓∞-＝ : {σ τ : 𝓓∞-carrier} → ((i : I) → ⦅ σ ⦆ i ＝ ⦅ τ ⦆ i) → σ ＝ τ
+ to-𝓓∞-＝ h =
+  to-subtype-＝ (λ σ → Π₃-is-prop fe (λ i j l → sethood (𝓓 i))) (dfunext fe h)
 
  family-at-ith-component : {𝓐 : 𝓥 ̇ } (α : 𝓐 → 𝓓∞-carrier) (i : I) → 𝓐 → ⟨ 𝓓 i ⟩
  family-at-ith-component α i a = ⦅ α a ⦆ i
@@ -135,20 +135,20 @@ module Diagram
    β = family-at-ith-component α
    δ' : (i : I) → is-Directed (𝓓 i) (β i)
    δ' = family-at-ith-component-is-directed α δ
-   φ : (i j : I) (l : i ⊑ j) → π l (∐ (𝓓 j) (δ' j)) ≡ ∐ (𝓓 i) (δ' i)
-   φ i j l = π l (∐ (𝓓 j) (δ' j))       ≡⟨ eq₁ ⟩
-             ∐ (𝓓 i) {𝓐} {π l ∘ β j} δ₁ ≡⟨ eq₂ ⟩
-             ∐ (𝓓 i) {𝓐} {β i} δ₂       ≡⟨ eq₃ ⟩
+   φ : (i j : I) (l : i ⊑ j) → π l (∐ (𝓓 j) (δ' j)) ＝ ∐ (𝓓 i) (δ' i)
+   φ i j l = π l (∐ (𝓓 j) (δ' j))       ＝⟨ eq₁ ⟩
+             ∐ (𝓓 i) {𝓐} {π l ∘ β j} δ₁ ＝⟨ eq₂ ⟩
+             ∐ (𝓓 i) {𝓐} {β i} δ₂       ＝⟨ eq₃ ⟩
              ∐ (𝓓 i) {𝓐} {β i} (δ' i)   ∎
     where
      δ₁ : is-Directed (𝓓 i) (π l ∘ β j)
      δ₁ = image-is-directed' (𝓓 j) (𝓓 i) ((π l) , (π-is-continuous l)) (δ' j)
-     h : π l ∘ β j ≡ β i
+     h : π l ∘ β j ＝ β i
      h = dfunext fe (λ a → π-equality (α a) l)
      δ₂ : is-Directed (𝓓 i) (β i)
      δ₂ = transport (is-Directed (𝓓 i)) h δ₁
-     eq₁ = continuous-∐-≡ (𝓓 j) (𝓓 i) ((π l) , (π-is-continuous l)) (δ' j)
-     eq₂ = ∐-family-≡ (𝓓 i) h δ₁
+     eq₁ = continuous-∐-＝ (𝓓 j) (𝓓 i) ((π l) , (π-is-continuous l)) (δ' j)
+     eq₂ = ∐-family-＝ (𝓓 i) h δ₁
      eq₃ = ∐-independent-of-directedness-witness (𝓓 i) δ₂ (δ' i)
 
  𝓓∞ : DCPO {𝓥 ⊔ 𝓤 ⊔ 𝓦} {𝓥 ⊔ 𝓣}
@@ -170,7 +170,7 @@ module Diagram
      t σ τ ρ l k i = transitivity (𝓓 i) (⦅ σ ⦆ i) (⦅ τ ⦆ i) (⦅ ρ ⦆ i) (l i) (k i)
      a : is-antisymmetric
      a σ τ l k =
-      to-𝓓∞-≡ (λ i → antisymmetry (𝓓 i) (⦅ σ ⦆ i) (⦅ τ ⦆ i) (l i) (k i))
+      to-𝓓∞-＝ (λ i → antisymmetry (𝓓 i) (⦅ σ ⦆ i) (⦅ τ ⦆ i) (l i) (k i))
    dc : is-directed-complete _≼_
    dc 𝓐 α δ = (𝓓∞-∐ α δ) , ub , lb-of-ubs
     where
@@ -196,15 +196,15 @@ module Diagram
   ∥∥-rec (sethood (𝓓 j)) γ (I-semidirected k k')
    where
     γ : (Σ m ꞉ I , k ⊑ m × k' ⊑ m)
-      → κ x (k , lᵢ , lⱼ) ≡ κ x (k' , lᵢ' , lⱼ')
-    γ (m , u , u') = π lⱼ (ε lᵢ x)                           ≡⟨ e₁ ⟩
-                     π lⱼ (π u (ε u (ε lᵢ x)))               ≡⟨ e₂ ⟩
-                     π (⊑-trans lⱼ u) (ε u (ε lᵢ x))         ≡⟨ e₃ ⟩
-                     π (⊑-trans lⱼ u) (ε (⊑-trans lᵢ u) x)   ≡⟨ e₄ ⟩
-                     π (⊑-trans lⱼ u) (ε (⊑-trans lᵢ' u') x) ≡⟨ e₅ ⟩
-                     π (⊑-trans lⱼ u) (ε u' (ε lᵢ' x))       ≡⟨ e₆ ⟩
-                     π (⊑-trans lⱼ' u') (ε u' (ε lᵢ' x))     ≡⟨ e₇ ⟩
-                     π lⱼ' (π u' (ε u' (ε lᵢ' x)))           ≡⟨ e₈ ⟩
+      → κ x (k , lᵢ , lⱼ) ＝ κ x (k' , lᵢ' , lⱼ')
+    γ (m , u , u') = π lⱼ (ε lᵢ x)                           ＝⟨ e₁ ⟩
+                     π lⱼ (π u (ε u (ε lᵢ x)))               ＝⟨ e₂ ⟩
+                     π (⊑-trans lⱼ u) (ε u (ε lᵢ x))         ＝⟨ e₃ ⟩
+                     π (⊑-trans lⱼ u) (ε (⊑-trans lᵢ u) x)   ＝⟨ e₄ ⟩
+                     π (⊑-trans lⱼ u) (ε (⊑-trans lᵢ' u') x) ＝⟨ e₅ ⟩
+                     π (⊑-trans lⱼ u) (ε u' (ε lᵢ' x))       ＝⟨ e₆ ⟩
+                     π (⊑-trans lⱼ' u') (ε u' (ε lᵢ' x))     ＝⟨ e₇ ⟩
+                     π lⱼ' (π u' (ε u' (ε lᵢ' x)))           ＝⟨ e₈ ⟩
                      π lⱼ' (ε lᵢ' x)                         ∎
      where
       e₁ = ap (π lⱼ) (ε-section-of-π u (ε lᵢ x) ⁻¹)
@@ -223,11 +223,11 @@ module Diagram
                (I-semidirected i j)
 
  ρ-in-terms-of-κ : {i j k : I} (lᵢ : i ⊑ k) (lⱼ : j ⊑ k) (x : ⟨ 𝓓 i ⟩)
-                 → ρ i j x ≡ κ x (k , lᵢ , lⱼ)
+                 → ρ i j x ＝ κ x (k , lᵢ , lⱼ)
  ρ-in-terms-of-κ {i} {j} {k} lᵢ lⱼ x =
-  ρ i j x                 ≡⟨ refl ⟩
-  ν (I-semidirected i j)  ≡⟨ p ⟩
-  ν ∣ (k , lᵢ , lⱼ) ∣     ≡⟨ q ⟩
+  ρ i j x                 ＝⟨ refl ⟩
+  ν (I-semidirected i j)  ＝⟨ p ⟩
+  ν ∣ (k , lᵢ , lⱼ) ∣     ＝⟨ q ⟩
   κ x (k , lᵢ , lⱼ)       ∎
    where
     s : is-set ⟨ 𝓓 j ⟩
@@ -246,18 +246,18 @@ module Diagram
   where
    σ : (j : I) → ⟨ 𝓓 j ⟩
    σ j = ρ i j x
-   φ : (j₁ j₂ : I) (l : j₁ ⊑ j₂) → π l (σ j₂) ≡ σ j₁
+   φ : (j₁ j₂ : I) (l : j₁ ⊑ j₂) → π l (σ j₂) ＝ σ j₁
    φ j₁ j₂ l = ∥∥-rec (sethood (𝓓 j₁)) γ (I-semidirected i j₂)
     where
-     γ : (Σ k ꞉ I , i ⊑ k × j₂ ⊑ k) → π l (σ j₂) ≡ σ j₁
-     γ (k , lᵢ , l₂) = π l (σ j₂)                  ≡⟨ refl ⟩
-                       π l (ρ i j₂ x)              ≡⟨ e₁   ⟩
-                       π l (κ x (k , lᵢ , l₂))     ≡⟨ refl ⟩
-                       π l (π l₂ (ε lᵢ x))         ≡⟨ e₂   ⟩
-                       π (⊑-trans l l₂) (ε lᵢ x)   ≡⟨ refl ⟩
-                       π (⊑-trans l l₂) (ε lᵢ x)   ≡⟨ refl ⟩
-                       κ x (k , lᵢ , ⊑-trans l l₂) ≡⟨ e₃   ⟩
-                       ρ i j₁ x                    ≡⟨ refl ⟩
+     γ : (Σ k ꞉ I , i ⊑ k × j₂ ⊑ k) → π l (σ j₂) ＝ σ j₁
+     γ (k , lᵢ , l₂) = π l (σ j₂)                  ＝⟨ refl ⟩
+                       π l (ρ i j₂ x)              ＝⟨ e₁   ⟩
+                       π l (κ x (k , lᵢ , l₂))     ＝⟨ refl ⟩
+                       π l (π l₂ (ε lᵢ x))         ＝⟨ e₂   ⟩
+                       π (⊑-trans l l₂) (ε lᵢ x)   ＝⟨ refl ⟩
+                       π (⊑-trans l l₂) (ε lᵢ x)   ＝⟨ refl ⟩
+                       κ x (k , lᵢ , ⊑-trans l l₂) ＝⟨ e₃   ⟩
+                       ρ i j₁ x                    ＝⟨ refl ⟩
                        σ j₁                        ∎
       where
        e₁ = ap (π l) (ρ-in-terms-of-κ lᵢ l₂ x)
@@ -265,29 +265,29 @@ module Diagram
        e₃ = (ρ-in-terms-of-κ lᵢ (⊑-trans l l₂) x) ⁻¹
 
  ε∞-commutes-with-εs : (i j : I) (l : i ⊑ j) → ε∞ j ∘ ε l ∼ ε∞ i
- ε∞-commutes-with-εs i j l x = to-𝓓∞-≡ γ
+ ε∞-commutes-with-εs i j l x = to-𝓓∞-＝ γ
   where
-   γ : (k : I) → ⦅ ε∞ j (ε l x) ⦆ k ≡ ⦅ ε∞ i x ⦆ k
+   γ : (k : I) → ⦅ ε∞ j (ε l x) ⦆ k ＝ ⦅ ε∞ i x ⦆ k
    γ k = ∥∥-rec (sethood (𝓓 k)) g (I-semidirected j k)
     where
-     g : (Σ m ꞉ I , j ⊑ m × k ⊑ m) → ⦅ ε∞ j (ε l x) ⦆ k ≡ ⦅ ε∞ i x ⦆ k
+     g : (Σ m ꞉ I , j ⊑ m × k ⊑ m) → ⦅ ε∞ j (ε l x) ⦆ k ＝ ⦅ ε∞ i x ⦆ k
      g (m , lⱼ , lₖ) =
-      ⦅ ε∞ j (ε l x) ⦆ k          ≡⟨ refl ⟩
-      ρ j k (ε l x)               ≡⟨ ρ-in-terms-of-κ lⱼ lₖ (ε l x) ⟩
-      κ (ε l x) (m , lⱼ , lₖ)     ≡⟨ refl ⟩
-      π lₖ (ε lⱼ (ε l x))         ≡⟨ ap (π lₖ) (ε-comp l lⱼ x) ⟩
-      π lₖ (ε (⊑-trans l lⱼ) x)   ≡⟨ refl ⟩
-      κ x (m , ⊑-trans l lⱼ , lₖ) ≡⟨ (ρ-in-terms-of-κ (⊑-trans l lⱼ) lₖ x) ⁻¹ ⟩
-      ρ i k x                     ≡⟨ refl ⟩
+      ⦅ ε∞ j (ε l x) ⦆ k          ＝⟨ refl ⟩
+      ρ j k (ε l x)               ＝⟨ ρ-in-terms-of-κ lⱼ lₖ (ε l x) ⟩
+      κ (ε l x) (m , lⱼ , lₖ)     ＝⟨ refl ⟩
+      π lₖ (ε lⱼ (ε l x))         ＝⟨ ap (π lₖ) (ε-comp l lⱼ x) ⟩
+      π lₖ (ε (⊑-trans l lⱼ) x)   ＝⟨ refl ⟩
+      κ x (m , ⊑-trans l lⱼ , lₖ) ＝⟨ (ρ-in-terms-of-κ (⊑-trans l lⱼ) lₖ x) ⁻¹ ⟩
+      ρ i k x                     ＝⟨ refl ⟩
       ⦅ ε∞ i x ⦆ k                ∎
 
  ε∞-section-of-π∞ : {i : I} → π∞ i ∘ ε∞ i ∼ id
  ε∞-section-of-π∞ {i} x =
-  π∞ i (ε∞ i x)  ≡⟨ refl ⟩
-  ⦅ ε∞ i x ⦆ i              ≡⟨ refl ⟩
-  ρ i i x                   ≡⟨ ρ-in-terms-of-κ ⊑-refl ⊑-refl x ⟩
-  κ x (i , ⊑-refl , ⊑-refl) ≡⟨ refl ⟩
-  π ⊑-refl (ε ⊑-refl x)     ≡⟨ ε-section-of-π ⊑-refl x ⟩
+  π∞ i (ε∞ i x)  ＝⟨ refl ⟩
+  ⦅ ε∞ i x ⦆ i              ＝⟨ refl ⟩
+  ρ i i x                   ＝⟨ ρ-in-terms-of-κ ⊑-refl ⊑-refl x ⟩
+  κ x (i , ⊑-refl , ⊑-refl) ＝⟨ refl ⟩
+  π ⊑-refl (ε ⊑-refl x)     ＝⟨ ε-section-of-π ⊑-refl x ⟩
   x                         ∎
 
  ε∞π∞-deflation : {i : I} (σ : ⟨ 𝓓∞ ⟩) → ε∞ i (π∞ i σ) ⊑⟨ 𝓓∞ ⟩ σ
@@ -305,11 +305,11 @@ module Diagram
                       π lⱼ (⦅ σ ⦆ k)               ⊑⟨ 𝓓 j ⟩[ u₄ ]
                       ⦅ σ ⦆ j                      ∎⟨ 𝓓 j ⟩
      where
-      u₁ = ≡-to-⊑ (𝓓 j) (ρ-in-terms-of-κ lᵢ lⱼ (⦅ σ ⦆ i))
-      u₂ = ≡-to-⊒ (𝓓 j) (ap (π lⱼ ∘ ε lᵢ) (π-equality σ lᵢ))
+      u₁ = ＝-to-⊑ (𝓓 j) (ρ-in-terms-of-κ lᵢ lⱼ (⦅ σ ⦆ i))
+      u₂ = ＝-to-⊒ (𝓓 j) (ap (π lⱼ ∘ ε lᵢ) (π-equality σ lᵢ))
       u₃ = monotone-if-continuous (𝓓 k) (𝓓 j) (π lⱼ , π-is-continuous lⱼ)
             (ε lᵢ (π lᵢ (⦅ σ ⦆ k))) (⦅ σ ⦆ k) (επ-deflation lᵢ (⦅ σ ⦆ k))
-      u₄ = ≡-to-⊑ (𝓓 j) (π-equality σ lⱼ)
+      u₄ = ＝-to-⊑ (𝓓 j) (π-equality σ lⱼ)
 
  π∞-is-continuous : (i : I) → is-continuous 𝓓∞ (𝓓 i) (π∞ i)
  π∞-is-continuous i 𝓐 α δ = ub , lb-of-ubs
@@ -350,7 +350,7 @@ module Diagram
                        ⦅ ε∞ i y ⦆ j      ∎⟨ 𝓓 j ⟩
       where
        u₁ = reflexivity (𝓓 j) (⦅ ε∞ i x ⦆ j)
-       u₂ = ≡-to-⊑ (𝓓 j) (ρ-in-terms-of-κ lᵢ lⱼ x)
+       u₂ = ＝-to-⊑ (𝓓 j) (ρ-in-terms-of-κ lᵢ lⱼ x)
        u₃ = reflexivity (𝓓 j) (κ x (k , lᵢ , lⱼ))
        u₄ = mπ (ε lᵢ x) (ε lᵢ y) (mε x y l)
         where
@@ -361,7 +361,7 @@ module Diagram
          mπ = monotone-if-continuous (𝓓 k) (𝓓 j)
                ((π lⱼ) , (π-is-continuous lⱼ))
        u₅ = reflexivity (𝓓 j) (π lⱼ (ε lᵢ y))
-       u₆ = ≡-to-⊒ (𝓓 j) (ρ-in-terms-of-κ lᵢ lⱼ y)
+       u₆ = ＝-to-⊒ (𝓓 j) (ρ-in-terms-of-κ lᵢ lⱼ y)
        u₇ = reflexivity (𝓓 j) (ρ i j y)
 
  ε∞-is-continuous : (i : I) → is-continuous (𝓓 i) 𝓓∞ (ε∞ i)
@@ -394,22 +394,22 @@ module Diagram
           πε' = πε , πε-is-continuous
           δ₁ : is-Directed (𝓓 j) (πε ∘ α)
           δ₁ = image-is-directed' (𝓓 i) (𝓓 j) πε' δ
-          p : πε ∘ α ≡ (λ a → ⦅ ε∞ i (α a) ⦆ j)
+          p : πε ∘ α ＝ (λ a → ⦅ ε∞ i (α a) ⦆ j)
           p = dfunext fe h
            where
             h : πε ∘ α ∼ (λ a → ⦅ ε∞ i (α a) ⦆ j)
-            h a = πε (α a)              ≡⟨ refl ⟩
-                  π lⱼ (ε lᵢ (α a))     ≡⟨ refl ⟩
-                  κ (α a) (k , lᵢ , lⱼ) ≡⟨ (ρ-in-terms-of-κ lᵢ lⱼ (α a)) ⁻¹ ⟩
-                  ρ i j (α a)           ≡⟨ refl ⟩
+            h a = πε (α a)              ＝⟨ refl ⟩
+                  π lⱼ (ε lᵢ (α a))     ＝⟨ refl ⟩
+                  κ (α a) (k , lᵢ , lⱼ) ＝⟨ (ρ-in-terms-of-κ lᵢ lⱼ (α a)) ⁻¹ ⟩
+                  ρ i j (α a)           ＝⟨ refl ⟩
                   ⦅ ε∞ i (α a) ⦆ j      ∎
           δ₂ : is-Directed (𝓓 j) (λ a → ⦅ ε∞ i (α a) ⦆ j)
           δ₂ = transport (is-Directed (𝓓 j)) p δ₁
           u₁ = reflexivity (𝓓 j) (⦅ ε∞ i (∐ (𝓓 i) δ) ⦆ j)
-          u₂ = ≡-to-⊑ (𝓓 j) (ρ-in-terms-of-κ lᵢ lⱼ (∐ (𝓓 i) δ))
+          u₂ = ＝-to-⊑ (𝓓 j) (ρ-in-terms-of-κ lᵢ lⱼ (∐ (𝓓 i) δ))
           u₃ = reflexivity (𝓓 j) (κ (∐ (𝓓 i) δ) (k , lᵢ , lⱼ))
           u₄ = continuous-∐-⊑ (𝓓 i) (𝓓 j) πε' δ
-          u₅ = ≡-to-⊑ (𝓓 j) (∐-family-≡ (𝓓 j) p δ₁)
+          u₅ = ＝-to-⊑ (𝓓 j) (∐-family-＝ (𝓓 j) p δ₁)
           u₆ = ∐-is-lowerbound-of-upperbounds (𝓓 j) δ₂ (⦅ σ ⦆ j) (λ a → ub a j)
 
  ε∞' : (i : I) → DCPO[ 𝓓 i , 𝓓∞ ]
@@ -434,7 +434,7 @@ indeed the limit of the diagram.
    where
     σ : (i : I) → ⟨ 𝓓 i ⟩
     σ i = f i y
-    φ : (i j : I) (l : i ⊑ j) → π l (f j y) ≡ f i y
+    φ : (i j : I) (l : i ⊑ j) → π l (f j y) ＝ f i y
     φ i j l = comm i j l y
 
   limit-mediating-arrow-commutes : (i : I) → π∞ i ∘ limit-mediating-arrow ∼ f i
@@ -444,7 +444,7 @@ indeed the limit of the diagram.
                                   → ((i : I) → π∞ i ∘ g ∼ f i)
                                   → g ∼ limit-mediating-arrow
   limit-mediating-arrow-is-unique g g-comm y =
-   to-𝓓∞-≡ (λ i → g-comm i y)
+   to-𝓓∞-＝ (λ i → g-comm i y)
 
   limit-mediating-arrow-is-monotone : is-monotone 𝓔 𝓓∞ limit-mediating-arrow
   limit-mediating-arrow-is-monotone x y l i = f i x ⊑⟨ 𝓓 i ⟩[ m x y l ]
@@ -504,10 +504,10 @@ are preliminaries for doing so.
       ⦅ ε∞-family σ j ⦆ k                 ∎⟨ 𝓓 k ⟩
        where
         u₁ = reflexivity (𝓓 k) (⦅ ε∞-family σ i ⦆ k)
-        u₂ = ≡-to-⊑ (𝓓 k) (ρ-in-terms-of-κ (⊑-trans l lⱼ) lₖ (⦅ σ ⦆ i))
+        u₂ = ＝-to-⊑ (𝓓 k) (ρ-in-terms-of-κ (⊑-trans l lⱼ) lₖ (⦅ σ ⦆ i))
         u₃ = reflexivity (𝓓 k) (κ (⦅ σ ⦆ i) (m , ⊑-trans l lⱼ , lₖ))
-        u₄ = ≡-to-⊒ (𝓓 k) (ap (π lₖ) (ε-comp l lⱼ (⦅ σ ⦆ i)))
-        u₅ = ≡-to-⊒ (𝓓 k) (ap (π lₖ ∘ ε lⱼ ∘ ε l) (π-equality σ l))
+        u₄ = ＝-to-⊒ (𝓓 k) (ap (π lₖ) (ε-comp l lⱼ (⦅ σ ⦆ i)))
+        u₅ = ＝-to-⊒ (𝓓 k) (ap (π lₖ ∘ ε lⱼ ∘ ε l) (π-equality σ l))
         u₆ = mon (ε l (π l (⦅ σ ⦆ j))) (⦅ σ ⦆ j) (επ-deflation l (⦅ σ ⦆ j))
          where
           mon : is-monotone (𝓓 j) (𝓓 k) (π lₖ ∘ ε lⱼ)
@@ -516,7 +516,7 @@ are preliminaries for doing so.
                   ∘-is-continuous (𝓓 j) (𝓓 m) (𝓓 k)
                   (ε lⱼ) (π lₖ) (ε-is-continuous lⱼ) (π-is-continuous lₖ))
         u₇ = reflexivity (𝓓 k) (κ (⦅ σ ⦆ j) (m , lⱼ , lₖ))
-        u₈ = ≡-to-⊒ (𝓓 k) (ρ-in-terms-of-κ lⱼ lₖ (⦅ σ ⦆ j))
+        u₈ = ＝-to-⊒ (𝓓 k) (ρ-in-terms-of-κ lⱼ lₖ (⦅ σ ⦆ j))
         u₉ = reflexivity (𝓓 k) (⦅ ε∞-family σ j ⦆ k)
 
  ε∞-family-is-directed : (σ : ⟨ 𝓓∞ ⟩) → is-Directed 𝓓∞ (ε∞-family σ)
@@ -532,7 +532,7 @@ are preliminaries for doing so.
       k , ε∞-family-is-monotone σ i k lᵢ ,
           ε∞-family-is-monotone σ j k lⱼ
 
- ∐-of-ε∞s : (σ : ⟨ 𝓓∞ ⟩) → σ ≡ ∐ 𝓓∞ {I} {ε∞-family σ} (ε∞-family-is-directed σ)
+ ∐-of-ε∞s : (σ : ⟨ 𝓓∞ ⟩) → σ ＝ ∐ 𝓓∞ {I} {ε∞-family σ} (ε∞-family-is-directed σ)
  ∐-of-ε∞s σ = antisymmetry 𝓓∞ σ (∐ 𝓓∞ δ) a b
   where
    α : I → ⟨ 𝓓∞ ⟩
@@ -552,10 +552,10 @@ are preliminaries for doing so.
     where
      δ' : is-Directed (𝓓 i) (family-at-ith-component α i)
      δ' = family-at-ith-component-is-directed α δ i
-     u₁ = ≡-to-⊒ (𝓓 i) (ε-id i (⦅ σ ⦆ i))
-     u₂ = ≡-to-⊒ (𝓓 i) (π-id i (ε ⊑-refl (⦅ σ ⦆ i)))
+     u₁ = ＝-to-⊒ (𝓓 i) (ε-id i (⦅ σ ⦆ i))
+     u₂ = ＝-to-⊒ (𝓓 i) (π-id i (ε ⊑-refl (⦅ σ ⦆ i)))
      u₃ = reflexivity (𝓓 i) (π ⊑-refl (ε ⊑-refl (⦅ σ ⦆ i)))
-     u₄ = ≡-to-⊒ (𝓓 i) (ρ-in-terms-of-κ ⊑-refl ⊑-refl (⦅ σ ⦆ i))
+     u₄ = ＝-to-⊒ (𝓓 i) (ρ-in-terms-of-κ ⊑-refl ⊑-refl (⦅ σ ⦆ i))
      u₅ = reflexivity (𝓓 i) (ρ i i (⦅ σ ⦆ i))
      u₆ = reflexivity (𝓓 i) (⦅ ε∞ i (⦅ σ ⦆ i) ⦆ i )
      u₇ = ∐-is-upperbound (𝓓 i) δ' i
@@ -579,15 +579,15 @@ are preliminaries for doing so.
         where
          u₁ = reflexivity (𝓓 j) (⦅ α i ⦆ j)
          u₂ = reflexivity (𝓓 j) (⦅ ε∞ i (⦅ σ ⦆ i) ⦆ j)
-         u₃ = ≡-to-⊑ (𝓓 j) (ρ-in-terms-of-κ lᵢ lⱼ (⦅ σ ⦆ i))
+         u₃ = ＝-to-⊑ (𝓓 j) (ρ-in-terms-of-κ lᵢ lⱼ (⦅ σ ⦆ i))
          u₄ = reflexivity (𝓓 j) (κ (⦅ σ ⦆ i) (k , lᵢ , lⱼ))
-         u₅ = ≡-to-⊒ (𝓓 j) (ap (π lⱼ ∘ ε lᵢ) (π-equality σ lᵢ))
+         u₅ = ＝-to-⊒ (𝓓 j) (ap (π lⱼ ∘ ε lᵢ) (π-equality σ lᵢ))
          u₆ = mon (ε lᵢ (π lᵢ (⦅ σ ⦆ k))) (⦅ σ ⦆ k) (επ-deflation lᵢ (⦅ σ ⦆ k))
           where
            mon : is-monotone (𝓓 k) (𝓓 j) (π lⱼ)
            mon = monotone-if-continuous (𝓓 k) (𝓓 j)
                   (π lⱼ , π-is-continuous lⱼ)
-         u₇ = ≡-to-⊑ (𝓓 j) (π-equality σ lⱼ)
+         u₇ = ＝-to-⊑ (𝓓 j) (π-equality σ lⱼ)
 
 \end{code}
 
@@ -613,8 +613,8 @@ We now show that 𝓓∞ is the colimit of the diagram.
    g j (ε l (π l (⦅ σ ⦆ j))) ⊑⟨ 𝓔 ⟩[ w ]
    g j (⦅ σ ⦆ j)             ∎⟨ 𝓔 ⟩
     where
-     u = ≡-to-⊒ 𝓔 (ap (g i) (π-equality σ l))
-     v = ≡-to-⊒ 𝓔 (comm i j l (π l (⦅ σ ⦆ j)))
+     u = ＝-to-⊒ 𝓔 (ap (g i) (π-equality σ l))
+     v = ＝-to-⊒ 𝓔 (comm i j l (π l (⦅ σ ⦆ j)))
      w = gm (ε l (π l (⦅ σ ⦆ j))) (⦅ σ ⦆ j) (επ-deflation l (⦅ σ ⦆ j))
       where
        gm : is-monotone (𝓓 j) 𝓔 (g j)
@@ -667,14 +667,14 @@ We now show that 𝓓∞ is the colimit of the diagram.
           g i x                      ∎⟨ 𝓔 ⟩
            where
             u₁ = reflexivity 𝓔 (colimit-family (ε∞ i x) j)
-            u₂ = ≡-to-⊑ 𝓔 (ap (g j) (ρ-in-terms-of-κ lᵢ lⱼ x))
+            u₂ = ＝-to-⊑ 𝓔 (ap (g j) (ρ-in-terms-of-κ lᵢ lⱼ x))
             u₃ = reflexivity 𝓔 (g j (κ x (k , lᵢ , lⱼ)))
-            u₄ = ≡-to-⊒ 𝓔 (comm j k lⱼ (π lⱼ (ε lᵢ x)))
+            u₄ = ＝-to-⊒ 𝓔 (comm j k lⱼ (π lⱼ (ε lᵢ x)))
             u₅ = m (ε lⱼ (π lⱼ (ε lᵢ x))) (ε lᵢ x) (επ-deflation lⱼ (ε lᵢ x))
              where
               m : is-monotone (𝓓 k) 𝓔 (g k)
               m = monotone-if-continuous (𝓓 k) 𝓔 (g k , g-cont k)
-            u₆ = ≡-to-⊑ 𝓔 (comm i k lᵢ x)
+            u₆ = ＝-to-⊑ 𝓔 (comm i k lᵢ x)
      b : g i x ⊑⟨ 𝓔 ⟩ colimit-mediating-arrow (ε∞ i x)
      b = g i x                            ⊑⟨ 𝓔 ⟩[ v₁ ]
          g i (ε ⊑-refl x)                 ⊑⟨ 𝓔 ⟩[ v₂ ]
@@ -685,10 +685,10 @@ We now show that 𝓓∞ is the colimit of the diagram.
          ∐ 𝓔 δ                            ⊑⟨ 𝓔 ⟩[ v₇ ]
          colimit-mediating-arrow (ε∞ i x) ∎⟨ 𝓔 ⟩
       where
-       v₁ = ≡-to-⊒ 𝓔 (ap (g i) (ε-id i x))
-       v₂ = ≡-to-⊒ 𝓔 (ap (g i) (π-id i (ε ⊑-refl x)))
+       v₁ = ＝-to-⊒ 𝓔 (ap (g i) (ε-id i x))
+       v₂ = ＝-to-⊒ 𝓔 (ap (g i) (π-id i (ε ⊑-refl x)))
        v₃ = reflexivity 𝓔 (g i (π ⊑-refl (ε ⊑-refl x)))
-       v₄ = ≡-to-⊒ 𝓔 (ap (g i) (ρ-in-terms-of-κ ⊑-refl ⊑-refl x))
+       v₄ = ＝-to-⊒ 𝓔 (ap (g i) (ρ-in-terms-of-κ ⊑-refl ⊑-refl x))
        v₅ = reflexivity 𝓔 (g i (ρ i i x))
        v₆ = ∐-is-upperbound 𝓔 δ i
        v₇ = reflexivity 𝓔 (∐ 𝓔 δ)
@@ -698,14 +698,14 @@ We now show that 𝓓∞ is the colimit of the diagram.
                                     → ((i : I) → h ∘ ε∞ i ∼ g i)
                                     → h ∼ colimit-mediating-arrow
   colimit-mediating-arrow-is-unique h h-cont h-comm σ =
-   h σ                                   ≡⟨ ap h (∐-of-ε∞s σ) ⟩
-   h (∐ 𝓓∞ {I} {λ i → ε∞ i (⦅ σ ⦆ i)} δ) ≡⟨ e₁ ⟩
-   ∐ 𝓔 {I} {λ i → h (ε∞ i (⦅ σ ⦆ i))} δ₁ ≡⟨ e₂ ⟩
-   ∐ 𝓔 {I} {λ i → g i (⦅ σ ⦆ i)} δ₂      ≡⟨ e₃ ⟩
-   ∐ 𝓔 {I} {λ i → g i (⦅ σ ⦆ i)} δ₃      ≡⟨ refl ⟩
+   h σ                                   ＝⟨ ap h (∐-of-ε∞s σ) ⟩
+   h (∐ 𝓓∞ {I} {λ i → ε∞ i (⦅ σ ⦆ i)} δ) ＝⟨ e₁ ⟩
+   ∐ 𝓔 {I} {λ i → h (ε∞ i (⦅ σ ⦆ i))} δ₁ ＝⟨ e₂ ⟩
+   ∐ 𝓔 {I} {λ i → g i (⦅ σ ⦆ i)} δ₂      ＝⟨ e₃ ⟩
+   ∐ 𝓔 {I} {λ i → g i (⦅ σ ⦆ i)} δ₃      ＝⟨ refl ⟩
    colimit-mediating-arrow σ             ∎
     where
-     p : (λ i → (h ∘ ε∞ i) (⦅ σ ⦆ i)) ≡ (λ i → g i (⦅ σ ⦆ i))
+     p : (λ i → (h ∘ ε∞ i) (⦅ σ ⦆ i)) ＝ (λ i → g i (⦅ σ ⦆ i))
      p = dfunext fe (λ i → h-comm i (⦅ σ ⦆ i))
      δ : is-Directed 𝓓∞ {I} (ε∞-family σ)
      δ = ε∞-family-is-directed σ
@@ -715,8 +715,8 @@ We now show that 𝓓∞ is the colimit of the diagram.
      δ₂ = transport (is-Directed 𝓔 {I}) p δ₁
      δ₃ : is-Directed 𝓔 (colimit-family σ)
      δ₃ = colimit-family-is-directed σ
-     e₁ = continuous-∐-≡ 𝓓∞ 𝓔 (h , h-cont) {I} {ε∞-family σ} δ
-     e₂ = ∐-family-≡ 𝓔 {I} p δ₁
+     e₁ = continuous-∐-＝ 𝓓∞ 𝓔 (h , h-cont) {I} {ε∞-family σ} δ
+     e₂ = ∐-family-＝ 𝓔 {I} p δ₁
      e₃ = ∐-independent-of-directedness-witness 𝓔 δ₂ δ₃
 
   colimit-mediating-arrow-is-monotone : is-monotone 𝓓∞ 𝓔
@@ -799,14 +799,14 @@ isomorphic to its own self-exponential.
           ε∞π∞-family-is-monotone lⱼ
 
  ∐-of-ε∞π∞s-is-id : ∐ (𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞) {I} {ε∞π∞-family} ε∞π∞-family-is-directed
-                  ≡ id , id-is-continuous 𝓓∞
- ∐-of-ε∞π∞s-is-id = to-continuous-function-≡ 𝓓∞ 𝓓∞ γ
+                  ＝ id , id-is-continuous 𝓓∞
+ ∐-of-ε∞π∞s-is-id = to-continuous-function-＝ 𝓓∞ 𝓓∞ γ
   where
    δ : is-Directed (𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞) ε∞π∞-family
    δ = ε∞π∞-family-is-directed
    γ : [ 𝓓∞ , 𝓓∞ ]⟨ ∐ (𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞) {I} {ε∞π∞-family} δ ⟩ ∼ id
-   γ σ = ∐ 𝓓∞ {I} {λ i → ε∞ i (⦅ σ ⦆ i)} δ₁ ≡⟨ e₁ ⟩
-         ∐ 𝓓∞ {I} {λ i → ε∞ i (⦅ σ ⦆ i)} δ₂ ≡⟨ e₂ ⟩
+   γ σ = ∐ 𝓓∞ {I} {λ i → ε∞ i (⦅ σ ⦆ i)} δ₁ ＝⟨ e₁ ⟩
+         ∐ 𝓓∞ {I} {λ i → ε∞ i (⦅ σ ⦆ i)} δ₂ ＝⟨ e₂ ⟩
          σ                                  ∎
     where
      δ₁ : is-Directed 𝓓∞ (λ i → ε∞ i (⦅ σ ⦆ i))
@@ -867,30 +867,30 @@ criteria for calculating its supremum and for it being directed.
   α∞ (i , j) = ε∞ i (α i j)
 
   α∞-is-sup-lemma : (σ : ⟨ 𝓓∞ ⟩) (δ : ((i : I) → is-Directed (𝓓 i) (α i)))
-                  → ((i : I) → ∐ (𝓓 i) (δ i) ≡ ⦅ σ ⦆ i)
+                  → ((i : I) → ∐ (𝓓 i) (δ i) ＝ ⦅ σ ⦆ i)
                   → is-sup _≼_ σ α∞
   α∞-is-sup-lemma σ δ e =
    transport (λ - → is-sup _≼_ - α∞) (σ-is-sup ⁻¹) (ub , lb-of-ubs)
     where
      δ' : (i : I) → is-Directed 𝓓∞ (ε∞ i ∘ α i)
      δ' i = image-is-directed' (𝓓 i) 𝓓∞ (ε∞' i) (δ i)
-     e₁ : ε∞-family σ ≡ (λ i → ε∞ i (∐ (𝓓 i) (δ i)))
+     e₁ : ε∞-family σ ＝ (λ i → ε∞ i (∐ (𝓓 i) (δ i)))
      e₁ = dfunext fe (λ i → ap (ε∞ i) (e i) ⁻¹)
-     e₂ : (λ i → ε∞ i (∐ (𝓓 i) (δ i))) ≡ (λ i → ∐ 𝓓∞ (δ' i))
-     e₂ = dfunext fe (λ i → continuous-∐-≡ (𝓓 i) 𝓓∞ (ε∞' i) (δ i))
+     e₂ : (λ i → ε∞ i (∐ (𝓓 i) (δ i))) ＝ (λ i → ∐ 𝓓∞ (δ' i))
+     e₂ = dfunext fe (λ i → continuous-∐-＝ (𝓓 i) 𝓓∞ (ε∞' i) (δ i))
 
      δ₁ : is-Directed 𝓓∞ (λ (i : I) → ε∞ i (∐ (𝓓 i) (δ i)))
      δ₁ = transport (is-Directed 𝓓∞) e₁ (ε∞-family-is-directed σ)
      δ₂ : is-Directed 𝓓∞ (λ i → ∐ 𝓓∞ (δ' i))
      δ₂ = transport (is-Directed 𝓓∞) e₂ δ₁
 
-     σ-is-sup = σ                              ≡⟨ ∐-of-ε∞s σ ⟩
-                ∐ 𝓓∞ (ε∞-family-is-directed σ) ≡⟨ ⦅1⦆ ⟩
-                ∐ 𝓓∞ δ₁                        ≡⟨ ⦅2⦆ ⟩
+     σ-is-sup = σ                              ＝⟨ ∐-of-ε∞s σ ⟩
+                ∐ 𝓓∞ (ε∞-family-is-directed σ) ＝⟨ ⦅1⦆ ⟩
+                ∐ 𝓓∞ δ₁                        ＝⟨ ⦅2⦆ ⟩
                 ∐ 𝓓∞ δ₂                        ∎
       where
-       ⦅1⦆ = ∐-family-≡ 𝓓∞ e₁ (ε∞-family-is-directed σ)
-       ⦅2⦆ = ∐-family-≡ 𝓓∞ e₂ δ₁
+       ⦅1⦆ = ∐-family-＝ 𝓓∞ e₁ (ε∞-family-is-directed σ)
+       ⦅2⦆ = ∐-family-＝ 𝓓∞ e₂ δ₁
 
      ub : (k : J∞) → α∞ k ≼ ∐ 𝓓∞ δ₂
      ub (i , j) = transitivity 𝓓∞ (α∞ (i , j)) (∐ 𝓓∞ (δ' i)) (∐ 𝓓∞ δ₂) ⦅1⦆ ⦅2⦆
@@ -907,8 +907,8 @@ criteria for calculating its supremum and for it being directed.
 
   α∞-is-directed-sup-lemma : (σ : ⟨ 𝓓∞ ⟩)
                              (δ : ((i : I) → is-Directed (𝓓 i) (α i)))
-                           → ((i : I) → ∐ (𝓓 i) (δ i) ≡ ⦅ σ ⦆ i)
-                           → (δ∞ : is-Directed 𝓓∞ α∞) → ∐ 𝓓∞ δ∞ ≡ σ
+                           → ((i : I) → ∐ (𝓓 i) (δ i) ＝ ⦅ σ ⦆ i)
+                           → (δ∞ : is-Directed 𝓓∞ α∞) → ∐ 𝓓∞ δ∞ ＝ σ
   α∞-is-directed-sup-lemma σ δ e δ∞ =
    antisymmetry 𝓓∞ (∐ 𝓓∞ δ∞) σ
                 (∐-is-lowerbound-of-upperbounds 𝓓∞ δ∞ σ
@@ -920,7 +920,7 @@ criteria for calculating its supremum and for it being directed.
      σ-is-sup = α∞-is-sup-lemma σ δ e
 
   α∞-is-directed-lemma : (σ : ⟨ 𝓓∞ ⟩) (δ : ((i : I) → is-Directed (𝓓 i) (α i)))
-                       → ((i : I) → ∐ (𝓓 i) (δ i) ≡ ⦅ σ ⦆ i)
+                       → ((i : I) → ∐ (𝓓 i) (δ i) ＝ ⦅ σ ⦆ i)
                        → ((i : I) (j : J i) → α i j ≪⟨ 𝓓 i ⟩ ⦅ σ ⦆ i)
                        → is-Directed 𝓓∞ α∞
   α∞-is-directed-lemma σ δ sup αs-wb = Ind-∐-is-directed ε∞-after-α dir
@@ -942,7 +942,7 @@ criteria for calculating its supremum and for it being directed.
        where
         cofinality-lemma : {i i' : I} → i ⊑ i' → ε∞-after-α i ≲ ε∞-after-α i'
         cofinality-lemma {i} {i'} l j =
-         ∥∥-functor lem (wb (J i') (α i') (δ i') (≡-to-⊒ (𝓓 i') (sup i')))
+         ∥∥-functor lem (wb (J i') (α i') (δ i') (＝-to-⊒ (𝓓 i') (sup i')))
           where
            lem : (Σ j' ꞉ J i' , ε l (α i j) ⊑⟨ 𝓓 i' ⟩ α i' j')
                → (Σ j' ꞉ J i' , ε∞ i (α i j) ⊑⟨ 𝓓∞ ⟩ ε∞ i' (α i' j'))
@@ -952,7 +952,7 @@ criteria for calculating its supremum and for it being directed.
                                                ⦅1⦆ ⦅2⦆
             where
              ⦅1⦆ : ε∞ i (α i j) ⊑⟨ 𝓓∞ ⟩ ε∞ i' (ε l (α i j))
-             ⦅1⦆ = ≡-to-⊑ 𝓓∞ ((ε∞-commutes-with-εs i i' l (α i j)) ⁻¹)
+             ⦅1⦆ = ＝-to-⊑ 𝓓∞ ((ε∞-commutes-with-εs i i' l (α i j)) ⁻¹)
              ⦅2⦆ : ε∞ i' (ε l (α i j)) ⊑⟨ 𝓓∞ ⟩ ε∞ i' (α i' j')
              ⦅2⦆ = monotone-if-continuous (𝓓 i') 𝓓∞ (ε∞' i')
                     (ε l (α i j)) (α i' j') u
@@ -969,7 +969,7 @@ criteria for calculating its supremum and for it being directed.
                     ε l (π l (π∞ i' σ)) ⊑⟨ 𝓓 i' ⟩[ ⦅2⦆ ]
                     ⦅ σ ⦆ i'            ∎⟨ 𝓓 i' ⟩
               where
-               ⦅1⦆ = ≡-to-⊑ (𝓓 i') (ap (ε l) ((π∞-commutes-with-πs i i' l σ) ⁻¹))
+               ⦅1⦆ = ＝-to-⊑ (𝓓 i') (ap (ε l) ((π∞-commutes-with-πs i i' l σ) ⁻¹))
                ⦅2⦆ = επ-deflation l (π∞ i' σ)
 
 \end{code}
@@ -1018,7 +1018,7 @@ because this seems to need instances of the axiom of choice in general.
    ; approximating-family              = α∞⁺
    ; approximating-family-is-directed  = α∞⁺-is-directed
    ; approximating-family-is-way-below = α∞⁺-is-way-below
-   ; approximating-family-∐-≡          = α∞⁺-∐-≡
+   ; approximating-family-∐-＝          = α∞⁺-∐-＝
    }
    where
     open structurally-continuous
@@ -1051,12 +1051,12 @@ because this seems to need instances of the axiom of choice in general.
      α∞⁺-is-directed : is-Directed 𝓓∞ α∞⁺
      α∞⁺-is-directed = α∞-is-directed-lemma σ
                         (λ i → δ i (⦅ σ ⦆ i))
-                        (λ i → approximating-family-∐-≡ (𝓒 i) (⦅ σ ⦆ i))
+                        (λ i → approximating-family-∐-＝ (𝓒 i) (⦅ σ ⦆ i))
                         (λ i → approximating-family-is-way-below (𝓒 i) (⦅ σ ⦆ i))
-     α∞⁺-∐-≡ : ∐ 𝓓∞ α∞⁺-is-directed ≡ σ
-     α∞⁺-∐-≡ = α∞-is-directed-sup-lemma σ
+     α∞⁺-∐-＝ : ∐ 𝓓∞ α∞⁺-is-directed ＝ σ
+     α∞⁺-∐-＝ = α∞-is-directed-sup-lemma σ
                 (λ i → δ i (⦅ σ ⦆ i))
-                (λ i → approximating-family-∐-≡ (𝓒 i) (⦅ σ ⦆ i))
+                (λ i → approximating-family-∐-＝ (𝓒 i) (⦅ σ ⦆ i))
                 α∞⁺-is-directed
 
 \end{code}
@@ -1073,7 +1073,7 @@ Similarly, if each 𝓓ᵢ is structurally algebraic then so is its bilimit 𝓓
    ; compact-family             = approximating-family C∞
    ; compact-family-is-directed = approximating-family-is-directed C∞
    ; compact-family-is-compact  = γ
-   ; compact-family-∐-≡         = approximating-family-∐-≡ C∞
+   ; compact-family-∐-＝         = approximating-family-∐-＝ C∞
    }
    where
     open structurally-continuous
@@ -1166,20 +1166,20 @@ small (compact) basis, then the bilimit 𝓓∞ does too.
        sublemma₁ : is-Directed 𝓓∞ (↡-inclusion 𝓓∞ β∞ σ ∘ ι)
        sublemma₁ = α∞-is-directed-lemma σ
                     (λ i → ↡ᴮₛ-is-directed (β-is-small-basis i) (⦅ σ ⦆ i))
-                    (λ i → ↡ᴮₛ-∐-≡ (β-is-small-basis i) (⦅ σ ⦆ i))
+                    (λ i → ↡ᴮₛ-∐-＝ (β-is-small-basis i) (⦅ σ ⦆ i))
                     (λ i → ↡ᴮₛ-is-way-below (β-is-small-basis i) (⦅ σ ⦆ i))
 
-       sublemma₂ : σ ≡ ∐ 𝓓∞ sublemma₁
+       sublemma₂ : σ ＝ ∐ 𝓓∞ sublemma₁
        sublemma₂ = (α∞-is-directed-sup-lemma σ δs es sublemma₁) ⁻¹
         where
          δs : (i : I) → is-Directed (𝓓 i) (↡-inclusionₛ (β-is-small-basis i) (⦅ σ ⦆ i))
          δs i = ↡ᴮₛ-is-directed (β-is-small-basis i) (⦅ σ ⦆ i)
-         es : (i : I) → ∐ (𝓓 i) (δs i) ≡ ⦅ σ ⦆ i
-         es i = ↡ᴮₛ-∐-≡ (β-is-small-basis i) (⦅ σ ⦆ i)
+         es : (i : I) → ∐ (𝓓 i) (δs i) ＝ ⦅ σ ⦆ i
+         es i = ↡ᴮₛ-∐-＝ (β-is-small-basis i) (⦅ σ ⦆ i)
 
        lemma₂ : is-Directed 𝓓∞ (↡-inclusion 𝓓∞ β∞ σ)
        lemma₂ = ↡ᴮ-directedness-criterion 𝓓∞ β∞ σ ι
-                 sublemma₁ (≡-to-⊑ 𝓓∞ sublemma₂)
+                 sublemma₁ (＝-to-⊑ 𝓓∞ sublemma₂)
 
        lemma₃ : is-sup (underlying-order 𝓓∞) σ (↡-inclusion 𝓓∞ β∞ σ)
        lemma₃ = ↡ᴮ-sup-criterion 𝓓∞ β∞ σ ι claim

@@ -77,7 +77,7 @@ structurally-continuous-Σ : (𝓓 : DCPO {𝓤} {𝓣}) → 𝓥 ⁺ ⊔ 𝓤 �
 structurally-continuous-Σ 𝓓 =
    (x : ⟨ 𝓓 ⟩)
  → Σ I ꞉ 𝓥 ̇  , Σ α ꞉ (I → ⟨ 𝓓 ⟩) , (is-way-upperbound 𝓓 x α)
-                                 × (Σ δ ꞉ is-Directed 𝓓 α , ∐ 𝓓 δ ≡ x)
+                                 × (Σ δ ꞉ is-Directed 𝓓 α , ∐ 𝓓 δ ＝ x)
 
 
 structurally-continuous-to-Σ : (𝓓 : DCPO {𝓤} {𝓣})
@@ -88,7 +88,7 @@ structurally-continuous-to-Σ 𝓓 C x =
  , approximating-family x
  , approximating-family-is-way-below x
  , approximating-family-is-directed x
- , approximating-family-∐-≡ x
+ , approximating-family-∐-＝ x
  where
   open structurally-continuous C
 
@@ -101,7 +101,7 @@ structurally-continuous-from-Σ 𝓓 C' =
   ; approximating-family              = λ x → pr₁ (pr₂ (C' x))
   ; approximating-family-is-directed  = λ x → pr₁ (pr₂ (pr₂ (pr₂ (C' x))))
   ; approximating-family-is-way-below = λ x → pr₁ (pr₂ (pr₂ (C' x)))
-  ; approximating-family-∐-≡          = λ x → pr₂ (pr₂ (pr₂ (pr₂ (C' x))))
+  ; approximating-family-∐-＝          = λ x → pr₂ (pr₂ (pr₂ (pr₂ (C' x))))
   }
 
 structurally-continuous-≃ : (𝓓 : DCPO {𝓤} {𝓣})
@@ -141,7 +141,7 @@ module _
    ; approximating-family              = λ x → pr₁ (pr₂ (L x))
    ; approximating-family-is-directed  = λ x → pr₂ (pr₂ (L x))
    ; approximating-family-is-way-below = λ x → pr₂ (L-is-approximating x)
-   ; approximating-family-∐-≡          = λ x → pr₁ (L-is-approximating x)
+   ; approximating-family-∐-＝          = λ x → pr₁ (L-is-approximating x)
    }
    where
     L-is-approximating : is-approximating L
@@ -162,7 +162,7 @@ module _
     where
      ⦅1⦆ : L x ≲ (I , α , δ) → x ⊑⟨ 𝓓 ⟩ ∐ 𝓓 δ
      ⦅1⦆ Lx-cofinal-in-α = transport (λ - → - ⊑⟨ 𝓓 ⟩ ∐ 𝓓 δ)
-                           (approximating-family-∐-≡ x)
+                           (approximating-family-∐-＝ x)
                            (≲-to-⊑-of-∐ (approximating-family-is-directed x)
                                         δ Lx-cofinal-in-α)
      ⦅2⦆ : x ⊑⟨ 𝓓 ⟩ ∐ 𝓓 δ → L x ≲ (I , α , δ)
@@ -176,11 +176,11 @@ module _
    g = specified-left-adjoint-if-structurally-continuous
    σ : g ∘ f ∼ id
    σ (L , L-left-adjoint) =
-    to-subtype-≡ being-left-adjoint-to-∐-map-is-prop refl
+    to-subtype-＝ being-left-adjoint-to-∐-map-is-prop refl
    τ : f ∘ g ∼ id
-   τ C = f (g C)         ≡⟨ refl ⟩
-         ϕ (ψ (f (g C))) ≡⟨ h    ⟩
-         ϕ (ψ C)         ≡⟨ refl ⟩
+   τ C = f (g C)         ＝⟨ refl ⟩
+         ϕ (ψ (f (g C))) ＝⟨ h    ⟩
+         ϕ (ψ C)         ＝⟨ refl ⟩
          C               ∎
     where
      ϕ : structurally-continuous-Σ 𝓓 → structurally-continuous 𝓓
@@ -188,8 +188,8 @@ module _
      ψ : structurally-continuous 𝓓 → structurally-continuous-Σ 𝓓
      ψ = structurally-continuous-to-Σ 𝓓
      h = ap ϕ (dfunext fe
-          (λ x → to-Σ-≡ (refl , (to-Σ-≡ (refl ,
-                  (to-×-≡ refl  (to-Σ-≡ (refl , (sethood 𝓓 _ _)))))))))
+          (λ x → to-Σ-＝ (refl , (to-Σ-＝ (refl ,
+                  (to-×-＝ refl  (to-Σ-＝ (refl , (sethood 𝓓 _ _)))))))))
 
 \end{code}
 
@@ -234,7 +234,7 @@ is-pseudocontinuous-dcpo : (𝓓 : DCPO {𝓤} {𝓣}) → 𝓥 ⁺ ⊔ 𝓤 ⊔
 is-pseudocontinuous-dcpo 𝓓 =
    (x : ⟨ 𝓓 ⟩)
  → ∥ Σ I ꞉ 𝓥 ̇  , Σ α ꞉ (I → ⟨ 𝓓 ⟩) , (is-way-upperbound 𝓓 x α)
-                                   × (Σ δ ꞉ is-Directed 𝓓 α , ∐ 𝓓 δ ≡ x) ∥
+                                   × (Σ δ ꞉ is-Directed 𝓓 α , ∐ 𝓓 δ ＝ x) ∥
 
 being-pseudocontinuous-dcpo-is-prop : (𝓓 : DCPO {𝓤} {𝓣})
                                     → is-prop (is-pseudocontinuous-dcpo 𝓓)
@@ -285,7 +285,7 @@ module _
     str-cont : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
     str-cont = (Σ I ꞉ 𝓥 ̇  , Σ α ꞉ (I → ⟨ 𝓓 ⟩)
                           , is-way-upperbound 𝓓 x α
-                          × (Σ δ ꞉ is-Directed 𝓓 α , ∐ 𝓓 δ ≡ x))
+                          × (Σ δ ꞉ is-Directed 𝓓 α , ∐ 𝓓 δ ＝ x))
     κ : str-cont → Ind
     κ (I , α , _ , (δ , _)) = I , α , δ
     κ-gives-approximating-family : (σ : str-cont) → κ σ approximates x
@@ -302,8 +302,8 @@ module _
     κ/-wconstant σ@(I , α , α-way-below-x , (δ , x-sup-of-α))
                  τ@(J , β , β-way-below-x , (ε , x-sup-of-β)) =
      ≤-is-antisymmetric (κ/ σ) (κ/ τ)
-      (η-preserves-order (λ i → α-way-below-x i J β ε (≡-to-⊒ 𝓓 x-sup-of-β)))
-      (η-preserves-order (λ j → β-way-below-x j I α δ (≡-to-⊒ 𝓓 x-sup-of-α)))
+      (η-preserves-order (λ i → α-way-below-x i J β ε (＝-to-⊒ 𝓓 x-sup-of-β)))
+      (η-preserves-order (λ j → β-way-below-x j I α δ (＝-to-⊒ 𝓓 x-sup-of-α)))
 
     ω : Σ ϕ ꞉ (∥ str-cont ∥ → Ind/≈) , κ/ ∼ ϕ ∘ ∣_∣
     ω = wconstant-map-to-set-factors-through-truncation-of-domain
@@ -338,10 +338,10 @@ module _
            s : (L x ≤ η τ) ⇔ (η (κ σ) ≤ η τ)
            s = transport (_≤ η τ) e , transport (_≤ η τ) (e ⁻¹)
             where
-             e : L x ≡ η (κ σ)
-             e = L x          ≡⟨ refl                                 ⟩
-                 pr₁ ω (pc x) ≡⟨ ap (pr₁ ω) (∥∥-is-prop (pc x) ∣ σ ∣) ⟩
-                 pr₁ ω ∣ σ ∣  ≡⟨ (pr₂ ω σ) ⁻¹                         ⟩
+             e : L x ＝ η (κ σ)
+             e = L x          ＝⟨ refl                                 ⟩
+                 pr₁ ω (pc x) ＝⟨ ap (pr₁ ω) (∥∥-is-prop (pc x) ∣ σ ∣) ⟩
+                 pr₁ ω ∣ σ ∣  ＝⟨ (pr₂ ω σ) ⁻¹                         ⟩
                  η (κ σ)      ∎
 
  pseudocontinuous-if-specified-left-adjoint : ∐-map/-has-specified-left-adjoint
@@ -349,9 +349,9 @@ module _
  pseudocontinuous-if-specified-left-adjoint (L , L-is-left-adjoint) x =
   ∥∥-functor lemma (η-is-surjection (L x))
    where
-    lemma : (Σ σ ꞉ Ind , η σ ≡ L x)
+    lemma : (Σ σ ꞉ Ind , η σ ＝ L x)
           → Σ I ꞉ 𝓥 ̇  , Σ α ꞉ (I → ⟨ 𝓓 ⟩) , is-way-upperbound 𝓓 x α
-                                          × (Σ δ ꞉ is-Directed 𝓓 α , ∐ 𝓓 δ ≡ x)
+                                          × (Σ δ ꞉ is-Directed 𝓓 α , ∐ 𝓓 δ ＝ x)
     lemma (σ@(I , α , δ) , e) = I , α , pr₂ approx , (δ , pr₁ approx)
      where
       ladj : (τ : Ind) → (σ ≲ τ) ⇔ (x ⊑⟨ 𝓓 ⟩ ∐-map τ)
@@ -360,7 +360,7 @@ module _
         ladj' : (η σ ≤ η τ) ⇔ x ⊑⟨ 𝓓 ⟩ ∐-map/ (η τ)
         ladj' = transport (λ - → (- ≤ η τ) ⇔ x ⊑⟨ 𝓓 ⟩ ∐-map/ (η τ)) (e ⁻¹)
                  (L-is-left-adjoint x (η τ))
-      approx : (∐ 𝓓 δ ≡ x) × is-way-upperbound 𝓓 x α
+      approx : (∐ 𝓓 δ ＝ x) × is-way-upperbound 𝓓 x α
       approx = approximates-if-left-adjunct-to σ x ladj
 
  specified-left-adjoint-pseudo-continuous-≃ : ∐-map/-has-specified-left-adjoint

@@ -45,7 +45,7 @@ module function-graphs
  Functional-Relation = Σ R ꞉ Relation , is-functional R
 
  ρ : Function → Relation
- ρ f = λ x a → f x ≡ a
+ ρ f = λ x a → f x ＝ a
 
  ρ-is-embedding : is-embedding ρ
  ρ-is-embedding = NatΠ-is-embedding hfe hfe
@@ -54,18 +54,18 @@ module function-graphs
   where
 
    τ : (x : X) → A x → (A x → 𝓥 ̇ )
-   τ x a b = a ≡ b
+   τ x a b = a ＝ b
 
-   remark₀ : τ ≡ λ x → 𝑌 (A x)
+   remark₀ : τ ＝ λ x → 𝑌 (A x)
    remark₀ = refl _
 
-   remark₁ : ρ ≡ NatΠ τ
+   remark₁ : ρ ＝ NatΠ τ
    remark₁ = refl _
 
  ρ-is-functional : (f : Function) → is-functional (ρ f)
  ρ-is-functional f = σ
   where
-   σ : (x : X) → ∃! a ꞉ A x , f x ≡ a
+   σ : (x : X) → ∃! a ꞉ A x , f x ＝ a
    σ x = singleton-types'-are-singletons (A x) (f x)
 
  Γ : Function → Functional-Relation
@@ -95,17 +95,17 @@ module function-graphs
      τ-is-fiberwise-equiv : (x : X) → is-fiberwise-equiv (τ x)
      τ-is-fiberwise-equiv x = universal-fiberwise-equiv (R x) (σ x) (f x) (τ x)
 
-     d : (x : X) (a : A x) → (f x ≡ a) ≃ R x a
+     d : (x : X) (a : A x) → (f x ＝ a) ≃ R x a
      d x a = τ x a , τ-is-fiberwise-equiv x a
 
-     c : (x : X) (a : A x) → (f x ≡ a) ≡ R x a
+     c : (x : X) (a : A x) → (f x ＝ a) ＝ R x a
      c x a = Eq→Id (ua 𝓥) _ _ (d x a)
 
-     b : ρ f ≡ R
+     b : ρ f ＝ R
      b = fe (λ x → fe (c x))
 
-     a : (ρ f , ρ-is-functional f) ≡ (R , σ)
-     a = to-subtype-≡ being-functional-is-subsingleton b
+     a : (ρ f , ρ-is-functional f) ＝ (R , σ)
+     a = to-subtype-＝ being-functional-is-subsingleton b
 
  functions-amount-to-functional-relations : Function ≃ Functional-Relation
  functions-amount-to-functional-relations = Γ , Γ-is-equiv

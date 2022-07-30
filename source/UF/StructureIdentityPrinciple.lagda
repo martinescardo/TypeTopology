@@ -65,7 +65,7 @@ structure = pr₂
  of underlying sets subject to a suitable condition involving the
  data:
 
-   (A ≡ B) ≃ Σ f ꞉ ⟨ A ⟩ → ⟨ B ⟩ , Σ e ꞉ is-equiv f , S-equiv A B (f , e)
+   (A ＝ B) ≃ Σ f ꞉ ⟨ A ⟩ → ⟨ B ⟩ , Σ e ꞉ is-equiv f , S-equiv A B (f , e)
 
  It is important that such a condition is not necessarily property but
  actually data in general.
@@ -83,7 +83,7 @@ structure = pr₂
 
   (3) Moreover, when f : ⟨ X , s ⟩ → ⟨ X , t ⟩ is the identity
       function, we want the data for (1) to give data for the identity
-      s ≡ t of structures. This is specified by the function
+      s ＝ t of structures. This is specified by the function
       S-id-structure.
 
   (4) We need a technical transport condition (which is not
@@ -109,7 +109,7 @@ module gsip
   (S-refl : (A : Σ S) → S-equiv A A (≃-refl ⟨ A ⟩))
 
   (S-id-structure : (X : 𝓤 ̇ ) (s t : S X)
-                  → S-equiv (X , s) (X , t) (≃-refl X) → s ≡ t)
+                  → S-equiv (X , s) (X , t) (≃-refl X) → s ＝ t)
 
   (S-transport : (A : Σ S)
                  (s : S ⟨ A ⟩)
@@ -118,7 +118,7 @@ module gsip
                     (λ - → S-equiv A (⟨ A ⟩ , -) (≃-refl ⟨ A ⟩))
                     (S-id-structure ⟨ A ⟩ (structure A) s υ)
                     (S-refl A)
-               ≡ υ)
+               ＝ υ)
   where
 
 \end{code}
@@ -150,7 +150,7 @@ module gsip
 
 \begin{code}
 
-  idtoeqₛ : (A B : Σ S) → A ≡ B → A ≃ₛ B
+  idtoeqₛ : (A B : Σ S) → A ＝ B → A ≃ₛ B
   idtoeqₛ A .A refl = ≃ₛ-refl A
 
 \end{code}
@@ -162,18 +162,18 @@ module gsip
 
   private
     Ψ : (A : Σ S) (Y : 𝓤 ̇ ) → ⟨ A ⟩ ≃ Y → 𝓤 ⁺ ⊔ 𝓥 ̇
-    Ψ A Y e = (s : S Y) → S-equiv A (Y , s) e → A ≡ (Y , s)
+    Ψ A Y e = (s : S Y) → S-equiv A (Y , s) e → A ＝ (Y , s)
     ψ : (A : Σ S) → Ψ A ⟨ A ⟩ (≃-refl ⟨ A ⟩)
-    ψ A s υ = to-Σ-≡' (S-id-structure ⟨ A ⟩ (structure A) s υ)
+    ψ A s υ = to-Σ-＝' (S-id-structure ⟨ A ⟩ (structure A) s υ)
 
-  eqtoidₛ : (A B : Σ S) → A ≃ₛ B → A ≡ B
+  eqtoidₛ : (A B : Σ S) → A ≃ₛ B → A ＝ B
   eqtoidₛ A B (f , e , υ) = JEq ua ⟨ A ⟩ (Ψ A) (ψ A) ⟨ B ⟩ (f , e) (structure B) υ
 
 \end{code}
 
   So far we have used the hypotheses
 
-     * S-equiv (to define _≡ₛ_),
+     * S-equiv (to define _＝ₛ_),
      * S-refl (to define idtoeqₛ), and
      * S-id-structure (to define eqtoidₛ).
 
@@ -182,33 +182,33 @@ module gsip
 
 \begin{code}
 
-  idtoeq-eqtoidₛ : (A B : Σ S) (ε : A ≃ₛ B) → idtoeqₛ A B (eqtoidₛ A B ε) ≡ ε
+  idtoeq-eqtoidₛ : (A B : Σ S) (ε : A ≃ₛ B) → idtoeqₛ A B (eqtoidₛ A B ε) ＝ ε
   idtoeq-eqtoidₛ A B (f , e , υ) = JEq ua ⟨ A ⟩ Φ φ ⟨ B ⟩ (f , e) (structure B) υ
    where
     Φ : (Y : 𝓤 ̇ ) → ⟨ A ⟩ ≃ Y → 𝓤 ⊔ 𝓥 ̇
     Φ Y (f , e) = (s : S Y)
                   (υ : S-equiv A (Y , s) (f , e))
-                 → idtoeqₛ A (Y , s) (eqtoidₛ A (Y , s) (f , e , υ)) ≡ f , e , υ
+                 → idtoeqₛ A (Y , s) (eqtoidₛ A (Y , s) (f , e , υ)) ＝ f , e , υ
     φ : Φ ⟨ A ⟩ (≃-refl ⟨ A ⟩)
     φ s υ =
       idtoeqₛ A A' (eqtoidₛ A A' refl')
-            ≡⟨ ap (λ h → idtoeqₛ A A' (h s υ)) (JEq-comp ua ⟨ A ⟩ (Ψ A) (ψ A)) ⟩
-      idtoeqₛ A A' (to-Σ-≡' p)
-            ≡⟨ h p ⟩
+            ＝⟨ ap (λ h → idtoeqₛ A A' (h s υ)) (JEq-comp ua ⟨ A ⟩ (Ψ A) (ψ A)) ⟩
+      idtoeqₛ A A' (to-Σ-＝' p)
+            ＝⟨ h p ⟩
       pr₁(≃-refl ⟨ A ⟩) , pr₂(≃-refl ⟨ A ⟩) , g p
-            ≡⟨ to-Σ-≡' (to-Σ-≡' (S-transport A s υ)) ⟩
+            ＝⟨ to-Σ-＝' (to-Σ-＝' (S-transport A s υ)) ⟩
       refl' ∎
      where
       A' : Σ S
       A' = ⟨ A ⟩ , s
       refl' : A ≃ₛ A'
       refl' = pr₁(≃-refl ⟨ A ⟩) , pr₂(≃-refl ⟨ A ⟩) , υ
-      g : structure A ≡ s → S-equiv A A' (≃-refl ⟨ A ⟩)
+      g : structure A ＝ s → S-equiv A A' (≃-refl ⟨ A ⟩)
       g p = transport (λ - → S-equiv A (⟨ A ⟩ , -) (≃-refl ⟨ A ⟩)) p (S-refl A)
-      h : (p : structure A ≡ s) → idtoeqₛ A A' (to-Σ-≡' p)
-                                ≡ pr₁(≃-refl ⟨ A ⟩) , pr₂(≃-refl ⟨ A ⟩) , g p
+      h : (p : structure A ＝ s) → idtoeqₛ A A' (to-Σ-＝' p)
+                                ＝ pr₁(≃-refl ⟨ A ⟩) , pr₂(≃-refl ⟨ A ⟩) , g p
       h refl = refl
-      p : structure A ≡ s
+      p : structure A ＝ s
       p = S-id-structure ⟨ A ⟩ (structure A) s υ
 
 \end{code}
@@ -225,11 +225,11 @@ module gsip
             (idtoeqₛ A)
             (λ B → eqtoidₛ A B , idtoeq-eqtoidₛ A B)
 
-  eqtoid-idtoeqₛ : (A B : Σ S) (p : A ≡ B) → eqtoidₛ A B (idtoeqₛ A B p) ≡ p
+  eqtoid-idtoeqₛ : (A B : Σ S) (p : A ＝ B) → eqtoidₛ A B (idtoeqₛ A B p) ＝ p
   eqtoid-idtoeqₛ A B = pr₁(pr₂ (equivs-are-qinvs (idtoeqₛ A B) (uaₛ A B)))
 
-  ≡-is-≃ₛ : (A B : Σ S) → (A ≡ B) ≃ (A ≃ₛ B)
-  ≡-is-≃ₛ A B = idtoeqₛ A B , uaₛ A B
+  ＝-is-≃ₛ : (A B : Σ S) → (A ＝ B) ≃ (A ≃ₛ B)
+  ＝-is-≃ₛ A B = idtoeqₛ A B , uaₛ A B
 
   _≃ₛ'_ : Σ S → Σ S → 𝓤 ⊔ 𝓥 ̇
   A ≃ₛ' B = Σ p ꞉ ⟨ A ⟩ ≃ ⟨ B ⟩ , S-equiv A B (pr₁ p , pr₂ p)
@@ -237,8 +237,8 @@ module gsip
   ≃ₛ-is-≃ₛ' : (A B : Σ S) → (A ≃ₛ B) ≃ (A ≃ₛ' B)
   ≃ₛ-is-≃ₛ' A B = ≃-sym Σ-assoc
 
-  ≡-is-≃ₛ' : (A B : Σ S) → (A ≡ B) ≃ (A ≃ₛ' B)
-  ≡-is-≃ₛ' A B = (≡-is-≃ₛ A B) ● (≃ₛ-is-≃ₛ' A B)
+  ＝-is-≃ₛ' : (A B : Σ S) → (A ＝ B) ≃ (A ≃ₛ' B)
+  ＝-is-≃ₛ' A B = (＝-is-≃ₛ A B) ● (≃ₛ-is-≃ₛ' A B)
 
 \end{code}
 
@@ -259,12 +259,12 @@ module ∞-magma (𝓤 : Universe) (ua : is-univalent 𝓤) where
  S X = X → X → X
 
  S-equiv : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓤 ̇
- S-equiv A B (f , e) = (λ x x' → f (structure A x x')) ≡ (λ x x' → structure B (f x) (f x'))
+ S-equiv A B (f , e) = (λ x x' → f (structure A x x')) ＝ (λ x x' → structure B (f x) (f x'))
 
  S-refl : (A : Σ S) → S-equiv A A (≃-refl ⟨ A ⟩)
  S-refl A = refl
 
- S-id-structure : (X : 𝓤 ̇ ) (s t : S X) → S-equiv (X , s) (X , t) (≃-refl X) → s ≡ t
+ S-id-structure : (X : 𝓤 ̇ ) (s t : S X) → S-equiv (X , s) (X , t) (≃-refl X) → s ＝ t
  S-id-structure X m n = id
 
  S-transport : (A : Σ S)
@@ -274,7 +274,7 @@ module ∞-magma (𝓤 : Universe) (ua : is-univalent 𝓤) where
                     (λ - → S-equiv A (⟨ A ⟩ , -) (≃-refl ⟨ A ⟩))
                     (S-id-structure ⟨ A ⟩ (structure A) s υ)
                     (S-refl A)
-               ≡ υ
+               ＝ υ
  S-transport A m υ = refl-left-neutral
 
  open gsip 𝓤 𝓤 ua S S-equiv S-refl S-id-structure S-transport
@@ -283,10 +283,10 @@ module ∞-magma (𝓤 : Universe) (ua : is-univalent 𝓤) where
  ∞-Magma = Σ S
 
  fact : (A B : ∞-Magma)
-      → (A ≡ B) ≃ (Σ f ꞉ (⟨ A ⟩ → ⟨ B ⟩)
+      → (A ＝ B) ≃ (Σ f ꞉ (⟨ A ⟩ → ⟨ B ⟩)
                        , is-equiv f
-                       × ((λ x x' → f (structure A x x')) ≡ (λ x x' → structure B (f x) (f x'))))
- fact = ≡-is-≃ₛ
+                       × ((λ x x' → f (structure A x x')) ＝ (λ x x' → structure B (f x) (f x'))))
+ fact = ＝-is-≃ₛ
 
 \end{code}
 
@@ -297,14 +297,14 @@ module ∞-magma (𝓤 : Universe) (ua : is-univalent 𝓤) where
 \begin{code}
 
  fact' : (X Y : 𝓤 ̇ ) (_·_ : X → X → X) (_*_ : Y → Y → Y)
-       → ((X , _·_) ≡ (Y , _*_))
-       ≃ (Σ f ꞉ (X → Y) , is-equiv f × ((λ x x' → f (x · x')) ≡ (λ x x' → f x * f x')))
+       → ((X , _·_) ＝ (Y , _*_))
+       ≃ (Σ f ꞉ (X → Y) , is-equiv f × ((λ x x' → f (x · x')) ＝ (λ x x' → f x * f x')))
  fact' X Y _·_ _*_ = fact (X , _·_) (Y , _*_)
 
 \end{code}
 
- Of course, the condition (λ x x' → f (x · x')) ≡ (λ x x' → f x ⋆ f x')
- is equivalent to (x x' : X) → f (x · x') ≡ f x ⋆ f x' by function
+ Of course, the condition (λ x x' → f (x · x')) ＝ (λ x x' → f x ⋆ f x')
+ is equivalent to (x x' : X) → f (x · x') ＝ f x ⋆ f x' by function
  extensionality. Hence the congruence of the type-theoretic operations
  gives that the identifications of ∞-Magmas are (equivalent to) a
  homomorphic equivalences:
@@ -319,14 +319,14 @@ module ∞-magma (𝓤 : Universe) (ua : is-univalent 𝓤) where
  fe = univalence-gives-funext ua
 
  fact'' : (X Y : 𝓤 ̇ ) (_·_ : X → X → X) (_*_ : Y → Y → Y)
-        → ((X , _·_) ≡ (Y , _*_))
-        ≃ (Σ f ꞉ (X → Y) , is-equiv f × ((x x' : X) → f (x · x') ≡ f x * f x'))
+        → ((X , _·_) ＝ (Y , _*_))
+        ≃ (Σ f ꞉ (X → Y) , is-equiv f × ((x x' : X) → f (x · x') ＝ f x * f x'))
  fact'' X Y _·_ _*_ =
-   ((X , _·_) ≡ (Y , _*_))
+   ((X , _·_) ＝ (Y , _*_))
        ≃⟨ fact' X Y _·_ _*_ ⟩
-   (Σ f ꞉ (X → Y) , is-equiv f × ((λ x x' → f (x · x')) ≡ (λ x x' → f x * f x')))
+   (Σ f ꞉ (X → Y) , is-equiv f × ((λ x x' → f (x · x')) ＝ (λ x x' → f x * f x')))
        ≃⟨ Σ-cong (λ f → ×-cong (≃-refl (is-equiv f)) (≃-funext₂ fe fe _ _)) ⟩
-   (Σ f ꞉ (X → Y) , is-equiv f × ((x x' : X) → f (x · x') ≡ f x * f x')) ■
+   (Σ f ꞉ (X → Y) , is-equiv f × ((x x' : X) → f (x · x') ＝ f x * f x')) ■
 
 \end{code}
 
@@ -353,15 +353,15 @@ module ∞-proto-topological-spaces (𝓤 𝓥 : Universe) (ua : is-univalent �
 
  open gsip
        𝓤 (𝓤 ⊔ 𝓥) ua S
-       (λ {A B (f , e) → (λ V → structure A (V ∘ f)) ≡ structure B})
+       (λ {A B (f , e) → (λ V → structure A (V ∘ f)) ＝ structure B})
        (λ A → refl)
        (λ X τ σ → id)
        (λ A τ υ → refl-left-neutral)
 
  fact : (A B : Σ S)
-      → (A ≡ B) ≃ (Σ f ꞉ (⟨ A ⟩ → ⟨ B ⟩)
-                       , is-equiv f × ((λ V → structure A (λ x → V (f x))) ≡ structure B))
- fact = ≡-is-≃ₛ
+      → (A ＝ B) ≃ (Σ f ꞉ (⟨ A ⟩ → ⟨ B ⟩)
+                       , is-equiv f × ((λ V → structure A (λ x → V (f x))) ＝ structure B))
+ fact = ＝-is-≃ₛ
 
 \end{code}
 
@@ -370,13 +370,13 @@ module ∞-proto-topological-spaces (𝓤 𝓥 : Universe) (ua : is-univalent �
 \begin{code}
 
  fact' : (X Y : 𝓤 ̇ ) (τ : (X → R) → R) (σ : (Y → R) → R)
-       → ((X , τ) ≡ (Y , σ)) ≃ (Σ f ꞉ (X → Y) , is-equiv f × ((λ V → τ (V ∘ f)) ≡ σ))
+       → ((X , τ) ＝ (Y , σ)) ≃ (Σ f ꞉ (X → Y) , is-equiv f × ((λ V → τ (V ∘ f)) ＝ σ))
  fact' X Y σ τ = fact (X , σ) (Y , τ)
 
 \end{code}
 
  Again by function extensionality, structure preservation is equivalent
- to (V : Y → R) → τ(V ∘ f) ≡ σ V. We can read this, at least when R is
+ to (V : Y → R) → τ(V ∘ f) ＝ σ V. We can read this, at least when R is
  the type Ω of truth-values, as saying that a set V : Y → R is σ-open
  precisely when its inverse image V ∘ f is τ-open.
 
@@ -397,18 +397,18 @@ module ∞-proto-metric-spaces (𝓤 𝓥 : Universe) (ua : is-univalent 𝓤) (
 
  open gsip
        𝓤 (𝓤 ⊔ 𝓥) ua S
-       (λ {A B (f , e) → structure A ≡ (λ x x' → structure B (f x) (f x'))})
+       (λ {A B (f , e) → structure A ＝ (λ x x' → structure B (f x) (f x'))})
        (λ A → refl)
        (λ X d e → id)
        (λ A s υ → refl-left-neutral)
 
  fact : (A B : Σ S)
-      → (A ≡ B) ≃ (Σ f ꞉ (⟨ A ⟩ → ⟨ B ⟩)
-                       , is-equiv f × (structure A ≡ (λ x x' → structure B (f x) (f x'))))
- fact = ≡-is-≃ₛ
+      → (A ＝ B) ≃ (Σ f ꞉ (⟨ A ⟩ → ⟨ B ⟩)
+                       , is-equiv f × (structure A ＝ (λ x x' → structure B (f x) (f x'))))
+ fact = ＝-is-≃ₛ
 
  fact' : (X Y : 𝓤 ̇ ) (d : X → X → R) (e : Y → Y → R)
-       → ((X , d) ≡ (Y , e)) ≃ (Σ f ꞉ (X → Y) , is-equiv f × (d ≡ (λ x x' → e (f x) (f x'))))
+       → ((X , d) ＝ (Y , e)) ≃ (Σ f ꞉ (X → Y) , is-equiv f × (d ＝ (λ x x' → e (f x) (f x'))))
  fact' X Y σ τ = fact (X , σ) (Y , τ)
 
 \end{code}
@@ -428,18 +428,18 @@ module selection-spaces (𝓤 𝓥 : Universe) (ua : is-univalent 𝓤) (R : �
 
  open gsip
        𝓤 (𝓤 ⊔ 𝓥) ua S
-       (λ {A B (f , e) → (λ V → f (structure A (V ∘ f))) ≡ structure B})
+       (λ {A B (f , e) → (λ V → f (structure A (V ∘ f))) ＝ structure B})
        (λ A → refl)
        (λ X ε δ → id)
        (λ A τ υ → refl-left-neutral)
 
  fact : (A B : Σ S)
-      → (A ≡ B) ≃ (Σ f ꞉ (⟨ A ⟩ → ⟨ B ⟩)
-                       , is-equiv f × ((λ V → f(structure A (λ x → V (f x)))) ≡ structure B))
- fact = ≡-is-≃ₛ
+      → (A ＝ B) ≃ (Σ f ꞉ (⟨ A ⟩ → ⟨ B ⟩)
+                       , is-equiv f × ((λ V → f(structure A (λ x → V (f x)))) ＝ structure B))
+ fact = ＝-is-≃ₛ
 
  fact' : (X Y : 𝓤 ̇ ) (ε : (X → R) → X) (δ : (Y → R) → Y)
-       → ((X , ε) ≡ (Y , δ)) ≃ (Σ f ꞉ (X → Y) , is-equiv f × ((λ V → f (ε (V ∘ f))) ≡ δ))
+       → ((X , ε) ＝ (Y , δ)) ≃ (Σ f ꞉ (X → Y) , is-equiv f × ((λ V → f (ε (V ∘ f))) ＝ δ))
  fact' X Y σ τ = fact (X , σ) (Y , τ)
 
 \end{code}
@@ -469,7 +469,7 @@ module gsip-with-axioms
  (S-refl : (A : Σ S) → S-equiv A A (≃-refl ⟨ A ⟩))
 
  (S-id-structure : (X : 𝓤 ̇ ) (s t : S X)
-                 → S-equiv (X , s) (X , t) (≃-refl X) → s ≡ t)
+                 → S-equiv (X , s) (X , t) (≃-refl X) → s ＝ t)
 
  (S-transport : (A : Σ S)
                 (s : S ⟨ A ⟩)
@@ -478,7 +478,7 @@ module gsip-with-axioms
                    (λ - → S-equiv A (⟨ A ⟩ , -) (≃-refl ⟨ A ⟩))
                    (S-id-structure ⟨ A ⟩ (structure A) s υ)
                    (S-refl A)
-              ≡ υ)
+              ＝ υ)
  where
 
 \end{code}
@@ -497,8 +497,8 @@ module gsip-with-axioms
    S'-refl (X , s , α) = S-refl (X , s)
 
    S'-id-structure : (X : 𝓤 ̇ ) (s' t' : S' X)
-                   → S'-preserving (X , s') (X , t') (≃-refl X) → s' ≡ t'
-   S'-id-structure X (s , α) (t , β) υ' = to-Σ-≡ (S-id-structure X s t υ' ,
+                   → S'-preserving (X , s') (X , t') (≃-refl X) → s' ＝ t'
+   S'-id-structure X (s , α) (t , β) υ' = to-Σ-＝ (S-id-structure X s t υ' ,
                                                    Axioms-is-prop X t _ _)
 
    S'-transport : (A' : Σ S')
@@ -508,24 +508,24 @@ module gsip-with-axioms
                      (λ - → S'-preserving A' (⟨ A' ⟩ , -) (≃-refl ⟨ A' ⟩))
                      (S'-id-structure ⟨ A' ⟩ (structure A') s' υ')
                      (S'-refl A')
-                ≡ υ'
+                ＝ υ'
    S'-transport (X , s , α) (t , β) υ' =
     f (S'-id-structure X (s , α) (t , β) υ')
-        ≡⟨ transport-ap F pr₁ (S'-id-structure X (s , α) (t , β) υ') ⟩
+        ＝⟨ transport-ap F pr₁ (S'-id-structure X (s , α) (t , β) υ') ⟩
     g (ap pr₁ (S'-id-structure X (s , α) (t , β) υ'))
-        ≡⟨ ap g r ⟩
+        ＝⟨ ap g r ⟩
     g (S-id-structure X s t υ')
-        ≡⟨ S-transport (X , s) t υ' ⟩
+        ＝⟨ S-transport (X , s) t υ' ⟩
     υ'  ∎
     where
      F : S X → 𝓤 ⊔ 𝓥 ̇
      F t = S-equiv (X , s) (X  , t) (≃-refl X)
-     f : (s , α) ≡ (t , β) → F t
+     f : (s , α) ＝ (t , β) → F t
      f q = transport (F ∘ pr₁) q (S-refl (X , s))
-     g : s ≡ t → F t
+     g : s ＝ t → F t
      g p = transport F p (S-refl (X , s))
-     r : ap pr₁ (S'-id-structure X (s , α) (t , β) υ') ≡ S-id-structure X s t υ'
-     r = ap-pr₁-to-Σ-≡ _
+     r : ap pr₁ (S'-id-structure X (s , α) (t , β) υ') ＝ S-id-structure X s t υ'
+     r = ap-pr₁-to-Σ-＝ _
 
 \end{code}
 
@@ -573,8 +573,8 @@ type X must a set:
 
  Axioms : (X : 𝓤 ̇ ) → S X → 𝓤 ̇
  Axioms X (_·_ , e) = is-set X
-                    × ((x y z : X) → (x · y) · z ≡ x · (y · z))
-                    × ((x : X) → (e · x ≡ x) × (x · e ≡ x))
+                    × ((x y z : X) → (x · y) · z ＝ x · (y · z))
+                    × ((x : X) → (e · x ＝ x) × (x · e ＝ x))
 
 \end{code}
 
@@ -639,27 +639,27 @@ And now we are ready to apply gsip-with-axioms to our situation:
        𝓤 𝓤 ua S
        Axioms
        Axioms-is-prop
-       (λ {A' B' (f , e) → ((λ x x' → f (mul A' x x')) ≡ (λ x x' → mul B' (f x) (f x')))
-                         × (f (unit A') ≡ unit B')})
+       (λ {A' B' (f , e) → ((λ x x' → f (mul A' x x')) ＝ (λ x x' → mul B' (f x) (f x')))
+                         × (f (unit A') ＝ unit B')})
        (λ A' → refl , refl)
-       (λ X m n υ → to-×-≡ (pr₁ υ) (pr₂ υ))
+       (λ X m n υ → to-×-＝ (pr₁ υ) (pr₂ υ))
        (λ { A' m (refl , refl) → refl })
 
  fact : (A B : Monoid)
-      → (A ≡ B)
+      → (A ＝ B)
       ≃ (Σ f ꞉ (⟨ A ⟩ → ⟨ B ⟩)
              , is-equiv f
-             × ((λ x x' → f (μ A x x')) ≡ (λ x x' → μ B (f x) (f x')))
-             × (f (η A) ≡ η B))
- fact = ≡-is-≃ₛ
+             × ((λ x x' → f (μ A x x')) ＝ (λ x x' → μ B (f x) (f x')))
+             × (f (η A) ＝ η B))
+ fact = ＝-is-≃ₛ
 
  fact' : (X : 𝓤 ̇ ) (_·_ : X → X → X) (d : X) (α : Axioms X (_·_ , d))
          (Y : 𝓤 ̇ ) (_*_ : Y → Y → Y) (e : Y) (β : Axioms Y (_*_ , e))
-       → ((X , (_·_ , d) , α) ≡ (Y , (_*_ , e) , β))
+       → ((X , (_·_ , d) , α) ＝ (Y , (_*_ , e) , β))
        ≃ (Σ f ꞉ (X → Y)
               , is-equiv f
-              × ((λ x x' → f (x · x')) ≡ (λ x x' → f x * f x'))
-              × (f d ≡ e))
+              × ((λ x x' → f (x · x')) ＝ (λ x x' → f x * f x'))
+              × (f d ＝ e))
  fact' X _·_ d α Y _*_ e β = fact (X , ((_·_ , d) , α)) (Y , ((_*_ , e) , β))
 
 \end{code}
@@ -694,7 +694,7 @@ module gsip'
   (S-refl : (A : Σ S) → S-equiv A A (≃-refl ⟨ A ⟩))
 
   (S-id-structure : (X : 𝓤 ̇ ) (s t : S X)
-                  → S-equiv (X , s) (X , t) (≃-refl X) → s ≡ t)
+                  → S-equiv (X , s) (X , t) (≃-refl X) → s ＝ t)
 
   (S-transport : (A : Σ S)
                  (s : S ⟨ A ⟩)
@@ -703,7 +703,7 @@ module gsip'
                     (λ - → S-equiv A (⟨ A ⟩ , -) (≃-refl ⟨ A ⟩))
                     (S-id-structure ⟨ A ⟩ (structure A) s υ)
                     (S-refl A)
-               ≡ υ)
+               ＝ υ)
   where
 
   _≃ₛ_ : Σ S → Σ S → 𝓤 ⊔ 𝓦 ̇
@@ -712,45 +712,45 @@ module gsip'
   ≃ₛ-refl : (A : Σ S) → A ≃ₛ A
   ≃ₛ-refl A = pr₁(≃-refl ⟨ A ⟩) , pr₂(≃-refl ⟨ A ⟩) , S-refl A
 
-  idtoeqₛ : (A B : Σ S) → A ≡ B → A ≃ₛ B
+  idtoeqₛ : (A B : Σ S) → A ＝ B → A ≃ₛ B
   idtoeqₛ A .A refl = ≃ₛ-refl A
 
   private
     Ψ : (A : Σ S) (Y : 𝓤 ̇ ) → ⟨ A ⟩ ≃ Y → 𝓤 ⁺ ⊔ 𝓥 ⊔ 𝓦 ̇
-    Ψ A Y e = (s : S Y) → S-equiv A (Y , s) e → A ≡ (Y , s)
+    Ψ A Y e = (s : S Y) → S-equiv A (Y , s) e → A ＝ (Y , s)
     ψ : (A : Σ S) → Ψ A ⟨ A ⟩ (≃-refl ⟨ A ⟩)
-    ψ A s υ = to-Σ-≡' (S-id-structure ⟨ A ⟩ (structure A) s υ)
+    ψ A s υ = to-Σ-＝' (S-id-structure ⟨ A ⟩ (structure A) s υ)
 
-  eqtoidₛ : (A B : Σ S) → A ≃ₛ B → A ≡ B
+  eqtoidₛ : (A B : Σ S) → A ≃ₛ B → A ＝ B
   eqtoidₛ A B (f , e , υ) = JEq ua ⟨ A ⟩ (Ψ A) (ψ A) ⟨ B ⟩ (f , e) (structure B) υ
 
-  idtoeq-eqtoidₛ : (A B : Σ S) (ε : A ≃ₛ B) → idtoeqₛ A B (eqtoidₛ A B ε) ≡ ε
+  idtoeq-eqtoidₛ : (A B : Σ S) (ε : A ≃ₛ B) → idtoeqₛ A B (eqtoidₛ A B ε) ＝ ε
   idtoeq-eqtoidₛ A B (f , e , υ) = JEq ua ⟨ A ⟩ Φ φ ⟨ B ⟩ (f , e) (structure B) υ
    where
     Φ : (Y : 𝓤 ̇ ) → ⟨ A ⟩ ≃ Y → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
     Φ Y (f , e) = (s : S Y)
                   (υ : S-equiv A (Y , s) (f , e))
-                 → idtoeqₛ A (Y , s) (eqtoidₛ A (Y , s) (f , e , υ)) ≡ f , e , υ
+                 → idtoeqₛ A (Y , s) (eqtoidₛ A (Y , s) (f , e , υ)) ＝ f , e , υ
     φ : Φ ⟨ A ⟩ (≃-refl ⟨ A ⟩)
     φ s υ =
       idtoeqₛ A A' (eqtoidₛ A A' refl')
-            ≡⟨ ap (λ h → idtoeqₛ A A' (h s υ)) (JEq-comp ua ⟨ A ⟩ (Ψ A) (ψ A)) ⟩
-      idtoeqₛ A A' (to-Σ-≡' p)
-            ≡⟨ h p ⟩
+            ＝⟨ ap (λ h → idtoeqₛ A A' (h s υ)) (JEq-comp ua ⟨ A ⟩ (Ψ A) (ψ A)) ⟩
+      idtoeqₛ A A' (to-Σ-＝' p)
+            ＝⟨ h p ⟩
       pr₁(≃-refl ⟨ A ⟩) , pr₂(≃-refl ⟨ A ⟩) , g p
-            ≡⟨ to-Σ-≡' (to-Σ-≡' (S-transport A s υ)) ⟩
+            ＝⟨ to-Σ-＝' (to-Σ-＝' (S-transport A s υ)) ⟩
       refl' ∎
      where
       A' : Σ S
       A' = ⟨ A ⟩ , s
       refl' : A ≃ₛ A'
       refl' = pr₁(≃-refl ⟨ A ⟩) , pr₂(≃-refl ⟨ A ⟩) , υ
-      g : structure A ≡ s → S-equiv A A' (≃-refl ⟨ A ⟩)
+      g : structure A ＝ s → S-equiv A A' (≃-refl ⟨ A ⟩)
       g p = transport (λ - → S-equiv A (⟨ A ⟩ , -) (≃-refl ⟨ A ⟩)) p (S-refl A)
-      h : (p : structure A ≡ s) → idtoeqₛ A A' (to-Σ-≡' p)
-                                ≡ pr₁(≃-refl ⟨ A ⟩) , pr₂(≃-refl ⟨ A ⟩) , g p
+      h : (p : structure A ＝ s) → idtoeqₛ A A' (to-Σ-＝' p)
+                                ＝ pr₁(≃-refl ⟨ A ⟩) , pr₂(≃-refl ⟨ A ⟩) , g p
       h refl = refl
-      p : structure A ≡ s
+      p : structure A ＝ s
       p = S-id-structure ⟨ A ⟩ (structure A) s υ
 
   uaₛ : (A B : Σ S) → is-equiv (idtoeqₛ A B)
@@ -758,11 +758,11 @@ module gsip'
             (idtoeqₛ A)
             (λ B → eqtoidₛ A B , idtoeq-eqtoidₛ A B)
 
-  eqtoid-idtoeqₛ : (A B : Σ S) (p : A ≡ B) → eqtoidₛ A B (idtoeqₛ A B p) ≡ p
+  eqtoid-idtoeqₛ : (A B : Σ S) (p : A ＝ B) → eqtoidₛ A B (idtoeqₛ A B p) ＝ p
   eqtoid-idtoeqₛ A B = pr₁(pr₂ (equivs-are-qinvs (idtoeqₛ A B) (uaₛ A B)))
 
-  ≡-is-≃ₛ : (A B : Σ S) → (A ≡ B) ≃ (A ≃ₛ B)
-  ≡-is-≃ₛ A B = idtoeqₛ A B , uaₛ A B
+  ＝-is-≃ₛ : (A B : Σ S) → (A ＝ B) ≃ (A ≃ₛ B)
+  ＝-is-≃ₛ A B = idtoeqₛ A B , uaₛ A B
 
   _≃ₛ'_ : Σ S → Σ S → 𝓤 ⊔ 𝓦 ̇
   A ≃ₛ' B = Σ p ꞉ ⟨ A ⟩ ≃ ⟨ B ⟩ , S-equiv A B (pr₁ p , pr₂ p)
@@ -770,8 +770,8 @@ module gsip'
   ≃ₛ-is-≃ₛ' : (A B : Σ S) → (A ≃ₛ B) ≃ (A ≃ₛ' B)
   ≃ₛ-is-≃ₛ' A B = ≃-sym Σ-assoc
 
-  ≡-is-≃ₛ' : (A B : Σ S) → (A ≡ B) ≃ (A ≃ₛ' B)
-  ≡-is-≃ₛ' A B = (≡-is-≃ₛ A B) ● (≃ₛ-is-≃ₛ' A B)
+  ＝-is-≃ₛ' : (A B : Σ S) → (A ＝ B) ≃ (A ≃ₛ' B)
+  ＝-is-≃ₛ' A B = (＝-is-≃ₛ A B) ● (≃ₛ-is-≃ₛ' A B)
 
 module gsip-with-axioms'
 
@@ -790,7 +790,7 @@ module gsip-with-axioms'
  (S-refl : (A : Σ S) → S-equiv A A (≃-refl ⟨ A ⟩))
 
  (S-id-structure : (X : 𝓤 ̇ ) (s t : S X)
-                 → S-equiv (X , s) (X , t) (≃-refl X) → s ≡ t)
+                 → S-equiv (X , s) (X , t) (≃-refl X) → s ＝ t)
 
  (S-transport : (A : Σ S)
                 (s : S ⟨ A ⟩)
@@ -799,7 +799,7 @@ module gsip-with-axioms'
                    (λ - → S-equiv A (⟨ A ⟩ , -) (≃-refl ⟨ A ⟩))
                    (S-id-structure ⟨ A ⟩ (structure A) s υ)
                    (S-refl A)
-              ≡ υ)
+              ＝ υ)
  where
 
    S' : 𝓤 ̇ → 𝓥 ⊔ 𝓣 ̇
@@ -812,8 +812,8 @@ module gsip-with-axioms'
    S'-refl (X , s , α) = S-refl (X , s)
 
    S'-id-structure : (X : 𝓤 ̇ ) (s' t' : S' X)
-                   → S'-preserving (X , s') (X , t') (≃-refl X) → s' ≡ t'
-   S'-id-structure X (s , α) (t , β) υ' = to-Σ-≡ (S-id-structure X s t υ' ,
+                   → S'-preserving (X , s') (X , t') (≃-refl X) → s' ＝ t'
+   S'-id-structure X (s , α) (t , β) υ' = to-Σ-＝ (S-id-structure X s t υ' ,
                                                    Axioms-is-prop X t _ _)
 
    S'-transport : (A' : Σ S')
@@ -823,24 +823,24 @@ module gsip-with-axioms'
                      (λ - → S'-preserving A' (⟨ A' ⟩ , -) (≃-refl ⟨ A' ⟩))
                      (S'-id-structure ⟨ A' ⟩ (structure A') s' υ')
                      (S'-refl A')
-                ≡ υ'
+                ＝ υ'
    S'-transport (X , s , α) (t , β) υ' =
     f (S'-id-structure X (s , α) (t , β) υ')
-        ≡⟨ transport-ap F pr₁ (S'-id-structure X (s , α) (t , β) υ') ⟩
+        ＝⟨ transport-ap F pr₁ (S'-id-structure X (s , α) (t , β) υ') ⟩
     g (ap pr₁ (S'-id-structure X (s , α) (t , β) υ'))
-        ≡⟨ ap g r ⟩
+        ＝⟨ ap g r ⟩
     g (S-id-structure X s t υ')
-        ≡⟨ S-transport (X , s) t υ' ⟩
+        ＝⟨ S-transport (X , s) t υ' ⟩
     υ'  ∎
     where
      F : S X → 𝓦 ̇
      F t = S-equiv (X , s) (X  , t) (≃-refl X)
-     f : (s , α) ≡ (t , β) → F t
+     f : (s , α) ＝ (t , β) → F t
      f q = transport (F ∘ pr₁) q (S-refl (X , s))
-     g : s ≡ t → F t
+     g : s ＝ t → F t
      g p = transport F p (S-refl (X , s))
-     r : ap pr₁ (S'-id-structure X (s , α) (t , β) υ') ≡ S-id-structure X s t υ'
-     r = ap-pr₁-to-Σ-≡ _
+     r : ap pr₁ (S'-id-structure X (s , α) (t , β) υ') ＝ S-id-structure X s t υ'
+     r = ap-pr₁-to-Σ-＝ _
 
    open gsip' 𝓤 (𝓥 ⊔ 𝓣) 𝓦 ua S' S'-preserving S'-refl S'-id-structure S'-transport public
 

@@ -47,7 +47,7 @@ prev : {x : X}
 prev (step a) = a
 
 prev-behaviour : (x : X) (a : is-accessible x)
-               → step (prev a) ≡ a
+               → step (prev a) ＝ a
 prev-behaviour = accessible-induction _ (λ _ _ _ → refl)
 
 transfinite-induction' :  (P : X → 𝓦 ̇ )
@@ -99,10 +99,10 @@ extensional-po-is-prop-valued fe isp x y =
 ≼-trans f g u l = g u (f u l)
 
 is-extensional : 𝓤 ⊔ 𝓥 ̇
-is-extensional = (x y : X) → x ≼ y → y ≼ x → x ≡ y
+is-extensional = (x y : X) → x ≼ y → y ≼ x → x ＝ y
 
 is-extensional' : 𝓤 ⊔ 𝓥 ̇
-is-extensional' = (x y : X) → ((u : X) → (u < x) ⇔ (u < y)) → x ≡ y
+is-extensional' = (x y : X) → ((u : X) → (u < x) ⇔ (u < y)) → x ＝ y
 
 extensional-gives-extensional' : is-extensional → is-extensional'
 extensional-gives-extensional' e x y f = e x y
@@ -143,19 +143,19 @@ accessibility-is-prop : FunExt
 accessibility-is-prop fe = accessible-induction P φ
  where
   P : (x : X) → is-accessible x → 𝓤 ⊔ 𝓥 ̇
-  P x a = (b : is-accessible x) → a ≡ b
+  P x a = (b : is-accessible x) → a ＝ b
 
   φ : (x : X) (σ : (y : X) → y < x → is-accessible y)
-    → ((y : X) (l : y < x) (a : is-accessible y) → σ y l ≡ a)
-    → (b : is-accessible x) → step σ ≡ b
-  φ x σ IH b = step σ ≡⟨ i ⟩
-               step τ ≡⟨ prev-behaviour x b ⟩
+    → ((y : X) (l : y < x) (a : is-accessible y) → σ y l ＝ a)
+    → (b : is-accessible x) → step σ ＝ b
+  φ x σ IH b = step σ ＝⟨ i ⟩
+               step τ ＝⟨ prev-behaviour x b ⟩
                b      ∎
    where
     τ : (y : X) → y < x → is-accessible y
     τ = prev b
 
-    h :  (y : X) (l : y < x) → σ y l ≡ τ y l
+    h :  (y : X) (l : y < x) → σ y l ＝ τ y l
     h y l = IH y l (τ y l)
 
     i = ap step
@@ -171,11 +171,11 @@ extensionally-ordered-types-are-sets : FunExt
                                      → is-set X
 extensionally-ordered-types-are-sets fe isp e = γ
  where
-  f : {x y :  X} → x ≡ y → x ≡ y
+  f : {x y :  X} → x ＝ y → x ＝ y
   f {x} {y} p = e x y (transport (x ≼_) p (≼-refl {x}))
                       (transport (_≼ x) p (≼-refl {x}))
 
-  ec : {x y : X} {l l' : x ≼ y} {m m' : y ≼ x} → e x y l m ≡ e x y l' m'
+  ec : {x y : X} {l l' : x ≼ y} {m m' : y ≼ x} → e x y l m ＝ e x y l' m'
   ec {x} {y} {l} {l'} {m} {m'} = ap₂ (e x y)
                                      (extensional-po-is-prop-valued fe isp x y l l')
                                      (extensional-po-is-prop-valued fe isp y x m m')
@@ -322,7 +322,7 @@ the time of writing, namely 11th January 2021).
 \begin{code}
 
 in-trichotomy : (x y : X) → 𝓤 ⊔ 𝓥 ̇
-in-trichotomy x y = (x < y) + (x ≡ y) + (y < x)
+in-trichotomy x y = (x < y) + (x ＝ y) + (y < x)
 
 is-trichotomous-element : X → 𝓤 ⊔ 𝓥 ̇
 is-trichotomous-element x = (y : X) → in-trichotomy x y
@@ -334,8 +334,8 @@ is-trichotomous-order = (x : X) → is-trichotomous-element x
 >-implies-in-trichotomy : {x y : X} → (x < y) → in-trichotomy x y
 >-implies-in-trichotomy = inl
 
-≡-implies-in-trichotomy : {x y : X} → (x ≡ y) → in-trichotomy x y
-≡-implies-in-trichotomy = inr ∘ inl
+＝-implies-in-trichotomy : {x y : X} → (x ＝ y) → in-trichotomy x y
+＝-implies-in-trichotomy = inr ∘ inl
 
 <-implies-in-trichotomy : {x y : X} → (y < x) → in-trichotomy x y
 <-implies-in-trichotomy = inr ∘ inr
@@ -349,10 +349,10 @@ _>_ : (x y : X) → 𝓥 ̇
 x > y = y < x
 
 _≦_ : (x y : X) → 𝓤 ⊔ 𝓥 ̇
-x ≦ y = (x < y) + (y ≡ x)
+x ≦ y = (x < y) + (y ＝ x)
 
 _≧_ : (x y : X) → 𝓤 ⊔ 𝓥 ̇
-x ≧ y = (x ≡ y) + (y < x)
+x ≧ y = (x ＝ y) + (y < x)
 
 ≧-implies-≦ : {x y : X} → x ≧ y → y ≦ x
 ≧-implies-≦ x-geq-y = +-commutative x-geq-y
@@ -364,7 +364,7 @@ x ≧ y = (x ≡ y) + (y < x)
 ≧-implies-in-trichotomy = inr
 
 ≦-implies-in-trichotomy : {x y : X} → x ≦ y → in-trichotomy x y
-≦-implies-in-trichotomy = cases inl (≡-implies-in-trichotomy ∘ _⁻¹)
+≦-implies-in-trichotomy = cases inl (＝-implies-in-trichotomy ∘ _⁻¹)
 
 in-trichotomy-not->-implies-≦ : {x y : X} → in-trichotomy x y → ¬ (y < x) → x ≦ y
 in-trichotomy-not->-implies-≦ (inl x-lt-y) y-not-lt-x = inl x-lt-y
@@ -432,7 +432,7 @@ trichotomous-gives-discrete : is-well-founded
                             → is-discrete X
 trichotomous-gives-discrete w t x y = f (t x y)
  where
-  f : (x < y) + (x ≡ y) + (y < x) → (x ≡ y) + (x ≢ y)
+  f : (x < y) + (x ＝ y) + (y < x) → (x ＝ y) + (x ≢ y)
   f (inl l)       = inr (<-gives-≢ w x y l)
   f (inr (inl p)) = inl p
   f (inr (inr l)) = inr (≢-sym (<-gives-≢ w y x l))
@@ -461,7 +461,7 @@ trichotomy : funext (𝓤 ⊔ 𝓥) 𝓤₀
 trichotomy fe em (p , w , e , t) = γ
  where
   P : X → X → 𝓤 ⊔ 𝓥 ̇
-  P x y = (x < y) + (x ≡ y) + (y < x)
+  P x y = (x < y) + (x ＝ y) + (y < x)
 
   γ : (x y : X) → P x y
   γ = transfinite-induction w (λ x → ∀ y → P x y) ϕ
@@ -476,7 +476,7 @@ trichotomy fe em (p , w , e , t) = γ
         → P x y
       ψ y IH-y = δ
        where
-        A = Σ x' ꞉ X , (x' < x) × ((y < x') + (x' ≡ y))
+        A = Σ x' ꞉ X , (x' < x) × ((y < x') + (x' ＝ y))
 
         ¬¬A-gives-P : ¬¬ A → P x y
         ¬¬A-gives-P = b
@@ -485,19 +485,19 @@ trichotomy fe em (p , w , e , t) = γ
           a (x' , l , inl m) = t y x' x m l
           a (x' , l , inr p) = transport (_< x) p l
 
-          b : ¬¬ A → (x < y) + (x ≡ y) + (y < x)
+          b : ¬¬ A → (x < y) + (x ＝ y) + (y < x)
           b = inr ∘ inr ∘ EM-gives-DNE (lower-EM 𝓤 em) (y < x) (p y x) ∘ ¬¬-functor a
 
         ¬A-gives-≼ : ¬ A → x ≼ y
         ¬A-gives-≼ ν x' l = d
          where
-          a : ¬ ((y < x') + (x' ≡ y))
+          a : ¬ ((y < x') + (x' ＝ y))
           a f = ν (x' , l , f)
 
           b : P x' y
           b = IH-x x' l y
 
-          c : ¬ ((y < x') + (x' ≡ y)) → P x' y → x' < y
+          c : ¬ ((y < x') + (x' ＝ y)) → P x' y → x' < y
           c g (inl i)         = i
           c g (inr (inl ii))  = 𝟘-elim (g (inr ii))
           c g (inr (inr iii)) = 𝟘-elim (g (inl iii))
@@ -505,7 +505,7 @@ trichotomy fe em (p , w , e , t) = γ
           d : x' < y
           d = c a b
 
-        B = Σ y' ꞉ X , (y' < y) × ((x < y') + (x ≡ y'))
+        B = Σ y' ꞉ X , (y' < y) × ((x < y') + (x ＝ y'))
 
         ¬¬B-gives-P : ¬¬ B → P x y
         ¬¬B-gives-P = b
@@ -514,19 +514,19 @@ trichotomy fe em (p , w , e , t) = γ
           a (y' , l , inl m) = t x y' y m l
           a (y' , l , inr p) = transport (_< y) (p ⁻¹) l
 
-          b : ¬¬ B → (x < y) + (x ≡ y) + (y < x)
+          b : ¬¬ B → (x < y) + (x ＝ y) + (y < x)
           b = inl ∘ EM-gives-DNE (lower-EM 𝓤 em) (x < y) (p x y) ∘ ¬¬-functor a
 
         ¬B-gives-≼ : ¬ B → y ≼ x
         ¬B-gives-≼ ν y' l = d
          where
-          a : ¬ ((x < y') + (x ≡ y'))
+          a : ¬ ((x < y') + (x ＝ y'))
           a f = ν (y' , l , f)
 
           b : P x y'
           b = IH-y y' l
 
-          c : ¬ ((x < y') + (x ≡ y')) → P x y' → y' < x
+          c : ¬ ((x < y') + (x ＝ y')) → P x y' → y' < x
           c g (inl i)         = 𝟘-elim (g (inl i))
           c g (inr (inl ii))  = 𝟘-elim (g (inr ii))
           c g (inr (inr iii)) = iii
@@ -537,10 +537,10 @@ trichotomy fe em (p , w , e , t) = γ
         ¬A-and-¬B-give-P : ¬ A → ¬ B → P x y
         ¬A-and-¬B-give-P ν ν' = b
          where
-          a : ¬ A → ¬ B → x ≡ y
+          a : ¬ A → ¬ B → x ＝ y
           a ν ν' = e x y (¬A-gives-≼ ν) (¬B-gives-≼ ν')
 
-          b : (x < y) + (x ≡ y) + (y < x)
+          b : (x < y) + (x ＝ y) + (y < x)
           b = inr (inl (a ν ν'))
 
         δ : P x y
@@ -567,7 +567,7 @@ The crucial observation (`lemma`) is that, under the outer induction
 hypothesis for u, the relations (_≼ u) and (_≦ u) coincide. We prove
 this observation by appealing to LEM to get that either u ≼ x or there
 is a witness i < u but ¬ (i < x). The former means (by extensionality)
-that u ≡ x. In the latter case, the witness i satisfies the induction
+that u ＝ x. In the latter case, the witness i satisfies the induction
 hypothesis, and so is in trichotomy with x, which by elimination means
 i >= x, so u > i >= x.
 
@@ -637,7 +637,7 @@ not-<-gives-≼ : funext (𝓤 ⊔ 𝓥) 𝓤₀
               → (x y : X) → ¬ (x < y) → y ≼ x
 not-<-gives-≼ fe em wo@(p , w , e , t) x y = γ (trichotomy fe em wo x y)
  where
-  γ : (x < y) + (x ≡ y) + (y < x) → ¬ (x < y) → y ≼ x
+  γ : (x < y) + (x ＝ y) + (y < x) → ¬ (x < y) → y ≼ x
   γ (inl l)       ν = 𝟘-elim (ν l)
   γ (inr (inl e)) ν = transport (_≼ x) e ≼-refl
   γ (inr (inr m)) ν = <-gives-≼ t m
@@ -648,7 +648,7 @@ not-<-gives-≼ fe em wo@(p , w , e , t) x y = γ (trichotomy fe em wo x y)
        → (x y : X) → (x ≼ y) + y < x
 ≼-or-> fe em wo@(p , w , e , t) x y = γ (trichotomy fe em wo x y)
  where
-  γ : (x < y) + (x ≡ y) + (y < x) → (x ≼ y) + (y < x)
+  γ : (x < y) + (x ＝ y) + (y < x) → (x ≼ y) + (y < x)
   γ (inl l)       = inl (<-gives-≼ t l)
   γ (inr (inl e)) = inl (transport (x ≼_) e ≼-refl)
   γ (inr (inr m)) = inr m
@@ -707,12 +707,12 @@ module _
    i x = ×-is-prop (A-is-prop-valued x) (j x)
 
    B-is-prop : is-prop B
-   B-is-prop (x , a , f) (x' , a' , f') = to-subtype-≡ i q
+   B-is-prop (x , a , f) (x' , a' , f') = to-subtype-＝ i q
     where
-     q : x ≡ x'
+     q : x ＝ x'
      q = k (trichotomy fe em W x x')
       where
-       k : (x < x') + (x ≡ x') + (x' < x) → x ≡ x'
+       k : (x < x') + (x ＝ x') + (x' < x) → x ＝ x'
        k (inl l)       = 𝟘-elim (f' x a l)
        k (inr (inl p)) = p
        k (inr (inr l)) = 𝟘-elim (f x' a' l)
@@ -744,7 +744,7 @@ cotransitive-≾-gives-≼ c x y n u l = γ (c u x y l)
 tricho-gives-cotrans : is-transitive → is-trichotomous-order → cotransitive
 tricho-gives-cotrans tra tri x y z l = γ (tri z y)
  where
-  γ : (z < y) + (z ≡ y) + (y < z) → (x < z) + (z < y)
+  γ : (z < y) + (z ＝ y) + (y < z) → (x < z) + (z < y)
   γ (inl m)          = inr m
   γ (inr (inl refl)) = inl l
   γ (inr (inr m))    = inl (tra x y z l m)
@@ -766,11 +766,11 @@ well-founded in the standard, stronger, sense.
 \begin{code}
 
 is-well-founded₂ : 𝓤 ⊔ 𝓥 ̇
-is-well-founded₂ = (p : X → 𝟚) → ((x : X) → ((y : X) → y < x → p y ≡ ₁) → p x ≡ ₁)
-                               → (x : X) → p x ≡ ₁
+is-well-founded₂ = (p : X → 𝟚) → ((x : X) → ((y : X) → y < x → p y ＝ ₁) → p x ＝ ₁)
+                               → (x : X) → p x ＝ ₁
 
 well-founded-Wellfounded₂ : is-well-founded → is-well-founded₂
-well-founded-Wellfounded₂ w p = transfinite-induction w (λ x → p x ≡ ₁)
+well-founded-Wellfounded₂ w p = transfinite-induction w (λ x → p x ＝ ₁)
 
 open import UF.Miscelanea
 
@@ -821,9 +821,9 @@ x ≺₂ y = Σ p ꞉ (X → 𝟚) , (p x <₂ p y)
                                   × (p u <₂ p v → u < v)))
     → (x < z) + (z < y)
   g (p , m , ϕ) = Cases (𝟚-is-discrete (p z) ₀)
-                   (λ (t : p z ≡ ₀)
-                            →  inr (pr₂ (ϕ z y) (Lemma[a≡₀→b<c→a<c] t m)))
-                   (λ (t : ¬ (p z ≡ ₀))
+                   (λ (t : p z ＝ ₀)
+                            →  inr (pr₂ (ϕ z y) (Lemma[a＝₀→b<c→a<c] t m)))
+                   (λ (t : ¬ (p z ＝ ₀))
                             → inl (pr₂ (ϕ x z) (Lemma[a<b→c≢₀→a<c] m t)))
 \end{code}
 

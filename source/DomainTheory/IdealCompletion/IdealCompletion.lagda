@@ -181,7 +181,7 @@ module Ideals
        t : is-transitive _⊑_
        t I J K = ⊆-trans' (carrier I) (carrier J) (carrier K)
        a : is-antisymmetric _⊑_
-       a I J u v = to-subtype-≡
+       a I J u v = to-subtype-＝
                     (λ K → being-ideal-is-prop K)
                     (subset-extensionality'' pe fe fe u v)
      dc : is-directed-complete _⊑_

@@ -22,9 +22,9 @@ record Lift {𝓤 : Universe} (𝓥 : Universe) (X : 𝓤 ̇ ) : 𝓤 ⊔ 𝓥 �
 
 open Lift public
 
-type-of-Lift  :             type-of (Lift  {𝓤} 𝓥)       ≡ (𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇ )
-type-of-lift  : {X : 𝓤 ̇ } → type-of (lift  {𝓤} {𝓥} {X}) ≡ (X → Lift 𝓥 X)
-type-of-lower : {X : 𝓤 ̇ } → type-of (lower {𝓤} {𝓥} {X}) ≡ (Lift 𝓥 X → X)
+type-of-Lift  :             type-of (Lift  {𝓤} 𝓥)       ＝ (𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇ )
+type-of-lift  : {X : 𝓤 ̇ } → type-of (lift  {𝓤} {𝓥} {X}) ＝ (X → Lift 𝓥 X)
+type-of-lower : {X : 𝓤 ̇ } → type-of (lower {𝓤} {𝓥} {X}) ＝ (Lift 𝓥 X → X)
 
 type-of-Lift  = refl _
 type-of-lift  = refl _
@@ -41,10 +41,10 @@ Lift-recursion : ∀ {𝓤} 𝓥 {X : 𝓤 ̇ } {B : 𝓦 ̇ }
 
 Lift-recursion 𝓥 {X} {B} = Lift-induction 𝓥 X (λ _ → B)
 
-lower-lift : {X : 𝓤 ̇ } (x : X) → lower {𝓤} {𝓥} (lift x) ≡ x
+lower-lift : {X : 𝓤 ̇ } (x : X) → lower {𝓤} {𝓥} (lift x) ＝ x
 lower-lift = refl
 
-lift-lower : {X : 𝓤 ̇ } (l : Lift 𝓥 X) → lift (lower l) ≡ l
+lift-lower : {X : 𝓤 ̇ } (l : Lift 𝓥 X) → lift (lower l) ＝ l
 lift-lower = refl
 
 Lift-≃ : (X : 𝓤 ̇ ) → Lift 𝓥 X ≃ X
@@ -68,10 +68,10 @@ lower-dfunext 𝓦 𝓣 𝓤 𝓥 fe {X} {A} {f} {g} h = p
   h' : f' ∼ g'
   h' y = ap lift (h (lower y))
 
-  p' : f' ≡ g'
+  p' : f' ＝ g'
   p' = fe h'
 
-  p : f ≡ g
+  p : f ＝ g
   p = ap (λ f' x → lower (f' (lift x))) p'
 
 universe-embedding-criterion : is-univalent 𝓤
@@ -91,11 +91,11 @@ universe-embedding-criterion {𝓤} {𝓥} ua ua' f e = embedding-criterion f γ
   fe₁ : dfunext 𝓤 (𝓤 ⊔ 𝓥)
   fe₁ = lower-dfunext 𝓥 𝓥 𝓤 (𝓤 ⊔ 𝓥) fe
 
-  γ : (X X' : 𝓤 ̇ ) → (f X ≡ f X') ≃ (X ≡ X')
-  γ X X' =  (f X ≡ f X')  ≃⟨ i ⟩
+  γ : (X X' : 𝓤 ̇ ) → (f X ＝ f X') ≃ (X ＝ X')
+  γ X X' =  (f X ＝ f X')  ≃⟨ i ⟩
             (f X ≃ f X')  ≃⟨ ii ⟩
             (X ≃ X')      ≃⟨ iii ⟩
-            (X ≡ X')      ■
+            (X ＝ X')      ■
    where
     i   = univalence-≃ ua' (f X) (f X')
     ii  = Eq-Eq-cong' fe fe fe fe fe fe₀ fe₁ fe fe₀ fe₀ fe₀ fe₀ (e X) (e X')
@@ -131,21 +131,21 @@ module _ {𝓤 𝓥 : Universe}
  univalence→' : (X : 𝓤 ̇ ) → is-subsingleton (Σ Y ꞉ 𝓥 ̇ , X ≃ Y)
  univalence→' X = s
   where
-   e : (Y : 𝓥 ̇ ) → (X ≃ Y) ≃ (Lift 𝓤 Y ≡ Lift 𝓥 X)
+   e : (Y : 𝓥 ̇ ) → (X ≃ Y) ≃ (Lift 𝓤 Y ＝ Lift 𝓥 X)
    e Y = (X ≃ Y)                 ≃⟨ i ⟩
          (Y ≃ X)                 ≃⟨ ii ⟩
          (Lift 𝓤 Y ≃ Lift 𝓥 X)   ≃⟨ iii ⟩
-         (Lift 𝓤 Y ≡ Lift 𝓥 X)   ■
+         (Lift 𝓤 Y ＝ Lift 𝓥 X)   ■
     where
      i   = ≃-Sym fe₀ fe₁ fe
      ii  = Eq-Eq-cong' fe₁ fe fe₂ fe₁ fe fe fe fe₃
              fe fe fe fe (≃-Lift Y) (≃-Lift X)
      iii = ≃-sym (univalence-≃ ua' (Lift 𝓤 Y) (Lift 𝓥 X))
 
-   d : (Σ Y ꞉ 𝓥 ̇ , X ≃ Y) ≃ (Σ Y ꞉ 𝓥 ̇ , Lift 𝓤 Y ≡ Lift 𝓥 X)
+   d : (Σ Y ꞉ 𝓥 ̇ , X ≃ Y) ≃ (Σ Y ꞉ 𝓥 ̇ , Lift 𝓤 Y ＝ Lift 𝓥 X)
    d = Σ-cong e
 
-   j : is-subsingleton (Σ Y ꞉ 𝓥 ̇ , Lift 𝓤 Y ≡ Lift 𝓥 X)
+   j : is-subsingleton (Σ Y ꞉ 𝓥 ̇ , Lift 𝓤 Y ＝ Lift 𝓥 X)
    j = Lift-is-embedding ua ua' (Lift 𝓥 X)
 
    abstract
@@ -180,7 +180,7 @@ G↑-≃ {𝓤} {𝓥} ua X A a Y e = transport A p a
   t : Σ Y ꞉ 𝓤 ⊔ 𝓥 ̇ , X ≃ Y
   t = (Lift 𝓥 X , ≃-Lift X)
 
-  p : t ≡ (Y , e)
+  p : t ＝ (Y , e)
   p = univalence→'' {𝓤} {𝓥} ua X t (Y , e)
 
 H↑-≃ : is-univalent (𝓤 ⊔ 𝓥)
@@ -247,7 +247,7 @@ G↓-≃ {𝓤} {𝓥} ua Y A a X e = transport A p a
   t : Σ X ꞉ 𝓤 ⊔ 𝓥 ̇ , X ≃ Y
   t = (Lift 𝓥 Y , Lift-≃ Y)
 
-  p : t ≡ (X , e)
+  p : t ＝ (X , e)
   p = univalence→'-dual {𝓤} {𝓤 ⊔ 𝓥} ua ua Y t (X , e)
 
 H↓-≃ : is-univalent (𝓤 ⊔ 𝓥)
@@ -346,10 +346,10 @@ global-≃-ap' {𝓤} {𝓥} ua F A φ X Y e =
       Y        ≃⟨ ≃-sym (Lift-≃ Y) ⟩
       Lift 𝓤 Y ■
 
-  p : Lift 𝓥 X ≡ Lift 𝓤 Y
+  p : Lift 𝓥 X ＝ Lift 𝓤 Y
   p = Eq→Id (ua (𝓤 ⊔ 𝓥)) (Lift 𝓥 X) (Lift 𝓤 Y) d
 
-  q : A (Lift 𝓥 X) ≡ A (Lift 𝓤 Y)
+  q : A (Lift 𝓥 X) ＝ A (Lift 𝓤 Y)
   q = ap A p
 
 global-≃-ap ua = global-≃-ap' ua id

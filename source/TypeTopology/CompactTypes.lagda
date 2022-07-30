@@ -6,22 +6,22 @@ of searchability, and we investigate this phenomenon in this module
 and the module WeaklyCompactTypes.
 
 Perhaps surprisingly, there are infinite searchable sets, such as ℕ∞
-(see the module GenericConvergentSequenceCompact).
+(see the module GenericConvergentSequenceCompactness).
 
 It is in general not possible to decide constructively the statement
 
-  Σ x ꞉ X , p x ≡ ₀
+  Σ x ꞉ X , p x ＝ ₀
 
 that a given function p : X → 𝟚 defined on a type X has a root.
 
 We say that a type X is Σ-compact, or simply compact for short, if
 this statement is decidable for every p : X → 𝟚. This is equivalent to
 
-  Π p ꞉ X → 𝟚 , (Σ x ꞉ X , p x ≡ ₀) + (Π x ꞉ X , p x ≡ ₁).
+  Π p ꞉ X → 𝟚 , (Σ x ꞉ X , p x ＝ ₀) + (Π x ꞉ X , p x ＝ ₁).
 
 We can also ask whether the statements
 
-  ∃ x : X , p x ≡ ₀   and   Π x ꞉ X , p x ≡ ₀
+  ∃ x : X , p x ＝ ₀   and   Π x ꞉ X , p x ＝ ₀
 
 are decidable for every p, and in these cases we say that X is
 is ∃-compact and is Π-compact respectively. We have
@@ -103,7 +103,7 @@ on it, it decidable whether it has a root:
 \begin{code}
 
 Σ-compact : 𝓤 ̇ → 𝓤 ̇
-Σ-compact X = (p : X → 𝟚) → (Σ x ꞉ X , p x ≡ ₀) + (Π x ꞉ X , p x ≡ ₁)
+Σ-compact X = (p : X → 𝟚) → (Σ x ꞉ X , p x ＝ ₀) + (Π x ꞉ X , p x ＝ ₁)
 
 compact    = Σ-compact
 
@@ -120,7 +120,7 @@ compactness and pointedness, and hence the notation "compact∙":
 \begin{code}
 
 compact∙ : 𝓤 ̇ → 𝓤 ̇
-compact∙ X = (p : X → 𝟚) → Σ x₀ ꞉ X , (p x₀ ≡ ₁ → (x : X) → p x ≡ ₁)
+compact∙ X = (p : X → 𝟚) → Σ x₀ ꞉ X , (p x₀ ＝ ₁ → (x : X) → p x ＝ ₁)
 
 \end{code}
 
@@ -131,8 +131,8 @@ Terminology: we call x₀ the universal witness.
 compact-pointed-gives-compact∙ : {X : 𝓤 ̇ } → compact X → X → compact∙ X
 compact-pointed-gives-compact∙ {𝓤} {X} φ x₀ p = γ (φ p)
  where
-  γ : (Σ x ꞉ X , p x ≡ ₀) + ((x : X) → p x ≡ ₁)
-    → Σ x₀ ꞉ X , (p x₀ ≡ ₁ → (x : X) → p x ≡ ₁)
+  γ : (Σ x ꞉ X , p x ＝ ₀) + ((x : X) → p x ＝ ₁)
+    → Σ x₀ ꞉ X , (p x₀ ＝ ₁ → (x : X) → p x ＝ ₁)
   γ (inl (x , r)) = x , (λ s → 𝟘-elim (equal-₀-different-from-₁ r s))
   γ (inr f) = x₀ , (λ r → f)
 
@@ -142,13 +142,13 @@ compact∙-gives-compact {𝓤} {X} ε p = 𝟚-equality-cases case₀ case₁
   x₀ : X
   x₀ = pr₁ (ε p)
 
-  lemma : p x₀ ≡ ₁ → (x : X) → p x ≡ ₁
+  lemma : p x₀ ＝ ₁ → (x : X) → p x ＝ ₁
   lemma = pr₂ (ε p)
 
-  case₀ : p x₀ ≡ ₀ → (Σ x ꞉ X , p x ≡ ₀) + ((x : X) → p x ≡ ₁)
+  case₀ : p x₀ ＝ ₀ → (Σ x ꞉ X , p x ＝ ₀) + ((x : X) → p x ＝ ₁)
   case₀ r = inl (x₀ , r)
 
-  case₁ : p x₀ ≡ ₁ → (Σ x ꞉ X , p x ≡ ₀) + ((x : X) → p x ≡ ₁)
+  case₁ : p x₀ ＝ ₁ → (Σ x ꞉ X , p x ＝ ₀) + ((x : X) → p x ＝ ₁)
   case₁ r = inr (lemma r)
 
 compact∙-gives-pointed : {X : 𝓤 ̇ } → compact∙ X → X
@@ -165,19 +165,19 @@ without the assumption of pointedness implies weak excluded middle
 For example, every finite set is compact, and in particular the set 𝟚
 of binary digits ₀ and ₁ is compact. To find x₀ : 𝟚 such that
 
-   (†) p x₀ ≡ ₁ → ∀ (x : X) → p x ≡ ₁,
+   (†) p x₀ ＝ ₁ → ∀ (x : X) → p x ＝ ₁,
 
-we can check whether p ₀ ≡ ₁ and p ₁ ≡ ₁.
+we can check whether p ₀ ＝ ₁ and p ₁ ＝ ₁.
 
-     If this is the case, then ∀ (x : X) → p x ≡ ₁ holds, which is
+     If this is the case, then ∀ (x : X) → p x ＝ ₁ holds, which is
      the conclusion the implication (†), and hence we can take any
      x₀ : 𝟚 to make (†) hold.
 
-     Otherwise, we can take any x₀ such that p x₀ ≡ ₀ so that the
+     Otherwise, we can take any x₀ such that p x₀ ＝ ₀ so that the
      implication (†) holds vacuously.
 
-That is, either the conclusion ∀ (x : X) → p x ≡ ₁ of (†) holds, or
-its premise p x₀ ≡ ₁ fails for suitable x₀.
+That is, either the conclusion ∀ (x : X) → p x ＝ ₁ of (†) holds, or
+its premise p x₀ ＝ ₁ fails for suitable x₀.
 
 However, there is a more direct proof: we claim that, without
 checking the two possibilities, we can always take x₀ = p ₀.
@@ -188,17 +188,17 @@ checking the two possibilities, we can always take x₀ = p ₀.
 𝟚-compact∙ : compact∙ 𝟚
 𝟚-compact∙ p = x₀ , (λ r → 𝟚-induction (lemma₀ r) (lemma₁ r))
  where
-    x₀ : 𝟚
-    x₀ = p ₀
+  x₀ : 𝟚
+  x₀ = p ₀
 
-    claim : p x₀ ≡ ₁ → p ₀ ≡ ₀ → p ₀ ≡ ₁
-    claim r s = transport (λ - → p - ≡ ₁) s r
+  claim : p x₀ ＝ ₁ → p ₀ ＝ ₀ → p ₀ ＝ ₁
+  claim r s = transport (λ - → p - ＝ ₁) s r
 
-    lemma₀ : p x₀ ≡ ₁ → p ₀ ≡ ₁
-    lemma₀ r = 𝟚-equality-cases (claim r) (λ s → s)
+  lemma₀ : p x₀ ＝ ₁ → p ₀ ＝ ₁
+  lemma₀ r = 𝟚-equality-cases (claim r) (λ s → s)
 
-    lemma₁ : p x₀ ≡ ₁ → p ₁ ≡ ₁
-    lemma₁ r = transport (λ - → p - ≡ ₁) (lemma₀ r) r
+  lemma₁ : p x₀ ＝ ₁ → p ₁ ＝ ₁
+  lemma₁ r = transport (λ - → p - ＝ ₁) (lemma₀ r) r
 
 𝟚-compact : compact 𝟚
 𝟚-compact = compact∙-gives-compact 𝟚-compact∙
@@ -214,21 +214,21 @@ propositional extensionality, which are consequences of univalence:
 Ω-compact∙ : funext 𝓤 𝓤 → propext 𝓤 → compact∙ (Ω 𝓤)
 Ω-compact∙ {𝓤} fe pe p = γ
   where
-    A = Σ x₀ ꞉ Ω 𝓤 , (p x₀ ≡ ₁ → (x : Ω 𝓤) → p x ≡ ₁)
+   A = Σ x₀ ꞉ Ω 𝓤 , (p x₀ ＝ ₁ → (x : Ω 𝓤) → p x ＝ ₁)
 
-    a : p ⊥ ≡ ₀ → A
-    a r = ⊥ , λ s → 𝟘-elim (zero-is-not-one (r ⁻¹ ∙ s))
+   a : p ⊥ ＝ ₀ → A
+   a r = ⊥ , λ s → 𝟘-elim (zero-is-not-one (r ⁻¹ ∙ s))
 
-    b : p ⊥ ≡ ₁ → A
-    b r = ⊤ , ⊥-⊤-density fe pe p r
+   b : p ⊥ ＝ ₁ → A
+   b r = ⊤ , ⊥-⊤-density fe pe p r
 
-    γ : A
-    γ = 𝟚-equality-cases a b
+   γ : A
+   γ = 𝟚-equality-cases a b
 
 𝟙-compact∙ : compact∙ (𝟙 {𝓤})
 𝟙-compact∙ p = ⋆ , f
  where
-  f : (r : p ⋆ ≡ ₁) (x : 𝟙) → p x ≡ ₁
+  f : (r : p ⋆ ＝ ₁) (x : 𝟙) → p x ＝ ₁
   f r ⋆ = r
 
 \end{code}
@@ -242,7 +242,7 @@ only if p has a root.
 \begin{code}
 
 _is-a-root-of_ : {X : 𝓤 ̇ } → X → (X → 𝟚) → 𝓤₀ ̇
-x is-a-root-of p = p x ≡ ₀
+x is-a-root-of p = p x ＝ ₀
 
 _has-a-root : {X : 𝓤 ̇ } → (X → 𝟚) → 𝓤 ̇
 p has-a-root = Σ x ꞉ domain p , x is-a-root-of p
@@ -256,13 +256,13 @@ putative-root {𝓤} {X} ε p = x₀ , lemma₀ , lemma₁
   x₀ : X
   x₀ = pr₁ (ε p)
 
-  lemma : ¬ ((x : X) → p x ≡ ₁) → p x₀ ≡ ₀
+  lemma : ¬ ((x : X) → p x ＝ ₁) → p x₀ ＝ ₀
   lemma = different-from-₁-equal-₀ ∘ contrapositive (pr₂ (ε p))
 
   lemma₀ : p has-a-root → x₀ is-a-root-of p
   lemma₀ (x , r) = lemma claim
    where
-    claim : ¬ ((x : X) → p x ≡ ₁)
+    claim : ¬ ((x : X) → p x ＝ ₁)
     claim f = equal-₁-different-from-₀ (f x) r
 
   lemma₁ : x₀ is-a-root-of p → p has-a-root
@@ -276,7 +276,7 @@ selection functions.
 \begin{code}
 
 _has-selection_ : (X : 𝓤 ̇ ) → ((X → 𝟚) → X) → 𝓤 ̇
-X has-selection ε = (p : X → 𝟚) → p (ε p) ≡ ₁ → (x : X) → p x ≡ ₁
+X has-selection ε = (p : X → 𝟚) → p (ε p) ＝ ₁ → (x : X) → p x ＝ ₁
 
 compact∙' : 𝓤 ̇ → 𝓤 ̇
 compact∙' X = Σ ε ꞉ ((X → 𝟚) → X) , X has-selection ε
@@ -287,7 +287,7 @@ compact∙-gives-compact∙' {𝓤} {X} ε' = ε , lemma
   ε : (X → 𝟚) → X
   ε p = pr₁ (ε' p)
 
-  lemma : (p : X → 𝟚) → p (ε p) ≡ ₁ → (x : X) → p x ≡ ₁
+  lemma : (p : X → 𝟚) → p (ε p) ＝ ₁ → (x : X) → p x ＝ ₁
   lemma p = pr₂ (ε' p)
 
 compact∙'-gives-compact∙ : {X : 𝓤 ̇ } → compact∙' X → compact∙ X
@@ -296,7 +296,7 @@ compact∙'-gives-compact∙ {𝓤} {X} ε p = x₀ , lemma
   x₀ : X
   x₀ = pr₁ ε p
 
-  lemma : p x₀ ≡ ₁ → (x : X) → p x ≡ ₁
+  lemma : p x₀ ＝ ₁ → (x : X) → p x ＝ ₁
   lemma u β = pr₂ ε p u β
 
 \end{code}
@@ -326,23 +326,23 @@ apart-or-equal : funext 𝓤 𝓥
                → compact X
                → ((x : X) → is-discrete (Y x))
                → (f g : (x : X) → Y x)
-               → (f ♯ g) + (f ≡ g)
+               → (f ♯ g) + (f ＝ g)
 apart-or-equal fe {X} {Y} φ d f g = lemma₂ lemma₁
  where
-  claim : (x : X) → (f x ≢ g x) + (f x ≡ g x)
+  claim : (x : X) → (f x ≢ g x) + (f x ＝ g x)
   claim x = +-commutative (d x (f x) (g x))
 
-  lemma₀ : Σ p ꞉ (X → 𝟚) , ((x : X) → (p x ≡ ₀ → f x ≢ g x)
-                         × (p x ≡ ₁ → f x ≡ g x))
+  lemma₀ : Σ p ꞉ (X → 𝟚) , ((x : X) → (p x ＝ ₀ → f x ≢ g x)
+                         × (p x ＝ ₁ → f x ＝ g x))
   lemma₀ = indicator claim
 
   p : X → 𝟚
   p = pr₁ lemma₀
 
-  lemma₁ : (Σ x ꞉ X , p x ≡ ₀) + (Π x ꞉ X , p x ≡ ₁)
+  lemma₁ : (Σ x ꞉ X , p x ＝ ₀) + (Π x ꞉ X , p x ＝ ₁)
   lemma₁ = φ p
 
-  lemma₂ : (Σ x ꞉ X , p x ≡ ₀) + (Π x ꞉ X , p x ≡ ₁) → (f ♯ g) + (f ≡ g)
+  lemma₂ : (Σ x ꞉ X , p x ＝ ₀) + (Π x ꞉ X , p x ＝ ₁) → (f ♯ g) + (f ＝ g)
   lemma₂ (inl (x , r)) = inl (x , (pr₁ (pr₂ lemma₀ x) r))
   lemma₂ (inr h) = inr (dfunext fe (λ x → pr₂ (pr₂ lemma₀ x) (h x)))
 
@@ -354,7 +354,7 @@ compact-discrete-discrete : funext 𝓤 𝓥
 
 compact-discrete-discrete fe φ d f g = h (apart-or-equal fe φ d f g)
  where
-  h : (f ♯ g) + (f ≡ g) → (f ≡ g) + (f ≢ g)
+  h : (f ♯ g) + (f ＝ g) → (f ＝ g) + (f ≢ g)
   h (inl a) = inr (apart-is-different a)
   h (inr r) = inl r
 
@@ -371,24 +371,24 @@ compact-discrete-discrete' fe φ d = compact-discrete-discrete fe φ (λ x → d
 compact-decidable : (X : 𝓤 ̇ ) → compact X → decidable X
 compact-decidable X φ = f a
  where
-  a : (X × (₀ ≡ ₀)) + (X → ₀ ≡ ₁)
+  a : (X × (₀ ＝ ₀)) + (X → ₀ ＝ ₁)
   a = φ (λ x → ₀)
 
-  f : (X × (₀ ≡ ₀)) + (X → ₀ ≡ ₁) → decidable X
+  f : (X × (₀ ＝ ₀)) + (X → ₀ ＝ ₁) → decidable X
   f (inl (x , _)) = inl x
   f (inr u)       = inr (λ x → zero-is-not-one (u x))
 
 decidable-prop-compact : (X : 𝓤 ̇ ) → is-prop X → decidable X → compact X
 decidable-prop-compact X isp δ p = g δ
  where
-  g : decidable X → (Σ x ꞉ X , p x ≡ ₀) + (Π x ꞉ X , p x ≡ ₁)
+  g : decidable X → (Σ x ꞉ X , p x ＝ ₀) + (Π x ꞉ X , p x ＝ ₁)
   g (inl x) = 𝟚-equality-cases b c
    where
-    b : p x ≡ ₀ → (Σ x ꞉ X , p x ≡ ₀) + (Π x ꞉ X , p x ≡ ₁)
+    b : p x ＝ ₀ → (Σ x ꞉ X , p x ＝ ₀) + (Π x ꞉ X , p x ＝ ₁)
     b r = inl (x , r)
 
-    c : p x ≡ ₁ → (Σ x ꞉ X , p x ≡ ₀) + (Π x ꞉ X , p x ≡ ₁)
-    c r = inr (λ y → transport (λ - → p - ≡ ₁) (isp x y) r)
+    c : p x ＝ ₁ → (Σ x ꞉ X , p x ＝ ₀) + (Π x ꞉ X , p x ＝ ₁)
+    c r = inr (λ y → transport (λ - → p - ＝ ₁) (isp x y) r)
   g (inr u) = inr (λ x → 𝟘-elim (u x))
 
 \end{code}
@@ -403,32 +403,32 @@ generalize to get closure of compact types under Σ.
 
 module warmup {𝓤} {𝓥} {R : 𝓥 ̇ } where
 
-  quantifier : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
-  quantifier X = (X → R) → R
+ quantifier : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
+ quantifier X = (X → R) → R
 
-  quant-prod : {X : 𝓤 ̇ } {Y : X → 𝓤 ̇ }
-             → quantifier X
-             → ((x : X)  → quantifier (Y x))
-             → quantifier (Σ Y)
-  quant-prod φ γ p = φ (λ x → γ x (λ y → p (x , y)))
+ quant-prod : {X : 𝓤 ̇ } {Y : X → 𝓤 ̇ }
+            → quantifier X
+            → ((x : X)  → quantifier (Y x))
+            → quantifier (Σ Y)
+ quant-prod φ γ p = φ (λ x → γ x (λ y → p (x , y)))
 
-  selection : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
-  selection X = (X → R) → X
+ selection : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
+ selection X = (X → R) → X
 
-  sel-prod : {X : 𝓤 ̇ } {Y : X → 𝓤 ̇ }
-           → selection X
-           → ((x : X) → selection (Y x))
-           → selection (Σ Y)
-  sel-prod {X} {Y} ε δ p = (x₀ , y₀)
-    where
-     next : (x : X) → Y x
-     next x = δ x (λ y → p (x , y))
+ sel-prod : {X : 𝓤 ̇ } {Y : X → 𝓤 ̇ }
+          → selection X
+          → ((x : X) → selection (Y x))
+          → selection (Σ Y)
+ sel-prod {X} {Y} ε δ p = (x₀ , y₀)
+   where
+    next : (x : X) → Y x
+    next x = δ x (λ y → p (x , y))
 
-     x₀ : X
-     x₀ = ε (λ x → p (x , next x))
+    x₀ : X
+    x₀ = ε (λ x → p (x , next x))
 
-     y₀ : Y x₀
-     y₀ = next x₀
+    y₀ : Y x₀
+    y₀ = next x₀
 
 \end{code}
 
@@ -436,20 +436,20 @@ module warmup {𝓤} {𝓥} {R : 𝓥 ̇ } where
 
 \begin{code}
 
-  overline : {X : 𝓤 ̇ } → selection X → quantifier X
-  overline ε p = p (ε p)
+ overline : {X : 𝓤 ̇ } → selection X → quantifier X
+ overline ε p = p (ε p)
 
-  sel-prod' : {X : 𝓤 ̇ } {Y : X → 𝓤 ̇ }
-            → selection X
-            → ((x : X) → selection (Y x))
-            → selection (Σ Y)
-  sel-prod' {X} {Y} ε δ p = (x₀ , y₀)
-   where
-    x₀ : X
-    x₀ = ε (λ x → overline (δ x) (λ y → p (x , y)))
+ sel-prod' : {X : 𝓤 ̇ } {Y : X → 𝓤 ̇ }
+           → selection X
+           → ((x : X) → selection (Y x))
+           → selection (Σ Y)
+ sel-prod' {X} {Y} ε δ p = (x₀ , y₀)
+  where
+   x₀ : X
+   x₀ = ε (λ x → overline (δ x) (λ y → p (x , y)))
 
-    y₀ : Y x₀
-    y₀ = δ x₀ (λ y → p (x₀ , y))
+   y₀ : Y x₀
+   y₀ = δ x₀ (λ y → p (x₀ , y))
 
 \end{code}
 
@@ -463,28 +463,28 @@ Back to compact sets:
            → compact∙ (Σ Y)
 Σ-compact∙ {i} {j} {X} {Y} ε δ p = (x₀ , y₀) , correctness
  where
-  lemma-next : (x : X) → Σ y₀ ꞉ Y x , (p (x , y₀) ≡ ₁ → (y : Y x) → p (x , y) ≡ ₁)
+  lemma-next : (x : X) → Σ y₀ ꞉ Y x , (p (x , y₀) ＝ ₁ → (y : Y x) → p (x , y) ＝ ₁)
   lemma-next x = δ x (λ y → p (x , y))
 
   next : (x : X) → Y x
   next x = pr₁ (lemma-next x)
 
-  next-correctness : (x : X) → p (x , next x) ≡ ₁ → (y : Y x) → p (x , y) ≡ ₁
+  next-correctness : (x : X) → p (x , next x) ＝ ₁ → (y : Y x) → p (x , y) ＝ ₁
   next-correctness x = pr₂ (lemma-next x)
 
-  lemma-first : Σ x₀ ꞉ X , (p (x₀ , next x₀) ≡ ₁ → (x : X) → p (x , next x) ≡ ₁)
+  lemma-first : Σ x₀ ꞉ X , (p (x₀ , next x₀) ＝ ₁ → (x : X) → p (x , next x) ＝ ₁)
   lemma-first = ε (λ x → p (x , next x))
 
   x₀ : X
   x₀ = pr₁ lemma-first
 
-  first-correctness : p (x₀ , next x₀) ≡ ₁ → (x : X) → p (x , next x) ≡ ₁
+  first-correctness : p (x₀ , next x₀) ＝ ₁ → (x : X) → p (x , next x) ＝ ₁
   first-correctness = pr₂ lemma-first
 
   y₀ : Y x₀
   y₀ = next x₀
 
-  correctness : p (x₀ , y₀) ≡ ₁ → (t : (Σ x ꞉ X , Y x)) → p t ≡ ₁
+  correctness : p (x₀ , y₀) ＝ ₁ → (t : (Σ x ꞉ X , Y x)) → p t ＝ ₁
   correctness r (x , y) = next-correctness x (first-correctness r x) y
 
 \end{code}
@@ -523,22 +523,22 @@ retractions-preserve-compactness {i} {j} {X} {Y} {f} f-retract ε q = y₀ , h
    y₀ : Y
    y₀ = f x₀
 
-   lemma : p x₀ ≡ ₁ → (x : X) → p x ≡ ₁
+   lemma : p x₀ ＝ ₁ → (x : X) → p x ＝ ₁
    lemma = pr₂ (ε p)
 
-   h : q y₀ ≡ ₁ → (a : Y) → q a ≡ ₁
+   h : q y₀ ＝ ₁ → (a : Y) → q a ＝ ₁
    h r a = fact₁ ⁻¹ ∙ fact₀
     where
-     fact : Σ x ꞉ X , f x ≡ a
+     fact : Σ x ꞉ X , f x ＝ a
      fact = f-retract a
 
      x : X
      x = pr₁ fact
 
-     fact₀ : q (f x) ≡ ₁
+     fact₀ : q (f x) ＝ ₁
      fact₀ = lemma r x
 
-     fact₁ : q (f x) ≡ q a
+     fact₁ : q (f x) ＝ q a
      fact₁ = ap q (pr₂ fact)
 
 retract-compact∙ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
@@ -561,7 +561,7 @@ retract-compact∙ (_ , φ) = retractions-preserve-compactness φ
   f : 𝟚 → 𝟙 + 𝟙
   f = 𝟚-cases (inl ⋆) (inr ⋆)
 
-  r : (y : 𝟙 + 𝟙) → Σ x ꞉ 𝟚 , f x ≡ y
+  r : (y : 𝟙 + 𝟙) → Σ x ꞉ 𝟚 , f x ＝ y
   r (inl ⋆) = ₀ , refl
   r (inr ⋆) = ₁ , refl
 
@@ -571,8 +571,8 @@ equiv-compact∙ (f , (g , fg) , (h , hf)) = retract-compact∙ (f , (λ y → g
 singleton-compact∙ : {X : 𝓤 ̇ } → is-singleton X → compact∙ X
 singleton-compact∙ {𝓤} {X} (x , φ) p = x , g
  where
-  g : p x ≡ ₁ → (y : X) → p y ≡ ₁
-  g r y = transport (λ - → p - ≡ ₁) (φ y) r
+  g : p x ＝ ₁ → (y : X) → p y ＝ ₁
+  g r y = transport (λ - → p - ＝ ₁) (φ y) r
 
 module _ (pt : propositional-truncations-exist) where
 
@@ -590,17 +590,17 @@ module _ (pt : propositional-truncations-exist) where
    x₀ : X
    x₀ = pr₁ (ε p)
 
-   g : q (f x₀) ≡ ₁ → (x : X) → q (f x) ≡ ₁
+   g : q (f x₀) ＝ ₁ → (x : X) → q (f x) ＝ ₁
    g = pr₂ (ε p)
 
    y₀ : Y
    y₀ = f x₀
 
-   isp : (y : Y) → is-prop (q y ≡ ₁)
+   isp : (y : Y) → is-prop (q y ＝ ₁)
    isp y = 𝟚-is-set
 
-   h : q y₀ ≡ ₁ → (y : Y) → q y ≡ ₁
-   h r = surjection-induction f i (λ y → q y ≡ ₁) isp (g r)
+   h : q y₀ ＝ ₁ → (y : Y) → q y ＝ ₁
+   h r = surjection-induction f i (λ y → q y ＝ ₁) isp (g r)
 
  image-compact∙ : {X Y : 𝓤₀ ̇ } (f : X → Y)
                 → compact∙ X
@@ -617,7 +617,7 @@ above. We should deal with this.
 \begin{code}
 
 wcompact : 𝓤 ̇ → 𝓤 ̇
-wcompact X = (p : X → 𝟚) → Σ y ꞉ 𝟚 , (y ≡ ₁ ⇔ ((x : X) → p x ≡ ₁))
+wcompact X = (p : X → 𝟚) → Σ y ꞉ 𝟚 , (y ＝ ₁ ⇔ ((x : X) → p x ＝ ₁))
 
 \end{code}
 
@@ -626,7 +626,7 @@ Closer to the original definition of exhaustibility in LICS'2007 amd LMCS'2008:
 \begin{code}
 
 wcompact' : 𝓤 ̇ → 𝓤 ̇
-wcompact' X = Σ A ꞉ ((X → 𝟚) → 𝟚) , ((p : X → 𝟚) → A p ≡ ₁ ⇔ ((x : X) → p x ≡ ₁))
+wcompact' X = Σ A ꞉ ((X → 𝟚) → 𝟚) , ((p : X → 𝟚) → A p ＝ ₁ ⇔ ((x : X) → p x ＝ ₁))
 
 \end{code}
 
@@ -641,7 +641,7 @@ wcompact-implies-wcompact' {𝓤} {X} φ = A , lemma
   A : (X → 𝟚) → 𝟚
   A p = pr₁ (φ p)
 
-  lemma : (p : X → 𝟚) → A p ≡ ₁ ⇔ ((x : X) → p x ≡ ₁)
+  lemma : (p : X → 𝟚) → A p ＝ ₁ ⇔ ((x : X) → p x ＝ ₁)
   lemma p = pr₂ (φ p)
 
 compact-gives-wcompact : {X : 𝓤 ̇ } → compact∙ X → wcompact X
@@ -653,10 +653,10 @@ compact-gives-wcompact {𝓤} {X} ε p = y , (lemma₀ , lemma₁)
   y : 𝟚
   y = p x₀
 
-  lemma₀ :  y ≡ ₁ → (x : X) → p x ≡ ₁
+  lemma₀ :  y ＝ ₁ → (x : X) → p x ＝ ₁
   lemma₀ = pr₂ (ε p)
 
-  lemma₁ : ((x : X) → p x ≡ ₁) → y ≡ ₁
+  lemma₁ : ((x : X) → p x ＝ ₁) → y ＝ ₁
   lemma₁ h = h x₀
 
 \end{code}
@@ -688,13 +688,13 @@ Compactness-gives-Markov {𝓤} {X} c A δ φ = γ (c A δ)
 compact-gives-Compact : {X : 𝓤 ̇ } → compact X → Compact X {𝓥}
 compact-gives-Compact {𝓤} {𝓥} {X} c A d = iii
  where
-  i : Σ p ꞉ (X → 𝟚) , ((x : X) → (p x ≡ ₀ → A x) × (p x ≡ ₁ → ¬ (A x)))
+  i : Σ p ꞉ (X → 𝟚) , ((x : X) → (p x ＝ ₀ → A x) × (p x ＝ ₁ → ¬ (A x)))
   i = characteristic-function d
 
   p : X → 𝟚
   p = pr₁ i
 
-  ii : (Σ x ꞉ X , p x ≡ ₀) + (Π x ꞉ X , p x ≡ ₁) → decidable (Σ A)
+  ii : (Σ x ꞉ X , p x ＝ ₀) + (Π x ꞉ X , p x ＝ ₁) → decidable (Σ A)
   ii (inl (x , r)) = inl (x , pr₁ (pr₂ i x) r)
   ii (inr u)       = inr φ
    where
@@ -704,27 +704,27 @@ compact-gives-Compact {𝓤} {𝓥} {X} c A d = iii
   iii : decidable (Σ A)
   iii = ii (c p)
 
-Compact-gives-compact : {X : 𝓤 ̇ } → Compact X → compact X
+Compact-gives-compact : {X : 𝓤 ̇ } → Compact X {𝓤₀} → compact X
 Compact-gives-compact {𝓤} {X} C p = iv
  where
   A : X → 𝓤₀ ̇
-  A x = p x ≡ ₀
+  A x = p x ＝ ₀
 
-  i : detachable (λ x → p x ≡ ₀) → decidable (Σ x ꞉ X , p x ≡ ₀)
+  i : detachable (λ x → p x ＝ ₀) → decidable (Σ x ꞉ X , p x ＝ ₀)
   i = C A
 
-  ii : detachable (λ x → p x ≡ ₀)
+  ii : detachable (λ x → p x ＝ ₀)
   ii x = 𝟚-is-discrete (p x) ₀
 
-  iii : decidable (Σ x ꞉ X , p x ≡ ₀) → (Σ x ꞉ X , p x ≡ ₀) + (Π x ꞉ X , p x ≡ ₁)
+  iii : decidable (Σ x ꞉ X , p x ＝ ₀) → (Σ x ꞉ X , p x ＝ ₀) + (Π x ꞉ X , p x ＝ ₁)
   iii (inl σ) = inl σ
   iii (inr u) = inr (λ x → different-from-₀-equal-₁ (λ r → u (x , r)))
 
-  iv : (Σ x ꞉ X , p x ≡ ₀) + (Π x ꞉ X , p x ≡ ₁)
+  iv : (Σ x ꞉ X , p x ＝ ₀) + (Π x ꞉ X , p x ＝ ₁)
   iv = iii (i ii)
 
-Compact-resizeup : {X : 𝓤 ̇ } → Compact X {𝓤₀} → Compact X {𝓥}
-Compact-resizeup C = compact-gives-Compact (Compact-gives-compact C)
+Compact-resize-up : {X : 𝓤 ̇ } → Compact X {𝓤₀} → Compact X {𝓥}
+Compact-resize-up C = compact-gives-Compact (Compact-gives-compact C)
 
 \end{code}
 
@@ -1023,7 +1023,7 @@ discrete-to-the-power-Compact-is-discrete : funext 𝓤 𝓥
 discrete-to-the-power-Compact-is-discrete {𝓤} {𝓥} fe {X} {Y} c d f g = γ
  where
   A : X → 𝓥 ̇
-  A x = f x ≡ g x
+  A x = f x ＝ g x
 
   a : (x : X) → decidable (A x)
   a x = d (f x) (g x)
@@ -1031,11 +1031,11 @@ discrete-to-the-power-Compact-is-discrete {𝓤} {𝓥} fe {X} {Y} c d f g = γ
   b : decidable (Π A)
   b = c A a
 
-  φ : decidable (Π A) → decidable (f ≡ g)
+  φ : decidable (Π A) → decidable (f ＝ g)
   φ (inl α) = inl (dfunext fe α)
   φ (inr ν) = inr (contrapositive happly ν)
 
-  γ : decidable (f ≡ g)
+  γ : decidable (f ＝ g)
   γ = φ b
 
 open import TypeTopology.TotallySeparated
@@ -1046,19 +1046,19 @@ compact-power-of-𝟚-has-discrete-exponent : {X : 𝓤 ̇ }
                                          → is-discrete X
 compact-power-of-𝟚-has-discrete-exponent {𝓤} {X} τ κ x y = γ δ
  where
-  d : (p : X → 𝟚) → decidable (p x ≡ p y)
+  d : (p : X → 𝟚) → decidable (p x ＝ p y)
   d p = 𝟚-is-discrete (p x) (p y)
 
-  δ : decidable ((p : X → 𝟚) → p x ≡ p y)
-  δ = κ (λ p → p x ≡ p y) d
+  δ : decidable ((p : X → 𝟚) → p x ＝ p y)
+  δ = κ (λ p → p x ＝ p y) d
 
-  α : x ≡ y → (p : X → 𝟚) → p x ≡ p y
+  α : x ＝ y → (p : X → 𝟚) → p x ＝ p y
   α e p = ap p e
 
-  β : ¬ ((p : X → 𝟚) → p x ≡ p y) → ¬ (x ≡ y)
+  β : ¬ ((p : X → 𝟚) → p x ＝ p y) → ¬ (x ＝ y)
   β = contrapositive α
 
-  γ : type-of δ → decidable (x ≡ y)
+  γ : type-of δ → decidable (x ＝ y)
   γ (inl α) = inl (τ α)
   γ (inr u) = inr (β u)
 
@@ -1112,10 +1112,10 @@ compact-gives-Σ+Π X A B κ q = III II
   p : X → 𝟚
   p = pr₁ (indicator q)
 
-  I : (x : X) → (p x ≡ ₀ → A x) × (p x ≡ ₁ → B x)
+  I : (x : X) → (p x ＝ ₀ → A x) × (p x ＝ ₁ → B x)
   I = pr₂ (indicator q)
 
-  II : (Σ x ꞉ X , p x ≡ ₀) + (Π x ꞉ X , p x ≡ ₁)
+  II : (Σ x ꞉ X , p x ＝ ₀) + (Π x ꞉ X , p x ＝ ₁)
   II = κ p
 
   III : type-of II → (Σ x ꞉ X , A x) + (Π x ꞉ X , B x)
@@ -1159,13 +1159,13 @@ Compact' = Σ-Compact'
 compact-gives-Compact' : {X : 𝓤 ̇ } → compact X → Compact' X {𝓥}
 compact-gives-Compact' {𝓤} {𝓥} {X} c A _ d = iii
  where
-  i : Σ p ꞉ (X → 𝟚) , ((x : X) → (p x ≡ ₀ → A x) × (p x ≡ ₁ → ¬ (A x)))
+  i : Σ p ꞉ (X → 𝟚) , ((x : X) → (p x ＝ ₀ → A x) × (p x ＝ ₁ → ¬ (A x)))
   i = characteristic-function d
 
   p : X → 𝟚
   p = pr₁ i
 
-  ii : (Σ x ꞉ X , p x ≡ ₀) + (Π x ꞉ X , p x ≡ ₁) → decidable (Σ A)
+  ii : (Σ x ꞉ X , p x ＝ ₀) + (Π x ꞉ X , p x ＝ ₁) → decidable (Σ A)
   ii (inl (x , r)) = inl (x , pr₁ (pr₂ i x) r)
   ii (inr u)       = inr φ
    where
@@ -1179,19 +1179,19 @@ Compact'-gives-compact : {X : 𝓤 ̇ } → Compact' X → compact X
 Compact'-gives-compact {𝓤} {X} C p = iv
  where
   A : X → 𝓤₀ ̇
-  A x = p x ≡ ₀
+  A x = p x ＝ ₀
 
-  i : detachable (λ x → p x ≡ ₀) → decidable (Σ x ꞉ X , p x ≡ ₀)
+  i : detachable (λ x → p x ＝ ₀) → decidable (Σ x ꞉ X , p x ＝ ₀)
   i = C A (λ x → 𝟚-is-set)
 
-  ii : detachable (λ x → p x ≡ ₀)
+  ii : detachable (λ x → p x ＝ ₀)
   ii x = 𝟚-is-discrete (p x) ₀
 
-  iii : decidable (Σ x ꞉ X , p x ≡ ₀) → (Σ x ꞉ X , p x ≡ ₀) + (Π x ꞉ X , p x ≡ ₁)
+  iii : decidable (Σ x ꞉ X , p x ＝ ₀) → (Σ x ꞉ X , p x ＝ ₀) + (Π x ꞉ X , p x ＝ ₁)
   iii (inl σ) = inl σ
   iii (inr u) = inr (λ x → different-from-₀-equal-₁ (λ r → u (x , r)))
 
-  iv : (Σ x ꞉ X , p x ≡ ₀) + (Π x ꞉ X , p x ≡ ₁)
+  iv : (Σ x ꞉ X , p x ＝ ₀) + (Π x ꞉ X , p x ＝ ₁)
   iv = iii (i ii)
 
 Compact'-gives-Compact : {X : 𝓤 ̇ } → Compact' X → Compact X {𝓦}

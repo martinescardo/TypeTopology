@@ -17,16 +17,14 @@ open import MLTT.Spartan
 open import TypeTopology.CompactTypes
 open import Utilities.Sequence fe
 
-binary-Tychonoff' :{X : ℕ → 𝓤 ̇ } →
+binary-Tychonoff' : {X : ℕ → 𝓤 ̇ }
+                  → compact∙ (X 0)
+                  → compact∙ ((n : ℕ) → X (succ n))
+                  → compact∙ ((n : ℕ) → X n)
 
- compact∙ (X 0) →  compact∙ ((n : ℕ) → X (succ n))
- → compact∙ ((n : ℕ) → X n)
-
-binary-Tychonoff' ε δ =
-  retractions-preserve-compactness
-  cons-has-section'
-  (binary-Tychonoff ε δ)
-
+binary-Tychonoff' ε δ = retractions-preserve-compactness
+                         cons-has-section'
+                         (binary-Tychonoff ε δ)
 \end{code}
 
 The following needs disabling of termination checking. It terminates
@@ -54,8 +52,9 @@ checker enabled.) (I plan to actually write down this proof in Agda.)
 \begin{code}
 
 {-# TERMINATING #-}
-countable-Tychonoff :{X : ℕ → 𝓤 ̇ }
-                    → ((n : ℕ) → compact∙ (X n)) → compact∙ ((n : ℕ) → X n)
+countable-Tychonoff : {X : ℕ → 𝓤 ̇ }
+                    → ((n : ℕ) → compact∙ (X n))
+                    → compact∙ ((n : ℕ) → X n)
 countable-Tychonoff {X} ε = binary-Tychonoff' (head ε) (countable-Tychonoff (tail ε))
 
 \end{code}

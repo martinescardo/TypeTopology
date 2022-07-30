@@ -34,7 +34,7 @@ x ≈[ _≈_ , _ ] y = x ≈ y
 
 identifies-related-points : {X : 𝓤 ̇  } (≈ : EqRel {𝓤} {𝓥} X) {Y : 𝓦 ̇  }
                           → (X → Y) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
-identifies-related-points (_≈_ , _) f = ∀ {x x'} → x ≈ x' → f x ≡ f x'
+identifies-related-points (_≈_ , _) f = ∀ {x x'} → x ≈ x' → f x ＝ f x'
 
 record set-quotients-exist : 𝓤ω where
  field
@@ -70,7 +70,7 @@ quotients to construct small suprema of small ordinals.
 
 
 A quotient is said to be effective if for every x, y : X, we have x ≈ y whenever
-η/ x ≡ ‌η/ y. Notice that we did not include effectivity as a requirement in
+η/ x ＝ ‌η/ y. Notice that we did not include effectivity as a requirement in
 'set-quotients-exist'. But actually it follows from the other properties, at
 least in the presence of function extensionality and propositonal
 extensionality, as Martín observed. The proof is as follows:
@@ -119,7 +119,7 @@ We extend unary and binary prop-valued relations to the quotient.
 
    module _
            (r : X → Ω 𝓣)
-           (p : {x y : X} → x ≈ y → r x ≡ r y)
+           (p : {x y : X} → x ≈ y → r x ＝ r y)
           where
 
     extension-rel₁ : X / ≋ → Ω 𝓣
@@ -129,45 +129,45 @@ We extend unary and binary prop-valued relations to the quotient.
     extension-rel-triangle₁ = universality-triangle/ ≋ (Ω-is-set fe pe) r p
 
    module _ (r : X → X → Ω 𝓣)
-            (p : {x y x' y' : X} → x ≈ x' → y ≈ y' → r x y ≡ r x' y')
+            (p : {x y x' y' : X} → x ≈ x' → y ≈ y' → r x y ＝ r x' y')
           where
 
     abstract
      private
-      p' : (x : X) {y y' : X} → y ≈ y' → r x y ≡ r x y'
+      p' : (x : X) {y y' : X} → y ≈ y' → r x y ＝ r x y'
       p' x {y} {y'} = p (≈r x)
 
       r₁ : X → X / ≋ → Ω 𝓣
       r₁ x = extension-rel₁ (r x) (p' x)
 
-      δ : {x x' : X} → x ≈ x' → (y : X) → r₁ x (η/ ≋ y) ≡ r₁ x' (η/ ≋ y)
+      δ : {x x' : X} → x ≈ x' → (y : X) → r₁ x (η/ ≋ y) ＝ r₁ x' (η/ ≋ y)
       δ {x} {x'} e y =
-        r₁ x  (η/ ≋ y)  ≡⟨ extension-rel-triangle₁ (r x) (p (≈r x)) y        ⟩
-        r  x     y      ≡⟨ p e (≈r y)                                        ⟩
-        r  x'    y      ≡⟨ (extension-rel-triangle₁ (r x') (p (≈r x')) y) ⁻¹ ⟩
+        r₁ x  (η/ ≋ y)  ＝⟨ extension-rel-triangle₁ (r x) (p (≈r x)) y        ⟩
+        r  x     y      ＝⟨ p e (≈r y)                                        ⟩
+        r  x'    y      ＝⟨ (extension-rel-triangle₁ (r x') (p (≈r x')) y) ⁻¹ ⟩
         r₁ x' (η/ ≋ y)  ∎
 
-      ρ : (q : X / ≋) {x x' : X} → x ≈ x' → r₁ x q ≡ r₁ x' q
+      ρ : (q : X / ≋) {x x' : X} → x ≈ x' → r₁ x q ＝ r₁ x' q
       ρ q {x} {x'} e = /-induction ≋ (λ q → Ω-is-set fe pe) (δ e) q
 
       r₂ : X / ≋ → X / ≋ → Ω 𝓣
       r₂ = mediating-map/ ≋ (Π-is-set fe (λ _ → Ω-is-set fe pe)) r₁
                             (λ {x} {x'} e → dfunext fe (λ q → ρ q e))
 
-      σ : (x : X) → r₂ (η/ ≋ x) ≡ r₁ x
+      σ : (x : X) → r₂ (η/ ≋ x) ＝ r₁ x
       σ = universality-triangle/ ≋ (Π-is-set fe (λ _ → Ω-is-set fe pe)) r₁
                                    (λ {x} {x'} e → dfunext fe (λ q → ρ q e))
 
-      τ : (x y : X) → r₂ (η/ ≋ x) (η/ ≋ y) ≡ r x y
-      τ x y = r₂ (η/ ≋ x) (η/ ≋ y) ≡⟨ happly (σ x) (η/ ≋ y) ⟩
-              r₁ x        (η/ ≋ y) ≡⟨ extension-rel-triangle₁ (r x) (p' x) y ⟩
+      τ : (x y : X) → r₂ (η/ ≋ x) (η/ ≋ y) ＝ r x y
+      τ x y = r₂ (η/ ≋ x) (η/ ≋ y) ＝⟨ happly (σ x) (η/ ≋ y) ⟩
+              r₁ x        (η/ ≋ y) ＝⟨ extension-rel-triangle₁ (r x) (p' x) y ⟩
               r  x            y    ∎
 
      extension-rel₂ : X / ≋ → X / ≋ → Ω 𝓣
      extension-rel₂ = r₂
 
      extension-rel-triangle₂ : (x y : X)
-                             → extension-rel₂ (η/ ≋ x) (η/ ≋ y) ≡ r x y
+                             → extension-rel₂ (η/ ≋ x) (η/ ≋ y) ＝ r x y
      extension-rel-triangle₂ = τ
 
 \end{code}
@@ -208,26 +208,26 @@ binary and ternary versions of quotient induction.
   where
    ≋  = (_≈_  , ≈p ,  ≈r  , ≈s  , ≈t )
    ≋' = (_≈'_ , ≈p' , ≈r' , ≈s' , ≈t')
-   i : {x y : X} → x ≈ y → η/ ≋' x ≡ η/ ≋' y
+   i : {x y : X} → x ≈ y → η/ ≋' x ＝ η/ ≋' y
    i e = η/-identifies-related-points ≋' (lr-implication ε e)
-   i' : {x y : X} → x ≈' y → η/ ≋ x ≡ η/ ≋ y
+   i' : {x y : X} → x ≈' y → η/ ≋ x ＝ η/ ≋ y
    i' e = η/-identifies-related-points ≋ (rl-implication ε e)
    f : X / ≋ → X / ≋'
    f = mediating-map/ ≋ (/-is-set ≋') (η/ ≋') i
    f' : X / ≋' → X / ≋
    f' = mediating-map/ ≋' (/-is-set ≋) (η/ ≋) i'
-   a : (x : X) → f (f' (η/ ≋' x)) ≡ η/ ≋' x
-   a x = f (f' (η/ ≋' x)) ≡⟨ I ⟩
-         f (η/ ≋ x)       ≡⟨ II ⟩
+   a : (x : X) → f (f' (η/ ≋' x)) ＝ η/ ≋' x
+   a x = f (f' (η/ ≋' x)) ＝⟨ I ⟩
+         f (η/ ≋ x)       ＝⟨ II ⟩
          η/ ≋' x          ∎
     where
      I  = ap f (universality-triangle/ ≋' (/-is-set ≋) (η/ ≋) i' x)
      II = universality-triangle/ ≋ (/-is-set ≋') (η/ ≋') i x
    α : f ∘ f' ∼ id
    α = /-induction ≋' (λ _ → /-is-set ≋') a
-   a' : (x : X) → f' (f (η/ ≋ x)) ≡ η/ ≋ x
-   a' x = f' (f (η/ ≋ x)) ≡⟨ I ⟩
-         f' (η/ ≋' x)     ≡⟨ II ⟩
+   a' : (x : X) → f' (f (η/ ≋ x)) ＝ η/ ≋ x
+   a' x = f' (f (η/ ≋ x)) ＝⟨ I ⟩
+         f' (η/ ≋' x)     ＝⟨ II ⟩
          η/ ≋ x           ∎
     where
      I  = ap f' (universality-triangle/ ≋ (/-is-set ≋') (η/ ≋') i x)
@@ -307,7 +307,7 @@ module _
         where
 
   _≈_ : X → X → 𝓦 ̇
-  x ≈ x' = f x ≡ f x'
+  x ≈ x' = f x ＝ f x'
 
   ≈-is-prop-valued : is-prop-valued _≈_
   ≈-is-prop-valued x x' = Y-is-set
@@ -379,45 +379,45 @@ module _
 
   corestriction-respects-≈ : {x x' : X}
                            → x ≈ x'
-                           → corestriction f x ≡ corestriction f x'
+                           → corestriction f x ＝ corestriction f x'
   corestriction-respects-≈ =
-   to-subtype-≡ (λ y → being-in-the-image-is-prop y f)
+   to-subtype-＝ (λ y → being-in-the-image-is-prop y f)
 
   quotient-to-image : X/≈ → image f
   quotient-to-image = mediating-map/ ≋ (image-is-set f Y-is-set)
                        (corestriction f) (corestriction-respects-≈)
 
   image-to-quotient' : (y : image f)
-                     → Σ q ꞉ X/≈ , ∃ x ꞉ X , ([ x ] ≡ q) × (f x ≡ pr₁ y)
+                     → Σ q ꞉ X/≈ , ∃ x ꞉ X , ([ x ] ＝ q) × (f x ＝ pr₁ y)
   image-to-quotient' (y , p) = ∥∥-rec prp r p
    where
-    r : (Σ x ꞉ X , f x ≡ y)
-      → (Σ q ꞉ X/≈ , ∃ x ꞉ X , ([ x ] ≡ q) × (f x ≡ y))
+    r : (Σ x ꞉ X , f x ＝ y)
+      → (Σ q ꞉ X/≈ , ∃ x ꞉ X , ([ x ] ＝ q) × (f x ＝ y))
     r (x , e) = [ x ] , ∣ x , refl , e ∣
-    prp : is-prop (Σ q ꞉ X/≈ , ∃ x ꞉ X , ([ x ] ≡ q) × (f x ≡ y))
-    prp (q , u) (q' , u') = to-subtype-≡ (λ _ → ∃-is-prop)
+    prp : is-prop (Σ q ꞉ X/≈ , ∃ x ꞉ X , ([ x ] ＝ q) × (f x ＝ y))
+    prp (q , u) (q' , u') = to-subtype-＝ (λ _ → ∃-is-prop)
                                          (∥∥-rec₂ (/-is-set ≋) γ u u')
      where
-      γ : (Σ x  ꞉ X , ([ x  ] ≡ q ) × (f x  ≡ y))
-        → (Σ x' ꞉ X , ([ x' ] ≡ q') × (f x' ≡ y))
-        → q ≡ q'
+      γ : (Σ x  ꞉ X , ([ x  ] ＝ q ) × (f x  ＝ y))
+        → (Σ x' ꞉ X , ([ x' ] ＝ q') × (f x' ＝ y))
+        → q ＝ q'
       γ (x , refl , e) (x' , refl , refl) = η/-identifies-related-points ≋ e
 
   image-to-quotient : image f → X/≈
   image-to-quotient y = pr₁ (image-to-quotient' y)
 
   image-to-quotient-lemma : (x : X)
-                          → image-to-quotient (corestriction f x) ≡ [ x ]
+                          → image-to-quotient (corestriction f x) ＝ [ x ]
   image-to-quotient-lemma x = ∥∥-rec (/-is-set ≋) γ t
    where
     q : X/≈
     q = image-to-quotient (corestriction f x)
-    t : ∃ x' ꞉ X , ([ x' ] ≡ q) × (f x' ≡ f x)
+    t : ∃ x' ꞉ X , ([ x' ] ＝ q) × (f x' ＝ f x)
     t = pr₂ (image-to-quotient' (corestriction f x))
-    γ : (Σ x' ꞉ X , ([ x' ] ≡ q) × (f x' ≡ f x))
-      → q ≡ [ x ]
-    γ (x' , u , v) =   q    ≡⟨ u ⁻¹ ⟩
-                     [ x' ] ≡⟨ η/-identifies-related-points ≋ v ⟩
+    γ : (Σ x' ꞉ X , ([ x' ] ＝ q) × (f x' ＝ f x))
+      → q ＝ [ x ]
+    γ (x' , u , v) =   q    ＝⟨ u ⁻¹ ⟩
+                     [ x' ] ＝⟨ η/-identifies-related-points ≋ v ⟩
                      [ x  ] ∎
 
   image-≃-quotient : image f ≃ X/≈
@@ -427,28 +427,28 @@ module _
     ϕ = image-to-quotient
     ψ : X/≈ → image f
     ψ = quotient-to-image
-    τ : (x : X) → ψ [ x ] ≡ corestriction f x
+    τ : (x : X) → ψ [ x ] ＝ corestriction f x
     τ = universality-triangle/ ≋ (image-is-set f Y-is-set)
                                (corestriction f)
                                corestriction-respects-≈
     σ : ϕ ∘ ψ ∼ id
     σ = /-induction ≋ (λ x' → /-is-set ≋) γ
      where
-      γ : (x : X) → ϕ (ψ [ x ]) ≡ [ x ]
-      γ x = ϕ (ψ [ x ])            ≡⟨ ap ϕ (τ x)                ⟩
-            ϕ (corestriction f x ) ≡⟨ image-to-quotient-lemma x ⟩
+      γ : (x : X) → ϕ (ψ [ x ]) ＝ [ x ]
+      γ x = ϕ (ψ [ x ])            ＝⟨ ap ϕ (τ x)                ⟩
+            ϕ (corestriction f x ) ＝⟨ image-to-quotient-lemma x ⟩
             [ x ]                  ∎
     ρ : ψ ∘ ϕ ∼ id
     ρ (y , p) = ∥∥-rec (image-is-set f Y-is-set) γ p
      where
-      γ : (Σ x ꞉ X , f x ≡ y) → ψ (ϕ (y , p)) ≡ (y , p)
-      γ (x , refl) = ψ (ϕ (f x , p))           ≡⟨ ⦅1⦆ ⟩
-                     ψ (ϕ (corestriction f x)) ≡⟨ ⦅2⦆ ⟩
-                     ψ [ x ]                   ≡⟨ ⦅3⦆ ⟩
-                     corestriction f x         ≡⟨ ⦅4⦆ ⟩
+      γ : (Σ x ꞉ X , f x ＝ y) → ψ (ϕ (y , p)) ＝ (y , p)
+      γ (x , refl) = ψ (ϕ (f x , p))           ＝⟨ ⦅1⦆ ⟩
+                     ψ (ϕ (corestriction f x)) ＝⟨ ⦅2⦆ ⟩
+                     ψ [ x ]                   ＝⟨ ⦅3⦆ ⟩
+                     corestriction f x         ＝⟨ ⦅4⦆ ⟩
                      (f x , p)                 ∎
        where
-        ⦅4⦆ = to-subtype-≡ (λ y → being-in-the-image-is-prop y f) refl
+        ⦅4⦆ = to-subtype-＝ (λ y → being-in-the-image-is-prop y f) refl
         ⦅1⦆ = ap (ψ ∘ ϕ) (⦅4⦆ ⁻¹)
         ⦅2⦆ = ap ψ (image-to-quotient-lemma x)
         ⦅3⦆ = τ x
@@ -470,7 +470,7 @@ module _
        X/≈      ≃⟨ X/≈-≃-X/≈⁻       ⟩
        X/≈⁻     ■
     where
-     h : (y : Y) → (Σ x ꞉ X , f x ≡ y) ≃ (Σ x' ꞉ X' , f' x' ≡ y)
-     h y = ≃-sym (Σ-change-of-variable (λ x → f x ≡ y) ⌜ φ ⌝ (⌜⌝-is-equiv φ))
+     h : (y : Y) → (Σ x ꞉ X , f x ＝ y) ≃ (Σ x' ꞉ X' , f' x' ＝ y)
+     h y = ≃-sym (Σ-change-of-variable (λ x → f x ＝ y) ⌜ φ ⌝ (⌜⌝-is-equiv φ))
 
 \end{code}

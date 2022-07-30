@@ -17,7 +17,7 @@ invertible : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 invertible f = Σ g ꞉ (codomain f → domain f) , (g ∘ f ∼ id) × (f ∘ g ∼ id)
 
 fiber : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) → Y → 𝓤 ⊔ 𝓥 ̇
-fiber f y = Σ x ꞉ domain f , f x ≡ y
+fiber f y = Σ x ꞉ domain f , f x ＝ y
 
 fiber-point : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f : X → Y} {y : Y}
             → fiber f y → X
@@ -25,7 +25,7 @@ fiber-point : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f : X → Y} {y : Y}
 fiber-point (x , p) = x
 
 fiber-identification : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f : X → Y} {y : Y}
-                     → (w : fiber f y) → f (fiber-point w) ≡ y
+                     → (w : fiber f y) → f (fiber-point w) ＝ y
 
 fiber-identification (x , p) = p
 
@@ -42,7 +42,7 @@ inverses-are-sections f e y = fiber-identification (center (fiber f y) (e y))
 
 inverse-centrality : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                      (f : X → Y) (e : is-equiv f) (y : Y) (t : fiber f y)
-                   → (inverse f e y , inverses-are-sections f e y) ≡ t
+                   → (inverse f e y , inverses-are-sections f e y) ＝ t
 
 inverse-centrality f e y = centrality (fiber f y) (e y)
 
@@ -51,7 +51,7 @@ inverses-are-retractions : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-e
 
 inverses-are-retractions f e x = ap fiber-point p
  where
-  p : inverse f e (f x) , inverses-are-sections f e (f x) ≡ x , refl (f x)
+  p : inverse f e (f x) , inverses-are-sections f e (f x) ＝ x , refl (f x)
   p = inverse-centrality f e (f x) (x , (refl (f x)))
 
 equivs-are-invertible : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
@@ -66,19 +66,19 @@ invertibles-are-equivs : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
 
 invertibles-are-equivs {𝓤} {𝓥} {X} {Y} f (g , η , ε) y₀ = iii
  where
-  i : (y : Y) → (f (g y) ≡ y₀) ◁ (y ≡ y₀)
-  i y =  r , s , transport-is-section (_≡ y₀) (ε y)
+  i : (y : Y) → (f (g y) ＝ y₀) ◁ (y ＝ y₀)
+  i y =  r , s , transport-is-section (_＝ y₀) (ε y)
    where
-    s : f (g y) ≡ y₀ → y ≡ y₀
-    s = transport (_≡ y₀) (ε y)
+    s : f (g y) ＝ y₀ → y ＝ y₀
+    s = transport (_＝ y₀) (ε y)
 
-    r : y ≡ y₀ → f (g y) ≡ y₀
-    r = transport (_≡ y₀) ((ε y)⁻¹)
+    r : y ＝ y₀ → f (g y) ＝ y₀
+    r = transport (_＝ y₀) ((ε y)⁻¹)
 
   ii : fiber f y₀ ◁ singleton-type y₀
-  ii = (Σ x ꞉ X , f x ≡ y₀)     ◁⟨ Σ-reindexing-retract g (f , η) ⟩
-       (Σ y ꞉ Y , f (g y) ≡ y₀) ◁⟨ Σ-retract i ⟩
-       (Σ y ꞉ Y , y ≡ y₀)       ◀
+  ii = (Σ x ꞉ X , f x ＝ y₀)     ◁⟨ Σ-reindexing-retract g (f , η) ⟩
+       (Σ y ꞉ Y , f (g y) ＝ y₀) ◁⟨ Σ-retract i ⟩
+       (Σ y ꞉ Y , y ＝ y₀)       ◀
 
   iii : is-singleton (fiber f y₀)
   iii = retract-of-singleton ii (singleton-types-are-singletons Y y₀)
@@ -91,7 +91,7 @@ inverses-are-equivs f e = invertibles-are-equivs
                            (f , inverses-are-sections f e , inverses-are-retractions f e)
 
 inversion-involutive : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equiv f)
-                     → inverse (inverse f e) (inverses-are-equivs f e) ≡ f
+                     → inverse (inverse f e) (inverses-are-equivs f e) ＝ f
 
 inversion-involutive f e = refl f
 
@@ -104,12 +104,12 @@ id-invertible X = 𝑖𝑑 X , refl , refl
 ∘-invertible {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {f} {f'} (g' , gf' , fg') (g , gf , fg) =
   g ∘ g' , η , ε
  where
-  η = λ x → g (g' (f' (f x))) ≡⟨ ap g (gf' (f x)) ⟩
-            g (f x)           ≡⟨ gf x ⟩
+  η = λ x → g (g' (f' (f x))) ＝⟨ ap g (gf' (f x)) ⟩
+            g (f x)           ＝⟨ gf x ⟩
             x                 ∎
 
-  ε = λ z → f' (f (g (g' z))) ≡⟨ ap f' (fg (g' z)) ⟩
-            f' (g' z)         ≡⟨ fg' z ⟩
+  ε = λ z → f' (f (g (g' z))) ＝⟨ ap f' (fg (g' z)) ⟩
+            f' (g' z)         ＝⟨ fg' z ⟩
             z                 ∎
 
 id-is-equiv : (X : 𝓤 ̇ ) → is-equiv (𝑖𝑑 X)
@@ -133,9 +133,9 @@ inverse-of-∘ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
 
 inverse-of-∘ f g i j z =
 
-  f' (g' z)             ≡⟨ (ap (f' ∘ g') (s z))⁻¹ ⟩
-  f' (g' (g (f (h z)))) ≡⟨ ap f' (inverses-are-retractions g j (f (h z))) ⟩
-  f' (f (h z))          ≡⟨ inverses-are-retractions f i (h z) ⟩
+  f' (g' z)             ＝⟨ (ap (f' ∘ g') (s z))⁻¹ ⟩
+  f' (g' (g (f (h z)))) ＝⟨ ap f' (inverses-are-retractions g j (f (h z))) ⟩
+  f' (f (h z))          ＝⟨ inverses-are-retractions f i (h z) ⟩
   h z                   ∎
 
  where
@@ -194,58 +194,58 @@ _ ≃⟨ d ⟩ e = d ● e
 _■ : (X : 𝓤 ̇ ) → X ≃ X
 _■ = id-≃
 
-transport-is-equiv : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) {x y : X} (p : x ≡ y)
+transport-is-equiv : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) {x y : X} (p : x ＝ y)
                    → is-equiv (transport A p)
 
 transport-is-equiv A (refl x) = id-is-equiv (A x)
 
-Σ-≡-≃ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (σ τ : Σ A)
-      → (σ ≡ τ) ≃ (Σ p ꞉ pr₁ σ ≡ pr₁ τ , transport A p (pr₂ σ) ≡ pr₂ τ)
+Σ-＝-≃ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (σ τ : Σ A)
+      → (σ ＝ τ) ≃ (Σ p ꞉ pr₁ σ ＝ pr₁ τ , transport A p (pr₂ σ) ＝ pr₂ τ)
 
-Σ-≡-≃ {𝓤} {𝓥} {X} {A}  σ τ = invertibility-gives-≃ from-Σ-≡ (to-Σ-≡ , η , ε)
+Σ-＝-≃ {𝓤} {𝓥} {X} {A}  σ τ = invertibility-gives-≃ from-Σ-＝ (to-Σ-＝ , η , ε)
  where
-  η : (q : σ ≡ τ) → to-Σ-≡ (from-Σ-≡ q) ≡ q
+  η : (q : σ ＝ τ) → to-Σ-＝ (from-Σ-＝ q) ＝ q
   η (refl σ) = refl (refl σ)
 
-  ε : (w : Σ p ꞉ pr₁ σ ≡ pr₁ τ , transport A p (pr₂ σ) ≡ pr₂ τ)
-    → from-Σ-≡ (to-Σ-≡ w) ≡ w
+  ε : (w : Σ p ꞉ pr₁ σ ＝ pr₁ τ , transport A p (pr₂ σ) ＝ pr₂ τ)
+    → from-Σ-＝ (to-Σ-＝ w) ＝ w
 
   ε (refl p , refl q) = refl (refl p , refl q)
 
-to-×-≡ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {z t : X × Y}
-       → (pr₁ z ≡ pr₁ t) × (pr₂ z ≡ pr₂ t) → z ≡ t
+to-×-＝ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {z t : X × Y}
+       → (pr₁ z ＝ pr₁ t) × (pr₂ z ＝ pr₂ t) → z ＝ t
 
-to-×-≡ (refl x , refl y) = refl (x , y)
+to-×-＝ (refl x , refl y) = refl (x , y)
 
-from-×-≡ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {z t : X × Y}
-         → z ≡ t → (pr₁ z ≡ pr₁ t) × (pr₂ z ≡ pr₂ t)
+from-×-＝ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {z t : X × Y}
+         → z ＝ t → (pr₁ z ＝ pr₁ t) × (pr₂ z ＝ pr₂ t)
 
-from-×-≡ {𝓤} {𝓥} {X} {Y} (refl (x , y)) = (refl x , refl y)
+from-×-＝ {𝓤} {𝓥} {X} {Y} (refl (x , y)) = (refl x , refl y)
 
-×-≡-≃ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (z t : X × Y)
-      → (z ≡ t) ≃ (pr₁ z ≡ pr₁ t) × (pr₂ z ≡ pr₂ t)
+×-＝-≃ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (z t : X × Y)
+      → (z ＝ t) ≃ (pr₁ z ＝ pr₁ t) × (pr₂ z ＝ pr₂ t)
 
-×-≡-≃ {𝓤} {𝓥} {X} {Y} z t = invertibility-gives-≃ from-×-≡ (to-×-≡ , η , ε)
+×-＝-≃ {𝓤} {𝓥} {X} {Y} z t = invertibility-gives-≃ from-×-＝ (to-×-＝ , η , ε)
  where
-  η : (p : z ≡ t) → to-×-≡ (from-×-≡ p) ≡ p
+  η : (p : z ＝ t) → to-×-＝ (from-×-＝ p) ＝ p
   η (refl z) = refl (refl z)
 
-  ε : (q : (pr₁ z ≡ pr₁ t) × (pr₂ z ≡ pr₂ t)) → from-×-≡ (to-×-≡ q) ≡ q
+  ε : (q : (pr₁ z ＝ pr₁ t) × (pr₂ z ＝ pr₂ t)) → from-×-＝ (to-×-＝ q) ＝ q
   ε (refl x , refl y) = refl (refl x , refl y)
 
-ap-pr₁-to-×-≡ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {z t : X × Y}
-              → (p₁ : pr₁ z ≡ pr₁ t)
-              → (p₂ : pr₂ z ≡ pr₂ t)
-              → ap pr₁ (to-×-≡ (p₁ , p₂)) ≡ p₁
+ap-pr₁-to-×-＝ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {z t : X × Y}
+              → (p₁ : pr₁ z ＝ pr₁ t)
+              → (p₂ : pr₂ z ＝ pr₂ t)
+              → ap pr₁ (to-×-＝ (p₁ , p₂)) ＝ p₁
 
-ap-pr₁-to-×-≡ (refl x) (refl y) = refl (refl x)
+ap-pr₁-to-×-＝ (refl x) (refl y) = refl (refl x)
 
-ap-pr₂-to-×-≡ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {z t : X × Y}
-              → (p₁ : pr₁ z ≡ pr₁ t)
-              → (p₂ : pr₂ z ≡ pr₂ t)
-              → ap pr₂ (to-×-≡ (p₁ , p₂)) ≡ p₂
+ap-pr₂-to-×-＝ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {z t : X × Y}
+              → (p₁ : pr₁ z ＝ pr₁ t)
+              → (p₂ : pr₂ z ＝ pr₂ t)
+              → ap pr₂ (to-×-＝ (p₁ , p₂)) ＝ p₂
 
-ap-pr₂-to-×-≡ (refl x) (refl y) = refl (refl y)
+ap-pr₂-to-×-＝ (refl x) (refl y) = refl (refl y)
 
 Σ-cong : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {B : X → 𝓦 ̇ }
        → ((x : X) → A x ≃ B x) → Σ A ≃ Σ B
@@ -259,18 +259,18 @@ ap-pr₂-to-×-≡ (refl x) (refl y) = refl (refl y)
   g : (x : X) → B x → A x
   g x = inverse (f x) (⌜⌝-is-equiv (φ x))
 
-  η : (x : X) (a : A x) → g x (f x a) ≡ a
+  η : (x : X) (a : A x) → g x (f x a) ＝ a
   η x = inverses-are-retractions (f x) (⌜⌝-is-equiv (φ x))
 
-  ε : (x : X) (b : B x) → f x (g x b) ≡ b
+  ε : (x : X) (b : B x) → f x (g x b) ＝ b
   ε x = inverses-are-sections (f x) (⌜⌝-is-equiv (φ x))
 
-  NatΣ-η : (w : Σ A) → NatΣ g (NatΣ f w) ≡ w
-  NatΣ-η (x , a) = x , g x (f x a) ≡⟨ to-Σ-≡' (η x a) ⟩
+  NatΣ-η : (w : Σ A) → NatΣ g (NatΣ f w) ＝ w
+  NatΣ-η (x , a) = x , g x (f x a) ＝⟨ to-Σ-＝' (η x a) ⟩
                    x , a           ∎
 
-  NatΣ-ε : (t : Σ B) → NatΣ f (NatΣ g t) ≡ t
-  NatΣ-ε (x , b) = x , f x (g x b) ≡⟨ to-Σ-≡' (ε x b) ⟩
+  NatΣ-ε : (t : Σ B) → NatΣ f (NatΣ g t) ＝ t
+  NatΣ-ε (x , b) = x , f x (g x b) ＝⟨ to-Σ-＝' (ε x b) ⟩
                    x , b           ∎
 
 ≃-gives-◁ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → X ≃ Y → X ◁ Y

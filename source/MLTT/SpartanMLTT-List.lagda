@@ -58,7 +58,7 @@ With the computation rules holding definitionally, as required:
 List-induction-[] : {X : 𝓤 ̇ } (P : List X → 𝓥 ̇ )
                → (p : P [])
                → (f : (x : X) (xs : List X) → P xs → P (x ∷ xs))
-               → List-induction P p f [] ≡ p
+               → List-induction P p f [] ＝ p
 List-induction-[] {𝓤} {𝓥} {X} P p f = refl
 
 List-induction-∷ : {X : 𝓤 ̇ } (P : List X → 𝓥 ̇ )
@@ -66,7 +66,7 @@ List-induction-∷ : {X : 𝓤 ̇ } (P : List X → 𝓥 ̇ )
                → (f : (x : X) (xs : List X) → P xs → P (x ∷ xs))
                → (x : X)
                → (xs : List X)
-               → List-induction P p f (x ∷ xs) ≡ f x xs (List-induction P p f xs)
+               → List-induction P p f (x ∷ xs) ＝ f x xs (List-induction P p f xs)
 List-induction-∷ {𝓤} {𝓥} {X} P p f x xs = refl
 
 pattern ⟨⟩       = ⋆
@@ -134,7 +134,7 @@ module _ {𝓤} (fe : funext 𝓤₀ 𝓤) where
  vecε 0        xs' = dfunext fe (λ i → 𝟘-elim i)
  vecε (succ n) xs' = dfunext fe h
   where
-   h : (i : Fin (succ n)) → index (succ n) (xs' 𝟎 :: xedni n (tl' xs')) i ≡ xs' i
+   h : (i : Fin (succ n)) → index (succ n) (xs' 𝟎 :: xedni n (tl' xs')) i ＝ xs' i
    h 𝟎       = refl
    h (suc i) = happly (vecε n (tl' xs')) i
 
@@ -163,7 +163,7 @@ append (succ m) n (x :: s) t = x :: append m n s t
 _++_ : {X : 𝓤 ̇ } {m n : ℕ} → Vec X m → Vec X n → Vec X (m ∔ n)
 _++_ = append _ _
 
-plus-1-is-succ : (n : ℕ) → n ∔ 1 ≡ succ n
+plus-1-is-succ : (n : ℕ) → n ∔ 1 ＝ succ n
 plus-1-is-succ zero     = refl
 plus-1-is-succ (succ n) = ap succ (plus-1-is-succ n)
 

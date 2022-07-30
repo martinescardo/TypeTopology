@@ -83,7 +83,7 @@ module HeytingImplicationConstruction (X : Locale 𝓤  𝓥  𝓥)
    ψ = aft-backward (meet-rightₘ U) (∧-right-preserves-joins U)
 
    β : ((W ∧[ L ] U) ≤[ poset-of L ] V ⇒ W ≤[ poset-of L ] (U ==> V)) holds
-   β p = pr₁ (pr₂ ψ W V) (U ∧[ L ] W   ≡⟨ ∧[ L ]-is-commutative U W ⟩ₚ
+   β p = pr₁ (pr₂ ψ W V) (U ∧[ L ] W   ＝⟨ ∧[ L ]-is-commutative U W ⟩ₚ
                           W ∧[ L ] U   ≤⟨ p ⟩
                           V            ■)
 
@@ -92,7 +92,7 @@ module HeytingImplicationConstruction (X : Locale 𝓤  𝓥  𝓥)
 
    γ : (W ≤[ poset-of L ] (U ==> V) ⇒ (W ∧[ L ] U) ≤[ poset-of L ] V) holds
    γ p = W ∧[ L ] U            ≤⟨ ∧[ L ]-left-monotone p            ⟩
-         (U ==> V) ∧[ L ] U    ≡⟨ ∧[ L ]-is-commutative (U ==> V) U ⟩ₚ
+         (U ==> V) ∧[ L ] U    ＝⟨ ∧[ L ]-is-commutative (U ==> V) U ⟩ₚ
          U ∧[ L ] (U ==> V)    ≤⟨ †                                 ⟩
          V                     ■
 

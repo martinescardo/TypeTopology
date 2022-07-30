@@ -32,11 +32,11 @@ SIGMA : {X : 𝓤 ̇ } → 𝓕  X → 𝓣 ̇
 SIGMA (I , φ) = I
 
 PI : {X : 𝓤 ̇ } → 𝓕  X → 𝓣 ⊔ 𝓤 ̇
-PI {𝓤} {X} (I , φ) = Σ s ꞉ (X → I) , φ ∘ s ≡ id
+PI {𝓤} {X} (I , φ) = Σ s ꞉ (X → I) , φ ∘ s ＝ id
 
 pullback : {A : 𝓤 ̇ } {B : 𝓥 ̇ } {C : 𝓦 ̇ }
          → (A → C) → (B → C) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
-pullback f g = Σ x ꞉ domain f , Σ y ꞉ domain g , f x ≡ g y
+pullback f g = Σ x ꞉ domain f , Σ y ꞉ domain g , f x ＝ g y
 
 ppr₁ : {A : 𝓤 ̇ } {B : 𝓥 ̇ } {C : 𝓦 ̇ }
        {f : A → C} {g : B → C}
@@ -50,7 +50,7 @@ ppr₂ (x , y , p) = y
 
 ppr₃ : {A : 𝓤 ̇ } {B : 𝓥 ̇ } {C : 𝓦 ̇ }
        {f : A → C} {g : B → C}
-     → (z : pullback f g) → f (ppr₁ z) ≡ g (ppr₂ z)
+     → (z : pullback f g) → f (ppr₁ z) ＝ g (ppr₂ z)
 ppr₃ (x , y , p) = p
 
 to-span : {A : 𝓤 ̇ } {B : 𝓥 ̇ } {C : 𝓦 ̇ }
@@ -67,13 +67,13 @@ to-span {𝓤} {𝓥} {𝓦} {𝓤'} {A} {B} {C} f g X =
              → (X → pullback f g) ≃ to-span f g X
 →-pullback-≃ {𝓤} {𝓥} {𝓦} {𝓤̇ } {A} {B} {C} f g X fe =
  (X → pullback f g)                              ≃⟨ i ⟩
- (X → Σ p ꞉ A × B , f (pr₁ p) ≡ g (pr₂ p))       ≃⟨ ii ⟩
+ (X → Σ p ꞉ A × B , f (pr₁ p) ＝ g (pr₂ p))       ≃⟨ ii ⟩
  (Σ j ꞉ (X → A × B) , f ∘ pr₁ ∘ j ∼ g ∘ pr₂ ∘ j) ≃⟨ iii ⟩
  to-span f g X                                   ■
   where
    i   = Π-cong fe fe X
           (λ _ → pullback f g)
-          (λ _ → Σ p ꞉ A × B , f (pr₁ p) ≡ g (pr₂ p))
+          (λ _ → Σ p ꞉ A × B , f (pr₁ p) ＝ g (pr₂ p))
           (λ x → ≃-sym Σ-assoc)
    ii  = ΠΣ-distr-≃
    iii = qinveq ϕ (ψ , (λ x → refl) , (λ x → refl))
@@ -129,30 +129,30 @@ open import UF.UA-FunExt
 open import UF.UniverseEmbedding
 open import UF.EquivalenceExamples
 
-𝓕-equiv : Univalence →  (X : 𝓤 ̇ ) → 𝓕 X ≃ (Σ A ꞉ (X → 𝓣 ⊔ 𝓤 ̇ ), (Σ A) has-size 𝓣)
+𝓕-equiv : Univalence →  (X : 𝓤 ̇ ) → 𝓕 X ≃ (Σ A ꞉ (X → 𝓣 ⊔ 𝓤 ̇ ), (Σ A) is 𝓣 small)
 𝓕-equiv {𝓤} ua X = qinveq φ (ψ , ψφ , φψ)
  where
   fe : FunExt
   fe = Univalence-gives-FunExt ua
 
-  φ : 𝓕 X → Σ A ꞉ (X → 𝓣 ⊔ 𝓤 ̇ ), (Σ A) has-size 𝓣
+  φ : 𝓕 X → Σ A ꞉ (X → 𝓣 ⊔ 𝓤 ̇ ), (Σ A) is 𝓣 small
   φ (I , φ) = fiber φ , I , ≃-sym (total-fiber-is-domain φ)
 
-  ψ : (Σ A ꞉ (X → 𝓣 ⊔ 𝓤 ̇ ), (Σ A) has-size 𝓣) → 𝓕 X
+  ψ : (Σ A ꞉ (X → 𝓣 ⊔ 𝓤 ̇ ), (Σ A) is 𝓣 small) → 𝓕 X
   ψ (A , I , (f , e)) = I , pr₁ ∘ f
 
-  φψ : (σ : Σ A ꞉ (X → 𝓣 ⊔ 𝓤 ̇ ), (Σ A) has-size 𝓣) → φ (ψ σ) ≡ σ
+  φψ : (σ : Σ A ꞉ (X → 𝓣 ⊔ 𝓤 ̇ ), (Σ A) is 𝓣 small) → φ (ψ σ) ＝ σ
   φψ (A , I , (f , e)) = p
    where
     h : (x : X) → fiber (pr₁ ∘ f) x ≃ A x
-    h x = (Σ i ꞉ I , pr₁ (f i) ≡ x) ≃⟨ Σ-change-of-variable (λ (σ : Σ A) → pr₁ σ ≡ x) f e ⟩
-          (Σ σ ꞉ Σ A , pr₁ σ ≡ x)   ≃⟨ pr₁-fiber-equiv x ⟩
+    h x = (Σ i ꞉ I , pr₁ (f i) ＝ x) ≃⟨ Σ-change-of-variable (λ (σ : Σ A) → pr₁ σ ＝ x) f e ⟩
+          (Σ σ ꞉ Σ A , pr₁ σ ＝ x)   ≃⟨ pr₁-fiber-equiv x ⟩
           A x                       ■
 
-    p : fiber (pr₁ ∘ f) , I , ≃-sym (total-fiber-is-domain (pr₁ ∘ f)) ≡ A , I , f , e
-    p = to-Σ-≡ (dfunext (fe 𝓤 ((𝓣 ⊔ 𝓤) ⁺)) (λ x → eqtoid (ua (𝓣 ⊔ 𝓤)) (fiber (pr₁ ∘ f) x) (A x) (h x)) ,
+    p : fiber (pr₁ ∘ f) , I , ≃-sym (total-fiber-is-domain (pr₁ ∘ f)) ＝ A , I , f , e
+    p = to-Σ-＝ (dfunext (fe 𝓤 ((𝓣 ⊔ 𝓤) ⁺)) (λ x → eqtoid (ua (𝓣 ⊔ 𝓤)) (fiber (pr₁ ∘ f) x) (A x) (h x)) ,
                 being-small-is-prop ua (Σ A) 𝓣 _ (I , f , e))
-  ψφ : (l : 𝓕 X) → ψ (φ l) ≡ l
+  ψφ : (l : 𝓕 X) → ψ (φ l) ＝ l
   ψφ (I , φ) = ap (λ - → I , -) (dfunext (fe 𝓣 𝓤) (λ i → refl))
 
 \end{code}

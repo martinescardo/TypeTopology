@@ -26,7 +26,7 @@ module ImageAndSurjection (pt : propositional-truncations-exist) where
  open PropositionalTruncation pt
 
  _∈image_ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → Y → (X → Y) → F (𝓤 ⊔ 𝓥) ̇
- y ∈image f = ∃ x ꞉ domain f , f x ≡ y
+ y ∈image f = ∃ x ꞉ domain f , f x ＝ y
 
  being-in-the-image-is-prop : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (y : Y) (f : X → Y)
                             → is-prop (y ∈image f)
@@ -53,13 +53,13 @@ module ImageAndSurjection (pt : propositional-truncations-exist) where
                                                   → wconstant f
                                                   → is-prop (image f)
  wconstant-maps-to-sets-have-propositional-images X s f c (y , p) (y' , p') =
-  to-Σ-≡ (∥∥-rec s (λ u → ∥∥-rec s (λ v → h u v) p') p ,
+  to-Σ-＝ (∥∥-rec s (λ u → ∥∥-rec s (λ v → h u v) p') p ,
           ∥∥-is-prop _ p')
    where
-    h : (Σ x ꞉ X , f x ≡ y) → (Σ x' ꞉ X , f x' ≡ y') → y ≡ y'
-    h (x , e) (x' , e') = y    ≡⟨ e ⁻¹ ⟩
-                          f x  ≡⟨ c x x' ⟩
-                          f x' ≡⟨ e' ⟩
+    h : (Σ x ꞉ X , f x ＝ y) → (Σ x' ꞉ X , f x' ＝ y') → y ＝ y'
+    h (x , e) (x' , e') = y    ＝⟨ e ⁻¹ ⟩
+                          f x  ＝⟨ c x x' ⟩
+                          f x' ＝⟨ e' ⟩
                           y'   ∎
 
  wconstant-map-to-set-truncation-of-domain-map' : (X : 𝓤 ̇ ) {Y : 𝓥 ̇ }
@@ -91,14 +91,14 @@ module ImageAndSurjection (pt : propositional-truncations-exist) where
    g = wconstant-map-to-set-truncation-of-domain-map' X s f c
    p : is-prop (image f)
    p = wconstant-maps-to-sets-have-propositional-images X s f c
-   γ : (x : X) → f x ≡ restriction f (g ∣ x ∣)
-   γ x = f x                               ≡⟨ refl ⟩
-         restriction f (corestriction f x) ≡⟨ ap (restriction f)
+   γ : (x : X) → f x ＝ restriction f (g ∣ x ∣)
+   γ x = f x                               ＝⟨ refl ⟩
+         restriction f (corestriction f x) ＝⟨ ap (restriction f)
                                               (p (corestriction f x) (g ∣ x ∣)) ⟩
          restriction f (g ∣ x ∣)           ∎
 
  is-surjection : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → F (𝓤 ⊔ 𝓥) ⊔ 𝓥 ̇
- is-surjection f = ∀ y → ∃ x ꞉ domain f , f x ≡ y
+ is-surjection f = ∀ y → ∃ x ꞉ domain f , f x ＝ y
 
  _↠_ : 𝓤 ̇ → 𝓥 ̇ → F (𝓤 ⊔ 𝓥) ⊔ 𝓤 ⊔ 𝓥 ̇
  X ↠ Y = Σ f ꞉ (X → Y) , is-surjection f
@@ -134,8 +134,8 @@ module ImageAndSurjection (pt : propositional-truncations-exist) where
                              → is-surjection (corestriction f)
  corestriction-is-surjection f (y , s) = ∥∥-functor g s
   where
-   g : (Σ x ꞉ domain f , f x ≡ y) → Σ x ꞉ domain f , corestriction f x ≡ (y , s)
-   g (x , p) = x , to-Σ-≡ (p , ∥∥-is-prop _ _)
+   g : (Σ x ꞉ domain f , f x ＝ y) → Σ x ꞉ domain f , corestriction f x ＝ (y , s)
+   g (x , p) = x , to-Σ-＝ (p , ∥∥-is-prop _ _)
 
  pt-is-surjection : {X : 𝓤 ̇ } → is-surjection (λ (x : X) → ∣ x ∣)
  pt-is-surjection t = ∥∥-rec ∥∥-is-prop (λ x → ∣ x , ∥∥-is-prop (∣ x ∣) t ∣) t
@@ -146,11 +146,11 @@ module ImageAndSurjection (pt : propositional-truncations-exist) where
                     → is-surjection (NatΣ ζ)
  NatΣ-is-surjection A B ζ i (x , b) = γ
   where
-   δ : (Σ a ꞉ A x , ζ x a ≡ b)
-     → Σ (x' , a) ꞉ Σ A , (x' , ζ x' a) ≡ (x , b)
+   δ : (Σ a ꞉ A x , ζ x a ＝ b)
+     → Σ (x' , a) ꞉ Σ A , (x' , ζ x' a) ＝ (x , b)
    δ (a , p) = (x , a) , (ap (x ,_) p)
 
-   γ : ∃ (x' , a) ꞉ Σ A , (x' , ζ x' a) ≡ (x , b)
+   γ : ∃ (x' , a) ꞉ Σ A , (x' , ζ x' a) ＝ (x , b)
    γ = ∥∥-functor δ (i x b)
 
  corestriction-of-embedding-is-equivalence : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
@@ -167,23 +167,23 @@ module ImageAndSurjection (pt : propositional-truncations-exist) where
     e' (y , p) = retract-of-prop γ (e y)
      where
       γ : fiber f' (y , p) ◁ fiber f y
-      γ = Σ-retract (λ x → f' x ≡ y , p) (λ x → f x ≡ y) ϕ
+      γ = Σ-retract (λ x → f' x ＝ y , p) (λ x → f x ＝ y) ϕ
        where
-        ϕ : (x : domain f) → (f' x ≡ (y , p)) ◁ (f x ≡ y)
+        ϕ : (x : domain f) → (f' x ＝ (y , p)) ◁ (f x ＝ y)
         ϕ x = ρ , σ , η
          where
-          ρ : f x ≡ y → f' x ≡ (y , p)
-          ρ q = to-subtype-≡ (λ y' → ∥∥-is-prop) q
-          σ : f' x ≡ (y , p) → f x ≡ y
+          ρ : f x ＝ y → f' x ＝ (y , p)
+          ρ q = to-subtype-＝ (λ y' → ∥∥-is-prop) q
+          σ : f' x ＝ (y , p) → f x ＝ y
           σ q' = ap pr₁ q'
           η : ρ ∘ σ ∼ id
-          η refl = to-Σ-≡ (refl , q)    ≡⟨ ap (λ - → to-Σ-≡ (refl , -)) h ⟩
-                   to-Σ-≡ (refl , refl) ≡⟨ refl ⟩
+          η refl = to-Σ-＝ (refl , q)    ＝⟨ ap (λ - → to-Σ-＝ (refl , -)) h ⟩
+                   to-Σ-＝ (refl , refl) ＝⟨ refl ⟩
                    refl                 ∎
            where
-            q : ∣ x , refl ∣ ≡ ∣ x , refl ∣
+            q : ∣ x , refl ∣ ＝ ∣ x , refl ∣
             q = ∥∥-is-prop ∣ x , refl ∣ ∣ x , refl ∣
-            h : q ≡ refl
+            h : q ＝ refl
             h = props-are-sets ∥∥-is-prop q refl
 
  embedding-if-corestriction-is-equivalence : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
@@ -213,7 +213,7 @@ module ImageAndSurjection (pt : propositional-truncations-exist) where
 
  image-surjection-converse : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                            → imageInduction f → is-surjection f
- image-surjection-converse f is' = is' (λ y → ∥ Σ (λ x → f x ≡ y) ∥)
+ image-surjection-converse f is' = is' (λ y → ∥ Σ (λ x → f x ＝ y) ∥)
                                        (λ y → ∥∥-is-prop)
                                        (λ x → ∣ x , refl ∣)
 
@@ -234,10 +234,10 @@ module ImageAndSurjection (pt : propositional-truncations-exist) where
                    → is-surjection (λ (σ : Σ A) → pr₁ σ)
  pr₁-is-surjection A s x = γ
   where
-   δ : A x → Σ σ ꞉ Σ A , pr₁ σ ≡ x
+   δ : A x → Σ σ ꞉ Σ A , pr₁ σ ＝ x
    δ a = (x , a) , refl
 
-   γ : ∃ σ ꞉ Σ A , pr₁ σ ≡ x
+   γ : ∃ σ ꞉ Σ A , pr₁ σ ＝ x
    γ = ∥∥-functor δ (s x)
 
  pr₁-is-surjection-converse : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
@@ -245,7 +245,7 @@ module ImageAndSurjection (pt : propositional-truncations-exist) where
                             → ((x : X) → ∥ A x ∥)
  pr₁-is-surjection-converse A s x = γ
   where
-   δ : (Σ σ ꞉ Σ A , pr₁ σ ≡ x) → A x
+   δ : (Σ σ ꞉ Σ A , pr₁ σ ＝ x) → A x
    δ ((.x , a) , refl) = a
 
    γ : ∥ A x ∥
@@ -256,12 +256,12 @@ module ImageAndSurjection (pt : propositional-truncations-exist) where
                     → image f ≃ Y
  surjection-≃-image {𝓤} {𝓥} {X} {Y} f s =
   image f                       ≃⟨ ≃-refl _ ⟩
-  (Σ y ꞉ Y , ∃ x ꞉ X , f x ≡ y) ≃⟨ Σ-cong γ ⟩
+  (Σ y ꞉ Y , ∃ x ꞉ X , f x ＝ y) ≃⟨ Σ-cong γ ⟩
   (Σ y ꞉ Y , 𝟙)                 ≃⟨ ≃-refl _ ⟩
   Y × 𝟙                         ≃⟨ 𝟙-rneutral {𝓥} {𝓥} ⟩
   Y                             ■
    where
-    γ : (y : Y) → (∃ x ꞉ X , f x ≡ y) ≃ 𝟙
+    γ : (y : Y) → (∃ x ꞉ X , f x ＝ y) ≃ 𝟙
     γ y = singleton-≃-𝟙 (pointed-props-are-singletons (s y) ∥∥-is-prop)
 
  ∘-is-surjection : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {f : X → Y} {g : Y → Z}
@@ -269,12 +269,12 @@ module ImageAndSurjection (pt : propositional-truncations-exist) where
  ∘-is-surjection {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {f} {g} σ τ z =
   ∥∥-rec ∥∥-is-prop γ₁ (τ z)
    where
-    γ₁ : (Σ y ꞉ Y , g y ≡ z) → ∃ x ꞉ X , (g ∘ f) x ≡ z
+    γ₁ : (Σ y ꞉ Y , g y ＝ z) → ∃ x ꞉ X , (g ∘ f) x ＝ z
     γ₁ (y , q) = ∥∥-functor γ₂ (σ y)
      where
-      γ₂ : (Σ x ꞉ X , f x ≡ y) → Σ x ꞉ X , (g ∘ f) x ≡ z
-      γ₂ (x , p) = (x , (g (f x) ≡⟨ ap g p ⟩
-                         g y     ≡⟨ q ⟩
+      γ₂ : (Σ x ꞉ X , f x ＝ y) → Σ x ꞉ X , (g ∘ f) x ＝ z
+      γ₂ (x , p) = (x , (g (f x) ＝⟨ ap g p ⟩
+                         g y     ＝⟨ q ⟩
                          z       ∎))
 
  equivs-are-surjections : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f : X → Y}

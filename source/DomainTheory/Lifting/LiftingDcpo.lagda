@@ -79,8 +79,8 @@ module freely-add-⊥
          value l (f p)     ⊑⟨ 𝓓 ⟩[ t (f p) ]
          value m (g (f p)) ∎⟨ 𝓓 ⟩
 
- ⊑-is-antisymmetric : (k l : 𝓛D) → k ⊑ l → l ⊑ k → k ≡ l
- ⊑-is-antisymmetric k l (f , s) (g , t) = ⋍-to-≡ γ
+ ⊑-is-antisymmetric : (k l : 𝓛D) → k ⊑ l → l ⊑ k → k ＝ l
+ ⊑-is-antisymmetric k l (f , s) (g , t) = ⋍-to-＝ γ
   where
    γ : k ⋍ l
    γ = (e , dfunext fe (λ p → antisymmetry 𝓓 (value k p) (value l (⌜ e ⌝ p))
@@ -94,7 +94,7 @@ module freely-add-⊥
            value k (g (⌜ e ⌝ p)) ⊑⟨ 𝓓 ⟩[ lemma       ]
            value k p             ∎⟨ 𝓓 ⟩
       where
-       lemma = ≡-to-⊑ 𝓓 (value-is-constant k (g (⌜ e ⌝ p)) p)
+       lemma = ＝-to-⊑ 𝓓 (value-is-constant k (g (⌜ e ⌝ p)) p)
 
  family-in-dcpo : {I : 𝓥 ̇  } (α : I → 𝓛D) → (Σ i ꞉ I , is-defined (α i)) → ⟨ 𝓓 ⟩
  family-in-dcpo {I} α (i , p) = value (α i) p
@@ -116,7 +116,7 @@ module freely-add-⊥
           value (α k) (g pⱼ) ⊑⟨ 𝓓 ⟩[ lemma ]
           value (α k) (f pᵢ) ∎⟨ 𝓓 ⟩
        where
-        lemma = ≡-to-⊑ 𝓓 (value-is-constant (α k) (g pⱼ) (f pᵢ))
+        lemma = ＝-to-⊑ 𝓓 (value-is-constant (α k) (g pⱼ) (f pᵢ))
 
  family-in-dcpo-is-directed : {I : 𝓥 ̇  } (α : I → 𝓛D)
                             → is-directed _⊑_ α
@@ -165,7 +165,7 @@ module freely-add-⊥
                        value l (pr₁ (l-is-ub i) qᵢ) ⊑⟨ 𝓓 ⟩[ lemma              ]
                        value l (f q)                ∎⟨ 𝓓 ⟩
           where
-           lemma = ≡-to-⊑ 𝓓 (value-is-constant l (pr₁ (l-is-ub i) qᵢ) (f q))
+           lemma = ＝-to-⊑ 𝓓 (value-is-constant l (pr₁ (l-is-ub i) qᵢ) (f q))
 
  𝓛-DCPO⊥ : DCPO⊥ {𝓥 ⁺ ⊔ 𝓤} {𝓥 ⊔ 𝓣}
  𝓛-DCPO⊥ = (𝓛-DCPO , (𝟘 , 𝟘-elim , 𝟘-is-prop)
@@ -193,14 +193,14 @@ continuous.
      q i = pr₁ (l-is-ub i) ⋆
      ub' : (i j : I) → α j ⊑⟨ 𝓓 ⟩ value l (q i)
      ub' i j = α j           ⊑⟨ 𝓓 ⟩[ pr₂ (l-is-ub j) ⋆ ]
-               value l (q j) ⊑⟨ 𝓓 ⟩[ ≡-to-⊑ 𝓓 (value-is-constant l (q j) (q i)) ]
+               value l (q j) ⊑⟨ 𝓓 ⟩[ ＝-to-⊑ 𝓓 (value-is-constant l (q j) (q i)) ]
                value l (q i) ∎⟨ 𝓓 ⟩
      γ : I → η (∐ 𝓓 δ) ⊑ l
      γ i = ((λ ⋆ → q i)
           , (λ ⋆ → ∐-is-lowerbound-of-upperbounds 𝓓 δ (value l (q i)) (ub' i)))
 
  𝓛-order-lemma : {k l : 𝓛D} → k ⊑' l → k ⊑ l
- 𝓛-order-lemma {k} {l} k-below-l = (pr₁ claim , (λ p → ≡-to-⊑ 𝓓 (pr₂ claim p)))
+ 𝓛-order-lemma {k} {l} k-below-l = (pr₁ claim , (λ p → ＝-to-⊑ 𝓓 (pr₂ claim p)))
   where
    open import Lifting.UnivalentPrecategory 𝓥 ⟨ 𝓓 ⟩ renaming (_⊑_ to _⊑''_)
    claim : k ⊑'' l
@@ -300,27 +300,27 @@ dcpo.
       γ (k , u , v) = (k , 𝓛-order-lemma u , 𝓛-order-lemma v)
 
   𝓛-sup-lemma : {I : 𝓥 ̇  } {α : I → 𝓛D} (δ : is-Directed 𝓛-DCPOₛ α)
-              → ∐ 𝓛-DCPOₛ δ ≡ ∐ 𝓛-DCPO {I} {α} (𝓛-directed-lemma δ)
-  𝓛-sup-lemma {I} {α} δ = ⋍-to-≡ (e , dfunext fe γ)
+              → ∐ 𝓛-DCPOₛ δ ＝ ∐ 𝓛-DCPO {I} {α} (𝓛-directed-lemma δ)
+  𝓛-sup-lemma {I} {α} δ = ⋍-to-＝ (e , dfunext fe γ)
    where
     ε : is-Directed 𝓛-DCPO α
     ε = 𝓛-directed-lemma δ
     e : is-defined (∐ 𝓛-DCPOₛ δ) ≃ is-defined (∐ 𝓛-DCPO {I} {α} ε)
     e = ≃-refl (∃ i ꞉ I , is-defined (α i))
     γ : (q : is-defined (∐ 𝓛-DCPO {I} {α} ε))
-      → value (∐ 𝓛-DCPOₛ δ) q ≡ value (∐ 𝓛-DCPO {I} {α} ε) (⌜ e ⌝ q)
+      → value (∐ 𝓛-DCPOₛ δ) q ＝ value (∐ 𝓛-DCPO {I} {α} ε) (⌜ e ⌝ q)
     γ q = ∥∥-rec (sethood 𝓓) goal q
      where
       goal : (Σ i ꞉ I , is-defined (α i))
-           → value (∐ 𝓛-DCPOₛ δ) q ≡ value (∐ 𝓛-DCPO {I} {α} ε) (⌜ e ⌝ q)
-      goal (i , qᵢ) = value (∐ 𝓛-DCPOₛ δ) q                ≡⟨ ⦅1⦆  ⟩
-                      value (α i) qᵢ                       ≡⟨ ⦅2⦆  ⟩
-                      ∐ 𝓓 ε'                               ≡⟨ refl ⟩
+           → value (∐ 𝓛-DCPOₛ δ) q ＝ value (∐ 𝓛-DCPO {I} {α} ε) (⌜ e ⌝ q)
+      goal (i , qᵢ) = value (∐ 𝓛-DCPOₛ δ) q                ＝⟨ ⦅1⦆  ⟩
+                      value (α i) qᵢ                       ＝⟨ ⦅2⦆  ⟩
+                      ∐ 𝓓 ε'                               ＝⟨ refl ⟩
                       value (∐ 𝓛-DCPO {I} {α} ε) (⌜ e ⌝ q) ∎
        where
         ε' : is-Directed 𝓓 (family-in-dcpo α)
         ε' = family-in-dcpo-is-directed α ε q
-        ⦅1⦆ = (≡-of-values-from-≡ (family-defined-somewhere-sup-≡
+        ⦅1⦆ = (＝-of-values-from-＝ (family-defined-somewhere-sup-＝
                                    (sethood 𝓓) δ i qᵢ)) ⁻¹
         ⦅2⦆ = antisymmetry 𝓓 (value (α i) qᵢ) (∐ 𝓓 ε') ⦅†⦆ ⦅‡⦆
          where
@@ -331,14 +331,14 @@ dcpo.
            where
             ub : ((j , qⱼ) : Σ i' ꞉ I , is-defined (α i'))
                → value (α j) qⱼ ⊑⟨ 𝓓 ⟩ value (α i) qᵢ
-            ub (j , qⱼ) = ≡-to-⊑ 𝓓 (≡-of-values-from-≡ (lemma j qⱼ))
+            ub (j , qⱼ) = ＝-to-⊑ 𝓓 (＝-of-values-from-＝ (lemma j qⱼ))
              where
-              lemma : (j : I) (qⱼ : is-defined (α j)) → α j ≡ α i
+              lemma : (j : I) (qⱼ : is-defined (α j)) → α j ＝ α i
               lemma j qⱼ =
                ∥∥-rec (lifting-of-set-is-set (sethood 𝓓)) claim
                       (semidirected-if-Directed 𝓛-DCPOₛ α δ i j)
                where
-                claim : (Σ k ꞉ I , (α i ⊑' α k) × (α j ⊑' α k)) → α j ≡ α i
+                claim : (Σ k ꞉ I , (α i ⊑' α k) × (α j ⊑' α k)) → α j ＝ α i
                 claim (k , u , v) = v qⱼ ∙ (u qᵢ) ⁻¹
 
   𝓛-continuity-lemma : (g : 𝓛D → ⟪ 𝓔 ⟫)
@@ -359,13 +359,13 @@ dcpo.
       T - = is-lowerbound-of-upperbounds (underlying-order (𝓔 ⁻)) (g -) (g ∘ α)
       ε : is-Directed 𝓛-DCPO α
       ε = 𝓛-directed-lemma δ
-      claim : ∐ 𝓛-DCPO {I} {α} ε ≡ ∐ 𝓛-DCPOₛ {I} {α} δ
+      claim : ∐ 𝓛-DCPO {I} {α} ε ＝ ∐ 𝓛-DCPOₛ {I} {α} δ
       claim = (𝓛-sup-lemma δ) ⁻¹
 
   f̃-is-unique' : (g : 𝓛D → ⟪ 𝓔 ⟫)
                → is-continuous 𝓛-DCPO (𝓔 ⁻) g
                → is-strict 𝓛-DCPO⊥ 𝓔 g
-               → g ∘ η ≡ f
+               → g ∘ η ＝ f
                → g ∼ f̃
   f̃-is-unique' g g-cont = f̃-is-unique g g-cont'
    where
@@ -375,17 +375,17 @@ dcpo.
   𝓛-gives-the-free-pointed-dcpo-on-a-dcpo :
    ∃! h ꞉ (⟪ 𝓛-DCPO⊥ ⟫ → ⟪ 𝓔 ⟫) , is-continuous (𝓛-DCPO⊥ ⁻) (𝓔 ⁻) h
                                 × is-strict 𝓛-DCPO⊥ 𝓔 h
-                                × (h ∘ η ≡ f)
+                                × (h ∘ η ＝ f)
   𝓛-gives-the-free-pointed-dcpo-on-a-dcpo =
    (f̃ , f̃-is-continuous' , f̃-is-strict' , (dfunext fe f̃-after-η-is-f')) , γ
     where
      γ : is-central (Σ h ꞉ (⟪ 𝓛-DCPO⊥ ⟫ → ⟪ 𝓔 ⟫)
                          , is-continuous (𝓛-DCPO⊥ ⁻) (𝓔 ⁻) h
                          × is-strict 𝓛-DCPO⊥ 𝓔 h
-                         × (h ∘ η ≡ f))
+                         × (h ∘ η ＝ f))
           (f̃ , f̃-is-continuous' , f̃-is-strict' , dfunext fe f̃-after-η-is-f')
      γ (g , cont , str , eq) =
-      to-subtype-≡ (λ h → ×₃-is-prop
+      to-subtype-＝ (λ h → ×₃-is-prop
                            (being-continuous-is-prop (𝓛-DCPO⊥ ⁻) (𝓔 ⁻) h)
                            (being-strict-is-prop 𝓛-DCPO⊥ 𝓔 h)
                            (equiv-to-prop
@@ -408,30 +408,30 @@ module _
        where
 
  X̃ : DCPO {𝓤} {𝓤}
- X̃ = (X , _≡_ , pa , γ)
+ X̃ = (X , _＝_ , pa , γ)
   where
-   open PosetAxioms {𝓤} {𝓤} {X} _≡_
+   open PosetAxioms {𝓤} {𝓤} {X} _＝_
    pa : poset-axioms
    pa = (X-is-set
       , (λ x y → X-is-set)
       , (λ x → refl)
       , (λ x y z → _∙_)
       , (λ x y u v → u))
-   γ : is-directed-complete _≡_
-   γ I α δ = ∥∥-rec (having-sup-is-prop _≡_ pa α) lemma
-                    (inhabited-if-directed _≡_ α δ)
+   γ : is-directed-complete _＝_
+   γ I α δ = ∥∥-rec (having-sup-is-prop _＝_ pa α) lemma
+                    (inhabited-if-directed _＝_ α δ)
     where
-     α-constant : (i j : I) → α i ≡ α j
-     α-constant i j = ∥∥-rec X-is-set h (semidirected-if-directed _≡_ α δ i j)
+     α-constant : (i j : I) → α i ＝ α j
+     α-constant i j = ∥∥-rec X-is-set h (semidirected-if-directed _＝_ α δ i j)
       where
-       h : (Σ k ꞉ I , (α i ≡ α k) × (α j ≡ α k)) → α i ≡ α j
+       h : (Σ k ꞉ I , (α i ＝ α k) × (α j ＝ α k)) → α i ＝ α j
        h (k , p , q) = p ∙ q ⁻¹
-     lemma : I → has-sup _≡_ α
+     lemma : I → has-sup _＝_ α
      lemma i = (α i , ub , lb-of-ubs)
       where
-       ub : (j : I) → α j ≡ α i
+       ub : (j : I) → α j ＝ α i
        ub j = α-constant j i
-       lb-of-ubs : is-lowerbound-of-upperbounds _≡_ (α i) α
+       lb-of-ubs : is-lowerbound-of-upperbounds _＝_ (α i) α
        lb-of-ubs y y-is-ub = y-is-ub i
 
  module _ where

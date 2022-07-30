@@ -240,7 +240,7 @@ function extensionality, AC is equivalent to EM × DNS.
 
 What if we don't (necessarily) have the quotient 𝟚/P for an arbitrary
 proposition P?  We get from AC that all sets have decidable
-equality. This is because the quotient 𝟚/(a₀≡a₁), for two points a₀
+equality. This is because the quotient 𝟚/(a₀＝a₁), for two points a₀
 and a₁ of a set X can be constructed as the image of the map a:𝟚→X
 with values a ₀ = a₀ and a ₁ = a₁.
 
@@ -259,62 +259,62 @@ module AC-renders-all-sets-discrete
  open import UF.Miscelanea
 
  lemma₁ : {X : 𝓤 ̇ } (a : 𝟚 → X)
-        → ((x : X) → (∃ i ꞉ 𝟚 , a i ≡ x) → Σ i ꞉ 𝟚 , a i ≡ x)
-        → decidable(a ₀ ≡ a ₁)
+        → ((x : X) → (∃ i ꞉ 𝟚 , a i ＝ x) → Σ i ꞉ 𝟚 , a i ＝ x)
+        → decidable(a ₀ ＝ a ₁)
  lemma₁ a c = claim (𝟚-is-discrete (s(r ₀)) (s(r ₁)))
   where
    r : 𝟚 → image a
    r = corestriction a
 
-   r-splits : (y : image a) → Σ i ꞉ 𝟚 , r i ≡ y
+   r-splits : (y : image a) → Σ i ꞉ 𝟚 , r i ＝ y
    r-splits (x , t) = f (c x t)
     where
-     f : (Σ i ꞉ 𝟚 , a i ≡ x) → Σ i ꞉ 𝟚 , r i ≡ (x , t)
-     f (i , p) = i , to-Σ-≡ (p , ∥∥-is-prop _ t)
+     f : (Σ i ꞉ 𝟚 , a i ＝ x) → Σ i ꞉ 𝟚 , r i ＝ (x , t)
+     f (i , p) = i , to-Σ-＝ (p , ∥∥-is-prop _ t)
 
    s : image a → 𝟚
    s y = pr₁(r-splits y)
 
-   rs : (y : image a) → r(s y) ≡ y
+   rs : (y : image a) → r(s y) ＝ y
    rs y = pr₂(r-splits y)
 
    s-lc : left-cancellable s
    s-lc = section-lc s (r , rs)
 
-   a-r : {i j : 𝟚} → a i ≡ a j → r i ≡ r j
-   a-r p = to-Σ-≡ (p , ∥∥-is-prop _ _)
+   a-r : {i j : 𝟚} → a i ＝ a j → r i ＝ r j
+   a-r p = to-Σ-＝ (p , ∥∥-is-prop _ _)
 
-   r-a : {i j : 𝟚} → r i ≡ r j → a i ≡ a j
+   r-a : {i j : 𝟚} → r i ＝ r j → a i ＝ a j
    r-a = ap pr₁
 
-   a-s : {i j : 𝟚} → a i ≡ a j → s(r i) ≡ s(r j)
+   a-s : {i j : 𝟚} → a i ＝ a j → s(r i) ＝ s(r j)
    a-s p = ap s (a-r p)
 
-   s-a : {i j : 𝟚} → s(r i) ≡ s(r j) → a i ≡ a j
+   s-a : {i j : 𝟚} → s(r i) ＝ s(r j) → a i ＝ a j
    s-a p = r-a (s-lc p)
 
-   claim : decidable (s(r ₀) ≡ s(r ₁)) → decidable(a ₀ ≡ a ₁)
+   claim : decidable (s(r ₀) ＝ s(r ₁)) → decidable(a ₀ ＝ a ₁)
    claim (inl p) = inl (s-a p)
    claim (inr u) = inr (contrapositive a-s u)
 
  lemma₂ : {X : 𝓤 ̇ } → is-set X → (a : 𝟚 → X)
-        → ∥((x : X) → (∃ i ꞉ 𝟚 , a i ≡ x) → Σ i ꞉ 𝟚 , a i ≡ x)∥
-        → decidable(a ₀ ≡ a ₁)
+        → ∥((x : X) → (∃ i ꞉ 𝟚 , a i ＝ x) → Σ i ꞉ 𝟚 , a i ＝ x)∥
+        → decidable(a ₀ ＝ a ₁)
  lemma₂ is a = ∥∥-rec (decidability-of-prop-is-prop (fe 𝓤 𝓤₀) is) (lemma₁ a)
 
- ac-discrete-sets' : AC → (X : 𝓤 ̇ ) → is-set X → (a : 𝟚 → X) → decidable(a ₀ ≡ a ₁)
+ ac-discrete-sets' : AC → (X : 𝓤 ̇ ) → is-set X → (a : 𝟚 → X) → decidable(a ₀ ＝ a ₁)
  ac-discrete-sets' ac X isx a = lemma₂ isx a (ac'' X A isx isa)
   where
    A : X → 𝓤 ̇
-   A x = Σ i ꞉ 𝟚 , a i ≡ x
+   A x = Σ i ꞉ 𝟚 , a i ＝ x
 
    isa : (x : X) → is-set (A x)
-   isa x = subsets-of-sets-are-sets 𝟚 (λ i → a i ≡ x) 𝟚-is-set isx
+   isa x = subsets-of-sets-are-sets 𝟚 (λ i → a i ＝ x) 𝟚-is-set isx
 
    ac'' : AC''
    ac'' = AC'AC'' (ACAC' ac)
 
- ac-discrete-sets : AC → (X : 𝓤 ̇ ) → is-set X → (a₀ a₁ : X) → decidable(a₀ ≡ a₁)
+ ac-discrete-sets : AC → (X : 𝓤 ̇ ) → is-set X → (a₀ a₁ : X) → decidable(a₀ ＝ a₁)
  ac-discrete-sets ac X isx a₀ a₁ = ac-discrete-sets' ac X isx (𝟚-cases a₀ a₁)
 
 \end{code}
@@ -330,7 +330,7 @@ families of sets.
 If we assume choice for 𝓤₁ we get excluded middle at 𝓤₀. This is
 because the quotient 𝟚/P, for a proposition P in 𝓤₀, exists in 𝓤₁. In
 fact, it is the image of the map 𝟚→Prop that sends ₀ to 𝟙 and ₁ to P,
-because (𝟙≡P)≡P.
+because (𝟙＝P)＝P.
 
 
 \begin{code}
@@ -364,43 +364,43 @@ module Observation (𝓤 : Universe)
  open import UF.Miscelanea
 
  observation : {X : 𝓤 ̇ } (a : 𝟚 → X)
-        → ((x : X) → ¬¬ (Σ i ꞉ 𝟚 , a i ≡ x) → Σ i ꞉ 𝟚 , a i ≡ x)
-        → decidable(a ₀ ≡ a ₁)
+        → ((x : X) → ¬¬ (Σ i ꞉ 𝟚 , a i ＝ x) → Σ i ꞉ 𝟚 , a i ＝ x)
+        → decidable(a ₀ ＝ a ₁)
  observation {X} a c = claim (𝟚-is-discrete (s(r ₀)) (s(r ₁)))
   where
-   Y = Σ x ꞉ X , ¬¬ (Σ i ꞉ 𝟚 , a i ≡ x)
+   Y = Σ x ꞉ X , ¬¬ (Σ i ꞉ 𝟚 , a i ＝ x)
 
    r : 𝟚 → Y
    r i = a i , λ u → u (i , refl)
 
-   r-splits : (y : Y) → Σ i ꞉ 𝟚 , r i ≡ y
+   r-splits : (y : Y) → Σ i ꞉ 𝟚 , r i ＝ y
    r-splits (x , t) = f (c x t)
     where
-     f : (Σ i ꞉ 𝟚 , a i ≡ x) → Σ i ꞉ 𝟚 , r i ≡ (x , t)
-     f (i , p) = i , (to-Σ-≡ (p , negations-are-props (fe 𝓤 𝓤₀) _ t))
+     f : (Σ i ꞉ 𝟚 , a i ＝ x) → Σ i ꞉ 𝟚 , r i ＝ (x , t)
+     f (i , p) = i , (to-Σ-＝ (p , negations-are-props (fe 𝓤 𝓤₀) _ t))
 
    s : Y → 𝟚
    s y = pr₁(r-splits y)
 
-   rs : (y : Y) → r(s y) ≡ y
+   rs : (y : Y) → r(s y) ＝ y
    rs y = pr₂(r-splits y)
 
    s-lc : left-cancellable s
    s-lc = section-lc s (r , rs)
 
-   a-r : {i j : 𝟚} → a i ≡ a j → r i ≡ r j
-   a-r p = to-Σ-≡ (p , negations-are-props (fe 𝓤 𝓤₀) _ _)
+   a-r : {i j : 𝟚} → a i ＝ a j → r i ＝ r j
+   a-r p = to-Σ-＝ (p , negations-are-props (fe 𝓤 𝓤₀) _ _)
 
-   r-a : {i j : 𝟚} → r i ≡ r j → a i ≡ a j
+   r-a : {i j : 𝟚} → r i ＝ r j → a i ＝ a j
    r-a = ap pr₁
 
-   a-s : {i j : 𝟚} → a i ≡ a j → s(r i) ≡ s(r j)
+   a-s : {i j : 𝟚} → a i ＝ a j → s(r i) ＝ s(r j)
    a-s p = ap s (a-r p)
 
-   s-a : {i j : 𝟚} → s(r i) ≡ s(r j) → a i ≡ a j
+   s-a : {i j : 𝟚} → s(r i) ＝ s(r j) → a i ＝ a j
    s-a p = r-a (s-lc p)
 
-   claim : decidable (s(r ₀) ≡ s(r ₁)) → decidable(a ₀ ≡ a ₁)
+   claim : decidable (s(r ₀) ＝ s(r ₁)) → decidable(a ₀ ＝ a ₁)
    claim (inl p) = inl (s-a p)
    claim (inr u) = inr (λ p → u (a-s p))
 

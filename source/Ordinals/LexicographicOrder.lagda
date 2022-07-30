@@ -3,7 +3,7 @@ Martin Escardo, 20-21 December 2012.
 If X and Y come with orders, both denoted by ≤, then the lexicographic
 order on X × Y is defined by
 
-  (x , y) ≤ (x' , y') ⇔ x ≤ x' ∧ (x ≡ x' → y ≤ y').
+  (x , y) ≤ (x' , y') ⇔ x ≤ x' ∧ (x ＝ x' → y ≤ y').
 
 More generally, we can consider the lexicographic product of two
 binary relations R on X and S on Y, which is a relation on X × Y, or
@@ -23,7 +23,7 @@ lex-order : ∀ {𝓣} {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
           →  (X → X → 𝓦 ̇ )
           → ({x : X} → Y x → Y x → 𝓣 ̇ )
           → (Σ Y → Σ Y → 𝓤 ⊔ 𝓦 ⊔ 𝓣 ̇ )
-lex-order _≤_ _≼_ (x , y) (x' , y') = (x ≤ x') × ((r : x ≡ x') → transport _ r y ≼ y')
+lex-order _≤_ _≼_ (x , y) (x' , y') = (x ≤ x') × ((r : x ＝ x') → transport _ r y ≼ y')
 
 \end{code}
 
@@ -31,7 +31,7 @@ Added 14th June 2018, from 2013 in another development.
 
 However, for a strict order, it makes sense to define
 
-  (x , y) < (x' , y') ⇔ x < x' ∨ (x ≡ x' ∧ y < y').
+  (x , y) < (x' , y') ⇔ x < x' ∨ (x ＝ x' ∧ y < y').
 
 \begin{code}
 
@@ -39,7 +39,7 @@ slex-order : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
            →  (X → X → 𝓦 ̇ )
            → ({x : X} → Y x → Y x → 𝓣 ̇ )
            → (Σ Y → Σ Y → 𝓤 ⊔ 𝓦 ⊔ 𝓣 ̇ )
-slex-order _<_ _≺_ (x , y) (x' , y') = (x < x') + (Σ r ꞉ x ≡ x' , transport _ r y ≺ y')
+slex-order _<_ _≺_ (x , y) (x' , y') = (x < x') + (Σ r ꞉ x ＝ x' , transport _ r y ≺ y')
 
 \end{code}
 
@@ -47,10 +47,10 @@ Usually in such a context, a ≤ b is defined to be ¬ (b < a).
 
 The negation of the strict lexicographic product is, then,
 
- ¬ (x < x') ∧ ¬ (x ≡ x' ∧ y < y') by de Morgan
-⇔ x ≤ x' ∧ ¬ (x ≡ x' ∧ y < y') by definition of ≤
-⇔ x' ≤ x ∧ ((x ≡ x' → ¬ (y < y')) by (un)currying
-⇔ x' ≤ x ∧ ((x ≡ x' → y' ≤ y) by definition of ≤
+ ¬ (x < x') ∧ ¬ (x ＝ x' ∧ y < y') by de Morgan
+⇔ x ≤ x' ∧ ¬ (x ＝ x' ∧ y < y') by definition of ≤
+⇔ x' ≤ x ∧ ((x ＝ x' → ¬ (y < y')) by (un)currying
+⇔ x' ≤ x ∧ ((x ＝ x' → y' ≤ y) by definition of ≤
 
 What this means is that the non-strict lexigraphic product of the
 induced non-strict order is induced by the strict lexicographic
@@ -86,7 +86,7 @@ module lexicographic-commutation
    where
     g : not (x < x')
     g l = f (inl l)
-    h : (r : x' ≡ x) → not (y ≺ transport Y r y')
+    h : (r : x' ＝ x) → not (y ≺ transport Y r y')
     h refl l = f (inr (refl , l))
 
   back : (x x' : X) (y : Y x) (y' : Y x') → (x' , y') ⊑ (x , y) → not ((x , y) ⊏ (x' , y'))

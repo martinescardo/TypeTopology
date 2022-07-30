@@ -3,8 +3,8 @@ Martin Escardo, 30 April 2020
 The structure identity principle and tools from the 2019 paper and links
 
  https://arxiv.org/abs/1911.00580
- https://www.cs.bham.ac.uk/~mhe/HoTT-UF.in-Agda-Lecture-Notes/index.html
- https://github.com/martinescardo/HoTT-UF.Agda-Lecture-Notes
+ https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/index.html
+ https://github.com/martinescardo/HoTT-UF-Agda-Lecture-Notes
 
 There are three submodules:
 
@@ -42,7 +42,7 @@ module sip where
                  (ρ : (A : Σ S) → ι A A (≃-refl ⟨ A ⟩))
                  {X : 𝓤 ̇ }
                  (s t : S X)
-               → s ≡ t → ι (X , s) (X , t) (≃-refl X)
+               → s ＝ t → ι (X , s) (X , t) (≃-refl X)
  canonical-map ι ρ {X} s s (refl {s}) = ρ (X , s)
 
  SNS : (𝓤 ̇ → 𝓥 ̇ ) → (𝓦 : Universe) → 𝓤 ⁺ ⊔ 𝓥 ⊔ (𝓦 ⁺) ̇
@@ -60,33 +60,33 @@ module sip where
             , homomorphic σ A B (f , i)
 
  Id→homEq : {S : 𝓤 ̇ → 𝓥 ̇ } (σ : SNS S 𝓦)
-          → (A B : Σ S) → (A ≡ B) → (A ≃[ σ ] B)
+          → (A B : Σ S) → (A ＝ B) → (A ≃[ σ ] B)
  Id→homEq (_ , ρ , _) A A (refl {A}) = id , id-is-equiv ⟨ A ⟩ , ρ A
 
  homomorphism-lemma : {S : 𝓤 ̇ → 𝓥 ̇ } (σ : SNS S 𝓦)
-                      (A B : Σ S) (p : ⟨ A ⟩ ≡ ⟨ B ⟩)
+                      (A B : Σ S) (p : ⟨ A ⟩ ＝ ⟨ B ⟩)
                     →
-                      (transport S p (structure A) ≡ structure B)
+                      (transport S p (structure A) ＝ structure B)
                     ≃  homomorphic σ A B (idtoeq ⟨ A ⟩ ⟨ B ⟩ p)
  homomorphism-lemma (ι , ρ , θ) (X , s) (X , t) (refl {X}) = γ
   where
-   γ : (s ≡ t) ≃ ι (X , s) (X , t) (≃-refl X)
+   γ : (s ＝ t) ≃ ι (X , s) (X , t) (≃-refl X)
    γ = (canonical-map ι ρ s t , θ s t)
 
- characterization-of-≡ : is-univalent 𝓤
+ characterization-of-＝ : is-univalent 𝓤
                        → {S : 𝓤 ̇ → 𝓥 ̇ } (σ : SNS S 𝓦)
                        → (A B : Σ S)
 
-                       → (A ≡ B) ≃ (A ≃[ σ ] B)
- characterization-of-≡ ua {S} σ A B =
-    (A ≡ B)                                                           ≃⟨ i ⟩
-    (Σ p ꞉ ⟨ A ⟩ ≡ ⟨ B ⟩ , transport S p (structure A) ≡ structure B) ≃⟨ ii ⟩
-    (Σ p ꞉ ⟨ A ⟩ ≡ ⟨ B ⟩ , ι A B (idtoeq ⟨ A ⟩ ⟨ B ⟩ p))               ≃⟨ iii ⟩
+                       → (A ＝ B) ≃ (A ≃[ σ ] B)
+ characterization-of-＝ ua {S} σ A B =
+    (A ＝ B)                                                           ≃⟨ i ⟩
+    (Σ p ꞉ ⟨ A ⟩ ＝ ⟨ B ⟩ , transport S p (structure A) ＝ structure B) ≃⟨ ii ⟩
+    (Σ p ꞉ ⟨ A ⟩ ＝ ⟨ B ⟩ , ι A B (idtoeq ⟨ A ⟩ ⟨ B ⟩ p))               ≃⟨ iii ⟩
     (Σ e ꞉ ⟨ A ⟩ ≃ ⟨ B ⟩ , ι A B e)                                   ≃⟨ iv ⟩
     (A ≃[ σ ] B)                                                      ■
   where
    ι   = homomorphic σ
-   i   = Σ-≡-≃
+   i   = Σ-＝-≃
    ii  = Σ-cong (homomorphism-lemma σ A B)
    iii = Σ-change-of-variable (ι A B) (idtoeq ⟨ A ⟩ ⟨ B ⟩) (ua ⟨ A ⟩ ⟨ B ⟩)
    iv  = Σ-assoc
@@ -95,12 +95,12 @@ module sip where
                    → (A B : Σ S) → is-equiv (Id→homEq σ A B)
  Id→homEq-is-equiv ua {S} σ A B = γ
   where
-   h : (A B : Σ S) → Id→homEq σ A B ∼ ⌜ characterization-of-≡ ua σ A B ⌝
+   h : (A B : Σ S) → Id→homEq σ A B ∼ ⌜ characterization-of-＝ ua σ A B ⌝
    h A A (refl {A}) = refl
 
    γ : is-equiv (Id→homEq σ A B)
    γ = equiv-closed-under-∼ _ _
-        (⌜⌝-is-equiv (characterization-of-≡ ua σ A B))
+        (⌜⌝-is-equiv (characterization-of-＝ ua σ A B))
         (h A B)
 
  module _ {S : 𝓤 ̇ → 𝓥 ̇ }
@@ -109,9 +109,9 @@ module sip where
           {X : 𝓤 ̇ }
         where
 
-  canonical-map-charac : (s t : S X) (p : s ≡ t)
+  canonical-map-charac : (s t : S X) (p : s ＝ t)
                        → canonical-map ι ρ s t p
-                       ≡ transport (λ - → ι (X , s) (X , -) (≃-refl X)) p (ρ (X , s))
+                       ＝ transport (λ - → ι (X , s) (X , -) (≃-refl X)) p (ρ (X , s))
   canonical-map-charac s t p = (yoneda-lemma s (λ t → ι (X , s) (X , t) (≃-refl X)) (canonical-map ι ρ s) t p)⁻¹
 
   when-canonical-map-is-equiv : ((s t : S X) → is-equiv (canonical-map ι ρ s t))
@@ -122,13 +122,13 @@ module sip where
     A = λ s t → ι (X , s) (X , t) (≃-refl X)
     τ = canonical-map ι ρ
 
-  canonical-map-equiv-criterion : ((s t : S X) → (s ≡ t) ≃ ι (X , s) (X , t) (≃-refl X))
+  canonical-map-equiv-criterion : ((s t : S X) → (s ＝ t) ≃ ι (X , s) (X , t) (≃-refl X))
                                 → (s t : S X) → is-equiv (canonical-map ι ρ s t)
   canonical-map-equiv-criterion φ s = fiberwise-equiv-criterion'
                                        (λ t → ι (X , s) (X , t) (≃-refl X))
                                        s (φ s) (canonical-map ι ρ s)
 
-  canonical-map-equiv-criterion' : ((s t : S X) → ι (X , s) (X , t) (≃-refl X) ◁ (s ≡ t))
+  canonical-map-equiv-criterion' : ((s t : S X) → ι (X , s) (X , t) (≃-refl X) ◁ (s ＝ t))
                                  → (s t : S X) → is-equiv (canonical-map ι ρ s t)
   canonical-map-equiv-criterion' φ s = fiberwise-equiv-criterion
                                         (λ t → ι (X , s) (X , t) (≃-refl X))
@@ -186,16 +186,16 @@ module sip-with-axioms where
      γ : is-equiv (canonical-map ι' ρ' (s , a) (t , b))
      γ = equiv-closed-under-∼ _ _ e l
 
- characterization-of-≡-with-axioms :
+ characterization-of-＝-with-axioms :
      is-univalent 𝓤
    → {S : 𝓤 ̇ → 𝓥 ̇ }
      (σ : SNS S 𝓣)
      (axioms : (X : 𝓤 ̇ ) → S X → 𝓦 ̇ )
    → ((X : 𝓤 ̇ ) (s : S X) → is-prop (axioms X s))
    → (A B : Σ X ꞉ 𝓤 ̇ , Σ s ꞉ S X , axioms X s)
-   → (A ≡ B) ≃ ([ A ] ≃[ σ ] [ B ])
- characterization-of-≡-with-axioms ua σ axioms i =
-   characterization-of-≡ ua (add-axioms axioms i σ)
+   → (A ＝ B) ≃ ([ A ] ≃[ σ ] [ B ])
+ characterization-of-＝-with-axioms ua σ axioms i =
+   characterization-of-＝ ua (add-axioms axioms i σ)
 
 
 module sip-join where
@@ -204,12 +204,12 @@ module sip-join where
 
      {X : 𝓤 ̇ } {A : X → X → 𝓥 ̇ }
      {Y : 𝓦 ̇ } {B : Y → Y → 𝓣 ̇ }
-     (f : (x₀ x₁ : X) → x₀ ≡ x₁ → A x₀ x₁)
-     (g : (y₀ y₁ : Y) → y₀ ≡ y₁ → B y₀ y₁)
+     (f : (x₀ x₁ : X) → x₀ ＝ x₁ → A x₀ x₁)
+     (g : (y₀ y₁ : Y) → y₀ ＝ y₁ → B y₀ y₁)
    → ((x₀ x₁ : X) → is-equiv (f x₀ x₁))
    → ((y₀ y₁ : Y) → is-equiv (g y₀ y₁))
 
-   → (z₀ z₁ : X × Y) → is-equiv (λ (p : z₀ ≡ z₁) → f (pr₁ z₀) (pr₁ z₁) (ap pr₁ p) ,
+   → (z₀ z₁ : X × Y) → is-equiv (λ (p : z₀ ＝ z₁) → f (pr₁ z₀) (pr₁ z₁) (ap pr₁ p) ,
                                                    g (pr₂ z₀) (pr₂ z₁) (ap pr₂ p))
 
  technical-lemma {𝓤} {𝓥} {𝓦} {𝓣} {X} {A} {Y} {B} f g i j (x₀ , y₀) = γ
@@ -218,31 +218,31 @@ module sip-join where
      x₁ = pr₁ z₁
      y₁ = pr₂ z₁
 
-     r : (x₀ , y₀) ≡ (x₁ , y₁) → A x₀ x₁ × B y₀ y₁
+     r : (x₀ , y₀) ＝ (x₁ , y₁) → A x₀ x₁ × B y₀ y₁
      r p = f x₀ x₁ (ap pr₁ p) , g y₀ y₁ (ap pr₂ p)
 
-     f' : (a : A x₀ x₁) → x₀ ≡ x₁
+     f' : (a : A x₀ x₁) → x₀ ＝ x₁
      f' = inverse (f x₀ x₁) (i x₀ x₁)
 
-     g' : (b : B y₀ y₁) → y₀ ≡ y₁
+     g' : (b : B y₀ y₁) → y₀ ＝ y₁
      g' = inverse (g y₀ y₁) (j y₀ y₁)
 
-     s : A x₀ x₁ × B y₀ y₁ → (x₀ , y₀) ≡ (x₁ , y₁)
-     s (a , b) = to-×-≡ (f' a) (g' b)
+     s : A x₀ x₁ × B y₀ y₁ → (x₀ , y₀) ＝ (x₁ , y₁)
+     s (a , b) = to-×-＝ (f' a) (g' b)
 
-     η : (c : A x₀ x₁ × B y₀ y₁) → r (s c) ≡ c
+     η : (c : A x₀ x₁ × B y₀ y₁) → r (s c) ＝ c
      η (a , b) =
-       r (s (a , b))                              ≡⟨ refl ⟩
-       r (to-×-≡  (f' a) (g' b))                  ≡⟨ refl ⟩
-       (f x₀ x₁ (ap pr₁ (to-×-≡ (f' a) (g' b))) ,
-        g y₀ y₁ (ap pr₂ (to-×-≡ (f' a) (g' b))))  ≡⟨ ii ⟩
-       (f x₀ x₁ (f' a) , g y₀ y₁ (g' b))          ≡⟨ iii ⟩
+       r (s (a , b))                              ＝⟨ refl ⟩
+       r (to-×-＝  (f' a) (g' b))                  ＝⟨ refl ⟩
+       (f x₀ x₁ (ap pr₁ (to-×-＝ (f' a) (g' b))) ,
+        g y₀ y₁ (ap pr₂ (to-×-＝ (f' a) (g' b))))  ＝⟨ ii ⟩
+       (f x₀ x₁ (f' a) , g y₀ y₁ (g' b))          ＝⟨ iii ⟩
        a , b                                      ∎
       where
        ii  = ap₂ (λ p q → f x₀ x₁ p , g y₀ y₁ q)
-                 (ap-pr₁-to-×-≡ (f' a) (g' b))
-                 (ap-pr₂-to-×-≡ (f' a) (g' b))
-       iii = to-×-≡ (inverses-are-sections (f x₀ x₁) (i x₀ x₁) a)
+                 (ap-pr₁-to-×-＝ (f' a) (g' b))
+                 (ap-pr₂-to-×-＝ (f' a) (g' b))
+       iii = to-×-＝ (inverses-are-sections (f x₀ x₁) (i x₀ x₁) a)
                     (inverses-are-sections (g y₀ y₁) (j y₀ y₁) b)
 
    γ : ∀ z₁ → is-equiv (r z₁)
@@ -283,7 +283,7 @@ module sip-join where
    θ : {X : 𝓤 ̇ } (s t : S X) → is-equiv (canonical-map ι ρ s t)
    θ {X} (s₀ , s₁) (t₀ , t₁) = γ
     where
-     c : (p : s₀ , s₁ ≡ t₀ , t₁) → ι₀ (X , s₀) (X , t₀) (≃-refl X)
+     c : (p : s₀ , s₁ ＝ t₀ , t₁) → ι₀ (X , s₀) (X , t₀) (≃-refl X)
                                  × ι₁ (X , s₁) (X , t₁) (≃-refl X)
 
      c p = (canonical-map ι₀ ρ₀ s₀ t₀ (ap pr₁ p) ,
@@ -311,11 +311,11 @@ module sip-join where
                   , Σ i ꞉ is-equiv f , homomorphic σ₀ [ A ]₀ [ B ]₀ (f , i)
                                      × homomorphic σ₁ [ A ]₁ [ B ]₁ (f , i)
 
- characterization-of-join-≡ : is-univalent 𝓤
+ characterization-of-join-＝ : is-univalent 𝓤
                             → {S₀ : 𝓤 ̇ → 𝓥 ̇ } {S₁ : 𝓤 ̇ → 𝓥₁ ̇ }
                               (σ₀ : SNS S₀ 𝓦₀)  (σ₁ : SNS S₁ 𝓦₁)
                               (A B : Σ X ꞉ 𝓤 ̇ , S₀ X × S₁ X)
-                            → (A ≡ B) ≃ (A ≃⟦ σ₀ , σ₁ ⟧ B)
- characterization-of-join-≡ ua σ₀ σ₁ = characterization-of-≡ ua (join σ₀ σ₁)
+                            → (A ＝ B) ≃ (A ≃⟦ σ₀ , σ₁ ⟧ B)
+ characterization-of-join-＝ ua σ₀ σ₁ = characterization-of-＝ ua (join σ₀ σ₁)
 
 \end{code}

@@ -73,7 +73,7 @@ open import UF.Size
 
 open import MLTT.List
 open import Groups.SRTclosure
-open import Groups.Groups
+open import Groups.Type
 open import Groups.FreeGroup
 
 fe : Fun-Ext
@@ -96,9 +96,9 @@ module resize-free-group
          {𝓤        : Universe}
          (A        : 𝓤 ⁺ ̇)
          (A-is-set : is-set A)
-         (_≡₀_     : A → A → 𝓤 ̇ )
-         (refl₀    : (a : A) → a ≡₀ a)
-         (from-≡₀  : (a b : A) → a ≡₀ b → a ≡ b)
+         (_＝₀_     : A → A → 𝓤 ̇ )
+         (refl₀    : (a : A) → a ＝₀ a)
+         (from-＝₀  : (a b : A) → a ＝₀ b → a ＝ b)
        where
 
  open free-group-construction A
@@ -112,8 +112,8 @@ module resize-free-group
 Our free group is constructed as a quotient of a set of words FA by a
 certain equivalence relation _∾_ : FA → FA → 𝓤⁺. To reduce the size of
 the quotient, we reduce the size of (propositional) values of this
-equivalence relation using the assumed relation _≡₀_ and functions
-refl₀ and from-≡₀.
+equivalence relation using the assumed relation _＝₀_ and functions
+refl₀ and from-＝₀.
 
 At this point, in order to understand the following constructions, it
 is necessary to first understand the constructions in the module
@@ -123,45 +123,45 @@ of the) local smalless of the type A.
 
 \begin{code}
 
- _≡[X]_ : X → X → 𝓤 ̇
- (m , a) ≡[X] (n , b) = (m ≡ n) × (a ≡₀ b)
+ _＝[X]_ : X → X → 𝓤 ̇
+ (m , a) ＝[X] (n , b) = (m ＝ n) × (a ＝₀ b)
 
- from-≡[X] : {x y : X} → x ≡[X] y → x ≡ y
- from-≡[X] {m , a} {n , b} (p , q) = to-×-≡ p (from-≡₀ a b q)
+ from-＝[X] : {x y : X} → x ＝[X] y → x ＝ y
+ from-＝[X] {m , a} {n , b} (p , q) = to-×-＝ p (from-＝₀ a b q)
 
- to-≡[X] : {x y : X} → x ≡ y → x ≡[X] y
- to-≡[X] {m , a} {m , a} refl = refl , refl₀ a
+ to-＝[X] : {x y : X} → x ＝ y → x ＝[X] y
+ to-＝[X] {m , a} {m , a} refl = refl , refl₀ a
 
- _≡[FA]_ : FA → FA → 𝓤 ̇
- []      ≡[FA] []      = 𝟙
- []      ≡[FA] (y ∷ t) = 𝟘
- (x ∷ s) ≡[FA] []      = 𝟘
- (x ∷ s) ≡[FA] (y ∷ t) = (x ≡[X] y) × (s ≡[FA] t)
+ _＝[FA]_ : FA → FA → 𝓤 ̇
+ []      ＝[FA] []      = 𝟙
+ []      ＝[FA] (y ∷ t) = 𝟘
+ (x ∷ s) ＝[FA] []      = 𝟘
+ (x ∷ s) ＝[FA] (y ∷ t) = (x ＝[X] y) × (s ＝[FA] t)
 
- from-≡[FA] : {s t : FA} → s ≡[FA] t → s ≡ t
- from-≡[FA] {[]}    {[]}    e       = refl
- from-≡[FA] {x ∷ s} {y ∷ t} (p , q) = ap₂ _∷_ (from-≡[X] p) (from-≡[FA] q)
+ from-＝[FA] : {s t : FA} → s ＝[FA] t → s ＝ t
+ from-＝[FA] {[]}    {[]}    e       = refl
+ from-＝[FA] {x ∷ s} {y ∷ t} (p , q) = ap₂ _∷_ (from-＝[X] p) (from-＝[FA] q)
 
- to-≡[FA] : {s t : FA} → s ≡ t → s ≡[FA] t
- to-≡[FA] {[]} {[]}       p = ⋆
- to-≡[FA] {x ∷ s} {y ∷ t} p = to-≡[X]  (equal-heads p) ,
-                              to-≡[FA] (equal-tails p)
+ to-＝[FA] : {s t : FA} → s ＝ t → s ＝[FA] t
+ to-＝[FA] {[]} {[]}       p = ⋆
+ to-＝[FA] {x ∷ s} {y ∷ t} p = to-＝[X]  (equal-heads p) ,
+                              to-＝[FA] (equal-tails p)
 
  _◗_ : FA → FA → 𝓤 ̇
  []          ◗ t = 𝟘
  (x ∷ [])    ◗ t = 𝟘
- (x ∷ y ∷ s) ◗ t = (y ≡[X] (x ⁻)) × (s ≡[FA] t)
+ (x ∷ y ∷ s) ◗ t = (y ＝[X] (x ⁻)) × (s ＝[FA] t)
 
  _▶_ : FA → FA → 𝓤 ̇
  []      ▶ t       = 𝟘
  (x ∷ s) ▶ []      = (x ∷ s) ◗ []
- (x ∷ s) ▶ (y ∷ t) = ((x ∷ s) ◗ (y ∷ t)) + (x ≡[X] y × (s ▶ t))
+ (x ∷ s) ▶ (y ∷ t) = ((x ∷ s) ◗ (y ∷ t)) + (x ＝[X] y × (s ▶ t))
 
- ▶-lemma : (x y : X) (s : List X) → y ≡ x ⁻ → (x ∷ y ∷ s) ▶ s
- ▶-lemma x _ []      refl = to-≡[X] {x ⁻} refl , ⋆
- ▶-lemma x _ (z ∷ s) refl = inl (to-≡[X]  {x ⁻} refl ,
-                                 to-≡[X]  {z}   refl ,
-                                 to-≡[FA] {s}   refl)
+ ▶-lemma : (x y : X) (s : List X) → y ＝ x ⁻ → (x ∷ y ∷ s) ▶ s
+ ▶-lemma x _ []      refl = to-＝[X] {x ⁻} refl , ⋆
+ ▶-lemma x _ (z ∷ s) refl = inl (to-＝[X]  {x ⁻} refl ,
+                                 to-＝[X]  {z}   refl ,
+                                 to-＝[FA] {s}   refl)
 \end{code}
 
 The reduction relation _▷_ is defined in the module FreeGroup.lagda,
@@ -178,20 +178,20 @@ We now show that _▶_ defined above is logically equivalent to _▷_.
  ▶-gives-▷ {[]} {t} r = 𝟘-elim r
 
  ▶-gives-▷ {x ∷ y ∷ s} {[]} (p , q) = [] , s , x ,
-                                      ap (λ - → x ∷ - ∷ s) (from-≡[X] p) ,
-                                      ((from-≡[FA] q)⁻¹)
+                                      ap (λ - → x ∷ - ∷ s) (from-＝[X] p) ,
+                                      ((from-＝[FA] q)⁻¹)
 
- ▶-gives-▷ {x ∷ y ∷ s} {z ∷ t} (inl (p , q)) = γ (from-≡[X] p) (from-≡[FA] q)
+ ▶-gives-▷ {x ∷ y ∷ s} {z ∷ t} (inl (p , q)) = γ (from-＝[X] p) (from-＝[FA] q)
   where
-   γ : y ≡ x ⁻ → s ≡ z ∷ t → x ∷ y ∷ s ▷ z ∷ t
+   γ : y ＝ x ⁻ → s ＝ z ∷ t → x ∷ y ∷ s ▷ z ∷ t
    γ p q = [] , s , x , ap (λ - → x ∷ (- ∷ s)) p , (q ⁻¹)
 
- ▶-gives-▷ {x ∷ s} {y ∷ t} (inr (p , r)) = γ (from-≡[X] p) IH
+ ▶-gives-▷ {x ∷ s} {y ∷ t} (inr (p , r)) = γ (from-＝[X] p) IH
   where
    IH : s ▷ t
    IH = ▶-gives-▷ r
 
-   γ : x ≡ y → s ▷ t → (x ∷ s) ▷ (y ∷ t)
+   γ : x ＝ y → s ▷ t → (x ∷ s) ▷ (y ∷ t)
    γ refl = ∷-▷ x
 
  ▷-gives-▶ : {s t : FA} → s ▷ t → s ▶ t
@@ -199,9 +199,9 @@ We now show that _▶_ defined above is logically equivalent to _▷_.
  ▷-gives-▶ (u , v , x , refl , refl) = f u v x
   where
    f : (u v : FA) (x : X) → (u ++ [ x ] ++ [ x ⁻ ] ++ v) ▶ (u ++ v)
-   f []      []      x = to-≡[X] {x ⁻} refl , ⋆
-   f []      (y ∷ v) x = inl (to-≡[X] {x ⁻} refl , to-≡[X] {y} refl , to-≡[FA] {v} refl)
-   f (y ∷ u) v       x = inr (to-≡[X] {y} refl , f u v x)
+   f []      []      x = to-＝[X] {x ⁻} refl , ⋆
+   f []      (y ∷ v) x = inl (to-＝[X] {x ⁻} refl , to-＝[X] {y} refl , to-＝[FA] {v} refl)
+   f (y ∷ u) v       x = inr (to-＝[X] {y} refl , f u v x)
 
 \end{code}
 
@@ -216,7 +216,7 @@ In order to overcome this obstacle, we consider a type of redexes.
  redex : FA → 𝓤 ̇
  redex []          = 𝟘
  redex (x ∷ [])    = 𝟘
- redex (x ∷ y ∷ s) = (y ≡[X] (x ⁻)) + redex (y ∷ s)
+ redex (x ∷ y ∷ s) = (y ＝[X] (x ⁻)) + redex (y ∷ s)
 
  reduct : (s : FA) → redex s → FA
  reduct (x ∷ y ∷ s) (inl p) = s
@@ -231,19 +231,19 @@ redex r, which is what we prove next:
 \begin{code}
 
  lemma-reduct→ : (s : FA) (r : redex s) → s ▶ reduct s r
- lemma-reduct→ (x ∷ y ∷ s) (inl p) = ▶-lemma x y s (from-≡[X] p)
- lemma-reduct→ (x ∷ y ∷ s) (inr r) = inr (to-≡[X] {x} refl ,
+ lemma-reduct→ (x ∷ y ∷ s) (inl p) = ▶-lemma x y s (from-＝[X] p)
+ lemma-reduct→ (x ∷ y ∷ s) (inr r) = inr (to-＝[X] {x} refl ,
                                          lemma-reduct→ (y ∷ s) r)
 
- lemma-reduct← : (s t : FA) → s ▶ t → Σ r ꞉ redex s , reduct s r ≡ t
+ lemma-reduct← : (s t : FA) → s ▶ t → Σ r ꞉ redex s , reduct s r ＝ t
  lemma-reduct← (x ∷ [])    (z ∷ t) (inl ())
  lemma-reduct← (x ∷ [])    (z ∷ t) (inr ())
- lemma-reduct← (x ∷ y ∷ s) []      (p , q)       = inl p , from-≡[FA] q
- lemma-reduct← (x ∷ y ∷ s) (z ∷ t) (inl (p , q)) = inl p , from-≡[FA] q
+ lemma-reduct← (x ∷ y ∷ s) []      (p , q)       = inl p , from-＝[FA] q
+ lemma-reduct← (x ∷ y ∷ s) (z ∷ t) (inl (p , q)) = inl p , from-＝[FA] q
  lemma-reduct← (x ∷ y ∷ s) (z ∷ t) (inr (p , r)) = inr (pr₁ IH) ,
-                                                   ap₂ _∷_ (from-≡[X] p) (pr₂ IH)
+                                                   ap₂ _∷_ (from-＝[X] p) (pr₂ IH)
   where
-   IH : Σ r ꞉ redex (y ∷ s) , reduct (y ∷ s) r ≡ t
+   IH : Σ r ꞉ redex (y ∷ s) , reduct (y ∷ s) r ＝ t
    IH = lemma-reduct← (y ∷ s) t r
 
 \end{code}
@@ -269,19 +269,19 @@ corresponding notion of reduct for such chains:
 
  chain-lemma← : (s t : FA) (n : ℕ)
               → s ▷[ n ] t
-              → Σ ρ ꞉ redex-chain n s , chain-reduct s n ρ ≡ t
+              → Σ ρ ꞉ redex-chain n s , chain-reduct s n ρ ＝ t
  chain-lemma← s t 0        r           = ⋆ , r
  chain-lemma← s t (succ n) (u , b , c) = γ IH l
   where
-   IH : Σ ρ ꞉ redex-chain n u , chain-reduct u n ρ ≡ t
+   IH : Σ ρ ꞉ redex-chain n u , chain-reduct u n ρ ＝ t
    IH = chain-lemma← u t n c
 
-   l : Σ r ꞉ redex s , reduct s r ≡ u
+   l : Σ r ꞉ redex s , reduct s r ＝ u
    l = lemma-reduct← s u (▷-gives-▶ b)
 
    γ : type-of IH
      → type-of l
-     → Σ ρ' ꞉ redex-chain (succ n) s , chain-reduct s (succ n) ρ' ≡ t
+     → Σ ρ' ꞉ redex-chain (succ n) s , chain-reduct s (succ n) ρ' ＝ t
    γ (ρ , refl) (r , refl) = (r , ρ) , refl
 
 \end{code}
@@ -298,7 +298,7 @@ which we now use for that purpose.
  s ≏ t = Σ m ꞉ ℕ ,
          Σ n ꞉ ℕ ,
          Σ ρ ꞉ redex-chain m s ,
-         Σ σ ꞉ redex-chain n t , chain-reduct s m ρ  ≡[FA] chain-reduct t n σ
+         Σ σ ꞉ redex-chain n t , chain-reduct s m ρ  ＝[FA] chain-reduct t n σ
 
  ≏-gives-∿ : (s t : FA) → s ≏ t → s ∿ t
  ≏-gives-∿ s t (m , n , ρ , σ , p) = γ
@@ -310,7 +310,7 @@ which we now use for that purpose.
    b = n , chain-lemma→ t n σ
 
    c : Σ u ꞉ FA , (s ▷⋆ u) × (t ▷⋆ u)
-   c = chain-reduct t n σ  , transport (s ▷⋆_) (from-≡[FA] p) a , b
+   c = chain-reduct t n σ  , transport (s ▷⋆_) (from-＝[FA] p) a , b
 
    γ : s ∿ t
    γ = to-∿ s t c
@@ -324,14 +324,14 @@ which we now use for that purpose.
    γ : type-of a → s ≏ t
    γ (u , (m , ρ) , (n , σ)) = δ b c
     where
-     b : Σ ρ ꞉ redex-chain m s , chain-reduct s m ρ ≡ u
+     b : Σ ρ ꞉ redex-chain m s , chain-reduct s m ρ ＝ u
      b = chain-lemma← s u m ρ
 
-     c : Σ σ ꞉ redex-chain n t , chain-reduct t n σ ≡ u
+     c : Σ σ ꞉ redex-chain n t , chain-reduct t n σ ＝ u
      c = chain-lemma← t u n σ
 
      δ : type-of b → type-of c → s ≏ t
-     δ (ρ , p) (σ , q) = m , n , ρ , σ , to-≡[FA] (p ∙ q ⁻¹)
+     δ (ρ , p) (σ , q) = m , n , ρ , σ , to-＝[FA] (p ∙ q ⁻¹)
 
  open free-group-construction-step₁ pt
 
@@ -383,10 +383,10 @@ FA/∾, which lives in the higher universe 𝓤⁺⁺.
  FA/∾-is-equivalent-to-FA/∥≏∥ = quotients-equivalent FA -∾- -∥≏∥-
                                 (λ {s} {t} → ∾-is-logically-equivalent-to-∥≏∥ s t)
 
- native-universe-of-free-group : universe-of ⟨ free-group A ⟩ ≡ 𝓤 ⁺⁺
+ native-universe-of-free-group : universe-of ⟨ free-group A ⟩ ＝ 𝓤 ⁺⁺
  native-universe-of-free-group = refl
 
- resized-free-group-carrier : ⟨ free-group A ⟩ has-size 𝓤⁺
+ resized-free-group-carrier : ⟨ free-group A ⟩ is 𝓤⁺ small
  resized-free-group-carrier = γ
   where
    γ : Σ F ꞉ 𝓤⁺ ̇ , F ≃ ⟨ free-group A ⟩
@@ -439,11 +439,11 @@ suffices to prove it for elements of the form η/∾ s with s : FA.
 \begin{code}
 
  ηᴳʳᵖ-is-medium : ηᴳʳᵖ is 𝓤⁺ small-map
- ηᴳʳᵖ-is-medium = /-induction -∾- (λ y → fiber ηᴳʳᵖ y has-size 𝓤⁺)
+ ηᴳʳᵖ-is-medium = /-induction -∾- (λ y → fiber ηᴳʳᵖ y is 𝓤⁺ small)
                    (λ y → being-small-is-prop ua (fiber ηᴳʳᵖ y) 𝓤⁺) γ
   where
-   e : (a : A) (s : FA) → (η/∾ (η a) ≡ η/∾ s) ≃ (η a ∥≏∥ s)
-   e a s = (η/∾ (η a) ≡ η/∾ s) ≃⟨ I ⟩
+   e : (a : A) (s : FA) → (η/∾ (η a) ＝ η/∾ s) ≃ (η a ∥≏∥ s)
+   e a s = (η/∾ (η a) ＝ η/∾ s) ≃⟨ I ⟩
            (η a ∾ s)           ≃⟨ II ⟩
            (η a ∥≏∥ s)         ■
     where
@@ -455,13 +455,13 @@ suffices to prove it for elements of the form η/∾ s with s : FA.
      II = ∿-is-equivalent-to-∥≏∥ (η a) s
 
    d : (s : FA) → fiber ηᴳʳᵖ (η/∾ s) ≃ (Σ a ꞉ A , η a ∥≏∥ s)
-   d s = (Σ a ꞉ A , η/∾ (η a) ≡ η/∾ s) ≃⟨ Σ-cong (λ a → e a s) ⟩
+   d s = (Σ a ꞉ A , η/∾ (η a) ＝ η/∾ s) ≃⟨ Σ-cong (λ a → e a s) ⟩
          (Σ a ꞉ A , η a ∥≏∥ s)          ■
 
-   γ : (s : FA) → fiber ηᴳʳᵖ (η/∾ s) has-size 𝓤⁺
+   γ : (s : FA) → fiber ηᴳʳᵖ (η/∾ s) is 𝓤⁺ small
    γ s = (Σ a ꞉ A , η a ∥≏∥ s) , ≃-sym (d s)
     where
-     notice : universe-of (fiber ηᴳʳᵖ (η/∾ s)) ≡ 𝓤⁺⁺
+     notice : universe-of (fiber ηᴳʳᵖ (η/∾ s)) ＝ 𝓤⁺⁺
      notice = refl
 
 \end{code}
@@ -469,7 +469,7 @@ suffices to prove it for elements of the form η/∾ s with s : FA.
 But the above resizing of the map ηᴳʳᵖ is not small enough for our
 purposes.
 
-The fiber type Σ a ꞉ A , η a ≡ s lives in the universe 𝓤⁺. In the next
+The fiber type Σ a ꞉ A , η a ＝ s lives in the universe 𝓤⁺. In the next
 step we construct a copy of this fiber type in the first universe 𝓤₀.
 
 The following construction also shows that the map η : A → FA has
@@ -478,7 +478,7 @@ pattern matching.
 
 \begin{code}
 
- native-universe-fiber-η : (s : FA) → universe-of (Σ a ꞉ A , η a ≡ s) ≡ 𝓤⁺
+ native-universe-fiber-η : (s : FA) → universe-of (Σ a ꞉ A , η a ＝ s) ＝ 𝓤⁺
  native-universe-fiber-η s = refl
 
  fiber₀-η : FA → 𝓤₀ ̇
@@ -493,13 +493,13 @@ pattern matching.
  NB-fiber₀-η-is-decidable ((₀ , a) ∷ []) = inl ⋆
  NB-fiber₀-η-is-decidable ((₁ , a) ∷ []) = inr id
 
- fiber-η→ : (s : FA) → fiber₀-η s → (Σ a ꞉ A , η a ≡ s)
+ fiber-η→ : (s : FA) → fiber₀-η s → (Σ a ꞉ A , η a ＝ s)
  fiber-η→ [] ()
  fiber-η→ (x ∷ y ∷ s) ()
  fiber-η→ (₀ , a ∷ []) ⋆ = a , refl
  fiber-η→ (₁ , a ∷ []) ()
 
- fiber-η← : (s : FA) → (Σ a ꞉ A , η a ≡ s) → fiber₀-η s
+ fiber-η← : (s : FA) → (Σ a ꞉ A , η a ＝ s) → fiber₀-η s
  fiber-η← .(η a) (a , refl) = ⋆
 
  η-fiber₀-η : (a : A) → fiber₀-η (η a)
@@ -525,11 +525,11 @@ as "the ∾-fiber of s over η".
    α : η a ∾ η a'
    α = psrt-transitive (η a) s (η a') e (psrt-symmetric (η a') s e')
 
-   β : a ≡ a'
+   β : a ＝ a'
    β = η-identifies-∾-related-points A-is-set α
 
-   γ : (a , e) ≡ (a' , e')
-   γ = to-subtype-≡ (λ x → ∥∥-is-prop) β
+   γ : (a , e) ＝ (a' , e')
+   γ = to-subtype-＝ (λ x → ∥∥-is-prop) β
 
  ∾-fiber-η-lemma→ : (s : FA) → (Σ a ꞉ A , η a ∾ s) → is-generator s
  ∾-fiber-η-lemma→ s (a , e) = ∥∥-functor γ e
@@ -540,16 +540,16 @@ as "the ∾-fiber of s over η".
      c : Σ u ꞉ FA , (η a ▷⋆ u) × (s ▷⋆ u)
      c = from-∿ Church-Rosser (η a) s e
 
-     d : type-of c → Σ n ꞉ ℕ , Σ ρ ꞉ redex-chain n s , chain-reduct s n ρ ≡ η a
+     d : type-of c → Σ n ꞉ ℕ , Σ ρ ꞉ redex-chain n s , chain-reduct s n ρ ＝ η a
      d (u , r , r₁) = δ r₂
       where
-       p : η a ≡ u
+       p : η a ＝ u
        p = η-irreducible⋆ r
 
        r₂ : s  ▷⋆ η a
        r₂ = transport (s ▷⋆_) (p ⁻¹) r₁
 
-       δ : s  ▷⋆ η a → Σ n ꞉ ℕ , Σ ρ ꞉ redex-chain n s , chain-reduct s n ρ ≡ η a
+       δ : s  ▷⋆ η a → Σ n ꞉ ℕ , Σ ρ ꞉ redex-chain n s , chain-reduct s n ρ ＝ η a
        δ (n , r₃) = (n , chain-lemma← s (η a) n r₃)
 
      δ : type-of (d c) → codomain γ
@@ -567,7 +567,7 @@ as "the ∾-fiber of s over η".
      e : chain-reduct s n ρ ∾ s
      e = ∣ to-∿ (chain-reduct s n ρ) s (chain-reduct s n ρ , (0 , refl) , (n , r)) ∣
 
-     σ : Σ a ꞉ A , η a ≡ chain-reduct s n ρ
+     σ : Σ a ꞉ A , η a ＝ chain-reduct s n ρ
      σ = fiber-η→ (chain-reduct s n ρ) i
 
      δ : type-of σ → Σ a ꞉ A , η a ∾ s
@@ -592,10 +592,10 @@ With this we can further reduce the size of the universal map ηᴳʳᵖ:
 \begin{code}
 
  ηᴳʳᵖ-is-small : ηᴳʳᵖ is 𝓤 small-map
- ηᴳʳᵖ-is-small = /-induction -∾- (λ y → fiber ηᴳʳᵖ y has-size 𝓤)
+ ηᴳʳᵖ-is-small = /-induction -∾- (λ y → fiber ηᴳʳᵖ y is 𝓤 small)
                   (λ y → being-small-is-prop ua (fiber ηᴳʳᵖ y) 𝓤) γ
   where
-   e : (a : A) (s : FA) → (η/∾ (η a) ≡ η/∾ s) ≃ (η a ∾ s)
+   e : (a : A) (s : FA) → (η/∾ (η a) ＝ η/∾ s) ≃ (η a ∾ s)
    e a s = logically-equivalent-props-are-equivalent
              (quotient-is-set -∾-)
              ∥∥-is-prop
@@ -603,11 +603,11 @@ With this we can further reduce the size of the universal map ηᴳʳᵖ:
              η/∾-identifies-related-points
 
    d : (s : FA) → fiber ηᴳʳᵖ (η/∾ s) ≃ is-generator s
-   d s = (Σ a ꞉ A , η/∾ (η a) ≡ η/∾ s) ≃⟨ Σ-cong (λ a → e a s) ⟩
+   d s = (Σ a ꞉ A , η/∾ (η a) ＝ η/∾ s) ≃⟨ Σ-cong (λ a → e a s) ⟩
          (Σ a ꞉ A , η a ∾ s)           ≃⟨ ∾-fiber-η-lemma s ⟩
          is-generator s                ■
 
-   γ : (s : FA) → fiber ηᴳʳᵖ (η/∾ s) has-size 𝓤
+   γ : (s : FA) → fiber ηᴳʳᵖ (η/∾ s) is 𝓤 small
    γ s = is-generator s , ≃-sym (d s)
 
 \end{code}
@@ -619,8 +619,8 @@ if also its codomain has size 𝓥, then so does its domain.
 
 \begin{code}
 
- free-group-small-gives-generating-set-small : ⟨ free-group A ⟩ has-size 𝓤
-                                             → A has-size 𝓤
+ free-group-small-gives-generating-set-small : ⟨ free-group A ⟩ is 𝓤 small
+                                             → A is 𝓤 small
  free-group-small-gives-generating-set-small h = size-contravariance ηᴳʳᵖ ηᴳʳᵖ-is-small h
 
 
@@ -639,7 +639,7 @@ large-group-with-no-small-copy : (Σ A ꞉ 𝓤 ⁺ ̇  , is-set A
 
 large-group-with-no-small-copy {𝓤} (A , A-is-set , A-is-large , A-ls) = δ
  where
-  open resize-free-group A A-is-set Id⟦ A-ls ⟧ ⟦ A-ls ⟧-refl  ≡⟦ A-ls ⟧-gives-≡
+  open resize-free-group A A-is-set Id⟦ A-ls ⟧ ⟦ A-ls ⟧-refl  ＝⟦ A-ls ⟧-gives-＝
 
   γ : (Σ F ꞉ Group (𝓤 ⁺) , F ≅ free-group A)
     → (Σ F ꞉ Group (𝓤 ⁺) , ((G : Group 𝓤) → ¬ (G ≅ F)))
@@ -648,7 +648,7 @@ large-group-with-no-small-copy {𝓤} (A , A-is-set , A-is-large , A-ls) = δ
     β : (G : Group 𝓤) → G ≅ F → 𝟘
     β G (g , g-is-equiv , g-is-hom) = α
      where
-      h : ⟨ free-group A ⟩ has-size 𝓤
+      h : ⟨ free-group A ⟩ is 𝓤 small
       h = ⟨ G ⟩ , f ∘ g , ∘-is-equiv g-is-equiv f-is-equiv
 
       α : 𝟘

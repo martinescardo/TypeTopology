@@ -100,10 +100,10 @@ open unions-of-small-families pt 𝓤 𝓤 X
   semidir : is-semidirected _⊆_ (κ⁺ A)
   semidir (l₁ , s₁) (l₂ , s₂) = ∣ ((l₁ ++ l₂) , s) , u₁ , u₂ ∣
    where
-    e : κ (l₁ ++ l₂) ≡ κ l₁ ∪ κ l₂
+    e : κ (l₁ ++ l₂) ＝ κ l₁ ∪ κ l₂
     e = κ-of-concatenated-lists-is-union pe fe l₁ l₂
     u : (κ l₁ ∪ κ l₂) ⊆ κ (l₁ ++ l₂)
-    u = ≡-to-⊒ 𝓟-DCPO e
+    u = ＝-to-⊒ 𝓟-DCPO e
     -- Unfortunately, using the ⊑⟨ 𝓟-DCPO ⟩-syntax here gives
     -- implicit arguments problems, so we use ⊆-trans instead.
     u₁ : κ l₁ ⊆ κ (l₁ ++ l₂)
@@ -115,7 +115,7 @@ open unions-of-small-families pt 𝓤 𝓤 X
     s = ⊆-trans (κ (l₁ ++ l₂)) (κ l₁ ∪ κ l₂) A ⦅1⦆ ⦅2⦆
      where
       ⦅1⦆ : κ (l₁ ++ l₂) ⊆ (κ l₁ ∪ κ l₂)
-      ⦅1⦆ = ≡-to-⊑ 𝓟-DCPO e
+      ⦅1⦆ = ＝-to-⊑ 𝓟-DCPO e
       ⦅2⦆ : (κ l₁ ∪ κ l₂) ⊆ A
       ⦅2⦆ = ∪-is-lowerbound-of-upperbounds (κ l₁) (κ l₂) A s₁ s₂
 
@@ -141,8 +141,8 @@ open unions-of-small-families pt 𝓤 𝓤 X
             (κ⁺-sup A) (⋃ (κ⁺ A))
             (⋃-is-upperbound (κ⁺ A))
 
-κ⁺-⋃-≡ : (A : 𝓟 X) → ⋃ (κ⁺ A) ≡ A
-κ⁺-⋃-≡ A = subset-extensionality pe fe (κ⁺-⋃-⊆ A) (κ⁺-⋃-⊇ A)
+κ⁺-⋃-＝ : (A : 𝓟 X) → ⋃ (κ⁺ A) ＝ A
+κ⁺-⋃-＝ A = subset-extensionality pe fe (κ⁺-⋃-⊆ A) (κ⁺-⋃-⊇ A)
 
 Kuratowski-finite-subset-if-compact : (A : 𝓟 X)
                                     → is-compact 𝓟-DCPO A
@@ -156,7 +156,7 @@ Kuratowski-finite-subset-if-compact A c =
    γ = ∥∥-functor h claim
     where
      h : (Σ l⁺ ꞉ (Σ l ꞉ List X , κ l ⊆ A) , A ⊆ κ⁺ A l⁺)
-       → Σ l ꞉ List X , κ l ≡ A
+       → Σ l ꞉ List X , κ l ＝ A
      h ((l , s) , t) = (l , subset-extensionality pe fe s t)
 
 ∅-is-compact : is-compact 𝓟-DCPO ∅

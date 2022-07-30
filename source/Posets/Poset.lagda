@@ -33,7 +33,7 @@ module Posets.Poset
   is-transitive = (x y z : D) → x ⊑ y → y ⊑ z → x ⊑ z
 
   is-antisymmetric : 𝓤 ⊔ 𝓣 ̇
-  is-antisymmetric = (x y : D) → x ⊑ y → y ⊑ x → x ≡ y
+  is-antisymmetric = (x y : D) → x ⊑ y → y ⊑ x → x ＝ y
 
   poset-axioms : 𝓤 ⊔ 𝓣 ̇
   poset-axioms = is-set D
@@ -56,6 +56,6 @@ module Posets.Poset
   is-greatest x = (y : D) → y ⊑ x
 
   is-maximal : D → 𝓤 ⊔ 𝓣 ̇
-  is-maximal x = (y : D) → x ⊑ y → x ≡ y
+  is-maximal x = (y : D) → x ⊑ y → x ＝ y
 
 \end{code}

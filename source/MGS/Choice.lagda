@@ -77,8 +77,8 @@ unique-choice-gives-hfunext {𝓤} {𝓥} uc = →hfunext γ
   γ X A f = uc X A R e
    where
     R : (x : X) → A x → 𝓥 ̇
-    R x a = f x ≡ a
-    e : (x : X) → ∃! a ꞉ A x , f x ≡ a
+    R x a = f x ＝ a
+    e : (x : X) → ∃! a ꞉ A x , f x ＝ a
     e x = singleton-types'-are-singletons (A x) (f x)
 
 unique-choice⇔vvfunext : Unique-Choice 𝓤 𝓥 𝓥 ⇔ vvfunext 𝓤 𝓥
@@ -88,7 +88,7 @@ unique-choice⇔vvfunext = unique-choice-gives-vvfunext ,
 module _ (hfe : global-hfunext) where
 
  private
-   hunapply : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {f g : Π A} → f ∼ g → f ≡ g
+   hunapply : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {f g : Π A} → f ∼ g → f ＝ g
    hunapply = inverse (happly _ _) (hfe _ _)
 
  transport-hunapply : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (R : (x : X) → A x → 𝓦 ̇ )
@@ -97,22 +97,22 @@ module _ (hfe : global-hfunext) where
                       (h : f ∼ g)
                       (x : X)
                     → transport (λ - → (x : X) → R x (- x)) (hunapply h) φ x
-                    ≡ transport (R x) (h x) (φ x)
+                    ＝ transport (R x) (h x) (φ x)
 
  transport-hunapply A R f g φ h x =
 
-   transport (λ - → ∀ x → R x (- x)) (hunapply h) φ x ≡⟨ i ⟩
-   transport (R x) (happly f g (hunapply h) x) (φ x)  ≡⟨ ii ⟩
+   transport (λ - → ∀ x → R x (- x)) (hunapply h) φ x ＝⟨ i ⟩
+   transport (R x) (happly f g (hunapply h) x) (φ x)  ＝⟨ ii ⟩
    transport (R x) (h x) (φ x)                        ∎
 
   where
-   a : {f g : Π A} {φ : ∀ x → R x (f x)} (p : f ≡ g) (x : domain A)
+   a : {f g : Π A} {φ : ∀ x → R x (f x)} (p : f ＝ g) (x : domain A)
      → transport (λ - → ∀ x → R x (- x)) p φ x
-     ≡ transport (R x) (happly f g p x) (φ x)
+     ＝ transport (R x) (happly f g p x) (φ x)
 
    a (refl _) x = refl _
 
-   b : happly f g (hunapply h) ≡ h
+   b : happly f g (hunapply h) ＝ h
    b = inverses-are-sections (happly f g) (hfe f g) h
 
    i  = a (hunapply h) x
@@ -134,27 +134,27 @@ module _ (hfe : global-hfunext) where
    C : Σ f ꞉ ((x : X) → A x), ((x : X) → R x (f x))
    C = f₀ , φ₀
 
-   c : (x : X) → (τ : Σ a ꞉ A x , R x a) → f₀ x , φ₀ x ≡ τ
+   c : (x : X) → (τ : Σ a ꞉ A x , R x a) → f₀ x , φ₀ x ＝ τ
    c x = centrality (Σ a ꞉ A x , R x a) (s x)
 
-   c₁ : (x : X) (a : A x) (r : R x a) → f₀ x ≡ a
+   c₁ : (x : X) (a : A x) (r : R x a) → f₀ x ＝ a
    c₁ x a r = ap pr₁ (c x (a , r))
 
    c₂ : (x : X) (a : A x) (r : R x a)
-      → transport (λ - → R x (pr₁ -)) (c x (a , r)) (φ₀ x) ≡ r
+      → transport (λ - → R x (pr₁ -)) (c x (a , r)) (φ₀ x) ＝ r
 
    c₂ x a r = apd pr₂ (c x (a , r))
 
-   Φ : (σ : Σ f ꞉ ((x : X) → A x), ((x : X) → R x (f x))) → C ≡ σ
-   Φ (f , φ) = to-Σ-≡ (p , hunapply q)
+   Φ : (σ : Σ f ꞉ ((x : X) → A x), ((x : X) → R x (f x))) → C ＝ σ
+   Φ (f , φ) = to-Σ-＝ (p , hunapply q)
     where
-     p : f₀ ≡ f
+     p : f₀ ＝ f
      p = hunapply (λ x → c₁ x (f x) (φ x))
 
      q : transport (λ - → (x : X) → R x (- x)) p φ₀ ∼ φ
-     q x = transport (λ - → (x : X) → R x (- x)) p φ₀ x           ≡⟨ i ⟩
-           transport (R x) (ap pr₁ (c x (f x , φ x))) (φ₀ x)      ≡⟨ ii ⟩
-           transport (λ σ → R x (pr₁ σ)) (c x (f x , φ x)) (φ₀ x) ≡⟨ iii ⟩
+     q x = transport (λ - → (x : X) → R x (- x)) p φ₀ x           ＝⟨ i ⟩
+           transport (R x) (ap pr₁ (c x (f x , φ x))) (φ₀ x)      ＝⟨ ii ⟩
+           transport (λ σ → R x (pr₁ σ)) (c x (f x , φ x)) (φ₀ x) ＝⟨ iii ⟩
            φ x                                                    ∎
       where
        i   = transport-hunapply A R f₀ f φ₀ (λ x → c₁ x (f x) (φ x)) x
@@ -204,7 +204,7 @@ module choice
   Choice-gives-IChoice {𝓤} ac X Y i j φ = γ
    where
     R : (x : X) → Y x → 𝓤 ̇
-    R x y = x ≡ x -- Any singleton type in 𝓤 will do.
+    R x y = x ＝ x -- Any singleton type in 𝓤 will do.
 
     k : (x : X) (y : Y x) → is-subsingleton (R x y)
     k x y = i x x
@@ -277,50 +277,50 @@ module choice
       φ f x = f x (g x)
 
   decidable-equality-criterion : {X : 𝓤 ̇ } (α : 𝟚 → X)
-                               → ((x : X) → (∃ n ꞉ 𝟚 , α n ≡ x)
-                                          → (Σ n ꞉ 𝟚 , α n ≡ x))
-                               → decidable (α ₀ ≡ α ₁)
+                               → ((x : X) → (∃ n ꞉ 𝟚 , α n ＝ x)
+                                          → (Σ n ꞉ 𝟚 , α n ＝ x))
+                               → decidable (α ₀ ＝ α ₁)
 
   decidable-equality-criterion α c = γ d
    where
     r : 𝟚 → image α
     r = corestriction α
 
-    σ : (y : image α) → Σ n ꞉ 𝟚 , r n ≡ y
+    σ : (y : image α) → Σ n ꞉ 𝟚 , r n ＝ y
     σ (x , t) = f u
      where
-      u : Σ n ꞉ 𝟚 , α n ≡ x
+      u : Σ n ꞉ 𝟚 , α n ＝ x
       u = c x t
 
-      f : (Σ n ꞉ 𝟚 , α n ≡ x) → Σ n ꞉ 𝟚 , r n ≡ (x , t)
-      f (n , p) = n , to-subtype-≡ (λ _ → ∃-is-subsingleton) p
+      f : (Σ n ꞉ 𝟚 , α n ＝ x) → Σ n ꞉ 𝟚 , r n ＝ (x , t)
+      f (n , p) = n , to-subtype-＝ (λ _ → ∃-is-subsingleton) p
 
     s : image α → 𝟚
     s y = pr₁ (σ y)
 
-    η : (y : image α) → r (s y) ≡ y
+    η : (y : image α) → r (s y) ＝ y
     η y = pr₂ (σ y)
 
     l : left-cancellable s
     l = sections-are-lc s (r , η)
 
-    αr : {m n : 𝟚} → α m ≡ α n → r m ≡ r n
-    αr p = to-subtype-≡ (λ _ → ∃-is-subsingleton) p
+    αr : {m n : 𝟚} → α m ＝ α n → r m ＝ r n
+    αr p = to-subtype-＝ (λ _ → ∃-is-subsingleton) p
 
-    rα : {m n : 𝟚} → r m ≡ r n → α m ≡ α n
+    rα : {m n : 𝟚} → r m ＝ r n → α m ＝ α n
     rα = ap pr₁
 
-    αs : {m n : 𝟚} → α m ≡ α n → s (r m) ≡ s (r n)
+    αs : {m n : 𝟚} → α m ＝ α n → s (r m) ＝ s (r n)
     αs p = ap s (αr p)
 
-    sα : {m n : 𝟚} → s (r m) ≡ s (r n) → α m ≡ α n
+    sα : {m n : 𝟚} → s (r m) ＝ s (r n) → α m ＝ α n
     sα p = rα (l p)
 
-    γ : decidable (s (r ₀) ≡ s (r ₁)) → decidable (α ₀ ≡ α ₁)
+    γ : decidable (s (r ₀) ＝ s (r ₁)) → decidable (α ₀ ＝ α ₁)
     γ (inl p) = inl (sα p)
     γ (inr u) = inr (contrapositive αs u)
 
-    d : decidable (s (r ₀) ≡ s (r ₁))
+    d : decidable (s (r ₀) ＝ s (r ₁))
     d = 𝟚-has-decidable-equality (s (r ₀)) (s (r ₁))
 
   choice-gives-decidable-equality : TChoice 𝓤
@@ -333,21 +333,21 @@ module choice
     α ₁ = x₁
 
     A : X → 𝓤 ̇
-    A x = Σ n ꞉ 𝟚 , α n ≡ x
+    A x = Σ n ꞉ 𝟚 , α n ＝ x
 
-    l : is-subsingleton (decidable (x₀ ≡ x₁))
+    l : is-subsingleton (decidable (x₀ ＝ x₁))
     l = +-is-subsingleton' hunapply (i (α ₀) (α ₁))
 
-    δ : ∥ ((x : X) → ∥ A x ∥ → A x)∥ → decidable (x₀ ≡ x₁)
+    δ : ∥ ((x : X) → ∥ A x ∥ → A x)∥ → decidable (x₀ ＝ x₁)
     δ = ∥∥-recursion l (decidable-equality-criterion α)
 
     j : (x : X) → is-set (A x)
-    j x = subsets-of-sets-are-sets 𝟚 (λ n → α n ≡ x) 𝟚-is-set (λ n → i (α n) x)
+    j x = subsets-of-sets-are-sets 𝟚 (λ n → α n ＝ x) 𝟚-is-set (λ n → i (α n) x)
 
     h : ∥ ((x : X) → ∥ A x ∥ → A x)∥
     h = tac X A i j
 
-    γ : decidable (x₀ ≡ x₁)
+    γ : decidable (x₀ ＝ x₁)
     γ = δ h
 
   choice-gives-EM : propext 𝓤 → TChoice (𝓤 ⁺) → EM 𝓤
@@ -356,22 +356,22 @@ module choice
     ⊤ : Ω 𝓤
     ⊤ = (Lift 𝓤 𝟙 , equiv-to-subsingleton (Lift-≃ 𝟙) 𝟙-is-subsingleton)
 
-    δ : (ω : Ω 𝓤) → decidable (⊤ ≡ ω)
+    δ : (ω : Ω 𝓤) → decidable (⊤ ＝ ω)
     δ = choice-gives-decidable-equality tac (Ω 𝓤) (Ω-is-set hunapply pe) ⊤
 
     em : (P : 𝓤 ̇ ) → is-subsingleton P → P + ¬ P
     em P i = γ (δ (P , i))
      where
-      γ : decidable (⊤ ≡ (P , i)) → P + ¬ P
+      γ : decidable (⊤ ＝ (P , i)) → P + ¬ P
 
       γ (inl r) = inl (Id→fun s (lift ⋆))
        where
-        s : Lift 𝓤 𝟙 ≡ P
+        s : Lift 𝓤 𝟙 ＝ P
         s = ap pr₁ r
 
       γ (inr n) = inr (contrapositive f n)
        where
-        f : P → ⊤ ≡ P , i
+        f : P → ⊤ ＝ P , i
         f p = Ω-ext hunapply pe (λ (_ : Lift 𝓤 𝟙) → p) (λ (_ : P) → lift ⋆)
 
   global-choice : (𝓤 : Universe) → 𝓤 ⁺ ̇
@@ -400,8 +400,8 @@ module choice
                                             → (X : 𝓤 ̇ ) → is-set  X
 
   global-∥∥-choice-gives-all-types-are-sets {𝓤} c X =
-    types-with-wconstant-≡-endomaps-are-sets X
-        (λ x y → ∥∥-choice-function-gives-wconstant-endomap (c (x ≡ y)))
+    types-with-wconstant-＝-endomaps-are-sets X
+        (λ x y → ∥∥-choice-function-gives-wconstant-endomap (c (x ＝ y)))
 
   global-∥∥-choice-gives-universe-is-set : global-∥∥-choice (𝓤 ⁺)
                                          → is-set (𝓤 ̇ )
@@ -474,6 +474,6 @@ module choice
   global-choice-gives-all-types-are-sets : global-choice 𝓤
                                          → (X : 𝓤 ̇ ) → is-set  X
 
-  global-choice-gives-all-types-are-sets {𝓤} c X = hedberg (λ x y → c (x ≡ y))
+  global-choice-gives-all-types-are-sets {𝓤} c X = hedberg (λ x y → c (x ＝ y))
 
 \end{code}

@@ -145,7 +145,7 @@ _≾_ : {X : 𝓤 ̇ } → (X → 𝓥 ̇ ) → (X → 𝓦 ̇ ) → 𝓤 ⊔ �
 _≾_ = Nat
 
 _≾_-explicitly : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ )
-               → A ≾ B ≡ ((x : X) → A x → B x)
+               → A ≾ B ＝ ((x : X) → A x → B x)
 _≾_-explicitly A B = refl
 
 \end{code}
@@ -154,7 +154,7 @@ We think of A and B as some sort ∞-presheaves, with the category of
 sets replaced by a universe of ∞-groupoids.
 
 Natural transformations are automatically natural: for all x,y: A and
-p : x ≡ y,
+p : x ＝ y,
 
                         τ x
                A x --------------→ B x
@@ -170,7 +170,7 @@ p : x ≡ y,
 \begin{code}
 
 ≾-naturality : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ ) (τ : A ≾ B)
-             → {x y : X} (p : x ≡ y) → τ y ∘ transport A p ≡ transport B p ∘ τ x
+             → {x y : X} (p : x ＝ y) → τ y ∘ transport A p ＝ transport B p ∘ τ x
 ≾-naturality = Nats-are-natural
 
 \end{code}
@@ -226,16 +226,16 @@ module _ {X : 𝓤 ̇ }
     ψ : (g : Y → 𝓣 ̇ ) → g ≾ f/j → g ∘ j ≾ f
     ψ g θ x C = θ (j x) C (x , refl)
 
-    ψφ : (g : Y → 𝓣 ̇ ) (η : g ∘ j ≾ f) (x : X) (C : g (j x)) → ψ g (φ g η) x C ≡ η x C
+    ψφ : (g : Y → 𝓣 ̇ ) (η : g ∘ j ≾ f) (x : X) (C : g (j x)) → ψ g (φ g η) x C ＝ η x C
     ψφ g η x C = refl
 
-    ψφ' : (g : Y → 𝓣 ̇ ) (η : g ∘ j ≾ f) → ψ g (φ g η) ≡ η
+    ψφ' : (g : Y → 𝓣 ̇ ) (η : g ∘ j ≾ f) → ψ g (φ g η) ＝ η
     ψφ' g η = dfunext (fe 𝓤 (𝓦 ⊔ 𝓣)) (λ x → dfunext (fe 𝓣 𝓦) (ψφ g η x))
 
-    φψ : (g : Y → 𝓣 ̇ ) (θ : g ≾ f/j) (y : Y) (C : g y) (w : fiber j y) → φ g (ψ g θ) y C w ≡ θ y C w
+    φψ : (g : Y → 𝓣 ̇ ) (θ : g ≾ f/j) (y : Y) (C : g y) (w : fiber j y) → φ g (ψ g θ) y C w ＝ θ y C w
     φψ g θ y C (x , refl) = refl
 
-    φψ' : (g : Y → 𝓣 ̇ ) (θ : g ≾ f/j) → φ g (ψ g θ) ≡ θ
+    φψ' : (g : Y → 𝓣 ̇ ) (θ : g ≾ f/j) → φ g (ψ g θ) ＝ θ
     φψ' g θ = dfunext (fe 𝓥 (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓣)) (λ y → dfunext (fe 𝓣 (𝓤 ⊔ 𝓥 ⊔ 𝓦)) (λ C → dfunext (fe (𝓤 ⊔ 𝓥) 𝓦) (φψ g θ y C)))
 
   Σ-extension-left-Kan : (g : Y → 𝓣 ̇ ) → (f∖j ≾ g) ≃ (f ≾ g ∘ j)
@@ -247,10 +247,10 @@ module _ {X : 𝓤 ̇ }
     ψ : (g : Y → 𝓣 ̇ ) → f∖j ≾ g → f ≾ g ∘ j
     ψ g θ x B = θ (j x) ((x , refl) , B)
 
-    φψ : (g : Y → 𝓣 ̇ ) (θ : f∖j ≾ g) (y : Y) (B : f∖j y) → φ g (ψ g θ) y B ≡ θ y B
+    φψ : (g : Y → 𝓣 ̇ ) (θ : f∖j ≾ g) (y : Y) (B : f∖j y) → φ g (ψ g θ) y B ＝ θ y B
     φψ g θ y ((x , refl) , B) = refl
 
-    ψφ : (g : Y → 𝓣 ̇ ) (η : f ≾ g ∘ j) (x : X) (B : f x) → ψ g (φ g η) x B ≡ η x B
+    ψφ : (g : Y → 𝓣 ̇ ) (η : f ≾ g ∘ j) (x : X) (B : f x) → ψ g (φ g η) x B ＝ η x B
     ψφ g η x B = refl
 
     e : f∖j ≾ g ≃ f ≾ g ∘ j
@@ -296,13 +296,13 @@ module _ {X : 𝓤 ̇ }
 
 \begin{code}
 
-  2nd-Π-extension-formula : (y : Y) → f/j (y) ≃ (Π x ꞉ X , (j x ≡ y → f x))
+  2nd-Π-extension-formula : (y : Y) → f/j (y) ≃ (Π x ꞉ X , (j x ＝ y → f x))
   2nd-Π-extension-formula y = curry-uncurry fe
 
-  2nd-Π-extension-formula' : (y : Y) → f/j (y) ≃ (λ x → j x ≡ y) ≾ f
+  2nd-Π-extension-formula' : (y : Y) → f/j (y) ≃ (λ x → j x ＝ y) ≾ f
   2nd-Π-extension-formula' = 2nd-Π-extension-formula
 
-  2nd-Σ-extension-formula : (y : Y) → f∖j (y) ≃ (Σ x ꞉ X , (j x ≡ y) × f x)
+  2nd-Σ-extension-formula : (y : Y) → f∖j (y) ≃ (Σ x ꞉ X , (j x ＝ y) × f x)
   2nd-Σ-extension-formula y = Σ-assoc
 
 
@@ -314,11 +314,11 @@ module _ {X : 𝓤 ̇ }
 
 \begin{code}
 
-  Π-observation : is-embedding j → (a : X) → f a ≃ (Π x ꞉ X , (j x ≡ j a → f x))
+  Π-observation : is-embedding j → (a : X) → f a ≃ (Π x ꞉ X , (j x ＝ j a → f x))
   Π-observation e a = ≃-sym ((≃-sym (2nd-Π-extension-formula (j a))) ●
                                       (Π-extension-property e a))
 
-  Σ-observation : is-embedding j → (a : X) → f a ≃ (Σ x ꞉ X , (j x ≡ j a) × f x)
+  Σ-observation : is-embedding j → (a : X) → f a ≃ (Σ x ꞉ X , (j x ＝ j a) × f x)
   Σ-observation e a = ≃-sym ((≃-sym (2nd-Σ-extension-formula (j a))) ●
                                       (Σ-extension-property e a))
 
@@ -340,13 +340,13 @@ respectively:
       G : Π f/j → Π f
       G ψ x = ψ (j x) (x , refl)
 
-      FG' : (ψ : Π f/j) (y : Y) (σ : fiber j y) → F (G ψ) y σ ≡ ψ y σ
+      FG' : (ψ : Π f/j) (y : Y) (σ : fiber j y) → F (G ψ) y σ ＝ ψ y σ
       FG' ψ x (_ , refl) = refl
 
-      FG : (ψ : Π f/j) → F (G ψ) ≡ ψ
+      FG : (ψ : Π f/j) → F (G ψ) ＝ ψ
       FG ψ = dfunext (fe 𝓥 (𝓤 ⊔ 𝓥 ⊔ 𝓦)) (λ y → dfunext (fe (𝓤 ⊔ 𝓥) 𝓦) (FG' ψ y))
 
-      GF : (φ : Π f) → G (F φ) ≡ φ
+      GF : (φ : Π f) → G (F φ) ＝ φ
       GF φ = refl
 
   same-Σ : Σ f ≃ Σ f∖j
@@ -358,10 +358,10 @@ respectively:
       G : Σ f∖j → Σ f
       G (y , (x , p) , y') = (x , y')
 
-      FG : (σ : Σ f∖j) → F (G σ) ≡ σ
+      FG : (σ : Σ f∖j) → F (G σ) ＝ σ
       FG (x , (_ , refl) , y') = refl
 
-      GF : (σ : Σ f) → G (F σ) ≡ σ
+      GF : (σ : Σ f) → G (F σ) ＝ σ
       GF (x , y) = refl
 
 \end{code}
@@ -403,11 +403,11 @@ inverse-image f v = v ∘ f
 Σ-images of singletons. Another way to see the following is with the
 function same-Σ defined above. This and univalence give
 
- Σ (Id x) ≡ Σ (Id x ∖ j) = Σ-image j (Id x)
+ Σ (Id x) ＝ Σ (Id x ∖ j) = Σ-image j (Id x)
 
 Hence
 
- is-singleton (Σ (Id x)) ≡ is-singleton (Σ-image j (Id x))
+ is-singleton (Σ (Id x)) ＝ is-singleton (Σ-image j (Id x))
 
 But the lhs holds, and hence is-singleton (Σ-image j (Id x)).
 
@@ -423,30 +423,30 @@ But the lhs holds, and hence is-singleton (Σ-image j (Id x)).
   g : Id (j x) y → Σ-image j (Id x) y
   g refl = (x , refl) , refl
 
-  gf : (i : Σ-image j (Id x) y) → g (f i) ≡ i
+  gf : (i : Σ-image j (Id x) y) → g (f i) ＝ i
   gf ((x , refl) , refl) = refl
 
-  fg : (p : Id (j x) y) → f (g p) ≡ p
+  fg : (p : Id (j x) y) → f (g p) ＝ p
   fg refl = refl
 
 Σ-image-of-singleton-lemma' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (j : X → Y) (x : X) (y : Y)
-                            → (((Id x) ∖ j) y) ≃ (j x ≡ y)
+                            → (((Id x) ∖ j) y) ≃ (j x ＝ y)
 Σ-image-of-singleton-lemma' = Σ-image-of-singleton-lemma
 
 Σ-image-of-singleton : {X Y : 𝓤 ̇ }
                      → is-univalent 𝓤
-                     → (j : X → Y) (x : X) → Σ-image j (Id x) ≡ Id (j x)
+                     → (j : X → Y) (x : X) → Σ-image j (Id x) ＝ Id (j x)
 Σ-image-of-singleton {𝓤} {X} {Y} ua j x = b
   where
-   a : (y : Y) → Σ-image j (Id x) y ≡ Id (j x) y
+   a : (y : Y) → Σ-image j (Id x) y ＝ Id (j x) y
    a y = eqtoid ua (Σ-image j (Id x) y) (Id (j x) y) (Σ-image-of-singleton-lemma j x y)
 
-   b : Σ-image j (Id x) ≡ Id (j x)
+   b : Σ-image j (Id x) ＝ Id (j x)
    b = dfunext (fe 𝓤 (𝓤 ⁺)) a
 
 Σ-image-of-singleton' : {X Y : 𝓤 ̇ }
                       → is-univalent 𝓤
-                      → (j : X → Y) (x : X) → (Id x) ∖ j ≡ Id (j x)
+                      → (j : X → Y) (x : X) → (Id x) ∖ j ＝ Id (j x)
 Σ-image-of-singleton' = Σ-image-of-singleton
 
 \end{code}
@@ -463,14 +463,14 @@ There is more to do about this.
 Π-extension-is-extension' : is-univalent (𝓤 ⊔ 𝓥) → funext 𝓤 ((𝓤 ⊔ 𝓥)⁺)
                           → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (j : X → Y)
                           → is-embedding j
-                          → (f : X → 𝓤 ⊔ 𝓥 ̇ ) → (f / j) ∘ j ≡ f
+                          → (f : X → 𝓤 ⊔ 𝓥 ̇ ) → (f / j) ∘ j ＝ f
 Π-extension-is-extension' ua fe j e f = dfunext fe (Π-extension-is-extension ua j e f)
 
 Π-extension-is-extension'' : is-univalent (𝓤 ⊔ 𝓥)
                            → funext ((𝓤 ⊔ 𝓥)⁺) ((𝓤 ⊔ 𝓥)⁺)
                            → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (j : X → Y)
                            → is-embedding j
-                           → (λ f → (f / j) ∘ j) ≡ id
+                           → (λ f → (f / j) ∘ j) ＝ id
 Π-extension-is-extension'' {𝓤} {𝓥} ua fe j e = dfunext fe (Π-extension-is-extension' ua (lower-fun-ext 𝓤 fe) j e)
 
 Σ-extension-is-extension : is-univalent (𝓤 ⊔ 𝓥) → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (j : X → Y)
@@ -482,14 +482,14 @@ There is more to do about this.
                           → funext 𝓤 ((𝓤 ⊔ 𝓥)⁺)
                           → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (j : X → Y)
                           → is-embedding j
-                          → (f : X → 𝓤 ⊔ 𝓥 ̇ ) → (f ∖ j) ∘ j ≡ f
+                          → (f : X → 𝓤 ⊔ 𝓥 ̇ ) → (f ∖ j) ∘ j ＝ f
 Σ-extension-is-extension' ua fe j e f = dfunext fe (Σ-extension-is-extension ua j e f)
 
 Σ-extension-is-extension'' : is-univalent (𝓤 ⊔ 𝓥)
                            → funext ((𝓤 ⊔ 𝓥)⁺) ((𝓤 ⊔ 𝓥)⁺)
                            → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (j : X → Y)
                            → is-embedding j
-                           → (λ f → (f ∖ j) ∘ j) ≡ id
+                           → (λ f → (f ∖ j) ∘ j) ＝ id
 Σ-extension-is-extension'' {𝓤} {𝓥} ua fe j e = dfunext fe
                                                  (Σ-extension-is-extension' ua
                                                    (lower-fun-ext 𝓤 fe) j e)
@@ -602,7 +602,7 @@ retract-extension {𝓤} {𝓥} {𝓦} {𝓣} {X} {Y} A B e ρ y = r , s , rs
   S : (x : X) → A x → B x
   S x = section (ρ x)
 
-  RS : (x : X) (a : A x) → R x (S x a) ≡ a
+  RS : (x : X) (a : A x) → R x (S x a) ＝ a
   RS x = retract-condition (ρ x)
 
   r : (B / e) y → (A / e) y
@@ -611,10 +611,10 @@ retract-extension {𝓤} {𝓥} {𝓦} {𝓣} {X} {Y} A B e ρ y = r , s , rs
   s : (A / e) y → (B / e) y
   s u (x , p) = S x (u (x , p))
 
-  h : (u : (A / e) y) (σ : fiber e y) → r (s u) σ ≡ u σ
+  h : (u : (A / e) y) (σ : fiber e y) → r (s u) σ ＝ u σ
   h u (x , p) = RS x (u (x , p))
 
-  rs : (u : (A / e) y) → r (s u) ≡ u
+  rs : (u : (A / e) y) → r (s u) ＝ u
   rs u = dfunext (fe (𝓤 ⊔ 𝓥) 𝓦) (h u)
 
 \end{code}
@@ -634,14 +634,14 @@ iterated-extension {𝓤} {𝓥} {𝓦} {𝓣} {X} {Y} {Z} {A} j k z = γ
   g : (A / (k ∘ j)) z → ((A / j) / k) z
   g v (.(j x) , q) (x , refl) = v (x , q)
 
-  fg : (v : (A / (k ∘ j)) z) → f (g v) ≡ v
+  fg : (v : (A / (k ∘ j)) z) → f (g v) ＝ v
   fg v = refl
 
   gf' : (u : ((A / j) / k) z) (w : fiber k z) (t : fiber j (fiber-point w))
-      → g (f u) w t ≡ u w t
+      → g (f u) w t ＝ u w t
   gf' u (.(j x) , q) (x , refl) = refl
 
-  gf : (u : ((A / j) / k) z) → g (f u) ≡ u
+  gf : (u : ((A / j) / k) z) → g (f u) ＝ u
   gf u = dfunext (fe (𝓥 ⊔ 𝓦) (𝓤 ⊔ 𝓥 ⊔ 𝓣))
           (λ w → dfunext (fe (𝓤 ⊔ 𝓥) 𝓣) (gf' u w))
 
@@ -672,7 +672,7 @@ the map P → 𝟙 is an embedding.
                \       /
                 \     /
               f  \   / (f / j) (x) = Π (w : fiber j x) → f (fiber-point w)
-                  \ /              ≃ Π (p : P) → j p ≡ x → f p
+                  \ /              ≃ Π (p : P) → j p ＝ x → f p
                    v               ≃ Π (p : P) → f p
                    𝓤
 
@@ -682,7 +682,7 @@ So in essence we are considering the map s : (P → 𝓤) → 𝓤 defined by
 
 Then, for any X : 𝓤,
 
-  fiber s X = Σ f ꞉ P → 𝓤 , (Π (p : P) → f p) ≡ X.
+  fiber s X = Σ f ꞉ P → 𝓤 , (Π (p : P) → f p) ＝ X.
 
 A few days pause. Now 15th Nov 2018 after a discussion in the HoTT list.
 https://groups.google.com/d/topic/homotopytypetheory/xvx5hOEPnDs/discussion
@@ -711,10 +711,10 @@ module /-extension-is-embedding-special-case
  s : (P → 𝓤 ̇ ) → 𝓤 ̇
  s = Π
 
- rs : ∀ A → r (s A) ≡ A
+ rs : ∀ A → r (s A) ＝ A
  rs A = dfunext fe' (λ p → eqtoid ua (s A) (A p) (prop-indexed-product feuu i p))
 
- sr : ∀ X → s (r X) ≡ (P → X)
+ sr : ∀ X → s (r X) ＝ (P → X)
  sr X = refl
 
  κ : (X : 𝓤 ̇ ) → X → s (r X)
@@ -729,20 +729,20 @@ module /-extension-is-embedding-special-case
    δ : (P → s A) → s A
    δ v p = v p p
 
-   η : (v : P → s A) → κ (s A) (δ v) ≡ v
+   η : (v : P → s A) → κ (s A) (δ v) ＝ v
    η v = dfunext feuu (λ p → dfunext feuu (λ q → ap (λ - → v - q) (i q p)))
 
-   ε : (u : Π A) → δ (κ (s A) u) ≡ u
+   ε : (u : Π A) → δ (κ (s A) u) ＝ u
    ε u = refl
 
  γ : M → (P → 𝓤 ̇ )
  γ (X , i) = r X
 
- φγ : (m : M) → φ (γ m) ≡ m
- φγ (X , i) = to-Σ-≡ (eqtoid ua (P → X) X (≃-sym (κ X , i)) ,
+ φγ : (m : M) → φ (γ m) ＝ m
+ φγ (X , i) = to-Σ-＝ (eqtoid ua (P → X) X (≃-sym (κ X , i)) ,
                       being-equiv-is-prop fe (κ X) _ i)
 
- γφ : (A : P → 𝓤 ̇ ) → γ (φ A) ≡ A
+ γφ : (A : P → 𝓤 ̇ ) → γ (φ A) ＝ A
  γφ = rs
 
  φ-is-equiv : is-equiv φ
@@ -757,7 +757,7 @@ module /-extension-is-embedding-special-case
  ψ-is-embedding : is-embedding ψ
  ψ-is-embedding = pr₁-is-embedding (λ X → being-equiv-is-prop fe (κ X))
 
- s-is-comp : s ≡ ψ ∘ φ
+ s-is-comp : s ＝ ψ ∘ φ
  s-is-comp = refl
 
  s-is-embedding : is-embedding s
@@ -785,10 +785,10 @@ module ∖-extension-is-embedding-special-case
  r :  𝓤 ̇ → (P → 𝓤 ̇ )
  r X p = X
 
- rs : ∀ A → r (s A) ≡ A
+ rs : ∀ A → r (s A) ＝ A
  rs A = dfunext fe' (λ p → eqtoid ua (Σ A) (A p) (prop-indexed-sum i p))
 
- sr : ∀ X → s (r X) ≡ P × X
+ sr : ∀ X → s (r X) ＝ P × X
  sr X = refl
 
  κ : (X : 𝓤 ̇ ) → s (r X) → X
@@ -803,20 +803,20 @@ module ∖-extension-is-embedding-special-case
    δ : s A → P × s A
    δ (p , a) = p , p , a
 
-   η : (σ : s A) → κ (s A) (δ σ) ≡ σ
+   η : (σ : s A) → κ (s A) (δ σ) ＝ σ
    η σ = refl
 
-   ε : (τ : P × s A) → δ (κ (s A) τ) ≡ τ
-   ε (p , q , a) = to-×-≡ (i q p) refl
+   ε : (τ : P × s A) → δ (κ (s A) τ) ＝ τ
+   ε (p , q , a) = to-×-＝ (i q p) refl
 
  γ : C → (P → 𝓤 ̇ )
  γ (X , i) = r X
 
- φγ : (c : C) → φ (γ c) ≡ c
- φγ (X , i) = to-Σ-≡ (eqtoid ua (P × X) X (κ X , i) ,
+ φγ : (c : C) → φ (γ c) ＝ c
+ φγ (X , i) = to-Σ-＝ (eqtoid ua (P × X) X (κ X , i) ,
                      (being-equiv-is-prop fe (κ X) _ i))
 
- γφ : (A : P → 𝓤 ̇ ) → γ (φ A) ≡ A
+ γφ : (A : P → 𝓤 ̇ ) → γ (φ A) ＝ A
  γφ = rs
 
  φ-is-equiv : is-equiv φ
@@ -831,7 +831,7 @@ module ∖-extension-is-embedding-special-case
  ψ-is-embedding : is-embedding ψ
  ψ-is-embedding = pr₁-is-embedding (λ X → being-equiv-is-prop fe (κ X))
 
- s-is-comp : s ≡ ψ ∘ φ
+ s-is-comp : s ＝ ψ ∘ φ
  s-is-comp = refl
 
  s-is-embedding : is-embedding s
@@ -865,10 +865,10 @@ module /-extension-is-embedding
  r : (Y → 𝓤 ̇ ) → (X → 𝓤 ̇ )
  r g = g ∘ j
 
- rs : ∀ f → r (s f) ≡ f
+ rs : ∀ f → r (s f) ＝ f
  rs = Π-extension-is-extension' ua fe' j i
 
- sr : ∀ g → s (r g) ≡ (g ∘ j) / j
+ sr : ∀ g → s (r g) ＝ (g ∘ j) / j
  sr g = refl
 
  κ : (g : Y → 𝓤 ̇ ) → g ≾ s (r g)
@@ -886,33 +886,33 @@ module /-extension-is-embedding
      δ : (((f / j) ∘ j) / j) y → (f / j) y
      δ C (x , p) = C (x , p) (x , refl)
 
-     η : (C : ((f / j ∘ j) / j) y) → κ (s f) y (δ C) ≡ C
+     η : (C : ((f / j ∘ j) / j) y) → κ (s f) y (δ C) ＝ C
      η C = dfunext feuu g
       where
-       g : (w : fiber j y) → κ (s f) y (δ C) w ≡ C w
+       g : (w : fiber j y) → κ (s f) y (δ C) w ＝ C w
        g (x , refl) = dfunext feuu h
         where
-         h : (t : fiber j (j x)) → C t (pr₁ t , refl) ≡ C (x , refl) t
-         h (x' , p') = transport (λ - → C - (pr₁ - , refl) ≡ C (x , refl) -) q refl
+         h : (t : fiber j (j x)) → C t (pr₁ t , refl) ＝ C (x , refl) t
+         h (x' , p') = transport (λ - → C - (pr₁ - , refl) ＝ C (x , refl) -) q refl
           where
-           q : (x , refl) ≡ (x' , p')
+           q : (x , refl) ＝ (x' , p')
            q = i (j x) (x , refl) (x' , p')
 
-     ε : (a : (f / j) y) → δ (κ (s f) y a) ≡ a
+     ε : (a : (f / j) y) → δ (κ (s f) y a) ＝ a
      ε a = dfunext feuu g
       where
-       g : (w : fiber j y) → δ (κ (s f) y a) w ≡ a w
+       g : (w : fiber j y) → δ (κ (s f) y a) w ＝ a w
        g (x , refl) = refl
 
  γ : M → (X → 𝓤 ̇ )
  γ (g , e) = r g
 
- φγ : ∀ m → φ (γ m) ≡ m
- φγ (g , e) = to-Σ-≡
+ φγ : ∀ m → φ (γ m) ＝ m
+ φγ (g , e) = to-Σ-＝
                (dfunext fe' (λ y → eqtoid ua (s (r g) y) (g y) (≃-sym (κ g y , e y))) ,
                 Π-is-prop feuu (λ y → being-equiv-is-prop'' feuu (κ g y)) _ e)
 
- γφ : ∀ f → γ (φ f) ≡ f
+ γφ : ∀ f → γ (φ f) ＝ f
  γφ = rs
 
  φ-is-equiv : is-equiv φ
@@ -927,7 +927,7 @@ module /-extension-is-embedding
  ψ-is-embedding : is-embedding ψ
  ψ-is-embedding = pr₁-is-embedding (λ g → Π-is-prop feuu (λ y → being-equiv-is-prop'' feuu (κ g y)))
 
- s-is-comp : s ≡ ψ ∘ φ
+ s-is-comp : s ＝ ψ ∘ φ
  s-is-comp = refl
 
  s-is-embedding : is-embedding s
@@ -961,10 +961,10 @@ module ∖-extension-is-embedding
  r : (Y → 𝓤 ̇ ) → (X → 𝓤 ̇ )
  r g = g ∘ j
 
- rs : ∀ f → r (s f) ≡ f
+ rs : ∀ f → r (s f) ＝ f
  rs = Σ-extension-is-extension' ua fe' j i
 
- sr : ∀ g → s (r g) ≡ (g ∘ j) ∖ j
+ sr : ∀ g → s (r g) ＝ (g ∘ j) ∖ j
  sr g = refl
 
  κ : (g : Y → 𝓤 ̇ ) → s (r g) ≾ g
@@ -983,35 +983,35 @@ module ∖-extension-is-embedding
        → Σ t ꞉ fiber j y , Σ (x , _) ꞉ fiber j (j (pr₁ t)), f x
      δ ((x , p) , C) = (x , p) , (x , refl) , C
 
-     η : (σ : s f y) → κ (s f) y (δ σ) ≡ σ
+     η : (σ : s f y) → κ (s f) y (δ σ) ＝ σ
      η ((x , refl) , C) = refl
 
-     ε : (τ : Σ (λ w → r (s f) (pr₁ w))) → δ (κ (s f) y τ) ≡ τ
+     ε : (τ : Σ (λ w → r (s f) (pr₁ w))) → δ (κ (s f) y τ) ＝ τ
      ε ((x , refl) , (x' , p') , C) = t x x' (pa x' x p') p' C (appa x x' p')
       where
-        t : (x x' : X) (u : x' ≡ x) (p : j x' ≡ j x) (C : f x') → (ap j u ≡ p) →
+        t : (x x' : X) (u : x' ＝ x) (p : j x' ＝ j x) (C : f x') → (ap j u ＝ p) →
             ((x' , p)    , (x' , refl) , C)
-          ≡ (((x  , refl) , (x' , p)    , C) ∶ (Σ (x , _) ꞉  fiber j (j x) , r (s f) x))
+          ＝ (((x  , refl) , (x' , p)    , C) ∶ (Σ (x , _) ꞉  fiber j (j x) , r (s f) x))
         t x .x refl p C refl = refl
 
         ej' : ∀ x x' → qinv (ap j {x} {x'})
         ej' x x' = equivs-are-qinvs (ap j) (embedding-embedding' j i x x')
 
-        pa : ∀ x x' → j x ≡ j x' → x ≡ x'
+        pa : ∀ x x' → j x ＝ j x' → x ＝ x'
         pa x x' = pr₁ (ej' x x')
 
-        appa : ∀ x x' p' → ap j (pa x' x p') ≡ p'
+        appa : ∀ x x' p' → ap j (pa x' x p') ＝ p'
         appa x x' = pr₂ (pr₂ (ej' x' x))
 
  γ : M → (X → 𝓤 ̇ )
  γ (g , e) = r g
 
- φγ : ∀ m → φ (γ m) ≡ m
- φγ (g , e) = to-Σ-≡
+ φγ : ∀ m → φ (γ m) ＝ m
+ φγ (g , e) = to-Σ-＝
                (dfunext fe' (λ y → eqtoid ua (s (r g) y) (g y) (κ g y , e y)) ,
                 Π-is-prop feuu (λ y → being-equiv-is-prop'' feuu (κ g y)) _ e)
 
- γφ : ∀ f → γ (φ f) ≡ f
+ γφ : ∀ f → γ (φ f) ＝ f
  γφ = rs
 
  φ-is-equiv : is-equiv φ
@@ -1027,7 +1027,7 @@ module ∖-extension-is-embedding
  ψ-is-embedding = pr₁-is-embedding
                      (λ g → Π-is-prop feuu (λ y → being-equiv-is-prop'' feuu (κ g y)))
 
- s-is-comp : s ≡ ψ ∘ φ
+ s-is-comp : s ＝ ψ ∘ φ
  s-is-comp = refl
 
  s-is-embedding : is-embedding s
@@ -1044,7 +1044,7 @@ algebraic flabbiness.
 \begin{code}
 
 aflabby : 𝓦 ̇ → (𝓤 : Universe) → 𝓦 ⊔ 𝓤 ⁺ ̇
-aflabby D 𝓤 = (P : 𝓤 ̇ ) → is-prop P → (f : P → D) → Σ d ꞉ D , ((p : P) → d ≡ f p)
+aflabby D 𝓤 = (P : 𝓤 ̇ ) → is-prop P → (f : P → D) → Σ d ꞉ D , ((p : P) → d ＝ f p)
 
 aflabby-pointed : (D : 𝓦 ̇ ) → aflabby D 𝓤 → D
 aflabby-pointed D φ = pr₁ (φ 𝟘 𝟘-is-prop unique-from-𝟘)
@@ -1061,10 +1061,10 @@ aflabby-types-are-ainjective D φ {X} {Y} j e f = f' , p
   f' : Y → D
   f' y = pr₁ (φ (fiber j y) (e y) (f ∘ pr₁))
 
-  p : (x : X) → f' (j x) ≡ f x
+  p : (x : X) → f' (j x) ＝ f x
   p x = q (x , refl)
    where
-    q : (w : fiber j (j x)) → f' (j x) ≡ f (pr₁ w)
+    q : (w : fiber j (j x)) → f' (j x) ＝ f (pr₁ w)
     q = pr₂ (φ (fiber j (j x)) (e (j x)) (f ∘ pr₁))
 
 \end{code}
@@ -1084,8 +1084,8 @@ whereas the injectivity of the universe requires full univalence.
   Q = (p : P) → f p holds
   j : is-prop Q
   j = Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥)) (λ p → holds-is-prop (f p))
-  c : (p : P) → Q , j ≡ f p
-  c p = to-Σ-≡ (t , being-prop-is-prop (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)) _ _)
+  c : (p : P) → Q , j ＝ f p
+  c p = to-Σ-＝ (t , being-prop-is-prop (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)) _ _)
    where
       g : Q → f p holds
       g q = q p
@@ -1093,7 +1093,7 @@ whereas the injectivity of the universe requires full univalence.
       h : f p holds → Q
       h r p' = transport (λ - → f - holds) (i p p') r
 
-      t : Q ≡ f p holds
+      t : Q ＝ f p holds
       t = pe j (holds-is-prop (f p)) g h
 
 Ω-ainjective : propext (𝓤 ⊔ 𝓥) → ainjective-type (Ω (𝓤 ⊔ 𝓥)) 𝓤 𝓥
@@ -1111,7 +1111,7 @@ The injectivity of all types is logically equivalent to excluded middle
 EM-gives-pointed-types-aflabby : (D : 𝓦 ̇ ) → EM 𝓤 → D → aflabby D 𝓤
 EM-gives-pointed-types-aflabby {𝓦} {𝓤} D em d P i f = h (em P i)
  where
-  h : P + ¬ P → Σ d ꞉ D , ((p : P) → d ≡ f p)
+  h : P + ¬ P → Σ d ꞉ D , ((p : P) → d ＝ f p)
   h (inl p) = f p , (λ q → ap f (i p q))
   h (inr n) = d , (λ p → 𝟘-elim (n p))
 
@@ -1127,16 +1127,16 @@ aflabby-EM-lemma {𝓦} P i φ = γ
   d : D
   d = pr₁ (φ (P + ¬ P) (decidability-of-prop-is-prop (fe 𝓦 𝓤₀) i) f)
 
-  κ : (z : P + ¬ P) → d ≡ f z
+  κ : (z : P + ¬ P) → d ＝ f z
   κ = pr₂ (φ (P + ¬ P) (decidability-of-prop-is-prop (fe 𝓦 𝓤₀) i) f)
 
-  a : (p : P) → d ≡ inl (inl p)
+  a : (p : P) → d ＝ inl (inl p)
   a p = κ (inl p)
 
-  b : (n : ¬ P) → d ≡ inl (inr n)
+  b : (n : ¬ P) → d ＝ inl (inr n)
   b n = κ (inr n)
 
-  δ : (d' : D) → d ≡ d' → P + ¬ P
+  δ : (d' : D) → d ＝ d' → P + ¬ P
   δ (inl (inl p)) r = inl p
   δ (inl (inr n)) r = inr n
   δ (inr ⋆)       r = 𝟘-elim (m n)
@@ -1218,12 +1218,12 @@ aflabbiness-resizing D 𝓤 𝓥 R φ P i f = d , h
   d : D
   d = pr₁ (φ Q j (f ∘ β))
 
-  k : (q : Q) → d ≡ f (β q)
+  k : (q : Q) → d ＝ f (β q)
   k = pr₂ (φ Q j (f ∘ β))
 
-  h : (p : P) → d ≡ f p
-  h p = d           ≡⟨ k (α p) ⟩
-        f (β (α p)) ≡⟨ ap f (i (β (α p)) p) ⟩
+  h : (p : P) → d ＝ f p
+  h p = d           ＝⟨ k (α p) ⟩
+        f (β (α p)) ＝⟨ ap f (i (β (α p)) p) ⟩
         f p         ∎
 
 \end{code}
@@ -1329,7 +1329,7 @@ free 𝓛-algebras are injective.
                → {A : 𝓥 ̇ } → 𝓛-alg A → aflabby A 𝓤
  𝓛-alg-aflabby pe fe fe' (∐ , κ , ι) P i f = ∐ i f , γ
   where
-   γ : (p : P) → ∐ i f ≡ f p
+   γ : (p : P) → ∐ i f ＝ f p
    γ p = 𝓛-alg-Law₀-gives₀' pe fe fe' ∐ κ P i f p
 
  𝓛-alg-ainjective : propext 𝓤

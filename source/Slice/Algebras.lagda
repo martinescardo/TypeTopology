@@ -41,11 +41,11 @@ joinop : 𝓤 ̇ → 𝓣 ⁺ ⊔ 𝓤 ̇
 joinop X = {I : 𝓣 ̇ } → (I → X) → X
 
 𝓕-alg-Law₀ : {X : 𝓤 ̇ } → joinop X → 𝓤 ̇
-𝓕-alg-Law₀ {𝓤} {X} ∐ = (x : X) → ∐ (λ (i : 𝟙) → x) ≡ x
+𝓕-alg-Law₀ {𝓤} {X} ∐ = (x : X) → ∐ (λ (i : 𝟙) → x) ＝ x
 
 𝓕-alg-Law₁ : {X : 𝓤 ̇ } → joinop X → 𝓣 ⁺ ⊔ 𝓤 ̇
 𝓕-alg-Law₁ {𝓤} {X} ∐ = (I : 𝓣 ̇ ) (J : I → 𝓣 ̇ ) (f : Σ J → X)
-                     → ∐ f ≡ ∐ (λ i → ∐ (λ j → f (i , j)))
+                     → ∐ f ＝ ∐ (λ i → ∐ (λ j → f (i , j)))
 
 
 𝓕-alg : 𝓤 ̇ → 𝓣 ⁺ ⊔ 𝓤 ̇
@@ -71,7 +71,7 @@ law₁ (∐ , κ , ι) = ι
                     (h : X → Y)
 
                   → (h ∘ s ∼ t ∘ 𝓕̇ h)
-                  ≃ ({I : 𝓣 ̇ } (f : I → X) → h (⋁ s f) ≡ ⋁ t (h ∘ f))
+                  ≃ ({I : 𝓣 ̇ } (f : I → X) → h (⋁ s f) ＝ ⋁ t (h ∘ f))
 𝓕-morphism-charac s t h = qinveq (λ H {I} f → H (I , f))
                                  ((λ {π (I , f) → π {I} f}) ,
                                   (λ _ → refl) ,
@@ -102,10 +102,10 @@ law₁ (∐ , κ , ι) = ι
  where
   ∐· : {I : 𝓣 ̇ } → (I → Π A) → Π A
   ∐· f x = ∐ (α x) (λ i → f i x)
-  l₀ : (φ : Π A) → ∐· (λ i → φ) ≡ φ
+  l₀ : (φ : Π A) → ∐· (λ i → φ) ＝ φ
   l₀ φ = dfunext fe (λ x → law₀ (α x) (φ x))
   l₁ : (I : 𝓣 ̇ ) (J : I → 𝓣 ̇ ) (f : Σ J → Π A)
-    → ∐· f ≡ ∐· (λ i → ∐· (λ j → f (i , j)))
+    → ∐· f ＝ ∐· (λ i → ∐· (λ j → f (i , j)))
   l₁ I J f = dfunext fe (λ x → law₁ (α x) I J (λ σ → f σ x))
 
 universe-is-algebra-Σ : is-univalent 𝓣 → 𝓕-alg (𝓣 ̇ )
@@ -113,10 +113,10 @@ universe-is-algebra-Σ ua = sum , k , ι
  where
   sum : {I : 𝓣 ̇ } → (I → 𝓣 ̇ ) → 𝓣 ̇
   sum = Σ
-  k : (X : 𝓣 ̇ ) → Σ (λ i → X) ≡ X
+  k : (X : 𝓣 ̇ ) → Σ (λ i → X) ＝ X
   k X = eqtoid ua (𝟙 × X) X 𝟙-lneutral
   ι : (I : 𝓣 ̇ ) (J : I → 𝓣 ̇ ) (f : Σ J → 𝓣 ̇ )
-    → Σ f ≡ Σ (λ i → Σ (λ j → f (i , j)))
+    → Σ f ＝ Σ (λ i → Σ (λ j → f (i , j)))
   ι I J f = eqtoid ua _ _ Σ-assoc
 
 universe-is-algebra-Π : is-univalent 𝓣 → 𝓕-alg (𝓣 ̇ )
@@ -126,10 +126,10 @@ universe-is-algebra-Π ua = prod , k , ι
   fe = univalence-gives-funext ua
   prod : {I : 𝓣 ̇ } → (I → 𝓣 ̇ ) → 𝓣 ̇
   prod = Π
-  k : (X : 𝓣 ̇ ) → Π (λ i → X) ≡ X
+  k : (X : 𝓣 ̇ ) → Π (λ i → X) ＝ X
   k X = eqtoid ua (𝟙 → X) X (≃-sym (𝟙→ (univalence-gives-funext ua)))
   ι : (I : 𝓣 ̇ ) (J : I → 𝓣 ̇ ) (f : Σ J → 𝓣 ̇ )
-    → Π f ≡ Π (λ i → Π (λ j → f (i , j)))
+    → Π f ＝ Π (λ i → Π (λ j → f (i , j)))
   ι I J f = eqtoid ua _ _ (curry-uncurry' fe fe)
 
 \end{code}

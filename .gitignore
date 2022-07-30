@@ -21,3 +21,5 @@ c
 b
 e
 source/html/*
+*.DS_Store
+#*

@@ -52,7 +52,7 @@ module poset-reflection
  ≋ = _≈_ , ≈-is-equiv-rel
 
  private
-  ≲-congruence : {x y x' y' : X} → x ≈ x' → y ≈ y' → x ≲Ω y ≡ x' ≲Ω y'
+  ≲-congruence : {x y x' y' : X} → x ≈ x' → y ≈ y' → x ≲Ω y ＝ x' ≲Ω y'
   ≲-congruence {x} {y} {x'} {y'} (k , l) (u , v) =
    Ω-extensionality fe pe
     (λ m → ≲-is-transitive x' x y' l
@@ -110,7 +110,7 @@ module poset-reflection
                                    (η-reflects-order k)
                                    (η-reflects-order l)))
 
- ≤-is-antisymmetric : (x' y' : X / ≋) → x' ≤ y' → y' ≤ x' → x' ≡ y'
+ ≤-is-antisymmetric : (x' y' : X / ≋) → x' ≤ y' → y' ≤ x' → x' ＝ y'
  ≤-is-antisymmetric =
   /-induction₂ ≋ (λ x' q → Π₂-is-prop fe (λ _ _ → quotient-is-set ≋))
                  (λ x y k l → η/-identifies-related-points ≋
@@ -130,7 +130,7 @@ it is convenient to assume it (for now) anyway.
   → ((p q : Q) → is-prop (p ⊑ q))
   → ((q : Q) → q ⊑ q)
   → ((p q r : Q) → p ⊑ q → q ⊑ r → p ⊑ r)
-  → ((p q : Q) → p ⊑ q → q ⊑ p → p ≡ q)
+  → ((p q : Q) → p ⊑ q → q ⊑ p → p ＝ q)
   → (f : X → Q)
   → ((x y : X) → x ≲ y → f x ⊑ f y)
   → ∃! f̃ ꞉ (X / ≋ → Q) , ((x' y' : X / ≋) → x' ≤ y' → f̃ x' ⊑ f̃ y')
@@ -139,7 +139,7 @@ it is convenient to assume it (for now) anyway.
                                                ⊑-antisym f f-mon =
   (f̃ , f̃-mon , f̃-eq) , σ
    where
-    μ : ∃! f̃ ꞉ (X / ≋ → Q), f̃ ∘ η ≡ f
+    μ : ∃! f̃ ꞉ (X / ≋ → Q), f̃ ∘ η ＝ f
     μ = universal-property/ ≋
          Q-is-set f (λ {x} {y} (k , l) → ⊑-antisym (f x) (f y)
                                           (f-mon x y k) (f-mon y x l))
@@ -158,14 +158,14 @@ it is convenient to assume it (for now) anyway.
                 → f̃ ∼ g
     f̃-is-unique g g-mon g-eq = happly e
      where
-      e : f̃ ≡ g
+      e : f̃ ＝ g
       e = ap pr₁ (∃!-uniqueness' μ (g , (dfunext fe g-eq)))
     σ : is-central (Σ g ꞉ (X / ≋ → Q)
                         , ((x' y' : X / ≋) → x' ≤ y' → g x' ⊑ g y')
                         × g ∘ η ∼ f)
                    (f̃ , f̃-mon , f̃-eq)
     σ (g , g-mon , g-eq) =
-     to-subtype-≡ (λ h → ×-is-prop
+     to-subtype-＝ (λ h → ×-is-prop
                           (Π₃-is-prop fe (λ x' y' _ → ⊑-prop (h x') (h y')))
                           (Π-is-prop fe (λ _ → Q-is-set)))
                   (dfunext fe (f̃-is-unique g g-mon g-eq))

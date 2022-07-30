@@ -55,9 +55,9 @@ P ⊑ Q = P holds → Q holds
 ⊑-is-transitive : (P Q R : Ω 𝓤) → P ⊑ Q → Q ⊑ R → P ⊑ R
 ⊑-is-transitive P Q R f g p = g (f p)
 
-⊑-is-antisymmetric : (P Q : Ω 𝓤) → P ⊑ Q → Q ⊑ P → P ≡ Q
+⊑-is-antisymmetric : (P Q : Ω 𝓤) → P ⊑ Q → Q ⊑ P → P ＝ Q
 ⊑-is-antisymmetric P Q f g =
- to-subtype-≡ (λ _ → being-prop-is-prop fe)
+ to-subtype-＝ (λ _ → being-prop-is-prop fe)
               (pe (holds-is-prop P) (holds-is-prop Q) f g)
 
 Ω-DCPO : DCPO {𝓤 ⁺} {𝓤}
@@ -136,7 +136,7 @@ compact-if-in-image-of-κ : (P : Ω 𝓤) → P ∈image κ → is-compact Ω-DC
 compact-if-in-image-of-κ P P-in-image-of-κ =
  ∥∥-rec (being-compact-is-prop Ω-DCPO P) γ P-in-image-of-κ
   where
-   γ : (Σ b ꞉ Bool , κ b ≡ P) → is-compact Ω-DCPO P
+   γ : (Σ b ꞉ Bool , κ b ＝ P) → is-compact Ω-DCPO P
    γ (inl ⋆ , refl) = ⊥-is-compact Ω-DCPO⊥
    γ (inr ⋆ , refl) = ⊤-is-compact
 
@@ -154,7 +154,7 @@ in-image-of-κ-if-compact P P-cpt = ∥∥-functor goal claim
   P-below-∐α p = ∣ inr p , ⋆ ∣
   claim : ∃ i ꞉ I , P ⊑ α i
   claim = P-cpt I α δ P-below-∐α
-  goal : (Σ i ꞉ I , P ⊑ α i) → Σ b ꞉ Bool , κ b ≡ P
+  goal : (Σ i ꞉ I , P ⊑ α i) → Σ b ꞉ Bool , κ b ＝ P
   goal (inl ⋆ , u) = (inl ⋆ , ⊑-is-antisymmetric (⊥ Ω-DCPO⊥) P
                                (⊥-is-least Ω-DCPO⊥ P) u)
   goal (inr p , u) = (inr ⋆ , ⊑-is-antisymmetric ⊤ P (λ _ → p) u)
@@ -199,20 +199,20 @@ compact-iff-decidable P = ⦅⇒⦆ , ⦅⇐⦆
   ⦅⇒⦆ c = ∥∥-rec (decidability-of-prop-is-prop fe (holds-is-prop P))
                  γ (in-image-of-κ-if-compact P c)
    where
-    γ : (Σ b ꞉ Bool , κ b ≡ P) → decidable (P holds)
+    γ : (Σ b ꞉ Bool , κ b ＝ P) → decidable (P holds)
     γ (inl ⋆ , refl) = 𝟘-decidable
     γ (inr ⋆ , refl) = 𝟙-decidable
   ⦅⇐⦆ : decidable (P holds) → is-compact Ω-DCPO P
   ⦅⇐⦆ (inl p) = transport (is-compact Ω-DCPO) e ⊤-is-compact
    where
-    e : ⊤ ≡ P
-    e = to-subtype-≡ (λ _ → being-prop-is-prop fe)
+    e : ⊤ ＝ P
+    e = to-subtype-＝ (λ _ → being-prop-is-prop fe)
                      (pe 𝟙-is-prop (holds-is-prop P)
                          (λ _ → p) (λ _ → ⋆))
   ⦅⇐⦆ (inr q) = transport (is-compact Ω-DCPO) e (⊥-is-compact Ω-DCPO⊥)
    where
-    e : ⊥ Ω-DCPO⊥ ≡ P
-    e = to-subtype-≡ (λ _ → being-prop-is-prop fe)
+    e : ⊥ Ω-DCPO⊥ ＝ P
+    e = to-subtype-＝ (λ _ → being-prop-is-prop fe)
                      (pe 𝟘-is-prop (holds-is-prop P)
                          𝟘-elim (⌜ one-𝟘-only ⌝ ∘ q))
 

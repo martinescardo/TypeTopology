@@ -101,17 +101,17 @@ module _
  ∪-enum'-is-surjection A B {n} {m} e f σ τ (x , p) = ∥∥-rec ∥∥-is-prop γ p
    where
     γ : (x ∈ A + x ∈ B)
-      → ∃ c ꞉ (Fin n + Fin m) , ∪-enum' A B e f c ≡ (x , p)
+      → ∃ c ꞉ (Fin n + Fin m) , ∪-enum' A B e f c ＝ (x , p)
     γ (inl a) = ∥∥-functor γ₁ (σ (x , a))
      where
-      γ₁ : (Σ k ꞉ Fin n , e k ≡ (x , a))
-         → Σ c ꞉ (Fin n + Fin m) , ∪-enum' A B e f c ≡ (x , p)
-      γ₁ (k , p) = inl k , to-subtype-≡ (∈-is-prop (A ∪ B)) (ap pr₁ p)
+      γ₁ : (Σ k ꞉ Fin n , e k ＝ (x , a))
+         → Σ c ꞉ (Fin n + Fin m) , ∪-enum' A B e f c ＝ (x , p)
+      γ₁ (k , p) = inl k , to-subtype-＝ (∈-is-prop (A ∪ B)) (ap pr₁ p)
     γ (inr b) = ∥∥-functor γ₂ (τ (x , b))
      where
-      γ₂ : (Σ k ꞉ Fin m , f k ≡ (x , b))
-         → Σ c ꞉ (Fin n + Fin m) , ∪-enum' A B e f c ≡ (x , p)
-      γ₂ (k , p) = inr k , to-subtype-≡ (∈-is-prop (A ∪ B)) (ap pr₁ p)
+      γ₂ : (Σ k ꞉ Fin m , f k ＝ (x , b))
+         → Σ c ꞉ (Fin n + Fin m) , ∪-enum' A B e f c ＝ (x , p)
+      γ₂ (k , p) = inr k , to-subtype-＝ (∈-is-prop (A ∪ B)) (ap pr₁ p)
 
  ∪-enum-is-surjection : (A B : 𝓟 X) {n m : ℕ}
                         (e : Fin n → 𝕋 A)
@@ -215,16 +215,16 @@ module _
          (pe : propext 𝓤)
         where
 
-   ⊆[𝓚]-is-antisymmetric : (A B : 𝓚 X) → A ⊆[𝓚] B → B ⊆[𝓚] A → A ≡ B
+   ⊆[𝓚]-is-antisymmetric : (A B : 𝓚 X) → A ⊆[𝓚] B → B ⊆[𝓚] A → A ＝ B
    ⊆[𝓚]-is-antisymmetric A B s t =
-    to-subtype-≡ (λ _ → being-Kuratowski-finite-is-prop)
+    to-subtype-＝ (λ _ → being-Kuratowski-finite-is-prop)
                  (subset-extensionality pe fe s t)
 
    𝓚-is-set : is-set (𝓚 X)
    𝓚-is-set = subtypes-of-sets-are-sets ⟨_⟩ s (powersets-are-sets fe pe)
      where
       s : left-cancellable ⟨_⟩
-      s e = to-subtype-≡ (λ _ → being-Kuratowski-finite-is-prop) e
+      s e = to-subtype-＝ (λ _ → being-Kuratowski-finite-is-prop) e
 
 \end{code}
 
@@ -275,18 +275,18 @@ proving a general induction principle for Kuratowski finite subsets.
      {n : ℕ}
      {e : Fin n → 𝕋 ⟨ A ⟩}
      (σ : is-surjection e)
-   → A ≡ ∨ⁿ (❴_❵[𝓚] ∘ 𝕋-to-carrier ⟨ A ⟩ ∘ e)
+   → A ＝ ∨ⁿ (❴_❵[𝓚] ∘ 𝕋-to-carrier ⟨ A ⟩ ∘ e)
   Kuratowski-finite-subset-expressed-as-finite-join A {n} {e} σ = γ
    where
     ε : Fin n → 𝓚 X
     ε = ❴_❵[𝓚] ∘ 𝕋-to-carrier ⟨ A ⟩ ∘ e
-    γ : A ≡ ∨ⁿ ε
+    γ : A ＝ ∨ⁿ ε
     γ = ⊆[𝓚]-is-antisymmetric fe pe A (∨ⁿ ε) u v
      where
       u : A ⊆[𝓚] ∨ⁿ ε
       u x a = ∥∥-rec (∈-is-prop ⟨ ∨ⁿ ε ⟩ x) μ (σ (x , a))
        where
-        μ : (Σ k ꞉ Fin n , e k ≡ (x , a))
+        μ : (Σ k ꞉ Fin n , e k ＝ (x , a))
           → x ∈ ⟨ ∨ⁿ ε ⟩
         μ (k , refl) = ∨ⁿ-is-upperbound ε k x refl
       v : ∨ⁿ ε ⊆[𝓚] A
@@ -309,7 +309,7 @@ proving a general induction principle for Kuratowski finite subsets.
       γ : (Σ n ꞉ ℕ , Fin n ↠ 𝕋 A) → Q 𝔸
       γ (n , e , e-surj) = transport Q ϕ (ψ n (𝕋-to-carrier A ∘ e))
        where
-        ϕ : ∨ⁿ (❴_❵[𝓚] ∘ 𝕋-to-carrier A ∘ e) ≡ 𝔸
+        ϕ : ∨ⁿ (❴_❵[𝓚] ∘ 𝕋-to-carrier A ∘ e) ＝ 𝔸
         ϕ = (Kuratowski-finite-subset-expressed-as-finite-join 𝔸 e-surj) ⁻¹
         ψ : (m : ℕ) (f : Fin m → X) → Q (∨ⁿ (❴_❵[𝓚] ∘ f))
         ψ zero     f = Q-empty
@@ -344,15 +344,15 @@ module canonical-map-from-lists-to-subsets
  κ-of-concatenated-lists-is-union : propext 𝓤
                                   → funext 𝓤 (𝓤 ⁺)
                                   → (l l' : List X)
-                                  → κ (l ++ l') ≡ κ l ∪ κ l'
+                                  → κ (l ++ l') ＝ κ l ∪ κ l'
  κ-of-concatenated-lists-is-union pe fe [] l' =
   ∅-left-neutral-for-∪ pe fe (κ l') ⁻¹
  κ-of-concatenated-lists-is-union pe fe (x ∷ l) l' =
-  ❴ x ❵ ∪ κ (l ++ l')  ≡⟨ ap (❴ x ❵ ∪_) IH                      ⟩
-  ❴ x ❵ ∪ (κ l ∪ κ l') ≡⟨ (∪-assoc pe fe ❴ x ❵ (κ l) (κ l')) ⁻¹ ⟩
+  ❴ x ❵ ∪ κ (l ++ l')  ＝⟨ ap (❴ x ❵ ∪_) IH                      ⟩
+  ❴ x ❵ ∪ (κ l ∪ κ l') ＝⟨ (∪-assoc pe fe ❴ x ❵ (κ l) (κ l')) ⁻¹ ⟩
   (❴ x ❵ ∪ κ l) ∪ κ l' ∎
    where
-    IH : κ (l ++ l') ≡ (κ l ∪ κ l')
+    IH : κ (l ++ l') ＝ (κ l ∪ κ l')
     IH = κ-of-concatenated-lists-is-union pe fe l l'
 
  κ-of-list-is-Kuratowski-finite-subset : (l : List X)
@@ -369,7 +369,7 @@ module canonical-map-from-lists-to-subsets
  Kuratowski-finite-subset-if-in-image-of-κ A =
   ∥∥-rec being-Kuratowski-finite-is-prop γ
    where
-    γ : (Σ l ꞉ List X , κ l ≡ A)
+    γ : (Σ l ꞉ List X , κ l ＝ A)
       → is-Kuratowski-finite-subset A
     γ (l , refl) = κ-of-list-is-Kuratowski-finite-subset l
 
@@ -408,13 +408,13 @@ during an Agda Club meeting).
    Q-unions : (A B : 𝓚 X) → Q A → Q B → Q (A ∪[𝓚] B)
    Q-unions A B qᴬ qᴮ = ∥∥-functor₂ γ qᴬ qᴮ
     where
-     γ : (Σ lᴬ ꞉ List X , κ lᴬ ≡ ⟨ A ⟩)
-       → (Σ lᴮ ꞉ List X , κ lᴮ ≡ ⟨ B ⟩)
-       → (Σ l  ꞉ List X , κ l  ≡ ⟨ A ∪[𝓚] B ⟩)
+     γ : (Σ lᴬ ꞉ List X , κ lᴬ ＝ ⟨ A ⟩)
+       → (Σ lᴮ ꞉ List X , κ lᴮ ＝ ⟨ B ⟩)
+       → (Σ l  ꞉ List X , κ l  ＝ ⟨ A ∪[𝓚] B ⟩)
      γ (lᴬ , pᴬ) (lᴮ , pᴮ) = ((lᴬ ++ lᴮ) , p)
       where
-       p = κ (lᴬ ++ lᴮ)  ≡⟨ κ-of-concatenated-lists-is-union pe fe lᴬ lᴮ ⟩
-           κ lᴬ ∪ κ lᴮ   ≡⟨ ap₂ _∪_ pᴬ pᴮ ⟩
+       p = κ (lᴬ ++ lᴮ)  ＝⟨ κ-of-concatenated-lists-is-union pe fe lᴬ lᴮ ⟩
+           κ lᴬ ∪ κ lᴮ   ＝⟨ ap₂ _∪_ pᴬ pᴮ ⟩
            ⟨ A ⟩ ∪ ⟨ B ⟩ ∎
    Q-holds-everywhere : (A : 𝓚 X) → Q A
    Q-holds-everywhere = Kuratowski-finite-subset-induction pe fe X X-is-set

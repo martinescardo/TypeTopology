@@ -162,7 +162,7 @@ is if excluded middle holds.
    I : (n : ℕ) → ⟦ b n ⟧₀ ⊴ ⟦ b n ⟧₂
    I n = comparison₀₂ em (b n)
 
-   II : (n : ℕ) → extension (λ i → ⟦ b i ⟧₂) (ℕ-to-ℕ∞ n) ≡ ⟦ b n ⟧₂
+   II : (n : ℕ) → extension (λ i → ⟦ b i ⟧₂) (ℕ-to-ℕ∞ n) ＝ ⟦ b n ⟧₂
    II n = eqtoidₒ _ _ (↗-property (λ i → ⟦ b i ⟧₂) (embedding-ℕ-to-ℕ∞ fe') n)
 
    III : (n : ℕ) → ⟦ b n ⟧₀ ⊴ extension (λ i → ⟦ b i ⟧₂) (ℕ-to-ℕ∞ n)
@@ -184,7 +184,7 @@ is if excluded middle holds.
    I : (⟦ b ⟧₂ +ₒ 𝟙ₒ) ⊴ ([ ⟦ b ⟧₃ ] +ₒ 𝟙ₒ)
    I = succ-monotone em (⟦ b ⟧₂) [ ⟦ b ⟧₃ ] (comparison₂₃ em b)
 
-   II : [ ⟦ b ⟧₃ +ᵒ 𝟙ᵒ ] ≡ ([ ⟦ b ⟧₃ ] +ₒ 𝟙ₒ)
+   II : [ ⟦ b ⟧₃ +ᵒ 𝟙ᵒ ] ＝ ([ ⟦ b ⟧₃ ] +ₒ 𝟙ₒ)
    II = alternative-plus (⟦ b ⟧₃) 𝟙ᵒ
 
    III : (⟦ b ⟧₂ +ₒ 𝟙ₒ) ⊴ [ ⟦ b ⟧₃ +ᵒ 𝟙ᵒ ]

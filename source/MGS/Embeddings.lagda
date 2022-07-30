@@ -30,7 +30,7 @@ pr₂-embedding : (A : 𝓤 ̇ ) (X : 𝓥 ̇ )
 
 pr₂-embedding A X i x ((a , x) , refl x) ((b , x) , refl x) = p
  where
-  p : ((a , x) , refl x) ≡ ((b , x) , refl x)
+  p : ((a , x) , refl x) ＝ ((b , x) , refl x)
   p = ap (λ - → ((- , x) , refl x)) (i a b)
 
 pr₁-embedding : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
@@ -39,10 +39,10 @@ pr₁-embedding : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
 
 pr₁-embedding i x ((x , a) , refl x) ((x , a') , refl x) = γ
  where
-  p : a ≡ a'
+  p : a ＝ a'
   p = i x a a'
 
-  γ : (x , a) , refl x ≡ (x , a') , refl x
+  γ : (x , a) , refl x ＝ (x , a') , refl x
   γ = ap (λ - → (x , -) , refl x) p
 
 equivs-are-embeddings : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
@@ -72,7 +72,7 @@ id-is-embedding {𝓤} {X} = equivs-are-embeddings id (id-is-equiv X)
   γ : (z : Z) → A z → fiber (g ∘ f) z
   γ z ((_ , p) , x , refl _) = x , p
 
-  η : (z : Z) (t : fiber (g ∘ f) z) → γ z (φ z t) ≡ t
+  η : (z : Z) (t : fiber (g ∘ f) z) → γ z (φ z t) ＝ t
   η _ (x , refl _) = refl (x , refl ((g ∘ f) x))
 
   h : (z : Z) → is-subsingleton (fiber (g ∘ f) z)
@@ -84,10 +84,10 @@ embedding-lemma : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
 
 embedding-lemma f φ = γ
  where
-  γ : (y : codomain f) (u v : fiber f y) → u ≡ v
+  γ : (y : codomain f) (u v : fiber f y) → u ＝ v
   γ y (x , p) v = j (x , p) v
    where
-    q : fiber f (f x) ≡ fiber f y
+    q : fiber f (f x) ＝ fiber f y
     q = ap (fiber f) p
 
     i : is-singleton (fiber f y)
@@ -97,14 +97,14 @@ embedding-lemma f φ = γ
     j = singletons-are-subsingletons (fiber f y) i
 
 embedding-criterion : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                    → ((x x' : X) → (f x ≡ f x') ≃ (x ≡ x'))
+                    → ((x x' : X) → (f x ＝ f x') ≃ (x ＝ x'))
                     → is-embedding f
 
 embedding-criterion f e = embedding-lemma f b
  where
   X = domain f
 
-  a : (x : X) → (Σ x' ꞉ X , f x' ≡ f x) ≃ (Σ x' ꞉ X , x' ≡ x)
+  a : (x : X) → (Σ x' ꞉ X , f x' ＝ f x) ≃ (Σ x' ꞉ X , x' ＝ x)
   a x = Σ-cong (λ x' → e x' x)
 
   a' : (x : X) → fiber f (f x) ≃ singleton-type x
@@ -126,20 +126,20 @@ embedding-gives-ap-is-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
 
 embedding-gives-ap-is-equiv {𝓤} {𝓥} {X} f e = γ
  where
-  d : (x' : X) → (Σ x ꞉ X , f x' ≡ f x) ≃ (Σ x ꞉ X , f x ≡ f x')
+  d : (x' : X) → (Σ x ꞉ X , f x' ＝ f x) ≃ (Σ x ꞉ X , f x ＝ f x')
   d x' = Σ-cong (λ x → ⁻¹-≃ (f x') (f x))
 
-  s : (x' : X) → is-subsingleton (Σ x ꞉ X , f x' ≡ f x)
+  s : (x' : X) → is-subsingleton (Σ x ꞉ X , f x' ＝ f x)
   s x' = equiv-to-subsingleton (d x') (e (f x'))
 
   γ : (x x' : X) → is-equiv (ap f {x} {x'})
   γ x = singleton-equiv-lemma x (λ x' → ap f {x} {x'})
          (pointed-subsingletons-are-singletons
-           (Σ x' ꞉ X , f x ≡ f x') (x , (refl (f x))) (s x))
+           (Σ x' ꞉ X , f x ＝ f x') (x , (refl (f x))) (s x))
 
 embedding-criterion-converse : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                              → is-embedding f
-                             → ((x' x : X) → (f x' ≡ f x) ≃ (x' ≡ x))
+                             → ((x' x : X) → (f x' ＝ f x) ≃ (x' ＝ x))
 
 embedding-criterion-converse f e x' x = ≃-sym
                                          (ap f {x'} {x} ,
@@ -170,14 +170,14 @@ NatΠ-is-embedding : hfunext 𝓤 𝓥
 
 NatΠ-is-embedding v w {X} {A} τ i = embedding-criterion (NatΠ τ) γ
  where
-  γ : (f g : Π A) → (NatΠ τ f ≡ NatΠ τ g) ≃ (f ≡ g)
-  γ f g = (NatΠ τ f ≡ NatΠ τ g) ≃⟨ hfunext-≃ w (NatΠ τ f) (NatΠ τ g) ⟩
+  γ : (f g : Π A) → (NatΠ τ f ＝ NatΠ τ g) ≃ (f ＝ g)
+  γ f g = (NatΠ τ f ＝ NatΠ τ g) ≃⟨ hfunext-≃ w (NatΠ τ f) (NatΠ τ g) ⟩
           (NatΠ τ f ∼ NatΠ τ g) ≃⟨ b ⟩
           (f ∼ g)               ≃⟨ ≃-sym (hfunext-≃ v f g) ⟩
-          (f ≡ g)               ■
+          (f ＝ g)               ■
 
    where
-    a : (x : X) → (NatΠ τ f x ≡ NatΠ τ g x) ≃ (f x ≡ g x)
+    a : (x : X) → (NatΠ τ f x ＝ NatΠ τ g x) ≃ (f x ＝ g x)
     a x = embedding-criterion-converse (τ x) (i x) (f x) (g x)
 
     b : (NatΠ τ f ∼ NatΠ τ g) ≃ (f ∼ g)

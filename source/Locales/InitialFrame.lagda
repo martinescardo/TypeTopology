@@ -105,7 +105,7 @@ open propositional-truncations-exist pt
    iss = carrier-of-[ 𝟎F-poset ua ]-is-set
 
    dist : (Ɐ(P , U) ∶ Ω 𝓤 × Fam 𝓤 (Ω 𝓤) ,
-           (P ∧ (⋁ U) ≡[ iss ]≡  ⋁⟨ i ⟩ P ∧ U [ i ])) holds
+           (P ∧ (⋁ U) ＝[ iss ]＝  ⋁⟨ i ⟩ P ∧ U [ i ])) holds
    dist (P , U) = Ω-ext-from-univalence ua β γ
     where
      β : (P ∧ ⋁ U ⇒ (⋁⟨ i ⟩ (P ∧ U [ i ]))) holds
@@ -125,7 +125,7 @@ open propositional-truncations-exist pt
 \end{code}
 
 \begin{code}
-𝟎-of-IF-is-⊥ : {𝓦 : Universe} → (ua : is-univalent 𝓦) → 𝟎[ 𝟎-𝔽𝕣𝕞 ua ] ≡ ⊥Ω
+𝟎-of-IF-is-⊥ : {𝓦 : Universe} → (ua : is-univalent 𝓦) → 𝟎[ 𝟎-𝔽𝕣𝕞 ua ] ＝ ⊥Ω
 𝟎-of-IF-is-⊥ ua =
  ≤-is-antisymmetric (poset-of (𝟎-𝔽𝕣𝕞 ua)) γ λ ()
  where
@@ -145,7 +145,7 @@ f ua A P = ⋁[ A ] ⁅ 𝟏[ A ] ∣ x ∶ P holds ⁆
 \begin{code}
 
 f-respects-⊤ : {𝓦 : Universe} (ua : is-univalent 𝓦) (A : Frame 𝓤 𝓥 𝓦)
-             → f ua A 𝟏[ 𝟎-𝔽𝕣𝕞 ua ] ≡ 𝟏[ A ]
+             → f ua A 𝟏[ 𝟎-𝔽𝕣𝕞 ua ] ＝ 𝟏[ A ]
 f-respects-⊤ ua A = ≤-is-antisymmetric (poset-of A) α β
  where
   open PosetNotation (poset-of A) renaming (_≤_ to _≤A_)
@@ -163,11 +163,11 @@ f-respects-⊤ ua A = ≤-is-antisymmetric (poset-of A) α β
 f-respects-∧ : {𝓦 : Universe} (ua : is-univalent 𝓦)
              → (A : Frame 𝓤 𝓥 𝓦)
              → (P Q : Ω 𝓦)
-             → f ua A (P ∧ Q) ≡ (f ua A P) ∧[ A ] (f ua A Q)
+             → f ua A (P ∧ Q) ＝ (f ua A P) ∧[ A ] (f ua A Q)
 f-respects-∧ ua A P Q =
- f ua A (P ∧ Q)                                      ≡⟨ refl ⟩
- ⋁[ A ] ⁅ 𝟏[ A ] ∣ _ ∶ (P ∧ Q) holds ⁆               ≡⟨ i    ⟩
- ⋁[ A ] ⁅ 𝟏[ A ] ∧[ A ] 𝟏[ A ] ∣ _ ∶ (P ∧ Q) holds ⁆ ≡⟨ ii   ⟩
+ f ua A (P ∧ Q)                                      ＝⟨ refl ⟩
+ ⋁[ A ] ⁅ 𝟏[ A ] ∣ _ ∶ (P ∧ Q) holds ⁆               ＝⟨ i    ⟩
+ ⋁[ A ] ⁅ 𝟏[ A ] ∧[ A ] 𝟏[ A ] ∣ _ ∶ (P ∧ Q) holds ⁆ ＝⟨ ii   ⟩
  (f ua A P) ∧[ A ] (f ua A Q)                        ∎
  where
   i  = ap (λ - → ⋁[ A ] ⁅ - ∣ _ ∶ _ ⁆) (∧[ A ]-is-idempotent 𝟏[ A ])
@@ -229,9 +229,9 @@ main-lemma ua P p =
 
 𝒻-is-unique : {𝓦 : Universe} (ua : is-univalent 𝓦) (F : Frame 𝓤 𝓥 𝓦)
             → (ℊ : (𝟎-𝔽𝕣𝕞 ua) ─f→ F)
-            → 𝒻 ua F ≡ ℊ
+            → 𝒻 ua F ＝ ℊ
 𝒻-is-unique ua F ℊ@ (g , ζ@ (ϕ , χ , ψ)) =
- to-subtype-≡ (holds-is-prop ∘ is-a-frame-homomorphism (𝟎-𝔽𝕣𝕞 ua) F) β
+ to-subtype-＝ (holds-is-prop ∘ is-a-frame-homomorphism (𝟎-𝔽𝕣𝕞 ua) F) β
  where
   open Joins (λ x y → x ≤[ poset-of F ] y)
   open PosetReasoning (poset-of F) renaming (_■ to _QED)
@@ -271,7 +271,7 @@ main-lemma ua P p =
         υ : (λ _ → g ⊤Ω) ∼ (λ _ → 𝟏[ F ])
         υ _ = ϕ
 
-  β : f ua F ≡ g
+  β : f ua F ＝ g
   β = dfunext fe γ
 
 \end{code}

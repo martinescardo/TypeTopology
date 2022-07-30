@@ -33,13 +33,13 @@ property.
  such that:
 
   (i)   Indistinguishable elements of X are equal,
-        i.e. ∀ x y , c x y ≡ ∞ → x ≡ y
+        i.e. ∀ x y , c x y ＝ ∞ → x ＝ y
 
   (ii)  Every element of X is self-indistinguishable,
-        i.e. ∀ x , c x x ≡ ∞
+        i.e. ∀ x , c x x ＝ ∞
 
   (iii) The binary function is symmetric,
-        i.e. ∀ x y , c x y ≡ c y x
+        i.e. ∀ x y , c x y ＝ c y x
 
   (iv)  The ultrametric property holds,
         i.e. ∀ x y z , min (c x y , c y z) ≤ c x z
@@ -77,7 +77,7 @@ A CUT C is complete if every Cauchy sequence on C has a limit.
 \begin{code}
 
 has-limit : {X : 𝓤 ̇ } → (ℕ → X) → 𝓤 ̇
-has-limit {X} s = Σ i ꞉ ℕ , Π n ꞉ ℕ , (i ≤ n → s n ≡ s i)
+has-limit {X} s = Σ i ꞉ ℕ , Π n ꞉ ℕ , (i ≤ n → s n ＝ s i)
 
 CUT-Complete : ClosenessSpace → 𝓤 ̇
 CUT-Complete C = Π (s , _) ꞉ CUT-CauchySequence C , has-limit s
@@ -140,7 +140,7 @@ iter : {X : 𝓤 ̇ } → X → (X → X) → (ℕ → X)
 iter x₀ f n = (f ^ n) x₀
 
 has-fixed-point : {X : 𝓤 ̇ } → (X → X) → 𝓤 ̇
-has-fixed-point {𝓤} {X} f = Σ x* ꞉ X , f x* ≡ x*
+has-fixed-point {𝓤} {X} f = Σ x* ꞉ X , f x* ＝ x*
 
 limits-yield-fixed-points : {X : 𝓤 ̇ }
                           → (f : X → X)

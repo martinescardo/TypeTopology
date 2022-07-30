@@ -22,7 +22,7 @@ open import UF.Subsingletons-FunExt
 open import UF.FunExt
 
 is-wconnected : 𝓤 ̇ → 𝓤 ̇
-is-wconnected X = (x y : X) → ∥ x ≡ y ∥
+is-wconnected X = (x y : X) → ∥ x ＝ y ∥
 
 is-connected : 𝓤 ̇ → 𝓤 ̇
 is-connected X = ∥ X ∥ × is-wconnected X
@@ -39,9 +39,9 @@ maps-of-wconnected-types-into-sets-are-constant : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                                                 → (f : X → Y) → wconstant f
 maps-of-wconnected-types-into-sets-are-constant {𝓤} {𝓥} {X} {Y} s w f x x' = γ
  where
-  a : ∥ x ≡ x' ∥
+  a : ∥ x ＝ x' ∥
   a = w x x'
-  γ : f x ≡ f x'
+  γ : f x ＝ f x'
   γ = ∥∥-rec s (ap f) a
 
 \end{code}

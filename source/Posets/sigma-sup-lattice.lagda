@@ -37,7 +37,7 @@ is-σ-sup-compatible-order {𝓤} {𝓥} {X} (⊥ , ⋁) _≤_ = I × II × III 
   I   = (x y : X) → is-prop (x ≤ y)
   II  = (x : X) → x ≤ x
   III = (x y z : X) → x ≤ y → y ≤ z → x ≤ z
-  IV  = (x y : X) → x ≤ y → y ≤ x → x ≡ y
+  IV  = (x y : X) → x ≤ y → y ≤ x → x ＝ y
   V   = (x : X) → ⊥ ≤ x
   VI  = (x : ℕ → X) (n : ℕ) → x n ≤ ⋁ x
   VII = (x : ℕ → X) (u : X) → ((n : ℕ) → x n ≤ u) → ⋁ x ≤ u
@@ -55,7 +55,7 @@ private _*_ : {X : 𝓤 ̇ } → X → X → (ℕ → X)
 (x * y) (succ _) = y
 
 intrinsic-order : {X : 𝓤 ̇ } → σ-suplat-structure X → (X → X → 𝓤 ̇ )
-intrinsic-order (⊥ , ⋁) x y = ⋁ (x * y) ≡ y
+intrinsic-order (⊥ , ⋁) x y = ⋁ (x * y) ＝ y
 
 syntax intrinsic-order s x y = x ≤[ s ] y
 
@@ -81,7 +81,7 @@ any-σ-sup-order-is-intrinsic-order {𝓥} {X} (⊥ , ⋁) _≤_ (≤-prop-value
     ii = ⋁-is-lb-of-ubs (x * y) y i
     iii : y ≤ ⋁ (x * y)
     iii = ⋁-is-ub (x * y) (succ 0)
-    iv : ⋁ (x * y) ≡ y
+    iv : ⋁ (x * y) ＝ y
     iv = ≤-anti (⋁ (x * y)) y ii iii
   b : x ≤[ s ] y → x ≤ y
   b l = iii
@@ -104,7 +104,7 @@ at-most-one-σ-sup-order : Prop-Ext
                         → {X : 𝓤 ̇ } (s : σ-suplat-structure X) (_≤_ _≤'_ : X → X → 𝓥 ̇ )
                         → is-σ-sup-compatible-order s _≤_
                         → is-σ-sup-compatible-order s _≤'_
-                        → _≤_ ≡ _≤'_
+                        → _≤_ ＝ _≤'_
 at-most-one-σ-sup-order pe s _≤_ _≤'_ (i , i') (j , j') = γ
  where
   a : ∀ x y → x ≤ y → x ≤' y
@@ -123,7 +123,7 @@ at-most-one-σ-sup-order pe s _≤_ _≤'_ (i , i') (j , j') = γ
     v : x ≤[ s ] y → x ≤ y
     v = rl-implication (any-σ-sup-order-is-intrinsic-order s _≤_ (i , i') x y)
 
-  γ : _≤_ ≡ _≤'_
+  γ : _≤_ ＝ _≤'_
   γ = dfunext fe (λ x → dfunext fe (λ y → pe (i x y) (j x y) (a x y) (b x y)))
 
 \end{code}
@@ -167,7 +167,7 @@ which is then unique by the above:
                        → {𝓥 : Universe}
                        → {X : 𝓤 ̇ } (s : σ-suplat-structure X)
                        → is-prop (σ-suplat-axiom 𝓥 {X} s)
-σ-suplat-axiom-is-prop pe s (_≤_ , a) (_≤'_ , a') = to-subtype-≡
+σ-suplat-axiom-is-prop pe s (_≤_ , a) (_≤'_ , a') = to-subtype-＝
                                                       (being-σ-sup-order-is-prop s)
                                                       (at-most-one-σ-sup-order pe s _≤_ _≤'_ a a')
 
@@ -213,7 +213,7 @@ syntax order 𝓐 x y = x ≤⟨ 𝓐 ⟩ y
 ⟨ A , _ , (_≤_ , i , ii , iii , iv , v , vi , vii) ⟩-trans = iii
 
 
-⟨_⟩-antisym : (𝓐 : σ-SupLat 𝓤 𝓥) (a b : ⟨ 𝓐 ⟩) → a ≤⟨ 𝓐 ⟩ b → b ≤⟨ 𝓐 ⟩ a → a ≡ b
+⟨_⟩-antisym : (𝓐 : σ-SupLat 𝓤 𝓥) (a b : ⟨ 𝓐 ⟩) → a ≤⟨ 𝓐 ⟩ b → b ≤⟨ 𝓐 ⟩ a → a ＝ b
 ⟨ A , _ , (_≤_ , i , ii , iii , iv , v , vi , vii) ⟩-antisym = iv
 
 
@@ -229,8 +229,8 @@ syntax order 𝓐 x y = x ≤⟨ 𝓐 ⟩ y
                    → ⋁⟨ 𝓐 ⟩ a ≤⟨ 𝓐 ⟩ u
 ⟨ A , _ , (_≤_ , i , ii , iii , iv , v , vi , vii) ⟩-⋁-is-lb-of-ubs = vii
 
-⟨_⟩-≡-gives-≤ : (𝓐 : σ-SupLat 𝓤 𝓥) {a b : ⟨ 𝓐 ⟩} → a ≡ b → a ≤⟨ 𝓐 ⟩ b
-⟨ 𝓐 ⟩-≡-gives-≤ {a} refl = ⟨ 𝓐 ⟩-refl a
+⟨_⟩-＝-gives-≤ : (𝓐 : σ-SupLat 𝓤 𝓥) {a b : ⟨ 𝓐 ⟩} → a ＝ b → a ≤⟨ 𝓐 ⟩ b
+⟨ 𝓐 ⟩-＝-gives-≤ {a} refl = ⟨ 𝓐 ⟩-refl a
 
 binary-join : (𝓐 : σ-SupLat 𝓤 𝓥) → ⟨ 𝓐 ⟩ → ⟨ 𝓐 ⟩ → ⟨ 𝓐 ⟩
 binary-join 𝓐 a b = ⋁⟨ 𝓐 ⟩ (a * b)
@@ -255,13 +255,13 @@ infixl 100 binary-join
   f (succ n) = m
 
 ⟨_⟩-⋁-idempotent : (𝓐 : σ-SupLat 𝓤 𝓥) (a : ⟨ 𝓐 ⟩)
-                  → ⋁⟨ 𝓐 ⟩ (n ↦ a) ≡ a
+                  → ⋁⟨ 𝓐 ⟩ (n ↦ a) ＝ a
 ⟨_⟩-⋁-idempotent 𝓐 a = ⟨ 𝓐 ⟩-antisym _ _
                               (⟨ 𝓐 ⟩-⋁-is-lb-of-ubs (n ↦ a) a (λ n → ⟨ 𝓐 ⟩-refl a))
                               (⟨ 𝓐 ⟩-⋁-is-ub (n ↦ a) 0)
 
 ⟨_⟩-⋁-transp : (𝓐 : σ-SupLat 𝓤 𝓥) (c : ℕ → ℕ → ⟨ 𝓐 ⟩)
-              → ⋁⟨ 𝓐 ⟩ (i ↦ ⋁⟨ 𝓐 ⟩ (j ↦ c i j)) ≡ ⋁⟨ 𝓐 ⟩ (j ↦ ⋁⟨ 𝓐 ⟩ (i ↦ c i j))
+              → ⋁⟨ 𝓐 ⟩ (i ↦ ⋁⟨ 𝓐 ⟩ (j ↦ c i j)) ＝ ⋁⟨ 𝓐 ⟩ (j ↦ ⋁⟨ 𝓐 ⟩ (i ↦ c i j))
 ⟨_⟩-⋁-transp {𝓤} {𝓥} 𝓐 c = ⟨ 𝓐 ⟩-antisym _ _ m l
  where
   ⋁ = ⋁⟨ 𝓐 ⟩
@@ -292,8 +292,8 @@ infixl 100 binary-join
 
 is-σ-suplat-hom : (𝓐 : σ-SupLat 𝓤 𝓦) (𝓑 : σ-SupLat 𝓥 𝓣)
                  → (⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩) → 𝓤 ⊔ 𝓥 ̇
-is-σ-suplat-hom  (_ , (⊥ , ⋁) , _) (_ , (⊥' , ⋁') , _) f = (f ⊥ ≡ ⊥')
-                                                         × (∀ 𝕒 → f (⋁ 𝕒) ≡ ⋁' (n ↦ f (𝕒 n)))
+is-σ-suplat-hom  (_ , (⊥ , ⋁) , _) (_ , (⊥' , ⋁') , _) f = (f ⊥ ＝ ⊥')
+                                                         × (∀ 𝕒 → f (⋁ 𝕒) ＝ ⋁' (n ↦ f (𝕒 n)))
 
 being-σ-suplat-hom-is-prop : (𝓐 : σ-SupLat 𝓤 𝓦) (𝓑 : σ-SupLat 𝓥 𝓣)
                              (f : ⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩)
@@ -305,13 +305,13 @@ being-σ-suplat-hom-is-prop 𝓐 𝓑 f = ×-is-prop
 σ-suplat-hom-⊥ : (𝓐 : σ-SupLat 𝓤 𝓦) (𝓑 : σ-SupLat 𝓥 𝓣)
                → (f : ⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩)
                → is-σ-suplat-hom 𝓐 𝓑 f
-               → f ⊥⟨ 𝓐 ⟩ ≡ ⊥⟨ 𝓑 ⟩
+               → f ⊥⟨ 𝓐 ⟩ ＝ ⊥⟨ 𝓑 ⟩
 σ-suplat-hom-⊥ 𝓐 𝓑 f (i , ii) = i
 
 σ-suplat-hom-⋁ : (𝓐 : σ-SupLat 𝓤 𝓦) (𝓑 : σ-SupLat 𝓥 𝓣)
                 → (f : ⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩)
                 → is-σ-suplat-hom 𝓐 𝓑 f
-                → ∀ 𝕒 → f (⋁⟨ 𝓐 ⟩ 𝕒) ≡ ⋁⟨ 𝓑 ⟩ (n ↦ f (𝕒 n))
+                → ∀ 𝕒 → f (⋁⟨ 𝓐 ⟩ 𝕒) ＝ ⋁⟨ 𝓑 ⟩ (n ↦ f (𝕒 n))
 σ-suplat-hom-⋁ 𝓐 𝓑 f (i , ii) = ii
 
 is-monotone : (𝓐 : σ-SupLat 𝓤 𝓦) (𝓑 : σ-SupLat 𝓥 𝓣)
@@ -327,12 +327,12 @@ is-monotone 𝓐 𝓑 f = ∀ a b → a ≤⟨ 𝓐 ⟩ b → f a ≤⟨ 𝓑 �
   c : f a * f b ∼ f ∘ (a * b)
   c 0 = refl
   c (succ n) = refl
-  l' : ⋁⟨ 𝓐 ⟩ (a * b) ≡ b
+  l' : ⋁⟨ 𝓐 ⟩ (a * b) ＝ b
   l' = lr-implication (any-σ-sup-order-is-intrinsic-order _ (⟨ 𝓐 ⟩-order) ⟨ 𝓐 ⟩-≤-is-σ-sup-compatible-order a b) l
-  m' : ⋁⟨ 𝓑 ⟩ (f a * f b) ≡ f b
-  m' = ⋁⟨ 𝓑 ⟩ (f a * f b)   ≡⟨ ap ⋁⟨ 𝓑 ⟩ (dfunext fe c) ⟩
-       ⋁⟨ 𝓑 ⟩ (f ∘ (a * b)) ≡⟨ (σ-suplat-hom-⋁ 𝓐 𝓑 f i (a * b))⁻¹ ⟩
-       f (⋁⟨ 𝓐 ⟩ (a * b))   ≡⟨ ap f l' ⟩
+  m' : ⋁⟨ 𝓑 ⟩ (f a * f b) ＝ f b
+  m' = ⋁⟨ 𝓑 ⟩ (f a * f b)   ＝⟨ ap ⋁⟨ 𝓑 ⟩ (dfunext fe c) ⟩
+       ⋁⟨ 𝓑 ⟩ (f ∘ (a * b)) ＝⟨ (σ-suplat-hom-⋁ 𝓐 𝓑 f i (a * b))⁻¹ ⟩
+       f (⋁⟨ 𝓐 ⟩ (a * b))   ＝⟨ ap f l' ⟩
        f b                   ∎
   m : f a ≤⟨ 𝓑 ⟩ f b
   m = rl-implication (any-σ-sup-order-is-intrinsic-order _ (⟨ 𝓑 ⟩-order) ⟨ 𝓑 ⟩-≤-is-σ-sup-compatible-order  (f a) (f b)) m'
@@ -347,11 +347,11 @@ id-is-σ-suplat-hom 𝓐 = refl , (λ 𝕒 → refl)
                → is-σ-suplat-hom 𝓐 𝓒 (g ∘ f)
 ∘-σ-suplat-hom 𝓐 𝓑 𝓒 f g (r₀ , s₀) (r₁ , s₁) = (r₂ , s₂)
  where
-  r₂ = g (f ⊥⟨ 𝓐 ⟩) ≡⟨ ap g r₀ ⟩
-       g ⊥⟨ 𝓑 ⟩     ≡⟨ r₁ ⟩
+  r₂ = g (f ⊥⟨ 𝓐 ⟩) ＝⟨ ap g r₀ ⟩
+       g ⊥⟨ 𝓑 ⟩     ＝⟨ r₁ ⟩
        ⊥⟨ 𝓒 ⟩       ∎
 
-  s₂ = λ 𝕒 → g (f (⋁⟨ 𝓐 ⟩ 𝕒))           ≡⟨ ap g (s₀ 𝕒) ⟩
-             g (⋁⟨ 𝓑 ⟩ (λ n → f (𝕒 n))) ≡⟨ s₁ (λ n → f (𝕒 n)) ⟩
+  s₂ = λ 𝕒 → g (f (⋁⟨ 𝓐 ⟩ 𝕒))           ＝⟨ ap g (s₀ 𝕒) ⟩
+             g (⋁⟨ 𝓑 ⟩ (λ n → f (𝕒 n))) ＝⟨ s₁ (λ n → f (𝕒 n)) ⟩
              ⋁⟨ 𝓒 ⟩ (λ n → g (f (𝕒 n))) ∎
 \end{code}

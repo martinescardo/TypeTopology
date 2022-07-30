@@ -62,7 +62,7 @@ more transparent and conceptual argument.)
 module concrete-example where
 
  X : 𝓤₀ ̇
- X = Σ u ꞉ ℕ∞ , (u ≡ ∞ → 𝟚)
+ X = Σ u ꞉ ℕ∞ , (u ＝ ∞ → 𝟚)
 
  ∞₀ : X
  ∞₀ = (∞ , λ r → ₀)
@@ -76,7 +76,7 @@ module concrete-example where
 
 \begin{code}
 
- naive : (pr₂ ∞₀ refl ≡ ₀)  ×  (pr₂ ∞₁ refl ≡ ₁)
+ naive : (pr₂ ∞₀ refl ＝ ₀)  ×  (pr₂ ∞₁ refl ＝ ₁)
  naive = refl , refl
 
 \end{code}
@@ -90,7 +90,7 @@ module concrete-example where
     p x = pr₂ x refl
 
  doesn't type check (Agda says: " (pr₁ (pr₁ x) x) != ₁ of type 𝟚 when
- checking that the expression refl has type pr₁ x ≡ ∞"), and hence we
+ checking that the expression refl has type pr₁ x ＝ ∞"), and hence we
  haven't distinguished ∞₀ and ∞₁ by applying the same function to
  them. This is clearly seen when enough implicit arguments are made
  explicit.
@@ -109,15 +109,15 @@ module concrete-example where
    p₁ : ℕ∞ → 𝟚
    p₁ u = p (u , λ r → ₁)
 
-   lemma : (n : ℕ) → p₀ (ι n) ≡ p₁ (ι n)
+   lemma : (n : ℕ) → p₀ (ι n) ＝ p₁ (ι n)
    lemma n = ap (λ - → p (ι n , -)) (dfunext (fe 𝓤₀ 𝓤₀) claim)
     where
-     claim : (r : ι n ≡ ∞) → (λ r → ₀) r ≡ (λ r → ₁) r
+     claim : (r : ι n ＝ ∞) → (λ r → ₀) r ＝ (λ r → ₁) r
      claim s = 𝟘-elim (∞-is-not-finite n (s ⁻¹))
 
  open import TypeTopology.DiscreteAndSeparated
 
- 𝟚-indistinguishability : ¬ WLPO → (p : X → 𝟚) → p ∞₀ ≡ p ∞₁
+ 𝟚-indistinguishability : ¬ WLPO → (p : X → 𝟚) → p ∞₀ ＝ p ∞₁
  𝟚-indistinguishability nwlpo p = 𝟚-is-¬¬-separated (p ∞₀) (p ∞₁)
                                     (not-Σ-implies-Π-not
                                     (contrapositive (λ σ → failure (pr₁ σ) (pr₂ σ)) nwlpo) p)
@@ -133,25 +133,25 @@ module concrete-example where
  ∞₀-and-∞₁-different : ∞₀ ≢ ∞₁
  ∞₀-and-∞₁-different r = zero-is-not-one claim₃
   where
-   p : ∞ ≡ ∞
+   p : ∞ ＝ ∞
    p = ap pr₁ r
 
-   φ : {x x' : ℕ∞} → x ≡ x' → (x ≡ ∞ → 𝟚) → (x' ≡ ∞ → 𝟚)
+   φ : {x x' : ℕ∞} → x ＝ x' → (x ＝ ∞ → 𝟚) → (x' ＝ ∞ → 𝟚)
    φ = transport _
 
-   claim₀ : φ p (λ p → ₀) ≡ (λ p → ₁)
-   claim₀ = from-Σ-≡' r
+   claim₀ : φ p (λ p → ₀) ＝ (λ p → ₁)
+   claim₀ = from-Σ-＝' r
 
-   claim₁ : φ p (λ p → ₀) refl ≡ ₁
+   claim₁ : φ p (λ p → ₀) refl ＝ ₁
    claim₁ = ap (λ - → - refl) claim₀
 
-   fact : refl ≡ p
+   fact : refl ＝ p
    fact = ℕ∞-is-set (fe 𝓤₀ 𝓤₀) refl p
 
-   claim₂ : ₀ ≡ φ p (λ _ → ₀) refl
+   claim₂ : ₀ ＝ φ p (λ _ → ₀) refl
    claim₂ = ap (λ - → φ - (λ _ → ₀) refl) fact
 
-   claim₃ : ₀ ≡ ₁
+   claim₃ : ₀ ＝ ₁
    claim₃ =  claim₂ ∙ claim₁
 
 \end{code}
@@ -166,7 +166,7 @@ module concrete-example where
  Failure : is-totally-separated X → ¬¬ WLPO
  Failure ts nwlpo = g (𝟚-indistinguishability nwlpo)
   where
-   g : ¬ ((p : X → 𝟚) → p ∞₀ ≡ p ∞₁)
+   g : ¬ ((p : X → 𝟚) → p ∞₀ ＝ p ∞₁)
    g = contrapositive ts ∞₀-and-∞₁-different
 
 \end{code}
@@ -185,7 +185,7 @@ unchanged.
 module general-example (𝓤 : Universe) (X : 𝓤 ̇ ) (a : X) where
 
  Y : 𝓤 ̇
- Y = Σ x ꞉ X , (x ≡ a → 𝟚)
+ Y = Σ x ꞉ X , (x ＝ a → 𝟚)
 
  e : 𝟚 → X → Y
  e n x = (x , λ p → n)
@@ -200,12 +200,12 @@ module general-example (𝓤 : Universe) (X : 𝓤 ̇ ) (a : X) where
  Proposition r = zero-is-not-one zero-is-one
   where
    P : Y → 𝓤 ̇
-   P (x , f) = Σ q ꞉ x ≡ a , f q ≡ ₁
+   P (x , f) = Σ q ꞉ x ＝ a , f q ＝ ₁
 
-   observation₀ : P a₀ ≡ (a ≡ a) × (₀ ≡ ₁)
+   observation₀ : P a₀ ＝ (a ＝ a) × (₀ ＝ ₁)
    observation₀ = refl
 
-   observation₁ : P a₁ ≡ (a ≡ a) × (₁ ≡ ₁)
+   observation₁ : P a₁ ＝ (a ＝ a) × (₁ ＝ ₁)
    observation₁ = refl
 
    f : P a₁ → P a₀
@@ -217,7 +217,7 @@ module general-example (𝓤 : Universe) (X : 𝓤 ̇ ) (a : X) where
    p₀ : P a₀
    p₀ = f p₁
 
-   zero-is-one : ₀ ≡ ₁
+   zero-is-one : ₀ ＝ ₁
    zero-is-one = pr₂ p₀
 
 \end{code}
@@ -227,10 +227,10 @@ two embeddings e₀ and e₁:
 
 \begin{code}
 
- Lemma : (x : X) → x ≢ a → e ₀ x ≡ e ₁ x
+ Lemma : (x : X) → x ≢ a → e ₀ x ＝ e ₁ x
  Lemma x φ = ap (λ - → (x , -)) claim
   where
-   claim : (λ p → ₀) ≡ (λ p → ₁)
+   claim : (λ p → ₀) ＝ (λ p → ₁)
    claim = dfunext (fe 𝓤 𝓤₀) (λ p → 𝟘-elim (φ p))
 
 \end{code}
@@ -239,7 +239,7 @@ The following theorem shows that, because not every type X has
 decidable equality, the points a₀,a₁ of Y cannot necessarily be
 distinguished by maps into the discrete set 𝟚. To get the desired
 conclusion, it is enough to consider X = (ℕ → 𝟚), which is
-¬¬-separated, in the sense that ¬¬ (x ≡ y) → x ≡ y, assuming
+¬¬-separated, in the sense that ¬¬ (x ＝ y) → x ＝ y, assuming
 extensionality. (Cf. the module DiscreteAndSeparated.)
 
 \begin{code}
@@ -253,22 +253,22 @@ extensionality. (Cf. the module DiscreteAndSeparated.)
    f : X → 𝟚
    f x = g (e ₀ x) ⊕ g (e ₁ x)
 
-   claim₀ : f a ≡ ₁
-   claim₀ = Lemma[b≢c→b⊕c≡₁] d
+   claim₀ : f a ＝ ₁
+   claim₀ = Lemma[b≢c→b⊕c＝₁] d
 
-   claim₁ : (x : X) → x ≢ a → f x ≡ ₀
-   claim₁ x φ = Lemma[b≡c→b⊕c≡₀] (ap g (Lemma x φ))
+   claim₁ : (x : X) → x ≢ a → f x ＝ ₀
+   claim₁ x φ = Lemma[b＝c→b⊕c＝₀] (ap g (Lemma x φ))
 
-   claim₀' : (x : X) → f x ≡ ₀ → x ≢ a
+   claim₀' : (x : X) → f x ＝ ₀ → x ≢ a
    claim₀' x p r = 𝟘-elim (equal-₀-different-from-₁ fact claim₀)
     where
-     fact : f a ≡ ₀
+     fact : f a ＝ ₀
      fact = ap f (r ⁻¹) ∙ p
 
-   claim₁' : (x : X) → f x ≡ ₁ → ¬ (x ≢ a)
+   claim₁' : (x : X) → f x ＝ ₁ → ¬ (x ≢ a)
    claim₁' x p φ = 𝟘-elim (equal-₀-different-from-₁ fact p)
     where
-     fact : f x ≡ ₀
+     fact : f x ＝ ₀
      fact = claim₁ x φ
 
 \end{code}
