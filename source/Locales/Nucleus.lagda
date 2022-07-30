@@ -139,7 +139,7 @@ nuclei-are-monotone : (L : Frame 𝓤 𝓥 𝓦) ((j , _) : Nucleus L)
 nuclei-are-monotone L 𝒿 = prenuclei-are-monotone L (nucleus-pre L 𝒿)
 
 nuclei-are-idempotent : (L : Frame 𝓤 𝓥 𝓦) ((j , _) : Nucleus L)
-                      → (x : ⟨ L ⟩) → j (j x) ≡ j x
+                      → (x : ⟨ L ⟩) → j (j x) ＝ j x
 nuclei-are-idempotent L 𝒿@(j , _) x = ≤-is-antisymmetric (poset-of L) β γ
  where
   β : (j (j x) ≤[ poset-of L ] j x) holds
@@ -182,7 +182,7 @@ prenucleus-property₂ L (j , ζj , _) (k , _) x = ζj (k x)
 ∨-preserves-binary-meets : (L : Frame 𝓤 𝓥 𝓦) (x : ⟨ L ⟩)
                          → preserves-binary-meets L L (binary-join L x) holds
 ∨-preserves-binary-meets L x y₁ y₂ =
- x ∨[ L ] (y₁ ∧[ L ] y₂)             ≡⟨ binary-distributivity-op L x y₁ y₂ ⟩
+ x ∨[ L ] (y₁ ∧[ L ] y₂)             ＝⟨ binary-distributivity-op L x y₁ y₂ ⟩
  (x ∨[ L ] y₁) ∧[ L ] (x ∨[ L ] y₂)  ∎
 
 ∨-is-nucleus : (L : Frame 𝓤 𝓥 𝓦)
