@@ -93,7 +93,7 @@ cofinal in the original family.
        † U = (𝔡𝔦𝔯 K₀ [ is ]) ((K₀ [ i ]) U)    ≤⟨ ♥ ⟩
              (K₀ [ j ]) ((K₀ [ i ]) U)         ≤⟨ ♠ ⟩
              (K₀ [ j ]) ((K₀ [ l ]) U)         ≤⟨ ♣ ⟩
-             (K₀ [ l ]) ((K₀ [ l ]) U)         ≡⟨ ♢ ⟩ₚ
+             (K₀ [ l ]) ((K₀ [ l ]) U)         ＝⟨ ♢ ⟩ₚ
              (K₀ [ l ]) U                      ■
               where
                ♥ = φ ((K₀ [ i ]) U)
@@ -111,7 +111,7 @@ cofinal in the original family.
  directed-joins-are-computed-pointwise : (K : Fam 𝓦 Perfect-Nucleus-on-X)
                                        → is-directed (poset-of (𝒪 Patch-of-X)) K holds
                                        → (U : ⟨ 𝒪 X ⟩)
-                                       → (⋁[ 𝒪 Patch-of-X ] K) $ U ≡ ⋁[ 𝒪 X ] ⁅ k $ U ∣ k ε K ⁆
+                                       → (⋁[ 𝒪 Patch-of-X ] K) $ U ＝ ⋁[ 𝒪 X ] ⁅ k $ U ∣ k ε K ⁆
  directed-joins-are-computed-pointwise K δ U =
   ≤-is-antisymmetric (poset-of (𝒪 X)) β γ
    where
@@ -185,8 +185,8 @@ module OpenNucleus (X : Locale 𝓤 𝓥 𝓥) (σ : is-spectral (𝒪 X) holds)
    open PosetReasoning (poset-of (𝒪 X))
 
    γ : (((U ==> (U ==> V)) ∧[ 𝒪 X ] U) ≤[ poset-of (𝒪 X) ] V) holds
-   γ = (U ==> (U ==> V)) ∧[ 𝒪 X ] U                ≡⟨ i    ⟩ₚ
-       (U ==> (U ==> V)) ∧[ 𝒪 X ] (U ∧[ 𝒪 X ] U)   ≡⟨ ii   ⟩ₚ
+   γ = (U ==> (U ==> V)) ∧[ 𝒪 X ] U                ＝⟨ i    ⟩ₚ
+       (U ==> (U ==> V)) ∧[ 𝒪 X ] (U ∧[ 𝒪 X ] U)   ＝⟨ ii   ⟩ₚ
        ((U ==> (U ==> V)) ∧[ 𝒪 X ] U) ∧[ 𝒪 X ] U   ≤⟨ iii  ⟩
        (U ==> V) ∧[ 𝒪 X ] U                        ≤⟨ iv   ⟩
        V                                           ■
@@ -246,12 +246,12 @@ module OpenNucleus (X : Locale 𝓤 𝓥 𝓥) (σ : is-spectral (𝒪 X) holds)
          δ : ((((U ==> V) ∧[ 𝒪 X ] (U ==> W)) ∧[ 𝒪 X ] U)
                ≤[ poset-of (𝒪 X) ]
               (V ∧[ 𝒪 X ] W)) holds
-         δ = ((U ==> V) ∧[ 𝒪 X ] (U ==> W)) ∧[ 𝒪 X ] U               ≡⟨ i   ⟩ₚ
-             ((U ==> V) ∧[ 𝒪 X ] (U ==> W)) ∧[ 𝒪 X ] (U ∧[ 𝒪 X ] U)  ≡⟨ ii  ⟩ₚ
-             (U ==> V) ∧[ 𝒪 X ] ((U ==> W) ∧[ 𝒪 X ] (U ∧[ 𝒪 X ] U))  ≡⟨ iii ⟩ₚ
+         δ = ((U ==> V) ∧[ 𝒪 X ] (U ==> W)) ∧[ 𝒪 X ] U               ＝⟨ i   ⟩ₚ
+             ((U ==> V) ∧[ 𝒪 X ] (U ==> W)) ∧[ 𝒪 X ] (U ∧[ 𝒪 X ] U)  ＝⟨ ii  ⟩ₚ
+             (U ==> V) ∧[ 𝒪 X ] ((U ==> W) ∧[ 𝒪 X ] (U ∧[ 𝒪 X ] U))  ＝⟨ iii ⟩ₚ
              (U ==> V) ∧[ 𝒪 X ] (((U ==> W) ∧[ 𝒪 X ] U) ∧[ 𝒪 X ] U)  ≤⟨ iv  ⟩
-             (U ==> V) ∧[ 𝒪 X ] (W ∧[ 𝒪 X ] U)                       ≡⟨ v   ⟩ₚ
-             (U ==> V) ∧[ 𝒪 X ] (U ∧[ 𝒪 X ] W)                       ≡⟨ vi  ⟩ₚ
+             (U ==> V) ∧[ 𝒪 X ] (W ∧[ 𝒪 X ] U)                       ＝⟨ v   ⟩ₚ
+             (U ==> V) ∧[ 𝒪 X ] (U ∧[ 𝒪 X ] W)                       ＝⟨ vi  ⟩ₚ
              ((U ==> V) ∧[ 𝒪 X ] U) ∧[ 𝒪 X ] W                       ≤⟨ vii ⟩
              V ∧[ 𝒪 X ] W ■
 
@@ -293,7 +293,7 @@ module OpenNucleus (X : Locale 𝓤 𝓥 𝓥) (σ : is-spectral (𝒪 X) holds)
 
 \begin{code}
 
- opn-reverses-binary-joins : (U V : ⟨ 𝒪 X ⟩) → opn (U ∨[ 𝒪 X ] V) ≡ opn U ⋏₀ opn V
+ opn-reverses-binary-joins : (U V : ⟨ 𝒪 X ⟩) → opn (U ∨[ 𝒪 X ] V) ＝ opn U ⋏₀ opn V
  opn-reverses-binary-joins U V = dfunext fe γ
   where
    open PosetReasoning (poset-of (𝒪 X))
@@ -328,7 +328,7 @@ module OpenNucleus (X : Locale 𝓤 𝓥 𝓥) (σ : is-spectral (𝒪 X) holds)
 
      ε₁ : ((U ==> W ∧[ 𝒪 X ] V ==> W ∧[ 𝒪 X ] (U ∨[ 𝒪 X ] V)) ≤ W) holds
      ε₁ =
-      T ∧[ 𝒪 X ] (U ∨[ 𝒪 X ] V)                                              ≡⟨ i   ⟩ₚ
+      T ∧[ 𝒪 X ] (U ∨[ 𝒪 X ] V)                                              ＝⟨ i   ⟩ₚ
       (T ∧[ 𝒪 X ] U) ∨[ 𝒪 X ] (T ∧[ 𝒪 X ] V)                                 ≤⟨ ii  ⟩
       (U ==> W ∧[ 𝒪 X ] U) ∨[ 𝒪 X ] ((U ==> W ∧[ 𝒪 X ] V ==> W) ∧[ 𝒪 X ] V)  ≤⟨ iii ⟩
       W ∨[ 𝒪 X ] ((U ==> W ∧[ 𝒪 X ] V ==> W) ∧[ 𝒪 X ] V)                     ≤⟨ iv  ⟩
@@ -370,10 +370,10 @@ module Epsilon (X : Locale (𝓤 ⁺) 𝓤 𝓤) (σᴰ : spectralᴰ (𝒪 X)) 
  open SmallPatchConstruction X σᴰ renaming (SmallPatch to Patchₛ-X)
  open ClosedNucleus X ∣ σᴰ ∣
 
- ϵ-preserves-𝟏 : ‘ 𝟏[ 𝒪 X ] ’ ≡ 𝟏[ 𝒪 Patchₛ-X ]
+ ϵ-preserves-𝟏 : ‘ 𝟏[ 𝒪 X ] ’ ＝ 𝟏[ 𝒪 Patchₛ-X ]
  ϵ-preserves-𝟏 = perfect-nuclei-eq ‘ 𝟏[ 𝒪 X ] ’ 𝟏[ 𝒪 Patchₛ-X ] (dfunext fe †)
   where
-   † : (U : ⟨ 𝒪 X ⟩) → 𝟏[ 𝒪 X ] ∨[ 𝒪 X ] U ≡ 𝟏[ 𝒪 X ]
+   † : (U : ⟨ 𝒪 X ⟩) → 𝟏[ 𝒪 X ] ∨[ 𝒪 X ] U ＝ 𝟏[ 𝒪 X ]
    † U = 𝟏-left-annihilator-for-∨ (𝒪 X) U
 
  ϵ : Patchₛ-X ─c→ X
@@ -385,11 +385,11 @@ module Epsilon (X : Locale (𝓤 ⁺) 𝓤 𝓤) (σᴰ : spectralᴰ (𝒪 X)) 
             (‘ U ’ ∧[ 𝒪 Patchₛ-X ] ‘ V ’)
             (dfunext fe †)
     where
-     † : (W : ⟨ 𝒪 X ⟩) → ‘ U ∧[ 𝒪 X ] V ’ $ W ≡ (‘ U ’ ∧[ 𝒪 Patchₛ-X ] ‘ V ’) $ W
-     † W = (U ∧[ 𝒪 X ] V) ∨[ 𝒪 X ] W                ≡⟨ i   ⟩
-           W ∨[ 𝒪 X ] (U ∧[ 𝒪 X ] V)                ≡⟨ ii  ⟩
-           (W ∨[ 𝒪 X ] U) ∧[ 𝒪 X ] (W ∨[ 𝒪 X ] V)   ≡⟨ iii ⟩
-           (U ∨[ 𝒪 X ] W) ∧[ 𝒪 X ] (W ∨[ 𝒪 X ] V)   ≡⟨ iv  ⟩
+     † : (W : ⟨ 𝒪 X ⟩) → ‘ U ∧[ 𝒪 X ] V ’ $ W ＝ (‘ U ’ ∧[ 𝒪 Patchₛ-X ] ‘ V ’) $ W
+     † W = (U ∧[ 𝒪 X ] V) ∨[ 𝒪 X ] W                ＝⟨ i   ⟩
+           W ∨[ 𝒪 X ] (U ∧[ 𝒪 X ] V)                ＝⟨ ii  ⟩
+           (W ∨[ 𝒪 X ] U) ∧[ 𝒪 X ] (W ∨[ 𝒪 X ] V)   ＝⟨ iii ⟩
+           (U ∨[ 𝒪 X ] W) ∧[ 𝒪 X ] (W ∨[ 𝒪 X ] V)   ＝⟨ iv  ⟩
            (U ∨[ 𝒪 X ] W) ∧[ 𝒪 X ] (V ∨[ 𝒪 X ] W)   ∎
             where
              i   = ∨[ 𝒪 X ]-is-commutative (U ∧[ 𝒪 X ] V) W
@@ -452,7 +452,7 @@ to the bottom element `𝟎` of the locale in consideration.
 \begin{code}
 
  ϵ⁎-is-application-to-𝟎 : (𝒿 : Perfect-Nucleus-on-X)
-                        → ϵ ⁎· 𝒿 ≡ 𝒿 $ 𝟎[ 𝒪 X ]
+                        → ϵ ⁎· 𝒿 ＝ 𝒿 $ 𝟎[ 𝒪 X ]
  ϵ⁎-is-application-to-𝟎 𝒿@(j , _) =
   ≤-is-antisymmetric (poset-of (𝒪 X)) β γ
    where
@@ -526,13 +526,13 @@ We use Yoneda for the `β` direction.
                       , ≼ᵏ-implies-≼ (𝒦 [ j ]) (𝒦 [ k ]) ψ
                       ∣
 
-    γ : ϵ ⁎· (⋁[ 𝒪 Patchₛ-X ] 𝒦) ≡ ⋁[ 𝒪 X ] ⁅ ϵ ⁎· k ∣ k ε 𝒦 ⁆
-    γ = ϵ ⁎· (⋁[ 𝒪 Patchₛ-X ] 𝒦)            ≡⟨ i   ⟩
-        (⋁[ 𝒪 Patchₛ-X ] 𝒦) $ 𝟎[ 𝒪 X ]      ≡⟨ ii  ⟩
-        ⋁[ 𝒪 X ] ⁅ k $ 𝟎[ 𝒪 X ] ∣ k ε 𝒦 ⁆   ≡⟨ iii ⟩
+    γ : ϵ ⁎· (⋁[ 𝒪 Patchₛ-X ] 𝒦) ＝ ⋁[ 𝒪 X ] ⁅ ϵ ⁎· k ∣ k ε 𝒦 ⁆
+    γ = ϵ ⁎· (⋁[ 𝒪 Patchₛ-X ] 𝒦)            ＝⟨ i   ⟩
+        (⋁[ 𝒪 Patchₛ-X ] 𝒦) $ 𝟎[ 𝒪 X ]      ＝⟨ ii  ⟩
+        ⋁[ 𝒪 X ] ⁅ k $ 𝟎[ 𝒪 X ] ∣ k ε 𝒦 ⁆   ＝⟨ iii ⟩
         ⋁[ 𝒪 X ] ⁅ ϵ ⁎· k ∣ k ε 𝒦 ⁆         ∎
           where
-           ※   : (i : index 𝒦) → (𝒦 [ i ]) $ 𝟎[ 𝒪 X ] ≡ ϵ ⁎· (𝒦 [ i ])
+           ※   : (i : index 𝒦) → (𝒦 [ i ]) $ 𝟎[ 𝒪 X ] ＝ ϵ ⁎· (𝒦 [ i ])
            ※   = λ i → ϵ⁎-is-application-to-𝟎 (𝒦 [ i ]) ⁻¹
 
            i   = ϵ⁎-is-application-to-𝟎 (⋁[ 𝒪 Patchₛ-X ] 𝒦)
