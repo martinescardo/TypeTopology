@@ -138,6 +138,16 @@ nuclei-are-monotone : (L : Frame 𝓤 𝓥 𝓦) ((j , _) : Nucleus L)
                     → is-monotonic (poset-of L) (poset-of L) j holds
 nuclei-are-monotone L 𝒿 = prenuclei-are-monotone L (nucleus-pre L 𝒿)
 
+nuclei-are-idempotent : (L : Frame 𝓤 𝓥 𝓦) ((j , _) : Nucleus L)
+                      → (x : ⟨ L ⟩) → j (j x) ≡ j x
+nuclei-are-idempotent L 𝒿@(j , _) x = ≤-is-antisymmetric (poset-of L) β γ
+ where
+  β : (j (j x) ≤[ poset-of L ] j x) holds
+  β = 𝓃₂ L 𝒿 x
+
+  γ : (j x ≤[ poset-of L ] j (j x)) holds
+  γ = 𝓃₁ L 𝒿 (j x)
+
 \end{code}
 
 \begin{code}
