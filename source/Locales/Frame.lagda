@@ -840,6 +840,12 @@ frame-morphisms-are-monotonic F G f (_ , ψ , _) (x , y) p =
    i  = reflexivity+ (poset-of G) (ap f (connecting-lemma₁ F p))
    ii = reflexivity+ (poset-of G) (ψ x y)
 
+yoneda : (F : Frame 𝓤 𝓥 𝓦)
+       → (x y : ⟨ F ⟩)
+       → ((z : ⟨ F ⟩) → ((z ≤[ poset-of F ] x) ⇒ (z ≤[ poset-of F ] y)) holds)
+       → (x ≤[ poset-of F ] y) holds
+yoneda F x y φ = φ x (≤-is-reflexive (poset-of F) x)
+
 scott-continuous-implies-monotone : (F : Frame 𝓤 𝓥 𝓦) (G : Frame 𝓤′ 𝓥′ 𝓦)
                                   → (f : ⟨ F ⟩ → ⟨ G ⟩)
                                   → is-scott-continuous F G f holds
