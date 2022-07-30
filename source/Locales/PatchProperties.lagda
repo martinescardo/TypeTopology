@@ -477,7 +477,6 @@ The nontrivial direction is the `β` direction, so let's get the trivial
         ‡₂ : ((ℬ [ i ]) ≤[ poset-of (𝒪 X) ] j (ℬ [ i ])) holds
         ‡₂ = 𝓃₁ (𝒪 X) (nucleus-of 𝒿) (ℬ [ i ])
 
-
 \end{code}
 
 We use Yoneda for the `β` direction.
