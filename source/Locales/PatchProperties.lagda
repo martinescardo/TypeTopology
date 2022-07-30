@@ -48,6 +48,65 @@ module BasicProperties (X : Locale 𝓤 𝓥 𝓦) (σ : is-spectral (𝒪 X) ho
  open PatchConstruction X σ renaming (Perfect-Nucleus to Perfect-Nucleus-on-X;
                                       Patch to Patch-of-X)
 
+\end{code}
+
+We first prove the following lemma about directed families of nuclei, which
+amounts the fact that the directification of an already directed family is
+cofinal in the original family.
+
+\begin{code}
+
+ directedness-lemma : (K : Fam 𝓦 Perfect-Nucleus-on-X)
+                    → is-directed (poset-of (𝒪 Patch-of-X)) K holds
+                    → let
+                       K₀ = ⁅ pr₁ k ∣ k ε K ⁆
+                      in
+                       (is : index (𝔡𝔦𝔯 K₀))
+                    → ∃ i ꞉ index K , (((𝔡𝔦𝔯 K₀ [ is ]) ≼₀ (K₀ [ i ])) holds )
+ directedness-lemma K δ []       = ∥∥-rec ∃-is-prop γ β
+  where
+   open PosetReasoning (poset-of (𝒪 X))
+
+   K₀ = ⁅ pr₁ k ∣ k ε K ⁆
+
+   β : ∥ index K ∥
+   β = directedness-entails-inhabitation (𝒪 Patch-of-X) K δ
+
+   γ : index K → _
+   γ i = ∣ i , 𝓃₁ (𝒪 X) (nucleus-of (K [ i ])) ∣
+ directedness-lemma K δ (i ∷ is) = ∥∥-rec ∃-is-prop γ IH
+  where
+   open PosetReasoning (poset-of (𝒪 X))
+
+   K₀ = ⁅ pr₁ k ∣ k ε K ⁆
+   K₁ = ⁅ nucleus-of k ∣ k ε K ⁆
+
+   γ : (Σ j ꞉ index K , (((𝔡𝔦𝔯 K₀ [ is ]) ≼₀ (K₀ [ j ])) holds))
+     → _
+   γ (j , φ) = ∥∥-rec ∃-is-prop ※ (pr₂ δ i j)
+    where
+     ※ : _ → _
+     ※ (l , ψ₁ , ψ₂) = ∣ l , † ∣
+      where
+       † : ((𝔡𝔦𝔯 K₀ [ i ∷ is ]) ≼₀ (K₀ [ l ])) holds
+       † U = (𝔡𝔦𝔯 K₀ [ is ]) ((K₀ [ i ]) U)    ≤⟨ ♥ ⟩
+             (K₀ [ j ]) ((K₀ [ i ]) U)         ≤⟨ ♠ ⟩
+             (K₀ [ j ]) ((K₀ [ l ]) U)         ≤⟨ ♣ ⟩
+             (K₀ [ l ]) ((K₀ [ l ]) U)         ≡⟨ ♢ ⟩ₚ
+             (K₀ [ l ]) U                      ■
+              where
+               ♥ = φ ((K₀ [ i ]) U)
+               ♠ = nuclei-are-monotone (𝒪 X) (K₁ [ j ]) _ (ψ₁ U)
+               ♣ = ψ₂ ((K₀ [ l ]) U)
+               ♢ = nuclei-are-idempotent (𝒪 X) (K₁ [ l ]) U
+
+   IH : ∃ j ꞉ index K , (((𝔡𝔦𝔯 K₀ [ is ]) ≼₀ (K₀ [ j ])) holds)
+   IH = directedness-lemma K δ is
+
+\end{code}
+
+\begin{code}
+
  directed-joins-are-computed-pointwise : (K : Fam 𝓦 Perfect-Nucleus-on-X)
                                        → is-directed (poset-of (𝒪 Patch-of-X)) K holds
                                        → (U : ⟨ 𝒪 X ⟩)
@@ -63,17 +122,11 @@ module BasicProperties (X : Locale 𝓤 𝓥 𝓦) (σ : is-spectral (𝒪 X) ho
 
     K₀ = ⁅ _$_ k ∣ k ε K ⁆
 
+    ‡ : cofinal-in (𝒪 X) ⁅ α U ∣ α ε 𝔡𝔦𝔯 K₀ ⁆ ⁅ k $ U ∣ k ε K ⁆ holds
+    ‡ is = ∥∥-rec ∃-is-prop (λ (j , φ) → ∣ j , φ U ∣) (directedness-lemma K δ is)
+
     β : (𝓁𝒽𝓈 ≤[ poset-of (𝒪 X) ] 𝓇𝒽𝓈) holds
-    β = ⋁[ 𝒪 X ]-least ⁅ α U ∣ α ε 𝔡𝔦𝔯 K₀ ⁆ (𝓇𝒽𝓈 , †)
-     where
-      † : (𝓇𝒽𝓈 is-an-upper-bound-of ⁅ α U ∣ α ε 𝔡𝔦𝔯 K₀ ⁆) holds
-      † []       = ∥∥-rec (holds-is-prop (U ≤[ poset-of (𝒪 X) ] 𝓇𝒽𝓈)) ※ (pr₁ δ)
-                    where
-                     ※ : index K → (U ≤[ poset-of (𝒪 X) ] 𝓇𝒽𝓈) holds
-                     ※ l = U               ≤⟨ 𝓃₁ (𝒪 X) (nucleus-of (K [ l ])) U  ⟩
-                           (K [ l ]) $ U   ≤⟨ ⋁[ 𝒪 X ]-upper ⁅ k $ U ∣ k ε K ⁆ l ⟩
-                           𝓇𝒽𝓈             ■
-      † (i ∷ is) = {!!}
+    β = cofinal-implies-join-covered (𝒪 X) _ _ ‡
 
     γ : (𝓇𝒽𝓈 ≤[ poset-of (𝒪 X) ] 𝓁𝒽𝓈) holds
     γ = ⋁[ 𝒪 X ]-least ⁅ k $ U ∣ k ε K ⁆ (𝓁𝒽𝓈 , †)
