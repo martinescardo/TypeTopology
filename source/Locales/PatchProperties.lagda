@@ -506,41 +506,42 @@ We use Yoneda for the `β` direction.
 \begin{code}
 
  ϵ-is-a-perfect-map : is-perfect-map 𝒷 ϵ holds
- ϵ-is-a-perfect-map 𝒦 δ = {!!}
-  where
-   open Joins (λ x y → x ≤[ poset-of (𝒪 X) ] y)
+ ϵ-is-a-perfect-map 𝒦 δ =
+  transport (λ - → (- is-lub-of ⁅ ϵ ⁎· k ∣ k ε 𝒦 ⁆) holds) (γ ⁻¹) †
+   where
+    open Joins (λ x y → x ≤[ poset-of (𝒪 X) ] y)
 
-   δ′ : is-directed (poset-of (𝒪 Patch-of-X)) 𝒦 holds
-   δ′ = pr₁ δ , ζ
-    where
-     ζ : (Ɐ i ∶ index 𝒦 , Ɐ j ∶ index 𝒦 ,
-           Ǝ k ∶ index 𝒦 , (((𝒦 [ i ]) ≼ (𝒦 [ k ])) holds)
-                         × (((𝒦 [ j ]) ≼ (𝒦 [ k ])) holds)) holds
-     ζ i j = ∥∥-rec ∃-is-prop η (pr₂ δ i j)
-      where
-       η : _
-       η (k , φ , ψ) =
-                     ∣ k
-                     , ≼ᵏ-implies-≼ (𝒦 [ i ]) (𝒦 [ k ]) φ
-                     , ≼ᵏ-implies-≼ (𝒦 [ j ]) (𝒦 [ k ]) ψ
-                     ∣
+    δ′ : is-directed (poset-of (𝒪 Patch-of-X)) 𝒦 holds
+    δ′ = pr₁ δ , ζ
+     where
+      ζ : (Ɐ i ∶ index 𝒦 , Ɐ j ∶ index 𝒦 ,
+            Ǝ k ∶ index 𝒦 , (((𝒦 [ i ]) ≼ (𝒦 [ k ])) holds)
+                          × (((𝒦 [ j ]) ≼ (𝒦 [ k ])) holds)) holds
+      ζ i j = ∥∥-rec ∃-is-prop η (pr₂ δ i j)
+       where
+        η : _
+        η (k , φ , ψ) =
+                      ∣ k
+                      , ≼ᵏ-implies-≼ (𝒦 [ i ]) (𝒦 [ k ]) φ
+                      , ≼ᵏ-implies-≼ (𝒦 [ j ]) (𝒦 [ k ]) ψ
+                      ∣
 
-   † : ((ϵ ⁎· (⋁[ 𝒪 Patchₛ-X ] 𝒦)) is-an-upper-bound-of ⁅ ϵ ⁎· k ∣ k ε 𝒦 ⁆) holds
-   † i = pr₂ (right-adjoint-of ϵ) _ (⋁[ 𝒪 Patchₛ-X ]-upper 𝒦 i)
+    γ : ϵ ⁎· (⋁[ 𝒪 Patchₛ-X ] 𝒦) ≡ ⋁[ 𝒪 X ] ⁅ ϵ ⁎· k ∣ k ε 𝒦 ⁆
+    γ = ϵ ⁎· (⋁[ 𝒪 Patchₛ-X ] 𝒦)            ≡⟨ i   ⟩
+        (⋁[ 𝒪 Patchₛ-X ] 𝒦) $ 𝟎[ 𝒪 X ]      ≡⟨ ii  ⟩
+        ⋁[ 𝒪 X ] ⁅ k $ 𝟎[ 𝒪 X ] ∣ k ε 𝒦 ⁆   ≡⟨ iii ⟩
+        ⋁[ 𝒪 X ] ⁅ ϵ ⁎· k ∣ k ε 𝒦 ⁆         ∎
+          where
+           ※   : (i : index 𝒦) → (𝒦 [ i ]) $ 𝟎[ 𝒪 X ] ≡ ϵ ⁎· (𝒦 [ i ])
+           ※   = λ i → ϵ⁎-is-application-to-𝟎 (𝒦 [ i ]) ⁻¹
 
-   ‡ : ((𝓊 , _) : upper-bound ⁅ ϵ ⁎· k ∣ k ε 𝒦 ⁆)
-     → ((ϵ ⁎· (⋁[ 𝒪 Patchₛ-X ] 𝒦)) ≤[ poset-of (𝒪 X) ] 𝓊) holds
-   ‡ (𝓊 , φ) = {!!}
+           i   = ϵ⁎-is-application-to-𝟎 (⋁[ 𝒪 Patchₛ-X ] 𝒦)
+           ii  = directed-joins-are-computed-pointwise 𝒦 δ′ 𝟎[ 𝒪 X ]
+           iii = ap (λ - → ⋁[ 𝒪 X ] (index 𝒦 , -)) (dfunext fe ※)
 
-   γ : ϵ ⁎· (⋁[ 𝒪 Patchₛ-X ] 𝒦) ≡ ⋁[ 𝒪 X ] ⁅ ϵ ⁎· k ∣ k ε 𝒦 ⁆
-   γ = ϵ ⁎· (⋁[ 𝒪 Patchₛ-X ] 𝒦)          ≡⟨ i   ⟩
-       (⋁[ 𝒪 Patchₛ-X ] 𝒦) $ 𝟎[ 𝒪 X ]    ≡⟨ ii  ⟩
-       ⋁[ 𝒪 X ] ⁅ k $ 𝟎[ 𝒪 X ] ∣ k ε 𝒦 ⁆ ≡⟨ iii ⟩
-       ⋁[ 𝒪 X ] ⁅ ϵ ⁎· k ∣ k ε 𝒦 ⁆       ∎
-         where
-          i   = {!!}
-          ii  = directed-joins-are-computed-pointwise 𝒦 δ′ 𝟎[ 𝒪 X ]
-          iii = {!!}
+    † : ((⋁[ 𝒪 X ] ⁅ ϵ ⁎· k ∣ k ε 𝒦 ⁆) is-lub-of ⁅ ϵ ⁎· k ∣ k ε 𝒦 ⁆) holds
+    † = ⋁[ 𝒪 X ]-upper ⁅ ϵ ⁎· k ∣ k ε 𝒦 ⁆ , ⋁[ 𝒪 X ]-least ⁅ ϵ ⁎· k ∣ k ε 𝒦 ⁆
+
 \end{code}
 
 \begin{code}
@@ -562,7 +563,6 @@ module PatchStone (X : Locale (𝓤 ⁺) 𝓤 𝓤) (σᴰ : spectralᴰ (𝒪 X
 \begin{code}
 
  patch-is-compact : is-compact (𝒪 Patchₛ-X) holds
- patch-is-compact =
-  perfect-map-implies-compactness ϵ {!!} X-is-compact
+ patch-is-compact = perfect-map-implies-compactness ϵ ϵ-is-a-perfect-map X-is-compact
 
 \end{code}
