@@ -451,9 +451,56 @@ to the bottom element `𝟎` of the locale in consideration.
 
 \begin{code}
 
- ϵ⁎-is-application-to-𝟎 : (𝒦 : Fam 𝓦 ⟨ 𝒪 X ⟩)
-                        → {!!}
- ϵ⁎-is-application-to-𝟎 = {!!}
+ ϵ⁎-is-application-to-𝟎 : (𝒿 : Perfect-Nucleus-on-X)
+                        → ϵ ⁎· 𝒿 ≡ 𝒿 $ 𝟎[ 𝒪 X ]
+ ϵ⁎-is-application-to-𝟎 𝒿@(j , _) =
+  ≤-is-antisymmetric (poset-of (𝒪 X)) β γ
+   where
+
+\end{code}
+
+We break this up into two directions by using antisymmetry: `β` and `γ`.
+The nontrivial direction is the `β` direction, so let's get the trivial
+`γ` direction out of the way first:
+
+\begin{code}
+
+    γ : (j 𝟎[ 𝒪 X ] ≤[ poset-of (𝒪 X) ] (ϵ ⁎· 𝒿)) holds
+    γ = adjunction-inequality-forward ϵ 𝒿 (j 𝟎[ 𝒪 X ]) †
+     where
+      † : (‘ j 𝟎[ 𝒪 X ] ’ ≤[ poset-of (𝒪 Patchₛ-X) ] 𝒿) holds
+      † i = ∨[ 𝒪 X ]-least ‡₁ ‡₂
+       where
+        ‡₁ : (j 𝟎[ 𝒪 X ] ≤[ poset-of (𝒪 X) ] j (ℬ [ i ])) holds
+        ‡₁ = nuclei-are-monotone (𝒪 X) (nucleus-of 𝒿) _ (𝟎-is-bottom (𝒪 X) (ℬ [ i ]))
+
+        ‡₂ : ((ℬ [ i ]) ≤[ poset-of (𝒪 X) ] j (ℬ [ i ])) holds
+        ‡₂ = 𝓃₁ (𝒪 X) (nucleus-of 𝒿) (ℬ [ i ])
+
+
+\end{code}
+
+We use Yoneda for the `β` direction.
+
+\begin{code}
+
+    β : ((ϵ ⁎· 𝒿) ≤[ poset-of (𝒪 X) ] j 𝟎[ 𝒪 X ]) holds
+    β = yoneda (𝒪 X) (ϵ ⁎· 𝒿) (j 𝟎[ 𝒪 X ]) †
+     where
+      open PosetReasoning (poset-of (𝒪 X))
+
+      † : (z : ⟨ 𝒪 X ⟩)
+        → (rel-syntax (poset-of (𝒪 X)) z (ϵ ⁎· (j , _))
+        ⇒ rel-syntax (poset-of (𝒪 X)) z (j 𝟎[ 𝒪 X ])) holds
+      † U φ = U                   ≤⟨ ∨[ 𝒪 X ]-upper₁ U 𝟎[ 𝒪 X ] ⟩
+              U ∨[ 𝒪 X ] 𝟎[ 𝒪 X ] ≤⟨ η                          ⟩
+              j 𝟎[ 𝒪 X ]          ■
+       where
+        ζ : (‘ U ’ ≤[ poset-of (𝒪 Patchₛ-X) ] 𝒿) holds
+        ζ = adjunction-inequality-backward ϵ 𝒿 U φ
+
+        η : ((U ∨[ 𝒪 X ] 𝟎[ 𝒪 X ]) ≤[ poset-of (𝒪 X) ] j 𝟎[ 𝒪 X ]) holds
+        η = ≼ᵏ-implies-≼ ‘ U ’ 𝒿 ζ 𝟎[ 𝒪 X ]
 
 \end{code}
 
