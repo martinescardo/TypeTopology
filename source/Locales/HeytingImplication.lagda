@@ -115,7 +115,7 @@ module HeytingImplicationConstruction (X : Locale 𝓤  𝓥  𝓥)
    ii  = modus-ponens X (==>-is-heyting-implication (U ∧[ 𝒪 X ] V) W)
 
    γ : ((((U ∧[ 𝒪 X ] V) ==> W) ∧[ 𝒪 X ] U ∧[ 𝒪 X ] V) ≤ W) holds
-   γ = ((U ∧[ 𝒪 X ] V) ==> W) ∧[ 𝒪 X ] U ∧[ 𝒪 X ] V    ≡⟨ i  ⟩ₚ
+   γ = ((U ∧[ 𝒪 X ] V) ==> W) ∧[ 𝒪 X ] U ∧[ 𝒪 X ] V    ＝⟨ i  ⟩ₚ
        ((U ∧[ 𝒪 X ] V) ==> W) ∧[ 𝒪 X ] (U ∧[ 𝒪 X ] V)  ≤⟨ ii ⟩
        W                                               ■
 
@@ -123,7 +123,7 @@ module HeytingImplicationConstruction (X : Locale 𝓤  𝓥  𝓥)
  mp-right U V = modus-ponens X (==>-is-heyting-implication U V)
 
  mp-left : (U V : ⟨ 𝒪 X ⟩) → ((U ∧[ 𝒪 X ] (U ==> V)) ≤[ poset-of (𝒪 X) ] V) holds
- mp-left U V = U ∧[ 𝒪 X ] (U ==> V)   ≡⟨ ∧[ 𝒪 X ]-is-commutative U (U ==> V) ⟩ₚ
+ mp-left U V = U ∧[ 𝒪 X ] (U ==> V)   ＝⟨ ∧[ 𝒪 X ]-is-commutative U (U ==> V) ⟩ₚ
               (U ==> V) ∧[ 𝒪 X ] U    ≤⟨ mp-right U V                        ⟩
               V                       ■
   where
