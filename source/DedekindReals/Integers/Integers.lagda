@@ -20,7 +20,6 @@ open import UF.Miscelanea
 
 module DedekindReals.Integers.Integers where
 
-
 \end{code}
 
 In order to avoid having positive and negative 0, a standard solutions

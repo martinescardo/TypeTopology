@@ -9,18 +9,22 @@ of abs, along with positive and negative properties of integers.
 
 open import MLTT.Spartan renaming (_+_ to _∔_) 
 
-open import TypeTopology.DiscreteAndSeparated 
-open import Naturals.Properties 
-open import UF.Miscelanea 
-open import UF.Subsingletons 
-
 open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
 open import DedekindReals.Integers.Multiplication
 open import DedekindReals.Integers.Negation
-open import DedekindReals.Integers.Addition
 open import DedekindReals.Integers.Integers
 
 module DedekindReals.Integers.Abs where
+
+\end{code}
+
+The absolute value function which maps integers to natural numbers are
+defined in same file as integers. It is also useful to have an
+absolute value function which maps integers to integers. This function
+is defined now, and for both versions of the functions it is trivial
+to prove that the absolute value of x and (- x) are equal.
+
+\begin{code}
 
 absℤ : ℤ → ℤ
 absℤ (pos x)     = pos x
@@ -36,19 +40,29 @@ absℤ-removes-neg-sign (pos zero)     = refl
 absℤ-removes-neg-sign (pos (succ x)) = refl
 absℤ-removes-neg-sign (negsucc x)    = refl
 
-abs-over-mult : (a b : ℤ) → abs (a * b) ＝ abs a ℕ* abs b
-abs-over-mult (pos x) (pos b) = I
+pos-abs-is-equal : (x : ℕ) → absℤ (pos x) ＝ pos x
+pos-abs-is-equal x = refl
+
+\end{code}
+
+A standard result with absolute values is that it distributes over
+multiplication, for both versions of the function. Of course, the same
+is not true of addition (instead, the main results involving absolute
+values and addition is the triangle inequality).
+
+The proof is by case analysis on each argument. The given proofs are
+lengthy, and a more elegant solution should be found.
+
+\begin{code}
+
+abs-over-mult : (x y : ℤ) → abs (x * y) ＝ abs x ℕ* abs y
+abs-over-mult (pos x) (pos y) = ap abs (pos-multiplication-equiv-to-ℕ x y)
+abs-over-mult (pos 0) (negsucc b) = I
  where
-  I : abs (pos x * pos b) ＝ abs (pos x) ℕ* abs (pos b)
-  I = abs (pos x * pos b)        ＝⟨ ap abs (pos-multiplication-equiv-to-ℕ x b) ⟩
-      abs (pos (x ℕ* b))         ＝⟨ refl ⟩
-      abs (pos x) ℕ* abs (pos b) ∎
-abs-over-mult (pos zero) (negsucc b) = I
- where
-  I : abs (pos zero * negsucc b) ＝ abs (pos zero) ℕ* abs (negsucc b)
-  I = abs (pos zero * negsucc b) ＝⟨ ap abs (ℤ-zero-left-base (negsucc b)) ⟩
-      abs (pos 0)                ＝⟨ zero-left-base (abs (negsucc b)) ⁻¹ ⟩
-      abs (pos zero) ℕ* abs (negsucc b) ∎
+  I : abs (pos 0 * negsucc b) ＝ abs (pos 0) ℕ* abs (negsucc b)
+  I = abs (pos 0 * negsucc b)        ＝⟨ ap abs (ℤ-zero-left-base (negsucc b)) ⟩
+      abs (pos 0)                    ＝⟨ zero-left-base (abs (negsucc b)) ⁻¹ ⟩
+      abs (pos 0) ℕ* abs (negsucc b) ∎
 abs-over-mult (pos (succ x)) (negsucc b) = I
  where
   I : abs (pos (succ x) * negsucc b) ＝ abs (pos (succ x)) ℕ* abs (negsucc b)
@@ -75,9 +89,6 @@ abs-over-mult (negsucc x) (negsucc b) = I
       abs (pos (succ x) * pos (succ b))         ＝⟨ ap abs (pos-multiplication-equiv-to-ℕ (succ x) (succ b)) ⟩
       (succ x) ℕ* (succ b)                      ＝⟨ refl ⟩
       abs (negsucc x) ℕ* abs (negsucc b)       ∎
-
-pos-abs-is-equal : (x : ℕ) → absℤ (pos x) ＝ pos x
-pos-abs-is-equal x = refl
 
 abs-over-mult' : (x y : ℤ) → absℤ (x * y) ＝ absℤ x * absℤ y
 abs-over-mult' (pos x) (pos y) = I
@@ -120,60 +131,6 @@ abs-over-mult' (negsucc x) (negsucc y) = I
       pos (succ x) * pos (succ y)         ＝⟨ by-definition ⟩
       absℤ (negsucc x) * absℤ (negsucc y) ∎
 
-gtz₀ : (x : ℤ) → (y : ℕ) → is-pos-succ x → is-pos-succ (pos y) → is-pos-succ (x + (pos y))
-gtz₀ x = induction base step
- where
-  base : is-pos-succ x
-       → is-pos-succ (pos 0)
-       → is-pos-succ (x + pos 0)
-  base l r = 𝟘-elim r
+\end{code}
 
-  step : (k : ℕ)
-       → (is-pos-succ x → is-pos-succ (pos k) → is-pos-succ (x + pos k))
-       → is-pos-succ x
-       → is-pos-succ (pos (succ k))
-       → is-pos-succ (x + pos (succ k))
-  step 0        IH l r = is-pos-succ-succℤ x l
-  step (succ k) IH l r = is-pos-succ-succℤ (x + pos (succ k)) (IH l r)
 
-is-pos-succ-trans : (x y : ℤ) → is-pos-succ x → is-pos-succ y → is-pos-succ (x + y)
-is-pos-succ-trans x (pos y)         = gtz₀ x y
-is-pos-succ-trans x (negsucc y) l r = 𝟘-elim r
-
-gtzmt₀ : (x : ℤ) → (y : ℕ) → is-pos-succ x → is-pos-succ (pos y) → is-pos-succ (x * pos y)
-gtzmt₀ x = induction base step
- where
-  base : is-pos-succ x → is-pos-succ (pos 0) → is-pos-succ (x * pos 0)
-  base l r = 𝟘-elim r
-
-  step : (k : ℕ)
-       → (is-pos-succ x → is-pos-succ (pos k) → is-pos-succ (x * pos k))
-       → is-pos-succ x
-       → is-pos-succ (pos (succ k))
-       → is-pos-succ (x * pos (succ k))
-  step zero IH l r = l
-  step (succ k) IH l r = is-pos-succ-trans x (x * pos (succ k)) l (IH l r)
-
-is-pos-succ-mult-trans : (x y : ℤ) → is-pos-succ x → is-pos-succ y → is-pos-succ (x * y)
-is-pos-succ-mult-trans x (negsucc y) l r = 𝟘-elim r
-is-pos-succ-mult-trans x (pos y)     l r = gtzmt₀ x y l r
-
-{-
-ℤ-not-equal-to-succ : (x : ℤ) → ¬ (x ＝ succℤ x)
-ℤ-not-equal-to-succ = ℤ-induction base step₁ step₂
- where
-  base : ¬ (pos 0 ＝ succℤ (pos 0))
-  base e = pos-int-not-zero 0 (e ⁻¹)
-  step₁ : (k : ℤ) → ¬ (k ＝ succℤ k) → ¬ (succℤ k ＝ succℤ (succℤ k))
-  step₁ k IH e = IH II
-   where
-    I : predℤ (succℤ k) ＝ predℤ (succℤ (succℤ k))
-    I = ap predℤ e
-    II : k ＝ succℤ k
-    II = k                       ＝⟨ predsuccℤ k ⁻¹ ⟩
-         predℤ (succℤ k)         ＝⟨ I ⟩
-         predℤ (succℤ (succℤ k)) ＝⟨ predsuccℤ (succℤ k) ⟩
-         succℤ k ∎
-  step₂ : (k : ℤ) → ¬ (succℤ k ＝ succℤ (succℤ k)) → ¬ (k ＝ succℤ k)
-  step₂ k IH e = IH (ap succℤ e)
--}
