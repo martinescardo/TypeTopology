@@ -294,12 +294,12 @@ is-pos-succ-trans x (pos (succ 0))        x>0 y>0 = is-pos-succ-succℤ x x>0
 is-pos-succ-trans x (pos (succ (succ y))) x>0 y>0 =
  is-pos-succ-succℤ (x + pos (succ y)) (is-pos-succ-trans x (pos (succ y)) x>0 y>0)
 
-is-pos-succ-mult-trans' : (x y : ℤ) → is-pos-succ x → is-pos-succ y → is-pos-succ (x * y)
-is-pos-succ-mult-trans' x (negsucc y)           x>0 y>0 = 𝟘-elim y>0
-is-pos-succ-mult-trans' x (pos 0)               x>0 y>0 = 𝟘-elim y>0
-is-pos-succ-mult-trans' x (pos (succ 0))        x>0 y>0 = x>0
-is-pos-succ-mult-trans' x (pos (succ (succ y))) x>0 y>0 =
- is-pos-succ-trans x (x * pos (succ y)) x>0 (is-pos-succ-mult-trans' x (pos (succ y)) x>0 y>0)
+is-pos-succ-mult-trans : (x y : ℤ) → is-pos-succ x → is-pos-succ y → is-pos-succ (x * y)
+is-pos-succ-mult-trans x (negsucc y)           x>0 y>0 = 𝟘-elim y>0
+is-pos-succ-mult-trans x (pos 0)               x>0 y>0 = 𝟘-elim y>0
+is-pos-succ-mult-trans x (pos (succ 0))        x>0 y>0 = x>0
+is-pos-succ-mult-trans x (pos (succ (succ y))) x>0 y>0 =
+ is-pos-succ-trans x (x * pos (succ y)) x>0 (is-pos-succ-mult-trans x (pos (succ y)) x>0 y>0)
 
 ℤ-mult-rearrangement : (x y z : ℤ) → x * y * z ＝ x * z * y
 ℤ-mult-rearrangement x y z = x * y * z   ＝⟨ ℤ*-assoc x y z          ⟩
