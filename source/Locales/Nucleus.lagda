@@ -138,6 +138,16 @@ nuclei-are-monotone : (L : Frame 𝓤 𝓥 𝓦) ((j , _) : Nucleus L)
                     → is-monotonic (poset-of L) (poset-of L) j holds
 nuclei-are-monotone L 𝒿 = prenuclei-are-monotone L (nucleus-pre L 𝒿)
 
+nuclei-are-idempotent : (L : Frame 𝓤 𝓥 𝓦) ((j , _) : Nucleus L)
+                      → (x : ⟨ L ⟩) → j (j x) ＝ j x
+nuclei-are-idempotent L 𝒿@(j , _) x = ≤-is-antisymmetric (poset-of L) β γ
+ where
+  β : (j (j x) ≤[ poset-of L ] j x) holds
+  β = 𝓃₂ L 𝒿 x
+
+  γ : (j x ≤[ poset-of L ] j (j x)) holds
+  γ = 𝓃₁ L 𝒿 (j x)
+
 \end{code}
 
 \begin{code}
@@ -152,5 +162,34 @@ prenucleus-property₂ : (L : Frame 𝓤 𝓥 𝓦)
                      → ((j , _) (k , _) : Prenucleus L)
                      → (Ɐ x ∶ ⟨ L ⟩ , k x ≤[ poset-of L ] (j ∘ k) x) holds
 prenucleus-property₂ L (j , ζj , _) (k , _) x = ζj (k x)
+
+\end{code}
+
+\section{Closed nucleus}
+
+\begin{code}
+
+∨-is-inflationary : (L : Frame 𝓤 𝓥 𝓦)
+                  → (x : ⟨ L ⟩) → is-inflationary L (binary-join L x) holds
+∨-is-inflationary L = ∨[ L ]-upper₂
+
+∨-is-idempotent : (L : Frame 𝓤 𝓥 𝓦)
+                → (x : ⟨ L ⟩) → is-idempotent L (binary-join L x) holds
+∨-is-idempotent L x y = ∨[ L ]-least
+                         (∨[ L ]-upper₁ x y)
+                         (≤-is-reflexive (poset-of L) (x ∨[ L ] y) )
+
+∨-preserves-binary-meets : (L : Frame 𝓤 𝓥 𝓦) (x : ⟨ L ⟩)
+                         → preserves-binary-meets L L (binary-join L x) holds
+∨-preserves-binary-meets L x y₁ y₂ =
+ x ∨[ L ] (y₁ ∧[ L ] y₂)             ＝⟨ binary-distributivity-op L x y₁ y₂ ⟩
+ (x ∨[ L ] y₁) ∧[ L ] (x ∨[ L ] y₂)  ∎
+
+∨-is-nucleus : (L : Frame 𝓤 𝓥 𝓦)
+             → (x : ⟨ L ⟩)
+             → is-nucleus L (binary-join L x) holds
+∨-is-nucleus L x = ∨-is-inflationary L x
+                 , ∨-is-idempotent L x
+                 , ∨-preserves-binary-meets L x
 
 \end{code}
