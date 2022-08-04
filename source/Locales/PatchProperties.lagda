@@ -544,6 +544,40 @@ We use Yoneda for the `β` direction.
 
 \end{code}
 
+\section{Basis of Patch}
+
+\begin{code}
+
+module BasisOfPatch (X : Locale (𝓤 ⁺) 𝓤 𝓤) (σᴰ : spectralᴰ (𝒪 X)) where
+
+ open PatchConstruction X ∣ σᴰ ∣ renaming (Perfect-Nucleus to Perfect-Nucleus-on-X)
+ open SmallPatchConstruction X σᴰ renaming (SmallPatch to Patchₛ-X)
+ open ClosedNucleus X ∣ σᴰ ∣
+ open OpenNucleus X ∣ σᴰ ∣
+
+\end{code}
+
+For convenience, we define the following auxiliary notation for the open nucleus:
+
+\begin{code}
+
+ 𝔬 : index ℬ → ⟨ 𝒪 Patchₛ-X ⟩
+ 𝔬 i = ‘ ℬ [ i ] ’
+
+ 𝔠 : index ℬ → ⟨ 𝒪 Patchₛ-X ⟩
+ 𝔠 i = ¬‘ ℬ [ i ] , pr₁ (pr₂ (pr₂ σᴰ)) i ’
+
+\end{code}
+
+We define the following basis for Patch:
+
+\begin{code}
+
+ ℬ-patch : Fam 𝓤 ⟨ 𝒪 Patchₛ-X ⟩
+ ℬ-patch = ⁅ 𝔬 k ⋏ 𝔠 l ∣ (k , l) ∶ (index ℬ × index ℬ) ⁆
+
+\end{code}
+
 \begin{code}
 
 module PatchStone (X : Locale (𝓤 ⁺) 𝓤 𝓤) (σᴰ : spectralᴰ (𝒪 X)) where
