@@ -4,7 +4,7 @@ Based on `ayberkt/formal-topology-in-UF`.
 
 \begin{code}[hide]
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline --experimental-lossy-unification #-}
 
 open import MLTT.Spartan
 open import UF.Base
@@ -322,6 +322,12 @@ Nuclei are ordered pointwise.
 
    γ : is-perfect (𝒿 ⋏₀ 𝓀) holds
    γ = ⋏₀-perfect 𝒿 𝓀 μj μk ζj ζk
+
+ idₙ : Perfect-Nucleus
+ idₙ = id , pr₂ (identity-nucleus (𝒪 X)) , ζ
+  where
+   ζ : is-perfect id holds
+   ζ S δ = ⋁[ 𝒪 X ]-upper S , ⋁[ 𝒪 X ]-least S
 
 \end{code}
 
@@ -868,5 +874,151 @@ when proving distributivity.
                                , ⋁ₙ-is-join
                                , λ { (𝒿 , 𝒦) → distributivityₚ 𝒿 𝒦 }
                 }
+
+\end{code}
+
+\section{Small version of Patch}
+
+\begin{code}
+
+module SmallPatchConstruction (X : Locale 𝓤 𝓥 𝓦) (σᴰ : spectralᴰ (𝒪 X)) where
+
+ ℬ : Fam 𝓦 ⟨ 𝒪 X ⟩
+ ℬ = basisₛ (𝒪 X) σᴰ
+
+ ℬ-is-basis : is-basis-for (𝒪 X) ℬ
+ ℬ-is-basis = pr₁ (pr₁ (pr₂ σᴰ))
+
+ cover : (U : ⟨ 𝒪 X ⟩) → Fam 𝓦 ⟨ 𝒪 X ⟩
+ cover U =
+  let
+   𝒥 = covering-index-family (𝒪 X) ℬ ℬ-is-basis U
+  in
+   ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆
+
+ covers-are-directed : (U : ⟨ 𝒪 X ⟩)
+                     → is-directed (poset-of (𝒪 X)) (cover U) holds
+ covers-are-directed = pr₂ (pr₁ (pr₂ σᴰ))
+
+ open PatchConstruction X ∣ σᴰ ∣ renaming (Perfect-Nucleus to Perfect-Nucleus-on-X)
+
+ _≼ᵏ_ : Perfect-Nucleus-on-X → Perfect-Nucleus-on-X → Ω (𝓥 ⊔ 𝓦)
+ _≼ᵏ_ (j , ζⱼ) (k , ζₖ) =
+  Ɐ i ∶ index ℬ , j (ℬ [ i ]) ≤[ poset-of (𝒪 X) ] k (ℬ [ i ])
+
+ open Meets (λ 𝒿 𝓀 → 𝒿 ≼ᵏ 𝓀)
+  using ()
+  renaming (is-top to is-topₖ;
+            _is-glb-of_ to _is-glb-ofₖ_;
+            _is-a-lower-bound-of_ to _is-a-lower-bound-ofₖ_;
+            lower-bound to lower-boundₖ)
+
+ ≼-implies-≼ᵏ : (𝒿 𝓀 : Perfect-Nucleus-on-X) → (𝒿 ≼ 𝓀 ⇒ 𝒿 ≼ᵏ 𝓀) holds
+ ≼-implies-≼ᵏ 𝒿 𝓀 p i = p (ℬ [ i ])
+
+ ≼ᵏ-implies-≼ : (𝒿 𝓀 : Perfect-Nucleus-on-X) → (𝒿 ≼ᵏ 𝓀 ⇒ 𝒿 ≼ 𝓀) holds
+ ≼ᵏ-implies-≼ 𝒿@(j , νⱼ , ζⱼ) 𝓀@(k , νₖ , ζₖ) p U =
+  j U                                ＝⟨ i   ⟩ₚ
+  j (⋁[ 𝒪 X ] ⁅ ℬ [ i ] ∣ i ε 𝒥 ⁆)   ＝⟨ ii  ⟩ₚ
+  ⋁[ 𝒪 X ] ⁅ j (ℬ [ i ]) ∣ i ε 𝒥 ⁆   ≤⟨ iii ⟩
+  ⋁[ 𝒪 X ] ⁅ k (ℬ [ i ]) ∣ i ε 𝒥 ⁆   ＝⟨ iv  ⟩ₚ
+  k (⋁[ 𝒪 X ] ⁅ ℬ [ i ] ∣ i ε 𝒥 ⁆)   ＝⟨ v   ⟩ₚ
+  k U ■
+   where
+    open PosetReasoning (poset-of (𝒪 X))
+
+    𝒥 : Fam 𝓦 (index ℬ)
+    𝒥 = covering-index-family (𝒪 X) ℬ (pr₁ (pr₁ (pr₂ σᴰ))) U
+
+    δ : is-directed (poset-of (𝒪 X)) ⁅ ℬ [ i ] ∣ i ε 𝒥 ⁆ holds
+    δ = covers-are-directed U
+
+    i   = ap j (covers (𝒪 X) ℬ ℬ-is-basis U)
+    ii  = scott-continuous-join-eq (𝒪 X) (𝒪 X) j ζⱼ ⁅ ℬ [ i ] ∣ i ε 𝒥 ⁆ δ
+    iii = cofinal-implies-join-covered
+           (𝒪 X)
+           ⁅ j (ℬ [ i ]) ∣ i ε 𝒥 ⁆
+           ⁅ k (ℬ [ i ]) ∣ i ε 𝒥 ⁆
+           λ i → ∣ i , p (𝒥 [ i ]) ∣
+    iv  = scott-continuous-join-eq (𝒪 X) (𝒪 X) k ζₖ ⁅ ℬ [ i ] ∣ i ε 𝒥 ⁆ δ ⁻¹
+    v   = ap k (covers (𝒪 X) ℬ ℬ-is-basis U) ⁻¹
+
+ ≼-iff-≼ᵏ : (𝒿 𝓀 : Perfect-Nucleus-on-X) → (𝒿 ≼ 𝓀 ↔ 𝒿 ≼ᵏ 𝓀) holds
+ ≼-iff-≼ᵏ 𝒿 𝓀 = ≼-implies-≼ᵏ 𝒿 𝓀 , ≼ᵏ-implies-≼ 𝒿 𝓀
+
+ ≼ᵏ-is-reflexive : is-reflexive _≼ᵏ_ holds
+ ≼ᵏ-is-reflexive 𝒿 = ≼-implies-≼ᵏ 𝒿 𝒿 (≼-is-reflexive 𝒿)
+
+ ≼ᵏ-is-transitive : is-transitive _≼ᵏ_ holds
+ ≼ᵏ-is-transitive 𝒿 𝓀 𝓁 p₀ q₀ = ≼-implies-≼ᵏ 𝒿 𝓁 (≼-is-transitive 𝒿 𝓀 𝓁 p q)
+  where
+   p : (𝒿 ≼ 𝓀) holds
+   p = ≼ᵏ-implies-≼ 𝒿 𝓀 p₀
+
+   q : (𝓀 ≼ 𝓁) holds
+   q = ≼ᵏ-implies-≼ 𝓀 𝓁 q₀
+
+ ≼ᵏ-is-preorder : is-preorder _≼ᵏ_ holds
+ ≼ᵏ-is-preorder = ≼ᵏ-is-reflexive , ≼ᵏ-is-transitive
+
+ ≼ᵏ-is-antisymmetric : is-antisymmetric _≼ᵏ_
+ ≼ᵏ-is-antisymmetric {x = 𝒿} {y = 𝓀} p₀ q₀ = ≼-is-antisymmetric p q
+  where
+   p : (𝒿 ≼ 𝓀) holds
+   p = ≼ᵏ-implies-≼ 𝒿 𝓀 p₀
+
+   q : (𝓀 ≼ 𝒿) holds
+   q = ≼ᵏ-implies-≼ 𝓀 𝒿 q₀
+
+ 𝟏ₚ-is-topₖ : is-topₖ 𝟏ₚ holds
+ 𝟏ₚ-is-topₖ 𝒿 = ≼-implies-≼ᵏ 𝒿 𝟏ₚ (𝟏ₚ-is-top 𝒿)
+
+ ⋏-is-meetₖ : (𝒿 𝓀 : Perfect-Nucleus-on-X)
+            → ((𝒿 ⋏ 𝓀) is-glb-ofₖ (𝒿 , 𝓀)) holds
+ ⋏-is-meetₖ 𝒿 𝓀 = β , γ
+  where
+   μ = ⋏-is-meet (𝒿 , 𝓀)
+
+   β : ((𝒿 ⋏ 𝓀) is-a-lower-bound-ofₖ (𝒿 , 𝓀)) holds
+   β = ≼-implies-≼ᵏ (𝒿 ⋏ 𝓀) 𝒿 β₁ , ≼-implies-≼ᵏ (𝒿 ⋏ 𝓀) 𝓀 β₂
+    where
+      β₁ : ((𝒿 ⋏ 𝓀) ≼ 𝒿) holds
+      β₁ = pr₁ (pr₁ (⋏-is-meet (𝒿 , 𝓀)))
+
+      β₂ : ((𝒿 ⋏ 𝓀) ≼ 𝓀) holds
+      β₂ = pr₂ (pr₁ (⋏-is-meet (𝒿 , 𝓀)))
+
+   γ : (Ɐ (𝒾 , _) ∶ (Meets.lower-bound _≼ᵏ_ (𝒿 , 𝓀)) , 𝒾 ≼ᵏ (𝒿 ⋏ 𝓀)) holds
+   γ (𝒾 , φ , ψ) = ≼-implies-≼ᵏ 𝒾 (𝒿 ⋏ 𝓀) δ
+    where
+     † = pr₂ (⋏-is-meet (𝒿 , 𝓀))
+
+     δ : (𝒾 ≼ (𝒿 ⋏ 𝓀)) holds
+     δ = † (𝒾 , ≼ᵏ-implies-≼ 𝒾 𝒿 φ , ≼ᵏ-implies-≼ 𝒾 𝓀 ψ)
+
+ ⋁ₙ-is-joinₖ : (Ɐ K ∶ Fam 𝓦 Perfect-Nucleus-on-X , Joins._is-lub-of_ _≼ᵏ_ (⋁ₙ K) K) holds
+ ⋁ₙ-is-joinₖ 𝒦 = β , γ
+  where
+   β : (_≼ᵏ_ Joins.is-an-upper-bound-of ⋁ₙ 𝒦) 𝒦 holds
+   β i = ≼-implies-≼ᵏ (𝒦 [ i ] ) (⋁ₙ 𝒦) †
+    where
+     † : ((𝒦 [ i ]) ≼ ⋁ₙ 𝒦) holds
+     † = pr₁ (⋁ₙ-is-join 𝒦) i
+
+   γ : (Ɐ (𝒾 , _) ∶ Joins.upper-bound _≼ᵏ_ 𝒦 , (⋁ₙ 𝒦) ≼ᵏ 𝒾) holds
+   γ (𝒾 , φ) = ≼-implies-≼ᵏ (⋁ₙ 𝒦) 𝒾 (pr₂ (⋁ₙ-is-join 𝒦) (𝒾 , †))
+    where
+     † : (_≼_ Joins.is-an-upper-bound-of 𝒾) 𝒦 holds
+     † j = ≼ᵏ-implies-≼ (𝒦 [ j ]) 𝒾 (φ j)
+
+ SmallPatch : Locale (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺) (𝓥 ⊔ 𝓦) 𝓦
+ SmallPatch = record { ⟨_⟩ₗ = Perfect-Nucleus-on-X
+                     ; frame-str-of = (_≼ᵏ_ , 𝟏ₚ , _⋏_ , ⋁ₙ)
+                     , (≼ᵏ-is-preorder , ≼ᵏ-is-antisymmetric)
+                     , 𝟏ₚ-is-topₖ
+                     , (λ { (𝒿 , 𝓀) → ⋏-is-meetₖ 𝒿 𝓀 })
+                     , ⋁ₙ-is-joinₖ
+                     , λ { (𝒿 , 𝒦) → distributivityₚ 𝒿 𝒦 }
+                     }
 
 \end{code}
