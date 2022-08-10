@@ -481,7 +481,7 @@ univ-function-equivariant {G} X x = λ g a →  (g ·⟨ G ⟩ a) · x ＝⟨  a
                                               g · (a · x)     ∎ 
   where
     _·_ : action-structure G (pr₁ (pr₁ X))
-    _·_ = pr₁ (pr₂ (pr₁ X))
+    _·_ = action-op G (pr₁ X)
 
 triv-map = univ-function
 triv-map-equivariant = univ-function-equivariant
@@ -641,37 +641,50 @@ module _ (G : Group 𝓤) where
 
   module _ (X : Tors G) where
 
-    𝕏 : Action G
-    𝕏 = pr₁ X 
-
-    t : (x : ⟨ 𝕏 ⟩) → ⟨ pr₁ (𝕋 G) ⟩ → ⟨ 𝕏 ⟩
+    t : (x : ⟨ pr₁ X ⟩) → ⟨ pr₁ (𝕋 G) ⟩ → ⟨ pr₁ X ⟩
     t  x = triv-map {G} X x
 
-    triv-map-right-equivariance : (x : ⟨ 𝕏 ⟩) (a : ⟨ G ⟩) → t (a ◂⟨ G ∣ 𝕏 ⟩ x) ＝ (t x) ∘ (ρ a)
+    triv-map-right-equivariance : (x : ⟨ pr₁ X ⟩) (a : ⟨ G ⟩) → 
+                                  t (action-op G (pr₁ X) a x) ＝ (t x) ∘ (ρ a)
     triv-map-right-equivariance x a = dfunext fe (λ g → (g · (a · x)     ＝⟨ ( action-assoc G 𝕏 g a x ) ⁻¹ ⟩
                                                          (g ·⟨ G ⟩ a) · x ∎ ) )
          where
-           _·_ : action-structure G  ⟨ 𝕏 ⟩
-           _·_ = action-op G 𝕏
+           𝕏 : Action G
+           𝕏 = pr₁ X
+           _·_ : action-structure G  ⟨ pr₁ X ⟩
+           _·_ = action-op G (pr₁ X)
 \end{code}
 
 If φ is a torsor map, informally φ (x) = g · x, for any point x, for
 an appropriate g. This is obtained by applying the divison map to
 φ. Thus, φ corresponds to j : X → G such that f x = (j x) · x.
 
-Informally, the equivariance properties of j is that
+Informally, the equivariance property of j is
 
-j (a · x) ＝ a (j x) a ⁻¹
+  j (a · x) ＝ a (j x) a ⁻¹
+
+If x ∈ X is a point and j the corresponding division map, its other
+equivariance property reads
+
+  f ∘ (t x) ＝ (t x) ∘ (ρ (j φ x))
+
+where (t x) is the trivialization map given by the choice of x, and ρ
+is the trivialization map of the trivial torsor G, that is, the
+right-multiplication map of G on itself.
 
 \begin{code}
   
-    j : Hom {G} X X → ⟨ 𝕏 ⟩ → ⟨ G ⟩
+    j : Hom {G} X X → ⟨ pr₁ X ⟩ → ⟨ G ⟩
     j φ x = torsor-division-map {G} {X} (pr₁ φ x) x
 
-    j-equivariance : (φ : Hom {G} X X) (a : ⟨ G ⟩) (x : ⟨ 𝕏 ⟩ ) →
-                     j φ (a ◂⟨ G ∣ 𝕏 ⟩ x) ·⟨ G ⟩ a ＝ a ·⟨ G ⟩ (j φ x)
+
+    j-equivariance : (φ : Hom {G} X X) (a : ⟨ G ⟩) (x : ⟨ pr₁ X ⟩ ) →
+                     j φ (action-op G (pr₁ X) a x) ·⟨ G ⟩ a ＝ a ·⟨ G ⟩ (j φ x)
     j-equivariance φ a x = equivs-are-lc (t x) (pr₂ (pr₁ (triv-iso {G} X x))) q
       where
+        𝕏 : Action G
+        𝕏 = pr₁ X
+
         _·_ : ⟨ G ⟩ → ⟨ 𝕏 ⟩ → ⟨ 𝕏 ⟩
         _·_ = action-op G 𝕏
 
@@ -694,6 +707,35 @@ j (a · x) ＝ a (j x) a ⁻¹
                 l = pr₂ (pr₁ (torsor-division G X (f x) x))
 
 
+    j-equivariance₁-pointwise : (φ : Hom {G} X X) (x : ⟨ pr₁ X ⟩) →
+                                (pr₁ φ) ∘ (t x) ∼ (t x) ∘ (ρ (j φ x))
+    j-equivariance₁-pointwise φ x g = f (t x g)             ＝⟨ refl ⟩
+                                      f (g · x)             ＝⟨ i g x ⟩
+                                      g · (f x)             ＝⟨ ap (λ v → g · v) l ⁻¹  ⟩
+                                      g · ((j φ x) · x)     ＝⟨ (action-assoc G 𝕏 _ _ _ ) ⁻¹ ⟩
+                                      (g ·⟨ G ⟩ (j φ x)) · x ＝⟨ refl ⟩
+                                      t x (ρ (j φ x) g) ∎
+      where
+        𝕏 : Action G
+        𝕏 = pr₁ X
+
+        _·_ : ⟨ G ⟩ → ⟨ 𝕏 ⟩ → ⟨ 𝕏 ⟩
+        _·_ = action-op G 𝕏
+
+        f : ⟨ 𝕏 ⟩ → ⟨ 𝕏 ⟩
+        f = pr₁ φ
+        e : is-equiv f
+        e = torsor-map-is-equiv {G} {X} {X} φ
+        i : is-equivariant G 𝕏 𝕏 f
+        i = pr₂ φ
+
+        l : j φ x · x ＝ f x 
+        l = pr₂ (pr₁ (torsor-division G X (f x) x))
+
+    j-equivariance₁ : (φ : Hom {G} X X) (x : ⟨ pr₁ X ⟩) →
+                      (pr₁ φ) ∘ (t x) ＝ (t x) ∘ (ρ (j φ x))
+    j-equivariance₁ φ x = dfunext fe (j-equivariance₁-pointwise φ x)
+        
 \end{code}
 
 
