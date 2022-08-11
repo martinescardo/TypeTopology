@@ -578,6 +578,34 @@ We define the following basis for Patch:
 
 \end{code}
 
+Given a perfect nucleus `j : 𝓞(X) → 𝓞(X)`, the basic covering family for it
+is given by the restriction of the family, given by the function `𝕔𝕠𝕧`
+
+\begin{code}
+
+ 𝕔𝕠𝕧 : Perfect-Nucleus-on-X → Fam 𝓤 (index ℬ × index ℬ)
+ 𝕔𝕠𝕧 (j , _) =
+  ⁅ (k , l) ∣ ((k , l) , _) ∶ (Σ (k , l) ꞉ (index ℬ × index ℬ) , (((ℬ [ k ]) ≤[ poset-of (𝒪 X) ] j (ℬ [ l ])) holds)) ⁆
+
+\end{code}
+
+We first prove that this forms a basis.
+
+\begin{code}
+
+ ℬ-is-basis-for-patch : is-basis-for (𝒪 Patchₛ-X) ℬ-patch
+ ℬ-is-basis-for-patch 𝒿 = 𝕔𝕠𝕧 𝒿 , β , γ
+  where
+   open Joins (λ x y → x ≤[ poset-of (𝒪 Patchₛ-X) ] y)
+
+   β : (𝒿 is-an-upper-bound-of ⁅ 𝔬 k ⋏ 𝔠 l ∣ (k , l) ε 𝕔𝕠𝕧 𝒿 ⁆) holds
+   β = {!!}
+
+   γ : {!!}
+   γ = {!!}
+
+\end{code}
+
 \begin{code}
 
 module PatchStone (X : Locale (𝓤 ⁺) 𝓤 𝓤) (σᴰ : spectralᴰ (𝒪 X)) where
