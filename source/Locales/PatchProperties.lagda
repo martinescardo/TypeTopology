@@ -359,6 +359,28 @@ module OpenNucleus (X : Locale 𝓤 𝓥 𝓥) (σ : is-spectral (𝒪 X) holds)
           opn (U ∨[ 𝒪 X ] V) W) holds
      ε = heyting-implication₁ (U ∨[ 𝒪 X ] V) W (opn U W ∧[ 𝒪 X ] opn V W) ε₁
 
+ nuclei-preserve-==> : (U V : ⟨ 𝒪 X ⟩) ((j , _) : Nucleus (𝒪 X))
+                                      → ((U ==> V) ≤[ poset-of (𝒪 X) ] (j U ==> j V)) holds
+ nuclei-preserve-==> U V 𝒿@(j , _) = U ==> V        ≤⟨ † ⟩
+                                     U ==> j V      ≤⟨ ‡ ⟩
+                                     j U ==> j V    ■
+  where
+   open PosetReasoning (poset-of (𝒪 X))
+
+   ♠ : (((U ==> V) ∧[ 𝒪 X ] U) ≤[ poset-of (𝒪 X) ] j V) holds
+   ♠ = (U ==> V) ∧[ 𝒪 X ] U ≤⟨ mp-right U V ⟩ V ≤⟨ 𝓃₁ (𝒪 X) 𝒿 V ⟩ j V ■
+
+   ♣ : (((U ==> j V) ∧[ 𝒪 X ] (j U)) ≤[ poset-of (𝒪 X) ] j V) holds
+   ♣ = (U ==> j V) ∧[ 𝒪 X ] (j U)    ≤⟨ i ⟩
+       j (U ==> j V) ∧[ 𝒪 X ] j U      ≤⟨ {!!} ⟩
+       j ((U ==> V) ∧[ 𝒪 X ] U)      ≤⟨ {!!} ⟩
+       j V                           ■
+        where
+         i = ∧[ 𝒪 X ]-left-monotone {!!}
+
+   † = heyting-implication₁ U (j V) (U ==> V) ♠
+   ‡ = heyting-implication₁ (j U) (j V) (U ==> j V) ♣
+
 
 \end{code}
 
@@ -552,6 +574,7 @@ module BasisOfPatch (X : Locale (𝓤 ⁺) 𝓤 𝓤) (σᴰ : spectralᴰ (𝒪
 
  open PatchConstruction X ∣ σᴰ ∣ renaming (Perfect-Nucleus to Perfect-Nucleus-on-X)
  open SmallPatchConstruction X σᴰ renaming (SmallPatch to Patchₛ-X)
+ open HeytingImplicationConstruction X (spectral-frames-have-bases (𝒪 X) ∣ σᴰ ∣)
  open ClosedNucleus X ∣ σᴰ ∣
  open OpenNucleus X ∣ σᴰ ∣
 
@@ -561,11 +584,11 @@ For convenience, we define the following auxiliary notation for the open nucleus
 
 \begin{code}
 
- 𝔬 : index ℬ → ⟨ 𝒪 Patchₛ-X ⟩
- 𝔬 i = ‘ ℬ [ i ] ’
-
  𝔠 : index ℬ → ⟨ 𝒪 Patchₛ-X ⟩
- 𝔠 i = ¬‘ ℬ [ i ] , pr₁ (pr₂ (pr₂ σᴰ)) i ’
+ 𝔠 i = ‘ ℬ [ i ] ’
+
+ 𝔬 : index ℬ → ⟨ 𝒪 Patchₛ-X ⟩
+ 𝔬 i = ¬‘ ℬ [ i ] , pr₁ (pr₂ (pr₂ σᴰ)) i ’
 
 \end{code}
 
@@ -574,7 +597,7 @@ We define the following basis for Patch:
 \begin{code}
 
  ℬ-patch : Fam 𝓤 ⟨ 𝒪 Patchₛ-X ⟩
- ℬ-patch = ⁅ 𝔬 k ⋏ 𝔠 l ∣ (k , l) ∶ (index ℬ × index ℬ) ⁆
+ ℬ-patch = ⁅ 𝔠 k ⋏ 𝔬 l ∣ (k , l) ∶ (index ℬ × index ℬ) ⁆
 
 \end{code}
 
@@ -583,9 +606,60 @@ is given by the restriction of the family, given by the function `𝕔𝕠𝕧`
 
 \begin{code}
 
- 𝕔𝕠𝕧 : Perfect-Nucleus-on-X → Fam 𝓤 (index ℬ × index ℬ)
- 𝕔𝕠𝕧 (j , _) =
-  ⁅ (k , l) ∣ ((k , l) , _) ∶ (Σ (k , l) ꞉ (index ℬ × index ℬ) , (((ℬ [ k ]) ≤[ poset-of (𝒪 X) ] j (ℬ [ l ])) holds)) ⁆
+ basic-below : Perfect-Nucleus-on-X → 𝓤  ̇
+ basic-below 𝒿@(j , _) =
+  Σ (k , l) ꞉ (index ℬ × index ℬ) , ((ℬ [ k ]) ≤[ poset-of (𝒪 X) ] j (ℬ [ l ])) holds
+
+ 𝕔𝕠𝕧₁ : Perfect-Nucleus-on-X → Fam 𝓤 ⟨ 𝒪 Patchₛ-X ⟩
+ 𝕔𝕠𝕧₁ 𝒿@(j , _) = ⁅ 𝔠 k ∧[ 𝒪 Patchₛ-X ] 𝔬 l ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆
+
+ 𝕜 : Perfect-Nucleus-on-X → index ℬ → ⟨ 𝒪 Patchₛ-X ⟩
+ 𝕜 (j , _) l = ‘ j (ℬ [ l ]) ’ ∧[ 𝒪 Patchₛ-X ] 𝔬 l
+
+ 𝕜-lemma : (𝒿 : Perfect-Nucleus-on-X) (i : index ℬ) → (𝕜 𝒿 i ≼ᵏ 𝒿) holds
+ 𝕜-lemma 𝒿@(j , _) i l =
+  𝕜 𝒿 i $ (ℬ [ l ])                             ＝⟨ refl ⟩ₚ
+  (j ℬᵢ ∨[ 𝒪 X ] ℬₗ) ∧[ 𝒪 X ] (ℬᵢ ==> ℬₗ)       ≤⟨ † ⟩
+  (j ℬᵢ ∨[ 𝒪 X ] ℬₗ) ∧[ 𝒪 X ] (j ℬᵢ ==> ℬₗ)     ≤⟨ {!!} ⟩
+  {!!}                                          ≤⟨ {!!} ⟩
+  j (ℬ [ l ])                                   ■
+   where
+    open PosetReasoning (poset-of (𝒪 X))
+    ℬᵢ = ℬ [ i ]
+    ℬₗ = ℬ [ l ]
+
+    ♠ : {!!}
+    ♠ = {!!}
+
+    † = ∧[ 𝒪 X ]-right-monotone {!!}
+
+
+ 𝕔𝕠𝕧₂ : Perfect-Nucleus-on-X → Fam 𝓤 ⟨ 𝒪 Patchₛ-X ⟩
+ 𝕔𝕠𝕧₂ 𝒿 = ⁅ 𝕜 𝒿 i ∣ i ∶ index ℬ ⁆
+
+\end{code}
+
+The first lemma we prove is the fact that `𝒿 = 𝕔𝕠𝕧₂ 𝒿` which we call
+*Johnstone's lemma*.
+
+\begin{code}
+
+ lemma-johnstone : (𝒿 : Perfect-Nucleus-on-X) → 𝒿 ＝ ⋁[ 𝒪 Patchₛ-X ] 𝕔𝕠𝕧₂ 𝒿
+ lemma-johnstone 𝒿@(j , _) = ⋁[ 𝒪 Patchₛ-X ]-unique (𝕔𝕠𝕧₂ 𝒿) 𝒿 († , ‡)
+  where
+   open Joins (λ 𝒿 𝓀 → 𝒿 ≤[ poset-of (𝒪 Patchₛ-X) ] 𝓀)
+   open PosetReasoning (poset-of (𝒪 X))
+
+   † : (𝒿 is-an-upper-bound-of 𝕔𝕠𝕧₂ 𝒿) holds
+   † = 𝕜-lemma 𝒿
+
+   ‡ : {!∀[∶]-syntax
+         (Joins.upper-bound (rel-syntax (poset-of (𝒪 Patchₛ-X)))
+          (𝕔𝕠𝕧₂ (j , _)))
+         (λ .patternInTele0 →
+            rel-syntax (poset-of (𝒪 Patchₛ-X)) (j , _) (pr₁ .patternInTele0))
+         holds!}
+   ‡ = {!!}
 
 \end{code}
 
@@ -593,16 +667,16 @@ We first prove that this forms a basis.
 
 \begin{code}
 
- ℬ-is-basis-for-patch : is-basis-for (𝒪 Patchₛ-X) ℬ-patch
- ℬ-is-basis-for-patch 𝒿 = 𝕔𝕠𝕧 𝒿 , β , γ
-  where
-   open Joins (λ x y → x ≤[ poset-of (𝒪 Patchₛ-X) ] y)
+ -- ℬ-is-basis-for-patch : is-basis-for (𝒪 Patchₛ-X) ℬ-patch
+ -- ℬ-is-basis-for-patch 𝒿 = 𝕔𝕠𝕧 𝒿 , β , γ
+ --  where
+ --   open Joins (λ x y → x ≤[ poset-of (𝒪 Patchₛ-X) ] y)
 
-   β : (𝒿 is-an-upper-bound-of ⁅ 𝔬 k ⋏ 𝔠 l ∣ (k , l) ε 𝕔𝕠𝕧 𝒿 ⁆) holds
-   β = {!!}
+ --   β : (𝒿 is-an-upper-bound-of ⁅ 𝔠 k ⋏ 𝔬 l ∣ (k , l) ε 𝕔𝕠𝕧 𝒿 ⁆) holds
+ --   β = {!!}
 
-   γ : {!!}
-   γ = {!!}
+ --   γ : {!!}
+ --   γ = {!!}
 
 \end{code}
 
