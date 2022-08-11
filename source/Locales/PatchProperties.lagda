@@ -371,12 +371,16 @@ module OpenNucleus (X : Locale 𝓤 𝓥 𝓥) (σ : is-spectral (𝒪 X) holds)
    ♠ = (U ==> V) ∧[ 𝒪 X ] U ≤⟨ mp-right U V ⟩ V ≤⟨ 𝓃₁ (𝒪 X) 𝒿 V ⟩ j V ■
 
    ♣ : (((U ==> j V) ∧[ 𝒪 X ] (j U)) ≤[ poset-of (𝒪 X) ] j V) holds
-   ♣ = (U ==> j V) ∧[ 𝒪 X ] (j U)    ≤⟨ i ⟩
-       j (U ==> j V) ∧[ 𝒪 X ] j U      ≤⟨ {!!} ⟩
-       j ((U ==> V) ∧[ 𝒪 X ] U)      ≤⟨ {!!} ⟩
-       j V                           ■
+   ♣ = (U ==> j V) ∧[ 𝒪 X ] j U     ≤⟨ i  ⟩
+       j (U ==> j V) ∧[ 𝒪 X ] j U   ＝⟨ ii ⟩ₚ
+       j ((U ==> j V) ∧[ 𝒪 X ] U)   ≤⟨ iii ⟩
+       j (j V)                      ＝⟨ iv ⟩ₚ
+       j V                          ■
         where
-         i = ∧[ 𝒪 X ]-left-monotone {!!}
+         i   = ∧[ 𝒪 X ]-left-monotone (𝓃₁ (𝒪 X) 𝒿 (U ==> j V))
+         ii  = 𝓃₃ (𝒪 X) 𝒿 (U ==> j V) U ⁻¹
+         iii = nuclei-are-monotone (𝒪 X) 𝒿 _ (mp-right U (j V))
+         iv  = nuclei-are-idempotent (𝒪 X) 𝒿 V
 
    † = heyting-implication₁ U (j V) (U ==> V) ♠
    ‡ = heyting-implication₁ (j U) (j V) (U ==> j V) ♣
