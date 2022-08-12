@@ -620,8 +620,15 @@ is given by the restriction of the family, given by the function `𝕔𝕠𝕧`
  𝕜 : Perfect-Nucleus-on-X → index ℬ → ⟨ 𝒪 Patchₛ-X ⟩
  𝕜 (j , _) l = ‘ j (ℬ [ l ]) ’ ∧[ 𝒪 Patchₛ-X ] 𝔬 l
 
- 𝕜-lemma : (𝒿 : Perfect-Nucleus-on-X) (i : index ℬ) → (𝕜 𝒿 i ≼ᵏ 𝒿) holds
- 𝕜-lemma 𝒿@(j , _) i l =
+ 𝕔𝕠𝕧₂ : Perfect-Nucleus-on-X → Fam 𝓤 ⟨ 𝒪 Patchₛ-X ⟩
+ 𝕔𝕠𝕧₂ 𝒿 = ⁅ 𝕜 𝒿 i ∣ i ∶ index ℬ ⁆
+
+\end{code}
+
+\begin{code}
+
+ 𝕜ⱼi-is-below-j : (𝒿 : Perfect-Nucleus-on-X) (i : index ℬ) → (𝕜 𝒿 i ≼ᵏ 𝒿) holds
+ 𝕜ⱼi-is-below-j 𝒿@(j , _) i l =
   𝕜 𝒿 i $ (ℬ [ l ])                                          ＝⟨ refl ⟩ₚ
   (j ℬᵢ ∨[ 𝒪 X ] ℬₗ) ∧[ 𝒪 X ] (ℬᵢ ==> ℬₗ)                    ≤⟨ ᚠ ⟩
   (j ℬᵢ ∨[ 𝒪 X ] ℬₗ) ∧[ 𝒪 X ] (j ℬᵢ ==> j ℬₗ)                ≤⟨ ᚣ ⟩
@@ -652,43 +659,35 @@ is given by the restriction of the family, given by the function `𝕔𝕠𝕧`
     ᚣ = ∧[ 𝒪 X ]-right-monotone ♠
     ᚬ = mp-left (j ℬᵢ ∨[ 𝒪 X ] ℬₗ) (j ℬₗ)
 
- 𝕜-𝒿-eq : (𝒿 : Perfect-Nucleus-on-X) (i : index ℬ) → 𝕜 𝒿 i ＝ 𝒿
- 𝕜-𝒿-eq 𝒿@(j , _) i = {!!}
+\end{code}
+
+This lemma can be strengthened to an equality in the case where `𝕜ⱼ(i)` is being
+applied to `ℬⱼ`.
+
+\begin{code}
+
+ 𝕜-𝒿-eq : (𝒿 : Perfect-Nucleus-on-X) (i : index ℬ) → 𝕜 𝒿 i $ (ℬ [ i ]) ＝ 𝒿 $ (ℬ [ i ])
+ 𝕜-𝒿-eq 𝒿@(j , _) i = ≤-is-antisymmetric (poset-of (𝒪 X)) † ‡
   where
+   open PosetReasoning (poset-of (𝒪 X))
 
-   † : (l : index ℬ) → 𝕜 𝒿 i $ (ℬ [ l ]) ＝ 𝒿 $ (ℬ [ l ])
-   † l =
-    𝕜 𝒿 i $ (ℬ [ l ])                          ＝⟨ {!!} ⟩
-    (j ℬᵢ ∨[ 𝒪 X ] ℬₗ) ∧[ 𝒪 X ] (ℬᵢ ==> ℬₗ)    ＝⟨ {!!} ⟩
-    𝒿 $ (ℬ [ l ])                              ∎
-     where
-      open PosetReasoning (poset-of (𝒪 X))
+   ℬᵢ = ℬ [ i ]
 
-      ℬᵢ = ℬ [ i ]
-      ℬₗ = ℬ [ l ]
+   † : (((𝕜 𝒿 i) $ (ℬ [ i ])) ≤[ poset-of (𝒪 X) ] (𝒿 $ (ℬ [ i ]))) holds
+   † = 𝕜ⱼi-is-below-j 𝒿 i i
 
-      Ⅰ = binary-distributivity (𝒪 X) (j ℬᵢ ==> j ℬₗ) (j ℬᵢ) ℬₗ
-      Ⅱ = ∨[ 𝒪 X ]-left-monotone (mp-right (j ℬᵢ) (j ℬₗ))
-      Ⅲ = ∨[ 𝒪 X ]-right-monotone (∧[ 𝒪 X ]-lower₂ (j ℬᵢ ==> j ℬₗ) ℬₗ)
-      Ⅳ = ∨[ 𝒪 X ]-least (≤-is-reflexive (poset-of (𝒪 X)) (j ℬₗ)) (𝓃₁ (𝒪 X) (nucleus-of 𝒿) ℬₗ)
+   Ⅰ = ∨[ 𝒪 X ]-upper₁ (j (ℬ [ i ])) (ℬ [ i ])
+   Ⅱ = 𝟏-right-unit-of-∧ (𝒪 X) (j (ℬ [ i ]) ∨[ 𝒪 X ] ℬ [ i ]) ⁻¹
+   Ⅲ = ap
+       (λ - → (j (ℬ [ i ]) ∨[ 𝒪 X ] ℬ [ i ]) ∧[ 𝒪 X ] -)
+       (heyting-implication-identity (ℬ [ i ]) ⁻¹)
 
-      ♣ : ((j ℬᵢ ==> j ℬₗ ∧[ 𝒪 X ] (j ℬᵢ ∨[ 𝒪 X ] ℬₗ)) ≤[ poset-of (𝒪 X) ] j ℬₗ) holds
-      ♣ = j ℬᵢ ==> j ℬₗ ∧[ 𝒪 X ] (j ℬᵢ ∨[ 𝒪 X ] ℬₗ)                             ＝⟨ Ⅰ ⟩ₚ
-          ((j ℬᵢ ==> j ℬₗ) ∧[ 𝒪 X ] j ℬᵢ) ∨[ 𝒪 X ] (j ℬᵢ ==> j ℬₗ) ∧[ 𝒪 X ] ℬₗ  ≤⟨ Ⅱ ⟩
-          j ℬₗ ∨[ 𝒪 X ] (j ℬᵢ ==> j ℬₗ) ∧[ 𝒪 X ] ℬₗ                             ≤⟨ Ⅲ ⟩
-          j ℬₗ ∨[ 𝒪 X ] ℬₗ                                                      ≤⟨ Ⅳ ⟩
-          j ℬₗ                                                                  ■
-
-
-      ♠ : ((j ℬᵢ ==> j ℬₗ) ≤[ poset-of (𝒪 X) ] ((j ℬᵢ ∨[ 𝒪 X ] ℬₗ) ==> j ℬₗ)) holds
-      ♠ = heyting-implication₁ _ (j ℬₗ) (j ℬᵢ ==> j ℬₗ) ♣
-
-      ᚠ = ∧[ 𝒪 X ]-right-monotone (nuclei-preserve-==> ℬᵢ ℬₗ (nucleus-of 𝒿))
-      ᚣ = ∧[ 𝒪 X ]-right-monotone ♠
-      ᚬ = mp-left (j ℬᵢ ∨[ 𝒪 X ] ℬₗ) (j ℬₗ)
-
- 𝕔𝕠𝕧₂ : Perfect-Nucleus-on-X → Fam 𝓤 ⟨ 𝒪 Patchₛ-X ⟩
- 𝕔𝕠𝕧₂ 𝒿 = ⁅ 𝕜 𝒿 i ∣ i ∶ index ℬ ⁆
+   ‡ : ((𝒿 $ (ℬ [ i ])) ≤[ poset-of (𝒪 X) ] (𝕜 𝒿 i $ (ℬ [ i ]))) holds
+   ‡ = 𝒿 $ (ℬ [ i ])                                                     ≤⟨ Ⅰ ⟩
+       j (ℬ [ i ]) ∨[ 𝒪 X ] ℬ [ i ]                                      ＝⟨ Ⅱ ⟩ₚ
+       (j (ℬ [ i ]) ∨[ 𝒪 X ] ℬ [ i ]) ∧[ 𝒪 X ] 𝟏[ 𝒪 X ]                  ＝⟨ Ⅲ ⟩ₚ
+       (j (ℬ [ i ]) ∨[ 𝒪 X ] ℬ [ i ]) ∧[ 𝒪 X ] ((ℬ [ i ]) ==> (ℬ [ i ])) ＝⟨ refl ⟩ₚ
+       𝕜 𝒿 i $ (ℬ [ i ])                                                 ■
 
 \end{code}
 
@@ -704,12 +703,12 @@ The first lemma we prove is the fact that `𝒿 = 𝕔𝕠𝕧₂ 𝒿` which we
    open PosetReasoning (poset-of (𝒪 X))
 
    † : (𝒿 is-an-upper-bound-of 𝕔𝕠𝕧₂ 𝒿) holds
-   † = 𝕜-lemma 𝒿
+   † = 𝕜ⱼi-is-below-j 𝒿
 
    ‡ : ((𝓀 , _) : upper-bound (𝕔𝕠𝕧₂ 𝒿)) → (𝒿 ≼ᵏ 𝓀) holds
-   ‡ (𝓀 , υ) l = j (ℬ [ l ])        ≤⟨ {!!} ⟩
-                 𝕜 𝒿 l $ (ℬ [ l ])  ≤⟨ {!!} ⟩
-                 {!!}               ■
+   ‡ (𝓀 , υ) l = j (ℬ [ l ])        ＝⟨ 𝕜-𝒿-eq 𝒿 l ⁻¹ ⟩ₚ
+                 𝕜 𝒿 l $ (ℬ [ l ])  ≤⟨ υ l l ⟩
+                 𝓀 $ (ℬ [ l ])      ■
 
 \end{code}
 
