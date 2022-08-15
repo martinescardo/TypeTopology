@@ -187,6 +187,41 @@ binary-join-is-compact
 
 \end{code}
 
+If we have a continuous section s with continuous retraction r, then y ≪ s x
+implies r y ≪ x for all elements x and y.
+
+\begin{code}
+
+module _
+        (𝓓 : DCPO {𝓤} {𝓣})
+        (𝓔 : DCPO {𝓤'} {𝓣'})
+        (ρ : 𝓓 continuous-retract-of 𝓔)
+       where
+
+ open _continuous-retract-of_ ρ
+
+ continuous-retraction-≪-criterion : (y : ⟨ 𝓔 ⟩) (x : ⟨ 𝓓 ⟩)
+                                   → y ≪⟨ 𝓔 ⟩ s x
+                                   → r y ≪⟨ 𝓓 ⟩ x
+ continuous-retraction-≪-criterion y x y-way-below-sx I α δ x-below-∐α =
+  ∥∥-functor h (y-way-below-sx I (s ∘ α) ε l)
+   where
+    ε : is-Directed 𝓔 (s ∘ α)
+    ε = image-is-directed' 𝓓 𝓔 𝕤 δ
+    l : s x ⊑⟨ 𝓔 ⟩ ∐ 𝓔 ε
+    l = s x       ⊑⟨ 𝓔 ⟩[ monotone-if-continuous 𝓓 𝓔 𝕤 x (∐ 𝓓 δ) x-below-∐α ]
+        s (∐ 𝓓 δ) ⊑⟨ 𝓔 ⟩[ continuous-∐-⊑ 𝓓 𝓔 𝕤 δ ]
+        ∐ 𝓔 ε     ∎⟨ 𝓔 ⟩
+    h : (Σ i ꞉ I , y ⊑⟨ 𝓔 ⟩ s (α i))
+      → (Σ i ꞉ I , r y ⊑⟨ 𝓓 ⟩ α i)
+    h (i , u) = (i , v)
+     where
+      v = r y         ⊑⟨ 𝓓 ⟩[ monotone-if-continuous 𝓔 𝓓 𝕣 y (s (α i)) u ]
+          r (s (α i)) ⊑⟨ 𝓓 ⟩[ ＝-to-⊑ 𝓓 (s-section-of-r (α i)) ]
+          α i         ∎⟨ 𝓓 ⟩
+
+\end{code}
+
 In an embedding-projection pair, the embedding preserves and reflects the
 way-below relation, and hence, compact elements.
 
@@ -232,66 +267,23 @@ module _
  embeddings-preserve-compactness x = embeddings-preserve-≪ x x
 
  embeddings-reflect-≪ : (x y : ⟨ 𝓓 ⟩) → ε x ≪⟨ 𝓔 ⟩ ε y → x ≪⟨ 𝓓 ⟩ y
- embeddings-reflect-≪ x y εx-way-below-εy I α δ y-below-∐α =
-  ∥∥-functor h (εx-way-below-εy I (ε ∘ α) δ' εy-below-∐εα)
-   where
-    δ' : is-Directed 𝓔 (ε ∘ α)
-    δ' = image-is-directed' 𝓓 𝓔 (ε , ε-is-continuous) δ
-    εy-below-∐εα = ε y       ⊑⟨ 𝓔 ⟩[ ⦅1⦆ ]
-                   ε (∐ 𝓓 δ) ⊑⟨ 𝓔 ⟩[ ⦅2⦆ ]
-                   ∐ 𝓔 δ'    ∎⟨ 𝓔 ⟩
-     where
-      ⦅1⦆ = monotone-if-continuous 𝓓 𝓔 (ε , ε-is-continuous) y (∐ 𝓓 δ) y-below-∐α
-      ⦅2⦆ = continuous-∐-⊑ 𝓓 𝓔 (ε , ε-is-continuous) δ
-    h : (Σ i ꞉ I , ε x ⊑⟨ 𝓔 ⟩ ε (α i))
-      → (Σ i ꞉ I , x   ⊑⟨ 𝓓 ⟩ α i)
-    h (i , u) = (i , (x           ⊑⟨ 𝓓 ⟩[ ⦅1⦆ ]
-                      π (ε x)     ⊑⟨ 𝓓 ⟩[ ⦅2⦆ ]
-                      π (ε (α i)) ⊑⟨ 𝓓 ⟩[ ⦅3⦆ ]
-                      α i         ∎⟨ 𝓓 ⟩))
-     where
-      ⦅1⦆ = ＝-to-⊑ 𝓓 ((π-ε-retraction x) ⁻¹)
-      ⦅2⦆ = monotone-if-continuous 𝓔 𝓓 (π , π-is-continuous) (ε x) (ε (α i)) u
-      ⦅3⦆ = ＝-to-⊑ 𝓓 (π-ε-retraction (α i))
+ embeddings-reflect-≪ x y l = transport (λ - → - ≪⟨ 𝓓 ⟩ y) (π-ε-retraction x) lem
+  where
+   lem : π (ε x) ≪⟨ 𝓓 ⟩ y
+   lem = continuous-retraction-≪-criterion 𝓓 𝓔 ρ (ε x) y l
+    where
+     ρ : 𝓓 continuous-retract-of 𝓔
+     ρ = record
+           { s = ε
+           ; r = π
+           ; s-section-of-r = π-ε-retraction
+           ; s-is-continuous = ε-is-continuous
+           ; r-is-continuous = π-is-continuous
+           }
 
  embeddings-reflect-compactness : (x : ⟨ 𝓓 ⟩)
                                 → is-compact 𝓔 (ε x)
                                 → is-compact 𝓓 x
  embeddings-reflect-compactness x = embeddings-reflect-≪ x x
-
-\end{code}
-
-Finally, if we have a continuous section s with continuous retraction r, then
-y ≪ s x implies r y ≪ x for all elements x and y.
-
-\begin{code}
-
-module _
-        (𝓓 : DCPO {𝓤} {𝓣})
-        (𝓔 : DCPO {𝓤'} {𝓣'})
-        (ρ : 𝓓 continuous-retract-of 𝓔)
-       where
-
- open _continuous-retract-of_ ρ
-
- continuous-retraction-≪-criterion : (y : ⟨ 𝓔 ⟩) (x : ⟨ 𝓓 ⟩)
-                                   → y ≪⟨ 𝓔 ⟩ s x
-                                   → r y ≪⟨ 𝓓 ⟩ x
- continuous-retraction-≪-criterion y x y-way-below-sx I α δ x-below-∐α =
-  ∥∥-functor h (y-way-below-sx I (s ∘ α) ε l)
-   where
-    ε : is-Directed 𝓔 (s ∘ α)
-    ε = image-is-directed' 𝓓 𝓔 𝕤 δ
-    l : s x ⊑⟨ 𝓔 ⟩ ∐ 𝓔 ε
-    l = s x       ⊑⟨ 𝓔 ⟩[ monotone-if-continuous 𝓓 𝓔 𝕤 x (∐ 𝓓 δ) x-below-∐α ]
-        s (∐ 𝓓 δ) ⊑⟨ 𝓔 ⟩[ continuous-∐-⊑ 𝓓 𝓔 𝕤 δ ]
-        ∐ 𝓔 ε     ∎⟨ 𝓔 ⟩
-    h : (Σ i ꞉ I , y ⊑⟨ 𝓔 ⟩ s (α i))
-      → (Σ i ꞉ I , r y ⊑⟨ 𝓓 ⟩ α i)
-    h (i , u) = (i , v)
-     where
-      v = r y         ⊑⟨ 𝓓 ⟩[ monotone-if-continuous 𝓔 𝓓 𝕣 y (s (α i)) u ]
-          r (s (α i)) ⊑⟨ 𝓓 ⟩[ ＝-to-⊑ 𝓓 (s-section-of-r (α i)) ]
-          α i         ∎⟨ 𝓓 ⟩
 
 \end{code}
