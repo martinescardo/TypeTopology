@@ -176,12 +176,6 @@ uniformly-continuous p = Σ n ꞉ ℕ , n is-a-modulus-of-uniform-continuity-of 
 
 \end{code}
 
-TODO. Show that
-
- (Σ p ꞉ (Cantor  → 𝟚) , uniformly-continuous p) ≃ (Σ n ꞉ ℕ , Fin n → 𝟚)
-
-If we define uniform continuity with ∃ rather than Σ, this is no longer the case.
-
 Notice that a function has modulus of continuity zero if and only it
 is constant.
 
