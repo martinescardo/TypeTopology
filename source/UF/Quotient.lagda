@@ -44,15 +44,48 @@ record set-quotients-exist : 𝓤ω where
                                  {X : 𝓤 ̇  } (≋ : EqRel {𝓤} {𝓥} X)
                                → identifies-related-points ≋ (η/ ≋)
   /-is-set : {𝓤 𝓥 : Universe} {X : 𝓤 ̇  } (≋ : EqRel {𝓤} {𝓥} X) → is-set (X / ≋)
-  /-induction : {𝓤 𝓥 : Universe} {X : 𝓤 ̇  } (≋ : EqRel {𝓤} {𝓥} X)
-                {𝓦 : Universe} {P : X / ≋ → 𝓦 ̇  }
-              → ((x' : X / ≋) → is-prop (P x'))
-              → ((x : X) → P (η/ ≋ x)) → (y : X / ≋) → P y
   /-universality : {𝓤 𝓥 : Universe} {X : 𝓤 ̇  } (≋ : EqRel {𝓤} {𝓥} X)
                    {𝓦 : Universe} {Y : 𝓦 ̇  }
                  → is-set Y → (f : X → Y)
                  → identifies-related-points ≋ f
                  → ∃! f̅ ꞉ (X / ≋ → Y) , f̅ ∘ η/ ≋ ∼ f
+
+\end{code}
+
+Added 22 August 2022.
+The induction principle follows from the universal property.
+
+\begin{code}
+
+ /-induction : {X : 𝓤 ̇  } (≋ : EqRel {𝓤} {𝓥} X)
+               {P : X / ≋ → 𝓦 ̇  }
+             → ((x' : X / ≋) → is-prop (P x'))
+             → ((x : X) → P (η/ ≋ x)) → (y : X / ≋) → P y
+ /-induction {X = X} ≋ {P} P-is-prop-valued ρ y =
+  transport P (happly f̅-section-of-pr₁ y) (pr₂ (f̅ y))
+   where
+    f : X → Σ P
+    f x = (η/ ≋ x , ρ x)
+    f-identifies-related-points : identifies-related-points ≋ f
+    f-identifies-related-points r =
+     to-subtype-＝ P-is-prop-valued (η/-identifies-related-points ≋ r)
+    ΣP-is-set : is-set (Σ P)
+    ΣP-is-set = subsets-of-sets-are-sets (X / ≋) P (/-is-set ≋)
+                                         (λ {x'} → P-is-prop-valued x')
+    F : ∃! f̅ ꞉ (X / ≋ → Σ P) , f̅ ∘ η/ ≋ ∼ f
+    F = /-universality ≋ ΣP-is-set f f-identifies-related-points
+    f̅ : X / ≋ → Σ P
+    f̅ = ∃!-witness F
+    f̅-after-η-is-f : f̅ ∘ η/ ≋ ∼ f
+    f̅-after-η-is-f = ∃!-is-witness F
+    f̅-section-of-pr₁ : pr₁ ∘ f̅ ＝ id
+    f̅-section-of-pr₁ = ap pr₁ (singletons-are-props c (pr₁ ∘ f̅ , h)
+                                                      (id , λ x → refl))
+     where
+      c : ∃! g ꞉ (X / ≋ → X / ≋) , g ∘ η/ ≋ ∼ η/ ≋
+      c = /-universality ≋ (/-is-set ≋) (η/ ≋) (η/-identifies-related-points ≋)
+      h : pr₁ ∘ f̅ ∘ η/ ≋ ∼ η/ ≋
+      h x = ap pr₁ (f̅-after-η-is-f x)
 
 \end{code}
 
