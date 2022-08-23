@@ -729,6 +729,39 @@ apartness relation _♯₂ is tight:
 
 \begin{code}
 
+-- Test
+
+ _♯Ω_ : Ω 𝓤 → Ω 𝓤 → 𝓤 ̇
+ (P , i) ♯Ω (Q , j) = (P × ¬ Q) + (¬ P × Q)
+
+ ♯Ω-irrefl : is-irreflexive (_♯Ω_ {𝓤})
+ ♯Ω-irrefl (P , i) (inl (p , nq)) = nq p
+ ♯Ω-irrefl (P , i) (inr (np , q)) = np q
+
+ ♯Ω-sym : is-symmetric (_♯Ω_ {𝓤})
+ ♯Ω-sym (P , i) (Q , j) (inl (p , nq)) = inr (nq , p)
+ ♯Ω-sym (P , i) (Q , j) (inr (np , q)) = inl (q , np)
+
+{-
+ ♯Ω-cotran : is-cotransitive (_♯Ω_ {𝓤})
+ ♯Ω-cotran (P , i) (Q , j) (R , k) (inl (p , nq)) = ∣ inl (inl (p , {!!})) ∣
+ ♯Ω-cotran (P , i) (Q , j) (R , k) (inr (np , q)) = {!!}
+-}
+
+ ♯Ω-cotran-taboo : is-cotransitive (_♯Ω_ {𝓤})
+                 → (p : Ω 𝓤) → p holds ∨ ¬ (p holds)
+ ♯Ω-cotran-taboo c p = ∥∥-functor II I
+  where
+   I : (⊥Ω ♯Ω p) ∨ (⊤Ω ♯Ω p)
+   I = c ⊥Ω ⊤Ω p (inr (𝟘-elim , ⋆))
+
+   II : (⊥Ω ♯Ω p) + (⊤Ω ♯Ω p) → (p holds) + ¬ (p holds)
+   II (inl (inr (a , b))) = inl b
+   II (inr (inl (a , b))) = inr b
+   II (inr (inr (a , b))) = inl b
+
+-- End of test
+
  _♯₂_ : {X : 𝓤 ̇ } → X → X → 𝓤 ̇
  x ♯₂ y = ∃ p ꞉ (type-of x → 𝟚), p x ≢ p y
 
