@@ -577,6 +577,7 @@ We use Yoneda for the `β` direction.
 module BasisOfPatch (X : Locale (𝓤 ⁺) 𝓤 𝓤) (σᴰ : spectralᴰ (𝒪 X)) where
 
  open PatchConstruction X ∣ σᴰ ∣ renaming (Perfect-Nucleus to Perfect-Nucleus-on-X)
+ open PatchConstruction X ∣ σᴰ ∣ using () renaming (Patch to Patch-X)
  open SmallPatchConstruction X σᴰ renaming (SmallPatch to Patchₛ-X)
  open HeytingImplicationConstruction X (spectral-frames-have-bases (𝒪 X) ∣ σᴰ ∣)
  open ClosedNucleus X ∣ σᴰ ∣
@@ -709,6 +710,56 @@ The first lemma we prove is the fact that `𝒿 = 𝕔𝕠𝕧₂ 𝒿` which we
    ‡ (𝓀 , υ) l = j (ℬ [ l ])        ＝⟨ 𝕜-𝒿-eq 𝒿 l ⁻¹ ⟩ₚ
                  𝕜 𝒿 l $ (ℬ [ l ])  ≤⟨ υ l l ⟩
                  𝓀 $ (ℬ [ l ])      ■
+
+\end{code}
+
+\begin{code}
+
+ open Epsilon X σᴰ
+
+ ‘’-is-monotone : (U V : ⟨ 𝒪 X ⟩)
+                → (U ≤[ poset-of (𝒪 X) ] V) holds
+                → (‘ U ’ ≤[ poset-of (𝒪 Patch-X) ] ‘ V ’) holds
+ ‘’-is-monotone U V p W = ∨[ 𝒪 X ]-least † ‡
+  where
+   open PosetReasoning (poset-of (𝒪 X))
+
+   † : (U ≤[ poset-of (𝒪 X) ] (V ∨[ 𝒪 X ] W)) holds
+   † = U ≤⟨ p ⟩ V ≤⟨ ∨[ 𝒪 X ]-upper₁ V W ⟩ V ∨[ 𝒪 X ] W ■
+
+   ‡ : (W ≤[ poset-of (𝒪 X) ] (V ∨[ 𝒪 X ] W)) holds
+   ‡ = ∨[ 𝒪 X ]-upper₂ V W
+
+
+ 𝕔𝕠𝕧₁=𝕔𝕠𝕧₂ : (𝒿 : Perfect-Nucleus-on-X) → ⋁ₙ (𝕔𝕠𝕧₁ 𝒿) ＝ ⋁ₙ (𝕔𝕠𝕧₂ 𝒿)
+ 𝕔𝕠𝕧₁=𝕔𝕠𝕧₂ 𝒿@(j , _) = ≤-is-antisymmetric (poset-of (𝒪 Patch-X)) † ‡
+  where
+   open PosetReasoning (poset-of (𝒪 Patch-X))
+
+   β : cofinal-in (𝒪 Patch-X) (𝕔𝕠𝕧₁ 𝒿) (𝕔𝕠𝕧₂ 𝒿) holds
+   β ((k , l) , p) = ∣ l , ※ ∣
+    where
+     ♠ : ((𝔠 k ∧[ 𝒪 Patch-X ] 𝔬 l)
+          ≤[ poset-of (𝒪 Patch-X) ]
+          (‘ j (ℬ [ l ]) ’ ∧[ 𝒪 Patchₛ-X ] 𝔬 l)) holds
+     ♠ = ∧[ 𝒪 Patch-X ]-left-monotone (‘’-is-monotone (ℬ [ k ]) (j (ℬ [ l ])) p)
+
+     ※ : ((𝕔𝕠𝕧₁ 𝒿 [ (k , l) , p ]) ≤[ poset-of (𝒪 Patch-X) ] ((𝕔𝕠𝕧₂ 𝒿) [ l ])) holds
+     ※ = 𝕔𝕠𝕧₁ 𝒿 [ (k , l) , p ]                ＝⟨ refl ⟩ₚ
+         𝔠 k ∧[ 𝒪 Patch-X ] 𝔬 l                ≤⟨ ♠ ⟩
+         ‘ j (ℬ [ l ]) ’ ∧[ 𝒪 Patchₛ-X ] 𝔬 l   ＝⟨ refl ⟩ₚ
+         𝕔𝕠𝕧₂ 𝒿 [ l ]                          ■
+
+   γ : cofinal-in (𝒪 Patch-X) (𝕔𝕠𝕧₂ 𝒿) (𝕔𝕠𝕧₁ 𝒿) holds
+   γ = {!!}
+
+   † : (⋁ₙ (𝕔𝕠𝕧₁ 𝒿) ≼ ⋁ₙ (𝕔𝕠𝕧₂ 𝒿)) holds
+   † = cofinal-implies-join-covered (𝒪 Patch-X) (𝕔𝕠𝕧₁ 𝒿) (𝕔𝕠𝕧₂ 𝒿) β
+
+   ‡ : rel-syntax (poset-of (𝒪 Patch-X)) (⋁ₙ (𝕔𝕠𝕧₂ (j , _)))
+         (⋁ₙ (𝕔𝕠𝕧₁ (j , _)))
+         holds
+   ‡ = {!!}
 
 \end{code}
 
