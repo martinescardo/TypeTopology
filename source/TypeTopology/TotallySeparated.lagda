@@ -882,31 +882,52 @@ apartness relation _♯₂ is tight:
  tightness, they are equal. It follows that tight apartness types are
  sets.
 
+ TODO. We need better names for the following functions:
+
 \begin{code}
+
+ not-not-equal-not-apart' : {X : 𝓤 ̇ } (x y : X) (_♯_ : X → X → 𝓥 ̇ )
+                          → is-irreflexive _♯_
+                          → ¬¬ (x ＝ y) → ¬ (x ♯ y)
+ not-not-equal-not-apart' x y _♯_ i = contrapositive f
+  where
+   f : x ♯ y → ¬ (x ＝ y)
+   f a p = i y (transport (λ - → - ♯ y) p a)
+
+ tight-is-¬¬-separated' : {X : 𝓤 ̇ } (_♯_ : X → X → 𝓥 ̇ )
+                        → is-irreflexive _♯_
+                        → is-tight _♯_
+                        → is-¬¬-separated X
+ tight-is-¬¬-separated' _♯_ i t = f
+  where
+   f : ∀ x y → ¬¬ (x ＝ y) → x ＝ y
+   f x y φ = t x y (not-not-equal-not-apart' x y _♯_ i φ)
+
+ tight-is-set' : {X : 𝓤 ̇ } (_♯_ : X → X → 𝓥 ̇ )
+               → funext 𝓤 𝓤₀
+               → is-irreflexive _♯_
+               → is-tight _♯_
+               → is-set X
+ tight-is-set' _♯_ fe i t = ¬¬-separated-types-are-sets fe
+                             (tight-is-¬¬-separated' _♯_ i t)
 
  not-not-equal-not-apart : {X : 𝓤 ̇ } (x y : X) (_♯_ : X → X → 𝓥 ̇ )
                          → is-apartness _♯_
                          → ¬¬ (x ＝ y) → ¬ (x ♯ y)
- not-not-equal-not-apart x y _♯_ (_ , i , _ , _) = contrapositive f
-  where
-   f : x ♯ y → ¬ (x ＝ y)
-   f a p = i y (transport (λ - → - ♯ y) p a)
+ not-not-equal-not-apart x y _♯_ (_ , i , _ , _) = not-not-equal-not-apart' x y _♯_ i
 
  tight-is-¬¬-separated : {X : 𝓤 ̇ } (_♯_ : X → X → 𝓥 ̇ )
                        → is-apartness _♯_
                        → is-tight _♯_
                        → is-¬¬-separated X
- tight-is-¬¬-separated _♯_ a t = f
-  where
-   f : ∀ x y → ¬¬ (x ＝ y) → x ＝ y
-   f x y φ = t x y (not-not-equal-not-apart x y _♯_ a φ)
+ tight-is-¬¬-separated _♯_ (_ , i , _ , _) = tight-is-¬¬-separated' _♯_ i
 
  tight-is-set : {X : 𝓤 ̇ } (_♯_ : X → X → 𝓥 ̇ )
               → funext 𝓤 𝓤₀
               → is-apartness _♯_
               → is-tight _♯_
               → is-set X
- tight-is-set _♯_ fe a t = ¬¬-separated-types-are-sets fe (tight-is-¬¬-separated _♯_ a t)
+ tight-is-set _♯_ fe (_ , i , _ , _) = tight-is-set' _♯_ fe i
 
 \end{code}
 
@@ -924,11 +945,11 @@ apartness relation _♯₂ is tight:
     f : (Σ _♯_ ꞉ (X → X → 𝓤 ̇ ), is-apartness _♯_ × is-tight _♯_) → is-¬¬-separated X
     f (_♯_ , a , t) = tight-is-¬¬-separated _♯_ a t
 
- tight-is-set' : funext 𝓤 𝓤
-               → {X : 𝓤 ̇ }
-               → (∃ _♯_ ꞉ (X → X → 𝓤 ̇ ), is-apartness _♯_ × is-tight _♯_)
-               → is-set X
- tight-is-set' {𝓤} fe {X} = ∥∥-rec (being-set-is-prop fe) f
+ tight-is-set'' : funext 𝓤 𝓤
+                → {X : 𝓤 ̇ }
+                → (∃ _♯_ ꞉ (X → X → 𝓤 ̇ ), is-apartness _♯_ × is-tight _♯_)
+                → is-set X
+ tight-is-set'' {𝓤} fe {X} = ∥∥-rec (being-set-is-prop fe) f
    where
     f : (Σ _♯_ ꞉ (X → X → 𝓤 ̇ ), is-apartness _♯_ × is-tight _♯_) → is-set X
     f (_♯_ , a , t) = tight-is-set _♯_ (lower-funext 𝓤 𝓤 fe) a t

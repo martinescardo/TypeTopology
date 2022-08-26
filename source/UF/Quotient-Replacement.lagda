@@ -135,7 +135,6 @@ set-replacement-gives-set-quotients R = record
  ; η/                           = η/ₛ R
  ; η/-identifies-related-points = η/ₛ-identifies-related-points R
  ; /-is-set                     = /ₛ-is-set R
- ; /-induction                  = /ₛ-induction R
  ; /-universality               = /ₛ-universality R
  }
 

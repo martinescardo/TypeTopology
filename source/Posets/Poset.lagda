@@ -59,3 +59,23 @@ module Posets.Poset
   is-maximal x = (y : D) → x ⊑ y → x ＝ y
 
 \end{code}
+
+Added 25 August 2022, but realized much earlier: the requirement that D is a set
+in poset-axioms is redundant.
+
+\begin{code}
+
+  posets-are-sets : is-prop-valued → is-reflexive → is-antisymmetric → is-set D
+  posets-are-sets p r a {x} {y} = local-hedberg x γ y
+   where
+    γ : (z : D) → collapsible (x ＝ z)
+    γ z = g ∘ f , c
+     where
+      f : (x ＝ z) → (x ⊑ z) × (z ⊑ x)
+      f refl = r x , r x
+      g : (x ⊑ z) × (z ⊑ x) → x ＝ z
+      g (k , l) = a x z k l
+      c : wconstant (g ∘ f)
+      c u v = ap g (×-is-prop (p x z) (p z x) (f u) (f v))
+
+\end{code}
