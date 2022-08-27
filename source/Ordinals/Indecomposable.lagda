@@ -2,7 +2,8 @@ Martin Escardo, 25th August 2022,
 written down in Agda 27th August 2022 while travelling back from
 Thierry Coquand's 60th birthday celebration
 
-The type of ordinals is indecomposable if and only weak excluded middle holds.
+The type of ordinals is decomposable as a disjoint union of two
+pointed types if and only weak excluded middle holds.
 
 \begin{code}
 
@@ -66,7 +67,8 @@ decomposable₁ {𝓤} X = Σ X₀ ꞉ 𝓤 ̇ , Σ X₁ ꞉ 𝓤 ̇ , X₀ × X
 
 \end{code}
 
-TODO. decomposable X ≃ decomposable₁ X
+TODO. decomposable X ≃ decomposable₁ X. Is this already proved
+somewhere in TypeTopology?
 
 \begin{code}
 
