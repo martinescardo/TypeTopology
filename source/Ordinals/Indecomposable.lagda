@@ -151,32 +151,33 @@ WEM-gives-decomposability-of-ordinals-type {𝓤} wem =
 
 \end{code}
 
-For the converse, we use the following notion.
+For the converse, we use the following notion, where Ω 𝓤 is the type
+of truth values, or propositions, in the universe 𝓤.
 
 \begin{code}
 
 Ω-Path : {X : 𝓤 ̇ } (𝓥 : Universe) → X → X → 𝓤 ⊔ (𝓥 ⁺) ̇
-Ω-Path {𝓤} {X} 𝓥 x y = Σ g ꞉ (Ω 𝓥 → X) , (g ⊥Ω ＝ x) × (g ⊤Ω ＝ y)
+Ω-Path {𝓤} {X} 𝓥 x y = Σ f ꞉ (Ω 𝓥 → X) , (f ⊥Ω ＝ x) × (f ⊤Ω ＝ y)
 
 has-Ω-paths : (𝓥 : Universe) → 𝓤 ̇  → 𝓤 ⊔ (𝓥 ⁺) ̇
 has-Ω-paths 𝓥 X = (x y : X) → Ω-Path 𝓥 x y
 
 type-of-ordinals-has-Ω-paths : has-Ω-paths 𝓤 (Ordinal 𝓤)
-type-of-ordinals-has-Ω-paths {𝓤} α β = g , γ⊥ , γ⊤
+type-of-ordinals-has-Ω-paths {𝓤} α β = f , γ⊥ , γ⊤
  where
-  g : Ω 𝓤 → Ordinal 𝓤
-  g p = (Ω-to-ordinal (not fe' p) ×ₒ α) +ₒ (Ω-to-ordinal p ×ₒ β)
+  f : Ω 𝓤 → Ordinal 𝓤
+  f p = (Ω-to-ordinal (not fe' p) ×ₒ α) +ₒ (Ω-to-ordinal p ×ₒ β)
 
-  γ⊥ : g ⊥Ω ＝ α
-  γ⊥ = eqtoidₒ (g ⊥Ω) α (u , o , e , p)
+  γ⊥ : f ⊥Ω ＝ α
+  γ⊥ = eqtoidₒ (f ⊥Ω) α (u , o , e , p)
    where
-    u : ⟨ g ⊥Ω ⟩ → ⟨ α ⟩
+    u : ⟨ f ⊥Ω ⟩ → ⟨ α ⟩
     u (inl (x , a)) = a
 
-    o : is-order-preserving (g ⊥Ω) α u
+    o : is-order-preserving (f ⊥Ω) α u
     o (inl (x , a)) (inl (x , b)) (inr (refl , l)) = l
 
-    v : ⟨ α ⟩ → ⟨ g ⊥Ω ⟩
+    v : ⟨ α ⟩ → ⟨ f ⊥Ω ⟩
     v a = inl (𝟘-elim , a)
 
     vu : v ∘ u ∼ id
@@ -188,21 +189,21 @@ type-of-ordinals-has-Ω-paths {𝓤} α β = g , γ⊥ , γ⊤
     e : is-equiv u
     e = qinvs-are-equivs u (v , vu , uv)
 
-    p : is-order-preserving α (g ⊥Ω) v
+    p : is-order-preserving α (f ⊥Ω) v
     p a b l = inr (refl , l)
 
-  γ⊤ : g ⊤Ω ＝ β
-  γ⊤ = eqtoidₒ (g ⊤Ω) β (u , o , e , p)
+  γ⊤ : f ⊤Ω ＝ β
+  γ⊤ = eqtoidₒ (f ⊤Ω) β (u , o , e , p)
    where
-    u : ⟨ g ⊤Ω ⟩ → ⟨ β ⟩
+    u : ⟨ f ⊤Ω ⟩ → ⟨ β ⟩
     u (inl (f , _)) = 𝟘-elim (f ⋆)
     u (inr (⋆ , b)) = b
 
-    o : is-order-preserving (g ⊤Ω) β u
+    o : is-order-preserving (f ⊤Ω) β u
     o (inl (f , _)) y l = 𝟘-elim (f ⋆)
     o (inr (⋆ , _)) (inr (⋆ , _)) (inr (_ , l)) = l
 
-    v : ⟨ β ⟩ → ⟨ g ⊤Ω ⟩
+    v : ⟨ β ⟩ → ⟨ f ⊤Ω ⟩
     v b = inr (⋆ , b)
 
     vu : v ∘ u ∼ id
@@ -215,7 +216,7 @@ type-of-ordinals-has-Ω-paths {𝓤} α β = g , γ⊥ , γ⊤
     e : is-equiv u
     e = qinvs-are-equivs u (v , vu , uv)
 
-    p : is-order-preserving β (g ⊤Ω) v
+    p : is-order-preserving β (f ⊤Ω) v
     p b c l = inr (refl , l)
 
 non-constant-map-Ω-to-𝟚-gives-WEM :
@@ -247,7 +248,6 @@ non-constant-map-Ω-to-𝟚-gives-WEM {𝓤} (f , p₀@(P₀ , i₀) , p₁@(P�
     II = f (g q) ＝⟨ ap f I ⟩
          f p₀    ＝⟨ e₀ ⟩
          ₀       ∎
-
 
   I₁ : (q : Ω 𝓤) → ¬ (q holds) → f (g q) ＝ ₁
   I₁ q n = II
@@ -309,4 +309,4 @@ Ordinal-decomposable-iff-WEM =
 
 TODO. Because WEM 𝓤 is a proposition, it follows that
 ∥ decomposable (Ordinal 𝓤) ∥ ⇔ WEM 𝓤, and hence also
-∥ decomposable (Ordinal 𝓤) ∥ → decomposable (Ordinal 𝓤)
+∥ decomposable (Ordinal 𝓤) ∥ → decomposable (Ordinal 𝓤).
