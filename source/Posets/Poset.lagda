@@ -60,8 +60,8 @@ module Posets.Poset
 
 \end{code}
 
-Added 25 August 2022, but realized much earlier (June 2020): the requirement
-that D is a set in poset-axioms is redundant.
+Added 25 August 2022, but added elsewhere in TypeTopology much earlier (June
+2020): the requirement that D is a set in poset-axioms is redundant.
 
 \begin{code}
 
