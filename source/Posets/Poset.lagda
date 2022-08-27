@@ -59,3 +59,13 @@ module Posets.Poset
   is-maximal x = (y : D) → x ⊑ y → x ＝ y
 
 \end{code}
+
+Added 25 August 2022, but added elsewhere in TypeTopology much earlier (June
+2020): the requirement that D is a set in poset-axioms is redundant.
+
+\begin{code}
+
+  posets-are-sets : is-prop-valued → is-reflexive → is-antisymmetric → is-set D
+  posets-are-sets = type-with-prop-valued-refl-antisym-rel-is-set _⊑_
+
+\end{code}
