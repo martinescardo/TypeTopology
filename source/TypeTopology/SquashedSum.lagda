@@ -489,10 +489,10 @@ module original-version-and-equivalence-with-new-version where
    lemma₂ : u ＝ ∞ → p y₀ ＝ ₁ → (y : Y) → p y ＝ ₁
    lemma₂ r e y = ap p (H u r y y₀) ∙ e
 
-   lemma₁' : p y₀ ＝ ₁ → (y : Y) → p y ＝ ₀ → (n : ℕ) → ι n ≢ u
+   lemma₁' : p y₀ ＝ ₁ → (y : Y) → p y ＝ ₀ → (n : ℕ) → ι n ≠ u
    lemma₁' e y s n r = zero-is-not-one (s ⁻¹ ∙ lemma₁ n r e y)
 
-   lemma₂' : p y₀ ＝ ₁ → (y : Y) → p y ＝ ₀ → u ≢ ∞
+   lemma₂' : p y₀ ＝ ₁ → (y : Y) → p y ＝ ₀ → u ≠ ∞
    lemma₂' e y s r = zero-is-not-one (s ⁻¹ ∙ lemma₂ r e y)
 
    lemma : p y₀ ＝ ₁ → (y : Y) → p y ＝ ₁

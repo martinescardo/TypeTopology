@@ -111,7 +111,7 @@ unique-least (succ n) l = 𝟘-elim l
 ≤-join m n (inl l) = ≤-trans m n (succ n) l (≤-succ n)
 ≤-join .(succ n) n (inr refl) = ≤-refl n
 
-≤-down : (m n : ℕ) → m ≤ succ n → (m ≢ succ n) → (m ≤ n)
+≤-down : (m n : ℕ) → m ≤ succ n → (m ≠ succ n) → (m ≤ n)
 ≤-down m n l u = cases id (λ p → 𝟘-elim (u p)) (≤-split m n l)
 
 ≤-+ : (m n : ℕ) → (m ≤ m +' n)
@@ -289,7 +289,7 @@ Bounded minimization (added 14th December 2019):
        where
         I : k ≤ succ n
         I = φ (succ n) a
-        II : k ≢ succ n
+        II : k ≠ succ n
         II p = transport (λ - → ¬ A -) p u a
         III : k ≤ n
         III = ≤-down k n I II
@@ -409,7 +409,7 @@ Following are proofs of common properties of strict and non-strict order of Natu
   I = ≤-trans x y u l₁ l₂
 
 <-trans₂ : (x y u v : ℕ) → x < y → y < u → u < v → x < v
-<-trans₂ x y u v l₁ l₂ = <-trans x u v I 
+<-trans₂ x y u v l₁ l₂ = <-trans x u v I
  where
   I : x < u
   I = <-trans x y u l₁ l₂
@@ -438,7 +438,7 @@ Following are proofs of common properties of strict and non-strict order of Natu
 <-n-monotone-right : (x y z : ℕ) → x < y → (x +' z) < (y +' z)
 <-n-monotone-right x y  0       l = l
 <-n-monotone-right x y (succ z) l = <-n-monotone-right x y z l
-    
+
 <-n-monotone-left : (x y z : ℕ) → x < y → (z +' x) < (z +' y)
 <-n-monotone-left x y z l
  = transport₂ _<_ (addition-commutativity x z) (addition-commutativity y z) (<-n-monotone-right x y z l)
@@ -483,7 +483,7 @@ subtraction' 0        0        l = 𝟘-induction l
 subtraction' 0        (succ y) l = (succ y) , refl
 subtraction' (succ x) (succ y) l = pr₁ IH , ap succ (pr₂ IH)
  where
-  IH : Σ z ꞉ ℕ , z +' x ＝ y 
+  IH : Σ z ꞉ ℕ , z +' x ＝ y
   IH = subtraction' x y l
 
 subtraction'' : (x y : ℕ) → x < y → Σ z ꞉ ℕ , (succ z +' x ＝ y)
@@ -518,7 +518,7 @@ least-element-unique σ (α , α₀ , α₁) (β , β₀ , β₁) = ≤-anti α 
 
   II : β ≤ α
   II = β₁ α α₀
-    
+
 least-element-unique' : {A : ℕ → 𝓤 ̇} → (σ : detachable A)
                                       → (x y : ℕ)
                                       → (δ : Σ A) → x ＝ pr₁ (least-from-given A σ δ) → y ＝ pr₁ (least-from-given A σ δ)
@@ -538,17 +538,17 @@ The strategy is simple.
 
 bounded-maximisation : (A : ℕ → 𝓤 ̇) → detachable A
                      → (k : ℕ)
-                     → (Σ m ꞉ ℕ , (m < k × A m × ((n : ℕ) → n < k → A n → n ≤ m))) + ((n : ℕ) → A n → n ≥ k) 
+                     → (Σ m ꞉ ℕ , (m < k × A m × ((n : ℕ) → n < k → A n → n ≤ m))) + ((n : ℕ) → A n → n ≥ k)
 bounded-maximisation A δ zero = inr (λ n _ → zero-least n)
 bounded-maximisation A δ (succ k) = f (bounded-maximisation A δ k)
  where
   conclusion = (Σ m ꞉ ℕ , (m < succ k) × A m × ((n : ℕ) → n < succ k → A n → n ≤ m)) + ((n : ℕ) → A n → n ≥ succ k)
-  
+
   f : (Σ m ꞉ ℕ , (m < k) × A m × ((n : ℕ) → n < k → A n → n ≤ m)) + ((n : ℕ) → A n → n ≥ k)
     → conclusion
   f (inl (m , l , a , ψ)) = g (δ k)
    where
-    g : A k + ¬ A k → conclusion 
+    g : A k + ¬ A k → conclusion
     g (inl k-holds) = inl (k , ((<-succ k) , (k-holds , ψ')))
      where
        ψ' : (n : ℕ) → n < succ k → A n → n ≤ k
@@ -594,12 +594,12 @@ bounded-maximisation' A δ k = result (bounded-maximisation A δ k) (δ k)
   result (inr z) (inr k-fails) = inr f
    where
     f : (n : ℕ) → A n → k < n
-    f n a = g (<-split k n (z n a)) 
+    f n a = g (<-split k n (z n a))
      where
       g : (k < n) + (k ＝ n) → k < n
       g (inl j) = j
       g (inr j) = 𝟘-elim (k-fails (transport (λ - → A -) (j ⁻¹) a))
-  
+
 -- type of maximal element m : ℕ such that A m holds, given an upper bound
 
 maximal-element : (A : ℕ → 𝓤 ̇) → (k : ℕ) → 𝓤 ̇
@@ -693,5 +693,3 @@ course-of-values-induction-modified P step = course-of-values-induction P step'
   step' n f with step n
   ... | n , m , ooop = ooop (f n m)
 -}
-
-

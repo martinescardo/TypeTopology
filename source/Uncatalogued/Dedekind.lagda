@@ -19,7 +19,7 @@ discussion.
 
 We also discuss a version of the Dedekind reals proposed by Troelstra.
 To show that it agrees with the usual one, we further assume that _<_
-is dense, upper open, and satisfies p ≢ q → p ≮ q → p < q (which the
+is dense, upper open, and satisfies p ≠ q → p ≮ q → p < q (which the
 type of rationals does).
 
 We also discuss what happens when we assume the principle of
@@ -499,7 +499,7 @@ and a few more:
 
 module _ (ℚ-density         : (p r : ℚ) → p < r → Σ q ꞉ ℚ , (p < q) × (q < r))
          (ℚ-transitivity    : (p q r : ℚ) → p < q → q < r → p < r)
-         (ℚ-order-criterion : (p q : ℚ) → q ≮ p → p ≢ q → p < q)
+         (ℚ-order-criterion : (p q : ℚ) → q ≮ p → p ≠ q → p < q)
          (ℚ-cotransitivity  : (p q r : ℚ) → p < r → (p < q) ∨ (q < r))
          (ℚ-tightness       : (p q : ℚ) → q ≮ p → p ≮ q → p ＝ q)
          (ℚ-is-lower-open   : (q : ℚ) → ∃ p ꞉ ℚ , (p < q))
@@ -547,7 +547,7 @@ module _ (ℚ-density         : (p r : ℚ) → p < r → Σ q ꞉ ℚ , (p < q)
    I : p ∉ U
    I p-in-U = LU-disjoint p (p-in-L , p-in-U)
 
-   II : p ≢ q
+   II : p ≠ q
    II refl = I q-in-U
 
    III : q ≮ p
@@ -687,7 +687,7 @@ does, it is given by the following candidate.
        g (inl r-in-L)     = 𝟘-elim (r-not-in-L r-in-L)
        g (inr q-not-in-L) = ℚ-order-criterion p q II I
         where
-         I : p ≢ q
+         I : p ≠ q
          I refl = q-not-in-L p-in-L
 
          II : q ≮ p
@@ -1524,8 +1524,8 @@ Apartness of real numbers and its basic properties:
  ♯-irrefl x (inl ℓ) = <-irrefl x ℓ
  ♯-irrefl x (inr ℓ) = <-irrefl x ℓ
 
- ♯-gives-≢ : (x y : ℝ) → x ♯ y → x ≢ y
- ♯-gives-≢ x x s refl = ♯-irrefl x s
+ ♯-gives-≠ : (x y : ℝ) → x ♯ y → x ≠ y
+ ♯-gives-≠ x x s refl = ♯-irrefl x s
 
  ♯-sym : (x y : ℝ) → x ♯ y → y ♯ x
  ♯-sym x y (inl ℓ) = inr ℓ
@@ -1560,7 +1560,7 @@ Apartness of real numbers and its basic properties:
  ℝ-is-¬¬-separated x y ϕ = ♯-tight x y (c ϕ)
   where
    c : ¬¬ (x ＝ y) → ¬ (x ♯ y)
-   c = contrapositive (♯-gives-≢ x y)
+   c = contrapositive (♯-gives-≠ x y)
 
  ℝ-order-criterion : (x y : ℝ) → x ≤ y → x ♯ y → x < y
  ℝ-order-criterion x y ℓ (inl m) = m
@@ -1661,7 +1661,7 @@ upper bound of the family x.
         II : p ≮ q
         II m = ν ∣ i , lowercut-is-lower (x i) q l p m ∣
 
-        III : q ≢ p
+        III : q ≠ p
         III refl = ν ∣ i , l ∣
 
     g : x ≤ ι p → p ≮ x

@@ -11,7 +11,7 @@ canonical inclusion of natural numbers in the integers.
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import MLTT.Spartan renaming (_+_ to _∔_) 
+open import MLTT.Spartan renaming (_+_ to _∔_)
 open import TypeTopology.DiscreteAndSeparated
 open import Naturals.Properties
 open import MLTT.Unit-Properties
@@ -30,7 +30,7 @@ For example, negsucc 0 = -1
 
 \begin{code}
 
-data ℤ : 𝓤₀ ̇ where 
+data ℤ : 𝓤₀ ̇ where
  pos     : ℕ → ℤ
  negsucc : ℕ → ℤ
 
@@ -51,12 +51,12 @@ succℤ (pos x)            = pos (succ x)
 succℤ (negsucc 0)        = pos 0
 succℤ (negsucc (succ x)) = negsucc x
 
-succpredℤ : (x : ℤ) → succℤ (predℤ x) ＝ x 
+succpredℤ : (x : ℤ) → succℤ (predℤ x) ＝ x
 succpredℤ (pos 0)        = refl
 succpredℤ (pos (succ x)) = refl
 succpredℤ (negsucc x)    = refl
 
-predsuccℤ : (x : ℤ) → predℤ (succℤ x) ＝ x 
+predsuccℤ : (x : ℤ) → predℤ (succℤ x) ＝ x
 predsuccℤ (pos x)            = refl
 predsuccℤ (negsucc 0)        = refl
 predsuccℤ (negsucc (succ x)) = refl
@@ -78,7 +78,7 @@ standard induction principle.
 ℤ-induction : {A : ℤ → 𝓤 ̇} → A (pos 0)
                             → ((k : ℤ) → A k → A (succℤ k))
                             → ((k : ℤ) → A (succℤ k) → A k)
-                            → (x : ℤ)          
+                            → (x : ℤ)
                             → A x
 ℤ-induction c₀ cₛ cₙ (pos 0)            = c₀
 ℤ-induction c₀ cₛ cₙ (pos (succ x))     = cₛ (pos x) (ℤ-induction c₀ cₛ cₙ (pos x))
@@ -88,16 +88,16 @@ standard induction principle.
 ℤ-induction' : {A : ℤ → 𝓤 ̇} → A (pos 0)
                             → ((k : ℤ) → A k → A (succℤ k))
                             → ((k : ℤ) → A k → A (predℤ k))
-                            → (x : ℤ)          
+                            → (x : ℤ)
                             → A x
 ℤ-induction' {𝓤} {A} c₀ cₛ cₙ =
- ℤ-induction c₀ cₛ (λ k k-holds → transport A (predsuccℤ k) (cₙ (succℤ k) k-holds)) 
+ ℤ-induction c₀ cₛ (λ k k-holds → transport A (predsuccℤ k) (cₙ (succℤ k) k-holds))
 
 
 \end{code}
 
 By introducing the abs function which take integers to natural
-numbers, we can prove that pos and negsucc are left-cancellable. 
+numbers, we can prove that pos and negsucc are left-cancellable.
 
 \begin{code}
 
@@ -106,7 +106,7 @@ abs (pos x)     = x
 abs (negsucc x) = succ x
 
 pos-lc : {x y : ℕ} → pos x ＝ pos y → x ＝ y
-pos-lc {x} {y} = ap abs 
+pos-lc {x} {y} = ap abs
 
 negsucc-lc : {x y : ℕ} → negsucc x ＝ negsucc y → x ＝ y
 negsucc-lc {x} {y} p = succ-lc (ap abs p)
@@ -140,16 +140,16 @@ is-pos-succ (pos 0)        = 𝟘
 is-pos-succ (pos (succ z)) = 𝟙
 is-pos-succ (negsucc z)    = 𝟘
 
-pos-not-negsucc : {x y : ℕ} → pos x ≢ negsucc y
+pos-not-negsucc : {x y : ℕ} → pos x ≠ negsucc y
 pos-not-negsucc {x} p = 𝟙-is-not-𝟘 (ap positive p)
 
-negsucc-not-pos : {x y : ℕ} → negsucc x ≢ pos y
+negsucc-not-pos : {x y : ℕ} → negsucc x ≠ pos y
 negsucc-not-pos p = 𝟙-is-not-𝟘 (ap negative p)
 
-pos-succ-not-zero : (x : ℕ) → pos (succ x) ≢ pos 0
+pos-succ-not-zero : (x : ℕ) → pos (succ x) ≠ pos 0
 pos-succ-not-zero x p = positive-not-zero x (pos-lc p)
 
-negsucc-not-zero : (x : ℕ) → negsucc x ≢ pos 0
+negsucc-not-zero : (x : ℕ) → negsucc x ≠ pos 0
 negsucc-not-zero x p = pos-not-negsucc (p ⁻¹)
 
 succℤ-no-fp : (x : ℤ) → ¬ (x ＝ succℤ x)
@@ -207,7 +207,7 @@ predℤ-lc {x} {y} p = x               ＝⟨ succpredℤ x ⁻¹ ⟩
 
 There is a natural injection of natural numbers to integers by mapping
 any natural number n to pos n. As with other canonical inclusions in
-this development, ι is used.  
+this development, ι is used.
 
 \begin{code}
 

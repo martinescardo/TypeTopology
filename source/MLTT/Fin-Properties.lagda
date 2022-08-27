@@ -65,7 +65,7 @@ Fin1-is-prop 𝟎 𝟎 = refl
 
 open import MLTT.Unit-Properties
 
-positive-not-𝟎 : {n : ℕ} {x : Fin n} → fsucc x ≢ 𝟎
+positive-not-𝟎 : {n : ℕ} {x : Fin n} → fsucc x ≠ 𝟎
 positive-not-𝟎 {0}      {x} p = 𝟘-elim x
 positive-not-𝟎 {succ n} {x} p = 𝟙-is-not-𝟘 (g p)
  where
@@ -297,7 +297,7 @@ as the existence of an injection Fin m → Fin n:
 \begin{code}
 
 _has-a-repetition : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
-f has-a-repetition = Σ x ꞉ domain f , Σ x' ꞉ domain f , (x ≢ x') × (f x ＝ f x')
+f has-a-repetition = Σ x ꞉ domain f , Σ x' ꞉ domain f , (x ≠ x') × (f x ＝ f x')
 
 pigeonhole-principle : (m n : ℕ) (f : Fin m → Fin n)
                      → m > n → f has-a-repetition
@@ -315,7 +315,7 @@ pigeonhole-principle m n f g = γ
   d : ¬¬ (f has-a-repetition)
   d ψ = c δ
    where
-    ε : (i j : Fin m) → f i ＝ f j → ¬ (i ≢ j)
+    ε : (i j : Fin m) → f i ＝ f j → ¬ (i ≠ j)
     ε i j p ν = ψ (i , j , ν , p)
 
     δ : (i j : Fin m) → f i ＝ f j → i ＝ j
@@ -328,12 +328,12 @@ need more steps.
 
 \begin{code}
 
-  u : (i j : Fin m) → decidable ((i ≢ j) × (f i ＝ f j))
+  u : (i j : Fin m) → decidable ((i ≠ j) × (f i ＝ f j))
   u i j = ×-preserves-decidability
            (¬-preserves-decidability (Fin-is-discrete i j))
            (Fin-is-discrete (f i) (f j))
 
-  v : (i : Fin m) → decidable (Σ j ꞉ Fin m , (i ≢ j) × (f i ＝ f j))
+  v : (i : Fin m) → decidable (Σ j ꞉ Fin m , (i ≠ j) × (f i ＝ f j))
   v i = Fin-Compact _ (u i)
 
   w : decidable (f has-a-repetition)
@@ -866,7 +866,7 @@ following form:
      r : f' has-a-repetition → f has-a-repetition
      r (i , j , u , p) = g i , g j , u' , p'
       where
-       u' : g i ≢ g j
+       u' : g i ≠ g j
        u' = contrapositive (equivs-are-lc g d) u
 
        p' : f (g i) ＝ f (g j)
@@ -944,7 +944,7 @@ We now consider further variations of the finite pigeonhole principle.
 \begin{code}
 
   repeated-values : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → X → 𝓤 ⊔ 𝓥 ̇
-  repeated-values f = λ x → Σ x' ꞉ domain f , (x ≢ x') × (f x ＝ f x')
+  repeated-values f = λ x → Σ x' ꞉ domain f , (x ≠ x') × (f x ＝ f x')
 
   repetitions-detachable : {m : ℕ} {Y : 𝓥 ̇ } (f : Fin m → Y)
                          → is-finite Y
@@ -952,7 +952,7 @@ We now consider further variations of the finite pigeonhole principle.
 
   repetitions-detachable {𝓥} {m} {Y} f (n , t) i =
    Fin-Compact
-    (λ j → (i ≢ j) × (f i ＝ f j))
+    (λ j → (i ≠ j) × (f i ＝ f j))
     (λ j → ×-preserves-decidability
             (¬-preserves-decidability (Fin-is-discrete i j))
             (finite-types-are-discrete fe (n , t) (f i) (f j)))
@@ -980,7 +980,7 @@ We now consider further variations of the finite pigeonhole principle.
     γ' = ∥∥-functor h t
 
     A : Fin m → 𝓥 ̇
-    A i = Σ j ꞉ Fin m , (i ≢ j) × (f i ＝ f j)
+    A i = Σ j ꞉ Fin m , (i ≠ j) × (f i ＝ f j)
 
     γ : f has-a-repetition
     γ = Fin-Σ-from-∃ fe {m} A (repetitions-detachable f (n , t)) γ'
@@ -1049,10 +1049,10 @@ construction.
     finite-order : (x : X) → Σ k ꞉ ℕ , x ↑ (succ k) ＝ e
     finite-order x = c a
      where
-      a : Σ m ꞉ ℕ , Σ n ꞉ ℕ , (m ≢ n) × (x ↑ m ＝ x ↑ n)
+      a : Σ m ꞉ ℕ , Σ n ꞉ ℕ , (m ≠ n) × (x ↑ m ＝ x ↑ n)
       a = ℕ-finite-pigeonhole-principle (x ↑_) φ
 
-      b : (m : ℕ) (n : ℕ) → m ≢ n → x ↑ m ＝ x ↑ n → Σ k ꞉ ℕ , x ↑ (succ k) ＝ e
+      b : (m : ℕ) (n : ℕ) → m ≠ n → x ↑ m ＝ x ↑ n → Σ k ꞉ ℕ , x ↑ (succ k) ＝ e
       b 0        0        ν p = 𝟘-elim (ν refl)
       b 0        (succ n) ν p = n , (p ⁻¹)
       b (succ m) 0        ν p = m , p
@@ -1714,7 +1714,7 @@ Addendum.
    f' = inverse f i
    g' = inverse g j
 
-   I : z ≢ x₀
+   I : z ≠ x₀
    I p = zero-is-not-one
           (₀        ＝⟨ (inverses-are-retractions g j ₀)⁻¹ ⟩
            g' (g ₀) ＝⟨ refl ⟩

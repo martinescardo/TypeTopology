@@ -763,7 +763,7 @@ apartness relation _♯₂ is tight:
 -- End of test
 
  _♯₂_ : {X : 𝓤 ̇ } → X → X → 𝓤 ̇
- x ♯₂ y = ∃ p ꞉ (type-of x → 𝟚), p x ≢ p y
+ x ♯₂ y = ∃ p ꞉ (type-of x → 𝟚), p x ≠ p y
 
  ♯₂-is-apartness : {X : 𝓤 ̇ } → is-apartness (_♯₂_ {𝓤} {X})
  ♯₂-is-apartness {𝓤} {X} = a , b , c , d
@@ -774,24 +774,24 @@ apartness relation _♯₂ is tight:
    b : is-irreflexive _♯₂_
    b x = ∥∥-rec 𝟘-is-prop g
     where
-     g : ¬ (Σ p ꞉ (X → 𝟚) , p x ≢ p x)
+     g : ¬ (Σ p ꞉ (X → 𝟚) , p x ≠ p x)
      g (p , u) = u refl
 
    c : is-symmetric _♯₂_
    c x y = ∥∥-functor g
     where
-     g : (Σ p ꞉ (X → 𝟚) , p x ≢ p y) → Σ p ꞉ (X → 𝟚) , p y ≢ p x
-     g (p , u) = p , ≢-sym u
+     g : (Σ p ꞉ (X → 𝟚) , p x ≠ p y) → Σ p ꞉ (X → 𝟚) , p y ≠ p x
+     g (p , u) = p , ≠-sym u
 
    d : is-cotransitive _♯₂_
    d x y z = ∥∥-functor g
     where
-     g : (Σ p ꞉ (X → 𝟚) , p x ≢ p y) → (x ♯₂ z) + (y ♯₂ z)
+     g : (Σ p ꞉ (X → 𝟚) , p x ≠ p y) → (x ♯₂ z) + (y ♯₂ z)
      g (p , u) = h (discrete-is-cotransitive 𝟚-is-discrete {p x} {p y} {p z} u)
       where
-       h : (p x ≢ p z) + (p z ≢ p y) → (x ♯₂ z) + (y ♯₂ z)
+       h : (p x ≠ p z) + (p z ≠ p y) → (x ♯₂ z) + (y ♯₂ z)
        h (inl u) = inl ∣ p , u ∣
-       h (inr v) = inr ∣ p , ≢-sym v ∣
+       h (inr v) = inr ∣ p , ≠-sym v ∣
 
  is-totally-separated₃ : 𝓤 ̇ → 𝓤 ̇
  is-totally-separated₃ {𝓤} X = is-tight (_♯₂_ {𝓤} {X})
@@ -801,7 +801,7 @@ apartness relation _♯₂ is tight:
                                             → is-totally-separated X
  totally-separated₃-gives-totally-separated {𝓤} {X} τ {x} {y} α = γ
   where
-   h : ¬ (Σ p ꞉ (X → 𝟚) , p x ≢ p y)
+   h : ¬ (Σ p ꞉ (X → 𝟚) , p x ≠ p y)
    h (p , u) = u (α p)
 
    γ : x ＝ y
@@ -812,7 +812,7 @@ apartness relation _♯₂ is tight:
                                             → is-totally-separated₃ X
  totally-separated-gives-totally-separated₃ {𝓤} {X} τ x y na = τ α
   where
-   h : ¬ (Σ p ꞉ (X → 𝟚) , p x ≢ p y)
+   h : ¬ (Σ p ꞉ (X → 𝟚) , p x ≠ p y)
    h (p , u) = na ∣ p , u ∣
 
    α : (p : X → 𝟚) → p x ＝ p y

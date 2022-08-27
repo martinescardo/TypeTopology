@@ -65,7 +65,7 @@ module μ-operator (fe : dfunext 𝓤₀ 𝓤₀) where
 
  μ-property₁ : (f : ℕ → ℕ) (i : is-defined μ f)
              → (f (μ [ f , i ]) ＝ 0)
-             × ((n : ℕ) → n < μ [ f , i ] → f n ≢ 0)
+             × ((n : ℕ) → n < μ [ f , i ] → f n ≠ 0)
 
  μ-property₁ f = pr₂
 

@@ -132,7 +132,7 @@ SUCC-PRED {u} = 𝟚-equality-cases l₀ l₁
    where
      c₀ : PRED u ＝ Pred' u
      c₀ = ap (𝟚-cases Zero' (Pred' u)) r
-     c₁ : u ≢ Zero
+     c₁ : u ≠ Zero
      c₁ s = equal-₀-different-from-₁(ap positivity s) r
 
 PRED-lc : {u v : ℕ∞} → PRED u ＝ PRED v → u ＝ v

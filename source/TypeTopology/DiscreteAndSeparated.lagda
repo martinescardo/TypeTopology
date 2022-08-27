@@ -72,7 +72,7 @@ props-are-discrete i x y = inl (i x y)
 ℕ-is-discrete (succ m) 0 = inr (λ (p : succ m ＝ zero) → positive-not-zero m p)
 ℕ-is-discrete (succ m) (succ n) =  step (ℕ-is-discrete m n)
   where
-   step : (m ＝ n) + (m ≢ n) → (succ m ＝ succ n) + (succ m ≢ succ n)
+   step : (m ＝ n) + (m ≠ n) → (succ m ＝ succ n) + (succ m ≠ succ n)
    step (inl r) = inl (ap succ r)
    step (inr f) = inr (λ s → f (succ-lc s))
 
@@ -112,10 +112,10 @@ General properties:
 \begin{code}
 
 discrete-is-cotransitive : {X : 𝓤 ̇ }
-                         → is-discrete X → {x y z : X} → x ≢ y → (x ≢ z) + (z ≢ y)
+                         → is-discrete X → {x y z : X} → x ≠ y → (x ≠ z) + (z ≠ y)
 discrete-is-cotransitive d {x} {y} {z} φ = f (d x z)
  where
-  f : (x ＝ z) + (x ≢ z) → (x ≢ z) + (z ≢ y)
+  f : (x ＝ z) + (x ≠ z) → (x ≠ z) + (z ≠ y)
   f (inl r) = inr (λ s → φ (r ∙ s))
   f (inr γ) = inl γ
 
@@ -127,7 +127,7 @@ retract-is-discrete (f , (s , φ)) d y y' = g (d (s y) (s y'))
   g (inl p) = inl ((φ y) ⁻¹ ∙ ap f p ∙ φ y')
   g (inr u) = inr (contrapositive (ap s) u)
 
-𝟚-retract-of-non-trivial-type-with-isolated-point : {X : 𝓤 ̇ } {x₀ x₁ : X} → x₀ ≢ x₁
+𝟚-retract-of-non-trivial-type-with-isolated-point : {X : 𝓤 ̇ } {x₀ x₁ : X} → x₀ ≠ x₁
                                                   → is-isolated x₀ → retract 𝟚 of X
 𝟚-retract-of-non-trivial-type-with-isolated-point {𝓤} {X} {x₀} {x₁} ne d = r , (s , rs)
  where
@@ -142,7 +142,7 @@ retract-is-discrete (f , (s , φ)) d y y' = g (d (s y) (s y'))
   rs ₀ = different-from-₁-equal-₀ (λ p → pr₂ (φ x₀) p refl)
   rs ₁ = different-from-₀-equal-₁ λ p → 𝟘-elim (ne (pr₁ (φ x₁) p))
 
-𝟚-retract-of-discrete : {X : 𝓤 ̇ } {x₀ x₁ : X} → x₀ ≢ x₁ → is-discrete X → retract 𝟚 of X
+𝟚-retract-of-discrete : {X : 𝓤 ̇ } {x₀ x₁ : X} → x₀ ≠ x₁ → is-discrete X → retract 𝟚 of X
 𝟚-retract-of-discrete {𝓤} {X} {x₀} {x₁} ne d = 𝟚-retract-of-non-trivial-type-with-isolated-point ne (d x₀)
 
 \end{code}
@@ -191,11 +191,11 @@ below.)
 infix 21 _♯_
 
 _♯_ : {X : 𝓤 ̇ } → {Y : X → 𝓥 ̇ } → (f g : (x : X) → Y x) → 𝓤 ⊔ 𝓥 ̇
-f ♯ g = Σ x ꞉ domain f , f x ≢ g x
+f ♯ g = Σ x ꞉ domain f , f x ≠ g x
 
 
 apart-is-different : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
-                   → {f g : (x : X) → Y x} → f ♯ g → f ≢ g
+                   → {f g : (x : X) → Y x} → f ♯ g → f ≠ g
 apart-is-different (x , φ) r = φ (ap (λ - → - x) r)
 
 
@@ -209,9 +209,9 @@ apart-is-cotransitive : {X : 𝓤 ̇ } → {Y : X → 𝓥 ̇ }
                      → f ♯ g → f ♯ h  +  h ♯ g
 apart-is-cotransitive d f g h (x , φ)  = lemma₁ (lemma₀ φ)
  where
-  lemma₀ : f x ≢ g x → (f x ≢ h x)  +  (h x ≢ g x)
+  lemma₀ : f x ≠ g x → (f x ≠ h x)  +  (h x ≠ g x)
   lemma₀ = discrete-is-cotransitive (d x)
-  lemma₁ : (f x ≢ h x) + (h x ≢ g x) → f ♯ h  +  h ♯ g
+  lemma₁ : (f x ≠ h x) + (h x ≠ g x) → f ♯ h  +  h ♯ g
   lemma₁ (inl γ) = inl (x , γ)
   lemma₁ (inr δ) = inr (x , δ)
 
@@ -311,10 +311,10 @@ binary-sum-is-¬¬-separated {𝓤} {𝓥} {X} {Y} s t (inr y) (inr y') = lemma
     a : ∀ p → ¬¬ (f p ＝ f ⊤)
     a p t = no-truth-values-other-than-⊥-or-⊤ fe pe (p , (b , c))
       where
-        b : p ≢ ⊥
+        b : p ≠ ⊥
         b u = t (ap f u ∙ r)
 
-        c : p ≢ ⊤
+        c : p ≠ ⊤
         c u = t (ap f u)
 
     g : ∀ p → f p ＝ f ⊤
@@ -428,10 +428,10 @@ being-¬¬-stable-is-prop fe i = Π-is-prop fe (λ _ → i)
   a : ¬¬ (f p ＝ f ⊤)
   a u = no-truth-values-other-than-⊥-or-⊤ fe pe (p , b , c)
    where
-    b : p ≢ ⊥
+    b : p ≠ ⊥
     b v = u (ap f v ∙ r)
 
-    c : p ≢ ⊤
+    c : p ≠ ⊤
     c w = u (ap f w)
 
 ⊥-⊤-density : funext 𝓤 𝓤
@@ -473,13 +473,13 @@ Back to old stuff:
 
 \begin{code}
 
-＝-indicator :  (m : ℕ) → Σ p ꞉ (ℕ → 𝟚) , ((n : ℕ) → (p n ＝ ₀ → m ≢ n) × (p n ＝ ₁ → m ＝ n))
+＝-indicator :  (m : ℕ) → Σ p ꞉ (ℕ → 𝟚) , ((n : ℕ) → (p n ＝ ₀ → m ≠ n) × (p n ＝ ₁ → m ＝ n))
 ＝-indicator m = co-characteristic-function (ℕ-is-discrete m)
 
 χ＝ : ℕ → ℕ → 𝟚
 χ＝ m = pr₁ (＝-indicator m)
 
-χ＝-spec : (m n : ℕ) → (χ＝ m n ＝ ₀ → m ≢ n) × (χ＝ m n ＝ ₁ → m ＝ n)
+χ＝-spec : (m n : ℕ) → (χ＝ m n ＝ ₀ → m ≠ n) × (χ＝ m n ＝ ₁ → m ＝ n)
 χ＝-spec m = pr₂ (＝-indicator m)
 
 _＝[ℕ]_ : ℕ → ℕ → 𝓤₀ ̇
@@ -490,22 +490,22 @@ infix  30 _＝[ℕ]_
 ＝-agrees-with-＝[ℕ] : (m n : ℕ) → m ＝ n ⇔ m ＝[ℕ] n
 ＝-agrees-with-＝[ℕ] m n = (λ r → different-from-₀-equal-₁ (λ s → pr₁ (χ＝-spec m n) s r)) , pr₂ (χ＝-spec m n)
 
-≢-indicator :  (m : ℕ) → Σ p ꞉ (ℕ → 𝟚) , ((n : ℕ) → (p n ＝ ₀ → m ＝ n) × (p n ＝ ₁ → m ≢ n))
-≢-indicator m = indicator (ℕ-is-discrete m)
+≠-indicator :  (m : ℕ) → Σ p ꞉ (ℕ → 𝟚) , ((n : ℕ) → (p n ＝ ₀ → m ＝ n) × (p n ＝ ₁ → m ≠ n))
+≠-indicator m = indicator (ℕ-is-discrete m)
 
-χ≢ : ℕ → ℕ → 𝟚
-χ≢ m = pr₁ (≢-indicator m)
+χ≠ : ℕ → ℕ → 𝟚
+χ≠ m = pr₁ (≠-indicator m)
 
-χ≢-spec : (m n : ℕ) → (χ≢ m n ＝ ₀ → m ＝ n) × (χ≢ m n ＝ ₁ → m ≢ n)
-χ≢-spec m = pr₂ (≢-indicator m)
+χ≠-spec : (m n : ℕ) → (χ≠ m n ＝ ₀ → m ＝ n) × (χ≠ m n ＝ ₁ → m ≠ n)
+χ≠-spec m = pr₂ (≠-indicator m)
 
-_≠_ : ℕ → ℕ → 𝓤₀ ̇
-m ≠ n = (χ≢ m n) ＝ ₁
+_≢_ : ℕ → ℕ → 𝓤₀ ̇
+m ≢ n = (χ≠ m n) ＝ ₁
 
-infix  30 _≠_
+infix  30 _≢_
 
-≠-agrees-with-≢ : (m n : ℕ) → m ≠ n ⇔ m ≢ n
-≠-agrees-with-≢ m n = pr₂ (χ≢-spec m n) , (λ d → different-from-₀-equal-₁ (contrapositive (pr₁ (χ≢-spec m n)) d))
+≢-agrees-with-≠ : (m n : ℕ) → m ≢ n ⇔ m ≠ n
+≢-agrees-with-≠ m n = pr₂ (χ≠-spec m n) , (λ d → different-from-₀-equal-₁ (contrapositive (pr₁ (χ≠-spec m n)) d))
 
 \end{code}
 
@@ -515,7 +515,7 @@ Added 14th Feb 2020:
 
 discrete-exponential-has-decidable-emptiness-of-exponent : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                                                          → funext 𝓤 𝓥
-                                                         → (Σ y₀ ꞉ Y , Σ y₁ ꞉ Y , y₀ ≢ y₁)
+                                                         → (Σ y₀ ꞉ Y , Σ y₁ ꞉ Y , y₀ ≠ y₁)
                                                          → is-discrete (X → Y)
                                                          → decidable (is-empty X)
 discrete-exponential-has-decidable-emptiness-of-exponent {𝓤} {𝓥} {X} {Y} fe (y₀ , y₁ , ne) d = γ

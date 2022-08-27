@@ -334,7 +334,7 @@ to-subtype-＝ : {X : 𝓦 ̇ } {A : X → 𝓥 ̇ }
 to-subtype-＝ {𝓤} {𝓥} {X} {A} {x} {y} {a} {b} s p = to-Σ-＝ (p , s y (transport A p a) b)
 
 subtype-of-prop-is-prop : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (m : X → Y)
-                          → left-cancellable m → is-prop Y → is-prop X
+                        → left-cancellable m → is-prop Y → is-prop X
 subtype-of-prop-is-prop {𝓤} {𝓥} {X} m lc i x x' = lc (i (m x) (m x'))
 
 subtypes-of-sets-are-sets : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (m : X → Y)
@@ -438,7 +438,7 @@ values other than 𝟘 and 𝟙:
 
 \begin{code}
 
-no-props-other-than-𝟘-or-𝟙 : propext 𝓤 → ¬ (Σ P ꞉ 𝓤 ̇ , is-prop P × (P ≢ 𝟘) × (P ≢ 𝟙))
+no-props-other-than-𝟘-or-𝟙 : propext 𝓤 → ¬ (Σ P ꞉ 𝓤 ̇ , is-prop P × (P ≠ 𝟘) × (P ≠ 𝟙))
 no-props-other-than-𝟘-or-𝟙 pe (P , i , f , g) = 𝟘-elim (φ u)
  where
    u : ¬ P
@@ -461,7 +461,7 @@ used in the following construction.
 
 \begin{code}
 
-𝟘-is-not-𝟙 : 𝟘 {𝓤} ≢ 𝟙 {𝓤}
+𝟘-is-not-𝟙 : 𝟘 {𝓤} ≠ 𝟙 {𝓤}
 𝟘-is-not-𝟙 p = 𝟘-elim (Idtofun (p ⁻¹) ⋆)
 
 \end{code}

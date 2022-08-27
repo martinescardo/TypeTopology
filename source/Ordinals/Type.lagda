@@ -1,6 +1,6 @@
 Martin Escardo, 29 June 2018
 
-The type Ordinals of ordinals in a universe U, and the subtype Ordinalsᵀ of
+The type Ordinals of ordinals in a universe 𝓤, and the subtype Ordinalsᵀ of
 ordinals with a top element.
 
 \begin{code}
@@ -181,8 +181,8 @@ Ordinal-＝ : FunExt
                  is-equiv f
                × ((λ x x' → x ≺⟨ α ⟩ x') ＝ (λ x x' → f x ≺⟨ β ⟩ f x')))
 Ordinal-＝ {𝓤} fe = generalized-metric-space.characterization-of-M-＝ (𝓤 ̇ )
-                    (λ _ → is-well-order)
-                    (λ X _<_ → being-well-order-is-prop _<_ fe)
+                      (λ _ → is-well-order)
+                      (λ X _<_ → being-well-order-is-prop _<_ fe)
  where
   open import UF.SIP-Examples
 

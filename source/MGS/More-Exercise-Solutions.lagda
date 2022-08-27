@@ -169,7 +169,7 @@ module surjection-classifier
                                   (univalence-gives-dfunext' (ua 𝓤) (ua (𝓤 ⁺)))
                                   ∥_∥
 
-positive-cantors-diagonal : (e : ℕ → (ℕ → ℕ)) → Σ α ꞉ (ℕ → ℕ), ((n : ℕ) → α ≢ e n)
+positive-cantors-diagonal : (e : ℕ → (ℕ → ℕ)) → Σ α ꞉ (ℕ → ℕ), ((n : ℕ) → α ≠ e n)
 
 cantors-diagonal : ¬ (Σ e ꞉ (ℕ → (ℕ → ℕ)) , ((α : ℕ → ℕ) → Σ n ꞉ ℕ , α ＝ e n))
 
@@ -193,25 +193,25 @@ SN-gives-DNE : SN 𝓤 → DNE 𝓤
 
 DNE-gives-SN : DNE 𝓤 → SN 𝓤
 
-succ-no-fixed-point : (n : ℕ) → succ n ≢ n
+succ-no-fixed-point : (n : ℕ) → succ n ≠ n
 succ-no-fixed-point 0        = positive-not-zero 0
 succ-no-fixed-point (succ n) = γ
  where
-  IH : succ n ≢ n
+  IH : succ n ≠ n
   IH = succ-no-fixed-point n
 
-  γ : succ (succ n) ≢ succ n
+  γ : succ (succ n) ≠ succ n
   γ p = IH (succ-lc p)
 
 positive-cantors-diagonal = sol
  where
-  sol : (e : ℕ → (ℕ → ℕ)) → Σ α ꞉ (ℕ → ℕ), ((n : ℕ) → α ≢ e n)
+  sol : (e : ℕ → (ℕ → ℕ)) → Σ α ꞉ (ℕ → ℕ), ((n : ℕ) → α ≠ e n)
   sol e = (α , φ)
    where
     α : ℕ → ℕ
     α n = succ (e n n)
 
-    φ : (n : ℕ) → α ≢ e n
+    φ : (n : ℕ) → α ≠ e n
     φ n p = succ-no-fixed-point (e n n) q
      where
       q = succ (e n n)  ＝⟨ refl (α n) ⟩
@@ -226,7 +226,7 @@ cantors-diagonal = sol
     α : ℕ → ℕ
     α = pr₁ (positive-cantors-diagonal e)
 
-    φ : (n : ℕ) → α ≢ e n
+    φ : (n : ℕ) → α ≠ e n
     φ = pr₂ (positive-cantors-diagonal e)
 
     b : Σ n ꞉ ℕ , α ＝ e n

@@ -283,7 +283,7 @@ embedding-exponential {𝓤} {𝓥} {𝓦} fe {X} {Y} {A} f i = γ
   γ = embedding-criterion' (f ∘_) k
 
 disjoint-images : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } → (X → A) → (Y → A) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
-disjoint-images f g = ∀ x y → f x ≢ g y
+disjoint-images f g = ∀ x y → f x ≠ g y
 
 disjoint-cases-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } (f : X → A) (g : Y → A)
                          → is-embedding f

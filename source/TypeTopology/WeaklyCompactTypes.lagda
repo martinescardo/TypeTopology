@@ -212,7 +212,7 @@ discrete-power-of-disconnected-gives-compact-exponent {𝓤} {𝓥} {X} {Y} ρ d
 discrete-power-of-non-trivial-discrete-gives-compact-exponent' :
 
     {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-  → (Σ y₀ ꞉ Y , Σ y₁ ꞉ Y , y₀ ≢ y₁)
+  → (Σ y₀ ꞉ Y , Σ y₁ ꞉ Y , y₀ ≠ y₁)
   → is-discrete Y
   → is-discrete (X → Y)
   → Π-compact X
@@ -395,7 +395,7 @@ tscd {𝓤} {X} ts c x y = g (a s)
   q : (X → 𝟚) → 𝟚
   q = pr₁ (co-characteristic-function (λ p → 𝟚-is-discrete (p x) (p y)))
 
-  r : (p : X → 𝟚) → (q p ＝ ₀ → p x ≢ p y) × (q p ＝ ₁ → p x ＝ p y)
+  r : (p : X → 𝟚) → (q p ＝ ₀ → p x ≠ p y) × (q p ＝ ₁ → p x ＝ p y)
   r = pr₂ (co-characteristic-function (λ p → 𝟚-is-discrete (p x) (p y)))
 
   s : decidable ((p : X → 𝟚) → q p ＝ ₁)
