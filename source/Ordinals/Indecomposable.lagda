@@ -21,8 +21,6 @@ open import UF.Subsingletons-FunExt
 open import UF.Equiv
 open import UF.UA-FunExt
 open import UF.FunExt
-open import UF.EquivalenceExamples
-open import UF.Embeddings
 open import UF.ExcludedMiddle
 open import UF.Size
 
@@ -37,17 +35,11 @@ private
  pe = Univalence-gives-PropExt ua
 
 open import MLTT.Spartan
-open import MLTT.Plus-Properties
 open import MLTT.Two-Properties
 
-open import InjectiveTypes.Blackboard fe
-
 open import Ordinals.Type
-open import Ordinals.Notions
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.Arithmetic fe
-
-open import UF.Miscelanea
 
 \end{code}
 
