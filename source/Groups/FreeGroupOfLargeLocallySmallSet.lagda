@@ -639,7 +639,7 @@ large-group-with-no-small-copy : (Σ A ꞉ 𝓤 ⁺ ̇  , is-set A
 
 large-group-with-no-small-copy {𝓤} (A , A-is-set , A-is-large , A-ls) = δ
  where
-  open resize-free-group A A-is-set Id⟦ A-ls ⟧ ⟦ A-ls ⟧-refl  ＝⟦ A-ls ⟧-gives-＝
+  open resize-free-group A A-is-set Id⟦ A-ls ⟧ (λ _ → ⟦ A-ls ⟧-refl) (λ _ _ p → ＝⟦ A-ls ⟧-gives-＝ p)
 
   γ : (Σ F ꞉ Group (𝓤 ⁺) , F ≅ free-group A)
     → (Σ F ꞉ Group (𝓤 ⁺) , ((G : Group 𝓤) → ¬ (G ≅ F)))
