@@ -11,9 +11,7 @@ pointed types if and only weak excluded middle holds.
 
 open import UF.Univalence
 
-module Ordinals.Indecomposable
-       (ua : Univalence)
-       where
+module Ordinals.Indecomposable (ua : Univalence) where
 
 open import UF.Base
 open import UF.Subsingletons
@@ -60,7 +58,8 @@ decomposable₁ {𝓤} X = Σ X₀ ꞉ 𝓤 ̇ , Σ X₁ ꞉ 𝓤 ̇ , X₀ × X
 \end{code}
 
 TODO. decomposable X ≃ decomposable₁ X. Is this already proved
-somewhere in TypeTopology?
+somewhere in TypeTopology? This equivalence was already used in a
+publication with coathors.
 
 \begin{code}
 
@@ -296,14 +295,13 @@ decomposable-type-with-Ω-paths-gives-WEM {𝓤} {𝓥} {X} (x₀ , x₁ , f , e
   γ : WEM 𝓥
   γ = non-constant-map-Ω-to-𝟚-gives-WEM (f ∘ g , ⊥Ω , ⊤Ω , I₀ , I₁)
 
-ordinal-of-ordinals-decomposable-gives-WEM : decomposable (Ordinal 𝓤) → WEM 𝓤
-ordinal-of-ordinals-decomposable-gives-WEM d =
+decomposability-of-ordinals-type-gives-WEM : decomposable (Ordinal 𝓤) → WEM 𝓤
+decomposability-of-ordinals-type-gives-WEM d =
  decomposable-type-with-Ω-paths-gives-WEM d type-of-ordinals-has-Ω-paths
 
 Ordinal-decomposable-iff-WEM : decomposable (Ordinal 𝓤) ⇔ WEM 𝓤
-Ordinal-decomposable-iff-WEM =
- ordinal-of-ordinals-decomposable-gives-WEM ,
- WEM-gives-decomposability-of-ordinals-type
+Ordinal-decomposable-iff-WEM = decomposability-of-ordinals-type-gives-WEM ,
+                               WEM-gives-decomposability-of-ordinals-type
 
 \end{code}
 
