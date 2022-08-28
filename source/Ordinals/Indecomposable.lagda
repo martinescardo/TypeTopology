@@ -1,14 +1,14 @@
 Martin Escardo, 25th August 2022,
 written down in Agda 27th August 2022 while travelling back from
-Thierry Coquand's 60th birthday celebration
+Thierry Coquand's 60th birthday celebration.
 
 The type of ordinals is decomposable as a disjoint union of two
-pointed types if and only weak excluded middle holds.
+pointed types if and only weak excluded middle holds (every negated
+proposition is decidable, which is equivalent to De Morgan's Law).
 
 Equivalently, there is a function f : Ordinal 𝓤 → 𝟚 such that f α ＝ 0
 and f β = 1 for some ordinals α and β if and only if weak excluded
-middle holds (every negated proposition is decidable, which is
-equivalent to De Morgan's Law).
+middle holds.
 
 \begin{code}
 
@@ -109,7 +109,7 @@ WEM-gives-decomposability-of-ordinals-type⁺ {𝓤} wem =
 \end{code}
 
 We can strengthen this to WEM 𝓤 → decomposable (Ordinal 𝓤 ̇) using
-the fact that Ordinal 𝓤 ̇ is locally small.
+the fact that the type Ordinal 𝓤 ̇ is locally small.
 
 \begin{code}
 
@@ -156,12 +156,20 @@ WEM-gives-decomposability-of-ordinals-type {𝓤} wem =
 \end{code}
 
 For the converse, we use the following notion, where Ω 𝓤 is the type
-of truth values, or propositions, in the universe 𝓤.
+of truth values, or propositions, in the universe 𝓤. An Ω-path from x
+to y in a type X is a function f ꞉ Ω 𝓥 → X that maps false to x and
+true to y. We collect all such functions in a type Ω-Path 𝓥 x y.
 
 \begin{code}
 
 Ω-Path : {X : 𝓤 ̇ } (𝓥 : Universe) → X → X → 𝓤 ⊔ (𝓥 ⁺) ̇
 Ω-Path {𝓤} {X} 𝓥 x y = Σ f ꞉ (Ω 𝓥 → X) , (f ⊥Ω ＝ x) × (f ⊤Ω ＝ y)
+
+\end{code}
+
+The ordinals in any universe have Ω-paths between any two points.
+
+\begin{code}
 
 has-Ω-paths : (𝓥 : Universe) → 𝓤 ̇  → 𝓤 ⊔ (𝓥 ⁺) ̇
 has-Ω-paths 𝓥 X = (x y : X) → Ω-Path 𝓥 x y
