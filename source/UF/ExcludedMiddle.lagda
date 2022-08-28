@@ -75,6 +75,13 @@ WEM-is-prop {𝓤} fe = Π₂-is-prop (λ {𝓤} {𝓥} → fe 𝓤 𝓥)
                                 (negations-are-props (fe 𝓤 𝓤₀))
                                 (λ u ϕ → ϕ u))
 
+\end{code}
+
+TODO. Prove the well-known fact that weak excluded middle WEM is
+equivalent to De Morgan's Law.
+
+\begin{code}
+
 DNE : ∀ 𝓤 → 𝓤 ⁺ ̇
 DNE 𝓤 = (P : 𝓤 ̇ ) → is-prop P → ¬¬ P → P
 
