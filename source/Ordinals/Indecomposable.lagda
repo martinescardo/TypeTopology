@@ -5,6 +5,8 @@ Thierry Coquand's 60th birthday celebration
 The type of ordinals is decomposable as a disjoint union of two
 pointed types if and only weak excluded middle holds.
 
+Equivalently, there is a function f : Ordinal 𝓤 → 𝟚 such that f α ＝ 0 and f β = 1 for some ordinals α and β if and only if weak excluded middle holds (every negated proposition is decidable, which is equivalent to De Morgan's Law). https://www.cs.bham.ac.uk/~mhe/TypeTopology/Ordinals.Indecomposable.html
+
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe #-}
