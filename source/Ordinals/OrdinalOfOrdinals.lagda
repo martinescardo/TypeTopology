@@ -31,6 +31,7 @@ open import UF.Equiv-FunExt
 open import UF.UA-FunExt
 open import UF.Yoneda
 open import UF.EquivalenceExamples
+open import UF.Size
 
 private
  fe : FunExt
@@ -401,6 +402,9 @@ the-type-of-ordinals-is-a-set {𝓤} {α} {β} = equiv-to-prop
 
 UAₒ-≃ : (α β : Ordinal 𝓤) → (α ＝ β) ≃ (α ≃ₒ β)
 UAₒ-≃ α β = idtoeqₒ α β , UAₒ α β
+
+the-type-of-ordinals-is-locally-small : is-locally-small (Ordinal 𝓤)
+the-type-of-ordinals-is-locally-small α β = (α ≃ₒ β) , ≃-sym (UAₒ-≃ α β)
 
 \end{code}
 

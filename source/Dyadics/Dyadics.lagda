@@ -55,7 +55,7 @@ By Hedberg's Theorem, 𝔻 is a set.
 
 \begin{code}
 
-middle-is-not-left : {x : 𝔻} → middle ≢ left x
+middle-is-not-left : {x : 𝔻} → middle ≠ left x
 middle-is-not-left p = 𝟙-is-not-𝟘 (ap f p)
  where
   f : 𝔻 → 𝓤₀ ̇
@@ -63,7 +63,7 @@ middle-is-not-left p = 𝟙-is-not-𝟘 (ap f p)
   f (left _)  = 𝟘
   f (right _) = 𝟘
 
-middle-is-not-right : {x : 𝔻} → middle ≢ right x
+middle-is-not-right : {x : 𝔻} → middle ≠ right x
 middle-is-not-right p = 𝟙-is-not-𝟘 (ap f p)
  where
   f : 𝔻 → 𝓤₀ ̇
@@ -71,7 +71,7 @@ middle-is-not-right p = 𝟙-is-not-𝟘 (ap f p)
   f (left _)  = 𝟘
   f (right _) = 𝟘
 
-left-is-not-right : {x y : 𝔻} → left x ≢ right y
+left-is-not-right : {x y : 𝔻} → left x ≠ right y
 left-is-not-right p = 𝟙-is-not-𝟘 (ap f p)
  where
   f : 𝔻 → 𝓤₀ ̇

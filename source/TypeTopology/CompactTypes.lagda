@@ -329,10 +329,10 @@ apart-or-equal : funext 𝓤 𝓥
                → (f ♯ g) + (f ＝ g)
 apart-or-equal fe {X} {Y} φ d f g = lemma₂ lemma₁
  where
-  claim : (x : X) → (f x ≢ g x) + (f x ＝ g x)
+  claim : (x : X) → (f x ≠ g x) + (f x ＝ g x)
   claim x = +-commutative (d x (f x) (g x))
 
-  lemma₀ : Σ p ꞉ (X → 𝟚) , ((x : X) → (p x ＝ ₀ → f x ≢ g x)
+  lemma₀ : Σ p ꞉ (X → 𝟚) , ((x : X) → (p x ＝ ₀ → f x ≠ g x)
                          × (p x ＝ ₁ → f x ＝ g x))
   lemma₀ = indicator claim
 
@@ -354,7 +354,7 @@ compact-discrete-discrete : funext 𝓤 𝓥
 
 compact-discrete-discrete fe φ d f g = h (apart-or-equal fe φ d f g)
  where
-  h : (f ♯ g) + (f ＝ g) → (f ＝ g) + (f ≢ g)
+  h : (f ♯ g) + (f ＝ g) → (f ＝ g) + (f ≠ g)
   h (inl a) = inr (apart-is-different a)
   h (inr r) = inl r
 

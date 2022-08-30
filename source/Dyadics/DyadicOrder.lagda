@@ -96,22 +96,22 @@ right-monotone = id
 ≺-is-transitive (right x) (right y) (left z) _ = id
 ≺-is-transitive (right x) (right y) (right z) = ≺-is-transitive x y z
 
-≺-is-linear : (x y : 𝔻) → x ≢ y → x ≺ y + y ≺ x
+≺-is-linear : (x y : 𝔻) → x ≠ y → x ≺ y + y ≺ x
 ≺-is-linear middle middle p = 𝟘-induction (p refl)
 ≺-is-linear middle (left y) _ = inr ⋆
 ≺-is-linear middle (right y) _ = inl ⋆
 ≺-is-linear (left x) middle _ = inl ⋆
-≺-is-linear (left x) (left y) lx≢ly = ≺-is-linear x y x≢y
+≺-is-linear (left x) (left y) lx≠ly = ≺-is-linear x y x≠y
  where
-  x≢y : x ≢ y
-  x≢y = contrapositive (ap left) lx≢ly
+  x≠y : x ≠ y
+  x≠y = contrapositive (ap left) lx≠ly
 ≺-is-linear (left x) (right y) _ = inl ⋆
 ≺-is-linear (right x) middle _ = inr ⋆
 ≺-is-linear (right x) (left y) _ = inr ⋆
-≺-is-linear (right x) (right y) rx≢ry = ≺-is-linear x y x≢y
+≺-is-linear (right x) (right y) rx≠ry = ≺-is-linear x y x≠y
  where
-  x≢y : x ≢ y
-  x≢y = contrapositive (ap right) rx≢ry
+  x≠y : x ≠ y
+  x≠y = contrapositive (ap right) rx≠ry
 
 \end{code}
 
@@ -127,7 +127,7 @@ trichotomy-is-a-singleton.
  where
   a : x ＝ y → (x ≺ y) + (x ＝ y) + (y ≺ x)
   a = inr ∘ inl
-  b : (x ≢ y) → (x ≺ y) + (x ＝ y) + (y ≺ x)
+  b : (x ≠ y) → (x ≺ y) + (x ＝ y) + (y ≺ x)
   b n = cases c d (≺-is-linear x y n)
    where
     c : x ≺ y → (x ≺ y) + (x ＝ y) + (y ≺ x)
@@ -135,25 +135,25 @@ trichotomy-is-a-singleton.
     d : y ≺ x → (x ≺ y) + (x ＝ y) + (y ≺ x)
     d = inr ∘ inr
 
-≺-to-≢ : {x y : 𝔻} → x ≺ y → x ≢ y
-≺-to-≢ {middle}  {middle}      = 𝟘-induction
-≺-to-≢ {middle}  {left y}      = 𝟘-induction
-≺-to-≢ {middle}  {right y} _   = middle-is-not-right
-≺-to-≢ {left x}  {middle}  _   = (λ p → middle-is-not-left (p ⁻¹))
-≺-to-≢ {left x}  {left y}  x≺y = contrapositive left-lc (≺-to-≢ x≺y)
-≺-to-≢ {left x}  {right y} _   = left-is-not-right
-≺-to-≢ {right x} {middle}      = 𝟘-induction
-≺-to-≢ {right x} {left y}      = 𝟘-induction
-≺-to-≢ {right x} {right y} x≺y = contrapositive right-lc (≺-to-≢ x≺y)
+≺-to-≠ : {x y : 𝔻} → x ≺ y → x ≠ y
+≺-to-≠ {middle}  {middle}      = 𝟘-induction
+≺-to-≠ {middle}  {left y}      = 𝟘-induction
+≺-to-≠ {middle}  {right y} _   = middle-is-not-right
+≺-to-≠ {left x}  {middle}  _   = (λ p → middle-is-not-left (p ⁻¹))
+≺-to-≠ {left x}  {left y}  x≺y = contrapositive left-lc (≺-to-≠ x≺y)
+≺-to-≠ {left x}  {right y} _   = left-is-not-right
+≺-to-≠ {right x} {middle}      = 𝟘-induction
+≺-to-≠ {right x} {left y}      = 𝟘-induction
+≺-to-≠ {right x} {right y} x≺y = contrapositive right-lc (≺-to-≠ x≺y)
 
-≺-to-≢' : {x y : 𝔻} → y ≺ x → x ≢ y
-≺-to-≢' l e = ≺-to-≢ l (e ⁻¹)
+≺-to-≠' : {x y : 𝔻} → y ≺ x → x ≠ y
+≺-to-≠' l e = ≺-to-≠ l (e ⁻¹)
 
 ＝-to-¬≺ : {x y : 𝔻} → x ＝ y → ¬ (x ≺ y)
-＝-to-¬≺ e l = ≺-to-≢ l e
+＝-to-¬≺ e l = ≺-to-≠ l e
 
 ＝-to-¬≺' : {x y : 𝔻} → x ＝ y → ¬ (y ≺ x)
-＝-to-¬≺' e l = ≺-to-≢ l (e ⁻¹)
+＝-to-¬≺' e l = ≺-to-≠ l (e ⁻¹)
 
 ≺-to-¬≺ : (x y : 𝔻) → x ≺ y → ¬ (y ≺ x)
 ≺-to-¬≺ middle    middle      = 𝟘-induction
@@ -178,8 +178,8 @@ trichotomy-is-a-singleton {x} {y} =
      g : x ≺ y → ¬ ((x ＝ y) + y ≺ x)
      g l = cases a b
       where
-       a : x ≢ y
-       a = ≺-to-≢ l
+       a : x ≠ y
+       a = ≺-to-≠ l
        b : ¬ (y ≺ x)
        b = ≺-to-¬≺ x y l
 

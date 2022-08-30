@@ -51,7 +51,7 @@ module example-of-a-nonset (ua : is-univalent 𝓤₀) where
  e₀ = id-≃ 𝟚
  e₁ = swap₂ , swap₂-is-equiv
 
- e₀-is-not-e₁ : e₀ ≢ e₁
+ e₀-is-not-e₁ : e₀ ≠ e₁
  e₀-is-not-e₁ p = ₁-is-not-₀ r
   where
    q : id ＝ swap₂
@@ -64,7 +64,7 @@ module example-of-a-nonset (ua : is-univalent 𝓤₀) where
  p₀ = Eq→Id ua 𝟚 𝟚 e₀
  p₁ = Eq→Id ua 𝟚 𝟚 e₁
 
- p₀-is-not-p₁ : p₀ ≢ p₁
+ p₀-is-not-p₁ : p₀ ≠ p₁
  p₀-is-not-p₁ q = e₀-is-not-e₁ r
   where
    r = e₀            ＝⟨ (inverses-are-sections (Id→Eq 𝟚 𝟚) (ua 𝟚 𝟚) e₀)⁻¹ ⟩

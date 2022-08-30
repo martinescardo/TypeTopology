@@ -62,7 +62,7 @@ open import Notation.CanonicalMap
     w : p (ι (succ n)) ＝ α (succ n)
     w = (ap (λ - → min𝟚 - (p (ι (succ n)))) s)⁻¹
 
-  Claim₀ : p a ＝ ₁ → (n : ℕ) → a ≢ ι n
+  Claim₀ : p a ＝ ₁ → (n : ℕ) → a ≠ ι n
   Claim₀ r n s = equal-₁-different-from-₀ r (Lemma s)
    where
     Lemma : a ＝ ι n → p a ＝ ₀
@@ -133,7 +133,7 @@ open import Notation.CanonicalMap
                p (ι (succ n)) ＝⟨ claim₁ ⟩
                ₁              ∎
 
-    claim₅ : ι u (succ n) ≢ ₀
+    claim₅ : ι u (succ n) ≠ ₀
     claim₅ t = equal-₁-different-from-₀ (claim₄ t) r
 
     lemma : ι u (succ n) ＝ ₁

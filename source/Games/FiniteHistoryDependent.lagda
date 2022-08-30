@@ -544,7 +544,7 @@ module permutations-example where
 
  no-repetitions : (n : ℕ) (X : Type) → DTT
  no-repetitions 0        X = []
- no-repetitions (succ n) X = X ∷ λ (x : X) → no-repetitions n (Σ y ꞉ X , y ≢ x)
+ no-repetitions (succ n) X = X ∷ λ (x : X) → no-repetitions n (Σ y ꞉ X , y ≠ x)
 
  Permutations : ℕ → Type
  Permutations n = Path (no-repetitions n (Fin n))

@@ -54,7 +54,7 @@ Idl-𝔻-has-no-compact-elements : (I : Idl) → ¬ (is-compact Idl-DCPO I)
 Idl-𝔻-has-no-compact-elements I κ = ∥∥-rec 𝟘-is-prop γ g
  where
   γ : ¬ (Σ x ꞉ 𝔻 , x ∈ᵢ I × I ⊑ (↓ x))
-  γ (x , xI , s) = ≺-to-≢ {x} {x} r refl
+  γ (x , xI , s) = ≺-to-≠ {x} {x} r refl
    where
     r : x ≺ x
     r = s x xI

@@ -31,7 +31,7 @@ open import MLTT.Spartan
 open import CoNaturals.GenericConvergentSequence
 
 WLPO : 𝓤₀ ̇
-WLPO = (u : ℕ∞) → (u ＝ ∞) + (u ≢ ∞)
+WLPO = (u : ℕ∞) → (u ＝ ∞) + (u ≠ ∞)
 
 open import TypeTopology.DiscreteAndSeparated
 
@@ -61,7 +61,7 @@ WLPO-gives-ℕ∞-discrete fe wlpo u v =
  Cases (wlpo (ℕ∞-closeness u v))
   (λ (p : ℕ∞-closeness u v ＝ ∞)
         → inl (ℕ∞-infinitely-close-are-equal u v p))
-  (λ (n : ℕ∞-closeness u v ≢ ∞)
+  (λ (n : ℕ∞-closeness u v ≠ ∞)
         → inr (contrapositive (λ (q : u ＝ v) → ℕ∞-equal-are-infinitely-close u v q) n))
  where
   open import TWA.Closeness fe

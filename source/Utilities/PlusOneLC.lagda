@@ -102,7 +102,7 @@ extensionality:
 \begin{code}
 
 _∖_ : (X : 𝓤 ̇ ) (a : X) → 𝓤 ̇
-X ∖ a = Σ x ꞉ X , x ≢ a
+X ∖ a = Σ x ꞉ X , x ≠ a
 
 open import UF.FunExt
 
@@ -160,11 +160,11 @@ module old (fe : FunExt) where
    ε : g ∘ f ∼ id
    ε (inl y , u) = to-Σ-＝ (p , negations-are-props (fe 𝓥 𝓤₀) _ _)
     where
-     φ : (p : inl b ＝ inl y) (q : i (inl y) ＝ inl p) → i (inl y) ＝ inr (≢-sym u)
+     φ : (p : inl b ＝ inl y) (q : i (inl y) ＝ inl p) → i (inl y) ＝ inr (≠-sym u)
      φ p q = 𝟘-elim (u (p ⁻¹))
-     ψ : (v : inl b ≢ inl y) (q : i (inl y) ＝ inr v) → i (inl y) ＝ inr (≢-sym u)
+     ψ : (v : inl b ≠ inl y) (q : i (inl y) ＝ inr v) → i (inl y) ＝ inr (≠-sym u)
      ψ v q = q ∙ ap inr (negations-are-props (fe 𝓥 𝓤₀) _ _)
-     h : i (inl y) ＝ inr (≢-sym u)
+     h : i (inl y) ＝ inr (≠-sym u)
      h = equality-cases (i (inl y)) φ ψ
      p : pr₁ (g' y (i (inl y))) ＝ inl y
      p = ap (pr₁ ∘ (g' y)) h
@@ -175,7 +175,7 @@ module old (fe : FunExt) where
       where
        r : g b ＝ (inr ⋆ , +disjoint')
        r = ap (g' b) q
-     ψ : (v : inl b ≢ inl b) → i (inl b) ＝ inr v → g (f (inr ⋆ , u)) ＝ (inr ⋆ , u)
+     ψ : (v : inl b ≠ inl b) → i (inl b) ＝ inr v → g (f (inr ⋆ , u)) ＝ (inr ⋆ , u)
      ψ v q = 𝟘-elim (v refl)
 
    η : f ∘ g ∼ id
@@ -183,7 +183,7 @@ module old (fe : FunExt) where
     where
      φ : (p : inl b ＝ inl y) → i (inl y) ＝ inl p → f (g' y (i (inl y))) ＝ y
      φ p q = ap (λ - → f (g' y -)) q ∙ inl-lc p
-     ψ : (u : inl b ≢ inl y) → i (inl y) ＝ inr u → f (g' y (i (inl y))) ＝ y
+     ψ : (u : inl b ≠ inl y) → i (inl y) ＝ inr u → f (g' y (i (inl y))) ＝ y
      ψ _ = ap ((λ d → f (g' y d)))
 
  add-one-and-remove-isolated-point {𝓥} {Y} (inr ⋆) _ = ≃-sym add-and-remove-point

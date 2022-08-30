@@ -233,9 +233,9 @@ private
 irreflexive : (x : X) → is-accessible x → ¬ (x < x)
 irreflexive = ≾-refl
 
-<-gives-≢ : is-well-founded
-          → (x y : X) → x < y → x ≢ y
-<-gives-≢ w x y l p = irreflexive y (w y) (transport (_< y) p l)
+<-gives-≠ : is-well-founded
+          → (x y : X) → x < y → x ≠ y
+<-gives-≠ w x y l p = irreflexive y (w y) (transport (_< y) p l)
 
 <-gives-≼ : is-transitive → {x y : X} → x < y → x ≼ y
 <-gives-≼ t {x} {y} l u m = t u x y m l
@@ -432,10 +432,10 @@ trichotomous-gives-discrete : is-well-founded
                             → is-discrete X
 trichotomous-gives-discrete w t x y = f (t x y)
  where
-  f : (x < y) + (x ＝ y) + (y < x) → (x ＝ y) + (x ≢ y)
-  f (inl l)       = inr (<-gives-≢ w x y l)
+  f : (x < y) + (x ＝ y) + (y < x) → (x ＝ y) + (x ≠ y)
+  f (inl l)       = inr (<-gives-≠ w x y l)
   f (inr (inl p)) = inl p
-  f (inr (inr l)) = inr (≢-sym (<-gives-≢ w y x l))
+  f (inr (inr l)) = inr (≠-sym (<-gives-≠ w y x l))
 
 \end{code}
 
@@ -824,7 +824,7 @@ x ≺₂ y = Σ p ꞉ (X → 𝟚) , (p x <₂ p y)
                    (λ (t : p z ＝ ₀)
                             →  inr (pr₂ (ϕ z y) (Lemma[a＝₀→b<c→a<c] t m)))
                    (λ (t : ¬ (p z ＝ ₀))
-                            → inl (pr₂ (ϕ x z) (Lemma[a<b→c≢₀→a<c] m t)))
+                            → inl (pr₂ (ϕ x z) (Lemma[a<b→c≠₀→a<c] m t)))
 \end{code}
 
 It seems that this is not going to be useful, because although ℕ∞

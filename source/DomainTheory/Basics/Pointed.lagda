@@ -67,7 +67,7 @@ module _ {𝓤 𝓣 : Universe} where
  infix 1 reflexivity'
 
 is-a-non-trivial-pointed-dcpo : (𝓓 : DCPO⊥ {𝓤} {𝓣}) → 𝓤 ̇
-is-a-non-trivial-pointed-dcpo 𝓓 = ∃ x ꞉ ⟪ 𝓓 ⟫ , x ≢ ⊥ 𝓓
+is-a-non-trivial-pointed-dcpo 𝓓 = ∃ x ꞉ ⟪ 𝓓 ⟫ , x ≠ ⊥ 𝓓
 
 ＝-to-⊥-criterion : (𝓓 : DCPO⊥ {𝓤} {𝓣}) {x : ⟪ 𝓓 ⟫} → x ⊑⟪ 𝓓 ⟫ ⊥ 𝓓 → x ＝ ⊥ 𝓓
 ＝-to-⊥-criterion 𝓓 {x} x-below-⊥ =

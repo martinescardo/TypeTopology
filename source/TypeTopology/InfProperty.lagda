@@ -32,7 +32,7 @@ has-inf-gives-compact∙ h p = f (h p)
     → (Σ x₀ ꞉ X , (p x₀ ＝ ₁ → (x : X) → p x ＝ ₁))
   f (x₀ , g , _) = (x₀ , k)
    where
-    g' : p x₀ ≢ ₀ → ¬ (Σ x ꞉ X , p x ＝ ₀)
+    g' : p x₀ ≠ ₀ → ¬ (Σ x ꞉ X , p x ＝ ₀)
     g' = contrapositive g
 
     u : ¬ (Σ x ꞉ X , p x ＝ ₀) → (x : X) → p x ＝ ₁

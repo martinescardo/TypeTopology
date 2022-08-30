@@ -43,7 +43,7 @@ n ＝ z.
 \begin{code}
 
 _has-no-root<_ : (ℕ → Z) → ℕ → 𝓤 ̇
-α has-no-root< k = (n : ℕ) → n < k → α n ≢ z
+α has-no-root< k = (n : ℕ) → n < k → α n ≠ z
 
 _has-a-minimal-root<_ : (ℕ → Z) → ℕ → 𝓤 ̇
 α has-a-minimal-root< k = Σ m ꞉ ℕ , (α m ＝ z)
@@ -75,8 +75,8 @@ fpo (succ k) α = cases f g (fpo k α)
     g₀ : α k ＝ z → FPO (succ k) α
     g₀ p = inl (k , p , ≤-refl k , φ)
 
-    g₁ : α k ≢ z → FPO (succ k) α
-    g₁ u = inr (bounded-∀-next (λ n → α n ≢ z) k u φ)
+    g₁ : α k ≠ z → FPO (succ k) α
+    g₁ u = inr (bounded-∀-next (λ n → α n ≠ z) k u φ)
 
 \end{code}
 
@@ -114,7 +114,7 @@ roots α = Σ n ꞉ ℕ , α n ＝ z
                 → (n : ℕ) → α n ＝ z → μρ-root α (m , p) ≤ n
 μρ-root-minimal α m p n q = not-less-bigger-or-equal (μρ-root α (m , p)) n (f (¬¬-intro q))
  where
-  f : ¬ (α n ≢ z) → ¬ (n < μρ-root α (m , p))
+  f : ¬ (α n ≠ z) → ¬ (n < μρ-root α (m , p))
   f = contrapositive (pr₂(pr₂(pr₂ (minimal-root α m p))) n)
 
 μρ-constant : (α : ℕ → Z) → wconstant (μρ α)

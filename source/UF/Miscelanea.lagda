@@ -65,15 +65,15 @@ isolated-inl : {X : 𝓤 ̇ } (x : X) (i : is-isolated x) (y : X) (r : x ＝ y) 
 isolated-inl x i y r =
   equality-cases (i y)
     (λ (p : x ＝ y) (q : i y ＝ inl p) → q ∙ ap inl (isolated-is-h-isolated x i p r))
-    (λ (h : x ≢ y) (q : i y ＝ inr h) → 𝟘-elim(h r))
+    (λ (h : x ≠ y) (q : i y ＝ inr h) → 𝟘-elim(h r))
 
 isolated-inr : {X : 𝓤 ̇ }
              → funext 𝓤 𝓤₀
-             → (x : X) (i : is-isolated x) (y : X) (n : x ≢ y) → i y ＝ inr n
+             → (x : X) (i : is-isolated x) (y : X) (n : x ≠ y) → i y ＝ inr n
 isolated-inr fe x i y n =
   equality-cases (i y)
   (λ (p : x ＝ y) (q : i y ＝ inl p) → 𝟘-elim (n p))
-  (λ (m : x ≢ y) (q : i y ＝ inr m) → q ∙ ap inr (dfunext fe (λ (p : x ＝ y) → 𝟘-elim (m p))))
+  (λ (m : x ≠ y) (q : i y ＝ inr m) → q ∙ ap inr (dfunext fe (λ (p : x ＝ y) → 𝟘-elim (m p))))
 
 \end{code}
 
@@ -82,11 +82,11 @@ The following variation of the above doesn't require function extensionality:
 \begin{code}
 
 isolated-inr' : {X : 𝓤 ̇ }
-              → (x : X) (i : is-isolated x) (y : X) (n : x ≢ y) → Σ m ꞉ x ≢ y , i y ＝ inr m
+              → (x : X) (i : is-isolated x) (y : X) (n : x ≠ y) → Σ m ꞉ x ≠ y , i y ＝ inr m
 isolated-inr' x i y n =
   equality-cases (i y)
   (λ (p : x ＝ y) (q : i y ＝ inl p) → 𝟘-elim (n p))
-  (λ (m : x ≢ y) (q : i y ＝ inr m) → m , q)
+  (λ (m : x ≠ y) (q : i y ＝ inr m) → m , q)
 
 discrete-inl : {X : 𝓤 ̇ } (d : is-discrete X) (x y : X) (r : x ＝ y) → d x y ＝ inl r
 discrete-inl d x = isolated-inl x (d x)
@@ -165,15 +165,15 @@ equiv-to-discrete (f , e) = equivs-preserve-discreteness f e
 ℕ-is-set : is-set ℕ
 ℕ-is-set = discrete-types-are-sets ℕ-is-discrete
 
-𝟚inΩ : 𝟚 → Ω 𝓤
-𝟚inΩ ₀ = ⊥
-𝟚inΩ ₁ = ⊤
+𝟚-to-Ω : 𝟚 → Ω 𝓤
+𝟚-to-Ω ₀ = ⊥
+𝟚-to-Ω ₁ = ⊤
 
-𝟚inΩ-embedding : funext 𝓤 𝓤 → propext 𝓤 → is-embedding (𝟚inΩ {𝓤})
-𝟚inΩ-embedding fe pe (P , isp) (₀ , p) (₀ , q) = to-Σ-＝ (refl , Ω-is-set fe pe p q)
-𝟚inΩ-embedding fe pe (P , isp) (₀ , p) (₁ , q) = 𝟘-elim (⊥-is-not-⊤ (p ∙ q ⁻¹))
-𝟚inΩ-embedding fe pe (P , isp) (₁ , p) (₀ , q) = 𝟘-elim (⊥-is-not-⊤ (q ∙ p ⁻¹))
-𝟚inΩ-embedding fe pe (P , isp) (₁ , p) (₁ , q) = to-Σ-＝ (refl , Ω-is-set fe pe p q)
+𝟚-to-Ω-is-embedding : funext 𝓤 𝓤 → propext 𝓤 → is-embedding (𝟚-to-Ω {𝓤})
+𝟚-to-Ω-is-embedding fe pe (P , isp) (₀ , p) (₀ , q) = to-Σ-＝ (refl , Ω-is-set fe pe p q)
+𝟚-to-Ω-is-embedding fe pe (P , isp) (₀ , p) (₁ , q) = 𝟘-elim (⊥-is-not-⊤ (p ∙ q ⁻¹))
+𝟚-to-Ω-is-embedding fe pe (P , isp) (₁ , p) (₀ , q) = 𝟘-elim (⊥-is-not-⊤ (q ∙ p ⁻¹))
+𝟚-to-Ω-is-embedding fe pe (P , isp) (₁ , p) (₁ , q) = to-Σ-＝ (refl , Ω-is-set fe pe p q)
 
 nonempty : 𝓤 ̇ → 𝓤 ̇
 nonempty X = is-empty(is-empty X)
