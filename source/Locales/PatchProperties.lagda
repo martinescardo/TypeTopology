@@ -620,6 +620,9 @@ is given by the restriction of the family, given by the function `𝕔𝕠𝕧`
  basic-below 𝒿@(j , _) =
   Σ (k , l) ꞉ (index ℬ × index ℬ) , ((ℬ [ k ]) ≤[ poset-of (𝒪 X) ] j (ℬ [ l ])) holds
 
+ proj : (𝒿 : Perfect-Nucleus-on-X) → basic-below 𝒿 → index ℬ × index ℬ
+ proj 𝒿 = {!!}
+
  𝕔𝕠𝕧₁ : Perfect-Nucleus-on-X → Fam 𝓤 ⟨ 𝒪 Patchₛ-X ⟩
  𝕔𝕠𝕧₁ 𝒿@(j , _) = ⁅ 𝔠 k ∧[ 𝒪 Patchₛ-X ] 𝔬 l ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆
 
@@ -815,16 +818,22 @@ We first prove that this forms a basis.
 
 \begin{code}
 
- -- ℬ-is-basis-for-patch : is-basis-for (𝒪 Patchₛ-X) ℬ-patch
- -- ℬ-is-basis-for-patch 𝒿 = 𝕔𝕠𝕧 𝒿 , β , γ
- --  where
- --   open Joins (λ x y → x ≤[ poset-of (𝒪 Patchₛ-X) ] y)
+ main-covering-lemma : (𝒿 : Perfect-Nucleus-on-X) → 𝒿 ＝ ⋁[ 𝒪 Patchₛ-X ] (𝕔𝕠𝕧₁ 𝒿)
+ main-covering-lemma 𝒿 =
+  𝒿                         ＝⟨ lemma-johnstone 𝒿 ⟩
+  ⋁[ 𝒪 Patchₛ-X ] (𝕔𝕠𝕧₂ 𝒿)  ＝⟨ (𝕔𝕠𝕧₁=𝕔𝕠𝕧₂ 𝒿) ⁻¹  ⟩
+  ⋁[ 𝒪 Patchₛ-X ] (𝕔𝕠𝕧₁ 𝒿)  ∎
 
- --   β : (𝒿 is-an-upper-bound-of ⁅ 𝔠 k ⋏ 𝔬 l ∣ (k , l) ε 𝕔𝕠𝕧 𝒿 ⁆) holds
- --   β = {!!}
+ ℬ-is-basis-for-patch : is-basis-for (𝒪 Patchₛ-X) ℬ-patch
+ ℬ-is-basis-for-patch 𝒿 = (basic-below 𝒿 , proj 𝒿) , ※
+  where
+   open Joins (λ x y → x ≤[ poset-of (𝒪 Patchₛ-X) ] y)
 
- --   γ : {!!}
- --   γ = {!!}
+   ※ : (𝒿 is-lub-of (𝕔𝕠𝕧₁ 𝒿)) holds
+   ※ = transport
+        (λ - → (- is-lub-of (𝕔𝕠𝕧₁ 𝒿)) holds)
+        ((main-covering-lemma 𝒿) ⁻¹)
+        (⋁[ 𝒪 Patchₛ-X ]-upper (𝕔𝕠𝕧₁ 𝒿) , ⋁[ 𝒪 Patchₛ-X ]-least (𝕔𝕠𝕧₁ 𝒿))
 
 \end{code}
 
