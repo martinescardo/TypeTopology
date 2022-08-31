@@ -1101,6 +1101,20 @@ distributivity′ F x S =
    ‡ = ∧[ F ]-is-commutative x ∘ (_[_] S)
    † = ap (λ - → join-of F (index S , -)) (dfunext fe ‡)
 
+distributivity′-right : (F : Frame 𝓤 𝓥 𝓦)
+                      → (x : ⟨ F ⟩)
+                      → (S : Fam 𝓦 ⟨ F ⟩)
+                      → let open JoinNotation (λ - → ⋁[ F ] -) in
+                         (⋁⟨ i ⟩ (S [ i ])) ∧[ F ] x ＝ ⋁⟨ i ⟩ ((S [ i ]) ∧[ F ] x)
+distributivity′-right F x S =
+ (⋁⟨ i ⟩ (S [ i ])) ∧[ F ] x  ＝⟨ †                     ⟩
+ x ∧[ F ] (⋁⟨ i ⟩ (S [ i ]))  ＝⟨ distributivity′ F x S ⟩
+ ⋁⟨ i ⟩ (S [ i ] ∧[ F ] x)    ∎
+  where
+   open JoinNotation (λ - → ⋁[ F ] -)
+
+   † = ∧[ F ]-is-commutative (⋁⟨ i ⟩ (S [ i ])) x
+
 absorption-right : (F : Frame 𝓤 𝓥 𝓦) (x y : ⟨ F ⟩)
                  → x ∨[ F ] (x ∧[ F ] y) ＝ x
 absorption-right F x y = ≤-is-antisymmetric (poset-of F) β γ
