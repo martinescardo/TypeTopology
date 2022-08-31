@@ -402,8 +402,46 @@ module Epsilon (X : Locale (𝓤 ⁺) 𝓤 𝓤) (σᴰ : spectralᴰ (𝒪 X)) 
    † : (U : ⟨ 𝒪 X ⟩) → 𝟏[ 𝒪 X ] ∨[ 𝒪 X ] U ＝ 𝟏[ 𝒪 X ]
    † U = 𝟏-left-annihilator-for-∨ (𝒪 X) U
 
+ ϵ-preserves-⋁ : let
+                  open Joins (λ x y → x ≤[ poset-of (𝒪 Patchₛ-X) ] y)
+                 in
+                  (Ɐ S ∶ Fam 𝓤 ⟨ 𝒪 X ⟩ , ‘ ⋁[ 𝒪 X ] S ’ is-lub-of ⁅ ‘ U ’ ∣ U ε S ⁆) holds
+ ϵ-preserves-⋁ S = † , ‡
+  where
+   open Joins (λ x y → x ≤[ poset-of (𝒪 Patchₛ-X) ] y)
+   open PosetReasoning (poset-of (𝒪 X))
+
+   † : (‘ ⋁[ 𝒪 X ] S ’ is-an-upper-bound-of ⁅ ‘ U ’ ∣ U ε S ⁆) holds
+   † i j = ∨[ 𝒪 X ]-least ♥ ♠
+      where
+       ♥ : ((S [ i ]) ≤[ poset-of (𝒪 X) ] ‘ ⋁[ 𝒪 X ] S ’ .pr₁ (ℬ [ j ])) holds
+       ♥ = S [ i ]                         ≤⟨ ⋁[ 𝒪 X ]-upper S i ⟩
+           ⋁[ 𝒪 X ] S                      ≤⟨ ∨[ 𝒪 X ]-upper₁ (⋁[ 𝒪 X ] S) (ℬ [ j ]) ⟩
+           (⋁[ 𝒪 X ] S) ∨[ 𝒪 X ] (ℬ [ j ]) ■
+
+       ♠ : ((ℬ [ j ]) ≤[ poset-of (𝒪 X) ] ((⋁[ 𝒪 X ] S) ∨[ 𝒪 X ] (ℬ [ j ]))) holds
+       ♠ = ∨[ 𝒪 X ]-upper₂ (⋁[ 𝒪 X ] S) (ℬ [ j ])
+
+   ‡ : (Ɐ (𝒿 , _) ∶ upper-bound ⁅ ‘ U ’ ∣ U ε S ⁆ ,
+         ‘ ⋁[ 𝒪 X ] S ’ ≤[ poset-of (𝒪 Patchₛ-X) ] 𝒿) holds
+   ‡ (𝒿@(j , _) , ψ) i =
+    ∨[ 𝒪 X ]-least δ (𝓃₁ (𝒪 X) (nucleus-of 𝒿) (ℬ [ i ]))
+     where
+      δ : ((⋁[ 𝒪 X ] S) ≤[ poset-of (𝒪 X) ] j (ℬ [ i ])) holds
+      δ = ⋁[ 𝒪 X ]-least S (j (ℬ [ i ]) , ε)
+       where
+        open Joins (λ x y → x ≤[ poset-of (𝒪 X) ] y)
+         renaming (_is-an-upper-bound-of_ to _is-an-upper-bound-of₀_)
+
+        ε : (j (ℬ [ i ]) is-an-upper-bound-of₀ S) holds
+        ε l =
+         S [ l ]                      ≤⟨ ∨[ 𝒪 X ]-upper₁ (S [ l ]) (ℬ [ i ]) ⟩
+         (S [ l ]) ∨[ 𝒪 X ] (ℬ [ i ]) ≤⟨ ψ l i                               ⟩
+         j (ℬ [ i ])                  ■
+
+
  ϵ : Patchₛ-X ─c→ X
- ϵ = ‘_’ , ϵ-preserves-𝟏 , β , γ
+ ϵ = ‘_’ , ϵ-preserves-𝟏 , β , ϵ-preserves-⋁
   where
    β : preserves-binary-meets (𝒪 X) (𝒪 Patchₛ-X) ‘_’ holds
    β U V = perfect-nuclei-eq
