@@ -467,39 +467,6 @@ module Epsilon (X : Locale (𝓤 ⁺) 𝓤 𝓤) (σᴰ : spectralᴰ (𝒪 X)) 
 
    open Joins (λ x y → x ≤[ poset-of (𝒪 Patchₛ-X) ] y)
 
-   γ : (Ɐ S ∶ Fam 𝓤 ⟨ 𝒪 X ⟩ , ‘ ⋁[ 𝒪 X ] S ’ is-lub-of ⁅ ‘ U ’ ∣ U ε S ⁆) holds
-   γ S = † , ‡
-    where
-     open PosetReasoning (poset-of (𝒪 X))
-
-     † : (‘ ⋁[ 𝒪 X ] S ’ is-an-upper-bound-of ⁅ ‘ U ’ ∣ U ε S ⁆) holds
-     † i j = ∨[ 𝒪 X ]-least ♥ ♠
-      where
-       ♥ : ((S [ i ]) ≤[ poset-of (𝒪 X) ] ‘ ⋁[ 𝒪 X ] S ’ .pr₁ (ℬ [ j ])) holds
-       ♥ = S [ i ]                         ≤⟨ ⋁[ 𝒪 X ]-upper S i ⟩
-           ⋁[ 𝒪 X ] S                      ≤⟨ ∨[ 𝒪 X ]-upper₁ (⋁[ 𝒪 X ] S) (ℬ [ j ]) ⟩
-           (⋁[ 𝒪 X ] S) ∨[ 𝒪 X ] (ℬ [ j ]) ■
-
-       ♠ : ((ℬ [ j ]) ≤[ poset-of (𝒪 X) ] ((⋁[ 𝒪 X ] S) ∨[ 𝒪 X ] (ℬ [ j ]))) holds
-       ♠ = ∨[ 𝒪 X ]-upper₂ (⋁[ 𝒪 X ] S) (ℬ [ j ])
-
-     ‡ : (Ɐ (𝒿 , _) ∶ upper-bound ⁅ ‘ U ’ ∣ U ε S ⁆ ,
-           ‘ ⋁[ 𝒪 X ] S ’ ≤[ poset-of (𝒪 Patchₛ-X) ] 𝒿) holds
-     ‡ (𝒿@(j , _) , ψ) i =
-      ∨[ 𝒪 X ]-least δ (𝓃₁ (𝒪 X) (nucleus-of 𝒿) (ℬ [ i ]))
-        where
-         δ : ((⋁[ 𝒪 X ] S) ≤[ poset-of (𝒪 X) ] j (ℬ [ i ])) holds
-         δ = ⋁[ 𝒪 X ]-least S (j (ℬ [ i ]) , ε)
-          where
-           open Joins (λ x y → x ≤[ poset-of (𝒪 X) ] y)
-            renaming (_is-an-upper-bound-of_ to _is-an-upper-bound-of₀_)
-
-           ε : (j (ℬ [ i ]) is-an-upper-bound-of₀ S) holds
-           ε l =
-             S [ l ]                      ≤⟨ ∨[ 𝒪 X ]-upper₁ (S [ l ]) (ℬ [ i ]) ⟩
-             (S [ l ]) ∨[ 𝒪 X ] (ℬ [ i ]) ≤⟨ ψ l i                               ⟩
-             j (ℬ [ i ])                  ■
-
  𝒷 : has-basis (𝒪 X) holds
  𝒷 = spectral-frames-have-bases (𝒪 X) ∣ σᴰ ∣
 
@@ -772,11 +739,12 @@ The first lemma we prove is the fact that `𝒿 = 𝕔𝕠𝕧₂ 𝒿` which we
  𝕔𝕠𝕧₁=𝕔𝕠𝕧₂ : (𝒿 : Perfect-Nucleus-on-X) → ⋁ₙ (𝕔𝕠𝕧₁ 𝒿) ＝ ⋁ₙ (𝕔𝕠𝕧₂ 𝒿)
  𝕔𝕠𝕧₁=𝕔𝕠𝕧₂ 𝒿@(j , _) = ≤-is-antisymmetric (poset-of (𝒪 Patch-X)) † ‡
   where
-   open PosetReasoning (poset-of (𝒪 Patch-X))
 
    β : cofinal-in (𝒪 Patch-X) (𝕔𝕠𝕧₁ 𝒿) (𝕔𝕠𝕧₂ 𝒿) holds
    β ((k , l) , p) = ∣ l , ※ ∣
     where
+     open PosetReasoning (poset-of (𝒪 Patch-X))
+
      ♠ : ((𝔠 k ∧[ 𝒪 Patch-X ] 𝔬 l)
           ≤[ poset-of (𝒪 Patch-X) ]
           (‘ j (ℬ [ l ]) ’ ∧[ 𝒪 Patchₛ-X ] 𝔬 l)) holds
@@ -788,16 +756,58 @@ The first lemma we prove is the fact that `𝒿 = 𝕔𝕠𝕧₂ 𝒿` which we
          ‘ j (ℬ [ l ]) ’ ∧[ 𝒪 Patchₛ-X ] 𝔬 l   ＝⟨ refl ⟩ₚ
          𝕔𝕠𝕧₂ 𝒿 [ l ]                          ■
 
-   γ : cofinal-in (𝒪 Patch-X) (𝕔𝕠𝕧₂ 𝒿) (𝕔𝕠𝕧₁ 𝒿) holds
-   γ = {!!}
-
    † : (⋁ₙ (𝕔𝕠𝕧₁ 𝒿) ≼ ⋁ₙ (𝕔𝕠𝕧₂ 𝒿)) holds
    † = cofinal-implies-join-covered (𝒪 Patch-X) (𝕔𝕠𝕧₁ 𝒿) (𝕔𝕠𝕧₂ 𝒿) β
 
-   ‡ : rel-syntax (poset-of (𝒪 Patch-X)) (⋁ₙ (𝕔𝕠𝕧₂ (j , _)))
-         (⋁ₙ (𝕔𝕠𝕧₁ (j , _)))
-         holds
-   ‡ = {!!}
+   ‡ : (⋁ₙ (𝕔𝕠𝕧₂ 𝒿) ≤[ poset-of (𝒪 Patch-X) ] (⋁ₙ (𝕔𝕠𝕧₁ 𝒿))) holds
+   ‡ = ⋁[ 𝒪 Patch-X ]-least (𝕔𝕠𝕧₂ 𝒿) (⋁ₙ (𝕔𝕠𝕧₁ 𝒿) , ※)
+    where
+     open Joins (λ x y → x ≤[ poset-of (𝒪 Patch-X) ] y)
+     open PosetReasoning (poset-of (𝒪 X))
+
+
+     ※ : (⋁ₙ (𝕔𝕠𝕧₁ 𝒿) is-an-upper-bound-of (𝕔𝕠𝕧₂ 𝒿)) holds
+     ※ i U =
+      (𝕔𝕠𝕧₂ 𝒿 [ i ]) $ U                                                  ＝⟨ refl ⟩ₚ
+      𝕜 𝒿 i $ U                                                           ＝⟨ refl ⟩ₚ
+      (‘ j (ℬ [ i ]) ’ ∧[ 𝒪 Patchₛ-X ] 𝔬 i) $ U                           ＝⟨ Ⅰ    ⟩ₚ
+      (‘ ⋁[ 𝒪 X ] ⁅ ℬ [ l ] ∣ l ε ℒ ⁆ ’ ∧[ 𝒪 Patchₛ-X ] 𝔬 i) $ U          ＝⟨ Ⅱ    ⟩ₚ
+      ((⋁[ 𝒪 Patchₛ-X ] ⁅ ‘ ℬ [ l ] ’ ∣ l ε ℒ ⁆) ∧[ 𝒪 Patchₛ-X ] 𝔬 i) $ U ＝⟨ Ⅲ    ⟩ₚ
+      ((⋁[ 𝒪 Patchₛ-X ] ⁅ ‘ ℬ [ l ] ’ ∧[ 𝒪 Patchₛ-X ] 𝔬 i ∣ l ε ℒ ⁆) $ U) ≤⟨ ♥     ⟩
+      ⋁ₙ (𝕔𝕠𝕧₁ 𝒿) $ U                                                     ■
+       where
+        ℒ : Fam 𝓤 (index ℬ)
+        ℒ = pr₁ (pr₁ (pr₁ (pr₂ σᴰ)) (𝒿 $ (ℬ [ i ])))
+
+        p : j (ℬ [ i ]) ＝ ⋁[ 𝒪 X ] ⁅ ℬ [ l ] ∣ l ε ℒ ⁆
+        p = (⋁[ 𝒪 X ]-unique ⁅ ℬ [ l ] ∣ l ε ℒ ⁆
+               (j (ℬ [ i ]))
+               (pr₂ (pr₁ (pr₁ (pr₂ σᴰ)) (𝒿 $ (ℬ [ i ])))))
+
+        Ⅰ = ap (λ - → (‘ - ’ ∧[ 𝒪 Patchₛ-X ] 𝔬 i) $ U) p
+        Ⅱ = ap
+             (λ - → (- ∧[ 𝒪 Patchₛ-X ] 𝔬 i) $ U)
+             (⋁[ 𝒪 Patchₛ-X ]-unique
+               ⁅ ‘ ℬ [ l ] ’ ∣ l ε ℒ ⁆
+               _
+               (ϵ-preserves-⋁ ⁅ ℬ [ l ] ∣ l ε ℒ ⁆))
+
+        Ⅲ = ap (λ - → - $ U) (distributivity′-right _ _ _)
+
+        ♣ : (l : index ℒ)
+          → ((‘ ℬ [ ℒ [ l ] ] ’ ∧[ 𝒪 Patchₛ-X ] 𝔬 i) ≤[ poset-of (𝒪 Patchₛ-X) ] (⋁[ 𝒪 Patchₛ-X ] 𝕔𝕠𝕧₁ 𝒿)) holds
+        ♣ l = ⋁[ 𝒪 Patchₛ-X ]-upper (𝕔𝕠𝕧₁ 𝒿) ((ℒ [ l ] , i) , γ)
+         where
+          γ : ((ℬ [ ℒ [ l ] ]) ≤[ poset-of (𝒪 X) ] j (ℬ [ i ])) holds
+          γ = ℬ [ ℒ [ l ] ]                  ≤⟨ ⋁[ 𝒪 X ]-upper ⁅ ℬ [ l ] ∣ l ε ℒ ⁆ l ⟩
+              ⋁[ 𝒪 X ] ⁅ ℬ [ l ] ∣ l ε ℒ ⁆   ＝⟨ p ⁻¹ ⟩ₚ
+              j (ℬ [ i ])                    ■
+
+        ♠ = ⋁[ 𝒪 Patchₛ-X ]-least
+             ⁅ ‘ ℬ [ l ] ’ ∧[ 𝒪 Patchₛ-X ] 𝔬 i ∣ l ε ℒ ⁆
+             ((⋁[ 𝒪 Patchₛ-X ] 𝕔𝕠𝕧₁ 𝒿) , ♣)
+
+        ♥ = ≼ᵏ-implies-≼ _ _ ♠ U
 
 \end{code}
 
