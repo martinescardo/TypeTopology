@@ -288,6 +288,13 @@ An open _U_ in a frame _A_ is *clopen* iff it is well-inside itself.
 
 \begin{code}
 
+
+is-boolean-complement-of : (F : Frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → ⟨ F ⟩ → Ω 𝓤
+is-boolean-complement-of F U′ U =
+ (U ∧[ F ] U′ ＝[ iss ]＝ 𝟎[ F ]) ∧ (U ∨[ F ] U′ ＝[ iss ]＝ 𝟏[ F ])
+  where
+   iss = carrier-of-[ poset-of F ]-is-set
+
 is-clopen₀ : (F : Frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → 𝓤 ̇
 is-clopen₀ F U = Σ W ꞉ ⟨ F ⟩ , (U ∧[ F ] W ＝ 𝟎[ F ]) × (U ∨[ F ] W ＝ 𝟏[ F ])
 
