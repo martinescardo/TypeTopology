@@ -621,7 +621,7 @@ is given by the restriction of the family, given by the function `𝕔𝕠𝕧`
   Σ (k , l) ꞉ (index ℬ × index ℬ) , ((ℬ [ k ]) ≤[ poset-of (𝒪 X) ] j (ℬ [ l ])) holds
 
  proj : (𝒿 : Perfect-Nucleus-on-X) → basic-below 𝒿 → index ℬ × index ℬ
- proj 𝒿 = {!!}
+ proj 𝒿 ((k , l) , _)= k , l
 
  𝕔𝕠𝕧₁ : Perfect-Nucleus-on-X → Fam 𝓤 ⟨ 𝒪 Patchₛ-X ⟩
  𝕔𝕠𝕧₁ 𝒿@(j , _) = ⁅ 𝔠 k ∧[ 𝒪 Patchₛ-X ] 𝔬 l ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆
