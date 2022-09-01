@@ -1161,6 +1161,21 @@ binary-distributivity {𝓦 = 𝓦} F x y z =
    † = distributivity F x (binary-family 𝓦 y z)
    ‡ = ap (λ - → join-of F -) (fmap-binary-family 𝓦 (λ - → x ∧[ F ] -) y z)
 
+binary-distributivity-right : (F : Frame 𝓤 𝓥 𝓦)
+                            → {x y z : ⟨ F ⟩}
+                            → (x ∨[ F ] y) ∧[ F ] z ＝ (x ∧[ F ] z) ∨[ F ] (y ∧[ F ] z)
+binary-distributivity-right F {x} {y} {z} =
+ (x ∨[ F ] y) ∧[ F ] z             ＝⟨ Ⅰ ⟩
+ z ∧[ F ] (x ∨[ F ] y)             ＝⟨ Ⅱ ⟩
+ (z ∧[ F ] x) ∨[ F ] (z ∧[ F ] y)  ＝⟨ Ⅲ ⟩
+ (x ∧[ F ] z) ∨[ F ] (z ∧[ F ] y)  ＝⟨ Ⅳ ⟩
+ (x ∧[ F ] z) ∨[ F ] (y ∧[ F ] z)  ∎
+  where
+   Ⅰ = ∧[ F ]-is-commutative (x ∨[ F ] y) z
+   Ⅱ = binary-distributivity F z x y
+   Ⅲ = ap (λ - → - ∨[ F ] (z ∧[ F ] y)) (∧[ F ]-is-commutative z x)
+   Ⅳ = ap (λ - → (x ∧[ F ] z) ∨[ F ] -) (∧[ F ]-is-commutative z y)
+
 binary-distributivity-op : (F : Frame 𝓤 𝓥 𝓦) (x y z : ⟨ F ⟩)
                          → x ∨[ F ] (y ∧[ F ] z) ＝ (x ∨[ F ] y) ∧[ F ] (x ∨[ F ] z)
 binary-distributivity-op F x y z =
