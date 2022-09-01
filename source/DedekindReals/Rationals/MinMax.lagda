@@ -280,6 +280,37 @@ max₃ a b c = max (max a b) c
 max₄ : (a b c d : ℚ) → ℚ
 max₄ a b c d = max (max (max a b) c) d
 
+min≤max : (a b : ℚ) → min a b ≤ max a b
+min≤max a b = I (min-to-≤ a b) 
+ where
+  I : a ≤ b × (min a b ＝ a)
+    ∔ b ≤ a × (min a b ＝ b)
+    → min a b ≤ max a b
+  I (inl (a≤b , e)) = transport₂ _≤_ (e ⁻¹) (min-to-max a b e ⁻¹) a≤b
+  I (inr (b≤a , e)) = transport₂ _≤_ (e ⁻¹) (min-to-max b a (min-comm b a ∙ e) ⁻¹ ∙ max-comm b a) b≤a
+
+min₃≤max₃ : (a b c : ℚ) → min₃ a b c ≤ max₃ a b c
+min₃≤max₃ a b c = I (min-to-≤ (min a b) c) (max-to-≤ (max a b) c)
+ where
+  I : min a b ≤ c × (min (min a b) c ＝ min a b) ∔ c ≤ (min a b) × (min (min a b) c ＝ c)
+     → max a b ≤ c × (max (max a b) c ＝ c) ∔ c ≤ max a b × (max (max a b) c ＝ max a b)
+     → min₃ a b c ≤ max₃ a b c
+  I (inl (l₁ , e₁)) (inl (l₂ , e₂)) = transport₂ _≤_ (e₁ ⁻¹) (e₂ ⁻¹) l₁
+  I (inl (l₁ , e₁)) (inr (l₂ , e₂)) = transport₂ _≤_ (e₁ ⁻¹) (e₂ ⁻¹) (min≤max a b) 
+  I (inr (l₁ , e₁)) (inl (l₂ , e₂)) = transport₂ _≤_ (e₁ ⁻¹) (e₂ ⁻¹) (ℚ≤-refl c)
+  I (inr (l₁ , e₁)) (inr (l₂ , e₂)) = transport₂ _≤_ (e₁ ⁻¹) (e₂ ⁻¹) l₂
+
+min₄≤max₄ : (a b c d : ℚ) → min₄ a b c d ≤ max₄ a b c d
+min₄≤max₄ a b c d = I (min-to-≤ (min₃ a b c) d) (max-to-≤ (max₃ a b c) d)
+ where
+  I : min₃ a b c ≤ d × (min (min₃ a b c) d ＝ min₃ a b c) ∔ d ≤ min₃ a b c × (min (min₃ a b c) d ＝ d)
+    → max₃ a b c ≤ d × (max (max₃ a b c) d ＝ d) ∔ d ≤ max₃ a b c × (max (max₃ a b c) d ＝ max₃ a b c)
+    → min₄ a b c d ≤ max₄ a b c d
+  I (inl (l₁ , e₁)) (inl (l₂ , e₂)) = transport₂ _≤_ (e₁ ⁻¹) (e₂ ⁻¹) l₁
+  I (inl (l₁ , e₁)) (inr (l₂ , e₂)) = transport₂ _≤_ (e₁ ⁻¹) (e₂ ⁻¹) (min₃≤max₃ a b c)                                                                              
+  I (inr (l₁ , e₁)) (inl (l₂ , e₂)) = transport₂ _≤_ (e₁ ⁻¹) (e₂ ⁻¹) (ℚ≤-refl d)
+  I (inr (l₁ , e₁)) (inr (l₂ , e₂)) = transport₂ _≤_ (e₁ ⁻¹) (e₂ ⁻¹) l₂
+
 \end{code}
 
 
