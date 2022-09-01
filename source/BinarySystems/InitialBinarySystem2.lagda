@@ -146,25 +146,25 @@ left-lc x x refl = refl
 right-lc : (x y : 𝔹) → right x ＝ right y → x ＝ y
 right-lc x x refl = refl
 
-𝔹-is-discrete : (x y : 𝔹) → (x ＝ y) + (x ≢ y)
+𝔹-is-discrete : (x y : 𝔹) → (x ＝ y) + (x ≠ y)
 𝔹-is-discrete center   center     = inl refl
 𝔹-is-discrete center   (left y)   = inr (λ ())
 𝔹-is-discrete center   (right y)  = inr (λ ())
 𝔹-is-discrete (left x) center     = inr (λ ())
 𝔹-is-discrete (left x) (left y)   = Cases (𝔹-is-discrete x y)
                                   (λ (p : x ＝ y) → inl (ap left p))
-                                  (λ (ν : x ≢ y) → inr (contrapositive (left-lc x y) ν))
+                                  (λ (ν : x ≠ y) → inr (contrapositive (left-lc x y) ν))
 𝔹-is-discrete (left x)  (right y) = inr (λ ())
 𝔹-is-discrete (right x) center    = inr (λ ())
 𝔹-is-discrete (right x) (left y)  = inr (λ ())
 𝔹-is-discrete (right x) (right y) = Cases (𝔹-is-discrete x y)
                                   (λ (p : x ＝ y) → inl (ap right p))
-                                  (λ (ν : x ≢ y) → inr (contrapositive (right-lc x y) ν))
+                                  (λ (ν : x ≠ y) → inr (contrapositive (right-lc x y) ν))
 
 η-lc : (x y : 𝔹) → η x ＝ η y → x ＝ y
 η-lc x x refl = refl
 
-𝕄-is-discrete : (x y : 𝕄) → (x ＝ y) + (x ≢ y)
+𝕄-is-discrete : (x y : 𝕄) → (x ＝ y) + (x ≠ y)
 𝕄-is-discrete L     L     = inl refl
 𝕄-is-discrete L     R     = inr (λ ())
 𝕄-is-discrete L     (η x) = inr (λ ())
@@ -175,7 +175,7 @@ right-lc x x refl = refl
 𝕄-is-discrete (η x) R     = inr (λ ())
 𝕄-is-discrete (η x) (η y) = Cases (𝔹-is-discrete x y)
                               (λ (p : x ＝ y) → inl (ap η p))
-                              (λ (ν : x ≢ y) → inr (contrapositive (η-lc x y) ν))
+                              (λ (ν : x ≠ y) → inr (contrapositive (η-lc x y) ν))
 
 open import UF.Miscelanea
 

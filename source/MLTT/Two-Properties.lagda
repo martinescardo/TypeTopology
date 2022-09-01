@@ -38,17 +38,17 @@ open import UF.Subsingletons
 𝟚-possibilities ₀ = inl refl
 𝟚-possibilities ₁ = inr refl
 
-𝟚-excluded-third : (b : 𝟚) → b ≢ ₀ → b ≢ ₁ → 𝟘 {𝓤₀}
+𝟚-excluded-third : (b : 𝟚) → b ≠ ₀ → b ≠ ₁ → 𝟘 {𝓤₀}
 𝟚-excluded-third ₀ u v = u refl
 𝟚-excluded-third ₁ u v = v refl
 
-𝟚-things-distinct-from-a-third-are-equal : (x y z : 𝟚) → x ≢ z → y ≢ z → x ＝ y
+𝟚-things-distinct-from-a-third-are-equal : (x y z : 𝟚) → x ≠ z → y ≠ z → x ＝ y
 𝟚-things-distinct-from-a-third-are-equal ₀ ₀ z u v = refl
-𝟚-things-distinct-from-a-third-are-equal ₀ ₁ z u v = 𝟘-elim (𝟚-excluded-third z (≢-sym u) (≢-sym v))
-𝟚-things-distinct-from-a-third-are-equal ₁ ₀ z u v = 𝟘-elim (𝟚-excluded-third z (≢-sym v) (≢-sym u))
+𝟚-things-distinct-from-a-third-are-equal ₀ ₁ z u v = 𝟘-elim (𝟚-excluded-third z (≠-sym u) (≠-sym v))
+𝟚-things-distinct-from-a-third-are-equal ₁ ₀ z u v = 𝟘-elim (𝟚-excluded-third z (≠-sym v) (≠-sym u))
 𝟚-things-distinct-from-a-third-are-equal ₁ ₁ z u v = refl
 
-one-is-not-zero : ₁ ≢ ₀
+one-is-not-zero : ₁ ≠ ₀
 one-is-not-zero p = 𝟙-is-not-𝟘 q
  where
   f : 𝟚 → 𝓤₀ ̇
@@ -58,19 +58,19 @@ one-is-not-zero p = 𝟙-is-not-𝟘 q
   q : 𝟙 ＝ 𝟘
   q = ap f p
 
-zero-is-not-one : ₀ ≢ ₁
+zero-is-not-one : ₀ ≠ ₁
 zero-is-not-one p = one-is-not-zero (p ⁻¹)
 
-equal-₁-different-from-₀ : {b : 𝟚} → b ＝ ₁ → b ≢ ₀
+equal-₁-different-from-₀ : {b : 𝟚} → b ＝ ₁ → b ≠ ₀
 equal-₁-different-from-₀ r s = zero-is-not-one (s ⁻¹ ∙ r)
 
-different-from-₀-equal-₁ : {b : 𝟚} → b ≢ ₀ → b ＝ ₁
+different-from-₀-equal-₁ : {b : 𝟚} → b ≠ ₀ → b ＝ ₁
 different-from-₀-equal-₁ f = 𝟚-equality-cases (𝟘-elim ∘ f) (λ r → r)
 
-different-from-₁-equal-₀ : {b : 𝟚} → b ≢ ₁ → b ＝ ₀
+different-from-₁-equal-₀ : {b : 𝟚} → b ≠ ₁ → b ＝ ₀
 different-from-₁-equal-₀ f = 𝟚-equality-cases (λ r → r) (𝟘-elim ∘ f)
 
-equal-₀-different-from-₁ : {b : 𝟚} → b ＝ ₀ → b ≢ ₁
+equal-₀-different-from-₁ : {b : 𝟚} → b ＝ ₀ → b ≠ ₁
 equal-₀-different-from-₁ r s = zero-is-not-one (r ⁻¹ ∙ s)
 
 [a＝₁→b＝₁]-gives-[b＝₀→a＝₀] : {a b : 𝟚} → (a ＝ ₁ → b ＝ ₁) → b ＝ ₀ → a ＝ ₀
@@ -89,7 +89,7 @@ complement : 𝟚 → 𝟚
 complement ₀ = ₁
 complement ₁ = ₀
 
-complement-no-fp : (n : 𝟚) → n ≢ complement n
+complement-no-fp : (n : 𝟚) → n ≠ complement n
 complement-no-fp ₀ p = 𝟘-elim (zero-is-not-one p)
 complement-no-fp ₁ p = 𝟘-elim (one-is-not-zero p)
 
@@ -168,9 +168,9 @@ instance
 Lemma[a＝₀→b<c→a<c] : {a b c : 𝟚} → a ＝ ₀ → b < c → a < c
 Lemma[a＝₀→b<c→a<c] {₀} {₀} {c} refl l = l
 
-Lemma[a<b→c≢₀→a<c] : {a b c : 𝟚} → a < b → c ≢ ₀ → a < c
-Lemma[a<b→c≢₀→a<c] {₀} {₁} {₀} l ν = ν refl
-Lemma[a<b→c≢₀→a<c] {₀} {₁} {₁} l ν = ⋆
+Lemma[a<b→c≠₀→a<c] : {a b c : 𝟚} → a < b → c ≠ ₀ → a < c
+Lemma[a<b→c≠₀→a<c] {₀} {₁} {₀} l ν = ν refl
+Lemma[a<b→c≠₀→a<c] {₀} {₁} {₁} l ν = ⋆
 
 ₁-top : {b : 𝟚} → b ≤ ₁
 ₁-top {₀} = ⋆
@@ -328,11 +328,11 @@ Lemma[b⊕c＝₀→b＝c] {₀} {₁} r = r ⁻¹
 Lemma[b⊕c＝₀→b＝c] {₁} {₀} r = r
 Lemma[b⊕c＝₀→b＝c] {₁} {₁} r = refl
 
-Lemma[b≢c→b⊕c＝₁] : {b c : 𝟚} → b ≢ c → b ⊕ c ＝ ₁
-Lemma[b≢c→b⊕c＝₁] = different-from-₀-equal-₁ ∘ (contrapositive Lemma[b⊕c＝₀→b＝c])
+Lemma[b≠c→b⊕c＝₁] : {b c : 𝟚} → b ≠ c → b ⊕ c ＝ ₁
+Lemma[b≠c→b⊕c＝₁] = different-from-₀-equal-₁ ∘ (contrapositive Lemma[b⊕c＝₀→b＝c])
 
-Lemma[b⊕c＝₁→b≢c] : {b c : 𝟚} → b ⊕ c ＝ ₁ → b ≢ c
-Lemma[b⊕c＝₁→b≢c] = (contrapositive Lemma[b＝c→b⊕c＝₀]) ∘ equal-₁-different-from-₀
+Lemma[b⊕c＝₁→b≠c] : {b c : 𝟚} → b ⊕ c ＝ ₁ → b ≠ c
+Lemma[b⊕c＝₁→b≠c] = (contrapositive Lemma[b＝c→b⊕c＝₀]) ∘ equal-₁-different-from-₀
 
 complement-left : {b c : 𝟚} → complement b ≤ c → complement c ≤ b
 complement-left {₀} {₁} l = ⋆

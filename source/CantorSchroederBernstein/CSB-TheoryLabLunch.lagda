@@ -561,7 +561,7 @@ left-cancellability of h:
   f-g⁻¹-disjoint-images : (x x' : X)
                         → ¬ is-g-point x
                         → (γ : is-g-point x')
-                        → f x ≢ g⁻¹ x' γ
+                        → f x ≠ g⁻¹ x' γ
   f-g⁻¹-disjoint-images x x' ν γ p = have p ∶ f x ＝ g⁻¹ x' γ
                                      so need contradiction
                                         which-is-given-by

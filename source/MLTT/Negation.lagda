@@ -19,11 +19,17 @@ private
 
 ¬_ : 𝓤 ̇ → 𝓤 ̇
 ¬ A = A → 𝟘 {𝓤₀}
-_≢_ : {X : 𝓤 ̇ } → (x y : X) → 𝓤 ̇
-x ≢ y = ¬ (x ＝ y)
+_≠_ : {X : 𝓤 ̇ } → (x y : X) → 𝓤 ̇
+x ≠ y = ¬ (x ＝ y)
 
-≢-sym : {X : 𝓤 ̇ } → {x y : X} → x ≢ y → y ≢ x
-≢-sym u r = u (r ⁻¹)
+has-two-distinct-points : 𝓤 ̇ → 𝓤 ̇
+has-two-distinct-points X = Σ (x , y) ꞉ X × X , (x ≠ y)
+
+has-three-distinct-points : 𝓤 ̇ → 𝓤 ̇
+has-three-distinct-points X = Σ (x , y , z) ꞉ X × X × X , (x ≠ y) × (y ≠ z) × (z ≠ x)
+
+≠-sym : {X : 𝓤 ̇ } → {x y : X} → x ≠ y → y ≠ x
+≠-sym u r = u (r ⁻¹)
 
 is-empty : 𝓤 ̇ → 𝓤 ̇
 is-empty = ¬_
@@ -178,6 +184,6 @@ Fixities:
 infix  50 ¬_
 infix  50 ¬¬_
 infix  50 ¬¬¬_
-infix  0 _≢_
+infix  0 _≠_
 
 \end{code}

@@ -1598,7 +1598,7 @@ is equal to the empty type 𝟘, but not definitionally:
            (∥∥-rec 𝟘-is-prop (unique-from-𝟘 ∘ pr₁))
            unique-from-𝟘
 
-  Ω-non-trivial : ⊥' ≢ ⊤'
+  Ω-non-trivial : ⊥' ≠ ⊤'
   Ω-non-trivial q = 𝟘-is-not-𝟙 r
    where
     r : 𝟘 ＝ 𝟙
@@ -1622,7 +1622,7 @@ Using τ we derive the non-triviality of 𝓐 from that of Ω:
 
 \begin{code}
 
-  𝓐-non-trivial : ⊥ ≢ ⊤
+  𝓐-non-trivial : ⊥ ≠ ⊤
   𝓐-non-trivial p = Ω-non-trivial q
    where
     q = ⊥'  ＝⟨ (σ-suplat-hom-⊥ 𝓐 Ω-qua-σ-SupLat τ τ-is-hom)⁻¹ ⟩

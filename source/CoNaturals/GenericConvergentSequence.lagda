@@ -182,11 +182,11 @@ is-Zero-Zero = refl
 is-positive-Succ : (α : ℕ∞) → is-positive (Succ α)
 is-positive-Succ α = refl
 
-Zero-not-Succ : {u : ℕ∞} → Zero ≢ Succ u
+Zero-not-Succ : {u : ℕ∞} → Zero ≠ Succ u
 Zero-not-Succ {u} r = zero-is-not-one (ap positivity r)
 
-Succ-not-Zero : {u : ℕ∞} → Succ u ≢ Zero
-Succ-not-Zero = ≢-sym Zero-not-Succ
+Succ-not-Zero : {u : ℕ∞} → Succ u ≠ Zero
+Succ-not-Zero = ≠-sym Zero-not-Succ
 
 ∞ : ℕ∞
 ∞ = (λ i → ₁) , (λ i → ≤₂-refl {₁})
@@ -292,14 +292,14 @@ successors-same-positivity : {u u' v v' : ℕ∞}
                            → positivity u ＝ positivity v
 successors-same-positivity refl refl = refl
 
-not-Zero-is-Succ : funext₀ → {u : ℕ∞} → u ≢ Zero → u ＝ Succ (Pred u)
+not-Zero-is-Succ : funext₀ → {u : ℕ∞} → u ≠ Zero → u ＝ Succ (Pred u)
 not-Zero-is-Succ fe {u} f = ℕ∞-to-ℕ→𝟚-lc fe (dfunext fe lemma)
  where
   lemma : (i : ℕ) → ι u i ＝ ι (Succ (Pred u)) i
   lemma 0        = different-from-₀-equal-₁ (f ∘ is-Zero-equal-Zero fe)
   lemma (succ i) = refl
 
-positive-is-not-Zero : {u : ℕ∞} → is-positive u → u ≢ Zero
+positive-is-not-Zero : {u : ℕ∞} → is-positive u → u ≠ Zero
 positive-is-not-Zero {u} r s = lemma r
  where
   lemma : ¬ (is-positive u)
@@ -340,12 +340,12 @@ Succ-criterion fe {u} {n} r s = ℕ∞-to-ℕ→𝟚-lc fe claim
   claim : ι u ＝ ι (Succ (ι n))
   claim = dfunext fe (lemma u n r s)
 
-∞-is-not-finite : (n : ℕ) → ∞ ≢ ι n
+∞-is-not-finite : (n : ℕ) → ∞ ≠ ι n
 ∞-is-not-finite n s = one-is-not-zero (₁         ＝⟨ ap (λ - → ι - n) s ⟩
                                        ι (ι n) n ＝⟨ ℕ-to-ℕ∞-diagonal₀ n ⟩
                                        ₀         ∎)
 
-not-finite-is-∞ : funext₀ → {u : ℕ∞} → ((n : ℕ) → u ≢ ι n) → u ＝ ∞
+not-finite-is-∞ : funext₀ → {u : ℕ∞} → ((n : ℕ) → u ≠ ι n) → u ＝ ∞
 not-finite-is-∞ fe {u} f = ℕ∞-to-ℕ→𝟚-lc fe (dfunext fe lemma)
  where
   lemma : (n : ℕ) → n ⊏ u
@@ -360,10 +360,10 @@ not-finite-is-∞ fe {u} f = ℕ∞-to-ℕ→𝟚-lc fe (dfunext fe lemma)
             → (u : ℕ∞) → f u ＝ g u
 ℕ∞-ddensity fe {Y} s {f} {g} h h∞ u = s (f u) (g u) c
  where
-  a : f u ≢ g u → (n : ℕ) → u ≢ ι n
+  a : f u ≠ g u → (n : ℕ) → u ≠ ι n
   a t n = contrapositive (λ (r : u ＝ ι n) → transport⁻¹ (λ - → f - ＝ g -) r (h n)) t
 
-  b : f u ≢ g u → u ≢ ∞
+  b : f u ≠ g u → u ≠ ∞
   b = contrapositive (λ (r : u ＝ ∞) → transport⁻¹ (λ - → f - ＝ g -) r h∞)
 
   c : ¬¬ (f u ＝ g u)
@@ -394,7 +394,7 @@ not-finite-is-∞ fe {u} f = ℕ∞-to-ℕ→𝟚-lc fe (dfunext fe lemma)
   g : is-embedding (λ _ → ∞)
   g x (* , p) (⋆ , q) = ap (λ - → ⋆ , -) (ℕ∞-is-set fe p q)
 
-  d : (n : ℕ) (y : 𝟙) → ι n ≢ ∞
+  d : (n : ℕ) (y : 𝟙) → ι n ≠ ∞
   d n _ p = ∞-is-not-finite n (p ⁻¹)
 
 ι𝟙-dense : funext₀ → is-dense ι𝟙
@@ -1111,10 +1111,10 @@ one ₁.
 
  at-most-one-₁-Lemma₁ : (β : ℕ → 𝟚)
                       → has-at-most-one-₁ β
-                      → {m n : ℕ} → m ≢ n → β m ＝ ₁ → β n ＝ ₀
+                      → {m n : ℕ} → m ≠ n → β m ＝ ₁ → β n ＝ ₀
  at-most-one-₁-Lemma₁ β π {m} {n} ν p = w
   where
-   I : β n ≢ ₁
+   I : β n ≠ ₁
    I q = ν (at-most-one-₁-Lemma₀ β π (p , q))
 
    w : β n ＝ ₀
@@ -1142,7 +1142,7 @@ a suitable induction hypothesis.
    IH : γ β k ＝ ₁
    IH = γ-lemma β π (n ∔ 1) p k (≤-trans k n (n ∔ 1) l (≤-succ n))
 
-   I : n ∔ 2 ≢ succ k
+   I : n ∔ 2 ≠ succ k
    I m = not-less-than-itself n r
     where
      q : n ∔ 1 ＝ k

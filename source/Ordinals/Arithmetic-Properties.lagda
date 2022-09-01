@@ -240,7 +240,7 @@ lemma₀ {𝓤} {α} {β} = to-≼ ϕ
 
 lemma₁ : {α β : Ordinal 𝓤}
          (a : ⟨ α ⟩)
-       → (α +ₒ β) ≢ (α ↓ a)
+       → (α +ₒ β) ≠ (α ↓ a)
 lemma₁ {𝓤} {α} {β} a p = irrefl (OO 𝓤) (α +ₒ β) m
  where
   l : (α +ₒ β) ⊲ α
@@ -485,7 +485,7 @@ ordinal-subtraction-gives-excluded-middle {𝓤} ϕ P P-is-prop = g
   f c p = z
    where
     A : 𝓤 ̇ → 𝓤 ̇
-    A X = Σ x ꞉ X , Σ y ꞉ X , x ≢ y
+    A X = Σ x ꞉ X , Σ y ꞉ X , x ≠ y
 
     u : A (P + ⟨ γ ⟩)
     u = inl p , inr c , +disjoint
@@ -573,7 +573,7 @@ module _ {𝓤 : Universe} where
    V P i = Cases (IV (P , i))
             (λ (e : ⊥Ω ＝ (P , i))
                   → inl (equal-𝟘-is-empty (ap pr₁ (e ⁻¹))))
-            (λ (ν : ⊥Ω ≢ (P , i))
+            (λ (ν : ⊥Ω ≠ (P , i))
                   → inr (contrapositive
                           (λ (u : ¬ P)
                                 → to-subtype-＝ (λ _ → being-prop-is-prop fe')

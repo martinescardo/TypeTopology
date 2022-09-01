@@ -906,7 +906,7 @@ has an element σ₀ such that σ₀ is not the least element, which we prove no
     e₁ = ap (π⁺ {n} {m} l) ((ε⁺-comp ⋆ l x₀) ⁻¹)
     e₂ = ε⁺-section-of-π⁺ l (ε⁺ {0} {n} ⋆ x₀)
 
-𝓓∞⊥-is-nontrivial : σ₀ ≢ ⊥ 𝓓∞⊥
+𝓓∞⊥-is-nontrivial : σ₀ ≠ ⊥ 𝓓∞⊥
 𝓓∞⊥-is-nontrivial e = 𝟘-is-not-𝟙 (γ ⁻¹)
  where
   e₀ : ⦅ σ₀ ⦆ 0 ＝ ⊥ (𝓓⊥ 0)

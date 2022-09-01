@@ -39,7 +39,7 @@ private
 
   recall₀ : compact∙ X    ＝ (Π p ꞉ (X → 𝟚) , Σ x₀ ꞉ X , (p x₀ ＝ ₁ → Π x ꞉ X , p x ＝ ₁))
   recall₁ : compact  X    ＝ (Π p ꞉ (X → 𝟚) , (Σ x ꞉ X , p x ＝ ₀) + (Π x ꞉ X , p x ＝ ₁))
-  recall₂ : is-discrete X ＝ ((x y : X) → (x ＝ y) + (x ≢ y))
+  recall₂ : is-discrete X ＝ ((x y : X) → (x ＝ y) + (x ≠ y))
 
   recall₀ = by-definition
   recall₁ = by-definition
@@ -106,7 +106,7 @@ This is the main theorem proved in this module.
                p (ι n) ＝⟨ Dagger₀ n t ⟩
                ₀       ∎
 
-  Claim₀ : p a ＝ ₁ → (n : ℕ) → a ≢ ι n
+  Claim₀ : p a ＝ ₁ → (n : ℕ) → a ≠ ι n
   Claim₀ r n s = equal-₁-different-from-₀ r (Lemma₀ n s)
 
   Claim₁ : p a ＝ ₁ → a ＝ ∞

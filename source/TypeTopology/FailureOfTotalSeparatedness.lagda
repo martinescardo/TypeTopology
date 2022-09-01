@@ -100,7 +100,7 @@ module concrete-example where
 
 \begin{code}
 
- failure : (p : X → 𝟚) → p ∞₀ ≢ p ∞₁ → WLPO
+ failure : (p : X → 𝟚) → p ∞₀ ≠ p ∞₁ → WLPO
  failure p = disagreement-taboo fe p₀ p₁ lemma
   where
    p₀ : ℕ∞ → 𝟚
@@ -130,7 +130,7 @@ module concrete-example where
 
 \begin{code}
 
- ∞₀-and-∞₁-different : ∞₀ ≢ ∞₁
+ ∞₀-and-∞₁-different : ∞₀ ≠ ∞₁
  ∞₀-and-∞₁-different r = zero-is-not-one claim₃
   where
    p : ∞ ＝ ∞
@@ -196,7 +196,7 @@ module general-example (𝓤 : Universe) (X : 𝓤 ̇ ) (a : X) where
  a₁ : Y
  a₁ = e ₁ a
 
- Proposition : a₀ ≢ a₁
+ Proposition : a₀ ≠ a₁
  Proposition r = zero-is-not-one zero-is-one
   where
    P : Y → 𝓤 ̇
@@ -227,7 +227,7 @@ two embeddings e₀ and e₁:
 
 \begin{code}
 
- Lemma : (x : X) → x ≢ a → e ₀ x ＝ e ₁ x
+ Lemma : (x : X) → x ≠ a → e ₀ x ＝ e ₁ x
  Lemma x φ = ap (λ - → (x , -)) claim
   where
    claim : (λ p → ₀) ＝ (λ p → ₁)
@@ -245,27 +245,27 @@ extensionality. (Cf. the module DiscreteAndSeparated.)
 \begin{code}
 
  weakly-isolated : {X : 𝓤 ̇ } (x : X) → 𝓤 ̇
- weakly-isolated x = ∀ x' → decidable (x' ≢ x)
+ weakly-isolated x = ∀ x' → decidable (x' ≠ x)
 
- Theorem : (Σ g ꞉ (Y → 𝟚), g a₀ ≢ g a₁) → weakly-isolated a
+ Theorem : (Σ g ꞉ (Y → 𝟚), g a₀ ≠ g a₁) → weakly-isolated a
  Theorem (g , d) = λ x → 𝟚-equality-cases' (claim₀' x) (claim₁' x)
   where
    f : X → 𝟚
    f x = g (e ₀ x) ⊕ g (e ₁ x)
 
    claim₀ : f a ＝ ₁
-   claim₀ = Lemma[b≢c→b⊕c＝₁] d
+   claim₀ = Lemma[b≠c→b⊕c＝₁] d
 
-   claim₁ : (x : X) → x ≢ a → f x ＝ ₀
+   claim₁ : (x : X) → x ≠ a → f x ＝ ₀
    claim₁ x φ = Lemma[b＝c→b⊕c＝₀] (ap g (Lemma x φ))
 
-   claim₀' : (x : X) → f x ＝ ₀ → x ≢ a
+   claim₀' : (x : X) → f x ＝ ₀ → x ≠ a
    claim₀' x p r = 𝟘-elim (equal-₀-different-from-₁ fact claim₀)
     where
      fact : f a ＝ ₀
      fact = ap f (r ⁻¹) ∙ p
 
-   claim₁' : (x : X) → f x ＝ ₁ → ¬ (x ≢ a)
+   claim₁' : (x : X) → f x ＝ ₁ → ¬ (x ≠ a)
    claim₁' x p φ = 𝟘-elim (equal-₀-different-from-₁ fact p)
     where
      fact : f x ＝ ₀
