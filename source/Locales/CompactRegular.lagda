@@ -295,6 +295,40 @@ is-boolean-complement-of F U′ U =
   where
    iss = carrier-of-[ poset-of F ]-is-set
 
+∧-complement : (F : Frame 𝓤 𝓥 𝓦)
+             → {x y x′ y′ : ⟨ F ⟩}
+             → is-boolean-complement-of F x x′ holds
+             → is-boolean-complement-of F y y′ holds
+             → is-boolean-complement-of F (x′ ∨[ F ] y′) (x ∧[ F ] y) holds
+∧-complement F {x} {y} {x′} {y′} φ ψ = β , γ
+ where
+  open PosetReasoning (poset-of F)
+
+  ※ : (((x ∧[ F ] y) ∧[ F ] x′) ≤[ poset-of F ] 𝟎[ F ]) holds
+  ※ = (x ∧[ F ] y) ∧[ F ] x′    ≤⟨ {!!} ⟩
+      (y ∧[ F ] x) ∧[ F ] x′    ≤⟨ {!!} ⟩
+      y ∧[ F ] (x ∧[ F ] x′)    ≤⟨ {!!} ⟩
+      y ∧[ F ] 𝟎[ F ]           ≤⟨ {!!} ⟩
+      𝟎[ F ]                    ■
+
+  † = (x ∧[ F ] y) ∧[ F ] (x′ ∨[ F ] y′)                        ＝⟨ Ⅰ ⟩ₚ
+      ((x ∧[ F ] y) ∧[ F ] x′) ∨[ F ] ((x ∧[ F ] y) ∧[ F ] y′)  ≤⟨ Ⅱ ⟩
+      𝟎[ F ] ∨[ F ] ((x ∧[ F ] y) ∧[ F ] y′)                    ≤⟨ Ⅲ ⟩
+      𝟎[ F ] ∨[ F ] 𝟎[ F ]                                      ＝⟨ Ⅳ ⟩ₚ
+      𝟎[ F ] ■
+       where
+        Ⅰ = binary-distributivity F (x ∧[ F ] y) x′ y′
+        Ⅱ = ∨[ F ]-left-monotone ※
+        Ⅲ = {!!}
+        Ⅳ = {!!}
+
+
+  β : (x ∧[ F ] y) ∧[ F ] (x′ ∨[ F ] y′) ＝ 𝟎[ F ]
+  β = only-𝟎-is-below-𝟎 F ((x ∧[ F ] y) ∧[ F ] (x′ ∨[ F ] y′)) †
+
+  γ : ((x ∧[ F ] y) ∨[ F ] binary-join F x′ y′) ＝ 𝟏[ F ]
+  γ = {!!}
+
 is-clopen₀ : (F : Frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → 𝓤 ̇
 is-clopen₀ F U = Σ W ꞉ ⟨ F ⟩ , (U ∧[ F ] W ＝ 𝟎[ F ]) × (U ∨[ F ] W ＝ 𝟏[ F ])
 
