@@ -575,6 +575,65 @@ We use Yoneda for the `β` direction.
 
 \end{code}
 
+\section{Open and Closed Nuclei are Complements}
+
+\begin{code}
+
+module Complementation (X : Locale (𝓤 ⁺) 𝓤 𝓤) (σᴰ : spectralᴰ (𝒪 X)) where
+
+ open SmallPatchConstruction X σᴰ renaming (SmallPatch to Patchₛ-X)
+ open PatchConstruction X ∣ σᴰ ∣ using (_$_; 𝔡𝔦𝔯)
+ open ClosedNucleus X ∣ σᴰ ∣
+ open OpenNucleus   X ∣ σᴰ ∣
+ open HeytingImplicationConstruction X (spectral-frames-have-bases (𝒪 X) ∣ σᴰ ∣)
+
+ open-complements-closed : (K : ⟨ 𝒪 X ⟩)
+                         → (κ : is-compact-open (𝒪 X) K holds)
+                         → (is-boolean-complement-of (𝒪 Patchₛ-X) ¬‘ (K , κ) ’ ‘ K ’ ) holds
+ open-complements-closed K κ = † , ‡
+  where
+   open PosetReasoning (poset-of (𝒪 X))
+
+   †₁ : ((‘ K ’ ∧[ 𝒪 Patchₛ-X ] ¬‘ (K , κ) ’)
+         ≤[ poset-of (𝒪 Patchₛ-X) ]
+         𝟎[ 𝒪 Patchₛ-X ]) holds
+   †₁ l =
+    (K ∨[ 𝒪 X ] (ℬ [ l ])) ∧[ 𝒪 X ] ((K ==> (ℬ [ l ])))                           ＝⟨ Ⅰ ⟩ₚ
+    (K ∧[ 𝒪 X ] (K ==> (ℬ [ l ]))) ∨[ 𝒪 X ] (ℬ [ l ] ∧[ 𝒪 X ] (K ==> (ℬ [ l ])))  ≤⟨ Ⅱ ⟩
+    (ℬ [ l ]) ∨[ 𝒪 X ] (ℬ [ l ] ∧[ 𝒪 X ] (K ==> (ℬ [ l ])))                       ≤⟨ Ⅲ ⟩
+    ℬ [ l ]                                                                       ＝⟨ Ⅳ ⟩ₚ
+    𝟎[ 𝒪 Patchₛ-X ] $ (ℬ [ l ])                                                   ■
+     where
+      Ⅰ =  binary-distributivity-right (𝒪 X)
+      Ⅱ = ∨[ 𝒪 X ]-left-monotone (mp-left K (ℬ [ l ]))
+      Ⅲ = ∨[ 𝒪 X ]-least ♥ ♠
+           where
+            ♥ = ≤-is-reflexive (poset-of (𝒪 X)) (ℬ [ l ])
+            ♠ = ∧[ 𝒪 X ]-lower₁ (ℬ [ l ]) (K ==> (ℬ [ l ]))
+      Ⅳ = 𝟎-is-id (ℬ [ l ]) ⁻¹
+
+   ‡₁ : (𝟏[ 𝒪 Patchₛ-X ] ≼ᵏ (‘ K ’ ∨[ 𝒪 Patchₛ-X ] ¬‘ (K , κ) ’)) holds
+   ‡₁ l =
+     𝟏[ 𝒪 X ]                                                 ≤⟨ Ⅰ ⟩
+     K ==> (K ∨[ 𝒪 X ] (ℬ [ l ]))                             ≤⟨ Ⅱ ⟩
+     (‘ K ’ ∨[ 𝒪 Patchₛ-X ] ¬‘ (K , κ) ’) $ (ℬ [ l ])         ■
+      where
+       ※ : ((𝟏[ 𝒪 X ] ∧[ 𝒪 X ] K) ≤[ poset-of (𝒪 X) ] (K ∨[ 𝒪 X ] ℬ [ l ])) holds
+       ※ = 𝟏[ 𝒪 X ] ∧[ 𝒪 X ] K   ≤⟨ ∧[ 𝒪 X ]-lower₂ (𝟏[ 𝒪 X ]) K ⟩
+           K                     ≤⟨ ∨[ 𝒪 X ]-upper₁ K (ℬ [ l ])  ⟩
+           K ∨[ 𝒪 X ] ℬ [ l ]    ■
+
+       Ⅰ = heyting-implication₁ K (K ∨[ 𝒪 X ] (ℬ [ l ])) 𝟏[ 𝒪 X ] ※
+       Ⅱ = ⋁[ 𝒪 X ]-upper _ (inl ⋆ ∷ inr ⋆ ∷ [])
+
+   † : ‘ K ’ ∧[ 𝒪 Patchₛ-X ] ¬‘ (K , κ) ’ ＝ 𝟎[ 𝒪 Patchₛ-X ]
+   † = only-𝟎-is-below-𝟎 (𝒪 Patchₛ-X) _ †₁
+
+   ‡ : ‘ K ’ ∨[ 𝒪 Patchₛ-X ] ¬‘ (K , κ) ’ ＝ 𝟏[ 𝒪 Patchₛ-X ]
+   ‡ = only-𝟏-is-above-𝟏 (𝒪 Patchₛ-X) _ ‡₁
+
+\end{code}
+
 \section{Basis of Patch}
 
 \begin{code}
