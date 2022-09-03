@@ -62,6 +62,11 @@ data Vec (A : 𝓤 ̇ ) : ℕ → 𝓤 ̇  where
   []  : Vec A 0
   _∷_ : {n : ℕ} → A → Vec A n → Vec A (succ n)
 
+infixr 20 _∷_
+[_] : {A : 𝓤 ̇} (x : A) → Vec A 1
+[ x ] = x ∷ []
+
+
 vec-map : {A : 𝓤 ̇ } {B : 𝓥 ̇ } {n : ℕ} → (A → B) → Vec A n → Vec B n
 vec-map f [] = []
 vec-map f (x ∷ v) = f x ∷ vec-map f v

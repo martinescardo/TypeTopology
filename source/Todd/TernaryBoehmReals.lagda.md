@@ -528,7 +528,7 @@ upLeft-or-upRight' : (k₁ k₂ c : ℤ) (n m : ℕ)
                    → (upRight k₁ ≤ upLeft  c ≤ upLeft k₂)
                    + (upRight k₁ ≤ upRight c ≤ upLeft k₂)
 upLeft-or-upRight' k₁ k₂ c 0 0        p q f
- = 𝟘-elim (b<a→a≢b _ _ f ((p ∙ q) ⁻¹))
+ = 𝟘-elim (b<a→a≠b _ _ f ((p ∙ q) ⁻¹))
 upLeft-or-upRight'
  k₁ .((k₁ +pos zero) +pos succ m) .(k₁ +pos zero) 0 (succ m) refl refl f
  = inr (ℤ≤-refl _ , upRight≤upLeft _ _ (m , ℤ-left-succ-pos k₁ m))
@@ -566,7 +566,7 @@ down-choices' : (k₁ k₂ c : ℤ) (n m : ℕ)
               → (downRight k₁ ≤ downLeft  c ≤ downLeft k₂)
               + (downRight k₁ ≤ downRight c ≤ downLeft k₂)
 down-choices' k₁ .((k₁ +pos zero) +pos zero) .(k₁ +pos zero) 0 0 refl refl f
- = 𝟘-elim (b<a→a≢b _ _ f refl)
+ = 𝟘-elim (b<a→a≠b _ _ f refl)
 down-choices'
  k₁ .((k₁ +pos zero) +pos succ m) .(k₁ +pos zero) 0 (succ m) refl refl f
  = inr ((zero , refl)

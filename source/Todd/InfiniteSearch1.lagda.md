@@ -366,7 +366,7 @@ discrete-c'-eic : {X : 𝓤 ̇ } → (x : X)
 discrete-c'-eic x (inl x＝x) = refl
 discrete-c'-eic x (inr x≢x) = 𝟘-elim (x≢x refl)
 
-zero-is-not-one : ₀ ≢ ₁
+zero-is-not-one : ₀ ≠ ₁
 zero-is-not-one ()
 
 discrete-c'-ice : {X : 𝓤 ̇ } → (x y : X)
@@ -375,7 +375,7 @@ discrete-c'-ice : {X : 𝓤 ̇ } → (x y : X)
 discrete-c'-ice x y (inl x＝y) cxy＝∞ = x＝y
 discrete-c'-ice x y (inr x≢y) cxy＝∞ = 𝟘-elim (Zero-not-∞ cxy＝∞)
  where
-   Zero-not-∞ : (0 ↑) ≢ ∞
+   Zero-not-∞ : (0 ↑) ≠ ∞
    Zero-not-∞ 0＝∞ = 𝟘-elim (zero-is-not-one (ap (λ - → pr₁ - 0) 0＝∞))
                                  
 discrete-c'-sym : {X : 𝓤 ̇ } → (x y : X)
@@ -383,9 +383,9 @@ discrete-c'-sym : {X : 𝓤 ̇ } → (x y : X)
                 → (dyx : decidable (y ＝ x))
                 → discrete-c' (x , y) dxy ＝ discrete-c' (y , x) dyx
 discrete-c'-sym x y (inl x＝y) (inl y＝x) = refl
-discrete-c'-sym x y (inr x≢y) (inr y≢x) = refl
-discrete-c'-sym x y (inl x＝y) (inr y≢x) = 𝟘-elim (y≢x (x＝y ⁻¹))
-discrete-c'-sym x y (inr x≢y) (inl y＝x) = 𝟘-elim (x≢y (y＝x ⁻¹))
+discrete-c'-sym x y (inr x≠y) (inr y≠x) = refl
+discrete-c'-sym x y (inl x＝y) (inr y≠x) = 𝟘-elim (y≠x (x＝y ⁻¹))
+discrete-c'-sym x y (inr x≠y) (inl y＝x) = 𝟘-elim (x≠y (y＝x ⁻¹))
                                            
 discrete-c'-ult : {X : 𝓤 ̇ } → (x y z : X)
                 → (dxy : decidable (x ＝ y))
@@ -394,9 +394,9 @@ discrete-c'-ult : {X : 𝓤 ̇ } → (x y z : X)
                 → min (discrete-c' (x , y) dxy) (discrete-c' (y , z) dyz)
                      ≼ discrete-c' (x , z) dxz
 discrete-c'-ult x  y  z       _          _    (inl x＝z ) _ _ = refl
-discrete-c'-ult x  y  z (inl x＝y ) (inr y≢z ) (inr x≢z ) _   = id
-discrete-c'-ult x  y  z (inr x≢y )       _    (inr x≢z ) _   = id
-discrete-c'-ult x .x .x (inl refl) (inl refl) (inr x≢x )     = 𝟘-elim (x≢x refl)
+discrete-c'-ult x  y  z (inl x＝y ) (inr y≠z ) (inr x≠z ) _   = id
+discrete-c'-ult x  y  z (inr x≠y )       _    (inr x≠z ) _   = id
+discrete-c'-ult x .x .x (inl refl) (inl refl) (inr x≠x )     = 𝟘-elim (x≠x refl)
 ```
 
 We can now easily prove that any discrete type has a closeness function

@@ -214,7 +214,7 @@ Trivial-informs-empty _ _ _ ()
 trivial-not-empty : {𝓦 𝓤 : Universe} {X : 𝓤 ̇ }
                   → nonempty X
                   → trivial-predicate {𝓦} X
-                  ≢   empty-predicate {𝓦} X
+                  ≠   empty-predicate {𝓦} X
 trivial-not-empty {𝓦} {𝓤} {X} x t＝e = ¬px ⋆
  where
    ¬px : ¬ pr₁ (trivial-predicate {𝓦} X) x

@@ -24,12 +24,12 @@ open import Todd.TernaryBoehmRealsPrelude fe
 ```
 
 ```
-b<a→a≢b : ∀ a b → (b <ℤ a) → a ≢ b
-b<a→a≢b a a (n , a<a) refl = γ γ'
+b<a→a≠b : ∀ a b → (b <ℤ a) → a ≠ b
+b<a→a≠b a a (n , a<a) refl = γ γ'
  where
    γ' : 0 ＝ succ n
    γ' = pos-lc (ℤ+-lc _ _ a (a<a ⁻¹ ∙ ℤ-left-succ-pos a n))
-   γ : 0 ≢ succ n
+   γ : 0 ≠ succ n
    γ ()
 
 ℤ-elim : (P : ℤ → 𝓤 ̇ )
@@ -90,8 +90,8 @@ pred-downRight a = predsuccℤ _
 pred-pred-downRight : (a : ℤ) → predℤ (predℤ (downRight a)) ＝ downLeft a
 pred-pred-downRight a = ap predℤ (predsuccℤ _) ∙ predsuccℤ _
 
-downLeft≢downRight : (a b : ℤ) → a ＝ b → downLeft a ≢ downRight a
-downLeft≢downRight a a refl dL＝dR = b<a→a≢b _ _ (1 , refl) (dL＝dR ⁻¹)
+downLeft≠downRight : (a b : ℤ) → a ＝ b → downLeft a ≠ downRight a
+downLeft≠downRight a a refl dL＝dR = b<a→a≠b _ _ (1 , refl) (dL＝dR ⁻¹)
 
 downLeft-monotone' : (a b : ℤ) → ((n , _) : a ≤ℤ b)
                    → downLeft a +pos (n +ℕ n) ＝ downLeft b
@@ -209,7 +209,7 @@ below-implies-below' a b ((succ (succ (succ _)) , _) , (1 , f))
 below-implies-below' a b ((succ (succ (succ _)) , _) , (2 , f))
  = inl (succℤ-lc (succℤ-lc f))
 below-implies-below' a b ((succ (succ (succ n)) , e) , (succ (succ (succ m)) , f))
- = 𝟘-elim (k≢2 k＝2)
+ = 𝟘-elim (k≠2 k＝2)
  where
    k : ℕ
    k = (succ (succ (succ (succ (succ (succ (n +ℕ m)))))))
@@ -225,8 +225,8 @@ below-implies-below' a b ((succ (succ (succ n)) , e) , (succ (succ (succ m)) , f
    ζ = refl
    k＝2 : k ＝ 2
    k＝2 = pos-lc (ℤ+-lc (pos k) (pos 2) (downLeft b) (η ∙ ζ ⁻¹))
-   k≢2 : k ≢ 2
-   k≢2 = λ ()
+   k≠2 : k ≠ 2
+   k≠2 = λ ()
 ```
 
 upLeft and upRight

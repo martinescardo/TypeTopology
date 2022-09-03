@@ -193,9 +193,9 @@ integer valued dyadic rationals.  For example, (3 / 2⁻⁶) = 192 = (192
 ```agda
 
 ℤ[1/2] : 𝓤₀ ̇
-ℤ[1/2] = Σ (z , n) ꞉ ℤ × ℕ , (n ＝ 0) ∔ ((n ≢ 0) × odd z)
+ℤ[1/2] = Σ (z , n) ꞉ ℤ × ℕ , (n ＝ 0) ∔ ((n ≠ 0) × odd z)
 
-ℤ[1/2]-cond-is-prop : (z : ℤ) (n : ℕ) → is-prop ((n ＝ 0) ∔ ((n ≢ 0) × odd z))
+ℤ[1/2]-cond-is-prop : (z : ℤ) (n : ℕ) → is-prop ((n ＝ 0) ∔ ((n ≠ 0) × odd z))
 ℤ[1/2]-cond-is-prop z n =
  +-is-prop ℕ-is-set (×-is-prop (Π-is-prop (fe 𝓤₀ 𝓤₀) (λ _ → 𝟘-is-prop)) (odd-is-prop z)) λ e (ne , _) → ne e
 
@@ -252,7 +252,7 @@ normalise (k , negsucc n) = normalise-neg k n
 
 open import Todd.BelowAndAbove fe
 
-normalise-pos-lemma₁ : (k : ℤ) (δ : ℕ) (p : (δ ＝ 0) ∔ ((δ ≢ 0) × odd k))
+normalise-pos-lemma₁ : (k : ℤ) (δ : ℕ) (p : (δ ＝ 0) ∔ ((δ ≠ 0) × odd k))
              → normalise-pos ((k +ℤ k) /2') δ ＝ (k , δ) , p
 normalise-pos-lemma₁ k 0 (inl refl) = to-subtype-＝ (λ (z , n) → ℤ[1/2]-cond-is-prop z n) (to-×-＝ (div-by-two k) refl)
 normalise-pos-lemma₁ k 0 (inr (δnz , k-odd)) = 𝟘-elim (δnz refl)
@@ -265,7 +265,7 @@ normalise-pos-lemma₂ k δ with even-or-odd? (k +ℤ k)
 ... | inl _ = ap (λ s → normalise-pos s δ) (div-by-two k ⁻¹)
 ... | inr o = 𝟘-elim (times-two-even' k o)
 
-normalise-lemma : (k : ℤ) (δ : ℕ) (n : ℕ) (p : (δ ＝ 0) ∔ ((δ ≢ 0) × odd k))
+normalise-lemma : (k : ℤ) (δ : ℕ) (n : ℕ) (p : (δ ＝ 0) ∔ ((δ ≠ 0) × odd k))
                 → normalise (rec k downLeft n +ℤ rec k downLeft n , (pos (succ δ) +ℤ pos n)) ＝ (k , δ) , p
 normalise-lemma k δ 0 p with even-or-odd? (k +ℤ k)
 ... | inl even = normalise-pos-lemma₁ k δ p
