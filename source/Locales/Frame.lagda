@@ -620,7 +620,6 @@ only-𝟎-is-below-𝟎 F x p =
  x ∨[ F ] 𝟎[ F ]  ＝⟨ ∨[ F ]-is-commutative x 𝟎[ F ] ⟩
  𝟎[ F ] ∨[ F ] x  ＝⟨ 𝟎-right-unit-of-∨ F x          ⟩
  x                ∎
-
 \end{code}
 
 \begin{code}
@@ -1081,7 +1080,14 @@ scott-continuous-join-eq F G f ζ S δ =
 𝟏-left-annihilator-for-∨ F x =
  𝟏[ F ] ∨[ F ] x  ＝⟨ ∨[ F ]-is-commutative 𝟏[ F ] x ⟩
  x ∨[ F ] 𝟏[ F ]  ＝⟨ 𝟏-right-annihilator-for-∨ F x  ⟩
- 𝟏[ F ] ∎
+ 𝟏[ F ]           ∎
+
+
+𝟏-left-unit-of-∧ : (F : Frame 𝓤 𝓥 𝓦)
+                 → (x : ⟨ F ⟩) → 𝟏[ F ] ∧[ F ] x ＝ x
+𝟏-left-unit-of-∧ F x = 𝟏[ F ] ∧[ F ] x   ＝⟨ ∧[ F ]-is-commutative 𝟏[ F ] x ⟩
+                       x ∧[ F ] 𝟏[ F ]   ＝⟨ 𝟏-right-unit-of-∧ F x          ⟩
+                       x                 ∎
 
 \end{code}
 
