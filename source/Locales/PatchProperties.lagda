@@ -668,6 +668,9 @@ We define the following basis for Patch:
  ℬ-patch : Fam 𝓤 ⟨ 𝒪 Patchₛ-X ⟩
  ℬ-patch = ⁅ 𝔠 k ⋏ 𝔬 l ∣ (k , l) ∶ (index ℬ × index ℬ) ⁆
 
+ ℬ-patch-consists-of-clopens : consists-of-clopens (𝒪 Patchₛ-X) ℬ-patch holds
+ ℬ-patch-consists-of-clopens i = {!!} , ({!!} , {!!})
+
 \end{code}
 
 Given a perfect nucleus `j : 𝓞(X) → 𝓞(X)`, the basic covering family for it
@@ -853,7 +856,6 @@ The first lemma we prove is the fact that `𝒿 = 𝕔𝕠𝕧₂ 𝒿` which we
                ⁅ ‘ ℬ [ l ] ’ ∣ l ε ℒ ⁆
                _
                (ϵ-preserves-⋁ ⁅ ℬ [ l ] ∣ l ε ℒ ⁆))
-
         Ⅲ = ap (λ - → - $ U) (distributivity′-right _ _ _)
 
         ♣ : (l : index ℒ)
@@ -917,5 +919,20 @@ module PatchStone (X : Locale (𝓤 ⁺) 𝓤 𝓤) (σᴰ : spectralᴰ (𝒪 X
  patch-is-compact : is-compact (𝒪 Patchₛ-X) holds
  patch-is-compact =
   compact-codomain-of-perfect-map-implies-compact-domain ϵ ϵ-is-a-perfect-map X-is-compact
+
+\end{code}
+
+\begin{code}
+
+ open BasisOfPatch X σᴰ
+
+ -- patch-zero-dimensional : is-zero-dimensional (𝒪 Patchₛ-X) holds
+ -- patch-zero-dimensional = ∣ ℬ-patch , β , γ ∣
+ --  where
+ --   β : is-basis-for (𝒪 Patchₛ-X) ℬ-patch
+ --   β = ℬ-is-basis-for-patch
+
+ --   γ : consists-of-clopens (𝒪 Patchₛ-X) {!!} holds
+ --   γ = {!!}
 
 \end{code}
