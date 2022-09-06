@@ -925,11 +925,12 @@ We first prove that this forms a basis.
 
 \begin{code}
 
-module PatchStone (X : Locale (𝓤 ⁺) 𝓤 𝓤) (σᴰ : spectralᴰ (𝒪 X)) where
+module PatchStoneᴰ (X : Locale (𝓤 ⁺) 𝓤 𝓤) (σᴰ : spectralᴰ (𝒪 X)) where
 
  open ClosedNucleus X ∣ σᴰ ∣
  open OpenNucleus   X ∣ σᴰ ∣
  open SmallPatchConstruction X σᴰ renaming (SmallPatch to Patchₛ-X)
+ open PatchConstruction X ∣ σᴰ ∣ using (_≼_; ⋁ₙ) renaming (Patch to Patch-X)
  open Epsilon X σᴰ
 
  open PerfectMaps Patchₛ-X X 𝒷
@@ -941,9 +942,31 @@ module PatchStone (X : Locale (𝓤 ⁺) 𝓤 𝓤) (σᴰ : spectralᴰ (𝒪 X
 
 \begin{code}
 
- patch-is-compact : is-compact (𝒪 Patchₛ-X) holds
- patch-is-compact =
+ patchₛ-is-compact : is-compact (𝒪 Patchₛ-X) holds
+ patchₛ-is-compact =
   compact-codomain-of-perfect-map-implies-compact-domain ϵ ϵ-is-a-perfect-map X-is-compact
+
+ patch-is-compact : is-compact (𝒪 Patch-X) holds
+ patch-is-compact S δ p = ∥∥-rec ∃-is-prop γ (patchₛ-is-compact S ζ †)
+  where
+   γ : (Σ i ꞉ index S , (𝟏[ 𝒪 Patchₛ-X ] ≼ᵏ (S [ i ])) holds)
+     → ∃ i ꞉ index S , (𝟏[ 𝒪 Patch-X ] ≼ (S [ i ])) holds
+   γ (i , q) = ∣ i , ≼ᵏ-implies-≼ 𝟏[ 𝒪 Patch-X ] (S [ i ]) q ∣
+
+   ζ : is-directed (poset-of (𝒪 Patchₛ-X)) S holds
+   ζ = pr₁ δ , †
+    where
+     † : (i j : index S) → (Ǝ k ∶ index S , (((S [ i ]) ≼ᵏ (S [ k ]))
+                                           ∧ ((S [ j ]) ≼ᵏ (S [ k ]))) holds) holds
+     † i j = ∥∥-rec ∃-is-prop ‡ (pr₂ δ i j)
+      where
+       ‡ : _
+       ‡ (k , φ , ψ) = ∣ k
+                       , ≼-implies-≼ᵏ (S [ i ]) (S [ k ]) φ
+                       , ≼-implies-≼ᵏ (S [ j ]) (S [ k ]) ψ ∣
+
+   † : (𝟏[ 𝒪 Patch-X ] ≼ᵏ ⋁ₙ S) holds
+   † = ≼-implies-≼ᵏ 𝟏[ 𝒪 Patch-X ] (⋁ₙ S) p
 
 \end{code}
 
