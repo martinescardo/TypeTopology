@@ -338,7 +338,7 @@ Without excluded middle, we have that:
 
 no-truth-values-other-than-⊥-or-⊤ : funext 𝓤 𝓤
                                   → propext 𝓤
-                                  → ¬ (Σ p ꞉ Ω 𝓤 , (p ≢ ⊥) × (p ≢ ⊤))
+                                  → ¬ (Σ p ꞉ Ω 𝓤 , (p ≠ ⊥) × (p ≠ ⊤))
 no-truth-values-other-than-⊥-or-⊤ fe pe ((P , i) , (f , g)) = φ u
  where
   u : ¬ P
@@ -353,42 +353,39 @@ no-truth-values-other-than-⊥-or-⊤ fe pe ((P , i) , (f , g)) = φ u
      l : (P , i) ＝ ⊥
      l = Ω-extensionality fe pe (λ p → 𝟘-elim (u p)) unique-from-𝟘
 
-has-three-distinct-points : 𝓤 ̇ → 𝓤 ̇
-has-three-distinct-points X = Σ (x , y , z) ꞉ X × X × X , (x ≢ y) × (y ≢ z) × (z ≢ x)
-
 no-three-distinct-propositions : funext 𝓤 𝓤
                                → propext 𝓤
                                → ¬ has-three-distinct-points (Ω 𝓤)
 no-three-distinct-propositions fe pe ((p , q , r) , u , v , w) = XI
  where
-  I : p ≢ ⊥
+  I : p ≠ ⊥
   I a = no-truth-values-other-than-⊥-or-⊤ fe pe (q , II , III)
    where
-    II : q ≢ ⊥
+    II : q ≠ ⊥
     II b = u (a ∙ b ⁻¹)
 
-    III : q ≢ ⊤
+    III : q ≠ ⊤
     III c = no-truth-values-other-than-⊥-or-⊤ fe pe (r , IV , V)
      where
-      IV : r ≢ ⊥
+      IV : r ≠ ⊥
       IV d = w (d ∙ a ⁻¹)
 
-      V : r ≢ ⊤
+      V : r ≠ ⊤
       V e = v (c ∙ e ⁻¹)
 
-  VI : p ≢ ⊤
+  VI : p ≠ ⊤
   VI a = no-truth-values-other-than-⊥-or-⊤ fe pe (q , VII , X)
    where
-    VII : q ≢ ⊥
+    VII : q ≠ ⊥
     VII b = no-truth-values-other-than-⊥-or-⊤ fe pe (r , VIII , IX)
      where
-      VIII : r ≢ ⊥
+      VIII : r ≠ ⊥
       VIII c = v (b ∙ c ⁻¹)
 
-      IX : r ≢ ⊤
+      IX : r ≠ ⊤
       IX d = w (d ∙ a ⁻¹)
 
-    X : q ≢ ⊤
+    X : q ≠ ⊤
     X e = u (a ∙ e ⁻¹)
 
   XI : 𝟘
@@ -408,7 +405,7 @@ to 𝟘 {𝓤₀} as this is where negations take values in.
 
 \begin{code}
 
-⊥-is-not-⊤ : ⊥ {𝓤} ≢ ⊤ {𝓤}
+⊥-is-not-⊤ : ⊥ {𝓤} ≠ ⊤ {𝓤}
 ⊥-is-not-⊤ b = 𝟘-elim (𝟘-is-not-𝟙 (ap _holds b))
 
 \end{code}

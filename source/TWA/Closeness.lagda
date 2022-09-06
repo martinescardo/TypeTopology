@@ -59,7 +59,7 @@ the functor 𝟙 + (-), which we refer to as corecursion.
   X = 𝓢 × 𝓢
   f : (α β : 𝓢) → head α ＝ head β → 𝟙 {𝓤₀} + X
   f α β q = inr (tail α , tail β)
-  g : (α β : 𝓢) → head α ≢ head β → 𝟙 {𝓤₀} + X
+  g : (α β : 𝓢) → head α ≠ head β → 𝟙 {𝓤₀} + X
   g α β n = inl ⋆
   p : X → 𝟙 {𝓤₀} + X
   p (α , β) = cases (f α β) (g α β) (δ (head α) (head β))
@@ -82,7 +82,7 @@ The two defining properties of the function c are the following:
 
 \begin{code}
 
- closeness-eq₀ : (α β : 𝓢) → head α ≢ head β
+ closeness-eq₀ : (α β : 𝓢) → head α ≠ head β
                → c α β ＝ Zero
  closeness-eq₁ : (α β : 𝓢) → head α ＝ head β
                → c α β ＝ Succ (c (tail α) (tail β))
@@ -145,13 +145,13 @@ impossible case) and closeness-eq₁ (to establish the result):
                  → (head α ＝ head β) × (c (tail α) (tail β) ＝ ∞)
    b α β q = d , e
     where
-     l : head α ≢ head β → c α β ＝ Zero
+     l : head α ≠ head β → c α β ＝ Zero
      l = closeness-eq₀ α β
      d : head α ＝ head β
      d = Cases (δ (head α) (head β))
           (λ (p : head α ＝ head β)
             → p)
-          (λ (n : head α ≢ head β)
+          (λ (n : head α ≠ head β)
             → 𝟘-elim (Zero-not-Succ (Zero    ＝⟨ (l n)⁻¹ ⟩
                                      c α β   ＝⟨ q ⟩
                                      ∞       ＝⟨ (Succ-∞-is-∞ (fe 𝓤₀ 𝓤₀))⁻¹ ⟩
@@ -183,11 +183,11 @@ Symmetric property:
        sₕ p = successors-same-positivity
                 (closeness-eq₁ α β p)
                 (closeness-eq₁ β α (p ⁻¹))
-       sₜ : head α ≢ head β → positivity (c α β) ＝ positivity (c β α)
+       sₜ : head α ≠ head β → positivity (c α β) ＝ positivity (c β α)
        sₜ d = ap positivity
                (closeness-eq₀ α β d
                ∙ closeness-eq₀ β α (λ p → d (p ⁻¹)) ⁻¹)
-     t : (head α ＝ head β) + (head α ≢ head β)
+     t : (head α ＝ head β) + (head α ≠ head β)
        → R (Pred (c α β)) (Pred (c β α))
      t (inl p) = tail α , tail β
                , ap Pred (closeness-eq₁ α β p ∙ Pred-Succ)
@@ -207,8 +207,8 @@ Ultra property:
  closeness-eq₁' : (α β : 𝓢) → is-positive (c α β)
                 → head α ＝ head β
  closeness-eq₁' α β p = Cases (δ (head α) (head β)) id
-   (λ h≢ → 𝟘-elim (zero-is-not-one
-    (is-Zero-Zero ⁻¹ ∙ ap (λ - → ι - 0) (closeness-eq₀ α β h≢ ⁻¹) ∙ p)))
+   (λ h≠ → 𝟘-elim (zero-is-not-one
+    (is-Zero-Zero ⁻¹ ∙ ap (λ - → ι - 0) (closeness-eq₀ α β h≠ ⁻¹) ∙ p)))
 
  open import Naturals.Order
 

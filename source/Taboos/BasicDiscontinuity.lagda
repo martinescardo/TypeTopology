@@ -34,22 +34,22 @@ basic-discontinuity-taboo p (f , r) u = 𝟚-equality-cases lemma₀ lemma₁
             p ∞ ＝⟨ r ⟩
             ₁   ∎
 
-  fact₁ : p u ≢ ₁ → u ≢ ∞
+  fact₁ : p u ≠ ₁ → u ≠ ∞
   fact₁ = contrapositive fact₀
 
-  fact₂ : p u ＝ ₀ → u ≢ ∞
+  fact₂ : p u ＝ ₀ → u ≠ ∞
   fact₂ = fact₁ ∘ equal-₀-different-from-₁
 
-  lemma₀ : p u ＝ ₀ → (u ＝ ∞) + (u ≢ ∞)
+  lemma₀ : p u ＝ ₀ → (u ＝ ∞) + (u ≠ ∞)
   lemma₀ s = inr (fact₂ s)
 
-  fact₃ : p u ＝ ₁ → ((n : ℕ) → u ≢ ι n)
+  fact₃ : p u ＝ ₁ → ((n : ℕ) → u ≠ ι n)
   fact₃ t n s = zero-is-not-one (₀       ＝⟨ (f n)⁻¹ ⟩
                                  p (ι n) ＝⟨ (ap p s)⁻¹ ⟩
                                  p u     ＝⟨ t ⟩
                                  ₁       ∎)
 
-  lemma₁ : p u ＝ ₁ → (u ＝ ∞) + (u ≢ ∞)
+  lemma₁ : p u ＝ ₁ → (u ＝ ∞) + (u ≠ ∞)
   lemma₁ t = inl (not-finite-is-∞ (fe 𝓤₀ 𝓤₀) (fact₃ t))
 
 \end{code}
@@ -69,7 +69,7 @@ WLPO-is-discontinuous f = p , (d , d∞)
     case₀ : (r : u ＝ ∞) → f u ＝ inl r → 𝟚
     case₀ r s = ₁
 
-    case₁ : (r : u ≢ ∞) → f u ＝ inr r → 𝟚
+    case₁ : (r : u ≠ ∞) → f u ＝ inr r → 𝟚
     case₁ r s = ₀
 
   d : (n : ℕ) → p (ι n) ＝ ₀
@@ -78,7 +78,7 @@ WLPO-is-discontinuous f = p , (d , d∞)
     case₀ : (r : ι n ＝ ∞) → f (ι n) ＝ inl r → p (ι n) ＝ ₀
     case₀ r s = 𝟘-elim (∞-is-not-finite n (r ⁻¹))
 
-    case₁ : (g : ι n ≢ ∞) → f (ι n) ＝ inr g → p (ι n) ＝ ₀
+    case₁ : (g : ι n ≠ ∞) → f (ι n) ＝ inr g → p (ι n) ＝ ₀
     case₁ g = ap (λ - → equality-cases - (λ r s → ₁) (λ r s → ₀))
 
   d∞ : p ∞ ＝ ₁
@@ -87,7 +87,7 @@ WLPO-is-discontinuous f = p , (d , d∞)
     case₀ : (r : ∞ ＝ ∞) → f ∞ ＝ inl r → p ∞ ＝ ₁
     case₀ r = ap (λ - → equality-cases - (λ r s → ₁) (λ r s → ₀))
 
-    case₁ : (g : ∞ ≢ ∞) → f ∞ ＝ inr g → p ∞ ＝ ₁
+    case₁ : (g : ∞ ≠ ∞) → f ∞ ＝ inr g → p ∞ ＝ ₁
     case₁ g = 𝟘-elim (g refl)
 
 \end{code}
@@ -97,7 +97,7 @@ at ∞ too, unless WLPO holds:
 
 \begin{code}
 
-disagreement-taboo : (p q : ℕ∞ → 𝟚) → ((n : ℕ) → p (ι n) ＝ q (ι n)) → p ∞ ≢ q ∞ → WLPO
+disagreement-taboo : (p q : ℕ∞ → 𝟚) → ((n : ℕ) → p (ι n) ＝ q (ι n)) → p ∞ ≠ q ∞ → WLPO
 disagreement-taboo p q f g = basic-discontinuity-taboo r (r-lemma , r-lemma∞)
  where
   r : ℕ∞ → 𝟚
@@ -107,7 +107,7 @@ disagreement-taboo p q f g = basic-discontinuity-taboo r (r-lemma , r-lemma∞)
   r-lemma n = Lemma[b＝c→b⊕c＝₀] (f n)
 
   r-lemma∞ : r ∞ ＝ ₁
-  r-lemma∞ = Lemma[b≢c→b⊕c＝₁] g
+  r-lemma∞ = Lemma[b≠c→b⊕c＝₁] g
 
 open import TypeTopology.DiscreteAndSeparated
 

@@ -92,7 +92,10 @@ module quotient
                     → ∃! f' ꞉ ( X/≈ → A), f' ∘ η ＝ f
  universal-property {𝓦} A iss f pr = ic
   where
-   φ : (x' : X/≈) → is-prop (Σ a ꞉ A , ∃ x ꞉ X ,  (η x ＝ x') × (f x ＝ a))
+   B : (x' : X/≈) → F (F (𝓥 ⁺ ⊔ 𝓤) ⊔ 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓦) ⊔ 𝓦 ̇
+   B x' = (Σ a ꞉ A , ∃ x ꞉ X ,  (η x ＝ x') × (f x ＝ a))
+
+   φ : (x' : X/≈) → is-prop (B x')
    φ = quotient-induction _ γ induction-step
      where
       induction-step : (y : X) → is-prop (Σ a ꞉ A , ∃ x ꞉ X ,  (η x ＝ η y) × (f x ＝ a))
@@ -109,7 +112,7 @@ module quotient
       γ : (x' : X/≈) → is-prop (is-prop (Σ a ꞉ A , ∃ x ꞉ X , (η x ＝ x') × (f x ＝ a)))
       γ x' = being-prop-is-prop fe
 
-   k : (x' : X/≈) → Σ a ꞉ A , ∃ x ꞉ X , (η x ＝ x') × (f x ＝ a)
+   k : (x' : X/≈) → B x'
    k = quotient-induction _ φ induction-step
     where
      induction-step : (y : X) → Σ a ꞉ A , ∃ x ꞉ X , (η x ＝ η y) × (f x ＝ a)

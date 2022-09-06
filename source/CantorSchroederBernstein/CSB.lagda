@@ -162,7 +162,7 @@ econstruction : {X : 𝓤 ̇ } (P : 𝓥 ̇ ) (x₀ : X) (s : X → X)
               → is-set X
               → is-prop P
               → is-isolated x₀
-              → ((x : X) → x₀ ≢ s x)
+              → ((x : X) → x₀ ≠ s x)
               → left-cancellable s
               → (X ↪ P + X) × (P + X ↪ X)
 econstruction {𝓤} {𝓥} {X} P x₀ s j i k d' lc = econstruction' P z s i h d e
@@ -436,7 +436,7 @@ left-cancellability of h:
   f-g⁻¹-disjoint-images : (x x' : X)
                         → ¬ is-g-point x
                         → (γ : is-g-point x')
-                        → f x ≢ g⁻¹ x' γ
+                        → f x ≠ g⁻¹ x' γ
   f-g⁻¹-disjoint-images x x' ν γ p = have p ∶ f x ＝ g⁻¹ x' γ
                                      so need contradiction
                                         which-is-given-by
@@ -741,7 +741,7 @@ EM-gives-Cantor-Schröder-Bernstein' {𝓤} {𝓥} fe excluded-middle {X} {Y} ((
   f-g⁻¹-disjoint-images : (x x' : X)
                         → ¬ is-g-point x
                         → (γ : is-g-point x')
-                        → f x ≢ g⁻¹ x' γ
+                        → f x ≠ g⁻¹ x' γ
   f-g⁻¹-disjoint-images x x' ν γ p = 𝟘-elim (v γ)
    where
     q = g (f x)      ＝⟨ ap g p ⟩

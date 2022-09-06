@@ -141,7 +141,7 @@ Some examples:
 isolated-point-different-from-another-point-gives-disconnected :
 
     {Y : 𝓥 ̇ }
-  → (Σ y₀ ꞉ Y , Σ y₁ ꞉ Y , (y₀ ≢ y₁) × is-isolated y₀ )
+  → (Σ y₀ ꞉ Y , Σ y₁ ꞉ Y , (y₀ ≠ y₁) × is-isolated y₀ )
   → disconnected Y
 
 isolated-point-different-from-another-point-gives-disconnected (y₀ , y₁ , ne , i) =
@@ -150,7 +150,7 @@ isolated-point-different-from-another-point-gives-disconnected (y₀ , y₁ , ne
 discrete-type-with-two-different-points-gives-disconnected :
 
     {Y : 𝓥 ̇ }
-  → (Σ y₀ ꞉ Y , Σ y₁ ꞉ Y , y₀ ≢ y₁)
+  → (Σ y₀ ꞉ Y , Σ y₁ ꞉ Y , y₀ ≠ y₁)
   → is-discrete Y
   → disconnected Y
 

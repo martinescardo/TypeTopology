@@ -281,13 +281,13 @@ module _ {X : 𝓤 ̇ }
   Π-extension-equivalence : is-embedding j → (x : X) → is-equiv (Π-proj (x , refl))
   Π-extension-equivalence e x = pr₂ (Π-extension-property e x)
 
-  Π-extension-out-of-range : ∀ {𝓦} (y : Y) → ((x : X) → j x ≢ y) → f/j (y) ≃ 𝟙 {𝓦}
+  Π-extension-out-of-range : ∀ {𝓦} (y : Y) → ((x : X) → j x ≠ y) → f/j (y) ≃ 𝟙 {𝓦}
   Π-extension-out-of-range y φ = prop-indexed-product-one (fe (𝓤 ⊔ 𝓥) 𝓦) (uncurry φ)
 
   Σ-extension-property : is-embedding j → (x : X) → f∖j (j x) ≃ f x
   Σ-extension-property e x = prop-indexed-sum (e (j x)) (x , refl)
 
-  Σ-extension-out-of-range : (y : Y) → ((x : X) → j x ≢ y) → f∖j (y) ≃ 𝟘 {𝓦}
+  Σ-extension-out-of-range : (y : Y) → ((x : X) → j x ≠ y) → f∖j (y) ≃ 𝟘 {𝓦}
   Σ-extension-out-of-range y φ = prop-indexed-sum-zero (uncurry φ)
 
 \end{code}

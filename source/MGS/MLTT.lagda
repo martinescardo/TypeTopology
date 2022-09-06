@@ -333,11 +333,11 @@ absurdity³-is-absurdity {𝓤} {A} = firstly , secondly
   secondly : ¬ A → ¬¬¬ A
   secondly = dni (¬ A)
 
-_≢_ : {X : 𝓤 ̇ } → X → X → 𝓤 ̇
-x ≢ y = ¬ (x ＝ y)
+_≠_ : {X : 𝓤 ̇ } → X → X → 𝓤 ̇
+x ≠ y = ¬ (x ＝ y)
 
-≢-sym : {X : 𝓤 ̇ } {x y : X} → x ≢ y → y ≢ x
-≢-sym {𝓤} {X} {x} {y} u = λ (p : y ＝ x) → u (p ⁻¹)
+≠-sym : {X : 𝓤 ̇ } {x y : X} → x ≠ y → y ≠ x
+≠-sym {𝓤} {X} {x} {y} u = λ (p : y ＝ x) → u (p ⁻¹)
 
 Id→Fun : {X Y : 𝓤 ̇ } → X ＝ Y → X → Y
 Id→Fun {𝓤} = transport (𝑖𝑑 (𝓤 ̇ ))
@@ -350,10 +350,10 @@ Id→Funs-agree : {X Y : 𝓤 ̇ } (p : X ＝ Y)
 
 Id→Funs-agree (refl X) = refl (𝑖𝑑 X)
 
-𝟙-is-not-𝟘 : 𝟙 ≢ 𝟘
+𝟙-is-not-𝟘 : 𝟙 ≠ 𝟘
 𝟙-is-not-𝟘 p = Id→Fun p ⋆
 
-₁-is-not-₀ : ₁ ≢ ₀
+₁-is-not-₀ : ₁ ≠ ₀
 ₁-is-not-₀ p = 𝟙-is-not-𝟘 q
  where
   f : 𝟚 → 𝓤₀ ̇
@@ -371,15 +371,15 @@ has-decidable-equality X = (x y : X) → decidable (x ＝ y)
 
 𝟚-has-decidable-equality : has-decidable-equality 𝟚
 𝟚-has-decidable-equality ₀ ₀ = inl (refl ₀)
-𝟚-has-decidable-equality ₀ ₁ = inr (≢-sym ₁-is-not-₀)
+𝟚-has-decidable-equality ₀ ₁ = inr (≠-sym ₁-is-not-₀)
 𝟚-has-decidable-equality ₁ ₀ = inr ₁-is-not-₀
 𝟚-has-decidable-equality ₁ ₁ = inl (refl ₁)
 
-not-zero-is-one : (n : 𝟚) → n ≢ ₀ → n ＝ ₁
+not-zero-is-one : (n : 𝟚) → n ≠ ₀ → n ＝ ₁
 not-zero-is-one ₀ f = !𝟘 (₀ ＝ ₁) (f (refl ₀))
 not-zero-is-one ₁ f = refl ₁
 
-inl-inr-disjoint-images : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {x : X} {y : Y} → inl x ≢ inr y
+inl-inr-disjoint-images : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {x : X} {y : Y} → inl x ≠ inr y
 inl-inr-disjoint-images {𝓤} {𝓥} {X} {Y} p = 𝟙-is-not-𝟘 q
  where
   f : X + Y → 𝓤₀ ̇
@@ -406,7 +406,7 @@ module twin-primes where
                                            × is-prime p
                                            × is-prime (p ∔ 2)
 
-positive-not-zero : (x : ℕ) → succ x ≢ 0
+positive-not-zero : (x : ℕ) → succ x ≠ 0
 positive-not-zero x p = 𝟙-is-not-𝟘 (g p)
  where
   f : ℕ → 𝓤₀ ̇
@@ -425,7 +425,7 @@ succ-lc = ap pred
 
 ℕ-has-decidable-equality : has-decidable-equality ℕ
 ℕ-has-decidable-equality 0 0               = inl (refl 0)
-ℕ-has-decidable-equality 0 (succ y)        = inr (≢-sym (positive-not-zero y))
+ℕ-has-decidable-equality 0 (succ y)        = inr (≠-sym (positive-not-zero y))
 ℕ-has-decidable-equality (succ x) 0        = inr (positive-not-zero x)
 ℕ-has-decidable-equality (succ x) (succ y) = f (ℕ-has-decidable-equality x y)
  where
@@ -613,7 +613,7 @@ module basic-arithmetic-and-order where
   root f = Σ n ꞉ ℕ , f n ＝ 0
 
   _has-no-root<_ : (ℕ → ℕ) → ℕ → 𝓤₀ ̇
-  f has-no-root< k = (n : ℕ) → n < k → f n ≢ 0
+  f has-no-root< k = (n : ℕ) → n < k → f n ≠ 0
 
   is-minimal-root : (ℕ → ℕ) → ℕ → 𝓤₀ ̇
   is-minimal-root f m = (f m ＝ 0) × (f has-no-root< m)
@@ -639,7 +639,7 @@ module basic-arithmetic-and-order where
   minimal-root-is-root f (m , p , _) = m , p
 
   bounded-ℕ-search : ∀ k f → (minimal-root f) + (f has-no-root< k)
-  bounded-ℕ-search zero f = inr (λ n → !𝟘 (f n ≢ 0))
+  bounded-ℕ-search zero f = inr (λ n → !𝟘 (f n ≠ 0))
   bounded-ℕ-search (succ k) f = +-recursion φ γ (bounded-ℕ-search k f)
    where
     A : ℕ → (ℕ → ℕ) → 𝓤₀ ̇
@@ -654,8 +654,8 @@ module basic-arithmetic-and-order where
       γ₀ : f k ＝ 0 → A (succ k) f
       γ₀ p = inl (k , p , u)
 
-      γ₁ : f k ≢ 0 → A (succ k) f
-      γ₁ v = inr (bounded-∀-next (λ n → f n ≢ 0) k v u)
+      γ₁ : f k ≠ 0 → A (succ k) f
+      γ₁ v = inr (bounded-∀-next (λ n → f n ≠ 0) k v u)
 
   root-gives-minimal-root : ∀ f → root f → minimal-root f
   root-gives-minimal-root f (n , p) = γ
