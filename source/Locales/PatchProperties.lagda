@@ -632,6 +632,14 @@ module Complementation (X : Locale (𝓤 ⁺) 𝓤 𝓤) (σᴰ : spectralᴰ (�
    ‡ : ‘ K ’ ∨[ 𝒪 Patchₛ-X ] ¬‘ (K , κ) ’ ＝ 𝟏[ 𝒪 Patchₛ-X ]
    ‡ = only-𝟏-is-above-𝟏 (𝒪 Patchₛ-X) _ ‡₁
 
+ closed-complements-open : (K : ⟨ 𝒪 X ⟩)
+                         → (κ : is-compact-open (𝒪 X) K holds)
+                         → is-boolean-complement-of (𝒪 Patchₛ-X) ‘ K ’ ¬‘ (K , κ) ’ holds
+ closed-complements-open K κ =
+  complementation-is-symmetric (𝒪 Patchₛ-X) ¬‘ (K , κ) ’ ‘ K ’ ※
+   where
+    ※ = open-complements-closed K κ
+
 \end{code}
 
 \section{Basis of Patch}
@@ -659,6 +667,9 @@ For convenience, we define the following auxiliary notation for the open nucleus
  𝔬 : index ℬ → ⟨ 𝒪 Patchₛ-X ⟩
  𝔬 i = ¬‘ ℬ [ i ] , pr₁ (pr₂ (pr₂ σᴰ)) i ’
 
+ κ : (i : index ℬ) → is-compact-open (𝒪 X) (ℬ [ i ]) holds
+ κ = pr₁ (pr₂ (pr₂ σᴰ))
+
 \end{code}
 
 We define the following basis for Patch:
@@ -669,7 +680,21 @@ We define the following basis for Patch:
  ℬ-patch = ⁅ 𝔠 k ⋏ 𝔬 l ∣ (k , l) ∶ (index ℬ × index ℬ) ⁆
 
  ℬ-patch-consists-of-clopens : consists-of-clopens (𝒪 Patchₛ-X) ℬ-patch holds
- ℬ-patch-consists-of-clopens i = {!!} , ({!!} , {!!})
+ ℬ-patch-consists-of-clopens (k , l) = (𝔬 k ∨[ 𝒪 Patchₛ-X ] 𝔠 l) , ※
+  where
+   open Complementation X σᴰ
+
+   † : is-boolean-complement-of (𝒪 Patchₛ-X) (𝔠 k) (𝔬 k) holds
+   † = closed-complements-open (ℬ [ k ]) (κ k)
+
+   ‡ : is-boolean-complement-of (𝒪 Patchₛ-X) (𝔬 l) (𝔠 l) holds
+   ‡ = open-complements-closed (ℬ [ l ]) (κ l)
+
+   ※ : is-boolean-complement-of
+        (𝒪 Patchₛ-X)
+        (𝔬 k ∨[ 𝒪 Patchₛ-X ] 𝔠 l)
+        ((𝔠 k ∧[ 𝒪 Patchₛ-X ] 𝔬 l)) holds
+   ※ = ∧-complement (𝒪 Patchₛ-X) † ‡
 
 \end{code}
 
