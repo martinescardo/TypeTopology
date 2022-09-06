@@ -29,6 +29,7 @@ open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.ExcludedMiddle
 open import UF.FunExt
+open import UF.PropTrunc
 open import UF.Size
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
@@ -50,11 +51,14 @@ open import Ordinals.Arithmetic fe
 
 \end{code}
 
-A type X is decomposable if there are designated pointed types X₀ and
-X₁ with X ≃ X₀ + X₁. Equivalently, X is decomposable if there is a
-designated non-constant function f : X → 𝟚, in the strong sense that
-there are designated x₀ and x₁ : X that are mapped to respectively ₀
-and ₁ by f.
+A type X is decomposable if there are pointed types X₀ and X₁ with
+X ≃ X₀ + X₁. Equivalently, X is decomposable if there is a
+non-constant function f : X → 𝟚, in the strong sense that there are x₀
+and x₁ in X that are mapped to respectively ₀ and ₁ by f.
+
+We first work with the type of all decompositions, in the above two
+equivalent manifestations, and later we consider decomposability
+defined as its propositional truncation.
 
 \begin{code}
 
@@ -66,7 +70,7 @@ decomposition' {𝓤} X = Σ (Y₀ , Y₁) ꞉ (𝓤 ̇ ) × (𝓤 ̇ ) , Y₀ �
 
 \end{code}
 
-The above two notions of decomposition are logically equivalent:
+The above two decomposition types are logically equivalent:
 
 \begin{code}
 
@@ -94,7 +98,7 @@ decomposition'-gives-decomposition X ((Y₀ , Y₁) , y₀ , y₁ , (g , i)) =
 
 \end{code}
 
-TODO. The above two constructions are mutually equivalent and hence
+TODO. The above two constructions are mutually inverse and hence
 give decomposition X ≃ decomposition' X.
 
 \begin{code}
@@ -346,6 +350,31 @@ Ordinal-decomposition-iff-WEM = decomposition-of-ordinals-type-gives-WEM ,
 
 \end{code}
 
-TODO. Because WEM 𝓤 is a proposition, it follows that
-∥ decomposition (Ordinal 𝓤) ∥ ⇔ WEM 𝓤, and hence also
-∥ decomposition (Ordinal 𝓤) ∥ → decomposition (Ordinal 𝓤).
+We now assume that propositional truncations exist to define
+decomposability as the truncation of the type of decompositions. It is
+a corollary of the above development that the decomposability of the
+type of ordinals gives a specific decomposition.
+
+\begin{code}
+
+module _ (pt : propositional-truncations-exist) where
+
+ open propositional-truncations-exist pt public
+
+ decomposable : 𝓤 ̇ → 𝓤 ̇
+ decomposable X = ∥ decomposition X ∥
+
+ Ordinal-decomposable-iff-WEM : decomposable (Ordinal 𝓤) ⇔ WEM 𝓤
+ Ordinal-decomposable-iff-WEM =
+  ∥∥-rec (WEM-is-prop fe) decomposition-of-ordinals-type-gives-WEM ,
+  (λ wem → ∣ WEM-gives-decomposition-of-ordinals-type wem ∣)
+
+ decomposability-gives-decomposition : decomposable (Ordinal 𝓤) → decomposition (Ordinal 𝓤)
+ decomposability-gives-decomposition {𝓤} δ = WEM-gives-decomposition-of-ordinals-type
+                                               (lr-implication Ordinal-decomposable-iff-WEM δ)
+
+\end{code}
+
+Notice that the formulation of this doesn't refer to WEM, but its
+proof uses WEM, which follows from the hypothesis. Even though
+decomposable (Ordinal 𝓤) and WEM, we get data out of them.
