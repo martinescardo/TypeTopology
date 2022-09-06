@@ -910,8 +910,8 @@ We first prove that this forms a basis.
   ⋁[ 𝒪 Patchₛ-X ] (𝕔𝕠𝕧₂ 𝒿)  ＝⟨ (𝕔𝕠𝕧₁=𝕔𝕠𝕧₂ 𝒿) ⁻¹  ⟩
   ⋁[ 𝒪 Patchₛ-X ] (𝕔𝕠𝕧₁ 𝒿)  ∎
 
- ℬ-is-basis-for-patch : is-basis-for (𝒪 Patchₛ-X) ℬ-patch
- ℬ-is-basis-for-patch 𝒿 = (basic-below 𝒿 , proj 𝒿) , ※
+ ℬ-is-basis-for-patchₛ : is-basis-for (𝒪 Patchₛ-X) ℬ-patch
+ ℬ-is-basis-for-patchₛ 𝒿 = (basic-below 𝒿 , proj 𝒿) , ※
   where
    open Joins (λ x y → x ≤[ poset-of (𝒪 Patchₛ-X) ] y)
 
@@ -978,7 +978,7 @@ module PatchStoneᴰ (X : Locale (𝓤 ⁺) 𝓤 𝓤) (σᴰ : spectralᴰ (�
  patchₛ-zero-dimensional = ∣ ℬ-patch , β , γ ∣
   where
    β : is-basis-for (𝒪 Patchₛ-X) ℬ-patch
-   β = ℬ-is-basis-for-patch
+   β = ℬ-is-basis-for-patchₛ
 
    γ : consists-of-clopens (𝒪 Patchₛ-X) ℬ-patch holds
    γ = ℬ-patch-consists-of-clopens
