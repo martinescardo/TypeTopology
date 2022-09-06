@@ -66,7 +66,7 @@ decomposition' {𝓤} X = Σ (Y₀ , Y₁) ꞉ (𝓤 ̇ ) × (𝓤 ̇ ) , Y₀ �
 
 \end{code}
 
-The above to notions of decomposition are logically equivalent:
+The above two notions of decomposition are logically equivalent:
 
 \begin{code}
 
@@ -92,7 +92,6 @@ decomposition'-gives-decomposition X ((Y₀ , Y₁) , y₀ , y₁ , (g , i)) =
   p₁ : f (inverse g i (inr y₁)) ＝ ₁
   p₁ = ap (λ - → Cases - (λ _ → ₀) (λ _ → ₁)) (inverses-are-sections g i (inr y₁))
 
-
 \end{code}
 
 TODO. The above two constructions are mutually equivalent and hence
@@ -100,11 +99,11 @@ give decomposition X ≃ decomposition' X.
 
 \begin{code}
 
-WEM-gives-decomposability-of-two-pointed-types : WEM 𝓤
-                                               → (X : 𝓤 ̇ )
-                                               → has-two-distinct-points X
-                                               → decomposition X
-WEM-gives-decomposability-of-two-pointed-types wem X ((x₀ , x₁) , d) = γ
+WEM-gives-decomposition-of-two-pointed-types : WEM 𝓤
+                                             → (X : 𝓤 ̇ )
+                                             → has-two-distinct-points X
+                                             → decomposition X
+WEM-gives-decomposition-of-two-pointed-types wem X ((x₀ , x₁) , d) = γ
  where
   g : (x : X) → ¬ (x ≠ x₀) + ¬¬ (x ≠ x₀) → 𝟚
   g x (inl _) = ₀
@@ -133,9 +132,9 @@ WEM-gives-decomposability-of-two-pointed-types wem X ((x₀ , x₁) , d) = γ
   γ : decomposition X
   γ = f , (x₀ , x₁) , e₀ , e₁
 
-WEM-gives-decomposability-of-ordinals-type⁺ : WEM (𝓤 ⁺) → decomposition (Ordinal 𝓤)
-WEM-gives-decomposability-of-ordinals-type⁺ {𝓤} wem =
- WEM-gives-decomposability-of-two-pointed-types wem (Ordinal 𝓤)
+WEM-gives-decomposition-of-ordinals-type⁺ : WEM (𝓤 ⁺) → decomposition (Ordinal 𝓤)
+WEM-gives-decomposition-of-ordinals-type⁺ {𝓤} wem =
+ WEM-gives-decomposition-of-two-pointed-types wem (Ordinal 𝓤)
   ((𝟙ₒ , 𝟘ₒ) , (λ (e : 𝟙ₒ ＝ 𝟘ₒ) → 𝟘-elim (idtofun 𝟙 𝟘 (ap ⟨_⟩ e) ⋆)))
 
 \end{code}
@@ -145,12 +144,12 @@ the fact that the type Ordinal 𝓤 ̇ is locally small.
 
 \begin{code}
 
-WEM-gives-decomposability-of-two-pointed-types⁺ : WEM 𝓤
-                                               → (X : 𝓤 ⁺ ̇ )
-                                               → is-locally-small X
-                                               → has-two-distinct-points X
-                                               → decomposition X
-WEM-gives-decomposability-of-two-pointed-types⁺ {𝓤} wem X l ((x₀ , x₁) , d) = γ
+WEM-gives-decomposition-of-two-pointed-types⁺ : WEM 𝓤
+                                              → (X : 𝓤 ⁺ ̇ )
+                                              → is-locally-small X
+                                              → has-two-distinct-points X
+                                              → decomposition X
+WEM-gives-decomposition-of-two-pointed-types⁺ {𝓤} wem X l ((x₀ , x₁) , d) = γ
  where
   g : (x : X) → ¬ (x ≠⟦ l ⟧ x₀) + ¬¬ (x ≠⟦ l ⟧ x₀) → 𝟚
   g x (inl _) = ₀
@@ -179,9 +178,9 @@ WEM-gives-decomposability-of-two-pointed-types⁺ {𝓤} wem X l ((x₀ , x₁) 
   γ : decomposition X
   γ = f , (x₀ , x₁) , e₀ , e₁
 
-WEM-gives-decomposability-of-ordinals-type : WEM 𝓤 → decomposition (Ordinal 𝓤)
-WEM-gives-decomposability-of-ordinals-type {𝓤} wem =
- WEM-gives-decomposability-of-two-pointed-types⁺ wem (Ordinal 𝓤)
+WEM-gives-decomposition-of-ordinals-type : WEM 𝓤 → decomposition (Ordinal 𝓤)
+WEM-gives-decomposition-of-ordinals-type {𝓤} wem =
+ WEM-gives-decomposition-of-two-pointed-types⁺ wem (Ordinal 𝓤)
   the-type-of-ordinals-is-locally-small
   ((𝟙ₒ , 𝟘ₒ) , (λ (e : 𝟙ₒ ＝ 𝟘ₒ) → 𝟘-elim (idtofun 𝟙 𝟘 (ap ⟨_⟩ e) ⋆)))
 
@@ -263,10 +262,8 @@ type-of-ordinals-has-Ω-paths {𝓤} α β = f , γ⊥ , γ⊤
     p : is-order-preserving β (f ⊤Ω) v
     p b c l = inr (refl , l)
 
-non-constant-map-Ω-to-𝟚-gives-WEM :
-        (Σ f ꞉ (Ω 𝓤 → 𝟚) , Σ p₀ ꞉ Ω 𝓤 , Σ p₁ ꞉ Ω 𝓤 , (f p₀ ＝ ₀) × (f p₁ ＝ ₁))
-      → WEM 𝓤
-non-constant-map-Ω-to-𝟚-gives-WEM {𝓤} (f , p₀@(P₀ , i₀) , p₁@(P₁ , i₁) , e₀ , e₁) = IV
+decomposition-of-Ω-gives-WEM : decomposition (Ω 𝓤) → WEM 𝓤
+decomposition-of-Ω-gives-WEM {𝓤} (f , (p₀@(P₀ , i₀) , p₁@(P₁ , i₁)) , e₀ , e₁) = IV
  where
   g : Ω 𝓤 → Ω 𝓤
   g (Q , j) = ((P₀ × Q) + (P₁ × ¬ Q)) , k
@@ -316,12 +313,11 @@ non-constant-map-Ω-to-𝟚-gives-WEM {𝓤} (f , p₀@(P₀ , i₀) , p₁@(P�
   IV : (Q : 𝓤  ̇) → is-prop Q → ¬ Q + ¬¬ Q
   IV Q j = 𝟚-equality-cases (III₀ (Q , j)) (III₁ (Q , j))
 
-
-decomposition-type-with-Ω-paths-gives-WEM : {X : 𝓤 ̇ }
-                                         → decomposition X
-                                         → has-Ω-paths 𝓥 X
-                                         → WEM 𝓥
-decomposition-type-with-Ω-paths-gives-WEM {𝓤} {𝓥} {X} (f , (x₀ , x₁) , e₀ , e₁) c = γ
+decomposition-of-type-with-Ω-paths-gives-WEM : {X : 𝓤 ̇ }
+                                             → decomposition X
+                                             → has-Ω-paths 𝓥 X
+                                             → WEM 𝓥
+decomposition-of-type-with-Ω-paths-gives-WEM {𝓤} {𝓥} {X} (f , (x₀ , x₁) , e₀ , e₁) c = γ
  where
   g : Ω 𝓥 → X
   g = pr₁ (c x₀ x₁)
@@ -338,15 +334,15 @@ decomposition-type-with-Ω-paths-gives-WEM {𝓤} {𝓥} {X} (f , (x₀ , x₁) 
        ₁        ∎
 
   γ : WEM 𝓥
-  γ = non-constant-map-Ω-to-𝟚-gives-WEM (f ∘ g , ⊥Ω , ⊤Ω , I₀ , I₁)
+  γ = decomposition-of-Ω-gives-WEM (f ∘ g , (⊥Ω , ⊤Ω) , I₀ , I₁)
 
-decomposability-of-ordinals-type-gives-WEM : decomposition (Ordinal 𝓤) → WEM 𝓤
-decomposability-of-ordinals-type-gives-WEM d =
- decomposition-type-with-Ω-paths-gives-WEM d type-of-ordinals-has-Ω-paths
+decomposition-of-ordinals-type-gives-WEM : decomposition (Ordinal 𝓤) → WEM 𝓤
+decomposition-of-ordinals-type-gives-WEM d =
+ decomposition-of-type-with-Ω-paths-gives-WEM d type-of-ordinals-has-Ω-paths
 
 Ordinal-decomposition-iff-WEM : decomposition (Ordinal 𝓤) ⇔ WEM 𝓤
-Ordinal-decomposition-iff-WEM = decomposability-of-ordinals-type-gives-WEM ,
-                                WEM-gives-decomposability-of-ordinals-type
+Ordinal-decomposition-iff-WEM = decomposition-of-ordinals-type-gives-WEM ,
+                                WEM-gives-decomposition-of-ordinals-type
 
 \end{code}
 
