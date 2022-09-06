@@ -792,6 +792,41 @@ complement-is-equiv = qinvs-are-equivs complement
 complement-≃ : 𝟚 ≃ 𝟚
 complement-≃ = (complement , complement-is-equiv)
 
+alternative-× : funext 𝓤₀ 𝓤 → {A : 𝟚 → 𝓤 ̇ } → (Π n ꞉ 𝟚 , A n) ≃ (A ₀ × A ₁)
+alternative-× fe {A} = qinveq ϕ (ψ , η , ε)
+ where
+  ϕ : (Π n ꞉ 𝟚 , A n) → A ₀ × A ₁
+  ϕ f = (f ₀ , f ₁)
+
+  ψ : A ₀ × A ₁ → Π n ꞉ 𝟚 , A n
+  ψ (a₀ , a₁) ₀ = a₀
+  ψ (a₀ , a₁) ₁ = a₁
+
+  η : ψ ∘ ϕ ∼ id
+  η f = dfunext fe (λ {₀ → refl ; ₁ → refl})
+
+  ε : ϕ ∘ ψ ∼ id
+  ε (a₀ , a₁) = refl
+
+alternative-+ : {A : 𝟚 → 𝓤 ̇ } → (Σ n ꞉ 𝟚 , A n) ≃ (A ₀ + A ₁)
+alternative-+ {𝓤} {A} = qinveq ϕ (ψ , η , ε)
+ where
+  ϕ : (Σ n ꞉ 𝟚 , A n) → A ₀ + A ₁
+  ϕ (₀ , a) = inl a
+  ϕ (₁ , a) = inr a
+
+  ψ : A ₀ + A ₁ → Σ n ꞉ 𝟚 , A n
+  ψ (inl a) = ₀ , a
+  ψ (inr a) = ₁ , a
+
+  η : ψ ∘ ϕ ∼ id
+  η (₀ , a) = refl
+  η (₁ , a) = refl
+
+  ε : ϕ ∘ ψ ∼ id
+  ε (inl a) = refl
+  ε (inr a) = refl
+
 domain-is-total-fiber : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) → X ≃ Σ (fiber f)
 domain-is-total-fiber {𝓤} {𝓥} {X} {Y} f =
   X                             ≃⟨ ≃-sym (𝟙-rneutral {𝓤} {𝓤}) ⟩

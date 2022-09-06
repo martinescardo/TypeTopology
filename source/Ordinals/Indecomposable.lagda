@@ -10,6 +10,9 @@ Equivalently, there is a function f : Ordinal 𝓤 → 𝟚 such that f α ＝ 0
 and f β = 1 for some ordinals α and β if and only if weak excluded
 middle holds.
 
+In other words, the type Ordinal 𝓤 has no non-trivial decidable
+property unless weak excluded middle holds.
+
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe #-}
@@ -18,14 +21,18 @@ open import UF.Univalence
 
 module Ordinals.Indecomposable (ua : Univalence) where
 
+open import MLTT.Spartan
+open import MLTT.Two-Properties
+
 open import UF.Base
+open import UF.Equiv
+open import UF.EquivalenceExamples
+open import UF.ExcludedMiddle
+open import UF.FunExt
+open import UF.Size
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-open import UF.Equiv
 open import UF.UA-FunExt
-open import UF.FunExt
-open import UF.ExcludedMiddle
-open import UF.Size
 
 private
  fe : FunExt
@@ -34,11 +41,8 @@ private
  fe' : Fun-Ext
  fe' {𝓤} {𝓥} = fe 𝓤 𝓥
 
- pe : PropExt
- pe = Univalence-gives-PropExt ua
-
-open import MLTT.Spartan
-open import MLTT.Two-Properties
+⇁_ : Ω 𝓤 → Ω 𝓤
+⇁_ = not fe'
 
 open import Ordinals.Type
 open import Ordinals.OrdinalOfOrdinals ua
@@ -54,24 +58,52 @@ and ₁ by f.
 
 \begin{code}
 
-decomposable : 𝓤 ̇ → 𝓤 ̇
-decomposable X = Σ x₀ ꞉ X , Σ x₁ ꞉ X , Σ f ꞉ (X → 𝟚) , (f x₀ ＝ ₀) × (f x₁ ＝ ₁)
+decomposition : 𝓤 ̇ → 𝓤 ̇
+decomposition X = Σ f ꞉ (X → 𝟚) , Σ (x₀ , x₁) ꞉ X × X , (f x₀ ＝ ₀) × (f x₁ ＝ ₁)
 
-decomposable₁ : 𝓤 ̇ → 𝓤 ⁺ ̇
-decomposable₁ {𝓤} X = Σ X₀ ꞉ 𝓤 ̇ , Σ X₁ ꞉ 𝓤 ̇ , X₀ × X₁ × (X ≃ X₀ + X₁)
+decomposition' : 𝓤 ̇ → 𝓤 ⁺ ̇
+decomposition' {𝓤} X = Σ (Y₀ , Y₁) ꞉ (𝓤 ̇ ) × (𝓤 ̇ ) , Y₀ × Y₁ × (X ≃ Y₀ + Y₁)
 
 \end{code}
 
-TODO. decomposable X ≃ decomposable₁ X. Is this already proved
-somewhere in TypeTopology? This equivalence was already used in a
-publication with coathors.
+The above to notions of decomposition are logically equivalent:
+
+\begin{code}
+
+decomposition-gives-decomposition' : (X : 𝓤 ̇ ) → decomposition X → decomposition' X
+decomposition-gives-decomposition' X (f , (x₀ , x₁) , p₀ , p₁) =
+ (fiber f ₀ , fiber f ₁) , ((x₀ , p₀) , (x₁ , p₁) , e)
+ where
+  e = X                       ≃⟨ domain-is-total-fiber f ⟩
+      Σ (fiber f)             ≃⟨ alternative-+ ⟩
+      (fiber f ₀ + fiber f ₁) ■
+
+decomposition'-gives-decomposition : (X : 𝓤 ̇ ) → decomposition' X → decomposition X
+decomposition'-gives-decomposition X ((Y₀ , Y₁) , y₀ , y₁ , (g , i)) =
+ f , ((inverse g i (inl y₀)) , (inverse g i (inr y₁))) , p₀ , p₁
+ where
+  open import MLTT.Plus-Properties
+  f : X → 𝟚
+  f x = Cases (g x) (λ _ → ₀) (λ _ → ₁)
+
+  p₀ : f (inverse g i (inl y₀)) ＝ ₀
+  p₀ = ap (λ - → Cases - (λ _ → ₀) (λ _ → ₁)) (inverses-are-sections g i (inl y₀))
+
+  p₁ : f (inverse g i (inr y₁)) ＝ ₁
+  p₁ = ap (λ - → Cases - (λ _ → ₀) (λ _ → ₁)) (inverses-are-sections g i (inr y₁))
+
+
+\end{code}
+
+TODO. The above two constructions are mutually equivalent and hence
+give decomposition X ≃ decomposition' X.
 
 \begin{code}
 
 WEM-gives-decomposability-of-two-pointed-types : WEM 𝓤
                                                → (X : 𝓤 ̇ )
                                                → has-two-distinct-points X
-                                               → decomposable X
+                                               → decomposition X
 WEM-gives-decomposability-of-two-pointed-types wem X ((x₀ , x₁) , d) = γ
  where
   g : (x : X) → ¬ (x ≠ x₀) + ¬¬ (x ≠ x₀) → 𝟚
@@ -84,31 +116,31 @@ WEM-gives-decomposability-of-two-pointed-types wem X ((x₀ , x₁) , d) = γ
   f : X → 𝟚
   f x = g x (h x)
 
-  f₀ : (δ : ¬ (x₀ ≠ x₀) + ¬¬ (x₀ ≠ x₀)) → g x₀ δ ＝ ₀
-  f₀ (inl _) = refl
-  f₀ (inr u) = 𝟘-elim (three-negations-imply-one u refl)
+  g₀ : (δ : ¬ (x₀ ≠ x₀) + ¬¬ (x₀ ≠ x₀)) → g x₀ δ ＝ ₀
+  g₀ (inl _) = refl
+  g₀ (inr u) = 𝟘-elim (three-negations-imply-one u refl)
 
   e₀ : f x₀ ＝ ₀
-  e₀ = f₀ (h x₀)
+  e₀ = g₀ (h x₀)
 
-  f₁ : (δ : ¬ (x₁ ≠ x₀) + ¬¬ (x₁ ≠ x₀)) → g x₁ δ ＝ ₁
-  f₁ (inl ϕ) = 𝟘-elim (ϕ (≠-sym d))
-  f₁ (inr _) = refl
+  g₁ : (δ : ¬ (x₁ ≠ x₀) + ¬¬ (x₁ ≠ x₀)) → g x₁ δ ＝ ₁
+  g₁ (inl ϕ) = 𝟘-elim (ϕ (≠-sym d))
+  g₁ (inr _) = refl
 
   e₁ : f x₁ ＝ ₁
-  e₁ = f₁ (h x₁)
+  e₁ = g₁ (h x₁)
 
-  γ : decomposable X
-  γ = x₀ , x₁ , f , e₀ , e₁
+  γ : decomposition X
+  γ = f , (x₀ , x₁) , e₀ , e₁
 
-WEM-gives-decomposability-of-ordinals-type⁺ : WEM (𝓤 ⁺) → decomposable (Ordinal 𝓤)
+WEM-gives-decomposability-of-ordinals-type⁺ : WEM (𝓤 ⁺) → decomposition (Ordinal 𝓤)
 WEM-gives-decomposability-of-ordinals-type⁺ {𝓤} wem =
  WEM-gives-decomposability-of-two-pointed-types wem (Ordinal 𝓤)
   ((𝟙ₒ , 𝟘ₒ) , (λ (e : 𝟙ₒ ＝ 𝟘ₒ) → 𝟘-elim (idtofun 𝟙 𝟘 (ap ⟨_⟩ e) ⋆)))
 
 \end{code}
 
-We can strengthen this to WEM 𝓤 → decomposable (Ordinal 𝓤 ̇) using
+We can strengthen this to WEM 𝓤 → decomposition (Ordinal 𝓤) using
 the fact that the type Ordinal 𝓤 ̇ is locally small.
 
 \begin{code}
@@ -117,7 +149,7 @@ WEM-gives-decomposability-of-two-pointed-types⁺ : WEM 𝓤
                                                → (X : 𝓤 ⁺ ̇ )
                                                → is-locally-small X
                                                → has-two-distinct-points X
-                                               → decomposable X
+                                               → decomposition X
 WEM-gives-decomposability-of-two-pointed-types⁺ {𝓤} wem X l ((x₀ , x₁) , d) = γ
  where
   g : (x : X) → ¬ (x ≠⟦ l ⟧ x₀) + ¬¬ (x ≠⟦ l ⟧ x₀) → 𝟚
@@ -130,24 +162,24 @@ WEM-gives-decomposability-of-two-pointed-types⁺ {𝓤} wem X l ((x₀ , x₁) 
   f : X → 𝟚
   f x = g x (h x)
 
-  f₀ : (δ : ¬ (x₀ ≠⟦ l ⟧ x₀) + ¬¬ (x₀ ≠⟦ l ⟧ x₀)) → g x₀ δ ＝ ₀
-  f₀ (inl _) = refl
-  f₀ (inr u) = 𝟘-elim (three-negations-imply-one u ⟦ l ⟧-refl)
+  g₀ : (δ : ¬ (x₀ ≠⟦ l ⟧ x₀) + ¬¬ (x₀ ≠⟦ l ⟧ x₀)) → g x₀ δ ＝ ₀
+  g₀ (inl _) = refl
+  g₀ (inr u) = 𝟘-elim (three-negations-imply-one u ⟦ l ⟧-refl)
 
   e₀ : f x₀ ＝ ₀
-  e₀ = f₀ (h x₀)
+  e₀ = g₀ (h x₀)
 
-  f₁ : (δ : ¬ (x₁ ≠⟦ l ⟧ x₀) + ¬¬ (x₁ ≠⟦ l ⟧ x₀)) → g x₁ δ ＝ ₁
-  f₁ (inl ϕ) = 𝟘-elim (ϕ (≠-gives-≠⟦ l ⟧ (≠-sym d)))
-  f₁ (inr _) = refl
+  g₁ : (δ : ¬ (x₁ ≠⟦ l ⟧ x₀) + ¬¬ (x₁ ≠⟦ l ⟧ x₀)) → g x₁ δ ＝ ₁
+  g₁ (inl ϕ) = 𝟘-elim (ϕ (≠-gives-≠⟦ l ⟧ (≠-sym d)))
+  g₁ (inr _) = refl
 
   e₁ : f x₁ ＝ ₁
-  e₁ = f₁ (h x₁)
+  e₁ = g₁ (h x₁)
 
-  γ : decomposable X
-  γ = x₀ , x₁ , f , e₀ , e₁
+  γ : decomposition X
+  γ = f , (x₀ , x₁) , e₀ , e₁
 
-WEM-gives-decomposability-of-ordinals-type : WEM 𝓤 → decomposable (Ordinal 𝓤)
+WEM-gives-decomposability-of-ordinals-type : WEM 𝓤 → decomposition (Ordinal 𝓤)
 WEM-gives-decomposability-of-ordinals-type {𝓤} wem =
  WEM-gives-decomposability-of-two-pointed-types⁺ wem (Ordinal 𝓤)
   the-type-of-ordinals-is-locally-small
@@ -178,7 +210,7 @@ type-of-ordinals-has-Ω-paths : has-Ω-paths 𝓤 (Ordinal 𝓤)
 type-of-ordinals-has-Ω-paths {𝓤} α β = f , γ⊥ , γ⊤
  where
   f : Ω 𝓤 → Ordinal 𝓤
-  f p = (Ω-to-ordinal (not fe' p) ×ₒ α) +ₒ (Ω-to-ordinal p ×ₒ β)
+  f p = (Ω-to-ordinal (⇁ p) ×ₒ α) +ₒ (Ω-to-ordinal p ×ₒ β)
 
   γ⊥ : f ⊥Ω ＝ α
   γ⊥ = eqtoidₒ (f ⊥Ω) α (u , o , e , p)
@@ -285,11 +317,11 @@ non-constant-map-Ω-to-𝟚-gives-WEM {𝓤} (f , p₀@(P₀ , i₀) , p₁@(P�
   IV Q j = 𝟚-equality-cases (III₀ (Q , j)) (III₁ (Q , j))
 
 
-decomposable-type-with-Ω-paths-gives-WEM : {X : 𝓤 ̇ }
-                                         → decomposable X
+decomposition-type-with-Ω-paths-gives-WEM : {X : 𝓤 ̇ }
+                                         → decomposition X
                                          → has-Ω-paths 𝓥 X
                                          → WEM 𝓥
-decomposable-type-with-Ω-paths-gives-WEM {𝓤} {𝓥} {X} (x₀ , x₁ , f , e₀ , e₁) c = γ
+decomposition-type-with-Ω-paths-gives-WEM {𝓤} {𝓥} {X} (f , (x₀ , x₁) , e₀ , e₁) c = γ
  where
   g : Ω 𝓥 → X
   g = pr₁ (c x₀ x₁)
@@ -308,16 +340,16 @@ decomposable-type-with-Ω-paths-gives-WEM {𝓤} {𝓥} {X} (x₀ , x₁ , f , e
   γ : WEM 𝓥
   γ = non-constant-map-Ω-to-𝟚-gives-WEM (f ∘ g , ⊥Ω , ⊤Ω , I₀ , I₁)
 
-decomposability-of-ordinals-type-gives-WEM : decomposable (Ordinal 𝓤) → WEM 𝓤
+decomposability-of-ordinals-type-gives-WEM : decomposition (Ordinal 𝓤) → WEM 𝓤
 decomposability-of-ordinals-type-gives-WEM d =
- decomposable-type-with-Ω-paths-gives-WEM d type-of-ordinals-has-Ω-paths
+ decomposition-type-with-Ω-paths-gives-WEM d type-of-ordinals-has-Ω-paths
 
-Ordinal-decomposable-iff-WEM : decomposable (Ordinal 𝓤) ⇔ WEM 𝓤
-Ordinal-decomposable-iff-WEM = decomposability-of-ordinals-type-gives-WEM ,
-                               WEM-gives-decomposability-of-ordinals-type
+Ordinal-decomposition-iff-WEM : decomposition (Ordinal 𝓤) ⇔ WEM 𝓤
+Ordinal-decomposition-iff-WEM = decomposability-of-ordinals-type-gives-WEM ,
+                                WEM-gives-decomposability-of-ordinals-type
 
 \end{code}
 
 TODO. Because WEM 𝓤 is a proposition, it follows that
-∥ decomposable (Ordinal 𝓤) ∥ ⇔ WEM 𝓤, and hence also
-∥ decomposable (Ordinal 𝓤) ∥ → decomposable (Ordinal 𝓤).
+∥ decomposition (Ordinal 𝓤) ∥ ⇔ WEM 𝓤, and hence also
+∥ decomposition (Ordinal 𝓤) ∥ → decomposition (Ordinal 𝓤).
