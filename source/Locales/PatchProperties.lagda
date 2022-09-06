@@ -974,13 +974,15 @@ module PatchStoneᴰ (X : Locale (𝓤 ⁺) 𝓤 𝓤) (σᴰ : spectralᴰ (�
 
  open BasisOfPatch X σᴰ
 
- -- patch-zero-dimensional : is-zero-dimensional (𝒪 Patchₛ-X) holds
- -- patch-zero-dimensional = ∣ ℬ-patch , β , γ ∣
- --  where
- --   β : is-basis-for (𝒪 Patchₛ-X) ℬ-patch
- --   β = ℬ-is-basis-for-patch
+ patchₛ-zero-dimensional : is-zero-dimensional (𝒪 Patchₛ-X) holds
+ patchₛ-zero-dimensional = ∣ ℬ-patch , β , γ ∣
+  where
+   β : is-basis-for (𝒪 Patchₛ-X) ℬ-patch
+   β = ℬ-is-basis-for-patch
 
- --   γ : consists-of-clopens (𝒪 Patchₛ-X) {!!} holds
- --   γ = {!!}
+   γ : consists-of-clopens (𝒪 Patchₛ-X) ℬ-patch holds
+   γ = ℬ-patch-consists-of-clopens
+
+\end{code}
 
 \end{code}
