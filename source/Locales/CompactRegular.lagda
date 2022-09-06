@@ -295,6 +295,17 @@ is-boolean-complement-of F U′ U =
   where
    iss = carrier-of-[ poset-of F ]-is-set
 
+complementation-is-symmetric : (F : Frame 𝓤 𝓥 𝓦) (x y : ⟨ F ⟩)
+                             → (is-boolean-complement-of F x y
+                             ⇒  is-boolean-complement-of F y x) holds
+complementation-is-symmetric F x y (φ , ψ) = † , ‡
+ where
+  † : x ∧[ F ] y ＝ 𝟎[ F ]
+  † = x ∧[ F ] y ＝⟨ ∧[ F ]-is-commutative x y ⟩ y ∧[ F ] x ＝⟨ φ ⟩ 𝟎[ F ] ∎
+
+  ‡ : x ∨[ F ] y ＝ 𝟏[ F ]
+  ‡ = x ∨[ F ] y ＝⟨ ∨[ F ]-is-commutative x y ⟩ y ∨[ F ] x ＝⟨ ψ ⟩ 𝟏[ F ] ∎
+
 ∧-complement : (F : Frame 𝓤 𝓥 𝓦)
              → {x y x′ y′ : ⟨ F ⟩}
              → is-boolean-complement-of F x x′ holds
