@@ -377,4 +377,5 @@ module _ (pt : propositional-truncations-exist) where
 
 Notice that the formulation of this doesn't refer to WEM, but its
 proof uses WEM, which follows from the hypothesis. Even though
-decomposable (Ordinal 𝓤) and WEM, we get data out of them.
+decomposable (Ordinal 𝓤) and WEM are property, we get data out of
+them.
