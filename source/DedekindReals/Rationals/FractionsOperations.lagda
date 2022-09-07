@@ -269,7 +269,7 @@ abs (x , a) = absℤ x , a
 ℚₙ-subtraction-dist-over-mult (x , a) (y , b) = ap (_ℤ* pos (succ (pred (succ a ℕ* succ b)))) I
  where
   I : (ℤ- x) ℤ* y ＝ ℤ- (x ℤ* y)
-  I = subtraction-dist-over-mult' x y
+  I = negation-dist-over-mult' x y
 
 ℚₙ-add-same-denom : ((x , a) (y , a) : ℚₙ) →  (((x , a) + (y , a)) ≈ (x ℤ+ y , a))
 ℚₙ-add-same-denom (x , a) (y , b) = (x ℤ* pos (succ b) ℤ+ y ℤ* pos (succ b)) ℤ* pos (succ b)   ＝⟨ ap (_ℤ* pos (succ b)) (distributivity-mult-over-ℤ x y (pos (succ b)) ⁻¹) ⟩

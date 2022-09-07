@@ -534,7 +534,7 @@ cauchy-approximation-limit-exists (f , approximation-condition) = y , y-is-limit
             3/5 * 5ε                         ＝⟨ ap (_* 5ε) (1-2/5＝3/5 fe ⁻¹) ⟩
             (1ℚ - 2/5) * 5ε                  ＝⟨ ℚ-distributivity' fe 5ε 1ℚ (- 2/5) ⟩
             1ℚ * 5ε + ((- 2/5) * 5ε)         ＝⟨ ap (_+ ((- 2/5) * 5ε)) (ℚ-mult-left-id fe 5ε) ⟩
-            5ε + ((- 2/5) * 5ε)              ＝⟨ ap (λ α → 5ε + α) (ℚ-subtraction-dist-over-mult fe 2/5 5ε) ⟩
+            5ε + ((- 2/5) * 5ε)              ＝⟨ ap (λ α → 5ε + α) (ℚ-negation-dist-over-mult fe 2/5 5ε) ⟩
             5ε - (2/5 * 5ε)                  ＝⟨ ap (λ α → 5ε - (α * 5ε)) (1/5+1/5 fe ⁻¹)  ⟩
             5ε - ((1/5 + 1/5) * 5ε)          ＝⟨ ap (λ α → 5ε - α) (ℚ-distributivity' fe 5ε 1/5 1/5)  ⟩
             5ε - (ε + ε) ∎

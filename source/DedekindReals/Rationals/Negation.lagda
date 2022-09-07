@@ -59,9 +59,9 @@ toℚ-neg fe (x , a) = IV
   II = ≈-sym (x , a) (x' , a') I
 
   III : x' ℤ* pos (succ a) ＝ x ℤ* pos (succ a') → (ℤ- x' , a') ≈ (ℤ- x , a)
-  III e = (ℤ- x') ℤ* pos (succ a)   ＝⟨ subtraction-dist-over-mult' x' (pos (succ a)) ⟩
+  III e = (ℤ- x') ℤ* pos (succ a)   ＝⟨ negation-dist-over-mult' x' (pos (succ a)) ⟩
           ℤ- (x' ℤ* pos (succ a))   ＝⟨ ap ℤ-_ e ⟩
-          ℤ- (x ℤ* pos (succ a'))   ＝⟨ subtraction-dist-over-mult' x (pos (succ a')) ⁻¹ ⟩
+          ℤ- (x ℤ* pos (succ a'))   ＝⟨ negation-dist-over-mult' x (pos (succ a')) ⁻¹ ⟩
           (ℤ- x) ℤ* pos (succ a') ∎
 
   IV : (- toℚ (x , a)) ＝ toℚ (ℤ- x , a) 
@@ -110,7 +110,7 @@ toℚ-neg fe (x , a) = IV
   II = ((- ((x , a) , p)) + (- ((y , b) , q)))                                                      ＝⟨ refl ⟩
        (toℚ ((ℤ- x) , a) + toℚ ((ℤ- y) , b))                                                        ＝⟨ toℚ-+ fe (ℤ- x , a) (ℤ- y , b) ⁻¹  ⟩
        toℚ ((ℤ- x , a) ℚₙ+ (ℤ- y , b))                                                              ＝⟨ I refl ⟩
-       toℚ (((ℤ- x') , a') ℚₙ+ ((ℤ- y') , b'))                                                      ＝⟨ ap₂ (λ α β → toℚ (α ℤ+ β ,  pred (succ a' ℕ* succ b'))) (subtraction-dist-over-mult' x' (pos (succ b'))) (subtraction-dist-over-mult' y' (pos (succ a'))) ⟩
+       toℚ (((ℤ- x') , a') ℚₙ+ ((ℤ- y') , b'))                                                      ＝⟨ ap₂ (λ α β → toℚ (α ℤ+ β ,  pred (succ a' ℕ* succ b'))) (negation-dist-over-mult' x' (pos (succ b'))) (negation-dist-over-mult' y' (pos (succ a'))) ⟩
        toℚ (((ℤ- x' ℤ* pos (succ b')) ℤ+ (ℤ- y' ℤ* pos (succ a'))) , ( pred (succ a' ℕ* succ b'))) ＝⟨ ap (λ - → toℚ (- , pred (succ a' ℕ* succ b'))) (negation-dist (x' ℤ* pos (succ b')) (y' ℤ* pos (succ a'))) ⟩
        toℚ ((ℤ- (x' ℤ* pos (succ b') ℤ+ y' ℤ* pos (succ a'))) , ( pred (succ a' ℕ* succ b')))        ＝⟨ toℚ-neg fe ((x' ℤ* pos (succ b') ℤ+ y' ℤ* pos (succ a') , pred (succ a' ℕ* succ b'))) ⁻¹ ⟩
        (- toℚ (x' ℤ* pos (succ b') ℤ+ y' ℤ* pos (succ a') , pred (succ a' ℕ* succ b')))            ＝⟨ refl ⟩
@@ -217,8 +217,8 @@ toℚ-neg fe (x , a) = IV
       (((x + (- z)) + z) + y)    ＝⟨ ℚ+-assoc fe (x - z) z y ⟩
       ((x - z) + (z + y)) ∎
 
-ℚ-subtraction-dist-over-mult : Fun-Ext → (p q : ℚ) → (- p) * q ＝ - (p * q)
-ℚ-subtraction-dist-over-mult fe ((x , a) , α) ((y , b) , β) = I
+ℚ-negation-dist-over-mult : Fun-Ext → (p q : ℚ) → (- p) * q ＝ - (p * q)
+ℚ-negation-dist-over-mult fe ((x , a) , α) ((y , b) , β) = I
  where
   xa : Σ (x' , a') ꞉ ℚₙ , ((x , a) , α) ＝ toℚ (x' , a')
   xa = q-has-qn fe ((x , a) , α)

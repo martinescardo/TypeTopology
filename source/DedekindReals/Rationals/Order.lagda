@@ -96,7 +96,7 @@ toℚ-< (x , a) (y , b) l = ordering-right-cancellable (x' ℤ* pos (succ b')) (
   β' = pr₂ (pr₂ (pr₂ II))
 
   III : is-pos-succ (pos (succ h) ℤ* pos (succ h'))
-  III = is-pos-succ-mult-trans (pos (succ h)) (pos (succ h')) ⋆ ⋆
+  III = is-pos-succ-mult (pos (succ h)) (pos (succ h')) ⋆ ⋆
 
   IV : is-pos-succ (pos (succ h ℕ* succ h'))
   IV = transport (λ z → is-pos-succ z) (pos-multiplication-equiv-to-ℕ (succ h) (succ h')) III
@@ -159,7 +159,7 @@ toℚ-≤ (x , a) (y , b) l = ℤ≤-ordering-right-cancellable (x' ℤ* pos (su
   β' = pr₂ (pr₂ (pr₂ II))
 
   III : is-pos-succ (pos (succ h ℕ* succ h'))
-  III = transport (λ - → is-pos-succ -) (pos-multiplication-equiv-to-ℕ (succ h) (succ h')) (is-pos-succ-mult-trans (pos (succ h)) (pos (succ h')) ⋆ ⋆)
+  III = transport (λ - → is-pos-succ -) (pos-multiplication-equiv-to-ℕ (succ h) (succ h')) (is-pos-succ-mult (pos (succ h)) (pos (succ h')) ⋆ ⋆)
 
   IV : (x' ℤ* pos (succ b') ℤ* pos (succ h ℕ* succ h')) ≤ (y' ℤ* pos (succ a') ℤ* pos (succ h ℕ* succ h'))
   IV = transport₂ (λ z z' → z ≤ z') VI VII l
@@ -399,7 +399,7 @@ rounded-lemma₀ (succ a) = succ (2 ℕ* pred (succ (succ a))) ＝⟨ ap (λ - �
   IV : ((q - p) * r) + p * r ＝ q * r
   IV = (q - p) * r + p * r         ＝⟨ ap (_+ p * r) (ℚ-distributivity' fe r q (- p)) ⟩
        q * r + (- p) * r + p * r   ＝⟨ ℚ+-assoc fe (q * r) ((- p) * r) (p * r) ⟩
-       q * r + ((- p) * r + p * r) ＝⟨ ap (λ z → (q * r) + (z + p * r)) (ℚ-subtraction-dist-over-mult fe p r) ⟩
+       q * r + ((- p) * r + p * r) ＝⟨ ap (λ z → (q * r) + (z + p * r)) (ℚ-negation-dist-over-mult fe p r) ⟩
        q * r + ((- p * r) + p * r) ＝⟨ ap (q * r +_) (ℚ-inverse-sum-to-zero' fe (p * r)) ⟩
        q * r + 0ℚ                  ＝⟨ ℚ-zero-right-neutral fe (q * r) ⟩
        q * r ∎
@@ -425,7 +425,7 @@ rounded-lemma₀ (succ a) = succ (2 ℕ* pred (succ (succ a))) ＝⟨ ap (λ - �
   IV : ((q - p) * r) + p * r ＝ q * r
   IV = (q - p) * r + p * r         ＝⟨ ap (_+ p * r) (ℚ-distributivity' fe r q (- p)) ⟩
        q * r + (- p) * r + p * r   ＝⟨ ℚ+-assoc fe (q * r) ((- p) * r) (p * r) ⟩
-       q * r + ((- p) * r + p * r) ＝⟨ ap (λ z → (q * r) + (z + p * r)) (ℚ-subtraction-dist-over-mult fe p r) ⟩
+       q * r + ((- p) * r + p * r) ＝⟨ ap (λ z → (q * r) + (z + p * r)) (ℚ-negation-dist-over-mult fe p r) ⟩
        q * r + ((- p * r) + p * r) ＝⟨ ap (q * r +_) (ℚ-inverse-sum-to-zero' fe (p * r)) ⟩
        q * r + 0ℚ                  ＝⟨ ℚ-zero-right-neutral fe (q * r) ⟩
        q * r ∎

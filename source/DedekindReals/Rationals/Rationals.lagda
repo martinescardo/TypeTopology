@@ -76,8 +76,8 @@ toℚlemma (negsucc a , b) = f (divbyhcf (succ a) (succ b))
         pos (succ h) ℤ* pos (succ x) ∎
 
     I : negsucc a ＝ pos (succ h) ℤ* negsucc x
-    I = negsucc a                          ＝⟨ ap -_ i                                                     ⟩
-        - (pos (succ h) ℤ* pos (succ x))   ＝⟨ subtraction-dist-over-mult (pos (succ h)) (pos (succ x)) ⁻¹ ⟩
+    I = negsucc a                          ＝⟨ ap -_ i                                                  ⟩
+        - (pos (succ h) ℤ* pos (succ x))   ＝⟨ negation-dist-over-mult (pos (succ h)) (pos (succ x)) ⁻¹ ⟩
         pos (succ h) ℤ* (- pos (succ x))   ∎
 
 toℚ : ℚₙ → ℚ

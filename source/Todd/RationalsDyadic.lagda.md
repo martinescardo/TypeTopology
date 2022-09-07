@@ -88,7 +88,7 @@ power-of-pos-positive 0 = ⋆
 power-of-pos-positive (succ n) = transport is-pos-succ (pos-multiplication-equiv-to-ℕ 2 (2^ n)) I
  where
   I : is-pos-succ (pos 2 * pos (2^ n))
-  I = is-pos-succ-mult-trans (pos 2) (pos (2^ n)) ⋆ (power-of-pos-positive n) 
+  I = is-pos-succ-mult (pos 2) (pos (2^ n)) ⋆ (power-of-pos-positive n) 
 
 -- TODO : Move following proofs into relevant files/places.
 

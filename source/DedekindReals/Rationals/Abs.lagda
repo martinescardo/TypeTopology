@@ -334,9 +334,9 @@ abs-mult fe x y = case-split (ℚ-dichotomous' fe x 0ℚ) (ℚ-dichotomous' fe y
     0<-y = ℚ<-swap'' fe y l₂
 
     remove-negatives : (- x) * (- y) ＝ x * y
-    remove-negatives = (- x) * (- y)     ＝⟨ ℚ-subtraction-dist-over-mult fe x (- y)     ⟩
+    remove-negatives = (- x) * (- y)     ＝⟨ ℚ-negation-dist-over-mult fe x (- y)        ⟩
                        - x * (- y)       ＝⟨ ap -_ (ℚ*-comm x (- y))                     ⟩
-                       - (- y) * x       ＝⟨ ap -_ (ℚ-subtraction-dist-over-mult fe y x) ⟩
+                       - (- y) * x       ＝⟨ ap -_ (ℚ-negation-dist-over-mult fe y x)    ⟩
                        - (- y * x)       ＝⟨ ℚ-minus-minus fe (y * x) ⁻¹                 ⟩
                        y * x             ＝⟨ ℚ*-comm y x                                 ⟩
                        x * y             ∎
@@ -358,7 +358,7 @@ abs-mult fe x y = case-split (ℚ-dichotomous' fe x 0ℚ) (ℚ-dichotomous' fe y
                     a * abs b     ＝⟨ ap (a *_) (ℚ-abs-neg-equals-pos fe b)                       ⟩
                     a * abs (- b) ＝⟨ ap (a *_) (abs-of-pos-is-pos' fe (- b) (ℚ<-swap'' fe b l₂)) ⟩
                     a * (- b)     ＝⟨ ℚ*-comm a (- b)                                             ⟩
-                    (- b) * a     ＝⟨ ℚ-subtraction-dist-over-mult fe b a                         ⟩
+                    (- b) * a     ＝⟨ ℚ-negation-dist-over-mult fe b a                            ⟩
                     - b * a       ＝⟨ ap -_ (ℚ*-comm b a)                                         ⟩
                     - a * b       ＝⟨ abs-of-pos-is-pos fe (- a * b) (ℚ≤-swap' fe (a * b) I) ⁻¹   ⟩
                     abs (- a * b) ＝⟨ ℚ-abs-neg-equals-pos fe (a * b) ⁻¹                          ⟩
@@ -376,7 +376,7 @@ abs-mult fe x y = case-split (ℚ-dichotomous' fe x 0ℚ) (ℚ-dichotomous' fe y
      where
       II : - (a * (- b)) ＝ a * b
       II = - a * (- b) ＝⟨ ap -_ (ℚ*-comm a (- b))                     ⟩
-           - (- b) * a ＝⟨ ap -_ (ℚ-subtraction-dist-over-mult fe b a) ⟩
+           - (- b) * a ＝⟨ ap -_ (ℚ-negation-dist-over-mult fe b a)    ⟩
            - (- b * a) ＝⟨ ℚ-minus-minus fe (b * a) ⁻¹                 ⟩
            b * a       ＝⟨ ℚ*-comm b a                                 ⟩
            a * b       ∎

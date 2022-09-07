@@ -54,7 +54,7 @@ product-positive-negative-not-positive (succ a) (succ b) c e₁ = I (pos-mult-is
        III = negsucc z                      ＝⟨ refl                                                        ⟩
              - pos (succ z)                 ＝⟨ ap (λ α → -_ (pos α)) e₂                                    ⟩
              - pos (succ a ℕ* succ b)       ＝⟨ ap -_ (pos-multiplication-equiv-to-ℕ (succ a) (succ b)) ⁻¹  ⟩
-             - pos (succ a) ℤ* pos (succ b) ＝⟨ subtraction-dist-over-mult (pos (succ a)) (pos (succ b)) ⁻¹ ⟩
+             - pos (succ a) ℤ* pos (succ b) ＝⟨ negation-dist-over-mult (pos (succ a)) (pos (succ b)) ⁻¹ ⟩
              pos (succ a) ℤ* negsucc b      ∎
        IV : negsucc d ＝ pos (succ c)
        IV = negsucc d                                 ＝⟨ e₃ ⁻¹                 ⟩
@@ -135,7 +135,7 @@ pos-div-to-nat-div (succ a) (succ b) (negsucc x , p) = 𝟘-elim (product-positi
     I = negsucc a                        ＝⟨ refl                                                         ⟩
         - pos (succ a)                   ＝⟨ ap -_ (ap pos e)                                             ⟩
         - pos (succ q ℕ* succ d)         ＝⟨ ap -_ (pos-multiplication-equiv-to-ℕ (succ q) (succ d) ⁻¹)   ⟩
-        - pos (succ q) ℤ* pos (succ d)   ＝⟨ subtraction-dist-over-mult' (pos (succ q)) (pos (succ d)) ⁻¹ ⟩
+        - pos (succ q) ℤ* pos (succ d)   ＝⟨ negation-dist-over-mult' (pos (succ q)) (pos (succ d)) ⁻¹ ⟩
         (- pos (succ q)) ℤ* pos (succ d) ＝⟨ refl                                                         ⟩
         negsucc q ℤ* pos (succ d)        ∎
   f (0 , succ r , e₁ , l₁) = negsucc 0 , I (subtraction' (succ r) (succ d) l₁)
@@ -163,10 +163,10 @@ pos-div-to-nat-div (succ a) (succ b) (negsucc x , p) = 𝟘-elim (product-positi
             pos 0 + negsucc r                                      ＝⟨ ap (_+ (negsucc r)) (ℤ-sum-of-inverse-is-zero (pos k) ⁻¹)                          ⟩
             pos k + (- pos k) + negsucc r                          ＝⟨ ℤ+-assoc (pos k) (- pos k) (negsucc r)                                             ⟩
             pos k + ((- pos k) + negsucc r)                        ＝⟨ ℤ+-comm (pos k) ((- pos k) + negsucc r)                                            ⟩
-            (- pos k) + negsucc r + pos k                          ＝⟨ ap (λ z → (z + negsucc r) + pos k) (mult-inverse (pos k))                          ⟩
-            negsucc 0 ℤ* pos k + (- pos (succ r)) + pos k          ＝⟨ ap (λ z →  (negsucc 0 ℤ* pos k + z) + pos k) (mult-inverse (pos (succ r)))         ⟩
+            (- pos k) + negsucc r + pos k                          ＝⟨ ap (λ z → (z + negsucc r) + pos k) (mult-negation (pos k))                         ⟩
+            negsucc 0 ℤ* pos k + (- pos (succ r)) + pos k          ＝⟨ ap (λ z →  (negsucc 0 ℤ* pos k + z) + pos k) (mult-negation (pos (succ r)))        ⟩
             negsucc 0 ℤ* pos k + negsucc 0 ℤ* pos (succ r) + pos k ＝⟨ ap (_+ pos k) (distributivity-mult-over-ℤ' (pos k) (pos (succ r)) (negsucc 0) ⁻¹)  ⟩
-            negsucc 0 ℤ* (pos k + pos (succ r)) + pos k            ＝⟨ ap (λ z → negsucc 0 ℤ* z + pos k) (distributivity-pos-addition k (succ r))             ⟩
+            negsucc 0 ℤ* (pos k + pos (succ r)) + pos k            ＝⟨ ap (λ z → negsucc 0 ℤ* z + pos k) (distributivity-pos-addition k (succ r))         ⟩
             negsucc 0 ℤ* pos (k ℕ+ succ r) + pos k                 ＝⟨ ap (λ z → negsucc 0 ℤ* pos z + pos k) e₂                                           ⟩
             negsucc 0 ℤ* pos (succ d) + pos k                      ∎
  
@@ -216,12 +216,12 @@ pos-div-to-nat-div (succ a) (succ b) (negsucc x , p) = 𝟘-elim (product-positi
               iv   = ap ((- pos (succ q) ℤ* pos (succ d)) +_) IV
               v    = ℤ+-rearrangement (- (pos (succ q) ℤ* pos (succ d))) (pos k) (- pos (succ d)) ⁻¹
               vi   = ap (λ z → ((- z) + (- pos (succ d))) + pos k) (ℤ*-comm (pos (succ q)) (pos (succ d)))
-              vii  = ap (λ z → (z + (- pos (succ d))) + pos k) (subtraction-dist-over-mult' (pos (succ d)) (pos (succ q)) ⁻¹)
+              vii  = ap (λ z → (z + (- pos (succ d))) + pos k) (negation-dist-over-mult' (pos (succ d)) (pos (succ q)) ⁻¹)
               viii = ap (λ z → ((- pos (succ d)) ℤ* pos (succ q) + z) + pos k) (ℤ-mult-right-id (- pos (succ d))) ⁻¹
               ix   = ap (_+ pos k) (distributivity-mult-over-ℤ' (pos (succ q)) (pos 1) (- pos (succ d)) ⁻¹)
-              x    = ap (_+ pos k) (subtraction-dist-over-mult' (pos (succ d)) (pos (succ (succ q))))
+              x    = ap (_+ pos k) (negation-dist-over-mult' (pos (succ d)) (pos (succ (succ q))))
               xi   = ap (λ z → (- z) + pos k) (ℤ*-comm (pos (succ d)) (pos (succ (succ q))))
-              xii  = ap (_+ pos k) (subtraction-dist-over-mult' (pos (succ (succ q))) (pos (succ d)) ⁻¹)
+              xii  = ap (_+ pos k) (negation-dist-over-mult' (pos (succ (succ q))) (pos (succ d)) ⁻¹)
 
 ℤ-∣-respects-addition : (x y z : ℤ) → x ∣ y → x ∣ z → x ∣ y + z
 ℤ-∣-respects-addition x y z (α , αₚ) (β , βₚ) = α + β , I
