@@ -379,3 +379,67 @@ Notice that the formulation of this doesn't refer to WEM, but its
 proof uses WEM, which follows from the hypothesis. Even though
 decomposable (Ordinal 𝓤) and WEM are property, we get data out of
 them - if we are given a proof of decomposability.
+
+
+Added 9th September 2022 by Tom de Jong.
+
+After a discussion with Martín on 8th September 2022, we noticed that the
+decomposability theorem can be generalised from Ord 𝓤 to any locally small
+𝓤-sup-lattice with two distinct points. (This is indeed a generalisation because
+Ord 𝓤 is a locally small 𝓤-sup-lattice, at least in the presence of small set
+quotients or set replacement, see Ordinals.OrdinalOfOrdinalsSuprema.)
+
+One direction is still given by the lemma above:
+  WEM-gives-decomposition-of-two-pointed-types⁺ :
+      WEM 𝓤
+    → (X : 𝓤 ⁺ ̇ )
+    → is-locally-small X
+    → has-two-distinct-points X
+    → decomposition X
+
+[NB. Predicatively, nontrivial 𝓤-sup-lattices necessarily have large
+     carriers [dJE21,dJE22], so that the simpler lemma
+
+     WEM-gives-decomposition-of-two-pointed-types :
+         WEM 𝓤
+       → (X : 𝓤 ̇ )
+       → has-two-distinct-points X
+       → decomposition X
+
+     is not sufficient.]
+
+For the other we use
+
+  decomposition-of-type-with-Ω-paths-gives-WEM :
+      {X : 𝓤 ̇ }
+    → decomposition X
+    → has-Ω-paths 𝓥 X
+    → WEM 𝓥
+
+The point is that every 𝓤-sup-lattice X has Ω𝓤-paths, because given x y : X, we
+can define f : Ω 𝓤 → X by mapping a proposition P to the join of the family
+
+  δ : 𝟙 + P → X
+  δ(inl ⋆) = x;
+  δ(inr p) = y.
+
+The family δ also plays a key role in [dJE21,dJE22] although we have the
+restriction that x ⊑ y in those papers, because we consider a broader collection
+of posets there that includes the 𝓤-sup-lattices, but also 𝓤-bounded-complete
+posets and 𝓤-directed complete posets.
+
+References
+----------
+
+[dJE21] Tom de Jong and Martín Hötzel Escardó.
+        ‘Predicative Aspects of Order Theory in Univalent Foundations’.
+        In: 6th International Conference on Formal Structures for Computation and
+        Deduction (FSCD 2021). Ed. by Naoki Kobayashi. Vol. 195.
+        Leibniz International Proceedings in Informatics (LIPIcs).
+        Schloss Dagstuhl–Leibniz-Zentrum für Informatik, 2021, 8:1–8:18.
+        doi: 10.4230/LIPIcs.FSCD.2021.8.
+[dJE22] Tom de Jong and Martín Hötzel Escardó.
+        ‘On Small Types in Univalent Foundations’. Sept. 2022.
+        arXiv: 2111.00482 [cs.LO]. Revised and expanded version of [dJE21b].
+        Accepted pending minor revision to a special issue of Logical Methods in
+        Computer Science on selected papers from FSCD 2021.
