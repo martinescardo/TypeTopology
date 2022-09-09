@@ -186,3 +186,41 @@ module surjection-classifier
                                    ∥_∥
 
 \end{code}
+
+9th September 2022. Here is an application of the above.
+
+\begin{code}
+
+open import UF.Equiv-FunExt
+open import UF.PropIndexedPiSigma
+open import UF.Yoneda
+
+Σ-fibers : is-univalent 𝓤
+         → funext 𝓤 (𝓤 ⁺)
+         → {X : 𝓤 ̇ } {Y : 𝓤 ̇ }
+         → (Σ A ꞉ (Y → 𝓤 ̇ ) , Σ A ≃ X) ≃ (X → Y)
+Σ-fibers {𝓤} ua fe⁺ {X} {Y} =
+  (Σ A ꞉ (Y → 𝓤 ̇ ) , Σ A ≃ X)                            ≃⟨ I ⟩
+  (Σ (Z , g) ꞉ 𝓤 / Y , (Σ y ꞉ Y , fiber g y) ≃ X)        ≃⟨ II ⟩
+  (Σ Z ꞉ 𝓤 ̇ , Σ g ꞉ (Z → Y) , (Σ y ꞉ Y , fiber g y) ≃ X) ≃⟨ III ⟩
+  (Σ Z ꞉ 𝓤 ̇ , (Z → Y) × (Z ≃ X))                         ≃⟨ IV ⟩
+  (Σ Z ꞉ 𝓤 ̇ , (Z ≃ X) × (Z → Y))                         ≃⟨ V ⟩
+  (Σ Z ꞉ 𝓤 ̇ , (X ≃ Z) × (Z → Y))                         ≃⟨ VI ⟩
+  (Σ (Z , e) ꞉ (Σ Z ꞉ 𝓤 ̇ , X ≃ Z) , (Z → Y))             ≃⟨ VII ⟩
+  (X → Y)                                                 ■
+ where
+  fe : funext 𝓤 𝓤
+  fe = univalence-gives-funext ua
+
+  I   = ≃-sym (Σ-change-of-variable (λ A → Σ A ≃ X) (χ Y)
+               (universes-are-map-classifiers ua fe⁺ Y))
+  II  = Σ-assoc
+  III = Σ-cong (λ Z → Σ-cong (λ g → ≃-cong-left' fe fe fe fe fe
+                                     (total-fiber-is-domain g)))
+  IV  = Σ-cong (λ Z → ×-comm)
+  V   = Σ-cong (λ Z → ×-cong (≃-Sym' fe fe fe fe) (≃-refl (Z → Y)))
+  VI  = ≃-sym Σ-assoc
+  VII = prop-indexed-sum
+         (singletons-are-props
+           (univalence-via-singletons→ ua X))
+         (X , ≃-refl X)

@@ -599,13 +599,13 @@ NatΣ-fiber-equiv : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ ) (ζ
 NatΣ-fiber-equiv A B ζ x b = qinveq (f b) (g b , ε b , η b)
  where
   f : (b : B x) → fiber (ζ x) b → fiber (NatΣ ζ) (x , b)
-  f . (ζ x a) (a , refl) = (x , a) , refl
+  f _ (a , refl) = (x , a) , refl
 
   g : (b : B x) → fiber (NatΣ ζ) (x , b) → fiber (ζ x) b
-  g . (ζ x a) ((.x , a) , refl) = a , refl
+  g _ ((x , a) , refl) = a , refl
 
   ε : (b : B x) (w : fiber (ζ x) b) → g b (f b w) ＝ w
-  ε . (ζ x a) (a , refl) = refl
+  ε _ (a , refl) = refl
 
   η : (b : B x) (t : fiber (NatΣ ζ) (x , b)) → f b (g b t) ＝ t
   η b (a , refl) = refl

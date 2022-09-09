@@ -31,8 +31,10 @@ being-vv-equiv-is-prop : FunExt
 being-vv-equiv-is-prop {𝓤} {𝓥} fe = being-vv-equiv-is-prop' (fe 𝓥 (𝓤 ⊔ 𝓥)) (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥))
 
 qinv-post' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ }
-          → naive-funext 𝓦 𝓤 → naive-funext 𝓦 𝓥
-          → (f : X → Y) → qinv f → qinv (λ (h : A → X) → f ∘ h)
+          → naive-funext 𝓦 𝓤
+          → naive-funext 𝓦 𝓥
+          → (f : X → Y)
+          → qinv f → qinv (λ (h : A → X) → f ∘ h)
 qinv-post' {𝓤} {𝓥} {𝓦} {X} {Y} {A} nfe nfe' f (g , η , ε) = (g' , η' , ε')
  where
   f' : (A → X) → (A → Y)
@@ -44,18 +46,26 @@ qinv-post' {𝓤} {𝓥} {𝓦} {X} {Y} {A} nfe nfe' f (g , η , ε) = (g' , η'
   ε' : (k : A → Y) → f' (g' k) ＝ k
   ε' k = nfe' (ε ∘ k)
 
-qinv-post : (∀ 𝓤 𝓥 → naive-funext 𝓤 𝓥) → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } (f : X → Y)
-          → qinv f → qinv (λ (h : A → X) → f ∘ h)
+qinv-post : (∀ 𝓤 𝓥 → naive-funext 𝓤 𝓥)
+          → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } (f : X → Y)
+          → qinv f
+          → qinv (λ (h : A → X) → f ∘ h)
 qinv-post {𝓤} {𝓥} {𝓦} nfe = qinv-post' (nfe 𝓦 𝓤) (nfe 𝓦 𝓥)
 
 equiv-post : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ }
-           → naive-funext 𝓦 𝓤 → naive-funext 𝓦 𝓥
-           → (f : X → Y) → is-equiv f → is-equiv (λ (h : A → X) → f ∘ h)
+           → naive-funext 𝓦 𝓤
+           → naive-funext 𝓦 𝓥
+           → (f : X → Y)
+           → is-equiv f
+           → is-equiv (λ (h : A → X) → f ∘ h)
 equiv-post nfe nfe' f e = qinvs-are-equivs (λ h → f ∘ h) (qinv-post' nfe nfe' f (equivs-are-qinvs f e))
 
 qinv-pre' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ }
-          → naive-funext 𝓥 𝓦 → naive-funext 𝓤 𝓦
-          → (f : X → Y) → qinv f → qinv (λ (h : Y → A) → h ∘ f)
+          → naive-funext 𝓥 𝓦
+          → naive-funext 𝓤 𝓦
+          → (f : X → Y)
+          → qinv f
+          → qinv (λ (h : Y → A) → h ∘ f)
 qinv-pre' {𝓤} {𝓥} {𝓦} {X} {Y} {A} nfe nfe' f (g , η , ε) = (g' , η' , ε')
  where
   f' : (Y → A) → (X → A)
@@ -67,13 +77,18 @@ qinv-pre' {𝓤} {𝓥} {𝓦} {X} {Y} {A} nfe nfe' f (g , η , ε) = (g' , η' 
   ε' : (k : X → A) → f' (g' k) ＝ k
   ε' k = nfe' (λ x → ap k (η x))
 
-qinv-pre : (∀ 𝓤 𝓥 → naive-funext 𝓤 𝓥) → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } (f : X → Y)
-         → qinv f → qinv (λ (h : Y → A) → h ∘ f)
+qinv-pre : (∀ 𝓤 𝓥 → naive-funext 𝓤 𝓥)
+         → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } (f : X → Y)
+         → qinv f
+         → qinv (λ (h : Y → A) → h ∘ f)
 qinv-pre {𝓤} {𝓥} {𝓦} nfe = qinv-pre' (nfe 𝓥 𝓦) (nfe 𝓤 𝓦)
 
 retractions-have-at-most-one-section' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-                                      → funext 𝓥 𝓤 → funext 𝓥 𝓥
-                                      → (f : X → Y) → is-section f → is-prop (has-section f)
+                                      → funext 𝓥 𝓤
+                                      → funext 𝓥 𝓥
+                                      → (f : X → Y)
+                                      → is-section f
+                                      → is-prop (has-section f)
 retractions-have-at-most-one-section' {𝓤} {𝓥} {X} {Y} fe fe' f (g , gf) (h , fh) =
  singletons-are-props c (h , fh)
  where
@@ -94,8 +109,11 @@ retractions-have-at-most-one-section' {𝓤} {𝓥} {X} {Y} fe fe' f (g , gf) (h
   c = retract-of-singleton (r , s , rs) b
 
 sections-have-at-most-one-retraction' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-                                      → funext 𝓤 𝓤 → funext 𝓥 𝓤
-                                      → (f : X → Y) → has-section f → is-prop (is-section f)
+                                      → funext 𝓤 𝓤
+                                      → funext 𝓥 𝓤
+                                      → (f : X → Y)
+                                      → has-section f
+                                      → is-prop (is-section f)
 sections-have-at-most-one-retraction' {𝓤} {𝓥} {X} {Y} fe fe' f (g , fg) (h , hf) =
  singletons-are-props c (h , hf)
  where
@@ -115,34 +133,46 @@ sections-have-at-most-one-retraction' {𝓤} {𝓥} {X} {Y} fe fe' f (g , fg) (h
   c : is-singleton (is-section f)
   c = retract-of-singleton (r , s , rs) b
 
-retractions-have-at-most-one-section : FunExt → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                                     → is-section f → is-prop (has-section f)
+retractions-have-at-most-one-section : FunExt
+                                     → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                                     → is-section f
+                                     → is-prop (has-section f)
 retractions-have-at-most-one-section {𝓤} {𝓥} fe = retractions-have-at-most-one-section' (fe 𝓥 𝓤) (fe 𝓥 𝓥)
 
-sections-have-at-most-one-retraction : FunExt → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                                     → has-section f → is-prop (is-section f)
+sections-have-at-most-one-retraction : FunExt
+                                     → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                                     → has-section f
+                                     → is-prop (is-section f)
 sections-have-at-most-one-retraction {𝓤} {𝓥} fe = sections-have-at-most-one-retraction' (fe 𝓤 𝓤) (fe 𝓥 𝓤)
 
 being-equiv-is-prop' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-                     → funext 𝓥 𝓤 → funext 𝓥 𝓥 → funext 𝓤 𝓤 → funext 𝓥 𝓤
-                     → (f : X → Y) → is-prop (is-equiv f)
+                     → funext 𝓥 𝓤
+                     → funext 𝓥 𝓥
+                     → funext 𝓤 𝓤
+                     → funext 𝓥 𝓤
+                     → (f : X → Y)
+                     → is-prop (is-equiv f)
 being-equiv-is-prop' fe fe' fe'' fe''' f = ×-prop-criterion (retractions-have-at-most-one-section' fe fe' f ,
                                                                sections-have-at-most-one-retraction' fe'' fe''' f)
 
-being-equiv-is-prop : FunExt → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+being-equiv-is-prop : FunExt
+                    → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                     → is-prop (is-equiv f)
 being-equiv-is-prop {𝓤} {𝓥} fe f = being-equiv-is-prop' (fe 𝓥 𝓤) (fe 𝓥 𝓥) (fe 𝓤 𝓤) (fe 𝓥 𝓤) f
 
 being-equiv-is-prop'' : {X Y : 𝓤 ̇ }
                       → funext 𝓤 𝓤
-                      → (f : X → Y) → is-prop (is-equiv f)
+                      → (f : X → Y)
+                      → is-prop (is-equiv f)
 being-equiv-is-prop'' fe = being-equiv-is-prop' fe fe fe fe
 
-≃-assoc : FunExt
-        → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {T : 𝓣 ̇ }
-          (α : X ≃ Y) (β : Y ≃ Z) (γ : Z ≃ T)
-        → α ● (β ● γ) ＝ (α ● β) ● γ
-≃-assoc fe (f , a) (g , b) (h , c) = to-Σ-＝ (p , q)
+≃-assoc' : funext 𝓣 𝓤
+         → funext 𝓣 𝓣
+         → funext 𝓤 𝓤
+         → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {T : 𝓣 ̇ }
+           (α : X ≃ Y) (β : Y ≃ Z) (γ : Z ≃ T)
+         → α ● (β ● γ) ＝ (α ● β) ● γ
+≃-assoc' fe₀ f₁ f₂ (f , a) (g , b) (h , c) = to-Σ-＝ (p , q)
  where
   p : (h ∘ g) ∘ f ＝ h ∘ (g ∘ f)
   p = refl
@@ -152,7 +182,13 @@ being-equiv-is-prop'' fe = being-equiv-is-prop' fe fe fe fe
   e = ∘-is-equiv (∘-is-equiv a b) c
 
   q : transport is-equiv p d ＝ e
-  q = being-equiv-is-prop fe (h ∘ g ∘ f) _ _
+  q = being-equiv-is-prop' fe₀ f₁ f₂ fe₀ (h ∘ g ∘ f) _ _
+
+≃-assoc : FunExt
+        → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {T : 𝓣 ̇ }
+          (α : X ≃ Y) (β : Y ≃ Z) (γ : Z ≃ T)
+        → α ● (β ● γ) ＝ (α ● β) ● γ
+≃-assoc fe = ≃-assoc' (fe _ _) (fe _ _) (fe _ _)
 
 \end{code}
 
@@ -162,8 +198,11 @@ a neutral element for ordinary function composition, definitionally:
 
 \begin{code}
 
-≃-refl-left' : funext 𝓥 𝓤 → funext 𝓥 𝓥 → funext 𝓤 𝓤
-               → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (α : X ≃ Y) → ≃-refl X ● α ＝ α
+≃-refl-left' : funext 𝓥 𝓤
+             → funext 𝓥 𝓥
+             → funext 𝓤 𝓤
+             → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (α : X ≃ Y)
+             → ≃-refl X ● α ＝ α
 ≃-refl-left' fe₀ fe₁ fe₂ α = to-Σ-＝' (being-equiv-is-prop' fe₀ fe₁ fe₂ fe₀ _ _ _)
 
 ≃-refl-right' : funext 𝓥 𝓤 → funext 𝓥 𝓥 → funext 𝓤 𝓤 → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (α : X ≃ Y) → α ● ≃-refl Y ＝ α
@@ -172,52 +211,93 @@ a neutral element for ordinary function composition, definitionally:
 ≃-sym-involutive' : funext 𝓥 𝓤 → funext 𝓥 𝓥 → funext 𝓤 𝓤
                   → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (α : X ≃ Y) → ≃-sym (≃-sym α) ＝ α
 ≃-sym-involutive' fe₀ fe₁ fe₂ (f , a) = to-Σ-＝
-                                             (inversion-involutive f a ,
-                                              being-equiv-is-prop' fe₀ fe₁ fe₂ fe₀ f _ a)
+                                         (inversion-involutive f a ,
+                                          being-equiv-is-prop' fe₀ fe₁ fe₂ fe₀ f _ a)
 
-≃-Sym' : funext 𝓥 𝓤 → funext 𝓥 𝓥 → funext 𝓤 𝓤 → funext 𝓤 𝓥
-       → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X ≃ Y) ≃ (Y ≃ X)
+≃-Sym' : funext 𝓥 𝓤
+       → funext 𝓥 𝓥
+       → funext 𝓤 𝓤
+       → funext 𝓤 𝓥
+       → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+       → (X ≃ Y) ≃ (Y ≃ X)
 ≃-Sym' fe₀ fe₁ fe₂ fe₃ = qinveq ≃-sym (≃-sym , ≃-sym-involutive' fe₀ fe₁ fe₂ , ≃-sym-involutive' fe₃ fe₂ fe₁)
 
 ≃-Sym'' : funext 𝓤 𝓤
-        → {X Y : 𝓤 ̇ } → (X ≃ Y) ≃ (Y ≃ X)
+        → {X Y : 𝓤 ̇ }
+        → (X ≃ Y) ≃ (Y ≃ X)
 ≃-Sym'' fe = ≃-Sym' fe fe fe fe
 
-≃-Sym : FunExt → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X ≃ Y) ≃ (Y ≃ X)
+≃-Sym : FunExt
+      → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+      → (X ≃ Y) ≃ (Y ≃ X)
 ≃-Sym {𝓤} {𝓥} fe = ≃-Sym' (fe 𝓥 𝓤) (fe 𝓥 𝓥) (fe 𝓤 𝓤) (fe 𝓤 𝓥)
 
-≃-refl-left : FunExt → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (α : X ≃ Y) → ≃-refl X ● α ＝ α
+≃-refl-left : FunExt
+            → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (α : X ≃ Y)
+            → ≃-refl X ● α ＝ α
 ≃-refl-left fe = ≃-refl-left' (fe _ _) (fe _ _) (fe _ _)
 
-≃-refl-right : FunExt → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (α : X ≃ Y) → α ● ≃-refl Y ＝ α
+≃-refl-right : FunExt
+             → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (α : X ≃ Y)
+             → α ● ≃-refl Y ＝ α
 ≃-refl-right fe = ≃-refl-right' (fe _ _) (fe _ _) (fe _ _)
 
-≃-sym-involutive : FunExt → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (α : X ≃ Y) → ≃-sym (≃-sym α) ＝ α
+≃-sym-involutive : FunExt
+                 → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (α : X ≃ Y)
+                 → ≃-sym (≃-sym α) ＝ α
 ≃-sym-involutive {𝓤} {𝓥} fe = ≃-sym-involutive' (fe 𝓥 𝓤) (fe 𝓥 𝓥) (fe 𝓤 𝓤)
 
-≃-sym-left-inverse : FunExt → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (α : X ≃ Y) → ≃-sym α ● α ＝ ≃-refl Y
-≃-sym-left-inverse {𝓤} {𝓥} fe (f , e) = to-Σ-＝ (p , being-equiv-is-prop fe _ _ _)
+≃-sym-left-inverse' : funext 𝓥 𝓥
+                    → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (α : X ≃ Y)
+                    → ≃-sym α ● α ＝ ≃-refl Y
+≃-sym-left-inverse' {𝓤} {𝓥} fe (f , e) = to-Σ-＝ (p , being-equiv-is-prop' fe fe fe fe _ _ _)
  where
   p : f ∘ inverse f e ＝ id
-  p = dfunext (fe 𝓥 𝓥) (inverses-are-sections f e)
+  p = dfunext fe (inverses-are-sections f e)
 
-≃-sym-right-inverse : FunExt → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (α : X ≃ Y) → α ● ≃-sym α ＝ ≃-refl X
-≃-sym-right-inverse {𝓤} {𝓥} fe (f , e) = to-Σ-＝ (p , being-equiv-is-prop fe _ _ _)
+≃-sym-left-inverse : FunExt
+                   → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (α : X ≃ Y)
+                   → ≃-sym α ● α ＝ ≃-refl Y
+≃-sym-left-inverse fe = ≃-sym-left-inverse' (fe _ _)
+
+≃-sym-right-inverse' : funext 𝓤 𝓤
+                     → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (α : X ≃ Y)
+                     → α ● ≃-sym α ＝ ≃-refl X
+≃-sym-right-inverse' {𝓤} {𝓥} fe (f , e) = to-Σ-＝ (p , being-equiv-is-prop' fe fe fe fe _ _ _)
  where
   p : inverse f e ∘ f ＝ id
-  p = dfunext (fe 𝓤 𝓤) (inverses-are-retractions f e)
+  p = dfunext fe (inverses-are-retractions f e)
 
-≃-cong-left : FunExt → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } → X ≃ Y → (X ≃ Z) ≃ (Y ≃ Z)
-≃-cong-left fe α = qinveq ((≃-sym α) ●_) ((α ●_), p , q)
+≃-sym-right-inverse : FunExt
+                    → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (α : X ≃ Y)
+                    → α ● ≃-sym α ＝ ≃-refl X
+≃-sym-right-inverse fe = ≃-sym-right-inverse' (fe _ _)
+
+≃-cong-left' : {𝓤 𝓥 𝓦 : Universe}
+             → funext 𝓦 𝓤
+             → funext 𝓦 𝓦
+             → funext 𝓤 𝓤
+             → funext 𝓦 𝓥
+             → funext 𝓥 𝓥
+             → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
+             → X ≃ Y
+             → (X ≃ Z) ≃ (Y ≃ Z)
+≃-cong-left' {𝓤} {𝓥} {𝓦} fe₀ fe₁ fe₂ fe₃ fe₄ α = qinveq ((≃-sym α) ●_) ((α ●_), p , q)
  where
-  p = λ γ → α ● (≃-sym α ● γ) ＝⟨ ≃-assoc fe α (≃-sym α) γ ⟩
-            (α ● ≃-sym α) ● γ ＝⟨ ap (_● γ) (≃-sym-right-inverse fe α) ⟩
-            ≃-refl _ ● γ      ＝⟨ ≃-refl-left fe _ ⟩
+  p = λ γ → α ● (≃-sym α ● γ) ＝⟨ ≃-assoc' fe₀ fe₁ fe₂ α (≃-sym α) γ ⟩
+            (α ● ≃-sym α) ● γ ＝⟨ ap (_● γ) (≃-sym-right-inverse' fe₂ α) ⟩
+            ≃-refl _ ● γ      ＝⟨ ≃-refl-left' fe₀ fe₁ fe₂ _ ⟩
             γ                 ∎
-  q = λ β → ≃-sym α ● (α ● β) ＝⟨ ≃-assoc fe (≃-sym α) α β ⟩
-            (≃-sym α ● α) ● β ＝⟨ ap (_● β) (≃-sym-left-inverse fe α) ⟩
-            ≃-refl _ ● β      ＝⟨ ≃-refl-left fe _ ⟩
+  q = λ β → ≃-sym α ● (α ● β) ＝⟨ ≃-assoc' fe₃ fe₁ fe₄ (≃-sym α) α β ⟩
+            (≃-sym α ● α) ● β ＝⟨ ap (_● β) (≃-sym-left-inverse' fe₄ α) ⟩
+            ≃-refl _ ● β      ＝⟨ ≃-refl-left' fe₃ fe₁ fe₄ _ ⟩
             β                 ∎
+
+≃-cong-left : FunExt
+            → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
+            → X ≃ Y
+            → (X ≃ Z) ≃ (Y ≃ Z)
+≃-cong-left fe = ≃-cong-left' (fe _ _) (fe _ _) (fe _ _) (fe _ _) (fe _ _)
 
 ≃-cong-right : FunExt → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } → X ≃ Y → (A ≃ X) ≃ (A ≃ Y)
 ≃-cong-right fe {X} {Y} {A} α =
@@ -228,7 +308,9 @@ a neutral element for ordinary function composition, definitionally:
 
 ≃-cong : FunExt
        → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } {B : 𝓣 ̇ }
-       → X ≃ A → Y ≃ B → (X ≃ Y) ≃ (A ≃ B)
+       → X ≃ A
+       → Y ≃ B
+       → (X ≃ Y) ≃ (A ≃ B)
 ≃-cong fe {X} {Y} {A} {B} α β =
  (X ≃ Y) ≃⟨ ≃-cong-left  fe α ⟩
  (A ≃ Y) ≃⟨ ≃-cong-right fe β ⟩
@@ -242,8 +324,11 @@ ranges over arbitrary types:
 
 \begin{code}
 
-propext-funext-give-prop-ua : propext 𝓤 → funext 𝓤 𝓤
-                            → (X : 𝓤 ̇ ) (P : 𝓤 ̇ ) → is-prop P → is-equiv (idtoeq X P)
+propext-funext-give-prop-ua : propext 𝓤
+                            → funext 𝓤 𝓤
+                            → (X : 𝓤 ̇ ) (P : 𝓤 ̇ )
+                            → is-prop P
+                            → is-equiv (idtoeq X P)
 propext-funext-give-prop-ua {𝓤} pe fe X P i = (eqtoid , η) , (eqtoid , ε)
  where
   l : X ≃ P → is-prop X
@@ -318,7 +403,8 @@ TT-choice-is-equiv : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {A : (x : X) → Y x �
                    → funext 𝓤 (𝓥 ⊔ 𝓦)
                    → is-equiv TT-choice
 TT-choice-is-equiv {𝓤} {𝓥} {𝓦} {X} {Y} {A} fe = TT-choice-has-section {𝓤} {𝓥} {𝓦} {X} {Y} {A} ,
-                                                (TT-unchoice , TT-unchoice-choice fe)
+                                                   TT-unchoice ,
+                                                   TT-unchoice-choice fe
 
 TT-unchoice-is-equiv : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {A : (x : X) → Y x → 𝓦 ̇ }
                      → funext 𝓤 (𝓥 ⊔ 𝓦)
