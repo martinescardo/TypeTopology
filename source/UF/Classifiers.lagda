@@ -195,11 +195,11 @@ open import UF.Equiv-FunExt
 open import UF.PropIndexedPiSigma
 open import UF.Yoneda
 
-Σ-fibers : is-univalent 𝓤
-         → funext 𝓤 (𝓤 ⁺)
-         → {X : 𝓤 ̇ } {Y : 𝓤 ̇ }
-         → (Σ A ꞉ (Y → 𝓤 ̇ ) , Σ A ≃ X) ≃ (X → Y)
-Σ-fibers {𝓤} ua fe⁺ {X} {Y} =
+Σ-fibers-≃ : is-univalent 𝓤
+           → funext 𝓤 (𝓤 ⁺)
+           → {X : 𝓤 ̇ } {Y : 𝓤 ̇ }
+           → (Σ A ꞉ (Y → 𝓤 ̇ ) , Σ A ≃ X) ≃ (X → Y)
+Σ-fibers-≃ {𝓤} ua fe⁺ {X} {Y} =
   (Σ A ꞉ (Y → 𝓤 ̇ ) , Σ A ≃ X)                            ≃⟨ I ⟩
   (Σ (Z , g) ꞉ 𝓤 / Y , (Σ y ꞉ Y , fiber g y) ≃ X)        ≃⟨ II ⟩
   (Σ Z ꞉ 𝓤 ̇ , Σ g ꞉ (Z → Y) , (Σ y ꞉ Y , fiber g y) ≃ X) ≃⟨ III ⟩
@@ -224,3 +224,16 @@ open import UF.Yoneda
          (singletons-are-props
            (univalence-via-singletons→ ua X))
          (X , ≃-refl X)
+
+∑ : {𝓤 𝓥 : Universe} (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
+∑ X Y = Σ Y
+
+
+Σ-fibers : is-univalent 𝓤
+         → funext 𝓤 (𝓤 ⁺)
+         → {X : 𝓤 ̇ } {Y : 𝓤 ̇ }
+         → fiber (∑ Y) X ≃ (X → Y)
+Σ-fibers {𝓤} ua fe⁺ {X} {Y} =
+  (Σ A ꞉ (Y → 𝓤 ̇ ) , Σ A ＝ X) ≃⟨ Σ-cong (λ A → univalence-≃ ua (Σ A) X) ⟩
+  (Σ A ꞉ (Y → 𝓤 ̇ ) , Σ A ≃ X)  ≃⟨ Σ-fibers-≃ ua fe⁺ ⟩
+  (X → Y)                       ■
