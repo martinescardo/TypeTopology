@@ -433,17 +433,19 @@ Tom de Jong, 27 August 2021. We implement this TODO.
 open import UF.Univalence
 
 module _
-        (ua : Univalence)
+        {𝓤 : Universe}
+        (ua : is-univalent 𝓤)
+        (fe : funext 𝓤 (𝓤 ⁺))
        where
 
- open import UF.Classifiers hiding (𝕋)
+ open import UF.Classifiers
  open import UF.EquivalenceExamples
 
  𝓚-is-equivalent-to-𝓚' : (X : 𝓤 ̇ ) →  𝓚 X ≃ 𝓚' X
- 𝓚-is-equivalent-to-𝓚' {𝓤} X = γ
+ 𝓚-is-equivalent-to-𝓚' X = γ
   where
    φ : Subtypes X ≃ 𝓟 X
-   φ = Ω-is-subtype-classifier ua X
+   φ = Ω-is-subtype-classifier ua fe X
    κ : 𝓤 ̇ → 𝓤 ̇
    κ = is-Kuratowski-finite
    γ = 𝓚 X                                                ≃⟨ ≃-refl _ ⟩
@@ -461,7 +463,7 @@ module _
        ψ : (A : 𝓤 ̇ ) (e : A ↪ X)
          → κ (𝕋 (⌜ φ ⌝ (A , e))) ≃ κ A
        ψ A e = idtoeq (κ A') (κ A)
-                (ap κ (eqtoid (ua 𝓤) A' A lemma))
+                (ap κ (eqtoid ua A' A lemma))
         where
          A' : 𝓤 ̇
          A' = 𝕋 (⌜ φ ⌝ (A , e))
