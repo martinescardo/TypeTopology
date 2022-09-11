@@ -28,13 +28,13 @@ dense-maps-into-¬¬-separated-types-are-rc' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z 
                                           → f ∼ g
 dense-maps-into-¬¬-separated-types-are-rc' {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {h} {f} {g} d s p = γ
  where
-  a : (y : Y) → (Σ x ꞉ X , h x ＝ y) → ¬ (f y ≢ g y)
+  a : (y : Y) → (Σ x ꞉ X , h x ＝ y) → ¬ (f y ≠ g y)
   a y (x , q) ψ = ψ (f y                     ＝⟨ (apd f q )⁻¹ ⟩
                      transport Z q (f (h x)) ＝⟨ ap (transport Z q) (p x) ⟩
                      transport Z q (g (h x)) ＝⟨ apd g q ⟩
                      g y                     ∎)
 
-  b : (y : Y) → ¬ (f y ≢ g y)
+  b : (y : Y) → ¬ (f y ≠ g y)
   b y ψ = d (y , λ σ → a y σ ψ)
 
   γ : f ∼ g

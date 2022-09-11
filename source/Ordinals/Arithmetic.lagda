@@ -25,9 +25,12 @@ open import UF.Subsingletons
 prop-ordinal : (P : 𝓤 ̇ ) → is-prop P → Ordinal 𝓤
 prop-ordinal P i = P , prop.order P i , prop.well-order P i
 
-prop-ordinal-is-trichotomous : (P : 𝓤 ̇ ) (i : is-prop P)
-                             → is-trichotomous (prop-ordinal P i)
-prop-ordinal-is-trichotomous = prop.trichotomous
+Ω-to-ordinal : Ω 𝓤 → Ordinal 𝓤
+Ω-to-ordinal (P , i) = prop-ordinal P i
+
+prop-ordinal-is-trichotomous : (p : Ω 𝓤)
+                             → is-trichotomous (Ω-to-ordinal p)
+prop-ordinal-is-trichotomous (P , i) = prop.trichotomous P i
 
 \end{code}
 
@@ -36,14 +39,14 @@ Here the subscript is the letter "o":
 \begin{code}
 
 𝟘ₒ 𝟙ₒ : {𝓤 : Universe} → Ordinal 𝓤
-𝟘ₒ = prop-ordinal 𝟘 𝟘-is-prop
-𝟙ₒ = prop-ordinal 𝟙 𝟙-is-prop
+𝟘ₒ = Ω-to-ordinal ⊥Ω
+𝟙ₒ = Ω-to-ordinal ⊤Ω
 
 𝟘ₒ-is-trichotomous : is-trichotomous (𝟘ₒ {𝓤})
-𝟘ₒ-is-trichotomous = prop-ordinal-is-trichotomous 𝟘 𝟘-is-prop
+𝟘ₒ-is-trichotomous = prop-ordinal-is-trichotomous ⊥Ω
 
 𝟙ₒ-is-trichotomous : is-trichotomous (𝟙ₒ {𝓤})
-𝟙ₒ-is-trichotomous = prop-ordinal-is-trichotomous 𝟙 𝟙-is-prop
+𝟙ₒ-is-trichotomous = prop-ordinal-is-trichotomous ⊤Ω
 
 \end{code}
 

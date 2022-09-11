@@ -107,13 +107,13 @@ transport-× : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ )
 transport-× A B refl = refl
 
 transport-∙ : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
-                 {x y z : X} (q : x ＝ y) (p : y ＝ z) {a : A x}
-               → transport A  (q ∙ p) a ＝ transport A p (transport A q a)
+              {x y z : X} (q : x ＝ y) (p : y ＝ z) {a : A x}
+            → transport A  (q ∙ p) a ＝ transport A p (transport A q a)
 transport-∙ A refl refl = refl
 
 transport-∙' : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
-                  {x y z : X} (q : x ＝ y) (p : y ＝ z)
-                → transport A  (q ∙ p) ＝ transport A p ∘ transport A q
+               {x y z : X} (q : x ＝ y) (p : y ＝ z)
+             → transport A  (q ∙ p) ＝ transport A p ∘ transport A q
 transport-∙' A refl refl = refl
 
 transport-ap : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : Y → 𝓦 ̇ )

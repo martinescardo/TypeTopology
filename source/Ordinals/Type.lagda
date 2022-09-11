@@ -1,6 +1,6 @@
 Martin Escardo, 29 June 2018
 
-The type Ordinals of ordinals in a universe U, and the subtype Ordinalsᵀ of
+The type Ordinals of ordinals in a universe 𝓤, and the subtype Ordinalsᵀ of
 ordinals with a top element.
 
 \begin{code}

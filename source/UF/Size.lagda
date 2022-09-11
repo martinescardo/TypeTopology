@@ -60,6 +60,12 @@ equivalent to a type in the universe 𝓥:
 _is_small : 𝓤 ̇ → (𝓥 : Universe) → 𝓥 ⁺  ⊔ 𝓤 ̇
 X is 𝓥 small = Σ Y ꞉ 𝓥 ̇ , Y ≃ X
 
+resized : (𝓥 : Universe) → (X : 𝓤 ̇) → X is 𝓥 small → 𝓥 ̇
+resized 𝓥 X = pr₁
+
+resizing-condition : (𝓥 : Universe) (X : 𝓤 ̇) (s : X is 𝓥 small) → resized 𝓥 X s ≃ X
+resizing-condition 𝓥 X = pr₂
+
 \end{code}
 
 Obsolete notation used in some publications:
@@ -121,10 +127,10 @@ Definitions:
 
 \begin{code}
 
-resize         ρ P i   = pr₁ (ρ P i)
-resize-is-prop ρ P i = equiv-to-prop (pr₂ (ρ P i)) i
-to-resize      ρ P i   = ⌜ pr₂ (ρ P i) ⌝⁻¹
-from-resize    ρ P i   = ⌜ pr₂ (ρ P i) ⌝
+resize         {𝓤} {𝓥} ρ P i = resized 𝓥 P (ρ P i)
+resize-is-prop {𝓤} {𝓥} ρ P i = equiv-to-prop (resizing-condition 𝓥 P (ρ P i)) i
+to-resize      {𝓤} {𝓥} ρ P i = ⌜ resizing-condition 𝓥 P (ρ P i) ⌝⁻¹
+from-resize    {𝓤} {𝓥} ρ P i = ⌜ resizing-condition 𝓥 P (ρ P i) ⌝
 
 Propositional-resizing : 𝓤ω
 Propositional-resizing = {𝓤 𝓥 : Universe} → propositional-resizing 𝓤 𝓥
@@ -425,7 +431,7 @@ the second universe 𝓤₁:
                             → FunExt
                             → Ω 𝓤 ≃ Ω 𝓤₀
 Ω-resizing₁-≃-from-pr-pe-fe {𝓤} ρ pe fe =
-  ≃-sym (pr₂ (Ω-resizing₁-from-pr-pe-fe {𝓤} ρ pe fe))
+  ≃-sym (resizing-condition 𝓤₁ (Ω 𝓤) (Ω-resizing₁-from-pr-pe-fe {𝓤} ρ pe fe))
 
 Ω-𝓤₀-lives-in-𝓤₁ : universe-of (Ω 𝓤₀) ＝ 𝓤₁
 Ω-𝓤₀-lives-in-𝓤₁ = refl
@@ -456,7 +462,7 @@ Lift-is-section ua R 𝓤 𝓥 = (r , rs)
   f Y = from-resize R (fiber s Y) (e Y)
 
   r : 𝓤 ⊔ 𝓥 ̇ → 𝓤 ̇
-  r Y = (p : F Y) → pr₁ (f Y p)
+  r Y = (p : F Y) → fiber-point (f Y p)
 
   rs : (X : 𝓤 ̇ ) → r (s X) ＝ X
   rs X = γ
@@ -474,13 +480,13 @@ Lift-is-section ua R 𝓤 𝓥 = (r , rs)
     i Y = resize-is-prop R (fiber s Y) (e Y)
 
     X' : 𝓤 ̇
-    X' = pr₁ v
+    X' = fiber-point v
 
     a : r (s X) ≃ X'
     a = prop-indexed-product (Univalence-gives-FunExt ua 𝓤 𝓤) (i (s X)) u
 
     b : s X' ＝ s X
-    b = pr₂ v
+    b = fiber-identification v
 
     c : X' ＝ X
     c = embeddings-are-lc s e b
@@ -608,23 +614,23 @@ being-small-is-idempotent : (ua : Univalence) (𝓤 𝓥 : Universe) (Y : 𝓤 �
 being-small-is-idempotent ua 𝓤 𝓥 Y i (H , e) = X , γ
  where
   X : 𝓥 ̇
-  X = Σ h ꞉ H , pr₁ (eqtofun e h)
+  X = Σ h ꞉ H , resized 𝓥 Y (eqtofun e h)
 
-  γ = X  ≃⟨ Σ-change-of-variable pr₁ (eqtofun e) (eqtofun- e) ⟩
+  γ = X  ≃⟨ Σ-change-of-variable (resized 𝓥 Y) (eqtofun e) (eqtofun- e) ⟩
       X' ≃⟨ ϕ ⟩
       Y  ■
    where
     X' : 𝓥 ⁺ ⊔ 𝓤 ̇
-    X' = Σ h ꞉ Y is 𝓥 small , pr₁ h
+    X' = Σ h ꞉ Y is 𝓥 small , resized 𝓥 Y h
 
     ϕ = logically-equivalent-props-are-equivalent j i f g
      where
       j : is-prop X'
       j = Σ-is-prop (being-small-is-prop ua Y 𝓥)
-            (λ (h : Y is 𝓥 small) → equiv-to-prop (pr₂ h) i)
+            (λ (h : Y is 𝓥 small) → equiv-to-prop (resizing-condition 𝓥 Y h) i)
 
       f : X' → Y
-      f (e' , x) = eqtofun (pr₂ e') x
+      f (e' , x) = eqtofun (resizing-condition 𝓥 Y e') x
 
       g : Y → X'
       g y = (𝟙{𝓥} , singleton-≃-𝟙' (pointed-props-are-singletons y i)) , ⋆
@@ -708,10 +714,10 @@ size-contravariance : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
 size-contravariance {𝓤} {𝓥} {𝓦} {X} {Y} f f-size (Y' , 𝕘) = γ
  where
   F : Y → 𝓦 ̇
-  F y = pr₁ (f-size y)
+  F y = resized 𝓦 (fiber f y) (f-size y)
 
   F-is-fiber : (y : Y) → F y ≃ fiber f y
-  F-is-fiber y = pr₂ (f-size y)
+  F-is-fiber y = resizing-condition 𝓦 (fiber f y) (f-size y)
 
   X' : 𝓦 ̇
   X' = Σ y' ꞉ Y' , F (⌜ 𝕘 ⌝ y')
@@ -838,16 +844,34 @@ For example, by univalence, universes are locally small, and so is the
 \begin{code}
 
 _＝⟦_⟧_ : {X : 𝓤 ⁺ ̇ } → X → is-locally-small X → X → 𝓤 ̇
-x ＝⟦ ls ⟧ y = pr₁ (ls x y)
+x ＝⟦ ls ⟧ y = resized _ (x ＝ y) (ls x y)
 
 Id⟦_⟧ : {X : 𝓤 ⁺ ̇ } → is-locally-small X → X → X → 𝓤 ̇
 Id⟦ ls ⟧ x y = x ＝⟦ ls ⟧ y
 
-＝⟦_⟧-gives-＝ : {X : 𝓤 ⁺ ̇ } (ls : is-locally-small X) (x y : X) → x ＝⟦ ls ⟧ y → x ＝ y
-＝⟦ ls ⟧-gives-＝ x y = ⌜ pr₂ (ls x y) ⌝
+＝⟦_⟧-gives-＝ : {X : 𝓤 ⁺ ̇ } (ls : is-locally-small X) {x y : X} → x ＝⟦ ls ⟧ y → x ＝ y
+＝⟦ ls ⟧-gives-＝ {x} {y} = ⌜ resizing-condition _ (x ＝ y) (ls x y) ⌝
 
-⟦_⟧-refl : {X : 𝓤 ⁺ ̇ } (ls : is-locally-small X) (x : X) → x ＝⟦ ls ⟧ x
-⟦ ls ⟧-refl x = ⌜ ≃-sym (pr₂ (ls x x)) ⌝ refl
+＝-gives-＝⟦_⟧ : {X : 𝓤 ⁺ ̇ } (ls : is-locally-small X) {x y : X} → x ＝ y → x ＝⟦ ls ⟧ y
+＝-gives-＝⟦ ls ⟧ {x} {y} = ⌜ resizing-condition _ (x ＝ y) (ls x y) ⌝⁻¹
+
+⟦_⟧-refl : {X : 𝓤 ⁺ ̇ } (ls : is-locally-small X) {x : X} → x ＝⟦ ls ⟧ x
+⟦ ls ⟧-refl {x} = ⌜ ≃-sym (resizing-condition _ (x ＝ x) (ls x x)) ⌝ refl
+
+＝⟦_⟧-sym : {X : 𝓤 ⁺ ̇ } (ls : is-locally-small X) → {x y : X} → x ＝⟦ ls ⟧ y → y ＝⟦ ls ⟧ x
+＝⟦ ls ⟧-sym p = ＝-gives-＝⟦ ls ⟧ (＝⟦ ls ⟧-gives-＝ p ⁻¹)
+
+_≠⟦_⟧_ : {X : 𝓤 ⁺ ̇ } → X → is-locally-small X → X → 𝓤 ̇
+x ≠⟦ ls ⟧ y = ¬ (x ＝⟦ ls ⟧ y)
+
+≠⟦_⟧-sym : {X : 𝓤 ⁺ ̇ } (ls : is-locally-small X) → {x y : X} → x ≠⟦ ls ⟧ y → y ≠⟦ ls ⟧ x
+≠⟦ ls ⟧-sym {x} {y} n = λ (p : y ＝⟦ ls ⟧ x) → n (＝⟦ ls ⟧-sym p)
+
+≠-gives-≠⟦_⟧ : {X : 𝓤 ⁺ ̇ } (ls : is-locally-small X) {x y : X} → x ≠ y → x ≠⟦ ls ⟧ y
+≠-gives-≠⟦ ls ⟧ = contrapositive ＝⟦ ls ⟧-gives-＝
+
+≠⟦_⟧-gives-≠ : {X : 𝓤 ⁺ ̇ } (ls : is-locally-small X) {x y : X} → x ≠⟦ ls ⟧ y → x ≠ y
+≠⟦ ls ⟧-gives-≠ = contrapositive ＝-gives-＝⟦ ls ⟧
 
 \end{code}
 
@@ -906,5 +930,4 @@ module _ (pt : propositional-truncations-exist) where
                  → Y is-locally 𝓥 small
                  → is-set Y
                  → image f is (𝓤 ⊔ 𝓥) small
-
 \end{code}

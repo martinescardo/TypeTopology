@@ -256,7 +256,7 @@ We now show that 𝔹is a set in the sense of univalent mathematics and
 that it has decidable equality. There are short proofs of some of the
 following lemmas in Agda. But we are restricting ourselves to a
 fragment of Agda corresponding to a spartan Martin-Löf type theory. In
-particular, in MLTT, it is not possible to prove that L ≢ R without
+particular, in MLTT, it is not possible to prove that L ≠ R without
 using a universe, but Agda just gives this as a fact.
 
 We want to show that the equality of 𝔹is truth valued, as opposed to

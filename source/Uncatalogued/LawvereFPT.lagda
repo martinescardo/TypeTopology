@@ -333,7 +333,7 @@ module Blechschmidt (pt : propositional-truncations-exist) where
    s : Y x₀ → Π Y
    s y x = Cases (i x)
             (λ (p : x₀ ＝ x) → transport Y p y)
-            (λ (_ : x₀ ≢ x) → g x)
+            (λ (_ : x₀ ≠ x) → g x)
 
    rs : (y : Y x₀) → s y x₀ ＝ y
    rs y = ap (λ - → Cases - _ _) a
@@ -377,14 +377,14 @@ module Blechschmidt (pt : propositional-truncations-exist) where
 
  universe-discretely-regular : {A : 𝓤 ̇ } (X : A → 𝓤 ⊔ 𝓥 ̇ )
                              → is-discrete A
-                             → Σ B ꞉ 𝓤 ⊔ 𝓥 ̇ , ((a : A) → X a ≢ B)
+                             → Σ B ꞉ 𝓤 ⊔ 𝓥 ̇ , ((a : A) → X a ≠ B)
  universe-discretely-regular {𝓤} {𝓥} {A} X d = γ
   where
    δ : (Σ B ꞉ 𝓤 ⊔ 𝓥 ̇ , ((a : A) → ¬ (X a ≃ B)))
-     → (Σ B ꞉ 𝓤 ⊔ 𝓥 ̇ , ((a : A) → X a ≢ B))
+     → (Σ B ꞉ 𝓤 ⊔ 𝓥 ̇ , ((a : A) → X a ≠ B))
    δ (B , φ) = B , (λ a → contrapositive (idtoeq (X a) B) (φ a))
 
-   γ : Σ B ꞉ 𝓤 ⊔ 𝓥 ̇ , ((a : A) → X a ≢ B)
+   γ : Σ B ꞉ 𝓤 ⊔ 𝓥 ̇ , ((a : A) → X a ≠ B)
    γ = δ (universe-discretely-regular' {𝓤} {𝓥} A X d)
 
 
@@ -396,7 +396,7 @@ module Blechschmidt (pt : propositional-truncations-exist) where
    B : 𝓤 ⊔ 𝓥 ̇
    B = pr₁ (universe-discretely-regular {𝓤} {𝓥} {A} X d)
 
-   φ : ∀ a → X a ≢ B
+   φ : ∀ a → X a ≠ B
    φ = pr₂ (universe-discretely-regular {𝓤} {𝓥} {A} X d)
 
    e : ∃ a ꞉ A , X a ＝ B
@@ -508,11 +508,11 @@ NB. If 𝓥 is 𝓤 or 𝓤', then X : A → 𝓤 ⁺ ̇.
        γ : designated-fixed-point-property (Ω 𝓤)
        γ = usr-lemma {(𝓤 ⁺) ⊔ 𝓥} {𝓤} {𝓤} fe' fe pe X a A-is-set ρ
 
-  universe-set-regular : Σ B ꞉ 𝓤 ⁺ ⊔ 𝓥 ̇ , ((a : A) → X a ≢ B)
+  universe-set-regular : Σ B ꞉ 𝓤 ⁺ ⊔ 𝓥 ̇ , ((a : A) → X a ≠ B)
   universe-set-regular = γ universe-set-regular'
    where
     γ : (Σ B ꞉ 𝓤 ⁺ ⊔ 𝓥 ̇ , ((a : A) → ¬ (X a ≃ B)))
-      → (Σ B ꞉ 𝓤 ⁺ ⊔ 𝓥 ̇ , ((a : A) → X a ≢ B))
+      → (Σ B ꞉ 𝓤 ⁺ ⊔ 𝓥 ̇ , ((a : A) → X a ≠ B))
     γ (B , φ) = B , (λ a → contrapositive (idtoeq (X a) B) (φ a))
 
   Universe-set-regular : ¬ is-surjection X
@@ -521,7 +521,7 @@ NB. If 𝓥 is 𝓤 or 𝓤', then X : A → 𝓤 ⁺ ̇.
     B : 𝓤 ⁺ ⊔ 𝓥 ̇
     B = pr₁ universe-set-regular
 
-    φ : ∀ a → X a ≢ B
+    φ : ∀ a → X a ≠ B
     φ = pr₂ universe-set-regular
 
     e : ∃ a ꞉ A , X a ＝ B

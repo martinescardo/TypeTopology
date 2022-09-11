@@ -585,6 +585,9 @@ map.
 𝟎[_] : (F : Frame 𝓤 𝓥 𝓦) → ⟨ F ⟩
 𝟎[ F ] = ⋁[ F ] 𝟘 , λ ()
 
+is-bottom : (F : Frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥)
+is-bottom F b = Ɐ x ∶ ⟨ F ⟩ , (b ≤[ poset-of F ] x)
+
 𝟎-is-bottom : (F : Frame 𝓤 𝓥 𝓦)
             → (x : ⟨ F ⟩) → (𝟎[ F ] ≤[ poset-of F ] x) holds
 𝟎-is-bottom F x = ⋁[ F ]-least (𝟘 , λ ()) (x , λ ())
@@ -638,6 +641,10 @@ is-directed F (I , β) =
    ∥ I ∥Ω
  ∧ (Ɐ i ∶ I , Ɐ j ∶ I , (Ǝ k ∶ I , ((β i ≤ β k) ∧ (β j ≤ β k)) holds))
   where open PosetNotation (poset-of F)
+
+directedness-entails-inhabitation : (F : Frame 𝓤 𝓥 𝓦) (S : Fam 𝓦 ⟨ F ⟩)
+                                  → (is-directed F S ⇒ ∥ index S ∥Ω) holds
+directedness-entails-inhabitation F S = pr₁
 
 is-scott-continuous : (F : Frame 𝓤  𝓥  𝓦)
                     → (G : Frame 𝓤′ 𝓥′ 𝓦)
@@ -832,6 +839,12 @@ frame-morphisms-are-monotonic F G f (_ , ψ , _) (x , y) p =
 
    i  = reflexivity+ (poset-of G) (ap f (connecting-lemma₁ F p))
    ii = reflexivity+ (poset-of G) (ψ x y)
+
+yoneda : (F : Frame 𝓤 𝓥 𝓦)
+       → (x y : ⟨ F ⟩)
+       → ((z : ⟨ F ⟩) → ((z ≤[ poset-of F ] x) ⇒ (z ≤[ poset-of F ] y)) holds)
+       → (x ≤[ poset-of F ] y) holds
+yoneda F x y φ = φ x (≤-is-reflexive (poset-of F) x)
 
 scott-continuous-implies-monotone : (F : Frame 𝓤 𝓥 𝓦) (G : Frame 𝓤′ 𝓥′ 𝓦)
                                   → (f : ⟨ F ⟩ → ⟨ G ⟩)
@@ -1283,11 +1296,18 @@ family is directed.
 
 \begin{code}
 
+is-directed-basis : (F : Frame 𝓤 𝓥 𝓦) (ℬ : Fam 𝓦 ⟨ F ⟩)
+                  → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺ ̇
+is-directed-basis {𝓦 = 𝓦} F ℬ =
+ Σ b ꞉ is-basis-for F ℬ ,
+  Π x ꞉ ⟨ F ⟩ , let
+                 𝒥 = covering-index-family F ℬ b x
+                in
+                 is-directed F ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆ holds
+
 has-directed-basis₀ : (F : Frame 𝓤 𝓥 𝓦) → (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺) ̇
 has-directed-basis₀ {𝓦 = 𝓦} F =
- Σ ℬ ꞉ Fam 𝓦 ⟨ F ⟩ ,
-  Σ b ꞉ is-basis-for F ℬ ,
-   Π x ꞉ ⟨ F ⟩ , is-directed F (⁅ ℬ [ i ] ∣ i ε pr₁ (b x) ⁆) holds
+ Σ ℬ ꞉ Fam 𝓦 ⟨ F ⟩ , is-directed-basis F ℬ
 
 has-directed-basis : (F : Frame 𝓤 𝓥 𝓦) → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
 has-directed-basis {𝓦 = 𝓦} F = ∥ has-directed-basis₀ F ∥Ω
@@ -1561,5 +1581,19 @@ open Locale
 
 _─c→_ : Locale 𝓤 𝓥 𝓦 → Locale 𝓤′ 𝓥′ 𝓦 → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺ ⊔ 𝓤′ ̇
 X ─c→ Y = (𝒪 Y) ─f→ (𝒪 X)
+
+module ContinuousMapNotation (X : Locale 𝓤 𝓥 𝓦) (Y : Locale 𝓤' 𝓥' 𝓦) where
+
+ infix 9 _⋆
+ infixl 9 _⋆∙_
+ -- infixl 9 _⁎∙_
+
+ _⋆ : (f : X ─c→ Y)
+      → 𝒪 Y ─f→ 𝒪 X
+ _⋆ f = f
+
+ _⋆∙_ : (f : X ─c→ Y)
+      → ⟨ 𝒪 Y ⟩ → ⟨ 𝒪 X ⟩
+ _⋆∙_ f V = (_⋆ f) .pr₁ V
 
 \end{code}

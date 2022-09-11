@@ -5,7 +5,7 @@
 
    Tested with Agda 2.6.2.2.
 
-   Martin Escardo, 2010--2022--∞
+   Martin Escardo and collaborators, 2010--2022--∞
    Continuously evolving.
 
    https://github.com/martinescardo/TypeTopology

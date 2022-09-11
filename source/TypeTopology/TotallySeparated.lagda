@@ -729,8 +729,41 @@ apartness relation _♯₂ is tight:
 
 \begin{code}
 
+-- Test
+
+ _♯Ω_ : Ω 𝓤 → Ω 𝓤 → 𝓤 ̇
+ (P , i) ♯Ω (Q , j) = (P × ¬ Q) + (¬ P × Q)
+
+ ♯Ω-irrefl : is-irreflexive (_♯Ω_ {𝓤})
+ ♯Ω-irrefl (P , i) (inl (p , nq)) = nq p
+ ♯Ω-irrefl (P , i) (inr (np , q)) = np q
+
+ ♯Ω-sym : is-symmetric (_♯Ω_ {𝓤})
+ ♯Ω-sym (P , i) (Q , j) (inl (p , nq)) = inr (nq , p)
+ ♯Ω-sym (P , i) (Q , j) (inr (np , q)) = inl (q , np)
+
+{-
+ ♯Ω-cotran : is-cotransitive (_♯Ω_ {𝓤})
+ ♯Ω-cotran (P , i) (Q , j) (R , k) (inl (p , nq)) = ∣ inl (inl (p , {!!})) ∣
+ ♯Ω-cotran (P , i) (Q , j) (R , k) (inr (np , q)) = {!!}
+-}
+
+ ♯Ω-cotran-taboo : is-cotransitive (_♯Ω_ {𝓤})
+                 → (p : Ω 𝓤) → p holds ∨ ¬ (p holds)
+ ♯Ω-cotran-taboo c p = ∥∥-functor II I
+  where
+   I : (⊥Ω ♯Ω p) ∨ (⊤Ω ♯Ω p)
+   I = c ⊥Ω ⊤Ω p (inr (𝟘-elim , ⋆))
+
+   II : (⊥Ω ♯Ω p) + (⊤Ω ♯Ω p) → (p holds) + ¬ (p holds)
+   II (inl (inr (a , b))) = inl b
+   II (inr (inl (a , b))) = inr b
+   II (inr (inr (a , b))) = inl b
+
+-- End of test
+
  _♯₂_ : {X : 𝓤 ̇ } → X → X → 𝓤 ̇
- x ♯₂ y = ∃ p ꞉ (type-of x → 𝟚), p x ≢ p y
+ x ♯₂ y = ∃ p ꞉ (type-of x → 𝟚), p x ≠ p y
 
  ♯₂-is-apartness : {X : 𝓤 ̇ } → is-apartness (_♯₂_ {𝓤} {X})
  ♯₂-is-apartness {𝓤} {X} = a , b , c , d
@@ -741,24 +774,24 @@ apartness relation _♯₂ is tight:
    b : is-irreflexive _♯₂_
    b x = ∥∥-rec 𝟘-is-prop g
     where
-     g : ¬ (Σ p ꞉ (X → 𝟚) , p x ≢ p x)
+     g : ¬ (Σ p ꞉ (X → 𝟚) , p x ≠ p x)
      g (p , u) = u refl
 
    c : is-symmetric _♯₂_
    c x y = ∥∥-functor g
     where
-     g : (Σ p ꞉ (X → 𝟚) , p x ≢ p y) → Σ p ꞉ (X → 𝟚) , p y ≢ p x
-     g (p , u) = p , ≢-sym u
+     g : (Σ p ꞉ (X → 𝟚) , p x ≠ p y) → Σ p ꞉ (X → 𝟚) , p y ≠ p x
+     g (p , u) = p , ≠-sym u
 
    d : is-cotransitive _♯₂_
    d x y z = ∥∥-functor g
     where
-     g : (Σ p ꞉ (X → 𝟚) , p x ≢ p y) → (x ♯₂ z) + (y ♯₂ z)
+     g : (Σ p ꞉ (X → 𝟚) , p x ≠ p y) → (x ♯₂ z) + (y ♯₂ z)
      g (p , u) = h (discrete-is-cotransitive 𝟚-is-discrete {p x} {p y} {p z} u)
       where
-       h : (p x ≢ p z) + (p z ≢ p y) → (x ♯₂ z) + (y ♯₂ z)
+       h : (p x ≠ p z) + (p z ≠ p y) → (x ♯₂ z) + (y ♯₂ z)
        h (inl u) = inl ∣ p , u ∣
-       h (inr v) = inr ∣ p , ≢-sym v ∣
+       h (inr v) = inr ∣ p , ≠-sym v ∣
 
  is-totally-separated₃ : 𝓤 ̇ → 𝓤 ̇
  is-totally-separated₃ {𝓤} X = is-tight (_♯₂_ {𝓤} {X})
@@ -768,7 +801,7 @@ apartness relation _♯₂ is tight:
                                             → is-totally-separated X
  totally-separated₃-gives-totally-separated {𝓤} {X} τ {x} {y} α = γ
   where
-   h : ¬ (Σ p ꞉ (X → 𝟚) , p x ≢ p y)
+   h : ¬ (Σ p ꞉ (X → 𝟚) , p x ≠ p y)
    h (p , u) = u (α p)
 
    γ : x ＝ y
@@ -779,7 +812,7 @@ apartness relation _♯₂ is tight:
                                             → is-totally-separated₃ X
  totally-separated-gives-totally-separated₃ {𝓤} {X} τ x y na = τ α
   where
-   h : ¬ (Σ p ꞉ (X → 𝟚) , p x ≢ p y)
+   h : ¬ (Σ p ꞉ (X → 𝟚) , p x ≠ p y)
    h (p , u) = na ∣ p , u ∣
 
    α : (p : X → 𝟚) → p x ＝ p y
@@ -882,31 +915,52 @@ apartness relation _♯₂ is tight:
  tightness, they are equal. It follows that tight apartness types are
  sets.
 
+ TODO. We need better names for the following functions:
+
 \begin{code}
+
+ not-not-equal-not-apart' : {X : 𝓤 ̇ } (x y : X) (_♯_ : X → X → 𝓥 ̇ )
+                          → is-irreflexive _♯_
+                          → ¬¬ (x ＝ y) → ¬ (x ♯ y)
+ not-not-equal-not-apart' x y _♯_ i = contrapositive f
+  where
+   f : x ♯ y → ¬ (x ＝ y)
+   f a p = i y (transport (λ - → - ♯ y) p a)
+
+ tight-is-¬¬-separated' : {X : 𝓤 ̇ } (_♯_ : X → X → 𝓥 ̇ )
+                        → is-irreflexive _♯_
+                        → is-tight _♯_
+                        → is-¬¬-separated X
+ tight-is-¬¬-separated' _♯_ i t = f
+  where
+   f : ∀ x y → ¬¬ (x ＝ y) → x ＝ y
+   f x y φ = t x y (not-not-equal-not-apart' x y _♯_ i φ)
+
+ tight-is-set' : {X : 𝓤 ̇ } (_♯_ : X → X → 𝓥 ̇ )
+               → funext 𝓤 𝓤₀
+               → is-irreflexive _♯_
+               → is-tight _♯_
+               → is-set X
+ tight-is-set' _♯_ fe i t = ¬¬-separated-types-are-sets fe
+                             (tight-is-¬¬-separated' _♯_ i t)
 
  not-not-equal-not-apart : {X : 𝓤 ̇ } (x y : X) (_♯_ : X → X → 𝓥 ̇ )
                          → is-apartness _♯_
                          → ¬¬ (x ＝ y) → ¬ (x ♯ y)
- not-not-equal-not-apart x y _♯_ (_ , i , _ , _) = contrapositive f
-  where
-   f : x ♯ y → ¬ (x ＝ y)
-   f a p = i y (transport (λ - → - ♯ y) p a)
+ not-not-equal-not-apart x y _♯_ (_ , i , _ , _) = not-not-equal-not-apart' x y _♯_ i
 
  tight-is-¬¬-separated : {X : 𝓤 ̇ } (_♯_ : X → X → 𝓥 ̇ )
                        → is-apartness _♯_
                        → is-tight _♯_
                        → is-¬¬-separated X
- tight-is-¬¬-separated _♯_ a t = f
-  where
-   f : ∀ x y → ¬¬ (x ＝ y) → x ＝ y
-   f x y φ = t x y (not-not-equal-not-apart x y _♯_ a φ)
+ tight-is-¬¬-separated _♯_ (_ , i , _ , _) = tight-is-¬¬-separated' _♯_ i
 
  tight-is-set : {X : 𝓤 ̇ } (_♯_ : X → X → 𝓥 ̇ )
               → funext 𝓤 𝓤₀
               → is-apartness _♯_
               → is-tight _♯_
               → is-set X
- tight-is-set _♯_ fe a t = ¬¬-separated-types-are-sets fe (tight-is-¬¬-separated _♯_ a t)
+ tight-is-set _♯_ fe (_ , i , _ , _) = tight-is-set' _♯_ fe i
 
 \end{code}
 
@@ -924,11 +978,11 @@ apartness relation _♯₂ is tight:
     f : (Σ _♯_ ꞉ (X → X → 𝓤 ̇ ), is-apartness _♯_ × is-tight _♯_) → is-¬¬-separated X
     f (_♯_ , a , t) = tight-is-¬¬-separated _♯_ a t
 
- tight-is-set' : funext 𝓤 𝓤
-               → {X : 𝓤 ̇ }
-               → (∃ _♯_ ꞉ (X → X → 𝓤 ̇ ), is-apartness _♯_ × is-tight _♯_)
-               → is-set X
- tight-is-set' {𝓤} fe {X} = ∥∥-rec (being-set-is-prop fe) f
+ tight-is-set'' : funext 𝓤 𝓤
+                → {X : 𝓤 ̇ }
+                → (∃ _♯_ ꞉ (X → X → 𝓤 ̇ ), is-apartness _♯_ × is-tight _♯_)
+                → is-set X
+ tight-is-set'' {𝓤} fe {X} = ∥∥-rec (being-set-is-prop fe) f
    where
     f : (Σ _♯_ ꞉ (X → X → 𝓤 ̇ ), is-apartness _♯_ × is-tight _♯_) → is-set X
     f (_♯_ , a , t) = tight-is-set _♯_ (lower-funext 𝓤 𝓤 fe) a t

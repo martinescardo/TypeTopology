@@ -77,6 +77,8 @@ module Implication (fe : Fun-Ext) where
  _↔_ : Ω 𝓤 → Ω 𝓥 → Ω (𝓤 ⊔ 𝓥)
  P ↔ Q = (P ⇒ Q) ∧ (Q ⇒ P)
 
+ infixr 3 _↔_
+
 \end{code}
 
 \section{Disjunction}

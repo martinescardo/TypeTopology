@@ -24,7 +24,7 @@ open import DomainTheory.Bilimits.Directed pt fe 𝓤₀ 𝓤 𝓣
 
 open import Naturals.Addition renaming (_+_ to _+'_)
 open import Naturals.Properties
-open import Naturals.Order
+open import Naturals.Order hiding (subtraction')
 open import Notation.Order
 
 open import UF.Equiv

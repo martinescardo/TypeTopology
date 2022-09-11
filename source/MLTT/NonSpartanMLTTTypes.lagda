@@ -14,7 +14,7 @@ data Maybe {𝓤 : Universe} (A : 𝓤 ̇ ) : 𝓤 ̇ where
  Nothing : Maybe A
  Just    : A → Maybe A
 
-Just-is-not-Nothing : {A : 𝓤 ̇ } {a : A} → Just a ≢ Nothing
+Just-is-not-Nothing : {A : 𝓤 ̇ } {a : A} → Just a ≠ Nothing
 Just-is-not-Nothing ()
 
 Nothing-is-isolated : {A : 𝓤 ̇ } (x : Maybe A) → decidable (Nothing ＝ x)
@@ -39,7 +39,7 @@ Nothing-is-h-isolated' x = equiv-to-prop ＝-flip (Nothing-is-h-isolated x)
 data Bool : 𝓤₀ ̇ where
  true false : Bool
 
-true-is-not-false : true ≢ false
+true-is-not-false : true ≠ false
 true-is-not-false ()
 
 if_then_else_ : {X : 𝓤 ̇ } → Bool → X → X → X

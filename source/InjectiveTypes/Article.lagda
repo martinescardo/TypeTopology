@@ -238,11 +238,12 @@ extensionality:
 
 \begin{code}
 
-fe : FunExt
-fe = Univalence-gives-FunExt ua
+private
+ fe : FunExt
+ fe = Univalence-gives-FunExt ua
 
-pe : PropExt
-pe 𝓤 = univalence-gives-propext (ua 𝓤)
+ pe : PropExt
+ pe 𝓤 = univalence-gives-propext (ua 𝓤)
 
 import InjectiveTypes.Blackboard
 module blackboard = InjectiveTypes.Blackboard fe
@@ -344,13 +345,13 @@ give 𝟘 and 𝟙 respectively:
 \begin{code}
 
 Σ-extension-out-of-range : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → 𝓦 ̇ ) (j : X → Y)
-                         → (y : Y) → ((x : X) → j x ≢ y)
+                         → (y : Y) → ((x : X) → j x ≠ y)
                          → (f ↓ j) y ≃ 𝟘 {𝓣}
 Σ-extension-out-of-range f j y φ = prop-indexed-sum-zero (uncurry φ)
 
 
 Π-extension-out-of-range : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → 𝓦 ̇ ) (j : X → Y)
-                         → (y : Y) → ((x : X) → j x ≢ y)
+                         → (y : Y) → ((x : X) → j x ≠ y)
                          → (f ↑ j) y ≃ 𝟙 {𝓣}
 Π-extension-out-of-range {𝓤} {𝓥} {𝓦} f j y φ = prop-indexed-product-one (fe (𝓤 ⊔ 𝓥) 𝓦) (uncurry φ)
 

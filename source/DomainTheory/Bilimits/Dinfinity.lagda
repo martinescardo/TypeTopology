@@ -52,7 +52,7 @@ open import DomainTheory.Basics.Pointed pt fe 𝓤₀
 open import DomainTheory.Bilimits.Sequential pt fe 𝓤₁ 𝓤₁
 open import DomainTheory.Lifting.LiftingSet pt fe 𝓤₀ pe
 
-open import Naturals.Order
+open import Naturals.Order hiding (subtraction')
 open import Naturals.Addition renaming (_+_ to _+'_)
 open import Notation.Order
 
@@ -906,7 +906,7 @@ has an element σ₀ such that σ₀ is not the least element, which we prove no
     e₁ = ap (π⁺ {n} {m} l) ((ε⁺-comp ⋆ l x₀) ⁻¹)
     e₂ = ε⁺-section-of-π⁺ l (ε⁺ {0} {n} ⋆ x₀)
 
-𝓓∞⊥-is-nontrivial : σ₀ ≢ ⊥ 𝓓∞⊥
+𝓓∞⊥-is-nontrivial : σ₀ ≠ ⊥ 𝓓∞⊥
 𝓓∞⊥-is-nontrivial e = 𝟘-is-not-𝟙 (γ ⁻¹)
  where
   e₀ : ⦅ σ₀ ⦆ 0 ＝ ⊥ (𝓓⊥ 0)

@@ -1,8 +1,6 @@
-Martin Escardo
+Martin Escardo, 2019
 
-ISBN 978-3-95977-158-0, LIPICS Vol. 175
-ISSN 1868-8969
-https://drops.dagstuhl.de/opus/portals/lipics/index.php?semnr=16167
+https://cas.oslo.no/types2019/programme/book-of-abstracts/
 
 *** Please do not move this file. It is linked from a published abstract. ***
 
