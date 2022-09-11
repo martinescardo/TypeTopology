@@ -98,9 +98,6 @@ decomposition'-gives-decomposition X ((Y₀ , Y₁) , y₀ , y₁ , (g , i)) =
 
 \end{code}
 
-TODO. The above two constructions are mutually inverse and hence
-give decomposition X ≃ decomposition' X.
-
 \begin{code}
 
 WEM-gives-decomposition-of-two-pointed-types : WEM 𝓤

@@ -127,7 +127,8 @@ Idtofun-eqtoid-⁻¹ ua {X} {Y} e =
  (idtofun-agreement Y X ((eqtoid ua X Y e) ⁻¹)) ⁻¹ ∙ idtofun-eqtoid-⁻¹ ua e
 
 transport-is-pre-comp' : (ua : is-univalent 𝓤)
-                       → {X X' Y : 𝓤 ̇ } (e : X ≃ X') (g : X → Y)
+                       → {X X' : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                         (e : X ≃ X') (g : X → Y)
                        → transport (λ - → - → Y) (eqtoid ua X X' e) g ＝ g ∘ ⌜ e ⌝⁻¹
 transport-is-pre-comp' ua {X} {X'} e g = transport-is-pre-comp (eqtoid ua X X' e) g ∙ q
  where

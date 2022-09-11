@@ -299,7 +299,10 @@ a neutral element for ordinary function composition, definitionally:
             → (X ≃ Z) ≃ (Y ≃ Z)
 ≃-cong-left fe = ≃-cong-left' (fe _ _) (fe _ _) (fe _ _) (fe _ _) (fe _ _)
 
-≃-cong-right : FunExt → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } → X ≃ Y → (A ≃ X) ≃ (A ≃ Y)
+≃-cong-right : FunExt
+             → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ }
+             → X ≃ Y
+             → (A ≃ X) ≃ (A ≃ Y)
 ≃-cong-right fe {X} {Y} {A} α =
  (A ≃ X) ≃⟨ ≃-Sym fe ⟩
  (X ≃ A) ≃⟨ ≃-cong-left fe α ⟩

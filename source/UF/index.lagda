@@ -8,6 +8,7 @@ import UF.Base
 import UF.Choice
 import UF.Classifiers-Old
 import UF.Classifiers
+import UF.Classifiers-MoreGeneralUniverses
 import UF.Connected
 import UF.Embeddings
 import UF.Equiv-FunExt
