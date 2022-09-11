@@ -696,7 +696,8 @@ NatΣ-equiv' A B ζ i = ((s , ζs), (r , rζ))
       iii = back-and-forth-transport (ε (g y))
 
 Σ-change-of-variable : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : X → 𝓦 ̇ ) (g : Y → X)
-                     → is-equiv g → (Σ y ꞉ Y , A (g y)) ≃ Σ A
+                     → is-equiv g
+                     → (Σ y ꞉ Y , A (g y)) ≃ (Σ x ꞉ X , A x)
 Σ-change-of-variable {𝓤} {𝓥} {𝓦} {X} {Y} A g e = γ , qinvs-are-equivs γ q
  where
   γ :  (Σ y ꞉ Y , A (g y)) → Σ A
@@ -704,6 +705,10 @@ NatΣ-equiv' A B ζ i = ((s , ζs), (r , rζ))
 
   q :  qinv γ
   q = pr₂ (Σ-change-of-variable' A g (equivs-are-haes g e))
+
+Σ-change-of-variable-≃ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : X → 𝓦 ̇ ) (e : Y ≃ X)
+                       → (Σ y ꞉ Y , A (⌜ e ⌝ y)) ≃ (Σ x ꞉ X , A x)
+Σ-change-of-variable-≃ A (g , i) = Σ-change-of-variable A g i
 
 NatΠ-fiber-equiv : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ ) (ζ : Nat A B)
                  → funext 𝓤 𝓦

@@ -25,7 +25,9 @@ open import MLTT.Spartan
 open import MLTT.Two-Properties
 
 open import UF.Base
+open import UF.Classifiers
 open import UF.Equiv
+open import UF.Equiv-FunExt
 open import UF.EquivalenceExamples
 open import UF.ExcludedMiddle
 open import UF.FunExt
@@ -63,10 +65,10 @@ defined as its propositional truncation.
 \begin{code}
 
 decomposition : 𝓤 ̇ → 𝓤 ̇
-decomposition X = Σ f ꞉ (X → 𝟚) , Σ (x₀ , x₁) ꞉ X × X , (f x₀ ＝ ₀) × (f x₁ ＝ ₁)
+decomposition X = Σ f ꞉ (X → 𝟚) , (Σ x₀ ꞉ X , f x₀ ＝ ₀) × (Σ x₁ ꞉ X , f x₁ ＝ ₁)
 
 decomposition' : 𝓤 ̇ → 𝓤 ⁺ ̇
-decomposition' {𝓤} X = Σ (Y₀ , Y₁) ꞉ (𝓤 ̇ ) × (𝓤 ̇ ) , Y₀ × Y₁ × (X ≃ Y₀ + Y₁)
+decomposition' {𝓤} X = Σ Y ꞉ (𝟚 → 𝓤 ̇ ) , (Y ₀ + Y ₁ ≃ X) × Y ₀ × Y ₁
 
 \end{code}
 
@@ -74,31 +76,25 @@ The above two decomposition types are logically equivalent:
 
 \begin{code}
 
-decomposition-gives-decomposition' : (X : 𝓤 ̇ ) → decomposition X → decomposition' X
-decomposition-gives-decomposition' X (f , (x₀ , x₁) , p₀ , p₁) =
- (fiber f ₀ , fiber f ₁) , ((x₀ , p₀) , (x₁ , p₁) , e)
+decomposition-lemma : (X : 𝓤 ̇ )
+                    → (Σ Y ꞉ (𝟚 → 𝓤 ̇ ) , (Y ₀ + Y ₁ ≃ X))
+                    ≃ (X → 𝟚)
+decomposition-lemma {𝓤} X =
+ (Σ Y ꞉ (𝟚 → 𝓤 ̇ ) , (Y ₀ + Y ₁ ≃ X))       ≃⟨ I ⟩
+ (Σ Y ꞉ (𝟚 → 𝓤 ̇ ) , ((Σ n ꞉ 𝟚 , Y n) ≃ X)) ≃⟨ II ⟩
+ (X → 𝟚)                                    ■
  where
-  e = X                       ≃⟨ domain-is-total-fiber f ⟩
-      Σ (fiber f)             ≃⟨ alternative-+ ⟩
-      (fiber f ₀ + fiber f ₁) ■
+  I  = Σ-cong (λ Y → ≃-cong-left fe (≃-sym alternative-+))
+  II = Σ-fibers-≃ (ua 𝓤) fe'
 
-decomposition'-gives-decomposition : (X : 𝓤 ̇ ) → decomposition' X → decomposition X
-decomposition'-gives-decomposition X ((Y₀ , Y₁) , y₀ , y₁ , (g , i)) =
- f , ((inverse g i (inl y₀)) , (inverse g i (inr y₁))) , p₀ , p₁
+decompositions-agree : (X : 𝓤 ̇ ) → decomposition X ≃ decomposition' X
+decompositions-agree {𝓤} X =
+ (Σ f ꞉ (X → 𝟚) , fiber f ₀ × fiber f ₁)                        ≃⟨ I ⟩
+ (Σ (Y , _) ꞉ (Σ Y ꞉ (𝟚 → 𝓤 ̇ ) , (Y ₀ + Y ₁ ≃ X)) , Y ₀ × Y ₁)  ≃⟨ II ⟩
+ (Σ Y ꞉ (𝟚 → 𝓤 ̇ ) , (Y ₀ + Y ₁ ≃ X) × Y ₀ × Y ₁)                ■
  where
-  open import MLTT.Plus-Properties
-  f : X → 𝟚
-  f x = Cases (g x) (λ _ → ₀) (λ _ → ₁)
-
-  p₀ : f (inverse g i (inl y₀)) ＝ ₀
-  p₀ = ap (λ - → Cases - (λ _ → ₀) (λ _ → ₁)) (inverses-are-sections g i (inl y₀))
-
-  p₁ : f (inverse g i (inr y₁)) ＝ ₁
-  p₁ = ap (λ - → Cases - (λ _ → ₀) (λ _ → ₁)) (inverses-are-sections g i (inr y₁))
-
-\end{code}
-
-\begin{code}
+  I  = Σ-change-of-variable-≃ _ (≃-sym (decomposition-lemma X))
+  II = Σ-assoc
 
 WEM-gives-decomposition-of-two-pointed-types : WEM 𝓤
                                              → (X : 𝓤 ̇ )
@@ -131,7 +127,7 @@ WEM-gives-decomposition-of-two-pointed-types wem X ((x₀ , x₁) , d) = γ
   e₁ = g₁ (h x₁)
 
   γ : decomposition X
-  γ = f , (x₀ , x₁) , e₀ , e₁
+  γ = f , (x₀ , e₀) , (x₁ , e₁)
 
 WEM-gives-decomposition-of-ordinals-type⁺ : WEM (𝓤 ⁺) → decomposition (Ordinal 𝓤)
 WEM-gives-decomposition-of-ordinals-type⁺ {𝓤} wem =
@@ -177,7 +173,7 @@ WEM-gives-decomposition-of-two-pointed-types⁺ {𝓤} wem X l ((x₀ , x₁) , 
   e₁ = g₁ (h x₁)
 
   γ : decomposition X
-  γ = f , (x₀ , x₁) , e₀ , e₁
+  γ = f , (x₀ , e₀) , (x₁ , e₁)
 
 WEM-gives-decomposition-of-ordinals-type : WEM 𝓤 → decomposition (Ordinal 𝓤)
 WEM-gives-decomposition-of-ordinals-type {𝓤} wem =
@@ -264,7 +260,7 @@ type-of-ordinals-has-Ω-paths {𝓤} α β = f , γ⊥ , γ⊤
     p b c l = inr (refl , l)
 
 decomposition-of-Ω-gives-WEM : decomposition (Ω 𝓤) → WEM 𝓤
-decomposition-of-Ω-gives-WEM {𝓤} (f , (p₀@(P₀ , i₀) , p₁@(P₁ , i₁)) , e₀ , e₁) = IV
+decomposition-of-Ω-gives-WEM {𝓤} (f , (p₀@(P₀ , i₀) , e₀) , (p₁@(P₁ , i₁) , e₁)) = IV
  where
   g : Ω 𝓤 → Ω 𝓤
   g (Q , j) = ((P₀ × Q) + (P₁ × ¬ Q)) , k
@@ -318,7 +314,7 @@ decomposition-of-type-with-Ω-paths-gives-WEM : {X : 𝓤 ̇ }
                                              → decomposition X
                                              → has-Ω-paths 𝓥 X
                                              → WEM 𝓥
-decomposition-of-type-with-Ω-paths-gives-WEM {𝓤} {𝓥} {X} (f , (x₀ , x₁) , e₀ , e₁) c = γ
+decomposition-of-type-with-Ω-paths-gives-WEM {𝓤} {𝓥} {X} (f , (x₀ , e₀) , (x₁ , e₁)) c = γ
  where
   g : Ω 𝓥 → X
   g = pr₁ (c x₀ x₁)
@@ -335,7 +331,7 @@ decomposition-of-type-with-Ω-paths-gives-WEM {𝓤} {𝓥} {X} (f , (x₀ , x�
        ₁        ∎
 
   γ : WEM 𝓥
-  γ = decomposition-of-Ω-gives-WEM (f ∘ g , (⊥Ω , ⊤Ω) , I₀ , I₁)
+  γ = decomposition-of-Ω-gives-WEM (f ∘ g , (⊥Ω , I₀) , (⊤Ω , I₁))
 
 decomposition-of-ordinals-type-gives-WEM : decomposition (Ordinal 𝓤) → WEM 𝓤
 decomposition-of-ordinals-type-gives-WEM d =
