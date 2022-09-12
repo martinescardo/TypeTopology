@@ -38,6 +38,7 @@ import UF.Quotient-Replacement
 import UF.Quotient
 import UF.Retracts-FunExt
 import UF.Retracts
+import UF.SetsGroupoids
 import UF.SIP-Examples
 import UF.SIP
 import UF.Section-Embedding
