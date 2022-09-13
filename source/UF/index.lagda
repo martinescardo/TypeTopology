@@ -19,6 +19,7 @@ import UF.Finiteness-Universe-Invariance
 import UF.FunExt-Properties
 import UF.FunExt-from-Naive-FunExt
 import UF.FunExt
+import UF.Groupoids
 import UF.IdEmbedding
 import UF.ImageAndSurjection-F
 import UF.ImageAndSurjection
@@ -38,7 +39,6 @@ import UF.Quotient-Replacement
 import UF.Quotient
 import UF.Retracts-FunExt
 import UF.Retracts
-import UF.SetsGroupoids
 import UF.SIP-Examples
 import UF.SIP
 import UF.Section-Embedding

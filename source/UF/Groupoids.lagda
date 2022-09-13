@@ -19,7 +19,7 @@ hlevel stuff is confined in a submodule below.
 open import MLTT.Spartan
 open import UF.Univalence
 
-module UF.SetsGroupoids where
+module UF.Groupoids where
 
 open import UF.FunExt
 open import UF.UA-FunExt
