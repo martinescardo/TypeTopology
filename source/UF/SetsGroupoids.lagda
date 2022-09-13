@@ -61,20 +61,6 @@ module hleveltwo (ua : Univalence)  where
     fe : funext 𝓤 𝓤
     fe {𝓤} = univalence-gives-funext (ua 𝓤)
 
-  is-of-hlevel-one-is-set : (X : 𝓤 ̇) → X is-of-hlevel 1 → is-set X
-  is-of-hlevel-one-is-set X h {x} {y} = h x y
-
-  is-set-is-of-hlevel-one : (X : 𝓤 ̇) → is-set X → X is-of-hlevel 1
-  is-set-is-of-hlevel-one X i x y = i {x} {y}
-
-  is-set-is-of-hlevel-one-equivalent : (X : 𝓤 ̇) →
-                                       is-set X ≃ X is-of-hlevel 1
-  is-set-is-of-hlevel-one-equivalent X = logically-equivalent-props-are-equivalent 
-                                                (being-set-is-prop fe)
-                                                (hlevel-relation-is-prop 1 X)
-                                                (is-set-is-of-hlevel-one X)
-                                                (is-of-hlevel-one-is-set X)
-
   is-groupoid-is-of-hlevel-two : (X : 𝓤 ̇) → is-groupoid X → X is-of-hlevel 2
   is-groupoid-is-of-hlevel-two X i x y = λ p q → i
 
@@ -89,5 +75,25 @@ module hleveltwo (ua : Univalence)  where
                                               (hlevel-relation-is-prop 2 X)
                                               (is-groupoid-is-of-hlevel-two X)
                                               (is-of-hlevel-two-is-groupoid X)
+\end{code}
+
+This is here for want of a better place.
+
+\begin{code}
+
+  is-of-hlevel-one-is-set : (X : 𝓤 ̇) → X is-of-hlevel 1 → is-set X
+  is-of-hlevel-one-is-set X h {x} {y} = h x y
+
+  is-set-is-of-hlevel-one : (X : 𝓤 ̇) → is-set X → X is-of-hlevel 1
+  is-set-is-of-hlevel-one X i x y = i {x} {y}
+
+  is-set-is-of-hlevel-one-equivalent : (X : 𝓤 ̇) →
+                                       is-set X ≃ X is-of-hlevel 1
+  is-set-is-of-hlevel-one-equivalent X = logically-equivalent-props-are-equivalent 
+                                                (being-set-is-prop fe)
+                                                (hlevel-relation-is-prop 1 X)
+                                                (is-set-is-of-hlevel-one X)
+                                                (is-of-hlevel-one-is-set X)
+
 
 \end{code}
