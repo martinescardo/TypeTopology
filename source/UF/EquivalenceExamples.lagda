@@ -599,13 +599,13 @@ NatΣ-fiber-equiv : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ ) (ζ
 NatΣ-fiber-equiv A B ζ x b = qinveq (f b) (g b , ε b , η b)
  where
   f : (b : B x) → fiber (ζ x) b → fiber (NatΣ ζ) (x , b)
-  f . (ζ x a) (a , refl) = (x , a) , refl
+  f _ (a , refl) = (x , a) , refl
 
   g : (b : B x) → fiber (NatΣ ζ) (x , b) → fiber (ζ x) b
-  g . (ζ x a) ((.x , a) , refl) = a , refl
+  g _ ((x , a) , refl) = a , refl
 
   ε : (b : B x) (w : fiber (ζ x) b) → g b (f b w) ＝ w
-  ε . (ζ x a) (a , refl) = refl
+  ε _ (a , refl) = refl
 
   η : (b : B x) (t : fiber (NatΣ ζ) (x , b)) → f b (g b t) ＝ t
   η b (a , refl) = refl
@@ -696,7 +696,8 @@ NatΣ-equiv' A B ζ i = ((s , ζs), (r , rζ))
       iii = back-and-forth-transport (ε (g y))
 
 Σ-change-of-variable : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : X → 𝓦 ̇ ) (g : Y → X)
-                     → is-equiv g → (Σ y ꞉ Y , A (g y)) ≃ Σ A
+                     → is-equiv g
+                     → (Σ y ꞉ Y , A (g y)) ≃ (Σ x ꞉ X , A x)
 Σ-change-of-variable {𝓤} {𝓥} {𝓦} {X} {Y} A g e = γ , qinvs-are-equivs γ q
  where
   γ :  (Σ y ꞉ Y , A (g y)) → Σ A
@@ -704,6 +705,10 @@ NatΣ-equiv' A B ζ i = ((s , ζs), (r , rζ))
 
   q :  qinv γ
   q = pr₂ (Σ-change-of-variable' A g (equivs-are-haes g e))
+
+Σ-change-of-variable-≃ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : X → 𝓦 ̇ ) (e : Y ≃ X)
+                       → (Σ y ꞉ Y , A (⌜ e ⌝ y)) ≃ (Σ x ꞉ X , A x)
+Σ-change-of-variable-≃ A (g , i) = Σ-change-of-variable A g i
 
 NatΠ-fiber-equiv : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ ) (ζ : Nat A B)
                  → funext 𝓤 𝓦
@@ -791,6 +796,41 @@ complement-is-equiv = qinvs-are-equivs complement
 
 complement-≃ : 𝟚 ≃ 𝟚
 complement-≃ = (complement , complement-is-equiv)
+
+alternative-× : funext 𝓤₀ 𝓤 → {A : 𝟚 → 𝓤 ̇ } → (Π n ꞉ 𝟚 , A n) ≃ (A ₀ × A ₁)
+alternative-× fe {A} = qinveq ϕ (ψ , η , ε)
+ where
+  ϕ : (Π n ꞉ 𝟚 , A n) → A ₀ × A ₁
+  ϕ f = (f ₀ , f ₁)
+
+  ψ : A ₀ × A ₁ → Π n ꞉ 𝟚 , A n
+  ψ (a₀ , a₁) ₀ = a₀
+  ψ (a₀ , a₁) ₁ = a₁
+
+  η : ψ ∘ ϕ ∼ id
+  η f = dfunext fe (λ {₀ → refl ; ₁ → refl})
+
+  ε : ϕ ∘ ψ ∼ id
+  ε (a₀ , a₁) = refl
+
+alternative-+ : {A : 𝟚 → 𝓤 ̇ } → (Σ n ꞉ 𝟚 , A n) ≃ (A ₀ + A ₁)
+alternative-+ {𝓤} {A} = qinveq ϕ (ψ , η , ε)
+ where
+  ϕ : (Σ n ꞉ 𝟚 , A n) → A ₀ + A ₁
+  ϕ (₀ , a) = inl a
+  ϕ (₁ , a) = inr a
+
+  ψ : A ₀ + A ₁ → Σ n ꞉ 𝟚 , A n
+  ψ (inl a) = ₀ , a
+  ψ (inr a) = ₁ , a
+
+  η : ψ ∘ ϕ ∼ id
+  η (₀ , a) = refl
+  η (₁ , a) = refl
+
+  ε : ϕ ∘ ψ ∼ id
+  ε (inl a) = refl
+  ε (inr a) = refl
 
 domain-is-total-fiber : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) → X ≃ Σ (fiber f)
 domain-is-total-fiber {𝓤} {𝓥} {X} {Y} f =
