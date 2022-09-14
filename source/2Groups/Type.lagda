@@ -17,6 +17,7 @@ open import UF.Subsingletons
 open import UF.FunExt
 open import UF.Subsingletons-FunExt
 open import UF.Equiv hiding (_≅_ ; ≅-refl ; _●_)
+open import UF.Groupoids
 
 module 2Groups.Type where
 
@@ -29,6 +30,7 @@ The mathematical structure of a 2-Group
 record 2Group-structure (X : 𝓤 ̇) : 𝓤 ̇ where
   field
     _●_ : X → X → X
+    is-grpd : is-groupoid X
     α : {x y z : X} → (x ● y) ● z ＝  x ● (y ● z)
 
   private
