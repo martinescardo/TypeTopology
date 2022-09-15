@@ -1439,9 +1439,9 @@ characterisation-of-continuity-op {𝓦 = 𝓦} L M σ f ζ =
       ♥ = pr₁ (pr₂ (pr₂ σᴰ)) (𝒥 [ k ])
 
       ♠ : ((ℬ [ 𝒥 [ k ] ]) ≤[ poset-of L ] U) holds
-      ♠ = ℬ [ 𝒥 [ k ] ]              ≤⟨ {!⋁[ L ]-upper!} ⟩
-          ⋁[ L ] ⁅ ℬ [ i ] ∣ i ε 𝒥 ⁆ ＝⟨ cover ⁻¹ ⟩ₚ
-          U                          ■
+      ♠ = ℬ [ 𝒥 [ k ] ]                ≤⟨ ⋁[ L ]-upper ⁅ ℬ [ i ] ∣ i ε 𝒥 ⁆ k ⟩
+          ⋁[ L ] ⁅ ℬ [ i ] ∣ i ε 𝒥 ⁆   ＝⟨ cover ⁻¹                          ⟩ₚ
+          U                            ■
 
     open PosetReasoning (poset-of M)
 
