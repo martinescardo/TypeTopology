@@ -80,8 +80,8 @@ module _ (X : Group 𝓤) (Y : Group 𝓥)
     x , u ← p
     ∣ ((inv X x) , q x u) ∣
     where
-      q : (x : ⟨ X ⟩) (u : y₂ ＝ multiplication Y y₁ (f x)) → 
-          y₁ ＝ multiplication Y y₂ (f (inv X x))
+      q : (x : ⟨ X ⟩) (u : y₂ ＝ multiplication Y y₁ (f x))
+        → y₁ ＝ multiplication Y y₂ (f (inv X x))
       q x u = y₁                                  ＝⟨ (unit-right Y y₁) ⁻¹ ⟩
               y₁ ·⟨ Y ⟩ unit Y                     ＝⟨ ap (λ v → y₁ ·⟨ Y ⟩ v) (inv-right Y (f x)) ⁻¹ ⟩
               y₁ ·⟨ Y ⟩ ( (f x) ·⟨ Y ⟩ inv Y (f x)) ＝⟨ (assoc Y _ _ _) ⁻¹ ⟩
