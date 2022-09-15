@@ -1461,38 +1461,41 @@ characterisation-of-continuity-op {𝓦 = 𝓦} L M σ f ζ =
     δ₂ : is-directed (poset-of M) ⁅ f (ℬ [ i ]) ∣ i ε 𝒥 ⁆ holds
     δ₂ = monotone-image-on-directed-family-is-directed L M ⁅ ℬ [ i ] ∣ i ε 𝒥 ⁆ δ₁ f μ
 
--- compact-join-lemma : (F : Frame 𝓤 𝓥 𝓦)
---                    → is-spectral F holds
---                    → (U V K : ⟨ F ⟩)
---                    → is-compact-open F K holds
---                    → (K ≤[ poset-of F ] (U ∨[ F ] V)) holds
---                    → ∃ (K₁ , K₂) ꞉ ⟨ F ⟩ × ⟨ F ⟩ ,
---                        is-compact-open F K₁ holds
---                      × is-compact-open F K₂ holds
---                      × (K ≤[ poset-of F ] (K₁ ∨[ F ] K₁)) holds
---                      × (K₁ ≤[ poset-of F ] U ∧ K₂ ≤[ poset-of F ] V) holds
--- compact-join-lemma F σ U V K κ = ∥∥-rec {!∃-is-prop!} {!!} {!!}
---  where
---   open Joins (λ x y → x ≤[ poset-of F ] y)
+compact-join-lemma : (F : Frame 𝓤 𝓥 𝓦)
+                   → is-spectral F holds
+                   → (U V K : ⟨ F ⟩)
+                   → is-compact-open F K holds
+                   → (K ≤[ poset-of F ] (U ∨[ F ] V)) holds
+                   → ∃ (K₁ , K₂) ꞉ ⟨ F ⟩ × ⟨ F ⟩ ,
+                       is-compact-open F K₁ holds
+                     × is-compact-open F K₂ holds
+                     × (K ≤[ poset-of F ] (K₁ ∨[ F ] K₁)) holds
+                     × (K₁ ≤[ poset-of F ] U ∧ K₂ ≤[ poset-of F ] V) holds
+compact-join-lemma F σ U V K κ = ∥∥-rec (holds-is-prop {!!}) † β
+ where
+  open Joins (λ x y → x ≤[ poset-of F ] y)
 
---   c₁ : ⟨ F ⟩ → ⟨ F ⟩
---   c₁ = λ - → - ∨[ F ] V
+  c₁ : ⟨ F ⟩ → ⟨ F ⟩
+  c₁ = λ - → - ∨[ F ] V
 
---   c₂ : ⟨ F ⟩ → ⟨ F ⟩
---   c₂ = λ - → K ∨[ F ] -
+  c₂ : ⟨ F ⟩ → ⟨ F ⟩
+  c₂ = λ - → K ∨[ F ] -
 
---   ζ₁ : is-scott-continuous F F c₁ holds
---   ζ₁ S δ = {!? !}
+  ζ₁ : is-scott-continuous F F c₁ holds
+  ζ₁ = ∨-is-scott-continuous′ F V
 
---   β : ∃ K₁ ꞉ ⟨ F ⟩ , (K ≤[ poset-of F ] (K₁ ∨[ F ] V)) holds
---   β =
---    ∥∥-rec
---     ∃-is-prop
---     β₁
---     (characterisation-of-continuity-op F F σ c₁ ζ₁ K V κ {!!} )
---    where
---     β₁ : Σ K₁ ꞉ ⟨ F ⟩ , (is-compact-open F K₁ ∧ rel-syntax (poset-of F) K₁ V ∧ rel-syntax (poset-of F) K (binary-join F K₁ V)) holds
---        → ∃ (λ K₁ → rel-syntax (poset-of F) K (binary-join F K₁ V) holds)
---     β₁ = {!!}
+  β : ∃ K₁ ꞉ ⟨ F ⟩ , (K ≤[ poset-of F ] (K₁ ∨[ F ] V)) holds
+  β =
+   ∥∥-rec
+    ∃-is-prop
+    β₁
+    (characterisation-of-continuity-op F F σ c₁ ζ₁ K V κ {!!} )
+   where
+    β₁ : Σ K₁ ꞉ ⟨ F ⟩ , (is-compact-open F K₁ ∧ (K₁ ≤[ poset-of F ] V) ∧ K ≤[ poset-of F ] (K₁ ∨[ F ] V)) holds
+       → ∃ K₁ ꞉ ⟨ F ⟩ , (K ≤[ poset-of F ] (K₁ ∨[ F ] V)) holds
+    β₁ (K₁ , κ₁ , p , q)= {!!}
+
+  † : {!!}
+  † = {!!}
 
 \end{code}
