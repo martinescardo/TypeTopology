@@ -14,6 +14,7 @@ open import UF.Univalence
 open import UF.UA-FunExt
 open import UF.EquivalenceExamples
 open import MLTT.List hiding ([_])
+open import MLTT.Pi
 
 \end{code}
 
@@ -1020,5 +1021,20 @@ module SmallPatchConstruction (X : Locale 𝓤 𝓥 𝓦) (σᴰ : spectralᴰ (
                      , ⋁ₙ-is-joinₖ
                      , λ { (𝒿 , 𝒦) → distributivityₚ 𝒿 𝒦 }
                      }
+
+ 𝟎-is-id : 𝟎[ 𝒪 SmallPatch ] $_ ∼ id
+ 𝟎-is-id U = ≤-is-antisymmetric (poset-of (𝒪 X)) † ‡
+  where
+   open PosetReasoning (poset-of (𝒪 X))
+
+   † : ((𝟎[ 𝒪 SmallPatch ] $ U) ≤[ poset-of (𝒪 X) ] U) holds
+   † = 𝟎-is-bottom (𝒪 Patch) idₙ U
+
+   ‡ : (U ≤[ poset-of (𝒪 X) ] (𝟎[ 𝒪 SmallPatch ] $ U)) holds
+   ‡ = U                             ≤⟨ ※ ⟩
+       (⋁[ 𝒪 SmallPatch ] ∅ 𝓦) $ U   ＝⟨ refl ⟩ₚ
+       𝟎[ 𝒪 SmallPatch ] $ U         ■
+        where
+         ※ = ⋁[ 𝒪 X ]-upper ⁅ α U ∣ α ε 𝔡𝔦𝔯 (∅ 𝓦) ⁆ []
 
 \end{code}
