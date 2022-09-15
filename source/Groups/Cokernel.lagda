@@ -147,8 +147,8 @@ We define a second equivalence relation using right cosets.
      ∣ ((x₂ ·⟨ X ⟩ x₁) , q x₁ u₁ x₂ u₂) ∣
      where
        q : (x₁ : ⟨ X ⟩) (u₁ : y₂ ＝ (f x₁) ·⟨ Y ⟩ y₁)
-           (x₂ : ⟨ X ⟩) (u₂ : y₃ ＝ (f x₂) ·⟨ Y ⟩ y₂) →
-           y₃ ＝ f (x₂ ·⟨ X ⟩ x₁) ·⟨ Y ⟩ y₁
+         → (x₂ : ⟨ X ⟩) (u₂ : y₃ ＝ (f x₂) ·⟨ Y ⟩ y₂)
+         → y₃ ＝ f (x₂ ·⟨ X ⟩ x₁) ·⟨ Y ⟩ y₁
        q x₁ u₁ x₂ u₂ = y₃                             ＝⟨ u₂ ⟩
                        (f x₂) ·⟨ Y ⟩ y₂                ＝⟨ ap (λ v → (f x₂) ·⟨ Y ⟩ v) u₁ ⟩
                        (f x₂) ·⟨ Y ⟩ ((f x₁) ·⟨ Y ⟩ y₁) ＝⟨ (assoc Y _ _ _) ⁻¹ ⟩
