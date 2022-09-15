@@ -569,6 +569,45 @@ well-inside-is-join-stable F {U₁} {U₂} {V} =
    γ = pr₁ ((∨-is-scott-continuous F U) S dir)
    δ = pr₂ ((∨-is-scott-continuous F U) S dir)
 
+∨-is-scott-continuous-eq′ : (F : Frame 𝓤 𝓥 𝓦)
+                          → (U : ⟨ F ⟩)
+                          → (S : Fam 𝓦 ⟨ F ⟩)
+                          → (is-directed (poset-of F) S) holds
+                          → (⋁[ F ] S) ∨[ F ] U ＝ ⋁[ F ] ⁅ Sᵢ ∨[ F ] U ∣ Sᵢ ε S ⁆
+∨-is-scott-continuous-eq′ F U S δ =
+ (⋁[ F ] S) ∨[ F ] U             ＝⟨ Ⅰ ⟩
+ U ∨[ F ] (⋁[ F ] S)             ＝⟨ Ⅱ ⟩
+ ⋁[ F ] ⁅ U ∨[ F ] Sᵢ ∣ Sᵢ ε S ⁆ ＝⟨ Ⅲ ⟩
+ ⋁[ F ] ⁅ Sᵢ ∨[ F ] U ∣ Sᵢ ε S ⁆ ∎
+  where
+   open PosetReasoning (poset-of F)
+
+   † : cofinal-in F ⁅ U ∨[ F ] Sᵢ ∣ Sᵢ ε S ⁆ ⁅ Sᵢ ∨[ F ] U ∣ Sᵢ ε S ⁆ holds
+   † i = ∣ i , (U ∨[ F ] (S [ i ]) ＝⟨ ∨[ F ]-is-commutative U (S [ i ]) ⟩ₚ
+                S [ i ] ∨[ F ] U   ■) ∣
+
+   ‡ : cofinal-in F ⁅ Sᵢ ∨[ F ] U ∣ Sᵢ ε S ⁆ ⁅ U ∨[ F ] Sᵢ ∣ Sᵢ ε S ⁆ holds
+   ‡ i = ∣ i , (S [ i ] ∨[ F ] U   ＝⟨ ∨[ F ]-is-commutative (S [ i ]) U ⟩ₚ
+                U ∨[ F ] (S [ i ]) ■) ∣
+
+   Ⅰ = ∨[ F ]-is-commutative (⋁[ F ] S) U
+   Ⅱ = ∨-is-scott-continuous-eq F U S δ
+   Ⅲ = bicofinal-implies-same-join F _ _ † ‡
+
+∨-is-scott-continuous′ : (F : Frame 𝓤 𝓥 𝓦)
+                       → (U : ⟨ F ⟩)
+                       → is-scott-continuous F F (λ - → - ∨[ F ] U) holds
+∨-is-scott-continuous′ F U S δ =
+ transport (λ - → (- is-lub-of ⁅ Sᵢ ∨[ F ] U ∣ Sᵢ ε S ⁆) holds) († ⁻¹) ‡
+  where
+   open Joins (λ x y → x ≤[ poset-of F ] y)
+
+   † : (⋁[ F ] S) ∨[ F ] U ＝ ⋁[ F ] ⁅ Sᵢ ∨[ F ] U ∣ Sᵢ ε S ⁆
+   † = ∨-is-scott-continuous-eq′ F U S δ
+
+   ‡ = ⋁[ F ]-upper ⁅ Sᵢ ∨[ F ] U ∣ Sᵢ ε S ⁆
+     , ⋁[ F ]-least ⁅ Sᵢ ∨[ F ] U ∣ Sᵢ ε S ⁆
+
 ⋜₀-implies-≪-in-compact-frames : (F : Frame 𝓤 𝓥 𝓦)
                                → is-compact F holds
                                → (U V : ⟨ F ⟩)
