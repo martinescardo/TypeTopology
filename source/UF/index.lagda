@@ -19,6 +19,7 @@ import UF.Finiteness-Universe-Invariance
 import UF.FunExt-Properties
 import UF.FunExt-from-Naive-FunExt
 import UF.FunExt
+import UF.Groupoids
 import UF.IdEmbedding
 import UF.ImageAndSurjection-F
 import UF.ImageAndSurjection
