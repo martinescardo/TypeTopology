@@ -13,5 +13,6 @@ import Locales.GaloisConnection
 import Locales.AdjointFunctorTheoremForFrames
 import Locales.HeytingImplication
 import Locales.PatchLocale
+import Locales.PatchProperties
 
 \end{code}
