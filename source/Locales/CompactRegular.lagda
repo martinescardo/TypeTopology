@@ -1411,55 +1411,55 @@ characterisation-of-continuity-op : (L M : Frame 𝓤 𝓥 𝓦)
                                   → continuity-condition L M f holds
 characterisation-of-continuity-op {𝓦 = 𝓦} L M σ f ζ =
  ∥∥-rec (holds-is-prop (continuity-condition L M f)) † σ
- where
-  μ : is-monotonic (poset-of L) (poset-of M) f holds
-  μ = scott-continuous-implies-monotone L M f ζ
+  where
+   μ : is-monotonic (poset-of L) (poset-of M) f holds
+   μ = scott-continuous-implies-monotone L M f ζ
 
-  † : spectralᴰ L → continuity-condition L M f holds
-  † σᴰ K U κ φ = ∥∥-rec ∃-is-prop ‡ (κ ⁅ f (ℬ [ i ]) ∣ i ε 𝒥 ⁆ δ₂ ψ)
-   where
-    ℬ : Fam 𝓦 ⟨ L ⟩
-    ℬ = pr₁ σᴰ
+   † : spectralᴰ L → continuity-condition L M f holds
+   † σᴰ K U κ φ = ∥∥-rec ∃-is-prop ‡ (κ ⁅ f (ℬ [ i ]) ∣ i ε 𝒥 ⁆ δ₂ ψ)
+    where
+     ℬ : Fam 𝓦 ⟨ L ⟩
+     ℬ = pr₁ σᴰ
 
-    𝒥 : Fam 𝓦 (index ℬ)
-    𝒥 = pr₁ (pr₁ (pr₁ (pr₂ σᴰ)) U)
+     𝒥 : Fam 𝓦 (index ℬ)
+     𝒥 = pr₁ (pr₁ (pr₁ (pr₂ σᴰ)) U)
 
-    cover : U ＝ ⋁[ L ] ⁅ ℬ [ i ] ∣ i ε 𝒥 ⁆
-    cover = ⋁[ L ]-unique ⁅ ℬ [ i ] ∣ i ε 𝒥 ⁆ U (pr₂ (pr₁ (pr₁ (pr₂ σᴰ)) U))
+     cover : U ＝ ⋁[ L ] ⁅ ℬ [ i ] ∣ i ε 𝒥 ⁆
+     cover = ⋁[ L ]-unique ⁅ ℬ [ i ] ∣ i ε 𝒥 ⁆ U (pr₂ (pr₁ (pr₁ (pr₂ σᴰ)) U))
 
-    ‡ : (Σ k ꞉ index 𝒥 , ((K ≤[ poset-of M ] f (ℬ [ 𝒥 [ k ] ])) holds))
-      → ∃ K′ ꞉ ⟨ L ⟩ , (is-compact-open L K′ holds)
-                     × ((K′ ≤[ poset-of L ] U) holds)
-                     × ((K ≤[ poset-of M ] f K′) holds )
-    ‡ (k , φ) = ∣ ℬ [ 𝒥 [ k ] ] , ♥ , ♠ , φ ∣
-     where
-      open PosetReasoning (poset-of L)
+     ‡ : (Σ k ꞉ index 𝒥 , ((K ≤[ poset-of M ] f (ℬ [ 𝒥 [ k ] ])) holds))
+       → ∃ K′ ꞉ ⟨ L ⟩ , (is-compact-open L K′ holds)
+                      × ((K′ ≤[ poset-of L ] U) holds)
+                      × ((K ≤[ poset-of M ] f K′) holds )
+     ‡ (k , φ) = ∣ ℬ [ 𝒥 [ k ] ] , ♥ , ♠ , φ ∣
+      where
+       open PosetReasoning (poset-of L)
 
-      ♥ : is-compact-open L (ℬ [ 𝒥 [ k ] ]) holds
-      ♥ = pr₁ (pr₂ (pr₂ σᴰ)) (𝒥 [ k ])
+       ♥ : is-compact-open L (ℬ [ 𝒥 [ k ] ]) holds
+       ♥ = pr₁ (pr₂ (pr₂ σᴰ)) (𝒥 [ k ])
 
-      ♠ : ((ℬ [ 𝒥 [ k ] ]) ≤[ poset-of L ] U) holds
-      ♠ = ℬ [ 𝒥 [ k ] ]                ≤⟨ ⋁[ L ]-upper ⁅ ℬ [ i ] ∣ i ε 𝒥 ⁆ k ⟩
-          ⋁[ L ] ⁅ ℬ [ i ] ∣ i ε 𝒥 ⁆   ＝⟨ cover ⁻¹                          ⟩ₚ
-          U                            ■
+       ♠ : ((ℬ [ 𝒥 [ k ] ]) ≤[ poset-of L ] U) holds
+       ♠ = ℬ [ 𝒥 [ k ] ]                ≤⟨ ⋁[ L ]-upper ⁅ ℬ [ i ] ∣ i ε 𝒥 ⁆ k ⟩
+           ⋁[ L ] ⁅ ℬ [ i ] ∣ i ε 𝒥 ⁆   ＝⟨ cover ⁻¹                          ⟩ₚ
+           U                            ■
 
-    open PosetReasoning (poset-of M)
+     open PosetReasoning (poset-of M)
 
-    δ₁ : is-directed (poset-of L) ⁅ ℬ [ i ] ∣ i ε 𝒥 ⁆ holds
-    δ₁ = pr₂ (pr₁ (pr₂ σᴰ)) U
+     δ₁ : is-directed (poset-of L) ⁅ ℬ [ i ] ∣ i ε 𝒥 ⁆ holds
+     δ₁ = pr₂ (pr₁ (pr₂ σᴰ)) U
 
-    ψ : (K ≤[ poset-of M ] (⋁[ M ] ⁅ f (ℬ [ i ]) ∣ i ε 𝒥 ⁆)) holds
-    ψ = K                              ≤⟨ φ ⟩
-        f U                            ＝⟨ Ⅰ ⟩ₚ
-        f (⋁[ L ] ⁅ ℬ [ i ] ∣ i ε 𝒥 ⁆) ＝⟨ Ⅱ ⟩ₚ
-        ⋁[ M ] ⁅ f (ℬ [ i ]) ∣ i ε 𝒥 ⁆ ■
-         where
-          Ⅰ = ap f cover
-          Ⅱ = ⋁[ M ]-unique _ _ (ζ ⁅ ℬ [ i ] ∣ i ε 𝒥 ⁆ δ₁)
+     ψ : (K ≤[ poset-of M ] (⋁[ M ] ⁅ f (ℬ [ i ]) ∣ i ε 𝒥 ⁆)) holds
+     ψ = K                              ≤⟨ φ ⟩
+         f U                            ＝⟨ Ⅰ ⟩ₚ
+         f (⋁[ L ] ⁅ ℬ [ i ] ∣ i ε 𝒥 ⁆) ＝⟨ Ⅱ ⟩ₚ
+         ⋁[ M ] ⁅ f (ℬ [ i ]) ∣ i ε 𝒥 ⁆ ■
+          where
+           Ⅰ = ap f cover
+           Ⅱ = ⋁[ M ]-unique _ _ (ζ ⁅ ℬ [ i ] ∣ i ε 𝒥 ⁆ δ₁)
 
 
-    δ₂ : is-directed (poset-of M) ⁅ f (ℬ [ i ]) ∣ i ε 𝒥 ⁆ holds
-    δ₂ = monotone-image-on-directed-family-is-directed L M ⁅ ℬ [ i ] ∣ i ε 𝒥 ⁆ δ₁ f μ
+     δ₂ : is-directed (poset-of M) ⁅ f (ℬ [ i ]) ∣ i ε 𝒥 ⁆ holds
+     δ₂ = monotone-image-on-directed-family-is-directed L M ⁅ ℬ [ i ] ∣ i ε 𝒥 ⁆ δ₁ f μ
 
 compact-join-lemma : (F : Frame 𝓤 𝓥 𝓦)
                    → is-spectral F holds
