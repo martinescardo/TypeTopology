@@ -1469,33 +1469,52 @@ compact-join-lemma : (F : Frame 𝓤 𝓥 𝓦)
                    → ∃ (K₁ , K₂) ꞉ ⟨ F ⟩ × ⟨ F ⟩ ,
                        is-compact-open F K₁ holds
                      × is-compact-open F K₂ holds
-                     × (K ≤[ poset-of F ] (K₁ ∨[ F ] K₁)) holds
+                     × (K ≤[ poset-of F ] (K₁ ∨[ F ] K₂)) holds
                      × (K₁ ≤[ poset-of F ] U ∧ K₂ ≤[ poset-of F ] V) holds
-compact-join-lemma F σ U V K κ = ∥∥-rec (holds-is-prop {!!}) † β
+compact-join-lemma F σ U V K κ ψ = ∥∥-rec ∃-is-prop † φ₁
  where
   open Joins (λ x y → x ≤[ poset-of F ] y)
+  open PosetReasoning (poset-of F)
+
+  Θ = ∃ (K₁ , K₂) ꞉ ⟨ F ⟩ × ⟨ F ⟩ ,
+        is-compact-open F K₁ holds
+      × is-compact-open F K₂ holds
+      × (K ≤[ poset-of F ] (K₁ ∨[ F ] K₂)) holds
+      × (K₁ ≤[ poset-of F ] U ∧ K₂ ≤[ poset-of F ] V) holds
+
 
   c₁ : ⟨ F ⟩ → ⟨ F ⟩
   c₁ = λ - → - ∨[ F ] V
 
-  c₂ : ⟨ F ⟩ → ⟨ F ⟩
-  c₂ = λ - → K ∨[ F ] -
-
   ζ₁ : is-scott-continuous F F c₁ holds
   ζ₁ = ∨-is-scott-continuous′ F V
 
-  β : ∃ K₁ ꞉ ⟨ F ⟩ , (K ≤[ poset-of F ] (K₁ ∨[ F ] V)) holds
-  β =
-   ∥∥-rec
-    ∃-is-prop
-    β₁
-    (characterisation-of-continuity-op F F σ c₁ ζ₁ K V κ {!!} )
-   where
-    β₁ : Σ K₁ ꞉ ⟨ F ⟩ , (is-compact-open F K₁ ∧ (K₁ ≤[ poset-of F ] V) ∧ K ≤[ poset-of F ] (K₁ ∨[ F ] V)) holds
-       → ∃ K₁ ꞉ ⟨ F ⟩ , (K ≤[ poset-of F ] (K₁ ∨[ F ] V)) holds
-    β₁ (K₁ , κ₁ , p , q)= {!!}
+  φ₁ : ∃ K₁ ꞉ ⟨ F ⟩ , (is-compact-open F K₁
+                    ∧ (K₁ ≤[ poset-of F ] U)
+                    ∧ K ≤[ poset-of F ] (K₁ ∨[ F ] V)) holds
+  φ₁ = characterisation-of-continuity-op F F σ c₁ ζ₁ K U κ ψ
 
-  † : {!!}
-  † = {!!}
+  † : Σ K₁ ꞉ ⟨ F ⟩ , (is-compact-open F K₁
+                    ∧ (K₁ ≤[ poset-of F ] U)
+                    ∧ K ≤[ poset-of F ] (K₁ ∨[ F ] V)) holds
+    → Θ
+  † (K₁ , κ₁ , p₁ , q₁) = ∥∥-rec ∃-is-prop ‡ φ₂
+   where
+    c₂ : ⟨ F ⟩ → ⟨ F ⟩
+    c₂ = λ - → K₁ ∨[ F ] -
+
+    ζ₂ : is-scott-continuous F F c₂ holds
+    ζ₂ = ∨-is-scott-continuous F K₁
+
+    ‡ : (Σ K₂ ꞉ ⟨ F ⟩ , (is-compact-open F K₂
+                      ∧ K₂ ≤[ poset-of F ] V
+                      ∧ K ≤[ poset-of F ] (K₁ ∨[ F ] K₂)) holds)
+      → Θ
+    ‡ (K₂ , κ₂ , p₂ , q₂) = ∣ (K₁ , K₂) , κ₁ , κ₂ , q₂ , p₁ , p₂ ∣
+
+    φ₂ : ∃ K₂ ꞉ ⟨ F ⟩ , (is-compact-open F K₂
+                      ∧ K₂ ≤[ poset-of F ] V
+                      ∧ (K ≤[ poset-of F ] (K₁ ∨[ F ] K₂))) holds
+    φ₂ = characterisation-of-continuity-op F F σ c₂ ζ₂ K V κ q₁
 
 \end{code}
