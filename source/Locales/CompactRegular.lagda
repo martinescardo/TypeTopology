@@ -1349,6 +1349,11 @@ compact-meet-lemma F U V K κ p = K , K , κ , κ , γ , p₁ , p₂
 
 ## Characterisation of continuity
 
+Let `L` and `M` be two frames and let `h : | L | → | M |` be a function.
+Function `h` is said to satisfy the **continuity condition** if *for every `x :
+L`, compact `b : M` with `b ≤ h(x)`, there is some compact `a : L` such that `a
+≤ x` and `b ≤ h(a)`*.
+
 \begin{code}
 
 continuity-condition : (L : Frame 𝓤 𝓥 𝓦) (M : Frame 𝓤' 𝓥' 𝓦)
@@ -1358,6 +1363,13 @@ continuity-condition L M h =
   b ≤[ poset-of M ] h x ⇒
    (Ǝ a ∶ ⟨ L ⟩ ,
      ((is-compact-open L a ∧ a ≤[ poset-of L ] x ∧ b ≤[ poset-of M ] h a) holds))
+
+\end{code}
+
+Given frames `L` and `M`, with `M` spectral, any monotone function `h : ∣ L ∣ →
+∣ M ∣` satisfying the continuity condition is Scott-continuous.
+
+\begin{code}
 
 characterisation-of-continuity : (L : Frame 𝓤  𝓥  𝓦)
                                → (M : Frame 𝓤' 𝓥' 𝓦)
@@ -1403,6 +1415,13 @@ characterisation-of-continuity L M σ h μ ζ S δ = β , γ
               (holds-is-prop (h a ≤[ poset-of M ] (⋁[ M ] ⁅ h s ∣ s ε S ⁆)))
               ♣
               (κₐ S δ q)
+
+\end{code}
+
+We now prove the converse: given frames `L` and `M`, with `L` spectral, any
+Scott-continuous function `h : ∣ L ∣ → ∣ M ∣` satisfies the continuity condition.
+
+\begin{code}
 
 characterisation-of-continuity-op : (L M : Frame 𝓤 𝓥 𝓦)
                                   → is-spectral L holds
@@ -1461,16 +1480,24 @@ characterisation-of-continuity-op {𝓦 = 𝓦} L M σ f ζ =
      δ₂ : is-directed (poset-of M) ⁅ f (ℬ [ i ]) ∣ i ε 𝒥 ⁆ holds
      δ₂ = monotone-image-on-directed-family-is-directed L M ⁅ ℬ [ i ] ∣ i ε 𝒥 ⁆ δ₁ f μ
 
+\end{code}
+
+Let `F` be a spectral frame. Given `x, y, : F` and compact `a : F` with `a ≤ x ∨
+y`, there exist compact `b, c : F` with `a ≤ b ∨ c` such that `b ≤ x` and `c ≤
+y`.
+
+\begin{code}
+
 compact-join-lemma : (F : Frame 𝓤 𝓥 𝓦)
                    → is-spectral F holds
-                   → (U V K : ⟨ F ⟩)
-                   → is-compact-open F K holds
-                   → (K ≤[ poset-of F ] (U ∨[ F ] V)) holds
-                   → ∃ (K₁ , K₂) ꞉ ⟨ F ⟩ × ⟨ F ⟩ ,
-                       is-compact-open F K₁ holds
-                     × is-compact-open F K₂ holds
-                     × (K ≤[ poset-of F ] (K₁ ∨[ F ] K₂)) holds
-                     × (K₁ ≤[ poset-of F ] U ∧ K₂ ≤[ poset-of F ] V) holds
+                   → (x y a : ⟨ F ⟩)
+                   → is-compact-open F a holds
+                   → (a ≤[ poset-of F ] (x ∨[ F ] y)) holds
+                   → ∃ (b , c) ꞉ ⟨ F ⟩ × ⟨ F ⟩ ,
+                       is-compact-open F b holds
+                     × is-compact-open F c holds
+                     × (a ≤[ poset-of F ] (b ∨[ F ] c)) holds
+                     × (b ≤[ poset-of F ] x ∧ c ≤[ poset-of F ] y) holds
 compact-join-lemma F σ U V K κ ψ = ∥∥-rec ∃-is-prop † φ₁
  where
   open Joins (λ x y → x ≤[ poset-of F ] y)
