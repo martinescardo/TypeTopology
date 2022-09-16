@@ -89,8 +89,8 @@ being-equiv-is-prop.
       rn-e : right-neutral e _·_
       rn-e = λ f → ≃-refl-right' fe fe fe f
 
-      φ : (f : Aut X) →
-          (Σ f' ꞉ Aut X , (f' · f ＝ e) × (f · f' ＝ e))
+      φ : (f : Aut X)
+        → (Σ f' ꞉ Aut X , (f' · f ＝ e) × (f · f' ＝ e))
       pr₁ (φ f) = ≃-sym f
       pr₁ (pr₂ (φ (∣f∣ , is))) = to-Σ-＝ (p  , being-equiv-is-prop'' fe _ _ _)
         where
