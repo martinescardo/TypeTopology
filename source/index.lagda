@@ -53,7 +53,8 @@
      this safe-modules index: The system with type-in-type is
      inconsistent (as is well known), countable Tychonoff, and
      compactness of the Cantor type using countable Tychonoff.
-     (https://www.cs.bham.ac.uk/~mhe/TypeTopology/UnsafeModulesIndex.html)
+
+     (https://www.cs.bham.ac.uk/~mhe/TypeTopology/Unsafe.index.html)
 
    * In our last count, this development has 97000 lines, including
      comments and blank lines.
