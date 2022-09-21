@@ -388,3 +388,13 @@ transport-along-→ : {X : 𝓤 ̇ } (Y : X → 𝓥 ̇ ) (Z : X → 𝓦 ̇ )
 transport-along-→ Y Z refl f = refl
 
 \end{code}
+
+Added by Ettore Aldrovandi
+September 19, 2022:
+
+\begin{code}
+
+ap-refl : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) {x : X}
+        → ap f (𝓻𝓮𝒻𝓵 x) ＝ 𝓻𝓮𝒻𝓵 (f x)
+ap-refl f = refl
+\end{code}
