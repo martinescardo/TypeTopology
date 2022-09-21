@@ -72,7 +72,7 @@ decomposition' {𝓤} X = Σ Y ꞉ (𝟚 → 𝓤 ̇ ) , (Y ₀ + Y ₁ ≃ X) �
 
 \end{code}
 
-The above two decomposition types are logically equivalent:
+The above two decomposition types are equivalent:
 
 \begin{code}
 

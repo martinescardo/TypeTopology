@@ -54,8 +54,8 @@ is-torsor : (G : Group 𝓤) (𝕏 : G Sets) → 𝓤  ̇
 is-torsor G (X , a) = ∥ X ∥ ×
                     ((x : X) → is-equiv (right-mult G (X , a) x))
 
-is-torsor-is-prop : (G : Group 𝓤) (𝕏 : G Sets) →
-                    is-prop (is-torsor G 𝕏)
+is-torsor-is-prop : (G : Group 𝓤) (𝕏 : G Sets)
+                  → is-prop (is-torsor G 𝕏)
 is-torsor-is-prop G 𝕏 = ×-is-prop ∥∥-is-prop
                           (Π-is-prop fe
                              (λ x → being-equiv-is-prop'' fe (right-mult G 𝕏 x)))
@@ -71,13 +71,13 @@ Those two formulations are equivalent (both being props).
 is-torsor₁ : (G : Group 𝓤) (𝕏 : G Sets) → 𝓤 ̇
 is-torsor₁ G 𝕏 = ∥ ⟨ 𝕏 ⟩ ∥ × is-equiv (mult G 𝕏)
 
-is-torsor₁-is-prop : (G : Group 𝓤) (𝕏 : G Sets) →
-                     is-prop (is-torsor₁ G 𝕏)
+is-torsor₁-is-prop : (G : Group 𝓤) (𝕏 : G Sets)
+                   → is-prop (is-torsor₁ G 𝕏)
 is-torsor₁-is-prop G 𝕏 = ×-is-prop (∥∥-is-prop)
                            (being-equiv-is-prop'' fe (mult G 𝕏))
 
-torsor→torsor₁ : {G : Group 𝓤} (𝕏 : G Sets) →
-                 is-torsor G 𝕏 → is-torsor₁ G 𝕏
+torsor→torsor₁ : {G : Group 𝓤} (𝕏 : G Sets)
+               → is-torsor G 𝕏 → is-torsor₁ G 𝕏
 torsor→torsor₁ {G = G } (X , a) (n , e) = n , ee
   where
     ee : is-equiv (mult G (X , a))
@@ -95,8 +95,8 @@ torsor→torsor₁ {G = G } (X , a) (n , e) = n , ee
         η : v ∘ (mult G (X , a)) ∼ id
         η (g , x) = to-×-＝ (pr₂ (pr₂ (e x)) g) refl
 
-torsor₁→torsor : {G : Group 𝓤} (𝕏 : G Sets) →
-                 is-torsor₁ G 𝕏 → is-torsor G 𝕏
+torsor₁→torsor : {G : Group 𝓤} (𝕏 : G Sets)
+               → is-torsor₁ G 𝕏 → is-torsor G 𝕏
 torsor₁→torsor {G = G} (X , a) (n , e) = n , ee
   where
     ee : (x : X) → is-equiv (right-mult G (X , a) x)
@@ -170,8 +170,8 @@ Torsor' = TORS'
 torsor-equivalent-defs : {G : Group 𝓤} → TORS G ≃ TORS' G
 torsor-equivalent-defs = Σ-assoc
 
-underlying-action : {G : Group 𝓤} → (X : Tors G) →
-                    Action G
+underlying-action : {G : Group 𝓤} → (X : Tors G)
+                  → Action G
 underlying-action X = pr₁ X
 
 torsor-carrier : {G : Group 𝓤} (X : Tors G) → 𝓤 ̇
@@ -190,12 +190,13 @@ torsor-splitting : {G : Group 𝓤} (X : Tors G) →
                    ((x : ⟨ pr₁ X ⟩) → is-equiv (right-mult G (pr₁ X) x))
 torsor-splitting {G}  X = pr₂ (torsor-prop {G} X) 
 
-torsor-splitting₁ : {G : Group 𝓤} (X : Tors G) →
-                    is-equiv (mult G (pr₁ X))
+torsor-splitting₁ : {G : Group 𝓤} (X : Tors G)
+                  → is-equiv (mult G (pr₁ X))
 torsor-splitting₁ {G = G} X = pr₂ (torsor→torsor₁ {G = G} (pr₁ X) (pr₂ X))
 
-torsor-to-equiv : {G : Group 𝓤} (X : Tors G) →
-                  (x : torsor-carrier {G = G} X) → ⟨ G ⟩ ≃ (torsor-carrier {G = G} X)
+torsor-to-equiv : {G : Group 𝓤} (X : Tors G)
+                → (x : torsor-carrier {G = G} X)
+                → ⟨ G ⟩ ≃ (torsor-carrier {G = G} X)
 torsor-to-equiv {G = G} X x = (right-mult G (pr₁ X) x) , torsor-splitting {G = G} X x
 
 \end{code}
@@ -211,8 +212,8 @@ codify this fact, as it will be useful elsewhere.
 
 \begin{code}
 
-torsor-rinv-mult torsor-linv-mult : (G : Group 𝓤) (X : Tors G) →
-                                    (⟨ pr₁ X ⟩ × ⟨ pr₁ X ⟩ → ⟨ G ⟩ × ⟨ pr₁ X ⟩)
+torsor-rinv-mult torsor-linv-mult : (G : Group 𝓤) (X : Tors G)
+                                  → (⟨ pr₁ X ⟩ × ⟨ pr₁ X ⟩ → ⟨ G ⟩ × ⟨ pr₁ X ⟩)
 torsor-rinv-mult G X (y , x) = pr₁ (ri (y , x)) , x
   where
     m : ⟨ G ⟩ × ⟨ pr₁ X ⟩ → ⟨ pr₁ X ⟩ × ⟨ pr₁ X ⟩
@@ -305,8 +306,8 @@ underlying weak equivalence, i.e. an ActionIso.
 
 \begin{code}
 
-left-mult-gives-ActionIso : (G : Group 𝓤) (i : is-abelian G) (X : Tors G) →
-                      (g : ⟨ G ⟩) → Action-Iso G (pr₁ X) (pr₁ X)
+left-mult-gives-ActionIso : (G : Group 𝓤) (i : is-abelian G) (X : Tors G)
+                          → (g : ⟨ G ⟩) → Action-Iso G (pr₁ X) (pr₁ X)
 left-mult-gives-ActionIso G i X g = (action-to-Aut G (pr₁ X) g) ,
                                       (λ a x → (
                                            g · (a · x)     ＝⟨ (action-assoc G 𝕏 g a x) ⁻¹ ⟩
@@ -330,23 +331,23 @@ Forgetting the torsor axiom is an inclusion into the type of actions.
 underlying-action-is-embedding : (G : Group 𝓤) → is-embedding (underlying-action {G})
 underlying-action-is-embedding G = pr₁-is-embedding (λ 𝕏 → is-torsor-is-prop G 𝕏)
 
-underlying-action-injectivity :  (G : Group 𝓤) (X Y : Tors G) →
-                                 (X ＝ Y) ≃ (underlying-action {G} X ＝ underlying-action  {G} Y)
+underlying-action-injectivity :  (G : Group 𝓤) (X Y : Tors G)
+                              →  (X ＝ Y) ≃ (underlying-action {G} X ＝ underlying-action  {G} Y)
 underlying-action-injectivity G X Y = ≃-sym
                               (embedding-criterion-converse
                                 (underlying-action {G = G})
                                 (underlying-action-is-embedding G) X Y)
 
-underlying-action-injectivity' : {G : Group 𝓤} {X Y : Tors G} →
-                                 (X ＝ Y) ≃ (underlying-action {G} X ＝ underlying-action {G} Y)
+underlying-action-injectivity' : {G : Group 𝓤} {X Y : Tors G}
+                               → (X ＝ Y) ≃ (underlying-action {G} X ＝ underlying-action {G} Y)
 underlying-action-injectivity' {G} {X} {Y} = ≃-sym
                               (embedding-criterion-converse
                                 (underlying-action {G = G})
                                 (underlying-action-is-embedding G) X Y)
 
 
-underlying-action-injectivity-comp : {G : Group 𝓤} {X Y : Tors G} (p : X ＝ Y) →
-                                     pr₁ (underlying-action-injectivity G X Y) p ＝ 
+underlying-action-injectivity-comp : {G : Group 𝓤} {X Y : Tors G} (p : X ＝ Y)
+                                   → pr₁ (underlying-action-injectivity G X Y) p ＝ 
                                        ap (underlying-action {G})  p
 underlying-action-injectivity-comp p = refl
 
@@ -375,15 +376,13 @@ torsor-division G X y x = (g , ap pr₁ u) ,
       m : ⟨ G ⟩ × ⟨ pr₁ X ⟩ → ⟨ pr₁ X ⟩ × ⟨ pr₁ X ⟩
       m = mult G (pr₁ X)
 
-      i : (h : ⟨ G ⟩) (p : action-op G (pr₁ X) h x ＝ y) → 
-          m (g , x) ＝ m (h , x)
+      i : (h : ⟨ G ⟩) (p : action-op G (pr₁ X) h x ＝ y) → m (g , x) ＝ m (h , x)
       i h p = m (g , x)                   ＝⟨ to-×-＝ (ap pr₁ u) refl ⟩
               y , x                       ＝⟨ to-×-＝ (p ⁻¹) refl ⟩
               action-op G (pr₁ X) h x , x ＝⟨ refl ⟩
               m (h , x) ∎
 
-      ii : (h : ⟨ G ⟩) (p : action-op G (pr₁ X) h x ＝ y) →
-           g , x ＝ h , x
+      ii : (h : ⟨ G ⟩) (p : action-op G (pr₁ X) h x ＝ y) → g , x ＝ h , x
       ii h p = g , x                            ＝⟨ q ⁻¹ ⟩
                torsor-linv-mult G X (m (g , x)) ＝⟨ ap (torsor-linv-mult G X) (i h p) ⟩
                torsor-linv-mult G X (m (h , x)) ＝⟨ r ⟩
@@ -392,8 +391,8 @@ torsor-division G X y x = (g , ap pr₁ u) ,
                    q = torsor-linv-mult-is-left-inverse G X (g , x)
                    r = torsor-linv-mult-is-left-inverse G X (h , x)
 
-torsor-division-map : {G : Group 𝓤} {X : Tors G} →
-                      (y x : ⟨ pr₁ X ⟩) → ⟨ G ⟩
+torsor-division-map : {G : Group 𝓤} {X : Tors G}
+                    → (y x : ⟨ pr₁ X ⟩) → ⟨ G ⟩
 torsor-division-map {G = G} {X} y x = pr₁ (pr₁ (torsor-division G X y x ))
 
 -- type as \ldiv
@@ -410,8 +409,8 @@ G-torsors is necessarily an equivalence.
 \begin{code}
 
 torsor-map-is-equiv : {G : Group 𝓤} {X Y : Tors G}
-                      ((f , is) : Action-Map G (pr₁ X) (pr₁ Y)) →
-                      is-equiv f
+                    → ((f , is) : Action-Map G (pr₁ X) (pr₁ Y))
+                    → is-equiv f
 torsor-map-is-equiv {G} {𝕏 , tx} {𝕐 , ty} (f , is) = ∥∥-rec (being-equiv-is-prop'' fe f) γ (pr₁ tx)
   where
     X Y : 𝓤 ̇
@@ -471,12 +470,12 @@ types.
 
 \begin{code}
 
-univ-function : {G : Group 𝓤} (X : Tors G) (x : ⟨ pr₁ X ⟩) →
-                ⟨ pr₁  (𝕋 G)  ⟩ → ⟨ pr₁ X ⟩
+univ-function : {G : Group 𝓤} (X : Tors G) (x : ⟨ pr₁ X ⟩)
+              → ⟨ pr₁  (𝕋 G)  ⟩ → ⟨ pr₁ X ⟩
 univ-function {G} X x = right-mult G (pr₁ X) x
 
-univ-function-equivariant : {G : Group 𝓤} (X : Tors G) (x : ⟨ pr₁ X ⟩) →
-                            is-equivariant G  (pr₁ (𝕋 G)) (pr₁ X) (univ-function {G} X x)
+univ-function-equivariant : {G : Group 𝓤} (X : Tors G) (x : ⟨ pr₁ X ⟩)
+                          → is-equivariant G  (pr₁ (𝕋 G)) (pr₁ X) (univ-function {G} X x)
 univ-function-equivariant {G} X x = λ g a →  (g ·⟨ G ⟩ a) · x ＝⟨  action-assoc G (pr₁ X) g a x ⟩
                                               g · (a · x)     ∎ 
   where
@@ -486,8 +485,8 @@ univ-function-equivariant {G} X x = λ g a →  (g ·⟨ G ⟩ a) · x ＝⟨  a
 triv-map = univ-function
 triv-map-equivariant = univ-function-equivariant
 
-triv-iso : {G : Group 𝓤} (X : Tors G) (x : ⟨ pr₁ X ⟩) →
-           Action-Iso G (pr₁ (𝕋 G)) (pr₁ X)
+triv-iso : {G : Group 𝓤} (X : Tors G) (x : ⟨ pr₁ X ⟩)
+         → Action-Iso G (pr₁ (𝕋 G)) (pr₁ X)
 triv-iso {G} X x = (t , eq) , eqv
   where
     t   = triv-map {G} X x
@@ -502,8 +501,8 @@ is an equivalence).
 
 \begin{code}
 
-triv-iso-compute : (G : Group 𝓤) →
-                   triv-iso {G} (𝕋 G) (unit G) ＝ id-Action-Iso G (pr₁ (𝕋 G))
+triv-iso-compute : (G : Group 𝓤)
+                 → triv-iso {G} (𝕋 G) (unit G) ＝ id-Action-Iso G (pr₁ (𝕋 G))
 triv-iso-compute G = pr₁ φ γ
   where
     u v : Action-Iso G (pr₁ (𝕋 G)) (pr₁ (𝕋 G))
@@ -531,16 +530,16 @@ multiplication by g.
 triv-torsor-equiv : (G : Group 𝓤) (g : ⟨ pr₁ (𝕋 G) ⟩) → ⟨ pr₁ (𝕋 G) ⟩ ≃ ⟨ pr₁ (𝕋 G) ⟩
 triv-torsor-equiv G g = pr₁ (triv-iso {G} (𝕋 G) g)
 
-triv-torsor-Auto : (G : Group 𝓤) (g : ⟨ G ⟩) →
-                   Action-Iso G (pr₁ (𝕋 G)) (pr₁ (𝕋 G))
+triv-torsor-Auto : (G : Group 𝓤) (g : ⟨ G ⟩)
+                 → Action-Iso G (pr₁ (𝕋 G)) (pr₁ (𝕋 G))
 triv-torsor-Auto G g = triv-iso {G} (𝕋 G) g
 
-triv-torsor-Auto' : (G : Group 𝓤) (g : ⟨ G ⟩) →
-                   Action-Iso G (pr₁ (𝕋 G)) (pr₁ (𝕋 G))
+triv-torsor-Auto' : (G : Group 𝓤) (g : ⟨ G ⟩)
+                  → Action-Iso G (pr₁ (𝕋 G)) (pr₁ (𝕋 G))
 triv-torsor-Auto' G g = triv-torsor-equiv G g , triv-map-equivariant {G} (𝕋 G) g
 
-triv-torsor-Auto-compare : (G : Group 𝓤) (g : ⟨ G ⟩) →
-                       triv-torsor-Auto G g ＝ triv-torsor-Auto' G g
+triv-torsor-Auto-compare : (G : Group 𝓤) (g : ⟨ G ⟩)
+                         → triv-torsor-Auto G g ＝ triv-torsor-Auto' G g
 triv-torsor-Auto-compare G g = refl
 
 \end{code}
@@ -555,8 +554,8 @@ that:
 u (g) ＝ u (g · e) ＝ g · u(e)
 
 \begin{code}
-triv-torsor-right-mult : (G : Group 𝓤) →
-                         ⟨ G ⟩ ≃ Action-Iso G (pr₁ (𝕋 G)) (pr₁ (𝕋 G))
+triv-torsor-right-mult : (G : Group 𝓤)
+                       → ⟨ G ⟩ ≃ Action-Iso G (pr₁ (𝕋 G)) (pr₁ (𝕋 G))
 triv-torsor-right-mult G = qinveq t (r , η , ε)
   where
     t : ⟨ G ⟩ → Action-Iso G (pr₁ (𝕋 G)) (pr₁ (𝕋 G))
@@ -622,8 +621,8 @@ module _ (G : Group 𝓤) where
   triv-torsor-map-mult : (a b : ⟨ G ⟩) → (ρ a) ∘ (ρ b) ＝ ρ (b ·⟨ G ⟩ a)
   triv-torsor-map-mult a b = dfunext fe (λ g → assoc G g b a)
 
-  triv-torsor-Aut-mult : (a b : ⟨ G ⟩) →
-                       compose-Action-Iso G {pr₁ (𝕋 G)} {pr₁ (𝕋 G)} {pr₁ (𝕋 G)} (τ a) (τ b) ＝ τ (a ·⟨ G ⟩ b)
+  triv-torsor-Aut-mult : (a b : ⟨ G ⟩)
+                       → compose-Action-Iso G {pr₁ (𝕋 G)} {pr₁ (𝕋 G)} {pr₁ (𝕋 G)} (τ a) (τ b) ＝ τ (a ·⟨ G ⟩ b)
   triv-torsor-Aut-mult a b = pr₁ φ γ
     where
       𝕋G : Action G
@@ -678,8 +677,8 @@ right-multiplication map of G on itself.
     j φ x = torsor-division-map {G} {X} (pr₁ φ x) x
 
 
-    j-equivariance : (φ : Hom {G} X X) (a : ⟨ G ⟩) (x : ⟨ pr₁ X ⟩ ) →
-                     j φ (action-op G (pr₁ X) a x) ·⟨ G ⟩ a ＝ a ·⟨ G ⟩ (j φ x)
+    j-equivariance : (φ : Hom {G} X X) (a : ⟨ G ⟩) (x : ⟨ pr₁ X ⟩ )
+                   → j φ (action-op G (pr₁ X) a x) ·⟨ G ⟩ a ＝ a ·⟨ G ⟩ (j φ x)
     j-equivariance φ a x = equivs-are-lc (t x) (pr₂ (pr₁ (triv-iso {G} X x))) q
       where
         𝕏 : Action G
@@ -707,8 +706,8 @@ right-multiplication map of G on itself.
                 l = pr₂ (pr₁ (torsor-division G X (f x) x))
 
 
-    j-equivariance₁-pointwise : (φ : Hom {G} X X) (x : ⟨ pr₁ X ⟩) →
-                                (pr₁ φ) ∘ (t x) ∼ (t x) ∘ (ρ (j φ x))
+    j-equivariance₁-pointwise : (φ : Hom {G} X X) (x : ⟨ pr₁ X ⟩)
+                              → (pr₁ φ) ∘ (t x) ∼ (t x) ∘ (ρ (j φ x))
     j-equivariance₁-pointwise φ x g = f (t x g)             ＝⟨ refl ⟩
                                       f (g · x)             ＝⟨ i g x ⟩
                                       g · (f x)             ＝⟨ ap (λ v → g · v) l ⁻¹  ⟩
@@ -732,8 +731,8 @@ right-multiplication map of G on itself.
         l : j φ x · x ＝ f x 
         l = pr₂ (pr₁ (torsor-division G X (f x) x))
 
-    j-equivariance₁ : (φ : Hom {G} X X) (x : ⟨ pr₁ X ⟩) →
-                      (pr₁ φ) ∘ (t x) ＝ (t x) ∘ (ρ (j φ x))
+    j-equivariance₁ : (φ : Hom {G} X X) (x : ⟨ pr₁ X ⟩)
+                    → (pr₁ φ) ∘ (t x) ＝ (t x) ∘ (ρ (j φ x))
     j-equivariance₁ φ x = dfunext fe (j-equivariance₁-pointwise φ x)
         
 \end{code}

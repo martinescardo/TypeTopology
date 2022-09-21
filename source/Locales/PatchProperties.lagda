@@ -4,7 +4,7 @@ Based on `ayberkt/formal-topology-in-UF`.
 
 \begin{code}[hide]
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline --experimental-lossy-unification #-}
+{-# OPTIONS --without-K --exact-split --safe --experimental-lossy-unification #-}
 
 open import MLTT.Spartan
 open import UF.Base
@@ -359,6 +359,32 @@ module OpenNucleus (X : Locale 𝓤 𝓥 𝓥) (σ : is-spectral (𝒪 X) holds)
           opn (U ∨[ 𝒪 X ] V) W) holds
      ε = heyting-implication₁ (U ∨[ 𝒪 X ] V) W (opn U W ∧[ 𝒪 X ] opn V W) ε₁
 
+ nuclei-preserve-==> : (U V : ⟨ 𝒪 X ⟩) ((j , _) : Nucleus (𝒪 X))
+                                      → ((U ==> V) ≤[ poset-of (𝒪 X) ] (j U ==> j V)) holds
+ nuclei-preserve-==> U V 𝒿@(j , _) = U ==> V        ≤⟨ † ⟩
+                                     U ==> j V      ≤⟨ ‡ ⟩
+                                     j U ==> j V    ■
+  where
+   open PosetReasoning (poset-of (𝒪 X))
+
+   ♠ : (((U ==> V) ∧[ 𝒪 X ] U) ≤[ poset-of (𝒪 X) ] j V) holds
+   ♠ = (U ==> V) ∧[ 𝒪 X ] U ≤⟨ mp-right U V ⟩ V ≤⟨ 𝓃₁ (𝒪 X) 𝒿 V ⟩ j V ■
+
+   ♣ : (((U ==> j V) ∧[ 𝒪 X ] (j U)) ≤[ poset-of (𝒪 X) ] j V) holds
+   ♣ = (U ==> j V) ∧[ 𝒪 X ] j U     ≤⟨ i  ⟩
+       j (U ==> j V) ∧[ 𝒪 X ] j U   ＝⟨ ii ⟩ₚ
+       j ((U ==> j V) ∧[ 𝒪 X ] U)   ≤⟨ iii ⟩
+       j (j V)                      ＝⟨ iv ⟩ₚ
+       j V                          ■
+        where
+         i   = ∧[ 𝒪 X ]-left-monotone (𝓃₁ (𝒪 X) 𝒿 (U ==> j V))
+         ii  = 𝓃₃ (𝒪 X) 𝒿 (U ==> j V) U ⁻¹
+         iii = nuclei-are-monotone (𝒪 X) 𝒿 _ (mp-right U (j V))
+         iv  = nuclei-are-idempotent (𝒪 X) 𝒿 V
+
+   † = heyting-implication₁ U (j V) (U ==> V) ♠
+   ‡ = heyting-implication₁ (j U) (j V) (U ==> j V) ♣
+
 
 \end{code}
 
@@ -376,8 +402,46 @@ module Epsilon (X : Locale (𝓤 ⁺) 𝓤 𝓤) (σᴰ : spectralᴰ (𝒪 X)) 
    † : (U : ⟨ 𝒪 X ⟩) → 𝟏[ 𝒪 X ] ∨[ 𝒪 X ] U ＝ 𝟏[ 𝒪 X ]
    † U = 𝟏-left-annihilator-for-∨ (𝒪 X) U
 
+ ϵ-preserves-⋁ : let
+                  open Joins (λ x y → x ≤[ poset-of (𝒪 Patchₛ-X) ] y)
+                 in
+                  (Ɐ S ∶ Fam 𝓤 ⟨ 𝒪 X ⟩ , ‘ ⋁[ 𝒪 X ] S ’ is-lub-of ⁅ ‘ U ’ ∣ U ε S ⁆) holds
+ ϵ-preserves-⋁ S = † , ‡
+  where
+   open Joins (λ x y → x ≤[ poset-of (𝒪 Patchₛ-X) ] y)
+   open PosetReasoning (poset-of (𝒪 X))
+
+   † : (‘ ⋁[ 𝒪 X ] S ’ is-an-upper-bound-of ⁅ ‘ U ’ ∣ U ε S ⁆) holds
+   † i j = ∨[ 𝒪 X ]-least ♥ ♠
+      where
+       ♥ : ((S [ i ]) ≤[ poset-of (𝒪 X) ] ‘ ⋁[ 𝒪 X ] S ’ .pr₁ (ℬ [ j ])) holds
+       ♥ = S [ i ]                         ≤⟨ ⋁[ 𝒪 X ]-upper S i ⟩
+           ⋁[ 𝒪 X ] S                      ≤⟨ ∨[ 𝒪 X ]-upper₁ (⋁[ 𝒪 X ] S) (ℬ [ j ]) ⟩
+           (⋁[ 𝒪 X ] S) ∨[ 𝒪 X ] (ℬ [ j ]) ■
+
+       ♠ : ((ℬ [ j ]) ≤[ poset-of (𝒪 X) ] ((⋁[ 𝒪 X ] S) ∨[ 𝒪 X ] (ℬ [ j ]))) holds
+       ♠ = ∨[ 𝒪 X ]-upper₂ (⋁[ 𝒪 X ] S) (ℬ [ j ])
+
+   ‡ : (Ɐ (𝒿 , _) ∶ upper-bound ⁅ ‘ U ’ ∣ U ε S ⁆ ,
+         ‘ ⋁[ 𝒪 X ] S ’ ≤[ poset-of (𝒪 Patchₛ-X) ] 𝒿) holds
+   ‡ (𝒿@(j , _) , ψ) i =
+    ∨[ 𝒪 X ]-least δ (𝓃₁ (𝒪 X) (nucleus-of 𝒿) (ℬ [ i ]))
+     where
+      δ : ((⋁[ 𝒪 X ] S) ≤[ poset-of (𝒪 X) ] j (ℬ [ i ])) holds
+      δ = ⋁[ 𝒪 X ]-least S (j (ℬ [ i ]) , ε)
+       where
+        open Joins (λ x y → x ≤[ poset-of (𝒪 X) ] y)
+         renaming (_is-an-upper-bound-of_ to _is-an-upper-bound-of₀_)
+
+        ε : (j (ℬ [ i ]) is-an-upper-bound-of₀ S) holds
+        ε l =
+         S [ l ]                      ≤⟨ ∨[ 𝒪 X ]-upper₁ (S [ l ]) (ℬ [ i ]) ⟩
+         (S [ l ]) ∨[ 𝒪 X ] (ℬ [ i ]) ≤⟨ ψ l i                               ⟩
+         j (ℬ [ i ])                  ■
+
+
  ϵ : Patchₛ-X ─c→ X
- ϵ = ‘_’ , ϵ-preserves-𝟏 , β , γ
+ ϵ = ‘_’ , ϵ-preserves-𝟏 , β , ϵ-preserves-⋁
   where
    β : preserves-binary-meets (𝒪 X) (𝒪 Patchₛ-X) ‘_’ holds
    β U V = perfect-nuclei-eq
@@ -402,39 +466,6 @@ module Epsilon (X : Locale (𝓤 ⁺) 𝓤 𝓤) (σᴰ : spectralᴰ (𝒪 X)) 
                     (∨[ 𝒪 X ]-is-commutative W V)
 
    open Joins (λ x y → x ≤[ poset-of (𝒪 Patchₛ-X) ] y)
-
-   γ : (Ɐ S ∶ Fam 𝓤 ⟨ 𝒪 X ⟩ , ‘ ⋁[ 𝒪 X ] S ’ is-lub-of ⁅ ‘ U ’ ∣ U ε S ⁆) holds
-   γ S = † , ‡
-    where
-     open PosetReasoning (poset-of (𝒪 X))
-
-     † : (‘ ⋁[ 𝒪 X ] S ’ is-an-upper-bound-of ⁅ ‘ U ’ ∣ U ε S ⁆) holds
-     † i j = ∨[ 𝒪 X ]-least ♥ ♠
-      where
-       ♥ : ((S [ i ]) ≤[ poset-of (𝒪 X) ] ‘ ⋁[ 𝒪 X ] S ’ .pr₁ (ℬ [ j ])) holds
-       ♥ = S [ i ]                         ≤⟨ ⋁[ 𝒪 X ]-upper S i ⟩
-           ⋁[ 𝒪 X ] S                      ≤⟨ ∨[ 𝒪 X ]-upper₁ (⋁[ 𝒪 X ] S) (ℬ [ j ]) ⟩
-           (⋁[ 𝒪 X ] S) ∨[ 𝒪 X ] (ℬ [ j ]) ■
-
-       ♠ : ((ℬ [ j ]) ≤[ poset-of (𝒪 X) ] ((⋁[ 𝒪 X ] S) ∨[ 𝒪 X ] (ℬ [ j ]))) holds
-       ♠ = ∨[ 𝒪 X ]-upper₂ (⋁[ 𝒪 X ] S) (ℬ [ j ])
-
-     ‡ : (Ɐ (𝒿 , _) ∶ upper-bound ⁅ ‘ U ’ ∣ U ε S ⁆ ,
-           ‘ ⋁[ 𝒪 X ] S ’ ≤[ poset-of (𝒪 Patchₛ-X) ] 𝒿) holds
-     ‡ (𝒿@(j , _) , ψ) i =
-      ∨[ 𝒪 X ]-least δ (𝓃₁ (𝒪 X) (nucleus-of 𝒿) (ℬ [ i ]))
-        where
-         δ : ((⋁[ 𝒪 X ] S) ≤[ poset-of (𝒪 X) ] j (ℬ [ i ])) holds
-         δ = ⋁[ 𝒪 X ]-least S (j (ℬ [ i ]) , ε)
-          where
-           open Joins (λ x y → x ≤[ poset-of (𝒪 X) ] y)
-            renaming (_is-an-upper-bound-of_ to _is-an-upper-bound-of₀_)
-
-           ε : (j (ℬ [ i ]) is-an-upper-bound-of₀ S) holds
-           ε l =
-             S [ l ]                      ≤⟨ ∨[ 𝒪 X ]-upper₁ (S [ l ]) (ℬ [ i ]) ⟩
-             (S [ l ]) ∨[ 𝒪 X ] (ℬ [ i ]) ≤⟨ ψ l i                               ⟩
-             j (ℬ [ i ])                  ■
 
  𝒷 : has-basis (𝒪 X) holds
  𝒷 = spectral-frames-have-bases (𝒪 X) ∣ σᴰ ∣
@@ -544,13 +575,364 @@ We use Yoneda for the `β` direction.
 
 \end{code}
 
+\section{Open and Closed Nuclei are Complements}
+
 \begin{code}
 
-module PatchStone (X : Locale (𝓤 ⁺) 𝓤 𝓤) (σᴰ : spectralᴰ (𝒪 X)) where
+module Complementation (X : Locale (𝓤 ⁺) 𝓤 𝓤) (σᴰ : spectralᴰ (𝒪 X)) where
+
+ open SmallPatchConstruction X σᴰ renaming (SmallPatch to Patchₛ-X)
+ open PatchConstruction X ∣ σᴰ ∣ using (_$_; 𝔡𝔦𝔯)
+ open ClosedNucleus X ∣ σᴰ ∣
+ open OpenNucleus   X ∣ σᴰ ∣
+ open HeytingImplicationConstruction X (spectral-frames-have-bases (𝒪 X) ∣ σᴰ ∣)
+
+ open-complements-closed : (K : ⟨ 𝒪 X ⟩)
+                         → (κ : is-compact-open (𝒪 X) K holds)
+                         → (is-boolean-complement-of (𝒪 Patchₛ-X) ¬‘ (K , κ) ’ ‘ K ’ ) holds
+ open-complements-closed K κ = † , ‡
+  where
+   open PosetReasoning (poset-of (𝒪 X))
+
+   †₁ : ((‘ K ’ ∧[ 𝒪 Patchₛ-X ] ¬‘ (K , κ) ’)
+         ≤[ poset-of (𝒪 Patchₛ-X) ]
+         𝟎[ 𝒪 Patchₛ-X ]) holds
+   †₁ l =
+    (K ∨[ 𝒪 X ] (ℬ [ l ])) ∧[ 𝒪 X ] ((K ==> (ℬ [ l ])))                           ＝⟨ Ⅰ ⟩ₚ
+    (K ∧[ 𝒪 X ] (K ==> (ℬ [ l ]))) ∨[ 𝒪 X ] (ℬ [ l ] ∧[ 𝒪 X ] (K ==> (ℬ [ l ])))  ≤⟨ Ⅱ ⟩
+    (ℬ [ l ]) ∨[ 𝒪 X ] (ℬ [ l ] ∧[ 𝒪 X ] (K ==> (ℬ [ l ])))                       ≤⟨ Ⅲ ⟩
+    ℬ [ l ]                                                                       ＝⟨ Ⅳ ⟩ₚ
+    𝟎[ 𝒪 Patchₛ-X ] $ (ℬ [ l ])                                                   ■
+     where
+      Ⅰ =  binary-distributivity-right (𝒪 X)
+      Ⅱ = ∨[ 𝒪 X ]-left-monotone (mp-left K (ℬ [ l ]))
+      Ⅲ = ∨[ 𝒪 X ]-least ♥ ♠
+           where
+            ♥ = ≤-is-reflexive (poset-of (𝒪 X)) (ℬ [ l ])
+            ♠ = ∧[ 𝒪 X ]-lower₁ (ℬ [ l ]) (K ==> (ℬ [ l ]))
+      Ⅳ = 𝟎-is-id (ℬ [ l ]) ⁻¹
+
+   ‡₁ : (𝟏[ 𝒪 Patchₛ-X ] ≼ᵏ (‘ K ’ ∨[ 𝒪 Patchₛ-X ] ¬‘ (K , κ) ’)) holds
+   ‡₁ l =
+     𝟏[ 𝒪 X ]                                                 ≤⟨ Ⅰ ⟩
+     K ==> (K ∨[ 𝒪 X ] (ℬ [ l ]))                             ≤⟨ Ⅱ ⟩
+     (‘ K ’ ∨[ 𝒪 Patchₛ-X ] ¬‘ (K , κ) ’) $ (ℬ [ l ])         ■
+      where
+       ※ : ((𝟏[ 𝒪 X ] ∧[ 𝒪 X ] K) ≤[ poset-of (𝒪 X) ] (K ∨[ 𝒪 X ] ℬ [ l ])) holds
+       ※ = 𝟏[ 𝒪 X ] ∧[ 𝒪 X ] K   ≤⟨ ∧[ 𝒪 X ]-lower₂ (𝟏[ 𝒪 X ]) K ⟩
+           K                     ≤⟨ ∨[ 𝒪 X ]-upper₁ K (ℬ [ l ])  ⟩
+           K ∨[ 𝒪 X ] ℬ [ l ]    ■
+
+       Ⅰ = heyting-implication₁ K (K ∨[ 𝒪 X ] (ℬ [ l ])) 𝟏[ 𝒪 X ] ※
+       Ⅱ = ⋁[ 𝒪 X ]-upper _ (inl ⋆ ∷ inr ⋆ ∷ [])
+
+   † : ‘ K ’ ∧[ 𝒪 Patchₛ-X ] ¬‘ (K , κ) ’ ＝ 𝟎[ 𝒪 Patchₛ-X ]
+   † = only-𝟎-is-below-𝟎 (𝒪 Patchₛ-X) _ †₁
+
+   ‡ : ‘ K ’ ∨[ 𝒪 Patchₛ-X ] ¬‘ (K , κ) ’ ＝ 𝟏[ 𝒪 Patchₛ-X ]
+   ‡ = only-𝟏-is-above-𝟏 (𝒪 Patchₛ-X) _ ‡₁
+
+ closed-complements-open : (K : ⟨ 𝒪 X ⟩)
+                         → (κ : is-compact-open (𝒪 X) K holds)
+                         → is-boolean-complement-of (𝒪 Patchₛ-X) ‘ K ’ ¬‘ (K , κ) ’ holds
+ closed-complements-open K κ =
+  complementation-is-symmetric (𝒪 Patchₛ-X) ¬‘ (K , κ) ’ ‘ K ’ ※
+   where
+    ※ = open-complements-closed K κ
+
+\end{code}
+
+\section{Basis of Patch}
+
+\begin{code}
+
+module BasisOfPatch (X : Locale (𝓤 ⁺) 𝓤 𝓤) (σᴰ : spectralᴰ (𝒪 X)) where
+
+ open PatchConstruction X ∣ σᴰ ∣
+  using (_≼_; _⋏_; nucleus-of; _$_; ⋁ₙ)
+  renaming (Patch to Patch-X; Perfect-Nucleus to Perfect-Nucleus-on-X)
+ open SmallPatchConstruction X σᴰ renaming (SmallPatch to Patchₛ-X)
+ open HeytingImplicationConstruction X (spectral-frames-have-bases (𝒪 X) ∣ σᴰ ∣)
+ open ClosedNucleus X ∣ σᴰ ∣
+ open OpenNucleus X ∣ σᴰ ∣
+
+\end{code}
+
+For convenience, we define the following auxiliary notation for the open nucleus:
+
+\begin{code}
+
+ 𝔠 : index ℬ → ⟨ 𝒪 Patchₛ-X ⟩
+ 𝔠 i = ‘ ℬ [ i ] ’
+
+ 𝔬 : index ℬ → ⟨ 𝒪 Patchₛ-X ⟩
+ 𝔬 i = ¬‘ ℬ [ i ] , pr₁ (pr₂ (pr₂ σᴰ)) i ’
+
+ κ : (i : index ℬ) → is-compact-open (𝒪 X) (ℬ [ i ]) holds
+ κ = pr₁ (pr₂ (pr₂ σᴰ))
+
+\end{code}
+
+We define the following basis for Patch:
+
+\begin{code}
+
+ ℬ-patch : Fam 𝓤 ⟨ 𝒪 Patchₛ-X ⟩
+ ℬ-patch = ⁅ 𝔠 k ⋏ 𝔬 l ∣ (k , l) ∶ (index ℬ × index ℬ) ⁆
+
+ ℬ-patch-consists-of-clopens : consists-of-clopens (𝒪 Patch-X) ℬ-patch holds
+ ℬ-patch-consists-of-clopens (k , l) = (𝔬 k ∨[ 𝒪 Patch-X ] 𝔠 l) , ※
+  where
+   open Complementation X σᴰ
+
+   † : is-boolean-complement-of (𝒪 Patch-X) (𝔠 k) (𝔬 k) holds
+   † = closed-complements-open (ℬ [ k ]) (κ k)
+
+   ‡ : is-boolean-complement-of (𝒪 Patch-X) (𝔬 l) (𝔠 l) holds
+   ‡ = open-complements-closed (ℬ [ l ]) (κ l)
+
+   ※ : is-boolean-complement-of
+        (𝒪 Patch-X)
+        (𝔬 k ∨[ 𝒪 Patch-X ] 𝔠 l)
+        (𝔠 k ∧[ 𝒪 Patch-X ] 𝔬 l) holds
+   ※ = ∧-complement (𝒪 Patch-X) † ‡
+
+\end{code}
+
+Given a perfect nucleus `j : 𝓞(X) → 𝓞(X)`, the basic covering family for it
+is given by the restriction of the family, given by the function `𝕔𝕠𝕧`
+
+\begin{code}
+
+ basic-below : Perfect-Nucleus-on-X → 𝓤  ̇
+ basic-below 𝒿@(j , _) =
+  Σ (k , l) ꞉ (index ℬ × index ℬ) , ((ℬ [ k ]) ≤[ poset-of (𝒪 X) ] j (ℬ [ l ])) holds
+
+ proj : (𝒿 : Perfect-Nucleus-on-X) → basic-below 𝒿 → index ℬ × index ℬ
+ proj 𝒿 ((k , l) , _)= k , l
+
+ 𝕔𝕠𝕧₁ : Perfect-Nucleus-on-X → Fam 𝓤 ⟨ 𝒪 Patchₛ-X ⟩
+ 𝕔𝕠𝕧₁ 𝒿@(j , _) = ⁅ 𝔠 k ∧[ 𝒪 Patchₛ-X ] 𝔬 l ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆
+
+ 𝕜 : Perfect-Nucleus-on-X → index ℬ → ⟨ 𝒪 Patchₛ-X ⟩
+ 𝕜 (j , _) l = ‘ j (ℬ [ l ]) ’ ∧[ 𝒪 Patchₛ-X ] 𝔬 l
+
+ 𝕔𝕠𝕧₂ : Perfect-Nucleus-on-X → Fam 𝓤 ⟨ 𝒪 Patchₛ-X ⟩
+ 𝕔𝕠𝕧₂ 𝒿 = ⁅ 𝕜 𝒿 i ∣ i ∶ index ℬ ⁆
+
+\end{code}
+
+\begin{code}
+
+ 𝕜ⱼi-is-below-j : (𝒿 : Perfect-Nucleus-on-X) (i : index ℬ) → (𝕜 𝒿 i ≼ᵏ 𝒿) holds
+ 𝕜ⱼi-is-below-j 𝒿@(j , _) i l =
+  𝕜 𝒿 i $ (ℬ [ l ])                                          ＝⟨ refl ⟩ₚ
+  (j ℬᵢ ∨[ 𝒪 X ] ℬₗ) ∧[ 𝒪 X ] (ℬᵢ ==> ℬₗ)                    ≤⟨ ᚠ ⟩
+  (j ℬᵢ ∨[ 𝒪 X ] ℬₗ) ∧[ 𝒪 X ] (j ℬᵢ ==> j ℬₗ)                ≤⟨ ᚣ ⟩
+  (j ℬᵢ ∨[ 𝒪 X ] ℬₗ) ∧[ 𝒪 X ] ((j ℬᵢ ∨[ 𝒪 X ] ℬₗ) ==> j ℬₗ)  ≤⟨ ᚬ ⟩
+  j (ℬ [ l ])                                                ■
+   where
+    open PosetReasoning (poset-of (𝒪 X))
+    ℬᵢ = ℬ [ i ]
+    ℬₗ = ℬ [ l ]
+
+    Ⅰ = binary-distributivity (𝒪 X) (j ℬᵢ ==> j ℬₗ) (j ℬᵢ) ℬₗ
+    Ⅱ = ∨[ 𝒪 X ]-left-monotone (mp-right (j ℬᵢ) (j ℬₗ))
+    Ⅲ = ∨[ 𝒪 X ]-right-monotone (∧[ 𝒪 X ]-lower₂ (j ℬᵢ ==> j ℬₗ) ℬₗ)
+    Ⅳ = ∨[ 𝒪 X ]-least (≤-is-reflexive (poset-of (𝒪 X)) (j ℬₗ)) (𝓃₁ (𝒪 X) (nucleus-of 𝒿) ℬₗ)
+
+    ♣ : ((j ℬᵢ ==> j ℬₗ ∧[ 𝒪 X ] (j ℬᵢ ∨[ 𝒪 X ] ℬₗ)) ≤[ poset-of (𝒪 X) ] j ℬₗ) holds
+    ♣ = j ℬᵢ ==> j ℬₗ ∧[ 𝒪 X ] (j ℬᵢ ∨[ 𝒪 X ] ℬₗ)                             ＝⟨ Ⅰ ⟩ₚ
+        ((j ℬᵢ ==> j ℬₗ) ∧[ 𝒪 X ] j ℬᵢ) ∨[ 𝒪 X ] (j ℬᵢ ==> j ℬₗ) ∧[ 𝒪 X ] ℬₗ  ≤⟨ Ⅱ ⟩
+        j ℬₗ ∨[ 𝒪 X ] (j ℬᵢ ==> j ℬₗ) ∧[ 𝒪 X ] ℬₗ                             ≤⟨ Ⅲ ⟩
+        j ℬₗ ∨[ 𝒪 X ] ℬₗ                                                      ≤⟨ Ⅳ ⟩
+        j ℬₗ                                                                  ■
+
+
+    ♠ : ((j ℬᵢ ==> j ℬₗ) ≤[ poset-of (𝒪 X) ] ((j ℬᵢ ∨[ 𝒪 X ] ℬₗ) ==> j ℬₗ)) holds
+    ♠ = heyting-implication₁ _ (j ℬₗ) (j ℬᵢ ==> j ℬₗ) ♣
+
+    ᚠ = ∧[ 𝒪 X ]-right-monotone (nuclei-preserve-==> ℬᵢ ℬₗ (nucleus-of 𝒿))
+    ᚣ = ∧[ 𝒪 X ]-right-monotone ♠
+    ᚬ = mp-left (j ℬᵢ ∨[ 𝒪 X ] ℬₗ) (j ℬₗ)
+
+\end{code}
+
+This lemma can be strengthened to an equality in the case where `𝕜ⱼ(i)` is being
+applied to `ℬⱼ`.
+
+\begin{code}
+
+ 𝕜-𝒿-eq : (𝒿 : Perfect-Nucleus-on-X) (i : index ℬ) → 𝕜 𝒿 i $ (ℬ [ i ]) ＝ 𝒿 $ (ℬ [ i ])
+ 𝕜-𝒿-eq 𝒿@(j , _) i = ≤-is-antisymmetric (poset-of (𝒪 X)) † ‡
+  where
+   open PosetReasoning (poset-of (𝒪 X))
+
+   ℬᵢ = ℬ [ i ]
+
+   † : (((𝕜 𝒿 i) $ (ℬ [ i ])) ≤[ poset-of (𝒪 X) ] (𝒿 $ (ℬ [ i ]))) holds
+   † = 𝕜ⱼi-is-below-j 𝒿 i i
+
+   Ⅰ = ∨[ 𝒪 X ]-upper₁ (j (ℬ [ i ])) (ℬ [ i ])
+   Ⅱ = 𝟏-right-unit-of-∧ (𝒪 X) (j (ℬ [ i ]) ∨[ 𝒪 X ] ℬ [ i ]) ⁻¹
+   Ⅲ = ap
+       (λ - → (j (ℬ [ i ]) ∨[ 𝒪 X ] ℬ [ i ]) ∧[ 𝒪 X ] -)
+       (heyting-implication-identity (ℬ [ i ]) ⁻¹)
+
+   ‡ : ((𝒿 $ (ℬ [ i ])) ≤[ poset-of (𝒪 X) ] (𝕜 𝒿 i $ (ℬ [ i ]))) holds
+   ‡ = 𝒿 $ (ℬ [ i ])                                                     ≤⟨ Ⅰ ⟩
+       j (ℬ [ i ]) ∨[ 𝒪 X ] ℬ [ i ]                                      ＝⟨ Ⅱ ⟩ₚ
+       (j (ℬ [ i ]) ∨[ 𝒪 X ] ℬ [ i ]) ∧[ 𝒪 X ] 𝟏[ 𝒪 X ]                  ＝⟨ Ⅲ ⟩ₚ
+       (j (ℬ [ i ]) ∨[ 𝒪 X ] ℬ [ i ]) ∧[ 𝒪 X ] ((ℬ [ i ]) ==> (ℬ [ i ])) ＝⟨ refl ⟩ₚ
+       𝕜 𝒿 i $ (ℬ [ i ])                                                 ■
+
+\end{code}
+
+The first lemma we prove is the fact that `𝒿 = 𝕔𝕠𝕧₂ 𝒿` which we call
+*Johnstone's lemma*.
+
+\begin{code}
+
+ lemma-johnstone : (𝒿 : Perfect-Nucleus-on-X) → 𝒿 ＝ ⋁[ 𝒪 Patchₛ-X ] 𝕔𝕠𝕧₂ 𝒿
+ lemma-johnstone 𝒿@(j , _) = ⋁[ 𝒪 Patchₛ-X ]-unique (𝕔𝕠𝕧₂ 𝒿) 𝒿 († , ‡)
+  where
+   open Joins (λ 𝒿 𝓀 → 𝒿 ≤[ poset-of (𝒪 Patchₛ-X) ] 𝓀)
+   open PosetReasoning (poset-of (𝒪 X))
+
+   † : (𝒿 is-an-upper-bound-of 𝕔𝕠𝕧₂ 𝒿) holds
+   † = 𝕜ⱼi-is-below-j 𝒿
+
+   ‡ : ((𝓀 , _) : upper-bound (𝕔𝕠𝕧₂ 𝒿)) → (𝒿 ≼ᵏ 𝓀) holds
+   ‡ (𝓀 , υ) l = j (ℬ [ l ])        ＝⟨ 𝕜-𝒿-eq 𝒿 l ⁻¹ ⟩ₚ
+                 𝕜 𝒿 l $ (ℬ [ l ])  ≤⟨ υ l l ⟩
+                 𝓀 $ (ℬ [ l ])      ■
+
+\end{code}
+
+\begin{code}
+
+ open Epsilon X σᴰ
+
+ ‘’-is-monotone : (U V : ⟨ 𝒪 X ⟩)
+                → (U ≤[ poset-of (𝒪 X) ] V) holds
+                → (‘ U ’ ≤[ poset-of (𝒪 Patch-X) ] ‘ V ’) holds
+ ‘’-is-monotone U V p W = ∨[ 𝒪 X ]-least † ‡
+  where
+   open PosetReasoning (poset-of (𝒪 X))
+
+   † : (U ≤[ poset-of (𝒪 X) ] (V ∨[ 𝒪 X ] W)) holds
+   † = U ≤⟨ p ⟩ V ≤⟨ ∨[ 𝒪 X ]-upper₁ V W ⟩ V ∨[ 𝒪 X ] W ■
+
+   ‡ : (W ≤[ poset-of (𝒪 X) ] (V ∨[ 𝒪 X ] W)) holds
+   ‡ = ∨[ 𝒪 X ]-upper₂ V W
+
+
+ 𝕔𝕠𝕧₁=𝕔𝕠𝕧₂ : (𝒿 : Perfect-Nucleus-on-X) → ⋁ₙ (𝕔𝕠𝕧₁ 𝒿) ＝ ⋁ₙ (𝕔𝕠𝕧₂ 𝒿)
+ 𝕔𝕠𝕧₁=𝕔𝕠𝕧₂ 𝒿@(j , _) = ≤-is-antisymmetric (poset-of (𝒪 Patch-X)) † ‡
+  where
+
+   β : cofinal-in (𝒪 Patch-X) (𝕔𝕠𝕧₁ 𝒿) (𝕔𝕠𝕧₂ 𝒿) holds
+   β ((k , l) , p) = ∣ l , ※ ∣
+    where
+     open PosetReasoning (poset-of (𝒪 Patch-X))
+
+     ♠ : ((𝔠 k ∧[ 𝒪 Patch-X ] 𝔬 l)
+          ≤[ poset-of (𝒪 Patch-X) ]
+          (‘ j (ℬ [ l ]) ’ ∧[ 𝒪 Patchₛ-X ] 𝔬 l)) holds
+     ♠ = ∧[ 𝒪 Patch-X ]-left-monotone (‘’-is-monotone (ℬ [ k ]) (j (ℬ [ l ])) p)
+
+     ※ : ((𝕔𝕠𝕧₁ 𝒿 [ (k , l) , p ]) ≤[ poset-of (𝒪 Patch-X) ] ((𝕔𝕠𝕧₂ 𝒿) [ l ])) holds
+     ※ = 𝕔𝕠𝕧₁ 𝒿 [ (k , l) , p ]                ＝⟨ refl ⟩ₚ
+         𝔠 k ∧[ 𝒪 Patch-X ] 𝔬 l                ≤⟨ ♠ ⟩
+         ‘ j (ℬ [ l ]) ’ ∧[ 𝒪 Patchₛ-X ] 𝔬 l   ＝⟨ refl ⟩ₚ
+         𝕔𝕠𝕧₂ 𝒿 [ l ]                          ■
+
+   † : (⋁ₙ (𝕔𝕠𝕧₁ 𝒿) ≼ ⋁ₙ (𝕔𝕠𝕧₂ 𝒿)) holds
+   † = cofinal-implies-join-covered (𝒪 Patch-X) (𝕔𝕠𝕧₁ 𝒿) (𝕔𝕠𝕧₂ 𝒿) β
+
+   ‡ : (⋁ₙ (𝕔𝕠𝕧₂ 𝒿) ≤[ poset-of (𝒪 Patch-X) ] (⋁ₙ (𝕔𝕠𝕧₁ 𝒿))) holds
+   ‡ = ⋁[ 𝒪 Patch-X ]-least (𝕔𝕠𝕧₂ 𝒿) (⋁ₙ (𝕔𝕠𝕧₁ 𝒿) , ※)
+    where
+     open Joins (λ x y → x ≤[ poset-of (𝒪 Patch-X) ] y)
+     open PosetReasoning (poset-of (𝒪 X))
+
+
+     ※ : (⋁ₙ (𝕔𝕠𝕧₁ 𝒿) is-an-upper-bound-of (𝕔𝕠𝕧₂ 𝒿)) holds
+     ※ i U =
+      (𝕔𝕠𝕧₂ 𝒿 [ i ]) $ U                                                  ＝⟨ refl ⟩ₚ
+      𝕜 𝒿 i $ U                                                           ＝⟨ refl ⟩ₚ
+      (‘ j (ℬ [ i ]) ’ ∧[ 𝒪 Patchₛ-X ] 𝔬 i) $ U                           ＝⟨ Ⅰ    ⟩ₚ
+      (‘ ⋁[ 𝒪 X ] ⁅ ℬ [ l ] ∣ l ε ℒ ⁆ ’ ∧[ 𝒪 Patchₛ-X ] 𝔬 i) $ U          ＝⟨ Ⅱ    ⟩ₚ
+      ((⋁[ 𝒪 Patchₛ-X ] ⁅ ‘ ℬ [ l ] ’ ∣ l ε ℒ ⁆) ∧[ 𝒪 Patchₛ-X ] 𝔬 i) $ U ＝⟨ Ⅲ    ⟩ₚ
+      ((⋁[ 𝒪 Patchₛ-X ] ⁅ ‘ ℬ [ l ] ’ ∧[ 𝒪 Patchₛ-X ] 𝔬 i ∣ l ε ℒ ⁆) $ U) ≤⟨ ♥     ⟩
+      ⋁ₙ (𝕔𝕠𝕧₁ 𝒿) $ U                                                     ■
+       where
+        ℒ : Fam 𝓤 (index ℬ)
+        ℒ = pr₁ (pr₁ (pr₁ (pr₂ σᴰ)) (𝒿 $ (ℬ [ i ])))
+
+        p : j (ℬ [ i ]) ＝ ⋁[ 𝒪 X ] ⁅ ℬ [ l ] ∣ l ε ℒ ⁆
+        p = (⋁[ 𝒪 X ]-unique ⁅ ℬ [ l ] ∣ l ε ℒ ⁆
+               (j (ℬ [ i ]))
+               (pr₂ (pr₁ (pr₁ (pr₂ σᴰ)) (𝒿 $ (ℬ [ i ])))))
+
+        Ⅰ = ap (λ - → (‘ - ’ ∧[ 𝒪 Patchₛ-X ] 𝔬 i) $ U) p
+        Ⅱ = ap
+             (λ - → (- ∧[ 𝒪 Patchₛ-X ] 𝔬 i) $ U)
+             (⋁[ 𝒪 Patchₛ-X ]-unique
+               ⁅ ‘ ℬ [ l ] ’ ∣ l ε ℒ ⁆
+               _
+               (ϵ-preserves-⋁ ⁅ ℬ [ l ] ∣ l ε ℒ ⁆))
+        Ⅲ = ap (λ - → - $ U) (distributivity′-right _ _ _)
+
+        ♣ : (l : index ℒ)
+          → ((‘ ℬ [ ℒ [ l ] ] ’ ∧[ 𝒪 Patchₛ-X ] 𝔬 i) ≤[ poset-of (𝒪 Patchₛ-X) ] (⋁[ 𝒪 Patchₛ-X ] 𝕔𝕠𝕧₁ 𝒿)) holds
+        ♣ l = ⋁[ 𝒪 Patchₛ-X ]-upper (𝕔𝕠𝕧₁ 𝒿) ((ℒ [ l ] , i) , γ)
+         where
+          γ : ((ℬ [ ℒ [ l ] ]) ≤[ poset-of (𝒪 X) ] j (ℬ [ i ])) holds
+          γ = ℬ [ ℒ [ l ] ]                  ≤⟨ ⋁[ 𝒪 X ]-upper ⁅ ℬ [ l ] ∣ l ε ℒ ⁆ l ⟩
+              ⋁[ 𝒪 X ] ⁅ ℬ [ l ] ∣ l ε ℒ ⁆   ＝⟨ p ⁻¹ ⟩ₚ
+              j (ℬ [ i ])                    ■
+
+        ♠ = ⋁[ 𝒪 Patchₛ-X ]-least
+             ⁅ ‘ ℬ [ l ] ’ ∧[ 𝒪 Patchₛ-X ] 𝔬 i ∣ l ε ℒ ⁆
+             ((⋁[ 𝒪 Patchₛ-X ] 𝕔𝕠𝕧₁ 𝒿) , ♣)
+
+        ♥ = ≼ᵏ-implies-≼ _ _ ♠ U
+
+\end{code}
+
+We first prove that this forms a basis.
+
+\begin{code}
+
+ main-covering-lemma : (𝒿 : Perfect-Nucleus-on-X) → 𝒿 ＝ ⋁[ 𝒪 Patch-X ] (𝕔𝕠𝕧₁ 𝒿)
+ main-covering-lemma 𝒿 =
+  𝒿                          ＝⟨ lemma-johnstone 𝒿 ⟩
+  ⋁[ 𝒪 Patch-X ] (𝕔𝕠𝕧₂ 𝒿)    ＝⟨ (𝕔𝕠𝕧₁=𝕔𝕠𝕧₂ 𝒿) ⁻¹  ⟩
+  ⋁[ 𝒪 Patch-X ] (𝕔𝕠𝕧₁ 𝒿)    ∎
+
+ ℬ-is-basis-for-patch : is-basis-for (𝒪 Patch-X) ℬ-patch
+ ℬ-is-basis-for-patch 𝒿 = (basic-below 𝒿 , proj 𝒿) , ※
+  where
+   open Joins _≼_
+
+   ※ : (𝒿 is-lub-of (𝕔𝕠𝕧₁ 𝒿)) holds
+   ※ = transport
+        (λ - → (- is-lub-of (𝕔𝕠𝕧₁ 𝒿)) holds)
+        (main-covering-lemma 𝒿 ⁻¹)
+        ((⋁[ 𝒪 Patch-X ]-upper (𝕔𝕠𝕧₁ 𝒿) , ⋁[ 𝒪 Patch-X ]-least (𝕔𝕠𝕧₁ 𝒿)))
+
+
+\end{code}
+
+\begin{code}
+
+module PatchStoneᴰ (X : Locale (𝓤 ⁺) 𝓤 𝓤) (σᴰ : spectralᴰ (𝒪 X)) where
 
  open ClosedNucleus X ∣ σᴰ ∣
  open OpenNucleus   X ∣ σᴰ ∣
  open SmallPatchConstruction X σᴰ renaming (SmallPatch to Patchₛ-X)
+ open PatchConstruction X ∣ σᴰ ∣ using (_≼_; ⋁ₙ) renaming (Patch to Patch-X)
  open Epsilon X σᴰ
 
  open PerfectMaps Patchₛ-X X 𝒷
@@ -562,8 +944,62 @@ module PatchStone (X : Locale (𝓤 ⁺) 𝓤 𝓤) (σᴰ : spectralᴰ (𝒪 X
 
 \begin{code}
 
- patch-is-compact : is-compact (𝒪 Patchₛ-X) holds
- patch-is-compact =
+ patchₛ-is-compact : is-compact (𝒪 Patchₛ-X) holds
+ patchₛ-is-compact =
   compact-codomain-of-perfect-map-implies-compact-domain ϵ ϵ-is-a-perfect-map X-is-compact
+
+ patch-is-compact : is-compact (𝒪 Patch-X) holds
+ patch-is-compact S δ p = ∥∥-rec ∃-is-prop γ (patchₛ-is-compact S ζ †)
+  where
+   γ : (Σ i ꞉ index S , (𝟏[ 𝒪 Patchₛ-X ] ≼ᵏ (S [ i ])) holds)
+     → ∃ i ꞉ index S , (𝟏[ 𝒪 Patch-X ] ≼ (S [ i ])) holds
+   γ (i , q) = ∣ i , ≼ᵏ-implies-≼ 𝟏[ 𝒪 Patch-X ] (S [ i ]) q ∣
+
+   ζ : is-directed (poset-of (𝒪 Patchₛ-X)) S holds
+   ζ = pr₁ δ , †
+    where
+     † : (i j : index S) → (Ǝ k ∶ index S , (((S [ i ]) ≼ᵏ (S [ k ]))
+                                           ∧ ((S [ j ]) ≼ᵏ (S [ k ]))) holds) holds
+     † i j = ∥∥-rec ∃-is-prop ‡ (pr₂ δ i j)
+      where
+       ‡ : _
+       ‡ (k , φ , ψ) = ∣ k
+                       , ≼-implies-≼ᵏ (S [ i ]) (S [ k ]) φ
+                       , ≼-implies-≼ᵏ (S [ j ]) (S [ k ]) ψ ∣
+
+   † : (𝟏[ 𝒪 Patch-X ] ≼ᵏ ⋁ₙ S) holds
+   † = ≼-implies-≼ᵏ 𝟏[ 𝒪 Patch-X ] (⋁ₙ S) p
+
+\end{code}
+
+\begin{code}
+
+ open BasisOfPatch X σᴰ
+
+ patch-zero-dimensional : is-zero-dimensional (𝒪 Patch-X) holds
+ patch-zero-dimensional = ∣ ℬ-patch , β , γ ∣
+  where
+   β : is-basis-for (𝒪 Patch-X) ℬ-patch
+   β = ℬ-is-basis-for-patch
+
+   γ : consists-of-clopens (𝒪 Patch-X) ℬ-patch holds
+   γ = ℬ-patch-consists-of-clopens
+
+\end{code}
+
+\begin{code}
+
+module PatchStone (X : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (𝒪 X) holds) where
+
+ open PatchConstruction X σ renaming (Patch to Patch-X)
+
+ patch-is-stone : is-stone (𝒪 Patch-X) holds
+ patch-is-stone = ∥∥-rec (holds-is-prop (is-stone (𝒪 Patch-X))) γ σ
+  where
+   γ : spectralᴰ (𝒪 X) → is-stone (𝒪 Patch-X) holds
+   γ σᴰ = let
+           open PatchStoneᴰ X σᴰ
+          in
+           patch-is-compact , patch-zero-dimensional
 
 \end{code}

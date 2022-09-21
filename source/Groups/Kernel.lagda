@@ -122,14 +122,14 @@ extra axioms
 \begin{code}
 
 
-  kernel-universal-map : (G : Group 𝓦) (u : ⟨ G ⟩ → ⟨ A ⟩) (isu : is-hom G A u) →
-                         ((g : ⟨ G ⟩) → f (u g) ＝ e⟨ B ⟩) → 
-                         ⟨ G ⟩ → ⟨ kernel ⟩
+  kernel-universal-map : (G : Group 𝓦) (u : ⟨ G ⟩ → ⟨ A ⟩) (isu : is-hom G A u)
+                       → ((g : ⟨ G ⟩) → f (u g) ＝ e⟨ B ⟩)
+                       → ⟨ G ⟩ → ⟨ kernel ⟩
   kernel-universal-map G u isu γ = λ g → (u g) , (γ g)
 
-  kernel-universal-map-is-hom : (G : Group 𝓦) (u : ⟨ G ⟩ → ⟨ A ⟩) (isu : is-hom G A u) →
-                                (γ : (g : ⟨ G ⟩) → f (u g) ＝ e⟨ B ⟩) →
-                                is-hom G kernel (kernel-universal-map G u isu γ)
+  kernel-universal-map-is-hom : (G : Group 𝓦) (u : ⟨ G ⟩ → ⟨ A ⟩) (isu : is-hom G A u)
+                              → (γ : (g : ⟨ G ⟩) → f (u g) ＝ e⟨ B ⟩)
+                              → is-hom G kernel (kernel-universal-map G u isu γ)
   kernel-universal-map-is-hom G u isu γ {x} {y} = to-Σ-＝ (isu , group-is-set B _ _)
 
 
@@ -140,9 +140,9 @@ extra axioms
             function extensionality
    -}
 
-  kernel-universal : (G : Group 𝓦) (u : ⟨ G ⟩ → ⟨ A ⟩) (isu : is-hom G A u) →
-                     ((g : ⟨ G ⟩) → f (u g) ＝ e⟨ B ⟩) → 
-                     Σ (λ v → kernel-map ∘ v ∼ u)
+  kernel-universal : (G : Group 𝓦) (u : ⟨ G ⟩ → ⟨ A ⟩) (isu : is-hom G A u)
+                   → ((g : ⟨ G ⟩) → f (u g) ＝ e⟨ B ⟩)
+                   → Σ (λ v → kernel-map ∘ v ∼ u)
   kernel-universal G u isu γ = kernel-universal-map G u isu γ , λ g → refl
 
 \end{code}

@@ -134,9 +134,10 @@ module special-classifier-single-universe (𝓤 : Universe) where
  universe-is-special-classifier : (𝓤 ̇ → 𝓥 ̇ ) → 𝓤 ⁺ ⊔ 𝓥 ̇
  universe-is-special-classifier P = (Y : 𝓤 ̇ ) → is-equiv (χ-special P Y)
 
- mc-gives-sc : universe-is-classifier
-             → (P : 𝓤 ̇ → 𝓥 ̇ ) → universe-is-special-classifier P
- mc-gives-sc s P Y = γ
+ classifier-gives-special-classifier : universe-is-classifier
+                                     → (P : 𝓤 ̇ → 𝓥 ̇ )
+                                     → universe-is-special-classifier P
+ classifier-gives-special-classifier s P Y = γ
   where
    e = (𝓤 /[ P ] Y)                               ≃⟨ a ⟩
        (Σ σ ꞉ 𝓤 / Y , ((y : Y) → P ((χ Y) σ y)))  ≃⟨ b ⟩
@@ -157,7 +158,7 @@ module special-classifier-single-universe (𝓤 : Universe) where
                     → funext 𝓤 (𝓤 ⁺)
                     → (P : 𝓤 ̇ → 𝓥 ̇ ) (Y : 𝓤 ̇ )
                     → is-equiv (χ-special P Y)
- χ-special-is-equiv ua fe P Y = mc-gives-sc (universes-are-classifiers ua fe) P Y
+ χ-special-is-equiv ua fe P Y = classifier-gives-special-classifier (universes-are-classifiers ua fe) P Y
 
  special-classification : is-univalent 𝓤
                         → funext 𝓤 (𝓤 ⁺)
@@ -230,22 +231,13 @@ module surjection-classifier (𝓤 : Universe) where
 \end{code}
 
 Added 11th September 2022. We now generalize the universe levels of
-the classifier and special classifier modules.  This turns out to be
-not as direct as we thought it would be.
-
-We work with two universes 𝓤 ⊑ 𝓑. Because Agda can't express such
-inequalities directly, we instead work with universes 𝓤 and 𝓥 and set
-𝓑 = 𝓤 ⊔ 𝓥. But then we shouldn't mention 𝓥.
+the classifier and special classifier modules.
 
 \begin{code}
 
-module general-classifier (𝓤 𝓥 : Universe) where
+module classifier (𝓤 𝓥 : Universe) where
 
- 𝓑 𝓑⁺ : Universe
- 𝓑 = 𝓤 ⊔ 𝓥
- 𝓑⁺ = 𝓑 ⁺
-
- χ : (Y : 𝓤 ̇ ) → 𝓑 / Y  → (Y → 𝓑 ̇ )
+ χ : (Y : 𝓤 ̇ ) → (𝓤 ⊔ 𝓥) / Y  → (Y → 𝓤 ⊔ 𝓥 ̇ )
  χ Y (X , f) = fiber f
 
 \end{code}
@@ -254,14 +246,14 @@ Definition of when the given pair of universes is a classifier,
 
 \begin{code}
 
- universe-is-classifier : 𝓑⁺ ̇
+ universe-is-classifier : (𝓤 ⊔ 𝓥)⁺ ̇
  universe-is-classifier = (Y : 𝓤 ̇ ) → is-equiv (χ Y)
 
- 𝕋 : (Y : 𝓤 ̇ ) → (Y → 𝓑 ̇ ) → 𝓑 / Y
+ 𝕋 : (Y : 𝓤 ̇ ) → (Y → 𝓤 ⊔ 𝓥 ̇ ) → (𝓤 ⊔ 𝓥) / Y
  𝕋 Y A = Σ A , pr₁
 
- χη : is-univalent 𝓑
-    → (Y : 𝓤 ̇ ) (σ : 𝓑 / Y) → 𝕋 Y (χ Y σ) ＝ σ
+ χη : is-univalent (𝓤 ⊔ 𝓥)
+    → (Y : 𝓤 ̇ ) (σ : (𝓤 ⊔ 𝓥) / Y) → 𝕋 Y (χ Y σ) ＝ σ
  χη ua Y (X , f) = r
   where
    e : Σ (fiber f) ≃ X
@@ -280,9 +272,9 @@ Definition of when the given pair of universes is a classifier,
    r : (Σ (fiber f) , pr₁) ＝ (X , f)
    r = to-Σ-＝ (p , q)
 
- χε : is-univalent 𝓑
-    → funext 𝓤 𝓑⁺
-    → (Y : 𝓤 ̇ ) (A : Y → 𝓑 ̇ ) → χ Y (𝕋 Y A) ＝ A
+ χε : is-univalent (𝓤 ⊔ 𝓥)
+    → funext 𝓤 ((𝓤 ⊔ 𝓥)⁺)
+    → (Y : 𝓤 ̇ ) (A : Y → 𝓤 ⊔ 𝓥 ̇ ) → χ Y (𝕋 Y A) ＝ A
  χε ua fe Y A = dfunext fe γ
   where
    f : ∀ y → fiber pr₁ y → A y
@@ -300,15 +292,15 @@ Definition of when the given pair of universes is a classifier,
    γ : ∀ y → fiber pr₁ y ＝ A y
    γ y = eqtoid ua _ _ (qinveq (f y) (g y , η y , ε y))
 
- universes-are-classifiers : is-univalent 𝓑
-                           → funext 𝓤 𝓑⁺
+ universes-are-classifiers : is-univalent (𝓤 ⊔ 𝓥)
+                           → funext 𝓤 ((𝓤 ⊔ 𝓥)⁺)
                            → universe-is-classifier
  universes-are-classifiers ua fe Y = qinvs-are-equivs (χ Y)
                                           (𝕋 Y , χη ua Y , χε ua fe Y)
 
- classification : is-univalent 𝓑
-                → funext 𝓤 𝓑⁺
-                → (Y : 𝓤 ̇ ) → 𝓑 / Y ≃ (Y → 𝓑 ̇ )
+ classification : is-univalent (𝓤 ⊔ 𝓥)
+                → funext 𝓤 ((𝓤 ⊔ 𝓥)⁺)
+                → (Y : 𝓤 ̇ ) → (𝓤 ⊔ 𝓥) / Y ≃ (Y → 𝓤 ⊔ 𝓥 ̇ )
  classification ua fe Y = χ Y , universes-are-classifiers ua fe Y
 
 \end{code}
@@ -320,22 +312,23 @@ universe 𝓦.
 
 module special-classifier (𝓤 𝓥 𝓦 : Universe) where
 
- open general-classifier 𝓤 𝓥 public
+ open classifier 𝓤 𝓥 public
 
- χ-special : (P : 𝓑 ̇ → 𝓦 ̇ ) (Y : 𝓤 ̇ ) → 𝓑 /[ P ] Y  → (Y → Σ P)
+ χ-special : (P : 𝓤 ⊔ 𝓥 ̇ → 𝓦 ̇ ) (Y : 𝓤 ̇ ) → (𝓤 ⊔ 𝓥) /[ P ] Y  → (Y → Σ P)
  χ-special P Y (X , f , φ) y = fiber f y , φ y
 
- universe-is-special-classifier : (𝓑 ̇ → 𝓦 ̇ ) → 𝓑⁺ ⊔ 𝓦 ̇
+ universe-is-special-classifier : (𝓤 ⊔ 𝓥 ̇ → 𝓦 ̇ ) → (𝓤 ⊔ 𝓥)⁺ ⊔ 𝓦 ̇
  universe-is-special-classifier P = (Y : 𝓤 ̇ ) → is-equiv (χ-special P Y)
 
- mc-gives-sc : universe-is-classifier
-             → (P : 𝓑 ̇ → 𝓦 ̇ ) → universe-is-special-classifier P
- mc-gives-sc s P Y = γ
+ classifier-gives-special-classifier : universe-is-classifier
+                                     → (P : 𝓤 ⊔ 𝓥 ̇ → 𝓦 ̇ )
+                                     → universe-is-special-classifier P
+ classifier-gives-special-classifier s P Y = γ
   where
-   e = (𝓑 /[ P ] Y)                               ≃⟨ a ⟩
-       (Σ σ ꞉ 𝓑 / Y , ((y : Y) → P ((χ Y) σ y)))  ≃⟨ b ⟩
-       (Σ A ꞉ (Y → 𝓑 ̇ ), ((y : Y) → P (A y)))     ≃⟨ c ⟩
-       (Y → Σ P)                                  ■
+   e = ((𝓤 ⊔ 𝓥) /[ P ] Y)                               ≃⟨ a ⟩
+       (Σ σ ꞉ (𝓤 ⊔ 𝓥) / Y , ((y : Y) → P ((χ Y) σ y)))  ≃⟨ b ⟩
+       (Σ A ꞉ (Y → 𝓤 ⊔ 𝓥 ̇ ), ((y : Y) → P (A y)))       ≃⟨ c ⟩
+       (Y → Σ P)                                        ■
     where
      a = ≃-sym Σ-assoc
      b = Σ-change-of-variable (λ A → Π (P ∘ A)) (χ Y) (s Y)
@@ -347,16 +340,17 @@ module special-classifier (𝓤 𝓥 𝓦 : Universe) where
    γ : is-equiv (χ-special P Y)
    γ = ⌜⌝-is-equiv e
 
- χ-special-is-equiv : is-univalent 𝓑
-                    → funext 𝓤 𝓑⁺
-                    → (P : 𝓑 ̇ → 𝓦 ̇ ) (Y : 𝓤 ̇ )
+ χ-special-is-equiv : is-univalent (𝓤 ⊔ 𝓥)
+                    → funext 𝓤 ((𝓤 ⊔ 𝓥)⁺)
+                    → (P : 𝓤 ⊔ 𝓥 ̇ → 𝓦 ̇ ) (Y : 𝓤 ̇ )
                     → is-equiv (χ-special P Y)
- χ-special-is-equiv ua fe P Y = mc-gives-sc (universes-are-classifiers ua fe) P Y
+ χ-special-is-equiv ua fe P Y = classifier-gives-special-classifier
+                                 (universes-are-classifiers ua fe) P Y
 
- special-classification : is-univalent 𝓑
-                        → funext 𝓤 𝓑⁺
-                        → (P : 𝓑 ̇ → 𝓦 ̇ ) (Y : 𝓤 ̇ )
-                        → 𝓑 /[ P ] Y ≃ (Y → Σ P)
+ special-classification : is-univalent (𝓤 ⊔ 𝓥)
+                        → funext 𝓤 ((𝓤 ⊔ 𝓥)⁺)
+                        → (P : 𝓤 ⊔ 𝓥 ̇ → 𝓦 ̇ ) (Y : 𝓤 ̇ )
+                        → (𝓤 ⊔ 𝓥) /[ P ] Y ≃ (Y → Σ P)
  special-classification ua fe P Y = χ-special P Y , χ-special-is-equiv ua fe P Y
 
 \end{code}
@@ -407,16 +401,16 @@ September. Here is an application of the above.
            → {X : 𝓤 ⊔ 𝓥 ̇ } {Y : 𝓤 ̇ }
            → (Σ A ꞉ (Y → 𝓤 ⊔ 𝓥 ̇ ) , Σ A ≃ X) ≃ (X → Y)
 Σ-fibers-≃ {𝓤} {𝓥} ua fe⁺ {X} {Y} =
-  (Σ A ꞉ (Y → 𝓑 ̇ ) , Σ A ≃ X)                            ≃⟨ I ⟩
-  (Σ (Z , g) ꞉ (𝓑) / Y , (Σ y ꞉ Y , fiber g y) ≃ X)      ≃⟨ II ⟩
-  (Σ Z ꞉ 𝓑 ̇ , Σ g ꞉ (Z → Y) , (Σ y ꞉ Y , fiber g y) ≃ X) ≃⟨ III ⟩
-  (Σ Z ꞉ 𝓑 ̇ , (Z → Y) × (Z ≃ X))                         ≃⟨ IV ⟩
-  (Σ Z ꞉ 𝓑 ̇ , (Z ≃ X) × (Z → Y))                         ≃⟨ V ⟩
-  (Σ Z ꞉ 𝓑 ̇ , (X ≃ Z) × (Z → Y))                         ≃⟨ VI ⟩
-  (Σ (Z , _) ꞉ (Σ Z ꞉ 𝓑 ̇ , X ≃ Z) , (Z → Y))             ≃⟨ VII ⟩
-  (X → Y)                                                 ■
+  (Σ A ꞉ (Y → 𝓤 ⊔ 𝓥 ̇ ) , Σ A ≃ X)                            ≃⟨ I ⟩
+  (Σ (Z , g) ꞉ (𝓤 ⊔ 𝓥) / Y , (Σ y ꞉ Y , fiber g y) ≃ X)      ≃⟨ II ⟩
+  (Σ Z ꞉ 𝓤 ⊔ 𝓥 ̇ , Σ g ꞉ (Z → Y) , (Σ y ꞉ Y , fiber g y) ≃ X) ≃⟨ III ⟩
+  (Σ Z ꞉ 𝓤 ⊔ 𝓥 ̇ , (Z → Y) × (Z ≃ X))                         ≃⟨ IV ⟩
+  (Σ Z ꞉ 𝓤 ⊔ 𝓥 ̇ , (Z ≃ X) × (Z → Y))                         ≃⟨ V ⟩
+  (Σ Z ꞉ 𝓤 ⊔ 𝓥 ̇ , (X ≃ Z) × (Z → Y))                         ≃⟨ VI ⟩
+  (Σ (Z , _) ꞉ (Σ Z ꞉ 𝓤 ⊔ 𝓥 ̇ , X ≃ Z) , (Z → Y))             ≃⟨ VII ⟩
+  (X → Y)                                                    ■
  where
-  open general-classifier 𝓤 𝓥
+  open classifier 𝓤 𝓥
   open import UF.Equiv-FunExt
   open import UF.PropIndexedPiSigma
   open import UF.Yoneda
