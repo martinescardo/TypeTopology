@@ -40,7 +40,7 @@ directly from density of rationals, and transitivity of rationals
 order. In the right to left, transivity alone completes the proof.
 
 \begin{code}
-
+{-
 _*_ : ℝ → ℝ → ℝ
 _*_ ((Lx , Rx) , inhabited-left-x , inhabited-right-x , rounded-left-x , rounded-right-x , disjoint-x , located-x) 
     ((Ly , Ry) , inhabited-left-y , inhabited-right-y , rounded-left-y , rounded-right-y , disjoint-y , located-y)
@@ -133,5 +133,5 @@ _*_ ((Lx , Rx) , inhabited-left-x , inhabited-right-x , rounded-left-x , rounded
       
       MAX₂≤q : MAX₂ ≤ q
       MAX₂≤q = ℚ<-coarser-than-≤ MAX₂ q MAX₂<q
-
+-}
 \end{code}
