@@ -277,3 +277,4 @@ toℚ-subtraction fe p q = II
 
 ℚ-inverse-intro'''' : Fun-Ext → (p q : ℚ) → p ＝ p - q + q
 ℚ-inverse-intro'''' fe p q = ℚ-inverse-intro''' fe p q ∙ ℚ+-assoc fe p (- q) q ⁻¹
+
