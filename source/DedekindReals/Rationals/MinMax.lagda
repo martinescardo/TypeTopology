@@ -97,6 +97,13 @@ max-to-≤ p q = I (max'-to-≤ p q (ℚ-trichotomous fe p q))
   I (inl t) = inl t
   I (inr t) = inr t
 
+max≤ : (p q : ℚ) → p ≤ max p q
+max≤ p q = I (max-to-≤ p q)
+ where
+  I : p ≤ q × (max p q ＝ q) ∔ q ≤ p × (max p q ＝ p) → p ≤ max p q
+  I (inl (p≤q , e)) = transport (p ≤_) (e ⁻¹) p≤q
+  I (inr (q≤p , e)) = transport (p ≤_) (e ⁻¹) (ℚ≤-refl p)
+  
 min' : (x y : ℚ) → x < y ∔ (x ＝ y) ∔ y < x → ℚ
 min' x y (inl _) = x
 min' x y (inr _) = y
@@ -177,6 +184,14 @@ min-to-≤ p q = I (min'-to-≤ p q (ℚ-trichotomous fe p q))
   I (inl t) = inl t
   I (inr t) = inr t
 
+min≤ : (p q : ℚ) → min p q ≤ p
+min≤ p q = I (min-to-≤ p q)
+ where
+  I : p ≤ q × (min p q ＝ p) ∔ q ≤ p × (min p q ＝ q)
+    → min p q ≤ p
+  I (inl (p≤q , e)) = transport (_≤ p) (e ⁻¹) (ℚ≤-refl p)
+  I (inr (q≤p , e)) = transport (_≤ p) (e ⁻¹) q≤p
+  
 ≤-to-min' : (x y : ℚ) → x ≤ y → (t : x < y ∔ (x ＝ y) ∔ y < x) → x ＝ min' x y t
 ≤-to-min' x y l (inl t) = refl
 ≤-to-min' x y l (inr (inl t)) = t
