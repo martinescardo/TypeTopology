@@ -185,7 +185,6 @@ toℚ-≤ (x , a) (y , b) l = ℤ≤-ordering-right-cancellable (x' ℤ* pos (su
            y' ℤ* pos (succ a') ℤ* pos (succ h' ℕ* succ h)            ＝⟨ ap (λ z → y' ℤ* pos (succ a') ℤ* pos z) (mult-commutativity (succ h') (succ h)) ⟩
            y' ℤ* pos (succ a') ℤ* pos (succ h ℕ* succ h') ∎
 
-
 ℚ-no-max-element : (p : ℚ) → Σ q ꞉ ℚ , (p < q)
 ℚ-no-max-element ((x , a) , α) = q , III
  where
@@ -323,6 +322,28 @@ rounded-lemma₀ (succ a) = succ (2 ℕ* pred (succ (succ a))) ＝⟨ ap (λ - �
   I : q + p < 0ℚ + p
   I = ℚ<-addition-preserves-order q 0ℚ p l
 
+ℚ<-subtraction-preserves-order'' : Fun-Ext → (p q r : ℚ) → p < q - r → p + r < q
+ℚ<-subtraction-preserves-order'' fe p q r l = transport (p + r <_) II I
+ where
+  I : p + r < q - r + r
+  I = ℚ<-addition-preserves-order p (q - r) r l 
+  II : q - r + r ＝ q
+  II = q - r + r       ＝⟨ ℚ+-assoc fe q (- r) r                   ⟩
+       q + ((- r) + r) ＝⟨ ap (q +_) (ℚ-inverse-sum-to-zero' fe r) ⟩
+       q + 0ℚ          ＝⟨ ℚ-zero-right-neutral fe q               ⟩
+       q               ∎
+
+ℚ<-subtraction-preserves-order''' : Fun-Ext → (p q r : ℚ) → p + q < r → p < r - q
+ℚ<-subtraction-preserves-order''' fe p q r l = transport (_< r - q) II I
+ where
+  I : p + q - q < r - q
+  I = ℚ<-addition-preserves-order (p + q) r (- q) l
+  II : p + q - q ＝ p
+  II = p + q - q       ＝⟨ ℚ+-assoc fe p q (- q)                  ⟩
+       p + (q - q)     ＝⟨ ap (p +_) (ℚ-inverse-sum-to-zero fe q) ⟩
+       p + 0ℚ          ＝⟨ ℚ-zero-right-neutral fe p              ⟩
+       p ∎
+
 ℚ<-difference-positive' : Fun-Ext → (p q : ℚ) → p < q → p - q < 0ℚ
 ℚ<-difference-positive' fe p q l = transport (p - q <_) (ℚ-inverse-sum-to-zero fe q) (ℚ<-addition-preserves-order p q (- q) l)
 
@@ -341,8 +362,6 @@ rounded-lemma₀ (succ a) = succ (2 ℕ* pred (succ (succ a))) ＝⟨ ap (λ - �
        r - r + q       ＝⟨ ap (_+ q) (ℚ-inverse-sum-to-zero fe r) ⟩
        0ℚ + q          ＝⟨ ℚ-zero-left-neutral fe q ⟩
        q ∎
-
-
 
 ℚ<-adding-zero : (p q : ℚ) → 0ℚ < p → 0ℚ < q → 0ℚ < p + q
 ℚ<-adding-zero p q l₁ l₂ = ℚ<-adding 0ℚ p 0ℚ q l₁ l₂
@@ -429,7 +448,13 @@ rounded-lemma₀ (succ a) = succ (2 ℕ* pred (succ (succ a))) ＝⟨ ap (λ - �
        q * r + ((- p * r) + p * r) ＝⟨ ap (q * r +_) (ℚ-inverse-sum-to-zero' fe (p * r)) ⟩
        q * r + 0ℚ                  ＝⟨ ℚ-zero-right-neutral fe (q * r) ⟩
        q * r ∎
- 
+
+order1ℚ : Fun-Ext → (p : ℚ) → p < p + 1ℚ
+order1ℚ fe p = ℚ<-addition-preserves-order'' fe p 1ℚ (0 , refl) 
+
+order1ℚ' : Fun-Ext → (p : ℚ) → p - 1ℚ < p
+order1ℚ' fe p = ℚ<-subtraction-preserves-order fe p 1ℚ (0 , refl)
+
 ℚ≤-trans : Fun-Ext → (p q r : ℚ) → p ≤ q → q ≤ r → p ≤ r
 ℚ≤-trans fe p q r l₁ l₂ = I (ℚ≤-split fe p q l₁) (ℚ≤-split fe q r l₂)
  where
@@ -510,6 +535,9 @@ rounded-lemma₀ (succ a) = succ (2 ℕ* pred (succ (succ a))) ＝⟨ ap (λ - �
 
 ℚ<-swap'' : Fun-Ext → (p : ℚ) → p < 0ℚ → 0ℚ < - p
 ℚ<-swap'' fe p l = transport (_< - p) ℚ-minus-zero-is-zero (ℚ<-swap fe p 0ℚ l)
+
+ℚ<-swap''' : Fun-Ext → (x y : ℚ) → - y < - x → x < y
+ℚ<-swap''' fe x y l = transport₂ _<_ (ℚ-minus-minus fe x ⁻¹) (ℚ-minus-minus fe y ⁻¹) (ℚ<-swap fe (- y) (- x) l)
 
 multiplicative-inverse-preserves-pos : (fe : Fun-Ext) → (p : ℚ) → 0ℚ < p → (nz : ¬ (p ＝ 0ℚ)) → 0ℚ < multiplicative-inverse fe p nz
 multiplicative-inverse-preserves-pos fe ((pos 0 , a) , α) l nz = 𝟘-elim (nz (numerator-zero-is-zero fe ((pos zero , a) , α) by-definition))
@@ -763,8 +791,42 @@ inequality-chain-outer-bounds-inner fe a b c d l₁ l₂ l₃ = ℚ<-trans (c - 
   I : p ≤ s
   I = ℚ≤-trans₂ fe p q r s l₁ l₂ l₃
 
+ℚ<-addition-cancellable : Fun-Ext → (a b c : ℚ) → a + b < c + b → a < c
+ℚ<-addition-cancellable fe a b c l = transport₂ _<_ (I a b) (I c b) (ℚ<-addition-preserves-order (a + b) (c + b) (- b) l)
+ where
+  I : (a b : ℚ) → a + b - b ＝ a
+  I a b = a + b - b   ＝⟨ ℚ+-assoc fe a b (- b) ⟩
+          a + (b - b) ＝⟨ ap (a +_) (ℚ-inverse-sum-to-zero fe b) ⟩
+          a + 0ℚ      ＝⟨ ℚ-zero-right-neutral fe a ⟩
+          a           ∎
 
+ℚ<-addition-cancellable' : Fun-Ext → (a b c : ℚ) → b + a < b + c → a < c
+ℚ<-addition-cancellable' fe a b c l = ℚ<-addition-cancellable fe a b c
+                                       (transport₂ _<_ (ℚ+-comm b a) (ℚ+-comm b c) l)
 
-
+order-lemma : Fun-Ext → (a b c d : ℚ) → a - b < c - d → d < b ∔ a < c
+order-lemma fe a b c d l = I (ℚ-trichotomous fe a c)
+ where
+  I : (a < c) ∔ (a ＝ c) ∔ (c < a) → d < b ∔ a < c
+  I (inl a<c) = inr a<c
+  I (inr (inl a＝c)) = inl (ℚ<-swap''' fe d b ii)
+   where
+    i : c - b < c - d
+    i = transport (λ z → z - b < c - d) a＝c l
+    ii : - b < - d
+    ii = ℚ<-addition-cancellable' fe (- b) c (- d) i
+  I (inr (inr c<a)) = inl (ℚ<-swap''' fe d b iii)
+   where
+    i :  - a < - c
+    i = ℚ<-swap fe c a c<a
+    ii : (- a) + (a - b) < (- c) + (c - d)
+    ii = ℚ<-adding (- a) (- c) (a - b) (c - d) i l
+    iv : (a b : ℚ) → (- a) + (a - b) ＝ - b
+    iv a b = (- a) + (a - b)   ＝⟨ ℚ+-assoc fe (- a) a (- b) ⁻¹ ⟩
+             (- a) + a - b     ＝⟨ ap (_- b) (ℚ-inverse-sum-to-zero' fe a) ⟩
+             0ℚ - b            ＝⟨ ℚ-zero-left-neutral fe (- b) ⟩
+             - b ∎
+    iii : - b < - d
+    iii = transport₂ _<_ (iv a b) (iv c d) ii
 
 \end{code}
