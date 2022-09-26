@@ -5,6 +5,7 @@
 module DedekindReals.MetricSpaces.index where
 
 import DedekindReals.MetricSpaces.ContinuousExtensionTheorem
+import DedekindReals.MetricSpaces.Extension
 import DedekindReals.MetricSpaces.Definition
 import DedekindReals.MetricSpaces.DedekindReals
 import DedekindReals.MetricSpaces.Rationals
