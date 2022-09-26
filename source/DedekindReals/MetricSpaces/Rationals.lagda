@@ -54,6 +54,11 @@ open import DedekindReals.MetricSpaces.Definition pt fe pe
                abs (q - p)                    ＝⟨ by-definition ⟩
                ℚ-metric q p                   ∎
 
+ℚ<-abs : Fun-Ext → (x y : ℚ) → x < y → y - x ＝ abs (x - y)
+ℚ<-abs fe x y l = y - x       ＝⟨ abs-of-pos-is-pos' fe (y - x) (ℚ<-difference-positive fe x y l) ⁻¹ ⟩
+                  abs (y - x) ＝⟨ ℚ-metric-commutes y x ⟩
+                  abs (x - y) ∎
+
 inequality-chain-to-metric : (w y z : ℚ) → w ≤ y
                                          → y ≤ z
                                          → ℚ-metric w z ＝ ℚ-metric w y + ℚ-metric y z                                         
