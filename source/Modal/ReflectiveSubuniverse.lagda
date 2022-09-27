@@ -69,25 +69,33 @@ subuniverse-contains-reflection A = pr₂ (○-packed A)
  ○-rec A B B-in-P (g ∘ η A) ＝⟨ H g ⟩
  g ∎
 
-η-is-section-implies-has-section
+η-is-section-gives-has-section
  : (fe : funext 𝓤 𝓤)
  → (A : 𝓤 ̇)
  → is-section (η A)
  → has-section (η A)
-pr₁ (η-is-section-implies-has-section fe A η-is-section) = pr₁ η-is-section
-pr₂ (η-is-section-implies-has-section fe A η-is-section) =
+pr₁ (η-is-section-gives-has-section fe A η-is-section) = pr₁ η-is-section
+pr₂ (η-is-section-gives-has-section fe A η-is-section) =
  happly
   (○-rec-ext A (○ A) (subuniverse-contains-reflection A) _ _
     (dfunext fe λ x →
      η A (pr₁ η-is-section (η A x)) ＝⟨ ap (η A) (pr₂ η-is-section x) ⟩
      η A x ∎))
 
-η-is-equiv-implies-subuniverse-contains
+η-is-section-gives-is-equiv
+ : (fe : funext 𝓤 𝓤)
+ → (A : 𝓤 ̇)
+ → is-section (η A)
+ → is-equiv (η A)
+pr₁ (η-is-section-gives-is-equiv fe A η-is-section) = η-is-section-gives-has-section fe A η-is-section
+pr₂ (η-is-section-gives-is-equiv fe A η-is-section) = η-is-section
+
+η-is-equiv-gives-subuniverse-contains
  : (P-is-replete : subuniverse-is-replete P)
  → (A : 𝓤 ̇)
  → is-equiv (η A)
  → subuniverse-contains P A
-η-is-equiv-implies-subuniverse-contains P-is-replete A η-is-equiv =
+η-is-equiv-gives-subuniverse-contains P-is-replete A η-is-equiv =
  P-is-replete _ _
   (η A , η-is-equiv)
   (subuniverse-contains-reflection A)
@@ -100,9 +108,8 @@ reflective-subuniverse-closed-under-retracts
  → subuniverse-contains P E
  → subuniverse-contains P B
 reflective-subuniverse-closed-under-retracts fe P-is-replete E B B-retract-of-E E-in-P =
- η-is-equiv-implies-subuniverse-contains P-is-replete B
-  (η-is-section-implies-has-section fe B η-is-section ,
-   η-is-section)
+ η-is-equiv-gives-subuniverse-contains P-is-replete B
+  (η-is-section-gives-is-equiv fe B η-is-section)
  where
   h : ○ B → E
   h = ○-rec B E E-in-P (section B-retract-of-E)
