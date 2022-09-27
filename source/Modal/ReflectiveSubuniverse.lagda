@@ -29,14 +29,14 @@ subuniverse-contains-reflection A = pr₂ (○-packed A)
 η : (A : 𝓤 ̇) → A → ○ A
 η A = pr₂ (reflection A)
 
-∘η : {𝓥 : _} (A : 𝓤 ̇) (B : 𝓥 ̇) → (○ A → B) → A → B
-∘η A B = _∘ η A
+precomp-η : {𝓥 : _} (A : 𝓤 ̇) (B : 𝓥 ̇) → (○ A → B) → A → B
+precomp-η A B = _∘ η A
 
-∘η-is-equiv
+precomp-η-is-equiv
  : {A B : 𝓤 ̇}
  → subuniverse-contains P B
- → is-equiv (∘η A B)
-∘η-is-equiv B-in-P =
+ → is-equiv (precomp-η A B)
+precomp-η-is-equiv B-in-P =
  pr₂ (P-is-reflective _) _ B-in-P
 
 ○-rec
@@ -45,7 +45,7 @@ subuniverse-contains-reflection A = pr₂ (○-packed A)
  → (A → B)
  → (○ A → B)
 ○-rec A B B-in-P =
- inverse _ (∘η-is-equiv B-in-P)
+ inverse _ (precomp-η-is-equiv B-in-P)
 
 ○-rec-compute
  : (A B : 𝓤 ̇)
@@ -54,7 +54,7 @@ subuniverse-contains-reflection A = pr₂ (○-packed A)
  → (x : A)
  → ○-rec A B B-in-P f (η A x) ＝ f x
 ○-rec-compute A B B-in-P f =
- happly (inverses-are-sections _ (∘η-is-equiv B-in-P) f)
+ happly (inverses-are-sections _ (precomp-η-is-equiv B-in-P) f)
 
 ○-rec-ext
  : (A B : 𝓤 ̇)
@@ -63,7 +63,7 @@ subuniverse-contains-reflection A = pr₂ (○-packed A)
  → (f ∘ η A) ＝ (g ∘ η A)
  → f ＝ g
 ○-rec-ext A B B-in-P f g fgη =
- let H = inverses-are-retractions _ (∘η-is-equiv B-in-P) in
+ let H = inverses-are-retractions _ (precomp-η-is-equiv B-in-P) in
  f ＝⟨ H f ⁻¹ ⟩
  ○-rec A B B-in-P (f ∘ η A) ＝⟨ ap (○-rec A B B-in-P) fgη ⟩
  ○-rec A B B-in-P (g ∘ η A) ＝⟨ H g ⟩
