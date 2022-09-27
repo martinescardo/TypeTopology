@@ -69,6 +69,14 @@ subuniverse-is-reflective P =
   Π (subuniverse-reflects P)
 
 
+subuniverse-is-replete
+  : subuniverse 𝓤 𝓥
+  → 𝓤 ⁺ ⊔ 𝓥  ̇
+subuniverse-is-replete {𝓤 = 𝓤} P =
+  (A B : 𝓤 ̇)
+  → A ≃ B
+  → subuniverse-contains P B
+  → subuniverse-contains P A
 
 module ReflectiveSubuniverse (P : subuniverse 𝓤 𝓥) (P-is-reflective : subuniverse-is-reflective P) where
   Type○ = subuniverse-member P
@@ -137,58 +145,58 @@ module ReflectiveSubuniverse (P : subuniverse 𝓤 𝓥) (P-is-reflective : subu
         η A x ∎))
 
   η-is-equiv-implies-subuniverse-contains
-    : (ua : is-univalent 𝓤)
+    : (P-is-replete : subuniverse-is-replete P)
     → (A : 𝓤 ̇)
     → is-equiv (η A)
     → subuniverse-contains P A
-  η-is-equiv-implies-subuniverse-contains ua A η-is-equiv =
-    transport⁻¹
-     (subuniverse-contains P)
-     (eqtoid ua A (○ A) (η A , η-is-equiv))
+  η-is-equiv-implies-subuniverse-contains P-is-replete A η-is-equiv =
+    P-is-replete _ _
+     (η A , η-is-equiv)
      (subuniverse-contains-reflection A)
 
   reflective-subuniverse-closed-under-retracts
-    : (ua : is-univalent 𝓤)
+    : (fe : funext 𝓤 𝓤)
+    → (P-is-replete : subuniverse-is-replete P)
     → (E B : 𝓤 ̇)
     → retract B of E
     → subuniverse-contains P E
     → subuniverse-contains P B
-  reflective-subuniverse-closed-under-retracts ua E B B-retract-of-E E-in-P =
-    η-is-equiv-implies-subuniverse-contains ua B
-     (η-is-section-implies-has-section (univalence-gives-funext ua) B η-is-section ,
+  reflective-subuniverse-closed-under-retracts fe P-is-replete E B B-retract-of-E E-in-P =
+    η-is-equiv-implies-subuniverse-contains P-is-replete B
+     (η-is-section-implies-has-section fe B η-is-section ,
       η-is-section)
     where
-      h : ○ B → E
-      h = ○-rec B E E-in-P (section B-retract-of-E)
+    h : ○ B → E
+    h = ○-rec B E E-in-P (section B-retract-of-E)
 
-      ε : ○ B → B
-      ε = retraction B-retract-of-E ∘ h
+    ε : ○ B → B
+    ε = retraction B-retract-of-E ∘ h
 
-      η-is-section : is-section (η B)
-      pr₁ η-is-section = ε
-      pr₂ η-is-section x =
-        ε (η B x) ＝⟨ ap (retraction B-retract-of-E) (○-rec-compute B E E-in-P (section B-retract-of-E) x) ⟩
-        retraction B-retract-of-E (section B-retract-of-E x) ＝⟨ retract-condition B-retract-of-E x ⟩
-        x ∎
+    η-is-section : is-section (η B)
+    pr₁ η-is-section = ε
+    pr₂ η-is-section x =
+      ε (η B x) ＝⟨ ap (retraction B-retract-of-E) (○-rec-compute B E E-in-P (section B-retract-of-E) x) ⟩
+      retraction B-retract-of-E (section B-retract-of-E x) ＝⟨ retract-condition B-retract-of-E x ⟩
+      x ∎
 
   reflective-subuniverse-closed-under-products
-    : (ua : is-univalent 𝓤)
+    : (fe : funext 𝓤 𝓤)
+    → (P-is-replete : subuniverse-is-replete P)
     → (A : 𝓤 ̇)
     → (B : A → 𝓤 ̇)
     → (B-in-P : Π x ꞉ A , subuniverse-contains P (B x))
     → subuniverse-contains P (Π B)
-  reflective-subuniverse-closed-under-products ua A B B-in-P =
-    reflective-subuniverse-closed-under-retracts ua (○ (Π B)) (Π B) ret (subuniverse-contains-reflection (Π B))
+  reflective-subuniverse-closed-under-products fe P-is-replete A B B-in-P =
+    reflective-subuniverse-closed-under-retracts fe P-is-replete _ _ ret (subuniverse-contains-reflection (Π B))
     where
+    h : (x : A) → ○ (Π B) → B x
+    h x = ○-rec (Π B) (B x) (B-in-P x) (λ f → f x)
 
-      h : (x : A) → ○ (Π B) → B x
-      h x = ○-rec (Π B) (B x) (B-in-P x) (λ f → f x)
-
-      ret : retract Π B of ○ (Π B)
-      pr₁ ret f x = h x f
-      pr₁ (pr₂ ret) = η (Π B)
-      pr₂ (pr₂ ret) f =
-       dfunext (univalence-gives-funext ua) λ x →
-       ○-rec-compute (Π B) (B x) (B-in-P x) (λ g → g x) f
+    ret : retract Π B of ○ (Π B)
+    pr₁ ret f x = h x f
+    pr₁ (pr₂ ret) = η (Π B)
+    pr₂ (pr₂ ret) f =
+     dfunext fe λ x →
+     ○-rec-compute (Π B) (B x) (B-in-P x) (λ g → g x) f
 
 \end{code}
