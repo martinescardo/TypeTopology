@@ -100,22 +100,22 @@ reflective-subuniverse-closed-under-retracts
  → subuniverse-contains P E
  → subuniverse-contains P B
 reflective-subuniverse-closed-under-retracts fe P-is-replete E B B-retract-of-E E-in-P =
-  η-is-equiv-implies-subuniverse-contains P-is-replete B
-   (η-is-section-implies-has-section fe B η-is-section ,
-    η-is-section)
-  where
-   h : ○ B → E
-   h = ○-rec B E E-in-P (section B-retract-of-E)
+ η-is-equiv-implies-subuniverse-contains P-is-replete B
+  (η-is-section-implies-has-section fe B η-is-section ,
+   η-is-section)
+ where
+  h : ○ B → E
+  h = ○-rec B E E-in-P (section B-retract-of-E)
 
-   ε : ○ B → B
-   ε = retraction B-retract-of-E ∘ h
+  ε : ○ B → B
+  ε = retraction B-retract-of-E ∘ h
 
-   η-is-section : is-section (η B)
-   pr₁ η-is-section = ε
-   pr₂ η-is-section x =
-    ε (η B x) ＝⟨ ap (retraction B-retract-of-E) (○-rec-compute B E E-in-P (section B-retract-of-E) x) ⟩
-    retraction B-retract-of-E (section B-retract-of-E x) ＝⟨ retract-condition B-retract-of-E x ⟩
-    x ∎
+  η-is-section : is-section (η B)
+  pr₁ η-is-section = ε
+  pr₂ η-is-section x =
+   ε (η B x) ＝⟨ ap (retraction B-retract-of-E) (○-rec-compute B E E-in-P (section B-retract-of-E) x) ⟩
+   retraction B-retract-of-E (section B-retract-of-E x) ＝⟨ retract-condition B-retract-of-E x ⟩
+   x ∎
 
 reflective-subuniverse-closed-under-products
  : (fe : funext 𝓤 𝓤)
