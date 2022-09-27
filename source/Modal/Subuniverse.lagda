@@ -57,7 +57,7 @@ subuniverse-reflects
  : subuniverse 𝓤 𝓥
  → 𝓤 ̇
  → 𝓤 ⁺ ⊔ 𝓥  ̇
-subuniverse-reflects {𝓤 = 𝓤} P A =
+subuniverse-reflects P A =
  Σ A' ꞉ reflection-candidate P A ,
  is-reflection P A A'
 
@@ -71,8 +71,8 @@ subuniverse-is-reflective P =
 subuniverse-is-replete
  : subuniverse 𝓤 𝓥
  → 𝓤 ⁺ ⊔ 𝓥  ̇
-subuniverse-is-replete {𝓤 = 𝓤} P =
- (A B : 𝓤 ̇)
+subuniverse-is-replete P =
+ (A B : _)
  → A ≃ B
  → subuniverse-contains P B
  → subuniverse-contains P A
