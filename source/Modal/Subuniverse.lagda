@@ -102,7 +102,6 @@ module ReflectiveSubuniverse (P : subuniverse 𝓤 𝓥) (P-is-reflective : subu
   η : (A : 𝓤 ̇) → A → ○ A
   η A = pr₂ (reflection A)
 
-
   ∘η : {𝓥 : _} (A : 𝓤 ̇) (B : 𝓥 ̇) → (○ A → B) → A → B
   ∘η A B = _∘ (η A)
 
@@ -142,7 +141,6 @@ module ReflectiveSubuniverse (P : subuniverse 𝓤 𝓥) (P-is-reflective : subu
     ○-rec A B B-in-P (f ∘ η A) ＝⟨ ap (○-rec A B B-in-P) fgη ⟩
     ○-rec A B B-in-P (g ∘ η A) ＝⟨ H g ⟩
     g ∎
-
 
   η-is-section-implies-has-section
     : (fe : funext 𝓤 𝓤)
