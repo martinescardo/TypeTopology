@@ -13,7 +13,6 @@ open import UF.FunExt
 open import UF.Equiv
 open import UF.Retracts
 open import UF.UA-FunExt
-open import UF.Univalence
 
 subuniverse
   : (𝓤 𝓥 : Universe)
