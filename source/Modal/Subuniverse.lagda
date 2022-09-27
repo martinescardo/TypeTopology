@@ -150,13 +150,19 @@ module ReflectiveSubuniverse (P : subuniverse 𝓤 𝓥) (P-is-reflective : subu
     → subuniverse-contains P B
   reflective-subuniverse-closed-under-retracts ua E B B-retract-of-E E-in-P =
     η-is-equiv-implies-subuniverse-contains ua B
-     (η-is-section-implies-has-section (univalence-gives-funext ua) B lem ,
-      lem)
+     (η-is-section-implies-has-section (univalence-gives-funext ua) B η-is-section ,
+      η-is-section)
     where
-      lem : is-section (η B)
-      pr₁ lem u = retraction B-retract-of-E (○-rec B E E-in-P (section B-retract-of-E) u)
-      pr₂ lem x =
-        pr₁ lem (η B x) ＝⟨ ap (retraction B-retract-of-E) (○-rec-compute B E E-in-P (section B-retract-of-E) x) ⟩
+      h : ○ B → E
+      h = ○-rec B E E-in-P (section B-retract-of-E)
+
+      ε : ○ B → B
+      ε = retraction B-retract-of-E ∘ h
+
+      η-is-section : is-section (η B)
+      pr₁ η-is-section = ε
+      pr₂ η-is-section x =
+        ε (η B x) ＝⟨ ap (retraction B-retract-of-E) (○-rec-compute B E E-in-P (section B-retract-of-E) x) ⟩
         retraction B-retract-of-E (section B-retract-of-E x) ＝⟨ retract-condition B-retract-of-E x ⟩
         x ∎
 
