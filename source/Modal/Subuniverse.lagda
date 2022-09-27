@@ -12,7 +12,7 @@ open import UF.Base
 open import UF.FunExt
 open import UF.Equiv
 open import UF.Retracts
-open import UF.UA-FunExt
+open import UF.Univalence
 
 subuniverse
   : (𝓤 𝓥 : Universe)
@@ -76,6 +76,15 @@ subuniverse-is-replete {𝓤 = 𝓤} P =
   → A ≃ B
   → subuniverse-contains P B
   → subuniverse-contains P A
+
+univalence-implies-subuniverse-is-replete
+  : (ua : is-univalent 𝓤)
+  → (P : subuniverse 𝓤 𝓥)
+  → subuniverse-is-replete P
+univalence-implies-subuniverse-is-replete ua P A B e =
+  transport⁻¹
+   (subuniverse-contains P)
+   (eqtoid ua A B e)
 
 module ReflectiveSubuniverse (P : subuniverse 𝓤 𝓥) (P-is-reflective : subuniverse-is-reflective P) where
   reflection : (A : 𝓤 ̇) → reflection-candidate P A
