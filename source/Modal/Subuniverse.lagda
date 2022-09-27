@@ -78,24 +78,29 @@ subuniverse-is-replete {𝓤 = 𝓤} P =
   → subuniverse-contains P A
 
 module ReflectiveSubuniverse (P : subuniverse 𝓤 𝓥) (P-is-reflective : subuniverse-is-reflective P) where
-  Type○ = subuniverse-member P
+  reflection : (A : 𝓤 ̇) → reflection-candidate P A
+  reflection A = pr₁ (P-is-reflective A)
 
-  ○-package : (A : 𝓤 ̇) → reflection-candidate P A
-  ○-package A = pr₁ (P-is-reflective A)
+  ○-packed : (A : 𝓤 ̇) → subuniverse-member P
+  ○-packed A = pr₁ (reflection A)
 
   ○ : 𝓤 ̇ → 𝓤 ̇
-  ○ A = pr₁ (pr₁ (○-package A))
+  ○ A = pr₁ (○-packed A)
 
   subuniverse-contains-reflection : (A : 𝓤 ̇) → subuniverse-contains P (○ A)
-  subuniverse-contains-reflection A = pr₂ (pr₁ (pr₁ (P-is-reflective A)))
+  subuniverse-contains-reflection A = pr₂ (○-packed A)
 
   η : (A : 𝓤 ̇) → A → ○ A
-  η A = pr₂ (○-package A)
+  η A = pr₂ (reflection A)
+
 
   ∘η : {𝓥 : _} (A : 𝓤 ̇) (B : 𝓥 ̇) → (○ A → B) → A → B
   ∘η A B = _∘ (η A)
 
-  ∘η-is-equiv : {A : 𝓤 ̇} {B : 𝓤 ̇} → subuniverse-contains P B → is-equiv (∘η A B)
+  ∘η-is-equiv
+    : {A : 𝓤 ̇} {B : 𝓤 ̇}
+    → subuniverse-contains P B
+    → is-equiv (∘η A B)
   ∘η-is-equiv B-in-P =
     pr₂ (P-is-reflective _) _ B-in-P
 
