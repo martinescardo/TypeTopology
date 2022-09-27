@@ -50,8 +50,9 @@ is-reflection
   → reflection-candidate P A
   → 𝓤 ⁺ ⊔ 𝓥  ̇
 is-reflection P A (A' , η) =
-  Π B ꞉ subuniverse-member P ,
-  is-equiv λ (f : pr₁ A' → pr₁ B) → f ∘ η
+  (B : _)
+  → subuniverse-contains P B
+  → is-equiv λ (f : pr₁ A' → B) → f ∘ η
 
 subuniverse-reflects
   : subuniverse 𝓤 𝓥
@@ -72,14 +73,24 @@ subuniverse-is-reflective P =
 module ReflectiveSubuniverse (P : subuniverse 𝓤 𝓥) (P-is-reflective : subuniverse-is-reflective P) where
   Type○ = subuniverse-member P
 
-  ○ : 𝓤 ̇ → 𝓤 ̇
-  ○ A = pr₁ (pr₁ (pr₁ (P-is-reflective A)))
+  ○-package : (A : 𝓤 ̇) → reflection-candidate P A
+  ○-package A = pr₁ (P-is-reflective A)
 
-  ○-in-subuniverse : (A : 𝓤 ̇) → subuniverse-contains P (○ A)
-  ○-in-subuniverse A = pr₂ (pr₁ (pr₁ (P-is-reflective A)))
+  ○ : 𝓤 ̇ → 𝓤 ̇
+  ○ A = pr₁ (pr₁ (○-package A))
+
+  subuniverse-contains-reflection : (A : 𝓤 ̇) → subuniverse-contains P (○ A)
+  subuniverse-contains-reflection A = pr₂ (pr₁ (pr₁ (P-is-reflective A)))
 
   η : (A : 𝓤 ̇) → A → ○ A
-  η A = pr₂ (pr₁ (P-is-reflective A))
+  η A = pr₂ (○-package A)
+
+  ∘η : {𝓥 : _} (A : 𝓤 ̇) (B : 𝓥 ̇) → (○ A → B) → A → B
+  ∘η A B = _∘ (η A)
+
+  ∘η-is-equiv : {A : 𝓤 ̇} {B : 𝓤 ̇} → subuniverse-contains P B → is-equiv (∘η A B)
+  ∘η-is-equiv B-in-P =
+    pr₂ (P-is-reflective _) _ B-in-P
 
   ○-rec
     : (A B : 𝓤 ̇)
@@ -87,9 +98,7 @@ module ReflectiveSubuniverse (P : subuniverse 𝓤 𝓥) (P-is-reflective : subu
     → (A → B)
     → (○ A → B)
   ○-rec A B B-in-P =
-    inverse
-     (_∘ (η A))
-     (pr₂ (P-is-reflective A) (B , B-in-P))
+    inverse _ (∘η-is-equiv B-in-P)
 
   ○-rec-compute
     : (A B : 𝓤 ̇)
@@ -98,11 +107,7 @@ module ReflectiveSubuniverse (P : subuniverse 𝓤 𝓥) (P-is-reflective : subu
     → (x : A)
     → ○-rec A B B-in-P f (η A x) ＝ f x
   ○-rec-compute A B B-in-P f =
-    happly
-     (inverses-are-sections
-      (_∘ (η A))
-      (pr₂ (P-is-reflective A) (B , B-in-P))
-      f)
+    happly (inverses-are-sections _ (∘η-is-equiv B-in-P) f)
 
   ○-rec-ext
     : (A B : 𝓤 ̇)
@@ -111,7 +116,7 @@ module ReflectiveSubuniverse (P : subuniverse 𝓤 𝓥) (P-is-reflective : subu
     → (f ∘ η A) ＝ (g ∘ η A)
     → f ＝ g
   ○-rec-ext A B B-in-P f g fgη =
-    let H = inverses-are-retractions (_∘ (η A)) (pr₂ (P-is-reflective A) (B , B-in-P)) in
+    let H = inverses-are-retractions _ (∘η-is-equiv B-in-P) in
     f ＝⟨ H f ⁻¹ ⟩
     ○-rec A B B-in-P (f ∘ η A) ＝⟨ ap (○-rec A B B-in-P) fgη ⟩
     ○-rec A B B-in-P (g ∘ η A) ＝⟨ H g ⟩
@@ -126,7 +131,7 @@ module ReflectiveSubuniverse (P : subuniverse 𝓤 𝓥) (P-is-reflective : subu
   pr₁ (η-is-section-implies-has-section fe A η-is-section) = pr₁ η-is-section
   pr₂ (η-is-section-implies-has-section fe A η-is-section) =
     happly
-     (○-rec-ext A (○ A) (○-in-subuniverse A) _ _
+     (○-rec-ext A (○ A) (subuniverse-contains-reflection A) _ _
        (dfunext fe λ x →
         η A (pr₁ η-is-section (η A x)) ＝⟨ ap (η A) (pr₂ η-is-section x) ⟩
         η A x ∎))
@@ -140,7 +145,7 @@ module ReflectiveSubuniverse (P : subuniverse 𝓤 𝓥) (P-is-reflective : subu
     transport⁻¹
      (subuniverse-contains P)
      (eqtoid ua A (○ A) (η A , η-is-equiv))
-     (○-in-subuniverse A)
+     (subuniverse-contains-reflection A)
 
   reflective-subuniverse-closed-under-retracts
     : (ua : is-univalent 𝓤)
@@ -173,7 +178,7 @@ module ReflectiveSubuniverse (P : subuniverse 𝓤 𝓥) (P-is-reflective : subu
     → (B-in-P : Π x ꞉ A , subuniverse-contains P (B x))
     → subuniverse-contains P (Π B)
   reflective-subuniverse-closed-under-products ua A B B-in-P =
-    reflective-subuniverse-closed-under-retracts ua (○ (Π B)) (Π B) ret (○-in-subuniverse (Π B))
+    reflective-subuniverse-closed-under-retracts ua (○ (Π B)) (Π B) ret (subuniverse-contains-reflection (Π B))
     where
 
       h : (x : A) → ○ (Π B) → B x
@@ -184,6 +189,6 @@ module ReflectiveSubuniverse (P : subuniverse 𝓤 𝓥) (P-is-reflective : subu
       pr₁ (pr₂ ret) = η (Π B)
       pr₂ (pr₂ ret) f =
        dfunext (univalence-gives-funext ua) λ x →
-         ○-rec-compute (Π B) (B x) (B-in-P x) (λ g → g x) f
+       ○-rec-compute (Π B) (B x) (B-in-P x) (λ g → g x) f
 
 \end{code}
