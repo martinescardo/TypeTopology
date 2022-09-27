@@ -33,7 +33,7 @@ subuniverse-contains-reflection A = pr₂ (○-packed A)
 ∘η A B = _∘ η A
 
 ∘η-is-equiv
- : {A : 𝓤 ̇} {B : 𝓤 ̇}
+ : {A B : 𝓤 ̇}
  → subuniverse-contains P B
  → is-equiv (∘η A B)
 ∘η-is-equiv B-in-P =
