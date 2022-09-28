@@ -9,6 +9,7 @@ open import UF.Base
 open import UF.FunExt
 open import UF.Equiv
 open import UF.Retracts
+import Slice.Slice as Slice
 
 open import Modal.Subuniverse
 
@@ -30,7 +31,7 @@ subuniverse-contains-reflection A = pr₂ (○-packed A)
 η A = pr₂ (reflection A)
 
 precomp-η : {𝓥 : _} (A : 𝓤 ̇) (B : 𝓥 ̇) → (○ A → B) → A → B
-precomp-η A B = _∘ η A
+precomp-η A B f = f ∘ η A
 
 precomp-η-is-equiv
  : {A B : 𝓤 ̇}
@@ -56,18 +57,33 @@ precomp-η-is-equiv B-in-P =
 ○-rec-compute A B B-in-P f =
  happly (inverses-are-sections _ (precomp-η-is-equiv B-in-P) f)
 
-○-rec-ext
- : (A B : 𝓤 ̇)
- → (B-in-P : subuniverse-contains P B)
- → (f g : ○ A → B)
- → (f ∘ η A) ＝ (g ∘ η A)
- → f ＝ g
-○-rec-ext A B B-in-P f g fgη =
- let H = inverses-are-retractions _ (precomp-η-is-equiv B-in-P) in
- f ＝⟨ H f ⁻¹ ⟩
- ○-rec A B B-in-P (f ∘ η A) ＝⟨ ap (○-rec A B B-in-P) fgη ⟩
- ○-rec A B B-in-P (g ∘ η A) ＝⟨ H g ⟩
- g ∎
+abstract
+ ○-rec-ext
+  : (A B : 𝓤 ̇)
+  → (B-in-P : subuniverse-contains P B)
+  → (f g : ○ A → B)
+  → (f ∘ η A) ＝ (g ∘ η A)
+  → f ＝ g
+ ○-rec-ext A B B-in-P f g fgη =
+  H f ⁻¹ ∙ ap (○-rec A B B-in-P) fgη ∙ H g
+  where
+   H : inverse (precomp-η A B) (precomp-η-is-equiv B-in-P) ∘ precomp-η A B ∼ id
+   H = inverses-are-retractions _ (precomp-η-is-equiv B-in-P)
+
+ ○-rec-ext-beta
+  : (A B : 𝓤 ̇)
+  → (B-in-P : subuniverse-contains P B)
+  → (f : ○ A → B)
+  → ○-rec-ext A B B-in-P f f refl ＝ refl
+ ○-rec-ext-beta A B B-in-P f =
+    (H f ⁻¹ ∙ H f) ＝⟨ (sym-is-inverse (H f)) ⁻¹ ⟩
+    refl ∎
+
+  where
+   H : inverse (precomp-η A B) (precomp-η-is-equiv B-in-P) ∘ precomp-η A B ∼ id
+   H = inverses-are-retractions _ (precomp-η-is-equiv B-in-P)
+
+
 
 η-is-section-gives-has-section
  : (fe : funext 𝓤 𝓤)
@@ -144,6 +160,22 @@ reflective-subuniverse-closed-under-products fe P-is-replete A B B-in-P =
    dfunext fe λ x →
    ○-rec-compute (Π B) (B x) (B-in-P x) (λ g → g x) f
 
+transport-fiber' : {𝓤 𝓥 : _} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                  (x x' : X) (y : Y) (p : x ＝ x') (q : y ＝ f x)
+                → transport (λ - → y ＝ f -) p q ＝ q ∙ ap f p
+transport-fiber' f x x' y refl refl = refl
 
+
+-- The following is currently too hard to prove!
+{-
+reflective-subuniverse-closed-under-id
+ : (fe : funext 𝓤 𝓤)
+ → (P-is-replete : subuniverse-is-replete P)
+ → (A : 𝓤 ̇)
+ → (u v : A)
+ → (A-in-P : subuniverse-contains P A)
+ → subuniverse-contains P (u ＝ v)
+reflective-subuniverse-closed-under-id fe P-is-replete A u v A-in-P =
+-}
 
 \end{code}
