@@ -160,11 +160,6 @@ reflective-subuniverse-closed-under-products fe P-is-replete A B B-in-P =
    dfunext fe λ x →
    ○-rec-compute (Π B) (B x) (B-in-P x) (λ g → g x) f
 
-transport-fiber' : {𝓤 𝓥 : _} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                  (x x' : X) (y : Y) (p : x ＝ x') (q : y ＝ f x)
-                → transport (λ - → y ＝ f -) p q ＝ q ∙ ap f p
-transport-fiber' f x x' y refl refl = refl
-
 
 -- The following is currently too hard to prove!
 {-
