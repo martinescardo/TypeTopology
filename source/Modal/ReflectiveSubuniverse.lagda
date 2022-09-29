@@ -54,6 +54,13 @@ precomp-η-is-equiv
 precomp-η-is-equiv B-in-P =
  pr₂ (P-is-reflective _) _ B-in-P
 
+precomp-η-equiv
+ : {A B : 𝓤 ̇}
+ → subuniverse-contains P B
+ → (○ A → B) ≃ (A → B)
+pr₁ (precomp-η-equiv B-in-P) = precomp-η _ _
+pr₂ (precomp-η-equiv B-in-P) = precomp-η-is-equiv B-in-P
+
 ○-rec
  : (A B : 𝓤 ̇)
  → (B-in-P : subuniverse-contains P B)
@@ -305,12 +312,9 @@ module Pullbacks (fe : funext 𝓤 𝓤) (P-is-replete : subuniverse-is-replete 
 
    restrict-cone-equiv : cone (○ C) ≃ cone C
    restrict-cone-equiv =
-    Σ-equiv-piecewise _ _ _ _
-     (precomp-η C A , precomp-η-is-equiv A-in-P)
-     (λ (ca : ○ C → A) →
-      Σ-equiv-piecewise _ _ _ _
-       (precomp-η C B , (precomp-η-is-equiv B-in-P))
-       (λ (cb : ○ C → B) → help ca cb))
+    Σ-equiv-piecewise _ _ _ _ (precomp-η-equiv A-in-P) λ ca →
+    Σ-equiv-piecewise _ _ _ _ (precomp-η-equiv B-in-P) λ cb →
+    help ca cb
 
     where
      help : (ca : ○ C → A) (cb : ○ C → B) → (f ∘ ca ∼ g ∘ cb) ≃ (f ∘ ca ∘ η C ∼ g ∘ cb ∘ η C)
