@@ -25,7 +25,9 @@ transport-Σ
   → {x y : A}
   → (p : x ＝ y)
   → (h : Σ (C x))
-  → transport (λ - → Σ (C -)) p h ＝ transport B p (pr₁ h) , transport (λ - → C (pr₁ -) (pr₂ -)) (to-Σ-＝ (p , refl)) (pr₂ h)
+  → transport (λ - → Σ (C -)) p h
+     ＝ transport B p (pr₁ h) ,
+        transport (λ - → C (pr₁ -) (pr₂ -)) (to-Σ-＝ (p , refl)) (pr₂ h)
 transport-Σ A B C refl h = refl
 
 
@@ -134,8 +136,10 @@ pr₂ (η-is-section-gives-has-section fe A η-is-section) =
  → (A : 𝓤 ̇)
  → is-section (η A)
  → is-equiv (η A)
-pr₁ (η-is-section-gives-is-equiv fe A η-is-section) = η-is-section-gives-has-section fe A η-is-section
-pr₂ (η-is-section-gives-is-equiv fe A η-is-section) = η-is-section
+pr₁ (η-is-section-gives-is-equiv fe A η-is-section) =
+ η-is-section-gives-has-section fe A η-is-section
+pr₂ (η-is-section-gives-is-equiv fe A η-is-section) =
+ η-is-section
 
 η-is-equiv-gives-subuniverse-contains
  : (P-is-replete : subuniverse-is-replete P)
@@ -167,8 +171,12 @@ reflective-subuniverse-closed-under-retracts fe P-is-replete E B B-retract-of-E 
   η-is-section : is-section (η B)
   pr₁ η-is-section = ε
   pr₂ η-is-section x =
-   ε (η B x) ＝⟨ ap (retraction B-retract-of-E) (○-rec-compute B E E-in-P (section B-retract-of-E) x) ⟩
-   retraction B-retract-of-E (section B-retract-of-E x) ＝⟨ retract-condition B-retract-of-E x ⟩
+   ε (η B x)
+    ＝⟨ ap
+         (retraction B-retract-of-E)
+         (○-rec-compute B E E-in-P (section B-retract-of-E) x) ⟩
+   retraction B-retract-of-E (section B-retract-of-E x)
+    ＝⟨ retract-condition B-retract-of-E x ⟩
    x ∎
 
 reflective-subuniverse-closed-under-products
@@ -179,7 +187,8 @@ reflective-subuniverse-closed-under-products
  → (B-in-P : Π x ꞉ A , subuniverse-contains P (B x))
  → subuniverse-contains P (Π B)
 reflective-subuniverse-closed-under-products fe P-is-replete A B B-in-P =
- reflective-subuniverse-closed-under-retracts fe P-is-replete _ _ ret (subuniverse-contains-reflection (Π B))
+ reflective-subuniverse-closed-under-retracts fe P-is-replete _ _ ret
+  (subuniverse-contains-reflection (Π B))
  where
   h : (x : A) → ○ (Π B) → B x
   h x = ○-rec (Π B) (B x) (B-in-P x) (λ f → f x)
@@ -219,31 +228,46 @@ module _ {𝓤 𝓥 : _} (A A' : 𝓤 ̇) (B : A → 𝓥 ̇) (B' : A' → 𝓥 
   Σ-map-bwd-is-section-pr₁ : pr₁ ∘ Σ-map-fwd ∘ Σ-map-bwd ∼ pr₁
   Σ-map-bwd-is-section-pr₁ (x , _) = inv-f-sec x
 
-  Σ-map-bwd-is-section-pr₂ : (u : Σ B') → transport B' (inv-f-sec (pr₁ u)) (pr₂ (Σ-map-fwd (Σ-map-bwd u))) ＝ pr₂ u
+  Σ-map-bwd-is-section-pr₂
+   : (u : Σ B')
+   → transport B' (inv-f-sec (pr₁ u)) (pr₂ (Σ-map-fwd (Σ-map-bwd u))) ＝ pr₂ u
   Σ-map-bwd-is-section-pr₂ (x , y) =
-   transport B' (inv-f-sec x) (g (inv-f x) (inv-g[ (inv-f x) ] (transport⁻¹ B' (inv-f-sec x) y))) ＝⟨ ap (transport B' (inv-f-sec x)) (inv-g-sec[ inv-f x ] (transport⁻¹ B' (inv-f-sec x) y)) ⟩
-   transport B' (inv-f-sec x) (transport⁻¹ B' (inv-f-sec x) y) ＝⟨ back-and-forth-transport (inv-f-sec x) ⟩
+   transport B' (inv-f-sec x) (g (inv-f x) (inv-g[ (inv-f x) ] (transport⁻¹ B' (inv-f-sec x) y)))
+    ＝⟨ ap (transport B' (inv-f-sec x)) (inv-g-sec[ inv-f x ] (transport⁻¹ B' (inv-f-sec x) y)) ⟩
+   transport B' (inv-f-sec x) (transport⁻¹ B' (inv-f-sec x) y)
+    ＝⟨ back-and-forth-transport (inv-f-sec x) ⟩
    y ∎
 
   Σ-map-bwd-is-section : Σ-map-fwd ∘ Σ-map-bwd ∼ id
-  Σ-map-bwd-is-section u = to-Σ-＝ (Σ-map-bwd-is-section-pr₁ u , Σ-map-bwd-is-section-pr₂ u)
+  Σ-map-bwd-is-section u =
+   to-Σ-＝
+    (Σ-map-bwd-is-section-pr₁ u ,
+     Σ-map-bwd-is-section-pr₂ u)
 
   Σ-map-bwd-is-retraction-pr₁ : pr₁ ∘ Σ-map-bwd ∘ Σ-map-fwd ∼ pr₁
   Σ-map-bwd-is-retraction-pr₁ (x , y) = inv-f-ret x
 
-  Σ-map-bwd-is-retraction-pr₂ : (u : Σ B) → transport B (inv-f-ret (pr₁ u)) (pr₂ (Σ-map-bwd (Σ-map-fwd u))) ＝ pr₂ u
+  Σ-map-bwd-is-retraction-pr₂
+   : (u : Σ B)
+   → transport B (inv-f-ret (pr₁ u)) (pr₂ (Σ-map-bwd (Σ-map-fwd u))) ＝ pr₂ u
   Σ-map-bwd-is-retraction-pr₂ (x , y) =
-   transport B (inv-f-ret x) (inv-g[ inv-f (f x) ] (transport⁻¹ B' (inv-f-sec (f x)) (g x y))) ＝⟨ nat-transport inv-g[_] (inv-f-ret x) ⁻¹ ⟩
-   inv-g[ x ] (transport (B' ∘ f) (inv-f-ret x) (transport B' (inv-f-sec (f x) ⁻¹) (g x y))) ＝⟨ ap inv-g[ x ] (transport-ap B' f (inv-f-ret x)) ⟩
-   inv-g[ x ] (transport B' (ap f (inv-f-ret x)) (transport B' (inv-f-sec (f x) ⁻¹) (g x y))) ＝⟨ ap inv-g[ x ] (transport-∙ B' (inv-f-sec (f x) ⁻¹) (ap f (inv-f-ret x)) ⁻¹) ⟩
-   inv-g[ x ] (transport B' (inv-f-sec (f x) ⁻¹ ∙ ap f (inv-f-ret x)) (g x y)) ＝⟨ ap (λ - → inv-g[ x ] (transport B' - (g x y))) aux ⟩
+   transport B (inv-f-ret x) (inv-g[ inv-f (f x) ] (transport⁻¹ B' (inv-f-sec (f x)) (g x y)))
+    ＝⟨ nat-transport inv-g[_] (inv-f-ret x) ⁻¹ ⟩
+   inv-g[ x ] (transport (B' ∘ f) (inv-f-ret x) (transport B' (inv-f-sec (f x) ⁻¹) (g x y)))
+    ＝⟨ ap inv-g[ x ] (transport-ap B' f (inv-f-ret x)) ⟩
+   inv-g[ x ] (transport B' (ap f (inv-f-ret x)) (transport B' (inv-f-sec (f x) ⁻¹) (g x y)))
+    ＝⟨ ap inv-g[ x ] (transport-∙ B' (inv-f-sec (f x) ⁻¹) (ap f (inv-f-ret x)) ⁻¹) ⟩
+   inv-g[ x ] (transport B' (inv-f-sec (f x) ⁻¹ ∙ ap f (inv-f-ret x)) (g x y))
+    ＝⟨ ap (λ - → inv-g[ x ] (transport B' - (g x y))) aux ⟩
    inv-g[ x ] (g x y) ＝⟨ inv-g-ret[ x ] y ⟩
    y ∎
    where
     aux : inv-f-sec (f x) ⁻¹ ∙ ap f (inv-f-ret x) ＝ refl
     aux =
-     inv-f-sec (f x) ⁻¹ ∙ ap f (inv-f-ret x) ＝⟨ ap (inv-f-sec (f x) ⁻¹ ∙_) (inv-f-sec-coh x) ⟩
-     inv-f-sec (f x) ⁻¹ ∙ inv-f-sec (f x) ＝⟨ trans-sym (inv-f-sec (f x)) ⟩
+     inv-f-sec (f x) ⁻¹ ∙ ap f (inv-f-ret x)
+      ＝⟨ ap (inv-f-sec (f x) ⁻¹ ∙_) (inv-f-sec-coh x) ⟩
+     inv-f-sec (f x) ⁻¹ ∙ inv-f-sec (f x)
+      ＝⟨ trans-sym (inv-f-sec (f x)) ⟩
      refl ∎
 
 
@@ -390,4 +414,6 @@ reflective-subuniverse-closed-under-id fe P-is-replete A u v A-in-P =
 \end{code}
 
 
-TODO: try to do this the way it is done in Egbert's thesis. It feels like he has a reasonable proof that reflective subuniverses are closed under pullback (5.1.19) which will then give the main result by repleteness.
+TODO: try to do this the way it is done in Egbert's thesis. It feels like he has
+a reasonable proof that reflective subuniverses are closed under pullback (5.1.19)
+ which will then give the main result by repleteness.
