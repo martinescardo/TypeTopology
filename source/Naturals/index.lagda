@@ -13,6 +13,7 @@ import Naturals.UniversalProperty
 import Naturals.Division
 import Naturals.Multiplication
 import Naturals.HCF
+import Naturals.Parity
 
 
 \end{code}
