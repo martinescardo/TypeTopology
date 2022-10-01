@@ -9,7 +9,7 @@ canonical inclusion of natural numbers in the integers.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import MLTT.Spartan renaming (_+_ to _∔_)
 open import TypeTopology.DiscreteAndSeparated
