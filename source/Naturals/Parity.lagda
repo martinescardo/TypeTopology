@@ -16,14 +16,6 @@ even (succ n) = odd n
 odd 0         = 𝟘
 odd (succ n)  = even n
 
-even-not-odd : (n : ℕ) → even n → ¬ odd n
-even-not-odd 0               even-n odd-n = odd-n
-even-not-odd 1               even-n odd-n = even-n
-even-not-odd (succ (succ n)) even-n odd-n = even-not-odd n even-n odd-n
-
-odd-not-even : (n : ℕ) → odd n → ¬ even n
-odd-not-even n odd-n even-n = even-not-odd n even-n odd-n
-
 even-is-prop : (n : ℕ) → is-prop (even n)
 even-is-prop 0               = 𝟙-is-prop
 even-is-prop 1               = 𝟘-is-prop
@@ -33,6 +25,14 @@ odd-is-prop : (n : ℕ) → is-prop (odd n)
 odd-is-prop 0               = 𝟘-is-prop
 odd-is-prop 1               = 𝟙-is-prop
 odd-is-prop (succ (succ n)) = odd-is-prop n
+
+even-not-odd : (n : ℕ) → even n → ¬ odd n
+even-not-odd 0               even-n odd-n = odd-n
+even-not-odd 1               even-n odd-n = even-n
+even-not-odd (succ (succ n)) even-n odd-n = even-not-odd n even-n odd-n
+
+odd-not-even : (n : ℕ) → odd n → ¬ even n
+odd-not-even n odd-n even-n = even-not-odd n even-n odd-n
 
 even-or-odd : (n : ℕ) → even n ∔ odd n
 even-or-odd 0        = inl ⋆
@@ -45,11 +45,11 @@ even-or-odd (succ n) = I (even-or-odd n)
 even-or-odd-is-prop : (n : ℕ) → is-prop (even n ∔ odd n)
 even-or-odd-is-prop n = +-is-prop (even-is-prop n) (odd-is-prop n) (even-not-odd n)
 
-succ-odd-is-even : (n : ℕ) → even n → odd (succ n)
-succ-odd-is-even n = id
-
-succ-even-is-odd : (n : ℕ) → odd n → even (succ n)
+succ-even-is-odd : (n : ℕ) → even n → odd (succ n)
 succ-even-is-odd n = id
+
+succ-odd-is-even : (n : ℕ) → odd n → even (succ n)
+succ-odd-is-even n = id
 
 odd-succ-succ : (n : ℕ) → odd n → odd (succ (succ n))
 odd-succ-succ n = id
@@ -153,7 +153,6 @@ even-is-multiple-of-two (succ (succ n)) even-sn = II IH
         2 + n         ＝⟨ ap (2 +_) e                ⟩
         2 + 2 * k     ＝⟨ refl                       ⟩
         2 * succ k    ∎
-
 
 odd-is-succ-multiple-of-two : (n : ℕ) → odd n → Σ k ꞉ ℕ , n ＝ succ (2 * k)
 odd-is-succ-multiple-of-two 0        odd-n = 𝟘-elim odd-n
