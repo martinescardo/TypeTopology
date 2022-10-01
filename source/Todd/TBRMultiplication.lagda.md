@@ -39,7 +39,7 @@ Multiplication of Dedekind Reals is defined as in the HoTT book, section 11.2.1.
 Notice that this is heavily related to interval multiplication.
 
 ```agda
-
+{-
 _ℝd*_ : ℝ-d → ℝ-d → ℝ-d
 ((Lx , Rx) , _) ℝd* ((Ly , Ry) , _) = (Lz , Rz) , {!!}
  where
@@ -86,5 +86,5 @@ F* Mult (x ∷ y ∷ []) = x 𝕋* y
 γ  Mult (x ∷ y ∷ []) = tbr-multiplication-agrees x y
 I  Mult              = mult-codeℤ
 ζ  Mult (x₁ ∷ y₁ ∷ []) (x₂ ∷ y₂ ∷ []) ε = {!!}
-
+-}
 ```
