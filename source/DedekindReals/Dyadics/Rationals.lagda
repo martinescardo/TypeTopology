@@ -40,18 +40,29 @@ module DedekindReals.Dyadics.Rationals where
 ℤ[1/2]-is-set : is-set ℤ[1/2]
 ℤ[1/2]-is-set = discrete-types-are-sets ℤ[1/2]-is-discrete
 
-normalise-lemma : (z : ℤ) (n : ℕ) → ℤ[1/2]
-normalise-lemma z 0        = (z , 0) , (inl refl)
-normalise-lemma z (succ n) = I (ℤeven-or-odd z)
+normalise-pos-lemma : (z : ℤ) (n : ℕ) → ℤ[1/2]
+normalise-pos-lemma z 0        = (z , 0) , (inl refl)
+normalise-pos-lemma z (succ n) = I (ℤeven-or-odd z)
  where
   I : ℤeven z ∔ ℤodd z → ℤ[1/2]
   I (inr oz) = (z , succ n) , (inr (⋆ , oz))
   I (inl ez) = II (ℤeven-is-multiple-of-two z ez)
    where
     II : Σ k ꞉ ℤ , z ＝ pos 2 * k → ℤ[1/2]
-    II (k , e) = normalise-lemma k n
+    II (k , e) = normalise-pos-lemma k n
 
-normalise : ℤ × ℕ → ℤ[1/2]
-normalise (z , n) = normalise-lemma z n
+normalise-pos : ℤ × ℕ → ℤ[1/2]
+normalise-pos (z , n) = normalise-pos-lemma z n
+
+normalise-neg-lemma : (z : ℤ) (n : ℕ) → ℤ[1/2]
+normalise-neg-lemma z 0        = (z * pos 2 , 0) , (inl refl)
+normalise-neg-lemma z (succ n) = normalise-neg-lemma (z * pos 2) n
+
+normalise-neg : ℤ × ℕ → ℤ[1/2]
+normalise-neg (z , n) = normalise-neg-lemma z n
+
+normalise : ℤ × ℤ → ℤ[1/2]
+normalise (z , pos n)     = normalise-pos (z , n)
+normalise (z , negsucc n) = normalise-neg (z , n)
 
 \end{code}
