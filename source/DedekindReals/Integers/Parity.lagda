@@ -27,6 +27,10 @@ module DedekindReals.Integers.Parity where
 ℤodd-not-even : (n : ℤ) → ℤodd n → ¬ ℤeven n
 ℤodd-not-even n = odd-not-even (abs n)
 
+ℤzero-not-odd : (n : ℤ) → ℤodd n → ¬ (n ＝ pos 0)
+ℤzero-not-odd (pos 0)        on e = on
+ℤzero-not-odd (pos (succ n)) on e = positive-not-zero n (pos-lc e)
+
 ℤeven-is-prop : (n : ℤ) → is-prop (ℤeven n)
 ℤeven-is-prop n = even-is-prop (abs n)
 

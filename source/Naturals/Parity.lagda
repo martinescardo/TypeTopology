@@ -16,6 +16,10 @@ even (succ n) = odd n
 odd 0         = 𝟘
 odd (succ n)  = even n
 
+zero-not-odd : (n : ℕ) → odd n → ¬ (n ＝ 0)
+zero-not-odd 0        on e = on
+zero-not-odd (succ n) on e = positive-not-zero n e
+
 even-is-prop : (n : ℕ) → is-prop (even n)
 even-is-prop 0               = 𝟙-is-prop
 even-is-prop 1               = 𝟘-is-prop
