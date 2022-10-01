@@ -142,7 +142,7 @@ module _ (G : Group 𝓤) where
 
      p : _*_ ＝ _*'_
      p = dfunext fe (λ x → dfunext fe (λ y → h-lc ( h (x * y)  ＝⟨ pmult ⟩
-                                                    h x · h y  ＝⟨ pmult' ⁻¹ ⟩ 
+                                                    h x · h y  ＝⟨ pmult' ⁻¹ ⟩
                                                     h (x *' y) ∎)))
      δ : τ ＝ τ'
      δ = to-subtype-＝ (λ _ → group-axioms-is-prop fe X _) p
@@ -205,7 +205,7 @@ module _ (G : Group 𝓤) where
                                      h x · h (invH x)  ＝⟨ ap (h x ·_) (pinv x) ⟩
                                      h x · inv G (h x) ＝⟨ inv-right G (h x) ⟩
                                      unit G            ＝⟨ punit ⁻¹ ⟩
-                                     h unitH ∎) 
+                                     h unitH ∎)
 
      j : is-set X
      j = subtypes-of-sets-are-sets h h-lc (group-is-set G)
@@ -274,6 +274,8 @@ module _ (G : Group 𝓤) where
    (Σ H ꞉ Group 𝓤 , Σ h ꞉ (⟨ H ⟩ → ⟨ G ⟩) , is-embedding h × is-hom H G h)                  ■
 
       where
+       open special-classifier-single-universe 𝓤
+
        φ : Subtypes ⟨ G ⟩ → 𝓟 ⟨ G ⟩
        φ = χ-special is-prop ⟨ G ⟩
 

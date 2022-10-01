@@ -120,7 +120,7 @@ open import UF.Univalence
 𝓕-equiv-particular : is-univalent 𝓣
                    → funext 𝓣 (𝓣 ⁺)
                    → (X : 𝓣 ̇ ) → 𝓕 X ≃ (X → 𝓣 ̇ )
-𝓕-equiv-particular = map-classification
+𝓕-equiv-particular = classifier-single-universe.classification 𝓣
 
 open import UF.Size
 open import UF.Base
@@ -129,7 +129,7 @@ open import UF.UA-FunExt
 open import UF.UniverseEmbedding
 open import UF.EquivalenceExamples
 
-𝓕-equiv : Univalence →  (X : 𝓤 ̇ ) → 𝓕 X ≃ (Σ A ꞉ (X → 𝓣 ⊔ 𝓤 ̇ ), (Σ A) is 𝓣 small)
+𝓕-equiv : Univalence → (X : 𝓤 ̇ ) → 𝓕 X ≃ (Σ A ꞉ (X → 𝓣 ⊔ 𝓤 ̇ ), (Σ A) is 𝓣 small)
 𝓕-equiv {𝓤} ua X = qinveq φ (ψ , ψφ , φψ)
  where
   fe : FunExt

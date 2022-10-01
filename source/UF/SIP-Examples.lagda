@@ -859,6 +859,8 @@ module subgroup
    (Σ H ꞉ Group , Σ h ꞉ (⟨ H ⟩ → ⟨ G ⟩) , is-embedding h × is-homomorphism H G h)                  ■
 
       where
+       open special-classifier-single-universe 𝓤
+
        φ : Subtypes ⟨ G ⟩ → 𝓟 ⟨ G ⟩
        φ = χ-special is-prop ⟨ G ⟩
 

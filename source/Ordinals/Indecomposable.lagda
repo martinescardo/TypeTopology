@@ -10,6 +10,9 @@ Equivalently, there is a function f : Ordinal 𝓤 → 𝟚 such that f α ＝ 0
 and f β = 1 for some ordinals α and β if and only if weak excluded
 middle holds.
 
+In other words, the type Ordinal 𝓤 has no non-trivial decidable
+property unless weak excluded middle holds.
+
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe #-}
@@ -18,14 +21,21 @@ open import UF.Univalence
 
 module Ordinals.Indecomposable (ua : Univalence) where
 
+open import MLTT.Spartan
+open import MLTT.Two-Properties
+
 open import UF.Base
+open import UF.Classifiers
+open import UF.Equiv
+open import UF.Equiv-FunExt
+open import UF.EquivalenceExamples
+open import UF.ExcludedMiddle
+open import UF.FunExt
+open import UF.PropTrunc
+open import UF.Size
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-open import UF.Equiv
 open import UF.UA-FunExt
-open import UF.FunExt
-open import UF.ExcludedMiddle
-open import UF.Size
 
 private
  fe : FunExt
@@ -34,11 +44,8 @@ private
  fe' : Fun-Ext
  fe' {𝓤} {𝓥} = fe 𝓤 𝓥
 
- pe : PropExt
- pe = Univalence-gives-PropExt ua
-
-open import MLTT.Spartan
-open import MLTT.Two-Properties
+⇁_ : Ω 𝓤 → Ω 𝓤
+⇁_ = not fe'
 
 open import Ordinals.Type
 open import Ordinals.OrdinalOfOrdinals ua
@@ -46,33 +53,54 @@ open import Ordinals.Arithmetic fe
 
 \end{code}
 
-A type X is decomposable if there are designated pointed types X₀ and
-X₁ with X ≃ X₀ + X₁. Equivalently, X is decomposable if there is a
-designated non-constant function f : X → 𝟚, in the strong sense that
-there are designated x₀ and x₁ : X that are mapped to respectively ₀
-and ₁ by f.
+A type X is decomposable if there are pointed types X₀ and X₁ with
+X ≃ X₀ + X₁. Equivalently, X is decomposable if there is a
+non-constant function f : X → 𝟚, in the strong sense that there are x₀
+and x₁ in X that are mapped to respectively ₀ and ₁ by f.
+
+We first work with the type of all decompositions, in the above two
+equivalent manifestations, and later we consider decomposability
+defined as its propositional truncation.
 
 \begin{code}
 
-decomposable : 𝓤 ̇ → 𝓤 ̇
-decomposable X = Σ x₀ ꞉ X , Σ x₁ ꞉ X , Σ f ꞉ (X → 𝟚) , (f x₀ ＝ ₀) × (f x₁ ＝ ₁)
+decomposition : 𝓤 ̇ → 𝓤 ̇
+decomposition X = Σ f ꞉ (X → 𝟚) , (Σ x₀ ꞉ X , f x₀ ＝ ₀) × (Σ x₁ ꞉ X , f x₁ ＝ ₁)
 
-decomposable₁ : 𝓤 ̇ → 𝓤 ⁺ ̇
-decomposable₁ {𝓤} X = Σ X₀ ꞉ 𝓤 ̇ , Σ X₁ ꞉ 𝓤 ̇ , X₀ × X₁ × (X ≃ X₀ + X₁)
+decomposition' : 𝓤 ̇ → 𝓤 ⁺ ̇
+decomposition' {𝓤} X = Σ Y ꞉ (𝟚 → 𝓤 ̇ ) , (Y ₀ + Y ₁ ≃ X) × Y ₀ × Y ₁
 
 \end{code}
 
-TODO. decomposable X ≃ decomposable₁ X. Is this already proved
-somewhere in TypeTopology? This equivalence was already used in a
-publication with coathors.
+The above two decomposition types are equivalent:
 
 \begin{code}
 
-WEM-gives-decomposability-of-two-pointed-types : WEM 𝓤
-                                               → (X : 𝓤 ̇ )
-                                               → has-two-distinct-points X
-                                               → decomposable X
-WEM-gives-decomposability-of-two-pointed-types wem X ((x₀ , x₁) , d) = γ
+decomposition-lemma : (X : 𝓤 ̇ )
+                    → (Σ Y ꞉ (𝟚 → 𝓤 ̇ ) , (Y ₀ + Y ₁ ≃ X))
+                    ≃ (X → 𝟚)
+decomposition-lemma {𝓤} X =
+ (Σ Y ꞉ (𝟚 → 𝓤 ̇ ) , (Y ₀ + Y ₁ ≃ X))       ≃⟨ I ⟩
+ (Σ Y ꞉ (𝟚 → 𝓤 ̇ ) , ((Σ n ꞉ 𝟚 , Y n) ≃ X)) ≃⟨ II ⟩
+ (X → 𝟚)                                    ■
+ where
+  I  = Σ-cong (λ Y → ≃-cong-left fe (≃-sym alternative-+))
+  II = Σ-fibers-≃ (ua 𝓤) fe'
+
+decompositions-agree : (X : 𝓤 ̇ ) → decomposition X ≃ decomposition' X
+decompositions-agree {𝓤} X =
+ (Σ f ꞉ (X → 𝟚) , fiber f ₀ × fiber f ₁)                        ≃⟨ I ⟩
+ (Σ (Y , _) ꞉ (Σ Y ꞉ (𝟚 → 𝓤 ̇ ) , (Y ₀ + Y ₁ ≃ X)) , Y ₀ × Y ₁)  ≃⟨ II ⟩
+ (Σ Y ꞉ (𝟚 → 𝓤 ̇ ) , (Y ₀ + Y ₁ ≃ X) × Y ₀ × Y ₁)                ■
+ where
+  I  = Σ-change-of-variable-≃ _ (≃-sym (decomposition-lemma X))
+  II = Σ-assoc
+
+WEM-gives-decomposition-of-two-pointed-types : WEM 𝓤
+                                             → (X : 𝓤 ̇ )
+                                             → has-two-distinct-points X
+                                             → decomposition X
+WEM-gives-decomposition-of-two-pointed-types wem X ((x₀ , x₁) , d) = γ
  where
   g : (x : X) → ¬ (x ≠ x₀) + ¬¬ (x ≠ x₀) → 𝟚
   g x (inl _) = ₀
@@ -84,41 +112,41 @@ WEM-gives-decomposability-of-two-pointed-types wem X ((x₀ , x₁) , d) = γ
   f : X → 𝟚
   f x = g x (h x)
 
-  f₀ : (δ : ¬ (x₀ ≠ x₀) + ¬¬ (x₀ ≠ x₀)) → g x₀ δ ＝ ₀
-  f₀ (inl _) = refl
-  f₀ (inr u) = 𝟘-elim (three-negations-imply-one u refl)
+  g₀ : (δ : ¬ (x₀ ≠ x₀) + ¬¬ (x₀ ≠ x₀)) → g x₀ δ ＝ ₀
+  g₀ (inl _) = refl
+  g₀ (inr u) = 𝟘-elim (three-negations-imply-one u refl)
 
   e₀ : f x₀ ＝ ₀
-  e₀ = f₀ (h x₀)
+  e₀ = g₀ (h x₀)
 
-  f₁ : (δ : ¬ (x₁ ≠ x₀) + ¬¬ (x₁ ≠ x₀)) → g x₁ δ ＝ ₁
-  f₁ (inl ϕ) = 𝟘-elim (ϕ (≠-sym d))
-  f₁ (inr _) = refl
+  g₁ : (δ : ¬ (x₁ ≠ x₀) + ¬¬ (x₁ ≠ x₀)) → g x₁ δ ＝ ₁
+  g₁ (inl ϕ) = 𝟘-elim (ϕ (≠-sym d))
+  g₁ (inr _) = refl
 
   e₁ : f x₁ ＝ ₁
-  e₁ = f₁ (h x₁)
+  e₁ = g₁ (h x₁)
 
-  γ : decomposable X
-  γ = x₀ , x₁ , f , e₀ , e₁
+  γ : decomposition X
+  γ = f , (x₀ , e₀) , (x₁ , e₁)
 
-WEM-gives-decomposability-of-ordinals-type⁺ : WEM (𝓤 ⁺) → decomposable (Ordinal 𝓤)
-WEM-gives-decomposability-of-ordinals-type⁺ {𝓤} wem =
- WEM-gives-decomposability-of-two-pointed-types wem (Ordinal 𝓤)
+WEM-gives-decomposition-of-ordinals-type⁺ : WEM (𝓤 ⁺) → decomposition (Ordinal 𝓤)
+WEM-gives-decomposition-of-ordinals-type⁺ {𝓤} wem =
+ WEM-gives-decomposition-of-two-pointed-types wem (Ordinal 𝓤)
   ((𝟙ₒ , 𝟘ₒ) , (λ (e : 𝟙ₒ ＝ 𝟘ₒ) → 𝟘-elim (idtofun 𝟙 𝟘 (ap ⟨_⟩ e) ⋆)))
 
 \end{code}
 
-We can strengthen this to WEM 𝓤 → decomposable (Ordinal 𝓤 ̇) using
+We can strengthen this to WEM 𝓤 → decomposition (Ordinal 𝓤) using
 the fact that the type Ordinal 𝓤 ̇ is locally small.
 
 \begin{code}
 
-WEM-gives-decomposability-of-two-pointed-types⁺ : WEM 𝓤
-                                               → (X : 𝓤 ⁺ ̇ )
-                                               → is-locally-small X
-                                               → has-two-distinct-points X
-                                               → decomposable X
-WEM-gives-decomposability-of-two-pointed-types⁺ {𝓤} wem X l ((x₀ , x₁) , d) = γ
+WEM-gives-decomposition-of-two-pointed-types⁺ : WEM 𝓤
+                                              → (X : 𝓤 ⁺ ̇ )
+                                              → is-locally-small X
+                                              → has-two-distinct-points X
+                                              → decomposition X
+WEM-gives-decomposition-of-two-pointed-types⁺ {𝓤} wem X l ((x₀ , x₁) , d) = γ
  where
   g : (x : X) → ¬ (x ≠⟦ l ⟧ x₀) + ¬¬ (x ≠⟦ l ⟧ x₀) → 𝟚
   g x (inl _) = ₀
@@ -130,26 +158,26 @@ WEM-gives-decomposability-of-two-pointed-types⁺ {𝓤} wem X l ((x₀ , x₁) 
   f : X → 𝟚
   f x = g x (h x)
 
-  f₀ : (δ : ¬ (x₀ ≠⟦ l ⟧ x₀) + ¬¬ (x₀ ≠⟦ l ⟧ x₀)) → g x₀ δ ＝ ₀
-  f₀ (inl _) = refl
-  f₀ (inr u) = 𝟘-elim (three-negations-imply-one u ⟦ l ⟧-refl)
+  g₀ : (δ : ¬ (x₀ ≠⟦ l ⟧ x₀) + ¬¬ (x₀ ≠⟦ l ⟧ x₀)) → g x₀ δ ＝ ₀
+  g₀ (inl _) = refl
+  g₀ (inr u) = 𝟘-elim (three-negations-imply-one u ⟦ l ⟧-refl)
 
   e₀ : f x₀ ＝ ₀
-  e₀ = f₀ (h x₀)
+  e₀ = g₀ (h x₀)
 
-  f₁ : (δ : ¬ (x₁ ≠⟦ l ⟧ x₀) + ¬¬ (x₁ ≠⟦ l ⟧ x₀)) → g x₁ δ ＝ ₁
-  f₁ (inl ϕ) = 𝟘-elim (ϕ (≠-gives-≠⟦ l ⟧ (≠-sym d)))
-  f₁ (inr _) = refl
+  g₁ : (δ : ¬ (x₁ ≠⟦ l ⟧ x₀) + ¬¬ (x₁ ≠⟦ l ⟧ x₀)) → g x₁ δ ＝ ₁
+  g₁ (inl ϕ) = 𝟘-elim (ϕ (≠-gives-≠⟦ l ⟧ (≠-sym d)))
+  g₁ (inr _) = refl
 
   e₁ : f x₁ ＝ ₁
-  e₁ = f₁ (h x₁)
+  e₁ = g₁ (h x₁)
 
-  γ : decomposable X
-  γ = x₀ , x₁ , f , e₀ , e₁
+  γ : decomposition X
+  γ = f , (x₀ , e₀) , (x₁ , e₁)
 
-WEM-gives-decomposability-of-ordinals-type : WEM 𝓤 → decomposable (Ordinal 𝓤)
-WEM-gives-decomposability-of-ordinals-type {𝓤} wem =
- WEM-gives-decomposability-of-two-pointed-types⁺ wem (Ordinal 𝓤)
+WEM-gives-decomposition-of-ordinals-type : WEM 𝓤 → decomposition (Ordinal 𝓤)
+WEM-gives-decomposition-of-ordinals-type {𝓤} wem =
+ WEM-gives-decomposition-of-two-pointed-types⁺ wem (Ordinal 𝓤)
   the-type-of-ordinals-is-locally-small
   ((𝟙ₒ , 𝟘ₒ) , (λ (e : 𝟙ₒ ＝ 𝟘ₒ) → 𝟘-elim (idtofun 𝟙 𝟘 (ap ⟨_⟩ e) ⋆)))
 
@@ -178,7 +206,7 @@ type-of-ordinals-has-Ω-paths : has-Ω-paths 𝓤 (Ordinal 𝓤)
 type-of-ordinals-has-Ω-paths {𝓤} α β = f , γ⊥ , γ⊤
  where
   f : Ω 𝓤 → Ordinal 𝓤
-  f p = (Ω-to-ordinal (not fe' p) ×ₒ α) +ₒ (Ω-to-ordinal p ×ₒ β)
+  f p = (Ω-to-ordinal (⇁ p) ×ₒ α) +ₒ (Ω-to-ordinal p ×ₒ β)
 
   γ⊥ : f ⊥Ω ＝ α
   γ⊥ = eqtoidₒ (f ⊥Ω) α (u , o , e , p)
@@ -231,10 +259,8 @@ type-of-ordinals-has-Ω-paths {𝓤} α β = f , γ⊥ , γ⊤
     p : is-order-preserving β (f ⊤Ω) v
     p b c l = inr (refl , l)
 
-non-constant-map-Ω-to-𝟚-gives-WEM :
-        (Σ f ꞉ (Ω 𝓤 → 𝟚) , Σ p₀ ꞉ Ω 𝓤 , Σ p₁ ꞉ Ω 𝓤 , (f p₀ ＝ ₀) × (f p₁ ＝ ₁))
-      → WEM 𝓤
-non-constant-map-Ω-to-𝟚-gives-WEM {𝓤} (f , p₀@(P₀ , i₀) , p₁@(P₁ , i₁) , e₀ , e₁) = IV
+decomposition-of-Ω-gives-WEM : decomposition (Ω 𝓤) → WEM 𝓤
+decomposition-of-Ω-gives-WEM {𝓤} (f , (p₀@(P₀ , i₀) , e₀) , (p₁@(P₁ , i₁) , e₁)) = IV
  where
   g : Ω 𝓤 → Ω 𝓤
   g (Q , j) = ((P₀ × Q) + (P₁ × ¬ Q)) , k
@@ -284,12 +310,11 @@ non-constant-map-Ω-to-𝟚-gives-WEM {𝓤} (f , p₀@(P₀ , i₀) , p₁@(P�
   IV : (Q : 𝓤  ̇) → is-prop Q → ¬ Q + ¬¬ Q
   IV Q j = 𝟚-equality-cases (III₀ (Q , j)) (III₁ (Q , j))
 
-
-decomposable-type-with-Ω-paths-gives-WEM : {X : 𝓤 ̇ }
-                                         → decomposable X
-                                         → has-Ω-paths 𝓥 X
-                                         → WEM 𝓥
-decomposable-type-with-Ω-paths-gives-WEM {𝓤} {𝓥} {X} (x₀ , x₁ , f , e₀ , e₁) c = γ
+decomposition-of-type-with-Ω-paths-gives-WEM : {X : 𝓤 ̇ }
+                                             → decomposition X
+                                             → has-Ω-paths 𝓥 X
+                                             → WEM 𝓥
+decomposition-of-type-with-Ω-paths-gives-WEM {𝓤} {𝓥} {X} (f , (x₀ , e₀) , (x₁ , e₁)) c = γ
  where
   g : Ω 𝓥 → X
   g = pr₁ (c x₀ x₁)
@@ -306,18 +331,108 @@ decomposable-type-with-Ω-paths-gives-WEM {𝓤} {𝓥} {X} (x₀ , x₁ , f , e
        ₁        ∎
 
   γ : WEM 𝓥
-  γ = non-constant-map-Ω-to-𝟚-gives-WEM (f ∘ g , ⊥Ω , ⊤Ω , I₀ , I₁)
+  γ = decomposition-of-Ω-gives-WEM (f ∘ g , (⊥Ω , I₀) , (⊤Ω , I₁))
 
-decomposability-of-ordinals-type-gives-WEM : decomposable (Ordinal 𝓤) → WEM 𝓤
-decomposability-of-ordinals-type-gives-WEM d =
- decomposable-type-with-Ω-paths-gives-WEM d type-of-ordinals-has-Ω-paths
+decomposition-of-ordinals-type-gives-WEM : decomposition (Ordinal 𝓤) → WEM 𝓤
+decomposition-of-ordinals-type-gives-WEM d =
+ decomposition-of-type-with-Ω-paths-gives-WEM d type-of-ordinals-has-Ω-paths
 
-Ordinal-decomposable-iff-WEM : decomposable (Ordinal 𝓤) ⇔ WEM 𝓤
-Ordinal-decomposable-iff-WEM = decomposability-of-ordinals-type-gives-WEM ,
-                               WEM-gives-decomposability-of-ordinals-type
+Ordinal-decomposition-iff-WEM : decomposition (Ordinal 𝓤) ⇔ WEM 𝓤
+Ordinal-decomposition-iff-WEM = decomposition-of-ordinals-type-gives-WEM ,
+                                WEM-gives-decomposition-of-ordinals-type
 
 \end{code}
 
-TODO. Because WEM 𝓤 is a proposition, it follows that
-∥ decomposable (Ordinal 𝓤) ∥ ⇔ WEM 𝓤, and hence also
-∥ decomposable (Ordinal 𝓤) ∥ → decomposable (Ordinal 𝓤).
+We now assume that propositional truncations exist to define
+decomposability as the truncation of the type of decompositions. It is
+a corollary of the above development that the decomposability of the
+type of ordinals gives a specific decomposition.
+
+\begin{code}
+
+module _ (pt : propositional-truncations-exist) where
+
+ open propositional-truncations-exist pt public
+
+ decomposable : 𝓤 ̇ → 𝓤 ̇
+ decomposable X = ∥ decomposition X ∥
+
+ Ordinal-decomposable-iff-WEM : decomposable (Ordinal 𝓤) ⇔ WEM 𝓤
+ Ordinal-decomposable-iff-WEM =
+  ∥∥-rec (WEM-is-prop fe) decomposition-of-ordinals-type-gives-WEM ,
+  (λ wem → ∣ WEM-gives-decomposition-of-ordinals-type wem ∣)
+
+ decomposability-gives-decomposition : decomposable (Ordinal 𝓤) → decomposition (Ordinal 𝓤)
+ decomposability-gives-decomposition {𝓤} δ = WEM-gives-decomposition-of-ordinals-type
+                                               (lr-implication Ordinal-decomposable-iff-WEM δ)
+
+\end{code}
+
+Notice that the formulation of this doesn't refer to WEM, but its
+proof uses WEM, which follows from the hypothesis. Even though
+decomposable (Ordinal 𝓤) and WEM are property, we get data out of
+them - if we are given a proof of decomposability.
+
+
+Added 9th September 2022 by Tom de Jong.
+
+After a discussion with Martín on 8th September 2022, we noticed that the
+decomposability theorem can be generalised from Ord 𝓤 to any locally small
+𝓤-sup-lattice with two distinct points. (This is indeed a generalisation because
+Ord 𝓤 is a locally small 𝓤-sup-lattice, at least in the presence of small set
+quotients or set replacement, see Ordinals.OrdinalOfOrdinalsSuprema.)
+
+One direction is still given by the lemma above:
+  WEM-gives-decomposition-of-two-pointed-types⁺ :
+      WEM 𝓤
+    → (X : 𝓤 ⁺ ̇ )
+    → is-locally-small X
+    → has-two-distinct-points X
+    → decomposition X
+
+[NB. Predicatively, nontrivial 𝓤-sup-lattices necessarily have large
+     carriers [dJE21,dJE22], so that the simpler lemma
+
+     WEM-gives-decomposition-of-two-pointed-types :
+         WEM 𝓤
+       → (X : 𝓤 ̇ )
+       → has-two-distinct-points X
+       → decomposition X
+
+     is not sufficient.]
+
+For the other we use
+
+  decomposition-of-type-with-Ω-paths-gives-WEM :
+      {X : 𝓤 ̇ }
+    → decomposition X
+    → has-Ω-paths 𝓥 X
+    → WEM 𝓥
+
+The point is that every 𝓤-sup-lattice X has Ω𝓤-paths, because given x y : X, we
+can define f : Ω 𝓤 → X by mapping a proposition P to the join of the family
+
+  δ : 𝟙 + P → X
+  δ(inl ⋆) = x;
+  δ(inr p) = y.
+
+The family δ also plays a key role in [dJE21,dJE22] although we have the
+restriction that x ⊑ y in those papers, because we consider a broader collection
+of posets there that includes the 𝓤-sup-lattices, but also 𝓤-bounded-complete
+posets and 𝓤-directed complete posets.
+
+References
+----------
+
+[dJE21] Tom de Jong and Martín Hötzel Escardó.
+        ‘Predicative Aspects of Order Theory in Univalent Foundations’.
+        In: 6th International Conference on Formal Structures for Computation and
+        Deduction (FSCD 2021). Ed. by Naoki Kobayashi. Vol. 195.
+        Leibniz International Proceedings in Informatics (LIPIcs).
+        Schloss Dagstuhl–Leibniz-Zentrum für Informatik, 2021, 8:1–8:18.
+        doi: 10.4230/LIPIcs.FSCD.2021.8.
+[dJE22] Tom de Jong and Martín Hötzel Escardó.
+        ‘On Small Types in Univalent Foundations’. Sept. 2022.
+        arXiv: 2111.00482 [cs.LO]. Revised and expanded version of [dJE21b].
+        Accepted pending minor revision to a special issue of Logical Methods in
+        Computer Science on selected papers from FSCD 2021.

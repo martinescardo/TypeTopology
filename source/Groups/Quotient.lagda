@@ -96,8 +96,9 @@ is compatible with the product and with taking the inverse.
       ≋ : EqRel ⟨ X ⟩
       ≋ = (_≈_ , ≈p , ≈r , ≈s , ≈t)
 
-    binop-cong : {x₁ x₂ x₁' x₂' : ⟨ X ⟩} →
-              x₁ ≈ x₁' → x₂ ≈ x₂' → (x₁ ·⟨ X ⟩ x₂) ≈ (x₁' ·⟨ X ⟩ x₂')
+    binop-cong : {x₁ x₂ x₁' x₂' : ⟨ X ⟩}
+               → x₁ ≈ x₁' → x₂ ≈ x₂'
+               → (x₁ ·⟨ X ⟩ x₂) ≈ (x₁' ·⟨ X ⟩ x₂')
     binop-cong {x₁} {x₂} {x₁'} {x₂'} u₁ u₂ = ≈t (x₁ · x₂) (x₁ · x₂') (x₁' · x₂') p₁ p₂
       where
         _·_ = multiplication X

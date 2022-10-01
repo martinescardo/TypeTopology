@@ -65,12 +65,12 @@ module _ (G : Group 𝓤) where
   carrier-is-set : (𝕏 : Action) → is-set (action-carrier 𝕏)
   carrier-is-set (X , op , i , _) = i
 
-  action-assoc : (𝕏 : Action) (g h : ⟨ G ⟩) (x : ⟨ 𝕏 ⟩) →
-                 (action-op 𝕏) (g ·⟨ G ⟩ h) x ＝ (action-op 𝕏) g ((action-op 𝕏) h x)
+  action-assoc : (𝕏 : Action) (g h : ⟨ G ⟩) (x : ⟨ 𝕏 ⟩)
+               →  (action-op 𝕏) (g ·⟨ G ⟩ h) x ＝ (action-op 𝕏) g ((action-op 𝕏) h x)
   action-assoc (X , op , i , a , u) = a
 
-  action-unit : (𝕏 : Action) (x : ⟨ 𝕏 ⟩) →
-                (action-op 𝕏) (unit G) x ＝ x
+  action-unit : (𝕏 : Action) (x : ⟨ 𝕏 ⟩)
+              →  (action-op 𝕏) (unit G) x ＝ x
   action-unit (X , op , i , a , u) = u
 
   action-tofun : (𝕏 : Action) (g : ⟨ G ⟩) → ⟨ 𝕏 ⟩ → ⟨ 𝕏 ⟩
@@ -111,8 +111,8 @@ module _ (G : Group 𝓤) where
 
   -- the total action map is often used, especiall for torsors
   ------------------------------------------------------------
-  mult : (𝕏 : Action) →
-         ⟨ G ⟩ × ⟨ 𝕏 ⟩ → ⟨ 𝕏 ⟩ × ⟨ 𝕏 ⟩
+  mult : (𝕏 : Action)
+       →  ⟨ G ⟩ × ⟨ 𝕏 ⟩ → ⟨ 𝕏 ⟩ × ⟨ 𝕏 ⟩
   mult 𝕏 (g , x) = action-op 𝕏 g x , x
 
 \end{code}
@@ -165,10 +165,10 @@ Resuming the general theory, the group action axioms form a proposition
 and the Action-structure is a set.
 
 \begin{code}
-  action-axioms-is-prop : funext 𝓤 𝓤 →
-                          (X : 𝓤 ̇) →
-                          (_·_ : action-structure X) →
-                          is-prop (action-axioms X _·_)
+  action-axioms-is-prop : funext 𝓤 𝓤
+                        → (X : 𝓤 ̇)
+                        → (_·_ : action-structure X)
+                        → is-prop (action-axioms X _·_)
   action-axioms-is-prop fe X _·_ s = γ s
     where
       i : is-set X
@@ -183,9 +183,9 @@ and the Action-structure is a set.
                         (Π-is-prop fe (λ x → i)))
 
 
-  Action-structure-is-set : funext 𝓤 𝓤 →
-                            (X : 𝓤 ̇) →
-                            is-set (Action-structure X)
+  Action-structure-is-set : funext 𝓤 𝓤
+                          → (X : 𝓤 ̇)
+                          → is-set (Action-structure X)
   Action-structure-is-set fe X {s} = γ {s}
     where
       i : is-set X
@@ -211,9 +211,9 @@ Equivariant maps.
       _*_ = action-op 𝕐
 
 
-  is-equivariant-is-prop : funext 𝓤 𝓤 →
-                           (𝕏 𝕐 : Action) → (f : ⟨ 𝕏 ⟩ → ⟨ 𝕐 ⟩) →
-                           is-prop (is-equivariant 𝕏 𝕐 f)
+  is-equivariant-is-prop : funext 𝓤 𝓤
+                         → (𝕏 𝕐 : Action) → (f : ⟨ 𝕏 ⟩ → ⟨ 𝕐 ⟩)
+                         → is-prop (is-equivariant 𝕏 𝕐 f)
   is-equivariant-is-prop fe 𝕏 𝕐 f s = γ s
     where
       i : is-set (action-carrier 𝕐)
@@ -224,10 +224,10 @@ Equivariant maps.
                     (λ g → Π-is-prop fe
                                      (λ x → i))
 
-  is-equivariant-comp : (𝕏 𝕐 ℤ : Action) →
-                        (p : ⟨ 𝕏 ⟩ → ⟨ 𝕐 ⟩) (i : is-equivariant 𝕏 𝕐 p) →
-                        (q : ⟨ 𝕐 ⟩ → ⟨ ℤ ⟩) (j : is-equivariant 𝕐 ℤ q) → 
-                        (is-equivariant 𝕏 ℤ (q ∘ p))
+  is-equivariant-comp : (𝕏 𝕐 ℤ : Action)
+                      → (p : ⟨ 𝕏 ⟩ → ⟨ 𝕐 ⟩) (i : is-equivariant 𝕏 𝕐 p)
+                      → (q : ⟨ 𝕐 ⟩ → ⟨ ℤ ⟩) (j : is-equivariant 𝕐 ℤ q) 
+                      → (is-equivariant 𝕏 ℤ (q ∘ p))
   is-equivariant-comp 𝕏 𝕐 ℤ p i q j g x = q (p (g · x)) ＝⟨ ap q (i g x) ⟩
                                           q (g * (p x)) ＝⟨ j g (p x) ⟩
                                           g ✵ (q (p x)) ∎
@@ -246,10 +246,10 @@ structures.
 
 \begin{code}
 
-  ＝-is-equivariant : funext 𝓤 𝓤 →
-                     (𝕏 𝕐 : Action) →
-                     (p : ⟨ 𝕏 ⟩ ＝ ⟨ 𝕐 ⟩) →
-                     (transport Action-structure p (pr₂ 𝕏)  ＝ pr₂ 𝕐 ) ≃ 
+  ＝-is-equivariant : funext 𝓤 𝓤
+                    → (𝕏 𝕐 : Action)
+                    → (p : ⟨ 𝕏 ⟩ ＝ ⟨ 𝕐 ⟩)
+                    → (transport Action-structure p (pr₂ 𝕏)  ＝ pr₂ 𝕐 ) ≃ 
                      is-equivariant 𝕏 𝕐 (idtofun ⟨ 𝕏 ⟩ ⟨ 𝕐 ⟩ p)
   pr₁ (＝-is-equivariant fe (X , as) (.X , .as) refl) refl = λ g x → refl
   pr₂ (＝-is-equivariant fe (X , as) (.X , as') refl) =
@@ -285,9 +285,9 @@ The above function is called is_equivariant_identity in UniMath.
   equivariance u = pr₂ u
 
 
-  Action-Map-is-set : funext 𝓤 𝓤 →
-                      (𝕏 𝕐 : Action) →
-                      is-set (Action-Map 𝕏 𝕐)
+  Action-Map-is-set : funext 𝓤 𝓤
+                    → (𝕏 𝕐 : Action)
+                    → is-set (Action-Map 𝕏 𝕐)
   Action-Map-is-set fe 𝕏 𝕐 {s} = γ {s}
     where
       γ : is-set (Action-Map 𝕏 𝕐)
@@ -295,18 +295,18 @@ The above function is called is_equivariant_identity in UniMath.
                      (λ u → carrier-is-set 𝕐))
                    λ f → props-are-sets (is-equivariant-is-prop fe 𝕏 𝕐 f)
 
-  compose-Action-Map : {𝕏 𝕐 ℤ : Action} →
-                       (Action-Map 𝕏 𝕐) → (Action-Map 𝕐 ℤ) →
-                       (Action-Map 𝕏 ℤ)
+  compose-Action-Map : {𝕏 𝕐 ℤ : Action}
+                     → (Action-Map 𝕏 𝕐) → (Action-Map 𝕐 ℤ)
+                     → (Action-Map 𝕏 ℤ)
   compose-Action-Map {𝕏} {𝕐} {ℤ} (p , i) (q , j) =
                      (q ∘ p) , (is-equivariant-comp 𝕏 𝕐 ℤ p i q j)
 
   Action-Iso : (𝕏 𝕐 : Action) → 𝓤 ̇
   Action-Iso 𝕏 𝕐 = Σ f ꞉ ⟨ 𝕏 ⟩ ≃ ⟨ 𝕐 ⟩ , is-equivariant 𝕏 𝕐 (eqtofun f)
 
-  Action-Iso-is-set : funext 𝓤 𝓤 →
-                      (𝕏 𝕐 : Action) →
-                      is-set (Action-Iso 𝕏 𝕐)
+  Action-Iso-is-set : funext 𝓤 𝓤
+                    → (𝕏 𝕐 : Action)
+                    → is-set (Action-Iso 𝕏 𝕐)
   Action-Iso-is-set fe 𝕏 𝕐 {s} = γ {s}
     where
       γ : is-set (Action-Iso 𝕏 𝕐)
@@ -317,58 +317,58 @@ The above function is called is_equivariant_identity in UniMath.
   underlying-iso : (𝕏 𝕐 : Action) → Action-Iso 𝕏 𝕐 → ⟨ 𝕏 ⟩ ≃ ⟨ 𝕐 ⟩
   underlying-iso 𝕏 𝕐 u = pr₁ u
                    
-  underlying-iso-is-embedding : funext 𝓤 𝓤 →
-                                (𝕏 𝕐 : Action) →
-                                is-embedding (underlying-iso 𝕏 𝕐)
+  underlying-iso-is-embedding : funext 𝓤 𝓤
+                              → (𝕏 𝕐 : Action)
+                              → is-embedding (underlying-iso 𝕏 𝕐)
   underlying-iso-is-embedding fe 𝕏 𝕐 =
     pr₁-is-embedding (λ f → is-equivariant-is-prop fe 𝕏 𝕐 (pr₁ f))
                            
-  underlying-iso-injectivity : funext 𝓤 𝓤 → 
-                               (𝕏 𝕐 : Action) →
-                               (u v : Action-Iso 𝕏 𝕐) →
-                               (u ＝ v) ≃ (underlying-iso 𝕏 𝕐 u ＝ underlying-iso 𝕏 𝕐 v)
+  underlying-iso-injectivity : funext 𝓤 𝓤
+                             → (𝕏 𝕐 : Action)
+                             → (u v : Action-Iso 𝕏 𝕐)
+                             → (u ＝ v) ≃ (underlying-iso 𝕏 𝕐 u ＝ underlying-iso 𝕏 𝕐 v)
   underlying-iso-injectivity fe 𝕏 𝕐 u v =
     ≃-sym (embedding-criterion-converse
              (underlying-iso 𝕏 𝕐)
              (underlying-iso-is-embedding fe 𝕏 𝕐) u v) 
 
   
-  underlying-Action-Map : (𝕏 𝕐 : Action) → Action-Iso 𝕏 𝕐 →
-                          Action-Map 𝕏 𝕐
+  underlying-Action-Map : (𝕏 𝕐 : Action) → Action-Iso 𝕏 𝕐
+                        → Action-Map 𝕏 𝕐
   underlying-Action-Map _ _ ((f , _) , is) = f , is
 
   id-Action-Iso : (𝕏 : Action) → Action-Iso 𝕏 𝕏
   id-Action-Iso 𝕏 = (id , (id-is-equiv ⟨ 𝕏 ⟩)) , (λ g x → refl)
 
-  ＝-to-Action-Iso : {𝕏 𝕐 : Action} →
-                    𝕏 ＝ 𝕐 → Action-Iso 𝕏 𝕐
+  ＝-to-Action-Iso : {𝕏 𝕐 : Action}
+                   → 𝕏 ＝ 𝕐 → Action-Iso 𝕏 𝕐
   ＝-to-Action-Iso {𝕏} {𝕐} p = transport (Action-Iso 𝕏) p (id-Action-Iso 𝕏)
 
-  ＝-to-Action-Iso₁ : {𝕏 𝕐 : Action} →
-                     𝕏 ＝ 𝕐 → Action-Iso 𝕏 𝕐
+  ＝-to-Action-Iso₁ : {𝕏 𝕐 : Action}
+                    → 𝕏 ＝ 𝕐 → Action-Iso 𝕏 𝕐
   ＝-to-Action-Iso₁ {𝕏} {.𝕏} refl = id-Action-Iso 𝕏
 
-  ＝-to-Action-Iso-compare : {𝕏 𝕐 : Action} → (u : 𝕏 ＝ 𝕐) →
-                             ＝-to-Action-Iso {𝕏} {𝕐} u ＝ ＝-to-Action-Iso₁ {𝕏} {𝕐} u
+  ＝-to-Action-Iso-compare : {𝕏 𝕐 : Action} → (u : 𝕏 ＝ 𝕐)
+                           → ＝-to-Action-Iso {𝕏} {𝕐} u ＝ ＝-to-Action-Iso₁ {𝕏} {𝕐} u
   ＝-to-Action-Iso-compare {𝕏} {.𝕏} refl = refl
 
 
-  compose-Action-Iso : {𝕏 𝕐 ℤ : Action} →
-                       Action-Iso 𝕏 𝕐 → Action-Iso 𝕐 ℤ →
-                       Action-Iso 𝕏 ℤ
+  compose-Action-Iso : {𝕏 𝕐 ℤ : Action}
+                     → Action-Iso 𝕏 𝕐 → Action-Iso 𝕐 ℤ
+                     → Action-Iso 𝕏 ℤ
   compose-Action-Iso {𝕏} {𝕐} {ℤ} (f , i) (g , j) =
                      (f ● g) , (is-equivariant-comp 𝕏 𝕐 ℤ (pr₁ f) i (pr₁ g) j)
 
-  compose-Action-Iso-id : funext 𝓤 𝓤 → 
-                          {𝕏 𝕐 : Action} → (u : Action-Iso 𝕏 𝕐) →
-                          compose-Action-Iso {𝕏} {𝕐} {𝕐} u (id-Action-Iso 𝕐) ＝ u
+  compose-Action-Iso-id : funext 𝓤 𝓤
+                        → {𝕏 𝕐 : Action} → (u : Action-Iso 𝕏 𝕐)
+                        → compose-Action-Iso {𝕏} {𝕐} {𝕐} u (id-Action-Iso 𝕐) ＝ u
   compose-Action-Iso-id fe {𝕏} {𝕐} u = to-subtype-＝
                            (λ f → is-equivariant-is-prop fe 𝕏 𝕐 (eqtofun f))
                            (≃-refl-right' fe fe fe (pr₁ u))
 
-  compose-id-Action-Iso : funext 𝓤 𝓤 →
-                          {𝕏 𝕐 : Action} → (u : Action-Iso 𝕏 𝕐) →
-                          compose-Action-Iso {𝕏} {𝕏} {𝕐} (id-Action-Iso 𝕏) u ＝ u
+  compose-id-Action-Iso : funext 𝓤 𝓤
+                        → {𝕏 𝕐 : Action} → (u : Action-Iso 𝕏 𝕐)
+                        → compose-Action-Iso {𝕏} {𝕏} {𝕐} (id-Action-Iso 𝕏) u ＝ u
   compose-id-Action-Iso fe {𝕏} {𝕐} u = to-subtype-＝
                            (λ f → is-equivariant-is-prop fe 𝕏 𝕐 (eqtofun f))
                            (≃-refl-left' fe fe fe (pr₁ u))
@@ -385,8 +385,8 @@ type-checking.
       fe : funext 𝓤 𝓤
       fe = univalence-gives-funext ua
 
-    Id-equiv-Action-Iso_prelim : (𝕏 𝕐 : Action) →
-                              (𝕏 ＝ 𝕐) ≃ (Action-Iso 𝕏 𝕐)
+    Id-equiv-Action-Iso_prelim : (𝕏 𝕐 : Action)
+                               → (𝕏 ＝ 𝕐) ≃ (Action-Iso 𝕏 𝕐)
     Id-equiv-Action-Iso_prelim 𝕏 𝕐 = ≃-comp (Φ , ll) (Ψ , ii)
       where
         T : (𝕏 𝕐 : Action) → (𝓤 ⁺) ̇
@@ -433,8 +433,8 @@ type-checking.
             inv-Φ = Φ' , (tofrom-Σ-＝ , fromto-Σ-＝)
 
 
-    ＝-to-Action-Iso-is-equiv : {𝕏 𝕐 : Action} →
-                               is-equiv (＝-to-Action-Iso {𝕏} {𝕐})
+    ＝-to-Action-Iso-is-equiv : {𝕏 𝕐 : Action}
+                              → is-equiv (＝-to-Action-Iso {𝕏} {𝕐})
     ＝-to-Action-Iso-is-equiv {𝕏} {𝕐} = equiv-closed-under-∼'
                              (pr₂ (Id-equiv-Action-Iso_prelim 𝕏 𝕐)) h
       where
@@ -444,8 +444,8 @@ type-checking.
         h refl = refl
 
 
-    Id-equiv-Action-Iso : (𝕏 𝕐 : Action) →
-                       (𝕏 ＝ 𝕐) ≃ (Action-Iso 𝕏 𝕐)
+    Id-equiv-Action-Iso : (𝕏 𝕐 : Action)
+                        → (𝕏 ＝ 𝕐) ≃ (Action-Iso 𝕏 𝕐)
     Id-equiv-Action-Iso 𝕏 𝕐 = ＝-to-Action-Iso , ＝-to-Action-Iso-is-equiv
 
 \end{code}
@@ -475,9 +475,9 @@ is a functor from the one-object category G[1] to sets.
 
 \begin{code}
 
-action-pullback : {H G : Group 𝓤} →
-                  (f : ⟨ H ⟩ → ⟨ G ⟩) → is-hom H G f →
-                  G Sets → H Sets
+action-pullback : {H G : Group 𝓤}
+                → (f : ⟨ H ⟩ → ⟨ G ⟩) → is-hom H G f
+                → G Sets → H Sets
 action-pullback {H = H} {G} f i ρ = (action-carrier G ρ) ,
                 (λ h x → (f h) · x) ,
                   (carrier-is-set G ρ) ,

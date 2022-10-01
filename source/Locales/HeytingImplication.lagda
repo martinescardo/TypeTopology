@@ -129,4 +129,10 @@ module HeytingImplicationConstruction (X : Locale 𝓤  𝓥  𝓥)
   where
    open PosetReasoning (poset-of (𝒪 X))
 
+ heyting-implication-identity : (U : ⟨ 𝒪 X ⟩) → U ==> U ＝ 𝟏[ 𝒪 X ]
+ heyting-implication-identity U = only-𝟏-is-above-𝟏 (𝒪 X) (U ==> U) †
+  where
+   † : (𝟏[ 𝒪 X ] ≤[ poset-of (𝒪 X ) ] (U ==> U)) holds
+   † = heyting-implication₁ U U 𝟏[ 𝒪 X ] (∧[ 𝒪 X ]-lower₂ 𝟏[ 𝒪 X ] U)
+
 \end{code}

@@ -582,8 +582,11 @@ map.
 
 \begin{code}
 
+∅ : {A : 𝓤  ̇} → (𝓦 : Universe) → Fam 𝓦 A
+∅ 𝓦 = 𝟘 {𝓦} , λ ()
+
 𝟎[_] : (F : Frame 𝓤 𝓥 𝓦) → ⟨ F ⟩
-𝟎[ F ] = ⋁[ F ] 𝟘 , λ ()
+𝟎[ F ] = ⋁[ F ] (∅ _)
 
 is-bottom : (F : Frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥)
 is-bottom F b = Ɐ x ∶ ⟨ F ⟩ , (b ≤[ poset-of F ] x)
@@ -617,7 +620,6 @@ only-𝟎-is-below-𝟎 F x p =
  x ∨[ F ] 𝟎[ F ]  ＝⟨ ∨[ F ]-is-commutative x 𝟎[ F ] ⟩
  𝟎[ F ] ∨[ F ] x  ＝⟨ 𝟎-right-unit-of-∨ F x          ⟩
  x                ∎
-
 \end{code}
 
 \begin{code}
@@ -1078,7 +1080,14 @@ scott-continuous-join-eq F G f ζ S δ =
 𝟏-left-annihilator-for-∨ F x =
  𝟏[ F ] ∨[ F ] x  ＝⟨ ∨[ F ]-is-commutative 𝟏[ F ] x ⟩
  x ∨[ F ] 𝟏[ F ]  ＝⟨ 𝟏-right-annihilator-for-∨ F x  ⟩
- 𝟏[ F ] ∎
+ 𝟏[ F ]           ∎
+
+
+𝟏-left-unit-of-∧ : (F : Frame 𝓤 𝓥 𝓦)
+                 → (x : ⟨ F ⟩) → 𝟏[ F ] ∧[ F ] x ＝ x
+𝟏-left-unit-of-∧ F x = 𝟏[ F ] ∧[ F ] x   ＝⟨ ∧[ F ]-is-commutative 𝟏[ F ] x ⟩
+                       x ∧[ F ] 𝟏[ F ]   ＝⟨ 𝟏-right-unit-of-∧ F x          ⟩
+                       x                 ∎
 
 \end{code}
 
@@ -1100,6 +1109,20 @@ distributivity′ F x S =
 
    ‡ = ∧[ F ]-is-commutative x ∘ (_[_] S)
    † = ap (λ - → join-of F (index S , -)) (dfunext fe ‡)
+
+distributivity′-right : (F : Frame 𝓤 𝓥 𝓦)
+                      → (x : ⟨ F ⟩)
+                      → (S : Fam 𝓦 ⟨ F ⟩)
+                      → let open JoinNotation (λ - → ⋁[ F ] -) in
+                         (⋁⟨ i ⟩ (S [ i ])) ∧[ F ] x ＝ ⋁⟨ i ⟩ ((S [ i ]) ∧[ F ] x)
+distributivity′-right F x S =
+ (⋁⟨ i ⟩ (S [ i ])) ∧[ F ] x  ＝⟨ †                     ⟩
+ x ∧[ F ] (⋁⟨ i ⟩ (S [ i ]))  ＝⟨ distributivity′ F x S ⟩
+ ⋁⟨ i ⟩ (S [ i ] ∧[ F ] x)    ∎
+  where
+   open JoinNotation (λ - → ⋁[ F ] -)
+
+   † = ∧[ F ]-is-commutative (⋁⟨ i ⟩ (S [ i ])) x
 
 absorption-right : (F : Frame 𝓤 𝓥 𝓦) (x y : ⟨ F ⟩)
                  → x ∨[ F ] (x ∧[ F ] y) ＝ x
@@ -1146,6 +1169,21 @@ binary-distributivity {𝓦 = 𝓦} F x y z =
   where
    † = distributivity F x (binary-family 𝓦 y z)
    ‡ = ap (λ - → join-of F -) (fmap-binary-family 𝓦 (λ - → x ∧[ F ] -) y z)
+
+binary-distributivity-right : (F : Frame 𝓤 𝓥 𝓦)
+                            → {x y z : ⟨ F ⟩}
+                            → (x ∨[ F ] y) ∧[ F ] z ＝ (x ∧[ F ] z) ∨[ F ] (y ∧[ F ] z)
+binary-distributivity-right F {x} {y} {z} =
+ (x ∨[ F ] y) ∧[ F ] z             ＝⟨ Ⅰ ⟩
+ z ∧[ F ] (x ∨[ F ] y)             ＝⟨ Ⅱ ⟩
+ (z ∧[ F ] x) ∨[ F ] (z ∧[ F ] y)  ＝⟨ Ⅲ ⟩
+ (x ∧[ F ] z) ∨[ F ] (z ∧[ F ] y)  ＝⟨ Ⅳ ⟩
+ (x ∧[ F ] z) ∨[ F ] (y ∧[ F ] z)  ∎
+  where
+   Ⅰ = ∧[ F ]-is-commutative (x ∨[ F ] y) z
+   Ⅱ = binary-distributivity F z x y
+   Ⅲ = ap (λ - → - ∨[ F ] (z ∧[ F ] y)) (∧[ F ]-is-commutative z x)
+   Ⅳ = ap (λ - → (x ∧[ F ] z) ∨[ F ] -) (∧[ F ]-is-commutative z y)
 
 binary-distributivity-op : (F : Frame 𝓤 𝓥 𝓦) (x y z : ⟨ F ⟩)
                          → x ∨[ F ] (y ∧[ F ] z) ＝ (x ∨[ F ] y) ∧[ F ] (x ∨[ F ] z)
@@ -1595,5 +1633,40 @@ module ContinuousMapNotation (X : Locale 𝓤 𝓥 𝓦) (Y : Locale 𝓤' 𝓥'
  _⋆∙_ : (f : X ─c→ Y)
       → ⟨ 𝒪 Y ⟩ → ⟨ 𝒪 X ⟩
  _⋆∙_ f V = (_⋆ f) .pr₁ V
+
+\end{code}
+
+\section{Cofinality}
+
+\begin{code}
+
+cofinal-in : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Fam 𝓦 ⟨ F ⟩ → Ω (𝓥 ⊔ 𝓦)
+cofinal-in F R S =
+ Ɐ i ∶ index R , Ǝ j ∶ index S , ((R [ i ]) ≤[ poset-of F ] (S [ j ])) holds
+
+cofinal-implies-join-covered : (F : Frame 𝓤 𝓥 𝓦) (R S : Fam 𝓦 ⟨ F ⟩)
+                             → cofinal-in F R S holds
+                             → ((⋁[ F ] R) ≤[ poset-of F ] (⋁[ F ] S)) holds
+cofinal-implies-join-covered F R S φ = ⋁[ F ]-least R ((⋁[ F ] S) , β)
+ where
+  open PosetReasoning (poset-of F)
+  open PropositionalTruncation pt
+
+  β : (i : index R) → ((R [ i ]) ≤[ poset-of F ] (⋁[ F ] S)) holds
+  β i = ∥∥-rec (holds-is-prop ((R [ i ]) ≤[ poset-of F ] (⋁[ F ] S))) γ (φ i)
+   where
+    γ : Σ j ꞉ index S , ((R [ i ]) ≤[ poset-of F ] (S [ j ])) holds
+        → ((R [ i ]) ≤[ poset-of F ] (⋁[ F ] S)) holds
+    γ (j , p) = R [ i ] ≤⟨ p ⟩ S [ j ] ≤⟨ ⋁[ F ]-upper S j ⟩ ⋁[ F ] S ■
+
+bicofinal-implies-same-join : (F : Frame 𝓤 𝓥 𝓦) (R S : Fam 𝓦 ⟨ F ⟩)
+                            → cofinal-in F R S holds
+                            → cofinal-in F S R holds
+                            → ⋁[ F ] R ＝ ⋁[ F ] S
+bicofinal-implies-same-join F R S φ ψ =
+ ≤-is-antisymmetric
+  (poset-of F)
+  (cofinal-implies-join-covered F R S φ)
+  (cofinal-implies-join-covered F S R ψ)
 
 \end{code}

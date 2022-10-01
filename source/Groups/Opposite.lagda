@@ -37,9 +37,9 @@ Forming the opposite gives a functor
 
 \begin{code}
 
-op-functoriality : (G H : Group 𝓤) →
-                   (f : ⟨ G ⟩ → ⟨ H ⟩) (i : is-hom G H f) →
-                   is-hom (G ᵒᵖ) (H ᵒᵖ) f
+op-functoriality : (G H : Group 𝓤)
+                 → (f : ⟨ G ⟩ → ⟨ H ⟩) (i : is-hom G H f)
+                 → is-hom (G ᵒᵖ) (H ᵒᵖ) f
 op-functoriality G H f i {x} {y} = i {y} {x}
 
 \end{code}
@@ -60,13 +60,13 @@ unless G is abelian.  In fact this is equivalent to G being abelian.
 
 \begin{code}
 
-underlying-id-is-hom : (G : Group 𝓤) (ab : is-abelian G) →
-                       is-hom G (G ᵒᵖ) id 
+underlying-id-is-hom : (G : Group 𝓤) (ab : is-abelian G)
+                     → is-hom G (G ᵒᵖ) id 
 underlying-id-is-hom G ab {x} {y} = ab x y
 
-op-hom-gives-abelian : (G : Group 𝓤) →
-                       (i : is-hom G (G ᵒᵖ) id) →
-                       is-abelian G
+op-hom-gives-abelian : (G : Group 𝓤)
+                     → (i : is-hom G (G ᵒᵖ) id)
+                     → is-abelian G
 op-hom-gives-abelian G i = λ x y → i {x} {y}
 
 \end{code}

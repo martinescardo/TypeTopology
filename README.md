@@ -5,7 +5,7 @@ transferred to github Monday 5th February 2018. A few files are
 authored by collaborators or external contributors, with names added
 at the top.
 
-If you contribute, please add your full real name and date
+If you contribute, please add your full (legal or adopted) name and date
 at the place of contribution.
 
 An [html rendering of the Agda
@@ -29,6 +29,7 @@ You can use the following BibTeX citation to cite `TypeTopology`:
 
 * Andrew Sneap
 * Ayberk Tosun
+* Chuangjie Xu
 * Cory Knapp
 * Ettore Aldrovandi
 * Keri D'Angelo
