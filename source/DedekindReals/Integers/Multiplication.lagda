@@ -5,12 +5,12 @@ properties of multiplication.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import MLTT.Spartan renaming (_+_ to _∔_) 
 
 open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
-
+open import Naturals.Addition renaming (_+_ to _ℕ+_)
 open import DedekindReals.Integers.Integers
 open import DedekindReals.Integers.Addition
 open import DedekindReals.Integers.Negation
@@ -328,6 +328,33 @@ is-pos-succ-mult x (pos 0)               x>0 y>0 = 𝟘-elim y>0
 is-pos-succ-mult x (pos (succ 0))        x>0 y>0 = x>0
 is-pos-succ-mult x (pos (succ (succ y))) x>0 y>0 =
  is-pos-succ-addition x (x * pos (succ y)) x>0 (is-pos-succ-mult x (pos (succ y)) x>0 y>0)
+
+pos-times-negative : (n k : ℕ) → Σ m ꞉ ℕ , pos (succ n) * negsucc k ＝ negsucc m
+pos-times-negative n 0        = n , refl
+pos-times-negative n (succ k) = I IH
+ where
+  IH : Σ m ꞉ ℕ , pos (succ n) * negsucc k ＝ negsucc m
+  IH = pos-times-negative n k
+  I : Σ m ꞉ ℕ , pos (succ n) * negsucc k ＝ negsucc m
+    → Σ m ꞉ ℕ , pos (succ n) * negsucc (succ k) ＝ negsucc m
+  I (m , e) = succ n ℕ+ m , II
+   where
+    II : pos (succ n) * negsucc (succ k) ＝ negsucc (succ n ℕ+ m)
+    II = pos (succ n) * negsucc (succ k)      ＝⟨ refl                                                            ⟩
+         negsucc n + pos (succ n) * negsucc k ＝⟨ ap (negsucc n +_) e                                             ⟩
+         negsucc n + negsucc m                ＝⟨ negation-dist (pos (succ n)) (pos (succ m))                     ⟩
+         - (succℤ (pos (succ n) + pos m))     ＝⟨ ap (λ z → - (succℤ z)) (distributivity-pos-addition (succ n) m) ⟩
+         - succℤ (pos (succ n ℕ+ m))          ＝⟨ refl                                                            ⟩
+         negsucc (succ n ℕ+ m)                ∎
+
+negatives-equal : (x y : ℤ) → (- x) ＝ (- y) → x ＝ y
+negatives-equal x y e = I
+ where
+  I : x ＝ y
+  I = x        ＝⟨ minus-minus-is-plus x ⁻¹ ⟩
+      - (- x)  ＝⟨ ap -_ e                  ⟩
+      - (- y)  ＝⟨ minus-minus-is-plus y    ⟩
+      y        ∎
 
 \end{code}
 
