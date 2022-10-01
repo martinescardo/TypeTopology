@@ -82,6 +82,12 @@ rational inhabiting a cut. This is useful for readability purposes.
  in-upper-cut : ℤ[1/2] → ℝ-d → 𝓤₀ ̇
  in-upper-cut q ((L , R) , _) = q ∈ R
 
+ inhabited-from-real-L : (x : ℝ-d) → inhabited-left (lower-cut-of x)
+ inhabited-from-real-L ((L , R) , inhab-L , inhab-R , rounded-L , rounded-R , disjoint , located) = inhab-L
+
+ inhabited-from-real-R : (x : ℝ-d) → inhabited-right (upper-cut-of x)
+ inhabited-from-real-R ((L , R) , inhab-L , inhab-R , rounded-L , rounded-R , disjoint , located) = inhab-R
+
  rounded-from-real-L1 : (x : ℝ-d) → (k : ℤ[1/2]) → k ∈ lower-cut-of x → ∃ p ꞉ ℤ[1/2] , k < p × p ∈ lower-cut-of x
  rounded-from-real-L1 ((L , R) , inhab-L , inhab-R , rounded-L , rounded-R , disjoint , located) k = pr₁ (rounded-L k)
 
