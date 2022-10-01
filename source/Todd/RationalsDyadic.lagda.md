@@ -347,6 +347,7 @@ record DyadicProperties : 𝓤₁ ̇ where
   ℤ[1/2]-negation-involutive : (x : ℤ[1/2]) → x ＝ ℤ[1/2]- (ℤ[1/2]- x)
   min : ℤ[1/2] → ℤ[1/2] → ℤ[1/2]
   max : ℤ[1/2] → ℤ[1/2] → ℤ[1/2]
+  ℤ[1/2]-abs : ℤ[1/2] → ℤ[1/2] 
   
  infix 20  ℤ[1/2]-_
  infixl 19 _ℤ[1/2]-_
@@ -381,9 +382,23 @@ record OrderProperties : 𝓤₁ ̇ where
   <-is-≤ℤ[1/2] : (x y : ℤ[1/2]) → x < y → x ≤ y
   diff-positive : (x y : ℤ[1/2]) → x < y → 0ℤ[1/2] < (y ℤ[1/2]- x)
   <-swap : (x y : ℤ[1/2]) → x < y → (ℤ[1/2]- y) < (ℤ[1/2]- x)
+  ≤-split : (x y : ℤ[1/2]) → x ≤ y → x < y ∔ (x ＝ y)
 
+ ℤ[1/2]<-≤ : (x y z : ℤ[1/2]) → x < y → y ≤ z → x < z
+ ℤ[1/2]<-≤ x y z x<y y≤z with ≤-split y z y≤z
+ ... | inl y<z = trans x y z x<y y<z
+ ... | inr y=z = transport (x <_) y=z x<y
+
+ ℤ[1/2]≤-< : (x y z : ℤ[1/2]) → x ≤ y → y < z → x < z
+ ℤ[1/2]≤-< x y z x≤y y<z with ≤-split x y x≤y
+ ... | inl x<y = trans x y z x<y y<z
+ ... | inr x＝y = transport (_< z) (x＝y ⁻¹) y<z
+ 
  trans₂ : (w x y z : ℤ[1/2]) → w < x → x < y → y < z → w < z
  trans₂ w x y z w<x x<y y<z = trans w x z w<x (trans x y z x<y y<z)
+
+ <-swap' : (x y : ℤ[1/2]) → (ℤ[1/2]- x) < (ℤ[1/2]- y) → y < x
+ <-swap' x y l = transport₂ _<_ (ℤ[1/2]-negation-involutive y ⁻¹) (ℤ[1/2]-negation-involutive x ⁻¹) (<-swap (ℤ[1/2]- x) (ℤ[1/2]- y) l)
 
 -- normalise-pos
 normalise-≤ : ((k , δ) : ℤ × ℕ) → ((m , ε) : ℤ × ℕ)
