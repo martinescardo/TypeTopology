@@ -4,6 +4,7 @@
 
 open import MLTT.Spartan renaming (_+_ to _∔_)
 open import Naturals.Addition
+open import Naturals.Properties
 open import Naturals.Multiplication
 
 module Naturals.Exponents where
@@ -43,5 +44,9 @@ power-of-power n a (succ b) = I
       n ℕ^ a * n ℕ^ (a * b)  ＝⟨ prod-of-powers n a (a * b) ⟩
       n ℕ^ (a + a * b)       ＝⟨ refl                       ⟩
       n ℕ^ (a * succ b)      ∎
+
+exponents-not-zero : (n : ℕ) → ¬ (2^ n ＝ 0)
+exponents-not-zero 0        e = positive-not-zero 0 e
+exponents-not-zero (succ n) e = exponents-not-zero n (mult-left-cancellable (2^ n) 0 1 e)
 
 \end{code}

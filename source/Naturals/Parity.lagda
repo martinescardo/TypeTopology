@@ -4,6 +4,8 @@
 
 open import MLTT.Spartan renaming (_+_ to _∔_)
 open import Naturals.Addition
+open import Naturals.Division
+open import Naturals.Exponents
 open import Naturals.Multiplication
 open import Naturals.Properties
 open import UF.Subsingletons
@@ -167,5 +169,57 @@ odd-is-succ-multiple-of-two (succ n) odd-sn = II I
 
   II : Σ k ꞉ ℕ , n ＝ 2 * k → Σ k ꞉ ℕ , succ n ＝ succ (2 * k)
   II (k , e) = k , (ap succ e)
+
+times-even-is-even : (m n  : ℕ) → even m → even (m * n)
+times-even-is-even m n em = I (even-or-odd n)
+ where
+  I : even n ∔ odd n → even (m * n)
+  I (inl en) = even*even m n em en
+  I (inr on) = even*odd m n em on
+
+only-odd-divides-odd : (d n : ℕ) → odd n → d ∣ n → odd d
+only-odd-divides-odd d n on (k , e) = I (even-or-odd d) (even-or-odd k)
+ where
+  I : even d ∔ odd d → even k ∔ odd k → odd d
+  I (inr od) _        = od
+  I (inl ed) (inl ek) = 𝟘-elim (even-not-odd n (transport even e (even*even d k ed ek)) on)
+  I (inl ed) (inr ok) = 𝟘-elim (even-not-odd n (transport even e (even*odd d k ed ok)) on)
+
+2-exponents-even : (n : ℕ) → even (2^ (succ n))
+2-exponents-even 0        = ⋆    -- 2 even
+2-exponents-even (succ n) = even*even 2 (2^ (succ n)) ⋆ (2-exponents-even n)
+
+odd-factors-of-2-exponents : (d n : ℕ) → d ∣ 2^ n → odd d → d ＝ 1
+odd-factors-of-2-exponents d 0        (k , e) od = product-one-gives-one d k e
+odd-factors-of-2-exponents d (succ n) (k , e) od = I (even-or-odd k)
+ where
+  I : even k ∔ odd k → d ＝ 1
+  I (inr ok) = 𝟘-elim (even-not-odd (2^ (succ n)) (2-exponents-even n) (transport odd e (odd*odd d k od ok)))
+  I (inl ek) = III (even-is-multiple-of-two k ek)
+   where
+    III : Σ k' ꞉ ℕ , k ＝ 2 * k' → d ＝ 1
+    III (k' , e') = odd-factors-of-2-exponents d n (k' , mult-left-cancellable (d * k') (2^ n) 1 II) od
+     where
+      II : 2 * (d * k') ＝ 2 * 2^ n
+      II = 2 * (d * k') ＝⟨ mult-commutativity 2 (d * k') ⟩
+           d * k' * 2   ＝⟨ mult-associativity d k' 2 ⟩
+           d * (k' * 2) ＝⟨ ap (d *_) (mult-commutativity k' 2) ⟩
+           d * (2 * k') ＝⟨ ap (d *_) (e' ⁻¹) ⟩
+           d * k        ＝⟨ e ⟩
+           2 * 2^ n ∎
+
+factors-of-2-exponents : (d n : ℕ) → d ∣ 2^ n → (d ＝ 1) ∔ even d
+factors-of-2-exponents d n d|2^n = I (even-or-odd d)
+ where
+  I : even d ∔ odd d → (d ＝ 1) ∔ even d
+  I (inl ed) = inr ed
+  I (inr od) = inl (odd-factors-of-2-exponents d n d|2^n od)
+
+odd-power-of-two-coprime : (d x n : ℕ) → odd x → d ∣ x → d ∣ 2^ n → d ∣ 1
+odd-power-of-two-coprime d x n ox d|x d|2^n = I (factors-of-2-exponents d n d|2^n) (only-odd-divides-odd d x ox d|x) 
+ where
+  I : (d ＝ 1) ∔ even d → odd d → d ∣ 1
+  I (inl d＝1) od = 1 , d＝1
+  I (inr ed)   od = 𝟘-elim (odd-not-even d od ed)
 
 \end{code}
