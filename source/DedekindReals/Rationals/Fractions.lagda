@@ -11,22 +11,21 @@ possibility of a zero-denominator.
 
 open import MLTT.Spartan renaming (_+_ to _∔_) 
 
-open import TypeTopology.DiscreteAndSeparated 
-open import Naturals.Properties --TypeToplogy
-open import TypeTopology.SigmaDiscreteAndTotallySeparated 
-open import UF.Base hiding (_≈_)  
-open import UF.FunExt 
-open import UF.Miscelanea 
-open import UF.Subsingletons 
-
 open import DedekindReals.Integers.Abs
 open import DedekindReals.Integers.Integers
 open import DedekindReals.Integers.HCF
 open import DedekindReals.Integers.Multiplication
 open import DedekindReals.Integers.Order
-open import Naturals.HCF
 open import Naturals.Division
+open import Naturals.HCF
 open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
+open import Naturals.Properties
+open import TypeTopology.DiscreteAndSeparated 
+open import TypeTopology.SigmaDiscreteAndTotallySeparated 
+open import UF.Base hiding (_≈_)  
+open import UF.FunExt 
+open import UF.Miscelanea 
+open import UF.Subsingletons 
 
 module DedekindReals.Rationals.Fractions where
 
@@ -36,6 +35,12 @@ module DedekindReals.Rationals.Fractions where
 is-in-lowest-terms : ℚₙ → 𝓤₀ ̇
 is-in-lowest-terms (x , y) = coprime (abs x) (succ y)
 
+denom-zero-lt : (x : ℤ) → is-in-lowest-terms (x , 0)
+denom-zero-lt x = ((1-divides-all (abs x)) , 1-divides-all 1) , I
+ where
+  I : (d : ℕ) → is-common-divisor d (abs x) 1 → d ∣ 1
+  I d (_ , d-divides-1) = d-divides-1
+  
 is-in-lowest-terms-is-prop : Fun-Ext → (q : ℚₙ) → is-prop (is-in-lowest-terms q)
 is-in-lowest-terms-is-prop fe (x , y) = coprime-is-prop fe (abs x) (succ y)
 
