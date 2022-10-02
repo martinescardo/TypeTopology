@@ -2,7 +2,7 @@
 Ettore Aldrovandi ealdrovandi@fsu.edu
 Keri D'Angelo kd349@cornell.edu
 
-July 2022
+Begun on July 2022. Reworked starting on September 2022.
 --------------------------------------------------------------------------------
 
 Basic facts about 2-groups, or categorical groups, or gr-categories, in another parlance.
@@ -66,6 +66,7 @@ It turns out a lifted structure can be obtained from a given
 
 \begin{code}
 
+
 ⊗-structure-ap-left : {X : 𝓤 ̇ } → (_●_ : ⊗-structure X)
                     → {x y : X} → (p : x ＝ y) → (z : X)
                     → x ● z ＝ y ● z
@@ -99,32 +100,32 @@ inhabited.
 
 \begin{code}
 
-⊗-structure-has-compatible-lifts : (X : 𝓤 ̇) → ⊗-structure X → 𝓤 ̇
-⊗-structure-has-compatible-lifts X _●_ = {x x' y y' : X}
-                                        → (p : x ＝ x')
-                                        → (q : y ＝ y')
-                                        → ⊗-structure-to-Id X _●_ {_} {x'} {y} p q 
-                                            ＝ ⊗-structure-to-Id' X _●_ {x} {x'} {y} {y'} p q
+module _ (X : 𝓤 ̇) (_●_ : ⊗-structure X) where
 
-⊗-structure-lifts-compatible : (X : 𝓤 ̇) → (_●_ : ⊗-structure X)
-                              → ⊗-structure-has-compatible-lifts X _●_
-⊗-structure-lifts-compatible X _●_ {x} {.x} {y} {y'} refl q = 
-                             ⊗-structure-to-Id X _●_ refl q        ＝⟨ refl ⟩
-                             refl ∙ (⊗-structure-ap-right _●_ x q) ＝⟨ refl-left-neutral ⟩
-                             ⊗-structure-ap-right _●_ x q          ＝⟨ refl ⁻¹ ⟩
-                             (⊗-structure-ap-right _●_ x q) ∙ refl ＝⟨ refl ⟩
-                             ⊗-structure-to-Id' X _●_ refl q ∎
+  ⊗-structure-has-compatible-lifts : 𝓤 ̇
+  ⊗-structure-has-compatible-lifts = {x x' y y' : X}
+                                    → (p : x ＝ x')
+                                    → (q : y ＝ y')
+                                    → ⊗-structure-to-Id X _●_ {_} {x'} {y} p q 
+                                       ＝ ⊗-structure-to-Id' X _●_ {x} {x'} {y} {y'} p q
 
-⊗-structure-has-compatible-lifts₂ : (X : 𝓤 ̇) → ⊗-structure X → 𝓤 ̇
-⊗-structure-has-compatible-lifts₂ X _●_ = {x x' y y' : X}
-                                        → (p : x ＝ x')
-                                        → (q : y ＝ y')
-                                        → ⊗-structure-to-Id₂ X _●_ p q ＝
-                                            ⊗-structure-to-Id X _●_ p q
+  ⊗-structure-lifts-compatible : ⊗-structure-has-compatible-lifts
+  ⊗-structure-lifts-compatible {x} {.x} {y} {y'} refl q = 
+                               ⊗-structure-to-Id X _●_ refl q        ＝⟨ refl ⟩
+                               refl ∙ (⊗-structure-ap-right _●_ x q) ＝⟨ refl-left-neutral ⟩
+                               ⊗-structure-ap-right _●_ x q          ＝⟨ refl ⁻¹ ⟩
+                               (⊗-structure-ap-right _●_ x q) ∙ refl ＝⟨ refl ⟩
+                               ⊗-structure-to-Id' X _●_ refl q ∎
 
-⊗-structure-lifts-compatible₂ : (X : 𝓤 ̇) → (_●_ : ⊗-structure X)
-                               → ⊗-structure-has-compatible-lifts₂ X _●_
-⊗-structure-lifts-compatible₂ X _●_ refl refl = refl
+  ⊗-structure-has-compatible-lifts₂ : 𝓤 ̇
+  ⊗-structure-has-compatible-lifts₂ = {x x' y y' : X}
+                                    → (p : x ＝ x')
+                                    → (q : y ＝ y')
+                                    → ⊗-structure-to-Id₂ X _●_ p q ＝
+                                         ⊗-structure-to-Id X _●_ p q
+
+  ⊗-structure-lifts-compatible₂ : ⊗-structure-has-compatible-lifts₂
+  ⊗-structure-lifts-compatible₂ refl refl = refl
 
 \end{code}
 
@@ -132,51 +133,234 @@ The interchange law holds for the lifts we have introduced. We prove it for one 
 
 \begin{code}
 
-⊗-structure-to-Id-has-interchange : (X : 𝓤 ̇) → (_●_ : ⊗-structure X)
-                                   → ⊗-structure-Id-interchange X _●_ (⊗-structure-to-Id X _●_)
-⊗-structure-to-Id-has-interchange X _●_ {x} {x'} {.x'} {y} {.y} {y''} p refl refl q' =
-     ⊗-structure-to-Id X _●_ p refl ∙ ⊗-structure-to-Id X _●_ refl q'         ＝⟨ refl ⟩
-     ⊗-structure-to-Id X _●_ p refl ∙ (refl ∙ ⊗-structure-ap-right _●_ x' q') ＝⟨ refl ⟩
-     (⊗-structure-ap-left _●_ p y)  ∙ (refl ∙ ⊗-structure-ap-right _●_ x' q') ＝⟨ i ⟩
-     (⊗-structure-ap-left _●_ p y)  ∙ (⊗-structure-ap-right _●_ x' q')        ＝⟨ refl ⟩
-     ⊗-structure-to-Id X _●_ p  q'                                             ＝⟨ refl ⟩
-     ⊗-structure-to-Id X _●_ (p ∙ refl) q'                                     ＝⟨ ii ⟩
-     ⊗-structure-to-Id X _●_ (p ∙ refl) (refl ∙ q') ∎
-       where
-         i = ap (λ v → (⊗-structure-ap-left _●_ p y) ∙ v) (refl-left-neutral {p = ⊗-structure-ap-right _●_ x' q'})
-         ii = ap (⊗-structure-to-Id X _●_ (p ∙ refl)) (refl-left-neutral {p = q'}) ⁻¹ 
+  ⊗-structure-to-Id-has-interchange : ⊗-structure-Id-interchange X _●_ (⊗-structure-to-Id X _●_)
+  ⊗-structure-to-Id-has-interchange {x} {x'} {.x'} {y} {.y} {y''} p refl refl q' =
+       ⊗-structure-to-Id X _●_ p refl ∙ ⊗-structure-to-Id X _●_ refl q'         ＝⟨ refl ⟩
+       ⊗-structure-to-Id X _●_ p refl ∙ (refl ∙ ⊗-structure-ap-right _●_ x' q') ＝⟨ refl ⟩
+       (⊗-structure-ap-left _●_ p y)  ∙ (refl ∙ ⊗-structure-ap-right _●_ x' q') ＝⟨ i ⟩
+       (⊗-structure-ap-left _●_ p y)  ∙ (⊗-structure-ap-right _●_ x' q')        ＝⟨ refl ⟩
+       ⊗-structure-to-Id X _●_ p  q'                                             ＝⟨ refl ⟩
+       ⊗-structure-to-Id X _●_ (p ∙ refl) q'                                     ＝⟨ ii ⟩
+       ⊗-structure-to-Id X _●_ (p ∙ refl) (refl ∙ q') ∎
+         where
+           i = ap (λ v → (⊗-structure-ap-left _●_ p y) ∙ v) (refl-left-neutral {p = ⊗-structure-ap-right _●_ x' q'})
+           ii = ap (⊗-structure-to-Id X _●_ (p ∙ refl)) (refl-left-neutral {p = q'}) ⁻¹ 
          
 \end{code}
 
+If the operation is associative and it admits a neutral element, we
+consider the following two axioms. One is the pentagon, that is the
+equality
 
+((xy)z)t → (x(yz))t → x((yz)t) → x(y(zt)) ＝ ((xy)z)t → (xy)(zt) → x(y(zt))
 
-record 2-group-structure (X : 𝓤 ̇) : 𝓤 ̇ where
+The other, which holds in the presence of a neutral term I is that
+
+(xI)y → x(Iy) → xy ＝ (xI)y → xy
+
+\begin{code}
+
+module _ (X : 𝓤 ̇) (_●_ : ⊗-structure X) where
+
+  ⊗-assoc-pentagon : associative _●_ → 𝓤 ̇
+  ⊗-assoc-pentagon α = ∀ {x y z t} → p x y z t ＝ q x y z t
+    where
+      p q : (x y z t : X) → ((x ● y) ● z) ● t ＝  x ● (y ● (z ● t))
+      p x y z t = ((x ● y) ● z) ● t ＝⟨ ⊗-structure-ap-left _●_ (α x y z) t ⟩
+                  (x ● (y ● z)) ● t ＝⟨ α _ _ _ ⟩
+                  x ● ((y ● z) ● t) ＝⟨ ⊗-structure-ap-right _●_ x (α y z t) ⟩
+                  x ● (y ● (z ● t)) ∎
+      q x y z t = ((x ● y) ● z) ● t ＝⟨ α _ _ _ ⟩
+                  (x ● y) ● (z ● t) ＝⟨ α _ _ _ ⟩
+                  x ● (y ● (z ● t)) ∎
+
+  ⊗-assoc-neutral : associative _●_
+                  → (e : X) → left-neutral e _●_ → right-neutral e _●_
+                  → 𝓤 ̇ 
+  ⊗-assoc-neutral α e l r = ∀ {x y} → p x y ＝ q x y 
+    where
+      p q : (x y : X) → (x ● e) ● y ＝ x ● y
+      p x y = (x ● e) ● y ＝⟨ α _ _ _ ⟩
+              x ● (e ● y) ＝⟨ ⊗-structure-ap-right _●_ x (l y) ⟩
+              x ● y ∎
+      q x y = (x ● e) ● y ＝⟨ ⊗-structure-ap-left _●_ (r x) y ⟩
+              x ● y ∎             
+
+\end{code}
+
+Inveritibility of the structure operation (duality, in another
+parlance) stipulates that for each object X there are two "duality"
+morphisms
+
+ε : x  xᵛ → I
+η : I → xᵛ x
+
+corresponding to the usual notion of "inverse" elements, such that the
+compositions
+
+x → x I → x (xᵛ x) → (x xᵛ) x → I x → x
+
+xᵛ → I xᵛ → (xᵛ x) xᵛ → xᵛ (x xᵛ) → xᵛ I → xᵛ
+
+are the identity, that is, refl in our case.
+
+\begin{code}
+
+module _ (X : 𝓤 ̇) (_●_ : ⊗-structure X) where
+
+  ⊗-inv-structure : (e : X)
+                   → left-neutral e _●_
+                   → right-neutral e _●_
+                   → 𝓤 ̇
+  ⊗-inv-structure e l r = (x : X) → Σ xᵛ ꞉ X , (x ● xᵛ ＝ e) × (e ＝ xᵛ ● x)
+
+  ⊗-inv-compatible : associative _●_
+                   → (e : X) (l : left-neutral e _●_) (r : right-neutral e _●_)
+                   → ⊗-inv-structure e l r
+                   → 𝓤 ̇
+  ⊗-inv-compatible α e l r inv = (x : X) → (p x ＝ refl) × (q x ＝ refl)
+    where
+      p : (x : X) → x ＝ x
+      p x = x            ＝⟨ (r x) ⁻¹ ⟩
+            x ● e        ＝⟨ ⊗-structure-ap-right _●_ x (pr₂ (pr₂ (inv x)))  ⟩
+            x ● (xᵛ ● x) ＝⟨ (α _ _ _) ⁻¹ ⟩
+            (x ● xᵛ) ● x ＝⟨ ⊗-structure-ap-left _●_ (pr₁ (pr₂ (inv x))) x ⟩
+            e ● x        ＝⟨ l x ⟩
+            x ∎
+            where
+              xᵛ : X
+              xᵛ = pr₁ (inv x)
+      q : (x : X) → pr₁ (inv x) ＝ pr₁ (inv x)
+      q x = xᵛ            ＝⟨ (l xᵛ) ⁻¹ ⟩
+            e ● xᵛ        ＝⟨ ⊗-structure-ap-left _●_ (pr₂ (pr₂ (inv x))) xᵛ ⟩
+            (xᵛ ● x) ● xᵛ ＝⟨ α _ _ _ ⟩
+            xᵛ ● (x ● xᵛ) ＝⟨ ⊗-structure-ap-right _●_ xᵛ (pr₁ (pr₂ (inv x))) ⟩
+            xᵛ ● e        ＝⟨ r xᵛ ⟩
+            xᵛ ∎
+            where
+              xᵛ : X
+              xᵛ = pr₁ (inv x)
+\end{code}
+
+Given a type X, have a structure consisting of a multiplication map
+_●_ : X → X → X and a unit e : X on X. We collect its axioms in a
+record.
+
+\begin{code}
+
+record monoidal-grpd-axioms (X : 𝓤 ̇)
+                            (_●_ : ⊗-structure X)
+                            (e : X) : 𝓤 ̇
+                              where
   field
-    _●_ : X → X → X
     is-grpd : is-groupoid X
-    α : associative _●_
+    is-assoc : associative _●_
+    has-pentagon : ⊗-assoc-pentagon X _●_ is-assoc
 
-  private
-    p : (x y z t : X) → ((x ● y) ● z) ● t ＝  x ● (y ● (z ● t))
-    p x y z t = ((x ● y) ● z) ● t ＝⟨ ap (λ v → v ● t) (α _ _ _) ⟩
-                (x ● (y ● z)) ● t ＝⟨ α _ _ _ ⟩
-                x ● ((y ● z) ● t) ＝⟨ ap (λ v → x ● v) (α _ _ _) ⟩
-                x ● (y ● (z ● t)) ∎
-    q : (x y z t : X) → ((x ● y) ● z) ● t ＝ x ● (y ● (z ● t))
-    q x y z t = ((x ● y) ● z) ● t ＝⟨ α _ _ _ ⟩
-                (x ● y) ● (z ● t) ＝⟨ α _ _ _ ⟩
-                x ● (y ● (z ● t)) ∎
+    unit-left : left-neutral e _●_
+    unit-right : right-neutral e _●_
+
+    left-right : unit-left e ＝ unit-right e
+    
+    has-assoc-neutral : ⊗-assoc-neutral X _●_
+                                        is-assoc
+                                        e unit-left unit-right
+
+-- open monoidal-grpd-axioms public
+
+\end{code}
+
+From another point of view a "monoidal groupoid structure" on the type
+X can be viewed as the the data (_●_ , e) together with the axioms.
+
+\begin{code}
+
+record Monoidal-grpd-structure (X : 𝓤 ̇) : 𝓤 ̇ where
+  field
+    _⊗_ : ⊗-structure X
+    e : X
+    is-monoidal-grpd : monoidal-grpd-axioms X _⊗_ e
+
+  open monoidal-grpd-axioms is-monoidal-grpd public -- do I need this?
+
+\end{code}
+
+
+The type of monoidal groupoids.
+
+\begin{code}
+
+Monoidal-Grpd : (𝓤 : Universe) → 𝓤 ⁺ ̇
+Monoidal-Grpd 𝓤 = Σ X ꞉ 𝓤 ̇ , Monoidal-grpd-structure X
+
+\end{code}
+
+Synonyms and References: the following terms all denote the same
+thing, namely a monoidal group-like groupoid.
+
+1. Categorical Group: abbreviated as Cat-Group
+
+   1. Joyal and Street
+   1. Brown, Higgins, Porter
+   1. Bullejos, Carrasco, Cegarra, Garzón, del Río, …
+
+1. 2-Group
+
+   1. Baez, Baez-Dolan, and followers
+
+1. Gr-Category (= gr-catégorie)
+
+   1. The french Algebraic Geometry school: Breen, Grothendieck, Sinh
+
+The "group-like" refers to the inverse structure in the sense
+specified above, that every term x : X possesses a rigid dual xᵛ.
+
+Thus a categorical group, or 2-group, or gr-category is a type
+equipped with a monoidal groupoid structure satisfying group-like
+axioms.
+
+\begin{code}
+
+record gr-like-axioms (X : 𝓤 ̇)
+                      (m : Monoidal-grpd-structure X) : 𝓤 ̇
+                        where
+  open Monoidal-grpd-structure 
 
   field
-    π : {x y z t : X} → p x y z t ＝ q x y z t
-    e : X
-    l : left-neutral e _●_
-    r : right-neutral e _●_
-    lr : l e ＝ r e
+    ⊗-inv : ⊗-inv-structure X (m ._⊗_)
+            (m .e) (m .unit-left) (m .unit-right)
 
-    inv-l : (x : X) → is-equiv (λ v → x ● v)
-    inv-r : (x : X) → is-equiv (λ v → v ● x)
+    ⊗-inv-axioms : ⊗-inv-compatible X (m ._⊗_) (m .is-assoc)
+                   (m .e) (m .unit-left) (m .unit-right) ⊗-inv
 
-2-Group : (𝓤 : Universe) → 𝓤 ⁺ ̇
-2-Group 𝓤 = Σ X ꞉ 𝓤 ̇ , 2-group-structure X
 
+record gr-like-structure (X : 𝓤 ̇) : 𝓤 ̇ where
+  field
+    m : Monoidal-grpd-structure X
+    gr : gr-like-axioms X m
+
+  open Monoidal-grpd-structure m public
+  open gr-like-axioms gr public
+
+
+2-Group Cat-Group Gr-Cat : (𝓤 : Universe) → 𝓤 ⁺ ̇
+2-Group 𝓤 = Σ X ꞉ 𝓤 ̇ , gr-like-structure X
+Cat-Group = 2-Group
+Gr-Cat = 2-Group
+
+\end{code}
+
+Forgetting the group-like structure gives a monoidal groupoid
+
+\begin{code}
+
+gr-like-structure-is-monoidal-grpd-structure : (X : 𝓤 ̇)
+                                             → gr-like-structure X
+                                             → Monoidal-grpd-structure X
+gr-like-structure-is-monoidal-grpd-structure X s = s .gr-like-structure.m
+
+2-groups-are-monoidal-groupoids : 2-Group 𝓤 → Monoidal-Grpd 𝓤
+2-groups-are-monoidal-groupoids (X , s) = X , gr-like-structure-is-monoidal-grpd-structure X s
+
+
+\end{code}
