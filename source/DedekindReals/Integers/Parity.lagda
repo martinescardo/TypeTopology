@@ -259,5 +259,15 @@ evenℕ-to-ℤ' (succ n) = id
     II = n                 ＝⟨ succpredℤ n ⁻¹ ⟩
          succℤ (predℤ n)   ＝⟨ ap succℤ e     ⟩
          succℤ (pos 2 * k) ∎
-         
+
+ℤtimes-even-is-even : (m n : ℤ) → ℤeven m → ℤeven (m * n)
+ℤtimes-even-is-even m n em = I (ℤeven-or-odd n)
+ where
+  I : ℤeven n ∔ ℤodd n → ℤeven (m * n)
+  I (inl en) = ℤeven*even m n em en
+  I (inr on) = ℤeven*odd m n em on
+
+ℤtimes-even-is-even' : (m n : ℤ) → ℤeven n → ℤeven (m * n)
+ℤtimes-even-is-even' m n en = transport ℤeven (ℤ*-comm n m) (ℤtimes-even-is-even n m en)
+       
 \end{code}

@@ -177,6 +177,9 @@ times-even-is-even m n em = I (even-or-odd n)
   I (inl en) = even*even m n em en
   I (inr on) = even*odd m n em on
 
+times-even-is-even' : (m n  : ℕ) → even n → even (m * n)
+times-even-is-even' m n en = transport even (mult-commutativity n m) (times-even-is-even n m en)
+
 only-odd-divides-odd : (d n : ℕ) → odd n → d ∣ n → odd d
 only-odd-divides-odd d n on (k , e) = I (even-or-odd d) (even-or-odd k)
  where

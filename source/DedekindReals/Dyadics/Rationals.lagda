@@ -6,6 +6,7 @@ open import MLTT.Spartan renaming (_+_ to _∔_)
 
 open import DedekindReals.Integers.Integers
 open import DedekindReals.Integers.Multiplication
+open import DedekindReals.Integers.Order
 open import DedekindReals.Integers.Parity
 open import DedekindReals.Rationals.Fractions hiding (_≈_)
 open import DedekindReals.Rationals.Multiplication renaming (_*_ to _ℚ*_)
@@ -13,6 +14,7 @@ open import DedekindReals.Rationals.Rationals
 open import Naturals.Division
 open import Naturals.Exponents
 open import Naturals.HCF
+open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
 open import Naturals.Order
 open import Naturals.Parity
 open import Naturals.Properties
@@ -101,14 +103,12 @@ _≈_ : (x y : ℤ[1/2]) → 𝓤₀ ̇
 ℤ[1/2]-to-ℚ ((x , 0)      , inr (0<n , ox)) = 𝟘-elim 0<n
 ℤ[1/2]-to-ℚ ((x , succ n) , inr (0<n , ox)) = (x , pred (2^ (succ n))) , (ℤ[1/2]-lt-lemma x n ox)
 
-
-{-
-≈-to-＝-lemma : ((x , m) (y , n) : ℤ × ℕ)
+≈-to-＝-lemma-sub-proof₁ : ((x , m) (y , n) : ℤ × ℕ)
               → (x , m) ≈' (y , n)
-              → ℤ[1/2]-cond x m
-              → ℤ[1/2]-cond y n
+              → m ＝ 0
+              → n ＝ 0
               → (x , m) ＝ (y , n)
-≈-to-＝-lemma (x , m) (y , n) e (inl m＝0)       (inl n＝0)       = to-×-＝ I (m＝0 ∙ n＝0 ⁻¹)
+≈-to-＝-lemma-sub-proof₁ (x , m) (y , n) e m＝0 n＝0 = to-×-＝ I (m＝0 ∙ n＝0 ⁻¹)
  where
   I : x ＝ y
   I = x              ＝⟨ refl                                  ⟩
@@ -117,23 +117,71 @@ _≈_ : (x y : ℤ[1/2]) → 𝓤₀ ̇
       y * pos (2^ m) ＝⟨ ap (λ z → y * (pos (2^ z))) m＝0      ⟩
       y * pos (2^ 0) ＝⟨ refl                                  ⟩
       y              ∎
-≈-to-＝-lemma (x , m) (y , n) e (inl m＝0)       (inr (n>0 , on)) = 𝟘-elim (ℤodd-not-even y on {!!})
+
+≈-to-＝-lemma-sub-proof₂ : ((x , m) (y , n) : ℤ × ℕ) → (x , m) ≈' (y , n) → m ＝ 0 → ¬ (n > 0 × ℤodd y)
+≈-to-＝-lemma-sub-proof₂ (x , m) (y , 0)      e m＝0 (n>0 , oy) = 𝟘-elim n>0
+≈-to-＝-lemma-sub-proof₂ (x , m) (y , succ n) e m＝0 (n>0 , oy) = ℤodd-not-even y oy (transport ℤeven I II)
  where
-  I : ℤeven {!!}
-  I = ℤmultiple-of-two-even {!!} {!!}
-  II : y ＝ x * pos (2^ n)
-  II = y              ＝⟨ refl                                ⟩
-       y * pos (2^ 0) ＝⟨ ap (λ z → y * pos (2^ z)) (m＝0 ⁻¹) ⟩
-       y * pos (2^ m) ＝⟨ e ⁻¹                                ⟩
-       x * pos (2^ n) ∎
-  III : ℤeven y
-  III = transport ℤeven {!!} I
-≈-to-＝-lemma (x , m) (y , n) e (inr (m>0 , om)) (inl n＝0)       = {!!}
-≈-to-＝-lemma (x , m) (y , n) e (inr (m>0 , om)) (inr (n>0 , on)) = {!!}
+  I : x * pos (2^ (succ n)) ＝ y
+  I = x * pos (2^ (succ n)) ＝⟨ e ⟩
+      y * pos (2^ m)        ＝⟨ ap (λ - → y * pos (2^ -)) m＝0 ⟩
+      y * pos (2^ 0)        ＝⟨ refl ⟩
+      y ∎
+  II : ℤeven (x * pos (2^ (succ n)))
+  II = ℤtimes-even-is-even' x (pos (2^ (succ n))) (2-exponents-even n)
+
+≈-to-＝-cancellation-lemma : (x y : ℤ) (n : ℕ) → (x , 1) ≈' (y , succ (succ n)) → (x , 0) ≈' (y , succ n)
+≈-to-＝-cancellation-lemma x y n e = ℤ-mult-right-cancellable (x * pos (2^ (succ n))) (y * pos (2^ 0)) (pos 2) id I
+ where
+  I : x * pos (2^ (succ n)) * pos 2 ＝ y * pos (2^ 0) * pos 2
+  I = x * pos (2^ (succ n)) * pos 2   ＝⟨ ℤ*-assoc x (pos (2^ (succ n))) (pos 2)                       ⟩
+      x * (pos (2^ (succ n)) * pos 2) ＝⟨ ap (x *_) (pos-multiplication-equiv-to-ℕ (2^ (succ n)) 2)    ⟩
+      x * pos (2^ (succ n) ℕ* 2)      ＝⟨ ap (λ - → x * pos -) (mult-commutativity (2^ (succ n)) 2)    ⟩
+      x * pos (2^ (succ (succ n)))    ＝⟨ e                                                            ⟩
+      y * pos (2^ 1)                  ＝⟨ ap (y *_) (pos-multiplication-equiv-to-ℕ 2 1) ⁻¹             ⟩
+      y * (pos 2 * pos 1)             ＝⟨ refl                                                         ⟩
+      y * pos (2^ 0) * pos 2          ∎
+
+≈-to-＝-lemma-sub-proof₃ : (x : ℤ) (m : ℕ) (y : ℤ) (n : ℕ) → (x , m) ≈' (y , n) → m > 0 × ℤodd x → n > 0 × ℤodd y → (x , m) ＝ (y , n)
+≈-to-＝-lemma-sub-proof₃ x  m               y  0               e (m>0 , ox) (n>0 , on) = 𝟘-elim n>0
+≈-to-＝-lemma-sub-proof₃ x  0               y  (succ n)        e (m>0 , ox) (n>0 , on) = 𝟘-elim m>0
+≈-to-＝-lemma-sub-proof₃ x  1               y  1               e (m>0 , ox) (n>0 , on) = to-×-＝ (ℤ-mult-right-cancellable x y (pos (2^ 1)) id e) refl
+≈-to-＝-lemma-sub-proof₃ x  1               y  (succ (succ n)) e (m>0 , ox) (n>0 , on) = 𝟘-elim (≈-to-＝-lemma-sub-proof₂ (x , 0) (y , succ n) (≈-to-＝-cancellation-lemma x y n e) refl (⋆ , on))
+≈-to-＝-lemma-sub-proof₃ x  (succ (succ m)) y  1               e (m>0 , ox) (n>0 , on) = 𝟘-elim (≈-to-＝-lemma-sub-proof₂ (y , 0) (x , succ m) (≈-to-＝-cancellation-lemma y x m (e ⁻¹)) refl (⋆ , ox))
+≈-to-＝-lemma-sub-proof₃ x  (succ (succ m)) y  (succ (succ n)) e (m>0 , ox) (n>0 , on) = III (from-×-＝' (≈-to-＝-lemma-sub-proof₃ x (succ m) y (succ n) II (⋆ , ox) (⋆ , on)))
+ where
+  I : x * pos (2^ (succ n)) * pos 2 ＝ y * pos (2^ (succ m)) * pos 2
+  I = x * pos (2^ (succ n)) * pos 2   ＝⟨ ℤ*-assoc x (pos (2^ (succ n))) (pos 2)                       ⟩
+      x * (pos (2^ (succ n)) * pos 2) ＝⟨ ap (x *_) (pos-multiplication-equiv-to-ℕ (2^ (succ n)) 2)    ⟩
+      x * pos (2^ (succ n) ℕ* 2)      ＝⟨ ap (λ - → x * pos -) (mult-commutativity (2^ (succ n)) 2)    ⟩
+      x * pos (2^ (succ (succ n)))    ＝⟨ e                                                            ⟩
+      y * pos (2^ (succ (succ m)))    ＝⟨ ap (λ - → y * pos -) (mult-commutativity 2 (2^ (succ m)))    ⟩
+      y * pos (2^ (succ m) ℕ* 2)      ＝⟨ ap (y *_) (pos-multiplication-equiv-to-ℕ (2^ (succ m)) 2 ⁻¹) ⟩
+      y * (pos (2^ (succ m)) * pos 2) ＝⟨ ℤ*-assoc y (pos (2^ (succ m))) (pos 2) ⁻¹ ⟩
+      y * pos (2^ (succ m)) * pos 2   ∎
+
+  II : x * pos (2^ (succ n)) ＝ y * pos (2^ (succ m))
+  II = ℤ-mult-right-cancellable (x * pos (2^ (succ n))) (y * pos (2^ (succ m))) (pos 2) id I
+  
+  III : (x ＝ y) × (succ m ＝ succ n) → x , succ (succ m) ＝ y , succ (succ n)
+  III (x＝y , m＝n) = to-×-＝ x＝y (ap succ m＝n)
+  
+≈-to-＝-lemma-sub-proof₄ : ((x , m) (y , n) : ℤ × ℕ) → (x , m) ≈' (y , n) → m > 0 × ℤodd x → n > 0 × ℤodd y → (x , m) ＝ (y , n)
+≈-to-＝-lemma-sub-proof₄ (x , m) (y , n) e p q = ≈-to-＝-lemma-sub-proof₃ x m y n e p q
+
+≈-to-＝-lemma : ((x , m) (y , n) : ℤ × ℕ)
+              → (x , m) ≈' (y , n)
+              → ℤ[1/2]-cond x m
+              → ℤ[1/2]-cond y n
+              → (x , m) ＝ (y , n)
+≈-to-＝-lemma x y e (inl p) (inl q) = ≈-to-＝-lemma-sub-proof₁ x y e p q
+≈-to-＝-lemma x y e (inl p) (inr q) = 𝟘-elim (≈-to-＝-lemma-sub-proof₂ x y e p q)
+≈-to-＝-lemma x y e (inr p) (inl q) = 𝟘-elim (≈-to-＝-lemma-sub-proof₂ y x (e ⁻¹) q p)
+≈-to-＝-lemma x y e (inr p) (inr q) = ≈-to-＝-lemma-sub-proof₄ x y e p q
 
 ≈-to-＝ : (x y : ℤ[1/2]) → x ≈ y → x ＝ y
 ≈-to-＝ ((x , n) , p) ((y , m) , q) eq =
  to-subtype-＝ (λ (x , n) → ℤ[1/2]-cond-is-prop x n) (≈-to-＝-lemma (x , n) (y , m) eq p q)
--}
+
 
 \end{code}

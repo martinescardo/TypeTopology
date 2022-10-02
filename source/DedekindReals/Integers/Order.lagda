@@ -450,6 +450,11 @@ negative-multiplication-changes-order' a b (negsucc x) g l = I (ℤ≤-split a b
       z * y   ＝⟨ ℤ*-comm z y ⟩
       y * z   ∎
 
+non-zero-multiplication : (x y : ℤ) → ¬ (x ＝ pos 0) → ¬ (y ＝ pos 0) → ¬ (x * y ＝ pos 0)
+non-zero-multiplication (pos 0)        y xnz ynz e = xnz refl
+non-zero-multiplication (pos (succ x)) y xnz ynz e = ynz (ℤ-mult-left-cancellable y (pos 0) (pos (succ x)) id e)
+non-zero-multiplication (negsucc x)    y xnz ynz e = ynz (ℤ-mult-left-cancellable y (pos 0) (negsucc x) id e)
+
 orcl : (a b : ℤ) → (n : ℕ) → a * (pos (succ n)) ≤ b * (pos (succ n)) → a ≤ b
 orcl a b = induction base step
  where
