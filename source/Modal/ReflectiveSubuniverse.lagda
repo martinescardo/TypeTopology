@@ -15,7 +15,10 @@ import Slice.Slice as Slice
 open import Modal.Subuniverse
 
 
-module Modal.ReflectiveSubuniverse (P : subuniverse 𝓤 𝓥) (P-is-reflective : subuniverse-is-reflective P) where
+module Modal.ReflectiveSubuniverse
+ (P : subuniverse 𝓤 𝓥)
+ (P-is-reflective : subuniverse-is-reflective P)
+ where
 
 
 transport-Σ
@@ -201,7 +204,16 @@ reflective-subuniverse-closed-under-products fe P-is-replete A B B-in-P =
    dfunext fe λ x →
    ○-rec-compute (Π B) (B x) (B-in-P x) (λ g → g x) f
 
-module Pullbacks (fe : funext 𝓤 𝓤) (P-is-replete : subuniverse-is-replete P) (A B X : 𝓤 ̇) (A-in-P : subuniverse-contains P A) (B-in-P : subuniverse-contains P B) (X-in-P : subuniverse-contains P X) (f : A → X) (g : B → X) where
+module Pullbacks
+ (fe : funext 𝓤 𝓤)
+ (P-is-replete : subuniverse-is-replete P)
+ (A B X : 𝓤 ̇)
+ (A-in-P : subuniverse-contains P A)
+ (B-in-P : subuniverse-contains P B)
+ (X-in-P : subuniverse-contains P X)
+ (f : A → X)
+ (g : B → X)
+ where
 
   private
    C : 𝓤 ̇
