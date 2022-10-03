@@ -13,10 +13,6 @@ Basic facts about 2-groups, or categorical groups, or gr-categories, in another 
 
 open import MLTT.Spartan
 open import UF.Base
-open import UF.Subsingletons
-open import UF.FunExt
-open import UF.Subsingletons-FunExt
-open import UF.Equiv hiding (_≅_ ; ≅-refl ; _●_)
 open import UF.Groupoids
 
 module 2Groups.Type where
@@ -341,6 +337,8 @@ record gr-like-structure (X : 𝓤 ̇) : 𝓤 ̇ where
 
   open Monoidal-grpd-structure m public
   open gr-like-axioms gr public
+
+group-like-structure = gr-like-structure -- for convenience
 
 
 2-Group Cat-Group Gr-Cat : (𝓤 : Universe) → 𝓤 ⁺ ̇
