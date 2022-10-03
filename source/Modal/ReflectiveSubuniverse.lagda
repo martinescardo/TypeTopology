@@ -200,21 +200,6 @@ reflective-subuniverse-closed-under-products fe P-is-replete A B B-in-P =
   pr₂ (pr₂ ret) f =
    dfunext fe λ x →
    ○-rec-compute (Π B) (B x) (B-in-P x) (λ g → g x) f
-Σ-equiv-piecewise
-  : {𝓤 𝓥 : _}
-  → (A A' : 𝓤 ̇)
-  → (B : A → 𝓥 ̇)
-  → (B' : A' → 𝓥 ̇)
-  → (f : A ≃ A')
-  → (g : (x : A) → B x ≃ B' (eqtofun f x))
-  → Σ B ≃ Σ B'
-pr₁ (Σ-equiv-piecewise A A' B B' f g) =
- PairFun.pair-fun (eqtofun f) (λ x → eqtofun (g x))
-pr₂ (Σ-equiv-piecewise A A' B B' f g) =
- PairFun.pair-fun-is-equiv _ _
-  (eqtofun- f)
-  (λ x → eqtofun- (g x))
-
 
 module Pullbacks (fe : funext 𝓤 𝓤) (P-is-replete : subuniverse-is-replete P) (A B X : 𝓤 ̇) (A-in-P : subuniverse-contains P A) (B-in-P : subuniverse-contains P B) (X-in-P : subuniverse-contains P X) (f : A → X) (g : B → X) where
 
