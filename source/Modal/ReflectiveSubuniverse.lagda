@@ -9,6 +9,7 @@ open import UF.Base
 open import UF.FunExt
 open import UF.Equiv
 open import UF.Retracts
+import Utilities.PairFun as PairFun
 import Slice.Slice as Slice
 
 open import Modal.Subuniverse
@@ -199,89 +200,6 @@ reflective-subuniverse-closed-under-products fe P-is-replete A B B-in-P =
   pr₂ (pr₂ ret) f =
    dfunext fe λ x →
    ○-rec-compute (Π B) (B x) (B-in-P x) (λ g → g x) f
-
-
-module _ {𝓤 𝓥 : _} (A A' : 𝓤 ̇) (B : A → 𝓥 ̇) (B' : A' → 𝓥 ̇) (f : A → A') (g : (x : A) → B x → B' (f x)) where
-
- Σ-map-fwd : Σ B → Σ B'
- Σ-map-fwd (x , y) = f x , g x y
-
- module _ (f-equiv : is-equiv f) (g-equiv : (x : A) → is-equiv (g x)) where
-  private
-   f-hae : is-hae f
-   f-hae = equivs-are-haes f f-equiv
-
-   inv-f = pr₁ f-hae
-   inv-f-sec = pr₁ (pr₂ (pr₂ f-hae))
-   inv-f-ret = pr₁ (pr₂ f-hae)
-   inv-f-sec-coh = pr₂ (pr₂ (pr₂ f-hae))
-
-   inv-g[_] = λ x → inverse (g x) (g-equiv x)
-   inv-g-sec[_] = λ x → inverses-are-sections (g x) (g-equiv x)
-   inv-g-ret[_] = λ x → inverses-are-retractions (g x) (g-equiv x)
-
-
-  Σ-map-bwd : Σ B' → Σ B
-  pr₁ (Σ-map-bwd (x , y)) = inv-f x
-  pr₂ (Σ-map-bwd (x , y)) = inv-g[ inv-f x ] (transport⁻¹ B' (inv-f-sec x) y)
-
-  Σ-map-bwd-is-section-pr₁ : pr₁ ∘ Σ-map-fwd ∘ Σ-map-bwd ∼ pr₁
-  Σ-map-bwd-is-section-pr₁ (x , _) = inv-f-sec x
-
-  Σ-map-bwd-is-section-pr₂
-   : (u : Σ B')
-   → transport B' (inv-f-sec (pr₁ u)) (pr₂ (Σ-map-fwd (Σ-map-bwd u))) ＝ pr₂ u
-  Σ-map-bwd-is-section-pr₂ (x , y) =
-   transport B' (inv-f-sec x) (g (inv-f x) (inv-g[ (inv-f x) ] (transport⁻¹ B' (inv-f-sec x) y)))
-    ＝⟨ ap (transport B' (inv-f-sec x)) (inv-g-sec[ inv-f x ] (transport⁻¹ B' (inv-f-sec x) y)) ⟩
-   transport B' (inv-f-sec x) (transport⁻¹ B' (inv-f-sec x) y)
-    ＝⟨ back-and-forth-transport (inv-f-sec x) ⟩
-   y ∎
-
-  Σ-map-bwd-is-section : Σ-map-fwd ∘ Σ-map-bwd ∼ id
-  Σ-map-bwd-is-section u =
-   to-Σ-＝
-    (Σ-map-bwd-is-section-pr₁ u ,
-     Σ-map-bwd-is-section-pr₂ u)
-
-  Σ-map-bwd-is-retraction-pr₁ : pr₁ ∘ Σ-map-bwd ∘ Σ-map-fwd ∼ pr₁
-  Σ-map-bwd-is-retraction-pr₁ (x , y) = inv-f-ret x
-
-  Σ-map-bwd-is-retraction-pr₂
-   : (u : Σ B)
-   → transport B (inv-f-ret (pr₁ u)) (pr₂ (Σ-map-bwd (Σ-map-fwd u))) ＝ pr₂ u
-  Σ-map-bwd-is-retraction-pr₂ (x , y) =
-   transport B (inv-f-ret x) (inv-g[ inv-f (f x) ] (transport⁻¹ B' (inv-f-sec (f x)) (g x y)))
-    ＝⟨ nat-transport inv-g[_] (inv-f-ret x) ⁻¹ ⟩
-   inv-g[ x ] (transport (B' ∘ f) (inv-f-ret x) (transport B' (inv-f-sec (f x) ⁻¹) (g x y)))
-    ＝⟨ ap inv-g[ x ] (transport-ap B' f (inv-f-ret x)) ⟩
-   inv-g[ x ] (transport B' (ap f (inv-f-ret x)) (transport B' (inv-f-sec (f x) ⁻¹) (g x y)))
-    ＝⟨ ap inv-g[ x ] (transport-∙ B' (inv-f-sec (f x) ⁻¹) (ap f (inv-f-ret x)) ⁻¹) ⟩
-   inv-g[ x ] (transport B' (inv-f-sec (f x) ⁻¹ ∙ ap f (inv-f-ret x)) (g x y))
-    ＝⟨ ap (λ - → inv-g[ x ] (transport B' - (g x y))) aux ⟩
-   inv-g[ x ] (g x y) ＝⟨ inv-g-ret[ x ] y ⟩
-   y ∎
-   where
-    aux : inv-f-sec (f x) ⁻¹ ∙ ap f (inv-f-ret x) ＝ refl
-    aux =
-     inv-f-sec (f x) ⁻¹ ∙ ap f (inv-f-ret x)
-      ＝⟨ ap (inv-f-sec (f x) ⁻¹ ∙_) (inv-f-sec-coh x) ⟩
-     inv-f-sec (f x) ⁻¹ ∙ inv-f-sec (f x)
-      ＝⟨ trans-sym (inv-f-sec (f x)) ⟩
-     refl ∎
-
-
-  Σ-map-bwd-is-retraction : Σ-map-bwd ∘ Σ-map-fwd ∼ id
-  Σ-map-bwd-is-retraction u = to-Σ-＝ (Σ-map-bwd-is-retraction-pr₁ u , Σ-map-bwd-is-retraction-pr₂ u)
-
-  Σ-map-fwd-is-equiv : is-equiv Σ-map-fwd
-  pr₁ (pr₁ Σ-map-fwd-is-equiv) = Σ-map-bwd
-  pr₂ (pr₁ Σ-map-fwd-is-equiv) = Σ-map-bwd-is-section
-  pr₁ (pr₂ Σ-map-fwd-is-equiv) = Σ-map-bwd
-  pr₂ (pr₂ Σ-map-fwd-is-equiv) = Σ-map-bwd-is-retraction
-
-
-
 Σ-equiv-piecewise
   : {𝓤 𝓥 : _}
   → (A A' : 𝓤 ̇)
@@ -291,9 +209,11 @@ module _ {𝓤 𝓥 : _} (A A' : 𝓤 ̇) (B : A → 𝓥 ̇) (B' : A' → 𝓥 
   → (g : (x : A) → B x ≃ B' (eqtofun f x))
   → Σ B ≃ Σ B'
 pr₁ (Σ-equiv-piecewise A A' B B' f g) =
- Σ-map-fwd _ _ _ _ _ _
+ PairFun.pair-fun (eqtofun f) (λ x → eqtofun (g x))
 pr₂ (Σ-equiv-piecewise A A' B B' f g) =
- Σ-map-fwd-is-equiv _ _ _ _ _ _ (pr₂ f) (λ x → pr₂ (g x))
+ PairFun.pair-fun-is-equiv _ _
+  (eqtofun- f)
+  (λ x → eqtofun- (g x))
 
 
 module Pullbacks (fe : funext 𝓤 𝓤) (P-is-replete : subuniverse-is-replete P) (A B X : 𝓤 ̇) (A-in-P : subuniverse-contains P A) (B-in-P : subuniverse-contains P B) (X-in-P : subuniverse-contains P X) (f : A → X) (g : B → X) where
@@ -335,14 +255,14 @@ module Pullbacks (fe : funext 𝓤 𝓤) (P-is-replete : subuniverse-is-replete 
        g (○-rec C B B-in-P hb (η C c)) ∎))
 
    restrict-cone-equiv : cone (○ C) ≃ cone C
-   restrict-cone-equiv =
-    Σ-equiv-piecewise _ _ _ _ (precomp-η-equiv A-in-P) λ ca →
-    Σ-equiv-piecewise _ _ _ _ (precomp-η-equiv B-in-P) λ cb →
-    help ca cb
-
-    where
-     help : (ca : ○ C → A) (cb : ○ C → B) → (f ∘ ca ∼ g ∘ cb) ≃ (f ∘ ca ∘ η C ∼ g ∘ cb ∘ η C)
-     help = {!!}
+   pr₁ restrict-cone-equiv =
+    PairFun.pair-fun (precomp-η C A) λ ca →
+    PairFun.pair-fun (precomp-η C B) λ cb ϕ x →
+    ϕ (η _ x)
+   pr₂ restrict-cone-equiv =
+    PairFun.pair-fun-is-equiv _ _ (precomp-η-is-equiv A-in-P) λ ca →
+    PairFun.pair-fun-is-equiv _ _ (precomp-η-is-equiv B-in-P) λ cb →
+    {!!}
 
   reflective-subuniverse-closed-under-pullbacks : subuniverse-contains P (Slice.pullback 𝓤 f g)
   reflective-subuniverse-closed-under-pullbacks =
