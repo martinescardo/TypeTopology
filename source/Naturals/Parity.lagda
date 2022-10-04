@@ -225,4 +225,12 @@ odd-power-of-two-coprime d x n ox d|x d|2^n = I (factors-of-2-exponents d n d|2^
   I (inl d＝1) od = 1 , d＝1
   I (inr ed)   od = 𝟘-elim (odd-not-even d od ed)
 
+even-transport : (z : ℕ) → (ez : even z) (p : even z ∔ odd z) → p ＝ inl ez
+even-transport z ez (inl ez') = ap inl (even-is-prop z ez' ez)
+even-transport z ez (inr oz)  = 𝟘-elim (even-not-odd z ez oz)
+
+odd-transport : (z : ℕ) → (oz : odd z) (p : even z ∔ odd z) → p ＝ inr oz
+odd-transport z oz (inl ez)  = 𝟘-elim (even-not-odd z ez oz)
+odd-transport z oz (inr oz') = ap inr (odd-is-prop z oz' oz)
+
 \end{code}

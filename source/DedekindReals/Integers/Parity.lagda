@@ -269,5 +269,13 @@ evenℕ-to-ℤ' (succ n) = id
 
 ℤtimes-even-is-even' : (m n : ℤ) → ℤeven n → ℤeven (m * n)
 ℤtimes-even-is-even' m n en = transport ℤeven (ℤ*-comm n m) (ℤtimes-even-is-even n m en)
-       
+
+ℤeven-transport : (z : ℤ) → (ez : ℤeven z) (p : ℤeven z ∔ ℤodd z) → p ＝ inl ez
+ℤeven-transport z ez (inl ez') = ap inl (ℤeven-is-prop z ez' ez)
+ℤeven-transport z ez (inr oz)  = 𝟘-elim (ℤeven-not-odd z ez oz)
+
+ℤodd-transport : (z : ℤ) → (oz : ℤodd z) (p : ℤeven z ∔ ℤodd z) → p ＝ inr oz
+ℤodd-transport z oz (inl ez)  = 𝟘-elim (ℤeven-not-odd z ez oz)
+ℤodd-transport z oz (inr oz') = ap inr (ℤodd-is-prop z oz' oz)
+
 \end{code}
