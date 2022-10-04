@@ -243,32 +243,45 @@ reflective-subuniverse-closed-under-products fe P-is-replete A B B-in-P =
    ○-rec-compute (Π B) (B x) (B-in-P x) (λ g → g x) f
 
 
-homotopy-whisker-η
- : {X Y : 𝓤 ̇}
- → (f g : ○ X → Y)
- → f ∼ g
- → (f ∘ η _) ∼ (g ∘ η _)
-homotopy-whisker-η f g h x = h (η _ x)
+homotopy-pre-whisker
+  : {U X Y : 𝓤 ̇}
+  → (f g : X → Y)
+  → (i : U → X)
+  → f ∼ g
+  → f ∘ i ∼ g ∘ i
+homotopy-pre-whisker f g i h =
+ h ∘ i
 
-whisker-η
- : {X Y : 𝓤 ̇}
- → (f g : ○ X → Y)
- → (α : f ＝ g)
- → (f ∘ η _) ＝ (g ∘ η _)
-whisker-η f g α =
- ap (precomp-η _ _) α
+homotopy-pre-whisker-is-equiv
+ : (fe : funext 𝓤 𝓤)
+ → {U X Y : 𝓤 ̇}
+ → (f g : X → Y)
+ → (i : U → X)
+ → (precomp-i-is-emb : is-embedding λ (- : X → Y) → - ∘ i)
+ → is-equiv (homotopy-pre-whisker f g i)
+homotopy-pre-whisker-is-equiv fe {U} {X} {Y} f g i precomp-i-is-emb =
+ transport is-equiv composite-is-pre-whisker (eqtofun- composite)
 
-whisker-η-is-equiv
- : {X Y : 𝓤 ̇}
- → (Y-in-P : subuniverse-contains P Y)
- → (f g : ○ X → Y)
- → is-equiv (whisker-η f g)
-whisker-η-is-equiv Y-in-P =
- embedding-gives-ap-is-equiv
-  (precomp-η _ _)
-  (equivs-are-embeddings
-   (precomp-η _ _)
-   (precomp-η-is-equiv Y-in-P))
+ where
+  composite : f ∼ g ≃ (f ∘ i ∼ g ∘ i)
+  composite =
+   ≃-sym (≃-funext fe f g)
+    ● (ap (_∘ i) , embedding-gives-ap-is-equiv _ precomp-i-is-emb f g)
+    ● ≃-funext fe (f ∘ i) (g ∘ i)
+
+  composite-is-pre-whisker : eqtofun composite ＝ homotopy-pre-whisker f g i
+  composite-is-pre-whisker =
+   dfunext fe λ h →
+   eqtofun composite h ＝⟨ ap happly (aux h) ⟩
+   happly (dfunext fe (h ∘ i)) ＝⟨ happly-funext fe _ _ (h ∘ i) ⟩
+   homotopy-pre-whisker f g i h ∎
+
+   where
+    aux : (h : f ∼ g) → ap (_∘ i) (inverse _ (fe f g) h) ＝ dfunext fe (h ∘ i)
+    aux h =
+     ap (_∘ i) (inverse (happly' f g) (fe f g) h) ＝⟨ ap (λ - → ap (_∘ i) (- h)) (inverse-happly-is-dfunext fe f g) ⟩
+     ap (_∘ i) (dfunext fe h) ＝⟨ ap-precomp-funext _ _ i h fe fe ⟩
+     dfunext fe (h ∘ i) ∎
 
 
 homotopy-whisker-η-is-equiv
@@ -276,47 +289,12 @@ homotopy-whisker-η-is-equiv
  → (X Y : 𝓤 ̇)
  → (Y-in-P : subuniverse-contains P Y)
  → (f g : ○ X → Y)
- → is-equiv (homotopy-whisker-η f g)
+ → is-equiv (homotopy-pre-whisker f g (η _))
 homotopy-whisker-η-is-equiv fe X Y Y-in-P f g =
- transport
-  is-equiv
-  composite-is-homotopy-whisker
-  composite-is-equiv
-
- where
-  composite : f ∼ g → f ∘ η _ ∼ g ∘ η _
-  composite =
-   happly' (f ∘ η X) (g ∘ η X)
-   ∘ whisker-η f g
-   ∘ inverse (happly' f g) (fe f g)
-
-  composite-is-equiv : is-equiv composite
-  composite-is-equiv =
-   ∘-is-equiv
-    (inverses-are-equivs (happly' f g) (fe f g))
-    (∘-is-equiv
-     (whisker-η-is-equiv Y-in-P f g)
-     (fe (f ∘ η X) (g ∘ η X)))
-
-  composite-is-homotopy-whisker : composite ＝ homotopy-whisker-η f g
-  composite-is-homotopy-whisker =
-   dfunext fe λ h →
-   composite h ＝⟨ ap happly (helper h) ⟩
-   happly (dfunext fe (λ z → h (η X z))) ＝⟨ happly-funext fe _ _ (h ∘ η X) ⟩
-   homotopy-whisker-η f g h ∎
-
-   where
-    helper
-     : (h : f ∼ g)
-     → whisker-η f g (inverse (happly' f g) (fe f g) h) ＝ dfunext fe (h ∘ η X)
-    helper h =
-     whisker-η f g (inverse (happly' f g) (fe f g) h)
-       ＝⟨ ap (λ - → whisker-η f g (- h)) (inverse-happly-is-dfunext fe f g) ⟩
-     ap (precomp-η X Y) (dfunext fe h)
-       ＝⟨ ap-precomp-funext _ _ (η X) h fe fe ⟩
-     dfunext fe (h ∘ η X) ∎
-
-
+ homotopy-pre-whisker-is-equiv fe f g (η _)
+  (equivs-are-embeddings
+   (precomp-η X Y)
+   (precomp-η-is-equiv Y-in-P))
 
 module Pullbacks
  (fe : funext 𝓤 𝓤)
