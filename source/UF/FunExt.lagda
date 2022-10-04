@@ -82,6 +82,26 @@ ap-funext f g k h fe x = ap (λ - → k (- x)) (dfunext fe h)    ＝⟨ refl ⟩
                          ap k (happly (dfunext fe h) x)       ＝⟨ ap (λ - → ap k (- x)) (happly-funext fe f g h) ⟩
                          ap k (h x)                           ∎
 
+ap-precomp-funext
+ : {X : 𝓤 ̇} {Y : 𝓥 ̇} {A : 𝓦 ̇}
+ → (f g : X → Y)
+ → (k : A → X) (h : f ∼ g)
+ → (fe0 : funext 𝓤 𝓥)
+ → (fe1 : funext 𝓦 𝓥)
+ → ap (_∘ k) (dfunext fe0 h) ＝ dfunext fe1 (h ∘ k)
+ap-precomp-funext f g k h fe0 fe1 =
+  ap (_∘ k) (dfunext fe0 h) ＝⟨ funext-happly fe1 (f ∘ k) (g ∘ k) _ ⁻¹ ⟩
+  dfunext fe1 (happly (ap (_∘ k) (dfunext fe0 h))) ＝⟨ ap (dfunext fe1) (dfunext fe1 aux) ⟩
+  dfunext fe1 (h ∘ k) ∎
+
+  where
+   aux : happly (ap (_∘ k) (dfunext fe0 h)) ∼ h ∘ k
+   aux x =
+    ap (λ - → - x) (ap (_∘ k) (dfunext fe0 h)) ＝⟨ ap-ap _ _ (dfunext fe0 h) ⟩
+    ap (λ - → - (k x)) (dfunext fe0 h) ＝⟨ ap-funext f g id h fe0 (k x) ⟩
+    ap (λ v → v) (h (k x)) ＝⟨ ap-id-is-id (h (k x)) ⟩
+    h (k x) ∎
+
 \end{code}
 
 The following is taken from this thread:
