@@ -5,20 +5,73 @@ Jon Sterling, started 27th Sep 2022
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import MLTT.Spartan
+open import UF.Subsingletons
 open import UF.Base
 open import UF.FunExt
 open import UF.Equiv
 open import UF.Retracts
+open import UF.Embeddings
+open import UF.EquivalenceExamples
 import Utilities.PairFun as PairFun
 import Slice.Slice as Slice
 
 open import Modal.Subuniverse
 
 
+
 module Modal.ReflectiveSubuniverse
  (P : subuniverse 𝓤 𝓥)
  (P-is-reflective : subuniverse-is-reflective P)
  where
+
+-- TODO: ripped from MGS, move into UF
+sym-is-equiv
+ : {𝓤 : Universe}
+ → {X : 𝓤 ̇}
+ → {x y : X}
+ → is-equiv (_⁻¹ {𝓤} {X} {x} {y})
+pr₁ (pr₁ sym-is-equiv) = _⁻¹
+pr₂ (pr₁ sym-is-equiv) refl = refl
+pr₁ (pr₂ sym-is-equiv) = _⁻¹
+pr₂ (pr₂ sym-is-equiv) refl = refl
+
+-- TODO: ripped from MGS, move into UF
+singleton-equiv-lemma
+ : {𝓤 𝓥 : _} {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (x : X)
+ → (f : (y : X) → x ＝ y → A y)
+ → is-singleton (Σ A)
+ → (y : X)
+ → is-equiv (f y)
+singleton-equiv-lemma {𝓤} {𝓥} {X} {A} x f i = γ
+ where
+  g : singleton-type x → Σ A
+  g = NatΣ f
+
+  e : is-equiv g
+  e = maps-of-singletons-are-equivs g (singleton-types-are-singletons x) i
+
+  abstract
+   γ : (y : X) → is-equiv (f y)
+   γ = NatΣ-equiv-gives-fiberwise-equiv f e
+
+embedding-gives-ap-is-equiv
+ : {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+ → is-embedding f
+ → (x x' : X)
+ → is-equiv (ap f {x} {x'})
+embedding-gives-ap-is-equiv {𝓤} {𝓥} {X} f e = γ
+ where
+  d : (x' : X) → (Σ x ꞉ X , f x' ＝ f x) ≃ (Σ x ꞉ X , f x ＝ f x')
+  d x' = Σ-cong λ x → _⁻¹ , sym-is-equiv
+
+  s : (x' : X) → is-prop (Σ x ꞉ X , f x' ＝ f x)
+  s x' = equiv-to-prop (d x') (e (f x'))
+
+  γ : (x x' : X) → is-equiv (ap f {x} {x'})
+  γ x =
+   singleton-equiv-lemma x
+    (λ x' → ap f {x} {x'})
+    (pointed-props-are-singletons (x , refl) (s x))
 
 reflection : (A : 𝓤 ̇) → reflection-candidate P A
 reflection A = pr₁ (P-is-reflective A)
@@ -189,6 +242,88 @@ reflective-subuniverse-closed-under-products fe P-is-replete A B B-in-P =
    dfunext fe λ x →
    ○-rec-compute (Π B) (B x) (B-in-P x) (λ g → g x) f
 
+
+
+
+
+homotopy-whisker-η
+ : {X Y : 𝓤 ̇}
+ → (f g : ○ X → Y)
+ → f ∼ g
+ → (f ∘ η _) ∼ (g ∘ η _)
+homotopy-whisker-η f g h x = h (η _ x)
+
+whisker-η
+ : {X Y : 𝓤 ̇}
+ → (f g : ○ X → Y)
+ → (α : f ＝ g)
+ → (f ∘ η _) ＝ (g ∘ η _)
+whisker-η f g α =
+ ap (precomp-η _ _) α
+
+whisker-η-is-equiv
+ : {X Y : 𝓤 ̇}
+ → (Y-in-P : subuniverse-contains P Y)
+ → (f g : ○ X → Y)
+ → is-equiv (whisker-η f g)
+whisker-η-is-equiv Y-in-P =
+ embedding-gives-ap-is-equiv
+  (precomp-η _ _)
+  (equivs-are-embeddings
+   (precomp-η _ _)
+   (precomp-η-is-equiv Y-in-P))
+
+-- TODO: refactor to be about precomposing homotopies with embeddings
+homotopy-whisker-η-is-equiv
+ : (fe : funext 𝓤 𝓤)
+ → (X Y : 𝓤 ̇)
+ → (Y-in-P : subuniverse-contains P Y)
+ → (f g : ○ X → Y)
+ → is-equiv (homotopy-whisker-η f g)
+homotopy-whisker-η-is-equiv fe X Y Y-in-P f g =
+ transport
+  is-equiv
+  composite-is-homotopy-whisker
+  composite-is-equiv
+
+ where
+  composite : f ∼ g → f ∘ η _ ∼ g ∘ η _
+  composite = happly' (f ∘ η X) (g ∘ η X) ∘ whisker-η f g ∘ inverse (happly' f g) (fe f g)
+
+  composite-is-equiv : is-equiv composite
+  composite-is-equiv =
+   ∘-is-equiv
+    (inverses-are-equivs (happly' f g) (fe f g))
+    (∘-is-equiv
+     (whisker-η-is-equiv Y-in-P f g)
+     (fe (f ∘ η X) (g ∘ η X)))
+
+  composite-is-homotopy-whisker : composite ＝ homotopy-whisker-η f g
+  composite-is-homotopy-whisker =
+   dfunext fe λ h →
+   composite h ＝⟨ ap happly (helper h) ⟩
+   happly (dfunext fe (λ z → h (η X z))) ＝⟨ happly-funext fe _ _ (h ∘ η X) ⟩
+   homotopy-whisker-η f g h ∎
+
+   where
+    inverse-happly-is-dfunext : inverse (happly' f g) (fe f g) ＝ dfunext fe
+    inverse-happly-is-dfunext =
+     dfunext fe λ h →
+     happly-lc fe f g
+      (happly' f g (inverse (happly' f g) (fe f g) h) ＝⟨ inverses-are-sections _ (fe f g) h ⟩
+       h ＝⟨ happly-funext fe f g h ⁻¹ ⟩
+       happly' f g (dfunext fe h) ∎)
+
+    helper : (h : f ∼ g) → whisker-η f g (inverse (happly' f g) (fe f g) h) ＝ dfunext fe (h ∘ η X)
+    helper h =
+     whisker-η f g (inverse (happly' f g) (fe f g) h)
+       ＝⟨ ap (λ - → whisker-η f g (- h)) inverse-happly-is-dfunext ⟩
+     ap (precomp-η X Y) (dfunext fe h)
+       ＝⟨ ap-precomp-funext _ _ (η X) h fe fe ⟩
+     dfunext fe (h ∘ η X) ∎
+
+
+
 module Pullbacks
  (fe : funext 𝓤 𝓤)
  (P-is-replete : subuniverse-is-replete P)
@@ -244,7 +379,7 @@ module Pullbacks
    pr₂ restrict-cone-equiv =
     PairFun.pair-fun-is-equiv _ _ (precomp-η-is-equiv A-in-P) λ ca →
     PairFun.pair-fun-is-equiv _ _ (precomp-η-is-equiv B-in-P) λ cb →
-    {!!}
+    homotopy-whisker-η-is-equiv fe C X X-in-P (f ∘ ca) (g ∘ cb)
 
   reflective-subuniverse-closed-under-pullbacks : subuniverse-contains P (Slice.pullback 𝓤 f g)
   reflective-subuniverse-closed-under-pullbacks =
