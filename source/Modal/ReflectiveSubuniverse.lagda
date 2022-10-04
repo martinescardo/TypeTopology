@@ -20,21 +20,6 @@ module Modal.ReflectiveSubuniverse
  (P-is-reflective : subuniverse-is-reflective P)
  where
 
-
-transport-Σ
-  : {𝓤 𝓥 𝓦 : _}
-  → (A : 𝓤 ̇)
-  → (B : A → 𝓥 ̇)
-  → (C : (x : A) → B x → 𝓦 ̇)
-  → {x y : A}
-  → (p : x ＝ y)
-  → (h : Σ (C x))
-  → transport (λ - → Σ (C -)) p h
-     ＝ transport B p (pr₁ h) ,
-        transport (λ - → C (pr₁ -) (pr₂ -)) (to-Σ-＝ (p , refl)) (pr₂ h)
-transport-Σ A B C refl h = refl
-
-
 reflection : (A : 𝓤 ̇) → reflection-candidate P A
 reflection A = pr₁ (P-is-reflective A)
 
