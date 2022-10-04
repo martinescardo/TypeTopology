@@ -55,6 +55,13 @@ abstract
               → happly (dfunext fe h) ＝ h
  happly-funext fe f g = inverses-are-sections happly (fe f g)
 
+ funext-happly
+  : {X : 𝓤 ̇} {A : X → 𝓥 ̇} (fe : funext 𝓤 𝓥)
+  → (f g : Π A) (h : f ＝ g)
+  → dfunext fe (happly h) ＝ h
+ funext-happly fe f g refl =
+  inverses-are-retractions happly (fe f f) refl
+
 funext-lc : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (fe : funext 𝓤 𝓥) (f g : Π A)
           → left-cancellable (dfunext fe {X} {A} {f} {g})
 funext-lc fe f g = section-lc (dfunext fe) (happly , happly-funext fe f g)
