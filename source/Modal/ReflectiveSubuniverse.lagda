@@ -243,9 +243,6 @@ reflective-subuniverse-closed-under-products fe P-is-replete A B B-in-P =
    ○-rec-compute (Π B) (B x) (B-in-P x) (λ g → g x) f
 
 
-
-
-
 homotopy-whisker-η
  : {X Y : 𝓤 ̇}
  → (f g : ○ X → Y)
@@ -273,7 +270,7 @@ whisker-η-is-equiv Y-in-P =
    (precomp-η _ _)
    (precomp-η-is-equiv Y-in-P))
 
--- TODO: refactor to be about precomposing homotopies with embeddings
+
 homotopy-whisker-η-is-equiv
  : (fe : funext 𝓤 𝓤)
  → (X Y : 𝓤 ̇)
@@ -288,7 +285,10 @@ homotopy-whisker-η-is-equiv fe X Y Y-in-P f g =
 
  where
   composite : f ∼ g → f ∘ η _ ∼ g ∘ η _
-  composite = happly' (f ∘ η X) (g ∘ η X) ∘ whisker-η f g ∘ inverse (happly' f g) (fe f g)
+  composite =
+   happly' (f ∘ η X) (g ∘ η X)
+   ∘ whisker-η f g
+   ∘ inverse (happly' f g) (fe f g)
 
   composite-is-equiv : is-equiv composite
   composite-is-equiv =
@@ -306,18 +306,12 @@ homotopy-whisker-η-is-equiv fe X Y Y-in-P f g =
    homotopy-whisker-η f g h ∎
 
    where
-    inverse-happly-is-dfunext : inverse (happly' f g) (fe f g) ＝ dfunext fe
-    inverse-happly-is-dfunext =
-     dfunext fe λ h →
-     happly-lc fe f g
-      (happly' f g (inverse (happly' f g) (fe f g) h) ＝⟨ inverses-are-sections _ (fe f g) h ⟩
-       h ＝⟨ happly-funext fe f g h ⁻¹ ⟩
-       happly' f g (dfunext fe h) ∎)
-
-    helper : (h : f ∼ g) → whisker-η f g (inverse (happly' f g) (fe f g) h) ＝ dfunext fe (h ∘ η X)
+    helper
+     : (h : f ∼ g)
+     → whisker-η f g (inverse (happly' f g) (fe f g) h) ＝ dfunext fe (h ∘ η X)
     helper h =
      whisker-η f g (inverse (happly' f g) (fe f g) h)
-       ＝⟨ ap (λ - → whisker-η f g (- h)) inverse-happly-is-dfunext ⟩
+       ＝⟨ ap (λ - → whisker-η f g (- h)) (inverse-happly-is-dfunext fe f g) ⟩
      ap (precomp-η X Y) (dfunext fe h)
        ＝⟨ ap-precomp-funext _ _ (η X) h fe fe ⟩
      dfunext fe (h ∘ η X) ∎
