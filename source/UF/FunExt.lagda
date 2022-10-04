@@ -70,6 +70,20 @@ happly-lc : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (fe : funext 𝓤 𝓥) (f g : �
           → left-cancellable (happly' f g)
 happly-lc fe f g = section-lc happly (equivs-are-sections happly (fe f g))
 
+inverse-happly-is-dfunext
+ : {A B : 𝓤 ̇}
+ → (fe : funext 𝓤 𝓤)
+ → (f g : A → B)
+ → inverse (happly' f g) (fe f g) ＝ dfunext fe
+inverse-happly-is-dfunext fe f g =
+ dfunext fe λ h →
+ happly-lc fe f g
+  (happly' f g (inverse (happly' f g) (fe f g) h)
+     ＝⟨ inverses-are-sections _ (fe f g) h ⟩
+   h ＝⟨ happly-funext fe f g h ⁻¹ ⟩
+   happly' f g (dfunext fe h) ∎)
+
+
 dfunext-refl : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (fe : funext 𝓤 𝓥) (f : Π A)
              → dfunext fe (λ (x : X) → 𝓻𝓮𝒻𝓵 (f x)) ＝ refl
 dfunext-refl fe f = happly-lc fe f f (happly-funext fe f f (λ x → refl))
