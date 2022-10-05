@@ -98,67 +98,69 @@ precomp-η-is-equiv
  : {A B : 𝓤 ̇}
  → is-modal B
  → is-equiv (precomp-η A B)
-precomp-η-is-equiv B-in-P =
- pr₂ (P-is-reflective _) _ B-in-P
+precomp-η-is-equiv =
+ pr₂ (P-is-reflective _) _
 
 precomp-η-equiv
  : {A B : 𝓤 ̇}
  → is-modal B
  → (○ A → B) ≃ (A → B)
-pr₁ (precomp-η-equiv B-in-P) = precomp-η _ _
-pr₂ (precomp-η-equiv B-in-P) = precomp-η-is-equiv B-in-P
+pr₁ (precomp-η-equiv B-modal) =
+ precomp-η _ _
+pr₂ (precomp-η-equiv B-modal) =
+ precomp-η-is-equiv B-modal
 
 ○-rec
  : (A B : 𝓤 ̇)
- → (B-in-P : is-modal B)
+ → (B-modal : is-modal B)
  → (A → B)
  → (○ A → B)
-○-rec A B B-in-P =
- inverse _ (precomp-η-is-equiv B-in-P)
+○-rec A B B-modal =
+ inverse _ (precomp-η-is-equiv B-modal)
 
 
 ○-rec-compute-pointsfree
  : (A B : 𝓤 ̇)
- → (B-in-P : is-modal B)
+ → (B-modal : is-modal B)
  → (f : A → B)
- → ○-rec A B B-in-P f ∘ η A ＝ f
-○-rec-compute-pointsfree A B B-in-P f =
- inverses-are-sections _ (precomp-η-is-equiv B-in-P) f
+ → ○-rec A B B-modal f ∘ η A ＝ f
+○-rec-compute-pointsfree A B B-modal f =
+ inverses-are-sections _ (precomp-η-is-equiv B-modal) f
 
 
 ○-rec-compute
  : (A B : 𝓤 ̇)
- → (B-in-P : is-modal B)
+ → (B-modal : is-modal B)
  → (f : A → B)
  → (x : A)
- → ○-rec A B B-in-P f (η A x) ＝ f x
-○-rec-compute A B B-in-P f =
+ → ○-rec A B B-modal f (η A x) ＝ f x
+○-rec-compute A B B-modal f =
  happly (○-rec-compute-pointsfree _ _ _ _)
 
 ○-rec-ext
  : (A B : 𝓤 ̇)
- → (B-in-P : is-modal B)
+ → (B-modal : is-modal B)
  → (f g : ○ A → B)
  → (f ∘ η A) ＝ (g ∘ η A)
  → f ＝ g
-○-rec-ext A B B-in-P f g fgη =
- H f ⁻¹ ∙ ap (○-rec A B B-in-P) fgη ∙ H g
+○-rec-ext A B B-modal f g fgη =
+ H f ⁻¹ ∙ ap (○-rec A B B-modal) fgη ∙ H g
  where
-  H : inverse (precomp-η A B) (precomp-η-is-equiv B-in-P) ∘ precomp-η A B ∼ id
-  H = inverses-are-retractions _ (precomp-η-is-equiv B-in-P)
+  H : inverse (precomp-η A B) (precomp-η-is-equiv B-modal) ∘ precomp-η A B ∼ id
+  H = inverses-are-retractions _ (precomp-η-is-equiv B-modal)
 
 ○-rec-ext-beta
  : (A B : 𝓤 ̇)
- → (B-in-P : is-modal B)
+ → (B-modal : is-modal B)
  → (f : ○ A → B)
- → ○-rec-ext A B B-in-P f f refl ＝ refl
-○-rec-ext-beta A B B-in-P f =
+ → ○-rec-ext A B B-modal f f refl ＝ refl
+○-rec-ext-beta A B B-modal f =
    (H f ⁻¹ ∙ H f) ＝⟨ (sym-is-inverse (H f)) ⁻¹ ⟩
    refl ∎
 
  where
-  H : inverse (precomp-η A B) (precomp-η-is-equiv B-in-P) ∘ precomp-η A B ∼ id
-  H = inverses-are-retractions _ (precomp-η-is-equiv B-in-P)
+  H : inverse (precomp-η A B) (precomp-η-is-equiv B-modal) ∘ precomp-η A B ∼ id
+  H = inverses-are-retractions _ (precomp-η-is-equiv B-modal)
 
 
 
@@ -263,14 +265,14 @@ homotopy-pre-whisker-is-equiv fe f g i precomp-i-is-emb =
 homotopy-whisker-η-is-equiv
  : (fe : funext 𝓤 𝓤)
  → (X Y : 𝓤 ̇)
- → (Y-in-P : is-modal Y)
+ → (Y-modal : is-modal Y)
  → (f g : ○ X → Y)
  → is-equiv (homotopy-pre-whisker f g (η _))
-homotopy-whisker-η-is-equiv fe X Y Y-in-P f g =
+homotopy-whisker-η-is-equiv fe X Y Y-modal f g =
  homotopy-pre-whisker-is-equiv fe f g (η _)
   (equivs-are-embeddings
    (precomp-η X Y)
-   (precomp-η-is-equiv Y-in-P))
+   (precomp-η-is-equiv Y-modal))
 
 private
  to-point
@@ -313,12 +315,12 @@ module _ (fe : funext 𝓤 𝓤) (P-is-replete : subuniverse-is-replete P) where
   → retract B of E
   → is-modal E
   → is-modal B
- retracts-of-modal-types-are-modal E B B-retract-of-E E-in-P =
+ retracts-of-modal-types-are-modal E B B-retract-of-E E-modal =
   η-is-equiv-gives-is-modal P-is-replete B
    (η-is-section-gives-is-equiv fe B η-is-section)
   where
    h : ○ B → E
-   h = ○-rec B E E-in-P (section B-retract-of-E)
+   h = ○-rec B E E-modal (section B-retract-of-E)
 
    ε : ○ B → B
    ε = retraction B-retract-of-E ∘ h
@@ -329,7 +331,7 @@ module _ (fe : funext 𝓤 𝓤) (P-is-replete : subuniverse-is-replete P) where
     ε (η B x)
      ＝⟨ ap
           (retraction B-retract-of-E)
-          (○-rec-compute B E E-in-P (section B-retract-of-E) x) ⟩
+          (○-rec-compute B E E-modal (section B-retract-of-E) x) ⟩
     retraction B-retract-of-E (section B-retract-of-E x)
      ＝⟨ retract-condition B-retract-of-E x ⟩
     x ∎
@@ -343,20 +345,20 @@ module _ (fe : funext 𝓤 𝓤) (P-is-replete : subuniverse-is-replete P) where
  products-of-modal-types-are-modal
   : (A : 𝓤 ̇)
   → (B : A → 𝓤 ̇)
-  → (B-in-P : Π x ꞉ A , is-modal (B x))
+  → (B-modal : Π x ꞉ A , is-modal (B x))
   → is-modal (Π B)
- products-of-modal-types-are-modal A B B-in-P =
+ products-of-modal-types-are-modal A B B-modal =
   retracts-of-modal-types-are-modal _ _ ret (○-is-modal (Π B))
   where
    h : (x : A) → ○ (Π B) → B x
-   h x = ○-rec (Π B) (B x) (B-in-P x) (λ f → f x)
+   h x = ○-rec (Π B) (B x) (B-modal x) (λ f → f x)
 
    ret : retract Π B of ○ (Π B)
    pr₁ ret f x = h x f
    pr₁ (pr₂ ret) = η (Π B)
    pr₂ (pr₂ ret) f =
     dfunext fe λ x →
-    ○-rec-compute (Π B) (B x) (B-in-P x) (λ g → g x) f
+    ○-rec-compute (Π B) (B x) (B-modal x) (λ - → - x) f
 
  pullbacks-of-modal-types-are-modal
   : (A B X : 𝓤 ̇)
