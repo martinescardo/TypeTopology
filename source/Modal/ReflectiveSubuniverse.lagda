@@ -1,5 +1,7 @@
 Jon Sterling, started 27th Sep 2022
 
+Much of this file is based on the proofs from Egbert Rijke's PhD thesis.
+
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
@@ -193,6 +195,24 @@ pr₂ (η-is-section-gives-is-equiv fe A η-is-section) =
   (η A , η-is-equiv)
   (subuniverse-contains-reflection A)
 
+generic-precomp-η-is-equiv-gives-η-is-section
+  : (A : 𝓤 ̇)
+  → is-equiv (precomp-η A A)
+  → is-section (η A)
+pr₁ (generic-precomp-η-is-equiv-gives-η-is-section A h) =
+ inverse _ h id
+pr₂ (generic-precomp-η-is-equiv-gives-η-is-section A h) =
+ happly (inverses-are-sections _ h id)
+
+generic-precomp-η-is-equiv-gives-η-is-equiv
+  : (fe : funext 𝓤 𝓤)
+  → (A : 𝓤 ̇)
+  → is-equiv (precomp-η A A)
+  → is-equiv (η A)
+generic-precomp-η-is-equiv-gives-η-is-equiv fe A h =
+ η-is-section-gives-is-equiv fe A
+  (generic-precomp-η-is-equiv-gives-η-is-section A h)
+
 reflective-subuniverse-closed-under-retracts
  : (fe : funext 𝓤 𝓤)
  → (P-is-replete : subuniverse-is-replete P)
@@ -283,7 +303,6 @@ homotopy-pre-whisker-is-equiv fe {U} {X} {Y} f g i precomp-i-is-emb =
      ap (_∘ i) (dfunext fe h) ＝⟨ ap-precomp-funext _ _ i h fe fe ⟩
      dfunext fe (h ∘ i) ∎
 
-
 homotopy-whisker-η-is-equiv
  : (fe : funext 𝓤 𝓤)
  → (X Y : 𝓤 ̇)
@@ -326,23 +345,6 @@ module Pullbacks
    cone-map-equiv : (Z : 𝓤 ̇) → (Z → C) ≃ cone Z
    cone-map-equiv Z = Slice.→-pullback-≃ 𝓤 f g Z fe
 
-   restrict-cone : (Z : 𝓤 ̇) → cone (○ Z) → cone Z
-   pr₁ (restrict-cone Z (ha , hb , hα)) = ha ∘ η Z
-   pr₁ (pr₂ (restrict-cone Z (hq , hb , hα))) = hb ∘ η Z
-   pr₂ (pr₂ (restrict-cone Z (hq , hb , hα))) = hα ∘ η Z
-
-   extend-cone : cone C → cone (○ C)
-   pr₁ (extend-cone (ha , hb , hα)) = ○-rec C A A-in-P ha
-   pr₁ (pr₂ (extend-cone (ha , hb , hα))) = ○-rec C B B-in-P hb
-   pr₂ (pr₂ (extend-cone (ha , hb , hα))) =
-    happly
-     (○-rec-ext C X X-in-P _ _
-      (dfunext fe λ c →
-       f (○-rec C A A-in-P ha (η C c)) ＝⟨ ap f (○-rec-compute C A A-in-P ha c) ⟩
-       f (ha c) ＝⟨ hα c ⟩
-       g (hb c) ＝⟨ ap g (○-rec-compute C B B-in-P hb c ⁻¹) ⟩
-       g (○-rec C B B-in-P hb (η C c)) ∎))
-
    restrict-cone-equiv : cone (○ C) ≃ cone C
    pr₁ restrict-cone-equiv =
     PairFun.pair-fun (precomp-η C A) λ ca →
@@ -353,9 +355,14 @@ module Pullbacks
     PairFun.pair-fun-is-equiv _ _ (precomp-η-is-equiv B-in-P) λ cb →
     homotopy-whisker-η-is-equiv fe C X X-in-P (f ∘ ca) (g ∘ cb)
 
-  reflective-subuniverse-closed-under-pullbacks : subuniverse-contains P (Slice.pullback 𝓤 f g)
+  reflective-subuniverse-closed-under-pullbacks : subuniverse-contains P C
   reflective-subuniverse-closed-under-pullbacks =
-    {!!}
+   η-is-equiv-gives-subuniverse-contains P-is-replete C
+    (generic-precomp-η-is-equiv-gives-η-is-equiv fe C
+     (eqtofun-
+      (cone-map-equiv (○ C)
+       ● restrict-cone-equiv
+       ● ≃-sym (cone-map-equiv C))))
 
 
 to-point
