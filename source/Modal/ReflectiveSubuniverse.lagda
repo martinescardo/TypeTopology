@@ -19,8 +19,6 @@ import Slice.Slice as Slice
 
 open import Modal.Subuniverse
 
-
-
 module Modal.ReflectiveSubuniverse
  (P : subuniverse 𝓤 𝓥)
  (P-is-reflective : subuniverse-is-reflective P)
@@ -75,6 +73,9 @@ embedding-gives-ap-is-equiv {𝓤} {𝓥} {X} f e = γ
     (λ x' → ap f {x} {x'})
     (pointed-props-are-singletons (x , refl) (s x))
 
+is-modal : (A : 𝓤 ̇) → 𝓥 ̇
+is-modal = subuniverse-contains P
+
 reflection : (A : 𝓤 ̇) → reflection-candidate P A
 reflection A = pr₁ (P-is-reflective A)
 
@@ -84,8 +85,8 @@ reflection A = pr₁ (P-is-reflective A)
 ○ : 𝓤 ̇ → 𝓤 ̇
 ○ A = pr₁ (○-packed A)
 
-subuniverse-contains-reflection : (A : 𝓤 ̇) → subuniverse-contains P (○ A)
-subuniverse-contains-reflection A = pr₂ (○-packed A)
+○-is-modal : (A : 𝓤 ̇) → is-modal (○ A)
+○-is-modal A = pr₂ (○-packed A)
 
 η : (A : 𝓤 ̇) → A → ○ A
 η A = pr₂ (reflection A)
@@ -95,21 +96,21 @@ precomp-η A B f = f ∘ η A
 
 precomp-η-is-equiv
  : {A B : 𝓤 ̇}
- → subuniverse-contains P B
+ → is-modal B
  → is-equiv (precomp-η A B)
 precomp-η-is-equiv B-in-P =
  pr₂ (P-is-reflective _) _ B-in-P
 
 precomp-η-equiv
  : {A B : 𝓤 ̇}
- → subuniverse-contains P B
+ → is-modal B
  → (○ A → B) ≃ (A → B)
 pr₁ (precomp-η-equiv B-in-P) = precomp-η _ _
 pr₂ (precomp-η-equiv B-in-P) = precomp-η-is-equiv B-in-P
 
 ○-rec
  : (A B : 𝓤 ̇)
- → (B-in-P : subuniverse-contains P B)
+ → (B-in-P : is-modal B)
  → (A → B)
  → (○ A → B)
 ○-rec A B B-in-P =
@@ -118,7 +119,7 @@ pr₂ (precomp-η-equiv B-in-P) = precomp-η-is-equiv B-in-P
 
 ○-rec-compute-pointsfree
  : (A B : 𝓤 ̇)
- → (B-in-P : subuniverse-contains P B)
+ → (B-in-P : is-modal B)
  → (f : A → B)
  → ○-rec A B B-in-P f ∘ η A ＝ f
 ○-rec-compute-pointsfree A B B-in-P f =
@@ -127,7 +128,7 @@ pr₂ (precomp-η-equiv B-in-P) = precomp-η-is-equiv B-in-P
 
 ○-rec-compute
  : (A B : 𝓤 ̇)
- → (B-in-P : subuniverse-contains P B)
+ → (B-in-P : is-modal B)
  → (f : A → B)
  → (x : A)
  → ○-rec A B B-in-P f (η A x) ＝ f x
@@ -137,7 +138,7 @@ pr₂ (precomp-η-equiv B-in-P) = precomp-η-is-equiv B-in-P
 abstract
  ○-rec-ext
   : (A B : 𝓤 ̇)
-  → (B-in-P : subuniverse-contains P B)
+  → (B-in-P : is-modal B)
   → (f g : ○ A → B)
   → (f ∘ η A) ＝ (g ∘ η A)
   → f ＝ g
@@ -149,7 +150,7 @@ abstract
 
  ○-rec-ext-beta
   : (A B : 𝓤 ̇)
-  → (B-in-P : subuniverse-contains P B)
+  → (B-in-P : is-modal B)
   → (f : ○ A → B)
   → ○-rec-ext A B B-in-P f f refl ＝ refl
  ○-rec-ext-beta A B B-in-P f =
@@ -170,7 +171,7 @@ abstract
 pr₁ (η-is-section-gives-has-section fe A η-is-section) = pr₁ η-is-section
 pr₂ (η-is-section-gives-has-section fe A η-is-section) =
  happly
-  (○-rec-ext A (○ A) (subuniverse-contains-reflection A) _ _
+  (○-rec-ext A (○ A) (○-is-modal A) _ _
     (dfunext fe λ x →
      η A (pr₁ η-is-section (η A x)) ＝⟨ ap (η A) (pr₂ η-is-section x) ⟩
      η A x ∎))
@@ -185,15 +186,15 @@ pr₁ (η-is-section-gives-is-equiv fe A η-is-section) =
 pr₂ (η-is-section-gives-is-equiv fe A η-is-section) =
  η-is-section
 
-η-is-equiv-gives-subuniverse-contains
+η-is-equiv-gives-is-modal
  : (P-is-replete : subuniverse-is-replete P)
  → (A : 𝓤 ̇)
  → is-equiv (η A)
- → subuniverse-contains P A
-η-is-equiv-gives-subuniverse-contains P-is-replete A η-is-equiv =
+ → is-modal A
+η-is-equiv-gives-is-modal P-is-replete A η-is-equiv =
  P-is-replete _ _
   (η A , η-is-equiv)
-  (subuniverse-contains-reflection A)
+  (○-is-modal A)
 
 generic-precomp-η-is-equiv-gives-η-is-section
   : (A : 𝓤 ̇)
@@ -213,15 +214,15 @@ generic-precomp-η-is-equiv-gives-η-is-equiv fe A h =
  η-is-section-gives-is-equiv fe A
   (generic-precomp-η-is-equiv-gives-η-is-section A h)
 
-reflective-subuniverse-closed-under-retracts
+retracts-of-modal-types-are-modal
  : (fe : funext 𝓤 𝓤)
  → (P-is-replete : subuniverse-is-replete P)
  → (E B : 𝓤 ̇)
  → retract B of E
- → subuniverse-contains P E
- → subuniverse-contains P B
-reflective-subuniverse-closed-under-retracts fe P-is-replete E B B-retract-of-E E-in-P =
- η-is-equiv-gives-subuniverse-contains P-is-replete B
+ → is-modal E
+ → is-modal B
+retracts-of-modal-types-are-modal fe P-is-replete E B B-retract-of-E E-in-P =
+ η-is-equiv-gives-is-modal P-is-replete B
   (η-is-section-gives-is-equiv fe B η-is-section)
  where
   h : ○ B → E
@@ -246,11 +247,11 @@ reflective-subuniverse-closed-under-products
  → (P-is-replete : subuniverse-is-replete P)
  → (A : 𝓤 ̇)
  → (B : A → 𝓤 ̇)
- → (B-in-P : Π x ꞉ A , subuniverse-contains P (B x))
- → subuniverse-contains P (Π B)
+ → (B-in-P : Π x ꞉ A , is-modal (B x))
+ → is-modal (Π B)
 reflective-subuniverse-closed-under-products fe P-is-replete A B B-in-P =
- reflective-subuniverse-closed-under-retracts fe P-is-replete _ _ ret
-  (subuniverse-contains-reflection (Π B))
+ retracts-of-modal-types-are-modal fe P-is-replete _ _ ret
+  (○-is-modal (Π B))
  where
   h : (x : A) → ○ (Π B) → B x
   h x = ○-rec (Π B) (B x) (B-in-P x) (λ f → f x)
@@ -308,7 +309,7 @@ homotopy-pre-whisker-is-equiv fe f g i precomp-i-is-emb =
 homotopy-whisker-η-is-equiv
  : (fe : funext 𝓤 𝓤)
  → (X Y : 𝓤 ̇)
- → (Y-in-P : subuniverse-contains P Y)
+ → (Y-in-P : is-modal Y)
  → (f g : ○ X → Y)
  → is-equiv (homotopy-pre-whisker f g (η _))
 homotopy-whisker-η-is-equiv fe X Y Y-in-P f g =
@@ -317,61 +318,12 @@ homotopy-whisker-η-is-equiv fe X Y Y-in-P f g =
    (precomp-η X Y)
    (precomp-η-is-equiv Y-in-P))
 
-module Pullbacks
- (fe : funext 𝓤 𝓤)
- (P-is-replete : subuniverse-is-replete P)
- (A B X : 𝓤 ̇)
- (A-in-P : subuniverse-contains P A)
- (B-in-P : subuniverse-contains P B)
- (X-in-P : subuniverse-contains P X)
- (f : A → X)
- (g : B → X)
- where
-
-  private
-   C : 𝓤 ̇
-   C = Slice.pullback 𝓤 f g
-
-   p : C → A
-   p (a , _ , _) = a
-
-   q : C → B
-   q (_ , b , _) = b
-
-   H : f ∘ p ∼ g ∘ q
-   H (_ , _ , α) = α
-
-   cone : 𝓤 ̇ → 𝓤 ̇
-   cone Z = Slice.to-span 𝓤 f g Z
-
-   cone-map-equiv : (Z : 𝓤 ̇) → (Z → C) ≃ cone Z
-   cone-map-equiv Z = Slice.→-pullback-≃ 𝓤 f g Z fe
-
-   restrict-cone-equiv : cone (○ C) ≃ cone C
-   pr₁ restrict-cone-equiv =
-    PairFun.pair-fun (precomp-η C A) λ ca →
-    PairFun.pair-fun (precomp-η C B) λ cb ϕ x →
-    ϕ (η _ x)
-   pr₂ restrict-cone-equiv =
-    PairFun.pair-fun-is-equiv _ _ (precomp-η-is-equiv A-in-P) λ ca →
-    PairFun.pair-fun-is-equiv _ _ (precomp-η-is-equiv B-in-P) λ cb →
-    homotopy-whisker-η-is-equiv fe C X X-in-P (f ∘ ca) (g ∘ cb)
-
-  reflective-subuniverse-closed-under-pullbacks : subuniverse-contains P C
-  reflective-subuniverse-closed-under-pullbacks =
-   η-is-equiv-gives-subuniverse-contains P-is-replete C
-    (generic-precomp-η-is-equiv-gives-η-is-equiv fe C
-     (eqtofun-
-      (cone-map-equiv (○ C)
-       ● restrict-cone-equiv
-       ● ≃-sym (cone-map-equiv C))))
-
-
-to-point
- : {A : 𝓤 ̇}
- → A
- → 𝟙 {𝓤} → A
-to-point a _ = a
+private
+ to-point
+  : {A : 𝓤 ̇}
+  → A
+  → 𝟙 {𝓤} → A
+ to-point a _ = a
 
 id-type-to-pullback
  : (A : 𝓤 ̇)
@@ -401,32 +353,64 @@ pr₁ retract-𝟙-of-○-𝟙 _ = ⋆
 pr₁ (pr₂ retract-𝟙-of-○-𝟙) _ = η _ ⋆
 pr₂ (pr₂ retract-𝟙-of-○-𝟙) ⋆ = refl
 
-reflective-subuniverse-contains-𝟙
- : (fe : funext 𝓤 𝓤)
- → (P-is-replete : subuniverse-is-replete P)
- → subuniverse-contains P (𝟙 {𝓤})
-reflective-subuniverse-contains-𝟙 fe P-is-replete =
-  reflective-subuniverse-closed-under-retracts fe P-is-replete (○ 𝟙) 𝟙
-   retract-𝟙-of-○-𝟙
-   (subuniverse-contains-reflection 𝟙)
+module _ (fe : funext 𝓤 𝓤) (P-is-replete : subuniverse-is-replete P) where
+ 𝟙-is-modal : is-modal (𝟙 {𝓤})
+ 𝟙-is-modal =
+   retracts-of-modal-types-are-modal fe P-is-replete (○ 𝟙) 𝟙
+    retract-𝟙-of-○-𝟙
+    (○-is-modal 𝟙)
 
-reflective-subuniverse-closed-under-id
- : (fe : funext 𝓤 𝓤)
- → (P-is-replete : subuniverse-is-replete P)
- → (A : 𝓤 ̇)
- → (u v : A)
- → (A-in-P : subuniverse-contains P A)
- → subuniverse-contains P (u ＝ v)
-reflective-subuniverse-closed-under-id fe P-is-replete A u v A-in-P =
- P-is-replete
-  (u ＝ v)
-  (Slice.pullback 𝓤 (to-point u) (to-point v))
-  (id-type-to-pullback-equiv A u v)
-  (Pullbacks.reflective-subuniverse-closed-under-pullbacks fe P-is-replete 𝟙 𝟙 A
-   (reflective-subuniverse-contains-𝟙 fe P-is-replete)
-   (reflective-subuniverse-contains-𝟙 fe P-is-replete)
-   A-in-P
-   (to-point u)
-   (to-point v))
+ pullbacks-of-modal-types-are-modal
+  : (A B X : 𝓤 ̇)
+  → (A-modal : is-modal A)
+  → (B-modal : is-modal B)
+  → (X-modal : is-modal X)
+  → (f : A → X)
+  → (g : B → X)
+  → is-modal (Slice.pullback 𝓤 f g)
+ pullbacks-of-modal-types-are-modal A B X A-modal B-modal X-modal f g =
+  η-is-equiv-gives-is-modal P-is-replete C
+   (generic-precomp-η-is-equiv-gives-η-is-equiv fe C
+    (eqtofun-
+     (cone-map-equiv (○ C)
+      ● restrict-cone-equiv
+      ● ≃-sym (cone-map-equiv C))))
+
+  where
+   C : 𝓤 ̇
+   C = Slice.pullback 𝓤 f g
+
+   cone : 𝓤 ̇ → 𝓤 ̇
+   cone Z = Slice.to-span 𝓤 f g Z
+
+   cone-map-equiv : (Z : 𝓤 ̇) → (Z → C) ≃ cone Z
+   cone-map-equiv Z = Slice.→-pullback-≃ 𝓤 f g Z fe
+
+   restrict-cone-equiv : cone (○ C) ≃ cone C
+   pr₁ restrict-cone-equiv =
+    PairFun.pair-fun (precomp-η C A) λ ca →
+    PairFun.pair-fun (precomp-η C B) λ cb ϕ x →
+    ϕ (η _ x)
+   pr₂ restrict-cone-equiv =
+    PairFun.pair-fun-is-equiv _ _ (precomp-η-is-equiv A-modal) λ ca →
+    PairFun.pair-fun-is-equiv _ _ (precomp-η-is-equiv B-modal) λ cb →
+    homotopy-whisker-η-is-equiv fe C X X-modal (f ∘ ca) (g ∘ cb)
+
+ id-types-are-modal
+  : (A : 𝓤 ̇)
+  → (u v : A)
+  → (A-in-P : is-modal A)
+  → is-modal (u ＝ v)
+ id-types-are-modal A u v A-in-P =
+  P-is-replete
+   (u ＝ v)
+   (Slice.pullback 𝓤 (to-point u) (to-point v))
+   (id-type-to-pullback-equiv A u v)
+   (pullbacks-of-modal-types-are-modal 𝟙 𝟙 A
+    𝟙-is-modal
+    𝟙-is-modal
+    A-in-P
+    (to-point u)
+    (to-point v))
 
 \end{code}
