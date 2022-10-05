@@ -24,55 +24,6 @@ module Modal.ReflectiveSubuniverse
  (P-is-reflective : subuniverse-is-reflective P)
  where
 
--- TODO: ripped from MGS, move into UF
-sym-is-equiv
- : {𝓤 : Universe}
- → {X : 𝓤 ̇}
- → {x y : X}
- → is-equiv (_⁻¹ {𝓤} {X} {x} {y})
-pr₁ (pr₁ sym-is-equiv) = _⁻¹
-pr₂ (pr₁ sym-is-equiv) refl = refl
-pr₁ (pr₂ sym-is-equiv) = _⁻¹
-pr₂ (pr₂ sym-is-equiv) refl = refl
-
--- TODO: ripped from MGS, move into UF
-singleton-equiv-lemma
- : {𝓤 𝓥 : _} {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (x : X)
- → (f : (y : X) → x ＝ y → A y)
- → is-singleton (Σ A)
- → (y : X)
- → is-equiv (f y)
-singleton-equiv-lemma {𝓤} {𝓥} {X} {A} x f i = γ
- where
-  g : singleton-type x → Σ A
-  g = NatΣ f
-
-  e : is-equiv g
-  e = maps-of-singletons-are-equivs g (singleton-types-are-singletons x) i
-
-  abstract
-   γ : (y : X) → is-equiv (f y)
-   γ = NatΣ-equiv-gives-fiberwise-equiv f e
-
-embedding-gives-ap-is-equiv
- : {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
- → is-embedding f
- → (x x' : X)
- → is-equiv (ap f {x} {x'})
-embedding-gives-ap-is-equiv {𝓤} {𝓥} {X} f e = γ
- where
-  d : (x' : X) → (Σ x ꞉ X , f x' ＝ f x) ≃ (Σ x ꞉ X , f x ＝ f x')
-  d x' = Σ-cong λ x → _⁻¹ , sym-is-equiv
-
-  s : (x' : X) → is-prop (Σ x ꞉ X , f x' ＝ f x)
-  s x' = equiv-to-prop (d x') (e (f x'))
-
-  γ : (x x' : X) → is-equiv (ap f {x} {x'})
-  γ x =
-   singleton-equiv-lemma x
-    (λ x' → ap f {x} {x'})
-    (pointed-props-are-singletons (x , refl) (s x))
-
 is-modal : (A : 𝓤 ̇) → 𝓥 ̇
 is-modal = subuniverse-contains P
 
@@ -240,7 +191,7 @@ homotopy-pre-whisker-is-equiv fe f g i precomp-i-is-emb =
   composite : f ∼ g ≃ (f ∘ i ∼ g ∘ i)
   composite =
    ≃-sym (≃-funext fe f g)
-    ● (ap (_∘ i) , embedding-gives-ap-is-equiv _ precomp-i-is-emb f g)
+    ● (ap (_∘ i) , embedding-embedding' _ precomp-i-is-emb _ _)
     ● ≃-funext fe (f ∘ i) (g ∘ i)
 
   composite-is-pre-whisker : eqtofun composite ＝ homotopy-pre-whisker f g i
