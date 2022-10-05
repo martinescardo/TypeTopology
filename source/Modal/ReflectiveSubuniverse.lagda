@@ -428,8 +428,3 @@ reflective-subuniverse-closed-under-id fe P-is-replete A u v A-in-P =
    (to-point v))
 
 \end{code}
-
-
-TODO: try to do this the way it is done in Egbert's thesis. It feels like he has
-a reasonable proof that reflective subuniverses are closed under pullback (5.1.19)
- which will then give the main result by repleteness.
