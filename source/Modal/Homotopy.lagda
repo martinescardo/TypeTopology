@@ -42,7 +42,7 @@ homotopy-precomp-by-embedding-is-equiv
  → (precomp-i-is-emb : is-embedding λ (- : X → Y) → - ∘ i)
  → is-equiv (homotopy-precomp f g i)
 homotopy-precomp-by-embedding-is-equiv fe0 fe1 fe2 fe3 f g i precomp-i-is-emb =
- transport is-equiv composite-is-pre-whisker (eqtofun- composite)
+ transport is-equiv composite-is-precomp (eqtofun- composite)
 
  where
   composite : f ∼ g ≃ (f ∘ i ∼ g ∘ i)
@@ -51,8 +51,8 @@ homotopy-precomp-by-embedding-is-equiv fe0 fe1 fe2 fe3 f g i precomp-i-is-emb =
     ● (ap (_∘ i) , embedding-embedding' _ precomp-i-is-emb _ _)
     ● ≃-funext fe1 (f ∘ i) (g ∘ i)
 
-  composite-is-pre-whisker : eqtofun composite ＝ homotopy-precomp f g i
-  composite-is-pre-whisker =
+  composite-is-precomp : eqtofun composite ＝ homotopy-precomp f g i
+  composite-is-precomp =
    dfunext fe2 λ h →
    eqtofun composite h ＝⟨ ap happly (aux h) ⟩
    happly (dfunext fe1 (h ∘ i)) ＝⟨ happly-funext fe1 _ _ (h ∘ i) ⟩
