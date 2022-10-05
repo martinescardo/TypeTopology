@@ -135,31 +135,30 @@ pr₂ (precomp-η-equiv B-in-P) = precomp-η-is-equiv B-in-P
 ○-rec-compute A B B-in-P f =
  happly (○-rec-compute-pointsfree _ _ _ _)
 
-abstract
- ○-rec-ext
-  : (A B : 𝓤 ̇)
-  → (B-in-P : is-modal B)
-  → (f g : ○ A → B)
-  → (f ∘ η A) ＝ (g ∘ η A)
-  → f ＝ g
- ○-rec-ext A B B-in-P f g fgη =
-  H f ⁻¹ ∙ ap (○-rec A B B-in-P) fgη ∙ H g
-  where
-   H : inverse (precomp-η A B) (precomp-η-is-equiv B-in-P) ∘ precomp-η A B ∼ id
-   H = inverses-are-retractions _ (precomp-η-is-equiv B-in-P)
+○-rec-ext
+ : (A B : 𝓤 ̇)
+ → (B-in-P : is-modal B)
+ → (f g : ○ A → B)
+ → (f ∘ η A) ＝ (g ∘ η A)
+ → f ＝ g
+○-rec-ext A B B-in-P f g fgη =
+ H f ⁻¹ ∙ ap (○-rec A B B-in-P) fgη ∙ H g
+ where
+  H : inverse (precomp-η A B) (precomp-η-is-equiv B-in-P) ∘ precomp-η A B ∼ id
+  H = inverses-are-retractions _ (precomp-η-is-equiv B-in-P)
 
- ○-rec-ext-beta
-  : (A B : 𝓤 ̇)
-  → (B-in-P : is-modal B)
-  → (f : ○ A → B)
-  → ○-rec-ext A B B-in-P f f refl ＝ refl
- ○-rec-ext-beta A B B-in-P f =
-    (H f ⁻¹ ∙ H f) ＝⟨ (sym-is-inverse (H f)) ⁻¹ ⟩
-    refl ∎
+○-rec-ext-beta
+ : (A B : 𝓤 ̇)
+ → (B-in-P : is-modal B)
+ → (f : ○ A → B)
+ → ○-rec-ext A B B-in-P f f refl ＝ refl
+○-rec-ext-beta A B B-in-P f =
+   (H f ⁻¹ ∙ H f) ＝⟨ (sym-is-inverse (H f)) ⁻¹ ⟩
+   refl ∎
 
-  where
-   H : inverse (precomp-η A B) (precomp-η-is-equiv B-in-P) ∘ precomp-η A B ∼ id
-   H = inverses-are-retractions _ (precomp-η-is-equiv B-in-P)
+ where
+  H : inverse (precomp-η A B) (precomp-η-is-equiv B-in-P) ∘ precomp-η A B ∼ id
+  H = inverses-are-retractions _ (precomp-η-is-equiv B-in-P)
 
 
 
