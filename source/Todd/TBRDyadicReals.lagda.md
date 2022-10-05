@@ -185,7 +185,7 @@ different sizes.
      where
       I : Σ k ꞉ ℤ , p < lb (x , b) k
         → Σ z ꞉ ℤ[1/2] , p < z × (∃ k' ꞉ ℤ , z < lb (x , b) k')
-      I (k , p<l) = let (m , p<m , m<l) = dense p (lb (x , b) k)
+      I (k , p<l) = let (m , p<m , m<l) = dense p (lb (x , b) k) p<l
                     in m , p<m , ∣ k , m<l ∣
     right-implication : ∃ z ꞉ ℤ[1/2] , p < z × (∃ k' ꞉ ℤ , z < lb (x , b) k')
                       → ∃ k ꞉ ℤ , p < lb (x , b) k
@@ -208,7 +208,7 @@ different sizes.
      where
       I : Σ k ꞉ ℤ , rb (x , b) k < q
         → Σ z ꞉ ℤ[1/2] , z < q × (∃ k' ꞉ ℤ , rb (x , b) k' < z)
-      I (k , r<z) = let (m , r<m , m<q) = dense (rb (x , b) k) q
+      I (k , r<z) = let (m , r<m , m<q) = dense (rb (x , b) k) q r<z
                     in m , m<q , ∣ k , r<m ∣
     right-implication : ∃ z ꞉ ℤ[1/2] , z < q × (∃ k' ꞉ ℤ , rb (x , b) k' < z)
                       → ∃ k ꞉ ℤ , rb (x , b) k < q 

@@ -1,6 +1,6 @@
 
 ```agda
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --allow-unsolved-metas --exact-split --auto-inline #-}
 
 open import MLTT.Spartan renaming (_+_ to _∔_)
 open import Notation.CanonicalMap
@@ -62,8 +62,6 @@ _Vecℤ[1/2]<_ _Vecℤ[1/2]≤_ : {n : ℕ} → Vec ℤ[1/2] n → Vec ℤ[1/2] 
 _Vecℤ[1/2]<_ = pairwise-P' _<ℤ[1/2]_ 
 _Vecℤ[1/2]≤_ = pairwise-P' _≤ℤ[1/2]_
 
-
-
 dyadic-real-lemma : {n : ℕ} → (as bs : Vec ℤ[1/2] n) (x : Vec ℝ-d n)
                      → pairwise-P' (λ a x → a < x) as x
                      → pairwise-P' (λ b x → x < b) bs x
@@ -105,15 +103,6 @@ generate-asbs {succ n} (v ∷ vs) = do (asbs , as<xs<bs) ← generate-asbs vs
                                      (b , x<b) ← inhabited-from-real-R v
                                      ∣ ((a , b) ∷ asbs) , ((a<x , x<b) , as<xs<bs) ∣
                                     
-{-
-vec-reorder-prop-args : {n : ℕ} {A : 𝓤 ̇} {B : 𝓥 ̇}
-                      → (as : Vec A n)
-                      → (bs : Vec B n)
-                      → (P : A → B → 𝓦 ̇)
-                      → pairwise-P' (λ a b → P a b) as bs 
-                      → pairwise-P' (λ b a → P {!b!} {!!}) as bs
-vec-reorder-prop-args = {!!}
--}
 open import Naturals.Order renaming (max to ℕmax)
 
 ℕmin : ℕ → ℕ → ℕ
@@ -127,16 +116,9 @@ open import Naturals.Order renaming (max to ℕmax)
 ℤmax (negsucc x) (pos y)     = pos y
 ℤmax (negsucc x) (negsucc y) = negsucc (ℕmin x y)
 
-metric : ℤ[1/2] → ℤ[1/2] → ℤ[1/2]
-metric p q = ℤ[1/2]-abs (p ℤ[1/2]- q)
-
-Bℤ[1/2] : (x y ε : ℤ[1/2]) → 0ℤ[1/2] < ε → 𝓤₀ ̇
-Bℤ[1/2] p q ε l = metric p q < ε
-
 record Collection (n : ℕ) : {!!} ̇ where
  field
   D : Vec ℤ[1/2] (succ n) → ℤ[1/2]
-  M : ℤ × ℤ → ℤ → ℕ
   L R : Vec (ℤ[1/2] × ℤ[1/2]) (succ n) → ℤ[1/2]
   Condition-1a : (a c x d b : Vec ℤ[1/2] (succ n))
                → (a Vecℤ[1/2]≤ c) × (c Vecℤ[1/2]≤ x) × (x Vecℤ[1/2]≤ d) × (d Vecℤ[1/2]≤ b)
@@ -153,8 +135,6 @@ record Collection (n : ℕ) : {!!} ̇ where
                
   Condition-2 : (x : Vec ℤ[1/2] (succ n)) → (ε : ℤ[1/2]) → (0<ε : 0ℤ[1/2] <ℤ[1/2] ε) → Σ (a , b) ꞉ Vec ℤ[1/2] (succ n) × Vec ℤ[1/2] (succ n) , (a Vecℤ[1/2]< x) × (x Vecℤ[1/2]< b) × Bℤ[1/2] (L (zip (a , b))) (D x) ε 0<ε
   Condition-3 : (x : Vec ℤ[1/2] (succ n)) → (ε : ℤ[1/2]) → (0<ε : 0ℤ[1/2] <ℤ[1/2] ε) → Σ (a , b) ꞉ Vec ℤ[1/2] (succ n) × Vec ℤ[1/2] (succ n) , (a Vecℤ[1/2]< x) × (x Vecℤ[1/2]< b) × Bℤ[1/2] (R (zip (a , b))) (D x) ε 0<ε
-  Condition-4 : (x q : ℤ) → {!!}
-  -- Some condition on M
   
  F : Vec ℝ-d (succ n) → ℝ-d
  F v = (Lc , Rc) , inhabited-l , inhabited-r , rounded-l , {!!} , is-disjoint , is-located
@@ -202,36 +182,8 @@ record Collection (n : ℕ) : {!!} ̇ where
  L' = {!!}
  R' = {!!}
 
- E : Vec ℤ (succ n) × ℤ → ℤ × ℤ × ℤ
- E (v , p) = l , r , j
-  where
-   lq rq : ℤ × ℤ
-   lq = L' {!!}
-   rq = {!!}
-   l' r' qₗ qᵣ : ℤ
-   qₗ = pr₂ lq
-   qᵣ = pr₂ rq
-   l' = pr₁ lq
-   r' = pr₁ rq
-   l r j : ℤ
-   j = ℤmax qₗ qᵣ
-   l = (downLeft ^ {!j - qₗ!}) l'
-   r = (downRight ^ {!j - qᵣ!}) r'
-
  F* : Vec 𝕋 (succ n) → 𝕋
- F* x = f , {!!}
-  where
-   f : ℤ → ℤ
-   f q = (upRight ^ {!abs (j + pos k)!}) l
-    where
-     k : ℕ
-     k = M {!!} q
-     from-E : ℤ × ℤ × ℤ
-     from-E = E ({!!} , q + pos k)
-     l r j : ℤ
-     l = pr₁ from-E
-     r = pr₁ (pr₂ from-E)
-     j = pr₂ (pr₂ from-E)
+ F* x = {!!} 
 
  dyadic-function-equiv-to-real : (x : Vec ℤ[1/2] (succ n)) → ι (D x) ＝ F (vec-map ι x)
  dyadic-function-equiv-to-real x = ℝ-d-equality-from-left-cut ltr rtl
@@ -272,13 +224,8 @@ record Collection (n : ℕ) : {!!} ̇ where
  ternary-boehm-function-equiv-to-real : (α : Vec 𝕋 (succ n)) → ⟦ F* α ⟧ ＝ F (vec-map ⟦_⟧ α)
  ternary-boehm-function-equiv-to-real = {!!}
 
-{-
-
 neg-D : Vec ℤ[1/2] 1 → ℤ[1/2]
 neg-D (x ∷ []) = ℤ[1/2]- x
-
-neg-M : {!!}
-neg-M = {!!}
 
 neg-L : Vec (ℤ[1/2] × ℤ[1/2]) 1 → ℤ[1/2]
 neg-L ((a , b) ∷ []) = ℤ[1/2]- b
@@ -286,22 +233,65 @@ neg-L ((a , b) ∷ []) = ℤ[1/2]- b
 neg-R : Vec (ℤ[1/2] × ℤ[1/2]) 1 → ℤ[1/2]
 neg-R ((a , b) ∷ []) = ℤ[1/2]- a
 
-neg-Condition-1 : {!!}
-neg-Condition-1 = {!!}
+neg-Condition-1a : (a c x d b : Vec ℤ[1/2] 1)
+                 → (a Vecℤ[1/2]≤ c) × (c Vecℤ[1/2]≤ x) × (x Vecℤ[1/2]≤ d) × (d Vecℤ[1/2]≤ b)
+                 → (neg-L (zip (a , b)) ≤ℤ[1/2] neg-L (zip (c , d)))
+neg-Condition-1a (a ∷ []) (c ∷ []) (x ∷ []) (d ∷ []) (b ∷ []) (a≤c , c≤x , x≤d , (d≤b , ⋆)) = ≤-swap d b d≤b
 
-neg-Condition-2 : {!!}
-neg-Condition-2 = {!!}
+neg-Condition-1b : (c x d : Vec ℤ[1/2] 1)
+                 → (c Vecℤ[1/2]≤ x) × (x Vecℤ[1/2]≤ d)             
+                 → (neg-L (zip (c , d)) ≤ℤ[1/2] neg-D x)
+neg-Condition-1b (c ∷ []) (x ∷ []) (d ∷ []) (c≤x , (x≤d , ⋆)) = ≤-swap x d x≤d
 
-neg-Condition-3 : {!!}
-neg-Condition-3 = {!!}
+neg-Condition-1c : (c x d : Vec ℤ[1/2] 1)
+                 → (c Vecℤ[1/2]≤ x) × (x Vecℤ[1/2]≤ d)              
+                 → (neg-D x ≤ℤ[1/2] neg-R (zip (c , d)))
+neg-Condition-1c (c ∷ []) (x ∷ []) (d ∷ []) ((c≤x , ⋆) , x≤d) = ≤-swap c x c≤x
+
+neg-Condition-1d : (a c x d b : Vec ℤ[1/2] 1)
+                 → (a Vecℤ[1/2]≤ c) × (c Vecℤ[1/2]≤ x) × (x Vecℤ[1/2]≤ d) × (d Vecℤ[1/2]≤ b)              
+                 → (neg-R (zip (c , d)) ≤ℤ[1/2] neg-R (zip (a , d)))
+neg-Condition-1d (a ∷ []) (c ∷ []) (x ∷ []) (d ∷ []) (b ∷ []) ((a≤c , ⋆) , c≤x , x≤d , d≤b) = ≤-swap a c a≤c
+ 
+neg-Condition-2 : (x : Vec ℤ[1/2] 1) → (ε : ℤ[1/2]) → (0<ε : 0ℤ[1/2] <ℤ[1/2] ε)
+                → Σ (a , b) ꞉ Vec ℤ[1/2] 1 × Vec ℤ[1/2] 1 , (a Vecℤ[1/2]< x) × (x Vecℤ[1/2]< b) × Bℤ[1/2] (neg-L (zip (a , b))) (neg-D x) ε 0<ε
+neg-Condition-2 (x ∷ []) ε 0<ε with (no-min x) 
+... | (a , a<x) with dense x (x ℤ[1/2]+ ε) (ℤ[1/2]<-+ x ε 0<ε)
+... | (b , x<b , b<x+ε) = ((a ∷ []) , (b ∷ [])) , ((a<x , ⋆) , (x<b , ⋆) , goal)
+ where
+  l₁ : (b ℤ[1/2]- x) < ε
+  l₁ = <-swap-consequence b x ε b<x+ε
+  l₂ : metric b x < ε
+  l₂ = transport (_< ε) (ℤ[1/2]-pos-abs x b x<b) l₁
+  goal : metric (ℤ[1/2]- b) (ℤ[1/2]- x) < ε
+  goal = ℤ[1/2]-metric-neg b x ε 0<ε l₂
+
+neg-Condition-3 : (x : Vec ℤ[1/2] 1) → (ε : ℤ[1/2]) → (0<ε : 0ℤ[1/2] <ℤ[1/2] ε)
+                → Σ (a , b) ꞉ Vec ℤ[1/2] 1 × Vec ℤ[1/2] 1 , (a Vecℤ[1/2]< x) × (x Vecℤ[1/2]< b) × Bℤ[1/2] (neg-R (zip (a , b))) (neg-D x) ε 0<ε
+neg-Condition-3 (x ∷ []) ε 0<ε with no-max x
+... | (b , x<b) with dense (x ℤ[1/2]- ε) x (ℤ[1/2]<-neg x ε 0<ε)
+... | (a , x-ε<a , a<x) = ((a ∷ []) , (b ∷ [])) , (a<x , ⋆) , (x<b , ⋆) , goal
+ where 
+  l₁ : x < (a ℤ[1/2]+ ε)
+  l₁ = ℤ[1/2]<-neg' x ε a x-ε<a
+  l₂ : (x ℤ[1/2]- a) < ε
+  l₂ = ℤ[1/2]<-+' x a ε l₁
+  l₃ : ℤ[1/2]-abs (x ℤ[1/2]- a) < ε
+  l₃ = transport (_< ε) (ℤ[1/2]-pos-abs a x a<x) l₂
+  l₄ : Bℤ[1/2] a x ε 0<ε
+  l₄ = ℤ[1/2]-metric-comm x a ε 0<ε l₃
+  goal : (metric (ℤ[1/2]- a) (ℤ[1/2]- x)) < ε
+  goal = ℤ[1/2]-metric-neg a x ε 0<ε l₄
 
 negation-collection : Collection 0
 negation-collection = record
                         { D = neg-D
-                        ; M = neg-M
                         ; L = neg-L
                         ; R = neg-R
-                        ; Condition-1 = neg-Condition-1
+                        ; Condition-1a = neg-Condition-1a
+                        ; Condition-1b = neg-Condition-1b
+                        ; Condition-1c = neg-Condition-1c
+                        ; Condition-1d = neg-Condition-1d
                         ; Condition-2 = neg-Condition-2
                         ; Condition-3 = neg-Condition-3
                         }
@@ -310,6 +300,6 @@ open Collection
 
 tbr- : 𝕋 → 𝕋
 tbr- x = F* negation-collection (x ∷ [])
--}
+
 
 ```
