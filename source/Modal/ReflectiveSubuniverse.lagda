@@ -217,9 +217,6 @@ generic-precomp-η-is-equiv-gives-η-is-equiv fe A h =
   (generic-precomp-η-is-equiv-gives-η-is-section A h)
 
 
-
-
-
 homotopy-pre-whisker
   : {U X Y : 𝓤 ̇}
   → (f g : X → Y)
@@ -274,6 +271,14 @@ homotopy-whisker-η-is-equiv fe X Y Y-modal f g =
    (precomp-η X Y)
    (precomp-η-is-equiv Y-modal))
 
+\end{code}
+
+Here we prove that identity types can be constructed by pullback; this will be
+useful later when we establish closure of modal types under identity types
+using closure of modal types under pullbacks.
+
+\begin{code}
+
 private
  to-point
   : {A : 𝓤 ̇}
@@ -308,6 +313,14 @@ retract-𝟙-of-○-𝟙 : retract (𝟙 {𝓤}) of ○ 𝟙
 pr₁ retract-𝟙-of-○-𝟙 _ = ⋆
 pr₁ (pr₂ retract-𝟙-of-○-𝟙) _ = η _ ⋆
 pr₂ (pr₂ retract-𝟙-of-○-𝟙) ⋆ = refl
+
+\end{code}
+
+
+We establish the closure conditions of modal types; every such lemma requires
+both function extensionality and repleteness of the subuniverse.
+
+\begin{code}
 
 module _ (fe : funext 𝓤 𝓤) (P-is-replete : subuniverse-is-replete P) where
  retracts-of-modal-types-are-modal
