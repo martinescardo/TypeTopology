@@ -396,12 +396,12 @@ module _ (fe : funext 𝓤 𝓤) (P-is-replete : subuniverse-is-replete P) where
     PairFun.pair-fun-is-equiv _ _ (precomp-η-is-equiv B-modal) λ cb →
     homotopy-whisker-η-is-equiv fe C X X-modal (f ∘ ca) (g ∘ cb)
 
- id-types-are-modal
+ id-types-of-modal-types-are-modal
   : (A : 𝓤 ̇)
   → (u v : A)
-  → (A-in-P : is-modal A)
+  → (A-modal : is-modal A)
   → is-modal (u ＝ v)
- id-types-are-modal A u v A-in-P =
+ id-types-of-modal-types-are-modal A u v A-modal =
   P-is-replete
    (u ＝ v)
    (Slice.pullback 𝓤 (to-point u) (to-point v))
@@ -409,7 +409,7 @@ module _ (fe : funext 𝓤 𝓤) (P-is-replete : subuniverse-is-replete P) where
    (pullbacks-of-modal-types-are-modal 𝟙 𝟙 A
     𝟙-is-modal
     𝟙-is-modal
-    A-in-P
+    A-modal
     (to-point u)
     (to-point v))
 
