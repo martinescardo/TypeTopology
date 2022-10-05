@@ -77,6 +77,7 @@ Click at the imported module names to navigate to them:
 
 module index where
 
+                                      
 import BinarySystems.index
 import CantorSchroederBernstein.index
 import Circle.index                   -- by Tom de Jong
@@ -84,20 +85,25 @@ import CoNaturals.index
 import CrossedModules.index           -- by Ettore Aldrovandi and Keri D'Angelo
 import DedekindReals.index            -- by Andrew Sneap
 import DomainTheory.index             -- by Tom de Jong
+import Dyadics.index                  -- by Andrew Sneap
 import DyadicsInductive.index         -- by Tom de Jong
+import Field.index                   -- by Andrew Sneap
 import Games.index                    -- by Martin Escardo and Paulo Oliva
 import Groups.index                   -- originally by Martin Escardo with many additions
                                       -- by Ettore Aldrovandi and Keri D'Angelo
 import InjectiveTypes.index
+import Integers.index                 -- by Andrew Sneap
 import Lifting.index
 import Locales.index                  -- by Ayberk Tosun
 import MGS.index                      -- Modular version of https://github.com/martinescardo/HoTT-UF-Agda-Lecture-Notes
 import MLTT.index
+import MetricSpaces.index             -- by Andrew Sneap
 import Naturals.index
 import Notation.index
 import NotionsOfDecidability.index    -- by Tom de Jong and Martin Escardo
 import Ordinals.index
 import Posets.index                   -- by Tom de Jong and Martin Escardo
+import Rationals.index                -- by Andrew Sneap
 import Slice.index
 import TWA.index                      -- by Todd Waugh Ambridge
 import Taboos.index
