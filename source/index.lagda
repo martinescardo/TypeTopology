@@ -84,7 +84,7 @@ import CoNaturals.index
 import CrossedModules.index           -- by Ettore Aldrovandi and Keri D'Angelo
 import DedekindReals.index            -- by Andrew Sneap
 import DomainTheory.index             -- by Tom de Jong
-import Dyadics.index                  -- by Tom de Jong
+import DyadicsInductive.index         -- by Tom de Jong
 import Games.index                    -- by Martin Escardo and Paulo Oliva
 import Groups.index                   -- originally by Martin Escardo with many additions
                                       -- by Ettore Aldrovandi and Keri D'Angelo

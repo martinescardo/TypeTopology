@@ -8,7 +8,7 @@ Dyadic rationals (https://en.wikipedia.org/wiki/Dyadic_rational)
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module Dyadics.Dyadics where
+module DyadicsInductive.Dyadics where
 
 open import MLTT.Spartan
 open import MLTT.Unit-Properties

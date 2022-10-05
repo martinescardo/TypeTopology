@@ -9,11 +9,11 @@ No endpoints, density and binary interpolation for (𝔻 , ≺) formulated using
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import MLTT.Spartan
-open import Dyadics.Dyadics
-open import Dyadics.DyadicOrder
+open import DyadicsInductive.Dyadics
+open import DyadicsInductive.DyadicOrder
 open import UF.PropTrunc
 
-module Dyadics.DyadicOrder-PropTrunc (pt : propositional-truncations-exist) where
+module DyadicsInductive.DyadicOrder-PropTrunc (pt : propositional-truncations-exist) where
 
 open PropositionalTruncation pt
 
