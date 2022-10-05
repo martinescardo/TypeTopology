@@ -181,36 +181,31 @@ useful later when we establish closure of modal types under identity types
 using closure of modal types under pullbacks.
 
 \begin{code}
-private
- to-point
-  : {A : 𝓤 ̇}
-  → A
-  → 𝟙 {𝓤} → A
- to-point a _ = a
+module _ (A : 𝓤 ̇) (x y : A) where
+ private
+  [x] [y] : 𝟙{𝓤} → A
+  [x] _ = x
+  [y] _ = y
 
-id-type-to-pullback
- : (A : 𝓤 ̇)
- → (x y : A)
- → (x ＝ y)
- → Slice.pullback 𝓤 (to-point x) (to-point y)
-id-type-to-pullback A x y p = ⋆ , ⋆ , p
+ id-type-as-pullback : 𝓤 ̇
+ id-type-as-pullback = Slice.pullback 𝓤 [x] [y]
 
-id-type-to-pullback-is-equiv
- : (A : 𝓤 ̇)
- → (x y : A)
- → is-equiv (id-type-to-pullback A x y)
-pr₁ (pr₁ (id-type-to-pullback-is-equiv A x y)) = pr₂ ∘ pr₂
-pr₂ (pr₁ (id-type-to-pullback-is-equiv A x y)) (_ , _ , p) = refl
-pr₁ (pr₂ (id-type-to-pullback-is-equiv A x y)) = pr₂ ∘ pr₂
-pr₂ (pr₂ (id-type-to-pullback-is-equiv A x y)) p = refl
+ id-type-to-pullback : x ＝ y → Slice.pullback 𝓤 [x] [y]
+ id-type-to-pullback p = ⋆ , ⋆ , p
 
-id-type-to-pullback-equiv
- : (A : 𝓤 ̇)
- → (x y : A)
- → (x ＝ y) ≃ Slice.pullback 𝓤 (to-point x) (to-point y)
-pr₁ (id-type-to-pullback-equiv A x y) = id-type-to-pullback A x y
-pr₂ (id-type-to-pullback-equiv A x y) = id-type-to-pullback-is-equiv A x y
+ pullback-to-id-type : Slice.pullback 𝓤 [x] [y] → x ＝ y
+ pullback-to-id-type (_ , _ , p) = p
 
+ id-type-to-pullback-is-equiv : is-equiv id-type-to-pullback
+ pr₁ id-type-to-pullback-is-equiv = pullback-to-id-type , λ _ → refl
+ pr₂ id-type-to-pullback-is-equiv = pullback-to-id-type , λ _ → refl
+
+ id-type-to-pullback-equiv : (x ＝ y) ≃ Slice.pullback 𝓤 [x] [y]
+ pr₁ id-type-to-pullback-equiv = id-type-to-pullback
+ pr₂ id-type-to-pullback-equiv = id-type-to-pullback-is-equiv
+\end{code}
+
+\begin{code}
 retract-𝟙-of-○-𝟙 : retract (𝟙 {𝓤}) of ○ 𝟙
 pr₁ retract-𝟙-of-○-𝟙 _ = ⋆
 pr₁ (pr₂ retract-𝟙-of-○-𝟙) _ = η _ ⋆
@@ -316,12 +311,7 @@ module _ (fe : funext 𝓤 𝓤) (P-is-replete : subuniverse-is-replete P) where
  id-types-of-modal-types-are-modal A u v A-modal =
   P-is-replete
    (u ＝ v)
-   (Slice.pullback 𝓤 (to-point u) (to-point v))
+   (id-type-as-pullback A u v)
    (id-type-to-pullback-equiv A u v)
-   (pullbacks-of-modal-types-are-modal 𝟙 𝟙 A
-    𝟙-is-modal
-    𝟙-is-modal
-    A-modal
-    (to-point u)
-    (to-point v))
+   (pullbacks-of-modal-types-are-modal 𝟙 𝟙 A 𝟙-is-modal 𝟙-is-modal A-modal _ _)
 \end{code}
