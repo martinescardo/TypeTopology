@@ -71,17 +71,19 @@ happly-lc : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (fe : funext 𝓤 𝓥) (f g : �
 happly-lc fe f g = section-lc happly (equivs-are-sections happly (fe f g))
 
 inverse-happly-is-dfunext
- : {A B : 𝓤 ̇}
- → (fe : funext 𝓤 𝓤)
+ : {𝓤 𝓥 : Universe}
+ → {A : 𝓤 ̇} {B : 𝓥 ̇}
+ → (fe0 : funext 𝓤 𝓥)
+ → (fe1 : funext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥))
  → (f g : A → B)
- → inverse (happly' f g) (fe f g) ＝ dfunext fe
-inverse-happly-is-dfunext fe f g =
- dfunext fe λ h →
- happly-lc fe f g
-  (happly' f g (inverse (happly' f g) (fe f g) h)
-     ＝⟨ inverses-are-sections _ (fe f g) h ⟩
-   h ＝⟨ happly-funext fe f g h ⁻¹ ⟩
-   happly' f g (dfunext fe h) ∎)
+ → inverse (happly' f g) (fe0 f g) ＝ dfunext fe0
+inverse-happly-is-dfunext fe0 fe1 f g =
+ dfunext fe1 λ h →
+ happly-lc fe0 f g
+  (happly' f g (inverse (happly' f g) (fe0 f g) h)
+     ＝⟨ inverses-are-sections _ (fe0 f g) h ⟩
+   h ＝⟨ happly-funext fe0 f g h ⁻¹ ⟩
+   happly' f g (dfunext fe0 h) ∎)
 
 
 dfunext-refl : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (fe : funext 𝓤 𝓥) (f : Π A)

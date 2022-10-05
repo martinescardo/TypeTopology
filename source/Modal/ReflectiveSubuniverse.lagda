@@ -18,6 +18,7 @@ import Utilities.PairFun as PairFun
 import Slice.Slice as Slice
 
 open import Modal.Subuniverse
+open import Modal.Homotopy
 
 module Modal.ReflectiveSubuniverse
  (P : subuniverse 𝓤 𝓥)
@@ -69,7 +70,6 @@ pr₂ (precomp-η-equiv B-modal) =
 ○-rec A B B-modal =
  inverse _ (precomp-η-is-equiv B-modal)
 
-
 ○-rec-compute-pointsfree
  : (A B : 𝓤 ̇)
  → (B-modal : is-modal B)
@@ -77,7 +77,6 @@ pr₂ (precomp-η-equiv B-modal) =
  → ○-rec A B B-modal f ∘ η A ＝ f
 ○-rec-compute-pointsfree A B B-modal f =
  inverses-are-sections _ (precomp-η-is-equiv B-modal) f
-
 
 ○-rec-compute
  : (A B : 𝓤 ̇)
@@ -158,69 +157,22 @@ pr₁ (generic-precomp-η-is-equiv-gives-η-is-section A h) =
 pr₂ (generic-precomp-η-is-equiv-gives-η-is-section A h) =
  happly (inverses-are-sections _ h id)
 
-generic-precomp-η-is-equiv-gives-η-is-equiv
- : (fe : funext 𝓤 𝓤)
- → (A : 𝓤 ̇)
- → is-equiv (precomp-η A A)
- → is-equiv (η A)
-generic-precomp-η-is-equiv-gives-η-is-equiv fe A h =
- η-is-section-gives-is-equiv fe A
-  (generic-precomp-η-is-equiv-gives-η-is-section A h)
+\end{code}
 
+The following is Lemma 5.1.18 of Egbert Rijke's thesis.
 
-homotopy-pre-whisker
-  : {U X Y : 𝓤 ̇}
-  → (f g : X → Y)
-  → (i : U → X)
-  → f ∼ g
-  → f ∘ i ∼ g ∘ i
-homotopy-pre-whisker f g i h =
- h ∘ i
+\begin{code}
+module _ (fe : funext 𝓤 𝓤) (X Y : 𝓤 ̇) (Y-modal : is-modal Y) (f g : ○ X → Y) where
+ homotopy-precomp-η-is-equiv : is-equiv (homotopy-precomp f g (η _))
+ homotopy-precomp-η-is-equiv =
+  homotopy-precomp-by-embedding-is-equiv fe fe fe fe f g (η _)
+   (equivs-are-embeddings
+    (precomp-η X Y)
+    (precomp-η-is-equiv Y-modal))
 
-homotopy-pre-whisker-is-equiv
- : (fe : funext 𝓤 𝓤)
- → {U X Y : 𝓤 ̇}
- → (f g : X → Y)
- → (i : U → X)
- → (precomp-i-is-emb : is-embedding λ (- : X → Y) → - ∘ i)
- → is-equiv (homotopy-pre-whisker f g i)
-homotopy-pre-whisker-is-equiv fe f g i precomp-i-is-emb =
- transport is-equiv composite-is-pre-whisker (eqtofun- composite)
-
- where
-  composite : f ∼ g ≃ (f ∘ i ∼ g ∘ i)
-  composite =
-   ≃-sym (≃-funext fe f g)
-    ● (ap (_∘ i) , embedding-embedding' _ precomp-i-is-emb _ _)
-    ● ≃-funext fe (f ∘ i) (g ∘ i)
-
-  composite-is-pre-whisker : eqtofun composite ＝ homotopy-pre-whisker f g i
-  composite-is-pre-whisker =
-   dfunext fe λ h →
-   eqtofun composite h ＝⟨ ap happly (aux h) ⟩
-   happly (dfunext fe (h ∘ i)) ＝⟨ happly-funext fe _ _ (h ∘ i) ⟩
-   homotopy-pre-whisker f g i h ∎
-
-   where
-    aux : (h : f ∼ g) → ap (_∘ i) (inverse _ (fe f g) h) ＝ dfunext fe (h ∘ i)
-    aux h =
-     ap (_∘ i) (inverse (happly' f g) (fe f g) h)
-      ＝⟨ ap (λ - → ap (_∘ i) (- h)) (inverse-happly-is-dfunext fe f g) ⟩
-     ap (_∘ i) (dfunext fe h)
-      ＝⟨ ap-precomp-funext _ _ i h fe fe ⟩
-     dfunext fe (h ∘ i) ∎
-
-homotopy-whisker-η-is-equiv
- : (fe : funext 𝓤 𝓤)
- → (X Y : 𝓤 ̇)
- → (Y-modal : is-modal Y)
- → (f g : ○ X → Y)
- → is-equiv (homotopy-pre-whisker f g (η _))
-homotopy-whisker-η-is-equiv fe X Y Y-modal f g =
- homotopy-pre-whisker-is-equiv fe f g (η _)
-  (equivs-are-embeddings
-   (precomp-η X Y)
-   (precomp-η-is-equiv Y-modal))
+ homotopy-precomp-η-equiv : (f ∼ g) ≃ (f ∘ η _ ∼ g ∘ η _)
+ pr₁ (homotopy-precomp-η-equiv) = homotopy-precomp f g (η _)
+ pr₂ (homotopy-precomp-η-equiv) = homotopy-precomp-η-is-equiv
 
 \end{code}
 
@@ -229,7 +181,6 @@ useful later when we establish closure of modal types under identity types
 using closure of modal types under pullbacks.
 
 \begin{code}
-
 private
  to-point
   : {A : 𝓤 ̇}
@@ -264,7 +215,6 @@ retract-𝟙-of-○-𝟙 : retract (𝟙 {𝓤}) of ○ 𝟙
 pr₁ retract-𝟙-of-○-𝟙 _ = ⋆
 pr₁ (pr₂ retract-𝟙-of-○-𝟙) _ = η _ ⋆
 pr₂ (pr₂ retract-𝟙-of-○-𝟙) ⋆ = refl
-
 \end{code}
 
 
@@ -272,7 +222,6 @@ We establish the closure conditions of modal types; every such lemma requires
 both function extensionality and repleteness of the subuniverse.
 
 \begin{code}
-
 module _ (fe : funext 𝓤 𝓤) (P-is-replete : subuniverse-is-replete P) where
  retracts-of-modal-types-are-modal
   : (E B : 𝓤 ̇)
@@ -283,28 +232,30 @@ module _ (fe : funext 𝓤 𝓤) (P-is-replete : subuniverse-is-replete P) where
   η-is-equiv-gives-is-modal P-is-replete B
    (η-is-section-gives-is-equiv fe B η-is-section)
   where
+   B-to-E : B → E
+   B-to-E = section B-retract-of-E
+
+   E-to-B : E → B
+   E-to-B = retraction B-retract-of-E
+
    h : ○ B → E
-   h = ○-rec B E E-modal (section B-retract-of-E)
+   h = ○-rec B E E-modal B-to-E
 
    ε : ○ B → B
-   ε = retraction B-retract-of-E ∘ h
+   ε = E-to-B ∘ h
 
    η-is-section : is-section (η B)
    pr₁ η-is-section = ε
    pr₂ η-is-section x =
-    ε (η B x)
-     ＝⟨ ap
-          (retraction B-retract-of-E)
-          (○-rec-compute B E E-modal (section B-retract-of-E) x) ⟩
-    retraction B-retract-of-E (section B-retract-of-E x)
-     ＝⟨ retract-condition B-retract-of-E x ⟩
+    ε (η B x) ＝⟨ ap E-to-B (○-rec-compute B E E-modal B-to-E x) ⟩
+    E-to-B (B-to-E x) ＝⟨ retract-condition B-retract-of-E x ⟩
     x ∎
 
  𝟙-is-modal : is-modal (𝟙 {𝓤})
  𝟙-is-modal =
-   retracts-of-modal-types-are-modal (○ 𝟙) 𝟙
-    retract-𝟙-of-○-𝟙
-    (○-is-modal 𝟙)
+  retracts-of-modal-types-are-modal (○ 𝟙) 𝟙
+   retract-𝟙-of-○-𝟙
+   (○-is-modal 𝟙)
 
  products-of-modal-types-are-modal
   : (A : 𝓤 ̇)
@@ -315,7 +266,7 @@ module _ (fe : funext 𝓤 𝓤) (P-is-replete : subuniverse-is-replete P) where
   retracts-of-modal-types-are-modal _ _ ret (○-is-modal (Π B))
   where
    h : (x : A) → ○ (Π B) → B x
-   h x = ○-rec (Π B) (B x) (B-modal x) (λ f → f x)
+   h x = ○-rec (Π B) (B x) (B-modal x) (λ - → - x)
 
    ret : retract Π B of ○ (Π B)
    pr₁ ret f x = h x f
@@ -334,11 +285,12 @@ module _ (fe : funext 𝓤 𝓤) (P-is-replete : subuniverse-is-replete P) where
   → is-modal (Slice.pullback 𝓤 f g)
  pullbacks-of-modal-types-are-modal A B X A-modal B-modal X-modal f g =
   η-is-equiv-gives-is-modal P-is-replete C
-   (generic-precomp-η-is-equiv-gives-η-is-equiv fe C
-    (eqtofun-
-     (cone-map-equiv (○ C)
-      ● restrict-cone-equiv
-      ● ≃-sym (cone-map-equiv C))))
+   (η-is-section-gives-is-equiv fe C
+    (generic-precomp-η-is-equiv-gives-η-is-section C
+     (eqtofun-
+      (cone-map-equiv (○ C)
+       ● restrict-cone-equiv
+       ● ≃-sym (cone-map-equiv C)))))
 
   where
    C : 𝓤 ̇
@@ -351,14 +303,10 @@ module _ (fe : funext 𝓤 𝓤) (P-is-replete : subuniverse-is-replete P) where
    cone-map-equiv Z = Slice.→-pullback-≃ 𝓤 f g Z fe
 
    restrict-cone-equiv : cone (○ C) ≃ cone C
-   pr₁ restrict-cone-equiv =
-    PairFun.pair-fun (precomp-η C A) λ ca →
-    PairFun.pair-fun (precomp-η C B) λ cb ϕ x →
-    ϕ (η _ x)
-   pr₂ restrict-cone-equiv =
-    PairFun.pair-fun-is-equiv _ _ (precomp-η-is-equiv A-modal) λ ca →
-    PairFun.pair-fun-is-equiv _ _ (precomp-η-is-equiv B-modal) λ cb →
-    homotopy-whisker-η-is-equiv fe C X X-modal (f ∘ ca) (g ∘ cb)
+   restrict-cone-equiv =
+    PairFun.pair-fun-equiv (precomp-η-equiv A-modal) λ hA →
+    PairFun.pair-fun-equiv (precomp-η-equiv B-modal) λ hB →
+    homotopy-precomp-η-equiv fe C X X-modal (f ∘ hA) (g ∘ hB)
 
  id-types-of-modal-types-are-modal
   : (A : 𝓤 ̇)
@@ -376,5 +324,4 @@ module _ (fe : funext 𝓤 𝓤) (P-is-replete : subuniverse-is-replete P) where
     A-modal
     (to-point u)
     (to-point v))
-
 \end{code}
