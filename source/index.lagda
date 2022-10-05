@@ -76,7 +76,6 @@ Click at the imported module names to navigate to them:
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 module index where
-
                                       
 import BinarySystems.index
 import CantorSchroederBernstein.index
@@ -87,7 +86,7 @@ import DedekindReals.index            -- by Andrew Sneap
 import DomainTheory.index             -- by Tom de Jong
 import Dyadics.index                  -- by Andrew Sneap
 import DyadicsInductive.index         -- by Tom de Jong
-import Field.index                   -- by Andrew Sneap
+import Field.index                    -- by Andrew Sneap
 import Games.index                    -- by Martin Escardo and Paulo Oliva
 import Groups.index                   -- originally by Martin Escardo with many additions
                                       -- by Ettore Aldrovandi and Keri D'Angelo
