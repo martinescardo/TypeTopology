@@ -279,7 +279,7 @@ homotopy-pre-whisker-is-equiv
  → (i : U → X)
  → (precomp-i-is-emb : is-embedding λ (- : X → Y) → - ∘ i)
  → is-equiv (homotopy-pre-whisker f g i)
-homotopy-pre-whisker-is-equiv fe {U} {X} {Y} f g i precomp-i-is-emb =
+homotopy-pre-whisker-is-equiv fe f g i precomp-i-is-emb =
  transport is-equiv composite-is-pre-whisker (eqtofun- composite)
 
  where
