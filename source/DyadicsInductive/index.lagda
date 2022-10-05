@@ -8,10 +8,10 @@ Cluster module for inductively defined dyadic rationals.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module Dyadics.index where
+module DyadicsInductive.index where
 
-import Dyadics.Dyadics
-import Dyadics.DyadicOrder
-import Dyadics.DyadicOrder-PropTrunc
+import DyadicsInductive.Dyadics
+import DyadicsInductive.DyadicOrder
+import DyadicsInductive.DyadicOrder-PropTrunc
 
 \end{code}

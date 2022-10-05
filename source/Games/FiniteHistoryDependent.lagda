@@ -26,7 +26,6 @@ given round. Then a play x₀,x₁,x₂,…, is a path in such a tree.
 This formulation of the notion of game naturally accounts for finite
 games of *unbounded* length, which in [1] was achieved by continuous,
 infinite games instead.
-
 \begin{code}
 
 {-# OPTIONS --without-K --safe --auto-inline #-} -- --exact-split
@@ -154,7 +153,34 @@ instead:
 
 K-sequence : {Xt : DTT} {R : Type} → 𝓚 R Xt → K R (Path Xt)
 K-sequence {[]}     ⟨⟩        q = q ⟨⟩
-K-sequence {X ∷ Xf} (ϕ :: ϕf) q = ϕ (λ x → K-sequence {Xf x} (ϕf x) (λ xs → q (x :: xs)))
+K-sequence {X ∷ Xf} {R} (ϕ :: ϕf) q = ϕ (λ x → γ x (λ xs → q (x :: xs)))
+ where
+  γ : (x : X) → K R (Path (Xf x))
+  γ x = K-sequence {Xf x} (ϕf x)
+
+module remark-about-K-sequence (R : Type) where
+
+ ηᴷ : {X : Type} → X → K R X
+ ηᴷ x p = p x
+
+ K-ext : {X Y : Type} → (X → K R Y) → K R X → K R Y
+ K-ext f ϕ p = ϕ (λ x → f x p)
+
+ K-map : {X Y : Type} → (X → Y) → K R X → K R Y
+ K-map f = K-ext (ηᴷ ∘ f)
+
+ _⊗ᴷ_ : {X : Type} {Y : X → Type}
+      → K R X
+      → ((x : X) → K R (Y x))
+      → K R (Σ x ꞉ X , Y x)
+ ϕ ⊗ᴷ γ = K-ext (λ x → K-map (λ y → x , y) (γ x)) ϕ
+
+ remarkᴷ : {X : Type} {Xf : X → DTT}
+           (ϕ : K R X)
+           (ϕf : (x : X) → 𝓚 R (Xf x))
+         → K-sequence {X ∷ Xf} (ϕ :: ϕf) ∼ ϕ ⊗ᴷ (λ x → K-sequence {Xf x} (ϕf x))
+ remarkᴷ ϕ f q = refl
+
 
 J-sequence₀ : {Xt : DTT} {R : Type} → 𝓙 R Xt → J R (Path Xt)
 J-sequence₀ {[]}     ⟨⟩        q = ⟨⟩
@@ -165,6 +191,29 @@ J-sequence₀ {X ∷ Xf} (ε :: εf) q = h :: t h
 
   h : X
   h = ε (λ x → q (x :: t x))
+
+module remark-about-J-sequence (R : Type) where
+
+ ηᴶ : {X : Type} → X → J R X
+ ηᴶ x p = x
+
+ J-ext : {X Y : Type} → (X → J R Y) → J R X → J R Y
+ J-ext f ε p = f (ε (λ x → p (f x p))) p
+
+ J-map : {X Y : Type} → (X → Y) → J R X → J R Y
+ J-map f = J-ext (ηᴶ ∘ f)
+
+ _⊗ᴶ_ : {X : Type} {Y : X → Type}
+      → J R X
+      → ((x : X) → J R (Y x))
+      → J R (Σ x ꞉ X , Y x)
+ ϕ ⊗ᴶ δ = J-ext (λ x → J-map (λ y → x , y) (δ x)) ϕ
+
+ remarkᴶ : {X : Type} {Xf : X → DTT}
+           (ϕ : J R X)
+           (ϕf : (x : X) → 𝓙 R (Xf x))
+         → J-sequence₀ {X ∷ Xf} (ϕ :: ϕf) ∼ ϕ ⊗ᴶ (λ x → J-sequence₀ {Xf x} (ϕf x))
+ remarkᴶ ϕ f q = refl
 
 \end{code}
 
