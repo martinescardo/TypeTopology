@@ -299,8 +299,10 @@ homotopy-pre-whisker-is-equiv fe f g i precomp-i-is-emb =
    where
     aux : (h : f ∼ g) → ap (_∘ i) (inverse _ (fe f g) h) ＝ dfunext fe (h ∘ i)
     aux h =
-     ap (_∘ i) (inverse (happly' f g) (fe f g) h) ＝⟨ ap (λ - → ap (_∘ i) (- h)) (inverse-happly-is-dfunext fe f g) ⟩
-     ap (_∘ i) (dfunext fe h) ＝⟨ ap-precomp-funext _ _ i h fe fe ⟩
+     ap (_∘ i) (inverse (happly' f g) (fe f g) h)
+      ＝⟨ ap (λ - → ap (_∘ i) (- h)) (inverse-happly-is-dfunext fe f g) ⟩
+     ap (_∘ i) (dfunext fe h)
+      ＝⟨ ap-precomp-funext _ _ i h fe fe ⟩
      dfunext fe (h ∘ i) ∎
 
 homotopy-whisker-η-is-equiv
