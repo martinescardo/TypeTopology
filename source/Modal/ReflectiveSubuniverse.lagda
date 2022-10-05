@@ -173,7 +173,6 @@ module _ (fe : funext 𝓤 𝓤) (X Y : 𝓤 ̇) (Y-modal : is-modal Y) (f g : �
  homotopy-precomp-η-equiv : (f ∼ g) ≃ (f ∘ η _ ∼ g ∘ η _)
  pr₁ (homotopy-precomp-η-equiv) = homotopy-precomp f g (η _)
  pr₂ (homotopy-precomp-η-equiv) = homotopy-precomp-η-is-equiv
-
 \end{code}
 
 Here we prove that identity types can be constructed by pullback; this will be
@@ -190,17 +189,17 @@ module _ (A : 𝓤 ̇) (x y : A) where
  id-type-as-pullback : 𝓤 ̇
  id-type-as-pullback = Slice.pullback 𝓤 [x] [y]
 
- id-type-to-pullback : x ＝ y → Slice.pullback 𝓤 [x] [y]
+ id-type-to-pullback : x ＝ y → id-type-as-pullback
  id-type-to-pullback p = ⋆ , ⋆ , p
 
- pullback-to-id-type : Slice.pullback 𝓤 [x] [y] → x ＝ y
+ pullback-to-id-type : id-type-as-pullback → x ＝ y
  pullback-to-id-type (_ , _ , p) = p
 
  id-type-to-pullback-is-equiv : is-equiv id-type-to-pullback
  pr₁ id-type-to-pullback-is-equiv = pullback-to-id-type , λ _ → refl
  pr₂ id-type-to-pullback-is-equiv = pullback-to-id-type , λ _ → refl
 
- id-type-to-pullback-equiv : (x ＝ y) ≃ Slice.pullback 𝓤 [x] [y]
+ id-type-to-pullback-equiv : (x ＝ y) ≃ id-type-as-pullback
  pr₁ id-type-to-pullback-equiv = id-type-to-pullback
  pr₂ id-type-to-pullback-equiv = id-type-to-pullback-is-equiv
 \end{code}
