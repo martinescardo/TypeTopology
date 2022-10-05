@@ -41,12 +41,9 @@ odd-not-even : (n : ℕ) → odd n → ¬ even n
 odd-not-even n odd-n even-n = even-not-odd n even-n odd-n
 
 even-or-odd : (n : ℕ) → even n ∔ odd n
-even-or-odd 0        = inl ⋆
-even-or-odd (succ n) = I (even-or-odd n)
- where
-  I : even n ∔ odd n → even (succ n) ∔ odd (succ n)
-  I (inl even-n) = inr even-n
-  I (inr odd-n)  = inl odd-n
+even-or-odd 0               = inl ⋆
+even-or-odd 1               = inr ⋆
+even-or-odd (succ (succ n)) = even-or-odd n
 
 even-or-odd-is-prop : (n : ℕ) → is-prop (even n ∔ odd n)
 even-or-odd-is-prop n = +-is-prop (even-is-prop n) (odd-is-prop n) (even-not-odd n)
