@@ -76,7 +76,7 @@ Click at the imported module names to navigate to them:
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 module index where
-                                      
+
 import BinarySystems.index
 import CantorSchroederBernstein.index
 import Circle.index                   -- by Tom de Jong
@@ -110,6 +110,8 @@ import TypeTopology.index
 import UF.index
 import Uncatalogued.index
 import Utilities.index
+
+import Modal.index                    -- by Jon Sterling
 
 \end{code}
 
