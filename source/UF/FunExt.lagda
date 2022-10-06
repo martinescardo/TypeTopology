@@ -55,6 +55,13 @@ abstract
               → happly (dfunext fe h) ＝ h
  happly-funext fe f g = inverses-are-sections happly (fe f g)
 
+ funext-happly
+  : {X : 𝓤 ̇} {A : X → 𝓥 ̇} (fe : funext 𝓤 𝓥)
+  → (f g : Π A) (h : f ＝ g)
+  → dfunext fe (happly h) ＝ h
+ funext-happly fe f g refl =
+  inverses-are-retractions happly (fe f f) refl
+
 funext-lc : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (fe : funext 𝓤 𝓥) (f g : Π A)
           → left-cancellable (dfunext fe {X} {A} {f} {g})
 funext-lc fe f g = section-lc (dfunext fe) (happly , happly-funext fe f g)
@@ -62,6 +69,22 @@ funext-lc fe f g = section-lc (dfunext fe) (happly , happly-funext fe f g)
 happly-lc : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (fe : funext 𝓤 𝓥) (f g : Π A)
           → left-cancellable (happly' f g)
 happly-lc fe f g = section-lc happly (equivs-are-sections happly (fe f g))
+
+inverse-happly-is-dfunext
+ : {𝓤 𝓥 : Universe}
+ → {A : 𝓤 ̇} {B : 𝓥 ̇}
+ → (fe0 : funext 𝓤 𝓥)
+ → (fe1 : funext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥))
+ → (f g : A → B)
+ → inverse (happly' f g) (fe0 f g) ＝ dfunext fe0
+inverse-happly-is-dfunext fe0 fe1 f g =
+ dfunext fe1 λ h →
+ happly-lc fe0 f g
+  (happly' f g (inverse (happly' f g) (fe0 f g) h)
+     ＝⟨ inverses-are-sections _ (fe0 f g) h ⟩
+   h ＝⟨ happly-funext fe0 f g h ⁻¹ ⟩
+   happly' f g (dfunext fe0 h) ∎)
+
 
 dfunext-refl : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (fe : funext 𝓤 𝓥) (f : Π A)
              → dfunext fe (λ (x : X) → 𝓻𝓮𝒻𝓵 (f x)) ＝ refl
@@ -74,6 +97,26 @@ ap-funext f g k h fe x = ap (λ - → k (- x)) (dfunext fe h)    ＝⟨ refl ⟩
                          ap k (ap (λ - → - x) (dfunext fe h)) ＝⟨ refl ⟩
                          ap k (happly (dfunext fe h) x)       ＝⟨ ap (λ - → ap k (- x)) (happly-funext fe f g h) ⟩
                          ap k (h x)                           ∎
+
+ap-precomp-funext
+ : {X : 𝓤 ̇} {Y : 𝓥 ̇} {A : 𝓦 ̇}
+ → (f g : X → Y)
+ → (k : A → X) (h : f ∼ g)
+ → (fe0 : funext 𝓤 𝓥)
+ → (fe1 : funext 𝓦 𝓥)
+ → ap (_∘ k) (dfunext fe0 h) ＝ dfunext fe1 (h ∘ k)
+ap-precomp-funext f g k h fe0 fe1 =
+  ap (_∘ k) (dfunext fe0 h) ＝⟨ funext-happly fe1 (f ∘ k) (g ∘ k) _ ⁻¹ ⟩
+  dfunext fe1 (happly (ap (_∘ k) (dfunext fe0 h))) ＝⟨ ap (dfunext fe1) (dfunext fe1 aux) ⟩
+  dfunext fe1 (h ∘ k) ∎
+
+  where
+   aux : happly (ap (_∘ k) (dfunext fe0 h)) ∼ h ∘ k
+   aux x =
+    ap (λ - → - x) (ap (_∘ k) (dfunext fe0 h)) ＝⟨ ap-ap _ _ (dfunext fe0 h) ⟩
+    ap (λ - → - (k x)) (dfunext fe0 h) ＝⟨ ap-funext f g id h fe0 (k x) ⟩
+    ap (λ v → v) (h (k x)) ＝⟨ ap-id-is-id (h (k x)) ⟩
+    h (k x) ∎
 
 \end{code}
 
