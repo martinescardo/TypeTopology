@@ -76,7 +76,7 @@ Click at the imported module names to navigate to them:
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 module index where
-                                      
+
 import BinarySystems.index
 import CantorSchroederBernstein.index
 import Circle.index                   -- by Tom de Jong
@@ -97,6 +97,7 @@ import Locales.index                  -- by Ayberk Tosun
 import MGS.index                      -- Modular version of https://github.com/martinescardo/HoTT-UF-Agda-Lecture-Notes
 import MLTT.index
 import MetricSpaces.index             -- by Andrew Sneap
+import Modal.index                    -- by Jon Sterling
 import Naturals.index
 import Notation.index
 import NotionsOfDecidability.index    -- by Tom de Jong and Martin Escardo
@@ -110,6 +111,8 @@ import TypeTopology.index
 import UF.index
 import Uncatalogued.index
 import Utilities.index
+
+
 
 \end{code}
 
