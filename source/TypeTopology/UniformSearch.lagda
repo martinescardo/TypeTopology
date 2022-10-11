@@ -11,6 +11,8 @@ uniformly continuous predicates. In this module, we generalise this to types
 
 \begin{code}
 
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+
 open import MLTT.Spartan
 open import UF.Base
 open import TypeTopology.TotallySeparated
