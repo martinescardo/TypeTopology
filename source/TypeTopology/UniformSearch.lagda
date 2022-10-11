@@ -72,11 +72,11 @@ is-locally-constant p = Σ n ꞉ ℕ , n is-a-mod-of-lc-of p
 
 \begin{code}
 
-cons-decreases-mod-of-uc : (p : (ℕ → X) → 𝟚)
+cons-decreases-mod-of-lc : (p : (ℕ → X) → 𝟚)
                          → (n : ℕ)
                          → (succ n) is-a-mod-of-lc-of p
                          → (x : X) → n is-a-mod-of-lc-of (p ∘ x ∷_)
-cons-decreases-mod-of-uc p n φ x 𝓊 𝓋 eq = φ (x ∷ 𝓊) (x ∷ 𝓋) (refl , eq)
+cons-decreases-mod-of-lc p n φ x 𝓊 𝓋 eq = φ (x ∷ 𝓊) (x ∷ 𝓋) (refl , eq)
 
 \end{code}
 
@@ -148,5 +148,43 @@ but only for locally constant predicates.
 Specification of `∀ₙ`
 
 \begin{code}
+
+specification-of-∀ₙ-⇒ : (p : (ℕ → X) → 𝟚)
+                      → (n : ℕ)
+                      → n is-a-mod-of-lc-of p
+                      → ((𝓊 : ℕ → X) → p 𝓊 ＝ ₁)
+                      → ∀ₙ n p ＝ ₁
+specification-of-∀ₙ-⇒ p n ζ φ = φ (ϵₙ n p)
+
+\end{code}
+
+\begin{code}
+
+specification-of-∀ₙ-⇐ : (p : (ℕ → X) → 𝟚)
+                      → (n : ℕ)
+                      → n is-a-mod-of-lc-of p
+                      → ∀ₙ n p ＝ ₁
+                      → (𝓊 : ℕ → X) → p 𝓊 ＝ ₁
+specification-of-∀ₙ-⇐ p zero     ζ φ 𝓊 = p 𝓊                 ＝⟨ ζ 𝓊 (λ _ → x₀) ⋆ ⟩
+                                         p (λ _ → x₀)        ＝⟨ φ                ⟩
+                                         ₁                   ∎
+specification-of-∀ₙ-⇐ p (succ n) ζ φ 𝓊 = p 𝓊                 ＝⟨ † ⟩
+                                         p (head 𝓊 ∷ tail 𝓊) ＝⟨ ‡ ⟩
+                                         ₁                   ∎
+ where
+  x₁ : X
+  x₁ = ϵₓ λ y → ∀ₙ n (p ∘ y ∷_)
+
+  ♠ : ∀ₙ n (p ∘ x₁ ∷_) ＝ ₁ → (x : X) → ∀ₙ n (p ∘ x ∷_) ＝ ₁
+  ♠ = specification-of-∀ₓ-⇒ λ y → ∀ₙ n (p ∘ y ∷_)
+
+  IH : (x : X) → ∀ₙ n (p ∘ x ∷_) ＝ ₁ → (𝓋 : ℕ → X) → p (x ∷ 𝓋) ＝ ₁
+  IH x = specification-of-∀ₙ-⇐ (p ∘ x ∷_) n (cons-decreases-mod-of-lc p n ζ x)
+
+  † : p 𝓊 ＝ p (head 𝓊 ∷ tail 𝓊)
+  † = ap p (cons-head-tail 𝓊 ⁻¹)
+
+  ‡ : p (head 𝓊 ∷ tail 𝓊) ＝ ₁
+  ‡ = IH (head 𝓊) (♠ φ (head 𝓊)) (tail 𝓊)
 
 \end{code}
