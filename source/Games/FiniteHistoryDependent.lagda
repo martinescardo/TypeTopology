@@ -439,27 +439,6 @@ J-sequence = J-sequence₂
 
 \end{code}
 
-We now convert a selection function into a quantifier as in
-Definition 10 of [1]:
-
-\begin{code}
-
-overline : {X R : Type} → J R X → K R X
-overline ε = λ p → p (ε p)
-
-\end{code}
-
-The following is the application of overline to each selection
-function of a tree:
-
-\begin{code}
-
-Overline : {Xt : 𝕋} {R : Type} → 𝓙 R Xt → 𝓚 R Xt
-Overline {[]}     ⟨⟩        = ⟨⟩
-Overline {X ∷ Xf} (ε :: εs) = overline ε :: (λ x → Overline {Xf x} (εs x))
-
-\end{code}
-
 The following, which defines a strategy from given selection
 functions, is defined in Theorem 5.4 of [1], with the difference that
 here, for the moment, we consider only single-valued quantifiers.
@@ -475,6 +454,16 @@ selection-strategy {X ∷ Xf} εt@(ε :: εf) q = x₀ :: σf
 
   σf : (x : X) → Strategy (Xf x)
   σf x = selection-strategy {Xf x} (εf x) (λ xs → q (x :: xs))
+
+\end{code}
+
+We now convert a selection function into a quantifier as in
+Definition 10 of [1]:
+
+\begin{code}
+
+overline : {X R : Type} → J R X → K R X
+overline ε = λ p → p (ε p)
 
 \end{code}
 
@@ -496,6 +485,23 @@ _are-selections-of_ : {Xt : 𝕋} {R : Type} → 𝓙 R Xt → 𝓚 R Xt → Typ
 _are-selections-of_ {[]}     ⟨⟩        ⟨⟩        = 𝟙
 _are-selections-of_ {X ∷ Xf} (ε :: εf) (ϕ :: ϕf) = (ε is-a-selection-of ϕ)
                                                  × ((x : X) → (εf x) are-selections-of (ϕf x))
+
+\end{code}
+
+The following is the application of overline to each selection
+function of a tree:
+
+\begin{code}
+
+Overline : {Xt : 𝕋} {R : Type} → 𝓙 R Xt → 𝓚 R Xt
+Overline {[]}     ⟨⟩        = ⟨⟩
+Overline {X ∷ Xf} (ε :: εs) = overline ε :: (λ x → Overline {Xf x} (εs x))
+
+\end{code}
+
+The following is proved by straightforward induction on trees:
+
+\begin{code}
 
 observation : {Xt : 𝕋} {R : Type} (εt : 𝓙 R Xt) (ϕt : 𝓚 R Xt)
             → εt are-selections-of ϕt
