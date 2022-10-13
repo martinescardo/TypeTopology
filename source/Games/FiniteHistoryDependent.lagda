@@ -41,19 +41,20 @@ module Games.FiniteHistoryDependent (fe : Fun-Ext) where
 \end{code}
 
 We represent the moves of a history-dependent sequential game by a
-dependent-type tree (DTT).  This is either an empty tree [] or else
-has a type X of initial moves at the root, and, inductively, a family
-Xf of subtrees indexed by elements of X, which is written X ∷ Xf. We
-refer to the family Xf as a forest. We let Xt range over such trees.
+dependent-type tree, collected in a type 𝕋.  This is either an empty
+tree [] or else has a type X of initial moves at the root, and,
+inductively, a family Xf of subtrees indexed by elements of X, which
+is written X ∷ Xf. We refer to the family Xf as a forest. We let Xt
+range over such trees.
 
  * Xt ranges over dependent-type trees.
  * Xf ranges over dependent-type forests.
 
 \begin{code}
 
-data DTT : Type₁ where
-  []  : DTT
-  _∷_ : (X : Type) (Xf : X → DTT) → DTT
+data 𝕋 : Type₁ where
+  []  : 𝕋
+  _∷_ : (X : Type) (Xf : X → 𝕋) → 𝕋
 
 \end{code}
 
@@ -62,7 +63,7 @@ inductively defined as follows:
 
 \begin{code}
 
-Path : DTT → Type
+Path : 𝕋 → Type
 Path []       = 𝟙
 Path (X ∷ Xf) = Σ x ꞉ X , Path (Xf x)
 
@@ -81,13 +82,13 @@ Path Xt for a dependent-type-tree Xt.
 pattern ⟨⟩        = ⋆
 pattern _::_ x xs = (x , xs)
 
-path-head : {X : Type} {Xf : X → DTT} → Path (X ∷ Xf) → X
+path-head : {X : Type} {Xf : X → 𝕋} → Path (X ∷ Xf) → X
 path-head (x :: xs) = x
 
-path-tail : {X : Type} {Xf : X → DTT} ((x :: xs) : Path (X ∷ Xf)) → Path (Xf x)
+path-tail : {X : Type} {Xf : X → 𝕋} ((x :: xs) : Path (X ∷ Xf)) → Path (Xf x)
 path-tail (x :: xs) = xs
 
-plength : {Xt : DTT} → Path Xt → ℕ
+plength : {Xt : 𝕋} → Path Xt → ℕ
 plength {[]}     ⟨⟩        = 0
 plength {X ∷ Xf} (x :: xs) = succ (plength {Xf x} xs)
 
@@ -99,21 +100,18 @@ it:
 
 \begin{code}
 
-data Path₁ : DTT → Type₁ where
+data Path₁ : 𝕋 → Type₁ where
  []  : Path₁ []
- _∷_ : {X : Type} {Xf : X → DTT} (x : X) (xs : Path₁ (Xf x)) → Path₁ (X ∷ Xf)
+ _∷_ : {X : Type} {Xf : X → 𝕋} (x : X) (xs : Path₁ (Xf x)) → Path₁ (X ∷ Xf)
 
 \end{code}
 
-Quantifiers and selections, as in Sections 1 and 2 of reference [1]:
+Quantifiers as in Section 1 of reference [1]:
 
 \begin{code}
 
 K : Type → Type → Type
 K R X = (X → R) → R
-
-J : Type → Type → Type
-J R X = (X → R) → X
 
 \end{code}
 
@@ -121,37 +119,27 @@ In the same way as the type of moves at a given stage of the game
 depends on the previously played moves, so do the quantifiers and
 selection functions.
 
-𝓚 assigns a quantifier to each node in a given tree, and similarly 𝓙
-assigns selection functions to the nodes.
+𝓚 assigns a quantifier to each node in a given tree:
 
 \begin{code}
 
-𝓚 :  Type → DTT → Type
+𝓚 :  Type → 𝕋 → Type
 𝓚 R []       = 𝟙
 𝓚 R (X ∷ Xf) = K R X × ((x : X) → 𝓚 R (Xf x))
 
-𝓙 :  Type → DTT → Type
-𝓙 R []       = 𝟙
-𝓙 R (X ∷ Xf) = J R X × ((x : X) → 𝓙 R (Xf x))
-
 \end{code}
 
- ⋆ ϕ ranges over the type K R X of quantifiers.
- ⋆ ε ranges over the type J R X of selection functions.
-
+ ⋆ ϕ  ranges over the type K R X of quantifiers.
  ⋆ ϕt ranges over the type 𝓚 R Xt of quantifier trees.
- ⋆ εt ranges over the type 𝓙 R Xt of selection-function trees.
-
  ⋆ ϕf ranges over the type (x : X) → 𝓚 R (Xf x) of quantifier forests.
- ⋆ εf ranges over the type (x : X) → 𝓙 R (Xf x) of selection-function forests.
 
-Sequencing quantifiers and selections, as constructed in Definitions 2
-and 12 of reference [1], but using our tree representation of games
-instead:
+
+Sequencing quantifiers, as constructed in Definition 2 of reference [1],
+but using our tree representation of games instead:
 
 \begin{code}
 
-K-sequence : {Xt : DTT} {R : Type} → 𝓚 R Xt → K R (Path Xt)
+K-sequence : {Xt : 𝕋} {R : Type} → 𝓚 R Xt → K R (Path Xt)
 K-sequence {[]}     ⟨⟩        q = q ⟨⟩
 K-sequence {X ∷ Xf} {R} (ϕ :: ϕf) q = ϕ (λ x → γ x (λ xs → q (x :: xs)))
  where
@@ -175,83 +163,11 @@ module remark-about-K-sequence (R : Type) where
       → K R (Σ x ꞉ X , Y x)
  ϕ ⊗ᴷ γ = K-ext (λ x → K-map (λ y → x , y) (γ x)) ϕ
 
- remarkᴷ : {X : Type} {Xf : X → DTT}
+ remarkᴷ : {X : Type} {Xf : X → 𝕋}
            (ϕ : K R X)
            (ϕf : (x : X) → 𝓚 R (Xf x))
          → K-sequence {X ∷ Xf} (ϕ :: ϕf) ∼ ϕ ⊗ᴷ (λ x → K-sequence {Xf x} (ϕf x))
  remarkᴷ ϕ f q = refl
-
-
-J-sequence₀ : {Xt : DTT} {R : Type} → 𝓙 R Xt → J R (Path Xt)
-J-sequence₀ {[]}     ⟨⟩        q = ⟨⟩
-J-sequence₀ {X ∷ Xf} (ε :: εf) q = h :: t h
- where
-  t : (x : X) → Path (Xf x)
-  t x = J-sequence₀ {Xf x} (εf x) (λ xs → q (x :: xs))
-
-  h : X
-  h = ε (λ x → q (x :: t x))
-
-module remark-about-J-sequence (R : Type) where
-
- ηᴶ : {X : Type} → X → J R X
- ηᴶ x p = x
-
- J-ext : {X Y : Type} → (X → J R Y) → J R X → J R Y
- J-ext f ε p = f (ε (λ x → p (f x p))) p
-
- J-map : {X Y : Type} → (X → Y) → J R X → J R Y
- J-map f = J-ext (ηᴶ ∘ f)
-
- _⊗ᴶ_ : {X : Type} {Y : X → Type}
-      → J R X
-      → ((x : X) → J R (Y x))
-      → J R (Σ x ꞉ X , Y x)
- ϕ ⊗ᴶ δ = J-ext (λ x → J-map (λ y → x , y) (δ x)) ϕ
-
- remarkᴶ : {X : Type} {Xf : X → DTT}
-           (ϕ : J R X)
-           (ϕf : (x : X) → 𝓙 R (Xf x))
-         → J-sequence₀ {X ∷ Xf} (ϕ :: ϕf) ∼ ϕ ⊗ᴶ (λ x → J-sequence₀ {Xf x} (ϕf x))
- remarkᴶ ϕ f q = refl
-
-\end{code}
-
-Try to make faster, exploiting Agda's evaluation strategy, but this
-doesn't seem to make any difference:
-
-\begin{code}
-
-J-sequence₁ : {Xt : DTT} {R : Type} → 𝓙 R Xt → J R (Path Xt)
-J-sequence₁ {[]}     ⟨⟩        q = ⟨⟩
-J-sequence₁ {X ∷ Xf} (ε :: εf) q = γ
- where
-  t : (x : X) → Path (Xf x)
-  t x = J-sequence₁ {Xf x} (εf x) (λ xs → q (x :: xs))
-
-  ν : X → Path (X ∷ Xf)
-  ν x = x :: t x
-
-  x₀ : X
-  x₀ = ε (λ x → q (ν x))
-
-  γ : Path (X ∷ Xf)
-  γ = ν x₀
-
-\end{code}
-
-Or this:
-
-\begin{code}
-
-J-sequence₂ : {Xt : DTT} {R : Type} → 𝓙 R Xt → J R (Path Xt)
-J-sequence₂ {[]}     _         q = ⟨⟩
-J-sequence₂ {X ∷ Xf} (ε :: εf) q = ν (ε (λ x → q (ν x)))
- where
-  ν : X → Path (X ∷ Xf)
-  ν x = x :: J-sequence₂ {Xf x} (εf x) (λ xs → q (x :: xs))
-
-J-sequence = J-sequence₂
 
 \end{code}
 
@@ -265,7 +181,7 @@ quantifier tree ϕt and an outcome function q:
 record Game : Type₁ where
  constructor game
  field
-  Xt  : DTT
+  Xt  : 𝕋
   R   : Type
   q   : Path Xt → R
   ϕt  : 𝓚 R Xt
@@ -292,7 +208,7 @@ all possible strategies is constructed as follows (Definition 4 of [1]):
 
 \begin{code}
 
-Strategy : DTT -> Type
+Strategy : 𝕋 -> Type
 Strategy []       = 𝟙
 Strategy (X ∷ Xf) = X × ((x : X) → Strategy (Xf x))
 
@@ -308,7 +224,7 @@ We get a path in the tree by following any given strategy:
 
 \begin{code}
 
-strategic-path : {Xt : DTT} → Strategy Xt → Path Xt
+strategic-path : {Xt : 𝕋} → Strategy Xt → Path Xt
 strategic-path {[]}     ⟨⟩        = ⟨⟩
 strategic-path {X ∷ Xf} (x :: σf) = x :: strategic-path {Xf x} (σf x)
 
@@ -341,7 +257,7 @@ is convenient to define this notion by induction on the game tree Xt:
 
 \begin{code}
 
-is-sgpe : {Xt : DTT} {R : Type} → 𝓚 R Xt → (Path Xt → R) → Strategy Xt → Type
+is-sgpe : {Xt : 𝕋} {R : Type} → 𝓚 R Xt → (Path Xt → R) → Strategy Xt → Type
 is-sgpe {[]}     ⟨⟩        q ⟨⟩         = 𝟙
 is-sgpe {X ∷ Xf} (ϕ :: ϕf) q (x₀ :: σf) =
 
@@ -391,7 +307,7 @@ The following is Theorem 3.1 of reference [1].
 
 \begin{code}
 
-sgpe-lemma : (Xt : DTT) {R : Type} (ϕt : 𝓚 R Xt) (q : Path Xt → R) (σ : Strategy Xt)
+sgpe-lemma : (Xt : 𝕋) {R : Type} (ϕt : 𝓚 R Xt) (q : Path Xt → R) (σ : Strategy Xt)
            → is-sgpe ϕt q σ
            → K-sequence ϕt q ＝ q (strategic-path σ)
 sgpe-lemma []       ⟨⟩        q ⟨⟩        ⟨⟩       = refl
@@ -422,7 +338,108 @@ equilibrium-theorem (game Xt R ϕt q) = sgpe-lemma Xt q ϕt
 
 We now show how to use selection functions to compute a sgpe strategy.
 
-We first convert a selection function into a quantifier as in
+Selection functions, as in Section 2 of reference [1]:
+
+\begin{code}
+
+J : Type → Type → Type
+J R X = (X → R) → X
+
+\end{code}
+
+𝓙 assigns selection functions to the nodes.
+
+\begin{code}
+
+𝓙 :  Type → 𝕋 → Type
+𝓙 R []       = 𝟙
+𝓙 R (X ∷ Xf) = J R X × ((x : X) → 𝓙 R (Xf x))
+
+\end{code}
+
+ ⋆ ε ranges over the type J R X of selection functions.
+ ⋆ εt ranges over the type 𝓙 R Xt of selection-function trees.
+ ⋆ εf ranges over the type (x : X) → 𝓙 R (Xf x) of selection-function forests.
+
+Sequencing selection functions, as constructed in Definition 12 of
+reference [1], but using our tree representation of games instead:
+
+\begin{code}
+
+J-sequence₀ : {Xt : 𝕋} {R : Type} → 𝓙 R Xt → J R (Path Xt)
+J-sequence₀ {[]}     ⟨⟩        q = ⟨⟩
+J-sequence₀ {X ∷ Xf} (ε :: εf) q = h :: t h
+ where
+  t : (x : X) → Path (Xf x)
+  t x = J-sequence₀ {Xf x} (εf x) (λ xs → q (x :: xs))
+
+  h : X
+  h = ε (λ x → q (x :: t x))
+
+module remark-about-J-sequence (R : Type) where
+
+ ηᴶ : {X : Type} → X → J R X
+ ηᴶ x p = x
+
+ J-ext : {X Y : Type} → (X → J R Y) → J R X → J R Y
+ J-ext f ε p = f (ε (λ x → p (f x p))) p
+
+ J-map : {X Y : Type} → (X → Y) → J R X → J R Y
+ J-map f = J-ext (ηᴶ ∘ f)
+
+ _⊗ᴶ_ : {X : Type} {Y : X → Type}
+      → J R X
+      → ((x : X) → J R (Y x))
+      → J R (Σ x ꞉ X , Y x)
+ ϕ ⊗ᴶ δ = J-ext (λ x → J-map (λ y → x , y) (δ x)) ϕ
+
+ remarkᴶ : {X : Type} {Xf : X → 𝕋}
+           (ϕ : J R X)
+           (ϕf : (x : X) → 𝓙 R (Xf x))
+         → J-sequence₀ {X ∷ Xf} (ϕ :: ϕf) ∼ ϕ ⊗ᴶ (λ x → J-sequence₀ {Xf x} (ϕf x))
+ remarkᴶ ϕ f q = refl
+
+\end{code}
+
+Try to make faster, exploiting Agda's evaluation strategy, but this
+doesn't seem to make any difference:
+
+\begin{code}
+
+J-sequence₁ : {Xt : 𝕋} {R : Type} → 𝓙 R Xt → J R (Path Xt)
+J-sequence₁ {[]}     ⟨⟩        q = ⟨⟩
+J-sequence₁ {X ∷ Xf} (ε :: εf) q = γ
+ where
+  t : (x : X) → Path (Xf x)
+  t x = J-sequence₁ {Xf x} (εf x) (λ xs → q (x :: xs))
+
+  ν : X → Path (X ∷ Xf)
+  ν x = x :: t x
+
+  x₀ : X
+  x₀ = ε (λ x → q (ν x))
+
+  γ : Path (X ∷ Xf)
+  γ = ν x₀
+
+\end{code}
+
+Or this:
+
+\begin{code}
+
+J-sequence₂ : {Xt : 𝕋} {R : Type} → 𝓙 R Xt → J R (Path Xt)
+J-sequence₂ {[]}     _         q = ⟨⟩
+J-sequence₂ {X ∷ Xf} (ε :: εf) q = ν (ε (λ x → q (ν x)))
+ where
+  ν : X → Path (X ∷ Xf)
+  ν x = x :: J-sequence₂ {Xf x} (εf x) (λ xs → q (x :: xs))
+
+J-sequence = J-sequence₂
+
+\end{code}
+
+We now convert a selection function into a quantifier as in
 Definition 10 of [1]:
 
 \begin{code}
@@ -437,7 +454,7 @@ function of a tree:
 
 \begin{code}
 
-Overline : {Xt : DTT} {R : Type} → 𝓙 R Xt → 𝓚 R Xt
+Overline : {Xt : 𝕋} {R : Type} → 𝓙 R Xt → 𝓚 R Xt
 Overline {[]}     ⟨⟩        = ⟨⟩
 Overline {X ∷ Xf} (ε :: εs) = overline ε :: (λ x → Overline {Xf x} (εs x))
 
@@ -449,7 +466,7 @@ here, for the moment, we consider only single-valued quantifiers.
 
 \begin{code}
 
-selection-strategy : {Xt : DTT} {R : Type} → 𝓙 R Xt → (Path Xt → R) → Strategy Xt
+selection-strategy : {Xt : 𝕋} {R : Type} → 𝓙 R Xt → (Path Xt → R) → Strategy Xt
 selection-strategy {[]}     ⟨⟩           q = ⟨⟩
 selection-strategy {X ∷ Xf} εt@(ε :: εf) q = x₀ :: σf
  where
@@ -475,12 +492,12 @@ obvious way, by induction:
 
 \begin{code}
 
-_are-selections-of_ : {Xt : DTT} {R : Type} → 𝓙 R Xt → 𝓚 R Xt → Type
+_are-selections-of_ : {Xt : 𝕋} {R : Type} → 𝓙 R Xt → 𝓚 R Xt → Type
 _are-selections-of_ {[]}     ⟨⟩        ⟨⟩        = 𝟙
 _are-selections-of_ {X ∷ Xf} (ε :: εf) (ϕ :: ϕf) = (ε is-a-selection-of ϕ)
                                                  × ((x : X) → (εf x) are-selections-of (ϕf x))
 
-observation : {Xt : DTT} {R : Type} (εt : 𝓙 R Xt) (ϕt : 𝓚 R Xt)
+observation : {Xt : 𝕋} {R : Type} (εt : 𝓙 R Xt) (ϕt : 𝓚 R Xt)
             → εt are-selections-of ϕt
             → Overline εt ＝ ϕt
 observation {[]}     ⟨⟩        ⟨⟩        ⟨⟩        = refl
@@ -505,7 +522,7 @@ then εt are selections of ϕt, but we don't need this fact here.
 
 \begin{code}
 
-crucial-lemma : {Xt : DTT} {R : Type} (εt : 𝓙 R Xt) (q : Path Xt → R)
+crucial-lemma : {Xt : 𝕋} {R : Type} (εt : 𝓙 R Xt) (q : Path Xt → R)
               → J-sequence εt q
               ＝ strategic-path (selection-strategy εt q)
 crucial-lemma {[]}     ⟨⟩           q = refl
@@ -529,7 +546,7 @@ crucial-lemma {X ∷ Xf} εt@(ε :: εf) q = γ
   γ : x₀ :: t x₀ ＝ x₀ :: strategic-path (σf x₀)
   γ = ap (x₀ ::_) IH
 
-selection-strategy-lemma : {Xt : DTT} {R : Type} (εt : 𝓙 R Xt) (q : Path Xt → R)
+selection-strategy-lemma : {Xt : 𝕋} {R : Type} (εt : 𝓙 R Xt) (q : Path Xt → R)
                          → is-sgpe (Overline εt) q (selection-strategy εt q)
 selection-strategy-lemma {[]}     {R} ⟨⟩        q = ⟨⟩
 selection-strategy-lemma {X ∷ Xf} {R} (ε :: εf) q = h :: t
@@ -561,7 +578,7 @@ optimal strategies, corresponds to Theorem 6.2 of [1].
 
 \begin{code}
 
-selection-strategy-theorem : {Xt : DTT} {R : Type} (εt : 𝓙 R Xt) (ϕt : 𝓚 R Xt) (q : Path Xt → R)
+selection-strategy-theorem : {Xt : 𝕋} {R : Type} (εt : 𝓙 R Xt) (ϕt : 𝓚 R Xt) (q : Path Xt → R)
                            → εt are-selections-of ϕt
                            → is-sgpe ϕt q (selection-strategy εt q)
 selection-strategy-theorem εt ϕt q a = III
@@ -591,7 +608,7 @@ module permutations-example where
 
  open import MLTT.NonSpartanMLTTTypes
 
- no-repetitions : (n : ℕ) (X : Type) → DTT
+ no-repetitions : (n : ℕ) (X : Type) → 𝕋
  no-repetitions 0        X = []
  no-repetitions (succ n) X = X ∷ λ (x : X) → no-repetitions n (Σ y ꞉ X , y ≠ x)
 
@@ -617,7 +634,7 @@ data GameJ (R : Type) : Type₁ where
   branch : (X : Type) (Xf : X → GameJ R) (ε : J R X) → GameJ R
 
 
-dtt : {R : Type} → GameJ R → DTT
+dtt : {R : Type} → GameJ R → 𝕋
 dtt (leaf x)        = []
 dtt (branch X Xf ε) = X ∷ λ x → dtt (Xf x)
 
@@ -1002,7 +1019,7 @@ module test where
  ε₂ : J Bool Bool
  ε₂ p = p true
 
- h : ℕ → DTT
+ h : ℕ → 𝕋
  h 0        = []
  h (succ n) = Bool ∷ λ _ → h n
 
@@ -1038,19 +1055,19 @@ TODO. Define game isomorphism (and possibly homomorphism more generally).
 
 \begin{code}
 
-data DTT' (X : Type) : Type₁ where
-  []  : DTT' X
-  _∷_ : (A : X → Type) (Xf : (x : X) → A x → DTT' X) → DTT' X
+data 𝕋' (X : Type) : Type₁ where
+  []  : 𝕋' X
+  _∷_ : (A : X → Type) (Xf : (x : X) → A x → 𝕋' X) → 𝕋' X
 
 record Game⁻ : Type₁ where
  constructor game⁻
  field
-  Xt  : DTT
+  Xt  : 𝕋
   R   : Type
   q   : Path Xt → R
 
 \end{code}
 
-TODO. Game⁻ ≃ (Σ R : Type, DDTT R) for a suitable definition of
-DDTT. Idea: In Game⁻, we know how to play the game, but we don't know
+TODO. Game⁻ ≃ (Σ R : Type, D𝕋 R) for a suitable definition of
+D𝕋. Idea: In Game⁻, we know how to play the game, but we don't know
 what the objective of the game is.
