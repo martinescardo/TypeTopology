@@ -1,4 +1,5 @@
-Martin Escardo and Paulo Oliva
+Martin Escardo and Paulo Oliva, 2-27 July 2021,
+refactored and slightly improved October 2022
 
 \begin{code}
 
@@ -7,5 +8,10 @@ Martin Escardo and Paulo Oliva
 module Games.index where
 
 open import Games.FiniteHistoryDependent
+open import Games.TypeTrees
+open import Games.Constructor
+open import Games.TicTacToe
+open import Games.TicTacToe2 -- more efficient
+open import Games.Examples
 
 \end{code}
