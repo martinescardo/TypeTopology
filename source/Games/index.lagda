@@ -7,8 +7,8 @@ refactored and slightly improved October 2022
 
 module Games.index where
 
-open import Games.FiniteHistoryDependent
 open import Games.TypeTrees
+open import Games.FiniteHistoryDependent
 open import Games.Constructor
 open import Games.TicTacToe
 open import Games.TicTacToe2 -- more efficient

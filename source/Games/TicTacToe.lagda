@@ -17,7 +17,6 @@ module Games.TicTacToe
         (fe : Fun-Ext)
        where
 
-open import Games.TypeTrees
 open import TypeTopology.CompactTypes
 open import UF.Subsingletons
 open import TypeTopology.DiscreteAndSeparated
@@ -31,6 +30,7 @@ open import MLTT.Fin-Properties
 𝟛 : Type
 𝟛 = Fin 3
 
+open import Games.TypeTrees
 open import Games.FiniteHistoryDependent 𝟛 fe
 open import Games.Constructor 𝟛 fe
 

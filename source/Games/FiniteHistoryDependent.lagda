@@ -76,9 +76,9 @@ selection functions.
 
 \end{code}
 
- ⋆ ϕ  ranges over the type K X of quantifiers.
- ⋆ ϕt ranges over the type 𝓚 Xt of quantifier trees.
- ⋆ ϕf ranges over the type (x : X) → 𝓚 (Xf x) of quantifier forests.
+ * ϕ  ranges over the type K X of quantifiers.
+ * ϕt ranges over the type 𝓚 Xt of quantifier trees.
+ * ϕf ranges over the type (x : X) → 𝓚 (Xf x) of quantifier forests.
 
 
 Sequencing quantifiers, as constructed in Definition 2 of reference [1],
@@ -105,22 +105,20 @@ We remark that ⊗ᴷ can be defined from the strong monad structure on K:
 
 \begin{code}
 
-module remark-about-⊗ᴷ (R : Type) where
+ηᴷ : {X : Type} → X → K X
+ηᴷ x p = p x
 
- ηᴷ : {X : Type} → X → K X
- ηᴷ x p = p x
+K-ext : {X Y : Type} → (X → K Y) → K X → K Y
+K-ext f ϕ p = ϕ (λ x → f x p)
 
- K-ext : {X Y : Type} → (X → K Y) → K X → K Y
- K-ext f ϕ p = ϕ (λ x → f x p)
+K-map : {X Y : Type} → (X → Y) → K X → K Y
+K-map f = K-ext (ηᴷ ∘ f)
 
- K-map : {X Y : Type} → (X → Y) → K X → K Y
- K-map f = K-ext (ηᴷ ∘ f)
-
- remarkᴷ : {X : Type} {Y : X → Type}
-           (ϕ : K X)
-           (γ : (x : X) → K (Y x))
-         → ϕ ⊗ᴷ γ ∼ K-ext (λ x → K-map (λ y → x , y) (γ x)) ϕ
- remarkᴷ ϕ γ q = refl
+⊗ᴷ-alternative-definition : {X : Type} {Y : X → Type}
+                            (ϕ : K X)
+                            (γ : (x : X) → K (Y x))
+                          → ϕ ⊗ᴷ γ ∼ K-ext (λ x → K-map (λ y → x , y) (γ x)) ϕ
+⊗ᴷ-alternative-definition ϕ γ q = refl
 
 \end{code}
 
@@ -166,10 +164,10 @@ Strategy (X ∷ Xf) = X × ((x : X) → Strategy (Xf x))
 
 \end{code}
 
- ⋆ σ ranges over the type Strategy Xt of strategies for a
+ * σ ranges over the type Strategy Xt of strategies for a
    dependent-type tree Xt.
 
- ⋆ σf ranges over the type (x : X) → Strategy (Xf x) of strategy
+ * σf ranges over the type (x : X) → Strategy (Xf x) of strategy
    forests for a dependent-type forest Xf.
 
 We get a path in the tree by following any given strategy:
@@ -221,11 +219,11 @@ is-sgpe {X ∷ Xf} (ϕ :: ϕf) q (x₀ :: σf) =
 
 In the above definition:
 
- ⋆ If the game tree is empty, then the strategy is empty, and we say
+ * If the game tree is empty, then the strategy is empty, and we say
    that it is true that it is in sgpe, where "true" is represented by
    the unit type 𝟙 in propositions-as-types.
 
- ⋆ If the game tree has a root X followed by a forest Xf, then the
+ * If the game tree has a root X followed by a forest Xf, then the
    strategy must be of the form x₀ :: σf, where x₀ is the first move
    according to the strategy, and where σf is a forest of strategies
    that depends on a deviation x.
@@ -309,9 +307,9 @@ J X = (X → R) → X
 
 \end{code}
 
- ⋆ ε ranges over the type J X of selection functions.
- ⋆ εt ranges over the type 𝓙 Xt of selection-function trees.
- ⋆ εf ranges over the type (x : X) → 𝓙 (Xf x) of selection-function forests.
+ * ε ranges over the type J X of selection functions.
+ * εt ranges over the type 𝓙 Xt of selection-function trees.
+ * εf ranges over the type (x : X) → 𝓙 (Xf x) of selection-function forests.
 
 Sequencing selection functions, as constructed in Definition 12 of
 reference [1], but using our tree representation of games instead:
@@ -338,22 +336,20 @@ as is the case for K:
 
 \begin{code}
 
-module remark-about-⊗ᴶ (R : Type) where
+ηᴶ : {X : Type} → X → J X
+ηᴶ x p = x
 
- ηᴶ : {X : Type} → X → J X
- ηᴶ x p = x
+J-ext : {X Y : Type} → (X → J Y) → J X → J Y
+J-ext f ε p = f (ε (λ x → p (f x p))) p
 
- J-ext : {X Y : Type} → (X → J Y) → J X → J Y
- J-ext f ε p = f (ε (λ x → p (f x p))) p
+J-map : {X Y : Type} → (X → Y) → J X → J Y
+J-map f = J-ext (ηᴶ ∘ f)
 
- J-map : {X Y : Type} → (X → Y) → J X → J Y
- J-map f = J-ext (ηᴶ ∘ f)
-
- remarkᴶ : {X : Type} {Y : X → Type}
-           (ε : J X)
-           (δ : (x : X) → J (Y x))
-         → ε ⊗ᴶ δ ∼ J-ext (λ x → J-map (λ y → x , y) (δ x)) ε
- remarkᴶ ε δ q = refl
+⊗ᴶ-alternative-definition : {X : Type} {Y : X → Type}
+                            (ε : J X)
+                            (δ : (x : X) → J (Y x))
+                          → ε ⊗ᴶ δ ∼ J-ext (λ x → J-map (λ y → x , y) (δ x)) ε
+⊗ᴶ-alternative-definition ε δ q = refl
 
 \end{code}
 
