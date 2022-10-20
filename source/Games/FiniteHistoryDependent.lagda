@@ -211,7 +211,7 @@ is-sgpe : {Xt : 𝕋} → 𝓚 Xt → (Path Xt → R) → Strategy Xt → Type
 is-sgpe {[]}     ⟨⟩        q ⟨⟩         = 𝟙
 is-sgpe {X ∷ Xf} (ϕ :: ϕf) q (x₀ :: σf) =
 
-      (q (x₀ :: strategic-path (σf x₀)) ＝ ϕ (λ x → q (x :: strategic-path (σf x))))
+      (sub q x₀ (strategic-path (σf x₀)) ＝ ϕ (λ x → q (x :: strategic-path (σf x))))
     ×
       ((x : X) → is-sgpe {Xf x} (ϕf x) (sub q x) (σf x))
 
@@ -468,28 +468,36 @@ crucial-lemma {X ∷ Xf} εt@(ε :: εf) q =
 
 selection-strategy-lemma : {Xt : 𝕋} (εt : 𝓙 Xt) (q : Path Xt → R)
                          → is-sgpe (Overline εt) q (selection-strategy εt q)
-selection-strategy-lemma {[]}     ⟨⟩        q = ⟨⟩
-selection-strategy-lemma {X ∷ Xf} (ε :: εf) q = h :: t
+selection-strategy-lemma {[]}     ⟨⟩           q = ⟨⟩
+selection-strategy-lemma {X ∷ Xf} εt@(ε :: εf) q = γ
  where
-  f g : X → R
-  f x = q (x :: J-sequence (εf x) (sub q x))
-  g x = q (x :: strategic-path (selection-strategy (εf x) (sub q x)))
+  σf : (x : X) → Strategy (Xf x)
+  σf x = selection-strategy (εf x) (sub q x)
 
-  I : (x : X) → J-sequence (εf x) (λ xs → q (x :: xs))
-              ＝ strategic-path (selection-strategy (εf x) (sub q x))
+  x₀ x₁ : X
+  x₀ = ε (λ x → sub q x (J-sequence (εf x) (sub q x)))
+  x₁ = ε (λ x → sub q x (strategic-path (σf x)))
+
+  I : (x : X) → J-sequence (εf x) (sub q x) ＝ strategic-path (σf x)
   I x = crucial-lemma (εf x) (sub q x)
 
-  II : f ＝ g
-  II = dfunext fe (λ x → ap (sub q x ) (I x))
+  II : x₀ ＝ x₁
+  II = ap (λ - → ε (λ x → sub q x (- x))) (dfunext fe I)
 
-  h : g (ε f) ＝ g (ε g)
-  h = ap (g ∘ ε) II
+  III = sub q x₀ (strategic-path (σf x₀))                  ＝⟨ IV ⟩
+        sub q x₁ (strategic-path (σf x₁))                  ＝⟨ refl ⟩
+        overline ε (λ x → sub q x (strategic-path (σf x))) ∎
+   where
+    IV = ap (λ - → sub q - (strategic-path (σf -))) II
 
-  t : (x : X) → is-sgpe
-                  (Overline (εf x))
-                  (sub q x)
-                  (selection-strategy (εf x) (sub q x))
-  t x = selection-strategy-lemma (εf x) (sub q x)
+  IH : (x : X) → is-sgpe
+                   (Overline (εf x))
+                   (sub q x)
+                   (selection-strategy (εf x) (sub q x))
+  IH x = selection-strategy-lemma (εf x) (sub q x)
+
+  γ : is-sgpe (Overline εt) q (x₀ :: σf)
+  γ = III :: IH
 
 \end{code}
 
