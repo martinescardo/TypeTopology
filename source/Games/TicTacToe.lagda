@@ -48,6 +48,10 @@ tic-tac-toe₁ = build-Game draw Board transition 9 board₀
   pattern draw   = 𝟏
   pattern O-wins = 𝟐
 
+  value : Player → 𝟛
+  value X = X-wins
+  value O = O-wins
+
   Grid   = 𝟛 × 𝟛
   Matrix = Grid → Maybe Player
   Board  = Player × Matrix
@@ -125,17 +129,19 @@ Convention: in a board (p , A), p is the opponent of the the current player.
   play (p , A) m = opponent p , update p A m
 
   transition : Board → 𝟛 + (Σ M ꞉ Type , (M → Board) × J M)
-  transition (p , A) = f p A (wins p A)
+  transition b@(p , A) = f b (wins p A)
    where
-    f : (p : Player) (A : Matrix) (b : Bool)
+    f : (b : Board)
+      → Bool
       → 𝟛 + (Σ M ꞉ Type , (M → Board) × J M)
-    f X A true  = inl X-wins
-    f O A true  = inl O-wins
-    f p A false = Cases (Move-decidable (p , A))
-                     (λ (m : Move (p , A)) → inr (Move (p , A) ,
-                                                  play (p , A) ,
-                                                  selection (p , A) m))
-                     (λ (ν : is-empty (Move (p , A))) → inl draw)
+    f (p , A) true  = inl (value p)
+    f b       false = Cases (Move-decidable b)
+                       (λ (m : Move b)
+                             → inr (Move b ,
+                                    play b ,
+                                    selection b m))
+                       (λ (ν : is-empty (Move b))
+                             → inl draw)
 
 t₁ : 𝟛
 t₁ = optimal-outcome tic-tac-toe₁

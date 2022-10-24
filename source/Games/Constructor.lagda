@@ -68,8 +68,6 @@ Selection-Strategy-TheoremJ Γ = γ
 The following is used in conjunction with GameJ to build certain games
 in a convenient way.
 
- *
-
 \begin{code}
 
 build-GameJ : (r     : R)
