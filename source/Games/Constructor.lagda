@@ -27,8 +27,8 @@ than to give a game directly.
 \begin{code}
 
 data GameJ : Type₁ where
-  leaf   : R → GameJ
-  branch : (X : Type) (Xf : X → GameJ) (ε : J X) → GameJ
+ leaf   : R → GameJ
+ branch : (X : Type) (Xf : X → GameJ) (ε : J X) → GameJ
 
 dtt : GameJ → 𝕋
 dtt (leaf x)        = []
@@ -68,33 +68,35 @@ Selection-Strategy-TheoremJ Γ = γ
 The following is used in conjunction with GameJ to build certain games
 in a convenient way.
 
+ *
+
 \begin{code}
 
-build-GameJ : (draw       : R)
-              (Board      : Type)
-              (transition : Board → R + (Σ M ꞉ Type , (M → Board) × J M))
-              (n          : ℕ)
-              (b          : Board)
+build-GameJ : (r     : R)
+              (Board : Type)
+              (τ     : Board → R + (Σ M ꞉ Type , (M → Board) × J M))
+              (n     : ℕ)
+              (b     : Board)
             → GameJ
-build-GameJ draw Board transition n b = h n b
+build-GameJ r Board τ n b = h n b
  where
   h : ℕ → Board → GameJ
-  h 0        b = leaf draw
-  h (succ n) b = g (transition b) refl
+  h 0        b = leaf r
+  h (succ n) b = g (τ b)
    where
-    g : (f : R + (Σ M ꞉ Type , (M → Board) × J M)) → transition b ＝ f → GameJ
-    g (inl r)              p = leaf r
-    g (inr (M , play , ε)) p = branch M Xf ε
+    g : (f : R + (Σ M ꞉ Type , (M → Board) × J M)) → GameJ
+    g (inl r)              = leaf r
+    g (inr (M , play , ε)) = branch M Xf ε
      where
       Xf : M → GameJ
       Xf m = h n (play m)
 
-build-Game : (draw       : R)
-             (Board      : Type)
-             (transition : Board → R + (Σ M ꞉ Type , (M → Board) × J M))
-             (n          : ℕ)
-             (b          : Board)
+build-Game : (r  : R)
+             (Board : Type)
+             (τ     : Board → R + (Σ M ꞉ Type , (M → Board) × J M))
+             (n     : ℕ)
+             (b     : Board)
            → Game
-build-Game draw Board transition n b = Game-from-GameJ (build-GameJ draw Board transition n b)
+build-Game r Board τ n b = Game-from-GameJ (build-GameJ r Board τ n b)
 
 \end{code}
