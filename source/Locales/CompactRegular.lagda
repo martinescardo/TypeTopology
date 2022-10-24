@@ -569,6 +569,45 @@ well-inside-is-join-stable F {U₁} {U₂} {V} =
    γ = pr₁ ((∨-is-scott-continuous F U) S dir)
    δ = pr₂ ((∨-is-scott-continuous F U) S dir)
 
+∨-is-scott-continuous-eq′ : (F : Frame 𝓤 𝓥 𝓦)
+                          → (U : ⟨ F ⟩)
+                          → (S : Fam 𝓦 ⟨ F ⟩)
+                          → (is-directed (poset-of F) S) holds
+                          → (⋁[ F ] S) ∨[ F ] U ＝ ⋁[ F ] ⁅ Sᵢ ∨[ F ] U ∣ Sᵢ ε S ⁆
+∨-is-scott-continuous-eq′ F U S δ =
+ (⋁[ F ] S) ∨[ F ] U             ＝⟨ Ⅰ ⟩
+ U ∨[ F ] (⋁[ F ] S)             ＝⟨ Ⅱ ⟩
+ ⋁[ F ] ⁅ U ∨[ F ] Sᵢ ∣ Sᵢ ε S ⁆ ＝⟨ Ⅲ ⟩
+ ⋁[ F ] ⁅ Sᵢ ∨[ F ] U ∣ Sᵢ ε S ⁆ ∎
+  where
+   open PosetReasoning (poset-of F)
+
+   † : cofinal-in F ⁅ U ∨[ F ] Sᵢ ∣ Sᵢ ε S ⁆ ⁅ Sᵢ ∨[ F ] U ∣ Sᵢ ε S ⁆ holds
+   † i = ∣ i , (U ∨[ F ] (S [ i ]) ＝⟨ ∨[ F ]-is-commutative U (S [ i ]) ⟩ₚ
+                S [ i ] ∨[ F ] U   ■) ∣
+
+   ‡ : cofinal-in F ⁅ Sᵢ ∨[ F ] U ∣ Sᵢ ε S ⁆ ⁅ U ∨[ F ] Sᵢ ∣ Sᵢ ε S ⁆ holds
+   ‡ i = ∣ i , (S [ i ] ∨[ F ] U   ＝⟨ ∨[ F ]-is-commutative (S [ i ]) U ⟩ₚ
+                U ∨[ F ] (S [ i ]) ■) ∣
+
+   Ⅰ = ∨[ F ]-is-commutative (⋁[ F ] S) U
+   Ⅱ = ∨-is-scott-continuous-eq F U S δ
+   Ⅲ = bicofinal-implies-same-join F _ _ † ‡
+
+∨-is-scott-continuous′ : (F : Frame 𝓤 𝓥 𝓦)
+                       → (U : ⟨ F ⟩)
+                       → is-scott-continuous F F (λ - → - ∨[ F ] U) holds
+∨-is-scott-continuous′ F U S δ =
+ transport (λ - → (- is-lub-of ⁅ Sᵢ ∨[ F ] U ∣ Sᵢ ε S ⁆) holds) († ⁻¹) ‡
+  where
+   open Joins (λ x y → x ≤[ poset-of F ] y)
+
+   † : (⋁[ F ] S) ∨[ F ] U ＝ ⋁[ F ] ⁅ Sᵢ ∨[ F ] U ∣ Sᵢ ε S ⁆
+   † = ∨-is-scott-continuous-eq′ F U S δ
+
+   ‡ = ⋁[ F ]-upper ⁅ Sᵢ ∨[ F ] U ∣ Sᵢ ε S ⁆
+     , ⋁[ F ]-least ⁅ Sᵢ ∨[ F ] U ∣ Sᵢ ε S ⁆
+
 ⋜₀-implies-≪-in-compact-frames : (F : Frame 𝓤 𝓥 𝓦)
                                → is-compact F holds
                                → (U V : ⟨ F ⟩)
@@ -1137,34 +1176,6 @@ Scott-continuous.
 
 \begin{code}
 
-cofinal-in : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Fam 𝓦 ⟨ F ⟩ → Ω (𝓥 ⊔ 𝓦)
-cofinal-in F R S =
- Ɐ i ∶ index R , Ǝ j ∶ index S , ((R [ i ]) ≤[ poset-of F ] (S [ j ])) holds
-
-cofinal-implies-join-covered : (F : Frame 𝓤 𝓥 𝓦) (R S : Fam 𝓦 ⟨ F ⟩)
-                             → cofinal-in F R S holds
-                             → ((⋁[ F ] R) ≤[ poset-of F ] (⋁[ F ] S)) holds
-cofinal-implies-join-covered F R S φ = ⋁[ F ]-least R ((⋁[ F ] S) , β)
- where
-  open PosetReasoning (poset-of F)
-
-  β : (i : index R) → ((R [ i ]) ≤[ poset-of F ] (⋁[ F ] S)) holds
-  β i = ∥∥-rec (holds-is-prop ((R [ i ]) ≤[ poset-of F ] (⋁[ F ] S))) γ (φ i)
-   where
-    γ : Σ j ꞉ index S , ((R [ i ]) ≤[ poset-of F ] (S [ j ])) holds
-        → ((R [ i ]) ≤[ poset-of F ] (⋁[ F ] S)) holds
-    γ (j , p) = R [ i ] ≤⟨ p ⟩ S [ j ] ≤⟨ ⋁[ F ]-upper S j ⟩ ⋁[ F ] S ■
-
-bicofinal-implies-same-join : (F : Frame 𝓤 𝓥 𝓦) (R S : Fam 𝓦 ⟨ F ⟩)
-                            → cofinal-in F R S holds
-                            → cofinal-in F S R holds
-                            → ⋁[ F ] R ＝ ⋁[ F ] S
-bicofinal-implies-same-join F R S φ ψ =
- ≤-is-antisymmetric
-  (poset-of F)
-  (cofinal-implies-join-covered F R S φ)
-  (cofinal-implies-join-covered F S R ψ)
-
 compact-rel-syntax : (F : Frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
 compact-rel-syntax F U V =
  Ɐ W ∶ ⟨ F ⟩ , is-compact-open F W ⇒ W ≤[ poset-of F ] U ⇒ W ≤[ poset-of F ] V
@@ -1338,6 +1349,11 @@ compact-meet-lemma F U V K κ p = K , K , κ , κ , γ , p₁ , p₂
 
 ## Characterisation of continuity
 
+Let `L` and `M` be two frames and let `h : | L | → | M |` be a function.
+Function `h` is said to satisfy the **continuity condition** if *for every `x :
+L`, compact `b : M` with `b ≤ h(x)`, there is some compact `a : L` such that `a
+≤ x` and `b ≤ h(a)`*.
+
 \begin{code}
 
 continuity-condition : (L : Frame 𝓤 𝓥 𝓦) (M : Frame 𝓤' 𝓥' 𝓦)
@@ -1347,6 +1363,13 @@ continuity-condition L M h =
   b ≤[ poset-of M ] h x ⇒
    (Ǝ a ∶ ⟨ L ⟩ ,
      ((is-compact-open L a ∧ a ≤[ poset-of L ] x ∧ b ≤[ poset-of M ] h a) holds))
+
+\end{code}
+
+Given frames `L` and `M`, with `M` spectral, any monotone function `h : ∣ L ∣ →
+∣ M ∣` satisfying the continuity condition is Scott-continuous.
+
+\begin{code}
 
 characterisation-of-continuity : (L : Frame 𝓤  𝓥  𝓦)
                                → (M : Frame 𝓤' 𝓥' 𝓦)
@@ -1392,5 +1415,133 @@ characterisation-of-continuity L M σ h μ ζ S δ = β , γ
               (holds-is-prop (h a ≤[ poset-of M ] (⋁[ M ] ⁅ h s ∣ s ε S ⁆)))
               ♣
               (κₐ S δ q)
+
+\end{code}
+
+We now prove the converse: given frames `L` and `M`, with `L` spectral, any
+Scott-continuous function `h : ∣ L ∣ → ∣ M ∣` satisfies the continuity condition.
+
+\begin{code}
+
+characterisation-of-continuity-op : (L M : Frame 𝓤 𝓥 𝓦)
+                                  → is-spectral L holds
+                                  → (f : ⟨ L ⟩ → ⟨ M ⟩)
+                                  → is-scott-continuous L M f holds
+                                  → continuity-condition L M f holds
+characterisation-of-continuity-op {𝓦 = 𝓦} L M σ f ζ =
+ ∥∥-rec (holds-is-prop (continuity-condition L M f)) † σ
+  where
+   μ : is-monotonic (poset-of L) (poset-of M) f holds
+   μ = scott-continuous-implies-monotone L M f ζ
+
+   † : spectralᴰ L → continuity-condition L M f holds
+   † σᴰ K U κ φ = ∥∥-rec ∃-is-prop ‡ (κ ⁅ f (ℬ [ i ]) ∣ i ε 𝒥 ⁆ δ₂ ψ)
+    where
+     ℬ : Fam 𝓦 ⟨ L ⟩
+     ℬ = pr₁ σᴰ
+
+     𝒥 : Fam 𝓦 (index ℬ)
+     𝒥 = pr₁ (pr₁ (pr₁ (pr₂ σᴰ)) U)
+
+     cover : U ＝ ⋁[ L ] ⁅ ℬ [ i ] ∣ i ε 𝒥 ⁆
+     cover = ⋁[ L ]-unique ⁅ ℬ [ i ] ∣ i ε 𝒥 ⁆ U (pr₂ (pr₁ (pr₁ (pr₂ σᴰ)) U))
+
+     ‡ : (Σ k ꞉ index 𝒥 , ((K ≤[ poset-of M ] f (ℬ [ 𝒥 [ k ] ])) holds))
+       → ∃ K′ ꞉ ⟨ L ⟩ , (is-compact-open L K′ holds)
+                      × ((K′ ≤[ poset-of L ] U) holds)
+                      × ((K ≤[ poset-of M ] f K′) holds )
+     ‡ (k , φ) = ∣ ℬ [ 𝒥 [ k ] ] , ♥ , ♠ , φ ∣
+      where
+       open PosetReasoning (poset-of L)
+
+       ♥ : is-compact-open L (ℬ [ 𝒥 [ k ] ]) holds
+       ♥ = pr₁ (pr₂ (pr₂ σᴰ)) (𝒥 [ k ])
+
+       ♠ : ((ℬ [ 𝒥 [ k ] ]) ≤[ poset-of L ] U) holds
+       ♠ = ℬ [ 𝒥 [ k ] ]                ≤⟨ ⋁[ L ]-upper ⁅ ℬ [ i ] ∣ i ε 𝒥 ⁆ k ⟩
+           ⋁[ L ] ⁅ ℬ [ i ] ∣ i ε 𝒥 ⁆   ＝⟨ cover ⁻¹                          ⟩ₚ
+           U                            ■
+
+     open PosetReasoning (poset-of M)
+
+     δ₁ : is-directed (poset-of L) ⁅ ℬ [ i ] ∣ i ε 𝒥 ⁆ holds
+     δ₁ = pr₂ (pr₁ (pr₂ σᴰ)) U
+
+     ψ : (K ≤[ poset-of M ] (⋁[ M ] ⁅ f (ℬ [ i ]) ∣ i ε 𝒥 ⁆)) holds
+     ψ = K                              ≤⟨ φ ⟩
+         f U                            ＝⟨ Ⅰ ⟩ₚ
+         f (⋁[ L ] ⁅ ℬ [ i ] ∣ i ε 𝒥 ⁆) ＝⟨ Ⅱ ⟩ₚ
+         ⋁[ M ] ⁅ f (ℬ [ i ]) ∣ i ε 𝒥 ⁆ ■
+          where
+           Ⅰ = ap f cover
+           Ⅱ = ⋁[ M ]-unique _ _ (ζ ⁅ ℬ [ i ] ∣ i ε 𝒥 ⁆ δ₁)
+
+
+     δ₂ : is-directed (poset-of M) ⁅ f (ℬ [ i ]) ∣ i ε 𝒥 ⁆ holds
+     δ₂ = monotone-image-on-directed-family-is-directed L M ⁅ ℬ [ i ] ∣ i ε 𝒥 ⁆ δ₁ f μ
+
+\end{code}
+
+Let `F` be a spectral frame. Given `x, y, : F` and compact `a : F` with `a ≤ x ∨
+y`, there exist compact `b, c : F` with `a ≤ b ∨ c` such that `b ≤ x` and `c ≤
+y`.
+
+\begin{code}
+
+compact-join-lemma : (F : Frame 𝓤 𝓥 𝓦)
+                   → is-spectral F holds
+                   → (x y a : ⟨ F ⟩)
+                   → is-compact-open F a holds
+                   → (a ≤[ poset-of F ] (x ∨[ F ] y)) holds
+                   → ∃ (b , c) ꞉ ⟨ F ⟩ × ⟨ F ⟩ ,
+                       is-compact-open F b holds
+                     × is-compact-open F c holds
+                     × (a ≤[ poset-of F ] (b ∨[ F ] c)) holds
+                     × (b ≤[ poset-of F ] x ∧ c ≤[ poset-of F ] y) holds
+compact-join-lemma F σ U V K κ ψ = ∥∥-rec ∃-is-prop † φ₁
+ where
+  open Joins (λ x y → x ≤[ poset-of F ] y)
+  open PosetReasoning (poset-of F)
+
+  Θ = ∃ (K₁ , K₂) ꞉ ⟨ F ⟩ × ⟨ F ⟩ ,
+        is-compact-open F K₁ holds
+      × is-compact-open F K₂ holds
+      × (K ≤[ poset-of F ] (K₁ ∨[ F ] K₂)) holds
+      × (K₁ ≤[ poset-of F ] U ∧ K₂ ≤[ poset-of F ] V) holds
+
+
+  c₁ : ⟨ F ⟩ → ⟨ F ⟩
+  c₁ = λ - → - ∨[ F ] V
+
+  ζ₁ : is-scott-continuous F F c₁ holds
+  ζ₁ = ∨-is-scott-continuous′ F V
+
+  φ₁ : ∃ K₁ ꞉ ⟨ F ⟩ , (is-compact-open F K₁
+                    ∧ (K₁ ≤[ poset-of F ] U)
+                    ∧ K ≤[ poset-of F ] (K₁ ∨[ F ] V)) holds
+  φ₁ = characterisation-of-continuity-op F F σ c₁ ζ₁ K U κ ψ
+
+  † : Σ K₁ ꞉ ⟨ F ⟩ , (is-compact-open F K₁
+                    ∧ (K₁ ≤[ poset-of F ] U)
+                    ∧ K ≤[ poset-of F ] (K₁ ∨[ F ] V)) holds
+    → Θ
+  † (K₁ , κ₁ , p₁ , q₁) = ∥∥-rec ∃-is-prop ‡ φ₂
+   where
+    c₂ : ⟨ F ⟩ → ⟨ F ⟩
+    c₂ = λ - → K₁ ∨[ F ] -
+
+    ζ₂ : is-scott-continuous F F c₂ holds
+    ζ₂ = ∨-is-scott-continuous F K₁
+
+    ‡ : (Σ K₂ ꞉ ⟨ F ⟩ , (is-compact-open F K₂
+                      ∧ K₂ ≤[ poset-of F ] V
+                      ∧ K ≤[ poset-of F ] (K₁ ∨[ F ] K₂)) holds)
+      → Θ
+    ‡ (K₂ , κ₂ , p₂ , q₂) = ∣ (K₁ , K₂) , κ₁ , κ₂ , q₂ , p₁ , p₂ ∣
+
+    φ₂ : ∃ K₂ ꞉ ⟨ F ⟩ , (is-compact-open F K₂
+                      ∧ K₂ ≤[ poset-of F ] V
+                      ∧ (K ≤[ poset-of F ] (K₁ ∨[ F ] K₂))) holds
+    φ₂ = characterisation-of-continuity-op F F σ c₂ ζ₂ K V κ q₁
 
 \end{code}

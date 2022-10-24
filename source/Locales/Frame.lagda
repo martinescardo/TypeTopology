@@ -1635,3 +1635,38 @@ module ContinuousMapNotation (X : Locale 𝓤 𝓥 𝓦) (Y : Locale 𝓤' 𝓥'
  _⋆∙_ f V = (_⋆ f) .pr₁ V
 
 \end{code}
+
+\section{Cofinality}
+
+\begin{code}
+
+cofinal-in : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Fam 𝓦 ⟨ F ⟩ → Ω (𝓥 ⊔ 𝓦)
+cofinal-in F R S =
+ Ɐ i ∶ index R , Ǝ j ∶ index S , ((R [ i ]) ≤[ poset-of F ] (S [ j ])) holds
+
+cofinal-implies-join-covered : (F : Frame 𝓤 𝓥 𝓦) (R S : Fam 𝓦 ⟨ F ⟩)
+                             → cofinal-in F R S holds
+                             → ((⋁[ F ] R) ≤[ poset-of F ] (⋁[ F ] S)) holds
+cofinal-implies-join-covered F R S φ = ⋁[ F ]-least R ((⋁[ F ] S) , β)
+ where
+  open PosetReasoning (poset-of F)
+  open PropositionalTruncation pt
+
+  β : (i : index R) → ((R [ i ]) ≤[ poset-of F ] (⋁[ F ] S)) holds
+  β i = ∥∥-rec (holds-is-prop ((R [ i ]) ≤[ poset-of F ] (⋁[ F ] S))) γ (φ i)
+   where
+    γ : Σ j ꞉ index S , ((R [ i ]) ≤[ poset-of F ] (S [ j ])) holds
+        → ((R [ i ]) ≤[ poset-of F ] (⋁[ F ] S)) holds
+    γ (j , p) = R [ i ] ≤⟨ p ⟩ S [ j ] ≤⟨ ⋁[ F ]-upper S j ⟩ ⋁[ F ] S ■
+
+bicofinal-implies-same-join : (F : Frame 𝓤 𝓥 𝓦) (R S : Fam 𝓦 ⟨ F ⟩)
+                            → cofinal-in F R S holds
+                            → cofinal-in F S R holds
+                            → ⋁[ F ] R ＝ ⋁[ F ] S
+bicofinal-implies-same-join F R S φ ψ =
+ ≤-is-antisymmetric
+  (poset-of F)
+  (cofinal-implies-join-covered F R S φ)
+  (cofinal-implies-join-covered F S R ψ)
+
+\end{code}
