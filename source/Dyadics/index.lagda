@@ -1,8 +1,4 @@
-Tom de Jong, 10 March 2020
-
-As suggested by Martin Escardo.
-
-Cluster module for inductively defined dyadic rationals.
+Andrew Sneap
 
 \begin{code}
 
@@ -10,8 +6,8 @@ Cluster module for inductively defined dyadic rationals.
 
 module Dyadics.index where
 
-import Dyadics.Dyadics
-import Dyadics.DyadicOrder
-import Dyadics.DyadicOrder-PropTrunc
+import Dyadics.Negation
+import Dyadics.Order
+import Dyadics.Rationals
 
 \end{code}

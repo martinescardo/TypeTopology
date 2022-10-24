@@ -17,7 +17,7 @@ open import UF.Equiv
 open import UF.LeftCancellable
 
 is-univalent : ∀ 𝓤 → 𝓤 ⁺ ̇
-is-univalent 𝓤 = (X Y : 𝓤 ̇ ) → is-equiv(idtoeq X Y)
+is-univalent 𝓤 = (X Y : 𝓤 ̇ ) → is-equiv (idtoeq X Y)
 
 Univalence : 𝓤ω
 Univalence = (𝓤 : Universe) → is-univalent 𝓤

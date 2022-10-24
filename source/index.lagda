@@ -53,7 +53,8 @@
      this safe-modules index: The system with type-in-type is
      inconsistent (as is well known), countable Tychonoff, and
      compactness of the Cantor type using countable Tychonoff.
-     (https://www.cs.bham.ac.uk/~mhe/TypeTopology/UnsafeModulesIndex.html)
+
+     (https://www.cs.bham.ac.uk/~mhe/TypeTopology/Unsafe.index.html)
 
    * In our last count, this development has 97000 lines, including
      comments and blank lines.
@@ -83,20 +84,26 @@ import CoNaturals.index
 import CrossedModules.index           -- by Ettore Aldrovandi and Keri D'Angelo
 import DedekindReals.index            -- by Andrew Sneap
 import DomainTheory.index             -- by Tom de Jong
-import Dyadics.index                  -- by Tom de Jong
+import Dyadics.index                  -- by Andrew Sneap
+import DyadicsInductive.index         -- by Tom de Jong
+import Field.index                    -- by Andrew Sneap
 import Games.index                    -- by Martin Escardo and Paulo Oliva
 import Groups.index                   -- originally by Martin Escardo with many additions
                                       -- by Ettore Aldrovandi and Keri D'Angelo
 import InjectiveTypes.index
+import Integers.index                 -- by Andrew Sneap
 import Lifting.index
 import Locales.index                  -- by Ayberk Tosun
 import MGS.index                      -- Modular version of https://github.com/martinescardo/HoTT-UF-Agda-Lecture-Notes
 import MLTT.index
+import MetricSpaces.index             -- by Andrew Sneap
+import Modal.index                    -- by Jon Sterling
 import Naturals.index
 import Notation.index
 import NotionsOfDecidability.index    -- by Tom de Jong and Martin Escardo
 import Ordinals.index
 import Posets.index                   -- by Tom de Jong and Martin Escardo
+import Rationals.index                -- by Andrew Sneap
 import Slice.index
 import TWA.index                      -- by Todd Waugh Ambridge
 import Taboos.index
@@ -104,6 +111,8 @@ import TypeTopology.index
 import UF.index
 import Uncatalogued.index
 import Utilities.index
+
+
 
 \end{code}
 

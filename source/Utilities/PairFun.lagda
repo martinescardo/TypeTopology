@@ -128,4 +128,15 @@ module _ {𝓤 𝓥 𝓦 𝓣}
                            (t x b)})
          (s y)
 
+module _ {𝓤 𝓥 𝓦 𝓣} {X : 𝓤 ̇} {A : X → 𝓥 ̇} {Y : 𝓦 ̇} {B : Y → 𝓣 ̇} where
+ pair-fun-equiv
+  : (f : X ≃ Y)
+  → (g : (x : X) → A x ≃ B (eqtofun f x))
+  → Σ A ≃ Σ B
+ pr₁ (pair-fun-equiv f g) =
+  pair-fun (eqtofun f) λ x →
+  eqtofun (g x)
+ pr₂ (pair-fun-equiv f g) =
+  pair-fun-is-equiv _ _ (eqtofun- f) λ x →
+  eqtofun- (g x)
 \end{code}
