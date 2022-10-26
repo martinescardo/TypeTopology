@@ -1,6 +1,6 @@
 Martin Escardo, March 2022
 
-This generalizes the 2018 file OrdinalNotationInterpretation.
+This generalizes the 2018 file OrdinalNotationInterpretation1.
 
 A Tarski universe E of ordinal codes with two related decoding
 functions Δ and Κ (standing for "discrete" and "compact"
