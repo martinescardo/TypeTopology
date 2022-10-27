@@ -3,6 +3,8 @@ Martin Escardo, Paulo Oliva, 2-27 July 2021
 Example: Tic-tac-toe. We have two versions. The other version is in
 another file.
 
+TODO. Organaze this module better, following the organization of TicTacToe0.
+
 \begin{code}
 
 {-# OPTIONS --without-K --safe --auto-inline #-} -- --exact-split
