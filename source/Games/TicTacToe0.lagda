@@ -1,41 +1,30 @@
-Martin Escardo, Paulo Oliva, 2-27 July 2021
+Martin Escardo, Paulo Oliva, 27th October 2022
 
-Example: Tic-tac-toe. We have two versions. The other version is in
-another file.
+A third version of tic-tac-toe.
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe --auto-inline #-} -- --exact-split
+{-# OPTIONS --without-K --safe --auto-inline --exact-split #-}
 
-open import UF.FunExt
-
-
-module Games.TicTacToe
-        (fe : Fun-Ext)
-       where
+module Games.TicTacToe0 where
 
 open import TypeTopology.CompactTypes
 open import TypeTopology.DiscreteAndSeparated
 open import TypeTopology.SigmaDiscreteAndTotallySeparated
-
-open import UF.Base
-open import UF.Subsingletons
-open import UF.Miscelanea
 
 open import MLTT.Spartan hiding (J)
 open import MLTT.NonSpartanMLTTTypes hiding (Fin ; 𝟎 ; 𝟏 ; 𝟐 ; 𝟑 ; 𝟒 ; 𝟓 ; 𝟔 ; 𝟕 ; 𝟖 ; 𝟗)
 open import MLTT.Fin
 open import MLTT.Fin-Properties
 
-𝟛 : Type
-𝟛 = Fin 3
+R : Type
+R = Fin 3
 
 open import Games.TypeTrees
-open import Games.FiniteHistoryDependent 𝟛 fe
-open import Games.Constructor 𝟛 fe
+open import Games.FiniteHistoryDependent R
 
 tic-tac-toe₁ : Game
-tic-tac-toe₁ = build-Game draw Board transition 9 board₀
+tic-tac-toe₁ = game (tree board₀ 9) (outcome board₀ 9) (quantifiers board₀ 9)
  where
   data Player : Type where
    X O : Player
@@ -48,11 +37,11 @@ tic-tac-toe₁ = build-Game draw Board transition 9 board₀
   pattern draw   = 𝟏
   pattern O-wins = 𝟐
 
-  value : Player → 𝟛
+  value : Player → R
   value X = X-wins
   value O = O-wins
 
-  Grid   = 𝟛 × 𝟛
+  Grid   = R × R
   Matrix = Grid → Maybe Player
   Board  = Player × Matrix
 
@@ -112,9 +101,9 @@ Convention: in a board (p , A), p is the opponent of the the current player.
                           (λ g → Nothing-is-isolated' (A g))
                           (λ g → Nothing-is-h-isolated' (A g))
 
-  selection : (b : Board) → Move b → J (Move b)
-  selection b@(X , A) m p = pr₁ (compact-argmax p (Move-compact b) m)
-  selection b@(O , A) m p = pr₁ (compact-argmin p (Move-compact b) m)
+  selection : (p : Player) (M : Type) → M → Compact M → J M
+  selection X M m κ p = pr₁ (compact-argmax p κ m)
+  selection O M m κ p = pr₁ (compact-argmin p κ m)
 
   update : (p : Player) (A : Matrix)
          → Move (p , A)
@@ -128,22 +117,34 @@ Convention: in a board (p , A), p is the opponent of the the current player.
   play : (b : Board) → Move b → Board
   play (p , A) m = opponent p , update p A m
 
-  transition : Board → 𝟛 + (Σ M ꞉ Type , (M → Board) × J M)
-  transition b@(p , A) = f b (wins p A)
-   where
-    f : (b : Board)
-      → Bool
-      → 𝟛 + (Σ M ꞉ Type , (M → Board) × J M)
-    f (p , A) true  = inl (value p)
-    f b       false = Cases (Move-decidable b)
-                       (λ (m : Move b)
-                             → inr (Move b ,
-                                    play b ,
-                                    selection b m))
-                       (λ (ν : is-empty (Move b))
-                             → inl draw)
+  tree : Board → ℕ → 𝕋
+  tree b         0        = []
+  tree b@(p , A) (succ k) = if wins (opponent p) A
+                            then []
+                            else (Move b ∷ λ m → tree (play b m) k)
 
-t₁ : 𝟛
+  quantifier : Player
+             → (M : Type)
+             → Compact M
+             → decidable M
+             → (M → R) → R
+  quantifier p M κ (inl m) = overline (selection p M m κ)
+  quantifier p M κ (inr _) = λ _ → draw
+
+  outcome : (b : Board) (k : ℕ) → Path (tree b k) → R
+  outcome b 0 ⟨⟩ = draw
+  outcome b@(p , A) (succ k) xs with wins (opponent p) A
+  ... | true  = value (opponent p)
+  ... | false = outcome (play b (path-head xs)) k (path-tail xs)
+
+  quantifiers : (b : Board) (k : ℕ) → 𝓚 (tree b k)
+  quantifiers b 0 = ⟨⟩
+  quantifiers b@(p , A)  (succ k) with wins (opponent p) A
+  ... | true  = ⟨⟩
+  ... | false = quantifier p (Move b) (Move-compact b) (Move-decidable b)
+                :: (λ m → quantifiers (play b m) k)
+
+t₁ : R
 t₁ = optimal-outcome tic-tac-toe₁
 
 \end{code}
