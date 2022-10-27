@@ -13,6 +13,6 @@ open import Games.TicTacToe0              -- This version uses only the above tw
 open import Games.Constructor             -- This is for simplifying the construction of games.
 open import Games.TicTacToe1              -- This is like TicTacToe0 but using the previous module.
 open import Games.TicTacToe2              -- This is a more efficient and less elegant version.
-open import Games.Examples                -- These are miscelaneous examples.
+open import Games.Examples                -- These are miscelaneous small examples.
 
 \end{code}

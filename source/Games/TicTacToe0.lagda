@@ -1,6 +1,7 @@
 Martin Escardo, Paulo Oliva, 27th October 2022
 
-A third version of tic-tac-toe.
+Implementation of tic-tac-toe using a general definition of finite
+history dependent game.
 
 \begin{code}
 
