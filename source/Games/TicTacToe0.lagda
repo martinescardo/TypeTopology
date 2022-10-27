@@ -199,7 +199,7 @@ And their derived quantifiers:
 
 \begin{code}
 
-quantifier : Player → (M : Type) → Compact M → decidable M → (M → R) → R
+quantifier : Player → (M : Type) → Compact M → decidable M → K M
 quantifier p M κ (inl m) = overline (selection p M m κ)
 quantifier p M κ (inr _) = λ _ → draw
 
