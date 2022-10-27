@@ -147,11 +147,9 @@ Update a matrix by playing a move:
 \begin{code}
 
 update : (p : Player) (A : Matrix) → Move (p , A) → Matrix
-update p A (m , _) m' = f (Grid-is-discrete m m')
- where
-  f : decidable (m ＝ m') → Maybe Player
-  f (inl _) = Just p
-  f (inr _) = A m'
+update p A (m , _) m' with (Grid-is-discrete m m')
+...                        | inl _ = Just p
+...                        | inr _ = A m
 
 \end{code}
 
