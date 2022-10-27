@@ -185,7 +185,7 @@ outcome b@(p , A) (succ k) (m :: ms) | false = outcome (play b m) k ms
 
 \end{code}
 
-Selection functions for players, namely argmax for X and argmin for O:
+Selection functions for players, namely argmin for X and argmax for O:
 
 \begin{code}
 
