@@ -44,7 +44,7 @@ O-wins = 𝟐
 \end{code}
 
 In our conception of game, it is not necessary to specify the players,
-but this case it is convenient to do so:
+but in this case it is convenient to do so:
 
 \begin{code}
 
@@ -116,8 +116,10 @@ Move (_ , A) = Σ g ꞉ Grid , A g ＝ Nothing
 
 \end{code}
 
-The type of grids has decidable equality and decidable quantification,
-and so does the type of moves in a board:
+The type of grids has decidable equality (it is discrete) and
+decidable quantification (it is compact).  The type of moves in a
+board is decidable (either empty or pointed) and also has decidable
+quantification.
 
 \begin{code}
 
@@ -169,7 +171,7 @@ tree : Board → ℕ → 𝕋
 tree b         0        = []
 tree b@(p , A) (succ k) = if wins (opponent p) A
                           then []
-                          else (Move b ∷ λ m → tree (play b m) k)
+                          else (Move b ∷ (λ m → tree (play b m) k))
 \end{code}
 
 The outcome function:
@@ -178,13 +180,13 @@ The outcome function:
 
 outcome : (b : Board) (k : ℕ) → Path (tree b k) → R
 outcome b 0 ⟨⟩ = draw
-outcome b@(p , A) (succ k) xs with wins (opponent p) A
-... | true  = value (opponent p)
-... | false = outcome (play b (path-head xs)) k (path-tail xs)
+outcome b@(p , A) (succ k) ms with wins (opponent p) A
+outcome b@(p , A) (succ k) ms        | true  = value (opponent p)
+outcome b@(p , A) (succ k) (m :: ms) | false = outcome (play b m) k ms
 
 \end{code}
 
-Selection functions for players, argmax for X and argmin for O:
+Selection functions for players, namely argmax for X and argmin for O:
 
 \begin{code}
 
@@ -230,4 +232,5 @@ t₁ = optimal-outcome tic-tac-toe₁
 \end{code}
 
 The above computation takes too long, due to the use of brute-force
-search. A more efficient one is in another file.
+search in the definition of the game (the compactness conditions). A
+more efficient one is in another file.
