@@ -222,11 +222,11 @@ And finally the game by putting the above together:
 
 \begin{code}
 
-tic-tac-toe₁ : Game
-tic-tac-toe₁ = game (tree board₀ 9) (outcome board₀ 9) (quantifiers board₀ 9)
+tic-tac-toe : Game
+tic-tac-toe = game (tree board₀ 9) (outcome board₀ 9) (quantifiers board₀ 9)
 
-t₁ : R
-t₁ = optimal-outcome tic-tac-toe₁
+r : R
+r = optimal-outcome tic-tac-toe
 
 \end{code}
 
