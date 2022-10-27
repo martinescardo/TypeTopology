@@ -7,7 +7,7 @@ refactored and slightly improved October 2022
 
 module Games.index where
 
-open import Games.TypeTrees               -- Dependently type trees.
+open import Games.TypeTrees               -- Dependent type trees.
 open import Games.FiniteHistoryDependent  -- Theory of finite history dependent games.
 open import Games.TicTacToe0              -- This version uses only the above two modules.
 open import Games.Constructor             -- This is for simplifying the construction of games.
