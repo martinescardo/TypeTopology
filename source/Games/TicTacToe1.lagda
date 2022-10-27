@@ -118,7 +118,7 @@ Convention: in a board (p , A), p is the opponent of the the current player.
    where
     f : decidable (m ＝ m') → Maybe Player
     f (inl _) = Just p
-    f (inr _) = A m'
+    f (inr _) = A m
 
   play : (b : Board) → Move b → Board
   play (p , A) m = opponent p , update p A m
