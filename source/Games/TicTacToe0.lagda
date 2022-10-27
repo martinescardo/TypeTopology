@@ -189,8 +189,8 @@ Selection functions for players, argmax for X and argmin for O:
 \begin{code}
 
 selection : (p : Player) (M : Type) → M → Compact M {𝓤₀} → J M
-selection X M m κ p = pr₁ (compact-argmax p κ m)
-selection O M m κ p = pr₁ (compact-argmin p κ m)
+selection X M m κ p = pr₁ (compact-argmin p κ m)
+selection O M m κ p = pr₁ (compact-argmax p κ m)
 
 \end{code}
 
