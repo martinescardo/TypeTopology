@@ -34,6 +34,7 @@ private
  pe : Prop-Ext
  pe = Univalence-gives-Prop-Ext ua
 
+open import Ordinals.Notions
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.Type hiding (Ord)
 
@@ -60,8 +61,35 @@ module _
   ×-is-prop being-transitive-set-is-prop
             (Π₂-is-prop fe (λ _ _ → being-transitive-set-is-prop))
 
- 𝕍ᵒʳᵈ : 𝓤 ⁺ ̇
- 𝕍ᵒʳᵈ = Σ x ꞉ 𝕍 , is-set-theoretic-ordinal x
+ being-set-theoretic-ordinal-is-hereditary : {x : 𝕍} → is-set-theoretic-ordinal x
+                                           → {y : 𝕍}
+                                           → y ∈ x → is-set-theoretic-ordinal y
+ being-set-theoretic-ordinal-is-hereditary {x} (t , τ) {y} m =
+  τ y m , (λ z n → τ z (t y z m n))
+
+ ⟨𝕍ᵒʳᵈ⟩ : 𝓤 ⁺ ̇
+ ⟨𝕍ᵒʳᵈ⟩ = Σ x ꞉ 𝕍 , is-set-theoretic-ordinal x
+
+ 𝕍ᵒʳᵈ-is-subtype : {x y : ⟨𝕍ᵒʳᵈ⟩} → pr₁ x ＝ pr₁ y → x ＝ y
+ 𝕍ᵒʳᵈ-is-subtype = to-subtype-＝ (λ _ → being-set-theoretic-ordinal-is-prop)
+
+ _∈ᵒʳᵈ_ : ⟨𝕍ᵒʳᵈ⟩ → ⟨𝕍ᵒʳᵈ⟩ → 𝓤 ⁺  ̇
+ _∈ᵒʳᵈ_ (x , _) (y , _) = x ∈ y
+
+ ∈ᵒʳᵈ-extensionality : is-extensional _∈ᵒʳᵈ_
+ ∈ᵒʳᵈ-extensionality (x , u) (y , v) s t =
+  𝕍ᵒʳᵈ-is-subtype
+   (∈-extensionality
+     x y
+     (λ z m → s (z , being-set-theoretic-ordinal-is-hereditary u m) m)
+     (λ z m → t (z , being-set-theoretic-ordinal-is-hereditary v m) m))
+
+ 𝕍ᵒʳᵈ : Ordinal (𝓤 ⁺)
+ 𝕍ᵒʳᵈ = ⟨𝕍ᵒʳᵈ⟩ , _∈ᵒʳᵈ_
+             , (λ x y → ∈-is-prop-valued)
+             , {!!}
+             , ∈ᵒʳᵈ-extensionality
+             , {!!}
 
  private
   Ord : 𝓤 ⁺ ̇
@@ -150,7 +178,7 @@ module _
      m : Ord-to-𝕍 (α ↓ a) ∈ Ord-to-𝕍 β
      m = s (Ord-to-𝕍 (α ↓ a)) (to-∈-of-Ord-to-𝕍 α ∣ a , refl ∣)
 
- Ord-to-𝕍ᵒʳᵈ : Ord → 𝕍ᵒʳᵈ
+ Ord-to-𝕍ᵒʳᵈ : Ord → ⟨𝕍ᵒʳᵈ⟩
  Ord-to-𝕍ᵒʳᵈ α = (Ord-to-𝕍 α , ρ α)
   where
    τ : (β : Ord) → is-transitive-set (Ord-to-𝕍 β)
