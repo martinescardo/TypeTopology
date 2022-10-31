@@ -200,22 +200,39 @@ module _
   open suprema pt (set-replacement-from-set-quotients sq pt)
 
   𝕍-to-Ord : 𝕍 → Ord
-  𝕍-to-Ord x = 𝕍-recursion the-type-of-ordinals-is-a-set ρ h x
+  𝕍-to-Ord = 𝕍-recursion the-type-of-ordinals-is-a-set ρ τ
    where
     ρ : {A : 𝓤 ̇ } → (A → 𝕍) → (A → Ord) → Ord
     ρ _ r = sup (λ a → r a +ₒ 𝟙ₒ)
-    ρ-is-monotone : {A B : 𝓤 ̇ } (f : A → 𝕍) (g : B → 𝕍)
-                    (r₁ : A → Ord) (r₂ : B → Ord)
-                  → f ≲ g → ρ f r₁ ⊴ ρ g r₂
-    ρ-is-monotone f g r₁ r₂ l = {!!}
-     {- sup-is-lower-bound-of-upper-bounds (λ a → r₁ a +ₒ 𝟙ₒ) (ρ g r₂)
-      (λ a → {!!}) -}
-    h : {A B : 𝓤 ̇ } (f : A → 𝕍) (g : B → 𝕍)
-        (r₁ : A → Ord) (r₂ : B → Ord)
-      → f ≈ g → ρ f r₁ ＝ ρ g r₂
-    h f g r₁ r₂ (s , t) =
-     ⊴-antisym (ρ f r₁) (ρ g r₂) (ρ-is-monotone f g r₁ r₂ s)
-                                 (ρ-is-monotone g f r₂ r₁ t)
 
+    monotone-lemma : {A B : 𝓤 ̇} (f : A → 𝕍) (g : B → 𝕍)
+                   → (r₁ : A → Ord) (r₂ : B → Ord)
+                   → ((a : A) → ∥ Σ b ꞉ B , Σ p ꞉ f a ＝ g b , r₁ a ＝ r₂ b ∥)
+                   → ρ f r₁ ⊴ ρ g r₂
+    monotone-lemma {A} {B} f g r₁ r₂ e =
+     sup-is-lower-bound-of-upper-bounds (λ a → r₁ a +ₒ 𝟙ₒ) (ρ g r₂) ϕ
+      where
+       ϕ : (a : A) → (r₁ a +ₒ 𝟙ₒ) ⊴ ρ g r₂
+       ϕ a = ∥∥-rec (⊴-is-prop-valued _ _) ψ (e a)
+        where
+         ψ : (Σ b ꞉ B , Σ p ꞉ f a ＝ g b , r₁ a ＝ r₂ b)
+           → (r₁ a +ₒ 𝟙ₒ) ⊴ ρ g r₂
+         ψ (b , _ , q) = ⊴-trans _ (r₂ b +ₒ 𝟙ₒ) _ k l
+          where
+           k : (r₁ a +ₒ 𝟙ₒ) ⊴ (r₂ b +ₒ 𝟙ₒ)
+           k = ≃ₒ-to-⊴ _ _ (idtoeqₒ _ _ (ap (_+ₒ 𝟙ₒ) q))
+           l : (r₂ b +ₒ 𝟙ₒ) ⊴ ρ g r₂
+           l = sup-is-upper-bound _ b
+
+    τ : {A B : 𝓤 ̇} (f : A → 𝕍) (g : B → 𝕍)
+      → (r₁ : A → Ord) (r₂ : B → Ord)
+      → ((a : A) → ∥ Σ b ꞉ B , Σ p ꞉ f a ＝ g b , r₁ a ＝ r₂ b ∥)
+      → ((b : B) → ∥ Σ a ꞉ A , Σ p ꞉ g b ＝ f a , r₂ b ＝ r₁ a ∥)
+      → f ≈ g
+      → ρ f r₁ ＝ ρ g r₂
+    τ {A} {B} f g r₁ r₂ e₁ e₂ _ =
+     ⊴-antisym (ρ f r₁) (ρ g r₂)
+               (monotone-lemma f g r₁ r₂ e₁)
+               (monotone-lemma g f r₂ r₁ e₂)
 
 \end{code}
