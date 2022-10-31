@@ -288,8 +288,8 @@ module _ (𝓤 : Universe) where
        → 𝕍-set g ⊆ 𝕍-set f → 𝕍-set f ⊆ 𝕍-set g → 𝕍-set g ＝ 𝕍-set f
      γ g s t = 𝕍-set-ext g f (⊆-to-≲ g f s , ⊆-to-≲ f g t)
 
-  extensionality : (x y : 𝕍) → x ⊆ y → y ⊆ x → x ＝ y
-  extensionality x y =
+  ∈-extensionality : (x y : 𝕍) → x ⊆ y → y ⊆ x → x ＝ y
+  ∈-extensionality x y =
    𝕍-prop-simple-induction (λ v → x ⊆ v → v ⊆ x → x ＝ v)
                            (λ _ → Π₂-is-prop fe (λ _ _ → 𝕍-is-set))
                            (λ f → pre-extensionality f x)
