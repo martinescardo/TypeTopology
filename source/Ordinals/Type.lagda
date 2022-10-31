@@ -92,6 +92,16 @@ Transfinite-induction α = transfinite-induction
                            (underlying-order α)
                            (Well-foundedness α)
 
+-- TO DO: Put comment
+Transfinite-induction-behaviour : FunExt → (α : Ordinal 𝓤)
+                                → (P : ⟨ α ⟩ → 𝓦 ̇ )
+                                → (f : (x : ⟨ α ⟩) → ((y : ⟨ α ⟩) → y ≺⟨ α ⟩ x → P y) → P x)
+                                → (x : ⟨ α ⟩)
+                                → Transfinite-induction α P f x
+                                  ＝ f x (λ y l → Transfinite-induction α P f y)
+Transfinite-induction-behaviour fe α P f =
+ transfinite-induction-behaviour (underlying-order α) fe (Well-foundedness α) P f
+
 Extensionality : (α : Ordinal 𝓤) → is-extensional (underlying-order α)
 Extensionality α = extensionality (underlying-order α) (is-well-ordered α)
 

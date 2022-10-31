@@ -1171,6 +1171,28 @@ transfinite-recursion-on-OO : (X : 𝓥 ̇ )
                             → Ordinal 𝓤 → X
 transfinite-recursion-on-OO {𝓤} {𝓥} X = transfinite-induction-on-OO (λ _ → X)
 
+-- TO DO: Put comment
+transfinite-induction-on-OO-behaviour :
+   (P : Ordinal 𝓤 → 𝓥 ̇ )
+ → (f : (α : Ordinal 𝓤) → ((a : ⟨ α ⟩) → P (α ↓ a)) → P α)
+ → (α : Ordinal 𝓤) → transfinite-induction-on-OO P f α
+                     ＝ f α (λ a → transfinite-induction-on-OO P f (α ↓ a))
+transfinite-induction-on-OO-behaviour {𝓤} {𝓥} P f =
+ Transfinite-induction-behaviour fe (OO 𝓤) P f'
+  where
+   f' : (α : Ordinal 𝓤)
+      → ((α' : Ordinal 𝓤) → α' ⊲ α → P α')
+      → P α
+   f' α g = f α (λ a → g (α ↓ a) (a , refl))
+
+transfinite-recursion-on-OO-behaviour :
+   (X : 𝓥 ̇ )
+ → (f : (α : Ordinal 𝓤) → (⟨ α ⟩ → X) → X)
+ → (α : Ordinal 𝓤) → transfinite-recursion-on-OO X f α
+                     ＝ f α (λ a → transfinite-recursion-on-OO X f (α ↓ a))
+transfinite-recursion-on-OO-behaviour X f =
+ transfinite-induction-on-OO-behaviour (λ _ → X) f
+
 has-minimal-element : Ordinal 𝓤 → 𝓤 ̇
 has-minimal-element α = Σ a ꞉ ⟨ α ⟩ , ((x : ⟨ α ⟩) → a ≾⟨ α ⟩ x)
 
