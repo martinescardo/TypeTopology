@@ -41,21 +41,31 @@ module _ (𝓤 : Universe) where
    𝕍-set-ext : {A B : 𝓤 ̇ } (f : A → 𝕍) (g : B → 𝕍) → f ≈ g → 𝕍-set f ＝ 𝕍-set g
    𝕍-induction : {𝓣 : Universe} (P : 𝕍 → 𝓣 ̇ )
                → ((x : 𝕍) → is-set (P x))
-               → (ρ : {A : 𝓤 ̇ } (f : A → 𝕍 ) → ((a : A) → P (f a))
-                                               → P (𝕍-set f))
+               → (ρ : {A : 𝓤 ̇ } (f : A → 𝕍 ) → ((a : A) → P (f a)) → P (𝕍-set f))
                → ({A B : 𝓤 ̇ } (f : A → 𝕍) (g : B → 𝕍) (e : f ≈ g)
-                  (IH₁ : (a : A) → P (f a)) (IH₂ : (b : B) → P (g b))
-                 → transport P (𝕍-set-ext f g e) (ρ f IH₁) ＝ ρ g IH₂)
+                   → (IH₁ : (a : A) → P (f a))
+                   → (IH₂ : (b : B) → P (g b))
+                   → ((a : A) → ∥ Σ b ꞉ B , Σ p ꞉ f a ＝ g b ,
+                                    transport P p (IH₁ a) ＝ IH₂ b ∥)
+                   → ((b : B) → ∥ Σ a ꞉ A , Σ p ꞉ g b ＝ f a ,
+                                    transport P p (IH₂ b) ＝ IH₁ a ∥)
+                   → transport P (𝕍-set-ext f g e) (ρ f IH₁) ＝ ρ g IH₂)
                → (x : 𝕍) → P x
    𝕍-induction-computes : {𝓣 : Universe} (P : 𝕍 → 𝓣 ̇ )
                         → (σ : (x : 𝕍) → is-set (P x))
                         → (ρ : {A : 𝓤 ̇ } (f : A → 𝕍 ) → ((a : A) → P (f a))
                                                         → P (𝕍-set f))
                         → (τ : {A B : 𝓤 ̇ } (f : A → 𝕍) (g : B → 𝕍) (e : f ≈ g)
-                               (IH₁ : (a : A) → P (f a)) (IH₂ : (b : B) → P (g b))
-                          → transport P (𝕍-set-ext f g e) (ρ f IH₁) ＝ ρ g IH₂)
-                        → ({A : 𝓤 ̇ } (f : A → 𝕍) (IH : (a : A) → P (f a))
-                          → 𝕍-induction P σ ρ τ (𝕍-set f) ＝ ρ f IH)
+                             → (IH₁ : (a : A) → P (f a))
+                             → (IH₂ : (b : B) → P (g b))
+                             → ((a : A) → ∥ Σ b ꞉ B , Σ p ꞉ f a ＝ g b ,
+                                              transport P p (IH₁ a) ＝ IH₂ b ∥)
+                             → ((b : B) → ∥ Σ a ꞉ A , Σ p ꞉ g b ＝ f a ,
+                                              transport P p (IH₂ b) ＝ IH₁ a ∥)
+                             → transport P (𝕍-set-ext f g e) (ρ f IH₁) ＝ ρ g IH₂)
+                        → {A : 𝓤 ̇ } (f : A → 𝕍) (IH : (a : A) → P (f a))
+                           → 𝕍-induction P σ ρ τ (𝕍-set f) ＝ ρ f IH
+
 
   𝕍-prop-induction : {𝓣 : Universe} (P : 𝕍 → 𝓣 ̇ )
                    → ((x : 𝕍) → is-prop (P x))
@@ -63,7 +73,8 @@ module _ (𝓤 : Universe) where
                    → (x : 𝕍) → P x
   𝕍-prop-induction {𝓣} P P-is-prop-valued ρ =
    𝕍-induction P (λ x → props-are-sets (P-is-prop-valued x)) ρ
-                 (λ f g e IH₁ IH₂ → P-is-prop-valued _ _ _)
+                 (λ f g e IH₁ IH₂ _ _ → P-is-prop-valued _ _ _)
+
 
   𝕍-prop-simple-induction : {𝓣 : Universe} (P : 𝕍 → 𝓣 ̇ )
                           → ((x : 𝕍) → is-prop (P x))
@@ -72,69 +83,99 @@ module _ (𝓤 : Universe) where
   𝕍-prop-simple-induction P σ ρ = 𝕍-prop-induction P σ (λ f _ → ρ f)
 
   private
-   𝕍-recursion-with-computation : {𝓣 : Universe} {X : 𝓣 ̇ }
-                                → (σ : is-set X)
-                                → (ρ : {A : 𝓤 ̇ } (f : A → 𝕍) → (A → X) → X)
-                                → (τ : {A B : 𝓤 ̇ } (f : A → 𝕍) (g : B → 𝕍)
-                                       (IH₁ : A → X) (IH₂ : B → X)
-                                     → f ≈ g → ρ f IH₁ ＝ ρ g IH₂)
-                                → Σ ϕ ꞉ (𝕍 → X) ,
-                                    ({A : 𝓤 ̇ } (f : A → 𝕍)
-                                                (IH : A → X) → ϕ (𝕍-set f) ＝ ρ f IH)
+   𝕍-recursion-with-computation :
+      {𝓣 : Universe} {X : 𝓣 ̇ }
+    → (σ : is-set X)
+    → (ρ : {A : 𝓤 ̇ } (f : A → 𝕍) → (A → X) → X)
+    → (τ : {A B : 𝓤 ̇ } (f : A → 𝕍) (g : B → 𝕍)
+         → (IH₁ : A → X)
+         → (IH₂ : B → X)
+         → ((a : A) → ∥ Σ b ꞉ B , Σ p ꞉ f a ＝ g b ,
+                          IH₁ a ＝ IH₂ b ∥)
+         → ((b : B) → ∥ Σ a ꞉ A , Σ p ꞉ g b ＝ f a ,
+                          IH₂ b ＝ IH₁ a ∥)
+         → f ≈ g → ρ f IH₁ ＝ ρ g IH₂)
+    → Σ ϕ ꞉ (𝕍 → X) , ({A : 𝓤 ̇ } (f : A → 𝕍)
+                       (IH : A → X) → ϕ (𝕍-set f) ＝ ρ f IH)
    𝕍-recursion-with-computation {𝓣} {X} σ ρ τ =
     ( 𝕍-induction (λ _ → X) (λ _ → σ) ρ τ'
     , 𝕍-induction-computes (λ _ → X) (λ _ → σ) ρ τ')
        where
-        τ' : {A B : 𝓤 ̇ } (f : A → 𝕍) (g : B → 𝕍) (e : f ≈ g)
-             (IH₁ : A → X) (IH₂ : B → X)
+        τ' : {A B : 𝓤 ̇ } (f : A → 𝕍) (g : B → 𝕍)
+           → (e : f ≈ g) (IH₁ : A → X) (IH₂ : B → X)
+           → ((a : A) → ∥ Σ b ꞉ B , Σ p ꞉ f a ＝ g b ,
+                            transport (λ _ → X) p (IH₁ a) ＝ IH₂ b ∥)
+           → ((b : B) → ∥ Σ a ꞉ A , Σ p ꞉ g b ＝ f a ,
+                            transport (λ _ → X) p (IH₂ b) ＝ IH₁ a ∥)
            → transport (λ _ → X) (𝕍-set-ext f g e) (ρ f IH₁) ＝ ρ g IH₂
-        τ' f g e IH₁ IH₂ =
-         transport (λ _ → X) e' (ρ f IH₁) ＝⟨ transport-const e' ⟩
-         ρ f IH₁                          ＝⟨ τ f g IH₁ IH₂ e ⟩
+        τ' {A} {B} f g e IH₁ IH₂ hIH₁ hIH₂ =
+         transport (λ _ → X) e' (ρ f IH₁) ＝⟨ transport-const e'          ⟩
+         ρ f IH₁                          ＝⟨ τ f g IH₁ IH₂ hIH₁' hIH₂' e ⟩
          ρ g IH₂                          ∎
           where
            e' = 𝕍-set-ext f g e
+           hIH₁' : (a : A) → ∥ Σ b ꞉ B , Σ p ꞉ f a ＝ g b , IH₁ a ＝ IH₂ b ∥
+           hIH₁' a = ∥∥-functor
+                      (λ (b , p , q) → (b , p , ((transport-const p) ⁻¹ ∙ q)))
+                      (hIH₁ a)
+           hIH₂' : (b : B) → ∥ Σ a ꞉ A , Σ p ꞉ g b ＝ f a , IH₂ b ＝ IH₁ a ∥
+           hIH₂' b = ∥∥-functor
+                      (λ (a , p , q) → (a , p , ((transport-const p) ⁻¹ ∙ q)))
+                      (hIH₂ b)
 
   𝕍-recursion : {𝓣 : Universe} {X : 𝓣 ̇ }
               → is-set X
               → (ρ : ({A : 𝓤 ̇ } (f : A → 𝕍) → (A → X) → X))
               → ({A B : 𝓤 ̇ } (f : A → 𝕍) (g : B → 𝕍)
-                 (IH₁ : A → X) (IH₂ : B → X) → f ≈ g → ρ f IH₁ ＝ ρ g IH₂)
+                  → (IH₁ : A → X) (IH₂ : B → X)
+                  → ((a : A) → ∥ Σ b ꞉ B , Σ p ꞉ f a ＝ g b , IH₁ a ＝ IH₂ b ∥)
+                  → ((b : B) → ∥ Σ a ꞉ A , Σ p ꞉ g b ＝ f a , IH₂ b ＝ IH₁ a ∥)
+                  → f ≈ g → ρ f IH₁ ＝ ρ g IH₂)
               → 𝕍 → X
   𝕍-recursion σ ρ τ = pr₁ (𝕍-recursion-with-computation σ ρ τ)
 
-  𝕍-recursion-computes : {𝓣 : Universe} {X : 𝓣 ̇ }
-                       → (σ : is-set X)
-                       → (ρ : {A : 𝓤 ̇ } (f : A → 𝕍) → (A → X) → X)
-                       → (τ : {A B : 𝓤 ̇ } (f : A → 𝕍) (g : B → 𝕍)
-                              (IH₁ : A → X) (IH₂ : B → X)
-                            → f ≈ g → ρ f IH₁ ＝ ρ g IH₂)
-                       → ({A : 𝓤 ̇ } (f : A → 𝕍) (IH : A → X)
-                         → 𝕍-recursion σ ρ τ (𝕍-set f) ＝ ρ f IH)
+  𝕍-recursion-computes :
+      {𝓣 : Universe} {X : 𝓣 ̇ }
+    → (σ : is-set X)
+    → (ρ : {A : 𝓤 ̇ } (f : A → 𝕍) → (A → X) → X)
+    → (τ : {A B : 𝓤 ̇ } (f : A → 𝕍) (g : B → 𝕍)
+         → (IH₁ : A → X) (IH₂ : B → X)
+         → ((a : A) → ∥ Σ b ꞉ B , Σ p ꞉ f a ＝ g b , IH₁ a ＝ IH₂ b ∥)
+         → ((b : B) → ∥ Σ a ꞉ A , Σ p ꞉ g b ＝ f a , IH₂ b ＝ IH₁ a ∥)
+         → f ≈ g → ρ f IH₁ ＝ ρ g IH₂)
+    → ({A : 𝓤 ̇ } (f : A → 𝕍) (IH : A → X)
+        → 𝕍-recursion σ ρ τ (𝕍-set f) ＝ ρ f IH)
   𝕍-recursion-computes σ ρ τ f = pr₂ (𝕍-recursion-with-computation σ ρ τ) f
 
   private
-   𝕍-prop-recursion-with-computation : {𝓣 : Universe}
-                                     → (ρ : ({A : 𝓤 ̇ } (f : A → 𝕍) → (A → Ω 𝓣) → Ω 𝓣))
-                                     → (τ : {A B : 𝓤 ̇ } (f : A → 𝕍) (g : B → 𝕍)
-                                            (IH₁ : A → Ω 𝓣) (IH₂ : B → Ω 𝓣)
-                                          → f ≲ g → ρ f IH₁ holds → ρ g IH₂ holds)
-                                     → Σ ϕ ꞉ (𝕍 → Ω 𝓣) , ({A : 𝓤 ̇ } (f : A → 𝕍)
-                                                           (IH : A → Ω 𝓣)
-                                                       → ϕ (𝕍-set f) ＝ ρ f IH)
+   𝕍-prop-recursion-with-computation :
+      {𝓣 : Universe}
+    → (ρ : ({A : 𝓤 ̇ } (f : A → 𝕍) → (A → Ω 𝓣) → Ω 𝓣))
+    → (τ : {A B : 𝓤 ̇ } (f : A → 𝕍) (g : B → 𝕍)
+         → (IH₁ : A → Ω 𝓣) (IH₂ : B → Ω 𝓣)
+         → ((a : A) → ∥ Σ b ꞉ B , Σ p ꞉ f a ＝ g b , IH₁ a ＝ IH₂ b ∥)
+         → f ≲ g → ρ f IH₁ holds → ρ g IH₂ holds)
+    → Σ ϕ ꞉ (𝕍 → Ω 𝓣) , ({A : 𝓤 ̇ } (f : A → 𝕍) (IH : A → Ω 𝓣)
+                      → ϕ (𝕍-set f) ＝ ρ f IH)
    𝕍-prop-recursion-with-computation {𝓣} ρ τ =
     ( 𝕍-recursion (Ω-is-set fe pe) ρ τ'
     , 𝕍-recursion-computes (Ω-is-set fe pe) ρ τ')
      where
-      τ' : {A B : 𝓤 ̇ } (f : A → 𝕍) (g : B → 𝕍) (IH₁ : A → Ω 𝓣) (IH₂ : B → Ω 𝓣)
+      τ' : {A B : 𝓤 ̇ } (f : A → 𝕍) (g : B → 𝕍)
+         → (IH₁ : A → Ω 𝓣) (IH₂ : B → Ω 𝓣)
+         → ((a : A) → ∥ Σ b ꞉ B , Σ p ꞉ f a ＝ g b , IH₁ a ＝ IH₂ b ∥)
+         → ((b : B) → ∥ Σ a ꞉ A , Σ p ꞉ g b ＝ f a , IH₂ b ＝ IH₁ a ∥)
          → f ≈ g → ρ f IH₁ ＝ ρ g IH₂
-      τ' f g IH₁ IH₂ (m₁ , m₂) = Ω-extensionality fe pe (τ f g IH₁ IH₂ m₁)
-                                                        (τ g f IH₂ IH₁ m₂)
+      τ' f g IH₁ IH₂ hIH₁ hIH₂ (m₁ , m₂) =
+       Ω-extensionality fe pe (τ f g IH₁ IH₂ hIH₁ m₁)
+                              (τ g f IH₂ IH₁ hIH₂ m₂)
 
   𝕍-prop-recursion : {𝓣 : Universe}
                    → (ρ : ({A : 𝓤 ̇ } (f : A → 𝕍) → (A → Ω 𝓣) → Ω 𝓣))
                    → ({A B : 𝓤 ̇ } (f : A → 𝕍) (g : B → 𝕍)
-                      (IH₁ : A → Ω 𝓣) (IH₂ : B → Ω 𝓣)
+                       → (IH₁ : A → Ω 𝓣) (IH₂ : B → Ω 𝓣)
+                       → ((a : A) → ∥ Σ b ꞉ B ,
+                                      Σ p ꞉ f a ＝ g b , IH₁ a ＝ IH₂ b ∥)
                      → f ≲ g → ρ f IH₁ holds → ρ g IH₂ holds)
                    → 𝕍 → Ω 𝓣
   𝕍-prop-recursion {𝓣} ρ τ =
@@ -143,7 +184,9 @@ module _ (𝓤 : Universe) where
   𝕍-prop-recursion-computes : {𝓣 : Universe}
                             → (ρ : ({A : 𝓤 ̇ } (f : A → 𝕍) → (A → Ω 𝓣) → Ω 𝓣))
                             → (τ : {A B : 𝓤 ̇ } (f : A → 𝕍) (g : B → 𝕍)
-                                   (IH₁ : A → Ω 𝓣) (IH₂ : B → Ω 𝓣)
+                                 → (IH₁ : A → Ω 𝓣) (IH₂ : B → Ω 𝓣)
+                                 → ((a : A) → ∥ Σ b ꞉ B , Σ p ꞉ f a ＝ g b ,
+                                                  IH₁ a ＝ IH₂ b ∥)
                                  → f ≲ g → ρ f IH₁ holds → ρ g IH₂ holds)
                             → ({A : 𝓤 ̇ } (f : A → 𝕍) (IH : A → Ω 𝓣)
                               → 𝕍-prop-recursion ρ τ (𝕍-set f) ＝ ρ f IH)
@@ -156,16 +199,17 @@ module _ (𝓤 : Universe) where
                             → f ≲ g → ρ f holds → ρ g holds)
                           → 𝕍 → Ω 𝓣
   𝕍-prop-simple-recursion {𝓣} ρ τ =
-   𝕍-prop-recursion (λ f _ → ρ f) (λ f g _ _ → τ f g)
+   𝕍-prop-recursion (λ f _ → ρ f) (λ f g _ _ _ → τ f g)
 
-  𝕍-prop-simple-recursion-computes : {𝓣 : Universe}
-                                   → (ρ : ({A : 𝓤 ̇ } (f : A → 𝕍) → Ω 𝓣))
-                                   → (τ : {A B : 𝓤 ̇ } (f : A → 𝕍) (g : B → 𝕍)
-                                        → f ≲ g → ρ f holds → ρ g holds)
-                                   → ({A : 𝓤 ̇ } (f : A → 𝕍)
-                                     → 𝕍-prop-simple-recursion ρ τ (𝕍-set f) ＝ ρ f)
+  𝕍-prop-simple-recursion-computes :
+      {𝓣 : Universe}
+    → (ρ : ({A : 𝓤 ̇ } (f : A → 𝕍) → Ω 𝓣))
+    → (τ : {A B : 𝓤 ̇ } (f : A → 𝕍) (g : B → 𝕍)
+         → f ≲ g → ρ f holds → ρ g holds)
+    → ({A : 𝓤 ̇ } (f : A → 𝕍) → 𝕍-prop-simple-recursion ρ τ (𝕍-set f) ＝ ρ f)
   𝕍-prop-simple-recursion-computes ρ τ f =
-   𝕍-prop-recursion-computes (λ f _ → ρ f) (λ f g _ _ → τ f g) f (λ _ → 𝟙 , 𝟙-is-prop)
+   𝕍-prop-recursion-computes (λ f _ → ρ f) (λ f g _ _ _ → τ f g)
+                             f (λ _ → 𝟙 , 𝟙-is-prop)
 
 \end{code}
 
