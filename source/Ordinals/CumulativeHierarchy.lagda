@@ -21,7 +21,7 @@ module Ordinals.CumulativeHierarchy
 
 open PropositionalTruncation pt
 
-open import UF.Base
+open import UF.Base hiding (_≈_)
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.FunExt
@@ -40,10 +40,10 @@ open import Ordinals.Type hiding (Ord)
 open import UF.CumulativeHierarchy pt fe pe
 
 module _
-        (che : cumulative-hierarchy-exists 𝓤)
+        (ch : cumulative-hierarchy-exists 𝓤)
        where
 
- open cumulative-hierarchy-exists che
+ open cumulative-hierarchy-exists ch
 
  is-transitive-set : 𝕍 → 𝓤 ⁺ ̇
  is-transitive-set x = (u : 𝕍) (v : 𝕍) → u ∈ x → v ∈ u → v ∈ x
@@ -183,5 +183,39 @@ module _
         where
          h : (Σ b ꞉ ⟨ β ⟩ , Ord-to-𝕍 (β ↓ b) ＝ y) → is-transitive-set y
          h (b , refl) = τ (β ↓ b)
+
+\end{code}
+
+\begin{code}
+
+ open import Ordinals.Arithmetic (λ _ _ → fe)
+ open import Ordinals.OrdinalOfOrdinalsSuprema ua
+
+ open import UF.Quotient
+
+ module _
+         (sq : set-quotients-exist)
+        where
+
+  open suprema pt (set-replacement-from-set-quotients sq pt)
+
+  𝕍-to-Ord : 𝕍 → Ord
+  𝕍-to-Ord x = 𝕍-recursion the-type-of-ordinals-is-a-set ρ h x
+   where
+    ρ : {A : 𝓤 ̇ } → (A → 𝕍) → (A → Ord) → Ord
+    ρ _ r = sup (λ a → r a +ₒ 𝟙ₒ)
+    ρ-is-monotone : {A B : 𝓤 ̇ } (f : A → 𝕍) (g : B → 𝕍)
+                    (r₁ : A → Ord) (r₂ : B → Ord)
+                  → f ≲ g → ρ f r₁ ⊴ ρ g r₂
+    ρ-is-monotone f g r₁ r₂ l = {!!}
+     {- sup-is-lower-bound-of-upper-bounds (λ a → r₁ a +ₒ 𝟙ₒ) (ρ g r₂)
+      (λ a → {!!}) -}
+    h : {A B : 𝓤 ̇ } (f : A → 𝕍) (g : B → 𝕍)
+        (r₁ : A → Ord) (r₂ : B → Ord)
+      → f ≈ g → ρ f r₁ ＝ ρ g r₂
+    h f g r₁ r₂ (s , t) =
+     ⊴-antisym (ρ f r₁) (ρ g r₂) (ρ-is-monotone f g r₁ r₂ s)
+                                 (ρ-is-monotone g f r₂ r₁ t)
+
 
 \end{code}
