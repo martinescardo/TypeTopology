@@ -273,41 +273,78 @@ module _
 
   open suprema pt (set-replacement-from-set-quotients sq pt)
 
+  private
+   𝕍-to-Ord-aux : {A : 𝓤 ̇ } → (A → 𝕍) → (A → Ord) → Ord
+   𝕍-to-Ord-aux _ r = sup (λ a → r a +ₒ 𝟙ₒ)
+
+   𝕍-to-Ord-packaged : Σ ϕ ꞉ (𝕍 → Ord) , ({A : 𝓤 ̇} (f : A → 𝕍)
+                                          (r : A → Ordinal 𝓤)
+                                       → ϕ (𝕍-set f) ＝ 𝕍-to-Ord-aux f r)
+
+   𝕍-to-Ord-packaged =
+    𝕍-recursion-with-computation the-type-of-ordinals-is-a-set ρ τ
+    where
+     ρ = 𝕍-to-Ord-aux
+     monotone-lemma : {A B : 𝓤 ̇} (f : A → 𝕍) (g : B → 𝕍)
+                    → (r₁ : A → Ord) (r₂ : B → Ord)
+                    → ((a : A) → ∥ Σ b ꞉ B , Σ p ꞉ f a ＝ g b , r₁ a ＝ r₂ b ∥)
+                    → ρ f r₁ ⊴ ρ g r₂
+     monotone-lemma {A} {B} f g r₁ r₂ e =
+      sup-is-lower-bound-of-upper-bounds (λ a → r₁ a +ₒ 𝟙ₒ) (ρ g r₂) ϕ
+       where
+        ϕ : (a : A) → (r₁ a +ₒ 𝟙ₒ) ⊴ ρ g r₂
+        ϕ a = ∥∥-rec (⊴-is-prop-valued _ _) ψ (e a)
+         where
+          ψ : (Σ b ꞉ B , Σ p ꞉ f a ＝ g b , r₁ a ＝ r₂ b)
+            → (r₁ a +ₒ 𝟙ₒ) ⊴ ρ g r₂
+          ψ (b , _ , q) = ⊴-trans _ (r₂ b +ₒ 𝟙ₒ) _ k l
+           where
+            k : (r₁ a +ₒ 𝟙ₒ) ⊴ (r₂ b +ₒ 𝟙ₒ)
+            k = ≃ₒ-to-⊴ _ _ (idtoeqₒ _ _ (ap (_+ₒ 𝟙ₒ) q))
+            l : (r₂ b +ₒ 𝟙ₒ) ⊴ ρ g r₂
+            l = sup-is-upper-bound _ b
+
+     τ : {A B : 𝓤 ̇} (f : A → 𝕍) (g : B → 𝕍)
+       → (r₁ : A → Ord) (r₂ : B → Ord)
+       → ((a : A) → ∥ Σ b ꞉ B , Σ p ꞉ f a ＝ g b , r₁ a ＝ r₂ b ∥)
+       → ((b : B) → ∥ Σ a ꞉ A , Σ p ꞉ g b ＝ f a , r₂ b ＝ r₁ a ∥)
+       → f ≈ g
+       → ρ f r₁ ＝ ρ g r₂
+     τ {A} {B} f g r₁ r₂ e₁ e₂ _ =
+      ⊴-antisym (ρ f r₁) (ρ g r₂)
+                (monotone-lemma f g r₁ r₂ e₁)
+                (monotone-lemma g f r₂ r₁ e₂)
+
   𝕍-to-Ord : 𝕍 → Ord
-  𝕍-to-Ord = 𝕍-recursion the-type-of-ordinals-is-a-set ρ τ
+  𝕍-to-Ord = pr₁ (𝕍-to-Ord-packaged)
+
+  𝕍-to-Ord-behaviour-on-𝕍-sets :
+     {A : 𝓤 ̇ } (f : A → 𝕍)
+   → 𝕍-to-Ord (𝕍-set f) ＝ sup (λ a → 𝕍-to-Ord (f a) +ₒ 𝟙ₒ)
+  𝕍-to-Ord-behaviour-on-𝕍-sets f = pr₂ 𝕍-to-Ord-packaged f (λ a → 𝕍-to-Ord (f a))
+
+  𝕍ᵒʳᵈ-to-Ord : 𝕍ᵒʳᵈ → Ord
+  𝕍ᵒʳᵈ-to-Ord = 𝕍-to-Ord ∘ pr₁
+
+  𝕍ᵒʳᵈ-to-Ord-is-section-of-Ord-to-𝕍ᵒʳᵈ : Ord-to-𝕍ᵒʳᵈ ∘ 𝕍ᵒʳᵈ-to-Ord ∼ id
+  𝕍ᵒʳᵈ-to-Ord-is-section-of-Ord-to-𝕍ᵒʳᵈ = λ (x , σ) → 𝕍ᵒʳᵈ-is-subtype (lemma x σ)
    where
-    ρ : {A : 𝓤 ̇ } → (A → 𝕍) → (A → Ord) → Ord
-    ρ _ r = sup (λ a → r a +ₒ 𝟙ₒ)
-
-    monotone-lemma : {A B : 𝓤 ̇} (f : A → 𝕍) (g : B → 𝕍)
-                   → (r₁ : A → Ord) (r₂ : B → Ord)
-                   → ((a : A) → ∥ Σ b ꞉ B , Σ p ꞉ f a ＝ g b , r₁ a ＝ r₂ b ∥)
-                   → ρ f r₁ ⊴ ρ g r₂
-    monotone-lemma {A} {B} f g r₁ r₂ e =
-     sup-is-lower-bound-of-upper-bounds (λ a → r₁ a +ₒ 𝟙ₒ) (ρ g r₂) ϕ
-      where
-       ϕ : (a : A) → (r₁ a +ₒ 𝟙ₒ) ⊴ ρ g r₂
-       ϕ a = ∥∥-rec (⊴-is-prop-valued _ _) ψ (e a)
-        where
-         ψ : (Σ b ꞉ B , Σ p ꞉ f a ＝ g b , r₁ a ＝ r₂ b)
-           → (r₁ a +ₒ 𝟙ₒ) ⊴ ρ g r₂
-         ψ (b , _ , q) = ⊴-trans _ (r₂ b +ₒ 𝟙ₒ) _ k l
-          where
-           k : (r₁ a +ₒ 𝟙ₒ) ⊴ (r₂ b +ₒ 𝟙ₒ)
-           k = ≃ₒ-to-⊴ _ _ (idtoeqₒ _ _ (ap (_+ₒ 𝟙ₒ) q))
-           l : (r₂ b +ₒ 𝟙ₒ) ⊴ ρ g r₂
-           l = sup-is-upper-bound _ b
-
-    τ : {A B : 𝓤 ̇} (f : A → 𝕍) (g : B → 𝕍)
-      → (r₁ : A → Ord) (r₂ : B → Ord)
-      → ((a : A) → ∥ Σ b ꞉ B , Σ p ꞉ f a ＝ g b , r₁ a ＝ r₂ b ∥)
-      → ((b : B) → ∥ Σ a ꞉ A , Σ p ꞉ g b ＝ f a , r₂ b ＝ r₁ a ∥)
-      → f ≈ g
-      → ρ f r₁ ＝ ρ g r₂
-    τ {A} {B} f g r₁ r₂ e₁ e₂ _ =
-     ⊴-antisym (ρ f r₁) (ρ g r₂)
-               (monotone-lemma f g r₁ r₂ e₁)
-               (monotone-lemma g f r₂ r₁ e₂)
+    ϕ : (x : 𝕍) → is-set-theoretic-ordinal x → 𝕍
+    ϕ x σ = pr₁ (Ord-to-𝕍ᵒʳᵈ (𝕍ᵒʳᵈ-to-Ord (x , σ)))
+    lemma : (x : 𝕍) (σ : is-set-theoretic-ordinal x) → ϕ x σ ＝ x
+    lemma = 𝕍-induction _ (λ x → Π-is-set fe (λ _ → props-are-sets 𝕍-is-set))
+                          ρ
+                          {!!}
+     where
+      ρ : {A : 𝓤 ̇} (f : A → 𝕍)
+        → ((a : A) (τ : is-set-theoretic-ordinal (f a)) → ϕ (f a) τ ＝ f a)
+        → (σ : is-set-theoretic-ordinal (𝕍-set f))
+        → ϕ (𝕍-set f) σ ＝ 𝕍-set f
+      ρ {A} f IH σ =
+       ϕ (𝕍-set f) σ ＝⟨ {!!} ⟩
+       Ord-to-𝕍 {!!} ＝⟨ {!!} ⟩
+       𝕍-set (λ a → {!𝕍-to-Ord x ↓ a!}) ＝⟨ {!!} ⟩
+       {!!} ∎
 
   𝕍ᵒʳᵈ-isomorphic-to-Ord : OO 𝓤 ≃ₒ 𝕍ᴼᴿᴰ
   𝕍ᵒʳᵈ-isomorphic-to-Ord =

@@ -82,46 +82,45 @@ module _ (𝓤 : Universe) where
                           → (x : 𝕍) → P x
   𝕍-prop-simple-induction P σ ρ = 𝕍-prop-induction P σ (λ f _ → ρ f)
 
-  private
-   𝕍-recursion-with-computation :
-      {𝓣 : Universe} {X : 𝓣 ̇ }
-    → (σ : is-set X)
-    → (ρ : {A : 𝓤 ̇ } (f : A → 𝕍) → (A → X) → X)
-    → (τ : {A B : 𝓤 ̇ } (f : A → 𝕍) (g : B → 𝕍)
-         → (IH₁ : A → X)
-         → (IH₂ : B → X)
-         → ((a : A) → ∥ Σ b ꞉ B , Σ p ꞉ f a ＝ g b ,
-                          IH₁ a ＝ IH₂ b ∥)
-         → ((b : B) → ∥ Σ a ꞉ A , Σ p ꞉ g b ＝ f a ,
-                          IH₂ b ＝ IH₁ a ∥)
-         → f ≈ g → ρ f IH₁ ＝ ρ g IH₂)
-    → Σ ϕ ꞉ (𝕍 → X) , ({A : 𝓤 ̇ } (f : A → 𝕍)
-                       (IH : A → X) → ϕ (𝕍-set f) ＝ ρ f IH)
-   𝕍-recursion-with-computation {𝓣} {X} σ ρ τ =
-    ( 𝕍-induction (λ _ → X) (λ _ → σ) ρ τ'
-    , 𝕍-induction-computes (λ _ → X) (λ _ → σ) ρ τ')
-       where
-        τ' : {A B : 𝓤 ̇ } (f : A → 𝕍) (g : B → 𝕍)
-           → (e : f ≈ g) (IH₁ : A → X) (IH₂ : B → X)
-           → ((a : A) → ∥ Σ b ꞉ B , Σ p ꞉ f a ＝ g b ,
-                            transport (λ _ → X) p (IH₁ a) ＝ IH₂ b ∥)
-           → ((b : B) → ∥ Σ a ꞉ A , Σ p ꞉ g b ＝ f a ,
-                            transport (λ _ → X) p (IH₂ b) ＝ IH₁ a ∥)
-           → transport (λ _ → X) (𝕍-set-ext f g e) (ρ f IH₁) ＝ ρ g IH₂
-        τ' {A} {B} f g e IH₁ IH₂ hIH₁ hIH₂ =
-         transport (λ _ → X) e' (ρ f IH₁) ＝⟨ transport-const e'          ⟩
-         ρ f IH₁                          ＝⟨ τ f g IH₁ IH₂ hIH₁' hIH₂' e ⟩
-         ρ g IH₂                          ∎
-          where
-           e' = 𝕍-set-ext f g e
-           hIH₁' : (a : A) → ∥ Σ b ꞉ B , Σ p ꞉ f a ＝ g b , IH₁ a ＝ IH₂ b ∥
-           hIH₁' a = ∥∥-functor
-                      (λ (b , p , q) → (b , p , ((transport-const p) ⁻¹ ∙ q)))
-                      (hIH₁ a)
-           hIH₂' : (b : B) → ∥ Σ a ꞉ A , Σ p ꞉ g b ＝ f a , IH₂ b ＝ IH₁ a ∥
-           hIH₂' b = ∥∥-functor
-                      (λ (a , p , q) → (a , p , ((transport-const p) ⁻¹ ∙ q)))
-                      (hIH₂ b)
+  𝕍-recursion-with-computation :
+     {𝓣 : Universe} {X : 𝓣 ̇ }
+   → (σ : is-set X)
+   → (ρ : {A : 𝓤 ̇ } (f : A → 𝕍) → (A → X) → X)
+   → (τ : {A B : 𝓤 ̇ } (f : A → 𝕍) (g : B → 𝕍)
+        → (IH₁ : A → X)
+        → (IH₂ : B → X)
+        → ((a : A) → ∥ Σ b ꞉ B , Σ p ꞉ f a ＝ g b ,
+                         IH₁ a ＝ IH₂ b ∥)
+        → ((b : B) → ∥ Σ a ꞉ A , Σ p ꞉ g b ＝ f a ,
+                         IH₂ b ＝ IH₁ a ∥)
+        → f ≈ g → ρ f IH₁ ＝ ρ g IH₂)
+   → Σ ϕ ꞉ (𝕍 → X) , ({A : 𝓤 ̇ } (f : A → 𝕍)
+                      (IH : A → X) → ϕ (𝕍-set f) ＝ ρ f IH)
+  𝕍-recursion-with-computation {𝓣} {X} σ ρ τ =
+   ( 𝕍-induction (λ _ → X) (λ _ → σ) ρ τ'
+   , 𝕍-induction-computes (λ _ → X) (λ _ → σ) ρ τ')
+      where
+       τ' : {A B : 𝓤 ̇ } (f : A → 𝕍) (g : B → 𝕍)
+          → (e : f ≈ g) (IH₁ : A → X) (IH₂ : B → X)
+          → ((a : A) → ∥ Σ b ꞉ B , Σ p ꞉ f a ＝ g b ,
+                           transport (λ _ → X) p (IH₁ a) ＝ IH₂ b ∥)
+          → ((b : B) → ∥ Σ a ꞉ A , Σ p ꞉ g b ＝ f a ,
+                           transport (λ _ → X) p (IH₂ b) ＝ IH₁ a ∥)
+          → transport (λ _ → X) (𝕍-set-ext f g e) (ρ f IH₁) ＝ ρ g IH₂
+       τ' {A} {B} f g e IH₁ IH₂ hIH₁ hIH₂ =
+        transport (λ _ → X) e' (ρ f IH₁) ＝⟨ transport-const e'          ⟩
+        ρ f IH₁                          ＝⟨ τ f g IH₁ IH₂ hIH₁' hIH₂' e ⟩
+        ρ g IH₂                          ∎
+         where
+          e' = 𝕍-set-ext f g e
+          hIH₁' : (a : A) → ∥ Σ b ꞉ B , Σ p ꞉ f a ＝ g b , IH₁ a ＝ IH₂ b ∥
+          hIH₁' a = ∥∥-functor
+                     (λ (b , p , q) → (b , p , ((transport-const p) ⁻¹ ∙ q)))
+                     (hIH₁ a)
+          hIH₂' : (b : B) → ∥ Σ a ꞉ A , Σ p ꞉ g b ＝ f a , IH₂ b ＝ IH₁ a ∥
+          hIH₂' b = ∥∥-functor
+                     (λ (a , p , q) → (a , p , ((transport-const p) ⁻¹ ∙ q)))
+                     (hIH₂ b)
 
   𝕍-recursion : {𝓣 : Universe} {X : 𝓣 ̇ }
               → is-set X
