@@ -82,13 +82,13 @@ module _
  being-set-theoretic-ordinal-is-hereditary {x} (t , τ) {y} m =
   τ y m , (λ z n → τ z (t y z m n))
 
- ⟨𝕍ᵒʳᵈ⟩ : 𝓤 ⁺ ̇
- ⟨𝕍ᵒʳᵈ⟩ = Σ x ꞉ 𝕍 , is-set-theoretic-ordinal x
+ 𝕍ᵒʳᵈ : 𝓤 ⁺ ̇
+ 𝕍ᵒʳᵈ = Σ x ꞉ 𝕍 , is-set-theoretic-ordinal x
 
- 𝕍ᵒʳᵈ-is-subtype : {x y : ⟨𝕍ᵒʳᵈ⟩} → pr₁ x ＝ pr₁ y → x ＝ y
+ 𝕍ᵒʳᵈ-is-subtype : {x y : 𝕍ᵒʳᵈ} → pr₁ x ＝ pr₁ y → x ＝ y
  𝕍ᵒʳᵈ-is-subtype = to-subtype-＝ (λ _ → being-set-theoretic-ordinal-is-prop)
 
- _∈ᵒʳᵈ_ : ⟨𝕍ᵒʳᵈ⟩ → ⟨𝕍ᵒʳᵈ⟩ → 𝓤 ⁺  ̇
+ _∈ᵒʳᵈ_ : 𝕍ᵒʳᵈ → 𝕍ᵒʳᵈ → 𝓤 ⁺  ̇
  _∈ᵒʳᵈ_ (x , _) (y , _) = x ∈ y
 
  ∈ᵒʳᵈ-is-extensional : is-extensional _∈ᵒʳᵈ_
@@ -122,11 +122,11 @@ module _
        f : (x : 𝕍) → ((y : 𝕍) → y ∈ x → Q y) → Q x
        f x IH' σ = IH (x , σ) g
         where
-         g : (y : ⟨𝕍ᵒʳᵈ⟩) → y ∈ᵒʳᵈ (x , σ) → P y
+         g : (y : 𝕍ᵒʳᵈ) → y ∈ᵒʳᵈ (x , σ) → P y
          g (y , τ) y-in-x = IH' y y-in-x τ
 
- 𝕍ᵒʳᵈ : Ordinal (𝓤 ⁺)
- 𝕍ᵒʳᵈ = ⟨𝕍ᵒʳᵈ⟩ , _∈ᵒʳᵈ_
+ 𝕍ᴼᴿᴰ : Ordinal (𝓤 ⁺)
+ 𝕍ᴼᴿᴰ = 𝕍ᵒʳᵈ , _∈ᵒʳᵈ_
              , (λ x y → ∈-is-prop-valued)
              , ∈ᵒʳᵈ-is-well-founded
              , ∈ᵒʳᵈ-is-extensional
@@ -219,7 +219,7 @@ module _
      m : Ord-to-𝕍 (α ↓ a) ∈ Ord-to-𝕍 β
      m = s (Ord-to-𝕍 (α ↓ a)) (to-∈-of-Ord-to-𝕍 α ∣ a , refl ∣)
 
- Ord-to-𝕍ᵒʳᵈ : Ord → ⟨𝕍ᵒʳᵈ⟩
+ Ord-to-𝕍ᵒʳᵈ : Ord → 𝕍ᵒʳᵈ
  Ord-to-𝕍ᵒʳᵈ α = (Ord-to-𝕍 α , ρ α)
   where
    τ : (β : Ord) → is-transitive-set (Ord-to-𝕍 β)
@@ -309,10 +309,10 @@ module _
                (monotone-lemma f g r₁ r₂ e₁)
                (monotone-lemma g f r₂ r₁ e₂)
 
-  𝕍ᵒʳᵈ-isomorphic-to-Ord : OO 𝓤 ≃ₒ 𝕍ᵒʳᵈ
+  𝕍ᵒʳᵈ-isomorphic-to-Ord : OO 𝓤 ≃ₒ 𝕍ᴼᴿᴰ
   𝕍ᵒʳᵈ-isomorphic-to-Ord =
    Ord-to-𝕍ᵒʳᵈ , order-preserving-reflecting-equivs-are-order-equivs
-                  (OO 𝓤) 𝕍ᵒʳᵈ Ord-to-𝕍ᵒʳᵈ
+                  (OO 𝓤) 𝕍ᴼᴿᴰ Ord-to-𝕍ᵒʳᵈ
                   (lc-split-surjections-are-equivs
                     Ord-to-𝕍ᵒʳᵈ Ord-to-𝕍ᵒʳᵈ-is-left-cancellable
                     {!!})
