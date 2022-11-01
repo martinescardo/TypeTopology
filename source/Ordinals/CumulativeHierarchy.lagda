@@ -22,9 +22,10 @@ module Ordinals.CumulativeHierarchy
 open PropositionalTruncation pt
 
 open import UF.Base hiding (_≈_)
+open import UF.Equiv
+open import UF.FunExt
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-open import UF.FunExt
 open import UF.UA-FunExt
 
 private
@@ -252,6 +253,11 @@ module _
          h : (Σ b ꞉ ⟨ β ⟩ , Ord-to-𝕍 (β ↓ b) ＝ y) → is-transitive-set y
          h (b , refl) = τ (β ↓ b)
 
+ Ord-to-𝕍ᵒʳᵈ-is-left-cancellable : {α β : Ord}
+                                 → Ord-to-𝕍ᵒʳᵈ α ＝ Ord-to-𝕍ᵒʳᵈ β → α ＝ β
+ Ord-to-𝕍ᵒʳᵈ-is-left-cancellable {α} {β} e =
+  Ord-to-𝕍-is-left-cancellable α β (ap pr₁ e)
+
 \end{code}
 
 \begin{code}
@@ -302,5 +308,15 @@ module _
      ⊴-antisym (ρ f r₁) (ρ g r₂)
                (monotone-lemma f g r₁ r₂ e₁)
                (monotone-lemma g f r₂ r₁ e₂)
+
+  𝕍ᵒʳᵈ-isomorphic-to-Ord : OO 𝓤 ≃ₒ 𝕍ᵒʳᵈ
+  𝕍ᵒʳᵈ-isomorphic-to-Ord =
+   Ord-to-𝕍ᵒʳᵈ , order-preserving-reflecting-equivs-are-order-equivs
+                  (OO 𝓤) 𝕍ᵒʳᵈ Ord-to-𝕍ᵒʳᵈ
+                  (lc-split-surjections-are-equivs
+                    Ord-to-𝕍ᵒʳᵈ Ord-to-𝕍ᵒʳᵈ-is-left-cancellable
+                    {!!})
+                  Ord-to-𝕍-preserves-strict-order
+                  Ord-to-𝕍-reflects-strict-order
 
 \end{code}
