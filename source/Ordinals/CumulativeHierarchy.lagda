@@ -31,6 +31,9 @@ private
  fe : Fun-Ext
  fe = Univalence-gives-Fun-Ext ua
 
+ fe' : FunExt
+ fe' _ _ = fe
+
  pe : Prop-Ext
  pe = Univalence-gives-Prop-Ext ua
 
@@ -61,6 +64,17 @@ module _
   ×-is-prop being-transitive-set-is-prop
             (Π₂-is-prop fe (λ _ _ → being-transitive-set-is-prop))
 
+ transitive-set-if-set-theoretic-ordinal : {x : 𝕍}
+                                         → is-set-theoretic-ordinal x
+                                         → is-transitive-set x
+ transitive-set-if-set-theoretic-ordinal = pr₁
+
+ transitive-set-if-element-of-set-theoretic-ordinal : {x : 𝕍}
+                                                    → is-set-theoretic-ordinal x
+                                                    → {y : 𝕍} → y ∈ x
+                                                    → is-transitive-set y
+ transitive-set-if-element-of-set-theoretic-ordinal σ {y} m = pr₂ σ y m
+
  being-set-theoretic-ordinal-is-hereditary : {x : 𝕍} → is-set-theoretic-ordinal x
                                            → {y : 𝕍}
                                            → y ∈ x → is-set-theoretic-ordinal y
@@ -76,20 +90,46 @@ module _
  _∈ᵒʳᵈ_ : ⟨𝕍ᵒʳᵈ⟩ → ⟨𝕍ᵒʳᵈ⟩ → 𝓤 ⁺  ̇
  _∈ᵒʳᵈ_ (x , _) (y , _) = x ∈ y
 
- ∈ᵒʳᵈ-extensionality : is-extensional _∈ᵒʳᵈ_
- ∈ᵒʳᵈ-extensionality (x , u) (y , v) s t =
+ ∈ᵒʳᵈ-is-extensional : is-extensional _∈ᵒʳᵈ_
+ ∈ᵒʳᵈ-is-extensional (x , u) (y , v) s t =
   𝕍ᵒʳᵈ-is-subtype
    (∈-extensionality
      x y
      (λ z m → s (z , being-set-theoretic-ordinal-is-hereditary u m) m)
      (λ z m → t (z , being-set-theoretic-ordinal-is-hereditary v m) m))
 
+ ∈ᵒʳᵈ-is-transitive : is-transitive _∈ᵒʳᵈ_
+ ∈ᵒʳᵈ-is-transitive (x , _) (y , _) (z , τ) x-in-y y-in-z =
+  transitive-set-if-set-theoretic-ordinal τ y x y-in-z x-in-y
+
+ ∈-is-well-founded : is-well-founded _∈_
+ ∈-is-well-founded = ∈-induction (is-accessible _∈_)
+                                 (λ x → accessibility-is-prop _∈_ fe' x)
+                                 (λ x IH → step IH)
+
+ ∈ᵒʳᵈ-is-well-founded : is-well-founded _∈ᵒʳᵈ_
+ ∈ᵒʳᵈ-is-well-founded = transfinite-induction-converse _∈ᵒʳᵈ_ W
+  where
+   W : Well-founded _∈ᵒʳᵈ_
+   W P IH = (λ (x , σ) → Q-holds-everywhere x σ)
+    where
+     Q : 𝕍 → 𝓤 ⁺ ̇
+     Q x = (σ : is-set-theoretic-ordinal x) → P (x , σ)
+     Q-holds-everywhere : (x : 𝕍) → Q x
+     Q-holds-everywhere = transfinite-induction _∈_ ∈-is-well-founded Q f
+      where
+       f : (x : 𝕍) → ((y : 𝕍) → y ∈ x → Q y) → Q x
+       f x IH' σ = IH (x , σ) g
+        where
+         g : (y : ⟨𝕍ᵒʳᵈ⟩) → y ∈ᵒʳᵈ (x , σ) → P y
+         g (y , τ) y-in-x = IH' y y-in-x τ
+
  𝕍ᵒʳᵈ : Ordinal (𝓤 ⁺)
  𝕍ᵒʳᵈ = ⟨𝕍ᵒʳᵈ⟩ , _∈ᵒʳᵈ_
              , (λ x y → ∈-is-prop-valued)
-             , {!!}
-             , ∈ᵒʳᵈ-extensionality
-             , {!!}
+             , ∈ᵒʳᵈ-is-well-founded
+             , ∈ᵒʳᵈ-is-extensional
+             , ∈ᵒʳᵈ-is-transitive
 
  private
   Ord : 𝓤 ⁺ ̇
@@ -216,7 +256,7 @@ module _
 
 \begin{code}
 
- open import Ordinals.Arithmetic (λ _ _ → fe)
+ open import Ordinals.Arithmetic fe'
  open import Ordinals.OrdinalOfOrdinalsSuprema ua
 
  open import UF.Quotient
