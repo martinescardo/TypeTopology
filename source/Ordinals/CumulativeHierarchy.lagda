@@ -326,25 +326,36 @@ module _
   𝕍ᵒʳᵈ-to-Ord : 𝕍ᵒʳᵈ → Ord
   𝕍ᵒʳᵈ-to-Ord = 𝕍-to-Ord ∘ pr₁
 
+  𝕍-to-Ord-is-section-of-Ord-to-𝕍 : (x : 𝕍)
+                                  → is-set-theoretic-ordinal x
+                                  → Ord-to-𝕍 (𝕍-to-Ord x) ＝ x
+  𝕍-to-Ord-is-section-of-Ord-to-𝕍 =
+   𝕍-induction (λ x → is-set-theoretic-ordinal x → Ord-to-𝕍 (𝕍-to-Ord x) ＝ x)
+                (λ x → Π-is-set fe (λ _ → props-are-sets 𝕍-is-set))
+                ρ
+                {!!}
+    where
+     ρ : {A : 𝓤 ̇} (f : A → 𝕍)
+       → ((a : A) → is-set-theoretic-ordinal (f a)
+                  → Ord-to-𝕍 (𝕍-to-Ord (f a)) ＝ f a)
+       → is-set-theoretic-ordinal (𝕍-set f)
+       → Ord-to-𝕍 (𝕍-to-Ord (𝕍-set f)) ＝ 𝕍-set f
+     ρ {A} f IH σ =
+      Ord-to-𝕍 (𝕍-to-Ord (𝕍-set f))  ＝⟨ ap Ord-to-𝕍 (𝕍-to-Ord-behaviour-on-𝕍-sets f) ⟩
+      Ord-to-𝕍 s                     ＝⟨ Ord-to-𝕍-behaviour s ⟩
+      𝕍-set (λ y → Ord-to-𝕍 (s ↓ y)) ＝⟨ 𝕍-set-ext _ _ (e₁ , e₂) ⟩
+      𝕍-set f                        ∎
+       where
+        s : Ord
+        s = sup (λ a → 𝕍-to-Ord (f a) +ₒ 𝟙ₒ)
+        e₁ : (λ y → Ord-to-𝕍 (s ↓ y)) ≲ f
+        e₁ = {!!}
+        e₂ : f ≲ (λ y → Ord-to-𝕍 (s ↓ y))
+        e₂ a = ∣ sum-to-sup _ (a , (inr ⋆)) , {!!} ∣
+
   𝕍ᵒʳᵈ-to-Ord-is-section-of-Ord-to-𝕍ᵒʳᵈ : Ord-to-𝕍ᵒʳᵈ ∘ 𝕍ᵒʳᵈ-to-Ord ∼ id
-  𝕍ᵒʳᵈ-to-Ord-is-section-of-Ord-to-𝕍ᵒʳᵈ = λ (x , σ) → 𝕍ᵒʳᵈ-is-subtype (lemma x σ)
-   where
-    ϕ : (x : 𝕍) → is-set-theoretic-ordinal x → 𝕍
-    ϕ x σ = pr₁ (Ord-to-𝕍ᵒʳᵈ (𝕍ᵒʳᵈ-to-Ord (x , σ)))
-    lemma : (x : 𝕍) (σ : is-set-theoretic-ordinal x) → ϕ x σ ＝ x
-    lemma = 𝕍-induction _ (λ x → Π-is-set fe (λ _ → props-are-sets 𝕍-is-set))
-                          ρ
-                          {!!}
-     where
-      ρ : {A : 𝓤 ̇} (f : A → 𝕍)
-        → ((a : A) (τ : is-set-theoretic-ordinal (f a)) → ϕ (f a) τ ＝ f a)
-        → (σ : is-set-theoretic-ordinal (𝕍-set f))
-        → ϕ (𝕍-set f) σ ＝ 𝕍-set f
-      ρ {A} f IH σ =
-       ϕ (𝕍-set f) σ ＝⟨ {!!} ⟩
-       Ord-to-𝕍 {!!} ＝⟨ {!!} ⟩
-       𝕍-set (λ a → {!𝕍-to-Ord x ↓ a!}) ＝⟨ {!!} ⟩
-       {!!} ∎
+  𝕍ᵒʳᵈ-to-Ord-is-section-of-Ord-to-𝕍ᵒʳᵈ (x , σ) =
+   𝕍ᵒʳᵈ-is-subtype (𝕍-to-Ord-is-section-of-Ord-to-𝕍 x σ)
 
   𝕍ᵒʳᵈ-isomorphic-to-Ord : OO 𝓤 ≃ₒ 𝕍ᴼᴿᴰ
   𝕍ᵒʳᵈ-isomorphic-to-Ord =
@@ -352,7 +363,8 @@ module _
                   (OO 𝓤) 𝕍ᴼᴿᴰ Ord-to-𝕍ᵒʳᵈ
                   (lc-split-surjections-are-equivs
                     Ord-to-𝕍ᵒʳᵈ Ord-to-𝕍ᵒʳᵈ-is-left-cancellable
-                    {!!})
+                    (λ x → 𝕍ᵒʳᵈ-to-Ord x
+                         , 𝕍ᵒʳᵈ-to-Ord-is-section-of-Ord-to-𝕍ᵒʳᵈ x))
                   Ord-to-𝕍-preserves-strict-order
                   Ord-to-𝕍-reflects-strict-order
 
