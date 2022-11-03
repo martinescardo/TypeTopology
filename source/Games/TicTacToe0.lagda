@@ -147,13 +147,13 @@ Update a matrix by playing a move:
 \begin{code}
 
 update : (p : Player) (A : Matrix) → Move (p , A) → Matrix
-update p A (m , _) m' with (Grid-is-discrete m m')
+update p A (g , _) g' with (Grid-is-discrete g g')
 ...                        | inl _ = Just p
-...                        | inr _ = A m
+...                        | inr _ = A g'
 
 \end{code}
 
-Update a a board by playing a move:
+Update a board by playing a move:
 
 \begin{code}
 
@@ -162,15 +162,16 @@ play (p , A) m = opponent p , update p A m
 
 \end{code}
 
-The game tree:
+The game tree, with a bound on which we perform induction:
 
 \begin{code}
 
 tree : Board → ℕ → 𝕋
 tree b         0        = []
-tree b@(p , A) (succ k) = if wins (opponent p) A
-                          then []
-                          else (Move b ∷ (λ m → tree (play b m) k))
+tree b@(p , A) (succ k) with wins (opponent p) A
+...                        | true  = []
+...                        | false = Move b ∷ (λ (m : Move b) → tree (play b m) k)
+
 \end{code}
 
 The outcome function:
@@ -180,7 +181,7 @@ The outcome function:
 outcome : (b : Board) (k : ℕ) → Path (tree b k) → R
 outcome b 0 ⟨⟩ = draw
 outcome b@(p , A) (succ k) ms with wins (opponent p) A
-outcome b@(p , A) (succ k) ms        | true  = value (opponent p)
+outcome b@(p , A) (succ k) ⟨⟩        | true  = value (opponent p)
 outcome b@(p , A) (succ k) (m :: ms) | false = outcome (play b m) k ms
 
 \end{code}
@@ -189,9 +190,9 @@ Selection functions for players, namely argmin for X and argmax for O:
 
 \begin{code}
 
-selection : (p : Player) (M : Type) → M → Compact M {𝓤₀} → J M
-selection X M m κ p = pr₁ (compact-argmin p κ m)
-selection O M m κ p = pr₁ (compact-argmax p κ m)
+selection : (p : Player) {M : Type} → M → Compact M {𝓤₀} → J M
+selection X m κ p = pr₁ (compact-argmin p κ m)
+selection O m κ p = pr₁ (compact-argmax p κ m)
 
 \end{code}
 
@@ -199,9 +200,9 @@ And their derived quantifiers:
 
 \begin{code}
 
-quantifier : Player → (M : Type) → Compact M → decidable M → K M
-quantifier p M κ (inl m) = overline (selection p M m κ)
-quantifier p M κ (inr _) = λ _ → draw
+quantifier : Player → {M : Type} → Compact M → decidable M → K M
+quantifier p κ (inl m) = overline (selection p m κ)
+quantifier p κ (inr _) = λ _ → draw
 
 \end{code}
 
@@ -211,9 +212,9 @@ The quantifier tree for the game:
 
 quantifiers : (b : Board) (k : ℕ) → 𝓚 (tree b k)
 quantifiers b 0 = ⟨⟩
-quantifiers b@(p , A)  (succ k) with wins (opponent p) A
+quantifiers b@(p , A) (succ k) with wins (opponent p) A
 ... | true  = ⟨⟩
-... | false = quantifier p (Move b) (Move-compact b) (Move-decidable b)
+... | false = quantifier p (Move-compact b) (Move-decidable b)
               :: (λ m → quantifiers (play b m) k)
 
 \end{code}
