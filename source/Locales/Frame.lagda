@@ -257,12 +257,22 @@ module Joins {A : 𝓤 ̇} (_≤_ : A → A → Ω 𝓥) where
  _is-an-upper-bound-of_ : A → Fam 𝓦 A → Ω (𝓥 ⊔ 𝓦)
  u is-an-upper-bound-of U = Ɐ i ∶ index U , (U [ i ]) ≤ u
 
+ _is-an-upper-bound-of₂_ : A → A × A → Ω 𝓥
+ u is-an-upper-bound-of₂ (v , w) = (v ≤ u) ∧ (w ≤ u)
+
  upper-bound : Fam 𝓦 A → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
  upper-bound U = Σ u ꞉ A , (u is-an-upper-bound-of U) holds
+
+ upper-bound₂ : A × A → 𝓤 ⊔ 𝓥  ̇
+ upper-bound₂ (x , y) = Σ u ꞉ A , (u is-an-upper-bound-of₂ (x , y)) holds
 
  _is-lub-of_ : A → Fam 𝓦 A → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦)
  u is-lub-of U = (u is-an-upper-bound-of U)
                ∧ (Ɐ (u′ , _) ∶ upper-bound U , (u ≤ u′))
+
+ _is-lub-of₂_ : A → A × A → Ω (𝓤 ⊔ 𝓥)
+ u is-lub-of₂ (v , w) = (u is-an-upper-bound-of₂ (v , w))
+                      ∧ (Ɐ (u′ , _) ∶ upper-bound₂ (v , w) , (u ≤ u′))
 
 module JoinNotation {A : 𝓤 ̇} (⋁_ : Fam 𝓦 A → A) where
 
