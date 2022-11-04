@@ -108,3 +108,77 @@ BooleanAlgebra : (𝓤 𝓥 : Universe) → 𝓤 ⁺ ⊔ 𝓥 ⁺  ̇
 BooleanAlgebra 𝓤 𝓥 = Σ A ꞉ 𝓤  ̇ , ba-structure 𝓥 A
 
 \end{code}
+
+\begin{code}
+
+⟪_⟫ : BooleanAlgebra 𝓤 𝓥 → 𝓤  ̇
+⟪ A , _ ⟫ = A
+
+poset-of-ba : BooleanAlgebra 𝓤 𝓥 → Poset 𝓤 𝓥
+poset-of-ba (A , ((_≤_ , _) , (φ , _))) = A , _≤_ , φ
+
+carrier-of-ba-is-set : (B : BooleanAlgebra 𝓤 𝓥) → is-set ⟪ B ⟫
+carrier-of-ba-is-set B = carrier-of-[ poset-of-ba B ]-is-set
+
+meet-of-ba : (B : BooleanAlgebra 𝓤 𝓥) → ⟪ B ⟫ → ⟪ B ⟫ → ⟪ B ⟫
+meet-of-ba (_ , (_ , _ , _⋏_ , _) , _) = _⋏_
+
+infixl 4 meet-of-ba
+
+syntax meet-of-ba B x y = x ⋏[ B ] y
+
+join-of-ba : (B : BooleanAlgebra 𝓤 𝓥) → ⟪ B ⟫ → ⟪ B ⟫ → ⟪ B ⟫
+join-of-ba (_ , (_ , _ , _ , _ , _⋎_ , _) , _) = _⋎_
+
+infixl 3 join-of-ba
+
+syntax join-of-ba B x y = x ⋎[ B ] y
+
+⊤[_] : (B : BooleanAlgebra 𝓤 𝓥) → ⟪ B ⟫
+⊤[ (_ , (_ , ⊤ , _ , _ , _ , _) , _) ] = ⊤
+
+⊥[_] : (B : BooleanAlgebra 𝓤 𝓥) → ⟪ B ⟫
+⊥[ (_ , (_ , _ , _ , ⊥ , _ , _) , _) ] = ⊥
+
+\end{code}
+
+\begin{code}
+
+is-embedding : (B : BooleanAlgebra 𝓤 𝓥) (L : Frame 𝓤 𝓥 𝓦) → (⟪ B ⟫ → ⟨ L ⟩) → Ω 𝓤
+is-embedding {𝓤 = 𝓤} {𝓥} B L η = ι ∧ β ∧ γ ∧ δ ∧ ϵ
+ where
+  iss : is-set ⟨ L ⟩
+  iss = carrier-of-[ poset-of L ]-is-set
+
+  ι : {!!}
+  ι = {!!}
+
+  β : Ω 𝓤
+  β = η ⊤[ B ] ＝[ iss ]＝ 𝟏[ L ]
+
+  γ : Ω (𝓤 ⊔ 𝓤)
+  γ = Ɐ x ∶ ⟪ B ⟫ , Ɐ y ∶ ⟪ B ⟫ , η (x ⋏[ B ] y) ＝[ iss ]＝ η x ∧[ L ] η y
+
+  δ : Ω 𝓤
+  δ = η ⊥[ B ] ＝[ iss ]＝ 𝟎[ L ]
+
+  ϵ : Ω (𝓤 ⊔ 𝓤)
+  ϵ = Ɐ x ∶ ⟪ B ⟫ , Ɐ y ∶ ⟪ B ⟫ , η (x ⋎[ B ] y) ＝[ iss ]＝ η x ∨[ L ] η y
+
+-- is-embedding {𝓤 = 𝓤} {𝓥 = 𝓥} L σ = β ∧ γ
+--  where
+--   B : BooleanAlgebra 𝓤 𝓥
+--   B = ⟨ L ⟩ , σ
+
+--   open Meets (λ x y → x ≤[ poset-of L ] y)
+
+--   iss : is-set ⟨ L ⟩
+--   iss = carrier-of-[ poset-of L ]-is-set
+
+--   β : Ω (𝓤 ⊔ 𝓤)
+--   β = Ɐ x ∶ ⟨ L ⟩ , Ɐ y ∶ ⟨ L ⟩ , x ∧[ L ] y ＝[ iss ]＝ x ⋏[ B ] y
+
+--   γ : Ω 𝓤
+--   γ = Ɐ x ∶ ⟨ L ⟩ , Ɐ y ∶ ⟨ L ⟩ , x ∨[ L ] y ＝[ iss ]＝ x ⋎[ B ] y
+
+\end{code}
