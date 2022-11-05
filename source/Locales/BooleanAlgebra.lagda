@@ -30,6 +30,8 @@ open AllCombinators pt fe
 
 open import Locales.Frame pt fe
 
+open PropositionalTruncation pt
+
 \end{code}
 
 \section{Definition of a Boolean algebra}
@@ -144,31 +146,87 @@ syntax join-of-ba B x y = x ⋎[ B ] y
 
 \begin{code}
 
-is-embedding : (B : BooleanAlgebra 𝓤 𝓥) (L : Frame 𝓤 𝓥 𝓦) → (⟪ B ⟫ → ⟨ L ⟩) → Ω 𝓤
-is-embedding {𝓤 = 𝓤} {𝓥} B L η = ι ∧ β ∧ γ ∧ δ ∧ ϵ
+is-lattice-homomorphism : (B : BooleanAlgebra 𝓤′ 𝓥′) (L : Frame 𝓤 𝓥 𝓦)
+                        → (⟪ B ⟫ → ⟨ L ⟩) → Ω (𝓤′ ⊔ 𝓤)
+is-lattice-homomorphism {𝓤′} {𝓥′} {𝓤} {𝓥} B L η = β ∧ γ ∧ δ ∧ ϵ
  where
   iss : is-set ⟨ L ⟩
   iss = carrier-of-[ poset-of L ]-is-set
 
-  ι : {!!}
-  ι = {!!}
-
   β : Ω 𝓤
   β = η ⊤[ B ] ＝[ iss ]＝ 𝟏[ L ]
 
-  γ : Ω (𝓤 ⊔ 𝓤)
+  γ : Ω (𝓤′ ⊔ 𝓤)
   γ = Ɐ x ∶ ⟪ B ⟫ , Ɐ y ∶ ⟪ B ⟫ , η (x ⋏[ B ] y) ＝[ iss ]＝ η x ∧[ L ] η y
 
   δ : Ω 𝓤
   δ = η ⊥[ B ] ＝[ iss ]＝ 𝟎[ L ]
 
-  ϵ : Ω (𝓤 ⊔ 𝓤)
+  ϵ : Ω (𝓤′ ⊔ 𝓤)
   ϵ = Ɐ x ∶ ⟪ B ⟫ , Ɐ y ∶ ⟪ B ⟫ , η (x ⋎[ B ] y) ＝[ iss ]＝ η x ∨[ L ] η y
 
--- is-embedding {𝓤 = 𝓤} {𝓥 = 𝓥} L σ = β ∧ γ
---  where
---   B : BooleanAlgebra 𝓤 𝓥
---   B = ⟨ L ⟩ , σ
+is-embedding : (B : BooleanAlgebra 𝓤′ 𝓥′) (L : Frame 𝓤 𝓥 𝓦) → (⟪ B ⟫ → ⟨ L ⟩) → Ω (𝓤′ ⊔ 𝓤)
+is-embedding {𝓤′} {𝓥′} {𝓤} {𝓥} {𝓦} B L η =
+ ι ∧ is-lattice-homomorphism B L η
+  where
+   iss : is-set ⟨ L ⟩
+   iss = carrier-of-[ poset-of L ]-is-set
+
+   iss₀ : is-set ⟪ B ⟫
+   iss₀ = carrier-of-[ poset-of-ba B ]-is-set
+
+   ι : Ω (𝓤′ ⊔ 𝓤)
+   ι = Ɐ x ∶ ⟪ B ⟫ , Ɐ y ∶ ⟪ B ⟫ , (η x ＝[ iss ]＝ η y) ⇒ (x ＝[ iss₀ ]＝ y)
+
+\end{code}
+
+\begin{code}
+
+_is-sublattice-of_ : BooleanAlgebra 𝓤′ 𝓥′ → Frame 𝓤 𝓥 𝓦 → Ω (𝓤′ ⊔ 𝓤)
+_is-sublattice-of_ B L = Ǝ η ∶ (⟪ B ⟫ → ⟨ L ⟩) , is-embedding B L η holds
+
+\end{code}
+
+\begin{code}
+
+is-generated-by : (L : Frame 𝓤 𝓥 𝓦) → (B : BooleanAlgebra 𝓤′ 𝓥′)
+                → (⟪ B ⟫ → ⟨ L ⟩) → Ω (𝓤 ⊔ 𝓦 ⁺ ⊔ 𝓤′)
+is-generated-by {𝓦 = 𝓦} L B η =
+ Ɐ x ∶ ⟨ L ⟩ , Ǝ W ∶ Fam 𝓦 ⟪ B ⟫ , x ＝ ⋁[ L ] ⁅ η w ∣ w ε W ⁆
+
+\end{code}
+
+\begin{code}
+
+extension-lemma : (B : BooleanAlgebra 𝓦 𝓥) (L L′ : Frame 𝓤 𝓦 𝓦)
+                → (η : ⟪ B ⟫ → ⟨ L ⟩)
+                → is-embedding B L η holds
+                → is-generated-by L B η holds
+                → (h : ⟪ B ⟫ → ⟨ L′ ⟩)
+                → is-lattice-homomorphism B L′ h holds
+                → is-contr
+                   (Σ h₀ ꞉ (⟨ L ⟩ → ⟨ L′ ⟩) ,
+                    (is-a-frame-homomorphism L L′ h₀ holds) × (h ＝ h₀ ∘ η))
+extension-lemma {𝓦} {𝓤} B L L′ η e γ h (♠₀ , ♠₁ , _) = (h⁻ , φ , {!!}) , {!!}
+ where
+  ↓↓_ : ⟨ L ⟩ → Fam 𝓦 ⟨ L′ ⟩
+  ↓↓ x = ⁅ h b ∣ (b , _) ∶ Σ b ꞉ ⟪ B ⟫ , (η b ≤[ poset-of L ] x) holds  ⁆
+
+  h⁻ : ⟨ L ⟩ → ⟨ L′ ⟩
+  h⁻ x = ⋁[ L′ ] ↓↓ x
+
+\end{code}
+
+We first show that `h⁻` preserves the top element.
+
+\begin{code}
+
+  φ₀ : h⁻ 𝟏[ L ] ＝ 𝟏[ L′ ]
+  φ₀ = only-𝟏-is-above-𝟏 L′ (h⁻ 𝟏[ L ]) †
+   where
+    ♥₀ = pr₁ (pr₂ e)
+
+    ‡ = ⋁[ L′ ]-upper _ (⊤[ B ] , reflexivity+ (poset-of L) ♥₀)
 
 --   open Meets (λ x y → x ≤[ poset-of L ] y)
 
