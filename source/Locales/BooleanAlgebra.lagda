@@ -228,15 +228,59 @@ We first show that `h⁻` preserves the top element.
 
     ‡ = ⋁[ L′ ]-upper _ (⊤[ B ] , reflexivity+ (poset-of L) ♥₀)
 
---   open Meets (λ x y → x ≤[ poset-of L ] y)
+    open PosetReasoning (poset-of L′)
 
---   iss : is-set ⟨ L ⟩
---   iss = carrier-of-[ poset-of L ]-is-set
+    † : (𝟏[ L′ ] ≤[ poset-of L′ ] h⁻ 𝟏[ L ]) holds
+    † = 𝟏[ L′ ]      ＝⟨ ♠₀ ⁻¹ ⟩ₚ
+        h ⊤[ B ]     ≤⟨ ‡ ⟩
+        h⁻ 𝟏[ L ]    ■
 
---   β : Ω (𝓤 ⊔ 𝓤)
---   β = Ɐ x ∶ ⟨ L ⟩ , Ɐ y ∶ ⟨ L ⟩ , x ∧[ L ] y ＝[ iss ]＝ x ⋏[ B ] y
+\end{code}
 
---   γ : Ω 𝓤
---   γ = Ɐ x ∶ ⟨ L ⟩ , Ɐ y ∶ ⟨ L ⟩ , x ∨[ L ] y ＝[ iss ]＝ x ⋎[ B ] y
+The function `h⁻` also  meets.
+
+\begin{code}
+
+  φ₁ : (x y : ⟨ L ⟩) → h⁻ (x ∧[ L ] y) ＝ h⁻ x ∧[ L′ ] h⁻ y
+  φ₁ x y = ≤-is-antisymmetric (poset-of L′) † ‡
+   where
+    † : (h⁻ (x ∧[ L ] y) ≤[ poset-of L′ ] (h⁻ x ∧[ L′ ] h⁻ y)) holds
+    † = ∧[ L′ ]-greatest (h⁻ x) (h⁻ y) (h⁻ (x ∧[ L ] y)) I II
+     where
+      open PosetReasoning (poset-of L)
+
+      δ₁ : cofinal-in L′ (↓↓ (x ∧[ L ] y)) (↓↓ x) holds
+      δ₁ (b , p) = ∣ (b , (η b ≤⟨ p ⟩ x ∧[ L ] y ≤⟨ ∧[ L ]-lower₁ x y ⟩ x ■))
+                 , ≤-is-reflexive (poset-of L′) (h b) ∣
+
+      δ₂ : cofinal-in L′ (↓↓ (x ∧[ L ] y)) (↓↓ y) holds
+      δ₂ (b , p) = ∣ (b , (η b ≤⟨ p ⟩ x ∧[ L ] y ≤⟨ ∧[ L ]-lower₂ x y ⟩ y ■))
+                   , ≤-is-reflexive (poset-of L′) (h b) ∣
+
+      I : (h⁻ (x ∧[ L ] y) ≤[ poset-of L′ ] h⁻ x) holds
+      I = cofinal-implies-join-covered L′ _ _ δ₁
+
+      II : (h⁻ (x ∧[ L ] y) ≤[ poset-of L′ ] h⁻ y) holds
+      II = cofinal-implies-join-covered L′ _ _ δ₂
+
+    ‡ : ((h⁻ x ∧[ L′ ] h⁻ y) ≤[ poset-of L′ ] h⁻ (x ∧[ L ] y)) holds
+    ‡ =
+     h⁻ x ∧[ L′ ] h⁻ y                                               ≤⟨ {!!} ⟩
+     (⋁[ L′ ] ↓↓ x) ∧[ L′ ] (⋁[ L′ ] ↓↓ y)                           ＝⟨ distributivity+ L′ (↓↓ x) (↓↓ y) ⟩ₚ
+     ⋁[ L′ ] ⁅ (h b₁) ∧[ L′ ] (h b₂)
+             ∣ ((b₁ , _) , (b₂ , _))
+                ∶ (Σ b₁ ꞉ ⟪ B ⟫ , (η b₁ ≤[ poset-of L ] x) holds)
+                × ((Σ b₂ ꞉ ⟪ B ⟫ , (η b₂ ≤[ poset-of L ] y) holds))
+             ⁆                                                       ≤⟨ {!!} ⟩
+     h⁻ (x ∧[ L ] y)                          ■
+      where
+       open PosetReasoning (poset-of L′)
+
+\end{code}
+
+\begin{code}
+
+  φ : is-a-frame-homomorphism L L′ h⁻ holds
+  φ = φ₀ , φ₁ , {!!}
 
 \end{code}
