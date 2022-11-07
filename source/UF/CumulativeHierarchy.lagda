@@ -1,4 +1,4 @@
-Tom de Jong, 28 October 2022 - ...
+Tom de Jong, 28 October 2022 - 7 November 2022
 
 TO DO: Put reference to HoTT Book
 
