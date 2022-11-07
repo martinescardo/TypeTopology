@@ -263,18 +263,39 @@ The function `h⁻` also  meets.
       II : (h⁻ (x ∧[ L ] y) ≤[ poset-of L′ ] h⁻ y) holds
       II = cofinal-implies-join-covered L′ _ _ δ₂
 
+    ℱ : Fam 𝓦 ⟨ L′ ⟩
+    ℱ = ⁅ (h b₁) ∧[ L′ ] (h b₂)
+         ∣ ((b₁ , _) , (b₂ , _))
+            ∶ (Σ b₁ ꞉ ⟪ B ⟫ , (η b₁ ≤[ poset-of L ] x) holds)
+            × ((Σ b₂ ꞉ ⟪ B ⟫ , (η b₂ ≤[ poset-of L ] y) holds)) ⁆
+
     ‡ : ((h⁻ x ∧[ L′ ] h⁻ y) ≤[ poset-of L′ ] h⁻ (x ∧[ L ] y)) holds
     ‡ =
-     h⁻ x ∧[ L′ ] h⁻ y                                               ≤⟨ {!!} ⟩
-     (⋁[ L′ ] ↓↓ x) ∧[ L′ ] (⋁[ L′ ] ↓↓ y)                           ＝⟨ distributivity+ L′ (↓↓ x) (↓↓ y) ⟩ₚ
-     ⋁[ L′ ] ⁅ (h b₁) ∧[ L′ ] (h b₂)
-             ∣ ((b₁ , _) , (b₂ , _))
-                ∶ (Σ b₁ ꞉ ⟪ B ⟫ , (η b₁ ≤[ poset-of L ] x) holds)
-                × ((Σ b₂ ꞉ ⟪ B ⟫ , (η b₂ ≤[ poset-of L ] y) holds))
-             ⁆                                                       ≤⟨ {!!} ⟩
+     h⁻ x ∧[ L′ ] h⁻ y                        ＝⟨ refl ⟩ₚ
+     (⋁[ L′ ] ↓↓ x) ∧[ L′ ] (⋁[ L′ ] ↓↓ y)    ＝⟨ distributivity+ L′ (↓↓ x) (↓↓ y) ⟩ₚ
+     ⋁[ L′ ] ℱ                                ≤⟨ ※ ⟩
      h⁻ (x ∧[ L ] y)                          ■
       where
        open PosetReasoning (poset-of L′)
+       open Joins (λ x y → x ≤[ poset-of L′ ] y)
+
+
+       β : (h⁻ (x ∧[ L ] y) is-an-upper-bound-of ℱ) holds
+       β ((b₁ , ϕ₁) , (b₂ , ϕ₂)) = h b₁ ∧[ L′ ] h b₂     ＝⟨ ♠₁ b₁ b₂ ⁻¹ ⟩ₚ
+                                   h (b₁ ⋏[ B ] b₂)      ≤⟨ ζ ⟩
+                                   h⁻ (x ∧[ L ] y)       ■
+        where
+         ξ : (η (b₁ ⋏[ B ] b₂) ≤[ poset-of L ] (x ∧[ L ] y)) holds
+         ξ = η (b₁ ⋏[ B ] b₂)      ＝⟨ pr₁ (pr₂ (pr₂ e)) b₁ b₂ ⟩L
+             η b₁ ∧[ L ] η b₂      ≤⟨ ∧[ L ]-left-monotone ϕ₁ ⟩L
+             x ∧[ L ] η b₂         ≤⟨ ∧[ L ]-right-monotone ϕ₂ ⟩L
+             x ∧[ L ] y            ■L
+              where open PosetReasoning (poset-of L) renaming (_≤⟨_⟩_ to _≤⟨_⟩L_; _■ to _■L; _＝⟨_⟩ₚ_ to _＝⟨_⟩L_)
+
+         ζ : (h (b₁ ⋏[ B ] b₂) ≤[ poset-of L′ ] (⋁[ L′ ] ↓↓ (x ∧[ L ] y))) holds
+         ζ = ⋁[ L′ ]-upper (↓↓ (x ∧[ L ] y)) ((b₁ ⋏[ B ] b₂) , ξ)
+
+       ※ = ⋁[ L′ ]-least _ (h⁻ (x ∧[ L ] y) , β)
 
 \end{code}
 
