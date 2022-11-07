@@ -4,6 +4,8 @@ TO DO: Put reference to HoTT Book
 
 In collaboration with Nicolai Kraus, Fredrik Norvall Forsberg and Chuangjie Xu.
 
+TO DO: Split this into 2 or 3 files perhaps?
+
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
@@ -193,7 +195,7 @@ module _ (𝓤 : Universe) where
    pr₂ (𝕍-prop-recursion-with-computation ρ τ) f
 
   𝕍-prop-simple-recursion : {𝓣 : Universe}
-                          → (ρ : ({A : 𝓤 ̇ } (f : A → 𝕍) → Ω 𝓣))
+                          → (ρ : ({A : 𝓤 ̇ } → (A → 𝕍) → Ω 𝓣))
                           → ({A B : 𝓤 ̇ } (f : A → 𝕍) (g : B → 𝕍)
                             → f ≲ g → ρ f holds → ρ g holds)
                           → 𝕍 → Ω 𝓣
@@ -202,7 +204,7 @@ module _ (𝓤 : Universe) where
 
   𝕍-prop-simple-recursion-computes :
       {𝓣 : Universe}
-    → (ρ : ({A : 𝓤 ̇ } (f : A → 𝕍) → Ω 𝓣))
+    → (ρ : ({A : 𝓤 ̇ } → (A → 𝕍) → Ω 𝓣))
     → (τ : {A B : 𝓤 ̇ } (f : A → 𝕍) (g : B → 𝕍)
          → f ≲ g → ρ f holds → ρ g holds)
     → ({A : 𝓤 ̇ } (f : A → 𝕍) → 𝕍-prop-simple-recursion ρ τ (𝕍-set f) ＝ ρ f)
