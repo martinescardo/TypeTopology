@@ -674,21 +674,6 @@ id-is-scott-continuous F S δ = ⋁[ F ]-upper S , ⋁[ F ]-least S
 
 \end{code}
 
-If a function preserves (1) binary joins and (2) directed joins then it
-preserves arbitrary joins.
-
-\begin{code}
-
-sc-and-∨-preserving-⇒-⋁-preserving : (F : Frame 𝓤 𝓥 𝓦) (G : Frame 𝓤′ 𝓥′ 𝓦)
-                                   → (h : ⟨ F ⟩ → ⟨ G ⟩)
-                                   → is-scott-continuous F G h holds
-                                   → (((x y : ⟨ F ⟩) → h (x ∨[ F ] y) ＝ h x ∨[ G ] h y))
-                                   → (S : Fam 𝓦 ⟨ F ⟩)
-                                   → h (⋁[ F ] S) ＝ ⋁[ G ] ⁅ h x ∣ x ε S ⁆
-sc-and-∨-preserving-⇒-⋁-preserving = {!!}
-
-\end{code}
-
 \section{Frame homomorphisms}
 
 \begin{code}
@@ -1507,6 +1492,23 @@ directify-preserves-joins₀ F S x p =
       ⋁[ F ] directify F S ∎
 
 \end{code}
+
+If a function preserves (1) binary joins and (2) directed joins then it
+preserves arbitrary joins.
+
+\begin{code}
+
+sc-and-∨-preserving-⇒-⋁-preserving : (F : Frame 𝓤 𝓥 𝓦) (G : Frame 𝓤′ 𝓥′ 𝓦)
+                                   → (h : ⟨ F ⟩ → ⟨ G ⟩)
+                                   → is-scott-continuous F G h holds
+                                   → (((x y : ⟨ F ⟩) → h (x ∨[ F ] y) ＝ h x ∨[ G ] h y))
+                                   → is-join-preserving F G h holds
+sc-and-∨-preserving-⇒-⋁-preserving F G h ζ φ S = {!?!}
+ where
+  S′ = directify F S
+
+\end{code}
+
 
 \begin{code}
 
