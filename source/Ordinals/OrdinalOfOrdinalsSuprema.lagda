@@ -1058,18 +1058,28 @@ module suprema
    sup-is-image-of-sum : ⟨ sup ⟩ is-image-of (Σ i ꞉ I , ⟨ α i ⟩)
    sup-is-image-of-sum = sum-to-sup , sum-to-sup-is-surjection
 
+   initial-segment-of-sup-at-component :
+      (i : I) (x : ⟨ α i ⟩)
+    → sup ↓ pr₁ (sup-is-upper-bound i) x ＝ α i ↓ x
+   initial-segment-of-sup-at-component i x =
+    (simulations-preserve-↓ (α i) sup (sup-is-upper-bound i) x) ⁻¹
+
    initial-segment-of-sup-is-initial-segment-of-some-component :
       (y : ⟨ sup ⟩) → ∥ Σ i ꞉ I , Σ x ꞉ ⟨ α i ⟩ , sup ↓ y ＝ α i ↓ x ∥
    initial-segment-of-sup-is-initial-segment-of-some-component y =
-    ∥∥-functor (λ (i , x , e) → (i , x , (ap (sup ↓_) (e ⁻¹) ∙ lemma₁ i x)))
-               (lemma₂ y)
+    ∥∥-functor h (α⁻-is-upper-bound-surjectivity sr y)
      where
-      lemma₁ : (i : I) (x : ⟨ α i ⟩)
-             → sup ↓ pr₁ (sup-is-upper-bound i) x ＝ α i ↓ x
-      lemma₁ i x = simulations-preserve-↓ (α i) sup (sup-is-upper-bound i) x ⁻¹
-      lemma₂ : (y : ⟨ sup ⟩)
-             → ∥ Σ i ꞉ I , Σ x ꞉ ⟨ α i ⟩ , pr₁ (sup-is-upper-bound i) x ＝ y ∥
-      lemma₂ = α⁻-is-upper-bound-surjectivity sr
+      h : (Σ i ꞉ I , Σ x ꞉ ⟨ α i ⟩ , pr₁ (sup-is-upper-bound i) x ＝ y)
+        → Σ i ꞉ I , Σ x ꞉ ⟨ α i ⟩ , sup ↓ y ＝ α i ↓ x
+      h (i , x , e) = (i , x , e')
+       where
+        e' : sup ↓ y ＝ α i ↓ x
+        e' = sup ↓ y  ＝⟨ ap (sup ↓_) (e ⁻¹)                         ⟩
+             sup ↓ y' ＝⟨ initial-segment-of-sup-at-component i x ⟩
+             α i ↓ x  ∎
+         where
+          y' : ⟨ sup ⟩
+          y' = pr₁ (sup-is-upper-bound i) x
 
  sup-monotone : {I : 𝓤 ̇ } (α β : I → Ordinal 𝓤)
               → ((i : I) → α i ⊴ β i)
