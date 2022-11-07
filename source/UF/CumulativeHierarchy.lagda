@@ -237,30 +237,30 @@ module _ (𝓤 : Universe) where
                → (x ∈ 𝕍-set f) ＝ (∃ a ꞉ A , f a ＝ x)
   ∈-for-𝕍-sets x f = ap pr₁ (𝕍-prop-simple-recursion-computes _ _ f)
 
-  from-∈-of-𝕍-sets : {x : 𝕍} {A : 𝓤 ̇ } {f : A → 𝕍}
+  from-∈-of-𝕍-set : {x : 𝕍} {A : 𝓤 ̇ } {f : A → 𝕍}
                     → (x ∈ 𝕍-set f) → (∃ a ꞉ A , f a ＝ x)
-  from-∈-of-𝕍-sets {x} {A} {f} = Idtofun (∈-for-𝕍-sets x f)
+  from-∈-of-𝕍-set {x} {A} {f} = Idtofun (∈-for-𝕍-sets x f)
 
-  to-∈-of-𝕍-sets : {x : 𝕍} {A : 𝓤 ̇ } {f : A → 𝕍}
+  to-∈-of-𝕍-set : {x : 𝕍} {A : 𝓤 ̇ } {f : A → 𝕍}
                   → (∃ a ꞉ A , f a ＝ x) → (x ∈ 𝕍-set f)
-  to-∈-of-𝕍-sets {x} {A} {f} = back-Idtofun (∈-for-𝕍-sets x f)
+  to-∈-of-𝕍-set {x} {A} {f} = back-Idtofun (∈-for-𝕍-sets x f)
 
   _⊆_ : 𝕍 → 𝕍 → 𝓤 ⁺ ̇
   x ⊆ y = (v : 𝕍) → v ∈ x → v ∈ y
 
   ⊆-to-≲ : {A B : 𝓤 ̇ } (f : A → 𝕍) (g : B → 𝕍)
          → 𝕍-set f ⊆ 𝕍-set g → f ≲ g
-  ⊆-to-≲ {A} {B} f g s a = from-∈-of-𝕍-sets m
+  ⊆-to-≲ {A} {B} f g s a = from-∈-of-𝕍-set m
    where
     m : f a ∈ 𝕍-set g
-    m = s (f a) (to-∈-of-𝕍-sets ∣ a , refl ∣)
+    m = s (f a) (to-∈-of-𝕍-set ∣ a , refl ∣)
 
   ≲-to-⊆ : {A B : 𝓤 ̇ } (f : A → 𝕍) (g : B → 𝕍)
          → f ≲ g → 𝕍-set f ⊆ 𝕍-set g
-  ≲-to-⊆ {A} {B} f g s x m = to-∈-of-𝕍-sets n
+  ≲-to-⊆ {A} {B} f g s x m = to-∈-of-𝕍-set n
    where
     m' : ∃ a ꞉ A , f a ＝ x
-    m' = from-∈-of-𝕍-sets m
+    m' = from-∈-of-𝕍-set m
     n : ∃ b ꞉ B , g b ＝ x
     n = ∥∥-rec ∃-is-prop
                (λ (a , p) → ∥∥-functor (λ (b , q) → b , (q ∙ p)) (s a)) m'
@@ -309,6 +309,6 @@ module _ (𝓤 : Universe) where
       c y m = ∥∥-rec (P-is-prop-valued y) (λ (a , p) → transport P p (IH a)) m'
        where
         m' : ∃ a ꞉ A , f a ＝ y
-        m' = from-∈-of-𝕍-sets m
+        m' = from-∈-of-𝕍-set m
 
 \end{code}
