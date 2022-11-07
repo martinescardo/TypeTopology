@@ -280,7 +280,6 @@ module _
    𝕍-to-Ord-packaged : Σ ϕ ꞉ (𝕍 → Ord) , ({A : 𝓤 ̇} (f : A → 𝕍)
                                           (r : A → Ordinal 𝓤)
                                        → ϕ (𝕍-set f) ＝ 𝕍-to-Ord-aux f r)
-
    𝕍-to-Ord-packaged =
     𝕍-recursion-with-computation the-type-of-ordinals-is-a-set ρ τ
     where
@@ -330,10 +329,7 @@ module _
                                   → is-set-theoretic-ordinal x
                                   → Ord-to-𝕍 (𝕍-to-Ord x) ＝ x
   𝕍-to-Ord-is-section-of-Ord-to-𝕍 =
-   𝕍-induction (λ x → is-set-theoretic-ordinal x → Ord-to-𝕍 (𝕍-to-Ord x) ＝ x)
-                (λ x → Π-is-set fe (λ _ → props-are-sets 𝕍-is-set))
-                ρ
-                {!!}
+   𝕍-prop-induction _ (λ x → Π-is-prop fe (λ _ → 𝕍-is-set)) ρ
     where
      ρ : {A : 𝓤 ̇} (f : A → 𝕍)
        → ((a : A) → is-set-theoretic-ordinal (f a)
