@@ -714,6 +714,16 @@ the given family α.
            ((α i ↓ x) ↓ (x' , l)) ＝⟨ iterated-↓ (α i) x x' l ⟩
            (α i ↓ x')             ∎
 
+ -- TO DO: Put comment
+ α⁺-is-upper-bound-surjectivity :
+    (y : α⁺)
+  → ∥ Σ i ꞉ I , Σ x ꞉ ⟨ α i ⟩ , pr₁ (α⁺-is-upper-bound i) x ＝ y ∥
+ α⁺-is-upper-bound-surjectivity (β , s) = ∥∥-functor h s
+  where
+   h : (Σ i ꞉ I , β ⊲ α i)
+     → Σ i ꞉ I , Σ x ꞉ ⟨ α i ⟩ , pr₁ (α⁺-is-upper-bound i) x ＝ (β , s)
+   h (i , x , e) = i , x , to-subtype-＝ (λ _ → ∃-is-prop) (e ⁻¹)
+
  module lower-bound-of-upper-bounds-proof
          (β : Ordinal 𝓤)
          (β-is-upper-bound : (i : I) → α i ⊴ β)
@@ -929,6 +939,25 @@ Next, we resize α⁺ using:
                         (α⁺-is-upper-bound i)
                         (≃ₒ-to-⊴ α⁺-Ord α⁻-Ord α⁺-≃ₒ-α⁻)
 
+  -- TO DO: Put comment
+  α⁻-is-upper-bound-surjectivity :
+     (y : α⁻)
+   → ∥ Σ i ꞉ I , Σ x ꞉ ⟨ α i ⟩ , pr₁ (α⁻-is-upper-bound i) x ＝ y ∥
+  α⁻-is-upper-bound-surjectivity y =
+   ∥∥-functor h (α⁺-is-upper-bound-surjectivity (⌜ φ ⌝ y))
+   where
+    h : (Σ i ꞉ I , Σ x ꞉ ⟨ α i ⟩ , pr₁ (α⁺-is-upper-bound i) x ＝ ⌜ φ ⌝ y)
+      → (Σ i ꞉ I , Σ x ꞉ ⟨ α i ⟩ , pr₁ (α⁻-is-upper-bound i) x ＝ y)
+    h (i , x , e) = (i , x , e')
+     where
+      e' = pr₁ (α⁻-is-upper-bound i) x           ＝⟨ refl ⟩
+           ⌜ φ ⌝⁻¹ (pr₁ (α⁺-is-upper-bound i) x) ＝⟨ ⦅1⦆ ⟩
+           ⌜ φ ⌝⁻¹ (⌜ φ ⌝ y)                     ＝⟨ ⦅2⦆ ⟩
+           y                                     ∎
+       where
+        ⦅1⦆ = ap ⌜ φ ⌝⁻¹ e
+        ⦅2⦆ = inverses-are-retractions ⌜ φ ⌝ (⌜⌝-is-equiv φ) y
+
   α⁻-is-lower-bound-of-upper-bounds : (β : Ordinal 𝓤)
                                     → ((i : I) → α i ⊴ β)
                                     → α⁻-Ord ⊴ β
@@ -984,6 +1013,7 @@ module suprema
        where
 
  open ImageAndSurjection pt
+ open PropositionalTruncation pt
 
  module _ {I : 𝓤 ̇  } (α : I → Ordinal 𝓤) where
 
@@ -1027,6 +1057,19 @@ module suprema
 
    sup-is-image-of-sum : ⟨ sup ⟩ is-image-of (Σ i ꞉ I , ⟨ α i ⟩)
    sup-is-image-of-sum = sum-to-sup , sum-to-sup-is-surjection
+
+   initial-segment-of-sup-is-initial-segment-of-some-component :
+      (y : ⟨ sup ⟩) → ∥ Σ i ꞉ I , Σ x ꞉ ⟨ α i ⟩ , sup ↓ y ＝ α i ↓ x ∥
+   initial-segment-of-sup-is-initial-segment-of-some-component y =
+    ∥∥-functor (λ (i , x , e) → (i , x , (ap (sup ↓_) (e ⁻¹) ∙ lemma₁ i x)))
+               (lemma₂ y)
+     where
+      lemma₁ : (i : I) (x : ⟨ α i ⟩)
+             → sup ↓ pr₁ (sup-is-upper-bound i) x ＝ α i ↓ x
+      lemma₁ i x = simulations-preserve-↓ (α i) sup (sup-is-upper-bound i) x ⁻¹
+      lemma₂ : (y : ⟨ sup ⟩)
+             → ∥ Σ i ꞉ I , Σ x ꞉ ⟨ α i ⟩ , pr₁ (sup-is-upper-bound i) x ＝ y ∥
+      lemma₂ = α⁻-is-upper-bound-surjectivity sr
 
  sup-monotone : {I : 𝓤 ̇ } (α β : I → Ordinal 𝓤)
               → ((i : I) → α i ⊴ β i)
