@@ -1152,6 +1152,18 @@ to-⊴ α β ϕ = g
 
 \end{code}
 
+Added 7 November 2022 by Tom de Jong.
+A consequence of the above constructions is that a simulation preserves initial
+segments in the following sense:
+
+\begin{code}
+
+simulations-preserve-↓ : (α β : Ordinal 𝓤) (f : α ⊴ β)
+                       → ((a : ⟨ α ⟩) → α ↓ a ＝ β ↓ pr₁ f a)
+simulations-preserve-↓ α β f a = pr₂ (from-≼ (⊴-gives-≼ α β f) a)
+
+\end{code}
+
 Transfinite induction on the ordinal of ordinals:
 
 \begin{code}
