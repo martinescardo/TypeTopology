@@ -290,7 +290,9 @@ The function `h⁻` also  meets.
              η b₁ ∧[ L ] η b₂      ≤⟨ ∧[ L ]-left-monotone ϕ₁ ⟩L
              x ∧[ L ] η b₂         ≤⟨ ∧[ L ]-right-monotone ϕ₂ ⟩L
              x ∧[ L ] y            ■L
-              where open PosetReasoning (poset-of L) renaming (_≤⟨_⟩_ to _≤⟨_⟩L_; _■ to _■L; _＝⟨_⟩ₚ_ to _＝⟨_⟩L_)
+              where
+               open PosetReasoning (poset-of L)
+                renaming (_≤⟨_⟩_ to _≤⟨_⟩L_; _■ to _■L; _＝⟨_⟩ₚ_ to _＝⟨_⟩L_)
 
          ζ : (h (b₁ ⋏[ B ] b₂) ≤[ poset-of L′ ] (⋁[ L′ ] ↓↓ (x ∧[ L ] y))) holds
          ζ = ⋁[ L′ ]-upper (↓↓ (x ∧[ L ] y)) ((b₁ ⋏[ B ] b₂) , ξ)
