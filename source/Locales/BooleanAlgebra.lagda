@@ -303,7 +303,16 @@ The function `h⁻` also  meets.
 
 \begin{code}
 
+  open Joins (λ x y → x ≤[ poset-of L′ ] y)
+
+  φ₂ : (S : Fam 𝓦 ⟨ L ⟩) → (h⁻ (⋁[ L ] S) is-lub-of ⁅ h⁻ x ∣ x ε S ⁆) holds
+  φ₂ (I , 𝓎) = {!!}
+
+\end{code}
+
+\begin{code}
+
   φ : is-a-frame-homomorphism L L′ h⁻ holds
-  φ = φ₀ , φ₁ , {!!}
+  φ = φ₀ , φ₁ , λ S → {!!}
 
 \end{code}
