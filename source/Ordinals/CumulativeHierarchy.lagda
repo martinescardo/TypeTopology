@@ -325,6 +325,10 @@ module _
   𝕍ᵒʳᵈ-to-Ord : 𝕍ᵒʳᵈ → Ord
   𝕍ᵒʳᵈ-to-Ord = 𝕍-to-Ord ∘ pr₁
 
+  -- TO DO: Move elsewhere and rename
+  +ₒ-𝟙ₒ-lemma : (α : Ord) → (α +ₒ 𝟙ₒ) ↓ inr ⋆ ＝ α
+  +ₒ-𝟙ₒ-lemma α = {!!}
+
   𝕍-to-Ord-is-section-of-Ord-to-𝕍 : (x : 𝕍)
                                   → is-set-theoretic-ordinal x
                                   → Ord-to-𝕍 (𝕍-to-Ord x) ＝ x
@@ -344,10 +348,25 @@ module _
        where
         s : Ord
         s = sup (λ a → 𝕍-to-Ord (f a) +ₒ 𝟙ₒ)
+        u : (a : A) → ⟨ 𝕍-to-Ord (f a) +ₒ 𝟙ₒ ⟩  → ⟨ s ⟩
+        u a = pr₁ (sup-is-upper-bound _ a)
         e₁ : (λ y → Ord-to-𝕍 (s ↓ y)) ≲ f
         e₁ = {!!}
         e₂ : f ≲ (λ y → Ord-to-𝕍 (s ↓ y))
-        e₂ a = ∣ sum-to-sup _ (a , (inr ⋆)) , {!!} ∣
+        e₂ a = ∣ u a (inr ⋆) , q ∣
+         where
+          p : Ord-to-𝕍 (𝕍-to-Ord (f a)) ＝ f a
+          p = IH a (being-set-theoretic-ordinal-is-hereditary σ
+                     (to-∈-of-𝕍-set ∣ a , refl ∣))
+          q : Ord-to-𝕍 (s ↓ u a (inr ⋆)) ＝ f a
+          q = Ord-to-𝕍 (s ↓ u a (inr ⋆))                ＝⟨ ⦅1⦆ ⟩
+              Ord-to-𝕍 ((𝕍-to-Ord (f a) +ₒ 𝟙ₒ) ↓ inr ⋆) ＝⟨ ⦅2⦆ ⟩
+              Ord-to-𝕍 (𝕍-to-Ord (f a))                 ＝⟨ p ⟩
+              f a                                       ∎
+           where
+            ⦅1⦆ = ap Ord-to-𝕍 (initial-segment-of-sup-at-component _ a (inr ⋆))
+            ⦅2⦆ = ap Ord-to-𝕍 (+ₒ-𝟙ₒ-lemma (𝕍-to-Ord (f a)))
+
 
   𝕍ᵒʳᵈ-to-Ord-is-section-of-Ord-to-𝕍ᵒʳᵈ : Ord-to-𝕍ᵒʳᵈ ∘ 𝕍ᵒʳᵈ-to-Ord ∼ id
   𝕍ᵒʳᵈ-to-Ord-is-section-of-Ord-to-𝕍ᵒʳᵈ (x , σ) =
