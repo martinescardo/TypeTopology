@@ -1,4 +1,4 @@
-Tom de Jong, 28 October 2022 - ...
+Tom de Jong, 28 October 2022 - 7 November 2022
 
 In collaboration with Nicolai Kraus, Fredrik Norvall Forsberg and Chuangjie Xu.
 
@@ -263,6 +263,7 @@ module _
 \begin{code}
 
  open import Ordinals.Arithmetic fe'
+ open import Ordinals.Arithmetic-Properties ua
  open import Ordinals.OrdinalOfOrdinalsSuprema ua
 
  open import UF.Quotient
@@ -327,8 +328,25 @@ module _
 
   -- TO DO: Move elsewhere and rename
   +ₒ-𝟙ₒ-lemma : (α : Ord) → (α +ₒ 𝟙ₒ) ↓ inr ⋆ ＝ α
-  +ₒ-𝟙ₒ-lemma α = {!!}
+  +ₒ-𝟙ₒ-lemma α =
+   eqtoidₒ ((α +ₒ 𝟙ₒ) ↓ inr ⋆) α (f , f-mon
+                                  , ((qinvs-are-equivs f (g , (η , ε)))
+                                  , g-mon))
+    where
+     f : ⟨ (α +ₒ 𝟙ₒ) ↓ inr ⋆ ⟩ → ⟨ α ⟩
+     f (inl x , l) = x
+     f-mon : is-order-preserving ((α +ₒ 𝟙ₒ) ↓ inr ⋆) α f
+     f-mon (inl x , _) (inl y , _) l = l
+     g : ⟨ α ⟩ → ⟨ (α +ₒ 𝟙ₒ) ↓ inr ⋆ ⟩
+     g x = (inl x , ⋆)
+     g-mon : is-order-preserving α ((α +ₒ 𝟙ₒ) ↓ inr ⋆) g
+     g-mon x y l = l
+     η : g ∘ f ∼ id
+     η (inl _ , _) = refl
+     ε : f ∘ g ∼ id
+     ε _ = refl
 
+  -- TO DO: Clean this up
   𝕍-to-Ord-is-section-of-Ord-to-𝕍 : (x : 𝕍)
                                   → is-set-theoretic-ordinal x
                                   → Ord-to-𝕍 (𝕍-to-Ord x) ＝ x
@@ -348,25 +366,65 @@ module _
        where
         s : Ord
         s = sup (λ a → 𝕍-to-Ord (f a) +ₒ 𝟙ₒ)
-        u : (a : A) → ⟨ 𝕍-to-Ord (f a) +ₒ 𝟙ₒ ⟩  → ⟨ s ⟩
-        u a = pr₁ (sup-is-upper-bound _ a)
-        e₁ : (λ y → Ord-to-𝕍 (s ↓ y)) ≲ f
-        e₁ = {!!}
-        e₂ : f ≲ (λ y → Ord-to-𝕍 (s ↓ y))
-        e₂ a = ∣ u a (inr ⋆) , q ∣
-         where
-          p : Ord-to-𝕍 (𝕍-to-Ord (f a)) ＝ f a
-          p = IH a (being-set-theoretic-ordinal-is-hereditary σ
-                     (to-∈-of-𝕍-set ∣ a , refl ∣))
-          q : Ord-to-𝕍 (s ↓ u a (inr ⋆)) ＝ f a
-          q = Ord-to-𝕍 (s ↓ u a (inr ⋆))                ＝⟨ ⦅1⦆ ⟩
-              Ord-to-𝕍 ((𝕍-to-Ord (f a) +ₒ 𝟙ₒ) ↓ inr ⋆) ＝⟨ ⦅2⦆ ⟩
-              Ord-to-𝕍 (𝕍-to-Ord (f a))                 ＝⟨ p ⟩
-              f a                                       ∎
-           where
-            ⦅1⦆ = ap Ord-to-𝕍 (initial-segment-of-sup-at-component _ a (inr ⋆))
-            ⦅2⦆ = ap Ord-to-𝕍 (+ₒ-𝟙ₒ-lemma (𝕍-to-Ord (f a)))
+        c : (a : A) → Ord
+        c a = 𝕍-to-Ord (f a) +ₒ 𝟙ₒ
 
+        abstract -- For performance
+         u : (a : A) → ⟨ 𝕍-to-Ord (f a) +ₒ 𝟙ₒ ⟩  → ⟨ s ⟩
+         u a = pr₁ (sup-is-upper-bound _ a)
+
+         IH' : (a : A) → Ord-to-𝕍 (𝕍-to-Ord (f a)) ＝ f a
+         IH' a = IH a (being-set-theoretic-ordinal-is-hereditary σ
+                        (to-∈-of-𝕍-set ∣ a , refl ∣))
+
+         lemma' : (a : A) → Ord-to-𝕍 (c a ↓ inr ⋆) ＝ f a
+         lemma' a = Ord-to-𝕍 (c a ↓ inr ⋆)     ＝⟨ ap Ord-to-𝕍 ⦅e⦆ ⟩
+                    Ord-to-𝕍 (𝕍-to-Ord (f a)) ＝⟨ IH' a            ⟩
+                    f a ∎
+          where
+           ⦅e⦆ : c a ↓ inr ⋆ ＝ 𝕍-to-Ord (f a)
+           ⦅e⦆ = +ₒ-𝟙ₒ-lemma (𝕍-to-Ord (f a))
+
+         lemma : (a : A) → Ord-to-𝕍 (s ↓ u a (inr ⋆)) ＝ f a
+         lemma a = Ord-to-𝕍 (s ↓ u a (inr ⋆)) ＝⟨ ap Ord-to-𝕍 ⦅e⦆ ⟩
+                   Ord-to-𝕍 (c a ↓ inr ⋆)     ＝⟨ lemma' a ⟩
+                   f a                        ∎
+          where
+           ⦅e⦆ : s ↓ u a (inr ⋆) ＝ c a ↓ inr ⋆
+           ⦅e⦆ = initial-segment-of-sup-at-component _ a (inr ⋆)
+
+        e₂ : f ≲ (λ y → Ord-to-𝕍 (s ↓ y))
+        e₂ a = ∣ u a (inr ⋆) , lemma a ∣
+
+        e₁ : (λ y → Ord-to-𝕍 (s ↓ y)) ≲ f
+        e₁ y =
+         ∥∥-rec ∃-is-prop h
+          (initial-segment-of-sup-is-initial-segment-of-some-component _ y)
+          where
+           h : (Σ a ꞉ A , Σ x ꞉ ⟨ c a ⟩ , s ↓ y ＝ c a ↓ x)
+             → ∃ a ꞉ A , f a ＝ Ord-to-𝕍 (s ↓ y)
+           h (a , inr ⋆ , e) = ∣ a , ((ap Ord-to-𝕍 e ∙ lemma' a ) ⁻¹) ∣
+           h (a , inl x , e) = goal
+            where
+             fact : c a ↓ inl x ＝ 𝕍-to-Ord (f a) ↓ x
+             fact = +ₒ-↓-left x ⁻¹
+             claim : Ord-to-𝕍 (𝕍-to-Ord (f a) ↓ x) ∈ f a
+             claim = transport (Ord-to-𝕍 (𝕍-to-Ord (f a) ↓ x) ∈_)
+                                (IH' a)
+                                (Ord-to-𝕍-preserves-strict-order
+                                  (𝕍-to-Ord (f a) ↓ x)
+                                  (𝕍-to-Ord (f a))
+                                  (x , refl))
+             claim' : Ord-to-𝕍 (𝕍-to-Ord (f a) ↓ x) ∈ 𝕍-set f
+             claim' = transitive-set-if-set-theoretic-ordinal σ
+                        (f a)
+                        (Ord-to-𝕍 (𝕍-to-Ord (f a) ↓ x))
+                        (to-∈-of-𝕍-set ∣ a , refl ∣)
+                        claim
+             suffices : ∃ a' ꞉ A , f a' ＝ Ord-to-𝕍 (𝕍-to-Ord (f a) ↓ x)
+             suffices = from-∈-of-𝕍-set claim'
+             goal : ∃ a' ꞉ A , f a' ＝ Ord-to-𝕍 (s ↓ y)
+             goal = ∥∥-functor (λ (a' , p) → a' , (p ∙ ap Ord-to-𝕍 (fact ⁻¹ ∙ e ⁻¹))) suffices
 
   𝕍ᵒʳᵈ-to-Ord-is-section-of-Ord-to-𝕍ᵒʳᵈ : Ord-to-𝕍ᵒʳᵈ ∘ 𝕍ᵒʳᵈ-to-Ord ∼ id
   𝕍ᵒʳᵈ-to-Ord-is-section-of-Ord-to-𝕍ᵒʳᵈ (x , σ) =
