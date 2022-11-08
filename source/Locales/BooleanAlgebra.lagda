@@ -235,6 +235,22 @@ We first show that `h⁻` preserves the top element.
         h ⊤[ B ]     ≤⟨ ‡ ⟩
         h⁻ 𝟏[ L ]    ■
 
+  φ₃ : h⁻ 𝟎[ L ] ＝ 𝟎[ L′ ]
+  φ₃ = only-𝟎-is-below-𝟎 L′ (h⁻ 𝟎[ L ]) †
+   where
+    open PosetReasoning (poset-of L′)
+    open Joins (λ x y → x ≤[ poset-of L′ ] y)
+
+    † : (h⁻ 𝟎[ L ] ≤[ poset-of L′ ] 𝟎[ L′ ]) holds
+    † = h⁻ 𝟎[ L ]              ＝⟨ refl ⟩ₚ
+        ⋁[ L′ ] (↓↓ 𝟎[ L ])    ≤⟨ ※ ⟩
+        𝟎[ L′ ]                ■
+         where
+          ‡ : (𝟎[ L′ ] is-an-upper-bound-of (↓↓ 𝟎[ L ])) holds
+          ‡ (b , q) = h b ≤⟨ {!q!} ⟩ {!!} ■
+
+          ※ = ⋁[ L′ ]-least (↓↓ 𝟎[ L ]) (𝟎[ L′ ] , ‡)
+
 \end{code}
 
 The function `h⁻` also  meets.
