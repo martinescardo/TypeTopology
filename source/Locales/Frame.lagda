@@ -1686,14 +1686,6 @@ preserves arbitrary joins.
 
 \begin{code}
 
-directed-join-preservation-lemma : (F : Frame 𝓤 𝓥 𝓦) (G : Frame 𝓤′ 𝓥′ 𝓦)
-                                 → (h : ⟨ F ⟩ → ⟨ G ⟩)
-                                 → (S : Fam 𝓦 ⟨ F ⟩)
-                                 → (i⃗ : List (index S))
-                                 → h (directify F S [ i⃗ ])
-                                 ＝ directify G ⁅ h x ∣ x ε S ⁆ [ i⃗ ]
-directed-join-preservation-lemma F G h S i⃗ = {!!}
-
 sc-and-∨-preserving-⇒-⋁-preserving : (F : Frame 𝓤 𝓥 𝓦) (G : Frame 𝓤′ 𝓥′ 𝓦)
                                    → (h : ⟨ F ⟩ → ⟨ G ⟩)
                                    → is-scott-continuous F G h holds
