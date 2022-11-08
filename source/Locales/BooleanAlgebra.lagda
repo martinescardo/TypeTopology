@@ -189,6 +189,33 @@ _is-sublattice-of_ B L = Ǝ η ∶ (⟪ B ⟫ → ⟨ L ⟩) , is-embedding B L 
 
 \begin{code}
 
+embedding-is-order-isomorphism : (B : BooleanAlgebra 𝓤 𝓥′) (L : Frame 𝓤 𝓥 𝓦)
+                               → (η : ⟪ B ⟫ → ⟨ L ⟩)
+                               → (x y : ⟪ B ⟫)
+                               → (x ≤[ poset-of-ba B ] y
+                               ↔ η x ≤[ poset-of L ] η y) holds
+embedding-is-order-isomorphism B L η x y = † , ‡
+ where
+  † : (x ≤[ poset-of-ba B ] y ⇒ η x ≤[ poset-of L ] η y) holds
+  † = {!meet-preserving-implies-monotone!}
+
+  ‡ : (η x ≤[ poset-of L ] η y ⇒ x ≤[ poset-of-ba B ] y) holds
+  ‡ = {!!}
+
+embeddings-lemma : (B : BooleanAlgebra 𝓤′ 𝓥′) (L : Frame 𝓤 𝓥 𝓦)
+                 → (η : ⟪ B ⟫ → ⟨ L ⟩)
+                 → is-embedding B L η holds
+                 → (x : ⟪ B ⟫) (y : ⟨ L ⟩) → η x ＝ 𝟎[ L ] → x ＝ ⊥[ B ]
+embeddings-lemma B L η e x y p =
+ ≤-is-antisymmetric (poset-of-ba B) † {!⊥[ B ]-is-bottom!}
+  where
+   † : (x ≤[ poset-of-ba B ] ⊥[ B ]) holds
+   † = {!!}
+
+\end{code}
+
+\begin{code}
+
 is-generated-by : (L : Frame 𝓤 𝓥 𝓦) → (B : BooleanAlgebra 𝓤′ 𝓥′)
                 → (⟪ B ⟫ → ⟨ L ⟩) → Ω (𝓤 ⊔ 𝓦 ⁺ ⊔ 𝓤′)
 is-generated-by {𝓦 = 𝓦} L B η =
@@ -207,7 +234,7 @@ extension-lemma : (B : BooleanAlgebra 𝓦 𝓥) (L L′ : Frame 𝓤 𝓦 𝓦)
                 → is-contr
                    (Σ h₀ ꞉ (⟨ L ⟩ → ⟨ L′ ⟩) ,
                     (is-a-frame-homomorphism L L′ h₀ holds) × (h ＝ h₀ ∘ η))
-extension-lemma {𝓦} {𝓤} B L L′ η e γ h (♠₀ , ♠₁ , _) = (h⁻ , φ , {!!}) , {!!}
+extension-lemma {𝓦} {𝓤} B L L′ η e@(_ , _ , _ , _ , ♥₂) γ h (♠₀ , ♠₁ , ♠₂ , ♠₃) = (h⁻ , φ , {!!}) , {!!}
  where
   ↓↓_ : ⟨ L ⟩ → Fam 𝓦 ⟨ L′ ⟩
   ↓↓ x = ⁅ h b ∣ (b , _) ∶ Σ b ꞉ ⟪ B ⟫ , (η b ≤[ poset-of L ] x) holds  ⁆
