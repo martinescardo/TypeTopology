@@ -321,14 +321,27 @@ The function `h⁻` also  meets.
 
   open Joins (λ x y → x ≤[ poset-of L′ ] y)
 
+  ζ⁻ : is-scott-continuous L L′ h⁻ holds
+  ζ⁻ = {!!}
+
+  h⁻-preserves-∨ : (x y : ⟨ L ⟩) → h⁻ (x ∨[ L ] y) ＝ h⁻ x ∨[ L′ ] h⁻ y
+  h⁻-preserves-∨ x y = {!!}
+
   φ₂ : (S : Fam 𝓦 ⟨ L ⟩) → (h⁻ (⋁[ L ] S) is-lub-of ⁅ h⁻ x ∣ x ε S ⁆) holds
-  φ₂ (I , 𝓎) = {!!}
+  φ₂ S@(I , 𝓎) =
+   transport (λ - → (- is-lub-of ⁅ h⁻ x ∣ x ε S ⁆) holds) († ⁻¹) ‡
+    where
+     † : h⁻ (⋁[ L ] S) ＝ ⋁[ L′ ] ⁅ h⁻ x ∣ x ε S ⁆
+     † = sc-and-∨-preserving-⇒-⋁-preserving L L′ h⁻ ζ⁻ φ₃ h⁻-preserves-∨ S
+
+     ‡ : ((⋁[ L′ ] ⁅ h⁻ x ∣ x ε S ⁆) is-lub-of ⁅ h⁻ x ∣ x ε S ⁆) holds
+     ‡ = ⋁[ L′ ]-upper ⁅ h⁻ x ∣ x ε S ⁆ , ⋁[ L′ ]-least ⁅ h⁻ x ∣ x ε S ⁆
 
 \end{code}
 
 \begin{code}
 
   φ : is-a-frame-homomorphism L L′ h⁻ holds
-  φ = φ₀ , φ₁ , λ S → {!!}
+  φ = φ₀ , φ₁ , φ₂
 
 \end{code}
