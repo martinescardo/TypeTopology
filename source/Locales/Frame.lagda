@@ -1493,23 +1493,6 @@ directify-preserves-joins₀ F S x p =
 
 \end{code}
 
-If a function preserves (1) binary joins and (2) directed joins then it
-preserves arbitrary joins.
-
-\begin{code}
-
-sc-and-∨-preserving-⇒-⋁-preserving : (F : Frame 𝓤 𝓥 𝓦) (G : Frame 𝓤′ 𝓥′ 𝓦)
-                                   → (h : ⟨ F ⟩ → ⟨ G ⟩)
-                                   → is-scott-continuous F G h holds
-                                   → (((x y : ⟨ F ⟩) → h (x ∨[ F ] y) ＝ h x ∨[ G ] h y))
-                                   → is-join-preserving F G h holds
-sc-and-∨-preserving-⇒-⋁-preserving F G h ζ φ S = {!?!}
- where
-  S′ = directify F S
-
-\end{code}
-
-
 \begin{code}
 
 directified-basis-is-basis : (F : Frame 𝓤 𝓥 𝓦)
@@ -1695,5 +1678,67 @@ bicofinal-implies-same-join F R S φ ψ =
   (poset-of F)
   (cofinal-implies-join-covered F R S φ)
   (cofinal-implies-join-covered F S R ψ)
+
+\end{code}
+
+If a function preserves (1) binary joins and (2) directed joins then it
+preserves arbitrary joins.
+
+\begin{code}
+
+directed-join-preservation-lemma : (F : Frame 𝓤 𝓥 𝓦) (G : Frame 𝓤′ 𝓥′ 𝓦)
+                                 → (h : ⟨ F ⟩ → ⟨ G ⟩)
+                                 → (S : Fam 𝓦 ⟨ F ⟩)
+                                 → (i⃗ : List (index S))
+                                 → h (directify F S [ i⃗ ])
+                                 ＝ directify G ⁅ h x ∣ x ε S ⁆ [ i⃗ ]
+directed-join-preservation-lemma F G h S i⃗ = {!!}
+
+sc-and-∨-preserving-⇒-⋁-preserving : (F : Frame 𝓤 𝓥 𝓦) (G : Frame 𝓤′ 𝓥′ 𝓦)
+                                   → (h : ⟨ F ⟩ → ⟨ G ⟩)
+                                   → is-scott-continuous F G h holds
+                                   → (h 𝟎[ F ] ＝ 𝟎[ G ])
+                                   → (((x y : ⟨ F ⟩) → h (x ∨[ F ] y) ＝ h x ∨[ G ] h y))
+                                   → is-join-preserving F G h holds
+sc-and-∨-preserving-⇒-⋁-preserving F G h ζ ψ φ S =
+ h (⋁[ F ] S)              ＝⟨ ap h p ⟩
+ h (⋁[ F ] S↑)             ＝⟨ ♠      ⟩
+ ⋁[ G ] ⁅ h x⃗ ∣ x⃗ ε S↑ ⁆   ＝⟨ ♥      ⟩
+ ⋁[ G ] ⁅ h x ∣ x ε S ⁆    ∎
+  where
+   open PropositionalTruncation pt
+   open PosetReasoning (poset-of G)
+
+   S↑ = directify F S
+
+   δ : is-directed F S↑ holds
+   δ = directify-is-directed F S
+
+   p : ⋁[ F ] S ＝ ⋁[ F ] S↑
+   p = directify-preserves-joins F S
+
+   ♠ = ⋁[ G ]-unique ⁅ h x ∣ x ε S↑ ⁆ (h (⋁[ F ] S↑)) (ζ S↑ δ)
+
+   ♥₁ : ((⋁[ G ] ⁅ h x⃗ ∣ x⃗ ε S↑ ⁆) ≤[ poset-of G ] (⋁[ G ] ⁅ h x ∣ x ε S ⁆)) holds
+   ♥₁ = ⋁[ G ]-least ⁅ h x⃗ ∣ x⃗ ε S↑ ⁆ ((⋁[ G ] ⁅ h x ∣ x ε S ⁆) , lemma)
+    where
+     open Joins (λ x y → x ≤[ poset-of G ] y)
+
+     lemma : ((⋁[ G ] ⁅ h x ∣ x ε S ⁆) is-an-upper-bound-of ⁅ h x⃗ ∣ x⃗ ε S↑ ⁆) holds
+     lemma [] =
+      h 𝟎[ F ]                  ＝⟨ ψ ⟩ₚ
+      𝟎[ G ]                    ≤⟨ 𝟎-is-bottom G (⋁[ G ] ⁅ h x ∣ x ε S ⁆) ⟩
+      ⋁[ G ] ⁅ h x ∣ x ε S ⁆    ■
+     lemma (i ∷ i⃗)  =
+      h ((S [ i ]) ∨[ F ] directify F S [ i⃗ ])    ＝⟨ φ _ _ ⟩ₚ
+      h (S [ i ]) ∨[ G ] h (directify F S [ i⃗ ])  ≤⟨ {!!} ⟩
+      ⋁[ G ] ⁅ h x ∣ x ε S ⁆                      ■
+       where
+        † = ?
+
+   ♥₂ : cofinal-in G ⁅ h x ∣ x ε S ⁆ ⁅ h x⃗ ∣ x⃗ ε S↑ ⁆ holds
+   ♥₂ = {!!}
+
+   ♥ = bicofinal-implies-same-join G ⁅ h x⃗ ∣ x⃗ ε S↑ ⁆ ⁅ h x ∣ x ε S ⁆ {!!} {!!}
 
 \end{code}
