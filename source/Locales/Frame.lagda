@@ -1719,26 +1719,40 @@ sc-and-∨-preserving-⇒-⋁-preserving F G h ζ ψ φ S =
 
    ♠ = ⋁[ G ]-unique ⁅ h x ∣ x ε S↑ ⁆ (h (⋁[ F ] S↑)) (ζ S↑ δ)
 
+   open Joins (λ x y → x ≤[ poset-of G ] y)
+
+   lemma : ((⋁[ G ] ⁅ h x ∣ x ε S ⁆) is-an-upper-bound-of ⁅ h x⃗ ∣ x⃗ ε S↑ ⁆) holds
+   lemma [] =
+    h 𝟎[ F ]                  ＝⟨ ψ ⟩ₚ
+    𝟎[ G ]                    ≤⟨ 𝟎-is-bottom G (⋁[ G ] ⁅ h x ∣ x ε S ⁆) ⟩
+    ⋁[ G ] ⁅ h x ∣ x ε S ⁆    ■
+   lemma (i ∷ i⃗) =
+    h ((S [ i ]) ∨[ F ] directify F S [ i⃗ ])    ＝⟨ φ _ _ ⟩ₚ
+    h (S [ i ]) ∨[ G ] h (directify F S [ i⃗ ])  ≤⟨ †     ⟩
+    ⋁[ G ] ⁅ h x ∣ x ε S ⁆                      ■
+     where
+      †₀ : (h (S [ i ]) ≤[ poset-of G ] (⋁[ G ] ⁅ h x ∣ x ε S ⁆)) holds
+      †₀ = ⋁[ G ]-upper ⁅ h x ∣ x ε S ⁆ i
+
+      †₁ : (h (directify F S [ i⃗ ]) ≤[ poset-of G ] (⋁[ G ] ⁅ h x ∣ x ε S ⁆)) holds
+      †₁ = lemma i⃗
+
+      †  = ∨[ G ]-least †₀ †₁
+
    ♥₁ : ((⋁[ G ] ⁅ h x⃗ ∣ x⃗ ε S↑ ⁆) ≤[ poset-of G ] (⋁[ G ] ⁅ h x ∣ x ε S ⁆)) holds
    ♥₁ = ⋁[ G ]-least ⁅ h x⃗ ∣ x⃗ ε S↑ ⁆ ((⋁[ G ] ⁅ h x ∣ x ε S ⁆) , lemma)
+
+   ♥₂ : ((⋁[ G ] ⁅ h x ∣ x ε S ⁆) ≤[ poset-of G ] (⋁[ G ] ⁅ h x⃗ ∣ x⃗ ε S↑ ⁆)) holds
+   ♥₂ = ⋁[ G ]-least ⁅ h x ∣ x ε S ⁆ ((⋁[ G ] ⁅ h x⃗ ∣ x⃗ ε S↑ ⁆) , †)
     where
-     open Joins (λ x y → x ≤[ poset-of G ] y)
+     † : ((⋁[ G ] ⁅ h x⃗ ∣ x⃗ ε S↑ ⁆) is-an-upper-bound-of ⁅ h x ∣ x ε S ⁆) holds
+     † i = h (S [ i ])                ＝⟨ ap h (𝟎-left-unit-of-∨ F (S [ i ]) ⁻¹) ⟩ₚ
+           h (S [ i ] ∨[ F ] 𝟎[ F ])  ＝⟨ refl ⟩ₚ
+           h (S↑ [ i ∷ [] ])          ≤⟨ ‡ ⟩
+           ⋁[ G ] ⁅ h x⃗ ∣ x⃗ ε S↑ ⁆    ■
+            where
+             ‡ = ⋁[ G ]-upper ⁅ h x⃗ ∣ x⃗ ε S↑ ⁆ (i ∷ [])
 
-     lemma : ((⋁[ G ] ⁅ h x ∣ x ε S ⁆) is-an-upper-bound-of ⁅ h x⃗ ∣ x⃗ ε S↑ ⁆) holds
-     lemma [] =
-      h 𝟎[ F ]                  ＝⟨ ψ ⟩ₚ
-      𝟎[ G ]                    ≤⟨ 𝟎-is-bottom G (⋁[ G ] ⁅ h x ∣ x ε S ⁆) ⟩
-      ⋁[ G ] ⁅ h x ∣ x ε S ⁆    ■
-     lemma (i ∷ i⃗)  =
-      h ((S [ i ]) ∨[ F ] directify F S [ i⃗ ])    ＝⟨ φ _ _ ⟩ₚ
-      h (S [ i ]) ∨[ G ] h (directify F S [ i⃗ ])  ≤⟨ {!!} ⟩
-      ⋁[ G ] ⁅ h x ∣ x ε S ⁆                      ■
-       where
-        † = ?
-
-   ♥₂ : cofinal-in G ⁅ h x ∣ x ε S ⁆ ⁅ h x⃗ ∣ x⃗ ε S↑ ⁆ holds
-   ♥₂ = {!!}
-
-   ♥ = bicofinal-implies-same-join G ⁅ h x⃗ ∣ x⃗ ε S↑ ⁆ ⁅ h x ∣ x ε S ⁆ {!!} {!!}
+   ♥ = ≤-is-antisymmetric (poset-of G) ♥₁ ♥₂
 
 \end{code}
