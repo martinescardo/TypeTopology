@@ -46,7 +46,7 @@ ln -s UF.Size.html UF-Size.html
 ln -s UF.UniverseEmbedding.html UniverseEmbedding.html
 ln -s UF.Yoneda.html UF-Yoneda.html
 ln -s UF.index.html UF.html
-ln -s Various.ArithmeticViaEquivalence.html ArithmeticViaEquivalence.html
+ln -s ArithmeticViaEquivalence.ArithmeticViaEquivalence.html ArithmeticViaEquivalence.html
 ln -s Various.Dedekind.html Dedekind.html
 ln -s Various.HiggsInvolutionTheorem.html HiggsInvolutionTheorem.html
 ln -s Various.LawvereFPT.html LawvereFPT.html
