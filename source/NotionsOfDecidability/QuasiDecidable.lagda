@@ -232,7 +232,7 @@ open import UF.Embeddings
 open import UF.Powerset
 
 open import NotionsOfDecidability.DecidableAndDetachable
-open import Uncatalogued.Dominance
+open import Various.Dominance
 
 \end{code}
 

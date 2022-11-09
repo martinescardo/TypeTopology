@@ -28,15 +28,15 @@ open import UF.FunExt
 
 module TWA.Closeness (fe : FunExt) where
 
-open import Utilities.Sequence fe
-open import CoNaturals.UniversalProperty fe
 open import CoNaturals.Arithmetic fe
 open import CoNaturals.GenericConvergentSequence renaming (min to min')
+open import CoNaturals.UniversalProperty fe
+open import MLTT.Two-Properties
+open import Naturals.Sequence fe
+open import Notation.CanonicalMap
+open import Notation.Order
 open import TypeTopology.DiscreteAndSeparated
 open import UF.Miscelanea
-open import MLTT.Two-Properties
-open import Notation.Order
-open import Notation.CanonicalMap
 
 module sequences
         {𝓤 : Universe}

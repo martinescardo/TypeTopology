@@ -145,7 +145,7 @@ foundations in Agda notation).
 
 open import MLTT.Spartan hiding (_^_)
 
-module Uncatalogued.ArithmeticViaEquivalence where
+module ArithmeticViaEquivalence.ArithmeticViaEquivalence where
 
 open import UF.Subsingletons
 open import UF.Equiv
@@ -366,11 +366,12 @@ module exponentiation-and-factorial (fe : FunExt) where
 
 Added 25t November 2019: Numerical factorial from the type theoretical
 factorial, which also uses function extensionality (which is not
-actually necessary - see the comments in the module UF.Factorial).
+actually necessary - see the comments in the module
+ArithmeticViaEquivalence.Factorial).
 
 \begin{code}
 
- open import UF.Factorial fe public
+ open import ArithmeticViaEquivalence.Factorial fe public
 
  !construction : (n : ℕ) → Σ k ꞉ ℕ , Fin k ≃ Aut (Fin n)
  !construction zero = 1 ,

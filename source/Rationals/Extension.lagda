@@ -7,7 +7,7 @@ another rational valued function on the rationals.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --experimental-lossy-unification #-}
 
 open import MLTT.Spartan renaming (_+_ to _∔_)
 

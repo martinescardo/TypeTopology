@@ -88,7 +88,7 @@ defined in the module PlusOneLC.lagda.
 
 \begin{code}
 
-open import Utilities.PlusOneLC
+open import ArithmeticViaEquivalence.PlusOneLC
 open import UF.Equiv
 
 Fin-lc : (m n : ℕ) → Fin m ≃ Fin n → m ＝ n
@@ -159,7 +159,7 @@ difference between the embedding property and left cancellability.
 
 \begin{code}
 
-open import Utilities.Swap
+open import ArithmeticViaEquivalence.Swap
 open import UF.LeftCancellable
 
 +𝟙-cancel-lemma : {X Y : 𝓤 ̇ }

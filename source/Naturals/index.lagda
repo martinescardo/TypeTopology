@@ -4,6 +4,7 @@
 
 module Naturals.index where
 
+import Naturals.Sequence
 import Naturals.Addition
 import Naturals.Binary
 import Naturals.Order

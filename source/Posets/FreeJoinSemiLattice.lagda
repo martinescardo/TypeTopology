@@ -11,11 +11,8 @@ subsets of X.
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import MLTT.Spartan
-
-open import Uncatalogued.ArithmeticViaEquivalence
 open import MLTT.Fin
 open import MLTT.Fin-Properties
-open import Posets.JoinSemiLattices
 
 open import UF.Base
 open import UF.Equiv
@@ -26,6 +23,9 @@ open import UF.Powerset
 open import UF.PropTrunc
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
+
+open import ArithmeticViaEquivalence.ArithmeticViaEquivalence
+open import Posets.JoinSemiLattices
 
 module Posets.FreeJoinSemiLattice
         (pt : propositional-truncations-exist)

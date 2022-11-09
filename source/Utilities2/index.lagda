@@ -4,11 +4,9 @@ Martin Escardo
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module Utilities.index where
+module Utilities2.index where
 
-import Utilities.PlusOneLC
-import Utilities.Swap
-import Utilities.Sequence
+import Utilities2.Sequence
 
 
 \end{code}
