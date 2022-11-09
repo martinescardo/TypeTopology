@@ -29,6 +29,7 @@ import UF.Large-Quotient
 import UF.LeftCancellable
 import UF.Lower-FunExt
 import UF.Miscelanea
+import UF.PairFun
 import UF.Powerset-Fin
 import UF.Powerset
 import UF.PropIndexedPiSigma

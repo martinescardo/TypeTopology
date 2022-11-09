@@ -9,16 +9,16 @@ another rational valued function on the rationals.
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import MLTT.Spartan renaming (_+_ to _∔_) 
+open import MLTT.Spartan renaming (_+_ to _∔_)
 
-open import Notation.CanonicalMap 
-open import Notation.Order 
-open import UF.Base 
-open import UF.FunExt 
-open import UF.PropTrunc 
-open import UF.Powerset 
-open import UF.Subsingletons 
-open import UF.Subsingletons-FunExt 
+open import Notation.CanonicalMap
+open import Notation.Order
+open import UF.Base
+open import UF.FunExt
+open import UF.PropTrunc
+open import UF.Powerset
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
 
 open import Rationals.Rationals
 open import Rationals.Order
@@ -84,19 +84,19 @@ bijective-and-monotonic' f g f-preserves-order f-g-bijection = γ
    where
     apply-order-preservation : g q < g p ⇔ f (g q) > f (g p)
     apply-order-preservation = f-preserves-order (g q) (g p)
-    
+
     ltr : p < q → g p > g q
     ltr l = (rl-implication apply-order-preservation) i
      where
       i : f (g q) > f (g p)
       i = transport₂ _<_ (pr₂ (f-g-bijection p) ⁻¹) (pr₂ (f-g-bijection q) ⁻¹) l
-    
+
     rtl : g p > g q → p < q
     rtl l = transport₂ _<_ (pr₂ (f-g-bijection p)) (pr₂ (f-g-bijection q)) i
      where
       i : f (g p) < f (g q)
       i = (lr-implication apply-order-preservation) l
-    
+
 \end{code}
 
 Now, given a monotonic function f, and a bijective function g, we construct an extension of f, which we call f̂.
@@ -106,12 +106,12 @@ Pictorially, we have the following:
                       f
    ℚ ────────────────────────────────▶ ℚ
    │                                   │           We want our extension to satisfy f̂ ∘ ι ＝ ι ∘ f
-   │                                   │           This means f̂ does not change the behavour of f 
+   │                                   │           This means f̂ does not change the behavour of f
    │                                   │           for any point in the rationals.
  ι │                                   │ ι
    │                                   │
-   │                                   │  
-   ▼                                   ▼  
+   │                                   │
+   ▼                                   ▼
    ℝ ────────────────────────────────▶ ℝ
                       f̂
 
@@ -237,7 +237,7 @@ diagram-commutes f g f-order-preserving f-g-bijective q = ℝ-equality' ((f̂ �
  where
   f̂ : ℝ → ℝ
   f̂ = f→f̂ f g f-order-preserving f-g-bijective
-  
+
   I : (a : ℚ) → g a < q → a < f q
   I a b = transport (_< f q) ii i
    where
@@ -301,7 +301,7 @@ open import Rationals.Negation
 ℚ-succ-pred r = i , ii
  where
   i : ℚ-pred (ℚ-succ r) ＝ r
-  i = ℚ+-assoc fe r 1ℚ (- 1ℚ) ∙ ℚ-inverse-intro fe r 1ℚ ⁻¹ 
+  i = ℚ+-assoc fe r 1ℚ (- 1ℚ) ∙ ℚ-inverse-intro fe r 1ℚ ⁻¹
   ii : ℚ-succ (ℚ-pred r) ＝ r
   ii = ℚ-succ (ℚ-pred r) ＝⟨ by-definition                           ⟩
        r - 1ℚ + 1ℚ       ＝⟨ ℚ+-assoc fe r (- 1ℚ) 1ℚ                 ⟩
@@ -314,7 +314,7 @@ open import Rationals.Negation
 ℝ-succ = f→f̂ ℚ-succ ℚ-pred <-ℚ-succ ℚ-succ-pred
 
 ℚ-succ-behaviour-preserved : (q : ℚ) → ℝ-succ (ι q) ＝ ι (ℚ-succ q)
-ℚ-succ-behaviour-preserved q = diagram-commutes ℚ-succ ℚ-pred <-ℚ-succ ℚ-succ-pred q 
+ℚ-succ-behaviour-preserved q = diagram-commutes ℚ-succ ℚ-pred <-ℚ-succ ℚ-succ-pred q
 
 \end{code}
 
@@ -338,7 +338,7 @@ open import DedekindReals.Order pe pt fe
 test : (x : ℚ) -> (ι x) < ℝ-succ (ι x) -- With Todds Help
 test x = transport (ι x <_) (ℚ-succ-behaviour-preserved x ⁻¹)
            (embedding-preserves-order x (ℚ-succ x)
-             (ℚ-succ-preserves-order x)) 
+             (ℚ-succ-preserves-order x))
 
 bijection-preserves-monotone-multi : (f g : ℚ → ℚ → ℚ) → 𝓤₀ ̇
 bijection-preserves-monotone-multi f g = ((p q r : ℚ) → p < q ⇔ f p r < f q r)
@@ -353,7 +353,7 @@ bijection-preserves-monotone-multi-proof f g f-preserves-order f-g-bijection = �
    where
     apply-order-preversation :  g p r < g q r ⇔ f (g p r) r < f (g q r) r
     apply-order-preversation = f-preserves-order (g p r) (g q r) r
-    
+
     ltr : p < q → g p r < g q r
     ltr l = (rl-implication apply-order-preversation) i
      where
@@ -370,12 +370,12 @@ open import DedekindReals.Properties fe pt pe
 composition-of-monotonic-functions : (f g : ℚ → ℚ → ℚ)
                                    → ((p q r : ℚ) → p < q ⇔ f p r < f q r)
                                    → ((p q : ℚ) → (g (f p q) q ＝ p) × (f (g p q) q ＝ p))
-                                   → ℝ → ℝ → ℝ 
+                                   → ℝ → ℝ → ℝ
 composition-of-monotonic-functions f g f-preserves-order f-g-bijective x y = (L , R) , inhabited-left' , inhabited-right' , rounded-left' , rounded-right' , disjoint' , located'
  where
   L : 𝓟 ℚ
   L p = (∃ a ꞉ ℚ , a < x × g p a < y) , ∃-is-prop
-   
+
   R : 𝓟 ℚ
   R q = (∃ b ꞉ ℚ , x < b × y < g q b) , ∃-is-prop
 
@@ -401,7 +401,7 @@ composition-of-monotonic-functions f g f-preserves-order f-g-bijective x y = (L 
       I (a , a<x , gka<y) = ∥∥-functor II ((rounded-left-b (lower-cut-of y) (rounded-from-real-L y) (g k a) gka<y))
        where
         II : (Σ t ꞉ ℚ , g k a < t × t < y) → Σ k' ꞉ ℚ , k < k' × (∃ a ꞉ ℚ , a < x × g k' a < y)
-        II (t , l₁ , t<y) = f t a , goal₁ , ∣ a , a<x , goal₂ ∣ 
+        II (t , l₁ , t<y) = f t a , goal₁ , ∣ a , a<x , goal₂ ∣
          where
           III :  f (g k a) a < f t a
           III = (pr₁ (f-preserves-order (g k a) t a)) l₁
@@ -413,7 +413,7 @@ composition-of-monotonic-functions f g f-preserves-order f-g-bijective x y = (L 
           goal₁ = transport (_< f t a) IV III
           goal₂ :  g (f t a) a < y
           goal₂ = transport (_< y) (V ⁻¹) t<y
-     
+
     rtl : ∃ p ꞉ ℚ , k < p × p ∈ L → k ∈ L
     rtl = ∥∥-rec ∃-is-prop I
      where
@@ -433,7 +433,7 @@ composition-of-monotonic-functions f g f-preserves-order f-g-bijective x y = (L 
     ltr = ∥∥-rec ∃-is-prop I
      where
       I : Σ a ꞉ ℚ , x < a × y < g k a → ∃ q ꞉ ℚ , q < k × q ∈ R
-      I (a , x<a , y<gka) = ∥∥-functor II (rounded-right-b (upper-cut-of y) (rounded-from-real-R y) (g k a) y<gka) 
+      I (a , x<a , y<gka) = ∥∥-functor II (rounded-right-b (upper-cut-of y) (rounded-from-real-R y) (g k a) y<gka)
        where
         II : Σ t ꞉ ℚ , t < g k a × y < t → Σ k' ꞉ ℚ , k' < k × k' ∈ R
         II (t , t<gka , y<t) = f t a , goal₁ , ∣ a , x<a , goal₂ ∣
@@ -444,12 +444,12 @@ composition-of-monotonic-functions f g f-preserves-order f-g-bijective x y = (L 
           IV = pr₂ (f-g-bijective k a)
           V : g (f t a) a ＝ t
           V = pr₁ (f-g-bijective t a)
-          
+
           goal₁ : f t a < k
-          goal₁ = transport (f t a <_) IV III 
+          goal₁ = transport (f t a <_) IV III
           goal₂ : y < (g (f t a) a)
           goal₂ = transport (y <_) (V ⁻¹) y<t
-          
+
     rtl : ∃ q ꞉ ℚ , q < k × q ∈ R → k ∈ R
     rtl = ∥∥-rec ∃-is-prop I
      where
@@ -475,7 +475,7 @@ composition-of-monotonic-functions f g f-preserves-order f-g-bijective x y = (L 
       II = pr₁ (f-preserves-order (g p a) (g q b) b) (disjoint-from-real y (g p a) (g q b) (gpa<y , y<gqb))
       -- II : {!!}
       -- II = bijection-preserves-monotone-multi-proof f g f-preserves-order f-g-bijective p q
-      
+
 -}
 {- disjoint→trans L R located' I
    where
@@ -484,7 +484,7 @@ composition-of-monotonic-functions f g f-preserves-order f-g-bijective x y = (L 
      where
       II : (Σ a ꞉ ℚ , a < x × g q a < y) × (Σ b ꞉ ℚ , x < b × y < g q b) → 𝟘
       II = {!!}
-  
+
   -}
 
 {-

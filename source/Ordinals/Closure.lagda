@@ -12,39 +12,35 @@ module Ordinals.Closure
         (fe : FunExt)
        where
 
-open import MLTT.Spartan
-open import MLTT.Two-Properties
+open import CoNaturals.GenericConvergentSequence
+open import InjectiveTypes.Blackboard fe
 open import MLTT.AlternativePlus
 open import MLTT.Plus-Properties
-
-open import UF.Base
-open import UF.Equiv
-open import UF.Subsingletons
-open import UF.Retracts
-open import UF.Embeddings
-open import UF.Miscelanea
-
-open import TypeTopology.CompactTypes
-open import TypeTopology.LexicographicCompactness
-open import TypeTopology.ConvergentSequenceHasInf
-open import TypeTopology.PropInfTychonoff
-open import TypeTopology.InfProperty
-open import TypeTopology.SigmaDiscreteAndTotallySeparated
-open import TypeTopology.SquashedSum fe
-open import TypeTopology.DiscreteAndSeparated
-
-open import Ordinals.SquashedCantor fe
-open import Ordinals.ToppedType fe
+open import MLTT.Spartan
+open import MLTT.Two-Properties
+open import Naturals.Binary hiding (_+_ ; L ; R)
+open import Notation.CanonicalMap
 open import Ordinals.Arithmetic fe
 open import Ordinals.Injectivity
-open import Ordinals.ToppedArithmetic fe
 open import Ordinals.LexicographicOrder
-
-open import InjectiveTypes.Blackboard fe
-open import CoNaturals.GenericConvergentSequence
-open import Naturals.Binary hiding (_+_ ; L ; R)
-open import Utilities.PairFun
-open import Notation.CanonicalMap
+open import Ordinals.SquashedCantor fe
+open import Ordinals.ToppedArithmetic fe
+open import Ordinals.ToppedType fe
+open import TypeTopology.CompactTypes
+open import TypeTopology.ConvergentSequenceHasInf
+open import TypeTopology.DiscreteAndSeparated
+open import TypeTopology.InfProperty
+open import TypeTopology.LexicographicCompactness
+open import TypeTopology.PropInfTychonoff
+open import TypeTopology.SigmaDiscreteAndTotallySeparated
+open import TypeTopology.SquashedSum fe
+open import UF.Base
+open import UF.Embeddings
+open import UF.Equiv
+open import UF.Miscelanea
+open import UF.PairFun
+open import UF.Retracts
+open import UF.Subsingletons
 
 private
  fe₀ : funext 𝓤₀ 𝓤₀

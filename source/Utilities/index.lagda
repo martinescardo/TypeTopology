@@ -6,7 +6,6 @@ Martin Escardo
 
 module Utilities.index where
 
-import Utilities.PairFun
 import Utilities.PlusOneLC
 import Utilities.Swap
 import Utilities.Sequence

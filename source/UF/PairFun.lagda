@@ -7,7 +7,7 @@ the resulting function.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module Utilities.PairFun where
+module UF.PairFun where
 
 open import MLTT.Spartan
 open import TypeTopology.Density

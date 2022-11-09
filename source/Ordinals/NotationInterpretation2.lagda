@@ -47,37 +47,33 @@ module Ordinals.NotationInterpretation2 (fe : FunExt) where
 private
  fe₀ = fe 𝓤₀ 𝓤₀
 
+open import CoNaturals.GenericConvergentSequence
+open import MLTT.Two-Properties
+open import Naturals.Binary hiding (_+_)
+open import Ordinals.Arithmetic fe
+open import Ordinals.Closure fe
+open import Ordinals.Injectivity
+open import Ordinals.ToppedArithmetic fe
+open import Ordinals.ToppedType fe
+open import Ordinals.Type
+open import Taboos.LPO fe
+open import Taboos.WLPO
+open import TypeTopology.CompactTypes
+open import TypeTopology.ConvergentSequenceHasInf
+open import TypeTopology.Density
+open import TypeTopology.DiscreteAndSeparated
+open import TypeTopology.InfProperty
+open import TypeTopology.PropInfTychonoff fe
+open import TypeTopology.PropTychonoff fe
+open import TypeTopology.SigmaDiscreteAndTotallySeparated
 open import UF.Base
-open import UF.Subsingletons
-open import UF.Retracts
 open import UF.Embeddings
 open import UF.Equiv
-open import UF.Subsingletons-FunExt
 open import UF.Miscelanea
-
-open import TypeTopology.DiscreteAndSeparated
-open import Naturals.Binary hiding (_+_)
-open import MLTT.Two-Properties
-open import Taboos.WLPO
-open import Taboos.LPO fe
-open import Utilities.PairFun
-
-open import CoNaturals.GenericConvergentSequence
-
-open import TypeTopology.SigmaDiscreteAndTotallySeparated
-open import TypeTopology.ConvergentSequenceHasInf
-open import TypeTopology.PropTychonoff fe
-open import TypeTopology.PropInfTychonoff fe
-open import TypeTopology.CompactTypes
-open import TypeTopology.InfProperty
-open import TypeTopology.Density
-
-open import Ordinals.Type
-open import Ordinals.Injectivity
-open import Ordinals.ToppedType fe
-open import Ordinals.Arithmetic fe
-open import Ordinals.ToppedArithmetic fe
-open import Ordinals.Closure fe
+open import UF.PairFun
+open import UF.Retracts
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
 
 \end{code}
 
