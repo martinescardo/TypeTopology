@@ -12,14 +12,14 @@ from 21 March 2018 is included at the end.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module Utilities.PlusOneLC where
+module ArithmeticViaEquivalence.PlusOneLC where
 
-open import MLTT.Spartan
-open import UF.Equiv
+open import ArithmeticViaEquivalence.Swap
 open import MLTT.Plus-Properties
-open import UF.Retracts
-open import Utilities.Swap
+open import MLTT.Spartan
 open import TypeTopology.DiscreteAndSeparated
+open import UF.Equiv
+open import UF.Retracts
 
 +𝟙-cancellable : {X : 𝓤 ̇ } {Y : 𝓥 ̇}
                → (X + 𝟙 {𝓦} ≃ Y + 𝟙 {𝓣})

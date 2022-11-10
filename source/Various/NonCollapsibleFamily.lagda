@@ -4,7 +4,7 @@ Martin Escardo, 1st April 2013
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module Uncatalogued.NonCollapsibleFamily where
+module Various.NonCollapsibleFamily where
 
 open import MLTT.Spartan
 

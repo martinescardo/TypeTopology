@@ -7,16 +7,13 @@ This module has functions to build games.
 {-# OPTIONS --without-K --safe --auto-inline --exact-split #-}
 
 open import MLTT.Spartan hiding (J)
-open import UF.Base
+
+module Games.Constructor (R : Type) where
+
 open import UF.FunExt
 
-module Games.Constructor
-        (R : Type)
-        (fe : Fun-Ext)
-       where
-
 open import Games.TypeTrees
-open import Games.FiniteHistoryDependent R fe
+open import Games.FiniteHistoryDependent R
 
 \end{code}
 
@@ -52,16 +49,17 @@ Game-from-GameJ Γ = game (dtt Γ) (predicate Γ) (quantifiers Γ)
 strategyJ : (Γ : GameJ) → Strategy (dtt Γ)
 strategyJ Γ = selection-strategy (selections Γ) (predicate Γ)
 
-Selection-Strategy-TheoremJ : (Γ : GameJ)
+Selection-Strategy-TheoremJ : Fun-Ext
+                            → (Γ : GameJ)
                             → is-optimal (Game-from-GameJ Γ) (strategyJ Γ)
-Selection-Strategy-TheoremJ Γ = γ
+Selection-Strategy-TheoremJ fe Γ = γ
  where
   δ : (Γ : GameJ) → (selections Γ) are-selections-of (quantifiers Γ)
   δ (leaf r)        = ⟨⟩
   δ (branch X Xf ε) = (λ p → refl) , (λ x → δ (Xf x))
 
   γ : is-optimal (Game-from-GameJ Γ) (strategyJ Γ)
-  γ = Selection-Strategy-Theorem (Game-from-GameJ Γ) (selections Γ) (δ Γ)
+  γ = Selection-Strategy-Theorem fe (Game-from-GameJ Γ) (selections Γ) (δ Γ)
 
 \end{code}
 

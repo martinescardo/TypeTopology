@@ -6,7 +6,7 @@ Martin Escardo 2011.
 
 open import UF.FunExt
 
-module Utilities.Sequence (fe : FunExt) where
+module Naturals.Sequence (fe : FunExt) where
 
 open import MLTT.Spartan hiding (_+_)
 open import UF.Base

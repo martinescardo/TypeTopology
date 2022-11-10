@@ -33,7 +33,7 @@ church-rosser. This seems to be a bug, but we are not sure.
 
 \begin{code}
 
-module Groups.FreeGroup where
+module Groups.Free where
 
 open import MLTT.Spartan
 open import MLTT.Two
