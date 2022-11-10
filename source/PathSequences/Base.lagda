@@ -65,15 +65,18 @@ manipulations are no longer necessary.
 
 data PathSeq {X : 𝓤 ̇} : X → X → 𝓤 ̇ where
   [] : {x : X} → PathSeq x x
-  [_,_] : {x y z : X} (p : x ＝ y) (s : PathSeq y z) → PathSeq x z
+  _◃∙_ : {x y z : X} (p : x ＝ y) (s : PathSeq y z) → PathSeq x z
 
 _≡_ = PathSeq
 
+_◃∎ : {X : 𝓤 ̇} {x y : X} → x ＝ y → x ≡ y
+p ◃∎ = p ◃∙ []
 
+-- Convert to identity type
 ≡-to-＝ : {X : 𝓤 ̇} {x y : X}
         → x ≡ y → x ＝ y
 ≡-to-＝ [] = refl
-≡-to-＝ [ p , s ] = p ∙ (≡-to-＝ s)
+≡-to-＝ (p ◃∙ s) = p ∙ ≡-to-＝ s
 
 ↓ = ≡-to-＝
 
@@ -86,11 +89,11 @@ Equality for path sequences
 record _＝ₛ_ {X : 𝓤 ̇}{x y : X} (s t : x ≡ y) : 𝓤 ̇ where
   constructor ＝ₛ-in
   field
-    ＝ₛ-out : ↓ s ＝ ↓ t
+    ＝ₛ-out : (≡-to-＝ s) ＝ (≡-to-＝ t)
 open _＝ₛ_
 
-_ : {X : 𝓤 ̇}{x y : X} (s t : x ≡ y) (p : ↓ s ＝ ↓ t) → s ＝ₛ t
-_ = λ { s t p .＝ₛ-out → p }
+_ : {X : 𝓤 ̇} {x y : X} (s t : x ≡ y) (p : ↓ s ＝ ↓ t) → s ＝ₛ t
+_ = λ { s t p → ＝ₛ-in p }
 
 \end{code}
 
@@ -99,10 +102,11 @@ Reasoning with path sequences
 \begin{code}
 
 _≡⟨_⟩_ : {X : 𝓤 ̇} (x : X) {y z : X} → x ＝ y → y ≡ z → x ≡ z
-_ ≡⟨ p ⟩ s = [ p , s ]
+_ ≡⟨ p ⟩ s = p ◃∙ s 
 
 _∎∎ : {X : 𝓤 ̇} (x : X) → x ≡ x
 _ ∎∎ = []
+
 
 \end{code}
 
@@ -110,7 +114,8 @@ Fixities
 
 \begin{code}
 
-infixr 80 [_,_]
+infix  90 _◃∎
+infixr 80 _◃∙_
 infix  30 _≡_
 infixr 10 _≡⟨_⟩_
 infix  15 _∎∎
