@@ -30,7 +30,7 @@ open import MLTT.Spartan
 open import MLTT.Two-Properties
 open import CoNaturals.UniversalProperty fe
 open import CoNaturals.GenericConvergentSequence
-open import Utilities.Sequence fe
+open import Naturals.Sequence fe
 open import Notation.CanonicalMap
 
 ℕ∞-to-ℕ→𝟚-is-a-section : Σ ρ ꞉ ((ℕ → 𝟚) → ℕ∞) , ρ ∘ ι ＝ id

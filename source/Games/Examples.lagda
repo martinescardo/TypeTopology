@@ -38,7 +38,7 @@ open import UF.FunExt
 module search (fe : Fun-Ext) where
 
  open import MLTT.NonSpartanMLTTTypes
- open import Games.FiniteHistoryDependent Bool fe
+ open import Games.FiniteHistoryDependent Bool
 
  ε₂ : J Bool
  ε₂ p = p true
@@ -65,12 +65,9 @@ module search (fe : Fun-Ext) where
 
 \begin{code}
 
-module another-game-representation
-        (R : Type)
-        (fe : Fun-Ext)
-       where
+module another-game-representation (R : Type) where
 
- open import Games.FiniteHistoryDependent R fe
+ open import Games.FiniteHistoryDependent R
 
  data GameK : Type₁ where
    leaf   : R → GameK

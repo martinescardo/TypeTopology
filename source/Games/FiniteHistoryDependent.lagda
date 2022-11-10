@@ -37,10 +37,7 @@ open import MLTT.Spartan hiding (J)
 open import UF.Base
 open import UF.FunExt
 
-module Games.FiniteHistoryDependent
-        (R : Type)
-        (fe : Fun-Ext)
-       where
+module Games.FiniteHistoryDependent (R : Type) where
 
 \end{code}
 
@@ -132,9 +129,9 @@ quantifier tree ϕt and an outcome function q:
 record Game : Type₁ where
  constructor game
  field
-  Xt  : 𝕋
-  q   : Path Xt → R
-  ϕt  : 𝓚 Xt
+  Xt : 𝕋
+  q  : Path Xt → R
+  ϕt : 𝓚 Xt
 
 open Game public
 
@@ -257,17 +254,18 @@ The following is Theorem 3.1 of reference [1].
 
 \begin{code}
 
-sgpe-lemma : (Xt : 𝕋) (ϕt : 𝓚 Xt) (q : Path Xt → R) (σ : Strategy Xt)
+sgpe-lemma : Fun-Ext
+           → (Xt : 𝕋) (ϕt : 𝓚 Xt) (q : Path Xt → R) (σ : Strategy Xt)
            → is-sgpe ϕt q σ
            → K-sequence ϕt q ＝ q (strategic-path σ)
-sgpe-lemma []       ⟨⟩        q ⟨⟩        ⟨⟩       = refl
-sgpe-lemma (X ∷ Xf) (ϕ :: ϕt) q (a :: σf) (h :: t) = γ
+sgpe-lemma fe []       ⟨⟩        q ⟨⟩        ⟨⟩       = refl
+sgpe-lemma fe (X ∷ Xf) (ϕ :: ϕt) q (a :: σf) (h :: t) = γ
  where
   observation-t : type-of t ＝ ((x : X) → is-sgpe (ϕt x) (sub q x) (σf x))
   observation-t = refl
 
   IH : (x : X) → K-sequence (ϕt x) (sub q x) ＝ q (x :: strategic-path (σf x))
-  IH x = sgpe-lemma (Xf x) (ϕt x) (sub q x) (σf x) (t x)
+  IH x = sgpe-lemma fe (Xf x) (ϕt x) (sub q x) (σf x) (t x)
 
   γ = ϕ (λ x → K-sequence (ϕt x) (sub q x))    ＝⟨ ap ϕ (dfunext fe IH) ⟩
       ϕ (λ x → q (x :: strategic-path (σf x))) ＝⟨ h ⁻¹ ⟩
@@ -279,10 +277,11 @@ This can be reformulated as follows in terms of the type of games:
 
 \begin{code}
 
-equilibrium-theorem : (G : Game) (σ : Strategy (Xt G))
+equilibrium-theorem : Fun-Ext
+                    → (G : Game) (σ : Strategy (Xt G))
                     → is-optimal G σ
                     → optimal-outcome G ＝ q G (strategic-path σ)
-equilibrium-theorem (game Xt ϕt q) = sgpe-lemma Xt q ϕt
+equilibrium-theorem fe (game Xt ϕt q) = sgpe-lemma fe Xt q ϕt
 
 \end{code}
 
@@ -417,14 +416,15 @@ The following is proved by straightforward induction on trees:
 
 \begin{code}
 
-observation : {Xt : 𝕋} (εt : 𝓙 Xt) (ϕt : 𝓚 Xt)
+observation : Fun-Ext
+            → {Xt : 𝕋} (εt : 𝓙 Xt) (ϕt : 𝓚 Xt)
             → εt are-selections-of ϕt
             → Overline εt ＝ ϕt
-observation {[]}     ⟨⟩        ⟨⟩        ⟨⟩        = refl
-observation {X ∷ Xf} (ε :: εf) (ϕ :: ϕf) (a :: af) = γ
+observation fe {[]}     ⟨⟩        ⟨⟩        ⟨⟩        = refl
+observation fe {X ∷ Xf} (ε :: εf) (ϕ :: ϕf) (a :: af) = γ
  where
   IH : (x : X) → Overline (εf x) ＝ ϕf x
-  IH x = observation {Xf x} (εf x) (ϕf x) (af x)
+  IH x = observation fe {Xf x} (εf x) (ϕf x) (af x)
 
   I : overline ε ＝ ϕ
   I = dfunext fe a
@@ -466,10 +466,11 @@ crucial-lemma {X ∷ Xf} εt@(ε :: εf) q =
   IH : J-sequence {Xf a} (εf a) (sub q a) ＝ strategic-path (σf a)
   IH = crucial-lemma (εf a) (sub q a)
 
-selection-strategy-lemma : {Xt : 𝕋} (εt : 𝓙 Xt) (q : Path Xt → R)
+selection-strategy-lemma : Fun-Ext
+                         → {Xt : 𝕋} (εt : 𝓙 Xt) (q : Path Xt → R)
                          → is-sgpe (Overline εt) q (selection-strategy εt q)
-selection-strategy-lemma {[]}     ⟨⟩           q = ⟨⟩
-selection-strategy-lemma {X ∷ Xf} εt@(ε :: εf) q = γ
+selection-strategy-lemma fe {[]}     ⟨⟩           q = ⟨⟩
+selection-strategy-lemma fe {X ∷ Xf} εt@(ε :: εf) q = γ
  where
   σf : (x : X) → Strategy (Xf x)
   σf x = selection-strategy (εf x) (sub q x)
@@ -494,7 +495,7 @@ selection-strategy-lemma {X ∷ Xf} εt@(ε :: εf) q = γ
                    (Overline (εf x))
                    (sub q x)
                    (selection-strategy (εf x) (sub q x))
-  IH x = selection-strategy-lemma (εf x) (sub q x)
+  IH x = selection-strategy-lemma fe (εf x) (sub q x)
 
   γ : is-sgpe (Overline εt) q (x₀ :: σf)
   γ = III :: IH
@@ -506,25 +507,27 @@ optimal strategies, corresponds to Theorem 6.2 of [1].
 
 \begin{code}
 
-selection-strategy-theorem : {Xt : 𝕋} (εt : 𝓙 Xt)
+selection-strategy-theorem : Fun-Ext
+                           → {Xt : 𝕋} (εt : 𝓙 Xt)
                              (ϕt : 𝓚 Xt) (q : Path Xt → R)
                            → εt are-selections-of ϕt
                            → is-sgpe ϕt q (selection-strategy εt q)
-selection-strategy-theorem εt ϕt q a = III
+selection-strategy-theorem fe εt ϕt q a = III
  where
   I : Overline εt ＝ ϕt
-  I = observation εt ϕt a
+  I = observation fe εt ϕt a
 
   II : is-sgpe (Overline εt) q (selection-strategy εt q)
-  II = selection-strategy-lemma εt q
+  II = selection-strategy-lemma fe εt q
 
   III : is-sgpe ϕt q (selection-strategy εt q)
   III = transport (λ - → is-sgpe - q (selection-strategy εt q)) I II
 
 
-Selection-Strategy-Theorem : (G : Game) (εt : 𝓙 (Xt G))
+Selection-Strategy-Theorem : Fun-Ext
+                           → (G : Game) (εt : 𝓙 (Xt G))
                            → εt are-selections-of (ϕt G)
                            → is-optimal G (selection-strategy εt (q G))
-Selection-Strategy-Theorem (game Xt ϕt q) εt = selection-strategy-theorem εt q ϕt
+Selection-Strategy-Theorem fe (game Xt ϕt q) εt = selection-strategy-theorem fe εt q ϕt
 
 \end{code}

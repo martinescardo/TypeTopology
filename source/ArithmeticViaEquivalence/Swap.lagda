@@ -6,10 +6,10 @@ The swap automorphism.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module Utilities.Swap where
+module ArithmeticViaEquivalence.Swap where
 
-open import MLTT.Spartan
 open import MLTT.Plus-Properties
+open import MLTT.Spartan
 open import TypeTopology.DiscreteAndSeparated
 open import UF.Equiv
 open import UF.Miscelanea

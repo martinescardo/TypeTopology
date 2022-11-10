@@ -3,24 +3,19 @@ Martin Escardo, Paulo Oliva, 2-27 July 2021
 Example: Tic-tac-toe. We have two versions. The other version is in
 another file.
 
+TODO. Organaze this module better, following the organization of TicTacToe0.
+
 \begin{code}
 
 {-# OPTIONS --without-K --safe --auto-inline #-} -- --exact-split
 
-open import UF.FunExt
 
 
-module Games.TicTacToe
-        (fe : Fun-Ext)
-       where
+module Games.TicTacToe1 where
 
 open import TypeTopology.CompactTypes
 open import TypeTopology.DiscreteAndSeparated
 open import TypeTopology.SigmaDiscreteAndTotallySeparated
-
-open import UF.Base
-open import UF.Subsingletons
-open import UF.Miscelanea
 
 open import MLTT.Spartan hiding (J)
 open import MLTT.NonSpartanMLTTTypes hiding (Fin ; 𝟎 ; 𝟏 ; 𝟐 ; 𝟑 ; 𝟒 ; 𝟓 ; 𝟔 ; 𝟕 ; 𝟖 ; 𝟗)
@@ -31,8 +26,8 @@ open import MLTT.Fin-Properties
 𝟛 = Fin 3
 
 open import Games.TypeTrees
-open import Games.FiniteHistoryDependent 𝟛 fe
-open import Games.Constructor 𝟛 fe
+open import Games.FiniteHistoryDependent 𝟛
+open import Games.Constructor 𝟛
 
 tic-tac-toe₁ : Game
 tic-tac-toe₁ = build-Game draw Board transition 9 board₀
@@ -123,7 +118,7 @@ Convention: in a board (p , A), p is the opponent of the the current player.
    where
     f : decidable (m ＝ m') → Maybe Player
     f (inl _) = Just p
-    f (inr _) = A m'
+    f (inr _) = A m
 
   play : (b : Board) → Move b → Board
   play (p , A) m = opponent p , update p A m

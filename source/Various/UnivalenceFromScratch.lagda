@@ -495,7 +495,7 @@ is written 𝓤 ⊔ 𝓥, to avoid subscripts.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module Uncatalogued.UnivalenceFromScratch where
+module Various.UnivalenceFromScratch where
 
 open import Agda.Primitive using (_⊔_) renaming (lzero to 𝓤₀ ; lsuc to _⁺ ; Level to Universe)
 

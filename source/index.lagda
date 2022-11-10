@@ -77,6 +77,7 @@ Click at the imported module names to navigate to them:
 
 module index where
 
+import ArithmeticViaEquivalence.index
 import BinarySystems.index
 import CantorSchroederBernstein.index
 import Circle.index                   -- by Tom de Jong
@@ -108,11 +109,8 @@ import Slice.index
 import TWA.index                      -- by Todd Waugh Ambridge
 import Taboos.index
 import TypeTopology.index
+import Various.index
 import UF.index
-import Uncatalogued.index
-import Utilities.index
-
-
 
 \end{code}
 
