@@ -277,11 +277,11 @@ This can be reformulated as follows in terms of the type of games:
 
 \begin{code}
 
-equilibrium-theorem : Fun-Ext
-                    → (G : Game) (σ : Strategy (Xt G))
-                    → is-optimal G σ
-                    → optimal-outcome G ＝ q G (strategic-path σ)
-equilibrium-theorem fe (game Xt ϕt q) = sgpe-lemma fe Xt q ϕt
+optimality-theorem : Fun-Ext
+                   → (G : Game) (σ : Strategy (Xt G))
+                   → is-optimal G σ
+                   → optimal-outcome G ＝ q G (strategic-path σ)
+optimality-theorem fe (game Xt ϕt q) = sgpe-lemma fe Xt q ϕt
 
 \end{code}
 
