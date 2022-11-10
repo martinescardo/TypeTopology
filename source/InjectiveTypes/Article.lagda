@@ -196,10 +196,8 @@ this module.
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import MLTT.Spartan
-open import Utilities.PairFun
-
-open import UF.Univalence
 open import UF.PropTrunc
+open import UF.Univalence
 
 module InjectiveTypes.Article
         (ua : Univalence)
@@ -218,18 +216,19 @@ imported later.
 
 open import MLTT.Plus-Properties
 open import UF.Base
-open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
-open import UF.FunExt
-open import UF.UA-FunExt
 open import UF.Embeddings
-open import UF.Retracts
 open import UF.Equiv
 open import UF.Equiv-FunExt
 open import UF.EquivalenceExamples
-open import UF.UniverseEmbedding
-open import UF.PropIndexedPiSigma
+open import UF.FunExt
 open import UF.IdEmbedding
+open import UF.PairFun
+open import UF.PropIndexedPiSigma
+open import UF.Retracts
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
+open import UF.UA-FunExt
+open import UF.UniverseEmbedding
 
 \end{code}
 

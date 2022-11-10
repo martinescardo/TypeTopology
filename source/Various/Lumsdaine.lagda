@@ -15,7 +15,7 @@ J'-comp) with a "propositional computation rule" J'-comp for J'.
 
 open import MLTT.Universes
 
-module Uncatalogued.Lumsdaine
+module Various.Lumsdaine
         {𝓤}
         (Id : ∀ {X : 𝓤 ̇ } → X → X → 𝓤 ̇ )
         (refl : ∀ {X : 𝓤 ̇ } {x : X} → Id x x)

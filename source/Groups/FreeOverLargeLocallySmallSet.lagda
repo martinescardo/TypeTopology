@@ -31,7 +31,7 @@ universe).
 
 In this file with work with a given locally small type A : 𝓤⁺ for an
 arbitrary universe 𝓤 and we show that the free group constructed in
-the module FreeGroup, which lives in the universe 𝓤⁺⁺, has a
+the module Group.Free, which lives in the universe 𝓤⁺⁺, has a
 copy in the same universe 𝓤⁺ where A lives, provided A is locally
 small (meaning that its identity types, which live in 𝓤⁺, have
 equivalent copies in 𝓤). Moreover, we show that if the group freely
@@ -43,7 +43,7 @@ doesn't have a copy in 𝓤.
 
 For that purpose, we need to know, in particular, that the inclusion
 of generators is injective, which is proved in the module
-FreeGroup. But this is is not enough: for example, the unique
+Group.Free. But this is is not enough: for example, the unique
 map P → 𝟙 is an embedding if P is a proposition, and the terminal
 type 𝟙 is of course small, but P doesn't need to be small - cf. work
 with Tom de Jong on size matters https://arxiv.org/abs/2102.08812,
@@ -57,7 +57,7 @@ open import MLTT.Spartan
 open import UF.PropTrunc
 open import UF.Univalence
 
-module Groups.FreeGroupOfLargeLocallySmallSet
+module Groups.FreeOverLargeLocallySmallSet
         (pt : propositional-truncations-exist)
         (ua : Univalence)
        where
@@ -74,7 +74,7 @@ open import UF.Size
 open import MLTT.List
 open import Groups.SRTclosure
 open import Groups.Type
-open import Groups.FreeGroup
+open import Groups.Free
 
 fe : Fun-Ext
 fe = Univalence-gives-Fun-Ext ua

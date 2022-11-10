@@ -12,41 +12,35 @@ module Ordinals.Closure
         (fe : FunExt)
        where
 
-open import MLTT.Spartan
-open import MLTT.Two-Properties
+open import CoNaturals.GenericConvergentSequence
+open import InjectiveTypes.Blackboard fe
 open import MLTT.AlternativePlus
 open import MLTT.Plus-Properties
-
-open import UF.Base
-open import UF.Equiv
-open import UF.Subsingletons
-open import UF.Retracts
-open import UF.Embeddings
-open import UF.Miscelanea
-
-open import TypeTopology.CompactTypes
-open import TypeTopology.LexicographicCompactness
-open import TypeTopology.ConvergentSequenceHasInf
-open import TypeTopology.PropInfTychonoff
-open import TypeTopology.InfProperty
-open import TypeTopology.SigmaDiscreteAndTotallySeparated
-open import TypeTopology.SquashedSum fe
-
-open import Ordinals.SquashedCantor fe
-open import Ordinals.ToppedType fe
+open import MLTT.Spartan
+open import MLTT.Two-Properties
+open import Naturals.Binary hiding (_+_ ; L ; R)
+open import Notation.CanonicalMap
 open import Ordinals.Arithmetic fe
 open import Ordinals.Injectivity
-open import Ordinals.ToppedArithmetic fe
-
-open import CoNaturals.GenericConvergentSequence
-
-open import InjectiveTypes.Blackboard fe
-
 open import Ordinals.LexicographicOrder
+open import Ordinals.SquashedCantor fe
+open import Ordinals.ToppedArithmetic fe
+open import Ordinals.ToppedType fe
+open import TypeTopology.CompactTypes
+open import TypeTopology.ConvergentSequenceHasInf
 open import TypeTopology.DiscreteAndSeparated
-open import Naturals.Binary hiding (_+_ ; L ; R)
-open import Utilities.PairFun
-open import Notation.CanonicalMap
+open import TypeTopology.InfProperty
+open import TypeTopology.LexicographicCompactness
+open import TypeTopology.PropInfTychonoff
+open import TypeTopology.SigmaDiscreteAndTotallySeparated
+open import TypeTopology.SquashedSum fe
+open import UF.Base
+open import UF.Embeddings
+open import UF.Equiv
+open import UF.Miscelanea
+open import UF.PairFun
+open import UF.Retracts
+open import UF.Subsingletons
 
 private
  fe₀ : funext 𝓤₀ 𝓤₀
@@ -54,7 +48,7 @@ private
 
 \end{code}
 
-Ordinal-indexed sums of ordinals are closed under compactness:
+Ordinal-indexed sums of topped ordinals are closed under compactness:
 
 \begin{code}
 
@@ -198,7 +192,6 @@ is-order-preserving  is-order-reflecting  : (τ υ : Ordᵀ) → (⟪ τ ⟫ →
 is-order-preserving τ υ f = (x y : ⟪ τ ⟫) → x ≺⟪ τ ⟫ y → f x ≺⟪ υ ⟫ f y
 is-order-reflecting τ υ f = (x y : ⟪ τ ⟫) → f x ≺⟪ υ ⟫ f y → x ≺⟪ τ ⟫ y
 
-
 comp-is-order-preserving : (τ υ φ : Ordᵀ)  (f : ⟪ τ ⟫ → ⟪ υ ⟫) (g : ⟪ υ ⟫ → ⟪ φ ⟫)
                          → is-order-preserving τ υ f
                          → is-order-preserving υ φ g
@@ -229,10 +222,10 @@ pair-fun-is-order-preserving τ υ A B f g φ γ (x , a) (x , b) (inr (refl , l)
 open topped-ordinals-injectivity fe
 
 over-ι-map-is-order-preserving  : (τ : ℕ → Ordᵀ) (z : ℕ + 𝟙)
-                                     → is-order-preserving
-                                         ((τ ↗ (over , over-embedding)) z)
-                                         ((τ ↗ embedding-ℕ-to-ℕ∞ fe₀) (ι𝟙 z))
-                                         (over-ι-map (λ n → ⟪ τ n ⟫) z)
+                                → is-order-preserving
+                                    ((τ ↗ (over , over-embedding)) z)
+                                    ((τ ↗ embedding-ℕ-to-ℕ∞ fe₀) (ι𝟙 z))
+                                    (over-ι-map (λ n → ⟪ τ n ⟫) z)
 over-ι-map-is-order-preserving τ (inl n) x y ((.n , refl) , l) = (n , refl) , γ
  where
   γ : over-ι-map (λ n → ⟪ τ n ⟫) (inl n) x (n , refl) ≺⟪ τ n ⟫

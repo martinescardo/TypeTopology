@@ -19,7 +19,7 @@ written.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module Uncatalogued.LawvereFPT where
+module Various.LawvereFPT where
 
 open import MLTT.Spartan
 
