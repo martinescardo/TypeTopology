@@ -18,7 +18,7 @@ open import MLTT.Unit-Properties
 open import UF.Subsingletons
 open import UF.Miscelanea
 
-module Integers.Integers where
+module Integers.Type where
 
 \end{code}
 

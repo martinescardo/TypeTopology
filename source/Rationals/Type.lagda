@@ -6,20 +6,20 @@ In this file I define rational numbers.
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import MLTT.Spartan renaming (_+_ to _∔_) 
+open import MLTT.Spartan renaming (_+_ to _∔_)
 
-open import Notation.CanonicalMap 
-open import TypeTopology.DiscreteAndSeparated 
-open import TypeTopology.SigmaDiscreteAndTotallySeparated 
-open import Naturals.Properties 
+open import Notation.CanonicalMap
+open import TypeTopology.DiscreteAndSeparated
+open import TypeTopology.SigmaDiscreteAndTotallySeparated
+open import Naturals.Properties
 open import UF.Base hiding (_≈_)
-open import UF.FunExt 
-open import UF.Miscelanea 
-open import UF.Subsingletons 
+open import UF.FunExt
+open import UF.Miscelanea
+open import UF.Subsingletons
 
 open import Naturals.HCF
 open import Integers.Abs
-open import Integers.Integers
+open import Integers.Type
 open import Integers.Multiplication renaming (_*_ to _ℤ*_)
 open import Integers.Negation
 open import Integers.Order
@@ -27,7 +27,7 @@ open import Naturals.Division
 open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
 open import Rationals.Fractions
 
-module Rationals.Rationals where
+module Rationals.Type where
 
 ℚ : 𝓤₀ ̇
 ℚ = Σ q ꞉ ℚₙ , is-in-lowest-terms q
@@ -59,7 +59,7 @@ toℚlemma (pos a , b) = f (divbyhcf a (succ b))
   f (succ h , x , succ y , (γ₁ , γ₂) , r) = (((pos x) , y) , r) , h , I , (γ₂ ⁻¹)
    where
     I : pos a ＝ pos (succ h) ℤ* pos x
-    I = pos a                 ＝⟨ ap pos γ₁ ⁻¹                                 ⟩                               
+    I = pos a                 ＝⟨ ap pos γ₁ ⁻¹                                 ⟩
         pos (succ h ℕ* x)     ＝⟨ pos-multiplication-equiv-to-ℕ (succ h) x ⁻¹ ⟩
         pos (succ h) ℤ* pos x ∎
 toℚlemma (negsucc a , b) = f (divbyhcf (succ a) (succ b))
@@ -193,7 +193,7 @@ equiv-equality fe (x , a) (y , b) = I , II
          pos (succ h) ℤ* x' ℤ* pos (succ h' ℕ* succ b')                 ＝⟨ ap₂ (λ z z' → (pos (succ h) ℤ* z ℤ* pos (succ h' ℕ* succ z'))) iv (v ⁻¹)            ⟩
          pos (succ h) ℤ* y' ℤ* pos (succ h' ℕ* succ a')                 ＝⟨ ap (pos (succ h) ℤ* y' ℤ*_) (pos-multiplication-equiv-to-ℕ (succ h') (succ a')) ⁻¹  ⟩
          pos (succ h) ℤ* y' ℤ* (pos (succ h') ℤ* pos (succ a'))         ＝⟨ ℤ-mult-rearrangement'' (pos (succ h')) (pos (succ h)) y' (pos (succ a'))            ⟩
-         pos (succ h') ℤ* y' ℤ* (pos (succ h) ℤ* pos (succ a'))         ＝⟨ ap (pos (succ h') ℤ* y' ℤ*_) (pos-multiplication-equiv-to-ℕ (succ h) (succ a'))     ⟩ 
+         pos (succ h') ℤ* y' ℤ* (pos (succ h) ℤ* pos (succ a'))         ＝⟨ ap (pos (succ h') ℤ* y' ℤ*_) (pos-multiplication-equiv-to-ℕ (succ h) (succ a'))     ⟩
          pos (succ h') ℤ* y' ℤ* pos (succ h ℕ* succ a')                 ＝⟨ ap₂ _ℤ*_ (βₚ₁ ⁻¹) (ap pos (αₚ₂ ⁻¹))                                                  ⟩
          y ℤ* pos (succ a)                                              ∎
     where
@@ -246,7 +246,7 @@ equality→equiv fe p q = I
 
   e₂ : succ a ＝ (succ h) ℕ* succ a'
   e₂ = pr₂ (pr₂ (pr₂ right-l))
-    
+
   conclusion : x ℤ* a'' ＝ x' ℤ* pos (succ a)
   conclusion = x ℤ* a''                           ＝⟨ ap (_ℤ* a'') e₁                                                ⟩
                h' ℤ* x' ℤ* a''                    ＝⟨ ap (_ℤ* a'') (ℤ*-comm h' x')                                   ⟩
@@ -267,7 +267,7 @@ q-has-qn fe (q , p) = q , (to-subtype-＝ (is-in-lowest-terms-is-prop fe) (equiv
 ℚ-zero-not-one : Fun-Ext → ¬ (0ℚ ＝ 1ℚ)
 ℚ-zero-not-one fe e = positive-not-zero 0 (pos-lc V ⁻¹)
  where
-  I : (pos 0 , 0) ≈ (pos 1 , 0) ⇔ toℚ (pos 0 , 0) ＝ toℚ (pos 1 , 0) 
+  I : (pos 0 , 0) ≈ (pos 1 , 0) ⇔ toℚ (pos 0 , 0) ＝ toℚ (pos 1 , 0)
   I = equiv-equality fe ((pos 0) , 0) ((pos 1) , 0)
 
   II : toℚ (pos 0 , 0) ＝ toℚ (pos 1 , 0) → (pos 0 , 0) ≈ (pos 1 , 0)
@@ -291,7 +291,7 @@ numerator-zero-is-zero fe ((pos zero  , a) , (_ , icd) , f) e = to-subtype-＝ (
  where
   I : pos zero , a ＝ pos zero , 0
   I = ap₂ _,_ refl (succ-lc II)
-   where    
+   where
     II : succ a ＝ 1
     II = ∣-anti (succ a) 1 (f (succ a) ((0 , refl) , 1 , refl)) icd
 numerator-zero-is-zero fe ((pos (succ x) , a) , p) e = 𝟘-elim (positive-not-zero x (pos-lc e))
@@ -321,8 +321,7 @@ instance
 ℕ-to-ℚ n = ι {{ canonical-map-ℤ-to-ℚ }} (ι n)
 
 instance
- canonical-map-ℕ-to-ℚ : Canonical-Map ℕ ℚ 
+ canonical-map-ℕ-to-ℚ : Canonical-Map ℕ ℚ
  ι {{canonical-map-ℕ-to-ℚ}} = ℕ-to-ℚ
 
 \end{code}
-

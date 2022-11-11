@@ -7,11 +7,11 @@ properties of multiplication.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import MLTT.Spartan renaming (_+_ to _∔_) 
+open import MLTT.Spartan renaming (_+_ to _∔_)
 
 open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
 open import Naturals.Addition renaming (_+_ to _ℕ+_)
-open import Integers.Integers
+open import Integers.Type
 open import Integers.Addition
 open import Integers.Negation
 
@@ -139,7 +139,7 @@ distributivity-mult-over-ℤ₁ x y = induction base step
       u v : ℤ
       u = x * negsucc k
       v = y * negsucc k
-    
+
 distributivity-mult-over-ℤ : (x y z : ℤ) → (x + y) * z ＝ (x * z) + (y * z)
 distributivity-mult-over-ℤ x y (pos z)     = distributivity-mult-over-ℤ₀ x y z
 distributivity-mult-over-ℤ x y (negsucc z) = distributivity-mult-over-ℤ₁ x y z
@@ -148,7 +148,7 @@ distributivity-mult-over-ℤ x y (negsucc z) = distributivity-mult-over-ℤ₁ x
 
 Following the same strategy as distributivity, we have proofs that
 relate multiplication and negation, commutativity of integers, and how
-negation distributes over multiplication. 
+negation distributes over multiplication.
 
 \begin{code}
 
@@ -161,10 +161,10 @@ mult-negation = ℤ-induction base step₁ step₂
   step₁ : (k : ℤ)
         → - k       ＝ negsucc 0 * k
         → - succℤ k ＝ negsucc 0 * succℤ k
-  step₁ (pos 0)            IH = refl 
+  step₁ (pos 0)            IH = refl
   step₁ (pos (succ x))     IH = predℤ (negsucc x)                ＝⟨ ap predℤ IH                                    ⟩
                                 predℤ (negsucc 0 * pos (succ x)) ＝⟨ ℤ-pred-is-minus-one (negsucc 0 * pos (succ x)) ⟩
-                                negsucc 0 * succℤ (pos (succ x)) ∎ 
+                                negsucc 0 * succℤ (pos (succ x)) ∎
   step₁ (negsucc 0)        IH = refl
   step₁ (negsucc (succ x)) IH = ℤ+-lc (- succℤ (negsucc (succ x))) (negsucc 0 * succℤ (negsucc (succ x))) (pos 1) I
    where
@@ -190,7 +190,7 @@ mult-negation = ℤ-induction base step₁ step₂
     I = pos (succ x) + pos 1                         ＝⟨ ℤ+-comm (pos (succ x)) (pos 1) ⟩
         pos 1 + pos (succ x)                         ＝⟨ ap (pos (succ 0) +_) IH        ⟩
         pos 1 + negsucc 0 * succℤ (negsucc (succ x)) ∎
-    
+
 ℤ*-comm₀ : (x : ℤ) → (y : ℕ) → x * pos y ＝ pos y * x
 ℤ*-comm₀ x = induction base step
  where
@@ -220,7 +220,7 @@ mult-negation = ℤ-induction base step₁ step₂
               (- x) + x * negsucc k            ＝⟨ ap ((- x) +_) IH                                         ⟩
               (- x) + negsucc k * x            ＝⟨ ap (_+ (negsucc k * x)) (mult-negation x)                ⟩
               negsucc 0 * x + negsucc k * x    ＝⟨ distributivity-mult-over-ℤ (negsucc 0) (negsucc k) x ⁻¹  ⟩
-              (negsucc 0 + negsucc k) * x      ＝⟨ ap (_* x) (ℤ+-comm (negsucc 0) (negsucc k))              ⟩   
+              (negsucc 0 + negsucc k) * x      ＝⟨ ap (_* x) (ℤ+-comm (negsucc 0) (negsucc k))              ⟩
               negsucc (succ k) * x             ∎
 
 ℤ*-comm : (x y : ℤ) → x * y ＝ y * x
@@ -263,7 +263,7 @@ negation-dist-over-mult₁ x = induction base step
               - ((- x) + x * negsucc k)     ∎
 
 negation-dist-over-mult : (x y : ℤ) → x * (- y) ＝ - (x * y)
-negation-dist-over-mult x (pos y)     = negation-dist-over-mult₀ x y 
+negation-dist-over-mult x (pos y)     = negation-dist-over-mult₀ x y
 negation-dist-over-mult x (negsucc y) = negation-dist-over-mult₁ x y
 
 negation-dist-over-mult' : (x y : ℤ) → (- x) * y ＝ - (x * y)
@@ -308,7 +308,7 @@ minus-times-minus-is-positive x y = (- x) * (- y) ＝⟨ negation-dist-over-mult
        → x * (y * negsucc (succ k)) ＝ x * y * negsucc (succ k)
   step k IH = x * (y * negsucc (succ k))        ＝⟨ distributivity-mult-over-ℤ' (- y) (y * negsucc k) x            ⟩
               x * (- y) + x * (y * negsucc k)   ＝⟨ ap ((x * (- y)) +_) IH                                         ⟩
-              x * (- y) + x * y * negsucc k     ＝⟨ ap (_+ ((x * y) * negsucc k)) (negation-dist-over-mult x y) ⟩ 
+              x * (- y) + x * y * negsucc k     ＝⟨ ap (_+ ((x * y) * negsucc k)) (negation-dist-over-mult x y) ⟩
               (- x * y) + x * y * negsucc k     ∎
 
 ℤ*-assoc : (x y z : ℤ) → x * y * z ＝ x * (y * z)
@@ -396,8 +396,3 @@ larger proofs.
                                 y * (x * z) ∎
 
 \end{code}
-
-
-
-
-

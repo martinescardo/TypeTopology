@@ -8,23 +8,22 @@ are embedded in the reals.
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import MLTT.Spartan renaming (_+_ to _∔_) 
+open import MLTT.Spartan renaming (_+_ to _∔_)
 
-open import Notation.CanonicalMap 
-open import Notation.Order 
-open import UF.Base 
-open import UF.FunExt 
-open import UF.PropTrunc 
-open import UF.Powerset 
-open import UF.Retracts 
-open import UF.Subsingletons 
-open import UF.Subsingletons-FunExt 
--- open import UF.Univalence 
+open import Notation.CanonicalMap
+open import Notation.Order
+open import UF.Base
+open import UF.FunExt
+open import UF.PropTrunc
+open import UF.Powerset
+open import UF.Retracts
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
 
-open import Rationals.Rationals
-open import Rationals.Order 
+open import Rationals.Type
+open import Rationals.Order
 
-module DedekindReals.Reals
+module DedekindReals.Type
          (pe : Prop-Ext)
          (pt : propositional-truncations-exist)
          (fe : Fun-Ext)
@@ -88,7 +87,7 @@ rounded-left-c L r x y l yL = pr₂ (r x) ∣ y , (l , yL) ∣
 rounded-right-a : (R : 𝓟 ℚ) → rounded-right R → (x y : ℚ) → x ≤ y → x ∈ R → y ∈ R
 rounded-right-a R r x y l x-R = II (ℚ≤-split fe x y l)
  where
-  I : (∃ p ꞉ ℚ , (p < y) × p ∈ R) → y ∈ R 
+  I : (∃ p ꞉ ℚ , (p < y) × p ∈ R) → y ∈ R
   I = pr₂ (r y)
   II : (x < y) ∔ (x ＝ y) → y ∈ R
   II (inl r) = I ∣ x , (r , x-R) ∣
@@ -185,14 +184,14 @@ embedding-ℚ-to-ℝ x = (L , R) , inhabited-left'
                               , rounded-left'
                               , rounded-right'
                               , disjoint'
-                              , located' 
+                              , located'
  where
   L R : 𝓟 ℚ
   L p = p < x , ℚ<-is-prop p x
   R q = x < q , ℚ<-is-prop x q
 
   inhabited-left' : ∃ p ꞉ ℚ , p < x
-  inhabited-left' = ∣ ℚ-no-least-element x ∣ 
+  inhabited-left' = ∣ ℚ-no-least-element x ∣
 
   inhabited-right' : ∃ q ꞉ ℚ , x < q
   inhabited-right' = ∣ ℚ-no-max-element x ∣
@@ -234,7 +233,7 @@ instance
  canonical-map-ℚ-to-ℝ : Canonical-Map ℚ ℝ
  ι {{canonical-map-ℚ-to-ℝ}} = embedding-ℚ-to-ℝ
 
-open import Integers.Integers
+open import Integers.Type
 ℤ-to-ℝ : ℤ → ℝ
 ℤ-to-ℝ z = ι (ι z)
 
@@ -321,12 +320,12 @@ instance
           get-contradiction : q' ∈ Ly
           get-contradiction = Lx⊆Ly q' q'-Lx
           from-above : q' < q'
-          from-above = disjoint-y q' q' (get-contradiction , q'-Ry) 
+          from-above = disjoint-y q' q' (get-contradiction , q'-Ry)
         III (inr q-Rx) = q-Rx
 
 ℝ-equality-from-left-cut : (((Lx , Rx) , isCutx) ((Ly , Ry) , isCuty) : ℝ)
                          → Lx ＝ Ly
-                         → ((Lx , Rx) , isCutx) ＝ ((Ly , Ry) , isCuty)                         
+                         → ((Lx , Rx) , isCutx) ＝ ((Ly , Ry) , isCuty)
 ℝ-equality-from-left-cut x y left-cut-equal = ℝ-equality x y left-cut-equal right-cut-equal
  where
   right-cut-equal : pr₂ (pr₁ x) ＝ pr₂ (pr₁ y)
@@ -342,4 +341,3 @@ type-of-locator-for-reals : 𝓤₁ ̇
 type-of-locator-for-reals = (x : ℝ) → (p q : ℚ) → p < x ∔ x < q
 
 \end{code}
-

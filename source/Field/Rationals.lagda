@@ -6,13 +6,13 @@ In this file I prove that the rationals are an ordered field.
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import MLTT.Spartan renaming (_+_ to _∔_) 
+open import MLTT.Spartan renaming (_+_ to _∔_)
 
-open import Notation.Order 
-open import UF.FunExt 
+open import Notation.Order
+open import UF.FunExt
 
 open import Field.Axioms
-open import Rationals.Rationals
+open import Rationals.Type
 open import Rationals.Addition
 open import Rationals.Multiplication
 open import Rationals.Negation
@@ -44,7 +44,3 @@ RationalsOrderedField = _<_ , ℚ<-addition-preserves-order , ℚ<-pos-multiplic
 
 RationalsOrderedField' : Ordered-Field 𝓤₀ { 𝓤₀ } { 𝓤₀ }
 RationalsOrderedField' = (ℚ , RationalsField) , RationalsOrderedField
-
-
-
-

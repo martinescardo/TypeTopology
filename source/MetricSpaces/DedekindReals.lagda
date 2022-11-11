@@ -6,18 +6,18 @@ The core result (that cauchy sequences converge) requires cleaning.
 \begin{code}
 {-# OPTIONS --without-K --exact-split --safe --experimental-lossy-unification #-}
 
-open import MLTT.Spartan renaming (_+_ to _∔_) 
+open import MLTT.Spartan renaming (_+_ to _∔_)
 
-open import Notation.Order 
-open import UF.Base 
-open import UF.FunExt 
-open import UF.Powerset 
-open import UF.PropTrunc 
-open import UF.Subsingletons 
+open import Notation.Order
+open import UF.Base
+open import UF.FunExt
+open import UF.Powerset
+open import UF.PropTrunc
+open import UF.Subsingletons
 
-open import Naturals.Order hiding (max ;  max-comm ;  max-assoc) 
+open import Naturals.Order hiding (max ;  max-comm ;  max-assoc)
 open import Rationals.Addition
-open import Rationals.Rationals
+open import Rationals.Type
 open import Rationals.Abs
 open import Rationals.Negation
 open import Rationals.Order
@@ -31,8 +31,8 @@ module MetricSpaces.DedekindReals
 
 open PropositionalTruncation pt
 
-open import MetricSpaces.Definition pt fe pe 
-open import DedekindReals.Reals pe pt fe
+open import MetricSpaces.Definition pt fe pe
+open import DedekindReals.Type pe pt fe
 open import MetricSpaces.Rationals fe pt pe
 open import Rationals.MinMax fe
 open import DedekindReals.Properties fe pt pe
@@ -51,7 +51,7 @@ B-ℝ x y ε l =
                                    × (x < q)
                                    × (y < v)
                                    × B-ℚ (min p u) (max q v) ε l
-                                   
+
 B-ℝ-ε-transport : (x y : ℝ) → (ε ε' : ℚ) → (ε ＝ ε') → (l₁ : 0ℚ < ε) → (l₂ : 0ℚ < ε') → B-ℝ x y ε l₁ → B-ℝ x y ε' l₂
 B-ℝ-ε-transport x y ε ε' e l₁ l₂ = ∥∥-functor I
  where
@@ -117,7 +117,7 @@ B-ℝ-ε-transport x y ε ε' e l₁ l₂ = ∥∥-functor I
                      ∔ (v ≤ q) × (max q v ＝ q)
                      → 0ℚ < (max q v - k')
         which-is-max (inl (q≤v , e)) = ℚ<-difference-positive fe k' (max q v) (transport (k' <_) (e ⁻¹) k<v)
-         where    
+         where
           k<v : k' < v
           k<v = ℚ<-≤-trans fe k' q v k<q q≤v
         which-is-max (inr (v≤q , e)) = ℚ<-difference-positive fe k' (max q v) (transport (k' <_) (e ⁻¹) k<q)
@@ -146,13 +146,13 @@ abstract a proof in the first condition.
 \begin{code}
 
 ℝ-m2 : m2 ℝ B-ℝ
-ℝ-m2 x y ε l = ∥∥-functor α 
+ℝ-m2 x y ε l = ∥∥-functor α
  where
   α : Σ (p , q , u , v) ꞉ ℚ × ℚ × ℚ × ℚ , p < x × u < y × x < q × y < v × B-ℚ (min p u) (max q v) ε l
     → Σ (u , v , p , q) ꞉ ℚ × ℚ × ℚ × ℚ , u < y × p < x × y < v × x < q × B-ℚ (min u p) (max v q) ε l
   α ((p , q , u , v) , p<x , u<y , x<q , y<v , B)
    = (u , v , p , q) , u<y , p<x , y<v , x<q , transport₂ (λ α β → B-ℚ α β ε l) (min-comm p u) (max-comm q v) B
-  
+
 ℝ-m1a : m1a ℝ B-ℝ
 ℝ-m1a x y f = ℝ-equality-from-left-cut' x y I II
  where
@@ -177,14 +177,14 @@ abstract a proof in the first condition.
   I ((a , b) , a<x , x<b , l₁ , l₂)
    = (a , b , a , b) , a<x , a<x , x<b , x<b , iv iii
     where
-     i : ℚ-metric b a < ε 
+     i : ℚ-metric b a < ε
      i = pos-abs-no-increase fe (b - a) ε (l₁ , l₂)
      ii : ℚ-metric b a ＝ ℚ-metric a b
      ii = ℚ-metric-commutes b a
      iii : ℚ-metric a b < ε
      iii = transport (_< ε) ii i
      iv : B-ℚ a b ε l → B-ℚ (min a a) (max b b) ε l
-     iv = transport₂ (λ α β → B-ℚ α β ε l) (min-refl a ⁻¹) (max-refl b ⁻¹) 
+     iv = transport₂ (λ α β → B-ℚ α β ε l) (min-refl a ⁻¹) (max-refl b ⁻¹)
 
 ℝ-m3 : m3 ℝ B-ℝ
 ℝ-m3 x y ε₁ ε₂ l₁ l₂ l₃ = ∥∥-functor I
@@ -192,7 +192,7 @@ abstract a proof in the first condition.
   I : Σ (p , q , u , v) ꞉ ℚ × ℚ × ℚ × ℚ , p < x × u < y × x < q × y < v × B-ℚ (min p u) (max q v) ε₁ l₁
     → Σ (p , q , u , v) ꞉ ℚ × ℚ × ℚ × ℚ , p < x × u < y × x < q × y < v × B-ℚ (min p u) (max q v) ε₂ l₂
   I ((p , q , u , v) , p<x , y<u , x<q , y<v , B)
-   = (p , q , u , v) , p<x , y<u , x<q , y<v , ℚ<-trans (ℚ-metric (min p u) (max q v)) ε₁ ε₂ B l₃ 
+   = (p , q , u , v) , p<x , y<u , x<q , y<v , ℚ<-trans (ℚ-metric (min p u) (max q v)) ε₁ ε₂ B l₃
 
 ℝ-m4 : m4 ℝ B-ℝ
 ℝ-m4 ((Lx , Rx) , inhabited-left-x , inhabited-right-x , rounded-left-x , rounded-right-x , disjoint-x , located-x)
@@ -201,9 +201,9 @@ abstract a proof in the first condition.
  where
   ε : ℚ
   ε = ε₁ + ε₂
-  ε>0 : 0ℚ < ε     
+  ε>0 : 0ℚ < ε
   ε>0 = ℚ<-adding-zero ε₁ ε₂ l₁ l₂
-  
+
   ε>ε₁ : ε₁ < ε
   ε>ε₁ = ℚ<-addition-preserves-order'' fe ε₁ ε₂ l₂
   ε>ε₂ : ε₂ < ε
@@ -282,7 +282,7 @@ abstract a proof in the first condition.
              v (inl (γ₁ , δ₁)) (inr (γ₂ , δ₂)) = transport₂ _≤_ (δ₁ ⁻¹) (δ₂ ⁻¹) (ℚ<-coarser-than-≤ p₂ q₁ (disjoint-y p₂ q₁ (p₂Ly , (rounded-right-a Ry rounded-right-y v₁ q₁ γ₂ v₁Ry))))
              v (inr (γ₁ , δ₁)) (inl (γ₂ , δ₂)) = transport₂ _≤_ (δ₁ ⁻¹) (δ₂ ⁻¹) (ℚ<-coarser-than-≤ u₂ v₁ (disjoint-y u₂ v₁ ((rounded-left-a Ly rounded-left-y u₂ p₂ γ₁ p₂Ly) , v₁Ry)))
              v (inr (γ₁ , δ₁)) (inr (γ₂ , δ₂)) = transport₂ _≤_ (δ₁ ⁻¹) (δ₂ ⁻¹) (ℚ<-coarser-than-≤ u₂ q₁ (disjoint-y u₂ q₁ ((rounded-left-a Ly rounded-left-y u₂ p₂ γ₁ p₂Ly) , (rounded-right-a Ry rounded-right-y v₁ q₁ γ₂ v₁Ry))))
-           
+
          iv (inl (k₁ , e₁)) (inr (k₂ , e₂)) = ℚ<-trans (abs (min xyl yzl - (max xyr yzr))) ε₁ ε (transport (_< ε₁) (v ⁻¹) B₃) ε>ε₁
           where
           v : abs (min xyl yzl - max xyr yzr) ＝ abs (xyl - xyr)
@@ -327,19 +327,19 @@ cauchy-approximation-limit-exists (f , approximation-condition) = y , y-is-limit
 
   LeftCondition : (q : ℚ) → 𝓤₀ ̇
   LeftCondition q = ∃ ((ε , l₁) , (θ , l₂)) ꞉ ℚ₊ × ℚ₊ , in-lower-cut (q + ε + θ) (f (ε , l₁))
- 
+
   RightCondition : (q : ℚ) → 𝓤₀ ̇
   RightCondition q = ∃ ((ε , l₁) , (θ , l₂)) ꞉ ℚ₊ × ℚ₊ , in-upper-cut (q - ε - θ) (f (ε , l₁))
-  
+
   Ly : 𝓟 ℚ
   Ly q = LeftCondition q , ∃-is-prop
 
   Ry : 𝓟 ℚ
   Ry q = RightCondition q , ∃-is-prop
 
-  inhabited-left-y : inhabited-left Ly 
+  inhabited-left-y : inhabited-left Ly
   inhabited-left-y = ∥∥-rec ∃-is-prop γ obtain-p'
-   where   
+   where
     ε : ℚ
     ε = 1ℚ
     δ : ℚ
@@ -389,7 +389,7 @@ cauchy-approximation-limit-exists (f , approximation-condition) = y , y-is-limit
           q' + (ε + (- ε))                          ＝⟨ ℚ+-assoc fe q' ε (- ε) ⁻¹ ⟩
           q' + ε + (- ε)                            ＝⟨ ap ((q' + ε) +_) (ℚ-zero-left-neutral fe (- ε) ⁻¹) ⟩
           q' + ε + (0ℚ - ε)                         ＝⟨ ap (λ α → q' + ε + (α - ε) ) (ℚ-inverse-sum-to-zero fe δ ⁻¹) ⟩
-          q' + ε + (δ + (- δ) + (- ε))              ＝⟨ ap ((q' + ε) +_) (ℚ+-assoc fe δ (- δ) (- ε)) ⟩          
+          q' + ε + (δ + (- δ) + (- ε))              ＝⟨ ap ((q' + ε) +_) (ℚ+-assoc fe δ (- δ) (- ε)) ⟩
           q' + ε + (δ + ((- δ) + (- ε)))            ＝⟨ ap (λ α → q' + ε + (δ + α)) (ℚ+-comm (- δ) (- ε)) ⟩
           q' + ε + (δ + ((- ε) - δ))                ＝⟨ ℚ+-assoc fe (q' + ε) δ ((- ε) - δ) ⁻¹ ⟩
           q' + ε + δ + ((- ε) + (- δ))              ＝⟨ ℚ+-assoc fe (q' + ε + δ) (- ε) (- δ) ⁻¹ ⟩
@@ -415,7 +415,7 @@ cauchy-approximation-limit-exists (f , approximation-condition) = y , y-is-limit
              k + θ * 1/2 + ε + θ * 1/2 ∎
         iii : 0ℚ < θ * 1/2
         iii = halving-preserves-order θ l₂
-    
+
     II : ∃ p ꞉ ℚ , k < p × p ∈ Ly → k ∈ Ly
     II assumption = ∥∥-rec (∈-is-prop Ly k) i assumption
      where
@@ -498,19 +498,19 @@ cauchy-approximation-limit-exists (f , approximation-condition) = y , y-is-limit
 
     0<5ε : 0ℚ < (r - q)
     0<5ε = ℚ<-difference-positive fe q r l
-       
+
     ε : ℚ
     ε = 1/5 * 5ε
- 
+
     0<ε : 0ℚ < ε
     0<ε = ℚ<-pos-multiplication-preserves-order 1/5 5ε 0<1/5 0<5ε
 
     ε₊ : ℚ₊
     ε₊ = ε , 0<ε
- 
+
     q+2ε : ℚ
     q+2ε = q + ε + ε
-    
+
     r-2ε : ℚ
     r-2ε = r - ε - ε
 
@@ -547,27 +547,27 @@ cauchy-approximation-limit-exists (f , approximation-condition) = y , y-is-limit
                      q + 5ε - (ε + ε)       ＝⟨ setup2 ⟩
                      r - (ε + ε)            ＝⟨ ap (λ α → r + α) (ℚ-minus-dist fe ε ε ⁻¹) ⟩
                      r + ((- ε) - ε)        ＝⟨ ℚ+-assoc fe r (- ε) (- ε) ⁻¹ ⟩
-                     r - ε - ε ∎ 
+                     r - ε - ε ∎
 
     q+2ε<q+3ε : q+2ε < q+3ε
     q+2ε<q+3ε = ℚ<-addition-preserves-order'' fe q+2ε ε 0<ε
 
     q+2ε<r-2ε : q+2ε < r-2ε
     q+2ε<r-2ε = transport (q+2ε <_) last-two-equal q+2ε<q+3ε
-    
+
     Lε : 𝓟 ℚ
     Lε = lower-cut-of (f ε₊)
     Rε : 𝓟 ℚ
     Rε = upper-cut-of (f ε₊)
-    
+
     I : q+2ε ∈ Lε ∨ r-2ε ∈ Rε
     I = located-from-real (f (ε , 0<ε)) q+2ε r-2ε q+2ε<r-2ε
-    
+
     II : (q + ε + ε) ∈ Lε ∔ (r - ε - ε) ∈ Rε → q ∈ Ly ∨ r ∈ Ry
     II = cases i ii
      where
       i : (q + ε + ε) ∈ Lε → q ∈ Ly ∨ r ∈ Ry
-      i s = ∣ inl ∣ ((ε , 0<ε) , (ε , 0<ε)) , s ∣ ∣      
+      i s = ∣ inl ∣ ((ε , 0<ε) , (ε , 0<ε)) , s ∣ ∣
       ii : (r - ε - ε) ∈ Rε → q ∈ Ly ∨ r ∈ Ry
       ii s = ∣ inr ∣ ((ε , 0<ε) , (ε , 0<ε)) , s ∣ ∣
 
@@ -579,7 +579,7 @@ cauchy-approximation-limit-exists (f , approximation-condition) = y , y-is-limit
      where
       II : (Σ ((ε₁ , l₁) , (θ₁ , l₂)) ꞉ ℚ₊ × ℚ₊ , in-lower-cut (k + ε₁ + θ₁) (f (ε₁ , l₁)))
          × (Σ ((ε₂ , l₃) , (θ₂ , l₄)) ꞉ ℚ₊ × ℚ₊ , in-upper-cut (k - ε₂ - θ₂) (f (ε₂ , l₃)))
-         → 𝟘 
+         → 𝟘
       II ((((ε₁ , l₁) , (θ₁ , l₂)) , klc) , ((ε₂ , l₃) , (θ₂ , l₄)) , kuc)  = ∥∥-rec 𝟘-is-prop III (approximation-condition (ε₁ , l₁) (ε₂ , l₃))
        where
         III : Σ (a , b , c , d) ꞉ ℚ × ℚ × ℚ × ℚ , a < (f (ε₁ , l₁)) × c < (f (ε₂ , l₃)) × b > (f (ε₁ , l₁)) × d > (f (ε₂ , l₃)) × B-ℚ (min a c) (max b d) (ε₁ + ε₂) (ℚ<-adding-zero ε₁ ε₂ l₁ l₃) → 𝟘
@@ -621,7 +621,7 @@ cauchy-approximation-limit-exists (f , approximation-condition) = y , y-is-limit
             ν = (ℚ<-trans c (k - ε₂ - θ₂) b i (ℚ<-trans (k - ε₂ - θ₂) k b ii (ℚ<-trans k (k + ε₁ + θ₁) b iii iv)))
             γ : 0ℚ < b - c
             γ = ℚ<-difference-positive fe c b ν
-            δ : abs (c - b) ＝ b - c  
+            δ : abs (c - b) ＝ b - c
             δ = ℚ-metric-commutes c b ∙ abs-of-pos-is-pos fe (b - c) (ℚ<-coarser-than-≤ 0ℚ (b - c) γ)
             α : a ≤ c × (min a c ＝ a) ∔ c ≤ a × (min a c ＝ c)
               → b ≤ d × (max b d ＝ d) ∔ d ≤ b × (max b d ＝ b)
@@ -634,7 +634,7 @@ cauchy-approximation-limit-exists (f , approximation-condition) = y , y-is-limit
               β (inl b<d) (inl a<c) = ℚ<-trans (b - c) (d - a) (ε₁ + ε₂) μ (transport (_< ε₁ + ε₂) (ℚ-metric-commutes a d ∙ abs-of-pos-is-pos fe (d - a) (ℚ<-coarser-than-≤ 0ℚ (d - a) (ℚ<-difference-positive fe a d (ℚ<-trans a c d a<c (ℚ<-trans c b d ν b<d))))) ζ)
                where
                 μ : b - c < d - a
-                μ = ℚ<-adding b d (- c) (- a) b<d (ℚ<-swap fe a c a<c) 
+                μ = ℚ<-adding b d (- c) (- a) b<d (ℚ<-swap fe a c a<c)
               β (inl b<d) (inr a＝c) = ℚ<-trans (b - c) (d - c) (ε₁ + ε₂) (ℚ<-addition-preserves-order b d (- c) b<d) μ
                where
                 μ : d - c < ε₁ + ε₂
@@ -642,7 +642,7 @@ cauchy-approximation-limit-exists (f , approximation-condition) = y , y-is-limit
               β (inr b＝d) (inl a<c) = ℚ<-trans (b - c) (b - a) (ε₁ + ε₂) τ (transport (_< ε₁ + ε₂) (ap (λ z → z - a) (b＝d ⁻¹)) μ)
                where
                 τ : b - c < b - a
-                τ = transport₂ _<_ (ℚ+-comm (- c) b) (ℚ+-comm (- a) b) (ℚ<-addition-preserves-order (- c) (- a) b (ℚ<-swap fe a c a<c))         
+                τ = transport₂ _<_ (ℚ+-comm (- c) b) (ℚ+-comm (- a) b) (ℚ<-addition-preserves-order (- c) (- a) b (ℚ<-swap fe a c a<c))
                 μ : d - a < (ε₁ + ε₂)
                 μ = transport (_< ε₁ + ε₂) (ℚ-metric-commutes a d ∙ abs-of-pos-is-pos fe (d - a) (ℚ<-coarser-than-≤ 0ℚ (d - a) (ℚ<-difference-positive fe a d (transport (a <_) b＝d (disjoint-from-real (f (ε₁ , l₁)) a b (aL1 , bR1)))))) ζ
               β (inr b＝d) (inr a＝c) = transport₂ (λ z z' → z  - z' < ε₁ + ε₂) (b＝d ⁻¹) a＝c μ
@@ -654,11 +654,11 @@ cauchy-approximation-limit-exists (f , approximation-condition) = y , y-is-limit
               ζ : B-ℚ a b (ε₁ + ε₂) (ℚ<-adding-zero ε₁ ε₂ l₁ l₃)
               ζ = transport₂ (λ α β → B-ℚ α β (ε₁ + ε₂) (ℚ<-adding-zero ε₁ ε₂ l₁ l₃)) e₁ e₂ B
               β : a < c ∔ (a ＝ c) → b - c < (ε₁ + ε₂)
-              β (inl a<c) = ℚ<-trans (b - c) (b - a) (ε₁ + ε₂) (transport₂ _<_ (ℚ+-comm (- c) b) (ℚ+-comm (- a) b) (ℚ<-addition-preserves-order (- c) (- a) b (ℚ<-swap fe a c a<c))) μ 
+              β (inl a<c) = ℚ<-trans (b - c) (b - a) (ε₁ + ε₂) (transport₂ _<_ (ℚ+-comm (- c) b) (ℚ+-comm (- a) b) (ℚ<-addition-preserves-order (- c) (- a) b (ℚ<-swap fe a c a<c))) μ
                where
                 μ : b - a < ε₁ + ε₂
                 μ =  transport (_< ε₁ + ε₂) (ℚ-metric-commutes a b ∙ (abs-of-pos-is-pos fe (b - a) (ℚ<-coarser-than-≤ 0ℚ (b - a) (ℚ<-difference-positive fe a b (disjoint-from-real (f (ε₁ , l₁)) a b (aL1 , bR1)))))) ζ
-            
+
               β (inr a＝c) = transport (_< ε₁ + ε₂) (ℚ-metric-commutes a b ∙ (abs-of-pos-is-pos fe (b - a) (ℚ<-coarser-than-≤ 0ℚ (b - a) (ℚ<-difference-positive fe a b (disjoint-from-real (f (ε₁ , l₁)) a b (aL1 , bR1)))) ∙ ap (λ z → b - z) a＝c)) ζ
             α (inr (c≤a , e₁)) (inl (b≤d , e₂)) = β (ℚ≤-split fe b d b≤d)
              where
@@ -666,7 +666,7 @@ cauchy-approximation-limit-exists (f , approximation-condition) = y , y-is-limit
               ζ = transport₂ (λ α β → B-ℚ α β (ε₁ + ε₂) (ℚ<-adding-zero ε₁ ε₂ l₁ l₃)) e₁ e₂ B
               suppose : abs (c - d) ＝ d - c
               suppose = ℚ-metric-commutes c d ∙ abs-of-pos-is-pos fe (d - c) (ℚ≤-difference-positive fe c d (ℚ≤-trans fe c a d c≤a (ℚ≤-trans fe a b d (ℚ<-coarser-than-≤ a b (disjoint-from-real (f (ε₁ , l₁)) a b (aL1 , bR1))) b≤d)))
-              β : b < d ∔ (b ＝ d) → b - c < (ε₁ + ε₂)    
+              β : b < d ∔ (b ＝ d) → b - c < (ε₁ + ε₂)
               β (inl b<d) = ℚ<-trans (b - c) (abs (c - d)) (ε₁ + ε₂) (transport ((b - c) <_) (suppose ⁻¹) μ) ζ
                where
                 μ : b - c < d - c
@@ -679,12 +679,12 @@ cauchy-approximation-limit-exists (f , approximation-condition) = y , y-is-limit
              where
               ζ : B-ℚ c b (ε₁ + ε₂) (ℚ<-adding-zero ε₁ ε₂ l₁ l₃)
               ζ = transport₂ (λ α β → B-ℚ α β (ε₁ + ε₂) (ℚ<-adding-zero ε₁ ε₂ l₁ l₃)) e₁ e₂ B
-                          
+
           viii : k + ε₁ + θ₁ - (k - ε₂ - θ₂) < ε₁ + ε₂
           viii = ℚ<-trans (k + ε₁ + θ₁ - (k - ε₂ - θ₂)) (b - c) (ε₁ + ε₂) v vii
           ix : ε₁ + ε₂ + (θ₁ + θ₂) < ε₁ + ε₂
           ix = transport (_< ε₁ + ε₂) vi viii
-          x : ε₁ + ε₂ + (θ₁ + θ₂) - (ε₁ + ε₂) < ε₁ + ε₂ - (ε₁ + ε₂) 
+          x : ε₁ + ε₂ + (θ₁ + θ₂) - (ε₁ + ε₂) < ε₁ + ε₂ - (ε₁ + ε₂)
           x = ℚ<-addition-preserves-order (ε₁ + ε₂ + (θ₁ + θ₂)) (ε₁ + ε₂) (- (ε₁ + ε₂)) ix
           xi : θ₁ + θ₂ < 0ℚ
           xi = transport₂ _<_ α (ℚ-inverse-sum-to-zero fe (ε₁ + ε₂)) x
@@ -693,8 +693,8 @@ cauchy-approximation-limit-exists (f , approximation-condition) = y , y-is-limit
             α = ℚ+-assoc fe (ε₁ + ε₂) (θ₁ + θ₂) (- (ε₁ + ε₂)) ∙ ap ((ε₁ + ε₂) +_) (ℚ+-comm (θ₁ + θ₂) (- (ε₁ + ε₂))) ∙ ℚ+-assoc fe (ε₁ + ε₂) (- (ε₁ + ε₂)) (θ₁ + θ₂) ⁻¹ ∙ ap (_+ (θ₁ + θ₂)) (ℚ-inverse-sum-to-zero fe (ε₁ + ε₂)) ∙ ℚ-zero-left-neutral fe (θ₁ + θ₂)
           xii : 0ℚ < 0ℚ
           xii = ℚ<-trans 0ℚ (θ₁ + θ₂) 0ℚ (ℚ<-adding-zero θ₁ θ₂ l₂ l₄) xi
-       
- 
+
+
   y : ℝ
   y = ((Ly , Ry) , inhabited-left-y , inhabited-right-y , rounded-left-y , rounded-right-y , disjoint-y , located-y)
 
@@ -709,7 +709,7 @@ cauchy-approximation-limit-exists (f , approximation-condition) = y , y-is-limit
 
     0<θ/2 : 0ℚ < 1/2 * θ
     0<θ/2 = ℚ<-pos-multiplication-preserves-order 1/2 θ (0 , refl) l₂
-    
+
     obtain-bounds :  ∃ (u , v) ꞉ ℚ × ℚ , u < (f (ε , l₁)) × v > (f (ε , l₁)) × 0ℚ < (v - u) × (v - u) < 1/2 * θ
     obtain-bounds = ℝ-arithmetically-located (f (ε , l₁)) (1/2 * θ) 0<θ/2
     I :  Σ (u , v) ꞉ ℚ × ℚ , u < (f (ε , l₁)) × v > (f (ε , l₁)) × 0ℚ < (v - u) × (v - u) < 1/2 * θ
@@ -778,7 +778,7 @@ cauchy-approximation-limit-exists (f , approximation-condition) = y , y-is-limit
       ψ : v + ε + 1/2 * θ - u < ε + θ
       ψ = transport₂ _<_ (α ⁻¹) γ β
 
-      iii : 0ℚ < v + ε + 1/2 * θ - u 
+      iii : 0ℚ < v + ε + 1/2 * θ - u
       iii = ℚ<-difference-positive fe u (v + ε + 1/2 * θ) (ℚ<-trans u v (v + ε + 1/2 * θ) u<v l₅)
 
       vi : abs (u - (v + ε + 1/2 * θ)) ＝ v + ε + 1/2 * θ - u
@@ -817,7 +817,7 @@ cauchy-approximation-limit-exists (f , approximation-condition) = y , y-is-limit
         vii : B-ℚ (min u (u - ε - 1/2 * θ)) (max v v) (ε + θ) l₃
         vii = transport₂ (λ α β → B-ℚ α β (ε + θ) l₃) (ii ∙ min-comm (u - ε - 1/2 * θ) u) (i ⁻¹) (transport (_< ε + θ) iv ψ)
 
-open import Rationals.Limits fe pt pe 
+open import Rationals.Limits fe pt pe
 
 RealsCauchySequence : (S : ℕ → ℝ) → 𝓤₀ ̇
 RealsCauchySequence = cauchy-sequence ℝ ℝ-metric-space
@@ -879,7 +879,7 @@ mod-convergence-property S RCS (M , f) (ε , l₁) (δ , l₂) = B-ℝ-ε-transp
    where
     by-convergence-property : ((ε , l₁) : ℚ₊)
                             → ((δ , l₂) : ℚ₊)
-                            → B-ℝ (S (M (1/2 * δ , halving-preserves-order' δ l₂))) (S (M (1/2 * ε , halving-preserves-order' ε l₁))) (1/2 * (δ + ε)) (ℚ<-pos-multiplication-preserves-order 1/2 (δ + ε) 0<1/2 (ℚ<-adding-zero δ ε l₂ l₁)) 
+                            → B-ℝ (S (M (1/2 * δ , halving-preserves-order' δ l₂))) (S (M (1/2 * ε , halving-preserves-order' ε l₁))) (1/2 * (δ + ε)) (ℚ<-pos-multiplication-preserves-order 1/2 (δ + ε) 0<1/2 (ℚ<-adding-zero δ ε l₂ l₁))
     by-convergence-property = mod-convergence-property S RCS (M , f)
 
     property-satisfies-cauchy-approximation : cauchy-approximation

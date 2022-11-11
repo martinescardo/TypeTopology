@@ -5,14 +5,14 @@ In this file I define min and max for rationals.
 \begin{code}
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import MLTT.Spartan renaming (_+_ to _∔_) 
+open import MLTT.Spartan renaming (_+_ to _∔_)
 
 open import Notation.Order
 open import UF.Base --Typetopology
-open import UF.FunExt 
-open import MLTT.Plus-Properties 
+open import UF.FunExt
+open import MLTT.Plus-Properties
 
-open import Rationals.Rationals
+open import Rationals.Type
 open import Rationals.Order
 
 module Rationals.MinMax (fe : Fun-Ext) where
@@ -103,7 +103,7 @@ max≤ p q = I (max-to-≤ p q)
   I : p ≤ q × (max p q ＝ q) ∔ q ≤ p × (max p q ＝ p) → p ≤ max p q
   I (inl (p≤q , e)) = transport (p ≤_) (e ⁻¹) p≤q
   I (inr (q≤p , e)) = transport (p ≤_) (e ⁻¹) (ℚ≤-refl p)
-  
+
 min' : (x y : ℚ) → x < y ∔ (x ＝ y) ∔ y < x → ℚ
 min' x y (inl _) = x
 min' x y (inr _) = y
@@ -111,7 +111,7 @@ min' x y (inr _) = y
 min : ℚ → ℚ → ℚ
 min p q = min' p q (ℚ-trichotomous fe p q)
 
-min'-to-min : (x y : ℚ) → (t : x < y ∔ (x ＝ y) ∔ y < x) → min' x y t ＝ min x y 
+min'-to-min : (x y : ℚ) → (t : x < y ∔ (x ＝ y) ∔ y < x) → min' x y t ＝ min x y
 min'-to-min x y t = equality-cases t I II
  where
   I : (k : x < y) → t ＝ inl k → min' x y t ＝ min x y
@@ -191,7 +191,7 @@ min≤ p q = I (min-to-≤ p q)
     → min p q ≤ p
   I (inl (p≤q , e)) = transport (_≤ p) (e ⁻¹) (ℚ≤-refl p)
   I (inr (q≤p , e)) = transport (_≤ p) (e ⁻¹) q≤p
-  
+
 ≤-to-min' : (x y : ℚ) → x ≤ y → (t : x < y ∔ (x ＝ y) ∔ y < x) → x ＝ min' x y t
 ≤-to-min' x y l (inl t) = refl
 ≤-to-min' x y l (inr (inl t)) = t
@@ -207,13 +207,13 @@ min≤ p q = I (min-to-≤ p q)
 <-to-min : (x y : ℚ) → x < y → x ＝ min x y
 <-to-min x y l = ≤-to-min x y (ℚ<-coarser-than-≤ x y l)
 
-≤-to-max' : (x y : ℚ) → x ≤ y → (t : x < y ∔ (x ＝ y) ∔ y < x) → y ＝ max' x y t 
+≤-to-max' : (x y : ℚ) → x ≤ y → (t : x < y ∔ (x ＝ y) ∔ y < x) → y ＝ max' x y t
 ≤-to-max' x y l (inl t) = refl
 ≤-to-max' x y l (inr (inl t)) = t ⁻¹
 ≤-to-max' x y l (inr (inr t)) = I (ℚ≤-split fe x y l)
  where
   I : x < y ∔ (x ＝ y) → y ＝ max' x y (inr (inr t))
-  I (inl s) = 𝟘-elim (ℚ<-not-itself x (ℚ<-trans x y x s t)) 
+  I (inl s) = 𝟘-elim (ℚ<-not-itself x (ℚ<-trans x y x s t))
   I (inr s) = s ⁻¹
 
 ≤-to-max : (x y : ℚ) → x ≤ y → y ＝ max x y
@@ -233,13 +233,13 @@ min-assoc x y z = I (min-to-≤ x y) (min-to-≤ (min x y) z) (min-to-≤ y z) (
   I (inl (l₁ , e₁)) (inl (l₂ , e₂)) (inl (l₃ , e₃)) (inl (l₄ , e₄)) = e₂ ∙ e₁ ∙ e₄ ⁻¹
   I (inl (l₁ , e₁)) (inl (l₂ , e₂)) (inl (l₃ , e₃)) (inr (l₄ , e₄)) = e₂ ∙ ap (λ - → min x -) (e₃ ⁻¹)
   I (inl (l₁ , e₁)) (inl (l₂ , e₂)) (inr (l₃ , e₃)) (inl (l₄ , e₄)) = e₂ ∙ e₁ ∙ e₄ ⁻¹
-  I (inl (l₁ , e₁)) (inl (l₂ , e₂)) (inr (l₃ , e₃)) (inr (l₄ , e₄)) = e₂ ∙ e₁ ∙ ℚ≤-anti fe x z (transport (_≤ z) e₁ l₂) (transport (_≤ x) e₃ l₄) ∙ e₃ ⁻¹ ∙ (e₄ ⁻¹) 
+  I (inl (l₁ , e₁)) (inl (l₂ , e₂)) (inr (l₃ , e₃)) (inr (l₄ , e₄)) = e₂ ∙ e₁ ∙ ℚ≤-anti fe x z (transport (_≤ z) e₁ l₂) (transport (_≤ x) e₃ l₄) ∙ e₃ ⁻¹ ∙ (e₄ ⁻¹)
   I (inl (l₁ , e₁)) (inr (l₂ , e₂)) (inl (l₃ , e₃)) (inl (l₄ , e₄)) = e₂ ∙ ℚ≤-anti fe z x (transport (z ≤_) e₁ l₂) (ℚ≤-trans fe x y z l₁ l₃) ∙ e₄ ⁻¹
   I (inl (l₁ , e₁)) (inr (l₂ , e₂)) (inl (l₃ , e₃)) (inr (l₄ , e₄)) = e₂ ∙ ℚ≤-anti fe z y (ℚ≤-trans fe z x y (transport (z ≤_) e₁ l₂) l₁) l₃ ∙ (e₃ ⁻¹) ∙ (e₄ ⁻¹)
   I (inl (l₁ , e₁)) (inr (l₂ , e₂)) (inr (l₃ , e₃)) (inl (l₄ , e₄)) = ap (λ - → min - z) e₁ ∙ ap (λ - → min x -) (e₃ ⁻¹)
   I (inl (l₁ , e₁)) (inr (l₂ , e₂)) (inr (l₃ , e₃)) (inr (l₄ , e₄)) = e₂ ∙ (e₃ ⁻¹) ∙ (e₄ ⁻¹)
   I (inr (l₁ , e₁)) (inl (l₂ , e₂)) (inl (l₃ , e₃)) (inl (l₄ , e₄)) = e₂ ∙ e₁ ∙ ℚ≤-anti fe y x l₁ (transport (x ≤_) e₃ l₄) ∙ (e₄ ⁻¹)
-  I (inr (l₁ , e₁)) (inl (l₂ , e₂)) (inl (l₃ , e₃)) (inr (l₄ , e₄)) = e₂ ∙ e₁ ∙ (e₃ ⁻¹) ∙ (e₄ ⁻¹) 
+  I (inr (l₁ , e₁)) (inl (l₂ , e₂)) (inl (l₃ , e₃)) (inr (l₄ , e₄)) = e₂ ∙ e₁ ∙ (e₃ ⁻¹) ∙ (e₄ ⁻¹)
   I (inr (l₁ , e₁)) (inl (l₂ , e₂)) (inr (l₃ , e₃)) (inl (l₄ , e₄)) = e₂ ∙ e₁ ∙ ℚ≤-anti fe y x l₁ (ℚ≤-trans fe x z y (transport (x ≤_) e₃ l₄) l₃) ∙ (e₄ ⁻¹)
   I (inr (l₁ , e₁)) (inl (l₂ , e₂)) (inr (l₃ , e₃)) (inr (l₄ , e₄)) = e₂ ∙ e₁ ∙ ℚ≤-anti fe y z (transport (_≤ z) e₁ l₂) l₃ ∙ (e₃ ⁻¹) ∙ (e₄ ⁻¹)
   I (inr (l₁ , e₁)) (inr (l₂ , e₂)) (inl (l₃ , e₃)) (inl (l₄ , e₄)) = e₂ ∙ ℚ≤-anti fe z y (transport (z ≤_) e₁ l₂) l₃ ∙ e₁ ⁻¹ ∙ ap (λ - → min x -) (e₃ ⁻¹)
@@ -296,7 +296,7 @@ max₄ : (a b c d : ℚ) → ℚ
 max₄ a b c d = max (max (max a b) c) d
 
 min≤max : (a b : ℚ) → min a b ≤ max a b
-min≤max a b = I (min-to-≤ a b) 
+min≤max a b = I (min-to-≤ a b)
  where
   I : a ≤ b × (min a b ＝ a)
     ∔ b ≤ a × (min a b ＝ b)
@@ -311,7 +311,7 @@ min₃≤max₃ a b c = I (min-to-≤ (min a b) c) (max-to-≤ (max a b) c)
      → max a b ≤ c × (max (max a b) c ＝ c) ∔ c ≤ max a b × (max (max a b) c ＝ max a b)
      → min₃ a b c ≤ max₃ a b c
   I (inl (l₁ , e₁)) (inl (l₂ , e₂)) = transport₂ _≤_ (e₁ ⁻¹) (e₂ ⁻¹) l₁
-  I (inl (l₁ , e₁)) (inr (l₂ , e₂)) = transport₂ _≤_ (e₁ ⁻¹) (e₂ ⁻¹) (min≤max a b) 
+  I (inl (l₁ , e₁)) (inr (l₂ , e₂)) = transport₂ _≤_ (e₁ ⁻¹) (e₂ ⁻¹) (min≤max a b)
   I (inr (l₁ , e₁)) (inl (l₂ , e₂)) = transport₂ _≤_ (e₁ ⁻¹) (e₂ ⁻¹) (ℚ≤-refl c)
   I (inr (l₁ , e₁)) (inr (l₂ , e₂)) = transport₂ _≤_ (e₁ ⁻¹) (e₂ ⁻¹) l₂
 
@@ -322,15 +322,8 @@ min₄≤max₄ a b c d = I (min-to-≤ (min₃ a b c) d) (max-to-≤ (max₃ a 
     → max₃ a b c ≤ d × (max (max₃ a b c) d ＝ d) ∔ d ≤ max₃ a b c × (max (max₃ a b c) d ＝ max₃ a b c)
     → min₄ a b c d ≤ max₄ a b c d
   I (inl (l₁ , e₁)) (inl (l₂ , e₂)) = transport₂ _≤_ (e₁ ⁻¹) (e₂ ⁻¹) l₁
-  I (inl (l₁ , e₁)) (inr (l₂ , e₂)) = transport₂ _≤_ (e₁ ⁻¹) (e₂ ⁻¹) (min₃≤max₃ a b c)                                                                              
+  I (inl (l₁ , e₁)) (inr (l₂ , e₂)) = transport₂ _≤_ (e₁ ⁻¹) (e₂ ⁻¹) (min₃≤max₃ a b c)
   I (inr (l₁ , e₁)) (inl (l₂ , e₂)) = transport₂ _≤_ (e₁ ⁻¹) (e₂ ⁻¹) (ℚ≤-refl d)
   I (inr (l₁ , e₁)) (inr (l₂ , e₂)) = transport₂ _≤_ (e₁ ⁻¹) (e₂ ⁻¹) l₂
 
 \end{code}
-
-
-
-
-
-
-
