@@ -29,13 +29,13 @@ using the corresponding properties for (finite) types.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module MLTT.Fin-Properties where
+module Fin.Properties where
 
 open import UF.Subsingletons renaming (⊤Ω to ⊤)
 
 open import MLTT.Spartan
 open import MLTT.Plus-Properties
-open import MLTT.Fin
+open import Fin.Type
 open import Notation.Order
 
 \end{code}
@@ -88,7 +88,7 @@ defined in the module PlusOneLC.lagda.
 
 \begin{code}
 
-open import ArithmeticViaEquivalence.PlusOneLC
+open import Factorial.PlusOneLC
 open import UF.Equiv
 
 Fin-lc : (m n : ℕ) → Fin m ≃ Fin n → m ＝ n
@@ -159,7 +159,7 @@ difference between the embedding property and left cancellability.
 
 \begin{code}
 
-open import ArithmeticViaEquivalence.Swap
+open import Factorial.Swap
 open import UF.LeftCancellable
 
 +𝟙-cancel-lemma : {X Y : 𝓤 ̇ }

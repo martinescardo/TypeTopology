@@ -53,9 +53,9 @@ extensionality or univalence).
 
 \begin{code}
 
-module ArithmeticViaEquivalence.Factorial (fe : FunExt) where
+module Factorial.Law (fe : FunExt) where
 
-open import ArithmeticViaEquivalence.Swap
+open import Factorial.Swap
 open import MLTT.Plus-Properties
 open import MLTT.Spartan
 open import TypeTopology.DiscreteAndSeparated

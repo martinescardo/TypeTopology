@@ -82,7 +82,7 @@ open import TypeTopology.DiscreteAndSeparated
 open import NotionsOfDecidability.DecidableAndDetachable
 open import Naturals.Order
 open import Notation.Order
-open import MLTT.Fin-Properties
+open import Fin.Properties
 open import MLTT.Two-Properties
 
 \end{code}

@@ -6,7 +6,7 @@ See also the file Fin-Properties.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module MLTT.Fin where
+module Fin.Type where
 
 open import UF.Subsingletons renaming (⊤Ω to ⊤)
 
