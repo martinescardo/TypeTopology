@@ -22,7 +22,7 @@ ln -s Factorial.Law.html UF-Factorial.html
 ln -s Fin.ArithmeticViaEquivalence.html ArithmeticViaEquivalence.html
 ln -s Fin.index.html Fin-Properties.html
 ln -s Fin.Type.html Fin.html
-ln -s Fin.UniverseInveriance.html UF-Finiteness-Universe-Invariance.html
+ln -s Fin.UniverseInvariance.html UF-Finiteness-Universe-Invariance.html
 ln -s Games.FiniteHistoryDependent.html FiniteHistoryDependentGames.html
 ln -s Groups.Free.html FreeGroup.html
 ln -s Groups.FreeOverLargeLocallySmallSet.html FreeGroupOfLargeLocallySmallSet.html
