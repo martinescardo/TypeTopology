@@ -152,6 +152,9 @@ open import UF.Equiv
 open import UF.EquivalenceExamples
 open import Fin.Type
 open import Fin.Properties
+open import Fin.Topology
+open import UF.PropTrunc
+open import Fin.Bishop
 
 \end{code}
 
@@ -427,14 +430,13 @@ Recall that a type X is finite if there is n : ℕ with X ≃ Fin n.
 
 \begin{code}
 
-open import UF.PropTrunc
-
 module _ (pt : propositional-truncations-exist)
          (fe : FunExt)
          {𝓤 : Universe}
          {X : 𝓤 ̇ }
          where
 
+ open PropositionalTruncation pt
  open finiteness pt
  open exponentiation-and-factorial fe
  open import UF.Equiv-FunExt

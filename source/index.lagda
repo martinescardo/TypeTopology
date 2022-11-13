@@ -109,8 +109,8 @@ import Slice.index
 import TWA.index                      -- by Todd Waugh Ambridge
 import Taboos.index
 import TypeTopology.index
-import Various.index
 import UF.index
+import Various.index
 
 \end{code}
 

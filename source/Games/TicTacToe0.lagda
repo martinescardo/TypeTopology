@@ -17,7 +17,8 @@ open import MLTT.Spartan hiding (J)
 open import MLTT.NonSpartanMLTTTypes
             hiding (Fin ; 𝟎 ; 𝟏 ; 𝟐 ; 𝟑 ; 𝟒 ; 𝟓 ; 𝟔 ; 𝟕 ; 𝟖 ; 𝟗)
 open import Fin.Type
-open import Fin.Properties
+open import Fin.Topology
+open import Fin.ArgMinMax
 
 open import Games.TypeTrees
 

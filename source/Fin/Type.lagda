@@ -1,7 +1,5 @@
 Martin Escardo, 2014.
 
-See also the file Fin-Properties.
-
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
@@ -60,6 +58,3 @@ Fin-induction P β σ (succ n) 𝟎       = β n
 Fin-induction P β σ (succ n) (suc i) = σ n i (Fin-induction P β σ n i)
 
 \end{code}
-
-We will not use this induction principle explicitly. Instead, we will
-use the above pattern for similar definitions by induction.

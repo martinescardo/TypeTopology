@@ -76,14 +76,15 @@ open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.UniverseEmbedding
 
+open import Fin.Topology
+open import Fin.Variation
+open import MLTT.Two-Properties
 open import Naturals.Binary hiding (_+_)
-open import TypeTopology.CompactTypes
-open import TypeTopology.DiscreteAndSeparated
-open import NotionsOfDecidability.DecidableAndDetachable
 open import Naturals.Order
 open import Notation.Order
-open import Fin.Properties
-open import MLTT.Two-Properties
+open import NotionsOfDecidability.DecidableAndDetachable
+open import TypeTopology.CompactTypes
+open import TypeTopology.DiscreteAndSeparated
 
 \end{code}
 
@@ -370,7 +371,6 @@ where
 \begin{code}
 
 open import UF.Embeddings
-
 open import Notation.CanonicalMap
 
 Ω¬¬-to-Ω : Ω¬¬ 𝓤 → Ω 𝓤
