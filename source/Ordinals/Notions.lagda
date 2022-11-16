@@ -632,21 +632,21 @@ module _
 
 End of proof added by Ohad Kammar.
 
-The following fact and proof was communicated verbally by Paul Levy to
-Martin Escardo and Ohad Kammar on 16th November 2022, and it is
-written down in Agda by Martin Escardo on the same date:
+The following fact and proof were communicated verbally by Paul Blain
+Levy to Martin Escardo and Ohad Kammar on 16th November 2022, and it
+is written down in Agda by Martin Escardo on the same date:
 
 \begin{code}
 
 is-decidable-order : 𝓤 ⊔ 𝓥 ̇
 is-decidable-order = (x y : X) → decidable (x < y)
 
-trichotomy-from-decidable-order : is-decidable-order
-                                → is-transitive
+trichotomy-from-decidable-order : is-transitive
                                 → is-extensional
                                 → is-well-founded
+                                → is-decidable-order
                                 → is-trichotomous-order
-trichotomy-from-decidable-order d t e w = γ
+trichotomy-from-decidable-order t e w d = γ
  where
   T : X → X → 𝓤 ⊔ 𝓥 ̇
   T x y = (x < y) + (x ＝ y) + (y < x)
@@ -681,7 +681,6 @@ trichotomy-from-decidable-order d t e w = γ
                                    → 𝟘-elim (ν (transport (_< a) p l)))
                              (λ (m : b < x)
                                    → 𝟘-elim (ν (t b x a m l))))
-
         δ : T a b
         δ = Cases (d a b)
               (λ (l : a < b)
@@ -693,12 +692,37 @@ trichotomy-from-decidable-order d t e w = γ
                        (λ (β : ¬ (b < a))
                              → inr (inl (e a b (II β) (I α))) ))
 
-
 trichotomy₃ : excluded-middle 𝓥
-           → is-well-order
-           → is-trichotomous-order
+            → is-well-order
+            → is-trichotomous-order
 trichotomy₃ em (p , w , e , t) = trichotomy-from-decidable-order
-                                  (λ x y → em (x < y) (p x y)) t e w
+                                  t e w (λ x y → em (x < y) (p x y))
+
+decidable-order-from-trichotomy : is-transitive
+                                → is-well-founded
+                                → is-trichotomous-order
+                                → is-decidable-order
+decidable-order-from-trichotomy t w τ = γ
+ where
+  γ : (x y : X) → decidable (x < y)
+  γ x y =
+   Cases (τ x y)
+    (λ (l : x < y)
+          → inl l)
+    (λ (c : (x ＝ y) + (y < x))
+          → Cases c
+             (λ (p : x ＝ y)
+                   → inr (λ (m : x < y)
+                               → irreflexive x (w x) (transport (x <_) (p ⁻¹) m)))
+             (λ (l : y < x)
+                   → inr (λ (m : x < y)
+                               → irreflexive x (w x) (t x y x m l))))
+
+decidable-order-iff-trichotomy : is-well-order
+                               → is-trichotomous-order ⇔ is-decidable-order
+decidable-order-iff-trichotomy (_ , w , e , t) =
+ decidable-order-from-trichotomy t w ,
+ trichotomy-from-decidable-order t e w
 
 \end{code}
 
