@@ -605,8 +605,8 @@ module _
        (λ ((i , i-lt-u) , i-not-lt-v) → ∣ i , i-lt-u , i-not-lt-v ∣) witness)))
      λ prf → inr (λ i i-lt-u → prf (i , i-lt-u))
 
- trichotomy' : is-well-order → is-trichotomous-order
- trichotomy' wo@(p , w , e , t) = transfinite-induction w is-trichotomous-element ϕ
+ trichotomy₂ : is-well-order → is-trichotomous-order
+ trichotomy₂ wo@(p , w , e , t) = transfinite-induction w is-trichotomous-element ϕ
   where
    ϕ : (x : X) → induction-hypothesis is-trichotomous-element x → is-trichotomous-element x
    ϕ u ih = -- now we proceed by induction on the inner argument
@@ -629,6 +629,80 @@ module _
              (in-trichotomy-not->-implies-≧ i-in-trichotomy-x i-not-lt-x)))
        λ u-below-x → inr ((e x u x-below-u u-below-x) ⁻¹)
 \end{code}
+
+End of proof added by Ohad Kammar.
+
+The following fact and proof was communicated verbally by Paul Levy to
+Martin Escardo and Ohad Kammar on 16th November 2022, and it is
+written down in Agda by Martin Escardo on the same date:
+
+\begin{code}
+
+is-decidable-order : 𝓤 ⊔ 𝓥 ̇
+is-decidable-order = (x y : X) → decidable (x < y)
+
+trichotomy-from-decidable-order : is-decidable-order
+                                → is-transitive
+                                → is-extensional
+                                → is-well-founded
+                                → is-trichotomous-order
+trichotomy-from-decidable-order d t e w = γ
+ where
+  T : X → X → 𝓤 ⊔ 𝓥 ̇
+  T x y = (x < y) + (x ＝ y) + (y < x)
+
+  γ : (a b : X) → T a b
+  γ = transfinite-induction w (λ a → (b : X) → T a b) ϕ
+   where
+    ϕ : (a : X) → ((x : X) → x < a → (b : X) → T x b) → (b : X) → T a b
+    ϕ a IH-a = transfinite-induction w (T a) ψ
+     where
+      ψ : (b : X) → ((y : X) → y < b → T a y) → T a b
+      ψ b IH-b = δ
+       where
+        I : ¬ (a < b) → b ≼ a
+        I ν y l = Cases (IH-b y l)
+                   (λ (m : a < y)
+                         → 𝟘-elim (ν (t a y b m l)))
+                   (λ (c : (a ＝ y) + (y < a))
+                         → Cases c
+                            (λ (p : a ＝ y)
+                                  → 𝟘-elim (ν (transport (_< b) (p ⁻¹) l)))
+                            (λ (m : y < a)
+                                  → m))
+
+        II : ¬ (b < a) → a ≼ b
+        II ν x l = Cases (IH-a x l b)
+                    (λ (m : x < b)
+                          → m)
+                    (λ (c : (x ＝ b) + (b < x))
+                          → Cases c
+                             (λ (p : x ＝ b)
+                                   → 𝟘-elim (ν (transport (_< a) p l)))
+                             (λ (m : b < x)
+                                   → 𝟘-elim (ν (t b x a m l))))
+
+        δ : T a b
+        δ = Cases (d a b)
+              (λ (l : a < b)
+                    → inl l)
+              (λ (α : ¬ (a < b))
+                    → Cases (d b a)
+                       (λ (l : b < a)
+                             → inr (inr l))
+                       (λ (β : ¬ (b < a))
+                             → inr (inl (e a b (II β) (I α))) ))
+
+
+trichotomy₃ : excluded-middle 𝓥
+           → is-well-order
+           → is-trichotomous-order
+trichotomy₃ em (p , w , e , t) = trichotomy-from-decidable-order
+                                  (λ x y → em (x < y) (p x y)) t e w
+
+\end{code}
+
+End of 16th November 2022 addition.
 
 \begin{code}
 not-<-gives-≼ : funext (𝓤 ⊔ 𝓥) 𝓤₀
