@@ -145,7 +145,7 @@ quantifiers applied to the outcome function (Theorem 3.1 of [1]).
 
 \begin{code}
 
-optimal-outcome : (G : Game) → R
+optimal-outcome : Game → R
 optimal-outcome (game Xt q ϕt) = K-sequence ϕt q
 
 \end{code}
@@ -208,7 +208,7 @@ is-sgpe : {Xt : 𝕋} → 𝓚 Xt → (Path Xt → R) → Strategy Xt → Type
 is-sgpe {[]}     ⟨⟩        q ⟨⟩         = 𝟙
 is-sgpe {X ∷ Xf} (ϕ :: ϕf) q (x₀ :: σf) =
 
-      (sub q x₀ (strategic-path (σf x₀)) ＝ ϕ (λ x → q (x :: strategic-path (σf x))))
+      (sub q x₀ (strategic-path (σf x₀)) ＝ ϕ (λ x → sub q x (strategic-path (σf x))))
     ×
       ((x : X) → is-sgpe {Xf x} (ϕf x) (sub q x) (σf x))
 
