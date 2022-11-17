@@ -319,10 +319,10 @@ _⊗ᴶ_ : {X : Type} {Y : X → Type}
      → J X
      → ((x : X) → J (Y x))
      → J (Σ x ꞉ X , Y x)
-(ε ⊗ᴶ δ) q = a :: b a
+(ε ⊗ᴶ δ) q = x₀ :: ν x₀
  where
-  b = λ x → δ x (sub q x)
-  a = ε (λ x → sub q x (b x))
+  ν  = λ x → δ x (sub q x)
+  x₀ = ε (λ x → sub q x (ν x))
 
 J-sequence : {Xt : 𝕋} → 𝓙 Xt → J (Path Xt)
 J-sequence {[]}     ⟨⟩        = λ q → ⟨⟩
@@ -443,28 +443,28 @@ then εt are selections of ϕt, but we don't need this fact here.
 \begin{code}
 
 crucial-lemma : {Xt : 𝕋} (εt : 𝓙 Xt) (q : Path Xt → R)
-              → J-sequence εt q
-              ＝ strategic-path (selection-strategy εt q)
+              → strategic-path (selection-strategy εt q)
+              ＝ J-sequence εt q
 crucial-lemma {[]}     ⟨⟩           q = refl
 crucial-lemma {X ∷ Xf} εt@(ε :: εf) q =
- J-sequence (ε :: εf) q                          ＝⟨ refl ⟩
+ strategic-path (selection-strategy (ε :: εf) q) ＝⟨ refl ⟩
+ x₀ :: strategic-path (σf x₀)                    ＝⟨ ap (x₀ ::_) IH ⟩
+ x₀ :: J-sequence {Xf x₀} (εf x₀) (sub q x₀)     ＝⟨ refl ⟩
+ x₀ :: ν x₀                                      ＝⟨ refl ⟩
  (ε ⊗ᴶ (λ x → J-sequence {Xf x} (εf x))) q       ＝⟨ refl ⟩
- a :: b a                                        ＝⟨ refl ⟩
- a :: J-sequence {Xf a} (εf a) (sub q a)         ＝⟨ ap (a ::_) IH ⟩
- a :: strategic-path (σf a)                      ＝⟨ refl ⟩
- strategic-path (selection-strategy (ε :: εf) q) ∎
+ J-sequence (ε :: εf) q                          ∎
  where
-  b : (x : X) → Path (Xf x)
-  b x = J-sequence {Xf x} (εf x) (sub q x)
+  ν : (x : X) → Path (Xf x)
+  ν x = J-sequence {Xf x} (εf x) (sub q x)
 
-  a : X
-  a = ε (λ x → sub q x (b x))
+  x₀ : X
+  x₀ = ε (λ x → sub q x (ν x))
 
   σf : (x : X) → Strategy (Xf x)
   σf x = selection-strategy {Xf x} (εf x) (sub q x)
 
-  IH : J-sequence {Xf a} (εf a) (sub q a) ＝ strategic-path (σf a)
-  IH = crucial-lemma (εf a) (sub q a)
+  IH : strategic-path (σf x₀) ＝ J-sequence {Xf x₀} (εf x₀) (sub q x₀)
+  IH = crucial-lemma (εf x₀) (sub q x₀)
 
 selection-strategy-lemma : Fun-Ext
                          → {Xt : 𝕋} (εt : 𝓙 Xt) (q : Path Xt → R)
@@ -479,15 +479,16 @@ selection-strategy-lemma fe {X ∷ Xf} εt@(ε :: εf) q = γ
   x₀ = ε (λ x → sub q x (J-sequence (εf x) (sub q x)))
   x₁ = ε (λ x → sub q x (strategic-path (σf x)))
 
-  I : (x : X) → J-sequence (εf x) (sub q x) ＝ strategic-path (σf x)
+  I : (x : X) → strategic-path (σf x) ＝ J-sequence (εf x) (sub q x)
   I x = crucial-lemma (εf x) (sub q x)
 
-  II : x₀ ＝ x₁
+  II : x₁ ＝ x₀
   II = ap (λ - → ε (λ x → sub q x (- x))) (dfunext fe I)
 
-  III = sub q x₀ (strategic-path (σf x₀))                  ＝⟨ IV ⟩
-        sub q x₁ (strategic-path (σf x₁))                  ＝⟨ refl ⟩
-        overline ε (λ x → sub q x (strategic-path (σf x))) ∎
+  III = overline ε (λ x → sub q x (strategic-path (σf x))) ＝⟨ refl ⟩
+        sub q x₁ (strategic-path (σf x₁))                  ＝⟨ IV ⟩
+        sub q x₀ (strategic-path (σf x₀))                  ∎
+
    where
     IV = ap (λ - → sub q - (strategic-path (σf -))) II
 
@@ -498,7 +499,7 @@ selection-strategy-lemma fe {X ∷ Xf} εt@(ε :: εf) q = γ
   IH x = selection-strategy-lemma fe (εf x) (sub q x)
 
   γ : is-sgpe (Overline εt) q (x₀ :: σf)
-  γ = III :: IH
+  γ = (III ⁻¹) :: IH
 
 \end{code}
 
