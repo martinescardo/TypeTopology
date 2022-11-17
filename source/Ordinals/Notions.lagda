@@ -726,6 +726,10 @@ decidable-order-iff-trichotomy (_ , w , e , t) =
 
 \end{code}
 
+Paul also remarks that the result can be strengthened as follows: A
+transitive well-founded relation is trichotomous iff it is both
+extensional and decidable. TODO. Write this down in Agda.
+
 End of 16th November 2022 addition.
 
 \begin{code}
