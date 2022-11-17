@@ -658,39 +658,33 @@ trichotomy-from-decidable-order t e w d = γ
     ϕ a IH-a = transfinite-induction w (T a) ψ
      where
       ψ : (b : X) → ((y : X) → y < b → T a y) → T a b
-      ψ b IH-b = δ
+      ψ b IH-b = III
        where
         I : ¬ (a < b) → b ≼ a
-        I ν y l = Cases (IH-b y l)
-                   (λ (m : a < y)
-                         → 𝟘-elim (ν (t a y b m l)))
-                   (λ (c : (a ＝ y) + (y < a))
-                         → Cases c
-                            (λ (p : a ＝ y)
-                                  → 𝟘-elim (ν (transport (_< b) (p ⁻¹) l)))
-                            (λ (m : y < a)
-                                  → m))
+        I ν y l = f (IH-b y l)
+         where
+          f : (a < y) + (a ＝ y) + (y < a) → y < a
+          f (inl m)       = 𝟘-elim (ν (t a y b m l))
+          f (inr (inl p)) = 𝟘-elim (ν (transport (_< b) (p ⁻¹) l))
+          f (inr (inr m)) = m
 
         II : ¬ (b < a) → a ≼ b
-        II ν x l = Cases (IH-a x l b)
-                    (λ (m : x < b)
-                          → m)
-                    (λ (c : (x ＝ b) + (b < x))
-                          → Cases c
-                             (λ (p : x ＝ b)
-                                   → 𝟘-elim (ν (transport (_< a) p l)))
-                             (λ (m : b < x)
-                                   → 𝟘-elim (ν (t b x a m l))))
-        δ : T a b
-        δ = Cases (d a b)
-              (λ (l : a < b)
-                    → inl l)
-              (λ (α : ¬ (a < b))
-                    → Cases (d b a)
-                       (λ (l : b < a)
-                             → inr (inr l))
-                       (λ (β : ¬ (b < a))
-                             → inr (inl (e a b (II β) (I α))) ))
+        II ν x l = g (IH-a x l b)
+         where
+          g : (x < b) + (x ＝ b) + (b < x) → x < b
+          g (inl m)       = m
+          g (inr (inl p)) = 𝟘-elim (ν (transport (_< a) p l))
+          g (inr (inr m)) = 𝟘-elim (ν (t b x a m l))
+
+        III : T a b
+        III = h (d a b) (d b a)
+         where
+          h : (a < b) + ¬ (a < b)
+            → (b < a) + ¬ (b < a)
+            → (a < b) + (a ＝ b) + (b < a)
+          h (inl l) _       = inl l
+          h (inr α) (inl l) = inr (inr l)
+          h (inr α) (inr β) = inr (inl (e a b (II β) (I α)))
 
 trichotomy₃ : excluded-middle 𝓥
             → is-well-order
@@ -705,18 +699,12 @@ decidable-order-from-trichotomy : is-transitive
 decidable-order-from-trichotomy t w τ = γ
  where
   γ : (x y : X) → decidable (x < y)
-  γ x y =
-   Cases (τ x y)
-    (λ (l : x < y)
-          → inl l)
-    (λ (c : (x ＝ y) + (y < x))
-          → Cases c
-             (λ (p : x ＝ y)
-                   → inr (λ (m : x < y)
-                               → irreflexive x (w x) (transport (x <_) (p ⁻¹) m)))
-             (λ (l : y < x)
-                   → inr (λ (m : x < y)
-                               → irreflexive x (w x) (t x y x m l))))
+  γ x y = f (τ x y)
+   where
+    f : (x < y) + (x ＝ y) + (y < x) → (x < y) + ¬ (x < y)
+    f (inl l)       = inl l
+    f (inr (inl p)) = inr (λ (m : x < y) → irreflexive x (w x) (transport (x <_) (p ⁻¹) m))
+    f (inr (inr l)) = inr (λ (m : x < y) → irreflexive x (w x) (t x y x m l))
 
 decidable-order-iff-trichotomy : is-well-order
                                → is-trichotomous-order ⇔ is-decidable-order
