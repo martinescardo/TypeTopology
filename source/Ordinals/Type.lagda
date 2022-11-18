@@ -92,7 +92,14 @@ Transfinite-induction α = transfinite-induction
                            (underlying-order α)
                            (Well-foundedness α)
 
--- TO DO: Put comment
+\end{code}
+
+Added 31 October 2022 by Tom de Jong.
+We record the (computational) behaviour of transfinite induction for use in
+other constructions.
+
+\begin{code}
+
 Transfinite-induction-behaviour : FunExt → (α : Ordinal 𝓤)
                                 → (P : ⟨ α ⟩ → 𝓦 ̇ )
                                 → (f : (x : ⟨ α ⟩) → ((y : ⟨ α ⟩) → y ≺⟨ α ⟩ x → P y) → P x)
