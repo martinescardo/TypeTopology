@@ -326,26 +326,6 @@ module _
   𝕍ᵒʳᵈ-to-Ord : 𝕍ᵒʳᵈ → Ord
   𝕍ᵒʳᵈ-to-Ord = 𝕍-to-Ord ∘ pr₁
 
-  -- TO DO: Move elsewhere and rename
-  +ₒ-𝟙ₒ-lemma : (α : Ord) → (α +ₒ 𝟙ₒ) ↓ inr ⋆ ＝ α
-  +ₒ-𝟙ₒ-lemma α =
-   eqtoidₒ ((α +ₒ 𝟙ₒ) ↓ inr ⋆) α (f , f-mon
-                                  , ((qinvs-are-equivs f (g , (η , ε)))
-                                  , g-mon))
-    where
-     f : ⟨ (α +ₒ 𝟙ₒ) ↓ inr ⋆ ⟩ → ⟨ α ⟩
-     f (inl x , l) = x
-     f-mon : is-order-preserving ((α +ₒ 𝟙ₒ) ↓ inr ⋆) α f
-     f-mon (inl x , _) (inl y , _) l = l
-     g : ⟨ α ⟩ → ⟨ (α +ₒ 𝟙ₒ) ↓ inr ⋆ ⟩
-     g x = (inl x , ⋆)
-     g-mon : is-order-preserving α ((α +ₒ 𝟙ₒ) ↓ inr ⋆) g
-     g-mon x y l = l
-     η : g ∘ f ∼ id
-     η (inl _ , _) = refl
-     ε : f ∘ g ∼ id
-     ε _ = refl
-
   -- TO DO: Clean this up
   𝕍-to-Ord-is-section-of-Ord-to-𝕍 : (x : 𝕍)
                                   → is-set-theoretic-ordinal x
@@ -383,7 +363,7 @@ module _
                     f a ∎
           where
            ⦅e⦆ : c a ↓ inr ⋆ ＝ 𝕍-to-Ord (f a)
-           ⦅e⦆ = +ₒ-𝟙ₒ-lemma (𝕍-to-Ord (f a))
+           ⦅e⦆ = +ₒ-𝟙ₒ-↓-right (𝕍-to-Ord (f a))
 
          lemma : (a : A) → Ord-to-𝕍 (s ↓ u a (inr ⋆)) ＝ f a
          lemma a = Ord-to-𝕍 (s ↓ u a (inr ⋆)) ＝⟨ ap Ord-to-𝕍 ⦅e⦆ ⟩

@@ -175,6 +175,39 @@ open import Ordinals.Arithmetic fe
   h : γ ＝ δ
   h = eqtoidₒ γ δ (f , f-is-order-preserving , f-is-equiv , g-is-order-preserving)
 
+\end{code}
+
+Added 7 November 2022 by Tom de Jong.
+
+A rather special case of the above is that adding 𝟙 and then taking the initial
+segment capped at inr ⋆ is the same thing as the original ordinal.
+
+It is indeed a special case of the above because (𝟙 ↓ ⋆) ＝ 𝟘ₒ and 𝟘ₒ is right
+neutral, but we give a direct proof instead.
+
+\begin{code}
+
++ₒ-𝟙ₒ-↓-right : (α : Ordinal 𝓤) → (α +ₒ 𝟙ₒ) ↓ inr ⋆ ＝ α
++ₒ-𝟙ₒ-↓-right α = eqtoidₒ ((α +ₒ 𝟙ₒ) ↓ inr ⋆) α h
+ where
+  f : ⟨ (α +ₒ 𝟙ₒ) ↓ inr ⋆ ⟩ → ⟨ α ⟩
+  f (inl x , l) = x
+  g : ⟨ α ⟩ → ⟨ (α +ₒ 𝟙ₒ) ↓ inr ⋆ ⟩
+  g x = (inl x , ⋆)
+  f-order-preserving : is-order-preserving ((α +ₒ 𝟙ₒ) ↓ inr ⋆) α f
+  f-order-preserving (inl x , _) (inl y , _) l = l
+  f-is-equiv : is-equiv f
+  f-is-equiv = qinvs-are-equivs f (g , η , ε)
+   where
+    η : g ∘ f ∼ id
+    η (inl _ , _) = refl
+    ε : f ∘ g ∼ id
+    ε _ = refl
+  g-order-preserving : is-order-preserving α ((α +ₒ 𝟙ₒ) ↓ inr ⋆) g
+  g-order-preserving x y l = l
+  h : ((α +ₒ 𝟙ₒ) ↓ inr ⋆) ≃ₒ α
+  h = f , f-order-preserving , f-is-equiv , g-order-preserving
+
 +ₒ-⊲-left : {α β : Ordinal 𝓤} (a : ⟨ α ⟩)
           → (α ↓ a) ⊲ (α +ₒ β)
 +ₒ-⊲-left {𝓤} {α} {β} a = inl a , +ₒ-↓-left a
