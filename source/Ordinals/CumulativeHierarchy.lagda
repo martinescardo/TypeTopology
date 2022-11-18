@@ -107,6 +107,13 @@ module _
 
  open cumulative-hierarchy-exists ch
 
+\end{code}
+
+We start by defining a set theoretic ordinal to be a transitive set whose
+elements are again transitive sets, as announced above.
+
+\begin{code}
+
  is-transitive-set : 𝕍 → 𝓤 ⁺ ̇
  is-transitive-set x = (u : 𝕍) (v : 𝕍) → u ∈ x → v ∈ u → v ∈ x
 
@@ -138,6 +145,14 @@ module _
                                            → y ∈ x → is-set-theoretic-ordinal y
  being-set-theoretic-ordinal-is-hereditary {x} (t , τ) {y} m =
   τ y m , (λ z n → τ z (t y z m n))
+
+\end{code}
+
+Restricting our attention to those elements of 𝕍 that are set theoretic
+ordinals, we show that the membership relation ∈ makes this subtype into a type
+theoretic ordinal.
+
+\begin{code}
 
  𝕍ᵒʳᵈ : 𝓤 ⁺ ̇
  𝕍ᵒʳᵈ = Σ x ꞉ 𝕍 , is-set-theoretic-ordinal x
@@ -189,6 +204,15 @@ module _
              , ∈ᵒʳᵈ-is-extensional
              , ∈ᵒʳᵈ-is-transitive
 
+\end{code}
+
+We now work towards proving that 𝕍ᴼᴿᴰ and Ord, the ordinal of type theoretic
+ordinals, are isomorphic (as type theoretic ordinals).
+
+We start by defining a map Ord → 𝕍 by transfinite recursion on Ord.
+
+\begin{code}
+
  private
   Ord : 𝓤 ⁺ ̇
   Ord = Ordinal 𝓤
@@ -214,6 +238,12 @@ module _
                     → x ∈ Ord-to-𝕍 α → (∃ a ꞉ ⟨ α ⟩ , Ord-to-𝕍 (α ↓ a) ＝ x)
  from-∈-of-Ord-to-𝕍 α {x} = Idtofun (∈-of-Ord-to-𝕍 α x)
 
+\end{code}
+
+The map Ord → 𝕍 preserves the strict and weak order.
+
+\begin{code}
+
  Ord-to-𝕍-preserves-strict-order : (α β : Ord) → α ⊲ β → Ord-to-𝕍 α ∈ Ord-to-𝕍 β
  Ord-to-𝕍-preserves-strict-order α β (b , refl) = to-∈-of-Ord-to-𝕍 β ∣ b , refl ∣
 
@@ -233,6 +263,15 @@ module _
        b = pr₁ (l' a)
        e : α ↓ a ＝ β ↓ b
        e = pr₂ (l' a)
+
+\end{code}
+
+An argument by transfinite induction shows that the map Ord-to-𝕍 is left
+cancellable, which yields a quick proof that Ord-to-𝕍 not only preserves the
+strict order, but also reflects it. It follows that Ord-to-𝕍 also reflects the
+weak order.
+
+\begin{code}
 
  Ord-to-𝕍-is-left-cancellable : (α β : Ord) → Ord-to-𝕍 α ＝ Ord-to-𝕍 β → α ＝ β
  Ord-to-𝕍-is-left-cancellable = transfinite-induction-on-OO _ f
@@ -276,6 +315,16 @@ module _
      m : Ord-to-𝕍 (α ↓ a) ∈ Ord-to-𝕍 β
      m = s (Ord-to-𝕍 (α ↓ a)) (to-∈-of-Ord-to-𝕍 α ∣ a , refl ∣)
 
+\end{code}
+
+The map Ord → 𝕍 constructed above actually factors through the subtype 𝕍ᵒʳᵈ.
+
+(The proof is quite straightforward, but the formal proof is slightly long,
+because we need to use from-∈-of-Ord-to-𝕍 and to-∈-of-Ord-to-𝕍 as we don't have
+judgemental computation rules for 𝕍.)
+
+\begin{code}
+
  Ord-to-𝕍ᵒʳᵈ : Ord → 𝕍ᵒʳᵈ
  Ord-to-𝕍ᵒʳᵈ α = (Ord-to-𝕍 α , ρ α)
   where
@@ -317,6 +366,7 @@ module _
 
 \end{code}
 
+TO DO: Comment further here.
 TO DO: Add rank (Jech) comment (see Definition 9.3.4 in [1])
 
 \begin{code}
