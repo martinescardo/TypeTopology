@@ -57,7 +57,14 @@ transfinite-induction' P f = accessible-induction
                               (λ x _ → P x)
                               (λ x _ → f x)
 
--- TO DO: Put comment
+\end{code}
+
+Added 31 October 2022 by Tom de Jong.
+We record the (computational) behaviour of transfinite induction for use in
+other constructions.
+
+\begin{code}
+
 transfinite-induction'-behaviour :
    (P : X → 𝓦 ̇ ) (f : (x : X) → ((y : X) → y < x → P y) → P x)
    (x : X) (a : is-accessible x)
@@ -108,7 +115,14 @@ accessibility-is-prop fe = accessible-induction P φ
     i = ap step
            (dfunext (fe 𝓤 (𝓤 ⊔ 𝓥)) (λ y → dfunext (fe 𝓥 (𝓤 ⊔ 𝓥)) (h y)))
 
--- TO DO: Put comment
+\end{code}
+
+Added 31 October 2022 by Tom de Jong.
+We record the (computational) behaviour of transfinite induction/recursion for
+use in other constructions.
+
+\begin{code}
+
 transfinite-induction-behaviour : FunExt → (w : is-well-founded)
                                   {𝓦 : Universe} (P : X → 𝓦 ̇ )
                                   (f : (x : X) → ((y : X) → y < x → P y) → P x)
