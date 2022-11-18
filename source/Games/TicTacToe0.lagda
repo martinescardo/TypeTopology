@@ -170,9 +170,10 @@ The game tree, with a bound on which we perform induction:
 
 tree : Board → ℕ → 𝕋
 tree b         0        = []
-tree b@(p , A) (succ k) with wins (opponent p) A
-...                        | true  = []
-...                        | false = Move b ∷ (λ (m : Move b) → tree (play b m) k)
+tree b@(p , A) (succ k) with wins (opponent p) A | Move-decidable b
+...                        | true  | _     = []
+...                        | false | inl _ = Move b ∷ (λ (m : Move b) → tree (play b m) k)
+...                        | false | inr _ = []
 
 \end{code}
 
@@ -182,9 +183,10 @@ The outcome function:
 
 outcome : (b : Board) (k : ℕ) → Path (tree b k) → R
 outcome b 0 ⟨⟩ = draw
-outcome b@(p , A) (succ k) ms with wins (opponent p) A
-outcome b@(p , A) (succ k) ⟨⟩        | true  = value (opponent p)
-outcome b@(p , A) (succ k) (m :: ms) | false = outcome (play b m) k ms
+outcome b@(p , A) (succ k) ms with wins (opponent p) A | Move-decidable b
+outcome b@(p , A) (succ k) ⟨⟩        | true  | _     = value (opponent p)
+outcome b@(p , A) (succ k) (m :: ms) | false | inl _ = outcome (play b m) k ms
+outcome b@(p , A) (succ k) ⟨⟩        | false | inr _ = draw
 
 \end{code}
 
@@ -214,11 +216,11 @@ The quantifier tree for the game:
 
 quantifiers : (b : Board) (k : ℕ) → 𝓚 (tree b k)
 quantifiers b 0 = ⟨⟩
-quantifiers b@(p , A) (succ k) with wins (opponent p) A
-... | true  = ⟨⟩
-... | false = quantifier p (Move-compact b) (Move-decidable b)
-              :: (λ m → quantifiers (play b m) k)
-
+quantifiers b@(p , A) (succ k) with wins (opponent p) A | Move-decidable b
+... | true  | _     = ⟨⟩
+... | false | inl _ = quantifier p (Move-compact b) (Move-decidable b)
+                      :: (λ (m : Move b) → quantifiers (play b m) k)
+... | false | inr _ = ⟨⟩
 \end{code}
 
 And finally the game by putting the above together:
@@ -236,3 +238,19 @@ r = optimal-outcome tic-tac-toe
 The above computation takes too long, due to the use of brute-force
 search in the definition of the game (the compactness conditions). A
 more efficient one is in another file.
+
+\begin{code}
+
+selections : (b : Board) (k : ℕ) → 𝓙 (tree b k)
+selections b 0 = ⟨⟩
+selections b@(p , A) (succ k) with wins (opponent p) A | Move-decidable b
+... | true  | _      = ⟨⟩
+... | false | inl m₀ = selection p m₀ (Move-compact b)
+                      :: (λ m → selections (play b m) k)
+... | false | inr _  = ⟨⟩
+
+
+p : Path (Xt tic-tac-toe)
+p = J-sequence (selections board₀ 9) (q tic-tac-toe)
+
+\end{code}
