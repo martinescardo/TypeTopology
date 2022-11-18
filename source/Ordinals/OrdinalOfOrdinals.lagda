@@ -1183,7 +1183,14 @@ transfinite-recursion-on-OO : (X : 𝓥 ̇ )
                             → Ordinal 𝓤 → X
 transfinite-recursion-on-OO {𝓤} {𝓥} X = transfinite-induction-on-OO (λ _ → X)
 
--- TO DO: Put comment
+\end{code}
+
+Added 31 October 2022 by Tom de Jong.
+We record the (computational) behaviour of transfinite induction on OO for use
+in other constructions.
+
+\begin{code}
+
 transfinite-induction-on-OO-behaviour :
    (P : Ordinal 𝓤 → 𝓥 ̇ )
  → (f : (α : Ordinal 𝓤) → ((a : ⟨ α ⟩) → P (α ↓ a)) → P α)
