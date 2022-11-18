@@ -1,10 +1,53 @@
-Tom de Jong, 28 October 2022 - 7 November 2022
-
-TO DO: Put reference to HoTT Book
-
+Tom de Jong, 28 October 2022 - 7 November 2022.
 In collaboration with Nicolai Kraus, Fredrik Norvall Forsberg and Chuangjie Xu.
 
-TO DO: Split this into 2 or 3 files perhaps?
+We define the induction principle (with a non-judgemental computation principle)
+of the cumulative hierarchy 𝕍 (with respect to a type universe 𝓤) as introduced
+in Section 10.5 of the HoTT Book [1]. Using the induction principle we formulate
+what it means for the cumulative hierarchy to exist, so that can use it as an
+(module) assumption in further developments.
+
+For example, in Ordinals/CumulativeHierarchy we show that the (type theoretic)
+ordinal of set theoretic ordinals in 𝕍 (w.r.t. 𝓤) is isomorphic to the ordinal
+of ordinals in 𝓤.
+
+This file has three parts:
+(I)    Introduction of the cumulative hierarchy 𝕍 and the statement of its
+       (most general) induction principle
+(II)   Statements and proofs of some simpler, more specialised, induction and
+       recursion principles for 𝕍
+(III)  Basic constructions and proofs for 𝕍, i.e. the definition of set
+       membership (∈), subset relation (⊆) and proofs of ∈-extensionality and
+       ∈-induction.
+
+The cumulative hierarchy 𝕍 can be seen as a HoTT-refined of Aczel's [3] type
+theoretic interpretation of constructive set theory and draws inspiration form
+Joyal and Moerdijk's [2] algebraic set theory.
+
+References
+----------
+
+[1] The Univalent Foundations Program
+    Homotopy Type Theory: Univalent Foundations of Mathematics
+    https://homotopytypetheory.org/book
+    Institute for Advanced Study
+    2013
+
+[2] A. Joyal and I. Moerdijk
+    Algebraic set theory
+    Volume 220 of London Mathematical Society Lecture Note Series
+    Cambridge University Press
+    1995
+    doi:10.1017/CBO9780511752483
+
+[3] Peter Aczel
+    The type theoretic interpretation of constructive set theory
+    In A. MacIntyre, L. Pacholski, and J. Paris (eds.) Logic Colloquium ’77
+    Volume 96 of Studies in Logic and the Foundations of Mathematics
+    Pages 55–66
+    North-Holland Publishing Company
+    1978
+    doi:10.1016/S0049-237X(08)71989-X
 
 \begin{code}
 
@@ -32,6 +75,24 @@ _≲_ {𝓤} {𝓥} {𝓣} {A} {B} f g = (a : A) → ∃ b ꞉ B , g b ＝ f a
 -- Note that _≈_ says that f and g have equal images
 _≈_ : {A : 𝓤 ̇ } {B : 𝓥 ̇ } {X : 𝓣 ̇ } → (A → X) → (B → X) → 𝓤 ⊔ 𝓥 ⊔ 𝓣 ̇
 f ≈ g = f ≲ g × g ≲ f
+
+\end{code}
+
+Part I
+------
+
+Introduction of the cumulative hierarchy 𝕍 and the statement of its (most
+general) induction principle.
+
+See Section 10.5 of the HoTT Book [1] for more of an explanation regarding the
+induction principle of 𝕍.
+
+For comparison, the higher inductive type (HIT) presentation of 𝕍 (w.r.t. 𝓤) is:
+  ∙ For every A : 𝓤 and f : A → 𝕍, we have an element 𝕍-set f : 𝕍
+  ∙ For every A, B : 𝓤, f : A → 𝕍 and g : B → 𝕍, if f ≈ g, then 𝕍-set f ＝ 𝕍-set g
+  ∙ 𝕍 is set-truncated: for every x, y : 𝕍 and p, q : x ＝ y, we have p ＝ q.
+
+\begin{code}
 
 module _ (𝓤 : Universe) where
 
@@ -68,21 +129,18 @@ module _ (𝓤 : Universe) where
                         → {A : 𝓤 ̇ } (f : A → 𝕍) (IH : (a : A) → P (f a))
                            → 𝕍-induction P σ ρ τ (𝕍-set f) ＝ ρ f IH
 
+\end{code}
 
-  𝕍-prop-induction : {𝓣 : Universe} (P : 𝕍 → 𝓣 ̇ )
-                   → ((x : 𝕍) → is-prop (P x))
-                   → ({A : 𝓤 ̇ } (f : A → 𝕍) → ((a : A) → P (f a)) → P (𝕍-set f))
-                   → (x : 𝕍) → P x
-  𝕍-prop-induction {𝓣} P P-is-prop-valued ρ =
-   𝕍-induction P (λ x → props-are-sets (P-is-prop-valued x)) ρ
-                 (λ f g e IH₁ IH₂ _ _ → P-is-prop-valued _ _ _)
+Part II
+-------
 
+Statements and proofs of some simpler, more specialised, induction and recursion
+principles for 𝕍.
 
-  𝕍-prop-simple-induction : {𝓣 : Universe} (P : 𝕍 → 𝓣 ̇ )
-                          → ((x : 𝕍) → is-prop (P x))
-                          → ({A : 𝓤 ̇ } (f : A → 𝕍) → P (𝕍-set f))
-                          → (x : 𝕍) → P x
-  𝕍-prop-simple-induction P σ ρ = 𝕍-prop-induction P σ (λ f _ → ρ f)
+We start with deriving the recursion principle for 𝕍, i.e. its nondependent
+induction principle. It should be noted that this is completely routine.
+
+\begin{code}
 
   𝕍-recursion-with-computation :
      {𝓣 : Universe} {X : 𝓣 ̇ }
@@ -91,10 +149,8 @@ module _ (𝓤 : Universe) where
    → (τ : {A B : 𝓤 ̇ } (f : A → 𝕍) (g : B → 𝕍)
         → (IH₁ : A → X)
         → (IH₂ : B → X)
-        → ((a : A) → ∥ Σ b ꞉ B , Σ p ꞉ f a ＝ g b ,
-                         IH₁ a ＝ IH₂ b ∥)
-        → ((b : B) → ∥ Σ a ꞉ A , Σ p ꞉ g b ＝ f a ,
-                         IH₂ b ＝ IH₁ a ∥)
+        → ((a : A) → ∥ Σ b ꞉ B , Σ p ꞉ f a ＝ g b , IH₁ a ＝ IH₂ b ∥)
+        → ((b : B) → ∥ Σ a ꞉ A , Σ p ꞉ g b ＝ f a , IH₂ b ＝ IH₁ a ∥)
         → f ≈ g → ρ f IH₁ ＝ ρ g IH₂)
    → Σ ϕ ꞉ (𝕍 → X) , ({A : 𝓤 ̇ } (f : A → 𝕍)
                       (IH : A → X) → ϕ (𝕍-set f) ＝ ρ f IH)
@@ -148,6 +204,36 @@ module _ (𝓤 : Universe) where
         → 𝕍-recursion σ ρ τ (𝕍-set f) ＝ ρ f IH)
   𝕍-recursion-computes σ ρ τ f = pr₂ (𝕍-recursion-with-computation σ ρ τ) f
 
+\end{code}
+
+Next, we observe that when P is a family of propositions, then the induction
+principle simplifies significantly.
+
+\begin{code}
+
+  𝕍-prop-induction : {𝓣 : Universe} (P : 𝕍 → 𝓣 ̇ )
+                   → ((x : 𝕍) → is-prop (P x))
+                   → ({A : 𝓤 ̇ } (f : A → 𝕍) → ((a : A) → P (f a)) → P (𝕍-set f))
+                   → (x : 𝕍) → P x
+  𝕍-prop-induction {𝓣} P P-is-prop-valued ρ =
+   𝕍-induction P (λ x → props-are-sets (P-is-prop-valued x)) ρ
+                 (λ f g e IH₁ IH₂ _ _ → P-is-prop-valued _ _ _)
+
+
+  𝕍-prop-simple-induction : {𝓣 : Universe} (P : 𝕍 → 𝓣 ̇ )
+                          → ((x : 𝕍) → is-prop (P x))
+                          → ({A : 𝓤 ̇ } (f : A → 𝕍) → P (𝕍-set f))
+                          → (x : 𝕍) → P x
+  𝕍-prop-simple-induction P σ ρ = 𝕍-prop-induction P σ (λ f _ → ρ f)
+
+\end{code}
+
+Because implication makes the set Ω into a poset, we can give specialised
+recursion principles for 𝕍 → Ω by (roughly) asking that ≲ is mapped to
+implication.
+
+\begin{code}
+
   private
    𝕍-prop-recursion-with-computation :
       {𝓣 : Universe}
@@ -194,6 +280,13 @@ module _ (𝓤 : Universe) where
   𝕍-prop-recursion-computes ρ τ f =
    pr₂ (𝕍-prop-recursion-with-computation ρ τ) f
 
+\end{code}
+
+We also have a simpler version of the above in the case that we don't need to
+make recursive calls.
+
+\begin{code}
+
   𝕍-prop-simple-recursion : {𝓣 : Universe}
                           → (ρ : ({A : 𝓤 ̇ } → (A → 𝕍) → Ω 𝓣))
                           → ({A B : 𝓤 ̇ } (f : A → 𝕍) (g : B → 𝕍)
@@ -213,6 +306,12 @@ module _ (𝓤 : Universe) where
                              f (λ _ → 𝟙 , 𝟙-is-prop)
 
 \end{code}
+
+Part III
+--------
+
+Basic constructions and proofs for 𝕍, i.e. the definition of set membership (∈),
+subset relation (⊆) and proofs of ∈-extensionality and ∈-induction.
 
 \begin{code}
 
@@ -275,6 +374,9 @@ module _ (𝓤 : Universe) where
   ＝-to-⊆ refl = ⊆-is-reflexive
 
 \end{code}
+
+We now prove, using the induction principles of 𝕍 above, two simple
+set-theoretic axioms: ∈-extensionality and ∈-induction.
 
 \begin{code}
 
