@@ -714,15 +714,24 @@ the given family α.
            ((α i ↓ x) ↓ (x' , l)) ＝⟨ iterated-↓ (α i) x x' l ⟩
            (α i ↓ x')             ∎
 
- -- TO DO: Put comment
- α⁺-is-upper-bound-surjectivity :
-    (y : α⁺)
-  → ∥ Σ i ꞉ I , Σ x ꞉ ⟨ α i ⟩ , pr₁ (α⁺-is-upper-bound i) x ＝ y ∥
- α⁺-is-upper-bound-surjectivity (β , s) = ∥∥-functor h s
-  where
-   h : (Σ i ꞉ I , β ⊲ α i)
-     → Σ i ꞉ I , Σ x ꞉ ⟨ α i ⟩ , pr₁ (α⁺-is-upper-bound i) x ＝ (β , s)
-   h (i , x , e) = i , x , to-subtype-＝ (λ _ → ∃-is-prop) (e ⁻¹)
+\end{code}
+
+Added 7 November 2022 by Tom de Jong.
+
+We record a surjectivity property w.r.t. the above simulation so that we can
+later prove that initial segments of the supremum of α are given by initial
+segments of some αᵢ.
+
+\begin{code}
+
+ private
+  α⁺-is-upper-bound-surjectivity :
+    (y : α⁺) → ∥ Σ i ꞉ I , Σ x ꞉ ⟨ α i ⟩ , pr₁ (α⁺-is-upper-bound i) x ＝ y ∥
+  α⁺-is-upper-bound-surjectivity (β , s) = ∥∥-functor h s
+   where
+    h : (Σ i ꞉ I , β ⊲ α i)
+      → Σ i ꞉ I , Σ x ꞉ ⟨ α i ⟩ , pr₁ (α⁺-is-upper-bound i) x ＝ (β , s)
+    h (i , x , e) = i , x , to-subtype-＝ (λ _ → ∃-is-prop) (e ⁻¹)
 
  module lower-bound-of-upper-bounds-proof
          (β : Ordinal 𝓤)
@@ -939,7 +948,16 @@ Next, we resize α⁺ using:
                         (α⁺-is-upper-bound i)
                         (≃ₒ-to-⊴ α⁺-Ord α⁻-Ord α⁺-≃ₒ-α⁻)
 
-  -- TO DO: Put comment
+\end{code}
+
+Added 7 November 2022 by Tom de Jong.
+
+As above, we record a surjectivity property w.r.t. the above simulation (but for
+the resized α⁻ this time) so that we can later prove that initial segments of
+the supremum of α are given by initial segments of some αᵢ.
+
+\begin{code}
+
   α⁻-is-upper-bound-surjectivity :
      (y : α⁻)
    → ∥ Σ i ꞉ I , Σ x ꞉ ⟨ α i ⟩ , pr₁ (α⁻-is-upper-bound i) x ＝ y ∥
@@ -1059,13 +1077,12 @@ module suprema
    sup-is-image-of-sum = sum-to-sup , sum-to-sup-is-surjection
 
    initial-segment-of-sup-at-component :
-      (i : I) (x : ⟨ α i ⟩)
-    → sup ↓ pr₁ (sup-is-upper-bound i) x ＝ α i ↓ x
+     (i : I) (x : ⟨ α i ⟩) → sup ↓ pr₁ (sup-is-upper-bound i) x ＝ α i ↓ x
    initial-segment-of-sup-at-component i x =
     (simulations-preserve-↓ (α i) sup (sup-is-upper-bound i) x) ⁻¹
 
    initial-segment-of-sup-is-initial-segment-of-some-component :
-      (y : ⟨ sup ⟩) → ∥ Σ i ꞉ I , Σ x ꞉ ⟨ α i ⟩ , sup ↓ y ＝ α i ↓ x ∥
+     (y : ⟨ sup ⟩) → ∥ Σ i ꞉ I , Σ x ꞉ ⟨ α i ⟩ , sup ↓ y ＝ α i ↓ x ∥
    initial-segment-of-sup-is-initial-segment-of-some-component y =
     ∥∥-functor h (α⁻-is-upper-bound-surjectivity sr y)
      where
