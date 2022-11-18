@@ -1,8 +1,65 @@
-Tom de Jong, 28 October 2022 - 7 November 2022
-
+Tom de Jong, 28 October 2022 - 7 November 2022.
 In collaboration with Nicolai Kraus, Fredrik Norvall Forsberg and Chuangjie Xu.
 
-TO DO: Add pointers to literature on ordinals in constructive set theory (Aczel─Rathjen, Powell'75)
+Following [2], in constructive set theory an ordinal is [Definition 9.4.1, 1],
+defined as a transitive set of transitive sets.
+
+We consider the subtype 𝕍ᵒʳᵈ of the cumulative hierarchy 𝕍 of set theoretic
+ordinals in 𝕍 (see UF/CumulativeHierarchy.lagda and [Section 10.5, 3] for more
+on 𝕍).
+
+We show that (𝕍ᵒʳᵈ,∈) is a ordinal, in the type theoretic sense of [3], i.e. it
+is a well-founded, extensional and transitive order. Moreover, we prove that
+(𝕍ᵒʳᵈ,∈) and the ordinal Ord of type theoretic ordinals are isomorphic.
+
+This is interesting for at least two reasons:
+(1) It shows that the set theoretic and type theoretic notions of ordinal
+    coincide in HoTT.
+(2) It shows that a nontrivial subtype of 𝕍, a complicated HIT, can be defined
+    internally in univalent type theory without HITs other than the
+    propositional truncation.
+
+After Fredrik Nordvall Forsberg's talk at the workshop in honour of Thorsten
+Altenkirch's 60th birthday
+(https://www.cs.nott.ac.uk/~psznk/events/thorsten60/#fred), Andreas Abel asked
+asked how/whether we can relate set theoretic ordinals and type theoretic
+ordinals through Aczel's [4] type theoretic interpretation of set theory. Since
+the cumulative hierarchy 𝕍 may be seen as an internal refinement of Aczel's
+interpretation in HoTT, the theorem announced above provides an answer to
+Andreas' question.
+
+There are some directions for future work recorded at the end of this file.
+
+References
+----------
+
+[1] Peter Aczel and Michael Rathjen
+    Notes on Constructive Set Theory
+    Book draft
+    https://www1.maths.leeds.ac.uk/~rathjen/book.pdf
+    2010
+
+[2] William C. Powell
+    Extending Gödel’s negative interpretation to ZF
+    Volume 40, Issue 2 of Journal of Symbolic Logic
+    Pages 221─229
+    1975
+    doi:10.2307/2271902
+
+[3] The Univalent Foundations Program
+    Homotopy Type Theory: Univalent Foundations of Mathematics
+    https://homotopytypetheory.org/book
+    Institute for Advanced Study
+    2013
+
+[4] Peter Aczel
+    The type theoretic interpretation of constructive set theory
+    In A. MacIntyre, L. Pacholski, and J. Paris (eds.) Logic Colloquium ’77
+    Volume 96 of Studies in Logic and the Foundations of Mathematics
+    Pages 55–66
+    North-Holland Publishing Company
+    1978
+    doi:10.1016/S0049-237X(08)71989-X
 
 \begin{code}
 
@@ -260,10 +317,12 @@ module _
 
 \end{code}
 
+TO DO: Add rank (Jech) comment (see Definition 9.3.4 in [1])
+
 \begin{code}
 
  open import Ordinals.Arithmetic fe'
- open import Ordinals.Arithmetic-Properties ua
+ open import Ordinals.Arithmetic-Properties ua hiding (lemma₁ ; lemma₂)
  open import Ordinals.OrdinalOfOrdinalsSuprema ua
 
  open import UF.Quotient
@@ -326,7 +385,6 @@ module _
   𝕍ᵒʳᵈ-to-Ord : 𝕍ᵒʳᵈ → Ord
   𝕍ᵒʳᵈ-to-Ord = 𝕍-to-Ord ∘ pr₁
 
-  -- TO DO: Clean this up
   𝕍-to-Ord-is-section-of-Ord-to-𝕍 : (x : 𝕍)
                                   → is-set-theoretic-ordinal x
                                   → Ord-to-𝕍 (𝕍-to-Ord x) ＝ x
@@ -339,72 +397,91 @@ module _
        → is-set-theoretic-ordinal (𝕍-set f)
        → Ord-to-𝕍 (𝕍-to-Ord (𝕍-set f)) ＝ 𝕍-set f
      ρ {A} f IH σ =
-      Ord-to-𝕍 (𝕍-to-Ord (𝕍-set f))  ＝⟨ ap Ord-to-𝕍 (𝕍-to-Ord-behaviour-on-𝕍-sets f) ⟩
-      Ord-to-𝕍 s                     ＝⟨ Ord-to-𝕍-behaviour s ⟩
-      𝕍-set (λ y → Ord-to-𝕍 (s ↓ y)) ＝⟨ 𝕍-set-ext _ _ (e₁ , e₂) ⟩
+      Ord-to-𝕍 (𝕍-to-Ord (𝕍-set f))  ＝⟨ ⦅1⦆ ⟩
+      Ord-to-𝕍 s                     ＝⟨ ⦅2⦆ ⟩
+      𝕍-set (λ y → Ord-to-𝕍 (s ↓ y)) ＝⟨ ⦅3⦆ ⟩
       𝕍-set f                        ∎
        where
         s : Ord
         s = sup (λ a → 𝕍-to-Ord (f a) +ₒ 𝟙ₒ)
-        c : (a : A) → Ord
-        c a = 𝕍-to-Ord (f a) +ₒ 𝟙ₒ
+        ⦅1⦆ = ap Ord-to-𝕍 (𝕍-to-Ord-behaviour-on-𝕍-sets f)
+        ⦅2⦆ = Ord-to-𝕍-behaviour s
+        ⦅3⦆ = 𝕍-set-ext _ _ (e₁ , e₂)
+          {- The proof of e₂ and especially e₁ are the only hard parts. We set
+             up two lemmas and some abbreviations to get e₁ and e₂. -}
+         where
+          c : (a : A) → Ord
+          c a = 𝕍-to-Ord (f a) +ₒ 𝟙ₒ
+          abstract -- For performance
+           u : (a : A) → ⟨ c a ⟩  → ⟨ s ⟩
+           u a = pr₁ (sup-is-upper-bound _ a)
 
-        abstract -- For performance
-         u : (a : A) → ⟨ 𝕍-to-Ord (f a) +ₒ 𝟙ₒ ⟩  → ⟨ s ⟩
-         u a = pr₁ (sup-is-upper-bound _ a)
+           IH' : (a : A) → Ord-to-𝕍 (𝕍-to-Ord (f a)) ＝ f a
+           IH' a = IH a (being-set-theoretic-ordinal-is-hereditary σ
+                          (to-∈-of-𝕍-set ∣ a , refl ∣))
 
-         IH' : (a : A) → Ord-to-𝕍 (𝕍-to-Ord (f a)) ＝ f a
-         IH' a = IH a (being-set-theoretic-ordinal-is-hereditary σ
-                        (to-∈-of-𝕍-set ∣ a , refl ∣))
-
-         lemma' : (a : A) → Ord-to-𝕍 (c a ↓ inr ⋆) ＝ f a
-         lemma' a = Ord-to-𝕍 (c a ↓ inr ⋆)     ＝⟨ ap Ord-to-𝕍 ⦅e⦆ ⟩
-                    Ord-to-𝕍 (𝕍-to-Ord (f a)) ＝⟨ IH' a            ⟩
-                    f a ∎
-          where
-           ⦅e⦆ : c a ↓ inr ⋆ ＝ 𝕍-to-Ord (f a)
-           ⦅e⦆ = +ₒ-𝟙ₒ-↓-right (𝕍-to-Ord (f a))
-
-         lemma : (a : A) → Ord-to-𝕍 (s ↓ u a (inr ⋆)) ＝ f a
-         lemma a = Ord-to-𝕍 (s ↓ u a (inr ⋆)) ＝⟨ ap Ord-to-𝕍 ⦅e⦆ ⟩
-                   Ord-to-𝕍 (c a ↓ inr ⋆)     ＝⟨ lemma' a ⟩
-                   f a                        ∎
-          where
-           ⦅e⦆ : s ↓ u a (inr ⋆) ＝ c a ↓ inr ⋆
-           ⦅e⦆ = initial-segment-of-sup-at-component _ a (inr ⋆)
-
-        e₂ : f ≲ (λ y → Ord-to-𝕍 (s ↓ y))
-        e₂ a = ∣ u a (inr ⋆) , lemma a ∣
-
-        e₁ : (λ y → Ord-to-𝕍 (s ↓ y)) ≲ f
-        e₁ y =
-         ∥∥-rec ∃-is-prop h
-          (initial-segment-of-sup-is-initial-segment-of-some-component _ y)
-          where
-           h : (Σ a ꞉ A , Σ x ꞉ ⟨ c a ⟩ , s ↓ y ＝ c a ↓ x)
-             → ∃ a ꞉ A , f a ＝ Ord-to-𝕍 (s ↓ y)
-           h (a , inr ⋆ , e) = ∣ a , ((ap Ord-to-𝕍 e ∙ lemma' a ) ⁻¹) ∣
-           h (a , inl x , e) = goal
+           lemma₁ : (a : A) → Ord-to-𝕍 (c a ↓ inr ⋆) ＝ f a
+           lemma₁ a = Ord-to-𝕍 (c a ↓ inr ⋆)     ＝⟨ ap Ord-to-𝕍 ⦅e⦆ ⟩
+                      Ord-to-𝕍 (𝕍-to-Ord (f a)) ＝⟨ IH' a            ⟩
+                      f a ∎
             where
-             fact : c a ↓ inl x ＝ 𝕍-to-Ord (f a) ↓ x
-             fact = +ₒ-↓-left x ⁻¹
-             claim : Ord-to-𝕍 (𝕍-to-Ord (f a) ↓ x) ∈ f a
-             claim = transport (Ord-to-𝕍 (𝕍-to-Ord (f a) ↓ x) ∈_)
-                                (IH' a)
-                                (Ord-to-𝕍-preserves-strict-order
-                                  (𝕍-to-Ord (f a) ↓ x)
-                                  (𝕍-to-Ord (f a))
-                                  (x , refl))
-             claim' : Ord-to-𝕍 (𝕍-to-Ord (f a) ↓ x) ∈ 𝕍-set f
-             claim' = transitive-set-if-set-theoretic-ordinal σ
-                        (f a)
-                        (Ord-to-𝕍 (𝕍-to-Ord (f a) ↓ x))
-                        (to-∈-of-𝕍-set ∣ a , refl ∣)
-                        claim
-             suffices : ∃ a' ꞉ A , f a' ＝ Ord-to-𝕍 (𝕍-to-Ord (f a) ↓ x)
-             suffices = from-∈-of-𝕍-set claim'
-             goal : ∃ a' ꞉ A , f a' ＝ Ord-to-𝕍 (s ↓ y)
-             goal = ∥∥-functor (λ (a' , p) → a' , (p ∙ ap Ord-to-𝕍 (fact ⁻¹ ∙ e ⁻¹))) suffices
+             ⦅e⦆ : c a ↓ inr ⋆ ＝ 𝕍-to-Ord (f a)
+             ⦅e⦆ = +ₒ-𝟙ₒ-↓-right (𝕍-to-Ord (f a))
+
+           lemma₂ : (a : A) → Ord-to-𝕍 (s ↓ u a (inr ⋆)) ＝ f a
+           lemma₂ a = Ord-to-𝕍 (s ↓ u a (inr ⋆)) ＝⟨ ap Ord-to-𝕍 ⦅e⦆ ⟩
+                      Ord-to-𝕍 (c a ↓ inr ⋆)     ＝⟨ lemma₁ a ⟩
+                      f a                        ∎
+            where
+             ⦅e⦆ : s ↓ u a (inr ⋆) ＝ c a ↓ inr ⋆
+             ⦅e⦆ = initial-segment-of-sup-at-component _ a (inr ⋆)
+
+          e₂ : f ≲ (λ y → Ord-to-𝕍 (s ↓ y))
+          e₂ a = ∣ u a (inr ⋆) , lemma₂ a ∣
+
+          e₁ : (λ y → Ord-to-𝕍 (s ↓ y)) ≲ f
+          e₁ y =
+           ∥∥-rec ∃-is-prop h
+            (initial-segment-of-sup-is-initial-segment-of-some-component _ y)
+            where
+             h : (Σ a ꞉ A , Σ x ꞉ ⟨ c a ⟩ , s ↓ y ＝ c a ↓ x)
+               → ∃ a ꞉ A , f a ＝ Ord-to-𝕍 (s ↓ y)
+             h (a , inr ⋆ , e) = ∣ a , (e' ⁻¹) ∣
+              where
+               e' = Ord-to-𝕍 (s ↓ y)       ＝⟨ ap Ord-to-𝕍 e ⟩
+                    Ord-to-𝕍 (c a ↓ inr ⋆) ＝⟨ lemma₁ a ⟩
+                    f a                    ∎
+             h (a , inl x , e) = goal
+              where
+               ∈-claim₁ : Ord-to-𝕍 (𝕍-to-Ord (f a) ↓ x) ∈ f a
+               ∈-claim₁ = transport (Ord-to-𝕍 (𝕍-to-Ord (f a) ↓ x) ∈_)
+                                    (IH' a)
+                                    (Ord-to-𝕍-preserves-strict-order
+                                      (𝕍-to-Ord (f a) ↓ x)
+                                      (𝕍-to-Ord (f a))
+                                      (x , refl))
+               ∈-claim₂ : Ord-to-𝕍 (𝕍-to-Ord (f a) ↓ x) ∈ 𝕍-set f
+               ∈-claim₂ = transitive-set-if-set-theoretic-ordinal σ
+                            (f a)
+                            (Ord-to-𝕍 (𝕍-to-Ord (f a) ↓ x))
+                            (to-∈-of-𝕍-set ∣ a , refl ∣)
+                            ∈-claim₁
+
+               goal : ∃ a' ꞉ A , f a' ＝ Ord-to-𝕍 (s ↓ y)
+               goal = ∥∥-functor g (from-∈-of-𝕍-set ∈-claim₂)
+                where
+                 g : (Σ a' ꞉ A , f a' ＝ Ord-to-𝕍 (𝕍-to-Ord (f a) ↓ x))
+                   → Σ a' ꞉ A , f a' ＝ Ord-to-𝕍 (s ↓ y)
+                 g (a' , p) = (a' , q)
+                  where
+                   q = f a'                          ＝⟨ p  ⟩
+                       Ord-to-𝕍 (𝕍-to-Ord (f a) ↓ x) ＝⟨ e' ⟩
+                       Ord-to-𝕍 (s ↓ y)              ∎
+                    where
+                     ↓-fact : c a ↓ inl x ＝ 𝕍-to-Ord (f a) ↓ x
+                     ↓-fact = +ₒ-↓-left x ⁻¹
+                     e' = ap Ord-to-𝕍 (↓-fact ⁻¹ ∙ e ⁻¹)
+
 
   𝕍ᵒʳᵈ-to-Ord-is-section-of-Ord-to-𝕍ᵒʳᵈ : Ord-to-𝕍ᵒʳᵈ ∘ 𝕍ᵒʳᵈ-to-Ord ∼ id
   𝕍ᵒʳᵈ-to-Ord-is-section-of-Ord-to-𝕍ᵒʳᵈ (x , σ) =
@@ -414,11 +491,22 @@ module _
   𝕍ᵒʳᵈ-isomorphic-to-Ord =
    Ord-to-𝕍ᵒʳᵈ , order-preserving-reflecting-equivs-are-order-equivs
                   (OO 𝓤) 𝕍ᴼᴿᴰ Ord-to-𝕍ᵒʳᵈ
-                  (lc-split-surjections-are-equivs
-                    Ord-to-𝕍ᵒʳᵈ Ord-to-𝕍ᵒʳᵈ-is-left-cancellable
-                    (λ x → 𝕍ᵒʳᵈ-to-Ord x
-                         , 𝕍ᵒʳᵈ-to-Ord-is-section-of-Ord-to-𝕍ᵒʳᵈ x))
+                  Ord-to-𝕍ᵒʳᵈ-is-equiv
                   Ord-to-𝕍-preserves-strict-order
                   Ord-to-𝕍-reflects-strict-order
+    where
+     Ord-to-𝕍ᵒʳᵈ-is-split-surjective : (x : 𝕍ᵒʳᵈ)
+                                     → Σ α ꞉ Ord , Ord-to-𝕍ᵒʳᵈ α ＝ x
+     Ord-to-𝕍ᵒʳᵈ-is-split-surjective x = 𝕍ᵒʳᵈ-to-Ord x
+                                       , 𝕍ᵒʳᵈ-to-Ord-is-section-of-Ord-to-𝕍ᵒʳᵈ x
+
+     Ord-to-𝕍ᵒʳᵈ-is-equiv : is-equiv (Ord-to-𝕍ᵒʳᵈ)
+     Ord-to-𝕍ᵒʳᵈ-is-equiv = lc-split-surjections-are-equivs
+                             Ord-to-𝕍ᵒʳᵈ
+                             Ord-to-𝕍ᵒʳᵈ-is-left-cancellable
+                             Ord-to-𝕍ᵒʳᵈ-is-split-surjective
+
 
 \end{code}
+
+TO DO: Add future work
