@@ -13,9 +13,9 @@ of ordinals in 𝓤.
 
 This file has three parts:
 (I)    Introduction of the cumulative hierarchy 𝕍 and the statement of its
-       (most general) induction principle
+       (most general) induction principle.
 (II)   Statements and proofs of some simpler, more specialised, induction and
-       recursion principles for 𝕍
+       recursion principles for 𝕍.
 (III)  Basic constructions and proofs for 𝕍, i.e. the definition of set
        membership (∈), subset relation (⊆) and proofs of ∈-extensionality and
        ∈-induction.
