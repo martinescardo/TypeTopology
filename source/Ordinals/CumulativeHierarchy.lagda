@@ -367,6 +367,7 @@ judgemental computation rules for 𝕍.)
 \end{code}
 
 TO DO: Comment further here.
+TO DO: Add https://arxiv.org/pdf/1612.05468.pdf to the references.
 TO DO: Add rank (Jech) comment (see Definition 9.3.4 in [1])
 
 \begin{code}
