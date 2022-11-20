@@ -1,14 +1,14 @@
 Tom de Jong, 28 October 2022 - 7 November 2022.
 In collaboration with Nicolai Kraus, Fredrik Norvall Forsberg and Chuangjie Xu.
 
-Following [2], in constructive set theory an ordinal is [Definition 9.4.1, 1],
+Following [3], in constructive set theory an ordinal is [Definition 9.4.1, 2],
 defined as a transitive set of transitive sets.
 
 We consider the subtype 𝕍ᵒʳᵈ of the cumulative hierarchy 𝕍 of set theoretic
-ordinals in 𝕍 (see UF/CumulativeHierarchy.lagda and [Section 10.5, 3] for more
+ordinals in 𝕍 (see UF/CumulativeHierarchy.lagda and [Section 10.5, 5] for more
 on 𝕍).
 
-We show that (𝕍ᵒʳᵈ,∈) is a ordinal, in the type theoretic sense of [3], i.e. it
+We show that (𝕍ᵒʳᵈ,∈) is a ordinal, in the type theoretic sense of [5], i.e. it
 is a well-founded, extensional and transitive order. Moreover, we prove that
 (𝕍ᵒʳᵈ,∈) and the ordinal Ord of type theoretic ordinals are isomorphic.
 
@@ -17,13 +17,16 @@ This is interesting for at least two reasons:
     coincide in HoTT.
 (2) It shows that a nontrivial subtype of 𝕍, a complicated HIT, can be defined
     internally in univalent type theory without HITs other than the
-    propositional truncation.
+    propositional truncation. (†)
+
+    (†): This was also done through other means by Gylterud [4] who gave a
+         non-HIT construction of the cumulative hiearchy 𝕍.
 
 After Fredrik Nordvall Forsberg's talk at the workshop in honour of Thorsten
 Altenkirch's 60th birthday
 (https://www.cs.nott.ac.uk/~psznk/events/thorsten60/#fred), Andreas Abel asked
 asked how/whether we can relate set theoretic ordinals and type theoretic
-ordinals through Aczel's [4] type theoretic interpretation of set theory. Since
+ordinals through Aczel's [1] type theoretic interpretation of set theory. Since
 the cumulative hierarchy 𝕍 may be seen as an internal refinement of Aczel's
 interpretation in HoTT, the theorem announced above provides an answer to
 Andreas' question.
@@ -33,26 +36,7 @@ There are some directions for future work recorded at the end of this file.
 References
 ----------
 
-[1] Peter Aczel and Michael Rathjen
-    Notes on Constructive Set Theory
-    Book draft
-    https://www1.maths.leeds.ac.uk/~rathjen/book.pdf
-    2010
-
-[2] William C. Powell
-    Extending Gödel’s negative interpretation to ZF
-    Volume 40, Issue 2 of Journal of Symbolic Logic
-    Pages 221─229
-    1975
-    doi:10.2307/2271902
-
-[3] The Univalent Foundations Program
-    Homotopy Type Theory: Univalent Foundations of Mathematics
-    https://homotopytypetheory.org/book
-    Institute for Advanced Study
-    2013
-
-[4] Peter Aczel
+[1] Peter Aczel
     The type theoretic interpretation of constructive set theory
     In A. MacIntyre, L. Pacholski, and J. Paris (eds.) Logic Colloquium ’77
     Volume 96 of Studies in Logic and the Foundations of Mathematics
@@ -60,6 +44,32 @@ References
     North-Holland Publishing Company
     1978
     doi:10.1016/S0049-237X(08)71989-X
+
+[2] Peter Aczel and Michael Rathjen
+    Notes on Constructive Set Theory
+    Book draft
+    https://www1.maths.leeds.ac.uk/~rathjen/book.pdf
+    2010
+
+[3] William C. Powell
+    Extending Gödel’s negative interpretation to ZF
+    Volume 40, Issue 2 of Journal of Symbolic Logic
+    Pages 221─229
+    1975
+    doi:10.2307/2271902
+
+[4] Håkon Robbestad Gylterud
+    From Multisets to Sets in Homotopy Type Theory
+    Volue 83, Issue 3 of The Journal Symbol Logic
+    Pages 1132─146
+    2018
+    doi:10.1017/jsl.2017.84
+
+[5] The Univalent Foundations Program
+    Homotopy Type Theory: Univalent Foundations of Mathematics
+    https://homotopytypetheory.org/book
+    Institute for Advanced Study
+    2013
 
 \begin{code}
 
@@ -366,9 +376,14 @@ judgemental computation rules for 𝕍.)
 
 \end{code}
 
-TO DO: Comment further here.
-TO DO: Add https://arxiv.org/pdf/1612.05468.pdf to the references.
-TO DO: Add rank (Jech) comment (see Definition 9.3.4 in [1])
+To show that Ord-to-𝕍ᵒʳᵈ is an isomorphism of ordinals it now suffices to prove
+that it is split surjective, which is what
+
+We construct a map 𝕍 → Ord by recursion on 𝕍 by sending 𝕍-set {A} f to the
+supremum of ordinals ⋁ (ψ (f a) + 𝟙) indexed by a : A.
+
+This is a familiar construction in set theory, see e.g. [Definition 9.3.4, 2],
+where the ordinal above is the "rank" of the set.
 
 \begin{code}
 
@@ -413,7 +428,6 @@ TO DO: Add rank (Jech) comment (see Definition 9.3.4 in [1])
             k = ≃ₒ-to-⊴ _ _ (idtoeqₒ _ _ (ap (_+ₒ 𝟙ₒ) q))
             l : (r₂ b +ₒ 𝟙ₒ) ⊴ ρ g r₂
             l = sup-is-upper-bound _ b
-
      τ : {A B : 𝓤 ̇} (f : A → 𝕍) (g : B → 𝕍)
        → (r₁ : A → Ord) (r₂ : B → Ord)
        → ((a : A) → ∥ Σ b ꞉ B , Σ p ꞉ f a ＝ g b , r₁ a ＝ r₂ b ∥)
@@ -428,6 +442,12 @@ TO DO: Add rank (Jech) comment (see Definition 9.3.4 in [1])
   𝕍-to-Ord : 𝕍 → Ord
   𝕍-to-Ord = pr₁ (𝕍-to-Ord-packaged)
 
+\end{code}
+
+The below records the behaviour on 𝕍-sets that we announced above.
+
+\begin{code}
+
   𝕍-to-Ord-behaviour-on-𝕍-sets :
      {A : 𝓤 ̇ } (f : A → 𝕍)
    → 𝕍-to-Ord (𝕍-set f) ＝ sup (λ a → 𝕍-to-Ord (f a) +ₒ 𝟙ₒ)
@@ -435,6 +455,14 @@ TO DO: Add rank (Jech) comment (see Definition 9.3.4 in [1])
 
   𝕍ᵒʳᵈ-to-Ord : 𝕍ᵒʳᵈ → Ord
   𝕍ᵒʳᵈ-to-Ord = 𝕍-to-Ord ∘ pr₁
+
+\end{code}
+
+We show that Ord-to-𝕍 is a split surjection by showing that 𝕍ᵒʳᵈ-to-Ord is a
+section of it. The fact that we are restricting the inputs to set theoretic
+ordinals is crucial in proving one of the inequalities.
+
+\begin{code}
 
   𝕍-to-Ord-is-section-of-Ord-to-𝕍 : (x : 𝕍)
                                   → is-set-theoretic-ordinal x
@@ -538,6 +566,13 @@ TO DO: Add rank (Jech) comment (see Definition 9.3.4 in [1])
   𝕍ᵒʳᵈ-to-Ord-is-section-of-Ord-to-𝕍ᵒʳᵈ (x , σ) =
    𝕍ᵒʳᵈ-is-subtype (𝕍-to-Ord-is-section-of-Ord-to-𝕍 x σ)
 
+\end{code}
+
+Finally we obtain the result that ordinal of type theoretic ordinals is
+isomorphic to the (type theoretic) ordinal 𝕍ᴼᴿᴰ of set theoretic ordinals.
+
+\begin{code}
+
   𝕍ᵒʳᵈ-isomorphic-to-Ord : OO 𝓤 ≃ₒ 𝕍ᴼᴿᴰ
   𝕍ᵒʳᵈ-isomorphic-to-Ord =
    Ord-to-𝕍ᵒʳᵈ , order-preserving-reflecting-equivs-are-order-equivs
@@ -560,4 +595,22 @@ TO DO: Add rank (Jech) comment (see Definition 9.3.4 in [1])
 
 \end{code}
 
-TO DO: Add future work
+Future work
+-----------
+
+(1) The recursive nature of 𝕍-to-Ord is convenient because it allows us to prove
+    properties by induction. Moreover, the supremum yields an ordinal by
+    construction. It is possible to give a more direct presentation of
+    𝕍-to-Ord (𝕍-set {A} f) however, that is nonrecursive.
+
+    Namely, we can show that 𝕍-to-Ord (𝕍-set {A} f) ＝ (A/∼ , <), where ~
+    identifies elements of A that have the same image under f and [a] < [a'] is
+    defined as f a ∈ f a'.
+
+    It is straightforward to see that (A/~ , <) is in fact equivalent (but not
+    equal for size reasons) to the image of f, which in turn is equivalent to
+    the total space (Σ y ꞉ 𝕍 , y ∈ 𝕍-set f), so that the map 𝕍-to-Ord can be
+    described (up to equivalence) as x ↦ Σ y ꞉ 𝕍 , y ∈ x.
+
+(2) We are currently working out the details of a related presentation for all
+    of 𝕍.
