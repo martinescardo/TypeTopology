@@ -20,9 +20,9 @@ This file has three parts:
        membership (∈), subset relation (⊆) and proofs of ∈-extensionality and
        ∈-induction.
 
-The cumulative hierarchy 𝕍 can be seen as a HoTT-refined of Aczel's [2] type
-theoretic interpretation of constructive set theory and draws inspiration form
-Joyal and Moerdijk's [3] algebraic set theory.
+The cumulative hierarchy 𝕍 can be seen as a HoTT-refined version of Aczel's [2]
+type theoretic interpretation of constructive set theory and draws inspiration
+form Joyal and Moerdijk's [3] algebraic set theory.
 
 References
 ----------

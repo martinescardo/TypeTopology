@@ -25,9 +25,9 @@ This is interesting for at least two reasons:
 After Fredrik Nordvall Forsberg's talk at the workshop in honour of Thorsten
 Altenkirch's 60th birthday
 (https://www.cs.nott.ac.uk/~psznk/events/thorsten60/#fred), Andreas Abel asked
-asked how/whether we can relate set theoretic ordinals and type theoretic
-ordinals through Aczel's [1] type theoretic interpretation of set theory. Since
-the cumulative hierarchy 𝕍 may be seen as an internal refinement of Aczel's
+how/whether we can relate set theoretic ordinals and type theoretic ordinals
+through Aczel's [1] type theoretic interpretation of set theory. Since the
+cumulative hierarchy 𝕍 may be seen as an internal refinement of Aczel's
 interpretation in HoTT, the theorem announced above provides an answer to
 Andreas' question.
 
@@ -377,7 +377,7 @@ judgemental computation rules for 𝕍.)
 \end{code}
 
 To show that Ord-to-𝕍ᵒʳᵈ is an isomorphism of ordinals it now suffices to prove
-that it is split surjective, which is what
+that it is split surjective.
 
 We construct a map 𝕍 → Ord by recursion on 𝕍 by sending 𝕍-set {A} f to the
 supremum of ordinals ⋁ (ψ (f a) + 𝟙) indexed by a : A.
