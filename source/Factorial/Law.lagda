@@ -480,5 +480,3 @@ propositional-factorial {𝓤} P i =
     III = discrete-factorial P (props-are-discrete i)
 
 \end{code}
-
-P + Q
