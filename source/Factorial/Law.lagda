@@ -22,7 +22,6 @@ and our
 
  https://www.cs.bham.ac.uk/~mhe/TypeTopology/PlusOneLC.html
 
-
 More generally, for an arbitraty type X, we prove that
 
   co-derived-set (X + 𝟙) × Aut X ≃ Aut (X + 𝟙),
@@ -39,6 +38,10 @@ On the other hand, if X is perfect (has no isolated points), then
   Aut X ≃ Aut (X + 𝟙),
 
 This is the case, for example, if X is the circle S¹.
+
+But if P is a proposition, then
+
+  Aut (P + 𝟙) ≃ P + 𝟙.
 
 \begin{code}
 
@@ -443,3 +446,39 @@ factorial-base = f , ((g , η) , (g , ε))
   ε ⋆ = refl
 
 \end{code}
+
+Added 21st November 2022.
+
+\begin{code}
+
+Aut-of-prop-is-singleton : (P : 𝓤 ̇ )
+                         → is-prop P
+                         → is-singleton (Aut P)
+Aut-of-prop-is-singleton P i = ≃-refl P , h
+ where
+  h : (e : P ≃ P) → ≃-refl P ＝ e
+  h (f , _) = to-subtype-＝
+                (being-equiv-is-prop fe)
+                (dfunext (fe _ _) (λ p → i p (f p)))
+
+factorial-base-generalized : (P : 𝓤 ̇ )
+                           → is-prop P
+                           → 𝟙 {𝓥} ≃ Aut P
+factorial-base-generalized P i = singleton-≃-𝟙' (Aut-of-prop-is-singleton P i)
+
+propositional-factorial : (P : 𝓤 ̇ )
+                        → is-prop P
+                        → (P + 𝟙) ≃ Aut (P + 𝟙)
+propositional-factorial {𝓤} P i =
+  P + 𝟙             ≃⟨ I ⟩
+  (P + 𝟙) × (𝟙 {𝓤}) ≃⟨ II ⟩
+  (P + 𝟙) × Aut P   ≃⟨ III ⟩
+  Aut (P + 𝟙)       ■
+   where
+    I   = ≃-sym 𝟙-rneutral
+    II  = ×-cong (≃-refl (P + 𝟙)) (factorial-base-generalized P i)
+    III = discrete-factorial P (props-are-discrete i)
+
+\end{code}
+
+P + Q

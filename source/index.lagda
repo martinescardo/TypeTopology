@@ -86,6 +86,7 @@ import DedekindReals.index            -- by Andrew Sneap
 import DomainTheory.index             -- by Tom de Jong
 import Dyadics.index                  -- by Andrew Sneap
 import DyadicsInductive.index         -- by Tom de Jong
+import Factorial.index
 import Field.index                    -- by Andrew Sneap
 import Fin.index
 import Games.index                    -- by Martin Escardo and Paulo Oliva
