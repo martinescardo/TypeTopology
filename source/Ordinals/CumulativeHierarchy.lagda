@@ -467,7 +467,7 @@ ordinals is crucial in proving one of the inequalities.
                                   → is-set-theoretic-ordinal x
                                   → Ord-to-𝕍 (𝕍-to-Ord x) ＝ x
   𝕍-to-Ord-is-section-of-Ord-to-𝕍 =
-   𝕍-prop-induction _ (λ x → Π-is-prop fe (λ _ → 𝕍-is-set)) ρ
+   𝕍-prop-induction _ (λ x → Π-is-prop fe (λ _ → 𝕍-is-large-set)) ρ
     where
      ρ : {A : 𝓤 ̇} (f : A → 𝕍)
        → ((a : A) → is-set-theoretic-ordinal (f a)

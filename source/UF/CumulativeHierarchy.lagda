@@ -92,14 +92,23 @@ For comparison, the higher inductive type (HIT) presentation of 𝕍 (w.r.t. �
   ∙ For every A, B : 𝓤, f : A → 𝕍 and g : B → 𝕍, if f ≈ g, then 𝕍-set f ＝ 𝕍-set g
   ∙ 𝕍 is set-truncated: for every x, y : 𝕍 and p, q : x ＝ y, we have p ＝ q.
 
+We require that the type 𝕍 is a set in the sense of HoTT, i.e. its elements are
+equal in at most one way. In the set theoretic sense it is of course a proper
+class and not a set: the type 𝕍 lives in the next type universe 𝓤 ⁺. To try to
+avoid confusion, we explicitly introduce the definition "is-large-set" below, as
+suggested by Martín Escardó.
+
 \begin{code}
 
 module _ (𝓤 : Universe) where
 
+ is-large-set : 𝓤 ⁺ ̇ → 𝓤 ⁺ ̇
+ is-large-set = is-set
+
  record cumulative-hierarchy-exists : 𝓤ω where
   field
    𝕍 : 𝓤 ⁺ ̇
-   𝕍-is-set : is-set 𝕍
+   𝕍-is-large-set : is-large-set 𝕍
    𝕍-set : {A : 𝓤 ̇ } → (A → 𝕍) → 𝕍
    𝕍-set-ext : {A B : 𝓤 ̇ } (f : A → 𝕍) (g : B → 𝕍) → f ≈ g → 𝕍-set f ＝ 𝕍-set g
    𝕍-induction : {𝓣 : Universe} (P : 𝕍 → 𝓣 ̇ )
@@ -384,7 +393,7 @@ set-theoretic axioms: ∈-extensionality and ∈-induction.
                      → x ⊆ 𝕍-set f → 𝕍-set f ⊆ x → x ＝ 𝕍-set f
   pre-extensionality f =
    𝕍-prop-simple-induction (λ x → x ⊆ 𝕍-set f → 𝕍-set f ⊆ x → x ＝ 𝕍-set f)
-                           (λ _ → Π₂-is-prop fe (λ _ _ → 𝕍-is-set))
+                           (λ _ → Π₂-is-prop fe (λ _ _ → 𝕍-is-large-set))
                            γ
     where
      γ : {B : 𝓤 ̇  } (g : B → 𝕍)
@@ -394,7 +403,7 @@ set-theoretic axioms: ∈-extensionality and ∈-induction.
   ∈-extensionality : (x y : 𝕍) → x ⊆ y → y ⊆ x → x ＝ y
   ∈-extensionality x y =
    𝕍-prop-simple-induction (λ v → x ⊆ v → v ⊆ x → x ＝ v)
-                           (λ _ → Π₂-is-prop fe (λ _ _ → 𝕍-is-set))
+                           (λ _ → Π₂-is-prop fe (λ _ _ → 𝕍-is-large-set))
                            (λ f → pre-extensionality f x)
                            y
 
