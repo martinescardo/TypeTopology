@@ -9,6 +9,7 @@ import UF.Choice
 import UF.Classifiers-Old
 import UF.Classifiers
 import UF.Connected
+import UF.CumulativeHierarchy      -- by de Jong, Kraus, Nordvall Forsberg and Xu.
 import UF.Embeddings
 import UF.Equiv-FunExt
 import UF.Equiv

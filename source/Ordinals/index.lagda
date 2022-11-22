@@ -12,6 +12,7 @@ import Ordinals.Brouwer
 import Ordinals.BuraliForti                   -- by Bezem, Coquand, Dybjer and Escardo.
 import Ordinals.Closure
 import Ordinals.Codes
+import Ordinals.CumulativeHierarchy           -- by de Jong, Kraus, Nordvall Forsberg, and Xu.
 import Ordinals.Indecomposable
 import Ordinals.Injectivity
 import Ordinals.LexicographicOrder
