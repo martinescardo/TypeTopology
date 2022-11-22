@@ -57,6 +57,27 @@ transfinite-induction' P f = accessible-induction
                               (λ x _ → P x)
                               (λ x _ → f x)
 
+\end{code}
+
+Added 31 October 2022 by Tom de Jong.
+We record the (computational) behaviour of transfinite induction for use in
+other constructions.
+
+\begin{code}
+
+transfinite-induction'-behaviour :
+   (P : X → 𝓦 ̇ ) (f : (x : X) → ((y : X) → y < x → P y) → P x)
+   (x : X) (a : is-accessible x)
+ → transfinite-induction' P f x a
+   ＝ f x (λ y l → transfinite-induction' P f y (prev a y l))
+transfinite-induction'-behaviour P f x (step σ) = refl
+
+\end{code}
+
+End of addition.
+
+\begin{code}
+
 is-well-founded : 𝓤 ⊔ 𝓥 ̇
 is-well-founded = (x : X) → is-accessible x
 
@@ -76,6 +97,72 @@ transfinite-recursion : is-well-founded
                       → ((x : X) → ((y : X) → y < x → Y) → Y)
                       → X → Y
 transfinite-recursion w {𝓦} {Y} = transfinite-induction w (λ x → Y)
+
+accessibility-is-prop : FunExt
+                      → (x : X) → is-prop (is-accessible x)
+accessibility-is-prop fe = accessible-induction P φ
+ where
+  P : (x : X) → is-accessible x → 𝓤 ⊔ 𝓥 ̇
+  P x a = (b : is-accessible x) → a ＝ b
+
+  φ : (x : X) (σ : (y : X) → y < x → is-accessible y)
+    → ((y : X) (l : y < x) (a : is-accessible y) → σ y l ＝ a)
+    → (b : is-accessible x) → step σ ＝ b
+  φ x σ IH b = step σ ＝⟨ i ⟩
+               step τ ＝⟨ prev-behaviour x b ⟩
+               b      ∎
+   where
+    τ : (y : X) → y < x → is-accessible y
+    τ = prev b
+
+    h :  (y : X) (l : y < x) → σ y l ＝ τ y l
+    h y l = IH y l (τ y l)
+
+    i = ap step
+           (dfunext (fe 𝓤 (𝓤 ⊔ 𝓥)) (λ y → dfunext (fe 𝓥 (𝓤 ⊔ 𝓥)) (h y)))
+
+\end{code}
+
+Added 31 October 2022 by Tom de Jong.
+We record the (computational) behaviour of transfinite induction/recursion for
+use in other constructions.
+
+\begin{code}
+
+transfinite-induction-behaviour : FunExt → (w : is-well-founded)
+                                  {𝓦 : Universe} (P : X → 𝓦 ̇ )
+                                  (f : (x : X) → ((y : X) → y < x → P y) → P x)
+                                  (x : X)
+                                → transfinite-induction w P f x
+                                  ＝ f x (λ y l → transfinite-induction w P f y)
+transfinite-induction-behaviour fe w {𝓦} P f x =
+ transfinite-induction w P f x                               ＝⟨ I    ⟩
+ f x (λ y l → transfinite-induction' P f y (prev (w x) y l)) ＝⟨ II   ⟩
+ f x (λ y l → transfinite-induction' P f y (w y))            ＝⟨ refl ⟩
+ f x (λ y l → transfinite-induction w P f y)                 ∎
+  where
+   I = transfinite-induction'-behaviour P f x (w x)
+   II = ap (f x) (dfunext (fe 𝓤 (𝓥 ⊔ 𝓦))
+                          (λ y → dfunext (fe 𝓥 𝓦)
+                                         (λ l → ap (transfinite-induction' P f y) (e y l))))
+    where
+     e : (y : X) (l : y < x) → prev (w x) y l ＝ w y
+     e y l = accessibility-is-prop fe y (prev (w x) y l) (w y)
+
+transfinite-recursion-behaviour : FunExt → (w : is-well-founded)
+                                  {𝓦 : Universe} {Y : 𝓦 ̇ }
+                                  (f : (x : X) → ((y : X) → y < x → Y) → Y)
+                                  (x : X)
+                                → transfinite-recursion w f x
+                                  ＝ f x (λ y _ → transfinite-recursion w f y)
+transfinite-recursion-behaviour fe w {𝓦} {Y} =
+ transfinite-induction-behaviour fe w (λ _ → Y)
+
+\end{code}
+
+End of addition.
+
+\begin{code}
 
 is-transitive : 𝓤 ⊔ 𝓥 ̇
 is-transitive = (x y z : X) → x < y → y < z → x < z
@@ -137,29 +224,6 @@ extensionality (p , w , e , t) = e
 
 transitivity : is-well-order → is-transitive
 transitivity (p , w , e , t) = t
-
-accessibility-is-prop : FunExt
-                      → (x : X) → is-prop (is-accessible x)
-accessibility-is-prop fe = accessible-induction P φ
- where
-  P : (x : X) → is-accessible x → 𝓤 ⊔ 𝓥 ̇
-  P x a = (b : is-accessible x) → a ＝ b
-
-  φ : (x : X) (σ : (y : X) → y < x → is-accessible y)
-    → ((y : X) (l : y < x) (a : is-accessible y) → σ y l ＝ a)
-    → (b : is-accessible x) → step σ ＝ b
-  φ x σ IH b = step σ ＝⟨ i ⟩
-               step τ ＝⟨ prev-behaviour x b ⟩
-               b      ∎
-   where
-    τ : (y : X) → y < x → is-accessible y
-    τ = prev b
-
-    h :  (y : X) (l : y < x) → σ y l ＝ τ y l
-    h y l = IH y l (τ y l)
-
-    i = ap step
-           (dfunext (fe 𝓤 (𝓤 ⊔ 𝓥)) (λ y → dfunext (fe 𝓥 (𝓤 ⊔ 𝓥)) (h y)))
 
 well-foundedness-is-prop : FunExt → is-prop is-well-founded
 well-foundedness-is-prop fe = Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥))
