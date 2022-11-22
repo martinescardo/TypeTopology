@@ -16,8 +16,7 @@ This is interesting for at least two reasons:
 (1) It shows that the set theoretic and type theoretic notions of ordinal
     coincide in HoTT.
 (2) It shows that a nontrivial subtype of 𝕍, a complicated HIT, can be defined
-    internally in univalent type theory without HITs other than the
-    propositional truncation. (†)
+    internally in univalent type theory without HITs (†).
 
     (†): This was also done through other means by Gylterud [4] who gave a
          non-HIT construction of the cumulative hiearchy 𝕍.
