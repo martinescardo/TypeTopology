@@ -1164,6 +1164,8 @@ simulations-preserve-↓ α β f a = pr₂ (from-≼ (⊴-gives-≼ α β f) a)
 
 \end{code}
 
+End of addition.
+
 Transfinite induction on the ordinal of ordinals:
 
 \begin{code}
@@ -1211,6 +1213,12 @@ transfinite-recursion-on-OO-behaviour :
                      ＝ f α (λ a → transfinite-recursion-on-OO X f (α ↓ a))
 transfinite-recursion-on-OO-behaviour X f =
  transfinite-induction-on-OO-behaviour (λ _ → X) f
+
+\end{code}
+
+End of addition.
+
+\begin{code}
 
 has-minimal-element : Ordinal 𝓤 → 𝓤 ̇
 has-minimal-element α = Σ a ꞉ ⟨ α ⟩ , ((x : ⟨ α ⟩) → a ≾⟨ α ⟩ x)

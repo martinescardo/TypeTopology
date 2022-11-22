@@ -72,6 +72,12 @@ transfinite-induction'-behaviour :
    ＝ f x (λ y l → transfinite-induction' P f y (prev a y l))
 transfinite-induction'-behaviour P f x (step σ) = refl
 
+\end{code}
+
+End of addition.
+
+\begin{code}
+
 is-well-founded : 𝓤 ⊔ 𝓥 ̇
 is-well-founded = (x : X) → is-accessible x
 
@@ -151,6 +157,12 @@ transfinite-recursion-behaviour : FunExt → (w : is-well-founded)
                                   ＝ f x (λ y _ → transfinite-recursion w f y)
 transfinite-recursion-behaviour fe w {𝓦} {Y} =
  transfinite-induction-behaviour fe w (λ _ → Y)
+
+\end{code}
+
+End of addition.
+
+\begin{code}
 
 is-transitive : 𝓤 ⊔ 𝓥 ̇
 is-transitive = (x y z : X) → x < y → y < z → x < z

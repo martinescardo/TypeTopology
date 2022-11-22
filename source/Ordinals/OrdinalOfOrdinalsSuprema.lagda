@@ -716,7 +716,7 @@ the given family α.
 
 \end{code}
 
-Added 7 November 2022 by Tom de Jong.
+Added 7 November 2022.
 
 We record a surjectivity property w.r.t. the above simulation so that we can
 later prove that initial segments of the supremum of α are given by initial
@@ -950,7 +950,7 @@ Next, we resize α⁺ using:
 
 \end{code}
 
-Added 7 November 2022 by Tom de Jong.
+Added 7 November 2022.
 
 As above, we record a surjectivity property w.r.t. the above simulation (but for
 the resized α⁻ this time) so that we can later prove that initial segments of

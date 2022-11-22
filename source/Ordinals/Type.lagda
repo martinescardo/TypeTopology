@@ -109,6 +109,12 @@ Transfinite-induction-behaviour : FunExt → (α : Ordinal 𝓤)
 Transfinite-induction-behaviour fe α P f =
  transfinite-induction-behaviour (underlying-order α) fe (Well-foundedness α) P f
 
+\end{code}
+
+End of addition.
+
+\begin{code}
+
 Extensionality : (α : Ordinal 𝓤) → is-extensional (underlying-order α)
 Extensionality α = extensionality (underlying-order α) (is-well-ordered α)
 

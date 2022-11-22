@@ -208,6 +208,12 @@ neutral, but we give a direct proof instead.
   h : ((α +ₒ 𝟙ₒ) ↓ inr ⋆) ≃ₒ α
   h = f , f-order-preserving , f-is-equiv , g-order-preserving
 
+\end{code}
+
+End of addition.
+
+\begin{code}
+
 +ₒ-⊲-left : {α β : Ordinal 𝓤} (a : ⟨ α ⟩)
           → (α ↓ a) ⊲ (α +ₒ β)
 +ₒ-⊲-left {𝓤} {α} {β} a = inl a , +ₒ-↓-left a
