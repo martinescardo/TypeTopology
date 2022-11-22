@@ -657,8 +657,8 @@ module _
        (λ ((i , i-lt-u) , i-not-lt-v) → ∣ i , i-lt-u , i-not-lt-v ∣) witness)))
      λ prf → inr (λ i i-lt-u → prf (i , i-lt-u))
 
- trichotomy' : is-well-order → is-trichotomous-order
- trichotomy' wo@(p , w , e , t) = transfinite-induction w is-trichotomous-element ϕ
+ trichotomy₂ : is-well-order → is-trichotomous-order
+ trichotomy₂ wo@(p , w , e , t) = transfinite-induction w is-trichotomous-element ϕ
   where
    ϕ : (x : X) → induction-hypothesis is-trichotomous-element x → is-trichotomous-element x
    ϕ u ih = -- now we proceed by induction on the inner argument
@@ -681,6 +681,96 @@ module _
              (in-trichotomy-not->-implies-≧ i-in-trichotomy-x i-not-lt-x)))
        λ u-below-x → inr ((e x u x-below-u u-below-x) ⁻¹)
 \end{code}
+
+End of proof added by Ohad Kammar.
+
+The following fact and proof were communicated verbally by Paul Blain
+Levy to Martin Escardo and Ohad Kammar on 16th November 2022, and it
+is written down in Agda by Martin Escardo on the same date:
+
+\begin{code}
+
+is-decidable-order : 𝓤 ⊔ 𝓥 ̇
+is-decidable-order = (x y : X) → decidable (x < y)
+
+trichotomy-from-decidable-order : is-transitive
+                                → is-extensional
+                                → is-well-founded
+                                → is-decidable-order
+                                → is-trichotomous-order
+trichotomy-from-decidable-order t e w d = γ
+ where
+  T : X → X → 𝓤 ⊔ 𝓥 ̇
+  T x y = (x < y) + (x ＝ y) + (y < x)
+
+  γ : (a b : X) → T a b
+  γ = transfinite-induction w (λ a → (b : X) → T a b) ϕ
+   where
+    ϕ : (a : X) → ((x : X) → x < a → (b : X) → T x b) → (b : X) → T a b
+    ϕ a IH-a = transfinite-induction w (T a) ψ
+     where
+      ψ : (b : X) → ((y : X) → y < b → T a y) → T a b
+      ψ b IH-b = III
+       where
+        I : ¬ (a < b) → b ≼ a
+        I ν y l = f (IH-b y l)
+         where
+          f : (a < y) + (a ＝ y) + (y < a) → y < a
+          f (inl m)       = 𝟘-elim (ν (t a y b m l))
+          f (inr (inl p)) = 𝟘-elim (ν (transport (_< b) (p ⁻¹) l))
+          f (inr (inr m)) = m
+
+        II : ¬ (b < a) → a ≼ b
+        II ν x l = g (IH-a x l b)
+         where
+          g : (x < b) + (x ＝ b) + (b < x) → x < b
+          g (inl m)       = m
+          g (inr (inl p)) = 𝟘-elim (ν (transport (_< a) p l))
+          g (inr (inr m)) = 𝟘-elim (ν (t b x a m l))
+
+        III : T a b
+        III = h (d a b) (d b a)
+         where
+          h : (a < b) + ¬ (a < b)
+            → (b < a) + ¬ (b < a)
+            → (a < b) + (a ＝ b) + (b < a)
+          h (inl l) _       = inl l
+          h (inr α) (inl l) = inr (inr l)
+          h (inr α) (inr β) = inr (inl (e a b (II β) (I α)))
+
+trichotomy₃ : excluded-middle 𝓥
+            → is-well-order
+            → is-trichotomous-order
+trichotomy₃ em (p , w , e , t) = trichotomy-from-decidable-order
+                                  t e w (λ x y → em (x < y) (p x y))
+
+decidable-order-from-trichotomy : is-transitive
+                                → is-well-founded
+                                → is-trichotomous-order
+                                → is-decidable-order
+decidable-order-from-trichotomy t w τ = γ
+ where
+  γ : (x y : X) → decidable (x < y)
+  γ x y = f (τ x y)
+   where
+    f : (x < y) + (x ＝ y) + (y < x) → (x < y) + ¬ (x < y)
+    f (inl l)       = inl l
+    f (inr (inl p)) = inr (λ (m : x < y) → irreflexive x (w x) (transport (x <_) (p ⁻¹) m))
+    f (inr (inr l)) = inr (λ (m : x < y) → irreflexive x (w x) (t x y x m l))
+
+decidable-order-iff-trichotomy : is-well-order
+                               → is-trichotomous-order ⇔ is-decidable-order
+decidable-order-iff-trichotomy (_ , w , e , t) =
+ decidable-order-from-trichotomy t w ,
+ trichotomy-from-decidable-order t e w
+
+\end{code}
+
+Paul also remarks that the result can be strengthened as follows: A
+transitive well-founded relation is trichotomous iff it is both
+extensional and decidable. TODO. Write this down in Agda.
+
+End of 16th November 2022 addition.
 
 \begin{code}
 not-<-gives-≼ : funext (𝓤 ⊔ 𝓥) 𝓤₀

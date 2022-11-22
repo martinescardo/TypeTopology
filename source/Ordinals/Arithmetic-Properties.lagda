@@ -537,8 +537,8 @@ ordinal-subtraction-gives-excluded-middle {𝓤} ϕ P P-is-prop = g
 
 \end{code}
 
-Another example where subtraction doesn't necessarily exist is the
-situation (ω +ₒ 𝟙ₒ) ≼ ℕ∞ₒ, discussed in the module
+TODO. Another example where subtraction doesn't necessarily exist is
+the situation (ω +ₒ 𝟙ₒ) ≼ ℕ∞ₒ, discussed in the module
 OrdinalOfOrdinals. The types ω +ₒ 𝟙ₒ and ℕ∞ₒ are equal if and only if
 LPO holds. Without assuming LPO, the image of the inclusion (ω +ₒ 𝟙ₒ)
 → ℕ∞ₒ, has empty complement, and so there is nothing that can be added
@@ -696,7 +696,9 @@ However, the successor function does not preserve _⊴_ in general:
 
 \begin{code}
 
-succ-not-necessarily-monotone : ((α β : Ordinal 𝓤) → α ⊴ β → (α +ₒ 𝟙ₒ) ⊴ (β +ₒ 𝟙ₒ))
+succ-not-necessarily-monotone : ((α β : Ordinal 𝓤)
+                              → α ⊴ β
+                              → (α +ₒ 𝟙ₒ) ⊴ (β +ₒ 𝟙ₒ))
                               → WEM 𝓤
 succ-not-necessarily-monotone {𝓤} ϕ P isp = II I
  where
@@ -920,7 +922,7 @@ is-limit-ordinal α.
 
 \end{code}
 
-We now gives an example of an ordinal which is not a limit ordinal and
+We now give an example of an ordinal which is not a limit ordinal and
 also is not a successor ordinal unless LPO holds:
 
 \begin{code}

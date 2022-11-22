@@ -28,13 +28,14 @@ open import UF.Retracts
 
 open import MLTT.Spartan
 open import MLTT.Two-Properties
+
 open import CoNaturals.GenericConvergentSequence
-open import Naturals.Addition renaming (_+_ to _∔_)
-open import TypeTopology.SquashedSum fe
 open import CoNaturals.UniversalProperty fe
-open import Utilities.Sequence fe renaming (head to head' ; tail to tail' ; _∶∶_ to _∶∶'_)
 open import InjectiveTypes.Blackboard fe
+open import Naturals.Sequence fe renaming (head to head' ; tail to tail' ; _∶∶_ to _∶∶'_)
+open import Naturals.Addition renaming (_+_ to _∔_)
 open import Notation.CanonicalMap
+open import TypeTopology.SquashedSum fe
 
 private
  fe₀ : funext 𝓤₀ 𝓤₀

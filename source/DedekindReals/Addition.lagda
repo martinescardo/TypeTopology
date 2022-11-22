@@ -7,27 +7,27 @@ show that the Reals are a group with respect to addition.
 \begin{code}
 {-# OPTIONS --without-K --exact-split --safe --experimental-lossy-unification #-}
 
-open import MLTT.Spartan renaming (_+_ to _∔_) 
-open import UF.Base 
-open import UF.FunExt 
-open import UF.Subsingletons 
-open import UF.PropTrunc 
-open import Notation.Order 
+open import MLTT.Spartan renaming (_+_ to _∔_)
+open import UF.Base
+open import UF.FunExt
+open import UF.Subsingletons
+open import UF.PropTrunc
+open import Notation.Order
 
 open import UF.Powerset
 open import DedekindReals.Properties
-open import Rationals.Rationals
+open import Rationals.Type
 open import Rationals.Addition renaming (_+_ to _ℚ+_)
 open import Rationals.Negation renaming (_-_ to _ℚ-_ ; -_ to ℚ-_)
-open import Rationals.Order 
+open import Rationals.Order
 
 module DedekindReals.Addition
          (pe : Prop-Ext)
          (pt : propositional-truncations-exist)
          (fe : Fun-Ext)
-       where 
+       where
 
-open import DedekindReals.Reals pe pt fe
+open import DedekindReals.Type pe pt fe
 open import DedekindReals.Order pe pt fe
 open PropositionalTruncation pt
 
@@ -37,7 +37,7 @@ _+_ : ℝ → ℝ → ℝ
  where
   x : ℝ
   x = ((L-x , R-x) , inhabited-left-x , inhabited-right-x , rounded-left-x , rounded-right-x , disjoint-x , located-x)
-  
+
   L-z R-z : 𝓟 ℚ
   L-z p = (∃ (r , s) ꞉ ℚ × ℚ , r ∈ L-x × s ∈ L-y × (p ＝ r ℚ+ s)) , ∃-is-prop
   R-z q = (∃ (r , s) ꞉ ℚ × ℚ , r ∈ R-x × s ∈ R-y × (q ＝ r ℚ+ s)) , ∃-is-prop
@@ -76,7 +76,7 @@ _+_ : ℝ → ℝ → ℝ
       δ : Σ (r , s) ꞉ ℚ × ℚ , r ∈ L-x × s ∈ L-y × (z ＝ r ℚ+ s) → ∃ t ꞉ ℚ , (z < t) × t ∈ L-z
       δ ((r , s) , rLx , sLy , e) = γ (rounded-left-b L-x rounded-left-x r rLx) (rounded-left-b L-y rounded-left-y s sLy)
        where
-        γ : (∃ p ꞉ ℚ , r < p × p ∈ L-x) → (∃ q ꞉ ℚ , s < q × q ∈ L-y) → ∃ t ꞉ ℚ , z < t × t ∈ L-z 
+        γ : (∃ p ꞉ ℚ , r < p × p ∈ L-x) → (∃ q ꞉ ℚ , s < q × q ∈ L-y) → ∃ t ꞉ ℚ , z < t × t ∈ L-z
         γ f g = ζ (binary-choice f g)
          where
           ζ : ∥ (Σ p ꞉ ℚ , r < p × p ∈ L-x) × (Σ q ꞉ ℚ , s < q × q ∈ L-y) ∥ → ∃ t ꞉ ℚ , z < t × t ∈ L-z
@@ -89,7 +89,7 @@ _+_ : ℝ → ℝ → ℝ
               II = transport (_< p ℚ+ q) (e ⁻¹) (ℚ<-adding r p s q l₁ l₂)
               III : (p ℚ+ q) ∈ L-z
               III = ∣ (p , q) , (pLx , qLy , refl) ∣
-      
+
     II : ∃ t ꞉ ℚ , (z < t) × t ∈ L-z → z ∈ L-z
     II et = ∥∥-rec (∈-is-prop L-z z) δ et
      where
@@ -104,7 +104,7 @@ _+_ : ℝ → ℝ → ℝ
           III = rounded-left-c L-x rounded-left-x (r ℚ+ (z ℚ- t)) r (ℚ<-subtraction-preserves-order' fe r (z ℚ- t) (ℚ<-difference-positive' fe z t l) ) rLx
           IV : z ＝ r ℚ+ (z ℚ- t) ℚ+ s
           IV = ψ z r t s e
-      
+
   rounded-right-z : (z : ℚ) → (z ∈ R-z) ⇔ (∃ q ꞉ ℚ , ((q < z) × (q ∈ R-z)))
   rounded-right-z z = I , II
    where
@@ -114,11 +114,11 @@ _+_ : ℝ → ℝ → ℝ
       δ : (Σ (r , s) ꞉ ℚ × ℚ , (r ∈ R-x) × (s ∈ R-y) × (z ＝ (r ℚ+ s))) → (∃ q ꞉ ℚ , (q < z) × q ∈ R-z)
       δ ((r , s) , rRx , sRy , e) = γ (rounded-right-b R-x rounded-right-x r rRx) (rounded-right-b R-y rounded-right-y s sRy)
        where
-        γ : (∃ p ꞉ ℚ , p < r × p ∈ R-x) → (∃ q ꞉ ℚ , q < s × q ∈ R-y) → ∃ t ꞉ ℚ , t < z × t ∈ R-z 
+        γ : (∃ p ꞉ ℚ , p < r × p ∈ R-x) → (∃ q ꞉ ℚ , q < s × q ∈ R-y) → ∃ t ꞉ ℚ , t < z × t ∈ R-z
         γ f g = ζ (binary-choice f g)
          where
           ζ : ∥ (Σ p ꞉ ℚ , p < r × p ∈ R-x) × (Σ q ꞉ ℚ , q < s × q ∈ R-y) ∥ → ∃ t ꞉ ℚ , t < z × t ∈ R-z
-          ζ = ∥∥-functor η 
+          ζ = ∥∥-functor η
            where
             η : (Σ p ꞉ ℚ , p < r × p ∈ R-x) × (Σ q ꞉ ℚ , q < s × q ∈ R-y) → Σ t ꞉ ℚ , t < z × t ∈ R-z
             η ((p , l₁ , pRx) , q , l₂ , qRy) = p ℚ+ q , II , III
@@ -141,7 +141,7 @@ _+_ : ℝ → ℝ → ℝ
           III = rounded-right-c R-x rounded-right-x r (r ℚ+ (z ℚ- t)) (ℚ<-addition-preserves-order'' fe r (z ℚ- t) (ℚ<-difference-positive fe t z l)) rRx
           IV : z ＝ r ℚ+ (z ℚ- t) ℚ+ s
           IV = ψ z r t s e
-          
+
   disjoint-z : disjoint L-z R-z
   disjoint-z p q (α , β) = ∥∥-rec (ℚ<-is-prop p q) δ (binary-choice α β)
    where
@@ -151,7 +151,7 @@ _+_ : ℝ → ℝ → ℝ
     δ (((r , s) , l-x , l-y , e₁) , ((r' , s') , r-x , r-y , e₂)) = goal
      where
       I : r < r'
-      I = disjoint-x r r' (l-x , r-x) 
+      I = disjoint-x r r' (l-x , r-x)
 
       II : s < s'
       II = disjoint-y s s' (l-y , r-y)
@@ -184,10 +184,10 @@ _+_ : ℝ → ℝ → ℝ
                q ℚ+ ((ℚ- p) ℚ+ p ℚ- t)      ＝⟨ ap (λ α → q ℚ+ (α ℚ- t)) (ℚ-inverse-sum-to-zero' fe p) ⟩
                q ℚ+ (0ℚ ℚ- t)               ＝⟨ ap (q ℚ+_) (ℚ-zero-left-neutral fe (ℚ- t)) ⟩
                q ℚ- t ∎
-               
+
         II : Σ z ꞉ ℚ , (p ℚ- e < z) × (z < q ℚ- t)
         II = ℚ-dense fe (p ℚ- e) (q ℚ- t) l₃
-       
+
         III : Σ y ꞉ ℚ , p ℚ- e < y × y < (pr₁ II)
         III = ℚ-dense fe (p ℚ- e) (pr₁ II) (pr₁ (pr₂ II))
         IV : ((y , _) : Σ y ꞉ ℚ , (p ℚ- e < y) × (y < q ℚ- t)) → Σ z ꞉ ℚ , p ℚ- e < z × z < y → ∥ p ∈ L-z ∔ q ∈ R-z ∥
@@ -239,7 +239,7 @@ plus2 x y = z
 
   rounded-left' : rounded-left L
   rounded-left' = {!!}
-  
+
   rounded-right' : rounded-right R
   rounded-right' = {!!}
 
@@ -248,11 +248,11 @@ plus2 x y = z
 
   located' : located L R
   located' = {!!}
-  
+
   z : ℝ
   z = (L , R) , inhabited-left' , inhabited-right' , rounded-left' , rounded-right' , disjoint' , located'
  -}
-  
+
 infixl 35 _+_
 
 ℝ+-comm : ∀ x y → x + y ＝ y + x
@@ -288,7 +288,7 @@ infixl 35 _+_
       iv = transport₂ _<_ v vi (ℚ<-addition-preserves-order (p ℚ+ r) (r ℚ+ s) (ℚ- r) iii )
        where
         v : p ℚ+ r ℚ- r ＝ p
-        v = ℚ+-assoc fe p r (ℚ- r) ∙ ℚ-inverse-intro fe p r ⁻¹ 
+        v = ℚ+-assoc fe p r (ℚ- r) ∙ ℚ-inverse-intro fe p r ⁻¹
         vi : r ℚ+ s ℚ- r ＝ s
         vi = r ℚ+ s ℚ- r   ＝⟨ ap (_ℚ- r) (ℚ+-comm r s) ⟩
              s ℚ+ r ℚ- r   ＝⟨ ℚ+-assoc fe s r (ℚ- r) ⟩
@@ -307,7 +307,7 @@ infixl 35 _+_
            q ℚ+ (q' ℚ- q')      ＝⟨ ap (q ℚ+_) (ℚ+-comm q' (ℚ- q')) ⟩
            q ℚ+ ((ℚ- q') ℚ+ q') ＝⟨ ℚ+-assoc fe q (ℚ- q') q' ⁻¹ ⟩
            q ℚ- q' ℚ+ q' ∎
-      
+
       iii : q ℚ- q' < 0ℚ
       iii = transport (q ℚ- q' <_) iv (ℚ<-addition-preserves-order q q' (ℚ- q') l)
        where
@@ -318,7 +318,7 @@ infixl 35 _+_
 ℝ-zero-right-neutral x = ℝ+-comm x 0ℝ ∙ ℝ-zero-left-neutral x
 
 ℝ+-assoc : ∀ x y z → x + y + z ＝ x + (y + z)
-ℝ+-assoc x y z = ℝ-equality-from-left-cut' _ _ ltr rtl 
+ℝ+-assoc x y z = ℝ-equality-from-left-cut' _ _ ltr rtl
  where
   ltr : lower-cut-of (x + y + z) ⊆ lower-cut-of (x + (y + z))
   ltr p p<x+y+z = ∥∥-rec ∃-is-prop I p<x+y+z
@@ -337,10 +337,10 @@ infixl 35 _+_
             c ℚ+ d ℚ+ b   ＝⟨ ℚ+-assoc fe c d b ⟩
             c ℚ+ (d ℚ+ b) ＝⟨ ap (c ℚ+_) (ℚ+-comm d b) ⟩
             c ℚ+ (b ℚ+ d) ∎
-            
+
         III : (b ℚ+ d) < (y + z)
         III = ∣ (d , b) , (d<y , b<z , ℚ+-comm b d) ∣
-  rtl :  lower-cut-of (x + (y + z)) ⊆ lower-cut-of (x + y + z) 
+  rtl :  lower-cut-of (x + (y + z)) ⊆ lower-cut-of (x + y + z)
   rtl p p<x+y+z-r = ∥∥-rec ∃-is-prop I p<x+y+z-r
    where
     I : Σ (a  , b) ꞉ ℚ × ℚ , a  < x        × b < (y + z)  × (p ＝ a ℚ+ b)
@@ -359,13 +359,13 @@ infixl 35 _+_
 open import Rationals.Multiplication renaming (_*_ to _ℚ*_)
 
 -_ : ℝ → ℝ
--_ x = (L , R) , inhabited-left-z , inhabited-right-z , rounded-left-z , rounded-right-z , disjoint-z , located-z 
+-_ x = (L , R) , inhabited-left-z , inhabited-right-z , rounded-left-z , rounded-right-z , disjoint-z , located-z
  where
   L : 𝓟 ℚ
   L p = (∃ r ꞉ ℚ , r > x × (p ＝ ℚ- r)) , ∃-is-prop
   R : 𝓟 ℚ
   R q = (∃ r ꞉ ℚ , r < x × (q ＝ ℚ- r)) , ∃-is-prop
-  
+
   inhabited-left-z : inhabited-left L
   inhabited-left-z = ∥∥-rec ∃-is-prop I (binary-choice (inhabited-from-real-L x) (inhabited-from-real-R x))
    where
@@ -399,7 +399,7 @@ open import Rationals.Multiplication renaming (_*_ to _ℚ*_)
         II = rounded-right-b (upper-cut-of x) (rounded-from-real-R x) r x<r
         III : Σ r' ꞉ ℚ , r' < r × r' > x → Σ p' ꞉ ℚ , p < p' × p' ∈ L
         III (r' , l , r'<x) = ℚ- r' , transport (_< ℚ- r') (e ⁻¹) (ℚ<-swap fe r' r l) , ∣ r' , r'<x , refl ∣
-    
+
     rtl : ∃ p' ꞉ ℚ , p < p' × p' ∈ L → p ∈ L
     rtl exists-p' = ∥∥-rec ∃-is-prop I exists-p'
      where
@@ -426,7 +426,7 @@ open import Rationals.Multiplication renaming (_*_ to _ℚ*_)
        where
         II : ∃ r' ꞉ ℚ , r < r' × r' < x
         II = rounded-left-b (lower-cut-of x) (rounded-from-real-L x) r r<x
-        III : (Σ r' ꞉ ℚ , r < r' × r' < x) → Σ q' ꞉ ℚ , q' < q × q' ∈ R 
+        III : (Σ r' ꞉ ℚ , r < r' × r' < x) → Σ q' ꞉ ℚ , q' < q × q' ∈ R
         III (r' , l , x<r') = ℚ- r' , (transport (ℚ- r' <_) (e ⁻¹) (ℚ<-swap fe r r' l) , ∣ r' , x<r' , refl ∣)
     rtl : ∃ q' ꞉ ℚ , q' < q × q' ∈ R → q ∈ R
     rtl exists-q' = ∥∥-rec ∃-is-prop I exists-q'
@@ -470,7 +470,7 @@ x - y = x + (- y)
   ltr p p<x-x = ∥∥-rec (∈-is-prop (lower-cut-of 0ℝ) p) I p<x-x
    where
     I : Σ (r , s) ꞉ ℚ × ℚ , r < x × s < (- x) × (p ＝ r ℚ+ s)
-      → p < 0ℝ 
+      → p < 0ℝ
     I ((r , s) , r<x , s<-x , e) = ∥∥-rec (∈-is-prop (lower-cut-of 0ℝ) p) II s<-x
      where
       II : Σ k ꞉ ℚ , k > x × (s ＝ ℚ- k) → p < 0ℝ
@@ -506,7 +506,7 @@ x - y = x + (- y)
                  r ℚ+ ((ℚ- k) ℚ+ k)   ＝⟨ ap (r ℚ+_) (ℚ+-comm (ℚ- k) k) ⟩
                  r ℚ+ (k ℚ- k)        ＝⟨ ℚ-inverse-intro fe r k ⁻¹ ⟩
                  r ∎
-      
+
   rtl : lower-cut-of 0ℝ ⊆ lower-cut-of (x - x)
   rtl p p<0 = ∥∥-rec (∈-is-prop (lower-cut-of (x - x)) p) II I
    where
@@ -542,7 +542,7 @@ x - y = x + (- y)
 ℝ<-addition-preserves-order x y z l = ∥∥-rec ∃-is-prop I l
  where
   I : Σ k ꞉ ℚ , k > x × k < y
-    → ∃ v ꞉ ℚ , v > (x + z) × v < (y + z)  
+    → ∃ v ꞉ ℚ , v > (x + z) × v < (y + z)
   I (k , x<k , k<y) = ∥∥-rec ∃-is-prop IV (binary-choice II III)
    where
     II : ∃ c ꞉ ℚ , c < k × c > x
@@ -570,7 +570,7 @@ x - y = x + (- y)
 ℝ<-addition-preserves-order' x y z l = ∥∥-rec ∃-is-prop I l
  where
   I : Σ k ꞉ ℚ , x < k     × k < y
-    → ∃ v ꞉ ℚ , x + z < v × v < y + z  
+    → ∃ v ꞉ ℚ , x + z < v × v < y + z
   I (k , x<k , k<y) = {!!}
 -}
 

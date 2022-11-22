@@ -6,9 +6,9 @@ This file defines negation of integers.
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import MLTT.Spartan renaming (_+_ to _∔_) 
+open import MLTT.Spartan renaming (_+_ to _∔_)
 
-open import Integers.Integers
+open import Integers.Type
 
 module Integers.Negation where
 

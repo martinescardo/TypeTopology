@@ -4,13 +4,13 @@
 
 open import MLTT.Spartan renaming (_+_ to _∔_)
 
-open import Integers.Integers
+open import Integers.Type
 open import Integers.Multiplication
 open import Integers.Order
 open import Integers.Parity
 open import Rationals.Fractions hiding (_≈_)
 open import Rationals.Multiplication renaming (_*_ to _ℚ*_)
-open import Rationals.Rationals
+open import Rationals.Type
 open import Naturals.Division
 open import Naturals.Exponents
 open import Naturals.HCF
@@ -23,7 +23,7 @@ open import UF.Base hiding (_≈_)
 open import UF.Miscelanea
 open import UF.Subsingletons
 open import TypeTopology.DiscreteAndSeparated
-open import TypeTopology.SigmaDiscreteAndTotallySeparated 
+open import TypeTopology.SigmaDiscreteAndTotallySeparated
 
 
 module Dyadics.Rationals where
@@ -50,13 +50,13 @@ module Dyadics.Rationals where
 ℤ[1/2]-is-set : is-set ℤ[1/2]
 ℤ[1/2]-is-set = discrete-types-are-sets ℤ[1/2]-is-discrete
 {-
-normalise-pos-lemma'' : (z : ℤ) (n : ℕ) → ℤeven z → (0<n : 0 < n) → Σ k ꞉ ℤ , z ＝ pos 2 * k → ℤ[1/2] 
+normalise-pos-lemma'' : (z : ℤ) (n : ℕ) → ℤeven z → (0<n : 0 < n) → Σ k ꞉ ℤ , z ＝ pos 2 * k → ℤ[1/2]
 normalise-pos-lemma'' z 0        ez 0<n (k , e) = 𝟘-elim 0<n
 normalise-pos-lemma'' z (succ n) ez 0<n (k , e) = {!!}
 
-normalise-pos-lemma' : (z : ℤ) (n : ℕ) → ℤeven z ∔ ℤodd z → (0<n : 0 < n) → ℤ[1/2] 
+normalise-pos-lemma' : (z : ℤ) (n : ℕ) → ℤeven z ∔ ℤodd z → (0<n : 0 < n) → ℤ[1/2]
 normalise-pos-lemma' z n (inr oz) 0<n = (z , n) , inr (0<n , oz)
-normalise-pos-lemma' z n (inl ez) 0<n = normalise-pos-lemma'' z n ez 0<n (ℤeven-is-multiple-of-two z ez) 
+normalise-pos-lemma' z n (inl ez) 0<n = normalise-pos-lemma'' z n ez 0<n (ℤeven-is-multiple-of-two z ez)
 -}
 
 normalise-pos-lemma : (z : ℤ) (n : ℕ) → ℤ[1/2]
@@ -166,10 +166,10 @@ _≈_ : (x y : ℤ[1/2]) → 𝓤₀ ̇
 
   II : x * pos (2^ (succ n)) ＝ y * pos (2^ (succ m))
   II = ℤ-mult-right-cancellable (x * pos (2^ (succ n))) (y * pos (2^ (succ m))) (pos 2) id I
-  
+
   III : (x ＝ y) × (succ m ＝ succ n) → x , succ (succ m) ＝ y , succ (succ n)
   III (x＝y , m＝n) = to-×-＝ x＝y (ap succ m＝n)
-  
+
 ≈-to-＝-lemma-sub-proof₄ : ((x , m) (y , n) : ℤ × ℕ) → (x , m) ≈' (y , n) → m > 0 × ℤodd x → n > 0 × ℤodd y → (x , m) ＝ (y , n)
 ≈-to-＝-lemma-sub-proof₄ (x , m) (y , n) e p q = ≈-to-＝-lemma-sub-proof₃ x m y n e p q
 

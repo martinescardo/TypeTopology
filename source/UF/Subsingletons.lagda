@@ -22,6 +22,9 @@ open import UF.Base
 is-prop : 𝓤 ̇ → 𝓤 ̇
 is-prop X = (x y : X) → x ＝ y
 
+is-prop-valued-family : {X : 𝓤 ̇ } → (X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
+is-prop-valued-family A = ∀ x → is-prop (A x)
+
 \end{code}
 
 And of course we could adopt a terminology borrowed from topos logic:

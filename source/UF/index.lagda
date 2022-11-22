@@ -14,8 +14,6 @@ import UF.Equiv-FunExt
 import UF.Equiv
 import UF.EquivalenceExamples
 import UF.ExcludedMiddle
-import UF.Factorial
-import UF.Finiteness-Universe-Invariance
 import UF.FunExt-Properties
 import UF.FunExt-from-Naive-FunExt
 import UF.FunExt
@@ -29,6 +27,7 @@ import UF.Large-Quotient
 import UF.LeftCancellable
 import UF.Lower-FunExt
 import UF.Miscelanea
+import UF.PairFun
 import UF.Powerset-Fin
 import UF.Powerset
 import UF.PropIndexedPiSigma

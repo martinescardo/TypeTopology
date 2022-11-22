@@ -7,22 +7,21 @@ another file.
 
 {-# OPTIONS --without-K --safe --auto-inline #-} -- --exact-split
 
+
+module Games.TicTacToe2 where
+
 open import MLTT.Spartan hiding (J)
-open import UF.Base
-open import UF.FunExt
-open import TypeTopology.SigmaDiscreteAndTotallySeparated
-
-
-module Games.TicTacToe2
-        (fe : Fun-Ext)
-       where
 
 data 𝟛 : Type where
  O-wins draw X-wins : 𝟛
 
+open import Games.Constructor 𝟛
+open import Games.FiniteHistoryDependent 𝟛
 open import Games.TypeTrees
-open import Games.FiniteHistoryDependent 𝟛 fe
-open import Games.Constructor 𝟛 fe
+open import MLTT.NonSpartanMLTTTypes
+open import TypeTopology.SigmaDiscreteAndTotallySeparated
+
+open list-util
 
 tic-tac-toe₂J : GameJ
 tic-tac-toe₂J = build-GameJ draw Board transition 9 board₀
@@ -34,9 +33,6 @@ tic-tac-toe₂J = build-GameJ draw Board transition 9 board₀
 
   data Player : Type where
    O X : Player
-
-  open import MLTT.NonSpartanMLTTTypes
-  open list-util
 
   Cell = Fin 9
 

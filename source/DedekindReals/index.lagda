@@ -6,7 +6,7 @@ Andrew Sneap
 
 module DedekindReals.index where
 
-import DedekindReals.Reals
+import DedekindReals.Type
 import DedekindReals.Addition
 import DedekindReals.Multiplication
 import DedekindReals.Order

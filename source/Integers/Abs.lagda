@@ -7,12 +7,12 @@ of abs, along with positive and negative properties of integers.
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import MLTT.Spartan renaming (_+_ to _∔_) 
+open import MLTT.Spartan renaming (_+_ to _∔_)
 
 open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
 open import Integers.Multiplication
 open import Integers.Negation
-open import Integers.Integers
+open import Integers.Type
 
 module Integers.Abs where
 
@@ -119,7 +119,7 @@ abs-over-mult' (negsucc x) (pos y) = I
       absℤ (pos (y ℕ* succ x))      ＝⟨ by-definition ⟩
       pos (y ℕ* succ x)             ＝⟨ pos-multiplication-equiv-to-ℕ y (succ x) ⁻¹ ⟩
       pos y * pos (succ x)          ＝⟨ ℤ*-comm (pos y) (pos (succ x)) ⟩
-      pos (succ x) * pos y          ＝⟨ by-definition ⟩ 
+      pos (succ x) * pos y          ＝⟨ by-definition ⟩
       absℤ (negsucc x) * absℤ (pos y) ∎
 abs-over-mult' (negsucc x) (negsucc y) = I
  where
@@ -132,5 +132,3 @@ abs-over-mult' (negsucc x) (negsucc y) = I
       absℤ (negsucc x) * absℤ (negsucc y) ∎
 
 \end{code}
-
-
