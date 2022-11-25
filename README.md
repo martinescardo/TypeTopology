@@ -39,6 +39,7 @@ You can use the following BibTeX citation to cite `TypeTopology`:
 * Martin Escardo
 * Nicolai Kraus **
 * Ohad Kammar
+* Paul Levy *
 * Paulo Oliva
 * Peter Dybjer *
 * Thierry Coquand *
