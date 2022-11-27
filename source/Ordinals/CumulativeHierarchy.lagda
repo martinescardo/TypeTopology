@@ -732,6 +732,19 @@ Future work
            , ≺-is-extensional (transitive-set-if-set-theoretic-ordinal σ)
            , ≺-is-transitive σ
 
-  open suprema pt (set-replacement-from-set-quotients sq pt)
+  {-
+    PROOF OUTLINE (TODO: FINISH)
+    We prove that A/~ is the supremum defined above by showing that
+      Ord-to-𝕍 (A/~ᵒʳᵈ) ＝ 𝕍-set f.
+    This boils down to proving
+      (a : A) → f a ＝ Ord-to-𝕍 (A/~ ↓ [ a ])
+    which we "Yoneda-fy" in the following lemma (which needs renaming) so that
+    it allows for a quick proof by ∈-induction.
+
+  key-lemma : {!!} --   is-transitive-set (𝕍-set f)
+                    -- → (x : 𝕍) (a : A) → x ＝ f a ⇔ x ＝ Ord-to-𝕍 (A/~ᵒʳᵈ ↓ [ a ])
+                    -- This does not typecheck for size reasons.
+  key-lemma = {!!}
+  -}
 
 \end{code}
