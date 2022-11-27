@@ -390,7 +390,7 @@ where the ordinal above is the "rank" of the set.
  open import Ordinals.Arithmetic-Properties ua hiding (lemma₁ ; lemma₂)
  open import Ordinals.OrdinalOfOrdinalsSuprema ua
 
- open import UF.Quotient
+ open import UF.Quotient hiding (is-prop-valued)
 
  module _
          (sq : set-quotients-exist)
@@ -654,6 +654,9 @@ Future work
   _≺_ : A/~ → A/~ → 𝓤 ⁺ ̇
   a ≺ b = (a ≺[Ω] b) holds
 
+  ≺-is-prop-valued : is-prop-valued _≺_
+  ≺-is-prop-valued a b = holds-is-prop (a ≺[Ω] b)
+
   ∈-to-≺ : {a b : A} → f a ∈ f b → [ a ] ≺ [ b ]
   ∈-to-≺ {a} {b} m =
    back-Idtofun (ap (_holds) (extension-rel-triangle₂ ~EqRel _ _ a b)) m
@@ -667,7 +670,7 @@ Future work
   ≺-is-transitive σ = /-induction₃ fe ~EqRel prop-valued trans
     where
      prop-valued : (x y z : A / ~EqRel) → is-prop (x ≺ y → y ≺ z → x ≺ z)
-     prop-valued x y z = Π₂-is-prop fe (λ _ _ → holds-is-prop (x ≺[Ω] z))
+     prop-valued x y z = Π₂-is-prop fe (λ _ _ → ≺-is-prop-valued x z)
      trans : (a b c : A) → [ a ] ≺ [ b ] → [ b ] ≺ [ c ] → [ a ] ≺ [ c ]
      trans a b c m n = ∈-to-≺ (τ (f a) (≺-to-∈ n) (≺-to-∈ m))
       where
