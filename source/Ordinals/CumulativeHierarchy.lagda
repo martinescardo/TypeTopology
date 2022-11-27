@@ -706,15 +706,31 @@ Future work
            h : (Σ c ꞉ A , f c ＝ x) → x ∈ f a
            h (c , refl) = ≺-to-∈ (t [ c ] (∈-to-≺ m))
 
-  -- ≺-is-well-founded : is-well-founded _≺_
-  -- ≺-is-well-founded = {!!}
-  {- /-induction ~EqRel (accessibility-is-prop _≺_ fe') acc
+  ≺-is-well-founded : is-well-founded _≺_
+  ≺-is-well-founded = /-induction ~EqRel acc-is-prop acc
    where
+    acc-is-prop : (x : A/~) → is-prop (is-accessible _≺_ x)
+    acc-is-prop = accessibility-is-prop _≺_ fe'
+    acc' : (x : 𝕍) → ((a : A) → f a ＝ x → is-accessible _≺_ [ a ])
+    acc' = transfinite-induction _∈_ ∈-is-well-founded _ h
+     where
+      h : (x : 𝕍)
+        → ((y : 𝕍) → y ∈ x → (a : A) → f a ＝ y → is-accessible _≺_ [ a ])
+        → (a : A) → f a ＝ x → is-accessible _≺_ [ a ]
+      h x IH a refl =
+       step (/-induction ~EqRel (λ _ → Π-is-prop fe (λ _ → acc-is-prop _)) α)
+        where
+         α : (b : A) → [ b ] ≺ [ a ] → is-accessible _≺_ [ b ]
+         α b m = IH (f b) (≺-to-∈ m) b refl
     acc : (a : A) → is-accessible _≺_ [ a ]
-    acc = {!!} -}
+    acc a = acc' (f a) a refl
 
-  -- A/~ᵒʳᵈ : Ordinal
-  -- A/~ᵒʳᵈ = ?
+  A/~ᵒʳᵈ : is-set-theoretic-ordinal (𝕍-set f) → Ordinal (𝓤 ⁺)
+  A/~ᵒʳᵈ σ = A/~ , _≺_
+           , ≺-is-prop-valued
+           , ≺-is-well-founded
+           , ≺-is-extensional (transitive-set-if-set-theoretic-ordinal σ)
+           , ≺-is-transitive σ
 
   open suprema pt (set-replacement-from-set-quotients sq pt)
 
