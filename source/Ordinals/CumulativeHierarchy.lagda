@@ -602,7 +602,7 @@ Future work
     construction. It is possible to give a more direct presentation of
     𝕍-to-Ord (𝕍-set {A} f) however, that is nonrecursive.
 
-    Namely, we can show that 𝕍-to-Ord (𝕍-set {A} f) ＝ (A/∼ , <), where ~
+    Namely, we can show that 𝕍-to-Ord (𝕍-set {A} f) ＝ (A/~ , <), where ~
     identifies elements of A that have the same image under f and [a] < [a'] is
     defined as f a ∈ f a'.
 
@@ -613,3 +613,106 @@ Future work
 
 (2) We are currently working out the details of a related presentation for all
     of 𝕍.
+
+\begin{code}
+
+ module _
+         (sq : set-quotients-exist)
+         {A : 𝓤 ̇ }
+         (f : A → 𝕍)
+        where
+
+  open set-quotients-exist sq
+  open extending-relations-to-quotient fe pe
+
+  _~_ : A → A → 𝓤 ⁺ ̇
+  a ~ b = f a ＝ f b
+
+  ~EqRel : EqRel A
+  ~EqRel = _~_ , (λ a b → 𝕍-is-large-set)
+               , (λ a → refl)
+               , (λ a b e → e ⁻¹)
+               , (λ a b c e₁ e₂ → e₁ ∙ e₂)
+
+  A/~ : 𝓤 ⁺ ̇
+  A/~ = A / ~EqRel
+
+  [_] : A → A/~
+  [_] = η/ ~EqRel
+
+  -- TO DO: Use bisimilation relation on 𝕍 instead to have A/~ in 𝓤
+
+  _≺[Ω]_ : A/~ → A/~ → Ω (𝓤 ⁺)
+  _≺[Ω]_ = extension-rel₂ ~EqRel (λ a b → f a ∈[Ω] f b) ρ
+   where
+    ρ : {a b a' b' : A}
+      → a ~ a' → b ~ b' → f a ∈[Ω] f b ＝ f a' ∈[Ω] f b'
+    ρ {a} {b} {a'} {b'} e e' =
+     Ω-extensionality fe pe (transport₂ _∈_ e e')
+                            (transport₂ _∈_ (e ⁻¹) (e' ⁻¹))
+
+  _≺_ : A/~ → A/~ → 𝓤 ⁺ ̇
+  a ≺ b = (a ≺[Ω] b) holds
+
+  ∈-to-≺ : {a b : A} → f a ∈ f b → [ a ] ≺ [ b ]
+  ∈-to-≺ {a} {b} m =
+   back-Idtofun (ap (_holds) (extension-rel-triangle₂ ~EqRel _ _ a b)) m
+
+  ≺-to-∈ : {a b : A} → [ a ] ≺ [ b ] → f a ∈ f b
+  ≺-to-∈ {a} {b} m =
+   Idtofun (ap (_holds) (extension-rel-triangle₂ ~EqRel _ _ a b)) m
+
+  ≺-is-transitive : is-set-theoretic-ordinal (𝕍-set f)
+                  → is-transitive _≺_
+  ≺-is-transitive σ = /-induction₃ fe ~EqRel prop-valued trans
+    where
+     prop-valued : (x y z : A / ~EqRel) → is-prop (x ≺ y → y ≺ z → x ≺ z)
+     prop-valued x y z = Π₂-is-prop fe (λ _ _ → holds-is-prop (x ≺[Ω] z))
+     trans : (a b c : A) → [ a ] ≺ [ b ] → [ b ] ≺ [ c ] → [ a ] ≺ [ c ]
+     trans a b c m n = ∈-to-≺ (τ (f a) (≺-to-∈ n) (≺-to-∈ m))
+      where
+       τ : (v : 𝕍) → f b ∈ f c → v ∈ f b → v ∈ f c
+       τ = transitive-set-if-element-of-set-theoretic-ordinal σ
+            (to-∈-of-𝕍-set ∣ c , refl ∣) (f b)
+
+  ≺-is-extensional : is-transitive-set (𝕍-set f)
+                   → is-extensional _≺_
+  ≺-is-extensional τ =
+   /-induction₂ fe ~EqRel (λ x y → Π₂-is-prop fe (λ _ _ → /-is-set ~EqRel))
+                ext
+    where
+     ext : (a b : A)
+         → ((x : A/~) → x ≺ [ a ] → x ≺ [ b ])
+         → ((x : A/~) → x ≺ [ b ] → x ≺ [ a ])
+         → [ a ] ＝ [ b ]
+     ext a b s t = η/-identifies-related-points ~EqRel e'
+      where
+       e' : a ~ b
+       e' = ∈-extensionality (f a) (f b) s' t'
+        where
+         lem : (x : 𝕍) (c : A) → x ∈ f c → ∃ d ꞉ A , f d ＝ x
+         lem x c m = from-∈-of-𝕍-set (τ (f c) x (to-∈-of-𝕍-set ∣ c , refl ∣) m)
+         s' : f a ⊆ f b
+         s' x m = ∥∥-rec ∈-is-prop-valued h (lem x a m)
+          where
+           h : (Σ c ꞉ A , f c ＝ x) → x ∈ f b
+           h (c , refl) = ≺-to-∈ (s [ c ] (∈-to-≺ m))
+         t' : f b ⊆ f a
+         t' x m = ∥∥-rec ∈-is-prop-valued h (lem x b m)
+          where
+           h : (Σ c ꞉ A , f c ＝ x) → x ∈ f a
+           h (c , refl) = ≺-to-∈ (t [ c ] (∈-to-≺ m))
+
+  -- ≺-is-well-founded : is-well-founded _≺_
+  -- ≺-is-well-founded = {!!}
+  {- /-induction ~EqRel (accessibility-is-prop _≺_ fe') acc
+   where
+    acc : (a : A) → is-accessible _≺_ [ a ]
+    acc = {!!} -}
+
+  -- A/~ᵒʳᵈ : Ordinal
+  -- A/~ᵒʳᵈ = ?
+
+  open suprema pt (set-replacement-from-set-quotients sq pt)
+
+\end{code}
