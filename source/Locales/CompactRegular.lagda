@@ -839,20 +839,6 @@ clopen elements.
 
 \begin{code}
 
-closed-under-binary-joins : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦)
-closed-under-binary-joins {𝓦 = 𝓦} F S =
- Ɐ i ∶ index S , Ɐ j ∶ index S ,
-  Ǝ k ∶ index S , ((S [ k ]) is-lub-of (binary-family 𝓦 (S [ i ]) (S [ j ]))) holds
-   where
-    open Joins (λ x y → x ≤[ poset-of F ] y)
-
-contains-bottom : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦)
-contains-bottom F U =  Ǝ i ∶ index U , is-bottom F (U [ i ]) holds
-
-closed-under-finite-joins : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦)
-closed-under-finite-joins F S =
- contains-bottom F S ∧ closed-under-binary-joins F S
-
 consists-of-clopens : (F : Frame 𝓤 𝓥 𝓦) → (S : Fam 𝓦 ⟨ F ⟩) → Ω (𝓤 ⊔ 𝓦)
 consists-of-clopens F S = Ɐ i ∶ index S , is-clopen F (S [ i ])
 
