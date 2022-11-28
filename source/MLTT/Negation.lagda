@@ -146,13 +146,18 @@ not-Σ-implies-Π-not = curry
                     → ¬ (Σ x ꞉ X , A x)
 Π-not-implies-not-Σ = uncurry
 
-not-Π-implies-not-not-Σ' : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
-                         → ¬ ((x : X) → ¬¬ (A x))
-                         → ¬¬ (Σ x ꞉ X , ¬ (A x))
-not-Π-implies-not-not-Σ' = contrapositive not-Σ-implies-Π-not
+Π-implies-not-Σ-not : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
+                    → ((x : X) → A x)
+                    → ¬ (Σ x ꞉ X , ¬ (A x))
+Π-implies-not-Σ-not f (x , ν) = ν (f x)
+
+not-Π-not-not-implies-not-not-Σ-not : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
+                                    → ¬ ((x : X) → ¬¬ (A x))
+                                    → ¬¬ (Σ x ꞉ X , ¬ (A x))
+not-Π-not-not-implies-not-not-Σ-not = contrapositive not-Σ-implies-Π-not
 
 not-Π-implies-not-not-Σ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
-                        → ((x : X) → ¬¬ (A x) → A x)
+                        → ((x : X) → ¬¬-stable (A x))
                         → ¬ ((x : X) → A x)
                         → ¬¬ (Σ x ꞉ X , ¬ (A x))
 not-Π-implies-not-not-Σ f g h = g (λ x → f x (λ u → h (x , u)))

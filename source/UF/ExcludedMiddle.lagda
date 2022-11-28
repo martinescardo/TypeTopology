@@ -132,17 +132,34 @@ module _ (pt : propositional-truncations-exist) where
  open PropositionalTruncation pt
 
  double-negation-is-truncation-gives-DNE : ((X : 𝓤 ̇ ) → ¬¬ X → ∥ X ∥) → DNE 𝓤
- double-negation-is-truncation-gives-DNE {𝓤} f P isp u = ∥∥-rec isp id (f P u)
+ double-negation-is-truncation-gives-DNE f P i u = ∥∥-rec i id (f P u)
 
- ∃¬-gives-∀ : EM (𝓤 ⊔ 𝓥)
+ ∃-not+Π : EM (𝓤 ⊔ 𝓥)
          → {X : 𝓤 ̇ }
          → (A : X → 𝓥 ̇ )
          → ((x : X) → is-prop (A x))
-         → (∃ x ꞉ X , ¬ (A x)) + (Π A)
- ∃¬-gives-∀ {𝓤} {𝓥} em {X} A is-prop-valued = Cases (em (∃ x ꞉ X , ¬ (A x)) ∥∥-is-prop)
+         → (∃ x ꞉ X , ¬ (A x)) + (Π x ꞉ X , A x)
+ ∃-not+Π {𝓤} {𝓥} em {X} A is-prop-valued =
+  Cases (em (∃ x ꞉ X , ¬ (A x)) ∃-is-prop)
    inl
-   λ notExists → inr (λ x → EM-gives-DNE (lower-EM (𝓤 ⊔ 𝓥) em) (A x) (is-prop-valued x)
-     λ notAx → notExists ∣ (x , notAx) ∣)
+   (λ (u : ¬ (∃ x ꞉ X , ¬ (A x)))
+         → inr (λ (x : X) → EM-gives-DNE
+                              (lower-EM (𝓤 ⊔ 𝓥) em)
+                              (A x)
+                              (is-prop-valued x)
+                              (λ (v : ¬ A x) → u ∣ (x , v) ∣)))
+
+ ∃+Π-not : EM (𝓤 ⊔ 𝓥)
+         → {X : 𝓤 ̇ }
+         → (A : X → 𝓥 ̇ )
+         → ((x : X) → is-prop (A x))
+         → (∃ x ꞉ X , A x) + (Π x ꞉ X , ¬ (A x))
+ ∃+Π-not {𝓤} {𝓥} em {X} A is-prop-valued =
+  Cases (em (∃ x ꞉ X , A x) ∃-is-prop)
+   inl
+   (λ (u : ¬ (∃ x ꞉ X , A x))
+         → inr (λ (x : X) (v : A x) → u ∣ x , v ∣))
+
 \end{code}
 
 Added by Tom de Jong in August 2021.
@@ -153,15 +170,33 @@ Added by Tom de Jong in August 2021.
                      → EM (𝓤 ⊔ 𝓥)
                      → ¬ ((x : X) → ¬ A x)
                      → ∃ x ꞉ X , A x
- not-Π-not-implies-∃ {𝓤} {𝓥} {X} {A} em f =
-  EM-gives-DNE em (∃ A) ∥∥-is-prop γ
+ not-Π-not-implies-∃ {𝓤} {𝓥} {X} {A} em f = EM-gives-DNE em (∃ A) ∥∥-is-prop γ
    where
     γ : ¬¬ (∃ A)
     γ g = f (λ x a → g ∣ x , a ∣)
 
 \end{code}
 
-Added by Martin Escardo 26th April 2022. We can find a point of every non-empty type.
+End of addition.
+
+\begin{code}
+
+ not-Π-implies-∃-not : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
+                     → EM {!!}
+                     → EM {!!}
+                     → ¬ ((x : X) → A x)
+                     → ∃ x ꞉ X , ¬ (A x)
+ not-Π-implies-∃-not {𝓤} {𝓥} {X} {A} em em' f =
+  Cases (em E ∃-is-prop)
+   id
+   (λ (ν : ¬ E)
+         → 𝟘-elim (f (λ (x : X) → EM-gives-DNE em' {!A x!} {!!} {!!})))
+  where
+   E = ∃ x ꞉ X , ¬ (A x)
+
+\end{code}
+
+Added by Martin Escardo 26th April 2022.
 
 \begin{code}
 
@@ -169,7 +204,7 @@ Global-Choice' : ∀ 𝓤 → 𝓤 ⁺ ̇
 Global-Choice' 𝓤 = (X : 𝓤 ̇ ) → is-nonempty X → X
 
 Global-Choice : ∀ 𝓤 → 𝓤 ⁺ ̇
-Global-Choice 𝓤 = (X : 𝓤 ̇ ) → X + ¬ X
+Global-Choice 𝓤 = (X : 𝓤 ̇ ) → X + is-empty X
 
 Global-Choice-gives-Global-Choice' : Global-Choice 𝓤 → Global-Choice' 𝓤
 Global-Choice-gives-Global-Choice' gc X φ = cases id (λ u → 𝟘-elim (φ u)) (gc X)

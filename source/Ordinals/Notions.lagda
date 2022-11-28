@@ -385,6 +385,30 @@ the time of writing, namely 11th January 2021).
 
 \begin{code}
 
+module _ (pt : propositional-truncations-exist) where
+
+ open PropositionalTruncation pt
+
+ inhabited-subset-has-least-element : is-well-founded
+                                    → ∀ {𝓦} (A : X → 𝓦 ̇ )
+                                    → ∃ A
+                                    → ∃ x ꞉ X , A x × ((y : X) → A y → x ≼ y)
+ inhabited-subset-has-least-element w A s = {!!}
+  where
+   I : is-nonempty (Σ A)
+   I e = ∥∥-rec 𝟘-is-prop e s
+
+   II : ¬ ((x : X) → A x → Σ y ꞉ X , (y < x) × A y)
+   II = contrapositive (no-minimal-is-empty' w A) I
+
+
+
+
+\end{code}
+
+
+\begin{code}
+
 in-trichotomy : (x y : X) → 𝓤 ⊔ 𝓥 ̇
 in-trichotomy x y = (x < y) + (x ＝ y) + (y < x)
 
@@ -662,7 +686,7 @@ module _
 
    lem-consequence : is-well-order → (u v : X) → (∃ i ꞉ X , ((i < u) × ¬ (i < v))) + (u ≼ v)
    lem-consequence (p , _) u v = Cases
-     (∃¬-gives-∀ pt em {Σ (λ i → i < u)}
+     (∃¬+Π pt em {Σ (λ i → i < u)}
         (λ (i , i-lt-u) → i < v)
         (λ (i , i-<-u) → p i v))
      (λ witness → inl ((∥∥-induction (λ s → ∃-is-prop)
