@@ -1451,6 +1451,60 @@ directify-is-directed F S@(I , α) = ∣ [] ∣ , υ
           where
            † = ∨[ F ]-upper₂ (directify F S [ is ]) (directify F S [ js ])
 
+closed-under-binary-joins : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦)
+closed-under-binary-joins {𝓦 = 𝓦} F S =
+ Ɐ i ∶ index S , Ɐ j ∶ index S ,
+  Ǝ k ∶ index S , ((S [ k ]) is-lub-of (binary-family 𝓦 (S [ i ]) (S [ j ]))) holds
+   where
+    open Joins (λ x y → x ≤[ poset-of F ] y)
+
+contains-bottom : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦)
+contains-bottom F U =  Ǝ i ∶ index U , is-bottom F (U [ i ]) holds
+
+closed-under-finite-joins : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦)
+closed-under-finite-joins F S =
+ contains-bottom F S ∧ closed-under-binary-joins F S
+
+directify-is-closed-under-fin-joins : (F : Frame 𝓤 𝓥 𝓦) (S : Fam 𝓦 ⟨ F ⟩)
+                                    → closed-under-finite-joins F (directify F S) holds
+directify-is-closed-under-fin-joins F S = † , ‡
+ where
+  open PropositionalTruncation pt
+
+  † : contains-bottom F (directify F S) holds
+  † = ∣ [] , 𝟎-is-bottom F ∣
+
+  ‡ : closed-under-binary-joins F (directify F S) holds
+  ‡ is js = ∣ (is ++ js) , ♠ , ♣ ∣
+   where
+    open Joins (λ x y → x ≤[ poset-of F ] y)
+    open PosetReasoning (poset-of F)
+
+    Ͱ = directify-functorial F S is js ⁻¹
+
+    ♠ : ((directify F S [ is ++ js ])
+         is-an-upper-bound-of
+         ⁅ directify F S [ is ] , directify F S [ js ] ⁆) holds
+    ♠ (inl p) = directify F S [ is ]                                ≤⟨ Ⅰ ⟩
+                directify F S [ is ] ∨[ F ] directify F S [ js ]    ＝⟨ Ͱ ⟩ₚ
+                directify F S [ is ++ js ]                          ■
+                 where
+                  Ⅰ = ∨[ F ]-upper₁ (directify F S [ is ]) (directify F S [ js ])
+    ♠ (inr p) = directify F S [ js ]                              ≤⟨ Ⅰ ⟩
+                directify F S [ is ] ∨[ F ] directify F S [ js ]  ＝⟨ Ͱ ⟩ₚ
+                directify F S [ is ++ js ]                        ■
+                 where
+                  Ⅰ = ∨[ F ]-upper₂ (directify F S [ is ]) (directify F S [ js ])
+
+    ♣ : ((u , _) : upper-bound ⁅ directify F S [ is ] , directify F S [ js ] ⁆)
+      → ((directify F S [ is ++ js ]) ≤[ poset-of F ] u) holds
+    ♣ (u , ζ) =
+     directify F S [ is ++ js ]                          ＝⟨ Ͱ ⁻¹ ⟩ₚ
+     directify F S [ is ] ∨[ F ] directify F S [ js ]    ≤⟨ ※ ⟩
+     u                                                   ■
+      where
+       ※ = ∨[ F ]-least (ζ (inl ⋆) ) (ζ (inr ⋆))
+
 \end{code}
 
 `directify` also preserves the join while doing what it is supposed to
