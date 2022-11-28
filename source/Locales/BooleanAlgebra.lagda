@@ -29,6 +29,7 @@ open import UF.Subsingletons-FunExt
 open AllCombinators pt fe
 
 open import Locales.Frame pt fe
+open import Locales.CompactRegular pt fe
 
 open PropositionalTruncation pt
 
@@ -178,6 +179,10 @@ is-embedding {𝓤′} {𝓥′} {𝓤} {𝓥} {𝓦} B L η =
    ι : Ω (𝓤′ ⊔ 𝓤)
    ι = Ɐ x ∶ ⟪ B ⟫ , Ɐ y ∶ ⟪ B ⟫ , (η x ＝[ iss ]＝ η y) ⇒ (x ＝[ iss₀ ]＝ y)
 
+is-spectral′ : (B : BooleanAlgebra 𝓤′ 𝓥′) (L : Frame 𝓤 𝓥 𝓦)
+            → (f : ⟪ B ⟫ → ⟨ L ⟩) → Ω (𝓤′ ⊔ 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
+is-spectral′ B L f = Ɐ x ∶ ⟪ B ⟫ , is-compact-open L (f x)
+
 \end{code}
 
 \begin{code}
@@ -191,13 +196,31 @@ _is-sublattice-of_ B L = Ǝ η ∶ (⟪ B ⟫ → ⟨ L ⟩) , is-embedding B L 
 
 embedding-is-order-isomorphism : (B : BooleanAlgebra 𝓤 𝓥′) (L : Frame 𝓤 𝓥 𝓦)
                                → (η : ⟪ B ⟫ → ⟨ L ⟩)
+                               → (μ : is-embedding B L η holds)
                                → (x y : ⟪ B ⟫)
                                → (x ≤[ poset-of-ba B ] y
                                ↔ η x ≤[ poset-of L ] η y) holds
-embedding-is-order-isomorphism B L η x y = † , ‡
+embedding-is-order-isomorphism B L η μ x y = † , ‡
  where
+  open PosetReasoning (poset-of L)
+
   † : (x ≤[ poset-of-ba B ] y ⇒ η x ≤[ poset-of L ] η y) holds
-  † = {!meet-preserving-implies-monotone!}
+  † p = η x              ＝⟨ ap η (※ ⁻¹) ⟩ₚ
+        η (x ⋏[ B ] y)   ＝⟨ {!!} ⟩ₚ
+        η x ∧[ L ] η y   ＝⟨ {!!} ⟩ₚ
+        η y              ■
+   where
+    ※ : x ⋏[ B ] y ＝ x
+    ※ = ≤-is-antisymmetric (poset-of-ba B) ※₁ ※₂
+     where
+      ※₁ : ((x ⋏[ B ] y) ≤[ poset-of-ba B ] x) holds
+      ※₁ = {!!}
+
+      ※₂ : (x ≤[ poset-of-ba B ] (x ⋏[ B ] y)) holds
+      ※₂ = {!!}
+
+  η-meet-preserving : (x y : ⟪ B ⟫) → η (x ⋏[ B ] y) ＝ η x ∧[ L ] η y
+  η-meet-preserving = {!!}
 
   ‡ : (η x ≤[ poset-of L ] η y ⇒ x ≤[ poset-of-ba B ] y) holds
   ‡ = {!!}
@@ -228,13 +251,14 @@ is-generated-by {𝓦 = 𝓦} L B η =
 extension-lemma : (B : BooleanAlgebra 𝓦 𝓥) (L L′ : Frame 𝓤 𝓦 𝓦)
                 → (η : ⟪ B ⟫ → ⟨ L ⟩)
                 → is-embedding B L η holds
+                → is-spectral′ B L η holds
                 → is-generated-by L B η holds
                 → (h : ⟪ B ⟫ → ⟨ L′ ⟩)
                 → is-lattice-homomorphism B L′ h holds
                 → is-contr
                    (Σ h₀ ꞉ (⟨ L ⟩ → ⟨ L′ ⟩) ,
                     (is-a-frame-homomorphism L L′ h₀ holds) × (h ＝ h₀ ∘ η))
-extension-lemma {𝓦} {𝓤} B L L′ η e@(_ , _ , _ , _ , ♥₂) γ h (♠₀ , ♠₁ , ♠₂ , ♠₃) = (h⁻ , φ , {!!}) , {!!}
+extension-lemma {𝓦} {𝓤} B L L′ η e@(_ , _ , _ , _ , ♥₂) s γ h (♠₀ , ♠₁ , ♠₂ , ♠₃) = (h⁻ , φ , {!!}) , {!!}
  where
   ↓↓_ : ⟨ L ⟩ → Fam 𝓦 ⟨ L′ ⟩
   ↓↓ x = ⁅ h b ∣ (b , _) ∶ Σ b ꞉ ⟪ B ⟫ , (η b ≤[ poset-of L ] x) holds  ⁆
@@ -274,6 +298,9 @@ We first show that `h⁻` preserves the top element.
         h ⊥[ B ]               ＝⟨ ♠₂ ⟩ₚ
         𝟎[ L′ ]                ■
          where
+          ‡ : (𝟎[ L′ ] is-an-upper-bound-of (↓↓ 𝟎[ L ])) holds
+          ‡ (b , q) = h b ≤⟨ {!!} ⟩ {!!} ■
+
           ♥ : η ⊥[ B ] ＝ 𝟎[ L ]
           ♥ = pr₁ (pr₂ (pr₂ (pr₂ e)))
 
@@ -284,7 +311,7 @@ We first show that `h⁻` preserves the top element.
 
 \end{code}
 
-The function `h⁻` also  meets.
+The function `h⁻` also preserves meets.
 
 \begin{code}
 
@@ -350,13 +377,50 @@ The function `h⁻` also  meets.
 
 \begin{code}
 
+  h⁻-is-monotone : is-monotonic (poset-of L) (poset-of L′) h⁻ holds
+  h⁻-is-monotone = meet-preserving-implies-monotone L L′ h⁻ φ₁
+
+\end{code}
+
+\begin{code}
+
   open Joins (λ x y → x ≤[ poset-of L′ ] y)
 
   ζ⁻ : is-scott-continuous L L′ h⁻ holds
   ζ⁻ = {!!}
 
   h⁻-preserves-∨ : (x y : ⟨ L ⟩) → h⁻ (x ∨[ L ] y) ＝ h⁻ x ∨[ L′ ] h⁻ y
-  h⁻-preserves-∨ x y = {!!}
+  h⁻-preserves-∨ x y = ≤-is-antisymmetric (poset-of L′) † ‡
+   where
+    open PosetReasoning (poset-of L′)
+
+    ※₁ : (h⁻ x ≤[ poset-of L′ ] h⁻ (x ∨[ L ] y)) holds
+    ※₁ = h⁻-is-monotone (x , (x ∨[ L ] y)) (∨[ L ]-upper₁ x y)
+
+    ※₂ : (h⁻ y ≤[ poset-of L′ ] h⁻ (x ∨[ L ] y)) holds
+    ※₂ = h⁻-is-monotone (y , (x ∨[ L ] y)) (∨[ L ]-upper₂ x y)
+
+    † : (h⁻ (x ∨[ L ] y) ≤[ poset-of L′ ] (h⁻ x ∨[ L′ ] h⁻ y)) holds
+    † = h⁻ (x ∨[ L ] y) ≤⟨ {!!} ⟩ {!!} ≤⟨ {!!} ⟩ {!!} ■
+
+    ‡ : ((h⁻ x ∨[ L′ ] h⁻ y) ≤[ poset-of L′ ] h⁻ (x ∨[ L ] y)) holds
+    ‡ = ∨[ L′ ]-least ‡₁ ‡₂
+     where
+      ‡₁ : (h⁻ x ≤[ poset-of L′ ] h⁻ (x ∨[ L ] y)) holds
+      ‡₁ = ⋁[ L′ ]-least (↓↓ x) (h⁻ (x ∨[ L ] y) , ♣₁)
+       where
+        ♣₁ : (h⁻ (x ∨[ L ] y) is-an-upper-bound-of (↓↓ x)) holds
+        ♣₁ (b , p) = h b             ≤⟨ ⋁[ L′ ]-upper (↓↓ x) (b , p) ⟩
+                     h⁻ x            ≤⟨ ※₁                           ⟩
+                     h⁻ (x ∨[ L ] y) ■
+
+      ‡₂ : (h⁻ y ≤[ poset-of L′ ] h⁻ (x ∨[ L ] y)) holds
+      ‡₂ = ⋁[ L′ ]-least (↓↓ y) (h⁻ (x ∨[ L ] y) , ♣₂)
+       where
+        ♣₂ : (h⁻ (x ∨[ L ] y) is-an-upper-bound-of (↓↓ y)) holds
+        ♣₂ (b , p) = h b                ≤⟨ ⋁[ L′ ]-upper (↓↓ y) (b , p) ⟩
+                     ⋁[ L′ ] (↓↓ y)     ≤⟨ ※₂                           ⟩
+                     h⁻ (x ∨[ L ] y)    ■
 
   φ₂ : (S : Fam 𝓦 ⟨ L ⟩) → (h⁻ (⋁[ L ] S) is-lub-of ⁅ h⁻ x ∣ x ε S ⁆) holds
   φ₂ S@(I , 𝓎) =
