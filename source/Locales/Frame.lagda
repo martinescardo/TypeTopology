@@ -1319,7 +1319,7 @@ further subfamily covering any given element of the frame.
 
 is-basis-for : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺) ̇
 is-basis-for {𝓦 = 𝓦} F (I , β) =
- (x : ⟨ F ⟩) → Σ J ꞉ (Fam 𝓦 I) , (x is-lub-of ⁅ β j ∣ j ε J ⁆) holds
+ (x : ⟨ F ⟩) → Σ J ꞉ Fam 𝓦 I , (x is-lub-of ⁅ β j ∣ j ε J ⁆) holds
   where
    open Joins (λ x y → x ≤[ poset-of F ] y)
 
