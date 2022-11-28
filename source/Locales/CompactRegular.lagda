@@ -926,6 +926,19 @@ clopens-are-closed-under-∨ F x y (x′ , ϡ₁ , ϟ₁) (y′ , ϡ₂ , ϟ₂)
    ‡ : (x ∨[ F ] y) ∨[ F ] (x′ ∧[ F ] y′) ＝ 𝟏[ F ]
    ‡ = only-𝟏-is-above-𝟏 F _ ‡₁
 
+directification-preserves-clopenness : (F : Frame 𝓤 𝓥 𝓦)
+                                     → (ℬ : Fam 𝓦 ⟨ F ⟩)
+                                     → (consists-of-clopens F ℬ
+                                     ⇒ consists-of-clopens F (directify F ℬ))
+                                       holds
+directification-preserves-clopenness F ℬ ξ []       = 𝟎-is-clopen F
+directification-preserves-clopenness F ℬ ξ (i ∷ is) =
+ clopens-are-closed-under-∨ F (ℬ [ i ]) (directify F ℬ [ is ]) (ξ i) ℐℋ
+  where
+   ℐℋ = directification-preserves-clopenness F ℬ ξ is
+
+\end{code}
+
 Every zero-dimensional locale is regular.
 
 \begin{code}
