@@ -839,16 +839,34 @@ clopen elements.
 
 \begin{code}
 
+closed-under-binary-joins : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦)
+closed-under-binary-joins {𝓦 = 𝓦} F S =
+ Ɐ i ∶ index S , Ɐ j ∶ index S ,
+  Ǝ k ∶ index S , ((S [ k ]) is-lub-of (binary-family 𝓦 (S [ i ]) (S [ j ]))) holds
+   where
+    open Joins (λ x y → x ≤[ poset-of F ] y)
+
+contains-bottom : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦)
+contains-bottom F U =  Ǝ i ∶ index U , is-bottom F (U [ i ]) holds
+
+closed-under-finite-joins : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦)
+closed-under-finite-joins F S =
+ contains-bottom F S ∧ closed-under-binary-joins F S
+
 consists-of-clopens : (F : Frame 𝓤 𝓥 𝓦) → (S : Fam 𝓦 ⟨ F ⟩) → Ω (𝓤 ⊔ 𝓦)
 consists-of-clopens F S = Ɐ i ∶ index S , is-clopen F (S [ i ])
 
 zero-dimensionalᴰ : Frame 𝓤 𝓥 𝓦 → (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺) ̇
 zero-dimensionalᴰ {𝓦 = 𝓦} F =
- Σ ℬ ꞉ Fam 𝓦 ⟨ F ⟩ , is-basis-for F ℬ × consists-of-clopens F ℬ holds
+ Σ ℬ ꞉ Fam 𝓦 ⟨ F ⟩ , is-basis-for F ℬ
+                   × closed-under-finite-joins F ℬ holds
+                   × consists-of-clopens F ℬ holds
 
 is-zero-dimensional : Frame 𝓤 𝓥 𝓦 → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
 is-zero-dimensional {𝓦 = 𝓦} F =
- Ǝ ℬ ∶ Fam 𝓦 ⟨ F ⟩ , is-basis-for F ℬ × consists-of-clopens F ℬ holds
+ Ǝ ℬ ∶ Fam 𝓦 ⟨ F ⟩ , is-basis-for F ℬ
+                   × closed-under-finite-joins F ℬ holds
+                   × consists-of-clopens F ℬ holds
 
 basis-of-zero-dimensional-frame : (F : Frame 𝓤 𝓥 𝓦)
                                 → (is-zero-dimensional F ⇒ has-basis F) holds
@@ -921,7 +939,7 @@ zero-dimensional-locales-are-regular {𝓦 = 𝓦} F =
    open Joins (λ x y → x ≤[ poset-of F ] y)
 
    γ : zero-dimensionalᴰ F → is-regular F holds
-   γ (ℬ , β , ξ) = ∣ ℬ , δ ∣
+   γ (ℬ , β , _ , ξ) = ∣ ℬ , δ ∣
     where
      δ : Π U ꞉ ⟨ F ⟩ ,
           Σ J ꞉ Fam 𝓦 (index ℬ) ,
@@ -979,14 +997,8 @@ clopen-iff-compact-in-stone-frame F (κ , ζ) U = β , γ
 
 \begin{code}
 
-consists-of-compact-opens : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
-consists-of-compact-opens F U = Ɐ i ∶ index U , is-compact-open F (U [ i ])
-
 contains-top : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦)
 contains-top F U = Ǝ t ∶ index U , is-top F (U [ t ]) holds
-
-contains-bottom : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦)
-contains-bottom F U =  Ǝ i ∶ index U , is-bottom F (U [ i ]) holds
 
 closed-under-binary-meets : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦)
 closed-under-binary-meets F 𝒮 =
@@ -995,19 +1007,11 @@ closed-under-binary-meets F 𝒮 =
    where
     open Meets (λ x y → x ≤[ poset-of F ] y)
 
-closed-under-binary-joins : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦)
-closed-under-binary-joins {𝓦 = 𝓦} F S =
- Ɐ i ∶ index S , Ɐ j ∶ index S ,
-  Ǝ k ∶ index S , ((S [ k ]) is-lub-of (binary-family 𝓦 (S [ i ]) (S [ j ]))) holds
-   where
-    open Joins (λ x y → x ≤[ poset-of F ] y)
-
 closed-under-finite-meets : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦)
 closed-under-finite-meets F S = contains-top F S ∧ closed-under-binary-meets F S
 
-closed-under-finite-joins : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦)
-closed-under-finite-joins F S =
- (contains-bottom F S) ∧ closed-under-binary-joins F S
+consists-of-compact-opens : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
+consists-of-compact-opens F U = Ɐ i ∶ index U , is-compact-open F (U [ i ])
 
 \end{code}
 
