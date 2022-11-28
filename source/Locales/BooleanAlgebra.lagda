@@ -126,6 +126,21 @@ carrier-of-ba-is-set B = carrier-of-[ poset-of-ba B ]-is-set
 meet-of-ba : (B : BooleanAlgebra 𝓤 𝓥) → ⟪ B ⟫ → ⟪ B ⟫ → ⟪ B ⟫
 meet-of-ba (_ , (_ , _ , _⋏_ , _) , _) = _⋏_
 
+⋏[_]-is-lower₁ : (B : BooleanAlgebra 𝓤 𝓥)
+               → (x y : ⟪ B ⟫) → ((x ⋏[ B ] y) ≤[ poset-of-ba B ] x) holds
+⋏[_]-is-lower₁ B@(_ , _ , (_ , φ , _ , _)) x y = pr₁ (pr₁ (φ x y))
+
+⋏[_]-is-lower₂ : (B : BooleanAlgebra 𝓤 𝓥)
+               → (x y : ⟪ B ⟫) → ((x ⋏[ B ] y) ≤[ poset-of-ba B ] y) holds
+⋏[_]-is-lower₂ B@(_ , _ , (_ , φ , _ , _)) x y = pr₂ (pr₁ (φ x y))
+
+⋏[_]-is-greatest : (B : BooleanAlgebra 𝓤 𝓥) {x y l : ⟪ B ⟫}
+                 → (l ≤[ poset-of-ba B ] x) holds
+                 → (l ≤[ poset-of-ba B ] y) holds
+                 → (l ≤[ poset-of-ba B ] (x ⋏[ B ] y)) holds
+⋏[_]-is-greatest B@(_ , _ , (_ , φ , _ , _)) {x} {y} {l} p q =
+ pr₂ (φ x y) (l , p , q)
+
 infixl 4 meet-of-ba
 
 syntax meet-of-ba B x y = x ⋏[ B ] y
@@ -183,6 +198,12 @@ is-embedding {𝓤′} {𝓥′} {𝓤} {𝓥} {𝓦} B L η =
    ι : Ω (𝓤′ ⊔ 𝓤)
    ι = Ɐ x ∶ ⟪ B ⟫ , Ɐ y ∶ ⟪ B ⟫ , (η x ＝[ iss ]＝ η y) ⇒ (x ＝[ iss₀ ]＝ y)
 
+embedding-preserves-meets : (B : BooleanAlgebra 𝓤′ 𝓥′) (L : Frame 𝓤 𝓥 𝓦)
+                          → (η : ⟪ B ⟫ → ⟨ L ⟩)
+                          → is-embedding B L η holds
+                          → (x y : ⟪ B ⟫) → η (x ⋏[ B ] y) ＝ η x ∧[ L ] η y
+embedding-preserves-meets B L η (_ , (_ , ξ , _)) = ξ
+
 is-spectral′ : (B : BooleanAlgebra 𝓤′ 𝓥′) (L : Frame 𝓤 𝓥 𝓦)
             → (f : ⟪ B ⟫ → ⟨ L ⟩) → Ω (𝓤′ ⊔ 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
 is-spectral′ B L f = Ɐ x ∶ ⟪ B ⟫ , is-compact-open L (f x)
@@ -198,36 +219,36 @@ _is-sublattice-of_ B L = Ǝ η ∶ (⟪ B ⟫ → ⟨ L ⟩) , is-embedding B L 
 
 \begin{code}
 
--- embedding-is-order-isomorphism : (B : BooleanAlgebra 𝓤 𝓥′) (L : Frame 𝓤 𝓥 𝓦)
---                                → (η : ⟪ B ⟫ → ⟨ L ⟩)
---                                → (μ : is-embedding B L η holds)
---                                → (x y : ⟪ B ⟫)
---                                → (x ≤[ poset-of-ba B ] y
---                                ↔ η x ≤[ poset-of L ] η y) holds
--- embedding-is-order-isomorphism B L η μ x y = † , ‡
---  where
---   open PosetReasoning (poset-of L)
+embedding-is-order-isomorphism : (B : BooleanAlgebra 𝓤′ 𝓥′) (L : Frame 𝓤 𝓥 𝓦)
+                               → (η : ⟪ B ⟫ → ⟨ L ⟩)
+                               → (μ : is-embedding B L η holds)
+                               → (x y : ⟪ B ⟫)
+                               → (x ≤[ poset-of-ba B ] y
+                               ↔ η x ≤[ poset-of L ] η y) holds
+embedding-is-order-isomorphism B L η μ x y = † , ‡
+ where
+  open PosetReasoning (poset-of L)
 
---   † : (x ≤[ poset-of-ba B ] y ⇒ η x ≤[ poset-of L ] η y) holds
---   † p = η x              ＝⟨ ap η (※ ⁻¹) ⟩ₚ
---         η (x ⋏[ B ] y)   ＝⟨ {!!} ⟩ₚ
---         η x ∧[ L ] η y   ＝⟨ {!!} ⟩ₚ
---         η y              ■
---    where
---     ※ : x ⋏[ B ] y ＝ x
---     ※ = ≤-is-antisymmetric (poset-of-ba B) ※₁ ※₂
---      where
---       ※₁ : ((x ⋏[ B ] y) ≤[ poset-of-ba B ] x) holds
---       ※₁ = {!!}
+  η-meet-preserving : (x y : ⟪ B ⟫) → η (x ⋏[ B ] y) ＝ η x ∧[ L ] η y
+  η-meet-preserving = embedding-preserves-meets B L η μ
 
---       ※₂ : (x ≤[ poset-of-ba B ] (x ⋏[ B ] y)) holds
---       ※₂ = {!!}
+  † : (x ≤[ poset-of-ba B ] y ⇒ η x ≤[ poset-of L ] η y) holds
+  † p = η x              ＝⟨ ap η (※ ⁻¹)              ⟩ₚ
+        η (x ⋏[ B ] y)   ＝⟨ η-meet-preserving x y    ⟩ₚ
+        η x ∧[ L ] η y   ≤⟨ ∧[ L ]-lower₂ (η x) (η y) ⟩
+        η y              ■
+   where
+    ※ : x ⋏[ B ] y ＝ x
+    ※ = ≤-is-antisymmetric (poset-of-ba B) ※₁ ※₂
+     where
+      ※₁ : ((x ⋏[ B ] y) ≤[ poset-of-ba B ] x) holds
+      ※₁ = ⋏[ B ]-is-lower₁ x y
 
---   η-meet-preserving : (x y : ⟪ B ⟫) → η (x ⋏[ B ] y) ＝ η x ∧[ L ] η y
---   η-meet-preserving = {!!}
+      ※₂ : (x ≤[ poset-of-ba B ] (x ⋏[ B ] y)) holds
+      ※₂ = ⋏[ B ]-is-greatest (≤-is-reflexive (poset-of-ba B) x) p
 
---   ‡ : (η x ≤[ poset-of L ] η y ⇒ x ≤[ poset-of-ba B ] y) holds
---   ‡ = {!!}
+  ‡ : (η x ≤[ poset-of L ] η y ⇒ x ≤[ poset-of-ba B ] y) holds
+  ‡ = {!!}
 
 embeddings-lemma : (B : BooleanAlgebra 𝓤′ 𝓥′) (L : Frame 𝓤 𝓥 𝓦)
                  → (η : ⟪ B ⟫ → ⟨ L ⟩)
@@ -262,7 +283,7 @@ extension-lemma : (B : BooleanAlgebra 𝓦 𝓥) (L L′ : Frame 𝓤 𝓦 𝓦)
                    (Σ h₀ ꞉ (⟨ L ⟩ → ⟨ L′ ⟩) ,
                     (is-a-frame-homomorphism L L′ h₀ holds) × (h ＝ h₀ ∘ η))
 extension-lemma {𝓦} {𝓤} B L L′ η e@(_ , _ , _ , _ , ♥₂) s γ h (♠₀ , ♠₁ , ♠₂ , ♠₃) =
- (h⁻ , φ , {!!}) , {!!}
+ (h⁻ , φ , ψ) , {!!}
  where
   ↓↓_ : ⟨ L ⟩ → Fam 𝓦 ⟨ L′ ⟩
   ↓↓ x = ⁅ h b ∣ (b , _) ∶ Σ b ꞉ ⟪ B ⟫ , (η b ≤[ poset-of L ] x) holds  ⁆
@@ -440,5 +461,26 @@ The function `h⁻` also preserves meets.
 
   φ : is-a-frame-homomorphism L L′ h⁻ holds
   φ = φ₀ , φ₁ , φ₂
+
+\end{code}
+
+\begin{code}
+
+  ψ : h ＝ h⁻ ∘ η
+  ψ = dfunext fe ψ₁
+   where
+    open PosetReasoning (poset-of L′)
+
+    χ : (b : ⟪ B ⟫) → (h b ≤[ poset-of L′ ] h⁻ (η b)) holds
+    χ b = ⋁[ L′ ]-upper (↓↓ (η b)) (b , ≤-is-reflexive (poset-of L) (η b))
+
+    ϕ : (b : ⟪ B ⟫) → (h⁻ (η b) ≤[ poset-of L′ ] h b) holds
+    ϕ b = ⋁[ L′ ]-least (↓↓ (η b)) (h b , ϕ₁)
+     where
+      ϕ₁ : (h b is-an-upper-bound-of (↓↓ η b)) holds
+      ϕ₁ (bᵢ , p) = {!!}
+
+    ψ₁ : h ∼ h⁻ ∘ η
+    ψ₁ b = ≤-is-antisymmetric (poset-of L′) (χ b) (ϕ b)
 
 \end{code}
