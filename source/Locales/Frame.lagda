@@ -1268,6 +1268,16 @@ binary-distributivity-op F x y z =
   γ : ((x ∧[ F ] x) ≤[ poset-of F ] x) holds
   γ = ∧[ F ]-lower₁ x x
 
+∨[_]-is-idempotent : (F : Frame 𝓤 𝓥 𝓦)
+                   → (x : ⟨ F ⟩) → x ＝ x ∨[ F ] x
+∨[ F ]-is-idempotent x = ≤-is-antisymmetric (poset-of F) † ‡
+ where
+  † : (x ≤[ poset-of F ] (x ∨[ F ] x)) holds
+  † = ∨[ F ]-upper₁ x x
+
+  ‡ : ((x ∨[ F ] x) ≤[ poset-of F ] x) holds
+  ‡ = ∨[ F ]-least (≤-is-reflexive (poset-of F) x) (≤-is-reflexive (poset-of F) x)
+
 \end{code}
 
 \begin{code}
