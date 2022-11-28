@@ -1255,7 +1255,7 @@ non-empty-classically-has-minimal-element {𝓤} α n = iv
   i = contrapositive (ordinal-with-no-minimal-element-is-empty α) n
 
   ii : ¬¬ (Σ a ꞉ ⟨ α ⟩ , ¬ (Σ x ꞉ ⟨ α ⟩ , x ≺⟨ α ⟩ a))
-  ii = not-Π-implies-not-not-Σ' i
+  ii = not-Π-not-not-implies-not-not-Σ-not i
 
   iii : (Σ a ꞉ ⟨ α ⟩ , ¬ (Σ x ꞉ ⟨ α ⟩ , x ≺⟨ α ⟩ a))
       → (Σ a ꞉ ⟨ α ⟩ , ((x : ⟨ α ⟩) → a ≾⟨ α ⟩ x))

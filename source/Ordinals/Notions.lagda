@@ -385,6 +385,7 @@ the time of writing, namely 11th January 2021).
 
 \begin{code}
 
+{-
 module _ (pt : propositional-truncations-exist) where
 
  open PropositionalTruncation pt
@@ -400,9 +401,7 @@ module _ (pt : propositional-truncations-exist) where
 
    II : ¬ ((x : X) → A x → Σ y ꞉ X , (y < x) × A y)
    II = contrapositive (no-minimal-is-empty' w A) I
-
-
-
+-}
 
 \end{code}
 
@@ -686,7 +685,7 @@ module _
 
    lem-consequence : is-well-order → (u v : X) → (∃ i ꞉ X , ((i < u) × ¬ (i < v))) + (u ≼ v)
    lem-consequence (p , _) u v = Cases
-     (∃¬+Π pt em {Σ (λ i → i < u)}
+     (∃-not+Π pt em {Σ (λ i → i < u)}
         (λ (i , i-lt-u) → i < v)
         (λ (i , i-<-u) → p i v))
      (λ witness → inl ((∥∥-induction (λ s → ∃-is-prop)
