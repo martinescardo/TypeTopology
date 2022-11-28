@@ -143,6 +143,10 @@ syntax join-of-ba B x y = x ⋎[ B ] y
 ⊥[_] : (B : BooleanAlgebra 𝓤 𝓥) → ⟪ B ⟫
 ⊥[ (_ , (_ , _ , _ , ⊥ , _ , _) , _) ] = ⊥
 
+⊥[_]-is-bottom : (B : BooleanAlgebra 𝓤 𝓥)
+               → (b : ⟪ B ⟫) → (⊥[ B ] ≤[ poset-of-ba B ] b) holds
+⊥[ _ , _ , φ ]-is-bottom = pr₁ (pr₂ (pr₂ (pr₂ (pr₂ φ))))
+
 \end{code}
 
 \begin{code}
@@ -228,12 +232,11 @@ embedding-is-order-isomorphism B L η μ x y = † , ‡
 embeddings-lemma : (B : BooleanAlgebra 𝓤′ 𝓥′) (L : Frame 𝓤 𝓥 𝓦)
                  → (η : ⟪ B ⟫ → ⟨ L ⟩)
                  → is-embedding B L η holds
-                 → (x : ⟪ B ⟫) (y : ⟨ L ⟩) → η x ＝ 𝟎[ L ] → x ＝ ⊥[ B ]
-embeddings-lemma B L η e x y p =
- ≤-is-antisymmetric (poset-of-ba B) † {!⊥[ B ]-is-bottom!}
-  where
-   † : (x ≤[ poset-of-ba B ] ⊥[ B ]) holds
-   † = {!!}
+                 → (x : ⟪ B ⟫) → (η x ≤[ poset-of L ] 𝟎[ L ]) holds → x ＝ ⊥[ B ]
+embeddings-lemma B L η (ι , _ , (_ , ξ , _)) x p = ι x ⊥[ B ] †
+ where
+  † : η x ＝ η ⊥[ B ]
+  † = η x ＝⟨ only-𝟎-is-below-𝟎 L (η x) p ⟩ 𝟎[ L ] ＝⟨ ξ ⁻¹   ⟩ η ⊥[ B ] ∎
 
 \end{code}
 
@@ -258,7 +261,8 @@ extension-lemma : (B : BooleanAlgebra 𝓦 𝓥) (L L′ : Frame 𝓤 𝓦 𝓦)
                 → is-contr
                    (Σ h₀ ꞉ (⟨ L ⟩ → ⟨ L′ ⟩) ,
                     (is-a-frame-homomorphism L L′ h₀ holds) × (h ＝ h₀ ∘ η))
-extension-lemma {𝓦} {𝓤} B L L′ η e@(_ , _ , _ , _ , ♥₂) s γ h (♠₀ , ♠₁ , ♠₂ , ♠₃) = (h⁻ , φ , {!!}) , {!!}
+extension-lemma {𝓦} {𝓤} B L L′ η e@(_ , _ , _ , _ , ♥₂) s γ h (♠₀ , ♠₁ , ♠₂ , ♠₃) =
+ (h⁻ , φ , {!!}) , {!!}
  where
   ↓↓_ : ⟨ L ⟩ → Fam 𝓦 ⟨ L′ ⟩
   ↓↓ x = ⁅ h b ∣ (b , _) ∶ Σ b ꞉ ⟪ B ⟫ , (η b ≤[ poset-of L ] x) holds  ⁆
@@ -294,20 +298,18 @@ We first show that `h⁻` preserves the top element.
 
     † : (h⁻ 𝟎[ L ] ≤[ poset-of L′ ] 𝟎[ L′ ]) holds
     † = h⁻ 𝟎[ L ]              ＝⟨ refl ⟩ₚ
-        ⋁[ L′ ] (↓↓ 𝟎[ L ])    ≤⟨ ‡ ⟩
-        h ⊥[ B ]               ＝⟨ ♠₂ ⟩ₚ
+        ⋁[ L′ ] (↓↓ 𝟎[ L ])    ≤⟨ Ⅰ     ⟩
+        h ⊥[ B ]               ＝⟨ ♠₂   ⟩ₚ
         𝟎[ L′ ]                ■
          where
-          ‡ : (𝟎[ L′ ] is-an-upper-bound-of (↓↓ 𝟎[ L ])) holds
-          ‡ (b , q) = h b ≤⟨ {!!} ⟩ {!!} ■
-
           ♥ : η ⊥[ B ] ＝ 𝟎[ L ]
           ♥ = pr₁ (pr₂ (pr₂ (pr₂ e)))
 
           ※ : (h ⊥[ B ] is-an-upper-bound-of (↓↓ 𝟎[ L ])) holds
-          ※ (b , q) = h b ＝⟨ ap h {!q!} ⟩ₚ h ⊥[ B ] ■
+          ※ (b , q) = h b         ＝⟨ ap h (embeddings-lemma B L η e b q) ⟩ₚ
+                      h ⊥[ B ]    ■
 
-          ‡ = ⋁[ L′ ]-least (↓↓ 𝟎[ L ]) (h ⊥[ B ] , ※)
+          Ⅰ = ⋁[ L′ ]-least (↓↓ 𝟎[ L ]) (h ⊥[ B ] , ※)
 
 \end{code}
 
