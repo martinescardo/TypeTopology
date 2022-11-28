@@ -180,21 +180,24 @@ Added by Tom de Jong in August 2021.
 End of addition.
 
 \begin{code}
-{-
+
  not-Π-implies-∃-not : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
-                     → EM {!!}
-                     → EM {!!}
+                     → EM (𝓤 ⊔ 𝓥)
+                     → ((x : X) → is-prop (A x))
                      → ¬ ((x : X) → A x)
-                     → ∃ x ꞉ X , ¬ (A x)
- not-Π-implies-∃-not {𝓤} {𝓥} {X} {A} em em' f =
+                     → ∃ x ꞉ X , ¬ A x
+ not-Π-implies-∃-not {𝓤} {𝓥} {X} {A} em i f =
   Cases (em E ∃-is-prop)
    id
-   (λ (ν : ¬ E)
-         → 𝟘-elim (f (λ (x : X) → EM-gives-DNE em' (A x) {!
-         !} {!!})))
+   (λ (u : ¬ E)
+         → 𝟘-elim (f (λ (x : X) → EM-gives-DNE
+                                    (lower-EM 𝓤 em)
+                                    (A x)
+                                    (i x)
+                                    (λ (v : ¬ A x) → u ∣ x , v ∣))))
   where
-   E = ∃ x ꞉ X , ¬ (A x)
--}
+   E = ∃ x ꞉ X , ¬ A x
+
 \end{code}
 
 Added by Martin Escardo 26th April 2022.
