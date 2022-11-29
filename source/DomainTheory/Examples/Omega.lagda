@@ -23,7 +23,7 @@ module DomainTheory.Examples.Omega
         (𝓤 : Universe)
        where
 
-open import NotionsOfDecidability.DecidableAndDetachable
+open import NotionsOfDecidability.Decidable
 
 open import UF.Equiv
 open import UF.EquivalenceExamples
@@ -39,7 +39,6 @@ open import DomainTheory.Basics.Dcpo pt fe 𝓤
 open import DomainTheory.Basics.Miscelanea pt fe 𝓤
 open import DomainTheory.Basics.Pointed pt fe 𝓤
 open import DomainTheory.Basics.WayBelow pt fe 𝓤
-
 open import DomainTheory.BasesAndContinuity.Bases pt fe 𝓤
 open import DomainTheory.BasesAndContinuity.Continuity pt fe 𝓤
 

@@ -8,20 +8,20 @@ module Fin.ArgMinMax where
 
 open import UF.Subsingletons renaming (⊤Ω to ⊤)
 
-open import MLTT.Spartan
-open import MLTT.Plus-Properties
-open import MLTT.SpartanMLTT-List
 open import Fin.Embeddings
-open import Fin.Type
+open import Fin.Order
 open import Fin.Properties
+open import Fin.Topology
+open import Fin.Type
+open import MLTT.Plus-Properties
+open import MLTT.Spartan
+open import MLTT.SpartanMLTT-List
+open import Naturals.Order
 open import Notation.Order
+open import NotionsOfDecidability.Complemented
+open import TypeTopology.CompactTypes
 open import TypeTopology.DiscreteAndSeparated
 open import UF.Equiv
-open import NotionsOfDecidability.DecidableAndDetachable
-open import Fin.Topology
-open import TypeTopology.CompactTypes
-open import Naturals.Order
-open import Fin.Order
 
 \end{code}
 
@@ -31,7 +31,7 @@ greatest element.
 \begin{code}
 
 Fin-wf : {n : ℕ} (A : Fin n → 𝓤  ̇ ) (r₀ : Fin n)
-       → detachable A
+       → complemented A
        → A r₀
        → Σ r ꞉ Fin n , A r × ((s : Fin n) → A s → r ≤ s)
 Fin-wf {𝓤} {succ n} A 𝟎 d a = 𝟎 , a , λ s a' → ⟨⟩
@@ -59,7 +59,7 @@ Fin-wf {𝓤} {succ n} A (suc r₀) d a = γ
        (λ (ν : ¬ A 𝟎) → suc r , b , l ν)
 
 Fin-co-wf : {n : ℕ} (A : Fin n → 𝓤  ̇ ) (r₀ : Fin n)
-          → detachable A
+          → complemented A
           → A r₀
           → Σ r ꞉ Fin n , A r × ((s : Fin n) → A s → s ≤ r)
 Fin-co-wf {𝓤} {succ n} A 𝟎 d a = γ
@@ -119,7 +119,7 @@ compact-argmax {𝓤} {X} {n} p κ x₀ = II I
   a₀ : A (p x₀)
   a₀ = x₀ , refl
 
-  δ : detachable A
+  δ : complemented A
   δ r = κ (λ x → p x ＝ r) (λ x → Fin-is-discrete (p x) r)
 
   I : Σ r ꞉ Fin n , A r × ((s : Fin n) → A s → s ≤ r)
@@ -140,7 +140,7 @@ compact-argmin {𝓤} {X} {n} p κ x₀ = II I
   a₀ : A (p x₀)
   a₀ = x₀ , refl
 
-  δ : detachable A
+  δ : complemented A
   δ r = κ (λ x → p x ＝ r) (λ x → Fin-is-discrete (p x) r)
 
   I : Σ r ꞉ Fin n , A r × ((s : Fin n) → A s → r ≤ s)

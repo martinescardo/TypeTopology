@@ -65,8 +65,7 @@ module TypeTopology.TotallySeparated where
 
 open import MLTT.Spartan
 open import MLTT.Two-Properties
-
-open import NotionsOfDecidability.DecidableAndDetachable
+open import NotionsOfDecidability.Complemented
 open import TypeTopology.DiscreteAndSeparated hiding (tight)
 open import UF.Base
 open import UF.Subsingletons

@@ -17,7 +17,8 @@ open import TypeTopology.DiscreteAndSeparated
 open import UF.Equiv
 open import UF.PropTrunc
 open import UF.FunExt
-open import NotionsOfDecidability.DecidableAndDetachable
+open import NotionsOfDecidability.Decidable
+open import NotionsOfDecidability.Complemented
 open import UF.Subsingletons-FunExt
 open import Fin.Order
 
@@ -33,7 +34,7 @@ module _ (pt : propositional-truncations-exist) where
  open PropositionalTruncation pt
 
  Σ-min-from-∃ : FunExt → {n : ℕ} (A : Fin n → 𝓤 ̇ )
-             → detachable A
+             → complemented A
              → is-prop-valued-family A
              → ∃ A
              → Σ-min A
@@ -42,7 +43,7 @@ module _ (pt : propositional-truncations-exist) where
 
  Fin-Σ-from-∃' : FunExt
                → {n : ℕ} (A : Fin n → 𝓤 ̇ )
-               → detachable A
+               → complemented A
                → is-prop-valued-family A
                → ∃ A
                → Σ A
@@ -57,7 +58,7 @@ But the prop-valuedness of A is actually not needed, with more work:
 
  Fin-Σ-from-∃ : FunExt
               → {n : ℕ} (A : Fin n → 𝓤 ̇ )
-              → detachable A
+              → complemented A
               → ∃ A
               → Σ A
 
@@ -66,7 +67,7 @@ But the prop-valuedness of A is actually not needed, with more work:
    A' : Fin n → 𝓤 ̇
    A' x = ∥ A x ∥
 
-   δ' : detachable A'
+   δ' : complemented A'
    δ' x = d (δ x)
     where
      d : decidable (A x) → decidable (A' x)

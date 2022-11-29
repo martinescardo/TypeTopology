@@ -12,22 +12,21 @@ ordinals.
 
 module TypeTopology.SigmaDiscreteAndTotallySeparated where
 
-open import MLTT.Spartan
-
-open import TypeTopology.DiscreteAndSeparated
-open import Taboos.WLPO
 open import CoNaturals.GenericConvergentSequence
+open import MLTT.Spartan
+open import NotionsOfDecidability.Complemented
+open import Taboos.WLPO
 open import TypeTopology.CompactTypes
-open import TypeTopology.TotallySeparated
+open import TypeTopology.DiscreteAndSeparated
+open import TypeTopology.FailureOfTotalSeparatedness
 open import TypeTopology.GenericConvergentSequenceCompactness
 open import TypeTopology.PropTychonoff
-open import TypeTopology.FailureOfTotalSeparatedness
-
+open import TypeTopology.TotallySeparated
 open import UF.Base
-open import UF.Subsingletons renaming (⊤Ω to ⊤ ; ⊥Ω to ⊥)
-open import UF.FunExt
 open import UF.Equiv
+open import UF.FunExt
 open import UF.Miscelanea
+open import UF.Subsingletons renaming (⊤Ω to ⊤ ; ⊥Ω to ⊥)
 
 Σ-isolated : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {x : X} {y : Y x}
            → is-isolated x
@@ -129,7 +128,7 @@ Here we need a compactness assumption:
    A : (y' : Y x') → 𝓤 ⊔ 𝓥 ̇
    A y' = (x , y) ＝ (x' , y')
 
-   d : detachable A
+   d : complemented A
    d y' = i (x' , y')
 
    δ : decidable (Σ A)

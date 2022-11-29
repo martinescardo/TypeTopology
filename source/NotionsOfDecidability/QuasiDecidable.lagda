@@ -231,7 +231,7 @@ open import UF.Yoneda
 open import UF.Embeddings
 open import UF.Powerset
 
-open import NotionsOfDecidability.DecidableAndDetachable
+open import NotionsOfDecidability.Decidable
 open import Dominance.Definition
 
 \end{code}

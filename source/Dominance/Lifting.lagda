@@ -4,8 +4,8 @@ Martin Escardo, January 2018, May 2020
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import MLTT.Spartan
 open import Dominance.Definition
+open import MLTT.Spartan
 
 module Dominance.Lifting
         {𝓣 𝓚 : Universe}
