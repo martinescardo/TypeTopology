@@ -105,7 +105,10 @@ and condition D5' below is easier to check:
  𝟙-is-dominant (_ , (_ , (_ , (oisd , _)))) = oisd
 
  dominant-closed-under-Σ : (D : Dominance) → (P : 𝓣 ̇ ) (Q : P → 𝓣 ̇ )
-                         → is-dominant D P → ((p : P) → is-dominant D (Q p)) → is-dominant D (Σ Q)
+                         → is-dominant D P
+                         → ((p : P)
+                         → is-dominant D (Q p))
+                         → is-dominant D (Σ Q)
  dominant-closed-under-Σ (_ , (_ , (_ , (_ , cus)))) = cus
 
  being-dominance-is-prop : Fun-Ext → (d : 𝓣 ̇ → 𝓚 ̇ ) → is-prop (is-dominance d)
@@ -122,4 +125,4 @@ and condition D5' below is easier to check:
 \end{code}
 
 TODO. Define a dominance to be a function Ω → Ω and prove the
-equivalence with the above definition.
+equivalence with the above definition. But keep the above definition.
