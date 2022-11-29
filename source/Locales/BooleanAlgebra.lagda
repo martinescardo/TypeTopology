@@ -284,10 +284,15 @@ embeddings-lemma B L η (ι , _ , (_ , ξ , _)) x p = ι x ⊥[ B ] †
 
 \begin{code}
 
-is-generated-by : (L : Frame 𝓤 𝓥 𝓦) → (B : BooleanAlgebra 𝓤′ 𝓥′)
-                → (⟪ B ⟫ → ⟨ L ⟩) → Ω (𝓤 ⊔ 𝓦 ⁺ ⊔ 𝓤′)
+is-generated-by : (L : Frame 𝓤 𝓦 𝓦) → (B : BooleanAlgebra 𝓦 𝓥)
+                → (⟪ B ⟫ → ⟨ L ⟩) → Ω 𝓤
 is-generated-by {𝓦 = 𝓦} L B η =
- Ɐ x ∶ ⟨ L ⟩ , Ǝ W ∶ Fam 𝓦 ⟪ B ⟫ , x ＝ ⋁[ L ] ⁅ η w ∣ w ε W ⁆
+ Ɐ x ∶ ⟨ L ⟩ , x ＝[ σ ]＝ (⋁[ L ] ⁅ η b ∣ (b , _) ∶ (Σ b ꞉ ⟪ B ⟫ , η b ≤ x) ⁆)
+  where
+   σ : is-set ⟨ L ⟩
+   σ = carrier-of-[ poset-of L ]-is-set
+
+   _≤_ = λ x y → (x ≤[ poset-of L ] y) holds
 
 \end{code}
 
@@ -304,7 +309,7 @@ extension-lemma : (B : BooleanAlgebra 𝓦 𝓥) (L L′ : Frame 𝓤 𝓦 𝓦)
                    (Σ h₀ ꞉ (⟨ L ⟩ → ⟨ L′ ⟩) ,
                     (is-a-frame-homomorphism L L′ h₀ holds) × (h ＝ h₀ ∘ η))
 extension-lemma {𝓦} {𝓤} B L L′ η e@(_ , _ , _ , _ , ♥₂) s γ h μ@(♠₀ , ♠₁ , ♠₂ , ♠₃) =
- (h⁻ , φ , ψ) , {!!}
+ (h⁻ , φ , ψ) , ϑ
  where
   ↓↓_ : ⟨ L ⟩ → Fam 𝓦 ⟨ L′ ⟩
   ↓↓ x = ⁅ h b ∣ (b , _) ∶ Σ b ꞉ ⟪ B ⟫ , (η b ≤[ poset-of L ] x) holds  ⁆
@@ -506,5 +511,45 @@ The function `h⁻` also preserves meets.
 
     ψ₁ : h ∼ h⁻ ∘ η
     ψ₁ b = ≤-is-antisymmetric (poset-of L′) (χ b) (ϕ b)
+
+\end{code}
+
+The map `h⁻` is the _unique_ map making the diagram commute.
+
+\begin{code}
+
+  ϑ : is-central
+       (Σ h⁻₀ ꞉ (⟨ L ⟩ → ⟨ L′ ⟩) ,
+         is-a-frame-homomorphism L L′ h⁻₀ holds × (h ＝ h⁻₀ ∘ η) )
+       (h⁻ , (φ , ψ))
+  ϑ (h⁻₀ , φ′@(φ′₁ , φ′₂ , φ′₃) , ψ′) = to-subtype-＝ † (dfunext fe ϑ₁)
+   where
+    _≤L_ = λ x y → (x ≤[ poset-of L ] y) holds
+
+    † : (h′ : ⟨ L ⟩ → ⟨ L′ ⟩)
+      → is-prop (is-a-frame-homomorphism L L′ h′ holds × (h ＝ h′ ∘ η))
+    † h′ = ×-is-prop
+            (holds-is-prop (is-a-frame-homomorphism L L′ h′))
+            (Π-is-set fe λ _ → carrier-of-[ poset-of L′ ]-is-set)
+
+    ϑ₁ : (x : ⟨ L ⟩) → h⁻ x ＝ h⁻₀ x
+    ϑ₁ x =
+     h⁻ x                                                      ＝⟨ refl ⟩
+     ⋁[ L′ ] (↓↓ x)                                            ＝⟨ refl ⟩
+     ⋁[ L′ ] ⁅ h b ∣ (b , _) ∶ Σ b ꞉ ⟪ B ⟫ , η b ≤L x  ⁆       ＝⟨ Ⅰ    ⟩
+     ⋁[ L′ ] ⁅ h⁻₀ (η b) ∣ (b , _) ∶ Σ b ꞉ ⟪ B ⟫ , η b ≤L x  ⁆ ＝⟨ Ⅱ    ⟩
+     h⁻₀ (⋁[ L ] ⁅ η b ∣ (b , _) ∶ Σ b ꞉ ⟪ B ⟫ , η b ≤L x  ⁆)  ＝⟨ Ⅲ    ⟩
+     h⁻₀ x                                                     ∎
+      where
+       ψ′′ : (b : ⟪ B ⟫) → h b ＝ h⁻₀ (η b)
+       ψ′′ b = ap (λ - → - b) ψ′
+
+       Ⅰ = ap
+            (λ - → ⋁[ L′ ] (index (↓↓ x) , -))
+            (dfunext fe λ { (b , _) → ψ′′ b })
+
+       Ⅱ = ⋁[ L′ ]-unique _ _ (φ′₃ ⁅ η b ∣ (b , _) ∶ Σ b ꞉ ⟪ B ⟫ , η b ≤L x  ⁆) ⁻¹
+
+       Ⅲ = ap h⁻₀ (γ x ⁻¹ )
 
 \end{code}
