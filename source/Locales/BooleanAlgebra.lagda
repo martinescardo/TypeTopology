@@ -8,7 +8,7 @@ Ported from `ayberkt/formal-topology-in-UF`.
 
 \begin{code}[hide]
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline --experimental-lossy-unification #-}
 
 open import MLTT.Spartan hiding (𝟚)
 open import UF.Base
@@ -185,6 +185,27 @@ is-lattice-homomorphism {𝓤′} {𝓥′} {𝓤} {𝓥} B L η = β ∧ γ ∧
   ϵ : Ω (𝓤′ ⊔ 𝓤)
   ϵ = Ɐ x ∶ ⟪ B ⟫ , Ɐ y ∶ ⟪ B ⟫ , η (x ⋎[ B ] y) ＝[ iss ]＝ η x ∨[ L ] η y
 
+lattice-homomorphisms-are-monotonic : (B : BooleanAlgebra 𝓤′ 𝓥′) (L : Frame 𝓤 𝓥 𝓦)
+                                    → (h : ⟪ B ⟫ → ⟨ L ⟩)
+                                    → is-lattice-homomorphism B L h holds
+                                    → (x y : ⟪ B ⟫)
+                                    → (x ≤[ poset-of-ba B ] y) holds
+                                    → (h x ≤[ poset-of L ] h y) holds
+lattice-homomorphisms-are-monotonic B L h (β , γ , _) x y p =
+ h x ＝⟨ † ⁻¹ ⟩ₚ h x ∧[ L ] h y ≤⟨ ∧[ L ]-lower₂ (h x) (h y) ⟩ h y ■
+  where
+   open PosetReasoning (poset-of L)
+
+   ‡ : x ⋏[ B ] y ＝ x
+   ‡ = ≤-is-antisymmetric (poset-of-ba B)
+        (⋏[ B ]-is-lower₁ x y)
+        (⋏[ B ]-is-greatest (≤-is-reflexive (poset-of-ba B) x) p)
+
+   † : h x ∧[ L ] h y ＝ h x
+   † = h x ∧[ L ] h y      ＝⟨ γ x y ⁻¹  ⟩
+       h (x ⋏[ B ] y)      ＝⟨ ap h ‡    ⟩
+       h x                 ∎
+
 is-embedding : (B : BooleanAlgebra 𝓤′ 𝓥′) (L : Frame 𝓤 𝓥 𝓦) → (⟪ B ⟫ → ⟨ L ⟩) → Ω (𝓤′ ⊔ 𝓤)
 is-embedding {𝓤′} {𝓥′} {𝓤} {𝓥} {𝓦} B L η =
  ι ∧ is-lattice-homomorphism B L η
@@ -248,7 +269,7 @@ embedding-is-order-isomorphism B L η μ x y = † , ‡
       ※₂ = ⋏[ B ]-is-greatest (≤-is-reflexive (poset-of-ba B) x) p
 
   ‡ : (η x ≤[ poset-of L ] η y ⇒ x ≤[ poset-of-ba B ] y) holds
-  ‡ = {!!}
+  ‡ p = {!!}
 
 embeddings-lemma : (B : BooleanAlgebra 𝓤′ 𝓥′) (L : Frame 𝓤 𝓥 𝓦)
                  → (η : ⟪ B ⟫ → ⟨ L ⟩)
@@ -282,7 +303,7 @@ extension-lemma : (B : BooleanAlgebra 𝓦 𝓥) (L L′ : Frame 𝓤 𝓦 𝓦)
                 → is-contr
                    (Σ h₀ ꞉ (⟨ L ⟩ → ⟨ L′ ⟩) ,
                     (is-a-frame-homomorphism L L′ h₀ holds) × (h ＝ h₀ ∘ η))
-extension-lemma {𝓦} {𝓤} B L L′ η e@(_ , _ , _ , _ , ♥₂) s γ h (♠₀ , ♠₁ , ♠₂ , ♠₃) =
+extension-lemma {𝓦} {𝓤} B L L′ η e@(_ , _ , _ , _ , ♥₂) s γ h μ@(♠₀ , ♠₁ , ♠₂ , ♠₃) =
  (h⁻ , φ , ψ) , {!!}
  where
   ↓↓_ : ⟨ L ⟩ → Fam 𝓦 ⟨ L′ ⟩
@@ -478,7 +499,10 @@ The function `h⁻` also preserves meets.
     ϕ b = ⋁[ L′ ]-least (↓↓ (η b)) (h b , ϕ₁)
      where
       ϕ₁ : (h b is-an-upper-bound-of (↓↓ η b)) holds
-      ϕ₁ (bᵢ , p) = {!!}
+      ϕ₁ (bᵢ , p) = lattice-homomorphisms-are-monotonic B L′ h μ bᵢ b ϕ₂
+       where
+        ϕ₂ : (bᵢ ≤[ poset-of-ba B ] b) holds
+        ϕ₂ = pr₂ (embedding-is-order-isomorphism B L η e bᵢ b) p
 
     ψ₁ : h ∼ h⁻ ∘ η
     ψ₁ b = ≤-is-antisymmetric (poset-of L′) (χ b) (ϕ b)
