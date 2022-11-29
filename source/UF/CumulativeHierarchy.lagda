@@ -614,4 +614,63 @@ a 𝓤-small membership relation.
    𝕍-is-locally-small : is-locally-small 𝕍
    𝕍-is-locally-small x y = (x ＝⁻ y) , ＝⁻-≃-＝
 
+{-
+   ＝⁻-is-transitive : {x y z : 𝕍} → x ＝⁻ y → y ＝⁻ z → x ＝⁻ z
+   ＝⁻-is-transitive {x} {y} {z} u v = ＝-to-＝⁻ (＝⁻-to-＝ u ∙ ＝⁻-to-＝ v)
+-}
+
+\end{code}
+
+\begin{code}
+
+  _∈⁻[Ω]_ : 𝕍 → 𝕍 → Ω 𝓤
+  _∈⁻[Ω]_ x = 𝕍-prop-simple-recursion
+               (λ {A} f → (∃ a ꞉ A , f a ＝⁻ x) , ∃-is-prop) e
+   where
+    e : {A B : 𝓤 ̇ } (f : A → 𝕍) (g : B → 𝕍)
+      → f ≲ g → (∃ a ꞉ A , f a ＝⁻ x) → (∃ b ꞉ B , g b ＝⁻ x)
+    e {A} {B} f g s =
+     ∥∥-rec ∃-is-prop
+            (λ (a , p) → ∥∥-functor (λ (b , q)
+                                       → b , ＝-to-＝⁻ (q ∙ ＝⁻-to-＝ p))
+                                    (s a))
+
+  _∈⁻_ : 𝕍 → 𝕍 → 𝓤  ̇
+  x ∈⁻ y = (x ∈⁻[Ω] y) holds
+
+  ∈⁻-for-𝕍-sets : (x : 𝕍) {A : 𝓤 ̇ } (f : A → 𝕍)
+                → (x ∈⁻ 𝕍-set f) ＝ (∃ a ꞉ A , f a ＝⁻ x)
+  ∈⁻-for-𝕍-sets x f = ap pr₁ (𝕍-prop-simple-recursion-computes _ _ f)
+
+  ∈⁻-is-prop-valued : {x y : 𝕍} → is-prop (x ∈⁻ y)
+  ∈⁻-is-prop-valued {x} {y} = holds-is-prop (x ∈⁻[Ω] y)
+
+  -- TO DO: Move this (and its symmetric cousin) somewhere
+  open import UF.Equiv-FunExt
+  ≃-is-prop : {X : 𝓥 ̇ } {Y : 𝓦 ̇ } → is-prop Y → is-prop (X ≃ Y)
+  ≃-is-prop i (f , e) (f' , e') =
+   to-subtype-＝ (being-equiv-is-prop (λ _ _ → fe))
+                 (dfunext fe (λ x → i (f x) (f' x)))
+
+  open import UF.EquivalenceExamples
+  ∈⁻-≃-∈ : {x y : 𝕍} → x ∈⁻ y ≃ x ∈ y
+  ∈⁻-≃-∈ {x} {y} =
+   𝕍-prop-simple-induction _ (λ _ → ≃-is-prop ∈-is-prop-valued) h y
+    where
+     h : {A : 𝓤 ̇ } (f : A → 𝕍) → (x ∈⁻ 𝕍-set f) ≃ (x ∈ 𝕍-set f)
+     h {A} f = x ∈⁻ 𝕍-set f          ≃⟨ ⦅1⦆ ⟩
+               (∃ a ꞉ A , f a ＝⁻ x) ≃⟨ ⦅2⦆ ⟩
+               (∃ a ꞉ A , f a ＝ x)  ≃⟨ ⦅3⦆ ⟩
+               x ∈ 𝕍-set f ■
+      where
+       ⦅1⦆ = idtoeq _ _ (∈⁻-for-𝕍-sets x f)
+       ⦅2⦆ = ∃-cong pt (λ a → ＝⁻-≃-＝)
+       ⦅3⦆ = idtoeq _ _ ((∈-for-𝕍-sets x f) ⁻¹)
+
+  ∈⁻-to-∈ : {x y : 𝕍} → x ∈⁻ y → x ∈ y
+  ∈⁻-to-∈ {x} {y} = ⌜ ∈⁻-≃-∈ ⌝
+
+  ∈-to-∈⁻ : {x y : 𝕍} → x ∈ y → x ∈⁻ y
+  ∈-to-∈⁻ {x} {y} = ⌜ ∈⁻-≃-∈ ⌝⁻¹
+
 \end{code}
