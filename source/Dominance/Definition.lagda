@@ -22,7 +22,7 @@ open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.FunExt
 
-module Various.Dominance where
+module Dominance.Definition where
 
 module _ {𝓣 𝓚 : Universe} where
 
@@ -121,91 +121,5 @@ and condition D5' below is easier to check:
 
 \end{code}
 
-Example: the decidable propositions form a dominance.
-
-\begin{code}
-
-module DecidableDominance where
-
- open import NotionsOfDecidability.DecidableAndDetachable
-
- decidable-dominance : Fun-Ext → Dominance {𝓤} {𝓤}
- decidable-dominance fe = (λ P → is-prop P × decidable P) ,
-                          (λ P → Σ-is-prop
-                                    (being-prop-is-prop fe)
-                                    (decidability-of-prop-is-prop fe)) ,
-                          (λ X → pr₁) ,
-                          (𝟙-is-prop , inl ⋆) ,
-                          λ P Q dP dQ → Σ-is-prop (pr₁ dP) (λ p → pr₁ (dQ p)) ,
-                                         decidable-closed-under-Σ (pr₁ dP) (pr₂ dP) λ p → pr₂ (dQ p)
-
-module lift
-        {𝓣 𝓚 : Universe}
-        (d : 𝓣 ̇ → 𝓚 ̇ )
-        (isd : is-dominance d)
-       where
-
- D : Dominance
- D = (d , isd)
-
- L : ∀ {𝓥} (X : 𝓥 ̇ ) → 𝓣 ⁺ ⊔ 𝓚 ⊔ 𝓥 ̇
- L X = Σ P ꞉ 𝓣 ̇ , d P × (P → X)
-
- LL : ∀ {𝓥} (X : 𝓥 ̇ ) → 𝓣 ⁺ ⊔ 𝓚 ⊔ 𝓥 ̇
- LL X = L (L X)
-
- _⇀_ : ∀ {𝓥 𝓦} → 𝓥 ̇ → 𝓦 ̇ → 𝓣 ⁺ ⊔ 𝓚 ⊔ 𝓥 ⊔ 𝓦 ̇
- X ⇀ Y = X → L Y
-
- isDefined : ∀ {𝓥} {X : 𝓥 ̇ } → L X → 𝓣 ̇
- isDefined (P , (isdp , φ)) = P
-
- is-dominantisDefined : ∀ {𝓥} {X : 𝓥 ̇ } → (x̃ : L X) → is-dominant D (isDefined x̃)
- is-dominantisDefined (P , (isdp , φ)) = isdp
-
- value : ∀ {𝓥} {X : 𝓥 ̇ } → (x̃ : L X) → isDefined x̃ → X
- value (P , (isdp , φ)) = φ
-
- η : ∀ {𝓥} {X : 𝓥 ̇ } → X → L X
- η x = 𝟙 , 𝟙-is-dominant D , λ _ → x
-
- extension : ∀ {𝓥 𝓦} {X : 𝓥 ̇ } {Y : 𝓦 ̇ } → (X ⇀ Y) → (L X → L Y)
- extension {𝓥} {𝓦} {X} {Y} f (P , (isdp , φ)) = (Q , (isdq , γ))
-  where
-   Q : 𝓣 ̇
-   Q = Σ p ꞉ P , isDefined (f (φ p))
-
-   isdq : is-dominant D Q
-   isdq = dominant-closed-under-Σ D
-            P
-            (λ p → isDefined (f (φ p)))
-            isdp
-            (λ p → is-dominantisDefined (f (φ p)))
-
-   γ : Q → Y
-   γ (p , def) = value (f (φ p)) def
-
- _♯ : ∀ {𝓥 𝓦} {X : 𝓥 ̇ } {Y : 𝓦 ̇ } → (X ⇀ Y) → (L X → L Y)
- f ♯ = extension f
-
- _◌_ : ∀ {𝓥 𝓦 𝓣} {X : 𝓥 ̇ } {Y : 𝓦 ̇ } {Z : 𝓣 ̇ }
-     → (Y ⇀ Z) → (X ⇀ Y) → (X ⇀ Z)
- g ◌ f = g ♯ ∘ f
-
- μ : ∀ {𝓥} {X : 𝓥 ̇ } → L (L X) → L X
- μ = extension id
-
- {- TODO:
- kleisli-law₀ : ∀ {𝓥} {X : 𝓥 ̇ } → extension (η {𝓥} {X}) ∼ id
- kleisli-law₀ {𝓥} {X} (P , (isdp , φ)) = {!!}
-
- kleisli-law₁ : ∀ {𝓥 𝓦)} {X : 𝓥 ̇ } {Y : 𝓦 ̇ } (f : X ⇀ Y) → extension f ∘ η ∼ f
- kleisli-law₁ {𝓥} {𝓦} {X} {Y} f x = {!!}
-
-
- kleisli-law₂ : ∀ {𝓥 𝓦) T} {X : 𝓥 ̇ } {Y : 𝓦 ̇ } {Z : 𝓣 ̇ } (f : X ⇀ Y) (g : Y ⇀ Z)
-              → (g ♯ ∘ f)♯ ∼ g ♯ ∘ f ♯
- kleisli-law₂ {𝓥} {𝓦} {𝓣} {X} {Y} {Z} f g (P , (isdp , φ)) = {!!}
- -}
-
-\end{code}
+TODO. Define a dominance to be a function Ω → Ω and prove the
+equivalence with the above definition.

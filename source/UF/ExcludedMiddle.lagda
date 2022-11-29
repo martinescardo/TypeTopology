@@ -119,14 +119,6 @@ fe-and-em-give-propositional-truncations fe em =
   ∥∥-rec       = λ i u φ → EM-gives-DNE em _ i (¬¬-functor u φ)
   }
 
-\end{code}
-
-Old, bad name for the above (TODO: get rid of it):
-
-\begin{code}
-
-fem-proptrunc = fe-and-em-give-propositional-truncations
-
 module _ (pt : propositional-truncations-exist) where
 
  open PropositionalTruncation pt

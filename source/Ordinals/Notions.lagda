@@ -376,35 +376,15 @@ no-minimal-is-empty' w A s = no-minimal-is-empty w A (λ x a → ¬¬-intro (s x
 
 \end{code}
 
+
+\end{code}
+
 The emptiness of the empty set doesn't play any special role in the
 above argument, and can be replaced by any type - would that be
 useful?
 
 The remainder of this file is not needed anywhere else (at least at
 the time of writing, namely 11th January 2021).
-
-\begin{code}
-
-{-
-module _ (pt : propositional-truncations-exist) where
-
- open PropositionalTruncation pt
-
- inhabited-subset-has-least-element : is-well-founded
-                                    → ∀ {𝓦} (A : X → 𝓦 ̇ )
-                                    → ∃ A
-                                    → ∃ x ꞉ X , A x × ((y : X) → A y → x ≼ y)
- inhabited-subset-has-least-element w A s = {!!}
-  where
-   I : is-nonempty (Σ A)
-   I e = ∥∥-rec 𝟘-is-prop e s
-
-   II : ¬ ((x : X) → A x → Σ y ꞉ X , (y < x) × A y)
-   II = contrapositive (no-minimal-is-empty' w A) I
--}
-
-\end{code}
-
 
 \begin{code}
 
@@ -675,7 +655,7 @@ module _
        where
  private
    pt : propositional-truncations-exist
-   pt = (fem-proptrunc (λ 𝓤 𝓥 → f-e {𝓤} {𝓥}) em)
+   pt = (fe-and-em-give-propositional-truncations (λ 𝓤 𝓥 → f-e {𝓤} {𝓥}) em)
 
    fe : FunExt
    fe 𝓤 𝓥 = f-e
@@ -844,7 +824,8 @@ module _
        where
 
  open import UF.PropTrunc
- open PropositionalTruncation (fem-proptrunc (λ 𝓤 𝓥 → fe {𝓤} {𝓥}) em)
+ open PropositionalTruncation (fe-and-em-give-propositional-truncations
+                                 (λ 𝓤 𝓥 → fe {𝓤} {𝓥}) em)
 
  nonempty-has-minimal : is-well-order
                       → (A : X → 𝓦 ̇ )
