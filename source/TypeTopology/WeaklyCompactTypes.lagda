@@ -84,7 +84,7 @@ LPO with WLPO.
    where
     g : ((x : X) → p x ＝ ₁) → ¬ (Σ x ꞉ X , p x ＝ ₀)
     g α (x , r) = zero-is-not-one (r ⁻¹ ∙ α x)
-  f (inr u) = inl (not-exists₀-implies-forall₁ pt p u)
+  f (inr u) = inl (not-exists₀-implies-forall₁ p u)
 
 empty-types-are-∃-compact : {X : 𝓤 ̇ } → is-empty X → ∃-compact X
 empty-types-are-∃-compact u p = inr (∥∥-rec 𝟘-is-prop λ σ → u (pr₁ σ))
@@ -104,7 +104,7 @@ compact-types-are-∃-compact {𝓤} {X} φ p = g (φ p)
  where
   g : ((Σ x ꞉ X , p x ＝ ₀) + ((x : X) → p x ＝ ₁)) → decidable (∃ x ꞉ X , p x ＝ ₀)
   g (inl (x , r)) = inl ∣ x , r ∣
-  g (inr α)       = inr (forall₁-implies-not-exists₀ pt p α)
+  g (inr α)       = inr (forall₁-implies-not-exists₀ p α)
 
 ∥Compact∥-types-are-∃-compact : {X : 𝓤 ̇ } → ∥ Compact X ∥ → ∃-compact X
 ∥Compact∥-types-are-∃-compact {𝓤} {X} = ∥∥-rec ∃-compactness-is-prop
@@ -797,7 +797,7 @@ inhabited-and-compact-gives-∃-compact∙ {𝓤} {X} (t , c) p = γ
      where
       h : (Σ x ꞉ X , p x ＝ ₀) → Σ x₀ ꞉ X , (p x₀ ＝ ₁ → (x : X) → p x ＝ ₁)
       h (x , r) = x , λ s _ → 𝟘-elim (zero-is-not-one (r ⁻¹ ∙ s))
-    g (inr _) (inr v) = ∣ x₀ , (λ _ → not-exists₀-implies-forall₁ pt p v) ∣
+    g (inr _) (inr v) = ∣ x₀ , (λ _ → not-exists₀-implies-forall₁ p v) ∣
 
   γ : ∃ x₀ ꞉ X , (p x₀ ＝ ₁ → (x : X) → p x ＝ ₁)
   γ = ∥∥-rec ∥∥-is-prop f t

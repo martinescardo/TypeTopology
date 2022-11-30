@@ -203,7 +203,7 @@ types and all decidable propositions.
   ϕ : ℕ → 𝟚
   ϕ _ = ₀
   ϕ-is-not-₁-anywhere : ¬ (∃ n ꞉ ℕ , ϕ n ＝ ₁)
-  ϕ-is-not-₁-anywhere = forall₀-implies-not-exists₁ pt ϕ (λ _ → refl)
+  ϕ-is-not-₁-anywhere = forall₀-implies-not-exists₁ ϕ (λ _ → refl)
   e : 𝟘 ≃ (∃ n ꞉ ℕ , ϕ n ＝ ₁)
   e = ≃-sym (lr-implication negations-are-equiv-to-𝟘 ϕ-is-not-₁-anywhere)
 
