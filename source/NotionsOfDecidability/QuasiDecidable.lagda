@@ -1507,7 +1507,7 @@ following renaming is annoying.
     forget : (g : A → B)
            → is-σ-frame-hom  𝓐-qua-σ-frame 𝓑              g
            → is-σ-suplat-hom 𝓐             𝓑-qua-σ-suplat g
-    forget g (i , ii , iii , vi) = (iii , vi)
+    forget g (i , ii , iii , iv) = (iii , iv)
 
     f-uniqueness : (g : A → B) → is-σ-frame-hom 𝓐-qua-σ-frame 𝓑 g → f ＝ g
     f-uniqueness g g-is-hom' = at-most-one-hom 𝓑-qua-σ-suplat ⊤' f g
