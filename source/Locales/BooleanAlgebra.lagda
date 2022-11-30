@@ -225,6 +225,12 @@ embedding-preserves-meets : (B : BooleanAlgebra 𝓤′ 𝓥′) (L : Frame 𝓤
                           → (x y : ⟪ B ⟫) → η (x ⋏[ B ] y) ＝ η x ∧[ L ] η y
 embedding-preserves-meets B L η (_ , (_ , ξ , _)) = ξ
 
+embedding-injective : (B : BooleanAlgebra 𝓤′ 𝓥′) (L : Frame 𝓤 𝓥 𝓦)
+                    → (η : ⟪ B ⟫ → ⟨ L ⟩)
+                    → is-embedding B L η holds
+                    → (x y : ⟪ B ⟫) → η x ＝ η y → x ＝ y
+embedding-injective B L η (ι , _) = ι
+
 is-spectral′ : (B : BooleanAlgebra 𝓤′ 𝓥′) (L : Frame 𝓤 𝓥 𝓦)
             → (f : ⟪ B ⟫ → ⟨ L ⟩) → Ω (𝓤′ ⊔ 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
 is-spectral′ B L f = Ɐ x ∶ ⟪ B ⟫ , is-compact-open L (f x)
@@ -248,8 +254,6 @@ embedding-is-order-isomorphism : (B : BooleanAlgebra 𝓤′ 𝓥′) (L : Frame
                                ↔ η x ≤[ poset-of L ] η y) holds
 embedding-is-order-isomorphism B L η μ x y = † , ‡
  where
-  open PosetReasoning (poset-of L)
-
   η-meet-preserving : (x y : ⟪ B ⟫) → η (x ⋏[ B ] y) ＝ η x ∧[ L ] η y
   η-meet-preserving = embedding-preserves-meets B L η μ
 
@@ -259,6 +263,8 @@ embedding-is-order-isomorphism B L η μ x y = † , ‡
         η x ∧[ L ] η y   ≤⟨ ∧[ L ]-lower₂ (η x) (η y) ⟩
         η y              ■
    where
+    open PosetReasoning (poset-of L)
+
     ※ : x ⋏[ B ] y ＝ x
     ※ = ≤-is-antisymmetric (poset-of-ba B) ※₁ ※₂
      where
@@ -269,7 +275,17 @@ embedding-is-order-isomorphism B L η μ x y = † , ‡
       ※₂ = ⋏[ B ]-is-greatest (≤-is-reflexive (poset-of-ba B) x) p
 
   ‡ : (η x ≤[ poset-of L ] η y ⇒ x ≤[ poset-of-ba B ] y) holds
-  ‡ p = {!!}
+  ‡ p = x ＝⟨ ♠ ⁻¹ ⟩ₚ x ⋏[ B ] y ≤⟨ ⋏[ B ]-is-lower₂ x y ⟩ y ■
+   where
+    open PosetReasoning (poset-of-ba B)
+
+    ♥ : η (x ⋏[ B ] y) ＝ η x
+    ♥ = η (x ⋏[ B ] y)     ＝⟨ embedding-preserves-meets B L η μ x y ⟩
+        η x ∧[ L ] η y     ＝⟨ connecting-lemma₁ L p ⁻¹              ⟩
+        η x                ∎
+
+    ♠ : x ⋏[ B ] y ＝ x
+    ♠ = embedding-injective B L η μ (x ⋏[ B ] y) x ♥
 
 embeddings-lemma : (B : BooleanAlgebra 𝓤′ 𝓥′) (L : Frame 𝓤 𝓥 𝓦)
                  → (η : ⟪ B ⟫ → ⟨ L ⟩)
