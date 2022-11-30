@@ -39,7 +39,7 @@ module
  is-defined : ∀ {𝓥} {X : 𝓥 ̇} → L X → 𝓣 ̇
  is-defined (P , (ϕ , isdp)) = P
 
- is-dominant-is-defined : ∀ {𝓥} {X : 𝓥 ̇ } → (x̃ : L X) → is-dominant D (is-defined x̃)
+ is-dominant-is-defined : ∀ {𝓥} {X : 𝓥 ̇} → (x̃ : L X) → is-dominant D (is-defined x̃)
  is-dominant-is-defined (P , (ϕ , isdp)) = isdp
 
  value : ∀ {𝓥} {X : 𝓥 ̇} → (x̃ : L X) → is-defined x̃ → X
@@ -149,18 +149,18 @@ module
    γ : Q → Y
    γ (p , def) = value (f (φ p)) def
 
- _♯ : ∀ {𝓥 𝓦} {X : 𝓥 ̇ } {Y : 𝓦 ̇ } → (X ⇀ Y) → (L X → L Y)
+ _♯ : ∀ {𝓥 𝓦} {X : 𝓥 ̇} {Y : 𝓦 ̇} → (X ⇀ Y) → (L X → L Y)
  f ♯ = extension f
 
  _◌_
-  : ∀ {𝓥 𝓦 𝓣} {X : 𝓥 ̇ } {Y : 𝓦 ̇ } {Z : 𝓣 ̇ }
+  : ∀ {𝓥 𝓦 𝓣} {X : 𝓥 ̇} {Y : 𝓦 ̇} {Z : 𝓣 ̇}
   → (Y ⇀ Z) → (X ⇀ Y) → (X ⇀ Z)
  g ◌ f = g ♯ ∘ f
 
  LL : {𝓥 : _} (X : 𝓥 ̇) → 𝓣 ⁺ ⊔ 𝓚 ⊔ 𝓥 ̇
  LL X = L (L X)
 
- μ : ∀ {𝓥} {X : 𝓥 ̇ } → LL X → L X
+ μ : ∀ {𝓥} {X : 𝓥 ̇} → LL X → L X
  μ = extension id
 
  module _ {𝓥} (𝓣𝓥-fe : funext 𝓣 𝓥) where
