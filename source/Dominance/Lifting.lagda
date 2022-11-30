@@ -89,7 +89,7 @@ module
   ＝-to-L-≅ : (𝓣𝓥-fe : funext 𝓣 𝓥) → (u v : L X) → (u ＝ v) ≃ L-≅ u v
   ＝-to-L-≅ 𝓣𝓥-fe u v =
    (u ＝ v) ≃⟨ step1 u v ⟩
-   Fam-≅ (P , value u) (is-defined v , value v) ≃⟨ step2 ⟩
+   Fam-≅ (P , value u) (Q , value v) ≃⟨ step2 ⟩
    (Σ f ꞉ (P → Q) , (Q → P) × value u ∼ value v ∘ f) ≃⟨ ≃-sym Σ-assoc ⟩
    L-≅ u v ■
    where
