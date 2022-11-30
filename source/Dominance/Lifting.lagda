@@ -92,19 +92,15 @@ module
    ＝-to-≅ : (u v : L X) → (u ＝ v) ≃ (u ≅ v)
    ＝-to-≅ u v =
     (u ＝ v) ≃⟨ step1 u v ⟩
-    fam-≅ (P , value u) (Q , value v) ≃⟨ step2 ⟩
-    (Σ f ꞉ (P → Q) , (Q → P) × value u ∼ value v ∘ f) ≃⟨ ≃-sym Σ-assoc-equiv ⟩
+    fam-≅ (u ↓ , value u) (v ↓ , value v) ≃⟨ step2 ⟩
+    (Σ f ꞉ (u ↓ → v ↓) , (v ↓ → u ↓) × value u ∼ value v ∘ f) ≃⟨ ≃-sym Σ-assoc-equiv ⟩
     u ≅ v ■
 
     where
      open sip-with-axioms
 
-     P = u ↓
-     Q = v ↓
-
-     P-is-prop = dominant-types-are-props D P (↓-is-dominant u)
-     Q-is-prop = dominant-types-are-props D Q (↓-is-dominant v)
-
+     u↓-is-prop = dominant-types-are-props D (u ↓) (↓-is-dominant u)
+     v↓-is-prop = dominant-types-are-props D (v ↓) (↓-is-dominant v)
      𝓣-fe = univalence-gives-funext 𝓣-ua
 
      step1 =
@@ -115,16 +111,16 @@ module
 
      step2 =
       PairFun.pair-fun-equiv
-       (≃-refl (P → Q))
+       (≃-refl (u ↓ → v ↓))
        (λ f →
         PairFun.pair-fun-equiv
          (logically-equivalent-props-are-equivalent
           (being-equiv-is-prop' 𝓣-fe 𝓣-fe 𝓣-fe 𝓣-fe f)
-          (Π-is-prop 𝓣-fe (λ _ → P-is-prop))
+          (Π-is-prop 𝓣-fe (λ _ → u↓-is-prop))
           (inverse f)
           (logically-equivalent-props-give-is-equiv
-           P-is-prop
-           Q-is-prop
+           u↓-is-prop
+           v↓-is-prop
            f))
          (λ _ → ≃-funext 𝓣𝓥-fe (value u) (value v ∘ f)))
 
