@@ -726,26 +726,93 @@ Future work
     acc : (a : A) → is-accessible _≺_ [ a ]
     acc a = acc' (f a) a refl
 
-  A/~ᵒʳᵈ : is-set-theoretic-ordinal (𝕍-set f) → Ordinal (𝓤 ⁺)
-  A/~ᵒʳᵈ σ = A/~ , _≺_
-           , ≺-is-prop-valued
-           , ≺-is-well-founded
-           , ≺-is-extensional (transitive-set-if-set-theoretic-ordinal σ)
-           , ≺-is-transitive σ
+  module construct-ordinal-as-quotient
+          (σ : is-set-theoretic-ordinal (𝕍-set f))
+         where
 
-  {-
+   A/~ᵒʳᵈ : Ordinal (𝓤 ⁺)
+   A/~ᵒʳᵈ = A/~ , _≺_
+                , ≺-is-prop-valued
+                , ≺-is-well-founded
+                , ≺-is-extensional (transitive-set-if-set-theoretic-ordinal σ)
+                , ≺-is-transitive σ
+
+\end{code}
+
+Now we show that A/~ is equivalent to a type in 𝓤 which then gives us an ordinal
+in 𝓤 equivalent to A/~ᵒʳᵈ.
+
+\begin{code}
+
+  _~⁻_ : A → A → 𝓤 ̇
+  a ~⁻ b = f a ＝⁻ f b
+
+  ~⁻EqRel : EqRel A
+  ~⁻EqRel = _~⁻_ , (λ a b → ＝⁻-is-prop-valued)
+                 , (λ a → ＝⁻-is-reflexive)
+                 , (λ a b → ＝⁻-is-symmetric)
+                 , (λ a b c → ＝⁻-is-transitive)
+
+  A/~⁻ : 𝓤 ̇
+  A/~⁻ = A / ~⁻EqRel
+
+  A/~-≃-A/~⁻ : A/~ ≃ A/~⁻
+  A/~-≃-A/~⁻ = quotients-equivalent A ~EqRel ~⁻EqRel (＝-to-＝⁻ , ＝⁻-to-＝)
+
+  open import UF.Size -- TO DO: Move imports
+  open import Ordinals.WellOrderTransport (λ _ _ → fe)
+
+  ≺-has-small-values : (x y : A/~) → is-small (x ≺ y)
+  ≺-has-small-values =
+   /-induction₂ fe ~EqRel
+                (λ x y → being-small-is-prop ua (x ≺ y) 𝓤)
+                (λ a b → (f a ∈⁻ f b)
+                       , ((f a ∈⁻ f b)    ≃⟨ ∈⁻-≃-∈ ⟩
+                          (f a ∈ f b)     ≃⟨ idtoeq _ _ (≺-＝-∈ ⁻¹) ⟩
+                          ([ a ] ≺ [ b ]) ■))
+
+  _≺⁻_ : A/~ → A/~ → 𝓤 ̇
+  x ≺⁻ y = pr₁ (≺-has-small-values x y)
+
+  ≺-≃-≺⁻ : {x y : A/~} → x ≺ y ≃ x ≺⁻ y
+  ≺-≃-≺⁻ {x} {y} = ≃-sym (pr₂ (≺-has-small-values x y))
+
+  module _
+          (σ : is-set-theoretic-ordinal (𝕍-set f))
+         where
+
+   open construct-ordinal-as-quotient σ
+
+   private
+    resize-ordinal : Σ s ꞉ OrdinalStructure A/~⁻ , (A/~⁻ , s) ≃ₒ A/~ᵒʳᵈ
+    resize-ordinal = transfer-structure A/~⁻ A/~ᵒʳᵈ (≃-sym A/~-≃-A/~⁻)
+                      (_≺⁻_ , (λ x y → ≺-≃-≺⁻))
+
+   A/~⁻ᵒʳᵈ : Ordinal 𝓤
+   A/~⁻ᵒʳᵈ = A/~⁻ , pr₁ resize-ordinal
+
+   A/~⁻ᵒʳᵈ-≃ₒ-A/~ᵒʳᵈ : A/~⁻ᵒʳᵈ ≃ₒ A/~ᵒʳᵈ
+   A/~⁻ᵒʳᵈ-≃ₒ-A/~ᵒʳᵈ = pr₂ resize-ordinal
+
+   A/~ᵒʳᵈ--≃ₒ-A/~⁻ᵒʳᵈ : A/~ᵒʳᵈ ≃ₒ A/~⁻ᵒʳᵈ
+   A/~ᵒʳᵈ--≃ₒ-A/~⁻ᵒʳᵈ = ≃ₒ-sym A/~⁻ᵒʳᵈ A/~ᵒʳᵈ A/~⁻ᵒʳᵈ-≃ₒ-A/~ᵒʳᵈ
+
+   [_]⁻ : A → A/~⁻
+   [_]⁻ = ⌜ A/~-≃-A/~⁻ ⌝ ∘ [_]
+
+\end{code}
+
     PROOF OUTLINE (TODO: FINISH)
     We prove that A/~ is the supremum defined above by showing that
       Ord-to-𝕍 (A/~ᵒʳᵈ) ＝ 𝕍-set f.
     This boils down to proving
-      (a : A) → f a ＝ Ord-to-𝕍 (A/~ ↓ [ a ])
+      (a : A) → f a ＝ Ord-to-𝕍 (A/~ ↓ [ a ]) (module size issues)
     which we "Yoneda-fy" in the following lemma (which needs renaming) so that
     it allows for a quick proof by ∈-induction.
 
-  key-lemma : {!!} --   is-transitive-set (𝕍-set f)
-                    -- → (x : 𝕍) (a : A) → x ＝ f a ⇔ x ＝ Ord-to-𝕍 (A/~ᵒʳᵈ ↓ [ a ])
-                    -- This does not typecheck for size reasons.
-  key-lemma = {!!}
-  -}
+\begin{code}
+
+   key-lemma : (x : 𝕍) (a : A) → x ＝ f a ⇔ x ＝ Ord-to-𝕍 (A/~⁻ᵒʳᵈ ↓ [ a ]⁻)
+   key-lemma = {!!}
 
 \end{code}
