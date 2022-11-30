@@ -27,49 +27,46 @@ module
  D : Dominance
  D = (d , isd)
 
+ module _ {𝓥} where
+  L : (X : 𝓥 ̇) → 𝓣 ⁺ ⊔ 𝓚 ⊔ 𝓥 ̇
+  L X = Σ P ꞉ 𝓣 ̇ , (P → X) × d P
 
- L : {𝓥 : _} (X : 𝓥 ̇) → 𝓣 ⁺ ⊔ 𝓚 ⊔ 𝓥 ̇
- L X = Σ P ꞉ 𝓣 ̇ , (P → X) × d P
+  is-defined : {X : 𝓥 ̇} → L X → 𝓣 ̇
+  is-defined (P , (ϕ , dP)) = P
 
- _⇀_ : ∀ {𝓥 𝓦} → 𝓥 ̇ → 𝓦 ̇ → 𝓣 ⁺ ⊔ 𝓚 ⊔ 𝓥 ⊔ 𝓦 ̇
- X ⇀ Y = X → L Y
+  is-dominant-is-defined : {X : 𝓥 ̇} → (x̃ : L X) → is-dominant D (is-defined x̃)
+  is-dominant-is-defined (P , (ϕ , dP)) = dP
 
- is-defined : ∀ {𝓥} {X : 𝓥 ̇} → L X → 𝓣 ̇
- is-defined (P , (ϕ , isdp)) = P
+  value : {X : 𝓥 ̇} → (x̃ : L X) → is-defined x̃ → X
+  value (P , (ϕ , dP)) = ϕ
 
- is-dominant-is-defined : ∀ {𝓥} {X : 𝓥 ̇} → (x̃ : L X) → is-dominant D (is-defined x̃)
- is-dominant-is-defined (P , (ϕ , isdp)) = isdp
-
- value : ∀ {𝓥} {X : 𝓥 ̇} → (x̃ : L X) → is-defined x̃ → X
- value (P , (ϕ , isdp)) = ϕ
 
  module _ {𝓥 : _} {X : 𝓥 ̇} where
   open sip
 
-  fam-structure : (P : 𝓣 ̇) → 𝓣 ⊔ 𝓥 ̇
-  fam-structure P = P → X
+  fam-str : (P : 𝓣 ̇) → 𝓣 ⊔ 𝓥 ̇
+  fam-str P = P → X
 
-  fam-sns-data : SNS fam-structure (𝓣 ⊔ 𝓥)
+  fam-sns-data : SNS fam-str (𝓣 ⊔ 𝓥)
   fam-sns-data = ι , ρ , θ
    where
-    ι : (u v : Σ fam-structure) → ⟨ u ⟩ ≃ ⟨ v ⟩ → 𝓣 ⊔ 𝓥 ̇
-    ι (P , u) (Q , v) (f , _) =
-     u ＝ v ∘ f
+    ι : (u v : Σ fam-str) → ⟨ u ⟩ ≃ ⟨ v ⟩ → 𝓣 ⊔ 𝓥 ̇
+    ι (P , u) (Q , v) (f , _) = u ＝ v ∘ f
 
-    ρ : (u : Σ fam-structure) → ι u u (≃-refl ⟨ u ⟩)
-    ρ (P , u) = refl
+    ρ : (u : Σ fam-str) → ι u u (≃-refl ⟨ u ⟩)
+    ρ _ = refl
 
-    h : {P : 𝓣 ̇} {u v : fam-structure P} → canonical-map ι ρ u v ∼ -id (u ＝ v)
+    h : {P : 𝓣 ̇} {u v : fam-str P} → canonical-map ι ρ u v ∼ -id (u ＝ v)
     h refl = refl
 
-    θ : {P : 𝓣 ̇} (u v : fam-structure P) → is-equiv (canonical-map ι ρ u v)
+    θ : {P : 𝓣 ̇} (u v : fam-str P) → is-equiv (canonical-map ι ρ u v)
     θ u v = equiv-closed-under-∼ _ _ (id-is-equiv (u ＝ v)) h
 
-  fam-≅ : (u v : Σ fam-structure) → 𝓣 ⊔ 𝓥 ̇
+  fam-≅ : (u v : Σ fam-str) → 𝓣 ⊔ 𝓥 ̇
   fam-≅ (P , u) (Q , v) =
    Σ f ꞉ (P → Q) , is-equiv f × (u ＝ v ∘ f)
 
-  characterization-of-fam-＝ : (u v : Σ fam-structure) → (u ＝ v) ≃ fam-≅ u v
+  characterization-of-fam-＝ : (u v : Σ fam-str) → (u ＝ v) ≃ fam-≅ u v
   characterization-of-fam-＝ = characterization-of-＝ 𝓣-ua fam-sns-data
 
   L-≅ : L X → L X → 𝓣 ⊔ 𝓥 ̇
@@ -128,38 +125,39 @@ module
   L-ext 𝓣𝓥-fe = back-eqtofun (＝-to-L-≅ 𝓣𝓥-fe _ _)
 
 
- η : ∀ {𝓥} {X : 𝓥 ̇} → X → L X
+ η : {𝓥 : _} {X : 𝓥 ̇} → X → L X
  η x = 𝟙 , (λ _ → x) , 𝟙-is-dominant D
 
- extension : ∀ {𝓥 𝓦} {X : 𝓥 ̇} {Y : 𝓦 ̇} → (X ⇀ Y) → (L X → L Y)
- extension {𝓥} {𝓦} {X} {Y} f (P , (φ , isdp)) = (Q , (γ , isdq))
-  where
-   Q : 𝓣 ̇
-   Q = Σ p ꞉ P , is-defined (f (φ p))
+ _⇀_ : {𝓥 𝓦 : _} → 𝓥 ̇ → 𝓦 ̇ → 𝓣 ⁺ ⊔ 𝓚 ⊔ 𝓥 ⊔ 𝓦 ̇
+ X ⇀ Y = X → L Y
 
-   isdq : is-dominant D Q
-   isdq =
-    dominant-closed-under-Σ D
-     P
-     (λ p → is-defined (f (φ p)))
-     isdp
-     (λ p → is-dominant-is-defined (f (φ p)))
+ module _ {𝓥 𝓦 : _} {X : 𝓥 ̇} {Y : 𝓦 ̇} where
+  extension : (X ⇀ Y) → (L X → L Y)
+  extension f (P , (φ , dP)) = (Q , (γ , dQ))
+   where
+    Q : 𝓣 ̇
+    Q = Σ p ꞉ P , is-defined (f (φ p))
 
-   γ : Q → Y
-   γ (p , def) = value (f (φ p)) def
+    dQ : is-dominant D Q
+    dQ =
+     dominant-closed-under-Σ D
+      P
+      (is-defined ∘ f ∘ φ)
+      dP
+      (is-dominant-is-defined ∘ f ∘ φ)
 
- _♯ : ∀ {𝓥 𝓦} {X : 𝓥 ̇} {Y : 𝓦 ̇} → (X ⇀ Y) → (L X → L Y)
- f ♯ = extension f
+    γ : Q → Y
+    γ (p , def) = value (f (φ p)) def
 
- _◌_
-  : ∀ {𝓥 𝓦 𝓣} {X : 𝓥 ̇} {Y : 𝓦 ̇} {Z : 𝓣 ̇}
+  _♯ : (X ⇀ Y) → (L X → L Y)
+  f ♯ = extension f
+
+ _<<<_
+  : {𝓥 𝓦 𝓣 : _} {X : 𝓥 ̇} {Y : 𝓦 ̇} {Z : 𝓣 ̇}
   → (Y ⇀ Z) → (X ⇀ Y) → (X ⇀ Z)
- g ◌ f = g ♯ ∘ f
+ g <<< f = g ♯ ∘ f
 
- LL : {𝓥 : _} (X : 𝓥 ̇) → 𝓣 ⁺ ⊔ 𝓚 ⊔ 𝓥 ̇
- LL X = L (L X)
-
- μ : ∀ {𝓥} {X : 𝓥 ̇} → LL X → L X
+ μ : {𝓥 : _} {X : 𝓥 ̇} → L (L X) → L X
  μ = extension id
 
  module _ {𝓥} (𝓣𝓥-fe : funext 𝓣 𝓥) where
