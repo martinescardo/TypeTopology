@@ -657,13 +657,14 @@ Future work
   ≺-is-prop-valued : is-prop-valued _≺_
   ≺-is-prop-valued a b = holds-is-prop (a ≺[Ω] b)
 
+  ≺-＝-∈ : {a b : A} → [ a ] ≺ [ b ] ＝ f a ∈ f b
+  ≺-＝-∈ {a} {b} = ap (_holds) (extension-rel-triangle₂ ~EqRel _ _ a b)
+
   ∈-to-≺ : {a b : A} → f a ∈ f b → [ a ] ≺ [ b ]
-  ∈-to-≺ {a} {b} m =
-   back-Idtofun (ap (_holds) (extension-rel-triangle₂ ~EqRel _ _ a b)) m
+  ∈-to-≺ = back-Idtofun ≺-＝-∈
 
   ≺-to-∈ : {a b : A} → [ a ] ≺ [ b ] → f a ∈ f b
-  ≺-to-∈ {a} {b} m =
-   Idtofun (ap (_holds) (extension-rel-triangle₂ ~EqRel _ _ a b)) m
+  ≺-to-∈ = Idtofun ≺-＝-∈
 
   ≺-is-transitive : is-set-theoretic-ordinal (𝕍-set f)
                   → is-transitive _≺_
