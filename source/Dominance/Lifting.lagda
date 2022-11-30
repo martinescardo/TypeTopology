@@ -27,8 +27,6 @@ module
  D : Dominance
  D = (d , isd)
 
- Fam-structure : {𝓥 : _} (X : 𝓥 ̇) (P : 𝓣 ̇) → 𝓣 ⊔ 𝓥 ̇
- Fam-structure X P = P → X
 
  L : {𝓥 : _} (X : 𝓥 ̇) → 𝓣 ⁺ ⊔ 𝓚 ⊔ 𝓥 ̇
  L X = Σ P ꞉ 𝓣 ̇ , (P → X) × d P
@@ -48,28 +46,31 @@ module
  module _ {𝓥 : _} {X : 𝓥 ̇} where
   open sip
 
-  Fam-sns-data : SNS (Fam-structure X) (𝓣 ⊔ 𝓥)
-  Fam-sns-data = ι , ρ , θ
+  fam-structure : (P : 𝓣 ̇) → 𝓣 ⊔ 𝓥 ̇
+  fam-structure P = P → X
+
+  fam-sns-data : SNS fam-structure (𝓣 ⊔ 𝓥)
+  fam-sns-data = ι , ρ , θ
    where
-    ι : (u v : Σ (Fam-structure X)) → ⟨ u ⟩ ≃ ⟨ v ⟩ → 𝓣 ⊔ 𝓥 ̇
+    ι : (u v : Σ fam-structure) → ⟨ u ⟩ ≃ ⟨ v ⟩ → 𝓣 ⊔ 𝓥 ̇
     ι (P , u) (Q , v) (f , _) =
      u ＝ v ∘ f
 
-    ρ : (u : Σ (Fam-structure X)) → ι u u (≃-refl ⟨ u ⟩)
+    ρ : (u : Σ fam-structure) → ι u u (≃-refl ⟨ u ⟩)
     ρ (P , u) = refl
 
-    h : {P : 𝓣 ̇} {u v : Fam-structure X P} → canonical-map ι ρ u v ∼ -id (u ＝ v)
+    h : {P : 𝓣 ̇} {u v : fam-structure P} → canonical-map ι ρ u v ∼ -id (u ＝ v)
     h refl = refl
 
-    θ : {P : 𝓣 ̇} (u v : Fam-structure X P) → is-equiv (canonical-map ι ρ u v)
+    θ : {P : 𝓣 ̇} (u v : fam-structure P) → is-equiv (canonical-map ι ρ u v)
     θ u v = equiv-closed-under-∼ _ _ (id-is-equiv (u ＝ v)) h
 
-  Fam-≅ : (u v : Σ (Fam-structure X)) → 𝓣 ⊔ 𝓥 ̇
-  Fam-≅ (P , u) (Q , v) =
+  fam-≅ : (u v : Σ fam-structure) → 𝓣 ⊔ 𝓥 ̇
+  fam-≅ (P , u) (Q , v) =
    Σ f ꞉ (P → Q) , is-equiv f × (u ＝ v ∘ f)
 
-  characterization-of-Fam-＝ : (u v : Σ (Fam-structure X)) → (u ＝ v) ≃ Fam-≅ u v
-  characterization-of-Fam-＝ = characterization-of-＝ 𝓣-ua Fam-sns-data
+  characterization-of-fam-＝ : (u v : Σ fam-structure) → (u ＝ v) ≃ fam-≅ u v
+  characterization-of-fam-＝ = characterization-of-＝ 𝓣-ua fam-sns-data
 
   L-≅ : L X → L X → 𝓣 ⊔ 𝓥 ̇
   L-≅ (P , u , dP) (Q , v , dQ) =
@@ -89,7 +90,7 @@ module
   ＝-to-L-≅ : (𝓣𝓥-fe : funext 𝓣 𝓥) → (u v : L X) → (u ＝ v) ≃ L-≅ u v
   ＝-to-L-≅ 𝓣𝓥-fe u v =
    (u ＝ v) ≃⟨ step1 u v ⟩
-   Fam-≅ (P , value u) (Q , value v) ≃⟨ step2 ⟩
+   fam-≅ (P , value u) (Q , value v) ≃⟨ step2 ⟩
    (Σ f ꞉ (P → Q) , (Q → P) × value u ∼ value v ∘ f) ≃⟨ ≃-sym Σ-assoc ⟩
    L-≅ u v ■
    where
@@ -97,16 +98,16 @@ module
     P = is-defined u
     Q = is-defined v
 
-    P-is-prop = dominant-types-are-props (d , isd) P (is-dominant-is-defined u)
-    Q-is-prop = dominant-types-are-props (d , isd) Q (is-dominant-is-defined v)
+    P-is-prop = dominant-types-are-props D P (is-dominant-is-defined u)
+    Q-is-prop = dominant-types-are-props D Q (is-dominant-is-defined v)
 
     𝓣-fe = univalence-gives-funext 𝓣-ua
 
     step1 =
      characterization-of-＝-with-axioms 𝓣-ua
-      Fam-sns-data
+      fam-sns-data
       (λ P u → d P)
-      (λ P _ → being-dominant-is-prop (d , isd) P)
+      (λ P _ → being-dominant-is-prop D P)
 
     step2 =
      PairFun.pair-fun-equiv
@@ -116,14 +117,12 @@ module
         (logically-equivalent-props-are-equivalent
          (being-equiv-is-prop' 𝓣-fe 𝓣-fe 𝓣-fe 𝓣-fe f)
          (Π-is-prop 𝓣-fe (λ _ → P-is-prop))
-         (λ f-equiv q → inverse f f-equiv q)
-         (λ g →
-          logically-equivalent-props-give-is-equiv
-           P-is-prop
-           Q-is-prop
-           f
-           g))
-        (λ f-equiv → ≃-funext 𝓣𝓥-fe (value u) (value v ∘ f)))
+         (inverse f)
+         (logically-equivalent-props-give-is-equiv
+          P-is-prop
+          Q-is-prop
+          f))
+        (λ _ → ≃-funext 𝓣𝓥-fe (value u) (value v ∘ f)))
 
   L-ext : (𝓣𝓥-fe : funext 𝓣 𝓥) {u v : L X} → L-≅ u v → u ＝ v
   L-ext 𝓣𝓥-fe = back-eqtofun (＝-to-L-≅ 𝓣𝓥-fe _ _)
