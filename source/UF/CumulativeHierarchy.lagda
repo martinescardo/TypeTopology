@@ -564,60 +564,61 @@ a 𝓤-small membership relation.
       ⦅1⦆ = ap _holds (happly (pr₂ ＝⁻[Ω]-packaged f r) (𝕍-set g))
       ⦅2⦆ = ap _holds (ρ₂-behaviour f r g)
 
-   ＝⁻-to-＝ : {x y : 𝕍} → x ＝⁻ y → x ＝ y
-   ＝⁻-to-＝ {x} {y} =
-    𝕍-prop-induction (λ u → ((v : 𝕍) → u ＝⁻ v → u ＝ v))
-                     (λ _ → Π₂-is-prop fe (λ _ _ → 𝕍-is-large-set))
-                     (λ {A} f r → 𝕍-prop-simple-induction _
-                                   (λ _ → Π-is-prop fe (λ _ → 𝕍-is-large-set))
-                                   (λ {B} g → h f g r))
-                     x y
-     where
-      h : {A B : 𝓤 ̇ } (f : A → 𝕍) (g : B → 𝕍)
-        → ((a : A) (v : 𝕍) → f a ＝⁻ v → f a ＝ v)
-        → 𝕍-set f ＝⁻ 𝕍-set g → 𝕍-set f ＝ 𝕍-set g
-      h {A} {B} f g r e = 𝕍-set-ext f g (⦅1⦆ , ⦅2⦆)
-       where
-        u : (a : A) → ∃ b ꞉ B , f a ＝⁻ g b
-        u = pr₁ (Idtofun (＝⁻-behaviour f g) e)
-        v : (b : B) → ∃ a ꞉ A , f a ＝⁻ g b
-        v = pr₂ (Idtofun (＝⁻-behaviour f g) e)
-        ⦅1⦆ : (a : A) → ∃ b ꞉ B , g b ＝ f a
-        ⦅1⦆ a = ∥∥-functor (λ (b , p) → b , ((r a (g b) p) ⁻¹)) (u a)
-        ⦅2⦆ : (b : B) → ∃ a ꞉ A , f a ＝ g b
-        ⦅2⦆ b = ∥∥-functor (λ (a , p) → a , r a (g b) p) (v b)
-
-   ＝⁻-is-reflexive : {x : 𝕍} → x ＝⁻ x
-   ＝⁻-is-reflexive {x} = 𝕍-prop-induction (λ - → - ＝⁻ -)
-                                           (λ _ → ＝⁻-is-prop-valued)
-                                           h x
+  ＝⁻-to-＝ : {x y : 𝕍} → x ＝⁻ y → x ＝ y
+  ＝⁻-to-＝ {x} {y} =
+   𝕍-prop-induction (λ u → ((v : 𝕍) → u ＝⁻ v → u ＝ v))
+                    (λ _ → Π₂-is-prop fe (λ _ _ → 𝕍-is-large-set))
+                    (λ {A} f r → 𝕍-prop-simple-induction _
+                                  (λ _ → Π-is-prop fe (λ _ → 𝕍-is-large-set))
+                                  (λ {B} g → h f g r))
+                    x y
     where
-     h : {A : 𝓤 ̇ } (f : A → 𝕍)
-       → ((a : A) → f a ＝⁻ f a)
-       → 𝕍-set f ＝⁻ 𝕍-set f
-     h {A} f r = back-Idtofun (＝⁻-behaviour f f)
-                              ((λ a → ∣ a , r a ∣) , (λ a → ∣ a , r a ∣))
+     h : {A B : 𝓤 ̇ } (f : A → 𝕍) (g : B → 𝕍)
+       → ((a : A) (v : 𝕍) → f a ＝⁻ v → f a ＝ v)
+       → 𝕍-set f ＝⁻ 𝕍-set g → 𝕍-set f ＝ 𝕍-set g
+     h {A} {B} f g r e = 𝕍-set-ext f g (⦅1⦆ , ⦅2⦆)
+      where
+       u : (a : A) → ∃ b ꞉ B , f a ＝⁻ g b
+       u = pr₁ (Idtofun (＝⁻-behaviour f g) e)
+       v : (b : B) → ∃ a ꞉ A , f a ＝⁻ g b
+       v = pr₂ (Idtofun (＝⁻-behaviour f g) e)
+       ⦅1⦆ : (a : A) → ∃ b ꞉ B , g b ＝ f a
+       ⦅1⦆ a = ∥∥-functor (λ (b , p) → b , ((r a (g b) p) ⁻¹)) (u a)
+       ⦅2⦆ : (b : B) → ∃ a ꞉ A , f a ＝ g b
+       ⦅2⦆ b = ∥∥-functor (λ (a , p) → a , r a (g b) p) (v b)
 
-   ＝-to-＝⁻ : {x y : 𝕍} → x ＝ y → x ＝⁻ y
-   ＝-to-＝⁻ refl = ＝⁻-is-reflexive
+  ＝⁻-is-reflexive : {x : 𝕍} → x ＝⁻ x
+  ＝⁻-is-reflexive {x} = 𝕍-prop-induction (λ - → - ＝⁻ -)
+                                          (λ _ → ＝⁻-is-prop-valued)
+                                          h x
+   where
+    h : {A : 𝓤 ̇ } (f : A → 𝕍)
+      → ((a : A) → f a ＝⁻ f a)
+      → 𝕍-set f ＝⁻ 𝕍-set f
+    h {A} f r = back-Idtofun (＝⁻-behaviour f f)
+                             ((λ a → ∣ a , r a ∣) , (λ a → ∣ a , r a ∣))
 
-   open import UF.Equiv -- TO DO: move imports
-   open import UF.Size
+  ＝-to-＝⁻ : {x y : 𝕍} → x ＝ y → x ＝⁻ y
+  ＝-to-＝⁻ refl = ＝⁻-is-reflexive
 
-   ＝⁻-≃-＝ : {x y : 𝕍} → (x ＝⁻ y) ≃ (x ＝ y)
-   ＝⁻-≃-＝ = logically-equivalent-props-are-equivalent
-               ＝⁻-is-prop-valued
-               𝕍-is-large-set
-               ＝⁻-to-＝
-               ＝-to-＝⁻
+  open import UF.Equiv -- TO DO: move imports
+  open import UF.Size
 
-   𝕍-is-locally-small : is-locally-small 𝕍
-   𝕍-is-locally-small x y = (x ＝⁻ y) , ＝⁻-≃-＝
+  ＝⁻-≃-＝ : {x y : 𝕍} → (x ＝⁻ y) ≃ (x ＝ y)
+  ＝⁻-≃-＝ = logically-equivalent-props-are-equivalent
+              ＝⁻-is-prop-valued
+              𝕍-is-large-set
+              ＝⁻-to-＝
+              ＝-to-＝⁻
 
-{-
-   ＝⁻-is-transitive : {x y z : 𝕍} → x ＝⁻ y → y ＝⁻ z → x ＝⁻ z
-   ＝⁻-is-transitive {x} {y} {z} u v = ＝-to-＝⁻ (＝⁻-to-＝ u ∙ ＝⁻-to-＝ v)
--}
+  𝕍-is-locally-small : is-locally-small 𝕍
+  𝕍-is-locally-small x y = (x ＝⁻ y) , ＝⁻-≃-＝
+
+  ＝⁻-is-transitive : {x y z : 𝕍} → x ＝⁻ y → y ＝⁻ z → x ＝⁻ z
+  ＝⁻-is-transitive {x} {y} {z} u v = ＝-to-＝⁻ (＝⁻-to-＝ u ∙ ＝⁻-to-＝ v)
+
+  ＝⁻-is-symmetric : {x y : 𝕍} → x ＝⁻ y → y ＝⁻ x
+  ＝⁻-is-symmetric {x} {y} e = ＝-to-＝⁻ ((＝⁻-to-＝ e)⁻¹)
 
 \end{code}
 
