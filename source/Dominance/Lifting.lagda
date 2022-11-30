@@ -11,7 +11,7 @@ open import UF.SIP
 open import UF.Univalence
 open import UF.FunExt
 open import UF.Equiv-FunExt
-open import UF.Equiv hiding (_≅_)
+open import UF.Equiv hiding (_≅_; ≅-refl)
 open import UF.UA-FunExt
 open import UF.Subsingletons-FunExt
 import UF.PairFun as PairFun
@@ -75,6 +75,9 @@ module
   (P , u , dP) ≅ (Q , v , dQ) =
     Σ f ꞉ P ⇔ Q , u ∼ v ∘ pr₁ f
 
+  ≅-refl : (u : L X) → u ≅ u
+  ≅-refl u = (id , id) , (λ _ → refl)
+
   -- TODO: move or find in library
   Σ-assoc-equiv
    : {𝓥 𝓦 𝓧 : _} {A : 𝓥 ̇} {B : A → 𝓦 ̇} {C : (x : A) → B x → 𝓧 ̇}
@@ -85,48 +88,52 @@ module
   pr₁ (pr₂ (pr₂ Σ-assoc-equiv)) (x , y , z) = (x , y) , z
   pr₂ (pr₂ (pr₂ Σ-assoc-equiv)) _ = refl
 
+  module _ (𝓣𝓥-fe : funext 𝓣 𝓥) where
+   ＝-to-≅ : (u v : L X) → (u ＝ v) ≃ (u ≅ v)
+   ＝-to-≅ u v =
+    (u ＝ v) ≃⟨ step1 u v ⟩
+    fam-≅ (P , value u) (Q , value v) ≃⟨ step2 ⟩
+    (Σ f ꞉ (P → Q) , (Q → P) × value u ∼ value v ∘ f) ≃⟨ ≃-sym Σ-assoc-equiv ⟩
+    u ≅ v ■
 
-  ＝-to-L-≅ : (𝓣𝓥-fe : funext 𝓣 𝓥) → (u v : L X) → (u ＝ v) ≃ (u ≅ v)
-  ＝-to-L-≅ 𝓣𝓥-fe u v =
-   (u ＝ v) ≃⟨ step1 u v ⟩
-   fam-≅ (P , value u) (Q , value v) ≃⟨ step2 ⟩
-   (Σ f ꞉ (P → Q) , (Q → P) × value u ∼ value v ∘ f) ≃⟨ ≃-sym Σ-assoc-equiv ⟩
-   u ≅ v ■
+    where
+     open sip-with-axioms
 
-   where
-    open sip-with-axioms
+     P = u ↓
+     Q = v ↓
 
-    P = u ↓
-    Q = v ↓
+     P-is-prop = dominant-types-are-props D P (↓-is-dominant u)
+     Q-is-prop = dominant-types-are-props D Q (↓-is-dominant v)
 
-    P-is-prop = dominant-types-are-props D P (↓-is-dominant u)
-    Q-is-prop = dominant-types-are-props D Q (↓-is-dominant v)
+     𝓣-fe = univalence-gives-funext 𝓣-ua
 
-    𝓣-fe = univalence-gives-funext 𝓣-ua
+     step1 =
+      characterization-of-＝-with-axioms 𝓣-ua
+       fam-sns-data
+       (λ P u → d P)
+       (λ P _ → being-dominant-is-prop D P)
 
-    step1 =
-     characterization-of-＝-with-axioms 𝓣-ua
-      fam-sns-data
-      (λ P u → d P)
-      (λ P _ → being-dominant-is-prop D P)
+     step2 =
+      PairFun.pair-fun-equiv
+       (≃-refl (P → Q))
+       (λ f →
+        PairFun.pair-fun-equiv
+         (logically-equivalent-props-are-equivalent
+          (being-equiv-is-prop' 𝓣-fe 𝓣-fe 𝓣-fe 𝓣-fe f)
+          (Π-is-prop 𝓣-fe (λ _ → P-is-prop))
+          (inverse f)
+          (logically-equivalent-props-give-is-equiv
+           P-is-prop
+           Q-is-prop
+           f))
+         (λ _ → ≃-funext 𝓣𝓥-fe (value u) (value v ∘ f)))
 
-    step2 =
-     PairFun.pair-fun-equiv
-      (≃-refl (P → Q))
-      (λ f →
-       PairFun.pair-fun-equiv
-        (logically-equivalent-props-are-equivalent
-         (being-equiv-is-prop' 𝓣-fe 𝓣-fe 𝓣-fe 𝓣-fe f)
-         (Π-is-prop 𝓣-fe (λ _ → P-is-prop))
-         (inverse f)
-         (logically-equivalent-props-give-is-equiv
-          P-is-prop
-          Q-is-prop
-          f))
-        (λ _ → ≃-funext 𝓣𝓥-fe (value u) (value v ∘ f)))
+   ＝-to-≅-refl : (u : L X) → eqtofun (＝-to-≅ u u) refl ＝ ≅-refl u
+   ＝-to-≅-refl _ = refl
+
 
   L-ext : (𝓣𝓥-fe : funext 𝓣 𝓥) {u v : L X} → u ≅ v → u ＝ v
-  L-ext 𝓣𝓥-fe = back-eqtofun (＝-to-L-≅ 𝓣𝓥-fe _ _)
+  L-ext 𝓣𝓥-fe = back-eqtofun (＝-to-≅ 𝓣𝓥-fe _ _)
 
  η : {𝓥 : _} {X : 𝓥 ̇} → X → L X
  η x = 𝟙 , (λ _ → x) , 𝟙-is-dominant D
