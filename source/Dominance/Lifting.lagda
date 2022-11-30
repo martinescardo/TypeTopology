@@ -76,7 +76,7 @@ module
     Σ f ꞉ P ⇔ Q , u ∼ v ∘ pr₁ f
 
   ≅-refl : (u : L X) → u ≅ u
-  ≅-refl u = (id , id) , (λ _ → refl)
+  ≅-refl u = (id , id) , λ _ → refl
 
   -- TODO: move or find in library
   Σ-assoc-equiv
@@ -127,9 +127,8 @@ module
    ＝-to-≅-refl : (u : L X) → eqtofun (＝-to-≅ u u) refl ＝ ≅-refl u
    ＝-to-≅-refl _ = refl
 
-
-  L-ext : (𝓣𝓥-fe : funext 𝓣 𝓥) {u v : L X} → u ≅ v → u ＝ v
-  L-ext 𝓣𝓥-fe = back-eqtofun (＝-to-≅ 𝓣𝓥-fe _ _)
+   L-ext : {u v : L X} → u ≅ v → u ＝ v
+   L-ext = back-eqtofun (＝-to-≅ _ _)
 
  η : {𝓥 : _} {X : 𝓥 ̇} → X → L X
  η x = 𝟙 , (λ _ → x) , 𝟙-is-dominant D
