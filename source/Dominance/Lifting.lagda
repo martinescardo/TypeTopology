@@ -36,13 +36,13 @@ module
  _⇀_ : ∀ {𝓥 𝓦} → 𝓥 ̇ → 𝓦 ̇ → 𝓣 ⁺ ⊔ 𝓚 ⊔ 𝓥 ⊔ 𝓦 ̇
  X ⇀ Y = X → L Y
 
- isDefined : ∀ {𝓥} {X : 𝓥 ̇} → L X → 𝓣 ̇
- isDefined (P , (ϕ , isdp)) = P
+ is-defined : ∀ {𝓥} {X : 𝓥 ̇} → L X → 𝓣 ̇
+ is-defined (P , (ϕ , isdp)) = P
 
- is-dominantisDefined : ∀ {𝓥} {X : 𝓥 ̇ } → (x̃ : L X) → is-dominant D (isDefined x̃)
- is-dominantisDefined (P , (ϕ , isdp)) = isdp
+ is-dominant-is-defined : ∀ {𝓥} {X : 𝓥 ̇ } → (x̃ : L X) → is-dominant D (is-defined x̃)
+ is-dominant-is-defined (P , (ϕ , isdp)) = isdp
 
- value : ∀ {𝓥} {X : 𝓥 ̇} → (x̃ : L X) → isDefined x̃ → X
+ value : ∀ {𝓥} {X : 𝓥 ̇} → (x̃ : L X) → is-defined x̃ → X
  value (P , (ϕ , isdp)) = ϕ
 
  module _ {𝓥 : _} {X : 𝓥 ̇} where
@@ -71,21 +71,6 @@ module
   characterization-of-Fam-＝ : (u v : Σ (Fam-structure X)) → (u ＝ v) ≃ Fam-≅ u v
   characterization-of-Fam-＝ = characterization-of-＝ 𝓣-ua Fam-sns-data
 
-  L-≅' : L X → L X → 𝓣 ⊔ 𝓥 ̇
-  L-≅' (P , u , dP) (Q , v , dQ) = Fam-≅ (P , u) (Q , v)
-
-  open sip-with-axioms
-
-  ＝-to-L-≅' : (u v : L X) → (u ＝ v) ≃ L-≅' u v
-  ＝-to-L-≅' =
-   characterization-of-＝-with-axioms 𝓣-ua
-    Fam-sns-data
-    (λ P u → d P)
-    (λ P _ → being-dominant-is-prop (d , isd) P)
-
-  L-ext' : {u v : L X} → L-≅' u v → u ＝ v
-  L-ext' = back-eqtofun (＝-to-L-≅' _ _)
-
   L-≅ : L X → L X → 𝓣 ⊔ 𝓥 ̇
   L-≅ (P , u , dP) (Q , v , dQ) =
     Σ f ꞉ P ⇔ Q , u ∼ v ∘ pr₁ f
@@ -100,19 +85,30 @@ module
   pr₁ (pr₂ (pr₂ Σ-assoc)) (x , y , z) = (x , y) , z
   pr₂ (pr₂ (pr₂ Σ-assoc)) _ = refl
 
-  L-≅'-to-L-≅ : (𝓣𝓥-fe : funext 𝓣 𝓥) → (u v : L X) → L-≅' u v ≃ L-≅ u v
-  L-≅'-to-L-≅ 𝓣𝓥-fe (P , u , dP) (Q , v , dQ) =
-   L-≅' (P , u , dP) (Q , v , dQ) ≃⟨ lem ⟩
-   (Σ f ꞉ (P → Q) , (Q → P) × u ∼ v ∘ f) ≃⟨ ≃-sym Σ-assoc ⟩
-   L-≅ (P , u , dP) (Q , v , dQ) ■
 
+  ＝-to-L-≅ : (𝓣𝓥-fe : funext 𝓣 𝓥) → (u v : L X) → (u ＝ v) ≃ L-≅ u v
+  ＝-to-L-≅ 𝓣𝓥-fe u v =
+   (u ＝ v) ≃⟨ step1 u v ⟩
+   Fam-≅ (P , value u) (is-defined v , value v) ≃⟨ step2 ⟩
+   (Σ f ꞉ (P → Q) , (Q → P) × value u ∼ value v ∘ f) ≃⟨ ≃-sym Σ-assoc ⟩
+   L-≅ u v ■
    where
-    𝓣-fe = univalence-gives-funext 𝓣-ua
-    P-is-prop = dominant-types-are-props (d , isd) P dP
-    Q-is-prop = dominant-types-are-props (d , isd) Q dQ
+    open sip-with-axioms
+    P = is-defined u
+    Q = is-defined v
 
-    lem : L-≅' (P , u , dP) (Q , v , dQ) ≃ (Σ f ꞉ (P → Q) , (Q → P) × u ∼ (λ x → v (f x)))
-    lem =
+    P-is-prop = dominant-types-are-props (d , isd) P (is-dominant-is-defined u)
+    Q-is-prop = dominant-types-are-props (d , isd) Q (is-dominant-is-defined v)
+
+    𝓣-fe = univalence-gives-funext 𝓣-ua
+
+    step1 =
+     characterization-of-＝-with-axioms 𝓣-ua
+      Fam-sns-data
+      (λ P u → d P)
+      (λ P _ → being-dominant-is-prop (d , isd) P)
+
+    step2 =
      PairFun.pair-fun-equiv
       (≃-refl (P → Q))
       (λ f →
@@ -127,15 +123,7 @@ module
            Q-is-prop
            f
            g))
-        (λ f-equiv → ≃-funext 𝓣𝓥-fe u (v ∘ f)))
-
-
-
-  ＝-to-L-≅ : (𝓣𝓥-fe : funext 𝓣 𝓥) → (u v : L X) → (u ＝ v) ≃ L-≅ u v
-  ＝-to-L-≅ 𝓣𝓥-fe u v =
-   (u ＝ v) ≃⟨ ＝-to-L-≅' u v ⟩
-   L-≅' u v ≃⟨ L-≅'-to-L-≅ 𝓣𝓥-fe u v ⟩
-   L-≅ u v ■
+        (λ f-equiv → ≃-funext 𝓣𝓥-fe (value u) (value v ∘ f)))
 
   L-ext : (𝓣𝓥-fe : funext 𝓣 𝓥) {u v : L X} → L-≅ u v → u ＝ v
   L-ext 𝓣𝓥-fe = back-eqtofun (＝-to-L-≅ 𝓣𝓥-fe _ _)
@@ -148,15 +136,15 @@ module
  extension {𝓥} {𝓦} {X} {Y} f (P , (φ , isdp)) = (Q , (γ , isdq))
   where
    Q : 𝓣 ̇
-   Q = Σ p ꞉ P , isDefined (f (φ p))
+   Q = Σ p ꞉ P , is-defined (f (φ p))
 
    isdq : is-dominant D Q
    isdq =
     dominant-closed-under-Σ D
      P
-     (λ p → isDefined (f (φ p)))
+     (λ p → is-defined (f (φ p)))
      isdp
-     (λ p → is-dominantisDefined (f (φ p)))
+     (λ p → is-dominant-is-defined (f (φ p)))
 
    γ : Q → Y
    γ (p , def) = value (f (φ p)) def
@@ -180,7 +168,7 @@ module
   kleisli-law₀ {X} u =
    L-ext 𝓣𝓥-fe (α , λ _ → refl)
    where
-    α : isDefined u × 𝟙 ⇔ isDefined u
+    α : is-defined u × 𝟙 ⇔ is-defined u
     α = pr₁ , (λ x → x , ⋆)
 
  module _ {𝓥 𝓦} (𝓣𝓦-fe : funext 𝓣 𝓦) where
@@ -188,7 +176,7 @@ module
   kleisli-law₁ {X} {Y} f u =
    L-ext 𝓣𝓦-fe (α , λ _ → refl)
    where
-    α : 𝟙 × isDefined (f u) ⇔ isDefined (f u)
+    α : 𝟙 × is-defined (f u) ⇔ is-defined (f u)
     α = pr₂ , (λ p → ⋆ , p)
 
  module _ {𝓥 𝓦 𝓧} (𝓣𝓧-fe : funext 𝓣 𝓧) where
@@ -198,7 +186,7 @@ module
   kleisli-law₂ f g x =
    L-ext 𝓣𝓧-fe (α , λ _ → refl)
    where
-    α : isDefined ((((g ♯) ∘ f) ♯) x) ⇔ isDefined (((g ♯) ∘ (f ♯)) x)
+    α : is-defined ((((g ♯) ∘ f) ♯) x) ⇔ is-defined (((g ♯) ∘ (f ♯)) x)
     pr₁ α (p , q , r) = (p , q) , r
     pr₂ α ((p , q) , r) = p , q , r
 
