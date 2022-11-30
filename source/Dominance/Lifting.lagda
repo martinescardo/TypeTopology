@@ -18,10 +18,10 @@ import UF.PairFun as PairFun
 
 module
  Dominance.Lifting
-   {𝓣 𝓚 : Universe}
-   (𝓣-ua : is-univalent 𝓣)
-   (d : 𝓣 ̇ → 𝓚 ̇)
-   (isd : is-dominance d)
+  {𝓣 𝓚 : Universe}
+  (𝓣-ua : is-univalent 𝓣)
+  (d : 𝓣 ̇ → 𝓚 ̇)
+  (isd : is-dominance d)
  where
 
  D : Dominance
@@ -34,10 +34,12 @@ module
   is-defined : {X : 𝓥 ̇} → L X → 𝓣 ̇
   is-defined (P , (ϕ , dP)) = P
 
-  is-dominant-is-defined : {X : 𝓥 ̇} → (x̃ : L X) → is-dominant D (is-defined x̃)
-  is-dominant-is-defined (P , (ϕ , dP)) = dP
+  _↓ = is-defined
 
-  value : {X : 𝓥 ̇} → (x̃ : L X) → is-defined x̃ → X
+  ↓-is-dominant : {X : 𝓥 ̇} → (x̃ : L X) → is-dominant D (x̃ ↓)
+  ↓-is-dominant (P , (ϕ , dP)) = dP
+
+  value : {X : 𝓥 ̇} → (x̃ : L X) → x̃ ↓ → X
   value (P , (ϕ , dP)) = ϕ
 
 
@@ -69,34 +71,36 @@ module
   characterization-of-fam-＝ : (u v : Σ fam-str) → (u ＝ v) ≃ fam-≅ u v
   characterization-of-fam-＝ = characterization-of-＝ 𝓣-ua fam-sns-data
 
-  L-≅ : L X → L X → 𝓣 ⊔ 𝓥 ̇
-  L-≅ (P , u , dP) (Q , v , dQ) =
+  _≅_ : L X → L X → 𝓣 ⊔ 𝓥 ̇
+  (P , u , dP) ≅ (Q , v , dQ) =
     Σ f ꞉ P ⇔ Q , u ∼ v ∘ pr₁ f
 
   -- TODO: move or find in library
-  Σ-assoc
+  Σ-assoc-equiv
    : {𝓥 𝓦 𝓧 : _} {A : 𝓥 ̇} {B : A → 𝓦 ̇} {C : (x : A) → B x → 𝓧 ̇}
    → (Σ xy ꞉ Σ B , C (pr₁ xy) (pr₂ xy)) ≃ (Σ x ꞉ A , Σ y ꞉ B x , C x y)
-  pr₁ Σ-assoc ((x , y) , z) = x , (y , z)
-  pr₁ (pr₁ (pr₂ Σ-assoc)) (x , y , z) = (x , y) , z
-  pr₂ (pr₁ (pr₂ Σ-assoc)) _ = refl
-  pr₁ (pr₂ (pr₂ Σ-assoc)) (x , y , z) = (x , y) , z
-  pr₂ (pr₂ (pr₂ Σ-assoc)) _ = refl
+  pr₁ Σ-assoc-equiv ((x , y) , z) = x , (y , z)
+  pr₁ (pr₁ (pr₂ Σ-assoc-equiv)) (x , y , z) = (x , y) , z
+  pr₂ (pr₁ (pr₂ Σ-assoc-equiv)) _ = refl
+  pr₁ (pr₂ (pr₂ Σ-assoc-equiv)) (x , y , z) = (x , y) , z
+  pr₂ (pr₂ (pr₂ Σ-assoc-equiv)) _ = refl
 
 
-  ＝-to-L-≅ : (𝓣𝓥-fe : funext 𝓣 𝓥) → (u v : L X) → (u ＝ v) ≃ L-≅ u v
+  ＝-to-L-≅ : (𝓣𝓥-fe : funext 𝓣 𝓥) → (u v : L X) → (u ＝ v) ≃ (u ≅ v)
   ＝-to-L-≅ 𝓣𝓥-fe u v =
    (u ＝ v) ≃⟨ step1 u v ⟩
    fam-≅ (P , value u) (Q , value v) ≃⟨ step2 ⟩
-   (Σ f ꞉ (P → Q) , (Q → P) × value u ∼ value v ∘ f) ≃⟨ ≃-sym Σ-assoc ⟩
-   L-≅ u v ■
+   (Σ f ꞉ (P → Q) , (Q → P) × value u ∼ value v ∘ f) ≃⟨ ≃-sym Σ-assoc-equiv ⟩
+   u ≅ v ■
+
    where
     open sip-with-axioms
-    P = is-defined u
-    Q = is-defined v
 
-    P-is-prop = dominant-types-are-props D P (is-dominant-is-defined u)
-    Q-is-prop = dominant-types-are-props D Q (is-dominant-is-defined v)
+    P = u ↓
+    Q = v ↓
+
+    P-is-prop = dominant-types-are-props D P (↓-is-dominant u)
+    Q-is-prop = dominant-types-are-props D Q (↓-is-dominant v)
 
     𝓣-fe = univalence-gives-funext 𝓣-ua
 
@@ -121,9 +125,8 @@ module
           f))
         (λ _ → ≃-funext 𝓣𝓥-fe (value u) (value v ∘ f)))
 
-  L-ext : (𝓣𝓥-fe : funext 𝓣 𝓥) {u v : L X} → L-≅ u v → u ＝ v
+  L-ext : (𝓣𝓥-fe : funext 𝓣 𝓥) {u v : L X} → u ≅ v → u ＝ v
   L-ext 𝓣𝓥-fe = back-eqtofun (＝-to-L-≅ 𝓣𝓥-fe _ _)
-
 
  η : {𝓥 : _} {X : 𝓥 ̇} → X → L X
  η x = 𝟙 , (λ _ → x) , 𝟙-is-dominant D
@@ -136,15 +139,10 @@ module
   extension f (P , (φ , dP)) = (Q , (γ , dQ))
    where
     Q : 𝓣 ̇
-    Q = Σ p ꞉ P , is-defined (f (φ p))
+    Q = Σ p ꞉ P , f (φ p) ↓
 
     dQ : is-dominant D Q
-    dQ =
-     dominant-closed-under-Σ D
-      P
-      (is-defined ∘ f ∘ φ)
-      dP
-      (is-dominant-is-defined ∘ f ∘ φ)
+    dQ = dominant-closed-under-Σ D P (_↓ ∘ f ∘ φ) dP (↓-is-dominant ∘ f ∘ φ)
 
     γ : Q → Y
     γ (p , def) = value (f (φ p)) def
@@ -160,30 +158,28 @@ module
  μ : {𝓥 : _} {X : 𝓥 ̇} → L (L X) → L X
  μ = extension id
 
- module _ {𝓥} (𝓣𝓥-fe : funext 𝓣 𝓥) where
-  kleisli-law₀ : {X : 𝓥 ̇} → extension (η {𝓥} {X}) ∼ id
-  kleisli-law₀ {X} u =
+ module _ {𝓥} {X : 𝓥 ̇} (𝓣𝓥-fe : funext 𝓣 𝓥) where
+  kleisli-law₀ : extension (η {𝓥} {X}) ∼ id
+  kleisli-law₀ u =
    L-ext 𝓣𝓥-fe (α , λ _ → refl)
    where
-    α : is-defined u × 𝟙 ⇔ is-defined u
-    α = pr₁ , (λ x → x , ⋆)
+    α : u ↓ × 𝟙 ⇔ u ↓
+    α = pr₁ , (_, ⋆)
 
- module _ {𝓥 𝓦} (𝓣𝓦-fe : funext 𝓣 𝓦) where
-  kleisli-law₁ : {X : 𝓥 ̇} {Y : 𝓦 ̇} (f : X ⇀ Y) → extension f ∘ η ∼ f
-  kleisli-law₁ {X} {Y} f u =
+ module _ {𝓥 𝓦} {X : 𝓥 ̇} {Y : 𝓦 ̇} (𝓣𝓦-fe : funext 𝓣 𝓦) where
+  kleisli-law₁ : (f : X ⇀ Y) → extension f ∘ η ∼ f
+  kleisli-law₁ f u =
    L-ext 𝓣𝓦-fe (α , λ _ → refl)
    where
-    α : 𝟙 × is-defined (f u) ⇔ is-defined (f u)
-    α = pr₂ , (λ p → ⋆ , p)
+    α : 𝟙 × f u ↓ ⇔ f u ↓
+    α = pr₂ , (⋆ ,_)
 
- module _ {𝓥 𝓦 𝓧} (𝓣𝓧-fe : funext 𝓣 𝓧) where
-  kleisli-law₂
-   : {X : 𝓥 ̇} {Y : 𝓦 ̇} {Z : 𝓧 ̇} (f : X ⇀ Y) (g : Y ⇀ Z)
-   → (g ♯ ∘ f)♯ ∼ g ♯ ∘ f ♯
+ module _ {𝓥 𝓦 𝓧} {X : 𝓥 ̇} {Y : 𝓦 ̇} {Z : 𝓧 ̇} (𝓣𝓧-fe : funext 𝓣 𝓧) where
+  kleisli-law₂ : (f : X ⇀ Y) (g : Y ⇀ Z) → (g ♯ ∘ f)♯ ∼ g ♯ ∘ f ♯
   kleisli-law₂ f g x =
    L-ext 𝓣𝓧-fe (α , λ _ → refl)
    where
-    α : is-defined ((((g ♯) ∘ f) ♯) x) ⇔ is-defined (((g ♯) ∘ (f ♯)) x)
+    α : (((g ♯) ∘ f) ♯) x ↓ ⇔ ((g ♯) ∘ (f ♯)) x ↓
     pr₁ α (p , q , r) = (p , q) , r
     pr₂ α ((p , q) , r) = p , q , r
 
