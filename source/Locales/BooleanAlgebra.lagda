@@ -317,6 +317,7 @@ is-generated-by {𝓦 = 𝓦} L B η =
 extension-lemma : (B : BooleanAlgebra 𝓦 𝓥) (L L′ : Frame 𝓤 𝓦 𝓦)
                 → (η : ⟪ B ⟫ → ⟨ L ⟩)
                 → is-embedding B L η holds
+                → is-spectral L holds
                 → is-spectral′ B L η holds
                 → is-generated-by L B η holds
                 → (h : ⟪ B ⟫ → ⟨ L′ ⟩)
@@ -324,7 +325,7 @@ extension-lemma : (B : BooleanAlgebra 𝓦 𝓥) (L L′ : Frame 𝓤 𝓦 𝓦)
                 → is-contr
                    (Σ h₀ ꞉ (⟨ L ⟩ → ⟨ L′ ⟩) ,
                     (is-a-frame-homomorphism L L′ h₀ holds) × (h ＝ h₀ ∘ η))
-extension-lemma {𝓦} {𝓤} B L L′ η e@(_ , _ , _ , _ , ♥₂) s γ h μ@(♠₀ , ♠₁ , ♠₂ , ♠₃) =
+extension-lemma {𝓦} {𝓤} B L L′ η e@(_ , _ , _ , _ , ♥₂) σ s γ h μ@(♠₀ , ♠₁ , ♠₂ , ♠₃) =
  (h⁻ , φ , ψ) , ϑ
  where
   ↓↓_ : ⟨ L ⟩ → Fam 𝓦 ⟨ L′ ⟩
@@ -466,7 +467,39 @@ The function `h⁻` also preserves meets.
     ※₂ = h⁻-is-monotone (y , (x ∨[ L ] y)) (∨[ L ]-upper₂ x y)
 
     † : (h⁻ (x ∨[ L ] y) ≤[ poset-of L′ ] (h⁻ x ∨[ L′ ] h⁻ y)) holds
-    † = {!!} -- h⁻ (x ∨[ L ] y) ≤⟨ {!!} ⟩ {!!} ≤⟨ {!!} ⟩ {!!} ■
+    † = ⋁[ L′ ]-least (↓↓ (x ∨[ L ] y)) ((h⁻ x ∨[ L′ ] h⁻ y) , †₁)
+     where
+      †₁ : ((h⁻ x ∨[ L′ ] h⁻ y) is-an-upper-bound-of (↓↓ (x ∨[ L ] y))) holds
+      †₁ (b , p) = ∥∥-rec
+                    (holds-is-prop (h b ≤[ poset-of L′ ] (h⁻ x ∨[ L′ ] h⁻ y)))
+                    †₂
+                    ॐ
+       where
+        ॐ : (Ǝ (c , d) ∶ (⟨ L ⟩ × ⟨ L ⟩) ,
+                (is-compact-open L c holds)
+              × (is-compact-open L d holds)
+              × (η b ≤[ poset-of L ] (c ∨[ L ] d)) holds
+              × (c ≤[ poset-of L ] x) holds
+              × (d ≤[ poset-of L ] y) holds)
+             holds
+        ॐ = compact-join-lemma L σ x y (η b) (s b) p
+
+        †₂ : Σ (c , d) ꞉ (⟨ L ⟩ × ⟨ L ⟩) ,
+                (is-compact-open L c holds)
+             × (is-compact-open L d holds)
+             × (η b ≤[ poset-of L ] (c ∨[ L ] d)) holds
+             × (c ≤[ poset-of L ] x) holds
+             × (d ≤[ poset-of L ] y) holds
+           → (h b ≤[ poset-of L′ ] (h⁻ x ∨[ L′ ] h⁻ y)) holds
+        †₂ ((c , d) , φ , β , ϑ , χ) =
+         h b                      ≤⟨ {!p!} ⟩
+         h⁻ (η b)                 ≤⟨ {!!}  ⟩
+         h⁻ (c ∨[ L ] d)          ≤⟨ {!!}  ⟩
+         h⁻ x ∨[ L′ ] h⁻ y        ■
+       -- h b                                          ≤⟨ {!!} ⟩
+       -- {!!}                                         ≤⟨ {!!} ⟩
+       -- (⋁[ L′ ] ↓↓ x ∨[ L′ ] (⋁[ L′ ] ↓↓ y))        ≤⟨ {!!} ⟩
+       -- h⁻ x ∨[ L′ ] h⁻ y                            ■
 
     ‡ : ((h⁻ x ∨[ L′ ] h⁻ y) ≤[ poset-of L′ ] h⁻ (x ∨[ L ] y)) holds
     ‡ = ∨[ L′ ]-least ‡₁ ‡₂
