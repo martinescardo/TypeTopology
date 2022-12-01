@@ -848,6 +848,11 @@ zero-dimensionalᴰ {𝓦 = 𝓦} F =
                    × closed-under-finite-joins F ℬ holds
                    × consists-of-clopens F ℬ holds
 
+basis-of-zero-dimensionalᴰ-frame : (L : Frame 𝓤 𝓥 𝓦)
+                                 → zero-dimensionalᴰ L
+                                 → Σ ℬ ꞉ Fam 𝓦 ⟨ L ⟩ , is-basis-for L ℬ
+basis-of-zero-dimensionalᴰ-frame L (ℬ , β , _) = ℬ , β
+
 is-zero-dimensional : Frame 𝓤 𝓥 𝓦 → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
 is-zero-dimensional {𝓦 = 𝓦} F =
  Ǝ ℬ ∶ Fam 𝓦 ⟨ F ⟩ , is-basis-for F ℬ

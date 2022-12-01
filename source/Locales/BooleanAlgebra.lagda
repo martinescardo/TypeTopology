@@ -310,6 +310,11 @@ is-generated-by {𝓦 = 𝓦} L B η =
 
    _≤_ = λ x y → (x ≤[ poset-of L ] y) holds
 
+contains-compact-opens : (L : Frame 𝓤 𝓦 𝓦) (B : BooleanAlgebra 𝓦 𝓥)
+                       → (⟪ B ⟫ → ⟨ L ⟩) → Ω (𝓤 ⊔ 𝓦 ⁺)
+contains-compact-opens L B η =
+ Ɐ x ∶ ⟨ L ⟩ , is-compact-open L x ⇒ (Ǝ b ∶ ⟪ B ⟫ , η b ＝ x)
+
 \end{code}
 
 \begin{code}
@@ -318,14 +323,16 @@ extension-lemma : (B : BooleanAlgebra 𝓦 𝓥) (L L′ : Frame 𝓤 𝓦 𝓦)
                 → (η : ⟪ B ⟫ → ⟨ L ⟩)
                 → is-embedding B L η holds
                 → is-spectral L holds
+                → is-spectral L′ holds
                 → is-spectral′ B L η holds
                 → is-generated-by L B η holds
+                → contains-compact-opens L B η holds
                 → (h : ⟪ B ⟫ → ⟨ L′ ⟩)
                 → is-lattice-homomorphism B L′ h holds
                 → is-contr
                    (Σ h₀ ꞉ (⟨ L ⟩ → ⟨ L′ ⟩) ,
                     (is-a-frame-homomorphism L L′ h₀ holds) × (h ＝ h₀ ∘ η))
-extension-lemma {𝓦} {𝓤} B L L′ η e@(_ , _ , _ , _ , ♥₂) σ s γ h μ@(♠₀ , ♠₁ , ♠₂ , ♠₃) =
+extension-lemma {𝓦} {𝓤} B L L′ η e@(_ , _ , _ , _ , ♥₂) σ σ′ s γ 𝕜 h μ@(♠₀ , ♠₁ , ♠₂ , ♠₃) =
  (h⁻ , φ , ψ) , ϑ
  where
   ↓↓_ : ⟨ L ⟩ → Fam 𝓦 ⟨ L′ ⟩
@@ -452,6 +459,30 @@ The function `h⁻` also preserves meets.
 
   open Joins (λ x y → x ≤[ poset-of L′ ] y)
 
+  ψ₁ : h ∼ h⁻ ∘ η
+  ψ₁ b = ≤-is-antisymmetric (poset-of L′) (χ b) (ϕ b)
+   where
+    open PosetReasoning (poset-of L′)
+
+    χ : (b : ⟪ B ⟫) → (h b ≤[ poset-of L′ ] h⁻ (η b)) holds
+    χ b = ⋁[ L′ ]-upper (↓↓ (η b)) (b , ≤-is-reflexive (poset-of L) (η b))
+
+    ϕ : (b : ⟪ B ⟫) → (h⁻ (η b) ≤[ poset-of L′ ] h b) holds
+    ϕ b = ⋁[ L′ ]-least (↓↓ (η b)) (h b , ϕ₁)
+     where
+      ϕ₁ : (h b is-an-upper-bound-of (↓↓ η b)) holds
+      ϕ₁ (bᵢ , p) = lattice-homomorphisms-are-monotonic B L′ h μ bᵢ b ϕ₂
+       where
+        ϕ₂ : (bᵢ ≤[ poset-of-ba B ] b) holds
+        ϕ₂ = pr₂ (embedding-is-order-isomorphism B L η e bᵢ b) p
+
+  ψ : h ＝ h⁻ ∘ η
+  ψ = dfunext fe ψ₁
+
+\end{code}
+
+\begin{code}
+
   ζ⁻ : is-scott-continuous L L′ h⁻ holds
   ζ⁻ = {!!}
 
@@ -492,10 +523,27 @@ The function `h⁻` also preserves meets.
              × (d ≤[ poset-of L ] y) holds
            → (h b ≤[ poset-of L′ ] (h⁻ x ∨[ L′ ] h⁻ y)) holds
         †₂ ((c , d) , φ , β , ϑ , χ) =
-         h b                      ≤⟨ {!p!} ⟩
-         h⁻ (η b)                 ≤⟨ {!!}  ⟩
-         h⁻ (c ∨[ L ] d)          ≤⟨ {!!}  ⟩
-         h⁻ x ∨[ L′ ] h⁻ y        ■
+         h b                  ＝⟨ ψ₁ b ⟩ₚ
+         h⁻ (η b)             ≤⟨ Ⅰ     ⟩
+         h⁻ (c ∨[ L ] d)      ≤⟨ Ⅱ     ⟩
+         h⁻ x ∨[ L′ ] h⁻ y    ■
+          where
+           Ⅰ = h⁻-is-monotone (η b , (c ∨[ L ] d)) ϑ
+           Ⅱ = ⋁[ L′ ]-least (↓↓ (c ∨[ L ] d)) ((h⁻ x ∨[ L′ ] h⁻ y) , ※)
+                where
+                 ※ : (binary-join L′ (h⁻ x) (h⁻ y) is-an-upper-bound-of (↓↓ (c ∨[ L ] d))) holds
+                 ※ (b′ , φ) = h b′ ≤⟨ {!φ!} ⟩ {!!} ≤⟨ {!!} ⟩ {!!} ■
+
+           †₄ : (h⁻ (η b) ≤ₖ[ L′ ] (h⁻ x ∨[ L′ ] h⁻ y)) holds
+           †₄ k 𝔠𝔬𝔪𝔭 p = ∥∥-rec {!!} {!!} (𝔠𝔬𝔪𝔭 (↓↓ x) {!!} {!!})
+
+           †₃ : (h⁻ (η b) ≤[ poset-of L′ ] (h⁻ x ∨[ L′ ] h⁻ y)) holds
+           †₃ = {!!}
+
+         -- spectral-yoneda L′ σ′ (h b) (h⁻ x ∨[ L′ ] h⁻ y) †₃
+         --  where
+         --   †₃ : (h b ≤ₖ[ L′ ] (h⁻ x ∨[ L′ ] h⁻ y)) holds
+         --   †₃ k 𝔠𝔬𝔪𝔭 p = {!!}
        -- h b                                          ≤⟨ {!!} ⟩
        -- {!!}                                         ≤⟨ {!!} ⟩
        -- (⋁[ L′ ] ↓↓ x ∨[ L′ ] (⋁[ L′ ] ↓↓ y))        ≤⟨ {!!} ⟩
@@ -536,30 +584,6 @@ The function `h⁻` also preserves meets.
 
   φ : is-a-frame-homomorphism L L′ h⁻ holds
   φ = φ₀ , φ₁ , φ₂
-
-\end{code}
-
-\begin{code}
-
-  ψ : h ＝ h⁻ ∘ η
-  ψ = dfunext fe ψ₁
-   where
-    open PosetReasoning (poset-of L′)
-
-    χ : (b : ⟪ B ⟫) → (h b ≤[ poset-of L′ ] h⁻ (η b)) holds
-    χ b = ⋁[ L′ ]-upper (↓↓ (η b)) (b , ≤-is-reflexive (poset-of L) (η b))
-
-    ϕ : (b : ⟪ B ⟫) → (h⁻ (η b) ≤[ poset-of L′ ] h b) holds
-    ϕ b = ⋁[ L′ ]-least (↓↓ (η b)) (h b , ϕ₁)
-     where
-      ϕ₁ : (h b is-an-upper-bound-of (↓↓ η b)) holds
-      ϕ₁ (bᵢ , p) = lattice-homomorphisms-are-monotonic B L′ h μ bᵢ b ϕ₂
-       where
-        ϕ₂ : (bᵢ ≤[ poset-of-ba B ] b) holds
-        ϕ₂ = pr₂ (embedding-is-order-isomorphism B L η e bᵢ b) p
-
-    ψ₁ : h ∼ h⁻ ∘ η
-    ψ₁ b = ≤-is-antisymmetric (poset-of L′) (χ b) (ϕ b)
 
 \end{code}
 
