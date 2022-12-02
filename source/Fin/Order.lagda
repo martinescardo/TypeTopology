@@ -12,7 +12,8 @@ open import Fin.Type
 open import MLTT.Spartan
 open import Naturals.Order
 open import Notation.Order
-open import NotionsOfDecidability.DecidableAndDetachable
+open import NotionsOfDecidability.Decidable
+open import NotionsOfDecidability.Complemented
 open import TypeTopology.DiscreteAndSeparated
 open import UF.Base
 open import UF.FunExt
@@ -65,7 +66,7 @@ inf-is-ub-of-lbs i A = pr₂
 
 
 inf-construction : {n : ℕ} (A : Fin (succ n) → 𝓤 ̇ )
-                 → detachable A
+                 → complemented A
                  → Σ i ꞉ Fin (succ n) , i is-inf-of A × (Σ A → A i)
 
 inf-construction {𝓤} {zero} A δ = 𝟎 , (l , m) , ε
@@ -123,17 +124,17 @@ inf-construction {𝓤} {succ n} A δ = γ (δ 𝟎)
      ε (suc j , b) = pr₂ (pr₂ IH) (j , b)
 
 
-inf : {n : ℕ} (A : Fin (succ n) → 𝓤 ̇ ) → detachable A → Fin (succ n)
+inf : {n : ℕ} (A : Fin (succ n) → 𝓤 ̇ ) → complemented A → Fin (succ n)
 inf A δ = pr₁ (inf-construction A δ)
 
 
-inf-property : {n : ℕ} (A : Fin (succ n) → 𝓤 ̇ ) (δ : detachable A)
+inf-property : {n : ℕ} (A : Fin (succ n) → 𝓤 ̇ ) (δ : complemented A)
              → (inf A δ) is-inf-of A
 
 inf-property A δ = pr₁ (pr₂ (inf-construction A δ))
 
 
-inf-is-attained : {n : ℕ} (A : Fin (succ n) → 𝓤 ̇ ) (δ : detachable A)
+inf-is-attained : {n : ℕ} (A : Fin (succ n) → 𝓤 ̇ ) (δ : complemented A)
                 → Σ A → A (inf A δ)
 
 inf-is-attained A δ = pr₂ (pr₂ (inf-construction A δ))
@@ -149,7 +150,7 @@ inf-is-attained A δ = pr₂ (pr₂ (inf-construction A δ))
 
 
 Σ-gives-Σ-min : {n : ℕ} (A : Fin n → 𝓤 ̇ )
-             → detachable A → Σ A → Σ-min A
+              → complemented A → Σ A → Σ-min A
 
 Σ-gives-Σ-min {𝓤} {0}      A δ (i , a) = 𝟘-elim i
 Σ-gives-Σ-min {𝓤} {succ n} A δ σ       = inf A δ ,
@@ -158,13 +159,13 @@ inf-is-attained A δ = pr₂ (pr₂ (inf-construction A δ))
 
 
 ¬¬Σ-gives-Σ-min : {n : ℕ} (A : Fin n → 𝓤 ̇ )
-               → detachable A → ¬¬ Σ A → Σ-min A
+                → complemented A → ¬¬ Σ A → Σ-min A
 
 ¬¬Σ-gives-Σ-min {𝓤} {n} A δ u = Σ-gives-Σ-min A δ (¬¬-elim (Fin-Compact A δ) u)
 
 Σ-min-is-prop : FunExt
-             → {n : ℕ} (A : Fin n → 𝓤 ̇ )
-             → is-prop-valued-family A → is-prop (Σ-min A)
+              → {n : ℕ} (A : Fin n → 𝓤 ̇ )
+              → is-prop-valued-family A → is-prop (Σ-min A)
 
 Σ-min-is-prop {𝓤} fe {n} A h (i , a , l) (i' , a' , l') = γ
  where

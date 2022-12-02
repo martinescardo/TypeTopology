@@ -82,7 +82,8 @@ open import MLTT.Two-Properties
 open import Naturals.Binary hiding (_+_)
 open import Naturals.Order
 open import Notation.Order
-open import NotionsOfDecidability.DecidableAndDetachable
+open import NotionsOfDecidability.Decidable
+open import NotionsOfDecidability.Complemented
 open import TypeTopology.CompactTypes
 open import TypeTopology.DiscreteAndSeparated
 
@@ -202,7 +203,7 @@ types and all decidable propositions.
   ϕ : ℕ → 𝟚
   ϕ _ = ₀
   ϕ-is-not-₁-anywhere : ¬ (∃ n ꞉ ℕ , ϕ n ＝ ₁)
-  ϕ-is-not-₁-anywhere = forall₀-implies-not-exists₁ pt ϕ (λ _ → refl)
+  ϕ-is-not-₁-anywhere = forall₀-implies-not-exists₁ ϕ (λ _ → refl)
   e : 𝟘 ≃ (∃ n ꞉ ℕ , ϕ n ＝ ₁)
   e = ≃-sym (lr-implication negations-are-equiv-to-𝟘 ϕ-is-not-₁-anywhere)
 
@@ -1006,8 +1007,8 @@ EKC-implies-semidecidable-closed-under-Σ {𝓤} {𝓥} ekc =
          β p = pr₁ (σ⁺ p)
          φ : ℕ × ℕ → 𝓤₀ ̇
          φ (n , m) = Σ b ꞉ α n ＝ ₁ , β (to-P ∣ n , b ∣) m ＝ ₁
-         φ-is-detachable : detachable φ
-         φ-is-detachable (n , m) =
+         φ-is-complemented : complemented φ
+         φ-is-complemented (n , m) =
           decidable-closed-under-Σ 𝟚-is-set (𝟚-is-discrete (α n) ₁)
                                    (λ b → 𝟚-is-discrete (β (to-P ∣ n , b ∣) m) ₁)
          φ-is-prop-valued : (k : ℕ × ℕ) → is-prop (φ k)
@@ -1035,7 +1036,7 @@ EKC-implies-semidecidable-closed-under-Σ {𝓤} {𝓥} ekc =
              χ : (Σ A ꞉ (ℕ × ℕ → Ω 𝓤₀) , is-complemented-subset A) → (ℕ × ℕ → 𝟚)
              χ = ⌜ 𝟚-classifies-decidable-subsets fe fe pe ⌝⁻¹
              Ψ : ℕ × ℕ → 𝟚
-             Ψ = χ (φ⁺ , φ-is-detachable)
+             Ψ = χ (φ⁺ , φ-is-complemented)
 
              II = ∥∥-cong pt
                    (Σ-cong (λ n →
@@ -1046,9 +1047,9 @@ EKC-implies-semidecidable-closed-under-Σ {𝓤} {𝓥} ekc =
                                     (lr-implication (lemma n m)))))
               where
                lemma : (n m : ℕ)
-                     → χ (φ⁺ , φ-is-detachable) (n , m) ＝ ₁ ⇔ (n , m) ∈ φ⁺
+                     → χ (φ⁺ , φ-is-complemented) (n , m) ＝ ₁ ⇔ (n , m) ∈ φ⁺
                lemma n m = pr₂ (𝟚-classifies-decidable-subsets-values fe fe pe
-                                 φ⁺ φ-is-detachable (n , m))
+                                 φ⁺ φ-is-complemented (n , m))
              I  = logically-equivalent-props-are-equivalent j ∥∥-is-prop f g
               where
                j : is-prop (P × Q)
@@ -1225,7 +1226,7 @@ Before starting the formalized proof, we explain the proof strategy here.
     Explicitly, P is given by
        P n m = (Σ p ꞉ (Ψ m ＝ ₁) , pr₁ (f ∣ m , p ∣) ＝ n).
 
-(3) We prove that each P n is detachable and subsingleton-valued, i.e. that each
+(3) We prove that each P n is complemented and subsingleton-valued, i.e. that each
     P n is a decidable subset of ℕ.
 
 This equips every X n with semidecidability structure.
@@ -1286,13 +1287,13 @@ semidecidability-structure-Σ  = γ
   γ X X-is-prop-valued (Ψ , e) n = ⌜ semidecidability-structure-≃ ⌝⁻¹ σ
    where
     σ : semidecidability-structure' 𝓤₀ (X n)
-    σ = φ⁺ , φ-is-detachable ,
+    σ = φ⁺ , φ-is-complemented ,
         (key-construction-lemma X-is-prop-valued (≃-sym e) n)
      where
       φ : ℕ → 𝓤₀ ̇
       φ = key-construction {𝓤₀} {_} {𝓤₀} {ℕ} {X} {λ m → Ψ m ＝ ₁} ⌜ e ⌝⁻¹ n
-      φ-is-detachable : detachable φ
-      φ-is-detachable m = decidable-closed-under-Σ 𝟚-is-set
+      φ-is-complemented : complemented φ
+      φ-is-complemented m = decidable-closed-under-Σ 𝟚-is-set
                            (𝟚-is-discrete (Ψ m) ₁)
                            (λ (p : Ψ m ＝ ₁) → ℕ-is-discrete
                                                (pr₁ (⌜ e ⌝⁻¹ ∣ m , p ∣)) n)

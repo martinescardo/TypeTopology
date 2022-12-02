@@ -19,6 +19,10 @@ private
 
 ¬_ : 𝓤 ̇ → 𝓤 ̇
 ¬ A = A → 𝟘 {𝓤₀}
+
+decidable : 𝓤 ̇ → 𝓤 ̇
+decidable A = A + ¬ A
+
 _≠_ : {X : 𝓤 ̇ } → (x y : X) → 𝓤 ̇
 x ≠ y = ¬ (x ＝ y)
 
@@ -57,20 +61,6 @@ double-contrapositive = contrapositive ∘ contrapositive
 
 ¬¬-kleisli : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → (A → ¬¬ B) → ¬¬ A → ¬¬ B
 ¬¬-kleisli f ϕ h = ϕ (λ a → f a h)
-
-decidable : 𝓤 ̇ → 𝓤 ̇
-decidable A = A + ¬ A
-
-map-decidable : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → (A → B) → (B → A) → decidable A → decidable B
-map-decidable f g (inl x) = inl (f x)
-map-decidable f g (inr h) = inr (λ y → h (g y))
-
-map-decidable-corollary : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → (A ⇔ B) → (decidable A ⇔ decidable B)
-map-decidable-corollary (f , g) = map-decidable f g , map-decidable g f
-
-map-decidable' : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → (A → ¬ B) → (¬ A → B) → decidable A → decidable B
-map-decidable' f g (inl x) = inr (f x)
-map-decidable' f g (inr h) = inl (g h)
 
 ¬¬-intro : {A : 𝓤 ̇ } → A → ¬¬ A
 ¬¬-intro x u = u x
@@ -146,13 +136,18 @@ not-Σ-implies-Π-not = curry
                     → ¬ (Σ x ꞉ X , A x)
 Π-not-implies-not-Σ = uncurry
 
-not-Π-implies-not-not-Σ' : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
-                         → ¬ ((x : X) → ¬¬ (A x))
-                         → ¬¬ (Σ x ꞉ X , ¬ (A x))
-not-Π-implies-not-not-Σ' = contrapositive not-Σ-implies-Π-not
+Π-implies-not-Σ-not : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
+                    → ((x : X) → A x)
+                    → ¬ (Σ x ꞉ X , ¬ (A x))
+Π-implies-not-Σ-not f (x , ν) = ν (f x)
+
+not-Π-not-not-implies-not-not-Σ-not : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
+                                    → ¬ ((x : X) → ¬¬ (A x))
+                                    → ¬¬ (Σ x ꞉ X , ¬ (A x))
+not-Π-not-not-implies-not-not-Σ-not = contrapositive not-Σ-implies-Π-not
 
 not-Π-implies-not-not-Σ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
-                        → ((x : X) → ¬¬ (A x) → A x)
+                        → ((x : X) → ¬¬-stable (A x))
                         → ¬ ((x : X) → A x)
                         → ¬¬ (Σ x ꞉ X , ¬ (A x))
 not-Π-implies-not-not-Σ f g h = g (λ x → f x (λ u → h (x , u)))

@@ -1,7 +1,7 @@
 Tom de Jong, 28 October 2022 - 7 November 2022.
 In collaboration with Nicolai Kraus, Fredrik Norvall Forsberg and Chuangjie Xu.
 
-Following [3], in constructive set theory an ordinal is [Definition 9.4.1, 2],
+Following [Pow75], in constructive set theory an ordinal is [Def. 9.4.1, AR10],
 defined as a transitive set of transitive sets.
 
 We consider the subtype 𝕍ᵒʳᵈ of the cumulative hierarchy 𝕍 of set theoretic
@@ -16,16 +16,17 @@ This is interesting for at least two reasons:
 (1) It shows that the set theoretic and type theoretic notions of ordinal
     coincide in HoTT.
 (2) It shows that a nontrivial subtype of 𝕍, a complicated HIT, can be defined
-    internally in univalent type theory without HITs (†).
+    internally in univalent type theory without HITs (†) other than set
+    quotients.
 
-    (†): This was also done through other means by Gylterud [4] who gave a
+    (†): This was also done through other means by Gylterud [Gyl18] who gave a
          non-HIT construction of the cumulative hiearchy 𝕍.
 
 After Fredrik Nordvall Forsberg's talk at the workshop in honour of Thorsten
 Altenkirch's 60th birthday
 (https://www.cs.nott.ac.uk/~psznk/events/thorsten60/#fred), Andreas Abel asked
 how/whether we can relate set theoretic ordinals and type theoretic ordinals
-through Aczel's [1] type theoretic interpretation of set theory. Since the
+through Aczel's [Acz78] type theoretic interpretation of set theory. Since the
 cumulative hierarchy 𝕍 may be seen as an internal refinement of Aczel's
 interpretation in HoTT, the theorem announced above provides an answer to
 Andreas' question.
@@ -35,40 +36,49 @@ There are some directions for future work recorded at the end of this file.
 References
 ----------
 
-[1] Peter Aczel
-    The type theoretic interpretation of constructive set theory
-    In A. MacIntyre, L. Pacholski, and J. Paris (eds.) Logic Colloquium ’77
-    Volume 96 of Studies in Logic and the Foundations of Mathematics
-    Pages 55–66
-    North-Holland Publishing Company
-    1978
-    doi:10.1016/S0049-237X(08)71989-X
+[Acz77] Peter Aczel
+        An introduction to inductive definitions
+        In Jon Barwise (ed.) Handbook of Mathematical Logic
+        Volume 90 of Studies in Logic and the Foundations of Mathematics
+        Pages 739─782
+        North-Holland Publishing Company
+        1977
+        doi:10.1016/S0049-237X(08)71120-0
 
-[2] Peter Aczel and Michael Rathjen
-    Notes on Constructive Set Theory
-    Book draft
-    https://www1.maths.leeds.ac.uk/~rathjen/book.pdf
-    2010
+[Acz78] Peter Aczel
+        The type theoretic interpretation of constructive set theory
+        In A. MacIntyre, L. Pacholski, and J. Paris (eds.) Logic Colloquium ’77
+        Volume 96 of Studies in Logic and the Foundations of Mathematics
+        Pages 55–66
+        North-Holland Publishing Company
+        1978
+        doi:10.1016/S0049-237X(08)71989-X
 
-[3] William C. Powell
-    Extending Gödel’s negative interpretation to ZF
-    Volume 40, Issue 2 of Journal of Symbolic Logic
-    Pages 221─229
-    1975
-    doi:10.2307/2271902
+[AR10] Peter Aczel and Michael Rathjen
+       Notes on Constructive Set Theory
+       Book draft
+       https://www1.maths.leeds.ac.uk/~rathjen/book.pdf
+       2010
 
-[4] Håkon Robbestad Gylterud
-    From Multisets to Sets in Homotopy Type Theory
-    Volue 83, Issue 3 of The Journal Symbol Logic
-    Pages 1132─146
-    2018
-    doi:10.1017/jsl.2017.84
+[Pow75] William C. Powell
+        Extending Gödel’s negative interpretation to ZF
+        Volume 40, Issue 2 of Journal of Symbolic Logic
+        Pages 221─229
+        1975
+        doi:10.2307/2271902
 
-[5] The Univalent Foundations Program
-    Homotopy Type Theory: Univalent Foundations of Mathematics
-    https://homotopytypetheory.org/book
-    Institute for Advanced Study
-    2013
+[Gyl18] Håkon Robbestad Gylterud
+        From Multisets to Sets in Homotopy Type Theory
+        Volue 83, Issue 3 of The Journal Symbol Logic
+        Pages 1132─146
+        2018
+        doi:10.1017/jsl.2017.84
+
+[Uni13] The Univalent Foundations Program
+        Homotopy Type Theory: Univalent Foundations of Mathematics
+        https://homotopytypetheory.org/book
+        Institute for Advanced Study
+        2013
 
 \begin{code}
 
@@ -381,8 +391,9 @@ that it is split surjective.
 We construct a map 𝕍 → Ord by recursion on 𝕍 by sending 𝕍-set {A} f to the
 supremum of ordinals ⋁ (ψ (f a) + 𝟙) indexed by a : A.
 
-This is a familiar construction in set theory, see e.g. [Definition 9.3.4, 2],
-where the ordinal above is the "rank" of the set.
+This is a familiar construction in set theory, see e.g. [Def. 9.3.4, AR10],
+where the ordinal above is the "rank" of the set. This map (but with the domain
+an arbitrary well founded order) also appears at the bottom of [Acz77, p. 743].
 
 \begin{code}
 

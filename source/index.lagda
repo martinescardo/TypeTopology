@@ -84,6 +84,7 @@ import CoNaturals.index
 import CrossedModules.index           -- by Ettore Aldrovandi and Keri D'Angelo
 import DedekindReals.index            -- by Andrew Sneap
 import DomainTheory.index             -- by Tom de Jong
+import Dominance.index
 import Dyadics.index                  -- by Andrew Sneap
 import DyadicsInductive.index         -- by Tom de Jong
 import Factorial.index

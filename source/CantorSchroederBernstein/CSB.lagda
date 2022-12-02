@@ -48,9 +48,17 @@ assumption beyond MLTT is explicit in each claim).
 
 module CantorSchroederBernstein.CSB where
 
+open import CoNaturals.GenericConvergentSequence
+open import MLTT.Plus-Properties
+open import MLTT.Spartan
+open import Naturals.Properties
+open import NotionsOfDecidability.Decidable
+open import TypeTopology.CompactTypes
+open import TypeTopology.DiscreteAndSeparated
+open import TypeTopology.GenericConvergentSequenceCompactness
 open import UF.Base
-open import UF.Equiv
 open import UF.Embeddings
+open import UF.Equiv
 open import UF.ExcludedMiddle
 open import UF.FunExt
 open import UF.Lower-FunExt
@@ -59,17 +67,6 @@ open import UF.PropTrunc
 open import UF.Retracts
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-
-open import MLTT.Spartan
-open import MLTT.Plus-Properties
-
-open import Naturals.Properties
-open import NotionsOfDecidability.DecidableAndDetachable
-open import CoNaturals.GenericConvergentSequence
-
-open import TypeTopology.CompactTypes
-open import TypeTopology.GenericConvergentSequenceCompactness
-open import TypeTopology.DiscreteAndSeparated
 
 \end{code}
 

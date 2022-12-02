@@ -41,7 +41,7 @@ This is the case, for example, if X is the circle S¹.
 
 But if P is a proposition, then
 
-  Aut (P + 𝟙) ≃ P + 𝟙.
+  P + 𝟙 ≃ Aut (P + 𝟙).
 
 \begin{code}
 
@@ -481,4 +481,4 @@ propositional-factorial {𝓤} P i =
 
 \end{code}
 
-P + Q
+Is the converse also true?

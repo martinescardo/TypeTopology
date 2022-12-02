@@ -58,7 +58,7 @@ The characteristic function of equality on ((ℕ → 𝟚) → ℕ):
 
 \begin{code}
 
-open import NotionsOfDecidability.DecidableAndDetachable
+open import NotionsOfDecidability.Complemented
 
 equal : ((ℕ → 𝟚) → ℕ) → ((ℕ → 𝟚) → ℕ) → 𝟚
 

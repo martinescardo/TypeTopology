@@ -374,6 +374,27 @@ no-minimal-is-empty' : is-well-founded
                      → is-empty (Σ A)
 no-minimal-is-empty' w A s = no-minimal-is-empty w A (λ x a → ¬¬-intro (s x a))
 
+{-
+module _ (pt : propositional-truncations-exist) where
+
+ open PropositionalTruncation pt
+
+
+ inhabited-subset-has-least-element : is-well-founded
+                                    → ∀ {𝓦} (A : X → 𝓦 ̇ )
+                                    → ∃ A
+                                    → ∃ x ꞉ X , A x × ((y : X) → A y → x ≼ y)
+ inhabited-subset-has-least-element w A s = {!!}
+  where
+   I : ?
+   I = contrapositive (no-minimal-is-empty' w A)
+
+   II : is-nonempty (Σ A)
+   II e = ∥∥-rec 𝟘-is-prop e s
+
+   III : ¬ ((x : X) → A x → Σ y ꞉ X , (y < x) × A y)
+   III = contrapositive (no-minimal-is-empty' w A) I
+-}
 \end{code}
 
 The emptiness of the empty set doesn't play any special role in the
@@ -652,7 +673,7 @@ module _
        where
  private
    pt : propositional-truncations-exist
-   pt = (fem-proptrunc (λ 𝓤 𝓥 → f-e {𝓤} {𝓥}) em)
+   pt = (fe-and-em-give-propositional-truncations (λ 𝓤 𝓥 → f-e {𝓤} {𝓥}) em)
 
    fe : FunExt
    fe 𝓤 𝓥 = f-e
@@ -662,7 +683,7 @@ module _
 
    lem-consequence : is-well-order → (u v : X) → (∃ i ꞉ X , ((i < u) × ¬ (i < v))) + (u ≼ v)
    lem-consequence (p , _) u v = Cases
-     (∃¬-gives-∀ pt em {Σ (λ i → i < u)}
+     (∃-not+Π pt em {Σ (λ i → i < u)}
         (λ (i , i-lt-u) → i < v)
         (λ (i , i-<-u) → p i v))
      (λ witness → inl ((∥∥-induction (λ s → ∃-is-prop)
@@ -821,7 +842,8 @@ module _
        where
 
  open import UF.PropTrunc
- open PropositionalTruncation (fem-proptrunc (λ 𝓤 𝓥 → fe {𝓤} {𝓥}) em)
+ open PropositionalTruncation (fe-and-em-give-propositional-truncations
+                                 (λ 𝓤 𝓥 → fe {𝓤} {𝓥}) em)
 
  nonempty-has-minimal : is-well-order
                       → (A : X → 𝓦 ̇ )

@@ -19,7 +19,8 @@ open import MLTT.Plus-Properties
 open import MLTT.Spartan
 open import Naturals.Order
 open import Notation.Order
-open import NotionsOfDecidability.DecidableAndDetachable
+open import NotionsOfDecidability.Complemented
+open import NotionsOfDecidability.Decidable
 open import TypeTopology.DiscreteAndSeparated
 open import UF.Equiv
 open import UF.EquivalenceExamples
@@ -274,11 +275,11 @@ We now consider further variations of the finite pigeonhole principle.
   repeated-values : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → X → 𝓤 ⊔ 𝓥 ̇
   repeated-values f = λ x → Σ x' ꞉ domain f , (x ≠ x') × (f x ＝ f x')
 
-  repetitions-detachable : {m : ℕ} {Y : 𝓥 ̇ } (f : Fin m → Y)
+  repetitions-complemented : {m : ℕ} {Y : 𝓥 ̇ } (f : Fin m → Y)
                          → is-finite Y
-                         → detachable (repeated-values f)
+                         → complemented (repeated-values f)
 
-  repetitions-detachable {𝓥} {m} {Y} f (n , t) i =
+  repetitions-complemented {𝓥} {m} {Y} f (n , t) i =
    Fin-Compact
     (λ j → (i ≠ j) × (f i ＝ f j))
     (λ j → ×-preserves-decidability
@@ -311,7 +312,7 @@ We now consider further variations of the finite pigeonhole principle.
     A i = Σ j ꞉ Fin m , (i ≠ j) × (f i ＝ f j)
 
     γ : f has-a-repetition
-    γ = Fin-Σ-from-∃ pt fe {m} A (repetitions-detachable f (n , t)) γ'
+    γ = Fin-Σ-from-∃ pt fe {m} A (repetitions-complemented f (n , t)) γ'
 
 \end{code}
 
@@ -331,7 +332,7 @@ Further versions of the pigeonhole principle are the following.
   finite-pigeonhole-principle'' {𝓥} {m} {Y} f φ g =
    Σ-gives-Σ-min
     (repeated-values f)
-    (repetitions-detachable f φ)
+    (repetitions-complemented f φ)
     (finite-pigeonhole-principle' f φ g)
 
   ℕ-finite-pigeonhole-principle : {Y : 𝓥 ̇ } (f : ℕ → Y)

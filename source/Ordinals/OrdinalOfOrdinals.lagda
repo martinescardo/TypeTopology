@@ -22,16 +22,16 @@ open import Ordinals.Type
 open import Notation.CanonicalMap
 
 open import UF.Base
-open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
 open import UF.Embeddings
-open import UF.FunExt
 open import UF.Equiv
 open import UF.Equiv-FunExt
+open import UF.EquivalenceExamples
+open import UF.FunExt
+open import UF.Size
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
 open import UF.UA-FunExt
 open import UF.Yoneda
-open import UF.EquivalenceExamples
-open import UF.Size
 
 private
  fe : FunExt
@@ -1255,7 +1255,7 @@ non-empty-classically-has-minimal-element {𝓤} α n = iv
   i = contrapositive (ordinal-with-no-minimal-element-is-empty α) n
 
   ii : ¬¬ (Σ a ꞉ ⟨ α ⟩ , ¬ (Σ x ꞉ ⟨ α ⟩ , x ≺⟨ α ⟩ a))
-  ii = not-Π-implies-not-not-Σ' i
+  ii = not-Π-not-not-implies-not-not-Σ-not i
 
   iii : (Σ a ꞉ ⟨ α ⟩ , ¬ (Σ x ꞉ ⟨ α ⟩ , x ≺⟨ α ⟩ a))
       → (Σ a ꞉ ⟨ α ⟩ , ((x : ⟨ α ⟩) → a ≾⟨ α ⟩ x))
