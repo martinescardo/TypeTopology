@@ -1743,6 +1743,38 @@ bicofinal-implies-same-join F R S φ ψ =
   (cofinal-implies-join-covered F R S φ)
   (cofinal-implies-join-covered F S R ψ)
 
+
+-- ∨[_]-iterated-join : (F : Frame 𝓤 𝓥 𝓦) (S₁ S₂ : Fam 𝓦 ⟨ F ⟩)
+--                    → (⋁[ F ] S₁) ∨[ F ] (⋁[ F ] S₂)
+--                    ＝ ⋁[ F ] ⁅ (S₁ [ i ]) ∨[ F ] (S₂ [ j ]) ∣ (i , j) ∶ (index S₁ × index S₂) ⁆
+-- ∨[_]-iterated-join {𝓦 = 𝓦} F S₁ S₂ =
+--  ≤-is-antisymmetric (poset-of F) † ‡
+--   where
+--    open PosetReasoning (poset-of F)
+
+--    fam-lhs : Fam 𝓦 ⟨ F ⟩
+--    fam-lhs = binary-family 𝓦 (⋁[ F ] S₁) (⋁[ F ] S₂)
+
+--    fam-rhs : Fam 𝓦 ⟨ F ⟩
+--    fam-rhs = ⁅ (S₁ [ i ]) ∨[ F ] (S₂ [ j ]) ∣ (i , j) ∶ (index S₁ × index S₂) ⁆
+
+--    † : ((⋁[ F ] fam-lhs) ≤[ poset-of F ] (⋁[ F ] fam-rhs)) holds
+--    † = ∨[ F ]-least †₁ {!!}
+--     where
+--      †₁ : ((⋁[ F ] S₁) ≤[ poset-of F ] (⋁[ F ] fam-rhs)) holds
+--      †₁ = ⋁[ F ]-least S₁ ((⋁[ F ] fam-rhs) , †₂)
+--       where
+--        open Joins (λ x y → x ≤[ poset-of F ] y)
+
+--        †₂ : ((⋁[ F ] fam-rhs) is-an-upper-bound-of S₁) holds
+--        †₂ i = S₁ [ i ] ≤⟨ {!!} ⟩ {!!} ≤⟨ {!!} ⟩ ⋁[ F ] fam-rhs ■
+
+--      †₂ : {!!}
+--      †₂ = {!!}
+
+--    ‡ : ((⋁[ F ] fam-rhs) ≤[ poset-of F ] (⋁[ F ] fam-lhs)) holds
+--    ‡ = {!!}
+
 \end{code}
 
 If a function preserves (1) binary joins and (2) directed joins then it
