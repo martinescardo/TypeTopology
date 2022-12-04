@@ -6,7 +6,7 @@ The swap automorphism.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module ArithmeticViaEquivalence.Swap where
+module Factorial.Swap where
 
 open import MLTT.Plus-Properties
 open import MLTT.Spartan

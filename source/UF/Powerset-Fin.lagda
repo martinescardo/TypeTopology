@@ -17,9 +17,10 @@ module UF.Powerset-Fin
 
 open PropositionalTruncation pt
 
-open import ArithmeticViaEquivalence.ArithmeticViaEquivalence
-open import MLTT.Fin
-open import MLTT.Fin-Properties
+open import Fin.ArithmeticViaEquivalence
+open import Fin.Type
+open import Fin.Kuratowski pt
+
 open import MLTT.List
 open import Posets.JoinSemiLattices
 
@@ -35,7 +36,6 @@ open import UF.Subsingletons-FunExt
 
 open binary-unions-of-subsets pt
 open ImageAndSurjection pt
-open Kuratowski-finiteness pt
 
 is-Kuratowski-finite-subset : {X : 𝓤 ̇ } (A : 𝓟 X) → 𝓤 ̇
 is-Kuratowski-finite-subset A = is-Kuratowski-finite (𝕋 A)

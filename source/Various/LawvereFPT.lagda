@@ -695,22 +695,22 @@ Mike Shulman.
 
  global-invariance-under-≃-false :
 
-    ((A : ∀ {𝓤 : Universe} → 𝓤 ̇ → 𝓤 ⁺ ̇ )
-     {𝓤 𝓥 : Universe}
+    ((A : (𝓤 : Universe) → 𝓤 ̇ → 𝓤 ⁺ ̇ )
+     (𝓤 𝓥 : Universe)
      (X : 𝓤 ̇ ) (Y : 𝓥 ̇ )
-    → X ≃ Y → A X ≃ A Y)
+    → X ≃ Y → A 𝓤 X ≃ A 𝓥 Y)
     → 𝟘
 
- global-invariance-under-≃-false i = γ
+ global-invariance-under-≃-false h = γ
   where
-   A : {𝓤 : Universe} → 𝓤 ̇ → 𝓤 ⁺ ̇
-   A {𝓤} _ = 𝓤 ̇
+   A : (𝓤 : Universe) → 𝓤 ̇ → 𝓤 ⁺ ̇
+   A 𝓤 _ = 𝓤 ̇
 
    e : 𝟘 {𝓤₁} ≃ 𝟘 {𝓤₀}
    e = qinveq 𝟘-elim (𝟘-elim , (λ x → 𝟘-elim x) , (λ x → 𝟘-elim x))
 
    δ : (𝓤₁ ̇ ) ≃ (𝓤₀ ̇ )
-   δ = i A (𝟘 {𝓤₁}) (𝟘 {𝓤₀}) e
+   δ = h A 𝓤₁ 𝓤₀ (𝟘 {𝓤₁}) (𝟘 {𝓤₀}) e
 
    γ : 𝟘 {𝓤₀}
    γ = Corollary δ

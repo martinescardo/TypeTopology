@@ -8,7 +8,7 @@ towards proving the continuous extension theorem.
 
 {-# OPTIONS --without-K --exact-split --safe --experimental-lossy-unification #-}
 
-open import MLTT.Spartan renaming (_+_ to _∔_) 
+open import MLTT.Spartan renaming (_+_ to _∔_)
 
 open import Notation.CanonicalMap
 open import UF.Base
@@ -17,9 +17,9 @@ open import UF.FunExt
 open import UF.PropTrunc
 open import Notation.Order
 
-open import Rationals.Rationals
+open import Rationals.Type
 open import Rationals.Order
-open import Rationals.Multiplication 
+open import Rationals.Multiplication
 
 
 module MetricSpaces.ContinuousExtensionTheorem
@@ -30,7 +30,7 @@ module MetricSpaces.ContinuousExtensionTheorem
 
 open PropositionalTruncation pt
 
-open import DedekindReals.Reals pe pt fe
+open import DedekindReals.Type pe pt fe
 open import MetricSpaces.Definition pt fe pe
 open import MetricSpaces.DedekindReals pt fe pe
 open import MetricSpaces.Rationals fe pt pe
@@ -66,7 +66,7 @@ open import Naturals.Order
     sequence-converges' : convergent-sequence ℝ ℝ-metric-space S'
     sequence-converges' = ℝ-cauchy-sequences-are-convergent S' ι-sequence-cauchy'
  -}
- 
+
 -- This is standard continuity
 -- May not be possible to prove with this. Should consider uniform continuity and\bishop continuity
 
@@ -96,7 +96,7 @@ open import Rationals.Addition
  -- This needs to be cleaned up, abstract two proofs to chop proof in half
 
 ι-continuous : continuous ℚ-metric-space ℝ-metric-space ι
-ι-continuous c (ε , 0<ε) = (ε' , 0<ε') , I 
+ι-continuous c (ε , 0<ε) = (ε' , 0<ε') , I
  where
   ε' : ℚ
   ε' = 1/2 * ε
@@ -120,16 +120,16 @@ open import Rationals.Addition
         → c + 1/4 * ε ≤ x + 1/4 * ε × (ℚ-max (c + 1/4 * ε) (x + 1/4 * ε) ＝ x + 1/4 * ε ) ∔ x + 1/4 * ε ≤ c + 1/4 * ε × (ℚ-max (c + 1/4 * ε) (x + 1/4 * ε) ＝ c + 1/4 * ε)
         → B-ℚ (ℚ-min (c - 1/4 * ε) (x - 1/4 * ε)) (ℚ-max (c + 1/4 * ε) (x + 1/4 * ε)) ε 0<ε
      II (inl (l₁ , e₁)) (inl (l₂ , e₂)) = transport (_< ε) (ℚ-metric-commutes (ℚ-max (c + 1/4 * ε) (x + 1/4 * ε)) (ℚ-min (c - 1/4 * ε) (x - 1/4 * ε))) i
-      where     
+      where
        i : B-ℚ (ℚ-max (c + 1/4 * ε) (x + 1/4 * ε)) (ℚ-min (c - 1/4 * ε) (x - 1/4 * ε)) ε 0<ε
        i = transport₂ (λ α β → B-ℚ α β ε 0<ε) (e₂ ⁻¹) (e₁ ⁻¹) (ℚ≤-<-trans fe (ℚ-metric (x + 1/4 * ε) (c - 1/4 * ε)) (abs (x - c) + 1/2 * ε) ε v vi)
         where
          ii : ℚ-metric (x + 1/4 * ε) (c - 1/4 * ε) ＝ ℚ-metric (x - c) (- 1/2 * ε)
          ii = ap abs (x + 1/4 * ε - (c - 1/4 * ε)    ＝⟨ general-rearrange ⟩
-                     x - c + (1/4 * ε - (- 1/4 * ε)) ＝⟨ ap (λ α → x - c + (1/4 * ε + α)) (ℚ-minus-minus fe (1/4 * ε) ⁻¹) ⟩ 
-                     x - c + (1/4 * ε + 1/4 * ε)     ＝⟨ ap (x - c +_) (ℚ-distributivity' fe ε 1/4 1/4 ⁻¹) ⟩ 
+                     x - c + (1/4 * ε - (- 1/4 * ε)) ＝⟨ ap (λ α → x - c + (1/4 * ε + α)) (ℚ-minus-minus fe (1/4 * ε) ⁻¹) ⟩
+                     x - c + (1/4 * ε + 1/4 * ε)     ＝⟨ ap (x - c +_) (ℚ-distributivity' fe ε 1/4 1/4 ⁻¹) ⟩
                      x - c + (1/4 + 1/4) * ε         ＝⟨ ap (λ α → x - c + α * ε ) (1/4+1/4 fe) ⟩
-                     x - c + 1/2 * ε                 ＝⟨ ap (x - c +_) (ℚ-minus-minus fe (1/2 * ε)) ⟩         
+                     x - c + 1/2 * ε                 ＝⟨ ap (x - c +_) (ℚ-minus-minus fe (1/2 * ε)) ⟩
                      x - c - (- 1/2 * ε)  ∎)
          iii : ℚ-metric (x - c) (- 1/2 * ε) ≤ abs (x - c) + abs (- (- 1/2 * ε))
          iii = ℚ-triangle-inequality fe (x - c) (- (- 1/2 * ε))
@@ -142,7 +142,7 @@ open import Rationals.Addition
           where
            vii : 1/2 * ε + 1/2 * ε ＝ ε
            vii = ap₂ _+_ (ℚ*-comm 1/2 ε) (ℚ*-comm 1/2 ε) ∙ ℚ-into-half fe ε ⁻¹
-       
+
      II (inl (l₁ , e₁)) (inr (l₂ , e₂)) = transport (_< ε) (ℚ-metric-commutes (ℚ-max (c + 1/4 * ε) (x + 1/4 * ε)) (ℚ-min (c - 1/4 * ε) (x - 1/4 * ε))) i
       where
        i : B-ℚ (ℚ-max (c + 1/4 * ε) (x + 1/4 * ε)) (ℚ-min (c - 1/4 * ε) (x - 1/4 * ε)) ε 0<ε
@@ -174,10 +174,10 @@ open import Rationals.Addition
         where
          ii : ℚ-metric (c + 1/4 * ε) (x - 1/4 * ε) ＝ ℚ-metric (c - x) (- 1/2 * ε)
          ii = ap abs (c + 1/4 * ε - (x - 1/4 * ε)    ＝⟨ general-rearrange ⟩
-                     c - x + (1/4 * ε - (- 1/4 * ε)) ＝⟨ ap (λ α → c - x + (1/4 * ε + α)) (ℚ-minus-minus fe (1/4 * ε) ⁻¹) ⟩ 
-                     c - x + (1/4 * ε + 1/4 * ε)     ＝⟨ ap (c - x +_) (ℚ-distributivity' fe ε 1/4 1/4 ⁻¹) ⟩ 
+                     c - x + (1/4 * ε - (- 1/4 * ε)) ＝⟨ ap (λ α → c - x + (1/4 * ε + α)) (ℚ-minus-minus fe (1/4 * ε) ⁻¹) ⟩
+                     c - x + (1/4 * ε + 1/4 * ε)     ＝⟨ ap (c - x +_) (ℚ-distributivity' fe ε 1/4 1/4 ⁻¹) ⟩
                      c - x + (1/4 + 1/4) * ε         ＝⟨ ap (λ α → c - x + α * ε ) (1/4+1/4 fe) ⟩
-                     c - x + 1/2 * ε                 ＝⟨ ap (c - x +_) (ℚ-minus-minus fe (1/2 * ε)) ⟩         
+                     c - x + 1/2 * ε                 ＝⟨ ap (c - x +_) (ℚ-minus-minus fe (1/2 * ε)) ⟩
                      c - x - (- 1/2 * ε)  ∎)
          iii : ℚ-metric (c - x) (- 1/2 * ε) ≤ abs (c - x) + abs (- (- 1/2 * ε))
          iii = ℚ-triangle-inequality fe (c - x) (- (- 1/2 * ε))
@@ -190,9 +190,9 @@ open import Rationals.Addition
           where
            vii : 1/2 * ε + 1/2 * ε ＝ ε
            vii = ap₂ _+_ (ℚ*-comm 1/2 ε) (ℚ*-comm 1/2 ε) ∙ ℚ-into-half fe ε ⁻¹
-           
-     abstract       
-     
+
+     abstract
+
       0<ε'' : 0ℚ <ℚ 1/4 * ε
       0<ε'' = quarter-preserves-order' ε 0<ε
       l₁ : c - 1/4 * ε <ℚ c
@@ -210,7 +210,7 @@ open import Rationals.Addition
  where
   get-inverse : Σ 1/absy ꞉ ℚ , abs y * 1/absy ＝ 1ℚ
   get-inverse = ℚ*-inverse fe (abs y) {!!}
-   
+
   I : Σ 1/absy ꞉ ℚ , abs y * 1/absy ＝ 1ℚ →  Σ (δ , l₂) ꞉ ℚ₊ , ((x : ℚ) → B-ℚ q x δ l₂ → B-ℚ (y * q) (y * x) ε l)
   I (1/absy , e) = (ε * 1/absy , {!!}) , II
    where
@@ -225,7 +225,7 @@ open import Rationals.Addition
             abs (y * q + (- x) * y) ＝⟨ ap (λ α → abs (y * q + α)) (ℚ-subtraction-dist-over-mult fe x y) ⟩
             abs (y * q - x * y)     ＝⟨ ap (λ α → abs (y * q - α)) (ℚ*-comm x y) ⟩
             abs (y * q - y * x)     ∎
-      
+
       IV : ε * 1/absy * abs y ＝ ε
       IV = ε * 1/absy * abs y   ＝⟨ ℚ*-assoc fe ε (1/absy) (abs y)     ⟩
            ε * (1/absy * abs y) ＝⟨ ap (ε *_) (ℚ*-comm 1/absy (abs y)) ⟩
@@ -241,7 +241,7 @@ composition-preserves-continuity : {M₁ : 𝓤 ̇} {M₂ : 𝓥 ̇} {M₃ : �
                                  → (g : M₂ → M₃)
                                  → continuous m₁ m₂ f
                                  → continuous m₂ m₃ g
-                                 → continuous m₁ m₃ (g ∘ f) 
+                                 → continuous m₁ m₃ (g ∘ f)
 
 composition-preserves-continuity  {𝓤} {𝓥} {𝓦} {M₁} {M₂} {M₃} (B₁ , m₁) (B₂ , m₂) (B₃ , m₃) f g c₁ c₂ c (ε , l) = I (c₂ (f c) (ε , l))
  where
@@ -280,10 +280,10 @@ open import DedekindReals.Order pe pt fe
  where
   S : ℕ → ℚ
   S = ⟨1/sn⟩
-  
+
   by-ℚ-ℝ-id-continuity : (c : ℚ) → ((ε , l) : ℚ₊) → Σ (δ , l₂) ꞉ ℚ₊ , ((x : ℚ) → B-ℚ c x δ l₂ → B-ℝ (ℚ-ℝ-id c) (ℚ-ℝ-id x) ε l)
   by-ℚ-ℝ-id-continuity = ℚ-ℝ-id-continuous
-  
+
   I : ((c : ℚ) → ((ε , l) : ℚ₊) → Σ (δ , l₂) ꞉ ℚ₊ , ((x : ℚ) → B-ℚ c x δ l₂ → B-ℝ (ℚ-ℝ-id c) (ℚ-ℝ-id x) ε l)) → ℚ
   I f = {!!}
    where
@@ -294,10 +294,10 @@ open import DedekindReals.Order pe pt fe
 ℝ-id' : ℝ → ℝ
 ℝ-id' r = I (by-ℚ-ℝ-id-continuity)
  where
-  
+
   by-ℚ-ℝ-id-continuity : (c : ℚ) → ((ε , l) : ℚ₊) → Σ (δ , l₂) ꞉ ℚ₊ , ((x : ℚ) → B-ℚ c x δ l₂ → B-ℝ (ℚ-ℝ-id c) (ℚ-ℝ-id x) ε l)
   by-ℚ-ℝ-id-continuity = ℚ-ℝ-id-continuous
-  
+
   I : ((c : ℚ) → ((ε , l) : ℚ₊) → Σ (δ , l₂) ꞉ ℚ₊ , ((x : ℚ) → B-ℚ c x δ l₂ → B-ℝ (ℚ-ℝ-id c) (ℚ-ℝ-id x) ε l)) → ℝ
   I f = (left , right) , {!!}
    where
@@ -313,7 +313,7 @@ That is, not only can I not find a q close to r (without truncation), I cannot f
 
 So how do we find to find a q close to r? We cannot.
 
-The only way I see to get access to values is by defining the "fbar" function. 
+The only way I see to get access to values is by defining the "fbar" function.
 
 \begin{code}
 
@@ -334,7 +334,7 @@ open import UF.Powerset
   II : continuous ℚ-metric-space ℚ-metric-space I × (I ∘ f ＝ id)
   II = {!!}
   by-f-continuity : (c : ℚ) → ((ε , 0<ε) : ℚ₊) → Σ (δ , 0<δ) ꞉ ℚ₊ , ((x : ℚ) → B-ℚ c x δ 0<δ → B-ℚ (f c) (f x) ε 0<ε)
-  by-f-continuity = cont 
+  by-f-continuity = cont
 -}
 {-
 f^ : (f g : ℚ → ℚ)
@@ -367,7 +367,7 @@ We have that ∀ ε , δ > 0 , ∀ x c →  | x - c | < δ  → | f x - f c | < 
 We have some r , mapping to r' , but we are defining r'.
 
                          p < r' → condition    with     condition ⇔ ?
-                         
+
                          We require that if a < r then f a < r' . But I see here that a = g b for some b. b = f a.
                          So we want b < r' ⇔ g b < r. This is fine by bijectivity of f , g.
 
@@ -384,12 +384,12 @@ So then, the question is, is continuity strong enough to be able to construct th
      where
       I : Σ p ꞉ ℚ , p < r → Σ p' ꞉ ℚ , g p' < r
       I (p , p<r) = (f p) ,  transport (_< r) (e₂ p ⁻¹) p<r
-      
+
     inhabited-right-z : inhabited-right R
     inhabited-right-z = ∥∥-functor I (inhabited-from-real-R r)
      where
       I : Σ q ꞉ ℚ , r < q → Σ q' ꞉ ℚ , r < g q'
-      I (q , r<q) = f q ,  transport (r <_) (e₂ q ⁻¹) r<q 
+      I (q , r<q) = f q ,  transport (r <_) (e₂ q ⁻¹) r<q
 -}
 \end{code}
 
@@ -418,21 +418,21 @@ Roundedness is where the problem begins. Following the same proof pattern, this 
      where
       ltr : {!!}
       ltr = {!!}
-      
+
       rtl : {!!}
       rtl = {!!}
-     
-    
+
+
     rounded-right-z : rounded-right R
     rounded-right-z = {!!}
-    
+
     disjoint-z : disjoint L R
     disjoint-z = {!!}
-    
+
     located-z : located L R
     located-z = {!!}
 
--} 
+-}
 
 
 {-
@@ -447,14 +447,14 @@ continuous-extension-theorem f f-continuous = (g , g-continuous) , g-unique
     Sl : ℕ → ℝ
     Sl n = embedding-ℚ-to-ℝ {!!}
      where
-      I : {!!} 
+      I : {!!}
       I = ℝ-arithmetically-located x (⟨1/sn⟩ n) {!!}
     res1 : (S : ℕ → ℝ) → cauchy→convergent ℝ ℝ-metric-space S
     res1 = ℝ-cauchy-sequences-are-convergent
-  
+
   g-continuous : continuous ℝ-metric-space ℝ-metric-space g
   g-continuous = {!!}
-  
+
   g-unique : is-central (Σ (continuous ℝ-metric-space ℝ-metric-space)) (g , g-continuous)
   g-unique (g' , g'-continuous) = {!!}
 -}
@@ -493,7 +493,7 @@ Do need to find a way to seperate the b out.
 
 Roundedness, disjointedness seem trivial... by density of rationals.
 
-Roundedness : 
+Roundedness :
 
 Locatedness could be difficult. I cannot get inhabitedness.
 
@@ -551,20 +551,20 @@ f^' f f-cont x = z
    where
     by-continuity : ℚ → ℚ₊ → ℚ₊
     by-continuity z ε = obtain-delta ℚ-metric-space ℚ-metric-space f f-cont z ε
- 
+
     L : 𝓟 ℚ
     L p = condition , ∃-is-prop
      where
      condition : 𝓤₀ ̇
      condition = ∃ (u , v) ꞉ ℚ × ℚ , Σ (ε , l) ꞉ ℚ₊ , u < x × x < v × p < f u - ε × B-ℚ u v (pr₁ (by-continuity u (ε , l))) (pr₂ (by-continuity u (ε , l)))
 
-    
+
     R : 𝓟 ℚ
     R q = condition , ∃-is-prop
      where
       condition : 𝓤₀ ̇
       condition = ∃ (u , v) ꞉ ℚ × ℚ , Σ (ε , l) ꞉ ℚ₊ , u < x × x < v × q < f u + ε × B-ℚ u v (pr₁ (by-continuity u (ε , l))) (pr₂ (by-continuity u (ε , l)))
-    
+
     inhabited-left-z : inhabited-left L
     inhabited-left-z = {!!}
 
@@ -573,10 +573,10 @@ f^' f f-cont x = z
 
     rounded-left-z : rounded-left L
     rounded-left-z = {!!}
-     
+
     rounded-right-z : rounded-right R
     rounded-right-z = {!!}
-     
+
     located-z : located L R
     located-z p q l = {!!}
 
@@ -610,13 +610,13 @@ f^' f f-cont x = z
      where
      condition : 𝓤₀ ̇
      condition = ∃ (u , v) ꞉ ℚ × ℚ , Σ (ε , _) ꞉ ℚ₊ , u < x × x < v × p < ℚ-min (f u) (f v) - ε
-    
+
     R : 𝓟 ℚ
     R q = condition , ∃-is-prop
      where
       condition : 𝓤₀ ̇
       condition = ∃ (u , v) ꞉ ℚ × ℚ , Σ (ε , _) ꞉ ℚ₊ , u < x × x < v × ℚ-max (f u) (f v) + ε < q
-    
+
     inhabited-left-z : inhabited-left L
     inhabited-left-z = ∥∥-rec (inhabited-left-is-prop L) I (ℝ-arithmetically-located x 1/2 (0 , refl))
      where
@@ -641,7 +641,7 @@ f^' f f-cont x = z
           II : Σ p' ꞉ ℚ , p < p' × p' < ℚ-min (f u) (f v) - ε
              → Σ p' ꞉ ℚ , p < p' × (∃ (u , v) ꞉ ℚ × ℚ , Σ (ε , _) ꞉ ℚ₊ , u < x × x < v × p' < ℚ-min (f u) (f v) - ε)
           II (p' , p<p' , p'<m) = p' , p<p' , ∣ (u , v) , (ε , l) , (u<x , x<v , p'<m) ∣
-        
+
       rtl : ∃ p' ꞉ ℚ , p < p' × p' ∈ L → p ∈ L
       rtl = ∥∥-rec ∃-is-prop I
        where
@@ -651,10 +651,10 @@ f^' f f-cont x = z
           II : Σ (u , v) ꞉ ℚ × ℚ , Σ (ε , _) ꞉ ℚ₊ , u < x × x < v × p' < ℚ-min (f u) (f v) - ε
              → Σ (u , v) ꞉ ℚ × ℚ , Σ (ε , _) ꞉ ℚ₊ , u < x × x < v × p < ℚ-min (f u) (f v) - ε
           II ((u , v) , (ε , l) , u<x , x<v , p'<m) = ((u , v) , (ε , l) , u<x , x<v , ℚ<-trans p p' (ℚ-min (f u) (f v) - ε) p<p' p'<m)
-     
+
     rounded-right-z : rounded-right R
     rounded-right-z = {!!}
-     
+
     located-z : located L R
     located-z p q l = {!!}
 
@@ -674,18 +674,18 @@ f^' f f-cont e x = z
      where
      condition : 𝓤₀ ̇
      condition = ∃ b ꞉ ℚ , ((ε : ℚ) → 0ℚ < ε → Σ δ ꞉ ℚ , ((l₁ : 0ℚ < δ) → B-ℝ x (ι b) δ l₁ → p < f b - ε))
-    
+
     R : 𝓟 ℚ
     R q = condition , ∃-is-prop
      where
       condition : 𝓤₀ ̇
       condition = ∃ b ꞉ ℚ , ((ε : ℚ) → 0ℚ < ε → Σ δ ꞉ ℚ , ((l₁ : 0ℚ < δ) → B-ℝ x (ι b) δ l₁ → q < f b + ε))
-    
+
     inhabited-left-z : inhabited-left L
     inhabited-left-z = {!!}
      where
       t : ∃ p ꞉ ℚ , p ∈ lower-cut-of x
-     t = inhabited-from-real-L x 
+     t = inhabited-from-real-L x
 
     inhabited-right-z : inhabited-right R
     inhabited-right-z = {!!}
@@ -695,7 +695,7 @@ f^' f f-cont e x = z
     rounded-left-z p = ltr , rtl
      where
       ltr : p ∈ L → ∃ p' ꞉ ℚ , p < p' × p' ∈ L
-      ltr p<x = ∥∥-functor I p<x 
+      ltr p<x = ∥∥-functor I p<x
        where
         I : Σ b ꞉ ℚ , ((ε : ℚ) → 0ℚ < ε → Σ δ ꞉ ℚ , ((l₁ : 0ℚ < δ) → B-ℝ x (ι b) δ l₁ → p < f b - ε))
           → Σ p' ꞉ ℚ , p < p' × p' ∈ L
@@ -705,14 +705,14 @@ f^' f f-cont e x = z
           using-b = {!!}
           by-density : {!!}
           by-density = {!!}
-        
+
       rtl : {!!}
       rtl = {!!}
-     
-    
+
+
     rounded-right-z : rounded-right R
     rounded-right-z = {!!}
-     
+
     located-z : located L R
     located-z = {!!}
 

@@ -9,10 +9,10 @@ possibility of a zero-denominator.
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import MLTT.Spartan renaming (_+_ to _∔_) 
+open import MLTT.Spartan renaming (_+_ to _∔_)
 
 open import Integers.Abs
-open import Integers.Integers
+open import Integers.Type
 open import Integers.HCF
 open import Integers.Multiplication
 open import Integers.Order
@@ -20,12 +20,12 @@ open import Naturals.Division
 open import Naturals.HCF
 open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
 open import Naturals.Properties
-open import TypeTopology.DiscreteAndSeparated 
-open import TypeTopology.SigmaDiscreteAndTotallySeparated 
-open import UF.Base hiding (_≈_)  
-open import UF.FunExt 
-open import UF.Miscelanea 
-open import UF.Subsingletons 
+open import TypeTopology.DiscreteAndSeparated
+open import TypeTopology.SigmaDiscreteAndTotallySeparated
+open import UF.Base hiding (_≈_)
+open import UF.FunExt
+open import UF.Miscelanea
+open import UF.Subsingletons
 
 module Rationals.Fractions where
 
@@ -40,7 +40,7 @@ denom-zero-lt x = ((1-divides-all (abs x)) , 1-divides-all 1) , I
  where
   I : (d : ℕ) → is-common-divisor d (abs x) 1 → d ∣ 1
   I d (_ , d-divides-1) = d-divides-1
-  
+
 is-in-lowest-terms-is-prop : Fun-Ext → (q : ℚₙ) → is-prop (is-in-lowest-terms q)
 is-in-lowest-terms-is-prop fe (x , y) = coprime-is-prop fe (abs x) (succ y)
 
@@ -75,7 +75,7 @@ _≈_ : (p q : ℚₙ) → 𝓤₀ ̇
       a' * (y * c') ＝⟨ ap (a' *_) e₂                 ⟩
       a' * (z * b') ＝⟨ ℤ-mult-rearrangement' z b' a' ⟩
       b' * (z * a') ∎
-        
+
   conclusion : (x , a) ≈ (z , c)
   conclusion = ℤ-mult-left-cancellable (x * c') (z * a') b' id I
 
@@ -97,7 +97,7 @@ equiv-with-lowest-terms-is-equal (x , a) (y , b) e ((m₁ , m₂) , n) ((m₁' ,
       abs (x * pos (succ b))      ＝⟨ γ                                 ⟩
       abs (y * pos (succ a))      ＝⟨ abs-over-mult y (pos (succ a))    ⟩
       abs y ℕ* abs (pos (succ a)) ∎
- 
+
   s : (succ a) ∣ (abs x) ℕ* (succ b)
   s = abs y , I
    where
@@ -146,5 +146,5 @@ instance
 instance
  canonical-map-ℕ-to-ℚₙ : Canonical-Map ℕ ℚₙ
  ι {{canonical-map-ℕ-to-ℚₙ}} = ℕ-to-ℚₙ
- 
+
 \end{code}

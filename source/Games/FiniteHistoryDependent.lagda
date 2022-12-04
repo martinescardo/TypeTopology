@@ -145,7 +145,7 @@ quantifiers applied to the outcome function (Theorem 3.1 of [1]).
 
 \begin{code}
 
-optimal-outcome : (G : Game) → R
+optimal-outcome : Game → R
 optimal-outcome (game Xt q ϕt) = K-sequence ϕt q
 
 \end{code}
@@ -208,7 +208,7 @@ is-sgpe : {Xt : 𝕋} → 𝓚 Xt → (Path Xt → R) → Strategy Xt → Type
 is-sgpe {[]}     ⟨⟩        q ⟨⟩         = 𝟙
 is-sgpe {X ∷ Xf} (ϕ :: ϕf) q (x₀ :: σf) =
 
-      (sub q x₀ (strategic-path (σf x₀)) ＝ ϕ (λ x → q (x :: strategic-path (σf x))))
+      (sub q x₀ (strategic-path (σf x₀)) ＝ ϕ (λ x → sub q x (strategic-path (σf x))))
     ×
       ((x : X) → is-sgpe {Xf x} (ϕf x) (sub q x) (σf x))
 
@@ -227,7 +227,7 @@ In the above definition:
 
    So the first part
 
-     q (x₀ :: strategic-path (σf x₀)) ＝ ϕ (λ x → q (x :: strategic-path (σf x)))
+     sub q x₀ (strategic-path (σf x₀)) ＝ ϕ (λ x → sub q x (strategic-path (σf x)))
 
    of the definition is as in the comment above, but with a partial
    play of length k=0, and the second (inductive) part, says that the
@@ -257,19 +257,19 @@ The following is Theorem 3.1 of reference [1].
 sgpe-lemma : Fun-Ext
            → (Xt : 𝕋) (ϕt : 𝓚 Xt) (q : Path Xt → R) (σ : Strategy Xt)
            → is-sgpe ϕt q σ
-           → K-sequence ϕt q ＝ q (strategic-path σ)
+           → q (strategic-path σ) ＝ K-sequence ϕt q
 sgpe-lemma fe []       ⟨⟩        q ⟨⟩        ⟨⟩       = refl
 sgpe-lemma fe (X ∷ Xf) (ϕ :: ϕt) q (a :: σf) (h :: t) = γ
  where
   observation-t : type-of t ＝ ((x : X) → is-sgpe (ϕt x) (sub q x) (σf x))
   observation-t = refl
 
-  IH : (x : X) → K-sequence (ϕt x) (sub q x) ＝ q (x :: strategic-path (σf x))
+  IH : (x : X) → sub q x (strategic-path (σf x)) ＝ K-sequence (ϕt x) (sub q x)
   IH x = sgpe-lemma fe (Xf x) (ϕt x) (sub q x) (σf x) (t x)
 
-  γ = ϕ (λ x → K-sequence (ϕt x) (sub q x))    ＝⟨ ap ϕ (dfunext fe IH) ⟩
-      ϕ (λ x → q (x :: strategic-path (σf x))) ＝⟨ h ⁻¹ ⟩
-      q (a :: strategic-path (σf a))           ∎
+  γ = sub q a (strategic-path (σf a))           ＝⟨ h ⟩
+      ϕ (λ x → sub q x (strategic-path (σf x))) ＝⟨ ap ϕ (dfunext fe IH) ⟩
+      ϕ (λ x → K-sequence (ϕt x) (sub q x))     ∎
 
 \end{code}
 
@@ -277,11 +277,11 @@ This can be reformulated as follows in terms of the type of games:
 
 \begin{code}
 
-equilibrium-theorem : Fun-Ext
-                    → (G : Game) (σ : Strategy (Xt G))
-                    → is-optimal G σ
-                    → optimal-outcome G ＝ q G (strategic-path σ)
-equilibrium-theorem fe (game Xt ϕt q) = sgpe-lemma fe Xt q ϕt
+optimality-theorem : Fun-Ext
+                   → (G : Game) (σ : Strategy (Xt G))
+                   → is-optimal G σ
+                   → q G (strategic-path σ) ＝ optimal-outcome G
+optimality-theorem fe (game Xt ϕt q) = sgpe-lemma fe Xt q ϕt
 
 \end{code}
 
@@ -319,10 +319,10 @@ _⊗ᴶ_ : {X : Type} {Y : X → Type}
      → J X
      → ((x : X) → J (Y x))
      → J (Σ x ꞉ X , Y x)
-(ε ⊗ᴶ δ) q = a :: b a
+(ε ⊗ᴶ δ) q = x₀ :: ν x₀
  where
-  b = λ x → δ x (sub q x)
-  a = ε (λ x → q (x :: b x))
+  ν  = λ x → δ x (sub q x)
+  x₀ = ε (λ x → sub q x (ν x))
 
 J-sequence : {Xt : 𝕋} → 𝓙 Xt → J (Path Xt)
 J-sequence {[]}     ⟨⟩        = λ q → ⟨⟩
@@ -443,28 +443,28 @@ then εt are selections of ϕt, but we don't need this fact here.
 \begin{code}
 
 crucial-lemma : {Xt : 𝕋} (εt : 𝓙 Xt) (q : Path Xt → R)
-              → J-sequence εt q
-              ＝ strategic-path (selection-strategy εt q)
+              → strategic-path (selection-strategy εt q)
+              ＝ J-sequence εt q
 crucial-lemma {[]}     ⟨⟩           q = refl
 crucial-lemma {X ∷ Xf} εt@(ε :: εf) q =
- J-sequence (ε :: εf) q                          ＝⟨ refl ⟩
+ strategic-path (selection-strategy (ε :: εf) q) ＝⟨ refl ⟩
+ x₀ :: strategic-path (σf x₀)                    ＝⟨ ap (x₀ ::_) IH ⟩
+ x₀ :: J-sequence {Xf x₀} (εf x₀) (sub q x₀)     ＝⟨ refl ⟩
+ x₀ :: ν x₀                                      ＝⟨ refl ⟩
  (ε ⊗ᴶ (λ x → J-sequence {Xf x} (εf x))) q       ＝⟨ refl ⟩
- a :: b a                                        ＝⟨ refl ⟩
- a :: J-sequence {Xf a} (εf a) (sub q a)         ＝⟨ ap (a ::_) IH ⟩
- a :: strategic-path (σf a)                      ＝⟨ refl ⟩
- strategic-path (selection-strategy (ε :: εf) q) ∎
+ J-sequence (ε :: εf) q                          ∎
  where
-  b : (x : X) → Path (Xf x)
-  b x = J-sequence {Xf x} (εf x) (sub q x)
+  ν : (x : X) → Path (Xf x)
+  ν x = J-sequence {Xf x} (εf x) (sub q x)
 
-  a : X
-  a = ε (λ x → q (x :: b x))
+  x₀ : X
+  x₀ = ε (λ x → sub q x (ν x))
 
   σf : (x : X) → Strategy (Xf x)
   σf x = selection-strategy {Xf x} (εf x) (sub q x)
 
-  IH : J-sequence {Xf a} (εf a) (sub q a) ＝ strategic-path (σf a)
-  IH = crucial-lemma (εf a) (sub q a)
+  IH : strategic-path (σf x₀) ＝ J-sequence {Xf x₀} (εf x₀) (sub q x₀)
+  IH = crucial-lemma (εf x₀) (sub q x₀)
 
 selection-strategy-lemma : Fun-Ext
                          → {Xt : 𝕋} (εt : 𝓙 Xt) (q : Path Xt → R)
@@ -479,15 +479,16 @@ selection-strategy-lemma fe {X ∷ Xf} εt@(ε :: εf) q = γ
   x₀ = ε (λ x → sub q x (J-sequence (εf x) (sub q x)))
   x₁ = ε (λ x → sub q x (strategic-path (σf x)))
 
-  I : (x : X) → J-sequence (εf x) (sub q x) ＝ strategic-path (σf x)
+  I : (x : X) → strategic-path (σf x) ＝ J-sequence (εf x) (sub q x)
   I x = crucial-lemma (εf x) (sub q x)
 
-  II : x₀ ＝ x₁
+  II : x₁ ＝ x₀
   II = ap (λ - → ε (λ x → sub q x (- x))) (dfunext fe I)
 
-  III = sub q x₀ (strategic-path (σf x₀))                  ＝⟨ IV ⟩
-        sub q x₁ (strategic-path (σf x₁))                  ＝⟨ refl ⟩
-        overline ε (λ x → sub q x (strategic-path (σf x))) ∎
+  III = overline ε (λ x → sub q x (strategic-path (σf x))) ＝⟨ refl ⟩
+        sub q x₁ (strategic-path (σf x₁))                  ＝⟨ IV ⟩
+        sub q x₀ (strategic-path (σf x₀))                  ∎
+
    where
     IV = ap (λ - → sub q - (strategic-path (σf -))) II
 
@@ -498,7 +499,7 @@ selection-strategy-lemma fe {X ∷ Xf} εt@(ε :: εf) q = γ
   IH x = selection-strategy-lemma fe (εf x) (sub q x)
 
   γ : is-sgpe (Overline εt) q (x₀ :: σf)
-  γ = III :: IH
+  γ = (III ⁻¹) :: IH
 
 \end{code}
 

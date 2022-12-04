@@ -12,7 +12,7 @@ the least element and binary joins.
 module Posets.JoinSemiLattices where
 
 open import MLTT.Spartan
-open import MLTT.Fin
+open import Fin.Type
 
 open import UF.Subsingletons
 

@@ -4,15 +4,15 @@ Andrew Sneap, 26th November 2021
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import MLTT.Spartan renaming (_+_ to _∔_) 
+open import MLTT.Spartan renaming (_+_ to _∔_)
 
-open import Naturals.Order 
-open import Notation.Order 
-open import UF.Base 
+open import Naturals.Order
+open import Notation.Order
+open import UF.Base
 open import UF.Subsingletons
 
 open import Integers.Abs
-open import Integers.Integers
+open import Integers.Type
 open import Integers.Addition
 open import Integers.Multiplication
 open import Integers.Negation
@@ -36,7 +36,7 @@ x ≥ℤ y = y ≤ℤ x
 instance
  Order-ℤ-ℤ : Order ℤ ℤ
  _≤_ {{Order-ℤ-ℤ}} = _≤ℤ_
- 
+
 _<ℤ_ _>ℤ_ : (x y : ℤ) → 𝓤₀ ̇
 x <ℤ y = succℤ x ≤ y
 x >ℤ y = y <ℤ x
@@ -186,11 +186,11 @@ negative-less-than-positive x y = (x ℕ+ y) , I
       negsucc x + pos (succ x) + pos y        ＝⟨ refl                                                       ⟩
       (- pos (succ x)) + pos (succ x) + pos y ＝⟨ ap (_+ pos y) (ℤ-sum-of-inverse-is-zero' (pos (succ x)))   ⟩
       pos 0 + pos y                           ＝⟨ ℤ-zero-left-neutral (pos y)                                ⟩
-      pos y                                   ∎  
+      pos y                                   ∎
 
 ℤ≤-swap : (x y : ℤ) → x ≤ y → - y ≤ - x
 ℤ≤-swap x y (k , e) = k , ℤ+-lc ((- y) + pos k) (- x) (y + x) I
- where 
+ where
   I : y + x + ((- y) + pos k) ＝ y + x - x
   I = y + x + ((- y) + pos k) ＝⟨ ap (_+ ((- y) + pos k)) (ℤ+-comm y x)                   ⟩
       x + y + ((- y) + pos k) ＝⟨ ℤ+-assoc (x + y) (- y) (pos k) ⁻¹                       ⟩
@@ -207,7 +207,7 @@ negative-less-than-positive x y = (x ℕ+ y) , I
 ℤ≤-swap₂ x y z (l₁ , l₂) = (ℤ≤-swap x y l₁) , (ℤ≤-swap y z l₂)
 
 ℕ≤-to-ℤ≤ : (x y : ℕ) → x ≤ y → pos x ≤ pos y
-ℕ≤-to-ℤ≤ x y l = I (subtraction x y l) 
+ℕ≤-to-ℤ≤ x y l = I (subtraction x y l)
  where
   I : (Σ k ꞉ ℕ , k ℕ+ x ＝ y) → pos x ≤ pos y
   I (k , e) = k , II
@@ -235,7 +235,7 @@ negative-less-than-positive x y = (x ℕ+ y) , I
 \end{code}
 
 ℤ-trichotomous : (x y : ℤ) → (x < y) ∔ (x ＝ y) ∔ (y < x)
-ℤ-trichotomous x y = I (ℤ-dichotomous x y) 
+ℤ-trichotomous x y = I (ℤ-dichotomous x y)
  where
   I : (x ≤ y) ∔ (y ≤ x) → (x < y) ∔ (x ＝ y) ∔ (y < x)
   I (inl l) = II (ℤ≤-split x y l)
@@ -245,7 +245,7 @@ negative-less-than-positive x y = (x ℕ+ y) , I
     II (inr r) = inr (inl r)
   I (inr r) = II (ℤ≤-split y x r)
    where
-    II : (y < x) ∔ (y ＝ x) → (x < y) ∔ (x ＝ y) ∔ (y < x) 
+    II : (y < x) ∔ (y ＝ x) → (x < y) ∔ (x ＝ y) ∔ (y < x)
     II (inl l) = inr (inr l)
     II (inr r) = inr (inl (r ⁻¹))
 
@@ -253,11 +253,11 @@ Different version of trich by Todd
 
 \begin{code}
 
-trich-locate : (x y : ℤ) → 𝓤₀ ̇ 
+trich-locate : (x y : ℤ) → 𝓤₀ ̇
 trich-locate x y = (x < y) ∔ (x ＝ y) ∔ (y < x)
 
 ℤ-trichotomous : (x y : ℤ) → trich-locate x y
-ℤ-trichotomous x y = I (ℤ-dichotomous x y) 
+ℤ-trichotomous x y = I (ℤ-dichotomous x y)
  where
   I : (x ≤ y) ∔ (y ≤ x) → (x < y) ∔ (x ＝ y) ∔ (y < x)
   I (inl l) = II (ℤ≤-split x y l)
@@ -267,14 +267,14 @@ trich-locate x y = (x < y) ∔ (x ＝ y) ∔ (y < x)
     II (inr r) = inr (inl r)
   I (inr r) = II (ℤ≤-split y x r)
    where
-    II : (y < x) ∔ (y ＝ x) → (x < y) ∔ (x ＝ y) ∔ (y < x) 
+    II : (y < x) ∔ (y ＝ x) → (x < y) ∔ (x ＝ y) ∔ (y < x)
     II (inl l) = inr (inr l)
     II (inr r) = inr (inl (r ⁻¹))
 
 ℤ-dichotomous' : (x y : ℤ) → x < y ∔ y ≤ x
 ℤ-dichotomous' x y = I (ℤ-trichotomous x y)
  where
-  I : (x < y) ∔ (x ＝ y) ∔ (y < x) → x < y ∔ y ≤ x 
+  I : (x < y) ∔ (x ＝ y) ∔ (y < x) → x < y ∔ y ≤ x
   I (inl x<y) = inl x<y
   I (inr (inl x＝y)) = inr (transport (_≤ x) x＝y (ℤ≤-refl x))
   I (inr (inr y<x)) = inr (<-is-≤ y x y<x)
@@ -322,7 +322,7 @@ trich-locate x y = (x < y) ∔ (x ＝ y) ∔ (y < x)
       a + pos k + c   ＝⟨ ap (_+ c) p                   ⟩
       b + c           ∎
 
-ℤ≤-adding₂ : (a b c d : ℤ) → a ≤ b × b ≤ c → (a + d ≤ b + d) × (b + d ≤ c + d) 
+ℤ≤-adding₂ : (a b c d : ℤ) → a ≤ b × b ≤ c → (a + d ≤ b + d) × (b + d ≤ c + d)
 ℤ≤-adding₂ a b c d (l₁ , l₂) = (ℤ≤-adding' a b d l₁) , (ℤ≤-adding' b c d l₂)
 
 ℤ<-adding' : (a b c : ℤ) → a < b → a + c < b + c
@@ -373,12 +373,12 @@ nmco-lemma a b = induction base step
    where
     II : (- b) + pos α + (a - a) ＝ a + pos α + ((- b) - a)
     II = (- b) + pos α + (a - a)    ＝⟨ ap (_+ (a - a)) (ℤ+-comm (- b) (pos α))     ⟩
-          pos α - b + (a - a)       ＝⟨ ℤ+-assoc (pos α - b) a (- a) ⁻¹             ⟩ 
+          pos α - b + (a - a)       ＝⟨ ℤ+-assoc (pos α - b) a (- a) ⁻¹             ⟩
           pos α - b + a - a         ＝⟨ ap (_+ (- a)) (ℤ+-comm (pos α - b) a)       ⟩
           a + (pos α - b) - a       ＝⟨ ap (_+ (- a)) (ℤ+-assoc a (pos α) (- b) ⁻¹) ⟩
           a + pos α - b - a         ＝⟨ ℤ+-assoc (a + pos α) (- b) (- a)            ⟩
           a + pos α + ((- b) - a)   ∎
-          
+
     I : succℤ (b * negsucc 0) + pos α ＝ a * negsucc 0
     I = succℤ (b * negsucc 0) + pos α    ＝⟨ by-definition                                                 ⟩
         succℤ (- b) + pos α              ＝⟨ ℤ-left-succ (- b) (pos α)                                     ⟩
@@ -500,7 +500,7 @@ ordering-right-cancellable a b (pos (succ x)) p l = orcl' a b x l
 ℤ≤-ordering-right-cancellable a b (pos (succ x)) p l = orcl a b x l
 ℤ≤-ordering-right-cancellable a b (negsucc x) p l    = 𝟘-elim p
 
-ℤ≤-anti : (x y : ℤ) → x ≤ y → y ≤ x → x ＝ y 
+ℤ≤-anti : (x y : ℤ) → x ≤ y → y ≤ x → x ＝ y
 ℤ≤-anti x y l₁ l₂ = I (ℤ≤-split x y l₁) (ℤ≤-split y x l₂)
  where
   I : x < y ∔ (x ＝ y) → y < x ∔ (y ＝ x)
@@ -534,7 +534,7 @@ min₃ w x y z = minℤ (min₂ w x y) z
 
 difference : (f : ℤ → ℤ → ℤ)             -- Given an integer function
            → (x y : ℤ)                   -- and two bounds
-           → ℤ                           -- find the integer difference 
+           → ℤ                           -- find the integer difference
 difference f l r = max₃ (f l r) (f l (r + pos 2)) (f (l + pos 2) r) (f (l + pos 2) (r + pos 2))
                   - min₃ (f l r) (f l (r + pos 2)) (f (l + pos 2) r) (f (l + pos 2) (r + pos 2))
 

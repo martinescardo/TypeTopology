@@ -8,19 +8,19 @@ properties of multiplication.
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import MLTT.Spartan renaming (_+_ to _∔_) 
+open import MLTT.Spartan renaming (_+_ to _∔_)
 
-open import UF.Base hiding (_≈_) 
-open import UF.FunExt 
-open import Naturals.Properties 
+open import UF.Base hiding (_≈_)
+open import UF.FunExt
+open import Naturals.Properties
 
 open import Integers.Abs
-open import Integers.Integers
+open import Integers.Type
 open import Integers.Multiplication renaming (_*_ to _ℤ*_)
 open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
 open import Rationals.Fractions
 open import Rationals.FractionsOperations renaming (_*_ to _ℚₙ*_ ; _+_ to _ℚₙ+_)
-open import Rationals.Rationals
+open import Rationals.Type
 open import Rationals.Addition
 
 module Rationals.Multiplication where
@@ -50,7 +50,7 @@ toℚ-* fe p q = equiv→equality fe (p ℚₙ* q) (p' ℚₙ* q') conclusion
 
   V : p' ℚₙ* q ≈ p' ℚₙ* q'
   V = transport₂ _≈_ (ℚₙ*-comm q p') (ℚₙ*-comm q' p') IV
-  
+
   conclusion : p ℚₙ* q ≈ p' ℚₙ* q'
   conclusion = ≈-trans (p ℚₙ* q) (p' ℚₙ* q) (p' ℚₙ* q') III V
 
@@ -94,7 +94,7 @@ toℚ-* fe p q = equiv→equality fe (p ℚₙ* q) (p' ℚₙ* q') conclusion
 
   II : toℚ ((pos 0 , 0) ℚₙ* (x' , a')) ＝ toℚ (pos 0 , 0)
   II = equiv→equality fe ((pos 0 , 0) ℚₙ* (x' , a')) (pos 0 , 0) (ℚₙ-zero-left-neutral (x' , a'))
-  
+
   III : 0ℚ * ((x , a) , q) ＝ 0ℚ
   III = 0ℚ * ((x , a) , q)              ＝⟨ ap (0ℚ *_) (pr₂ qn) ⟩
         0ℚ * toℚ (x' , a')              ＝⟨ toℚ-* fe (pos 0 , 0) (x' , a') ⁻¹ ⟩
@@ -108,8 +108,8 @@ toℚ-* fe p q = equiv→equality fe (p ℚₙ* q) (p' ℚₙ* q') conclusion
 ℚ-mult-left-id fe q = II
  where
   I : Σ q' ꞉ ℚₙ , q ＝ toℚ q'
-  I = q-has-qn fe q 
-  
+  I = q-has-qn fe q
+
   q' : ℚₙ
   q' = pr₁ I
 
@@ -120,9 +120,9 @@ toℚ-* fe p q = equiv→equality fe (p ℚₙ* q) (p' ℚₙ* q') conclusion
        q                          ∎
 
 ℚ-mult-right-id : Fun-Ext → (q : ℚ) → q * 1ℚ ＝ q
-ℚ-mult-right-id fe q = ℚ*-comm q 1ℚ ∙ ℚ-mult-left-id fe q 
+ℚ-mult-right-id fe q = ℚ*-comm q 1ℚ ∙ ℚ-mult-left-id fe q
 
-ℚ-distributivity : Fun-Ext → (p q r : ℚ) → p * (q + r) ＝ p * q + p * r 
+ℚ-distributivity : Fun-Ext → (p q r : ℚ) → p * (q + r) ＝ p * q + p * r
 ℚ-distributivity fe p q r = II
  where
   pnc : Σ p' ꞉ ℚₙ , p ＝ toℚ p'
@@ -139,7 +139,7 @@ toℚ-* fe p q = equiv→equality fe (p ℚₙ* q) (p' ℚₙ* q') conclusion
   q' = pr₁ qnc
   r' = pr₁ rnc
 
-  I : p' ℚₙ* (q' ℚₙ+ r') ≈ (p' ℚₙ* q') ℚₙ+ (p' ℚₙ* r') → toℚ (p' ℚₙ* (q' ℚₙ+ r')) ＝ toℚ ((p' ℚₙ* q') ℚₙ+ (p' ℚₙ* r')) 
+  I : p' ℚₙ* (q' ℚₙ+ r') ≈ (p' ℚₙ* q') ℚₙ+ (p' ℚₙ* r') → toℚ (p' ℚₙ* (q' ℚₙ+ r')) ＝ toℚ ((p' ℚₙ* q') ℚₙ+ (p' ℚₙ* r'))
   I = equiv→equality fe (p' ℚₙ* (q' ℚₙ+ r')) ((p' ℚₙ* q') ℚₙ+ (p' ℚₙ* r'))
 
   II : p * (q + r) ＝ p * q + p * r
@@ -151,7 +151,7 @@ toℚ-* fe p q = equiv→equality fe (p ℚₙ* q) (p' ℚₙ* q') conclusion
        toℚ (p' ℚₙ* q') + toℚ (p' ℚₙ* r')       ＝⟨ refl                                     ⟩
        (p * q) + (p * r)                      ∎
 
-ℚ-distributivity' : Fun-Ext → (p q r : ℚ) → (q + r) * p ＝ q * p + r * p 
+ℚ-distributivity' : Fun-Ext → (p q r : ℚ) → (q + r) * p ＝ q * p + r * p
 ℚ-distributivity' fe p q r = II
  where
   I : p * (q + r) ＝ p * q + p * r
@@ -163,7 +163,7 @@ toℚ-* fe p q = equiv→equality fe (p ℚₙ* q) (p' ℚₙ* q') conclusion
        p * q + p * r ＝⟨ ap₂ _+_ (ℚ*-comm p q) (ℚ*-comm p r) ⟩
        q * p + r * p ∎
 
-multiplicative-inverse : Fun-Ext → (q : ℚ) → ¬ (q ＝ 0ℚ) → ℚ 
+multiplicative-inverse : Fun-Ext → (q : ℚ) → ¬ (q ＝ 0ℚ) → ℚ
 multiplicative-inverse fe ((pos 0        , a) , p) nz = 𝟘-elim (nz (numerator-zero-is-zero fe (((pos 0 , a) , p)) refl))
 multiplicative-inverse fe ((pos (succ x) , a) , p) nz = toℚ ((pos (succ a)) , x)
 multiplicative-inverse fe ((negsucc x    , a) , p) nz = toℚ ((negsucc  a) , x)
@@ -204,7 +204,7 @@ division-by-self-is-one fe (pos (succ x) , a) e = I II
       pos (succ x) ℤ* pos (succ a)         ＝⟨ ℤ*-comm (pos (succ x)) (pos (succ a))                       ⟩
       pos (succ a) ℤ* pos (succ x)         ＝⟨ denom-setup a x ⁻¹                                          ⟩
       pos (succ (pred (succ a ℕ* succ x))) ∎
- 
+
   γ : ((negsucc x , a) , p) * toℚ ((negsucc  a) , x) ＝ 1ℚ
   γ = ((negsucc x , a) , p) * toℚ (negsucc a , x) ＝⟨ ap (_* toℚ (negsucc a , x)) (toℚ-toℚₙ fe ((negsucc x , a) , p))                 ⟩
       (toℚ (negsucc x , a) * toℚ (negsucc a , x)) ＝⟨ toℚ-* fe (negsucc x , a) (negsucc a , x) ⁻¹                                     ⟩

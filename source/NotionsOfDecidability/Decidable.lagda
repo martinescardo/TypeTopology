@@ -6,18 +6,28 @@ We look at decidable propositions, detachable families, and complemented subsets
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module NotionsOfDecidability.DecidableAndDetachable where
+module NotionsOfDecidability.Decidable where
 
 open import MLTT.Spartan
 
 open import MLTT.Plus-Properties
 open import MLTT.Two-Properties
 open import UF.Subsingletons
-open import UF.PropTrunc
 
 ¬¬-elim : {A : 𝓤 ̇ } → decidable A → ¬¬ A → A
 ¬¬-elim (inl a) f = a
 ¬¬-elim (inr g) f = 𝟘-elim(f g)
+
+map-decidable : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → (A → B) → (B → A) → decidable A → decidable B
+map-decidable f g (inl x) = inl (f x)
+map-decidable f g (inr h) = inr (λ y → h (g y))
+
+map-decidable-corollary : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → (A ⇔ B) → (decidable A ⇔ decidable B)
+map-decidable-corollary (f , g) = map-decidable f g , map-decidable g f
+
+map-decidable' : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → (A → ¬ B) → (¬ A → B) → decidable A → decidable B
+map-decidable' f g (inl x) = inr (f x)
+map-decidable' f g (inr h) = inl (g h)
 
 empty-decidable : {X : 𝓤 ̇ } → is-empty X → decidable X
 empty-decidable = inr
@@ -28,107 +38,27 @@ empty-decidable = inr
 pointed-decidable : {X : 𝓤 ̇ } → X → decidable X
 pointed-decidable = inl
 
-\end{code}
-
-Digression: https://twitter.com/EgbertRijke/status/1429443868450295810
-
-"decidable" is almost a monad, except that it is not even functorial:
-
-\begin{code}
-
-module EgbertRijkeTwitterDiscussion-22-August-2021-not-a-monad where
-
-  open import UF.Equiv
-
-  T : 𝓤 ̇ → 𝓤 ̇
-  T = decidable
-
-  η : (X : 𝓤 ̇ ) → X → T X
-  η X = inl
-
-  μ : (X : 𝓤 ̇ ) → T (T X) → T X
-  μ X (inl d) = d
-  μ X (inr u) = inr (λ x → u (inl x))
-
-  T-is-nonempty : (X : 𝓤 ̇ ) → is-nonempty (T X)
-  T-is-nonempty X u = u (inr (λ x → u (inl x)))
-
-  μη : (X : 𝓤 ̇ ) → μ X ∘ η (T X) ∼ id
-  μη X (inl x) = refl
-  μη X (inr u) = refl
-
-  ημ : (X : 𝓤 ̇ ) → η (T X) ∘ μ X ∼ id
-  ημ X (inl (inl x)) = refl
-  ημ X (inl (inr u)) = refl
-  ημ X (inr u) = 𝟘-elim (u (inr (λ x → u (inl x))))
-
-  μ-is-invertible : (X : 𝓤 ̇ ) → invertible (μ X)
-  μ-is-invertible X = η (T X) , ημ X , μη X
-
-  μ-≃ : (X : 𝓤 ̇ ) → T (T X) ≃ T X
-  μ-≃ X = qinveq (μ X) (μ-is-invertible X)
-
-  raw-T-algebras-are-non-empty : {X : 𝓤 ̇ } (α : T X → X) → is-nonempty X
-  raw-T-algebras-are-non-empty α u = u (α (inr u))
-
-  retraction-of-η-is-section : {A : 𝓤 ̇ } (α : T A → A)
-                             → α ∘ η A ∼ id
-                             → η A ∘ α ∼ id
-  retraction-of-η-is-section α h (inl a) = ap inl (h a)
-  retraction-of-η-is-section α h (inr u) = 𝟘-elim (raw-T-algebras-are-non-empty α u)
-
-  section-of-η-is-retraction : {A : 𝓤 ̇ } (α : T A → A)
-                             → η A ∘ α ∼ id
-                             → α ∘ η A ∼ id
-  section-of-η-is-retraction α k a = inl-lc (k (inl a))
-
-  η⁻¹ : {A : 𝓤 ̇ } → is-nonempty A → (T A → A)
-  η⁻¹ ϕ (inl a) = a
-  η⁻¹ ϕ (inr u) = 𝟘-elim (ϕ u)
-
-  η⁻¹-is-retraction : {A : 𝓤 ̇ } (ϕ : is-nonempty A) → η⁻¹ ϕ ∘ η A ∼ id
-  η⁻¹-is-retraction ϕ a = refl
-
-  η⁻¹-is-section : {A : 𝓤 ̇ } (ϕ : is-nonempty A) → η A ∘ η⁻¹ ϕ ∼ id
-  η⁻¹-is-section ϕ = retraction-of-η-is-section (η⁻¹ ϕ) (η⁻¹-is-retraction ϕ)
-
-  η-invertible-gives-non-empty : {X : 𝓤 ̇ } → invertible (η X) → is-nonempty X
-  η-invertible-gives-non-empty (α , _ , _) = raw-T-algebras-are-non-empty α
-
-  nonempty-gives-η-invertible : {X : 𝓤 ̇ } → is-nonempty X → invertible (η X)
-  nonempty-gives-η-invertible {𝓤} {X} ϕ = η⁻¹ ϕ , η⁻¹-is-retraction ϕ , η⁻¹-is-section ϕ
-
-  η-≃ : (X : 𝓤 ̇ ) → is-nonempty X → X ≃ T X
-  η-≃ X ϕ = qinveq (η X) (nonempty-gives-η-invertible ϕ)
-
-  retractions-of-η-are-invertible : {A : 𝓤 ̇ } (α : T A → A)
-                                  → α ∘ η A ∼ id
-                                  → invertible α
-  retractions-of-η-are-invertible {𝓤} {A} α h = η A , retraction-of-η-is-section α h , h
-
-  retractions-of-η-are-unique : {A : 𝓤 ̇ } (α : T A → A)
-                              → α ∘ η A ∼ id
-                              → (ϕ : is-nonempty A) → α ∼ η⁻¹ ϕ
-  retractions-of-η-are-unique α h ϕ (inl a) = h a
-  retractions-of-η-are-unique α h ϕ (inr u) = 𝟘-elim (ϕ u)
-
-  is-proto-algebra : 𝓤 ̇ → 𝓤 ̇
-  is-proto-algebra A = Σ α ꞉ (T A → A) , α ∘ η A ∼ id
-
-  proto-algebras-are-non-empty : {A : 𝓤 ̇ } → is-proto-algebra A → is-nonempty A
-  proto-algebras-are-non-empty (α , _) = raw-T-algebras-are-non-empty α
-
-  nonempty-types-are-proto-algebras : {A : 𝓤 ̇ } → is-nonempty A → is-proto-algebra A
-  nonempty-types-are-proto-algebras ϕ = η⁻¹ ϕ , η⁻¹-is-retraction ϕ
-
-\end{code}
-
-End of digression.
-
-\begin{code}
-
 𝟙-decidable : decidable (𝟙 {𝓤})
 𝟙-decidable = pointed-decidable ⋆
+
+decidable-closed-under-Σ : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
+                         → is-prop X
+                         → decidable X
+                         → ((x : X) → decidable (Y x))
+                         → decidable (Σ Y)
+decidable-closed-under-Σ {𝓤} {𝓥} {X} {Y} isp d e = g d
+ where
+  g : decidable X → decidable (Σ Y)
+  g (inl x) = h (e x)
+   where
+    φ : Σ Y → Y x
+    φ (x' , y) = transport Y (isp x' x) y
+
+    h : decidable(Y x) → decidable (Σ Y)
+    h (inl y) = inl (x , y)
+    h (inr v) = inr (contrapositive φ v)
+
+  g (inr u) = inr (contrapositive pr₁ u)
 
 ×-preserves-decidability : {A : 𝓤 ̇ } {B : 𝓥 ̇ }
                          → decidable A
@@ -224,83 +154,6 @@ indicator {𝓤} {𝓥} {𝓦} {X} {A} {B} h = (λ x → pr₁(lemma₁ x)) , (�
 
   lemma₁ : (x : X) → Σ b ꞉ 𝟚 , (b ＝ ₀ → A x) × (b ＝ ₁ → B x)
   lemma₁ = λ x → lemma₀ x (h x)
-
-\end{code}
-
-We again have a particular case of interest.  Detachable subsets,
-defined below, are often known as decidable subsets. Agda doesn't
-allow overloading of terminology, and hence we gladly accept the
-slighly non-universal terminology.
-
-\begin{code}
-
-detachable : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
-detachable A = ∀ x → decidable(A x)
-
-characteristic-function : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
-                        → detachable A
-                        → Σ p ꞉ (X → 𝟚) , ((x : X) → (p x ＝ ₀ →   A x)
-                                                   × (p x ＝ ₁ → ¬ (A x)))
-characteristic-function = indicator
-
-co-characteristic-function : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
-                           → detachable A
-                           → Σ p ꞉ (X → 𝟚) , ((x : X) → (p x ＝ ₀ → ¬ (A x))
-                                                      × (p x ＝ ₁ →   A x))
-co-characteristic-function d = indicator(λ x → +-commutative(d x))
-
-decidable-closed-under-Σ : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
-                         → is-prop X
-                         → decidable X
-                         → ((x : X) → decidable (Y x))
-                         → decidable (Σ Y)
-decidable-closed-under-Σ {𝓤} {𝓥} {X} {Y} isp d e = g d
- where
-  g : decidable X → decidable (Σ Y)
-  g (inl x) = h (e x)
-   where
-    φ : Σ Y → Y x
-    φ (x' , y) = transport Y (isp x' x) y
-
-    h : decidable(Y x) → decidable (Σ Y)
-    h (inl y) = inl (x , y)
-    h (inr v) = inr (contrapositive φ v)
-
-  g (inr u) = inr (contrapositive pr₁ u)
-
-\end{code}
-
-Notice that p is unique (Agda exercise - you will need function
-extensionality).
-
-Don't really have a good place to put this:
-
-\begin{code}
-
-module _ (pt : propositional-truncations-exist) where
-
- open PropositionalTruncation pt
-
- not-exists₀-implies-forall₁ : {X : 𝓤 ̇ } (p : X → 𝟚)
-                            → ¬ (∃ x ꞉ X , p x ＝ ₀)
-                            → ∀ (x : X) → p x ＝ ₁
- not-exists₀-implies-forall₁ p u x = different-from-₀-equal-₁ (not-Σ-implies-Π-not (u ∘ ∣_∣) x)
-
- forall₁-implies-not-exists₀ : {X : 𝓤 ̇ } (p : X → 𝟚)
-                            → (∀ (x : X) → p x ＝ ₁)
-                            → ¬ (∃ x ꞉ X , p x ＝ ₀)
- forall₁-implies-not-exists₀ {𝓤} {X} p α = ∥∥-rec 𝟘-is-prop h
-  where
-   h : (Σ x ꞉ X , p x ＝ ₀) → 𝟘
-   h (x , r) = zero-is-not-one (r ⁻¹ ∙ α x)
-
- forall₀-implies-not-exists₁ : {X : 𝓤 ̇ } (p : X → 𝟚)
-                            → (∀ (x : X) → p x ＝ ₀)
-                            → ¬ (∃ x ꞉ X , p x ＝ ₁)
- forall₀-implies-not-exists₁ {𝓤} {X} p α = ∥∥-rec 𝟘-is-prop h
-  where
-   h : (Σ x ꞉ X , p x ＝ ₁) → 𝟘
-   h (x , r) = one-is-not-zero (r ⁻¹ ∙ α x)
 
 \end{code}
 

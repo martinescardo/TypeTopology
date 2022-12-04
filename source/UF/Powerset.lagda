@@ -17,14 +17,15 @@ type into X, or, equivalently, a map of X into the subtype classifier
 module UF.Powerset where
 
 open import MLTT.Spartan
-open import UF.Subsingletons
 open import UF.Equiv
-open import UF.Univalence
+open import UF.Equiv-FunExt
 open import UF.FunExt
 open import UF.Lower-FunExt
-open import UF.UA-FunExt
+open import UF.PropTrunc
+open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-open import UF.Equiv-FunExt
+open import UF.UA-FunExt
+open import UF.Univalence
 
 𝓟 : 𝓤 ̇ → 𝓤 ⁺ ̇
 𝓟 {𝓤} X = X → Ω 𝓤
@@ -47,6 +48,23 @@ x ∈ A = A x holds
 _∉_ : {X : 𝓤 ̇ } → X → (X → Ω 𝓥) → 𝓥 ̇
 x ∉ A = ¬ (x ∈ A)
 
+infix  40 _∈_
+infix  40 _∉_
+
+is-empty-subset : {X : 𝓤 ̇ } → (X → Ω 𝓥) → 𝓤 ⊔ 𝓥 ̇
+is-empty-subset {𝓤} {𝓥} {X} A = (x : X) → x ∉ A
+
+module _ (pt : propositional-truncations-exist) where
+
+ open PropositionalTruncation pt
+
+ is-inhabited-subset : {X : 𝓤 ̇ } → (X → Ω 𝓥) → 𝓤 ⊔ 𝓥 ̇
+ is-inhabited-subset {𝓤} {𝓥} {X} A = ∃ x ꞉ X , x ∈ A
+
+ being-inhabited-subset-is-prop : {X : 𝓤 ̇ } (A : X → Ω 𝓥)
+                                → is-prop (is-inhabited-subset A)
+ being-inhabited-subset-is-prop {𝓤} {𝓥} {X} A = ∃-is-prop
+
 are-disjoint : {X : 𝓤 ̇ } → (X → Ω 𝓥) → (X → Ω 𝓦) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
 are-disjoint {𝓤} {𝓥} {𝓦} {X} A B = (x : X) → ¬((x ∈ A) × (x ∈ B))
 
@@ -61,6 +79,15 @@ A ⊇ B = B ⊆ A
 
 ∈-is-prop : {X : 𝓤 ̇ } (A : X → Ω 𝓥) (x : X) → is-prop (x ∈ A)
 ∈-is-prop A x = holds-is-prop (A x)
+
+∉-is-prop : funext 𝓥 𝓤₀ → {X : 𝓤 ̇ } (A : X → Ω 𝓥) (x : X) → is-prop (x ∉ A)
+∉-is-prop fe A x = negations-are-props fe
+
+_∖[_]_ :  {X : 𝓤 ̇ } → (X → Ω 𝓥) → funext 𝓦 𝓤₀ → (X → Ω 𝓦) → (X → Ω (𝓥 ⊔ 𝓦))
+A ∖[ fe ] B = λ x → (x ∈ A × x ∉ B) , ×-is-prop (∈-is-prop A x) (∉-is-prop fe B x)
+
+complement :  {X : 𝓤 ̇ } → funext 𝓤 𝓤₀ → (X → Ω 𝓤) → (X → Ω 𝓤)
+complement fe A = λ x → (x ∉ A) , (∉-is-prop fe A x)
 
 ⊆-is-prop' : funext 𝓤 𝓥
            → funext 𝓥 𝓥
@@ -124,10 +151,6 @@ subset-extensionality' : Univalence
 subset-extensionality' {𝓤} ua = subset-extensionality
                                  (univalence-gives-propext (ua 𝓤))
                                  (univalence-gives-funext' 𝓤 (𝓤 ⁺) (ua 𝓤) (ua (𝓤 ⁺)))
-
-infix  40 _∈_
-infix  40 _∉_
-
 \end{code}
 
 Tom de Jong, 24 January 2022
@@ -152,7 +175,7 @@ module _
 
 \end{code}
 
-We use a named module UF.when defining singleton subsets, so that we can write
+We use a named module when defining singleton subsets, so that we can write
 ❴ x ❵ without having to keep supplying the proof that the ambient type is a set.
 
 \begin{code}
@@ -202,8 +225,6 @@ module _
  ∩-is-upperbound-of-lowerbounds : (A B C : X → Ω 𝓥)
                                 → C ⊆ A → C ⊆ B → C ⊆ (A ∩ B)
  ∩-is-upperbound-of-lowerbounds A B C s t x c = (s x c , t x c)
-
-open import UF.PropTrunc
 
 module binary-unions-of-subsets
         (pt : propositional-truncations-exist)

@@ -77,7 +77,6 @@ Click at the imported module names to navigate to them:
 
 module index where
 
-import ArithmeticViaEquivalence.index
 import BinarySystems.index
 import CantorSchroederBernstein.index
 import Circle.index                   -- by Tom de Jong
@@ -85,9 +84,12 @@ import CoNaturals.index
 import CrossedModules.index           -- by Ettore Aldrovandi and Keri D'Angelo
 import DedekindReals.index            -- by Andrew Sneap
 import DomainTheory.index             -- by Tom de Jong
+import Dominance.index
 import Dyadics.index                  -- by Andrew Sneap
 import DyadicsInductive.index         -- by Tom de Jong
+import Factorial.index
 import Field.index                    -- by Andrew Sneap
+import Fin.index
 import Games.index                    -- by Martin Escardo and Paulo Oliva
 import Groups.index                   -- originally by Martin Escardo with many additions
                                       -- by Ettore Aldrovandi and Keri D'Angelo
@@ -109,8 +111,8 @@ import Slice.index
 import TWA.index                      -- by Todd Waugh Ambridge
 import Taboos.index
 import TypeTopology.index
-import Various.index
 import UF.index
+import Various.index
 
 \end{code}
 

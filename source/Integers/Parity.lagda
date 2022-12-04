@@ -6,7 +6,7 @@ open import MLTT.Spartan renaming (_+_ to _∔_)
 
 open import Integers.Abs
 open import Integers.Addition
-open import Integers.Integers
+open import Integers.Type
 open import Integers.Multiplication
 open import Integers.Negation
 open import Naturals.Addition renaming (_+_ to _ℕ+_)
@@ -117,7 +117,7 @@ module Integers.Parity where
 ℤeven*even : (n m : ℤ) → ℤeven n → ℤeven m → ℤeven (n * m)
 ℤeven*even n m en em = transport even I II
  where
-  I : abs n ℕ* abs m ＝ abs (n * m) 
+  I : abs n ℕ* abs m ＝ abs (n * m)
   I = abs-over-mult n m ⁻¹
   II : even (abs n ℕ* abs m)
   II = even*even (abs n) (abs m) en em
@@ -161,7 +161,7 @@ module Integers.Parity where
 ℤeven+odd n (pos (succ (succ m)))     on em = ℤodd-succ-succ (n + pos m) (ℤeven+odd n (pos m) on em)
 ℤeven+odd n (negsucc 0)               on em = ℤpred-even-is-odd n on
 ℤeven+odd n (negsucc 1)               on em = 𝟘-elim em
-ℤeven+odd n (negsucc (succ (succ m))) on em = ℤodd-pred-pred (n +negsucc m) (ℤeven+odd n (negsucc m) on em) 
+ℤeven+odd n (negsucc (succ (succ m))) on em = ℤodd-pred-pred (n +negsucc m) (ℤeven+odd n (negsucc m) on em)
 
 ℤodd+even : (n m : ℤ) → ℤodd n → ℤeven m → ℤodd (n + m)
 ℤodd+even n m on em = transport ℤodd (ℤ+-comm m n) (ℤeven+odd m n em on)
@@ -193,7 +193,7 @@ evenℕ-to-ℤ' (succ n) = id
   step k = id
 ℤmultiple-of-two-even-lemma-pos (negsucc n) k e = 𝟘-elim (negsucc-not-pos (e ∙ pos-multiplication-equiv-to-ℕ 2 k))
 
-ℤmultiple-of-two-even-lemma-neg : (n : ℤ) → (k : ℕ) → n ＝ pos 2 * negsucc k → ℤeven n 
+ℤmultiple-of-two-even-lemma-neg : (n : ℤ) → (k : ℕ) → n ＝ pos 2 * negsucc k → ℤeven n
 ℤmultiple-of-two-even-lemma-neg (pos n)     k e = 𝟘-elim (pos-not-negsucc (e ∙ pr₂ (pos-times-negative 1 k)))
 ℤmultiple-of-two-even-lemma-neg (negsucc n) k e = induction base step k
  where

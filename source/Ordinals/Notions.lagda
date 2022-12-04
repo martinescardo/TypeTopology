@@ -57,6 +57,27 @@ transfinite-induction' P f = accessible-induction
                               (λ x _ → P x)
                               (λ x _ → f x)
 
+\end{code}
+
+Added 31 October 2022 by Tom de Jong.
+We record the (computational) behaviour of transfinite induction for use in
+other constructions.
+
+\begin{code}
+
+transfinite-induction'-behaviour :
+   (P : X → 𝓦 ̇ ) (f : (x : X) → ((y : X) → y < x → P y) → P x)
+   (x : X) (a : is-accessible x)
+ → transfinite-induction' P f x a
+   ＝ f x (λ y l → transfinite-induction' P f y (prev a y l))
+transfinite-induction'-behaviour P f x (step σ) = refl
+
+\end{code}
+
+End of addition.
+
+\begin{code}
+
 is-well-founded : 𝓤 ⊔ 𝓥 ̇
 is-well-founded = (x : X) → is-accessible x
 
@@ -76,6 +97,72 @@ transfinite-recursion : is-well-founded
                       → ((x : X) → ((y : X) → y < x → Y) → Y)
                       → X → Y
 transfinite-recursion w {𝓦} {Y} = transfinite-induction w (λ x → Y)
+
+accessibility-is-prop : FunExt
+                      → (x : X) → is-prop (is-accessible x)
+accessibility-is-prop fe = accessible-induction P φ
+ where
+  P : (x : X) → is-accessible x → 𝓤 ⊔ 𝓥 ̇
+  P x a = (b : is-accessible x) → a ＝ b
+
+  φ : (x : X) (σ : (y : X) → y < x → is-accessible y)
+    → ((y : X) (l : y < x) (a : is-accessible y) → σ y l ＝ a)
+    → (b : is-accessible x) → step σ ＝ b
+  φ x σ IH b = step σ ＝⟨ i ⟩
+               step τ ＝⟨ prev-behaviour x b ⟩
+               b      ∎
+   where
+    τ : (y : X) → y < x → is-accessible y
+    τ = prev b
+
+    h :  (y : X) (l : y < x) → σ y l ＝ τ y l
+    h y l = IH y l (τ y l)
+
+    i = ap step
+           (dfunext (fe 𝓤 (𝓤 ⊔ 𝓥)) (λ y → dfunext (fe 𝓥 (𝓤 ⊔ 𝓥)) (h y)))
+
+\end{code}
+
+Added 31 October 2022 by Tom de Jong.
+We record the (computational) behaviour of transfinite induction/recursion for
+use in other constructions.
+
+\begin{code}
+
+transfinite-induction-behaviour : FunExt → (w : is-well-founded)
+                                  {𝓦 : Universe} (P : X → 𝓦 ̇ )
+                                  (f : (x : X) → ((y : X) → y < x → P y) → P x)
+                                  (x : X)
+                                → transfinite-induction w P f x
+                                  ＝ f x (λ y l → transfinite-induction w P f y)
+transfinite-induction-behaviour fe w {𝓦} P f x =
+ transfinite-induction w P f x                               ＝⟨ I    ⟩
+ f x (λ y l → transfinite-induction' P f y (prev (w x) y l)) ＝⟨ II   ⟩
+ f x (λ y l → transfinite-induction' P f y (w y))            ＝⟨ refl ⟩
+ f x (λ y l → transfinite-induction w P f y)                 ∎
+  where
+   I = transfinite-induction'-behaviour P f x (w x)
+   II = ap (f x) (dfunext (fe 𝓤 (𝓥 ⊔ 𝓦))
+                          (λ y → dfunext (fe 𝓥 𝓦)
+                                         (λ l → ap (transfinite-induction' P f y) (e y l))))
+    where
+     e : (y : X) (l : y < x) → prev (w x) y l ＝ w y
+     e y l = accessibility-is-prop fe y (prev (w x) y l) (w y)
+
+transfinite-recursion-behaviour : FunExt → (w : is-well-founded)
+                                  {𝓦 : Universe} {Y : 𝓦 ̇ }
+                                  (f : (x : X) → ((y : X) → y < x → Y) → Y)
+                                  (x : X)
+                                → transfinite-recursion w f x
+                                  ＝ f x (λ y _ → transfinite-recursion w f y)
+transfinite-recursion-behaviour fe w {𝓦} {Y} =
+ transfinite-induction-behaviour fe w (λ _ → Y)
+
+\end{code}
+
+End of addition.
+
+\begin{code}
 
 is-transitive : 𝓤 ⊔ 𝓥 ̇
 is-transitive = (x y z : X) → x < y → y < z → x < z
@@ -137,29 +224,6 @@ extensionality (p , w , e , t) = e
 
 transitivity : is-well-order → is-transitive
 transitivity (p , w , e , t) = t
-
-accessibility-is-prop : FunExt
-                      → (x : X) → is-prop (is-accessible x)
-accessibility-is-prop fe = accessible-induction P φ
- where
-  P : (x : X) → is-accessible x → 𝓤 ⊔ 𝓥 ̇
-  P x a = (b : is-accessible x) → a ＝ b
-
-  φ : (x : X) (σ : (y : X) → y < x → is-accessible y)
-    → ((y : X) (l : y < x) (a : is-accessible y) → σ y l ＝ a)
-    → (b : is-accessible x) → step σ ＝ b
-  φ x σ IH b = step σ ＝⟨ i ⟩
-               step τ ＝⟨ prev-behaviour x b ⟩
-               b      ∎
-   where
-    τ : (y : X) → y < x → is-accessible y
-    τ = prev b
-
-    h :  (y : X) (l : y < x) → σ y l ＝ τ y l
-    h y l = IH y l (τ y l)
-
-    i = ap step
-           (dfunext (fe 𝓤 (𝓤 ⊔ 𝓥)) (λ y → dfunext (fe 𝓥 (𝓤 ⊔ 𝓥)) (h y)))
 
 well-foundedness-is-prop : FunExt → is-prop is-well-founded
 well-foundedness-is-prop fe = Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥))
@@ -310,6 +374,27 @@ no-minimal-is-empty' : is-well-founded
                      → is-empty (Σ A)
 no-minimal-is-empty' w A s = no-minimal-is-empty w A (λ x a → ¬¬-intro (s x a))
 
+{-
+module _ (pt : propositional-truncations-exist) where
+
+ open PropositionalTruncation pt
+
+
+ inhabited-subset-has-least-element : is-well-founded
+                                    → ∀ {𝓦} (A : X → 𝓦 ̇ )
+                                    → ∃ A
+                                    → ∃ x ꞉ X , A x × ((y : X) → A y → x ≼ y)
+ inhabited-subset-has-least-element w A s = {!!}
+  where
+   I : ?
+   I = contrapositive (no-minimal-is-empty' w A)
+
+   II : is-nonempty (Σ A)
+   II e = ∥∥-rec 𝟘-is-prop e s
+
+   III : ¬ ((x : X) → A x → Σ y ꞉ X , (y < x) × A y)
+   III = contrapositive (no-minimal-is-empty' w A) I
+-}
 \end{code}
 
 The emptiness of the empty set doesn't play any special role in the
@@ -588,7 +673,7 @@ module _
        where
  private
    pt : propositional-truncations-exist
-   pt = (fem-proptrunc (λ 𝓤 𝓥 → f-e {𝓤} {𝓥}) em)
+   pt = (fe-and-em-give-propositional-truncations (λ 𝓤 𝓥 → f-e {𝓤} {𝓥}) em)
 
    fe : FunExt
    fe 𝓤 𝓥 = f-e
@@ -598,15 +683,15 @@ module _
 
    lem-consequence : is-well-order → (u v : X) → (∃ i ꞉ X , ((i < u) × ¬ (i < v))) + (u ≼ v)
    lem-consequence (p , _) u v = Cases
-     (∃¬-gives-∀ pt em {Σ (λ i → i < u)}
+     (∃-not+Π pt em {Σ (λ i → i < u)}
         (λ (i , i-lt-u) → i < v)
         (λ (i , i-<-u) → p i v))
      (λ witness → inl ((∥∥-induction (λ s → ∃-is-prop)
        (λ ((i , i-lt-u) , i-not-lt-v) → ∣ i , i-lt-u , i-not-lt-v ∣) witness)))
      λ prf → inr (λ i i-lt-u → prf (i , i-lt-u))
 
- trichotomy' : is-well-order → is-trichotomous-order
- trichotomy' wo@(p , w , e , t) = transfinite-induction w is-trichotomous-element ϕ
+ trichotomy₂ : is-well-order → is-trichotomous-order
+ trichotomy₂ wo@(p , w , e , t) = transfinite-induction w is-trichotomous-element ϕ
   where
    ϕ : (x : X) → induction-hypothesis is-trichotomous-element x → is-trichotomous-element x
    ϕ u ih = -- now we proceed by induction on the inner argument
@@ -629,6 +714,96 @@ module _
              (in-trichotomy-not->-implies-≧ i-in-trichotomy-x i-not-lt-x)))
        λ u-below-x → inr ((e x u x-below-u u-below-x) ⁻¹)
 \end{code}
+
+End of proof added by Ohad Kammar.
+
+The following fact and proof were communicated verbally by Paul Blain
+Levy to Martin Escardo and Ohad Kammar on 16th November 2022, and it
+is written down in Agda by Martin Escardo on the same date:
+
+\begin{code}
+
+is-decidable-order : 𝓤 ⊔ 𝓥 ̇
+is-decidable-order = (x y : X) → decidable (x < y)
+
+trichotomy-from-decidable-order : is-transitive
+                                → is-extensional
+                                → is-well-founded
+                                → is-decidable-order
+                                → is-trichotomous-order
+trichotomy-from-decidable-order t e w d = γ
+ where
+  T : X → X → 𝓤 ⊔ 𝓥 ̇
+  T x y = (x < y) + (x ＝ y) + (y < x)
+
+  γ : (a b : X) → T a b
+  γ = transfinite-induction w (λ a → (b : X) → T a b) ϕ
+   where
+    ϕ : (a : X) → ((x : X) → x < a → (b : X) → T x b) → (b : X) → T a b
+    ϕ a IH-a = transfinite-induction w (T a) ψ
+     where
+      ψ : (b : X) → ((y : X) → y < b → T a y) → T a b
+      ψ b IH-b = III
+       where
+        I : ¬ (a < b) → b ≼ a
+        I ν y l = f (IH-b y l)
+         where
+          f : (a < y) + (a ＝ y) + (y < a) → y < a
+          f (inl m)       = 𝟘-elim (ν (t a y b m l))
+          f (inr (inl p)) = 𝟘-elim (ν (transport (_< b) (p ⁻¹) l))
+          f (inr (inr m)) = m
+
+        II : ¬ (b < a) → a ≼ b
+        II ν x l = g (IH-a x l b)
+         where
+          g : (x < b) + (x ＝ b) + (b < x) → x < b
+          g (inl m)       = m
+          g (inr (inl p)) = 𝟘-elim (ν (transport (_< a) p l))
+          g (inr (inr m)) = 𝟘-elim (ν (t b x a m l))
+
+        III : T a b
+        III = h (d a b) (d b a)
+         where
+          h : (a < b) + ¬ (a < b)
+            → (b < a) + ¬ (b < a)
+            → (a < b) + (a ＝ b) + (b < a)
+          h (inl l) _       = inl l
+          h (inr α) (inl l) = inr (inr l)
+          h (inr α) (inr β) = inr (inl (e a b (II β) (I α)))
+
+trichotomy₃ : excluded-middle 𝓥
+            → is-well-order
+            → is-trichotomous-order
+trichotomy₃ em (p , w , e , t) = trichotomy-from-decidable-order
+                                  t e w (λ x y → em (x < y) (p x y))
+
+decidable-order-from-trichotomy : is-transitive
+                                → is-well-founded
+                                → is-trichotomous-order
+                                → is-decidable-order
+decidable-order-from-trichotomy t w τ = γ
+ where
+  γ : (x y : X) → decidable (x < y)
+  γ x y = f (τ x y)
+   where
+    f : (x < y) + (x ＝ y) + (y < x) → (x < y) + ¬ (x < y)
+    f (inl l)       = inl l
+    f (inr (inl p)) = inr (λ (m : x < y) → irreflexive x (w x) (transport (x <_) (p ⁻¹) m))
+    f (inr (inr l)) = inr (λ (m : x < y) → irreflexive x (w x) (t x y x m l))
+
+decidable-order-iff-trichotomy : is-well-order
+                               → is-trichotomous-order ⇔ is-decidable-order
+decidable-order-iff-trichotomy (_ , w , e , t) =
+ decidable-order-from-trichotomy t w ,
+ trichotomy-from-decidable-order t e w
+
+\end{code}
+
+Paul also remarks that the result can be strengthened as follows: A
+transitive well-founded relation is trichotomous iff it is both
+extensional and decidable. TODO. Write this down in Agda.
+
+End of 16th November 2022 addition.
 
 \begin{code}
 not-<-gives-≼ : funext (𝓤 ⊔ 𝓥) 𝓤₀
@@ -667,7 +842,8 @@ module _
        where
 
  open import UF.PropTrunc
- open PropositionalTruncation (fem-proptrunc (λ 𝓤 𝓥 → fe {𝓤} {𝓥}) em)
+ open PropositionalTruncation (fe-and-em-give-propositional-truncations
+                                 (λ 𝓤 𝓥 → fe {𝓤} {𝓥}) em)
 
  nonempty-has-minimal : is-well-order
                       → (A : X → 𝓦 ̇ )

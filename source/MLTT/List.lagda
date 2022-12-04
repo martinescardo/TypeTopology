@@ -56,6 +56,3 @@ map f (x ∷ xs) = f x ∷ map f xs
 _<$>_ = map
 
 \end{code}
-
-The above is all we need about lists for the moment, in the module
-FreeGroups.lagda.
