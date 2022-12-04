@@ -69,20 +69,26 @@ data PathSeq {X : 𝓤 ̇} : X → X → 𝓤 ̇ where
 
 _≡_ = PathSeq
 
+-- Convenience: to have a more practical and visible Path Sequence
+-- termination
 _◃∎ : {X : 𝓤 ̇} {x y : X} → x ＝ y → x ≡ y
 p ◃∎ = p ◃∙ []
 
--- Convert to identity type
+-- Convert to identity type and normalize.  The resulting
+-- concatenation of identity types is normalized. This is shown in
+-- PathSequences.Concat
 ≡-to-＝ : {X : 𝓤 ̇} {x y : X}
         → x ≡ y → x ＝ y
 ≡-to-＝ [] = refl
 ≡-to-＝ (p ◃∙ s) = p ∙ ≡-to-＝ s
 
-↓ = ≡-to-＝
+syntax ≡-to-＝ s = [ s ↓]
 
 \end{code}
 
-Equality for path sequences
+Equality for path sequences.
+
+TODO: Find better names for the field and constructor.
 
 \begin{code}
 
@@ -91,9 +97,6 @@ record _＝ₛ_ {X : 𝓤 ̇}{x y : X} (s t : x ≡ y) : 𝓤 ̇ where
   field
     ＝ₛ-out : (≡-to-＝ s) ＝ (≡-to-＝ t)
 open _＝ₛ_
-
-_ : {X : 𝓤 ̇} {x y : X} (s t : x ≡ y) (p : ↓ s ＝ ↓ t) → s ＝ₛ t
-_ = λ { s t p → ＝ₛ-in p }
 
 \end{code}
 
@@ -104,8 +107,26 @@ Reasoning with path sequences
 _≡⟨_⟩_ : {X : 𝓤 ̇} (x : X) {y z : X} → x ＝ y → y ≡ z → x ≡ z
 _ ≡⟨ p ⟩ s = p ◃∙ s 
 
+_≡⟨⟩_ : {X : 𝓤 ̇} (x : X) {y : X} → x ≡ y → x ≡ y
+x ≡⟨⟩ s = s
+
 _∎∎ : {X : 𝓤 ̇} (x : X) → x ≡ x
 _ ∎∎ = []
+
+\end{code}
+
+Tests
+
+\begin{code}
+
+_ : {X : 𝓤 ̇} {x y : X} (s t : x ≡ y) (p : [ s ↓]  ＝ [ t ↓]) → s ＝ₛ t
+_ = λ { s t p → ＝ₛ-in p }
+
+module _ {X : 𝓤 ̇} {x y z t u : X} where
+  
+  _ : (a : x ＝ y) (b : y ＝ z) (c : z ＝ t) (d : t ＝ u)
+    → [ (a ◃∙ b ◃∙ c ◃∙ d ◃∎) ↓] ＝ a ∙ (b ∙ (c ∙ (d ∙ refl)))
+  _ = λ a b c d → refl
 
 
 \end{code}
@@ -118,6 +139,7 @@ infix  90 _◃∎
 infixr 80 _◃∙_
 infix  30 _≡_
 infixr 10 _≡⟨_⟩_
+infixr 10 _≡⟨⟩_
 infix  15 _∎∎
 
 \end{code}
