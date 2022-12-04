@@ -6,22 +6,22 @@ and prove properties of the absolute value.
 \begin{code}
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import MLTT.Spartan renaming (_+_ to _∔_) 
+open import MLTT.Spartan renaming (_+_ to _∔_)
 
-open import Notation.Order 
-open import UF.FunExt 
-open import UF.Base hiding (_≈_) 
-open import UF.Subsingletons 
+open import Notation.Order
+open import UF.FunExt
+open import UF.Base hiding (_≈_)
+open import UF.Subsingletons
 
 open import Integers.Abs
 open import Integers.Addition renaming (_+_ to _ℤ+_) hiding (_-_)
-open import Integers.Integers hiding (abs)
+open import Integers.Type hiding (abs)
 open import Integers.Multiplication renaming (_*_ to _ℤ*_)
-open import Integers.Order 
+open import Integers.Order
 open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
 open import Rationals.Fractions
 open import Rationals.FractionsOperations renaming (abs to ℚₙ-abs) renaming (-_ to ℚₙ-_) hiding (_+_) hiding (_*_)
-open import Rationals.Rationals
+open import Rationals.Type
 open import Rationals.Addition
 open import Rationals.Negation
 open import Rationals.Order
@@ -35,7 +35,7 @@ abs (q , _) = toℚ (ℚₙ-abs q)
 ℚ-abs-zero : 0ℚ ＝ abs 0ℚ
 ℚ-abs-zero = by-definition
 
-toℚ-abs : Fun-Ext → (q : ℚₙ) → abs (toℚ q) ＝ toℚ (ℚₙ-abs q) 
+toℚ-abs : Fun-Ext → (q : ℚₙ) → abs (toℚ q) ＝ toℚ (ℚₙ-abs q)
 toℚ-abs fe (x , a) = conclusion
  where
   rational-q : Σ ((x' , a') , lxp) ꞉ ℚ , Σ h ꞉ ℕ , (x ＝ pos (succ h) ℤ* x') × (succ a ＝ succ h ℕ* succ a')
@@ -59,7 +59,7 @@ toℚ-abs fe (x , a) = conclusion
   psh = pos (succ h)
   sa' = succ a'
   psa' = pos (succ a')
-    
+
   helper : ℚₙ-abs (x' , a') ≈ ℚₙ-abs (x , a) → toℚ (ℚₙ-abs (x' , a')) ＝ toℚ (ℚₙ-abs (x , a))
   helper = equiv→equality fe (ℚₙ-abs (x' , a')) (ℚₙ-abs (x , a))
 
@@ -75,7 +75,7 @@ toℚ-abs fe (x , a) = conclusion
          absℤ x ℤ* pos (sh ℕ* sa')     ＝⟨ ap (absℤ x ℤ*_) (pos-multiplication-equiv-to-ℕ sh sa' ⁻¹) ⟩
          absℤ x ℤ* (psh ℤ* psa')       ＝⟨ ℤ-mult-rearrangement''' (absℤ x) psh psa'                 ⟩
          psh ℤ* (absℤ x ℤ* psa')       ∎
-  
+
   conclusion : abs (toℚ (x , a)) ＝ toℚ (ℚₙ-abs (x , a))
   conclusion = helper I
 
@@ -93,7 +93,7 @@ abs-of-pos-is-pos fe ((negsucc x , a) , α) l = 𝟘-elim (III II)
   I = l
   II : pos 0 ≤ negsucc x
   II = transport₂ _≤_ (ℤ-zero-left-base (pos (succ a))) (ℤ-zero-right-neutral (negsucc x)) I
-  III : ¬ (pos 0 ≤ negsucc x) 
+  III : ¬ (pos 0 ≤ negsucc x)
   III (k , e) = pos-not-negsucc (ℤ-zero-left-neutral (pos k) ⁻¹ ∙ e)
 
 abs-of-pos-is-pos' : Fun-Ext → (p : ℚ) → 0ℚ < p → abs p ＝ p
@@ -107,7 +107,7 @@ abs-of-pos-is-pos' fe p l = abs-of-pos-is-pos fe p (ℚ<-coarser-than-≤ 0ℚ p
 
   I : ℚₙ-abs q ≈ ℚₙ-abs (ℚₙ- q)
   I = ℚₙ-abs-neg-equals-pos q
-  
+
   conclusion : abs (q , p) ＝ abs (- (q , p))
   conclusion = abs (q , p)           ＝⟨ by-definition ⟩
                toℚ (ℚₙ-abs q)         ＝⟨ helper I ⟩
@@ -120,7 +120,7 @@ abs-of-pos-is-pos' fe p l = abs-of-pos-is-pos fe p (ℚ<-coarser-than-≤ 0ℚ p
  where
   I : (pos x , a) ≈ toℚₙ (toℚ (pos x , a))
   I = ≈-toℚ (pos x , a)
-  II : Σ (x' , a') ꞉ ℚₙ , ((pos x , a) , q ＝ toℚ (x' , a')) 
+  II : Σ (x' , a') ꞉ ℚₙ , ((pos x , a) , q ＝ toℚ (x' , a'))
   II = q-has-qn fe ((pos x , a) , q)
   x' = pr₁ (pr₁ II)
   a' = pr₂ (pr₁ II)
@@ -188,7 +188,7 @@ abs-of-pos-is-pos' fe p l = abs-of-pos-is-pos fe p (ℚ<-coarser-than-≤ 0ℚ p
   iii = transport₂ _≤_ (ℚ-zero-left-neutral fe (- abs q)) (ℚ-inverse-sum-to-zero fe (abs q)) ii
   iv : - abs q ≤ abs q
   iv = ℚ≤-trans fe (- abs q) 0ℚ (abs q) iii i
-  
+
   locate-q : (abs q ＝ q) ∔ (abs q ＝ - q) → - abs q ≤ q × q ≤ abs q
   locate-q (inl e) = I , II
    where
@@ -203,11 +203,11 @@ abs-of-pos-is-pos' fe p l = abs-of-pos-is-pos fe p (ℚ<-coarser-than-≤ 0ℚ p
     α = q         ＝⟨ ℚ-minus-minus fe q ⟩
         - (- q)   ＝⟨ ap -_ (r ⁻¹) ⟩
         - abs q   ∎
-        
+
     I : - abs q ≤ q
     I = transport (_≤ q) α (ℚ≤-refl q)
 
-    II : q ≤ abs q 
+    II : q ≤ abs q
     II = transport (_≤ abs q) (α ⁻¹) iv
 
 ℚ-abs-≤-unpack : Fun-Ext → (q ε : ℚ) → abs q ≤ ε → (- ε ≤ q) × (q ≤ ε)
@@ -221,7 +221,7 @@ abs-of-pos-is-pos' fe p l = abs-of-pos-is-pos fe p (ℚ<-coarser-than-≤ 0ℚ p
 
   neg-epsilon-negative : - ε ≤ 0ℚ
   neg-epsilon-negative = ℚ≤-swap fe 0ℚ ε ε-positive
-  
+
   locate-q : (abs q ＝ q) ∔ (abs q ＝ - q) → - ε ≤ q × q ≤ ε
   locate-q (inl i) = ℚ≤-trans fe (- ε) 0ℚ q neg-epsilon-negative (transport (0ℚ ≤_) i abs-q-positive) , (transport (_≤ ε) i l)
   locate-q (inr i) = transport (- ε ≤_) (ℚ-minus-minus fe q ⁻¹) β , ℚ≤-trans fe q 0ℚ ε δ ε-positive
@@ -245,7 +245,7 @@ abs-of-pos-is-pos' fe p l = abs-of-pos-is-pos fe p (ℚ<-coarser-than-≤ 0ℚ p
   I (inr r) = transport₂ _≤_ (r ⁻¹) (ℚ-minus-minus fe y ⁻¹) α
 
 ℚ<-to-abs : Fun-Ext → (x y : ℚ) → (- y < x) × (x < y) → abs x < y
-ℚ<-to-abs fe x y (l₁ , l₂) = II (ℚ≤-split fe (abs x) y I) 
+ℚ<-to-abs fe x y (l₁ , l₂) = II (ℚ≤-split fe (abs x) y I)
  where
   I : abs x ≤ y
   I = ℚ≤-to-abs fe x y (ℚ<-coarser-than-≤ (- y) x l₁ , ℚ<-coarser-than-≤ x y l₂)
@@ -253,7 +253,7 @@ abs-of-pos-is-pos' fe p l = abs-of-pos-is-pos fe p (ℚ<-coarser-than-≤ 0ℚ p
   II (inl l) = l
   II (inr r) = III (ℚ-abs-inverse fe x)
    where
-    
+
     III : (abs x ＝ x) ∔ (abs x ＝ - x) → abs x < y
     III (inl s) = 𝟘-elim (ℚ<-not-itself x (transport (x <_) (r ⁻¹ ∙ s) l₂))
     III (inr s) = 𝟘-elim (ℚ<-not-itself x (transport (_< x) IV l₁))
@@ -268,7 +268,7 @@ abs-of-pos-is-pos' fe p l = abs-of-pos-is-pos fe p (ℚ<-coarser-than-≤ 0ℚ p
  where
   abs-q-positive : 0ℚ ≤ abs q
   abs-q-positive = ℚ-abs-is-positive q
-  
+
   ε-positive : 0ℚ < ε
   ε-positive = ℚ≤-<-trans fe 0ℚ (abs q) ε abs-q-positive l
 
@@ -304,7 +304,7 @@ abs-of-pos-is-pos' fe p l = abs-of-pos-is-pos fe p (ℚ<-coarser-than-≤ 0ℚ p
 pos-abs-no-increase : Fun-Ext → (q ε : ℚ) → (0ℚ < q) × (q < ε) → abs q < ε
 pos-abs-no-increase fe q ε (l₁ , l₂) = IV
  where
-  I : 0ℚ < ε 
+  I : 0ℚ < ε
   I = ℚ<-trans 0ℚ q ε l₁ l₂
   II : - ε < 0ℚ
   II = transport (- ε <_) ℚ-minus-zero-is-zero i
@@ -343,7 +343,7 @@ abs-mult fe x y = case-split (ℚ-dichotomous' fe x 0ℚ) (ℚ-dichotomous' fe y
 
     0<x*y : 0ℚ < x * y
     0<x*y = transport (0ℚ <_) remove-negatives (ℚ<-pos-multiplication-preserves-order (- x) (- y) 0<-x 0<-y)
-    
+
     goal : abs x * abs y ＝ abs (x * y)
     goal = abs x * abs y     ＝⟨ ap (_* abs y) (ℚ-abs-neg-equals-pos fe x)        ⟩
            abs (- x) * abs y ＝⟨ ap (_* abs y) (abs-of-pos-is-pos' fe (- x) 0<-x) ⟩
@@ -394,4 +394,3 @@ abs-mult fe x y = case-split (ℚ-dichotomous' fe x 0ℚ) (ℚ-dichotomous' fe y
   case-split (inr l₁) (inr l₂) = case1 l₁ l₂
 
 \end{code}
-

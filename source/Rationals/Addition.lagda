@@ -7,22 +7,22 @@ properties of addition.
 
 {-# OPTIONS --without-K --exact-split --safe  --experimental-lossy-unification #-}
 
-open import MLTT.Spartan renaming (_+_ to _∔_) 
+open import MLTT.Spartan renaming (_+_ to _∔_)
 
-open import UF.Base hiding (_≈_) 
-open import UF.FunExt 
+open import UF.Base hiding (_≈_)
+open import UF.FunExt
 
-open import Integers.Integers
+open import Integers.Type
 open import Rationals.Fractions
 open import Rationals.FractionsOperations renaming (_+_ to _ℚₙ+_)
-open import Rationals.Rationals
+open import Rationals.Type
 
 module Rationals.Addition where
 
 _+_ : ℚ → ℚ → ℚ
 (p , _) + (q , _) = toℚ (p ℚₙ+ q)
 
-infixl 32 _+_ 
+infixl 32 _+_
 
 ℚ+-comm : (p q : ℚ) → p + q ＝ q + p
 ℚ+-comm (p , _) (q , _) = ap toℚ I
@@ -35,12 +35,12 @@ toℚ-+ fe p q = equiv→equality fe (p ℚₙ+ q) (p' ℚₙ+ q') conclusion
  where
   p-ℚ = toℚ p
   q-ℚ = toℚ q
-  p' = toℚₙ p-ℚ 
-  q' = toℚₙ q-ℚ 
+  p' = toℚₙ p-ℚ
+  q' = toℚₙ q-ℚ
 
   I : p ≈ p'
   I = ≈-toℚ p
-  
+
   II : q ≈ q'
   II = ≈-toℚ q
 
@@ -52,16 +52,16 @@ toℚ-+ fe p q = equiv→equality fe (p ℚₙ+ q) (p' ℚₙ+ q') conclusion
 
   V : p' ℚₙ+ q ≈ p' ℚₙ+ q'
   V = transport₂ _≈_ (ℚₙ+-comm q p') (ℚₙ+-comm q' p') IV
-  
+
   conclusion : p ℚₙ+ q ≈ p' ℚₙ+ q'
   conclusion = ≈-trans (p ℚₙ+ q) (p' ℚₙ+ q) (p' ℚₙ+ q') III V
-  
+
 ℚ+-assoc : Fun-Ext → (p q r : ℚ) → p + q + r ＝ p + (q + r)
 ℚ+-assoc fe (x , p) (y , q) (z , r) = V
  where
   α β : ℚ
   α = toℚ (x ℚₙ+ y)
-  β = toℚ (y ℚₙ+ z) 
+  β = toℚ (y ℚₙ+ z)
 
   III : Σ r' ꞉ ℚₙ , (z , r ＝ toℚ r')
   III = q-has-qn fe (z , r)
@@ -101,7 +101,7 @@ toℚ-+ fe p q = equiv→equality fe (p ℚₙ+ q) (p' ℚₙ+ q') conclusion
   q' : ℚₙ
   q' = pr₁ I
 
-  II : 0ℚ + q ＝ q 
+  II : 0ℚ + q ＝ q
   II = 0ℚ + q                   ＝⟨ refl                              ⟩
        toℚ ((pos 0 , 0) ℚₙ+ q') ＝⟨ ap toℚ (ℚₙ+-comm (pos 0 , 0) q')  ⟩
        toℚ (q' ℚₙ+ (pos 0 , 0)) ＝⟨ ap toℚ (ℚₙ-zero-right-neutral q') ⟩
@@ -143,10 +143,10 @@ be added, otherwise the file compiles infinitely.
  where
   abstract
    I : toℚ ((pos 1 , 3) ℚₙ+ (pos 3 , 3)) ＝  toℚ (pos 1 , 3) + toℚ (pos 3 , 3)
-   I = toℚ-+ fe (pos 1 , 3) (pos 3 , 3) 
+   I = toℚ-+ fe (pos 1 , 3) (pos 3 , 3)
 
 1/3+2/3 : Fun-Ext → 1/3 + 2/3 ＝ 1ℚ
-1/3+2/3 fe = I ∙ equiv→equality fe (pos 3 , 2) (pos 1 , 0) refl 
+1/3+2/3 fe = I ∙ equiv→equality fe (pos 3 , 2) (pos 1 , 0) refl
  where
   abstract
    I : toℚ (pos 1 , 2) + toℚ (pos 2 , 2) ＝ toℚ (pos 1 ℤ+ pos 2 , 2)
@@ -164,7 +164,7 @@ be added, otherwise the file compiles infinitely.
  where
   abstract
    I : 1/5 + 1/5 ＝ 2/5
-   I = add-same-denom fe (pos 1 , 4) (pos 1 , 4) 
+   I = add-same-denom fe (pos 1 , 4) (pos 1 , 4)
 
 1/5+2/5 : Fun-Ext → 1/5 + 2/5 ＝ 3/5
 1/5+2/5 fe = I
@@ -184,17 +184,10 @@ be added, otherwise the file compiles infinitely.
    I = add-same-denom fe (pos 2 , 4) (pos 3 , 4)
 
 2/5+3/5 : Fun-Ext → 2/5 + 3/5 ＝ 1ℚ
-2/5+3/5 fe = I 
+2/5+3/5 fe = I
  where
   abstract
    I : 2/5 + 3/5 ＝ 1ℚ
    I = 2/5+3/5-lemma fe ∙ equiv→equality fe (pos 5 , 4) (pos 1 , 0) refl
 
 \end{code}
-
-
-  
-
-
-
-

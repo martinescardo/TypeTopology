@@ -20,7 +20,7 @@ open import UF.Powerset
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
-open import Rationals.Rationals
+open import Rationals.Type
 open import Rationals.Order
 
 module Rationals.Extension
@@ -31,7 +31,7 @@ module Rationals.Extension
 
 open PropositionalTruncation pt
 
-open import DedekindReals.Reals pe pt fe
+open import DedekindReals.Type pe pt fe
 
 \end{code}
 

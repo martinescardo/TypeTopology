@@ -7,7 +7,6 @@ Martin Escardo
 module Various.index where
 
 import Various.Dedekind
-import Various.Dominance
 import Various.DummettDisjunction
 import Various.HiggsInvolutionTheorem
 import Various.LawvereFPT

@@ -6,7 +6,7 @@ Andrew Sneap
 
 module Rationals.index where
 
-import Rationals.Rationals
+import Rationals.Type
 import Rationals.Abs
 import Rationals.Addition
 import Rationals.Extension

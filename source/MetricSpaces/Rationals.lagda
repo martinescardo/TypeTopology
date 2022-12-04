@@ -7,15 +7,15 @@ respect to the usual metric.
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import MLTT.Spartan renaming (_+_ to _∔_) 
+open import MLTT.Spartan renaming (_+_ to _∔_)
 
-open import Notation.Order 
-open import UF.FunExt 
-open import UF.Base 
-open import UF.Subsingletons 
-open import UF.PropTrunc 
+open import Notation.Order
+open import UF.FunExt
+open import UF.Base
+open import UF.Subsingletons
+open import UF.PropTrunc
 
-open import Rationals.Rationals
+open import Rationals.Type
 open import Rationals.Abs
 open import Rationals.Addition
 open import Rationals.Negation
@@ -43,7 +43,7 @@ open import MetricSpaces.Definition pt fe pe
 ℚ-metric-commutes : (p q : ℚ) → ℚ-metric p q ＝ ℚ-metric q p
 ℚ-metric-commutes p q = conclusion
  where
-  conclusion : ℚ-metric p q ＝ ℚ-metric q p 
+  conclusion : ℚ-metric p q ＝ ℚ-metric q p
   conclusion = ℚ-metric p q                   ＝⟨ by-definition ⟩
                abs (p - q)                    ＝⟨ ℚ-abs-neg-equals-pos fe (p - q) ⟩
                abs (- (p - q))                ＝⟨ by-definition ⟩
@@ -61,7 +61,7 @@ open import MetricSpaces.Definition pt fe pe
 
 inequality-chain-to-metric : (w y z : ℚ) → w ≤ y
                                          → y ≤ z
-                                         → ℚ-metric w z ＝ ℚ-metric w y + ℚ-metric y z                                         
+                                         → ℚ-metric w z ＝ ℚ-metric w y + ℚ-metric y z
 inequality-chain-to-metric w y z l₁ l₂ = conclusion
  where
   l₃ : w ≤ z
@@ -88,7 +88,7 @@ inequality-chain-with-metric : (x y w z ε₁ ε₂ : ℚ) → w ≤ y
                                                    → ℚ-metric x y < ε₁
                                                    → ℚ-metric w z < ε₂
                                                    → ℚ-metric x z < (ε₁ + ε₂)
-inequality-chain-with-metric x y w z ε₁ ε₂ l₁ l₂ l₃ l₄ = conclusion 
+inequality-chain-with-metric x y w z ε₁ ε₂ l₁ l₂ l₃ l₄ = conclusion
  where
   from-previous-result : ℚ-metric w z ＝ ℚ-metric w y + ℚ-metric y z
   from-previous-result = inequality-chain-to-metric w y z l₁ l₂
@@ -100,19 +100,19 @@ inequality-chain-with-metric x y w z ε₁ ε₂ l₁ l₂ l₃ l₄ = conclusio
       abs (x - y + ((- z) - (- y))) ＝⟨ ap (λ α → abs (x - y + α)) (ℚ-minus-dist fe z (- y)) ⟩
       abs (x - y - (z - y))         ＝⟨ by-definition ⟩
       ℚ-metric (x - y) (z - y) ∎
-      
+
   II : ℚ-metric (x - y) (z - y) ≤ (abs (x - y) + abs (- (z - y)))
   II = ℚ-triangle-inequality fe (x - y) (- (z - y))
-  
+
   III : (abs (x - y) + abs (- (z - y))) ＝ ℚ-metric x y + ℚ-metric y z
   III = abs (x - y) + abs (- (z - y))   ＝⟨ ap (abs (x - y) +_) (ℚ-abs-neg-equals-pos fe (z - y) ⁻¹) ⟩
         abs (x - y) + abs (z - y)       ＝⟨ ap (abs (x - y) +_) (ℚ-metric-commutes z y) ⟩
         abs (x - y) + ℚ-metric y z      ＝⟨ by-definition ⟩
         ℚ-metric x y + ℚ-metric y z ∎
-        
+
   IV : ℚ-metric (x - y) (z - y) ≤ (ℚ-metric x y + ℚ-metric y z)
   IV = transport (λ α → ℚ-metric (x - y) (z - y) ≤ α) III II
-  
+
   V : ℚ-metric y z ≤ ℚ-metric w z
   V = transport (ℚ-metric y z ≤_) (from-previous-result ⁻¹) ii
    where
@@ -120,10 +120,10 @@ inequality-chain-with-metric x y w z ε₁ ε₂ l₁ l₂ l₃ l₄ = conclusio
     i = ℚ≤-addition-preserves-order'' fe (ℚ-metric y z) (ℚ-metric w y) (ℚ-abs-is-positive (w - y))
     ii : ℚ-metric y z ≤ (ℚ-metric w y + ℚ-metric y z)
     ii = transport (ℚ-metric y z ≤_) (ℚ+-comm (ℚ-metric y z) (ℚ-metric w y)) i
-    
+
   VI : (ℚ-metric x y + ℚ-metric w z) < (ε₁ + ε₂)
   VI = ℚ<-adding (ℚ-metric x y) ε₁ (ℚ-metric w z) ε₂ l₃ l₄
-  
+
   VII : ℚ-metric x z ≤ ℚ-metric x y + ℚ-metric w z
   VII = transport (_≤ (ℚ-metric x y + ℚ-metric w z)) (I ⁻¹) ii
    where
@@ -158,9 +158,9 @@ B-ℚ x y ε l = ℚ-metric x y < ε
          x + (y - y)            ＝⟨ ap (x +_) (ℚ+-comm y (- y)) ⟩
          x + ((- y) + y)        ＝⟨ ℚ+-assoc fe x (- y) y ⁻¹ ⟩
          x + (- y) + y          ＝⟨ ap (_+ y) i ⟩
-         0ℚ + y                 ＝⟨ ℚ-zero-left-neutral fe y ⟩ 
+         0ℚ + y                 ＝⟨ ℚ-zero-left-neutral fe y ⟩
          y                      ∎
-  
+
 ℚ-m1b : m1b ℚ B-ℚ
 ℚ-m1b x y l = transport (λ v → v < y) (ℚ-self-dist fe x ⁻¹) l
 
@@ -183,7 +183,7 @@ B-ℚ x y ε l = ℚ-metric x y < ε
   δ = ap abs (ℚ-add-zero fe x (- z) y ⁻¹)
 
   conclusion : abs ((x - y) + (y - z)) ≤ (abs (x - y) + abs (y - z)) → abs (x - z) < (ε₁ + ε₂)
-  conclusion l = I (ℚ≤-split fe (abs ((x - y) + (y - z))) ((abs (x - y) + abs (y - z))) l) 
+  conclusion l = I (ℚ≤-split fe (abs ((x - y) + (y - z))) ((abs (x - y) + abs (y - z))) l)
    where
     I : (abs ((x - y) + (y - z)) < (abs (x - y) + abs (y - z)))
       ∔ (abs ((x - y) + (y - z)) ＝ abs (x - y) + abs (y - z))
@@ -197,4 +197,3 @@ B-ℚ x y ε l = ℚ-metric x y < ε
 ℚ-metric-space : metric-space ℚ
 ℚ-metric-space = B-ℚ , ℚ-m1a , ℚ-m1b , ℚ-m2 , ℚ-m3 , ℚ-m4
 \end{code}
-

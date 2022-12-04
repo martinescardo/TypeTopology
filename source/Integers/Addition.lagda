@@ -7,9 +7,9 @@ This file defines addition of integers, and commonly used properties used in pro
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import MLTT.Spartan renaming (_+_ to _∔_) 
+open import MLTT.Spartan renaming (_+_ to _∔_)
 
-open import Integers.Integers
+open import Integers.Type
 open import Integers.Negation
 open import Naturals.Addition renaming (_+_ to _ℕ+_)
 
@@ -20,24 +20,24 @@ module Integers.Addition where
 Addition is defined inductively, first on positive and then through
 negatives using auxilliary functions. +pos and +negsucc.
 
-\begin{code} 
+\begin{code}
 
-_+pos_ : ℤ → ℕ → ℤ 
+_+pos_ : ℤ → ℕ → ℤ
 x +pos 0      = x
 x +pos succ y = succℤ (x +pos y)
 
-_+negsucc_ : ℤ → ℕ → ℤ 
+_+negsucc_ : ℤ → ℕ → ℤ
 x +negsucc 0      = predℤ x
 x +negsucc succ y = predℤ (x +negsucc y)
 
-_+_ : ℤ → ℤ → ℤ 
+_+_ : ℤ → ℤ → ℤ
 x + pos y     = x +pos y
 x + negsucc y = x +negsucc y
 
 _-_ : ℤ → ℤ → ℤ
 a - b = a + (- b)
 
-infixl 31 _-_ 
+infixl 31 _-_
 infixl 31 _+_
 
 \end{code}
@@ -63,7 +63,7 @@ distributivity-pos-addition x = induction base step
   step k IH = pos x + pos (succ k)  ＝⟨ ap succℤ IH ⟩
               succℤ (pos (x ℕ+ k))  ∎
 
-ℤ-left-succ-pos : (x : ℤ) → (y : ℕ) → succℤ x +pos y ＝ succℤ (x +pos y) 
+ℤ-left-succ-pos : (x : ℤ) → (y : ℕ) → succℤ x +pos y ＝ succℤ (x +pos y)
 ℤ-left-succ-pos x 0        = refl
 ℤ-left-succ-pos x (succ y) = ap succℤ (ℤ-left-succ-pos x y)
 
@@ -74,11 +74,11 @@ distributivity-pos-addition x = induction base step
                              x +pos y                  ＝⟨ predsuccℤ (x +pos y) ⁻¹        ⟩
                              predℤ (succℤ (x +pos y))  ∎
 
-ℤ-left-pred-negsucc : (x : ℤ) → (y : ℕ) → predℤ x +negsucc y ＝ predℤ (x +negsucc y) 
+ℤ-left-pred-negsucc : (x : ℤ) → (y : ℕ) → predℤ x +negsucc y ＝ predℤ (x +negsucc y)
 ℤ-left-pred-negsucc x 0        = refl
 ℤ-left-pred-negsucc x (succ y) = ap predℤ (ℤ-left-pred-negsucc x y)
 
-ℤ-left-succ-negsucc : (x : ℤ) → (y : ℕ) → succℤ x +negsucc y ＝ succℤ (x +negsucc y) 
+ℤ-left-succ-negsucc : (x : ℤ) → (y : ℕ) → succℤ x +negsucc y ＝ succℤ (x +negsucc y)
 ℤ-left-succ-negsucc x 0        = predsuccℤ x ∙ (succpredℤ x ⁻¹)
 ℤ-left-succ-negsucc x (succ y) = succℤ x +negsucc succ y      ＝⟨ ℤ-left-pred-negsucc (succℤ x) y ⁻¹  ⟩
                                  predℤ (succℤ x) +negsucc y   ＝⟨ ap (_+ (negsucc y)) (predsuccℤ x)   ⟩
@@ -131,8 +131,8 @@ is commutative, both proved by induction.
   step₁ k IH = x + succℤ k   ＝⟨ ℤ-right-succ x k   ⟩
                succℤ (x + k) ＝⟨ ap succℤ IH        ⟩
                succℤ (k + x) ＝⟨ ℤ-left-succ k x ⁻¹ ⟩
-               succℤ k + x   ∎ 
-    
+               succℤ k + x   ∎
+
   step₂ : (k : ℤ)
         → x + succℤ k ＝ succℤ k + x
         → x + k       ＝ k + x
@@ -175,13 +175,13 @@ As a corollary of commutativity, we can prove that predℤ x ＝ -1 + x.
    where
     I : succℤ (a + b + k) ＝ succℤ (a + (b + k))
     I = succℤ ((a + b) + k)        ＝⟨ ℤ-right-succ (a + b) k ⁻¹    ⟩
-        (a + b) + succℤ k          ＝⟨ IH                           ⟩ 
+        (a + b) + succℤ k          ＝⟨ IH                           ⟩
         a + (b + succℤ k)          ＝⟨ ap (a +_) (ℤ-right-succ b k) ⟩
         a + succℤ (b + k)          ＝⟨ ℤ-right-succ a (b + k)       ⟩
         succℤ (a + (b + k))        ∎
 
 ℤ+-rearrangement : (a b c : ℤ) → a + c + b ＝ a + (b + c)
-ℤ+-rearrangement a b c = a + c + b   ＝⟨ ℤ+-assoc a c b          ⟩ 
+ℤ+-rearrangement a b c = a + c + b   ＝⟨ ℤ+-assoc a c b          ⟩
                          a + (c + b) ＝⟨ ap (a +_) (ℤ+-comm c b) ⟩
                          a + (b + c) ∎
 
@@ -222,7 +222,7 @@ avoids the use of predℤ in the proof.
   step₂ k IH e = IH I
    where
     I : succℤ k + x ＝ succℤ k + y
-    I = succℤ k + x    ＝⟨ ℤ-left-succ k x    ⟩ 
+    I = succℤ k + x    ＝⟨ ℤ-left-succ k x    ⟩
         succℤ (k + x)  ＝⟨ ap succℤ e         ⟩
         succℤ (k + y)  ＝⟨ ℤ-left-succ k y ⁻¹ ⟩
         succℤ k + y    ∎

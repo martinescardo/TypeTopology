@@ -4,21 +4,21 @@ Andrew Sneap, 27 April 2021
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import MLTT.Spartan renaming (_+_ to _∔_) 
+open import MLTT.Spartan renaming (_+_ to _∔_)
 
-open import Naturals.Addition renaming (_+_ to _ℕ+_) 
-open import Naturals.Properties 
-open import Naturals.Order 
-open import Notation.Order 
-open import UF.Base 
-open import UF.Subsingletons 
+open import Naturals.Addition renaming (_+_ to _ℕ+_)
+open import Naturals.Properties
+open import Naturals.Order
+open import Notation.Order
+open import UF.Base
+open import UF.Subsingletons
 
 open import Integers.Addition
-open import Integers.Integers
+open import Integers.Type
 open import Integers.Abs
 open import Integers.Negation
 open import Integers.Order
-open import Integers.Multiplication renaming (_*_ to _ℤ*_) 
+open import Integers.Multiplication renaming (_*_ to _ℤ*_)
 open import Naturals.Division renaming (_∣_ to _ℕ∣_)
 open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
 
@@ -75,7 +75,7 @@ _ℤ∣_-is-prop a b nz (x , p) (x' , p') = to-subtype-＝ (λ _ → ℤ-is-set)
       b        ＝⟨ p' ⁻¹        ⟩
       a ℤ* x'  ＝⟨ ℤ*-comm a x' ⟩
       x' ℤ* a  ∎
- 
+
   II : x ＝ x'
   II = ℤ-mult-right-cancellable x x' a nz I
 
@@ -156,7 +156,7 @@ pos-div-to-nat-div (succ a) (succ b) (negsucc x , p) = 𝟘-elim (product-positi
              0 ℕ* succ d ℕ+ succ r ＝⟨ ap succ (ap (_ℕ+ r) (zero-left-base (succ d))) ⟩
              succ (0 ℕ+ r)         ＝⟨ ap succ (zero-left-neutral r)                     ⟩
              succ r                ∎
-     
+
         V : negsucc a ＝ negsucc 0 ℤ* pos (succ d) + pos k
         V = negsucc a                                              ＝⟨ ap negsucc (succ-lc IV)                                                            ⟩
             negsucc r                                              ＝⟨ ℤ-zero-left-neutral (negsucc r) ⁻¹                                                 ⟩
@@ -169,7 +169,7 @@ pos-div-to-nat-div (succ a) (succ b) (negsucc x , p) = 𝟘-elim (product-positi
             negsucc 0 ℤ* (pos k + pos (succ r)) + pos k            ＝⟨ ap (λ z → negsucc 0 ℤ* z + pos k) (distributivity-pos-addition k (succ r))         ⟩
             negsucc 0 ℤ* pos (k ℕ+ succ r) + pos k                 ＝⟨ ap (λ z → negsucc 0 ℤ* pos z + pos k) e₂                                           ⟩
             negsucc 0 ℤ* pos (succ d) + pos k                      ∎
- 
+
   f (succ q , succ r , e₁ , l₁) = negsucc (succ q) , I (subtraction' (succ r) (succ d) l₁)
    where
     I : Σ k ꞉ ℕ , k ℕ+ succ r ＝ succ d
@@ -201,7 +201,7 @@ pos-div-to-nat-div (succ a) (succ b) (negsucc x , p) = 𝟘-elim (product-positi
             (- pos (succ q) ℤ* pos (succ d)) - pos (succ r)                    ＝⟨ iv                 ⟩
             (- pos (succ q) ℤ* pos (succ d)) + (pos k - pos (succ d))          ＝⟨ v                  ⟩
             (- pos (succ q) ℤ* pos (succ d)) - pos (succ d) + pos k            ＝⟨ vi                 ⟩
-            (- pos (succ d) ℤ* pos (succ q)) - pos (succ d) + pos k            ＝⟨ vii                ⟩             
+            (- pos (succ d) ℤ* pos (succ q)) - pos (succ d) + pos k            ＝⟨ vii                ⟩
             (- pos (succ d)) ℤ* pos (succ q) - pos (succ d) + pos k            ＝⟨ viii               ⟩
             (- pos (succ d)) ℤ* pos (succ q) - pos (succ d) ℤ* pos 1 + pos k   ＝⟨ ix                 ⟩
             (- pos (succ d)) ℤ* (pos (succ q) + pos 1) + pos k                 ＝⟨ refl               ⟩
@@ -228,7 +228,7 @@ pos-div-to-nat-div (succ a) (succ b) (negsucc x , p) = 𝟘-elim (product-positi
  where
   I : x ℤ* (α + β) ＝ y + z
   I = x ℤ* (α + β)    ＝⟨ distributivity-mult-over-ℤ' α β x ⟩
-      x ℤ* α + x ℤ* β ＝⟨ ap₂ _+_ αₚ βₚ                      ⟩  
+      x ℤ* α + x ℤ* β ＝⟨ ap₂ _+_ αₚ βₚ                      ⟩
       y + z           ∎
 
 ℤ-∣-respects-addition-of-multiples : (x y z k l : ℤ) → x ∣ y → x ∣ z → x ∣ (y ℤ* k + z ℤ* l)

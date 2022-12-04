@@ -12,9 +12,9 @@ from 21 March 2018 is included at the end.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module ArithmeticViaEquivalence.PlusOneLC where
+module Factorial.PlusOneLC where
 
-open import ArithmeticViaEquivalence.Swap
+open import Factorial.Swap
 open import MLTT.Plus-Properties
 open import MLTT.Spartan
 open import TypeTopology.DiscreteAndSeparated

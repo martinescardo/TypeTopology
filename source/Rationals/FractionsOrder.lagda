@@ -4,18 +4,18 @@ Andrew Sneap, November 2021
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import MLTT.Spartan renaming (_+_ to _∔_) 
+open import MLTT.Spartan renaming (_+_ to _∔_)
 
-open import Naturals.Properties 
-open import Notation.Order 
-open import UF.Base 
-open import UF.Subsingletons 
+open import Naturals.Properties
+open import Notation.Order
+open import UF.Base
+open import UF.Subsingletons
 
 open import Integers.Abs
 open import Integers.Addition renaming (_+_ to _ℤ+_)
-open import Integers.Integers
+open import Integers.Type
 open import Integers.Multiplication renaming (_*_ to _ℤ*_)
-open import Integers.Order 
+open import Integers.Order
 open import Naturals.Addition renaming (_+_ to _ℕ+_)
 open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
 open import Rationals.Fractions
@@ -46,7 +46,7 @@ p ℚₙ> q = q ℚₙ< p
   a' = pos (succ a)
   b' = pos (succ b)
   c' = pos (succ c)
-  
+
   I : x ℤ* c' ℤ* b' < z ℤ* a' ℤ* b'
   I = ℤ<-trans ((x ℤ* c') ℤ* b') ((y ℤ* a') ℤ* c') ((z ℤ* a') ℤ* b') i ii
    where
@@ -89,15 +89,15 @@ p ℚₙ> q = q ℚₙ< p
         succ c ℕ* (succ c ℕ* 0)      ∎
     ii : succ c ℕ* succ n ＝ succ c ℕ* 0
     ii = mult-left-cancellable (succ c ℕ* succ n) (succ c ℕ* 0) c i
-  
-  II : succℤ (pos (pred (succ c ℕ* succ c ℕ* succ n))) ＝ c' ℤ* c' ℤ* n' 
+
+  II : succℤ (pos (pred (succ c ℕ* succ c ℕ* succ n))) ＝ c' ℤ* c' ℤ* n'
   II = succℤ (pos (pred (succ c ℕ* succ c ℕ* succ n))) ＝⟨ by-definition ⟩
       pos (succ (pred (succ c ℕ* succ c ℕ* succ n)))  ＝⟨ ap pos (succ-pred' (succ c ℕ* succ c ℕ* succ n) I)⟩
       pos (succ c ℕ* succ c ℕ* succ n)                ＝⟨ pos-multiplication-equiv-to-ℕ (succ c ℕ* succ c) (succ n) ⁻¹ ⟩
       pos (succ c ℕ* succ c) ℤ* pos (succ n)          ＝⟨ ap (_ℤ* pos (succ n)) (pos-multiplication-equiv-to-ℕ (succ c) (succ c) ⁻¹) ⟩
       pos (succ c) ℤ* pos (succ c) ℤ* pos (succ n)    ＝⟨ by-definition ⟩
       c' ℤ* c' ℤ* n' ∎
-      
+
   III : succℤ ((x ℤ* c' ℤ+ z ℤ* a') ℤ* pos (succ (pred (succ b ℕ* succ c)))) ℤ+ pos (pred (succ c ℕ* succ c ℕ* succ n))
       ＝ (y ℤ* c' ℤ+ z ℤ* b') ℤ* pos (succ (pred (succ a ℕ* succ c)))
   III = succℤ ((x ℤ* c' ℤ+ z ℤ* a') ℤ* pos (succ (pred (succ b ℕ* succ c)))) ℤ+ pos (pred (succ c ℕ* succ c ℕ* succ n)) ＝⟨ i     ⟩
@@ -144,12 +144,12 @@ p ℚₙ> q = q ℚₙ< p
     xx    = ap (λ - → y ℤ* c' ℤ* (a' ℤ* c') ℤ+ -) (ℤ*-assoc z b' (a' ℤ* c') ⁻¹)
     xxi   = distributivity-mult-over-ℤ (y ℤ* c') (z ℤ* b') (a' ℤ* c') ⁻¹
     xxii  = ap (λ - → (y ℤ* c' ℤ+ z ℤ* b') ℤ* -) (denom-setup a c ⁻¹)
-    
+
 ℚₙ<-adding : (p q r s : ℚₙ) → p ℚₙ< q → r ℚₙ< s → p + r ℚₙ< q + s
 ℚₙ<-adding p q r s l₁ l₂ = ℚₙ<-trans (p + r) (q + r) (q + s) I III
  where
   I : (p + r) ℚₙ< (q + r)
-  I = ℚₙ<-addition-preserves-order p q r l₁ 
+  I = ℚₙ<-addition-preserves-order p q r l₁
 
   II : (r + q) ℚₙ< (s + q)
   II = ℚₙ<-addition-preserves-order r s q l₂
@@ -187,7 +187,7 @@ p ℚₙ> q = q ℚₙ< p
   I = succℤ (pos 0 ℤ* pos (succ (pred (succ a ℕ* succ b)))) ℤ+ pos (pred (succ c ℕ* succ d)) ＝⟨ γ                                                                               ⟩
       succℤ (pos 0) ℤ+ pos (pred (succ c ℕ* succ d))                                         ＝⟨ ℤ-left-succ (pos 0) (pos (pred (succ c ℕ* succ d)))                             ⟩
       succℤ (pos 0 ℤ+ pos (pred (succ c ℕ* succ d)))                                         ＝⟨ ap succℤ (ℤ-zero-left-neutral (pos (pred (succ c ℕ* succ d))))                  ⟩
-      succℤ (pos (pred (succ c ℕ* succ d)))                                                  ＝⟨ by-definition                                                                   ⟩ 
+      succℤ (pos (pred (succ c ℕ* succ d)))                                                  ＝⟨ by-definition                                                                   ⟩
       pos (succ (pred (succ c ℕ* succ d)))                                                   ＝⟨ ap pos (succ-pred' (succ c ℕ* succ d) (ℕ-positive-multiplication-not-zero c d)) ⟩
       pos (succ c ℕ* succ d)                                                                 ＝⟨ pos-multiplication-equiv-to-ℕ (succ c) (succ d) ⁻¹                              ⟩
       pos (succ c) ℤ* pos (succ d)                                                           ＝⟨ ap₂ _ℤ*_ α β                                                                    ⟩
@@ -218,7 +218,7 @@ p ℚₙ> q = q ℚₙ< p
 2/3ℚₙ≤1 : (pos 2 , 2) ℚₙ≤ (pos 1 , 0)
 2/3ℚₙ≤1 = 1 , refl
 
-negative-not-greater-than-zero : (x a : ℕ) → ¬ ((pos 0 , 0) ℚₙ<( negsucc x , a)) 
+negative-not-greater-than-zero : (x a : ℕ) → ¬ ((pos 0 , 0) ℚₙ<( negsucc x , a))
 negative-not-greater-than-zero x a (n , l) = negsucc-not-pos I
  where
   I : negsucc x ℤ* pos 1 ＝ pos (succ n)
@@ -227,5 +227,4 @@ negative-not-greater-than-zero x a (n , l) = negsucc-not-pos I
       succℤ (pos 0 ℤ* pos (succ a) ℤ+ pos n)  ＝⟨ ℤ-right-succ (pos 0 ℤ* pos (succ a)) (pos n) ⁻¹            ⟩
       pos 0 ℤ* pos (succ a) ℤ+ succℤ (pos n)  ＝⟨ ap (_ℤ+ pos (succ n)) (ℤ-zero-left-base (pos (succ a))) ⟩
       pos 0 ℤ+ pos (succ n)                   ＝⟨  ℤ-zero-left-neutral (pos (succ n))                        ⟩
-      pos (succ n)                            ∎ 
-
+      pos (succ n)                            ∎

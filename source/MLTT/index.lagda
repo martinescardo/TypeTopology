@@ -9,8 +9,8 @@ module MLTT.index where
 import MLTT.AlternativePlus
 import MLTT.Empty-Type
 import MLTT.Empty
-import MLTT.Fin
-import MLTT.Fin-Properties
+import Fin.Type
+import Fin.Properties
 import MLTT.Id
 import MLTT.Identity-Type
 import MLTT.List

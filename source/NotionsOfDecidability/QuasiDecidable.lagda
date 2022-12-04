@@ -231,8 +231,8 @@ open import UF.Yoneda
 open import UF.Embeddings
 open import UF.Powerset
 
-open import NotionsOfDecidability.DecidableAndDetachable
-open import Various.Dominance
+open import NotionsOfDecidability.Decidable
+open import Dominance.Definition
 
 \end{code}
 
@@ -483,6 +483,7 @@ closure under binary products (that is, conjunctions, or meets):
     where
      i : is-prop Q
      i = quasidecidable-types-are-props Q (φ ⋆)
+
      r : Q ＝ 𝟙 × Q
      r = pe i (×-is-prop 𝟙-is-prop i) (λ q → (⋆ , q)) pr₂
 
@@ -538,7 +539,7 @@ by quasidecidable propositions:
 
  quasidecidable-closed-under-Σ = D3-and-D5'-give-D5 pe is-quasidecidable
                                   (quasidecidable-types-are-props)
-                                  (λ P Q' i j → quasidecidable-closed-under-× P i Q' j)
+                                  (λ P Q' i → quasidecidable-closed-under-× P i Q')
 
 \end{code}
 
@@ -632,9 +633,9 @@ propositions:
      ≤-refl ,
      ≤-trans ,
      ≤-antisym ,
-      ⊥-is-minimum ,
-      ⋁-is-ub ,
-      ⋁-is-lb-of-ubs
+     ⊥-is-minimum ,
+     ⋁-is-ub ,
+     ⋁-is-lb-of-ubs
 
 \end{code}
 
@@ -861,6 +862,8 @@ module quasidecidability-construction-from-resizing
         (ρ : Propositional-Resizing)
        where
 
+ open import UF.Powerset-Resizing fe ρ
+
 \end{code}
 
 This assumption says that any proposition in the universe 𝓤 is
@@ -868,47 +871,7 @@ equivalent to some proposition in the universe 𝓥, for any two
 universes 𝓤 and 𝓥.
 
 The crucial fact exploited here is that intersections of collections
-of subcollections 𝓐 : 𝓟 (𝓟 X) exist under propositional resizing. We
-prove this generalizing the type of 𝓐 (the double powerset of X) as
-follows, where the membership relation defined in the module
-UF.Powerset has type
-
-  _∈_ : {X : 𝓤 ̇ } → X → (X → Ω 𝓥) → 𝓥 ̇
-
-\begin{code}
-
- intersections-exist : {X : 𝓤 ̇ } (𝓐 : (X → Ω 𝓥) → Ω 𝓦)
-                     → Σ B ꞉ (X → Ω 𝓥) , ((x : X) → x ∈ B ⇔ ((A : X → Ω 𝓥) → A ∈ 𝓐 → x ∈ A))
- intersections-exist {𝓤} {𝓥} {𝓦} {X} 𝓐 = B , (λ x → lr x , rl x)
-  where
-   β : X → 𝓤 ⊔ (𝓥 ⁺) ⊔ 𝓦 ̇
-   β x = (A : X → Ω 𝓥) → A ∈ 𝓐 → x ∈ A
-
-   i : (x : X) → is-prop (β x)
-   i x = Π₂-is-prop fe (λ A _ → ∈-is-prop A x)
-
-   B : X → Ω 𝓥
-   B x = resize ρ (β x) (i x) ,
-         resize-is-prop ρ (β x) (i x)
-
-   lr : (x : X) → x ∈ B → (A : X → Ω 𝓥) → A ∈ 𝓐 → x ∈ A
-   lr x = from-resize ρ (β x) (i x)
-
-   rl : (x : X) → ((A : X → Ω 𝓥) → A ∈ 𝓐 → x ∈ A) → x ∈ B
-   rl x = to-resize ρ (β x) (i x)
-
- ⋂ : {X : 𝓤 ̇ } → ((X → Ω 𝓥) → Ω 𝓦) → (X → Ω 𝓥)
- ⋂ 𝓐 = pr₁ (intersections-exist 𝓐)
-
- from-⋂ : {X : 𝓤 ̇ } (𝓐 : ((X → Ω 𝓥) → Ω 𝓦)) (x : X)
-        → x ∈ ⋂ 𝓐 → (A : X → Ω 𝓥) → A ∈ 𝓐 → x ∈ A
- from-⋂ 𝓐 x = lr-implication (pr₂ (intersections-exist 𝓐) x)
-
- to-⋂ : {X : 𝓤 ̇ } (𝓐 : ((X → Ω 𝓥) → Ω 𝓦)) (x : X)
-      → ((A : X → Ω 𝓥) → A ∈ 𝓐 → x ∈ A) → x ∈ ⋂ 𝓐
- to-⋂ 𝓐 x = rl-implication (pr₂ (intersections-exist 𝓐) x)
-
-\end{code}
+of subcollections 𝓐 : 𝓟 (𝓟 X) exist under propositional resizing.
 
 To define the type of quasi-decidable propositions, we take the
 intersection of the collections of types satisfying the following
@@ -1544,7 +1507,7 @@ following renaming is annoying.
     forget : (g : A → B)
            → is-σ-frame-hom  𝓐-qua-σ-frame 𝓑              g
            → is-σ-suplat-hom 𝓐             𝓑-qua-σ-suplat g
-    forget g (i , ii , iii , vi) = (iii , vi)
+    forget g (i , ii , iii , iv) = (iii , iv)
 
     f-uniqueness : (g : A → B) → is-σ-frame-hom 𝓐-qua-σ-frame 𝓑 g → f ＝ g
     f-uniqueness g g-is-hom' = at-most-one-hom 𝓑-qua-σ-suplat ⊤' f g
