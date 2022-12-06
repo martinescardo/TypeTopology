@@ -332,7 +332,7 @@ extension-lemma : (B : BooleanAlgebra 𝓦 𝓥) (L L′ : Frame 𝓤 𝓦 𝓦)
                 → is-contr
                    (Σ h₀ ꞉ (⟨ L ⟩ → ⟨ L′ ⟩) ,
                     (is-a-frame-homomorphism L L′ h₀ holds) × (h ＝ h₀ ∘ η))
-extension-lemma {𝓦} {𝓤} B L L′ η e@(_ , _ , _ , _ , ♥₂) σ σ′ s γ 𝕜 h μ@(♠₀ , ♠₁ , ♠₂ , ♠₃) =
+extension-lemma {𝓦} {𝓤} B L L′ η e@(_ , _ , _ , ♥₁ , ♥₂) σ σ′ s γ 𝕜 h μ@(♠₀ , ♠₁ , ♠₂ , ♠₃) =
  (h⁻ , φ , ψ) , ϑ
  where
   ↓↓_ : ⟨ L ⟩ → Fam 𝓦 ⟨ L′ ⟩
@@ -489,8 +489,6 @@ The function `h⁻` also preserves meets.
   h⁻-preserves-∨ : (x y : ⟨ L ⟩) → h⁻ (x ∨[ L ] y) ＝ h⁻ x ∨[ L′ ] h⁻ y
   h⁻-preserves-∨ x y = ≤-is-antisymmetric (poset-of L′) † ‡
    where
-    open PosetReasoning (poset-of L′)
-
     ※₁ : (h⁻ x ≤[ poset-of L′ ] h⁻ (x ∨[ L ] y)) holds
     ※₁ = h⁻-is-monotone (x , (x ∨[ L ] y)) (∨[ L ]-upper₁ x y)
 
@@ -522,7 +520,7 @@ The function `h⁻` also preserves meets.
              × (c ≤[ poset-of L ] x) holds
              × (d ≤[ poset-of L ] y) holds
            → (h b ≤[ poset-of L′ ] (h⁻ x ∨[ L′ ] h⁻ y)) holds
-        †₂ ((c , d) , φ , β , ϑ , χ , ξ) =
+        †₂ ((c , d) , κc , κd , ϑ , χ , ξ) =
          h b                  ＝⟨ ψ₁ b ⟩ₚ
          h⁻ (η b)             ≤⟨ Ⅰ   ⟩
          h⁻ (c ∨[ L ] d)      ≤⟨ Ⅱ   ⟩
@@ -530,11 +528,16 @@ The function `h⁻` also preserves meets.
          h⁻ c ∨[ L′ ] h⁻ y    ≤⟨ Ⅵ   ⟩
          h⁻ x ∨[ L′ ] h⁻ y    ■
           where
+           open PosetReasoning (poset-of L′)
+
            Ⅰ = h⁻-is-monotone (η b , (c ∨[ L ] d)) ϑ
 
            Ⅱ : (h⁻ (c ∨[ L ] d) ≤[ poset-of L′ ] ((h⁻ c) ∨[ L′ ] (h⁻ d))) holds
            Ⅱ = h⁻ (c ∨[ L ] d) ≤⟨ ♣ ⟩ 𝓇𝒽𝓈 ＝⟨ ※ ⁻¹ ⟩ₚ h⁻ c ∨[ L′ ] h⁻ d ■
             where
+             open PosetReasoning (poset-of L)
+              renaming (_≤⟨_⟩_ to _≤⟨_⟩ₗ_; _■ to _𝔔𝔈𝔇; _＝⟨_⟩ₚ_ to _＝⟨_⟩ₗ_)
+
              𝓇𝒽𝓈 = ⋁[ L′ ]
                      ⁅ h b₁ ∨[ L′ ] h b₂ ∣ ((b₁ , _) , (b₂ , _)) ∶ (Σ b₁ ꞉ ⟪ B ⟫ , (η b₁ ≤[ poset-of L ] c) holds)
                                                                  × (Σ b₂ ꞉ ⟪ B ⟫ , (η b₂ ≤[ poset-of L ] d) holds) ⁆
@@ -543,18 +546,38 @@ The function `h⁻` also preserves meets.
                ＝ ⋁[ L′ ]
                    ⁅ h b₁ ∨[ L′ ] h b₂ ∣ ((b₁ , _) , (b₂ , _)) ∶ (Σ b₁ ꞉ ⟪ B ⟫ , (η b₁ ≤[ poset-of L ] c) holds)
                                                                × (Σ b₂ ꞉ ⟪ B ⟫ , (η b₂ ≤[ poset-of L ] d) holds) ⁆
-             ※ = {!!}
-               -- foo₁ : ((h⁻ c ∨[ L′ ] h⁻ d) ≤[ poset-of L′ ] 𝓇𝒽𝓈) holds
-               -- foo₁ = ∨[ L′ ]-least fooₐ {!!}
-               --  where
-               --   fooₐ : (h⁻ c ≤[ poset-of L′ ] 𝓇𝒽𝓈) holds
-               --   fooₐ = h⁻ c ≤⟨ {!!} ⟩ ? ≤⟨ ?  {!!} ■
+             ※ = ∨[ L′ ]-iterated-join (↓↓ c) (↓↓ d) ∣ i₁ ∣ ∣ i₂ ∣
+              where
+               i₁ : index (↓↓ c)
+               i₁ = ⊥[ B ] , (η ⊥[ B ]    ＝⟨ ♥₁             ⟩ₗ
+                              𝟎[ L ]      ≤⟨ 𝟎-is-bottom L c ⟩ₗ
+                              c           𝔔𝔈𝔇)
 
-               -- foo₂ : (𝓇𝒽𝓈 ≤[ poset-of L′ ] (h⁻ c ∨[ L′ ] h⁻ d)) holds
-               -- foo₂ = {!!}
+               i₂ : index (↓↓ d)
+               i₂ = ⊥[ B ] , (η ⊥[ B ]    ＝⟨ ♥₁             ⟩ₗ
+                              𝟎[ L ]      ≤⟨ 𝟎-is-bottom L d ⟩ₗ
+                              d           𝔔𝔈𝔇)
 
              ♣₁ : (𝓇𝒽𝓈 is-an-upper-bound-of (↓↓ (c ∨[ L ] d))) holds
-             ♣₁ (b , q) = h b ≤⟨ {!!} ⟩ h {!!} ∨[ L′ ] {!!} d ≤⟨ {!!} ⟩ 𝓇𝒽𝓈 ■
+             ♣₁ (b , q) = ∥∥-rec₂ (holds-is-prop (h b ≤[ poset-of L′ ] 𝓇𝒽𝓈)) ♣₂ (𝕜 c κc) (𝕜 d κd)
+              where
+               ♣₂ : (Σ b₁ ꞉ ⟪ B ⟫ , η b₁ ＝ c)
+                  → (Σ b₂ ꞉ ⟪ B ⟫ , η b₂ ＝ d)
+                  → (h b ≤[ poset-of L′ ] 𝓇𝒽𝓈) holds
+               ♣₂ (b₁ , r₁) (b₂ , r₂) =
+                h b                     ≤⟨ lattice-homomorphisms-are-monotonic B L′ h μ b (b₁ ⋎[ B ] b₂) foo ⟩
+                h (b₁ ⋎[ B ] b₂)        ＝⟨ ♠₃ b₁ b₂ ⟩ₚ
+                (h b₁) ∨[ L′ ] (h b₂)   ≤⟨ ⋁[ L′ ]-upper _ ((b₁ , reflexivity+ (poset-of L) r₁) , (b₂ , reflexivity+ (poset-of L) r₂)) ⟩
+                𝓇𝒽𝓈                     ■
+                 where
+                  foo : (b ≤[ poset-of-ba B ] (b₁ ⋎[ B ] b₂)) holds
+                  foo = pr₂
+                         (embedding-is-order-isomorphism B L η e b (join-of-ba B b₁ b₂))
+                         (η b                    ≤⟨ q                                     ⟩ₗ
+                          c ∨[ L ] d             ＝⟨ ap (λ - → - ∨[ L ] d) (r₁ ⁻¹) ⟩ₗ
+                          (η b₁) ∨[ L ] d        ＝⟨ ap (λ - → (η b₁) ∨[ L ] -) (r₂ ⁻¹)   ⟩ₗ
+                          (η b₁) ∨[ L ] (η b₂)   ＝⟨ ♥₂ b₁ b₂ ⁻¹ ⟩ₗ
+                          η (b₁ ⋎[ B ] b₂)       𝔔𝔈𝔇)
 
              ♣ = ⋁[ L′ ]-least (↓↓ (c ∨[ L ] d)) (𝓇𝒽𝓈 , ♣₁)
 
@@ -571,6 +594,8 @@ The function `h⁻` also preserves meets.
         ♣₁ (b , p) = h b             ≤⟨ ⋁[ L′ ]-upper (↓↓ x) (b , p) ⟩
                      h⁻ x            ≤⟨ ※₁                           ⟩
                      h⁻ (x ∨[ L ] y) ■
+                      where
+                       open PosetReasoning (poset-of L′)
 
       ‡₂ : (h⁻ y ≤[ poset-of L′ ] h⁻ (x ∨[ L ] y)) holds
       ‡₂ = ⋁[ L′ ]-least (↓↓ y) (h⁻ (x ∨[ L ] y) , ♣₂)
@@ -579,6 +604,8 @@ The function `h⁻` also preserves meets.
         ♣₂ (b , p) = h b                ≤⟨ ⋁[ L′ ]-upper (↓↓ y) (b , p) ⟩
                      ⋁[ L′ ] (↓↓ y)     ≤⟨ ※₂                           ⟩
                      h⁻ (x ∨[ L ] y)    ■
+                      where
+                       open PosetReasoning (poset-of L′)
 
   φ₂ : (S : Fam 𝓦 ⟨ L ⟩) → (h⁻ (⋁[ L ] S) is-lub-of ⁅ h⁻ x ∣ x ε S ⁆) holds
   φ₂ S@(I , 𝓎) =
