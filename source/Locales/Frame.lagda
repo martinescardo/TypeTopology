@@ -1754,6 +1754,7 @@ open PropositionalTruncation pt
  ≤-is-antisymmetric (poset-of F) † ‡
   where
    open PosetReasoning (poset-of F)
+   open Joins (λ x y → x ≤[ poset-of F ] y)
 
    fam-lhs : Fam 𝓦 ⟨ F ⟩
    fam-lhs = binary-family 𝓦 (⋁[ F ] S₁) (⋁[ F ] S₂)
@@ -1762,25 +1763,57 @@ open PropositionalTruncation pt
    fam-rhs = ⁅ (S₁ [ i ]) ∨[ F ] (S₂ [ j ]) ∣ (i , j) ∶ (index S₁ × index S₂) ⁆
 
    † : ((⋁[ F ] fam-lhs) ≤[ poset-of F ] (⋁[ F ] fam-rhs)) holds
-   † = ∨[ F ]-least †₁ {!!}
+   † = ∨[ F ]-least †₁ †₂
     where
-     †₁ : ((⋁[ F ] S₁) ≤[ poset-of F ] (⋁[ F ] fam-rhs)) holds
-     †₁ = ⋁[ F ]-least S₁ ((⋁[ F ] fam-rhs) , †₂)
+     ♠ : ((⋁[ F ] fam-rhs) is-an-upper-bound-of S₁) holds
+     ♠ i = ∥∥-rec (holds-is-prop (_ ≤[ poset-of F ] _)) ♣ i₂
       where
-       open Joins (λ x y → x ≤[ poset-of F ] y)
+       ♣ : index S₂
+         → ((S₁ [ i ]) ≤[ poset-of F ] (⋁[ F ] fam-rhs)) holds
+       ♣ j =
+        S₁ [ i ]                       ≤⟨ Ⅰ ⟩
+        (S₁ [ i ]) ∨[ F ] (S₂ [ j ])   ≤⟨ Ⅱ ⟩
+        ⋁[ F ] fam-rhs                 ■
+         where
+          Ⅰ = ∨[ F ]-upper₁ (S₁ [ i ]) (S₂ [ j ])
 
-       †₂ : ((⋁[ F ] fam-rhs) is-an-upper-bound-of S₁) holds
-       †₂ i = ∥∥-rec (holds-is-prop (_ ≤[ poset-of F ] _)) ♣ i₁
-        where
-         ♣ : index S₁
-           → ((S₁ [ i ]) ≤[ poset-of F ] (⋁[ F ] fam-rhs)) holds
-         ♣ i₁ = {!!} ≤⟨ {!!} ⟩ {!!} ■
+          Ⅱ : (((S₁ [ i ]) ∨[ F ] (S₂ [ j ])) ≤[ poset-of F ] (⋁[ F ] fam-rhs)) holds
+          Ⅱ = ⋁[ F ]-upper fam-rhs (i , j)
 
-     †₂ : {!!}
-     †₂ = {!!}
+     †₁ : ((⋁[ F ] S₁) ≤[ poset-of F ] (⋁[ F ] fam-rhs)) holds
+     †₁ = ⋁[ F ]-least S₁ ((⋁[ F ] fam-rhs) , ♠)
+
+     ♥ : ((⋁[ F ] fam-rhs) is-an-upper-bound-of S₂) holds
+     ♥ j = ∥∥-rec (holds-is-prop (_ ≤[ poset-of F ] _)) ♢ i₁
+      where
+       ♢ : index S₁ → ((S₂ [ j ]) ≤[ poset-of F ] (⋁[ F ] fam-rhs)) holds
+       ♢ i =
+        S₂ [ j ]                        ≤⟨ Ⅰ ⟩
+        (S₁ [ i ]) ∨[ F ] (S₂ [ j ])    ≤⟨ Ⅱ ⟩
+        ⋁[ F ] fam-rhs                  ■
+         where
+          Ⅰ : ((S₂ [ j ]) ≤[ poset-of F ] (S₁ [ i ] ∨[ F ] S₂ [ j ])) holds
+          Ⅰ = ∨[ F ]-upper₂ (S₁ [ i ]) (S₂ [ j ])
+
+          Ⅱ : ((S₁ [ i ] ∨[ F ] S₂ [ j ]) ≤[ poset-of F ] (⋁[ F ] fam-rhs)) holds
+          Ⅱ = ⋁[ F ]-upper fam-rhs (i , j)
+
+     †₂ : ((⋁[ F ] S₂) ≤[ poset-of F ] (⋁[ F ] fam-rhs)) holds
+     †₂ = ⋁[ F ]-least S₂ ((⋁[ F ] fam-rhs) , ♥)
 
    ‡ : ((⋁[ F ] fam-rhs) ≤[ poset-of F ] (⋁[ F ] fam-lhs)) holds
-   ‡ = {!!}
+   ‡ = ⋁[ F ]-least fam-rhs ((⋁[ F ] fam-lhs) , ‡₁)
+    where
+     ‡₁ : ((⋁[ F ] fam-lhs) is-an-upper-bound-of fam-rhs) holds
+     ‡₁ (i , j) =
+      (S₁ [ i ])  ∨[ F ] (S₂ [ j ])   ≤⟨ Ⅰ    ⟩
+      (⋁[ F ] S₁) ∨[ F ] (S₂ [ j ])   ≤⟨ Ⅱ    ⟩
+      (⋁[ F ] S₁) ∨[ F ] (⋁[ F ] S₂)  ＝⟨ Ⅲ   ⟩ₚ
+      ⋁[ F ] fam-lhs                  ■
+       where
+        Ⅰ = ∨[ F ]-left-monotone  (⋁[ F ]-upper S₁ i)
+        Ⅱ = ∨[ F ]-right-monotone (⋁[ F ]-upper S₂ j)
+        Ⅲ = refl
 
 \end{code}
 
