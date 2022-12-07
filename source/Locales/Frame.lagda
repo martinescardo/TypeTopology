@@ -1682,7 +1682,6 @@ record Locale (𝓤 𝓥 𝓦 : Universe) : 𝓤 ⁺ ⊔ 𝓥 ⁺ ⊔ 𝓦 ⁺ �
  𝒪 : Frame 𝓤 𝓥 𝓦
  𝒪 = ⟨_⟩ₗ , frame-str-of
 
-
 \end{code}
 
 The type of continuous maps from locale `X` to locale `Y`:
@@ -1707,6 +1706,53 @@ module ContinuousMapNotation (X : Locale 𝓤 𝓥 𝓦) (Y : Locale 𝓤' 𝓥'
  _⋆∙_ : (f : X ─c→ Y)
       → ⟨ 𝒪 Y ⟩ → ⟨ 𝒪 X ⟩
  _⋆∙_ f V = (_⋆ f) .pr₁ V
+
+\end{code}
+
+\begin{code}
+
+cont-comp : (X Y Z : Locale 𝓤 𝓥 𝓦) → (Y ─c→ Z) → (X ─c→ Y) → X ─c→ Z
+cont-comp {𝓦 = 𝓦} X Y Z ℊ@(g , α₁ , α₂ , α₃) 𝒻@(f , β₁ , β₂ , β₃) = h , †
+ where
+  open ContinuousMapNotation X Y using () renaming (_⋆∙_ to _⋆₁∙_)
+  open ContinuousMapNotation Y Z using () renaming (_⋆∙_ to _⋆₂∙_)
+
+  h : ⟨ 𝒪 Z ⟩ → ⟨ 𝒪 X ⟩
+  h W = 𝒻 ⋆₁∙ (ℊ ⋆₂∙ W)
+
+  † : is-a-frame-homomorphism (𝒪 Z) (𝒪 X) h holds
+  † = †₁ , †₂ , †₃
+   where
+    †₁ : 𝒻 ⋆₁∙ (ℊ ⋆₂∙ 𝟏[ 𝒪 Z ]) ＝ 𝟏[ 𝒪 X ]
+    †₁ = 𝒻 ⋆₁∙ (ℊ ⋆₂∙ 𝟏[ 𝒪 Z ])     ＝⟨ Ⅰ ⟩
+         𝒻 ⋆₁∙ 𝟏[ 𝒪 Y ]             ＝⟨ Ⅱ ⟩
+         𝟏[ 𝒪 X ]                   ∎
+          where
+           Ⅰ = ap (λ - → 𝒻 ⋆₁∙ -) α₁
+           Ⅱ = β₁
+
+    †₂ : (U V : ⟨ 𝒪 Z ⟩)
+       → 𝒻 ⋆₁∙ (ℊ ⋆₂∙ (U ∧[ 𝒪 Z ] V)) ＝ (𝒻 ⋆₁∙ (ℊ ⋆₂∙ U)) ∧[ 𝒪 X ] (𝒻 ⋆₁∙ (ℊ ⋆₂∙ V))
+    †₂ U V = 𝒻 ⋆₁∙ (ℊ ⋆₂∙ (U ∧[ 𝒪 Z ] V))                   ＝⟨ Ⅰ ⟩
+             𝒻 ⋆₁∙ ((ℊ ⋆₂∙ U) ∧[ 𝒪 Y ] (ℊ ⋆₂∙ V))           ＝⟨ Ⅱ ⟩
+             (𝒻 ⋆₁∙ (ℊ ⋆₂∙ U)) ∧[ 𝒪 X ] (𝒻 ⋆₁∙ (ℊ ⋆₂∙ V))   ∎
+              where
+               Ⅰ = ap (λ - → 𝒻 ⋆₁∙ -) (α₂ U V)
+               Ⅱ = β₂ (ℊ ⋆₂∙ U) (ℊ ⋆₂∙ V)
+
+    open Joins (λ x y → x ≤[ poset-of (𝒪 X) ] y)
+
+    †₃ : (U : Fam 𝓦 ⟨ 𝒪 Z ⟩) → ((h (⋁[ 𝒪 Z ] U)) is-lub-of ⁅ h x ∣ x ε U ⁆) holds
+    †₃ U = ♥ , ♣
+     where
+      open PosetReasoning (poset-of (𝒪 X))
+
+      ♥ : (h (⋁[ 𝒪 Z ] U) is-an-upper-bound-of ⁅ h x ∣ x ε U ⁆) holds
+      ♥ i = frame-morphisms-are-monotonic (𝒪 Y) (𝒪 X) f (pr₂ 𝒻) _ (pr₁ (α₃ U) i)
+
+      ♣ : ((u , _) : upper-bound ⁅ h x ∣ x ε U ⁆)
+        → (h (⋁[ 𝒪 Z ] U) ≤[ poset-of (𝒪 X) ] u) holds
+      ♣ (u , p) = {!!}
 
 \end{code}
 
