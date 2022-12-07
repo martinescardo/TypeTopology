@@ -403,7 +403,7 @@ an arbitrary well founded order) also appears at the bottom of [Acz77, p. 743].
 
  open import UF.Quotient hiding (is-prop-valued)
 
- module _
+ module 𝕍-to-Ord-construction
          (sq : set-quotients-exist)
         where
 
@@ -625,6 +625,9 @@ Future work
 (2) We are currently working out the details of a related presentation for all
     of 𝕍.
 
+
+TO DO: Put in dates
+
 \begin{code}
 
  module _
@@ -773,20 +776,21 @@ in 𝓤 equivalent to A/~ᵒʳᵈ.
   open import UF.Size -- TO DO: Move imports
   open import Ordinals.WellOrderTransport (λ _ _ → fe)
 
-  ≺-has-small-values : (x y : A/~) → is-small (x ≺ y)
-  ≺-has-small-values =
-   /-induction₂ fe ~EqRel
-                (λ x y → being-small-is-prop ua (x ≺ y) 𝓤)
-                (λ a b → (f a ∈⁻ f b)
-                       , ((f a ∈⁻ f b)    ≃⟨ ∈⁻-≃-∈ ⟩
-                          (f a ∈ f b)     ≃⟨ idtoeq _ _ (≺-＝-∈ ⁻¹) ⟩
-                          ([ a ] ≺ [ b ]) ■))
+  private
+   ≺-has-small-values : (x y : A/~) → is-small (x ≺ y)
+   ≺-has-small-values =
+    /-induction₂ fe ~EqRel
+                 (λ x y → being-small-is-prop ua (x ≺ y) 𝓤)
+                 (λ a b → (f a ∈⁻ f b)
+                        , ((f a ∈⁻ f b)    ≃⟨ ∈⁻-≃-∈ ⟩
+                           (f a ∈ f b)     ≃⟨ idtoeq _ _ (≺-＝-∈ ⁻¹) ⟩
+                           ([ a ] ≺ [ b ]) ■))
 
-  _≺⁻_ : A/~ → A/~ → 𝓤 ̇
-  x ≺⁻ y = pr₁ (≺-has-small-values x y)
+   _≺'_ : A/~ → A/~ → 𝓤 ̇
+   x ≺' y = pr₁ (≺-has-small-values x y)
 
-  ≺-≃-≺⁻ : {x y : A/~} → x ≺ y ≃ x ≺⁻ y
-  ≺-≃-≺⁻ {x} {y} = ≃-sym (pr₂ (≺-has-small-values x y))
+   ≺-≃-≺' : {x y : A/~} → x ≺ y ≃ x ≺' y
+   ≺-≃-≺' {x} {y} = ≃-sym (pr₂ (≺-has-small-values x y))
 
   module _
           (σ : is-set-theoretic-ordinal (𝕍-set f))
@@ -797,7 +801,7 @@ in 𝓤 equivalent to A/~ᵒʳᵈ.
    private
     resize-ordinal : Σ s ꞉ OrdinalStructure A/~⁻ , (A/~⁻ , s) ≃ₒ A/~ᵒʳᵈ
     resize-ordinal = transfer-structure A/~⁻ A/~ᵒʳᵈ (≃-sym A/~-≃-A/~⁻)
-                      (_≺⁻_ , (λ x y → ≺-≃-≺⁻))
+                      (_≺'_ , (λ x y → ≺-≃-≺'))
 
    A/~⁻ᵒʳᵈ : Ordinal 𝓤
    A/~⁻ᵒʳᵈ = A/~⁻ , pr₁ resize-ordinal
@@ -811,19 +815,114 @@ in 𝓤 equivalent to A/~ᵒʳᵈ.
    [_]⁻ : A → A/~⁻
    [_]⁻ = ⌜ A/~-≃-A/~⁻ ⌝ ∘ [_]
 
+   open import UF.ImageAndSurjection -- TO DO: Move and clean up
+   open ImageAndSurjection pt
+   []⁻-is-surjection : is-surjection [_]⁻
+   []⁻-is-surjection = ∘-is-surjection (image-surjection-converse [_] λ P → /-induction ~EqRel) (equivs-are-surjections (⌜⌝-is-equiv A/~-≃-A/~⁻))
+
+   _≺⁻_ : A/~⁻ → A/~⁻ → 𝓤 ̇
+   _≺⁻_ = underlying-order A/~⁻ᵒʳᵈ
+
+   ≺⁻-≃-≺ : {a b : A} → [ a ]⁻ ≺⁻ [ b ]⁻ ≃ [ a ] ≺ [ b ]
+   ≺⁻-≃-≺ {a} {b} = logically-equivalent-props-are-equivalent
+                      (prop-valuedness _≺⁻_ (is-well-ordered A/~⁻ᵒʳᵈ)
+                        [ a ]⁻ [ b ]⁻)
+                      (≺-is-prop-valued [ a ] [ b ])
+                      (⦅2⦆ [ a ] [ b ])
+                      (⦅1⦆ [ a ] [ b ])
+    where
+     φ⁺ : A/~⁻ᵒʳᵈ ≃ₒ A/~ᵒʳᵈ
+     φ⁺ = A/~⁻ᵒʳᵈ-≃ₒ-A/~ᵒʳᵈ
+     φ⁻¹ : A/~ → A/~⁻
+     φ⁻¹ = ≃ₒ-to-fun⁻¹ _ _ φ⁺
+     φ-is-order-equiv : is-order-equiv A/~⁻ᵒʳᵈ A/~ᵒʳᵈ (≃ₒ-to-fun _ _ φ⁺)
+     φ-is-order-equiv = ≃ₒ-to-fun-is-order-equiv _ _ φ⁺
+     ⦅1⦆ : (x y : A/~) → x ≺ y → φ⁻¹ x ≺⁻ φ⁻¹ y
+     ⦅1⦆ = inverses-of-order-equivs-are-order-preserving A/~⁻ᵒʳᵈ A/~ᵒʳᵈ
+                                                         φ-is-order-equiv
+     ⦅2⦆ : (x y : A/~) → φ⁻¹ x ≺⁻ φ⁻¹ y → x ≺ y
+     ⦅2⦆ = inverses-of-order-equivs-are-order-reflecting A/~⁻ᵒʳᵈ A/~ᵒʳᵈ
+                                                          φ-is-order-equiv
+
+   ≺⁻-≃-∈ : {a b : A} → [ a ]⁻ ≺⁻ [ b ]⁻ ≃ f a ∈ f b
+   ≺⁻-≃-∈ {a} {b} = [ a ]⁻ ≺⁻ [ b ]⁻ ≃⟨ ≺⁻-≃-≺ ⟩
+                    ([ a ] ≺ [ b ])  ≃⟨ idtoeq _ _ ≺-＝-∈ ⟩
+                    f a ∈ f b        ■
+
+   ≺⁻-to-∈ : {a b : A} → [ a ]⁻ ≺⁻ [ b ]⁻ → f a ∈ f b
+   ≺⁻-to-∈ = ⌜ ≺⁻-≃-∈ ⌝
+
+   ∈-to-≺⁻ : {a b : A} → f a ∈ f b → [ a ]⁻ ≺⁻ [ b ]⁻
+   ∈-to-≺⁻ = ⌜ ≺⁻-≃-∈ ⌝⁻¹
+
 \end{code}
 
-    PROOF OUTLINE (TODO: FINISH)
     We prove that A/~ is the supremum defined above by showing that
       Ord-to-𝕍 (A/~ᵒʳᵈ) ＝ 𝕍-set f.
     This boils down to proving
       (a : A) → f a ＝ Ord-to-𝕍 (A/~ ↓ [ a ]) (module size issues)
-    which we "Yoneda-fy" in the following lemma (which needs renaming) so that
-    it allows for a quick proof by ∈-induction.
 
 \begin{code}
 
-   key-lemma : (x : 𝕍) (a : A) → x ＝ f a ⇔ x ＝ Ord-to-𝕍 (A/~⁻ᵒʳᵈ ↓ [ a ]⁻)
-   key-lemma = {!!}
+   key-lemma : (a' : A/~⁻) (a : A) → a' ＝ [ a ]⁻ → Ord-to-𝕍 (A/~⁻ᵒʳᵈ ↓ [ a ]⁻) ＝ f a
+   key-lemma = transfinite-induction _≺⁻_ (Well-foundedness A/~⁻ᵒʳᵈ) _ ind-proof
+    where
+     ind-proof : (a' : A/~⁻)
+               → ((b' : A/~⁻) → b' ≺⁻ a'
+                              → (b : A) → b' ＝ [ b ]⁻
+                              → Ord-to-𝕍 (A/~⁻ᵒʳᵈ ↓ [ b ]⁻) ＝ f b)
+               → (a : A) → a' ＝ [ a ]⁻ → Ord-to-𝕍 (A/~⁻ᵒʳᵈ ↓ [ a ]⁻) ＝ f a
+     ind-proof a' IH a refl = ∈-extensionality _ _ ⦅1⦆ ⦅2⦆
+      where
+       -- TO DO: Clean
+       ⦅1⦆ : Ord-to-𝕍 (A/~⁻ᵒʳᵈ ↓ [ a ]⁻) ⊆ f a
+       ⦅1⦆ x m = ∥∥-rec ∈-is-prop-valued bzz
+           (from-∈-of-𝕍-set (transport (x ∈_) (Ord-to-𝕍-behaviour (A/~⁻ᵒʳᵈ ↓ [ a ]⁻)) m))
+        where
+         foo : (b : A) → f b ∈ f a → x ＝ Ord-to-𝕍 (A/~⁻ᵒʳᵈ ↓ [ b ]⁻) → x ∈ f a
+         foo b n e = transport (_∈ f a) ((IH [ b ]⁻ (∈-to-≺⁻ n) b refl) ⁻¹ ∙ e ⁻¹) n
+         bzz : Σ (λ a₁ → Ord-to-𝕍 ((A/~⁻ᵒʳᵈ ↓ [ a ]⁻) ↓ a₁) ＝ x) → x ∈ f a
+         bzz ((b' , l) , e) = ∥∥-rec ∈-is-prop-valued zzz ([]⁻-is-surjection b')
+          where
+           zzz : Σ (λ x₁ → [ x₁ ]⁻ ＝ b') → x ∈ f a
+           zzz (b , refl) = transport (_∈ f a) ((IH [ b ]⁻ l b refl) ⁻¹ ∙ ((ap Ord-to-𝕍 (iterated-↓ A/~⁻ᵒʳᵈ [ a ]⁻ [ b ]⁻ l)) ⁻¹ ∙ e ) ) (≺⁻-to-∈ l)
+       ⦅2⦆ : f a ⊆ Ord-to-𝕍 (A/~⁻ᵒʳᵈ ↓ [ a ]⁻)
+       ⦅2⦆ x m = ∥∥-rec ∈-is-prop-valued (λ (b , n , e) → baz b n e) m'
+        where
+         m' : ∃ b ꞉ A , (f b ∈ f a) × (f b ＝ x)
+         m' = ∥∥-functor h blah
+          where
+           blah : ∃ b ꞉ A , f b ＝ x
+           blah = from-∈-of-𝕍-set (transitive-set-if-set-theoretic-ordinal σ (f a) x (to-∈-of-𝕍-set ∣ a , refl ∣) m)
+           abstract
+            h : (Σ b ꞉ A , f b ＝ x)
+              → Σ b ꞉ A , (f b ∈ f a) × (f b ＝ x)
+            h (b , e) = b , transport⁻¹ (_∈ f a) e m , e
+         foo : (b : A) → f b ∈ f a → f b ＝ x → Ord-to-𝕍 (A/~⁻ᵒʳᵈ ↓ [ b ]⁻) ＝ f b
+         foo b n e = IH [ b ]⁻ (∈-to-≺⁻ n) b refl
+         baz : (b : A) → f b ∈ f a → f b ＝ x → x ∈ Ord-to-𝕍 (A/~⁻ᵒʳᵈ ↓ [ a ]⁻)
+         baz b n e = transport (_∈ Ord-to-𝕍 (A/~⁻ᵒʳᵈ ↓ [ a ]⁻)) (IH [ b ]⁻ (∈-to-≺⁻ n) b refl ∙ e)
+                               (transport⁻¹ (Ord-to-𝕍 (A/~⁻ᵒʳᵈ ↓ [ b ]⁻) ∈_)
+                                            (Ord-to-𝕍-behaviour (A/~⁻ᵒʳᵈ ↓ [ a ]⁻))
+                                            (to-∈-of-𝕍-set ∣ ([ b ]⁻ , (∈-to-≺⁻ n)) , (ap Ord-to-𝕍 (iterated-↓ A/~⁻ᵒʳᵈ [ a ]⁻ [ b ]⁻ (∈-to-≺⁻ n))) ∣))
+
+   open 𝕍-to-Ord-construction sq
+   coincide : 𝕍ᵒʳᵈ-to-Ord (𝕍-set f , σ) ＝ A/~⁻ᵒʳᵈ
+   coincide = Ord-to-𝕍-is-left-cancellable (𝕍ᵒʳᵈ-to-Ord (𝕍-set f , σ)) A/~⁻ᵒʳᵈ
+               e
+    where
+     e : Ord-to-𝕍 (𝕍ᵒʳᵈ-to-Ord (𝕍-set f , σ)) ＝ Ord-to-𝕍 A/~⁻ᵒʳᵈ
+     e = Ord-to-𝕍 (𝕍ᵒʳᵈ-to-Ord (𝕍-set f , σ)) ＝⟨ ap pr₁ (𝕍ᵒʳᵈ-to-Ord-is-section-of-Ord-to-𝕍ᵒʳᵈ (𝕍-set f , σ)) ⟩
+         𝕍-set f ＝⟨ 𝕍-set-ext f _ ⦅2⦆ ⟩
+         𝕍-set (λ a' → Ord-to-𝕍 (A/~⁻ᵒʳᵈ ↓ a')) ＝⟨ (Ord-to-𝕍-behaviour A/~⁻ᵒʳᵈ) ⁻¹ ⟩
+         Ord-to-𝕍 A/~⁻ᵒʳᵈ ∎
+      where
+       ⦅2⦆ : f ≈ (λ a' → Ord-to-𝕍 (A/~⁻ᵒʳᵈ ↓ a'))
+       pr₁ ⦅2⦆ a = ∣ [ a ]⁻ , (key-lemma [ a ]⁻ a refl) ∣
+       pr₂ ⦅2⦆ a' = ∥∥-functor h ([]⁻-is-surjection a')
+        where
+         h : Σ (λ x → [ x ]⁻ ＝ a') → Σ (λ b → f b ＝ Ord-to-𝕍 (A/~⁻ᵒʳᵈ ↓ a'))
+         h (a , refl) = a , ((key-lemma a' a refl) ⁻¹)
+
 
 \end{code}
