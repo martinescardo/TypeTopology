@@ -484,7 +484,46 @@ The function `h⁻` also preserves meets.
 \begin{code}
 
   ζ⁻ : is-scott-continuous L L′ h⁻ holds
-  ζ⁻ S δ = {!!}
+  ζ⁻ S δ = transport (λ - → (- is-lub-of ⁅ h⁻ x ∣ x ε S ⁆) holds) (※ ⁻¹) ♣
+   where
+    † : (h⁻ (⋁[ L ] S) ≤[ poset-of L′ ] (⋁[ L′ ] ⁅ h⁻ x ∣ x ε S ⁆)) holds
+    † = ⋁[ L′ ]-least (↓↓ (⋁[ L ] S)) ((⋁[ L′ ] ⁅ h⁻ x ∣ x ε S ⁆) , †₁)
+     where
+      open PosetReasoning (poset-of L′)
+
+      †₁ : ((⋁[ L′ ] ⁅ h⁻ x ∣ x ε S ⁆) is-an-upper-bound-of (↓↓ (⋁[ L ] S))) holds
+      †₁ (b , p) =
+       h b                          ＝⟨ ψ₁ b ⟩ₚ
+       h⁻ (η b)                     ≤⟨ †₂ ⟩
+       ⋁[ L′ ] ⁅ h⁻ x ∣ x ε S ⁆     ■
+        where
+         †₃ : (Σ k ꞉ index S , ((η b ≤[ poset-of L ] (S [ k ])) holds))
+            → (h⁻ (η b) ≤[ poset-of L′ ] (⋁[ L′ ] (⁅ h⁻ x ∣ x ε S ⁆))) holds
+         †₃ (k , q) =
+          h⁻ (η b)                   ≤⟨ Ⅰ ⟩
+          h⁻ (S [ k ])               ≤⟨ Ⅱ ⟩
+          ⋁[ L′ ] ⁅ h⁻ x ∣ x ε S ⁆   ■
+           where
+            Ⅰ = h⁻-is-monotone (η b , S [ k ]) q
+            Ⅱ = ⋁[ L′ ]-upper ⁅ h⁻ x ∣ x ε S ⁆ k
+
+         †₂ : (h⁻ (η b) ≤[ poset-of L′ ] (⋁[ L′ ] (⁅ h⁻ x ∣ x ε S ⁆))) holds
+         †₂ = ∥∥-rec
+               (holds-is-prop ((h⁻ (η b) ≤[ poset-of L′ ] (⋁[ L′ ] (⁅ h⁻ x ∣ x ε S ⁆)))))
+               †₃
+               (s b S δ p)
+
+    ‡ : ((⋁[ L′ ] ⁅ h⁻ x ∣ x ε S ⁆) ≤[ poset-of L′ ] h⁻ (⋁[ L ] S)) holds
+    ‡ = ⋁[ L′ ]-least ⁅ h⁻ x ∣ x ε S ⁆ (h⁻ (⋁[ L ] S) , ‡₁)
+     where
+      ‡₁ : (h⁻ (⋁[ L ] S) is-an-upper-bound-of ⁅ h⁻ x ∣ x ε S ⁆) holds
+      ‡₁ i = h⁻-is-monotone ((S [ i ]) , ⋁[ L ] S) (⋁[ L ]-upper S i)
+
+    ※ : h⁻ (⋁[ L ] S) ＝ ⋁[ L′ ] ⁅ h⁻ x ∣ x ε S ⁆
+    ※ = ≤-is-antisymmetric (poset-of L′) † ‡
+
+    ♣ : ((⋁[ L′ ] ⁅ h⁻ x ∣ x ε S ⁆) is-lub-of ⁅ h⁻ x ∣ x ε S ⁆) holds
+    ♣ = ⋁[ L′ ]-upper ⁅ h⁻ x ∣ x ε S ⁆ , ⋁[ L′ ]-least ⁅ h⁻ x ∣ x ε S ⁆
 
   h⁻-preserves-∨ : (x y : ⟨ L ⟩) → h⁻ (x ∨[ L ] y) ＝ h⁻ x ∨[ L′ ] h⁻ y
   h⁻-preserves-∨ x y = ≤-is-antisymmetric (poset-of L′) † ‡
