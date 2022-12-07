@@ -185,13 +185,13 @@ is-lattice-homomorphism {𝓤′} {𝓥′} {𝓤} {𝓥} B L η = β ∧ γ ∧
   ϵ : Ω (𝓤′ ⊔ 𝓤)
   ϵ = Ɐ x ∶ ⟪ B ⟫ , Ɐ y ∶ ⟪ B ⟫ , η (x ⋎[ B ] y) ＝[ iss ]＝ η x ∨[ L ] η y
 
-lattice-homomorphisms-are-monotonic : (B : BooleanAlgebra 𝓤′ 𝓥′) (L : Frame 𝓤 𝓥 𝓦)
+lattice-homomorphisms-are-monotone : (B : BooleanAlgebra 𝓤′ 𝓥′) (L : Frame 𝓤 𝓥 𝓦)
                                     → (h : ⟪ B ⟫ → ⟨ L ⟩)
                                     → is-lattice-homomorphism B L h holds
                                     → (x y : ⟪ B ⟫)
                                     → (x ≤[ poset-of-ba B ] y) holds
                                     → (h x ≤[ poset-of L ] h y) holds
-lattice-homomorphisms-are-monotonic B L h (β , γ , _) x y p =
+lattice-homomorphisms-are-monotone B L h (β , γ , _) x y p =
  h x ＝⟨ † ⁻¹ ⟩ₚ h x ∧[ L ] h y ≤⟨ ∧[ L ]-lower₂ (h x) (h y) ⟩ h y ■
   where
    open PosetReasoning (poset-of L)
@@ -206,7 +206,8 @@ lattice-homomorphisms-are-monotonic B L h (β , γ , _) x y p =
        h (x ⋏[ B ] y)      ＝⟨ ap h ‡    ⟩
        h x                 ∎
 
-is-embedding : (B : BooleanAlgebra 𝓤′ 𝓥′) (L : Frame 𝓤 𝓥 𝓦) → (⟪ B ⟫ → ⟨ L ⟩) → Ω (𝓤′ ⊔ 𝓤)
+is-embedding : (B : BooleanAlgebra 𝓤′ 𝓥′) (L : Frame 𝓤 𝓥 𝓦)
+             → (⟪ B ⟫ → ⟨ L ⟩) → Ω (𝓤′ ⊔ 𝓤)
 is-embedding {𝓤′} {𝓥′} {𝓤} {𝓥} {𝓦} B L η =
  ι ∧ is-lattice-homomorphism B L η
   where
@@ -419,13 +420,14 @@ The function `h⁻` also preserves meets.
     ‡ : ((h⁻ x ∧[ L′ ] h⁻ y) ≤[ poset-of L′ ] h⁻ (x ∧[ L ] y)) holds
     ‡ =
      h⁻ x ∧[ L′ ] h⁻ y                        ＝⟨ refl ⟩ₚ
-     (⋁[ L′ ] ↓↓ x) ∧[ L′ ] (⋁[ L′ ] ↓↓ y)    ＝⟨ distributivity+ L′ (↓↓ x) (↓↓ y) ⟩ₚ
-     ⋁[ L′ ] ℱ                                ≤⟨ ※ ⟩
+     (⋁[ L′ ] ↓↓ x) ∧[ L′ ] (⋁[ L′ ] ↓↓ y)    ＝⟨ Ⅰ ⟩ₚ
+     ⋁[ L′ ] ℱ                                ≤⟨ Ⅱ ⟩
      h⁻ (x ∧[ L ] y)                          ■
       where
        open PosetReasoning (poset-of L′)
        open Joins (λ x y → x ≤[ poset-of L′ ] y)
 
+       Ⅰ = distributivity+ L′ (↓↓ x) (↓↓ y)
 
        β : (h⁻ (x ∧[ L ] y) is-an-upper-bound-of ℱ) holds
        β ((b₁ , ϕ₁) , (b₂ , ϕ₂)) = h b₁ ∧[ L′ ] h b₂     ＝⟨ ♠₁ b₁ b₂ ⁻¹ ⟩ₚ
@@ -444,7 +446,7 @@ The function `h⁻` also preserves meets.
          ζ : (h (b₁ ⋏[ B ] b₂) ≤[ poset-of L′ ] (⋁[ L′ ] ↓↓ (x ∧[ L ] y))) holds
          ζ = ⋁[ L′ ]-upper (↓↓ (x ∧[ L ] y)) ((b₁ ⋏[ B ] b₂) , ξ)
 
-       ※ = ⋁[ L′ ]-least _ (h⁻ (x ∧[ L ] y) , β)
+       Ⅱ = ⋁[ L′ ]-least _ (h⁻ (x ∧[ L ] y) , β)
 
 \end{code}
 
@@ -471,7 +473,7 @@ The function `h⁻` also preserves meets.
     ϕ b = ⋁[ L′ ]-least (↓↓ (η b)) (h b , ϕ₁)
      where
       ϕ₁ : (h b is-an-upper-bound-of (↓↓ η b)) holds
-      ϕ₁ (bᵢ , p) = lattice-homomorphisms-are-monotonic B L′ h μ bᵢ b ϕ₂
+      ϕ₁ (bᵢ , p) = lattice-homomorphisms-are-monotone B L′ h μ bᵢ b ϕ₂
        where
         ϕ₂ : (bᵢ ≤[ poset-of-ba B ] b) holds
         ϕ₂ = pr₂ (embedding-is-order-isomorphism B L η e bᵢ b) p
@@ -500,18 +502,12 @@ The function `h⁻` also preserves meets.
          †₃ : (Σ k ꞉ index S , ((η b ≤[ poset-of L ] (S [ k ])) holds))
             → (h⁻ (η b) ≤[ poset-of L′ ] (⋁[ L′ ] (⁅ h⁻ x ∣ x ε S ⁆))) holds
          †₃ (k , q) =
-          h⁻ (η b)                   ≤⟨ Ⅰ ⟩
-          h⁻ (S [ k ])               ≤⟨ Ⅱ ⟩
+          h⁻ (η b)                   ≤⟨ h⁻-is-monotone (η b , S [ k ]) q ⟩
+          h⁻ (S [ k ])               ≤⟨ ⋁[ L′ ]-upper ⁅ h⁻ x ∣ x ε S ⁆ k ⟩
           ⋁[ L′ ] ⁅ h⁻ x ∣ x ε S ⁆   ■
-           where
-            Ⅰ = h⁻-is-monotone (η b , S [ k ]) q
-            Ⅱ = ⋁[ L′ ]-upper ⁅ h⁻ x ∣ x ε S ⁆ k
 
          †₂ : (h⁻ (η b) ≤[ poset-of L′ ] (⋁[ L′ ] (⁅ h⁻ x ∣ x ε S ⁆))) holds
-         †₂ = ∥∥-rec
-               (holds-is-prop ((h⁻ (η b) ≤[ poset-of L′ ] (⋁[ L′ ] (⁅ h⁻ x ∣ x ε S ⁆)))))
-               †₃
-               (s b S δ p)
+         †₂ = ∥∥-rec (holds-is-prop (_ ≤[ poset-of L′ ] _)) †₃ (s b S δ p)
 
     ‡ : ((⋁[ L′ ] ⁅ h⁻ x ∣ x ε S ⁆) ≤[ poset-of L′ ] h⁻ (⋁[ L ] S)) holds
     ‡ = ⋁[ L′ ]-least ⁅ h⁻ x ∣ x ε S ⁆ (h⁻ (⋁[ L ] S) , ‡₁)
@@ -577,14 +573,19 @@ The function `h⁻` also preserves meets.
              open PosetReasoning (poset-of L)
               renaming (_≤⟨_⟩_ to _≤⟨_⟩ₗ_; _■ to _𝔔𝔈𝔇; _＝⟨_⟩ₚ_ to _＝⟨_⟩ₗ_)
 
-             𝓇𝒽𝓈 = ⋁[ L′ ]
-                     ⁅ h b₁ ∨[ L′ ] h b₂ ∣ ((b₁ , _) , (b₂ , _)) ∶ (Σ b₁ ꞉ ⟪ B ⟫ , (η b₁ ≤[ poset-of L ] c) holds)
-                                                                 × (Σ b₂ ꞉ ⟪ B ⟫ , (η b₂ ≤[ poset-of L ] d) holds) ⁆
+             𝓇𝒽𝓈 =
+              ⋁[ L′ ]
+               ⁅ h b₁ ∨[ L′ ] h b₂
+                 ∣ ((b₁ , _) , (b₂ , _))
+                    ∶ (Σ b₁ ꞉ ⟪ B ⟫ , (η b₁ ≤[ poset-of L ] c) holds)
+                    × (Σ b₂ ꞉ ⟪ B ⟫ , (η b₂ ≤[ poset-of L ] d) holds) ⁆
 
              ※ : h⁻ c ∨[ L′ ] h⁻ d
                ＝ ⋁[ L′ ]
-                   ⁅ h b₁ ∨[ L′ ] h b₂ ∣ ((b₁ , _) , (b₂ , _)) ∶ (Σ b₁ ꞉ ⟪ B ⟫ , (η b₁ ≤[ poset-of L ] c) holds)
-                                                               × (Σ b₂ ꞉ ⟪ B ⟫ , (η b₂ ≤[ poset-of L ] d) holds) ⁆
+                   ⁅ h b₁ ∨[ L′ ] h b₂
+                     ∣ ((b₁ , _) , (b₂ , _))
+                        ∶ (Σ b₁ ꞉ ⟪ B ⟫ , (η b₁ ≤[ poset-of L ] c) holds)
+                        × (Σ b₂ ꞉ ⟪ B ⟫ , (η b₂ ≤[ poset-of L ] d) holds) ⁆
              ※ = ∨[ L′ ]-iterated-join (↓↓ c) (↓↓ d) ∣ i₁ ∣ ∣ i₂ ∣
               where
                i₁ : index (↓↓ c)
@@ -598,25 +599,37 @@ The function `h⁻` also preserves meets.
                               d           𝔔𝔈𝔇)
 
              ♣₁ : (𝓇𝒽𝓈 is-an-upper-bound-of (↓↓ (c ∨[ L ] d))) holds
-             ♣₁ (b , q) = ∥∥-rec₂ (holds-is-prop (h b ≤[ poset-of L′ ] 𝓇𝒽𝓈)) ♣₂ (𝕜 c κc) (𝕜 d κd)
-              where
-               ♣₂ : (Σ b₁ ꞉ ⟪ B ⟫ , η b₁ ＝ c)
-                  → (Σ b₂ ꞉ ⟪ B ⟫ , η b₂ ＝ d)
-                  → (h b ≤[ poset-of L′ ] 𝓇𝒽𝓈) holds
-               ♣₂ (b₁ , r₁) (b₂ , r₂) =
-                h b                     ≤⟨ lattice-homomorphisms-are-monotonic B L′ h μ b (b₁ ⋎[ B ] b₂) foo ⟩
-                h (b₁ ⋎[ B ] b₂)        ＝⟨ ♠₃ b₁ b₂ ⟩ₚ
-                (h b₁) ∨[ L′ ] (h b₂)   ≤⟨ ⋁[ L′ ]-upper _ ((b₁ , reflexivity+ (poset-of L) r₁) , (b₂ , reflexivity+ (poset-of L) r₂)) ⟩
-                𝓇𝒽𝓈                     ■
-                 where
-                  foo : (b ≤[ poset-of-ba B ] (b₁ ⋎[ B ] b₂)) holds
-                  foo = pr₂
-                         (embedding-is-order-isomorphism B L η e b (join-of-ba B b₁ b₂))
-                         (η b                    ≤⟨ q                                     ⟩ₗ
-                          c ∨[ L ] d             ＝⟨ ap (λ - → - ∨[ L ] d) (r₁ ⁻¹) ⟩ₗ
-                          (η b₁) ∨[ L ] d        ＝⟨ ap (λ - → (η b₁) ∨[ L ] -) (r₂ ⁻¹)   ⟩ₗ
-                          (η b₁) ∨[ L ] (η b₂)   ＝⟨ ♥₂ b₁ b₂ ⁻¹ ⟩ₗ
-                          η (b₁ ⋎[ B ] b₂)       𝔔𝔈𝔇)
+             ♣₁ (b , q) =
+              ∥∥-rec₂ (holds-is-prop (h b ≤[ poset-of L′ ] 𝓇𝒽𝓈)) ♣₂ (𝕜 c κc) (𝕜 d κd)
+               where
+                ♣₂ : (Σ b₁ ꞉ ⟪ B ⟫ , η b₁ ＝ c)
+                   → (Σ b₂ ꞉ ⟪ B ⟫ , η b₂ ＝ d)
+                   → (h b ≤[ poset-of L′ ] 𝓇𝒽𝓈) holds
+                ♣₂ (b₁ , r₁) (b₂ , r₂) =
+                 h b                     ≤⟨ Ⅰ₀ ⟩
+                 h (b₁ ⋎[ B ] b₂)        ＝⟨ ♠₃ b₁ b₂ ⟩ₚ
+                 (h b₁) ∨[ L′ ] (h b₂)   ≤⟨ ᕯ ⟩
+                 𝓇𝒽𝓈                     ■
+                  where
+                   ᕯ₁ = reflexivity+ (poset-of L) r₁
+                   ᕯ₂ = reflexivity+ (poset-of L) r₂
+                   ᕯ  = ⋁[ L′ ]-upper _ ((b₁ , ᕯ₁), (b₂ , ᕯ₂))
+
+                   ν : (η b ≤[ poset-of L ] η (b₁ ⋎[ B ] b₂)) holds
+                   ν = η b                    ≤⟨ q ⟩ₗ
+                       c ∨[ L ] d             ＝⟨ ϟ ⟩ₗ
+                       (η b₁) ∨[ L ] d        ＝⟨ ϡ ⟩ₗ
+                       (η b₁) ∨[ L ] (η b₂)   ＝⟨ ͱ ⟩ₗ
+                       η (b₁ ⋎[ B ] b₂)       𝔔𝔈𝔇
+                        where
+                         ϟ = ap (λ - → - ∨[ L ] d) (r₁ ⁻¹)
+                         ϡ = ap (λ - → (η b₁) ∨[ L ] -) (r₂ ⁻¹)
+                         ͱ = ♥₂ b₁ b₂ ⁻¹
+
+                   υ : (b ≤[ poset-of-ba B ] (b₁ ⋎[ B ] b₂)) holds
+                   υ = pr₂ (embedding-is-order-isomorphism B L η e b _) ν
+
+                   Ⅰ₀ = lattice-homomorphisms-are-monotone B L′ h μ b _ υ
 
              ♣ = ⋁[ L′ ]-least (↓↓ (c ∨[ L ] d)) (𝓇𝒽𝓈 , ♣₁)
 
