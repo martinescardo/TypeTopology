@@ -484,7 +484,7 @@ The function `h⁻` also preserves meets.
 \begin{code}
 
   ζ⁻ : is-scott-continuous L L′ h⁻ holds
-  ζ⁻ = {!!}
+  ζ⁻ S δ = {!!}
 
   h⁻-preserves-∨ : (x y : ⟨ L ⟩) → h⁻ (x ∨[ L ] y) ＝ h⁻ x ∨[ L′ ] h⁻ y
   h⁻-preserves-∨ x y = ≤-is-antisymmetric (poset-of L′) † ‡
