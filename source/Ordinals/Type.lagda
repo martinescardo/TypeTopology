@@ -100,7 +100,8 @@ other constructions.
 
 \begin{code}
 
-Transfinite-induction-behaviour : FunExt → (α : Ordinal 𝓤)
+Transfinite-induction-behaviour : FunExt
+                                → (α : Ordinal 𝓤)
                                 → (P : ⟨ α ⟩ → 𝓦 ̇ )
                                 → (f : (x : ⟨ α ⟩) → ((y : ⟨ α ⟩) → y ≺⟨ α ⟩ x → P y) → P x)
                                 → (x : ⟨ α ⟩)

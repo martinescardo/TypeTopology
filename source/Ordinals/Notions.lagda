@@ -374,28 +374,8 @@ no-minimal-is-empty' : is-well-founded
                      → is-empty (Σ A)
 no-minimal-is-empty' w A s = no-minimal-is-empty w A (λ x a → ¬¬-intro (s x a))
 
-{-
-module _ (pt : propositional-truncations-exist) where
-
- open PropositionalTruncation pt
-
-
- inhabited-subset-has-least-element : is-well-founded
-                                    → ∀ {𝓦} (A : X → 𝓦 ̇ )
-                                    → ∃ A
-                                    → ∃ x ꞉ X , A x × ((y : X) → A y → x ≼ y)
- inhabited-subset-has-least-element w A s = {!!}
-  where
-   I : ?
-   I = contrapositive (no-minimal-is-empty' w A)
-
-   II : is-nonempty (Σ A)
-   II e = ∥∥-rec 𝟘-is-prop e s
-
-   III : ¬ ((x : X) → A x → Σ y ꞉ X , (y < x) × A y)
-   III = contrapositive (no-minimal-is-empty' w A) I
--}
 \end{code}
+
 
 The emptiness of the empty set doesn't play any special role in the
 above argument, and can be replaced by any type - would that be
@@ -836,9 +816,28 @@ amounts to double negation.
 
 \begin{code}
 
-module _
-        (fe : Fun-Ext)
-        (em : Excluded-Middle)
+≾-gives-≼-under-trichotomy : is-transitive
+                           → {a b : X}
+                           → ((x : X) → in-trichotomy x b)
+                           → a ≾ b
+                           → a ≼ b
+≾-gives-≼-under-trichotomy t {a} {b} τ ν x = γ (τ x)
+ where
+  γ : (x < b) + (x ＝ b) + (b < x)
+    → x < a
+    → x < b
+  γ (inl m)       l = m
+  γ (inr (inl p)) l = 𝟘-elim (ν (transport (_< a) p l))
+  γ (inr (inr m)) l = 𝟘-elim (ν (t b x a m l))
+
+≾-gives-≼-under-trichotomy' : is-transitive
+                            → is-trichotomous-order
+                            → {a b : X} → a ≾ b → a ≼ b
+≾-gives-≼-under-trichotomy' t τ {a} {b} = ≾-gives-≼-under-trichotomy t (λ x → τ x b)
+
+
+module _ (fe : Fun-Ext)
+         (em : Excluded-Middle)
        where
 
  open import UF.PropTrunc
@@ -849,14 +848,14 @@ module _
                       → (A : X → 𝓦 ̇ )
                       → ((x : X) → is-prop (A x))
                       → ∃ x ꞉ X , A x
-                      → Σ x ꞉ X , A x × ((y : X) → A y → x ≾ y)
- nonempty-has-minimal {𝓦} W A A-is-prop-valued f = γ
+                      → Σ x ꞉ X , A x × ((y : X) → A y → x ≼ y)
+ nonempty-has-minimal {𝓦} W@(p , w , e , t) A A-is-prop-valued f = γ δ
   where
-   B : 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
-   B = Σ x ꞉ X , A x × ((y : X) → A y → x ≾ y)
+   Δ : 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
+   Δ = Σ x ꞉ X , A x × ((y : X) → A y → x ≾ y)
 
    g : ¬ ((x : X) → A x → ∃ y ꞉ X , (y < x) × A y)
-   g = contrapositive (no-minimal-is-empty (well-foundedness W) A) f
+   g = contrapositive (no-minimal-is-empty w A) f
 
    h : ∃ x ꞉ X , ¬ (A x → ∃ y ꞉ X , (y < x) × A y)
    h = not-Π-implies-not-not-Σ
@@ -873,28 +872,34 @@ module _
              ((λ ν → ψ (λ a _ → ν a))) ,
            λ y a l → ψ (λ _ ν → ν (y , l , a))
 
-   δ : ¬¬ B
-   δ = ¬¬-functor (λ (x , f) → x , ϕ x f) h
+   ν : ¬¬ Δ
+   ν = ¬¬-functor (λ (x , f) → x , ϕ x f) h
 
    j : (x : X) → is-prop ((y : X) → A y → x ≾ y)
-   j x = Π₃-is-prop fe (λ x a l → 𝟘-is-prop)
+   j x = Π₃-is-prop fe (λ y a l → 𝟘-is-prop)
 
    i : (x : X) → is-prop (A x × ((y : X) → A y → x ≾ y))
    i x = ×-is-prop (A-is-prop-valued x) (j x)
 
-   B-is-prop : is-prop B
-   B-is-prop (x , a , f) (x' , a' , f') = to-subtype-＝ i q
+   τ : is-trichotomous-order
+   τ = trichotomy₃ em W
+
+   Δ-is-prop : is-prop Δ
+   Δ-is-prop (x , a , f) (x' , a' , f') = to-subtype-＝ i q
     where
      q : x ＝ x'
-     q = k (trichotomy fe em W x x')
+     q = k (τ x x')
       where
        k : (x < x') + (x ＝ x') + (x' < x) → x ＝ x'
        k (inl l)       = 𝟘-elim (f' x a l)
        k (inr (inl p)) = p
        k (inr (inr l)) = 𝟘-elim (f x' a' l)
 
-   γ : B
-   γ = EM-gives-DNE em B B-is-prop δ
+   δ : Δ
+   δ = EM-gives-DNE em Δ Δ-is-prop ν
+
+   γ : Δ → Σ x ꞉ X , A x × ((y : X) → A y → x ≼ y)
+   γ (x , a , h) = x , a , (λ y a → ≾-gives-≼-under-trichotomy' t τ {x} {y} (h y a))
 
 \end{code}
 

@@ -1,10 +1,9 @@
-Martin Escardo
-21-25 December 2020.
+Martin Escardo, 21th December 2020 - 18th February 2021.
 
 In collaboration with  Marc Bezem, Thierry Coquand, Peter Dybjer.
 
-The Burali-Forti argument in HoTT/UF in Agda notation
------------------------------------------------------
+The Burali-Forti argument in HoTT/UF with applications to the type of groups in a universe
+------------------------------------------------------------------------------------------
 
 Abstract. We use the Burali-Forti argument to show that, in HoTT/UF,
 the embedding
