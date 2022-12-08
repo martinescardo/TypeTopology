@@ -626,11 +626,85 @@ Future work
     of 𝕍.
 
 
-TO DO: Put in dates
+TO DO: Put in dates and put the below in another file
 
 \begin{code}
 
- module _
+ module total-space-of-𝕍-set
+         (x : 𝕍)
+         (σ : is-set-theoretic-ordinal x)
+        where
+
+  𝕋x : 𝓤 ⁺ ̇
+  𝕋x = Σ y ꞉ 𝕍 , y ∈ x
+
+  _∈ₓ_ : 𝕋x → 𝕋x → 𝓤 ⁺ ̇
+  u ∈ₓ v = pr₁ u ∈ pr₁ v
+
+  ∈ₓ-is-prop-valued : is-prop-valued _∈ₓ_
+  ∈ₓ-is-prop-valued u v = ∈-is-prop-valued
+
+  ∈ₓ-is-transitive : is-transitive _∈ₓ_
+  ∈ₓ-is-transitive u v w m n =
+   transitive-set-if-set-theoretic-ordinal
+    (being-set-theoretic-ordinal-is-hereditary σ (pr₂ w)) (pr₁ v) (pr₁ u) n m
+
+  ∈ₓ-is-extensional : is-extensional _∈ₓ_
+  ∈ₓ-is-extensional u v s t =
+   to-subtype-＝ (λ _ → ∈-is-prop-valued)
+                (∈-extensionality (pr₁ u) (pr₁ v)
+                                  s' t')
+    where
+     s' : pr₁ u ⊆ pr₁ v
+     s' y y-in-u = s (y , τ) y-in-u
+      where
+       τ : y ∈ x
+       τ = transitive-set-if-set-theoretic-ordinal σ (pr₁ u) y (pr₂ u) y-in-u
+     t' : pr₁ v ⊆ pr₁ u
+     t' y y-in-v = t (y , τ) y-in-v
+      where
+       τ : y ∈ x
+       τ = transitive-set-if-set-theoretic-ordinal σ (pr₁ v) y (pr₂ v) y-in-v
+
+  ∈ₓ-is-well-founded : is-well-founded _∈ₓ_
+  ∈ₓ-is-well-founded = λ (y , m) → ρ y m
+   where
+    ρ : (y : 𝕍) (m : y ∈ x) → is-accessible _∈ₓ_ (y , m)
+    ρ = transfinite-induction _∈_ ∈-is-well-founded _ h
+     where
+      h : (y : 𝕍)
+        → ((u : 𝕍) → u ∈ y → (m : u ∈ x) → is-accessible _∈ₓ_ (u , m))
+        → (m : y ∈ x) → is-accessible _∈ₓ_ (y , m)
+      h y IH m = step (λ (u , u-in-x) u-in-y → IH u u-in-y u-in-x)
+
+  𝕋x-ordinal : Ordinal (𝓤 ⁺)
+  𝕋x-ordinal = 𝕋x , _∈ₓ_ , ∈ₓ-is-prop-valued , ∈ₓ-is-well-founded
+                         , ∈ₓ-is-extensional , ∈ₓ-is-transitive
+
+  𝕋ᵒʳᵈx : 𝓤 ⁺ ̇
+  𝕋ᵒʳᵈx = Σ y ꞉ 𝕍ᵒʳᵈ , y ∈ᵒʳᵈ (x , σ)
+
+  -- NB
+  𝕋ᵒʳᵈx-≃-𝕋x : 𝕋ᵒʳᵈx ≃ 𝕋x
+  𝕋ᵒʳᵈx-≃-𝕋x = qinveq f (g , η , ε)
+   where
+    f : 𝕋ᵒʳᵈx → 𝕋x
+    f ((y , _) , m) = y , m
+    g : 𝕋x → 𝕋ᵒʳᵈx
+    g (y , m) = (y , (being-set-theoretic-ordinal-is-hereditary σ m)) , m
+    ε : f ∘ g ∼ id
+    ε (y , m) = to-subtype-＝ (λ _ → ∈-is-prop-valued) refl
+    η : g ∘ f ∼ id
+    η ((y , τ) , m) =
+     to-subtype-＝ (λ _ → ∈-is-prop-valued)
+                   (to-subtype-＝ (λ _ → being-set-theoretic-ordinal-is-prop)
+                                  refl)
+
+\end{code}
+
+\begin{code}
+
+ module 𝕍-set-carrier-quotient
          (sq : set-quotients-exist)
          {A : 𝓤 ̇ }
          (f : A → 𝕍)
@@ -792,7 +866,7 @@ in 𝓤 equivalent to A/~ᵒʳᵈ.
    ≺-≃-≺' : {x y : A/~} → x ≺ y ≃ x ≺' y
    ≺-≃-≺' {x} {y} = ≃-sym (pr₂ (≺-has-small-values x y))
 
-  module _
+  module construct-ordinal-as-quotient₂
           (σ : is-set-theoretic-ordinal (𝕍-set f))
          where
 
@@ -924,5 +998,112 @@ in 𝓤 equivalent to A/~ᵒʳᵈ.
          h : Σ (λ x → [ x ]⁻ ＝ a') → Σ (λ b → f b ＝ Ord-to-𝕍 (A/~⁻ᵒʳᵈ ↓ a'))
          h (a , refl) = a , ((key-lemma a' a refl) ⁻¹)
 
+ module total-space-of-𝕍-set'
+         (sq : set-quotients-exist)
+         {A : 𝓤 ̇ }
+         (f : A → 𝕍)
+         (σ : is-set-theoretic-ordinal (𝕍-set f))
+        where
+
+  private
+   x = 𝕍-set f
+
+  open total-space-of-𝕍-set x σ
+  open 𝕍-set-carrier-quotient sq f
+  open construct-ordinal-as-quotient₂ σ
+  open construct-ordinal-as-quotient σ
+
+  open import UF.ImageAndSurjection
+  open ImageAndSurjection pt
+  open import UF.EquivalenceExamples
+
+  open set-quotients-exist sq
+
+  𝕋x-≃-image-f : 𝕋x ≃ image f
+  𝕋x-≃-image-f = Σ-cong h
+   where
+    h : (y : 𝕍) → (y ∈ x) ≃ y ∈image f
+    h y = logically-equivalent-props-are-equivalent
+           ∈-is-prop-valued
+           (being-in-the-image-is-prop y f)
+           from-∈-of-𝕍-set
+           to-∈-of-𝕍-set
+
+  open import Ordinals.WellOrderTransport (λ _ _ → fe)
+  private
+   transfer : Σ s ꞉ OrdinalStructure (image f) , (image f , s) ≃ₒ 𝕋x-ordinal
+   transfer = transfer-structure (image f) 𝕋x-ordinal (≃-sym 𝕋x-≃-image-f) (_∈ₓ_ , (λ u v → ≃-refl (u ∈ₓ v)))
+
+  image-f-ordinal : Ordinal (𝓤 ⁺)
+  image-f-ordinal = image f , pr₁ transfer
+
+  𝕋x-ordinal-≃-image-f-ordinal : 𝕋x-ordinal ≃ₒ image-f-ordinal
+  𝕋x-ordinal-≃-image-f-ordinal = ≃ₒ-sym _ _ (pr₂ transfer)
+
+  coincide₂ : 𝕋x-ordinal ＝ A/~ᵒʳᵈ
+  coincide₂ = 𝕋x-ordinal      ＝⟨ ⦅1⦆ ⟩
+              image-f-ordinal ＝⟨ ⦅2⦆ ⟩
+              A/~ᵒʳᵈ          ∎
+   where
+    ⦅1⦆ = eqtoidₒ _ _ 𝕋x-ordinal-≃-image-f-ordinal
+    ⦅2⦆ = eqtoidₒ _ _ (≃ₒ-sym _ _ (ϕ , ϕ-is-order-equiv))
+     where
+      open set-replacement-construction sq pt f 𝕍-is-locally-small 𝕍-is-large-set hiding ([_])
+      ϕ : A/~ → image f
+      ϕ = quotient-to-image
+      ϕ-behaviour : (a : A) → ϕ [ a ] ＝ corestriction f a
+      ϕ-behaviour = universality-triangle/ ~EqRel (image-is-set f 𝕍-is-large-set) (corestriction f) _
+      ϕ-is-order-preserving : is-order-preserving A/~ᵒʳᵈ image-f-ordinal ϕ
+      ϕ-is-order-preserving =
+       /-induction₂ fe ~EqRel
+                    (λ a' b' → Π-is-prop fe
+                                (λ _ → prop-valuedness (underlying-order image-f-ordinal)
+                                                       (is-well-ordered image-f-ordinal)
+                                                       (ϕ a') (ϕ b')))
+                    test
+       where
+        test : (a b : A) → [ a ] ≺ [ b ]
+             → underlying-order image-f-ordinal (ϕ [ a ]) (ϕ [ b ])
+        test a b l = transport₂ (underlying-order image-f-ordinal) ((ϕ-behaviour a) ⁻¹) ((ϕ-behaviour b) ⁻¹) (≺-to-∈ l)
+      ϕ-is-order-reflecting : is-order-reflecting A/~ᵒʳᵈ image-f-ordinal ϕ
+      ϕ-is-order-reflecting =
+       /-induction₂ fe ~EqRel
+                    (λ a' b' → Π-is-prop fe λ _ → prop-valuedness _≺_ (is-well-ordered A/~ᵒʳᵈ) a' b')
+                    (λ a b l → ∈-to-≺ (transport₂ (underlying-order image-f-ordinal) (ϕ-behaviour a) (ϕ-behaviour b) l))
+      ϕ-is-order-equiv : is-order-equiv A/~ᵒʳᵈ image-f-ordinal ϕ
+      ϕ-is-order-equiv =
+       order-preserving-reflecting-equivs-are-order-equivs _ _
+        ϕ (⌜⌝⁻¹-is-equiv image-≃-quotient)
+        ϕ-is-order-preserving
+        ϕ-is-order-reflecting
+
+
+ module _
+         (sq : set-quotients-exist)
+         (x : 𝕍ᵒʳᵈ)
+        where
+
+  open 𝕍-to-Ord-construction sq
+  open total-space-of-𝕍-set
+  open total-space-of-𝕍-set' sq
+
+  finally : 𝕍ᵒʳᵈ-to-Ord x ≃ₒ 𝕋x-ordinal (pr₁ x) (pr₂ x)
+  finally = blah (pr₁ x) (pr₂ x)
+   where
+    blah : (y : 𝕍) (σ : is-set-theoretic-ordinal y)
+         → 𝕍ᵒʳᵈ-to-Ord (y , σ) ≃ₒ 𝕋x-ordinal y σ
+    blah = 𝕍-prop-simple-induction _ (λ y → Π-is-prop fe (λ σ → ≃ₒ-is-prop-valued (𝕍ᵒʳᵈ-to-Ord (y , σ)) (𝕋x-ordinal y σ))) foofoo
+     where
+      foofoo : {A : 𝓤 ̇ } (f : A → 𝕍) (σ : is-set-theoretic-ordinal (𝕍-set f))
+             → 𝕍ᵒʳᵈ-to-Ord (𝕍-set f , σ) ≃ₒ 𝕋x-ordinal (𝕍-set f) σ
+      foofoo {A} f σ = ≃ₒ-trans (𝕍ᵒʳᵈ-to-Ord (𝕍-set f , σ)) A/~⁻ᵒʳᵈ (𝕋x-ordinal (𝕍-set f) σ)
+                        (idtoeqₒ _ _ coincide)
+                        (≃ₒ-sym _ _ (≃ₒ-trans (𝕋x-ordinal (𝕍-set f) σ) A/~ᵒʳᵈ A/~⁻ᵒʳᵈ
+                                              (idtoeqₒ _ _ (coincide₂ f σ))
+                                              A/~ᵒʳᵈ--≃ₒ-A/~⁻ᵒʳᵈ))
+       where
+       open 𝕍-set-carrier-quotient sq f
+       open construct-ordinal-as-quotient₂ σ
+       open construct-ordinal-as-quotient σ
 
 \end{code}
