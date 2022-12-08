@@ -1711,7 +1711,10 @@ module ContinuousMapNotation (X : Locale 𝓤 𝓥 𝓦) (Y : Locale 𝓤' 𝓥'
 
 \begin{code}
 
-cont-comp : (X Y Z : Locale 𝓤 𝓥 𝓦) → (Y ─c→ Z) → (X ─c→ Y) → X ─c→ Z
+cont-comp : (X : Locale 𝓤   𝓥   𝓦)
+          → (Y : Locale 𝓤′  𝓥′  𝓦)
+          → (Z : Locale 𝓤′′ 𝓥′′ 𝓦)
+          → (Y ─c→ Z) → (X ─c→ Y) → X ─c→ Z
 cont-comp {𝓦 = 𝓦} X Y Z ℊ@(g , α₁ , α₂ , α₃) 𝒻@(f , β₁ , β₂ , β₃) = h , †
  where
   open ContinuousMapNotation X Y using () renaming (_⋆∙_ to _⋆₁∙_)
