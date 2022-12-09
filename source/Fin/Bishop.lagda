@@ -8,10 +8,7 @@ module Fin.Bishop where
 
 open import Fin.Properties
 open import Fin.Type
-open import MLTT.Plus-Properties
 open import MLTT.Spartan
-open import Notation.Order
-open import TypeTopology.DiscreteAndSeparated
 open import UF.Base
 open import UF.Equiv
 open import UF.Equiv-FunExt
