@@ -69,8 +69,8 @@ References
 
 [Gyl18] Håkon Robbestad Gylterud
         From Multisets to Sets in Homotopy Type Theory
-        Volue 83, Issue 3 of The Journal Symbol Logic
-        Pages 1132─146
+        Volue 83, Issue 3 of The Journal of Symbolic Logic
+        Pages 1132─1146
         2018
         doi:10.1017/jsl.2017.84
 
