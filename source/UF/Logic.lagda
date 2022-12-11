@@ -105,6 +105,7 @@ module Truncation (pt : propositional-truncations-exist) where
 
   ∥_∥Ω : 𝓤 ̇  → Ω 𝓤
   ∥ A ∥Ω = ∥ A ∥ , ∥∥-is-prop
+
 \end{code}
 
 \section{Existential quantification}
@@ -129,6 +130,17 @@ module Existential (pt : propositional-truncations-exist) where
 
 \end{code}
 
+\section{Negation of equality}
+
+\begin{code}
+
+module Negation-of-equality (fe : Fun-Ext) where
+
+ _≢_ : {X : 𝓤 ̇ } → X → X → Ω 𝓤
+ x ≢ y = (x ≠ y) , Π-is-prop fe (λ _ → 𝟘-is-prop)
+
+\end{code}
+
 \section{A module for importing all combinators}
 
 \begin{code}
@@ -138,11 +150,12 @@ module AllCombinators
         (fe : Fun-Ext)
        where
 
- open Conjunction    public
- open Universal   fe public
- open Implication fe public
- open Disjunction pt public
- open Existential pt public
- open Truncation  pt public
+ open Conjunction             public
+ open Universal            fe public
+ open Implication          fe public
+ open Disjunction          pt public
+ open Existential          pt public
+ open Truncation           pt public
+ open Negation-of-equality fe public
 
 \end{code}
