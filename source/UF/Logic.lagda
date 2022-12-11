@@ -7,7 +7,7 @@ Based in part by the `Cubical.Functions.Logic` module UF.of
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module UF.Subsingleton-Combinators where
+module UF.Logic where
 
 open import MLTT.Spartan
 open import UF.Subsingletons
