@@ -593,7 +593,6 @@ Replacement is equivalent to having small set quotients.)
 \begin{code}
 
 open import UF.EquivalenceExamples
-open import UF.ImageAndSurjection
 
 module construction-using-image
         (pt : propositional-truncations-exist)
@@ -602,7 +601,7 @@ module construction-using-image
        where
 
  open PropositionalTruncation pt
- open ImageAndSurjection pt
+ open import UF.ImageAndSurjection pt
 
  σ : (Σ i ꞉ I , ⟨ α i ⟩) → Ordinal 𝓤
  σ (i , x) = α i ↓ x
@@ -1030,8 +1029,8 @@ module suprema
         (sr : Set-Replacement pt)
        where
 
- open ImageAndSurjection pt
  open PropositionalTruncation pt
+ open import UF.ImageAndSurjection pt
 
  module _ {I : 𝓤 ̇  } (α : I → Ordinal 𝓤) where
 

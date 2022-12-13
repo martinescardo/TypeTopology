@@ -37,7 +37,7 @@ module Groups.Cokernel
         (pe  : Prop-Ext)
        where
 
-open import UF.ImageAndSurjection
+open import UF.ImageAndSurjection pt
 open import UF.Large-Quotient pt fe pe
 
 open import Groups.Type renaming (_≅_ to _≣_)
@@ -57,7 +57,6 @@ module _ (X : Group 𝓤) (Y : Group 𝓥)
          (f : ⟨ X ⟩ → ⟨ Y ⟩) (isf : is-hom X Y f) where
 
   open PropositionalTruncation pt
-  open ImageAndSurjection pt
 
   -- Left cosets
   _≈_ : ⟨ Y ⟩ → ⟨ Y ⟩ → _
@@ -71,7 +70,7 @@ module _ (X : Group 𝓤) (Y : Group 𝓥)
     where
       p : f (unit X) ＝ unit Y
       p = homs-preserve-unit X Y f isf
-      
+
       q : multiplication Y y (f (unit X)) ＝ y
       q = ap (λ v → y ·⟨ Y ⟩ v) p ∙ (unit-right Y y)
 
@@ -92,7 +91,7 @@ module _ (X : Group 𝓤) (Y : Group 𝓥)
   ≈t : transitive _≈_
   ≈t y₁ y₂ y₃ p₁ p₂ = do
      x₁ , u₁ ← p₁
-     x₂ , u₂ ← p₂ 
+     x₂ , u₂ ← p₂
      ∣ ((x₁ ·⟨ X ⟩ x₂) , q x₁ u₁ x₂ u₂) ∣
      where
        q : (x₁ : ⟨ X ⟩) (u₁ : y₂ ＝ y₁ ·⟨ Y ⟩ (f x₁))
@@ -103,7 +102,7 @@ module _ (X : Group 𝓤) (Y : Group 𝓥)
                        (y₁ ·⟨ Y ⟩ f (x₁)) ·⟨ Y ⟩ (f x₂) ＝⟨ assoc Y _ _ _ ⟩
                        y₁ ·⟨ Y ⟩ (f (x₁) ·⟨ Y ⟩ (f x₂)) ＝⟨ ap (λ v → y₁ ·⟨ Y ⟩ v) (isf {x₁} {x₂}) ⁻¹ ⟩
                        y₁ ·⟨ Y ⟩ f (x₁ ·⟨ X ⟩ x₂) ∎
-    
+
 \end{code}
 
 We define a second equivalence relation using right cosets.
@@ -122,7 +121,7 @@ We define a second equivalence relation using right cosets.
     where
       p : f (unit X) ＝ unit Y
       p = homs-preserve-unit X Y f isf
-      
+
       q : (f (unit X)) ·⟨ Y ⟩ y ＝ y
       q = ap (λ v → v ·⟨ Y ⟩ y) p ∙ (unit-left Y y)
 
@@ -131,7 +130,7 @@ We define a second equivalence relation using right cosets.
     x , u ← p
     ∣ ((inv X x) , q x u) ∣
     where
-      q : (x : ⟨ X ⟩) (u : y₂ ＝ (f x) ·⟨ Y ⟩ y₁) → 
+      q : (x : ⟨ X ⟩) (u : y₂ ＝ (f x) ·⟨ Y ⟩ y₁) →
           y₁ ＝ (f (inv X x)) ·⟨ Y ⟩ y₂
       q x u  = y₁                                 ＝⟨ (unit-left Y y₁) ⁻¹ ⟩
                unit Y ·⟨ Y ⟩ y₁                    ＝⟨ ap (λ v → v ·⟨ Y ⟩ y₁) (inv-left Y (f x)) ⁻¹ ⟩
@@ -143,7 +142,7 @@ We define a second equivalence relation using right cosets.
   ≈'t : transitive _≈'_
   ≈'t y₁ y₂ y₃ p₁ p₂ = do
      x₁ , u₁ ← p₁
-     x₂ , u₂ ← p₂ 
+     x₂ , u₂ ← p₂
      ∣ ((x₂ ·⟨ X ⟩ x₁) , q x₁ u₁ x₂ u₂) ∣
      where
        q : (x₁ : ⟨ X ⟩) (u₁ : y₂ ＝ (f x₁) ·⟨ Y ⟩ y₁)
@@ -194,7 +193,7 @@ equivalent.
   pr₁ (has-normal-image-gives-≈-is-same-as-≈' ni) {y} {y'} r = do
                   x , p ← r
                   x' , p' ← ni y (corestriction f x)
-                  let 
+                  let
                     q = y ·⟨ Y ⟩ (f x)                           ＝⟨ (unit-right Y _) ⁻¹ ⟩
                         (y ·⟨ Y ⟩ (f x)) ·⟨ Y ⟩ (unit Y)          ＝⟨ ap (λ v → (y ·⟨ Y ⟩ (f x)) ·⟨ Y ⟩ v) (inv-left Y _ ⁻¹) ⟩
                         (y ·⟨ Y ⟩ (f x)) ·⟨ Y ⟩ (inv Y y ·⟨ Y ⟩ y) ＝⟨ assoc Y _ _ _ ⁻¹ ⟩
@@ -228,7 +227,7 @@ left and right-invariant, in the sense specified in Groups.quotient.
   ≋ ≋' : EqRel ⟨ Y ⟩
   ≋    = _≈_ , ≈p , ≈r , (≈s , ≈t)
   ≋'   = _≈'_ , ≈'p , ≈'r , (≈'s , ≈'t)
-  
+
   ≈-linv : ≈left-invariant Y ≋
   ≈-linv = λ y y' a r → do
                          x , p ← r
@@ -243,17 +242,17 @@ left and right-invariant, in the sense specified in Groups.quotient.
                           x , p ← r
                           let
                             q = y' ·⟨ Y ⟩ a                ＝⟨ ap (λ v → v ·⟨ Y ⟩ a) p ⟩
-                                ((f x) ·⟨ Y ⟩ y) ·⟨ Y ⟩ a   ＝⟨ assoc Y _ _ _ ⟩ 
+                                ((f x) ·⟨ Y ⟩ y) ·⟨ Y ⟩ a   ＝⟨ assoc Y _ _ _ ⟩
                                 (f x) ·⟨ Y ⟩  (y ·⟨ Y ⟩ a) ∎
                             in ∣ (x , q) ∣
-  
+
   ≈-is-same-as-≈'-gives-invariance≈ : ≈-is-same-as-≈' → (≈left-invariant Y ≋) × (≈right-invariant Y ≋)
   pr₁ (≈-is-same-as-≈'-gives-invariance≈ Φ) = ≈-linv
   pr₂ (≈-is-same-as-≈'-gives-invariance≈ Φ) = λ y y' a r → do
                                            x , p ← (pr₁ Φ) {y} {y'} r
                                            let
                                              q = y' ·⟨ Y ⟩ a               ＝⟨ ap (λ v → v ·⟨ Y ⟩ a) p ⟩
-                                                ((f x) ·⟨ Y ⟩ y) ·⟨ Y ⟩ a   ＝⟨ assoc Y _ _ _ ⟩ 
+                                                ((f x) ·⟨ Y ⟩ y) ·⟨ Y ⟩ a   ＝⟨ assoc Y _ _ _ ⟩
                                                 (f x) ·⟨ Y ⟩  (y ·⟨ Y ⟩ a) ∎
                                              in (pr₂ Φ) {y ·⟨ Y ⟩ a} {y' ·⟨ Y ⟩ a} ( ∣ (x , q) ∣ )
 
@@ -355,7 +354,7 @@ surjective.
         e≈ : Y≈
         e≈ = unit (cokernel-gr)
 
-        u : Y≈ → ⟨ triv {𝓤 ⊔ 𝓥 ⁺} ⟩ 
+        u : Y≈ → ⟨ triv {𝓤 ⊔ 𝓥 ⁺} ⟩
         u = triv-terminal cokernel-gr
 
         is-equiv-u : _
@@ -366,7 +365,7 @@ surjective.
 
         v : ⟨ triv {𝓤 ⊔ 𝓥 ⁺} ⟩ → Y≈
         v = inverse u is-equiv-u
-        
+
         lemma3 : (y≈ : Y≈) → y≈ ＝ e≈
         lemma3 y≈ = y≈         ＝⟨ (inverses-are-retractions u is-equiv-u y≈) ⁻¹ ⟩
                     v (u (y≈)) ＝⟨ ap v refl ⟩
@@ -381,6 +380,3 @@ surjective.
         lemma1 : (y : ⟨ Y ⟩) → e⟨ Y ⟩ ≈ y
         lemma1 y = η/-relates-identified-points ≋ (lemma2 y)
 \end{code}
-
-
-

@@ -18,7 +18,6 @@ open import UF.EquivalenceExamples
 open import UF.Retracts
 open import UF.Embeddings
 open import UF.PropTrunc
-open import UF.ImageAndSurjection
 open import Groups.Type
 
 \end{code}
@@ -31,7 +30,7 @@ UF-ImageAndSurjection.
 
 module Groups.Image (pt : propositional-truncations-exist) where
 
-open ImageAndSurjection pt
+open import UF.ImageAndSurjection pt
 open PropositionalTruncation pt
 
 private
@@ -41,8 +40,8 @@ private
 module _ (X : Group 𝓤) (Y : Group 𝓥) (f : ⟨ X ⟩ → ⟨ Y ⟩) (isf : is-hom X Y f) where
 
      group-image : Group (𝓤 ⊔ 𝓥)
-     group-image = Im , group-structure-im , 
-                        is-set-im , 
+     group-image = Im , group-structure-im ,
+                        is-set-im ,
                         assoc-im ,
                         unit-im ,
                         left-neutral-im ,

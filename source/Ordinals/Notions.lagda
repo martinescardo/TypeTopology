@@ -149,7 +149,8 @@ transfinite-induction-behaviour fe w {𝓦} P f x =
      e : (y : X) (l : y < x) → prev (w x) y l ＝ w y
      e y l = accessibility-is-prop fe y (prev (w x) y l) (w y)
 
-transfinite-recursion-behaviour : FunExt → (w : is-well-founded)
+transfinite-recursion-behaviour : FunExt
+                                → (w : is-well-founded)
                                   {𝓦 : Universe} {Y : 𝓦 ̇ }
                                   (f : (x : X) → ((y : X) → y < x → Y) → Y)
                                   (x : X)
@@ -380,9 +381,6 @@ no-minimal-is-empty' w A s = no-minimal-is-empty w A (λ x a → ¬¬-intro (s x
 The emptiness of the empty set doesn't play any special role in the
 above argument, and can be replaced by any type - would that be
 useful?
-
-The remainder of this file is not needed anywhere else (at least at
-the time of writing, namely 11th January 2021).
 
 \begin{code}
 

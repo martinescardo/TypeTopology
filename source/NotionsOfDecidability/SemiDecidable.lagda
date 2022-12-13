@@ -68,7 +68,6 @@ open import UF.Equiv
 open import UF.Equiv-FunExt
 open import UF.EquivalenceExamples
 open import UF.FunExt
-open import UF.ImageAndSurjection
 open import UF.Miscelanea
 open import UF.Powerset
 open import UF.PropTrunc
@@ -103,7 +102,7 @@ fe' : FunExt
 fe' 𝓤 𝓥 = fe
 
 open PropositionalTruncation pt
-open ImageAndSurjection pt
+open import UF.ImageAndSurjection pt
 
 semidecidability-structure : (X : 𝓤 ̇  ) → 𝓤 ̇
 semidecidability-structure X = Σ α ꞉ (ℕ → 𝟚) , X ≃ (∃ n ꞉ ℕ , α n ＝ ₁)

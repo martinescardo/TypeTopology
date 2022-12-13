@@ -17,7 +17,6 @@ open import UF.EquivalenceExamples
 open import UF.Retracts
 open import UF.Embeddings
 open import UF.PropTrunc
-open import UF.ImageAndSurjection
 open import Groups.Type renaming (_≅_ to _≣_)
 
 open import Groups.Triv
@@ -56,7 +55,7 @@ has-triv-kernel = is-iso (triv {𝓤 ⊔ 𝓥}) (kernel X Y f isf) (triv-initial
 Being injective in the naive sense employed above is the same as having a left-cancellable underlying function.
 
 \begin{code}
- 
+
 lc-hom-is-inj : left-cancellable f → is-injective-hom
 lc-hom-is-inj lc x p = lc {x} {unit X} q
   where
@@ -71,7 +70,7 @@ inj-hom-is-lc i {x} {x'} p = x                             ＝⟨ (unit-right X 
                              (x ·⟨ X ⟩ (inv X x')) ·⟨ X ⟩ x' ＝⟨ ap (λ v → v ·⟨ X ⟩ x') u  ⟩
                              e⟨ X ⟩ ·⟨ X ⟩ x'                ＝⟨ unit-left X x' ⟩
                              x' ∎
-                where  
+                where
                   q : f (x ·⟨ X ⟩ (inv X x')) ＝ e⟨ Y ⟩
                   q = f (x ·⟨ X ⟩ (inv X x'))     ＝⟨ isf ⟩
                       f x ·⟨ Y ⟩ f (inv X x')     ＝⟨ ap (λ v → f x ·⟨ Y ⟩ v) (homs-preserve-invs X Y f isf _) ⟩
@@ -90,7 +89,7 @@ the second uses the fact that kernels of injective homs are
 contractible.
 
 \begin{code}
-  
+
 triv-kernel-implies-inj-hom : has-triv-kernel → is-injective-hom
 triv-kernel-implies-inj-hom is x p = ap pr₁ u
   where
@@ -102,9 +101,9 @@ triv-kernel-implies-inj-hom is x p = ap pr₁ u
 
 
 inj-hom-has-triv-kernel : is-injective-hom → has-triv-kernel
-pr₁ (pr₁ (inj-hom-has-triv-kernel is)) = (triv-terminal (kernel X Y f isf)) 
+pr₁ (pr₁ (inj-hom-has-triv-kernel is)) = (triv-terminal (kernel X Y f isf))
                                        , (λ { (x , p) → to-Σ-＝ (((is x p) ⁻¹) , group-is-set Y _ _ )})
-pr₂ (pr₁ (inj-hom-has-triv-kernel is)) = (triv-terminal (kernel X Y f isf)) 
+pr₂ (pr₁ (inj-hom-has-triv-kernel is)) = (triv-terminal (kernel X Y f isf))
                                        , (λ x → refl)
 pr₂ (inj-hom-has-triv-kernel is) = triv-initial-is-hom {𝓥 = 𝓤 ⊔ 𝓥} (kernel X Y f isf)
 
@@ -150,8 +149,9 @@ that we just have an isomorphism.
 \begin{code}
 
 module _ (pt : propositional-truncations-exist) where
-    open ImageAndSurjection pt
+
     open PropositionalTruncation pt
+    open import UF.ImageAndSurjection pt
 
     --
     -- Shorten notation in the following
@@ -184,17 +184,17 @@ module _ (pt : propositional-truncations-exist) where
     pr₁ (surjective-homs-have-complete-images is) = group-image-inj pt X Y f isf
     pr₁ (pr₂ (surjective-homs-have-complete-images is)) = surjective-homs-give-image-equiv is
     pr₂ (pr₂ (surjective-homs-have-complete-images is)) {x} {y} = group-image-inj-is-hom pt X Y f isf {x} {y}
-    
 
-    
+
+
     image-equiv-gives-surjective-hom : is-equiv (group-image-inj pt X Y f isf) → is-surjective-hom
     image-equiv-gives-surjective-hom e y = do
                                           x , p ← pr₂ (j y)
-                                          ∣ (x , (p ∙ u)) ∣ 
+                                          ∣ (x , (p ∙ u)) ∣
       where
         i : ⟨ group-image pt X Y f isf ⟩ → ⟨ Y ⟩
-        i = group-image-inj pt X Y f isf 
-        
+        i = group-image-inj pt X Y f isf
+
         j : ⟨ Y ⟩ → ⟨ group-image pt X Y f isf ⟩
         j = inverse i e
 
@@ -204,7 +204,7 @@ module _ (pt : propositional-truncations-exist) where
     complete-image-implies-surjective-hom : is-iso I Y inj → is-surjective-hom
     complete-image-implies-surjective-hom iso = image-equiv-gives-surjective-hom (pr₁ iso)
 
-\end{code} 
+\end{code}
 
 
 \section{Homomorphisms with normal image}
@@ -217,8 +217,8 @@ We are still inside the anonymous module where propositional
 truncation is assumed.
 
 \begin{code}
-    
+
     has-normal-image : _
-    has-normal-image = (z : ⟨ Y ⟩ ) ((y , p) : ⟨ I ⟩) → ((z ·⟨ Y ⟩ y) ·⟨ Y ⟩ (inv Y z)) ∈image f 
+    has-normal-image = (z : ⟨ Y ⟩ ) ((y , p) : ⟨ I ⟩) → ((z ·⟨ Y ⟩ y) ·⟨ Y ⟩ (inv Y z)) ∈image f
 
 \end{code}

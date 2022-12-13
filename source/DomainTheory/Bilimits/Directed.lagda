@@ -47,14 +47,13 @@ module DomainTheory.Bilimits.Directed
         (𝓤 𝓣 : Universe)
        where
 
+open PropositionalTruncation pt
+
 open import UF.Equiv
 open import UF.EquivalenceExamples
-open import UF.ImageAndSurjection
+open import UF.ImageAndSurjection pt
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-
-open ImageAndSurjection pt
-open PropositionalTruncation pt
 
 open import Posets.Poset fe
 

@@ -65,6 +65,7 @@ module Various.Dedekind
        where
 
 open PropositionalTruncation pt
+open inhabited-subsets pt
 
 instance
  strict-order-ℚ : Strict-Order ℚ ℚ

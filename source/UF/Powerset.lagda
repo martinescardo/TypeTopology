@@ -82,19 +82,27 @@ module subset-complement (fe : Fun-Ext) where
  _∖_ :  {X : 𝓤 ̇ } → (X → Ω 𝓥) → (X → Ω 𝓦) → (X → Ω (𝓥 ⊔ 𝓦))
  A ∖ B = λ x → (x ∈ A × x ∉ B) , ×-is-prop (∈-is-prop A x) (∉-is-prop fe B x)
 
+ infix  45 _∖_
+
+ ∖-elim₀ : {X : 𝓤 ̇ } (A : X → Ω 𝓥) (B : X → Ω 𝓦) {x : X} → x ∈ A ∖ B → x ∈ A
+ ∖-elim₀ A B = pr₁
+
+ ∖-elim₁ : {X : 𝓤 ̇ } (A : X → Ω 𝓥) (B : X → Ω 𝓦) {x : X} → x ∈ A ∖ B → x ∉ B
+ ∖-elim₁ A B = pr₂
+
 module inhabited-subsets (pt : propositional-truncations-exist) where
 
  open PropositionalTruncation pt
 
- is-inhabited-subset : {X : 𝓤 ̇ } → (X → Ω 𝓥) → 𝓤 ⊔ 𝓥 ̇
- is-inhabited-subset {𝓤} {𝓥} {X} A = ∃ x ꞉ X , x ∈ A
+ is-inhabited : {X : 𝓤 ̇ } → (X → Ω 𝓥) → 𝓤 ⊔ 𝓥 ̇
+ is-inhabited {𝓤} {𝓥} {X} A = ∃ x ꞉ X , x ∈ A
 
- being-inhabited-subset-is-prop : {X : 𝓤 ̇ } (A : X → Ω 𝓥)
-                                → is-prop (is-inhabited-subset A)
- being-inhabited-subset-is-prop {𝓤} {𝓥} {X} A = ∃-is-prop
+ being-inhabited-is-prop : {X : 𝓤 ̇ } (A : X → Ω 𝓥)
+                         → is-prop (is-inhabited A)
+ being-inhabited-is-prop {𝓤} {𝓥} {X} A = ∃-is-prop
 
  𝓟⁺ : 𝓤 ̇ → 𝓤 ⁺ ̇
- 𝓟⁺ {𝓤} X = Σ A ꞉ 𝓟 X , is-inhabited-subset A
+ 𝓟⁺ {𝓤} X = Σ A ꞉ 𝓟 X , is-inhabited A
 
 complement :  {X : 𝓤 ̇ } → funext 𝓤 𝓤₀ → (X → Ω 𝓤) → (X → Ω 𝓤)
 complement fe A = λ x → (x ∉ A) , (∉-is-prop fe A x)
