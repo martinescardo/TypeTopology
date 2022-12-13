@@ -5,12 +5,12 @@ Following [Pow75], in constructive set theory an ordinal is [Definition 9.4.1,
 AR10], defined as a transitive set of transitive sets.
 
 We consider the subtype 𝕍ᵒʳᵈ of the cumulative hierarchy 𝕍 of set theoretic
-ordinals in 𝕍 (see UF/CumulativeHierarchy.lagda and [Section 10.5, 5] for more
-on 𝕍).
+ordinals in 𝕍 (see UF/CumulativeHierarchy.lagda and [Section 10.5, Uni13] for
+more on 𝕍).
 
-We show that (𝕍ᵒʳᵈ,∈) is a ordinal, in the type theoretic sense of [5], i.e. it
-is a well-founded, extensional and transitive order. Moreover, we prove that
-(𝕍ᵒʳᵈ,∈) and the ordinal Ord of type theoretic ordinals are isomorphic.
+We show that (𝕍ᵒʳᵈ,∈) is a ordinal, in the type theoretic sense of [Uni13],
+i.e. it is a well-founded, extensional and transitive order. Moreover, we prove
+that (𝕍ᵒʳᵈ,∈) and the ordinal Ord of type theoretic ordinals are isomorphic.
 
 This is interesting for at least two reasons:
 (1) It shows that the set theoretic and type theoretic notions of ordinal
