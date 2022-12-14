@@ -6,12 +6,12 @@ In this file I define negation of real numbers.
 
 {-# OPTIONS --without-K --exact-split --safe --experimental-lossy-unification #-}
 
-open import MLTT.Spartan renaming (_+_ to _∔_) 
+open import MLTT.Spartan renaming (_+_ to _∔_)
 
-open import UF.Base hiding (_≈_) 
-open import UF.FunExt 
+open import UF.Base hiding (_≈_)
+open import UF.FunExt
 
-open import Integers.Integers
+open import Integers.Type
 open import Integers.Addition renaming (_+_ to _ℤ+_) hiding (_-_)
 open import Integers.Multiplication renaming (_*_ to _ℤ*_)
 open import Integers.Negation renaming (-_ to ℤ-_)
@@ -19,7 +19,7 @@ open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
 open import Naturals.Properties
 open import Rationals.Fractions
 open import Rationals.FractionsOperations renaming (-_ to ℚₙ-_ ; _+_ to _ℚₙ+_ ; _*_ to _ℚₙ*_)
-open import Rationals.Rationals
+open import Rationals.Type
 open import Rationals.Addition
 open import Rationals.Multiplication
 
@@ -35,10 +35,10 @@ p - q = p + (- q)
 
 infixl 32 _-_
 
-ℚ-minus-zero-is-zero : 0ℚ ＝ - 0ℚ 
+ℚ-minus-zero-is-zero : 0ℚ ＝ - 0ℚ
 ℚ-minus-zero-is-zero = refl
 
-toℚ-neg : Fun-Ext → ((x , a) : ℚₙ) → (- toℚ (x , a)) ＝ toℚ (ℚₙ- (x , a)) 
+toℚ-neg : Fun-Ext → ((x , a) : ℚₙ) → (- toℚ (x , a)) ＝ toℚ (ℚₙ- (x , a))
 toℚ-neg fe (x , a) = IV
  where
   p : ℚ
@@ -64,7 +64,7 @@ toℚ-neg fe (x , a) = IV
           ℤ- (x ℤ* pos (succ a'))   ＝⟨ negation-dist-over-mult' x (pos (succ a')) ⁻¹ ⟩
           (ℤ- x) ℤ* pos (succ a') ∎
 
-  IV : (- toℚ (x , a)) ＝ toℚ (ℤ- x , a) 
+  IV : (- toℚ (x , a)) ＝ toℚ (ℤ- x , a)
   IV = (- toℚ (x , a))       ＝⟨ refl ⟩
         (- p)                ＝⟨ refl ⟩
         toℚ (ℤ- x' , a')     ＝⟨ helper (III II) ⟩
@@ -103,7 +103,7 @@ toℚ-neg fe (x , a) = IV
   c : ℕ
   c = pr₂ pq
 
-  I : ((ℤ- x , a) ℚₙ+ (ℤ- y , b)) ≈ (((ℤ- x') , a') ℚₙ+ ((ℤ- y') , b')) → toℚ ((ℤ- x , a) ℚₙ+ (ℤ- y , b)) ＝ toℚ (((ℤ- x') , a') ℚₙ+ ((ℤ- y') , b')) 
+  I : ((ℤ- x , a) ℚₙ+ (ℤ- y , b)) ≈ (((ℤ- x') , a') ℚₙ+ ((ℤ- y') , b')) → toℚ ((ℤ- x , a) ℚₙ+ (ℤ- y , b)) ＝ toℚ (((ℤ- x') , a') ℚₙ+ ((ℤ- y') , b'))
   I = lr-implication (equiv-equality fe ((ℤ- x , a) ℚₙ+ (ℤ- y , b)) (((ℤ- x') , a') ℚₙ+ ((ℤ- y') , b')))
 
   II : (- ((x , a) , p)) + (- ((y , b) , q)) ＝ - (((x , a) , p) + ((y , b) , q))
@@ -132,7 +132,7 @@ toℚ-neg fe (x , a) = IV
 ℚ-inverse-sum-to-zero : Fun-Ext → (q : ℚ) → q + (- q) ＝ 0ℚ
 ℚ-inverse-sum-to-zero fe ((x , a) , p) = γ
  where
-  -qnc : Σ (x' , y') ꞉ ℚₙ , toℚ (ℤ- x , a) ＝ toℚ (x' , y') 
+  -qnc : Σ (x' , y') ꞉ ℚₙ , toℚ (ℤ- x , a) ＝ toℚ (x' , y')
   -qnc = q-has-qn fe (toℚ (ℤ- x , a))
 
   x' : ℤ
@@ -257,7 +257,7 @@ toℚ-subtraction fe p q = II
                2/5 + (3/5 - 2/5)     ＝⟨ ap (2/5 +_) (ℚ+-comm 3/5 (- 2/5)) ⟩
                2/5 + ((- 2/5) + 3/5) ＝⟨ ℚ+-assoc fe 2/5 (- 2/5) 3/5 ⁻¹ ⟩
                2/5 - 2/5 + 3/5       ＝⟨ ap (_+ 3/5) (ℚ-inverse-sum-to-zero fe 2/5) ⟩
-               0ℚ + 3/5              ＝⟨ ℚ-zero-left-neutral fe 3/5 ⟩ 
+               0ℚ + 3/5              ＝⟨ ℚ-zero-left-neutral fe 3/5 ⟩
                3/5                   ∎
 
 
@@ -272,9 +272,8 @@ toℚ-subtraction fe p q = II
 ℚ-inverse-intro' : Fun-Ext → (p q : ℚ) → p ＝ (q - q) + p
 ℚ-inverse-intro' fe p q = ℚ-inverse-intro fe p q ∙ ℚ+-comm p (q - q)
 
-ℚ-inverse-intro''' : Fun-Ext → (p q : ℚ) → p ＝ p + ((- q) + q) 
+ℚ-inverse-intro''' : Fun-Ext → (p q : ℚ) → p ＝ p + ((- q) + q)
 ℚ-inverse-intro''' fe p q = ℚ-inverse-intro fe p q ∙ ap (p +_) (ℚ+-comm q (- q))
 
 ℚ-inverse-intro'''' : Fun-Ext → (p q : ℚ) → p ＝ p - q + q
 ℚ-inverse-intro'''' fe p q = ℚ-inverse-intro''' fe p q ∙ ℚ+-assoc fe p (- q) q ⁻¹
-

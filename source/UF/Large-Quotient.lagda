@@ -38,7 +38,6 @@ open import UF.PropTrunc
 open import UF.Base hiding (_≈_)
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-open import UF.ImageAndSurjection
 open import UF.Equiv
 
 module UF.Large-Quotient
@@ -95,7 +94,7 @@ module quotient
       where
 
  open PropositionalTruncation pt
- open ImageAndSurjection pt
+ open import UF.ImageAndSurjection pt
 
 \end{code}
 
@@ -283,7 +282,7 @@ use:
 module _ {𝓤 𝓥 : Universe} where
 
  open quotient
- open ImageAndSurjection pt
+ open import UF.ImageAndSurjection pt
 
  EqRel : 𝓤 ̇ → 𝓤 ⊔ (𝓥 ⁺) ̇
  EqRel X = Σ R ꞉ (X → X → 𝓥 ̇ ) , is-equiv-relation R

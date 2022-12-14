@@ -3,26 +3,26 @@ Andrew Sneap
 \begin{code}
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import MLTT.Spartan renaming (_+_ to _∔_) 
+open import MLTT.Spartan renaming (_+_ to _∔_)
 
 open import Notation.Order
-open import UF.PropTrunc 
-open import UF.Subsingletons 
-open import UF.FunExt 
-open import UF.Powerset 
+open import UF.PropTrunc
+open import UF.Subsingletons
+open import UF.FunExt
+open import UF.Powerset
 
-open import Rationals.Rationals
+open import Rationals.Type
 open import Rationals.Order
 
 module DedekindReals.Multiplication
-         (pe : Prop-Ext) 
+         (pe : Prop-Ext)
          (pt : propositional-truncations-exist)
          (fe : Fun-Ext)
        where
 
 open import Rationals.Multiplication renaming (_*_ to _ℚ*_)
 open import Rationals.MinMax fe
-open import DedekindReals.Reals pe pt fe
+open import DedekindReals.Type pe pt fe
 open PropositionalTruncation pt
 
 
@@ -42,7 +42,7 @@ order. In the right to left, transivity alone completes the proof.
 \begin{code}
 {-
 _*_ : ℝ → ℝ → ℝ
-_*_ ((Lx , Rx) , inhabited-left-x , inhabited-right-x , rounded-left-x , rounded-right-x , disjoint-x , located-x) 
+_*_ ((Lx , Rx) , inhabited-left-x , inhabited-right-x , rounded-left-x , rounded-right-x , disjoint-x , located-x)
     ((Ly , Ry) , inhabited-left-y , inhabited-right-y , rounded-left-y , rounded-right-y , disjoint-y , located-y)
   = (L , R) , inhabited-L , {!!} , rounded-left-L , {!!} , is-disjoint , {!!}
  where
@@ -59,7 +59,7 @@ _*_ ((Lx , Rx) , inhabited-left-x , inhabited-right-x , rounded-left-x , rounded
 
   xy-values : ∥ ((Σ a ꞉ ℚ , a ∈ Lx) × (Σ b ꞉ ℚ , b ∈ Rx)) × ((Σ c ꞉ ℚ , c ∈ Ly) × (Σ d ꞉ ℚ , d ∈ Ry)) ∥
   xy-values = binary-choice x-values y-values
-  
+
   inhabited-L : inhabited-left L
   inhabited-L = ∥∥-rec ∃-is-prop I xy-values
    where
@@ -109,7 +109,7 @@ _*_ ((Lx , Rx) , inhabited-left-x , inhabited-right-x , rounded-left-x , rounded
       b₃ = min b₁ b₂
       c₃ = max c₁ c₂
       d₃ = min d₁ d₂
-      
+
       MIN₁ MAX₁ MIN₂ MAX₂ : ℚ
       MIN₁ = min₄ (a₁ ℚ* c₁) (a₁ ℚ* d₁) (b₁ ℚ* c₁) (b₁ ℚ* d₁)
       MAX₁ = max₄ (a₂ ℚ* c₂) (a₂ ℚ* d₂) (b₂ ℚ* c₂) (b₂ ℚ* d₂)
@@ -130,7 +130,7 @@ _*_ ((Lx , Rx) , inhabited-left-x , inhabited-right-x , rounded-left-x , rounded
 
       MAX₂<q : MAX₂ < q
       MAX₂<q = ℚ≤-<-trans fe MAX₂ MAX₁ q MAX₂≤MAX₁ MAX₁<q
-      
+
       MAX₂≤q : MAX₂ ≤ q
       MAX₂≤q = ℚ<-coarser-than-≤ MAX₂ q MAX₂<q
 -}

@@ -201,12 +201,11 @@ module. This time a pointwise weakening of surjection is not enough.
 \begin{code}
 
 open import UF.PropTrunc
-open import UF.ImageAndSurjection
 
 module surjection-version (pt : propositional-truncations-exist) where
 
  open PropositionalTruncation pt
- open ImageAndSurjection pt
+ open import UF.ImageAndSurjection pt
 
  existential-fixed-point-property : 𝓤 ̇ → 𝓤 ̇
  existential-fixed-point-property X = (f : X → X) → ∃ x ꞉ X , x ＝ f x
@@ -320,7 +319,7 @@ of "jumping" a universe.
 module Blechschmidt (pt : propositional-truncations-exist) where
 
  open PropositionalTruncation pt
- open ImageAndSurjection pt
+ open import UF.ImageAndSurjection pt
  open import TypeTopology.DiscreteAndSeparated
 
  Π-projection-has-section : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
@@ -418,7 +417,7 @@ A variation, replacing discreteness by set-hood, at the cost of
 module Blechschmidt' (pt : propositional-truncations-exist) where
 
  open PropositionalTruncation pt
- open ImageAndSurjection pt
+ open import UF.ImageAndSurjection pt
  open import TypeTopology.DiscreteAndSeparated
 
  Π-projection-has-section : funext 𝓥 ((𝓤 ⊔ 𝓦)⁺)
@@ -695,22 +694,22 @@ Mike Shulman.
 
  global-invariance-under-≃-false :
 
-    ((A : ∀ {𝓤 : Universe} → 𝓤 ̇ → 𝓤 ⁺ ̇ )
-     {𝓤 𝓥 : Universe}
+    ((A : (𝓤 : Universe) → 𝓤 ̇ → 𝓤 ⁺ ̇ )
+     (𝓤 𝓥 : Universe)
      (X : 𝓤 ̇ ) (Y : 𝓥 ̇ )
-    → X ≃ Y → A X ≃ A Y)
+    → X ≃ Y → A 𝓤 X ≃ A 𝓥 Y)
     → 𝟘
 
- global-invariance-under-≃-false i = γ
+ global-invariance-under-≃-false h = γ
   where
-   A : {𝓤 : Universe} → 𝓤 ̇ → 𝓤 ⁺ ̇
-   A {𝓤} _ = 𝓤 ̇
+   A : (𝓤 : Universe) → 𝓤 ̇ → 𝓤 ⁺ ̇
+   A 𝓤 _ = 𝓤 ̇
 
    e : 𝟘 {𝓤₁} ≃ 𝟘 {𝓤₀}
    e = qinveq 𝟘-elim (𝟘-elim , (λ x → 𝟘-elim x) , (λ x → 𝟘-elim x))
 
    δ : (𝓤₁ ̇ ) ≃ (𝓤₀ ̇ )
-   δ = i A (𝟘 {𝓤₁}) (𝟘 {𝓤₀}) e
+   δ = h A 𝓤₁ 𝓤₀ (𝟘 {𝓤₁}) (𝟘 {𝓤₀}) e
 
    γ : 𝟘 {𝓤₀}
    γ = Corollary δ

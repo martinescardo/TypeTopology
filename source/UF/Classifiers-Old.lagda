@@ -478,8 +478,7 @@ module inhabited-classifier
         (pt : propositional-truncations-exist)
        where
 
- open import UF.ImageAndSurjection
- open ImageAndSurjection pt
+ open import UF.ImageAndSurjection pt
  open PropositionalTruncation pt
  open general-classifier (univalence-gives-funext ua) fe' ua Y
                          (λ (X : 𝓤 ̇ ) → ∥ X ∥)

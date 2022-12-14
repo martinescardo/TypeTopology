@@ -77,23 +77,21 @@ topologically compact, when one reasons constructively.
 
 module TypeTopology.CompactTypes where
 
+open import MLTT.AlternativePlus
+open import MLTT.Plus-Properties
 open import MLTT.Spartan
 open import MLTT.Two-Properties
-open import MLTT.Plus-Properties
-open import MLTT.AlternativePlus
-
+open import NotionsOfDecidability.Complemented
+open import NotionsOfDecidability.Decidable
 open import TypeTopology.DiscreteAndSeparated
-open import NotionsOfDecidability.DecidableAndDetachable public
-
 open import UF.Base
+open import UF.Equiv
+open import UF.FunExt
+open import UF.Miscelanea
+open import UF.PropTrunc
+open import UF.Retracts
 open import UF.Subsingletons renaming (⊤Ω to ⊤ ; ⊥Ω to ⊥)
 open import UF.Subsingletons-FunExt
-open import UF.FunExt
-open import UF.Retracts
-open import UF.Equiv
-open import UF.PropTrunc
-open import UF.ImageAndSurjection
-open import UF.Miscelanea
 
 \end{code}
 
@@ -576,7 +574,7 @@ singleton-compact∙ {𝓤} {X} (x , φ) p = x , g
 
 module _ (pt : propositional-truncations-exist) where
 
- open ImageAndSurjection pt
+ open import UF.ImageAndSurjection pt
 
  surjection-compact∙ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                      → is-surjection f
@@ -668,7 +666,7 @@ in the original development:
 \begin{code}
 
 Σ-Compact : 𝓤 ̇ → {𝓥 : Universe} → 𝓤 ⊔ (𝓥 ⁺) ̇
-Σ-Compact {𝓤} X {𝓥} = (A : X → 𝓥 ̇ ) → detachable A → decidable (Σ A)
+Σ-Compact {𝓤} X {𝓥} = (A : X → 𝓥 ̇ ) → complemented A → decidable (Σ A)
 
 Compact = Σ-Compact
 
@@ -676,7 +674,7 @@ Compactness-gives-Markov : {X : 𝓤 ̇ }
                          → Compact X
 
                          → (A : X → 𝓥 ̇ )
-                         → detachable A
+                         → complemented A
                          → ¬¬ Σ A
                          → Σ A
 Compactness-gives-Markov {𝓤} {X} c A δ φ = γ (c A δ)
@@ -710,10 +708,10 @@ Compact-gives-compact {𝓤} {X} C p = iv
   A : X → 𝓤₀ ̇
   A x = p x ＝ ₀
 
-  i : detachable (λ x → p x ＝ ₀) → decidable (Σ x ꞉ X , p x ＝ ₀)
+  i : complemented (λ x → p x ＝ ₀) → decidable (Σ x ꞉ X , p x ＝ ₀)
   i = C A
 
-  ii : detachable (λ x → p x ＝ ₀)
+  ii : complemented (λ x → p x ＝ ₀)
   ii x = 𝟚-is-discrete (p x) ₀
 
   iii : decidable (Σ x ꞉ X , p x ＝ ₀) → (Σ x ꞉ X , p x ＝ ₀) + (Π x ꞉ X , p x ＝ ₁)
@@ -735,12 +733,12 @@ that any decidable proposition is logically equivalent to either 𝟘 or
 \begin{code}
 
 Π-Compact : 𝓤 ̇ → {𝓥 : Universe} → 𝓤 ⊔ (𝓥 ⁺) ̇
-Π-Compact {𝓤} X {𝓥} = (A : X → 𝓥 ̇ ) → detachable A → decidable (Π A)
+Π-Compact {𝓤} X {𝓥} = (A : X → 𝓥 ̇ ) → complemented A → decidable (Π A)
 
 Σ-Compact-gives-Π-Compact : (X : 𝓤 ̇ ) → Σ-Compact X {𝓥} → Π-Compact X {𝓥}
 Σ-Compact-gives-Π-Compact X C A d = γ (C (λ x → ¬ (A x)) e)
  where
-  e : detachable (λ x → ¬ (A x))
+  e : complemented (λ x → ¬ (A x))
   e x = ¬-preserves-decidability (d x)
 
   γ : decidable (Σ x ꞉ X , ¬ (A x)) → decidable (Π x ꞉ X , A x)
@@ -779,10 +777,10 @@ that any decidable proposition is logically equivalent to either 𝟘 or
   B : X → 𝓥 ⊔ 𝓦 ̇
   B x = Σ y ꞉ Y x , A (x , y)
 
-  ζ : (x : X) → detachable (λ y → A (x , y))
+  ζ : (x : X) → complemented (λ y → A (x , y))
   ζ x y = δ (x , y)
 
-  ε : detachable B
+  ε : complemented B
   ε x = d x (λ y → A (x , y)) (ζ x)
 
   e : decidable (Σ B)
@@ -813,7 +811,7 @@ Compact-closed-under-retracts {𝓤} {𝓥} {𝓦} {X} {Y} (r , s , η) c A δ =
   B : X → 𝓦 ̇
   B = A ∘ r
 
-  ε : detachable B
+  ε : complemented B
   ε = δ ∘ r
 
   γ : decidable (Σ B) → decidable (Σ A)
@@ -828,7 +826,7 @@ Compact-closed-under-≃ e = Compact-closed-under-retracts (≃-gives-▷ e)
 
 module CompactTypesPT (pt : propositional-truncations-exist) where
 
- open ImageAndSurjection pt
+ open import UF.ImageAndSurjection pt
 
  surjection-Compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                     → funext 𝓥 𝓤₀
@@ -840,7 +838,7 @@ module CompactTypesPT (pt : propositional-truncations-exist) where
    B : X → 𝓥 ̇
    B = A ∘ f
 
-   ε : detachable B
+   ε : complemented B
    ε = δ ∘ f
 
    γ : decidable (Σ B) → decidable (Σ A)
@@ -867,7 +865,7 @@ module CompactTypesPT (pt : propositional-truncations-exist) where
  open PropositionalTruncation pt
 
  ∃-Compact : 𝓤 ̇ → {𝓥 : Universe} → 𝓤 ⊔ (𝓥 ⁺) ̇
- ∃-Compact {𝓤} X {𝓥} = (A : X → 𝓥 ̇ ) → detachable A → decidable (∃ A)
+ ∃-Compact {𝓤} X {𝓥} = (A : X → 𝓥 ̇ ) → complemented A → decidable (∃ A)
 
  Compactness-gives-∃-Compactness : {X : 𝓤 ̇ } → Compact X {𝓥} → ∃-Compact X {𝓥}
  Compactness-gives-∃-Compactness {𝓤} {X} c A δ = γ (c A δ)
@@ -886,7 +884,7 @@ module CompactTypesPT (pt : propositional-truncations-exist) where
  ∃-Compactness-gives-Markov : {X : 𝓤 ̇ }
                             → ∃-Compact X {𝓥}
                             → (A : X → 𝓥 ̇ )
-                            → detachable A
+                            → complemented A
                             → ¬¬ ∃ A
                             → ∃ A
  ∃-Compactness-gives-Markov {𝓤} {𝓥} {X} c A δ = ¬¬-elim (c A δ)
@@ -904,7 +902,7 @@ module CompactTypesPT (pt : propositional-truncations-exist) where
    A : P → 𝓤 ̇
    A p = 𝟙
 
-   α : detachable A
+   α : complemented A
    α p = inl ⋆
 
    β : decidable (∃ p ꞉ P , A p)
@@ -930,7 +928,7 @@ Variation:
    A (inl p) = 𝟙
    A (inr ⋆) = 𝟘
 
-   α : detachable A
+   α : complemented A
    α (inl p) = inl ⋆
    α (inr ⋆) = inr (λ z → 𝟘-elim z)
 
@@ -955,7 +953,7 @@ Added 10th December 2019.
 \begin{code}
 
 Compact∙ : 𝓤 ̇ → {𝓥 : Universe} → 𝓤 ⊔ (𝓥 ⁺) ̇
-Compact∙ {𝓤} X {𝓥} = (A : X → 𝓥 ̇ ) → detachable A → Σ x₀ ꞉ X , (A x₀ → (x : X) → A x)
+Compact∙ {𝓤} X {𝓥} = (A : X → 𝓥 ̇ ) → complemented A → Σ x₀ ꞉ X , (A x₀ → (x : X) → A x)
 
 Compact-pointed-gives-Compact∙ : {X : 𝓤 ̇ } → Compact X {𝓥} → X → Compact∙ X {𝓥}
 Compact-pointed-gives-Compact∙ {𝓤} {𝓥} {X} c x₀ A δ = γ (c A' δ')
@@ -963,7 +961,7 @@ Compact-pointed-gives-Compact∙ {𝓤} {𝓥} {X} c x₀ A δ = γ (c A' δ')
   A' : X → 𝓥 ̇
   A' x = ¬ A x
 
-  δ' : detachable A'
+  δ' : complemented A'
   δ' x = ¬-preserves-decidability (δ x)
 
   γ : decidable (Σ A') → Σ x₀ ꞉ X , (A x₀ → (x : X) → A x)
@@ -1002,7 +1000,7 @@ Compact-types-are-decidable X c = γ
   A : X → 𝓤₀ ̇
   A _ = 𝟙
 
-  δ : detachable A
+  δ : complemented A
   δ _ = inl ⋆
 
   a : decidable (X × 𝟙)
@@ -1070,19 +1068,19 @@ Added 21st October 2021.
 
 complemented-subset-of-compact-type : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
                                     → Compact X {𝓥 ⊔ 𝓦}
-                                    → detachable A
+                                    → complemented A
                                     → ((x : X) → is-prop (A x))
                                     → Compact (Σ x ꞉ X , A x) {𝓦}
 complemented-subset-of-compact-type {𝓤} {𝓥} {𝓦} {X} {A}
                                     X-compact
-                                    A-detachable
+                                    A-complemented
                                     A-is-prop-valued
-                                    B B-detachable = γ II
+                                    B B-complemented = γ II
  where
   I : (x : X) → decidable (Σ a ꞉ A x , B (x , a))
-  I x = Cases (A-detachable x)
+  I x = Cases (A-complemented x)
          (λ (a : A x)
-               → Cases (B-detachable (x , a))
+               → Cases (B-complemented (x , a))
                   (λ (b : B (x , a))     → inl (a , b))
                   (λ ν → inr (λ (a' , b) → ν (transport
                                                (λ - → B (x , -))
@@ -1151,7 +1149,7 @@ prop-valued? We could have if we wanted to.
 Σ-Compact' : 𝓤 ̇ → {𝓥 : Universe} → 𝓤 ⊔ (𝓥 ⁺) ̇
 Σ-Compact' {𝓤} X {𝓥} = (A : X → 𝓥 ̇ )
                      → ((x : X) → is-prop (A x))
-                     → detachable A
+                     → complemented A
                      → decidable (Σ A)
 
 Compact' = Σ-Compact'
@@ -1181,10 +1179,10 @@ Compact'-gives-compact {𝓤} {X} C p = iv
   A : X → 𝓤₀ ̇
   A x = p x ＝ ₀
 
-  i : detachable (λ x → p x ＝ ₀) → decidable (Σ x ꞉ X , p x ＝ ₀)
+  i : complemented (λ x → p x ＝ ₀) → decidable (Σ x ꞉ X , p x ＝ ₀)
   i = C A (λ x → 𝟚-is-set)
 
-  ii : detachable (λ x → p x ＝ ₀)
+  ii : complemented (λ x → p x ＝ ₀)
   ii x = 𝟚-is-discrete (p x) ₀
 
   iii : decidable (Σ x ꞉ X , p x ＝ ₀) → (Σ x ꞉ X , p x ＝ ₀) + (Π x ꞉ X , p x ＝ ₁)

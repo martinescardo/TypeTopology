@@ -235,15 +235,15 @@ module _
   fe : FunExt
   fe = Univalence-gives-FunExt ua
 
- open import NotionsOfDecidability.DecidableAndDetachable
+ open import NotionsOfDecidability.Decidable
+ open import NotionsOfDecidability.Complemented
 
  open import Ordinals.Arithmetic fe
  open import Ordinals.OrdinalOfOrdinals ua
  open import Ordinals.WellOrderArithmetic
 
  open import UF.Embeddings
- open import UF.ImageAndSurjection
- open ImageAndSurjection pt
+ open import UF.ImageAndSurjection pt
 
  module discrete-sup-taboo-construction-II
           (P : 𝓤 ̇  )

@@ -49,6 +49,15 @@ being-groupoid-is-prop fe {X} = subtype-of-prop-is-prop g (ap f) (being-groupoid
 
 \end{code}
 
+Groupoids are sets.
+
+\begin{code}
+
+sets-are-groupoids : {X : 𝓤 ̇} → is-set X → is-groupoid X
+sets-are-groupoids i = props-are-sets i
+
+\end{code}
+
 UF.hlevels uses global univalence.
 
 \begin{code}

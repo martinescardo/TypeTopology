@@ -22,10 +22,9 @@ module DomainTheory.Lifting.LiftingSetAlgebraic
 
 open import UF.Equiv
 open import UF.Miscelanea
-open import UF.ImageAndSurjection
+open import UF.ImageAndSurjection pt
 open import UF.Subsingletons-FunExt
 
-open ImageAndSurjection pt
 open PropositionalTruncation pt
 
 open import Lifting.Lifting 𝓤 hiding (⊥)

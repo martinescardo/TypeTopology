@@ -10,35 +10,29 @@ subsets of X.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import MLTT.Spartan
-open import MLTT.Fin
-open import MLTT.Fin-Properties
-
-open import UF.Base
-open import UF.Equiv
-open import UF.FunExt
-open import UF.Lower-FunExt
-open import UF.ImageAndSurjection
-open import UF.Powerset
 open import UF.PropTrunc
-open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
-
-open import ArithmeticViaEquivalence.ArithmeticViaEquivalence
-open import Posets.JoinSemiLattices
 
 module Posets.FreeJoinSemiLattice
         (pt : propositional-truncations-exist)
        where
 
+open import Fin.ArithmeticViaEquivalence
+open import Fin.Kuratowski pt
+open import Fin.Type
+open import MLTT.Spartan
+open import Posets.JoinSemiLattices
+open import UF.Base
+open import UF.Equiv
+open import UF.FunExt
+open import UF.ImageAndSurjection pt
+open import UF.Lower-FunExt
+open import UF.Powerset
 open import UF.Powerset-Fin pt
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
 
-open binary-unions-of-subsets pt
-
-open Kuratowski-finiteness pt
-
-open ImageAndSurjection pt
 open PropositionalTruncation pt hiding (_∨_)
+open binary-unions-of-subsets pt
 
 \end{code}
 

@@ -11,14 +11,17 @@ another file.
 module Games.TicTacToe2 where
 
 open import MLTT.Spartan hiding (J)
-open import TypeTopology.SigmaDiscreteAndTotallySeparated
 
 data 𝟛 : Type where
  O-wins draw X-wins : 𝟛
 
-open import Games.TypeTrees
-open import Games.FiniteHistoryDependent 𝟛
 open import Games.Constructor 𝟛
+open import Games.FiniteHistoryDependent 𝟛
+open import Games.TypeTrees
+open import MLTT.NonSpartanMLTTTypes
+open import TypeTopology.SigmaDiscreteAndTotallySeparated
+
+open list-util
 
 tic-tac-toe₂J : GameJ
 tic-tac-toe₂J = build-GameJ draw Board transition 9 board₀
@@ -30,9 +33,6 @@ tic-tac-toe₂J = build-GameJ draw Board transition 9 board₀
 
   data Player : Type where
    O X : Player
-
-  open import MLTT.NonSpartanMLTTTypes
-  open list-util
 
   Cell = Fin 9
 

@@ -7,28 +7,28 @@ some key properties.
 \begin{code}
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import MLTT.Spartan renaming (_+_ to _∔_) 
+open import MLTT.Spartan renaming (_+_ to _∔_)
 
 open import Notation.CanonicalMap
 open import Notation.Order
 open import Rationals.Order
 
-open import UF.FunExt 
-open import UF.PropTrunc 
-open import UF.Powerset 
-open import UF.Subsingletons 
-open import UF.Subsingletons-FunExt 
+open import UF.FunExt
+open import UF.PropTrunc
+open import UF.Powerset
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
 
-open import Rationals.Rationals
+open import Rationals.Type
 
 module DedekindReals.Order
-         (pe : Prop-Ext) 
+         (pe : Prop-Ext)
          (pt : propositional-truncations-exist)
          (fe : Fun-Ext)
        where
 
-open import DedekindReals.Reals pe pt fe
-open PropositionalTruncation pt 
+open import DedekindReals.Type pe pt fe
+open PropositionalTruncation pt
 
 _<ℝ_ : ℝ → ℝ → 𝓤₀ ̇
 x <ℝ y = ∃ q ꞉ ℚ , (x < q) × (q < y)
@@ -153,7 +153,7 @@ apartness-gives-inequality x y apart e = ∥∥-rec 𝟘-is-prop I apart
   I (q , qRy , qLz) = q , ∥∥-rec (∈-is-prop (upper-cut-of x) q) III II , qLz
    where
     II : ∃ k ꞉ ℚ , k < q × k > y
-    II = rounded-right-b (upper-cut-of y) (rounded-from-real-R y) q qRy 
+    II = rounded-right-b (upper-cut-of y) (rounded-from-real-R y) q qRy
 
     III : Σ k ꞉ ℚ , k < q × k > y → q > x
     III (k , k<q , kRy) = ∥∥-rec (∈-is-prop (upper-cut-of x) q) IV (located-from-real x k q k<q)
@@ -182,9 +182,5 @@ embedding-preserves-order p q l = I (use-rationals-density)
 
   I : (Σ k ꞉ ℚ , p < k × k < q) → ∃ k ꞉ ℚ , p < k × k < q
   I (k , p<k , k<q) = ∣ k , p<k , k<q ∣
-  
+
 \end{code}
-
-
-
-
