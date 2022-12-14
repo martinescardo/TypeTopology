@@ -109,12 +109,11 @@ module _ {𝓤 𝓥 𝓦 𝓣}
        l (a , refl) = n ((x , a) , refl)
 
  open import UF.PropTrunc
- open import UF.ImageAndSurjection
 
  module pair-fun-surjection (pt : propositional-truncations-exist) where
 
   open PropositionalTruncation pt
-  open ImageAndSurjection pt
+  open import UF.ImageAndSurjection pt
 
   pair-fun-is-surjection : is-surjection f
                          → ((x : X) → is-surjection (g x))

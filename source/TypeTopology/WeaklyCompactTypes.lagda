@@ -29,7 +29,6 @@ open import UF.FunExt
 open import UF.PropTrunc
 open import UF.Retracts
 open import UF.Retracts-FunExt
-open import UF.ImageAndSurjection
 open import UF.Equiv
 open import UF.Miscelanea
 
@@ -231,7 +230,7 @@ Compactness of images:
 
 \begin{code}
 
-open ImageAndSurjection pt
+open import UF.ImageAndSurjection pt
 
 surjection-∃-compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                      → is-surjection f

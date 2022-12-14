@@ -77,7 +77,6 @@ open import UF.Embeddings
 open import UF.FunExt
 open import UF.Lower-FunExt
 open import UF.PropTrunc
-open import UF.ImageAndSurjection
 open import UF.Miscelanea
 
 \end{code}
@@ -550,7 +549,7 @@ module TotallySeparatedReflection
  where
 
  open PropositionalTruncation pt
- open ImageAndSurjection pt
+ open import UF.ImageAndSurjection pt
 
 \end{code}
 
@@ -710,6 +709,7 @@ for the moment.
 module Apartness (pt : propositional-truncations-exist) where
 
  open PropositionalTruncation pt
+ open import UF.ImageAndSurjection pt
 
  is-prop-valued is-irreflexive is-symmetric is-cotransitive is-tight is-apartness
      : {X : 𝓤 ̇ } → (X → X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
@@ -1074,8 +1074,6 @@ apartness relation _♯₂ is tight:
   apartness types. We take X' to be the image of the map α.
 
 \begin{code}
-
-  open ImageAndSurjection pt
 
   X' : 𝓤 ⊔ 𝓥 ⁺ ̇
   X' = image α

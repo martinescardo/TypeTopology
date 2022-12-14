@@ -36,6 +36,11 @@ powersets-are-sets' {𝓤} ua = powersets-are-sets
                                (univalence-gives-funext' 𝓤 (𝓤 ⁺) (ua 𝓤) (ua (𝓤 ⁺)))
                                (univalence-gives-propext (ua 𝓤))
 
+comprehension : (X : 𝓤 ̇ ) → (X → Ω 𝓥) → (X → Ω 𝓥)
+comprehension X A = A
+
+syntax comprehension X (λ x → A) = ⁅ x ꞉ X ∣ A ⁆
+
 ∅ : {X : 𝓤 ̇ } →  X → Ω 𝓥
 ∅ _ = 𝟘 , 𝟘-is-prop
 
@@ -53,17 +58,6 @@ infix  40 _∉_
 
 is-empty-subset : {X : 𝓤 ̇ } → (X → Ω 𝓥) → 𝓤 ⊔ 𝓥 ̇
 is-empty-subset {𝓤} {𝓥} {X} A = (x : X) → x ∉ A
-
-module _ (pt : propositional-truncations-exist) where
-
- open PropositionalTruncation pt
-
- is-inhabited-subset : {X : 𝓤 ̇ } → (X → Ω 𝓥) → 𝓤 ⊔ 𝓥 ̇
- is-inhabited-subset {𝓤} {𝓥} {X} A = ∃ x ꞉ X , x ∈ A
-
- being-inhabited-subset-is-prop : {X : 𝓤 ̇ } (A : X → Ω 𝓥)
-                                → is-prop (is-inhabited-subset A)
- being-inhabited-subset-is-prop {𝓤} {𝓥} {X} A = ∃-is-prop
 
 are-disjoint : {X : 𝓤 ̇ } → (X → Ω 𝓥) → (X → Ω 𝓦) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
 are-disjoint {𝓤} {𝓥} {𝓦} {X} A B = (x : X) → ¬((x ∈ A) × (x ∈ B))
@@ -83,8 +77,32 @@ A ⊇ B = B ⊆ A
 ∉-is-prop : funext 𝓥 𝓤₀ → {X : 𝓤 ̇ } (A : X → Ω 𝓥) (x : X) → is-prop (x ∉ A)
 ∉-is-prop fe A x = negations-are-props fe
 
-_∖[_]_ :  {X : 𝓤 ̇ } → (X → Ω 𝓥) → funext 𝓦 𝓤₀ → (X → Ω 𝓦) → (X → Ω (𝓥 ⊔ 𝓦))
-A ∖[ fe ] B = λ x → (x ∈ A × x ∉ B) , ×-is-prop (∈-is-prop A x) (∉-is-prop fe B x)
+module subset-complement (fe : Fun-Ext) where
+
+ _∖_ :  {X : 𝓤 ̇ } → (X → Ω 𝓥) → (X → Ω 𝓦) → (X → Ω (𝓥 ⊔ 𝓦))
+ A ∖ B = λ x → (x ∈ A × x ∉ B) , ×-is-prop (∈-is-prop A x) (∉-is-prop fe B x)
+
+ infix  45 _∖_
+
+ ∖-elim₀ : {X : 𝓤 ̇ } (A : X → Ω 𝓥) (B : X → Ω 𝓦) {x : X} → x ∈ A ∖ B → x ∈ A
+ ∖-elim₀ A B = pr₁
+
+ ∖-elim₁ : {X : 𝓤 ̇ } (A : X → Ω 𝓥) (B : X → Ω 𝓦) {x : X} → x ∈ A ∖ B → x ∉ B
+ ∖-elim₁ A B = pr₂
+
+module inhabited-subsets (pt : propositional-truncations-exist) where
+
+ open PropositionalTruncation pt
+
+ is-inhabited : {X : 𝓤 ̇ } → (X → Ω 𝓥) → 𝓤 ⊔ 𝓥 ̇
+ is-inhabited {𝓤} {𝓥} {X} A = ∃ x ꞉ X , x ∈ A
+
+ being-inhabited-is-prop : {X : 𝓤 ̇ } (A : X → Ω 𝓥)
+                         → is-prop (is-inhabited A)
+ being-inhabited-is-prop {𝓤} {𝓥} {X} A = ∃-is-prop
+
+ 𝓟⁺ : 𝓤 ̇ → 𝓤 ⁺ ̇
+ 𝓟⁺ {𝓤} X = Σ A ꞉ 𝓟 X , is-inhabited A
 
 complement :  {X : 𝓤 ̇ } → funext 𝓤 𝓤₀ → (X → Ω 𝓤) → (X → Ω 𝓤)
 complement fe A = λ x → (x ∉ A) , (∉-is-prop fe A x)
@@ -170,7 +188,7 @@ module _
  𝕋-to-carrier : (A : X → Ω 𝓥) → 𝕋 A → X
  𝕋-to-carrier A = pr₁
 
- 𝕋-to-membership : (A : X → Ω 𝓥) → (t : 𝕋 A) → (𝕋-to-carrier A t) ∈ A
+ 𝕋-to-membership : (A : X → Ω 𝓥) → (t : 𝕋 A) → 𝕋-to-carrier A t ∈ A
  𝕋-to-membership A = pr₂
 
 \end{code}

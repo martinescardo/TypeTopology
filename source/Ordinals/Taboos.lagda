@@ -243,8 +243,7 @@ module _
  open import Ordinals.WellOrderArithmetic
 
  open import UF.Embeddings
- open import UF.ImageAndSurjection
- open ImageAndSurjection pt
+ open import UF.ImageAndSurjection pt
 
  module discrete-sup-taboo-construction-II
           (P : 𝓤 ̇  )

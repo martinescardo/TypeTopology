@@ -34,7 +34,7 @@ private
 
 open PropositionalTruncation pt
 
-open import UF.ImageAndSurjection
+open import UF.ImageAndSurjection pt
 open import UF.Embeddings
 open import UF.Size
 
@@ -60,7 +60,6 @@ open import CoNaturals.GenericConvergentSequence
 open import MLTT.Spartan
 open import MLTT.Plus-Properties
 
-open ImageAndSurjection pt
 open ordinals-injectivity fe
 
 module _ (sr : Set-Replacement pt) where

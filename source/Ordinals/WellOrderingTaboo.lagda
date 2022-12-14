@@ -299,14 +299,12 @@ module swan'
         (P-is-not-false : ¬¬ P)
        where
 
+ open PropositionalTruncation pt
+
  open import MLTT.Two-Properties
 
  open import UF.Large-Quotient pt fe pe
-
- open import UF.ImageAndSurjection
- open ImageAndSurjection pt
-
- open PropositionalTruncation pt
+ open import UF.ImageAndSurjection pt
 
  _≈_ : 𝟚 → 𝟚 → 𝓤 ̇
  x ≈ y = (x ＝ y) ∨ P

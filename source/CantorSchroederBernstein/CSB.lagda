@@ -651,8 +651,7 @@ module CSB-for-connected-types-without-EM (pt : propositional-truncations-exist)
 
  open PropositionalTruncation pt public
  open import UF.Connected pt
- open import UF.ImageAndSurjection
- open ImageAndSurjection pt
+ open import UF.ImageAndSurjection pt
 
 \end{code}
 

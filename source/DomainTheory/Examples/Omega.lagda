@@ -23,15 +23,14 @@ module DomainTheory.Examples.Omega
         (𝓤 : Universe)
        where
 
+open PropositionalTruncation pt
+
 open import NotionsOfDecidability.Decidable
 
 open import UF.Equiv
 open import UF.EquivalenceExamples
-open import UF.ImageAndSurjection
+open import UF.ImageAndSurjection pt
 open import UF.Subsingletons-FunExt
-
-open ImageAndSurjection pt
-open PropositionalTruncation pt
 
 open import Posets.Poset fe
 
