@@ -24,14 +24,13 @@ open import Posets.JoinSemiLattices
 open import UF.Base
 open import UF.Equiv
 open import UF.FunExt
-open import UF.ImageAndSurjection
+open import UF.ImageAndSurjection pt
 open import UF.Lower-FunExt
 open import UF.Powerset
 open import UF.Powerset-Fin pt
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
-open ImageAndSurjection pt
 open PropositionalTruncation pt hiding (_∨_)
 open binary-unions-of-subsets pt
 

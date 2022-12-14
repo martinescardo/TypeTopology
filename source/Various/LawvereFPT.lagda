@@ -201,12 +201,11 @@ module. This time a pointwise weakening of surjection is not enough.
 \begin{code}
 
 open import UF.PropTrunc
-open import UF.ImageAndSurjection
 
 module surjection-version (pt : propositional-truncations-exist) where
 
  open PropositionalTruncation pt
- open ImageAndSurjection pt
+ open import UF.ImageAndSurjection pt
 
  existential-fixed-point-property : 𝓤 ̇ → 𝓤 ̇
  existential-fixed-point-property X = (f : X → X) → ∃ x ꞉ X , x ＝ f x
@@ -320,7 +319,7 @@ of "jumping" a universe.
 module Blechschmidt (pt : propositional-truncations-exist) where
 
  open PropositionalTruncation pt
- open ImageAndSurjection pt
+ open import UF.ImageAndSurjection pt
  open import TypeTopology.DiscreteAndSeparated
 
  Π-projection-has-section : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
@@ -418,7 +417,7 @@ A variation, replacing discreteness by set-hood, at the cost of
 module Blechschmidt' (pt : propositional-truncations-exist) where
 
  open PropositionalTruncation pt
- open ImageAndSurjection pt
+ open import UF.ImageAndSurjection pt
  open import TypeTopology.DiscreteAndSeparated
 
  Π-projection-has-section : funext 𝓥 ((𝓤 ⊔ 𝓦)⁺)

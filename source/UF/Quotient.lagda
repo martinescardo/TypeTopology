@@ -15,7 +15,6 @@ open import MLTT.Spartan
 open import UF.Base hiding (_≈_)
 open import UF.Equiv
 open import UF.FunExt
-open import UF.ImageAndSurjection
 open import UF.PropTrunc
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
@@ -328,8 +327,8 @@ module _
        where
  open set-quotients-exist sq
 
- open ImageAndSurjection pt
  open PropositionalTruncation pt
+ open import UF.ImageAndSurjection pt
 
  module set-replacement-construction
          {X : 𝓤 ̇  }

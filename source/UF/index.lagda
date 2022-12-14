@@ -26,6 +26,7 @@ import UF.Knapp-UA
 import UF.KrausLemma
 import UF.Large-Quotient
 import UF.LeftCancellable
+import UF.Logic
 import UF.Lower-FunExt
 import UF.Miscelanea
 import UF.PairFun
@@ -45,7 +46,6 @@ import UF.SIP-Examples
 import UF.Section-Embedding
 import UF.Size
 import UF.StructureIdentityPrinciple
-import UF.Subsingleton-Combinators
 import UF.Subsingletons
 import UF.Subsingletons-FunExt
 import UF.UA-FunExt

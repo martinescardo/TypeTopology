@@ -1,10 +1,9 @@
-Martin Escardo
-21-25 December 2020.
+Martin Escardo, 21th December 2020 - 18th February 2021.
 
 In collaboration with  Marc Bezem, Thierry Coquand, Peter Dybjer.
 
-The Burali-Forti argument in HoTT/UF in Agda notation
------------------------------------------------------
+The Burali-Forti argument in HoTT/UF with applications to the type of groups in a universe
+------------------------------------------------------------------------------------------
 
 Abstract. We use the Burali-Forti argument to show that, in HoTT/UF,
 the embedding
@@ -181,7 +180,7 @@ Burali-Forti {𝓤} (α , 𝕗) = γ
 
 Some corollaries follow.
 
-The main work in the first one, which says that the type of all
+The main work is in the first one, which says that the type of all
 ordinals is large, happens in the function transfer-structure, which
 is developed in the module OrdinalsWellOrderTransport, where the
 difficulties are explained.
@@ -200,7 +199,7 @@ the-type-of-ordinals-is-large : is-large (Ordinal 𝓤)
 the-type-of-ordinals-is-large {𝓤} (X , 𝕗) = γ
  where
   δ : Σ s ꞉ OrdinalStructure X , (X , s) ≃ₒ OO 𝓤
-  δ = transfer-structure fe X (OO 𝓤)
+  δ = transfer-structure fe {𝓤} {𝓤 ⁺} X (OO 𝓤)
        𝕗 (_⊲⁻_ , ⊲-is-equivalent-to-⊲⁻)
 
   γ : 𝟘

@@ -87,7 +87,6 @@ open import TypeTopology.DiscreteAndSeparated
 open import UF.Base
 open import UF.Equiv
 open import UF.FunExt
-open import UF.ImageAndSurjection
 open import UF.Miscelanea
 open import UF.PropTrunc
 open import UF.Retracts
@@ -575,7 +574,7 @@ singleton-compact∙ {𝓤} {X} (x , φ) p = x , g
 
 module _ (pt : propositional-truncations-exist) where
 
- open ImageAndSurjection pt
+ open import UF.ImageAndSurjection pt
 
  surjection-compact∙ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                      → is-surjection f
@@ -827,7 +826,7 @@ Compact-closed-under-≃ e = Compact-closed-under-retracts (≃-gives-▷ e)
 
 module CompactTypesPT (pt : propositional-truncations-exist) where
 
- open ImageAndSurjection pt
+ open import UF.ImageAndSurjection pt
 
  surjection-Compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                     → funext 𝓥 𝓤₀

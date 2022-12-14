@@ -39,7 +39,6 @@ open import UF.Subsingletons renaming (⊤Ω to ⊤ ; ⊥Ω to ⊥)
 open import UF.Subsingletons-FunExt
 open import UF.FunExt
 open import UF.PropTrunc
-open import UF.ImageAndSurjection
 open import UF.LeftCancellable
 open import UF.Equiv
 
@@ -254,7 +253,7 @@ module AC-renders-all-sets-discrete
 
  open PropositionalTruncation pt
  open UnivalentChoice fe pt 𝓤 public
- open ImageAndSurjection pt
+ open import UF.ImageAndSurjection pt
  open import TypeTopology.DiscreteAndSeparated
  open import UF.Miscelanea
 

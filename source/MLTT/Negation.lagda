@@ -106,6 +106,17 @@ und (φ , γ) w = γ (λ y → φ (λ x → w (x , y)))
 ×-is-¬¬-stable f g ϕ = f (λ v → ϕ (λ (a , b) → v a)) ,
                        g (λ v → ϕ (λ (a , b) → v b))
 
+negation-of-implication :  {A : 𝓤 ̇ } {B : 𝓥 ̇ }
+                        → ¬ (A → B)
+                        → ¬¬ A × ¬ B
+negation-of-implication u = (λ v → u (λ a → 𝟘-elim (v a))) ,
+                            (λ b → u (λ a → b))
+
+negation-of-implication-converse :  {A : 𝓤 ̇ } {B : 𝓥 ̇ }
+                                 → ¬¬ A × ¬ B
+                                 → ¬ (A → B)
+negation-of-implication-converse (u , v) f = u (λ a → v (f a))
+
 Double-negation-of-implication← : {A : 𝓤 ̇ } {B : 𝓥 ̇ }
                                   {R : 𝓦 ̇ } {S : 𝓣 ̇ } {T : 𝓣' ̇ }
                                 → (((A → B) → T) → S)

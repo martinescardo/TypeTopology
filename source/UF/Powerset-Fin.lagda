@@ -29,13 +29,12 @@ open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.FunExt
 open import UF.Lower-FunExt
-open import UF.ImageAndSurjection
+open import UF.ImageAndSurjection pt
 open import UF.Powerset
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
 open binary-unions-of-subsets pt
-open ImageAndSurjection pt
 
 is-Kuratowski-finite-subset : {X : 𝓤 ̇ } (A : 𝓟 X) → 𝓤 ̇
 is-Kuratowski-finite-subset A = is-Kuratowski-finite (𝕋 A)

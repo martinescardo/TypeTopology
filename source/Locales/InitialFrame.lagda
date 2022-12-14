@@ -19,7 +19,7 @@ module Locales.InitialFrame
        where
 
 open import UF.Subsingletons
-open import UF.Subsingleton-Combinators
+open import UF.Logic
 open import UF.Subsingletons-FunExt
 open import UF.Equiv
 open import Locales.Frame pt fe
