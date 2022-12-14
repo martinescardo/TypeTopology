@@ -450,6 +450,15 @@ clopenness-equivalent-to-well-inside-itself F U =
   γ : 𝟎[ F ] ∨[ F ] 𝟏[ F ] ＝ 𝟏[ F ]
   γ = 𝟏-right-annihilator-for-∨ F 𝟎[ F ]
 
+𝟏-is-clopen : (F : Frame 𝓤 𝓥 𝓦) → 𝟏[ F ] ⋜₀[ F ] 𝟏[ F ]
+𝟏-is-clopen F = 𝟎[ F ] , β , γ
+ where
+  β : 𝟏[ F ] ∧[ F ] 𝟎[ F ] ＝ 𝟎[ F ]
+  β = 𝟎-right-annihilator-for-∧ F 𝟏[ F ]
+
+  γ : 𝟏[ F ] ∨[ F ] 𝟎[ F ] ＝ 𝟏[ F ]
+  γ = 𝟏-left-annihilator-for-∨ F 𝟎[ F ]
+
 \end{code}
 
 \begin{code}
