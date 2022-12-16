@@ -55,29 +55,66 @@ module depolarization (𝓓 : deductive-system 𝓤 𝓥) where
   open deductive-system 𝓓
   open polarities 𝓓
 
+  -- We could consider three forms of depolarization:
+  -- 1. All objects have positive polarity
+  -- 2. All objects have negative polarity
+  -- 3. Either (1) or (2).
+
+  is-positively-depolarized : 𝓤 ⊔ 𝓥 ̇
+  is-positively-depolarized = (A : ob) → is-positive A
+
+  is-negatively-depolarized : 𝓤 ⊔ 𝓥 ̇
+  is-negatively-depolarized = (A : ob) → is-negative A
+
   depolarization : 𝓤 ⊔ 𝓥 ̇
-  depolarization = ((A : ob) → is-positive A) + ((A : ob) → is-negative A)
+  depolarization = is-positively-depolarized + is-negatively-depolarized
 
   is-depolarized : 𝓤 ⊔ 𝓥 ̇
   is-depolarized = ∥ depolarization ∥
 
-  module _ (depol : is-depolarized) where
+  -- It turns out that all three forms of depolarization are equivalent.
+  -- But we will use `is-depolarized` because it is the most symmetrical.
 
-   -- If the deductive system is depolarized, then either all its objects are
-   -- positive or all its objects are negative, but we don't know which.
-   --
-   -- Because the associativity law is a proposition, we can still split
-   -- on whether all objects are positive or negative. In the positive case,
-   -- we use the polarity of the third object in the composite and in the
-   -- negative case, we use the polarity of the second object in the composite.
-   --
+  is-positively-depolarized-gives-is-negatively-depolarized
+   : is-positively-depolarized
+   → is-negatively-depolarized
+  is-positively-depolarized-gives-is-negatively-depolarized pos A B f C D g h =
+   pos C D h B A g f
+
+  is-negatively-depolarized-gives-is-positively-depolarized
+   : is-negatively-depolarized
+   → is-positively-depolarized
+  is-negatively-depolarized-gives-is-positively-depolarized neg A B f U V g h =
+   neg V U h A B g f
+
+
+  module _ (fe0 : funext 𝓤 (𝓤 ⊔ 𝓥)) (fe1 : funext 𝓥 (𝓤 ⊔ 𝓥)) where
+   is-depolarized-gives-is-positively-depolarized
+    : is-depolarized
+    → is-positively-depolarized
+   is-depolarized-gives-is-positively-depolarized =
+    ∥∥-rec (Π-is-prop fe0 λ _ → is-positive-is-prop fe0 fe1) case
+    where
+     case : depolarization → is-positively-depolarized
+     case (inl pos) = pos
+     case (inr neg) = is-negatively-depolarized-gives-is-positively-depolarized neg
+
+   is-depolarized-gives-is-negatively-depolarized
+    : is-depolarized
+    → is-negatively-depolarized
+   is-depolarized-gives-is-negatively-depolarized =
+    is-positively-depolarized-gives-is-negatively-depolarized
+    ∘ is-depolarized-gives-is-positively-depolarized
+
+  module _ (depol : is-depolarized) where
    depolarization-gives-assoc : category-axiom-statements.statement-assoc (pr₁ 𝓓)
    depolarization-gives-assoc A B C D f g h =
-    ∥∥-rec (⊢-is-set A D) assoc-case depol
+    ∥∥-rec (⊢-is-set A D) case depol
     where
-     assoc-case : depolarization → cut f (cut g h) ＝ cut (cut f g) h
-     assoc-case (inl pos) = pos C D h A B g f ⁻¹
-     assoc-case (inr neg) = neg B A f C D g h ⁻¹
+     case : depolarization → cut f (cut g h) ＝ cut (cut f g) h
+     case (inl pos) = pos C D h A B g f ⁻¹
+     case (inr neg) = neg B A f C D g h ⁻¹
+
 
    depolarization-gives-precategory : precategory-axioms (pr₁ 𝓓)
    depolarization-gives-precategory =
@@ -85,5 +122,19 @@ module depolarization (𝓓 : deductive-system 𝓤 𝓥) where
     idn-L ,
     idn-R ,
     depolarization-gives-assoc
+
+  module _ (ax : precategory-axioms (pr₁ 𝓓)) where
+   module ax = precategory-axioms (pr₁ 𝓓) ax
+
+   precategory-gives-positively-depolarized : (A : ob) → is-positive A
+   precategory-gives-positively-depolarized A B f U V g h =
+    ax.assoc U V A B h g f ⁻¹
+
+   precategory-gives-negatively-depolarized : (A : ob) → is-negative A
+   precategory-gives-negatively-depolarized A B f U V g h =
+    ax.assoc B A U V f g h ⁻¹
+
+
+
 
 \end{code}
