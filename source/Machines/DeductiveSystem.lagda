@@ -38,7 +38,7 @@ module deductive-system-structure (𝓓 : deductive-system-structure 𝓤 𝓥) 
 
 module _ (𝓓 : deductive-system-structure 𝓤 𝓥) where
  open deductive-system-structure 𝓓
- open precategory-axiom-statements 𝓓
+ open category-axiom-statements 𝓓
 
  deductive-system-axioms : 𝓤 ⊔ 𝓥 ̇
  deductive-system-axioms =
