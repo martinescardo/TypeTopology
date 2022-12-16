@@ -38,14 +38,14 @@ module _ (𝓓 : deductive-system 𝓤 𝓥) where
   upshift-axioms (⇑A , force) =
    is-negative ⇑A ×
    (Σ delay ꞉ A ⊢ ⇑A ,
-    are-inverse force delay
+    is-inverse force delay
     × is-linear force)
 
   downshift-axioms : downshift-data A → 𝓤 ⊔ 𝓥 ̇
   downshift-axioms (⇓A , wrap) =
    is-positive ⇓A ×
    (Σ unwrap ꞉ ⇓A ⊢ A ,
-    are-inverse wrap unwrap
+    is-inverse wrap unwrap
     × is-thunkable wrap)
 
 
@@ -72,7 +72,7 @@ module _ (𝓓 : deductive-system 𝓤 𝓥) where
    delay : A ⊢ upshift
    delay = pr₁ (pr₂ ax)
 
-   force-delay-inverse : are-inverse force delay
+   force-delay-inverse : is-inverse force delay
    force-delay-inverse = pr₁ (pr₂ (pr₂ ax))
 
    force-linear : is-linear force
@@ -87,7 +87,7 @@ module _ (𝓓 : deductive-system 𝓤 𝓥) where
    unwrap : downshift ⊢ A
    unwrap = pr₁ (pr₂ ax)
 
-   wrap-unwrap-inverse : are-inverse wrap unwrap
+   wrap-unwrap-inverse : is-inverse wrap unwrap
    wrap-unwrap-inverse = pr₁ (pr₂ (pr₂ ax))
 
    wrap-thunkable : is-thunkable wrap
@@ -104,30 +104,30 @@ module _ (𝓓 : deductive-system 𝓤 𝓥) where
     let module ax0 = upshift-axioms ax0 in
     let module ax1 = upshift-axioms ax1 in
     to-×-＝
-     (is-negative-is-prop fe0 fe1 _ _)
+     (being-negative-is-prop fe0 fe1 _ _)
      (to-Σ-＝
       (thunkable-inverse-is-unique
         ax1.force-delay-inverse
         ax0.force-delay-inverse
         (ax0.upshift-negative _ _) ,
        to-×-＝
-        (are-inverse-is-prop _ _ _)
-        (is-linear-is-prop fe0 fe2 _ _)))
+        (being-inverse-is-prop _ _ _)
+        (being-linear-is-prop fe0 fe2 _ _)))
 
    downshift-axioms-is-prop : {dsh : _} → is-prop (downshift-axioms dsh)
    downshift-axioms-is-prop ax0 ax1 =
     let module ax0 = downshift-axioms ax0 in
     let module ax1 = downshift-axioms ax1 in
     to-×-＝
-     (is-positive-is-prop fe0 fe1 _ _)
+     (being-positive-is-prop fe0 fe1 _ _)
      (to-Σ-＝
       (linear-inverse-is-unique
         ax1.wrap-unwrap-inverse
         ax0.wrap-unwrap-inverse
         (ax0.downshift-positive _ _) ,
        to-×-＝
-        (are-inverse-is-prop _ _ _)
-        (is-thunkable-is-prop fe0 fe2 _ _)))
+        (being-inverse-is-prop _ _ _)
+        (being-thunkable-is-prop fe0 fe2 _ _)))
 
  module _ (A : ob) where
   has-upshift : 𝓤 ⊔ 𝓥 ̇

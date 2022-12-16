@@ -9,9 +9,11 @@ module Categories.Precategory where
 open import MLTT.Spartan
 open import UF.FunExt
 open import UF.Base
+open import UF.Equiv
 open import UF.Lower-FunExt
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
+open import UF.Equiv-FunExt
 
 -- We prefer composition in diagrammatic order.
 
@@ -149,8 +151,8 @@ module _ (𝓒 : precategory 𝓤 𝓥) where
    is-inverse : 𝓥 ̇
    is-inverse = (seq f g ＝ idn A) × (seq g f ＝ idn B)
 
-   is-inverse-is-prop : is-prop is-inverse
-   is-inverse-is-prop = ×-is-prop (hom-is-set _ _) (hom-is-set _ _)
+   being-inverse-is-prop : is-prop is-inverse
+   being-inverse-is-prop = ×-is-prop (hom-is-set _ _) (hom-is-set _ _)
 
   inverse-is-unique
    : (g g' : hom B A)
@@ -172,7 +174,7 @@ module _ (𝓒 : precategory 𝓤 𝓥) where
   is-iso-is-prop (g , fg) (g' , fg') =
    to-Σ-＝
     (inverse-is-unique g g' fg fg' ,
-     is-inverse-is-prop _ _ _)
+     being-inverse-is-prop _ _ _)
 
  iso : ob → ob → 𝓥 ̇
  iso A B = Σ f ꞉ hom A B , hom-properties.is-iso f
@@ -182,8 +184,22 @@ module _ (𝓒 : precategory 𝓤 𝓥) where
  pr₁ (pr₂ idn-is-iso) = idn-L _ _ _
  pr₂ (pr₂ idn-is-iso) = idn-L _ _ _
 
- module _ {A B : ob} where
+ module _ (A B : ob) where
   ＝-to-iso : A ＝ B → iso A B
   ＝-to-iso refl = idn A , idn-is-iso
+
+ is-univalent : 𝓤 ⊔ 𝓥 ̇
+ is-univalent = (A B : ob) → is-equiv (＝-to-iso A B)
+
+ module _ (fe0 : funext 𝓤 (𝓤 ⊔ 𝓥)) (fe1 : funext 𝓥 𝓥) (fe2 : funext 𝓥 𝓤) where
+  private
+   fe3 : funext 𝓤 𝓤
+   fe3 = lower-funext 𝓤 𝓥 fe0
+
+  being-univalent-is-prop : is-prop is-univalent
+  being-univalent-is-prop =
+   Π-is-prop fe0 λ _ →
+   Π-is-prop fe0 λ _ →
+   being-equiv-is-prop' fe2 fe1 fe3 fe2 _
 
 \end{code}

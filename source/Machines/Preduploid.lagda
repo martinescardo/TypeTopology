@@ -26,8 +26,8 @@ module _ (𝓓 : deductive-system 𝓤 𝓥) where
  is-polarized : (A : ob) → 𝓤 ⊔ 𝓥 ̇
  is-polarized A = ∥ is-positive A + is-negative A ∥
 
- is-polarized-is-prop : {A : ob} → is-prop (is-polarized A)
- is-polarized-is-prop = ∥∥-is-prop
+ being-polarized-is-prop : {A : ob} → is-prop (is-polarized A)
+ being-polarized-is-prop = ∥∥-is-prop
 
  preduploid-axioms : 𝓤 ⊔ 𝓥 ̇
  preduploid-axioms = (A : ob) → is-polarized A
@@ -36,7 +36,7 @@ module _ (𝓓 : deductive-system 𝓤 𝓥) where
   preduploid-axioms-is-prop : is-prop preduploid-axioms
   preduploid-axioms-is-prop =
    Π-is-prop fe λ _ →
-   is-polarized-is-prop
+   being-polarized-is-prop
 
 preduploid : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
 preduploid 𝓤 𝓥 =  Σ 𝓓 ꞉ deductive-system 𝓤 𝓥 , preduploid-axioms 𝓓

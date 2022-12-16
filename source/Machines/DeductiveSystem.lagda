@@ -82,24 +82,24 @@ module ⊢-properties (𝓓 : deductive-system 𝓤 𝓥) where
   is-inverse : (g : B ⊢ A) → 𝓥 ̇
   is-inverse g = (cut f g ＝ idn _) × (cut g f ＝ idn _)
 
-  is-inverse-is-prop
+  being-inverse-is-prop
    : {g : B ⊢ A}
    → is-prop (is-inverse g)
-  is-inverse-is-prop =
+  being-inverse-is-prop =
    ×-is-prop (⊢-is-set _ _) (⊢-is-set _ _)
 
 
  module _ {A B} {f : A ⊢ B} (fe0 : funext 𝓤 (𝓤 ⊔ 𝓥)) (fe1 : funext 𝓥 𝓥) where
-  is-thunkable-is-prop : is-prop (is-thunkable f)
-  is-thunkable-is-prop =
+  being-thunkable-is-prop : is-prop (is-thunkable f)
+  being-thunkable-is-prop =
    Π-is-prop fe0 λ C →
    Π-is-prop (lower-funext 𝓤 𝓤 fe0) λ D →
    Π-is-prop fe1 λ g →
    Π-is-prop fe1 λ h →
    ⊢-is-set _ _
 
-  is-linear-is-prop : is-prop (is-linear f)
-  is-linear-is-prop =
+  being-linear-is-prop : is-prop (is-linear f)
+  being-linear-is-prop =
    Π-is-prop fe0 λ _ →
    Π-is-prop (lower-funext 𝓤 𝓤 fe0) λ _ →
    Π-is-prop fe1 λ _ →
@@ -150,16 +150,16 @@ module polarities (𝓓 : deductive-system 𝓤 𝓥) where
    fe2 : funext 𝓥 𝓥
    fe2 = lower-funext 𝓥 𝓤 fe1
 
-  is-positive-is-prop : is-prop (is-positive A)
-  is-positive-is-prop =
+  being-positive-is-prop : is-prop (is-positive A)
+  being-positive-is-prop =
    Π-is-prop fe0 λ _ →
    Π-is-prop fe1 λ _ →
-   is-linear-is-prop fe0 fe2
+   being-linear-is-prop fe0 fe2
 
-  is-negative-is-prop : is-prop (is-negative A)
-  is-negative-is-prop =
+  being-negative-is-prop : is-prop (is-negative A)
+  being-negative-is-prop =
    Π-is-prop fe0 λ _ →
    Π-is-prop fe1 λ _ →
-   is-thunkable-is-prop fe0 fe2
+   being-thunkable-is-prop fe0 fe2
 
 \end{code}
