@@ -8,6 +8,7 @@ module Categories.Precategory where
 
 open import MLTT.Spartan
 open import UF.FunExt
+open import UF.Base
 open import UF.Lower-FunExt
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
@@ -138,5 +139,40 @@ precategory 𝓤 𝓥 =
 module precategory (𝓒 : precategory 𝓤 𝓥) where
  open category-structure (pr₁ 𝓒) public
  open precategory-axioms (pr₁ 𝓒) (pr₂ 𝓒) public
+
+
+module _ (𝓒 : precategory 𝓤 𝓥) where
+ open precategory 𝓒
+
+ module _ {A B : ob} (f : hom A B) where
+
+  module _ (g : hom B A) where
+   is-inverse : 𝓥 ̇
+   is-inverse = (seq f g ＝ idn A) × (seq g f ＝ idn B)
+
+   is-inverse-is-prop : is-prop is-inverse
+   is-inverse-is-prop = ×-is-prop (hom-is-set _ _) (hom-is-set _ _)
+
+  is-inverse-is-unique
+   : (g g' : hom B A)
+   → is-inverse g
+   → is-inverse g'
+   → g ＝ g'
+  is-inverse-is-unique g g' fg fg' =
+   g ＝⟨ idn-R _ _ _ ⁻¹ ⟩
+   seq g (idn _) ＝⟨ ap (seq g) (pr₁ fg' ⁻¹) ⟩
+   seq g (seq f g') ＝⟨ assoc _ _ _ _ _ _ _ ⟩
+   seq (seq g f) g' ＝⟨ ap (λ x → seq x g') (pr₂ fg) ⟩
+   seq (idn _) g' ＝⟨ idn-L _ _ _ ⟩
+   g' ∎
+
+  is-iso : 𝓥 ̇
+  is-iso = Σ g ꞉ hom B A , is-inverse g
+
+  is-iso-is-prop : is-prop is-iso
+  is-iso-is-prop (g , fg) (g' , fg') =
+   to-Σ-＝
+    (is-inverse-is-unique g g' fg fg' ,
+     is-inverse-is-prop _ _ _)
 
 \end{code}

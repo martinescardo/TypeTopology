@@ -79,13 +79,13 @@ module ⊢-properties (𝓓 : deductive-system 𝓤 𝓥) where
    (U V : ob) (g : V ⊢ A) (h : U ⊢ V)
    → cut (cut h g) f ＝ (cut h (cut g f))
 
-  are-inverse : (g : B ⊢ A) → 𝓥 ̇
-  are-inverse g = (cut f g ＝ idn _) × (cut g f ＝ idn _)
+  is-inverse : (g : B ⊢ A) → 𝓥 ̇
+  is-inverse g = (cut f g ＝ idn _) × (cut g f ＝ idn _)
 
-  are-inverse-is-prop
+  is-inverse-is-prop
    : {g : B ⊢ A}
-   → is-prop (are-inverse g)
-  are-inverse-is-prop =
+   → is-prop (is-inverse g)
+  is-inverse-is-prop =
    ×-is-prop (⊢-is-set _ _) (⊢-is-set _ _)
 
 
@@ -106,7 +106,7 @@ module ⊢-properties (𝓓 : deductive-system 𝓤 𝓥) where
    Π-is-prop fe1 λ _ →
    ⊢-is-set _ _
 
- module _ {A B} {f : A ⊢ B} {g g'} (fg : are-inverse f g) (fg' : are-inverse f g') where
+ module _ {A B} {f : A ⊢ B} {g g'} (fg : is-inverse f g) (fg' : is-inverse f g') where
   linear-inverse-is-unique
    : is-linear g
    → g' ＝ g
