@@ -41,9 +41,13 @@ preduploid : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
 preduploid 𝓤 𝓥 =  Σ 𝓓 ꞉ deductive-system 𝓤 𝓥 , preduploid-axioms 𝓓
 
 module preduploid (𝓓 : preduploid 𝓤 𝓥) where
- open deductive-system (pr₁ 𝓓) public
 
- ob-is-polarized : (A : ob) → is-polarized (pr₁ 𝓓) A
+ underlying-deductive-system : deductive-system 𝓤 𝓥
+ underlying-deductive-system = pr₁ 𝓓
+
+ open deductive-system underlying-deductive-system public
+
+ ob-is-polarized : (A : ob) → is-polarized underlying-deductive-system A
  ob-is-polarized = pr₂ 𝓓
 
 \end{code}
