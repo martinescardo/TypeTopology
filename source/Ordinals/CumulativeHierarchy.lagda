@@ -630,6 +630,9 @@ TO DO: Put in dates and put the below in another file
 
 \begin{code}
 
+ open import UF.CumulativeHierarchy-LocallySmall pt fe pe
+ open 𝕍-is-locally-small ch
+
  module total-space-of-𝕍-set
          (x : 𝕍)
          (σ : is-set-theoretic-ordinal x)
