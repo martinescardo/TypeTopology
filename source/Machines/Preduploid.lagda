@@ -166,6 +166,41 @@ module NegativesAndAllMaps (𝓓 : preduploid 𝓤 𝓥) where
   precat : precategory (𝓤 ⊔ 𝓥) 𝓥
   precat = cat-data , hom-is-set , idn-L , idn-R , assoc
 
+module PositivesAndAllMaps (𝓓 : preduploid 𝓤 𝓥) where
+ module 𝓓 = preduploid 𝓓
+ open polarities (pr₁ 𝓓)
+
+ ob : 𝓤 ⊔ 𝓥 ̇
+ ob = Σ A ꞉ 𝓓.ob , is-positive A
+
+ hom : ob → ob → 𝓥 ̇
+ hom A B = pr₁ A 𝓓.⊢ pr₁ B
+
+ idn : (A : ob) → hom A A
+ idn A = 𝓓.idn (pr₁ A)
+
+ seq : {A B C : ob} → hom A B → hom B C → hom A C
+ seq f g = 𝓓.cut f g
+
+ cat-data : category-structure (𝓤 ⊔ 𝓥) 𝓥
+ cat-data = ob , hom , idn , λ {A} {B} {C} → seq {A} {B} {C}
+
+ module _ (open category-axiom-statements) where
+  hom-is-set : statement-hom-is-set cat-data
+  hom-is-set A B = 𝓓.⊢-is-set (pr₁ A) (pr₁ B)
+
+  idn-L : statement-idn-L cat-data
+  idn-L A B = 𝓓.idn-L (pr₁ A) (pr₁ B)
+
+  idn-R : statement-idn-R cat-data
+  idn-R A B = 𝓓.idn-R (pr₁ A) (pr₁ B)
+
+  assoc : statement-assoc cat-data
+  assoc A B C D f g h = pr₂ C (pr₁ D) h (pr₁ A) (pr₁ B) g f ⁻¹
+
+  precat : precategory (𝓤 ⊔ 𝓥) 𝓥
+  precat = cat-data , hom-is-set , idn-L , idn-R , assoc
+
 module NegativesAndLinearMaps (𝓓 : preduploid 𝓤 𝓥) where
  module 𝓓 = preduploid 𝓓
  open polarities (pr₁ 𝓓)
@@ -210,6 +245,55 @@ module NegativesAndLinearMaps (𝓓 : preduploid 𝓤 𝓥) where
   assoc A B C D f g h =
    to-hom-＝ A D _ _
     (pr₂ B (pr₁ A) (pr₁ f) (pr₁ C) (pr₁ D) (pr₁ g) (pr₁ h) ⁻¹)
+
+  precat : precategory (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
+  precat = cat-data , hom-is-set , idn-L , idn-R , assoc
+
+
+module PositivesAndThunkableMaps (𝓓 : preduploid 𝓤 𝓥) where
+ module 𝓓 = preduploid 𝓓
+ open polarities (pr₁ 𝓓)
+ open ⊢-properties (pr₁ 𝓓)
+
+ ob : 𝓤 ⊔ 𝓥 ̇
+ ob = Σ A ꞉ 𝓓.ob , is-positive A
+
+ hom : ob → ob → 𝓤 ⊔ 𝓥 ̇
+ hom A B = Σ f ꞉ (pr₁ A 𝓓.⊢ pr₁ B) , is-thunkable f
+
+ idn : (A : ob) → hom A A
+ pr₁ (idn A) = 𝓓.idn (pr₁ A)
+ pr₂ (idn A) = idn-thunkable (pr₁ A)
+
+ seq : {A B C : ob} → hom A B → hom B C → hom A C
+ pr₁ (seq f g) = 𝓓.cut (pr₁ f) (pr₁ g)
+ pr₂ (seq f g) = cut-thunkable (pr₁ f) (pr₁ g) (pr₂ f) (pr₂ g)
+
+ cat-data : category-structure (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
+ cat-data = ob , hom , idn , λ {A} {B} {C} → seq {A} {B} {C}
+
+ module _ (fe0 : funext 𝓤 (𝓤 ⊔ 𝓥)) (fe1 : funext 𝓥 𝓥) where
+  open category-axiom-statements
+
+  module _ (A B : ob) (f g : hom A B) where
+   to-hom-＝ : pr₁ f ＝ pr₁ g → f ＝ g
+   to-hom-＝ h = to-Σ-＝ (h , being-thunkable-is-prop fe0 fe1 _ _)
+
+  hom-is-set : statement-hom-is-set cat-data
+  hom-is-set A B =
+   Σ-is-set (𝓓.⊢-is-set (pr₁ A) (pr₁ B)) λ _ →
+   props-are-sets (being-thunkable-is-prop fe0 fe1)
+
+  idn-L : statement-idn-L cat-data
+  idn-L A B f = to-hom-＝ A B _ _ (𝓓.idn-L (pr₁ A) (pr₁ B) (pr₁ f))
+
+  idn-R : statement-idn-R cat-data
+  idn-R A B f = to-hom-＝ A B _ _ (𝓓.idn-R (pr₁ A) (pr₁ B) (pr₁ f))
+
+  assoc : statement-assoc cat-data
+  assoc A B C D f g h =
+   to-hom-＝ A D _ _
+    (pr₂ C (pr₁ D) (pr₁ h) (pr₁ A) (pr₁ B) (pr₁ g) (pr₁ f) ⁻¹)
 
   precat : precategory (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
   precat = cat-data , hom-is-set , idn-L , idn-R , assoc
