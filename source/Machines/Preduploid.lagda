@@ -87,34 +87,27 @@ module depolarization (𝓓 : deductive-system 𝓤 𝓥) where
   is-negatively-depolarized-gives-is-positively-depolarized neg A B f U V g h =
    neg V U h A B g f
 
-
-  module _ (fe0 : funext 𝓤 (𝓤 ⊔ 𝓥)) (fe1 : funext 𝓥 (𝓤 ⊔ 𝓥)) where
-   is-depolarized-gives-is-positively-depolarized
-    : is-depolarized
-    → is-positively-depolarized
-   is-depolarized-gives-is-positively-depolarized =
-    ∥∥-rec (Π-is-prop fe0 λ _ → is-positive-is-prop fe0 fe1) case
+  module _ (H : is-depolarized) where
+   is-depolarized-gives-is-positively-depolarized : is-positively-depolarized
+   is-depolarized-gives-is-positively-depolarized A B f U V g h =
+    ∥∥-rec (⊢-is-set _ _) case H
     where
-     case : depolarization → is-positively-depolarized
-     case (inl pos) = pos
-     case (inr neg) = is-negatively-depolarized-gives-is-positively-depolarized neg
+     case : depolarization → cut (cut h g) f ＝ cut h (cut g f)
+     case (inl pos) =
+      pos A B f U V g h
+     case (inr neg) =
+      is-negatively-depolarized-gives-is-positively-depolarized
+       neg
+       A B f U V g h
 
-   is-depolarized-gives-is-negatively-depolarized
-    : is-depolarized
-    → is-negatively-depolarized
+   is-depolarized-gives-is-negatively-depolarized : is-negatively-depolarized
    is-depolarized-gives-is-negatively-depolarized =
     is-positively-depolarized-gives-is-negatively-depolarized
-    ∘ is-depolarized-gives-is-positively-depolarized
+     is-depolarized-gives-is-positively-depolarized
 
-  module _ (depol : is-depolarized) where
    depolarization-gives-assoc : category-axiom-statements.statement-assoc (pr₁ 𝓓)
    depolarization-gives-assoc A B C D f g h =
-    ∥∥-rec (⊢-is-set A D) case depol
-    where
-     case : depolarization → cut f (cut g h) ＝ cut (cut f g) h
-     case (inl pos) = pos C D h A B g f ⁻¹
-     case (inr neg) = neg B A f C D g h ⁻¹
-
+    is-depolarized-gives-is-positively-depolarized C D h A B g f ⁻¹
 
    depolarization-gives-precategory : precategory-axioms (pr₁ 𝓓)
    depolarization-gives-precategory =
