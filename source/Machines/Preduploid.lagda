@@ -13,6 +13,7 @@ open PropositionalTruncation pt
 open import MLTT.Spartan
 open import UF.FunExt
 open import UF.Base
+open import UF.Equiv
 open import UF.Retracts
 open import UF.hlevels
 open import UF.Subsingletons
@@ -53,6 +54,49 @@ module preduploid (𝓓 : preduploid 𝓤 𝓥) where
 
  ob-is-polarized : (A : ob) → is-polarized underlying-deductive-system A
  ob-is-polarized = pr₂ 𝓓
+
+ -- I don't know the correct univalence/saturation conditions yet for a preduploid
+
+ module preduploid-univalence where
+  open polarities underlying-deductive-system
+  open ⊢-properties underlying-deductive-system
+
+  is-thunkable-iso : (A B : ob) (f : A ⊢ B) → 𝓤 ⊔ 𝓥 ̇
+  is-thunkable-iso A B f = is-thunkable f × (Σ g ꞉ (B ⊢ A) , is-inverse f g)
+
+  is-linear-iso : (A B : ob) (f : A ⊢ B) → 𝓤 ⊔ 𝓥 ̇
+  is-linear-iso A B f = is-linear f × (Σ g ꞉ (B ⊢ A) , is-inverse f g)
+
+  thunkable-iso : ob → ob → 𝓤 ⊔ 𝓥 ̇
+  thunkable-iso A B = Σ f ꞉ A ⊢ B , is-thunkable-iso A B f
+
+  linear-iso : ob → ob → 𝓤 ⊔ 𝓥 ̇
+  linear-iso A B = Σ f ꞉ A ⊢ B , is-linear-iso A B f
+
+  ＝-to-thunkable-iso : (A B : ob) → A ＝ B → thunkable-iso A B
+  ＝-to-thunkable-iso A .A refl =
+   idn A , idn-thunkable A , idn A , idn-L _ _ _ , idn-L _ _ _
+
+  ＝-to-linear-iso : (A B : ob) → A ＝ B → linear-iso A B
+  ＝-to-linear-iso A B refl =
+   idn A , idn-linear A , idn A , idn-L _ _ _ , idn-L _ _ _
+
+  is-positively-univalent : 𝓤 ⊔ 𝓥 ̇
+  is-positively-univalent =
+   (A B : ob)
+   → is-positive A
+   → is-positive B
+   → is-equiv (＝-to-thunkable-iso A B)
+
+  is-negatively-univalent : 𝓤 ⊔ 𝓥 ̇
+  is-negatively-univalent =
+   (A B : ob)
+   → is-negative A
+   → is-negative B
+   → is-equiv (＝-to-linear-iso A B)
+
+  is-univalent : 𝓤 ⊔ 𝓥 ̇
+  is-univalent = is-positively-univalent × is-negatively-univalent
 
 module depolarization (𝓓 : deductive-system 𝓤 𝓥) where
   open deductive-system 𝓓
