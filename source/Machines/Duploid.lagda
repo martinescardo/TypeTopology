@@ -160,24 +160,28 @@ module _ (𝓓 : deductive-system 𝓤 𝓥) where
   underlying-preduploid = 𝓓 , pr₁ str
 
   module _ (A : ob) where
-   open has-upshift A (pr₁ (pr₂ str A))
-    renaming
-     (upshift to ⇑_;
-      upshift-negative to ⇑-negative)
-    public
+   private
+    A-has-shifts = pr₂ str A
+    module ⇑A = has-upshift A (pr₁ A-has-shifts)
+    module ⇓A = has-downshift A (pr₂ A-has-shifts)
 
-   open has-downshift A (pr₂ (pr₂ str A))
-    renaming
-     (downshift to ⇓_;
-      downshift-positive to ⇓-positive)
-    public
+   ⇑_ = ⇑A.upshift
+   ⇓ = ⇓A.downshift
 
+  module _ {A : ob} where
+   private
+    A-has-shifts = pr₂ str A
+    module ⇑A = has-upshift A (pr₁ A-has-shifts)
+    module ⇓A = has-downshift A (pr₂ A-has-shifts)
+
+   open ⇑A hiding (upshift)
+   open ⇓A hiding (downshift)
 
 duploid : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
 duploid 𝓤 𝓥 = Σ 𝓓 ꞉ deductive-system 𝓤 𝓥 , duploid-structure 𝓓
 
 module duploid (𝓓 : duploid 𝓤 𝓥) where
  open duploid-structure (pr₁ 𝓓) (pr₂ 𝓓) public
- open preduploid underlying-preduploid
+ open preduploid underlying-preduploid public
 
 \end{code}
