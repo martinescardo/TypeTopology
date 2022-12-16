@@ -20,8 +20,10 @@ open import UF.Lower-FunExt
 open import Machines.DeductiveSystem
 open import Machines.Preduploid pt
 
-module _ {𝓤 𝓥} (𝓓 : deductive-system 𝓤 𝓥) where
+module _ (𝓓 : deductive-system 𝓤 𝓥) where
  open deductive-system 𝓓
+ open polarities 𝓓
+ open ⊢-properties 𝓓
 
  module _ (A : ob) where
   upshift-data : 𝓤 ⊔ 𝓥 ̇
@@ -45,6 +47,7 @@ module _ {𝓤 𝓥} (𝓓 : deductive-system 𝓤 𝓥) where
     are-inverse wrap unwrap
     × is-thunkable wrap)
 
+
   module _ (fe0 : funext 𝓤 (𝓤 ⊔ 𝓥)) (fe1 : funext 𝓥 (𝓤 ⊔ 𝓥)) where
    private
     fe2 : funext 𝓥 𝓥
@@ -57,7 +60,7 @@ module _ {𝓤 𝓥} (𝓓 : deductive-system 𝓤 𝓥) where
      (to-Σ-＝
       (thunkable-inverse-is-unique i1 i0 (n0 _ _) ,
        to-×-＝
-        (are-inverse-is-prop _ _)
+        (are-inverse-is-prop _ _ _)
         (is-linear-is-prop fe0 fe2 _ _)))
 
    downshift-axioms-is-prop : {dsh : _} → is-prop (downshift-axioms dsh)
@@ -67,9 +70,8 @@ module _ {𝓤 𝓥} (𝓓 : deductive-system 𝓤 𝓥) where
      (to-Σ-＝
       (linear-inverse-is-unique i1 i0 (p0 _ _) ,
        to-×-＝
-        (are-inverse-is-prop _ _)
+        (are-inverse-is-prop _ _ _)
         (is-thunkable-is-prop fe0 fe2 _ _)))
-
 
  module _ (A : ob) where
   has-upshift : 𝓤 ⊔ 𝓥 ̇
@@ -77,7 +79,6 @@ module _ {𝓤 𝓥} (𝓓 : deductive-system 𝓤 𝓥) where
 
   has-downshift : 𝓤 ⊔ 𝓥 ̇
   has-downshift = Σ dsh ꞉ downshift-data A , downshift-axioms dsh
-
 
  has-all-shifts : 𝓤 ⊔ 𝓥 ̇
  has-all-shifts = (A : ob) → has-upshift A × has-downshift A
@@ -90,5 +91,8 @@ module _ {𝓤 𝓥} (𝓓 : deductive-system 𝓤 𝓥) where
  duploid-structure =
   preduploid-axioms 𝓓
   × has-all-shifts
+
+duploid : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
+duploid 𝓤 𝓥 = Σ 𝓓 ꞉ deductive-system 𝓤 𝓥 , duploid-structure 𝓓
 
 \end{code}

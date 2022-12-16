@@ -18,15 +18,67 @@ open import UF.Subsingletons-FunExt
 open import UF.Logic
 open import UF.Lower-FunExt
 
-record deductive-system (𝓤 𝓥 : Universe) : (𝓤 ⊔ 𝓥) ⁺ ̇ where
- field
-   ob : 𝓤 ̇
-   _⊢_ : ob → ob → 𝓥 ̇
-   ⊢-is-set : (A B : ob) → is-set (A ⊢ B)
-   idn : (A : ob) → A ⊢ A
-   cut : {A B C : ob} (f : A ⊢ B) (g : B ⊢ C) → A ⊢ C
-   idn-L : (A B : ob) (f : A ⊢ B) → cut (idn A) f ＝ f
-   idn-R : (A B : ob) (f : A ⊢ B) → cut f (idn B) ＝ f
+module _ (𝓤 𝓥 : Universe) where
+ deductive-system-structure : (𝓤 ⊔ 𝓥)⁺ ̇
+ deductive-system-structure =
+  Σ ob ꞉ (𝓤 ̇),
+  Σ _⊢_ ꞉ (ob → ob → 𝓥 ̇) ,
+  Σ idn ꞉ ((A : ob) → A ⊢ A) ,
+  ({A B C : ob} (f : A ⊢ B) (g : B ⊢ C) → A ⊢ C)
+
+module deductive-system-structure (𝓓 : deductive-system-structure 𝓤 𝓥) where
+ ob : 𝓤 ̇
+ ob = pr₁ 𝓓
+
+ _⊢_ : ob → ob → 𝓥 ̇
+ A ⊢ B = pr₁ (pr₂ 𝓓) A B
+
+ idn : (A : ob) → A ⊢ A
+ idn A = pr₁ (pr₂ (pr₂ 𝓓)) A
+
+ cut : {A B C : ob} (f : A ⊢ B) (g : B ⊢ C) → A ⊢ C
+ cut f g = pr₂ (pr₂ (pr₂ 𝓓)) f g
+
+module _ (𝓓 : deductive-system-structure 𝓤 𝓥) where
+ open deductive-system-structure 𝓓
+
+ statement-⊢-is-set : 𝓤 ⊔ 𝓥 ̇
+ statement-⊢-is-set = (A B : ob) → is-set (A ⊢ B)
+
+ statement-idn-L : 𝓤 ⊔ 𝓥 ̇
+ statement-idn-L = (A B : ob) (f : A ⊢ B) → cut (idn A) f ＝ f
+
+ statement-idn-R : 𝓤 ⊔ 𝓥 ̇
+ statement-idn-R = (A B : ob) (f : A ⊢ B) → cut f (idn B) ＝ f
+
+ deductive-system-axioms : 𝓤 ⊔ 𝓥 ̇
+ deductive-system-axioms =
+  statement-⊢-is-set
+  × statement-idn-L
+  × statement-idn-R
+
+
+ module deductive-system-axioms (ax : deductive-system-axioms) where
+  ⊢-is-set : statement-⊢-is-set
+  ⊢-is-set = pr₁ ax
+
+  idn-L : statement-idn-L
+  idn-L = pr₁ (pr₂ ax)
+
+  idn-R : statement-idn-R
+  idn-R = pr₂ (pr₂ ax)
+
+deductive-system : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
+deductive-system 𝓤 𝓥 =
+ Σ 𝓓 ꞉ deductive-system-structure 𝓤 𝓥 ,
+ deductive-system-axioms 𝓓
+
+module deductive-system (𝓓 : deductive-system 𝓤 𝓥) where
+ open deductive-system-structure (pr₁ 𝓓) public
+ open deductive-system-axioms (pr₁ 𝓓) (pr₂ 𝓓) public
+
+module ⊢-properties (𝓓 : deductive-system 𝓤 𝓥) where
+ open deductive-system 𝓓
 
  module _ {A B : ob} (f : A ⊢ B) where
   is-thunkable : 𝓤 ⊔ 𝓥  ̇
@@ -39,58 +91,32 @@ record deductive-system (𝓤 𝓥 : Universe) : (𝓤 ⊔ 𝓥) ⁺ ̇ where
    (U V : ob) (g : V ⊢ A) (h : U ⊢ V)
    → cut (cut h g) f ＝ (cut h (cut g f))
 
- module _ (A : ob) where
-  is-positive : 𝓤 ⊔ 𝓥 ̇
-  is-positive =
-   (B : ob) (f : A ⊢ B)
-   → is-linear f
-
-  is-negative : 𝓤 ⊔ 𝓥 ̇
-  is-negative =
-   (B : ob) (f : B ⊢ A)
-   → is-thunkable f
-
- are-inverse : {A B : ob} (f : A ⊢ B) (g : B ⊢ A) → 𝓥 ̇
- are-inverse f g = (cut f g ＝ idn _) × (cut g f ＝ idn _)
-
- module _ {A B} {f : A ⊢ B} where
+  are-inverse : (g : B ⊢ A) → 𝓥 ̇
+  are-inverse g = (cut f g ＝ idn _) × (cut g f ＝ idn _)
 
   are-inverse-is-prop
    : {g : B ⊢ A}
-   → is-prop (are-inverse f g)
+   → is-prop (are-inverse g)
   are-inverse-is-prop =
    ×-is-prop (⊢-is-set _ _) (⊢-is-set _ _)
 
-  module _ (fe0 : funext 𝓤 (𝓤 ⊔ 𝓥)) (fe1 : funext 𝓥 𝓥) where
-   is-thunkable-is-prop : is-prop (is-thunkable f)
-   is-thunkable-is-prop =
-    Π-is-prop fe0 λ C →
-    Π-is-prop (lower-funext 𝓤 𝓤 fe0) λ D →
-    Π-is-prop fe1 λ g →
-    Π-is-prop fe1 λ h →
-    ⊢-is-set _ _
 
-   is-linear-is-prop : is-prop (is-linear f)
-   is-linear-is-prop =
-    Π-is-prop fe0 λ _ →
-    Π-is-prop (lower-funext 𝓤 𝓤 fe0) λ _ →
-    Π-is-prop fe1 λ _ →
-    Π-is-prop fe1 λ _ →
-    ⊢-is-set _ _
+ module _ {A B} {f : A ⊢ B} (fe0 : funext 𝓤 (𝓤 ⊔ 𝓥)) (fe1 : funext 𝓥 𝓥) where
+  is-thunkable-is-prop : is-prop (is-thunkable f)
+  is-thunkable-is-prop =
+   Π-is-prop fe0 λ C →
+   Π-is-prop (lower-funext 𝓤 𝓤 fe0) λ D →
+   Π-is-prop fe1 λ g →
+   Π-is-prop fe1 λ h →
+   ⊢-is-set _ _
 
- module _ {A} (fe0 : funext 𝓤 (𝓤 ⊔ 𝓥)) (fe1 : funext 𝓥 (𝓤 ⊔ 𝓥)) where
-  is-positive-is-prop : is-prop (is-positive A)
-  is-positive-is-prop =
+  is-linear-is-prop : is-prop (is-linear f)
+  is-linear-is-prop =
    Π-is-prop fe0 λ _ →
+   Π-is-prop (lower-funext 𝓤 𝓤 fe0) λ _ →
    Π-is-prop fe1 λ _ →
-   is-linear-is-prop fe0 (lower-funext 𝓥 𝓤 fe1)
-
-  is-negative-is-prop : is-prop (is-negative A)
-  is-negative-is-prop =
-   Π-is-prop fe0 λ _ →
    Π-is-prop fe1 λ _ →
-   is-thunkable-is-prop fe0 (lower-funext 𝓥 𝓤 fe1)
-
+   ⊢-is-set _ _
 
  module _ {A B} {f : A ⊢ B} {g g'} (fg : are-inverse f g) (fg' : are-inverse f g') where
   linear-inverse-is-unique
@@ -116,6 +142,36 @@ record deductive-system (𝓤 𝓥 : Universe) : (𝓤 ⊔ 𝓥) ⁺ ̇ where
    g ∎
 
 
+module polarities (𝓓 : deductive-system 𝓤 𝓥) where
+ open deductive-system 𝓓
+ open ⊢-properties 𝓓
 
+ module _ (A : ob) where
+  is-positive : 𝓤 ⊔ 𝓥 ̇
+  is-positive =
+   (B : ob) (f : A ⊢ B)
+   → is-linear f
+
+  is-negative : 𝓤 ⊔ 𝓥 ̇
+  is-negative =
+   (B : ob) (f : B ⊢ A)
+   → is-thunkable f
+
+ module _ {A} (fe0 : funext 𝓤 (𝓤 ⊔ 𝓥)) (fe1 : funext 𝓥 (𝓤 ⊔ 𝓥)) where
+  private
+   fe2 : funext 𝓥 𝓥
+   fe2 = lower-funext 𝓥 𝓤 fe1
+
+  is-positive-is-prop : is-prop (is-positive A)
+  is-positive-is-prop =
+   Π-is-prop fe0 λ _ →
+   Π-is-prop fe1 λ _ →
+   is-linear-is-prop fe0 fe2
+
+  is-negative-is-prop : is-prop (is-negative A)
+  is-negative-is-prop =
+   Π-is-prop fe0 λ _ →
+   Π-is-prop fe1 λ _ →
+   is-thunkable-is-prop fe0 fe2
 
 \end{code}

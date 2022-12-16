@@ -17,8 +17,10 @@ open import UF.Subsingletons-FunExt
 
 open import Machines.DeductiveSystem
 
-module _ {𝓤 𝓥} (𝓓 : deductive-system 𝓤 𝓥) where
+module _ (𝓓 : deductive-system 𝓤 𝓥) where
  open deductive-system 𝓓
+ open ⊢-properties 𝓓
+ open polarities 𝓓
 
  is-polarized : (A : ob) → 𝓤 ⊔ 𝓥 ̇
  is-polarized A = ∥ is-positive A + is-negative A ∥
@@ -35,8 +37,13 @@ module _ {𝓤 𝓥} (𝓓 : deductive-system 𝓤 𝓥) where
    Π-is-prop fe λ _ →
    is-polarized-is-prop
 
-module _ (𝓤 𝓥 : Universe) where
- preduploid : (𝓤 ⊔ 𝓥) ⁺ ̇
- preduploid = Σ 𝓓 ꞉ deductive-system 𝓤 𝓥 , preduploid-axioms 𝓓
+preduploid : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
+preduploid 𝓤 𝓥 =  Σ 𝓓 ꞉ deductive-system 𝓤 𝓥 , preduploid-axioms 𝓓
+
+module preduploid (𝓓 : preduploid 𝓤 𝓥) where
+ open deductive-system (pr₁ 𝓓) public
+
+ ob-is-polarized : (A : ob) → is-polarized (pr₁ 𝓓) A
+ ob-is-polarized = pr₂ 𝓓
 
 \end{code}
