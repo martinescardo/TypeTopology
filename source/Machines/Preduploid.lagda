@@ -61,17 +61,20 @@ module preduploid (𝓓 : preduploid 𝓤 𝓥) where
   open polarities underlying-deductive-system
   open ⊢-properties underlying-deductive-system
 
-  is-thunkable-iso : (A B : ob) (f : A ⊢ B) → 𝓤 ⊔ 𝓥 ̇
-  is-thunkable-iso A B f = is-thunkable f × (Σ g ꞉ (B ⊢ A) , is-inverse f g)
+  module _ (A B : ob) where
 
-  is-linear-iso : (A B : ob) (f : A ⊢ B) → 𝓤 ⊔ 𝓥 ̇
-  is-linear-iso A B f = is-linear f × (Σ g ꞉ (B ⊢ A) , is-inverse f g)
+   module _ (f : A ⊢ B) where
+    is-thunkable-iso : 𝓤 ⊔ 𝓥 ̇
+    is-thunkable-iso = is-thunkable f × (Σ g ꞉ (B ⊢ A) , is-inverse f g)
 
-  thunkable-iso : ob → ob → 𝓤 ⊔ 𝓥 ̇
-  thunkable-iso A B = Σ f ꞉ A ⊢ B , is-thunkable-iso A B f
+    is-linear-iso : 𝓤 ⊔ 𝓥 ̇
+    is-linear-iso = is-linear f × (Σ g ꞉ (B ⊢ A) , is-inverse f g)
 
-  linear-iso : ob → ob → 𝓤 ⊔ 𝓥 ̇
-  linear-iso A B = Σ f ꞉ A ⊢ B , is-linear-iso A B f
+   thunkable-iso : 𝓤 ⊔ 𝓥 ̇
+   thunkable-iso = Σ f ꞉ A ⊢ B , is-thunkable-iso f
+
+   linear-iso : 𝓤 ⊔ 𝓥 ̇
+   linear-iso = Σ f ꞉ A ⊢ B , is-linear-iso f
 
   ＝-to-thunkable-iso : (A B : ob) → A ＝ B → thunkable-iso A B
   ＝-to-thunkable-iso A .A refl =
