@@ -92,6 +92,46 @@ module ⊢-properties (𝓓 : deductive-system 𝓤 𝓥) where
     (⊢-is-set _ _)
     (⊢-is-set _ _)
 
+
+
+ module _ (A : ob) where
+  abstract
+   idn-linear : is-linear (idn A)
+   idn-linear U V g h =
+    cut (cut h g) (idn A) ＝⟨ idn-R _ _ _ ⟩
+    cut h g ＝⟨ ap (cut h) (idn-R _ _ _ ⁻¹) ⟩
+    cut h (cut g (idn A)) ∎
+
+   idn-thunkable : is-thunkable (idn A)
+   idn-thunkable C D g h =
+     cut (cut (idn A) g) h ＝⟨ ap (λ x → cut x h) (idn-L A C g) ⟩
+     cut g h ＝⟨ idn-L A D (cut g h) ⁻¹ ⟩
+     cut (idn A) (cut g h) ∎
+
+  module _ {A B C : ob} (f : A ⊢ B) (g : B ⊢ C) where
+   abstract
+    cut-linear
+     : is-linear f
+     → is-linear g
+     → is-linear (cut f g)
+    cut-linear f-lin g-lin U V h k =
+     cut (cut k h) (cut f g) ＝⟨ g-lin U A f (cut k h) ⁻¹ ⟩
+     cut (cut (cut k h) f) g ＝⟨ ap (λ x → cut x g) (f-lin U V h k) ⟩
+     cut (cut k (cut h f)) g ＝⟨ g-lin U V (cut h f) k ⟩
+     cut k (cut (cut h f) g) ＝⟨ ap (cut k) (g-lin V A f h) ⟩
+     cut k (cut h (cut f g)) ∎
+
+    cut-thunkable
+     : is-thunkable f
+     → is-thunkable g
+     → is-thunkable (cut f g)
+    cut-thunkable f-th g-th D E h k =
+     cut (cut (cut f g) h) k ＝⟨ ap (λ x → cut x k) (f-th C D g h) ⟩
+     cut (cut f (cut g h)) k ＝⟨ f-th D E (cut g h) k ⟩
+     cut f (cut (cut g h) k) ＝⟨ ap (cut f) (g-th D E h k) ⟩
+     cut f (cut g (cut h k)) ＝⟨ f-th C E g (cut h k) ⁻¹ ⟩
+     cut (cut f g) (cut h k) ∎
+
  module _ {A B} {f : A ⊢ B} (fe0 : funext 𝓤 (𝓤 ⊔ 𝓥)) (fe1 : funext 𝓥 𝓥) where
   being-thunkable-is-prop : is-prop (is-thunkable f)
   being-thunkable-is-prop =

@@ -178,27 +178,6 @@ module NegativesAndLinearMaps (𝓓 : preduploid 𝓤 𝓥) where
  hom A B = Σ f ꞉ (pr₁ A 𝓓.⊢ pr₁ B) , is-linear f
 
 
- abstract
-  idn-linear : (A : 𝓓.ob) → is-linear (𝓓.idn A)
-  idn-linear A U V g h =
-   𝓓.cut (𝓓.cut h g) (𝓓.idn A) ＝⟨ 𝓓.idn-R _ _ _ ⟩
-   𝓓.cut h g ＝⟨ ap (𝓓.cut h) (𝓓.idn-R _ _ _ ⁻¹) ⟩
-   𝓓.cut h (𝓓.cut g (𝓓.idn A)) ∎
-
-  cut-linear
-   : {A B C : 𝓓.ob}
-   → (f : A 𝓓.⊢ B)
-   → (g : B 𝓓.⊢ C)
-   → is-linear f
-   → is-linear g
-   → is-linear (𝓓.cut f g)
-  cut-linear {A} {B} {C} f g f-lin g-lin U V h k =
-   𝓓.cut (𝓓.cut k h) (𝓓.cut f g) ＝⟨ g-lin U A f (𝓓.cut k h) ⁻¹ ⟩
-   𝓓.cut (𝓓.cut (𝓓.cut k h) f) g ＝⟨ ap (λ x → 𝓓.cut x g) (f-lin U V h k) ⟩
-   𝓓.cut (𝓓.cut k (𝓓.cut h f)) g ＝⟨ g-lin U V (𝓓.cut h f) k ⟩
-   𝓓.cut k (𝓓.cut (𝓓.cut h f) g) ＝⟨ ap (𝓓.cut k) (g-lin V A f h) ⟩
-   𝓓.cut k (𝓓.cut h (𝓓.cut f g)) ∎
-
  idn : (A : ob) → hom A A
  pr₁ (idn A) = 𝓓.idn (pr₁ A)
  pr₂ (idn A) = idn-linear (pr₁ A)
