@@ -144,7 +144,7 @@ module precategory (𝓒 : precategory 𝓤 𝓥) where
 module _ (𝓒 : precategory 𝓤 𝓥) where
  open precategory 𝓒
 
- module _ {A B : ob} (f : hom A B) where
+ module hom-properties {A B : ob} (f : hom A B) where
 
   module _ (g : hom B A) where
    is-inverse : 𝓥 ̇
@@ -174,5 +174,17 @@ module _ (𝓒 : precategory 𝓤 𝓥) where
    to-Σ-＝
     (is-inverse-is-unique g g' fg fg' ,
      is-inverse-is-prop _ _ _)
+
+ iso : ob → ob → 𝓥 ̇
+ iso A B = Σ f ꞉ hom A B , hom-properties.is-iso f
+
+ idn-is-iso : {A : ob} → hom-properties.is-iso (idn A)
+ pr₁ idn-is-iso = idn _
+ pr₁ (pr₂ idn-is-iso) = idn-L _ _ _
+ pr₂ (pr₂ idn-is-iso) = idn-L _ _ _
+
+ module _ {A B : ob} where
+  ＝-to-iso : A ＝ B → iso A B
+  ＝-to-iso refl = idn A , idn-is-iso
 
 \end{code}

@@ -166,7 +166,7 @@ module _ (𝓓 : deductive-system 𝓤 𝓥) where
     module ⇓A = has-downshift A (pr₂ A-has-shifts)
 
    ⇑_ = ⇑A.upshift
-   ⇓ = ⇓A.downshift
+   ⇓_ = ⇓A.downshift
 
   module _ {A : ob} where
    private

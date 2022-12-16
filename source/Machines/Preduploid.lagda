@@ -127,7 +127,4 @@ module depolarization (𝓓 : deductive-system 𝓤 𝓥) where
    precategory-gives-negatively-depolarized A B f U V g h =
     ax.assoc B A U V f g h ⁻¹
 
-
-
-
 \end{code}
