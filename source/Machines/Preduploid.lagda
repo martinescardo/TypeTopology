@@ -62,18 +62,19 @@ module depolarization (𝓓 : deductive-system 𝓤 𝓥) where
   is-depolarized : 𝓤 ⊔ 𝓥 ̇
   is-depolarized = ∥ depolarization ∥
 
-  module depolarization-gives-precategory (depol : is-depolarized) where
-   assoc : category-axiom-statements.statement-assoc (pr₁ 𝓓)
-   assoc A B C D f g h = ∥∥-rec (⊢-is-set A D) assoc-case depol
+  module _ (depol : is-depolarized) where
+   depolarization-gives-assoc : category-axiom-statements.statement-assoc (pr₁ 𝓓)
+   depolarization-gives-assoc A B C D f g h = ∥∥-rec (⊢-is-set A D) assoc-case depol
     where
      assoc-case : depolarization → cut f (cut g h) ＝ cut (cut f g) h
      assoc-case (inl pos) = pos C D h A B g f ⁻¹
      assoc-case (inr neg) = neg B A f C D g h ⁻¹
 
-   main : precategory-axioms (pr₁ 𝓓)
-   pr₁ main = ⊢-is-set
-   pr₁ (pr₂ main) = idn-L
-   pr₁ (pr₂ (pr₂ main)) = idn-R
-   pr₂ (pr₂ (pr₂ main)) = assoc
+   depolarization-gives-precategory : precategory-axioms (pr₁ 𝓓)
+   depolarization-gives-precategory =
+    ⊢-is-set ,
+    idn-L ,
+    idn-R ,
+    depolarization-gives-assoc
 
 \end{code}
