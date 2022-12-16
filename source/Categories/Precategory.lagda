@@ -7,7 +7,10 @@ Jon Sterling, started 28th Sep 2022
 module Categories.Precategory where
 
 open import MLTT.Spartan
+open import UF.FunExt
+open import UF.Lower-FunExt
 open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
 
 -- We prefer composition in diagrammatic order.
 
@@ -51,6 +54,44 @@ module category-axiom-statements (𝓒 : category-structure 𝓤 𝓥) where
   (A B C D : ob) (f : hom A B) (g : hom B C) (h : hom C D)
   → seq f (seq g h) ＝ seq (seq f g) h
 
+
+ module _ (fe0 : funext 𝓤 (𝓤 ⊔ 𝓥)) (fe1 : funext 𝓥 𝓥) where
+  private
+   fe2 : funext 𝓤 𝓥
+   fe2 = lower-funext 𝓤 𝓤 fe0
+
+  statement-hom-is-set-is-prop : is-prop statement-hom-is-set
+  statement-hom-is-set-is-prop =
+   Π-is-prop fe0 λ _ →
+   Π-is-prop fe2 λ _ →
+   being-set-is-prop fe1
+
+  module _ (hom-is-set : statement-hom-is-set) where
+   statement-idn-L-is-prop : is-prop statement-idn-L
+   statement-idn-L-is-prop =
+    Π-is-prop fe0 λ _ →
+    Π-is-prop fe2 λ _ →
+    Π-is-prop fe1 λ _ →
+    hom-is-set _ _
+
+   statement-idn-R-is-prop : is-prop statement-idn-R
+   statement-idn-R-is-prop =
+    Π-is-prop fe0 λ _ →
+    Π-is-prop fe2 λ _ →
+    Π-is-prop fe1 λ _ →
+    hom-is-set _ _
+
+   statement-assoc-is-prop : is-prop statement-assoc
+   statement-assoc-is-prop =
+    Π-is-prop fe0 λ _ →
+    Π-is-prop fe0 λ _ →
+    Π-is-prop fe0 λ _ →
+    Π-is-prop fe2 λ _ →
+    Π-is-prop fe1 λ _ →
+    Π-is-prop fe1 λ _ →
+    Π-is-prop fe1 λ _ →
+    hom-is-set _ _
+
  -- TODO: univalence statement
 
 -- Precategories are an intermediate notion in univalent 1-category theory.
@@ -63,6 +104,18 @@ module _ (𝓒 : category-structure 𝓤 𝓥) where
   × statement-idn-L
   × statement-idn-R
   × statement-assoc
+
+
+ module _ (fe0 : funext 𝓤 (𝓤 ⊔ 𝓥)) (fe1 : funext 𝓥 𝓥) where
+  precategory-axioms-is-prop : is-prop precategory-axioms
+  precategory-axioms-is-prop =
+   Σ-is-prop (statement-hom-is-set-is-prop fe0 fe1) λ hom-is-set →
+   ×-is-prop
+    (statement-idn-L-is-prop fe0 fe1 hom-is-set)
+    (×-is-prop
+     (statement-idn-R-is-prop fe0 fe1 hom-is-set)
+     (statement-assoc-is-prop fe0 fe1 hom-is-set))
+
 
  module precategory-axioms (ax : precategory-axioms) where
   hom-is-set : statement-hom-is-set
