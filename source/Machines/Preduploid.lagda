@@ -53,7 +53,6 @@ module preduploid (𝓓 : preduploid 𝓤 𝓥) where
 
 module depolarization (𝓓 : deductive-system 𝓤 𝓥) where
   open deductive-system 𝓓
-  open ⊢-properties 𝓓
   open polarities 𝓓
 
   depolarization : 𝓤 ⊔ 𝓥 ̇
@@ -63,8 +62,18 @@ module depolarization (𝓓 : deductive-system 𝓤 𝓥) where
   is-depolarized = ∥ depolarization ∥
 
   module _ (depol : is-depolarized) where
+
+   -- If the deductive system is depolarized, then either all its objects are
+   -- positive or all its objects are negative, but we don't know which.
+   --
+   -- Because the associativity law is a proposition, we can still split
+   -- on whether all objects are positive or negative. In the positive case,
+   -- we use the polarity of the third object in the composite and in the
+   -- negative case, we use the polarity of the second object in the composite.
+   --
    depolarization-gives-assoc : category-axiom-statements.statement-assoc (pr₁ 𝓓)
-   depolarization-gives-assoc A B C D f g h = ∥∥-rec (⊢-is-set A D) assoc-case depol
+   depolarization-gives-assoc A B C D f g h =
+    ∥∥-rec (⊢-is-set A D) assoc-case depol
     where
      assoc-case : depolarization → cut f (cut g h) ＝ cut (cut f g) h
      assoc-case (inl pos) = pos C D h A B g f ⁻¹
