@@ -32,7 +32,6 @@ module _ (𝓓 : deductive-system 𝓤 𝓥) where
   downshift-data : 𝓤 ⊔ 𝓥 ̇
   downshift-data = Σ ⇓A ꞉ ob , A ⊢ ⇓A
 
-
  module _ {A : ob} where
   upshift-axioms : upshift-data A → 𝓤 ⊔ 𝓥 ̇
   upshift-axioms (⇑A , force) =

@@ -80,22 +80,25 @@ module ⊢-properties (𝓓 : deductive-system 𝓤 𝓥) where
    → cut (cut h g) f ＝ (cut h (cut g f))
 
   is-inverse : (g : B ⊢ A) → 𝓥 ̇
-  is-inverse g = (cut f g ＝ idn _) × (cut g f ＝ idn _)
+  is-inverse g =
+   (cut f g ＝ idn _)
+   × (cut g f ＝ idn _)
 
   being-inverse-is-prop
    : {g : B ⊢ A}
    → is-prop (is-inverse g)
   being-inverse-is-prop =
-   ×-is-prop (⊢-is-set _ _) (⊢-is-set _ _)
-
+   ×-is-prop
+    (⊢-is-set _ _)
+    (⊢-is-set _ _)
 
  module _ {A B} {f : A ⊢ B} (fe0 : funext 𝓤 (𝓤 ⊔ 𝓥)) (fe1 : funext 𝓥 𝓥) where
   being-thunkable-is-prop : is-prop (is-thunkable f)
   being-thunkable-is-prop =
-   Π-is-prop fe0 λ C →
-   Π-is-prop (lower-funext 𝓤 𝓤 fe0) λ D →
-   Π-is-prop fe1 λ g →
-   Π-is-prop fe1 λ h →
+   Π-is-prop fe0 λ _ →
+   Π-is-prop (lower-funext 𝓤 𝓤 fe0) λ _ →
+   Π-is-prop fe1 λ _ →
+   Π-is-prop fe1 λ _ →
    ⊢-is-set _ _
 
   being-linear-is-prop : is-prop (is-linear f)

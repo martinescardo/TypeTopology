@@ -12,6 +12,9 @@ open PropositionalTruncation pt
 
 open import MLTT.Spartan
 open import UF.FunExt
+open import UF.Base
+open import UF.Retracts
+open import UF.hlevels
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
@@ -126,5 +129,114 @@ module depolarization (𝓓 : deductive-system 𝓤 𝓥) where
    precategory-gives-negatively-depolarized : (A : ob) → is-negative A
    precategory-gives-negatively-depolarized A B f U V g h =
     ax.assoc B A U V f g h ⁻¹
+
+
+module NegativesAndAllMaps (𝓓 : preduploid 𝓤 𝓥) where
+ module 𝓓 = preduploid 𝓓
+ open polarities (pr₁ 𝓓)
+
+ ob : 𝓤 ⊔ 𝓥 ̇
+ ob = Σ A ꞉ 𝓓.ob , is-negative A
+
+ hom : ob → ob → 𝓥 ̇
+ hom A B = pr₁ A 𝓓.⊢ pr₁ B
+
+ idn : (A : ob) → hom A A
+ idn A = 𝓓.idn (pr₁ A)
+
+ seq : {A B C : ob} → hom A B → hom B C → hom A C
+ seq f g = 𝓓.cut f g
+
+ cat-data : category-structure (𝓤 ⊔ 𝓥) 𝓥
+ cat-data = ob , hom , idn , λ {A} {B} {C} → seq {A} {B} {C}
+
+ module _ (open category-axiom-statements) where
+  hom-is-set : statement-hom-is-set cat-data
+  hom-is-set A B = 𝓓.⊢-is-set (pr₁ A) (pr₁ B)
+
+  idn-L : statement-idn-L cat-data
+  idn-L A B = 𝓓.idn-L (pr₁ A) (pr₁ B)
+
+  idn-R : statement-idn-R cat-data
+  idn-R A B = 𝓓.idn-R (pr₁ A) (pr₁ B)
+
+  assoc : statement-assoc cat-data
+  assoc A B C D f g h = pr₂ B (pr₁ A) f (pr₁ C) (pr₁ D) g h ⁻¹
+
+  precat : precategory (𝓤 ⊔ 𝓥) 𝓥
+  precat = cat-data , hom-is-set , idn-L , idn-R , assoc
+
+module NegativesAndLinearMaps (𝓓 : preduploid 𝓤 𝓥) where
+ module 𝓓 = preduploid 𝓓
+ open polarities (pr₁ 𝓓)
+ open ⊢-properties (pr₁ 𝓓)
+
+ ob : 𝓤 ⊔ 𝓥 ̇
+ ob = Σ A ꞉ 𝓓.ob , is-negative A
+
+ hom : ob → ob → 𝓤 ⊔ 𝓥 ̇
+ hom A B = Σ f ꞉ (pr₁ A 𝓓.⊢ pr₁ B) , is-linear f
+
+
+ abstract
+  idn-linear : (A : 𝓓.ob) → is-linear (𝓓.idn A)
+  idn-linear A U V g h =
+   𝓓.cut (𝓓.cut h g) (𝓓.idn A) ＝⟨ 𝓓.idn-R _ _ _ ⟩
+   𝓓.cut h g ＝⟨ ap (𝓓.cut h) (𝓓.idn-R _ _ _ ⁻¹) ⟩
+   𝓓.cut h (𝓓.cut g (𝓓.idn A)) ∎
+
+  cut-linear
+   : {A B C : 𝓓.ob}
+   → (f : A 𝓓.⊢ B)
+   → (g : B 𝓓.⊢ C)
+   → is-linear f
+   → is-linear g
+   → is-linear (𝓓.cut f g)
+  cut-linear {A} {B} {C} f g f-lin g-lin U V h k =
+   𝓓.cut (𝓓.cut k h) (𝓓.cut f g) ＝⟨ g-lin U A f (𝓓.cut k h) ⁻¹ ⟩
+   𝓓.cut (𝓓.cut (𝓓.cut k h) f) g ＝⟨ ap (λ x → 𝓓.cut x g) (f-lin U V h k) ⟩
+   𝓓.cut (𝓓.cut k (𝓓.cut h f)) g ＝⟨ g-lin U V (𝓓.cut h f) k ⟩
+   𝓓.cut k (𝓓.cut (𝓓.cut h f) g) ＝⟨ ap (𝓓.cut k) (g-lin V A f h) ⟩
+   𝓓.cut k (𝓓.cut h (𝓓.cut f g)) ∎
+
+ idn : (A : ob) → hom A A
+ pr₁ (idn A) = 𝓓.idn (pr₁ A)
+ pr₂ (idn A) = idn-linear (pr₁ A)
+
+ seq : {A B C : ob} → hom A B → hom B C → hom A C
+ pr₁ (seq f g) = 𝓓.cut (pr₁ f) (pr₁ g)
+ pr₂ (seq f g) = cut-linear (pr₁ f) (pr₁ g) (pr₂ f) (pr₂ g)
+
+ cat-data : category-structure (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
+ cat-data = ob , hom , idn , λ {A} {B} {C} → seq {A} {B} {C}
+
+ module _ (fe0 : funext 𝓤 (𝓤 ⊔ 𝓥)) (fe1 : funext 𝓥 𝓥) where
+  open category-axiom-statements
+
+  module _ (A B : ob) (f g : hom A B) where
+   to-hom-＝ : pr₁ f ＝ pr₁ g → f ＝ g
+   to-hom-＝ h = to-Σ-＝ (h , being-linear-is-prop fe0 fe1 _ _)
+
+  hom-is-set : statement-hom-is-set cat-data
+  hom-is-set A B =
+   Σ-is-set (𝓓.⊢-is-set (pr₁ A) (pr₁ B)) λ _ →
+   props-are-sets (being-linear-is-prop fe0 fe1)
+
+  idn-L : statement-idn-L cat-data
+  idn-L A B f = to-hom-＝ A B _ _ (𝓓.idn-L (pr₁ A) (pr₁ B) (pr₁ f))
+
+  idn-R : statement-idn-R cat-data
+  idn-R A B f = to-hom-＝ A B _ _ (𝓓.idn-R (pr₁ A) (pr₁ B) (pr₁ f))
+
+  assoc : statement-assoc cat-data
+  assoc A B C D f g h =
+   to-hom-＝ A D _ _
+    (pr₂ B (pr₁ A) (pr₁ f) (pr₁ C) (pr₁ D) (pr₁ g) (pr₁ h) ⁻¹)
+
+  precat : precategory (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
+  precat = cat-data , hom-is-set , idn-L , idn-R , assoc
+
+
+
 
 \end{code}
