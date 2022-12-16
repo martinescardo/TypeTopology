@@ -177,7 +177,6 @@ module NegativesAndLinearMaps (𝓓 : preduploid 𝓤 𝓥) where
  hom : ob → ob → 𝓤 ⊔ 𝓥 ̇
  hom A B = Σ f ꞉ (pr₁ A 𝓓.⊢ pr₁ B) , is-linear f
 
-
  idn : (A : ob) → hom A A
  pr₁ (idn A) = 𝓓.idn (pr₁ A)
  pr₂ (idn A) = idn-linear (pr₁ A)

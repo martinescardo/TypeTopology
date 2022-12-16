@@ -202,4 +202,5 @@ module _ (𝓒 : precategory 𝓤 𝓥) where
    Π-is-prop fe0 λ _ →
    being-equiv-is-prop' fe2 fe1 fe3 fe2 _
 
+
 \end{code}
