@@ -18,13 +18,10 @@ open import UF.Subsingletons-FunExt
 open import UF.Logic
 open import UF.Lower-FunExt
 
-module _ (𝓤 𝓥 : Universe) where
- deductive-system-structure : (𝓤 ⊔ 𝓥)⁺ ̇
- deductive-system-structure =
-  Σ ob ꞉ (𝓤 ̇),
-  Σ _⊢_ ꞉ (ob → ob → 𝓥 ̇) ,
-  Σ idn ꞉ ((A : ob) → A ⊢ A) ,
-  ({A B C : ob} (f : A ⊢ B) (g : B ⊢ C) → A ⊢ C)
+open import Categories.Precategory
+
+deductive-system-structure : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
+deductive-system-structure 𝓤 𝓥 = category-structure 𝓤 𝓥
 
 module deductive-system-structure (𝓓 : deductive-system-structure 𝓤 𝓥) where
  ob : 𝓤 ̇
@@ -41,25 +38,16 @@ module deductive-system-structure (𝓓 : deductive-system-structure 𝓤 𝓥) 
 
 module _ (𝓓 : deductive-system-structure 𝓤 𝓥) where
  open deductive-system-structure 𝓓
-
- statement-⊢-is-set : 𝓤 ⊔ 𝓥 ̇
- statement-⊢-is-set = (A B : ob) → is-set (A ⊢ B)
-
- statement-idn-L : 𝓤 ⊔ 𝓥 ̇
- statement-idn-L = (A B : ob) (f : A ⊢ B) → cut (idn A) f ＝ f
-
- statement-idn-R : 𝓤 ⊔ 𝓥 ̇
- statement-idn-R = (A B : ob) (f : A ⊢ B) → cut f (idn B) ＝ f
+ open precategory-axiom-statements 𝓓
 
  deductive-system-axioms : 𝓤 ⊔ 𝓥 ̇
  deductive-system-axioms =
-  statement-⊢-is-set
+  statement-hom-is-set
   × statement-idn-L
   × statement-idn-R
 
-
  module deductive-system-axioms (ax : deductive-system-axioms) where
-  ⊢-is-set : statement-⊢-is-set
+  ⊢-is-set : statement-hom-is-set
   ⊢-is-set = pr₁ ax
 
   idn-L : statement-idn-L
