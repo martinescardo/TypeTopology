@@ -106,7 +106,6 @@ module _ (𝓒 : category-structure 𝓤 𝓥) where
   × statement-idn-R
   × statement-assoc
 
-
  module _ (fe0 : funext 𝓤 (𝓤 ⊔ 𝓥)) (fe1 : funext 𝓥 𝓥) where
   precategory-axioms-is-prop : is-prop precategory-axioms
   precategory-axioms-is-prop =
@@ -153,12 +152,12 @@ module _ (𝓒 : precategory 𝓤 𝓥) where
    is-inverse-is-prop : is-prop is-inverse
    is-inverse-is-prop = ×-is-prop (hom-is-set _ _) (hom-is-set _ _)
 
-  is-inverse-is-unique
+  inverse-is-unique
    : (g g' : hom B A)
    → is-inverse g
    → is-inverse g'
    → g ＝ g'
-  is-inverse-is-unique g g' fg fg' =
+  inverse-is-unique g g' fg fg' =
    g ＝⟨ idn-R _ _ _ ⁻¹ ⟩
    seq g (idn _) ＝⟨ ap (seq g) (pr₁ fg' ⁻¹) ⟩
    seq g (seq f g') ＝⟨ assoc _ _ _ _ _ _ _ ⟩
@@ -172,7 +171,7 @@ module _ (𝓒 : precategory 𝓤 𝓥) where
   is-iso-is-prop : is-prop is-iso
   is-iso-is-prop (g , fg) (g' , fg') =
    to-Σ-＝
-    (is-inverse-is-unique g g' fg fg' ,
+    (inverse-is-unique g g' fg fg' ,
      is-inverse-is-prop _ _ _)
 
  iso : ob → ob → 𝓥 ̇
