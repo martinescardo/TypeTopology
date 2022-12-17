@@ -605,24 +605,26 @@ isomorphic to the (type theoretic) ordinal 𝕍ᴼᴿᴰ of set theoretic ordina
 
 \end{code}
 
-Future work
-
-TO DO: Update (1)
------------
+Further work
+------------
 
 (1) The recursive nature of 𝕍-to-Ord is convenient because it allows us to prove
-    properties by induction. Moreover, the supremum yields an ordinal by
-    construction. It is possible to give a more direct presentation of
-    𝕍-to-Ord (𝕍-set {A} f) however, that is nonrecursive.
+properties by induction. Moreover, the supremum yields an ordinal by
+construction. It is possible to give a more direct presentation of
+  𝕍-to-Ord (𝕍-set {A} f)
+however, that is nonrecursive.
 
-    Namely, we can show that 𝕍-to-Ord (𝕍-set {A} f) ＝ (A/~ , <), where ~
-    identifies elements of A that have the same image under f and [a] < [a'] is
-    defined as f a ∈ f a'.
+Namely, we can show that 𝕍-to-Ord (𝕍-set {A} f) ＝ (A/~ , <), where ~ identifies
+elements of A that have the same image under f and [a] < [a'] is defined to hold
+when f a ∈ f a'.
 
-    It is straightforward to see that (A/~ , <) is in fact equivalent (but not
-    equal for size reasons) to the image of f, which in turn is equivalent to
-    the total space (Σ y ꞉ 𝕍 , y ∈ 𝕍-set f), so that the map 𝕍-to-Ord can be
-    described (up to equivalence) as x ↦ Σ y ꞉ 𝕍 , y ∈ x.
+It is straightforward to see that (A/~ , <) is in fact equivalent (but not equal
+for size reasons) to the image of f, which in turn is equivalent to the total
+space (Σ y ꞉ 𝕍 , y ∈ 𝕍-set f), so that the map 𝕍-to-Ord can be described (up to
+equivalence) as x ↦ Σ y ꞉ 𝕍 , y ∈ x.
 
-(2) We are currently working out the details of a related presentation for all
-    of 𝕍.
+These observations are fully formalised in the file
+Ordinals/CumulativeHierarchy-Addendum.lagda.
+
+(2) On a separate note, we are currently working out the details of a related
+presentation for all of 𝕍.
