@@ -1,20 +1,20 @@
 Tom de Jong, ?? ─ ??
 In collaboration with Nicolai Kraus, Fredrik Norvall Forsberg and Chuangjie Xu.
 
-TO DO: Update
-(1) The recursive nature of 𝕍-to-Ord is convenient because it allows us to prove
-    properties by induction. Moreover, the supremum yields an ordinal by
-    construction. It is possible to give a more direct presentation of
-    𝕍-to-Ord (𝕍-set {A} f) however, that is nonrecursive.
+The recursive nature of 𝕍-to-Ord is convenient because it allows us to prove
+properties by induction. Moreover, the supremum yields an ordinal by
+construction. It is possible to give a more direct presentation of
+  𝕍-to-Ord (𝕍-set {A} f)
+however, that is nonrecursive.
 
-    Namely, we can show that 𝕍-to-Ord (𝕍-set {A} f) ＝ (A/~ , <), where ~
-    identifies elements of A that have the same image under f and [a] < [a'] is
-    defined as f a ∈ f a'.
+Namely, we can show that 𝕍-to-Ord (𝕍-set {A} f) ＝ (A/~ , <), where ~ identifies
+elements of A that have the same image under f and [a] < [a'] is defined to hold
+when f a ∈ f a'.
 
-    It is straightforward to see that (A/~ , <) is in fact equivalent (but not
-    equal for size reasons) to the image of f, which in turn is equivalent to
-    the total space (Σ y ꞉ 𝕍 , y ∈ 𝕍-set f), so that the map 𝕍-to-Ord can be
-    described (up to equivalence) as x ↦ Σ y ꞉ 𝕍 , y ∈ x.
+It is straightforward to see that (A/~ , <) is in fact equivalent (but not equal
+for size reasons) to the image of f, which in turn is equivalent to the total
+space (Σ y ꞉ 𝕍 , y ∈ 𝕍-set f), so that the map 𝕍-to-Ord can be described (up to
+equivalence) as x ↦ Σ y ꞉ 𝕍 , y ∈ x.
 
 \begin{code}
 
@@ -31,15 +31,19 @@ module Ordinals.CumulativeHierarchy-Addendum
         (𝓤 : Universe)
        where
 
-open PropositionalTruncation pt
-
 open import UF.Base hiding (_≈_)
 open import UF.Equiv
+open import UF.EquivalenceExamples
 open import UF.FunExt
+open import UF.ImageAndSurjection
+open import UF.Size
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.Quotient hiding (is-prop-valued)
 open import UF.UA-FunExt
+
+open ImageAndSurjection pt
+open PropositionalTruncation pt
 
 private
  fe : Fun-Ext
@@ -52,10 +56,13 @@ private
  pe = Univalence-gives-Prop-Ext ua
 
 open import UF.CumulativeHierarchy pt fe pe
+open import UF.CumulativeHierarchy-LocallySmall pt fe pe
+
 open import Ordinals.CumulativeHierarchy pt ua 𝓤
 open import Ordinals.Notions
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.Type
+open import Ordinals.WellOrderTransport fe'
 
 module _
         (ch : cumulative-hierarchy-exists 𝓤)
@@ -63,7 +70,6 @@ module _
 
  open cumulative-hierarchy-exists ch
 
- open import UF.CumulativeHierarchy-LocallySmall pt fe pe
  open 𝕍-is-locally-small ch
  open ordinal-of-set-theoretic-ordinals ch
 
@@ -136,6 +142,44 @@ module _
      to-subtype-＝ (λ _ → ∈-is-prop-valued)
                    (to-subtype-＝ (λ _ → being-set-theoretic-ordinal-is-prop)
                                   refl)
+
+\end{code}
+
+\begin{code}
+
+ module total-space-of-𝕍-set'
+         (sq : set-quotients-exist)
+         {A : 𝓤 ̇ }
+         (f : A → 𝕍)
+         (σ : is-set-theoretic-ordinal (𝕍-set f))
+        where
+
+  private
+   x = 𝕍-set f
+
+  open total-space-of-𝕍-set x σ
+
+  open set-quotients-exist sq
+
+  𝕋x-≃-image-f : 𝕋x ≃ image f
+  𝕋x-≃-image-f = Σ-cong h
+   where
+    h : (y : 𝕍) → (y ∈ x) ≃ y ∈image f
+    h y = logically-equivalent-props-are-equivalent
+           ∈-is-prop-valued
+           (being-in-the-image-is-prop y f)
+           from-∈-of-𝕍-set
+           to-∈-of-𝕍-set
+
+  private
+   transfer : Σ s ꞉ OrdinalStructure (image f) , (image f , s) ≃ₒ 𝕋x-ordinal
+   transfer = transfer-structure (image f) 𝕋x-ordinal (≃-sym 𝕋x-≃-image-f) (_∈ₓ_ , (λ u v → ≃-refl (u ∈ₓ v)))
+
+  image-f-ordinal : Ordinal (𝓤 ⁺)
+  image-f-ordinal = image f , pr₁ transfer
+
+  𝕋x-ordinal-≃-image-f-ordinal : 𝕋x-ordinal ≃ₒ image-f-ordinal
+  𝕋x-ordinal-≃-image-f-ordinal = ≃ₒ-sym _ _ (pr₂ transfer)
 
 \end{code}
 
@@ -284,9 +328,6 @@ in 𝓤 equivalent to A/~ᵒʳᵈ.
   A/~-≃-A/~⁻ : A/~ ≃ A/~⁻
   A/~-≃-A/~⁻ = quotients-equivalent A ~EqRel ~⁻EqRel (＝-to-＝⁻ , ＝⁻-to-＝)
 
-  open import UF.Size -- TO DO: Move imports
-  open import Ordinals.WellOrderTransport (λ _ _ → fe)
-
   private
    ≺-has-small-values : (x y : A/~) → is-small (x ≺ y)
    ≺-has-small-values =
@@ -326,8 +367,6 @@ in 𝓤 equivalent to A/~ᵒʳᵈ.
    [_]⁻ : A → A/~⁻
    [_]⁻ = ⌜ A/~-≃-A/~⁻ ⌝ ∘ [_]
 
-   open import UF.ImageAndSurjection -- TO DO: Move and clean up
-   open ImageAndSurjection pt
    []⁻-is-surjection : is-surjection [_]⁻
    []⁻-is-surjection = ∘-is-surjection (image-surjection-converse [_] λ P → /-induction ~EqRel) (equivs-are-surjections (⌜⌝-is-equiv A/~-≃-A/~⁻))
 
@@ -435,7 +474,7 @@ in 𝓤 equivalent to A/~ᵒʳᵈ.
          h : Σ (λ x → [ x ]⁻ ＝ a') → Σ (λ b → f b ＝ Ord-to-𝕍 (A/~⁻ᵒʳᵈ ↓ a'))
          h (a , refl) = a , ((key-lemma a' a refl) ⁻¹)
 
- module total-space-of-𝕍-set'
+ module total-space-of-𝕍-set''
          (sq : set-quotients-exist)
          {A : 𝓤 ̇ }
          (f : A → 𝕍)
@@ -446,36 +485,12 @@ in 𝓤 equivalent to A/~ᵒʳᵈ.
    x = 𝕍-set f
 
   open total-space-of-𝕍-set x σ
+  open total-space-of-𝕍-set' sq f σ
   open 𝕍-set-carrier-quotient sq f
   open construct-ordinal-as-quotient₂ σ
   open construct-ordinal-as-quotient σ
 
-  open import UF.ImageAndSurjection
-  open ImageAndSurjection pt
-  open import UF.EquivalenceExamples
-
   open set-quotients-exist sq
-
-  𝕋x-≃-image-f : 𝕋x ≃ image f
-  𝕋x-≃-image-f = Σ-cong h
-   where
-    h : (y : 𝕍) → (y ∈ x) ≃ y ∈image f
-    h y = logically-equivalent-props-are-equivalent
-           ∈-is-prop-valued
-           (being-in-the-image-is-prop y f)
-           from-∈-of-𝕍-set
-           to-∈-of-𝕍-set
-
-  open import Ordinals.WellOrderTransport (λ _ _ → fe)
-  private
-   transfer : Σ s ꞉ OrdinalStructure (image f) , (image f , s) ≃ₒ 𝕋x-ordinal
-   transfer = transfer-structure (image f) 𝕋x-ordinal (≃-sym 𝕋x-≃-image-f) (_∈ₓ_ , (λ u v → ≃-refl (u ∈ₓ v)))
-
-  image-f-ordinal : Ordinal (𝓤 ⁺)
-  image-f-ordinal = image f , pr₁ transfer
-
-  𝕋x-ordinal-≃-image-f-ordinal : 𝕋x-ordinal ≃ₒ image-f-ordinal
-  𝕋x-ordinal-≃-image-f-ordinal = ≃ₒ-sym _ _ (pr₂ transfer)
 
   coincide₂ : 𝕋x-ordinal ＝ A/~ᵒʳᵈ
   coincide₂ = 𝕋x-ordinal      ＝⟨ ⦅1⦆ ⟩
@@ -523,6 +538,7 @@ in 𝓤 equivalent to A/~ᵒʳᵈ.
   open 𝕍-to-Ord-construction sq
   open total-space-of-𝕍-set
   open total-space-of-𝕍-set' sq
+  open total-space-of-𝕍-set'' sq
 
   finally : 𝕍ᵒʳᵈ-to-Ord x ≃ₒ 𝕋x-ordinal (pr₁ x) (pr₂ x)
   finally = blah (pr₁ x) (pr₂ x)
