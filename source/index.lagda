@@ -79,6 +79,7 @@ module index where
 
 import BinarySystems.index
 import CantorSchroederBernstein.index
+import Categories.index               -- by Jon Sterling
 import Circle.index                   -- by Tom de Jong
 import CoNaturals.index
 import CrossedModules.index           -- by Ettore Aldrovandi and Keri D'Angelo
@@ -97,6 +98,7 @@ import InjectiveTypes.index
 import Integers.index                 -- by Andrew Sneap
 import Lifting.index
 import Locales.index                  -- by Ayberk Tosun
+import Machines.index                 -- by Jon Sterling
 import MGS.index                      -- Modular version of https://github.com/martinescardo/HoTT-UF-Agda-Lecture-Notes
 import MLTT.index
 import MetricSpaces.index             -- by Andrew Sneap
