@@ -308,6 +308,55 @@ module _
 
 \end{code}
 
+TO DO: Write comment. We relate total space and quotient...
+
+\begin{code}
+
+   private
+    x = 𝕍-set f
+
+   open total-space-of-𝕍-set x σ
+   open total-space-of-𝕍-set' sq f σ
+
+   coincide₂ : 𝕋x-ordinal ＝ A/~ᵒʳᵈ
+   coincide₂ = 𝕋x-ordinal      ＝⟨ ⦅1⦆ ⟩
+               image-f-ordinal ＝⟨ ⦅2⦆ ⟩
+               A/~ᵒʳᵈ          ∎
+    where
+     ⦅1⦆ = eqtoidₒ _ _ 𝕋x-ordinal-≃-image-f-ordinal
+     ⦅2⦆ = eqtoidₒ _ _ (≃ₒ-sym _ _ (ϕ , ϕ-is-order-equiv))
+      where
+       open set-replacement-construction sq pt f 𝕍-is-locally-small 𝕍-is-large-set hiding ([_])
+       ϕ : A/~ → image f
+       ϕ = quotient-to-image
+       ϕ-behaviour : (a : A) → ϕ [ a ] ＝ corestriction f a
+       ϕ-behaviour = universality-triangle/ ~EqRel (image-is-set f 𝕍-is-large-set) (corestriction f) _
+       ϕ-is-order-preserving : is-order-preserving A/~ᵒʳᵈ image-f-ordinal ϕ
+       ϕ-is-order-preserving =
+        /-induction₂ fe ~EqRel
+                     (λ a' b' → Π-is-prop fe
+                                 (λ _ → prop-valuedness (underlying-order image-f-ordinal)
+                                                        (is-well-ordered image-f-ordinal)
+                                                        (ϕ a') (ϕ b')))
+                     test
+        where
+         test : (a b : A) → [ a ] ≺ [ b ]
+              → underlying-order image-f-ordinal (ϕ [ a ]) (ϕ [ b ])
+         test a b l = transport₂ (underlying-order image-f-ordinal) ((ϕ-behaviour a) ⁻¹) ((ϕ-behaviour b) ⁻¹) (≺-to-∈ l)
+       ϕ-is-order-reflecting : is-order-reflecting A/~ᵒʳᵈ image-f-ordinal ϕ
+       ϕ-is-order-reflecting =
+        /-induction₂ fe ~EqRel
+                     (λ a' b' → Π-is-prop fe λ _ → prop-valuedness _≺_ (is-well-ordered A/~ᵒʳᵈ) a' b')
+                     (λ a b l → ∈-to-≺ (transport₂ (underlying-order image-f-ordinal) (ϕ-behaviour a) (ϕ-behaviour b) l))
+       ϕ-is-order-equiv : is-order-equiv A/~ᵒʳᵈ image-f-ordinal ϕ
+       ϕ-is-order-equiv =
+        order-preserving-reflecting-equivs-are-order-equivs _ _
+         ϕ (⌜⌝⁻¹-is-equiv image-≃-quotient)
+         ϕ-is-order-preserving
+         ϕ-is-order-reflecting
+
+\end{code}
+
 Now we show that A/~ is equivalent to a type in 𝓤 which then gives us an ordinal
 in 𝓤 equivalent to A/~ᵒʳᵈ.
 
@@ -474,62 +523,6 @@ in 𝓤 equivalent to A/~ᵒʳᵈ.
          h : Σ (λ x → [ x ]⁻ ＝ a') → Σ (λ b → f b ＝ Ord-to-𝕍 (A/~⁻ᵒʳᵈ ↓ a'))
          h (a , refl) = a , ((key-lemma a' a refl) ⁻¹)
 
- module total-space-of-𝕍-set''
-         (sq : set-quotients-exist)
-         {A : 𝓤 ̇ }
-         (f : A → 𝕍)
-         (σ : is-set-theoretic-ordinal (𝕍-set f))
-        where
-
-  private
-   x = 𝕍-set f
-
-  open total-space-of-𝕍-set x σ
-  open total-space-of-𝕍-set' sq f σ
-  open 𝕍-set-carrier-quotient sq f
-  open construct-ordinal-as-quotient₂ σ
-  open construct-ordinal-as-quotient σ
-
-  open set-quotients-exist sq
-
-  coincide₂ : 𝕋x-ordinal ＝ A/~ᵒʳᵈ
-  coincide₂ = 𝕋x-ordinal      ＝⟨ ⦅1⦆ ⟩
-              image-f-ordinal ＝⟨ ⦅2⦆ ⟩
-              A/~ᵒʳᵈ          ∎
-   where
-    ⦅1⦆ = eqtoidₒ _ _ 𝕋x-ordinal-≃-image-f-ordinal
-    ⦅2⦆ = eqtoidₒ _ _ (≃ₒ-sym _ _ (ϕ , ϕ-is-order-equiv))
-     where
-      open set-replacement-construction sq pt f 𝕍-is-locally-small 𝕍-is-large-set hiding ([_])
-      ϕ : A/~ → image f
-      ϕ = quotient-to-image
-      ϕ-behaviour : (a : A) → ϕ [ a ] ＝ corestriction f a
-      ϕ-behaviour = universality-triangle/ ~EqRel (image-is-set f 𝕍-is-large-set) (corestriction f) _
-      ϕ-is-order-preserving : is-order-preserving A/~ᵒʳᵈ image-f-ordinal ϕ
-      ϕ-is-order-preserving =
-       /-induction₂ fe ~EqRel
-                    (λ a' b' → Π-is-prop fe
-                                (λ _ → prop-valuedness (underlying-order image-f-ordinal)
-                                                       (is-well-ordered image-f-ordinal)
-                                                       (ϕ a') (ϕ b')))
-                    test
-       where
-        test : (a b : A) → [ a ] ≺ [ b ]
-             → underlying-order image-f-ordinal (ϕ [ a ]) (ϕ [ b ])
-        test a b l = transport₂ (underlying-order image-f-ordinal) ((ϕ-behaviour a) ⁻¹) ((ϕ-behaviour b) ⁻¹) (≺-to-∈ l)
-      ϕ-is-order-reflecting : is-order-reflecting A/~ᵒʳᵈ image-f-ordinal ϕ
-      ϕ-is-order-reflecting =
-       /-induction₂ fe ~EqRel
-                    (λ a' b' → Π-is-prop fe λ _ → prop-valuedness _≺_ (is-well-ordered A/~ᵒʳᵈ) a' b')
-                    (λ a b l → ∈-to-≺ (transport₂ (underlying-order image-f-ordinal) (ϕ-behaviour a) (ϕ-behaviour b) l))
-      ϕ-is-order-equiv : is-order-equiv A/~ᵒʳᵈ image-f-ordinal ϕ
-      ϕ-is-order-equiv =
-       order-preserving-reflecting-equivs-are-order-equivs _ _
-        ϕ (⌜⌝⁻¹-is-equiv image-≃-quotient)
-        ϕ-is-order-preserving
-        ϕ-is-order-reflecting
-
-
  module _
          (sq : set-quotients-exist)
          (x : 𝕍ᵒʳᵈ)
@@ -538,7 +531,6 @@ in 𝓤 equivalent to A/~ᵒʳᵈ.
   open 𝕍-to-Ord-construction sq
   open total-space-of-𝕍-set
   open total-space-of-𝕍-set' sq
-  open total-space-of-𝕍-set'' sq
 
   finally : 𝕍ᵒʳᵈ-to-Ord x ≃ₒ 𝕋x-ordinal (pr₁ x) (pr₂ x)
   finally = blah (pr₁ x) (pr₂ x)
@@ -552,11 +544,11 @@ in 𝓤 equivalent to A/~ᵒʳᵈ.
       foofoo {A} f σ = ≃ₒ-trans (𝕍ᵒʳᵈ-to-Ord (𝕍-set f , σ)) A/~⁻ᵒʳᵈ (𝕋x-ordinal (𝕍-set f) σ)
                         (idtoeqₒ _ _ coincide)
                         (≃ₒ-sym _ _ (≃ₒ-trans (𝕋x-ordinal (𝕍-set f) σ) A/~ᵒʳᵈ A/~⁻ᵒʳᵈ
-                                              (idtoeqₒ _ _ (coincide₂ f σ))
+                                              (idtoeqₒ _ _ coincide₂)
                                               A/~ᵒʳᵈ--≃ₒ-A/~⁻ᵒʳᵈ))
        where
-       open 𝕍-set-carrier-quotient sq f
-       open construct-ordinal-as-quotient₂ σ
-       open construct-ordinal-as-quotient σ
+        open 𝕍-set-carrier-quotient sq f
+        open construct-ordinal-as-quotient₂ σ
+        open construct-ordinal-as-quotient σ
 
 \end{code}
