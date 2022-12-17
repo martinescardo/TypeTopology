@@ -171,6 +171,7 @@ module PositivesAndAllMaps (𝓓 : preduploid 𝓤 𝓥) where
   precat : precategory (𝓤 ⊔ 𝓥) 𝓥
   precat = cat-data , hom-is-set , idn-L , idn-R , assoc
 
+
 module NegativesAndLinearMaps (𝓓 : preduploid 𝓤 𝓥) where
  module 𝓓 = preduploid 𝓓
  open polarities (pr₁ 𝓓)

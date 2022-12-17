@@ -54,6 +54,12 @@ module functor-of-precategories (𝓒 𝓓 : precategory 𝓤 𝓥) where
    statement-preserves-idn
    × statement-preserves-seq
 
+  module functor-axioms (ax : functor-axioms) where
+   preserves-idn : statement-preserves-idn
+   preserves-idn = pr₁ ax
+
+   preserves-seq : statement-preserves-seq
+   preserves-seq = pr₂ ax
 
   module _ (fe : funext 𝓤 𝓥) where
    preserving-idn-is-prop : is-prop statement-preserves-idn
@@ -81,6 +87,12 @@ module functor-of-precategories (𝓒 𝓓 : precategory 𝓤 𝓥) where
      (preserving-idn-is-prop fe2)
      preserving-seq-is-prop
 
+ functor : 𝓤 ⊔ 𝓥 ̇
+ functor = Σ F ꞉ functor-structure , functor-axioms F
+
+ module functor (F : functor) where
+  open functor-structure (pr₁ F) public
+  open functor-axioms (pr₁ F) (pr₂ F) public
 
 module functor-of-categories (𝓒 𝓓 : category 𝓤 𝓥) where
   open
