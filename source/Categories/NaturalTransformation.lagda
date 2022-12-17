@@ -39,8 +39,8 @@ module _ {𝓒 : precategory 𝓤 𝓥} {𝓓 : precategory 𝓤' 𝓥'} where
 
   is-natural : transf → 𝓤 ⊔ 𝓥 ⊔ 𝓥' ̇
   is-natural α =
-    (A B : 𝓒.ob) (f : 𝓒.hom A B)
-    → 𝓓.seq (F.hom f) (α B) ＝ 𝓓.seq (α A) (G.hom f)
+   (A B : 𝓒.ob) (f : 𝓒.hom A B)
+   → 𝓓.seq (F.hom f) (α B) ＝ 𝓓.seq (α A) (G.hom f)
 
   nat-transf : 𝓤 ⊔ 𝓥 ⊔ 𝓥' ̇
   nat-transf = Σ α ꞉ transf , is-natural α
