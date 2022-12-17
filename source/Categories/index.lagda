@@ -10,5 +10,6 @@ point of view.
 module Categories.index where
 
 import Categories.Category
+import Categories.Functor
 
 \end{code}

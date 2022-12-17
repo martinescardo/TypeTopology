@@ -107,7 +107,6 @@ module _ (𝓓 : deductive-system 𝓤 𝓥) where
   -- When a deductive system is depolarized in the unbiased sense,
   -- it is both positively and negatively depolarized. Hence, all notions
   -- of depolarization are equivalent.
-  --
 
   module _ (H : is-depolarized) where
    is-depolarized-gives-is-pos-depolarized : is-pos-depolarized
