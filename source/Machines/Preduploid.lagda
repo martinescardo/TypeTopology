@@ -1,4 +1,4 @@
-Jon Sterling, started 27th Sep 2022
+Jon Sterling, started 16th Dec 2022
 
 \begin{code}
 
@@ -62,7 +62,6 @@ module preduploid (𝓓 : preduploid 𝓤 𝓥) where
   open ⊢-properties underlying-deductive-system
 
   module _ (A B : ob) where
-
    module _ (f : A ⊢ B) where
     is-thunkable-iso : 𝓤 ⊔ 𝓥 ̇
     is-thunkable-iso = is-thunkable f × (Σ g ꞉ (B ⊢ A) , is-inverse f g)
