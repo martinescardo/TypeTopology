@@ -11,5 +11,6 @@ module Categories.index where
 
 import Categories.Category
 import Categories.Functor
+import Categories.NaturalTransformation
 
 \end{code}
