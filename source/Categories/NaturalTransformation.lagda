@@ -54,45 +54,53 @@ module _ {𝓒 : precategory 𝓤 𝓥} {𝓓 : precategory 𝓤' 𝓥'} where
 
   -- TODO : characterize identity type
 
- module functor-category where
-  module str where
-   ob : 𝓤 ⊔ 𝓥 ⊔ 𝓤' ⊔ 𝓥' ̇
-   ob = functor
+ module _ (F : functor) where
+  private module F = functor F
+  transf-idn : transf F F
+  transf-idn A = 𝓓.idn (F.ob A)
 
-   hom : ob → ob → 𝓤 ⊔ 𝓥 ⊔ 𝓥' ̇
-   hom = nat-transf
-
-   idn : (F : ob) → hom F F
-   pr₁ (idn F) A = 𝓓.idn (functor.ob F A)
-   pr₂ (idn F) A B f =
-    let module F = functor F in
+  abstract
+   transf-idn-natural : is-natural F F transf-idn
+   transf-idn-natural A B f =
     𝓓.seq (F.hom f) (𝓓.idn _) ＝⟨ 𝓓.idn-R _ _ _ ⟩
     F.hom f ＝⟨ 𝓓.idn-L _ _ _ ⁻¹ ⟩
     𝓓.seq (𝓓.idn _) (F.hom f) ∎
 
-   module _ (F G H : ob) where
-    private
-     module F = functor F
-     module G = functor G
-     module H = functor H
+  nat-transf-idn : nat-transf F F
+  nat-transf-idn = transf-idn , transf-idn-natural
 
-    seq : hom F G → hom G H → hom F H
-    pr₁ (seq α β) A = 𝓓.seq (pr₁ α A) (pr₁ β A)
-    pr₂ (seq α β) A B f =
-     𝓓.seq (F.hom f) (𝓓.seq (pr₁ α B) (pr₁ β B))
-      ＝⟨ 𝓓.assoc _ _ _ _ _ _ _ ⟩
-     𝓓.seq (𝓓.seq (F.hom f) (pr₁ α B)) (pr₁ β B)
-      ＝⟨ ap (λ x → 𝓓.seq x (pr₁ β B)) (pr₂ α _ _ _) ⟩
-     𝓓.seq (𝓓.seq (pr₁ α A) (G.hom f)) (pr₁ β B)
-      ＝⟨ 𝓓.assoc _ _ _ _ _ _ _ ⁻¹ ⟩
-     𝓓.seq (pr₁ α A) (𝓓.seq (G.hom f) (pr₁ β B))
-      ＝⟨ ap (𝓓.seq (pr₁ α A)) (pr₂ β _ _ _) ⟩
-     𝓓.seq (pr₁ α A) (𝓓.seq (pr₁ β A) (H.hom f))
-      ＝⟨ 𝓓.assoc _ _ _ _ _ _ _ ⟩
-     𝓓.seq (𝓓.seq (pr₁ α A) (pr₁ β A)) (H.hom f) ∎
+ module _ (F G H : functor) where
+  private
+   module F = functor F
+   module G = functor G
+   module H = functor H
 
-   structure : category-structure (𝓤 ⊔ 𝓥 ⊔ 𝓤' ⊔ 𝓥') (𝓤 ⊔ 𝓥 ⊔ 𝓥')
-   structure = ob , hom , idn , seq
+  module _ (α : transf F G) (β : transf G H) where
+   transf-seq : transf F H
+   transf-seq A = 𝓓.seq (α A) (β A)
 
+   module _ (α-nat : is-natural F G α) (β-nat : is-natural G H β) where
+    abstract
+     transf-seq-natural : is-natural F H transf-seq
+     transf-seq-natural A B f =
+      𝓓.seq (F.hom f) (𝓓.seq (α B) (β B))
+       ＝⟨ 𝓓.assoc _ _ _ _ _ _ _ ⟩
+      𝓓.seq (𝓓.seq (F.hom f) (α B)) (β B)
+       ＝⟨ ap (λ x → 𝓓.seq x (β B)) (α-nat _ _ _) ⟩
+      𝓓.seq (𝓓.seq (α A) (G.hom f)) (β B)
+       ＝⟨ 𝓓.assoc _ _ _ _ _ _ _ ⁻¹ ⟩
+      𝓓.seq (α A) (𝓓.seq (G.hom f) (β B))
+       ＝⟨ ap (𝓓.seq (α A)) (β-nat _ _ _) ⟩
+      𝓓.seq (α A) (𝓓.seq (β A) (H.hom f))
+       ＝⟨ 𝓓.assoc _ _ _ _ _ _ _ ⟩
+      𝓓.seq (𝓓.seq (α A) (β A)) (H.hom f) ∎
+
+  nat-transf-seq : nat-transf F G  → nat-transf G H → nat-transf F H
+  pr₁ (nat-transf-seq α β) = transf-seq (pr₁ α) (pr₁ β)
+  pr₂ (nat-transf-seq α β) = transf-seq-natural (pr₁ α) (pr₁ β) (pr₂ α) (pr₂ β)
+
+ module functor-category where
+  structure : category-structure (𝓤 ⊔ 𝓥 ⊔ 𝓤' ⊔ 𝓥') (𝓤 ⊔ 𝓥 ⊔ 𝓥')
+  structure = functor , nat-transf , nat-transf-idn , nat-transf-seq
 
 \end{code}

@@ -92,8 +92,6 @@ module ⊢-properties (𝓓 : deductive-system 𝓤 𝓥) where
     (⊢-is-set _ _)
     (⊢-is-set _ _)
 
-
-
  module _ (A : ob) where
   abstract
    idn-linear : is-linear (idn A)
