@@ -183,6 +183,15 @@ module duploid (𝓓 : duploid 𝓤 𝓥) where
  open duploid-structure (pr₁ 𝓓) (pr₂ 𝓓) public
  open preduploid underlying-preduploid public
 
+-- Some preliminary "quick notation" for working with duploids
+module duploid-notation (𝓓 : duploid 𝓤 𝓥) where
+ open duploid 𝓓
+ _>>_ = cut
+ 𝒹 = delay
+ 𝒻 = force
+ 𝓌 = wrap
+ 𝓊 = unwrap
+
 
 open import Categories.Category
 open import Categories.Functor
@@ -191,6 +200,7 @@ module unrestricted-upshift-functor (𝓓 : duploid 𝓤 𝓥) where
  module 𝓓 = duploid 𝓓
  open ⊢-properties (pr₁ 𝓓.underlying-preduploid)
  open functor-of-precategories
+ open duploid-notation 𝓓
 
  𝓝 = NegativesAndAllMaps.precat 𝓓.underlying-preduploid
  𝓟 = PositivesAndAllMaps.precat 𝓓.underlying-preduploid
@@ -203,56 +213,45 @@ module unrestricted-upshift-functor (𝓓 : duploid 𝓤 𝓥) where
   ob (A , A-pos) = 𝓓.⇑ A , 𝓓.upshift-negative
 
   hom : {A B : 𝓟.ob} → pr₁ A 𝓓.⊢ pr₁ B → (𝓓.⇑ pr₁ A) 𝓓.⊢ (𝓓.⇑ pr₁ B)
-  hom f = 𝓓.cut 𝓓.force (𝓓.cut f 𝓓.delay)
+  hom f = 𝒻 >> (f >> 𝒹)
 
   structure : functor-structure 𝓟 𝓝
   structure = ob , λ {A} {B} → hom {A} {B}
 
  module ax where
   private
-   preserves-idn
-    : (A : 𝓟.ob)
-    → 𝓓.cut 𝓓.force (𝓓.cut (𝓓.idn _) 𝓓.delay)
-       ＝ 𝓓.idn (𝓓.⇑ pr₁ A)
-   preserves-idn (A , A-pos) =
-    𝓓.cut 𝓓.force (𝓓.cut (𝓓.idn A) 𝓓.delay)
-     ＝⟨ ap (𝓓.cut 𝓓.force) (𝓓.idn-L _ _ _) ⟩
-    𝓓.cut 𝓓.force 𝓓.delay
-     ＝⟨ pr₁ 𝓓.force-delay-inverse ⟩
-    𝓓.idn (𝓓.⇑ A) ∎
+   abstract
+    preserves-idn : (A : 𝓟.ob) → 𝒻 >> (𝓓.idn _ >> 𝒹) ＝ 𝓓.idn (𝓓.⇑ pr₁ A)
+    preserves-idn (A , A-pos) =
+     𝒻 >> (𝓓.idn A >> 𝒹) ＝⟨ ap (𝒻 >>_) (𝓓.idn-L _ _ _) ⟩
+     𝒻 >> 𝒹 ＝⟨ pr₁ 𝓓.force-delay-inverse ⟩
+     𝓓.idn (𝓓.⇑ A) ∎
 
-  preserves-seq
-   : (A B C : 𝓟.ob)
-   → (f : 𝓟.hom A B)
-   → (g : 𝓟.hom B C)
-   → str.hom {A} {C} (𝓟.seq {A} {B} {C} f g)
-     ＝ 𝓝.seq {str.ob A} {str.ob B} {str.ob C}
-         (str.hom {A} {B} f)
-         (str.hom {B} {C} g)
-  preserves-seq (A , A-pos) (B , B-pos) (C , C-pos) f g =
-   ϝ >> ((f >> g) >> δ) ＝⟨ ap (𝓓.cut ϝ) (δ-linear A B g f) ⟩
-   ϝ >> (f >> (g >> δ)) ＝⟨ g-δ-linear _ _ _ _ ⁻¹ ⟩
-   ((ϝ >> f) >> (g >> δ)) ＝⟨ ap (_>> (g >> δ)) (help ⁻¹) ⟩
-   ((ϝ >> (f >> δ)) >> ϝ) >> (g >> δ) ＝⟨ g-δ-linear (𝓓.⇑ A) (𝓓.⇑ B) ϝ _ ⟩
-   (ϝ >> (f >> δ)) >> (ϝ >> (g >> δ)) ∎
-   where
-    _>>_ = 𝓓.cut
-    ϝ = 𝓓.force
-    δ = 𝓓.delay
+   preserves-seq
+    : (A B C : 𝓟.ob)
+    → (f : 𝓟.hom A B)
+    → (g : 𝓟.hom B C)
+    → 𝒻 >> ((f >> g) >> 𝒹) ＝ (𝒻 >> (f >> 𝒹)) >> (𝒻 >> (g >> 𝒹))
+   preserves-seq (A , A-pos) (B , B-pos) (C , C-pos) f g =
+    𝒻 >> ((f >> g) >> 𝒹) ＝⟨ ap (𝓓.cut 𝒻) (𝒹-linear A B g f) ⟩
+    𝒻 >> (f >> (g >> 𝒹)) ＝⟨ g-𝒹-linear _ _ _ _ ⁻¹ ⟩
+    ((𝒻 >> f) >> (g >> 𝒹)) ＝⟨ ap (_>> (g >> 𝒹)) (help ⁻¹) ⟩
+    ((𝒻 >> (f >> 𝒹)) >> 𝒻) >> (g >> 𝒹) ＝⟨ g-𝒹-linear (𝓓.⇑ A) (𝓓.⇑ B) 𝒻 _ ⟩
+    (𝒻 >> (f >> 𝒹)) >> (𝒻 >> (g >> 𝒹)) ∎
+    where
+     help : ((𝒻 >> (f >> 𝒹)) >> 𝒻) ＝ 𝒻 >> f
+     help =
+      ((𝒻 >> (f >> 𝒹)) >> 𝒻) ＝⟨ 𝓓.force-linear _ _ _ _ ⟩
+      (𝒻 >> ((f >> 𝒹) >> 𝒻)) ＝⟨ ap (𝒻 >>_) (𝓓.force-linear _ _ _ _) ⟩
+      (𝒻 >> (f >> (𝒹 >> 𝒻))) ＝⟨ ap (λ x → 𝒻 >> (f >> x)) (pr₂ 𝓓.force-delay-inverse) ⟩
+      (𝒻 >> (f >> 𝓓.idn _)) ＝⟨ ap (𝒻 >>_) (𝓓.idn-R _ _ _) ⟩
+      (𝒻 >> f) ∎
 
-    help : ((ϝ >> (f >> δ)) >> ϝ) ＝ ϝ >> f
-    help =
-     ((ϝ >> (f >> δ)) >> ϝ) ＝⟨ 𝓓.force-linear _ _ _ _ ⟩
-     (ϝ >> ((f >> δ) >> ϝ)) ＝⟨ ap (ϝ >>_) (𝓓.force-linear _ _ _ _) ⟩
-     (ϝ >> (f >> (δ >> ϝ))) ＝⟨ ap (λ x → ϝ >> (f >> x)) (pr₂ 𝓓.force-delay-inverse) ⟩
-     (ϝ >> (f >> 𝓓.idn _)) ＝⟨ ap (ϝ >>_) (𝓓.idn-R _ _ _) ⟩
-     (ϝ >> f) ∎
+     g-𝒹-linear : is-linear (g >> 𝒹)
+     g-𝒹-linear = B-pos (𝓓.⇑ C) (g >> 𝒹)
 
-    g-δ-linear : is-linear (𝓓.cut g δ)
-    g-δ-linear = B-pos (𝓓.⇑ C) (𝓓.cut g δ)
-
-    δ-linear : is-linear (δ {C})
-    δ-linear = C-pos (𝓓.⇑ C) δ
+     𝒹-linear : is-linear (𝒹 {C})
+     𝒹-linear = C-pos (𝓓.⇑ C) 𝒹
 
   axioms : functor-axioms 𝓟 𝓝 str.structure
   axioms = preserves-idn , preserves-seq
