@@ -198,15 +198,14 @@ open import Categories.Functor
 
 module unrestricted-upshift-functor (𝓓 : duploid 𝓤 𝓥) where
  module 𝓓 = duploid 𝓓
+ 𝓝 = NegativesAndAllMaps.precat 𝓓.underlying-preduploid
+ 𝓟 = PositivesAndAllMaps.precat 𝓓.underlying-preduploid
+ module 𝓝 = precategory 𝓝
+ module 𝓟 = precategory 𝓟
+
  open ⊢-properties (pr₁ 𝓓.underlying-preduploid)
  open functor-of-precategories
  open duploid-notation 𝓓
-
- 𝓝 = NegativesAndAllMaps.precat 𝓓.underlying-preduploid
- 𝓟 = PositivesAndAllMaps.precat 𝓓.underlying-preduploid
-
- module 𝓝 = precategory 𝓝
- module 𝓟 = precategory 𝓟
 
  module str where
   ob : 𝓟.ob → 𝓝.ob
