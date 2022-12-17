@@ -34,7 +34,7 @@ module deductive-system-structure (𝓓 : deductive-system-structure 𝓤 𝓥) 
  idn A = pr₁ (pr₂ (pr₂ 𝓓)) A
 
  cut : {A B C : ob} (f : A ⊢ B) (g : B ⊢ C) → A ⊢ C
- cut f g = pr₂ (pr₂ (pr₂ 𝓓)) f g
+ cut f g = pr₂ (pr₂ (pr₂ 𝓓)) _ _ _ f g
 
 module _ (𝓓 : deductive-system-structure 𝓤 𝓥) where
  open deductive-system-structure 𝓓

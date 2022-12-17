@@ -22,7 +22,7 @@ category-structure 𝓤 𝓥 =
  Σ ob ꞉ (𝓤 ̇),
  Σ hom ꞉ (ob → ob → 𝓥 ̇) ,
  Σ idn ꞉ ((A : ob) → hom A A) ,
- ({A B C : ob} (f : hom A B) (g : hom B C) → hom A C)
+ ((A B C : ob) (f : hom A B) (g : hom B C) → hom A C)
 
 module category-structure (𝓒 : category-structure 𝓤 𝓥) where
  ob : 𝓤 ̇
@@ -35,7 +35,7 @@ module category-structure (𝓒 : category-structure 𝓤 𝓥) where
  idn A = pr₁ (pr₂ (pr₂ 𝓒)) A
 
  seq : {A B C : ob} (f : hom A B) (g : hom B C) → hom A C
- seq f g = pr₂ (pr₂ (pr₂ 𝓒)) f g
+ seq f g = pr₂ (pr₂ (pr₂ 𝓒)) _ _ _ f g
 
  cmp : {A B C : ob} (g : hom B C) (f : hom A B) → hom A C
  cmp f g = seq g f

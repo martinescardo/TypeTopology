@@ -70,7 +70,7 @@ module _ {𝓒 : precategory 𝓤 𝓥} {𝓓 : precategory 𝓤' 𝓥'} where
     F.hom f ＝⟨ 𝓓.idn-L _ _ _ ⁻¹ ⟩
     𝓓.seq (𝓓.idn _) (F.hom f) ∎
 
-   module _ {F G H : ob} where
+   module _ (F G H : ob) where
     private
      module F = functor F
      module G = functor G
@@ -92,7 +92,7 @@ module _ {𝓒 : precategory 𝓤 𝓥} {𝓓 : precategory 𝓤' 𝓥'} where
      𝓓.seq (𝓓.seq (pr₁ α A) (pr₁ β A)) (H.hom f) ∎
 
    structure : category-structure (𝓤 ⊔ 𝓥 ⊔ 𝓤' ⊔ 𝓥') (𝓤 ⊔ 𝓥 ⊔ 𝓥')
-   structure = ob , hom , idn , λ {A} {B} {C} → seq {A} {B} {C}
+   structure = ob , hom , idn , seq
 
 
 \end{code}

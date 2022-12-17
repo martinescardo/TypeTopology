@@ -114,11 +114,11 @@ module NegativesAndAllMaps (𝓓 : preduploid 𝓤 𝓥) where
  idn : (A : ob) → hom A A
  idn A = 𝓓.idn (pr₁ A)
 
- seq : {A B C : ob} → hom A B → hom B C → hom A C
- seq f g = 𝓓.cut f g
+ seq : (A B C : ob) → hom A B → hom B C → hom A C
+ seq _ _ _ f g = 𝓓.cut f g
 
  cat-data : category-structure (𝓤 ⊔ 𝓥) 𝓥
- cat-data = ob , hom , idn , λ {A} {B} {C} → seq {A} {B} {C}
+ cat-data = ob , hom , idn , seq
 
  module _ (open category-axiom-statements) where
   hom-is-set : statement-hom-is-set cat-data
@@ -149,11 +149,11 @@ module PositivesAndAllMaps (𝓓 : preduploid 𝓤 𝓥) where
  idn : (A : ob) → hom A A
  idn A = 𝓓.idn (pr₁ A)
 
- seq : {A B C : ob} → hom A B → hom B C → hom A C
- seq f g = 𝓓.cut f g
+ seq : (A B C : ob) → hom A B → hom B C → hom A C
+ seq _ _ _ f g = 𝓓.cut f g
 
  cat-data : category-structure (𝓤 ⊔ 𝓥) 𝓥
- cat-data = ob , hom , idn , λ {A} {B} {C} → seq {A} {B} {C}
+ cat-data = ob , hom , idn , seq
 
  module _ (open category-axiom-statements) where
   hom-is-set : statement-hom-is-set cat-data
@@ -187,12 +187,12 @@ module NegativesAndLinearMaps (𝓓 : preduploid 𝓤 𝓥) where
  pr₁ (idn A) = 𝓓.idn (pr₁ A)
  pr₂ (idn A) = idn-linear (pr₁ A)
 
- seq : {A B C : ob} → hom A B → hom B C → hom A C
- pr₁ (seq f g) = 𝓓.cut (pr₁ f) (pr₁ g)
- pr₂ (seq f g) = cut-linear (pr₁ f) (pr₁ g) (pr₂ f) (pr₂ g)
+ seq : (A B C : ob) → hom A B → hom B C → hom A C
+ pr₁ (seq _ _ _ f g) = 𝓓.cut (pr₁ f) (pr₁ g)
+ pr₂ (seq _ _ _ f g) = cut-linear (pr₁ f) (pr₁ g) (pr₂ f) (pr₂ g)
 
  cat-data : category-structure (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
- cat-data = ob , hom , idn , λ {A} {B} {C} → seq {A} {B} {C}
+ cat-data = ob , hom , idn , seq
 
  module _ (fe0 : funext 𝓤 (𝓤 ⊔ 𝓥)) (fe1 : funext 𝓥 𝓥) where
   open category-axiom-statements
@@ -236,12 +236,12 @@ module PositivesAndThunkableMaps (𝓓 : preduploid 𝓤 𝓥) where
  pr₁ (idn A) = 𝓓.idn (pr₁ A)
  pr₂ (idn A) = idn-thunkable (pr₁ A)
 
- seq : {A B C : ob} → hom A B → hom B C → hom A C
- pr₁ (seq f g) = 𝓓.cut (pr₁ f) (pr₁ g)
- pr₂ (seq f g) = cut-thunkable (pr₁ f) (pr₁ g) (pr₂ f) (pr₂ g)
+ seq : (A B C : ob) → hom A B → hom B C → hom A C
+ pr₁ (seq _ _ _ f g) = 𝓓.cut (pr₁ f) (pr₁ g)
+ pr₂ (seq _ _ _ f g) = cut-thunkable (pr₁ f) (pr₁ g) (pr₂ f) (pr₂ g)
 
  cat-data : category-structure (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
- cat-data = ob , hom , idn , λ {A} {B} {C} → seq {A} {B} {C}
+ cat-data = ob , hom , idn , seq
 
  module _ (fe0 : funext 𝓤 (𝓤 ⊔ 𝓥)) (fe1 : funext 𝓥 𝓥) where
   open category-axiom-statements
