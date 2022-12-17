@@ -233,18 +233,23 @@ module unrestricted-upshift-functor (𝓓 : duploid 𝓤 𝓥) where
     → (g : 𝓟.hom B C)
     → 𝒻 >> ((f >> g) >> 𝒹) ＝ (𝒻 >> (f >> 𝒹)) >> (𝒻 >> (g >> 𝒹))
    preserves-seq (A , A-pos) (B , B-pos) (C , C-pos) f g =
-    𝒻 >> ((f >> g) >> 𝒹) ＝⟨ ap (𝓓.cut 𝒻) (𝒹-linear A B g f) ⟩
+    𝒻 >> ((f >> g) >> 𝒹) ＝⟨ ap (𝒻 >>_) (𝒹-linear _ _ _ _) ⟩
     𝒻 >> (f >> (g >> 𝒹)) ＝⟨ g-𝒹-linear _ _ _ _ ⁻¹ ⟩
-    ((𝒻 >> f) >> (g >> 𝒹)) ＝⟨ ap (_>> (g >> 𝒹)) (help ⁻¹) ⟩
-    ((𝒻 >> (f >> 𝒹)) >> 𝒻) >> (g >> 𝒹) ＝⟨ g-𝒹-linear (𝓓.⇑ A) (𝓓.⇑ B) 𝒻 _ ⟩
+    ((𝒻 >> f) >> (g >> 𝒹)) ＝⟨ ap (_>> (g >> 𝒹)) (help1 ⁻¹) ⟩
+    ((𝒻 >> (f >> 𝒹)) >> 𝒻) >> (g >> 𝒹) ＝⟨ g-𝒹-linear _ _ _ _ ⟩
     (𝒻 >> (f >> 𝒹)) >> (𝒻 >> (g >> 𝒹)) ∎
     where
-     help : ((𝒻 >> (f >> 𝒹)) >> 𝒻) ＝ 𝒻 >> f
-     help =
+     help2 : (f >> 𝒹) >> 𝒻 ＝ f
+     help2 =
+      (f >> 𝒹) >> 𝒻 ＝⟨ 𝓓.force-linear _ _ _ _ ⟩
+      f >> (𝒹 >> 𝒻) ＝⟨ ap (f >>_) (pr₂ 𝓓.force-delay-inverse) ⟩
+      f >> 𝓓.idn _ ＝⟨ 𝓓.idn-R _ _ _ ⟩
+      f ∎
+
+     help1 : ((𝒻 >> (f >> 𝒹)) >> 𝒻) ＝ 𝒻 >> f
+     help1 =
       ((𝒻 >> (f >> 𝒹)) >> 𝒻) ＝⟨ 𝓓.force-linear _ _ _ _ ⟩
-      (𝒻 >> ((f >> 𝒹) >> 𝒻)) ＝⟨ ap (𝒻 >>_) (𝓓.force-linear _ _ _ _) ⟩
-      (𝒻 >> (f >> (𝒹 >> 𝒻))) ＝⟨ ap (λ x → 𝒻 >> (f >> x)) (pr₂ 𝓓.force-delay-inverse) ⟩
-      (𝒻 >> (f >> 𝓓.idn _)) ＝⟨ ap (𝒻 >>_) (𝓓.idn-R _ _ _) ⟩
+      (𝒻 >> ((f >> 𝒹) >> 𝒻)) ＝⟨ ap (𝒻 >>_) help2 ⟩
       (𝒻 >> f) ∎
 
      g-𝒹-linear : is-linear (g >> 𝒹)
