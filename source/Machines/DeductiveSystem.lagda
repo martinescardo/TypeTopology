@@ -18,7 +18,7 @@ open import UF.Subsingletons-FunExt
 open import UF.Logic
 open import UF.Lower-FunExt
 
-open import Categories.Precategory
+open import Categories.Category
 
 deductive-system-structure : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
 deductive-system-structure 𝓤 𝓥 = category-structure 𝓤 𝓥

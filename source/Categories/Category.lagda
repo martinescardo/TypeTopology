@@ -4,7 +4,7 @@ Jon Sterling, started 16th Dec 2022
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module Categories.Precategory where
+module Categories.Category where
 
 open import MLTT.Spartan
 open import UF.FunExt
@@ -184,24 +184,28 @@ module _ (𝓒 : precategory 𝓤 𝓥) where
  pr₁ (pr₂ idn-is-iso) = idn-L _ _ _
  pr₂ (pr₂ idn-is-iso) = idn-L _ _ _
 
- module precategory-univalence where
-  module _ (A B : ob) where
-   ＝-to-iso : A ＝ B → iso A B
-   ＝-to-iso refl = idn A , idn-is-iso
+ module _ (A B : ob) where
+  ＝-to-iso : A ＝ B → iso A B
+  ＝-to-iso refl = idn A , idn-is-iso
 
-  is-univalent : 𝓤 ⊔ 𝓥 ̇
-  is-univalent = (A B : ob) → is-equiv (＝-to-iso A B)
+ is-univalent-precategory : 𝓤 ⊔ 𝓥 ̇
+ is-univalent-precategory = (A B : ob) → is-equiv (＝-to-iso A B)
 
-  module _ (fe0 : funext 𝓤 (𝓤 ⊔ 𝓥)) (fe1 : funext 𝓥 𝓥) (fe2 : funext 𝓥 𝓤) where
-   private
-    fe3 : funext 𝓤 𝓤
-    fe3 = lower-funext 𝓤 𝓥 fe0
+ module _ (fe0 : funext 𝓤 (𝓤 ⊔ 𝓥)) (fe1 : funext 𝓥 𝓥) (fe2 : funext 𝓥 𝓤) where
+  private
+   fe3 : funext 𝓤 𝓤
+   fe3 = lower-funext 𝓤 𝓥 fe0
 
-   being-univalent-is-prop : is-prop is-univalent
-   being-univalent-is-prop =
-    Π-is-prop fe0 λ _ →
-    Π-is-prop fe0 λ _ →
-    being-equiv-is-prop' fe2 fe1 fe3 fe2 _
+  being-univalent-is-prop : is-prop is-univalent-precategory
+  being-univalent-is-prop =
+   Π-is-prop fe0 λ _ →
+   Π-is-prop fe0 λ _ →
+   being-equiv-is-prop' fe2 fe1 fe3 fe2 _
 
+category : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
+category 𝓤 𝓥 = Σ 𝓒 ꞉ precategory 𝓤 𝓥 , is-univalent-precategory 𝓒
+
+category-to-precategory : category 𝓤 𝓥 → precategory 𝓤 𝓥
+category-to-precategory 𝓒 = pr₁ 𝓒
 
 \end{code}

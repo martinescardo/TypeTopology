@@ -7,6 +7,7 @@ Jon Sterling, 16 Dec 2022
 module Machines.index where
 
 import Machines.DeductiveSystem
+import Machines.Depolarization
 import Machines.Preduploid
 import Machines.Duploid
 

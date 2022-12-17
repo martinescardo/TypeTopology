@@ -9,6 +9,6 @@ point of view.
 
 module Categories.index where
 
-import Categories.Precategory
+import Categories.Category
 
 \end{code}
