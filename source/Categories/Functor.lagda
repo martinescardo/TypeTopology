@@ -25,14 +25,14 @@ module functor-of-precategories (𝓒 : precategory 𝓤 𝓥) (𝓓 : precatego
  functor-structure : 𝓤 ⊔ 𝓥 ⊔ 𝓤' ⊔ 𝓥' ̇
  functor-structure =
   Σ ob ꞉ (𝓒.ob → 𝓓.ob) ,
-  ({A B : 𝓒.ob} (f : 𝓒.hom A B) → 𝓓.hom (ob A) (ob B))
+  ((A B : 𝓒.ob) (f : 𝓒.hom A B) → 𝓓.hom (ob A) (ob B))
 
  module functor-structure (F : functor-structure) where
   ob : 𝓒.ob → 𝓓.ob
   ob = pr₁ F
 
   hom : {A B : 𝓒.ob} (f : 𝓒.hom A B) → 𝓓.hom (ob A) (ob B)
-  hom = pr₂ F
+  hom = pr₂ F _ _
 
  module _ (F : functor-structure) where
   open functor-structure F
@@ -109,3 +109,61 @@ module functor-of-categories (𝓒 𝓓 : category 𝓤 𝓥) where
     (category-to-precategory 𝓒)
     (category-to-precategory 𝓓)
    public
+
+
+module identity-functor (𝓒 : precategory 𝓤 𝓥) where
+ open functor-of-precategories
+
+ str : functor-structure 𝓒 𝓒
+ str = id , λ _ _ → id
+
+ ax : functor-axioms 𝓒 𝓒 str
+ ax = (λ A → refl) , (λ A B C f g → refl)
+
+ fun : functor 𝓒 𝓒
+ fun = str , ax
+
+module composite-functor
+ (𝓒 : precategory 𝓣 𝓤) (𝓓 : precategory 𝓣' 𝓤') (𝓔 : precategory 𝓥 𝓦)
+ (open functor-of-precategories)
+ (F : functor 𝓒 𝓓)
+ (G : functor 𝓓 𝓔)
+ where
+
+ private
+  module 𝓒 = precategory 𝓒
+  module 𝓓 = precategory 𝓓
+  module 𝓔 = precategory 𝓔
+  module F = functor 𝓒 𝓓 F
+  module G = functor 𝓓 𝓔 G
+
+ ob : 𝓒.ob → 𝓔.ob
+ ob A = G.ob (F.ob A)
+
+ hom : (A B : 𝓒.ob) (f : 𝓒.hom A B) → 𝓔.hom (ob A) (ob B)
+ hom A B f = G.hom (F.hom f)
+
+ str : functor-structure 𝓒 𝓔
+ str = ob , hom
+
+ preserves-idn : (A : 𝓒.ob) → hom A A (𝓒.idn A) ＝ 𝓔.idn (ob A)
+ preserves-idn A =
+  G.hom (F.hom (𝓒.idn A)) ＝⟨ ap G.hom (F.preserves-idn A) ⟩
+  G.hom (𝓓.idn (F.ob A)) ＝⟨ G.preserves-idn (F.ob A) ⟩
+  𝓔.idn (ob A) ∎
+
+ preserves-seq
+  : (A B C : 𝓒.ob) (f : 𝓒.hom A B) (g : 𝓒.hom B C)
+  → hom A C (𝓒.seq f g) ＝ 𝓔.seq (hom A B f) (hom B C g)
+ preserves-seq A B C f g =
+  G.hom (F.hom (𝓒.seq f g))
+   ＝⟨ ap G.hom (F.preserves-seq A B C f g) ⟩
+  G.hom (𝓓.seq (F.hom f) (F.hom g))
+   ＝⟨ G.preserves-seq (F.ob A) (F.ob B) (F.ob C) (F.hom f) (F.hom g) ⟩
+  𝓔.seq (G.hom (F.hom f)) (G.hom (F.hom g)) ∎
+
+ ax : functor-axioms 𝓒 𝓔 str
+ ax = preserves-idn , preserves-seq
+
+ fun : functor 𝓒 𝓔
+ fun = str , ax
