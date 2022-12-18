@@ -239,7 +239,6 @@ assuming.
            X'        ≃⟨ ≃-sym (f' , f'-is-equiv) ⟩
            Ordinal 𝓤 ■
 
-
        the-type-of-ordinals-is-small : is-small (Ordinal 𝓤)
        the-type-of-ordinals-is-small = X'' , e
 
@@ -281,10 +280,10 @@ such α, which we will call α₀:
 
 \end{code}
 
-We now restrict f to α₀ as follows, and show that it is a surjection
-and an injection, and hence an equivalence, and we use this to
-transport the well-ordering of α₀ to X to establish the desired
-result:
+We now restrict f to α₀ as follows, and show that the resulting map is
+a surjection and an injection, and hence an equivalence, and we use
+this to transport the well-ordering of α₀ to X to establish the
+desired result:
 
 \begin{code}
 
