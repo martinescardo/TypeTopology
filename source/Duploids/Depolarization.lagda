@@ -14,7 +14,7 @@ a depolarized deductive system is the same thing as a precategory.
 
 open import MLTT.Spartan
 
-module Machines.Depolarization where
+module Duploids.Depolarization where
 
 open import UF.FunExt
 open import UF.Base
@@ -27,7 +27,7 @@ open import UF.Subsingletons-FunExt
 open import UF.Lower-FunExt
 
 open import Categories.Category
-open import Machines.DeductiveSystem
+open import Duploids.DeductiveSystem
 
 module _ (𝓓 : deductive-system 𝓤 𝓥) where
  open deductive-system 𝓓

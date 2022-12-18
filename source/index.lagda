@@ -98,7 +98,7 @@ import InjectiveTypes.index
 import Integers.index                 -- by Andrew Sneap
 import Lifting.index
 import Locales.index                  -- by Ayberk Tosun
-import Machines.index                 -- by Jon Sterling
+import Duploids.index                 -- by Jon Sterling
 import MGS.index                      -- Modular version of https://github.com/martinescardo/HoTT-UF-Agda-Lecture-Notes
 import MLTT.index
 import MetricSpaces.index             -- by Andrew Sneap

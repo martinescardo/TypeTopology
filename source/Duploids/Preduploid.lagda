@@ -6,7 +6,7 @@ Jon Sterling, started 16th Dec 2022
 
 open import UF.PropTrunc
 
-module Machines.Preduploid (pt : propositional-truncations-exist) where
+module Duploids.Preduploid (pt : propositional-truncations-exist) where
 
 open PropositionalTruncation pt
 
@@ -20,7 +20,7 @@ open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
 open import Categories.Category
-open import Machines.DeductiveSystem
+open import Duploids.DeductiveSystem
 
 module _ (𝓓 : deductive-system 𝓤 𝓥) where
  open deductive-system 𝓓

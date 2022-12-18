@@ -4,7 +4,7 @@ Jon Sterling, started 16th Dec 2022
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module Machines.DeductiveSystem where
+module Duploids.DeductiveSystem where
 
 open import UF.FunExt
 open import UF.Base

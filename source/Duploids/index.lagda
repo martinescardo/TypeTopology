@@ -49,11 +49,11 @@ structure theorem in a univalent setting.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module Machines.index where
+module Duploids.index where
 
-import Machines.DeductiveSystem
-import Machines.Depolarization
-import Machines.Preduploid
-import Machines.Duploid
+import Duploids.DeductiveSystem
+import Duploids.Depolarization
+import Duploids.Preduploid
+import Duploids.Duploid
 
 \end{code}
