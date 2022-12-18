@@ -211,11 +211,11 @@ module unrestricted-upshift-functor (𝓓 : duploid 𝓤 𝓥) where
   ob : 𝓟.ob → 𝓝.ob
   ob (A , A-pos) = 𝓓.⇑ A , 𝓓.upshift-negative
 
-  hom : {A B : 𝓟.ob} → pr₁ A 𝓓.⊢ pr₁ B → (𝓓.⇑ pr₁ A) 𝓓.⊢ (𝓓.⇑ pr₁ B)
-  hom f = 𝒻 >> (f >> 𝒹)
+  hom : (A B : 𝓟.ob) → pr₁ A 𝓓.⊢ pr₁ B → (𝓓.⇑ pr₁ A) 𝓓.⊢ (𝓓.⇑ pr₁ B)
+  hom A B f = 𝒻 >> (f >> 𝒹)
 
   structure : functor-structure 𝓟 𝓝
-  structure = ob , λ {A} {B} → hom {A} {B}
+  structure = ob , hom
 
  module ax where
   private
