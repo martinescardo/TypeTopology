@@ -2,7 +2,17 @@ Jon Sterling, 16 Dec 2022
 
 The goal of this library is to explore the theory of *duploids*, a categorical
 semantics that unifies polarized sequent calculus, call-by-push-value, and
-abstract machines. A duploid is a generalization of a category that relaxes the
+abstract machines. Duploids are introduced in the following paper:
+
+   Munch-Maccagnoni, G. (2014). Models of a Non-associative Composition. In:
+   Muscholl, A. (eds) Foundations of Software Science and Computation
+   Structures. FoSSaCS 2014. Lecture Notes in Computer Science, vol
+   8412. Springer, Berlin, Heidelberg.
+
+   https://doi.org/10.1007/978-3-642-54830-7_26
+
+
+A duploid is a generalization of a category that relaxes the
 associativity condition in a way that is compatible with the viewpoint of
 morphisms as *effectful* programs.
 
