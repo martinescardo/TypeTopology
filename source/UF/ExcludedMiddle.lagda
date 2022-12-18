@@ -126,6 +126,11 @@ module _ (pt : propositional-truncations-exist) where
  double-negation-is-truncation-gives-DNE : ((X : 𝓤 ̇ ) → ¬¬ X → ∥ X ∥) → DNE 𝓤
  double-negation-is-truncation-gives-DNE f P i u = ∥∥-rec i id (f P u)
 
+ non-empty-is-inhabited : EM 𝓤 → {X : 𝓤 ̇ } → ¬¬ X → ∥ X ∥
+ non-empty-is-inhabited em {X} φ = cases
+                                    (λ s → s)
+                                    (λ u → 𝟘-elim (φ (contrapositive ∣_∣ u))) (em ∥ X ∥ ∥∥-is-prop)
+
  ∃-not+Π : EM (𝓤 ⊔ 𝓥)
          → {X : 𝓤 ̇ }
          → (A : X → 𝓥 ̇ )
@@ -152,27 +157,6 @@ module _ (pt : propositional-truncations-exist) where
    (λ (u : ¬ (∃ x ꞉ X , A x))
          → inr (λ (x : X) (v : A x) → u ∣ x , v ∣))
 
-\end{code}
-
-Added by Tom de Jong in August 2021.
-
-\begin{code}
-
- not-Π-not-implies-∃ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
-                     → EM (𝓤 ⊔ 𝓥)
-                     → ¬ ((x : X) → ¬ A x)
-                     → ∃ x ꞉ X , A x
- not-Π-not-implies-∃ {𝓤} {𝓥} {X} {A} em f = EM-gives-DNE em (∃ A) ∥∥-is-prop γ
-   where
-    γ : ¬¬ (∃ A)
-    γ g = f (λ x a → g ∣ x , a ∣)
-
-\end{code}
-
-End of addition.
-
-\begin{code}
-
  not-Π-implies-∃-not : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
                      → EM (𝓤 ⊔ 𝓥)
                      → ((x : X) → is-prop (A x))
@@ -189,6 +173,21 @@ End of addition.
                                     (λ (v : ¬ A x) → u ∣ x , v ∣))))
   where
    E = ∃ x ꞉ X , ¬ A x
+
+\end{code}
+
+Added by Tom de Jong in August 2021.
+
+\begin{code}
+
+ not-Π-not-implies-∃ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
+                     → EM (𝓤 ⊔ 𝓥)
+                     → ¬ ((x : X) → ¬ A x)
+                     → ∃ x ꞉ X , A x
+ not-Π-not-implies-∃ {𝓤} {𝓥} {X} {A} em f = EM-gives-DNE em (∃ A) ∥∥-is-prop γ
+   where
+    γ : ¬¬ (∃ A)
+    γ g = f (λ x a → g ∣ x , a ∣)
 
 \end{code}
 

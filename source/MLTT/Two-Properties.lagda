@@ -61,6 +61,12 @@ one-is-not-zero p = 𝟙-is-not-𝟘 q
 zero-is-not-one : ₀ ≠ ₁
 zero-is-not-one p = one-is-not-zero (p ⁻¹)
 
+𝟚-ext : {b c : 𝟚} → (b ＝ ₁ → c ＝ ₁) → (c ＝ ₁ → b ＝ ₁) → b ＝ c
+𝟚-ext {₀} {₀} f g = refl
+𝟚-ext {₀} {₁} f g = 𝟘-elim (zero-is-not-one (g refl))
+𝟚-ext {₁} {₀} f g = 𝟘-elim (zero-is-not-one (f refl))
+𝟚-ext {₁} {₁} f g = refl
+
 equal-₁-different-from-₀ : {b : 𝟚} → b ＝ ₁ → b ≠ ₀
 equal-₁-different-from-₀ r s = zero-is-not-one (s ⁻¹ ∙ r)
 
@@ -378,6 +384,9 @@ complement-both-right {₁} {₁} l = ⋆
 
 complement-intro₀ : {a : 𝟚} → a ＝ ₀ → complement a ＝ ₁
 complement-intro₀ {₀} p = refl
+
+complement-one-gives-argument-not-one : {a : 𝟚} → complement a ＝ ₁ → a ≠ ₁
+complement-one-gives-argument-not-one {₀} _ = zero-is-not-one
 
 complement-intro₁ : {a : 𝟚} → a ＝ ₁ → complement a ＝ ₀
 complement-intro₁ {₁} p = refl

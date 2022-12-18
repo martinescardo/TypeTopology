@@ -82,6 +82,7 @@ open import Naturals.Binary hiding (_+_)
 open import Naturals.Order
 open import Notation.Order
 open import NotionsOfDecidability.Decidable
+open import NotionsOfDecidability.DecidableClassifier
 open import NotionsOfDecidability.Complemented
 open import TypeTopology.CompactTypes
 open import TypeTopology.DiscreteAndSeparated
