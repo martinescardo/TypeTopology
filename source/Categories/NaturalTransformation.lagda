@@ -183,66 +183,98 @@ module natural-transformation (𝓒 : precategory 𝓤 𝓥) (𝓓 : precategory
    precat : precategory (𝓤 ⊔ 𝓥 ⊔ 𝓤' ⊔ 𝓥') (𝓤 ⊔ 𝓥 ⊔ 𝓥')
    precat = structure , axioms
 
-module horizontal-composition
- (𝓒 : precategory 𝓣 𝓤)
- (𝓓 : precategory 𝓣' 𝓤')
- (𝓔 : precategory 𝓥 𝓦)
- (open functor-of-precategories) (open natural-transformation)
- (F1 G1 : functor 𝓒 𝓓)
- (F2 G2 : functor 𝓓 𝓔)
- (α : nat-transf 𝓒 𝓓 F1 G1)
- (β : nat-transf 𝓓 𝓔 F2 G2)
- where
-
+module _ (𝓒 : precategory 𝓣 𝓤) (𝓓 : precategory 𝓣' 𝓤') (𝓔 : precategory 𝓥 𝓦) where
  private
   module 𝓒 = precategory 𝓒
   module 𝓓 = precategory 𝓓
   module 𝓔 = precategory 𝓔
-  F3 = composite-functor.fun 𝓒 𝓓 𝓔 F1 F2
-  G3 = composite-functor.fun 𝓒 𝓓 𝓔 G1 G2
-  module F1 = functor 𝓒 𝓓 F1
-  module F2 = functor 𝓓 𝓔 F2
-  module G1 = functor 𝓒 𝓓 G1
-  module G2 = functor 𝓓 𝓔 G2
-  module F3 = functor 𝓒 𝓔 F3
-  module G3 = functor 𝓒 𝓔 G3
+ open functor-of-precategories
+ open natural-transformation
 
- hcomp-str : transf 𝓒 𝓔 F3 G3
- hcomp-str A = 𝓔.seq (pr₁ β (F1.ob A)) (G2.hom (pr₁ α A))
+ module horizontal-composition
+  (F1 G1 : functor 𝓒 𝓓)
+  (F2 G2 : functor 𝓓 𝓔)
+  (α : nat-transf 𝓒 𝓓 F1 G1)
+  (β : nat-transf 𝓓 𝓔 F2 G2)
+  where
 
- abstract
-  hcomp-ax : is-natural 𝓒 𝓔 F3 G3 hcomp-str
-  hcomp-ax A B f =
-   𝓔.seq (F2.hom (F1.hom f)) (𝓔.seq (pr₁ β (F1.ob B)) (G2.hom (pr₁ α B)))
-    ＝⟨ 𝓔.assoc _ _ _ _ _ _ _ ⟩
-   𝓔.seq (𝓔.seq (F3.hom f) (pr₁ β (F1.ob B))) (G2.hom (pr₁ α B))
-    ＝⟨ ap (λ x → 𝓔.seq x _) h0 ⟩
-   𝓔.seq (𝓔.seq (pr₁ β (F1.ob A)) (G2.hom (F1.hom f))) (G2.hom (pr₁ α B))
-    ＝⟨ 𝓔.assoc _ _ _ _ _ _ _ ⁻¹ ⟩
-   𝓔.seq (pr₁ β (F1.ob A)) (𝓔.seq (G2.hom (F1.hom f)) (G2.hom (pr₁ α B)))
-    ＝⟨ ap (𝓔.seq (pr₁ β (F1.ob A))) h1 ⟩
-   𝓔.seq (pr₁ β (F1.ob A)) (𝓔.seq (G2.hom (pr₁ α A)) (G3.hom f))
-    ＝⟨ 𝓔.assoc _ _ _ _ _ _ _ ⟩
-   𝓔.seq (𝓔.seq (pr₁ β (F1.ob A)) (G2.hom (pr₁ α A))) (G3.hom f) ∎
-   where
-    h0
-     : 𝓔.seq (F2.hom (F1.hom f)) (pr₁ β (F1.ob B))
-     ＝ 𝓔.seq (pr₁ β (F1.ob A)) (G2.hom (F1.hom f))
-    h0 = pr₂ β (F1.ob A) (F1.ob B) (F1.hom f)
+  private
+   F3 = composite-functor.fun 𝓒 𝓓 𝓔 F1 F2
+   G3 = composite-functor.fun 𝓒 𝓓 𝓔 G1 G2
+   module F1 = functor 𝓒 𝓓 F1
+   module F2 = functor 𝓓 𝓔 F2
+   module G1 = functor 𝓒 𝓓 G1
+   module G2 = functor 𝓓 𝓔 G2
+   module F3 = functor 𝓒 𝓔 F3
+   module G3 = functor 𝓒 𝓔 G3
 
-    h1
-     : 𝓔.seq (G2.hom (F1.hom f)) (G2.hom (pr₁ α B))
-     ＝ 𝓔.seq (G2.hom (pr₁ α A)) (G3.hom f)
-    h1 =
-     𝓔.seq (G2.hom (F1.hom f)) (G2.hom (pr₁ α B))
-      ＝⟨ G2.preserves-seq _ _ _ _ _ ⁻¹ ⟩
-     G2.hom (𝓓.seq (F1.hom f) (pr₁ α B))
-      ＝⟨ ap G2.hom (pr₂ α _ _ _) ⟩
-     G2.hom (𝓓.seq (pr₁ α A) (G1.hom f))
-      ＝⟨ G2.preserves-seq _ _ _ _ _ ⟩
-     𝓔.seq (G2.hom (pr₁ α A)) (G3.hom f) ∎
+  hcomp-str : transf 𝓒 𝓔 F3 G3
+  hcomp-str A = 𝓔.seq (pr₁ β (F1.ob A)) (G2.hom (pr₁ α A))
 
- hcomp : nat-transf 𝓒 𝓔 F3 G3
- hcomp = hcomp-str , hcomp-ax
+  abstract
+   hcomp-ax : is-natural 𝓒 𝓔 F3 G3 hcomp-str
+   hcomp-ax A B f =
+    𝓔.seq (F2.hom (F1.hom f)) (𝓔.seq (pr₁ β (F1.ob B)) (G2.hom (pr₁ α B)))
+     ＝⟨ 𝓔.assoc _ _ _ _ _ _ _ ⟩
+    𝓔.seq (𝓔.seq (F3.hom f) (pr₁ β (F1.ob B))) (G2.hom (pr₁ α B))
+     ＝⟨ ap (λ x → 𝓔.seq x _) h0 ⟩
+    𝓔.seq (𝓔.seq (pr₁ β (F1.ob A)) (G2.hom (F1.hom f))) (G2.hom (pr₁ α B))
+     ＝⟨ 𝓔.assoc _ _ _ _ _ _ _ ⁻¹ ⟩
+    𝓔.seq (pr₁ β (F1.ob A)) (𝓔.seq (G2.hom (F1.hom f)) (G2.hom (pr₁ α B)))
+     ＝⟨ ap (𝓔.seq (pr₁ β (F1.ob A))) h1 ⟩
+    𝓔.seq (pr₁ β (F1.ob A)) (𝓔.seq (G2.hom (pr₁ α A)) (G3.hom f))
+     ＝⟨ 𝓔.assoc _ _ _ _ _ _ _ ⟩
+    𝓔.seq (𝓔.seq (pr₁ β (F1.ob A)) (G2.hom (pr₁ α A))) (G3.hom f) ∎
+    where
+     h0
+      : 𝓔.seq (F2.hom (F1.hom f)) (pr₁ β (F1.ob B))
+      ＝ 𝓔.seq (pr₁ β (F1.ob A)) (G2.hom (F1.hom f))
+     h0 = pr₂ β (F1.ob A) (F1.ob B) (F1.hom f)
+
+     h1
+      : 𝓔.seq (G2.hom (F1.hom f)) (G2.hom (pr₁ α B))
+      ＝ 𝓔.seq (G2.hom (pr₁ α A)) (G3.hom f)
+     h1 =
+      𝓔.seq (G2.hom (F1.hom f)) (G2.hom (pr₁ α B))
+       ＝⟨ G2.preserves-seq _ _ _ _ _ ⁻¹ ⟩
+      G2.hom (𝓓.seq (F1.hom f) (pr₁ α B))
+       ＝⟨ ap G2.hom (pr₂ α _ _ _) ⟩
+      G2.hom (𝓓.seq (pr₁ α A) (G1.hom f))
+       ＝⟨ G2.preserves-seq _ _ _ _ _ ⟩
+      𝓔.seq (G2.hom (pr₁ α A)) (G3.hom f) ∎
+
+  hcomp : nat-transf 𝓒 𝓔 F3 G3
+  hcomp = hcomp-str , hcomp-ax
+
+
+ module left-whiskering
+  (W : functor 𝓒 𝓓)
+  (G H : functor 𝓓 𝓔)
+  (β : nat-transf 𝓓 𝓔 G H)
+  where
+
+  private
+   G∘W = composite-functor.fun 𝓒 𝓓 𝓔 W G
+   H∘W = composite-functor.fun 𝓒 𝓓 𝓔 W H
+
+  open horizontal-composition W W G H (nat-transf-idn 𝓒 𝓓 W) β
+
+  whisk : nat-transf 𝓒 𝓔 G∘W H∘W
+  whisk = hcomp
+
+ module right-whiskering
+  (G H : functor 𝓒 𝓓)
+  (W : functor 𝓓 𝓔)
+  (β : nat-transf 𝓒 𝓓 G H)
+  where
+
+  private
+   W∘G = composite-functor.fun 𝓒 𝓓 𝓔 G W
+   W∘H = composite-functor.fun 𝓒 𝓓 𝓔 H W
+
+  open horizontal-composition G H W W β (nat-transf-idn 𝓓 𝓔 W)
+
+  whisk : nat-transf 𝓒 𝓔 W∘G W∘H
+  whisk = hcomp
 
 \end{code}
