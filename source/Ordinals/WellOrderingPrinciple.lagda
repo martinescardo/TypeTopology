@@ -186,7 +186,7 @@ The following properties of f should be self-explanatory:
 
 A crucial property of the family A α of subsets of X is that it is
 eventually empty. We first prove that it is somewhere empty by
-constradiction, using the fact that the type of ordinals is large (by
+contradiction, using the fact that the type of ordinals is large (by
 the Burali-Forti argument). We need to use propositional resizing for
 this purpose, which follows from excluded middle, which we are
 assuming.
@@ -330,14 +330,13 @@ And our desired results follows directly:
 \end{code}
 
 Using this we can prove the theorem stated above, and restated below,
-as follows. We first obtain a choice function conditional to the
-inhabitedness of X from the axiom of choice, and als the principle of
-excluded middle. We then use excluded middle to check whether it is in
-habited. If it is, we apply the above lemma. Otherwise it is empty and
-hence clearly well-ordered.
+as follows. We first obtain a choice function conditionally to the
+inhabitedness of X from the axiom of choice, and also the principle of
+excluded middle. We then use excluded middle to check whether it is
+inhabited. If it is, we apply the above lemma. Otherwise it is empty
+and hence clearly well-ordered.
 
 \begin{code}
-
 
 Choice-gives-well-ordering = restatement
  where
