@@ -86,6 +86,7 @@ import CrossedModules.index           -- by Ettore Aldrovandi and Keri D'Angelo
 import DedekindReals.index            -- by Andrew Sneap
 import DomainTheory.index             -- by Tom de Jong
 import Dominance.index
+import Duploids.index                 -- by Jon Sterling
 import Dyadics.index                  -- by Andrew Sneap
 import DyadicsInductive.index         -- by Tom de Jong
 import Factorial.index
@@ -98,7 +99,6 @@ import InjectiveTypes.index
 import Integers.index                 -- by Andrew Sneap
 import Lifting.index
 import Locales.index                  -- by Ayberk Tosun
-import Duploids.index                 -- by Jon Sterling
 import MGS.index                      -- Modular version of https://github.com/martinescardo/HoTT-UF-Agda-Lecture-Notes
 import MLTT.index
 import MetricSpaces.index             -- by Andrew Sneap
