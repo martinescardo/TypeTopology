@@ -3,7 +3,10 @@ Martin Escardo, 17th December 2022.
 Proof that in HoTT/UF the axiom of choice implies that every set can
 be well-ordered, written in Agda.
 
-This is not a new result. The HoTT book from 2013 already has a proof, and perhaps it has already been formalized in Coq. What I did was to stare at various proofs in set theory, and then adapted the one I liked most to HoTT/UF.
+This is not a new result. The HoTT book from 2013 already has a proof,
+and perhaps it has already been formalized in Coq. What I did was to
+stare at various proofs in set theory, and then adapted the one I
+liked most to HoTT/UF.
 
 \begin{code}
 
