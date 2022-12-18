@@ -3,6 +3,8 @@ Martin Escardo, 17th December 2022.
 Proof that in HoTT/UF the axiom of choice implies that every set can
 be well-ordered, written in Agda.
 
+This is not a new result. The HoTT book from 2013 already has a proof, and perhaps it has already been formalized in Coq. What I did was to stare at various proofs in set theory, and then adapted the one I liked most to HoTT/UF.
+
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline --experimental-lossy-unification #-}
@@ -83,7 +85,7 @@ Choice-gives-well-ordering : Choice
 This is proved at the very end of this file. We first prove that,
 under excluded middle, if a set has a given choice function, then it
 can be equipped with a well ordering. Later we will derive excluded
-middle from choice in order to apply this to prove the main theore.
+middle from choice in order to apply this to prove the main theorem.
 
 \begin{code}
 
@@ -249,7 +251,7 @@ assuming.
 
 \end{code}
 
-It follows fromn the above and excluded middle that there is a least
+It follows from the above and excluded middle that there is a least
 such α, which we will call α₀:
 
 \begin{code}

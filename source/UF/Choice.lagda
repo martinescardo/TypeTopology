@@ -385,6 +385,12 @@ module EM-and-choice-functions
    (ac-renders-all-sets-discrete {𝓤 ⁺} ac (Ω 𝓤)
      (Ω-is-set (fe 𝓤 𝓤) (pe 𝓤)))
 
+\end{code}
+
+Added 17th December 2022:
+
+\begin{code}
+
  Choice : 𝓤ω
  Choice = {𝓤 𝓥 𝓦 : Universe} → AC {𝓤} {𝓥} {𝓦}
 
@@ -470,6 +476,8 @@ module EM-and-choice-functions
                                        (AC-gives-EM ac)
                                        (AC-gives-AC₃ ac X X-is-set)
 \end{code}
+
+End of addition.
 
 The following is probably not going to be useful for anything here:
 
