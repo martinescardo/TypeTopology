@@ -12,9 +12,9 @@ abstract machines. Duploids are introduced in the following paper:
    https://doi.org/10.1007/978-3-642-54830-7_26
 
 
-A duploid is a generalization of a category that relaxes the
-associativity condition in a way that is compatible with the viewpoint of
-morphisms as *effectful* programs.
+A duploid is a generalization of a category that relaxes the associativity
+condition in a way that is compatible with the viewpoint of morphisms as
+*effectful* programs.
 
 A "thunkable" morphism is one that satisfies an associativity law for
 precomposition (being fed into other programs as input), whereas a "linear"
@@ -22,7 +22,7 @@ morphism is one that satisfies an associativity law for postcomposition
 (consuming the outputs of other programs).
 
 An object is "positive" when every map out of it is linear, and an object is
-"neagtive" when every map into it is thunkable. A thunkable map between positive
+"negative" when every map into it is thunkable. A thunkable map between positive
 objects corresponds a *value* in call-by-push-value, whereas a linear map
 between negative objects corresponds to a *stack* in call-by-push-value. The
 duploid analysis of polarity is, however, more refined than that of
