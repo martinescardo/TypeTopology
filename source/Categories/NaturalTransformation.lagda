@@ -19,9 +19,11 @@ open import UF.Equiv-FunExt
 open import Categories.Category
 open import Categories.Functor
 
-module _ {𝓒 : precategory 𝓤 𝓥} {𝓓 : precategory 𝓤' 𝓥'} where
- module 𝓒 = precategory 𝓒
- module 𝓓 = precategory 𝓓
+module natural-transformation (𝓒 : precategory 𝓤 𝓥) (𝓓 : precategory 𝓤' 𝓥') where
+ private
+  module 𝓒 = precategory 𝓒
+  module 𝓓 = precategory 𝓓
+
  open functor-of-precategories 𝓒 𝓓
 
  module _ (F G : functor) where
