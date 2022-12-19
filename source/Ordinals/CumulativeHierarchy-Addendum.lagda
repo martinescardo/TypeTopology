@@ -44,6 +44,9 @@ that the total space
 is equivalent to the image of f : A → 𝕍 (with A : 𝓤), which is a small type up
 to equivalence thanks to the fact that 𝕍 is locally small.
 
+(This general fact on small images of maps into locally small sets is recorded
+in the module set-replacement-construction in the file UF/Quotient.lagda.)
+
 Specifically, the image of f is equivalent to the set quotient A/~ where ~
 relates two elements if f identifies them. We then prove that
   𝕍-to-Ord (𝕍-set {A} f) ＝ (A/~ , <),
@@ -116,6 +119,13 @@ module _
  open 𝕍-is-locally-small ch
  open ordinal-of-set-theoretic-ordinals ch
 
+\end{code}
+
+We start by showing that the total space (Σ y ꞉ 𝕍 , y ∈ x) of a set theoretic
+ordinal x is a (large) type theoretic ordinal when ordered by membership.
+
+\begin{code}
+
  module total-space-of-an-element-of-𝕍
          (x : 𝕍)
          (σ : is-set-theoretic-ordinal x)
@@ -138,8 +148,7 @@ module _
   ∈ₓ-is-extensional : is-extensional _∈ₓ_
   ∈ₓ-is-extensional u v s t =
    to-subtype-＝ (λ _ → ∈-is-prop-valued)
-                (∈-extensionality (pr₁ u) (pr₁ v)
-                                  s' t')
+                (∈-extensionality (pr₁ u) (pr₁ v) s' t')
     where
      s' : pr₁ u ⊆ pr₁ v
      s' y y-in-u = s (y , τ) y-in-u
@@ -165,12 +174,19 @@ module _
 
   𝕋xᵒʳᵈ : Ordinal (𝓤 ⁺)
   𝕋xᵒʳᵈ = 𝕋x , _∈ₓ_ , ∈ₓ-is-prop-valued , ∈ₓ-is-well-founded
-                         , ∈ₓ-is-extensional , ∈ₓ-is-transitive
+                    , ∈ₓ-is-extensional , ∈ₓ-is-transitive
+
+\end{code}
+
+Because being an set theoretic ordinal is hereditary the total spaces
+  (Σ y ꞉ 𝕍 , y ∈ x) and (Σ y ꞉ 𝕍ᵒʳᵈ , y ∈ᵒʳᵈ (x , σ))
+are equivalent, as we record below.
+
+\begin{code}
 
   𝕋x-restricted-to-𝕍ᵒʳᵈ : 𝓤 ⁺ ̇
   𝕋x-restricted-to-𝕍ᵒʳᵈ = Σ y ꞉ 𝕍ᵒʳᵈ , y ∈ᵒʳᵈ (x , σ)
 
-  -- NB
   𝕋x-restricted-to-𝕍ᵒʳᵈ-≃-𝕋x : 𝕋x-restricted-to-𝕍ᵒʳᵈ ≃ 𝕋x
   𝕋x-restricted-to-𝕍ᵒʳᵈ-≃-𝕋x = qinveq f (g , η , ε)
    where
@@ -188,6 +204,9 @@ module _
 
 \end{code}
 
+When x = 𝕍-set f, then the total space of x is equivalent to the image f,
+because y ∈ 𝕍-set f if and only if y is in the image of f.
+
 \begin{code}
 
  module total-space-of-𝕍-set
@@ -201,7 +220,6 @@ module _
    x = 𝕍-set f
 
   open total-space-of-an-element-of-𝕍 x σ
-
   open set-quotients-exist sq
 
   𝕋x-≃-image-f : 𝕋x ≃ image f
@@ -214,9 +232,17 @@ module _
            from-∈-of-𝕍-set
            to-∈-of-𝕍-set
 
+\end{code}
+
+The well order on the total space induces a well order on the image of f.
+
+\begin{code}
+
   private
    transfer : Σ s ꞉ OrdinalStructure (image f) , (image f , s) ≃ₒ 𝕋xᵒʳᵈ
-   transfer = transfer-structure (image f) 𝕋xᵒʳᵈ (≃-sym 𝕋x-≃-image-f) (_∈ₓ_ , (λ u v → ≃-refl (u ∈ₓ v)))
+   transfer = transfer-structure (image f) 𝕋xᵒʳᵈ
+               (≃-sym 𝕋x-≃-image-f)
+               (_∈ₓ_ , (λ u v → ≃-refl (u ∈ₓ v)))
 
   image-fᵒʳᵈ : Ordinal (𝓤 ⁺)
   image-fᵒʳᵈ = image f , pr₁ transfer
@@ -225,6 +251,18 @@ module _
   𝕋xᵒʳᵈ-≃-image-fᵒʳᵈ = ≃ₒ-sym _ _ (pr₂ transfer)
 
 \end{code}
+
+As mentioned at the top of this file, the image of f : A → 𝕍 is equivalent to
+the set quotient A/~ where ~ relates two elements of A if f identifies them.
+
+We show that the relation ≺ on A/~ defined by [ a ] ≺ [ a' ] := f a ∈ f a' makes
+this quotient into a type theoretic ordinal that moreover is isomorphic to the
+ordinal image-fᵒʳᵈ.
+
+Note that because equality on 𝕍 and ∈ take values in 𝓤 ⁺, this quotient
+construction yields an ordinal in 𝓤 ⁺. We present a resized small-valued
+varation of this construction below to get a quotient that lives in 𝓤, rather
+than 𝓤 ⁺.
 
 \begin{code}
 
@@ -251,8 +289,6 @@ module _
 
   [_] : A → A/~
   [_] = η/ ~EqRel
-
-  -- TO DO: Use bisimilation relation on 𝕍 instead to have A/~ in 𝓤
 
   _≺[Ω]_ : A/~ → A/~ → Ω (𝓤 ⁺)
   _≺[Ω]_ = extension-rel₂ ~EqRel (λ a b → f a ∈[Ω] f b) ρ
@@ -338,7 +374,7 @@ module _
     acc : (a : A) → is-accessible _≺_ [ a ]
     acc a = acc' (f a) a refl
 
-  module construct-ordinal-as-quotient
+  module quotient-as-ordinal
           (σ : is-set-theoretic-ordinal (𝕍-set f))
          where
 
@@ -351,7 +387,11 @@ module _
 
 \end{code}
 
-TO DO: Write comment. We relate total space and quotient...
+We now show that for x = 𝕍-set {A} f, the total space 𝕋xᵒʳᵈ and the above set
+quotient A/~ᵒʳᵈ are equal as (large) ordinals. The equivalence of types is
+proved generally in the module set-replacement-construction in the file
+UF/Quotient.lagda. We only need to check that the equivalence is order
+preserving and reflecting.
 
 \begin{code}
 
@@ -361,36 +401,68 @@ TO DO: Write comment. We relate total space and quotient...
    open total-space-of-an-element-of-𝕍 x σ
    open total-space-of-𝕍-set sq f σ
 
-   coincide₂ : 𝕋xᵒʳᵈ ＝ A/~ᵒʳᵈ
-   coincide₂ = 𝕋xᵒʳᵈ      ＝⟨ ⦅1⦆ ⟩
-               image-fᵒʳᵈ ＝⟨ ⦅2⦆ ⟩
-               A/~ᵒʳᵈ          ∎
-    where
-     ⦅1⦆ = eqtoidₒ _ _ 𝕋xᵒʳᵈ-≃-image-fᵒʳᵈ
-     ⦅2⦆ = eqtoidₒ _ _ (≃ₒ-sym _ _ (ϕ , ϕ-is-order-equiv))
-      where
-       open set-replacement-construction sq pt f 𝕍-is-locally-small 𝕍-is-large-set hiding ([_])
-       ϕ : A/~ → image f
-       ϕ = quotient-to-image
-       ϕ-behaviour : (a : A) → ϕ [ a ] ＝ corestriction f a
-       ϕ-behaviour = universality-triangle/ ~EqRel (image-is-set f 𝕍-is-large-set) (corestriction f) _
-       ϕ-is-order-preserving : is-order-preserving A/~ᵒʳᵈ image-fᵒʳᵈ ϕ
-       ϕ-is-order-preserving =
-        /-induction₂ fe ~EqRel
-                     (λ a' b' → Π-is-prop fe
-                                 (λ _ → prop-valuedness (underlying-order image-fᵒʳᵈ)
-                                                        (is-well-ordered image-fᵒʳᵈ)
-                                                        (ϕ a') (ϕ b')))
-                     test
-        where
-         test : (a b : A) → [ a ] ≺ [ b ]
+   open set-replacement-construction sq pt f
+                                     𝕍-is-locally-small
+                                     𝕍-is-large-set
+        hiding ([_])
+
+   private
+    ϕ : A/~ → image f
+    ϕ = quotient-to-image
+
+    ϕ-behaviour : (a : A) → ϕ [ a ] ＝ corestriction f a
+    ϕ-behaviour = universality-triangle/ ~EqRel
+                   (image-is-set f 𝕍-is-large-set) (corestriction f) _
+
+    ϕ-is-order-preserving : is-order-preserving A/~ᵒʳᵈ image-fᵒʳᵈ ϕ
+    ϕ-is-order-preserving = /-induction₂ fe ~EqRel prop-valued preserve
+     where
+      prop-valued : (a' b' : A / ~EqRel)
+                  → is-prop (a' ≺ b' → underlying-order image-fᵒʳᵈ (ϕ a') (ϕ b'))
+      prop-valued a' b' = Π-is-prop fe (λ _ → prop-valuedness _
+                                               (is-well-ordered image-fᵒʳᵈ)
+                                               (ϕ a') (ϕ b'))
+      preserve : (a b : A)
+               → [ a ] ≺ [ b ]
+               → underlying-order image-fᵒʳᵈ (ϕ [ a ]) (ϕ [ b ])
+      preserve a b l = transport₂ (underlying-order image-fᵒʳᵈ) p q mon
+       where
+        mem : f a ∈ f b
+        mem = ≺-to-∈ l
+        mon : underlying-order image-fᵒʳᵈ (corestriction f a) (corestriction f b)
+        mon = mem
+        p : corestriction f a ＝ ϕ [ a ]
+        p = (ϕ-behaviour a) ⁻¹
+        q : corestriction f b ＝ ϕ [ b ]
+        q = (ϕ-behaviour b) ⁻¹
+
+    ϕ-is-order-reflecting : is-order-reflecting A/~ᵒʳᵈ image-fᵒʳᵈ ϕ
+    ϕ-is-order-reflecting = /-induction₂ fe ~EqRel prop-valued reflect
+     where
+      prop-valued : (a' b' : A/~)
+                  → is-prop (underlying-order image-fᵒʳᵈ (ϕ a') (ϕ b') → a' ≺ b')
+      prop-valued a' b' = Π-is-prop fe (λ _ → prop-valuedness _≺_
+                                               (is-well-ordered A/~ᵒʳᵈ) a' b')
+      reflect : (a b : A)
               → underlying-order image-fᵒʳᵈ (ϕ [ a ]) (ϕ [ b ])
-         test a b l = transport₂ (underlying-order image-fᵒʳᵈ) ((ϕ-behaviour a) ⁻¹) ((ϕ-behaviour b) ⁻¹) (≺-to-∈ l)
-       ϕ-is-order-reflecting : is-order-reflecting A/~ᵒʳᵈ image-fᵒʳᵈ ϕ
-       ϕ-is-order-reflecting =
-        /-induction₂ fe ~EqRel
-                     (λ a' b' → Π-is-prop fe λ _ → prop-valuedness _≺_ (is-well-ordered A/~ᵒʳᵈ) a' b')
-                     (λ a b l → ∈-to-≺ (transport₂ (underlying-order image-fᵒʳᵈ) (ϕ-behaviour a) (ϕ-behaviour b) l))
+              → [ a ] ≺ [ b ]
+      reflect a b l = ∈-to-≺ mem
+       where
+        p : ϕ [ a ] ＝ corestriction f a
+        p = ϕ-behaviour a
+        q : ϕ [ b ] ＝ corestriction f b
+        q = ϕ-behaviour b
+        mem : f a ∈ f b
+        mem = transport₂ (underlying-order image-fᵒʳᵈ) p q l
+
+   total-space-is-quotientᵒʳᵈ : 𝕋xᵒʳᵈ ＝ A/~ᵒʳᵈ
+   total-space-is-quotientᵒʳᵈ = 𝕋xᵒʳᵈ      ＝⟨ ⦅1⦆ ⟩
+                                image-fᵒʳᵈ ＝⟨ ⦅2⦆ ⟩
+                                A/~ᵒʳᵈ     ∎
+    where
+     ⦅1⦆ = eqtoidₒ 𝕋xᵒʳᵈ image-fᵒʳᵈ 𝕋xᵒʳᵈ-≃-image-fᵒʳᵈ
+     ⦅2⦆ = eqtoidₒ image-fᵒʳᵈ A/~ᵒʳᵈ (≃ₒ-sym A/~ᵒʳᵈ image-fᵒʳᵈ (ϕ , ϕ-is-order-equiv))
+      where
        ϕ-is-order-equiv : is-order-equiv A/~ᵒʳᵈ image-fᵒʳᵈ ϕ
        ϕ-is-order-equiv =
         order-preserving-reflecting-equivs-are-order-equivs _ _
@@ -400,8 +472,9 @@ TO DO: Write comment. We relate total space and quotient...
 
 \end{code}
 
-Now we show that A/~ is equivalent to a type in 𝓤 which then gives us an ordinal
-in 𝓤 equivalent to A/~ᵒʳᵈ.
+Next, we make use of the fact that the cumulative hierarchy 𝕍 is locally small,
+as shown in UF/CumulativeHierarchy-LocallySmall.lagda, to construct a small quotient
+A/~⁻ equivalent to A/~.
 
 \begin{code}
 
@@ -420,6 +493,15 @@ in 𝓤 equivalent to A/~ᵒʳᵈ.
   A/~-≃-A/~⁻ : A/~ ≃ A/~⁻
   A/~-≃-A/~⁻ = quotients-equivalent A ~EqRel ~⁻EqRel (＝-to-＝⁻ , ＝⁻-to-＝)
 
+\end{code}
+
+The small-valued membership relation ∈⁻ developed in the aforementioned file now
+allows us define a small-valued relation ≺' on A/~ and transfer the well order
+on A/~ to A/~⁻, for which we use the machinery developed by Martín Escardó in
+Ordinals/WellOrderTransport.lagda.
+
+\begin{code}
+
   private
    ≺-has-small-values : (x y : A/~) → is-small (x ≺ y)
    ≺-has-small-values =
@@ -436,11 +518,11 @@ in 𝓤 equivalent to A/~ᵒʳᵈ.
    ≺-≃-≺' : {x y : A/~} → x ≺ y ≃ x ≺' y
    ≺-≃-≺' {x} {y} = ≃-sym (pr₂ (≺-has-small-values x y))
 
-  module construct-ordinal-as-quotient₂
+  module small-quotient-as-ordinal
           (σ : is-set-theoretic-ordinal (𝕍-set f))
          where
 
-   open construct-ordinal-as-quotient σ
+   open quotient-as-ordinal σ
 
    private
     resize-ordinal : Σ s ꞉ OrdinalStructure A/~⁻ , (A/~⁻ , s) ≃ₒ A/~ᵒʳᵈ
@@ -464,6 +546,13 @@ in 𝓤 equivalent to A/~ᵒʳᵈ.
 
    _≺⁻_ : A/~⁻ → A/~⁻ → 𝓤 ̇
    _≺⁻_ = underlying-order A/~⁻ᵒʳᵈ
+
+\end{code}
+
+We relate the order ≺⁻ on the small quotient A/~⁻ to the order ≺ on the large
+quotient A/~ and the set membership relation ∈ on 𝕍.
+
+\begin{code}
 
    ≺⁻-≃-≺ : {a b : A} → [ a ]⁻ ≺⁻ [ b ]⁻ ≃ [ a ] ≺ [ b ]
    ≺⁻-≃-≺ {a} {b} = logically-equivalent-props-are-equivalent
@@ -587,11 +676,11 @@ in 𝓤 equivalent to A/~ᵒʳᵈ.
       foofoo {A} f σ = ≃ₒ-trans (𝕍ᵒʳᵈ-to-Ord (𝕍-set f , σ)) A/~⁻ᵒʳᵈ (𝕋xᵒʳᵈ (𝕍-set f) σ)
                         (idtoeqₒ _ _ coincide)
                         (≃ₒ-sym _ _ (≃ₒ-trans (𝕋xᵒʳᵈ (𝕍-set f) σ) A/~ᵒʳᵈ A/~⁻ᵒʳᵈ
-                                              (idtoeqₒ _ _ coincide₂)
+                                              (idtoeqₒ _ _ total-space-is-quotientᵒʳᵈ)
                                               A/~ᵒʳᵈ--≃ₒ-A/~⁻ᵒʳᵈ))
        where
         open 𝕍-set-carrier-quotient sq f
-        open construct-ordinal-as-quotient₂ σ
-        open construct-ordinal-as-quotient σ
+        open small-quotient-as-ordinal σ
+        open quotient-as-ordinal σ
 
 \end{code}
