@@ -476,6 +476,8 @@ Next, we make use of the fact that the cumulative hierarchy 𝕍 is locally smal
 as shown in UF/CumulativeHierarchy-LocallySmall.lagda, to construct a small quotient
 A/~⁻ equivalent to A/~.
 
+In general, we use the symbol ⁻ to indicate a resized small-valued analogue.
+
 \begin{code}
 
   _~⁻_ : A → A → 𝓤 ̇
