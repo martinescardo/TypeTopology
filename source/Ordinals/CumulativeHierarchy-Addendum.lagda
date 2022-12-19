@@ -590,72 +590,139 @@ quotient A/~ and the set membership relation ∈ on 𝕍.
 
 \end{code}
 
-    We prove that A/~ is the supremum defined above by showing that
-      Ord-to-𝕍 (A/~ᵒʳᵈ) ＝ 𝕍-set f.
-    This boils down to proving
-      (a : A) → f a ＝ Ord-to-𝕍 (A/~ ↓ [ a ]) (module size issues)
+Because A/~⁻ᵒʳᵈ is a small ordinal in 𝓤, it now typechecks to ask whether it
+equals the recursive supremum given by 𝕍ᵒʳᵈ-to-Ord (𝕍-set f).
+
+This is indeed the case and because Ord-to-𝕍ᵒʳᵈ is left-cancellable, it suffices
+to show that
+  Ord-to-𝕍 (A/~ᵒʳᵈ) ＝ 𝕍-set f.
+This boils down to proving the equality
+  f a ＝ Ord-to-𝕍 (A/~⁻ᵒʳᵈ ↓ [ a ]⁻)
+for every a : A.
+
+We slightly generalise this statement so that we can prove it by transfinite
+induction on A/~⁻ᵒʳᵈ.
 
 \begin{code}
 
-   key-lemma : (a' : A/~⁻) (a : A) → a' ＝ [ a ]⁻ → Ord-to-𝕍 (A/~⁻ᵒʳᵈ ↓ [ a ]⁻) ＝ f a
-   key-lemma = transfinite-induction _≺⁻_ (Well-foundedness A/~⁻ᵒʳᵈ) _ ind-proof
-    where
-     ind-proof : (a' : A/~⁻)
-               → ((b' : A/~⁻) → b' ≺⁻ a'
-                              → (b : A) → b' ＝ [ b ]⁻
-                              → Ord-to-𝕍 (A/~⁻ᵒʳᵈ ↓ [ b ]⁻) ＝ f b)
-               → (a : A) → a' ＝ [ a ]⁻ → Ord-to-𝕍 (A/~⁻ᵒʳᵈ ↓ [ a ]⁻) ＝ f a
-     ind-proof a' IH a refl = ∈-extensionality _ _ ⦅1⦆ ⦅2⦆
-      where
-       -- TO DO: Clean
-       ⦅1⦆ : Ord-to-𝕍 (A/~⁻ᵒʳᵈ ↓ [ a ]⁻) ⊆ f a
-       ⦅1⦆ x m = ∥∥-rec ∈-is-prop-valued bzz
-           (from-∈-of-𝕍-set (transport (x ∈_) (Ord-to-𝕍-behaviour (A/~⁻ᵒʳᵈ ↓ [ a ]⁻)) m))
-        where
-         foo : (b : A) → f b ∈ f a → x ＝ Ord-to-𝕍 (A/~⁻ᵒʳᵈ ↓ [ b ]⁻) → x ∈ f a
-         foo b n e = transport (_∈ f a) ((IH [ b ]⁻ (∈-to-≺⁻ n) b refl) ⁻¹ ∙ e ⁻¹) n
-         bzz : Σ (λ a₁ → Ord-to-𝕍 ((A/~⁻ᵒʳᵈ ↓ [ a ]⁻) ↓ a₁) ＝ x) → x ∈ f a
-         bzz ((b' , l) , e) = ∥∥-rec ∈-is-prop-valued zzz ([]⁻-is-surjection b')
-          where
-           zzz : Σ (λ x₁ → [ x₁ ]⁻ ＝ b') → x ∈ f a
-           zzz (b , refl) = transport (_∈ f a) ((IH [ b ]⁻ l b refl) ⁻¹ ∙ ((ap Ord-to-𝕍 (iterated-↓ A/~⁻ᵒʳᵈ [ a ]⁻ [ b ]⁻ l)) ⁻¹ ∙ e ) ) (≺⁻-to-∈ l)
-       ⦅2⦆ : f a ⊆ Ord-to-𝕍 (A/~⁻ᵒʳᵈ ↓ [ a ]⁻)
-       ⦅2⦆ x m = ∥∥-rec ∈-is-prop-valued (λ (b , n , e) → baz b n e) m'
-        where
-         m' : ∃ b ꞉ A , (f b ∈ f a) × (f b ＝ x)
-         m' = ∥∥-functor h blah
-          where
-           blah : ∃ b ꞉ A , f b ＝ x
-           blah = from-∈-of-𝕍-set (transitive-set-if-set-theoretic-ordinal σ (f a) x (to-∈-of-𝕍-set ∣ a , refl ∣) m)
-           abstract
-            h : (Σ b ꞉ A , f b ＝ x)
-              → Σ b ꞉ A , (f b ∈ f a) × (f b ＝ x)
-            h (b , e) = b , transport⁻¹ (_∈ f a) e m , e
-         foo : (b : A) → f b ∈ f a → f b ＝ x → Ord-to-𝕍 (A/~⁻ᵒʳᵈ ↓ [ b ]⁻) ＝ f b
-         foo b n e = IH [ b ]⁻ (∈-to-≺⁻ n) b refl
-         baz : (b : A) → f b ∈ f a → f b ＝ x → x ∈ Ord-to-𝕍 (A/~⁻ᵒʳᵈ ↓ [ a ]⁻)
-         baz b n e = transport (_∈ Ord-to-𝕍 (A/~⁻ᵒʳᵈ ↓ [ a ]⁻)) (IH [ b ]⁻ (∈-to-≺⁻ n) b refl ∙ e)
-                               (transport⁻¹ (Ord-to-𝕍 (A/~⁻ᵒʳᵈ ↓ [ b ]⁻) ∈_)
-                                            (Ord-to-𝕍-behaviour (A/~⁻ᵒʳᵈ ↓ [ a ]⁻))
-                                            (to-∈-of-𝕍-set ∣ ([ b ]⁻ , (∈-to-≺⁻ n)) , (ap Ord-to-𝕍 (iterated-↓ A/~⁻ᵒʳᵈ [ a ]⁻ [ b ]⁻ (∈-to-≺⁻ n))) ∣))
+   initial-segments-of-A/~⁻ᵒʳᵈ-are-given-by-f :
+      (a' : A/~⁻) (a : A)
+    → a' ＝ [ a ]⁻
+    → Ord-to-𝕍 (A/~⁻ᵒʳᵈ ↓ [ a ]⁻) ＝ f a
+   initial-segments-of-A/~⁻ᵒʳᵈ-are-given-by-f =
+    transfinite-induction _≺⁻_ (Well-foundedness A/~⁻ᵒʳᵈ) _ ind-proof
+     where
+      ind-proof : (a' : A/~⁻)
+                → ((b' : A/~⁻) → b' ≺⁻ a'
+                               → (b : A) → b' ＝ [ b ]⁻
+                               → Ord-to-𝕍 (A/~⁻ᵒʳᵈ ↓ [ b ]⁻) ＝ f b)
+                → (a : A) → a' ＝ [ a ]⁻ → Ord-to-𝕍 (A/~⁻ᵒʳᵈ ↓ [ a ]⁻) ＝ f a
+      ind-proof a' IH a refl = ∈-extensionality _ _ ⦅1⦆ ⦅2⦆
+       where
+        ↓a : Ordinal 𝓤
+        ↓a = A/~⁻ᵒʳᵈ ↓ [ a ]⁻
+
+        ⦅1⦆ : Ord-to-𝕍 ↓a ⊆ f a
+        ⦅1⦆ x m = ∥∥-rec ∈-is-prop-valued ⦅1⦆' fact
+         where
+          lemma : (b : A)
+                → f b ∈ f a
+                → x ＝ Ord-to-𝕍 (A/~⁻ᵒʳᵈ ↓ [ b ]⁻)
+                → x ∈ f a
+          lemma b n e = transport (_∈ f a) (e' ⁻¹) n
+           where
+            e' = x                           ＝⟨ e                            ⟩
+                 Ord-to-𝕍 (A/~⁻ᵒʳᵈ ↓ [ b ]⁻) ＝⟨ IH [ b ]⁻ (∈-to-≺⁻ n) b refl ⟩
+                 f b                         ∎
+
+          fact : ∃ b' ꞉ ⟨ ↓a ⟩ , Ord-to-𝕍 (↓a ↓ b') ＝ x
+          fact = from-∈-of-𝕍-set (transport (x ∈_) (Ord-to-𝕍-behaviour ↓a) m)
+
+          ⦅1⦆' : (Σ b' ꞉ ⟨ A/~⁻ᵒʳᵈ ↓ [ a ]⁻ ⟩ , Ord-to-𝕍 (↓a ↓ b') ＝ x)
+              → x ∈ f a
+          ⦅1⦆' ((b' , l) , e) = ∥∥-rec ∈-is-prop-valued h ([]⁻-is-surjection b')
+           where
+            h : (Σ b ꞉ A , [ b ]⁻ ＝ b') → x ∈ f a
+            h (b , refl) = lemma b (≺⁻-to-∈ l) e'
+             where
+              e' = x                            ＝⟨ e ⁻¹ ⟩
+                   Ord-to-𝕍 (↓a ↓ ([ b ]⁻ , l)) ＝⟨ e''  ⟩
+                   Ord-to-𝕍 (A/~⁻ᵒʳᵈ ↓ [ b ]⁻)  ∎
+               where
+                e'' = ap Ord-to-𝕍 (iterated-↓ A/~⁻ᵒʳᵈ [ a ]⁻ [ b ]⁻ l)
+
+        ⦅2⦆ : f a ⊆ Ord-to-𝕍 ↓a
+        ⦅2⦆ x m = ∥∥-rec ∈-is-prop-valued (λ (b , n , e) → ⦅2⦆' b n e) fact
+         where
+          fact : ∃ b ꞉ A , (f b ∈ f a) × (f b ＝ x)
+          fact = ∥∥-functor h fact'
+           where
+            fact' : ∃ b ꞉ A , f b ＝ x
+            fact' = from-∈-of-𝕍-set (transitive-set-if-set-theoretic-ordinal σ
+                                      (f a) x (to-∈-of-𝕍-set ∣ a , refl ∣) m)
+            abstract
+             h : (Σ b ꞉ A , f b ＝ x)
+               → Σ b ꞉ A , (f b ∈ f a) × (f b ＝ x)
+             h (b , e) = b , transport⁻¹ (_∈ f a) e m , e
+
+          lemma : (b : A)
+                → f b ∈ f a
+                → f b ＝ x
+                → Ord-to-𝕍 (A/~⁻ᵒʳᵈ ↓ [ b ]⁻) ＝ x
+          lemma b n e = IH [ b ]⁻ (∈-to-≺⁻ n) b refl ∙ e
+
+          ⦅2⦆' : (b : A)
+               → f b ∈ f a
+               → f b ＝ x
+               → x ∈ Ord-to-𝕍 ↓a
+          ⦅2⦆' b n e = transport (_∈ Ord-to-𝕍 ↓a) (lemma b n e) mem
+           where
+            mem' : Ord-to-𝕍 (A/~⁻ᵒʳᵈ ↓ [ b ]⁻) ∈ 𝕍-set (λ b' → Ord-to-𝕍 (↓a ↓ b'))
+            mem' = to-∈-of-𝕍-set ∣ ([ b ]⁻ , ∈-to-≺⁻ n) , e' ∣
+             where
+              e' : Ord-to-𝕍 (↓a ↓ ([ b ]⁻ , ∈-to-≺⁻ n))
+                 ＝ Ord-to-𝕍 (A/~⁻ᵒʳᵈ ↓ [ b ]⁻)
+              e' = ap Ord-to-𝕍 (iterated-↓ A/~⁻ᵒʳᵈ [ a ]⁻ [ b ]⁻ (∈-to-≺⁻ n))
+            mem : Ord-to-𝕍 (A/~⁻ᵒʳᵈ ↓ [ b ]⁻) ∈ Ord-to-𝕍 ↓a
+            mem = transport⁻¹ (Ord-to-𝕍 (A/~⁻ᵒʳᵈ ↓ [ b ]⁻) ∈_)
+                              (Ord-to-𝕍-behaviour ↓a)
+                              mem'
+
+\end{code}
+
+Using that Ord-to-𝕍ᵒʳᵈ is left-cancellable and a retraction of 𝕍ᵒʳᵈ-to-Ord, we
+now prove that the recursive supremum given by 𝕍ᵒʳᵈ-to-Ord (𝕍-set f) is equal to
+the nonrecursive set quotient A/~⁻ᵒʳᵈ.
+
+\begin{code}
 
    open 𝕍-to-Ord-construction sq
-   coincide : 𝕍ᵒʳᵈ-to-Ord (𝕍-set f , σ) ＝ A/~⁻ᵒʳᵈ
-   coincide = Ord-to-𝕍-is-left-cancellable (𝕍ᵒʳᵈ-to-Ord (𝕍-set f , σ)) A/~⁻ᵒʳᵈ
-               e
-    where
-     e : Ord-to-𝕍 (𝕍ᵒʳᵈ-to-Ord (𝕍-set f , σ)) ＝ Ord-to-𝕍 A/~⁻ᵒʳᵈ
-     e = Ord-to-𝕍 (𝕍ᵒʳᵈ-to-Ord (𝕍-set f , σ)) ＝⟨ ap pr₁ (𝕍ᵒʳᵈ-to-Ord-is-section-of-Ord-to-𝕍ᵒʳᵈ (𝕍-set f , σ)) ⟩
-         𝕍-set f ＝⟨ 𝕍-set-ext f _ ⦅2⦆ ⟩
-         𝕍-set (λ a' → Ord-to-𝕍 (A/~⁻ᵒʳᵈ ↓ a')) ＝⟨ (Ord-to-𝕍-behaviour A/~⁻ᵒʳᵈ) ⁻¹ ⟩
-         Ord-to-𝕍 A/~⁻ᵒʳᵈ ∎
-      where
-       ⦅2⦆ : f ≈ (λ a' → Ord-to-𝕍 (A/~⁻ᵒʳᵈ ↓ a'))
-       pr₁ ⦅2⦆ a = ∣ [ a ]⁻ , (key-lemma [ a ]⁻ a refl) ∣
-       pr₂ ⦅2⦆ a' = ∥∥-functor h ([]⁻-is-surjection a')
-        where
-         h : Σ (λ x → [ x ]⁻ ＝ a') → Σ (λ b → f b ＝ Ord-to-𝕍 (A/~⁻ᵒʳᵈ ↓ a'))
-         h (a , refl) = a , ((key-lemma a' a refl) ⁻¹)
+
+   𝕍ᵒʳᵈ-to-Ord-is-quotient-of-carrier : 𝕍ᵒʳᵈ-to-Ord (𝕍-set f , σ) ＝ A/~⁻ᵒʳᵈ
+   𝕍ᵒʳᵈ-to-Ord-is-quotient-of-carrier =
+    Ord-to-𝕍-is-left-cancellable (𝕍ᵒʳᵈ-to-Ord (𝕍-set f , σ)) A/~⁻ᵒʳᵈ e
+     where
+      e = Ord-to-𝕍 (𝕍ᵒʳᵈ-to-Ord (𝕍-set f , σ))   ＝⟨ ap pr₁ ⦅1⦆        ⟩
+          𝕍-set f                                ＝⟨ 𝕍-set-ext _ _ ⦅2⦆ ⟩
+          𝕍-set (λ a' → Ord-to-𝕍 (A/~⁻ᵒʳᵈ ↓ a')) ＝⟨ ⦅3⦆               ⟩
+          Ord-to-𝕍 A/~⁻ᵒʳᵈ                       ∎
+       where
+        ⦅1⦆ : Ord-to-𝕍ᵒʳᵈ (𝕍ᵒʳᵈ-to-Ord (𝕍-set f , σ)) ＝ 𝕍-set f , σ
+        ⦅1⦆ = 𝕍ᵒʳᵈ-to-Ord-is-section-of-Ord-to-𝕍ᵒʳᵈ (𝕍-set f , σ)
+        ⦅2⦆ : f ≈ (λ a' → Ord-to-𝕍 (A/~⁻ᵒʳᵈ ↓ a'))
+        ⦅2⦆ = ⦅2⦆ˡ , ⦅2⦆ʳ
+         where
+          ⦅2⦆ˡ : f ≲ (λ a' → Ord-to-𝕍 (A/~⁻ᵒʳᵈ ↓ a'))
+          ⦅2⦆ˡ a =
+           ∣ [ a ]⁻ , initial-segments-of-A/~⁻ᵒʳᵈ-are-given-by-f [ a ]⁻ a refl ∣
+          ⦅2⦆ʳ : (λ a' → Ord-to-𝕍 (A/~⁻ᵒʳᵈ ↓ a')) ≲ f
+          ⦅2⦆ʳ a' = ∥∥-functor h ([]⁻-is-surjection a')
+           where
+            h : (Σ a ꞉ A , [ a ]⁻ ＝ a')
+              → (Σ a ꞉ A , f a ＝ Ord-to-𝕍 (A/~⁻ᵒʳᵈ ↓ a'))
+            h (a , refl) =
+             a , ((initial-segments-of-A/~⁻ᵒʳᵈ-are-given-by-f a' a refl) ⁻¹)
+        ⦅3⦆ = (Ord-to-𝕍-behaviour A/~⁻ᵒʳᵈ) ⁻¹
 
  module _
          (sq : set-quotients-exist)
@@ -676,7 +743,7 @@ quotient A/~ and the set membership relation ∈ on 𝕍.
       foofoo : {A : 𝓤 ̇ } (f : A → 𝕍) (σ : is-set-theoretic-ordinal (𝕍-set f))
              → 𝕍ᵒʳᵈ-to-Ord (𝕍-set f , σ) ≃ₒ 𝕋xᵒʳᵈ (𝕍-set f) σ
       foofoo {A} f σ = ≃ₒ-trans (𝕍ᵒʳᵈ-to-Ord (𝕍-set f , σ)) A/~⁻ᵒʳᵈ (𝕋xᵒʳᵈ (𝕍-set f) σ)
-                        (idtoeqₒ _ _ coincide)
+                        (idtoeqₒ _ _ 𝕍ᵒʳᵈ-to-Ord-is-quotient-of-carrier)
                         (≃ₒ-sym _ _ (≃ₒ-trans (𝕋xᵒʳᵈ (𝕍-set f) σ) A/~ᵒʳᵈ A/~⁻ᵒʳᵈ
                                               (idtoeqₒ _ _ total-space-is-quotientᵒʳᵈ)
                                               A/~ᵒʳᵈ--≃ₒ-A/~⁻ᵒʳᵈ))
