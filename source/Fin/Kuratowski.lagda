@@ -24,7 +24,6 @@ open import UF.Equiv-FunExt
 open import UF.EquivalenceExamples
 open import UF.ExcludedMiddle
 open import UF.FunExt
-open import UF.ImageAndSurjection
 open import UF.Miscelanea
 open import UF.Subsingletons renaming (⊤Ω to ⊤)
 open import UF.Subsingletons-FunExt
@@ -34,7 +33,7 @@ open import UF.UniverseEmbedding
 
 open PropositionalTruncation pt
 open finiteness pt
-open ImageAndSurjection pt
+open import UF.ImageAndSurjection pt
 open CompactTypesPT pt
 
 is-Kuratowski-finite : 𝓤 ̇ → 𝓤 ̇

@@ -656,7 +656,7 @@ module subgroup
   subgroups-form-a-set : is-set Subgroups
   subgroups-form-a-set {S} {T} = equiv-to-prop
                                   (ap-⟪⟫ S T , ap-⟪⟫-is-equiv S T)
-                                  (powersets-are-sets' ua)
+                                  (𝓟-is-set ua)
 
   subgroup-equality : (S T : Subgroups)
                     → (S ＝ T)

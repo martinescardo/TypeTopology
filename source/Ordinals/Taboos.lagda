@@ -236,6 +236,7 @@ module _
   fe = Univalence-gives-FunExt ua
 
  open import NotionsOfDecidability.Decidable
+ open import NotionsOfDecidability.DecidableClassifier
  open import NotionsOfDecidability.Complemented
 
  open import Ordinals.Arithmetic fe
@@ -243,8 +244,7 @@ module _
  open import Ordinals.WellOrderArithmetic
 
  open import UF.Embeddings
- open import UF.ImageAndSurjection
- open ImageAndSurjection pt
+ open import UF.ImageAndSurjection pt
 
  module discrete-sup-taboo-construction-II
           (P : 𝓤 ̇  )

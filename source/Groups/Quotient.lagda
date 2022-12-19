@@ -9,7 +9,7 @@ Following P. Aluffi, "Algebra: Chapter 0," we consider
 equivalence relations that are left- and right-invariant.
 
 If $X$ is a group, the quotient by such an equivalence
-relation is again a group. 
+relation is again a group.
 
 In particular this is true for the equivalence relation arising from
 the standard condition that the image of a group homomorphism be
@@ -39,7 +39,7 @@ module Groups.Quotient
         (pe  : Prop-Ext)
        where
 
-open import UF.ImageAndSurjection
+open import UF.ImageAndSurjection pt
 open import UF.Large-Quotient pt fe pe
 
 open import Groups.Type renaming (_≅_ to _≣_)
@@ -59,8 +59,6 @@ Similarly, it is right-invariant if
 module _ {𝓤 𝓥 : Universe} (X : Group 𝓤) ((_≈_ , ≈p , ≈r , ≈s , ≈t) : EqRel {𝓤} {𝓥} ⟨ X ⟩ ) where
 
   open PropositionalTruncation pt
-  open ImageAndSurjection pt
-
 
   ≈left-invariant : _
   ≈left-invariant = (a b g : ⟨ X ⟩) → a ≈ b → (g · a) ≈ (g · b)
@@ -114,7 +112,7 @@ related. It should be part of \texttt{GeneralNotation.lagda}, or
 closer to general facts about equivalence relations.
 
 \begin{code}
- 
+
     inv-cong : {x y : ⟨ X ⟩} → x ≈ y → inv X x ≈ inv X y
     inv-cong {x} {y} p = ≈t x' (x' ·⟨ X ⟩ (y ·⟨ X ⟩  y')) y'
                                   I' (≈t (x' ·⟨ X ⟩ (y ·⟨ X ⟩  y')) ((x' ·⟨ X ⟩ y) ·⟨ X ⟩  y') y' III II')
@@ -132,7 +130,7 @@ closer to general facts about equivalence relations.
 
         I' : x' ≈ (x' ·⟨ X ⟩ (y ·⟨ X ⟩  y'))
         I' = ≈t x' (x' ·⟨ X ⟩ e) ((x' ·⟨ X ⟩ (y ·⟨ X ⟩  y'))) (id-implies-related ((unit-right X x') ⁻¹)) (≈li _ _ _ I)
-        
+
         II : (x' ·⟨ X ⟩ y) ≈ e
         II = ≈t (x' ·⟨ X ⟩ y) (x' ·⟨ X ⟩ x) e (≈li _ _ _ (≈s _ _ p)) (id-implies-related (inv-left X x))
 
@@ -174,8 +172,8 @@ closer to general facts about equivalence relations.
                                          π≈ ((s ·⟨ X ⟩ t) ·⟨ X ⟩ z) ＝⟨ ap π≈ (assoc X s t z) ⟩
                                          π≈ (s ·⟨ X ⟩ (t ·⟨ X ⟩ z)) ＝⟨ ·-natural s (t ·⟨ X ⟩ z) ⁻¹ ⟩
                                          π≈ s · π≈ (t ·⟨ X ⟩ z)    ＝⟨ ap (λ v → π≈ s · v) (·-natural t  z ⁻¹) ⟩
-                                         (π≈ s · (π≈ t · π≈ z)) ∎ 
-            
+                                         (π≈ s · (π≈ t · π≈ z)) ∎
+
 
         e≈ : X≈
         e≈ = π≈ (unit X)
@@ -218,7 +216,7 @@ closer to general facts about equivalence relations.
                   e≈ ∎
 \end{code}
 
-The quotient map π≈ is a homomorphism.  
+The quotient map π≈ is a homomorphism.
 
 FIXME: This fact has been already proven within the definition of the
 quotient, so we just repeat that. We should rewrite this in a more
@@ -246,7 +244,7 @@ So we prove the map in the universality triangle is a homomorphism.
 \begin{code}
 
     module _ {𝓦 : Universe}
-             (G : Group 𝓦) 
+             (G : Group 𝓦)
              (φ : ⟨ X ⟩ → ⟨ G ⟩)
              (i : is-hom X G φ)
              (p : identifies-related-points ≋ φ)
@@ -276,6 +274,6 @@ So we prove the map in the universality triangle is a homomorphism.
                   φ≈ (π≈ s) ·⟨ G ⟩ φ≈ (π≈ t) ∎
 
           δ : (x y : X≈) → φ≈ (x ·⟨ quotient-gr ⟩ y) ＝ (φ≈ x) ·⟨ G ⟩ (φ≈ y)
-          δ = /-induction₂ ≋ (λ x' y' → group-is-set G) γ 
+          δ = /-induction₂ ≋ (λ x' y' → group-is-set G) γ
 
 \end{code}

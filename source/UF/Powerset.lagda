@@ -30,11 +30,18 @@ open import UF.Univalence
 𝓟 : 𝓤 ̇ → 𝓤 ⁺ ̇
 𝓟 {𝓤} X = X → Ω 𝓤
 
-powersets-are-sets' : Univalence → {X : 𝓤 ̇ } → is-set (𝓟 X)
+𝓟-is-set' : funext 𝓤 (𝓤 ⁺) → propext 𝓤 → {X : 𝓤 ̇ } → is-set (𝓟 X)
+𝓟-is-set' = powersets-are-sets
 
-powersets-are-sets' {𝓤} ua = powersets-are-sets
-                               (univalence-gives-funext' 𝓤 (𝓤 ⁺) (ua 𝓤) (ua (𝓤 ⁺)))
-                               (univalence-gives-propext (ua 𝓤))
+𝓟-is-set : Univalence → {X : 𝓤 ̇ } → is-set (𝓟 X)
+𝓟-is-set {𝓤} ua = 𝓟-is-set'
+                    (univalence-gives-funext' 𝓤 (𝓤 ⁺) (ua 𝓤) (ua (𝓤 ⁺)))
+                    (univalence-gives-propext (ua 𝓤))
+
+comprehension : (X : 𝓤 ̇ ) → (X → Ω 𝓥) → (X → Ω 𝓥)
+comprehension X A = A
+
+syntax comprehension X (λ x → A) = ⁅ x ꞉ X ∣ A ⁆
 
 ∅ : {X : 𝓤 ̇ } →  X → Ω 𝓥
 ∅ _ = 𝟘 , 𝟘-is-prop
@@ -54,16 +61,10 @@ infix  40 _∉_
 is-empty-subset : {X : 𝓤 ̇ } → (X → Ω 𝓥) → 𝓤 ⊔ 𝓥 ̇
 is-empty-subset {𝓤} {𝓥} {X} A = (x : X) → x ∉ A
 
-module _ (pt : propositional-truncations-exist) where
-
- open PropositionalTruncation pt
-
- is-inhabited-subset : {X : 𝓤 ̇ } → (X → Ω 𝓥) → 𝓤 ⊔ 𝓥 ̇
- is-inhabited-subset {𝓤} {𝓥} {X} A = ∃ x ꞉ X , x ∈ A
-
- being-inhabited-subset-is-prop : {X : 𝓤 ̇ } (A : X → Ω 𝓥)
-                                → is-prop (is-inhabited-subset A)
- being-inhabited-subset-is-prop {𝓤} {𝓥} {X} A = ∃-is-prop
+being-empty-subset-is-prop : Fun-Ext
+                           → {X : 𝓤 ̇ } (A : X → Ω 𝓥)
+                           → is-prop (is-empty-subset A)
+being-empty-subset-is-prop fe {X} A = Π-is-prop fe (λ x → negations-are-props fe)
 
 are-disjoint : {X : 𝓤 ̇ } → (X → Ω 𝓥) → (X → Ω 𝓦) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
 are-disjoint {𝓤} {𝓥} {𝓦} {X} A B = (x : X) → ¬((x ∈ A) × (x ∈ B))
@@ -83,8 +84,65 @@ A ⊇ B = B ⊆ A
 ∉-is-prop : funext 𝓥 𝓤₀ → {X : 𝓤 ̇ } (A : X → Ω 𝓥) (x : X) → is-prop (x ∉ A)
 ∉-is-prop fe A x = negations-are-props fe
 
-_∖[_]_ :  {X : 𝓤 ̇ } → (X → Ω 𝓥) → funext 𝓦 𝓤₀ → (X → Ω 𝓦) → (X → Ω (𝓥 ⊔ 𝓦))
-A ∖[ fe ] B = λ x → (x ∈ A × x ∉ B) , ×-is-prop (∈-is-prop A x) (∉-is-prop fe B x)
+module subset-complement (fe : Fun-Ext) where
+
+ _∖_ :  {X : 𝓤 ̇ } → (X → Ω 𝓥) → (X → Ω 𝓦) → (X → Ω (𝓥 ⊔ 𝓦))
+ A ∖ B = λ x → (x ∈ A × x ∉ B) , ×-is-prop (∈-is-prop A x) (∉-is-prop fe B x)
+
+ infix  45 _∖_
+
+ ∖-elim₀ : {X : 𝓤 ̇ } (A : X → Ω 𝓥) (B : X → Ω 𝓦) {x : X} → x ∈ A ∖ B → x ∈ A
+ ∖-elim₀ A B = pr₁
+
+ ∖-elim₁ : {X : 𝓤 ̇ } (A : X → Ω 𝓥) (B : X → Ω 𝓦) {x : X} → x ∈ A ∖ B → x ∉ B
+ ∖-elim₁ A B = pr₂
+
+module inhabited-subsets (pt : propositional-truncations-exist) where
+
+ open PropositionalTruncation pt
+
+ is-inhabited : {X : 𝓤 ̇ } → (X → Ω 𝓥) → 𝓤 ⊔ 𝓥 ̇
+ is-inhabited {𝓤} {𝓥} {X} A = ∃ x ꞉ X , x ∈ A
+
+ being-inhabited-is-prop : {X : 𝓤 ̇ } (A : X → Ω 𝓥)
+                         → is-prop (is-inhabited A)
+ being-inhabited-is-prop {𝓤} {𝓥} {X} A = ∃-is-prop
+
+ 𝓟⁺ : 𝓤 ̇ → 𝓤 ⁺ ̇
+ 𝓟⁺ {𝓤} X = Σ A ꞉ 𝓟 X , is-inhabited A
+
+ 𝓟⁺-is-set' : funext 𝓤 (𝓤 ⁺) → propext 𝓤 → {X : 𝓤 ̇ } → is-set (𝓟⁺ X)
+ 𝓟⁺-is-set' fe pe {X} = subsets-of-sets-are-sets (𝓟 X)
+                         is-inhabited
+                         (𝓟-is-set' fe pe)
+                         (λ {A} → being-inhabited-is-prop A)
+
+ 𝓟⁺-is-set : Univalence → {X : 𝓤 ̇ } → is-set (𝓟⁺ X)
+ 𝓟⁺-is-set {𝓤} ua = 𝓟⁺-is-set'
+                      (univalence-gives-funext' 𝓤 (𝓤 ⁺) (ua 𝓤) (ua (𝓤 ⁺)))
+                      (univalence-gives-propext (ua 𝓤) )
+
+ _∈⁺_ : {X : 𝓤 ̇ } → X → 𝓟⁺ X → 𝓤 ̇
+ x ∈⁺ (A , _) = x ∈ A
+
+ _∉⁺_ : {X : 𝓤 ̇ } → X → 𝓟⁺ X → 𝓤 ̇
+ x ∉⁺ A = ¬ (x ∈⁺ A)
+
+ infix  40 _∈⁺_
+ infix  40 _∉⁺_
+
+ open import UF.ExcludedMiddle
+
+ non-empty-subsets-are-inhabited : Excluded-Middle
+                                 → {X : 𝓤 ̇ } (B : 𝓟 X)
+                                 → ¬ is-empty-subset B
+                                 → is-inhabited B
+ non-empty-subsets-are-inhabited em B = not-Π-not-implies-∃ pt em
+
+ non-inhabited-subsets-are-empty : {X : 𝓤 ̇ } (B : 𝓟 X)
+                                 → ¬ is-inhabited B
+                                 → is-empty-subset B
+ non-inhabited-subsets-are-empty B ν x m = ν ∣ x , m ∣
 
 complement :  {X : 𝓤 ̇ } → funext 𝓤 𝓤₀ → (X → Ω 𝓤) → (X → Ω 𝓤)
 complement fe A = λ x → (x ∉ A) , (∉-is-prop fe A x)
@@ -100,7 +158,7 @@ complement fe A = λ x → (x ∉ A) , (∉-is-prop fe A x)
           → {X : 𝓤 ̇ } (A B : 𝓟 X) → is-prop (A ⊆ B)
 ⊆-is-prop fe = ⊆-is-prop' fe fe
 
-∅-is-least' : {X : 𝓤 ̇  } (A : X → Ω 𝓥) → ∅ {𝓤} {𝓥} ⊆ A
+∅-is-least' : {X : 𝓤 ̇ } (A : X → Ω 𝓥) → ∅ {𝓤} {𝓥} ⊆ A
 ∅-is-least' _ x = 𝟘-induction
 
 ∅-is-least : {X : 𝓤 ̇ } (A : 𝓟 X) → ∅ {𝓤} {𝓤} ⊆ A
@@ -170,7 +228,7 @@ module _
  𝕋-to-carrier : (A : X → Ω 𝓥) → 𝕋 A → X
  𝕋-to-carrier A = pr₁
 
- 𝕋-to-membership : (A : X → Ω 𝓥) → (t : 𝕋 A) → (𝕋-to-carrier A t) ∈ A
+ 𝕋-to-membership : (A : X → Ω 𝓥) → (t : 𝕋 A) → 𝕋-to-carrier A t ∈ A
  𝕋-to-membership A = pr₂
 
 \end{code}

@@ -35,6 +35,7 @@ import Ordinals.TrichotomousType
 import Ordinals.Type
 import Ordinals.WellOrderArithmetic
 import Ordinals.WellOrderTransport
+import Ordinals.WellOrderingPrinciple
 import Ordinals.WellOrderingTaboo            -- by Tom de Jong
 
 \end{code}

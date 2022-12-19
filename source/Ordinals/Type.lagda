@@ -86,12 +86,20 @@ Well-foundedness α = well-foundedness (underlying-order α) (is-well-ordered α
 
 Transfinite-induction : (α : Ordinal 𝓤)
                       → (P : ⟨ α ⟩ → 𝓦 ̇ )
-                      → ((x : ⟨ α ⟩) → ((y : ⟨ α ⟩) → y ≺⟨ α ⟩ x → P y) → P x)
+                      → ((x : ⟨ α ⟩)
+                      → ((y : ⟨ α ⟩) → y ≺⟨ α ⟩ x → P y) → P x)
                       → (x : ⟨ α ⟩) → P x
 Transfinite-induction α = transfinite-induction
                            (underlying-order α)
                            (Well-foundedness α)
 
+Transfinite-recursion : (α : Ordinal 𝓤) {Y : 𝓥 ̇ }
+                      → ((x : ⟨ α ⟩)
+                      → ((y : ⟨ α ⟩) → y ≺⟨ α ⟩ x → Y) → Y)
+                      → ⟨ α ⟩ → Y
+Transfinite-recursion α = transfinite-recursion
+                           (underlying-order α)
+                           (Well-foundedness α)
 \end{code}
 
 Added 31 October 2022 by Tom de Jong.
@@ -100,20 +108,31 @@ other constructions.
 
 \begin{code}
 
-Transfinite-induction-behaviour : FunExt → (α : Ordinal 𝓤)
+Transfinite-induction-behaviour : FunExt
+                                → (α : Ordinal 𝓤)
                                 → (P : ⟨ α ⟩ → 𝓦 ̇ )
                                 → (f : (x : ⟨ α ⟩) → ((y : ⟨ α ⟩) → y ≺⟨ α ⟩ x → P y) → P x)
                                 → (x : ⟨ α ⟩)
                                 → Transfinite-induction α P f x
                                   ＝ f x (λ y l → Transfinite-induction α P f y)
-Transfinite-induction-behaviour fe α P f =
- transfinite-induction-behaviour (underlying-order α) fe (Well-foundedness α) P f
-
+Transfinite-induction-behaviour fe α = transfinite-induction-behaviour
+                                        (underlying-order α) fe
+                                        (Well-foundedness α)
 \end{code}
 
 End of addition.
 
 \begin{code}
+
+Transfinite-recursion-behaviour : FunExt
+                                → (α : Ordinal 𝓤)
+                                → {Y : 𝓥 ̇ }
+                                → (f : (x : ⟨ α ⟩) → ((y : ⟨ α ⟩) → y ≺⟨ α ⟩ x → Y) → Y)
+                                → (x : ⟨ α ⟩)
+                                → Transfinite-recursion α f x
+                                  ＝ f x (λ y l → Transfinite-recursion α f y)
+Transfinite-recursion-behaviour fe α =
+ transfinite-recursion-behaviour (underlying-order α) fe (Well-foundedness α)
 
 Extensionality : (α : Ordinal 𝓤) → is-extensional (underlying-order α)
 Extensionality α = extensionality (underlying-order α) (is-well-ordered α)

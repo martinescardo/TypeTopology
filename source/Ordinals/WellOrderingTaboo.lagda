@@ -299,14 +299,12 @@ module swan'
         (P-is-not-false : ¬¬ P)
        where
 
+ open PropositionalTruncation pt
+
  open import MLTT.Two-Properties
 
  open import UF.Large-Quotient pt fe pe
-
- open import UF.ImageAndSurjection
- open ImageAndSurjection pt
-
- open PropositionalTruncation pt
+ open import UF.ImageAndSurjection pt
 
  _≈_ : 𝟚 → 𝟚 → 𝓤 ̇
  x ≈ y = (x ＝ y) ∨ P
@@ -771,7 +769,7 @@ module _
  open import UF.Retracts
  open import UF.Choice
 
- open UnivalentChoice (λ _ _ → fe) pt
+ open Univalent-Choice (λ _ _ → fe) pt
 
  open PropositionalTruncation pt
 
@@ -779,9 +777,9 @@ module _
  open InductiveWellOrder pt
 
  classical-well-ordering-implies-ac : classical-well-order-on-every-set (𝓤 ⊔ 𝓣) 𝓣
-                                    → AC (𝓤 ⊔ 𝓣)
+                                    → AC {𝓤 ⊔ 𝓣} {𝓤 ⊔ 𝓣} {𝓤 ⊔ 𝓣}
  classical-well-ordering-implies-ac {𝓤} {𝓣} CWO =
-  AC'AC (𝓤 ⊔ 𝓣) (AC''AC' (𝓤 ⊔ 𝓣) γ)
+  AC₁-gives-AC (AC₂-gives-AC₁ γ)
    where
     γ : (X : 𝓤 ⊔ 𝓣 ̇ ) (Y : X → 𝓤 ⊔ 𝓣 ̇ )
       → is-set X
@@ -806,20 +804,20 @@ module _
          y' = pr₂ (pr₁ m)
 
  classical-well-ordering-implies-ac-corollary :
-   classical-well-order-on-every-set 𝓤 𝓤 → AC 𝓤
+   classical-well-order-on-every-set 𝓤 𝓤 → AC {𝓤} {𝓤} {𝓤}
  classical-well-ordering-implies-ac-corollary {𝓤} =
    classical-well-ordering-implies-ac {𝓤} {𝓤}
 
  inductive-well-ordering-implies-ac :
   inductive-well-order-on-every-set ((𝓤 ⁺) ⊔ (𝓣 ⁺)) 𝓣
-  → AC (𝓤 ⊔ 𝓣)
+  → AC {𝓤 ⊔ 𝓣} {𝓤 ⊔ 𝓣} {𝓤 ⊔ 𝓣}
  inductive-well-ordering-implies-ac {𝓤} {𝓣} =
      classical-well-ordering-implies-ac {𝓤} {𝓣}
    ∘ inductive-well-ordering-implies-classical-well-ordering
 
  inductive-well-ordering-implies-ac-corollary :
    inductive-well-order-on-every-set (𝓤 ⁺) 𝓤
-   → AC 𝓤
+   → AC {𝓤} {𝓤} {𝓤}
  inductive-well-ordering-implies-ac-corollary {𝓤} =
    inductive-well-ordering-implies-ac {𝓤} {𝓤}
 

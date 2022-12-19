@@ -1158,9 +1158,9 @@ segments in the following sense:
 
 \begin{code}
 
-simulations-preserve-↓ : (α β : Ordinal 𝓤) (f : α ⊴ β)
-                       → ((a : ⟨ α ⟩) → α ↓ a ＝ β ↓ pr₁ f a)
-simulations-preserve-↓ α β f a = pr₂ (from-≼ (⊴-gives-≼ α β f) a)
+simulations-preserve-↓ : (α β : Ordinal 𝓤) ((f , _) : α ⊴ β)
+                       → ((a : ⟨ α ⟩) → α ↓ a ＝ β ↓ f a)
+simulations-preserve-↓ α β 𝕗 a = pr₂ (from-≼ (⊴-gives-≼ α β 𝕗) a)
 
 \end{code}
 
