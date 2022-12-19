@@ -1,9 +1,30 @@
-Tom de Jong, ?? ─ ??
+Tom de Jong, 29 November 2022.
 In collaboration with Nicolai Kraus, Fredrik Norvall Forsberg and Chuangjie Xu.
 
-TO DO: - Clean up lemma names
-       - Input dates
-       - Write comments
+Cleaned up on 16 and 19 December 2022.
+
+The cumulative hierarchy 𝕍 with respect to a universe 𝓤 is a large type, meaning
+it lives in the next universe 𝓤 ⁺. Hence, for elements x, y : 𝕍, the identity type
+x ＝ y of 𝕍 also livese in 𝓤 ⁺. However, as pointed out in the HoTT Book
+[Section 10.5, 1], it is possible to define a binary relation on 𝕍 that takes
+values in 𝓤 and prove it equivalent to the identity type of 𝕍. This makes 𝕍 an
+example of a locally 𝓤-small type.
+
+The membership relation on 𝕍 makes use of equality on 𝕍, and hence, has values
+in 𝓤 ⁺ too. But, using that 𝕍 is locally 𝓤-small we can define an equivalent
+𝓤-small membership relation.
+
+These facts are used in our development relating set theoretic and type
+theoretic ordinals, see Ordinals/CumulativeHierarchy-Addendum.lagda.
+
+References
+----------
+
+[1] The Univalent Foundations Program
+    Homotopy Type Theory: Univalent Foundations of Mathematics
+    https://homotopytypetheory.org/book
+    Institute for Advanced Study
+    2013
 
 \begin{code}
 
@@ -33,11 +54,14 @@ open PropositionalTruncation pt
 
 \end{code}
 
-Notice that since 𝕍 is a type in 𝓤 ⁺ the type x ＝ y also lives in 𝓤 ⁺ whenever
-x, y : 𝕍. However, as pointed out in the HoTT Book [Section 10.5, 1], it is
-possible to define a 𝓤-small relation and prove it equivalent to the identity
-type of 𝕍, making 𝕍 (essentially) locally 𝓤-small. This also allows us to define
-a 𝓤-small membership relation.
+The idea is to have a 𝓤-valued equality relation on 𝕍 by defining:
+  𝕍-set {A} f ＝⁻ 𝕍-set {B} g
+inductively as
+    (Π a : A , ∃ b : B , f a ＝⁻ g b)
+  × (Π b : B , ∃ a : A , g b ＝⁻ f a).
+
+Of course, we need to formally check that this definition respects the 𝕍-set-ext
+constructor of 𝕍 in both arguments, which is provided by the setup below.
 
 \begin{code}
 
@@ -57,12 +81,15 @@ module 𝕍-is-locally-small
           (r : A → 𝕍 → Ω 𝓤)
          where
 
-   ρ₁ : {B : 𝓤 ̇ } → (B → 𝕍) → Ω 𝓤
-   ρ₁ {B} g = (Ɐ a ∶ A , Ǝ b ∶ B , r a (g b) holds)
-            ∧ (Ɐ b ∶ B , Ǝ a ∶ A , r a (g b) holds)
+   ＝⁻-aux₁ : {B : 𝓤 ̇ } → (B → 𝕍) → Ω 𝓤
+   ＝⁻-aux₁ {B} g = (Ɐ a ∶ A , Ǝ b ∶ B , r a (g b) holds)
+                  ∧ (Ɐ b ∶ B , Ǝ a ∶ A , r a (g b) holds)
 
-   τ₁' : {B' B : 𝓤 ̇} (g' : B' → 𝕍) (g : B → 𝕍) → g' ≈ g → ρ₁ g' holds → ρ₁ g holds
-   τ₁' {B'} {B} g' g (s , t) (u , v) = ⦅1⦆ , ⦅2⦆
+   ＝⁻-aux₁-respects-≈ : {B' B : 𝓤 ̇} (g' : B' → 𝕍) (g : B → 𝕍)
+                       → g' ≈ g
+                       → ＝⁻-aux₁ g' holds
+                       → ＝⁻-aux₁ g  holds
+   ＝⁻-aux₁-respects-≈ {B'} {B} g' g (s , t) (u , v) = ⦅1⦆ , ⦅2⦆
     where
      ⦅1⦆ : (a : A) → ∃ b ꞉ B , r a (g b) holds
      ⦅1⦆ a = ∥∥-rec ∃-is-prop h₁ (u a)
@@ -81,25 +108,32 @@ module 𝕍-is-locally-small
          h₂ : (Σ a ꞉ A , r a (g' b') holds) → Σ a ꞉ A , r a (g b) holds
          h₂ (a , p) = a , transport (λ - → (r a -) holds) e p
 
-   τ₁ : {B' B : 𝓤 ̇} (g' : B' → 𝕍) (g : B → 𝕍) → g' ≈ g → ρ₁ g' ＝ ρ₁ g
-   τ₁ {B'} {B} g' g e = Ω-extensionality fe pe (τ₁' g' g e) (τ₁' g g' (≈-sym e))
+   ＝⁻-aux₁-respects-≈' : {B' B : 𝓤 ̇} (g' : B' → 𝕍) (g : B → 𝕍)
+                        → g' ≈ g
+                        → ＝⁻-aux₁ g' ＝ ＝⁻-aux₁ g
+   ＝⁻-aux₁-respects-≈' {B'} {B} g' g e =
+    Ω-extensionality fe pe
+     (＝⁻-aux₁-respects-≈ g' g e)
+     (＝⁻-aux₁-respects-≈ g g' (≈-sym e))
 
-   ρ₂ : 𝕍 → Ω 𝓤
-   ρ₂ = 𝕍-recursion (Ω-is-set fe pe) (λ g _ → ρ₁ g)
-                    (λ g' g _ _ _ _ e → τ₁ g' g e)
+   ＝⁻-aux₂ : 𝕍 → Ω 𝓤
+   ＝⁻-aux₂ = 𝕍-recursion (Ω-is-set fe pe) (λ g _ → ＝⁻-aux₁ g)
+                          (λ g' g _ _ _ _ e → ＝⁻-aux₁-respects-≈' g' g e)
 
-   ρ₂-behaviour : {B : 𝓤 ̇ } (g : B → 𝕍) → ρ₂ (𝕍-set g) ＝ ρ₁ g
-   ρ₂-behaviour g =
-    𝕍-recursion-computes (Ω-is-set fe pe) (λ g₁ _ → ρ₁ g₁)
-                         (λ g' g _ _ _ _ e → τ₁ g' g e)
+   ＝⁻-aux₂-behaviour : {B : 𝓤 ̇ } (g : B → 𝕍) → ＝⁻-aux₂ (𝕍-set g) ＝ ＝⁻-aux₁ g
+   ＝⁻-aux₂-behaviour g =
+    𝕍-recursion-computes (Ω-is-set fe pe) (λ g₁ _ → ＝⁻-aux₁ g₁)
+                         (λ g' g _ _ _ _ e → ＝⁻-aux₁-respects-≈' g' g e)
                          g (λ _ → 𝟙 , 𝟙-is-prop)
 
-  τ' : {A B : 𝓤 ̇ } (f : A → 𝕍) (g : B → 𝕍)
-     → (r₁ : A → 𝕍 → Ω 𝓤) (r₂ : B → 𝕍 → Ω 𝓤)
-     → ((a : A) → ∃ b ꞉ B , (f a ＝ g b) × (r₁ a ＝ r₂ b))
-     → ((b : B) → ∃ a ꞉ A , (g b ＝ f a) × (r₂ b ＝ r₁ a))
-     → {C : 𝓤 ̇ } (h : C → 𝕍) → ρ₁ f r₁ h holds → ρ₁ g r₂ h holds
-  τ' {A} {B} f g r₁ r₂ s t {C} h (u , v) = ⦅1⦆ , ⦅2⦆
+  ＝⁻-aux₂-respects-≈ : {A B : 𝓤 ̇ } (f : A → 𝕍) (g : B → 𝕍)
+                      → (r₁ : A → 𝕍 → Ω 𝓤) (r₂ : B → 𝕍 → Ω 𝓤)
+                      → ((a : A) → ∃ b ꞉ B , (f a ＝ g b) × (r₁ a ＝ r₂ b))
+                      → ((b : B) → ∃ a ꞉ A , (g b ＝ f a) × (r₂ b ＝ r₁ a))
+                      → {C : 𝓤 ̇ } (h : C → 𝕍)
+                      → ＝⁻-aux₁ f r₁ h holds
+                      → ＝⁻-aux₁ g r₂ h holds
+  ＝⁻-aux₂-respects-≈ {A} {B} f g r₁ r₂ s t {C} h (u , v) = ⦅1⦆ , ⦅2⦆
    where
     ⦅1⦆ : (b : B) → ∃ c ꞉ C , r₂ b (h c) holds
     ⦅1⦆ b = ∥∥-rec ∃-is-prop m (t b)
@@ -122,31 +156,42 @@ module 𝕍-is-locally-small
           → Σ b ꞉ B , r₂ b (h c) holds
         m (b , _ , q) = b , Idtofun (ap _holds (happly q (h c))) w
 
-  τ : {A B : 𝓤 ̇} (f : A → 𝕍) (g : B → 𝕍)
-      (r₁ : A → 𝕍 → Ω 𝓤) (r₂ : B → 𝕍 → Ω 𝓤)
-    → ((a : A) → ∃ b ꞉ B , (f a ＝ g b) × (r₁ a ＝ r₂ b))
-    → ((b : B) → ∃ a ꞉ A , (g b ＝ f a) × (r₂ b ＝ r₁ a))
-    → f ≈ g → ρ₂ f r₁ ＝ ρ₂ g r₂
-  τ {A} {B} f g r₁ r₂ IH₁ IH₂ _ =
-   dfunext fe (𝕍-prop-simple-induction (λ x → ρ₂ f r₁ x ＝ ρ₂ g r₂ x)
+  ＝⁻-aux₂-respects-≈' : {A B : 𝓤 ̇} (f : A → 𝕍) (g : B → 𝕍)
+                         (r₁ : A → 𝕍 → Ω 𝓤) (r₂ : B → 𝕍 → Ω 𝓤)
+                       → ((a : A) → ∃ b ꞉ B , (f a ＝ g b) × (r₁ a ＝ r₂ b))
+                       → ((b : B) → ∃ a ꞉ A , (g b ＝ f a) × (r₂ b ＝ r₁ a))
+                       → f ≈ g
+                       → ＝⁻-aux₂ f r₁ ＝ ＝⁻-aux₂ g r₂
+  ＝⁻-aux₂-respects-≈' {A} {B} f g r₁ r₂ IH₁ IH₂ _ =
+   dfunext fe (𝕍-prop-simple-induction (λ x → ＝⁻-aux₂ f r₁ x ＝ ＝⁻-aux₂ g r₂ x)
                                        (λ _ → Ω-is-set fe pe)
                                        σ)
     where
-     σ : {C : 𝓤 ̇ } (h : C → 𝕍) → ρ₂ f r₁ (𝕍-set h) ＝ ρ₂ g r₂ (𝕍-set h)
-     σ h = ρ₂ f r₁ (𝕍-set h) ＝⟨ ρ₂-behaviour f r₁ h ⟩
-           ρ₁ f r₁ h         ＝⟨ e ⟩
-           ρ₁ g r₂ h         ＝⟨ (ρ₂-behaviour g r₂ h) ⁻¹ ⟩
-           ρ₂ g r₂ (𝕍-set h) ∎
+     σ : {C : 𝓤 ̇ } (h : C → 𝕍)
+       → ＝⁻-aux₂ f r₁ (𝕍-set h) ＝ ＝⁻-aux₂ g r₂ (𝕍-set h)
+     σ h = ＝⁻-aux₂ f r₁ (𝕍-set h) ＝⟨ ＝⁻-aux₂-behaviour f r₁ h      ⟩
+           ＝⁻-aux₁ f r₁ h         ＝⟨ e                              ⟩
+           ＝⁻-aux₁ g r₂ h         ＝⟨ (＝⁻-aux₂-behaviour g r₂ h) ⁻¹ ⟩
+           ＝⁻-aux₂ g r₂ (𝕍-set h) ∎
       where
        e = Ω-extensionality fe pe
-            (τ' f g r₁ r₂ IH₁ IH₂ h)
-            (τ' g f r₂ r₁ IH₂ IH₁ h)
+            (＝⁻-aux₂-respects-≈ f g r₁ r₂ IH₁ IH₂ h)
+            (＝⁻-aux₂-respects-≈ g f r₂ r₁ IH₂ IH₁ h)
+
+\end{code}
+
+We package up the above in the following definition which records the behaviour
+of the relation on the 𝕍-set constructor.
+
+\begin{code}
 
   ＝⁻[Ω]-packaged : Σ ϕ ꞉ (𝕍 → 𝕍 → Ω 𝓤) , ({A : 𝓤 ̇} (f : A → 𝕍)
                                            (r : A → 𝕍 → Ω 𝓤)
-                                         → ϕ (𝕍-set f) ＝ ρ₂ f r)
-  ＝⁻[Ω]-packaged =
-   𝕍-recursion-with-computation (Π-is-set fe (λ _ → Ω-is-set fe pe)) ρ₂ τ
+                                        → ϕ (𝕍-set f) ＝ ＝⁻-aux₂ f r)
+  ＝⁻[Ω]-packaged = 𝕍-recursion-with-computation
+                     (Π-is-set fe (λ _ → Ω-is-set fe pe))
+                     ＝⁻-aux₂
+                     ＝⁻-aux₂-respects-≈'
 
  _＝⁻[Ω]_ : 𝕍 → 𝕍 → Ω 𝓤
  _＝⁻[Ω]_ = pr₁ ＝⁻[Ω]-packaged
@@ -157,15 +202,22 @@ module 𝕍-is-locally-small
  ＝⁻-is-prop-valued : {x y : 𝕍} → is-prop (x ＝⁻ y)
  ＝⁻-is-prop-valued {x} {y} = holds-is-prop (x ＝⁻[Ω] y)
 
+\end{code}
+
+The following lemma shows that the relation ＝⁻ indeed implements the idea
+announced in the comment above.
+
+\begin{code}
+
  private
   ＝⁻-behaviour : {A B : 𝓤 ̇ } (f : A → 𝕍) (g : B → 𝕍)
                → (𝕍-set f ＝⁻ 𝕍-set g)
                ＝ ( ((a : A) → ∃ b ꞉ B , f a ＝⁻ g b)
                   × ((b : B) → ∃ a ꞉ A , f a ＝⁻ g b))
   ＝⁻-behaviour {A} {B} f g =
-   (𝕍-set f ＝⁻ 𝕍-set g)    ＝⟨ ⦅1⦆ ⟩
-   (ρ₂ f r (𝕍-set g) holds) ＝⟨ ⦅2⦆ ⟩
-   T                        ∎
+   (𝕍-set f ＝⁻ 𝕍-set g)          ＝⟨ ⦅1⦆ ⟩
+   (＝⁻-aux₂ f r (𝕍-set g) holds) ＝⟨ ⦅2⦆ ⟩
+   T                              ∎
     where
      T : 𝓤 ̇
      T = ((a : A) → ∃ b ꞉ B , f a ＝⁻ g b)
@@ -173,7 +225,13 @@ module 𝕍-is-locally-small
      r : A → 𝕍 → Ω 𝓤
      r a y = f a ＝⁻[Ω] y
      ⦅1⦆ = ap _holds (happly (pr₂ ＝⁻[Ω]-packaged f r) (𝕍-set g))
-     ⦅2⦆ = ap _holds (ρ₂-behaviour f r g)
+     ⦅2⦆ = ap _holds (＝⁻-aux₂-behaviour f r g)
+
+\end{code}
+
+Finally, we show that ＝⁻ and ＝ are equivalent, making 𝕍 a locally small type.
+
+\begin{code}
 
  ＝⁻-to-＝ : {x y : 𝕍} → x ＝⁻ y → x ＝ y
  ＝⁻-to-＝ {x} {y} =
@@ -228,9 +286,12 @@ module 𝕍-is-locally-small
  ＝⁻-is-symmetric : {x y : 𝕍} → x ＝⁻ y → y ＝⁻ x
  ＝⁻-is-symmetric {x} {y} e = ＝-to-＝⁻ ((＝⁻-to-＝ e)⁻¹)
 
- \end{code}
+\end{code}
 
- \begin{code}
+We now make use of the fact that 𝕍 is locally small by introducing a
+small-valued membership relation on 𝕍.
+
+\begin{code}
 
  _∈⁻[Ω]_ : 𝕍 → 𝕍 → Ω 𝓤
  _∈⁻[Ω]_ x = 𝕍-prop-simple-recursion
@@ -262,7 +323,7 @@ module 𝕍-is-locally-small
     h {A} f = x ∈⁻ 𝕍-set f          ≃⟨ ⦅1⦆ ⟩
               (∃ a ꞉ A , f a ＝⁻ x) ≃⟨ ⦅2⦆ ⟩
               (∃ a ꞉ A , f a ＝ x)  ≃⟨ ⦅3⦆ ⟩
-              x ∈ 𝕍-set f ■
+              x ∈ 𝕍-set f           ■
      where
       ⦅1⦆ = idtoeq _ _ (∈⁻-for-𝕍-sets x f)
       ⦅2⦆ = ∃-cong pt (λ a → ＝⁻-≃-＝)
