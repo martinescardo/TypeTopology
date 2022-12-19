@@ -35,7 +35,7 @@ the comonad respectively.
 open import UF.FunExt
 open import UF.PropTrunc
 
-module Duploids.Duploid (fe : FunExt) (pt : propositional-truncations-exist) where
+module Duploids.Duploid (fe : Fun-Ext) (pt : propositional-truncations-exist) where
 
 open PropositionalTruncation pt
 

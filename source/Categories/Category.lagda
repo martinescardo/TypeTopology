@@ -6,7 +6,7 @@ Jon Sterling, started 16th Dec 2022
 
 open import UF.FunExt
 
-module Categories.Category (fe : FunExt) where
+module Categories.Category (fe : Fun-Ext) where
 
 open import MLTT.Spartan
 open import UF.Base
@@ -60,34 +60,34 @@ module category-axiom-statements (𝓒 : category-structure 𝓤 𝓥) where
 
  statement-hom-is-set-is-prop : is-prop statement-hom-is-set
  statement-hom-is-set-is-prop =
-  Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥)) λ _ →
-  Π-is-prop (fe 𝓤 𝓥) λ _ →
-  being-set-is-prop (fe 𝓥 𝓥)
+  Π-is-prop fe λ _ →
+  Π-is-prop fe λ _ →
+  being-set-is-prop fe
 
  module _ (hom-is-set : statement-hom-is-set) where
   statement-idn-L-is-prop : is-prop statement-idn-L
   statement-idn-L-is-prop =
-   Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥)) λ _ →
-   Π-is-prop (fe 𝓤 𝓥) λ _ →
-   Π-is-prop (fe 𝓥 𝓥) λ _ →
+   Π-is-prop fe λ _ →
+   Π-is-prop fe λ _ →
+   Π-is-prop fe λ _ →
    hom-is-set _ _
 
   statement-idn-R-is-prop : is-prop statement-idn-R
   statement-idn-R-is-prop =
-   Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥)) λ _ →
-   Π-is-prop (fe 𝓤 𝓥) λ _ →
-   Π-is-prop (fe 𝓥 𝓥) λ _ →
+   Π-is-prop fe λ _ →
+   Π-is-prop fe λ _ →
+   Π-is-prop fe λ _ →
    hom-is-set _ _
 
   statement-assoc-is-prop : is-prop statement-assoc
   statement-assoc-is-prop =
-   Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥)) λ _ →
-   Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥)) λ _ →
-   Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥)) λ _ →
-   Π-is-prop (fe 𝓤 𝓥) λ _ →
-   Π-is-prop (fe 𝓥 𝓥) λ _ →
-   Π-is-prop (fe 𝓥 𝓥) λ _ →
-   Π-is-prop (fe 𝓥 𝓥) λ _ →
+   Π-is-prop fe λ _ →
+   Π-is-prop fe λ _ →
+   Π-is-prop fe λ _ →
+   Π-is-prop fe λ _ →
+   Π-is-prop fe λ _ →
+   Π-is-prop fe λ _ →
+   Π-is-prop fe λ _ →
    hom-is-set _ _
 
  -- TODO: univalence statement
@@ -187,9 +187,9 @@ module _ (𝓒 : precategory 𝓤 𝓥) where
 
  being-univalent-is-prop : is-prop is-univalent-precategory
  being-univalent-is-prop =
-  Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥)) λ _ →
-  Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥)) λ _ →
-  being-equiv-is-prop fe _
+  Π-is-prop fe λ _ →
+  Π-is-prop fe λ _ →
+  being-equiv-is-prop (λ _ _ → fe) _
 
 category : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
 category 𝓤 𝓥 = Σ 𝓒 ꞉ precategory 𝓤 𝓥 , is-univalent-precategory 𝓒

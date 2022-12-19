@@ -6,7 +6,7 @@ Jon Sterling, started 16th Dec 2022
 
 open import UF.FunExt
 
-module Categories.Functor (fe : FunExt) where
+module Categories.Functor (fe : Fun-Ext) where
 
 open import MLTT.Spartan
 open import UF.Base
@@ -63,16 +63,16 @@ module functor-of-precategories (𝓒 : precategory 𝓤 𝓥) (𝓓 : precatego
 
   preserving-idn-is-prop : is-prop statement-preserves-idn
   preserving-idn-is-prop =
-   Π-is-prop (fe 𝓤 𝓥') λ _ →
+   Π-is-prop fe λ _ →
    𝓓.hom-is-set _ _
 
   preserving-seq-is-prop : is-prop statement-preserves-seq
   preserving-seq-is-prop =
-   Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥 ⊔ 𝓥')) λ _ →
-   Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥 ⊔ 𝓥')) λ _ →
-   Π-is-prop (fe 𝓤 (𝓥 ⊔ 𝓥')) λ _ →
-   Π-is-prop (fe 𝓥 (𝓥 ⊔ 𝓥')) λ _ →
-   Π-is-prop (fe 𝓥 𝓥') λ _ →
+   Π-is-prop fe λ _ →
+   Π-is-prop fe λ _ →
+   Π-is-prop fe λ _ →
+   Π-is-prop fe λ _ →
+   Π-is-prop fe λ _ →
    𝓓.hom-is-set _ _
 
   functor-axioms-is-prop : is-prop functor-axioms

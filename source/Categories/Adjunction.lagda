@@ -6,7 +6,7 @@ Jon Sterling, started 18th Dec 2022
 
 open import UF.FunExt
 
-module Categories.Adjunction (fe : FunExt) where
+module Categories.Adjunction (fe : Fun-Ext) where
 
 open import MLTT.Spartan
 open import UF.Base

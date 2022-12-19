@@ -14,7 +14,7 @@ a depolarized deductive system is the same thing as a precategory.
 
 open import UF.FunExt
 
-module Duploids.Depolarization (fe : FunExt) where
+module Duploids.Depolarization (fe : Fun-Ext) where
 
 open import MLTT.Spartan
 open import UF.Base
@@ -40,12 +40,12 @@ module _ (𝓓 : deductive-system 𝓤 𝓥) where
 
  being-pos-depolarized-is-prop : is-prop is-pos-depolarized
  being-pos-depolarized-is-prop =
-  Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥)) λ _ →
+  Π-is-prop fe λ _ →
   being-positive-is-prop
 
  being-neg-depolarized-is-prop : is-prop is-neg-depolarized
  being-neg-depolarized-is-prop =
-  Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥)) λ _ →
+  Π-is-prop fe λ _ →
   being-negative-is-prop
 \end{code}
 

@@ -6,7 +6,7 @@ Jon Sterling, started 16th Dec 2022
 
 open import UF.FunExt
 
-module Categories.NaturalTransformation (fe : FunExt) where
+module Categories.NaturalTransformation (fe : Fun-Ext) where
 
 open import MLTT.Spartan
 open import UF.Base
@@ -36,7 +36,7 @@ module natural-transformation (𝓒 : precategory 𝓤 𝓥) (𝓓 : precategory
 
   transf-is-set : is-set transf
   transf-is-set  =
-   Π-is-set (fe 𝓤 𝓥') λ _ →
+   Π-is-set fe λ _ →
    𝓓.hom-is-set (F.ob _) (G.ob _)
 
   is-natural : transf → 𝓤 ⊔ 𝓥 ⊔ 𝓥' ̇
@@ -49,9 +49,9 @@ module natural-transformation (𝓒 : precategory 𝓤 𝓥) (𝓓 : precategory
 
   being-natural-is-prop : {α : transf} → is-prop (is-natural α)
   being-natural-is-prop =
-   Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥 ⊔ 𝓥')) λ _ →
-   Π-is-prop (fe 𝓤 (𝓥 ⊔ 𝓥')) λ _ →
-   Π-is-prop (fe 𝓥 𝓥') λ _ →
+   Π-is-prop fe λ _ →
+   Π-is-prop fe λ _ →
+   Π-is-prop fe λ _ →
    𝓓.hom-is-set _ _
 
   nat-transf-is-set : is-set nat-transf
@@ -113,12 +113,12 @@ module natural-transformation (𝓒 : precategory 𝓤 𝓥) (𝓓 : precategory
  module _ (F G : functor) (α : transf F G) where
   transf-idn-L : transf-seq F F G (transf-idn F) α ＝ α
   transf-idn-L =
-   dfunext (fe 𝓤 𝓥') λ _ →
+   dfunext fe λ _ →
    𝓓.idn-L _ _ _
 
   transf-idn-R : transf-seq F G G α (transf-idn G) ＝ α
   transf-idn-R =
-   dfunext (fe 𝓤 𝓥') λ _ →
+   dfunext fe λ _ →
    𝓓.idn-R _ _ _
 
  module _
@@ -126,7 +126,6 @@ module natural-transformation (𝓒 : precategory 𝓤 𝓥) (𝓓 : precategory
   (α : transf F G)
   (β : transf G H)
   (γ : transf H I)
-  (fe : funext 𝓤 𝓥')
   where
   transf-assoc
    : transf-seq F G I α (transf-seq G H I β γ)
@@ -152,7 +151,7 @@ module natural-transformation (𝓒 : precategory 𝓤 𝓥) (𝓓 : precategory
    ＝ nat-transf-seq F H I (nat-transf-seq F G H α β) γ
   nat-transf-assoc =
    to-nat-transf-＝ F I
-    (transf-assoc F G H I (pr₁ α) (pr₁ β) (pr₁ γ) (fe 𝓤 𝓥'))
+    (transf-assoc F G H I (pr₁ α) (pr₁ β) (pr₁ γ))
 
  module functor-category where
   structure : category-structure (𝓤 ⊔ 𝓥 ⊔ 𝓤' ⊔ 𝓥') (𝓤 ⊔ 𝓥 ⊔ 𝓥')

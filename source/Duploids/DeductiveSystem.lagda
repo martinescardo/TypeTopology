@@ -14,7 +14,7 @@ the (non-associative) composition operation.
 
 open import UF.FunExt
 
-module Duploids.DeductiveSystem (fe : FunExt) where
+module Duploids.DeductiveSystem (fe : Fun-Ext) where
 
 open import UF.Base
 open import UF.Equiv
@@ -165,18 +165,18 @@ thunkable. Furthermore, the composition of (linear, thunkable) morphisms is
  module _ {A B} {f : A ⊢ B} where
   being-thunkable-is-prop : is-prop (is-thunkable f)
   being-thunkable-is-prop =
-   Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥)) λ _ →
-   Π-is-prop (fe 𝓤 𝓥) λ _ →
-   Π-is-prop (fe 𝓥 𝓥) λ _ →
-   Π-is-prop (fe 𝓥 𝓥) λ _ →
+   Π-is-prop fe λ _ →
+   Π-is-prop fe λ _ →
+   Π-is-prop fe λ _ →
+   Π-is-prop fe λ _ →
    ⊢-is-set _ _
 
   being-linear-is-prop : is-prop (is-linear f)
   being-linear-is-prop =
-   Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥)) λ _ →
-   Π-is-prop (fe 𝓤 𝓥) λ _ →
-   Π-is-prop (fe 𝓥 𝓥) λ _ →
-   Π-is-prop (fe 𝓥 𝓥) λ _ →
+   Π-is-prop fe λ _ →
+   Π-is-prop fe λ _ →
+   Π-is-prop fe λ _ →
+   Π-is-prop fe λ _ →
    ⊢-is-set _ _
 \end{code}
 
@@ -232,14 +232,14 @@ module polarities (𝓓 : deductive-system 𝓤 𝓥) where
  module _ {A} where
   being-positive-is-prop : is-prop (is-positive A)
   being-positive-is-prop =
-   Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥)) λ _ →
-   Π-is-prop (fe 𝓥 (𝓤 ⊔ 𝓥)) λ _ →
+   Π-is-prop fe λ _ →
+   Π-is-prop fe λ _ →
    being-linear-is-prop
 
   being-negative-is-prop : is-prop (is-negative A)
   being-negative-is-prop =
-   Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥)) λ _ →
-   Π-is-prop (fe 𝓥 (𝓤 ⊔ 𝓥)) λ _ →
+   Π-is-prop fe λ _ →
+   Π-is-prop fe λ _ →
    being-thunkable-is-prop
 
 \end{code}

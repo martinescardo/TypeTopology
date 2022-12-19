@@ -14,7 +14,7 @@ the modified definition in private communication.
 open import UF.PropTrunc
 open import UF.FunExt
 
-module Duploids.Preduploid (fe : FunExt) (pt : propositional-truncations-exist) where
+module Duploids.Preduploid (fe : Fun-Ext) (pt : propositional-truncations-exist) where
 
 open PropositionalTruncation pt
 
@@ -45,7 +45,7 @@ module _ (𝓓 : deductive-system 𝓤 𝓥) where
 
  preduploid-axioms-is-prop : is-prop preduploid-axioms
  preduploid-axioms-is-prop =
-  Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥)) λ _ →
+  Π-is-prop fe λ _ →
   being-polarized-is-prop
 
 preduploid : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
