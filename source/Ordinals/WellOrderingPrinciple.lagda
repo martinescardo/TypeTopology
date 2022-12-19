@@ -12,7 +12,6 @@ liked most to HoTT/UF.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline --experimental-lossy-unification #-}
 
-open import MLTT.Plus-Properties
 open import MLTT.Spartan
 open import NotionsOfDecidability.Decidable
 open import Ordinals.Arithmetic
