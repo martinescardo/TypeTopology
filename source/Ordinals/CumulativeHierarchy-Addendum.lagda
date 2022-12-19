@@ -116,7 +116,7 @@ module _
  open 𝕍-is-locally-small ch
  open ordinal-of-set-theoretic-ordinals ch
 
- module total-space-of-𝕍-set
+ module total-space-of-an-element-of-𝕍
          (x : 𝕍)
          (σ : is-set-theoretic-ordinal x)
         where
@@ -163,20 +163,20 @@ module _
         → (m : y ∈ x) → is-accessible _∈ₓ_ (y , m)
       h y IH m = step (λ (u , u-in-x) u-in-y → IH u u-in-y u-in-x)
 
-  𝕋x-ordinal : Ordinal (𝓤 ⁺)
-  𝕋x-ordinal = 𝕋x , _∈ₓ_ , ∈ₓ-is-prop-valued , ∈ₓ-is-well-founded
+  𝕋xᵒʳᵈ : Ordinal (𝓤 ⁺)
+  𝕋xᵒʳᵈ = 𝕋x , _∈ₓ_ , ∈ₓ-is-prop-valued , ∈ₓ-is-well-founded
                          , ∈ₓ-is-extensional , ∈ₓ-is-transitive
 
-  𝕋ᵒʳᵈx : 𝓤 ⁺ ̇
-  𝕋ᵒʳᵈx = Σ y ꞉ 𝕍ᵒʳᵈ , y ∈ᵒʳᵈ (x , σ)
+  𝕋x-restricted-to-𝕍ᵒʳᵈ : 𝓤 ⁺ ̇
+  𝕋x-restricted-to-𝕍ᵒʳᵈ = Σ y ꞉ 𝕍ᵒʳᵈ , y ∈ᵒʳᵈ (x , σ)
 
   -- NB
-  𝕋ᵒʳᵈx-≃-𝕋x : 𝕋ᵒʳᵈx ≃ 𝕋x
-  𝕋ᵒʳᵈx-≃-𝕋x = qinveq f (g , η , ε)
+  𝕋x-restricted-to-𝕍ᵒʳᵈ-≃-𝕋x : 𝕋x-restricted-to-𝕍ᵒʳᵈ ≃ 𝕋x
+  𝕋x-restricted-to-𝕍ᵒʳᵈ-≃-𝕋x = qinveq f (g , η , ε)
    where
-    f : 𝕋ᵒʳᵈx → 𝕋x
+    f : 𝕋x-restricted-to-𝕍ᵒʳᵈ → 𝕋x
     f ((y , _) , m) = y , m
-    g : 𝕋x → 𝕋ᵒʳᵈx
+    g : 𝕋x → 𝕋x-restricted-to-𝕍ᵒʳᵈ
     g (y , m) = (y , (being-set-theoretic-ordinal-is-hereditary σ m)) , m
     ε : f ∘ g ∼ id
     ε (y , m) = to-subtype-＝ (λ _ → ∈-is-prop-valued) refl
@@ -190,7 +190,7 @@ module _
 
 \begin{code}
 
- module total-space-of-𝕍-set'
+ module total-space-of-𝕍-set
          (sq : set-quotients-exist)
          {A : 𝓤 ̇ }
          (f : A → 𝕍)
@@ -200,7 +200,7 @@ module _
   private
    x = 𝕍-set f
 
-  open total-space-of-𝕍-set x σ
+  open total-space-of-an-element-of-𝕍 x σ
 
   open set-quotients-exist sq
 
@@ -215,14 +215,14 @@ module _
            to-∈-of-𝕍-set
 
   private
-   transfer : Σ s ꞉ OrdinalStructure (image f) , (image f , s) ≃ₒ 𝕋x-ordinal
-   transfer = transfer-structure (image f) 𝕋x-ordinal (≃-sym 𝕋x-≃-image-f) (_∈ₓ_ , (λ u v → ≃-refl (u ∈ₓ v)))
+   transfer : Σ s ꞉ OrdinalStructure (image f) , (image f , s) ≃ₒ 𝕋xᵒʳᵈ
+   transfer = transfer-structure (image f) 𝕋xᵒʳᵈ (≃-sym 𝕋x-≃-image-f) (_∈ₓ_ , (λ u v → ≃-refl (u ∈ₓ v)))
 
-  image-f-ordinal : Ordinal (𝓤 ⁺)
-  image-f-ordinal = image f , pr₁ transfer
+  image-fᵒʳᵈ : Ordinal (𝓤 ⁺)
+  image-fᵒʳᵈ = image f , pr₁ transfer
 
-  𝕋x-ordinal-≃-image-f-ordinal : 𝕋x-ordinal ≃ₒ image-f-ordinal
-  𝕋x-ordinal-≃-image-f-ordinal = ≃ₒ-sym _ _ (pr₂ transfer)
+  𝕋xᵒʳᵈ-≃-image-fᵒʳᵈ : 𝕋xᵒʳᵈ ≃ₒ image-fᵒʳᵈ
+  𝕋xᵒʳᵈ-≃-image-fᵒʳᵈ = ≃ₒ-sym _ _ (pr₂ transfer)
 
 \end{code}
 
@@ -358,15 +358,15 @@ TO DO: Write comment. We relate total space and quotient...
    private
     x = 𝕍-set f
 
-   open total-space-of-𝕍-set x σ
-   open total-space-of-𝕍-set' sq f σ
+   open total-space-of-an-element-of-𝕍 x σ
+   open total-space-of-𝕍-set sq f σ
 
-   coincide₂ : 𝕋x-ordinal ＝ A/~ᵒʳᵈ
-   coincide₂ = 𝕋x-ordinal      ＝⟨ ⦅1⦆ ⟩
-               image-f-ordinal ＝⟨ ⦅2⦆ ⟩
+   coincide₂ : 𝕋xᵒʳᵈ ＝ A/~ᵒʳᵈ
+   coincide₂ = 𝕋xᵒʳᵈ      ＝⟨ ⦅1⦆ ⟩
+               image-fᵒʳᵈ ＝⟨ ⦅2⦆ ⟩
                A/~ᵒʳᵈ          ∎
     where
-     ⦅1⦆ = eqtoidₒ _ _ 𝕋x-ordinal-≃-image-f-ordinal
+     ⦅1⦆ = eqtoidₒ _ _ 𝕋xᵒʳᵈ-≃-image-fᵒʳᵈ
      ⦅2⦆ = eqtoidₒ _ _ (≃ₒ-sym _ _ (ϕ , ϕ-is-order-equiv))
       where
        open set-replacement-construction sq pt f 𝕍-is-locally-small 𝕍-is-large-set hiding ([_])
@@ -374,24 +374,24 @@ TO DO: Write comment. We relate total space and quotient...
        ϕ = quotient-to-image
        ϕ-behaviour : (a : A) → ϕ [ a ] ＝ corestriction f a
        ϕ-behaviour = universality-triangle/ ~EqRel (image-is-set f 𝕍-is-large-set) (corestriction f) _
-       ϕ-is-order-preserving : is-order-preserving A/~ᵒʳᵈ image-f-ordinal ϕ
+       ϕ-is-order-preserving : is-order-preserving A/~ᵒʳᵈ image-fᵒʳᵈ ϕ
        ϕ-is-order-preserving =
         /-induction₂ fe ~EqRel
                      (λ a' b' → Π-is-prop fe
-                                 (λ _ → prop-valuedness (underlying-order image-f-ordinal)
-                                                        (is-well-ordered image-f-ordinal)
+                                 (λ _ → prop-valuedness (underlying-order image-fᵒʳᵈ)
+                                                        (is-well-ordered image-fᵒʳᵈ)
                                                         (ϕ a') (ϕ b')))
                      test
         where
          test : (a b : A) → [ a ] ≺ [ b ]
-              → underlying-order image-f-ordinal (ϕ [ a ]) (ϕ [ b ])
-         test a b l = transport₂ (underlying-order image-f-ordinal) ((ϕ-behaviour a) ⁻¹) ((ϕ-behaviour b) ⁻¹) (≺-to-∈ l)
-       ϕ-is-order-reflecting : is-order-reflecting A/~ᵒʳᵈ image-f-ordinal ϕ
+              → underlying-order image-fᵒʳᵈ (ϕ [ a ]) (ϕ [ b ])
+         test a b l = transport₂ (underlying-order image-fᵒʳᵈ) ((ϕ-behaviour a) ⁻¹) ((ϕ-behaviour b) ⁻¹) (≺-to-∈ l)
+       ϕ-is-order-reflecting : is-order-reflecting A/~ᵒʳᵈ image-fᵒʳᵈ ϕ
        ϕ-is-order-reflecting =
         /-induction₂ fe ~EqRel
                      (λ a' b' → Π-is-prop fe λ _ → prop-valuedness _≺_ (is-well-ordered A/~ᵒʳᵈ) a' b')
-                     (λ a b l → ∈-to-≺ (transport₂ (underlying-order image-f-ordinal) (ϕ-behaviour a) (ϕ-behaviour b) l))
-       ϕ-is-order-equiv : is-order-equiv A/~ᵒʳᵈ image-f-ordinal ϕ
+                     (λ a b l → ∈-to-≺ (transport₂ (underlying-order image-fᵒʳᵈ) (ϕ-behaviour a) (ϕ-behaviour b) l))
+       ϕ-is-order-equiv : is-order-equiv A/~ᵒʳᵈ image-fᵒʳᵈ ϕ
        ϕ-is-order-equiv =
         order-preserving-reflecting-equivs-are-order-equivs _ _
          ϕ (⌜⌝⁻¹-is-equiv image-≃-quotient)
@@ -572,21 +572,21 @@ in 𝓤 equivalent to A/~ᵒʳᵈ.
         where
 
   open 𝕍-to-Ord-construction sq
-  open total-space-of-𝕍-set
-  open total-space-of-𝕍-set' sq
+  open total-space-of-an-element-of-𝕍
+  open total-space-of-𝕍-set sq
 
-  finally : 𝕍ᵒʳᵈ-to-Ord x ≃ₒ 𝕋x-ordinal (pr₁ x) (pr₂ x)
+  finally : 𝕍ᵒʳᵈ-to-Ord x ≃ₒ 𝕋xᵒʳᵈ (pr₁ x) (pr₂ x)
   finally = blah (pr₁ x) (pr₂ x)
    where
     blah : (y : 𝕍) (σ : is-set-theoretic-ordinal y)
-         → 𝕍ᵒʳᵈ-to-Ord (y , σ) ≃ₒ 𝕋x-ordinal y σ
-    blah = 𝕍-prop-simple-induction _ (λ y → Π-is-prop fe (λ σ → ≃ₒ-is-prop-valued (𝕍ᵒʳᵈ-to-Ord (y , σ)) (𝕋x-ordinal y σ))) foofoo
+         → 𝕍ᵒʳᵈ-to-Ord (y , σ) ≃ₒ 𝕋xᵒʳᵈ y σ
+    blah = 𝕍-prop-simple-induction _ (λ y → Π-is-prop fe (λ σ → ≃ₒ-is-prop-valued (𝕍ᵒʳᵈ-to-Ord (y , σ)) (𝕋xᵒʳᵈ y σ))) foofoo
      where
       foofoo : {A : 𝓤 ̇ } (f : A → 𝕍) (σ : is-set-theoretic-ordinal (𝕍-set f))
-             → 𝕍ᵒʳᵈ-to-Ord (𝕍-set f , σ) ≃ₒ 𝕋x-ordinal (𝕍-set f) σ
-      foofoo {A} f σ = ≃ₒ-trans (𝕍ᵒʳᵈ-to-Ord (𝕍-set f , σ)) A/~⁻ᵒʳᵈ (𝕋x-ordinal (𝕍-set f) σ)
+             → 𝕍ᵒʳᵈ-to-Ord (𝕍-set f , σ) ≃ₒ 𝕋xᵒʳᵈ (𝕍-set f) σ
+      foofoo {A} f σ = ≃ₒ-trans (𝕍ᵒʳᵈ-to-Ord (𝕍-set f , σ)) A/~⁻ᵒʳᵈ (𝕋xᵒʳᵈ (𝕍-set f) σ)
                         (idtoeqₒ _ _ coincide)
-                        (≃ₒ-sym _ _ (≃ₒ-trans (𝕋x-ordinal (𝕍-set f) σ) A/~ᵒʳᵈ A/~⁻ᵒʳᵈ
+                        (≃ₒ-sym _ _ (≃ₒ-trans (𝕋xᵒʳᵈ (𝕍-set f) σ) A/~ᵒʳᵈ A/~⁻ᵒʳᵈ
                                               (idtoeqₒ _ _ coincide₂)
                                               A/~ᵒʳᵈ--≃ₒ-A/~⁻ᵒʳᵈ))
        where
