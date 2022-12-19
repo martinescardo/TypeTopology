@@ -81,12 +81,31 @@ module functor-of-precategories (𝓒 : precategory 𝓤 𝓥) (𝓓 : precatego
     preserving-idn-is-prop
     preserving-seq-is-prop
 
- functor : 𝓤 ⊔ 𝓥 ⊔ 𝓤' ⊔ 𝓥' ̇
- functor = Σ F ꞉ functor-structure , functor-axioms F
+ record functor : 𝓤 ⊔ 𝓥 ⊔ 𝓤' ⊔ 𝓥' ̇ where
+  constructor make
+  field
+   str : functor-structure
+   ax : functor-axioms str
 
- module functor (F : functor) where
-  open functor-structure (pr₁ F) public
-  open functor-axioms (pr₁ F) (pr₂ F) public
+  open functor-structure str public
+  open functor-axioms str ax public
+
+ module functor-as-sum where
+  to-sum : functor → Σ functor-axioms
+  to-sum F = let open functor F in str , ax
+
+  from-sum : Σ functor-axioms → functor
+  from-sum F = make (pr₁ F) (pr₂ F)
+
+  to-sum-is-equiv : is-equiv to-sum
+  pr₁ (pr₁ to-sum-is-equiv) = from-sum
+  pr₂ (pr₁ to-sum-is-equiv) _ = refl
+  pr₁ (pr₂ to-sum-is-equiv) = from-sum
+  pr₂ (pr₂ to-sum-is-equiv) _ = refl
+
+  equiv : functor ≃ Σ functor-axioms
+  equiv = to-sum , to-sum-is-equiv
+
 
 module functor-of-categories (𝓒 𝓓 : category 𝓤 𝓥) where
   open
@@ -106,10 +125,10 @@ module identity-functor (𝓒 : precategory 𝓤 𝓥) where
  ax = (λ A → refl) , (λ A B C f g → refl)
 
  fun : functor 𝓒 𝓒
- fun = str , ax
+ fun = make str ax
 
 module composite-functor
- (𝓒 : precategory 𝓣 𝓤) (𝓓 : precategory 𝓣' 𝓤') (𝓔 : precategory 𝓥 𝓦)
+ {𝓒 : precategory 𝓣 𝓤} {𝓓 : precategory 𝓣' 𝓤'} {𝓔 : precategory 𝓥 𝓦}
  (open functor-of-precategories)
  (F : functor 𝓒 𝓓)
  (G : functor 𝓓 𝓔)
@@ -119,8 +138,8 @@ module composite-functor
   module 𝓒 = precategory 𝓒
   module 𝓓 = precategory 𝓓
   module 𝓔 = precategory 𝓔
-  module F = functor 𝓒 𝓓 F
-  module G = functor 𝓓 𝓔 G
+  module F = functor F
+  module G = functor G
 
  ob : 𝓒.ob → 𝓔.ob
  ob A = G.ob (F.ob A)
@@ -151,4 +170,4 @@ module composite-functor
  ax = preserves-idn , preserves-seq
 
  fun : functor 𝓒 𝓔
- fun = str , ax
+ fun = make str ax
