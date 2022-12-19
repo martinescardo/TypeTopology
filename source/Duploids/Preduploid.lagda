@@ -48,17 +48,35 @@ module _ (𝓓 : deductive-system 𝓤 𝓥) where
   Π-is-prop fe λ _ →
   being-polarized-is-prop
 
-preduploid : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
-preduploid 𝓤 𝓥 =  Σ 𝓓 ꞉ deductive-system 𝓤 𝓥 , preduploid-axioms 𝓓
+-- TODO: consider flattening the structure
+record preduploid (𝓤 𝓥 : Universe) : (𝓤 ⊔ 𝓥)⁺ ̇ where
+ constructor make
+ field
+  str : deductive-system 𝓤 𝓥
+  ax : preduploid-axioms str
 
-module preduploid (𝓓 : preduploid 𝓤 𝓥) where
- underlying-deductive-system : deductive-system 𝓤 𝓥
- underlying-deductive-system = pr₁ 𝓓
+ underlying-deductive-system = str
 
- open deductive-system underlying-deductive-system public
+ open deductive-system underlying-deductive-system hiding (str ; ax) public
 
- ob-is-polarized : (A : ob) → is-polarized underlying-deductive-system A
- ob-is-polarized = pr₂ 𝓓
+ ob-is-polarized : (A : ob) → is-polarized str A
+ ob-is-polarized = ax
+
+module preduploid-as-sum (𝓤 𝓥 : Universe) where
+ to-sum : preduploid 𝓤 𝓥 → Σ str ꞉ deductive-system 𝓤 𝓥 , preduploid-axioms str
+ to-sum 𝓓 = let open preduploid 𝓓 in str , ax
+
+ from-sum : (Σ str ꞉ deductive-system 𝓤 𝓥 , preduploid-axioms str) → preduploid 𝓤 𝓥
+ from-sum 𝓓 = make (pr₁ 𝓓) (pr₂ 𝓓)
+
+ to-sum-is-equiv : is-equiv to-sum
+ pr₁ (pr₁ to-sum-is-equiv) = from-sum
+ pr₂ (pr₁ to-sum-is-equiv) _ = refl
+ pr₁ (pr₂ to-sum-is-equiv) = from-sum
+ pr₂ (pr₂ to-sum-is-equiv) _ = refl
+
+ equiv : preduploid 𝓤 𝓥 ≃ (Σ str ꞉ deductive-system 𝓤 𝓥 , preduploid-axioms str)
+ equiv = to-sum , to-sum-is-equiv
 \end{code}
 
 It is currently not totally clear what the correct statement of univalence for a
@@ -67,6 +85,9 @@ with adjunctions) is to have two univalence conditions: one for thunkable maps
 between positive objects and another for linear maps between negative objects.
 
 \begin{code}
+module _ (𝓓 : preduploid 𝓤 𝓥) where
+ open preduploid 𝓓
+
  module preduploid-univalence where
   open polarities underlying-deductive-system
   open ⊢-properties underlying-deductive-system
@@ -126,7 +147,7 @@ implemented these yet.
 \begin{code}
 module NegativesAndAllMaps (𝓓 : preduploid 𝓤 𝓥) where
  module 𝓓 = preduploid 𝓓
- open polarities (pr₁ 𝓓)
+ open polarities 𝓓.underlying-deductive-system
 
  ob : 𝓤 ⊔ 𝓥 ̇
  ob = Σ A ꞉ 𝓓.ob , is-negative A
@@ -161,7 +182,7 @@ module NegativesAndAllMaps (𝓓 : preduploid 𝓤 𝓥) where
 
 module PositivesAndAllMaps (𝓓 : preduploid 𝓤 𝓥) where
  module 𝓓 = preduploid 𝓓
- open polarities (pr₁ 𝓓)
+ open polarities 𝓓.underlying-deductive-system
 
  ob : 𝓤 ⊔ 𝓥 ̇
  ob = Σ A ꞉ 𝓓.ob , is-positive A
@@ -197,8 +218,8 @@ module PositivesAndAllMaps (𝓓 : preduploid 𝓤 𝓥) where
 
 module NegativesAndLinearMaps (𝓓 : preduploid 𝓤 𝓥) where
  module 𝓓 = preduploid 𝓓
- open polarities (pr₁ 𝓓)
- open ⊢-properties (pr₁ 𝓓)
+ open polarities 𝓓.underlying-deductive-system
+ open ⊢-properties 𝓓.underlying-deductive-system
 
  ob : 𝓤 ⊔ 𝓥 ̇
  ob = Σ A ꞉ 𝓓.ob , is-negative A
@@ -245,8 +266,8 @@ module NegativesAndLinearMaps (𝓓 : preduploid 𝓤 𝓥) where
 
 module PositivesAndThunkableMaps (𝓓 : preduploid 𝓤 𝓥) where
  module 𝓓 = preduploid 𝓓
- open polarities (pr₁ 𝓓)
- open ⊢-properties (pr₁ 𝓓)
+ open polarities 𝓓.underlying-deductive-system
+ open ⊢-properties 𝓓.underlying-deductive-system
 
  ob : 𝓤 ⊔ 𝓥 ̇
  ob = Σ A ꞉ 𝓓.ob , is-positive A

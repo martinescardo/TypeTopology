@@ -180,7 +180,7 @@ module _ (𝓓 : deductive-system 𝓤 𝓥) where
 
  module duploid-structure (str : duploid-structure) where
   underlying-preduploid : preduploid 𝓤 𝓥
-  underlying-preduploid = 𝓓 , pr₁ str
+  underlying-preduploid = make 𝓓 (pr₁ str)
 
   module _ (A : ob) where
    private
@@ -224,7 +224,7 @@ module unrestricted-upshift-functor (𝓓 : duploid 𝓤 𝓥) where
  module 𝓝 = precategory 𝓝
  module 𝓟 = precategory 𝓟
 
- open ⊢-properties (pr₁ 𝓓.underlying-preduploid)
+ open ⊢-properties (preduploid.underlying-deductive-system 𝓓.underlying-preduploid)
  open functor-of-precategories
  open duploid-notation 𝓓
 
