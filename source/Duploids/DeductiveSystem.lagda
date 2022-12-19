@@ -1,5 +1,13 @@
 Jon Sterling, started 16th Dec 2022
 
+A deductive system is a category-like structure in that omits the associativity
+law; associativity of pre-and-post-composition then begins a *property* of
+certain morphisms. This captures the behavior of *effectful* programs, whose
+composition is not also associative; this perspective of effectful programs
+arises from an analysis of the dynamics of cut elimination in polarized sequent
+calculus. For this reason, we denote morphisms by `A ⊢ B` and write `cut` for
+the (non-associative) composition operation.
+
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
@@ -65,6 +73,16 @@ module deductive-system (𝓓 : deductive-system 𝓤 𝓥) where
  open deductive-system-structure (pr₁ 𝓓) public
  open deductive-system-axioms (pr₁ 𝓓) (pr₂ 𝓓) public
 
+\end{code}
+
+We now begin to state the associativity properties that hold of certain
+morphisms. A morphism `f` is "thunkable" when precomposing by it is associative
+in the sense that `f; (g; h) ＝ (f; g); h`; such morphisms correspond to
+"values" in programming languages. On the other hand, a morphism `f` is "linear"
+when postcomposing by it is associative; such morphisms correspond to "stacks" in
+programming languages.
+
+\begin{code}
 module ⊢-properties (𝓓 : deductive-system 𝓤 𝓥) where
  open deductive-system 𝓓
 
@@ -78,7 +96,12 @@ module ⊢-properties (𝓓 : deductive-system 𝓤 𝓥) where
   is-linear =
    (U V : ob) (g : V ⊢ A) (h : U ⊢ V)
    → cut (cut h g) f ＝ (cut h (cut g f))
+\end{code}
 
+Just as in a category, we can speak of a map being inverse to another map. Note
+however that without additional assumptions, inverses do not seem to be unique.
+
+\begin{code}
   is-inverse : (g : B ⊢ A) → 𝓥 ̇
   is-inverse g =
    (cut f g ＝ idn _)
@@ -92,6 +115,14 @@ module ⊢-properties (𝓓 : deductive-system 𝓤 𝓥) where
     (⊢-is-set _ _)
     (⊢-is-set _ _)
 
+
+\end{code}
+
+Because the identity laws hold, identity morphisms are both linear and
+thunkable. Furthermore, the composition of (linear, thunkable) morphisms is
+(linear, thunkable).
+
+\begin{code}
  module _ (A : ob) where
   abstract
    idn-linear : is-linear (idn A)
@@ -146,7 +177,12 @@ module ⊢-properties (𝓓 : deductive-system 𝓤 𝓥) where
    Π-is-prop fe1 λ _ →
    Π-is-prop fe1 λ _ →
    ⊢-is-set _ _
+\end{code}
 
+Although inverses need not in general be unique, an inverse *is* unique if it is
+either linear or thunkable.
+
+\begin{code}
  module _ {A B} {f : A ⊢ B} {g g'} (fg : is-inverse f g) (fg' : is-inverse f g') where
   linear-inverse-is-unique
    : is-linear g
@@ -169,8 +205,14 @@ module ⊢-properties (𝓓 : deductive-system 𝓤 𝓥) where
    cut g (cut f g') ＝⟨ ap (cut g) (pr₁ fg') ⟩
    cut g (idn _) ＝⟨ idn-R B A g ⟩
    g ∎
+\end{code}
 
+An object `A` in a deductive system such that every morphism out of `A` is
+linear is called "positive"; conversely, when every morphism into `A` is
+thunkable we call `A` "negative". This is an extensional / objective account of
+the syntactical phenomenon of polarity in structural proof theory.
 
+\begin{code}
 module polarities (𝓓 : deductive-system 𝓤 𝓥) where
  open deductive-system 𝓓
  open ⊢-properties 𝓓
