@@ -81,14 +81,13 @@ open import UF.Base hiding (_≈_)
 open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.FunExt
-open import UF.ImageAndSurjection
+open import UF.ImageAndSurjection pt
 open import UF.Size
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.Quotient hiding (is-prop-valued)
 open import UF.UA-FunExt
 
-open ImageAndSurjection pt
 open PropositionalTruncation pt
 
 private

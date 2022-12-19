@@ -45,9 +45,9 @@ open import UF.Base hiding (_≈_)
 open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.Equiv-FunExt
+open import UF.Logic
 open import UF.Size
 open import UF.Subsingletons-FunExt
-open import UF.Subsingleton-Combinators
 
 open AllCombinators pt fe
 open PropositionalTruncation pt
