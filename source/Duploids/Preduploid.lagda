@@ -31,8 +31,6 @@ open import Duploids.DeductiveSystem fe
 
 module _ (𝓓 : deductive-system 𝓤 𝓥) where
  open deductive-system 𝓓
- open ⊢-properties 𝓓
- open polarities 𝓓
 
  is-polarized : (A : ob) → 𝓤 ⊔ 𝓥 ̇
  is-polarized A = ∥ is-positive A + is-negative A ∥
@@ -77,6 +75,11 @@ module preduploid-as-sum (𝓤 𝓥 : Universe) where
 
  equiv : preduploid 𝓤 𝓥 ≃ (Σ str ꞉ deductive-system 𝓤 𝓥 , preduploid-axioms str)
  equiv = to-sum , to-sum-is-equiv
+
+module preduploid-extras (𝓓 : preduploid 𝓤 𝓥) where
+ private
+  module 𝓓 = preduploid 𝓓
+ open deductive-system-extras 𝓓.underlying-deductive-system public
 \end{code}
 
 It is currently not totally clear what the correct statement of univalence for a
@@ -87,11 +90,9 @@ between positive objects and another for linear maps between negative objects.
 \begin{code}
 module _ (𝓓 : preduploid 𝓤 𝓥) where
  open preduploid 𝓓
+ open preduploid-extras 𝓓
 
  module preduploid-univalence where
-  open polarities underlying-deductive-system
-  open ⊢-properties underlying-deductive-system
-
   module _ (A B : ob) where
    module _ (f : A ⊢ B) where
     is-thunkable-iso : 𝓤 ⊔ 𝓥 ̇
@@ -147,10 +148,9 @@ implemented these yet.
 \begin{code}
 module NegativesAndAllMaps (𝓓 : preduploid 𝓤 𝓥) where
  module 𝓓 = preduploid 𝓓
- open polarities 𝓓.underlying-deductive-system
 
  ob : 𝓤 ⊔ 𝓥 ̇
- ob = Σ A ꞉ 𝓓.ob , is-negative A
+ ob = Σ A ꞉ 𝓓.ob , 𝓓.is-negative A
 
  hom : ob → ob → 𝓥 ̇
  hom A B = pr₁ A 𝓓.⊢ pr₁ B
@@ -182,10 +182,9 @@ module NegativesAndAllMaps (𝓓 : preduploid 𝓤 𝓥) where
 
 module PositivesAndAllMaps (𝓓 : preduploid 𝓤 𝓥) where
  module 𝓓 = preduploid 𝓓
- open polarities 𝓓.underlying-deductive-system
 
  ob : 𝓤 ⊔ 𝓥 ̇
- ob = Σ A ꞉ 𝓓.ob , is-positive A
+ ob = Σ A ꞉ 𝓓.ob , 𝓓.is-positive A
 
  hom : ob → ob → 𝓥 ̇
  hom A B = pr₁ A 𝓓.⊢ pr₁ B
@@ -218,14 +217,13 @@ module PositivesAndAllMaps (𝓓 : preduploid 𝓤 𝓥) where
 
 module NegativesAndLinearMaps (𝓓 : preduploid 𝓤 𝓥) where
  module 𝓓 = preduploid 𝓓
- open polarities 𝓓.underlying-deductive-system
- open ⊢-properties 𝓓.underlying-deductive-system
+ open preduploid-extras 𝓓
 
  ob : 𝓤 ⊔ 𝓥 ̇
- ob = Σ A ꞉ 𝓓.ob , is-negative A
+ ob = Σ A ꞉ 𝓓.ob , 𝓓.is-negative A
 
  hom : ob → ob → 𝓤 ⊔ 𝓥 ̇
- hom A B = Σ f ꞉ (pr₁ A 𝓓.⊢ pr₁ B) , is-linear f
+ hom A B = Σ f ꞉ (pr₁ A 𝓓.⊢ pr₁ B) , 𝓓.is-linear f
 
  idn : (A : ob) → hom A A
  pr₁ (idn A) = 𝓓.idn (pr₁ A)
@@ -242,12 +240,12 @@ module NegativesAndLinearMaps (𝓓 : preduploid 𝓤 𝓥) where
 
  module _ (A B : ob) (f g : hom A B) where
   to-hom-＝ : pr₁ f ＝ pr₁ g → f ＝ g
-  to-hom-＝ h = to-Σ-＝ (h , being-linear-is-prop _ _)
+  to-hom-＝ h = to-Σ-＝ (h , 𝓓.being-linear-is-prop _ _)
 
  hom-is-set : statement-hom-is-set cat-data
  hom-is-set A B =
   Σ-is-set (𝓓.⊢-is-set (pr₁ A) (pr₁ B)) λ _ →
-  props-are-sets being-linear-is-prop
+  props-are-sets 𝓓.being-linear-is-prop
 
  idn-L : statement-idn-L cat-data
  idn-L A B f = to-hom-＝ A B _ _ (𝓓.idn-L (pr₁ A) (pr₁ B) (pr₁ f))
@@ -266,14 +264,13 @@ module NegativesAndLinearMaps (𝓓 : preduploid 𝓤 𝓥) where
 
 module PositivesAndThunkableMaps (𝓓 : preduploid 𝓤 𝓥) where
  module 𝓓 = preduploid 𝓓
- open polarities 𝓓.underlying-deductive-system
- open ⊢-properties 𝓓.underlying-deductive-system
+ open preduploid-extras 𝓓
 
  ob : 𝓤 ⊔ 𝓥 ̇
- ob = Σ A ꞉ 𝓓.ob , is-positive A
+ ob = Σ A ꞉ 𝓓.ob , 𝓓.is-positive A
 
  hom : ob → ob → 𝓤 ⊔ 𝓥 ̇
- hom A B = Σ f ꞉ (pr₁ A 𝓓.⊢ pr₁ B) , is-thunkable f
+ hom A B = Σ f ꞉ (pr₁ A 𝓓.⊢ pr₁ B) , 𝓓.is-thunkable f
 
  idn : (A : ob) → hom A A
  pr₁ (idn A) = 𝓓.idn (pr₁ A)
@@ -290,12 +287,12 @@ module PositivesAndThunkableMaps (𝓓 : preduploid 𝓤 𝓥) where
 
  module _ (A B : ob) (f g : hom A B) where
   to-hom-＝ : pr₁ f ＝ pr₁ g → f ＝ g
-  to-hom-＝ h = to-Σ-＝ (h , being-thunkable-is-prop _ _)
+  to-hom-＝ h = to-Σ-＝ (h , 𝓓.being-thunkable-is-prop _ _)
 
  hom-is-set : statement-hom-is-set cat-data
  hom-is-set A B =
   Σ-is-set (𝓓.⊢-is-set (pr₁ A) (pr₁ B)) λ _ →
-  props-are-sets being-thunkable-is-prop
+  props-are-sets 𝓓.being-thunkable-is-prop
 
  idn-L : statement-idn-L cat-data
  idn-L A B f = to-hom-＝ A B _ _ (𝓓.idn-L (pr₁ A) (pr₁ B) (pr₁ f))
@@ -310,6 +307,5 @@ module PositivesAndThunkableMaps (𝓓 : preduploid 𝓤 𝓥) where
 
  precat : precategory (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
  precat = make cat-data (hom-is-set , idn-L , idn-R , assoc)
-
 
 \end{code}

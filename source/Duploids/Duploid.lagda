@@ -1,9 +1,10 @@
 Jon Sterling, started 16th Dec 2022
 
-A duploid is a preduploid that has "shifts" between positive and negative objects.
+A duploid is a preduploid that has "shifts" between positive and negative
+objects.
 
-1. An "upshift" for an object `A` is a negative object `⇑A` together with an invertible
-thunkable map `wrap : A ⊢ ⇑A`.
+1. An "upshift" for an object `A` is a negative object `⇑A` together with an
+invertible thunkable map `wrap : A ⊢ ⇑A`.
 
 2. A "downshift" for an object `A` is a positive object `⇓A` together with an
 invertible linear map `force : ⇓A ⊢ A`.
@@ -51,8 +52,6 @@ open import Duploids.Preduploid fe pt
 
 module _ (𝓓 : deductive-system 𝓤 𝓥) where
  open deductive-system 𝓓
- open polarities 𝓓
- open ⊢-properties 𝓓
 
  module _ (A : ob) where
   upshift-data : 𝓤 ⊔ 𝓥 ̇
@@ -134,7 +133,7 @@ module _ (𝓓 : deductive-system 𝓤 𝓥) where
        ax0.force-delay-inverse
        (ax0.upshift-negative _ _) ,
       to-×-＝
-       (being-inverse-is-prop _ _ _)
+       (being-inverse-is-prop _ _)
        (being-linear-is-prop _ _)))
 
   downshift-axioms-is-prop : {dsh : _} → is-prop (downshift-axioms dsh)
@@ -149,7 +148,7 @@ module _ (𝓓 : deductive-system 𝓤 𝓥) where
        ax0.wrap-unwrap-inverse
        (ax0.downshift-positive _ _) ,
       to-×-＝
-       (being-inverse-is-prop _ _ _)
+       (being-inverse-is-prop _ _)
        (being-thunkable-is-prop _ _)))
 
  module _ (A : ob) where
@@ -216,6 +215,11 @@ module duploid-notation (𝓓 : duploid 𝓤 𝓥) where
  𝓌 = wrap
  𝓊 = unwrap
 
+module duploid-extras (𝓓 : duploid 𝓤 𝓥) where
+ private
+  module 𝓓 = duploid 𝓓
+ open preduploid-extras 𝓓.underlying-preduploid public
+
 
 module unrestricted-upshift-functor (𝓓 : duploid 𝓤 𝓥) where
  module 𝓓 = duploid 𝓓
@@ -224,7 +228,6 @@ module unrestricted-upshift-functor (𝓓 : duploid 𝓤 𝓥) where
  module 𝓝 = precategory 𝓝
  module 𝓟 = precategory 𝓟
 
- open ⊢-properties (preduploid.underlying-deductive-system 𝓓.underlying-preduploid)
  open functor-of-precategories
  open duploid-notation 𝓓
 
@@ -272,10 +275,10 @@ module unrestricted-upshift-functor (𝓓 : duploid 𝓤 𝓥) where
       (𝒻 >> ((f >> 𝒹) >> 𝒻)) ＝⟨ ap (𝒻 >>_) help2 ⟩
       (𝒻 >> f) ∎
 
-     g-𝒹-linear : is-linear (g >> 𝒹)
+     g-𝒹-linear : 𝓓.is-linear (g >> 𝒹)
      g-𝒹-linear = B-pos (𝓓.⇑ C) (g >> 𝒹)
 
-     𝒹-linear : is-linear (𝒹 {C})
+     𝒹-linear : 𝓓.is-linear (𝒹 {C})
      𝒹-linear = C-pos (𝓓.⇑ C) 𝒹
 
   axioms : functor-axioms 𝓟 𝓝 str.structure

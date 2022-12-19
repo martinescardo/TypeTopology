@@ -31,7 +31,6 @@ open import Duploids.DeductiveSystem fe
 module _ (𝓓 : deductive-system 𝓤 𝓥) where
  module 𝓓 = deductive-system 𝓓
  open 𝓓
- open polarities 𝓓
 
  is-pos-depolarized : 𝓤 ⊔ 𝓥 ̇
  is-pos-depolarized = (A : ob) → is-positive A
