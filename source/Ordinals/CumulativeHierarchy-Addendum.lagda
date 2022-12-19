@@ -1,20 +1,63 @@
-Tom de Jong, ?? ─ ??
+Tom de Jong, 27 & 30 November and 7 & 8 December 2022.
 In collaboration with Nicolai Kraus, Fredrik Norvall Forsberg and Chuangjie Xu.
+
+Cleaned up on 16, 17 and 19 December 2022.
+
+Abstract
+────────
+We previously defined (in Ordinals/CumulativeHierarchy.lagda) the map
+  𝕍-to-Ord : 𝕍 → Ord
+such that
+  𝕍-to-Ord (𝕍-set f) ＝ sup (λ a → 𝕍-to-Ord (f a) +ₒ 𝟙ₒ).
 
 The recursive nature of 𝕍-to-Ord is convenient because it allows us to prove
 properties by induction. Moreover, the supremum yields an ordinal by
-construction. It is possible to give a more direct presentation of
-  𝕍-to-Ord (𝕍-set {A} f)
-however, that is nonrecursive.
+construction.
 
-Namely, we can show that 𝕍-to-Ord (𝕍-set {A} f) ＝ (A/~ , <), where ~ identifies
-elements of A that have the same image under f and [a] < [a'] is defined to hold
-when f a ∈ f a'.
+We show here that this map also admits a nonrecursive description and pay
+partiuclar attention to the size issues involved.
 
-It is straightforward to see that (A/~ , <) is in fact equivalent (but not equal
-for size reasons) to the image of f, which in turn is equivalent to the total
-space (Σ y ꞉ 𝕍 , y ∈ 𝕍-set f), so that the map 𝕍-to-Ord can be described (up to
-equivalence) as x ↦ Σ y ꞉ 𝕍 , y ∈ x.
+
+Introduction
+────────────
+A natural function that turns elements of 𝕍 into types is the map that takes an
+element x : 𝕍 to its total space
+  Σ y ꞉ 𝕍 , y ∈ x.
+Note that when x is a set theoretic ordinal, i.e. it is an element of x : 𝕍ᵒʳᵈ,
+then, since being a set theoretic ordinal is hereditary, we have
+  (Σ y ꞉ 𝕍 , y ∈ x) ≃ (Σ y ꞉ 𝕍ᵒʳᵈ , y ∈ x).
+Hence, the total space is an ordinal as it inherits the well-order from 𝕍ᵒʳᵈ.
+
+However, the above does *not* define a map 𝕍 → Ord, because 𝕍, and hence the
+total space, are large types, so that we get an ordinal in 𝓤 ⁺ and not in 𝓤, as
+desired.
+
+Still, we can prove that the total space yields an ordinal isomorphic to the one
+obtained by 𝕍-to-Ord as the recursive supremum. In particular, it it thus
+possible to give a more direct presentation, at least up to equivalence, of
+𝕍-to-Ord (𝕍-set f) that is nonrecursive.
+
+But we can do better, because the cumulative hierarchy 𝕍 is locally small,
+meaning that its identity types are 𝓤-valued up to equivalence. We first observe
+that the total space
+  Σ y ꞉ 𝕍 , y ∈ 𝕍-set f
+is equivalent to the image of f : A → 𝕍 (with A : 𝓤), which is a small type up
+to equivalence thanks to the fact that 𝕍 is locally small.
+
+Specifically, the image of f is equivalent to the set quotient A/~ where ~
+relates two elements if f identifies them. We then prove that
+  𝕍-to-Ord (𝕍-set {A} f) ＝ (A/~ , <),
+where [a] < [a'] is defined to hold when f a ∈ f a'.
+
+
+Summary
+───────
+In summary, we prove two results:
+  (1) 𝕍-to-Ord (𝕍-set {A} f) and (A/~ , <) are equal as ordinals, and
+  (2) 𝕍-to-Ord x and the total space (Σ y ꞉ 𝕍 , y ∈ x) are isomorphic as
+      ordinals.
+The isomorphism in (2) cannot be promoted to an equality (despite univalence),
+because (Σ y ꞉ 𝕍 , y ∈ x) is a large type.
 
 \begin{code}
 
