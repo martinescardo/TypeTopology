@@ -29,7 +29,8 @@ open import Categories.Category fe
 open import Duploids.DeductiveSystem fe
 
 module _ (𝓓 : deductive-system 𝓤 𝓥) where
- open deductive-system 𝓓
+ module 𝓓 = deductive-system 𝓓
+ open 𝓓
  open polarities 𝓓
 
  is-pos-depolarized : 𝓤 ⊔ 𝓥 ̇
@@ -70,10 +71,10 @@ gives rise to a precategory.
 
 \begin{code}
  module depolarization-and-precategories (H : is-pos-depolarized) where
-  depolarization-gives-assoc : category-axiom-statements.statement-assoc (pr₁ 𝓓)
+  depolarization-gives-assoc : category-axiom-statements.statement-assoc 𝓓.str
   depolarization-gives-assoc A B C D f g h = H C D h A B g f ⁻¹
 
-  depolarization-gives-precategory-axioms : precategory-axioms (pr₁ 𝓓)
+  depolarization-gives-precategory-axioms : precategory-axioms 𝓓.str
   depolarization-gives-precategory-axioms =
    ⊢-is-set ,
    idn-L ,
@@ -82,15 +83,15 @@ gives rise to a precategory.
 
   precategory-of-depolarized-deductive-system : precategory 𝓤 𝓥
   precategory-of-depolarized-deductive-system =
-   make (pr₁ 𝓓) depolarization-gives-precategory-axioms
+   make 𝓓.str depolarization-gives-precategory-axioms
 \end{code}
 
 Conversely, any deductive system enjoying the axioms of a precategory is
 depolarized.
 
 \begin{code}
- module _ (ax : precategory-axioms (pr₁ 𝓓)) where
-  module ax = precategory-axioms (pr₁ 𝓓) ax
+ module _ (ax : precategory-axioms 𝓓.str) where
+  module ax = precategory-axioms 𝓓.str ax
 
   precategory-gives-pos-depolarized : is-pos-depolarized
   precategory-gives-pos-depolarized A B f U V g h =
@@ -156,7 +157,7 @@ precategory-to-depolarized-deductive-system 𝓒 =
   open precategory 𝓒
   open depolarization-and-precategories
   𝓓 : deductive-system _ _
-  𝓓 = precategory.str 𝓒 , hom-is-set , idn-L , idn-R
+  𝓓 = make (precategory.str 𝓒) (hom-is-set , idn-L , idn-R)
 
 depolarized-deductive-system-to-precategory-is-equiv
  : is-equiv (depolarized-deductive-system-to-precategory {𝓤} {𝓥})
