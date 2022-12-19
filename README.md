@@ -40,6 +40,7 @@ You can use the following BibTeX citation to cite `TypeTopology`:
 * Nicolai Kraus **
 * Ohad Kammar
 * Paul Levy *
+* Guillaume Munch-Maccagnoni ***
 * Paulo Oliva
 * Peter Dybjer *
 * Thierry Coquand *
@@ -53,3 +54,7 @@ of Martin Escardo.
 (**) These authors didn't write any single line of Agda code here, but
 they contributed to constructions, theorems and proofs via the hands
 of Tom de Jong.
+
+(***) These authors didn't write any single line of Agda code here, but
+they contributed to constructions, theorems and proofs via the hands
+of Jon Sterling.
