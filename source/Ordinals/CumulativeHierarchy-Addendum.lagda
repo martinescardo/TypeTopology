@@ -15,13 +15,13 @@ properties by induction. Moreover, the supremum yields an ordinal by
 construction.
 
 We show here that this map also admits a nonrecursive description and pay
-partiuclar attention to the size issues involved.
+particular attention to the size issues involved.
 
 
 Introduction
 ────────────
 A natural function that turns elements of 𝕍 into types is the map that takes an
-element x : 𝕍 to its total space
+element x : 𝕍 to its total space, the type of elements contained in x,
   Σ y ꞉ 𝕍 , y ∈ x.
 Note that when x is a set theoretic ordinal, i.e. it is an element of x : 𝕍ᵒʳᵈ,
 then, since being a set theoretic ordinal is hereditary, we have
@@ -60,7 +60,7 @@ In summary, we prove two results:
   (2) 𝕍-to-Ord x and the total space (Σ y ꞉ 𝕍 , y ∈ x) are isomorphic as
       ordinals.
 The isomorphism in (2) cannot be promoted to an equality (despite univalence),
-because (Σ y ꞉ 𝕍 , y ∈ x) is a large type.
+because the type (Σ y ꞉ 𝕍 , y ∈ x) of elements contained in x is a large type.
 
 \begin{code}
 
@@ -264,8 +264,11 @@ ordinal image-fᵒʳᵈ.
 
 Note that because equality on 𝕍 and ∈ take values in 𝓤 ⁺, this quotient
 construction yields an ordinal in 𝓤 ⁺. We present a resized small-valued
-varation of this construction below to get a quotient that lives in 𝓤, rather
+variation of this construction below to get a quotient that lives in 𝓤, rather
 than 𝓤 ⁺.
+
+NB: We use the word "resized" here to indicate that have a small type/ordinal
+equivalent to a large one. We do *not* use resizing axioms.
 
 \begin{code}
 

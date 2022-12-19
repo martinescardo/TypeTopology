@@ -5,7 +5,7 @@ Cleaned up on 16 and 19 December 2022.
 
 The cumulative hierarchy 𝕍 with respect to a universe 𝓤 is a large type, meaning
 it lives in the next universe 𝓤 ⁺. Hence, for elements x, y : 𝕍, the identity type
-x ＝ y of 𝕍 also livese in 𝓤 ⁺. However, as pointed out in the HoTT Book
+x ＝ y of 𝕍 also lives in 𝓤 ⁺. However, as pointed out in the HoTT Book
 [Section 10.5, 1], it is possible to define a binary relation on 𝕍 that takes
 values in 𝓤 and prove it equivalent to the identity type of 𝕍. This makes 𝕍 an
 example of a locally 𝓤-small type.
