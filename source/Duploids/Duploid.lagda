@@ -1,5 +1,33 @@
 Jon Sterling, started 16th Dec 2022
 
+A duploid is a preduploid that has "shifts" between positive and negative objects.
+
+1. An "upshift" for an object `A` is a negative object `⇑A` together with an invertible
+thunkable map `wrap : A ⊢ ⇑A`.
+
+2. A "downshift" for an object `A` is a positive object `⇓A` together with an
+invertible linear map `force : ⇓A ⊢ A`.
+
+Note that the inverses to the maps specified above are uniquely determined.  The
+upshift and downshift, when viewed in terms of the categories obtained from the
+duploid, will ultimately form a pair of adjunctions `↑⊣↓` and `⇓⊣⇑`
+respectively:
+
+1. The upshift becomes a *left* adjoint functor `↑ : 𝓟-thunk → 𝓝-lin` from the
+category of positive types and thunkable maps to the category of negative
+objects and linear maps. Its right adjoint is the downshift `↓ : 𝓝-lin →
+𝓟-thunk`.
+
+2. The upshift becomes a *right* adjoint functor `⇑ : 𝓟 → 𝓝` from the category
+of positive types and all maps to the category of negative objects and all
+maps. Its left adjoint is the downshift `⇓ : 𝓝 → 𝓟`.
+
+The category of positive objects and all maps is the Kleisli category for the
+monad of the adjunction `↑⊣↓`; the category of negative objects and all maps is
+the Kleisli category for the comonad of `↑⊣↓`. Then the (flipped) adjunction
+`⇓⊣⇑` is the usual adjunction between the Kleisli categories for the monad and
+the comonad respectively.
+
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}

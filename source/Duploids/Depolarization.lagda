@@ -49,8 +49,11 @@ module _ (𝓓 : deductive-system 𝓤 𝓥) where
   being-neg-depolarized-is-prop =
    Π-is-prop fe0 λ _ →
    being-negative-is-prop fe0 fe1
+\end{code}
 
- -- The positive and negative depolarizations are equivalent:
+The positive and negative depolarizations are equivalent.
+
+\begin{code}
  is-pos-depolarized-gives-is-neg-depolarized
   : is-pos-depolarized
   → is-neg-depolarized
@@ -62,9 +65,12 @@ module _ (𝓓 : deductive-system 𝓤 𝓥) where
   → is-pos-depolarized
  is-neg-depolarized-gives-is-pos-depolarized neg A B f U V g h =
   neg V U h A B g f
+\end{code}
 
- -- A depolarized deductive system enjoys the full associativity axiom
- -- and therefore gives rise to a precategory.
+A depolarized deductive system enjoys the full associativity axiom and therefore
+gives rise to a precategory.
+
+\begin{code}
  module depolarization-and-precategories (H : is-pos-depolarized) where
   depolarization-gives-assoc : category-axiom-statements.statement-assoc (pr₁ 𝓓)
   depolarization-gives-assoc A B C D f g h = H C D h A B g f ⁻¹
@@ -80,21 +86,24 @@ module _ (𝓓 : deductive-system 𝓤 𝓥) where
   precategory-of-depolarized-deductive-system =
    pr₁ 𝓓 ,
    depolarization-gives-precategory-axioms
+\end{code}
 
-  -- Conversely, any deductive system enjoying the axioms of a precategory is
-  -- depolarized.
+Conversely, any deductive system enjoying the axioms of a precategory is
+depolarized.
+
+\begin{code}
  module _ (ax : precategory-axioms (pr₁ 𝓓)) where
   module ax = precategory-axioms (pr₁ 𝓓) ax
 
   precategory-gives-pos-depolarized : is-pos-depolarized
   precategory-gives-pos-depolarized A B f U V g h =
    ax.assoc U V A B h g f ⁻¹
+\end{code}
 
+For the sake of symmetry, we may considered an equivalent "unbiased" form of
+depolarization, which requires propositional truncation.
 
-
- -- For the sake of symmetry, we may considered an equivalent "unbiased" form
- -- of depolarization, which requires propositional truncation.
-
+\begin{code}
  module unbiased-depolarization (pt : propositional-truncations-exist) where
   open PropositionalTruncation pt
 
@@ -103,11 +112,13 @@ module _ (𝓓 : deductive-system 𝓤 𝓥) where
 
   is-depolarized : 𝓤 ⊔ 𝓥 ̇
   is-depolarized = ∥ depolarization ∥
+\end{code}
 
-  -- When a deductive system is depolarized in the unbiased sense,
-  -- it is both positively and negatively depolarized. Hence, all notions
-  -- of depolarization are equivalent.
+When a deductive system is depolarized in the unbiased sense, it is both
+positively and negatively depolarized. Hence, all notions of depolarization are
+equivalent.
 
+\begin{code}
   module _ (H : is-depolarized) where
    is-depolarized-gives-is-pos-depolarized : is-pos-depolarized
    is-depolarized-gives-is-pos-depolarized A B f U V g h =

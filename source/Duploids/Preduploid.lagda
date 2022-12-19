@@ -1,5 +1,12 @@
 Jon Sterling, started 16th Dec 2022
 
+A preduploid is a deductive system in which every object is polarized,
+i.e. either positive or negative. Because an object could be both positive *and*
+negative, it is necessary to state the preduploid axiom using a propositional
+truncation. This definition differs from that of Munch-Maccagnoni (who includes
+in the definition of a preduploid a choice of polarization), who has suggested
+the modified definition in private communication.
+
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
@@ -46,7 +53,6 @@ preduploid : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
 preduploid 𝓤 𝓥 =  Σ 𝓓 ꞉ deductive-system 𝓤 𝓥 , preduploid-axioms 𝓓
 
 module preduploid (𝓓 : preduploid 𝓤 𝓥) where
-
  underlying-deductive-system : deductive-system 𝓤 𝓥
  underlying-deductive-system = pr₁ 𝓓
 
@@ -54,9 +60,14 @@ module preduploid (𝓓 : preduploid 𝓤 𝓥) where
 
  ob-is-polarized : (A : ob) → is-polarized underlying-deductive-system A
  ob-is-polarized = pr₂ 𝓓
+\end{code}
 
- -- I don't know the correct univalence/saturation conditions yet for a preduploid
+It is currently not totally clear what the correct statement of univalence for a
+preduploid is, but one option (inspired by the identification of preduploids
+with adjunctions) is to have two univalence conditions: one for thunkable maps
+between positive objects and another for linear maps between negative objects.
 
+\begin{code}
  module preduploid-univalence where
   open polarities underlying-deductive-system
   open ⊢-properties underlying-deductive-system
@@ -99,8 +110,21 @@ module preduploid (𝓓 : preduploid 𝓤 𝓥) where
 
   is-univalent : 𝓤 ⊔ 𝓥 ̇
   is-univalent = is-positively-univalent × is-negatively-univalent
+\end{code}
 
+Several *categories* can be obtained from a given preduploid:
 
+1. The category of negative objects and all maps.
+2. The category of positive objects and all maps.
+3. The category of negative objects and linear maps.
+4. The category of positive objects and linear maps.
+
+We define these below, and they will play a role in the structure theorem that
+identifies duploids with adjunctions; it is also possible to consider the full
+subcategories of a preduploid spanned by linear or thunkable maps. We have not
+implemented these yet.
+
+\begin{code}
 module NegativesAndAllMaps (𝓓 : preduploid 𝓤 𝓥) where
  module 𝓓 = preduploid 𝓓
  open polarities (pr₁ 𝓓)
