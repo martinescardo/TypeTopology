@@ -282,9 +282,6 @@ module unrestricted-upshift-functor (𝓓 : duploid 𝓤 𝓥) where
   axioms = preserves-idn , preserves-seq
 
  ⇑-functor : functor 𝓟 𝓝
- ⇑-functor = str.structure , ax.axioms
-
-
-
+ ⇑-functor = make str.structure ax.axioms
 
 \end{code}

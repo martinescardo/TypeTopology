@@ -157,7 +157,7 @@ module NegativesAndAllMaps (𝓓 : preduploid 𝓤 𝓥) where
   assoc A B C D f g h = pr₂ B (pr₁ A) f (pr₁ C) (pr₁ D) g h ⁻¹
 
   precat : precategory (𝓤 ⊔ 𝓥) 𝓥
-  precat = cat-data , hom-is-set , idn-L , idn-R , assoc
+  precat = make cat-data (hom-is-set , idn-L , idn-R , assoc)
 
 module PositivesAndAllMaps (𝓓 : preduploid 𝓤 𝓥) where
  module 𝓓 = preduploid 𝓓
@@ -192,7 +192,7 @@ module PositivesAndAllMaps (𝓓 : preduploid 𝓤 𝓥) where
   assoc A B C D f g h = pr₂ C (pr₁ D) h (pr₁ A) (pr₁ B) g f ⁻¹
 
   precat : precategory (𝓤 ⊔ 𝓥) 𝓥
-  precat = cat-data , hom-is-set , idn-L , idn-R , assoc
+  precat = make cat-data (hom-is-set , idn-L , idn-R , assoc)
 
 
 module NegativesAndLinearMaps (𝓓 : preduploid 𝓤 𝓥) where
@@ -240,7 +240,7 @@ module NegativesAndLinearMaps (𝓓 : preduploid 𝓤 𝓥) where
    (pr₂ B (pr₁ A) (pr₁ f) (pr₁ C) (pr₁ D) (pr₁ g) (pr₁ h) ⁻¹)
 
  precat : precategory (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
- precat = cat-data , hom-is-set , idn-L , idn-R , assoc
+ precat = make cat-data (hom-is-set , idn-L , idn-R , assoc)
 
 
 module PositivesAndThunkableMaps (𝓓 : preduploid 𝓤 𝓥) where
@@ -288,7 +288,7 @@ module PositivesAndThunkableMaps (𝓓 : preduploid 𝓤 𝓥) where
    (pr₂ C (pr₁ D) (pr₁ h) (pr₁ A) (pr₁ B) (pr₁ g) (pr₁ f) ⁻¹)
 
  precat : precategory (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
- precat = cat-data , hom-is-set , idn-L , idn-R , assoc
+ precat = make cat-data (hom-is-set , idn-L , idn-R , assoc)
 
 
 \end{code}

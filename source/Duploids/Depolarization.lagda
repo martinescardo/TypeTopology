@@ -82,8 +82,7 @@ gives rise to a precategory.
 
   precategory-of-depolarized-deductive-system : precategory 𝓤 𝓥
   precategory-of-depolarized-deductive-system =
-   pr₁ 𝓓 ,
-   depolarization-gives-precategory-axioms
+   make (pr₁ 𝓓) depolarization-gives-precategory-axioms
 \end{code}
 
 Conversely, any deductive system enjoying the axioms of a precategory is
@@ -152,12 +151,12 @@ precategory-to-depolarized-deductive-system
  : precategory 𝓤 𝓥
  → depolarized-deductive-system 𝓤 𝓥
 precategory-to-depolarized-deductive-system 𝓒 =
- 𝓓 , precategory-gives-pos-depolarized 𝓓 (pr₂ 𝓒)
+ 𝓓 , precategory-gives-pos-depolarized 𝓓 (precategory.ax 𝓒)
  where
   open precategory 𝓒
   open depolarization-and-precategories
   𝓓 : deductive-system _ _
-  𝓓 = pr₁ 𝓒 , hom-is-set , idn-L , idn-R
+  𝓓 = precategory.str 𝓒 , hom-is-set , idn-L , idn-R
 
 depolarized-deductive-system-to-precategory-is-equiv
  : is-equiv (depolarized-deductive-system-to-precategory {𝓤} {𝓥})
@@ -165,8 +164,11 @@ depolarized-deductive-system-to-precategory-is-equiv = H
  where
   H : is-equiv (depolarized-deductive-system-to-precategory {𝓤} {𝓥})
   pr₁ H =
-   precategory-to-depolarized-deductive-system ,
-   λ 𝓒 → to-Σ-＝ (refl , precategory-axioms-is-prop (pr₁ 𝓒) _ _)
+   precategory-to-depolarized-deductive-system , λ 𝓒 →
+    equivs-are-lc
+     precategory-as-sum.to-sum
+     precategory-as-sum.to-sum-is-equiv
+     (to-Σ-＝ (refl , precategory-axioms-is-prop (precategory.str 𝓒) _ _))
   pr₂ H =
    precategory-to-depolarized-deductive-system ,
    λ (𝓓 , _) → to-Σ-＝ (refl , being-pos-depolarized-is-prop 𝓓 _ _)
