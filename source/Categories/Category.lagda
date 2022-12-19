@@ -4,13 +4,13 @@ Jon Sterling, started 16th Dec 2022
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module Categories.Category where
+open import UF.FunExt
+
+module Categories.Category (fe : FunExt) where
 
 open import MLTT.Spartan
-open import UF.FunExt
 open import UF.Base
 open import UF.Equiv
-open import UF.Lower-FunExt
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.Equiv-FunExt
@@ -58,42 +58,37 @@ module category-axiom-statements (𝓒 : category-structure 𝓤 𝓥) where
   → seq f (seq g h) ＝ seq (seq f g) h
 
 
- module _ (fe0 : funext 𝓤 (𝓤 ⊔ 𝓥)) (fe1 : funext 𝓥 𝓥) where
-  private
-   fe2 : funext 𝓤 𝓥
-   fe2 = lower-funext 𝓤 𝓤 fe0
+ statement-hom-is-set-is-prop : is-prop statement-hom-is-set
+ statement-hom-is-set-is-prop =
+  Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥)) λ _ →
+  Π-is-prop (fe 𝓤 𝓥) λ _ →
+  being-set-is-prop (fe 𝓥 𝓥)
 
-  statement-hom-is-set-is-prop : is-prop statement-hom-is-set
-  statement-hom-is-set-is-prop =
-   Π-is-prop fe0 λ _ →
-   Π-is-prop fe2 λ _ →
-   being-set-is-prop fe1
+ module _ (hom-is-set : statement-hom-is-set) where
+  statement-idn-L-is-prop : is-prop statement-idn-L
+  statement-idn-L-is-prop =
+   Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥)) λ _ →
+   Π-is-prop (fe 𝓤 𝓥) λ _ →
+   Π-is-prop (fe 𝓥 𝓥) λ _ →
+   hom-is-set _ _
 
-  module _ (hom-is-set : statement-hom-is-set) where
-   statement-idn-L-is-prop : is-prop statement-idn-L
-   statement-idn-L-is-prop =
-    Π-is-prop fe0 λ _ →
-    Π-is-prop fe2 λ _ →
-    Π-is-prop fe1 λ _ →
-    hom-is-set _ _
+  statement-idn-R-is-prop : is-prop statement-idn-R
+  statement-idn-R-is-prop =
+   Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥)) λ _ →
+   Π-is-prop (fe 𝓤 𝓥) λ _ →
+   Π-is-prop (fe 𝓥 𝓥) λ _ →
+   hom-is-set _ _
 
-   statement-idn-R-is-prop : is-prop statement-idn-R
-   statement-idn-R-is-prop =
-    Π-is-prop fe0 λ _ →
-    Π-is-prop fe2 λ _ →
-    Π-is-prop fe1 λ _ →
-    hom-is-set _ _
-
-   statement-assoc-is-prop : is-prop statement-assoc
-   statement-assoc-is-prop =
-    Π-is-prop fe0 λ _ →
-    Π-is-prop fe0 λ _ →
-    Π-is-prop fe0 λ _ →
-    Π-is-prop fe2 λ _ →
-    Π-is-prop fe1 λ _ →
-    Π-is-prop fe1 λ _ →
-    Π-is-prop fe1 λ _ →
-    hom-is-set _ _
+  statement-assoc-is-prop : is-prop statement-assoc
+  statement-assoc-is-prop =
+   Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥)) λ _ →
+   Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥)) λ _ →
+   Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥)) λ _ →
+   Π-is-prop (fe 𝓤 𝓥) λ _ →
+   Π-is-prop (fe 𝓥 𝓥) λ _ →
+   Π-is-prop (fe 𝓥 𝓥) λ _ →
+   Π-is-prop (fe 𝓥 𝓥) λ _ →
+   hom-is-set _ _
 
  -- TODO: univalence statement
 
@@ -108,15 +103,14 @@ module _ (𝓒 : category-structure 𝓤 𝓥) where
   × statement-idn-R
   × statement-assoc
 
- module _ (fe0 : funext 𝓤 (𝓤 ⊔ 𝓥)) (fe1 : funext 𝓥 𝓥) where
-  precategory-axioms-is-prop : is-prop precategory-axioms
-  precategory-axioms-is-prop =
-   Σ-is-prop (statement-hom-is-set-is-prop fe0 fe1) λ hom-is-set →
-   ×-is-prop
-    (statement-idn-L-is-prop fe0 fe1 hom-is-set)
-    (×-is-prop
-     (statement-idn-R-is-prop fe0 fe1 hom-is-set)
-     (statement-assoc-is-prop fe0 fe1 hom-is-set))
+ precategory-axioms-is-prop : is-prop precategory-axioms
+ precategory-axioms-is-prop =
+  Σ-is-prop statement-hom-is-set-is-prop λ hom-is-set →
+  ×-is-prop
+   (statement-idn-L-is-prop hom-is-set)
+   (×-is-prop
+    (statement-idn-R-is-prop hom-is-set)
+    (statement-assoc-is-prop hom-is-set))
 
 
  module precategory-axioms (ax : precategory-axioms) where
@@ -191,16 +185,11 @@ module _ (𝓒 : precategory 𝓤 𝓥) where
  is-univalent-precategory : 𝓤 ⊔ 𝓥 ̇
  is-univalent-precategory = (A B : ob) → is-equiv (＝-to-iso A B)
 
- module _ (fe0 : funext 𝓤 (𝓤 ⊔ 𝓥)) (fe1 : funext 𝓥 𝓥) (fe2 : funext 𝓥 𝓤) where
-  private
-   fe3 : funext 𝓤 𝓤
-   fe3 = lower-funext 𝓤 𝓥 fe0
-
-  being-univalent-is-prop : is-prop is-univalent-precategory
-  being-univalent-is-prop =
-   Π-is-prop fe0 λ _ →
-   Π-is-prop fe0 λ _ →
-   being-equiv-is-prop' fe2 fe1 fe3 fe2 _
+ being-univalent-is-prop : is-prop is-univalent-precategory
+ being-univalent-is-prop =
+  Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥)) λ _ →
+  Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥)) λ _ →
+  being-equiv-is-prop fe _
 
 category : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
 category 𝓤 𝓥 = Σ 𝓒 ꞉ precategory 𝓤 𝓥 , is-univalent-precategory 𝓒

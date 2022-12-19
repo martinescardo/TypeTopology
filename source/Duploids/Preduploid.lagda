@@ -12,13 +12,13 @@ the modified definition in private communication.
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import UF.PropTrunc
+open import UF.FunExt
 
-module Duploids.Preduploid (pt : propositional-truncations-exist) where
+module Duploids.Preduploid (fe : FunExt) (pt : propositional-truncations-exist) where
 
 open PropositionalTruncation pt
 
 open import MLTT.Spartan
-open import UF.FunExt
 open import UF.Base
 open import UF.Equiv
 open import UF.Retracts
@@ -26,8 +26,8 @@ open import UF.hlevels
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
-open import Categories.Category
-open import Duploids.DeductiveSystem
+open import Categories.Category fe
+open import Duploids.DeductiveSystem fe
 
 module _ (𝓓 : deductive-system 𝓤 𝓥) where
  open deductive-system 𝓓
@@ -43,11 +43,10 @@ module _ (𝓓 : deductive-system 𝓤 𝓥) where
  preduploid-axioms : 𝓤 ⊔ 𝓥 ̇
  preduploid-axioms = (A : ob) → is-polarized A
 
- module _ (fe : funext 𝓤 (𝓤 ⊔ 𝓥)) where
-  preduploid-axioms-is-prop : is-prop preduploid-axioms
-  preduploid-axioms-is-prop =
-   Π-is-prop fe λ _ →
-   being-polarized-is-prop
+ preduploid-axioms-is-prop : is-prop preduploid-axioms
+ preduploid-axioms-is-prop =
+  Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥)) λ _ →
+  being-polarized-is-prop
 
 preduploid : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
 preduploid 𝓤 𝓥 =  Σ 𝓓 ꞉ deductive-system 𝓤 𝓥 , preduploid-axioms 𝓓
@@ -218,31 +217,30 @@ module NegativesAndLinearMaps (𝓓 : preduploid 𝓤 𝓥) where
  cat-data : category-structure (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
  cat-data = ob , hom , idn , seq
 
- module _ (fe0 : funext 𝓤 (𝓤 ⊔ 𝓥)) (fe1 : funext 𝓥 𝓥) where
-  open category-axiom-statements
+ open category-axiom-statements
 
-  module _ (A B : ob) (f g : hom A B) where
-   to-hom-＝ : pr₁ f ＝ pr₁ g → f ＝ g
-   to-hom-＝ h = to-Σ-＝ (h , being-linear-is-prop fe0 fe1 _ _)
+ module _ (A B : ob) (f g : hom A B) where
+  to-hom-＝ : pr₁ f ＝ pr₁ g → f ＝ g
+  to-hom-＝ h = to-Σ-＝ (h , being-linear-is-prop _ _)
 
-  hom-is-set : statement-hom-is-set cat-data
-  hom-is-set A B =
-   Σ-is-set (𝓓.⊢-is-set (pr₁ A) (pr₁ B)) λ _ →
-   props-are-sets (being-linear-is-prop fe0 fe1)
+ hom-is-set : statement-hom-is-set cat-data
+ hom-is-set A B =
+  Σ-is-set (𝓓.⊢-is-set (pr₁ A) (pr₁ B)) λ _ →
+  props-are-sets being-linear-is-prop
 
-  idn-L : statement-idn-L cat-data
-  idn-L A B f = to-hom-＝ A B _ _ (𝓓.idn-L (pr₁ A) (pr₁ B) (pr₁ f))
+ idn-L : statement-idn-L cat-data
+ idn-L A B f = to-hom-＝ A B _ _ (𝓓.idn-L (pr₁ A) (pr₁ B) (pr₁ f))
 
-  idn-R : statement-idn-R cat-data
-  idn-R A B f = to-hom-＝ A B _ _ (𝓓.idn-R (pr₁ A) (pr₁ B) (pr₁ f))
+ idn-R : statement-idn-R cat-data
+ idn-R A B f = to-hom-＝ A B _ _ (𝓓.idn-R (pr₁ A) (pr₁ B) (pr₁ f))
 
-  assoc : statement-assoc cat-data
-  assoc A B C D f g h =
-   to-hom-＝ A D _ _
-    (pr₂ B (pr₁ A) (pr₁ f) (pr₁ C) (pr₁ D) (pr₁ g) (pr₁ h) ⁻¹)
+ assoc : statement-assoc cat-data
+ assoc A B C D f g h =
+  to-hom-＝ A D _ _
+   (pr₂ B (pr₁ A) (pr₁ f) (pr₁ C) (pr₁ D) (pr₁ g) (pr₁ h) ⁻¹)
 
-  precat : precategory (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
-  precat = cat-data , hom-is-set , idn-L , idn-R , assoc
+ precat : precategory (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
+ precat = cat-data , hom-is-set , idn-L , idn-R , assoc
 
 
 module PositivesAndThunkableMaps (𝓓 : preduploid 𝓤 𝓥) where
@@ -267,33 +265,30 @@ module PositivesAndThunkableMaps (𝓓 : preduploid 𝓤 𝓥) where
  cat-data : category-structure (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
  cat-data = ob , hom , idn , seq
 
- module _ (fe0 : funext 𝓤 (𝓤 ⊔ 𝓥)) (fe1 : funext 𝓥 𝓥) where
-  open category-axiom-statements
+ open category-axiom-statements
 
-  module _ (A B : ob) (f g : hom A B) where
-   to-hom-＝ : pr₁ f ＝ pr₁ g → f ＝ g
-   to-hom-＝ h = to-Σ-＝ (h , being-thunkable-is-prop fe0 fe1 _ _)
+ module _ (A B : ob) (f g : hom A B) where
+  to-hom-＝ : pr₁ f ＝ pr₁ g → f ＝ g
+  to-hom-＝ h = to-Σ-＝ (h , being-thunkable-is-prop _ _)
 
-  hom-is-set : statement-hom-is-set cat-data
-  hom-is-set A B =
-   Σ-is-set (𝓓.⊢-is-set (pr₁ A) (pr₁ B)) λ _ →
-   props-are-sets (being-thunkable-is-prop fe0 fe1)
+ hom-is-set : statement-hom-is-set cat-data
+ hom-is-set A B =
+  Σ-is-set (𝓓.⊢-is-set (pr₁ A) (pr₁ B)) λ _ →
+  props-are-sets being-thunkable-is-prop
 
-  idn-L : statement-idn-L cat-data
-  idn-L A B f = to-hom-＝ A B _ _ (𝓓.idn-L (pr₁ A) (pr₁ B) (pr₁ f))
+ idn-L : statement-idn-L cat-data
+ idn-L A B f = to-hom-＝ A B _ _ (𝓓.idn-L (pr₁ A) (pr₁ B) (pr₁ f))
 
-  idn-R : statement-idn-R cat-data
-  idn-R A B f = to-hom-＝ A B _ _ (𝓓.idn-R (pr₁ A) (pr₁ B) (pr₁ f))
+ idn-R : statement-idn-R cat-data
+ idn-R A B f = to-hom-＝ A B _ _ (𝓓.idn-R (pr₁ A) (pr₁ B) (pr₁ f))
 
-  assoc : statement-assoc cat-data
-  assoc A B C D f g h =
-   to-hom-＝ A D _ _
-    (pr₂ C (pr₁ D) (pr₁ h) (pr₁ A) (pr₁ B) (pr₁ g) (pr₁ f) ⁻¹)
+ assoc : statement-assoc cat-data
+ assoc A B C D f g h =
+  to-hom-＝ A D _ _
+   (pr₂ C (pr₁ D) (pr₁ h) (pr₁ A) (pr₁ B) (pr₁ g) (pr₁ f) ⁻¹)
 
-  precat : precategory (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
-  precat = cat-data , hom-is-set , idn-L , idn-R , assoc
-
-
+ precat : precategory (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
+ precat = cat-data , hom-is-set , idn-L , idn-R , assoc
 
 
 \end{code}

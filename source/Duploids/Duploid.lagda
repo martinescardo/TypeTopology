@@ -32,21 +32,22 @@ the comonad respectively.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
+open import UF.FunExt
 open import UF.PropTrunc
 
-module Duploids.Duploid (pt : propositional-truncations-exist) where
+module Duploids.Duploid (fe : FunExt) (pt : propositional-truncations-exist) where
 
 open PropositionalTruncation pt
 
 open import MLTT.Spartan
 open import UF.Base
-open import UF.FunExt
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-open import UF.Lower-FunExt
 
-open import Duploids.DeductiveSystem
-open import Duploids.Preduploid pt
+open import Categories.Category fe
+open import Categories.Functor fe
+open import Duploids.DeductiveSystem fe
+open import Duploids.Preduploid fe pt
 
 module _ (𝓓 : deductive-system 𝓤 𝓥) where
  open deductive-system 𝓓
@@ -121,40 +122,35 @@ module _ (𝓓 : deductive-system 𝓤 𝓥) where
    wrap-thunkable = pr₂ (pr₂ (pr₂ ax))
 
 
-  module _ (fe0 : funext 𝓤 (𝓤 ⊔ 𝓥)) (fe1 : funext 𝓥 (𝓤 ⊔ 𝓥)) where
-   private
-    fe2 : funext 𝓥 𝓥
-    fe2 = lower-funext 𝓥 𝓤 fe1
+  upshift-axioms-is-prop : {ush : _} → is-prop (upshift-axioms ush)
+  upshift-axioms-is-prop ax0 ax1 =
+   let module ax0 = upshift-axioms ax0 in
+   let module ax1 = upshift-axioms ax1 in
+   to-×-＝
+    (being-negative-is-prop _ _)
+    (to-Σ-＝
+     (thunkable-inverse-is-unique
+       ax1.force-delay-inverse
+       ax0.force-delay-inverse
+       (ax0.upshift-negative _ _) ,
+      to-×-＝
+       (being-inverse-is-prop _ _ _)
+       (being-linear-is-prop _ _)))
 
-   upshift-axioms-is-prop : {ush : _} → is-prop (upshift-axioms ush)
-   upshift-axioms-is-prop ax0 ax1 =
-    let module ax0 = upshift-axioms ax0 in
-    let module ax1 = upshift-axioms ax1 in
-    to-×-＝
-     (being-negative-is-prop fe0 fe1 _ _)
-     (to-Σ-＝
-      (thunkable-inverse-is-unique
-        ax1.force-delay-inverse
-        ax0.force-delay-inverse
-        (ax0.upshift-negative _ _) ,
-       to-×-＝
-        (being-inverse-is-prop _ _ _)
-        (being-linear-is-prop fe0 fe2 _ _)))
-
-   downshift-axioms-is-prop : {dsh : _} → is-prop (downshift-axioms dsh)
-   downshift-axioms-is-prop ax0 ax1 =
-    let module ax0 = downshift-axioms ax0 in
-    let module ax1 = downshift-axioms ax1 in
-    to-×-＝
-     (being-positive-is-prop fe0 fe1 _ _)
-     (to-Σ-＝
-      (linear-inverse-is-unique
-        ax1.wrap-unwrap-inverse
-        ax0.wrap-unwrap-inverse
-        (ax0.downshift-positive _ _) ,
-       to-×-＝
-        (being-inverse-is-prop _ _ _)
-        (being-thunkable-is-prop fe0 fe2 _ _)))
+  downshift-axioms-is-prop : {dsh : _} → is-prop (downshift-axioms dsh)
+  downshift-axioms-is-prop ax0 ax1 =
+   let module ax0 = downshift-axioms ax0 in
+   let module ax1 = downshift-axioms ax1 in
+   to-×-＝
+    (being-positive-is-prop _ _)
+    (to-Σ-＝
+     (linear-inverse-is-unique
+       ax1.wrap-unwrap-inverse
+       ax0.wrap-unwrap-inverse
+       (ax0.downshift-positive _ _) ,
+      to-×-＝
+       (being-inverse-is-prop _ _ _)
+       (being-thunkable-is-prop _ _)))
 
  module _ (A : ob) where
   has-upshift : 𝓤 ⊔ 𝓥 ̇
@@ -220,9 +216,6 @@ module duploid-notation (𝓓 : duploid 𝓤 𝓥) where
  𝓌 = wrap
  𝓊 = unwrap
 
-
-open import Categories.Category
-open import Categories.Functor
 
 module unrestricted-upshift-functor (𝓓 : duploid 𝓤 𝓥) where
  module 𝓓 = duploid 𝓓

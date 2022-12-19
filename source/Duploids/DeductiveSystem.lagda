@@ -12,9 +12,10 @@ the (non-associative) composition operation.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module Duploids.DeductiveSystem where
-
 open import UF.FunExt
+
+module Duploids.DeductiveSystem (fe : FunExt) where
+
 open import UF.Base
 open import UF.Equiv
 open import UF.PropTrunc
@@ -26,7 +27,7 @@ open import UF.Subsingletons-FunExt
 open import UF.Logic
 open import UF.Lower-FunExt
 
-open import Categories.Category
+open import Categories.Category fe
 
 deductive-system-structure : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
 deductive-system-structure 𝓤 𝓥 = category-structure 𝓤 𝓥
@@ -161,21 +162,21 @@ thunkable. Furthermore, the composition of (linear, thunkable) morphisms is
     cut f (cut g (cut h k)) ＝⟨ f-th C E g (cut h k) ⁻¹ ⟩
     cut (cut f g) (cut h k) ∎
 
- module _ {A B} {f : A ⊢ B} (fe0 : funext 𝓤 (𝓤 ⊔ 𝓥)) (fe1 : funext 𝓥 𝓥) where
+ module _ {A B} {f : A ⊢ B} where
   being-thunkable-is-prop : is-prop (is-thunkable f)
   being-thunkable-is-prop =
-   Π-is-prop fe0 λ _ →
-   Π-is-prop (lower-funext 𝓤 𝓤 fe0) λ _ →
-   Π-is-prop fe1 λ _ →
-   Π-is-prop fe1 λ _ →
+   Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥)) λ _ →
+   Π-is-prop (fe 𝓤 𝓥) λ _ →
+   Π-is-prop (fe 𝓥 𝓥) λ _ →
+   Π-is-prop (fe 𝓥 𝓥) λ _ →
    ⊢-is-set _ _
 
   being-linear-is-prop : is-prop (is-linear f)
   being-linear-is-prop =
-   Π-is-prop fe0 λ _ →
-   Π-is-prop (lower-funext 𝓤 𝓤 fe0) λ _ →
-   Π-is-prop fe1 λ _ →
-   Π-is-prop fe1 λ _ →
+   Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥)) λ _ →
+   Π-is-prop (fe 𝓤 𝓥) λ _ →
+   Π-is-prop (fe 𝓥 𝓥) λ _ →
+   Π-is-prop (fe 𝓥 𝓥) λ _ →
    ⊢-is-set _ _
 \end{code}
 
@@ -228,21 +229,17 @@ module polarities (𝓓 : deductive-system 𝓤 𝓥) where
    (B : ob) (f : B ⊢ A)
    → is-thunkable f
 
- module _ {A} (fe0 : funext 𝓤 (𝓤 ⊔ 𝓥)) (fe1 : funext 𝓥 (𝓤 ⊔ 𝓥)) where
-  private
-   fe2 : funext 𝓥 𝓥
-   fe2 = lower-funext 𝓥 𝓤 fe1
-
+ module _ {A} where
   being-positive-is-prop : is-prop (is-positive A)
   being-positive-is-prop =
-   Π-is-prop fe0 λ _ →
-   Π-is-prop fe1 λ _ →
-   being-linear-is-prop fe0 fe2
+   Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥)) λ _ →
+   Π-is-prop (fe 𝓥 (𝓤 ⊔ 𝓥)) λ _ →
+   being-linear-is-prop
 
   being-negative-is-prop : is-prop (is-negative A)
   being-negative-is-prop =
-   Π-is-prop fe0 λ _ →
-   Π-is-prop fe1 λ _ →
-   being-thunkable-is-prop fe0 fe2
+   Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥)) λ _ →
+   Π-is-prop (fe 𝓥 (𝓤 ⊔ 𝓥)) λ _ →
+   being-thunkable-is-prop
 
 \end{code}

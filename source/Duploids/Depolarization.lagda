@@ -12,11 +12,11 @@ a depolarized deductive system is the same thing as a precategory.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-open import MLTT.Spartan
-
-module Duploids.Depolarization where
-
 open import UF.FunExt
+
+module Duploids.Depolarization (fe : FunExt) where
+
+open import MLTT.Spartan
 open import UF.Base
 open import UF.Equiv
 open import UF.PropTrunc
@@ -24,10 +24,9 @@ open import UF.Retracts
 open import UF.hlevels
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-open import UF.Lower-FunExt
 
-open import Categories.Category
-open import Duploids.DeductiveSystem
+open import Categories.Category fe
+open import Duploids.DeductiveSystem fe
 
 module _ (𝓓 : deductive-system 𝓤 𝓥) where
  open deductive-system 𝓓
@@ -39,16 +38,15 @@ module _ (𝓓 : deductive-system 𝓤 𝓥) where
  is-neg-depolarized : 𝓤 ⊔ 𝓥 ̇
  is-neg-depolarized = (A : ob) → is-negative A
 
- module _ (fe0 : funext 𝓤 (𝓤 ⊔ 𝓥)) (fe1 : funext 𝓥 (𝓤 ⊔ 𝓥)) where
-  being-pos-depolarized-is-prop : is-prop is-pos-depolarized
-  being-pos-depolarized-is-prop =
-   Π-is-prop fe0 λ _ →
-   being-positive-is-prop fe0 fe1
+ being-pos-depolarized-is-prop : is-prop is-pos-depolarized
+ being-pos-depolarized-is-prop =
+  Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥)) λ _ →
+  being-positive-is-prop
 
-  being-neg-depolarized-is-prop : is-prop is-neg-depolarized
-  being-neg-depolarized-is-prop =
-   Π-is-prop fe0 λ _ →
-   being-negative-is-prop fe0 fe1
+ being-neg-depolarized-is-prop : is-prop is-neg-depolarized
+ being-neg-depolarized-is-prop =
+  Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥)) λ _ →
+  being-negative-is-prop
 \end{code}
 
 The positive and negative depolarizations are equivalent.
@@ -161,21 +159,15 @@ precategory-to-depolarized-deductive-system 𝓒 =
   𝓓 : deductive-system _ _
   𝓓 = pr₁ 𝓒 , hom-is-set , idn-L , idn-R
 
-module _ (fe0 : funext 𝓤 (𝓤 ⊔ 𝓥)) (fe1 : funext 𝓥 (𝓤 ⊔ 𝓥)) where
- private
-  fe2 : funext 𝓥 𝓥
-  fe2 = lower-funext 𝓥 𝓤 fe1
-
- depolarized-deductive-system-to-precategory-is-equiv
-  : is-equiv (depolarized-deductive-system-to-precategory {𝓤} {𝓥})
- depolarized-deductive-system-to-precategory-is-equiv = H
-  where
-   H : is-equiv (depolarized-deductive-system-to-precategory {𝓤} {𝓥})
-   pr₁ H =
-    precategory-to-depolarized-deductive-system ,
-    λ 𝓒 → to-Σ-＝ (refl , precategory-axioms-is-prop (pr₁ 𝓒) fe0 fe2 _ _)
-   pr₂ H =
-    precategory-to-depolarized-deductive-system ,
-    λ (𝓓 , _) → to-Σ-＝ (refl , being-pos-depolarized-is-prop 𝓓 fe0 fe1 _ _)
-
+depolarized-deductive-system-to-precategory-is-equiv
+ : is-equiv (depolarized-deductive-system-to-precategory {𝓤} {𝓥})
+depolarized-deductive-system-to-precategory-is-equiv = H
+ where
+  H : is-equiv (depolarized-deductive-system-to-precategory {𝓤} {𝓥})
+  pr₁ H =
+   precategory-to-depolarized-deductive-system ,
+   λ 𝓒 → to-Σ-＝ (refl , precategory-axioms-is-prop (pr₁ 𝓒) _ _)
+  pr₂ H =
+   precategory-to-depolarized-deductive-system ,
+   λ (𝓓 , _) → to-Σ-＝ (refl , being-pos-depolarized-is-prop 𝓓 _ _)
 \end{code}

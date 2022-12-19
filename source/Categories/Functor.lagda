@@ -4,18 +4,18 @@ Jon Sterling, started 16th Dec 2022
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module Categories.Functor where
+open import UF.FunExt
+
+module Categories.Functor (fe : FunExt) where
 
 open import MLTT.Spartan
-open import UF.FunExt
 open import UF.Base
 open import UF.Equiv
-open import UF.Lower-FunExt
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.Equiv-FunExt
 
-open import Categories.Category
+open import Categories.Category fe
 
 module functor-of-precategories (𝓒 : precategory 𝓤 𝓥) (𝓓 : precategory 𝓤' 𝓥') where
  private
@@ -61,40 +61,25 @@ module functor-of-precategories (𝓒 : precategory 𝓤 𝓥) (𝓓 : precatego
    preserves-seq : statement-preserves-seq
    preserves-seq = pr₂ ax
 
-  module _ (fe : funext 𝓤 𝓥') where
-   preserving-idn-is-prop : is-prop statement-preserves-idn
-   preserving-idn-is-prop =
-    Π-is-prop fe λ _ →
-    𝓓.hom-is-set _ _
+  preserving-idn-is-prop : is-prop statement-preserves-idn
+  preserving-idn-is-prop =
+   Π-is-prop (fe 𝓤 𝓥') λ _ →
+   𝓓.hom-is-set _ _
 
-  module _ (fe0 : funext 𝓤 (𝓤 ⊔ 𝓥 ⊔ 𝓥')) (fe1 : funext 𝓥 (𝓥 ⊔ 𝓥')) where
-   private
-    fe2 : funext 𝓤 𝓥
-    fe2 = lower-funext 𝓤 (𝓤 ⊔ 𝓥') fe0
+  preserving-seq-is-prop : is-prop statement-preserves-seq
+  preserving-seq-is-prop =
+   Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥 ⊔ 𝓥')) λ _ →
+   Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥 ⊔ 𝓥')) λ _ →
+   Π-is-prop (fe 𝓤 (𝓥 ⊔ 𝓥')) λ _ →
+   Π-is-prop (fe 𝓥 (𝓥 ⊔ 𝓥')) λ _ →
+   Π-is-prop (fe 𝓥 𝓥') λ _ →
+   𝓓.hom-is-set _ _
 
-    fe3 : funext 𝓤 (𝓥 ⊔ 𝓥')
-    fe3 = lower-funext 𝓤 𝓤 fe0
-
-    fe4 : funext 𝓥 𝓥'
-    fe4 = lower-funext 𝓥 𝓥 fe1
-
-    fe5 : funext 𝓤 𝓥'
-    fe5 = lower-funext 𝓤 (𝓤 ⊔ 𝓥) fe0
-
-   preserving-seq-is-prop : is-prop statement-preserves-seq
-   preserving-seq-is-prop =
-    Π-is-prop fe0 λ _ →
-    Π-is-prop fe0 λ _ →
-    Π-is-prop fe3 λ _ →
-    Π-is-prop fe1 λ _ →
-    Π-is-prop fe4 λ _ →
-    𝓓.hom-is-set _ _
-
-   functor-axioms-is-prop : is-prop functor-axioms
-   functor-axioms-is-prop =
-    ×-is-prop
-     (preserving-idn-is-prop fe5)
-     preserving-seq-is-prop
+  functor-axioms-is-prop : is-prop functor-axioms
+  functor-axioms-is-prop =
+   ×-is-prop
+    preserving-idn-is-prop
+    preserving-seq-is-prop
 
  functor : 𝓤 ⊔ 𝓥 ⊔ 𝓤' ⊔ 𝓥' ̇
  functor = Σ F ꞉ functor-structure , functor-axioms F
