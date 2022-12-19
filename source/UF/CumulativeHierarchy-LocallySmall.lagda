@@ -1,5 +1,5 @@
 Tom de Jong, 29 November 2022.
-In collaboration with Nicolai Kraus, Fredrik Norvall Forsberg and Chuangjie Xu.
+In collaboration with Nicolai Kraus, Fredrik Nordvall Forsberg and Chuangjie Xu.
 
 Cleaned up on 16 and 19 December 2022.
 

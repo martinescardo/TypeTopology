@@ -1,5 +1,5 @@
 Tom de Jong, 27 & 30 November and 7 & 8 December 2022.
-In collaboration with Nicolai Kraus, Fredrik Norvall Forsberg and Chuangjie Xu.
+In collaboration with Nicolai Kraus, Fredrik Nordvall Forsberg and Chuangjie Xu.
 
 Cleaned up on 16, 17 and 19 December 2022.
 

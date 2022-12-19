@@ -1,5 +1,5 @@
 Tom de Jong, 28 October 2022 - 7 November 2022.
-In collaboration with Nicolai Kraus, Fredrik Norvall Forsberg and Chuangjie Xu.
+In collaboration with Nicolai Kraus, Fredrik Nordvall Forsberg and Chuangjie Xu.
 
 Following [Pow75], in constructive set theory an ordinal is [Def. 9.4.1, AR10],
 defined as a transitive set of transitive sets.

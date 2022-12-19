@@ -1,5 +1,5 @@
 Tom de Jong, 28 October 2022 - 7 November 2022.
-In collaboration with Nicolai Kraus, Fredrik Norvall Forsberg and Chuangjie Xu.
+In collaboration with Nicolai Kraus, Fredrik Nordvall Forsberg and Chuangjie Xu.
 
 We define the induction principle (with a non-judgemental computation principle)
 of the cumulative hierarchy 𝕍 (with respect to a type universe 𝓤) as introduced
