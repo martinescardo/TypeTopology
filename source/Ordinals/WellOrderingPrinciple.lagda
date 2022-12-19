@@ -18,6 +18,7 @@ open import Ordinals.Arithmetic
 open import Ordinals.Notions
 open import Ordinals.Type
 open import UF.Base
+open import UF.Choice
 open import UF.Embeddings
 open import UF.Equiv
 open import UF.EquivalenceExamples
@@ -31,7 +32,6 @@ open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.UA-FunExt
 open import UF.Univalence
-open import UF.Choice
 
 \end{code}
 
@@ -318,7 +318,7 @@ desired result:
 
 \end{code}
 
-And our desired results follows directly:
+And our desired results follows directly from this:
 
 \begin{code}
 
@@ -330,7 +330,7 @@ And our desired results follows directly:
 Using this we can prove the theorem stated above, and restated below,
 as follows. We first obtain a choice function conditionally to the
 inhabitedness of X from the axiom of choice, and also the principle of
-excluded middle. We then use excluded middle to check whether it is
+excluded middle. We then use excluded middle to check whether X is
 inhabited. If it is, we apply the above lemma. Otherwise it is empty
 and hence clearly well-ordered.
 
@@ -356,7 +356,7 @@ Choice-gives-well-ordering = restatement
             (choice-function s)
 
     II : ¬ ∥ X ∥ → ∃ _<_ ꞉ (X → X → 𝓤 ̇) , (is-well-order _<_)
-    II ν = ∣ structure (prop-ordinal fe X (empty-types-are-props λ x → ν ∣ x ∣)) ∣
+    II ν = ∣ structure (prop-ordinal fe X (empty-types-are-props (ν ∘ ∣_∣))) ∣
 
     III : ∃ _<_ ꞉ (X → X → 𝓤 ̇) , (is-well-order _<_)
     III = cases I II (em ∥ X ∥ ∥∥-is-prop)
