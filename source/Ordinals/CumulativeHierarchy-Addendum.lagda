@@ -176,6 +176,9 @@ ordinal x is a (large) type theoretic ordinal when ordered by membership.
   𝕋xᵒʳᵈ = 𝕋x , _∈ₓ_ , ∈ₓ-is-prop-valued , ∈ₓ-is-well-founded
                     , ∈ₓ-is-extensional , ∈ₓ-is-transitive
 
+  total-spaceᵒʳᵈ : Ordinal (𝓤 ⁺)
+  total-spaceᵒʳᵈ = 𝕋xᵒʳᵈ
+
 \end{code}
 
 Because being an set theoretic ordinal is hereditary the total spaces
@@ -724,32 +727,52 @@ the nonrecursive set quotient A/~⁻ᵒʳᵈ.
              a , ((initial-segments-of-A/~⁻ᵒʳᵈ-are-given-by-f a' a refl) ⁻¹)
         ⦅3⦆ = (Ord-to-𝕍-behaviour A/~⁻ᵒʳᵈ) ⁻¹
 
+\end{code}
+
+Finally, using that the total space of (𝕍-set {A} f) and A/~ are equal as
+(large) ordinals we distill a proof that 𝕍ᵒʳᵈ-to-Ord x is isomorphic as an
+ordinal to the total space 𝕋xᵒʳᵈ of x.
+
+\begin{code}
+
  module _
          (sq : set-quotients-exist)
-         (x : 𝕍ᵒʳᵈ)
         where
 
-  open 𝕍-to-Ord-construction sq
   open total-space-of-an-element-of-𝕍
-  open total-space-of-𝕍-set sq
+  open 𝕍-to-Ord-construction sq
 
-  finally : 𝕍ᵒʳᵈ-to-Ord x ≃ₒ 𝕋xᵒʳᵈ (pr₁ x) (pr₂ x)
-  finally = blah (pr₁ x) (pr₂ x)
+  𝕍ᵒʳᵈ-to-Ord-is-isomorphic-to-total-space :
+     (x : 𝕍) (σ : is-set-theoretic-ordinal x)
+   → 𝕍ᵒʳᵈ-to-Ord (x , σ) ≃ₒ total-spaceᵒʳᵈ x σ
+  𝕍ᵒʳᵈ-to-Ord-is-isomorphic-to-total-space = 𝕍-prop-simple-induction _
+                                              prop-valued γ
    where
-    blah : (y : 𝕍) (σ : is-set-theoretic-ordinal y)
-         → 𝕍ᵒʳᵈ-to-Ord (y , σ) ≃ₒ 𝕋xᵒʳᵈ y σ
-    blah = 𝕍-prop-simple-induction _ (λ y → Π-is-prop fe (λ σ → ≃ₒ-is-prop-valued (𝕍ᵒʳᵈ-to-Ord (y , σ)) (𝕋xᵒʳᵈ y σ))) foofoo
+    prop-valued : (x : 𝕍)
+                → is-prop ((σ : is-set-theoretic-ordinal x) → 𝕍ᵒʳᵈ-to-Ord (x , σ)
+                                                            ≃ₒ total-spaceᵒʳᵈ x σ)
+    prop-valued x = Π-is-prop fe (λ σ → ≃ₒ-is-prop-valued _ _)
+    γ : {A : 𝓤 ̇ } (f : A → 𝕍) (σ : is-set-theoretic-ordinal (𝕍-set f))
+      → 𝕍ᵒʳᵈ-to-Ord (𝕍-set f , σ) ≃ₒ total-spaceᵒʳᵈ (𝕍-set f) σ
+    γ {A} f σ = ≃ₒ-trans (𝕍ᵒʳᵈ-to-Ord (𝕍-set f , σ))
+                         A/~⁻ᵒʳᵈ
+                         (total-spaceᵒʳᵈ (𝕍-set f) σ)
+                         ⦅1⦆ ⦅2⦆
      where
-      foofoo : {A : 𝓤 ̇ } (f : A → 𝕍) (σ : is-set-theoretic-ordinal (𝕍-set f))
-             → 𝕍ᵒʳᵈ-to-Ord (𝕍-set f , σ) ≃ₒ 𝕋xᵒʳᵈ (𝕍-set f) σ
-      foofoo {A} f σ = ≃ₒ-trans (𝕍ᵒʳᵈ-to-Ord (𝕍-set f , σ)) A/~⁻ᵒʳᵈ (𝕋xᵒʳᵈ (𝕍-set f) σ)
-                        (idtoeqₒ _ _ 𝕍ᵒʳᵈ-to-Ord-is-quotient-of-carrier)
-                        (≃ₒ-sym _ _ (≃ₒ-trans (𝕋xᵒʳᵈ (𝕍-set f) σ) A/~ᵒʳᵈ A/~⁻ᵒʳᵈ
-                                              (idtoeqₒ _ _ total-space-is-quotientᵒʳᵈ)
-                                              A/~ᵒʳᵈ--≃ₒ-A/~⁻ᵒʳᵈ))
+      open 𝕍-set-carrier-quotient sq f
+      open small-quotient-as-ordinal σ
+      open quotient-as-ordinal σ
+      ⦅1⦆ : 𝕍ᵒʳᵈ-to-Ord (𝕍-set f , σ) ≃ₒ A/~⁻ᵒʳᵈ
+      ⦅1⦆ = idtoeqₒ _ _ 𝕍ᵒʳᵈ-to-Ord-is-quotient-of-carrier
+      ⦅2⦆ : A/~⁻ᵒʳᵈ ≃ₒ total-spaceᵒʳᵈ (𝕍-set f) σ
+      ⦅2⦆ = ≃ₒ-sym _ _ (≃ₒ-trans (total-spaceᵒʳᵈ (𝕍-set f) σ)
+                                 A/~ᵒʳᵈ
+                                 A/~⁻ᵒʳᵈ
+                                 ⦅3⦆ ⦅4⦆)
        where
-        open 𝕍-set-carrier-quotient sq f
-        open small-quotient-as-ordinal σ
-        open quotient-as-ordinal σ
+        ⦅3⦆ : total-spaceᵒʳᵈ (𝕍-set f) σ ≃ₒ A/~ᵒʳᵈ
+        ⦅3⦆ = idtoeqₒ _ _ total-space-is-quotientᵒʳᵈ
+        ⦅4⦆ : A/~ᵒʳᵈ ≃ₒ A/~⁻ᵒʳᵈ
+        ⦅4⦆ = A/~ᵒʳᵈ--≃ₒ-A/~⁻ᵒʳᵈ
 
 \end{code}
