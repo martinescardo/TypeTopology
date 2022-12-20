@@ -266,7 +266,7 @@ construction yields an ordinal in 𝓤 ⁺. We present a resized small-valued
 variation of this construction below to get a quotient that lives in 𝓤, rather
 than 𝓤 ⁺.
 
-NB: We use the word "resized" here to indicate that have a small type/ordinal
+NB: We use the word "resized" here to indicate that we have a small type/ordinal
 equivalent to a large one. We do *not* use resizing axioms.
 
 \begin{code}
@@ -503,9 +503,9 @@ In general, we use the symbol ⁻ to indicate a resized small-valued analogue.
 \end{code}
 
 The small-valued membership relation ∈⁻ developed in the aforementioned file now
-allows us define a small-valued relation ≺' on A/~ and transfer the well order
-on A/~ to A/~⁻, for which we use the machinery developed by Martín Escardó in
-Ordinals/WellOrderTransport.lagda.
+allows us to define a small-valued relation ≺' on A/~ and transfer the well
+order on A/~ to A/~⁻, for which we use the machinery developed by Martín Escardó
+in Ordinals/WellOrderTransport.lagda.
 
 \begin{code}
 
@@ -603,7 +603,7 @@ to show that
   Ord-to-𝕍 (A/~ᵒʳᵈ) ＝ 𝕍-set f.
 This boils down to proving the equality
   f a ＝ Ord-to-𝕍 (A/~⁻ᵒʳᵈ ↓ [ a ]⁻)
-for every a : A.
+for every a : A, where ↓ denotes taking the initial segment.
 
 We slightly generalise this statement so that we can prove it by transfinite
 induction on A/~⁻ᵒʳᵈ.
