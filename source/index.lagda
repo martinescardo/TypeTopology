@@ -56,12 +56,12 @@
 
      (https://www.cs.bham.ac.uk/~mhe/TypeTopology/Unsafe.index.html)
 
-   * In our last count, this development has 97000 lines, including
+   * In our last count, this development has 126k lines, including
      comments and blank lines.
 
    * A module dependency graph is available, updated manually from
-     time to time.
-     (https://www.cs.bham.ac.uk/~mhe/TypeTopology/dependency-graph.pdf)
+     time to time last tine on 19th December 2022:
+     https://www.cs.bham.ac.uk/~mhe/TypeTopology/dependency-graph.pdf
 
    * There are some somewhat obsolete comments at the end of this
      file, explaining part of what we do in this development. See

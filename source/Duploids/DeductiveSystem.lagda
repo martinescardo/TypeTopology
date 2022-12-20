@@ -65,15 +65,35 @@ module _ (𝓓 : deductive-system-structure 𝓤 𝓥) where
   idn-R : statement-idn-R
   idn-R = pr₂ (pr₂ ax)
 
-deductive-system : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
-deductive-system 𝓤 𝓥 =
- Σ 𝓓 ꞉ deductive-system-structure 𝓤 𝓥 ,
- deductive-system-axioms 𝓓
+record deductive-system (𝓤 𝓥 : Universe) : (𝓤 ⊔ 𝓥)⁺ ̇ where
+ constructor make
+ field
+  str : deductive-system-structure 𝓤 𝓥
+  ax : deductive-system-axioms str
+ open deductive-system-structure str public
+ open deductive-system-axioms str ax public
 
-module deductive-system (𝓓 : deductive-system 𝓤 𝓥) where
- open deductive-system-structure (pr₁ 𝓓) public
- open deductive-system-axioms (pr₁ 𝓓) (pr₂ 𝓓) public
+module deductive-system-as-sum {𝓤 𝓥 : Universe} where
+ to-sum
+  : deductive-system 𝓤 𝓥
+  → Σ str ꞉ deductive-system-structure 𝓤 𝓥 , deductive-system-axioms str
+ to-sum 𝓓 = let open deductive-system 𝓓 in str , ax
 
+ from-sum
+  : (Σ str ꞉ deductive-system-structure 𝓤 𝓥 , deductive-system-axioms str)
+  → deductive-system 𝓤 𝓥
+ from-sum 𝓓 = make (pr₁ 𝓓) (pr₂ 𝓓)
+
+ to-sum-is-equiv : is-equiv to-sum
+ pr₁ (pr₁ to-sum-is-equiv) = from-sum
+ pr₂ (pr₁ to-sum-is-equiv) _ = refl
+ pr₁ (pr₂ to-sum-is-equiv) = from-sum
+ pr₂ (pr₂ to-sum-is-equiv) _ = refl
+
+ equiv
+  : deductive-system 𝓤 𝓥
+  ≃ (Σ str ꞉ deductive-system-structure 𝓤 𝓥 , deductive-system-axioms str)
+ equiv = to-sum , to-sum-is-equiv
 \end{code}
 
 We now begin to state the associativity properties that hold of certain

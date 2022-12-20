@@ -69,7 +69,9 @@ private
  pe' 𝓤 = pe {𝓤}
 
 open PropositionalTruncation pt
-open UF.Choice.EM-and-choice-functions pt pe' fe
+open UF.Choice.AC-gives-EM pt fe
+open UF.Choice.choice-functions pt pe'
+open UF.Choice.Univalent-Choice fe pt
 
 \end{code}
 
@@ -345,10 +347,10 @@ Choice-gives-well-ordering = restatement
   restatement {𝓤} ac {X} X-is-set = III
    where
     choice-function : ∥ X ∥ → ∃ ε ꞉ (𝓟 X → X) , ((A : 𝓟 X) → is-inhabited A → ε A ∈ A)
-    choice-function = Choice-gives-Choice₄ ac X X-is-set
+    choice-function = Choice-gives-Choice₄ fe ac X X-is-set
 
     em : Excluded-Middle
-    em = Choice-gives-Excluded-Middle ac
+    em = Choice-gives-Excluded-Middle pe' ac
 
     I : ∥ X ∥ → ∃ _<_ ꞉ (X → X → 𝓤 ̇) , (is-well-order _<_)
     I s = ∥∥-functor

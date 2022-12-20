@@ -126,15 +126,27 @@ module _ (𝓒 : category-structure 𝓤 𝓥) where
   assoc : statement-assoc
   assoc = pr₂ (pr₂ (pr₂ ax))
 
-precategory : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
-precategory 𝓤 𝓥 =
- Σ 𝓒 ꞉ category-structure 𝓤 𝓥 ,
- precategory-axioms 𝓒
+record precategory (𝓤 𝓥 : Universe) : (𝓤 ⊔ 𝓥)⁺ ̇ where
+ constructor make
+ field
+  str : category-structure 𝓤 𝓥
+  ax : precategory-axioms str
 
-module precategory (𝓒 : precategory 𝓤 𝓥) where
- open category-structure (pr₁ 𝓒) public
- open precategory-axioms (pr₁ 𝓒) (pr₂ 𝓒) public
+ open category-structure str public
+ open precategory-axioms str ax public
 
+module precategory-as-sum {𝓤 𝓥} where
+ to-sum : precategory 𝓤 𝓥 → (Σ 𝓒 ꞉ category-structure 𝓤 𝓥 , precategory-axioms 𝓒)
+ to-sum 𝓒 = let open precategory 𝓒 in str , ax
+
+ from-sum : (Σ 𝓒 ꞉ category-structure 𝓤 𝓥 , precategory-axioms 𝓒) → precategory 𝓤 𝓥
+ from-sum 𝓒 = make (pr₁ 𝓒) (pr₂ 𝓒)
+
+ to-sum-is-equiv : is-equiv to-sum
+ pr₁ (pr₁ to-sum-is-equiv) = from-sum
+ pr₂ (pr₁ to-sum-is-equiv) _ = refl
+ pr₁ (pr₂ to-sum-is-equiv) = from-sum
+ pr₂ (pr₂ to-sum-is-equiv) _ = refl
 
 module _ (𝓒 : precategory 𝓤 𝓥) where
  open precategory 𝓒
