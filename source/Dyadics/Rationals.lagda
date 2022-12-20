@@ -8,7 +8,7 @@ open import Integers.Type
 open import Integers.Multiplication
 open import Integers.Order
 open import Integers.Parity
-open import Rationals.Fractions hiding (_≈_)
+open import Rationals.Fractions hiding (_≈_ ; ≈-sym ; ≈-trans ; ≈-refl)
 open import Rationals.Multiplication renaming (_*_ to _ℚ*_)
 open import Rationals.Type
 open import Naturals.Division
@@ -88,8 +88,43 @@ normalise (z , negsucc n) = normalise-neg (z , n)
 _≈'_ : (x y : ℤ × ℕ) → 𝓤₀ ̇
 (x , n) ≈' (y , m) = x * pos (2^ m) ＝ y * pos (2^ n)
 
+\end{code}
+
+TODO : Move following proof
+
+\begin{code}
+
+exponents-not-zero' : (m : ℕ) → not-zero (pos (2^ m))
+exponents-not-zero' m iz = exponents-not-zero m (pos-lc I)
+ where
+  I : pos (2^ m) ＝ pos 0
+  I = from-is-zero (pos (2^ m)) iz
+
 _≈_ : (x y : ℤ[1/2]) → 𝓤₀ ̇
 (x , _) ≈ (y , _) = x ≈' y
+
+≈-sym : (x y : ℤ[1/2]) → x ≈ y → y ≈ x
+≈-sym x y e = e ⁻¹
+
+≈-trans : (x y z : ℤ[1/2]) → x ≈ y → y ≈ z → x ≈ z
+≈-trans ((x , n) , _) ((y , m) , _) ((z , p) , _) e₁ e₂ = γ
+ where
+  I : x * pos (2^ p) * pos (2^ m) ＝ z * pos (2^ n) * pos (2^ m)
+  I = x * pos (2^ p) * pos (2^ m) ＝⟨ ℤ-mult-rearrangement x (pos (2^ p)) (pos (2^ m)) ⟩
+      x * pos (2^ m) * pos (2^ p) ＝⟨ ap (_* pos (2^ p)) e₁                            ⟩
+      y * pos (2^ n) * pos (2^ p) ＝⟨ ℤ-mult-rearrangement y (pos (2^ n)) (pos (2^ p)) ⟩
+      y * pos (2^ p) * pos (2^ n) ＝⟨ ap (_* pos (2^ n)) e₂                            ⟩
+      z * pos (2^ m) * pos (2^ n) ＝⟨ ℤ-mult-rearrangement z (pos (2^ m)) (pos (2^ n)) ⟩
+      z * pos (2^ n) * pos (2^ m) ∎
+
+  VI : not-zero (pos (2^ m))
+  VI = exponents-not-zero' m
+
+  γ : x * pos (2^ p) ＝ z * pos (2^ n)
+  γ = ℤ-mult-right-cancellable (x * pos (2^ p)) (z * pos (2^ n)) (pos (2^ m)) VI I
+
+≈-refl : (x : ℤ[1/2]) → x ≈ x
+≈-refl x = refl
 
 ℤ[1/2]-lt-lemma : (x : ℤ) → (n : ℕ) → ℤodd x → is-in-lowest-terms (x , pred (2^ (succ n)))
 ℤ[1/2]-lt-lemma x n ox = (1-divides-all (abs x) , 1-divides-all (succ (pred (2^ (succ n))))) , I
