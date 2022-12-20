@@ -69,7 +69,7 @@ private
  pe' 𝓤 = pe {𝓤}
 
 open PropositionalTruncation pt
-open UF.Choice.AC-gives-EM pt fe
+open UF.Choice.ExcludedMiddle pt fe
 open UF.Choice.choice-functions pt pe'
 open UF.Choice.Univalent-Choice fe pt
 

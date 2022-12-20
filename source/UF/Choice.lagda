@@ -2,7 +2,8 @@ Martin Escardo 7 May 2014, 10 Oct 2014, 25 January 2018, 17 December 2022.
 
 We first look at choice as in the HoTT book a little bit more
 abstractly, where for the HoTT book we take T X = ∥ X ∥. It also makes
-sense to consider T=¬¬, in connection with the double-negation shift.
+sense to consider T = ¬¬, in connection with the double-negation
+shift.
 
 Choice in the HoTT book, under the assumption that X is a set and A is
 an X-indexed family of sets is
@@ -33,10 +34,14 @@ choice where X is a proposition (see https://arxiv.org/abs/1610.03346).
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import MLTT.Spartan
+open import TypeTopology.DiscreteAndSeparated
 open import UF.Base
 open import UF.Equiv
+open import UF.ExcludedMiddle
 open import UF.FunExt
 open import UF.LeftCancellable
+open import UF.Miscelanea
+open import UF.Powerset
 open import UF.PropTrunc
 open import UF.Subsingletons renaming (⊤Ω to ⊤ ; ⊥Ω to ⊥)
 open import UF.Subsingletons-FunExt
@@ -103,11 +108,11 @@ module TChoice
         (T-is-S : {𝓤 : Universe} {X : 𝓤 ̇ } → S (T X))
        where
 
- Shift : {𝓤 𝓥 : Universe} (X : 𝓤 ̇ ) → (X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
- Shift X A = ((x : X) → T (A x)) → T (Π x ꞉ X , A x)
-
  TAC : {𝓤 𝓥 : Universe} → (𝓤 ⊔ 𝓥)⁺ ̇
- TAC {𝓤} {𝓥} = (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) → S X → (Π x ꞉ X , S (A x)) → Shift X A
+ TAC {𝓤} {𝓥} = (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ )
+              → S X
+              → (Π x ꞉ X , S (A x))
+              → ((x : X) → T (A x)) → T (Π x ꞉ X , A x)
 
  TAC' : {𝓤 𝓥 : Universe} → (𝓤 ⊔ 𝓥)⁺ ̇
  TAC' {𝓤} {𝓥} = (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ )
@@ -133,7 +138,7 @@ module TChoice
 
 January 2018.
 
-Let's formalize the examples discussed above, which give
+We now formalize the examples discussed above, which give
 characterizations choice as in the HoTT book, which we refer to as
 Univalent Choice.
 
@@ -153,16 +158,13 @@ module Univalent-Choice
        (λ Y-is-set → Π-is-set (fe _ _) (λ _ → Y-is-set))
        (props-are-sets ∥∥-is-prop)
 
- AC : {𝓤 𝓥 𝓦 : Universe} → (𝓤 ⊔ 𝓥 ⊔ 𝓦) ⁺ ̇
- AC {𝓤} {𝓥} {𝓦} = (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) (P : (x : X) → A x → 𝓦 ̇ )
-                  → is-set X
-                  → ((x : X) → is-set (A x))
-                  → ((x : X) (a : A x) → is-prop (P x a))
-                  → ((x : X) → ∃ a ꞉ A x , P x a)
-                  → ∃ f ꞉ Π A , ((x : X) → P x (f x))
-
- Choice : 𝓤ω
- Choice = {𝓤 𝓥 𝓦 : Universe} → AC {𝓤} {𝓥} {𝓦}
+ AC : {𝓤 𝓥 : Universe} → (𝓤 ⊔ 𝓥) ⁺ ̇
+ AC {𝓤} {𝓥} = (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) (P : (x : X) → A x → 𝓥 ̇ )
+             → is-set X
+             → ((x : X) → is-set (A x))
+             → ((x : X) (a : A x) → is-prop (P x a))
+             → ((x : X) → ∃ a ꞉ A x , P x a)
+             → ∃ f ꞉ Π A , ((x : X) → P x (f x))
 
  AC₁ : {𝓤 𝓥 : Universe} → (𝓤 ⊔ 𝓥)⁺ ̇
  AC₁ {𝓤} {𝓥} = (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ )
@@ -177,16 +179,21 @@ module Univalent-Choice
               → ((x : X) → is-set (Y x))
               → ∥(Π x ꞉ X , (∥ Y x ∥ → Y x))∥
 
- AC-gives-AC₁ : AC {𝓤} {𝓥} {𝓦} → AC₁ {𝓤} {𝓥}
- AC-gives-AC₁ ac X Y isx isy f = h
+ Choice Choice₁ Choice₂ : 𝓤ω
+ Choice  = {𝓤 𝓥 : Universe} → AC  {𝓤} {𝓥}
+ Choice₁ = {𝓤 𝓥 : Universe} → AC₁ {𝓤} {𝓥}
+ Choice₂ = {𝓤 𝓥 : Universe} → AC₂ {𝓤} {𝓥}
+
+ AC-gives-AC₁ : AC {𝓤} {𝓥} → AC₁ {𝓤} {𝓥}
+ AC-gives-AC₁ ac X Y i j f = h
   where
    g : ∃ f ꞉ Π Y , (X → 𝟙)
-   g = ac X Y (λ x a → 𝟙) isx isy (λ x a → 𝟙-is-prop) (λ x → ∥∥-functor (λ z → z , ⋆) (f x))
+   g = ac X Y (λ x a → 𝟙) i j (λ x a → 𝟙-is-prop) (λ x → ∥∥-functor (λ z → z , ⋆) (f x))
 
    h : ∥ Π Y ∥
    h = ∥∥-functor pr₁ g
 
- AC₁-gives-AC : AC₁ {𝓤} {𝓥} → AC {𝓤} {𝓥} {𝓥}
+ AC₁-gives-AC : AC₁ {𝓤} {𝓥} → AC {𝓤} {𝓥}
  AC₁-gives-AC ac₁ X A P s t i f = ∥∥-functor ΠΣ-distr g
   where
    g : ∥(Π x ꞉ X , Σ a ꞉ A x , P x a)∥
@@ -208,63 +215,6 @@ module Univalent-Choice
 
 \end{code}
 
-Now, assuming excluded middle, choice is equivalent to the double
-negation shift.
-
-\begin{code}
-
-open import UF.ExcludedMiddle
-
-module Choice-under-EM₀
-        (em : Excluded-Middle)
-        (pt : propositional-truncations-exist)
-        (fe : FunExt)
-       where
-
- open PropositionalTruncation pt
- open Univalent-Choice fe pt
-
- DNS : {𝓤 𝓥 : Universe} → (𝓤 ⊔ 𝓥)⁺ ̇
- DNS {𝓤} {𝓥} = (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ )
-              → is-set X
-              → ((x : X) → is-set (A x))
-              → (Π x ꞉ X , ¬¬ A x)
-              → ¬¬ (Π x ꞉ X , A x)
-
- DNA : {𝓤 𝓥 : Universe} → 𝓤 ⁺ ̇
- DNA {𝓤} {𝓥} = (X : 𝓤 ̇ ) (A : X → 𝓤 ̇ )
-              → is-set X
-              → ((x : X) → is-set (A x))
-              → ¬¬ (Π x ꞉ X , (¬¬ A x → A x))
-
- private
-  α : {X : 𝓤 ̇ } → ∥ X ∥ → ¬¬ X
-  α = inhabited-is-nonempty
-
-  β : {X : 𝓤 ̇ } → ¬¬ X → ∥ X ∥
-  β = non-empty-is-inhabited pt em
-
-  γ : {X : 𝓤 ̇ } → is-set (¬¬ X)
-  γ = props-are-sets (negations-are-props (fe _ _))
-
- AC₁-gives-DNS : AC₁ {𝓤} {𝓥} → DNS {𝓤} {𝓥}
- AC₁-gives-DNS ac X A i j f = α (ac X A i j (λ x → β (f x)))
-
- DNS-gives-AC₁ : DNS {𝓤} {𝓥} → AC₁ {𝓤} {𝓥}
- DNS-gives-AC₁ dns X A i j g = β (dns X A i j (λ x → α (g x)))
-
- setei : {𝓤 𝓥 : Universe} → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → is-set Y → is-set (X → Y)
- setei {𝓤} {𝓥} Y-is-set = Π-is-set (fe _ _) (λ _ → Y-is-set)
-
-
- DNS-gives-DNA : DNS {𝓤} {𝓤} → DNA {𝓤} {𝓥}
- DNS-gives-DNA = TChoice.TAC-gives-TAC' ¬¬_ ¬¬-functor is-set setei γ
-
- DNA-gives-DNS : DNA {𝓤} {𝓥} → DNS {𝓤} {𝓤}
- DNA-gives-DNS = TChoice.TAC'-gives-TAC ¬¬_ ¬¬-functor is-set setei γ
-
-\end{code}
-
 But choice implies excluded middle. Provided we have quotients. In
 fact, the quotient 𝟚/P of 𝟚 by the relation R ₀ ₁ = P, for any given
 proposition P, suffices. In that case, we conclude that, assuming
@@ -278,17 +228,14 @@ with values a ₀ = a₀ and a ₁ = a₁.
 
 \begin{code}
 
-module AC-gives-EM
+module ExcludedMiddle
         (pt : propositional-truncations-exist)
         (fe : FunExt)
        where
 
  open PropositionalTruncation pt
  open Univalent-Choice fe pt
-
- open import TypeTopology.DiscreteAndSeparated
  open import UF.ImageAndSurjection pt
- open import UF.Miscelanea
 
  decidability-lemma : {X : 𝓤 ̇ } (a : 𝟚 → X)
                     → ((x : X) → (∃ i ꞉ 𝟚 , a i ＝ x) → Σ i ꞉ 𝟚 , a i ＝ x)
@@ -334,10 +281,10 @@ module AC-gives-EM
                      → (a : 𝟚 → X)
                      → ∥((x : X) → (∃ i ꞉ 𝟚 , a i ＝ x) → Σ i ꞉ 𝟚 , a i ＝ x)∥
                      → decidable (a ₀ ＝ a ₁)
- decidability-lemma₂ is a =
-  ∥∥-rec (decidability-of-prop-is-prop (fe _ _) is) (decidability-lemma a)
+ decidability-lemma₂ i a =
+  ∥∥-rec (decidability-of-prop-is-prop (fe _ _) i) (decidability-lemma a)
 
- ac-renders-all-sets-discrete' : AC {𝓤} {𝓤} {𝓤}
+ ac-renders-all-sets-discrete' : AC {𝓤} {𝓤}
                                → (X : 𝓤 ̇ )
                                → is-set X
                                → (a : 𝟚 → X) → decidable (a ₀ ＝ a ₁)
@@ -353,14 +300,14 @@ module AC-gives-EM
    ac₂ : AC₂ {𝓤} {𝓤}
    ac₂ = AC₁-gives-AC₂ (AC-gives-AC₁ ac)
 
- ac-renders-all-sets-discrete : AC {𝓤} {𝓤} {𝓤}
+ ac-renders-all-sets-discrete : AC {𝓤} {𝓤}
                               → (X : 𝓤 ̇ )
                               → is-set X
                               → (a₀ a₁ : X) → decidable (a₀ ＝ a₁)
  ac-renders-all-sets-discrete {𝓤} ac X isx a₀ a₁ =
   ac-renders-all-sets-discrete' {𝓤} ac X isx (𝟚-cases a₀ a₁)
 
- AC-gives-EM : PropExt → AC {𝓤 ⁺} {𝓤 ⁺} {𝓤 ⁺} → EM 𝓤
+ AC-gives-EM : PropExt → AC {𝓤 ⁺} {𝓤 ⁺} → EM 𝓤
  AC-gives-EM {𝓤} pe ac =
   Ω-discrete-gives-EM (fe _ _) (pe _)
    (ac-renders-all-sets-discrete {𝓤 ⁺} ac (Ω 𝓤)
@@ -384,6 +331,133 @@ because the quotient 𝟚/P, for a proposition P in 𝓤₀, exists in 𝓤₁. 
 fact, it is the image of the map 𝟚→Prop that sends ₀ to 𝟙 and ₁ to P,
 because (𝟙＝P)＝P.
 
+Now, assuming excluded middle, choice is equivalent to the double
+negation shift.
+
+\begin{code}
+
+module DNS
+        (pt : propositional-truncations-exist)
+        (fe : FunExt)
+       where
+
+ open PropositionalTruncation pt
+ open Univalent-Choice fe pt
+ open ExcludedMiddle pt fe
+
+ DNS : {𝓤 𝓥 : Universe} → (𝓤 ⊔ 𝓥)⁺ ̇
+ DNS {𝓤} {𝓥} = (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ )
+              → is-set X
+              → ((x : X) → is-set (A x))
+              → (Π x ꞉ X , ¬¬ A x)
+              → ¬¬ (Π x ꞉ X , A x)
+
+ Double-Negation-Shift : 𝓤ω
+ Double-Negation-Shift = {𝓤 𝓥 : Universe} → DNS {𝓤} {𝓥}
+
+ private
+  α : {X : 𝓤 ̇ } → ∥ X ∥ → ¬¬ X
+  α = inhabited-is-nonempty
+
+  β : EM 𝓤 → {X : 𝓤 ̇ } → ¬¬ X → ∥ X ∥
+  β = non-empty-is-inhabited pt
+
+  γ : {X : 𝓤 ̇ } → is-set (¬¬ X)
+  γ = props-are-sets (negations-are-props (fe _ _))
+
+  δ : {𝓤 𝓥 : Universe} → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → is-set Y → is-set (X → Y)
+  δ {𝓤} {𝓥} Y-is-set = Π-is-set (fe _ _) (λ _ → Y-is-set)
+
+ EM-and-AC₁-give-DNS : EM 𝓥 → AC₁ {𝓤} {𝓥} → DNS {𝓤} {𝓥}
+ EM-and-AC₁-give-DNS em ac X A i j f = α (ac X A i j (λ x → β em (f x)))
+
+ EM-and-DNS-give-AC₁ : EM (𝓤 ⊔ 𝓥) → DNS {𝓤} {𝓥} → AC₁ {𝓤} {𝓥}
+ EM-and-DNS-give-AC₁ em dns X A i j g = β em (dns X A i j (λ x → α (g x)))
+
+\end{code}
+
+DNS for prop-valued A, written DNS' below, is equivalent to the double
+negation of the (universally quantified) principle of excluded middle.
+
+\begin{code}
+
+ DNS' : {𝓤 𝓥 : Universe} → (𝓤 ⊔ 𝓥)⁺ ̇
+ DNS' {𝓤} {𝓥} = (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ )
+               → is-set X
+               → ((x : X) → is-prop (A x))
+               → (Π x ꞉ X , ¬¬ A x)
+               → ¬¬ (Π x ꞉ X , A x)
+
+ DNS-gives-DNS' : DNS {𝓤} {𝓥} → DNS' {𝓤} {𝓥}
+ DNS-gives-DNS' dns X A i j = dns X A i (λ x → props-are-sets (j x))
+
+ DNS'-gives-¬¬EM : propext 𝓤 → DNS' {𝓤 ⁺} {𝓤} → ¬¬ EM 𝓤
+ DNS'-gives-¬¬EM {𝓤} pe dns' = ¬¬-functor (λ f P i → f (P , i)) I
+  where
+   A : Ω 𝓤 → 𝓤 ̇
+   A (P , i) = P + ¬ P
+
+   j : (p : Ω 𝓤) → is-prop (A p)
+   j (P , i) = decidability-of-prop-is-prop (fe _ _) i
+
+   I : ¬¬ (((P , i) : Ω 𝓤) → P + ¬ P)
+   I = dns'
+        (Ω 𝓤)
+        A
+        (Ω-is-set (fe _ _) pe)
+        (λ (P , i) → decidability-of-prop-is-prop (fe _ _) i)
+        (λ _ → fake-¬¬-EM)
+
+ ¬¬EM-gives-DNS' : ¬¬ EM 𝓤 → DNS' {𝓤} {𝓤}
+ ¬¬EM-gives-DNS' {𝓤} nnem X A X-is-set A-is-prop-valued f = ¬¬-functor g nnem
+  where
+   g : EM 𝓤 → (x : X) → A x
+   g em x = EM-gives-DNE em (A x) (A-is-prop-valued x) (f x)
+
+\end{code}
+
+In the presence of propositional extensionality, the axiom of choice
+is equivalent to the conjunction of the principle of excluded middle
+and the double negation shift for set-valued (rather than prop-valued)
+predicates:
+
+\begin{code}
+
+ Choice-gives-Double-Negation-Shift : PropExt → Choice₁ → Double-Negation-Shift
+ Choice-gives-Double-Negation-Shift pe ac {𝓤} {𝓥} = III
+  where
+   em : Excluded-Middle
+   em = AC-gives-EM pe (AC₁-gives-AC ac)
+
+
+   III : DNS {𝓤} {𝓥}
+   III = EM-and-AC₁-give-DNS em ac
+
+ Double-Negation-Shift-gives-Choice : Excluded-Middle → Double-Negation-Shift → Choice₁
+ Double-Negation-Shift-gives-Choice em dns {𝓤} {𝓥} = EM-and-DNS-give-AC₁ em (dns {𝓤} {𝓥})
+
+\end{code}
+
+And here is an equivalent variant of DNS:
+
+\begin{code}
+
+ DNA : {𝓤 𝓥 : Universe} → 𝓤 ⁺ ̇
+ DNA {𝓤} {𝓥} = (X : 𝓤 ̇ ) (A : X → 𝓤 ̇ )
+              → is-set X
+              → ((x : X) → is-set (A x))
+              → ¬¬ (Π x ꞉ X , (¬¬ A x → A x))
+
+ open TChoice
+
+ DNS-gives-DNA : DNS {𝓤} {𝓤} → DNA {𝓤} {𝓥}
+ DNS-gives-DNA = TAC-gives-TAC' ¬¬_ ¬¬-functor is-set δ γ
+
+ DNA-gives-DNS : DNA {𝓤} {𝓥} → DNS {𝓤} {𝓤}
+ DNA-gives-DNS = TAC'-gives-TAC ¬¬_ ¬¬-functor is-set δ γ
+
+\end{code}
+
 Added 17th December 2022:
 
 \begin{code}
@@ -396,9 +470,7 @@ module choice-functions
 
  open PropositionalTruncation pt
  open Univalent-Choice fe pt
- open AC-gives-EM pt fe
-
- open import UF.Powerset
+ open ExcludedMiddle pt fe
  open UF.Powerset.inhabited-subsets pt
 
  Choice-Function : 𝓤 ̇ → 𝓤 ⁺ ̇
@@ -407,7 +479,7 @@ module choice-functions
  AC₃ : {𝓤 : Universe} → 𝓤 ⁺ ̇
  AC₃ {𝓤} = (X : 𝓤 ̇ ) → is-set X → Choice-Function X
 
- AC-gives-AC₃ : {𝓤 : Universe} → AC {𝓤 ⁺} {𝓤} {𝓤} → AC₃ {𝓤}
+ AC-gives-AC₃ : {𝓤 : Universe} → AC {𝓤 ⁺} {𝓤} → AC₃ {𝓤}
  AC-gives-AC₃ ac X X-is-set =
   ac (𝓟⁺ X)
      (λ (𝓐 : 𝓟⁺ X) → X)
@@ -421,7 +493,7 @@ module choice-functions
  Choice₃ = {𝓤 : Universe} → AC₃ {𝓤}
 
  Choice-gives-Choice₃ : Choice → Choice₃
- Choice-gives-Choice₃ c {𝓤} = AC-gives-AC₃ {𝓤} (c {𝓤 ⁺} {𝓤} {𝓤})
+ Choice-gives-Choice₃ c {𝓤} = AC-gives-AC₃ {𝓤} (c {𝓤 ⁺} {𝓤})
 
  Choice-Function⁻ : 𝓤 ̇ → 𝓤 ⁺ ̇
  Choice-Function⁻ X = ∃ ε ꞉ (𝓟 X → X) , ((A : 𝓟 X) → is-inhabited A → ε A ∈ A)
@@ -488,9 +560,6 @@ module Observation
         (𝓤 : Universe)
         (fe : FunExt)
         where
-
- open import TypeTopology.DiscreteAndSeparated
- open import UF.Miscelanea
 
  observation : {X : 𝓤 ̇ } (a : 𝟚 → X)
              → ((x : X) → ¬¬ (Σ i ꞉ 𝟚 , a i ＝ x) → Σ i ꞉ 𝟚 , a i ＝ x)
