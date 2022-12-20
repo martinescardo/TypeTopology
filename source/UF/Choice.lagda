@@ -1,4 +1,4 @@
-Martin Escardo 7 May 2014, 10 Oct 2014, 25 January 2018.
+Martin Escardo 7 May 2014, 10 Oct 2014, 25 January 2018, 17 December 2022.
 
 We first look at choice as in the HoTT book a little bit more
 abstractly, where for the HoTT book we take T X = ∥ X ∥. It also makes
@@ -106,27 +106,28 @@ module TChoice
  Shift : {𝓤 𝓥 : Universe} (X : 𝓤 ̇ ) → (X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
  Shift X A = ((x : X) → T (A x)) → T (Π x ꞉ X , A x)
 
- Choice : {𝓤 𝓥 : Universe} → (𝓤 ⊔ 𝓥)⁺ ̇
- Choice {𝓤} {𝓥} = (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) → S X → (Π x ꞉ X , S (A x)) → Shift X A
+ TAC : {𝓤 𝓥 : Universe} → (𝓤 ⊔ 𝓥)⁺ ̇
+ TAC {𝓤} {𝓥} = (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) → S X → (Π x ꞉ X , S (A x)) → Shift X A
 
- Choice' : {𝓤 𝓥 : Universe} → (𝓤 ⊔ 𝓥)⁺ ̇
- Choice' {𝓤} {𝓥} = (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ )
-                  → S X
-                  → (Π x ꞉ X , S (A x))
-                  → T (Π x ꞉ X , (T (A x) → A x))
+ TAC' : {𝓤 𝓥 : Universe} → (𝓤 ⊔ 𝓥)⁺ ̇
+ TAC' {𝓤} {𝓥} = (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ )
+               → S X
+               → (Π x ꞉ X , S (A x))
+               → T (Π x ꞉ X , (T (A x) → A x))
 
- choice-lemma : Choice → (X : 𝓤 ̇ ) → S X → T (T X → X)
- choice-lemma c X s = c (T X) (λ _ → X) T-is-S  (λ x → s) (λ x → x)
+ T-lemma : TAC → (X : 𝓤 ̇ ) → S X → T (T X → X)
+ T-lemma tac X s = tac (T X) (λ _ → X) T-is-S  (λ x → s) (λ x → x)
 
- Choice-gives-Choice' : Choice {𝓤} {𝓤} → Choice' {𝓤} {𝓤}
- Choice-gives-Choice' c X A s t = c X
-                                    (λ x → T (A x) → A x)
-                                    s
-                                    (λ x → S-exponential-ideal (t x))
-                                    (λ x → choice-lemma c (A x) (t x))
+ TAC-gives-TAC' : TAC {𝓤} {𝓤} → TAC' {𝓤} {𝓤}
+ TAC-gives-TAC' tac X A s t = tac
+                               X
+                               (λ x → T (A x) → A x)
+                               s
+                               (λ x → S-exponential-ideal (t x))
+                               (λ x → T-lemma tac (A x) (t x))
 
- Choice'-gives-Choice : Choice' {𝓤} {𝓥} → Choice {𝓤} {𝓥}
- Choice'-gives-Choice c' X A s t φ = T-functor (λ ψ x → ψ x (φ x)) (c' X A s t)
+ TAC'-gives-TAC : TAC' {𝓤} {𝓥} → TAC {𝓤} {𝓥}
+ TAC'-gives-TAC c' X A s t φ = T-functor (λ ψ x → ψ x (φ x)) (c' X A s t)
 
 \end{code}
 
@@ -160,6 +161,9 @@ module Univalent-Choice
                   → ((x : X) → ∃ a ꞉ A x , P x a)
                   → ∃ f ꞉ Π A , ((x : X) → P x (f x))
 
+ Choice : 𝓤ω
+ Choice = {𝓤 𝓥 𝓦 : Universe} → AC {𝓤} {𝓥} {𝓦}
+
  AC₁ : {𝓤 𝓥 : Universe} → (𝓤 ⊔ 𝓥)⁺ ̇
  AC₁ {𝓤} {𝓥} = (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ )
               → is-set X
@@ -168,7 +172,9 @@ module Univalent-Choice
               → ∥(Π x ꞉ X , Y x)∥
 
  AC₂ : {𝓤 𝓥 : Universe} → (𝓤 ⊔ 𝓥)⁺ ̇
- AC₂ {𝓤} {𝓥} = (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ ) → is-set X → ((x : X) → is-set (Y x))
+ AC₂ {𝓤} {𝓥} = (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ )
+              → is-set X
+              → ((x : X) → is-set (Y x))
               → ∥(Π x ꞉ X , (∥ Y x ∥ → Y x))∥
 
  AC-gives-AC₁ : AC {𝓤} {𝓥} {𝓦} → AC₁ {𝓤} {𝓥}
@@ -184,20 +190,21 @@ module Univalent-Choice
  AC₁-gives-AC ac₁ X A P s t i f = ∥∥-functor ΠΣ-distr g
   where
    g : ∥(Π x ꞉ X , Σ a ꞉ A x , P x a)∥
-   g = ac₁ X
-           (λ x → Σ a ꞉ A x , P x a)
-           s
-           (λ x → subsets-of-sets-are-sets (A x) (P x) (t x) (λ {a} → i x a))
-           f
+   g = ac₁
+        X
+        (λ x → Σ a ꞉ A x , P x a)
+        s
+        (λ x → subsets-of-sets-are-sets (A x) (P x) (t x) (λ {a} → i x a))
+        f
 
  AC₁-gives-AC₂ : AC₁ {𝓤} {𝓤} → AC₂ {𝓤} {𝓤}
- AC₁-gives-AC₂ = Choice-gives-Choice'
+ AC₁-gives-AC₂ = TAC-gives-TAC'
 
  AC₂-gives-AC₁ : AC₂ {𝓤} {𝓥} → AC₁ {𝓤} {𝓥}
- AC₂-gives-AC₁ = Choice'-gives-Choice
+ AC₂-gives-AC₁ = TAC'-gives-TAC
 
  secretly-revealing-secrets : AC₁ → (B : 𝓤 ̇ ) → is-set B → ∥(∥ B ∥ → B)∥
- secretly-revealing-secrets = choice-lemma
+ secretly-revealing-secrets = T-lemma
 
 \end{code}
 
@@ -208,7 +215,7 @@ negation shift.
 
 open import UF.ExcludedMiddle
 
-module ChoiceUnderEM₀
+module Choice-under-EM₀
         (em : Excluded-Middle)
         (pt : propositional-truncations-exist)
         (fe : FunExt)
@@ -238,23 +245,23 @@ module ChoiceUnderEM₀
   β = non-empty-is-inhabited pt em
 
   γ : {X : 𝓤 ̇ } → is-set (¬¬ X)
-  γ = props-are-sets (Π-is-prop (fe _ _) (λ _ → 𝟘-is-prop))
+  γ = props-are-sets (negations-are-props (fe _ _))
 
  AC₁-gives-DNS : AC₁ {𝓤} {𝓥} → DNS {𝓤} {𝓥}
  AC₁-gives-DNS ac X A i j f = α (ac X A i j (λ x → β (f x)))
 
  DNS-gives-AC₁ : DNS {𝓤} {𝓥} → AC₁ {𝓤} {𝓥}
- DNS-gives-AC₁ dns X A isx isa g = β (dns X A isx isa (λ x → α (g x)))
+ DNS-gives-AC₁ dns X A i j g = β (dns X A i j (λ x → α (g x)))
 
  setei : {𝓤 𝓥 : Universe} → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → is-set Y → is-set (X → Y)
  setei {𝓤} {𝓥} Y-is-set = Π-is-set (fe _ _) (λ _ → Y-is-set)
 
 
  DNS-gives-DNA : DNS {𝓤} {𝓤} → DNA {𝓤} {𝓥}
- DNS-gives-DNA = TChoice.Choice-gives-Choice' ¬¬_ ¬¬-functor is-set setei γ
+ DNS-gives-DNA = TChoice.TAC-gives-TAC' ¬¬_ ¬¬-functor is-set setei γ
 
  DNA-gives-DNS : DNA {𝓤} {𝓥} → DNS {𝓤} {𝓤}
- DNA-gives-DNS = TChoice.Choice'-gives-Choice ¬¬_ ¬¬-functor is-set setei γ
+ DNA-gives-DNS = TChoice.TAC'-gives-TAC ¬¬_ ¬¬-functor is-set setei γ
 
 \end{code}
 
@@ -271,13 +278,13 @@ with values a ₀ = a₀ and a ₁ = a₁.
 
 \begin{code}
 
-module AC-renders-all-sets-discrete
+module AC-gives-EM
         (pt : propositional-truncations-exist)
         (fe : FunExt)
        where
 
  open PropositionalTruncation pt
- open Univalent-Choice fe pt public
+ open Univalent-Choice fe pt
 
  open import TypeTopology.DiscreteAndSeparated
  open import UF.ImageAndSurjection pt
@@ -353,6 +360,15 @@ module AC-renders-all-sets-discrete
  ac-renders-all-sets-discrete {𝓤} ac X isx a₀ a₁ =
   ac-renders-all-sets-discrete' {𝓤} ac X isx (𝟚-cases a₀ a₁)
 
+ AC-gives-EM : PropExt → AC {𝓤 ⁺} {𝓤 ⁺} {𝓤 ⁺} → EM 𝓤
+ AC-gives-EM {𝓤} pe ac =
+  Ω-discrete-gives-EM (fe _ _) (pe _)
+   (ac-renders-all-sets-discrete {𝓤 ⁺} ac (Ω 𝓤)
+     (Ω-is-set (fe 𝓤 𝓤) (pe 𝓤)))
+
+ Choice-gives-Excluded-Middle : PropExt → Choice → Excluded-Middle
+ Choice-gives-Excluded-Middle pe ac {𝓤} = AC-gives-EM {𝓤} pe (ac {𝓤 ⁺})
+
 \end{code}
 
 Is there a way to define the quotient 𝟚/P for an arbitrary proposition
@@ -368,34 +384,19 @@ because the quotient 𝟚/P, for a proposition P in 𝓤₀, exists in 𝓤₁. 
 fact, it is the image of the map 𝟚→Prop that sends ₀ to 𝟙 and ₁ to P,
 because (𝟙＝P)＝P.
 
+Added 17th December 2022:
+
 \begin{code}
 
-module EM-and-choice-functions
+module choice-functions
         (pt : propositional-truncations-exist)
         (pe : PropExt)
         (fe : FunExt)
        where
 
  open PropositionalTruncation pt
- open AC-renders-all-sets-discrete pt fe
-
- AC-gives-EM : AC {𝓤 ⁺} {𝓤 ⁺} {𝓤 ⁺} → EM 𝓤
- AC-gives-EM {𝓤} ac =
-  Ω-discrete-gives-EM (fe _ _) (pe _)
-   (ac-renders-all-sets-discrete {𝓤 ⁺} ac (Ω 𝓤)
-     (Ω-is-set (fe 𝓤 𝓤) (pe 𝓤)))
-
-\end{code}
-
-Added 17th December 2022:
-
-\begin{code}
-
- Choice : 𝓤ω
- Choice = {𝓤 𝓥 𝓦 : Universe} → AC {𝓤} {𝓥} {𝓦}
-
- Choice-gives-Excluded-Middle : Choice → Excluded-Middle
- Choice-gives-Excluded-Middle ac {𝓤} = AC-gives-EM {𝓤} (ac {𝓤 ⁺})
+ open Univalent-Choice fe pt
+ open AC-gives-EM pt fe
 
  open import UF.Powerset
  open UF.Powerset.inhabited-subsets pt
@@ -432,10 +433,10 @@ Added 17th December 2022:
  Choice₄ = {𝓤 : Universe} → AC₄ {𝓤}
 
  improve-choice-function : EM 𝓤
-                      → {X : 𝓤 ̇ }
-                      → Choice-Function X
-                      → ∥ X ∥
-                      → Choice-Function⁻ X
+                         → {X : 𝓤 ̇ }
+                         → Choice-Function X
+                         → ∥ X ∥
+                         → Choice-Function⁻ X
  improve-choice-function em {X} c s = III
   where
    I : (Σ ε⁺ ꞉ (𝓟⁺ X → X) , (((A , i) : 𝓟⁺ X) → (ε⁺ (A , i) ∈ A)))
@@ -473,7 +474,7 @@ Added 17th December 2022:
 
  Choice-gives-Choice₄ : Choice → Choice₄
  Choice-gives-Choice₄ ac X X-is-set = improve-choice-function
-                                       (AC-gives-EM ac)
+                                       (AC-gives-EM pe ac)
                                        (AC-gives-AC₃ ac X X-is-set)
 \end{code}
 
