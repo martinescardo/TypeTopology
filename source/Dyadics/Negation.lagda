@@ -22,21 +22,13 @@ infix 31 -_
 
 ℤ[1/2]-minus-zero : - 0ℤ[1/2] ＝ 0ℤ[1/2]
 ℤ[1/2]-minus-zero = refl
-{-
+
 normalise-negation : (((z , n) , e) : ℤ[1/2]) → - normalise-pos (z , n) ＝ normalise-pos (ℤ- z , n)
-normalise-negation ((z , n) , e) = to-subtype-＝ {!!} {!!}
+normalise-negation ((z , n) , e) = {!!}
 
 ℤ[1/2]-minus-minus : (z : ℤ[1/2]) → z ＝ (- (- z))
-ℤ[1/2]-minus-minus ((z , n) , e) = {!ℤ[1/2]-to-normalise-pos!}
+ℤ[1/2]-minus-minus ((z , n) , inl l)        = ≈-to-＝ _ _ (ap (_* pos (2^ n)) (minus-minus-is-plus z ⁻¹))
+ℤ[1/2]-minus-minus ((z , n) , inr (l , oz)) = ≈-to-＝ _ _ (ap (_* pos (2^ n)) (minus-minus-is-plus z ⁻¹))
 
-ℤ[1/2]-minus-minus : (z : ℤ[1/2]) → z ＝ (- (- z))
-ℤ[1/2]-minus-minus ((z , n) , e) = ≈-to-＝ ((z , n) , e) (- (- ((z , n) , e))) I
- where
-  I : ((z , n) , e) ≈ - (- ((z , n) , e))
-  I = z * pos (2^ {!n!}) ＝⟨ {!!} ⟩
-      {!!} ＝⟨ {!!} ⟩
-      {!!} ＝⟨ {!!} ⟩
-      pr₁ (pr₁ (- (- ((z , n) , e)))) * pos (2^ n) ∎
--}
 
 \end{code}
