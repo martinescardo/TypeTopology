@@ -236,6 +236,7 @@ module _
   fe = Univalence-gives-FunExt ua
 
  open import NotionsOfDecidability.Decidable
+ open import NotionsOfDecidability.DecidableClassifier
  open import NotionsOfDecidability.Complemented
 
  open import Ordinals.Arithmetic fe

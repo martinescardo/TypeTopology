@@ -25,13 +25,14 @@ There is an embedding ι : Δ ν → Κ ν which is order preserving and
 reflecting, and whose image has empty complement. The assumption that
 it is a bijection implies LPO.
 
-This extends and generalizes OrdinalNotationInterpretation.lagda, for
+This extends and generalizes OrdinalNotationInterpretation1.lagda, for
 which slides for a talk are available at
 https://www.cs.bham.ac.uk/~mhe/.talks/csl2022.pdf which may well serve
 as an introduction to this file. The main difference is that the
 ordinal expressions considered there amount to a W type, whereas the
 ones considered here amount to an inductive-recursive type,
-generalizing that.
+generalizing that, which is explained in these slides
+https://www.cs.bham.ac.uk/~mhe/.talks/ljubljana2022.pdf
 
 This is a draft version that needs polishing and more explanation.
 
@@ -251,7 +252,7 @@ module Κ-extension (ν : E) (A : ⟪ Δ ν ⟫ → E) where
 This completes the definitions of Κ, ι and ι-is-embedding.
 
 The important fact about the Κ interpretation is that the ordinals in
-its image have the least element property for decidable subsets, and,
+its image have the least element property for complemented subsets, and,
 in particular, they are compact.
 
 \begin{code}
@@ -546,7 +547,8 @@ module _ (pe : propext 𝓤₀) where
                               (λ (p : ℓ ν x ＝ ₀) → inl (ℓ-isolated ν x p))
                               (λ (p : ℓ ν x ＝ ₁) → inr (ℓ-limit ν x p))
 
- isolatedness-decision' : ¬ WLPO → (ν : E) (x : ⟪ Δ ν ⟫)
+ isolatedness-decision' : ¬ WLPO
+                        → (ν : E) (x : ⟪ Δ ν ⟫)
                         → decidable (is-isolated (ι ν x))
  isolatedness-decision' f ν x =
    Cases (isolatedness-decision ν x)
@@ -559,10 +561,12 @@ We conclude with some impossibility results.
 
 \begin{code}
 
-ι-is-equiv-gives-LPO : ((ν : E) → is-equiv (ι ν)) → LPO
+ι-is-equiv-gives-LPO : ((ν : E) → is-equiv (ι ν))
+                     → LPO
 ι-is-equiv-gives-LPO f = ι𝟙-is-equiv-gives-LPO (f ⌜ω+𝟙⌝)
 
-LPO-gives-ι-is-equiv : LPO → (ν : E) → is-equiv (ι ν)
+LPO-gives-ι-is-equiv : LPO
+                     → (ν : E) → is-equiv (ι ν)
 LPO-gives-ι-is-equiv lpo ⌜𝟙⌝         = id-is-equiv 𝟙
 LPO-gives-ι-is-equiv lpo ⌜ω+𝟙⌝       = LPO-gives-ι𝟙-is-equiv lpo
 LPO-gives-ι-is-equiv lpo (ν₀ ⌜+⌝ ν₁) = pair-fun-is-equiv
@@ -603,11 +607,13 @@ We also have the following:
 ι-is-equiv-gives-Κ-discrete ν e = ι-has-section-gives-Κ-discrete ν
                                    (equivs-have-sections (ι ν) e)
 
-LPO-gives-Κ-discrete : LPO → (ν : E) → is-discrete ⟪ Κ ν ⟫
+LPO-gives-Κ-discrete : LPO
+                     → (ν : E) → is-discrete ⟪ Κ ν ⟫
 LPO-gives-Κ-discrete lpo ν = ι-is-equiv-gives-Κ-discrete ν
                               (LPO-gives-ι-is-equiv lpo ν)
 
-Κ-discrete-gives-WLPO : ((ν : E) → is-discrete ⟪ Κ ν ⟫) → WLPO
+Κ-discrete-gives-WLPO : ((ν : E) → is-discrete ⟪ Κ ν ⟫)
+                      → WLPO
 Κ-discrete-gives-WLPO f = ℕ∞-discrete-gives-WLPO (f ⌜ω+𝟙⌝)
 
 \end{code}
@@ -624,6 +630,8 @@ Let P be a proposition and assume function extensionality.
 It doesn't seem to be possible to reverse any of the implications (0)
 and (1), so that the proposition "(P -> 2) has decidable equality"
 seems to be strictly between "P is decidable" and "¬P is decidable".
+
+This is discussed in the file Taboos2.P2.
 
 TODO. Do we have (ν : E) → [ Δ ν ] ⊴ [ Κ ν ]? Notice that we do have
 (ω +ₒ 𝟙ₒ) ⊴ ℕ∞ₒ, proved in OrdinalOfOrdinals, submodule ℕ∞-in-Ord.
