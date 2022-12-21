@@ -43,6 +43,7 @@ open import UF.LeftCancellable
 open import UF.Miscelanea
 open import UF.Powerset
 open import UF.PropTrunc
+open import UF.Retracts
 open import UF.Subsingletons renaming (⊤Ω to ⊤ ; ⊥Ω to ⊥)
 open import UF.Subsingletons-FunExt
 
