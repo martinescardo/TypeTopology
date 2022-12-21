@@ -9,7 +9,8 @@ import UF.Choice
 import UF.Classifiers
 import UF.Classifiers-Old
 import UF.Connected
-import UF.CumulativeHierarchy      -- by de Jong, Kraus, Nordvall Forsberg and Xu.
+import UF.CumulativeHierarchy               -- by de Jong, Kraus, Nordvall Forsberg and Xu.
+import UF.CumulativeHierarchy-LocallySmall  -- by de Jong, Kraus, Nordvall Forsberg and Xu.
 import UF.Embeddings
 import UF.Equiv
 import UF.Equiv-FunExt

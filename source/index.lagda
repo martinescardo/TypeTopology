@@ -56,18 +56,19 @@
 
      (https://www.cs.bham.ac.uk/~mhe/TypeTopology/Unsafe.index.html)
 
-   * In our last count, this development has 97000 lines, including
+   * In our last count, this development has 126k lines, including
      comments and blank lines.
 
    * A module dependency graph is available, updated manually from
-     time to time.
-     (https://www.cs.bham.ac.uk/~mhe/TypeTopology/dependency-graph.pdf)
+     time to time last tine on 19th December 2022:
+     https://www.cs.bham.ac.uk/~mhe/TypeTopology/dependency-graph.pdf
 
    * There are some somewhat obsolete comments at the end of this
      file, explaining part of what we do in this development. See
      instead the comments in the various modules.
 
-   * This has been tested with 2.6.2.1.
+   * This has been tested with 2.6.2.1 and with the release
+     candidates 2.6.3.
 
 Click at the imported module names to navigate to them:
 
@@ -79,12 +80,14 @@ module index where
 
 import BinarySystems.index
 import CantorSchroederBernstein.index
+import Categories.index               -- by Jon Sterling
 import Circle.index                   -- by Tom de Jong
 import CoNaturals.index
 import CrossedModules.index           -- by Ettore Aldrovandi and Keri D'Angelo
 import DedekindReals.index            -- by Andrew Sneap
 import DomainTheory.index             -- by Tom de Jong
 import Dominance.index
+import Duploids.index                 -- by Jon Sterling
 import Dyadics.index                  -- by Andrew Sneap
 import DyadicsInductive.index         -- by Tom de Jong
 import Factorial.index

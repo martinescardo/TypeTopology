@@ -13,6 +13,7 @@ import Ordinals.BuraliForti                   -- by Bezem, Coquand, Dybjer and E
 import Ordinals.Closure
 import Ordinals.Codes
 import Ordinals.CumulativeHierarchy           -- by de Jong, Kraus, Nordvall Forsberg, and Xu.
+import Ordinals.CumulativeHierarchy-Addendum  -- by de Jong, Kraus, Nordvall Forsberg, and Xu.
 import Ordinals.Indecomposable
 import Ordinals.Injectivity
 import Ordinals.LexicographicOrder
@@ -35,6 +36,7 @@ import Ordinals.TrichotomousType
 import Ordinals.Type
 import Ordinals.WellOrderArithmetic
 import Ordinals.WellOrderTransport
+import Ordinals.WellOrderingPrinciple
 import Ordinals.WellOrderingTaboo            -- by Tom de Jong
 
 \end{code}
