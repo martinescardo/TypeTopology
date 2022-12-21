@@ -167,17 +167,17 @@ module Univalent-Choice
              → ∃ f ꞉ Π A , ((x : X) → P x (f x))
 
  AC₁ : {𝓤 𝓥 : Universe} → (𝓤 ⊔ 𝓥)⁺ ̇
- AC₁ {𝓤} {𝓥} = (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ )
+ AC₁ {𝓤} {𝓥} = (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ )
               → is-set X
-              → ((x : X) → is-set (Y x))
-              → (Π x ꞉ X , ∥ Y x ∥)
-              → ∥(Π x ꞉ X , Y x)∥
+              → ((x : X) → is-set (A x))
+              → (Π x ꞉ X , ∥ A x ∥)
+              → ∥(Π x ꞉ X , A x)∥
 
  AC₂ : {𝓤 𝓥 : Universe} → (𝓤 ⊔ 𝓥)⁺ ̇
- AC₂ {𝓤} {𝓥} = (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ )
+ AC₂ {𝓤} {𝓥} = (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ )
               → is-set X
-              → ((x : X) → is-set (Y x))
-              → ∥(Π x ꞉ X , (∥ Y x ∥ → Y x))∥
+              → ((x : X) → is-set (A x))
+              → ∥(Π x ꞉ X , (∥ A x ∥ → A x))∥
 
  Choice Choice₁ Choice₂ : 𝓤ω
  Choice  = {𝓤 𝓥 : Universe} → AC  {𝓤} {𝓥}
@@ -185,12 +185,12 @@ module Univalent-Choice
  Choice₂ = {𝓤 𝓥 : Universe} → AC₂ {𝓤} {𝓥}
 
  AC-gives-AC₁ : AC {𝓤} {𝓥} → AC₁ {𝓤} {𝓥}
- AC-gives-AC₁ ac X Y i j f = h
+ AC-gives-AC₁ ac X A i j f = h
   where
-   g : ∃ f ꞉ Π Y , (X → 𝟙)
-   g = ac X Y (λ x a → 𝟙) i j (λ x a → 𝟙-is-prop) (λ x → ∥∥-functor (λ z → z , ⋆) (f x))
+   g : ∃ f ꞉ Π A , (X → 𝟙)
+   g = ac X A (λ x a → 𝟙) i j (λ x a → 𝟙-is-prop) (λ x → ∥∥-functor (λ z → z , ⋆) (f x))
 
-   h : ∥ Π Y ∥
+   h : ∥ Π A ∥
    h = ∥∥-functor pr₁ g
 
  AC₁-gives-AC : AC₁ {𝓤} {𝓥} → AC {𝓤} {𝓥}
@@ -365,8 +365,8 @@ module DNS
   γ : {X : 𝓤 ̇ } → is-set (¬¬ X)
   γ = props-are-sets (negations-are-props (fe _ _))
 
-  δ : {𝓤 𝓥 : Universe} → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → is-set Y → is-set (X → Y)
-  δ {𝓤} {𝓥} Y-is-set = Π-is-set (fe _ _) (λ _ → Y-is-set)
+  δ : {𝓤 𝓥 : Universe} → {X : 𝓤 ̇ } {A : 𝓥 ̇ } → is-set A → is-set (X → A)
+  δ {𝓤} {𝓥} A-is-set = Π-is-set (fe _ _) (λ _ → A-is-set)
 
  EM-and-AC₁-give-DNS : EM 𝓥 → AC₁ {𝓤} {𝓥} → DNS {𝓤} {𝓥}
  EM-and-AC₁-give-DNS em ac X A i j f = α (ac X A i j (λ x → β em (f x)))
