@@ -85,6 +85,9 @@ module PropositionalTruncation (pt : propositional-truncations-exist) where
 
  infixr -1 Exists
 
+ Nat∃ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {B : X → 𝓦 ̇ } → Nat A B → ∃ A → ∃ B
+ Nat∃ ζ = ∥∥-functor (NatΣ ζ)
+
  _∨_  : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
  P ∨ Q = ∥ P + Q ∥
 
