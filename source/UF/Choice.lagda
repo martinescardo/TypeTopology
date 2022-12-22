@@ -490,11 +490,61 @@ module choice-functions
      (λ (A , i) x → ∈-is-prop A x)
      (λ (A , i) → i)
 
+ AC₃-gives-AC₁ : {𝓤 𝓥 : Universe} → AC₃ {𝓤 ⊔ 𝓥} → AC₁ {𝓤} {𝓥}
+ AC₃-gives-AC₁ {𝓤} {𝓥} ac₃ X A X-is-set A-is-set-valued = V
+  where
+   X' : 𝓤 ⊔ 𝓥 ̇
+   X' = Σ x ꞉ X , A x
+
+   X'-is-set : is-set X'
+   X'-is-set = Σ-is-set X-is-set A-is-set-valued
+
+   I : ∃ ε ꞉ (𝓟⁺ X' → X') , ((𝓐 : 𝓟⁺ X') → ε 𝓐 ∈⁺ 𝓐)
+   I = ac₃ X' X'-is-set
+
+   II : (Π x ꞉ X , ∥ A x ∥)
+      → (Σ ε ꞉ (𝓟⁺ X' → X') , ((𝓐 : 𝓟⁺ X') → ε 𝓐 ∈⁺ 𝓐))
+      → (Π x ꞉ X , A x)
+   II g (ε , ϕ) x = IV
+    where
+     C : 𝓟 X'
+     C (x₀ , a₀) = ((x₀ ＝ x) × ∥ A x ∥) , ×-is-prop X-is-set ∥∥-is-prop
+
+     j : is-inhabited C
+     j = ∥∥-functor (λ a → (x , a) , (refl , ∣ a ∣)) (g x)
+
+     x' : X'
+     x' = ε (C , j)
+
+     x₀ : X
+     x₀ = pr₁ x'
+
+     a₀ : A x₀
+     a₀ = pr₂ x'
+
+     III : (x₀ ＝ x) × ∥ A x ∥
+     III = ϕ (C , j)
+
+     IV : A x
+     IV = transport A (pr₁ III) a₀
+
+   V : (Π x ꞉ X , ∥ A x ∥)
+     → ∥(Π x ꞉ X , A x)∥
+   V g = ∥∥-functor (II g) I
+
+ AC₃-gives-AC : {𝓤 𝓥 : Universe} → AC₃ {𝓤 ⊔ 𝓥} → AC {𝓤} {𝓥}
+ AC₃-gives-AC ac₃ = AC₁-gives-AC (AC₃-gives-AC₁ ac₃)
+
+
+
  Choice₃ : 𝓤ω
  Choice₃ = {𝓤 : Universe} → AC₃ {𝓤}
 
  Choice-gives-Choice₃ : Choice → Choice₃
  Choice-gives-Choice₃ c {𝓤} = AC-gives-AC₃ {𝓤} (c {𝓤 ⁺} {𝓤})
+
+ Choice₃-gives-Choice : Choice₃ → Choice
+ Choice₃-gives-Choice c {𝓤} {𝓥} = AC₃-gives-AC {𝓤} {𝓥} (c {𝓤 ⊔ 𝓥})
 
  Choice-Function⁻ : 𝓤 ̇ → 𝓤 ⁺ ̇
  Choice-Function⁻ X = ∃ ε ꞉ (𝓟 X → X) , ((A : 𝓟 X) → is-inhabited A → ε A ∈ A)
@@ -553,19 +603,19 @@ module choice-functions
 
 End of addition.
 
-The following is probably not going to be useful for anything here:
+The following is probably not going to be useful for anything here,
+but it is stronger than the above decidability lemma:
 
 \begin{code}
 
 module Observation
-        (𝓤 : Universe)
         (fe : FunExt)
         where
 
- observation : {X : 𝓤 ̇ } (a : 𝟚 → X)
-             → ((x : X) → ¬¬ (Σ i ꞉ 𝟚 , a i ＝ x) → Σ i ꞉ 𝟚 , a i ＝ x)
-             → decidable (a ₀ ＝ a ₁)
- observation {X} a c = claim (𝟚-is-discrete (s(r ₀)) (s(r ₁)))
+ decidability-observation : {X : 𝓤 ̇ } (a : 𝟚 → X)
+                          → ((x : X) → ¬¬ (Σ i ꞉ 𝟚 , a i ＝ x) → Σ i ꞉ 𝟚 , a i ＝ x)
+                          → decidable (a ₀ ＝ a ₁)
+ decidability-observation {𝓤} {X} a c = claim (𝟚-is-discrete (s(r ₀)) (s(r ₁)))
   where
    Y = Σ x ꞉ X , ¬¬ (Σ i ꞉ 𝟚 , a i ＝ x)
 
