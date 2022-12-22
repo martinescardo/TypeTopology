@@ -180,10 +180,10 @@ module Univalent-Choice
               → ((x : X) → is-set (A x))
               → ∥(Π x ꞉ X , (∥ A x ∥ → A x))∥
 
- Choice Choice₁ Choice₂ : 𝓤ω
- Choice  = {𝓤 𝓥 : Universe} → AC  {𝓤} {𝓥}
- Choice₁ = {𝓤 𝓥 : Universe} → AC₁ {𝓤} {𝓥}
- Choice₂ = {𝓤 𝓥 : Universe} → AC₂ {𝓤} {𝓥}
+ Axiom-of-Choice Axiom-of-Choice₁ Axiom-of-Choice₂ : 𝓤ω
+ Axiom-of-Choice  = {𝓤 𝓥 : Universe} → AC  {𝓤} {𝓥}
+ Axiom-of-Choice₁ = {𝓤 𝓥 : Universe} → AC₁ {𝓤} {𝓥}
+ Axiom-of-Choice₂ = {𝓤 𝓥 : Universe} → AC₂ {𝓤} {𝓥}
 
  AC-gives-AC₁ : AC {𝓤} {𝓥} → AC₁ {𝓤} {𝓥}
  AC-gives-AC₁ ac X A i j f = h
@@ -314,14 +314,17 @@ module ExcludedMiddle
    (ac-renders-all-sets-discrete {𝓤 ⁺} ac (Ω 𝓤)
      (Ω-is-set (fe 𝓤 𝓤) (pe 𝓤)))
 
- Choice-gives-Excluded-Middle : PropExt → Choice → Excluded-Middle
+ Choice-gives-Excluded-Middle : PropExt
+                              → Axiom-of-Choice
+                              → Excluded-Middle
  Choice-gives-Excluded-Middle pe ac {𝓤} = AC-gives-EM {𝓤} pe (ac {𝓤 ⁺})
 
 \end{code}
 
-Is there a way to define the quotient 𝟚/P for an arbitrary proposition
-P, in the universe 𝓤, using propositional truncation as the only HIT,
-and funext, propext? We could allow, more generally, univalence.
+Is there a way to define the quotient 𝟚/P for an arbitrary
+proposition P, in the universe 𝓤, using propositional truncation as
+the only HIT, and funext, propext? We could allow, more generally,
+univalence.
 
 If so, then, under these conditions, AC is equivalent to excluded
 middle together with the double-negation shift for set-indexed
@@ -424,7 +427,9 @@ predicates:
 
 \begin{code}
 
- Choice-gives-Double-Negation-Shift : PropExt → Choice₁ → Double-Negation-Shift
+ Choice-gives-Double-Negation-Shift : PropExt
+                                    → Axiom-of-Choice₁
+                                    → Double-Negation-Shift
  Choice-gives-Double-Negation-Shift pe ac {𝓤} {𝓥} = III
   where
    em : Excluded-Middle
@@ -434,8 +439,11 @@ predicates:
    III : DNS {𝓤} {𝓥}
    III = EM-and-AC₁-give-DNS em ac
 
- Double-Negation-Shift-gives-Choice : Excluded-Middle → Double-Negation-Shift → Choice₁
- Double-Negation-Shift-gives-Choice em dns {𝓤} {𝓥} = EM-and-DNS-give-AC₁ em (dns {𝓤} {𝓥})
+ Double-Negation-Shift-gives-Choice : Excluded-Middle
+                                    → Double-Negation-Shift
+                                    → Axiom-of-Choice₁
+ Double-Negation-Shift-gives-Choice em dns {𝓤} {𝓥} =
+  EM-and-DNS-give-AC₁ em (dns {𝓤} {𝓥})
 
 \end{code}
 
@@ -535,15 +543,13 @@ module choice-functions
  AC₃-gives-AC : {𝓤 𝓥 : Universe} → AC₃ {𝓤 ⊔ 𝓥} → AC {𝓤} {𝓥}
  AC₃-gives-AC ac₃ = AC₁-gives-AC (AC₃-gives-AC₁ ac₃)
 
+ Axiom-of-Choice₃ : 𝓤ω
+ Axiom-of-Choice₃ = {𝓤 : Universe} → AC₃ {𝓤}
 
-
- Choice₃ : 𝓤ω
- Choice₃ = {𝓤 : Universe} → AC₃ {𝓤}
-
- Choice-gives-Choice₃ : Choice → Choice₃
+ Choice-gives-Choice₃ : Axiom-of-Choice → Axiom-of-Choice₃
  Choice-gives-Choice₃ c {𝓤} = AC-gives-AC₃ {𝓤} (c {𝓤 ⁺} {𝓤})
 
- Choice₃-gives-Choice : Choice₃ → Choice
+ Choice₃-gives-Choice : Axiom-of-Choice₃ → Axiom-of-Choice
  Choice₃-gives-Choice c {𝓤} {𝓥} = AC₃-gives-AC {𝓤} {𝓥} (c {𝓤 ⊔ 𝓥})
 
  Choice-Function⁻ : 𝓤 ̇ → 𝓤 ⁺ ̇
@@ -552,8 +558,8 @@ module choice-functions
  AC₄ : {𝓤 : Universe} → 𝓤 ⁺ ̇
  AC₄ {𝓤} = (X : 𝓤 ̇ ) → is-set X → ∥ X ∥ → Choice-Function⁻ X
 
- Choice₄ : 𝓤ω
- Choice₄ = {𝓤 : Universe} → AC₄ {𝓤}
+ Axiom-of-Choice₄ : 𝓤ω
+ Axiom-of-Choice₄ = {𝓤 : Universe} → AC₄ {𝓤}
 
  improve-choice-function : EM 𝓤
                          → {X : 𝓤 ̇ }
@@ -595,7 +601,7 @@ module choice-functions
    III : Choice-Function⁻ X
    III = ∥∥-rec ∃-is-prop (λ x → ∥∥-rec ∃-is-prop (λ σ → ∣ II (I σ) x ∣) c) s
 
- Choice-gives-Choice₄ : Choice → Choice₄
+ Choice-gives-Choice₄ : Axiom-of-Choice → Axiom-of-Choice₄
  Choice-gives-Choice₄ ac X X-is-set = improve-choice-function
                                        (AC-gives-EM pe ac)
                                        (AC-gives-AC₃ ac X X-is-set)

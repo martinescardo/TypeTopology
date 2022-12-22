@@ -4,6 +4,8 @@ Proof that in HoTT/UF the axiom of choice implies that every set can
 be well-ordered, written in Agda, similar to the one in the HoTT book,
 and to one of the two original proofs by Zermelo in set theory.
 
+Converse added 22nd December 2022
+
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline --experimental-lossy-unification #-}
@@ -41,8 +43,8 @@ module Ordinals.WellOrderingPrinciple
         (pt : propositional-truncations-exist)
        where
 
-open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.BuraliForti ua
+open import Ordinals.OrdinalOfOrdinals ua
 
 \end{code}
 
@@ -64,28 +66,37 @@ private
  pe' : PropExt
  pe' 𝓤 = pe {𝓤}
 
+open import Ordinals.WellOrderingTaboo fe' pe
+
+open InductiveWellOrder pt
 open PropositionalTruncation pt
 open UF.Choice.ExcludedMiddle pt fe
-open UF.Choice.choice-functions pt pe'
+open UF.Choice.choice-functions pt pe' fe
 open UF.Choice.Univalent-Choice fe pt
 
 \end{code}
 
-We now state the main theorem of this file, where the axiom of choice
-is formulated as in the HoTT book.
+We now state the main theorem of this file, and its converse, where
+the axiom of choice is formulated as in the HoTT book.
 
 \begin{code}
 
-Choice-gives-well-ordering : Choice
-                           → {X : 𝓤 ̇ }
-                           → is-set X
-                           → ∃ _<_ ꞉ (X → X → 𝓤 ̇) , (is-well-order _<_)
+every-set-can-be-well-ordered = {𝓤 : Universe} {X : 𝓤 ̇ }
+                              → is-set X
+                              → ∃ _≺_ ꞉ (X → X → 𝓤 ̇) , (is-well-order _≺_)
+
+choice-gives-well-ordering : Axiom-of-Choice
+                           → every-set-can-be-well-ordered
+
+well-ordering-gives-choice : every-set-can-be-well-ordered
+                           → Axiom-of-Choice
+
 \end{code}
 
-This is proved at the very end of this file. We first prove that,
-under excluded middle, if a set has a given choice function, then it
-can be equipped with a well ordering. Later we will derive excluded
-middle from choice in order to apply this to prove the main theorem.
+We first prove that, under excluded middle, if a set has a given
+choice function, then it can be equipped with a well ordering. Later
+we will derive excluded middle from choice in order to apply this to
+prove the main theorem.
 
 \begin{code}
 
@@ -323,25 +334,25 @@ And our desired results follows directly from this:
 
 \end{code}
 
-Using this we can prove the theorem stated above, and restated below,
-as follows. We first obtain a choice function conditionally to the
-inhabitedness of X from the axiom of choice, and also the principle of
-excluded middle. We then use excluded middle to check whether X is
-inhabited. If it is, we apply the above lemma. Otherwise it is empty
-and hence clearly well-ordered.
+Using this we can prove the main theorem stated above, and restated
+below, as follows. We first obtain a choice function conditionally to
+the inhabitedness of X from the axiom of choice, and also the
+principle of excluded middle. We then use excluded middle to check
+whether X is inhabited. If it is, we apply the above lemma. Otherwise
+it is empty and hence clearly well-ordered.
 
 \begin{code}
 
-Choice-gives-well-ordering = restatement
+choice-gives-well-ordering = restatement
  where
-  restatement : Choice
-              → {X : 𝓤 ̇ }
+  restatement : Axiom-of-Choice
+              → {𝓤 : Universe} {X : 𝓤 ̇ }
               → is-set X
               → ∃ _<_ ꞉ (X → X → 𝓤 ̇) , (is-well-order _<_)
-  restatement {𝓤} ac {X} X-is-set = III
+  restatement ac {𝓤} {X} X-is-set = III
    where
     choice-function : ∥ X ∥ → ∃ ε ꞉ (𝓟 X → X) , ((A : 𝓟 X) → is-inhabited A → ε A ∈ A)
-    choice-function = Choice-gives-Choice₄ fe ac X X-is-set
+    choice-function = Choice-gives-Choice₄ ac X X-is-set
 
     em : Excluded-Middle
     em = Choice-gives-Excluded-Middle pe' ac
@@ -356,5 +367,46 @@ Choice-gives-well-ordering = restatement
 
     III : ∃ _<_ ꞉ (X → X → 𝓤 ̇) , (is-well-order _<_)
     III = cases I II (em ∥ X ∥ ∥∥-is-prop)
+
+\end{code}
+
+We now prove the converse of the main theorem.
+
+\begin{code}
+
+well-ordering-gives-choice-function :
+
+        Excluded-Middle
+      → {X : 𝓤 ̇ }
+      → is-set X
+      → Σ _<_ ꞉ (X → X → 𝓤 ̇) , (is-well-order _<_)
+      → (Σ ε ꞉ (𝓟⁺ X → X) , ((𝓐 : 𝓟⁺ X) → ε 𝓐 ∈⁺ 𝓐))
+
+well-ordering-gives-choice-function {𝓤} em {X} X-is-set (_<_ , w) = ε , ε-behaviour
+ where
+  μ : (𝓐 : 𝓟⁺ X) → Σ x₀ ꞉ X , (x₀ ∈⁺ 𝓐) × _
+  μ (A , i) = nonempty-has-minimal _<_ fe' em pt w (_∈ A) (∈-is-prop A) i
+
+  ε : 𝓟⁺ X → X
+  ε 𝓐 = pr₁ (μ 𝓐)
+
+  ε-behaviour : (𝓐 : 𝓟⁺ X) → ε 𝓐 ∈⁺ 𝓐
+  ε-behaviour 𝓐 = pr₁ (pr₂ (μ 𝓐))
+
+well-ordering-gives-choice = restatement
+ where
+  restatement : every-set-can-be-well-ordered → Axiom-of-Choice
+  restatement w {𝓤} {𝓥} = II
+   where
+    em : Excluded-Middle
+    em = inductive-well-order-on-every-set-gives-excluded-middle (λ _ → w)
+
+    I : AC₃ {𝓤 ⊔ 𝓥}
+    I X X-is-set = ∥∥-functor
+                    (well-ordering-gives-choice-function em X-is-set)
+                    (w X-is-set)
+
+    II : AC {𝓤} {𝓥}
+    II = AC₃-gives-AC I
 
 \end{code}
