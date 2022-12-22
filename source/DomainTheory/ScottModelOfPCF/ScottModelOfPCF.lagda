@@ -114,7 +114,7 @@ computation above, the term t₂ reduces to the numeral ⌜ 2 ⌝ in PCF.
  t₃ : PCF ι
  t₃ = ifZero · ⌜ 2 ⌝ · (Pred · ⌜ 5 ⌝) · ⌜ 3 ⌝
 
- -- Notice how the extend of the partial element is no longer given by 𝟙 but, as
+ -- Notice how the extent of the partial element is no longer given by 𝟙 but, as
  -- a consequence of the constructions in our model, by the product 𝟙 × 𝟙.
  --
  -- We let Agda compute the witness (indicated by _) that the type 𝟙 × 𝟙 is a
