@@ -67,7 +67,8 @@
      file, explaining part of what we do in this development. See
      instead the comments in the various modules.
 
-   * This has been tested with 2.6.2.1.
+   * This has been tested with 2.6.2.1 and with the release
+     candidates 2.6.3.
 
 Click at the imported module names to navigate to them:
 

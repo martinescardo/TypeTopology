@@ -1,12 +1,8 @@
 Martin Escardo, 17th December 2022.
 
 Proof that in HoTT/UF the axiom of choice implies that every set can
-be well-ordered, written in Agda.
-
-This is not a new result. The HoTT book from 2013 already has a proof,
-and perhaps it has already been formalized in Coq. What I did was to
-stare at various proofs in set theory, and then adapt the one I
-liked most to HoTT/UF.
+be well-ordered, written in Agda, similar to the one in the HoTT book,
+and to one of the two original proofs by Zermelo in set theory.
 
 \begin{code}
 
@@ -69,7 +65,7 @@ private
  pe' 𝓤 = pe {𝓤}
 
 open PropositionalTruncation pt
-open UF.Choice.AC-gives-EM pt fe
+open UF.Choice.ExcludedMiddle pt fe
 open UF.Choice.choice-functions pt pe'
 open UF.Choice.Univalent-Choice fe pt
 
@@ -178,10 +174,8 @@ The following properties of f should be self-explanatory:
                          → α ＝ β
    f-is-conditionally-lc α β i j p =
      ¬¬-elim
-       (em (α ＝ β)
-           (extensionally-ordered-types-are-sets _⊲_ fe
-             ⊲-is-prop-valued ⊲-is-extensional))
-           (λ (ν : α ≠ β) → f-is-conditionally-1-1 α β i j ν p)
+       (em (α ＝ β) the-type-of-ordinals-is-a-set)
+       (λ (ν : α ≠ β) → f-is-conditionally-1-1 α β i j ν p)
 
 \end{code}
 
