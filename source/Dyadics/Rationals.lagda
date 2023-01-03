@@ -1,4 +1,4 @@
-\begin{code}
+1\begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
@@ -126,6 +126,51 @@ _≈_ : (x y : ℤ[1/2]) → 𝓤₀ ̇
 ≈-refl : (x : ℤ[1/2]) → x ≈ x
 ≈-refl x = refl
 
+--  Cases (ℤeven-or-odd z)
+
+jjj : ∀ {z} {a}
+        {pr₁ = x : (Strict-Order-ℕ-ℕ Strict-Order.< 0) (succ a)}
+        {pr₂ = oz : ℤodd z} →
+      pr₁
+      (dep-cases
+       (λ ez →
+          normalise-pos-lemma (pr₁ (ℤeven-is-multiple-of-two z ez)) a)
+       (λ oz₁ → (z , succ a) , inr (⋆ , oz₁)) (ℤeven-or-odd z))
+      ＝ z , succ a
+jjj = {!!}      
+
+hhhhh : ∀ {z} {a}
+          {pr₁ = pr₃ : (Strict-Order-ℕ-ℕ Strict-Order.< 0) (succ a)}
+          {pr₂ = pr₄ : ℤodd z} →
+        normalise-pos (z , succ a) ＝ (z , succ a) , inr (pr₃ , pr₄)
+hhhhh {z} {a} {x} {oz} = to-subtype-＝ {!!} {!!}        
+
+jhj : (z : ℤ) (a : ℕ) (p : ℤ[1/2]-cond z a) → (eo : ℤeven z ∔ ℤodd z) → normalise-pos (z , a) ＝ (z , a) , p
+jhj z 0 (inl refl) eo = refl
+jhj z (succ a) p (inl x) = {!p!}
+jhj z (succ a) (inr (pr₃ , pr₄)) (inr x) = {!!}
+
+from-normalise-pos : (z : ℤ) (a : ℕ) (p : ℤ[1/2]-cond z a) → (a-not-zero : 0 < a) → (oz : ℤodd z) → normalise-pos (z , a) ＝ (z , a) , inr (a-not-zero , oz)
+from-normalise-pos z a (inl x) a-not-zero oz = {!!}
+from-normalise-pos z (succ a) (inr (pr₃ , pr₄)) a-not-zero oz = {!!}
+
+≈-normalise-pos' : (((z , a) , p) : ℤ[1/2])
+                 → (a-not-zero : 0 < a)
+                 → ℤodd z
+                 → (((z , a) , p)) ≈ normalise-pos (z , a)
+≈-normalise-pos' ((z , a) , inl ea) anz oz = 𝟘-elim (not-less-than-itself a (transport (_< a) (ea ⁻¹) anz))
+≈-normalise-pos' ((z , a) , inr (0<a , zo)) anz oz = {!!}
+
+≈-normalise-pos : (((z , a) , p) : ℤ[1/2]) → (((z , a) , p)) ≈ normalise-pos (z , a)
+≈-normalise-pos ((z , 0)        , inl a-is-zero)     = refl
+≈-normalise-pos ((z , (succ a)) , inl a-is-zero)     = 𝟘-elim (positive-not-zero a a-is-zero)
+≈-normalise-pos ((z , 0) , inr (a-not-zero , z-odd)) = 𝟘-elim a-not-zero
+≈-normalise-pos ((z , (succ a)) , inr (a-not-zero , z-odd)) = I (ℤeven-or-odd z)
+ where
+  I : ℤeven z ∔ ℤodd z → ((z , succ a) , inr (a-not-zero , z-odd)) ≈ normalise-pos (z , succ a)
+  I (inl ez) = 𝟘-elim (ℤeven-not-odd z ez z-odd)
+  I (inr oz) = {!!}
+
 ℤ[1/2]-lt-lemma : (x : ℤ) → (n : ℕ) → ℤodd x → is-in-lowest-terms (x , pred (2^ (succ n)))
 ℤ[1/2]-lt-lemma x n ox = (1-divides-all (abs x) , 1-divides-all (succ (pred (2^ (succ n))))) , I
  where
@@ -221,6 +266,18 @@ _≈_ : (x y : ℤ[1/2]) → 𝓤₀ ̇
 ≈-to-＝ : (x y : ℤ[1/2]) → x ≈ y → x ＝ y
 ≈-to-＝ ((x , n) , p) ((y , m) , q) eq =
  to-subtype-＝ (λ (x , n) → ℤ[1/2]-cond-is-prop x n) (≈-to-＝-lemma (x , n) (y , m) eq p q)
+
+＝-to-≈ : (x y : ℤ[1/2]) → x ＝ y → x ≈ y
+＝-to-≈ ((x , a) , α) ((y , b) , β) e = γ
+ where
+  γ₁ : x ＝ y
+  γ₁ = ap (pr₁ ∘ pr₁) e
+  γ₂ : b ＝ a
+  γ₂ = ap (pr₂ ∘ pr₁) (e ⁻¹)
+  γ : ((x , a) , α) ≈ ((y , b) , β)
+  γ = x * pos (2^ b) ＝⟨ ap (_* pos (2^ b)) γ₁ ⟩
+      y * pos (2^ b) ＝⟨ ap (λ - → y * pos (2^ -)) γ₂ ⟩
+      y * pos (2^ a) ∎
 
 ℤ[1/2]-to-normalise-pos : (((x , n) , e) : ℤ[1/2]) → ((x , n) , e) ＝ normalise-pos (x , n)
 ℤ[1/2]-to-normalise-pos ((x , 0)        , inl n＝0)       = to-subtype-＝ (λ (x , n) → ℤ[1/2]-cond-is-prop x n) refl
