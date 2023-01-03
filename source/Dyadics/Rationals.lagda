@@ -143,67 +143,6 @@ _≈_ : (x y : ℤ[1/2]) → 𝓤₀ ̇
 ≈-refl : (x : ℤ[1/2]) → x ≈ x
 ≈-refl x = refl
 
---  Cases (ℤeven-or-odd z)
-
-jjj : ∀ {z} {a}
-        {pr₁ = x : (Strict-Order-ℕ-ℕ Strict-Order.< 0) (succ a)}
-        {pr₂ = oz : ℤodd z} →
-      pr₁
-      (dep-cases
-       (λ ez →
-          normalise-pos-lemma (pr₁ (ℤeven-is-multiple-of-two z ez)) a)
-       (λ oz₁ → (z , succ a) , inr (⋆ , oz₁)) (ℤeven-or-odd z))
-      ＝ z , succ a
-jjj = {!!}      
-
-hhhhh : ∀ {z} {a}
-          {pr₁ = pr₃ : (Strict-Order-ℕ-ℕ Strict-Order.< 0) (succ a)}
-          {pr₂ = pr₄ : ℤodd z} →
-        normalise-pos (z , succ a) ＝ (z , succ a) , inr (pr₃ , pr₄)
-hhhhh {z} {a} {x} {oz} = to-subtype-＝ {!!} {!!}        
-
-jhj : (z : ℤ) (a : ℕ) (p : ℤ[1/2]-cond z a) → (eo : ℤeven z ∔ ℤodd z) → normalise-pos (z , a) ＝ (z , a) , p
-jhj z 0 (inl refl) eo = refl
-jhj z (succ a) p (inl x) = {!p!}
-jhj z (succ a) (inr (pr₃ , pr₄)) (inr x) = {!!}
-
-from-normalise-pos : (z : ℤ) (a : ℕ) (p : ℤ[1/2]-cond z a) → (a-not-zero : 0 < a) → (oz : ℤodd z) → normalise-pos (z , a) ＝ (z , a) , inr (a-not-zero , oz)
-from-normalise-pos z a (inl x) a-not-zero oz = {!!}
-from-normalise-pos z (succ a) (inr (pr₃ , pr₄)) a-not-zero oz = {!!}
-
-≈-normalise-pos' : (((z , a) , p) : ℤ[1/2])
-                 → (a-not-zero : 0 < a)
-                 → ℤodd z
-                 → (((z , a) , p)) ≈ normalise-pos (z , a)
-≈-normalise-pos' ((z , a) , inl ea) anz oz = 𝟘-elim (not-less-than-itself a (transport (_< a) (ea ⁻¹) anz))
-≈-normalise-pos' ((z , a) , inr (0<a , zo)) anz oz = {!!}
-
-≈-normalise-pos : (((z , a) , p) : ℤ[1/2]) → (((z , a) , p)) ≈ normalise-pos (z , a)
-≈-normalise-pos ((z , 0)        , inl a-is-zero)     = refl
-≈-normalise-pos ((z , (succ a)) , inl a-is-zero)     = 𝟘-elim (positive-not-zero a a-is-zero)
-≈-normalise-pos ((z , 0) , inr (a-not-zero , z-odd)) = 𝟘-elim a-not-zero
-≈-normalise-pos ((z , (succ a)) , inr (a-not-zero , z-odd)) = I (ℤeven-or-odd z)
- where
-  I : ℤeven z ∔ ℤodd z → ((z , succ a) , inr (a-not-zero , z-odd)) ≈ normalise-pos (z , succ a)
-  I (inl ez) = 𝟘-elim (ℤeven-not-odd z ez z-odd)
-  I (inr oz) = {!!}
-
-ℤ[1/2]-lt-lemma : (x : ℤ) → (n : ℕ) → ℤodd x → is-in-lowest-terms (x , pred (2^ (succ n)))
-ℤ[1/2]-lt-lemma x n ox = (1-divides-all (abs x) , 1-divides-all (succ (pred (2^ (succ n))))) , I
- where
-  I : (d : ℕ) → is-common-divisor d (abs x) (succ (pred (2^ (succ n)))) → d ∣ 1
-  I d icd-d = III II
-   where
-    II : is-common-divisor d (abs x) (2^ (succ n))
-    II = transport (λ - → is-common-divisor d (abs x) -) (succ-pred' (2^ (succ n)) (exponents-not-zero (succ n))) icd-d
-    III : is-common-divisor d (abs x) (2^ (succ n)) → d ∣ 1
-    III (d|x , d|2^sn) = odd-power-of-two-coprime d (abs x) (succ n) ox d|x d|2^sn
-
-ℤ[1/2]-to-ℚ : ℤ[1/2] → ℚ
-ℤ[1/2]-to-ℚ ((x , n)      , inl n＝0)       = (x , 0) , (denom-zero-lt x)
-ℤ[1/2]-to-ℚ ((x , 0)      , inr (0<n , ox)) = 𝟘-elim 0<n
-ℤ[1/2]-to-ℚ ((x , succ n) , inr (0<n , ox)) = (x , pred (2^ (succ n))) , (ℤ[1/2]-lt-lemma x n ox)
-
 ≈-to-＝-lemma-sub-proof₁ : ((x , m) (y , n) : ℤ × ℕ)
               → (x , m) ≈' (y , n)
               → m ＝ 0
@@ -305,5 +244,30 @@ from-normalise-pos z (succ a) (inr (pr₃ , pr₄)) a-not-zero oz = {!!}
      (λ ez → normalise-pos-lemma (pr₁ (ℤeven-is-multiple-of-two x ez)) n)
      (λ oz₁ → (x , succ n) , inr (⋆ , oz₁)) zzz)
       (ℤeven-or-odd-is-prop x (inr oz) (ℤeven-or-odd x))
+
+≈-normalise-pos : (((z , a) , p) : ℤ[1/2]) → (((z , a) , p)) ≈ normalise-pos (z , a)
+≈-normalise-pos (z , α) = ＝-to-≈ (z , α) (normalise-pos z) (ℤ[1/2]-to-normalise-pos (z , α))
+
+\end{code}
+
+The following proofs relate dyadic rationals to rationals.
+
+\begin{code}
+
+ℤ[1/2]-lt-lemma : (x : ℤ) → (n : ℕ) → ℤodd x → is-in-lowest-terms (x , pred (2^ (succ n)))
+ℤ[1/2]-lt-lemma x n ox = (1-divides-all (abs x) , 1-divides-all (succ (pred (2^ (succ n))))) , I
+ where
+  I : (d : ℕ) → is-common-divisor d (abs x) (succ (pred (2^ (succ n)))) → d ∣ 1
+  I d icd-d = III II
+   where
+    II : is-common-divisor d (abs x) (2^ (succ n))
+    II = transport (λ - → is-common-divisor d (abs x) -) (succ-pred' (2^ (succ n)) (exponents-not-zero (succ n))) icd-d
+    III : is-common-divisor d (abs x) (2^ (succ n)) → d ∣ 1
+    III (d|x , d|2^sn) = odd-power-of-two-coprime d (abs x) (succ n) ox d|x d|2^sn
+
+ℤ[1/2]-to-ℚ : ℤ[1/2] → ℚ
+ℤ[1/2]-to-ℚ ((x , n)      , inl n＝0)       = (x , 0) , (denom-zero-lt x)
+ℤ[1/2]-to-ℚ ((x , 0)      , inr (0<n , ox)) = 𝟘-elim 0<n
+ℤ[1/2]-to-ℚ ((x , succ n) , inr (0<n , ox)) = (x , pred (2^ (succ n))) , (ℤ[1/2]-lt-lemma x n ox)
 
 \end{code}
