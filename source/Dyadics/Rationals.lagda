@@ -115,6 +115,8 @@ _≈'_ : (x y : ℤ × ℕ) → 𝓤₀ ̇
 _≈_ : (x y : ℤ[1/2]) → 𝓤₀ ̇
 (x , _) ≈ (y , _) = x ≈' y
 
+infix 0 _≈_
+
 ≈-sym : (x y : ℤ[1/2]) → x ≈ y → y ≈ x
 ≈-sym x y e = e ⁻¹
 
@@ -248,6 +250,12 @@ _≈_ : (x y : ℤ[1/2]) → 𝓤₀ ̇
 ≈-normalise-pos : (((z , a) , p) : ℤ[1/2]) → (((z , a) , p)) ≈ normalise-pos (z , a)
 ≈-normalise-pos (z , α) = ＝-to-≈ (z , α) (normalise-pos z) (ℤ[1/2]-to-normalise-pos (z , α))
 
+≈-ap : (f : ℤ[1/2] → ℤ[1/2]) (x y : ℤ[1/2]) → x ≈ y → f x ≈ f y
+≈-ap f x y e = ＝-to-≈ (f x) (f y) (ap f (≈-to-＝ x y e))
+
+≈-transport : (A : ℤ[1/2] → 𝓤 ̇) {x y : ℤ[1/2]} → x ≈ y → A x → A y
+≈-transport A {x} {y} e = transport A (≈-to-＝ x y e)
+
 \end{code}
 
 The following proofs relate dyadic rationals to rationals.
@@ -269,5 +277,23 @@ The following proofs relate dyadic rationals to rationals.
 ℤ[1/2]-to-ℚ ((x , n)      , inl n＝0)       = (x , 0) , (denom-zero-lt x)
 ℤ[1/2]-to-ℚ ((x , 0)      , inr (0<n , ox)) = 𝟘-elim 0<n
 ℤ[1/2]-to-ℚ ((x , succ n) , inr (0<n , ox)) = (x , pred (2^ (succ n))) , (ℤ[1/2]-lt-lemma x n ox)
+
+\end{code}
+
+Boilerplate
+
+\begin{code}
+
+≈-trans₂ : (x y z a : ℤ[1/2]) → x ≈ y → y ≈ z → z ≈ a → x ≈ a
+≈-trans₂ x y z a p q r = ≈-trans x y a p (≈-trans y z a q r)
+
+≈-trans₃ : (x y z a b : ℤ[1/2]) → x ≈ y → y ≈ z → z ≈ a → a ≈ b → x ≈ b
+≈-trans₃ x y z a b p q r s = ≈-trans₂ x y z b p q (≈-trans z a b r s)
+
+≈-trans₄ : (x y z a b c : ℤ[1/2]) → x ≈ y → y ≈ z → z ≈ a → a ≈ b → b ≈ c → x ≈ c
+≈-trans₄ x y z a b c p q r s t = ≈-trans₃ x y z a c p q r (≈-trans a b c s t)
+
+≈-trans₅ : (x y z a b c d : ℤ[1/2]) → x ≈ y → y ≈ z → z ≈ a → a ≈ b → b ≈ c → c ≈ d → x ≈ d
+≈-trans₅ x y z a b c d p q r s t u = ≈-trans₄ x y z a b d p q r s (≈-trans b c d t u)
 
 \end{code}
