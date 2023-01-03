@@ -68,15 +68,20 @@ are a set.
 1ℤ[1/2] : ℤ[1/2]
 1ℤ[1/2] = (pos 1 , 0) , (inl refl)
 
-{-
-normalise-pos-lemma'' : (z : ℤ) (n : ℕ) → ℤeven z → (0<n : 0 < n) → Σ k ꞉ ℤ , z ＝ pos 2 * k → ℤ[1/2]
-normalise-pos-lemma'' z 0        ez 0<n (k , e) = 𝟘-elim 0<n
-normalise-pos-lemma'' z (succ n) ez 0<n (k , e) = {!!}
+\end{code}
 
-normalise-pos-lemma' : (z : ℤ) (n : ℕ) → ℤeven z ∔ ℤodd z → (0<n : 0 < n) → ℤ[1/2]
-normalise-pos-lemma' z n (inr oz) 0<n = (z , n) , inr (0<n , oz)
-normalise-pos-lemma' z n (inl ez) 0<n = normalise-pos-lemma'' z n ez 0<n (ℤeven-is-multiple-of-two z ez)
--}
+To define operations on dyadics, we need to consider how to normalise
+dyadics into their simplified forms. For example, multiplication of
+dyadics using standard rational multiplication gives
+numerator/denominator combinations which are not always in lowest
+terms. Hence, we must factor our operations through a "normalisation",
+similarly to our approach to standard rationals.
+
+Due to this normalisation, we introduce an equivalence relation, and
+prove that equivalent dyadics are equal. In order to prove properties
+of dyadic operations, we will prove that dyadics are equivalent.
+
+\begin{code}
 
 normalise-pos-lemma : (z : ℤ) (n : ℕ) → ℤ[1/2]
 normalise-pos-lemma z 0        = (z , 0) , (inl refl)
@@ -116,19 +121,24 @@ _≈_ : (x y : ℤ[1/2]) → 𝓤₀ ̇
 ≈-trans : (x y z : ℤ[1/2]) → x ≈ y → y ≈ z → x ≈ z
 ≈-trans ((x , n) , _) ((y , m) , _) ((z , p) , _) e₁ e₂ = γ
  where
-  I : x * pos (2^ p) * pos (2^ m) ＝ z * pos (2^ n) * pos (2^ m)
-  I = x * pos (2^ p) * pos (2^ m) ＝⟨ ℤ-mult-rearrangement x (pos (2^ p)) (pos (2^ m)) ⟩
-      x * pos (2^ m) * pos (2^ p) ＝⟨ ap (_* pos (2^ p)) e₁                            ⟩
-      y * pos (2^ n) * pos (2^ p) ＝⟨ ℤ-mult-rearrangement y (pos (2^ n)) (pos (2^ p)) ⟩
-      y * pos (2^ p) * pos (2^ n) ＝⟨ ap (_* pos (2^ n)) e₂                            ⟩
-      z * pos (2^ m) * pos (2^ n) ＝⟨ ℤ-mult-rearrangement z (pos (2^ m)) (pos (2^ n)) ⟩
-      z * pos (2^ n) * pos (2^ m) ∎
+  p' m' n' : ℤ
+  p' = pos (2^ p)
+  m' = pos (2^ m)
+  n' = pos (2^ n)
 
-  VI : not-zero (pos (2^ m))
+  I : x * p' * m' ＝ z * n' * m'
+  I = x * p' * m' ＝⟨ ℤ-mult-rearrangement x p' m' ⟩
+      x * m' * p' ＝⟨ ap (_* p') e₁ ⟩
+      y * n' * p' ＝⟨ ℤ-mult-rearrangement y n' p' ⟩
+      y * p' * n' ＝⟨ ap (_* n') e₂ ⟩
+      z * m' * n' ＝⟨ ℤ-mult-rearrangement z m' n' ⟩
+      z * n' * m' ∎
+
+  VI : not-zero m'
   VI = exponents-not-zero' m
 
-  γ : x * pos (2^ p) ＝ z * pos (2^ n)
-  γ = ℤ-mult-right-cancellable (x * pos (2^ p)) (z * pos (2^ n)) (pos (2^ m)) VI I
+  γ : x * p' ＝ z * n'
+  γ = ℤ-mult-right-cancellable (x * p') (z * n') m' VI I
 
 ≈-refl : (x : ℤ[1/2]) → x ≈ x
 ≈-refl x = refl
