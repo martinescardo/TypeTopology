@@ -25,8 +25,20 @@ open import UF.Subsingletons
 open import TypeTopology.DiscreteAndSeparated
 open import TypeTopology.SigmaDiscreteAndTotallySeparated
 
-
 module Dyadics.Rationals where
+
+\end{code}
+
+We will define the dyadics as a sigma type. Hence, we begin by stating
+the type of the property which defines a dyadic. The condition is that
+either the denominator is zero, or the denominator is greater than
+zero, but the numerator is odd. This type contains "simplified"
+dyadics. 
+
+By properties of order, naturals, integers it follows that the dyadics
+are a set.
+
+\begin{code}
 
 ℤ[1/2]-cond : (z : ℤ) (n : ℕ) → 𝓤₀ ̇
 ℤ[1/2]-cond z n = (n ＝ 0) ∔ (n > 0 × ℤodd z)
@@ -49,6 +61,13 @@ module Dyadics.Rationals where
 
 ℤ[1/2]-is-set : is-set ℤ[1/2]
 ℤ[1/2]-is-set = discrete-types-are-sets ℤ[1/2]-is-discrete
+
+0ℤ[1/2] : ℤ[1/2]
+0ℤ[1/2] = (pos 0 , 0) , (inl refl)
+
+1ℤ[1/2] : ℤ[1/2]
+1ℤ[1/2] = (pos 1 , 0) , (inl refl)
+
 {-
 normalise-pos-lemma'' : (z : ℤ) (n : ℕ) → ℤeven z → (0<n : 0 < n) → Σ k ꞉ ℤ , z ＝ pos 2 * k → ℤ[1/2]
 normalise-pos-lemma'' z 0        ez 0<n (k , e) = 𝟘-elim 0<n
@@ -79,26 +98,14 @@ normalise : ℤ × ℤ → ℤ[1/2]
 normalise (z , pos n)     = normalise-pos (z , n)
 normalise (z , negsucc n) = normalise-neg (z , n)
 
-0ℤ[1/2] : ℤ[1/2]
-0ℤ[1/2] = (pos 0 , 0) , (inl refl)
-
-1ℤ[1/2] : ℤ[1/2]
-1ℤ[1/2] = (pos 1 , 0) , (inl refl)
-
-_≈'_ : (x y : ℤ × ℕ) → 𝓤₀ ̇
-(x , n) ≈' (y , m) = x * pos (2^ m) ＝ y * pos (2^ n)
-
-\end{code}
-
-TODO : Move following proof
-
-\begin{code}
-
 exponents-not-zero' : (m : ℕ) → not-zero (pos (2^ m))
 exponents-not-zero' m iz = exponents-not-zero m (pos-lc I)
  where
   I : pos (2^ m) ＝ pos 0
   I = from-is-zero (pos (2^ m)) iz
+
+_≈'_ : (x y : ℤ × ℕ) → 𝓤₀ ̇
+(x , n) ≈' (y , m) = x * pos (2^ m) ＝ y * pos (2^ n)
 
 _≈_ : (x y : ℤ[1/2]) → 𝓤₀ ̇
 (x , _) ≈ (y , _) = x ≈' y
