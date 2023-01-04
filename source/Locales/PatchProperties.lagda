@@ -700,6 +700,12 @@ We define the following basis for Patch:
  ℬ-patch-↑ : Fam 𝓤 ⟨ 𝒪 Patchₛ-X ⟩
  ℬ-patch-↑ = directify (𝒪 Patchₛ-X) ℬ-patch
 
+ ℬ-patch-↑-consists-of-clopens : consists-of-clopens (𝒪 Patch-X) ℬ-patch-↑ holds
+ ℬ-patch-↑-consists-of-clopens =
+  directification-preserves-clopenness
+   (𝒪 Patch-X)
+   ℬ-patch ℬ-patch-consists-of-clopens
+
 \end{code}
 
 Given a perfect nucleus `j : 𝓞(X) → 𝓞(X)`, the basic covering family for it
@@ -1012,5 +1018,8 @@ module PatchStone (X : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (𝒪 X) h
            open PatchStoneᴰ X σᴰ
           in
            patch-is-compact , patch-zero-dimensional
+
+ patch-is-spectral : is-spectral (𝒪 Patch-X) holds
+ patch-is-spectral = {!stone-locales-are-spectral!}
 
 \end{code}
