@@ -14,6 +14,7 @@ open import MLTT.Spartan hiding (𝟚)
 open import UF.Base
 open import UF.PropTrunc
 open import UF.FunExt
+open import UF.Size
 open import UF.PropTrunc
 open import MLTT.List hiding ([_])
 
@@ -72,7 +73,7 @@ satisfies-ba-laws {𝓤 = 𝓤} {𝓥 = 𝓥} {A = A} (_≤_ , 𝟏 , _⊓_ , �
    open Joins (λ x y → x ≤ y)
 
    rest : is-partial-order A _≤_ → Ω (𝓤 ⊔ 𝓥)
-   rest p = β ∧ γ ∧ δ ∧ ϵ ∧ ζ
+   rest p = β ∧ γ ∧ δ ∧ ϵ ∧ ζ ∧ η
     where
      P : Poset 𝓤 𝓥
      P = A , _≤_ , p
@@ -206,9 +207,9 @@ lattice-homomorphisms-are-monotone B L h (β , γ , _) x y p =
        h (x ⋏[ B ] y)      ＝⟨ ap h ‡    ⟩
        h x                 ∎
 
-is-embedding : (B : BooleanAlgebra 𝓤′ 𝓥′) (L : Frame 𝓤 𝓥 𝓦)
+is-ba-embedding : (B : BooleanAlgebra 𝓤′ 𝓥′) (L : Frame 𝓤 𝓥 𝓦)
              → (⟪ B ⟫ → ⟨ L ⟩) → Ω (𝓤′ ⊔ 𝓤)
-is-embedding {𝓤′} {𝓥′} {𝓤} {𝓥} {𝓦} B L η =
+is-ba-embedding {𝓤′} {𝓥′} {𝓤} {𝓥} {𝓦} B L η =
  ι ∧ is-lattice-homomorphism B L η
   where
    iss : is-set ⟨ L ⟩
@@ -222,13 +223,13 @@ is-embedding {𝓤′} {𝓥′} {𝓤} {𝓥} {𝓦} B L η =
 
 embedding-preserves-meets : (B : BooleanAlgebra 𝓤′ 𝓥′) (L : Frame 𝓤 𝓥 𝓦)
                           → (η : ⟪ B ⟫ → ⟨ L ⟩)
-                          → is-embedding B L η holds
+                          → is-ba-embedding B L η holds
                           → (x y : ⟪ B ⟫) → η (x ⋏[ B ] y) ＝ η x ∧[ L ] η y
 embedding-preserves-meets B L η (_ , (_ , ξ , _)) = ξ
 
 embedding-injective : (B : BooleanAlgebra 𝓤′ 𝓥′) (L : Frame 𝓤 𝓥 𝓦)
                     → (η : ⟪ B ⟫ → ⟨ L ⟩)
-                    → is-embedding B L η holds
+                    → is-ba-embedding B L η holds
                     → (x y : ⟪ B ⟫) → η x ＝ η y → x ＝ y
 embedding-injective B L η (ι , _) = ι
 
@@ -241,7 +242,7 @@ is-spectral′ B L f = Ɐ x ∶ ⟪ B ⟫ , is-compact-open L (f x)
 \begin{code}
 
 _is-sublattice-of_ : BooleanAlgebra 𝓤′ 𝓥′ → Frame 𝓤 𝓥 𝓦 → Ω (𝓤′ ⊔ 𝓤)
-_is-sublattice-of_ B L = Ǝ η ∶ (⟪ B ⟫ → ⟨ L ⟩) , is-embedding B L η holds
+_is-sublattice-of_ B L = Ǝ η ∶ (⟪ B ⟫ → ⟨ L ⟩) , is-ba-embedding B L η holds
 
 \end{code}
 
@@ -249,7 +250,7 @@ _is-sublattice-of_ B L = Ǝ η ∶ (⟪ B ⟫ → ⟨ L ⟩) , is-embedding B L 
 
 embedding-is-order-isomorphism : (B : BooleanAlgebra 𝓤′ 𝓥′) (L : Frame 𝓤 𝓥 𝓦)
                                → (η : ⟪ B ⟫ → ⟨ L ⟩)
-                               → (μ : is-embedding B L η holds)
+                               → (μ : is-ba-embedding B L η holds)
                                → (x y : ⟪ B ⟫)
                                → (x ≤[ poset-of-ba B ] y
                                ↔ η x ≤[ poset-of L ] η y) holds
@@ -290,7 +291,7 @@ embedding-is-order-isomorphism B L η μ x y = † , ‡
 
 embeddings-lemma : (B : BooleanAlgebra 𝓤′ 𝓥′) (L : Frame 𝓤 𝓥 𝓦)
                  → (η : ⟪ B ⟫ → ⟨ L ⟩)
-                 → is-embedding B L η holds
+                 → is-ba-embedding B L η holds
                  → (x : ⟪ B ⟫) → (η x ≤[ poset-of L ] 𝟎[ L ]) holds → x ＝ ⊥[ B ]
 embeddings-lemma B L η (ι , _ , (_ , ξ , _)) x p = ι x ⊥[ B ] †
  where
@@ -322,7 +323,7 @@ contains-compact-opens L B η =
 
 extension-lemma : (B : BooleanAlgebra 𝓦 𝓥) (L L′ : Frame 𝓤 𝓦 𝓦)
                 → (η : ⟪ B ⟫ → ⟨ L ⟩)
-                → is-embedding B L η holds
+                → is-ba-embedding B L η holds
                 → is-spectral L holds
                 → is-spectral L′ holds
                 → is-spectral′ B L η holds
