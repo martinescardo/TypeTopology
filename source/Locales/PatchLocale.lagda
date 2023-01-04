@@ -907,6 +907,9 @@ module SmallPatchConstruction (X : Locale 𝓤 𝓥 𝓦) (σᴰ : spectralᴰ (
  _≼ᵏ_ (j , ζⱼ) (k , ζₖ) =
   Ɐ i ∶ index ℬ , j (ℬ [ i ]) ≤[ poset-of (𝒪 X) ] k (ℬ [ i ])
 
+ _＝ᵏ_ : Perfect-Nucleus-on-X → Perfect-Nucleus-on-X → Ω (𝓥 ⊔ 𝓦)
+ _＝ᵏ_ 𝒿@(j , ζⱼ) 𝓀@(k , ζₖ) = (𝒿 ≼ᵏ 𝓀) ∧ (𝓀 ≼ᵏ 𝒿)
+
  open Meets (λ 𝒿 𝓀 → 𝒿 ≼ᵏ 𝓀)
   using ()
   renaming (is-top to is-topₖ;
