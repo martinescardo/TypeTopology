@@ -28,10 +28,11 @@ module Ordinals.SupSum
        where
 
 open import MLTT.Spartan
-open import Notation.UnderlyingType
+open import Notation.CanonicalMap
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.OrdinalOfOrdinalsSuprema ua
 open import Ordinals.Type
+open import Ordinals.Underlying
 open import UF.ExcludedMiddle
 open import UF.FunExt
 open import UF.PropTrunc
@@ -104,7 +105,7 @@ universe 𝓤, that is, the ordinals that have a largest element.
  open import Ordinals.ToppedType fe
  open import Ordinals.ToppedArithmetic fe renaming (∑ to ∑ᵀ)
 
- sup-bounded-by-sumᵀ : (τ : Ordinalᵀ 𝓤) (υ : ⟪ τ ⟫ → Ordinalᵀ 𝓤)
+ sup-bounded-by-sumᵀ : (τ : Ordinalᵀ 𝓤) (υ : ⟨ τ ⟩ → Ordinalᵀ 𝓤)
                      → sup (λ x → [ υ x ]) ⊴ [ ∑ᵀ τ υ ]
  sup-bounded-by-sumᵀ τ υ = sup-bounded-by-sum [ τ ] (λ x → [ υ x ])
 
@@ -131,7 +132,7 @@ module _ {𝓤 : Universe}
  open import Ordinals.ToppedArithmetic fe
  open suprema pt sr
 
- sup-bounded-by-sum-gives-WEM : ({𝓤 : Universe} (τ : Ordinalᵀ 𝓤) (υ : ⟪ τ ⟫ → Ordinalᵀ 𝓤)
+ sup-bounded-by-sum-gives-WEM : ({𝓤 : Universe} (τ : Ordinalᵀ 𝓤) (υ : ⟨ τ ⟩ → Ordinalᵀ 𝓤)
                                     → sup (λ x → [ υ x ]) ⊴ [ ∑ τ υ ])
 
                               → {𝓤 : Universe} → WEM 𝓤
@@ -143,7 +144,7 @@ module _ {𝓤 : Universe}
 
    τ = 𝟚ᵒ
 
-   υ : ⟪ 𝟚ᵒ ⟫ →  Ordinalᵀ (𝓤 ⁺)
+   υ : ⟨ 𝟚ᵒ ⟩ →  Ordinalᵀ (𝓤 ⁺)
    υ = cases (λ ⋆ → 𝟙ᵒ) (λ ⋆ → Ωᵒ)
 
    l : sup (λ x → [ υ x ]) ⊴ [ ∑ τ υ ]
@@ -187,14 +188,14 @@ module _ {𝓤 : Universe}
  open import Ordinals.ToppedType fe
  open import Ordinals.ToppedArithmetic fe
 
- sup-bounded-by-sumᵀ : (τ : Ordinalᵀ 𝓤) (υ : ⟪ τ ⟫ → Ordinalᵀ 𝓤)
+ sup-bounded-by-sumᵀ : (τ : Ordinalᵀ 𝓤) (υ : ⟨ τ ⟩ → Ordinalᵀ 𝓤)
                      → sup (λ x → [ υ x ]) ⊴ [ ∑ τ υ ]
  sup-bounded-by-sumᵀ τ υ = γ
   where
-   bound : (x : ⟪ τ ⟫) → [ υ x ] ⊴ [ ∑ τ υ ]
+   bound : (x : ⟨ τ ⟩) → [ υ x ] ⊴ [ ∑ τ υ ]
    bound x = ≼-gives-⊴ [ υ x ] [ ∑ τ υ ] m
     where
-     f : ⟪ υ x ⟫ → ⟪ ∑ τ υ ⟫
+     f : ⟨ υ x ⟩ → ⟨ ∑ τ υ ⟩
      f y = x , y
 
      fop : is-order-preserving [ υ x ] [ ∑ τ υ ] f
@@ -209,23 +210,23 @@ module _ {𝓤 : Universe}
  open import Ordinals.TrichotomousType fe
  open import Ordinals.TrichotomousArithmetic fe
 
- sup-bounded-by-sum₃ : (τ : Ordinal₃ 𝓤) (υ : ⦅ τ ⦆ → Ordinal₃ 𝓤)
-                     → sup (λ x → ⁅ υ x ⁆) ⊴ ⁅ ∑³ τ υ ⁆
+ sup-bounded-by-sum₃ : (τ : Ordinal₃ 𝓤) (υ : ⟨ τ ⟩ → Ordinal₃ 𝓤)
+                     → sup (λ x → [ υ x ]) ⊴ [ ∑³ τ υ ]
  sup-bounded-by-sum₃ τ υ = γ
   where
-   bound : (x : ⦅ τ ⦆) → ⁅ υ x ⁆ ⊴ ⁅ ∑³ τ υ ⁆
-   bound x = ≼-gives-⊴ ⁅ υ x ⁆ ⁅ ∑³ τ υ ⁆ m
+   bound : (x : ⟨ τ ⟩) → [ υ x ] ⊴ [ ∑³ τ υ ]
+   bound x = ≼-gives-⊴ [ υ x ] [ ∑³ τ υ ] m
     where
-     f : ⦅ υ x ⦆ → ⦅ ∑³ τ υ ⦆
+     f : ⟨ υ x ⟩ → ⟨ ∑³ τ υ ⟩
      f y = x , y
 
-     fop : is-order-preserving ⁅ υ x ⁆ ⁅ ∑³ τ υ ⁆ f
+     fop : is-order-preserving [ υ x ] [ ∑³ τ υ ] f
      fop y z l = inr (refl , l)
 
-     m : ⁅ υ x ⁆ ≼ ⁅ ∑³ τ υ ⁆
-     m = order-preserving-gives-≼ em ⁅ υ x ⁆ ⁅ ∑³ τ υ ⁆ (f , fop)
+     m : [ υ x ] ≼ [ ∑³ τ υ ]
+     m = order-preserving-gives-≼ em [ υ x ] [ ∑³ τ υ ] (f , fop)
 
-   γ : sup (λ x → ⁅ υ x ⁆) ⊴ ⁅ ∑³ τ υ ⁆
-   γ = sup-is-lower-bound-of-upper-bounds (λ x → ⁅ υ x ⁆) ⁅ ∑³ τ υ ⁆ bound
+   γ : sup (λ x → [ υ x ]) ⊴ [ ∑³ τ υ ]
+   γ = sup-is-lower-bound-of-upper-bounds (λ x → [ υ x ]) [ ∑³ τ υ ] bound
 
 \end{code}

@@ -37,6 +37,7 @@ open import Ordinals.Arithmetic fe
 open import Ordinals.WellOrderArithmetic
 open import Ordinals.ToppedType fe
 open import Ordinals.Injectivity
+open import Ordinals.Underlying
 
 Ordᵀ = Ordinalᵀ 𝓤₀
 
@@ -65,20 +66,20 @@ Sum of an ordinal-indexed family of ordinals:
 
 \begin{code}
 
-∑ : (τ : Ordinalᵀ 𝓤) → (⟪ τ ⟫ → Ordinalᵀ 𝓤) → Ordinalᵀ 𝓤
-∑ {𝓤} ((X , _<_ , o) , t) υ = ((Σ x ꞉ X , ⟪ υ x ⟫) ,
+∑ : (τ : Ordinalᵀ 𝓤) → (⟨ τ ⟩ → Ordinalᵀ 𝓤) → Ordinalᵀ 𝓤
+∑ {𝓤} ((X , _<_ , o) , t) υ = ((Σ x ꞉ X , ⟨ υ x ⟩) ,
                               Sum.order ,
                               Sum.well-order o (λ x → tis-well-ordered (υ x))) ,
                           Sum.top-preservation t
  where
-  _≺_ : {x : X} → ⟪ υ x ⟫ → ⟪ υ x ⟫ → 𝓤 ̇
-  y ≺ z = y ≺⟪ υ _ ⟫ z
+  _≺_ : {x : X} → ⟨ υ x ⟩ → ⟨ υ x ⟩ → 𝓤 ̇
+  y ≺ z = y ≺⟨ υ _ ⟩ z
 
   module Sum = sum-top fe _<_ _≺_ (λ x → top (υ x)) (λ x → top-is-top (υ x))
 
-∑-is-trichotomous : (τ : Ordinalᵀ 𝓤) (υ : ⟪ τ ⟫ → Ordinalᵀ 𝓤)
+∑-is-trichotomous : (τ : Ordinalᵀ 𝓤) (υ : ⟨ τ ⟩ → Ordinalᵀ 𝓤)
                   → is-trichotomous [ τ ]
-                  → ((x : ⟪ τ ⟫) → is-trichotomous [ υ x ])
+                  → ((x : ⟨ τ ⟩) → is-trichotomous [ υ x ])
                   → is-trichotomous [ ∑ τ υ ]
 ∑-is-trichotomous τ υ = sum.trichotomy-preservation _ _
 
@@ -101,7 +102,7 @@ _+ᵒ_ : Ordinalᵀ 𝓤 → Ordinalᵀ 𝓤 → Ordinalᵀ 𝓤
                               (dep-cases (λ _ → t) (λ _ → u))
 
 _×ᵒ_ : Ordinalᵀ 𝓤 → Ordinalᵀ 𝓤 → Ordinalᵀ 𝓤
-τ ×ᵒ υ = ∑ τ  (λ (_ : ⟪ τ ⟫) → υ)
+τ ×ᵒ υ = ∑ τ  (λ (_ : ⟨ τ ⟩) → υ)
 
 ×ᵒ-is-trichotomous : (τ υ : Ordinalᵀ 𝓤)
                    → is-trichotomous [ τ ]

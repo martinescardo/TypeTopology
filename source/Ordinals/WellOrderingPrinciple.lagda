@@ -14,11 +14,11 @@ of ordinals agree.
 {-# OPTIONS --without-K --exact-split --safe --auto-inline --experimental-lossy-unification #-}
 
 open import MLTT.Spartan
-open import Notation.UnderlyingType
 open import NotionsOfDecidability.Decidable
 open import Ordinals.Arithmetic
 open import Ordinals.Notions
 open import Ordinals.Type
+open import Ordinals.Underlying
 open import UF.Base
 open import UF.Choice
 open import UF.Embeddings

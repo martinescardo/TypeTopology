@@ -49,7 +49,7 @@ open import UF.Subsingletons-FunExt
 open import Ordinals.Notions hiding (is-prop-valued)
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.Type
-open import Notation.UnderlyingType
+open import Ordinals.Underlying
 
 private
  fe : FunExt

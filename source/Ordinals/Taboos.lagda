@@ -8,9 +8,9 @@ module Ordinals.Taboos where
 
 open import MLTT.Plus-Properties
 open import MLTT.Spartan hiding (𝟚 ; ₀ ; ₁)
-open import Notation.UnderlyingType
 open import Ordinals.Notions
 open import Ordinals.Type
+open import Ordinals.Underlying
 open import TypeTopology.DiscreteAndSeparated hiding (𝟚-is-discrete)
 open import UF.Equiv
 open import UF.EquivalenceExamples

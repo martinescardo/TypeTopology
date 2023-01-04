@@ -1,8 +1,6 @@
-Martin Escardo 4th January 2023
+Martin Escardo 6th May 2022
 
-Type-class for notation for underlying types. Our convention here is
-that an underlying type something we decide to call an underlying
-type.
+Type-class for notation for underlying types of ordered sets.
 
 \begin{code}
 
@@ -12,13 +10,10 @@ module Notation.UnderlyingType where
 
 open import MLTT.Spartan
 
-record Underlying-Type {𝓤} {𝓥} (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) : 𝓤 ⊔ 𝓥 ̇  where
+record Underlying-Type {𝓤} (X : 𝓤 ̇ ) (𝓥 : Universe) : 𝓤 ⊔ 𝓥 ⁺ ̇  where
  field
-  ⟨_⟩ : X → Y
+  ⟨_⟩ : X → 𝓥 ̇
 
 open Underlying-Type {{...}} public
-
-underlying-type : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) → {{_ : Underlying-Type X Y}} → X → Y
-underlying-type X Y = ⟨_⟩
 
 \end{code}

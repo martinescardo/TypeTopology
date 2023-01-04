@@ -14,8 +14,8 @@ module Ordinals.WellOrderTransport (fe : FunExt) where
 
 open import Ordinals.Notions
 open import Ordinals.Type
+open import Ordinals.Underlying
 open import Ordinals.WellOrderArithmetic
-open import Notation.UnderlyingType
 open import UF.Base
 open import UF.Subsingletons
 open import UF.Retracts

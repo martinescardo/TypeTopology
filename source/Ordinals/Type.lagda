@@ -8,7 +8,7 @@ ordinals with a top element.
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import MLTT.Spartan
-open import Notation.UnderlyingType
+open import Ordinals.Underlying
 open import Ordinals.Notions
 open import UF.Base
 open import UF.Embeddings
@@ -47,27 +47,15 @@ set):
 \begin{code}
 
 instance
- underlying-type-of-ordinal : Underlying-Type (Ordinal 𝓤) (𝓤 ̇)
- ⟨_⟩ {{underlying-type-of-ordinal}} = pr₁
+ underlying-type-of-ordinal : Underlying (Ordinal 𝓤)
+ ⟨_⟩ {{underlying-type-of-ordinal}} (X , _) = X
+ underlying-order {{underlying-type-of-ordinal}} (X , _<_ , o) = _<_
 
 structure : (α : Ordinal 𝓤) → OrdinalStructure ⟨ α ⟩
 structure (X , s) = s
 
-underlying-order : (α : Ordinal 𝓤) → ⟨ α ⟩ → ⟨ α ⟩ → 𝓤 ̇
-underlying-order (X , _<_ , o) = _<_
-
 is-trichotomous : Ordinal 𝓤 → 𝓤 ̇
 is-trichotomous α = is-trichotomous-order (underlying-order α)
-
-underlying-weak-order : (α : Ordinal 𝓤) → ⟨ α ⟩ → ⟨ α ⟩ → 𝓤 ̇
-underlying-weak-order α x y = ¬ (underlying-order α y x)
-
-underlying-porder : (α : Ordinal 𝓤) → ⟨ α ⟩ → ⟨ α ⟩ → 𝓤 ̇
-underlying-porder (X , _<_ , o) = extensional-po _<_
-
-syntax underlying-order       α x y = x ≺⟨ α ⟩ y
-syntax underlying-weak-order  α x y = x ≾⟨ α ⟩ y
-syntax underlying-porder      α x y = x ≼⟨ α ⟩ y
 
 is-well-ordered : (α : Ordinal 𝓤) → is-well-order (underlying-order α)
 is-well-ordered (X , _<_ , o) = o

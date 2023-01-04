@@ -11,16 +11,14 @@ module Ordinals.Arithmetic-Properties
        where
 
 open import UF.Base
+open import UF.Embeddings
+open import UF.Equiv
+open import UF.EquivalenceExamples
+open import UF.ExcludedMiddle
+open import UF.FunExt
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-open import UF.Equiv
 open import UF.UA-FunExt
-open import UF.FunExt
-open import UF.EquivalenceExamples
-open import UF.Embeddings
-open import UF.ExcludedMiddle
-
-open import Notation.UnderlyingType
 
 private
  fe : FunExt
@@ -35,13 +33,16 @@ private
 open import MLTT.Spartan
 open import MLTT.Plus-Properties
 
-open import Ordinals.Type
+open import Notation.CanonicalMap
+
+open import Ordinals.Arithmetic fe
 open import Ordinals.Notions
 open import Ordinals.OrdinalOfOrdinals ua
-open import Ordinals.Arithmetic fe
+open import Ordinals.Type
+open import Ordinals.Underlying
 
 𝟘ₒ-left-neutral : (α : Ordinal 𝓤) → 𝟘ₒ +ₒ α ＝ α
-𝟘ₒ-left-neutral α = eqtoidₒ (𝟘ₒ +ₒ α) α h
+𝟘ₒ-left-neutral {𝓤} α = eqtoidₒ (𝟘ₒ +ₒ α) α h
  where
   f : 𝟘 + ⟨ α ⟩ → ⟨ α ⟩
   f = ⌜ 𝟘-lneutral ⌝
@@ -1077,11 +1078,11 @@ alternative-plusₒ τ₀ τ₁ = e
  where
   υ = cases (λ ⋆ → τ₀) (λ ⋆ → τ₁)
 
-  f : ⟪ ∑ 𝟚ᵒ υ ⟫ → ⟨ [ τ₀ ] +ₒ [ τ₁ ] ⟩
+  f : ⟨ ∑ 𝟚ᵒ υ ⟩ → ⟨ [ τ₀ ] +ₒ [ τ₁ ] ⟩
   f (inl ⋆ , x) = inl x
   f (inr ⋆ , y) = inr y
 
-  g : ⟨ [ τ₀ ] +ₒ [ τ₁ ] ⟩ → ⟪ ∑ 𝟚ᵒ υ ⟫
+  g : ⟨ [ τ₀ ] +ₒ [ τ₁ ] ⟩ → ⟨ ∑ 𝟚ᵒ υ ⟩
   g (inl x) = (inl ⋆ , x)
   g (inr y) = (inr ⋆ , y)
 

@@ -108,8 +108,7 @@ open import Ordinals.Notions
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.Type
 open import Ordinals.WellOrderTransport fe'
-
-open import Notation.UnderlyingType
+open import Ordinals.Underlying
 
 module _
         (ch : cumulative-hierarchy-exists 𝓤)
