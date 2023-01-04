@@ -1284,6 +1284,24 @@ spectral-yoneda {𝓦 = 𝓦} F σ U V χ =
 
 \end{code}
 
+Stone locales are spectral.
+
+\begin{code}
+
+stone-locales-are-spectral : (F : Frame 𝓤 𝓥 𝓦)
+                           → (is-stone F ⇒ is-spectral F) holds
+stone-locales-are-spectral F (κ , ζ) =
+ ∥∥-rec (holds-is-prop (is-spectral F)) ♣ ζ
+  where
+   ♣ : zero-dimensionalᴰ F → is-spectral F holds
+   ♣ (ℬ , φ₁ , φ₂ , φ₃) = ∣ ℬ , {!!} , ψ₁ , {!!} ∣
+    where
+     ψ₁ : consists-of-compact-opens F ℬ holds
+     ψ₁ is = clopens-are-compact-in-compact-frames F {!!} {!!} {!!}
+
+\end{code}
+
+
 \begin{code}
 
 compacts-are-basic-in-spectralᴰ-frames : (F : Frame 𝓤 𝓥 𝓦)
