@@ -60,6 +60,8 @@ open import CoNaturals.GenericConvergentSequence
 open import MLTT.Spartan
 open import MLTT.Plus-Properties
 
+open import Notation.UnderlyingType
+
 open ordinals-injectivity fe
 
 module _ (sr : Set-Replacement pt) where

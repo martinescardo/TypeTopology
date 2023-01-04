@@ -11,13 +11,12 @@ open import UF.FunExt
 module Ordinals.Injectivity where
 
 open import MLTT.Spartan
-
-open import UF.Base
-open import UF.Equiv
-open import UF.Embeddings
-
+open import Notation.UnderlyingType
 open import Ordinals.Type
 open import Ordinals.WellOrderArithmetic
+open import UF.Base
+open import UF.Embeddings
+open import UF.Equiv
 
 module ordinals-injectivity (fe : FunExt) where
 

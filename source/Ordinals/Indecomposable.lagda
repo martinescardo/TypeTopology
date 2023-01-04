@@ -51,6 +51,8 @@ open import Ordinals.Type
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.Arithmetic fe
 
+open import Notation.UnderlyingType
+
 \end{code}
 
 A type X is decomposable if there are pointed types X₀ and X₁ with

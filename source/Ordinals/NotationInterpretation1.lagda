@@ -120,6 +120,7 @@ the theorems and constructions to be performed here:
 
 \begin{code}
 
+open import Notation.UnderlyingType
 open import Ordinals.Arithmetic fe
 open import Ordinals.Closure fe
 open import Ordinals.Codes

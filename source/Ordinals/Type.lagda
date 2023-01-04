@@ -8,14 +8,13 @@ ordinals with a top element.
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import MLTT.Spartan
-
+open import Notation.UnderlyingType
 open import Ordinals.Notions
-
 open import UF.Base
+open import UF.Embeddings
 open import UF.FunExt
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-open import UF.Embeddings
 
 module Ordinals.Type where
 
@@ -47,8 +46,9 @@ set):
 
 \begin{code}
 
-⟨_⟩ : Ordinal 𝓤 → 𝓤 ̇
-⟨ X , _<_ , o ⟩ = X
+instance
+ underlying-type-of-ordinal : Underlying-Type (Ordinal 𝓤) (𝓤 ̇)
+ ⟨_⟩ {{underlying-type-of-ordinal}} = pr₁
 
 structure : (α : Ordinal 𝓤) → OrdinalStructure ⟨ α ⟩
 structure (X , s) = s

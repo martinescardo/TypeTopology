@@ -20,6 +20,8 @@ open import UF.EquivalenceExamples
 open import UF.Embeddings
 open import UF.ExcludedMiddle
 
+open import Notation.UnderlyingType
+
 private
  fe : FunExt
  fe = Univalence-gives-FunExt ua

@@ -14,6 +14,7 @@ module Ordinals.Arithmetic
 
 open import MLTT.Spartan
 open import Naturals.Order
+open import Notation.UnderlyingType
 open import CoNaturals.GenericConvergentSequence
 open import Ordinals.Notions
 open import Ordinals.Type

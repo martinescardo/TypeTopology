@@ -46,10 +46,10 @@ open import UF.PropTrunc
 open import UF.Size
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-
 open import Ordinals.Notions hiding (is-prop-valued)
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.Type
+open import Notation.UnderlyingType
 
 private
  fe : FunExt

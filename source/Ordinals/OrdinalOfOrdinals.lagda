@@ -20,6 +20,7 @@ open import MLTT.Spartan
 open import Ordinals.Notions
 open import Ordinals.Type
 open import Notation.CanonicalMap
+open import Notation.UnderlyingType
 
 open import UF.Base
 open import UF.Embeddings

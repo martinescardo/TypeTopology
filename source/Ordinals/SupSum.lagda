@@ -28,16 +28,16 @@ module Ordinals.SupSum
        where
 
 open import MLTT.Spartan
-open import Ordinals.Type
+open import Notation.UnderlyingType
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.OrdinalOfOrdinalsSuprema ua
-
-open import UF.FunExt
-open import UF.UA-FunExt
+open import Ordinals.Type
 open import UF.ExcludedMiddle
-open import UF.Size
+open import UF.FunExt
 open import UF.PropTrunc
+open import UF.Size
 open import UF.Subsingletons
+open import UF.UA-FunExt
 
 private
  fe : FunExt
