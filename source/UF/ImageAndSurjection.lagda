@@ -75,10 +75,13 @@ wconstant-map-to-set-factors-through-truncation-of-domain
    p : is-prop (image f)
    p = wconstant-maps-to-sets-have-propositional-images
         Y-is-set f f-is-wconstant
+
    f'' : ∥ X ∥ → image f
    f'' = ∥∥-rec p (corestriction f)
+
    f' : ∥ X ∥ → Y
    f' = restriction f ∘ f''
+
    h : f ∼ f' ∘ ∣_∣
    h x = f x                               ＝⟨ refl ⟩
          restriction f (corestriction f x) ＝⟨ ρ    ⟩
@@ -213,22 +216,28 @@ embedding-if-corestriction-is-equivalence f i =
 
 \end{code}
 
+End of Tom de Jong's addition.
+
 Surjections can be characterized as follows, modulo size:
 
 \begin{code}
 
 imageInduction : ∀ {𝓦 𝓤 𝓥} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ⊔ 𝓦  ⁺ ̇
-imageInduction {𝓦} {𝓤} {𝓥} {X} {Y} f =
-               (P : Y → 𝓦 ̇ ) → ((y : Y) → is-prop (P y)) → ((x : X) → P (f x)) → (y : Y) → P y
+imageInduction {𝓦} {𝓤} {𝓥} {X} {Y} f = (P : Y → 𝓦 ̇ )
+                                       → ((y : Y) → is-prop (P y))
+                                       → ((x : X) → P (f x))
+                                       → (y : Y) → P y
 
 surjection-induction : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                      → is-surjection f → imageInduction {𝓦} f
-surjection-induction f is P isp a y = ∥∥-rec (isp y)
-                                            (λ σ → transport P (pr₂ σ) (a (pr₁ σ)))
-                                            (is y)
+surjection-induction f is P isp a y = ∥∥-rec
+                                       (isp y)
+                                       (λ σ → transport P (pr₂ σ) (a (pr₁ σ)))
+                                       (is y)
 
 image-surjection-converse : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                          → imageInduction f → is-surjection f
+                          → imageInduction f
+                          → is-surjection f
 image-surjection-converse f is' = is' (λ y → ∥ Σ (λ x → f x ＝ y) ∥)
                                       (λ y → ∥∥-is-prop)
                                       (λ x → ∣ x , refl ∣)
@@ -238,11 +247,13 @@ image-induction : ∀ {𝓦} {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                 → (∀ y' → is-prop (P y'))
                 → (∀ x → P (corestriction f x))
                 → ∀ y' → P y'
-image-induction f = surjection-induction (corestriction f)
-                                         (corestriction-is-surjection f)
+image-induction f = surjection-induction
+                     (corestriction f)
+                     (corestriction-is-surjection f)
 
 retraction-surjection : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                      → has-section f → is-surjection f
+                      → has-section f
+                      → is-surjection f
 retraction-surjection {𝓤} {𝓥} {X} f φ y = ∣ pr₁ φ y , pr₂ φ y ∣
 
 pr₁-is-surjection : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
@@ -306,7 +317,8 @@ Added 18 December 2020 by Tom de Jong.
                         z       ∎))
 
 equivs-are-surjections : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f : X → Y}
-                       → is-equiv f → is-surjection f
+                       → is-equiv f
+                       → is-surjection f
 equivs-are-surjections ((ρ , η) , (σ , ε)) y = ∣ ρ y , η y ∣
 
 \end{code}
