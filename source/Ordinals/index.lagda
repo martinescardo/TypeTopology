@@ -33,6 +33,7 @@ import Ordinals.ToppedType
 import Ordinals.TrichotomousArithmetic
 import Ordinals.TrichotomousType
 import Ordinals.Type
+import Ordinals.Underlying
 import Ordinals.WellOrderArithmetic
 import Ordinals.WellOrderTransport
 import Ordinals.WellOrderingPrinciple

@@ -3,7 +3,7 @@
    constructive univalent mathematics
    written in Agda
 
-   Tested with Agda 2.6.2.2.
+   Tested with Agda 2.6.2.2 and the release candidate 2 of Agda 2.6.3
 
    Martin Escardo and collaborators, 2010--2022--∞
    Continuously evolving.
