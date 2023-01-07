@@ -166,64 +166,6 @@ NatΣ-is-surjection A B ζ i (x , b) = γ
 
 \end{code}
 
-The following was marked as a TODO by Martin:
-  A map is an embedding iff its corestriction is an equivalence.
-It was done by Tom de Jong on 4 December 2020.
-
-\begin{code}
-
-corestriction-of-embedding-is-equivalence : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                                          → is-embedding f
-                                          → is-equiv (corestriction f)
-corestriction-of-embedding-is-equivalence f e =
- surjective-embeddings-are-equivs f' e' s'
-  where
-   f' : domain f → image f
-   f' = corestriction f
-   s' : is-surjection f'
-   s' = corestriction-is-surjection f
-   e' : is-embedding f'
-   e' (y , p) = retract-of-prop γ (e y)
-    where
-     γ : fiber f' (y , p) ◁ fiber f y
-     γ = Σ-retract (λ x → f' x ＝ y , p) (λ x → f x ＝ y) ϕ
-      where
-       ϕ : (x : domain f) → (f' x ＝ (y , p)) ◁ (f x ＝ y)
-       ϕ x = ρ , σ , η
-        where
-         ρ : f x ＝ y → f' x ＝ (y , p)
-         ρ q = to-subtype-＝ (λ y' → ∥∥-is-prop) q
-         σ : f' x ＝ (y , p) → f x ＝ y
-         σ q' = ap pr₁ q'
-         η : ρ ∘ σ ∼ id
-         η refl = to-Σ-＝ (refl , q)    ＝⟨ ap (λ - → to-Σ-＝ (refl , -)) h ⟩
-                  to-Σ-＝ (refl , refl) ＝⟨ refl ⟩
-                  refl                 ∎
-          where
-           q : ∣ x , refl ∣ ＝ ∣ x , refl ∣
-           q = ∥∥-is-prop ∣ x , refl ∣ ∣ x , refl ∣
-           h : q ＝ refl
-           h = props-are-sets ∥∥-is-prop q refl
-
-embedding-if-corestriction-is-equivalence : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                                          → is-equiv (corestriction f)
-                                          → is-embedding f
-embedding-if-corestriction-is-equivalence f i =
- embedding-closed-under-∼ f' f (∘-is-embedding e₁ e₂) H
-  where
-   f' : domain f → codomain f
-   f' = pr₁ ∘ corestriction f
-   H : f ∼ pr₁ ∘ corestriction f
-   H x = refl
-   e₁ : is-embedding (corestriction f)
-   e₁ = equivs-are-embeddings (corestriction f) i
-   e₂ : is-embedding pr₁
-   e₂ = pr₁-is-embedding (λ y → ∥∥-is-prop)
-
-\end{code}
-
-End of Tom de Jong's addition.
-
 Surjections can be characterized as follows, modulo size:
 
 \begin{code}
@@ -284,12 +226,6 @@ pr₁-is-surjection-converse A s x = γ
 
   γ : ∥ A x ∥
   γ = ∥∥-functor δ (s x)
-
-\end{code}
-
-Added 7th January 2023 by Martin Escardo.
-
-\begin{code}
 
 factor-through-surjection : Fun-Ext
                           → {X : 𝓤 ̇ } {A : 𝓥 ̇ }
@@ -369,6 +305,61 @@ factor-through-image fe f  B-is-set g g-respects-f =
   r : ∀ x y → f x , ∣ x , refl ∣ ＝ f y , ∣ y , refl ∣ → g x ＝ g y
   r x y p = g-respects-f x y (ap pr₁ p)
 
+\end{code}
+
+The following was marked as a TODO by Martin:
+  A map is an embedding iff its corestriction is an equivalence.
+It was done by Tom de Jong on 4 December 2020.
+
+\begin{code}
+
+corestriction-of-embedding-is-equivalence : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                                          → is-embedding f
+                                          → is-equiv (corestriction f)
+corestriction-of-embedding-is-equivalence f e =
+ surjective-embeddings-are-equivs f' e' s'
+  where
+   f' : domain f → image f
+   f' = corestriction f
+   s' : is-surjection f'
+   s' = corestriction-is-surjection f
+   e' : is-embedding f'
+   e' (y , p) = retract-of-prop γ (e y)
+    where
+     γ : fiber f' (y , p) ◁ fiber f y
+     γ = Σ-retract (λ x → f' x ＝ y , p) (λ x → f x ＝ y) ϕ
+      where
+       ϕ : (x : domain f) → (f' x ＝ (y , p)) ◁ (f x ＝ y)
+       ϕ x = ρ , σ , η
+        where
+         ρ : f x ＝ y → f' x ＝ (y , p)
+         ρ q = to-subtype-＝ (λ y' → ∥∥-is-prop) q
+         σ : f' x ＝ (y , p) → f x ＝ y
+         σ q' = ap pr₁ q'
+         η : ρ ∘ σ ∼ id
+         η refl = to-Σ-＝ (refl , q)    ＝⟨ ap (λ - → to-Σ-＝ (refl , -)) h ⟩
+                  to-Σ-＝ (refl , refl) ＝⟨ refl ⟩
+                  refl                 ∎
+          where
+           q : ∣ x , refl ∣ ＝ ∣ x , refl ∣
+           q = ∥∥-is-prop ∣ x , refl ∣ ∣ x , refl ∣
+           h : q ＝ refl
+           h = props-are-sets ∥∥-is-prop q refl
+
+embedding-if-corestriction-is-equivalence : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                                          → is-equiv (corestriction f)
+                                          → is-embedding f
+embedding-if-corestriction-is-equivalence f i =
+ embedding-closed-under-∼ f' f (∘-is-embedding e₁ e₂) H
+  where
+   f' : domain f → codomain f
+   f' = pr₁ ∘ corestriction f
+   H : f ∼ pr₁ ∘ corestriction f
+   H x = refl
+   e₁ : is-embedding (corestriction f)
+   e₁ = equivs-are-embeddings (corestriction f) i
+   e₂ : is-embedding pr₁
+   e₂ = pr₁-is-embedding (λ y → ∥∥-is-prop)
 
 \end{code}
 
