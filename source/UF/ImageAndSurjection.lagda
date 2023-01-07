@@ -262,7 +262,7 @@ factor-through-surjection fe {X} {A}
         pr₁ (σ (f x)) (f-is-surjection (f x)) ＝⟨ i ⟩
         pr₁ (σ (f x)) ∣ x , refl ∣             ＝⟨ ii ⟩
         φ (f x) (x , refl)                    ＝⟨ refl ⟩
-        g x ∎
+        g x                                   ∎
          where
           i = ap (pr₁ (σ (f x))) (∥∥-is-prop (f-is-surjection (f x)) ∣ x , refl ∣)
           ii = (pr₂ (σ (f x)) (x , refl))⁻¹
