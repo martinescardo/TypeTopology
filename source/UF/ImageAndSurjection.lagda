@@ -74,12 +74,12 @@ wconstant-map-to-set-factors-through-truncation-of-domain :
 wconstant-map-to-set-factors-through-truncation-of-domain
  {𝓤} {𝓥} {X} {Y} Y-is-set f f-is-wconstant = f' , h
   where
-   p : is-prop (image f)
-   p = wconstant-maps-to-sets-have-propositional-images
+   i : is-prop (image f)
+   i = wconstant-maps-to-sets-have-propositional-images
         Y-is-set f f-is-wconstant
 
    f'' : ∥ X ∥ → image f
-   f'' = ∥∥-rec p (corestriction f)
+   f'' = ∥∥-rec i (corestriction f)
 
    f' : ∥ X ∥ → Y
    f' = restriction f ∘ f''
@@ -87,10 +87,10 @@ wconstant-map-to-set-factors-through-truncation-of-domain
    h : f ∼ f' ∘ ∣_∣
    h x = f x                               ＝⟨ refl ⟩
          restriction f (corestriction f x) ＝⟨ ρ    ⟩
-         restriction f (f'' ∣ x ∣)         ＝⟨ refl ⟩
-         f' ∣ x ∣                          ∎
+         restriction f (f'' ∣ x ∣)          ＝⟨ refl ⟩
+         f' ∣ x ∣                           ∎
     where
-     ρ = ap (restriction f) (p (corestriction f x) (f'' ∣ x ∣))
+     ρ = ap (restriction f) (i (corestriction f x) (f'' ∣ x ∣))
 
 is-surjection : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 is-surjection f = ∀ y → y ∈image f
@@ -117,29 +117,32 @@ image-is-set f i = subsets-of-sets-are-sets _
                     (λ y → y ∈image f) i
                     (being-in-the-image-is-prop _ f)
 
-vv-equiv-iff-embedding-and-surjection  :  {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                                       → is-vv-equiv f
-                                       ⇔ is-embedding f × is-surjection f
-vv-equiv-iff-embedding-and-surjection f = g , h
- where
-  g : is-vv-equiv f → is-embedding f × is-surjection f
-  g i = (λ y → pr₁ (pr₁ the-singletons-are-the-inhabited-propositions (i y))) ,
-        (λ y → pr₂ (pr₁ the-singletons-are-the-inhabited-propositions (i y)))
-
-  h : is-embedding f × is-surjection f → is-vv-equiv f
-  h (e , s) = λ y → pr₂ the-singletons-are-the-inhabited-propositions (e y , s y)
+vv-equivs-are-surjections : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                          → is-vv-equiv f
+                          → is-surjection f
+vv-equivs-are-surjections f i y =
+ pr₂ (lr-implication the-singletons-are-the-inhabited-propositions (i y))
 
 surjective-embeddings-are-vv-equivs : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                                     → is-embedding f
                                     → is-surjection f
                                     → is-vv-equiv f
-surjective-embeddings-are-vv-equivs f e s = pr₂ (vv-equiv-iff-embedding-and-surjection f) (e , s)
+surjective-embeddings-are-vv-equivs f e s y =
+ rl-implication the-singletons-are-the-inhabited-propositions (e y , s y)
 
 surjective-embeddings-are-equivs : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                                  → is-embedding f
                                  → is-surjection f
                                  → is-equiv f
-surjective-embeddings-are-equivs f e s = vv-equivs-are-equivs f (surjective-embeddings-are-vv-equivs f e s)
+surjective-embeddings-are-equivs f e s =
+ vv-equivs-are-equivs f (surjective-embeddings-are-vv-equivs f e s)
+
+vv-equiv-iff-embedding-and-surjection : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                                      → is-vv-equiv f
+                                      ⇔ is-embedding f × is-surjection f
+vv-equiv-iff-embedding-and-surjection f =
+  (λ i → vv-equivs-are-embeddings f i , vv-equivs-are-surjections f i) ,
+  (λ (e , s) → surjective-embeddings-are-vv-equivs f e s)
 
 corestriction-is-surjection : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                             → is-surjection (corestriction f)
@@ -166,6 +169,8 @@ NatΣ-is-surjection A B ζ i (x , b) = γ
 
 \end{code}
 
+TODO. The converse of the above holds.
+
 Surjections can be characterized as follows, modulo size:
 
 \begin{code}
@@ -179,10 +184,11 @@ Surjection-Induction {𝓦} {𝓤} {𝓥} {X} {Y} f = (P : Y → 𝓦 ̇ )
 surjection-induction : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                      → is-surjection f
                      → Surjection-Induction {𝓦} f
-surjection-induction f is P isp a y = ∥∥-rec
-                                       (isp y)
-                                       (λ σ → transport P (pr₂ σ) (a (pr₁ σ)))
-                                       (is y)
+surjection-induction f is P P-is-prop a y =
+ ∥∥-rec
+  (P-is-prop y)
+  (λ σ → transport P (pr₂ σ) (a (pr₁ σ)))
+  (is y)
 
 surjection-induction-converse : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                               → Surjection-Induction f

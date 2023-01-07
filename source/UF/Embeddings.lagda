@@ -47,10 +47,15 @@ embedding-criterion' {𝓤} {𝓥} {X} {Y} f e =
   a : (x' : X) → fiber f (f x') ≃ (Σ x ꞉ X , x ＝ x')
   a x' = Σ-cong (λ x → e x x')
 
+vv-equivs-are-embeddings : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                         → is-vv-equiv f
+                         → is-embedding f
+vv-equivs-are-embeddings f e y = singletons-are-props (e y)
+
 equivs-are-embeddings : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                       → is-equiv f
                       → is-embedding f
-equivs-are-embeddings f e y = singletons-are-props (equivs-are-vv-equivs f e y)
+equivs-are-embeddings f e = vv-equivs-are-embeddings f (equivs-are-vv-equivs f e)
 
 embeddings-with-sections-are-vv-equivs : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                                        → is-embedding f
