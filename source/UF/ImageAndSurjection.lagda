@@ -49,53 +49,15 @@ corestriction : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
               → X → image f
 corestriction f x = f x , ∣ x , refl ∣
 
-wconstant-maps-to-sets-have-propositional-images : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-                                                 → is-set Y
-                                                 → (f : X → Y)
-                                                 → wconstant f
-                                                 → is-prop (image f)
-wconstant-maps-to-sets-have-propositional-images
- {𝓤} {𝓥} {X} {Y} s f c (y , p) (y' , p') =
-  to-subtype-＝ (λ _ → ∥∥-is-prop) (∥∥-rec s q p)
-   where
-    q : (Σ x ꞉ X , f x ＝ y) → y ＝ y'
-    q u = ∥∥-rec s (h u) p'
-     where
-      h : (Σ x ꞉ X , f x ＝ y) → (Σ x' ꞉ X , f x' ＝ y') → y ＝ y'
-      h (x , e) (x' , e') = y    ＝⟨ e ⁻¹ ⟩
-                            f x  ＝⟨ c x x' ⟩
-                            f x' ＝⟨ e' ⟩
-                            y'   ∎
-
-wconstant-map-to-set-factors-through-truncation-of-domain :
-   {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
- → is-set Y
- → (f : X → Y)
- → wconstant f
- → Σ f' ꞉ (∥ X ∥ → Y) , f ∼ f' ∘ ∣_∣
-wconstant-map-to-set-factors-through-truncation-of-domain
- {𝓤} {𝓥} {X} {Y} Y-is-set f f-is-wconstant = f' , h
-  where
-   i : is-prop (image f)
-   i = wconstant-maps-to-sets-have-propositional-images
-        Y-is-set f f-is-wconstant
-
-   f'' : ∥ X ∥ → image f
-   f'' = ∥∥-rec i (corestriction f)
-
-   f' : ∥ X ∥ → Y
-   f' = restriction f ∘ f''
-
-   h : f ∼ f' ∘ ∣_∣
-   h x = f x                               ＝⟨ refl ⟩
-         restriction f (corestriction f x) ＝⟨ ρ    ⟩
-         restriction f (f'' ∣ x ∣)          ＝⟨ refl ⟩
-         f' ∣ x ∣                           ∎
-    where
-     ρ = ap (restriction f) (i (corestriction f x) (f'' ∣ x ∣))
-
 is-surjection : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 is-surjection f = ∀ y → y ∈image f
+
+corestriction-is-surjection : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                            → is-surjection (corestriction f)
+corestriction-is-surjection f (y , s) = ∥∥-functor g s
+ where
+  g : (Σ x ꞉ domain f , f x ＝ y) → Σ x ꞉ domain f , corestriction f x ＝ (y , s)
+  g (x , p) = x , to-Σ-＝ (p , ∥∥-is-prop _ _)
 
 id-is-surjection : {X : 𝓤 ̇ } → is-surjection (𝑖𝑑 X)
 id-is-surjection = λ y → ∣ y , refl ∣
@@ -145,13 +107,6 @@ vv-equiv-iff-embedding-and-surjection : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X →
 vv-equiv-iff-embedding-and-surjection f =
   (λ i → vv-equivs-are-embeddings f i , vv-equivs-are-surjections f i) ,
   (λ (e , s) → surjective-embeddings-are-vv-equivs f e s)
-
-corestriction-is-surjection : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                            → is-surjection (corestriction f)
-corestriction-is-surjection f (y , s) = ∥∥-functor g s
- where
-  g : (Σ x ꞉ domain f , f x ＝ y) → Σ x ꞉ domain f , corestriction f x ＝ (y , s)
-  g (x , p) = x , to-Σ-＝ (p , ∥∥-is-prop _ _)
 
 pt-is-surjection : {X : 𝓤 ̇ } → is-surjection (λ (x : X) → ∣ x ∣)
 pt-is-surjection t = ∥∥-rec ∥∥-is-prop (λ x → ∣ x , ∥∥-is-prop (∣ x ∣) t ∣) t
@@ -234,6 +189,51 @@ pr₁-is-surjection-converse A s x = γ
 
   γ : ∥ A x ∥
   γ = ∥∥-functor δ (s x)
+
+wconstant-maps-to-sets-have-propositional-images : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                                                 → is-set Y
+                                                 → (f : X → Y)
+                                                 → wconstant f
+                                                 → is-prop (image f)
+wconstant-maps-to-sets-have-propositional-images
+ {𝓤} {𝓥} {X} {Y} s f c (y , p) (y' , p') =
+  to-subtype-＝ (λ _ → ∥∥-is-prop) (∥∥-rec s q p)
+   where
+    q : (Σ x ꞉ X , f x ＝ y) → y ＝ y'
+    q u = ∥∥-rec s (h u) p'
+     where
+      h : (Σ x ꞉ X , f x ＝ y) → (Σ x' ꞉ X , f x' ＝ y') → y ＝ y'
+      h (x , e) (x' , e') = y    ＝⟨ e ⁻¹ ⟩
+                            f x  ＝⟨ c x x' ⟩
+                            f x' ＝⟨ e' ⟩
+                            y'   ∎
+
+wconstant-map-to-set-factors-through-truncation-of-domain :
+   {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+ → is-set Y
+ → (f : X → Y)
+ → wconstant f
+ → Σ f' ꞉ (∥ X ∥ → Y) , f ∼ f' ∘ ∣_∣
+wconstant-map-to-set-factors-through-truncation-of-domain
+ {𝓤} {𝓥} {X} {Y} Y-is-set f f-is-wconstant = f' , h
+  where
+   i : is-prop (image f)
+   i = wconstant-maps-to-sets-have-propositional-images
+        Y-is-set f f-is-wconstant
+
+   f'' : ∥ X ∥ → image f
+   f'' = ∥∥-rec i (corestriction f)
+
+   f' : ∥ X ∥ → Y
+   f' = restriction f ∘ f''
+
+   h : f ∼ f' ∘ ∣_∣
+   h x = f x                               ＝⟨ refl ⟩
+         restriction f (corestriction f x) ＝⟨ ρ    ⟩
+         restriction f (f'' ∣ x ∣)          ＝⟨ refl ⟩
+         f' ∣ x ∣                           ∎
+    where
+     ρ = ap (restriction f) (i (corestriction f x) (f'' ∣ x ∣))
 
 factor-through-surjection : Fun-Ext
                           → {X : 𝓤 ̇ } {A : 𝓥 ̇ }
