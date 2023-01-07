@@ -8,11 +8,13 @@ module UF.ImageAndSurjection (pt : propositional-truncations-exist) where
 
 open import MLTT.Spartan
 open import UF.Base
+open import UF.Embeddings
 open import UF.Equiv
 open import UF.EquivalenceExamples
-open import UF.Embeddings
-open import UF.Subsingletons
+open import UF.FunExt
 open import UF.Retracts
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
 
 \end{code}
 
@@ -108,8 +110,7 @@ X ↠ Y = Σ f ꞉ (X → Y) , is-surjection f
 _is-image-of_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
 Y is-image-of X = X ↠ Y
 
-image-is-set : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-             → (f : X → Y)
+image-is-set : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
              → is-set Y
              → is-set (image f)
 image-is-set f i = subsets-of-sets-are-sets _
@@ -117,7 +118,8 @@ image-is-set f i = subsets-of-sets-are-sets _
                     (being-in-the-image-is-prop _ f)
 
 vv-equiv-iff-embedding-and-surjection  :  {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                                       → is-vv-equiv f ⇔ is-embedding f × is-surjection f
+                                       → is-vv-equiv f
+                                       ⇔ is-embedding f × is-surjection f
 vv-equiv-iff-embedding-and-surjection f = g , h
  where
   g : is-vv-equiv f → is-embedding f × is-surjection f
@@ -128,11 +130,15 @@ vv-equiv-iff-embedding-and-surjection f = g , h
   h (e , s) = λ y → pr₂ the-singletons-are-the-inhabited-propositions (e y , s y)
 
 surjective-embeddings-are-vv-equivs : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                                    → is-embedding f → is-surjection f → is-vv-equiv f
+                                    → is-embedding f
+                                    → is-surjection f
+                                    → is-vv-equiv f
 surjective-embeddings-are-vv-equivs f e s = pr₂ (vv-equiv-iff-embedding-and-surjection f) (e , s)
 
 surjective-embeddings-are-equivs : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                                 → is-embedding f → is-surjection f → is-equiv f
+                                 → is-embedding f
+                                 → is-surjection f
+                                 → is-equiv f
 surjective-embeddings-are-equivs f e s = vv-equivs-are-equivs f (surjective-embeddings-are-vv-equivs f e s)
 
 corestriction-is-surjection : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
@@ -222,23 +228,24 @@ Surjections can be characterized as follows, modulo size:
 
 \begin{code}
 
-imageInduction : ∀ {𝓦 𝓤 𝓥} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ⊔ 𝓦  ⁺ ̇
-imageInduction {𝓦} {𝓤} {𝓥} {X} {Y} f = (P : Y → 𝓦 ̇ )
-                                       → ((y : Y) → is-prop (P y))
-                                       → ((x : X) → P (f x))
-                                       → (y : Y) → P y
+Surjection-Induction : ∀ {𝓦 𝓤 𝓥} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺ ̇
+Surjection-Induction {𝓦} {𝓤} {𝓥} {X} {Y} f = (P : Y → 𝓦 ̇ )
+                                             → ((y : Y) → is-prop (P y))
+                                             → ((x : X) → P (f x))
+                                             → (y : Y) → P y
 
 surjection-induction : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                     → is-surjection f → imageInduction {𝓦} f
+                     → is-surjection f
+                     → Surjection-Induction {𝓦} f
 surjection-induction f is P isp a y = ∥∥-rec
                                        (isp y)
                                        (λ σ → transport P (pr₂ σ) (a (pr₁ σ)))
                                        (is y)
 
-image-surjection-converse : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                          → imageInduction f
-                          → is-surjection f
-image-surjection-converse f is' = is' (λ y → ∥ Σ (λ x → f x ＝ y) ∥)
+surjection-induction-converse : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                              → Surjection-Induction f
+                              → is-surjection f
+surjection-induction-converse f is' = is' (λ y → ∥ Σ (λ x → f x ＝ y) ∥)
                                       (λ y → ∥∥-is-prop)
                                       (λ x → ∣ x , refl ∣)
 
@@ -280,6 +287,91 @@ pr₁-is-surjection-converse A s x = γ
 
 \end{code}
 
+Added 7th January 2023 by Martin Escardo.
+
+\begin{code}
+
+factor-through-surjection : Fun-Ext
+                          → {X : 𝓤 ̇ } {A : 𝓥 ̇ }
+                          → (f : X → A)
+                          → is-surjection f
+                          → {B : 𝓦 ̇ }
+                          → is-set B
+                          → (g : X → B)
+                          → ((x y : X) → f x ＝ f y → g x ＝ g y)
+                          → ∃! h ꞉ (A → B) , h ∘ f ∼ g
+factor-through-surjection fe {X} {A}
+                          f f-is-surjection {B} B-is-set g g-respects-f = γ
+ where
+  φ : (a : A) → fiber f a → B
+  φ _ (x , _) = g x
+
+  φ-is-wconstant : (a : A) (u v : fiber f a) → φ a u ＝ φ a v
+  φ-is-wconstant a (x , p) (y , q) = g-respects-f x y
+                                      (f x ＝⟨ p ⟩
+                                       a   ＝⟨ q ⁻¹ ⟩
+                                       f y ∎)
+
+  σ : (a : A) → Σ ψ ꞉ (∥ fiber f a ∥ → B) , φ a ∼ ψ ∘ ∣_∣
+  σ a = wconstant-map-to-set-factors-through-truncation-of-domain
+         B-is-set
+         (φ a)
+         (φ-is-wconstant a)
+
+  h : A → B
+  h a = pr₁ (σ a) (f-is-surjection a)
+
+  H : h ∘ f ∼ g
+  H x = h (f x)                               ＝⟨ refl ⟩
+        pr₁ (σ (f x)) (f-is-surjection (f x)) ＝⟨ i ⟩
+        pr₁ (σ (f x)) ∣ x , refl ∣             ＝⟨ ii ⟩
+        φ (f x) (x , refl)                    ＝⟨ refl ⟩
+        g x ∎
+         where
+          i = ap (pr₁ (σ (f x))) (∥∥-is-prop (f-is-surjection (f x)) ∣ x , refl ∣)
+          ii = (pr₂ (σ (f x)) (x , refl))⁻¹
+
+  u : (k : A → B)
+    → k ∘ f ∼ g
+    → h ∼ k
+  u k K = surjection-induction
+           f
+           f-is-surjection
+           (λ a → h a ＝ k a)
+           (λ a → B-is-set)
+           (λ x → h (f x) ＝⟨ (H x) ⟩
+                  g x     ＝⟨ (K x)⁻¹ ⟩
+                  k (f x) ∎)
+
+  γ : ∃! h ꞉ (A → B) , h ∘ f ∼ g
+  γ = (h , H) ,
+      (λ (k , K) → to-subtype-＝
+                     (λ - → Π-is-prop fe (λ x → B-is-set))
+                     (dfunext fe (u k K)))
+
+factor-through-image : Fun-Ext
+                     → {X : 𝓤 ̇ } {A : 𝓥 ̇ }
+                     → (f : X → A)
+                     → {B : 𝓦 ̇ }
+                     → is-set B
+                     → (g : X → B)
+                     → ((x y : X) → f x ＝ f y → g x ＝ g y)
+                     → ∃! h ꞉ (image f → B) , h ∘ corestriction f ∼ g
+factor-through-image fe f  B-is-set g g-respects-f =
+ factor-through-surjection
+  fe
+  (corestriction f)
+  (corestriction-is-surjection f)
+  B-is-set
+  g
+  r
+ where
+  r : ∀ x y → f x , ∣ x , refl ∣ ＝ f y , ∣ y , refl ∣ → g x ＝ g y
+  r x y p = g-respects-f x y (ap pr₁ p)
+
+
+\end{code}
+
 Added 13 February 2020 by Tom de Jong.
 
 \begin{code}
@@ -304,7 +396,9 @@ Added 18 December 2020 by Tom de Jong.
 \begin{code}
 
 ∘-is-surjection : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {f : X → Y} {g : Y → Z}
-                → is-surjection f → is-surjection g → is-surjection (g ∘ f)
+                → is-surjection f
+                → is-surjection g
+                → is-surjection (g ∘ f)
 ∘-is-surjection {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {f} {g} σ τ z =
  ∥∥-rec ∥∥-is-prop γ₁ (τ z)
   where

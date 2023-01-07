@@ -550,7 +550,7 @@ in Ordinals/WellOrderTransport.lagda.
    [_]⁻ = ⌜ A/~-≃-A/~⁻ ⌝ ∘ [_]
 
    []⁻-is-surjection : is-surjection [_]⁻
-   []⁻-is-surjection = ∘-is-surjection (image-surjection-converse [_] λ P → /-induction ~EqRel) (equivs-are-surjections (⌜⌝-is-equiv A/~-≃-A/~⁻))
+   []⁻-is-surjection = ∘-is-surjection (surjection-induction-converse [_] λ P → /-induction ~EqRel) (equivs-are-surjections (⌜⌝-is-equiv A/~-≃-A/~⁻))
 
    _≺⁻_ : A/~⁻ → A/~⁻ → 𝓤 ̇
    _≺⁻_ = underlying-order A/~⁻ᵒʳᵈ
