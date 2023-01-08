@@ -163,10 +163,30 @@ image-induction f = surjection-induction
                      (corestriction f)
                      (corestriction-is-surjection f)
 
-retraction-surjection : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                      → has-section f
-                      → is-surjection f
-retraction-surjection {𝓤} {𝓥} {X} f φ y = ∣ pr₁ φ y , pr₂ φ y ∣
+set-right-cancellable : {X : 𝓤 ̇ } {A : 𝓥 ̇ } → (X → A) → 𝓤ω
+set-right-cancellable f = {𝓦 : Universe}
+                        → (B : 𝓦 ̇ )
+                        → is-set B
+                        → (g h : codomain f → B)
+                        → g ∘ f ∼ h ∘ f
+                        → g ∼ h
+
+surjections-are-set-rc : {X : 𝓤 ̇ } {A : 𝓥 ̇ } (f : X → A)
+                       → is-surjection f
+                       → set-right-cancellable f
+surjections-are-set-rc f f-is-surjection B B-is-set g h H =
+ surjection-induction
+  f
+  f-is-surjection
+  (λ a → g a ＝ h a)
+  (λ a → B-is-set)
+  (λ x → g (f x) ＝⟨ (H x) ⟩
+         h (f x) ∎)
+
+retractions-are-surjections : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                            → has-section f
+                            → is-surjection f
+retractions-are-surjections {𝓤} {𝓥} {X} f φ y = ∣ pr₁ φ y , pr₂ φ y ∣
 
 pr₁-is-surjection : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
                   → ((x : X) → ∥ A x ∥)
@@ -235,16 +255,15 @@ wconstant-map-to-set-factors-through-truncation-of-domain
     where
      ρ = ap (restriction f) (i (corestriction f x) (f'' ∣ x ∣))
 
-factor-through-surjection : Fun-Ext
-                          → {X : 𝓤 ̇ } {A : 𝓥 ̇ }
+factor-through-surjection : {X : 𝓤 ̇ } {A : 𝓥 ̇ }
                           → (f : X → A)
                           → is-surjection f
                           → {B : 𝓦 ̇ }
                           → is-set B
                           → (g : X → B)
                           → ((x y : X) → f x ＝ f y → g x ＝ g y)
-                          → ∃! h ꞉ (A → B) , h ∘ f ∼ g
-factor-through-surjection fe {X} {A}
+                          → Σ h ꞉ (A → B) , h ∘ f ∼ g
+factor-through-surjection {𝓤} {𝓥} {𝓦} {X} {A}
                           f f-is-surjection {B} B-is-set g g-respects-f = γ
  where
   φ : (a : A) → fiber f a → B
@@ -275,23 +294,40 @@ factor-through-surjection fe {X} {A}
           i = ap (pr₁ (σ (f x))) (∥∥-is-prop (f-is-surjection (f x)) ∣ x , refl ∣)
           ii = (pr₂ (σ (f x)) (x , refl))⁻¹
 
-  u : (k : A → B)
-    → k ∘ f ∼ g
-    → h ∼ k
-  u k K = surjection-induction
-           f
-           f-is-surjection
-           (λ a → h a ＝ k a)
-           (λ a → B-is-set)
-           (λ x → h (f x) ＝⟨ (H x) ⟩
-                  g x     ＝⟨ (K x)⁻¹ ⟩
-                  k (f x) ∎)
+  γ : Σ h ꞉ (A → B) , h ∘ f ∼ g
+  γ = (h , H)
 
-  γ : ∃! h ꞉ (A → B) , h ∘ f ∼ g
-  γ = (h , H) ,
-      (λ (k , K) → to-subtype-＝
-                     (λ - → Π-is-prop fe (λ x → B-is-set))
-                     (dfunext fe (u k K)))
+factor-through-surjection! : Fun-Ext
+                           → {X : 𝓤 ̇ } {A : 𝓥 ̇ }
+                           → (f : X → A)
+                           → is-surjection f
+                           → {B : 𝓦 ̇ }
+                           → is-set B
+                           → (g : X → B)
+                           → ((x y : X) → f x ＝ f y → g x ＝ g y)
+                           → ∃! h ꞉ (A → B) , h ∘ f ∼ g
+factor-through-surjection! fe {X} {A}
+                           f f-is-surjection {B} B-is-set g g-respects-f = IV
+ where
+  I : (Σ h ꞉ (A → B) , h ∘ f ∼ g) → ∃! h ꞉ (A → B) , h ∘ f ∼ g
+  I (h , H) = III
+   where
+    II : (k : A → B)
+       → k ∘ f ∼ g
+       → h ∼ k
+    II k K = surjections-are-set-rc f f-is-surjection B B-is-set h k
+              (λ x → h (f x) ＝⟨ H x ⟩
+                     g x     ＝⟨ (K x)⁻¹ ⟩
+                     k (f x) ∎)
+
+    III : ∃! h ꞉ (A → B) , h ∘ f ∼ g
+    III = (h , H) ,
+          (λ (k , K) → to-subtype-＝
+                        (λ - → Π-is-prop fe (λ x → B-is-set))
+                        (dfunext fe (II k K)))
+
+  IV : ∃! h ꞉ (A → B) , h ∘ f ∼ g
+  IV = I (factor-through-surjection f f-is-surjection B-is-set g g-respects-f)
 
 factor-through-image : Fun-Ext
                      → {X : 𝓤 ̇ } {A : 𝓥 ̇ }
@@ -302,7 +338,7 @@ factor-through-image : Fun-Ext
                      → ((x y : X) → f x ＝ f y → g x ＝ g y)
                      → ∃! h ꞉ (image f → B) , h ∘ corestriction f ∼ g
 factor-through-image fe f  B-is-set g g-respects-f =
- factor-through-surjection
+ factor-through-surjection!
   fe
   (corestriction f)
   (corestriction-is-surjection f)

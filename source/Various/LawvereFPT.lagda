@@ -530,7 +530,7 @@ NB. If 𝓥 is 𝓤 or 𝓤', then X : A → 𝓤 ⁺ ̇.
     γ = ∥∥-rec 𝟘-is-prop (uncurry φ) e
 
   Universe-set-regular' : ¬ has-section X
-  Universe-set-regular' h = Universe-set-regular (retraction-surjection X h)
+  Universe-set-regular' h = Universe-set-regular (retractions-are-surjections X h)
 
 \end{code}
 
