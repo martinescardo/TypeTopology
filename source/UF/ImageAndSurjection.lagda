@@ -41,20 +41,24 @@ restriction : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
             → image f → Y
 restriction f (y , _) = y
 
-restriction-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                      → is-embedding (restriction f)
-restriction-embedding f = pr₁-is-embedding (λ y → ∥∥-is-prop)
-
 corestriction : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
               → X → image f
 corestriction f x = f x , ∣ x , refl ∣
 
+image-factorization : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                    → f ∼ restriction f ∘ corestriction f
+image-factorization f x = refl
+
+restrictions-are-embeddings : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                            → is-embedding (restriction f)
+restrictions-are-embeddings f = pr₁-is-embedding (λ y → ∥∥-is-prop)
+
 is-surjection : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 is-surjection f = ∀ y → y ∈image f
 
-corestriction-is-surjection : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                            → is-surjection (corestriction f)
-corestriction-is-surjection f (y , s) = ∥∥-functor g s
+corestrictions-are-surjections : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                               → is-surjection (corestriction f)
+corestrictions-are-surjections f (y , s) = ∥∥-functor g s
  where
   g : (Σ x ꞉ domain f , f x ＝ y) → Σ x ꞉ domain f , corestriction f x ＝ (y , s)
   g (x , p) = x , to-Σ-＝ (p , ∥∥-is-prop _ _)
@@ -161,7 +165,7 @@ image-induction : ∀ {𝓦} {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                 → ∀ y' → P y'
 image-induction f = surjection-induction
                      (corestriction f)
-                     (corestriction-is-surjection f)
+                     (corestrictions-are-surjections f)
 
 set-right-cancellable : {X : 𝓤 ̇ } {A : 𝓥 ̇ } → (X → A) → 𝓤ω
 set-right-cancellable f = {𝓦 : Universe}
@@ -341,7 +345,7 @@ factor-through-image fe f  B-is-set g g-respects-f =
  factor-through-surjection!
   fe
   (corestriction f)
-  (corestriction-is-surjection f)
+  (corestrictions-are-surjections f)
   B-is-set
   g
   r
@@ -366,7 +370,7 @@ corestriction-of-embedding-is-equivalence f e =
    f' : domain f → image f
    f' = corestriction f
    s' : is-surjection f'
-   s' = corestriction-is-surjection f
+   s' = corestrictions-are-surjections f
    e' : is-embedding f'
    e' (y , p) = retract-of-prop γ (e y)
     where

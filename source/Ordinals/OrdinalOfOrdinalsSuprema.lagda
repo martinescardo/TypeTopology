@@ -1067,7 +1067,7 @@ module suprema
 
    sum-to-sup-is-surjection : is-surjection sum-to-sup
    sum-to-sup-is-surjection = ∘-is-surjection
-                               (corestriction-is-surjection σ)
+                               (corestrictions-are-surjections σ)
                                (equivs-are-surjections
                                  (⌜⌝-is-equiv
                                     (≃-sym sup-is-image-of-sum-to-ordinals)))

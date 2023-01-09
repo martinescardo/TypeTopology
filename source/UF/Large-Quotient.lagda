@@ -144,7 +144,7 @@ By construction, η is a surjection, of course:
 \begin{code}
 
  η-surjection : is-surjection η
- η-surjection = corestriction-is-surjection equiv-rel
+ η-surjection = corestrictions-are-surjections equiv-rel
 
 \end{code}
 

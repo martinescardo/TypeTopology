@@ -343,7 +343,7 @@ e : ⟨ sup α ⟩ → Ordinal 𝓤 and ⟨ sup α ⟩ is discrete by assumption
     e-is-embedding : is-embedding e
     e-is-embedding =
      ∘-is-embedding (equivs-are-embeddings ⌜ φ ⌝ (⌜⌝-is-equiv φ))
-                    (restriction-embedding (sum-to-ordinals α))
+                    (restrictions-are-embeddings (sum-to-ordinals α))
     e-after-f-lemma : e ∘ f ∼ sum-to-ordinals α
     e-after-f-lemma (i , x) =
      (r ∘ ⌜ φ ⌝ ∘ ⌜ φ ⌝⁻¹ ∘ c) (i , x) ＝⟨ h    ⟩

@@ -605,7 +605,7 @@ module _ (pt : propositional-truncations-exist) where
                 → compact∙ (image f)
  image-compact∙ f = surjection-compact∙
                      (corestriction f)
-                     (corestriction-is-surjection f)
+                     (corestrictions-are-surjections f)
 
 \end{code}
 
@@ -856,7 +856,7 @@ module CompactTypesPT (pt : propositional-truncations-exist) where
                → Compact X {𝓤 ⊔ 𝓥}
                → Compact (image f) {𝓤 ⊔ 𝓥}
  image-Compact fe f c = surjection-Compact (corestriction f) fe
-                         (corestriction-is-surjection f) c
+                         (corestrictions-are-surjections f) c
 
 
  open PropositionalTruncation pt
