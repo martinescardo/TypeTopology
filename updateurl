@@ -54,3 +54,4 @@ ln -s Various.LawvereFPT.html LawvereFPT.html
 ln -s Various.UnivalenceFromScratch.html UnivalenceFromScratch.html
 
 # From now on (12th Jan 2023), published things should go to ~/public_html/TypeTopology/Published.*
+# Use symlinks as above to create them. NB. Don't use subdirectories because the links may break.
