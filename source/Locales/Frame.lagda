@@ -12,7 +12,6 @@ Ported from `ayberkt/formal-topology-in-UF`.
 
 open import MLTT.Spartan hiding (𝟚)
 open import UF.Base
-open import UF.PropTrunc
 open import UF.FunExt
 open import UF.PropTrunc
 open import MLTT.List hiding ([_])
@@ -1464,6 +1463,28 @@ contains-bottom F U =  Ǝ i ∶ index U , is-bottom F (U [ i ]) holds
 closed-under-finite-joins : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦)
 closed-under-finite-joins F S =
  contains-bottom F S ∧ closed-under-binary-joins F S
+
+closed-under-fin-joins-implies-directed : (F : Frame 𝓤 𝓥 𝓦) (S : Fam 𝓦 ⟨ F ⟩)
+                                        → (closed-under-finite-joins F S
+                                        ⇒ is-directed F S) holds
+closed-under-fin-joins-implies-directed F S (i₀ , ð) =
+ ∥∥-rec (holds-is-prop (is-directed F S)) γ i₀
+  where
+   open PropositionalTruncation pt
+   open PosetNotation (poset-of F)
+   open Joins (λ x y → x ≤[ poset-of F ] y)
+
+   γ : (Σ i ꞉ index S , is-bottom F (S [ i ]) holds)
+     → is-directed F S holds
+   γ (i , _) = ∣ i ∣ , δ
+    where
+     δ : (m n : index S)
+       → (Ǝ o ∶ index S , ((S [ m ] ≤ S [ o ]) ∧ (S [ n ] ≤ S [ o ])) holds) holds
+     δ m n = ∥∥-rec ∃-is-prop ϵ (ð m n)
+      where
+       ϵ : Σ o ꞉ index S , ((S [ o ]) is-lub-of (binary-family 𝓦 (S [ m ]) (S [ n ]))) holds
+         → (Ǝ o ∶ index S , ((S [ m ] ≤ S [ o ]) ∧ (S [ n ] ≤ S [ o ])) holds) holds
+       ϵ (o , ψ , _) = ∣ o , ψ (inl ⋆) , ψ (inr ⋆) ∣
 
 directify-is-closed-under-fin-joins : (F : Frame 𝓤 𝓥 𝓦) (S : Fam 𝓦 ⟨ F ⟩)
                                     → closed-under-finite-joins F (directify F S) holds
