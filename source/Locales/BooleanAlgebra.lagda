@@ -39,6 +39,14 @@ private
   variable
     𝓤′ 𝓥′ 𝓦′ 𝓤′′ 𝓥′′ : Universe
 
+\end{code}
+
+Since the order is derivable from the meets (or the joins), it might be room for
+further work to define the order using the meets. However, the universes will
+change if we do this so it is not clear what it will result in.
+
+\begin{code}
+
 ba-data : {𝓤 : Universe} → (𝓥 : Universe) → 𝓤  ̇ → 𝓤 ⊔ 𝓥 ⁺  ̇
 ba-data 𝓥 A = (A → A → Ω 𝓥 )  -- order
             × A               -- top element
