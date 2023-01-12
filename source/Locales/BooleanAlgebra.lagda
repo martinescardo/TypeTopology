@@ -334,9 +334,8 @@ extension-lemma : (B : BooleanAlgebra 𝓦 𝓥) (L L′ : Frame 𝓤 𝓦 𝓦)
                 → contains-compact-opens L B η holds
                 → (h : ⟪ B ⟫ → ⟨ L′ ⟩)
                 → is-lattice-homomorphism B L′ h holds
-                → is-contr
-                   (Σ h₀ ꞉ (⟨ L ⟩ → ⟨ L′ ⟩) ,
-                    (is-a-frame-homomorphism L L′ h₀ holds) × (h ＝ h₀ ∘ η))
+                → ∃! h₀ ꞉ (⟨ L ⟩ → ⟨ L′ ⟩) ,
+                   is-a-frame-homomorphism L L′ h₀ holds × (h ＝ h₀ ∘ η)
 extension-lemma {𝓦} {𝓤} B L L′ η e@(_ , _ , _ , ♥₁ , ♥₂) σ σ′ s γ 𝕜 h μ@(♠₀ , ♠₁ , ♠₂ , ♠₃) =
  (h⁻ , φ , ψ) , ϑ
  where
