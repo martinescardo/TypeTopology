@@ -19,18 +19,18 @@ propositions, or subsingletons, as in HoTT/UF.)
 module UF.UniverseEmbedding where
 
 open import MLTT.Spartan
-open import Utilities.PairFun
 
-open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
 open import UF.Embeddings
 open import UF.Equiv
+open import UF.Equiv-FunExt
 open import UF.EquivalenceExamples
 open import UF.FunExt
 open import UF.Lower-FunExt
-open import UF.Equiv-FunExt
-open import UF.Univalence
+open import UF.PairFun
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
 open import UF.UA-FunExt
+open import UF.Univalence
 
 is-universe-embedding : (𝓤 ̇ → 𝓥 ̇ ) → (𝓤 ⁺) ⊔ 𝓥 ̇
 is-universe-embedding f = ∀ X → f X ≃ X
@@ -140,7 +140,7 @@ Lift-is-embedding {𝓤} {𝓥} ua = universe-embeddings-are-embeddings ua 𝓤 
 \end{code}
 
 Added 7th Feb 2019. Assuming propositional and functional
-extensionality instead of univalence, the lift-fibers of propositions
+extensionality instead of univalence, then lift-fibers of propositions
 are propositions. (For use in the module UF.Resize.)
 
 \begin{code}

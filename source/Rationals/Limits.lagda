@@ -8,16 +8,16 @@ and that 1/(n+1) converges to 0.
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import MLTT.Spartan renaming (_+_ to _∔_)  
+open import MLTT.Spartan renaming (_+_ to _∔_)
 
-open import Notation.Order 
-open import UF.Base 
-open import UF.Equiv 
-open import UF.FunExt 
-open import UF.Subsingletons 
-open import UF.PropTrunc 
+open import Notation.Order
+open import UF.Base
+open import UF.Equiv
+open import UF.FunExt
+open import UF.Subsingletons
+open import UF.PropTrunc
 
-open import Rationals.Rationals
+open import Rationals.Type
 open import Rationals.Addition
 open import Rationals.Abs
 open import Rationals.MinMax
@@ -58,22 +58,22 @@ sandwich-theorem L f g h (k , k-greater) lim-f lim-h = lim-g
      where
       N : ℕ
       N = ℕ-max (ℕ-max N₁ N₂) k
-      
+
       N₁-small : N₁ ≤ ℕ-max N₁ N₂
       N₁-small = max-≤-upper-bound N₁ N₂
-      
+
       N₂-small : N₂ ≤ ℕ-max N₁ N₂
       N₂-small = transport (N₂ ≤_) (ℕ-max-comm N₂ N₁) (max-≤-upper-bound N₂ N₁)
-      
+
       N₁N₂-small : ℕ-max N₁ N₂ ≤ ℕ-max (ℕ-max N₁ N₂) k
       N₁N₂-small = max-≤-upper-bound (ℕ-max N₁ N₂) k
-      
+
       k-small : k ≤ ℕ-max (ℕ-max N₁ N₂) k
       k-small = transport (k ≤_) (ℕ-max-comm k (ℕ-max N₁ N₂)) (max-≤-upper-bound k (ℕ-max N₁ N₂))
 
       α : (f N ≤ g N) × (g N ≤ h N)
       α = k-greater N k-small
-     
+
       g-close : (n : ℕ) → ℕ-max (ℕ-max N₁ N₂) k ≤ n → ℚ-metric (g n) L < ε
       g-close n less = obtain-inequalities (ℚ-abs-<-unpack fe (f n - L) ε f-close') (ℚ-abs-<-unpack fe (h n - L) ε h-close')
        where
@@ -89,7 +89,7 @@ sandwich-theorem L f g h (k , k-greater) lim-f lim-h = lim-g
          where
           k-greater' : f n ≤ g n × g n ≤ h n
           k-greater' = k-greater n (≤-trans k N n k-small less)
-          
+
           I : - ε < g n - L
           I = ℚ<-≤-trans fe (- ε) (f n - L) (g n - L) l₁ (ℚ≤-addition-preserves-order fe (f n) (g n) (- L) (pr₁ k-greater'))
           II : g n - L < ε
@@ -111,7 +111,7 @@ sandwich-theorem L f g h (k , k-greater) lim-f lim-h = lim-g
         0ℚ ∎
 
 constant-sequence : (q : ℚ) → (n : ℕ) → ℚ
-constant-sequence q n = q 
+constant-sequence q n = q
 
 constant-sequence-converges : (q : ℚ) → q limit-of (constant-sequence q)
 constant-sequence-converges q ε l = 0 , (λ n l₂ → transport (_< ε) I l)
@@ -119,9 +119,9 @@ constant-sequence-converges q ε l = 0 , (λ n l₂ → transport (_< ε) I l)
   I : 0ℚ ＝ ℚ-metric q q
   I = ℚ-self-dist fe q ⁻¹
 
-open import Integers.Integers hiding (abs)
+open import Integers.Type hiding (abs)
 open import Rationals.FractionsOrder
-open import Rationals.FractionsOperations renaming (_*_ to _ℚₙ*_ ; _+_ to _ℚₙ+_ ; -_ to ℚₙ-_ ; abs to ℚₙ-abs) 
+open import Rationals.FractionsOperations renaming (_*_ to _ℚₙ*_ ; _+_ to _ℚₙ+_ ; -_ to ℚₙ-_ ; abs to ℚₙ-abs)
 
 open import Notation.CanonicalMap
 
@@ -134,7 +134,7 @@ embedding-1/ℕ-to-ℚ n = toℚ (pos 1 , n)
 open import Naturals.Division
 open import Naturals.Addition renaming (_+_ to _ℕ+_)
 open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
-open import Naturals.Properties 
+open import Naturals.Properties
 open import Integers.Multiplication renaming (_*_ to _ℤ*_)
 open import Integers.Addition renaming (_+_ to _ℤ+_) hiding (_-_)
 open import Integers.Order
@@ -147,27 +147,27 @@ positive-order-flip m n a b l = transport₂ _<_ I II l
   I = (ℤ*-comm (pos (succ m)) (pos (succ b)))
 
   II : pos (succ n) ℤ* pos (succ a) ＝ pos (succ a) ℤ* pos (succ n)
-  II = (ℤ*-comm (pos (succ n)) (pos (succ a))) 
+  II = (ℤ*-comm (pos (succ n)) (pos (succ a)))
 
 open import Rationals.Fractions
 
 ⟨1/sn⟩-converges : 0ℚ limit-of ⟨1/sn⟩
 ⟨1/sn⟩-converges ((pos 0 , a) , ε)        l = 𝟘-elim (ℚ<-not-itself 0ℚ (transport (0ℚ <_) (numerator-zero-is-zero fe ((pos 0 , a) , ε) refl) l))
 ⟨1/sn⟩-converges ((negsucc x , a) , ε)    l = 𝟘-elim (negative-not-greater-than-zero x a l)
-⟨1/sn⟩-converges ((pos (succ x) , a) , ε) l = q ℕ+ 1 , conclusion 
+⟨1/sn⟩-converges ((pos (succ x) , a) , ε) l = q ℕ+ 1 , conclusion
  where
   rough-N : Σ q ꞉ ℕ , Σ r ꞉ ℕ , (succ a ＝ q ℕ* succ x ℕ+ r) × r < succ x
   rough-N = division (succ a) x
   q = pr₁ rough-N
   r = pr₁ (pr₂ rough-N)
-  
+
   γ : succ a < succ x ℕ* (q ℕ+ 1)
   γ = transport₂ _<_ ii iii i
    where
     i : q ℕ* succ x ℕ+ r < q ℕ* succ x ℕ+ succ x
     i = <-n-monotone-left r (succ x) (q ℕ* succ x) (pr₂ (pr₂ (pr₂ rough-N)))
 
-    ii : q ℕ* succ x ℕ+ r ＝ succ a 
+    ii : q ℕ* succ x ℕ+ r ＝ succ a
     ii = pr₁ (pr₂ (pr₂ rough-N)) ⁻¹
 
     iii : q ℕ* succ x ℕ+ succ x ＝ succ x ℕ* (q ℕ+ 1)
@@ -183,7 +183,7 @@ open import Rationals.Fractions
    where
      I : pos (succ q) ≤ pos (succ n)
      I = ℕ≤-to-ℤ≤ (succ q) (succ n) l'
-     
+
      II : (pos (succ a) , x) ℚₙ< (pos (succ n) , 0)
      II = β (ℤ≤-split (pos (succ q)) (pos (succ n)) I)
       where
@@ -192,12 +192,12 @@ open import Rationals.Fractions
            pos (succ x) ℤ* pos (q ℕ+ 1) ＝⟨ by-definition                                      ⟩
            pos (succ x) ℤ* pos (succ q) ＝⟨ ℤ*-comm (pos (succ x)) (pos (succ q))              ⟩
            pos (succ q) ℤ* pos (succ x) ∎
-       α : pos (succ a) ℤ* pos 1 < pos (succ q) ℤ* pos (succ x) 
+       α : pos (succ a) ℤ* pos 1 < pos (succ q) ℤ* pos (succ x)
        α = transport₂ _<_ (ℤ-mult-right-id (pos (succ a))) τ ζ
        β : pos (succ q) < pos (succ n) ∔ (pos (succ q) ＝ pos (succ n)) → (pos (succ a) , x) ℚₙ< (pos (succ n) , 0)
        β (inl less) = ℚₙ<-trans (pos (succ a) , x) (pos (succ q) , 0) (pos (succ n) , 0) α less
        β (inr equal) = transport (λ - → (pos (succ a) , x) ℚₙ< (- , 0)) equal α
-     
+
      III : (pos (succ x) , a) ℚₙ> (pos 1 , n)
      III = positive-order-flip a n x 0 II
 
@@ -220,7 +220,7 @@ open import Rationals.Fractions
 
        iv : toℚ (pos 1 , n) < ((pos (succ x) , a) , ε)
        iv = transport (toℚ (pos 1 , n) <_) (iii ⁻¹) ii
-    
+
 limits-lemma : (k : ℕ) → ((pos 1 , succ k) ℚₙ* (pos 2 , 2)) ℚₙ≤ (pos 1 , succ (succ k))
 limits-lemma k = k , I
  where
@@ -233,8 +233,8 @@ limits-lemma k = k , I
       pos k ℤ+ pos 2 ℤ* pos k ℤ+ pos 6                ＝⟨ ap (λ z → z ℤ+ pos 2 ℤ* pos k ℤ+ pos 6) (ℤ-mult-left-id (pos k) ⁻¹)    ⟩
       pos 1 ℤ* pos k ℤ+ pos 2 ℤ* pos k ℤ+ pos 6       ＝⟨ ap (_ℤ+ pos 6) (distributivity-mult-over-ℤ (pos 1) (pos 2) (pos k) ⁻¹) ⟩
       (pos 3) ℤ* pos k ℤ+ pos 6                       ＝⟨ ap (_ℤ+ pos 6) (ℤ*-comm (pos 3) (pos k))                               ⟩
-      pos k ℤ* pos 3 ℤ+ pos 6                         ＝⟨ distributivity-mult-over-ℤ (pos k) (pos 2) (pos 3) ⁻¹                  ⟩ 
-      (pos k ℤ+ pos 2) ℤ* pos 3                       ＝⟨ ap (_ℤ* pos 3) (distributivity-pos-addition k 2)                           ⟩ 
+      pos k ℤ* pos 3 ℤ+ pos 6                         ＝⟨ distributivity-mult-over-ℤ (pos k) (pos 2) (pos 3) ⁻¹                  ⟩
+      (pos k ℤ+ pos 2) ℤ* pos 3                       ＝⟨ ap (_ℤ* pos 3) (distributivity-pos-addition k 2)                           ⟩
       pos (k ℕ+ 2) ℤ* pos 3                           ＝⟨ by-definition                                                          ⟩
       pos (succ (succ k)) ℤ* pos 3                    ＝⟨ denom-setup (succ k) 2 ⁻¹                                              ⟩
       pos (succ (pred (succ (succ k) ℕ* 3)))          ＝⟨ ℤ-mult-left-id (pos (succ (pred (succ (succ k) ℕ* 3)))) ⁻¹             ⟩
@@ -264,7 +264,7 @@ limits-lemma k = k , I
        where
         i : (0ℚ * 2/3) ≤ ((⟨2/3⟩^ succ k) * 2/3)
         i = ℚ≤-pos-multiplication-preserves-order' fe 0ℚ (⟨2/3⟩^ (succ k)) 2/3 IH γ
-        
+
     III : (⟨2/3⟩^ succ n) ≤ ⟨1/sn⟩ (succ n)
     III = induction base step n
      where
@@ -273,7 +273,7 @@ limits-lemma k = k , I
       step : (k : ℕ)
            → (⟨2/3⟩^ succ k) ≤ ⟨1/sn⟩ (succ k)
            → (⟨2/3⟩^ succ (succ k)) ≤ ⟨1/sn⟩ (succ (succ k))
-      step 0 IH = goal 
+      step 0 IH = goal
        where
         abstract
          goal : (⟨2/3⟩^ succ (succ 0)) ≤ℚ ⟨1/sn⟩ (succ (succ 0))

@@ -211,8 +211,7 @@ module surjection-classifier (𝓤 : Universe) where
  module _ (pt : propositional-truncations-exist) where
 
   open PropositionalTruncation pt public
-  open import UF.ImageAndSurjection
-  open ImageAndSurjection pt public
+  open import UF.ImageAndSurjection pt public
 
   surjections-into : 𝓤 ̇ → 𝓤 ⁺ ̇
   surjections-into Y = Σ X ꞉ 𝓤 ̇ , X ↠ Y

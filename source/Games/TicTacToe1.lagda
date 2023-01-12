@@ -19,8 +19,9 @@ open import TypeTopology.SigmaDiscreteAndTotallySeparated
 
 open import MLTT.Spartan hiding (J)
 open import MLTT.NonSpartanMLTTTypes hiding (Fin ; 𝟎 ; 𝟏 ; 𝟐 ; 𝟑 ; 𝟒 ; 𝟓 ; 𝟔 ; 𝟕 ; 𝟖 ; 𝟗)
-open import MLTT.Fin
-open import MLTT.Fin-Properties
+open import Fin.Type
+open import Fin.Topology
+open import Fin.ArgMinMax
 
 𝟛 : Type
 𝟛 = Fin 3

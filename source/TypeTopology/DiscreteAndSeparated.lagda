@@ -11,16 +11,17 @@ module TypeTopology.DiscreteAndSeparated where
 
 open import MLTT.Spartan
 
-open import MLTT.Two-Properties
 open import MLTT.Plus-Properties
+open import MLTT.Two-Properties
 open import Naturals.Properties
-open import NotionsOfDecidability.DecidableAndDetachable
+open import NotionsOfDecidability.Complemented
+open import NotionsOfDecidability.Decidable
 open import UF.Base
+open import UF.Equiv
+open import UF.FunExt
+open import UF.Retracts
 open import UF.Subsingletons renaming (⊤Ω to ⊤ ; ⊥Ω to ⊥)
 open import UF.Subsingletons-FunExt
-open import UF.Equiv
-open import UF.Retracts
-open import UF.FunExt
 
 is-isolated : {X : 𝓤 ̇ } → X → 𝓤 ̇
 is-isolated x = ∀ y → decidable (x ＝ y)
@@ -499,13 +500,13 @@ infix  30 _＝[ℕ]_
 χ≠-spec : (m n : ℕ) → (χ≠ m n ＝ ₀ → m ＝ n) × (χ≠ m n ＝ ₁ → m ≠ n)
 χ≠-spec m = pr₂ (≠-indicator m)
 
-_≢_ : ℕ → ℕ → 𝓤₀ ̇
-m ≢ n = (χ≠ m n) ＝ ₁
+_≠[ℕ]_ : ℕ → ℕ → 𝓤₀ ̇
+m ≠[ℕ] n = (χ≠ m n) ＝ ₁
 
-infix  30 _≢_
+infix  30 _≠[ℕ]_
 
-≢-agrees-with-≠ : (m n : ℕ) → m ≢ n ⇔ m ≠ n
-≢-agrees-with-≠ m n = pr₂ (χ≠-spec m n) , (λ d → different-from-₀-equal-₁ (contrapositive (pr₁ (χ≠-spec m n)) d))
+≠[ℕ]-agrees-with-≠ : (m n : ℕ) → m ≠[ℕ] n ⇔ m ≠ n
+≠[ℕ]-agrees-with-≠ m n = pr₂ (χ≠-spec m n) , (λ d → different-from-₀-equal-₁ (contrapositive (pr₁ (χ≠-spec m n)) d))
 
 \end{code}
 

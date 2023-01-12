@@ -1,18 +1,18 @@
-Andrew Sneap, November 2021 
+Andrew Sneap, November 2021
 
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import MLTT.Spartan renaming (_+_ to _∔_) 
+open import MLTT.Spartan renaming (_+_ to _∔_)
 
-open import Naturals.Addition renaming (_+_ to _ℕ+_) 
-open import Naturals.Properties 
-open import UF.Base hiding (_≈_) 
-open import UF.Subsingletons 
+open import Naturals.Addition renaming (_+_ to _ℕ+_)
+open import Naturals.Properties
+open import UF.Base hiding (_≈_)
+open import UF.Subsingletons
 
-open import Integers.Integers hiding (abs)
-open import Integers.Abs 
+open import Integers.Type hiding (abs)
+open import Integers.Abs
 open import Integers.Addition renaming (_+_ to _ℤ+_)
 open import Integers.Multiplication renaming (_*_ to _ℤ*_)
 open import Integers.Negation renaming (-_ to ℤ-_)
@@ -60,7 +60,7 @@ infixl 33 _+_
  where
   left : ℚₙ
   left = (x , a) + (y , b)
-  
+
   right : ℚₙ
   right = (y , b) + (z , c)
 
@@ -75,7 +75,7 @@ infixl 33 _+_
   a' = pos (succ a)
   b' = pos (succ b)
   c' = pos (succ c)
-  
+
   I : α ℤ* c' ℤ+ z ℤ* pos (succ (pred (succ a ℕ* succ b))) ＝ x ℤ* pos (succ (pred (succ b ℕ* succ c))) ℤ+ δ ℤ* a'
   I = α ℤ* c' ℤ+ z ℤ* pos (succ (pred (succ a ℕ* succ b)))       ＝⟨ i    ⟩
       (x ℤ* b' ℤ+ y ℤ* a') ℤ* c' ℤ+ z ℤ* pos (succ a ℕ* succ b)  ＝⟨ ii   ⟩
@@ -95,7 +95,7 @@ infixl 33 _+_
         vi = ap (λ - → x ℤ* (b' ℤ* c') ℤ+ - ) (distributivity-mult-over-ℤ (y ℤ* c') (z ℤ* b') a' ⁻¹)
         vii = ap (λ - → x ℤ* - ℤ+ (y ℤ* c' ℤ+ z ℤ* b') ℤ* a') (pos-multiplication-equiv-to-ℕ (succ b) (succ c))
         viii = ap (λ - →  x ℤ* pos - ℤ+ δ ℤ* a') (succ-pred-multiplication b c)
-        
+
   II : pred (succ (pred (succ a ℕ* (succ b))) ℕ* succ c) ＝ pred (succ a ℕ* succ (pred (succ b ℕ+ succ b ℕ* c)))
   II = pred (succ (pred (succ a ℕ* succ b)) ℕ* succ c)      ＝⟨ ap (λ - → pred (- ℕ* succ c)) (succ-pred-multiplication a b ⁻¹) ⟩
        pred (succ a ℕ* succ b ℕ* succ c)                    ＝⟨ ap pred (mult-associativity (succ a) (succ b) (succ c))         ⟩
@@ -149,7 +149,7 @@ infixl 34 _*_
       y ℤ* a' ℤ* z ℤ* c'                             ＝⟨ ap (_ℤ* c') (ℤ*-assoc y a' z )                ⟩
       y ℤ* (a' ℤ* z) ℤ* c'                           ＝⟨ ap (λ - → y ℤ* - ℤ* c') (ℤ*-comm a' z)        ⟩
       y ℤ* (z ℤ* a') ℤ* c'                           ＝⟨ ap (_ℤ* c') (ℤ*-assoc y z a' ⁻¹)              ⟩
-      y ℤ* z ℤ* a' ℤ* c'                             ＝⟨ ℤ*-assoc (y ℤ* z) a' c'                       ⟩ 
+      y ℤ* z ℤ* a' ℤ* c'                             ＝⟨ ℤ*-assoc (y ℤ* z) a' c'                       ⟩
       y ℤ* z ℤ* (a' ℤ* c')                           ＝⟨ ap (λ - → (y ℤ* z ℤ* -)) (denom-setup a c ⁻¹) ⟩
       y ℤ* z ℤ* pos (succ (pred (succ a ℕ* succ c))) ∎
 
@@ -170,7 +170,7 @@ infixl 34 _*_
                           pos 1 ℤ* x , pred (succ a)        ＝⟨ ap (λ z → z , pred (succ a)) (ℤ-mult-left-id x)          ⟩
                           x , pred (succ a)                 ＝⟨ refl                                                     ⟩
                           x , a                             ∎
-     
+
 ℚₙ-zero-left-neutral : (q : ℚₙ) → (pos 0 , 0) * q ≈ (pos 0 , 0)
 ℚₙ-zero-left-neutral (x , a) = pos 0 ℤ* x ℤ* pos 1                      ＝⟨ ℤ*-assoc (pos 0) x (pos 1)                               ⟩
                                pos 0 ℤ* (x ℤ* pos 1)                    ＝⟨ ℤ-zero-left-base (x ℤ* pos 1)                         ⟩
@@ -190,7 +190,7 @@ infixl 34 _*_
 ℚₙ*-assoc (x , a) (y , b) (z , c) = ap₂ _,_ I II
  where
   I : x ℤ* y ℤ* z ＝ x ℤ* (y ℤ* z)
-  I = ℤ*-assoc x y z 
+  I = ℤ*-assoc x y z
 
   a' b' c' : ℕ
   a' = succ a
@@ -217,7 +217,7 @@ infixl 34 _*_
   c'' = pos c'
   k = pos (succ (pred (a' ℕ* c')))
   l = pos (succ (pred (a' ℕ* b')))
-  
+
 
   I-lemma : (x y p q : ℤ) → x ℤ* y ℤ* (p ℤ* q) ＝ x ℤ* p ℤ* (y ℤ* q)
   I-lemma x y p q = x ℤ* y ℤ* (p ℤ* q) ＝⟨ ℤ*-assoc (x ℤ* y) p q ⁻¹             ⟩
@@ -276,8 +276,5 @@ abs (x , a) = absℤ x , a
                                     (x ℤ+ y) ℤ* pos (succ b) ℤ* pos (succ b)                   ＝⟨ ℤ*-assoc (x ℤ+ y ) (pos (succ b)) (pos (succ b))                         ⟩
                                     (x ℤ+ y) ℤ* (pos (succ b) ℤ* pos (succ b))                 ＝⟨ ap ((x ℤ+ y) ℤ*_) (denom-setup b b ⁻¹)                                   ⟩
                                     (x ℤ+ y) ℤ* pos (succ (pred (succ b ℕ* succ b)))           ∎
-                                    
+
 \end{code}
-
- 
-

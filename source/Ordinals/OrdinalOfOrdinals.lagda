@@ -19,19 +19,20 @@ module Ordinals.OrdinalOfOrdinals
 open import MLTT.Spartan
 open import Ordinals.Notions
 open import Ordinals.Type
+open import Ordinals.Underlying
 open import Notation.CanonicalMap
 
 open import UF.Base
-open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
 open import UF.Embeddings
-open import UF.FunExt
 open import UF.Equiv
 open import UF.Equiv-FunExt
+open import UF.EquivalenceExamples
+open import UF.FunExt
+open import UF.Size
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
 open import UF.UA-FunExt
 open import UF.Yoneda
-open import UF.EquivalenceExamples
-open import UF.Size
 
 private
  fe : FunExt
@@ -367,7 +368,7 @@ eqtoidₒ {𝓤} α β (f , p , e , q) = γ
   a : A ⟨ α ⟩ (≃-refl ⟨ α ⟩)
   a σ φ ψ = g
    where
-    b : ∀ x x' → (x ≺⟨ α ⟩ x') ＝ (x ≺⟨ ⟨ α ⟩ , σ ⟩ x')
+    b : (x x' : ⟨ α ⟩) → (x ≺⟨ α ⟩ x') ＝ (x ≺⟨ ⟨ α ⟩ , σ ⟩ x')
     b x x' = univalence-gives-propext (ua 𝓤)
               (Prop-valuedness α x x')
               (Prop-valuedness (⟨ α ⟩ , σ) x x')
@@ -1152,6 +1153,20 @@ to-⊴ α β ϕ = g
 
 \end{code}
 
+Added 7 November 2022 by Tom de Jong.
+A consequence of the above constructions is that a simulation preserves initial
+segments in the following sense:
+
+\begin{code}
+
+simulations-preserve-↓ : (α β : Ordinal 𝓤) ((f , _) : α ⊴ β)
+                       → ((a : ⟨ α ⟩) → α ↓ a ＝ β ↓ f a)
+simulations-preserve-↓ α β 𝕗 a = pr₂ (from-≼ (⊴-gives-≼ α β 𝕗) a)
+
+\end{code}
+
+End of addition.
+
 Transfinite induction on the ordinal of ordinals:
 
 \begin{code}
@@ -1170,6 +1185,41 @@ transfinite-recursion-on-OO : (X : 𝓥 ̇ )
                             → ((α : Ordinal 𝓤) → (⟨ α ⟩ → X) → X)
                             → Ordinal 𝓤 → X
 transfinite-recursion-on-OO {𝓤} {𝓥} X = transfinite-induction-on-OO (λ _ → X)
+
+\end{code}
+
+Added 31 October 2022 by Tom de Jong.
+We record the (computational) behaviour of transfinite induction on OO for use
+in other constructions.
+
+\begin{code}
+
+transfinite-induction-on-OO-behaviour :
+   (P : Ordinal 𝓤 → 𝓥 ̇ )
+ → (f : (α : Ordinal 𝓤) → ((a : ⟨ α ⟩) → P (α ↓ a)) → P α)
+ → (α : Ordinal 𝓤) → transfinite-induction-on-OO P f α
+                     ＝ f α (λ a → transfinite-induction-on-OO P f (α ↓ a))
+transfinite-induction-on-OO-behaviour {𝓤} {𝓥} P f =
+ Transfinite-induction-behaviour fe (OO 𝓤) P f'
+  where
+   f' : (α : Ordinal 𝓤)
+      → ((α' : Ordinal 𝓤) → α' ⊲ α → P α')
+      → P α
+   f' α g = f α (λ a → g (α ↓ a) (a , refl))
+
+transfinite-recursion-on-OO-behaviour :
+   (X : 𝓥 ̇ )
+ → (f : (α : Ordinal 𝓤) → (⟨ α ⟩ → X) → X)
+ → (α : Ordinal 𝓤) → transfinite-recursion-on-OO X f α
+                     ＝ f α (λ a → transfinite-recursion-on-OO X f (α ↓ a))
+transfinite-recursion-on-OO-behaviour X f =
+ transfinite-induction-on-OO-behaviour (λ _ → X) f
+
+\end{code}
+
+End of addition.
+
+\begin{code}
 
 has-minimal-element : Ordinal 𝓤 → 𝓤 ̇
 has-minimal-element α = Σ a ꞉ ⟨ α ⟩ , ((x : ⟨ α ⟩) → a ≾⟨ α ⟩ x)
@@ -1206,7 +1256,7 @@ non-empty-classically-has-minimal-element {𝓤} α n = iv
   i = contrapositive (ordinal-with-no-minimal-element-is-empty α) n
 
   ii : ¬¬ (Σ a ꞉ ⟨ α ⟩ , ¬ (Σ x ꞉ ⟨ α ⟩ , x ≺⟨ α ⟩ a))
-  ii = not-Π-implies-not-not-Σ' i
+  ii = not-Π-not-not-implies-not-not-Σ-not i
 
   iii : (Σ a ꞉ ⟨ α ⟩ , ¬ (Σ x ꞉ ⟨ α ⟩ , x ≺⟨ α ⟩ a))
       → (Σ a ꞉ ⟨ α ⟩ , ((x : ⟨ α ⟩) → a ≾⟨ α ⟩ x))

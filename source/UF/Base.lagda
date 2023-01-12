@@ -1,3 +1,5 @@
+Martin Escardo
+
 This file needs reorganization and clean-up.
 
 \begin{code}

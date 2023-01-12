@@ -20,4 +20,7 @@ open Canonical-Map {{...}} public
 canonical-map : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) → {{_ : Canonical-Map X Y}} → X → Y
 canonical-map X Y = ι
 
+[_] : {X : 𝓤 ̇} {Y : 𝓥 ̇} {{ r : Canonical-Map X Y }} → X → Y
+[_] = ι
+
 \end{code}

@@ -46,10 +46,10 @@ open import UF.PropTrunc
 open import UF.Size
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-
 open import Ordinals.Notions hiding (is-prop-valued)
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.Type
+open import Ordinals.Underlying
 
 private
  fe : FunExt
@@ -593,7 +593,6 @@ Replacement is equivalent to having small set quotients.)
 \begin{code}
 
 open import UF.EquivalenceExamples
-open import UF.ImageAndSurjection
 
 module construction-using-image
         (pt : propositional-truncations-exist)
@@ -602,7 +601,7 @@ module construction-using-image
        where
 
  open PropositionalTruncation pt
- open ImageAndSurjection pt
+ open import UF.ImageAndSurjection pt
 
  σ : (Σ i ꞉ I , ⟨ α i ⟩) → Ordinal 𝓤
  σ (i , x) = α i ↓ x
@@ -713,6 +712,25 @@ the given family α.
       e' = β                      ＝⟨ e ⟩
            ((α i ↓ x) ↓ (x' , l)) ＝⟨ iterated-↓ (α i) x x' l ⟩
            (α i ↓ x')             ∎
+
+\end{code}
+
+Added 7 November 2022.
+
+We record a surjectivity property w.r.t. the above simulation so that we can
+later prove that initial segments of the supremum of α are given by initial
+segments of some αᵢ.
+
+\begin{code}
+
+ private
+  α⁺-is-upper-bound-surjectivity :
+    (y : α⁺) → ∥ Σ i ꞉ I , Σ x ꞉ ⟨ α i ⟩ , pr₁ (α⁺-is-upper-bound i) x ＝ y ∥
+  α⁺-is-upper-bound-surjectivity (β , s) = ∥∥-functor h s
+   where
+    h : (Σ i ꞉ I , β ⊲ α i)
+      → Σ i ꞉ I , Σ x ꞉ ⟨ α i ⟩ , pr₁ (α⁺-is-upper-bound i) x ＝ (β , s)
+    h (i , x , e) = i , x , to-subtype-＝ (λ _ → ∃-is-prop) (e ⁻¹)
 
  module lower-bound-of-upper-bounds-proof
          (β : Ordinal 𝓤)
@@ -929,6 +947,34 @@ Next, we resize α⁺ using:
                         (α⁺-is-upper-bound i)
                         (≃ₒ-to-⊴ α⁺-Ord α⁻-Ord α⁺-≃ₒ-α⁻)
 
+\end{code}
+
+Added 7 November 2022.
+
+As above, we record a surjectivity property w.r.t. the above simulation (but for
+the resized α⁻ this time) so that we can later prove that initial segments of
+the supremum of α are given by initial segments of some αᵢ.
+
+\begin{code}
+
+  α⁻-is-upper-bound-surjectivity :
+     (y : α⁻)
+   → ∥ Σ i ꞉ I , Σ x ꞉ ⟨ α i ⟩ , pr₁ (α⁻-is-upper-bound i) x ＝ y ∥
+  α⁻-is-upper-bound-surjectivity y =
+   ∥∥-functor h (α⁺-is-upper-bound-surjectivity (⌜ φ ⌝ y))
+   where
+    h : (Σ i ꞉ I , Σ x ꞉ ⟨ α i ⟩ , pr₁ (α⁺-is-upper-bound i) x ＝ ⌜ φ ⌝ y)
+      → (Σ i ꞉ I , Σ x ꞉ ⟨ α i ⟩ , pr₁ (α⁻-is-upper-bound i) x ＝ y)
+    h (i , x , e) = (i , x , e')
+     where
+      e' = pr₁ (α⁻-is-upper-bound i) x           ＝⟨ refl ⟩
+           ⌜ φ ⌝⁻¹ (pr₁ (α⁺-is-upper-bound i) x) ＝⟨ ⦅1⦆ ⟩
+           ⌜ φ ⌝⁻¹ (⌜ φ ⌝ y)                     ＝⟨ ⦅2⦆ ⟩
+           y                                     ∎
+       where
+        ⦅1⦆ = ap ⌜ φ ⌝⁻¹ e
+        ⦅2⦆ = inverses-are-retractions ⌜ φ ⌝ (⌜⌝-is-equiv φ) y
+
   α⁻-is-lower-bound-of-upper-bounds : (β : Ordinal 𝓤)
                                     → ((i : I) → α i ⊴ β)
                                     → α⁻-Ord ⊴ β
@@ -983,7 +1029,8 @@ module suprema
         (sr : Set-Replacement pt)
        where
 
- open ImageAndSurjection pt
+ open PropositionalTruncation pt
+ open import UF.ImageAndSurjection pt
 
  module _ {I : 𝓤 ̇  } (α : I → Ordinal 𝓤) where
 
@@ -1020,13 +1067,35 @@ module suprema
 
    sum-to-sup-is-surjection : is-surjection sum-to-sup
    sum-to-sup-is-surjection = ∘-is-surjection
-                               (corestriction-is-surjection σ)
+                               (corestrictions-are-surjections σ)
                                (equivs-are-surjections
                                  (⌜⌝-is-equiv
                                     (≃-sym sup-is-image-of-sum-to-ordinals)))
 
    sup-is-image-of-sum : ⟨ sup ⟩ is-image-of (Σ i ꞉ I , ⟨ α i ⟩)
    sup-is-image-of-sum = sum-to-sup , sum-to-sup-is-surjection
+
+   initial-segment-of-sup-at-component :
+     (i : I) (x : ⟨ α i ⟩) → sup ↓ pr₁ (sup-is-upper-bound i) x ＝ α i ↓ x
+   initial-segment-of-sup-at-component i x =
+    (simulations-preserve-↓ (α i) sup (sup-is-upper-bound i) x) ⁻¹
+
+   initial-segment-of-sup-is-initial-segment-of-some-component :
+     (y : ⟨ sup ⟩) → ∥ Σ i ꞉ I , Σ x ꞉ ⟨ α i ⟩ , sup ↓ y ＝ α i ↓ x ∥
+   initial-segment-of-sup-is-initial-segment-of-some-component y =
+    ∥∥-functor h (α⁻-is-upper-bound-surjectivity sr y)
+     where
+      h : (Σ i ꞉ I , Σ x ꞉ ⟨ α i ⟩ , pr₁ (sup-is-upper-bound i) x ＝ y)
+        → Σ i ꞉ I , Σ x ꞉ ⟨ α i ⟩ , sup ↓ y ＝ α i ↓ x
+      h (i , x , e) = (i , x , e')
+       where
+        e' : sup ↓ y ＝ α i ↓ x
+        e' = sup ↓ y  ＝⟨ ap (sup ↓_) (e ⁻¹)                         ⟩
+             sup ↓ y' ＝⟨ initial-segment-of-sup-at-component i x ⟩
+             α i ↓ x  ∎
+         where
+          y' : ⟨ sup ⟩
+          y' = pr₁ (sup-is-upper-bound i) x
 
  sup-monotone : {I : 𝓤 ̇ } (α β : I → Ordinal 𝓤)
               → ((i : I) → α i ⊴ β i)

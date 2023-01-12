@@ -24,7 +24,7 @@ module Locales.PatchProperties
         (fe : Fun-Ext) where
 
 open import UF.Subsingletons
-open import UF.Subsingleton-Combinators
+open import UF.Logic
 open import UF.Equiv using (_≃_; logically-equivalent-props-give-is-equiv)
 open import Locales.Frame pt fe hiding (is-directed)
 open import Locales.AdjointFunctorTheoremForFrames pt fe

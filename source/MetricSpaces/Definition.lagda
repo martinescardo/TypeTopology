@@ -6,16 +6,16 @@ Cauchy and convergent sequences.
 \begin{code}
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import MLTT.Spartan renaming (_+_ to _∔_)  
+open import MLTT.Spartan renaming (_+_ to _∔_)
 
-open import Naturals.Addition renaming (_+_ to _ℕ+_) 
-open import Naturals.Order 
-open import Notation.Order 
-open import UF.FunExt 
-open import UF.PropTrunc 
-open import UF.Subsingletons 
+open import Naturals.Addition renaming (_+_ to _ℕ+_)
+open import Naturals.Order
+open import Notation.Order
+open import UF.FunExt
+open import UF.PropTrunc
+open import UF.Subsingletons
 
-open import Rationals.Rationals
+open import Rationals.Type
 open import Rationals.Addition
 open import Rationals.Order
 
@@ -23,10 +23,10 @@ module MetricSpaces.Definition
   (pt : propositional-truncations-exist)
   (fe : Fun-Ext)
   (pe : Prop-Ext)
- where 
+ where
 
 open PropositionalTruncation pt
-open import DedekindReals.Reals pe pt fe
+open import DedekindReals.Type pe pt fe
 open import DedekindReals.Order pe pt fe
 
 m1a : {𝓤 : Universe} → (X : 𝓤 ̇) → (B : X → X → (ε : ℚ) → 0ℚ < ε → 𝓤₀ ̇) → 𝓤 ̇
@@ -89,7 +89,7 @@ convergent-sequence X (B , _) S
 cauchy-sequence : {𝓤 : Universe} → (X : 𝓤 ̇) → metric-space X → (S : ℕ → X) → 𝓤₀ ̇
 cauchy-sequence X (B , _) S
  = ((ε , l) : ℚ₊) → Σ N ꞉ ℕ , ((m n : ℕ) → N ≤ m → N ≤ n → B (S m) (S n) ε l)
- 
+
 convergent→cauchy : {𝓤 : Universe} → (X : 𝓤 ̇) → (m : metric-space X) → (S : ℕ → X) → 𝓤 ̇
 convergent→cauchy X m S = convergent-sequence X m S → cauchy-sequence X m S
 
@@ -100,4 +100,3 @@ complete-metric-space : {𝓤 : Universe} → (X : 𝓤 ̇) → 𝓤₁ ⊔ 𝓤
 complete-metric-space X = Σ m ꞉ (metric-space X) , ((S : ℕ → X) → cauchy→convergent X m S)
 
 \end{code}
-

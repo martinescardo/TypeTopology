@@ -29,7 +29,6 @@ open import UF.FunExt
 open import UF.PropTrunc
 open import UF.Retracts
 open import UF.Retracts-FunExt
-open import UF.ImageAndSurjection
 open import UF.Equiv
 open import UF.Miscelanea
 
@@ -39,7 +38,8 @@ module TypeTopology.WeaklyCompactTypes
        where
 
 open PropositionalTruncation pt
-open import NotionsOfDecidability.DecidableAndDetachable
+open import NotionsOfDecidability.Decidable
+open import NotionsOfDecidability.Complemented
 
 ∃-compact : 𝓤 ̇ → 𝓤 ̇
 ∃-compact X = (p : X → 𝟚) → decidable (∃ x ꞉ X , p x ＝ ₀)
@@ -83,7 +83,7 @@ LPO with WLPO.
    where
     g : ((x : X) → p x ＝ ₁) → ¬ (Σ x ꞉ X , p x ＝ ₀)
     g α (x , r) = zero-is-not-one (r ⁻¹ ∙ α x)
-  f (inr u) = inl (not-exists₀-implies-forall₁ pt p u)
+  f (inr u) = inl (not-exists₀-implies-forall₁ p u)
 
 empty-types-are-∃-compact : {X : 𝓤 ̇ } → is-empty X → ∃-compact X
 empty-types-are-∃-compact u p = inr (∥∥-rec 𝟘-is-prop λ σ → u (pr₁ σ))
@@ -103,7 +103,7 @@ compact-types-are-∃-compact {𝓤} {X} φ p = g (φ p)
  where
   g : ((Σ x ꞉ X , p x ＝ ₀) + ((x : X) → p x ＝ ₁)) → decidable (∃ x ꞉ X , p x ＝ ₀)
   g (inl (x , r)) = inl ∣ x , r ∣
-  g (inr α)       = inr (forall₁-implies-not-exists₀ pt p α)
+  g (inr α)       = inr (forall₁-implies-not-exists₀ p α)
 
 ∥Compact∥-types-are-∃-compact : {X : 𝓤 ̇ } → ∥ Compact X ∥ → ∃-compact X
 ∥Compact∥-types-are-∃-compact {𝓤} {X} = ∥∥-rec ∃-compactness-is-prop
@@ -230,7 +230,7 @@ Compactness of images:
 
 \begin{code}
 
-open ImageAndSurjection pt
+open import UF.ImageAndSurjection pt
 
 surjection-∃-compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                      → is-surjection f
@@ -254,7 +254,7 @@ surjection-∃-compact {𝓤} {𝓥} {X} {Y} f su c q = g (c (q ∘ f))
 image-∃-compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                 → ∃-compact X
                 → ∃-compact (image f)
-image-∃-compact f = surjection-∃-compact (corestriction f) (corestriction-is-surjection f)
+image-∃-compact f = surjection-∃-compact (corestriction f) (corestrictions-are-surjections f)
 
 surjection-Π-compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                      → is-surjection f
@@ -271,7 +271,7 @@ retract-∃-compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                   → ∃-compact X
                   → ∃-compact Y
 retract-∃-compact (f , hass) = surjection-∃-compact f
-                                (retraction-surjection f hass)
+                                (retractions-are-surjections f hass)
 
 retract-∃-compact' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                    → ∥ retract Y of X ∥
@@ -285,14 +285,14 @@ image-Π-compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                 → Π-compact (image f)
 image-Π-compact f = surjection-Π-compact
                      (corestriction f)
-                     (corestriction-is-surjection f)
+                     (corestrictions-are-surjections f)
 
 retract-Π-compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                   → retract Y of X
                   → Π-compact X
                   → Π-compact Y
 retract-Π-compact (f , hass) = surjection-Π-compact f
-                                (retraction-surjection f hass)
+                                (retractions-are-surjections f hass)
 
 retract-Π-compact' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                    → ∥ retract Y of X ∥
@@ -796,7 +796,7 @@ inhabited-and-compact-gives-∃-compact∙ {𝓤} {X} (t , c) p = γ
      where
       h : (Σ x ꞉ X , p x ＝ ₀) → Σ x₀ ꞉ X , (p x₀ ＝ ₁ → (x : X) → p x ＝ ₁)
       h (x , r) = x , λ s _ → 𝟘-elim (zero-is-not-one (r ⁻¹ ∙ s))
-    g (inr _) (inr v) = ∣ x₀ , (λ _ → not-exists₀-implies-forall₁ pt p v) ∣
+    g (inr _) (inr v) = ∣ x₀ , (λ _ → not-exists₀-implies-forall₁ p v) ∣
 
   γ : ∃ x₀ ꞉ X , (p x₀ ＝ ₁ → (x : X) → p x ＝ ₁)
   γ = ∥∥-rec ∥∥-is-prop f t

@@ -319,6 +319,14 @@ a neutral element for ordinary function composition, definitionally:
  (A ≃ Y) ≃⟨ ≃-cong-right fe β ⟩
  (A ≃ B) ■
 
+≃-is-prop : FunExt → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → is-prop Y → is-prop (X ≃ Y)
+≃-is-prop {𝓤} {𝓥} fe i (f , e) (f' , e') =
+ to-subtype-＝ (being-equiv-is-prop fe)
+               (dfunext (fe 𝓤 𝓥) (λ x → i (f x) (f' x)))
+
+≃-is-prop' : FunExt → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → is-prop X → is-prop (X ≃ Y)
+≃-is-prop' fe i = equiv-to-prop (≃-Sym fe) (≃-is-prop fe i)
+
 \end{code}
 
 Propositional and functional extesionality give univalence for

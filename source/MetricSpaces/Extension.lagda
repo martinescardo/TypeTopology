@@ -11,14 +11,14 @@ open import Rationals.Addition
 open import Rationals.Multiplication
 open import Rationals.Negation
 open import Rationals.Order
-open import Rationals.Rationals
+open import Rationals.Type
 open import UF.FunExt
 open import UF.Subsingletons
 open import UF.Base
 open import UF.PropTrunc
 open import UF.Powerset
 
-module MetricSpaces.Extension 
+module MetricSpaces.Extension
   (fe : Fun-Ext)
   (pe : Prop-Ext)
   (pt : propositional-truncations-exist)
@@ -27,7 +27,7 @@ module MetricSpaces.Extension
 open PropositionalTruncation pt
 
 open import Rationals.MinMax fe
-open import DedekindReals.Reals pe pt fe
+open import DedekindReals.Type pe pt fe
 open import DedekindReals.Properties fe pt pe
 open import MetricSpaces.Definition pt fe pe
 open import MetricSpaces.Rationals fe pt pe
@@ -72,7 +72,7 @@ uniform-modulus : {M₁ : 𝓤 ̇} {M₂ : 𝓥 ̇}
         → (m₁ : metric-space M₁)
         → (m₂ : metric-space M₂)
         → (f : M₁ → M₂)
-        → is-uniformly-continuous m₁ m₂ f  
+        → is-uniformly-continuous m₁ m₂ f
         → ((ε , ε>0) : ℚ₊)
         → ℚ₊
 uniform-modulus _ _ f is-cont ε = pr₁ (is-cont ε)
@@ -81,7 +81,7 @@ modulus : {M₁ : 𝓤 ̇} {M₂ : 𝓥 ̇}
         → (m₁ : metric-space M₁)
         → (m₂ : metric-space M₂)
         → (f : M₁ → M₂)
-        → is-continuous m₁ m₂ f  
+        → is-continuous m₁ m₂ f
         → (x y : M₁)
         → ((ε , ε>0) : ℚ₊)
         → ℚ₊
@@ -101,7 +101,7 @@ modulus-superadditive : {M₁ : 𝓤 ̇} {M₂ : 𝓥 ̇}
                       → (x y : M₁)
                       → (ε₁ ε₂ : ℚ₊)
                       → 𝓤₀ ̇
-modulus-superadditive m₁ m₂ f is-cont  = λ x y ε₁ ε₂ → 
+modulus-superadditive m₁ m₂ f is-cont  = λ x y ε₁ ε₂ →
  (modulus m₁ m₂ f is-cont x y ε₁ ℚ₊+ modulus m₁ m₂ f is-cont x y ε₂) ℚ₊≤ modulus m₁ m₂ f is-cont x y (ε₁ ℚ₊+ ε₂)
 
 uniform-modulus-superadditive : {M₁ : 𝓤 ̇} {M₂ : 𝓥 ̇}
@@ -166,12 +166,12 @@ Located:
  In case f v + ε < q, f̂ x < q.
 
  Hence, f̂ x is located.
-                              
+
 Disjoint:
 
  In the presence of locatedness, is suffices to prove that ¬ (p < f̂ x < p).
  Suppose that p < f̂ x < p.
- Then ∃ (u  , v  , ε₊ ) : ℚ × ℚ × ℚ₊ , (u  < x < v ) × (|u  - v | < δ⦅ ε  ⦆) × p < f u - ε, and 
+ Then ∃ (u  , v  , ε₊ ) : ℚ × ℚ × ℚ₊ , (u  < x < v ) × (|u  - v | < δ⦅ ε  ⦆) × p < f u - ε, and
       ∃ (u' , v' , ε'₊) : ℚ × ℚ × ℚ₊ , (u' < x < v') × (|u' - v'| < δ⦅ ε' ⦆) × f v' + ε' < p.
 
  Hence, f v' + ε' < f u - ε, so ε + ε' < f u - f v'.
@@ -210,14 +210,14 @@ distance-ℚ-ℝ x y (ε , 0<ε) l = ∥∥-rec (ℚ<-is-prop (abs (x - y)) ε) 
     l₅ = ℚ<-≤-trans fe y v (max q v) y<v (transport (v ≤_) (max-comm v q) (max≤ v q))
     III : (a b  : ℚ) → min p u < a → b < max q v
                      → a < b
-                     → B-ℚ a b ε 0<ε 
+                     → B-ℚ a b ε 0<ε
     III a b l₂ l₃ l₄ = ℚ<-trans (abs (a - b)) (abs (min p u - max q v)) ε V l₁
-     where     
+     where
       IV : b - a < max q v - min p u
       IV = inequality-chain-outer-bounds-inner fe (min p u) a b (max q v) l₂ l₄ l₃
       V : abs (a - b) < abs (min p u - max q v)
       V = transport₂ _<_ (ℚ<-abs fe a b l₄) (ℚ<-abs fe (min p u) (max q v) (ℚ<-trans₂ (min p u) a b (max q v) l₂ l₄ l₃)) IV
- 
+
     II : (x < y) ∔ (x ＝ y) ∔ (y < x) → abs (x - y) < ε
     II (inl x<y) = III x y l₂ l₅ x<y
     II (inr (inl e)) = transport (_< ε) i 0<ε
@@ -227,7 +227,7 @@ distance-ℚ-ℝ x y (ε , 0<ε) l = ∥∥-rec (ℚ<-is-prop (abs (x - y)) ε) 
           abs 0ℚ      ＝⟨ ap abs (ℚ-inverse-sum-to-zero fe x ⁻¹) ⟩
           abs (x - x) ＝⟨ ap (λ z → abs (x - z)) e ⟩
           abs (x - y) ∎
-    II (inr (inr y<x)) = ℚ-m2 y x ε 0<ε (III y x l₄ l₃ y<x) 
+    II (inr (inr y<x)) = ℚ-m2 y x ε 0<ε (III y x l₄ l₃ y<x)
 
 distance-ℚ-ℝ-ℚ : (u v : ℚ) ((ε , 0<ε) : ℚ₊) (x : ℝ) → (u < x) × (x < v) → B-ℚ u v ε 0<ε → B-ℝ (ι u) x ε 0<ε
 distance-ℚ-ℝ-ℚ u v (ε , 0<ε) x (u<x , x<v) l = ∥∥-functor I (rounded-right-b (upper-cut-of x) (rounded-from-real-R x) v x<v)
@@ -249,7 +249,7 @@ distance-ℚ-ℝ-ℚ u v (ε , 0<ε) x (u<x , x<v) l = ∥∥-functor I (rounded
          abs (u - v + (- (- v')) - v')                       ＝⟨ ap abs (ℚ+-assoc fe (u - v) ((- (- v'))) ((- v'))) ⟩
          abs (u - v + (((- (- v')) - v')))                   ＝⟨ ap (λ z → abs (u - v + z)) (ℚ-inverse-sum-to-zero' fe ((- v'))) ⟩
          abs (u - v + 0ℚ)                                    ＝⟨ ap abs (ℚ-zero-right-neutral fe (u - v)) ⟩
-         abs (u - v) ∎    
+         abs (u - v) ∎
 
 distance-ℚ-ℝ-ℚ' : (u v : ℚ) ((ε , 0<ε) : ℚ₊) (x : ℝ) → (u < x) × (x < v) → B-ℚ u v ε 0<ε → B-ℝ x (ι v) ε 0<ε
 distance-ℚ-ℝ-ℚ' u v (ε , 0<ε) x (u<x , x<v) l = ∥∥-functor I (rounded-left-b (lower-cut-of x) (rounded-from-real-L x) u u<x)
@@ -281,7 +281,7 @@ extension-theorem = (f : ℚ → ℚ)
                   → (ic : is-uniformly-continuous ℚ-metric-space ℚ-metric-space f)
                   → (δ-sup : (ε₁ ε₂ : ℚ₊) → uniform-modulus-superadditive ℚ-metric-space ℚ-metric-space f ic ε₁ ε₂)
                   → ℝ → ℝ
-                  
+
 f→f̂ : extension-theorem
 f→f̂ f is-continuous δ-sup x = (L , R) , inhabited-l , inhabited-r , rounded-l , rounded-r , is-disjoint , is-located
  where
@@ -313,7 +313,7 @@ f→f̂ f is-continuous δ-sup x = (L , R) , inhabited-l , inhabited-r , rounded
       IV = transport (_< δ') (ℚ-metric-commutes v u) III
       V : f u - 1ℚ - 1ℚ + 1ℚ < f u
       V = transport (_< f u) II (order1ℚ' fe (f u))
-  
+
   inhabited-r : inhabited-right R
   inhabited-r = ∥∥-rec ∃-is-prop I find-uv
    where
@@ -324,15 +324,15 @@ f→f̂ f is-continuous δ-sup x = (L , R) , inhabited-l , inhabited-r , rounded
       II = f v + 1ℚ              ＝⟨ ℚ-zero-right-neutral fe (f v + 1ℚ) ⁻¹ ⟩
            f v + 1ℚ + 0ℚ         ＝⟨ ap (f v + 1ℚ +_) (ℚ-inverse-sum-to-zero fe 1ℚ ⁻¹) ⟩
            f v + 1ℚ + (1ℚ - 1ℚ)  ＝⟨ ℚ+-assoc fe (f v + 1ℚ) 1ℚ (- 1ℚ) ⁻¹ ⟩
-           f v + 1ℚ + 1ℚ - 1ℚ    ∎ 
+           f v + 1ℚ + 1ℚ - 1ℚ    ∎
       III : abs (v - u) < δ'
       III = pos-abs-no-increase fe (v - u) δ' (l₁ , l₂)
       IV : abs (u - v) < δ'
       IV = transport (_< δ') (ℚ-metric-commutes v u) III
       V : f v < f v + 1ℚ + 1ℚ - 1ℚ
       V = transport (f v <_) II (order1ℚ fe (f v))
-    
-    
+
+
   rounded-l : rounded-left L
   rounded-l p = ltr , rtl
    where
@@ -358,7 +358,7 @@ f→f̂ f is-continuous δ-sup x = (L , R) , inhabited-l , inhabited-r , rounded
                p' + ((- ε) + ε) ＝⟨ ℚ+-assoc fe p' (- ε) ε ⁻¹ ⟩
                p' - ε + ε ∎
           i : p' - ε + ε <ℚ f u
-          i = transport (_< f u) ii l₂   
+          i = transport (_< f u) ii l₂
     rtl : ∃ p' ꞉ ℚ , p < p' × p' ∈ L → p ∈ L
     rtl = ∥∥-rec ∃-is-prop I
      where
@@ -374,11 +374,11 @@ f→f̂ f is-continuous δ-sup x = (L , R) , inhabited-l , inhabited-r , rounded
   rounded-r : rounded-right R
   rounded-r q = ltr , rtl
    where
-    ltr : ∃ (u , v , (ε , 0<ε)) ꞉ ℚ × ℚ × ℚ₊ , (u < x) × (x < v) × B-ℚ u v (pr₁ (uniform-modulus ℚ-metric-space ℚ-metric-space f is-continuous (ε , 0<ε))) (pr₂ (uniform-modulus ℚ-metric-space ℚ-metric-space f is-continuous (ε , 0<ε))) × f v < q - ε 
+    ltr : ∃ (u , v , (ε , 0<ε)) ꞉ ℚ × ℚ × ℚ₊ , (u < x) × (x < v) × B-ℚ u v (pr₁ (uniform-modulus ℚ-metric-space ℚ-metric-space f is-continuous (ε , 0<ε))) (pr₂ (uniform-modulus ℚ-metric-space ℚ-metric-space f is-continuous (ε , 0<ε))) × f v < q - ε
         → ∃ q' ꞉ ℚ , q' < q × q' ∈ R
     ltr = ∥∥-functor I
      where
-      I : Σ (u , v , (ε , 0<ε)) ꞉ ℚ × ℚ × ℚ₊ , (u < x) × (x < v) × B-ℚ u v (pr₁ (uniform-modulus ℚ-metric-space ℚ-metric-space f is-continuous (ε , 0<ε))) (pr₂ (uniform-modulus ℚ-metric-space ℚ-metric-space f is-continuous (ε , 0<ε))) × f v < q - ε 
+      I : Σ (u , v , (ε , 0<ε)) ꞉ ℚ × ℚ × ℚ₊ , (u < x) × (x < v) × B-ℚ u v (pr₁ (uniform-modulus ℚ-metric-space ℚ-metric-space f is-continuous (ε , 0<ε))) (pr₂ (uniform-modulus ℚ-metric-space ℚ-metric-space f is-continuous (ε , 0<ε))) × f v < q - ε
         → Σ q' ꞉ ℚ , q' < q × q' ∈ R
       I ((u , v , (ε , 0<ε)) , u<x , x<v , u-v<δ , l) = II (ℚ-dense fe (f v) (q - ε) l)
        where
@@ -393,7 +393,7 @@ f→f̂ f is-continuous δ-sup x = (L , R) , inhabited-l , inhabited-r , rounded
     rtl : ∃ q' ꞉ ℚ , q' < q × q' ∈ R → q ∈ R
     rtl = ∥∥-rec ∃-is-prop I
      where
-      I : Σ q' ꞉ ℚ , q' < q × q' ∈ R → q ∈ R 
+      I : Σ q' ꞉ ℚ , q' < q × q' ∈ R → q ∈ R
       I (q' , q'<q , x<q') = ∥∥-functor II x<q'
        where
         II : Σ (u , v , (ε , 0<ε)) ꞉ ℚ × ℚ × ℚ₊ , (u < x) × (x < v) × B-ℚ u v (pr₁ (uniform-modulus ℚ-metric-space ℚ-metric-space f is-continuous (ε , 0<ε))) (pr₂ (uniform-modulus ℚ-metric-space ℚ-metric-space f is-continuous (ε , 0<ε))) × f v < q' - ε
@@ -424,7 +424,7 @@ f→f̂ f is-continuous δ-sup x = (L , R) , inhabited-l , inhabited-r , rounded
       uv = ℚ-m2 v u (pr₁ (uniform-modulus ℚ-metric-space ℚ-metric-space f is-continuous (1/4 * (q - p) , 0<1/4q-p)))
                     (pr₂ (uniform-modulus ℚ-metric-space ℚ-metric-space f is-continuous (1/4 * (q - p) , 0<1/4q-p)))
                      vu
-                
+
       ii : f v - f u + (1/4 * (q - p) + 1/4 * (q - p)) ＝ (f v + 1/4 * (q - p)) - (f u - 1/4 * (q - p))
       ii = f v - f u + (1/4 * (q - p) + 1/4 * (q - p))         ＝⟨ ℚ+-assoc fe (f v - f u) (1/4 * (q - p)) (1/4 * (q - p)) ⁻¹ ⟩
             f v - f u + 1/4 * (q - p) + 1/4 * (q - p)           ＝⟨ ap (_+ 1/4 * (q - p)) (ℚ+-assoc fe (f v) (- f u) (1/4 * (q - p))) ⟩
@@ -478,7 +478,7 @@ f→f̂ f is-continuous δ-sup x = (L , R) , inhabited-l , inhabited-r , rounded
          0<δ₁ = pr₂ (uniform-modulus ℚ-metric-space ℚ-metric-space f is-continuous (ε  , 0<ε))
          0<δ₂ = pr₂ (uniform-modulus ℚ-metric-space ℚ-metric-space f is-continuous (ε' , 0<ε'))
          cont : B-ℚ u v' δ 0<δ → B-ℚ (f u) (f v') (ε + ε') (ℚ<-adding-zero ε ε' 0<ε 0<ε')
-         cont = pr₂ (is-continuous ((ε , 0<ε) ℚ₊+ (ε' , 0<ε'))) u v'        
+         cont = pr₂ (is-continuous ((ε , 0<ε) ℚ₊+ (ε' , 0<ε'))) u v'
          III : abs (u - v') < δ ∔ (abs (u - v') ＝ δ) ∔ δ < abs (u - v') → 𝟘
          III (inl l₅)       = ℚ<-not-itself (ε + ε') (ℚ<-trans (ε + ε') (abs (f u - f v')) (ε + ε') iv using-continuity)
           where
@@ -487,7 +487,7 @@ f→f̂ f is-continuous δ-sup x = (L , R) , inhabited-l , inhabited-r , rounded
            i : f v' + ε' < f u - ε
            i = ℚ<-trans (f v' + ε') p (f u - ε)
                (ℚ<-subtraction-preserves-order'' fe (f v') p ε' l₄)
-                (ℚ<-subtraction-preserves-order''' fe p ε (f u) l₂)     
+                (ℚ<-subtraction-preserves-order''' fe p ε (f u) l₂)
            ii : ε + ε' < f u - f v'
            ii = transport₂ _<_ α β (ℚ<-addition-preserves-order (f v' + ε') (f u - ε) (ε - f v') i)
             where
@@ -504,10 +504,10 @@ f→f̂ f is-continuous δ-sup x = (L , R) , inhabited-l , inhabited-r , rounded
                  f u - ε + ε - f v'       ＝⟨ ap (_- f v') (ℚ+-assoc fe (f u) (- ε) ε)                ⟩
                  f u + ((- ε) + ε) - f v' ＝⟨ ap (λ z → f u + z - f v') (ℚ-inverse-sum-to-zero' fe ε) ⟩
                  f u + 0ℚ - f v'          ＝⟨ ap (_- f v') (ℚ-zero-right-neutral fe (f u))            ⟩
-                 f u - f v'               ∎  
+                 f u - f v'               ∎
            iv : ε + ε' < abs (f u - f v')
            iv = ℚ<-≤-trans fe (ε + ε') (f u - f v') (abs (f u - f v')) ii (pr₂ (ℚ-abs-≤  fe (f u - f v')))
-         III (inr l₅)  = ℚ<-not-itself (δ₁ + δ₂) (ℚ≤-<-trans fe (δ₁ + δ₂) (abs (u - v')) (δ₁ + δ₂) iv ii) 
+         III (inr l₅)  = ℚ<-not-itself (δ₁ + δ₂) (ℚ≤-<-trans fe (δ₁ + δ₂) (abs (u - v')) (δ₁ + δ₂) iv ii)
           where
            i : B-ℝ (ι u) (ι v') (δ₁ + δ₂) (ℚ<-adding-zero δ₁ δ₂ 0<δ₁ 0<δ₂)
            i = ℝ-m4 (ι u) x (ι v') δ₁ δ₂ 0<δ₁ 0<δ₂ ii iii
@@ -517,12 +517,12 @@ f→f̂ f is-continuous δ-sup x = (L , R) , inhabited-l , inhabited-r , rounded
              iii : B-ℝ x (ι v') δ₂ 0<δ₂
              iii = distance-ℚ-ℝ-ℚ' u' v' (δ₂ , 0<δ₂) x (u'<x , x<v') l₃
            ii : B-ℚ u v' (δ₁ + δ₂) (ℚ<-adding-zero δ₁ δ₂ 0<δ₁ 0<δ₂)
-           ii = distance-ℚ-ℝ u v' (δ₁ + δ₂ , ℚ<-adding-zero δ₁ δ₂ 0<δ₁ 0<δ₂) i         
-           iii : uniform-modulus-superadditive ℚ-metric-space ℚ-metric-space f is-continuous (ε , 0<ε) (ε' , 0<ε') 
-           iii = (δ-sup (ε , 0<ε) (ε' , 0<ε'))         
+           ii = distance-ℚ-ℝ u v' (δ₁ + δ₂ , ℚ<-adding-zero δ₁ δ₂ 0<δ₁ 0<δ₂) i
+           iii : uniform-modulus-superadditive ℚ-metric-space ℚ-metric-space f is-continuous (ε , 0<ε) (ε' , 0<ε')
+           iii = (δ-sup (ε , 0<ε) (ε' , 0<ε'))
            l₆ : δ ≤ abs (u - v')
            l₆ = Cases l₅ (λ e → transport (δ ≤_) (e ⁻¹) (ℚ≤-refl δ)) (ℚ<-coarser-than-≤ δ (abs (u - v')))
            iv : δ₁ + δ₂ ≤ abs (u - v')
            iv = ℚ≤-trans fe (δ₁ + δ₂) δ (abs (u - v')) iii l₆
-           
+
 \end{code}

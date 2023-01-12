@@ -23,7 +23,7 @@ module DomainTheory.Basics.Dcpo
         (𝓥 : Universe) -- where the index types for directed completeness live
        where
 
-open PropositionalTruncation pt hiding (is-inhabited; being-inhabited-is-prop)
+open PropositionalTruncation pt
 
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt

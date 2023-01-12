@@ -29,7 +29,7 @@ module DomainTheory.Examples.Powerset
 open import MLTT.List
 
 open import UF.Equiv
-open import UF.ImageAndSurjection
+open import UF.ImageAndSurjection pt
 open import UF.Powerset
 open import UF.Powerset-Fin pt
 open import UF.Subsingletons-FunExt
@@ -38,7 +38,6 @@ open import Posets.Poset fe
 
 open binary-unions-of-subsets pt
 open canonical-map-from-lists-to-subsets X-is-set
-open ImageAndSurjection pt
 open PropositionalTruncation pt
 open singleton-subsets X-is-set
 

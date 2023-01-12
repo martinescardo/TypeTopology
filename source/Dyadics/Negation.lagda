@@ -4,7 +4,7 @@
 
 open import MLTT.Spartan renaming (_+_ to _∔_)
 open import Dyadics.Rationals
-open import Integers.Integers
+open import Integers.Type
 open import Integers.Multiplication
 open import Integers.Negation renaming (-_ to ℤ-_)
 open import Integers.Parity
