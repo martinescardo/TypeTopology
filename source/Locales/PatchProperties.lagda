@@ -697,6 +697,9 @@ We define the following basis for Patch:
         (𝔠 k ∧[ 𝒪 Patch-X ] 𝔬 l) holds
    ※ = ∧-complement (𝒪 Patch-X) † ‡
 
+ ℬ-patch-↑ : Fam 𝓤 ⟨ 𝒪 Patchₛ-X ⟩
+ ℬ-patch-↑ = directify (𝒪 Patchₛ-X) ℬ-patch
+
 \end{code}
 
 Given a perfect nucleus `j : 𝓞(X) → 𝓞(X)`, the basic covering family for it
@@ -945,8 +948,10 @@ module PatchStoneᴰ (X : Locale (𝓤 ⁺) 𝓤 𝓤) (σᴰ : spectralᴰ (�
 \begin{code}
 
  patchₛ-is-compact : is-compact (𝒪 Patchₛ-X) holds
- patchₛ-is-compact =
-  compact-codomain-of-perfect-map-implies-compact-domain ϵ ϵ-is-a-perfect-map X-is-compact
+ patchₛ-is-compact = compact-codomain-of-perfect-map-implies-compact-domain
+                      ϵ
+                      ϵ-is-a-perfect-map
+                      X-is-compact
 
  patch-is-compact : is-compact (𝒪 Patch-X) holds
  patch-is-compact S δ p = ∥∥-rec ∃-is-prop γ (patchₛ-is-compact S ζ †)
@@ -977,13 +982,19 @@ module PatchStoneᴰ (X : Locale (𝓤 ⁺) 𝓤 𝓤) (σᴰ : spectralᴰ (�
  open BasisOfPatch X σᴰ
 
  patch-zero-dimensional : is-zero-dimensional (𝒪 Patch-X) holds
- patch-zero-dimensional = ∣ ℬ-patch , β , γ ∣
+ patch-zero-dimensional = ∣ ℬ-patch-↑ , β , υ , γ ∣
   where
-   β : is-basis-for (𝒪 Patch-X) ℬ-patch
-   β = ℬ-is-basis-for-patch
+   β : is-basis-for (𝒪 Patch-X) ℬ-patch-↑
+   β = directified-basis-is-basis (𝒪 Patch-X) ℬ-patch ℬ-is-basis-for-patch
 
-   γ : consists-of-clopens (𝒪 Patch-X) ℬ-patch holds
-   γ = ℬ-patch-consists-of-clopens
+   υ : closed-under-finite-joins (𝒪 Patch-X) ℬ-patch-↑ holds
+   υ = directify-is-closed-under-fin-joins (𝒪 Patch-X) ℬ-patch
+
+   γ : consists-of-clopens (𝒪 Patch-X) ℬ-patch-↑ holds
+   γ = directification-preserves-clopenness (𝒪 Patch-X) ℬ-patch γ₁
+    where
+     γ₁ : consists-of-clopens (𝒪 Patch-X) ℬ-patch holds
+     γ₁ = ℬ-patch-consists-of-clopens
 
 \end{code}
 
