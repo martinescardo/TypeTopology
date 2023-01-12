@@ -1,10 +1,6 @@
-Ayberk Tosun, 8 March 2021.
+Ayberk Tosun, completed 30 November 2022.
 
-Ported from `ayberkt/formal-topology-in-UF`.
-
- * Frames.
- * Frame homomorphisms.
- * Frame bases.
+The main result needed in this module is the extension lemma.
 
 \begin{code}[hide]
 
