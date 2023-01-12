@@ -251,13 +251,13 @@ _is-sublattice-of_ B L = Ǝ η ∶ (⟪ B ⟫ → ⟨ L ⟩) , is-embedding B L 
 
 \begin{code}
 
-embedding-is-order-isomorphism : (B : BooleanAlgebra 𝓤′ 𝓥′) (L : Frame 𝓤 𝓥 𝓦)
-                               → (η : ⟪ B ⟫ → ⟨ L ⟩)
-                               → (μ : is-embedding B L η holds)
-                               → (x y : ⟪ B ⟫)
-                               → (x ≤[ poset-of-ba B ] y
-                               ↔ η x ≤[ poset-of L ] η y) holds
-embedding-is-order-isomorphism B L η μ x y = † , ‡
+embedding-preserves-and-reflects-order : (B : BooleanAlgebra 𝓤′ 𝓥′) (L : Frame 𝓤 𝓥 𝓦)
+                                       → (η : ⟪ B ⟫ → ⟨ L ⟩)
+                                       → (μ : is-embedding B L η holds)
+                                       → (x y : ⟪ B ⟫)
+                                       → (x ≤[ poset-of-ba B ] y
+                                       ↔ η x ≤[ poset-of L ] η y) holds
+embedding-preserves-and-reflects-order B L η μ x y = † , ‡
  where
   η-meet-preserving : (x y : ⟪ B ⟫) → η (x ⋏[ B ] y) ＝ η x ∧[ L ] η y
   η-meet-preserving = embedding-preserves-meets B L η μ
@@ -480,7 +480,7 @@ The function `h⁻` also preserves meets.
       ϕ₁ (bᵢ , p) = lattice-homomorphisms-are-monotone B L′ h μ bᵢ b ϕ₂
        where
         ϕ₂ : (bᵢ ≤[ poset-of-ba B ] b) holds
-        ϕ₂ = pr₂ (embedding-is-order-isomorphism B L η e bᵢ b) p
+        ϕ₂ = pr₂ (embedding-preserves-and-reflects-order B L η e bᵢ b) p
 
   ψ : h ＝ h⁻ ∘ η
   ψ = dfunext fe ψ₁
@@ -631,7 +631,7 @@ The function `h⁻` also preserves meets.
                          ͱ = ♥₂ b₁ b₂ ⁻¹
 
                    υ : (b ≤[ poset-of-ba B ] (b₁ ⋎[ B ] b₂)) holds
-                   υ = pr₂ (embedding-is-order-isomorphism B L η e b _) ν
+                   υ = pr₂ (embedding-preserves-and-reflects-order B L η e b _) ν
 
                    Ⅰ₀ = lattice-homomorphisms-are-monotone B L′ h μ b _ υ
 
