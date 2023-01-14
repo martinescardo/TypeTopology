@@ -254,7 +254,7 @@ _is-sublattice-of_ B L = Ǝ η ∶ (⟪ B ⟫ → ⟨ L ⟩) , is-ba-embedding B
 
 embedding-preserves-and-reflects-order : (B : BooleanAlgebra 𝓤′ 𝓥′) (L : Frame 𝓤 𝓥 𝓦)
                                        → (η : ⟪ B ⟫ → ⟨ L ⟩)
-                                       → (μ : is-embedding B L η holds)
+                                       → (μ : is-ba-embedding B L η holds)
                                        → (x y : ⟪ B ⟫)
                                        → (x ≤[ poset-of-ba B ] y
                                        ↔ η x ≤[ poset-of L ] η y) holds
