@@ -17,24 +17,23 @@ private
  fe₀ : funext 𝓤₀ 𝓤₀
  fe₀ = fe 𝓤₀ 𝓤₀
 
-open import MLTT.Two-Properties
-open import MLTT.Plus-Properties
 open import CoNaturals.GenericConvergentSequence
-open import TypeTopology.Density
+open import InjectiveTypes.Blackboard fe
+open import MLTT.Plus-Properties
+open import MLTT.Two-Properties
+open import Notation.CanonicalMap hiding ([_])
 open import TypeTopology.CompactTypes
+open import TypeTopology.Density
+open import TypeTopology.DiscreteAndSeparated
+open import TypeTopology.ExtendedSumCompact fe
 open import TypeTopology.GenericConvergentSequenceCompactness fe₀
 open import TypeTopology.SigmaDiscreteAndTotallySeparated
-open import TypeTopology.ExtendedSumCompact fe
-open import TypeTopology.DiscreteAndSeparated
-open import InjectiveTypes.Blackboard fe
-open import Notation.CanonicalMap
-open import Utilities.PairFun
-
 open import UF.Base
-open import UF.Subsingletons
-open import UF.Equiv
 open import UF.Embeddings
+open import UF.Equiv
 open import UF.Miscelanea
+open import UF.PairFun
+open import UF.Subsingletons
 
 \end{code}
 

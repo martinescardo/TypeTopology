@@ -17,7 +17,7 @@ module Locales.GaloisConnection
 open import Locales.Frame pt fe
 open import UF.Subsingletons
 
-open import UF.Subsingleton-Combinators
+open import UF.Logic
 open AllCombinators pt fe
 
 \end{code}

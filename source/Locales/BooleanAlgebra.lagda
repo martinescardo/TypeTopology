@@ -1,10 +1,6 @@
-Ayberk Tosun, 8 March 2021.
+Ayberk Tosun, completed 30 November 2022.
 
-Ported from `ayberkt/formal-topology-in-UF`.
-
- * Frames.
- * Frame homomorphisms.
- * Frame bases.
+The main result needed in this module is the extension lemma.
 
 \begin{code}[hide]
 
@@ -24,7 +20,7 @@ module Locales.BooleanAlgebra
        where
 
 open import UF.Subsingletons
-open import UF.Subsingleton-Combinators
+open import UF.Logic
 open import UF.Subsingletons-FunExt
 
 open AllCombinators pt fe
@@ -43,6 +39,14 @@ open PropositionalTruncation pt
 private
   variable
     𝓤′ 𝓥′ 𝓦′ 𝓤′′ 𝓥′′ : Universe
+
+\end{code}
+
+Since the order is derivable from the meets (or the joins), it might be room for
+further work to define the order using the meets. However, the universes will
+change if we do this so it is not clear what it will result in.
+
+\begin{code}
 
 ba-data : {𝓤 : Universe} → (𝓥 : Universe) → 𝓤  ̇ → 𝓤 ⊔ 𝓥 ⁺  ̇
 ba-data 𝓥 A = (A → A → Ω 𝓥 )  -- order
@@ -248,13 +252,13 @@ _is-sublattice-of_ B L = Ǝ η ∶ (⟪ B ⟫ → ⟨ L ⟩) , is-ba-embedding B
 
 \begin{code}
 
-embedding-is-order-isomorphism : (B : BooleanAlgebra 𝓤′ 𝓥′) (L : Frame 𝓤 𝓥 𝓦)
-                               → (η : ⟪ B ⟫ → ⟨ L ⟩)
-                               → (μ : is-ba-embedding B L η holds)
-                               → (x y : ⟪ B ⟫)
-                               → (x ≤[ poset-of-ba B ] y
-                               ↔ η x ≤[ poset-of L ] η y) holds
-embedding-is-order-isomorphism B L η μ x y = † , ‡
+embedding-preserves-and-reflects-order : (B : BooleanAlgebra 𝓤′ 𝓥′) (L : Frame 𝓤 𝓥 𝓦)
+                                       → (η : ⟪ B ⟫ → ⟨ L ⟩)
+                                       → (μ : is-embedding B L η holds)
+                                       → (x y : ⟪ B ⟫)
+                                       → (x ≤[ poset-of-ba B ] y
+                                       ↔ η x ≤[ poset-of L ] η y) holds
+embedding-preserves-and-reflects-order B L η μ x y = † , ‡
  where
   η-meet-preserving : (x y : ⟪ B ⟫) → η (x ⋏[ B ] y) ＝ η x ∧[ L ] η y
   η-meet-preserving = embedding-preserves-meets B L η μ
@@ -331,9 +335,8 @@ extension-lemma : (B : BooleanAlgebra 𝓦 𝓥) (L L′ : Frame 𝓤 𝓦 𝓦)
                 → contains-compact-opens L B η holds
                 → (h : ⟪ B ⟫ → ⟨ L′ ⟩)
                 → is-lattice-homomorphism B L′ h holds
-                → is-contr
-                   (Σ h₀ ꞉ (⟨ L ⟩ → ⟨ L′ ⟩) ,
-                    (is-a-frame-homomorphism L L′ h₀ holds) × (h ＝ h₀ ∘ η))
+                → ∃! h₀ ꞉ (⟨ L ⟩ → ⟨ L′ ⟩) ,
+                   is-a-frame-homomorphism L L′ h₀ holds × (h ＝ h₀ ∘ η)
 extension-lemma {𝓦} {𝓤} B L L′ η e@(_ , _ , _ , ♥₁ , ♥₂) σ σ′ s γ 𝕜 h μ@(♠₀ , ♠₁ , ♠₂ , ♠₃) =
  (h⁻ , φ , ψ) , ϑ
  where
@@ -477,7 +480,7 @@ The function `h⁻` also preserves meets.
       ϕ₁ (bᵢ , p) = lattice-homomorphisms-are-monotone B L′ h μ bᵢ b ϕ₂
        where
         ϕ₂ : (bᵢ ≤[ poset-of-ba B ] b) holds
-        ϕ₂ = pr₂ (embedding-is-order-isomorphism B L η e bᵢ b) p
+        ϕ₂ = pr₂ (embedding-preserves-and-reflects-order B L η e bᵢ b) p
 
   ψ : h ＝ h⁻ ∘ η
   ψ = dfunext fe ψ₁
@@ -628,7 +631,7 @@ The function `h⁻` also preserves meets.
                          ͱ = ♥₂ b₁ b₂ ⁻¹
 
                    υ : (b ≤[ poset-of-ba B ] (b₁ ⋎[ B ] b₂)) holds
-                   υ = pr₂ (embedding-is-order-isomorphism B L η e b _) ν
+                   υ = pr₂ (embedding-preserves-and-reflects-order B L η e b _) ν
 
                    Ⅰ₀ = lattice-homomorphisms-are-monotone B L′ h μ b _ υ
 

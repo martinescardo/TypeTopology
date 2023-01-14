@@ -14,21 +14,6 @@ open import MLTT.Identity-Type renaming (_＝_ to infix 0 _＝_) public
 𝓻𝓮𝒻𝓵 : {X : 𝓤 ̇ } (x : X) → x ＝ x
 𝓻𝓮𝒻𝓵 x = refl {_} {_} {x}
 
-by-definition : {X : 𝓤 ̇ } {x : X} → x ＝ x
-by-definition = refl
-
-by-construction : {X : 𝓤 ̇ } {x : X} → x ＝ x
-by-construction = refl
-
-by-assumption : {X : 𝓤 ̇ } {x : X} → x ＝ x
-by-assumption = refl
-
-lhs : {X : 𝓤 ̇ } {x y : X} → x ＝ y → X
-lhs {𝓤} {X} {x} {y} p = x
-
-rhs : {X : 𝓤 ̇ } {x y : X} → x ＝ y → X
-rhs {𝓤} {X} {x} {y} p = y
-
 Id : {X : 𝓤 ̇ } → X → X → 𝓤 ̇
 Id = _＝_
 
@@ -52,6 +37,12 @@ transport : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) {x y : X}
           → x ＝ y → A x → A y
 transport A refl = id
 
+lhs : {X : 𝓤 ̇ } {x y : X} → x ＝ y → X
+lhs {𝓤} {X} {x} {y} p = x
+
+rhs : {X : 𝓤 ̇ } {x y : X} → x ＝ y → X
+rhs {𝓤} {X} {x} {y} p = y
+
 _∙_ : {X : 𝓤 ̇ } {x y z : X} → x ＝ y → y ＝ z → x ＝ z
 p ∙ q = transport (lhs p ＝_) q p
 
@@ -66,6 +57,21 @@ transport⁻¹ B p = transport B (p ⁻¹)
 
 _∼_ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } → ((x : X) → A x) → ((x : X) → A x) → 𝓤 ⊔ 𝓥 ̇
 f ∼ g = ∀ x → f x ＝ g x
+
+\end{code}
+
+Notations to make some proofs more readable:
+
+\begin{code}
+
+by-definition : {X : 𝓤 ̇ } {x : X} → x ＝ x
+by-definition = refl
+
+by-construction : {X : 𝓤 ̇ } {x : X} → x ＝ x
+by-construction = refl
+
+by-assumption : {X : 𝓤 ̇ } {x : X} → x ＝ x
+by-assumption = refl
 
 \end{code}
 

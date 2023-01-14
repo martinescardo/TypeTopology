@@ -11,14 +11,14 @@ module Ordinals.Arithmetic-Properties
        where
 
 open import UF.Base
+open import UF.Embeddings
+open import UF.Equiv
+open import UF.EquivalenceExamples
+open import UF.ExcludedMiddle
+open import UF.FunExt
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-open import UF.Equiv
 open import UF.UA-FunExt
-open import UF.FunExt
-open import UF.EquivalenceExamples
-open import UF.Embeddings
-open import UF.ExcludedMiddle
 
 private
  fe : FunExt
@@ -33,13 +33,16 @@ private
 open import MLTT.Spartan
 open import MLTT.Plus-Properties
 
-open import Ordinals.Type
+open import Notation.CanonicalMap
+
+open import Ordinals.Arithmetic fe
 open import Ordinals.Notions
 open import Ordinals.OrdinalOfOrdinals ua
-open import Ordinals.Arithmetic fe
+open import Ordinals.Type
+open import Ordinals.Underlying
 
 𝟘ₒ-left-neutral : (α : Ordinal 𝓤) → 𝟘ₒ +ₒ α ＝ α
-𝟘ₒ-left-neutral α = eqtoidₒ (𝟘ₒ +ₒ α) α h
+𝟘ₒ-left-neutral {𝓤} α = eqtoidₒ (𝟘ₒ +ₒ α) α h
  where
   f : 𝟘 + ⟨ α ⟩ → ⟨ α ⟩
   f = ⌜ 𝟘-lneutral ⌝
@@ -174,6 +177,45 @@ open import Ordinals.Arithmetic fe
 
   h : γ ＝ δ
   h = eqtoidₒ γ δ (f , f-is-order-preserving , f-is-equiv , g-is-order-preserving)
+
+\end{code}
+
+Added 7 November 2022 by Tom de Jong.
+
+A rather special case of the above is that adding 𝟙 and then taking the initial
+segment capped at inr ⋆ is the same thing as the original ordinal.
+
+It is indeed a special case of the above because (𝟙 ↓ ⋆) ＝ 𝟘ₒ and 𝟘ₒ is right
+neutral, but we give a direct proof instead.
+
+\begin{code}
+
++ₒ-𝟙ₒ-↓-right : (α : Ordinal 𝓤) → (α +ₒ 𝟙ₒ) ↓ inr ⋆ ＝ α
++ₒ-𝟙ₒ-↓-right α = eqtoidₒ ((α +ₒ 𝟙ₒ) ↓ inr ⋆) α h
+ where
+  f : ⟨ (α +ₒ 𝟙ₒ) ↓ inr ⋆ ⟩ → ⟨ α ⟩
+  f (inl x , l) = x
+  g : ⟨ α ⟩ → ⟨ (α +ₒ 𝟙ₒ) ↓ inr ⋆ ⟩
+  g x = (inl x , ⋆)
+  f-order-preserving : is-order-preserving ((α +ₒ 𝟙ₒ) ↓ inr ⋆) α f
+  f-order-preserving (inl x , _) (inl y , _) l = l
+  f-is-equiv : is-equiv f
+  f-is-equiv = qinvs-are-equivs f (g , η , ε)
+   where
+    η : g ∘ f ∼ id
+    η (inl _ , _) = refl
+    ε : f ∘ g ∼ id
+    ε _ = refl
+  g-order-preserving : is-order-preserving α ((α +ₒ 𝟙ₒ) ↓ inr ⋆) g
+  g-order-preserving x y l = l
+  h : ((α +ₒ 𝟙ₒ) ↓ inr ⋆) ≃ₒ α
+  h = f , f-order-preserving , f-is-equiv , g-order-preserving
+
+\end{code}
+
+End of addition.
+
+\begin{code}
 
 +ₒ-⊲-left : {α β : Ordinal 𝓤} (a : ⟨ α ⟩)
           → (α ↓ a) ⊲ (α +ₒ β)
@@ -1036,11 +1078,11 @@ alternative-plusₒ τ₀ τ₁ = e
  where
   υ = cases (λ ⋆ → τ₀) (λ ⋆ → τ₁)
 
-  f : ⟪ ∑ 𝟚ᵒ υ ⟫ → ⟨ [ τ₀ ] +ₒ [ τ₁ ] ⟩
+  f : ⟨ ∑ 𝟚ᵒ υ ⟩ → ⟨ [ τ₀ ] +ₒ [ τ₁ ] ⟩
   f (inl ⋆ , x) = inl x
   f (inr ⋆ , y) = inr y
 
-  g : ⟨ [ τ₀ ] +ₒ [ τ₁ ] ⟩ → ⟪ ∑ 𝟚ᵒ υ ⟫
+  g : ⟨ [ τ₀ ] +ₒ [ τ₁ ] ⟩ → ⟨ ∑ 𝟚ᵒ υ ⟩
   g (inl x) = (inl ⋆ , x)
   g (inr y) = (inr ⋆ , y)
 

@@ -242,7 +242,8 @@ Added December 2019.
 
 \begin{code}
 
-open import NotionsOfDecidability.DecidableAndDetachable
+open import NotionsOfDecidability.Decidable
+open import NotionsOfDecidability.Complemented
 
 ≤-decidable : (m n : ℕ ) → decidable (m ≤ n)
 ≤-decidable zero     n        = inl (zero-least n)
@@ -258,7 +259,7 @@ Bounded minimization (added 14th December 2019):
 
 \begin{code}
 
-βμ : (A : ℕ → 𝓤 ̇ ) → detachable A
+βμ : (A : ℕ → 𝓤 ̇ ) → complemented A
   → (k : ℕ) → (Σ m ꞉ ℕ , (m < k) × A m × ((n : ℕ) → A n → m ≤ n))
             + ((n : ℕ) → A n → n ≥ k)
 
@@ -307,7 +308,7 @@ bounded minimization:
 Σμ : (ℕ → 𝓤 ̇ ) → 𝓤 ̇
 Σμ A = Σ m ꞉ ℕ , A m × ((n : ℕ) → A n → m ≤ n)
 
-least-from-given : (A : ℕ → 𝓤 ̇ ) → detachable A → Σ A → Σμ A
+least-from-given : (A : ℕ → 𝓤 ̇ ) → complemented A → Σ A → Σμ A
 least-from-given A δ (k , a) = γ
  where
   f : (Σ m ꞉ ℕ , (m < k) × A m × ((n : ℕ) → A n → m ≤ n)) → Σμ A
@@ -507,7 +508,7 @@ order-split 0        (succ y) = inl (zero-least (succ y))
 order-split (succ x) 0        = inr (zero-least (succ x))
 order-split (succ x) (succ y) = order-split x y
 
-least-element-unique : {A : ℕ → 𝓤 ̇} → (σ : detachable A)
+least-element-unique : {A : ℕ → 𝓤 ̇} → (σ : complemented A)
                                      → ((α , αₚ) : Σ k ꞉ ℕ , A k × ((z : ℕ) → A z → k ≤ z))
                                      → ((β , βₚ) : Σ n ꞉ ℕ , A n × ((z : ℕ) → A z → n ≤ z))
                                      → α ＝ β
@@ -519,7 +520,7 @@ least-element-unique σ (α , α₀ , α₁) (β , β₀ , β₁) = ≤-anti α 
   II : β ≤ α
   II = β₁ α α₀
 
-least-element-unique' : {A : ℕ → 𝓤 ̇} → (σ : detachable A)
+least-element-unique' : {A : ℕ → 𝓤 ̇} → (σ : complemented A)
                                       → (x y : ℕ)
                                       → (δ : Σ A) → x ＝ pr₁ (least-from-given A σ δ) → y ＝ pr₁ (least-from-given A σ δ)
                                       → x ＝ y
@@ -536,7 +537,7 @@ The strategy is simple.
 
 \begin{code}
 
-bounded-maximisation : (A : ℕ → 𝓤 ̇) → detachable A
+bounded-maximisation : (A : ℕ → 𝓤 ̇) → complemented A
                      → (k : ℕ)
                      → (Σ m ꞉ ℕ , (m < k × A m × ((n : ℕ) → n < k → A n → n ≤ m))) + ((n : ℕ) → A n → n ≥ k)
 bounded-maximisation A δ zero = inr (λ n _ → zero-least n)
@@ -574,7 +575,7 @@ bounded-maximisation A δ (succ k) = f (bounded-maximisation A δ k)
         τ (inr w) = 𝟘-elim (k-fails (transport (λ - → A -) (w ⁻¹) n-holds))
         τ (inl w) = w
 
-bounded-maximisation' : (A : ℕ → 𝓤 ̇) → detachable A
+bounded-maximisation' : (A : ℕ → 𝓤 ̇) → complemented A
    → (k : ℕ)
    → (Σ m ꞉ ℕ , (m ≤ k × A m × ((n : ℕ) → n ≤ k → A n → n ≤ m))) + ((n : ℕ) → A n → k < n)
 bounded-maximisation' A δ k = result (bounded-maximisation A δ k) (δ k)
@@ -616,14 +617,14 @@ which the property holds. Of course, we must provide an upper bound.
 
 \begin{code}
 
-maximal-from-given : (A : ℕ → 𝓤 ̇) → (b : ℕ) → detachable A → Σ k ꞉ ℕ , A k × k < b → maximal-element A b
+maximal-from-given : (A : ℕ → 𝓤 ̇) → (b : ℕ) → complemented A → Σ k ꞉ ℕ , A k × k < b → maximal-element A b
 maximal-from-given A b δ (k , a) = f (bounded-maximisation A δ b)
  where
   f : (Σ m ꞉ ℕ , (m < b) × A m × ((n : ℕ) → n < b → A n → n ≤ m)) + ((n : ℕ) → A n → n ≥ b) → maximal-element A b
   f (inl x) = x
   f (inr x) = 𝟘-elim (less-not-bigger-or-equal k b (pr₂ a) (x k (pr₁ a)))
 
-maximal-from-given' : (A : ℕ → 𝓤 ̇) → (b : ℕ) → detachable A → Σ k ꞉ ℕ , A k × k ≤ b → maximal-element' A b
+maximal-from-given' : (A : ℕ → 𝓤 ̇) → (b : ℕ) → complemented A → Σ k ꞉ ℕ , A k × k ≤ b → maximal-element' A b
 maximal-from-given' A b δ (k , a , c) = f (bounded-maximisation' A δ b)
  where
   f : (Σ m ꞉ ℕ , (m ≤ b) × A m × ((n : ℕ) → n ≤ b → A n → n ≤ m)) + ((n : ℕ) → A n → b < n) → maximal-element' A b

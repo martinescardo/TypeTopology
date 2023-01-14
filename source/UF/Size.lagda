@@ -121,16 +121,24 @@ to-resize : (ρ : propositional-resizing 𝓤 𝓥) (P : 𝓤 ̇ ) (i : is-prop 
 from-resize : (ρ : propositional-resizing 𝓤 𝓥) (P : 𝓤 ̇ ) (i : is-prop P)
             → resize ρ P i → P
 
+to-resize-is-equiv : (ρ : propositional-resizing 𝓤 𝓥) (P : 𝓤 ̇ ) (i : is-prop P)
+                   → is-equiv (to-resize ρ P i)
+
+from-resize-is-equiv : (ρ : propositional-resizing 𝓤 𝓥) (P : 𝓤 ̇ ) (i : is-prop P)
+                     → is-equiv (from-resize ρ P i)
+
 \end{code}
 
 Definitions:
 
 \begin{code}
 
-resize         {𝓤} {𝓥} ρ P i = resized 𝓥 P (ρ P i)
-resize-is-prop {𝓤} {𝓥} ρ P i = equiv-to-prop (resizing-condition 𝓥 P (ρ P i)) i
-to-resize      {𝓤} {𝓥} ρ P i = ⌜ resizing-condition 𝓥 P (ρ P i) ⌝⁻¹
-from-resize    {𝓤} {𝓥} ρ P i = ⌜ resizing-condition 𝓥 P (ρ P i) ⌝
+resize               {𝓤} {𝓥} ρ P i = resized 𝓥 P (ρ P i)
+resize-is-prop       {𝓤} {𝓥} ρ P i = equiv-to-prop (resizing-condition 𝓥 P (ρ P i)) i
+to-resize            {𝓤} {𝓥} ρ P i = ⌜ resizing-condition 𝓥 P (ρ P i) ⌝⁻¹
+from-resize          {𝓤} {𝓥} ρ P i = ⌜ resizing-condition 𝓥 P (ρ P i) ⌝
+to-resize-is-equiv   {𝓤} {𝓥} ρ P i = ⌜⌝⁻¹-is-equiv (resizing-condition 𝓥 P (ρ P i))
+from-resize-is-equiv {𝓤} {𝓥} ρ P i = ⌜⌝-is-equiv (resizing-condition 𝓥 P (ρ P i))
 
 Propositional-resizing : 𝓤ω
 Propositional-resizing = {𝓤 𝓥 : Universe} → propositional-resizing 𝓤 𝓥
@@ -921,8 +929,7 @@ X is-locally 𝓥 small = (x y : X) → (x ＝ y) is 𝓥 small
 
 module _ (pt : propositional-truncations-exist) where
 
- open import UF.ImageAndSurjection
- open ImageAndSurjection pt
+ open import UF.ImageAndSurjection pt
 
  Set-Replacement : 𝓤ω
  Set-Replacement = {𝓦 𝓣 𝓤 𝓥 : Universe} {X : 𝓣 ̇  } {Y : 𝓦 ̇  } (f : X → Y)

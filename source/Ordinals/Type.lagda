@@ -8,14 +8,13 @@ ordinals with a top element.
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import MLTT.Spartan
-
+open import Ordinals.Underlying
 open import Ordinals.Notions
-
 open import UF.Base
+open import UF.Embeddings
 open import UF.FunExt
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-open import UF.Embeddings
 
 module Ordinals.Type where
 
@@ -47,27 +46,16 @@ set):
 
 \begin{code}
 
-⟨_⟩ : Ordinal 𝓤 → 𝓤 ̇
-⟨ X , _<_ , o ⟩ = X
+instance
+ underlying-type-of-ordinal : Underlying (Ordinal 𝓤)
+ ⟨_⟩ {{underlying-type-of-ordinal}} (X , _) = X
+ underlying-order {{underlying-type-of-ordinal}} (X , _<_ , o) = _<_
 
 structure : (α : Ordinal 𝓤) → OrdinalStructure ⟨ α ⟩
 structure (X , s) = s
 
-underlying-order : (α : Ordinal 𝓤) → ⟨ α ⟩ → ⟨ α ⟩ → 𝓤 ̇
-underlying-order (X , _<_ , o) = _<_
-
 is-trichotomous : Ordinal 𝓤 → 𝓤 ̇
 is-trichotomous α = is-trichotomous-order (underlying-order α)
-
-underlying-weak-order : (α : Ordinal 𝓤) → ⟨ α ⟩ → ⟨ α ⟩ → 𝓤 ̇
-underlying-weak-order α x y = ¬ (underlying-order α y x)
-
-underlying-porder : (α : Ordinal 𝓤) → ⟨ α ⟩ → ⟨ α ⟩ → 𝓤 ̇
-underlying-porder (X , _<_ , o) = extensional-po _<_
-
-syntax underlying-order       α x y = x ≺⟨ α ⟩ y
-syntax underlying-weak-order  α x y = x ≾⟨ α ⟩ y
-syntax underlying-porder      α x y = x ≼⟨ α ⟩ y
 
 is-well-ordered : (α : Ordinal 𝓤) → is-well-order (underlying-order α)
 is-well-ordered (X , _<_ , o) = o
@@ -86,11 +74,53 @@ Well-foundedness α = well-foundedness (underlying-order α) (is-well-ordered α
 
 Transfinite-induction : (α : Ordinal 𝓤)
                       → (P : ⟨ α ⟩ → 𝓦 ̇ )
-                      → ((x : ⟨ α ⟩) → ((y : ⟨ α ⟩) → y ≺⟨ α ⟩ x → P y) → P x)
+                      → ((x : ⟨ α ⟩)
+                      → ((y : ⟨ α ⟩) → y ≺⟨ α ⟩ x → P y) → P x)
                       → (x : ⟨ α ⟩) → P x
 Transfinite-induction α = transfinite-induction
                            (underlying-order α)
                            (Well-foundedness α)
+
+Transfinite-recursion : (α : Ordinal 𝓤) {Y : 𝓥 ̇ }
+                      → ((x : ⟨ α ⟩)
+                      → ((y : ⟨ α ⟩) → y ≺⟨ α ⟩ x → Y) → Y)
+                      → ⟨ α ⟩ → Y
+Transfinite-recursion α = transfinite-recursion
+                           (underlying-order α)
+                           (Well-foundedness α)
+\end{code}
+
+Added 31 October 2022 by Tom de Jong.
+We record the (computational) behaviour of transfinite induction for use in
+other constructions.
+
+\begin{code}
+
+Transfinite-induction-behaviour : FunExt
+                                → (α : Ordinal 𝓤)
+                                → (P : ⟨ α ⟩ → 𝓦 ̇ )
+                                → (f : (x : ⟨ α ⟩) → ((y : ⟨ α ⟩) → y ≺⟨ α ⟩ x → P y) → P x)
+                                → (x : ⟨ α ⟩)
+                                → Transfinite-induction α P f x
+                                  ＝ f x (λ y l → Transfinite-induction α P f y)
+Transfinite-induction-behaviour fe α = transfinite-induction-behaviour
+                                        (underlying-order α) fe
+                                        (Well-foundedness α)
+\end{code}
+
+End of addition.
+
+\begin{code}
+
+Transfinite-recursion-behaviour : FunExt
+                                → (α : Ordinal 𝓤)
+                                → {Y : 𝓥 ̇ }
+                                → (f : (x : ⟨ α ⟩) → ((y : ⟨ α ⟩) → y ≺⟨ α ⟩ x → Y) → Y)
+                                → (x : ⟨ α ⟩)
+                                → Transfinite-recursion α f x
+                                  ＝ f x (λ y l → Transfinite-recursion α f y)
+Transfinite-recursion-behaviour fe α =
+ transfinite-recursion-behaviour (underlying-order α) fe (Well-foundedness α)
 
 Extensionality : (α : Ordinal 𝓤) → is-extensional (underlying-order α)
 Extensionality α = extensionality (underlying-order α) (is-well-ordered α)

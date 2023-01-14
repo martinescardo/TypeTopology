@@ -22,7 +22,7 @@ module Locales.Frame
        where
 
 open import UF.Subsingletons
-open import UF.Subsingleton-Combinators
+open import UF.Logic
 open import UF.Subsingletons-FunExt
 
 open AllCombinators pt fe

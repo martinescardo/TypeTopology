@@ -18,12 +18,13 @@ open import UF.FunExt
 module TypeTopology.ADecidableQuantificationOverTheNaturals (fe : funext 𝓤₀ 𝓤₀) where
 
 open import CoNaturals.GenericConvergentSequence
-open import TypeTopology.CompactTypes
-open import TypeTopology.GenericConvergentSequenceCompactness fe
-open import TypeTopology.DiscreteAndSeparated
 open import MLTT.Two-Properties
-open import NotionsOfDecidability.DecidableAndDetachable
 open import Notation.CanonicalMap
+open import NotionsOfDecidability.Complemented
+open import NotionsOfDecidability.Decidable
+open import TypeTopology.CompactTypes
+open import TypeTopology.DiscreteAndSeparated
+open import TypeTopology.GenericConvergentSequenceCompactness fe
 open import UF.PropTrunc
 
 Lemma-8·1 : (p : ℕ∞ → 𝟚) → (Σ x ꞉ ℕ∞ , (x ≠ ∞) × (p x ＝ ₀))

@@ -25,7 +25,7 @@ module Unsafe.Type-in-Type-False where
 module coquand where
 
  open import MLTT.Spartan
- open import Uncatalogued.LawvereFPT
+ open import Various.LawvereFPT
 
  Y : {X : Set} → (X → X) → X
  Y {X} f = pr₁ (γ f)

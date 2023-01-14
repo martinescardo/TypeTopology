@@ -10,7 +10,7 @@ import Integers.Abs
 import Integers.Addition
 import Integers.Division
 import Integers.HCF
-import Integers.Integers
+import Integers.Type
 import Integers.Multiplication
 import Integers.Negation
 import Integers.Order

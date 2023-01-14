@@ -6,18 +6,18 @@ In this file, I prove that the Reals are arithmetically located.
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import MLTT.Spartan renaming (_+_ to _∔_) 
+open import MLTT.Spartan renaming (_+_ to _∔_)
 
-open import Notation.Order 
-open import UF.Base 
-open import UF.PropTrunc 
-open import UF.FunExt 
-open import UF.Powerset 
-open import UF.Subsingletons 
-open import Naturals.Properties 
+open import Notation.Order
+open import UF.Base
+open import UF.PropTrunc
+open import UF.FunExt
+open import UF.Powerset
+open import UF.Subsingletons
+open import Naturals.Properties
 
 open import Naturals.Order
-open import Rationals.Rationals
+open import Rationals.Type
 open import Rationals.Abs
 open import Rationals.Addition
 open import Rationals.Limits
@@ -30,7 +30,7 @@ module DedekindReals.Properties
         (pt : propositional-truncations-exist)
         (pe : Prop-Ext)
       where
-open import DedekindReals.Reals pe pt fe
+open import DedekindReals.Type pe pt fe
 open import MetricSpaces.Rationals fe pt pe
 open PropositionalTruncation pt
 
@@ -56,10 +56,10 @@ exists-2/3-n x y (p , α) l₁ l₂ = V use-limit
   II = ℚ<-difference-positive fe x y l₁
 
   z = multiplicative-inverse fe (y - x) I
-  
+
   III : 0ℚ < multiplicative-inverse fe (y - x) I
   III = multiplicative-inverse-preserves-pos fe (y - x) II I
-     
+
   IV : 0ℚ < (toℚ p * multiplicative-inverse fe (y - x) I)
   IV = ℚ<-pos-multiplication-preserves-order (toℚ p) (multiplicative-inverse fe (y - x) I) (transport (0ℚ <_) p-convert l₂) III
 
@@ -114,11 +114,11 @@ ral-lemma α β n e = ((rec 2/3 (λ k → k * 2/3) n * 2/3) * α) ＝⟨ refl �
 ℝ-arithmetically-located ((L , R) , inhabited-left , inhabited-right , rounded-left , rounded-right , disjoint , located) p l = ∥∥-rec ∃-is-prop I (binary-choice inhabited-left inhabited-right)
  where
   I : (Σ x ꞉ ℚ , x ∈ L) × (Σ y ꞉ ℚ , y ∈ R) → ∃ (x , y) ꞉ ℚ × ℚ , x ∈ L × y ∈ R × (0ℚ < (y - x) × (y - x) < p)
-  I ((x , x-L) , (y , y-R)) = II x y x-L y-R (pr₁ γ) (trisect fe x y (disjoint x y (x-L , y-R))) (pr₂ γ) 
+  I ((x , x-L) , (y , y-R)) = II x y x-L y-R (pr₁ γ) (trisect fe x y (disjoint x y (x-L , y-R))) (pr₂ γ)
    where
     γ : Sigma ℕ (λ n → ((⟨2/3⟩^ n) * (y - x)) < p)
     γ = exists-2/3-n x y p (disjoint x y (x-L , y-R)) l
-    
+
     II : (x y : ℚ) → x ∈ L → y ∈ R → (n : ℕ) → (Σ (x' , y') ꞉ ℚ × ℚ , x < x' × x' < y' × y' < y × ((y - x') ＝ (2/3 * (y - x))) × (y' - x ＝ 2/3 * (y - x)))
        → ((⟨2/3⟩^ n) * (y - x)) < p
        → ∃ (x , y) ꞉ ℚ × ℚ , x ∈ L × y ∈ R × (0ℚ < (y - x)) × ((y - x) < p)
@@ -129,7 +129,7 @@ ral-lemma α β n e = ((rec 2/3 (λ k → k * 2/3) n * 2/3) * α) ＝⟨ refl �
        α = ℚ<-difference-positive fe x y (disjoint x y (x-L , y-R))
        β : y - x <ℚ p
        β = transport (_<ℚ p) (ℚ-mult-left-id fe (y - x)) l₄
-      
+
     II x y x-L y-R (succ zero) ((x' , y') , l₁ , l₂ , l₃ , e₁ , e₂) l₄     = ∥∥-rec ∃-is-prop III (located x' y' l₂)
      where
       III : (x' ∈ L) ∔ (y' ∈ R) → ∃ (x , y) ꞉ ℚ × ℚ , x ∈ L × y ∈ R × (0ℚ < y - x × y - x < p)
