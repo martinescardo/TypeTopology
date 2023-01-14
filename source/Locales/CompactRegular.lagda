@@ -853,14 +853,13 @@ consists-of-clopens F S = Ɐ i ∶ index S , is-clopen F (S [ i ])
 
 zero-dimensionalᴰ : Frame 𝓤 𝓥 𝓦 → (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺) ̇
 zero-dimensionalᴰ {𝓦 = 𝓦} F =
- Σ ℬ ꞉ Fam 𝓦 ⟨ F ⟩ , is-basis-for F ℬ
-                   × closed-under-finite-joins F ℬ holds
+ Σ ℬ ꞉ Fam 𝓦 ⟨ F ⟩ , is-directed-basis F ℬ
                    × consists-of-clopens F ℬ holds
 
 basis-of-zero-dimensionalᴰ-frame : (L : Frame 𝓤 𝓥 𝓦)
                                  → zero-dimensionalᴰ L
                                  → Σ ℬ ꞉ Fam 𝓦 ⟨ L ⟩ , is-basis-for L ℬ
-basis-of-zero-dimensionalᴰ-frame L (ℬ , β , _) = ℬ , β
+basis-of-zero-dimensionalᴰ-frame L (ℬ , (β , _) , _) = ℬ , β
 
 is-zero-dimensional : Frame 𝓤 𝓥 𝓦 → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
 is-zero-dimensional {𝓦 = 𝓦} F = ∥ zero-dimensionalᴰ F ∥Ω
@@ -868,7 +867,7 @@ is-zero-dimensional {𝓦 = 𝓦} F = ∥ zero-dimensionalᴰ F ∥Ω
 basis-of-zero-dimensional-frame : (F : Frame 𝓤 𝓥 𝓦)
                                 → (is-zero-dimensional F ⇒ has-basis F) holds
 basis-of-zero-dimensional-frame F =
- ∥∥-rec (holds-is-prop (has-basis F)) λ { (ℬ , δ , _) → ∣ ℬ , δ ∣ }
+ ∥∥-rec (holds-is-prop (has-basis F)) λ { (ℬ , (δ , _) , _) → ∣ ℬ , δ ∣ }
 
 \end{code}
 
@@ -949,7 +948,7 @@ zero-dimensional-locales-are-regular {𝓦 = 𝓦} F =
    open Joins (λ x y → x ≤[ poset-of F ] y)
 
    γ : zero-dimensionalᴰ F → is-regular F holds
-   γ (ℬ , β , _ , ξ) = ∣ ℬ , δ ∣
+   γ (ℬ , β , ξ) = ∣ ℬ , δ ∣
     where
      δ : Π U ꞉ ⟨ F ⟩ ,
           Σ J ꞉ Fam 𝓦 (index ℬ) ,
@@ -957,10 +956,10 @@ zero-dimensional-locales-are-regular {𝓦 = 𝓦} F =
            × (Π i ꞉ index J , (ℬ [ J [ i ] ] ⋜[ F ] U) holds)
      δ U = 𝒥 , c , ε
       where
-       𝒥 = pr₁ (β U)
+       𝒥 = pr₁ (pr₁ β U)
 
        c : (U is-lub-of ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆) holds
-       c = pr₂ (β U)
+       c = pr₂ (pr₁ β U)
 
        ε : Π i ꞉ index 𝒥 , (ℬ [ 𝒥 [ i ] ] ⋜[ F ] U) holds
        ε i = ↑↑-is-upwards-closed F ∣ ξ (𝒥 [ i ]) ∣ (pr₁ c i)
