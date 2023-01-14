@@ -988,13 +988,13 @@ module PatchStoneᴰ (X : Locale (𝓤 ⁺) 𝓤 𝓤) (σᴰ : spectralᴰ (�
  open BasisOfPatch X σᴰ
 
  patch-zero-dimensional : is-zero-dimensional (𝒪 Patch-X) holds
- patch-zero-dimensional = ∣ ℬ-patch-↑ , β , υ , γ ∣
+ patch-zero-dimensional = ∣ ℬ-patch-↑ , υ , γ ∣
   where
    β : is-basis-for (𝒪 Patch-X) ℬ-patch-↑
    β = directified-basis-is-basis (𝒪 Patch-X) ℬ-patch ℬ-is-basis-for-patch
 
-   υ : closed-under-finite-joins (𝒪 Patch-X) ℬ-patch-↑ holds
-   υ = directify-is-closed-under-fin-joins (𝒪 Patch-X) ℬ-patch
+   υ : is-directed-basis (𝒪 Patch-X) ℬ-patch-↑
+   υ = β , covers-of-directified-basis-are-directed (𝒪 Patch-X) ℬ-patch ℬ-is-basis-for-patch
 
    γ : consists-of-clopens (𝒪 Patch-X) ℬ-patch-↑ holds
    γ = directification-preserves-clopenness (𝒪 Patch-X) ℬ-patch γ₁
