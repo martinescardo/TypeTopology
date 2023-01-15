@@ -11,6 +11,7 @@ open import Integers.Parity
 open import Rationals.Fractions hiding (_≈_ ; ≈-sym ; ≈-trans ; ≈-refl)
 open import Rationals.Multiplication renaming (_*_ to _ℚ*_)
 open import Rationals.Type
+open import Naturals.Addition
 open import Naturals.Division
 open import Naturals.Exponents
 open import Naturals.HCF
@@ -108,6 +109,15 @@ exponents-not-zero' m iz = exponents-not-zero m (pos-lc I)
  where
   I : pos (2^ m) ＝ pos 0
   I = from-is-zero (pos (2^ m)) iz
+
+{-
+from-normalise-pos : (x : ℤ) (n : ℕ) → Σ ((x' , n') , p) ꞉ ℤ[1/2] , (Σ k ꞉ ℕ , (x ＝ x' * pos (2^ k))
+                                                                             × (n ＝ n' + k))
+from-normalise-pos x n = q , ({!!} , {!!})
+ where
+  q : ℤ[1/2]
+  q = normalise-pos (x , n)
+-}
 
 _≈'_ : (x y : ℤ × ℕ) → 𝓤₀ ̇
 (x , n) ≈' (y , m) = x * pos (2^ m) ＝ y * pos (2^ n)
@@ -247,6 +257,9 @@ infix 0 _≈_
      (λ oz₁ → (x , succ n) , inr (⋆ , oz₁)) zzz)
       (ℤeven-or-odd-is-prop x (inr oz) (ℤeven-or-odd x))
 
+ℤ[1/2]-from-normalise-pos : (z : ℤ) → (n : ℕ) → Σ q ꞉ ℤ[1/2] , q ＝ normalise-pos (z , n)
+ℤ[1/2]-from-normalise-pos z n = (normalise-pos (z , n)) , refl
+
 ≈-normalise-pos : (((z , a) , p) : ℤ[1/2]) → (((z , a) , p)) ≈ normalise-pos (z , a)
 ≈-normalise-pos (z , α) = ＝-to-≈ (z , α) (normalise-pos z) (ℤ[1/2]-to-normalise-pos (z , α))
 
@@ -255,7 +268,7 @@ infix 0 _≈_
 
 ≈-transport : (A : ℤ[1/2] → 𝓤 ̇) {x y : ℤ[1/2]} → x ≈ y → A x → A y
 ≈-transport A {x} {y} e = transport A (≈-to-＝ x y e)
-
+  
 \end{code}
 
 The following proofs relate dyadic rationals to rationals.
@@ -295,5 +308,41 @@ Boilerplate
 
 ≈-trans₅ : (x y z a b c d : ℤ[1/2]) → x ≈ y → y ≈ z → z ≈ a → a ≈ b → b ≈ c → c ≈ d → x ≈ d
 ≈-trans₅ x y z a b c d p q r s t u = ≈-trans₄ x y z a b d p q r s (≈-trans b c d t u)
+
+{-
+≈-normalise-pos' : (x : ℤ) (n : ℕ) (y : ℤ) (m : ℕ)
+                 → x * pos (2^ m) ＝ y * pos (2^ n)
+                 → normalise-pos (x , n) ≈ normalise-pos (y , m)
+≈-normalise-pos' x n y m e = I (ℤ[1/2]-from-normalise-pos x n) (ℤ[1/2]-from-normalise-pos y m)
+ where
+  I : Σ p ꞉ ℤ[1/2] , p ＝ normalise-pos (x , n)
+    → Σ q ꞉ ℤ[1/2] , q ＝ normalise-pos (y , m)
+    → normalise-pos (x , n) ≈ normalise-pos (y , m)
+  I (p , α) (q , β) = γ
+   where
+    i : p ≈ normalise-pos (x , n)
+    i = ＝-to-≈ p (normalise-pos (x , n)) α
+
+    i⁻¹ : normalise-pos (x , n) ≈ p
+    i⁻¹ = ≈-sym p (normalise-pos (x , n)) i 
+
+    ii : q ≈ normalise-pos (y , m)
+    ii = ＝-to-≈ q (normalise-pos (y , m)) β
+
+-- (x' , n')
+
+
+-- (y' , m')
+
+    iii : p ≈ q
+    iii = {!!}
+    
+    γ : normalise-pos (x , n) ≈ normalise-pos (y , m)
+    γ = ≈-trans₂ (normalise-pos (x , n)) p q (normalise-pos (y , m))
+        i⁻¹ iii ii
+
+    γ₂ : normalise-pos (x , n) ≈ normalise-pos (y , m)
+    γ₂ = {!!}
+-}
 
 \end{code}

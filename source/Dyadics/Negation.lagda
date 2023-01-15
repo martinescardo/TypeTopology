@@ -22,9 +22,75 @@ infix 31 -_
 ℤ[1/2]-minus-zero : - 0ℤ[1/2] ＝ 0ℤ[1/2]
 ℤ[1/2]-minus-zero = refl
 
+{-
+
 minus-normalise-pos : (z : ℤ) (n : ℕ) → normalise-pos (z , n) ≈ - normalise-pos (ℤ- z , n)
 minus-normalise-pos z n = {!!}
+ where
+  q : ℤ[1/2]
+  q = normalise-pos (ℤ- z , n)
 
+  z' : ℤ
+  z' = (pr₁ ∘ pr₁) q
+
+  n' : ℕ
+  n' = (pr₂ ∘ pr₁) q
+
+  i : normalise-pos (z , n) ＝ normalise-pos (ℤ- z' , n')
+  i = ≈-to-＝ _ _ si
+   where
+    si : normalise-pos (z , n) ≈ normalise-pos (ℤ- z' , n')
+    si = {!!} ＝⟨ {!!} ⟩
+         {!!} ＝⟨ {!!} ⟩
+         {!!} ＝⟨ {!!} ⟩
+         {!!} ＝⟨ {!!} ⟩
+         {!!} ∎
+-}
+{-
+
+  normalise-pos (z , n) ≈ 
+
+                        ≈ 
+                        ≈ normalise-pos (- z' , n')
+                        ≈ - (z' , n') , _
+                        ≈ - normalise-pos (ℤ- z , n)
+ 
+
+  q : ℤ[1/2]
+  q = normalise-pos (ℤ- z , n)
+
+-- q = normalise-pos (z' , n')
+--        
+
+  z' : ℤ
+  z' = (pr₁ ∘ pr₁)  q
+
+  n' : ℕ
+  n' = (pr₂ ∘ pr₁) q
+
+{-
+
+   normalise-pos (z       , n)
+   normalise-pos (- (- z) , n)
+
+                                   
+   normalise-pos (ℤ- z' , n')     ≈   - normalise-pos (ℤ- z , n)
+   - (z' , n') , _                    - normalise-pos (z' , n')
+   - q
+   - normalise-pos (ℤ- z , n)
+
+-}
+
+  i : normalise-pos (ℤ- z , n) ≈ normalise-pos (ℤ- z' , n')
+  i = {!!}
+
+  ii : normalise-pos (z' , n') ≈ normalise-pos (ℤ- z , n)
+  ii = ≈-sym q (normalise-pos (z' , n')) (≈-normalise-pos q)
+
+  iii : {!!}
+  iii = {!!}
+-}
+{-
 ℤ[1/2]-minus-minus' : (z : ℤ[1/2]) → z ≈ - (- z)
 ℤ[1/2]-minus-minus' ((z , n) , α) = γ
  where
@@ -47,7 +113,7 @@ minus-normalise-pos z n = {!!}
 
 ℤ[1/2]-minus-minus : (z : ℤ[1/2]) → z ＝ - (- z)
 ℤ[1/2]-minus-minus z = ≈-to-＝ z (- (- z)) (ℤ[1/2]-minus-minus' z)
-
+-}
 \end{code}
 
 -_ : ℤ[1/2] → ℤ[1/2]
