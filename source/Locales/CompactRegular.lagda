@@ -1286,14 +1286,23 @@ Stone locales are spectral.
 
 stone-locales-are-spectral : (F : Frame 𝓤 𝓥 𝓦)
                            → (is-stone F ⇒ is-spectral F) holds
-stone-locales-are-spectral F (κ , ζ) =
+stone-locales-are-spectral F σ@(κ , ζ) =
  ∥∥-rec (holds-is-prop (is-spectral F)) ♣ ζ
   where
    ♣ : zero-dimensionalᴰ F → is-spectral F holds
-   ♣ (ℬ , φ₁ , φ₂ , φ₃) = ∣ ℬ , {!!} , ψ₁ , {!!} ∣
+   ♣ (ℬ , δ , ψ) = ∣ ℬ , δ , ϑ , † ∣
     where
-     ψ₁ : consists-of-compact-opens F ℬ holds
-     ψ₁ is = clopens-are-compact-in-compact-frames F {!!} {!!} {!!}
+     ϑ : consists-of-compact-opens F ℬ holds
+     ϑ is = pr₁ (clopen-iff-compact-in-stone-frame F σ (ℬ [ is ])) (ψ is)
+
+     †₁ : contains-top F ℬ holds
+     †₁ = {!!}
+
+     †₂ : {!!}
+     †₂ = {!!}
+
+     † : closed-under-finite-meets F ℬ holds
+     † = †₁ , {!!}
 
 \end{code}
 
