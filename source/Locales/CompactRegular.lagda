@@ -1325,49 +1325,6 @@ compact-opens-are-basic-in-compact-frames F ℬ β κ x ϟ  =
      → ∥ Σ i ꞉ index ℬ , x ＝ ℬ [ i ] ∥
    † (i , p) = ∣ 𝒥 [ i ] , {!!} ∣
 
-compacts-are-basic-in-spectralᴰ-frames : (F : Frame 𝓤 𝓥 𝓦)
-                                       → (σ : spectralᴰ F)
-                                       → (U : ⟨ F ⟩)
-                                       → is-compact-open F U holds
-                                       → let
-                                          ℬ  = basisₛ F σ
-                                          I  = index ℬ
-                                         in
-                                          ∥ Σ i ꞉ I , U ＝ ℬ [ i ] ∥
-compacts-are-basic-in-spectralᴰ-frames {𝓦 = 𝓦} F σ@(_ , β , _) U κ =
- ∥∥-rec ∥∥-is-prop γ (κ ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆ d p₁)
-  where
-   open PosetReasoning (poset-of F)
-
-   ℬ = basisₛ F σ
-
-   𝒥 : Fam 𝓦 (index ℬ)
-   𝒥 = pr₁ (pr₁ β U)
-
-   p : U ＝ ⋁[ F ] ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆
-   p = covers F ℬ (pr₁ β) U
-
-   p₁ : (U ≤[ poset-of F ] (⋁[ F ] ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆)) holds
-   p₁ = reflexivity+ (poset-of F) p
-
-   p₂ : ((⋁[ F ] ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆) ≤[ poset-of F ] U) holds
-   p₂ = reflexivity+ (poset-of F) (p ⁻¹)
-
-   d : is-directed (poset-of F) ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆ holds
-   d = pr₂ β U
-
-   γ : Σ k ꞉ index 𝒥 , (U ≤[ poset-of F ] (ℬ [ 𝒥 [ k ] ])) holds
-     → ∥ Σ i ꞉ index ℬ , U ＝ ℬ [ i ] ∥
-   γ (k , q) = ∣ 𝒥 [ k ] , ≤-is-antisymmetric (poset-of F) δ ϵ ∣
-    where
-     δ : (U ≤[ poset-of F ] (ℬ [ 𝒥 [ k ] ])) holds
-     δ = q
-
-     ϵ : ((ℬ [ 𝒥 [ k ] ]) ≤[ poset-of F ] U) holds
-     ϵ = ℬ [ 𝒥 [ k ] ]                ≤⟨ ⋁[ F ]-upper ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆ k ⟩
-         ⋁[ F ] ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆   ≤⟨ p₂                                 ⟩
-         U                            ■
-
 spectral-implies-compact : (F : Frame 𝓤 𝓥 𝓦) → (is-spectral F ⇒ is-compact F) holds
 spectral-implies-compact F σ = ∥∥-rec (holds-is-prop (is-compact F)) γ σ
  where
@@ -1380,6 +1337,20 @@ spectral-implies-compact F σ = ∥∥-rec (holds-is-prop (is-compact F)) γ σ
      where
       δ : ℬ [ t ] ＝ 𝟏[ F ]
       δ = only-𝟏-is-above-𝟏 F (ℬ [ t ]) (φ 𝟏[ F ])
+
+compacts-are-basic-in-spectralᴰ-frames : (F : Frame 𝓤 𝓥 𝓦)
+                                       → (σ : spectralᴰ F)
+                                       → (U : ⟨ F ⟩)
+                                       → is-compact-open F U holds
+                                       → let
+                                          ℬ  = basisₛ F σ
+                                          I  = index ℬ
+                                         in
+                                          ∥ Σ i ꞉ I , U ＝ ℬ [ i ] ∥
+compacts-are-basic-in-spectralᴰ-frames {𝓦 = 𝓦} F σ@(_ , β , _) U κ =
+ compact-opens-are-basic-in-compact-frames F (basisₛ F σ) β † U κ
+  where
+   † = spectral-implies-compact F ∣ σ ∣
 
 compacts-closed-under-∧-in-spectral-frames : (F : Frame 𝓤 𝓥 𝓦)
                                            → is-spectral F holds
