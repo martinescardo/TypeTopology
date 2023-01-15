@@ -1300,6 +1300,31 @@ stone-locales-are-spectral F (κ , ζ) =
 
 \begin{code}
 
+compact-opens-are-basic-in-compact-frames : (F : Frame 𝓤 𝓥 𝓦)
+                                          → (ℬ : Fam 𝓦 ⟨ F ⟩)
+                                          → is-directed-basis F ℬ
+                                          → is-compact F holds
+                                          → (x : ⟨ F ⟩)
+                                          → is-compact-open F x holds
+                                          → ∥ Σ i ꞉ index ℬ , x ＝ ℬ [ i ] ∥
+compact-opens-are-basic-in-compact-frames F ℬ β κ x ϟ  =
+ ∥∥-rec ∥∥-is-prop † (ϟ ⁅ ℬ [ i ] ∣ i ε 𝒥 ⁆ ð γ)
+  where
+   β₀ : is-basis-for F ℬ
+   β₀ = pr₁ β
+
+   𝒥 = covering-index-family F ℬ β₀ x
+
+   ð : is-directed (poset-of F) ⁅ ℬ [ i ] ∣ i ε 𝒥 ⁆ holds
+   ð = pr₂ β x
+
+   γ : (x ≤[ poset-of F ] (⋁[ F ] ⁅ ℬ [ i ] ∣ i ε 𝒥 ⁆)) holds
+   γ = reflexivity+ (poset-of F) (covers F ℬ β₀ x)
+
+   † : Σ i ꞉ index 𝒥 , ((x ≤[ poset-of F ] (ℬ [ 𝒥 [ i ] ])) holds)
+     → ∥ Σ i ꞉ index ℬ , x ＝ ℬ [ i ] ∥
+   † (i , p) = ∣ 𝒥 [ i ] , {!!} ∣
+
 compacts-are-basic-in-spectralᴰ-frames : (F : Frame 𝓤 𝓥 𝓦)
                                        → (σ : spectralᴰ F)
                                        → (U : ⟨ F ⟩)
