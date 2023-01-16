@@ -1020,6 +1020,6 @@ module PatchStone (X : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (𝒪 X) h
            patch-is-compact , patch-zero-dimensional
 
  patch-is-spectral : is-spectral (𝒪 Patch-X) holds
- patch-is-spectral = {!stone-locales-are-spectral!}
+ patch-is-spectral = stone-locales-are-spectral (𝒪 Patch-X) patch-is-stone
 
 \end{code}
