@@ -22,12 +22,12 @@ module Locales.UniversalPropertyOfPatch
        where
 
 open import UF.Subsingletons
-open import UF.Subsingleton-Combinators
+open import UF.Logic
 open import UF.Subsingletons-FunExt
 
 open AllCombinators pt fe
 open import UF.ImageAndSurjection
-open ImageAndSurjection pt
+open UF.ImageAndSurjection pt
 
 open import Locales.Frame pt fe
 open import Locales.CompactRegular pt fe
@@ -52,24 +52,15 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
               → is-stone (𝒪 X) holds
               → (𝒻 : X ─c→ A)
               → is-spectral-map (𝒪 A) (𝒪 X) 𝒻 holds
-              → is-contr (Σ 𝒻⁻ ꞉ (X ─c→ Patch-A) , ((x : ⟨ 𝒪 A ⟩) → 𝒻 .pr₁ x  ＝ 𝒻⁻ .pr₁ ‘ x ’))
+              → ∃! 𝒻⁻ ꞉ (X ─c→ Patch-A) , ((x : ⟨ 𝒪 A ⟩) → 𝒻 .pr₁ x  ＝ 𝒻⁻ .pr₁ ‘ x ’)
  ump-of-patch X 𝕤 𝒻 μ = ∥∥-rec (being-singleton-is-prop fe) γ σ
   where
    γ : spectralᴰ (𝒪 A)
-     → is-contr (Σ 𝒻⁻ ꞉ (X ─c→ Patch-A) , ((x : ⟨ 𝒪 A ⟩) → 𝒻 .pr₁ x  ＝ 𝒻⁻ .pr₁ ‘ x ’))
-   γ σᴰ = ∥∥-rec {!!} {!!} {!!}
+     → ∃! 𝒻⁻ ꞉ (X ─c→ Patch-A) , ((x : ⟨ 𝒪 A ⟩) → 𝒻 .pr₁ x  ＝ 𝒻⁻ .pr₁ ‘ x ’)
+   γ σᴰ = ∥∥-rec (∃!-is-prop fe) {!!} {!!}
     where
      open SmallPatchConstruction A σᴰ renaming (SmallPatch to Patchₛ-A)
      open BasisOfPatch A σᴰ
-
-
-     clopens-are-basic : (𝒿 : ⟨ 𝒪 Patch-A ⟩)
-                       → is-clopen (𝒪 Patch-A) 𝒿 holds
-                       → ∃ i ꞉ index ℬ-patch-↑ , 𝒿 ＝ ℬ-patch-↑ [ i ]
-     clopens-are-basic 𝒿 ϟ = {!∥∥-rec ? ? ? !}
-      where
-       ϡ : {!!}
-       ϡ = compacts-are-basic-in-spectralᴰ-frames (𝒪 Patch-A) {!!} 𝒿 {!!}
 
      𝒞𝓁ℴ𝓅 : 𝓤 ⁺  ̇
      𝒞𝓁ℴ𝓅 = Σ 𝒿 ꞉ ⟨ 𝒪 Patchₛ-A ⟩ , is-clopen (𝒪 Patchₛ-A) 𝒿 holds
