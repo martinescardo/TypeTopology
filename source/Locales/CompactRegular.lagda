@@ -922,6 +922,23 @@ clopens-are-closed-under-∨ F x y (x′ , ϡ₁ , ϟ₁) (y′ , ϡ₂ , ϟ₂)
    ‡ : (x ∨[ F ] y) ∨[ F ] (x′ ∧[ F ] y′) ＝ 𝟏[ F ]
    ‡ = only-𝟏-is-above-𝟏 F _ ‡₁
 
+clopens-are-closed-under-∧ : (F : Frame 𝓤 𝓥 𝓦) (x y : ⟨ F ⟩)
+                           → (is-clopen F x
+                           ⇒  is-clopen F y
+                           ⇒  is-clopen F (x ∧[ F ] y)) holds
+clopens-are-closed-under-∧ F x y ϟ₁@(x′ , φ₁ , φ₂) ϟ₂@(y′ , ψ₁ , ψ₂) = (x′ ∨[ F ] y′) , †
+ where
+  ϡ₁ : is-boolean-complement-of F x x′ holds
+  ϡ₁ = (x′ ∧[ F ] x ＝⟨ ∧[ F ]-is-commutative x′ x ⟩ x ∧[ F ] x′ ＝⟨ φ₁ ⟩ 𝟎[ F ] ∎)
+     , (x′ ∨[ F ] x ＝⟨ ∨[ F ]-is-commutative x′ x ⟩ x ∨[ F ] x′ ＝⟨ φ₂ ⟩ 𝟏[ F ] ∎)
+
+  ϡ₂ : is-boolean-complement-of F y y′ holds
+  ϡ₂ = (y′ ∧[ F ] y ＝⟨ ∧[ F ]-is-commutative y′ y ⟩ y ∧[ F ] y′ ＝⟨ ψ₁ ⟩ 𝟎[ F ] ∎)
+     , (y′ ∨[ F ] y ＝⟨ ∨[ F ]-is-commutative y′ y ⟩ y ∨[ F ] y′ ＝⟨ ψ₂ ⟩ 𝟏[ F ] ∎)
+
+  † : is-boolean-complement-of F (x′ ∨[ F ] y′) (x ∧[ F ] y) holds
+  † = ∧-complement F ϡ₁ ϡ₂
+
 directification-preserves-clopenness : (F : Frame 𝓤 𝓥 𝓦)
                                      → (ℬ : Fam 𝓦 ⟨ F ⟩)
                                      → (consists-of-clopens F ℬ
