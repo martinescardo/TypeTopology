@@ -1297,32 +1297,6 @@ spectral-yoneda {𝓦 = 𝓦} F σ U V χ =
 
 \end{code}
 
-Stone locales are spectral.
-
-\begin{code}
-
-stone-locales-are-spectral : (F : Frame 𝓤 𝓥 𝓦)
-                           → (is-stone F ⇒ is-spectral F) holds
-stone-locales-are-spectral F σ@(κ , ζ) =
- ∥∥-rec (holds-is-prop (is-spectral F)) ♣ ζ
-  where
-   ♣ : zero-dimensionalᴰ F → is-spectral F holds
-   ♣ (ℬ , δ , ψ) = ∣ ℬ , δ , ϑ , † ∣
-    where
-     ϑ : consists-of-compact-opens F ℬ holds
-     ϑ is = pr₁ (clopen-iff-compact-in-stone-frame F σ (ℬ [ is ])) (ψ is)
-
-     †₁ : contains-top F ℬ holds
-     †₁ = {!!}
-
-     †₂ : {!!}
-     †₂ = {!!}
-
-     † : closed-under-finite-meets F ℬ holds
-     † = †₁ , {!!}
-
-\end{code}
-
 
 \begin{code}
 
@@ -1372,6 +1346,19 @@ spectral-implies-compact F σ = ∥∥-rec (holds-is-prop (is-compact F)) γ σ
       δ : ℬ [ t ] ＝ 𝟏[ F ]
       δ = only-𝟏-is-above-𝟏 F (ℬ [ t ]) (φ 𝟏[ F ])
 
+clopens-are-basic-in-stone-locales : (F : Frame 𝓤 𝓥 𝓦)
+                                   → is-stone F holds
+                                   → (ℬ : Fam 𝓦 ⟨ F ⟩)
+                                   → is-directed-basis F ℬ
+                                   → (x : ⟨ F ⟩)
+                                   → is-clopen F x holds
+                                   → ∥ Σ i ꞉ index ℬ , x ＝ ℬ [ i ] ∥
+clopens-are-basic-in-stone-locales F (κ , _) ℬ δ x ζ =
+ compact-opens-are-basic-in-compact-frames F ℬ δ κ x †
+  where
+   † : is-compact-open F x holds
+   † = clopens-are-compact-in-compact-frames F κ x ζ
+
 compacts-are-basic-in-spectralᴰ-frames : (F : Frame 𝓤 𝓥 𝓦)
                                        → (σ : spectralᴰ F)
                                        → (U : ⟨ F ⟩)
@@ -1385,6 +1372,64 @@ compacts-are-basic-in-spectralᴰ-frames {𝓦 = 𝓦} F σ@(_ , β , _) U κ =
  compact-opens-are-basic-in-compact-frames F (basisₛ F σ) β † U κ
   where
    † = spectral-implies-compact F ∣ σ ∣
+
+\end{code}
+
+Stone locales are spectral.
+
+\begin{code}
+
+stone-locales-are-spectral : (F : Frame 𝓤 𝓥 𝓦)
+                           → (is-stone F ⇒ is-spectral F) holds
+stone-locales-are-spectral F σ@(κ , ζ) =
+ ∥∥-rec (holds-is-prop (is-spectral F)) ♣ ζ
+  where
+   open Meets (λ x y → x ≤[ poset-of F ] y) hiding (is-top)
+
+   ♣ : zero-dimensionalᴰ F → is-spectral F holds
+   ♣ (ℬ , δ , ψ) = ∣ ℬ , δ , ϑ , † ∣
+    where
+     ϑ : consists-of-compact-opens F ℬ holds
+     ϑ is = pr₁ (clopen-iff-compact-in-stone-frame F σ (ℬ [ is ])) (ψ is)
+
+     τ : ∥ Σ i ꞉ index ℬ , 𝟏[ F ] ＝ ℬ [ i ] ∥
+     τ = compact-opens-are-basic-in-compact-frames F ℬ δ κ 𝟏[ F ] κ
+
+     †₁ : contains-top F ℬ holds
+     †₁ = ∥∥-rec (holds-is-prop (contains-top F ℬ)) ‡₁ τ
+      where
+       ‡₁ : (Σ i ꞉ index ℬ , 𝟏[ F ] ＝ ℬ [ i ]) → contains-top F ℬ holds
+       ‡₁ (i , p) = ∣ i , transport (λ - → is-top F - holds) p (𝟏-is-top F) ∣
+
+     †₂ : closed-under-binary-meets F ℬ holds
+     †₂ i j = ∥∥-rec ∃-is-prop ‡₂ υ
+      where
+       χ : is-clopen F (ℬ [ i ] ∧[ F ] ℬ [ j ]) holds
+       χ = clopens-are-closed-under-∧ F (ℬ [ i ]) (ℬ [ j ]) (ψ i) (ψ j)
+
+       υ : ∥ Σ k ꞉ index ℬ , (ℬ [ i ]) ∧[ F ] (ℬ [ j ]) ＝ ℬ [ k ] ∥
+       υ = clopens-are-basic-in-stone-locales F σ ℬ δ (ℬ [ i ] ∧[ F ] ℬ [ j ]) χ
+
+       ‡₂ : (Σ k ꞉ index ℬ , (ℬ [ i ]) ∧[ F ] (ℬ [ j ]) ＝ ℬ [ k ])
+          → ∥ Σ k ꞉ index ℬ , ((ℬ [ k ]) is-glb-of (ℬ [ i ] , ℬ [ j ])) holds ∥
+       ‡₂ (k , p) = ∣ k , ‡₃ ∣
+        where
+         ρ₁ = ∧[ F ]-lower₁ (ℬ [ i ]) (ℬ [ j ])
+         ρ₂ = ∧[ F ]-lower₂ (ℬ [ i ]) (ℬ [ j ])
+         ρ₃ = λ { (z , p , q) → ∧[ F ]-greatest (ℬ [ i ]) (ℬ [ j ]) z p q }
+
+         ‡₃ : ((ℬ [ k ]) is-glb-of (ℬ [ i ] , ℬ [ j ])) holds
+         ‡₃ = transport
+               (λ - → (- is-glb-of (ℬ [ i ] , ℬ [ j ])) holds)
+               p
+               ((ρ₁ , ρ₂) , ρ₃)
+
+     † : closed-under-finite-meets F ℬ holds
+     † = †₁ , †₂
+
+\end{code}
+
+\begin{code}
 
 compacts-closed-under-∧-in-spectral-frames : (F : Frame 𝓤 𝓥 𝓦)
                                            → is-spectral F holds
