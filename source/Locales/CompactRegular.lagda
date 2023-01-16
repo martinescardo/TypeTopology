@@ -1336,6 +1336,8 @@ compact-opens-are-basic-in-compact-frames : (F : Frame 𝓤 𝓥 𝓦)
 compact-opens-are-basic-in-compact-frames F ℬ β κ x ϟ  =
  ∥∥-rec ∥∥-is-prop † (ϟ ⁅ ℬ [ i ] ∣ i ε 𝒥 ⁆ ð γ)
   where
+   open PosetReasoning (poset-of F)
+
    β₀ : is-basis-for F ℬ
    β₀ = pr₁ β
 
@@ -1347,9 +1349,15 @@ compact-opens-are-basic-in-compact-frames F ℬ β κ x ϟ  =
    γ : (x ≤[ poset-of F ] (⋁[ F ] ⁅ ℬ [ i ] ∣ i ε 𝒥 ⁆)) holds
    γ = reflexivity+ (poset-of F) (covers F ℬ β₀ x)
 
-   † : Σ i ꞉ index 𝒥 , ((x ≤[ poset-of F ] (ℬ [ 𝒥 [ i ] ])) holds)
+   † : Σ i ꞉ index 𝒥 , (x ≤[ poset-of F ] (ℬ [ 𝒥 [ i ] ])) holds
      → ∥ Σ i ꞉ index ℬ , x ＝ ℬ [ i ] ∥
-   † (i , p) = ∣ 𝒥 [ i ] , {!!} ∣
+   † (i , p) = ∣ 𝒥 [ i ] , ≤-is-antisymmetric (poset-of F) p q ∣
+    where
+     q : ((ℬ [ 𝒥 [ i ] ]) ≤[ poset-of F ] x) holds
+     q = ℬ [ 𝒥 [ i ] ]              ≤⟨ ⋁[ F ]-upper ⁅ ℬ [ i ] ∣ i ε 𝒥 ⁆ i ⟩
+         ⋁[ F ] ⁅ ℬ [ i ] ∣ i ε 𝒥 ⁆ ＝⟨ covers F ℬ β₀ x ⁻¹                ⟩ₚ
+         x                          ■
+
 
 spectral-implies-compact : (F : Frame 𝓤 𝓥 𝓦) → (is-spectral F ⇒ is-compact F) holds
 spectral-implies-compact F σ = ∥∥-rec (holds-is-prop (is-compact F)) γ σ
