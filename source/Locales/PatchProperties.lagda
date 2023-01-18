@@ -697,6 +697,24 @@ We define the following basis for Patch:
         (𝔠 k ∧[ 𝒪 Patch-X ] 𝔬 l) holds
    ※ = ∧-complement (𝒪 Patch-X) † ‡
 
+ ℬ-patchₛ-consists-of-clopens : consists-of-clopens (𝒪 Patchₛ-X) ℬ-patch holds
+ ℬ-patchₛ-consists-of-clopens (k , l) = (𝔬 k ∨[ 𝒪 Patchₛ-X ] 𝔠 l) , ※
+  where
+   open Complementation X σᴰ
+
+   † : is-boolean-complement-of (𝒪 Patchₛ-X) (𝔠 k) (𝔬 k) holds
+   † = closed-complements-open (ℬ [ k ]) (κ k)
+
+   ‡ : is-boolean-complement-of (𝒪 Patchₛ-X) (𝔬 l) (𝔠 l) holds
+   ‡ = open-complements-closed (ℬ [ l ]) (κ l)
+
+   ※ : is-boolean-complement-of
+        (𝒪 Patchₛ-X)
+        (𝔬 k ∨[ 𝒪 Patchₛ-X ] 𝔠 l)
+        (𝔠 k ∧[ 𝒪 Patch-X ] 𝔬 l)
+       holds
+   ※ = ∧-complement (𝒪 Patchₛ-X) † ‡
+
  ℬ-patch-↑ : Fam 𝓤 ⟨ 𝒪 Patchₛ-X ⟩
  ℬ-patch-↑ = directify (𝒪 Patchₛ-X) ℬ-patch
 
@@ -931,6 +949,17 @@ We first prove that this forms a basis.
         (main-covering-lemma 𝒿 ⁻¹)
         ((⋁[ 𝒪 Patch-X ]-upper (𝕔𝕠𝕧₁ 𝒿) , ⋁[ 𝒪 Patch-X ]-least (𝕔𝕠𝕧₁ 𝒿)))
 
+ ℬ-is-basis-for-patchₛ : is-basis-for (𝒪 Patchₛ-X) ℬ-patch
+ ℬ-is-basis-for-patchₛ 𝒿 = (basic-below 𝒿 , proj 𝒿) , ※
+  where
+   open Joins (λ x y → x ≤[ poset-of (𝒪 Patchₛ-X) ] y)
+
+   ※ : (𝒿 is-lub-of 𝕔𝕠𝕧₁ 𝒿) holds
+   ※ = transport
+        (λ - → (- is-lub-of (𝕔𝕠𝕧₁ 𝒿)) holds)
+        (main-covering-lemma 𝒿 ⁻¹)
+        (⋁[ 𝒪 Patchₛ-X ]-upper (𝕔𝕠𝕧₁ 𝒿) , ⋁[ 𝒪 Patchₛ-X ]-least (𝕔𝕠𝕧₁ 𝒿))
+
 
 \end{code}
 
@@ -1001,6 +1030,24 @@ module PatchStoneᴰ (X : Locale (𝓤 ⁺) 𝓤 𝓤) (σᴰ : spectralᴰ (�
     where
      γ₁ : consists-of-clopens (𝒪 Patch-X) ℬ-patch holds
      γ₁ = ℬ-patch-consists-of-clopens
+
+ patchₛ-zero-dimensional : is-zero-dimensional (𝒪 Patchₛ-X) holds
+ patchₛ-zero-dimensional = ∣ ℬ-patch-↑ , υ , γ ∣
+  where
+   β : is-basis-for (𝒪 Patchₛ-X) ℬ-patch-↑
+   β = directified-basis-is-basis (𝒪 Patchₛ-X) ℬ-patch ℬ-is-basis-for-patchₛ
+
+   υ : is-directed-basis (𝒪 Patchₛ-X) ℬ-patch-↑
+   υ = β , covers-of-directified-basis-are-directed (𝒪 Patchₛ-X) ℬ-patch ℬ-is-basis-for-patchₛ
+
+   γ : consists-of-clopens (𝒪 Patchₛ-X) ℬ-patch-↑ holds
+   γ = directification-preserves-clopenness (𝒪 Patchₛ-X) ℬ-patch γ₁
+    where
+     γ₁ : consists-of-clopens (𝒪 Patchₛ-X) ℬ-patch holds
+     γ₁ = ℬ-patchₛ-consists-of-clopens
+
+ patchₛ-is-stone : is-stone (𝒪 Patchₛ-X) holds
+ patchₛ-is-stone = patchₛ-is-compact , patchₛ-zero-dimensional
 
 \end{code}
 
