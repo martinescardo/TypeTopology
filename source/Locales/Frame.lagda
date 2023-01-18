@@ -1571,10 +1571,11 @@ directify-preserves-joins₀ F S x p =
  where
   open Joins (λ x y → x ≤[ poset-of F ] y)
 
-  q : x ＝ ⋁[ F ] directify F S
-  q = x                    ＝⟨ ⋁[ F ]-unique S x p           ⟩
-      ⋁[ F ] S             ＝⟨ directify-preserves-joins F S ⟩
-      ⋁[ F ] directify F S ∎
+  abstract
+   q : x ＝ ⋁[ F ] directify F S
+   q = x                    ＝⟨ ⋁[ F ]-unique S x p           ⟩
+       ⋁[ F ] S             ＝⟨ directify-preserves-joins F S ⟩
+       ⋁[ F ] directify F S ∎
 
 \end{code}
 
@@ -1597,12 +1598,13 @@ directified-basis-is-basis {𝓦 = 𝓦} F ℬ β = β↑
   𝒦 : ⟨ F ⟩ → Fam 𝓦 (List (index ℬ))
   𝒦 x = List (index (𝒥 x)) , (λ - → 𝒥 x [ - ]) <$>_
 
-  φ : (x : ⟨ F ⟩)
-    → (is : List (index (𝒥 x)))
-    → directify F ℬ [ (λ - → 𝒥 x [ - ]) <$> is ]
-    ＝ directify F ⁅ ℬ [ j ] ∣ j ε 𝒥 x ⁆ [ is ]
-  φ x []       = refl
-  φ x (i ∷ is) = ap (λ - → (_ ∨[ F ] -)) (φ x is)
+  abstract
+   φ : (x : ⟨ F ⟩)
+     → (is : List (index (𝒥 x)))
+     → directify F ℬ [ (λ - → 𝒥 x [ - ]) <$> is ]
+     ＝ directify F ⁅ ℬ [ j ] ∣ j ε 𝒥 x ⁆ [ is ]
+   φ x []       = refl
+   φ x (i ∷ is) = ap (λ - → (_ ∨[ F ] -)) (φ x is)
 
   ψ : (x : ⟨ F ⟩)
     → ⁅ directify F ℬ [ is ] ∣ is ε 𝒦 x ⁆ ＝ directify F ⁅ ℬ [ j ] ∣ j ε 𝒥 x ⁆
