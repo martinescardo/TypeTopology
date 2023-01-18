@@ -948,7 +948,9 @@ directification-preserves-clopenness F ℬ ξ []       = 𝟎-is-clopen F
 directification-preserves-clopenness F ℬ ξ (i ∷ is) =
  clopens-are-closed-under-∨ F (ℬ [ i ]) (directify F ℬ [ is ]) (ξ i) ℐℋ
   where
-   ℐℋ = directification-preserves-clopenness F ℬ ξ is
+   abstract
+    ℐℋ : is-clopen F (directify F ℬ [ is ]) holds
+    ℐℋ = directification-preserves-clopenness F ℬ ξ is
 
 \end{code}
 
