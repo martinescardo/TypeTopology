@@ -1635,7 +1635,7 @@ covers-of-directified-basis-are-directed : (F : Frame 𝓤 𝓥 𝓦)
                                             β↑ = directified-basis-is-basis F ℬ β
                                             𝒥↑ = pr₁ (β↑ x)
                                            in
-                                            is-directed F (⁅ ℬ↑ [ i ] ∣ i ε 𝒥↑ ⁆) holds
+                                            is-directed F ⁅ ℬ↑ [ i ] ∣ i ε 𝒥↑ ⁆ holds
 covers-of-directified-basis-are-directed {𝓦 = 𝓦} F ℬ β x =
  transport (λ - → is-directed F - holds) (ψ ⁻¹) ε
   where
