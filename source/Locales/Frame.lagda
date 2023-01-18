@@ -1644,16 +1644,18 @@ covers-of-directified-basis-are-directed {𝓦 = 𝓦} F ℬ β x =
    𝒦 : Fam 𝓦 (List (index ℬ))
    𝒦 = ⁅ (λ - → 𝒥 [ - ]) <$> is ∣ is ∶ List (index 𝒥) ⁆
 
-   φ : (is : List (index 𝒥))
-     → directify F ℬ [ (λ - → 𝒥 [ - ]) <$> is ]
-     ＝ directify F ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆ [ is ]
-   φ []       = refl
-   φ (i ∷ is) = ap (λ - → (_ ∨[ F ] -)) (φ is)
+   abstract
+    φ : (is : List (index 𝒥))
+      → directify F ℬ [ (λ - → 𝒥 [ - ]) <$> is ]
+      ＝ directify F ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆ [ is ]
+    φ []       = refl
+    φ (i ∷ is) = ap (λ - → (_ ∨[ F ] -)) (φ is)
 
-   ψ : ⁅ directify F ℬ [ is ] ∣ is ε 𝒦 ⁆ ＝ directify F ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆
-   ψ = to-Σ-＝ (refl , dfunext fe φ)
+    ψ : ⁅ directify F ℬ [ is ] ∣ is ε 𝒦 ⁆ ＝ directify F ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆
+    ψ = to-Σ-＝ (refl , dfunext fe φ)
 
-   ε = directify-is-directed F ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆
+    ε : is-directed F (directify F ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆) holds
+    ε = directify-is-directed F ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆
 
 directify-basis : (F : Frame 𝓤 𝓥 𝓦)
                 → (has-basis F ⇒ has-directed-basis F) holds
