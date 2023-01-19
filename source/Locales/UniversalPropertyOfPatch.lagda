@@ -181,6 +181,9 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
      to-clop : B₀ → 𝒞𝓁ℴ𝓅
      to-clop = Eqtofun B₀ 𝒞𝓁ℴ𝓅 iso₃
 
+     to-clop-is-injective : (x y : B₀) → to-clop x ＝ to-clop y → x ＝ y
+     to-clop-is-injective x y = equivs-are-lc to-clop (pr₂ iso₃)
+
      from-clop : 𝒞𝓁ℴ𝓅 → B₀
      from-clop = Eqtofun 𝒞𝓁ℴ𝓅 B₀ (≃-sym iso₃)
 
@@ -256,6 +259,11 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
          _≼ᵢ_ : B₀ → B₀ → Ω 𝓤
          x ≼ᵢ y = to-clop x ≼ₓ to-clop y
 
+
+         to-clop-reflects-order : (x y : B₀)
+                                → (to-clop x ≼ₓ to-clop y ⇒ x ≼ᵢ y) holds
+         to-clop-reflects-order x y p = p
+
          𝟏ᵢ : B₀
          𝟏ᵢ = from-clop 𝟏ₓ
 
@@ -275,19 +283,33 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
          d = _≼ᵢ_ , 𝟏ᵢ , _⋏ᵢ_ , 𝟎ᵢ , _⋎ᵢ_ , ¬ᵢ_
 
          ρ : is-partial-order B₀ _≼ᵢ_
-         ρ = (ρ₁ , ρ₂) , {!!}
+         ρ = (ρ₁ , ρ₂) , ρ₃
           where
            ρ₁ : (x : B₀) → (x ≼ᵢ x) holds
            ρ₁ x = ≤-is-reflexive (poset-of (𝒪 Patchₛ-A)) (pr₁ (to-clop x))
 
            ρ₂ : is-transitive _≼ᵢ_ holds
-           ρ₂ x y z = {!!}
+           ρ₂ x y z p q = ≤-is-transitive
+                           (poset-of (𝒪 Patchₛ-A))
+                           (pr₁ (to-clop x))
+                           (pr₁ (to-clop y))
+                           (pr₁ (to-clop z))
+                           p
+                           q
 
            ρ₃ : is-antisymmetric _≼ᵢ_
-           ρ₃ x y = {!≤-is-antisymmetric (poset-of (𝒪 Patchₛ-A)) ? ?!}
+           ρ₃ {x} {y} p q =
+            to-clop-is-injective x y
+             (to-subtype-＝ þ (≤-is-antisymmetric (poset-of (𝒪 Patchₛ-A)) p q))
+
+         ξ₁ : (x y : B₀) → Meets._is-glb-of_ _≼ᵢ_ (x ⋏ᵢ y) (x , y) holds
+         ξ₁ x y = ({!!} , {!!}) , {!!}
+          where
+           θ : ({!(pr₁ (to-clop x))!} ≤[ poset-of (𝒪 Patchₛ-A) ] {!!}) holds
+           θ = ∧[ 𝒪 Patchₛ-A ]-lower₁ (pr₁ (to-clop x)) (pr₁ (to-clop y))
 
          † : satisfies-ba-laws d
-         † = {!!} , {!!}
+         † = ρ , ξ₁ , {!!}
 
        η : ⟪ ℂ₀ ⟫ → ⟨ 𝒪 Patchₛ-A ⟩
        η = pr₁ ∘ to-clop
