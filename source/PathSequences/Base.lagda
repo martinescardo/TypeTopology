@@ -69,20 +69,30 @@ data PathSeq {X : 𝓤 ̇} : X → X → 𝓤 ̇ where
 
 _≡_ = PathSeq
 
--- Convenience: to have a more practical and visible Path Sequence
--- termination
+\end{code}
+
+Convenience: to have a more practical and visible Path Sequence
+termination
+
+\begin{code}
 _◃∎ : {X : 𝓤 ̇} {x y : X} → x ＝ y → x ≡ y
 p ◃∎ = p ◃∙ []
 
--- Convert to identity type and normalize.  The resulting
--- concatenation of identity types is normalized. This is shown in
--- PathSequences.Concat
+\end{code}
+
+Convert to identity type and normalize.  The resulting concatenation
+of identity types is normalized. This will be (is) shown in
+PathSequences.Concat
+
+\begin{code}
 ≡-to-＝ : {X : 𝓤 ̇} {x y : X}
         → x ≡ y → x ＝ y
 ≡-to-＝ [] = refl
 ≡-to-＝ (p ◃∙ s) = p ∙ ≡-to-＝ s
 
-syntax ≡-to-＝ s = [ s ↓]
+-- syntax ≡-to-＝ s = [ s ↓]
+
+[_↓] = ≡-to-＝ 
 
 \end{code}
 
@@ -96,11 +106,12 @@ record _＝ₛ_ {X : 𝓤 ̇}{x y : X} (s t : x ≡ y) : 𝓤 ̇ where
   constructor ＝ₛ-in
   field
     ＝ₛ-out : (≡-to-＝ s) ＝ (≡-to-＝ t)
-open _＝ₛ_
+open _＝ₛ_ public
 
 \end{code}
 
-Reasoning with path sequences
+Elementary reasoning with path sequences.  More of it is in
+PathSequences.Concat.
 
 \begin{code}
 
@@ -115,26 +126,11 @@ _ ∎∎ = []
 
 \end{code}
 
-Tests
-
-\begin{code}
-
-_ : {X : 𝓤 ̇} {x y : X} (s t : x ≡ y) (p : [ s ↓]  ＝ [ t ↓]) → s ＝ₛ t
-_ = λ { s t p → ＝ₛ-in p }
-
-module _ {X : 𝓤 ̇} {x y z t u : X} where
-  
-  _ : (a : x ＝ y) (b : y ＝ z) (c : z ＝ t) (d : t ＝ u)
-    → [ (a ◃∙ b ◃∙ c ◃∙ d ◃∎) ↓] ＝ a ∙ (b ∙ (c ∙ (d ∙ refl)))
-  _ = λ a b c d → refl
-
-
-\end{code}
-
 Fixities
 
 \begin{code}
 
+infix  30 [_↓]
 infix  90 _◃∎
 infixr 80 _◃∙_
 infix  30 _≡_
