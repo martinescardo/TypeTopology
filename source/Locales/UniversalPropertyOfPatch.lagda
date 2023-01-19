@@ -104,9 +104,13 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
            γ₂ = transport (λ - → (- ≼ᵏ 𝒿) holds) p ζ
 
      open PatchStoneᴰ A σᴰ
+     open PatchStone  A ∣ σᴰ ∣
+
+     þ : (𝒿 : ⟨ 𝒪 Patchₛ-A ⟩) → is-prop (is-clopen (𝒪 Patchₛ-A) 𝒿 holds)
+     þ = holds-is-prop ∘ is-clopen (𝒪 Patchₛ-A)
 
      iso : ℬ𝒶𝓈𝒾𝒸 ≃ 𝒞𝓁ℴ𝓅
-     iso = to , (section-retraction-equiv to (from , r) {!!})
+     iso = to , (section-retraction-equiv to (from , r) s)
       where
        to : ℬ𝒶𝓈𝒾𝒸 → 𝒞𝓁ℴ𝓅
        to (𝒿 , p) = 𝒿 , ∥∥-rec ((holds-is-prop (is-clopen (𝒪 Patchₛ-A) 𝒿))) † p
@@ -123,22 +127,65 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
                    (λ - → is-clopen (𝒪 Patchₛ-A) - holds)
                    eq (ℬ-patch-↑-consists-of-clopens k)
 
-         -- † = ∥∥-rec
-         --      (holds-is-prop (is-clopen (𝒪 Patchₛ-A) 𝒿))
-         --      ‡
-         --      patch-zero-dimensional
-
        from : 𝒞𝓁ℴ𝓅 → ℬ𝒶𝓈𝒾𝒸
-       from (𝒿 , p) = {!clopens-are-basic!}
+       from (𝒿 , p) = 𝒿 , ∥∥-rec ∃-is-prop † υ
+        where
+         † : Σ i ꞉ index ℬ-patch-↑ , (𝒿 ＝ ℬ-patch-↑ [ i ])
+           → ∃ i ꞉ index ℬ-patch-↑ , ℬ-patch-↑ [ i ] ＝ 𝒿
+         † (i , p) = ∣ i , (p ⁻¹) ∣
+
+         υ : ∥ Σ i ꞉ index ℬ-patch-↑ , 𝒿 ＝ ℬ-patch-↑ [ i ] ∥
+         υ = clopens-are-basic-in-stone-locales
+              (𝒪 Patchₛ-A)
+              patchₛ-is-stone
+              ℬ-patch-↑
+              ℬ-patch-↑-is-directed-basisₛ 𝒿 p
 
        r : (to ∘ from) ∼ id
-       r = {!!}
+       r (𝒿 , p) = to-subtype-＝ þ refl
+
+       ρ : (from ∘ to) ∼ id
+       ρ (𝒿 , p) = to-subtype-＝ (λ _ → ∃-is-prop) refl
+
+       s : is-section to
+       s = from , ρ
 
      -- 𝒻⁻ : X ─c→ Patchₛ-A
      -- 𝒻⁻ = {!!}
 
+     ψ : is-partial-order 𝒞𝓁ℴ𝓅 _≼ₓ_
+     ψ = (ψ₁ , ψ₂) , ψ₃
+      where
+       ψ₁ : (𝒿 : 𝒞𝓁ℴ𝓅) → (𝒿 ≼ₓ 𝒿) holds
+       ψ₁ (𝒿 , p) = ≤-is-reflexive (poset-of (𝒪 Patchₛ-A)) 𝒿
+
+       ψ₂ : is-transitive _≼ₓ_ holds
+       ψ₂ (𝒿 , _) (𝓀 , _) (𝓁 , _)= ≤-is-transitive (poset-of (𝒪 Patchₛ-A)) 𝒿 𝓀 𝓁
+
+       ψ₃ : is-antisymmetric _≼ₓ_
+       ψ₃ {(𝒿 , _)} {(𝓀 , _)} p q =
+        to-subtype-＝ þ ψ₄
+         where
+          ψ₄ : 𝒿 ＝ 𝓀
+          ψ₄ = ≤-is-antisymmetric (poset-of (𝒪 Patchₛ-A)) p q
+
+     B₀ : Set 𝓤
+     B₀ = pr₁ resize-basic
+
+     iso₂ : B₀ ≃ ℬ𝒶𝓈𝒾𝒸
+     iso₂ = pr₂ resize-basic
+
+     iso₃ : B₀ ≃ 𝒞𝓁ℴ𝓅
+     iso₃ = B₀ ≃⟨ iso₂ ⟩ ℬ𝒶𝓈𝒾𝒸 ≃⟨ iso ⟩ 𝒞𝓁ℴ𝓅 ■
+
+     to-clop : B₀ → 𝒞𝓁ℴ𝓅
+     to-clop = Eqtofun B₀ 𝒞𝓁ℴ𝓅 iso₃
+
+     from-clop : 𝒞𝓁ℴ𝓅 → B₀
+     from-clop = Eqtofun 𝒞𝓁ℴ𝓅 B₀ (≃-sym iso₃)
+
      ℂ : BooleanAlgebra (𝓤 ⁺) 𝓤
-     ℂ = 𝒞𝓁ℴ𝓅 , (_≼ₓ_ , 𝟏ₓ , _⋏ₓ_ , 𝟎ₓ , _⋎ₓ_ , ¡_) , {!!} , φ₁ , φ₂ , φ₃ , φ₄ , φ₅ , φ₆
+     ℂ = 𝒞𝓁ℴ𝓅 , (_≼ₓ_ , 𝟏ₓ , _⋏ₓ_ , 𝟎ₓ , _⋎ₓ_ , ¡_) , ψ , φ₁ , φ₂ , φ₃ , φ₄ , φ₅ , φ₆
       where
        𝟏ₓ : 𝒞𝓁ℴ𝓅
        𝟏ₓ = 𝟏[ 𝒪 Patchₛ-A ] , 𝟏-is-clopen (𝒪 Patchₛ-A)
@@ -147,7 +194,11 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
        (𝒿 , 𝒿′ , p) ⋏ₓ (𝓀 , 𝓀′ , q) =
         (𝒿 ∧[ 𝒪 Patchₛ-A ] 𝓀) , (𝒿′ ∨[ 𝒪 Patchₛ-A ] 𝓀′) , ※
          where
-          ※ : is-boolean-complement-of (𝒪 Patchₛ-A) (𝒿′ ∨[ 𝒪 Patchₛ-A ] 𝓀′) (𝒿 ∧[ 𝒪 Patchₛ-A ] 𝓀) holds
+          ※ : is-boolean-complement-of
+               (𝒪 Patchₛ-A)
+               (𝒿′ ∨[ 𝒪 Patchₛ-A ] 𝓀′)
+               (𝒿 ∧[ 𝒪 Patchₛ-A ] 𝓀)
+              holds
           ※ = ∧-complement (𝒪 Patchₛ-A) † ‡
            where
             † : is-boolean-complement-of (𝒪 Patchₛ-A) 𝒿 𝒿′ holds
@@ -164,7 +215,11 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
         (𝒿 ∨[ 𝒪 Patchₛ-A ] 𝓀) , (𝒿′ ∧[ 𝒪 Patchₛ-A ] 𝓀′) , ※
          where
           ※ : is-boolean-complement-of (𝒪 Patchₛ-A) (𝒿′ ∧[ 𝒪 Patchₛ-A ] 𝓀′) (𝒿 ∨[ 𝒪 Patchₛ-A ] 𝓀) holds
-          ※ = complementation-is-symmetric (𝒪 Patchₛ-A) (𝒿 ∨[ 𝒪 Patchₛ-A ] 𝓀) (𝒿′ ∧[ 𝒪 Patchₛ-A ] 𝓀′) (∧-complement (𝒪 Patchₛ-A) p q)
+          ※ = complementation-is-symmetric
+               (𝒪 Patchₛ-A)
+               (𝒿 ∨[ 𝒪 Patchₛ-A ] 𝓀)
+               (𝒿′ ∧[ 𝒪 Patchₛ-A ] 𝓀′)
+               (∧-complement (𝒪 Patchₛ-A) p q)
 
        ¡_ : 𝒞𝓁ℴ𝓅 → 𝒞𝓁ℴ𝓅
        ¡ (𝒿 , 𝒿′ , p) = 𝒿′ , 𝒿 , complementation-is-symmetric (𝒪 Patchₛ-A) 𝒿′ 𝒿 p
@@ -188,13 +243,46 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
        φ₄ : (𝒿 : 𝒞𝓁ℴ𝓅) → (𝟎ₓ ≼ₓ 𝒿) holds
        φ₄ (𝒿 , _) = 𝟎-is-bottom (𝒪 Patchₛ-A) 𝒿
 
-       φ₅ : (𝒿 𝓀 : 𝒞𝓁ℴ𝓅) → {!!}
-       φ₅ = {!!}
+       φ₅ : (𝒿 𝓀 𝓁 : 𝒞𝓁ℴ𝓅) → 𝒿 ⋏ₓ (𝓀 ⋎ₓ 𝓁) ＝ (𝒿 ⋏ₓ 𝓀) ⋎ₓ (𝒿 ⋏ₓ 𝓁)
+       φ₅ (𝒿 , _) (𝓀 , _) (𝓁 , _) =
+        to-subtype-＝ þ (binary-distributivity (𝒪 Patchₛ-A) 𝒿 𝓀 𝓁)
 
        φ₆ : (𝒿 : 𝒞𝓁ℴ𝓅) → (𝒿 ⋏ₓ (¡ 𝒿) ＝ 𝟎ₓ) × (𝒿 ⋎ₓ (¡ 𝒿) ＝ 𝟏ₓ)
-       φ₆ (𝒿 , p) = {!!} , {!!}
+       φ₆ (𝒿 , 𝒿′ , p , q) = to-subtype-＝ þ p , to-subtype-＝ þ q
+
+       ℂ₀ : BooleanAlgebra 𝓤 𝓤
+       ℂ₀ = B₀ , d , {!!}
+        where
+         _≼ᵢ_ : B₀ → B₀ → Ω 𝓤
+         x ≼ᵢ y = to-clop x ≼ₓ to-clop y
+
+         𝟏ᵢ : B₀
+         𝟏ᵢ = from-clop 𝟏ₓ
+
+         𝟎ᵢ : B₀
+         𝟎ᵢ = from-clop 𝟎ₓ
+
+         d : ba-data 𝓤 B₀
+         d = _≼ᵢ_ , 𝟏ᵢ , {!!} , (𝟎ᵢ , {!!})
+
+       η : ⟪ ℂ₀ ⟫ → ⟨ 𝒪 Patchₛ-A ⟩
+       η = pr₁ ∘ to-clop
+
+       ϟ : contains-compact-opens (𝒪 Patchₛ-A) ℂ₀ η holds
+       ϟ 𝒿 κ = ∥∥-rec
+                ∃-is-prop
+                ※
+                (compact-opens-are-basic-in-compact-frames
+                  (𝒪 Patchₛ-A)
+                  ℬ-patch-↑
+                  ℬ-patch-↑-is-directed-basisₛ
+                  patchₛ-is-compact 𝒿 κ )
+        where
+         ※ : Σ i ꞉ index ℬ-patch-↑ , 𝒿 ＝ ℬ-patch-↑ [ i ]
+           → ∃ (λ b → η b ＝ 𝒿)
+         ※ (i , p) = ∣ (from-clop (ℬ-patch-↑ [ i ] , {!!})) , {!!} ∣
 
        ext : {!!}
-       ext = {!extension-lemma ℂ ?!}
+       ext = extension-lemma ℂ₀ (𝒪 Patchₛ-A) (𝒪 X) η {!!} patchₛ-is-spectral {!!} {!!} {!!} ϟ {!!} {!!}
 
 \end{code}

@@ -1031,14 +1031,18 @@ module PatchStoneᴰ (X : Locale (𝓤 ⁺) 𝓤 𝓤) (σᴰ : spectralᴰ (�
      γ₁ : consists-of-clopens (𝒪 Patch-X) ℬ-patch holds
      γ₁ = ℬ-patch-consists-of-clopens
 
+ ℬ-patch-↑-is-directed-basisₛ : is-directed-basis (𝒪 Patchₛ-X) ℬ-patch-↑
+ ℬ-patch-↑-is-directed-basisₛ =
+  β , covers-of-directified-basis-are-directed (𝒪 Patchₛ-X) ℬ-patch ℬ-is-basis-for-patchₛ
+   where
+    β : is-basis-for (𝒪 Patchₛ-X) ℬ-patch-↑
+    β = directified-basis-is-basis (𝒪 Patchₛ-X) ℬ-patch ℬ-is-basis-for-patchₛ
+
  patchₛ-zero-dimensional : is-zero-dimensional (𝒪 Patchₛ-X) holds
- patchₛ-zero-dimensional = ∣ ℬ-patch-↑ , υ , γ ∣
+ patchₛ-zero-dimensional = ∣ ℬ-patch-↑ , ℬ-patch-↑-is-directed-basisₛ , γ ∣
   where
    β : is-basis-for (𝒪 Patchₛ-X) ℬ-patch-↑
    β = directified-basis-is-basis (𝒪 Patchₛ-X) ℬ-patch ℬ-is-basis-for-patchₛ
-
-   υ : is-directed-basis (𝒪 Patchₛ-X) ℬ-patch-↑
-   υ = β , covers-of-directified-basis-are-directed (𝒪 Patchₛ-X) ℬ-patch ℬ-is-basis-for-patchₛ
 
    γ : consists-of-clopens (𝒪 Patchₛ-X) ℬ-patch-↑ holds
    γ = directification-preserves-clopenness (𝒪 Patchₛ-X) ℬ-patch γ₁
@@ -1048,6 +1052,9 @@ module PatchStoneᴰ (X : Locale (𝓤 ⁺) 𝓤 𝓤) (σᴰ : spectralᴰ (�
 
  patchₛ-is-stone : is-stone (𝒪 Patchₛ-X) holds
  patchₛ-is-stone = patchₛ-is-compact , patchₛ-zero-dimensional
+
+ patchₛ-is-spectral : is-spectral (𝒪 Patchₛ-X) holds
+ patchₛ-is-spectral = stone-locales-are-spectral (𝒪 Patchₛ-X) patchₛ-is-stone
 
 \end{code}
 

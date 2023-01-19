@@ -325,7 +325,7 @@ contains-compact-opens L B η =
 
 \begin{code}
 
-extension-lemma : (B : BooleanAlgebra 𝓦 𝓥) (L L′ : Frame 𝓤 𝓦 𝓦)
+extension-lemma : (B : BooleanAlgebra 𝓦 𝓦) (L L′ : Frame 𝓤 𝓦 𝓦)
                 → (η : ⟪ B ⟫ → ⟨ L ⟩)
                 → is-ba-embedding B L η holds
                 → is-spectral L holds
