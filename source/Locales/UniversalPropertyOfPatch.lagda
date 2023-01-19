@@ -251,7 +251,7 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
        φ₆ (𝒿 , 𝒿′ , p , q) = to-subtype-＝ þ p , to-subtype-＝ þ q
 
        ℂ₀ : BooleanAlgebra 𝓤 𝓤
-       ℂ₀ = B₀ , d , {!!}
+       ℂ₀ = B₀ , d , †
         where
          _≼ᵢ_ : B₀ → B₀ → Ω 𝓤
          x ≼ᵢ y = to-clop x ≼ₓ to-clop y
@@ -262,8 +262,32 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
          𝟎ᵢ : B₀
          𝟎ᵢ = from-clop 𝟎ₓ
 
+         _⋏ᵢ_ : B₀ → B₀ → B₀
+         x ⋏ᵢ y = from-clop (to-clop x ⋏ₓ to-clop y)
+
+         _⋎ᵢ_ : B₀ → B₀ → B₀
+         x ⋎ᵢ y = from-clop (to-clop x ⋎ₓ to-clop y)
+
+         ¬ᵢ_ : B₀ → B₀
+         ¬ᵢ_ = from-clop ∘ ¡_ ∘ to-clop
+
          d : ba-data 𝓤 B₀
-         d = _≼ᵢ_ , 𝟏ᵢ , {!!} , (𝟎ᵢ , {!!})
+         d = _≼ᵢ_ , 𝟏ᵢ , _⋏ᵢ_ , 𝟎ᵢ , _⋎ᵢ_ , ¬ᵢ_
+
+         ρ : is-partial-order B₀ _≼ᵢ_
+         ρ = (ρ₁ , ρ₂) , {!!}
+          where
+           ρ₁ : (x : B₀) → (x ≼ᵢ x) holds
+           ρ₁ x = ≤-is-reflexive (poset-of (𝒪 Patchₛ-A)) (pr₁ (to-clop x))
+
+           ρ₂ : is-transitive _≼ᵢ_ holds
+           ρ₂ x y z = {!!}
+
+           ρ₃ : is-antisymmetric _≼ᵢ_
+           ρ₃ x y = {!≤-is-antisymmetric (poset-of (𝒪 Patchₛ-A)) ? ?!}
+
+         † : satisfies-ba-laws d
+         † = {!!} , {!!}
 
        η : ⟪ ℂ₀ ⟫ → ⟨ 𝒪 Patchₛ-A ⟩
        η = pr₁ ∘ to-clop
