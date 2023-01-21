@@ -179,13 +179,19 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
      iso₃ = B₀ ≃⟨ iso₂ ⟩ ℬ𝒶𝓈𝒾𝒸 ≃⟨ iso ⟩ 𝒞𝓁ℴ𝓅 ■
 
      to-clop : B₀ → 𝒞𝓁ℴ𝓅
-     to-clop = Eqtofun B₀ 𝒞𝓁ℴ𝓅 iso₃
+     to-clop = pr₁ iso₃
 
      to-clop-is-injective : (x y : B₀) → to-clop x ＝ to-clop y → x ＝ y
      to-clop-is-injective x y = equivs-are-lc to-clop (pr₂ iso₃)
 
      from-clop : 𝒞𝓁ℴ𝓅 → B₀
      from-clop = Eqtofun 𝒞𝓁ℴ𝓅 B₀ (≃-sym iso₃)
+
+     ♣ : to-clop ∘ from-clop ∼ id
+     ♣ = pr₂ (equivs-have-sections to-clop (pr₂ iso₃))
+
+     ♥ : from-clop ∘ to-clop ∼ id
+     ♥ 𝓍 = {!!}
 
      ℂ : BooleanAlgebra (𝓤 ⁺) 𝓤
      ℂ = 𝒞𝓁ℴ𝓅 , (_≼ₓ_ , 𝟏ₓ , _⋏ₓ_ , 𝟎ₓ , _⋎ₓ_ , ¡_) , ψ , φ₁ , φ₂ , φ₃ , φ₄ , φ₅ , φ₆
@@ -303,10 +309,7 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
              (to-subtype-＝ þ (≤-is-antisymmetric (poset-of (𝒪 Patchₛ-A)) p q))
 
          ξ₁ : (x y : B₀) → Meets._is-glb-of_ _≼ᵢ_ (x ⋏ᵢ y) (x , y) holds
-         ξ₁ x y = ({!!} , {!!}) , {!!}
-          where
-           θ : ({!(pr₁ (to-clop x))!} ≤[ poset-of (𝒪 Patchₛ-A) ] {!!}) holds
-           θ = ∧[ 𝒪 Patchₛ-A ]-lower₁ (pr₁ (to-clop x)) (pr₁ (to-clop y))
+         ξ₁ x y = {!!}
 
          † : satisfies-ba-laws d
          † = ρ , ξ₁ , {!!}
@@ -325,8 +328,21 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
                   patchₛ-is-compact 𝒿 κ )
         where
          ※ : Σ i ꞉ index ℬ-patch-↑ , 𝒿 ＝ ℬ-patch-↑ [ i ]
-           → ∃ (λ b → η b ＝ 𝒿)
-         ※ (i , p) = ∣ (from-clop (ℬ-patch-↑ [ i ] , {!!})) , {!!} ∣
+           → ∃ b ꞉ ⟪ ℂ₀ ⟫ , η b ＝ 𝒿
+         ※ (i , p) = ∣ from-clop (ℬ-patch-↑ [ i ] , foo) , ♠ ∣
+          where
+           abstract
+            foo : is-clopen (𝒪 Patchₛ-A) (ℬ-patch-↑ [ i ]) holds
+            foo = directification-preserves-clopenness (𝒪 Patchₛ-A) ℬ-patch ℬ-patchₛ-consists-of-clopens i
+
+           𝓍 : 𝒞𝓁ℴ𝓅
+           𝓍 = ℬ-patch-↑ [ i ] , foo
+
+           ♠ : η (from-clop 𝓍) ＝ 𝒿
+           ♠ = η (from-clop 𝓍)               ＝⟨ refl         ⟩
+               pr₁ (to-clop (from-clop 𝓍))   ＝⟨ ap pr₁ (♣ 𝓍) ⟩
+               pr₁ 𝓍                         ＝⟨ p ⁻¹         ⟩
+               𝒿                             ∎
 
        ext : {!!}
        ext = extension-lemma ℂ₀ (𝒪 Patchₛ-A) (𝒪 X) η {!!} patchₛ-is-spectral {!!} {!!} {!!} ϟ {!!} {!!}
