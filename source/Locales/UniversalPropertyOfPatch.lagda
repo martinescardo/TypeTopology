@@ -344,7 +344,14 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
                pr₁ 𝓍                         ＝⟨ p ⁻¹         ⟩
                𝒿                             ∎
 
-       ext : {!!}
-       ext = extension-lemma ℂ₀ (𝒪 Patchₛ-A) (𝒪 X) η {!!} patchₛ-is-spectral {!!} {!!} {!!} ϟ {!!} {!!}
+       h : ⟪ ℂ₀ ⟫ → ⟨ 𝒪 X ⟩
+       h = {!!}
+
+       h-is-a-lattice-homomorphism : is-lattice-homomorphism ℂ₀ (𝒪 X) h holds
+       h-is-a-lattice-homomorphism = {!!}
+
+       ext : ∃! 𝒻⁻⋆ ꞉ (⟨ 𝒪 Patchₛ-A ⟩ → ⟨ 𝒪 X ⟩)
+           , ((is-a-frame-homomorphism (𝒪 Patchₛ-A) (𝒪 X) 𝒻⁻⋆ holds) × (h ＝ 𝒻⁻⋆ ∘ η))
+       ext = extension-lemma ℂ₀ (𝒪 Patchₛ-A) (𝒪 X) η {!!} patchₛ-is-spectral {!!} {!!} {!!} ϟ h h-is-a-lattice-homomorphism
 
 \end{code}
