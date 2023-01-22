@@ -48,6 +48,148 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
  open PatchConstruction A σ renaming (Patch to Patch-A)
  open ClosedNucleus A σ
 
+\end{code}
+
+\begin{code}
+
+ module AlgebraOfClopensOfPatch (σᴰ : spectralᴰ (𝒪 A)) where
+
+  open SmallPatchConstruction A σᴰ renaming (SmallPatch to Patchₛ-A)
+  open BasisOfPatch A σᴰ
+  open PatchStoneᴰ A σᴰ
+
+\end{code}
+
+Throughout this module, we will have to keep referring to the fact that being
+clopen is a proposition so we introduce the shorthand `þ` (Old Norse letter
+Thorn) for this.
+
+\begin{code}
+
+  þ : (𝒿 : ⟨ 𝒪 Patchₛ-A ⟩) → is-prop (is-clopen (𝒪 Patchₛ-A) 𝒿 holds)
+  þ = holds-is-prop ∘ is-clopen (𝒪 Patchₛ-A)
+
+\end{code}
+
+We also add a shorthand for the fact that the basis of Patch(A) consists of
+clopens. Using this proof results in the typechecking taking an unreasonably
+long time so we mark it as `abstract` to avoid this.
+
+\begin{code}
+
+  abstract
+   𝕫 : (i : index ℬ-patch-↑) → is-clopen (𝒪 Patchₛ-A) (ℬ-patch-↑ [ i ]) holds
+   𝕫 = directification-preserves-clopenness
+        (𝒪 Patchₛ-A)
+        ℬ-patch
+        ℬ-patchₛ-consists-of-clopens
+
+\end{code}
+
+We denote by `𝒞𝓁ℴ𝓅` the type of clopens of Patch(A).
+
+\begin{code}
+
+  𝒞𝓁ℴ𝓅 : 𝓤 ⁺  ̇
+  𝒞𝓁ℴ𝓅 = Σ 𝒿 ꞉ ⟨ 𝒪 Patch-A ⟩ , is-clopen (𝒪 Patchₛ-A) 𝒿 holds
+
+\end{code}
+
+Note that this type lives in 𝓤⁺ and not 𝓤 which is to say that is not a priori
+small. Before we proceed to prove the universal property of patch, we will first
+show that this type can be resized.
+
+We now define `ℬ𝒶𝓈𝒾𝒸`, the type of _basic opens_ of Patch(A), that is equivalent
+to `𝒞𝓁ℴ𝓅` in the case of a Stone locale.
+
+\begin{code}
+
+  ℬ𝒶𝓈𝒾𝒸 : 𝓤 ⁺  ̇
+  ℬ𝒶𝓈𝒾𝒸 = Σ 𝒿 ꞉ ⟨ 𝒪 Patchₛ-A ⟩ , ∃ i ꞉ index ℬ-patch-↑ , ℬ-patch-↑ [ i ] ＝ 𝒿
+
+\end{code}
+
+To show that `ℬ𝒶𝓈𝒾𝒸` and `𝒞𝓁ℴ𝓅` are equivalent, we define the following pair of
+maps forming a section-retraction pair:
+
+\begin{code}
+
+  𝔰₁ : ℬ𝒶𝓈𝒾𝒸 → 𝒞𝓁ℴ𝓅
+  𝔰₁ (𝒿 , p) = 𝒿 , ∥∥-rec (þ 𝒿) † p
+   where
+    † : Σ i ꞉ index ℬ-patch-↑ , ℬ-patch-↑ [ i ] ＝ 𝒿
+      → is-clopen (𝒪 Patchₛ-A) 𝒿 holds
+    † (i , q) = transport (λ - → is-clopen (𝒪 Patchₛ-A) - holds) q (𝕫 i)
+
+  𝔯₁ : 𝒞𝓁ℴ𝓅 → ℬ𝒶𝓈𝒾𝒸
+  𝔯₁ (𝒿 , p) = 𝒿 , ∥∥-rec ∃-is-prop † γ
+   where
+    γ : ∃ i ꞉ index ℬ-patch-↑ , 𝒿 ＝ ℬ-patch-↑ [ i ]
+    γ = clopens-are-basic-in-stone-locales
+         (𝒪 Patchₛ-A)
+         patchₛ-is-stone
+         ℬ-patch-↑
+         ℬ-patch-↑-is-directed-basisₛ
+         𝒿
+         p
+
+    † : Σ i ꞉ index ℬ-patch-↑ , 𝒿 ＝ ℬ-patch-↑ [ i ]
+      → ∃ i ꞉ index ℬ-patch-↑ , ℬ-patch-↑ [ i ] ＝ 𝒿
+    † (i , p) = ∣ i , (p ⁻¹) ∣
+
+  𝔰₁-has-section : has-section 𝔰₁
+  𝔰₁-has-section = 𝔯₁ , †
+   where
+    † : 𝔰₁ ∘ 𝔯₁ ∼ id
+    † (𝒿 , _) = to-subtype-＝ þ (refl {x = 𝒿})
+
+  𝔰₁-is-section : is-section 𝔰₁
+  𝔰₁-is-section = 𝔯₁ , †
+   where
+    † : 𝔯₁ ∘ 𝔰₁ ∼ id
+    † (𝒿 , _) = to-subtype-＝ (λ _ → ∃-is-prop) (refl {x = 𝒿})
+
+  basic-is-equivalent-to-clop : ℬ𝒶𝓈𝒾𝒸 ≃ 𝒞𝓁ℴ𝓅
+  basic-is-equivalent-to-clop =
+   𝔰₁ , section-retraction-equiv 𝔰₁ 𝔰₁-has-section 𝔰₁-is-section
+
+\end{code}
+
+We now proceed to show that the type `ℬ𝒶𝓈𝒾𝒸` is small. Let `B` and `β` denote
+the index and the enumeration function of the family of basic opens of Patch(A)
+respectively.
+
+\begin{code}
+
+  B : 𝓤  ̇
+  B = index ℬ-patch-↑
+
+  β : index ℬ-patch-↑ → ⟨ 𝒪 Patchₛ-A ⟩
+  β = λ - → ℬ-patch-↑ [ - ]
+
+\end{code}
+
+We can show patch Patch(A) is locally small by using the logical equivalence
+between the pointwise nuclei ordering and the basic one.
+
+\begin{code}
+
+  patch-is-locally-small : ⟨ 𝒪 Patchₛ-A ⟩ is-locally 𝓤 small
+  patch-is-locally-small 𝒿 𝓀 = (𝒿 ＝ᵏ 𝓀) holds , †
+   where
+    † : (𝒿 ＝ᵏ 𝓀) holds ≃ (𝒿 ＝ 𝓀)
+    † = {!!}
+
+\end{code}
+
+\begin{code}
+
+  basic-is-small : ℬ𝒶𝓈𝒾𝒸 is 𝓤 small
+  basic-is-small =
+   sr β (B , ≃-refl B) {!!} carrier-of-[ poset-of (𝒪 Patchₛ-A) ]-is-set -- (B , ≃-refl B) † carrier-of-[ poset-of (𝒪 Patchₛ-A) ]-is-set
+
+\end{code}
+
  ump-of-patch : (X : Locale (𝓤 ⁺) 𝓤 𝓤)
               → is-stone (𝒪 X) holds
               → (𝒻 : X ─c→ A)
