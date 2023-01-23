@@ -42,7 +42,7 @@ transport-ordinal-structure ua X Y = γ
 
 \end{code}
 
-The above can be done without univance.
+The above can be done without univalence.
 
 We could hope to get, more generally,
 
