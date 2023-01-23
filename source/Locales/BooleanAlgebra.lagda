@@ -8,6 +8,8 @@ The main result needed in this module is the extension lemma.
 
 open import MLTT.Spartan hiding (𝟚)
 open import UF.Base
+open import UF.Equiv using (is-equiv; equivs-are-lc; equivs-are-sections;
+                            equivs-have-sections)
 open import UF.PropTrunc
 open import UF.FunExt
 open import UF.Size
@@ -167,6 +169,9 @@ syntax join-of-ba B x y = x ⋎[ B ] y
                → (b : ⟪ B ⟫) → (⊥[ B ] ≤[ poset-of-ba B ] b) holds
 ⊥[ _ , _ , φ ]-is-bottom = pr₁ (pr₂ (pr₂ (pr₂ (pr₂ φ))))
 
+¬[_]_ : (B : BooleanAlgebra 𝓤 𝓥) → ⟪ B ⟫ → ⟪ B ⟫
+¬[ B ] x = pr₂ (pr₂ (pr₂ (pr₂ (pr₂ (pr₁ (pr₂ B)))))) x
+
 \end{code}
 
 \begin{code}
@@ -189,6 +194,25 @@ is-lattice-homomorphism {𝓤′} {𝓥′} {𝓤} {𝓥} B L η = β ∧ γ ∧
 
   ϵ : Ω (𝓤′ ⊔ 𝓤)
   ϵ = Ɐ x ∶ ⟪ B ⟫ , Ɐ y ∶ ⟪ B ⟫ , η (x ⋎[ B ] y) ＝[ iss ]＝ η x ∨[ L ] η y
+
+is-ba-homomorphism : (B₁ : BooleanAlgebra 𝓤 𝓥) (B₂ : BooleanAlgebra 𝓤' 𝓥')
+                   → (f : ⟪ B₁ ⟫ → ⟪ B₂ ⟫) → Ω (𝓤 ⊔ 𝓤')
+is-ba-homomorphism {𝓤} {𝓥} {𝓤'} {𝓥'} B₁ B₂ f = β ∧ γ ∧ δ ∧ ϵ
+ where
+  σ : is-set ⟪ B₂ ⟫
+  σ = carrier-of-[ poset-of-ba B₂ ]-is-set
+
+  β : Ω 𝓤'
+  β = f ⊤[ B₁ ] ＝[ σ ]＝ ⊤[ B₂ ]
+
+  γ : Ω (𝓤 ⊔ 𝓤')
+  γ = Ɐ x ∶ ⟪ B₁ ⟫ , Ɐ y ∶ ⟪ B₁ ⟫ , f (x ⋏[ B₁ ] y) ＝[ σ ]＝ f x ⋏[ B₂ ] f y
+
+  δ : Ω 𝓤'
+  δ = f ⊥[ B₁ ] ＝[ σ ]＝ ⊥[ B₂ ]
+
+  ϵ : Ω (𝓤 ⊔ 𝓤')
+  ϵ = Ɐ x ∶ ⟪ B₁ ⟫ , Ɐ y ∶ ⟪ B₁ ⟫ , f (x ⋎[ B₁ ] y) ＝[ σ ]＝ f x ⋎[ B₂ ] f y
 
 lattice-homomorphisms-are-monotone : (B : BooleanAlgebra 𝓤′ 𝓥′) (L : Frame 𝓤 𝓥 𝓦)
                                     → (h : ⟪ B ⟫ → ⟨ L ⟩)
@@ -719,5 +743,72 @@ The map `h⁻` is the _unique_ map making the diagram commute.
        Ⅱ = ⋁[ L′ ]-unique _ _ (φ′₃ ⁅ η b ∣ (b , _) ∶ Σ b ꞉ ⟪ B ⟫ , η b ≤L x  ⁆) ⁻¹
 
        Ⅲ = ap h⁻₀ (γ x ⁻¹ )
+
+\end{code}
+
+\section{Transport}
+
+Given a Boolean algebra `L` on some set `X : 𝓤` that has a copy in universe `𝓥`,
+then `L` itself has a copy in universe `𝓥`
+
+\begin{code}
+
+transport-ba-structure : (X : 𝓤  ̇) (Y : 𝓤'  ̇) (f : X → Y)
+                       → is-equiv f
+                       → (b : ba-structure 𝓥 X)
+                       → Σ b′ ꞉ ba-structure 𝓥 Y ,
+                          (is-ba-homomorphism (X , b) (Y , b′) f holds)
+transport-ba-structure {𝓤} {𝓤'} {𝓥} X Y f e@((g , _) , _) b = (d , †) , ※
+ where
+  B₁ : BooleanAlgebra 𝓤 𝓥
+  B₁ = X , b
+
+  open PosetNotation (poset-of-ba B₁)
+
+  _≼ᵢ_ : Y → Y → Ω 𝓥
+  y₁ ≼ᵢ y₂ = g y₁ ≤[ poset-of-ba (X , b) ] g y₂
+
+  f-is-injective : left-cancellable f
+  f-is-injective = equivs-are-lc f e
+
+  section : f ∘ g ∼ id
+  section = pr₂ (equivs-have-sections f e)
+
+  retract : g ∘ f ∼ {!!}
+  retract = {!!}
+
+  f-reflects-order : (x₁ x₂ : X) → (f x₁ ≼ᵢ f x₂ ⇒ x₁ ≤ x₂) holds
+  f-reflects-order x₁ x₂ = transport _holds †
+   where
+    † : f x₁ ≼ᵢ f x₂ ＝ x₁ ≤ x₂
+    † = f x₁ ≼ᵢ f x₂         ＝⟨ refl ⟩
+        g (f x₁) ≤ g (f x₂)  ＝⟨ {!!} ⟩
+        x₁ ≤ g (f x₁)        ＝⟨ {!!} ⟩
+        x₁ ≤ x₂              ∎
+
+  ≼ᵢ-is-reflexive : is-reflexive _≼ᵢ_ holds
+  ≼ᵢ-is-reflexive = ≤-is-reflexive (poset-of-ba B₁) ∘ g
+
+  ≼ᵢ-is-transitive : is-transitive _≼ᵢ_ holds
+  ≼ᵢ-is-transitive x y z p q =
+   ≤-is-transitive (poset-of-ba B₁) (g x) (g y) (g z) {!p!} {!!}
+
+  _⋏ᵢ_ : Y → Y → Y
+  y₁ ⋏ᵢ y₂ = f (g y₁ ⋏[ B₁ ] g y₂)
+
+  _⋎ᵢ_ : Y → Y → Y
+  y₁ ⋎ᵢ y₂ = f (g y₁ ⋎[ B₁ ] g y₂)
+
+  ¬ᵢ_ : Y → Y
+  ¬ᵢ y = f (¬[ B₁ ] g y)
+
+  d : ba-data 𝓥 Y
+  d = _≼ᵢ_ , f ⊤[ B₁ ] , _⋏ᵢ_ , f ⊥[ B₁ ] , _⋎ᵢ_ , ¬ᵢ_
+
+  † : satisfies-ba-laws d
+  † = ((≼ᵢ-is-reflexive , {!!}) , {!!}) , {!!}
+
+  ※ : is-ba-homomorphism (X , b) (Y , d , †) f holds
+  ※ = {!!} , {!!}
 
 \end{code}
