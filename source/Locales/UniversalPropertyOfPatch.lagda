@@ -57,6 +57,7 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
   open SmallPatchConstruction A σᴰ renaming (SmallPatch to Patchₛ-A)
   open BasisOfPatch A σᴰ
   open PatchStoneᴰ A σᴰ
+  open PatchStone  A ∣ σᴰ ∣
 
 \end{code}
 
@@ -86,12 +87,16 @@ long time so we mark it as `abstract` to avoid this.
 
 \end{code}
 
-We denote by `𝒞𝓁ℴ𝓅` the type of clopens of Patch(A).
+We denote by `𝒞𝓁ℴ𝓅` the type of clopens of Patch(A) and define the order `_≼ₓ_`
+on this type.
 
 \begin{code}
 
   𝒞𝓁ℴ𝓅 : 𝓤 ⁺  ̇
   𝒞𝓁ℴ𝓅 = Σ 𝒿 ꞉ ⟨ 𝒪 Patch-A ⟩ , is-clopen (𝒪 Patchₛ-A) 𝒿 holds
+
+  _≼ₓ_ : 𝒞𝓁ℴ𝓅 → 𝒞𝓁ℴ𝓅 → Ω 𝓤
+  (𝒿 , _) ≼ₓ (𝓀 , _) = 𝒿 ≤[ poset-of (𝒪 Patchₛ-A) ] 𝓀
 
 \end{code}
 
@@ -177,16 +182,156 @@ between the pointwise nuclei ordering and the basic one.
   patch-is-locally-small : ⟨ 𝒪 Patchₛ-A ⟩ is-locally 𝓤 small
   patch-is-locally-small 𝒿 𝓀 = (𝒿 ＝ᵏ 𝓀) holds , †
    where
+    r = ≤-is-reflexive (poset-of (𝒪 Patchₛ-A)) 𝒿
+
+    †₁ : (𝒿 ＝ᵏ 𝓀) holds → 𝒿 ＝ 𝓀
+    †₁ = uncurry ≼ᵏ-is-antisymmetric
+
+    †₂ : 𝒿 ＝ 𝓀 → (𝒿 ＝ᵏ 𝓀) holds
+    †₂ p = transport (λ - → (𝒿 ＝ᵏ -) holds) p (r , r)
+
     † : (𝒿 ＝ᵏ 𝓀) holds ≃ (𝒿 ＝ 𝓀)
-    † = {!!}
+    † = logically-equivalent-props-are-equivalent
+         (holds-is-prop (𝒿 ＝ᵏ 𝓀))
+         carrier-of-[ poset-of (𝒪 Patchₛ-A) ]-is-set
+         †₁
+         †₂
 
 \end{code}
+
+Using the assumption of the set replacement axiom and the fact that the carrier
+set of Patch(A) is locally small, we prove that the type of basic opens is
+small.
 
 \begin{code}
 
   basic-is-small : ℬ𝒶𝓈𝒾𝒸 is 𝓤 small
   basic-is-small =
-   sr β (B , ≃-refl B) {!!} carrier-of-[ poset-of (𝒪 Patchₛ-A) ]-is-set -- (B , ≃-refl B) † carrier-of-[ poset-of (𝒪 Patchₛ-A) ]-is-set
+   sr β (B , ≃-refl B) † carrier-of-[ poset-of (𝒪 Patchₛ-A) ]-is-set
+    where
+     † : ⟨ 𝒪 Patchₛ-A ⟩ is-locally 𝓤 small
+     † = patch-is-locally-small
+
+\end{code}
+
+We denote by `ℬ𝒶𝓈𝒾𝒸₀` the small copy of `ℬ𝒶𝓈𝒾𝒸` given by `basic-is-small`.
+
+\begin{code}
+
+  ℬ𝒶𝓈𝒾𝒸₀ : 𝓤  ̇
+  ℬ𝒶𝓈𝒾𝒸₀ = pr₁ basic-is-small
+
+\end{code}
+
+\section{The Algebra of Clopens of Patch}
+
+We now show that the type of clopens of Patch forms a Boolean algebra. We denote
+this by `ℂ`.
+
+\begin{code}
+
+  ο : is-partial-order 𝒞𝓁ℴ𝓅 _≼ₓ_
+  ο = (ο₁ , ο₂) , ο₃
+   where
+    ο₁ : (𝒿 : 𝒞𝓁ℴ𝓅) → (𝒿 ≼ₓ 𝒿) holds
+    ο₁ (𝒿 , p) = ≤-is-reflexive (poset-of (𝒪 Patchₛ-A)) 𝒿
+
+    ο₂ : is-transitive _≼ₓ_ holds
+    ο₂ (𝒿 , _) (𝓀 , _) (𝓁 , _)= ≤-is-transitive (poset-of (𝒪 Patchₛ-A)) 𝒿 𝓀 𝓁
+
+    ο₃ : is-antisymmetric _≼ₓ_
+    ο₃ {(𝒿 , _)} {(𝓀 , _)} =
+     curry
+      (to-subtype-＝ þ ∘ uncurry (≤-is-antisymmetric (poset-of (𝒪 Patchₛ-A))))
+
+\end{code}
+
+The top and bottom elements of `ℂ`.
+
+\begin{code}
+
+  𝟏ₓ : 𝒞𝓁ℴ𝓅
+  𝟏ₓ = 𝟏[ 𝒪 Patchₛ-A ] , 𝟏-is-clopen (𝒪 Patchₛ-A)
+
+  𝟎ₓ : 𝒞𝓁ℴ𝓅
+  𝟎ₓ = 𝟎[ 𝒪 Patchₛ-A ] , 𝟎-is-clopen (𝒪 Patchₛ-A)
+
+\end{code}
+
+The meet and the join of `ℂ`.
+
+\begin{code}
+
+  _⋏ₓ_ : 𝒞𝓁ℴ𝓅 → 𝒞𝓁ℴ𝓅 → 𝒞𝓁ℴ𝓅
+  (𝒿 , 𝒿′ , p) ⋏ₓ (𝓀 , 𝓀′ , q) =
+   (𝒿 ∧[ 𝒪 Patchₛ-A ] 𝓀) , (𝒿′ ∨[ 𝒪 Patchₛ-A ] 𝓀′) , ※
+    where
+     † : is-boolean-complement-of (𝒪 Patchₛ-A) 𝒿 𝒿′ holds
+     † = (complementation-is-symmetric (𝒪 Patchₛ-A) 𝒿′ 𝒿 p)
+
+     ‡ : is-boolean-complement-of (𝒪 Patchₛ-A) 𝓀 𝓀′ holds
+     ‡ = complementation-is-symmetric (𝒪 Patchₛ-A) 𝓀′ 𝓀 q
+
+     ※ : is-boolean-complement-of
+          (𝒪 Patchₛ-A)
+          (𝒿′ ∨[ 𝒪 Patchₛ-A ] 𝓀′)
+          (𝒿 ∧[ 𝒪 Patchₛ-A ] 𝓀)
+         holds
+     ※ = ∧-complement (𝒪 Patchₛ-A) † ‡
+
+  _⋎ₓ_ : 𝒞𝓁ℴ𝓅 → 𝒞𝓁ℴ𝓅 → 𝒞𝓁ℴ𝓅
+  (𝒿 , 𝒿′ , p) ⋎ₓ (𝓀 , 𝓀′ , q) = (𝒿 ∨[ 𝒪 Patchₛ-A ] 𝓀) , (𝒿′ ⋏ 𝓀′) , ※
+   where
+    ※ : is-boolean-complement-of (𝒪 Patchₛ-A) (𝒿′ ⋏ 𝓀′) (𝒿 ∨[ 𝒪 Patchₛ-A ] 𝓀) holds
+    ※ = complementation-is-symmetric
+         (𝒪 Patchₛ-A)
+         (𝒿 ∨[ 𝒪 Patchₛ-A ] 𝓀)
+         (𝒿′ ∧[ 𝒪 Patchₛ-A ] 𝓀′)
+         (∧-complement (𝒪 Patchₛ-A) p q)
+
+\end{code}
+
+The negation operation of `ℂ`.
+
+\begin{code}
+
+  ¡_ : 𝒞𝓁ℴ𝓅 → 𝒞𝓁ℴ𝓅
+  ¡ (𝒿 , 𝒿′ , p) = 𝒿′ , 𝒿 , complementation-is-symmetric (𝒪 Patchₛ-A) 𝒿′ 𝒿 p
+
+\end{code}
+
+Finally, the complete definition of the algebra of clopens `ℂ`.
+
+\begin{code}
+
+  ℂ : BooleanAlgebra (𝓤 ⁺) 𝓤
+  ℂ = 𝒞𝓁ℴ𝓅 , (_≼ₓ_ , 𝟏ₓ , _⋏ₓ_ , 𝟎ₓ , _⋎ₓ_ , ¡_) , ο , φ₁ , φ₂ , φ₃ , φ₄ , φ₅ , φ₆
+   where
+    open Meets (λ x y → x ≼ₓ y)
+
+    φ₁ : (𝒿 𝓀 : 𝒞𝓁ℴ𝓅) → ((𝒿 ⋏ₓ 𝓀) is-glb-of (𝒿 , 𝓀)) holds
+    φ₁ (𝒿 , _) (𝓀 , _) =
+      (∧[ 𝒪 Patchₛ-A ]-lower₁ 𝒿 𝓀 , ∧[ 𝒪 Patchₛ-A ]-lower₂ 𝒿 𝓀)
+     , λ { ((u , _) , p , q) → ∧[ 𝒪 Patchₛ-A ]-greatest 𝒿 𝓀 u p q }
+
+    φ₂ : (𝒿 : 𝒞𝓁ℴ𝓅) → (𝒿 ≼ₓ 𝟏ₓ) holds
+    φ₂ (𝒿 , _) = 𝟏-is-top (𝒪 Patchₛ-A) 𝒿
+
+    open Joins (λ x y → x ≼ₓ y)
+
+    φ₃ : (𝒿 𝓀 : 𝒞𝓁ℴ𝓅) → ((𝒿 ⋎ₓ 𝓀) is-lub-of₂ (𝒿 , 𝓀)) holds
+    φ₃ (𝒿 , _) (𝓀 , _) = (∨[ 𝒪 Patchₛ-A ]-upper₁ 𝒿 𝓀 , ∨[ 𝒪 Patchₛ-A ]-upper₂ 𝒿 𝓀)
+                       , λ { ((u , _) , p , q) → ∨[_]-least (𝒪 Patchₛ-A) {z = u}  p q }
+
+    φ₄ : (𝒿 : 𝒞𝓁ℴ𝓅) → (𝟎ₓ ≼ₓ 𝒿) holds
+    φ₄ (𝒿 , _) = 𝟎-is-bottom (𝒪 Patchₛ-A) 𝒿
+
+    φ₅ : (𝒿 𝓀 𝓁 : 𝒞𝓁ℴ𝓅) → 𝒿 ⋏ₓ (𝓀 ⋎ₓ 𝓁) ＝ (𝒿 ⋏ₓ 𝓀) ⋎ₓ (𝒿 ⋏ₓ 𝓁)
+    φ₅ (𝒿 , _) (𝓀 , _) (𝓁 , _) =
+     to-subtype-＝ þ (binary-distributivity (𝒪 Patchₛ-A) 𝒿 𝓀 𝓁)
+
+    φ₆ : (𝒿 : 𝒞𝓁ℴ𝓅) → (𝒿 ⋏ₓ (¡ 𝒿) ＝ 𝟎ₓ) × (𝒿 ⋎ₓ (¡ 𝒿) ＝ 𝟏ₓ)
+    φ₆ (𝒿 , 𝒿′ , p , q) = to-subtype-＝ þ p , to-subtype-＝ þ q
 
 \end{code}
 
@@ -295,22 +440,6 @@ between the pointwise nuclei ordering and the basic one.
      -- 𝒻⁻ : X ─c→ Patchₛ-A
      -- 𝒻⁻ = {!!}
 
-     ψ : is-partial-order 𝒞𝓁ℴ𝓅 _≼ₓ_
-     ψ = (ψ₁ , ψ₂) , ψ₃
-      where
-       ψ₁ : (𝒿 : 𝒞𝓁ℴ𝓅) → (𝒿 ≼ₓ 𝒿) holds
-       ψ₁ (𝒿 , p) = ≤-is-reflexive (poset-of (𝒪 Patchₛ-A)) 𝒿
-
-       ψ₂ : is-transitive _≼ₓ_ holds
-       ψ₂ (𝒿 , _) (𝓀 , _) (𝓁 , _)= ≤-is-transitive (poset-of (𝒪 Patchₛ-A)) 𝒿 𝓀 𝓁
-
-       ψ₃ : is-antisymmetric _≼ₓ_
-       ψ₃ {(𝒿 , _)} {(𝓀 , _)} p q =
-        to-subtype-＝ þ ψ₄
-         where
-          ψ₄ : 𝒿 ＝ 𝓀
-          ψ₄ = ≤-is-antisymmetric (poset-of (𝒪 Patchₛ-A)) p q
-
      B₀ : Set 𝓤
      B₀ = pr₁ resize-basic
 
@@ -334,72 +463,6 @@ between the pointwise nuclei ordering and the basic one.
 
      ♥ : from-clop ∘ to-clop ∼ id
      ♥ 𝓍 = {!!}
-
-     ℂ : BooleanAlgebra (𝓤 ⁺) 𝓤
-     ℂ = 𝒞𝓁ℴ𝓅 , (_≼ₓ_ , 𝟏ₓ , _⋏ₓ_ , 𝟎ₓ , _⋎ₓ_ , ¡_) , ψ , φ₁ , φ₂ , φ₃ , φ₄ , φ₅ , φ₆
-      where
-       𝟏ₓ : 𝒞𝓁ℴ𝓅
-       𝟏ₓ = 𝟏[ 𝒪 Patchₛ-A ] , 𝟏-is-clopen (𝒪 Patchₛ-A)
-
-       _⋏ₓ_ : 𝒞𝓁ℴ𝓅 → 𝒞𝓁ℴ𝓅 → 𝒞𝓁ℴ𝓅
-       (𝒿 , 𝒿′ , p) ⋏ₓ (𝓀 , 𝓀′ , q) =
-        (𝒿 ∧[ 𝒪 Patchₛ-A ] 𝓀) , (𝒿′ ∨[ 𝒪 Patchₛ-A ] 𝓀′) , ※
-         where
-          ※ : is-boolean-complement-of
-               (𝒪 Patchₛ-A)
-               (𝒿′ ∨[ 𝒪 Patchₛ-A ] 𝓀′)
-               (𝒿 ∧[ 𝒪 Patchₛ-A ] 𝓀)
-              holds
-          ※ = ∧-complement (𝒪 Patchₛ-A) † ‡
-           where
-            † : is-boolean-complement-of (𝒪 Patchₛ-A) 𝒿 𝒿′ holds
-            † = (complementation-is-symmetric (𝒪 Patchₛ-A) 𝒿′ 𝒿 p)
-
-            ‡ : is-boolean-complement-of (𝒪 Patchₛ-A) 𝓀 𝓀′ holds
-            ‡ = complementation-is-symmetric (𝒪 Patchₛ-A) 𝓀′ 𝓀 q
-
-       𝟎ₓ : 𝒞𝓁ℴ𝓅
-       𝟎ₓ = 𝟎[ 𝒪 Patchₛ-A ] , 𝟎-is-clopen (𝒪 Patchₛ-A)
-
-       _⋎ₓ_ : 𝒞𝓁ℴ𝓅 → 𝒞𝓁ℴ𝓅 → 𝒞𝓁ℴ𝓅
-       (𝒿 , 𝒿′ , p) ⋎ₓ (𝓀 , 𝓀′ , q) =
-        (𝒿 ∨[ 𝒪 Patchₛ-A ] 𝓀) , (𝒿′ ∧[ 𝒪 Patchₛ-A ] 𝓀′) , ※
-         where
-          ※ : is-boolean-complement-of (𝒪 Patchₛ-A) (𝒿′ ∧[ 𝒪 Patchₛ-A ] 𝓀′) (𝒿 ∨[ 𝒪 Patchₛ-A ] 𝓀) holds
-          ※ = complementation-is-symmetric
-               (𝒪 Patchₛ-A)
-               (𝒿 ∨[ 𝒪 Patchₛ-A ] 𝓀)
-               (𝒿′ ∧[ 𝒪 Patchₛ-A ] 𝓀′)
-               (∧-complement (𝒪 Patchₛ-A) p q)
-
-       ¡_ : 𝒞𝓁ℴ𝓅 → 𝒞𝓁ℴ𝓅
-       ¡ (𝒿 , 𝒿′ , p) = 𝒿′ , 𝒿 , complementation-is-symmetric (𝒪 Patchₛ-A) 𝒿′ 𝒿 p
-
-       open Meets (λ x y → x ≼ₓ y)
-
-       φ₁ : (𝒿 𝓀 : 𝒞𝓁ℴ𝓅) → ((𝒿 ⋏ₓ 𝓀) is-glb-of (𝒿 , 𝓀)) holds
-       φ₁ (𝒿 , _) (𝓀 , _) =
-         (∧[ 𝒪 Patchₛ-A ]-lower₁ 𝒿 𝓀 , ∧[ 𝒪 Patchₛ-A ]-lower₂ 𝒿 𝓀)
-        , λ { ((u , _) , p , q) → ∧[ 𝒪 Patchₛ-A ]-greatest 𝒿 𝓀 u p q }
-
-       φ₂ : (𝒿 : 𝒞𝓁ℴ𝓅) → (𝒿 ≼ₓ 𝟏ₓ) holds
-       φ₂ (𝒿 , _) = 𝟏-is-top (𝒪 Patchₛ-A) 𝒿
-
-       open Joins (λ x y → x ≼ₓ y)
-
-       φ₃ : (𝒿 𝓀 : 𝒞𝓁ℴ𝓅) → ((𝒿 ⋎ₓ 𝓀) is-lub-of₂ (𝒿 , 𝓀)) holds
-       φ₃ (𝒿 , _) (𝓀 , _) = (∨[ 𝒪 Patchₛ-A ]-upper₁ 𝒿 𝓀 , ∨[ 𝒪 Patchₛ-A ]-upper₂ 𝒿 𝓀)
-                          , λ { ((u , _) , p , q) → ∨[_]-least (𝒪 Patchₛ-A) {z = u}  p q }
-
-       φ₄ : (𝒿 : 𝒞𝓁ℴ𝓅) → (𝟎ₓ ≼ₓ 𝒿) holds
-       φ₄ (𝒿 , _) = 𝟎-is-bottom (𝒪 Patchₛ-A) 𝒿
-
-       φ₅ : (𝒿 𝓀 𝓁 : 𝒞𝓁ℴ𝓅) → 𝒿 ⋏ₓ (𝓀 ⋎ₓ 𝓁) ＝ (𝒿 ⋏ₓ 𝓀) ⋎ₓ (𝒿 ⋏ₓ 𝓁)
-       φ₅ (𝒿 , _) (𝓀 , _) (𝓁 , _) =
-        to-subtype-＝ þ (binary-distributivity (𝒪 Patchₛ-A) 𝒿 𝓀 𝓁)
-
-       φ₆ : (𝒿 : 𝒞𝓁ℴ𝓅) → (𝒿 ⋏ₓ (¡ 𝒿) ＝ 𝟎ₓ) × (𝒿 ⋎ₓ (¡ 𝒿) ＝ 𝟏ₓ)
-       φ₆ (𝒿 , 𝒿′ , p , q) = to-subtype-＝ þ p , to-subtype-＝ þ q
 
        ℂ₀ : BooleanAlgebra 𝓤 𝓤
        ℂ₀ = B₀ , d , †
