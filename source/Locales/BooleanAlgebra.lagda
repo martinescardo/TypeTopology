@@ -8,8 +8,7 @@ The main result needed in this module is the extension lemma.
 
 open import MLTT.Spartan hiding (𝟚)
 open import UF.Base
-open import UF.Equiv using (is-equiv; equivs-are-lc; equivs-are-sections;
-                            equivs-have-sections)
+open import UF.Equiv hiding (_■)
 open import UF.PropTrunc
 open import UF.FunExt
 open import UF.Size
@@ -758,32 +757,38 @@ transport-ba-structure : (X : 𝓤  ̇) (Y : 𝓤'  ̇) (f : X → Y)
                        → (b : ba-structure 𝓥 X)
                        → Σ b′ ꞉ ba-structure 𝓥 Y ,
                           (is-ba-homomorphism (X , b) (Y , b′) f holds)
-transport-ba-structure {𝓤} {𝓤'} {𝓥} X Y f e@((g , _) , _) b = (d , †) , ※
+transport-ba-structure {𝓤} {𝓤'} {𝓥} X Y f e b = (d , †) , f-is-hom
  where
   B₁ : BooleanAlgebra 𝓤 𝓥
   B₁ = X , b
 
-  open PosetNotation (poset-of-ba B₁)
+  P₁ : Poset 𝓤 𝓥
+  P₁ = poset-of-ba B₁
+
+  open PosetNotation P₁
+
+  g : Y → X
+  g = inverse f e
 
   _≼ᵢ_ : Y → Y → Ω 𝓥
-  y₁ ≼ᵢ y₂ = g y₁ ≤[ poset-of-ba (X , b) ] g y₂
+  y₁ ≼ᵢ y₂ = g y₁ ≤[ P₁ ] g y₂
 
-  f-is-injective : left-cancellable f
-  f-is-injective = equivs-are-lc f e
+  -- f-is-injective : left-cancellable f
+  -- f-is-injective = equivs-are-lc f e
 
-  section : f ∘ g ∼ id
-  section = pr₂ (equivs-have-sections f e)
+  η : f ∘ g ∼ id
+  η = inverses-are-sections f e
 
-  retract : g ∘ f ∼ {!!}
-  retract = {!!}
+  ε : g ∘ f ∼ id
+  ε = inverses-are-retractions f e
 
-  f-reflects-order : (x₁ x₂ : X) → (f x₁ ≼ᵢ f x₂ ⇒ x₁ ≤ x₂) holds
-  f-reflects-order x₁ x₂ = transport _holds †
+  f-reflects-order : {x₁ x₂ : X} → (f x₁ ≼ᵢ f x₂ ⇒ x₁ ≤ x₂) holds
+  f-reflects-order {x₁} {x₂} = transport _holds †
    where
     † : f x₁ ≼ᵢ f x₂ ＝ x₁ ≤ x₂
-    † = f x₁ ≼ᵢ f x₂         ＝⟨ refl ⟩
-        g (f x₁) ≤ g (f x₂)  ＝⟨ {!!} ⟩
-        x₁ ≤ g (f x₁)        ＝⟨ {!!} ⟩
+    † = f x₁ ≼ᵢ f x₂         ＝⟨ refl                           ⟩
+        g (f x₁) ≤ g (f x₂)  ＝⟨ ap (λ - → - ≤ g (f x₂)) (ε x₁) ⟩
+        x₁ ≤ g (f x₂)        ＝⟨ ap (λ - → x₁ ≤ -) (ε x₂)       ⟩
         x₁ ≤ x₂              ∎
 
   ≼ᵢ-is-reflexive : is-reflexive _≼ᵢ_ holds
@@ -791,7 +796,22 @@ transport-ba-structure {𝓤} {𝓤'} {𝓥} X Y f e@((g , _) , _) b = (d , †)
 
   ≼ᵢ-is-transitive : is-transitive _≼ᵢ_ holds
   ≼ᵢ-is-transitive x y z p q =
-   ≤-is-transitive (poset-of-ba B₁) (g x) (g y) (g z) {!p!} {!!}
+   ≤-is-transitive (poset-of-ba B₁) (g x) (g y) (g z) † ‡
+    where
+     † : (g x ≤ g y) holds
+     † = f-reflects-order
+          (transport₂ (λ a b → (a ≤ b) holds) (ap g (η x) ⁻¹) (ap g (η y) ⁻¹) p)
+
+     ‡ : (g y ≤ g z) holds
+     ‡ = f-reflects-order
+          (transport₂ (λ a b → (a ≤ b) holds) (ap g (η y) ⁻¹) (ap g (η z) ⁻¹) q)
+
+  ≼ᵢ-is-antisymmetric : is-antisymmetric _≼ᵢ_
+  ≼ᵢ-is-antisymmetric {x} {y} p q =
+   x ＝⟨ η x ⁻¹ ⟩ f (g x) ＝⟨ ap f † ⟩ f (g y) ＝⟨ η y ⟩ y ∎
+    where
+     † : g x ＝ g y
+     † = ≤-is-antisymmetric (poset-of-ba B₁) p q
 
   _⋏ᵢ_ : Y → Y → Y
   y₁ ⋏ᵢ y₂ = f (g y₁ ⋏[ B₁ ] g y₂)
@@ -805,10 +825,32 @@ transport-ba-structure {𝓤} {𝓤'} {𝓥} X Y f e@((g , _) , _) b = (d , †)
   d : ba-data 𝓥 Y
   d = _≼ᵢ_ , f ⊤[ B₁ ] , _⋏ᵢ_ , f ⊥[ B₁ ] , _⋎ᵢ_ , ¬ᵢ_
 
-  † : satisfies-ba-laws d
-  † = ((≼ᵢ-is-reflexive , {!!}) , {!!}) , {!!}
+  open Meets (λ x y → x ≼ᵢ y)
 
-  ※ : is-ba-homomorphism (X , b) (Y , d , †) f holds
-  ※ = {!!} , {!!}
+  ⋏ᵢ-is-glb : (y₁ y₂ : Y) → ((y₁ ⋏ᵢ y₂) is-glb-of (y₁ , y₂)) holds
+  ⋏ᵢ-is-glb y₁ y₂ = † , ‡
+   where
+    open PosetReasoning P₁
+
+    †₁ : ((y₁ ⋏ᵢ y₂) ≼ᵢ y₁) holds
+    †₁ = g (y₁ ⋏ᵢ y₂)           ≤⟨ {!!} ⟩
+         g (f (g (y₁ ⋏ᵢ y₂)))   ≤⟨ {!!} ⟩
+         g y₁                   ■
+
+    †₂ : ((y₁ ⋏ᵢ y₂) ≼ᵢ y₂) holds
+    †₂ = {!!}
+
+    † : ((y₁ ⋏ᵢ y₂) is-a-lower-bound-of (y₁ , y₂)) holds
+    † = †₁ , †₂
+
+    ‡ : {!!}
+    ‡ = {!!}
+
+  † : satisfies-ba-laws d
+  † = ((≼ᵢ-is-reflexive , ≼ᵢ-is-transitive) , ≼ᵢ-is-antisymmetric)
+    , {!!} , {!!}
+
+  f-is-hom : is-ba-homomorphism (X , b) (Y , d , †) f holds
+  f-is-hom = {!!} , {!!}
 
 \end{code}
