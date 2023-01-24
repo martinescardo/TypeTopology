@@ -161,6 +161,10 @@ syntax join-of-ba B x y = x ⋎[ B ] y
 ⊤[_] : (B : BooleanAlgebra 𝓤 𝓥) → ⟪ B ⟫
 ⊤[ (_ , (_ , ⊤ , _ , _ , _ , _) , _) ] = ⊤
 
+⊤[_]-is-top : (B : BooleanAlgebra 𝓤 𝓥)
+            → (b : ⟪ B ⟫) → (b ≤[ poset-of-ba B ] ⊤[ B ]) holds
+⊤[ _ , _ , φ ]-is-top = pr₁ (pr₂ (pr₂ φ))
+
 ⊥[_] : (B : BooleanAlgebra 𝓤 𝓥) → ⟪ B ⟫
 ⊥[ (_ , (_ , _ , _ , ⊥ , _ , _) , _) ] = ⊥
 
@@ -813,6 +817,12 @@ transport-ba-structure {𝓤} {𝓤'} {𝓥} X Y f e b = (d , †) , f-is-hom
      † : g x ＝ g y
      † = ≤-is-antisymmetric (poset-of-ba B₁) p q
 
+  𝟏ᵢ : Y
+  𝟏ᵢ = f ⊤[ B₁ ]
+
+  𝟎ᵢ : Y
+  𝟎ᵢ = f ⊥[ B₁ ]
+
   _⋏ᵢ_ : Y → Y → Y
   y₁ ⋏ᵢ y₂ = f (g y₁ ⋏[ B₁ ] g y₂)
 
@@ -835,6 +845,21 @@ transport-ba-structure {𝓤} {𝓤'} {𝓥} X Y f e b = (d , †) , f-is-hom
 
   P₂ : Poset 𝓤' 𝓥
   P₂ = Y , (_≼ᵢ_ , ρ)
+
+  𝟏ᵢ-is-top : (y : Y) → (y ≼ᵢ 𝟏ᵢ) holds
+  𝟏ᵢ-is-top y = g y    ≤⟨ ⊤[ B₁ ]-is-top (g y) ⟩
+               ⊤[ B₁ ] ＝⟨ ε ⊤[ B₁ ] ⁻¹ ⟩ₚ
+               g (f ⊤[ B₁ ]) ■
+   where
+    open PosetReasoning P₁
+
+  𝟎ᵢ-is-bottom : (y : Y) → (𝟎ᵢ ≼ᵢ y) holds
+  𝟎ᵢ-is-bottom y = g 𝟎ᵢ           ＝⟨ refl                   ⟩ₚ
+                   g (f ⊥[ B₁ ])  ＝⟨ ε ⊥[ B₁ ]              ⟩ₚ
+                   ⊥[ B₁ ]        ≤⟨ ⊥[ B₁ ]-is-bottom (g y) ⟩
+                   g y            ■
+   where
+    open PosetReasoning P₁
 
   ⋏ᵢ-is-glb : (y₁ y₂ : Y) → ((y₁ ⋏ᵢ y₂) is-glb-of (y₁ , y₂)) holds
   ⋏ᵢ-is-glb y₁ y₂ = † , ‡
@@ -859,11 +884,19 @@ transport-ba-structure {𝓤} {𝓤'} {𝓥} X Y f e b = (d , †) , f-is-hom
                     g y₁ ⋏[ B₁ ] g y₂ ＝⟨ g-preserves-meets ⁻¹   ⟩ₚ
                     g (y₁ ⋏ᵢ y₂)      ■
 
+  ⋎ᵢ-is-lub : {!!}
+  ⋎ᵢ-is-lub = {!!}
 
   † : satisfies-ba-laws d
-  † = ρ , ⋏ᵢ-is-glb , {!!}
+  † = ρ , ⋏ᵢ-is-glb , 𝟏ᵢ-is-top , ⋎ᵢ-is-lub , 𝟎ᵢ-is-bottom , {!!}
 
   f-is-hom : is-ba-homomorphism (X , b) (Y , d , †) f holds
-  f-is-hom = {!!} , {!!}
+  f-is-hom = refl , γ , {!!}
+   where
+    γ : (x₁ x₂ : X) → f (x₁ ⋏[ B₁ ] x₂) ＝ f x₁ ⋏ᵢ f x₂
+    γ x₁ x₂ = f (x₁ ⋏[ B₁ ] x₂)             ＝⟨ {!!} ⟩
+              f (g (f x₁ ⋏ᵢ f x₂))          ＝⟨ {!!} ⟩
+              f (g (f x₁) ⋏[ B₁ ] g (f x₂)) ＝⟨ refl ⟩
+              f x₁ ⋏ᵢ f x₂                  ∎
 
 \end{code}
