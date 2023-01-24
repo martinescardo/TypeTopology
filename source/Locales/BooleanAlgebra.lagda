@@ -822,10 +822,19 @@ transport-ba-structure {𝓤} {𝓤'} {𝓥} X Y f e b = (d , †) , f-is-hom
   ¬ᵢ_ : Y → Y
   ¬ᵢ y = f (¬[ B₁ ] g y)
 
+  g-preserves-meets : {y₁ y₂ : Y} → g (y₁ ⋏ᵢ y₂) ＝ g y₁ ⋏[ B₁ ] g y₂
+  g-preserves-meets {y₁} {y₂} = ε (g y₁ ⋏[ B₁ ] g y₂)
+
   d : ba-data 𝓥 Y
   d = _≼ᵢ_ , f ⊤[ B₁ ] , _⋏ᵢ_ , f ⊥[ B₁ ] , _⋎ᵢ_ , ¬ᵢ_
 
   open Meets (λ x y → x ≼ᵢ y)
+
+  ρ : is-partial-order Y _≼ᵢ_
+  ρ = (≼ᵢ-is-reflexive , ≼ᵢ-is-transitive) , ≼ᵢ-is-antisymmetric
+
+  P₂ : Poset 𝓤' 𝓥
+  P₂ = Y , (_≼ᵢ_ , ρ)
 
   ⋏ᵢ-is-glb : (y₁ y₂ : Y) → ((y₁ ⋏ᵢ y₂) is-glb-of (y₁ , y₂)) holds
   ⋏ᵢ-is-glb y₁ y₂ = † , ‡
@@ -833,22 +842,26 @@ transport-ba-structure {𝓤} {𝓤'} {𝓥} X Y f e b = (d , †) , f-is-hom
     open PosetReasoning P₁
 
     †₁ : ((y₁ ⋏ᵢ y₂) ≼ᵢ y₁) holds
-    †₁ = g (y₁ ⋏ᵢ y₂)           ≤⟨ {!!} ⟩
-         g (f (g (y₁ ⋏ᵢ y₂)))   ≤⟨ {!!} ⟩
-         g y₁                   ■
+    †₁ = g (y₁ ⋏ᵢ y₂)       ＝⟨ g-preserves-meets ⟩ₚ
+         g y₁ ⋏[ B₁ ] g y₂  ≤⟨ ⋏[ B₁ ]-is-lower₁ (g y₁) (g y₂) ⟩
+         g y₁               ■
 
     †₂ : ((y₁ ⋏ᵢ y₂) ≼ᵢ y₂) holds
-    †₂ = {!!}
+    †₂ = g (y₁ ⋏ᵢ y₂)       ＝⟨ g-preserves-meets ⟩ₚ
+         g y₁ ⋏[ B₁ ] g y₂  ≤⟨ ⋏[ B₁ ]-is-lower₂ (g y₁) (g y₂) ⟩
+         g y₂               ■
 
     † : ((y₁ ⋏ᵢ y₂) is-a-lower-bound-of (y₁ , y₂)) holds
     † = †₁ , †₂
 
-    ‡ : {!!}
-    ‡ = {!!}
+    ‡ : ((𝓁 , _) : lower-bound (y₁ , y₂)) → (g 𝓁 ≤[ P₁ ] g (y₁ ⋏ᵢ y₂)) holds
+    ‡ (𝓁 , p , q) = g 𝓁               ≤⟨ ⋏[ B₁ ]-is-greatest p q ⟩
+                    g y₁ ⋏[ B₁ ] g y₂ ＝⟨ g-preserves-meets ⁻¹   ⟩ₚ
+                    g (y₁ ⋏ᵢ y₂)      ■
+
 
   † : satisfies-ba-laws d
-  † = ((≼ᵢ-is-reflexive , ≼ᵢ-is-transitive) , ≼ᵢ-is-antisymmetric)
-    , {!!} , {!!}
+  † = ρ , ⋏ᵢ-is-glb , {!!}
 
   f-is-hom : is-ba-homomorphism (X , b) (Y , d , †) f holds
   f-is-hom = {!!} , {!!}
