@@ -191,6 +191,14 @@ syntax join-of-ba B x y = x ⋎[ B ] y
 ¬[_]_ : (B : BooleanAlgebra 𝓤 𝓥) → ⟪ B ⟫ → ⟪ B ⟫
 ¬[ B ] x = pr₂ (pr₂ (pr₂ (pr₂ (pr₂ (pr₁ (pr₂ B)))))) x
 
+¬[_]-is-complement : (B : BooleanAlgebra 𝓤 𝓥)
+                   → let
+                      σ = carrier-of-[ poset-of-ba B ]-is-set
+                      open Complementation σ ⊥[ B ] ⊤[ B ] (meet-of-ba B) (join-of-ba B)
+                     in
+                      (x : ⟪ B ⟫) → ((¬[ B ] x) complements x) holds
+¬[_]-is-complement (_ , _ , (_ , _ , _ , _ , _ , _ , φ)) = φ
+
 ⋏-distributes-over-⋎ : (B : BooleanAlgebra 𝓤 𝓥)
                      → (x y z : ⟪ B ⟫)
                      → x ⋏[ B ] (y ⋎[ B ] z) ＝ (x ⋏[ B ] y) ⋎[ B ] (x ⋏[ B ] z)
@@ -798,9 +806,6 @@ transport-ba-structure {𝓤} {𝓤'} {𝓥} X Y f e b = (d , †) , f-is-hom
   _≼ᵢ_ : Y → Y → Ω 𝓥
   y₁ ≼ᵢ y₂ = g y₁ ≤[ P₁ ] g y₂
 
-  -- f-is-injective : left-cancellable f
-  -- f-is-injective = equivs-are-lc f e
-
   η : f ∘ g ∼ id
   η = inverses-are-sections f e
 
@@ -946,8 +951,31 @@ transport-ba-structure {𝓤} {𝓤'} {𝓥} X Y f e b = (d , †) , f-is-hom
      Ⅱ = ap f (⋏-distributes-over-⋎ B₁ (g y₁) (g y₂) (g y₃))
      Ⅲ = ap₂ (λ a b → f (a ⋎[ B₁ ] b)) (※ y₁ y₂) (※ y₁ y₃)
 
+  σ = carrier-of-[ P₂ ]-is-set
+
+  open Complementation σ 𝟎ᵢ 𝟏ᵢ _⋏ᵢ_ _⋎ᵢ_
+
+  ¬ᵢ-is-complement : (y : Y) → ((¬ᵢ y) complements y) holds
+  ¬ᵢ-is-complement y = † , ‡
+   where
+    † : f (g y ⋏[ B₁ ] g (f (¬[ B₁ ] g y))) ＝ f ⊥[ B₁ ]
+    † = f (g y ⋏[ B₁ ] g (f (¬[ B₁ ] g y)))    ＝⟨ Ⅰ ⟩
+        f (g y ⋏[ B₁ ] ¬[ B₁ ] g y)            ＝⟨ Ⅱ ⟩
+        f ⊥[ B₁ ]                              ∎
+         where
+          Ⅰ = ap (λ - → f (g y ⋏[ B₁ ] -)) (ε (¬[ B₁ ] g y))
+          Ⅱ = ap f (pr₁ (¬[ B₁ ]-is-complement (g y)))
+
+    ‡ : f (g y ⋎[ B₁ ] g (f (¬[ B₁ ] g y)) ) ＝ f ⊤[ B₁ ]
+    ‡ = f (g y ⋎[ B₁ ] g (f (¬[ B₁ ] g y)) )   ＝⟨ Ⅰ ⟩
+        f (g y ⋎[ B₁ ] ¬[ B₁ ] g y)            ＝⟨ Ⅱ ⟩
+        f ⊤[ B₁ ]                              ∎
+         where
+          Ⅰ = ap (λ - → f (g y ⋎[ B₁ ] -)) (ε (¬[ B₁ ] g y))
+          Ⅱ = ap f (pr₂ (¬[ B₁ ]-is-complement (g y)))
+
   † : satisfies-ba-laws d
-  † = ρ , ⋏ᵢ-is-glb , 𝟏ᵢ-is-top , ⋎ᵢ-is-lub , 𝟎ᵢ-is-bottom , ζ , {!!}
+  † = ρ , ⋏ᵢ-is-glb , 𝟏ᵢ-is-top , ⋎ᵢ-is-lub , 𝟎ᵢ-is-bottom , ζ , ¬ᵢ-is-complement
 
   f-is-hom : is-ba-homomorphism (X , b) (Y , d , †) f holds
   f-is-hom = refl , γ , refl , ϵ
