@@ -835,6 +835,9 @@ transport-ba-structure {𝓤} {𝓤'} {𝓥} X Y f e b = (d , †) , f-is-hom
   g-preserves-meets : {y₁ y₂ : Y} → g (y₁ ⋏ᵢ y₂) ＝ g y₁ ⋏[ B₁ ] g y₂
   g-preserves-meets {y₁} {y₂} = ε (g y₁ ⋏[ B₁ ] g y₂)
 
+  g-preserves-joins : {y₁ y₂ : Y} → g (y₁ ⋎ᵢ y₂) ＝ g y₁ ⋎[ B₁ ] g y₂
+  g-preserves-joins {y₁} {y₂} = ε (g y₁ ⋎[ B₁ ] g y₂)
+
   d : ba-data 𝓥 Y
   d = _≼ᵢ_ , f ⊤[ B₁ ] , _⋏ᵢ_ , f ⊥[ B₁ ] , _⋎ᵢ_ , ¬ᵢ_
 
@@ -891,12 +894,31 @@ transport-ba-structure {𝓤} {𝓤'} {𝓥} X Y f e b = (d , †) , f-is-hom
   † = ρ , ⋏ᵢ-is-glb , 𝟏ᵢ-is-top , ⋎ᵢ-is-lub , 𝟎ᵢ-is-bottom , {!!}
 
   f-is-hom : is-ba-homomorphism (X , b) (Y , d , †) f holds
-  f-is-hom = refl , γ , {!!}
+  f-is-hom = refl , γ , refl , ϵ
    where
     γ : (x₁ x₂ : X) → f (x₁ ⋏[ B₁ ] x₂) ＝ f x₁ ⋏ᵢ f x₂
-    γ x₁ x₂ = f (x₁ ⋏[ B₁ ] x₂)             ＝⟨ {!!} ⟩
-              f (g (f x₁ ⋏ᵢ f x₂))          ＝⟨ {!!} ⟩
-              f (g (f x₁) ⋏[ B₁ ] g (f x₂)) ＝⟨ refl ⟩
-              f x₁ ⋏ᵢ f x₂                  ∎
+    γ x₁ x₂ = f (x₁ ⋏[ B₁ ] x₂)               ＝⟨ Ⅰ    ⟩
+              f (g (f x₁) ⋏[ B₁ ] x₂)         ＝⟨ Ⅱ    ⟩
+              f (g (f x₁) ⋏[ B₁ ] g (f x₂))   ＝⟨ Ⅲ    ⟩
+              f (g (f x₁ ⋏ᵢ f x₂))            ＝⟨ Ⅳ    ⟩
+              f (g (f x₁) ⋏[ B₁ ] g (f x₂))   ＝⟨ refl ⟩
+              f x₁ ⋏ᵢ f x₂                    ∎
+               where
+                Ⅰ = ap (λ - → f (-        ⋏[ B₁ ] x₂)) (ε x₁ ⁻¹)
+                Ⅱ = ap (λ - → f (g (f x₁) ⋏[ B₁ ] -))  (ε x₂ ⁻¹)
+                Ⅲ = ap f g-preserves-meets ⁻¹
+                Ⅳ = η (f x₁ ⋏ᵢ f x₂)
+
+    ϵ : (x₁ x₂ : X) → f (x₁ ⋎[ B₁ ] x₂) ＝ f x₁ ⋎ᵢ f x₂
+    ϵ x₁ x₂ = f (x₁ ⋎[ B₁ ] x₂)               ＝⟨ Ⅰ ⟩
+              f (g (f x₁) ⋎[ B₁ ] x₂)         ＝⟨ Ⅱ ⟩
+              f (g (f x₁) ⋎[ B₁ ] g (f x₂))   ＝⟨ Ⅲ ⟩
+              f (g (f x₁ ⋎ᵢ f x₂))            ＝⟨ Ⅳ ⟩
+              f x₁ ⋎ᵢ f x₂                    ∎
+               where
+                Ⅰ = ap (λ - → f (- ⋎[ B₁ ] x₂))       (ε x₁ ⁻¹)
+                Ⅱ = ap (λ - → f (g (f x₁) ⋎[ B₁ ] -)) (ε x₂ ⁻¹)
+                Ⅲ = ap f (g-preserves-joins ⁻¹ )
+                Ⅳ = η (f x₁ ⋎ᵢ f x₂)
 
 \end{code}
