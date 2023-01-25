@@ -158,6 +158,22 @@ infixl 3 join-of-ba
 
 syntax join-of-ba B x y = x ⋎[ B ] y
 
+⋎[_]-is-upper₁ : (B : BooleanAlgebra 𝓤 𝓥)
+               → (x y : ⟪ B ⟫) → (x ≤[ poset-of-ba B ] (x ⋎[ B ] y)) holds
+⋎[_]-is-upper₁ (_ , _ , (_ , _ , _ , φ , _)) x y = pr₁ (pr₁ (φ x y))
+
+⋎[_]-is-upper₂ : (B : BooleanAlgebra 𝓤 𝓥)
+               → (x y : ⟪ B ⟫) → (y ≤[ poset-of-ba B ] (x ⋎[ B ] y)) holds
+⋎[_]-is-upper₂ (_ , _ , (_ , _ , _ , φ , _)) x y = pr₂ (pr₁ (φ x y))
+
+⋎[_]-is-least : (B : BooleanAlgebra 𝓤 𝓥)
+              → {u x y : ⟪ B ⟫}
+              → (x ≤[ poset-of-ba B ] u) holds
+              → (y ≤[ poset-of-ba B ] u) holds
+              → ((x ⋎[ B ] y) ≤[ poset-of-ba B ] u) holds
+⋎[_]-is-least (_ , _ , (_ , _ , _ , φ , _)) {u} {x} {y} p q =
+ pr₂ (φ x y) (u , p , q)
+
 ⊤[_] : (B : BooleanAlgebra 𝓤 𝓥) → ⟪ B ⟫
 ⊤[ (_ , (_ , ⊤ , _ , _ , _ , _) , _) ] = ⊤
 
@@ -842,6 +858,7 @@ transport-ba-structure {𝓤} {𝓤'} {𝓥} X Y f e b = (d , †) , f-is-hom
   d = _≼ᵢ_ , f ⊤[ B₁ ] , _⋏ᵢ_ , f ⊥[ B₁ ] , _⋎ᵢ_ , ¬ᵢ_
 
   open Meets (λ x y → x ≼ᵢ y)
+  open Joins (λ x y → x ≼ᵢ y)
 
   ρ : is-partial-order Y _≼ᵢ_
   ρ = (≼ᵢ-is-reflexive , ≼ᵢ-is-transitive) , ≼ᵢ-is-antisymmetric
@@ -887,11 +904,31 @@ transport-ba-structure {𝓤} {𝓤'} {𝓥} X Y f e b = (d , †) , f-is-hom
                     g y₁ ⋏[ B₁ ] g y₂ ＝⟨ g-preserves-meets ⁻¹   ⟩ₚ
                     g (y₁ ⋏ᵢ y₂)      ■
 
-  ⋎ᵢ-is-lub : {!!}
-  ⋎ᵢ-is-lub = {!!}
+  ⋎ᵢ-is-lub : (y₁ y₂ : Y) → ((y₁ ⋎ᵢ y₂) is-lub-of₂ (y₁ , y₂)) holds
+  ⋎ᵢ-is-lub y₁ y₂ = † , ‡
+   where
+    open PosetReasoning P₁
+
+    † : ((y₁ ⋎ᵢ y₂) is-an-upper-bound-of₂ (y₁ , y₂)) holds
+    † = †₁ , †₂
+     where
+      †₁ : (y₁ ≼ᵢ (y₁ ⋎ᵢ y₂)) holds
+      †₁ = g y₁                 ≤⟨ ⋎[ B₁ ]-is-upper₁ (g y₁) (g y₂) ⟩
+           g y₁ ⋎[ B₁ ] g y₂    ＝⟨ g-preserves-joins ⁻¹           ⟩ₚ
+           g (y₁ ⋎ᵢ y₂)         ■
+
+      †₂ : (y₂ ≼ᵢ (y₁ ⋎ᵢ y₂)) holds
+      †₂ = g y₂                ≤⟨ ⋎[ B₁ ]-is-upper₂ (g y₁) (g y₂) ⟩
+           g y₁ ⋎[ B₁ ] g y₂   ＝⟨ g-preserves-joins ⁻¹ ⟩ₚ
+           g (y₁ ⋎ᵢ y₂)        ■
+
+    ‡ : ((𝓊 , _) : upper-bound₂ (y₁ , y₂)) → (g (y₁ ⋎ᵢ y₂) ≤[ P₁ ] g 𝓊) holds
+    ‡ (u , p , q) = g (y₁ ⋎ᵢ y₂)      ＝⟨ g-preserves-joins   ⟩ₚ
+                    g y₁ ⋎[ B₁ ] g y₂ ≤⟨ ⋎[ B₁ ]-is-least p q ⟩
+                    g u               ■
 
   † : satisfies-ba-laws d
-  † = ρ , ⋏ᵢ-is-glb , 𝟏ᵢ-is-top , ⋎ᵢ-is-lub , 𝟎ᵢ-is-bottom , {!!}
+  † = ρ , ⋏ᵢ-is-glb , 𝟏ᵢ-is-top , ⋎ᵢ-is-lub , 𝟎ᵢ-is-bottom , {!!} , {!!}
 
   f-is-hom : is-ba-homomorphism (X , b) (Y , d , †) f holds
   f-is-hom = refl , γ , refl , ϵ
