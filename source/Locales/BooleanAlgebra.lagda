@@ -937,8 +937,8 @@ transport-ba-structure {𝓤} {𝓤'} {𝓥} X Y f e b = (d , †) , f-is-hom
                     g y₁ ⋎[ B₁ ] g y₂ ≤⟨ ⋎[ B₁ ]-is-least p q ⟩
                     g u               ■
 
-  ζ : (y₁ y₂ y₃ : Y) → y₁ ⋏ᵢ (y₂ ⋎ᵢ y₃) ＝ (y₁ ⋏ᵢ y₂) ⋎ᵢ (y₁ ⋏ᵢ y₃)
-  ζ y₁ y₂ y₃ =
+  distributivityᵢ : (y₁ y₂ y₃ : Y) → y₁ ⋏ᵢ (y₂ ⋎ᵢ y₃) ＝ (y₁ ⋏ᵢ y₂) ⋎ᵢ (y₁ ⋏ᵢ y₃)
+  distributivityᵢ y₁ y₂ y₃ =
    y₁ ⋏ᵢ (y₂ ⋎ᵢ y₃)                                        ＝⟨ refl ⟩
    f (g y₁ ⋏[ B₁ ] g (y₂ ⋎ᵢ y₃))                           ＝⟨ Ⅰ    ⟩
    f (g y₁ ⋏[ B₁ ] (g y₂ ⋎[ B₁ ] g y₃))                    ＝⟨ Ⅱ    ⟩
@@ -975,7 +975,9 @@ transport-ba-structure {𝓤} {𝓤'} {𝓥} X Y f e b = (d , †) , f-is-hom
           Ⅱ = ap f (pr₂ (¬[ B₁ ]-is-complement (g y)))
 
   † : satisfies-ba-laws d
-  † = ρ , ⋏ᵢ-is-glb , 𝟏ᵢ-is-top , ⋎ᵢ-is-lub , 𝟎ᵢ-is-bottom , ζ , ¬ᵢ-is-complement
+  † = ρ
+    , ⋏ᵢ-is-glb , 𝟏ᵢ-is-top , ⋎ᵢ-is-lub , 𝟎ᵢ-is-bottom
+    , distributivityᵢ , ¬ᵢ-is-complement
 
   f-is-hom : is-ba-homomorphism (X , b) (Y , d , †) f holds
   f-is-hom = refl , γ , refl , ϵ
