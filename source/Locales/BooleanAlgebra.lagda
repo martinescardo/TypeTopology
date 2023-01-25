@@ -191,6 +191,11 @@ syntax join-of-ba B x y = x ⋎[ B ] y
 ¬[_]_ : (B : BooleanAlgebra 𝓤 𝓥) → ⟪ B ⟫ → ⟪ B ⟫
 ¬[ B ] x = pr₂ (pr₂ (pr₂ (pr₂ (pr₂ (pr₁ (pr₂ B)))))) x
 
+⋏-distributes-over-⋎ : (B : BooleanAlgebra 𝓤 𝓥)
+                     → (x y z : ⟪ B ⟫)
+                     → x ⋏[ B ] (y ⋎[ B ] z) ＝ (x ⋏[ B ] y) ⋎[ B ] (x ⋏[ B ] z)
+⋏-distributes-over-⋎ (_ , _ , (_ , _ , _ , _ , _ , φ , _)) = φ
+
 \end{code}
 
 \begin{code}
@@ -927,8 +932,22 @@ transport-ba-structure {𝓤} {𝓤'} {𝓥} X Y f e b = (d , †) , f-is-hom
                     g y₁ ⋎[ B₁ ] g y₂ ≤⟨ ⋎[ B₁ ]-is-least p q ⟩
                     g u               ■
 
+  ζ : (y₁ y₂ y₃ : Y) → y₁ ⋏ᵢ (y₂ ⋎ᵢ y₃) ＝ (y₁ ⋏ᵢ y₂) ⋎ᵢ (y₁ ⋏ᵢ y₃)
+  ζ y₁ y₂ y₃ =
+   y₁ ⋏ᵢ (y₂ ⋎ᵢ y₃)                                        ＝⟨ refl ⟩
+   f (g y₁ ⋏[ B₁ ] g (y₂ ⋎ᵢ y₃))                           ＝⟨ Ⅰ ⟩
+   f (g y₁ ⋏[ B₁ ] (g y₂ ⋎[ B₁ ] g y₃))                    ＝⟨ Ⅱ ⟩
+   f ((g y₁ ⋏[ B₁ ] g y₂) ⋎[ B₁ ] (g y₁ ⋏[ B₁ ] g y₃))     ＝⟨ Ⅲ ⟩
+   f (g (y₁ ⋏ᵢ y₂) ⋎[ B₁ ] g (y₁ ⋏ᵢ y₃))                   ＝⟨ refl ⟩
+   (y₁ ⋏ᵢ y₂) ⋎ᵢ (y₁ ⋏ᵢ y₃)                                ∎
+    where
+     ※ = λ x y → g-preserves-meets {x} {y} ⁻¹
+     Ⅰ = ap (λ - → f (g y₁ ⋏[ B₁ ] -)) g-preserves-joins
+     Ⅱ = ap f (⋏-distributes-over-⋎ B₁ (g y₁) (g y₂) (g y₃))
+     Ⅲ = ap₂ (λ a b → f (a ⋎[ B₁ ] b)) (※ y₁ y₂) (※ y₁ y₃)
+
   † : satisfies-ba-laws d
-  † = ρ , ⋏ᵢ-is-glb , 𝟏ᵢ-is-top , ⋎ᵢ-is-lub , 𝟎ᵢ-is-bottom , {!!} , {!!}
+  † = ρ , ⋏ᵢ-is-glb , 𝟏ᵢ-is-top , ⋎ᵢ-is-lub , 𝟎ᵢ-is-bottom , ζ , {!!}
 
   f-is-hom : is-ba-homomorphism (X , b) (Y , d , †) f holds
   f-is-hom = refl , γ , refl , ϵ
