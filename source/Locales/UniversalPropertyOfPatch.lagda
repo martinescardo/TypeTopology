@@ -223,6 +223,23 @@ We denote by `ℬ𝒶𝓈𝒾𝒸₀` the small copy of `ℬ𝒶𝓈𝒾𝒸` gi
 
 \end{code}
 
+Since `ℬ𝒶𝓈𝒾𝒸₀` is equivalent to `ℬ𝒶𝓈𝒾𝒸` which is in turn equivalent to `𝒞𝓁ℴ𝓅`,
+we have that `ℬ𝒶𝓈𝒾𝒸₀` is equivalent to `𝒞𝓁ℴ𝓅`.
+
+\begin{code}
+
+  basic₀-is-equivalent-to-clop : ℬ𝒶𝓈𝒾𝒸₀ ≃ 𝒞𝓁ℴ𝓅
+  basic₀-is-equivalent-to-clop = ℬ𝒶𝓈𝒾𝒸₀ ≃⟨ † ⟩ ℬ𝒶𝓈𝒾𝒸 ≃⟨ ‡ ⟩ 𝒞𝓁ℴ𝓅 ■
+    where
+     † = pr₂ basic-is-small
+     ‡ = basic-is-equivalent-to-clop
+
+\end{code}
+
+In the next section we show that the set of clopens forms a Boolean algebra. We
+then transport this Boolean algebra structure on `𝒞𝓁ℴ𝓅` along the equivalence
+`ℬ𝒶𝓈𝒾𝒸₀ ≃ 𝒞𝓁ℴ𝓅` to obtain a small version of this Boolean algebra.
+
 \section{The Algebra of Clopens of Patch}
 
 We now show that the type of clopens of Patch forms a Boolean algebra. We denote
@@ -332,6 +349,31 @@ Finally, the complete definition of the algebra of clopens `ℂ`.
 
     φ₆ : (𝒿 : 𝒞𝓁ℴ𝓅) → (𝒿 ⋏ₓ (¡ 𝒿) ＝ 𝟎ₓ) × (𝒿 ⋎ₓ (¡ 𝒿) ＝ 𝟏ₓ)
     φ₆ (𝒿 , 𝒿′ , p , q) = to-subtype-＝ þ p , to-subtype-＝ þ q
+
+\end{code}
+
+\section{Small version of `ℂ`}
+
+\begin{code}
+
+  to-clop : ℬ𝒶𝓈𝒾𝒸₀ → 𝒞𝓁ℴ𝓅
+  to-clop = pr₁ (basic₀-is-equivalent-to-clop)
+
+  to-basic₀ : 𝒞𝓁ℴ𝓅 → ℬ𝒶𝓈𝒾𝒸₀
+  to-basic₀ = inverse to-clop (pr₂ basic₀-is-equivalent-to-clop)
+
+  to-basic₀-is-equiv : is-equiv to-basic₀
+  to-basic₀-is-equiv = pr₂ (≃-sym basic₀-is-equivalent-to-clop)
+
+  ℂ₀ : BooleanAlgebra 𝓤 𝓤
+  ℂ₀ = ℬ𝒶𝓈𝒾𝒸₀ , b′
+   where
+    ξ : Σ b′ ꞉ ba-structure 𝓤 ℬ𝒶𝓈𝒾𝒸₀ ,
+         is-ba-homomorphism ℂ (ℬ𝒶𝓈𝒾𝒸₀ , b′) to-basic₀ holds
+    ξ = transport-ba-structure 𝒞𝓁ℴ𝓅 ℬ𝒶𝓈𝒾𝒸₀ to-basic₀ to-basic₀-is-equiv (pr₂ ℂ)
+
+    b′ : ba-structure 𝓤 ℬ𝒶𝓈𝒾𝒸₀
+    b′ = pr₁ ξ
 
 \end{code}
 
