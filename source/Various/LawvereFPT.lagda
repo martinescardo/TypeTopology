@@ -311,7 +311,7 @@ The following proofs are originally due to Ingo Blechschmidt during
 the Autumn School "Proof and Computation", Fischbachau, 2018, after I
 posed the problem of showing that the universe is uncountable to
 him. This version is an adaptation jointly developed by the two of us
-to use LFTP, also extended to replace "discrete" by "set" at the cost
+to use LFPT, also extended to replace "discrete" by "set" at the cost
 of "jumping" a universe.
 
 \begin{code}
@@ -553,8 +553,8 @@ types, Π types, W types and a universe 𝓤 closed under them. In
 particular, extensionality and univalence are not needed. We again use
 Lawvere's fixed point theorem.
 
-NB. It should also be possible to replace the diagonal construction of
-Lemma₀ by a second application of LFPT (todo).
+TODO. It should also be possible to replace the diagonal construction
+of Lemma₀ by a second application of LFPT.
 
 \begin{code}
 
@@ -604,7 +604,7 @@ module GeneralizedCoquand where
            Rf : Σ H
            Rf = (R , f)
 
-           i = (transport-ap H pr₁ (η (Rf)))⁻¹
+           i = (transport-ap H pr₁ (η Rf))⁻¹
            ii = apd pr₂ (η Rf)
 
      δ : designated-fixed-point-property X
