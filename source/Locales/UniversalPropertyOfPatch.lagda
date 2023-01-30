@@ -221,6 +221,12 @@ We denote by `ℬ𝒶𝓈𝒾𝒸₀` the small copy of `ℬ𝒶𝓈𝒾𝒸` gi
   ℬ𝒶𝓈𝒾𝒸₀ : 𝓤  ̇
   ℬ𝒶𝓈𝒾𝒸₀ = pr₁ basic-is-small
 
+  𝔰₂ : ℬ𝒶𝓈𝒾𝒸₀ → ℬ𝒶𝓈𝒾𝒸
+  𝔰₂ = pr₁ (pr₂ basic-is-small)
+
+  𝔯₂ : ℬ𝒶𝓈𝒾𝒸 → ℬ𝒶𝓈𝒾𝒸₀
+  𝔯₂ = inverse 𝔰₂ {!!}
+
 \end{code}
 
 Since `ℬ𝒶𝓈𝒾𝒸₀` is equivalent to `ℬ𝒶𝓈𝒾𝒸` which is in turn equivalent to `𝒞𝓁ℴ𝓅`,
@@ -377,6 +383,10 @@ Finally, the complete definition of the algebra of clopens `ℂ`.
 
 \end{code}
 
+\section{Proof of the Universal Property}
+
+\begin{code}
+
  ump-of-patch : (X : Locale (𝓤 ⁺) 𝓤 𝓤)
               → is-stone (𝒪 X) holds
               → (𝒻 : X ─c→ A)
@@ -390,215 +400,20 @@ Finally, the complete definition of the algebra of clopens `ℂ`.
     where
      open SmallPatchConstruction A σᴰ renaming (SmallPatch to Patchₛ-A)
      open BasisOfPatch A σᴰ
+     open AlgebraOfClopensOfPatch σᴰ
 
-     𝒞𝓁ℴ𝓅 : 𝓤 ⁺  ̇
-     𝒞𝓁ℴ𝓅 = Σ 𝒿 ꞉ ⟨ 𝒪 Patchₛ-A ⟩ , is-clopen (𝒪 Patchₛ-A) 𝒿 holds
+     h₀ : ℬ𝒶𝓈𝒾𝒸 → ⟨ 𝒪 X ⟩
+     h₀ = {!!}
 
-     _≼ₓ_ : 𝒞𝓁ℴ𝓅 → 𝒞𝓁ℴ𝓅 → Ω 𝓤
-     (𝒿 , _) ≼ₓ (𝓀 , _) = 𝒿 ≤[ poset-of (𝒪 Patchₛ-A) ] 𝓀
+     h : ℬ𝒶𝓈𝒾𝒸₀ → ⟨ 𝒪 X ⟩
+     h = {!𝔰₁!}
 
-     ℬ𝒶𝓈𝒾𝒸 : 𝓤 ⁺  ̇
-     ℬ𝒶𝓈𝒾𝒸 = Σ 𝒿 ꞉ ⟨ 𝒪 Patchₛ-A ⟩ , ∃ i ꞉ index ℬ-patch-↑ , ℬ-patch-↑ [ i ] ＝ 𝒿
+     𝕚 : ⟪ ℂ₀ ⟫ → ⟨ 𝒪 Patchₛ-A ⟩
+     𝕚 = pr₁ ∘ to-clop
 
-     B = index ℬ-patch-↑
-
-     β : B → ⟨ 𝒪 Patchₛ-A ⟩
-     β i = ℬ-patch-↑ [ i ]
-
-     resize-basic : ℬ𝒶𝓈𝒾𝒸 is 𝓤 small
-     resize-basic = sr β (B , ≃-refl B) † carrier-of-[ poset-of (𝒪 Patchₛ-A) ]-is-set
-      where
-       † : ⟨ 𝒪 Patchₛ-A ⟩ is-locally 𝓤 small
-       † 𝒿 𝓀 = (𝒿 ＝ᵏ 𝓀) holds , logically-equivalent-props-are-equivalent ♥ ♠ to from
-        where
-         ♥ : is-prop ((𝒿 ＝ᵏ 𝓀) holds)
-         ♥ = holds-is-prop (𝒿 ＝ᵏ 𝓀)
-
-         ♠ : is-prop (𝒿 ＝ 𝓀)
-         ♠ = carrier-of-[ poset-of (𝒪 Patchₛ-A) ]-is-set
-
-         to : (𝒿 ＝ᵏ 𝓀) holds → 𝒿 ＝ 𝓀
-         to (p , q) = ≤-is-antisymmetric (poset-of (𝒪 Patchₛ-A)) p q
-
-         from : 𝒿 ＝ 𝓀 → (𝒿 ＝ᵏ 𝓀) holds
-         from p = γ₁ , γ₂
-          where
-           ζ : (i : index ℬ) → ((𝒿 $ (ℬ [ i ])) ≤[ poset-of (𝒪 A) ] (𝒿 $ (ℬ [ i ]))) holds
-           ζ i = ≤-is-reflexive (poset-of (𝒪 A)) (𝒿 $ (ℬ [ i ]))
-
-           γ₁ : (𝒿 ≼ᵏ 𝓀) holds
-           γ₁ = transport (λ - → (𝒿 ≼ᵏ -) holds) p ζ
-
-           γ₂ : (𝓀 ≼ᵏ 𝒿) holds
-           γ₂ = transport (λ - → (- ≼ᵏ 𝒿) holds) p ζ
-
-     open PatchStoneᴰ A σᴰ
-     open PatchStone  A ∣ σᴰ ∣
-
-     þ : (𝒿 : ⟨ 𝒪 Patchₛ-A ⟩) → is-prop (is-clopen (𝒪 Patchₛ-A) 𝒿 holds)
-     þ = holds-is-prop ∘ is-clopen (𝒪 Patchₛ-A)
-
-     iso : ℬ𝒶𝓈𝒾𝒸 ≃ 𝒞𝓁ℴ𝓅
-     iso = to , (section-retraction-equiv to (from , r) s)
-      where
-       to : ℬ𝒶𝓈𝒾𝒸 → 𝒞𝓁ℴ𝓅
-       to (𝒿 , p) = 𝒿 , ∥∥-rec ((holds-is-prop (is-clopen (𝒪 Patchₛ-A) 𝒿))) † p
-        where
-         † : (Σ i ꞉ index ℬ-patch-↑ , ℬ-patch-↑ [ i ] ＝ 𝒿)
-           → is-clopen (𝒪 Patchₛ-A) 𝒿 holds
-         † (k , eq) = ∥∥-rec
-                       (holds-is-prop (is-clopen (𝒪 Patchₛ-A) 𝒿))
-                       ‡
-                       patch-zero-dimensional
-          where
-           ‡ : _ → is-clopen (𝒪 Patchₛ-A) 𝒿 holds
-           ‡ zᴰ = transport
-                   (λ - → is-clopen (𝒪 Patchₛ-A) - holds)
-                   eq (ℬ-patch-↑-consists-of-clopens k)
-
-       from : 𝒞𝓁ℴ𝓅 → ℬ𝒶𝓈𝒾𝒸
-       from (𝒿 , p) = 𝒿 , ∥∥-rec ∃-is-prop † υ
-        where
-         † : Σ i ꞉ index ℬ-patch-↑ , (𝒿 ＝ ℬ-patch-↑ [ i ])
-           → ∃ i ꞉ index ℬ-patch-↑ , ℬ-patch-↑ [ i ] ＝ 𝒿
-         † (i , p) = ∣ i , (p ⁻¹) ∣
-
-         υ : ∥ Σ i ꞉ index ℬ-patch-↑ , 𝒿 ＝ ℬ-patch-↑ [ i ] ∥
-         υ = clopens-are-basic-in-stone-locales
-              (𝒪 Patchₛ-A)
-              patchₛ-is-stone
-              ℬ-patch-↑
-              ℬ-patch-↑-is-directed-basisₛ 𝒿 p
-
-       r : (to ∘ from) ∼ id
-       r (𝒿 , p) = to-subtype-＝ þ refl
-
-       ρ : (from ∘ to) ∼ id
-       ρ (𝒿 , p) = to-subtype-＝ (λ _ → ∃-is-prop) refl
-
-       s : is-section to
-       s = from , ρ
-
-     -- 𝒻⁻ : X ─c→ Patchₛ-A
-     -- 𝒻⁻ = {!!}
-
-     B₀ : Set 𝓤
-     B₀ = pr₁ resize-basic
-
-     iso₂ : B₀ ≃ ℬ𝒶𝓈𝒾𝒸
-     iso₂ = pr₂ resize-basic
-
-     iso₃ : B₀ ≃ 𝒞𝓁ℴ𝓅
-     iso₃ = B₀ ≃⟨ iso₂ ⟩ ℬ𝒶𝓈𝒾𝒸 ≃⟨ iso ⟩ 𝒞𝓁ℴ𝓅 ■
-
-     to-clop : B₀ → 𝒞𝓁ℴ𝓅
-     to-clop = pr₁ iso₃
-
-     to-clop-is-injective : (x y : B₀) → to-clop x ＝ to-clop y → x ＝ y
-     to-clop-is-injective x y = equivs-are-lc to-clop (pr₂ iso₃)
-
-     from-clop : 𝒞𝓁ℴ𝓅 → B₀
-     from-clop = Eqtofun 𝒞𝓁ℴ𝓅 B₀ (≃-sym iso₃)
-
-     ♣ : to-clop ∘ from-clop ∼ id
-     ♣ = pr₂ (equivs-have-sections to-clop (pr₂ iso₃))
-
-     ♥ : from-clop ∘ to-clop ∼ id
-     ♥ 𝓍 = {!!}
-
-       ℂ₀ : BooleanAlgebra 𝓤 𝓤
-       ℂ₀ = B₀ , d , †
-        where
-         _≼ᵢ_ : B₀ → B₀ → Ω 𝓤
-         x ≼ᵢ y = to-clop x ≼ₓ to-clop y
-
-
-         to-clop-reflects-order : (x y : B₀)
-                                → (to-clop x ≼ₓ to-clop y ⇒ x ≼ᵢ y) holds
-         to-clop-reflects-order x y p = p
-
-         𝟏ᵢ : B₀
-         𝟏ᵢ = from-clop 𝟏ₓ
-
-         𝟎ᵢ : B₀
-         𝟎ᵢ = from-clop 𝟎ₓ
-
-         _⋏ᵢ_ : B₀ → B₀ → B₀
-         x ⋏ᵢ y = from-clop (to-clop x ⋏ₓ to-clop y)
-
-         _⋎ᵢ_ : B₀ → B₀ → B₀
-         x ⋎ᵢ y = from-clop (to-clop x ⋎ₓ to-clop y)
-
-         ¬ᵢ_ : B₀ → B₀
-         ¬ᵢ_ = from-clop ∘ ¡_ ∘ to-clop
-
-         d : ba-data 𝓤 B₀
-         d = _≼ᵢ_ , 𝟏ᵢ , _⋏ᵢ_ , 𝟎ᵢ , _⋎ᵢ_ , ¬ᵢ_
-
-         ρ : is-partial-order B₀ _≼ᵢ_
-         ρ = (ρ₁ , ρ₂) , ρ₃
-          where
-           ρ₁ : (x : B₀) → (x ≼ᵢ x) holds
-           ρ₁ x = ≤-is-reflexive (poset-of (𝒪 Patchₛ-A)) (pr₁ (to-clop x))
-
-           ρ₂ : is-transitive _≼ᵢ_ holds
-           ρ₂ x y z p q = ≤-is-transitive
-                           (poset-of (𝒪 Patchₛ-A))
-                           (pr₁ (to-clop x))
-                           (pr₁ (to-clop y))
-                           (pr₁ (to-clop z))
-                           p
-                           q
-
-           ρ₃ : is-antisymmetric _≼ᵢ_
-           ρ₃ {x} {y} p q =
-            to-clop-is-injective x y
-             (to-subtype-＝ þ (≤-is-antisymmetric (poset-of (𝒪 Patchₛ-A)) p q))
-
-         ξ₁ : (x y : B₀) → Meets._is-glb-of_ _≼ᵢ_ (x ⋏ᵢ y) (x , y) holds
-         ξ₁ x y = {!!}
-
-         † : satisfies-ba-laws d
-         † = ρ , ξ₁ , {!!}
-
-       η : ⟪ ℂ₀ ⟫ → ⟨ 𝒪 Patchₛ-A ⟩
-       η = pr₁ ∘ to-clop
-
-       ϟ : contains-compact-opens (𝒪 Patchₛ-A) ℂ₀ η holds
-       ϟ 𝒿 κ = ∥∥-rec
-                ∃-is-prop
-                ※
-                (compact-opens-are-basic-in-compact-frames
-                  (𝒪 Patchₛ-A)
-                  ℬ-patch-↑
-                  ℬ-patch-↑-is-directed-basisₛ
-                  patchₛ-is-compact 𝒿 κ )
-        where
-         ※ : Σ i ꞉ index ℬ-patch-↑ , 𝒿 ＝ ℬ-patch-↑ [ i ]
-           → ∃ b ꞉ ⟪ ℂ₀ ⟫ , η b ＝ 𝒿
-         ※ (i , p) = ∣ from-clop (ℬ-patch-↑ [ i ] , foo) , ♠ ∣
-          where
-           abstract
-            foo : is-clopen (𝒪 Patchₛ-A) (ℬ-patch-↑ [ i ]) holds
-            foo = directification-preserves-clopenness (𝒪 Patchₛ-A) ℬ-patch ℬ-patchₛ-consists-of-clopens i
-
-           𝓍 : 𝒞𝓁ℴ𝓅
-           𝓍 = ℬ-patch-↑ [ i ] , foo
-
-           ♠ : η (from-clop 𝓍) ＝ 𝒿
-           ♠ = η (from-clop 𝓍)               ＝⟨ refl         ⟩
-               pr₁ (to-clop (from-clop 𝓍))   ＝⟨ ap pr₁ (♣ 𝓍) ⟩
-               pr₁ 𝓍                         ＝⟨ p ⁻¹         ⟩
-               𝒿                             ∎
-
-       h : ⟪ ℂ₀ ⟫ → ⟨ 𝒪 X ⟩
-       h = {!!}
-
-       h-is-a-lattice-homomorphism : is-lattice-homomorphism ℂ₀ (𝒪 X) h holds
-       h-is-a-lattice-homomorphism = {!!}
-
-       ext : ∃! 𝒻⁻⋆ ꞉ (⟨ 𝒪 Patchₛ-A ⟩ → ⟨ 𝒪 X ⟩)
-           , ((is-a-frame-homomorphism (𝒪 Patchₛ-A) (𝒪 X) 𝒻⁻⋆ holds) × (h ＝ 𝒻⁻⋆ ∘ η))
-       ext = extension-lemma ℂ₀ (𝒪 Patchₛ-A) (𝒪 X) η {!!} patchₛ-is-spectral {!!} {!!} {!!} ϟ h h-is-a-lattice-homomorphism
+     ξ : ∃! 𝒻⁻⋆ ꞉ (⟨ 𝒪 Patchₛ-A ⟩ → ⟨ 𝒪 X ⟩) ,
+            (is-a-frame-homomorphism (𝒪 Patchₛ-A) (𝒪 X) 𝒻⁻⋆ holds)
+          × (h ＝ 𝒻⁻⋆ ∘ 𝕚)
+     ξ = {!!}
 
 \end{code}
