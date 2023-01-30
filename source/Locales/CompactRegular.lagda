@@ -377,8 +377,11 @@ complementation-is-symmetric F x y (φ , ψ) = † , ‡
         Ⅸ = ap (λ - → x′ ∨[ F ] -) (pr₂ ψ)
         Ⅹ = 𝟏-right-annihilator-for-∨ F x′
 
+is-complement-of : (F : Frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → ⟨ F ⟩ → 𝓤  ̇
+is-complement-of F x′ x = (x ∧[ F ] x′ ＝ 𝟎[ F ]) × (x ∨[ F ] x′ ＝ 𝟏[ F ])
+
 is-clopen₀ : (F : Frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → 𝓤 ̇
-is-clopen₀ F U = Σ W ꞉ ⟨ F ⟩ , (U ∧[ F ] W ＝ 𝟎[ F ]) × (U ∨[ F ] W ＝ 𝟏[ F ])
+is-clopen₀ F U = Σ W ꞉ ⟨ F ⟩ , is-complement-of F W U
 
 is-clopen₀-is-prop : (F : Frame 𝓤 𝓥 𝓦) → (U : ⟨ F ⟩) → is-prop (is-clopen₀ F U)
 is-clopen₀-is-prop F U (W₁ , p₁ , q₁) (W₂ , p₂ , q₂) = to-subtype-＝ β γ
