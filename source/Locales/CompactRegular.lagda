@@ -534,6 +534,17 @@ well-inside-is-join-stable F {U₁} {U₂} {V} =
 
 \end{code}
 
+\begin{code}
+
+frame-homomorphisms-preserve-complements : (F G : Frame 𝓤 𝓥 𝓦)
+                                         → (h : F ─f→ G)
+                                         → {x x′ : ⟨ F ⟩}
+                                         → is-complement-of F x′ x
+                                         → is-complement-of G (h .pr₁ x) (h .pr₁ x′)
+frame-homomorphisms-preserve-complements F G h = {!!}
+
+\end{code}
+
 \section{Some properties}
 
 \begin{code}
