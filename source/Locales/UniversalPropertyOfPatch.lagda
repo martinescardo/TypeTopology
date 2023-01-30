@@ -225,7 +225,7 @@ We denote by `ℬ𝒶𝓈𝒾𝒸₀` the small copy of `ℬ𝒶𝓈𝒾𝒸` gi
   𝔰₂ = pr₁ (pr₂ basic-is-small)
 
   𝔯₂ : ℬ𝒶𝓈𝒾𝒸 → ℬ𝒶𝓈𝒾𝒸₀
-  𝔯₂ = inverse 𝔰₂ {!!}
+  𝔯₂ = inverse 𝔰₂ (pr₂ (pr₂ basic-is-small))
 
 \end{code}
 
@@ -363,13 +363,17 @@ Finally, the complete definition of the algebra of clopens `ℂ`.
 \begin{code}
 
   to-clop : ℬ𝒶𝓈𝒾𝒸₀ → 𝒞𝓁ℴ𝓅
-  to-clop = pr₁ (basic₀-is-equivalent-to-clop)
+  to-clop = pr₁ basic₀-is-equivalent-to-clop
 
   to-basic₀ : 𝒞𝓁ℴ𝓅 → ℬ𝒶𝓈𝒾𝒸₀
   to-basic₀ = inverse to-clop (pr₂ basic₀-is-equivalent-to-clop)
 
   to-basic₀-is-equiv : is-equiv to-basic₀
   to-basic₀-is-equiv = pr₂ (≃-sym basic₀-is-equivalent-to-clop)
+
+  to-basic₀-is-section-of-to-clop : to-clop ∘ to-basic₀ ∼ id
+  to-basic₀-is-section-of-to-clop =
+   pr₂ (equivs-have-sections to-clop (pr₂ basic₀-is-equivalent-to-clop))
 
   ℂ₀ : BooleanAlgebra 𝓤 𝓤
   ℂ₀ = ℬ𝒶𝓈𝒾𝒸₀ , b′
@@ -401,19 +405,67 @@ Finally, the complete definition of the algebra of clopens `ℂ`.
      open SmallPatchConstruction A σᴰ renaming (SmallPatch to Patchₛ-A)
      open BasisOfPatch A σᴰ
      open AlgebraOfClopensOfPatch σᴰ
+     open PatchStoneᴰ A σᴰ
 
      h₀ : ℬ𝒶𝓈𝒾𝒸 → ⟨ 𝒪 X ⟩
-     h₀ = {!!}
+     h₀ (𝒿 , p) = {!!}
 
      h : ℬ𝒶𝓈𝒾𝒸₀ → ⟨ 𝒪 X ⟩
-     h = {!𝔰₁!}
+     h = h₀ ∘ 𝔰₂
 
      𝕚 : ⟪ ℂ₀ ⟫ → ⟨ 𝒪 Patchₛ-A ⟩
      𝕚 = pr₁ ∘ to-clop
 
+     † : contains-compact-opens (𝒪 Patchₛ-A) ℂ₀ 𝕚 holds
+     † 𝒿 φ = ∥∥-rec ∃-is-prop ‡ ※
+      where
+       ‡ : Σ i ꞉ index ℬ-patch-↑ , 𝒿 ＝ ℬ-patch-↑ [ i ]
+         → ∃ b ꞉ ⟪ ℂ₀ ⟫ , 𝕚 b ＝ 𝒿
+       ‡ (i , p) = ∣ to-basic₀ ℬᵢ , q ∣
+        where
+         ζ : is-clopen (𝒪 Patchₛ-A) (ℬ-patch-↑ [ i ]) holds
+         ζ = directification-preserves-clopenness
+              (𝒪 Patchₛ-A)
+              ℬ-patch
+              ℬ-patchₛ-consists-of-clopens
+              i
+
+         ℬᵢ : 𝒞𝓁ℴ𝓅
+         ℬᵢ = ℬ-patch-↑ [ i ] , ζ
+
+         q : 𝕚 (to-basic₀ ℬᵢ) ＝ 𝒿
+         q = 𝕚 (to-basic₀ ℬᵢ)              ＝⟨ refl        ⟩
+             pr₁ (to-clop (to-basic₀ ℬᵢ))  ＝⟨ ♣           ⟩
+             pr₁ ℬᵢ                        ＝⟨ refl        ⟩
+             ℬ-patch-↑ [ i ]               ＝⟨ p ⁻¹        ⟩
+             𝒿                             ∎
+              where
+               ♣ = ap pr₁ (to-basic₀-is-section-of-to-clop ℬᵢ)
+
+       ※ : ∥ Σ i ꞉ index ℬ-patch-↑ , 𝒿 ＝ ℬ-patch-↑ [ i ] ∥
+       ※ = compact-opens-are-basic-in-compact-frames
+            (𝒪 Patchₛ-A)
+            ℬ-patch-↑
+            ℬ-patch-↑-is-directed-basisₛ
+            patchₛ-is-compact
+            𝒿
+            φ
+
      ξ : ∃! 𝒻⁻⋆ ꞉ (⟨ 𝒪 Patchₛ-A ⟩ → ⟨ 𝒪 X ⟩) ,
             (is-a-frame-homomorphism (𝒪 Patchₛ-A) (𝒪 X) 𝒻⁻⋆ holds)
           × (h ＝ 𝒻⁻⋆ ∘ 𝕚)
-     ξ = {!!}
+     ξ = extension-lemma
+          ℂ₀
+          (𝒪 Patchₛ-A)
+          (𝒪 X)
+          𝕚
+          {!!}
+          patchₛ-is-spectral
+          {!!}
+          {!!}
+          {!!}
+          †
+          h
+          {!!}
 
 \end{code}
