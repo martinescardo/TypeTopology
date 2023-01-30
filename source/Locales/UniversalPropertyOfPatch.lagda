@@ -27,7 +27,7 @@ open import UF.Subsingletons-FunExt
 
 open AllCombinators pt fe
 open import UF.ImageAndSurjection
-open UF.ImageAndSurjection pt
+-- open UF.ImageAndSurjection pt
 
 open import Locales.Frame pt fe
 open import Locales.CompactRegular pt fe
@@ -110,7 +110,7 @@ to `𝒞𝓁ℴ𝓅` in the case of a Stone locale.
 \begin{code}
 
   ℬ𝒶𝓈𝒾𝒸 : 𝓤 ⁺  ̇
-  ℬ𝒶𝓈𝒾𝒸 = Σ 𝒿 ꞉ ⟨ 𝒪 Patchₛ-A ⟩ , ∃ i ꞉ index ℬ-patch-↑ , ℬ-patch-↑ [ i ] ＝ 𝒿
+  ℬ𝒶𝓈𝒾𝒸 = image pt (λ - → ℬ-patch-↑ [ - ])
 
 \end{code}
 
@@ -407,8 +407,23 @@ Finally, the complete definition of the algebra of clopens `ℂ`.
      open AlgebraOfClopensOfPatch σᴰ
      open PatchStoneᴰ A σᴰ
 
+     X-is-set : is-set ⟨ 𝒪 X ⟩
+     X-is-set = carrier-of-[ poset-of (𝒪 X) ]-is-set
+
+     ¬ₓ_ : ?
+     ¬ₓ_ = ?
+
+     open ContinuousMapNotation X A
+
+     g : index ℬ-patch-↑ → ⟨ 𝒪 X ⟩
+     g []             = 𝟏[ 𝒪 X ]
+     g ((i , j) ∷ ks) = (𝒻 ⋆∙ (ℬ [ i ]) ∧[ 𝒪 X ] {!𝒻 ⋆∙ (ℬ [ j ])!}) ∨[ 𝒪 X ] g ks
+
+     congruence-wrt-β : (i j : index ℬ-patch-↑) → β i ＝ β j → g i ＝ g j
+     congruence-wrt-β i j p = {!!}
+
      h₀ : ℬ𝒶𝓈𝒾𝒸 → ⟨ 𝒪 X ⟩
-     h₀ (𝒿 , p) = {!!}
+     h₀ = pr₁ (pr₁ (factor-through-image pt fe β X-is-set g congruence-wrt-β))
 
      h : ℬ𝒶𝓈𝒾𝒸₀ → ⟨ 𝒪 X ⟩
      h = h₀ ∘ 𝔰₂
