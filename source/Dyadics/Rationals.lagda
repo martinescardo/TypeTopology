@@ -41,24 +41,24 @@ are a set.
 
 \begin{code}
 
-ℤ[1/2]-cond : (z : ℤ) (n : ℕ) → 𝓤₀ ̇
-ℤ[1/2]-cond z n = (n ＝ 0) ∔ (n > 0 × ℤodd z)
+is-ℤ[1/2] : (z : ℤ) (n : ℕ) → 𝓤₀ ̇
+is-ℤ[1/2] z n = (n ＝ 0) ∔ (n > 0 × ℤodd z)
 
-ℤ[1/2]-cond-is-prop : (z : ℤ) (n : ℕ) → is-prop (ℤ[1/2]-cond z n)
-ℤ[1/2]-cond-is-prop z n = +-is-prop ℕ-is-set (×-is-prop (<-is-prop-valued 0 n) (ℤodd-is-prop z)) I
+is-ℤ[1/2]-is-prop : (z : ℤ) (n : ℕ) → is-prop (is-ℤ[1/2] z n)
+is-ℤ[1/2]-is-prop z n = +-is-prop ℕ-is-set (×-is-prop (<-is-prop-valued 0 n) (ℤodd-is-prop z)) I
  where
   I : n ＝ 0 → ¬ (0 < n × ℤodd z)
   I n＝0 (0<n , odd-z) = not-less-than-itself 0 (transport (0 <_) n＝0 0<n)
 
-ℤ[1/2]-cond-is-discrete : ((z , n) : ℤ × ℕ) → is-discrete (ℤ[1/2]-cond z n)
-ℤ[1/2]-cond-is-discrete (z , n) = +-is-discrete (λ x y → inl (ℕ-is-set x y))
+is-ℤ[1/2]-is-discrete : ((z , n) : ℤ × ℕ) → is-discrete (is-ℤ[1/2] z n)
+is-ℤ[1/2]-is-discrete (z , n) = +-is-discrete (λ x y → inl (ℕ-is-set x y))
                                    (×-is-discrete (λ x y → inl (<-is-prop-valued 0 n x y))
                                                   (λ x y → inl (ℤodd-is-prop z x y)))
 ℤ[1/2] : 𝓤₀ ̇
-ℤ[1/2] = Σ (z , n) ꞉ ℤ × ℕ , ℤ[1/2]-cond z n
+ℤ[1/2] = Σ (z , n) ꞉ ℤ × ℕ , is-ℤ[1/2] z n
 
 ℤ[1/2]-is-discrete : is-discrete ℤ[1/2]
-ℤ[1/2]-is-discrete = Σ-is-discrete (×-is-discrete ℤ-is-discrete ℕ-is-discrete) ℤ[1/2]-cond-is-discrete
+ℤ[1/2]-is-discrete = Σ-is-discrete (×-is-discrete ℤ-is-discrete ℕ-is-discrete) is-ℤ[1/2]-is-discrete
 
 ℤ[1/2]-is-set : is-set ℤ[1/2]
 ℤ[1/2]-is-set = discrete-types-are-sets ℤ[1/2]-is-discrete
@@ -104,34 +104,24 @@ normalise : ℤ × ℤ → ℤ[1/2]
 normalise (z , pos n)     = normalise-pos (z , n)
 normalise (z , negsucc n) = normalise-neg (z , n)
 
+{-
+TODO : Introduce Integers Exponents File.
+-}
+
 exponents-not-zero' : (m : ℕ) → not-zero (pos (2^ m))
 exponents-not-zero' m iz = exponents-not-zero m (pos-lc I)
  where
   I : pos (2^ m) ＝ pos 0
   I = from-is-zero (pos (2^ m)) iz
 
-{-
-from-normalise-pos : (x : ℤ) (n : ℕ) → Σ ((x' , n') , p) ꞉ ℤ[1/2] , (Σ k ꞉ ℕ , (x ＝ x' * pos (2^ k))
-                                                                             × (n ＝ n' + k))
-from-normalise-pos x n = q , ({!!} , {!!})
- where
-  q : ℤ[1/2]
-  q = normalise-pos (x , n)
--}
-
-_≈'_ : (x y : ℤ × ℕ) → 𝓤₀ ̇
+_≈'_ : (p q : ℤ × ℕ) → 𝓤₀ ̇
 (x , n) ≈' (y , m) = x * pos (2^ m) ＝ y * pos (2^ n)
 
-_≈_ : (x y : ℤ[1/2]) → 𝓤₀ ̇
-(x , _) ≈ (y , _) = x ≈' y
+≈'-sym : (p q : ℤ × ℕ) → p ≈' q → q ≈' p
+≈'-sym p q e = e ⁻¹
 
-infix 0 _≈_
-
-≈-sym : (x y : ℤ[1/2]) → x ≈ y → y ≈ x
-≈-sym x y e = e ⁻¹
-
-≈-trans : (x y z : ℤ[1/2]) → x ≈ y → y ≈ z → x ≈ z
-≈-trans ((x , n) , _) ((y , m) , _) ((z , p) , _) e₁ e₂ = γ
+≈'-trans : (p q r : ℤ × ℕ) → p ≈' q → q ≈' r → p ≈' r
+≈'-trans (x , n) (y , m) (z , p) e₁ e₂ = γ
  where
   p' m' n' : ℤ
   p' = pos (2^ p)
@@ -152,15 +142,29 @@ infix 0 _≈_
   γ : x * p' ＝ z * n'
   γ = ℤ-mult-right-cancellable (x * p') (z * n') m' VI I
 
-≈-refl : (x : ℤ[1/2]) → x ≈ x
-≈-refl x = refl
+≈'-refl : (p : ℤ × ℕ) → p ≈' p
+≈'-refl p = refl
 
-≈-to-＝-lemma-sub-proof₁ : ((x , m) (y , n) : ℤ × ℕ)
+_≈_ : (p q : ℤ[1/2]) → 𝓤₀ ̇
+(p , _) ≈ (q , _) = p ≈' q
+
+infix 0 _≈_
+
+≈-sym : (x y : ℤ[1/2]) → x ≈ y → y ≈ x
+≈-sym (p , _) (q , _) e = ≈'-sym p q e
+
+≈-trans : (x y z : ℤ[1/2]) → x ≈ y → y ≈ z → x ≈ z
+≈-trans (p , _) (q , _) (r , _) e₁ e₂ = ≈'-trans p q r e₁ e₂
+
+≈-refl : (p : ℤ[1/2]) → p ≈ p
+≈-refl (p , _) = ≈'-refl p
+
+≈'-to-＝-0 : ((x , m) (y , n) : ℤ × ℕ)
               → (x , m) ≈' (y , n)
               → m ＝ 0
               → n ＝ 0
               → (x , m) ＝ (y , n)
-≈-to-＝-lemma-sub-proof₁ (x , m) (y , n) e m＝0 n＝0 = to-×-＝ I (m＝0 ∙ n＝0 ⁻¹)
+≈'-to-＝-0 (x , m) (y , n) e m＝0 n＝0 = to-×-＝ I (m＝0 ∙ n＝0 ⁻¹)
  where
   I : x ＝ y
   I = x              ＝⟨ refl                                  ⟩
@@ -170,9 +174,9 @@ infix 0 _≈_
       y * pos (2^ 0) ＝⟨ refl                                  ⟩
       y              ∎
 
-≈-to-＝-lemma-sub-proof₂ : ((x , m) (y , n) : ℤ × ℕ) → (x , m) ≈' (y , n) → m ＝ 0 → ¬ (n > 0 × ℤodd y)
-≈-to-＝-lemma-sub-proof₂ (x , m) (y , 0)      e m＝0 (n>0 , oy) = 𝟘-elim n>0
-≈-to-＝-lemma-sub-proof₂ (x , m) (y , succ n) e m＝0 (n>0 , oy) = ℤodd-not-even y oy (transport ℤeven I II)
+≈'-lt-consequence : ((x , m) (y , n) : ℤ × ℕ) → (x , m) ≈' (y , n) → m ＝ 0 → ¬ (n > 0 × ℤodd y)
+≈'-lt-consequence (x , m) (y , 0)      e m＝0 (n>0 , oy) = 𝟘-elim n>0
+≈'-lt-consequence (x , m) (y , succ n) e m＝0 (n>0 , oy) = ℤodd-not-even y oy (transport ℤeven I II)
  where
   I : x * pos (2^ (succ n)) ＝ y
   I = x * pos (2^ (succ n)) ＝⟨ e ⟩
@@ -182,8 +186,8 @@ infix 0 _≈_
   II : ℤeven (x * pos (2^ (succ n)))
   II = ℤtimes-even-is-even' x (pos (2^ (succ n))) (2-exponents-even n)
 
-≈-to-＝-cancellation-lemma : (x y : ℤ) (n : ℕ) → (x , 1) ≈' (y , succ (succ n)) → (x , 0) ≈' (y , succ n)
-≈-to-＝-cancellation-lemma x y n e = ℤ-mult-right-cancellable (x * pos (2^ (succ n))) (y * pos (2^ 0)) (pos 2) id I
+≈'-reduce  : (x y : ℤ) (n : ℕ) → (x , 1) ≈' (y , succ (succ n)) → (x , 0) ≈' (y , succ n)
+≈'-reduce  x y n e = ℤ-mult-right-cancellable (x * pos (2^ (succ n))) (y * pos (2^ 0)) (pos 2) id I
  where
   I : x * pos (2^ (succ n)) * pos 2 ＝ y * pos (2^ 0) * pos 2
   I = x * pos (2^ (succ n)) * pos 2   ＝⟨ ℤ*-assoc x (pos (2^ (succ n))) (pos 2)                       ⟩
@@ -194,13 +198,13 @@ infix 0 _≈_
       y * (pos 2 * pos 1)             ＝⟨ refl                                                         ⟩
       y * pos (2^ 0) * pos 2          ∎
 
-≈-to-＝-lemma-sub-proof₃ : (x : ℤ) (m : ℕ) (y : ℤ) (n : ℕ) → (x , m) ≈' (y , n) → m > 0 × ℤodd x → n > 0 × ℤodd y → (x , m) ＝ (y , n)
-≈-to-＝-lemma-sub-proof₃ x  m               y  0               e (m>0 , ox) (n>0 , on) = 𝟘-elim n>0
-≈-to-＝-lemma-sub-proof₃ x  0               y  (succ n)        e (m>0 , ox) (n>0 , on) = 𝟘-elim m>0
-≈-to-＝-lemma-sub-proof₃ x  1               y  1               e (m>0 , ox) (n>0 , on) = to-×-＝ (ℤ-mult-right-cancellable x y (pos (2^ 1)) id e) refl
-≈-to-＝-lemma-sub-proof₃ x  1               y  (succ (succ n)) e (m>0 , ox) (n>0 , on) = 𝟘-elim (≈-to-＝-lemma-sub-proof₂ (x , 0) (y , succ n) (≈-to-＝-cancellation-lemma x y n e) refl (⋆ , on))
-≈-to-＝-lemma-sub-proof₃ x  (succ (succ m)) y  1               e (m>0 , ox) (n>0 , on) = 𝟘-elim (≈-to-＝-lemma-sub-proof₂ (y , 0) (x , succ m) (≈-to-＝-cancellation-lemma y x m (e ⁻¹)) refl (⋆ , ox))
-≈-to-＝-lemma-sub-proof₃ x  (succ (succ m)) y  (succ (succ n)) e (m>0 , ox) (n>0 , on) = III (from-×-＝' (≈-to-＝-lemma-sub-proof₃ x (succ m) y (succ n) II (⋆ , ox) (⋆ , on)))
+≈'-to-＝' : (x : ℤ) (m : ℕ) (y : ℤ) (n : ℕ) → (x , m) ≈' (y , n) → m > 0 × ℤodd x → n > 0 × ℤodd y → (x , m) ＝ (y , n)
+≈'-to-＝' x  m               y  0               e (m>0 , ox) (n>0 , on) = 𝟘-elim n>0
+≈'-to-＝' x  0               y  (succ n)        e (m>0 , ox) (n>0 , on) = 𝟘-elim m>0
+≈'-to-＝' x  1               y  1               e (m>0 , ox) (n>0 , on) = to-×-＝ (ℤ-mult-right-cancellable x y (pos (2^ 1)) id e) refl
+≈'-to-＝' x  1               y  (succ (succ n)) e (m>0 , ox) (n>0 , on) = 𝟘-elim (≈'-lt-consequence (x , 0) (y , succ n) (≈'-reduce x y n e) refl (⋆ , on))
+≈'-to-＝' x  (succ (succ m)) y  1               e (m>0 , ox) (n>0 , on) = 𝟘-elim (≈'-lt-consequence (y , 0) (x , succ m) (≈'-reduce y x m (e ⁻¹)) refl (⋆ , ox))
+≈'-to-＝' x  (succ (succ m)) y  (succ (succ n)) e (m>0 , ox) (n>0 , on) = III (from-×-＝' (≈'-to-＝' x (succ m) y (succ n) II (⋆ , ox) (⋆ , on)))
  where
   I : x * pos (2^ (succ n)) * pos 2 ＝ y * pos (2^ (succ m)) * pos 2
   I = x * pos (2^ (succ n)) * pos 2   ＝⟨ ℤ*-assoc x (pos (2^ (succ n))) (pos 2)                       ⟩
@@ -218,22 +222,22 @@ infix 0 _≈_
   III : (x ＝ y) × (succ m ＝ succ n) → x , succ (succ m) ＝ y , succ (succ n)
   III (x＝y , m＝n) = to-×-＝ x＝y (ap succ m＝n)
 
-≈-to-＝-lemma-sub-proof₄ : ((x , m) (y , n) : ℤ × ℕ) → (x , m) ≈' (y , n) → m > 0 × ℤodd x → n > 0 × ℤodd y → (x , m) ＝ (y , n)
-≈-to-＝-lemma-sub-proof₄ (x , m) (y , n) e p q = ≈-to-＝-lemma-sub-proof₃ x m y n e p q
+≈'-to-＝'' : ((x , m) (y , n) : ℤ × ℕ) → (x , m) ≈' (y , n) → m > 0 × ℤodd x → n > 0 × ℤodd y → (x , m) ＝ (y , n)
+≈'-to-＝'' (x , m) (y , n) e p q = ≈'-to-＝' x m y n e p q
 
 ≈-to-＝-lemma : ((x , m) (y , n) : ℤ × ℕ)
               → (x , m) ≈' (y , n)
-              → ℤ[1/2]-cond x m
-              → ℤ[1/2]-cond y n
+              → is-ℤ[1/2] x m
+              → is-ℤ[1/2] y n
               → (x , m) ＝ (y , n)
-≈-to-＝-lemma x y e (inl p) (inl q) = ≈-to-＝-lemma-sub-proof₁ x y e p q
-≈-to-＝-lemma x y e (inl p) (inr q) = 𝟘-elim (≈-to-＝-lemma-sub-proof₂ x y e p q)
-≈-to-＝-lemma x y e (inr p) (inl q) = 𝟘-elim (≈-to-＝-lemma-sub-proof₂ y x (e ⁻¹) q p)
-≈-to-＝-lemma x y e (inr p) (inr q) = ≈-to-＝-lemma-sub-proof₄ x y e p q
+≈-to-＝-lemma x y e (inl p) (inl q) = ≈'-to-＝-0 x y e p q
+≈-to-＝-lemma x y e (inl p) (inr q) = 𝟘-elim (≈'-lt-consequence x y e p q)
+≈-to-＝-lemma x y e (inr p) (inl q) = 𝟘-elim (≈'-lt-consequence y x (e ⁻¹) q p)
+≈-to-＝-lemma x y e (inr p) (inr q) = ≈'-to-＝'' x y e p q
 
 ≈-to-＝ : (x y : ℤ[1/2]) → x ≈ y → x ＝ y
 ≈-to-＝ ((x , n) , p) ((y , m) , q) eq =
- to-subtype-＝ (λ (x , n) → ℤ[1/2]-cond-is-prop x n) (≈-to-＝-lemma (x , n) (y , m) eq p q)
+ to-subtype-＝ (λ (x , n) → is-ℤ[1/2]-is-prop x n) (≈-to-＝-lemma (x , n) (y , m) eq p q)
 
 ＝-to-≈ : (x y : ℤ[1/2]) → x ＝ y → x ≈ y
 ＝-to-≈ ((x , a) , α) ((y , b) , β) e = γ
@@ -248,7 +252,7 @@ infix 0 _≈_
       y * pos (2^ a) ∎
 
 ℤ[1/2]-to-normalise-pos : (((x , n) , e) : ℤ[1/2]) → ((x , n) , e) ＝ normalise-pos (x , n)
-ℤ[1/2]-to-normalise-pos ((x , 0)        , inl n＝0)       = to-subtype-＝ (λ (x , n) → ℤ[1/2]-cond-is-prop x n) refl
+ℤ[1/2]-to-normalise-pos ((x , 0)        , inl n＝0)       = to-subtype-＝ (λ (x , n) → is-ℤ[1/2]-is-prop x n) refl
 ℤ[1/2]-to-normalise-pos ((x , (succ n)) , inl n＝0)       = 𝟘-elim (positive-not-zero n n＝0)
 ℤ[1/2]-to-normalise-pos ((x , 0)        , inr (0<0 , oz)) = 𝟘-elim (not-less-than-itself 0 0<0)
 ℤ[1/2]-to-normalise-pos ((x , succ n)   , inr (0<n , oz)) =
@@ -268,6 +272,9 @@ infix 0 _≈_
 
 ≈-transport : (A : ℤ[1/2] → 𝓤 ̇) {x y : ℤ[1/2]} → x ≈ y → A x → A y
 ≈-transport A {x} {y} e = transport A (≈-to-＝ x y e)
+
+-- normalise-pos-reduce : (z : ℤ) → (n : ℕ) → normalise-pos (z * pos 2 , succ n) ＝ normalise-pos (z , n)
+-- normalise-pos-reduce = {!!}
   
 \end{code}
 
@@ -308,41 +315,5 @@ Boilerplate
 
 ≈-trans₅ : (x y z a b c d : ℤ[1/2]) → x ≈ y → y ≈ z → z ≈ a → a ≈ b → b ≈ c → c ≈ d → x ≈ d
 ≈-trans₅ x y z a b c d p q r s t u = ≈-trans₄ x y z a b d p q r s (≈-trans b c d t u)
-
-{-
-≈-normalise-pos' : (x : ℤ) (n : ℕ) (y : ℤ) (m : ℕ)
-                 → x * pos (2^ m) ＝ y * pos (2^ n)
-                 → normalise-pos (x , n) ≈ normalise-pos (y , m)
-≈-normalise-pos' x n y m e = I (ℤ[1/2]-from-normalise-pos x n) (ℤ[1/2]-from-normalise-pos y m)
- where
-  I : Σ p ꞉ ℤ[1/2] , p ＝ normalise-pos (x , n)
-    → Σ q ꞉ ℤ[1/2] , q ＝ normalise-pos (y , m)
-    → normalise-pos (x , n) ≈ normalise-pos (y , m)
-  I (p , α) (q , β) = γ
-   where
-    i : p ≈ normalise-pos (x , n)
-    i = ＝-to-≈ p (normalise-pos (x , n)) α
-
-    i⁻¹ : normalise-pos (x , n) ≈ p
-    i⁻¹ = ≈-sym p (normalise-pos (x , n)) i 
-
-    ii : q ≈ normalise-pos (y , m)
-    ii = ＝-to-≈ q (normalise-pos (y , m)) β
-
--- (x' , n')
-
-
--- (y' , m')
-
-    iii : p ≈ q
-    iii = {!!}
-    
-    γ : normalise-pos (x , n) ≈ normalise-pos (y , m)
-    γ = ≈-trans₂ (normalise-pos (x , n)) p q (normalise-pos (y , m))
-        i⁻¹ iii ii
-
-    γ₂ : normalise-pos (x , n) ≈ normalise-pos (y , m)
-    γ₂ = {!!}
--}
 
 \end{code}
