@@ -9,7 +9,8 @@ import UF.Choice
 import UF.Classifiers
 import UF.Classifiers-Old
 import UF.Connected
-import UF.CumulativeHierarchy      -- by de Jong, Kraus, Nordvall Forsberg and Xu.
+import UF.CumulativeHierarchy               -- by de Jong, Kraus, Nordvall Forsberg and Xu.
+import UF.CumulativeHierarchy-LocallySmall  -- by de Jong, Kraus, Nordvall Forsberg and Xu.
 import UF.Embeddings
 import UF.Equiv
 import UF.Equiv-FunExt
@@ -26,6 +27,7 @@ import UF.Knapp-UA
 import UF.KrausLemma
 import UF.Large-Quotient
 import UF.LeftCancellable
+import UF.Logic
 import UF.Lower-FunExt
 import UF.Miscelanea
 import UF.PairFun
@@ -45,7 +47,6 @@ import UF.SIP-Examples
 import UF.Section-Embedding
 import UF.Size
 import UF.StructureIdentityPrinciple
-import UF.Subsingleton-Combinators
 import UF.Subsingletons
 import UF.Subsingletons-FunExt
 import UF.UA-FunExt

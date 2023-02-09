@@ -87,7 +87,6 @@ open import TypeTopology.DiscreteAndSeparated
 open import UF.Base
 open import UF.Equiv
 open import UF.FunExt
-open import UF.ImageAndSurjection
 open import UF.Miscelanea
 open import UF.PropTrunc
 open import UF.Retracts
@@ -575,7 +574,7 @@ singleton-compact∙ {𝓤} {X} (x , φ) p = x , g
 
 module _ (pt : propositional-truncations-exist) where
 
- open ImageAndSurjection pt
+ open import UF.ImageAndSurjection pt
 
  surjection-compact∙ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                      → is-surjection f
@@ -606,7 +605,7 @@ module _ (pt : propositional-truncations-exist) where
                 → compact∙ (image f)
  image-compact∙ f = surjection-compact∙
                      (corestriction f)
-                     (corestriction-is-surjection f)
+                     (corestrictions-are-surjections f)
 
 \end{code}
 
@@ -667,22 +666,17 @@ in the original development:
 \begin{code}
 
 Σ-Compact : 𝓤 ̇ → {𝓥 : Universe} → 𝓤 ⊔ (𝓥 ⁺) ̇
-Σ-Compact {𝓤} X {𝓥} = (A : X → 𝓥 ̇ ) → complemented A → decidable (Σ A)
+Σ-Compact X {𝓥} = (A : X → 𝓥 ̇ ) → complemented A → decidable (Σ A)
 
 Compact = Σ-Compact
 
-Compactness-gives-Markov : {X : 𝓤 ̇ }
-                         → Compact X
+Complemented-choice : 𝓤 ̇ → {𝓥 : Universe} → 𝓤 ⊔ (𝓥 ⁺) ̇
+Complemented-choice X {𝓥} = (A : X → 𝓥 ̇ ) → complemented A → ¬¬ Σ A → Σ A
 
-                         → (A : X → 𝓥 ̇ )
-                         → complemented A
-                         → ¬¬ Σ A
-                         → Σ A
-Compactness-gives-Markov {𝓤} {X} c A δ φ = γ (c A δ)
- where
-  γ : decidable (Σ A) → Σ A
-  γ (inl σ) = σ
-  γ (inr u) = 𝟘-elim (φ u)
+compactness-gives-complemented-choice : {X : 𝓤 ̇ }
+                                      → Compact X
+                                      → Complemented-choice X {𝓥}
+compactness-gives-complemented-choice c A δ = ¬¬-elim (c A δ)
 
 compact-gives-Compact : {X : 𝓤 ̇ } → compact X → Compact X {𝓥}
 compact-gives-Compact {𝓤} {𝓥} {X} c A d = iii
@@ -799,7 +793,9 @@ assignments:
 \begin{code}
 
 ×-Compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-          → Compact X {𝓥 ⊔ 𝓦} → Compact Y {𝓦} → Compact (X × Y) {𝓦}
+          → Compact X {𝓥 ⊔ 𝓦}
+          → Compact Y {𝓦}
+          → Compact (X × Y) {𝓦}
 ×-Compact c d = Σ-preserves-Compactness c (λ x → d)
 
 
@@ -827,7 +823,7 @@ Compact-closed-under-≃ e = Compact-closed-under-retracts (≃-gives-▷ e)
 
 module CompactTypesPT (pt : propositional-truncations-exist) where
 
- open ImageAndSurjection pt
+ open import UF.ImageAndSurjection pt
 
  surjection-Compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                     → funext 𝓥 𝓤₀
@@ -860,7 +856,7 @@ module CompactTypesPT (pt : propositional-truncations-exist) where
                → Compact X {𝓤 ⊔ 𝓥}
                → Compact (image f) {𝓤 ⊔ 𝓥}
  image-Compact fe f c = surjection-Compact (corestriction f) fe
-                         (corestriction-is-surjection f) c
+                         (corestrictions-are-surjections f) c
 
 
  open PropositionalTruncation pt

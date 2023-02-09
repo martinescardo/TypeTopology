@@ -62,8 +62,8 @@ LEM 𝓤 = (p : Ω 𝓤) → p holds + ¬ (p holds)
 EM-gives-LEM : EM 𝓤 → LEM 𝓤
 EM-gives-LEM em p = em (p holds) (holds-is-prop p)
 
-LEM-gives-LEM : LEM 𝓤 → EM 𝓤
-LEM-gives-LEM lem P i = lem (P , i)
+LEM-gives-EM : LEM 𝓤 → EM 𝓤
+LEM-gives-EM lem P i = lem (P , i)
 
 WEM : ∀ 𝓤 → 𝓤 ⁺ ̇
 WEM 𝓤 = (P : 𝓤 ̇ ) → is-prop P → ¬ P + ¬¬ P
@@ -86,16 +86,18 @@ DNE : ∀ 𝓤 → 𝓤 ⁺ ̇
 DNE 𝓤 = (P : 𝓤 ̇ ) → is-prop P → ¬¬ P → P
 
 EM-gives-DNE : EM 𝓤 → DNE 𝓤
-EM-gives-DNE em P isp φ = cases id (λ u → 𝟘-elim (φ u)) (em P isp)
+EM-gives-DNE em P i φ = cases id (λ u → 𝟘-elim (φ u)) (em P i)
 
 double-negation-elim : EM 𝓤 → DNE 𝓤
 double-negation-elim = EM-gives-DNE
 
+fake-¬¬-EM : {X : 𝓤 ̇ } → ¬¬ (X + ¬ X)
+fake-¬¬-EM u = u (inr (λ p → u (inl p)))
+
 DNE-gives-EM : funext 𝓤 𝓤₀ → DNE 𝓤 → EM 𝓤
 DNE-gives-EM fe dne P isp = dne (P + ¬ P)
                              (decidability-of-prop-is-prop fe isp)
-                             (λ u → u (inr (λ p → u (inl p))))
-
+                             fake-¬¬-EM
 de-Morgan : EM 𝓤
           → EM 𝓥
           → {A : 𝓤 ̇ } {B : 𝓥 ̇ }
@@ -126,6 +128,11 @@ module _ (pt : propositional-truncations-exist) where
  double-negation-is-truncation-gives-DNE : ((X : 𝓤 ̇ ) → ¬¬ X → ∥ X ∥) → DNE 𝓤
  double-negation-is-truncation-gives-DNE f P i u = ∥∥-rec i id (f P u)
 
+ non-empty-is-inhabited : EM 𝓤 → {X : 𝓤 ̇ } → ¬¬ X → ∥ X ∥
+ non-empty-is-inhabited em {X} φ = cases
+                                    (λ s → s)
+                                    (λ u → 𝟘-elim (φ (contrapositive ∣_∣ u))) (em ∥ X ∥ ∥∥-is-prop)
+
  ∃-not+Π : EM (𝓤 ⊔ 𝓥)
          → {X : 𝓤 ̇ }
          → (A : X → 𝓥 ̇ )
@@ -152,27 +159,6 @@ module _ (pt : propositional-truncations-exist) where
    (λ (u : ¬ (∃ x ꞉ X , A x))
          → inr (λ (x : X) (v : A x) → u ∣ x , v ∣))
 
-\end{code}
-
-Added by Tom de Jong in August 2021.
-
-\begin{code}
-
- not-Π-not-implies-∃ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
-                     → EM (𝓤 ⊔ 𝓥)
-                     → ¬ ((x : X) → ¬ A x)
-                     → ∃ x ꞉ X , A x
- not-Π-not-implies-∃ {𝓤} {𝓥} {X} {A} em f = EM-gives-DNE em (∃ A) ∥∥-is-prop γ
-   where
-    γ : ¬¬ (∃ A)
-    γ g = f (λ x a → g ∣ x , a ∣)
-
-\end{code}
-
-End of addition.
-
-\begin{code}
-
  not-Π-implies-∃-not : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
                      → EM (𝓤 ⊔ 𝓥)
                      → ((x : X) → is-prop (A x))
@@ -189,6 +175,21 @@ End of addition.
                                     (λ (v : ¬ A x) → u ∣ x , v ∣))))
   where
    E = ∃ x ꞉ X , ¬ A x
+
+\end{code}
+
+Added by Tom de Jong in August 2021.
+
+\begin{code}
+
+ not-Π-not-implies-∃ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
+                     → EM (𝓤 ⊔ 𝓥)
+                     → ¬ ((x : X) → ¬ A x)
+                     → ∃ x ꞉ X , A x
+ not-Π-not-implies-∃ {𝓤} {𝓥} {X} {A} em f = EM-gives-DNE em (∃ A) ∥∥-is-prop γ
+   where
+    γ : ¬¬ (∃ A)
+    γ g = f (λ x a → g ∣ x , a ∣)
 
 \end{code}
 

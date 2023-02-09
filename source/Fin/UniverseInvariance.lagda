@@ -17,7 +17,6 @@ open import UF.Embeddings
 open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.FunExt
-open import UF.ImageAndSurjection
 open import UF.PairFun
 open import UF.PropTrunc
 open import UF.Subsingletons renaming (⊤Ω to ⊤)
@@ -34,7 +33,7 @@ fe : Fun-Ext
 fe = Univalence-gives-Fun-Ext ua
 
 open PropositionalTruncation pt
-open ImageAndSurjection pt
+open import UF.ImageAndSurjection pt
 open finiteness pt
 
 module constructions (X₀ : 𝓤₀ ̇ ) where

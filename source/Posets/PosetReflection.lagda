@@ -20,10 +20,8 @@ module Posets.PosetReflection
 
 open import UF.Base hiding (_≈_)
 open import UF.Large-Quotient pt fe pe hiding (/-induction)
-open import UF.ImageAndSurjection
+open import UF.ImageAndSurjection pt
 open import UF.Subsingletons-FunExt
-
-open ImageAndSurjection pt
 
 module poset-reflection
         (X : 𝓤 ̇  )

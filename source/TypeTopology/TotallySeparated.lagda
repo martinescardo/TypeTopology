@@ -77,7 +77,6 @@ open import UF.Embeddings
 open import UF.FunExt
 open import UF.Lower-FunExt
 open import UF.PropTrunc
-open import UF.ImageAndSurjection
 open import UF.Miscelanea
 
 \end{code}
@@ -550,7 +549,7 @@ module TotallySeparatedReflection
  where
 
  open PropositionalTruncation pt
- open ImageAndSurjection pt
+ open import UF.ImageAndSurjection pt
 
 \end{code}
 
@@ -582,7 +581,7 @@ the reflector.
  η {𝓤} {X} = corestriction (eval X)
 
  η-is-surjection : {X : 𝓤 ̇ } → is-surjection η
- η-is-surjection {𝓤} {X} = corestriction-is-surjection (eval X)
+ η-is-surjection {𝓤} {X} = corestrictions-are-surjections (eval X)
 
  η-induction :  {X : 𝓤 ̇ } (P : 𝕋 X → 𝓦 ̇ )
              → ((x' : 𝕋 X) → is-prop (P x'))
@@ -710,6 +709,7 @@ for the moment.
 module Apartness (pt : propositional-truncations-exist) where
 
  open PropositionalTruncation pt
+ open import UF.ImageAndSurjection pt
 
  is-prop-valued is-irreflexive is-symmetric is-cotransitive is-tight is-apartness
      : {X : 𝓤 ̇ } → (X → X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
@@ -1075,8 +1075,6 @@ apartness relation _♯₂ is tight:
 
 \begin{code}
 
-  open ImageAndSurjection pt
-
   X' : 𝓤 ⊔ 𝓥 ⁺ ̇
   X' = image α
 
@@ -1106,7 +1104,7 @@ apartness on it.
 \begin{code}
 
   η-is-surjection : is-surjection η
-  η-is-surjection = corestriction-is-surjection α
+  η-is-surjection = corestrictions-are-surjections α
 
   η-induction : (P : X' → 𝓦 ̇ )
               → ((x' : X') → is-prop (P x'))

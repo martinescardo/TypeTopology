@@ -25,6 +25,7 @@ import TypeTopology.PropTychonoff
 import TypeTopology.RicesTheoremForTheUniverse
 import TypeTopology.SigmaDiscreteAndTotallySeparated
 import TypeTopology.SimpleTypes
+import TypeTopology.SquashedCantor
 import TypeTopology.SquashedSum
 import TypeTopology.TheTopologyOfTheUniverse
 import TypeTopology.TotallySeparated

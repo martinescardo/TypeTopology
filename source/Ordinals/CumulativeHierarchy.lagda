@@ -1,16 +1,16 @@
 Tom de Jong, 28 October 2022 - 7 November 2022.
-In collaboration with Nicolai Kraus, Fredrik Norvall Forsberg and Chuangjie Xu.
+In collaboration with Nicolai Kraus, Fredrik Nordvall Forsberg and Chuangjie Xu.
 
-Following [Pow75], in constructive set theory an ordinal is [Definition 9.4.1,
-AR10], defined as a transitive set of transitive sets.
+Following [Pow75], in constructive set theory an ordinal is [Def. 9.4.1, AR10],
+defined as a transitive set of transitive sets.
 
 We consider the subtype 𝕍ᵒʳᵈ of the cumulative hierarchy 𝕍 of set theoretic
-ordinals in 𝕍 (see UF/CumulativeHierarchy.lagda and [Section 10.5, 5] for more
-on 𝕍).
+ordinals in 𝕍 (see UF/CumulativeHierarchy.lagda and [Section 10.5, Uni13] for
+more on 𝕍).
 
-We show that (𝕍ᵒʳᵈ,∈) is a ordinal, in the type theoretic sense of [5], i.e. it
-is a well-founded, extensional and transitive order. Moreover, we prove that
-(𝕍ᵒʳᵈ,∈) and the ordinal Ord of type theoretic ordinals are isomorphic.
+We show that (𝕍ᵒʳᵈ,∈) is a ordinal, in the type theoretic sense of [Uni13],
+i.e. it is a well-founded, extensional and transitive order. Moreover, we prove
+that (𝕍ᵒʳᵈ,∈) and the ordinal Ord of type theoretic ordinals are isomorphic.
 
 This is interesting for at least two reasons:
 (1) It shows that the set theoretic and type theoretic notions of ordinal
@@ -69,8 +69,8 @@ References
 
 [Gyl18] Håkon Robbestad Gylterud
         From Multisets to Sets in Homotopy Type Theory
-        Volue 83, Issue 3 of The Journal Symbol Logic
-        Pages 1132─146
+        Volue 83, Issue 3 of The Journal of Symbolic Logic
+        Pages 1132─1146
         2018
         doi:10.1017/jsl.2017.84
 
@@ -117,10 +117,11 @@ private
 open import Ordinals.Notions
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.Type hiding (Ord)
+open import Ordinals.Underlying
 
 open import UF.CumulativeHierarchy pt fe pe
 
-module _
+module ordinal-of-set-theoretic-ordinals
         (ch : cumulative-hierarchy-exists 𝓤)
        where
 
@@ -391,7 +392,7 @@ that it is split surjective.
 We construct a map 𝕍 → Ord by recursion on 𝕍 by sending 𝕍-set {A} f to the
 supremum of ordinals ⋁ (ψ (f a) + 𝟙) indexed by a : A.
 
-This is a familiar construction in set theory, see e.g. [Definition 9.3.4, 2],
+This is a familiar construction in set theory, see e.g. [Def. 9.3.4, AR10],
 where the ordinal above is the "rank" of the set. This map (but with the domain
 an arbitrary well founded order) also appears at the bottom of [Acz77, p. 743].
 
@@ -401,9 +402,9 @@ an arbitrary well founded order) also appears at the bottom of [Acz77, p. 743].
  open import Ordinals.Arithmetic-Properties ua hiding (lemma₁ ; lemma₂)
  open import Ordinals.OrdinalOfOrdinalsSuprema ua
 
- open import UF.Quotient
+ open import UF.Quotient hiding (is-prop-valued)
 
- module _
+ module 𝕍-to-Ord-construction
          (sq : set-quotients-exist)
         where
 
@@ -605,22 +606,26 @@ isomorphic to the (type theoretic) ordinal 𝕍ᴼᴿᴰ of set theoretic ordina
 
 \end{code}
 
-Future work
------------
+Further work
+------------
 
 (1) The recursive nature of 𝕍-to-Ord is convenient because it allows us to prove
-    properties by induction. Moreover, the supremum yields an ordinal by
-    construction. It is possible to give a more direct presentation of
-    𝕍-to-Ord (𝕍-set {A} f) however, that is nonrecursive.
+properties by induction. Moreover, the supremum yields an ordinal by
+construction. It is possible to give a more direct presentation of
+  𝕍-to-Ord (𝕍-set {A} f)
+however, that is nonrecursive.
 
-    Namely, we can show that 𝕍-to-Ord (𝕍-set {A} f) ＝ (A/∼ , <), where ~
-    identifies elements of A that have the same image under f and [a] < [a'] is
-    defined as f a ∈ f a'.
+Namely, we can show that 𝕍-to-Ord (𝕍-set {A} f) ＝ (A/~ , <), where ~ identifies
+elements of A that have the same image under f and [a] < [a'] is defined to hold
+when f a ∈ f a'.
 
-    It is straightforward to see that (A/~ , <) is in fact equivalent (but not
-    equal for size reasons) to the image of f, which in turn is equivalent to
-    the total space (Σ y ꞉ 𝕍 , y ∈ 𝕍-set f), so that the map 𝕍-to-Ord can be
-    described (up to equivalence) as x ↦ Σ y ꞉ 𝕍 , y ∈ x.
+It is straightforward to see that (A/~ , <) is in fact equivalent (but not equal
+for size reasons) to the image of f, which in turn is equivalent to the total
+space (Σ y ꞉ 𝕍 , y ∈ 𝕍-set f), so that the map 𝕍-to-Ord can be described (up to
+equivalence) as x ↦ Σ y ꞉ 𝕍 , y ∈ x.
 
-(2) We are currently working out the details of a related presentation for all
-    of 𝕍.
+These observations are fully formalised in the file
+Ordinals/CumulativeHierarchy-Addendum.lagda.
+
+(2) On a separate note, we are currently working out the details of a related
+presentation for all of 𝕍.

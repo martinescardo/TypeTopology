@@ -29,7 +29,6 @@ open import UF.FunExt
 open import UF.PropTrunc
 open import UF.Retracts
 open import UF.Retracts-FunExt
-open import UF.ImageAndSurjection
 open import UF.Equiv
 open import UF.Miscelanea
 
@@ -231,7 +230,7 @@ Compactness of images:
 
 \begin{code}
 
-open ImageAndSurjection pt
+open import UF.ImageAndSurjection pt
 
 surjection-∃-compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                      → is-surjection f
@@ -255,7 +254,7 @@ surjection-∃-compact {𝓤} {𝓥} {X} {Y} f su c q = g (c (q ∘ f))
 image-∃-compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                 → ∃-compact X
                 → ∃-compact (image f)
-image-∃-compact f = surjection-∃-compact (corestriction f) (corestriction-is-surjection f)
+image-∃-compact f = surjection-∃-compact (corestriction f) (corestrictions-are-surjections f)
 
 surjection-Π-compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                      → is-surjection f
@@ -272,7 +271,7 @@ retract-∃-compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                   → ∃-compact X
                   → ∃-compact Y
 retract-∃-compact (f , hass) = surjection-∃-compact f
-                                (retraction-surjection f hass)
+                                (retractions-are-surjections f hass)
 
 retract-∃-compact' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                    → ∥ retract Y of X ∥
@@ -286,14 +285,14 @@ image-Π-compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                 → Π-compact (image f)
 image-Π-compact f = surjection-Π-compact
                      (corestriction f)
-                     (corestriction-is-surjection f)
+                     (corestrictions-are-surjections f)
 
 retract-Π-compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                   → retract Y of X
                   → Π-compact X
                   → Π-compact Y
 retract-Π-compact (f , hass) = surjection-Π-compact f
-                                (retraction-surjection f hass)
+                                (retractions-are-surjections f hass)
 
 retract-Π-compact' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                    → ∥ retract Y of X ∥

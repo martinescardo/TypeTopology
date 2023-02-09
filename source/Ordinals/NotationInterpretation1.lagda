@@ -123,14 +123,15 @@ the theorems and constructions to be performed here:
 open import Ordinals.Arithmetic fe
 open import Ordinals.Closure fe
 open import Ordinals.Codes
-open import Ordinals.SquashedCantor fe hiding (Κ)
 open import Ordinals.ToppedArithmetic fe
 open import Ordinals.ToppedType fe
 open import Ordinals.Type
+open import Ordinals.Underlying
 open import TypeTopology.CompactTypes
 open import TypeTopology.Density
 open import TypeTopology.DiscreteAndSeparated
 open import TypeTopology.SigmaDiscreteAndTotallySeparated
+open import TypeTopology.SquashedCantor fe hiding (Κ)
 open import TypeTopology.SquashedSum fe
 open import TypeTopology.TotallySeparated
 open import UF.Embeddings
@@ -150,25 +151,25 @@ _≺⟪ τ ⟫_ denotes its underlying order.
 \begin{code}
 
 Κ                            : OE → Ordᵀ
-Κ-compact∙                   : (ν : OE) → compact∙ ⟪ Κ ν ⟫
-Κ-Cantor-retract             : (ν : OE) → retract ⟪ Κ ν ⟫ of (ℕ → 𝟚)
-Κ-is-totally-separated       : (ν : OE) → is-totally-separated ⟪ Κ ν ⟫
+Κ-compact∙                   : (ν : OE) → compact∙ ⟨ Κ ν ⟩
+Κ-Cantor-retract             : (ν : OE) → retract ⟨ Κ ν ⟩ of (ℕ → 𝟚)
+Κ-is-totally-separated       : (ν : OE) → is-totally-separated ⟨ Κ ν ⟩
 
 Δ                            : OE → Ordᵀ
-Δ-retract-of-ℕ               : (ν : OE) → retract ⟪ Δ ν ⟫ of ℕ
-Δ-is-discrete                : (ν : OE) → is-discrete ⟪ Δ ν ⟫
+Δ-retract-of-ℕ               : (ν : OE) → retract ⟨ Δ ν ⟩ of ℕ
+Δ-is-discrete                : (ν : OE) → is-discrete ⟨ Δ ν ⟩
 
-ι                            : {ν : OE} → ⟪ Δ ν ⟫ → ⟪ Κ ν ⟫
+ι                            : {ν : OE} → ⟨ Δ ν ⟩ → ⟨ Κ ν ⟩
 ι-is-dense                   : (ν : OE) → is-dense (ι {ν})
 ι-is-embedding               : (ν : OE) → is-embedding (ι {ν})
 
-ι-is-order-preserving        : (ν : OE) (x y : ⟪ Δ ν ⟫)
-                             →   x ≺⟪ Δ ν ⟫   y
-                             → ι x ≺⟪ Κ ν ⟫ ι y
+ι-is-order-preserving        : (ν : OE) (x y : ⟨ Δ ν ⟩)
+                             →   x ≺⟨ Δ ν ⟩   y
+                             → ι x ≺⟨ Κ ν ⟩ ι y
 
-ι-is-order-reflecting        : (ν : OE) (x y : ⟪ Δ ν ⟫)
-                             → ι x ≺⟪ Κ ν ⟫ ι y
-                             →   x ≺⟪ Δ ν ⟫   y
+ι-is-order-reflecting        : (ν : OE) (x y : ⟨ Δ ν ⟩)
+                             → ι x ≺⟨ Κ ν ⟩ ι y
+                             →   x ≺⟨ Δ ν ⟩   y
 
 Κ-has-infs-of-complemented-subsets
                              : propext 𝓤₀
@@ -176,7 +177,7 @@ _≺⟪ τ ⟫_ denotes its underlying order.
 
 brouwer-to-oe                : B → OE
 ε₀-upper-bound               : Ordᵀ
-compact∙-ε₀-ub               : compact∙ ⟪ ε₀-upper-bound ⟫
+compact∙-ε₀-ub               : compact∙ ⟨ ε₀-upper-bound ⟩
 
 \end{code}
 
@@ -208,7 +209,7 @@ The underlying sets  of such ordinals are compact∙:
                         𝟙+𝟙-compact∙
                         (dep-cases (λ _ → Κ-compact∙ ν) (λ _ → Κ-compact∙ μ))
 Κ-compact∙ (Mul ν μ) = Σ-compact∙ (Κ-compact∙ ν) (λ _ → Κ-compact∙ μ)
-Κ-compact∙ (L ν)     = Σ¹-compact∙ (λ n → ⟪ Κ (ν n) ⟫) (λ n → Κ-compact∙ (ν n))
+Κ-compact∙ (L ν)     = Σ¹-compact∙ (λ n → ⟨ Κ (ν n) ⟩) (λ n → Κ-compact∙ (ν n))
 
 \end{code}
 
@@ -224,7 +225,7 @@ The compact∙ ordinals are retracts of the Cantor type (ℕ → 𝟚).
 Κ-Cantor-retract (Mul ν μ) = ×-retract-of-Cantor (Κ ν) (Κ μ)
                               (Κ-Cantor-retract ν) (Κ-Cantor-retract μ)
 Κ-Cantor-retract (L ν)     = Σ¹-Cantor-retract
-                               (λ n → ⟪ Κ (ν n) ⟫) (λ i → Κ-Cantor-retract (ν i))
+                               (λ n → ⟨ Κ (ν n) ⟩) (λ i → Κ-Cantor-retract (ν i))
 \end{code}
 
 And hence they are totally separated:
@@ -263,7 +264,7 @@ many interesting properties, formulated above and proved below.
                            (λ _ → Δ-is-discrete μ))
 Δ-is-discrete (Mul ν μ) = Σ-is-discrete (Δ-is-discrete ν) (λ _ → Δ-is-discrete μ)
 Δ-is-discrete (L ν)     = Σ₁-is-discrete
-                            (λ n → ⟪ Δ (ν n) ⟫)
+                            (λ n → ⟨ Δ (ν n) ⟩)
                             (λ i → Δ-is-discrete (ν i))
 \end{code}
 
@@ -289,8 +290,8 @@ order preserving and reflecting (28 July 2018).
                         (ι-is-dense ν)
                         (λ _ → ι-is-dense μ)
 ι-is-dense (L ν)     =  Σ↑-dense
-                        (λ n → ⟪ Δ (ν n) ⟫)
-                        (λ n → ⟪ Κ (ν n) ⟫)
+                        (λ n → ⟨ Δ (ν n) ⟩)
+                        (λ n → ⟨ Κ (ν n) ⟩)
                         (λ n → ι {ν n})
                         (λ i → ι-is-dense (ν i))
 
@@ -304,8 +305,8 @@ order preserving and reflecting (28 July 2018).
                             (ι-is-embedding ν)
                             (λ _ → ι-is-embedding μ)
 ι-is-embedding (L ν)     = Σ↑-embedding
-                            (λ n → ⟪ Δ (ν n) ⟫)
-                            (λ n → ⟪ Κ (ν n) ⟫)
+                            (λ n → ⟨ Δ (ν n) ⟩)
+                            (λ n → ⟨ Κ (ν n) ⟩)
                             (λ n → ι {ν n})
                             (λ i → ι-is-embedding (ν i))
 
@@ -470,8 +471,7 @@ module _ (pt : propositional-truncations-exist)
  open import Ordinals.Injectivity
  open import Ordinals.Arithmetic-Properties ua
 
- open import UF.ImageAndSurjection
- open ImageAndSurjection pt
+ open import UF.ImageAndSurjection pt
  open ordinals-injectivity fe
 
  module _ (sr : Set-Replacement pt) where
@@ -501,7 +501,7 @@ module _ (pt : propositional-truncations-exist)
                                      (ℕ-to-ℕ∞-is-embedding fe₀ u)
                                      (λ (i , _) → 𝓢-compact∙ (ν i))))
 
-  σ : (ν : OE) → ⟪ Κ ν ⟫ → ⟨ 𝓢 ν ⟩
+  σ : (ν : OE) → ⟨ Κ ν ⟩ → ⟨ 𝓢 ν ⟩
   σ One       x           = x
   σ (Add ν μ) (inl ⋆ , x) = inl (σ ν x)
   σ (Add ν μ) (inr ⋆ , y) = inr (σ μ y)

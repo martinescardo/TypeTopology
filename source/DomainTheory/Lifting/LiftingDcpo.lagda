@@ -24,13 +24,12 @@ module DomainTheory.Lifting.LiftingDcpo
         (pe : propext 𝓥)
        where
 
+open PropositionalTruncation pt
+
 open import UF.Equiv
-open import UF.ImageAndSurjection
+open import UF.ImageAndSurjection pt
 open import UF.Miscelanea
 open import UF.Subsingletons-FunExt
-
-open ImageAndSurjection pt
-open PropositionalTruncation pt
 
 open import Lifting.Lifting 𝓥 hiding (⊥)
 open import Lifting.IdentityViaSIP 𝓥

@@ -149,7 +149,8 @@ transfinite-induction-behaviour fe w {𝓦} P f x =
      e : (y : X) (l : y < x) → prev (w x) y l ＝ w y
      e y l = accessibility-is-prop fe y (prev (w x) y l) (w y)
 
-transfinite-recursion-behaviour : FunExt → (w : is-well-founded)
+transfinite-recursion-behaviour : FunExt
+                                → (w : is-well-founded)
                                   {𝓦 : Universe} {Y : 𝓦 ̇ }
                                   (f : (x : X) → ((y : X) → y < x → Y) → Y)
                                   (x : X)
@@ -380,9 +381,6 @@ no-minimal-is-empty' w A s = no-minimal-is-empty w A (λ x a → ¬¬-intro (s x
 The emptiness of the empty set doesn't play any special role in the
 above argument, and can be replaced by any type - would that be
 useful?
-
-The remainder of this file is not needed anywhere else (at least at
-the time of writing, namely 11th January 2021).
 
 \begin{code}
 
@@ -653,7 +651,7 @@ module _
        where
  private
    pt : propositional-truncations-exist
-   pt = (fe-and-em-give-propositional-truncations (λ 𝓤 𝓥 → f-e {𝓤} {𝓥}) em)
+   pt = fe-and-em-give-propositional-truncations (λ 𝓤 𝓥 → f-e {𝓤} {𝓥}) em
 
    fe : FunExt
    fe 𝓤 𝓥 = f-e
@@ -840,32 +838,28 @@ module _ (fe : Fun-Ext)
          (em : Excluded-Middle)
        where
 
- open import UF.PropTrunc
- open PropositionalTruncation (fe-and-em-give-propositional-truncations
-                                 (λ 𝓤 𝓥 → fe {𝓤} {𝓥}) em)
-
- nonempty-has-minimal : is-well-order
-                      → (A : X → 𝓦 ̇ )
-                      → ((x : X) → is-prop (A x))
-                      → ∃ x ꞉ X , A x
-                      → Σ x ꞉ X , A x × ((y : X) → A y → x ≼ y)
- nonempty-has-minimal {𝓦} W@(p , w , e , t) A A-is-prop-valued f = γ δ
+ nonempty-has-minimal' : is-well-order
+                       → (A : X → 𝓦 ̇ )
+                       → ((x : X) → is-prop (A x))
+                       → ¬¬ (Σ x ꞉ X , A x)
+                       → Σ x ꞉ X , A x × ((y : X) → A y → x ≼ y)
+ nonempty-has-minimal' {𝓦} W@(p , w , e , t) A A-is-prop-valued f = γ δ
   where
    Δ : 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
    Δ = Σ x ꞉ X , A x × ((y : X) → A y → x ≾ y)
 
-   g : ¬ ((x : X) → A x → ∃ y ꞉ X , (y < x) × A y)
+   g : ¬ ((x : X) → A x → ¬¬ (Σ y ꞉ X , (y < x) × A y))
    g = contrapositive (no-minimal-is-empty w A) f
 
-   h : ∃ x ꞉ X , ¬ (A x → ∃ y ꞉ X , (y < x) × A y)
+   h : ¬¬ (Σ x ꞉ X , ¬ (A x → ¬¬ (Σ y ꞉ X , (y < x) × A y)))
    h = not-Π-implies-not-not-Σ
         (λ x → EM-gives-DNE em
-                (A x → ∃ y ꞉ X , (y < x) × A y)
+                (A x → ¬¬ (Σ y ꞉ X , (y < x) × A y))
                 (Π₂-is-prop fe (λ _ _ → 𝟘-is-prop)))
         g
 
    ϕ : (x : X)
-     → ¬ (A x → ∃ y ꞉ X , (y < x) × A y)
+     → ¬ (A x → ¬¬ (Σ y ꞉ X , (y < x) × A y))
      → A x × ((y : X) → A y → x ≾ y)
    ϕ x ψ = EM-gives-DNE em (A x)
              (A-is-prop-valued x)
@@ -900,6 +894,18 @@ module _ (fe : Fun-Ext)
 
    γ : Δ → Σ x ꞉ X , A x × ((y : X) → A y → x ≼ y)
    γ (x , a , h) = x , a , (λ y a → ≾-gives-≼-under-trichotomy' t τ {x} {y} (h y a))
+
+ module _ (pt : propositional-truncations-exist) where
+
+  open import UF.PropTrunc
+  open PropositionalTruncation pt
+
+  nonempty-has-minimal : is-well-order
+                       → (A : X → 𝓦 ̇ )
+                       → ((x : X) → is-prop (A x))
+                       → ∃ x ꞉ X , A x
+                       → Σ x ꞉ X , A x × ((y : X) → A y → x ≼ y)
+  nonempty-has-minimal w A i e = nonempty-has-minimal' w A i (inhabited-is-nonempty e)
 
 \end{code}
 

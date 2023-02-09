@@ -50,6 +50,7 @@ private
 open import Ordinals.Type
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.Arithmetic fe
+open import Ordinals.Underlying
 
 \end{code}
 

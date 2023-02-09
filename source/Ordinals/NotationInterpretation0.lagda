@@ -34,7 +34,7 @@ private
 
 open PropositionalTruncation pt
 
-open import UF.ImageAndSurjection
+open import UF.ImageAndSurjection pt
 open import UF.Embeddings
 open import UF.Size
 
@@ -49,6 +49,7 @@ open import Ordinals.ToppedArithmetic fe
 open import Ordinals.ToppedType fe
 open import Ordinals.TrichotomousType fe
 open import Ordinals.TrichotomousArithmetic fe
+open import Ordinals.Underlying
 
 open import TypeTopology.GenericConvergentSequenceCompactness
 open import TypeTopology.CompactTypes
@@ -60,7 +61,8 @@ open import CoNaturals.GenericConvergentSequence
 open import MLTT.Spartan
 open import MLTT.Plus-Properties
 
-open ImageAndSurjection pt
+open import Notation.CanonicalMap
+
 open ordinals-injectivity fe
 
 module _ (sr : Set-Replacement pt) where
@@ -150,14 +152,14 @@ is why we defined the base cases to be 𝟙 rather than 𝟘.
        (λ i → ⟨ ⟦ b i ⟧₂ ⟩)
        (λ i → ⟦ b i ⟧₂-is-compact∙ ))
 
- ⟦_⟧₁-is-compact∙ : (b : B) → compact∙ ⟪ ⟦ b ⟧₁ ⟫
+ ⟦_⟧₁-is-compact∙ : (b : B) → compact∙ ⟨ ⟦ b ⟧₁ ⟩
  ⟦ Z ⟧₁-is-compact∙   = 𝟙-compact∙
  ⟦ S b ⟧₁-is-compact∙ = Σ-compact∙ 𝟙+𝟙-compact∙
                          (dep-cases
                            (λ _ → ⟦ b ⟧₁-is-compact∙)
                            (λ _ → 𝟙-compact∙))
  ⟦ L b ⟧₁-is-compact∙ = Σ¹-compact∙
-                          (λ i → ⟪ ⟦ b i ⟧₁ ⟫)
+                          (λ i → ⟨ ⟦ b i ⟧₁ ⟩)
                           (λ i → ⟦ b i ⟧₁-is-compact∙)
 \end{code}
 
@@ -169,21 +171,21 @@ is if excluded middle holds.
  open import UF.ExcludedMiddle
  open import Ordinals.SupSum ua
 
- comparison₀₃ : Excluded-Middle → (b : B) → ⟦ b ⟧₀ ⊴ ⁅ ⟦ b ⟧₃ ⁆
+ comparison₀₃ : Excluded-Middle → (b : B) → ⟦ b ⟧₀ ⊴ [ ⟦ b ⟧₃ ]
  comparison₀₃ em Z     = ⊴-refl 𝟘ₒ
- comparison₀₃ em (S b) = succ-monotone em ⟦ b ⟧₀ ⁅ ⟦ b ⟧₃ ⁆ (comparison₀₃ em b)
+ comparison₀₃ em (S b) = succ-monotone em ⟦ b ⟧₀ [ ⟦ b ⟧₃ ] (comparison₀₃ em b)
  comparison₀₃ em (L b) = IV
   where
-   I : (i : ℕ) → ⟦ b i ⟧₀ ⊴ ⁅ ⟦ b i ⟧₃ ⁆
+   I : (i : ℕ) → ⟦ b i ⟧₀ ⊴ [ ⟦ b i ⟧₃ ]
    I i = comparison₀₃ em (b i)
 
-   II : sup (λ i → ⟦ b i ⟧₀) ⊴ sup (λ i → ⁅ ⟦ b i ⟧₃ ⁆)
-   II = sup-monotone (λ i → ⟦ b i ⟧₀) (λ i → ⁅ ⟦ b i ⟧₃ ⁆) I
+   II : sup (λ i → ⟦ b i ⟧₀) ⊴ sup (λ i → [ ⟦ b i ⟧₃ ])
+   II = sup-monotone (λ i → ⟦ b i ⟧₀) (λ i → [ ⟦ b i ⟧₃ ]) I
 
-   III : sup (λ i → ⁅ ⟦ b i ⟧₃ ⁆)  ⊴ ⁅ ∑³ ω₃ (λ i → ⟦ b i ⟧₃) ⁆
+   III : sup (λ i → [ ⟦ b i ⟧₃ ])  ⊴ [ ∑³ ω₃ (λ i → ⟦ b i ⟧₃) ]
    III = sup-bounded-by-sum₃ em pt sr _ _
 
-   IV : sup (λ i → ⟦ b i ⟧₀) ⊴ ⁅ ∑³ ω₃ (λ i → ⟦ b i ⟧₃) ⁆
+   IV : sup (λ i → ⟦ b i ⟧₀) ⊴ [ ∑³ ω₃ (λ i → ⟦ b i ⟧₃) ]
    IV = ⊴-trans _ _ _ II III
 
  comparison₀₂ : EM 𝓤₁ → (b : B) → ⟦ b ⟧₀ ⊴ ⟦ b ⟧₂
@@ -248,16 +250,16 @@ is if excluded middle holds.
    V : sup α ⊴ [ ∑ ℕ∞ᵒ τ ]
    V = ⊴-trans _ _ _ III IV
 
- map₃₁ : (b : B) → ⦅ ⟦ b ⟧₃ ⦆ → ⟪ ⟦ b ⟧₁ ⟫
+ map₃₁ : (b : B) → ⟨ ⟦ b ⟧₃ ⟩ → ⟨ ⟦ b ⟧₁ ⟩
  map₃₁ Z     x = unique-from-𝟘 x
  map₃₁ (S b) (inl x) = inl ⋆ , map₃₁ b x
  map₃₁ (S b) (inr x) = inr ⋆ , ⋆
  map₃₁ (L b) (i , x) = ℕ-to-ℕ∞ i , f
   where
-   f : ((j , p) : fiber ℕ-to-ℕ∞ (ℕ-to-ℕ∞ i)) → ⟪ ⟦ b j ⟧₁ ⟫
-   f (j , p) = transport⁻¹ (λ - → ⟪ ⟦ b - ⟧₁ ⟫) (ℕ-to-ℕ∞-lc p) (map₃₁ (b i) x)
+   f : ((j , p) : fiber ℕ-to-ℕ∞ (ℕ-to-ℕ∞ i)) → ⟨ ⟦ b j ⟧₁ ⟩
+   f (j , p) = transport⁻¹ (λ - → ⟨ ⟦ b - ⟧₁ ⟩) (ℕ-to-ℕ∞-lc p) (map₃₁ (b i) x)
 
- map₃₁-is-order-preserving : (b : B) → is-order-preserving ⁅ ⟦ b ⟧₃ ⁆ [ ⟦ b ⟧₁ ] (map₃₁ b)
+ map₃₁-is-order-preserving : (b : B) → is-order-preserving [ ⟦ b ⟧₃ ] [ ⟦ b ⟧₁ ] (map₃₁ b)
  map₃₁-is-order-preserving (S b) (inl x) (inl y) l =
   inr (refl , (map₃₁-is-order-preserving b x y l))
  map₃₁-is-order-preserving (S b) (inl x) (inr y) ⋆ = inl ⋆
@@ -266,18 +268,18 @@ is if excluded middle holds.
  map₃₁-is-order-preserving (L b) (i , x) (.i , y) (inr (refl , m)) =
   inr (refl , (i , refl) , γ)
   where
-   IH : map₃₁ (b i) x ≺⟪ ⟦ b i ⟧₁ ⟫ map₃₁ (b i) y
+   IH : map₃₁ (b i) x ≺⟨ ⟦ b i ⟧₁ ⟩ map₃₁ (b i) y
    IH = map₃₁-is-order-preserving (b i) x y m
 
-   γ : transport⁻¹ (λ - → ⟪ ⟦ b - ⟧₁ ⟫) (ℕ-to-ℕ∞-lc refl) (map₃₁ (b i) x) ≺⟪ ⟦ b i ⟧₁ ⟫
-       transport⁻¹ (λ - → ⟪ ⟦ b - ⟧₁ ⟫) (ℕ-to-ℕ∞-lc refl) (map₃₁ (b i) y)
+   γ : transport⁻¹ (λ - → ⟨ ⟦ b - ⟧₁ ⟩) (ℕ-to-ℕ∞-lc refl) (map₃₁ (b i) x) ≺⟨ ⟦ b i ⟧₁ ⟩
+       transport⁻¹ (λ - → ⟨ ⟦ b - ⟧₁ ⟩) (ℕ-to-ℕ∞-lc refl) (map₃₁ (b i) y)
    γ = transport⁻¹
-        (λ r → transport⁻¹ (λ - → ⟪ ⟦ b - ⟧₁ ⟫) r (map₃₁ (b i) x) ≺⟪ ⟦ b i ⟧₁ ⟫
-               transport⁻¹ (λ - → ⟪ ⟦ b - ⟧₁ ⟫) r (map₃₁ (b i) y))
+        (λ r → transport⁻¹ (λ - → ⟨ ⟦ b - ⟧₁ ⟩) r (map₃₁ (b i) x) ≺⟨ ⟦ b i ⟧₁ ⟩
+               transport⁻¹ (λ - → ⟨ ⟦ b - ⟧₁ ⟩) r (map₃₁ (b i) y))
         (ℕ-to-ℕ∞-lc-refl i)
         IH
 
- comparison₃₁ : EM 𝓤₁ → (b : B) → ⁅ ⟦ b ⟧₃ ⁆ ⊴ [ ⟦ b ⟧₁ ]
+ comparison₃₁ : EM 𝓤₁ → (b : B) → [ ⟦ b ⟧₃ ] ⊴ [ ⟦ b ⟧₁ ]
  comparison₃₁ em b = ≼-gives-⊴ _ _
                       (order-preserving-gives-≼ em _ _
                         (map₃₁ b , map₃₁-is-order-preserving b))
@@ -289,7 +291,7 @@ We also have:
 
 \begin{code}
 
- map₁₂ : (b : B) → ⟪ ⟦ b ⟧₁ ⟫ → ⟨ ⟦ b ⟧₂ ⟩
+ map₁₂ : (b : B) → ⟨ ⟦ b ⟧₁ ⟩ → ⟨ ⟦ b ⟧₂ ⟩
  map₁₂ Z     x           = x
  map₁₂ (S b) (inl ⋆ , x) = inl (map₁₂ b x)
  map₁₂ (S b) (inr ⋆ , y) = inr ⋆
