@@ -22,30 +22,26 @@ infix 31 -_
 ℤ[1/2]-minus-zero : - 0ℤ[1/2] ＝ 0ℤ[1/2]
 ℤ[1/2]-minus-zero = refl
 
-{-
+minus-normalise-pos : (z : ℤ) (n : ℕ) → - normalise-pos (z , n) ≈ normalise-pos (ℤ- z , n)
+minus-normalise-pos z 0        = refl
+minus-normalise-pos z (succ n) = {!minus-normalise-pos z n!}
 
-minus-normalise-pos : (z : ℤ) (n : ℕ) → normalise-pos (z , n) ≈ - normalise-pos (ℤ- z , n)
-minus-normalise-pos z n = {!!}
+ℤ[1/2]-minus-minus : (p : ℤ[1/2]) → p ＝ - (- p)
+ℤ[1/2]-minus-minus ((z , n) , α) = γ
  where
-  q : ℤ[1/2]
-  q = normalise-pos (ℤ- z , n)
+  I : (z , n) , α ≈ normalise-pos (z , n)
+  I = ≈-normalise-pos ((z , n) , α)
 
-  z' : ℤ
-  z' = (pr₁ ∘ pr₁) q
+  II : - normalise-pos (ℤ- z , n) ＝ normalise-pos (ℤ- (ℤ- z) , n)
+  II = ≈-to-＝ (- normalise-pos (ℤ- z , n)) (normalise-pos (ℤ- (ℤ- z) , n)) (minus-normalise-pos (ℤ- z) n)
+  
+  γ : (z , n) , α ＝ - (- ((z , n) , α))
+  γ = (z , n) , α                   ＝⟨ ≈-to-＝ ((z , n) , α) (normalise-pos (z , n)) I ⟩
+      normalise-pos (z , n)         ＝⟨ ap (λ - → normalise-pos (- , n)) (minus-minus-is-plus z ⁻¹) ⟩
+      normalise-pos (ℤ- (ℤ- z) , n) ＝⟨ II ⁻¹ ⟩
+      - normalise-pos (ℤ- z , n)    ＝⟨ refl ⟩
+      - (- ((z , n) , α))           ∎
 
-  n' : ℕ
-  n' = (pr₂ ∘ pr₁) q
-
-  i : normalise-pos (z , n) ＝ normalise-pos (ℤ- z' , n')
-  i = ≈-to-＝ _ _ si
-   where
-    si : normalise-pos (z , n) ≈ normalise-pos (ℤ- z' , n')
-    si = {!!} ＝⟨ {!!} ⟩
-         {!!} ＝⟨ {!!} ⟩
-         {!!} ＝⟨ {!!} ⟩
-         {!!} ＝⟨ {!!} ⟩
-         {!!} ∎
--}
 {-
 
   normalise-pos (z , n) ≈ 
