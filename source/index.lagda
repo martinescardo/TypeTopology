@@ -49,7 +49,7 @@
      precisely which assumptions of HoTT/UF and classical mathematics,
      if any, we have used for each construction, theorem or set of
      results. We also work, deliberately, with a minimal subset of
-     Agda.
+     Agda. See below for more about the philosophy.
 
    * There is also a module that links some "unsafe" modules that use
      type theory beyond MLTT and HoTT/UF, which cannot be included in
@@ -60,7 +60,8 @@
      (https://www.cs.bham.ac.uk/~mhe/TypeTopology/Unsafe.index.html)
 
    * In our last count, this development has 126k lines, including
-     comments and blank lines.
+     comments and blank lines. But we don't update the count
+     frequently.
 
    * A module dependency graph is available, updated manually from
      time to time last tine on 19th December 2022:
@@ -70,18 +71,18 @@ Philosophy of the repository
 ----------------------------
 
    * We adopt the univalent point of view, even in modules which don't
-     assume the univalent axiom. In particular, we take seriously the
-     distinction between types that are singletons, propositions,
-     sets, 1-groupoids etc., even when the univalence axiom, or its
-     typical consequences such as function extensionality and
-     propositional extensionality, are not needed to reason about
-     them.
+     assume the univalence axiom. In particular, we take seriously the
+     distinction between types that are singletons (contractible),
+     propositions, sets, 1-groupoids etc., even when the univalence
+     axiom, or its typical consequences such as function
+     extensionality and propositional extensionality, are not needed
+     to reason about them.
 
    * We work in a minimal version of intensional Martin Löf Type
      Theory, with very few exceptions, which we refer to as Spartan
      MLTT. This is compatible with the UniMath approach.
 
-   * We adopt the flag exact-split, so that Agda definitions by
+   * We adopt the Agda flag exact-split, so that Agda definitions by
      pattern matching are definitional equalities, to stay as close as
      Agda can check to the above MLTT.
 
@@ -99,12 +100,12 @@ Philosophy of the repository
      Cantor-Schröder-Bernstein for arbitrary (homotopy) types, which
      was published in the Journal of Homotopy and Related Structures
      (written in mathematical vernacular as advanced in the HoTT book
-     and proposed by Peter Aczel).
+     and originally proposed by Peter Aczel).
 
    * We don't assume propositional resizing as Voevodsky and UniMath
      do. But there are some theorems whose hypotheses or conclusions
      involve propositional resizing (as an axiom, rather than as a
-     rule of the type theory).
+     rule of the type theory as unimath does).
 
    * The general idea is that any theorem here should be valid in any
      ∞-topos.
@@ -117,7 +118,7 @@ Philosophy of the repository
      implementations, we should be able to run the constructions and
      proofs given here, so that we get constructivity in the
      computational sense (as opposed to constructivity in the sense of
-     validity in any (∞-)topos.
+     validity in any (∞-)topos).
 
 Click at the imported module names to navigate to them:
 
