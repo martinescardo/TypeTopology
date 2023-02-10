@@ -410,8 +410,8 @@ Finally, the complete definition of the algebra of clopens `ℂ`.
      X-is-set : is-set ⟨ 𝒪 X ⟩
      X-is-set = carrier-of-[ poset-of (𝒪 X) ]-is-set
 
-     ¬ₓ_ : ?
-     ¬ₓ_ = ?
+     ¬ₓ_ : {!!}
+     ¬ₓ_ = {!!}
 
      open ContinuousMapNotation X A
 
@@ -476,7 +476,7 @@ Finally, the complete definition of the algebra of clopens `ℂ`.
           𝕚
           {!!}
           patchₛ-is-spectral
-          {!!}
+          (stone-locales-are-spectral (𝒪 X) 𝕤)
           {!!}
           {!!}
           †

@@ -541,7 +541,27 @@ frame-homomorphisms-preserve-complements : (F G : Frame 𝓤 𝓥 𝓦)
                                          → {x x′ : ⟨ F ⟩}
                                          → is-complement-of F x′ x
                                          → is-complement-of G (h .pr₁ x) (h .pr₁ x′)
-frame-homomorphisms-preserve-complements F G h = {!!}
+frame-homomorphisms-preserve-complements F G 𝒽@(h , _ , μ) {x} {x′} (φ , ψ) = † , ‡
+ where
+  † : (h x′) ∧[ G ] (h x) ＝ 𝟎[ G ]
+  † = h x′ ∧[ G ] h x   ＝⟨ Ⅰ ⟩
+      h (x′ ∧[ F ] x)   ＝⟨ Ⅱ ⟩
+      h 𝟎[ F ]          ＝⟨ Ⅲ ⟩
+      𝟎[ G ]            ∎
+       where
+        Ⅰ = frame-homomorphisms-preserve-meets F G 𝒽 x′ x ⁻¹
+        Ⅱ = ap h (x′ ∧[ F ] x   ＝⟨ ∧[ F ]-is-commutative x′ x ⟩
+                  x ∧[ F ] x′   ＝⟨ φ ⟩
+                  𝟎[ F ]        ∎)
+        Ⅲ = frame-homomorphisms-preserve-bottom F G 𝒽
+
+  ‡ : h x′ ∨[ G ] h x ＝ 𝟏[ G ]
+  ‡ = h x′ ∨[ G ] h x   ＝⟨ Ⅰ ⟩
+      h (x′ ∨[ F ] x)   ＝⟨ {!!} ⟩
+      h 𝟏[ F ]          ＝⟨ {!!} ⟩
+      𝟏[ G ]            ∎
+       where
+        Ⅰ = {!frame-hoo!}
 
 \end{code}
 

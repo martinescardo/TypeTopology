@@ -911,6 +911,23 @@ meet-preserving-implies-monotone F G h μ (x , y) p =
    ii  = μ x y
    iii = ∧[ G ]-lower₂ (h x) (h y)
 
+frame-homomorphisms-preserve-meets : (F : Frame 𝓤 𝓥 𝓦) (G : Frame 𝓤′ 𝓥′ 𝓦)
+                                   → (h : F ─f→ G)
+                                   → preserves-binary-meets F G (h .pr₁) holds
+frame-homomorphisms-preserve-meets F G 𝒽@(_ , _ , β , _) = β
+
+frame-homomorphisms-preserve-bottom : (F : Frame 𝓤 𝓥 𝓦) (G : Frame 𝓤′ 𝓥′ 𝓦)
+                                    → (h : F ─f→ G)
+                                    → h .pr₁ 𝟎[ F ] ＝ 𝟎[ G ]
+frame-homomorphisms-preserve-bottom {𝓦 = 𝓦}F G 𝒽@(h , _ , _ , γ) =
+ only-𝟎-is-below-𝟎 G (𝒽 .pr₁ 𝟎[ F ]) †
+  where
+   † : (h 𝟎[ F ] ≤[ poset-of G ] 𝟎[ G ]) holds
+   † = pr₂ (γ (∅ _)) ((⋁[ G ] ∅ 𝓦) , λ ())
+
+frame-homomorphisms-preserve-binary-joins : {!!}
+frame-homomorphisms-preserve-binary-joins = {!!}
+
 scott-continuous-join-eq : (F : Frame 𝓤  𝓥  𝓦)
                          → (G : Frame 𝓤′ 𝓥′ 𝓦)
                          → (f : ⟨ F ⟩ → ⟨ G ⟩)
