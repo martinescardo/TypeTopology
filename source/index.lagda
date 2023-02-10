@@ -116,15 +116,15 @@ Philosophy of the repository
    * The general idea is that any theorem here should be valid in any
      ∞-topos.
 
-   * Moreover, by fulfilling the HoTT hypotheses with Cubical-Agda
+   * In particular, we don't use Cubical Agda features, deliberately,
+     because at present it is not known whether (some) cubical type
+     theory has an interpretation in any ∞ topos.
+
+   * Howover, by fulfilling the HoTT hypotheses with Cubical-Agda
      implementations, we should be able to run the constructions and
      proofs given here, so that we get constructivity in the
      computational sense (as opposed to constructivity in the sense of
      validity in any (∞-)topos.
-
-   * In particular, we don't use Cubical Agda features, deliberately,
-     because at present it is not known whether (some) cubical type
-     theory has an interpretation in any ∞ topos.
 
 Click at the imported module names to navigate to them:
 
