@@ -37,6 +37,10 @@ curry :  {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {Z : 𝓦 ̇ }
       → (Σ Y → Z) → ((x : X) → Y x → Z)
 curry f x y = f (x , y)
 
+×functor : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } {B : 𝓣 ̇ }
+         → (X → A) → (Y → B) → X × Y → A × B
+×functor f g (x , y) = f x , g y
+
 \end{code}
 
 As usual in type theory, binary products are particular cases of

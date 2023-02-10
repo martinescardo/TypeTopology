@@ -40,9 +40,11 @@ is-subsingleton = is-prop
 \begin{code}
 
 Σ-is-prop : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
-          → is-prop X → ((x : X) → is-prop (A x)) → is-prop (Σ A)
+          → is-prop X
+          → ((x : X) → is-prop (A x))
+          → is-prop (Σ A)
 Σ-is-prop {𝓤} {𝓥} {X} {A} i j (x , a) (y , b) =
-  to-Σ-＝ (i x y , j y (transport A (i x y) a) b)
+ to-Σ-＝ (i x y , j y (transport A (i x y) a) b)
 
 \end{code}
 
@@ -88,13 +90,18 @@ singletons-are-props (c , φ) x y = x ＝⟨ (φ x) ⁻¹ ⟩
                                    c ＝⟨ φ y ⟩
                                    y ∎
 
-prop-criterion' : {X : 𝓤 ̇ } → (X → is-singleton X) → is-prop X
+prop-criterion' : {X : 𝓤 ̇ }
+                → (X → is-singleton X)
+                → is-prop X
 prop-criterion' φ x = singletons-are-props (φ x) x
 
 prop-criterion : {X : 𝓤 ̇ } → (X → is-prop X) → is-prop X
 prop-criterion φ x = φ x x
 
-pointed-props-are-singletons : {X : 𝓤 ̇ } → X → is-prop X → is-singleton X
+pointed-props-are-singletons : {X : 𝓤 ̇ }
+                             → X
+                             → is-prop X
+                             → is-singleton X
 pointed-props-are-singletons x h = x , h x
 
 \end{code}
@@ -117,7 +124,7 @@ data or structure).
 
 \begin{code}
 
-is-h-isolated : {X : 𝓤 ̇ } (x : X) → 𝓤 ̇
+is-h-isolated : {X : 𝓤 ̇ } → X → 𝓤 ̇
 is-h-isolated x = ∀ {y} → is-prop (x ＝ y)
 
 is-set : 𝓤 ̇ → 𝓤 ̇
@@ -138,7 +145,7 @@ underlying-set-is-set = pr₂
 refl-is-set : (X : 𝓤 ̇ )
             → ((x : X) (p : x ＝ x) → p ＝ refl)
             → is-set X
-refl-is-set X r {x} {.x} p refl = r x p
+refl-is-set X r {x} p refl = r x p
 
 \end{code}
 
@@ -150,12 +157,16 @@ using weakly, or wildly, constant maps:
 wconstant : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (f : X → Y) → 𝓤 ⊔ 𝓥 ̇
 wconstant f = ∀ x y → f x ＝ f y
 
-wconstant-pre-comp : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (f : X → Y) (g : Y → Z)
-                   → wconstant f → wconstant (g ∘ f)
+wconstant-pre-comp : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
+                     (f : X → Y) (g : Y → Z)
+                   → wconstant f
+                   → wconstant (g ∘ f)
 wconstant-pre-comp f g c x x' = ap g (c x x')
 
-wconstant-post-comp : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (f : X → Y) (g : Y → Z)
-                    → wconstant g → wconstant (g ∘ f)
+wconstant-post-comp : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
+                      (f : X → Y) (g : Y → Z)
+                    → wconstant g
+                    → wconstant (g ∘ f)
 wconstant-post-comp f g c x x' = c (f x) (f x')
 
 collapsible : 𝓤 ̇ → 𝓤 ̇
@@ -167,7 +178,9 @@ Id-collapsible' x = ∀ {y} → collapsible (x ＝ y)
 Id-collapsible : 𝓤 ̇ → 𝓤 ̇
 Id-collapsible X = {x : X} → Id-collapsible' x
 
-h-isolated-points-are-Id-collapsible : {X : 𝓤 ̇ } {x : X} → is-h-isolated x → Id-collapsible' x
+h-isolated-points-are-Id-collapsible : {X : 𝓤 ̇ } {x : X}
+                                     → is-h-isolated x
+                                     → Id-collapsible' x
 h-isolated-points-are-Id-collapsible h = id , h
 
 sets-are-Id-collapsible : {X : 𝓤 ̇ } → is-set X → Id-collapsible X
@@ -184,13 +197,18 @@ local-hedberg {𝓤} {X} x pc y p q =
  where
   f : (y : X) → x ＝ y → x ＝ y
   f y = pr₁ (pc y)
+
   κ : (y : X) (p q : x ＝ y) → f y p ＝ f y q
   κ y = pr₂ (pc y)
+
   c : (y : X) (r : x ＝ y) → r ＝ (f x refl)⁻¹ ∙ f y r
   c _ refl = sym-is-inverse (f x refl)
 
-Id-collapsibles-are-h-isolated : {X : 𝓤 ̇ } (x : X) → Id-collapsible' x → is-h-isolated x
-Id-collapsibles-are-h-isolated x pc {y} p q = local-hedberg x (λ y → (pr₁ (pc {y})) , (pr₂ (pc {y}))) y p q
+Id-collapsibles-are-h-isolated : {X : 𝓤 ̇ } (x : X)
+                               → Id-collapsible' x
+                               → is-h-isolated x
+Id-collapsibles-are-h-isolated x pc {y} p q =
+ local-hedberg x (λ y → (pr₁ (pc {y})) , (pr₂ (pc {y}))) y p q
 
 Id-collapsibles-are-sets : {X : 𝓤 ̇ } → Id-collapsible X → is-set X
 Id-collapsibles-are-sets pc {x} = Id-collapsibles-are-h-isolated x pc
@@ -208,7 +226,8 @@ type-with-prop-valued-refl-antisym-rel-is-set : {X : 𝓤 ̇ }
                                               → ((x : X) → x ≤ x)
                                               → ((x y : X) → x ≤ y → y ≤ x → x ＝ y)
                                               → is-set X
-type-with-prop-valued-refl-antisym-rel-is-set {𝓤} {𝓥} {X} _≤_ ≤-prop-valued ≤-refl ≤-anti = γ
+type-with-prop-valued-refl-antisym-rel-is-set
+ {𝓤} {𝓥} {X} _≤_ ≤-prop-valued ≤-refl ≤-anti = γ
  where
   α : ∀ {x y} (l l' : x ≤ y) (m m' : y ≤ x) → ≤-anti x y l m ＝ ≤-anti x y l' m'
   α {x} {y} l l' m m' = ap₂ (≤-anti x y)
@@ -252,8 +271,10 @@ local-hedberg' {𝓤} {X} x pc y p q =
  where
   f : (y : X) → y ＝ x → y ＝ x
   f y = pr₁ (pc y)
+
   κ : (y : X) (p q : y ＝ x) → f y p ＝ f y q
   κ y = pr₂ (pc y)
+
   c : (y : X) (r : y ＝ x) → r ＝  (f y r) ∙ (f x refl)⁻¹
   c _ refl = sym-is-inverse' (f x refl)
 
@@ -292,16 +313,19 @@ singleton-type x = Σ y ꞉ type-of x , x ＝ y
 singleton-center : {X : 𝓤 ̇ } (x : X) → singleton-type x
 singleton-center x = (x , refl)
 
-singleton-types-are-singletons'' : {X : 𝓤 ̇ } {x x' : X} (r : x ＝ x') → singleton-center x ＝ (x' , r)
+singleton-types-are-singletons'' : {X : 𝓤 ̇ } {x x' : X} (r : x ＝ x')
+                                 → singleton-center x ＝ (x' , r)
 singleton-types-are-singletons'' {𝓤} {X} = J A (λ x → refl)
  where
   A : (x x' : X) → x ＝ x' → 𝓤 ̇
   A x x' r = singleton-center x ＝[ Σ x' ꞉ X , x ＝ x' ] (x' , r)
 
-singleton-types-are-singletons : {X : 𝓤 ̇ } (x₀ : X) → is-singleton (singleton-type x₀)
+singleton-types-are-singletons : {X : 𝓤 ̇ } (x₀ : X)
+                               → is-singleton (singleton-type x₀)
 singleton-types-are-singletons x₀ = singleton-center x₀ , (λ t → singleton-types-are-singletons'' (pr₂ t))
 
-singleton-types-are-singletons' : {X : 𝓤 ̇ } {x : X} → is-central (singleton-type x) (x , refl)
+singleton-types-are-singletons' : {X : 𝓤 ̇ } {x : X}
+                                → is-central (singleton-type x) (x , refl)
 singleton-types-are-singletons' {𝓤} {X} (y , refl) = refl
 
 singleton-types-are-props : {X : 𝓤 ̇ } (x : X) → is-prop (singleton-type x)
@@ -329,7 +353,9 @@ singleton'-center x = (x , refl)
 𝟘-×-is-prop (z , x) _ = 𝟘-elim z
 
 ×-is-prop : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-          → is-prop X → is-prop Y → is-prop (X × Y)
+          → is-prop X
+          → is-prop Y
+          → is-prop (X × Y)
 ×-is-prop i j = ×-prop-criterion ((λ _ → i) , (λ _ → j))
 
 to-subtype-＝ : {X : 𝓦 ̇ } {A : X → 𝓥 ̇ }
@@ -337,14 +363,19 @@ to-subtype-＝ : {X : 𝓦 ̇ } {A : X → 𝓥 ̇ }
              → ((x : X) → is-prop (A x))
              → x ＝ y
              → (x , a) ＝ (y , b)
-to-subtype-＝ {𝓤} {𝓥} {X} {A} {x} {y} {a} {b} s p = to-Σ-＝ (p , s y (transport A p a) b)
+to-subtype-＝ {𝓤} {𝓥} {X} {A} {x} {y} {a} {b} s p =
+ to-Σ-＝ (p , s y (transport A p a) b)
 
 subtype-of-prop-is-prop : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (m : X → Y)
-                        → left-cancellable m → is-prop Y → is-prop X
+                        → left-cancellable m
+                        → is-prop Y
+                        → is-prop X
 subtype-of-prop-is-prop {𝓤} {𝓥} {X} m lc i x x' = lc (i (m x) (m x'))
 
 subtypes-of-sets-are-sets : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (m : X → Y)
-                          → left-cancellable m → is-set Y → is-set X
+                          → left-cancellable m
+                          → is-set Y
+                          → is-set X
 subtypes-of-sets-are-sets {𝓤} {𝓥} {X} m i h = Id-collapsibles-are-sets (f , g)
  where
   f : {x x' : X} → x ＝ x' → x ＝ x'
@@ -352,7 +383,8 @@ subtypes-of-sets-are-sets {𝓤} {𝓥} {X} m i h = Id-collapsibles-are-sets (f 
   g : {x x' : X} (r s : x ＝ x') → f r ＝ f s
   g r s = ap i (h (ap m r) (ap m s))
 
-pr₁-lc : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } → ({x : X} → is-prop (Y x))
+pr₁-lc : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
+       → ({x : X} → is-prop (Y x))
        → left-cancellable (pr₁ {𝓤} {𝓥} {X} {Y})
 pr₁-lc f p = to-Σ-＝ (p , (f _ _))
 
@@ -362,38 +394,59 @@ subsets-of-sets-are-sets : (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ )
                          → is-set (Σ x ꞉ X , Y x)
 subsets-of-sets-are-sets X Y h p = subtypes-of-sets-are-sets pr₁ (pr₁-lc p) h
 
-inl-lc-is-section : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {x x' : X} → (p : inl {𝓤} {𝓥} {X} {Y} x ＝ inl x') → p ＝ ap inl (inl-lc p)
+inl-lc-is-section : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                    {x x' : X}
+                    (p : inl {𝓤} {𝓥} {X} {Y} x ＝ inl x')
+                  → p ＝ ap inl (inl-lc p)
 inl-lc-is-section refl = refl
 
-inr-lc-is-section : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {y y' : Y} → (p : inr {𝓤} {𝓥} {X} {Y} y ＝ inr y') → p ＝ ap inr (inr-lc p)
+inr-lc-is-section : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {y y' : Y}
+                    (p : inr {𝓤} {𝓥} {X} {Y} y ＝ inr y')
+                  → p ＝ ap inr (inr-lc p)
 inr-lc-is-section refl = refl
 
-+-is-set : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) → is-set X → is-set Y → is-set (X + Y)
-+-is-set X Y i j {inl x} {inl x'} p q = inl-lc-is-section p ∙ r ∙ (inl-lc-is-section q)⁻¹
++-is-set : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ )
+         → is-set X
+         → is-set Y
+         → is-set (X + Y)
++-is-set X Y i j {inl x} {inl x'} p q = γ
  where
   r : ap inl (inl-lc p) ＝ ap inl (inl-lc q)
   r = ap (ap inl) (i (inl-lc p) (inl-lc q))
+
+  γ : p ＝ q
+  γ = inl-lc-is-section p ∙ r ∙ (inl-lc-is-section q)⁻¹
+
 +-is-set X Y i j {inl x} {inr y} p q = 𝟘-elim (+disjoint  p)
+
 +-is-set X Y i j {inr y} {inl x} p q = 𝟘-elim (+disjoint' p)
-+-is-set X Y i j {inr y} {inr y'} p q = inr-lc-is-section p ∙ r ∙ (inr-lc-is-section q)⁻¹
+
++-is-set X Y i j {inr y} {inr y'} p q = γ
  where
   r : ap inr (inr-lc p) ＝ ap inr (inr-lc q)
   r = ap (ap inr) (j (inr-lc p) (inr-lc q))
+
+  γ : p ＝ q
+  γ = inr-lc-is-section p ∙ r ∙ (inr-lc-is-section q)⁻¹
 
 ×-is-set : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → is-set X → is-set Y → is-set (X × Y)
 ×-is-set i j {(x , y)} {(x' , y')} p q =
  p            ＝⟨ tofrom-×-＝ p ⟩
  to-×-＝ p₀ p₁ ＝⟨ ap₂ (λ -₀ -₁ → to-×-＝ -₀ -₁) (i p₀ q₀) (j p₁ q₁) ⟩
  to-×-＝ q₀ q₁ ＝⟨ (tofrom-×-＝ q)⁻¹ ⟩
- q            ∎ where
-  p₀ : x ＝ x'
-  p₀ = pr₁ (from-×-＝' p)
-  p₁ : y ＝ y'
-  p₁ = pr₂ (from-×-＝' p)
-  q₀ : x ＝ x'
-  q₀ = pr₁ (from-×-＝' q)
-  q₁ : y ＝ y'
-  q₁ = pr₂ (from-×-＝' q)
+ q            ∎
+  where
+   p₀ : x ＝ x'
+   p₀ = pr₁ (from-×-＝' p)
+
+   p₁ : y ＝ y'
+   p₁ = pr₂ (from-×-＝' p)
+
+   q₀ : x ＝ x'
+   q₀ = pr₁ (from-×-＝' q)
+
+   q₁ : y ＝ y'
+   q₁ = pr₂ (from-×-＝' q)
 
 \end{code}
 
@@ -428,7 +481,10 @@ proposition is a proposition:
 \begin{code}
 
 sum-of-contradictory-props : {P : 𝓤 ̇ } {Q : 𝓥 ̇ }
-                           → is-prop P → is-prop Q → (P → Q → 𝟘 {𝓦}) → is-prop (P + Q)
+                           → is-prop P
+                           → is-prop Q
+                           → (P → Q → 𝟘 {𝓦})
+                           → is-prop (P + Q)
 sum-of-contradictory-props {𝓤} {𝓥} {𝓦} {P} {Q} i j f = γ
  where
   γ : (x y : P + Q) → x ＝ y
@@ -452,6 +508,7 @@ no-props-other-than-𝟘-or-𝟙 pe (P , i , f , g) = 𝟘-elim (φ u)
      where
        l : P ＝ 𝟙
        l = pe i 𝟙-is-prop unique-to-𝟙 (λ _ → p)
+
    φ : ¬¬ P
    φ u = f l
      where
@@ -491,25 +548,38 @@ witness-uniqueness A e x y a b = ap pr₁ (singletons-are-props e (x , a) (y , b
 
 infixr -1 existsUnique
 
-∃!-intro : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (x : X) (a : A x) → ((σ : Σ A) → (x , a) ＝ σ) → ∃! A
+∃!-intro : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (x : X) (a : A x)
+         → ((σ : Σ A) → (x , a) ＝ σ)
+         → ∃! A
 ∃!-intro x a o = (x , a) , o
 
 ∃!-witness : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } → ∃! A → X
 ∃!-witness ((x , a) , o) = x
 
-∃!-is-witness : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (u : ∃! A) → A (∃!-witness u)
+∃!-is-witness : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
+                (u : ∃! A)
+              → A (∃!-witness u)
 ∃!-is-witness ((x , a) , o) = a
 
 description : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } → ∃! A → Σ A
 description (σ , o) = σ
 
-∃!-uniqueness' : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (u : ∃! A) → (σ : Σ A) → description u ＝ σ
+∃!-uniqueness' : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
+                 (u : ∃! A)
+               → (σ : Σ A)
+               → description u ＝ σ
 ∃!-uniqueness' ((x , a) , o) = o
 
-∃!-uniqueness : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (u : ∃! A) → (x : X) (a : A x) → description u ＝ (x , a)
+∃!-uniqueness : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
+                (u : ∃! A)
+              → (x : X) (a : A x)
+              → description u ＝ (x , a)
 ∃!-uniqueness u x a = ∃!-uniqueness' u (x , a)
 
-∃!-uniqueness'' : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (u : ∃! A) → (σ ω : Σ A) → σ ＝ ω
+∃!-uniqueness'' : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
+                  (u : ∃! A)
+                → (σ ω : Σ A)
+                → σ ＝ ω
 ∃!-uniqueness'' u σ ω = ∃!-uniqueness' u σ ⁻¹ ∙ ∃!-uniqueness' u ω
 
 \end{code}
@@ -520,7 +590,7 @@ Added 5 March 2020 by Tom de Jong.
 
 +-is-prop : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
           → is-prop X
-            → is-prop Y
+          → is-prop Y
           → (X → ¬ Y)
           → is-prop (X + Y)
 +-is-prop i j f (inl x) (inl x') = ap inl (i x x')
