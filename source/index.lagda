@@ -2,12 +2,12 @@
    Various new theorems in univalent mathematics written in Agda
    -------------------------------------------------------------
 
-   Martin Escardo and collaborators
+   Martin Escardo and collaborators,
    2010--2023--∞, continuously evolving.
    https://www.cs.bham.ac.uk/~mhe/
    https://github.com/martinescardo/TypeTopology
 
-   Tested with Agda 2.6.2.2 and the release candidate 3 of Agda 2.6.3
+   Tested with Agda 2.6.2.2 and Agda 2.6.3
    (but soon this is going to work only with 2.6.3)
 
    The main new results are about compact types, totally separated
@@ -66,20 +66,13 @@
      time to time last tine on 19th December 2022:
      https://www.cs.bham.ac.uk/~mhe/TypeTopology/dependency-graph.pdf
 
-   * There are some somewhat obsolete comments at the end of this
-     file, explaining part of what we do in this development. See
-     instead the comments in the various modules.
-
-   * This has been tested with 2.6.2.1 and with the release
-     candidates 2.6.3.
-
 Philosophy of the repository
 ----------------------------
 
    * We adopt the univalent point of view, even in modules which don't
      assume the univalent axiom. In particular, we take seriously the
      distinction between types that are singletons, propositions,
-     sets, 1-groupoids etc, even when the univalence axiom, or its
+     sets, 1-groupoids etc., even when the univalence axiom, or its
      typical consequences such as function extensionality and
      propositional extensionality, are not needed to reason about
      them.
