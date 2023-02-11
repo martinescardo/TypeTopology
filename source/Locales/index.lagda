@@ -14,5 +14,6 @@ import Locales.AdjointFunctorTheoremForFrames
 import Locales.HeytingImplication
 import Locales.PatchLocale
 import Locales.PatchProperties
+import Locales.BooleanAlgebra
 
 \end{code}

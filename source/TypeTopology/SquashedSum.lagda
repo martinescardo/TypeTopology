@@ -21,7 +21,7 @@ open import CoNaturals.GenericConvergentSequence
 open import InjectiveTypes.Blackboard fe
 open import MLTT.Plus-Properties
 open import MLTT.Two-Properties
-open import Notation.CanonicalMap
+open import Notation.CanonicalMap hiding ([_])
 open import TypeTopology.CompactTypes
 open import TypeTopology.Density
 open import TypeTopology.DiscreteAndSeparated

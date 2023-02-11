@@ -59,10 +59,12 @@ naive-univalence-gives-funext {𝓤} ua {𝓥} {X} {Y} {f₀} {f₁} h = γ
   γ : f₀ ＝ f₁
   γ = f₀                              ＝⟨ refl ⟩
       (λ x → f₀ x)                    ＝⟨ refl ⟩
-      (λ x → π₀ (f₀ x , f₁ x , h x))  ＝⟨ ap (λ π x → π (f₀ x , f₁ x , h x)) π₀-equals-π₁ ⟩
+      (λ x → π₀ (f₀ x , f₁ x , h x))  ＝⟨ I ⟩
       (λ x → π₁ (f₀ x , f₁ x , h x))  ＝⟨ refl ⟩
       (λ x → f₁ x)                    ＝⟨ refl ⟩
       f₁                              ∎
+       where
+        I = ap (λ π x → π (f₀ x , f₁ x , h x)) π₀-equals-π₁
 
 \end{code}
 
@@ -71,7 +73,8 @@ Added 19th May 2018:
 \begin{code}
 
 univalence-gives-funext : is-univalent 𝓤 → funext 𝓤 𝓤
-univalence-gives-funext ua = naive-funext-gives-funext (naive-univalence-gives-funext ua)
+univalence-gives-funext ua = naive-funext-gives-funext
+                              (naive-univalence-gives-funext ua)
 
 \end{code}
 
@@ -79,7 +82,10 @@ Added 27 Jun 2018:
 
 \begin{code}
 
-univalence-gives-funext' : ∀ 𝓤 𝓥 → is-univalent 𝓤 → is-univalent (𝓤 ⊔ 𝓥) → funext 𝓤 𝓥
+univalence-gives-funext' : ∀ 𝓤 𝓥
+                         → is-univalent 𝓤
+                         → is-univalent (𝓤 ⊔ 𝓥)
+                         → funext 𝓤 𝓥
 univalence-gives-funext' 𝓤 𝓥 ua ua' = naive-funext-gives-funext'
                                        (naive-univalence-gives-funext ua')
                                        (naive-univalence-gives-funext ua)
@@ -90,7 +96,10 @@ Univalence-gives-FunExt ua 𝓤 𝓥 = univalence-gives-funext' 𝓤 𝓥 (ua �
 Univalence-gives-Fun-Ext : Univalence → Fun-Ext
 Univalence-gives-Fun-Ext ua {𝓤} {𝓥} = Univalence-gives-FunExt ua 𝓤 𝓥
 
-funext-from-successive-univalence : ∀ 𝓤 → is-univalent 𝓤 → is-univalent (𝓤 ⁺) → funext 𝓤 (𝓤 ⁺)
+funext-from-successive-univalence : ∀ 𝓤
+                                  → is-univalent 𝓤
+                                  → is-univalent (𝓤 ⁺)
+                                  → funext 𝓤 (𝓤 ⁺)
 funext-from-successive-univalence 𝓤 = univalence-gives-funext' 𝓤 (𝓤 ⁺)
 
 open import UF.Subsingletons
@@ -102,8 +111,8 @@ open import UF.Subsingletons-FunExt
                       → (q holds → p holds)
                       → p ＝ q
 Ω-ext-from-univalence {𝓤} ua {p} {q} = Ω-extensionality
-                                         (univalence-gives-funext ua)
-                                         (univalence-gives-propext ua)
+                                        (univalence-gives-funext ua)
+                                        (univalence-gives-propext ua)
 \end{code}
 
 April 2020. How much function extensionality do we get from
@@ -117,7 +126,9 @@ naive-prop-valued-funext 𝓤 𝓥 = (X : 𝓤 ̇ ) (Y : 𝓥 ̇ )
                               → is-prop (X → Y)
 
 propositional-univalence : (𝓤 : Universe) → 𝓤 ⁺  ̇
-propositional-univalence 𝓤 = (P : 𝓤 ̇ ) → is-prop P → (Y : 𝓤 ̇ ) → is-equiv (idtoeq P Y)
+propositional-univalence 𝓤 = (P : 𝓤 ̇ )
+                           → is-prop P
+                           → (Y : 𝓤 ̇ ) → is-equiv (idtoeq P Y)
 
 prop-eqtoid : propositional-univalence 𝓤
             → (P : 𝓤 ̇ )
@@ -134,7 +145,8 @@ propositional-≃-induction 𝓤 𝓥 = (P : 𝓤 ̇ )
                               → A P (≃-refl P) → (Y : 𝓤 ̇ ) (e : P ≃ Y) → A Y e
 
 propositional-JEq : propositional-univalence 𝓤
-                  → (𝓥 : Universe) → propositional-≃-induction 𝓤 𝓥
+                  → (𝓥 : Universe)
+                  → propositional-≃-induction 𝓤 𝓥
 propositional-JEq {𝓤} pu 𝓥 P i A b Y e = γ
  where
   A' : (Y : 𝓤 ̇ ) → P ＝ Y → 𝓥 ̇
@@ -174,9 +186,13 @@ prop-precomp-is-equiv' {𝓤} pu X Y Z i f ise =
    j : is-prop X
    j = equiv-to-prop (f , ise) i
 
-propositional-univalence-gives-naive-prop-valued-funext : propositional-univalence 𝓤
-                                                        → naive-prop-valued-funext 𝓥 𝓤
-propositional-univalence-gives-naive-prop-valued-funext {𝓤} {𝓥} pu X Y Y-is-prop f₀ f₁ = γ
+propositional-univalence-gives-naive-prop-valued-funext :
+
+   propositional-univalence 𝓤
+ → naive-prop-valued-funext 𝓥 𝓤
+
+propositional-univalence-gives-naive-prop-valued-funext
+ {𝓤} {𝓥} pu X Y Y-is-prop f₀ f₁ = γ
  where
   Δ : 𝓤 ̇
   Δ = Σ y₀ ꞉ Y , Σ y₁ ꞉ Y , y₀ ＝ y₁

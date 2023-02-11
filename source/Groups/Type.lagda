@@ -110,6 +110,11 @@ group-axioms-is-prop fe X _·_ s = γ s
     γ = ×-is-prop (being-set-is-prop fe)
         (×-is-prop α β)
 
+\end{code}
+
+End of addition.
+
+\begin{code}
 
 Group-structure : 𝓤 ̇ → 𝓤 ̇
 Group-structure X = Σ _·_ ꞉ group-structure X , (group-axioms X _·_)

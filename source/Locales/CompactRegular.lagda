@@ -844,16 +844,86 @@ consists-of-clopens F S = Ɐ i ∶ index S , is-clopen F (S [ i ])
 
 zero-dimensionalᴰ : Frame 𝓤 𝓥 𝓦 → (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺) ̇
 zero-dimensionalᴰ {𝓦 = 𝓦} F =
- Σ ℬ ꞉ Fam 𝓦 ⟨ F ⟩ , is-basis-for F ℬ × consists-of-clopens F ℬ holds
+ Σ ℬ ꞉ Fam 𝓦 ⟨ F ⟩ , is-basis-for F ℬ
+                   × closed-under-finite-joins F ℬ holds
+                   × consists-of-clopens F ℬ holds
+
+basis-of-zero-dimensionalᴰ-frame : (L : Frame 𝓤 𝓥 𝓦)
+                                 → zero-dimensionalᴰ L
+                                 → Σ ℬ ꞉ Fam 𝓦 ⟨ L ⟩ , is-basis-for L ℬ
+basis-of-zero-dimensionalᴰ-frame L (ℬ , β , _) = ℬ , β
 
 is-zero-dimensional : Frame 𝓤 𝓥 𝓦 → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
-is-zero-dimensional {𝓦 = 𝓦} F =
- Ǝ ℬ ∶ Fam 𝓦 ⟨ F ⟩ , is-basis-for F ℬ × consists-of-clopens F ℬ holds
+is-zero-dimensional {𝓦 = 𝓦} F = ∥ zero-dimensionalᴰ F ∥Ω
 
 basis-of-zero-dimensional-frame : (F : Frame 𝓤 𝓥 𝓦)
                                 → (is-zero-dimensional F ⇒ has-basis F) holds
 basis-of-zero-dimensional-frame F =
  ∥∥-rec (holds-is-prop (has-basis F)) λ { (ℬ , δ , _) → ∣ ℬ , δ ∣ }
+
+\end{code}
+
+\begin{code}
+
+clopens-are-closed-under-∨ : (F : Frame 𝓤 𝓥 𝓦) (x y : ⟨ F ⟩)
+                           → (is-clopen F x
+                           ⇒  is-clopen F y
+                           ⇒  is-clopen F (x ∨[ F ] y)) holds
+clopens-are-closed-under-∨ F x y (x′ , ϡ₁ , ϟ₁) (y′ , ϡ₂ , ϟ₂) =
+ (x′ ∧[ F ] y′) , † , ‡
+  where
+   open PosetReasoning (poset-of F)
+
+   †₁ : (((x ∨[ F ] y) ∧[ F ] (x′ ∧[ F ] y′)) ≤[ poset-of F ] 𝟎[ F ]) holds
+   †₁ =
+    (x ∨[ F ] y) ∧[ F ] (x′ ∧[ F ] y′)                         ＝⟨ Ⅰ ⟩ₚ
+    (x ∧[ F ] (x′ ∧[ F ] y′)) ∨[ F ] (y ∧[ F ] (x′ ∧[ F ] y′)) ≤⟨ Ⅱ ⟩
+    (x ∧[ F ] x′) ∨[ F ] (y ∧[ F ] (x′ ∧[ F ] y′))             ≤⟨ Ⅲ ⟩
+    (x ∧[ F ] x′) ∨[ F ] (y ∧[ F ] y′)                         ≤⟨ Ⅳ ⟩
+    𝟎[ F ] ∨[ F ] (y ∧[ F ] y′)                                ≤⟨ Ⅴ ⟩
+    𝟎[ F ] ∨[ F ] 𝟎[ F ]                                       ＝⟨ Ⅵ ⟩ₚ
+    𝟎[ F ]                                                     ■
+     where
+      Ⅰ = binary-distributivity-right F
+      Ⅱ = ∨[ F ]-left-monotone  (∧[ F ]-right-monotone (∧[ F ]-lower₁ x′ y′))
+      Ⅲ = ∨[ F ]-right-monotone (∧[ F ]-right-monotone (∧[ F ]-lower₂ x′ y′))
+      Ⅳ = ∨[ F ]-left-monotone  (reflexivity+ (poset-of F) ϡ₁)
+      Ⅴ = ∨[ F ]-right-monotone (reflexivity+ (poset-of F) ϡ₂)
+      Ⅵ = ∨[ F ]-is-idempotent 𝟎[ F ] ⁻¹
+
+   † : (x ∨[ F ] y) ∧[ F ] (x′ ∧[ F ] y′) ＝ 𝟎[ F ]
+   † = only-𝟎-is-below-𝟎 F _ †₁
+
+   ‡₁ : (𝟏[ F ] ≤[ poset-of F ] ((x ∨[ F ] y) ∨[ F ] (x′ ∧[ F ] y′))) holds
+   ‡₁ =
+    𝟏[ F ]                                                      ＝⟨ Ⅰ ⟩ₚ
+    𝟏[ F ] ∧[ F ] 𝟏[ F ]                                        ≤⟨ Ⅱ ⟩
+    (x ∨[ F ] x′) ∧[ F ] 𝟏[ F ]                                 ≤⟨ Ⅲ ⟩
+    (x ∨[ F ] x′) ∧[ F ] (y ∨[ F ] y′)                          ≤⟨ Ⅳ ⟩
+    ((x ∨[ F ] y ) ∨[ F ] x′)∧[ F ] (y ∨[ F ] y′)               ≤⟨ Ⅴ ⟩
+    ((x ∨[ F ] y ) ∨[ F ] x′) ∧[ F ] ((x ∨[ F ] y ) ∨[ F ] y′)  ＝⟨ Ⅵ ⟩ₚ
+    (x ∨[ F ] y) ∨[ F ] (x′ ∧[ F ] y′)                          ■
+     where
+      Ⅰ = ∧[ F ]-is-idempotent 𝟏[ F ]
+      Ⅱ = ∧[ F ]-left-monotone  (reflexivity+ (poset-of F) (ϟ₁ ⁻¹))
+      Ⅲ = ∧[ F ]-right-monotone (reflexivity+ (poset-of F) (ϟ₂ ⁻¹))
+      Ⅳ = ∧[ F ]-left-monotone (∨[ F ]-left-monotone (∨[ F ]-upper₁ x y))
+      Ⅴ = ∧[ F ]-right-monotone (∨[ F ]-left-monotone (∨[ F ]-upper₂ x y))
+      Ⅵ = binary-distributivity-op F (x ∨[ F ] y) x′ y′ ⁻¹
+
+   ‡ : (x ∨[ F ] y) ∨[ F ] (x′ ∧[ F ] y′) ＝ 𝟏[ F ]
+   ‡ = only-𝟏-is-above-𝟏 F _ ‡₁
+
+directification-preserves-clopenness : (F : Frame 𝓤 𝓥 𝓦)
+                                     → (ℬ : Fam 𝓦 ⟨ F ⟩)
+                                     → (consists-of-clopens F ℬ
+                                     ⇒ consists-of-clopens F (directify F ℬ))
+                                       holds
+directification-preserves-clopenness F ℬ ξ []       = 𝟎-is-clopen F
+directification-preserves-clopenness F ℬ ξ (i ∷ is) =
+ clopens-are-closed-under-∨ F (ℬ [ i ]) (directify F ℬ [ is ]) (ξ i) ℐℋ
+  where
+   ℐℋ = directification-preserves-clopenness F ℬ ξ is
 
 \end{code}
 
@@ -870,7 +940,7 @@ zero-dimensional-locales-are-regular {𝓦 = 𝓦} F =
    open Joins (λ x y → x ≤[ poset-of F ] y)
 
    γ : zero-dimensionalᴰ F → is-regular F holds
-   γ (ℬ , β , ξ) = ∣ ℬ , δ ∣
+   γ (ℬ , β , _ , ξ) = ∣ ℬ , δ ∣
     where
      δ : Π U ꞉ ⟨ F ⟩ ,
           Σ J ꞉ Fam 𝓦 (index ℬ) ,
@@ -928,14 +998,8 @@ clopen-iff-compact-in-stone-frame F (κ , ζ) U = β , γ
 
 \begin{code}
 
-consists-of-compact-opens : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
-consists-of-compact-opens F U = Ɐ i ∶ index U , is-compact-open F (U [ i ])
-
 contains-top : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦)
 contains-top F U = Ǝ t ∶ index U , is-top F (U [ t ]) holds
-
-contains-bottom : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦)
-contains-bottom F U =  Ǝ i ∶ index U , is-bottom F (U [ i ]) holds
 
 closed-under-binary-meets : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦)
 closed-under-binary-meets F 𝒮 =
@@ -944,19 +1008,11 @@ closed-under-binary-meets F 𝒮 =
    where
     open Meets (λ x y → x ≤[ poset-of F ] y)
 
-closed-under-binary-joins : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦)
-closed-under-binary-joins {𝓦 = 𝓦} F S =
- Ɐ i ∶ index S , Ɐ j ∶ index S ,
-  Ǝ k ∶ index S , ((S [ k ]) is-lub-of (binary-family 𝓦 (S [ i ]) (S [ j ]))) holds
-   where
-    open Joins (λ x y → x ≤[ poset-of F ] y)
-
 closed-under-finite-meets : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦)
 closed-under-finite-meets F S = contains-top F S ∧ closed-under-binary-meets F S
 
-closed-under-finite-joins : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦)
-closed-under-finite-joins F S =
- (contains-bottom F S) ∧ closed-under-binary-joins F S
+consists-of-compact-opens : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
+consists-of-compact-opens F U = Ɐ i ∶ index U , is-compact-open F (U [ i ])
 
 \end{code}
 

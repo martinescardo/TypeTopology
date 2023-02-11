@@ -1,3 +1,5 @@
+Martin Escardo
+
 This file needs reorganization and clean-up.
 
 \begin{code}
@@ -32,10 +34,10 @@ NatΠ f g x = f x (g x) -- (S combinator from combinatory logic!)
          → Σ f ꞉ Π A , Π x ꞉ X , P x (f x)
 ΠΣ-distr φ = (λ x → pr₁ (φ x)) , λ x → pr₂ (φ x)
 
-ΠΣ-distr-back : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {P : (x : X) → A x → 𝓦 ̇ }
-              → (Σ f ꞉ Π A , Π x ꞉ X , P x (f x))
-              → Π x ꞉ X , Σ a ꞉ A x , P x a
-ΠΣ-distr-back (f , φ) x = f x , φ x
+ΠΣ-distr⁻¹ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {P : (x : X) → A x → 𝓦 ̇ }
+           → (Σ f ꞉ Π A , Π x ꞉ X , P x (f x))
+           → Π x ꞉ X , Σ a ꞉ A x , P x a
+ΠΣ-distr⁻¹ (f , φ) x = f x , φ x
 
 _≈_ : {X : 𝓤 ̇ } {x : X} {A : X → 𝓥 ̇ } → Nat (Id x) A → Nat (Id x) A → 𝓤 ⊔ 𝓥 ̇
 η ≈ θ = ∀ y → η y ∼ θ y
@@ -133,31 +135,31 @@ nat-transport f refl = refl
 
 transport-fam : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } (P : {x : X} → Y x → 𝓦 ̇ )
                (x : X) (y : Y x) → P y → (x' : X) (r : x ＝ x') → P (transport Y r y)
-transport-fam P x y p .x refl = p
+transport-fam P x y p x refl = p
 
 transport-left-rel : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } (_≺_ : {x : X} → Y x → Y x → 𝓦 ̇ )
                    → (a x : X) (b : Y a) (v : Y x) (r : x ＝ a)
                    → transport Y r v ≺ b
                    → v ≺ transport⁻¹ Y r b
-transport-left-rel _≺_ a .a b v refl = id
+transport-left-rel _≺_ a a b v refl = id
 
 transport-right-rel : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } (_≺_ : {x : X} → Y x → Y x → 𝓦 ̇ )
                     → (a x : X) (b : Y a) (v : Y x) (p : a ＝ x)
                     →  v ≺ transport Y p b
                     → transport⁻¹ Y p v ≺ b
-transport-right-rel _≺_ a .a b v refl = id
+transport-right-rel _≺_ a a b v refl = id
 
 transport⁻¹-right-rel : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } (_≺_ : {x : X} → Y x → Y x → 𝓦 ̇ )
                       → (a x : X) (b : Y a) (v : Y x) (r : x ＝ a)
                       → v ≺ transport⁻¹ Y r b
                       → transport Y r v ≺ b
-transport⁻¹-right-rel _≺_ a .a b v refl = id
+transport⁻¹-right-rel _≺_ a a b v refl = id
 
 transport⁻¹-left-rel : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } (_≺_ : {x : X} → Y x → Y x → 𝓦 ̇ )
                      → (a x : X) (b : Y a) (v : Y x) (p : a ＝ x)
                      → transport⁻¹ Y p v ≺ b
                      → v ≺ transport Y p b
-transport⁻¹-left-rel _≺_ a .a b v refl = id
+transport⁻¹-left-rel _≺_ a a b v refl = id
 
 transport-const : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {x x' : X} {y : Y} (p : x ＝ x')
                 → transport (λ (_ : X) → Y) p y ＝ y
@@ -194,16 +196,16 @@ ap-sym f refl = refl
 ap-ap : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (f : X → Y) (g : Y → Z)
         {x x' : X} (r : x ＝ x')
       → ap g (ap f r) ＝ ap (g ∘ f) r
-ap-ap {𝓤} {𝓥} {𝓦} {X} {Y} {Z} f g = J A (λ x → refl)
- where
-  A : (x x' : X) → x ＝ x' → 𝓦 ̇
-  A x x' r = ap g (ap f r) ＝ ap (g ∘ f) r
+ap-ap {𝓤} {𝓥} {𝓦} {X} {Y} {Z} f g refl = refl
 
 ap₂ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (f : X → Y → Z) {x₀ x₁ : X} {y₀ y₁ : Y}
-    → x₀ ＝ x₁ → y₀ ＝ y₁ → f x₀ y₀ ＝ f x₁ y₁
+    → x₀ ＝ x₁
+    → y₀ ＝ y₁
+    → f x₀ y₀ ＝ f x₁ y₁
 ap₂ f refl refl = refl
 
-refl-left-neutral : {X : 𝓤 ̇ } {x y : X} {p : x ＝ y} → refl ∙ p ＝ p
+refl-left-neutral : {X : 𝓤 ̇ } {x y : X} {p : x ＝ y}
+                  → refl ∙ p ＝ p
 refl-left-neutral {𝓤} {X} {x} {_} {refl} = refl
 
 refl-right-neutral : {X : 𝓤 ̇ } {x y : X} (p : x ＝ y) → p ＝ p ∙ refl
@@ -221,7 +223,7 @@ happly = happly' _ _
 
 sym-is-inverse : {X : 𝓤 ̇ } {x y : X} (p : x ＝ y)
                → refl ＝ p ⁻¹ ∙ p
-sym-is-inverse = J (λ x y p → refl ＝ p ⁻¹ ∙ p) (λ x → refl)
+sym-is-inverse refl = refl
 
 sym-is-inverse' : {X : 𝓤 ̇ } {x y : X} (p : x ＝ y)
                 → refl ＝ p ∙ p ⁻¹
@@ -241,7 +243,8 @@ right-inverse : {X : 𝓤 ̇ } {x y : X} (p : x ＝ y) → refl ＝ p ∙ p ⁻�
 right-inverse {𝓤} {X} {x} {y} refl = refl
 
 cancel-left : {X : 𝓤 ̇ } {x y z : X} {p : x ＝ y} {q r : y ＝ z}
-            → p ∙ q ＝ p ∙ r → q ＝ r
+            → p ∙ q ＝ p ∙ r
+            → q ＝ r
 cancel-left {𝓤} {X} {x} {y} {z} {p} {q} {r} s =
        q              ＝⟨ refl-left-neutral ⁻¹ ⟩
        refl ∙ q       ＝⟨ ap (λ - → - ∙ q) ((left-inverse p)⁻¹) ⟩
@@ -275,47 +278,61 @@ cancel-left-＝ {𝓤} {X} {x} {y} {z} {refl} {q} {r} =
 
 \end{code}
 
+End of addition.
+
 \begin{code}
 
-homotopies-are-natural' : {X : 𝓤 ̇ } {A : 𝓥 ̇ } (f g : X → A) (H : f ∼ g) {x y : X} {p : x ＝ y}
+homotopies-are-natural' : {X : 𝓤 ̇ } {A : 𝓥 ̇ }
+                          (f g : X → A)
+                          (H : f ∼ g)
+                          {x y : X}
+                          {p : x ＝ y}
                         → H x ∙ ap g p ∙ (H y)⁻¹ ＝ ap f p
 homotopies-are-natural' f g H {x} {_} {refl} = trans-sym' (H x)
 
-homotopies-are-natural'' : {X : 𝓤 ̇ } {A : 𝓥 ̇ } (f g : X → A) (H : f ∼ g) {x y : X} {p : x ＝ y}
+homotopies-are-natural'' : {X : 𝓤 ̇ } {A : 𝓥 ̇ }
+                           (f g : X → A)
+                           (H : f ∼ g)
+                           {x y : X}
+                           {p : x ＝ y}
                          → (H x) ⁻¹ ∙ ap f p ∙ H y ＝ ap g p
 homotopies-are-natural'' f g H {x} {_} {refl} = trans-sym (H x)
 
-homotopies-are-natural : {X : 𝓤 ̇ } {A : 𝓥 ̇ } (f g : X → A) (H : f ∼ g) {x y : X} {p : x ＝ y}
+homotopies-are-natural : {X : 𝓤 ̇ } {A : 𝓥 ̇ }
+                         (f g : X → A)
+                         (H : f ∼ g)
+                         {x y : X}
+                         {p : x ＝ y}
                        → H x ∙ ap g p ＝ ap f p ∙ H y
 homotopies-are-natural f g H {x} {_} {refl} = refl-left-neutral ⁻¹
 
 to-×-＝ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {x x' : X} {y y' : Y}
-       → x ＝ x' → y ＝ y' → (x , y) ＝ (x' , y')
+         → x ＝ x'
+         → y ＝ y'
+         → (x , y) ＝ (x' , y')
 to-×-＝ refl refl = refl
 
 to-×-＝' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {z z' : X × Y}
-        → (pr₁ z ＝ pr₁ z') × (pr₂ z ＝ pr₂ z') → z ＝ z'
+          → (pr₁ z ＝ pr₁ z') × (pr₂ z ＝ pr₂ z')
+          → z ＝ z'
 to-×-＝' (refl , refl) = refl
 
 from-×-＝' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {z z' : X × Y}
-          → z ＝ z'
-          → (pr₁ z ＝ pr₁ z') × (pr₂ z ＝ pr₂ z' )
+            → z ＝ z'
+            → (pr₁ z ＝ pr₁ z') × (pr₂ z ＝ pr₂ z' )
 from-×-＝' refl = (refl , refl)
 
 tofrom-×-＝ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-             {z z' : X × Y} (p : z ＝ z')
-           → p ＝ to-×-＝ (pr₁ (from-×-＝' p)) (pr₂ (from-×-＝' p))
+              {z z' : X × Y} (p : z ＝ z')
+            → p ＝ to-×-＝ (pr₁ (from-×-＝' p)) (pr₂ (from-×-＝' p))
 tofrom-×-＝ refl = refl
 
 from-Σ-＝' : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {u v : Σ Y} (r : u ＝ v)
-          → transport Y (ap pr₁ r) (pr₂ u) ＝ (pr₂ v)
-from-Σ-＝' {𝓤} {𝓥} {X} {Y} {u} {v} = J A (λ u → refl) {u} {v}
- where
-  A : (u v : Σ Y) → u ＝ v → 𝓥 ̇
-  A u v r = transport Y (ap pr₁ r) (pr₂ u) ＝ (pr₂ v)
+           → transport Y (ap pr₁ r) (pr₂ u) ＝ (pr₂ v)
+from-Σ-＝' {𝓤} {𝓥} {X} {Y} {u} {v} refl = refl
 
 from-Σ-＝ : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {σ τ : Σ Y} (r : σ ＝ τ)
-         → Σ p ꞉ pr₁ σ ＝ pr₁ τ , transport Y p (pr₂ σ) ＝ (pr₂ τ)
+          → Σ p ꞉ pr₁ σ ＝ pr₁ τ , transport Y p (pr₂ σ) ＝ (pr₂ τ)
 from-Σ-＝ r = (ap pr₁ r , from-Σ-＝' r)
 
 to-Σ-＝ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {σ τ : Σ A}
@@ -324,8 +341,8 @@ to-Σ-＝ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {σ τ : Σ A}
 to-Σ-＝ (refl , refl) = refl
 
 ap-pr₁-to-Σ-＝ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {σ τ : Σ A}
-                (w : Σ p ꞉ pr₁ σ ＝ pr₁ τ , transport A p (pr₂ σ) ＝ pr₂ τ)
-              → ap pr₁ (to-Σ-＝ w) ＝ pr₁ w
+                 (w : Σ p ꞉ pr₁ σ ＝ pr₁ τ , transport A p (pr₂ σ) ＝ pr₂ τ)
+               → ap pr₁ (to-Σ-＝ w) ＝ pr₁ w
 ap-pr₁-to-Σ-＝ (refl , refl) = refl
 
 to-Σ-＝' : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {x : X} {y y' : Y x}
@@ -334,9 +351,9 @@ to-Σ-＝' : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {x : X} {y y' : Y x}
 to-Σ-＝' {𝓤} {𝓥} {X} {Y} {x} = ap (λ - → (x , -))
 
 fromto-Σ-＝ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
-             {σ τ : Σ A}
-             (w : Σ p ꞉ pr₁ σ ＝ pr₁ τ , transport A p (pr₂ σ) ＝ pr₂ τ)
-           → from-Σ-＝ (to-Σ-＝ w) ＝ w
+              {σ τ : Σ A}
+              (w : Σ p ꞉ pr₁ σ ＝ pr₁ τ , transport A p (pr₂ σ) ＝ pr₂ τ)
+            → from-Σ-＝ (to-Σ-＝ w) ＝ w
 fromto-Σ-＝ (refl , refl) = refl
 
 tofrom-Σ-＝ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {σ τ : Σ A} (r : σ ＝ τ)

@@ -3,9 +3,10 @@
    constructive univalent mathematics
    written in Agda
 
-   Tested with Agda 2.6.2.2.
+   Tested with Agda 2.6.2.2 and Agda 2.6.3
+   (but soon it is going to work only with 2.6.3)
 
-   Martin Escardo and collaborators, 2010--2022--∞
+   Martin Escardo and collaborators, 2010--2023--∞
    Continuously evolving.
 
    https://github.com/martinescardo/TypeTopology
@@ -31,8 +32,4 @@ mathematics. However, instead of postulating these non-existing
 ingredients, we take them as assumptions (for single
 definitions/construction/theorems/proofs or for whole modules via
 module parameters). These ingredients do exist in the new cubical
-Agda, and we intend to eventually port this development to cubical
-Agda. The only obstacle at the moment is that there is no pattern
-matching on refl at present in cubical Agda, and hence we would need
-to rewrite large portions of the code here to use J rather than
-pattern matching on refl.
+Agda.

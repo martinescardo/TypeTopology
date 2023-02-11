@@ -89,7 +89,8 @@ module _ {𝓤 𝓥 𝓦 𝓣}
  pair-fun-is-equiv : is-equiv f
                    → ((x : X) → is-equiv (g x))
                    → is-equiv pair-fun
- pair-fun-is-equiv e d = vv-equivs-are-equivs pair-fun
+ pair-fun-is-equiv e d = vv-equivs-are-equivs
+                          pair-fun
                           (pair-fun-is-vv-equiv
                             (equivs-are-vv-equivs f e)
                             (λ x → equivs-are-vv-equivs (g x) (d x)))
@@ -127,15 +128,12 @@ module _ {𝓤 𝓥 𝓦 𝓣}
                            (t x b)})
          (s y)
 
-module _ {𝓤 𝓥 𝓦 𝓣} {X : 𝓤 ̇} {A : X → 𝓥 ̇} {Y : 𝓦 ̇} {B : Y → 𝓣 ̇} where
- pair-fun-equiv
-  : (f : X ≃ Y)
-  → (g : (x : X) → A x ≃ B (eqtofun f x))
-  → Σ A ≃ Σ B
- pr₁ (pair-fun-equiv f g) =
-  pair-fun (eqtofun f) λ x →
-  eqtofun (g x)
- pr₂ (pair-fun-equiv f g) =
-  pair-fun-is-equiv _ _ (eqtofun- f) λ x →
-  eqtofun- (g x)
+pair-fun-equiv : {X : 𝓤 ̇} {A : X → 𝓥 ̇}
+                 {Y : 𝓦 ̇} {B : Y → 𝓣 ̇}
+                 (f : X ≃ Y)
+               → ((x : X) → A x ≃ B (⌜ f ⌝ x))
+               → Σ A ≃ Σ B
+pair-fun-equiv f g = pair-fun ⌜ f ⌝ (λ x → ⌜ g x ⌝) ,
+                     pair-fun-is-equiv _ _ ⌜ f ⌝-is-equiv (λ x → ⌜ g x ⌝-is-equiv)
+
 \end{code}

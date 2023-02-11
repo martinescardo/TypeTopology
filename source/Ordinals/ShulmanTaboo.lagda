@@ -50,6 +50,7 @@ module Ordinals.ShulmanTaboo
 open import Ordinals.Type
 open import Ordinals.OrdinalOfTruthValues fe 𝓤₀ pe
 open import Ordinals.Notions
+open import Ordinals.Underlying
 
 open import UF.Base
 open import UF.Subsingletons-FunExt
