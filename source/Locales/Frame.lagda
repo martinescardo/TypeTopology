@@ -924,6 +924,11 @@ frame-homomorphisms-preserve-meets : (F : Frame 𝓤 𝓥 𝓦) (G : Frame 𝓤�
                                    → preserves-binary-meets F G (h .pr₁) holds
 frame-homomorphisms-preserve-meets F G 𝒽@(_ , _ , β , _) = β
 
+frame-homomorphisms-preserve-top : (F : Frame 𝓤 𝓥 𝓦) (G : Frame 𝓤′ 𝓥′ 𝓦)
+                                 → (h : F ─f→ G)
+                                 → h .pr₁ 𝟏[ F ] ＝ 𝟏[ G ]
+frame-homomorphisms-preserve-top F G 𝒽@(_ , α , _ , _) = α
+
 frame-homomorphisms-preserve-bottom : (F : Frame 𝓤 𝓥 𝓦) (G : Frame 𝓤′ 𝓥′ 𝓦)
                                     → (h : F ─f→ G)
                                     → h .pr₁ 𝟎[ F ] ＝ 𝟎[ G ]
