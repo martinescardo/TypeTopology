@@ -1,5 +1,7 @@
 --------------------------------------------------------------------------------
-Path Sequences
+Path Sequences library
+
+Ettore Aldrovandi, ealdrovandi@fsu.edu
 
 Begun November 2022
 --------------------------------------------------------------------------------
@@ -12,8 +14,11 @@ HoTT-Agda library at https://github.com/HoTT/HoTT-Agda
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module PathSequence.index where
+module PathSequences.index where
 
 import PathSequences.Base
+import PathSequences.Concat
+import PathSequences.Convenience
+import PathSequences.Split
 
 \end{code}
