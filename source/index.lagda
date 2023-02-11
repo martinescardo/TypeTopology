@@ -78,6 +78,7 @@ Click at the imported module names to navigate to them:
 
 module index where
 
+import 2Groups.index                  --by Ettore Aldrovandi and Keri D'Angelo
 import BinarySystems.index
 import CantorSchroederBernstein.index
 import Categories.index               -- by Jon Sterling
@@ -108,6 +109,7 @@ import Naturals.index
 import Notation.index
 import NotionsOfDecidability.index    -- by Tom de Jong and Martin Escardo
 import Ordinals.index
+import PathSequences.index            -- by Ettore Aldrovandi
 import Posets.index                   -- by Tom de Jong and Martin Escardo
 import Rationals.index                -- by Andrew Sneap
 import Slice.index
