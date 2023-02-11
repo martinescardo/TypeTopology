@@ -198,6 +198,18 @@ the pentagon, that is the equality
 
 ((xy)z)t → (x(yz))t → x((yz)t) → x(y(zt)) ＝ ((xy)z)t → (xy)(zt) → x(y(zt))
 
+% https://q.uiver.app/?q=WzAsNSxbMCwxLCIoKHggXFxvdGltZXMgeSlcXG90aW1lcyB6KSBcXG90aW1lcyB0Il0sWzEsMCwiKHggXFxvdGltZXMgKHlcXG90aW1lcyB6KSkgXFxvdGltZXMgdCJdLFszLDAsInggXFxvdGltZXMgKCh5XFxvdGltZXMgeikgXFxvdGltZXMgdCkiXSxbNCwxLCJ4IFxcb3RpbWVzICh5XFxvdGltZXMgKHogXFxvdGltZXMgdCkpIl0sWzIsMiwiKHggXFxvdGltZXMgeSlcXG90aW1lcyAoeiBcXG90aW1lcyB0KSJdLFswLDFdLFsxLDJdLFsyLDNdLFswLDRdLFs0LDNdXQ==
+\[\begin{tikzcd}[column sep=scriptsize]
+	& {(x \otimes (y\otimes z)) \otimes t} && {x \otimes ((y\otimes z) \otimes t)} \\
+	{((x \otimes y)\otimes z) \otimes t} &&&& {x \otimes (y\otimes (z \otimes t))} \\
+	&& {(x \otimes y)\otimes (z \otimes t)}
+	\arrow[from=2-1, to=1-2]
+	\arrow[from=1-2, to=1-4]
+	\arrow[from=1-4, to=2-5]
+	\arrow[from=2-1, to=3-3]
+	\arrow[from=3-3, to=2-5]
+\end{tikzcd}\]
+
 It is also supposed that the associativity term behaves in a
 compatible way relative to identity types, that is
 
