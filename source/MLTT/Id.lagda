@@ -58,6 +58,12 @@ transport⁻¹ B p = transport B (p ⁻¹)
 _∼_ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } → ((x : X) → A x) → ((x : X) → A x) → 𝓤 ⊔ 𝓥 ̇
 f ∼ g = ∀ x → f x ＝ g x
 
+∼-sym : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
+        {f g : (x : X) → A x}
+      → f ∼ g
+      → g ∼ f
+∼-sym h x = (h x)⁻¹
+
 \end{code}
 
 Notations to make some proofs more readable:

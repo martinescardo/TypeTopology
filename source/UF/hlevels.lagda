@@ -38,10 +38,10 @@ props-have-all-hlevels zero     P i = i
 props-have-all-hlevels (succ n) P i = λ x x' → props-have-all-hlevels n (x ＝ x') (props-are-sets i)
 
 hlevels-closed-under-Σ : (n : ℕ)
-                        → (X : 𝓤 ̇ ) (Y : X → 𝓤 ̇ )
-                        → X is-of-hlevel n
-                        → ((x : X) → (Y x) is-of-hlevel n)
-                        → (Σ Y) is-of-hlevel n
+                       → (X : 𝓤 ̇ ) (Y : X → 𝓤 ̇ )
+                       → X is-of-hlevel n
+                       → ((x : X) → (Y x) is-of-hlevel n)
+                       → (Σ Y) is-of-hlevel n
 hlevels-closed-under-Σ {𝓤} zero X Y l m = Σ-is-prop l m
 hlevels-closed-under-Σ {𝓤} (succ n) X Y l m = γ
  where

@@ -53,8 +53,9 @@ Excluded-Middle : 𝓤ω
 Excluded-Middle = ∀ {𝓤} → EM 𝓤
 
 EM-is-prop : FunExt → is-prop (EM 𝓤)
-EM-is-prop {𝓤} fe = Π₂-is-prop (λ {𝓤} {𝓥} → fe 𝓤 𝓥)
-                       (λ _ → decidability-of-prop-is-prop (fe 𝓤 𝓤₀))
+EM-is-prop {𝓤} fe = Π₂-is-prop
+                     (λ {𝓤} {𝓥} → fe 𝓤 𝓥)
+                     (λ _ → decidability-of-prop-is-prop (fe 𝓤 𝓤₀))
 
 LEM : ∀ 𝓤 → 𝓤 ⁺ ̇
 LEM 𝓤 = (p : Ω 𝓤) → p holds + ¬ (p holds)
@@ -103,7 +104,8 @@ de-Morgan : EM 𝓤
           → {A : 𝓤 ̇ } {B : 𝓥 ̇ }
           → is-prop A
           → is-prop B
-          → ¬ (A × B) → ¬ A + ¬ B
+          → ¬ (A × B)
+          → ¬ A + ¬ B
 de-Morgan em em' {A} {B} i j n = Cases (em A i)
                                   (λ a → Cases (em' B j)
                                           (λ b → 𝟘-elim (n (a , b)))

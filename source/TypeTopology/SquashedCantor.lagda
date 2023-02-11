@@ -18,7 +18,7 @@ a Cantor retract.
 
 open import UF.FunExt
 
-module Ordinals.SquashedCantor (fe : FunExt) where
+module TypeTopology.SquashedCantor (fe : FunExt) where
 
 open import UF.Base
 open import UF.Subsingletons

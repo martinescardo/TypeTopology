@@ -2,6 +2,8 @@ Martin Escardo
 
 UF things that depend on non-UF things.
 
+Find a better home for all of this.
+
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
@@ -12,14 +14,14 @@ open import MLTT.Spartan
 
 open import MLTT.Plus-Properties
 open import Naturals.Properties
+open import TypeTopology.DiscreteAndSeparated
 open import UF.Base
-open import UF.Subsingletons renaming (⊤Ω to ⊤ ; ⊥Ω to ⊥)
+open import UF.Embeddings
+open import UF.Equiv
 open import UF.FunExt
 open import UF.Lower-FunExt
+open import UF.Subsingletons renaming (⊤Ω to ⊤ ; ⊥Ω to ⊥)
 open import UF.Subsingletons-FunExt
-open import UF.Equiv
-open import UF.Embeddings
-open import TypeTopology.DiscreteAndSeparated
 
 decidable-is-collapsible : {X : 𝓤 ̇ } → decidable X → collapsible X
 decidable-is-collapsible (inl x) = pointed-types-are-collapsible x
@@ -52,7 +54,7 @@ being-isolated'-is-prop {𝓤} fe x = prop-criterion γ
                  (λ p n → n p))
 
 being-discrete-is-prop : FunExt → {X : 𝓤 ̇ } → is-prop (is-discrete X)
-being-discrete-is-prop {𝓤} fe {X} = Π-is-prop (fe 𝓤 𝓤) (being-isolated-is-prop fe)
+being-discrete-is-prop {𝓤} fe = Π-is-prop (fe 𝓤 𝓤) (being-isolated-is-prop fe)
 
 isolated-is-h-isolated : {X : 𝓤 ̇ } (x : X) → is-isolated x → is-h-isolated x
 isolated-is-h-isolated {𝓤} {X} x i {y} = local-hedberg x (λ y → γ y (i y)) y
@@ -61,19 +63,24 @@ isolated-is-h-isolated {𝓤} {X} x i {y} = local-hedberg x (λ y → γ y (i y)
   γ y (inl p) = (λ _ → p) , (λ q r → refl)
   γ y (inr n) = id , (λ q r → 𝟘-elim (n r))
 
-isolated-inl : {X : 𝓤 ̇ } (x : X) (i : is-isolated x) (y : X) (r : x ＝ y) → i y ＝ inl r
+isolated-inl : {X : 𝓤 ̇ } (x : X) (i : is-isolated x) (y : X) (r : x ＝ y)
+             → i y ＝ inl r
 isolated-inl x i y r =
   equality-cases (i y)
-    (λ (p : x ＝ y) (q : i y ＝ inl p) → q ∙ ap inl (isolated-is-h-isolated x i p r))
-    (λ (h : x ≠ y) (q : i y ＝ inr h) → 𝟘-elim(h r))
+   (λ (p : x ＝ y) (q : i y ＝ inl p)
+      → q ∙ ap inl (isolated-is-h-isolated x i p r))
+   (λ (h : x ≠ y) (q : i y ＝ inr h)
+      → 𝟘-elim(h r))
 
 isolated-inr : {X : 𝓤 ̇ }
              → funext 𝓤 𝓤₀
              → (x : X) (i : is-isolated x) (y : X) (n : x ≠ y) → i y ＝ inr n
 isolated-inr fe x i y n =
   equality-cases (i y)
-  (λ (p : x ＝ y) (q : i y ＝ inl p) → 𝟘-elim (n p))
-  (λ (m : x ≠ y) (q : i y ＝ inr m) → q ∙ ap inr (dfunext fe (λ (p : x ＝ y) → 𝟘-elim (m p))))
+   (λ (p : x ＝ y) (q : i y ＝ inl p)
+      → 𝟘-elim (n p))
+   (λ (m : x ≠ y) (q : i y ＝ inr m)
+      → q ∙ ap inr (dfunext fe (λ (p : x ＝ y) → 𝟘-elim (m p))))
 
 \end{code}
 
@@ -82,13 +89,17 @@ The following variation of the above doesn't require function extensionality:
 \begin{code}
 
 isolated-inr' : {X : 𝓤 ̇ }
-              → (x : X) (i : is-isolated x) (y : X) (n : x ≠ y) → Σ m ꞉ x ≠ y , i y ＝ inr m
+                (x : X) (i : is-isolated x) (y : X) (n : x ≠ y)
+              → Σ m ꞉ x ≠ y , i y ＝ inr m
 isolated-inr' x i y n =
   equality-cases (i y)
-  (λ (p : x ＝ y) (q : i y ＝ inl p) → 𝟘-elim (n p))
-  (λ (m : x ≠ y) (q : i y ＝ inr m) → m , q)
+   (λ (p : x ＝ y) (q : i y ＝ inl p)
+      → 𝟘-elim (n p))
+   (λ (m : x ≠ y) (q : i y ＝ inr m)
+      → m , q)
 
-discrete-inl : {X : 𝓤 ̇ } (d : is-discrete X) (x y : X) (r : x ＝ y) → d x y ＝ inl r
+discrete-inl : {X : 𝓤 ̇ } (d : is-discrete X) (x y : X) (r : x ＝ y)
+             → d x y ＝ inl r
 discrete-inl d x = isolated-inl x (d x)
 
 discrete-inr : funext 𝓤 𝓤₀
@@ -99,7 +110,9 @@ discrete-inr : funext 𝓤 𝓤₀
              → d x y ＝ inr n
 discrete-inr fe d x = isolated-inr fe x (d x)
 
-isolated-Id-is-prop : {X : 𝓤 ̇ } (x : X) → is-isolated' x → (y : X) → is-prop (y ＝ x)
+isolated-Id-is-prop : {X : 𝓤 ̇ } (x : X)
+                    → is-isolated' x
+                    → (y : X) → is-prop (y ＝ x)
 isolated-Id-is-prop x i = local-hedberg' x (λ y → decidable-is-collapsible (i y))
 
 lc-maps-reflect-isolatedness : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
@@ -115,7 +128,8 @@ lc-maps-reflect-discreteness : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                              → left-cancellable f
                              → is-discrete Y
                              → is-discrete X
-lc-maps-reflect-discreteness f l d x = lc-maps-reflect-isolatedness f l x (d (f x))
+lc-maps-reflect-discreteness f l d x =
+ lc-maps-reflect-isolatedness f l x (d (f x))
 
 embeddings-reflect-isolatedness : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                                 → is-embedding f
@@ -136,9 +150,6 @@ embeddings-reflect-discreteness : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                                 → is-discrete Y
                                 → is-discrete X
 embeddings-reflect-discreteness f e = lc-maps-reflect-discreteness f (embeddings-are-lc f e)
-
-
-open import UF.Equiv
 
 equivs-preserve-discreteness : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                              → is-equiv f
@@ -170,10 +181,10 @@ equiv-to-discrete (f , e) = equivs-preserve-discreteness f e
 𝟚-to-Ω ₁ = ⊤
 
 𝟚-to-Ω-is-embedding : funext 𝓤 𝓤 → propext 𝓤 → is-embedding (𝟚-to-Ω {𝓤})
-𝟚-to-Ω-is-embedding fe pe (P , isp) (₀ , p) (₀ , q) = to-Σ-＝ (refl , Ω-is-set fe pe p q)
-𝟚-to-Ω-is-embedding fe pe (P , isp) (₀ , p) (₁ , q) = 𝟘-elim (⊥-is-not-⊤ (p ∙ q ⁻¹))
-𝟚-to-Ω-is-embedding fe pe (P , isp) (₁ , p) (₀ , q) = 𝟘-elim (⊥-is-not-⊤ (q ∙ p ⁻¹))
-𝟚-to-Ω-is-embedding fe pe (P , isp) (₁ , p) (₁ , q) = to-Σ-＝ (refl , Ω-is-set fe pe p q)
+𝟚-to-Ω-is-embedding fe pe _ (₀ , p) (₀ , q) = to-Σ-＝ (refl , Ω-is-set fe pe p q)
+𝟚-to-Ω-is-embedding fe pe _ (₀ , p) (₁ , q) = 𝟘-elim (⊥-is-not-⊤ (p ∙ q ⁻¹))
+𝟚-to-Ω-is-embedding fe pe _ (₁ , p) (₀ , q) = 𝟘-elim (⊥-is-not-⊤ (q ∙ p ⁻¹))
+𝟚-to-Ω-is-embedding fe pe _ (₁ , p) (₁ , q) = to-Σ-＝ (refl , Ω-is-set fe pe p q)
 
 nonempty : 𝓤 ̇ → 𝓤 ̇
 nonempty X = is-empty(is-empty X)
@@ -209,7 +220,8 @@ stable-is-collapsible {𝓤} fe {X} s = (f , g)
 ¬¬-separated-types-are-sets : funext 𝓤 𝓤₀ → {X : 𝓤 ̇ }
                             → is-¬¬-separated X
                             → is-set X
-¬¬-separated-types-are-sets fe s = Id-collapsibles-are-sets (¬¬-separated-is-Id-collapsible fe s)
+¬¬-separated-types-are-sets fe s =
+ Id-collapsibles-are-sets (¬¬-separated-is-Id-collapsible fe s)
 
 being-¬¬-separated-is-prop : funext 𝓤 𝓤
                            → {X : 𝓤 ̇ }
@@ -220,12 +232,6 @@ being-¬¬-separated-is-prop {𝓤} fe {X} = prop-criterion f
   f s = Π-is-prop fe (λ _ →
         Π-is-prop fe (λ _ →
         Π-is-prop fe (λ _ → ¬¬-separated-types-are-sets (lower-funext 𝓤 𝓤 fe) s)))
-
-\end{code}
-
-Find a better home for this:
-
-\begin{code}
 
 𝟚-ℕ-embedding : 𝟚 → ℕ
 𝟚-ℕ-embedding ₀ = 0
@@ -254,17 +260,23 @@ Added 19th Feb 2020:
 
 open import UF.Embeddings
 
-maps-of-props-into-h-isolated-points-are-embeddings : {P : 𝓤 ̇ } {X : 𝓥 ̇ } (f : P → X)
-                                                    → is-prop P
-                                                    → ((p : P) → is-h-isolated (f p))
-                                                    → is-embedding f
-maps-of-props-into-h-isolated-points-are-embeddings f i j q (p , s) (p' , s') = to-Σ-＝ (i p p' , j p' _ s')
+maps-of-props-into-h-isolated-points-are-embeddings :
 
-maps-of-props-into-isolated-points-are-embeddings : {P : 𝓤 ̇ } {X : 𝓥 ̇ } (f : P → X)
+   {P : 𝓤 ̇ } {X : 𝓥 ̇ } (f : P → X)
+ → is-prop P
+ → ((p : P) → is-h-isolated (f p))
+ → is-embedding f
+
+maps-of-props-into-h-isolated-points-are-embeddings f i j q (p , s) (p' , s') =
+ to-Σ-＝ (i p p' , j p' _ s')
+
+maps-of-props-into-isolated-points-are-embeddings : {P : 𝓤 ̇ } {X : 𝓥 ̇ }
+                                                    (f : P → X)
                                                   → is-prop P
                                                   → ((p : P) → is-isolated (f p))
                                                   → is-embedding f
-maps-of-props-into-isolated-points-are-embeddings f i j = maps-of-props-into-h-isolated-points-are-embeddings
-                                                           f i (λ p → isolated-is-h-isolated (f p) (j p))
+maps-of-props-into-isolated-points-are-embeddings f i j =
+ maps-of-props-into-h-isolated-points-are-embeddings f i
+  (λ p → isolated-is-h-isolated (f p) (j p))
 
 \end{code}

@@ -11,13 +11,13 @@ open import UF.FunExt
 module Ordinals.Injectivity where
 
 open import MLTT.Spartan
-
-open import UF.Base
-open import UF.Equiv
-open import UF.Embeddings
-
+open import Notation.CanonicalMap
 open import Ordinals.Type
+open import Ordinals.Underlying
 open import Ordinals.WellOrderArithmetic
+open import UF.Base
+open import UF.Embeddings
+open import UF.Equiv
 
 module ordinals-injectivity (fe : FunExt) where
 
@@ -92,8 +92,8 @@ module topped-ordinals-injectivity (fe : FunExt) where
                                    Extension.well-order j (λ i → tis-well-ordered (τ i))) ,
                                    Extension.top-preservation j (λ i → topped (τ i))
   where
-   t = λ x → ⟪ τ x ⟫
-   module Extension = extension fe t e e-is-embedding (λ {i} → tunderlying-order (τ i))
+   t = λ x → ⟨ τ x ⟩
+   module Extension = extension fe t e e-is-embedding (λ {i} → underlying-order (τ i))
 
  ↗-property : {I : 𝓤  ̇ } {J : 𝓥 ̇ }
               (α : I → Ordinalᵀ 𝓤)

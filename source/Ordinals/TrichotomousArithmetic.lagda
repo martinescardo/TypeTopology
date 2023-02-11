@@ -15,14 +15,16 @@ module Ordinals.TrichotomousArithmetic
 open import UF.Subsingletons
 
 open import MLTT.Spartan
+open import Notation.CanonicalMap
 open import Ordinals.Type
 open import Ordinals.Notions
 open import Ordinals.Arithmetic fe
 open import Ordinals.WellOrderArithmetic
 open import Ordinals.TrichotomousType fe
+open import Ordinals.Underlying
 
 _+₃_ : Ordinal₃ 𝓤 → Ordinal₃ 𝓤 → Ordinal₃ 𝓤
-τ +₃ υ = (⁅ τ ⁆ +ₒ ⁅ υ ⁆) , +ₒ-is-trichotomous ⁅ τ ⁆ ⁅ υ ⁆
+τ +₃ υ = ([ τ ] +ₒ [ υ ]) , +ₒ-is-trichotomous [ τ ] [ υ ]
                               (3is-trichotomous τ)
                               (3is-trichotomous υ)
 
@@ -34,18 +36,18 @@ _+₃_ : Ordinal₃ 𝓤 → Ordinal₃ 𝓤 → Ordinal₃ 𝓤
 ω₃ : Ordinal₃ 𝓤₀
 ω₃ = ω , ω-is-trichotomous
 
-∑³ : (τ : Ordinal₃ 𝓤) → (⦅ τ ⦆ → Ordinal₃ 𝓤) → Ordinal₃ 𝓤
-∑³ {𝓤} (α@(X , _<_ , o) , t) υ = ((Σ x ꞉ X , ⦅ υ x ⦆) ,
+∑³ : (τ : Ordinal₃ 𝓤) → (⟨ τ ⟩ → Ordinal₃ 𝓤) → Ordinal₃ 𝓤
+∑³ {𝓤} (α@(X , _<_ , o) , t) υ = ((Σ x ꞉ X , ⟨ υ x ⟩) ,
                                  Sum.order ,
                                  Sum.well-order o (λ x → 3is-well-ordered (υ x))) ,
                                 sum.trichotomy-preservation _ _ t (λ x → 3is-trichotomous (υ x))
  where
-  _≺_ : {x : X} → ⦅ υ x ⦆ → ⦅ υ x ⦆ → 𝓤 ̇
-  y ≺ z = y ≺⦅ υ _ ⦆ z
+  _≺_ : {x : X} → ⟨ υ x ⟩ → ⟨ υ x ⟩ → 𝓤 ̇
+  y ≺ z = y ≺⟨ υ _ ⟩ z
 
   module Sum = sum-cotransitive fe _<_ _≺_ (tricho-gives-cotrans _<_ (Transitivity α) t)
 
 _×₃_ : Ordinal₃ 𝓤 → Ordinal₃ 𝓤 → Ordinal₃ 𝓤
-τ ×₃ υ = ∑³ τ  (λ (_ : ⦅ τ ⦆) → υ)
+τ ×₃ υ = ∑³ τ  (λ (_ : ⟨ τ ⟩) → υ)
 
 \end{code}
