@@ -2,7 +2,7 @@
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe --auto-inline --experimental-lossy-unification #-}
+{-# OPTIONS --without-K --safe --auto-inline --lossy-unification #-}
 
 open import MLTT.Spartan
 open import UF.Base

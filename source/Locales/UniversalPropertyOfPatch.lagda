@@ -2,7 +2,7 @@ Ayberk Tosun, started 7th December 2022
 
 \begin{code}[hide]
 
-{-# OPTIONS --without-K --exact-split --safe --experimental-lossy-unification #-}
+{-# OPTIONS --without-K --exact-split --safe --lossy-unification #-}
 
 open import MLTT.Spartan hiding (𝟚)
 open import UF.Base
