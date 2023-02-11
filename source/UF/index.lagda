@@ -46,7 +46,7 @@ import UF.SIP
 import UF.SIP-Examples
 import UF.Section-Embedding
 import UF.Size
-import UF.StructureIdentityPrinciple
+import UF.StructureIdentityPrinciple -- obsolete but keep
 import UF.Subsingletons
 import UF.Subsingletons-FunExt
 import UF.UA-FunExt

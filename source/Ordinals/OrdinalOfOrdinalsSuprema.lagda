@@ -46,10 +46,10 @@ open import UF.PropTrunc
 open import UF.Size
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-
 open import Ordinals.Notions hiding (is-prop-valued)
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.Type
+open import Ordinals.Underlying
 
 private
  fe : FunExt
@@ -1067,7 +1067,7 @@ module suprema
 
    sum-to-sup-is-surjection : is-surjection sum-to-sup
    sum-to-sup-is-surjection = ∘-is-surjection
-                               (corestriction-is-surjection σ)
+                               (corestrictions-are-surjections σ)
                                (equivs-are-surjections
                                  (⌜⌝-is-equiv
                                     (≃-sym sup-is-image-of-sum-to-ordinals)))

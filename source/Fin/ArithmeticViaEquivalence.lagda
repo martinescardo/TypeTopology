@@ -460,7 +460,7 @@ module _ (pt : propositional-truncations-exist)
   +finite (m , α) (n , β) = m +' n , γ
    where
     δ : X ≃ Fin m → Y ≃ Fin n → X + Y ≃ Fin (m +' n)
-    δ d e = X + Y         ≃⟨ +cong d e ⟩
+    δ d e = X + Y         ≃⟨ +-cong d e ⟩
             Fin m + Fin n ≃⟨ ≃-sym (pr₂ (+construction m n)) ⟩
             Fin (m +' n)  ■
     γ : ∥ X + Y ≃ Fin (m +' n) ∥
@@ -515,8 +515,8 @@ open import UF.PropIndexedPiSigma
    where
     i   = pr₂ (+construction (a 𝟎) k)
     ii  = +comm
-    iii = +cong φ (≃-sym (prop-indexed-sum 𝟙-is-prop ⋆))
-    iv  = Σ+distr (Fin n) 𝟙 (λ i → Fin (a i))
+    iii = +-cong φ (≃-sym (prop-indexed-sum 𝟙-is-prop ⋆))
+    iv  = Σ+-split (Fin n) 𝟙 (λ i → Fin (a i))
 
   g : Σ k' ꞉ ℕ , Fin k' ≃ (Σ i ꞉ Fin (succ n) , Fin (a i))
   g = a 𝟎 +' k , φ'

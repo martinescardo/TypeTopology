@@ -51,6 +51,11 @@ left-cancellable f = ∀ {x x'} → f x ＝ f x' → x ＝ x'
 left-cancellable' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 left-cancellable' f = ∀ x x' → f x ＝ f x' → x ＝ x'
 
+right-cancellable : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤ω
+right-cancellable f = {𝓦 : Universe} {Z : 𝓦 ̇ } (g h : codomain f → Z)
+                    → g ∘ f ∼ h ∘ f
+                    → g ∼ h
+
 _⇔_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
 A ⇔ B = (A → B) × (B → A)
 

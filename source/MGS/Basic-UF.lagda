@@ -234,9 +234,6 @@ transport-ap : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : Y → 𝓦 ̇ )
 
 transport-ap A f (refl x) a = refl a
 
-data Color : 𝓤₀ ̇  where
- Black White : Color
-
 apd : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (f : (x : X) → A x) {x y : X}
       (p : x ＝ y) → transport A p (f x) ＝ f y
 

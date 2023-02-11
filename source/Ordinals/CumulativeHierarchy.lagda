@@ -117,6 +117,7 @@ private
 open import Ordinals.Notions
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.Type hiding (Ord)
+open import Ordinals.Underlying
 
 open import UF.CumulativeHierarchy pt fe pe
 

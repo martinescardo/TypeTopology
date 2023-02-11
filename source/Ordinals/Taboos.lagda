@@ -6,13 +6,12 @@ Tom de Jong, 1 and 4 April 2022.
 
 module Ordinals.Taboos where
 
-open import TypeTopology.DiscreteAndSeparated hiding (𝟚-is-discrete)
-open import MLTT.Spartan hiding (𝟚 ; ₀ ; ₁)
 open import MLTT.Plus-Properties
-
+open import MLTT.Spartan hiding (𝟚 ; ₀ ; ₁)
 open import Ordinals.Notions
 open import Ordinals.Type
-
+open import Ordinals.Underlying
+open import TypeTopology.DiscreteAndSeparated hiding (𝟚-is-discrete)
 open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.ExcludedMiddle
@@ -344,7 +343,7 @@ e : ⟨ sup α ⟩ → Ordinal 𝓤 and ⟨ sup α ⟩ is discrete by assumption
     e-is-embedding : is-embedding e
     e-is-embedding =
      ∘-is-embedding (equivs-are-embeddings ⌜ φ ⌝ (⌜⌝-is-equiv φ))
-                    (restriction-embedding (sum-to-ordinals α))
+                    (restrictions-are-embeddings (sum-to-ordinals α))
     e-after-f-lemma : e ∘ f ∼ sum-to-ordinals α
     e-after-f-lemma (i , x) =
      (r ∘ ⌜ φ ⌝ ∘ ⌜ φ ⌝⁻¹ ∘ c) (i , x) ＝⟨ h    ⟩
