@@ -557,11 +557,14 @@ frame-homomorphisms-preserve-complements F G 𝒽@(h , _ , μ) {x} {x′} (φ , 
 
   ‡ : h x′ ∨[ G ] h x ＝ 𝟏[ G ]
   ‡ = h x′ ∨[ G ] h x   ＝⟨ Ⅰ ⟩
-      h (x′ ∨[ F ] x)   ＝⟨ {!!} ⟩
+      h (x′ ∨[ F ] x)   ＝⟨ Ⅱ ⟩
       h 𝟏[ F ]          ＝⟨ {!!} ⟩
       𝟏[ G ]            ∎
        where
-        Ⅰ = {!frame-hoo!}
+        Ⅰ = frame-homomorphisms-preserve-binary-joins F G 𝒽 x′ x ⁻¹
+        Ⅱ = ap h (x′ ∨[ F ] x ＝⟨ ∨[ F ]-is-commutative x′ x ⟩
+                  x ∨[ F ] x′ ＝⟨ ψ ⟩
+                  𝟏[ F ]      ∎)
 
 \end{code}
 
