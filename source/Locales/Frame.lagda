@@ -685,6 +685,14 @@ preserves-binary-meets F G h =
    ψ : is-set ⟨ G ⟩
    ψ = carrier-of-[ poset-of G ]-is-set
 
+preserves-binary-joins : (F : Frame 𝓤 𝓥 𝓦) (G : Frame 𝓤′ 𝓥′ 𝓦)
+                       → (⟨ F ⟩ → ⟨ G ⟩) → Ω (𝓤 ⊔ 𝓤′)
+preserves-binary-joins F G h =
+ Ɐ x ∶ ⟨ F ⟩ , Ɐ y ∶ ⟨ F ⟩ , (h (x ∨[ F ] y) ＝[ ψ ]＝ h x ∨[ G ] h y)
+  where
+   ψ : is-set ⟨ G ⟩
+   ψ = carrier-of-[ poset-of G ]-is-set
+
 is-a-frame-homomorphism : (F : Frame 𝓤  𝓥  𝓦)
                           (G : Frame 𝓤′ 𝓥′ 𝓦)
                         → (⟨ F ⟩ → ⟨ G ⟩)
@@ -925,8 +933,27 @@ frame-homomorphisms-preserve-bottom {𝓦 = 𝓦}F G 𝒽@(h , _ , _ , γ) =
    † : (h 𝟎[ F ] ≤[ poset-of G ] 𝟎[ G ]) holds
    † = pr₂ (γ (∅ _)) ((⋁[ G ] ∅ 𝓦) , λ ())
 
-frame-homomorphisms-preserve-binary-joins : {!!}
-frame-homomorphisms-preserve-binary-joins = {!!}
+frame-homomorphisms-preserve-binary-joins : (F : Frame 𝓤 𝓥 𝓦) (G : Frame 𝓤′ 𝓥′ 𝓦)
+                                          → (h : F ─f→ G)
+                                          → (x y : ⟨ F ⟩)
+                                          → h .pr₁ (x ∨[ F ] y)
+                                          ＝ (h .pr₁ x) ∨[ G ] (h .pr₁ y)
+frame-homomorphisms-preserve-binary-joins F G 𝒽@(h , _ , _ , γ) x y =
+ ⋁[ G ]-unique ⁅ h x , h y ⁆ (h (x ∨[ F ] y)) († , ‡)
+  where
+   open Joins (λ x y → x ≤[ poset-of G ] y)
+
+   † : (h (x ∨[ F ] y) is-an-upper-bound-of ⁅ h x , h y ⁆) holds
+   † (inl ⋆) = pr₁ (γ ⁅ x , y ⁆) (inl ⋆)
+   † (inr ⋆) = pr₁ (γ ⁅ x , y ⁆) (inr ⋆)
+
+   ‡ : ((u , _) : upper-bound ⁅ h x , h y ⁆)
+     → (h (x ∨[ F ] y) ≤[ poset-of G ] u) holds
+   ‡ (u , p) = pr₂ (γ ⁅ x , y ⁆) (u , q)
+    where
+     q : (u is-an-upper-bound-of ⁅ h z ∣ z ε ⁅ x , y ⁆ ⁆) holds
+     q (inl ⋆) = {!!}
+     q (inr ⋆) = ?
 
 scott-continuous-join-eq : (F : Frame 𝓤  𝓥  𝓦)
                          → (G : Frame 𝓤′ 𝓥′ 𝓦)
