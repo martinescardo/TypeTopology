@@ -14,8 +14,8 @@ module Ordinals.WellOrderTransport (fe : FunExt) where
 
 open import Ordinals.Notions
 open import Ordinals.Type
+open import Ordinals.Underlying
 open import Ordinals.WellOrderArithmetic
-
 open import UF.Base
 open import UF.Subsingletons
 open import UF.Retracts
@@ -42,7 +42,7 @@ transport-ordinal-structure ua X Y = γ
 
 \end{code}
 
-The above can be done without univance.
+The above can be done without univalence.
 
 We could hope to get, more generally,
 

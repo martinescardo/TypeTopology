@@ -43,6 +43,7 @@ open import UF.LeftCancellable
 open import UF.Miscelanea
 open import UF.Powerset
 open import UF.PropTrunc
+open import UF.Retracts
 open import UF.Subsingletons renaming (⊤Ω to ⊤ ; ⊥Ω to ⊥)
 open import UF.Subsingletons-FunExt
 
@@ -179,10 +180,10 @@ module Univalent-Choice
               → ((x : X) → is-set (A x))
               → ∥(Π x ꞉ X , (∥ A x ∥ → A x))∥
 
- Choice Choice₁ Choice₂ : 𝓤ω
- Choice  = {𝓤 𝓥 : Universe} → AC  {𝓤} {𝓥}
- Choice₁ = {𝓤 𝓥 : Universe} → AC₁ {𝓤} {𝓥}
- Choice₂ = {𝓤 𝓥 : Universe} → AC₂ {𝓤} {𝓥}
+ Axiom-of-Choice Axiom-of-Choice₁ Axiom-of-Choice₂ : 𝓤ω
+ Axiom-of-Choice  = {𝓤 𝓥 : Universe} → AC  {𝓤} {𝓥}
+ Axiom-of-Choice₁ = {𝓤 𝓥 : Universe} → AC₁ {𝓤} {𝓥}
+ Axiom-of-Choice₂ = {𝓤 𝓥 : Universe} → AC₂ {𝓤} {𝓥}
 
  AC-gives-AC₁ : AC {𝓤} {𝓥} → AC₁ {𝓤} {𝓥}
  AC-gives-AC₁ ac X A i j f = h
@@ -313,14 +314,17 @@ module ExcludedMiddle
    (ac-renders-all-sets-discrete {𝓤 ⁺} ac (Ω 𝓤)
      (Ω-is-set (fe 𝓤 𝓤) (pe 𝓤)))
 
- Choice-gives-Excluded-Middle : PropExt → Choice → Excluded-Middle
+ Choice-gives-Excluded-Middle : PropExt
+                              → Axiom-of-Choice
+                              → Excluded-Middle
  Choice-gives-Excluded-Middle pe ac {𝓤} = AC-gives-EM {𝓤} pe (ac {𝓤 ⁺})
 
 \end{code}
 
-Is there a way to define the quotient 𝟚/P for an arbitrary proposition
-P, in the universe 𝓤, using propositional truncation as the only HIT,
-and funext, propext? We could allow, more generally, univalence.
+Is there a way to define the quotient 𝟚/P for an arbitrary
+proposition P, in the universe 𝓤, using propositional truncation as
+the only HIT, and funext, propext? We could allow, more generally,
+univalence.
 
 If so, then, under these conditions, AC is equivalent to excluded
 middle together with the double-negation shift for set-indexed
@@ -423,7 +427,9 @@ predicates:
 
 \begin{code}
 
- Choice-gives-Double-Negation-Shift : PropExt → Choice₁ → Double-Negation-Shift
+ Choice-gives-Double-Negation-Shift : PropExt
+                                    → Axiom-of-Choice₁
+                                    → Double-Negation-Shift
  Choice-gives-Double-Negation-Shift pe ac {𝓤} {𝓥} = III
   where
    em : Excluded-Middle
@@ -433,8 +439,11 @@ predicates:
    III : DNS {𝓤} {𝓥}
    III = EM-and-AC₁-give-DNS em ac
 
- Double-Negation-Shift-gives-Choice : Excluded-Middle → Double-Negation-Shift → Choice₁
- Double-Negation-Shift-gives-Choice em dns {𝓤} {𝓥} = EM-and-DNS-give-AC₁ em (dns {𝓤} {𝓥})
+ Double-Negation-Shift-gives-Choice : Excluded-Middle
+                                    → Double-Negation-Shift
+                                    → Axiom-of-Choice₁
+ Double-Negation-Shift-gives-Choice em dns {𝓤} {𝓥} =
+  EM-and-DNS-give-AC₁ em (dns {𝓤} {𝓥})
 
 \end{code}
 
@@ -489,11 +498,59 @@ module choice-functions
      (λ (A , i) x → ∈-is-prop A x)
      (λ (A , i) → i)
 
- Choice₃ : 𝓤ω
- Choice₃ = {𝓤 : Universe} → AC₃ {𝓤}
+ AC₃-gives-AC₁ : {𝓤 𝓥 : Universe} → AC₃ {𝓤 ⊔ 𝓥} → AC₁ {𝓤} {𝓥}
+ AC₃-gives-AC₁ {𝓤} {𝓥} ac₃ X A X-is-set A-is-set-valued = V
+  where
+   X' : 𝓤 ⊔ 𝓥 ̇
+   X' = Σ x ꞉ X , A x
 
- Choice-gives-Choice₃ : Choice → Choice₃
+   X'-is-set : is-set X'
+   X'-is-set = Σ-is-set X-is-set A-is-set-valued
+
+   I : ∃ ε ꞉ (𝓟⁺ X' → X') , ((𝓐 : 𝓟⁺ X') → ε 𝓐 ∈⁺ 𝓐)
+   I = ac₃ X' X'-is-set
+
+   II : (Π x ꞉ X , ∥ A x ∥)
+      → (Σ ε ꞉ (𝓟⁺ X' → X') , ((𝓐 : 𝓟⁺ X') → ε 𝓐 ∈⁺ 𝓐))
+      → (Π x ꞉ X , A x)
+   II g (ε , ϕ) x = IV
+    where
+     C : 𝓟 X'
+     C (x₀ , a₀) = ((x₀ ＝ x) × ∥ A x ∥) , ×-is-prop X-is-set ∥∥-is-prop
+
+     j : is-inhabited C
+     j = ∥∥-functor (λ a → (x , a) , (refl , ∣ a ∣)) (g x)
+
+     x' : X'
+     x' = ε (C , j)
+
+     x₀ : X
+     x₀ = pr₁ x'
+
+     a₀ : A x₀
+     a₀ = pr₂ x'
+
+     III : (x₀ ＝ x) × ∥ A x ∥
+     III = ϕ (C , j)
+
+     IV : A x
+     IV = transport A (pr₁ III) a₀
+
+   V : (Π x ꞉ X , ∥ A x ∥)
+     → ∥(Π x ꞉ X , A x)∥
+   V g = ∥∥-functor (II g) I
+
+ AC₃-gives-AC : {𝓤 𝓥 : Universe} → AC₃ {𝓤 ⊔ 𝓥} → AC {𝓤} {𝓥}
+ AC₃-gives-AC ac₃ = AC₁-gives-AC (AC₃-gives-AC₁ ac₃)
+
+ Axiom-of-Choice₃ : 𝓤ω
+ Axiom-of-Choice₃ = {𝓤 : Universe} → AC₃ {𝓤}
+
+ Choice-gives-Choice₃ : Axiom-of-Choice → Axiom-of-Choice₃
  Choice-gives-Choice₃ c {𝓤} = AC-gives-AC₃ {𝓤} (c {𝓤 ⁺} {𝓤})
+
+ Choice₃-gives-Choice : Axiom-of-Choice₃ → Axiom-of-Choice
+ Choice₃-gives-Choice c {𝓤} {𝓥} = AC₃-gives-AC {𝓤} {𝓥} (c {𝓤 ⊔ 𝓥})
 
  Choice-Function⁻ : 𝓤 ̇ → 𝓤 ⁺ ̇
  Choice-Function⁻ X = ∃ ε ꞉ (𝓟 X → X) , ((A : 𝓟 X) → is-inhabited A → ε A ∈ A)
@@ -501,8 +558,8 @@ module choice-functions
  AC₄ : {𝓤 : Universe} → 𝓤 ⁺ ̇
  AC₄ {𝓤} = (X : 𝓤 ̇ ) → is-set X → ∥ X ∥ → Choice-Function⁻ X
 
- Choice₄ : 𝓤ω
- Choice₄ = {𝓤 : Universe} → AC₄ {𝓤}
+ Axiom-of-Choice₄ : 𝓤ω
+ Axiom-of-Choice₄ = {𝓤 : Universe} → AC₄ {𝓤}
 
  improve-choice-function : EM 𝓤
                          → {X : 𝓤 ̇ }
@@ -544,7 +601,7 @@ module choice-functions
    III : Choice-Function⁻ X
    III = ∥∥-rec ∃-is-prop (λ x → ∥∥-rec ∃-is-prop (λ σ → ∣ II (I σ) x ∣) c) s
 
- Choice-gives-Choice₄ : Choice → Choice₄
+ Choice-gives-Choice₄ : Axiom-of-Choice → Axiom-of-Choice₄
  Choice-gives-Choice₄ ac X X-is-set = improve-choice-function
                                        (AC-gives-EM pe ac)
                                        (AC-gives-AC₃ ac X X-is-set)
@@ -552,19 +609,19 @@ module choice-functions
 
 End of addition.
 
-The following is probably not going to be useful for anything here:
+The following is probably not going to be useful for anything here,
+but it is stronger than the above decidability lemma:
 
 \begin{code}
 
 module Observation
-        (𝓤 : Universe)
         (fe : FunExt)
         where
 
- observation : {X : 𝓤 ̇ } (a : 𝟚 → X)
-             → ((x : X) → ¬¬ (Σ i ꞉ 𝟚 , a i ＝ x) → Σ i ꞉ 𝟚 , a i ＝ x)
-             → decidable (a ₀ ＝ a ₁)
- observation {X} a c = claim (𝟚-is-discrete (s(r ₀)) (s(r ₁)))
+ decidability-observation : {X : 𝓤 ̇ } (a : 𝟚 → X)
+                          → ((x : X) → ¬¬ (Σ i ꞉ 𝟚 , a i ＝ x) → Σ i ꞉ 𝟚 , a i ＝ x)
+                          → decidable (a ₀ ＝ a ₁)
+ decidability-observation {𝓤} {X} a c = claim (𝟚-is-discrete (s(r ₀)) (s(r ₁)))
   where
    Y = Σ x ꞉ X , ¬¬ (Σ i ꞉ 𝟚 , a i ＝ x)
 

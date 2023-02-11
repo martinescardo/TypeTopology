@@ -21,6 +21,7 @@ open import Ordinals.Arithmetic fe
 open import Ordinals.Type
 open import Ordinals.Notions
 open import Ordinals.Type
+open import Ordinals.Underlying
 
 Ωₒ : Ordinal (𝓤 ⁺)
 Ωₒ = Ω 𝓤 , _≺_ , pv , w , e , t

@@ -8,14 +8,13 @@ ordinals with a top element.
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import MLTT.Spartan
-
+open import Ordinals.Underlying
 open import Ordinals.Notions
-
 open import UF.Base
+open import UF.Embeddings
 open import UF.FunExt
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-open import UF.Embeddings
 
 module Ordinals.Type where
 
@@ -47,27 +46,16 @@ set):
 
 \begin{code}
 
-⟨_⟩ : Ordinal 𝓤 → 𝓤 ̇
-⟨ X , _<_ , o ⟩ = X
+instance
+ underlying-type-of-ordinal : Underlying (Ordinal 𝓤)
+ ⟨_⟩ {{underlying-type-of-ordinal}} (X , _) = X
+ underlying-order {{underlying-type-of-ordinal}} (X , _<_ , o) = _<_
 
 structure : (α : Ordinal 𝓤) → OrdinalStructure ⟨ α ⟩
 structure (X , s) = s
 
-underlying-order : (α : Ordinal 𝓤) → ⟨ α ⟩ → ⟨ α ⟩ → 𝓤 ̇
-underlying-order (X , _<_ , o) = _<_
-
 is-trichotomous : Ordinal 𝓤 → 𝓤 ̇
 is-trichotomous α = is-trichotomous-order (underlying-order α)
-
-underlying-weak-order : (α : Ordinal 𝓤) → ⟨ α ⟩ → ⟨ α ⟩ → 𝓤 ̇
-underlying-weak-order α x y = ¬ (underlying-order α y x)
-
-underlying-porder : (α : Ordinal 𝓤) → ⟨ α ⟩ → ⟨ α ⟩ → 𝓤 ̇
-underlying-porder (X , _<_ , o) = extensional-po _<_
-
-syntax underlying-order       α x y = x ≺⟨ α ⟩ y
-syntax underlying-weak-order  α x y = x ≾⟨ α ⟩ y
-syntax underlying-porder      α x y = x ≼⟨ α ⟩ y
 
 is-well-ordered : (α : Ordinal 𝓤) → is-well-order (underlying-order α)
 is-well-ordered (X , _<_ , o) = o
@@ -239,17 +227,26 @@ is-order-preserving : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
                     → (⟨ α ⟩ → ⟨ β ⟩) → 𝓤 ⊔ 𝓥 ̇
 is-order-preserving α β f = (x y : ⟨ α ⟩) → x ≺⟨ α ⟩ y → f x ≺⟨ β ⟩ f y
 
+being-order-preserving-is-prop : Fun-Ext
+                               → (α : Ordinal 𝓤) (β : Ordinal 𝓥)
+                                 (f : ⟨ α ⟩ → ⟨ β ⟩)
+                               → is-prop (is-order-preserving α β f)
+being-order-preserving-is-prop fe α β f =
+ Π₃-is-prop fe (λ x y l → Prop-valuedness β (f x) (f y))
+
 is-order-equiv : (α : Ordinal 𝓤) (β : Ordinal 𝓥) → (⟨ α ⟩ → ⟨ β ⟩) → 𝓤 ⊔ 𝓥 ̇
 is-order-equiv α β f = is-order-preserving α β f
                      × (Σ e ꞉ is-equiv f , is-order-preserving β α (inverse f e))
 
-order-equivs-are-order-preserving : (α : Ordinal 𝓤) (β : Ordinal 𝓥) {f : ⟨ α ⟩ → ⟨ β ⟩}
+order-equivs-are-order-preserving : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
+                                    {f : ⟨ α ⟩ → ⟨ β ⟩}
                                   → is-order-equiv α β f
                                   → is-order-preserving α β f
 order-equivs-are-order-preserving α β = pr₁
 
 
-order-equivs-are-equivs : (α : Ordinal 𝓤) (β : Ordinal 𝓥) {f : ⟨ α ⟩ → ⟨ β ⟩}
+order-equivs-are-equivs : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
+                          {f : ⟨ α ⟩ → ⟨ β ⟩}
                         → (i : is-order-equiv α β f)
                         → is-equiv f
 order-equivs-are-equivs α β = pr₁ ∘ pr₂
@@ -301,6 +298,13 @@ inverses-of-order-equivs-are-order-preserving α β = pr₂ ∘ pr₂
 is-order-reflecting : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
                     → (⟨ α ⟩ → ⟨ β ⟩) → 𝓤 ⊔ 𝓥 ̇
 is-order-reflecting α β f = (x y : ⟨ α ⟩) → f x ≺⟨ β ⟩ f y → x ≺⟨ α ⟩ y
+
+being-order-reflecting-is-prop : Fun-Ext
+                               → (α : Ordinal 𝓤) (β : Ordinal 𝓥)
+                                 (f : ⟨ α ⟩ → ⟨ β ⟩)
+                               → is-prop (is-order-reflecting α β f)
+being-order-reflecting-is-prop fe α β f =
+ Π₃-is-prop fe (λ x y l → Prop-valuedness α x y)
 
 order-preserving-reflecting-equivs-are-order-equivs : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
                                                       (f : ⟨ α ⟩ → ⟨ β ⟩)

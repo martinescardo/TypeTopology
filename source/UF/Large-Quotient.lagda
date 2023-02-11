@@ -70,7 +70,7 @@ _≈_ is a variable:
 \begin{code}
 
 is-prop-valued is-equiv-relation : {X : 𝓤 ̇ } → (X → X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
-is-prop-valued _≈_ = ∀ x y → is-prop (x ≈ y)
+is-prop-valued _≈_    = ∀ x y → is-prop (x ≈ y)
 is-equiv-relation _≈_ = is-prop-valued _≈_ × reflexive _≈_ × symmetric _≈_ × transitive _≈_
 
 \end{code}
@@ -144,7 +144,7 @@ By construction, η is a surjection, of course:
 \begin{code}
 
  η-surjection : is-surjection η
- η-surjection = corestriction-is-surjection equiv-rel
+ η-surjection = corestrictions-are-surjections equiv-rel
 
 \end{code}
 
