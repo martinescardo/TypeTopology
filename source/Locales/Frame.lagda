@@ -952,8 +952,8 @@ frame-homomorphisms-preserve-binary-joins F G 𝒽@(h , _ , _ , γ) x y =
    ‡ (u , p) = pr₂ (γ ⁅ x , y ⁆) (u , q)
     where
      q : (u is-an-upper-bound-of ⁅ h z ∣ z ε ⁅ x , y ⁆ ⁆) holds
-     q (inl ⋆) = {!!}
-     q (inr ⋆) = ?
+     q (inl ⋆) = p (inl ⋆)
+     q (inr ⋆) = p (inr ⋆)
 
 scott-continuous-join-eq : (F : Frame 𝓤  𝓥  𝓦)
                          → (G : Frame 𝓤′ 𝓥′ 𝓦)
