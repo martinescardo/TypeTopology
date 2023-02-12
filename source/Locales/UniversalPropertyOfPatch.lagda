@@ -396,11 +396,12 @@ Finally, the complete definition of the algebra of clopens `ℂ`.
               → (𝒻 : X ─c→ A)
               → is-spectral-map (𝒪 A) (𝒪 X) 𝒻 holds
               → ∃! 𝒻⁻ ꞉ (X ─c→ Patch-A) , ((x : ⟨ 𝒪 A ⟩) → 𝒻 .pr₁ x  ＝ 𝒻⁻ .pr₁ ‘ x ’)
- ump-of-patch X 𝕤 𝒻 μ = ∥∥-rec (being-singleton-is-prop fe) γ σ
+ ump-of-patch X 𝕤 𝒻 μ = ∥∥-rec₂ (being-singleton-is-prop fe) γ σ (pr₂ 𝕤)
   where
    γ : spectralᴰ (𝒪 A)
+     → zero-dimensionalᴰ (𝒪 X)
      → ∃! 𝒻⁻ ꞉ (X ─c→ Patch-A) , ((x : ⟨ 𝒪 A ⟩) → 𝒻 .pr₁ x  ＝ 𝒻⁻ .pr₁ ‘ x ’)
-   γ σᴰ = ∥∥-rec (∃!-is-prop fe) {!!} {!!}
+   γ σᴰ 𝕫ᴰ = {!!}
     where
      open SmallPatchConstruction A σᴰ renaming (SmallPatch to Patchₛ-A)
      open BasisOfPatch A σᴰ
@@ -410,14 +411,33 @@ Finally, the complete definition of the algebra of clopens `ℂ`.
      X-is-set : is-set ⟨ 𝒪 X ⟩
      X-is-set = carrier-of-[ poset-of (𝒪 X) ]-is-set
 
-     ¬ₓ_ : {!!}
-     ¬ₓ_ = {!!}
+     ℬ-X : Fam 𝓤 ⟨ 𝒪 X ⟩
+     ℬ-X = pr₁ 𝕫ᴰ
+
+     ¬𝒻_ : (i : index ℬ) → is-clopen₀ (𝒪 X) (𝒻 .pr₁ (ℬ [ i ]))
+     ¬𝒻_ i = ∥∥-rec
+              (is-clopen₀-is-prop (𝒪 X) (𝒻 .pr₁ (ℬ [ i ])))
+              †
+              (compact-opens-are-basic-in-compact-frames
+                (𝒪 X)
+                ℬ-X
+                (pr₁ (pr₂ 𝕫ᴰ))
+                ((spectral-implies-compact (𝒪 X) (stone-locales-are-spectral (𝒪 X) 𝕤)))
+                (𝒻 .pr₁ (ℬ [ i ]))
+                (μ (ℬ [ i ]) (pr₁ (pr₂ (pr₂ σᴰ)) i)))
+      where
+       † : Σ j ꞉ index ℬ-X , 𝒻 .pr₁ (ℬ [ i ]) ＝ ℬ-X [ j ]
+         → is-clopen₀ (𝒪 X) (𝒻 .pr₁ (ℬ [ i ]))
+       † (j , p) = transport
+                    (is-clopen₀ (𝒪 X))
+                    (p ⁻¹)
+                    (pr₂ (pr₂ 𝕫ᴰ) j)
 
      open ContinuousMapNotation X A
 
      g : index ℬ-patch-↑ → ⟨ 𝒪 X ⟩
      g []             = 𝟏[ 𝒪 X ]
-     g ((i , j) ∷ ks) = (𝒻 ⋆∙ (ℬ [ i ]) ∧[ 𝒪 X ] {!𝒻 ⋆∙ (ℬ [ j ])!}) ∨[ 𝒪 X ] g ks
+     g ((i , j) ∷ ks) = (𝒻 ⋆∙ (ℬ [ i ]) ∧[ 𝒪 X ] pr₁ (¬𝒻 j)) ∨[ 𝒪 X ] g ks
 
      congruence-wrt-β : (i j : index ℬ-patch-↑) → β i ＝ β j → g i ＝ g j
      congruence-wrt-β i j p = {!!}
