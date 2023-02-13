@@ -43,7 +43,7 @@ naive-funext-gives-funext' {𝓤} {𝓥} nfe nfe' = funext-via-singletons γ
     f = pr₁
 
     f-is-equiv : is-equiv f
-    f-is-equiv = pr₁-equivalence X A φ
+    f-is-equiv = pr₁-is-equiv X A φ
 
     g : (X → Σ A) → (X → X)
     g h = f ∘ h

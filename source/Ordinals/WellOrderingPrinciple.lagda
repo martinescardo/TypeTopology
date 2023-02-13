@@ -11,7 +11,7 @@ of ordinals agree.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline --experimental-lossy-unification #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline --lossy-unification #-}
 
 open import MLTT.Spartan
 open import NotionsOfDecidability.Decidable
@@ -245,7 +245,7 @@ assuming.
        X'' : 𝓤 ̇
        X'' = Σ x ꞉ X , C x
 
-       e = X''       ≃⟨ NatΣ τ , NatΣ-equiv C B τ τ-is-equiv ⟩
+       e = X''       ≃⟨ NatΣ τ , NatΣ-is-equiv C B τ τ-is-equiv ⟩
            X'        ≃⟨ ≃-sym (f' , f'-is-equiv) ⟩
            Ordinal 𝓤 ■
 
