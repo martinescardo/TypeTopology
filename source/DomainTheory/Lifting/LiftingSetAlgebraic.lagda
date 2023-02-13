@@ -5,7 +5,7 @@ particular, this dcpo is algebraic.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline --experimental-lossy-unification #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline --lossy-unification #-}
 
 open import MLTT.Spartan
 
@@ -156,7 +156,7 @@ A small compact basis for 𝓛 X will be given by [⊥ , η] : 𝟙 + X → 𝓛
    α : I → 𝓛 X
    α = add-⊥ (𝓛-DCPO⊥ X-is-set) (η ∘ φ)
    δ : is-Directed (𝓛-DCPO X-is-set) α
-   -- We use --experimental-lossy-unification here to speed up typechecking
+   -- We use --lossy-unification here to speed up typechecking
    δ = add-⊥-is-directed (𝓛-DCPO⊥ X-is-set) σ
     where
      σ : is-semidirected _⊑'_ (η ∘ φ)
