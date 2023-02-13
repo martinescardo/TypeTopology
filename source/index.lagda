@@ -2,12 +2,12 @@
    Various new theorems in univalent mathematics written in Agda
    -------------------------------------------------------------
 
-   Martin Escardo and collaborators
+   Martin Escardo and collaborators,
    2010--2023--∞, continuously evolving.
    https://www.cs.bham.ac.uk/~mhe/
    https://github.com/martinescardo/TypeTopology
 
-   Tested with Agda 2.6.2.2 and the release candidate 3 of Agda 2.6.3
+   Tested with Agda 2.6.3
 
    The main new results are about compact types, totally separated
    types, compact ordinals and injective types, but there are many
@@ -48,7 +48,7 @@
      precisely which assumptions of HoTT/UF and classical mathematics,
      if any, we have used for each construction, theorem or set of
      results. We also work, deliberately, with a minimal subset of
-     Agda.
+     Agda. See below for more about the philosophy.
 
    * There is also a module that links some "unsafe" modules that use
      type theory beyond MLTT and HoTT/UF, which cannot be included in
@@ -59,18 +59,65 @@
      (https://www.cs.bham.ac.uk/~mhe/TypeTopology/Unsafe.index.html)
 
    * In our last count, this development has 126k lines, including
-     comments and blank lines.
+     comments and blank lines. But we don't update the count
+     frequently.
 
    * A module dependency graph is available, updated manually from
      time to time last tine on 19th December 2022:
      https://www.cs.bham.ac.uk/~mhe/TypeTopology/dependency-graph.pdf
 
-   * There are some somewhat obsolete comments at the end of this
-     file, explaining part of what we do in this development. See
-     instead the comments in the various modules.
+Philosophy of the repository
+----------------------------
 
-   * This has been tested with 2.6.2.1 and with the release
-     candidates 2.6.3.
+   * We adopt the univalent point of view, even in modules which don't
+     assume the univalence axiom. In particular, we take seriously the
+     distinction between types that are singletons (contractible),
+     propositions, sets, 1-groupoids etc., even when the univalence
+     axiom, or its typical consequences such as function
+     extensionality and propositional extensionality, are not needed
+     to reason about them.
+
+   * We work in a minimal version of intensional Martin Löf Type
+     Theory, with very few exceptions, which we refer to as Spartan
+     MLTT. This is compatible with the UniMath approach.
+
+   * We adopt the Agda flag exact-split, so that Agda definitions by
+     pattern matching are definitional equalities, to stay as close as
+     Agda can check to the above MLTT.
+
+   * We work in a minimal subset of Agda to implement Spartan MLTT and
+     work with it. In particular, we restrict ourselves to safe
+     features (with the flag --safe).
+
+   * Some functions, and theorems, and definitions need HoTT/UF
+     axioms. They are always given explicitly as
+     assumptions. Postulates are not allowed in this development.
+
+   * The development is mostly constructive. A few theorems have
+     non-constructive, explicit assumptions, such as excluded middle,
+     or choice and global choice. One example is
+     Cantor-Schröder-Bernstein for arbitrary (homotopy) types, which
+     was published in the Journal of Homotopy and Related Structures
+     (written in mathematical vernacular as advanced in the HoTT book
+     and originally proposed by Peter Aczel).
+
+   * We don't assume propositional resizing as Voevodsky and UniMath
+     do. But there are some theorems whose hypotheses or conclusions
+     involve propositional resizing (as an axiom, rather than as a
+     rule of the type theory as unimath does).
+
+   * The general idea is that any theorem here should be valid in any
+     ∞-topos.
+
+   * In particular, we don't use Cubical Agda features, deliberately,
+     because at present it is not known whether (some) cubical type
+     theory has an interpretation in any ∞ topos.
+
+   * Howover, by fulfilling the HoTT hypotheses with Cubical-Agda
+     implementations, we should be able to run the constructions and
+     proofs given here, so that we get constructivity in the
+     computational sense (as opposed to constructivity in the sense of
+     validity in any (∞-)topos).
 
 Click at the imported module names to navigate to them:
 

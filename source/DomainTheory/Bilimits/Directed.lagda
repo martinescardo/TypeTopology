@@ -14,11 +14,11 @@ closed under structural continuity/algebraicity and having a small (compact) bas
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline --experimental-lossy-unification #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline --lossy-unification #-}
 
 \end{code}
 
-We use the flag --experimental-lossy-unification to speed up the type-checking.
+We use the flag --lossy-unification to speed up the type-checking.
 
 This flag was kindly implemented by Andrea Vezzosi upon request.
 

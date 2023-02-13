@@ -4,7 +4,7 @@ Added examples at the end on 22 December 2022.
 
 The denotational semantics of PCF based on pointed directed complete posets.
 
-The flag --experimental-lossy-unification significantly speeds up the
+The flag --lossy-unification significantly speeds up the
 typechecking of the line ⟦ S {ρ} {σ} {τ} ⟧ₑ = Sᵈᶜᵖᵒ⊥ ⟦ ρ ⟧ ⟦ σ ⟧ ⟦ τ ⟧ below.
 (https://agda.readthedocs.io/en/latest/language/lossy-unification.html)
 
@@ -22,7 +22,7 @@ https://github.com/BrendanHart/Investigating-Properties-of-PCF/blob/master/Inves
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline --experimental-lossy-unification #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline --lossy-unification #-}
 
 open import MLTT.Spartan
 open import UF.PropTrunc
