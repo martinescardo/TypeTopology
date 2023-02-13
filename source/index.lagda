@@ -7,8 +7,7 @@
    https://www.cs.bham.ac.uk/~mhe/
    https://github.com/martinescardo/TypeTopology
 
-   Tested with Agda 2.6.2.2 and Agda 2.6.3
-   (but soon this is going to work only with 2.6.3)
+   Tested with Agda 2.6.3
 
    The main new results are about compact types, totally separated
    types, compact ordinals and injective types, but there are many
