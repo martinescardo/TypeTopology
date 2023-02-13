@@ -64,7 +64,7 @@ because the type (Σ y ꞉ 𝕍 , y ∈ x) of elements contained in x is a large
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline --experimental-lossy-unification #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline --lossy-unification #-}
 
 open import MLTT.Spartan
 

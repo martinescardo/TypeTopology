@@ -26,7 +26,7 @@ notably doesn't use set quotients.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline --experimental-lossy-unification #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline --lossy-unification #-}
 
 
 open import UF.Quotient
