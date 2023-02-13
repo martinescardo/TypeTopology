@@ -375,6 +375,10 @@ Finally, the complete definition of the algebra of clopens `ℂ`.
   to-basic₀-is-section-of-to-clop =
    pr₂ (equivs-have-sections to-clop (pr₂ basic₀-is-equivalent-to-clop))
 
+  to-clop-is-section-of-to-basic₀ : to-basic₀ ∘ to-clop ∼ id
+  to-clop-is-section-of-to-basic₀ =
+   pr₂ (equivs-have-sections to-basic₀ (pr₂ (≃-sym basic₀-is-equivalent-to-clop)))
+
   ℂ₀ : BooleanAlgebra 𝓤 𝓤
   ℂ₀ = ℬ𝒶𝓈𝒾𝒸₀ , b′
    where
@@ -494,7 +498,16 @@ Finally, the complete definition of the algebra of clopens `ℂ`.
                     , 𝕚-preserves-∨
       where
        ι : (x y : ⟪ ℂ₀ ⟫) → 𝕚 x ＝ 𝕚 y → x ＝ y
-       ι x y p = {!!}
+       ι x y p = x                       ＝⟨ Ⅰ ⟩
+                 to-basic₀ (to-clop x)   ＝⟨ Ⅱ ⟩
+                 to-basic₀ (to-clop y)   ＝⟨ Ⅲ ⟩
+                 y                       ∎
+                  where
+                   Ⅰ = to-clop-is-section-of-to-basic₀ x ⁻¹
+                   Ⅱ = ap
+                        to-basic₀
+                        (to-subtype-＝ (is-clopen₀-is-prop (𝒪 Patchₛ-A)) p)
+                   Ⅲ = to-clop-is-section-of-to-basic₀ y
 
        𝕚-preserves-⊤ : 𝕚 ⊤[ ℂ₀ ] ＝ 𝟏[ 𝒪 Patchₛ-A ]
        𝕚-preserves-⊤ = ap pr₁ (to-basic₀-is-section-of-to-clop ⊤[ ℂ ])
