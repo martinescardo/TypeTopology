@@ -22,9 +22,13 @@ infix 31 -_
 ℤ[1/2]-minus-zero : - 0ℤ[1/2] ＝ 0ℤ[1/2]
 ℤ[1/2]-minus-zero = refl
 
+{-
+
 minus-normalise-pos : (z : ℤ) (n : ℕ) → - normalise-pos (z , n) ≈ normalise-pos (ℤ- z , n)
 minus-normalise-pos z 0        = refl
 minus-normalise-pos z (succ n) = {!minus-normalise-pos z n!}
+
+
 
 ℤ[1/2]-minus-minus : (p : ℤ[1/2]) → p ＝ - (- p)
 ℤ[1/2]-minus-minus ((z , n) , α) = γ
@@ -41,6 +45,8 @@ minus-normalise-pos z (succ n) = {!minus-normalise-pos z n!}
       normalise-pos (ℤ- (ℤ- z) , n) ＝⟨ II ⁻¹ ⟩
       - normalise-pos (ℤ- z , n)    ＝⟨ refl ⟩
       - (- ((z , n) , α))           ∎
+
+-}
 
 {-
 
