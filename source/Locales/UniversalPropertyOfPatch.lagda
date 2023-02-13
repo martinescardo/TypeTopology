@@ -487,7 +487,11 @@ Finally, the complete definition of the algebra of clopens `ℂ`.
             φ
 
      𝕚-is-embedding : is-ba-embedding ℂ₀ (𝒪 Patchₛ-A) 𝕚 holds
-     𝕚-is-embedding = ι , 𝕚-preserves-⊤ , 𝕚-preserves-∧ , {!!}
+     𝕚-is-embedding = ι
+                    , 𝕚-preserves-⊤
+                    , 𝕚-preserves-∧
+                    , 𝕚-preserves-⊥
+                    , 𝕚-preserves-∨
       where
        ι : (x y : ⟪ ℂ₀ ⟫) → 𝕚 x ＝ 𝕚 y → x ＝ y
        ι x y p = {!!}
@@ -497,7 +501,15 @@ Finally, the complete definition of the algebra of clopens `ℂ`.
 
        𝕚-preserves-∧ : (x y : ⟪ ℂ₀ ⟫)
                      → 𝕚 (x ⋏[ ℂ₀ ] y) ＝ 𝕚 x ∧[ 𝒪 Patchₛ-A ] 𝕚 y
-       𝕚-preserves-∧ x y = {!!}
+       𝕚-preserves-∧ x y =
+        ap pr₁ (to-basic₀-is-section-of-to-clop (to-clop x ⋏[ ℂ ] to-clop y))
+
+       𝕚-preserves-⊥ : 𝕚 ⊥[ ℂ₀ ] ＝ 𝟎[ 𝒪 Patchₛ-A ]
+       𝕚-preserves-⊥ = ap pr₁ (to-basic₀-is-section-of-to-clop ⊥[ ℂ ])
+
+       𝕚-preserves-∨ : (x y : ⟪ ℂ₀ ⟫) → 𝕚 (x ⋎[ ℂ₀ ] y) ＝ 𝕚 x ∨[ 𝒪 Patchₛ-A ] 𝕚 y
+       𝕚-preserves-∨ x y =
+        ap pr₁ (to-basic₀-is-section-of-to-clop (to-clop x ⋎[ ℂ ] to-clop y))
 
      ξ : ∃! 𝒻⁻⋆ ꞉ (⟨ 𝒪 Patchₛ-A ⟩ → ⟨ 𝒪 X ⟩) ,
             (is-a-frame-homomorphism (𝒪 Patchₛ-A) (𝒪 X) 𝒻⁻⋆ holds)
