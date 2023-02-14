@@ -396,20 +396,27 @@ infix 0 _≈_
 
 ℤ[1/2]-from-normalise-pos : (z : ℤ) → (n : ℕ) → Σ q ꞉ ℤ[1/2] , q ＝ normalise-pos (z , n)
 ℤ[1/2]-from-normalise-pos z n = (normalise-pos (z , n)) , refl
-{-
+
 ≈'-normalise-pos' : (p : ℤ × ℕ) → p ≈' from-ℤ[1/2] (normalise-pos p)
-≈'-normalise-pos' (p , a) = γ
+≈'-normalise-pos' (p , a) = γ (normalise-pos-info (p , a))
  where
-  find-dyadic : Σ q ꞉ ℤ[1/2] , q ＝ normalise-pos (p , a)
-  find-dyadic = ℤ[1/2]-from-normalise-pos p a
-
-  q' = pr₁ find-dyadic
-  q = pr₁ (pr₁ q')
-  b = pr₂ (pr₁ q')
-
-  γ : (p , a) ≈' (q , b)
-  γ = {!!}
--}
+  p' : ℤ
+  p' = dnum (normalise-pos (p , a))
+  
+  a' : ℕ
+  a' = dden (normalise-pos (p , a))
+  
+  γ : Σ k ꞉ ℕ , (p ＝ p' * pos (2^ k))
+              × (a ＝ a' + k)
+    → (p , a) ≈' (p' , a')
+  γ (k , e₁ , e₂) = p * pos (2^ a')                 ＝⟨ ap (_* pos (2^ a')) e₁ ⟩
+                    p' * pos (2^ k) * pos (2^ a')   ＝⟨ ℤ*-assoc p' (pos (2^ k)) (pos (2^ a')) ⟩
+                    p' * (pos (2^ k) * pos (2^ a')) ＝⟨ ap (p' *_) (pos-multiplication-equiv-to-ℕ (2^ k) (2^ a')) ⟩
+                    p' * pos (2^ k ℕ* 2^ a')        ＝⟨ ap (λ - → p' * pos -) (prod-of-powers 2 k a') ⟩
+                    p' * pos (2^ (k + a'))          ＝⟨ ap (λ - → p' * pos (2^ -)) (addition-commutativity k a') ⟩
+                    p' * pos (2^ (a' + k))          ＝⟨ ap (λ - → p' * pos (2^ -)) (e₂ ⁻¹) ⟩
+                    p' * pos (2^ a) ∎
+  
 ≈-normalise-pos : (((z , a) , p) : ℤ[1/2]) → (((z , a) , p)) ≈ normalise-pos (z , a)
 ≈-normalise-pos (z , α) = ＝-to-≈ (z , α) (normalise-pos z) (ℤ[1/2]-to-normalise-pos (z , α))
 
@@ -418,9 +425,6 @@ infix 0 _≈_
 
 ≈-transport : (A : ℤ[1/2] → 𝓤 ̇) {x y : ℤ[1/2]} → x ≈ y → A x → A y
 ≈-transport A {x} {y} e = transport A (≈-to-＝ x y e)
-
--- normalise-pos-reduce : (z : ℤ) → (n : ℕ) → normalise-pos (z * pos 2 , succ n) ＝ normalise-pos (z , n)
--- normalise-pos-reduce = {!!}
   
 \end{code}
 
