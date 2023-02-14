@@ -211,6 +211,13 @@ normalise-pos-info' p  (succ a) = equality-cases (ℤeven-or-odd p) I II
     ii : succ a ＝ dden (normalise-pos (p , succ a)) 
     ii = normalise-pos-odd-denom (p , succ a) op ⁻¹
 
+\end{code}
+
+This function finds the k value for which (2^k) is a common factor of
+a dyadic rational. It is proved with it's arguments seperated in the
+above function, to satisy Agda's termination checker.
+
+\begin{code}
 
 normalise-pos-info : ((p , a) : ℤ × ℕ) → Σ k ꞉ ℕ , (p ＝ dnum (normalise-pos (p , a)) * pos (2^ k))
                                                  × (a ＝ dden (normalise-pos (p , a)) + k)
