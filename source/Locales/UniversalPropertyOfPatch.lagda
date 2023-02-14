@@ -545,10 +545,10 @@ Finally, the complete definition of the algebra of clopens `ℂ`.
           𝕚-is-embedding
           patchₛ-is-spectral
           (stone-locales-are-spectral (𝒪 X) 𝕤)
-          {!!}
+          𝕚-is-spectral
           {!!}
           †
           h
-          {!!}
+          h-is-homomorphism
 
 \end{code}
