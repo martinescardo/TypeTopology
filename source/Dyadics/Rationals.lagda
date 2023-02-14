@@ -88,6 +88,8 @@ of dyadic operations, we will prove that dyadics are equivalent.
 
 \begin{code}
 
+
+
 normalise-pos-lemma : (z : ℤ) (n : ℕ) → ℤ[1/2]
 normalise-pos-lemma z 0        = (z , 0) , (inl refl)
 normalise-pos-lemma z (succ n) =
@@ -383,8 +385,8 @@ infix 0 _≈_
   γ = x * pos (2^ b) ＝⟨ ap (_* pos (2^ b)) γ₁ ⟩
       y * pos (2^ b) ＝⟨ ap (λ - → y * pos (2^ -)) γ₂ ⟩
       y * pos (2^ a) ∎
-
-ℤ[1/2]-to-normalise-pos : (((x , n) , e) : ℤ[1/2]) → ((x , n) , e) ＝ normalise-pos (x , n)
+  
+ℤ[1/2]-to-normalise-pos : ((p , e) : ℤ[1/2]) → (p , e) ＝ normalise-pos p
 ℤ[1/2]-to-normalise-pos ((x , 0)        , inl n＝0)       = to-subtype-＝ (λ (x , n) → is-ℤ[1/2]-is-prop x n) refl
 ℤ[1/2]-to-normalise-pos ((x , (succ n)) , inl n＝0)       = 𝟘-elim (positive-not-zero n n＝0)
 ℤ[1/2]-to-normalise-pos ((x , 0)        , inr (0<0 , oz)) = 𝟘-elim (not-less-than-itself 0 0<0)
@@ -397,8 +399,8 @@ infix 0 _≈_
 ℤ[1/2]-from-normalise-pos : (z : ℤ) → (n : ℕ) → Σ q ꞉ ℤ[1/2] , q ＝ normalise-pos (z , n)
 ℤ[1/2]-from-normalise-pos z n = (normalise-pos (z , n)) , refl
 
-≈'-normalise-pos' : (p : ℤ × ℕ) → p ≈' from-ℤ[1/2] (normalise-pos p)
-≈'-normalise-pos' (p , a) = γ (normalise-pos-info (p , a))
+≈'-normalise-pos : (p : ℤ × ℕ) → p ≈' from-ℤ[1/2] (normalise-pos p)
+≈'-normalise-pos (p , a) = γ (normalise-pos-info (p , a))
  where
   p' : ℤ
   p' = dnum (normalise-pos (p , a))
