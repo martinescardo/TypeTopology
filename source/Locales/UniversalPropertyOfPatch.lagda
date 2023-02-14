@@ -524,6 +524,16 @@ Finally, the complete definition of the algebra of clopens `ℂ`.
        𝕚-preserves-∨ x y =
         ap pr₁ (to-basic₀-is-section-of-to-clop (to-clop x ⋎[ ℂ ] to-clop y))
 
+     𝕚-is-spectral : is-spectral′ ℂ₀ (𝒪 Patchₛ-A) 𝕚 holds
+     𝕚-is-spectral b =
+      pr₁ (clopen-iff-compact-in-stone-frame (𝒪 Patchₛ-A) ♠ (𝕚 b)) ♣
+       where
+        ♠ : is-stone (𝒪 Patchₛ-A) holds
+        ♠ = patchₛ-is-stone
+
+        ♣ : is-clopen (𝒪 Patchₛ-A) (𝕚 b) holds
+        ♣ = pr₂ (to-clop b)
+
      ξ : ∃! 𝒻⁻⋆ ꞉ (⟨ 𝒪 Patchₛ-A ⟩ → ⟨ 𝒪 X ⟩) ,
             (is-a-frame-homomorphism (𝒪 Patchₛ-A) (𝒪 X) 𝒻⁻⋆ holds)
           × (h ＝ 𝒻⁻⋆ ∘ 𝕚)
