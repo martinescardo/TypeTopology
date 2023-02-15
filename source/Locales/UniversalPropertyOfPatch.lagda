@@ -227,6 +227,13 @@ We denote by `ℬ𝒶𝓈𝒾𝒸₀` the small copy of `ℬ𝒶𝓈𝒾𝒸` gi
   𝔯₂ : ℬ𝒶𝓈𝒾𝒸 → ℬ𝒶𝓈𝒾𝒸₀
   𝔯₂ = inverse 𝔰₂ (pr₂ (pr₂ basic-is-small))
 
+  𝔰₂-is-section-of-𝔯₂ : 𝔯₂ ∘ 𝔰₂ ∼ id
+  𝔰₂-is-section-of-𝔯₂ =
+   inverses-are-sections 𝔯₂ (pr₂ (≃-sym (pr₂ basic-is-small)))
+
+  𝔯₂-is-section-of-𝔰₂ : 𝔰₂ ∘ 𝔯₂ ∼ id
+  𝔯₂-is-section-of-𝔰₂ = inverses-are-sections 𝔰₂ (pr₂ (pr₂ basic-is-small))
+
 \end{code}
 
 Since `ℬ𝒶𝓈𝒾𝒸₀` is equivalent to `ℬ𝒶𝓈𝒾𝒸` which is in turn equivalent to `𝒞𝓁ℴ𝓅`,
@@ -411,6 +418,7 @@ Finally, the complete definition of the algebra of clopens `ℂ`.
      open BasisOfPatch A σᴰ
      open AlgebraOfClopensOfPatch σᴰ
      open PatchStoneᴰ A σᴰ
+     open OpenNucleus A ∣ σᴰ ∣
 
      X-is-set : is-set ⟨ 𝒪 X ⟩
      X-is-set = carrier-of-[ poset-of (𝒪 X) ]-is-set
@@ -426,7 +434,9 @@ Finally, the complete definition of the algebra of clopens `ℂ`.
                 (𝒪 X)
                 ℬ-X
                 (pr₁ (pr₂ 𝕫ᴰ))
-                ((spectral-implies-compact (𝒪 X) (stone-locales-are-spectral (𝒪 X) 𝕤)))
+                (spectral-implies-compact
+                  (𝒪 X)
+                  (stone-locales-are-spectral (𝒪 X) 𝕤))
                 (𝒻 .pr₁ (ℬ [ i ]))
                 (μ (ℬ [ i ]) (pr₁ (pr₂ (pr₂ σᴰ)) i)))
       where
@@ -440,7 +450,7 @@ Finally, the complete definition of the algebra of clopens `ℂ`.
      open ContinuousMapNotation X A
 
      g : index ℬ-patch-↑ → ⟨ 𝒪 X ⟩
-     g []             = 𝟏[ 𝒪 X ]
+     g []             = 𝟎[ 𝒪 X ]
      g ((i , j) ∷ ks) = (𝒻 ⋆∙ (ℬ [ i ]) ∧[ 𝒪 X ] pr₁ (¬𝒻 j)) ∨[ 𝒪 X ] g ks
 
      congruence-wrt-β : (i j : index ℬ-patch-↑) → β i ＝ β j → g i ＝ g j
@@ -448,6 +458,9 @@ Finally, the complete definition of the algebra of clopens `ℂ`.
 
      h₀ : ℬ𝒶𝓈𝒾𝒸 → ⟨ 𝒪 X ⟩
      h₀ = pr₁ (pr₁ (factor-through-image pt fe β X-is-set g congruence-wrt-β))
+
+     υ : h₀ ∘ corestriction pt β ∼ g
+     υ = pr₂ (pr₁ (factor-through-image pt fe β X-is-set g congruence-wrt-β))
 
      h : ℬ𝒶𝓈𝒾𝒸₀ → ⟨ 𝒪 X ⟩
      h = h₀ ∘ 𝔰₂
@@ -533,6 +546,43 @@ Finally, the complete definition of the algebra of clopens `ℂ`.
 
         ♣ : is-clopen (𝒪 Patchₛ-A) (𝕚 b) holds
         ♣ = pr₂ (to-clop b)
+
+     h-is-homomorphism : is-lattice-homomorphism ℂ₀ (𝒪 X) h holds
+     h-is-homomorphism = {!!}
+      where
+       ϟ : Σ i ꞉ index ℬ-patch-↑ , 𝟏[ 𝒪 Patchₛ-A ] ＝ ℬ-patch-↑ [ i ]
+         → Σ ib ꞉ index ℬ , 𝟎[ 𝒪 A ] ＝ ℬ [ ib ]
+         → Σ iu ꞉ index ℬ , 𝟏[ 𝒪 A ] ＝ ℬ [ iu ]
+         → is-lattice-homomorphism ℂ₀ (𝒪 X) h holds
+       ϟ (i , p) (ib , q₁) (iu , q₂) = {!!}
+        where
+         foo : g i ＝ g (iu , ib ∷ [])
+         foo = congruence-wrt-β i (iu , ib ∷ [])
+                (β i                                                  ＝⟨ {!!} ⟩
+                 𝟏[ 𝒪 Patchₛ-A ]                                      ＝⟨ {!!} ⟩
+                 ‘ ℬ [ iu ] ’ ∧[ 𝒪 Patchₛ-A ] ¬‘ (ℬ [ ib ]) , {!!} ’  ＝⟨ {!refl!} ⟩
+                 β (iu , ib ∷ [])                                     ∎)
+
+         α₁ : h ⊤[ ℂ₀ ] ＝ 𝟏[ 𝒪 X ]
+         α₁ = h ⊤[ ℂ₀ ]                                                         ＝⟨ refl  ⟩
+              h₀ (𝔰₂ ⊤[ ℂ₀ ])                                                   ＝⟨ refl  ⟩
+              h₀ (𝔰₂ (to-basic₀ ⊤[ ℂ ]))                                        ＝⟨ refl  ⟩
+              h₀ (𝔰₂ (𝔯₂ (𝔯₁ (𝟏[ 𝒪 Patchₛ-A ] , 𝟏-is-clopen (𝒪 Patchₛ-A)))))    ＝⟨ Ⅱ     ⟩
+              h₀ (𝔯₁ (𝟏[ 𝒪 Patchₛ-A ] , 𝟏-is-clopen (𝒪 Patchₛ-A)))              ＝⟨ Ⅰ     ⟩
+              h₀ (𝟏[ 𝒪 Patchₛ-A ] , ∣ i , (p ⁻¹) ∣)                             ＝⟨ Ⅲ     ⟩
+              h₀ (ℬ-patch-↑ [ i ] , ∣ i , refl ∣)                               ＝⟨ refl  ⟩
+              h₀ (corestriction pt β i)                                         ＝⟨ υ i   ⟩
+              g i                                                               ＝⟨ foo  ⟩
+              g (iu , ib ∷ [])                                                  ＝⟨ {!foo ⁻¹!} ⟩
+              (𝒻 ⋆∙ (ℬ [ iu ]) ∧[ 𝒪 X ] pr₁ (¬𝒻 ib))                            ＝⟨ {!!} ⟩
+              𝟏[ 𝒪 X ]                                                          ∎
+               where
+                Ⅰ = ap h₀ (to-subtype-＝ (λ _ → ∃-is-prop) refl)
+                Ⅱ = ap h₀ (𝔯₂-is-section-of-𝔰₂ (𝔯₁ (𝟏[ 𝒪 Patchₛ-A ] , 𝟏-is-clopen (𝒪 Patchₛ-A))))
+                Ⅲ = ap h₀ (to-subtype-＝ (λ _ → ∃-is-prop) p)
+
+       α₂ : {!!}
+       α₂ = {!!}
 
      ξ : ∃! 𝒻⁻⋆ ꞉ (⟨ 𝒪 Patchₛ-A ⟩ → ⟨ 𝒪 X ⟩) ,
             (is-a-frame-homomorphism (𝒪 Patchₛ-A) (𝒪 X) 𝒻⁻⋆ holds)
