@@ -134,4 +134,18 @@ module HeytingImplicationConstruction (X : Locale 𝓤  𝓥  𝓥)
    † : (𝟏[ 𝒪 X ] ≤[ poset-of (𝒪 X ) ] (U ==> U)) holds
    † = heyting-implication₁ U U 𝟏[ 𝒪 X ] (∧[ 𝒪 X ]-lower₂ 𝟏[ 𝒪 X ] U)
 
+ weakening : (U V : ⟨ 𝒪 X ⟩) → (V ≤[ poset-of (𝒪 X) ] (U ==> V)) holds
+ weakening U V = heyting-implication₁ U V V (∧[ 𝒪 X ]-lower₁ V U)
+
+ ex-falso-quodlibet : (U : ⟨ 𝒪 X ⟩)
+                    → (𝟏[ 𝒪 X ] ≤[ poset-of (𝒪 X) ] (𝟎[ 𝒪 X ] ==> U)) holds
+ ex-falso-quodlibet U = heyting-implication₁ 𝟎[ 𝒪 X ] U 𝟏[ 𝒪 X ] †
+  where
+   open PosetReasoning (poset-of (𝒪 X))
+
+   † : ((𝟏[ 𝒪 X ] ∧[ 𝒪 X ] 𝟎[ 𝒪 X ]) ≤[ poset-of (𝒪 X) ] U) holds
+   † = 𝟏[ 𝒪 X ] ∧[ 𝒪 X ] 𝟎[ 𝒪 X ]  ＝⟨ 𝟏-left-unit-of-∧ (𝒪 X) 𝟎[ 𝒪 X ] ⟩ₚ
+       𝟎[ 𝒪 X ]                    ≤⟨ 𝟎-is-bottom (𝒪 X) U ⟩
+       U                           ■
+
 \end{code}
