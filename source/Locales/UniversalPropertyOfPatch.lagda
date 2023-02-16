@@ -419,6 +419,8 @@ Finally, the complete definition of the algebra of clopens `ℂ`.
      open AlgebraOfClopensOfPatch σᴰ
      open PatchStoneᴰ A σᴰ
      open OpenNucleus A ∣ σᴰ ∣
+     open ContinuousMapNotation X A
+     open BasicComplements (𝒪 X) (pr₁ 𝕤) 𝕫ᴰ
 
      X-is-set : is-set ⟨ 𝒪 X ⟩
      X-is-set = carrier-of-[ poset-of (𝒪 X) ]-is-set
@@ -426,32 +428,34 @@ Finally, the complete definition of the algebra of clopens `ℂ`.
      ℬ-X : Fam 𝓤 ⟨ 𝒪 X ⟩
      ℬ-X = pr₁ 𝕫ᴰ
 
-     ¬𝒻_ : (i : index ℬ) → is-clopen₀ (𝒪 X) (𝒻 .pr₁ (ℬ [ i ]))
-     ¬𝒻_ i = ∥∥-rec
-              (is-clopen₀-is-prop (𝒪 X) (𝒻 .pr₁ (ℬ [ i ])))
-              †
-              (compact-opens-are-basic-in-compact-frames
-                (𝒪 X)
-                ℬ-X
-                (pr₁ (pr₂ 𝕫ᴰ))
-                (spectral-implies-compact
-                  (𝒪 X)
-                  (stone-locales-are-spectral (𝒪 X) 𝕤))
-                (𝒻 .pr₁ (ℬ [ i ]))
-                (μ (ℬ [ i ]) (pr₁ (pr₂ (pr₂ σᴰ)) i)))
-      where
-       † : Σ j ꞉ index ℬ-X , 𝒻 .pr₁ (ℬ [ i ]) ＝ ℬ-X [ j ]
-         → is-clopen₀ (𝒪 X) (𝒻 .pr₁ (ℬ [ i ]))
-       † (j , p) = transport
-                    (is-clopen₀ (𝒪 X))
-                    (p ⁻¹)
-                    (pr₂ (pr₂ 𝕫ᴰ) j)
+     ¬𝒻_ : index ℬ → ⟨ 𝒪 X ⟩
+     ¬𝒻 i = ¬ₓ (𝒻 ⋆∙ (ℬ [ i ]) , μ (ℬ [ i ]) (pr₁ (pr₂ (pr₂ σᴰ)) i))
 
-     open ContinuousMapNotation X A
+     ¬𝒻-lemma : (i : index ℬ) (ℬᵢ′ : ⟨ 𝒪 A ⟩)
+              → is-complement-of (𝒪 A) ℬᵢ′ (ℬ [ i ])
+              → ¬𝒻 i ＝ 𝒻 ⋆∙ ℬᵢ′
+     ¬𝒻-lemma i ℬᵢ′ (p , q) =
+      complements-are-unique (𝒪 X) (𝒻 ⋆∙ (ℬ [ i ])) (¬𝒻 i) (𝒻 ⋆∙ ℬᵢ′) † ‡
+       where
+        † : is-complement-of (𝒪 X) (¬𝒻 i) (𝒻 ⋆∙ (ℬ [ i ]))
+        † = ¬ₓ-gives-complement (𝒻 ⋆∙ (ℬ [ i ])) (μ (ℬ [ i ]) (pr₁ (pr₂ (pr₂ σᴰ)) i))
+
+        ‡₁ : ℬᵢ′ ∧[ 𝒪 A ] (ℬ [ i ]) ＝ 𝟎[ 𝒪 A ]
+        ‡₁ = ℬᵢ′     ∧[ 𝒪 A ] (ℬ [ i ]) ＝⟨ ∧[ 𝒪 A ]-is-commutative ℬᵢ′ (ℬ [ i ]) ⟩
+             ℬ [ i ] ∧[ 𝒪 A ] ℬᵢ′       ＝⟨ p                                     ⟩
+             𝟎[ 𝒪 A ]                   ∎
+
+        ‡₂ : ℬᵢ′ ∨[ 𝒪 A ] (ℬ [ i ]) ＝ 𝟏[ 𝒪 A ]
+        ‡₂ = ℬᵢ′ ∨[ 𝒪 A ] (ℬ [ i ])     ＝⟨ ∨[ 𝒪 A ]-is-commutative ℬᵢ′ (ℬ [ i ]) ⟩
+             (ℬ [ i ]) ∨[ 𝒪 A ] ℬᵢ′     ＝⟨ q ⟩
+             𝟏[ 𝒪 A ]                   ∎
+
+        ‡ : is-complement-of (𝒪 X) (𝒻 ⋆∙ ℬᵢ′) (𝒻 ⋆∙ (ℬ [ i ]))
+        ‡ = frame-homomorphisms-preserve-complements (𝒪 A) (𝒪 X) 𝒻 (‡₁ , ‡₂)
 
      g : index ℬ-patch-↑ → ⟨ 𝒪 X ⟩
      g []             = 𝟎[ 𝒪 X ]
-     g ((i , j) ∷ ks) = (𝒻 ⋆∙ (ℬ [ i ]) ∧[ 𝒪 X ] pr₁ (¬𝒻 j)) ∨[ 𝒪 X ] g ks
+     g ((i , j) ∷ ks) = (𝒻 ⋆∙ (ℬ [ i ]) ∧[ 𝒪 X ] ¬𝒻 j) ∨[ 𝒪 X ] g ks
 
      congruence-wrt-β : (i j : index ℬ-patch-↑) → β i ＝ β j → g i ＝ g j
      congruence-wrt-β i j p = {!!}
@@ -547,39 +551,70 @@ Finally, the complete definition of the algebra of clopens `ℂ`.
         ♣ : is-clopen (𝒪 Patchₛ-A) (𝕚 b) holds
         ♣ = pr₂ (to-clop b)
 
+     open Epsilon A σᴰ
+
      h-is-homomorphism : is-lattice-homomorphism ℂ₀ (𝒪 X) h holds
      h-is-homomorphism = {!!}
       where
-       ϟ : Σ i ꞉ index ℬ-patch-↑ , 𝟏[ 𝒪 Patchₛ-A ] ＝ ℬ-patch-↑ [ i ]
-         → Σ ib ꞉ index ℬ , 𝟎[ 𝒪 A ] ＝ ℬ [ ib ]
+       ϟ : Σ ib ꞉ index ℬ , 𝟎[ 𝒪 A ] ＝ ℬ [ ib ]
          → Σ iu ꞉ index ℬ , 𝟏[ 𝒪 A ] ＝ ℬ [ iu ]
          → is-lattice-homomorphism ℂ₀ (𝒪 X) h holds
-       ϟ (i , p) (ib , q₁) (iu , q₂) = {!!}
+       ϟ (ib , q₁) (iu , q₂) = {!!}
         where
-         foo : g i ＝ g (iu , ib ∷ [])
-         foo = congruence-wrt-β i (iu , ib ∷ [])
-                (β i                                                  ＝⟨ {!!} ⟩
-                 𝟏[ 𝒪 Patchₛ-A ]                                      ＝⟨ {!!} ⟩
-                 ‘ ℬ [ iu ] ’ ∧[ 𝒪 Patchₛ-A ] ¬‘ (ℬ [ ib ]) , {!!} ’  ＝⟨ {!refl!} ⟩
-                 β (iu , ib ∷ [])                                     ∎)
+         k = (iu , ib) ∷ []
+
+         ♣ : ℬ-patch-↑ [ k ] ＝ 𝟏[ 𝒪 Patchₛ-A ]
+         ♣ = ℬ-patch-↑ [ k ]                                                                ＝⟨ refl ⟩
+             (‘ ℬ [ iu ] ’ ∧[ 𝒪 Patchₛ-A ] ¬‘ ℬₖ [ ib ] ’) ∨[ 𝒪 Patchₛ-A ] 𝟎[ 𝒪 Patchₛ-A ]  ＝⟨ Ⅰ    ⟩
+             ‘ ℬ [ iu ] ’ ∧[ 𝒪 Patchₛ-A ] ¬‘ ℬₖ [ ib ] ’                                    ＝⟨ Ⅱ    ⟩
+             ‘ 𝟏[ 𝒪 A ] ’ ∧[ 𝒪 Patchₛ-A ] ¬‘ ℬₖ [ ib ] ’                                    ＝⟨ Ⅲ    ⟩
+             ‘ 𝟏[ 𝒪 A ] ’ ∧[ 𝒪 Patchₛ-A ] ¬‘ 𝟎ₖ  ’                                          ＝⟨ Ⅳ    ⟩
+             ‘ 𝟏[ 𝒪 A ] ’ ∧[ 𝒪 Patchₛ-A ] 𝟏[ 𝒪 Patchₛ-A ]                                   ＝⟨ Ⅴ    ⟩
+             𝟏[ 𝒪 Patchₛ-A ] ∧[ 𝒪 Patchₛ-A ] 𝟏[ 𝒪 Patchₛ-A ]                                ＝⟨ Ⅵ    ⟩
+             𝟏[ 𝒪 Patchₛ-A ]                                                                ∎
+              where
+               Ⅰ =  𝟎-left-unit-of-∨ (𝒪 Patchₛ-A) (‘ ℬ [ iu ] ’ ∧[ 𝒪 Patchₛ-A ] ¬‘ ℬₖ [ ib ] ’)
+               Ⅱ = ap (λ - → ‘ - ’ ∧[ 𝒪 Patchₛ-A ] ¬‘ ℬₖ [ ib ] ’) (q₂ ⁻¹)
+               Ⅲ = ap
+                    (λ - → ‘ 𝟏[ 𝒪 A ] ’ ∧[ 𝒪 Patchₛ-A ] ¬‘ - ’)
+                    (to-subtype-＝ (λ x → holds-is-prop (is-compact-open (𝒪 A) x)) (q₁ ⁻¹))
+               Ⅳ = ap (λ - → ‘ 𝟏[ 𝒪 A ] ’ ∧[ 𝒪 Patchₛ-A ] -) ¬‘’-reflects-𝟎
+               Ⅴ = ap (λ - →  - ∧[ 𝒪 Patchₛ-A ] 𝟏[ 𝒪 Patchₛ-A ]) ϵ-preserves-𝟏
+               Ⅵ = ∧[ 𝒪 Patchₛ-A ]-is-idempotent 𝟏[ 𝒪 Patchₛ-A ] ⁻¹
 
          α₁ : h ⊤[ ℂ₀ ] ＝ 𝟏[ 𝒪 X ]
-         α₁ = h ⊤[ ℂ₀ ]                                                         ＝⟨ refl  ⟩
-              h₀ (𝔰₂ ⊤[ ℂ₀ ])                                                   ＝⟨ refl  ⟩
-              h₀ (𝔰₂ (to-basic₀ ⊤[ ℂ ]))                                        ＝⟨ refl  ⟩
-              h₀ (𝔰₂ (𝔯₂ (𝔯₁ (𝟏[ 𝒪 Patchₛ-A ] , 𝟏-is-clopen (𝒪 Patchₛ-A)))))    ＝⟨ Ⅱ     ⟩
-              h₀ (𝔯₁ (𝟏[ 𝒪 Patchₛ-A ] , 𝟏-is-clopen (𝒪 Patchₛ-A)))              ＝⟨ Ⅰ     ⟩
-              h₀ (𝟏[ 𝒪 Patchₛ-A ] , ∣ i , (p ⁻¹) ∣)                             ＝⟨ Ⅲ     ⟩
-              h₀ (ℬ-patch-↑ [ i ] , ∣ i , refl ∣)                               ＝⟨ refl  ⟩
-              h₀ (corestriction pt β i)                                         ＝⟨ υ i   ⟩
-              g i                                                               ＝⟨ foo  ⟩
-              g (iu , ib ∷ [])                                                  ＝⟨ {!foo ⁻¹!} ⟩
-              (𝒻 ⋆∙ (ℬ [ iu ]) ∧[ 𝒪 X ] pr₁ (¬𝒻 ib))                            ＝⟨ {!!} ⟩
-              𝟏[ 𝒪 X ]                                                          ∎
+         α₁ = h ⊤[ ℂ₀ ]                                                       ＝⟨ refl  ⟩
+              h₀ (𝔰₂ ⊤[ ℂ₀ ])                                                 ＝⟨ refl  ⟩
+              h₀ (𝔰₂ (to-basic₀ ⊤[ ℂ ]))                                      ＝⟨ refl  ⟩
+              h₀ (𝔰₂ (𝔯₂ (𝔯₁ (𝟏[ 𝒪 Patchₛ-A ] , 𝟏-is-clopen (𝒪 Patchₛ-A)))))  ＝⟨ Ⅱ     ⟩
+              h₀ (𝔯₁ (𝟏[ 𝒪 Patchₛ-A ] , 𝟏-is-clopen (𝒪 Patchₛ-A)))            ＝⟨ Ⅰ     ⟩
+              h₀ (𝟏[ 𝒪 Patchₛ-A ] , ∣ k , ♣ ∣)                                ＝⟨ Ⅲ     ⟩
+              h₀ (ℬ-patch-↑ [ k ] , ∣ k , refl ∣)                             ＝⟨ refl  ⟩
+              h₀ (corestriction pt β k)                                       ＝⟨ υ k   ⟩
+              g (iu , ib ∷ [])                                                ＝⟨ refl  ⟩
+              (𝒻 ⋆∙ (ℬ [ iu ]) ∧[ 𝒪 X ] ¬𝒻 ib) ∨[ 𝒪 X ] 𝟎[ 𝒪 X ]              ＝⟨ Ⅳ     ⟩
+              (𝒻 ⋆∙ (ℬ [ iu ]) ∧[ 𝒪 X ] ¬𝒻 ib)                                ＝⟨ Ⅴ     ⟩
+              (𝒻 ⋆∙ 𝟏[ 𝒪 A ] ∧[ 𝒪 X ] ¬𝒻 ib)                                  ＝⟨ Ⅵ     ⟩
+              (𝒻 ⋆∙ 𝟏[ 𝒪 A ] ∧[ 𝒪 X ] 𝒻 ⋆∙ 𝟏[ 𝒪 A ])                          ＝⟨ Ⅶ     ⟩
+              𝟏[ 𝒪 X ] ∧[ 𝒪 X ] 𝟏[ 𝒪 X ]                                      ＝⟨ Ⅷ     ⟩
+              𝟏[ 𝒪 X ]                                                        ∎
                where
                 Ⅰ = ap h₀ (to-subtype-＝ (λ _ → ∃-is-prop) refl)
                 Ⅱ = ap h₀ (𝔯₂-is-section-of-𝔰₂ (𝔯₁ (𝟏[ 𝒪 Patchₛ-A ] , 𝟏-is-clopen (𝒪 Patchₛ-A))))
-                Ⅲ = ap h₀ (to-subtype-＝ (λ _ → ∃-is-prop) p)
+                Ⅲ = ap h₀ (to-subtype-＝ (λ _ → ∃-is-prop) (♣ ⁻¹))
+                Ⅳ = 𝟎-left-unit-of-∨ (𝒪 X) (𝒻 ⋆∙ (ℬ [ iu ]) ∧[ 𝒪 X ] ¬𝒻 ib)
+                Ⅴ = ap (λ - → (𝒻 ⋆∙ -) ∧[ 𝒪 X ] (¬𝒻 ib)) (q₂ ⁻¹)
+                Ⅵ = ap (λ - → (𝒻 ⋆∙ 𝟏[ 𝒪 A ]) ∧[ 𝒪 X ] -) (¬𝒻-lemma ib 𝟏[ 𝒪 A ] ※)
+                     where
+                      ※ = transport
+                           (is-complement-of (𝒪 A) 𝟏[ 𝒪 A ])
+                           q₁
+                           (pr₂ (𝟎-is-clopen (𝒪 A)))
+                Ⅶ = ap₂ (λ x y → x ∧[ 𝒪 X ] y) ※ ※
+                     where
+                      ※ = (frame-homomorphisms-preserve-top (𝒪 A) (𝒪 X) 𝒻)
+                Ⅷ = ∧[ 𝒪 X ]-is-idempotent 𝟏[ 𝒪 X ] ⁻¹
+
 
        α₂ : {!!}
        α₂ = {!!}
