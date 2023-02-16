@@ -145,3 +145,25 @@ same dyadic, and using the above two proofs.
       ((p , a) , α) * (((q , b) , β) * ((r , c) , δ))         ∎
 
 \end{code}
+
+Now we prove the zero and unit laws for multiplication.
+
+\begin{code}
+
+ℤ[1/2]*-mult-left-id : (p : ℤ[1/2]) → 0ℤ[1/2] * p ＝ 0ℤ[1/2]
+ℤ[1/2]*-mult-left-id (p , α) = γ
+ where
+  x = pr₁ p -- numerator   of p
+  a = pr₂ p -- denominator of p
+  
+  γ : 0ℤ[1/2] * (p , α) ＝ 0ℤ[1/2]
+  γ = 0ℤ[1/2] * (p , α)                           ＝⟨ ap (0ℤ[1/2] *_) (ℤ[1/2]-to-normalise-pos (p , α)) ⟩
+      0ℤ[1/2] * normalise-pos p                   ＝⟨ refl ⟩
+      normalise-pos (pos 0 , 0) * normalise-pos p ＝⟨ ℤ[1/2]*-normalise-pos (pos 0 , 0) p ⁻¹ ⟩
+      normalise-pos ((pos 0 , 0) *' p)            ＝⟨ refl ⟩
+      normalise-pos ((pos 0 , 0) *' (x , a))      ＝⟨ refl ⟩
+      normalise-pos (pos 0 ℤ* x , 0 ℕ+ a)         ＝⟨ ap₂ (λ -₁ -₂ → normalise-pos (-₁ , -₂)) (ℤ-zero-left-base x) (zero-left-neutral a) ⟩
+      normalise-pos (pos 0 , a)                   ＝⟨ ℤ[1/2]-numerator-zero-is-zero' a ⟩
+      0ℤ[1/2] ∎
+
+\end{code}
