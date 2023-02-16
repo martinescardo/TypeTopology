@@ -475,6 +475,13 @@ clopenness-equivalent-to-well-inside-itself F U =
   γ : 𝟏[ F ] ∨[ F ] 𝟎[ F ] ＝ 𝟏[ F ]
   γ = 𝟏-left-annihilator-for-∨ F 𝟎[ F ]
 
+𝟎-is-compact : (F : Frame 𝓤 𝓥 𝓦) → is-compact-open F 𝟎[ F ] holds
+𝟎-is-compact F S (∣i∣ , _) p = ∥∥-rec ∃-is-prop † ∣i∣
+ where
+  † : index S
+    → ∃ i ꞉ index S , (𝟎[ F ] ≤[ poset-of F ] (S [ i ])) holds
+  † i = ∣ i , 𝟎-is-bottom F (S [ i ]) ∣
+
 \end{code}
 
 \begin{code}
