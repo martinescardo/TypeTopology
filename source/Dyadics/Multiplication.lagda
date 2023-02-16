@@ -7,6 +7,9 @@ open import Dyadics.Rationals
 open import Integers.Multiplication renaming (_*_ to _ℤ*_)
 open import Integers.Type
 open import Naturals.Addition renaming (_+_ to _ℕ+_)
+open import Naturals.Exponents
+open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
+open import UF.Base hiding (_≈_)
 
 module Dyadics.Multiplication where
 
@@ -22,6 +25,9 @@ We use an intermediate _*'_ relation (as in the approach with rationals).
 
 _*'_ : (p q : ℤ × ℕ) → ℤ × ℕ
 (p , a) *' (q , b) = p ℤ* q , a ℕ+ b
+
+ℤ[1/2]*'-comm : (p q : ℤ × ℕ) → p *' q ＝ q *' p
+ℤ[1/2]*'-comm (p , a) (q , b) = ap₂ _,_ (ℤ*-comm p q) (addition-commutativity a b)
 
 infixl 33 _*'_
 
@@ -43,8 +49,7 @@ number addition.
  where
   γ : (((p , a) , α) * ((q , b) , β)) ＝ (((q , b) , β) * ((p , a) , α))
   γ = ((p , a) , α) * ((q , b) , β)   ＝⟨ refl  ⟩
-      normalise-pos (p ℤ* q , a ℕ+ b) ＝⟨ ap (λ - → normalise-pos (- , a ℕ+ b)) (ℤ*-comm p q) ⟩
-      normalise-pos (q ℤ* p , a ℕ+ b) ＝⟨ ap (λ - → normalise-pos (q ℤ* p , -)) (addition-commutativity a b) ⟩
+      normalise-pos (p ℤ* q , a ℕ+ b) ＝⟨ ap normalise-pos (ℤ[1/2]*'-comm (p , a) (q , b)) ⟩
       normalise-pos (q ℤ* p , b ℕ+ a) ＝⟨ refl ⟩
       ((q , b) , β) * ((p , a) , α)   ∎
 
@@ -59,11 +64,53 @@ multiplication operation.
 
 \begin{code}
 
-ℤ[1/2]*-normalise-pos : (p q : ℤ × ℕ) → normalise-pos (p *' q) ＝ normalise-pos p * normalise-pos q
-ℤ[1/2]*-normalise-pos p q = {!!}
+ℤ[1/2]-rearrangement-lemma : (p q : ℤ) → (a b : ℕ) → p ℤ* q ℤ* pos (2^ (a ℕ+ b)) ＝ p ℤ* pos (2^ a) ℤ* q ℤ* pos (2^ b)
+ℤ[1/2]-rearrangement-lemma p q a b = γ
  where
-  I : p ≈' {!!}
-  I = {!!}
+  γ : p ℤ* q ℤ* pos (2^ (a ℕ+ b)) ＝ p ℤ* pos (2^ a) ℤ* q ℤ* pos (2^ b)
+  γ = p ℤ* q ℤ* pos (2^ (a ℕ+ b))          ＝⟨ ap (λ - →  p ℤ* q ℤ* pos -) (prod-of-powers 2 a b ⁻¹) ⟩
+      p ℤ* q ℤ* pos (2^ a ℕ* 2^ b)         ＝⟨ ap (p ℤ* q ℤ*_) (pos-multiplication-equiv-to-ℕ (2^ a) (2^ b) ⁻¹) ⟩
+      p ℤ* q ℤ* (pos (2^ a) ℤ* pos (2^ b)) ＝⟨ ℤ*-assoc (p ℤ* q) (pos (2^ a)) (pos (2^ b)) ⁻¹ ⟩
+      p ℤ* q ℤ* pos (2^ a) ℤ* pos (2^ b)   ＝⟨ ap (_ℤ* pos (2^ b)) (ℤ*-assoc p q (pos (2^ a))) ⟩
+      p ℤ* (q ℤ* pos (2^ a)) ℤ* pos (2^ b) ＝⟨ ap (λ - → p ℤ* - ℤ* pos (2^ b)) (ℤ*-comm q (pos (2^ a))) ⟩
+      p ℤ* (pos (2^ a) ℤ* q) ℤ* pos (2^ b) ＝⟨ ap (_ℤ* pos (2^ b)) (ℤ*-assoc p (pos (2^ a)) q ⁻¹) ⟩
+      p ℤ* pos (2^ a) ℤ* q ℤ* pos (2^ b)   ∎
+      
+ℤ[1/2]*'-≈' : (p q r : ℤ × ℕ) → p ≈' q → (p *' r) ≈' (q *' r)
+ℤ[1/2]*'-≈' (p , a) (q , b) (r , c) e = γ
+ where
+  e' : p ℤ* pos (2^ b) ＝ q ℤ* pos (2^ a) -- Unfolded goal type
+  e' = e
+  
+  γ : p ℤ* r ℤ* pos (2^ (b ℕ+ c)) ＝ q ℤ* r ℤ* pos (2^ (a ℕ+ c))
+  γ = p ℤ* r ℤ* pos (2^ (b ℕ+ c))          ＝⟨ ℤ[1/2]-rearrangement-lemma p r b c ⟩
+      p ℤ* pos (2^ b) ℤ* r ℤ* pos (2^ c)   ＝⟨ ap (λ - → - ℤ* r ℤ* pos (2^ c)) e' ⟩
+      q ℤ* pos (2^ a) ℤ* r ℤ* pos (2^ c)   ＝⟨ ℤ[1/2]-rearrangement-lemma q r a c ⁻¹ ⟩      
+      q ℤ* r ℤ* pos (2^ (a ℕ+ c)) ∎
+
+ℤ[1/2]*-normalise-pos : (p q : ℤ × ℕ) → normalise-pos (p *' q) ＝ normalise-pos p * normalise-pos q
+ℤ[1/2]*-normalise-pos p q = ≈'-to-＝ (p *' q) (p' *' q') γ
+ where
+  p' = from-ℤ[1/2] (normalise-pos p)
+  q' = from-ℤ[1/2] (normalise-pos q)
+
+  I : p ≈' p'
+  I = ≈'-normalise-pos p
+
+  II : q ≈' q'
+  II = ≈'-normalise-pos q
+
+  III : (p *' q) ≈' (p' *' q)
+  III = ℤ[1/2]*'-≈' p p' q I
+
+  IV : (q *' p') ≈' (q' *' p')
+  IV = ℤ[1/2]*'-≈' q q' p' II
+
+  V : (p' *' q) ≈' (p' *' q')
+  V = transport₂ _≈'_ (ℤ[1/2]*'-comm q p') (ℤ[1/2]*'-comm q' p') IV
+
+  γ : (p *' q) ≈' (p' *' q')
+  γ = ≈'-trans (p *' q) (p' *' q) (p' *' q') III V
 
 ℤ[1/2]*'-assoc : (p q r : ℤ × ℕ) → p *' q *' r ＝ p *' (q *' r)
 ℤ[1/2]*'-assoc (p , a) (q , b) (r , c) = γ
