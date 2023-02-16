@@ -29,6 +29,9 @@ _+'_ : ℤ × ℕ → ℤ × ℕ → ℤ × ℕ
 _+_ : ℤ[1/2] → ℤ[1/2] → ℤ[1/2]
 (p , _) + (q , _) = normalise-pos (p +' q)
 
+infixl 32 _+'_
+infixl 32 _+_
+
 ℤ[1/2]+'-comm : (p q : ℤ × ℕ) → p +' q ＝ q +' p
 ℤ[1/2]+'-comm (p , a) (q , b) = ap₂ _,_ I II
  where
@@ -95,5 +98,52 @@ _+_ : ℤ[1/2] → ℤ[1/2] → ℤ[1/2]
 
   γ : (p +' q) ≈' (p' +' q')
   γ = ≈'-trans (p +' q) (p' +' q) (p' +' q') III V
+
+ℤ[1/2]+'-assoc : (p q r : ℤ × ℕ) → (p +' q) +' r ＝ p +' (q +' r)
+ℤ[1/2]+'-assoc (p , a) (q , b) (r , c) = to-×-＝' (γ₁ , γ₂)
+ where
+  I : (p * pos (2^ b) ℤ+ q * pos (2^ a)) * pos (2^ c) ＝ p * (pos (2^ b) * pos (2^ c)) ℤ+ q * pos (2^ c) * pos (2^ a)
+  I = (p * pos (2^ b) ℤ+ q * pos (2^ a)) * pos (2^ c)             ＝⟨ distributivity-mult-over-ℤ (p * pos (2^ b)) (q * pos (2^ a)) (pos (2^ c)) ⟩
+      p * pos (2^ b) * pos (2^ c) ℤ+ q * pos (2^ a) * pos (2^ c)  ＝⟨ ap ( p * pos (2^ b) * pos (2^ c) ℤ+_) (ℤ-mult-rearrangement q (pos (2^ a)) (pos (2^ c))) ⟩
+      p * pos (2^ b) * pos (2^ c) ℤ+ q * pos (2^ c) * pos (2^ a)  ＝⟨ ap (_ℤ+ q * pos (2^ c) * pos (2^ a)) (ℤ*-assoc p (pos (2^ b)) (pos (2^ c)) ) ⟩    
+      p * (pos (2^ b) * pos (2^ c)) ℤ+ q * pos (2^ c) * pos (2^ a) ∎
+  
+  γ₁ : (p * pos (2^ b) ℤ+ q * pos (2^ a)) * pos (2^ c) ℤ+ r * pos (2^ (a ℕ+ b)) ＝ p * pos (2^ (b ℕ+ c)) ℤ+ (q * pos (2^ c) ℤ+ r * pos (2^ b)) * pos (2^ a)
+  γ₁ = (p * pos (2^ b) ℤ+ q * pos (2^ a)) * pos (2^ c) ℤ+ r * pos (2^ (a ℕ+ b))                      ＝⟨ i ⟩
+       (p * pos (2^ b) ℤ+ q * pos (2^ a)) * pos (2^ c) ℤ+ r * pos (2^ a ℕ* 2^ b)                     ＝⟨ ii ⟩
+       (p * pos (2^ b) ℤ+ q * pos (2^ a)) * pos (2^ c) ℤ+ r * (pos (2^ a) * pos (2^ b))              ＝⟨ iii ⟩
+       p * (pos (2^ b) * pos (2^ c)) ℤ+ q * pos (2^ c) * pos (2^ a) ℤ+ r * (pos (2^ a) * pos (2^ b)) ＝⟨ iv ⟩
+       p * (pos (2^ b) * pos (2^ c)) ℤ+ q * pos (2^ c) * pos (2^ a) ℤ+ r * (pos (2^ b) * pos (2^ a)) ＝⟨ v ⟩
+       p * (pos (2^ b) * pos (2^ c)) ℤ+ q * pos (2^ c) * pos (2^ a) ℤ+ r * pos (2^ b) * pos (2^ a)   ＝⟨ vi ⟩
+       p * (pos (2^ b) * pos (2^ c)) ℤ+ (q * pos (2^ c) * pos (2^ a) ℤ+ r * pos (2^ b) * pos (2^ a)) ＝⟨ vii ⟩
+       p * (pos (2^ b) * pos (2^ c)) ℤ+ (q * pos (2^ c) ℤ+ r * pos (2^ b)) * pos (2^ a)              ＝⟨ viii ⟩
+       p * pos (2^ b ℕ* 2^ c) ℤ+ (q * pos (2^ c) ℤ+ r * pos (2^ b)) * pos (2^ a)                     ＝⟨ ix ⟩      
+       p * pos (2^ (b ℕ+ c)) ℤ+ (q * pos (2^ c) ℤ+ r * pos (2^ b)) * pos (2^ a)                      ∎
+        where
+         i = ap (λ - → (p * pos (2^ b) ℤ+ q * pos (2^ a)) * pos (2^ c) ℤ+ r * pos -) (prod-of-powers 2 a b ⁻¹)
+         ii = ap (λ - → (p * pos (2^ b) ℤ+ q * pos (2^ a)) * pos (2^ c) ℤ+ r * -) (pos-multiplication-equiv-to-ℕ (2^ a) (2^ b) ⁻¹)
+         iii = ap (λ - → - ℤ+ r * (pos (2^ a) * pos (2^ b))) I
+         iv = ap (λ - → p * (pos (2^ b) * pos (2^ c)) ℤ+ q * pos (2^ c) * pos (2^ a) ℤ+ r * -) (ℤ*-comm (pos (2^ a)) (pos (2^ b)))
+         v = ap (λ - → p * (pos (2^ b) * pos (2^ c)) ℤ+ q * pos (2^ c) * pos (2^ a) ℤ+ -) (ℤ*-assoc r (pos (2^ b)) (pos (2^ a)) ⁻¹)
+         vi = ℤ+-assoc (p * (pos (2^ b) * pos (2^ c))) ((q * pos (2^ c) * pos (2^ a))) (r * pos (2^ b) * pos (2^ a))
+         vii = ap (λ - → p * (pos (2^ b) * pos (2^ c)) ℤ+ -) (distributivity-mult-over-ℤ (q * pos (2^ c)) (r * pos (2^ b)) (pos (2^ a)) ⁻¹)
+         viii = ap (λ - → p * - ℤ+ (q * pos (2^ c) ℤ+ r * pos (2^ b)) * pos (2^ a)) (pos-multiplication-equiv-to-ℕ (2^ b) (2^ c))
+         ix = ap (λ - → p * pos - ℤ+ (q * pos (2^ c) ℤ+ r * pos (2^ b)) * pos (2^ a)) (prod-of-powers 2 b c)
+        
+  γ₂ : a ℕ+ b ℕ+ c ＝ a ℕ+ (b ℕ+ c)
+  γ₂ = addition-associativity a b c
+
+ℤ[1/2]+-assoc : (p q r : ℤ[1/2]) → p + q + r ＝ p + (q + r)
+ℤ[1/2]+-assoc ((p , a) , α) ((q , b) , β) ((r , c) , δ) = γ
+ where
+  γ : ((p , a) , α) + ((q , b) , β) + ((r , c) , δ) ＝ ((p , a) , α) + (((q , b) , β) + ((r , c) , δ))
+  γ = ((p , a) , α) + ((q , b) , β) + ((r , c) , δ)                                     ＝⟨ refl ⟩
+      normalise-pos (p * pos (2^ b) ℤ+ q * pos (2^ a) , a ℕ+ b) + ((r , c) , δ)         ＝⟨ ap (λ - → normalise-pos (p * pos (2^ b) ℤ+ q * pos (2^ a) , a ℕ+ b) + -) (ℤ[1/2]-to-normalise-pos ((r , c) , δ)) ⟩
+      normalise-pos (p * pos (2^ b) ℤ+ q * pos (2^ a) , a ℕ+ b) + normalise-pos (r , c) ＝⟨ ℤ[1/2]+-normalise-pos (p * pos (2^ b) ℤ+ q * pos (2^ a) , a ℕ+ b) (r , c) ⁻¹ ⟩
+      normalise-pos ((p * pos (2^ b) ℤ+ q * pos (2^ a) , a ℕ+ b) +' (r , c))            ＝⟨ ap normalise-pos (ℤ[1/2]+'-assoc (p , a) (q , b) (r , c)) ⟩
+      normalise-pos ((p , a) +' (q * pos (2^ c) ℤ+ r * pos (2^ b) , b ℕ+ c))            ＝⟨ ℤ[1/2]+-normalise-pos (p , a) (q * pos (2^ c) ℤ+ r * pos (2^ b) , b ℕ+ c) ⟩
+      normalise-pos (p , a) + normalise-pos (q * pos (2^ c) ℤ+ r * pos (2^ b) , b ℕ+ c) ＝⟨ ap (_+ normalise-pos (q * pos (2^ c) ℤ+ r * pos (2^ b) , b ℕ+ c)) (ℤ[1/2]-to-normalise-pos ((p , a) , α) ⁻¹) ⟩
+      ((p , a) , α) + normalise-pos (q * pos (2^ c) ℤ+ r * pos (2^ b) , b ℕ+ c)         ＝⟨ refl ⟩      
+      ((p , a) , α) + (((q , b) , β) + ((r , c) , δ)) ∎
 
 \end{code}
