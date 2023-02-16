@@ -146,12 +146,13 @@ same dyadic, and using the above two proofs.
 
 \end{code}
 
-Now we prove the zero and unit laws for multiplication.
+Now we prove the zero and unit laws for multiplication. In each case
+we prove one side, and the other follows by commutativity.
 
 \begin{code}
 
-ℤ[1/2]*-mult-left-id : (p : ℤ[1/2]) → 0ℤ[1/2] * p ＝ 0ℤ[1/2]
-ℤ[1/2]*-mult-left-id (p , α) = γ
+ℤ[1/2]*-zero-left-base : (p : ℤ[1/2]) → 0ℤ[1/2] * p ＝ 0ℤ[1/2]
+ℤ[1/2]*-zero-left-base (p , α) = γ
  where
   x = pr₁ p -- numerator   of p
   a = pr₂ p -- denominator of p
@@ -165,5 +166,32 @@ Now we prove the zero and unit laws for multiplication.
       normalise-pos (pos 0 ℤ* x , 0 ℕ+ a)         ＝⟨ ap₂ (λ -₁ -₂ → normalise-pos (-₁ , -₂)) (ℤ-zero-left-base x) (zero-left-neutral a) ⟩
       normalise-pos (pos 0 , a)                   ＝⟨ ℤ[1/2]-numerator-zero-is-zero' a ⟩
       0ℤ[1/2] ∎
+
+ℤ[1/2]*-zero-right-base : (p : ℤ[1/2]) → p * 0ℤ[1/2] ＝ 0ℤ[1/2]
+ℤ[1/2]*-zero-right-base p = ℤ[1/2]*-comm p 0ℤ[1/2] ∙ ℤ[1/2]*-zero-left-base p
+
+ℤ[1/2]*-mult-left-id : (p : ℤ[1/2]) → 1ℤ[1/2] * p ＝ p
+ℤ[1/2]*-mult-left-id (p , α) = γ
+ where
+  x = pr₁ p -- numerator   of p
+  a = pr₂ p -- denominator of p
+
+  I : (pos 1 , 0) *' (x , a) ＝ (x , a)
+  I = (pos 1 , 0) *' (x , a) ＝⟨ refl ⟩
+      pos 1 ℤ* x , 0 ℕ+ a    ＝⟨ ap (_, 0 ℕ+ a) (ℤ-mult-left-id x) ⟩
+      x , 0 ℕ+ a             ＝⟨ ap (x ,_) (zero-left-neutral a) ⟩
+      x , a ∎
+  
+  γ : 1ℤ[1/2] * (p , α) ＝ (p , α)
+  γ = 1ℤ[1/2] * (p , α)                           ＝⟨ ap (1ℤ[1/2] *_) (ℤ[1/2]-to-normalise-pos (p , α)) ⟩
+      1ℤ[1/2] * normalise-pos p                   ＝⟨ ap (_* normalise-pos p) (ℤ[1/2]-to-normalise-pos 1ℤ[1/2]) ⟩
+      normalise-pos (pos 1 , 0) * normalise-pos p ＝⟨ ℤ[1/2]*-normalise-pos (pos 1 , 0) p ⁻¹ ⟩
+      normalise-pos ((pos 1 , 0) *' (x , a))      ＝⟨ ap normalise-pos I ⟩
+      normalise-pos (x , a)                       ＝⟨ refl ⟩
+      normalise-pos p                             ＝⟨ ℤ[1/2]-to-normalise-pos (p , α) ⁻¹ ⟩      
+      (p , α) ∎
+
+ℤ[1/2]*-mult-right-id : (p : ℤ[1/2]) → p * 1ℤ[1/2] ＝ p
+ℤ[1/2]*-mult-right-id p = ℤ[1/2]*-comm p 1ℤ[1/2] ∙ ℤ[1/2]*-mult-left-id p
 
 \end{code}
