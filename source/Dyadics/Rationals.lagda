@@ -427,6 +427,21 @@ infix 0 _≈_
 
 ≈-transport : (A : ℤ[1/2] → 𝓤 ̇) {x y : ℤ[1/2]} → x ≈ y → A x → A y
 ≈-transport A {x} {y} e = transport A (≈-to-＝ x y e)
+
+≈'-to-＝ : (p q : ℤ × ℕ) → p ≈' q → normalise-pos p ＝ normalise-pos q
+≈'-to-＝ p q e = ≈-to-＝ (normalise-pos p) (normalise-pos q) γ
+ where
+  I : from-ℤ[1/2] (normalise-pos p) ≈' p
+  I = (≈'-normalise-pos p) ⁻¹
+  
+  II : q ≈' from-ℤ[1/2] (normalise-pos q)
+  II = ≈'-normalise-pos q
+
+  III : from-ℤ[1/2] (normalise-pos p) ≈' q
+  III = ≈'-trans (from-ℤ[1/2] (normalise-pos p)) p q I e
+
+  γ : from-ℤ[1/2] (normalise-pos p) ≈' from-ℤ[1/2] (normalise-pos q)
+  γ = ≈'-trans (from-ℤ[1/2] (normalise-pos p)) q (from-ℤ[1/2] (normalise-pos q)) III II
   
 \end{code}
 
