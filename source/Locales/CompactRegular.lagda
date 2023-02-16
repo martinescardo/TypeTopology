@@ -414,6 +414,19 @@ is-clopen₀-is-prop F U (W₁ , p₁ , q₁) (W₂ , p₂ , q₂) = to-subtype-
         vii  = ap (λ - → W₂ ∧[ F ] -) q₁
         viii = 𝟏-right-unit-of-∧ F W₂
 
+complements-are-unique : (F : Frame 𝓤 𝓥 𝓦) (U V₁ V₂ : ⟨ F ⟩)
+                       → is-complement-of F V₁ U
+                       → is-complement-of F V₂ U
+                       → V₁ ＝ V₂
+complements-are-unique F U V₁ V₂ p q =
+ pr₁ (from-Σ-＝ (is-clopen₀-is-prop F U φ ψ))
+  where
+   φ : is-clopen₀ F U
+   φ = V₁ , p
+
+   ψ : is-clopen₀ F U
+   ψ = V₂ , q
+
 is-clopen : (F : Frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → Ω 𝓤
 is-clopen F U = is-clopen₀ F U , is-clopen₀-is-prop F U
 
