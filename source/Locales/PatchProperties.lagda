@@ -395,6 +395,19 @@ module Epsilon (X : Locale (𝓤 ⁺) 𝓤 𝓤) (σᴰ : spectralᴰ (𝒪 X)) 
  open PatchConstruction X ∣ σᴰ ∣ renaming (Perfect-Nucleus to Perfect-Nucleus-on-X)
  open SmallPatchConstruction X σᴰ renaming (SmallPatch to Patchₛ-X)
  open ClosedNucleus X ∣ σᴰ ∣
+ open OpenNucleus X ∣ σᴰ ∣
+ open HeytingImplicationConstruction X (spectral-frames-have-bases (𝒪 X) ∣ σᴰ ∣)
+
+ 𝟎ₖ : 𝒦
+ 𝟎ₖ = 𝟎[ 𝒪 X ] , 𝟎-is-compact (𝒪 X)
+
+ ¬‘’-reflects-𝟎 : ¬‘ 𝟎ₖ ’ ＝ 𝟏[ 𝒪 Patchₛ-X ]
+ ¬‘’-reflects-𝟎 = only-𝟏-is-above-𝟏 (𝒪 Patchₛ-X) ¬‘ 𝟎ₖ ’ †
+  where
+   open PosetReasoning (poset-of (𝒪 X))
+
+   † : (𝟏[ 𝒪 Patchₛ-X ] ≼ᵏ ¬‘ 𝟎ₖ ’) holds
+   † i = ex-falso-quodlibet (ℬ [ i ])
 
  ϵ-preserves-𝟏 : ‘ 𝟏[ 𝒪 X ] ’ ＝ 𝟏[ 𝒪 Patchₛ-X ]
  ϵ-preserves-𝟏 = perfect-nuclei-eq ‘ 𝟏[ 𝒪 X ] ’ 𝟏[ 𝒪 Patchₛ-X ] (dfunext fe †)
