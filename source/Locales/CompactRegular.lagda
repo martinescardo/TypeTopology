@@ -1392,6 +1392,31 @@ compact-opens-are-basic-in-compact-frames F ℬ β κ x ϟ  =
          ⋁[ F ] ⁅ ℬ [ i ] ∣ i ε 𝒥 ⁆ ＝⟨ covers F ℬ β₀ x ⁻¹                ⟩ₚ
          x                          ■
 
+\end{code}
+
+\begin{code}
+
+module BasicComplements (L : Frame 𝓤 𝓥 𝓦) (𝕜 : is-compact L holds) (zᴰ : zero-dimensionalᴰ L) where
+
+ private
+  ℬ : Fam 𝓦 ⟨ L ⟩
+  ℬ = pr₁ zᴰ
+
+ ¬ₓ_ : Σ c ꞉ ⟨ L ⟩ , is-compact-open L c holds → ⟨ L ⟩
+ ¬ₓ_ (c , κ) = k
+  where
+   k : ⟨ L ⟩
+   k = pr₁ (pr₂ (clopen-iff-compact-in-stone-frame L (𝕜 , ∣ zᴰ ∣ ) c) κ)
+
+ ¬ₓ-gives-complement : (c : ⟨ L ⟩)
+                     → (κ : is-compact-open L c holds)
+                     → is-complement-of L (¬ₓ (c , κ)) c
+ ¬ₓ-gives-complement c κ =
+  pr₂ (pr₂ (clopen-iff-compact-in-stone-frame L (𝕜 , ∣ zᴰ ∣ ) c) κ)
+
+\end{code}
+
+\begin{code}
 
 spectral-implies-compact : (F : Frame 𝓤 𝓥 𝓦) → (is-spectral F ⇒ is-compact F) holds
 spectral-implies-compact F σ = ∥∥-rec (holds-is-prop (is-compact F)) γ σ
