@@ -887,6 +887,9 @@ module SmallPatchConstruction (X : Locale 𝓤 𝓥 𝓦) (σᴰ : spectralᴰ (
  ℬ : Fam 𝓦 ⟨ 𝒪 X ⟩
  ℬ = basisₛ (𝒪 X) σᴰ
 
+ ℬₖ : Fam 𝓦 (Σ C ꞉ ⟨ 𝒪 X ⟩ , is-compact-open (𝒪 X) C holds)
+ ℬₖ = index ℬ , λ i → ℬ [ i ] , pr₁ (pr₂ (pr₂ σᴰ)) i
+
  ℬ-is-basis : is-basis-for (𝒪 X) ℬ
  ℬ-is-basis = pr₁ (pr₁ (pr₂ σᴰ))
 
