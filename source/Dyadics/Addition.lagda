@@ -72,15 +72,28 @@ _+_ : ℤ[1/2] → ℤ[1/2] → ℤ[1/2]
       q * pos (2^ c) * pos (2^ (a ℕ+ c)) ℤ+ r * pos (2^ b) * pos (2^ (a ℕ+ c)) ＝⟨ distributivity-mult-over-ℤ (q * pos (2^ c)) (r * pos (2^ b)) (pos (2^ (a ℕ+ c))) ⁻¹ ⟩       
       (q * pos (2^ c) ℤ+ r * pos (2^ b)) * pos (2^ (a ℕ+ c))                   ∎
 
-{-
 ℤ[1/2]+-normalise-pos : (p q : ℤ × ℕ) → normalise-pos (p +' q) ＝ (normalise-pos p) + (normalise-pos q)
-ℤ[1/2]+-normalise-pos (p , a) (q , b) = {!γ!}
+ℤ[1/2]+-normalise-pos p q = ≈'-to-＝ (p +' q) (p' +' q') γ
  where
-  I : {!!}
-  I = {!ℤ[1/2]-to-normalise-pos !}
- 
-  γ : {!!}
-  γ = {!!}
--}
+  p' = from-ℤ[1/2] (normalise-pos p)
+  q' = from-ℤ[1/2] (normalise-pos q)
+
+  I : p ≈' p'
+  I = ≈'-normalise-pos p
+
+  II : q ≈' q'
+  II = ≈'-normalise-pos q
+  
+  III : (p +' q) ≈' (p' +' q)
+  III = ℤ[1/2]+'-≈' p p' q I
+
+  IV : (q +' p') ≈' (q' +' p')
+  IV = ℤ[1/2]+'-≈' q q' p' II
+
+  V : (p' +' q) ≈' (p' +' q')
+  V = transport₂ _≈'_ (ℤ[1/2]+'-comm q p') (ℤ[1/2]+'-comm q' p') IV
+
+  γ : (p +' q) ≈' (p' +' q')
+  γ = ≈'-trans (p +' q) (p' +' q) (p' +' q') III V
 
 \end{code}
