@@ -134,16 +134,16 @@ infixl 32 _+_
   γ₂ = addition-associativity a b c
 
 ℤ[1/2]+-assoc : (p q r : ℤ[1/2]) → p + q + r ＝ p + (q + r)
-ℤ[1/2]+-assoc ((p , a) , α) ((q , b) , β) ((r , c) , δ) = γ
+ℤ[1/2]+-assoc (p , α) (q , β) (r , δ) = γ
  where
-  γ : ((p , a) , α) + ((q , b) , β) + ((r , c) , δ) ＝ ((p , a) , α) + (((q , b) , β) + ((r , c) , δ))
-  γ = ((p , a) , α) + ((q , b) , β) + ((r , c) , δ)                                     ＝⟨ refl ⟩
-      normalise-pos (p * pos (2^ b) ℤ+ q * pos (2^ a) , a ℕ+ b) + ((r , c) , δ)         ＝⟨ ap (λ - → normalise-pos (p * pos (2^ b) ℤ+ q * pos (2^ a) , a ℕ+ b) + -) (ℤ[1/2]-to-normalise-pos ((r , c) , δ)) ⟩
-      normalise-pos (p * pos (2^ b) ℤ+ q * pos (2^ a) , a ℕ+ b) + normalise-pos (r , c) ＝⟨ ℤ[1/2]+-normalise-pos (p * pos (2^ b) ℤ+ q * pos (2^ a) , a ℕ+ b) (r , c) ⁻¹ ⟩
-      normalise-pos ((p * pos (2^ b) ℤ+ q * pos (2^ a) , a ℕ+ b) +' (r , c))            ＝⟨ ap normalise-pos (ℤ[1/2]+'-assoc (p , a) (q , b) (r , c)) ⟩
-      normalise-pos ((p , a) +' (q * pos (2^ c) ℤ+ r * pos (2^ b) , b ℕ+ c))            ＝⟨ ℤ[1/2]+-normalise-pos (p , a) (q * pos (2^ c) ℤ+ r * pos (2^ b) , b ℕ+ c) ⟩
-      normalise-pos (p , a) + normalise-pos (q * pos (2^ c) ℤ+ r * pos (2^ b) , b ℕ+ c) ＝⟨ ap (_+ normalise-pos (q * pos (2^ c) ℤ+ r * pos (2^ b) , b ℕ+ c)) (ℤ[1/2]-to-normalise-pos ((p , a) , α) ⁻¹) ⟩
-      ((p , a) , α) + normalise-pos (q * pos (2^ c) ℤ+ r * pos (2^ b) , b ℕ+ c)         ＝⟨ refl ⟩      
-      ((p , a) , α) + (((q , b) , β) + ((r , c) , δ)) ∎
+  γ : (p , α) + (q , β) + (r , δ) ＝ (p , α) + ((q , β) + (r , δ))
+  γ = (p , α) + (q , β) + (r , δ)              ＝⟨ refl ⟩
+      normalise-pos (p +' q) + (r , δ)         ＝⟨ ap (λ - → normalise-pos (p +' q) + -) (ℤ[1/2]-to-normalise-pos (r , δ)) ⟩
+      normalise-pos (p +' q) + normalise-pos r ＝⟨ ℤ[1/2]+-normalise-pos (p +' q) r ⁻¹ ⟩
+      normalise-pos ((p +' q) +' r)            ＝⟨ ap normalise-pos (ℤ[1/2]+'-assoc p q r) ⟩
+      normalise-pos (p +' (q +' r))            ＝⟨ ℤ[1/2]+-normalise-pos p (q +' r) ⟩
+      normalise-pos p + normalise-pos (q +' r) ＝⟨ ap (_+ normalise-pos (q +' r)) (ℤ[1/2]-to-normalise-pos (p , α) ⁻¹) ⟩
+      (p , α) + normalise-pos (q +' r)         ＝⟨ refl ⟩      
+      (p , α) + ((q , β) + (r , δ)) ∎
 
 \end{code}
