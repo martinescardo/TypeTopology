@@ -88,8 +88,6 @@ of dyadic operations, we will prove that dyadics are equivalent.
 
 \begin{code}
 
-
-
 normalise-pos-lemma : (z : ℤ) (n : ℕ) → ℤ[1/2]
 normalise-pos-lemma z 0        = (z , 0) , (inl refl)
 normalise-pos-lemma z (succ n) =
@@ -464,6 +462,21 @@ The following proofs relate dyadic rationals to rationals.
 ℤ[1/2]-to-ℚ ((x , n)      , inl n＝0)       = (x , 0) , (denom-zero-lt x)
 ℤ[1/2]-to-ℚ ((x , 0)      , inr (0<n , ox)) = 𝟘-elim 0<n
 ℤ[1/2]-to-ℚ ((x , succ n) , inr (0<n , ox)) = (x , pred (2^ (succ n))) , (ℤ[1/2]-lt-lemma x n ox)
+
+ℤ[1/2]-numerator-zero-is-zero' : (a : ℕ) → normalise-pos (pos 0 , a) ＝ 0ℤ[1/2] 
+ℤ[1/2]-numerator-zero-is-zero' 0        = refl
+ℤ[1/2]-numerator-zero-is-zero' (succ a) = I ⁻¹ ∙ IH
+ where
+  IH : normalise-pos (pos 0 , a) ＝ 0ℤ[1/2]
+  IH = ℤ[1/2]-numerator-zero-is-zero' a
+
+  I : normalise-pos (pos 0 , a) ＝ normalise-pos (pos 0 , succ a)
+  I = normalise-pos-even-prev (pos 0) a ⋆ (pos 0 , refl)
+
+ℤ[1/2]-numerator-zero-is-zero : ((x , a) : ℤ × ℕ) → x ＝ pos 0 → normalise-pos (x , a) ＝ 0ℤ[1/2]
+ℤ[1/2]-numerator-zero-is-zero (pos 0 , a)        e = ℤ[1/2]-numerator-zero-is-zero' a      
+ℤ[1/2]-numerator-zero-is-zero (pos (succ x) , a) e = 𝟘-elim (pos-succ-not-zero x e)
+ℤ[1/2]-numerator-zero-is-zero (negsucc x , a)    e = 𝟘-elim (negsucc-not-pos e)
 
 \end{code}
 
