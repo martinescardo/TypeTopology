@@ -2,6 +2,8 @@ Andrew Sneap
 
 \begin{code}
 
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+
 open import MLTT.Spartan renaming (_+_ to _∔_)
 open import Dyadics.Rationals
 open import Integers.Multiplication renaming (_*_ to _ℤ*_)

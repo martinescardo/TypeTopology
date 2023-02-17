@@ -1,4 +1,6 @@
-1\begin{code}
+Andrew Sneap
+
+\begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
