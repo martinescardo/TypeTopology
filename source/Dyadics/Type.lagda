@@ -7,6 +7,7 @@ Andrew Sneap
 open import MLTT.Spartan renaming (_+_ to _∔_)
 
 open import Integers.Type
+open import Integers.Exponents
 open import Integers.Multiplication
 open import Integers.Order
 open import Integers.Parity
@@ -248,16 +249,6 @@ normalise (z , negsucc n) = normalise-neg (z , n)
 from-ℤ[1/2] : ℤ[1/2] → ℤ × ℕ
 from-ℤ[1/2] = pr₁
 
-{-
-TODO : Introduce Integers Exponents File.
--}
-
-exponents-not-zero' : (m : ℕ) → not-zero (pos (2^ m))
-exponents-not-zero' m iz = exponents-not-zero m (pos-lc I)
- where
-  I : pos (2^ m) ＝ pos 0
-  I = from-is-zero (pos (2^ m)) iz
-
 \end{code}
 
 We define two equivalence relations. The first is by considering an
@@ -478,7 +469,22 @@ infix 0 _≈_
 
   γ : from-ℤ[1/2] (normalise-pos p) ≈' from-ℤ[1/2] (normalise-pos q)
   γ = ≈'-trans (from-ℤ[1/2] (normalise-pos p)) q (from-ℤ[1/2] (normalise-pos q)) III II
-  
+
+ℤ[1/2]-numerator-zero-is-zero' : (a : ℕ) → normalise-pos (pos 0 , a) ＝ 0ℤ[1/2] 
+ℤ[1/2]-numerator-zero-is-zero' 0        = refl
+ℤ[1/2]-numerator-zero-is-zero' (succ a) = I ⁻¹ ∙ IH
+ where
+  IH : normalise-pos (pos 0 , a) ＝ 0ℤ[1/2]
+  IH = ℤ[1/2]-numerator-zero-is-zero' a
+
+  I : normalise-pos (pos 0 , a) ＝ normalise-pos (pos 0 , succ a)
+  I = normalise-pos-even-prev (pos 0) a ⋆ (pos 0 , refl)
+
+ℤ[1/2]-numerator-zero-is-zero : ((x , a) : ℤ × ℕ) → x ＝ pos 0 → normalise-pos (x , a) ＝ 0ℤ[1/2]
+ℤ[1/2]-numerator-zero-is-zero (pos 0 , a)        e = ℤ[1/2]-numerator-zero-is-zero' a      
+ℤ[1/2]-numerator-zero-is-zero (pos (succ x) , a) e = 𝟘-elim (pos-succ-not-zero x e)
+ℤ[1/2]-numerator-zero-is-zero (negsucc x , a)    e = 𝟘-elim (negsucc-not-pos e)
+
 \end{code}
 
 The following proofs relate dyadic rationals to rationals.
@@ -500,21 +506,6 @@ The following proofs relate dyadic rationals to rationals.
 ℤ[1/2]-to-ℚ ((x , n)      , inl n＝0)       = (x , 0) , (denom-zero-lt x)
 ℤ[1/2]-to-ℚ ((x , 0)      , inr (0<n , ox)) = 𝟘-elim 0<n
 ℤ[1/2]-to-ℚ ((x , succ n) , inr (0<n , ox)) = (x , pred (2^ (succ n))) , (ℤ[1/2]-lt-lemma x n ox)
-
-ℤ[1/2]-numerator-zero-is-zero' : (a : ℕ) → normalise-pos (pos 0 , a) ＝ 0ℤ[1/2] 
-ℤ[1/2]-numerator-zero-is-zero' 0        = refl
-ℤ[1/2]-numerator-zero-is-zero' (succ a) = I ⁻¹ ∙ IH
- where
-  IH : normalise-pos (pos 0 , a) ＝ 0ℤ[1/2]
-  IH = ℤ[1/2]-numerator-zero-is-zero' a
-
-  I : normalise-pos (pos 0 , a) ＝ normalise-pos (pos 0 , succ a)
-  I = normalise-pos-even-prev (pos 0) a ⋆ (pos 0 , refl)
-
-ℤ[1/2]-numerator-zero-is-zero : ((x , a) : ℤ × ℕ) → x ＝ pos 0 → normalise-pos (x , a) ＝ 0ℤ[1/2]
-ℤ[1/2]-numerator-zero-is-zero (pos 0 , a)        e = ℤ[1/2]-numerator-zero-is-zero' a      
-ℤ[1/2]-numerator-zero-is-zero (pos (succ x) , a) e = 𝟘-elim (pos-succ-not-zero x e)
-ℤ[1/2]-numerator-zero-is-zero (negsucc x , a)    e = 𝟘-elim (negsucc-not-pos e)
 
 \end{code}
 

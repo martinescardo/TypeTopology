@@ -8,6 +8,7 @@ open import MLTT.Spartan renaming (_+_ to _∔_)
 open import Naturals.Exponents
 open import Dyadics.Type
 open import Integers.Type
+open import Integers.Exponents
 open import Integers.Multiplication
 open import Integers.Order
 open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
@@ -47,28 +48,6 @@ It follows by transitivity of integer order and multiplicative
 cancellation that x * pos (2^ c) ≤ z * pos (2^ a).
 
 \begin{code}
-
-{-
-
-TODO : Move to relevant place. Maybe Integers.Exponents
-
--}
-
-exponents-of-two-positive : (k : ℕ) → is-pos-succ (pos (2^ k))
-exponents-of-two-positive 0        = ⋆
-exponents-of-two-positive (succ k) = γ
- where
-  I : is-pos-succ (pos (2^ k))
-  I = exponents-of-two-positive k
-
-  II : is-pos-succ (pos 2 * pos (2^ k))
-  II = is-pos-succ-mult (pos 2) (pos (2^ k)) ⋆ I
-
-  III : pos 2 * pos (2^ k) ＝ pos (2 ℕ* 2^ k)
-  III = pos-multiplication-equiv-to-ℕ 2 (2^ k)
-
-  γ : is-pos-succ (pos (2 ℕ* 2^ k))
-  γ = transport is-pos-succ III II
 
 ℤ[1/2]<-trans : (x y z : ℤ[1/2]) → x < y → y < z → x < z
 ℤ[1/2]<-trans ((x , a) , _) ((y , b) , _) ((z , c) , _) l₁ l₂ = γ
