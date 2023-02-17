@@ -4,16 +4,15 @@
 
 open import MLTT.Spartan renaming (_+_ to _∔_)
 open import Dyadics.Rationals
+open import Dyadics.Negation
 open import Naturals.Addition renaming (_+_ to _ℕ+_)
 open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
 open import Integers.Type
 open import Integers.Addition renaming (_+_ to _ℤ+_)
 open import Integers.Multiplication
--- open import Integers.Negation renaming (-_ to ℤ-_)
--- open import Integers.Parity
+open import Integers.Negation renaming (-_ to ℤ-_)
 open import Naturals.Exponents
 open import UF.Base hiding (_≈_)
--- open import UF.Subsingletons
 
 module Dyadics.Addition where
 
@@ -145,5 +144,25 @@ infixl 32 _+_
       normalise-pos p + normalise-pos (q +' r) ＝⟨ ap (_+ normalise-pos (q +' r)) (ℤ[1/2]-to-normalise-pos (p , α) ⁻¹) ⟩
       (p , α) + normalise-pos (q +' r)         ＝⟨ refl ⟩      
       (p , α) + ((q , β) + (r , δ)) ∎
+
+ℤ[1/2]-negation-dist : (p q : ℤ[1/2]) → - p + q ＝ (- p) + (- q)
+ℤ[1/2]-negation-dist ((p , a) , α) ((q , b) , β) = γ
+ where 
+  γ : - ((p , a) , α) + ((q , b) , β) ＝ (- ((p , a) , α)) + (- ((q , b) , β))
+  γ = - ((p , a) , α) + ((q , b) , β)                                     ＝⟨ ap (λ z → - ((p , a) , α) + z) (ℤ[1/2]-to-normalise-pos ((q , b) , β)) ⟩
+      - ((p , a) , α) + normalise-pos (q , b)                             ＝⟨ ap (λ z → - z + normalise-pos (q , b)) (ℤ[1/2]-to-normalise-pos ((p , a) , α)) ⟩
+      - normalise-pos (p , a) + normalise-pos (q , b)                     ＝⟨ ap -_ (ℤ[1/2]+-normalise-pos (p , a) (q , b) ⁻¹) ⟩
+      - normalise-pos ((p , a) +' (q , b))                                ＝⟨ refl ⟩
+      - normalise-pos (p * pos (2^ b) ℤ+ q * pos (2^ a) , a ℕ+ b)         ＝⟨ minus-normalise-pos (p * pos (2^ b) ℤ+ q * pos (2^ a)) (a ℕ+ b) ⟩
+      normalise-pos (ℤ- (p * pos (2^ b) ℤ+ q * pos (2^ a)) , a ℕ+ b)      ＝⟨ ap (λ z → normalise-pos (z , a ℕ+ b)) (negation-dist (p * pos (2^ b)) (q * pos (2^ a)) ⁻¹) ⟩
+      normalise-pos ((ℤ- p * pos (2^ b)) ℤ+ (ℤ- q * pos (2^ a)) , a ℕ+ b) ＝⟨ ap (λ z → normalise-pos (z ℤ+ (ℤ- q * pos (2^ a)) , a ℕ+ b)) (negation-dist-over-mult' p (pos (2^ b)) ⁻¹) ⟩
+      normalise-pos ((ℤ- p) * pos (2^ b) ℤ+ (ℤ- q * pos (2^ a)) , a ℕ+ b) ＝⟨ ap (λ z → normalise-pos ((ℤ- p) * pos (2^ b) ℤ+ z , a ℕ+ b)) (negation-dist-over-mult' q (pos (2^ a)) ⁻¹) ⟩
+      normalise-pos ((ℤ- p) * pos (2^ b) ℤ+ (ℤ- q) * pos (2^ a) , a ℕ+ b) ＝⟨ refl ⟩
+      normalise-pos ((ℤ- p , a) +' (ℤ- q , b))                            ＝⟨ ℤ[1/2]+-normalise-pos (ℤ- p , a) (ℤ- q , b) ⟩
+      normalise-pos (ℤ- p , a) + normalise-pos (ℤ- q , b)                 ＝⟨ ap (_+ normalise-pos (ℤ- q , b)) (minus-normalise-pos p a ⁻¹) ⟩
+      (- normalise-pos (p , a)) + normalise-pos (ℤ- q , b)                ＝⟨ ap ((- normalise-pos (p , a)) +_) (minus-normalise-pos q b ⁻¹) ⟩
+      (- normalise-pos (p , a)) + (- normalise-pos (q , b))               ＝⟨ ap (λ z → (- normalise-pos (p , a)) + (- z)) (ℤ[1/2]-to-normalise-pos ((q , b) , β) ⁻¹) ⟩
+      (- normalise-pos (p , a)) + (- ((q , b) , β))                       ＝⟨ ap (λ z → (- z) + (- ((q , b) , β))) (ℤ[1/2]-to-normalise-pos ((p , a) , α) ⁻¹) ⟩            
+      (- ((p , a) , α)) + (- ((q , b) , β)) ∎
 
 \end{code}
