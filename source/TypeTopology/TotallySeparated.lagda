@@ -606,7 +606,7 @@ the reflector.
 
  η-induction :  {X : 𝓤 ̇ } (P : 𝕋 X → 𝓦 ̇ )
              → ((x' : 𝕋 X) → is-prop (P x'))
-             → ((x : X) → P(η x))
+             → ((x : X) → P (η x))
              → (x' : 𝕋 X) → P x'
  η-induction = surjection-induction η η-is-surjection
 
@@ -844,8 +844,9 @@ apartness relation _♯₂ is tight:
 
 \end{code}
 
-I don't think there is a tight apartness relation on Ω without
-constructive taboos.
+ I don't think there is a tight apartness relation on Ω without
+ constructive taboos. The natural apartness relation seems to be the
+ following, but it isn't contrasitive unless excluded middle holds.
 
 \begin{code}
 
@@ -1005,7 +1006,8 @@ https://nforum.ncatlab.org/discussion/8282/points-of-the-localic-quotient-with-r
                          → is-apartness _♯_
                          → ¬¬ (x ＝ y)
                          → ¬ (x ♯ y)
- not-not-equal-not-apart x y _♯_ (_ , i , _ , _) = not-not-equal-not-apart' x y _♯_ i
+ not-not-equal-not-apart x y _♯_ (_ , i , _ , _) =
+  not-not-equal-not-apart' x y _♯_ i
 
  tight-is-¬¬-separated : {X : 𝓤 ̇ } (_♯_ : X → X → 𝓥 ̇ )
                        → is-apartness _♯_
@@ -1136,7 +1138,7 @@ https://nforum.ncatlab.org/discussion/8282/points-of-the-localic-quotient-with-r
     g z = pe (♯p x z) (♯p y z) (pr₁ (f z)) (pr₂ (f z))
 
     h : (z : X) → α x z ＝ α y z
-    h z = to-Σ-＝ (g z , being-prop-is-prop fe' _ _)
+    h z = to-subtype-＝ (λ _ → being-prop-is-prop fe') (g z)
 
 \end{code}
 
@@ -1159,7 +1161,7 @@ apartness on it.
 
   X'-is-set : is-set X'
   X'-is-set = subsets-of-sets-are-sets (X → Ω 𝓥) _
-                (powersets-are-sets'' fe' fe' pe) ∥∥-is-prop
+               (powersets-are-sets'' fe' fe' pe) ∥∥-is-prop
 
   η : X → X'
   η = corestriction α
@@ -1218,14 +1220,9 @@ apartness on it.
 
   Of course, we must check that _♯'_ is indeed an apartness
   relation. We do this by η-induction. These proofs by induction need
-  routine proofs that some things are propositions. We include the
-  following abbreviation `fuv` to avoid some long lines in such
-  proofs.
+  routine proofs that some things are propositions.
 
 \begin{code}
-
-  fuv : funext (𝓤 ⊔ 𝓥 ⁺) (𝓤 ⊔ 𝓥 ⁺)
-  fuv = fe (𝓤 ⊔ 𝓥 ⁺) (𝓤 ⊔ 𝓥 ⁺)
 
   ♯'p : is-prop-valued _♯'_
   ♯'p _ _ = ∥∥-is-prop
@@ -1236,10 +1233,9 @@ apartness on it.
     induction-step : ∀ x → ¬ (η x ♯' η x)
     induction-step x a = ♯i x (η-is-se x x a)
 
-    by-induction : _
     by-induction = η-induction (λ x' → ¬ (x' ♯' x'))
-                      (λ _ → Π-is-prop fe' (λ _ → 𝟘-is-prop))
-                      induction-step
+                    (λ _ → Π-is-prop fe' (λ _ → 𝟘-is-prop))
+                    induction-step
 
   ♯'s : is-symmetric _♯'_
   ♯'s = by-nested-induction
@@ -1248,13 +1244,11 @@ apartness on it.
     induction-step x y a = η-preserves-apartness
                             (♯s x y (η-is-se x y a))
 
-    by-nested-induction : _
     by-nested-induction =
       η-induction (λ x' → ∀ y' → x' ♯' y' → y' ♯' x')
-       (λ x' → Π-is-prop fuv (λ y' →
-               Π-is-prop fuv (λ _ → ♯'p y' x')))
+       (λ x' → Π₂-is-prop fe' (λ y' _ → ♯'p y' x'))
        (λ x → η-induction (λ y' → η x ♯' y' → y' ♯' η x)
-                (λ y' → Π-is-prop fuv (λ _ → ♯'p y' (η x)))
+                (λ y' → Π-is-prop fe' (λ _ → ♯'p y' (η x)))
                 (induction-step x))
 
   ♯'c : is-cotransitive _♯'_
@@ -1273,17 +1267,13 @@ apartness on it.
       c (inl e) = inl (η-preserves-apartness e)
       c (inr f) = inr (η-preserves-apartness f)
 
-    by-nested-induction : _
     by-nested-induction =
       η-induction (λ x' → ∀ y' z' → x' ♯' y' → (x' ♯' z') ∨ (y' ♯' z'))
-       (λ _ → Π-is-prop fuv
-                (λ _ → Π-is-prop fuv (λ _ →
-                       Π-is-prop fuv (λ _ → ∥∥-is-prop))))
+       (λ _ → Π₃-is-prop fe' (λ _ _ _ → ∥∥-is-prop))
        (λ x → η-induction (λ y' → ∀ z' → η x ♯' y' → (η x ♯' z') ∨ (y' ♯' z'))
-                (λ _ → Π-is-prop fuv (λ _ →
-                       Π-is-prop fuv (λ _ → ∥∥-is-prop)))
+                (λ _ → Π₂-is-prop fe' (λ _ _ → ∥∥-is-prop))
                 (λ y → η-induction (λ z' → η x ♯' η y → (η x ♯' z') ∨ (η y ♯' z'))
-                         (λ _ → Π-is-prop fuv (λ _ → ∥∥-is-prop))
+                         (λ _ → Π-is-prop fe' (λ _ → ∥∥-is-prop))
                          (induction-step x y)))
 
   ♯'a : is-apartness _♯'_
@@ -1362,11 +1352,11 @@ apartness on it.
     f-transforms-~-into-= = ♯ᴬt _ _ ∘ contrapositive (f-is-se _ _)
 
    tr-lemma : (x' : X') → is-prop (Σ a ꞉ A , ∃ x ꞉ X , (η x ＝ x') × (f x ＝ a))
-   tr-lemma = η-induction _ induction-step-is-prop induction-step
+   tr-lemma = η-induction _ p induction-step
      where
-      induction-step-is-prop : (x' : X')
+      p : (x' : X')
         → is-prop (is-prop (Σ a ꞉ A , ∃ x ꞉ X , (η x ＝ x') × (f x ＝ a)))
-      induction-step-is-prop x' = being-prop-is-prop fe'
+      p x' = being-prop-is-prop fe'
 
       induction-step : (y : X)
                      → is-prop (Σ a ꞉ A , ∃ x ꞉ X , (η x ＝ η y) × (f x ＝ a))
@@ -1445,7 +1435,7 @@ apartness on it.
    pre-tight-reflection : ∃! f⁻ ꞉ (X' → A) , (f⁻ ∘ η ＝ f)
    pre-tight-reflection = (f⁻ , mediating-triangle) , c'
 
-   mediating-map-is-se : is-se _♯'_ _♯ᴬ_ f⁻
+   mediating-map-is-se : is-strongly-extensional _♯'_ _♯ᴬ_ f⁻
    mediating-map-is-se = V
     where
      I : (x y : X) → f⁻ (η x) ♯ᴬ f⁻ (η y) → η x ♯' η y
@@ -1482,8 +1472,8 @@ apartness on it.
 
 
    tight-reflection : ∃! f⁻ ꞉ (X' → A)
-                              , (is-strongly-extensional _♯'_ _♯ᴬ_ f⁻)
-                              × (f⁻ ∘ η ＝ f)
+                            , (is-strongly-extensional _♯'_ _♯ᴬ_ f⁻)
+                            × (f⁻ ∘ η ＝ f)
    tight-reflection = (f⁻ , mediating-map-is-se , mediating-triangle) , c
 
 \end{code}
