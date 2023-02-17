@@ -164,8 +164,10 @@ is-¬¬-separated X = (x y : X) → ¬¬-stable (x ＝ y)
  where
   lemma₀ : f ＝ g → ∀ x → f x ＝ g x
   lemma₀ r x = ap (λ - → - x) r
+
   lemma₁ : ∀ x → ¬¬ (f x ＝ g x)
   lemma₁ = double-negation-unshift (¬¬-functor lemma₀ h)
+
   lemma₂ : ∀ x → f x ＝ g x
   lemma₂ x =  s x (f x) (g x) (lemma₁ x)
 
@@ -212,6 +214,7 @@ apart-is-cotransitive d f g h (x , φ)  = lemma₁ (lemma₀ φ)
  where
   lemma₀ : f x ≠ g x → (f x ≠ h x)  +  (h x ≠ g x)
   lemma₀ = discrete-is-cotransitive (d x)
+
   lemma₁ : (f x ≠ h x) + (h x ≠ g x) → f ♯ h  +  h ♯ g
   lemma₁ (inl γ) = inl (x , γ)
   lemma₁ (inr δ) = inr (x , δ)
@@ -233,6 +236,7 @@ tight fe s f g h = dfunext fe lemma₁
  where
   lemma₀ : ∀ x → ¬¬ (f x ＝ g x)
   lemma₀ = not-Σ-implies-Π-not h
+
   lemma₁ : ∀ x → f x ＝ g x
   lemma₁ x = (s x (f x) (g x)) (lemma₀ x)
 
@@ -367,56 +371,6 @@ equality-of-¬¬stable-propositions fe pe p q f g a = γ
   γ : p ＝ q
   γ = to-subtype-＝ (λ _ → being-prop-is-prop fe) δ
 
-\end{code}
-
-Added by Tom de Jong in January 2022.
-
-Another logical place for these three lemmas would be Negation.lagda, but
-(1) the first lemma needs _⇔_ which is defined in Notation.General.lagda, which
-    imports Negation.lagda;
-(2) the second lemma needs _≃_ which is only defined in UF.Equiv.lagda;
-(3) the third lemma needs funext, which is only defined in UF.FunExt.lagda.
-
-\begin{code}
-
-¬¬-stable-⇔ : {X : 𝓤 ̇  } {Y : 𝓥 ̇  }
-            → X ⇔ Y
-            → ¬¬-stable X
-            → ¬¬-stable Y
-¬¬-stable-⇔ (f , g) σ h = f (σ (¬¬-functor g h))
-
-¬¬-stable-≃ : {X : 𝓤 ̇  } {Y : 𝓥 ̇  }
-            → X ≃ Y
-            → ¬¬-stable X
-            → ¬¬-stable Y
-¬¬-stable-≃ e = ¬¬-stable-⇔ (⌜ e ⌝ , ⌜ e ⌝⁻¹)
-
-being-¬¬-stable-is-prop : {X : 𝓤 ̇  }
-                        → funext 𝓤 𝓤
-                        → is-prop X → is-prop (¬¬-stable X)
-being-¬¬-stable-is-prop fe i = Π-is-prop fe (λ _ → i)
-
-\end{code}
-
-\begin{code}
-
-Ω¬¬ : (𝓤 : Universe)  → 𝓤 ⁺ ̇
-Ω¬¬ 𝓤 = Σ p ꞉ Ω 𝓤 , ¬¬-stable (p holds)
-
-Ω¬¬-is-¬¬-separated : funext 𝓤 𝓤
-                    → propext 𝓤
-                    → is-¬¬-separated (Ω¬¬ 𝓤)
-Ω¬¬-is-¬¬-separated fe pe (p , s) (q , t) ν = γ
- where
-  α : ¬¬ (p ＝ q)
-  α = ¬¬-functor (ap pr₁) ν
-
-  δ : p ＝ q
-  δ = equality-of-¬¬stable-propositions fe pe p q s t α
-
-  γ : (p , s) ＝ (q , t)
-  γ = to-subtype-＝ (λ p → Π-is-prop fe (λ _ → holds-is-prop p)) δ
-
 ⊥-⊤-Density : funext 𝓤 𝓤
             → propext 𝓤
             → {X : 𝓥 ̇ }
@@ -540,5 +494,51 @@ discrete-exponential-has-decidable-emptiness-of-exponent {𝓤} {𝓥} {X} {Y} f
 
   γ : decidable (is-empty X)
   γ = f a
+
+\end{code}
+
+Added by Tom de Jong in January 2022.
+
+Another logical place for these three lemmas would be Negation.lagda, but
+(1) the first lemma needs _⇔_ which is defined in Notation.General.lagda, which
+    imports Negation.lagda;
+(2) the second lemma needs _≃_ which is only defined in UF.Equiv.lagda;
+(3) the third lemma needs funext, which is only defined in UF.FunExt.lagda.
+
+\begin{code}
+
+¬¬-stable-⇔ : {X : 𝓤 ̇  } {Y : 𝓥 ̇  }
+            → X ⇔ Y
+            → ¬¬-stable X
+            → ¬¬-stable Y
+¬¬-stable-⇔ (f , g) σ h = f (σ (¬¬-functor g h))
+
+¬¬-stable-≃ : {X : 𝓤 ̇  } {Y : 𝓥 ̇  }
+            → X ≃ Y
+            → ¬¬-stable X
+            → ¬¬-stable Y
+¬¬-stable-≃ e = ¬¬-stable-⇔ (⌜ e ⌝ , ⌜ e ⌝⁻¹)
+
+being-¬¬-stable-is-prop : {X : 𝓤 ̇  }
+                        → funext 𝓤 𝓤
+                        → is-prop X → is-prop (¬¬-stable X)
+being-¬¬-stable-is-prop fe i = Π-is-prop fe (λ _ → i)
+
+Ω¬¬ : (𝓤 : Universe)  → 𝓤 ⁺ ̇
+Ω¬¬ 𝓤 = Σ p ꞉ Ω 𝓤 , ¬¬-stable (p holds)
+
+Ω¬¬-is-¬¬-separated : funext 𝓤 𝓤
+                    → propext 𝓤
+                    → is-¬¬-separated (Ω¬¬ 𝓤)
+Ω¬¬-is-¬¬-separated fe pe (p , s) (q , t) ν = γ
+ where
+  α : ¬¬ (p ＝ q)
+  α = ¬¬-functor (ap pr₁) ν
+
+  δ : p ＝ q
+  δ = equality-of-¬¬stable-propositions fe pe p q s t α
+
+  γ : (p , s) ＝ (q , t)
+  γ = to-subtype-＝ (λ p → Π-is-prop fe (λ _ → holds-is-prop p)) δ
 
 \end{code}

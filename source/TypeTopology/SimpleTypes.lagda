@@ -14,7 +14,6 @@ holds (Tychonoff Theorem).)
 
 open import MLTT.Spartan
 open import TypeTopology.DisconnectedTypes
-
 open import UF.FunExt
 open import UF.PropTrunc
 
@@ -30,9 +29,9 @@ data simple-type : 𝓤₀ ̇ → 𝓤₁ ̇ where
  base : simple-type ℕ
  step : {X Y : 𝓤₀ ̇ } → simple-type X → simple-type Y → simple-type (X → Y)
 
+open import TypeTopology.DiscreteAndSeparated
 open import TypeTopology.TotallySeparated
 open import TypeTopology.WeaklyCompactTypes fe pt renaming (Π-compact to compact)
-open import TypeTopology.DiscreteAndSeparated
 
 simple-types-are-totally-separated : {X : 𝓤₀ ̇ }
                                    → simple-type X
@@ -58,9 +57,11 @@ cfdbce : {X Y : 𝓤₀ ̇ }
        → simple-type Y
        → compact (X → Y)
        → is-discrete X × compact Y
-cfdbce s t c = tscd₀ (simple-types-are-totally-separated s) (simple-types-r ℕ-disconnected t) c ,
-               Π-compact-exponential-with-pointed-domain-has-Π-compact-domain (simple-types-pointed s) c
-
+cfdbce s t c = tscd₀
+                (simple-types-are-totally-separated s)
+                (simple-types-r ℕ-disconnected t) c ,
+               Π-compact-exponential-with-pointed-domain-has-Π-compact-domain
+                (simple-types-pointed s) c
 \end{code}
 
 TODO: prove that WLPO' is equivalent to WLPO. But notice that WLPO' is

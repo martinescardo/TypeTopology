@@ -15,7 +15,7 @@ surprising, because
     (𝟘 → Y) = Y^𝟘 ≃ 𝟙 (which is always compact),
     (𝟙 → Y) = Y^𝟙 ≃ Y (which is compact if Y is),
 
-and excluded middle for a proposition X amounts to X=𝟘 or X=𝟙, so
+and excluded middle for a proposition X amounts to X = 𝟘 or X = 𝟙, so
 that
 
     Y^X is compact if Y is compact and X is a proposition.
@@ -47,13 +47,13 @@ open import UF.FunExt
 
 module TypeTopology.PropTychonoff (fe : FunExt) where
 
-open import TypeTopology.CompactTypes
 open import MLTT.Two-Properties
+open import TypeTopology.CompactTypes
 open import UF.Base
-open import UF.Subsingletons
-open import UF.PropIndexedPiSigma
 open import UF.Equiv
 open import UF.EquivalenceExamples
+open import UF.PropIndexedPiSigma
+open import UF.Subsingletons
 
 \end{code}
 
@@ -122,7 +122,7 @@ The following is what we get from prop-indexed-product, abstractly:
 \end{code}
 
 We define a predicate q x : Y x → 𝟚, for each x : X, from the
-predicate p : Π Y → 𝟚 via (part of) the above isomorphism:
+predicate p : Π Y → 𝟚 via (part of) the above equivalence:
 
 \begin{code}
 
@@ -168,8 +168,7 @@ By the definition of f in prop-indexed-product (namely f x φ = φ x):
 
 \end{code}
 
-(So we can't abstract away the definition/proof of
-prop-indexed-product.)
+(So we can't abstract away the construction of prop-indexed-product.)
 
 In particular, with y = f x φ, we get:
 
@@ -214,6 +213,7 @@ We get the same conclusion if X is empty:
    where
     claim : φ ＝ φ₀
     claim = dfunext (fe 𝓤 𝓥) (λ x → unique-from-𝟘 (u x))
+
 \end{code}
 
 So we would get what we want if we had excluded middle, because X is a
@@ -267,12 +267,17 @@ Finally, we do case analysis on the value of p φ:
   φ₀-is-universal-witness : p φ₀ ＝ ₁ → (φ : Π Y) → p φ ＝ ₁
   φ₀-is-universal-witness r φ = 𝟚-equality-cases (Claim₃ r φ) id
 
+\end{code}
+
+And we are done:
+
+\begin{code}
+
   γ : Σ φ₀ ꞉ Π Y , (p φ₀ ＝ ₁ → (φ : Π Y) → p φ ＝ ₁)
   γ = φ₀ , φ₀-is-universal-witness
 
 \end{code}
 
-And we are done.
 
 TODO. 9 Sep 2015. We can generalize from X being a subsingleton (or
 proposition) to X being subfinite (embedded into a finite type).

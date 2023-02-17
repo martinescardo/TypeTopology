@@ -61,6 +61,7 @@ prop-inf-tychonoff {𝓤} {𝓥} {𝓦} {X} {Y} hp _≺_ ε p =
    where
     s : p φ₀ ＝ p (h x (φ₀ x))
     s = ap p ((hf x φ₀)⁻¹)
+
     t : p (h x (φ₀ x)) ＝ ₀
     t = cr-particular-case x (φ , (ap p (hf x φ) ∙ r))
 
