@@ -20,22 +20,21 @@ open import UF.FunExt
 
 module TypeTopology.SquashedCantor (fe : FunExt) where
 
-open import UF.Base
-open import UF.Subsingletons
-open import UF.Equiv
-open import UF.Embeddings
-open import UF.Retracts
-
-open import MLTT.Spartan
-open import MLTT.Two-Properties
-
 open import CoNaturals.GenericConvergentSequence
 open import CoNaturals.UniversalProperty fe
 open import InjectiveTypes.Blackboard fe
-open import Naturals.Sequence fe renaming (head to head' ; tail to tail' ; _∶∶_ to _∶∶'_)
+open import MLTT.Spartan
+open import MLTT.Two-Properties
 open import Naturals.Addition renaming (_+_ to _∔_)
+open import Naturals.Sequence fe renaming (head to head' ; tail to tail' ; _∶∶_ to _∶∶'_)
 open import Notation.CanonicalMap
 open import TypeTopology.SquashedSum fe
+open import UF.Base
+open import UF.Embeddings
+open import UF.Equiv
+open import UF.Retracts
+open import UF.Retracts-FunExt
+open import UF.Subsingletons
 
 private
  fe₀ : funext 𝓤₀ 𝓤₀
@@ -86,12 +85,15 @@ transport-Cantor = transport Cantor[_]
 transport-finite : {u v : ℕ∞} (p : u ＝ v) → is-finite u → is-finite v
 transport-finite = transport is-finite
 
-back-transport-finite : {u v : ℕ∞} (p : u ＝ v) → is-finite v → is-finite u
-back-transport-finite = transport⁻¹ is-finite
+transport-finite⁻¹ : {u v : ℕ∞} (p : u ＝ v) → is-finite v → is-finite u
+transport-finite⁻¹ = transport⁻¹ is-finite
 
-ap-Cantor : {X : 𝓤 ̇ } (f : (u : ℕ∞) → Cantor[ u ] → X)
-            {u v : ℕ∞} (p : u ＝ v) {φ : Cantor[ u ]}
-          → f u φ ＝ f v (φ ∘ back-transport-finite p)
+ap-Cantor : {X : 𝓤 ̇ }
+            (f : (u : ℕ∞) → Cantor[ u ] → X)
+            {u v : ℕ∞}
+            (p : u ＝ v)
+            {φ : Cantor[ u ]}
+          → f u φ ＝ f v (φ ∘ transport-finite⁻¹ p)
 ap-Cantor f refl = refl
 
 \end{code}
@@ -102,7 +104,7 @@ transportation of finiteness:
 \begin{code}
 
 tpc : {u v : ℕ∞} (φ : Cantor[ u ]) (p : u ＝ v)
-    → transport-Cantor p φ ＝ φ ∘ back-transport-finite p
+    → transport-Cantor p φ ＝ φ ∘ transport-finite⁻¹ p
 tpc φ refl = refl
 
 back-tpc : {u v : ℕ∞} (φ : Cantor[ u ]) (p : v ＝ u)
@@ -172,30 +174,38 @@ following coinductive definition (see the module CoNaturals).
 
 Head-step : Cantor → 𝟙 {𝓤₀} + Cantor
 Head-step α = 𝟚-equality-cases
-                (λ (r : head α ＝ ₀) → inl ⋆)
-                (λ (r : head α ＝ ₁) → inr (tail α))
+               (λ (r : head α ＝ ₀) → inl ⋆)
+               (λ (r : head α ＝ ₁) → inr (tail α))
 
 Head : Cantor → ℕ∞
 Head = ℕ∞-corec Head-step
 
 Head-step₀ : (α : Cantor) → head α ＝ ₀ → Head-step α ＝ inl ⋆
 Head-step₀ α = ap (λ - → 𝟚-equality-cases
-                           (λ (r : - ＝ ₀) → inl ⋆)
-                           (λ (r : - ＝ ₁) → inr (tail α)))
+                          (λ (r : - ＝ ₀) → inl ⋆)
+                          (λ (r : - ＝ ₁) → inr (tail α)))
 
 Head-step₁ : (α : Cantor) → head α ＝ ₁ → Head-step α ＝ inr (tail α)
 Head-step₁ α = ap (λ - → 𝟚-equality-cases
-                           (λ (r : - ＝ ₀) → inl ⋆)
-                           (λ (r : - ＝ ₁) → inr (tail α)))
+                          (λ (r : - ＝ ₀) → inl ⋆)
+                          (λ (r : - ＝ ₁) → inr (tail α)))
 
 Head₀ : (α : Cantor) → head α ＝ ₀ → Head α ＝ Zero
 Head₀ α r = coalg-morphism-Zero
-             Head-step Head (ℕ∞-corec-homomorphism Head-step) α ⋆ (Head-step₀ α r)
+             Head-step
+             Head (ℕ∞-corec-homomorphism Head-step)
+             α
+             ⋆
+             (Head-step₀ α r)
 
 Head₁ : (α : Cantor) → head α ＝ ₁ → Head α ＝ Succ (Head (tail α))
 Head₁ α r = coalg-morphism-Succ
-             Head-step Head (ℕ∞-corec-homomorphism Head-step) α (tail α) (Head-step₁ α r)
-
+             Head-step
+             Head
+             (ℕ∞-corec-homomorphism Head-step)
+             α
+             (tail α)
+             (Head-step₁ α r)
 \end{code}
 
 Tail is defined explicitly:
@@ -219,9 +229,9 @@ Tail₁ α (zero   , r) = 𝟘-elim (Zero-not-Succ (Zero          ＝⟨ r ⟩
                                               Succ (Head α) ∎))
 Tail₁ α (succ n , r) = refl
 
-ap-Tail : {α β : Cantor} (p : α ＝ β)
-        → Tail α ＝ Tail β ∘ transport (λ - → is-finite (Head -)) p
-ap-Tail refl = refl
+ap-Tail' : {α β : Cantor} (p : α ＝ β)
+         → Tail α ＝ Tail β ∘ transport (λ - → is-finite (Head -)) p
+ap-Tail' refl = refl
 
 \end{code}
 
@@ -230,10 +240,10 @@ version of the above, derived from it:
 
 \begin{code}
 
-ap₂-Tail : {α β : Cantor} (i : is-finite (Head α))
-         → (p : α ＝ β)
-         → Tail α i ＝ Tail β (transport (λ - → is-finite (Head -)) p i)
-ap₂-Tail i p = ap (λ - → - i) (ap-Tail p)
+ap-Tail : {α β : Cantor} (i : is-finite (Head α))
+        → (p : α ＝ β)
+        → Tail α i ＝ Tail β (transport (λ - → is-finite (Head -)) p i)
+ap-Tail i p = ap (λ - → - i) (ap-Tail' p)
 
 \end{code}
 
@@ -288,14 +298,18 @@ head-Κ-Succ : (u : ℕ∞) (φ : Cantor[ Succ u ])
             → head (Κ (Succ u , φ ))＝ ₁
 head-Κ-Succ u φ = seq-corec-head head-step tail-step (Succ u , φ)
 
-to-Κ-＝ : ({u v} w : ℕ∞) (φ : Cantor[ w ])
-         (p : u ＝ v) {s : is-finite u → is-finite w} {t : is-finite v → is-finite w}
+to-Κ-＝ : ({u v} w : ℕ∞)
+         (φ : Cantor[ w ])
+         (p : u ＝ v)
+         {s : is-finite u → is-finite w}
+         {t : is-finite v → is-finite w}
         → Κ (u , φ ∘ s) ＝ Κ (v , φ ∘ t)
 to-Κ-＝ {u} w φ refl {s} {t} =
   ap (λ - → Κ (u , -))
      (dfunext fe₀ (λ (i : is-finite u) → ap φ (being-finite-is-prop fe₀ w (s i) (t i))))
 
-tail-Κ-Succ : (u : ℕ∞) (φ : Cantor[ Succ u ])
+tail-Κ-Succ : (u : ℕ∞)
+              (φ : Cantor[ Succ u ])
             → tail (Κ (Succ u , φ)) ＝ Κ (u , φ ∘ is-finite-up u)
 tail-Κ-Succ u φ =
   tail (Κ (Succ u , φ))                             ＝⟨ I ⟩
@@ -323,8 +337,11 @@ defined from it is:
 Cons : D Cantor → Cantor
 Cons (u , φ) = Κ (u , λ (i : is-finite u) → ₀ ∶∶ φ i)
 
-to-Cons-＝ : ({u v} w : ℕ∞) (φ : Cantor[ w ])
-            (p : u ＝ v) {s : is-finite u → is-finite w} {t : is-finite v → is-finite w}
+to-Cons-＝ : ({u v} w : ℕ∞)
+            (φ : Cantor[ w ])
+            (p : u ＝ v)
+            {s : is-finite u → is-finite w}
+            {t : is-finite v → is-finite w}
           → Cons (u , φ ∘ s) ＝ Cons (v , φ ∘ t)
 to-Cons-＝ {u} {v} w φ = to-Κ-＝ {u} {v} w (λ i → ₀ ∶∶ φ i)
 
@@ -332,7 +349,8 @@ Cons₀ : (φ : Cantor[ Zero ])
       → Cons (Zero , φ) ＝ ₀ ∶∶ φ Zero-is-finite
 Cons₀ φ = Κ₀ (λ i → ₀ ∶∶ φ i)
 
-Cons₁ : (u : ℕ∞) (φ : Cantor[ Succ u ])
+Cons₁ : (u : ℕ∞)
+        (φ : Cantor[ Succ u ])
       → Cons (Succ u , φ) ＝ ₁ ∶∶  Cons (u , φ ∘ is-finite-up u)
 Cons₁ u φ = Κ₁ u (λ i → ₀ ∶∶ φ i)
 
@@ -370,8 +388,8 @@ tail-Cons-ι (succ n) φ = γ
 
 The following can be proved by coinduction on ℕ∞, but it is more
 direct to prove it using density, which means it is enough to check
-the cases u = ι n (which we do by induction on ℕ) and u = ∞ (which
-we do using the fact that ∞ is the unique fixed point of Succ).
+the cases u = ι n (which we do by induction on ℕ) and u = ∞ (which we
+do using the fact that ∞ is the unique fixed point of Succ).
 
 \begin{code}
 
@@ -402,7 +420,8 @@ Head-Cons = λ u φ → ap (λ - → - φ) (γ u)
   Head-Cons-∞ : (φ : Cantor[ ∞ ]) → Head (Cons (∞ , φ)) ＝ ∞
   Head-Cons-∞ φ = unique-fixed-point-of-Succ fe₀ (Head (Cons (∞ , φ))) p
    where
-    r : Cons (Succ ∞ , φ ∘ is-finite-down ∞) ＝ ₁ ∶∶ Cons (∞ , φ ∘ is-finite-down ∞ ∘ is-finite-up ∞)
+    r : Cons (Succ ∞ , φ ∘ is-finite-down ∞)
+      ＝ ₁ ∶∶ Cons (∞ , φ ∘ is-finite-down ∞ ∘ is-finite-up ∞)
     r = Cons₁ ∞ (φ ∘ is-finite-down ∞)
 
     p = Head (Cons (∞ , φ))                                            ＝⟨ I ⟩
@@ -418,9 +437,9 @@ Head-Cons = λ u φ → ap (λ - → - φ) (γ u)
 
   γ : (u : ℕ∞) → (λ φ → Head (Cons (u , φ))) ＝ (λ φ → u)
   γ = ℕ∞-ddensity fe₀
-        (λ {u} → Π-is-¬¬-separated fe₀ (λ φ → ℕ∞-is-¬¬-separated fe₀))
-        (λ n → dfunext fe₀ (Head-Cons-finite n))
-        (dfunext fe₀ Head-Cons-∞)
+       (λ {u} → Π-is-¬¬-separated fe₀ (λ φ → ℕ∞-is-¬¬-separated fe₀))
+       (λ n → dfunext fe₀ (Head-Cons-finite n))
+       (dfunext fe₀ Head-Cons-∞)
 
 Head-finite : (u : ℕ∞) (φ : Cantor[ u ]) → is-finite (Head (Cons (u , φ))) → is-finite u
 Head-finite u φ = transport-finite (Head-Cons u φ)
@@ -446,7 +465,7 @@ Tail-Cons u φ = dfunext fe₀ (γ u φ)
          ι zero              ∎
 
      t : is-finite Zero → is-finite u
-     t = back-transport-finite p
+     t = transport-finite⁻¹ p
 
      q : Cons (u , φ) ＝ Cons (Zero , φ ∘ t)
      q = ap-Cantor (λ u φ → Cons (u , φ)) p
@@ -463,8 +482,8 @@ Tail-Cons u φ = dfunext fe₀ (γ u φ)
          φ (t Zero-is-finite)               ＝⟨ IV ⟩
          φ (Head-finite u φ (zero , r))     ∎
       where
-       I   = ap₂-Tail (zero , r) q
-       II  = ap₂-Tail j (Cons₀ (φ ∘ t))
+       I   = ap-Tail (zero , r) q
+       II  = ap-Tail j (Cons₀ (φ ∘ t))
        III = Tail₀ (φ (t Zero-is-finite)) k
        IV  = ap φ (being-finite-is-prop fe₀ u _ _)
 
@@ -475,7 +494,7 @@ Tail-Cons u φ = dfunext fe₀ (γ u φ)
          ι (succ n)          ∎
 
      t : is-finite (Succ (ι n)) → is-finite u
-     t = back-transport-finite p
+     t = transport-finite⁻¹ p
 
      t' : is-finite (ι n) → is-finite u
      t' = t ∘ is-finite-up (ι n)
@@ -510,8 +529,8 @@ Tail-Cons u φ = dfunext fe₀ (γ u φ)
          φ (t' (ℕ-to-ℕ∞-is-finite n))             ＝⟨ VI ⟩
          φ (Head-finite u φ (succ n , r))         ∎
       where
-       I   = ap₂-Tail (succ n , r) q
-       II  = ap₂-Tail j (Cons₁ (ι n) (φ ∘ t))
+       I   = ap-Tail (succ n , r) q
+       II  = ap-Tail j (Cons₁ (ι n) (φ ∘ t))
        III = Tail₁ (Cons (ι n , φ ∘ t')) k
        IV  = ap (λ - → Cons (ι n , φ ∘ t') ∘ (λ l → l ∔ -)) m
        V   = tail-Cons-ι n (φ ∘ t')
@@ -565,7 +584,7 @@ of showing that our searchable ordinals are totally separated.
 
 \end{code}
 
-We also need the following retractions (the first with X=ℕ):
+We also need the following retractions (the first with X = ℕ):
 
 \begin{code}
 
@@ -575,7 +594,6 @@ pair-seq-retract : {X : 𝓤 ̇ }
 pair-seq-retract {𝓤} {X} fe = retracts-compose (retracts-compose c d) b
  where
   open import Naturals.Binary
-  open import UF.Retracts-FunExt
 
   a : retract (ℕ → X) of (𝔹 → X)
   a = retract-covariance fe (unary , binary , unary-binary)
@@ -661,22 +679,22 @@ Cons-Snoc α = dfunext fe₀ γ
      where
       s : Head α ＝ Zero
       s = Head₀ α r
-      p : Cons (Head α , Tail α) ＝ Cons (Zero , Tail α ∘ back-transport-finite s)
-      p = to-Cons-＝ {Head α} {Zero} (Head α) (Tail α) s {id} {back-transport-finite s}
-      q : Cons (Zero , Tail α ∘ back-transport-finite s)
-        ＝ ₀ ∶∶  Tail α (back-transport-finite s Zero-is-finite)
-      q = Cons₀ (Tail α ∘ back-transport-finite s)
+      p : Cons (Head α , Tail α) ＝ Cons (Zero , Tail α ∘ transport-finite⁻¹ s)
+      p = to-Cons-＝ {Head α} {Zero} (Head α) (Tail α) s {id} {transport-finite⁻¹ s}
+      q : Cons (Zero , Tail α ∘ transport-finite⁻¹ s)
+        ＝ ₀ ∶∶  Tail α (transport-finite⁻¹ s Zero-is-finite)
+      q = Cons₀ (Tail α ∘ transport-finite⁻¹ s)
     b : head α ＝ ₁ → Cons (Head α , Tail α) zero ＝ α zero
     b r = ap head (p ∙ q) ∙ r ⁻¹
      where
       s : Head α ＝ Succ (Head (tail α))
       s = Head₁ α r
       p : Cons (Head α , Tail α)
-       ＝ Cons (Succ (Head (tail α)) , Tail α ∘ back-transport-finite s)
-      p = to-Cons-＝ {Head α} {Succ (Head (tail α))} (Head α) (Tail α) s {id} {back-transport-finite s}
-      q : Cons (Succ (Head (tail α)) , Tail α ∘ back-transport-finite s)
-       ＝ (₁ ∶∶  Cons ((Head (tail α)) , (Tail α ∘ back-transport-finite s ∘ is-finite-up (Head (tail α)))))
-      q = Cons₁ (Head (tail α)) (Tail α ∘ back-transport-finite s)
+       ＝ Cons (Succ (Head (tail α)) , Tail α ∘ transport-finite⁻¹ s)
+      p = to-Cons-＝ {Head α} {Succ (Head (tail α))} (Head α) (Tail α) s {id} {transport-finite⁻¹ s}
+      q : Cons (Succ (Head (tail α)) , Tail α ∘ transport-finite⁻¹ s)
+       ＝ (₁ ∶∶  Cons ((Head (tail α)) , (Tail α ∘ transport-finite⁻¹ s ∘ is-finite-up (Head (tail α)))))
+      q = Cons₁ (Head (tail α)) (Tail α ∘ transport-finite⁻¹ s)
 
   γ (succ i) = g
    where

@@ -117,9 +117,9 @@ being-upper-open-is-prop L = Π₂-is-prop fe (λ _ _ → ∃-is-prop)
 
 being-lower-real-is-prop : (L : 𝓟 ℚ) → is-prop (is-lower-real L)
 being-lower-real-is-prop L = ×₃-is-prop
-                               (being-inhabited-is-prop L)
-                               (being-lower-is-prop L)
-                               (being-upper-open-is-prop L)
+                              (being-inhabited-is-prop L)
+                              (being-lower-is-prop L)
+                              (being-upper-open-is-prop L)
 
 being-upper-is-prop : (L : 𝓟 ℚ) → is-prop (is-upper L)
 being-upper-is-prop L = Π₄-is-prop fe (λ _ _ _ _ → ∈-is-prop L _)
@@ -129,9 +129,9 @@ being-lower-open-is-prop L = Π₂-is-prop fe (λ _ _ → ∃-is-prop)
 
 being-upper-real-is-prop : (L : 𝓟 ℚ) → is-prop (is-upper-real L)
 being-upper-real-is-prop L = ×₃-is-prop
-                               (being-inhabited-is-prop L)
-                               (being-upper-is-prop L)
-                               (being-lower-open-is-prop L)
+                              (being-inhabited-is-prop L)
+                              (being-upper-is-prop L)
+                              (being-lower-open-is-prop L)
 \end{code}
 
 The sets of lower and upper reals:
@@ -349,9 +349,11 @@ is-dedekind : ℝᴸ → 𝓤⁺ ̇
 is-dedekind l = Σ u ꞉ ℝᵁ , (u is-upper-section-of l)
 
 being-dedekind-is-prop : (l : ℝᴸ) → is-prop (is-dedekind l)
-being-dedekind-is-prop l (u₀ , p₀) (u₁ , p₁) = to-subtype-＝
-                                                 (being-upper-section-is-prop l)
-                                                 (at-most-one-upper-section l u₀ u₁ p₀ p₁)
+being-dedekind-is-prop l (u₀ , p₀) (u₁ , p₁) =
+ to-subtype-＝
+  (being-upper-section-is-prop l)
+  (at-most-one-upper-section l u₀ u₁ p₀ p₁)
+
 \end{code}
 
 We define the Dedekind reals as a subset of the lower reals:
@@ -376,9 +378,9 @@ and hence ℝ is a set:
 
 ℝ-is-set : is-set ℝ
 ℝ-is-set = subsets-of-sets-are-sets ℝᴸ
-             is-dedekind
-             ℝᴸ-is-set
-             (λ {l} → being-dedekind-is-prop l)
+            is-dedekind
+            ℝᴸ-is-set
+            (λ {l} → being-dedekind-is-prop l)
 
 instance
  canonical-map-ℝ-to-ℝᴸ : Canonical-Map ℝ ℝᴸ
@@ -403,15 +405,17 @@ is-dedekind-section (L , U) = is-inhabited L × is-lower L × is-upper-open L
 
 NB₁ : ℝ ≃ (Σ (L , R) ꞉ 𝓟 ℚ × 𝓟 ℚ , is-dedekind-section (L , R))
 
-NB₁ = qinveq (λ ((L , Li , Ll , Lo) , (U , Ui , Uu , Uo) , o , l)
-              → ((L , U) , Li , Ll , Lo , Ui , Uu , Uo , o , l))
+NB₁ = qinveq
+       (λ ((L , Li , Ll , Lo) , (U , Ui , Uu , Uo) , o , l)
+         → ((L , U) , Li , Ll , Lo , Ui , Uu , Uo , o , l))
 
-            ((λ ((L , U) , Li , Ll , Lo , Ui , Uu , Uo , o , l)
-              → ((L , Li , Ll , Lo) , (U , Ui , Uu , Uo) , o , l)) ,
+       ((λ ((L , U) , Li , Ll , Lo , Ui , Uu , Uo , o , l)
+         → ((L , Li , Ll , Lo) , (U , Ui , Uu , Uo) , o , l)) ,
 
-             (λ _ → refl) ,
+        (λ _ → refl) ,
 
-             (λ _ → refl))
+        (λ _ → refl))
+
 \end{code}
 
 The following shows that there is some redundancy in the definition of
@@ -457,28 +461,28 @@ NB₂ : ℝ ≃ (Σ (L , U) ꞉ 𝓟 ℚ × 𝓟 ℚ
                 × is-inhabited U × is-lower-open U
                 × are-ordered L U × are-located L U)
 
-NB₂ = qinveq (λ ((L , Li , _ , Lo) , (U , Ui , _ , Uo) , o , l)
-              → ((L , U) , Li , Lo , Ui , Uo , o , l))
+NB₂ = qinveq
+       (λ ((L , Li , _ , Lo) , (U , Ui , _ , Uo) , o , l)
+         → ((L , U) , Li , Lo , Ui , Uo , o , l))
 
-            ((λ ((L , U) , Li , Lo , Ui , Uo , o , l)
-              → ((L , Li , ordered-located-gives-lower L U o l , Lo) ,
-                 (U , Ui , ordered-located-gives-upper L U o l , Uo) ,
-                 o , l)) ,
+       ((λ ((L , U) , Li , Lo , Ui , Uo , o , l)
+         → ((L , Li , ordered-located-gives-lower L U o l , Lo) ,
+            (U , Ui , ordered-located-gives-upper L U o l , Uo) ,
+            o , l)) ,
 
-             (λ ((L , Li , Ll , Lo) , (U , Ui , Uu , Uo) , o , l)
-              → to-subtype-＝ being-dedekind-is-prop
-                  (to-subtype-＝ being-lower-real-is-prop
-                     refl)) ,
+        (λ ((L , Li , Ll , Lo) , (U , Ui , Uu , Uo) , o , l)
+          → to-subtype-＝ being-dedekind-is-prop
+             (to-subtype-＝ being-lower-real-is-prop refl)) ,
 
-             (λ ((L , U) , Li , Lo , Ui , Uo , o , l)
-              → to-subtype-＝ (λ (L , U) → ×₆-is-prop
-                                           (being-inhabited-is-prop L)
-                                           (being-upper-open-is-prop L)
-                                           (being-inhabited-is-prop U)
-                                           (being-lower-open-is-prop U)
-                                           (being-ordered-is-prop L U)
-                                           (being-located-is-prop L U))
-                  refl))
+        (λ ((L , U) , Li , Lo , Ui , Uo , o , l)
+         → to-subtype-＝ (λ (L , U) → ×₆-is-prop
+                                      (being-inhabited-is-prop L)
+                                      (being-upper-open-is-prop L)
+                                      (being-inhabited-is-prop U)
+                                      (being-lower-open-is-prop U)
+                                      (being-ordered-is-prop L U)
+                                      (being-located-is-prop L U))
+             refl))
 \end{code}
 
 Sometimes a disjointness condition rather than the order condition is
@@ -569,30 +573,32 @@ found in the literature:
                  × is-inhabited U × is-upper U × is-lower-open U
                  × are-disjoint L U × are-located L U)
 
- NB₃ = qinveq (λ ((L , Li , Ll , Lo) , (U , Ui , Uu , Uo) , o , l)
-               → ((L , U) , Li , Ll , Lo , Ui , Uu , Uo , disjoint-criterion L U o , l))
+ NB₃ = qinveq
+        (λ ((L , Li , Ll , Lo) , (U , Ui , Uu , Uo) , o , l)
+          → ((L , U) , Li , Ll , Lo , Ui , Uu , Uo , disjoint-criterion L U o , l))
 
-             ((λ ((L , U) , Li , Ll , Lo , Ui , Uu , Uo , d , l)
-               → ((L , Li , Ll , Lo) ,
-                  (U , Ui , Uu , Uo) ,
-                  ordered-criterion L U Ll d , l)) ,
+        ((λ ((L , U) , Li , Ll , Lo , Ui , Uu , Uo , d , l)
+          → ((L , Li , Ll , Lo) ,
+             (U , Ui , Uu , Uo) ,
+             ordered-criterion L U Ll d , l)) ,
 
-              (λ ((L , Li , Ll , Lo) , (U , Ui , Uu , Uo) , o , l)
-               → to-subtype-＝ being-dedekind-is-prop
-                   (to-subtype-＝ being-lower-real-is-prop
-                      refl)) ,
+         (λ ((L , Li , Ll , Lo) , (U , Ui , Uu , Uo) , o , l)
+          → to-subtype-＝ being-dedekind-is-prop
+             (to-subtype-＝ being-lower-real-is-prop
+               refl)) ,
 
-              (λ ((L , U) , Li , Lo , Ui , Uo , o , l)
-               → to-subtype-＝ (λ (L , U) → ×₈-is-prop
-                                            (being-inhabited-is-prop L)
-                                            (being-lower-is-prop L)
-                                            (being-upper-open-is-prop L)
-                                            (being-inhabited-is-prop U)
-                                            (being-upper-is-prop U)
-                                            (being-lower-open-is-prop U)
-                                            (being-disjoint-is-prop fe L U)
-                                            (being-located-is-prop L U))
-                   refl))
+         (λ ((L , U) , Li , Lo , Ui , Uo , o , l)
+          → to-subtype-＝ (λ (L , U) → ×₈-is-prop
+                                       (being-inhabited-is-prop L)
+                                       (being-lower-is-prop L)
+                                       (being-upper-open-is-prop L)
+                                       (being-inhabited-is-prop U)
+                                       (being-upper-is-prop U)
+                                       (being-lower-open-is-prop U)
+                                       (being-disjoint-is-prop fe L U)
+                                       (being-located-is-prop L U))
+            refl))
+
 \end{code}
 
 We now consider an alternative definition of the Dedekind reals
@@ -749,7 +755,8 @@ sense:
 \begin{code}
 
  unique-candidate : (L U : 𝓟 ℚ)
-                  → is-dedekind-section (L , U) → U ＝ candidate-upper-section L
+                  → is-dedekind-section (L , U)
+                  → U ＝ candidate-upper-section L
  unique-candidate L U (Li , Ll , Lo , Ui , Uu , Uo , ordered , located) = γ
   where
    l : ℝᴸ
@@ -969,7 +976,10 @@ independently by Steve Vickers and Toby Bartels.
    l-dedekind-gives-A-decidable ((U , _ , _) , LU-ordered , LU-located) = δ
     where
      δ : A + ¬ A
-     δ = ∥∥-rec (decidability-of-prop-is-prop fe A-is-prop) h (LU-located 𝟎 ½ 𝟎-is-less-than-½)
+     δ = ∥∥-rec
+           (decidability-of-prop-is-prop fe A-is-prop)
+           h
+           (LU-located 𝟎 ½ 𝟎-is-less-than-½)
       where
        h : (𝟎 ∈ L) + (½ ∈ U) → A + ¬ A
        h (inl 𝟘-in-L) = inl (∥∥-rec A-is-prop k 𝟘-in-L)
@@ -1115,8 +1125,8 @@ We now consider order and apartness on real numbers.
 
 \end{code}
 
-We now name all the projections out of ℝ. We first give their types
-and then define them, for the sake of clarity.
+We now name all the remaining projections out of ℝ. We first give
+their types and then define them, for the sake of clarity.
 
 \begin{code}
 
@@ -1142,10 +1152,10 @@ and then define them, for the sake of clarity.
  cuts-are-located       ((L , Li , Ll , Lo) , (U , Ui , Uu , Uo) , o , l) = l
 
  cuts-are-disjoint x p l m = disjoint-criterion
-                               (lowercut x) (uppercut x)
-                               (cuts-are-ordered x)
-                               p
-                               (l , m)
+                              (lowercut x) (uppercut x)
+                              (cuts-are-ordered x)
+                              p
+                              (l , m)
 
  lowercut-is-bounded (l , δ) = pr₁ (dedekind-gives-troelstra l δ)
  lowercut-is-located (l , δ) = pr₂ (dedekind-gives-troelstra l δ)
@@ -1410,8 +1420,9 @@ Relationship between the orders of ℚ and ℝ:
                               (λ (q , m , o) → lowercut-is-lower x q o p m)
 
  ℚ-to-ℝ-right : (x : ℝ) (q : ℚ) → x < q → x < ι q
- ℚ-to-ℝ-right x q l = ∥∥-functor (λ (p , m , o) → p , o , m)
-                                (uppercut-is-lower-open x q l)
+ ℚ-to-ℝ-right x q l = ∥∥-functor
+                       (λ (p , m , o) → p , o , m)
+                       (uppercut-is-lower-open x q l)
 
  ℚ-to-ℝ-right-converse : (x : ℝ) (q : ℚ) → x < ι q → x < q
  ℚ-to-ℝ-right-converse x q = ∥∥-rec
@@ -1630,8 +1641,8 @@ upper bound of the family x.
   having-lub-is-prop : (x : F) (y : ℝ)
                      → is-prop (x has-lub y)
   having-lub-is-prop x y = ×-is-prop
-                             (≤-F-ℝ-is-prop-valued x y)
-                             (Π₂-is-prop fe (λ z _ → ≤₀-is-prop-valued y z))
+                            (≤-F-ℝ-is-prop-valued x y)
+                            (Π₂-is-prop fe (λ z _ → ≤₀-is-prop-valued y z))
 
   having-a-lub-is-prop : (x : F) → is-prop (x has-a-lub)
   having-a-lub-is-prop x (y , a , b) (y' , a' , b') = γ

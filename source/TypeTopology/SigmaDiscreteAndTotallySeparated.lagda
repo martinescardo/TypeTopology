@@ -155,7 +155,8 @@ private
 
 \end{code}
 
-We now derive a constructive taboo from the assumption that totally separated types are closed under Σ.
+We now derive a constructive taboo from the assumption that totally
+separated types are closed under Σ.
 
 \begin{code}
 

@@ -82,9 +82,14 @@ module PropositionalTruncation (pt : propositional-truncations-exist) where
  Exists : {𝓤 𝓥 : Universe} (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
  Exists X Y = ∃ Y
 
+ ¬Exists : {𝓤 𝓥 : Universe} (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
+ ¬Exists X Y = ¬ (∃ Y)
+
  syntax Exists A (λ x → b) = ∃ x ꞉ A , b
+ syntax ¬Exists A (λ x → b) = ¬∃ x ꞉ A , b
 
  infixr -1 Exists
+ infixr -1 ¬Exists
 
  Nat∃ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {B : X → 𝓦 ̇ } → Nat A B → ∃ A → ∃ B
  Nat∃ ζ = ∥∥-functor (NatΣ ζ)

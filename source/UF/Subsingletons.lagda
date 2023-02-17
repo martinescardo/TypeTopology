@@ -572,7 +572,8 @@ description (σ , o) = σ
 
 ∃!-uniqueness : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
                 (u : ∃! A)
-              → (x : X) (a : A x)
+              → (x : X)
+                (a : A x)
               → description u ＝ (x , a)
 ∃!-uniqueness u x a = ∃!-uniqueness' u (x , a)
 

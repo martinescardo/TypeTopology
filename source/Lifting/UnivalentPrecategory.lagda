@@ -36,7 +36,7 @@ open import Lifting.Lifting 𝓣
 open import Lifting.IdentityViaSIP 𝓣
 \end{code}
 
-We define l ⊑ m to mean that if l is defined than so is m with the
+We define l ⊑ m to mean that if l is defined then so is m with the
 same value:
 
 \begin{code}
@@ -69,7 +69,7 @@ cod {l} {m} α = m
              → {l m n o : 𝓛 X} (α : l ⊑ m) (β : m ⊑ n) (γ : n ⊑ o)
              →  𝓛-comp l n o (𝓛-comp l m n α β) γ ＝ 𝓛-comp l m o α (𝓛-comp m n o β γ)
 𝓛-comp-assoc fe (f , δ) (g , ε) (h , ζ) =
-   to-Σ-＝ (refl , dfunext fe (λ p → ∙assoc (δ p) (ε (f p)) (ζ (g (f p)))))
+ to-Σ-＝ (refl , dfunext fe (λ p → ∙assoc (δ p) (ε (f p)) (ζ (g (f p)))))
 
 \end{code}
 
@@ -86,10 +86,11 @@ If X is a set, then _⊑_ is a partial order:
 
 ⊑-prop-valued : funext 𝓣 𝓣
               → funext 𝓣 𝓤
-              → is-set X → (l m : 𝓛 X) → is-prop (l ⊑ m)
+              → is-set X
+              → (l m : 𝓛 X) → is-prop (l ⊑ m)
 ⊑-prop-valued fe fe' s l m (f , δ) (g , ε) =
-  to-Σ-＝ (dfunext fe (λ p → being-defined-is-prop m (f p) (g p)) ,
-          Π-is-prop fe' (λ d → s) _ ε)
+ to-Σ-＝ (dfunext fe (λ p → being-defined-is-prop m (f p) (g p)) ,
+         Π-is-prop fe' (λ d → s) _ ε)
 
 \end{code}
 
@@ -113,18 +114,23 @@ embedding.
  where
   ε : (p : P) → ψ (g p) ＝ φ p
   ε p = δ (g p) ∙ ap φ (i (f (g p)) p)
+
   a : Q ＝ P
   a = pe j i f g
+
   b : Idtofun (a ⁻¹) ＝ g
   b = dfunext fe (λ p → j (Idtofun (a ⁻¹) p) (g p))
+
   c : transport (λ - → (- → X) × is-prop -) a (ψ , j)
     ＝ (transport (λ - → - → X) a ψ , transport is-prop a j)
   c = transport-× (λ - → - → X) is-prop a
+
   d = pr₁ (transport (λ - → (- → X) × is-prop -) a (ψ , j)) ＝⟨ ap pr₁ c ⟩
       transport (λ - → - → X) a ψ                           ＝⟨ transport-is-pre-comp a ψ ⟩
       ψ ∘ Idtofun (a ⁻¹)                                    ＝⟨ ap (λ - → ψ ∘ -) b ⟩
       ψ ∘ g                                                 ＝⟨ dfunext fe' ε ⟩
-      φ     ∎
+      φ                                                     ∎
+
   e : Q , ψ , j ＝ P , φ , i
   e = to-Σ-＝ (a , to-×-＝ d (being-prop-is-prop fe _ i))
 
@@ -151,15 +157,19 @@ open import Lifting.EmbeddingDirectly 𝓣
  where
   f : (l : 𝓛 X) → fiber η l → is-defined l
   f (.𝟙 , .(λ _ → x) , .𝟙-is-prop) (x , refl) = ⋆
+
   g : (l : 𝓛 X) → is-defined l → fiber η l
   g (P , φ , i) p = φ p , ⊑-anti pe fe fe' (a , b)
    where
     a : η (φ p) ⊑ (P , φ , i)
     a = (λ _ → p) , (λ _ → refl)
+
     b : (P , φ , i) ⊑ η (φ p)
     b = (λ _ → ⋆) , (λ q → ap φ (i q p))
+
   fg : (d : is-defined l) → f l (g l d) ＝ d
   fg d = being-defined-is-prop l (f l (g l d)) d
+
   gf : (z : fiber η l) → g l (f l z) ＝ z
   gf z = η-is-embedding pe fe fe' fe'' l (g l (f l z)) z
 
@@ -201,14 +211,15 @@ construction of _⋍·_ in another module:
  where
   e : Q ≃ P
   e = f , ((g , (λ p → i (f (g p)) p)) , (g , (λ q → j (g (f q)) q)))
+
   γ : (Q , ψ , j) ⋍· (P , φ , i)
   γ = e , δ
 
 \end{code}
 
-Could the map (anti l m) be an equivalence? No. instead have an
-equivalence (l ⊑ m) × (m ⊑ l) → (l ＝ m) × (l ＝ m), reflecting the fact
-that there were two candidate proofs for the equality.
+Could the map (anti l m) be an equivalence? No. We instead have an
+equivalence (l ⊑ m) × (m ⊑ l) → (l ＝ m) × (l ＝ m), reflecting the
+fact that there are two candidate proofs for the equality.
 
 \begin{code}
 
@@ -227,8 +238,10 @@ to-from fe l m ((f , δ) , g) = b
  where
   δ' : is-equiv f
   δ' = pr₂ (pr₁ (to-⋍· l m (from-⋍· l m ((f , δ) , g))))
+
   a : δ' ＝ δ
   a = being-equiv-is-prop'' fe f δ' δ
+
   b : (f , δ') , g ＝ (f , δ) , g
   b = ap (λ - → (f , -) , g) a
 
@@ -278,11 +291,13 @@ to-from fe l m ((f , δ) , g) = b
      uv (((f , δ) , h) , ((g , ε) , k)) = t
       where
        r : g ＝ h
-       r = dfunext (univalence-gives-funext ua)
-                   (λ p → being-defined-is-prop l (g p) (h p))
+       r = dfunext
+            (univalence-gives-funext ua)
+            (λ p → being-defined-is-prop l (g p) (h p))
        s : f ＝ k
-       s = dfunext (univalence-gives-funext ua)
-                   (λ p → being-defined-is-prop m (f p) (k p))
+       s = dfunext
+            (univalence-gives-funext ua)
+            (λ p → being-defined-is-prop m (f p) (k p))
 
        t : ((f , δ) , g) , (g , ε) , f ＝ ((f , δ) , h) , (g , ε) , k
        t = ap₂ (λ -₀ -₁ → ((f , δ) , -₀) , (g , ε) , -₁) r s
@@ -383,22 +398,28 @@ Using this we have the following, as promised:
   fe : funext 𝓣 𝓣
   fe = univalence-gives-funext ua
   s : (is-defined l → is-defined m → is-defined l) ≃ 𝟙 {𝓤}
-  s = singleton-≃-𝟙 ((λ d e → d) ,
-                     Π-is-prop fe
-                       (λ d → Π-is-prop fe
-                                (λ e → being-defined-is-prop l)) (λ d e → d))
+  s = singleton-≃-𝟙
+       ((λ d e → d) ,
+        Π-is-prop fe
+          (λ d → Π-is-prop fe
+                   (λ e → being-defined-is-prop l)) (λ d e → d))
 
   a = ⊑-open fe (lower-funext 𝓣 ((𝓣 ⁺) ⊔ 𝓤) fe⁺) l m
   b =  ≃-sym 𝟙-rneutral
   c = ×-cong (≃-refl _) (≃-sym s)
   d = ≃-sym ΠΣ-distr-≃
-  e = →cong fe⁺ (lower-funext 𝓣 ((𝓣 ⁺) ⊔ 𝓤) fe⁺) (≃-refl (is-defined l)) (⊑-anti-equiv-lemma ua (lower-funext 𝓣 ((𝓣 ⁺) ⊔ 𝓤) fe⁺) l m)
+  e = →cong fe⁺
+       (lower-funext 𝓣 ((𝓣 ⁺) ⊔ 𝓤) fe⁺)
+       (≃-refl (is-defined l))
+       (⊑-anti-equiv-lemma ua (lower-funext 𝓣 ((𝓣 ⁺) ⊔ 𝓤) fe⁺) l m)
 
 \end{code}
 
 And we also get the promised map l ⊑ m → 𝓛 (l ＝ m) that regards
 elements of hom-type l ⊑ m as partial element of identity the type l ＝ m.
 (Conjectural conjecture: this map is an embedding.)
+
+TODO. This map should be an embedding.
 
 \begin{code}
 
@@ -424,13 +445,17 @@ is-𝓛-equiv l m α = (n : 𝓛 X) → is-equiv (𝓛-pre-comp-with l m α n)
 being-𝓛-equiv-is-prop : funext (𝓣 ⁺ ⊔ 𝓤) (𝓣 ⊔ 𝓤)
                         → (l m : 𝓛 X) (α : l ⊑ m) → is-prop (is-𝓛-equiv l m α)
 being-𝓛-equiv-is-prop fe l m α =
- Π-is-prop fe (λ n → being-equiv-is-prop'' (lower-funext (𝓣 ⁺) 𝓤 fe) (𝓛-pre-comp-with l m α n))
+ Π-is-prop fe
+  (λ n → being-equiv-is-prop''
+          (lower-funext (𝓣 ⁺) 𝓤 fe)
+          (𝓛-pre-comp-with l m α n))
 
 is-𝓛-equiv→ : (l m : 𝓛 X) (α : l ⊑ m) → is-𝓛-equiv l m α → is-equiv (pr₁ α)
-is-𝓛-equiv→ l m α e = qinvs-are-equivs (pr₁ α)
-                                       (pr₁ β ,
-                                        (λ p → being-defined-is-prop l (pr₁ β (pr₁ α p)) p) ,
-                                        (λ q → being-defined-is-prop m (pr₁ α (pr₁ β q)) q))
+is-𝓛-equiv→ l m α e = qinvs-are-equivs
+                       (pr₁ α)
+                       (pr₁ β ,
+                        (λ p → being-defined-is-prop l (pr₁ β (pr₁ α p)) p) ,
+                        (λ q → being-defined-is-prop m (pr₁ α (pr₁ β q)) q))
  where
   u : m ⊑ l → l ⊑ l
   u = 𝓛-pre-comp-with l m α l
@@ -457,14 +482,19 @@ is-𝓛-equiv← pe fe fe' l m α e = γ
    where
     s : pr₁ α ＝ id
     s = dfunext fe (λ q → being-defined-is-prop l (pr₁ α q) q)
+
     δ : (q : is-defined l) → value l q ＝ value l q
     δ = pr₁ (π l n α s)
+
     u : l ⊑ n → l ⊑ n
     u β = pr₁ β , λ q → δ q ∙ pr₂ β q
+
     h : 𝓛-pre-comp-with l l α n ∼ u
     h = pr₂ (π l n α s)
+
     v : l ⊑ n → l ⊑ n
     v γ = pr₁ γ , (λ p → (δ p)⁻¹ ∙ pr₂ γ p)
+
     vu : v ∘ u ∼ id
     vu (g , ε) = to-Σ-＝ (refl , a)
      where
@@ -472,6 +502,7 @@ is-𝓛-equiv← pe fe fe' l m α e = γ
                              ((δ q)⁻¹ ∙ δ q) ∙ ε q   ＝⟨ ap (λ - → - ∙ ε q) ((sym-is-inverse (δ q))⁻¹)⟩
                                refl ∙ ε q            ＝⟨ refl-left-neutral ⟩
                                ε q                   ∎)
+
     uv : u ∘ v ∼ id
     uv (g , ε) = to-Σ-＝ (refl , a)
      where
@@ -524,9 +555,11 @@ module univalence-of-𝓛 (ua : is-univalent 𝓣)
         (being-equiv-is-prop'' fe (pr₁ α))
         (Π-is-prop fe (λ p → being-defined-is-prop l))
         (inverse (pr₁ α))
-        (λ g → qinvs-are-equivs (pr₁ α)
-                                (g , (λ q → being-defined-is-prop l (g (pr₁ α q)) q) ,
-                                     (λ p → being-defined-is-prop m (pr₁ α (g p)) p)))
+        (λ g → qinvs-are-equivs
+                (pr₁ α)
+                (g ,
+                 (λ q → being-defined-is-prop l (g (pr₁ α q)) q) ,
+                 (λ p → being-defined-is-prop m (pr₁ α (g p)) p)))
 
  _≃⟨𝓛⟩_ : 𝓛 X → 𝓛 X → 𝓣 ⁺ ⊔ 𝓤 ̇
  l ≃⟨𝓛⟩ m = Σ α ꞉ l ⊑ m , is-𝓛-equiv l m α
@@ -601,8 +634,9 @@ We have yet another equivalence, using the above techniques:
   α p = refl
 
   β : {x y : X} (q : η x ⊑ η y) → η-＝-gives-⊑ (η-⊑-gives-＝ q) ＝ q
-  β (f , δ) = to-×-＝ (dfunext fe (λ x → 𝟙-is-prop x (f x)))
-                     (dfunext fe' (λ x → ap δ (𝟙-is-prop ⋆ x)))
+  β (f , δ) = to-×-＝
+               (dfunext fe (λ x → 𝟙-is-prop x (f x)))
+               (dfunext fe' (λ x → ap δ (𝟙-is-prop ⋆ x)))
 
 Id-via-lifting : funext 𝓣 𝓣
                → funext 𝓣 𝓤
