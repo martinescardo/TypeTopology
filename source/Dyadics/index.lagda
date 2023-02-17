@@ -12,5 +12,4 @@ import Dyadics.Negation
 import Dyadics.Order
 import Dyadics.Type
 
-
 \end{code}
