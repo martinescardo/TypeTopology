@@ -482,7 +482,7 @@ The following proofs relate dyadic rationals to rationals.
 
 \end{code}
 
-Boilerplate
+Boilerplate transitivity proofs.
 
 \begin{code}
 
