@@ -81,8 +81,8 @@ To define operations on dyadics, we need to consider how to normalise
 dyadics into their simplified forms. For example, multiplication of
 dyadics using standard rational multiplication gives
 numerator/denominator combinations which are not always in lowest
-terms. Hence, we must factor our operations through a "normalisation",
-similarly to our approach to standard rationals.
+terms. Hence, we must factor our operations through a "normalisation"
+function, similarly to our approach to standard rationals.
 
 Due to this normalisation, we introduce an equivalence relation, and
 prove that equivalent dyadics are equal. In order to prove properties
@@ -225,6 +225,15 @@ normalise-pos-info : ((p , a) : ℤ × ℕ) → Σ k ꞉ ℕ , (p ＝ dnum (norm
                                                  × (a ＝ dden (normalise-pos (p , a)) + k)
 normalise-pos-info (p , a) = normalise-pos-info' p a
 
+\end{code}
+
+We also defined a normalisation process for when an operation results
+in a negative on the denominator (i.e 2^ (- k)) for some (k : ℕ). This
+is not needed for the standard field operations but may be useful for
+more exotic dyadic rational functions.
+
+\begin{code}
+
 normalise-neg-lemma : (z : ℤ) (n : ℕ) → ℤ[1/2]
 normalise-neg-lemma z 0        = (z * pos 2 , 0) , (inl refl)
 normalise-neg-lemma z (succ n) = normalise-neg-lemma (z * pos 2) n
@@ -248,6 +257,12 @@ exponents-not-zero' m iz = exponents-not-zero m (pos-lc I)
  where
   I : pos (2^ m) ＝ pos 0
   I = from-is-zero (pos (2^ m)) iz
+
+\end{code}
+
+TODO: Add description here.
+
+\begin{code}
 
 _≈'_ : (p q : ℤ × ℕ) → 𝓤₀ ̇
 (x , n) ≈' (y , m) = x * pos (2^ m) ＝ y * pos (2^ n)
