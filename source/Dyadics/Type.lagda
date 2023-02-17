@@ -260,11 +260,10 @@ exponents-not-zero' m iz = exponents-not-zero m (pos-lc I)
 
 \end{code}
 
-TODO: We may define two equivalence relations. The first is by
-considering an equivalence on a numerator / denominator pair only,
-without the proof that they are simplified. The second defines an
-equivalence on two dyadic rationals, and is defined in terms of the
-first.
+We define two equivalence relations. The first is by considering an
+equivalence on a numerator / denominator pair only, without the proof
+that they are simplified. The second defines an equivalence on two
+dyadic rationals, and is defined in terms of the first.
 
 Sometimes we have two dyadics rationals of the form (p , α) (q , β),
 and we want to prove equality using an equivalence p ≈' q. In other
