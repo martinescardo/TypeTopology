@@ -5,7 +5,7 @@ Andrew Sneap
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import MLTT.Spartan renaming (_+_ to _∔_)
-open import Dyadics.Rationals
+open import Dyadics.Type
 open import Dyadics.Negation
 open import Naturals.Addition renaming (_+_ to _ℕ+_)
 open import Naturals.Multiplication renaming (_*_ to _ℕ*_)

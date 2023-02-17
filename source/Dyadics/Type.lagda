@@ -29,7 +29,7 @@ open import UF.Subsingletons
 open import TypeTopology.DiscreteAndSeparated
 open import TypeTopology.SigmaDiscreteAndTotallySeparated
 
-module Dyadics.Rationals where
+module Dyadics.Type where
 
 \end{code}
 

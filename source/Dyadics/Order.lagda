@@ -6,7 +6,7 @@ Andrew Sneap
 
 open import MLTT.Spartan renaming (_+_ to _∔_)
 open import Naturals.Exponents
-open import Dyadics.Rationals
+open import Dyadics.Type
 open import Integers.Type
 open import Integers.Multiplication
 open import Integers.Order
