@@ -9,28 +9,24 @@ the module CompactTypes for the strong notion.
 
 open import MLTT.Spartan
 
-open import TypeTopology.CompactTypes
-open import TypeTopology.TotallySeparated
-
 open import CoNaturals.GenericConvergentSequence
-
-open import MLTT.Two-Properties
 open import MLTT.Plus-Properties
-
+open import MLTT.Two-Properties
+open import Notation.Order
+open import Taboos.WLPO
+open import TypeTopology.CompactTypes
 open import TypeTopology.DisconnectedTypes
 open import TypeTopology.DiscreteAndSeparated
-open import Taboos.WLPO
-open import Notation.Order
-
+open import TypeTopology.TotallySeparated
 open import UF.Base
-open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
+open import UF.Equiv
 open import UF.FunExt
+open import UF.Miscelanea
 open import UF.PropTrunc
 open import UF.Retracts
 open import UF.Retracts-FunExt
-open import UF.Equiv
-open import UF.Miscelanea
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
 
 module TypeTopology.WeaklyCompactTypes
         (fe : FunExt)
@@ -101,14 +97,16 @@ of ℕ∞, for example):
 compact-types-are-∃-compact : {X : 𝓤 ̇ } → compact X → ∃-compact X
 compact-types-are-∃-compact {𝓤} {X} φ p = g (φ p)
  where
-  g : ((Σ x ꞉ X , p x ＝ ₀) + ((x : X) → p x ＝ ₁)) → decidable (∃ x ꞉ X , p x ＝ ₀)
+  g : ((Σ x ꞉ X , p x ＝ ₀) + ((x : X) → p x ＝ ₁))
+    → decidable (∃ x ꞉ X , p x ＝ ₀)
   g (inl (x , r)) = inl ∣ x , r ∣
   g (inr α)       = inr (forall₁-implies-not-exists₀ p α)
 
 ∥Compact∥-types-are-∃-compact : {X : 𝓤 ̇ } → ∥ Compact X ∥ → ∃-compact X
-∥Compact∥-types-are-∃-compact {𝓤} {X} = ∥∥-rec ∃-compactness-is-prop
-                                          (compact-types-are-∃-compact
-                                           ∘ Compact-gives-compact)
+∥Compact∥-types-are-∃-compact {𝓤} {X} =
+  ∥∥-rec
+    ∃-compactness-is-prop
+    (compact-types-are-∃-compact ∘ Compact-gives-compact)
 
 \end{code}
 
@@ -192,7 +190,7 @@ power-of-two-discrete-gives-compact-exponent : {X : 𝓤 ̇ }
                                              → is-discrete (X → 𝟚)
                                              → Π-compact X
 power-of-two-discrete-gives-compact-exponent d =
-  Π-compact'-gives-Π-compact (λ p → d p (λ x → ₁))
+ Π-compact'-gives-Π-compact (λ p → d p (λ x → ₁))
 
 discrete-power-of-disconnected-gives-compact-exponent : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                                                       → disconnected Y
@@ -277,7 +275,8 @@ retract-∃-compact' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                    → ∥ retract Y of X ∥
                    → ∃-compact X
                    → ∃-compact Y
-retract-∃-compact' t c = ∥∥-rec ∃-compactness-is-prop
+retract-∃-compact' t c = ∥∥-rec
+                           ∃-compactness-is-prop
                            (λ r → retract-∃-compact r c) t
 
 image-Π-compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
@@ -298,7 +297,8 @@ retract-Π-compact' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                    → ∥ retract Y of X ∥
                    → Π-compact X
                    → Π-compact Y
-retract-Π-compact' t c = ∥∥-rec Π-compactness-is-prop
+retract-Π-compact' t c = ∥∥-rec
+                           Π-compactness-is-prop
                            (λ r → retract-Π-compact r c) t
 
 Π-compact-exponential-with-pointed-domain-has-Π-compact-domain :
@@ -309,27 +309,30 @@ retract-Π-compact' t c = ∥∥-rec Π-compactness-is-prop
   → Π-compact Y
 
 Π-compact-exponential-with-pointed-domain-has-Π-compact-domain x =
-  retract-Π-compact (codomain-is-retract-of-function-space-with-pointed-domain x)
+ retract-Π-compact (codomain-is-retract-of-function-space-with-pointed-domain x)
 
 \end{code}
 
 A main reason to consider the notion of total separatedness is that
 the totally separated reflection 𝕋 X of X has the same supply of
-boolean predicates as X, and hence X is ∃-compact (respectively
+boolean-valued predicates as X, and hence X is ∃-compact (respectively
 Π-compact) iff 𝕋 X is, as we show now.
 
 \begin{code}
 
 module _ (X : 𝓤 ̇ ) where
 
- open TotallySeparatedReflection fe pt
+ open totally-separated-reflection fe pt
 
  private
+  EP : (p : X → 𝟚) → ∃! p' ꞉ (𝕋 X → 𝟚) , p' ∘ η ＝ p
+  EP = totally-separated-reflection 𝟚-is-totally-separated
+
   extension : (X → 𝟚) → (𝕋 X → 𝟚)
-  extension p = pr₁ (pr₁ (totally-separated-reflection 𝟚-is-totally-separated p))
+  extension p = ∃!-witness (EP p)
 
   extension-property : (p : X → 𝟚) (x : X) → extension p (η x) ＝ p x
-  extension-property p = happly (pr₂ (pr₁ (totally-separated-reflection 𝟚-is-totally-separated p)))
+  extension-property p = happly (∃!-is-witness (EP p))
 
  ∃-compact-gives-∃-compact-𝕋 : ∃-compact X → ∃-compact (𝕋 X)
  ∃-compact-gives-∃-compact-𝕋 = surjection-∃-compact η η-is-surjection
@@ -343,10 +346,12 @@ module _ (X : 𝓤 ̇ ) where
      f' : (Σ x ꞉ X , η x ＝ x') → Σ x ꞉ X , p x ＝ ₀
      f' (x , s) = x , ((extension-property p x) ⁻¹ ∙ ap (extension p) s ∙ r)
 
-   g : (Σ x ꞉ X , p x ＝ ₀) → Σ x' ꞉ 𝕋 X , extension p x' ＝ ₀
+   g : (Σ x ꞉ X , p x ＝ ₀)
+     → Σ x' ꞉ 𝕋 X , extension p x' ＝ ₀
    g (x , r) = η x , (extension-property p x ∙ r)
 
-   h : decidable (∃ x' ꞉ 𝕋 X , extension p x' ＝ ₀) → decidable (∃ x ꞉ X , p x ＝ ₀)
+   h : decidable (∃ x' ꞉ 𝕋 X , extension p x' ＝ ₀)
+     → decidable (∃ x ꞉ X , p x ＝ ₀)
    h (inl x) = inl (∥∥-rec ∥∥-is-prop f x)
    h (inr u) = inr (contrapositive (∥∥-functor g) u)
 
@@ -359,13 +364,15 @@ module _ (X : 𝓤 ̇ ) where
    f : ((x' : 𝕋 X) → extension p x' ＝ ₁) → ((x : X) → p x ＝ ₁)
    f α x = (extension-property p x)⁻¹ ∙ α (η x)
 
-   g : (α : (x : X) → p x ＝ ₁) → ((x' : 𝕋 X) → extension p x' ＝ ₁)
+   g : (α : (x : X) → p x ＝ ₁)
+     → ((x' : 𝕋 X) → extension p x' ＝ ₁)
    g α = η-induction (λ x' → extension p x' ＝ ₁) (λ _ → 𝟚-is-set) g'
      where
       g' : (x : X) → extension p (η x) ＝ ₁
       g' x = extension-property p x ∙ α x
 
-   h : decidable ((x' : 𝕋 X) → extension p x' ＝ ₁) → decidable ((x : X) → p x ＝ ₁)
+   h : decidable ((x' : 𝕋 X) → extension p x' ＝ ₁)
+     → decidable ((x : X) → p x ＝ ₁)
    h (inl α) = inl (f α)
    h (inr u) = inr (contrapositive g u)
 
@@ -427,9 +434,10 @@ tscd₀ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
       → disconnected Y
       → Π-compact (X → Y)
       → is-discrete X
-tscd₀ {𝓤} {𝓥} {X} {Y} ts r c = tscd ts (retract-Π-compact (retract-contravariance (fe 𝓤 𝓤₀) r) c)
+tscd₀ {𝓤} {𝓥} {X} {Y} ts r c =
+ tscd ts (retract-Π-compact (retract-contravariance (fe 𝓤 𝓤₀) r) c)
 
-open TotallySeparatedReflection fe pt
+open totally-separated-reflection fe pt
 
 tscd₁ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
       → disconnected Y
@@ -439,6 +447,7 @@ tscd₁ {𝓤} {𝓥} {X} {Y} r c = f
  where
   z : retract (X → 𝟚) of (X → Y)
   z = retract-contravariance (fe 𝓤 𝓤₀) r
+
   a : (𝕋 X → 𝟚) ≃ (X → 𝟚)
   a = totally-separated-reflection'' 𝟚-is-totally-separated
 
@@ -537,8 +546,8 @@ information for the moment.
                                        → ∃-compact X
                                        → decidable ∥ X ∥
 ∃-compact-types-have-decidable-support {𝓤} {X} c =
-  ∃-compact-propositions-are-decidable ∥ X ∥ ∥∥-is-prop
-    (surjection-∃-compact ∣_∣ pt-is-surjection c)
+ ∃-compact-propositions-are-decidable ∥ X ∥ ∥∥-is-prop
+  (surjection-∃-compact ∣_∣ pt-is-surjection c)
 
 ∃-compact-non-empty-types-are-inhabited : {X : 𝓤 ̇ }
                                         → ∃-compact X
@@ -624,13 +633,16 @@ detachable-subset-retract : {X : 𝓤 ̇ } {A : X → 𝟚}
 detachable-subset-retract {𝓤} {X} {A} (x₀ , e₀) = r , pr₁ , rs
  where
   r : X → Σ x ꞉ X , A x ＝ ₀
-  r x = 𝟚-equality-cases (λ (e : A x ＝ ₀) → (x , e)) (λ (e : A x ＝ ₁) → (x₀ , e₀))
+  r x = 𝟚-equality-cases
+         (λ (e : A x ＝ ₀) → (x , e))
+         (λ (e : A x ＝ ₁) → (x₀ , e₀))
 
   rs : (σ : Σ x ꞉ X , A x ＝ ₀) → r (pr₁ σ) ＝ σ
   rs (x , e) = w
    where
-    s : (b : 𝟚) → b ＝ ₀ → 𝟚-equality-cases (λ (_ : b ＝ ₀) → (x , e))
-                                             (λ (_ : b ＝ ₁) → (x₀ , e₀)) ＝ (x , e)
+    s : (b : 𝟚) → b ＝ ₀ → 𝟚-equality-cases
+                           (λ (_ : b ＝ ₀) → (x , e))
+                           (λ (_ : b ＝ ₁) → (x₀ , e₀)) ＝ (x , e)
     s ₀ refl = refl
     s ₁ r = 𝟘-elim (one-is-not-zero r)
 
@@ -813,10 +825,10 @@ being-∃-compact∙-and-empty-is-prop : {X : 𝓤 ̇ }
                                    → is-prop (∃-compact∙ X + is-empty X)
 being-∃-compact∙-and-empty-is-prop {𝓤} {X} =
  sum-of-contradictory-props
-    ∃-compactness∙-is-prop
-    (Π-is-prop (fe 𝓤 𝓤₀)
-      (λ _ → 𝟘-is-prop))
-    (λ c u → ∥∥-rec 𝟘-is-prop (contrapositive pr₁ u) (c (λ _ → ₀)))
+  ∃-compactness∙-is-prop
+  (Π-is-prop (fe 𝓤 𝓤₀)
+    (λ _ → 𝟘-is-prop))
+  (λ c u → ∥∥-rec 𝟘-is-prop (contrapositive pr₁ u) (c (λ _ → ₀)))
 
 ∃-compact∙-or-empty-gives-∃-compact : {X : 𝓤 ̇ }
                                     → ∃-compact∙ X + is-empty X
@@ -918,6 +930,7 @@ inf₁-converse c {p} α = ₁-maximal (h g)
  where
   h : (∀ x → ₁ ≤ p x) → ₁ ≤ inf c p
   h = pr₂ (inf-property c p) ₁
+
   g : ∀ x → ₁ ≤ p x
   g x = ₁-maximal-converse (α x)
 
@@ -1067,7 +1080,7 @@ and hence so is the type (X → 𝟚) with the pointwise operations.
 \begin{code}
 
 𝟚-DeMorgan-dual : {X : 𝓤 ̇ } → ((X → 𝟚) → 𝟚) → ((X → 𝟚) → 𝟚)
-𝟚-DeMorgan-dual φ = λ p → complement (φ (λ x → complement (p x)))
+𝟚-DeMorgan-dual φ p = complement (φ (λ x → complement (p x)))
 
 𝟚-DeMorgan-dual-involutive : {X : 𝓤 ̇ } → (φ : (X → 𝟚) → 𝟚)
                            → 𝟚-DeMorgan-dual (𝟚-DeMorgan-dual φ) ＝ φ
@@ -1270,7 +1283,6 @@ clopen-projections-∃-compact {𝓤} {𝓦} X κ p = g (κ 𝟙 (λ z → p (pr
    where
     h : (Σ x ꞉ X , p x ＝ ₀) → Σ z ꞉ 𝟙 × X , (p (pr₂ z) ＝ ₀) × (pr₁ z ＝ ⋆)
     h (x , r) = (⋆ , x) , (r , refl)
-
 
 \end{code}
 
