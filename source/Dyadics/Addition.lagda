@@ -20,7 +20,10 @@ module Dyadics.Addition where
 
 \end{code}
 
-TODO: Comment on strategy.
+The usual strategy is applied to define addition of dyadic
+rationals. We first define addition of unsimplified dyadics, and then
+addition of dyadic rationals is defined by normalising the result of
+this addition.
 
 \begin{code}
 
@@ -33,6 +36,15 @@ _+_ : ℤ[1/2] → ℤ[1/2] → ℤ[1/2]
 infixl 32 _+'_
 infixl 32 _+_
 
+\end{code}
+
+Commutativity is trivial as usual, and follows by commutativity of
+addition of integers and natural numbers. To get commutativity of
+addition of dyadic rationals, we can simply take the action on paths
+of normalise-pos on addition of unsimplified dyadic rationals.
+
+\begin{code}
+
 ℤ[1/2]+'-comm : (p q : ℤ × ℕ) → p +' q ＝ q +' p
 ℤ[1/2]+'-comm (p , a) (q , b) = ap₂ _,_ I II
  where
@@ -43,6 +55,30 @@ infixl 32 _+_
 
 ℤ[1/2]+-comm : (p q : ℤ[1/2]) → p + q ＝ q + p
 ℤ[1/2]+-comm (p , _) (q , _) = ap normalise-pos (ℤ[1/2]+'-comm p q)
+
+\end{code}
+
+For associativity, it is slightly more involved. It's not possible to
+take the action on paths as with commutativity, because on each side
+we have two addition, meaning we apply normalise-pos on intermediate
+calculations. The idea of the associativity proof is as follows:
+
+(p , α) + (q , β) + (r , γ) = normalise-pos p + normalise-pos q + normalise-pos r
+                            = normalise-pos (p +' q) + normalise-pos r
+                            = normalise-pos (p +' q +' r)                          
+                            = normalise-pos (p +' (q +' r))
+                            = normalise-pos p + normalise (q +' r)
+                            = normalise-pos p + (normalise pos q + normalise-pos r)
+                            = (p , α) + ((q , β) + (r , γ)) ∎
+
+This proof requires that proof that (p , α) ＝ normalise-pos p, which
+is proved in the Dyadics.Type file. It also requires that
+(normalise-pos p + normalise-pos q) ＝ (normalise-pos (p +' q)).
+
+This proof follows, preceded by a lemma about equivalences on
+unsimplified rationals.
+
+\begin{code}
 
 ℤ[1/2]+'-≈' : (p q r : ℤ × ℕ) → p ≈' q → (p +' r) ≈' (q +' r)
 ℤ[1/2]+'-≈' (p , a) (q , b) (r , c) e = γ
@@ -146,6 +182,29 @@ infixl 32 _+_
       normalise-pos p + normalise-pos (q +' r) ＝⟨ ap (_+ normalise-pos (q +' r)) (ℤ[1/2]-to-normalise-pos (p , α) ⁻¹) ⟩
       (p , α) + normalise-pos (q +' r)         ＝⟨ refl ⟩      
       (p , α) + ((q , β) + (r , δ)) ∎
+
+ℤ[1/2]'-zero-left-neutral : (p : ℤ × ℕ) → (pos 0 , 0) +' p ＝ p
+ℤ[1/2]'-zero-left-neutral (p , a) = ap₂ _,_ γ₁ γ₂
+ where
+  γ₁ : pos 0 * pos (2^ a) ℤ+ p * pos (2^ 0) ＝ p
+  γ₁ = pos 0 * pos (2^ a) ℤ+ p * pos (2^ 0) ＝⟨ ap (_ℤ+ p * pos (2^ 0)) (ℤ-zero-left-base (pos (2^ a))) ⟩
+       pos 0 ℤ+ p                           ＝⟨ ℤ-zero-left-neutral p ⟩
+       p                                    ∎
+
+  γ₂ : 0 ℕ+ a ＝ a
+  γ₂ = zero-left-neutral a
+  
+ℤ[1/2]-zero-left-neutral : (q : ℤ[1/2]) → 0ℤ[1/2] + q ＝ q
+ℤ[1/2]-zero-left-neutral (q , α) = γ
+ where
+  γ : 0ℤ[1/2] + (q , α) ＝ (q , α)
+  γ = 0ℤ[1/2] + (q , α)                 ＝⟨ refl ⟩
+      normalise-pos ((pos 0 , 0) +' q)  ＝⟨ ap normalise-pos (ℤ[1/2]'-zero-left-neutral q) ⟩
+      normalise-pos q                   ＝⟨ ℤ[1/2]-to-normalise-pos (q , α) ⁻¹ ⟩
+      (q , α) ∎
+
+ℤ[1/2]-zero-right-neutral : (q : ℤ[1/2]) → q + 0ℤ[1/2] ＝ q
+ℤ[1/2]-zero-right-neutral q = ℤ[1/2]+-comm 0ℤ[1/2] q ⁻¹ ∙ ℤ[1/2]-zero-left-neutral q
 
 ℤ[1/2]-negation-dist : (p q : ℤ[1/2]) → - p + q ＝ (- p) + (- q)
 ℤ[1/2]-negation-dist ((p , a) , α) ((q , b) , β) = γ
