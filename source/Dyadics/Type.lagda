@@ -260,7 +260,29 @@ exponents-not-zero' m iz = exponents-not-zero m (pos-lc I)
 
 \end{code}
 
-TODO: Add description here.
+TODO: We may define two equivalence relations. The first is by
+considering an equivalence on a numerator / denominator pair only,
+without the proof that they are simplified. The second defines an
+equivalence on two dyadic rationals, and is defined in terms of the
+first.
+
+Sometimes we have two dyadics rationals of the form (p , α) (q , β),
+and we want to prove equality using an equivalence p ≈' q. In other
+cases we may have dyadic rationals of the form (normalise-pos p)
+(normalise-pos q), and we want to prove equality using the equivalence
+using p ≈' q.
+
+Usually, the first case isn't fruitful, and instead we prove that
+ (p , α) ≈ normalise-pos p,
+ (q , β) ≈ normalise-pos q.
+
+Given an operation _⊙_, we then show that
+ (p , α) ⊙ (q , β) ＝ (normalise-pos p) ⊙ (normalise-pos q)
+                   ＝ normalise-pos (p ⊙' q)
+for some operation _⊙'_ defined on (ℤ × ℕ) × (ℤ × ℕ).
+
+All of this machinery, as well as the usual equivalence laws are
+defined below.
 
 \begin{code}
 
