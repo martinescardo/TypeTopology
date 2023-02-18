@@ -458,7 +458,9 @@ Finally, the complete definition of the algebra of clopens `ℂ`.
      g ((i , j) ∷ ks) = (𝒻 ⋆∙ (ℬ [ i ]) ∧[ 𝒪 X ] ¬𝒻 j) ∨[ 𝒪 X ] g ks
 
      congruence-wrt-β : (i j : index ℬ-patch-↑) → β i ＝ β j → g i ＝ g j
-     congruence-wrt-β i j p = {!!}
+     congruence-wrt-β []       []               p = refl
+     congruence-wrt-β []       ((j₁ , j₂) ∷ js) p = {!!}
+     congruence-wrt-β (i ∷ is) (j ∷ js)         p = {!i!}
 
      h₀ : ℬ𝒶𝓈𝒾𝒸 → ⟨ 𝒪 X ⟩
      h₀ = pr₁ (pr₁ (factor-through-image pt fe β X-is-set g congruence-wrt-β))
