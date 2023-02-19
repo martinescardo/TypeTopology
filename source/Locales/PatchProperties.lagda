@@ -1093,3 +1093,49 @@ module PatchStone (X : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (𝒪 X) h
  patch-is-spectral = stone-locales-are-spectral (𝒪 Patch-X) patch-is-stone
 
 \end{code}
+
+\begin{code}
+
+module OpenMeetClosedLemmata (X  : Locale (𝓤 ⁺) 𝓤 𝓤) (σᴰ : spectralᴰ (𝒪 X)) where
+
+ open ClosedNucleus X ∣ σᴰ ∣
+ open OpenNucleus   X ∣ σᴰ ∣
+ open SmallPatchConstruction X σᴰ using    (𝟎-is-id)
+                                  renaming (SmallPatch to Patchₛ-X)
+ open PatchConstruction X ∣ σᴰ ∣
+
+ X-has-basis : has-basis (𝒪 X) holds
+ X-has-basis = spectral-frames-have-bases (𝒪 X) ∣ σᴰ ∣
+
+ open HeytingImplicationConstruction X X-has-basis
+
+ closed-meet-open-𝟎-lemma : (C D : ⟨ 𝒪 X ⟩)
+                          → (κ : is-compact-open (𝒪 X) D holds)
+                          → (‘ C ’ ∧[ 𝒪 Patchₛ-X ] ¬‘ D , κ ’) ＝ 𝟎[ 𝒪 Patchₛ-X ]
+                          → (C ≤[ poset-of (𝒪 X) ] D) holds
+ closed-meet-open-𝟎-lemma C D κ p = connecting-lemma₃ (𝒪 X) (‡ ⁻¹)
+  where
+   † : (C ∨[ 𝒪 X ] D) ∧[ 𝒪 X ] (D ==> D) ＝ 𝟎[ 𝒪 Patchₛ-X ] $ D
+   † =
+    perfect-nuclei-eq-inverse
+     (‘ C ’ ∧[ 𝒪 Patchₛ-X ] ¬‘ D , κ ’)
+     𝟎[ 𝒪 Patchₛ-X ]
+     p
+     D
+
+   ‡ : C ∨[ 𝒪 X ] D ＝ D
+   ‡ = C ∨[ 𝒪 X ] D                               ＝⟨ Ⅰ ⟩
+       (C ∨[ 𝒪 X ] D) ∧[ 𝒪 X ] 𝟏[ 𝒪 X ]           ＝⟨ Ⅱ ⟩
+       (C ∨[ 𝒪 X ] D) ∧[ 𝒪 X ] (D ==> D)          ＝⟨ Ⅲ ⟩
+       𝟎[ 𝒪 Patchₛ-X ] $ D                        ＝⟨ Ⅳ ⟩
+       D                                          ∎
+        where
+         Ⅰ = 𝟏-right-unit-of-∧ (𝒪 X) (C ∨[ 𝒪 X ] D) ⁻¹
+         Ⅱ = ap
+              (λ - → (C ∨[ 𝒪 X ] D) ∧[ 𝒪 X ] -)
+              (heyting-implication-identity D ⁻¹)
+         Ⅲ = †
+         Ⅳ = 𝟎-is-id D
+
+
+\end{code}
