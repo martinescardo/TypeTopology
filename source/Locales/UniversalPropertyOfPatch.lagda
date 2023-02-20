@@ -459,7 +459,33 @@ Finally, the complete definition of the algebra of clopens `ℂ`.
 
      congruence-wrt-β : (i j : index ℬ-patch-↑) → β i ＝ β j → g i ＝ g j
      congruence-wrt-β []       []               p = refl
-     congruence-wrt-β []       ((j₁ , j₂) ∷ js) p = {!!}
+     congruence-wrt-β []       ((j₁ , j₂) ∷ js) p = †
+      where
+       foo : g js ＝ 𝟎[ 𝒪 X ]
+       foo = congruence-wrt-β js [] (join-𝟎-lemma₂ (𝒪 Patchₛ-A) (p ⁻¹))
+
+       open OpenMeetClosedLemmata A σᴰ
+
+       crux : ((ℬ [ j₁ ]) ≤[ poset-of (𝒪 A) ] (ℬ [ j₂ ])) holds
+       crux = closed-meet-open-𝟎-lemma
+               (ℬ [ j₁ ])
+               (ℬ [ j₂ ])
+               (pr₁ (pr₂ (pr₂ σᴰ)) j₂)
+               (join-𝟎-lemma₁ (𝒪 Patchₛ-A) (p ⁻¹))
+
+       bar : 𝒻 ⋆∙ (ℬ [ j₁ ]) ∧[ 𝒪 X ] ¬𝒻 j₂ ＝ 𝟎[ 𝒪 X ]
+       bar = only-𝟎-is-below-𝟎 (𝒪 X) (𝒻 ⋆∙ (ℬ [ j₁ ]) ∧[ 𝒪 X ] ¬𝒻 j₂) ※
+        where
+         ※ : {!!}
+         ※ = {!!}
+
+       † : 𝟎[ 𝒪 X ] ＝ g (j₁ , j₂ ∷ js)
+       † = 𝟎[ 𝒪 X ]                                           ＝⟨ {!!} ⟩
+           (𝒻 ⋆∙ (ℬ [ j₁ ]) ∧[ 𝒪 X ] ¬𝒻 j₂)                   ＝⟨ {!!} ⟩
+           (𝒻 ⋆∙ (ℬ [ j₁ ]) ∧[ 𝒪 X ] ¬𝒻 j₂) ∨[ 𝒪 X ] 𝟎[ 𝒪 X ] ＝⟨ {!!} ⟩
+           (𝒻 ⋆∙ (ℬ [ j₁ ]) ∧[ 𝒪 X ] ¬𝒻 j₂) ∨[ 𝒪 X ] g js     ＝⟨ refl ⟩
+           g (j₁ , j₂ ∷ js)                                   ∎
+     congruence-wrt-β (i ∷ is) []               p = {!!}
      congruence-wrt-β (i ∷ is) (j ∷ js)         p = {!i!}
 
      h₀ : ℬ𝒶𝓈𝒾𝒸 → ⟨ 𝒪 X ⟩
