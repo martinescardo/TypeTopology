@@ -385,7 +385,6 @@ extension-lemma : (B : BooleanAlgebra 𝓦 𝓦) (L L′ : Frame 𝓤 𝓦 𝓦)
                 → (η : ⟪ B ⟫ → ⟨ L ⟩)
                 → is-ba-embedding B L η holds
                 → is-spectral L holds
-                → is-spectral L′ holds
                 → is-spectral′ B L η holds
                 → is-generated-by L B η holds
                 → contains-compact-opens L B η holds
@@ -393,7 +392,7 @@ extension-lemma : (B : BooleanAlgebra 𝓦 𝓦) (L L′ : Frame 𝓤 𝓦 𝓦)
                 → is-lattice-homomorphism B L′ h holds
                 → ∃! h₀ ꞉ (⟨ L ⟩ → ⟨ L′ ⟩) ,
                    is-a-frame-homomorphism L L′ h₀ holds × (h ＝ h₀ ∘ η)
-extension-lemma {𝓦} {𝓤} B L L′ η e@(_ , _ , _ , ♥₁ , ♥₂) σ σ′ s γ 𝕜 h μ@(♠₀ , ♠₁ , ♠₂ , ♠₃) =
+extension-lemma {𝓦} {𝓤} B L L′ η e@(_ , _ , _ , ♥₁ , ♥₂) σ s γ 𝕜 h μ@(♠₀ , ♠₁ , ♠₂ , ♠₃) =
  (h⁻ , φ , ψ) , ϑ
  where
   ↓↓_ : ⟨ L ⟩ → Fam 𝓦 ⟨ L′ ⟩
