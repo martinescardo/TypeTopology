@@ -2011,4 +2011,26 @@ sc-and-∨-preserving-⇒-⋁-preserving F G h ζ ψ φ S =
 
    ♥ = ≤-is-antisymmetric (poset-of G) ♥₁ ♥₂
 
+join-𝟎-lemma₁ : (F : Frame 𝓤 𝓥 𝓦)
+              → {x y : ⟨ F ⟩}
+              → x ∨[ F ] y ＝ 𝟎[ F ]
+              → x ＝ 𝟎[ F ]
+join-𝟎-lemma₁ F {x} {y} p = only-𝟎-is-below-𝟎 F x †
+ where
+  open PosetReasoning (poset-of F)
+
+  † : (x ≤[ poset-of F ] 𝟎[ F ]) holds
+  † = x ≤⟨ ∨[ F ]-upper₁ x y ⟩ x ∨[ F ] y ＝⟨ p ⟩ₚ 𝟎[ F ] ■
+
+join-𝟎-lemma₂ : (F : Frame 𝓤 𝓥 𝓦)
+              → {x y : ⟨ F ⟩}
+              → x ∨[ F ] y ＝ 𝟎[ F ]
+              → y ＝ 𝟎[ F ]
+join-𝟎-lemma₂ F {x} {y} p = only-𝟎-is-below-𝟎 F y †
+ where
+  open PosetReasoning (poset-of F)
+
+  † : (y ≤[ poset-of F ] 𝟎[ F ]) holds
+  † = y ≤⟨ ∨[ F ]-upper₂ x y ⟩ x ∨[ F ] y ＝⟨ p ⟩ₚ 𝟎[ F ] ■
+
 \end{code}
