@@ -582,8 +582,16 @@ Finally, the complete definition of the algebra of clopens `ℂ`.
      open Epsilon A σᴰ
 
      h-is-homomorphism : is-lattice-homomorphism ℂ₀ (𝒪 X) h holds
-     h-is-homomorphism = {!!}
+     h-is-homomorphism = ∥∥-rec₂
+                          (holds-is-prop (is-lattice-homomorphism ℂ₀ (𝒪 X) h)) {!!} {!!} {!!}
       where
+       𝟎-is-basic : ∃ ib ꞉ index ℬ , 𝟎[ 𝒪 A ] ＝ ℬ [ ib ]
+       𝟎-is-basic =
+        compact-opens-are-basic-in-compact-frames (𝒪 A) ℬ {!!} {!!} {!!} {!!}
+
+       𝟏-is-basic : ∃ iu ꞉ index ℬ , 𝟏[ 𝒪 A ] ＝ ℬ [ iu ]
+       𝟏-is-basic = {!!}
+
        ϟ : Σ ib ꞉ index ℬ , 𝟎[ 𝒪 A ] ＝ ℬ [ ib ]
          → Σ iu ꞉ index ℬ , 𝟏[ 𝒪 A ] ＝ ℬ [ iu ]
          → is-lattice-homomorphism ℂ₀ (𝒪 X) h holds
