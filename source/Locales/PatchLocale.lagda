@@ -100,6 +100,13 @@ A nucleus is called perfect iff it is Scott-continuous:
      → is-prop ((is-nucleus (𝒪 X) j ∧ is-perfect j) holds)
    γ j = holds-is-prop (is-nucleus (𝒪 X) j ∧ is-perfect j)
 
+ perfect-nuclei-eq-inverse : (𝒿 𝓀 : Perfect-Nucleus) → 𝒿 ＝ 𝓀 → 𝒿 $_ ∼ 𝓀 $_
+ perfect-nuclei-eq-inverse 𝒿 𝓀 p =
+  transport (λ - → 𝒿 $_ ∼ - $_) p λ _ → refl
+   where
+    † : 𝒿 .pr₁ ＝ 𝓀 .pr₁
+    † = pr₁ (from-Σ-＝ p)
+
 \end{code}
 
 Nuclei are ordered pointwise.
