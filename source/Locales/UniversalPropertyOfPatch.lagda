@@ -9,7 +9,7 @@ open import UF.Base
 open import UF.PropTrunc
 open import UF.FunExt
 open import UF.Size
-open import UF.Equiv
+open import UF.Equiv renaming (_■ to _𝔔𝔈𝔇)
 open import UF.Retracts
 open import UF.Embeddings
 open import UF.PropTrunc
@@ -242,7 +242,7 @@ we have that `ℬ𝒶𝓈𝒾𝒸₀` is equivalent to `𝒞𝓁ℴ𝓅`.
 \begin{code}
 
   basic₀-is-equivalent-to-clop : ℬ𝒶𝓈𝒾𝒸₀ ≃ 𝒞𝓁ℴ𝓅
-  basic₀-is-equivalent-to-clop = ℬ𝒶𝓈𝒾𝒸₀ ≃⟨ † ⟩ ℬ𝒶𝓈𝒾𝒸 ≃⟨ ‡ ⟩ 𝒞𝓁ℴ𝓅 ■
+  basic₀-is-equivalent-to-clop = ℬ𝒶𝓈𝒾𝒸₀ ≃⟨ † ⟩ ℬ𝒶𝓈𝒾𝒸 ≃⟨ ‡ ⟩ 𝒞𝓁ℴ𝓅 𝔔𝔈𝔇
     where
      † = pr₂ basic-is-small
      ‡ = basic-is-equivalent-to-clop
@@ -476,17 +476,37 @@ Finally, the complete definition of the algebra of clopens `ℂ`.
        bar : 𝒻 ⋆∙ (ℬ [ j₁ ]) ∧[ 𝒪 X ] ¬𝒻 j₂ ＝ 𝟎[ 𝒪 X ]
        bar = only-𝟎-is-below-𝟎 (𝒪 X) (𝒻 ⋆∙ (ℬ [ j₁ ]) ∧[ 𝒪 X ] ¬𝒻 j₂) ※
         where
-         ※ : {!!}
-         ※ = {!!}
+         open PosetReasoning (poset-of (𝒪 X))
+
+         ※ : (((𝒻 ⋆∙ (ℬ [ j₁ ])) ∧[ 𝒪 X ] (¬𝒻 j₂)) ≤[ poset-of (𝒪 X) ] 𝟎[ 𝒪 X ]) holds
+         ※ = (𝒻 ⋆∙ (ℬ [ j₁ ])) ∧[ 𝒪 X ] ¬𝒻 j₂    ≤⟨ I  ⟩
+             (𝒻 ⋆∙ (ℬ [ j₂ ])) ∧[ 𝒪 X ] ¬𝒻 j₂    ＝⟨ II ⟩ₚ
+             𝟎[ 𝒪 X ]                            ■
+              where
+               I  = ∧[ 𝒪 X ]-left-monotone
+                     (frame-morphisms-are-monotonic
+                       (𝒪 A)
+                       (𝒪 X)
+                       (𝒻 .pr₁)
+                       (pr₂ 𝒻)
+                       (ℬ [ j₁ ] , ℬ [ j₂ ])
+                       crux)
+               II = pr₁ (¬ₓ-gives-complement (𝒻 ⋆∙ (ℬ [ j₂ ])) (μ (ℬ [ j₂ ]) (κ j₂)))
 
        † : 𝟎[ 𝒪 X ] ＝ g (j₁ , j₂ ∷ js)
-       † = 𝟎[ 𝒪 X ]                                           ＝⟨ {!!} ⟩
-           (𝒻 ⋆∙ (ℬ [ j₁ ]) ∧[ 𝒪 X ] ¬𝒻 j₂)                   ＝⟨ {!!} ⟩
-           (𝒻 ⋆∙ (ℬ [ j₁ ]) ∧[ 𝒪 X ] ¬𝒻 j₂) ∨[ 𝒪 X ] 𝟎[ 𝒪 X ] ＝⟨ {!!} ⟩
+       † = 𝟎[ 𝒪 X ]                                           ＝⟨ bar ⁻¹ ⟩
+           (𝒻 ⋆∙ (ℬ [ j₁ ]) ∧[ 𝒪 X ] ¬𝒻 j₂)                   ＝⟨ I    ⟩
+           (𝒻 ⋆∙ (ℬ [ j₁ ]) ∧[ 𝒪 X ] ¬𝒻 j₂) ∨[ 𝒪 X ] 𝟎[ 𝒪 X ] ＝⟨ II   ⟩
            (𝒻 ⋆∙ (ℬ [ j₁ ]) ∧[ 𝒪 X ] ¬𝒻 j₂) ∨[ 𝒪 X ] g js     ＝⟨ refl ⟩
            g (j₁ , j₂ ∷ js)                                   ∎
+            where
+             I  = 𝟎-left-unit-of-∨ (𝒪 X) (𝒻 ⋆∙ (ℬ [ j₁ ]) ∧[ 𝒪 X ] ¬𝒻 j₂) ⁻¹
+             II = ap (λ - → (𝒻 ⋆∙ (ℬ [ j₁ ]) ∧[ 𝒪 X ] ¬𝒻 j₂) ∨[ 𝒪 X ] -) (foo ⁻¹)
      congruence-wrt-β (i ∷ is) []               p = {!!}
-     congruence-wrt-β (i ∷ is) (j ∷ js)         p = {!i!}
+     congruence-wrt-β ((i₁ , i₂) ∷ is) ((j₁ , j₂) ∷ js) p = †
+      where
+       † : g ((i₁ , i₂) ∷ is) ＝ g ((j₁ , j₂) ∷ js)
+       † = {!!}
 
      h₀ : ℬ𝒶𝓈𝒾𝒸 → ⟨ 𝒪 X ⟩
      h₀ = pr₁ (pr₁ (factor-through-image pt fe β X-is-set g congruence-wrt-β))
@@ -583,11 +603,17 @@ Finally, the complete definition of the algebra of clopens `ℂ`.
 
      h-is-homomorphism : is-lattice-homomorphism ℂ₀ (𝒪 X) h holds
      h-is-homomorphism = ∥∥-rec₂
-                          (holds-is-prop (is-lattice-homomorphism ℂ₀ (𝒪 X) h)) {!!} {!!} {!!}
+                          (holds-is-prop (is-lattice-homomorphism ℂ₀ (𝒪 X) h)) ϟ 𝟎-is-basic 𝟏-is-basic
       where
        𝟎-is-basic : ∃ ib ꞉ index ℬ , 𝟎[ 𝒪 A ] ＝ ℬ [ ib ]
        𝟎-is-basic =
-        compact-opens-are-basic-in-compact-frames (𝒪 A) ℬ {!!} {!!} {!!} {!!}
+        compact-opens-are-basic-in-compact-frames
+         (𝒪 A)
+         ℬ
+         {!!}
+         (spectral-implies-compact (𝒪 A) σ)
+         𝟎[ 𝒪 A ]
+         (𝟎-is-compact (𝒪 A))
 
        𝟏-is-basic : ∃ iu ꞉ index ℬ , 𝟏[ 𝒪 A ] ＝ ℬ [ iu ]
        𝟏-is-basic = {!!}
@@ -595,7 +621,7 @@ Finally, the complete definition of the algebra of clopens `ℂ`.
        ϟ : Σ ib ꞉ index ℬ , 𝟎[ 𝒪 A ] ＝ ℬ [ ib ]
          → Σ iu ꞉ index ℬ , 𝟏[ 𝒪 A ] ＝ ℬ [ iu ]
          → is-lattice-homomorphism ℂ₀ (𝒪 X) h holds
-       ϟ (ib , q₁) (iu , q₂) = {!!}
+       ϟ (ib , q₁) (iu , q₂) = α₁ , {!!}
         where
          k = (iu , ib) ∷ []
 
@@ -651,10 +677,6 @@ Finally, the complete definition of the algebra of clopens `ℂ`.
                       ※ = (frame-homomorphisms-preserve-top (𝒪 A) (𝒪 X) 𝒻)
                 Ⅷ = ∧[ 𝒪 X ]-is-idempotent 𝟏[ 𝒪 X ] ⁻¹
 
-
-       α₂ : {!!}
-       α₂ = {!!}
-
      ξ : ∃! 𝒻⁻⋆ ꞉ (⟨ 𝒪 Patchₛ-A ⟩ → ⟨ 𝒪 X ⟩) ,
             (is-a-frame-homomorphism (𝒪 Patchₛ-A) (𝒪 X) 𝒻⁻⋆ holds)
           × (h ＝ 𝒻⁻⋆ ∘ 𝕚)
@@ -665,7 +687,6 @@ Finally, the complete definition of the algebra of clopens `ℂ`.
           𝕚
           𝕚-is-embedding
           patchₛ-is-spectral
-          (stone-locales-are-spectral (𝒪 X) 𝕤)
           𝕚-is-spectral
           {!!}
           †
