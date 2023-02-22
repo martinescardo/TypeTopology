@@ -252,7 +252,7 @@ We start by defining a map Ord → 𝕍 by transfinite recursion on Ord.
 
  to-∈-of-Ord-to-𝕍 : (α : Ord) {x : 𝕍}
                   → (∃ a ꞉ ⟨ α ⟩ , Ord-to-𝕍 (α ↓ a) ＝ x) → x ∈ Ord-to-𝕍 α
- to-∈-of-Ord-to-𝕍 α {x} = back-Idtofun (∈-of-Ord-to-𝕍 α x)
+ to-∈-of-Ord-to-𝕍 α {x} = Idtofun⁻¹ (∈-of-Ord-to-𝕍 α x)
 
  from-∈-of-Ord-to-𝕍 : (α : Ord) {x : 𝕍}
                     → x ∈ Ord-to-𝕍 α → (∃ a ꞉ ⟨ α ⟩ , Ord-to-𝕍 (α ↓ a) ＝ x)

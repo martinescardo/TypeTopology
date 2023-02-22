@@ -315,7 +315,7 @@ equivalent to a large one. We do *not* use resizing axioms.
   ≺-＝-∈ {a} {b} = ap (_holds) (extension-rel-triangle₂ ~EqRel _ _ a b)
 
   ∈-to-≺ : {a b : A} → f a ∈ f b → [ a ] ≺ [ b ]
-  ∈-to-≺ = back-Idtofun ≺-＝-∈
+  ∈-to-≺ = Idtofun⁻¹ ≺-＝-∈
 
   ≺-to-∈ : {a b : A} → [ a ] ≺ [ b ] → f a ∈ f b
   ≺-to-∈ = Idtofun ≺-＝-∈

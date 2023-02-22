@@ -75,8 +75,8 @@ Idtofun-retraction refl _ = refl
 Idtofun-section : {X Y : 𝓤 ̇ } (p : X ＝ Y) → Idtofun (p ⁻¹) ∘ Idtofun p ∼ id
 Idtofun-section refl _ = refl
 
-back-Idtofun : {X Y : 𝓤 ̇ } → X ＝ Y → Y → X
-back-Idtofun = transport⁻¹ id
+Idtofun⁻¹ : {X Y : 𝓤 ̇ } → X ＝ Y → Y → X
+Idtofun⁻¹ = transport⁻¹ id
 
 forth-and-back-transport : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
                            {x y : X} (p : x ＝ y) {a : A x}
@@ -110,12 +110,12 @@ transport-× A B refl = refl
 
 transport-∙ : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
               {x y z : X} (q : x ＝ y) (p : y ＝ z) {a : A x}
-            → transport A  (q ∙ p) a ＝ transport A p (transport A q a)
+            → transport A (q ∙ p) a ＝ transport A p (transport A q a)
 transport-∙ A refl refl = refl
 
 transport-∙' : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
                {x y z : X} (q : x ＝ y) (p : y ＝ z)
-             → transport A  (q ∙ p) ＝ transport A p ∘ transport A q
+             → transport A (q ∙ p) ＝ transport A p ∘ transport A q
 transport-∙' A refl refl = refl
 
 transport-ap : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : Y → 𝓦 ̇ )

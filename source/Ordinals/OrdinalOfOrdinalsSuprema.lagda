@@ -329,7 +329,7 @@ induced order on Σα.
  ≺/-to-≺ = Idtofun ≺/-＝-≺
 
  ≺-to-≺/ : {p q : Σα} → p ≺ q → [ p ] ≺/ [ q ]
- ≺-to-≺/ = back-Idtofun ≺/-＝-≺
+ ≺-to-≺/ = Idtofun⁻¹ ≺/-＝-≺
 
  ≺/-is-prop-valued : is-prop-valued _≺/_
  ≺/-is-prop-valued x y = holds-is-prop (x ≺/[Ω] y)

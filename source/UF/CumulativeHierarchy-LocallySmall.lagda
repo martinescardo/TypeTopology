@@ -264,8 +264,8 @@ Finally, we show that ＝⁻ and ＝ are equivalent, making 𝕍 a locally small
    h : {A : 𝓤 ̇ } (f : A → 𝕍)
      → ((a : A) → f a ＝⁻ f a)
      → 𝕍-set f ＝⁻ 𝕍-set f
-   h {A} f r = back-Idtofun (＝⁻-behaviour f f)
-                            ((λ a → ∣ a , r a ∣) , (λ a → ∣ a , r a ∣))
+   h {A} f r = Idtofun⁻¹ (＝⁻-behaviour f f)
+                         ((λ a → ∣ a , r a ∣) , (λ a → ∣ a , r a ∣))
 
  ＝-to-＝⁻ : {x y : 𝕍} → x ＝ y → x ＝⁻ y
  ＝-to-＝⁻ refl = ＝⁻-is-reflexive
