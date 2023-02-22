@@ -158,8 +158,13 @@ succℤ-no-fp (negsucc (succ x)) e = succ-no-fp x (negsucc-lc (e ⁻¹))
 
 is-pos-succ-succℤ : (x : ℤ) → is-pos-succ x → is-pos-succ (succℤ x)
 is-pos-succ-succℤ (pos 0)        g = 𝟘-elim g
-is-pos-succ-succℤ (pos (succ x)) g = g -- TODO : Is this okay?
+is-pos-succ-succℤ (pos (succ x)) g = g 
 is-pos-succ-succℤ (negsucc x)    g = 𝟘-elim g
+
+from-is-zero : (z : ℤ) → is-zero z → z ＝ pos 0
+from-is-zero (negsucc x)    iz = 𝟘-elim iz
+from-is-zero (pos 0)        iz = refl
+from-is-zero (pos (succ m)) iz = 𝟘-elim iz
 
 \end{code}
 
