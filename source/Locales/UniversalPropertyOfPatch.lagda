@@ -396,6 +396,19 @@ Finally, the complete definition of the algebra of clopens `ℂ`.
     b′ : ba-structure 𝓤 ℬ𝒶𝓈𝒾𝒸₀
     b′ = pr₁ ξ
 
+  ℂb : BooleanAlgebra (𝓤 ⁺) 𝓤
+  ℂb = ℬ𝒶𝓈𝒾𝒸 , b′
+   where
+    ξ : Σ b′ ꞉ ba-structure 𝓤 ℬ𝒶𝓈𝒾𝒸 , is-ba-homomorphism ℂ (ℬ𝒶𝓈𝒾𝒸 , b′) 𝔯₁ holds
+    ξ = transport-ba-structure 𝒞𝓁ℴ𝓅 ℬ𝒶𝓈𝒾𝒸 𝔯₁ (pr₂ (≃-sym basic-is-equivalent-to-clop)) (pr₂ ℂ)
+
+    b′ : ba-structure 𝓤 ℬ𝒶𝓈𝒾𝒸
+    b′ = pr₁ ξ
+
+  𝔯₁-is-ba-homomorphism : is-ba-homomorphism ℂ ℂb 𝔯₁ holds
+  𝔯₁-is-ba-homomorphism =
+   pr₂ (transport-ba-structure 𝒞𝓁ℴ𝓅 ℬ𝒶𝓈𝒾𝒸 𝔯₁ (pr₂ (≃-sym basic-is-equivalent-to-clop)) (pr₂ ℂ))
+
 \end{code}
 
 \section{Proof of the Universal Property}
@@ -621,7 +634,7 @@ Finally, the complete definition of the algebra of clopens `ℂ`.
        ϟ : Σ ib ꞉ index ℬ , 𝟎[ 𝒪 A ] ＝ ℬ [ ib ]
          → Σ iu ꞉ index ℬ , 𝟏[ 𝒪 A ] ＝ ℬ [ iu ]
          → is-lattice-homomorphism ℂ₀ (𝒪 X) h holds
-       ϟ (ib , q₁) (iu , q₂) = α₁ , {!!}
+       ϟ (ib , q₁) (iu , q₂) = α₁ , {!α₂!} , α₃ , α₄
         where
          k = (iu , ib) ∷ []
 
@@ -676,6 +689,20 @@ Finally, the complete definition of the algebra of clopens `ℂ`.
                      where
                       ※ = (frame-homomorphisms-preserve-top (𝒪 A) (𝒪 X) 𝒻)
                 Ⅷ = ∧[ 𝒪 X ]-is-idempotent 𝟏[ 𝒪 X ] ⁻¹
+
+         α₃ : h ⊥[ ℂ₀ ] ＝ 𝟎[ 𝒪 X ]
+         α₃ = {!!}
+
+         α₄ : (x y : ⟪ ℂ₀ ⟫) → h (x ⋎[ ℂ₀ ] y) ＝ h x ∨[ 𝒪 X ] h y
+         α₄ x y = h (x ⋎[ ℂ₀ ] y)                      ＝⟨ refl ⟩
+                  h₀ (𝔰₂ (x ⋎[ ℂ₀ ] y))                ＝⟨  {!!}   ⟩
+                  h₀ (𝔰₂ x ⋎[ ℂb ] 𝔰₂ y)               ＝⟨  {!!}   ⟩
+                  h₀ (𝔰₂ x ⋎[ ℂb ] 𝔰₂ y)               ＝⟨  {!!}   ⟩
+                  h₀ (𝔰₂ x) ∨[ 𝒪 X ] h₀ (𝔰₂ y)         ＝⟨ refl    ⟩
+                  h x ∨[ 𝒪 X ] h y                     ∎
+                   where
+                    κp : is-clopen (𝒪 Patchₛ-A) (pr₁ (to-clop x) ∨[ 𝒪 Patchₛ-A ] pr₁ (to-clop y)) holds
+                    κp = clopens-are-closed-under-∨ (𝒪 Patchₛ-A) _ _ (pr₂ (to-clop x)) (pr₂ (to-clop y))
 
      ξ : ∃! 𝒻⁻⋆ ꞉ (⟨ 𝒪 Patchₛ-A ⟩ → ⟨ 𝒪 X ⟩) ,
             (is-a-frame-homomorphism (𝒪 Patchₛ-A) (𝒪 X) 𝒻⁻⋆ holds)
