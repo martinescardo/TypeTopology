@@ -1137,5 +1137,63 @@ module OpenMeetClosedLemmata (X  : Locale (𝓤 ⁺) 𝓤 𝓤) (σᴰ : spectra
          Ⅲ = †
          Ⅳ = 𝟎-is-id D
 
+module AdditionalLemmata (X : Locale (𝓤 ⁺) 𝓤 𝓤) where
+
+ ∨-distributivity-over-⋁ : (S T : Fam 𝓤 ⟨ 𝒪 X ⟩)
+                         → ∥ index S ∥
+                         → ∥ index T ∥
+                         → (⋁[ 𝒪 X ] S) ∨[ 𝒪 X ] (⋁[ 𝒪 X ] T)
+                         ＝ ⋁[ 𝒪 X ] ⁅ (S [ i ]) ∨[ 𝒪 X ] (T [ j ])
+                                      ∣ (i , j) ∶ (index S × index T) ⁆
+ ∨-distributivity-over-⋁ S T ∣i∣ ∣j∣ = ≤-is-antisymmetric (poset-of (𝒪 X)) † ‡
+  where
+   open Joins (λ x y → x ≤[ poset-of (𝒪 X) ] y)
+   open PosetReasoning (poset-of (𝒪 X))
+
+   𝓁𝒽𝓈 = (⋁[ 𝒪 X ] S) ∨[ 𝒪 X ] (⋁[ 𝒪 X ] T)
+   𝓇𝒽𝓈 = ⋁[ 𝒪 X ] ⁅ (S [ i ]) ∨[ 𝒪 X ] (T [ j ]) ∣ (i , j) ∶ (index S × index T) ⁆
+
+   † : (𝓁𝒽𝓈 ≤[ poset-of (𝒪 X) ] 𝓇𝒽𝓈) holds
+   † = ∨[ 𝒪 X ]-least †₁ †₂
+    where
+     ♣₁ : index T → ((⋁[ 𝒪 X ] S) ≤[ poset-of (𝒪 X) ] 𝓇𝒽𝓈) holds
+     ♣₁ j = ⋁[ 𝒪 X ]-least S (𝓇𝒽𝓈 , ※)
+      where
+       ※ : (𝓇𝒽𝓈 is-an-upper-bound-of S) holds
+       ※ i =
+        S [ i ]                         ≤⟨ ∨[ 𝒪 X ]-upper₁ (S [ i ]) (T [ j ]) ⟩
+        (S [ i ]) ∨[ 𝒪 X ] (T [ j ])    ≤⟨ ⋁[ 𝒪 X ]-upper _ (i , j)            ⟩
+        𝓇𝒽𝓈                             ■
+
+     †₁ : ((⋁[ 𝒪 X ] S) ≤[ poset-of (𝒪 X) ] 𝓇𝒽𝓈) holds
+     †₁ = ∥∥-rec (holds-is-prop ((⋁[ 𝒪 X ] S) ≤[ poset-of (𝒪 X) ] 𝓇𝒽𝓈)) ♣₁ ∣j∣
+
+     ♣₂ : index S → ((⋁[ 𝒪 X ] T) ≤[ poset-of (𝒪 X) ] 𝓇𝒽𝓈) holds
+     ♣₂ i = ⋁[ 𝒪 X ]-least T (𝓇𝒽𝓈 , ※)
+      where
+       ※ : (𝓇𝒽𝓈 is-an-upper-bound-of T) holds
+       ※ j =
+        T [ j ]                        ≤⟨ ∨[ 𝒪 X ]-upper₂ (S [ i ]) (T [ j ]) ⟩
+        (S [ i ]) ∨[ 𝒪 X ] (T [ j ])   ≤⟨ ⋁[ 𝒪 X ]-upper _ (i , j)            ⟩
+        𝓇𝒽𝓈 ■
+
+     †₂ : ((⋁[ 𝒪 X ] T) ≤[ poset-of (𝒪 X) ] 𝓇𝒽𝓈) holds
+     †₂ = ∥∥-rec (holds-is-prop ((⋁[ 𝒪 X ] T) ≤[ poset-of (𝒪 X) ] 𝓇𝒽𝓈)) ♣₂ ∣i∣
+
+   ‡ : (𝓇𝒽𝓈 ≤[ poset-of (𝒪 X) ] 𝓁𝒽𝓈) holds
+   ‡ = ⋁[ 𝒪 X ]-least
+        ⁅ (S [ i ]) ∨[ 𝒪 X ] (T [ j ]) ∣ (i , j) ∶ (index S × index T) ⁆
+        (𝓁𝒽𝓈 , ※)
+        where
+         ※ : (𝓁𝒽𝓈
+               is-an-upper-bound-of
+              ⁅ (S [ i ]) ∨[ 𝒪 X ] (T [ j ]) ∣ (i , j) ∶ (index S × index T) ⁆)
+             holds
+         ※ (i , j) = (S [ i ])    ∨[ 𝒪 X ] (T [ j ])     ≤⟨ Ⅰ ⟩
+                     (⋁[ 𝒪 X ] S) ∨[ 𝒪 X ] (T [ j ])     ≤⟨ Ⅱ ⟩
+                     (⋁[ 𝒪 X ] S) ∨[ 𝒪 X ] (⋁[ 𝒪 X ] T)  ■
+                      where
+                       Ⅰ = ∨[ 𝒪 X ]-left-monotone (⋁[ 𝒪 X ]-upper S i)
+                       Ⅱ = ∨[ 𝒪 X ]-right-monotone (⋁[ 𝒪 X ]-upper T j)
 
 \end{code}
