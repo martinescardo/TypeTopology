@@ -169,8 +169,8 @@ respectively.
   B : 𝓤  ̇
   B = index ℬ-patch-↑
 
-  β : index ℬ-patch-↑ → ⟨ 𝒪 Patchₛ-A ⟩
-  β = λ - → ℬ-patch-↑ [ - ]
+  γγ : index ℬ-patch-↑ → ⟨ 𝒪 Patchₛ-A ⟩
+  γγ = λ - → ℬ-patch-↑ [ - ]
 
 \end{code}
 
@@ -207,7 +207,7 @@ small.
 
   basic-is-small : ℬ𝒶𝓈𝒾𝒸 is 𝓤 small
   basic-is-small =
-   sr β (B , ≃-refl B) † carrier-of-[ poset-of (𝒪 Patchₛ-A) ]-is-set
+   sr γγ (B , ≃-refl B) † carrier-of-[ poset-of (𝒪 Patchₛ-A) ]-is-set
     where
      † : ⟨ 𝒪 Patchₛ-A ⟩ is-locally 𝓤 small
      † = patch-is-locally-small
@@ -370,7 +370,7 @@ Finally, the complete definition of the algebra of clopens `ℂ`.
 \begin{code}
 
   to-clop : ℬ𝒶𝓈𝒾𝒸₀ → 𝒞𝓁ℴ𝓅
-  to-clop = pr₁ basic₀-is-equivalent-to-clop
+  to-clop = 𝔰₁ ∘ 𝔰₂
 
   to-basic₀ : 𝒞𝓁ℴ𝓅 → ℬ𝒶𝓈𝒾𝒸₀
   to-basic₀ = inverse to-clop (pr₂ basic₀-is-equivalent-to-clop)
@@ -470,7 +470,7 @@ Finally, the complete definition of the algebra of clopens `ℂ`.
      g []             = 𝟎[ 𝒪 X ]
      g ((i , j) ∷ ks) = (𝒻 ⋆∙ (ℬ [ i ]) ∧[ 𝒪 X ] ¬𝒻 j) ∨[ 𝒪 X ] g ks
 
-     congruence-wrt-β : (i j : index ℬ-patch-↑) → β i ＝ β j → g i ＝ g j
+     congruence-wrt-β : (i j : index ℬ-patch-↑) → γγ i ＝ γγ j → g i ＝ g j
      congruence-wrt-β []       []               p = refl
      congruence-wrt-β []       ((j₁ , j₂) ∷ js) p = †
       where
@@ -522,10 +522,18 @@ Finally, the complete definition of the algebra of clopens `ℂ`.
        † = {!!}
 
      h₀ : ℬ𝒶𝓈𝒾𝒸 → ⟨ 𝒪 X ⟩
-     h₀ = pr₁ (pr₁ (factor-through-image pt fe β X-is-set g congruence-wrt-β))
+     h₀ = pr₁ (pr₁ (factor-through-image pt fe γγ X-is-set g congruence-wrt-β))
 
-     υ : h₀ ∘ corestriction pt β ∼ g
-     υ = pr₂ (pr₁ (factor-through-image pt fe β X-is-set g congruence-wrt-β))
+     -- h₁(j) ≔ ⋁ ⁅ f*(Bₘ) ∧ ¬f*(Bₙ) ∣ Bₘ ≤ j(Bₙ) ⁆
+
+     h₁ : ℬ𝒶𝓈𝒾𝒸 → ⟨ 𝒪 X ⟩
+     h₁ (j , p) =
+      ⋁[ 𝒪 X ] (I , (λ { ((m , n) , _) → (𝒻 ⋆∙ (ℬ [ m ])) ∧[ 𝒪 X ] ¬𝒻 n }))
+       where
+        I = Σ (m , n) ꞉ index ℬ × index ℬ , (((ℬ [ m ]) ≤[ poset-of (𝒪 A) ] j .pr₁ (ℬ [ n ]) ) holds)
+
+     υ : h₀ ∘ corestriction pt γγ ∼ g
+     υ = pr₂ (pr₁ (factor-through-image pt fe γγ X-is-set g congruence-wrt-β))
 
      h : ℬ𝒶𝓈𝒾𝒸₀ → ⟨ 𝒪 X ⟩
      h = h₀ ∘ 𝔰₂
@@ -665,7 +673,7 @@ Finally, the complete definition of the algebra of clopens `ℂ`.
               h₀ (𝔯₁ (𝟏[ 𝒪 Patchₛ-A ] , 𝟏-is-clopen (𝒪 Patchₛ-A)))            ＝⟨ Ⅰ     ⟩
               h₀ (𝟏[ 𝒪 Patchₛ-A ] , ∣ k , ♣ ∣)                                ＝⟨ Ⅲ     ⟩
               h₀ (ℬ-patch-↑ [ k ] , ∣ k , refl ∣)                             ＝⟨ refl  ⟩
-              h₀ (corestriction pt β k)                                       ＝⟨ υ k   ⟩
+              h₀ (corestriction pt γγ k)                                      ＝⟨ υ k   ⟩
               g (iu , ib ∷ [])                                                ＝⟨ refl  ⟩
               (𝒻 ⋆∙ (ℬ [ iu ]) ∧[ 𝒪 X ] ¬𝒻 ib) ∨[ 𝒪 X ] 𝟎[ 𝒪 X ]              ＝⟨ Ⅳ     ⟩
               (𝒻 ⋆∙ (ℬ [ iu ]) ∧[ 𝒪 X ] ¬𝒻 ib)                                ＝⟨ Ⅴ     ⟩
