@@ -104,7 +104,8 @@ data E where
 
 \end{code}
 
-All ordinals in the image of Δ are retracts of ℕ.
+All ordinals in the image of Δ are retracts of ℕ (and hence
+countable).
 
 \begin{code}
 
@@ -160,6 +161,15 @@ Now we define Κ, ι, ι-is-embedding by simultaneous induction.
 
 \end{code}
 
+Before completing the induction, we define the following abbreviation:
+
+\begin{code}
+
+j : (ν : E) → ⟨ Δ ν ⟩ ↪ ⟨ Κ ν ⟩
+j ν = ι ν , ι-is-embedding ν
+
+\end{code}
+
 We use the following auxiliary extension constructions, illustrated by
 this diagram:
 
@@ -167,7 +177,7 @@ this diagram:
           ⟨ Δ ν ⟩  ⟶ ⟨ Κ ν ⟩
               |           .
               |           .
-           A  |           .  (K ∘ A) ↗ (ι ν , ι-is-embedding ν)
+           A  |           .  (K ∘ A) ↗ j ν
               |           .
               ↓           ↓
               E    ⟶   Ordᵀ
@@ -202,7 +212,7 @@ The above gives an extension up to ordinal equivalence
 module Κ-extension (ν : E) (A : ⟨ Δ ν ⟩ → E) where
 
  ϕ : (x : ⟨ Δ ν ⟩) → [ 𝓚 ν A (ι ν x) ] ≃ₒ [ Κ (A x) ]
- ϕ = ↗-property (Κ ∘ A) (ι ν , ι-is-embedding ν)
+ ϕ = ↗-property (Κ ∘ A) (j ν)
 
  φ : (x : ⟨ Δ ν ⟩) → ⟨ 𝓚 ν A (ι ν x) ⟩ → ⟨ Κ (A x) ⟩
  φ x = ≃ₒ-to-fun [ 𝓚 ν A (ι ν x) ] [ Κ (A x) ] (ϕ x)
@@ -210,11 +220,11 @@ module Κ-extension (ν : E) (A : ⟨ Δ ν ⟩ → E) where
  γ : (x : ⟨ Δ ν ⟩) → ⟨ Κ (A x) ⟩ → ⟨ 𝓚 ν A (ι ν x) ⟩
  γ x = ≃ₒ-to-fun⁻¹ [ 𝓚 ν A (ι ν x) ] [ Κ (A x) ] (ϕ x)
 
- γ-is-equiv : (x : ⟨ Δ ν ⟩) → is-equiv (γ x)
- γ-is-equiv x = ≃ₒ-to-fun⁻¹-is-equiv [ 𝓚 ν A (ι ν x) ] [ Κ (A x) ] (ϕ x)
-
  φ-is-equiv : (x : ⟨ Δ ν ⟩) → is-equiv (φ x)
  φ-is-equiv x = ≃ₒ-to-fun-is-equiv [ 𝓚 ν A (ι ν x) ] [ Κ (A x) ] (ϕ x)
+
+ γ-is-equiv : (x : ⟨ Δ ν ⟩) → is-equiv (γ x)
+ γ-is-equiv x = ≃ₒ-to-fun⁻¹-is-equiv [ 𝓚 ν A (ι ν x) ] [ Κ (A x) ] (ϕ x)
 
 Κ ⌜𝟙⌝         = 𝟙ᵒ
 Κ ⌜ω+𝟙⌝       = ℕ∞ᵒ
@@ -266,15 +276,18 @@ module _ (pe : propext 𝓤₀) where
  𝓚-has-infs-of-complemented-subsets : (ν : E) (A : ⟨ Δ ν ⟩ → E) (x : ⟨ Κ ν ⟩)
                                     → has-infs-of-complemented-subsets (𝓚 ν A x)
 
- K-has-infs-of-complemented-subsets ⌜𝟙⌝         = 𝟙ᵒ-has-infs-of-complemented-subsets
- K-has-infs-of-complemented-subsets ⌜ω+𝟙⌝       = ℕ∞ᵒ-has-infs-of-complemented-subsets pe
+ K-has-infs-of-complemented-subsets ⌜𝟙⌝         =
+  𝟙ᵒ-has-infs-of-complemented-subsets
+ K-has-infs-of-complemented-subsets ⌜ω+𝟙⌝       =
+  ℕ∞ᵒ-has-infs-of-complemented-subsets pe
  K-has-infs-of-complemented-subsets (ν₀ ⌜+⌝ ν₁) =
-   ∑-has-infs-of-complemented-subsets pe
-     𝟚ᵒ
-     (cases (λ _ → Κ ν₀) (λ _ → Κ ν₁))
-     𝟚ᵒ-has-infs-of-complemented-subsets
-     (dep-cases (λ _ → K-has-infs-of-complemented-subsets ν₀)
-                (λ _ → K-has-infs-of-complemented-subsets ν₁))
+  ∑-has-infs-of-complemented-subsets pe
+    𝟚ᵒ
+    (cases (λ _ → Κ ν₀) (λ _ → Κ ν₁))
+    𝟚ᵒ-has-infs-of-complemented-subsets
+    (dep-cases
+      (λ _ → K-has-infs-of-complemented-subsets ν₀)
+      (λ _ → K-has-infs-of-complemented-subsets ν₁))
  K-has-infs-of-complemented-subsets (ν₀ ⌜×⌝ ν₁) =
    ∑-has-infs-of-complemented-subsets pe
      (Κ ν₀)
@@ -299,7 +312,8 @@ the image of Κ are compact:
 
 \begin{code}
 
- Κ-Compact : {𝓥 : Universe} (ν : E) → Compact ⟨ Κ ν ⟩ {𝓥}
+ Κ-Compact : {𝓥 : Universe} (ν : E)
+           → Compact ⟨ Κ ν ⟩ {𝓥}
  Κ-Compact ν = has-inf-gives-Compact _ (K-has-infs-of-complemented-subsets ν)
 
  𝓚-Compact : {𝓥 : Universe} (ν : E) (A : ⟨ Δ ν ⟩ → E) (x : ⟨ Κ ν ⟩)
@@ -633,7 +647,7 @@ It doesn't seem to be possible to reverse any of the implications (0)
 and (1), so that the proposition "(P -> 2) has decidable equality"
 seems to be strictly between "P is decidable" and "¬P is decidable".
 
-This is discussed in the file Taboos2.P2.
+This is discussed in the file Taboos.P2.
 
 TODO. Do we have (ν : E) → [ Δ ν ] ⊴ [ Κ ν ]? Notice that we do have
 (ω +ₒ 𝟙ₒ) ⊴ ℕ∞ₒ, proved in OrdinalOfOrdinals, submodule ℕ∞-in-Ord.

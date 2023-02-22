@@ -195,19 +195,25 @@ neutral, but we give a direct proof instead.
  where
   f : ⟨ (α +ₒ 𝟙ₒ) ↓ inr ⋆ ⟩ → ⟨ α ⟩
   f (inl x , l) = x
+
   g : ⟨ α ⟩ → ⟨ (α +ₒ 𝟙ₒ) ↓ inr ⋆ ⟩
   g x = (inl x , ⋆)
+
   f-order-preserving : is-order-preserving ((α +ₒ 𝟙ₒ) ↓ inr ⋆) α f
   f-order-preserving (inl x , _) (inl y , _) l = l
+
   f-is-equiv : is-equiv f
   f-is-equiv = qinvs-are-equivs f (g , η , ε)
    where
     η : g ∘ f ∼ id
     η (inl _ , _) = refl
+
     ε : f ∘ g ∼ id
     ε _ = refl
+
   g-order-preserving : is-order-preserving α ((α +ₒ 𝟙ₒ) ↓ inr ⋆) g
   g-order-preserving x y l = l
+
   h : ((α +ₒ 𝟙ₒ) ↓ inr ⋆) ≃ₒ α
   h = f , f-order-preserving , f-is-equiv , g-order-preserving
 
@@ -429,9 +435,10 @@ partial ordering:
 
 \end{code}
 
-Classically, if α ≼ β then there is (a necessarily unique) γ with α +ₒ
-γ ＝ β. But this not necessarily the case constructively. For that
-purpose, we first characterize the order of subsingleton ordinals.
+Classically, if α ≼ β then there is (a necessarily unique) γ with
+α +ₒ γ ＝ β. But this not necessarily the case constructively. For
+that purpose, we first characterize the order of subsingleton
+ordinals.
 
 \begin{code}
 
@@ -497,12 +504,13 @@ The existence of ordinal subtraction implies excluded middle.
 \begin{code}
 
 existence-of-subtraction : (𝓤 : Universe) → 𝓤 ⁺ ̇
-existence-of-subtraction 𝓤 = (α β : Ordinal 𝓤) → α ≼ β → Σ γ ꞉ Ordinal 𝓤 , α +ₒ γ ＝ β
+existence-of-subtraction 𝓤 = (α β : Ordinal 𝓤)
+                           → α ≼ β
+                           → Σ γ ꞉ Ordinal 𝓤 , α +ₒ γ ＝ β
 
 existence-of-subtraction-is-prop : is-prop (existence-of-subtraction 𝓤)
 existence-of-subtraction-is-prop = Π₃-is-prop fe'
-                                     (λ α β l → left-+ₒ-is-embedding α β)
-
+                                    (λ α β l → left-+ₒ-is-embedding α β)
 
 ordinal-subtraction-gives-excluded-middle : existence-of-subtraction 𝓤 → EM 𝓤
 ordinal-subtraction-gives-excluded-middle {𝓤} ϕ P P-is-prop = g
@@ -706,8 +714,8 @@ However, the successor function does not preserve _⊴_ in general:
 \begin{code}
 
 succ-not-necessarily-monotone : ((α β : Ordinal 𝓤)
-                              → α ⊴ β
-                              → (α +ₒ 𝟙ₒ) ⊴ (β +ₒ 𝟙ₒ))
+                                      → α ⊴ β
+                                      → (α +ₒ 𝟙ₒ) ⊴ (β +ₒ 𝟙ₒ))
                               → WEM 𝓤
 succ-not-necessarily-monotone {𝓤} ϕ P isp = II I
  where

@@ -226,7 +226,6 @@ TODO. Derive a constructive taboo from the hypothesis
 
       ((P : 𝓤 ̇ ) → is-prop P → is-pseudo-inhabited P → P).
 
-
 \begin{code}
 
 η : (X : 𝓤 ̇ ) → X → is-pseudo-inhabited' X
@@ -256,11 +255,15 @@ _♯ {𝓤} {𝓥} {X} {Y} h (r , rκ) = q
   q : is-pseudo-inhabited' Y
   q = u , v
 
-μ : (X : 𝓤 ̇ ) → is-pseudo-inhabited' (is-pseudo-inhabited' X) → is-pseudo-inhabited' X
+μ : (X : 𝓤 ̇ )
+  → is-pseudo-inhabited' (is-pseudo-inhabited' X)
+  → is-pseudo-inhabited' X
 μ X = id ♯
 
 being-pseudo-inhabited'-is-prop : {X : 𝓤 ̇ } → is-prop X → is-prop (is-pseudo-inhabited' X)
-being-pseudo-inhabited'-is-prop {𝓤} {X} i = prop-criterion
-                                              (λ (r , rκ) → sections-have-at-most-one-retraction fe (κ X)
-                                                             (r , retraction-of-κ-is-section i r rκ))
+being-pseudo-inhabited'-is-prop {𝓤} {X} i =
+ prop-criterion
+  (λ (r , rκ) → sections-have-at-most-one-retraction fe (κ X)
+               (r , retraction-of-κ-is-section i r rκ))
+
 \end{code}

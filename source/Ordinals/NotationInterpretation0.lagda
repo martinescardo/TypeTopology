@@ -34,36 +34,36 @@ private
 
 open PropositionalTruncation pt
 
-open import UF.ImageAndSurjection pt
+open import MLTT.Plus-Properties
+open import MLTT.Spartan
+
+open import Notation.CanonicalMap
+
 open import UF.Embeddings
+open import UF.ImageAndSurjection pt
 open import UF.Size
 
-open import Ordinals.Brouwer
-open import Ordinals.Type
 open import Ordinals.Arithmetic fe
 open import Ordinals.Arithmetic-Properties ua
-open import Ordinals.OrdinalOfOrdinalsSuprema ua
-open import Ordinals.OrdinalOfOrdinals ua
+open import Ordinals.Brouwer
 open import Ordinals.Injectivity
+open import Ordinals.OrdinalOfOrdinals ua
+open import Ordinals.OrdinalOfOrdinalsSuprema ua
 open import Ordinals.ToppedArithmetic fe
 open import Ordinals.ToppedType fe
-open import Ordinals.TrichotomousType fe
 open import Ordinals.TrichotomousArithmetic fe
+open import Ordinals.TrichotomousType fe
+open import Ordinals.Type
 open import Ordinals.Underlying
 
-open import TypeTopology.GenericConvergentSequenceCompactness
+open ordinals-injectivity fe
+
 open import TypeTopology.CompactTypes
+open import TypeTopology.GenericConvergentSequenceCompactness
 open import TypeTopology.PropTychonoff
 open import TypeTopology.SquashedSum fe
 
 open import CoNaturals.GenericConvergentSequence
-
-open import MLTT.Spartan
-open import MLTT.Plus-Properties
-
-open import Notation.CanonicalMap
-
-open ordinals-injectivity fe
 
 module _ (sr : Set-Replacement pt) where
 
@@ -133,7 +133,7 @@ relation _⊴_ on ordinals, under the assumption of excluded middle:
    ↓       ↓
  ⟦ b ⟧₂ → ⟦ b ⟧₁
 
-But we first show that ⟦ b ⟧₂ and ⟦ b ⟧₁ are compact. And pointed. The
+But we first show that ⟦ b ⟧₂ and ⟦ b ⟧₁ are compact and pointed. The
 pointedness is absolutely essential in the proofs by induction, via
 the indirect use of prop-tychonoff in Σ¹, because a version of
 prop-tychonoff without pointedness implies excluded middle. And this

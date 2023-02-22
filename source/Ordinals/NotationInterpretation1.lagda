@@ -145,8 +145,8 @@ private
 
 \end{code}
 
-In the following, ⟪ τ ⟫ denotes the underlying set of an ordinal τ, and
-_≺⟪ τ ⟫_ denotes its underlying order.
+In the following, ⟨ τ ⟩ denotes the underlying set of an ordinal τ, and
+_≺⟨ τ ⟩_ denotes its underlying order.
 
 \begin{code}
 
@@ -371,14 +371,16 @@ much easier (given the mathematics we have already developed).
 
 \begin{code}
 
-Κ-has-infs-of-complemented-subsets pe One       = 𝟙ᵒ-has-infs-of-complemented-subsets
+Κ-has-infs-of-complemented-subsets pe One       =
+ 𝟙ᵒ-has-infs-of-complemented-subsets
 Κ-has-infs-of-complemented-subsets pe (Add ν μ) =
  ∑-has-infs-of-complemented-subsets pe
   𝟚ᵒ
   (cases (λ _ → Κ ν) (λ _ → Κ μ))
   𝟚ᵒ-has-infs-of-complemented-subsets
-  (dep-cases (λ _ → Κ-has-infs-of-complemented-subsets pe ν)
-                                                        (λ _ → Κ-has-infs-of-complemented-subsets pe μ))
+  (dep-cases
+    (λ _ → Κ-has-infs-of-complemented-subsets pe ν)
+    (λ _ → Κ-has-infs-of-complemented-subsets pe μ))
 Κ-has-infs-of-complemented-subsets pe (Mul ν μ) =
  ∑-has-infs-of-complemented-subsets pe
   (Κ ν)
@@ -500,7 +502,6 @@ module _ (pt : propositional-truncations-exist)
                              (λ u → prop-tychonoff fe
                                      (ℕ-to-ℕ∞-is-embedding fe₀ u)
                                      (λ (i , _) → 𝓢-compact∙ (ν i))))
-
   σ : (ν : OE) → ⟨ Κ ν ⟩ → ⟨ 𝓢 ν ⟩
   σ One       x           = x
   σ (Add ν μ) (inl ⋆ , x) = inl (σ ν x)

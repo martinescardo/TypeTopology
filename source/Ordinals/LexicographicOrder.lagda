@@ -47,10 +47,10 @@ Usually in such a context, a ≤ b is defined to be ¬ (b < a).
 
 The negation of the strict lexicographic product is, then,
 
- ¬ (x < x') ∧ ¬ (x ＝ x' ∧ y < y') by de Morgan
-⇔ x ≤ x' ∧ ¬ (x ＝ x' ∧ y < y') by definition of ≤
-⇔ x' ≤ x ∧ ((x ＝ x' → ¬ (y < y')) by (un)currying
-⇔ x' ≤ x ∧ ((x ＝ x' → y' ≤ y) by definition of ≤
+ ¬ (x < x') ∧ ¬ (x ＝ x' ∧ y < y') by de Morgan,
+⇔ x ≤ x' ∧ ¬ (x ＝ x' ∧ y < y')    by definition of ≤,
+⇔ x' ≤ x ∧ ((x ＝ x' → ¬ (y < y')) by (un)currying,
+⇔ x' ≤ x ∧ ((x ＝ x' → y' ≤ y)     by definition of ≤.
 
 What this means is that the non-strict lexigraphic product of the
 induced non-strict order is induced by the strict lexicographic
