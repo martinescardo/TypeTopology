@@ -49,15 +49,25 @@ is-ℤ[1/2] : (z : ℤ) (n : ℕ) → 𝓤₀ ̇
 is-ℤ[1/2] z n = (n ＝ 0) ∔ (n > 0 × ℤodd z)
 
 is-ℤ[1/2]-is-prop : (z : ℤ) (n : ℕ) → is-prop (is-ℤ[1/2] z n)
-is-ℤ[1/2]-is-prop z n = +-is-prop ℕ-is-set (×-is-prop (<-is-prop-valued 0 n) (ℤodd-is-prop z)) I
+is-ℤ[1/2]-is-prop z n = +-is-prop ℕ-is-set II I
  where
   I : n ＝ 0 → ¬ (0 < n × ℤodd z)
   I n＝0 (0<n , odd-z) = not-less-than-itself 0 (transport (0 <_) n＝0 0<n)
 
+  II : is-prop (0 < n × ℤodd z)
+  II = ×-is-prop (<-is-prop-valued 0 n) (ℤodd-is-prop z)
+
 is-ℤ[1/2]-is-discrete : ((z , n) : ℤ × ℕ) → is-discrete (is-ℤ[1/2] z n)
-is-ℤ[1/2]-is-discrete (z , n) = +-is-discrete (λ x y → inl (ℕ-is-set x y))
-                                   (×-is-discrete (λ x y → inl (<-is-prop-valued 0 n x y))
-                                                  (λ x y → inl (ℤodd-is-prop z x y)))
+is-ℤ[1/2]-is-discrete (z , n) = +-is-discrete I II
+                                  
+ where
+  I : is-discrete (n ＝ 0)
+  I x y = inl (ℕ-is-set x y)
+
+  II : is-discrete (n > 0 × ℤodd z)
+  II = (×-is-discrete (λ x y → inl (<-is-prop-valued 0 n x y))
+                      (λ x y → inl (ℤodd-is-prop z x y)))
+  
 ℤ[1/2] : 𝓤₀ ̇
 ℤ[1/2] = Σ (z , n) ꞉ ℤ × ℕ , is-ℤ[1/2] z n
 
