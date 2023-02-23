@@ -15,7 +15,7 @@ import Naturals.Division
 import Naturals.Multiplication
 import Naturals.HCF
 import Naturals.Parity
-import Naturals.Exponents
+import Naturals.Exponentiation
 
 
 \end{code}

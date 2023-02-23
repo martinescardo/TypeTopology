@@ -9,7 +9,7 @@ module Integers.index where
 import Integers.Abs
 import Integers.Addition
 import Integers.Division
-import Integers.Exponents
+import Integers.Exponentiation
 import Integers.HCF
 import Integers.Type
 import Integers.Multiplication
