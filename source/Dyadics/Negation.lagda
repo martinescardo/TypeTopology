@@ -10,7 +10,7 @@ open import Integers.Type
 open import Integers.Multiplication
 open import Integers.Negation renaming (-_ to ℤ-_)
 open import Integers.Parity
-open import Naturals.Exponents
+open import Naturals.Exponentiation
 open import UF.Base hiding (_≈_)
 open import UF.Subsingletons
 
@@ -24,7 +24,8 @@ infix 31 -_
 ℤ[1/2]-minus-zero : - 0ℤ[1/2] ＝ 0ℤ[1/2]
 ℤ[1/2]-minus-zero = refl
 
-minus-normalise-pos : (p : ℤ) (a : ℕ) → - normalise-pos (p , a) ＝ normalise-pos (ℤ- p , a)
+minus-normalise-pos : (p : ℤ) (a : ℕ)
+                    → - normalise-pos (p , a) ＝ normalise-pos (ℤ- p , a)
 minus-normalise-pos p a = γ
  where
   p' = (pr₁ ∘ pr₁) (normalise-pos (p , a))
@@ -53,10 +54,14 @@ minus-normalise-pos p a = γ
   I = ≈-normalise-pos ((z , n) , α)
 
   γ : (z , n) , α ＝ - (- ((z , n) , α))
-  γ = (z , n) , α                   ＝⟨ ≈-to-＝ ((z , n) , α) (normalise-pos (z , n)) I ⟩
-      normalise-pos (z , n)         ＝⟨ ap (λ - → normalise-pos (- , n)) (minus-minus-is-plus z ⁻¹) ⟩
-      normalise-pos (ℤ- (ℤ- z) , n) ＝⟨ minus-normalise-pos (ℤ- z) n ⁻¹ ⟩
+  γ = (z , n) , α                   ＝⟨ i    ⟩
+      normalise-pos (z , n)         ＝⟨ ii   ⟩
+      normalise-pos (ℤ- (ℤ- z) , n) ＝⟨ iii  ⟩
       - normalise-pos (ℤ- z , n)    ＝⟨ refl ⟩
       - (- ((z , n) , α))           ∎
+   where
+    i   = ≈-to-＝ ((z , n) , α) (normalise-pos (z , n)) I
+    ii  = ap (λ - → normalise-pos (- , n)) (minus-minus-is-plus z ⁻¹)
+    iii = minus-normalise-pos (ℤ- z) n ⁻¹
 
 \end{code}

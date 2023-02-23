@@ -5,10 +5,10 @@ Andrew Sneap, 17 February 2022
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import MLTT.Spartan renaming (_+_ to _∔_)
-open import Naturals.Exponents
+open import Naturals.Exponentiation
 open import Dyadics.Type
 open import Integers.Type
-open import Integers.Exponents
+open import Integers.Exponentiation
 open import Integers.Multiplication
 open import Integers.Order
 open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
