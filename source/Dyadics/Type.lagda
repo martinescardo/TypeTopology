@@ -59,20 +59,22 @@ is-ℤ[1/2]-is-prop z n = +-is-prop ℕ-is-set II I
 
 is-ℤ[1/2]-is-discrete : ((z , n) : ℤ × ℕ) → is-discrete (is-ℤ[1/2] z n)
 is-ℤ[1/2]-is-discrete (z , n) = +-is-discrete I II
-                                  
  where
   I : is-discrete (n ＝ 0)
   I x y = inl (ℕ-is-set x y)
 
   II : is-discrete (n > 0 × ℤodd z)
-  II = (×-is-discrete (λ x y → inl (<-is-prop-valued 0 n x y))
-                      (λ x y → inl (ℤodd-is-prop z x y)))
+  II = ×-is-discrete (λ x y → inl (<-is-prop-valued 0 n x y))
+                     (λ x y → inl (ℤodd-is-prop z x y))
   
 ℤ[1/2] : 𝓤₀ ̇
 ℤ[1/2] = Σ (z , n) ꞉ ℤ × ℕ , is-ℤ[1/2] z n
 
 ℤ[1/2]-is-discrete : is-discrete ℤ[1/2]
-ℤ[1/2]-is-discrete = Σ-is-discrete (×-is-discrete ℤ-is-discrete ℕ-is-discrete) is-ℤ[1/2]-is-discrete
+ℤ[1/2]-is-discrete = Σ-is-discrete I is-ℤ[1/2]-is-discrete
+ where
+  I : is-discrete (ℤ × ℕ)
+  I = ×-is-discrete ℤ-is-discrete ℕ-is-discrete
 
 ℤ[1/2]-is-set : is-set ℤ[1/2]
 ℤ[1/2]-is-set = discrete-types-are-sets ℤ[1/2]-is-discrete
@@ -104,8 +106,16 @@ of dyadic operations, we will prove that dyadics are equivalent.
 normalise-pos-lemma : (z : ℤ) (n : ℕ) → ℤ[1/2]
 normalise-pos-lemma z 0        = (z , 0) , (inl refl)
 normalise-pos-lemma z (succ n) =
- Cases (ℤeven-or-odd z) (λ ez → (λ (k , e) → normalise-pos-lemma k n) (ℤeven-is-multiple-of-two z ez))
-                        (λ oz → (z , succ n) , inr (⋆ , oz))
+ Cases (ℤeven-or-odd z) case-even case-odd
+ where
+  case-even : ℤeven z → ℤ[1/2]
+  case-even ez = (λ (k , e) → normalise-pos-lemma k n) divide-by-two
+   where
+    divide-by-two : Σ k ꞉ ℤ , z ＝ pos 2 * k
+    divide-by-two = ℤeven-is-multiple-of-two z ez
+  
+  case-odd : ℤodd z → ℤ[1/2]
+  case-odd oz = (z , succ n) , inr (⋆ , oz)
 
 normalise-pos : ℤ × ℕ → ℤ[1/2]
 normalise-pos (z , n) = normalise-pos-lemma z n
