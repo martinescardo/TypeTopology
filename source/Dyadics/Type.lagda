@@ -16,7 +16,7 @@ open import Rationals.Multiplication renaming (_*_ to _ℚ*_)
 open import Rationals.Type
 open import Naturals.Addition
 open import Naturals.Division
-open import Naturals.Exponents
+open import Naturals.Exponentiation
 open import Naturals.HCF
 open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
 open import Naturals.Order

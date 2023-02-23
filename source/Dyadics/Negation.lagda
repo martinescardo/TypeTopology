@@ -10,7 +10,7 @@ open import Integers.Type
 open import Integers.Multiplication
 open import Integers.Negation renaming (-_ to ℤ-_)
 open import Integers.Parity
-open import Naturals.Exponents
+open import Naturals.Exponentiation
 open import UF.Base hiding (_≈_)
 open import UF.Subsingletons
 

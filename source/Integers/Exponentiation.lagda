@@ -11,7 +11,7 @@ open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
 open import Integers.Addition
 open import Integers.Multiplication
 open import Integers.Type
-open import Naturals.Exponents
+open import Naturals.Exponentiation
 
 module Integers.Exponentiation where
 

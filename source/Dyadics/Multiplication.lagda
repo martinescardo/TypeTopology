@@ -9,7 +9,7 @@ open import Dyadics.Type
 open import Integers.Multiplication renaming (_*_ to _ℤ*_)
 open import Integers.Type
 open import Naturals.Addition renaming (_+_ to _ℕ+_)
-open import Naturals.Exponents
+open import Naturals.Exponentiation
 open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
 open import UF.Base hiding (_≈_)
 
