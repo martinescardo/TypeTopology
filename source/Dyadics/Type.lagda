@@ -498,9 +498,14 @@ infix 0 _≈_
 ≈-to-＝-lemma x y e (inr p) (inr q) = ≈'-to-＝'' x y e p q
 
 ≈-to-＝ : (x y : ℤ[1/2]) → x ≈ y → x ＝ y
-≈-to-＝ ((x , n) , p) ((y , m) , q) eq =
- to-subtype-＝ (λ (x , n) → is-ℤ[1/2]-is-prop x n) (≈-to-＝-lemma (x , n) (y , m) eq p q)
+≈-to-＝ ((x , n) , p) ((y , m) , q) eq = to-subtype-＝ I II
+ where
+  I : ((x , n) : ℤ × ℕ) → is-prop (is-ℤ[1/2] x n)
+  I (x , n) = is-ℤ[1/2]-is-prop x n
 
+  II : x , n ＝ y , m
+  II = ≈-to-＝-lemma (x , n) (y , m) eq p q
+ 
 ＝-to-≈ : (x y : ℤ[1/2]) → x ＝ y → x ≈ y
 ＝-to-≈ ((x , a) , α) ((y , b) , β) e = γ
  where
@@ -514,14 +519,26 @@ infix 0 _≈_
       y * pos (2^ a) ∎
   
 ℤ[1/2]-to-normalise-pos : ((p , e) : ℤ[1/2]) → (p , e) ＝ normalise-pos p
-ℤ[1/2]-to-normalise-pos ((x , 0)        , inl n＝0)       = to-subtype-＝ (λ (x , n) → is-ℤ[1/2]-is-prop x n) refl
-ℤ[1/2]-to-normalise-pos ((x , (succ n)) , inl n＝0)       = 𝟘-elim (positive-not-zero n n＝0)
-ℤ[1/2]-to-normalise-pos ((x , 0)        , inr (0<0 , oz)) = 𝟘-elim (not-less-than-itself 0 0<0)
-ℤ[1/2]-to-normalise-pos ((x , succ n)   , inr (0<n , oz)) =
- ap (λ zzz → dep-cases
-     (λ ez → normalise-pos-lemma (pr₁ (ℤeven-is-multiple-of-two x ez)) n)
-     (λ oz₁ → (x , succ n) , inr (⋆ , oz₁)) zzz)
-      (ℤeven-or-odd-is-prop x (inr oz) (ℤeven-or-odd x))
+ℤ[1/2]-to-normalise-pos ((x , 0) , inl n＝0)
+ = to-subtype-＝ (λ (x , n) → is-ℤ[1/2]-is-prop x n) refl
+ℤ[1/2]-to-normalise-pos ((x , (succ n)) , inl n＝0)
+ = 𝟘-elim (positive-not-zero n n＝0)
+ℤ[1/2]-to-normalise-pos ((x , 0) , inr (0<0 , oz))
+ = 𝟘-elim (not-less-than-itself 0 0<0)
+ℤ[1/2]-to-normalise-pos ((x , succ n)   , inr (0<n , oz)) = ap f e
+ where
+  e : inr oz ＝ ℤeven-or-odd x
+  e = ℤeven-or-odd-is-prop x (inr oz) (ℤeven-or-odd x)
+  
+  f : ℤeven x ∔ ℤodd x → ℤ[1/2]
+  f = dep-cases case-even case-odd
+   where
+    case-even : ℤeven x → ℤ[1/2]
+    case-even ez = normalise-pos-lemma x/2 n
+     where
+      x/2 = pr₁ (ℤeven-is-multiple-of-two x ez)
+    case-odd : ℤodd x → ℤ[1/2]
+    case-odd oz = (x , succ n) , inr (⋆ , oz)
 
 ℤ[1/2]-from-normalise-pos : (z : ℤ) → (n : ℕ) → Σ q ꞉ ℤ[1/2] , q ＝ normalise-pos (z , n)
 ℤ[1/2]-from-normalise-pos z n = (normalise-pos (z , n)) , refl
