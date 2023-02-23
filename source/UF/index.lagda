@@ -40,6 +40,8 @@ import UF.PropTrunc-F
 import UF.Quotient
 import UF.Quotient-F
 import UF.Quotient-Replacement
+import UF.PreSIP
+import UF.PreUnivalence
 import UF.Retracts
 import UF.Retracts-FunExt
 import UF.SIP
