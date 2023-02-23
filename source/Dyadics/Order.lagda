@@ -8,7 +8,7 @@ open import MLTT.Spartan renaming (_+_ to _∔_)
 open import Naturals.Exponents
 open import Dyadics.Type
 open import Integers.Type
-open import Integers.Exponents
+open import Integers.Exponentiation
 open import Integers.Multiplication
 open import Integers.Order
 open import Naturals.Multiplication renaming (_*_ to _ℕ*_)

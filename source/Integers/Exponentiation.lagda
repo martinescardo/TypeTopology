@@ -13,7 +13,7 @@ open import Integers.Multiplication
 open import Integers.Type
 open import Naturals.Exponents
 
-module Integers.Exponents where
+module Integers.Exponentiation where
 
 \end{code}
 
@@ -35,11 +35,16 @@ a pos^ b = ((a *_) ^ b) (pos 1)
 ℤ-exp-addition n a (succ b) = γ
  where
   γ : (n pos^ (a ℕ+ succ b)) ＝ (n pos^ a) * (n pos^ succ b)
-  γ = (n pos^ (a ℕ+ succ b))        ＝⟨ ap (n *_) (ℤ-exp-addition n a b)          ⟩
-      n * ((n pos^ a) * (n pos^ b)) ＝⟨ ℤ*-assoc n (n pos^ a) (n pos^ b) ⁻¹       ⟩
-      n * (n pos^ a) * (n pos^ b)   ＝⟨ ap (_* (n pos^ b)) (ℤ*-comm n (n pos^ a)) ⟩
-      (n pos^ a) * n * (n pos^ b)   ＝⟨ ℤ*-assoc (n pos^ a) n (n pos^ b)          ⟩
+  γ = (n pos^ (a ℕ+ succ b))        ＝⟨ i   ⟩
+      n * ((n pos^ a) * (n pos^ b)) ＝⟨ ii  ⟩
+      n * (n pos^ a) * (n pos^ b)   ＝⟨ iii ⟩
+      (n pos^ a) * n * (n pos^ b)   ＝⟨ iv  ⟩
       (n pos^ a) * (n pos^ succ b)   ∎
+   where
+    i   = ap (n *_) (ℤ-exp-addition n a b)
+    ii  = ℤ*-assoc n (n pos^ a) (n pos^ b) ⁻¹
+    iii = ap (_* (n pos^ b)) (ℤ*-comm n (n pos^ a))
+    iv  = ℤ*-assoc (n pos^ a) n (n pos^ b)
 
 exponents-not-zero' : (m : ℕ) → not-zero (pos (2^ m))
 exponents-not-zero' m iz = exponents-not-zero m (pos-lc I)

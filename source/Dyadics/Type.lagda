@@ -7,7 +7,7 @@ Andrew Sneap, 17 February 2022
 open import MLTT.Spartan renaming (_+_ to _∔_)
 
 open import Integers.Type
-open import Integers.Exponents
+open import Integers.Exponentiation
 open import Integers.Multiplication
 open import Integers.Order
 open import Integers.Parity
