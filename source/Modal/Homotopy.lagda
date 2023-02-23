@@ -48,7 +48,7 @@ homotopy-precomp-by-embedding-is-equiv fe0 fe1 fe2 fe3 f g i precomp-i-is-emb =
   composite : f ∼ g ≃ (f ∘ i ∼ g ∘ i)
   composite =
    ≃-sym (≃-funext fe0 f g)
-    ● (ap (_∘ i) , embedding-embedding' _ precomp-i-is-emb _ _)
+    ● (ap (_∘ i) , embedding-gives-embedding' _ precomp-i-is-emb _ _)
     ● ≃-funext fe1 (f ∘ i) (g ∘ i)
 
   composite-is-precomp : eqtofun composite ＝ homotopy-precomp f g i

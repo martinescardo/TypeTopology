@@ -173,7 +173,7 @@ module sip-with-axioms where
      j = pr₁-is-embedding (i X)
 
      k : {s' t' : S' X} → is-equiv (ap π {s'} {t'})
-     k {s'} {t'} = embedding-embedding' π j s' t'
+     k {s'} {t'} = embedding-gives-embedding' π j s' t'
 
      l : canonical-map ι' ρ' (s , a) (t , b)
        ∼ canonical-map ι ρ s t ∘ ap π {s , a} {t , b}
@@ -209,8 +209,9 @@ module sip-join where
    → ((x₀ x₁ : X) → is-equiv (f x₀ x₁))
    → ((y₀ y₁ : Y) → is-equiv (g y₀ y₁))
 
-   → (z₀ z₁ : X × Y) → is-equiv (λ (p : z₀ ＝ z₁) → f (pr₁ z₀) (pr₁ z₁) (ap pr₁ p) ,
-                                                   g (pr₂ z₀) (pr₂ z₁) (ap pr₂ p))
+   → ((x₀ , y₀) (x₁ , y₁) : X × Y) →
+   is-equiv (λ (p : (x₀ , y₀) ＝ (x₁ , y₁)) → f x₀ x₁ (ap pr₁ p) ,
+                                              g y₀ y₁ (ap pr₂ p))
 
  technical-lemma {𝓤} {𝓥} {𝓦} {𝓣} {X} {A} {Y} {B} f g i j (x₀ , y₀) = γ
   where

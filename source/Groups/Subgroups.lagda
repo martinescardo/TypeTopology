@@ -83,7 +83,7 @@ module _ (G : Group 𝓤) where
   ap-⟪⟫ S T = ap ⟪_⟫
 
   ap-⟪⟫-is-equiv : (S T : Subgroups) → is-equiv (ap-⟪⟫ S T)
-  ap-⟪⟫-is-equiv = embedding-embedding' ⟪_⟫ ⟪⟫-is-embedding
+  ap-⟪⟫-is-equiv = embedding-gives-embedding' ⟪_⟫ ⟪⟫-is-embedding
 
   subgroups-form-a-set : is-set Subgroups
   subgroups-form-a-set {S} {T} = equiv-to-prop

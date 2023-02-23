@@ -11,7 +11,7 @@ module Ordinals.Arithmetic-Properties
        where
 
 open import UF.Base
-open import UF.Embeddings
+open import UF.Embeddings hiding (⌊_⌋)
 open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.ExcludedMiddle

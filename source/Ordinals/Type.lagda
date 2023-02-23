@@ -256,9 +256,9 @@ _≃ₒ_ : Ordinal 𝓤 → Ordinal 𝓥 → 𝓤 ⊔ 𝓥 ̇
 
 \end{code}
 
-See the module for a proof that α ≃ₒ β is canonically equivalent to
-α ＝ β. (For historical reasons, that proof doesn't use the structure
-identity principle.)
+See the module OrdinalOfOrdinals for a proof that α ≃ₒ β is
+canonically equivalent to α ＝ β. (For historical reasons, that proof
+doesn't use the structure identity principle.)
 
 \begin{code}
 

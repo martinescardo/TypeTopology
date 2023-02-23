@@ -325,7 +325,7 @@ pair-fun-is-order-reflecting τ υ A B f g φ e γ (x , a) (y , b) (inl l)      
 pair-fun-is-order-reflecting τ υ A B f g φ e γ (x , a) (y , b) (inr (r , l)) = inr (c r , p)
  where
   e' : is-equiv (ap f)
-  e' = embedding-embedding' f e x y
+  e' = embedding-gives-embedding' f e x y
 
   c : f x ＝ f y → x ＝ y
   c = inverse (ap f) e'

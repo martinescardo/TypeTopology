@@ -493,7 +493,7 @@ embedding are themselves embeddings.
            ＝ (((x  , refl) , (x' , p)    , C) ∶ (Σ (x , _) ꞉ fiber j (j x) , r (s f) x))
          t x x refl p C refl = refl
          q : ∀ x x' → qinv (ap j {x} {x'})
-         q x x' = equivs-are-qinvs (ap j) (embedding-embedding' j i x x')
+         q x x' = equivs-are-qinvs (ap j) (embedding-gives-embedding' j i x x')
          pa : ∀ x x' → j x ＝ j x' → x ＝ x'
          pa x x' = pr₁ (q x x')
          appa : ∀ x x' p' → ap j (pa x' x p') ＝ p'

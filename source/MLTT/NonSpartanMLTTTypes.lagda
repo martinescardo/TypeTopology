@@ -103,6 +103,10 @@ data List {𝓤 : Universe} (X : 𝓤 ̇ ) : 𝓤 ̇ where
 
 infixr 3 _∷_
 
+foldr : {X : 𝓤 ̇ } {R : 𝓥 ̇ } → List X → (X → R → R) → R → R
+foldr []       f r = r
+foldr (x ∷ xs) f r = f x (foldr xs f r)
+
 _++_ : {𝓤 : Universe} {X : 𝓤 ̇ } → List X → List X → List X
 []       ++ ys = ys
 (x ∷ xs) ++ ys = x ∷ (xs ++ ys)
@@ -117,11 +121,24 @@ map : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
 map f []       = []
 map f (x ∷ xs) = f x ∷ map f xs
 
+member : {X : Type} → X → List X → Type
+member y []       = 𝟘
+member y (x ∷ xs) = (x ＝ y) + member y xs
+
+member-map : {X Y : Type} (f : X → Y) (x : X) (xs : List X)
+           → member x xs
+           → member (f x) (map f xs)
+member-map f x' (x ∷ xs) (inl p) = inl (ap f p)
+member-map f x' (x ∷ xs) (inr m) = inr (member-map f x' xs m)
+
+listable : Type → Type
+listable X = Σ xs ꞉ List X , ((x : X) → member x xs)
+
 module list-util
-          {𝓤 : Universe}
-          {X : 𝓤 ̇ }
-          {{_ : Eq X}}
-        where
+        {𝓤 : Universe}
+        {X : 𝓤 ̇ }
+        {{_ : Eq X}}
+       where
 
   _is-in_ : X → List X → Bool
   x is-in []       = false
@@ -193,9 +210,13 @@ module list-util
   xs minus []       = xs
   xs minus (y ∷ ys) = (remove-all y xs) minus ys
 
-data Fin : ℕ → 𝓤₀  ̇  where
+data Fin : ℕ → 𝓤₀ ̇  where
  𝟎   : {n : ℕ} → Fin (succ n)
  suc : {n : ℕ} → Fin n → Fin (succ n)
+
+ℕ-to-Fin : (n : ℕ) → Fin (succ n)
+ℕ-to-Fin zero     = 𝟎
+ℕ-to-Fin (succ n) = suc (ℕ-to-Fin n)
 
 pattern 𝟏 = suc 𝟎
 pattern 𝟐 = suc 𝟏
@@ -210,6 +231,19 @@ pattern 𝟗 = suc 𝟖
 list-Fin : (n : ℕ) → List (Fin n)
 list-Fin zero     = []
 list-Fin (succ n) = 𝟎 ∷ map suc (list-Fin n)
+
+list-Fin-correct : (n : ℕ) (i : Fin n) → member i (list-Fin n)
+list-Fin-correct (succ n) 𝟎       = inl refl
+list-Fin-correct (succ n) (suc i) = inr g
+ where
+  IH : member i (list-Fin n)
+  IH = list-Fin-correct n i
+
+  g : member (suc i) (map suc (list-Fin n))
+  g = member-map suc i (list-Fin n) IH
+
+Fin-listable : (n : ℕ) → listable (Fin n)
+Fin-listable n = list-Fin n , list-Fin-correct n
 
 Fin-== : {n : ℕ} → Fin n → Fin n → Bool
 Fin-== {succ n} (suc x) (suc y) = Fin-== {n} x y

@@ -995,7 +995,7 @@ module ∖-extension-is-embedding
         t x .x refl p C refl = refl
 
         ej' : ∀ x x' → qinv (ap j {x} {x'})
-        ej' x x' = equivs-are-qinvs (ap j) (embedding-embedding' j i x x')
+        ej' x x' = equivs-are-qinvs (ap j) (embedding-gives-embedding' j i x x')
 
         pa : ∀ x x' → j x ＝ j x' → x ＝ x'
         pa x x' = pr₁ (ej' x x')

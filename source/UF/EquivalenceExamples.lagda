@@ -606,8 +606,7 @@ NatΣ-equiv-gives-fiberwise-equiv = NatΣ-equiv-converse _ _
 
 Σ-change-of-variable : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : X → 𝓦 ̇ ) (g : Y → X)
                      → is-equiv g
-                     → (Σ y ꞉ Y , A (g y))
-                     ≃ (Σ x ꞉ X , A x)
+                     → (Σ y ꞉ Y , A (g y)) ≃ (Σ x ꞉ X , A x)
 Σ-change-of-variable {𝓤} {𝓥} {𝓦} {X} {Y} A g e = γ , qinvs-are-equivs γ q
  where
   γ :  (Σ y ꞉ Y , A (g y)) → Σ A

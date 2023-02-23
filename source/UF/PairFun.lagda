@@ -136,4 +136,29 @@ pair-fun-equiv : {X : 𝓤 ̇} {A : X → 𝓥 ̇}
 pair-fun-equiv f g = pair-fun ⌜ f ⌝ (λ x → ⌜ g x ⌝) ,
                      pair-fun-is-equiv _ _ ⌜ f ⌝-is-equiv (λ x → ⌜ g x ⌝-is-equiv)
 
+Σ-change-of-variable-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                                 (A : X → 𝓦 ̇ ) (g : Y → X)
+                               → is-embedding g
+                               → (Σ y ꞉ Y , A (g y)) ↪ (Σ x ꞉ X , A x)
+Σ-change-of-variable-embedding A g e = pair-fun g (λ _ → id) ,
+                                       pair-fun-is-embedding
+                                        g
+                                        (λ _ → id)
+                                        e
+                                        (λ _ → id-is-embedding)
+
+pair-fun-embedding : {X : 𝓤 ̇ }
+                     {A : X → 𝓥 ̇ }
+                     {Y : 𝓦 ̇ }
+                     {B : Y → 𝓣 ̇ }
+                   → (e : X ↪ Y)
+                   → ((x : X) → A x ↪ B (⌊ e ⌋ x))
+                   → Σ A ↪ Σ B
+pair-fun-embedding (f , i) g = pair-fun f (λ x → ⌊ g x ⌋) ,
+                               pair-fun-is-embedding
+                                f
+                                ((λ x → ⌊ g x ⌋))
+                                i
+                                (λ x → ⌊ g x ⌋-is-embedding)
+
 \end{code}
