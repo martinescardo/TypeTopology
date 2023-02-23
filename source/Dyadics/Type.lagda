@@ -525,11 +525,11 @@ infix 0 _≈_
  = 𝟘-elim (positive-not-zero n n＝0)
 ℤ[1/2]-to-normalise-pos ((x , 0) , inr (0<0 , oz))
  = 𝟘-elim (not-less-than-itself 0 0<0)
-ℤ[1/2]-to-normalise-pos ((x , succ n)   , inr (0<n , oz)) = ap f e
+ℤ[1/2]-to-normalise-pos ((x , succ n) , inr (0<n , oz)) = ap f e
  where
   e : inr oz ＝ ℤeven-or-odd x
   e = ℤeven-or-odd-is-prop x (inr oz) (ℤeven-or-odd x)
-  
+ 
   f : ℤeven x ∔ ℤodd x → ℤ[1/2]
   f = dep-cases case-even case-odd
    where
@@ -540,7 +540,8 @@ infix 0 _≈_
     case-odd : ℤodd x → ℤ[1/2]
     case-odd oz = (x , succ n) , inr (⋆ , oz)
 
-ℤ[1/2]-from-normalise-pos : (z : ℤ) → (n : ℕ) → Σ q ꞉ ℤ[1/2] , q ＝ normalise-pos (z , n)
+ℤ[1/2]-from-normalise-pos : (z : ℤ) (n : ℕ)
+                          → Σ q ꞉ ℤ[1/2] , q ＝ normalise-pos (z , n)
 ℤ[1/2]-from-normalise-pos z n = (normalise-pos (z , n)) , refl
 
 ≈'-normalise-pos : (p : ℤ × ℕ) → p ≈' from-ℤ[1/2] (normalise-pos p)
@@ -555,16 +556,24 @@ infix 0 _≈_
   γ : Σ k ꞉ ℕ , (p ＝ p' * pos (2^ k))
               × (a ＝ a' + k)
     → (p , a) ≈' (p' , a')
-  γ (k , e₁ , e₂) = p * pos (2^ a')                 ＝⟨ ap (_* pos (2^ a')) e₁ ⟩
-                    p' * pos (2^ k) * pos (2^ a')   ＝⟨ ℤ*-assoc p' (pos (2^ k)) (pos (2^ a')) ⟩
-                    p' * (pos (2^ k) * pos (2^ a')) ＝⟨ ap (p' *_) (pos-multiplication-equiv-to-ℕ (2^ k) (2^ a')) ⟩
-                    p' * pos (2^ k ℕ* 2^ a')        ＝⟨ ap (λ - → p' * pos -) (prod-of-powers 2 k a') ⟩
-                    p' * pos (2^ (k + a'))          ＝⟨ ap (λ - → p' * pos (2^ -)) (addition-commutativity k a') ⟩
-                    p' * pos (2^ (a' + k))          ＝⟨ ap (λ - → p' * pos (2^ -)) (e₂ ⁻¹) ⟩
+  γ (k , e₁ , e₂) = p * pos (2^ a')                 ＝⟨ i   ⟩
+                    p' * pos (2^ k) * pos (2^ a')   ＝⟨ ii  ⟩
+                    p' * (pos (2^ k) * pos (2^ a')) ＝⟨ iii ⟩
+                    p' * pos (2^ k ℕ* 2^ a')        ＝⟨ iv  ⟩
+                    p' * pos (2^ (k + a'))          ＝⟨ v   ⟩
+                    p' * pos (2^ (a' + k))          ＝⟨ vi  ⟩
                     p' * pos (2^ a) ∎
+   where
+    i   = ap (_* pos (2^ a')) e₁
+    ii  = ℤ*-assoc p' (pos (2^ k)) (pos (2^ a'))
+    iii = ap (p' *_) (pos-multiplication-equiv-to-ℕ (2^ k) (2^ a'))
+    iv  = ap (λ - → p' * pos -) (prod-of-powers 2 k a')
+    v   = ap (λ - → p' * pos (2^ -)) (addition-commutativity k a')
+    vi  = ap (λ - → p' * pos (2^ -)) (e₂ ⁻¹)
   
-≈-normalise-pos : (((z , a) , p) : ℤ[1/2]) → (((z , a) , p)) ≈ normalise-pos (z , a)
-≈-normalise-pos (z , α) = ＝-to-≈ (z , α) (normalise-pos z) (ℤ[1/2]-to-normalise-pos (z , α))
+≈-normalise-pos : ((z , α) : ℤ[1/2]) → (z , α) ≈ normalise-pos z
+≈-normalise-pos (z , α)
+ = ＝-to-≈ (z , α) (normalise-pos z) (ℤ[1/2]-to-normalise-pos (z , α))
 
 ≈-ap : (f : ℤ[1/2] → ℤ[1/2]) (x y : ℤ[1/2]) → x ≈ y → f x ≈ f y
 ≈-ap f x y e = ＝-to-≈ (f x) (f y) (ap f (≈-to-＝ x y e))
