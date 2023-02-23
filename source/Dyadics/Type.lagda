@@ -214,7 +214,7 @@ normalise-pos-info' p  (succ a) = equality-cases (ℤeven-or-odd p) I II
               × (succ a ＝ dden (normalise-pos (p , succ a)) + k)
   I ep e = γ₁ (ℤeven-is-multiple-of-two p ep)
    where
-    γ₁ : (Σ p/2 ꞉ ℤ , p ＝ pos 2 * p/2)
+    γ₁ : Σ p/2 ꞉ ℤ , p ＝ pos 2 * p/2
        → Σ k ꞉ ℕ , (p ＝ dnum (normalise-pos (p , succ a)) * pos (2^ k))
                  × (succ a ＝ dden (normalise-pos (p , succ a)) + k)
     γ₁ (p/2 , e₂) = γ₂ (normalise-pos-info' p/2 a)
@@ -224,23 +224,37 @@ normalise-pos-info' p  (succ a) = equality-cases (ℤeven-or-odd p) I II
 
           → Σ k ꞉ ℕ , (p ＝ dnum (normalise-pos (p , succ a)) * pos (2^ k))
                     × (succ a ＝ dden (normalise-pos (p , succ a)) + k)
-      γ₂ (k' , e₃ , e₄) = (succ k') , i , ii
+      γ₂ (k' , e₃ , e₄) = (succ k') , α , β
        where
-        i : p ＝ dnum (normalise-pos (p , succ a)) * pos (2^ (succ k'))
-        i = p           ＝⟨ e₂ ⟩
-            pos 2 * p/2 ＝⟨ ap (pos 2 *_) e₃ ⟩
-            pos 2 * (dnum (normalise-pos (p/2 , a)) * pos (2^ k')) ＝⟨ ℤ*-assoc (pos 2) (dnum (normalise-pos (p/2 , a))) (pos (2^ k')) ⁻¹ ⟩
-            pos 2 * dnum (normalise-pos (p/2 , a)) * pos (2^ k')   ＝⟨ ap (_* pos (2^ k')) (ℤ*-comm (pos 2) (dnum (normalise-pos (p/2 , a)))) ⟩
-            dnum (normalise-pos (p/2 , a)) * pos 2 * pos (2^ k')   ＝⟨ ℤ*-assoc (dnum (normalise-pos (p/2 , a))) (pos 2) (pos (2^ k')) ⟩
-            dnum (normalise-pos (p/2 , a)) * (pos 2 * pos (2^ k')) ＝⟨ ap (dnum (normalise-pos (p/2 , a)) *_) (pos-multiplication-equiv-to-ℕ 2 (2^ k')) ⟩
-            dnum (normalise-pos (p/2 , a)) * pos (2^ (succ k'))    ＝⟨ ap (λ - → dnum - * pos (2^ (succ k'))) (normalise-pos-even-prev p a ep (p/2 , e₂)) ⟩
+        k'' = pos (2^ k')
+        α : p ＝ dnum (normalise-pos (p , succ a)) * pos (2^ (succ k'))
+        α = p                                                      ＝⟨ e₂  ⟩
+            pos 2 * p/2                                            ＝⟨ i   ⟩
+            pos 2 * (dnum (normalise-pos (p/2 , a)) * k'')         ＝⟨ ii  ⟩
+            pos 2 * dnum (normalise-pos (p/2 , a)) * k''           ＝⟨ iii ⟩
+            dnum (normalise-pos (p/2 , a)) * pos 2 * k''           ＝⟨ iv  ⟩
+            dnum (normalise-pos (p/2 , a)) * (pos 2 * k'')         ＝⟨ v   ⟩
+            dnum (normalise-pos (p/2 , a)) * pos (2^ (succ k'))    ＝⟨ vi  ⟩
             dnum (normalise-pos (p , succ a)) * pos (2^ (succ k')) ∎
+         where
+          i   = ap (pos 2 *_) e₃
+          ii  = ℤ*-assoc (pos 2) (dnum (normalise-pos (p/2 , a))) k'' ⁻¹
+          iii = ap (_* k'') (ℤ*-comm (pos 2) (dnum (normalise-pos (p/2 , a))))
+          iv  = ℤ*-assoc (dnum (normalise-pos (p/2 , a))) (pos 2) k''
+          v   = ap (dnum (normalise-pos (p/2 , a)) *_)
+                 (pos-multiplication-equiv-to-ℕ 2 (2^ k'))
+          vi  = ap (λ - → dnum - * pos (2^ (succ k')))
+                 (normalise-pos-even-prev p a ep (p/2 , e₂))
             
-        ii : succ a ＝ dden (normalise-pos (p , succ a)) + succ k'
-        ii = succ a                                     ＝⟨ ap succ e₄ ⟩
-             succ (dden (normalise-pos (p/2 , a)) + k') ＝⟨ refl ⟩
-             dden (normalise-pos (p/2 , a)) + succ k'   ＝⟨ ap (λ - → dden - + succ k') (normalise-pos-even-prev p a ep (p/2 , e₂)) ⟩
+        β : succ a ＝ dden (normalise-pos (p , succ a)) + succ k'
+        β = succ a                                       ＝⟨ i    ⟩
+             succ (dden (normalise-pos (p/2 , a)) + k')  ＝⟨ refl ⟩
+             dden (normalise-pos (p/2 , a)) + succ k'    ＝⟨ ii   ⟩
              dden (normalise-pos (p , succ a)) + succ k' ∎
+         where
+          i = ap succ e₄
+          ii = ap (λ - → dden - + succ k')
+                (normalise-pos-even-prev p a ep (p/2 , e₂))
 
   II : (op : ℤodd p)
     → ℤeven-or-odd p ＝ inr op
@@ -262,8 +276,9 @@ above function, to satisy Agda's termination checker.
 
 \begin{code}
 
-normalise-pos-info : ((p , a) : ℤ × ℕ) → Σ k ꞉ ℕ , (p ＝ dnum (normalise-pos (p , a)) * pos (2^ k))
-                                                 × (a ＝ dden (normalise-pos (p , a)) + k)
+normalise-pos-info : ((p , a) : ℤ × ℕ)
+                   → Σ k ꞉ ℕ , (p ＝ dnum (normalise-pos (p , a)) * pos (2^ k))
+                             × (a ＝ dden (normalise-pos (p , a)) + k)
 normalise-pos-info (p , a) = normalise-pos-info' p a
 
 \end{code}
@@ -376,17 +391,22 @@ infix 0 _≈_
       y * pos (2^ 0) ＝⟨ refl                                  ⟩
       y              ∎
 
-≈'-lt-consequence : ((x , m) (y , n) : ℤ × ℕ) → (x , m) ≈' (y , n) → m ＝ 0 → ¬ (n > 0 × ℤodd y)
+≈'-lt-consequence : ((x , m) (y , n) : ℤ × ℕ)
+                  → (x , m) ≈' (y , n) → m ＝ 0 → ¬ (n > 0 × ℤodd y)
 ≈'-lt-consequence (x , m) (y , 0)      e m＝0 (n>0 , oy) = 𝟘-elim n>0
-≈'-lt-consequence (x , m) (y , succ n) e m＝0 (n>0 , oy) = ℤodd-not-even y oy (transport ℤeven I II)
+≈'-lt-consequence (x , m) (y , succ n) e m＝0 (n>0 , oy) = γ
  where
   I : x * pos (2^ (succ n)) ＝ y
   I = x * pos (2^ (succ n)) ＝⟨ e ⟩
       y * pos (2^ m)        ＝⟨ ap (λ - → y * pos (2^ -)) m＝0 ⟩
       y * pos (2^ 0)        ＝⟨ refl ⟩
       y ∎
+
   II : ℤeven (x * pos (2^ (succ n)))
   II = ℤtimes-even-is-even' x (pos (2^ (succ n))) (2-exponents-even n)
+
+  γ : 𝟘
+  γ = ℤodd-not-even y oy (transport ℤeven I II)
 
 ≈'-reduce  : (x y : ℤ) (n : ℕ) → (x , 1) ≈' (y , succ (succ n)) → (x , 0) ≈' (y , succ n)
 ≈'-reduce  x y n e = ℤ-mult-right-cancellable (x * pos (2^ (succ n))) (y * pos (2^ 0)) (pos 2) id I
