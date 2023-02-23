@@ -408,43 +408,83 @@ infix 0 _≈_
   γ : 𝟘
   γ = ℤodd-not-even y oy (transport ℤeven I II)
 
-≈'-reduce  : (x y : ℤ) (n : ℕ) → (x , 1) ≈' (y , succ (succ n)) → (x , 0) ≈' (y , succ n)
-≈'-reduce  x y n e = ℤ-mult-right-cancellable (x * pos (2^ (succ n))) (y * pos (2^ 0)) (pos 2) id I
+≈'-reduce  : (x y : ℤ) (n : ℕ)
+           → (x , 1) ≈' (y , succ (succ n))
+           → (x , 0) ≈' (y , succ n)
+≈'-reduce  x y n e
+ = ℤ-mult-right-cancellable (x * n') (y * pos (2^ 0)) (pos 2) id I
  where
-  I : x * pos (2^ (succ n)) * pos 2 ＝ y * pos (2^ 0) * pos 2
-  I = x * pos (2^ (succ n)) * pos 2   ＝⟨ ℤ*-assoc x (pos (2^ (succ n))) (pos 2)                       ⟩
-      x * (pos (2^ (succ n)) * pos 2) ＝⟨ ap (x *_) (pos-multiplication-equiv-to-ℕ (2^ (succ n)) 2)    ⟩
-      x * pos (2^ (succ n) ℕ* 2)      ＝⟨ ap (λ - → x * pos -) (mult-commutativity (2^ (succ n)) 2)    ⟩
-      x * pos (2^ (succ (succ n)))    ＝⟨ e                                                            ⟩
-      y * pos (2^ 1)                  ＝⟨ ap (y *_) (pos-multiplication-equiv-to-ℕ 2 1) ⁻¹             ⟩
-      y * (pos 2 * pos 1)             ＝⟨ refl                                                         ⟩
+  n' = pos (2^ (succ n))
+  I : x * n' * pos 2 ＝ y * pos (2^ 0) * pos 2
+  I = x * n' * pos 2                  ＝⟨ i    ⟩
+      x * (n' * pos 2)                ＝⟨ ii   ⟩
+      x * pos (2^ (succ n) ℕ* 2)      ＝⟨ iii  ⟩
+      x * pos (2^ (succ (succ n)))    ＝⟨ e    ⟩
+      y * pos (2^ 1)                  ＝⟨ iv   ⟩
+      y * (pos 2 * pos 1)             ＝⟨ refl ⟩
       y * pos (2^ 0) * pos 2          ∎
 
-≈'-to-＝' : (x : ℤ) (m : ℕ) (y : ℤ) (n : ℕ) → (x , m) ≈' (y , n) → m > 0 × ℤodd x → n > 0 × ℤodd y → (x , m) ＝ (y , n)
-≈'-to-＝' x  m               y  0               e (m>0 , ox) (n>0 , on) = 𝟘-elim n>0
-≈'-to-＝' x  0               y  (succ n)        e (m>0 , ox) (n>0 , on) = 𝟘-elim m>0
-≈'-to-＝' x  1               y  1               e (m>0 , ox) (n>0 , on) = to-×-＝ (ℤ-mult-right-cancellable x y (pos (2^ 1)) id e) refl
-≈'-to-＝' x  1               y  (succ (succ n)) e (m>0 , ox) (n>0 , on) = 𝟘-elim (≈'-lt-consequence (x , 0) (y , succ n) (≈'-reduce x y n e) refl (⋆ , on))
-≈'-to-＝' x  (succ (succ m)) y  1               e (m>0 , ox) (n>0 , on) = 𝟘-elim (≈'-lt-consequence (y , 0) (x , succ m) (≈'-reduce y x m (e ⁻¹)) refl (⋆ , ox))
-≈'-to-＝' x  (succ (succ m)) y  (succ (succ n)) e (m>0 , ox) (n>0 , on) = III (from-×-＝' (≈'-to-＝' x (succ m) y (succ n) II (⋆ , ox) (⋆ , on)))
- where
-  I : x * pos (2^ (succ n)) * pos 2 ＝ y * pos (2^ (succ m)) * pos 2
-  I = x * pos (2^ (succ n)) * pos 2   ＝⟨ ℤ*-assoc x (pos (2^ (succ n))) (pos 2)                       ⟩
-      x * (pos (2^ (succ n)) * pos 2) ＝⟨ ap (x *_) (pos-multiplication-equiv-to-ℕ (2^ (succ n)) 2)    ⟩
-      x * pos (2^ (succ n) ℕ* 2)      ＝⟨ ap (λ - → x * pos -) (mult-commutativity (2^ (succ n)) 2)    ⟩
-      x * pos (2^ (succ (succ n)))    ＝⟨ e                                                            ⟩
-      y * pos (2^ (succ (succ m)))    ＝⟨ ap (λ - → y * pos -) (mult-commutativity 2 (2^ (succ m)))    ⟩
-      y * pos (2^ (succ m) ℕ* 2)      ＝⟨ ap (y *_) (pos-multiplication-equiv-to-ℕ (2^ (succ m)) 2 ⁻¹) ⟩
-      y * (pos (2^ (succ m)) * pos 2) ＝⟨ ℤ*-assoc y (pos (2^ (succ m))) (pos 2) ⁻¹ ⟩
-      y * pos (2^ (succ m)) * pos 2   ∎
+   where
+    i   = ℤ*-assoc x n' (pos 2)
+    ii  = ap (x *_) (pos-multiplication-equiv-to-ℕ (2^ (succ n)) 2)
+    iii = ap (λ - → x * pos -) (mult-commutativity (2^ (succ n)) 2)
+    iv  = ap (y *_) (pos-multiplication-equiv-to-ℕ 2 1) ⁻¹
 
-  II : x * pos (2^ (succ n)) ＝ y * pos (2^ (succ m))
-  II = ℤ-mult-right-cancellable (x * pos (2^ (succ n))) (y * pos (2^ (succ m))) (pos 2) id I
+≈'-to-＝' : (x : ℤ) (m : ℕ) (y : ℤ) (n : ℕ)
+          → (x , m) ≈' (y , n)
+          → m > 0 × ℤodd x
+          → n > 0 × ℤodd y
+          → (x , m) ＝ (y , n)
+≈'-to-＝' x m y 0 e (m>0 , ox) (n>0 , on)        = 𝟘-elim n>0
+≈'-to-＝' x 0 y (succ n) e (m>0 , ox) (n>0 , on) = 𝟘-elim m>0
+≈'-to-＝' x 1 y 1 e (m>0 , ox) (n>0 , on)
+ = to-×-＝ (ℤ-mult-right-cancellable x y (pos (2^ 1)) id e) refl
+≈'-to-＝' x 1 y (succ (succ n)) e (m>0 , ox) (n>0 , on)
+ = 𝟘-elim i
+  where
+   ii : x * pos (2^ (succ n)) ＝ y * pos (2^ 0)
+   ii = ≈'-reduce x y n e
+   i : 𝟘
+   i = ≈'-lt-consequence (x , 0) (y , succ n) ii refl (⋆ , on)
+≈'-to-＝' x (succ (succ m)) y 1 e (m>0 , ox) (n>0 , on)
+ = 𝟘-elim i
+  where
+   ii : (y , 0) ≈' (x , succ m)
+   ii = ≈'-reduce y x m (e ⁻¹)
+   i : 𝟘
+   i = ≈'-lt-consequence (y , 0) (x , succ m) ii refl (⋆ , ox)
+≈'-to-＝' x  (succ (succ m)) y  (succ (succ n)) e (m>0 , ox) (n>0 , on)
+ = III (from-×-＝' (≈'-to-＝' x (succ m) y (succ n) II (⋆ , ox) (⋆ , on)))
+  where
+   n' = pos (2^ (succ n))
+   m' = pos (2^ (succ m))
+   I : x * n' * pos 2 ＝ y * m' * pos 2
+   I = x * n' * pos 2               ＝⟨ i   ⟩
+       x * (n' * pos 2)             ＝⟨ ii  ⟩
+       x * pos (2^ (succ n) ℕ* 2)   ＝⟨ iii ⟩
+       x * pos (2^ (succ (succ n))) ＝⟨ e   ⟩
+       y * pos (2^ (succ (succ m))) ＝⟨ iv  ⟩
+       y * pos (2^ (succ m) ℕ* 2)   ＝⟨ v   ⟩
+       y * (m' * pos 2)             ＝⟨ vi  ⟩
+       y * m' * pos 2               ∎
+    where
+     i   = ℤ*-assoc x (n') (pos 2)
+     ii  = ap (x *_) (pos-multiplication-equiv-to-ℕ (2^ (succ n)) 2)
+     iii = ap (λ - → x * pos -) (mult-commutativity (2^ (succ n)) 2)
+     iv  = ap (λ - → y * pos -) (mult-commutativity 2 (2^ (succ m))) 
+     v   = ap (y *_) (pos-multiplication-equiv-to-ℕ (2^ (succ m)) 2 ⁻¹)
+     vi  = ℤ*-assoc y m' (pos 2) ⁻¹
 
-  III : (x ＝ y) × (succ m ＝ succ n) → x , succ (succ m) ＝ y , succ (succ n)
-  III (x＝y , m＝n) = to-×-＝ x＝y (ap succ m＝n)
+   II : x * n' ＝ y * m'
+   II = ℤ-mult-right-cancellable (x * n') (y * m') (pos 2) id I
 
-≈'-to-＝'' : ((x , m) (y , n) : ℤ × ℕ) → (x , m) ≈' (y , n) → m > 0 × ℤodd x → n > 0 × ℤodd y → (x , m) ＝ (y , n)
+   III : (x ＝ y) × (succ m ＝ succ n) → x , succ (succ m) ＝ y , succ (succ n)
+   III (x＝y , m＝n) = to-×-＝ x＝y (ap succ m＝n)
+
+≈'-to-＝'' : ((x , m) (y , n) : ℤ × ℕ)
+           → (x , m) ≈' (y , n) → m > 0 × ℤodd x
+           → n > 0 × ℤodd y
+           → (x , m) ＝ (y , n)
 ≈'-to-＝'' (x , m) (y , n) e p q = ≈'-to-＝' x m y n e p q
 
 ≈-to-＝-lemma : ((x , m) (y , n) : ℤ × ℕ)
