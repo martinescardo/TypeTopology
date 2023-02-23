@@ -594,7 +594,11 @@ infix 0 _≈_
   III = ≈'-trans (from-ℤ[1/2] (normalise-pos p)) p q I e
 
   γ : from-ℤ[1/2] (normalise-pos p) ≈' from-ℤ[1/2] (normalise-pos q)
-  γ = ≈'-trans (from-ℤ[1/2] (normalise-pos p)) q (from-ℤ[1/2] (normalise-pos q)) III II
+  γ = ≈'-trans
+      (from-ℤ[1/2] (normalise-pos p))
+      q
+      (from-ℤ[1/2] (normalise-pos q))
+      III II
 
 ℤ[1/2]-numerator-zero-is-zero' : (a : ℕ) → normalise-pos (pos 0 , a) ＝ 0ℤ[1/2] 
 ℤ[1/2]-numerator-zero-is-zero' 0        = refl
@@ -606,10 +610,13 @@ infix 0 _≈_
   I : normalise-pos (pos 0 , a) ＝ normalise-pos (pos 0 , succ a)
   I = normalise-pos-even-prev (pos 0) a ⋆ (pos 0 , refl)
 
-ℤ[1/2]-numerator-zero-is-zero : ((x , a) : ℤ × ℕ) → x ＝ pos 0 → normalise-pos (x , a) ＝ 0ℤ[1/2]
-ℤ[1/2]-numerator-zero-is-zero (pos 0 , a)        e = ℤ[1/2]-numerator-zero-is-zero' a      
-ℤ[1/2]-numerator-zero-is-zero (pos (succ x) , a) e = 𝟘-elim (pos-succ-not-zero x e)
-ℤ[1/2]-numerator-zero-is-zero (negsucc x , a)    e = 𝟘-elim (negsucc-not-pos e)
+ℤ[1/2]-numerator-zero-is-zero : ((x , a) : ℤ × ℕ)
+                              → x ＝ pos 0
+                              → normalise-pos (x , a) ＝ 0ℤ[1/2]
+ℤ[1/2]-numerator-zero-is-zero (pos 0 , a) e = ℤ[1/2]-numerator-zero-is-zero' a      
+ℤ[1/2]-numerator-zero-is-zero (pos (succ x) , a) e
+ = 𝟘-elim (pos-succ-not-zero x e)
+ℤ[1/2]-numerator-zero-is-zero (negsucc x , a) e = 𝟘-elim (negsucc-not-pos e)
 
 \end{code}
 
@@ -617,21 +624,38 @@ The following proofs relate dyadic rationals to rationals.
 
 \begin{code}
 
-ℤ[1/2]-lt-lemma : (x : ℤ) → (n : ℕ) → ℤodd x → is-in-lowest-terms (x , pred (2^ (succ n)))
-ℤ[1/2]-lt-lemma x n ox = (1-divides-all (abs x) , 1-divides-all (succ (pred (2^ (succ n))))) , I
+ℤ[1/2]-lt-lemma : (x : ℤ) (n : ℕ)
+                → ℤodd x
+                → is-in-lowest-terms (x , pred (2^ (succ n)))
+ℤ[1/2]-lt-lemma x n ox = (γ₁ , γ₂) , γ₃
  where
-  I : (d : ℕ) → is-common-divisor d (abs x) (succ (pred (2^ (succ n)))) → d ∣ 1
-  I d icd-d = III II
+  n' = 2^ (succ n)
+  
+  γ₁ : 1 ∣ abs x
+  γ₁ = 1-divides-all (abs x)
+
+  γ₂ : 1 ∣ succ (pred n')
+  γ₂ = 1-divides-all (succ (pred n'))
+
+  γ₃ : (d : ℕ) → is-common-divisor d (abs x) (succ (pred n')) → d ∣ 1
+  γ₃ d icd-d = III II
    where
-    II : is-common-divisor d (abs x) (2^ (succ n))
-    II = transport (λ - → is-common-divisor d (abs x) -) (succ-pred' (2^ (succ n)) (exponents-not-zero (succ n))) icd-d
-    III : is-common-divisor d (abs x) (2^ (succ n)) → d ∣ 1
-    III (d|x , d|2^sn) = odd-power-of-two-coprime d (abs x) (succ n) ox d|x d|2^sn
+    i : succ (pred n') ＝ n'
+    i = succ-pred' n' (exponents-not-zero (succ n))
+
+    II : is-common-divisor d (abs x) n'
+    II = transport (λ - → is-common-divisor d (abs x) -) i icd-d
+    
+    III : is-common-divisor d (abs x) n' → d ∣ 1
+    III (d|x , d|n') = odd-power-of-two-coprime d (abs x) (succ n) ox d|x d|n'
 
 ℤ[1/2]-to-ℚ : ℤ[1/2] → ℚ
 ℤ[1/2]-to-ℚ ((x , n)      , inl n＝0)       = (x , 0) , (denom-zero-lt x)
 ℤ[1/2]-to-ℚ ((x , 0)      , inr (0<n , ox)) = 𝟘-elim 0<n
-ℤ[1/2]-to-ℚ ((x , succ n) , inr (0<n , ox)) = (x , pred (2^ (succ n))) , (ℤ[1/2]-lt-lemma x n ox)
+ℤ[1/2]-to-ℚ ((x , succ n) , inr (0<n , ox)) = (x , pred (2^ (succ n))) , I
+ where
+  I : is-in-lowest-terms (x , pred (2^ (succ n)))
+  I = ℤ[1/2]-lt-lemma x n ox
 
 \end{code}
 
@@ -639,16 +663,27 @@ Boilerplate transitivity proofs.
 
 \begin{code}
 
-≈-trans₂ : (x y z a : ℤ[1/2]) → x ≈ y → y ≈ z → z ≈ a → x ≈ a
+≈-trans₂ : (x y z a : ℤ[1/2]) → x ≈ y → y ≈ z
+                              → z ≈ a
+                              → x ≈ a
 ≈-trans₂ x y z a p q r = ≈-trans x y a p (≈-trans y z a q r)
 
-≈-trans₃ : (x y z a b : ℤ[1/2]) → x ≈ y → y ≈ z → z ≈ a → a ≈ b → x ≈ b
+≈-trans₃ : (x y z a b : ℤ[1/2]) → x ≈ y → y ≈ z
+                                → z ≈ a → a ≈ b
+                                → x ≈ b
 ≈-trans₃ x y z a b p q r s = ≈-trans₂ x y z b p q (≈-trans z a b r s)
 
-≈-trans₄ : (x y z a b c : ℤ[1/2]) → x ≈ y → y ≈ z → z ≈ a → a ≈ b → b ≈ c → x ≈ c
+≈-trans₄ : (x y z a b c : ℤ[1/2]) → x ≈ y → y ≈ z
+                                  → z ≈ a → a ≈ b
+                                  → b ≈ c
+                                  → x ≈ c
 ≈-trans₄ x y z a b c p q r s t = ≈-trans₃ x y z a c p q r (≈-trans a b c s t)
 
-≈-trans₅ : (x y z a b c d : ℤ[1/2]) → x ≈ y → y ≈ z → z ≈ a → a ≈ b → b ≈ c → c ≈ d → x ≈ d
-≈-trans₅ x y z a b c d p q r s t u = ≈-trans₄ x y z a b d p q r s (≈-trans b c d t u)
+≈-trans₅ : (x y z a b c d : ℤ[1/2]) → x ≈ y → y ≈ z
+                                    → z ≈ a → a ≈ b
+                                    → b ≈ c → c ≈ d
+                                    → x ≈ d
+≈-trans₅ x y z a b c d p q r s t u =
+ ≈-trans₄ x y z a b d p q r s (≈-trans b c d t u)
 
 \end{code}
