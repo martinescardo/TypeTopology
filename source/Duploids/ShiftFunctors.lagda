@@ -52,7 +52,7 @@ module _ (𝓓 : duploid 𝓤 𝓥) where
  open import Duploids.Categories fe pt 𝓓.underlying-preduploid
 
  -- forget linearity
- module 𝓢⇒𝓝 where
+ module ForgetLinearity where
   structure : functor-structure 𝓢 𝓝
   pr₁ structure A = A
   pr₂ structure A B f = pr₁ f
@@ -64,8 +64,11 @@ module _ (𝓓 : duploid 𝓤 𝓥) where
   fun : functor 𝓢 𝓝
   fun = make structure axioms
 
+ 𝓢⇒𝓝 = ForgetLinearity.fun
+ module 𝓢⇒𝓝 = functor 𝓢⇒𝓝
+
  -- forget thunkability
- module 𝓒⇒𝓟 where
+ module ForgetThunkability where
   structure : functor-structure 𝓒 𝓟
   pr₁ structure A = A
   pr₂ structure A B f = pr₁ f
@@ -77,8 +80,99 @@ module _ (𝓓 : duploid 𝓤 𝓥) where
   fun : functor 𝓒 𝓟
   fun = make structure axioms
 
+ 𝓒⇒𝓟 = ForgetThunkability.fun
+ module 𝓒⇒𝓟 = functor 𝓒⇒𝓟
 
- module 𝓟⇒𝓢 where
+ module Downshift where
+  module str where
+   ob : 𝓝.ob → 𝓒.ob
+   ob (N , _) = 𝓓.⇓ N , 𝓓.⇓-positive N
+
+   module _ (M N : 𝓝.ob) (f : 𝓝.hom M N) where
+    hom-𝓟 : 𝓟.hom (ob M) (ob N)
+    hom-𝓟 = 𝓊 >> (f >> 𝓌)
+
+    hom-thunkable : 𝓓.is-thunkable hom-𝓟
+    hom-thunkable U V g h =
+     ((𝓊 >> (f >> 𝓌)) >> g) >> h ＝⟨ ap (_>> h) (𝓊[M]-th _ _ _ _) ⟩
+     (𝓊 >> ((f >> 𝓌) >> g)) >> h ＝⟨ 𝓊[M]-th _ _ _ _ ⟩
+     𝓊 >> (((f >> 𝓌) >> g) >> h) ＝⟨ ap (𝓊 >>_) lem ⟩
+     𝓊 >> ((f >> 𝓌) >> (g >> h)) ＝⟨ 𝓊[M]-th _ _ _ _ ⁻¹ ⟩
+     (𝓊 >> (f >> 𝓌)) >> (g >> h) ∎
+     where
+
+      f-th : 𝓓.is-thunkable f
+      f-th = pr₂ N (pr₁ M) f
+
+      g-lin : 𝓓.is-linear g
+      g-lin = 𝓓.⇓-positive (pr₁ N) U g
+
+      𝓊[M]-th : 𝓓.is-thunkable (𝓊 {pr₁ M})
+      𝓊[M]-th = pr₂ M (𝓓.⇓ (pr₁ M)) 𝓊
+
+      lem : ((f >> 𝓌) >> g) >> h ＝ (f >> 𝓌) >> (g >> h)
+      lem =
+       ((f >> 𝓌) >> g) >> h ＝⟨ ap (_>> h) (g-lin _ _ _ _) ⟩
+       (f >> (𝓌 >> g)) >> h ＝⟨ f-th _ _ _ _ ⟩
+       f >> ((𝓌 >> g) >> h) ＝⟨ ap (f >>_) (𝓓.wrap-thunkable _ _ _ _) ⟩
+       f >> (𝓌 >> (g >> h)) ＝⟨ f-th _ _ _ _ ⁻¹ ⟩
+       (f >> 𝓌) >> (g >> h) ∎
+
+
+    hom : 𝓒.hom (ob M) (ob N)
+    pr₁ hom = hom-𝓟
+    pr₂ hom = hom-thunkable
+
+   structure : functor-structure 𝓝 𝓒
+   structure = ob , hom
+
+  module ax where
+   preserves-idn : statement-preserves-idn 𝓝 𝓒 str.structure
+   preserves-idn M =
+    PositivesAndThunkableMaps.to-hom-＝ (str.ob M) (str.ob M) _ _
+     (𝓊 >> (𝓝.idn M >> 𝓌) ＝⟨ ap (𝓊 >>_) (𝓓.idn-L _ _ _) ⟩
+      𝓊 >> 𝓌 ＝⟨ pr₂ 𝓓.wrap-unwrap-inverse ⟩
+      𝓟.idn (str.ob M) ∎)
+
+   preserves-seq : statement-preserves-seq 𝓝 𝓒 str.structure
+   preserves-seq M N O f g =
+    PositivesAndThunkableMaps.to-hom-＝ (str.ob M) (str.ob O) _ _
+     (𝓊 >> ((f >> g) >> 𝓌) ＝⟨ ap (𝓊 >>_) (f-th _ _ _ _) ⟩
+      𝓊 >> (f >> (g >> 𝓌)) ＝⟨ 𝓊[M]-th _ _ _ _ ⁻¹ ⟩
+      (𝓊 >> f) >> (g >> 𝓌) ＝⟨ ap (_>> (g >> 𝓌)) lem1 ⟩
+      ((𝓊 >> (f >> 𝓌)) >> 𝓊) >> (g >> 𝓌) ＝⟨ str.hom-thunkable M N _ _ _ _ _ ⟩
+      (𝓊 >> (f >> 𝓌)) >> (𝓊 >> (g >> 𝓌)) ∎)
+    where
+     f-th : 𝓓.is-thunkable f
+     f-th = pr₂ N (pr₁ M) f
+
+     𝓊[M]-th : 𝓓.is-thunkable (𝓊 {pr₁ M})
+     𝓊[M]-th = pr₂ M (𝓓.⇓ (pr₁ M)) 𝓊
+
+     lem0 : f ＝ (f >> 𝓌) >> 𝓊
+     lem0 =
+      f ＝⟨ 𝓓.idn-R _ _ _ ⁻¹ ⟩
+      f >> 𝓓.idn _ ＝⟨ ap (f >>_) (pr₁ 𝓓.wrap-unwrap-inverse ⁻¹) ⟩
+      f >> (𝓌 >> 𝓊) ＝⟨ f-th _ _ _ _ ⁻¹ ⟩
+      (f >> 𝓌) >> 𝓊 ∎
+
+     lem1 : (𝓊 >> f) ＝ (𝓊 >> (f >> 𝓌)) >> 𝓊
+     lem1 =
+      𝓊 >> f ＝⟨ ap (𝓊 >>_) lem0 ⟩
+      𝓊 >> ((f >> 𝓌) >> 𝓊) ＝⟨ 𝓓.unwrap-linear _ _ _ _ ⁻¹ ⟩
+      ((𝓊 >> (f >> 𝓌)) >> 𝓊) ∎
+
+   axioms : functor-axioms 𝓝 𝓒 str.structure
+   pr₁ axioms = preserves-idn
+   pr₂ axioms = preserves-seq
+
+  fun : functor 𝓝 𝓒
+  fun = make str.structure ax.axioms
+
+ 𝓝⇒𝓒 = Downshift.fun
+ module 𝓝⇒𝓒 = functor 𝓝⇒𝓒
+
+ module Upshift where
   module str where
    ob : 𝓟.ob → 𝓢.ob
    ob (A , A-pos) = 𝓓.⇑ A , 𝓓.⇑-negative A
@@ -168,15 +262,19 @@ module _ (𝓓 : duploid 𝓤 𝓥) where
   fun : functor 𝓟 𝓢
   fun = make str.structure ax.axioms
 
+ 𝓟⇒𝓢 = Upshift.fun
+ module 𝓟⇒𝓢 = functor 𝓟⇒𝓢
 
- -- The ↑ functor
- module 𝓒⇒𝓢 where
-  fun : functor 𝓒 𝓢
-  fun = composite-functor.fun 𝓒⇒𝓟.fun 𝓟⇒𝓢.fun
+ [↑] : functor 𝓒 𝓢
+ [↑] = composite-functor.fun 𝓒⇒𝓟 𝓟⇒𝓢
 
- -- The ⇑ functor
- module 𝓟⇒𝓝 where
-  fun : functor 𝓟 𝓝
-  fun = composite-functor.fun 𝓟⇒𝓢.fun 𝓢⇒𝓝.fun
+ [↓] : functor 𝓢 𝓒
+ [↓] = composite-functor.fun 𝓢⇒𝓝 𝓝⇒𝓒
+
+ [⇑] : functor 𝓟 𝓝
+ [⇑] = composite-functor.fun 𝓟⇒𝓢 𝓢⇒𝓝
+
+ [⇓] : functor 𝓝 𝓟
+ [⇓] = composite-functor.fun 𝓝⇒𝓒 𝓒⇒𝓟
 
 \end{code}
