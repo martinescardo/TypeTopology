@@ -73,12 +73,19 @@ being-prop-is-prop {𝓤} {X} fe f g = c₁
                                        (Π-is-prop fe  (λ _ → Y-is-prop))
                                        (Π-is-prop fe' (λ _ → X-is-prop))
 
-identifications-of-props-are-props : propext 𝓤
-                                   → funext 𝓤 𝓤
-                                   → (P : 𝓤 ̇ )
-                                   → is-prop P
-                                   → (X : 𝓤 ̇ ) → is-prop (X ＝ P)
-identifications-of-props-are-props {𝓤} pe fe P i = γ
+\end{code}
+
+The following means that propositions are h-isolated elements of type
+universes:
+
+\begin{code}
+
+identifications-with-props-are-props : propext 𝓤
+                                     → funext 𝓤 𝓤
+                                     → (P : 𝓤 ̇ )
+                                     → is-prop P
+                                     → (X : 𝓤 ̇ ) → is-prop (X ＝ P)
+identifications-with-props-are-props {𝓤} pe fe P i = γ
  where
   f : (X : 𝓤 ̇ ) → X ＝ P → is-prop X × (X ⇔ P)
   f X refl = i , (id , id)

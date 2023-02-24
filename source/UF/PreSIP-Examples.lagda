@@ -17,6 +17,7 @@ open import UF.Equiv hiding (_≅_)
 open import UF.PreUnivalence
 open import UF.EquivalenceExamples
 open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
 open import UF.Embeddings
 open import UF.FunExt
 
@@ -56,41 +57,66 @@ module generalized-metric-space
  M : 𝓤 ⁺ ⊔ 𝓥 ⊔ 𝓦 ̇
  M = Σ X ꞉ 𝓤 ̇ , Σ d ꞉ (X → X → R) , axioms X d
 
- _≅_  : M → M → 𝓤 ⊔ 𝓥 ̇
- (X , d , _) ≅ (Y , e , _) = Σ f ꞉ (X → Y), is-equiv f
-                                          × (d ＝ λ x x' → e (f x) (f x'))
+ _≅₀_  : M → M → 𝓤 ⊔ 𝓥 ̇
+ (X , d , _) ≅₀ (Y , e , _) = Σ f ꞉ (X → Y)
+                                 , is-equiv f
+                                 × (d ＝ λ x x' → e (f x) (f x'))
 
- M-embedding : is-preunivalent 𝓤
-             → (A B : M)
+ M-embedding₀ : is-preunivalent 𝓤 → (A B : M) → (A ＝ B) ↪ (A ≅₀ B)
+ M-embedding₀ ua = ＝-embedding-with-axioms ua sns-data axioms axiomss
 
-             → (A ＝ B) ↪ (A ≅ B)
+ _≅₁_  : M → M → 𝓤 ⊔ 𝓥 ̇
+ (X , d , _) ≅₁ (Y , e , _) = Σ f ꞉ (X → Y)
+                                  , is-equiv f
+                                  × ((x x' : X) → d x x' ＝ e (f x) (f x'))
 
- M-embedding ua = ＝-embedding-with-axioms ua
-                                sns-data
-                                axioms
-                                axiomss
-
- _≅'_  : M → M → 𝓤 ⊔ 𝓥 ̇
- (X , d , _) ≅' (Y , e , _)
-             = Σ f ꞉ (X → Y), is-equiv f
-                            × ((x x' : X) → d x x' ＝ e (f x) (f x'))
+ ≅₁-lemma : Fun-Ext → (A B : M) → (A ≅₀ B) ≃ (A ≅₁ B)
+ ≅₁-lemma fe (X , d , _) (Y , e , _) =
+  Σ-cong (λ f → ×-cong
+                 (≃-refl (is-equiv f))
+                 (≃-funext₂ fe fe
+                   (λ x y → d x y)
+                   (λ x x' → e (f x) (f x'))))
 
 
- M-embedding' : Preunivalence
+ M-embedding₁ : is-preunivalent 𝓤
               → Fun-Ext
-              → ((X , d , a) (Y , e , b) : M)
-              → ((X , d , a) ＝ (Y , e , b))
-                             ↪  (Σ f ꞉ (X → Y)
-                                     , is-equiv f
-                                     × ((x x' : X) → d x x' ＝ e (f x) (f x')))
+              → (A B : M) → (A ＝ B) ↪ (A ≅₁ B)
+ M-embedding₁ pua fe A B = (A ＝ B) ↪⟨ M-embedding₀ pua A B ⟩
+                           (A ≅₀ B)  ↪⟨ ≃-gives-↪ (≅₁-lemma fe A B) ⟩
+                           (A ≅₁ B) □
 
- M-embedding' pua fe (X , d , a) (Y , e , b) =
-    ((X , d , a) ＝ (Y , e , b)) ↪⟨ M-embedding (pua 𝓤) (X , d , a) (Y , e , b) ⟩
-    ((X , d , a) ≅ (Y , e , b))  ↪⟨ ≃-gives-↪ i ⟩
-    _                            □
-  where
-   i = Σ-cong (λ f → ×-cong (≃-refl (is-equiv f))
-                      (≃-funext₂ fe fe
-                        (λ x y → d x y)
-                        (λ x x' → e (f x) (f x'))))
+module relational-space
+        {𝓤 𝓥 𝓦 𝓣 : Universe}
+        (R : 𝓥 ̇ )
+        (axioms  : (X : 𝓤 ̇ ) → (X → X → 𝓣 ̇ ) → 𝓦 ̇ )
+        (axiomss : (X : 𝓤 ̇ ) (R : X → X → 𝓣 ̇ ) → is-prop (axioms X R))
+        (rel-is-prop-valued : ∀ {X R} → axioms X R → ∀ {x y} → is-prop (R x y))
+       where
+
+ open presip
+ open presip-with-axioms
+ open generalized-metric-space {𝓤} {𝓣 ⁺} {𝓦} (𝓣 ̇ ) axioms axiomss
+
+ _≅₂_  : M → M → 𝓤 ⊔ 𝓣 ̇
+ (X , R , _) ≅₂ (Y , S , _) = Σ f ꞉ (X → Y)
+                                  , is-equiv f
+                                  × ((x x' : X) → R x x' ⇔ S (f x) (f x'))
+
+ open import UF.Equiv-FunExt
+
+ ≅₂-lemma : Fun-Ext → Prop-Ext → (A B : M) → (A ≅₁ B) ≃ (A ≅₂ B)
+ ≅₂-lemma fe pe A@(X , R , a) B@(Y , S , b) =
+  Σ-cong
+   (λ f → ×-cong
+           (≃-refl (is-equiv f))
+           (Π-cong' fe (λ x →
+            Π-cong' fe (λ x' →
+             prop-＝-≃-⇔ pe fe
+              (rel-is-prop-valued a)
+              (rel-is-prop-valued b)))))
+
+ ≅₂-lemma' : Fun-Ext → Prop-Ext → (A B : M) → (A ≅₁ B) ↪ (A ≅₂ B)
+ ≅₂-lemma' fe pe A B = ≃-gives-↪ (≅₂-lemma fe pe A B)
+
 \end{code}

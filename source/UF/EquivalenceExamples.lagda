@@ -157,7 +157,8 @@ curry-uncurry {𝓤} {𝓥} {𝓦} fe = curry-uncurry' (fe 𝓤 (𝓥 ⊔ 𝓦))
 Π-cong : funext 𝓤 𝓥
        → funext 𝓤 𝓦
        → (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ ) (Y' : X → 𝓦 ̇ )
-       → ((x : X) → Y x ≃ Y' x) → Π Y ≃ Π Y'
+       → ((x : X) → Y x ≃ Y' x)
+       → Π Y ≃ Π Y'
 Π-cong fe fe' X Y Y' φ = qinveq f (g , gf , fg)
  where
   f : ((x : X) → Y x) → ((x : X) → Y' x)
@@ -653,12 +654,13 @@ NatΠ-equiv A B ζ fe i = vv-equivs-are-equivs
                              (NatΠ-vv-equiv A B ζ fe
                                (λ x → equivs-are-vv-equivs (ζ x) (i x)))
 
-Π-cong' : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ )
+Π-cong' : {X : 𝓤 ̇ }
         → funext 𝓤 (𝓥 ⊔ 𝓦)
+        → {A : X → 𝓥 ̇ } {B : X → 𝓦 ̇ }
         → ((x : X) → A x ≃ B x)
         → Π A ≃ Π B
-Π-cong' A B fe e = NatΠ (λ x → pr₁ (e x)) ,
-                   NatΠ-equiv A B (λ x → pr₁ (e x)) fe (λ x → pr₂ (e x))
+Π-cong' fe {A} {B} e = NatΠ (λ x → pr₁ (e x)) ,
+                       NatΠ-equiv A B (λ x → pr₁ (e x)) fe (λ x → pr₂ (e x))
 
 ＝-cong : {X : 𝓤 ̇ } (x y : X) {x' y' : X}
         → x ＝ x'
@@ -706,7 +708,7 @@ singleton-≃-𝟙' = singleton-≃ 𝟙-is-singleton
   η p = i (Idtofun (f p) ⋆) p
 
   ε : (q : 𝟙 ＝ P) → f (Idtofun q ⋆) ＝ q
-  ε q = identifications-of-props-are-props pe fe P i 𝟙 (f (Idtofun q ⋆)) q
+  ε q = identifications-with-props-are-props pe fe P i 𝟙 (f (Idtofun q ⋆)) q
 
 empty-≃-𝟘 : {X : 𝓤 ̇ } → (X → 𝟘 {𝓥}) → X ≃ 𝟘 {𝓦}
 empty-≃-𝟘 i = qinveq

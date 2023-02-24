@@ -39,8 +39,11 @@ FunExt = (𝓤 𝓥 : Universe) → funext 𝓤 𝓥
 Fun-Ext : 𝓤ω
 Fun-Ext = {𝓤 𝓥 : Universe} → funext 𝓤 𝓥
 
-FunExt' : 𝓤ω
-FunExt' = {𝓤 𝓥 : Universe} → funext 𝓤 𝓥
+FunExt-to-Fun-Ext : FunExt → Fun-Ext
+FunExt-to-Fun-Ext fe {𝓤} {𝓥} = fe 𝓤 𝓥
+
+Fun-Ext-to-FunExt : Fun-Ext → FunExt
+Fun-Ext-to-FunExt fe 𝓤 𝓥 = fe {𝓤} {𝓥}
 
 ≃-funext : funext 𝓤 𝓥 → {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (f g : Π A)
          → (f ＝ g) ≃ (f ∼ g)

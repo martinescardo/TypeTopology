@@ -408,12 +408,12 @@ maps-of-props-are-embeddings : {P : 𝓤 ̇ } {Q : 𝓥 ̇ } (f : P → Q)
 maps-of-props-are-embeddings f i j =
  maps-of-props-into-sets-are-embeddings f i (props-are-sets j)
 
-×-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } {B : 𝓣 ̇ }
-              (f : X → A ) (g : Y → B)
-            → is-embedding f
-            → is-embedding g
-            → is-embedding (λ ((x , y) : X × Y) → (f x , g y))
-×-embedding f g i j (a , b) = retract-of-prop
+×-is-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } {B : 𝓣 ̇ }
+                 (f : X → A ) (g : Y → B)
+               → is-embedding f
+               → is-embedding g
+               → is-embedding (λ ((x , y) : X × Y) → (f x , g y))
+×-is-embedding f g i j (a , b) = retract-of-prop
                                (r , (s , rs))
                                (×-is-prop (i a) (j b))
  where
