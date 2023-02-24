@@ -577,53 +577,76 @@ The following section provides an algorithm for bounded maximisation
 of decidable propositions on Natural numbers, similar to the algorithm
 for bounded-minimisation above.
 
-The strategy is simple.
+We want to prove the following:
 
+Given a complemented predicate A on naturals numbers and strict upper bound k,
+either there exists a maximal element m such that m < k , A m holds and
+(∀ n , A n → n ≤ m), or our predicate only holds for n ≥ k.
+
+Proof: We proceed by induction on the upper bound. Given an upper bound of 0, we
+are done, because there are no natural numbers less than 0.
+
+Now we consider the induction hypothesis that our statement is true for an upper
+bound k. We consider each case.
+
+Case 1: We have some maximal element m such that A m holds, with m < k.
+Since A is decidable, we find that either A k holds, or it doesn't. If it holds,
+then have a new maximal element A k, with k < k + 1.
+
+Case 2: The predicate does not hold for any m < k. Again, we inspect A k. If it
+holds, then we have found a maximal (and the only) element m < k + 1. Otherwise,
+the statement does not hold for any n is our range.
 
 \begin{code}
 
-bounded-maximisation : (A : ℕ → 𝓤 ̇) → complemented A
-                     → (k : ℕ)
-                     → (Σ m ꞉ ℕ , (m < k × A m × ((n : ℕ) → n < k → A n → n ≤ m))) + ((n : ℕ) → A n → n ≥ k)
-bounded-maximisation A δ zero = inr (λ n _ → zero-least n)
-bounded-maximisation A δ (succ k) = f (bounded-maximisation A δ k)
+bm : (A : ℕ → 𝓤 ̇)
+   → complemented A
+   → (k : ℕ)
+   → (Σ m ꞉ ℕ , m < k × A m × ((n : ℕ) → n < k → A n → n ≤ m))
+   + ((n : ℕ) → A n → n ≥ k)
+bm A δ 0        = inr (λ n _ → zero-least n)
+bm A δ (succ k) = γ (δ k) (bm A δ k)
  where
-  conclusion = (Σ m ꞉ ℕ , (m < succ k) × A m × ((n : ℕ) → n < succ k → A n → n ≤ m)) + ((n : ℕ) → A n → n ≥ succ k)
+  γ : A k + ¬ A k
+   → (Σ m ꞉ ℕ , m < k × A m × ((n : ℕ) → n < k → A n → n ≤ m))
+   + ((n : ℕ) → A n → n ≥ k)
+   → (Σ m' ꞉ ℕ , m' < succ k × A m' × ((n : ℕ) → n < succ k → A n → n ≤ m'))
+   + ((n : ℕ) → A n → n ≥ succ k)
+   
+  -- Case 1
+  γ (inl Ak)  (inl (m , l , Am , ψ)) = inl (k , <-succ k , Ak , ψ')
+   where
+   ψ' : (n : ℕ) → n < succ k → A n → n ≤ k
+   ψ' n l' An = l'                       -- n < succ k → succ n ≤ succ k → n ≤ k
+  γ (inr ¬Ak) (inl (m , l , Am , ψ)) = inl (m , l' , Am , ψ')
+   where
+    l' : m < succ k
+    l' = <-trans m k (succ k) l (<-succ k)
+    ψ' : (n : ℕ) → n < succ k → A n → n < succ m
+    ψ' n l' An = ρ (<-split n k l') 
+     where
+      ρ : (n < k) + (n ＝ k) → n < succ m
+      ρ (inl l'') = ψ n l'' An
+      ρ (inr e)   = 𝟘-elim (¬Ak (transport A e An))
 
-  f : (Σ m ꞉ ℕ , (m < k) × A m × ((n : ℕ) → n < k → A n → n ≤ m)) + ((n : ℕ) → A n → n ≥ k)
-    → conclusion
-  f (inl (m , l , a , ψ)) = g (δ k)
+  -- Case 2
+  γ (inl Ak)  (inr ω)  = inl (k , <-succ k , Ak , ψ)
    where
-    g : A k + ¬ A k → conclusion
-    g (inl k-holds) = inl (k , ((<-succ k) , (k-holds , ψ')))
-     where
-       ψ' : (n : ℕ) → n < succ k → A n → n ≤ k
-       ψ' n z a' = z
-    g (inr k-fails) = inl (m , ((<-trans m k (succ k) l (<-succ k)) , a , ψ'))
-     where
-      ψ' : (n : ℕ) → n < succ k → A n → n ≤ m
-      ψ' n z a' = ψ n (ρ (<-split n k z)) a'
-       where
-        ρ : (n < k) + (n ＝ k) → n < k
-        ρ (inl r) = r
-        ρ (inr r) = 𝟘-elim (k-fails (transport (λ - → A -) r a'))
-  f (inr ω) = g (δ k)
+    ψ : (n : ℕ) → n < succ k → A n → n ≤ k
+    ψ n l An = l
+  γ (inr ¬Ak) (inr ψ) = inr ψ'
    where
-    g : A k + ¬ A k → conclusion
-    g (inl k-holds) = inl (k , (<-succ k , k-holds , (λ z l a' → l)))
-    g (inr k-fails) = inr ψ
+    ψ' : (n : ℕ) → A n → n ≥ succ k
+    ψ' n An = ρ (<-split k n (ψ n An))
      where
-      ψ : (n : ℕ) → A n → n ≥ succ k
-      ψ n n-holds = τ (<-split k n (ω n n-holds))
-       where
-        τ : (k < n) + (k ＝ n) → n ≥ succ k
-        τ (inr w) = 𝟘-elim (k-fails (transport (λ - → A -) (w ⁻¹) n-holds))
-        τ (inl w) = w
+      ρ : (k < n) + (k ＝ n) → n ≥ succ k
+      ρ (inl l') = l'
+      ρ (inr e)  = 𝟘-elim (¬Ak (transport A (e ⁻¹) An))
 
 bounded-maximisation' : (A : ℕ → 𝓤 ̇) → complemented A
    → (k : ℕ)
    → (Σ m ꞉ ℕ , (m ≤ k × A m × ((n : ℕ) → n ≤ k → A n → n ≤ m))) + ((n : ℕ) → A n → k < n)
-bounded-maximisation' A δ k = result (bounded-maximisation A δ k) (δ k)
+bounded-maximisation' A δ k = result (bm A δ k) (δ k)
  where
   result : (Σ m ꞉ ℕ , (m < k) × A m × ((n : ℕ) → n < k → A n → n ≤ m)) + ((n : ℕ) → A n → n ≥ k) → A k + ¬ A k
          → (Σ m ꞉ ℕ , (m ≤ k) × A m × ((n : ℕ) → n ≤ k → A n → n ≤ m)) + ((n : ℕ) → A n → k < n)
@@ -663,7 +686,7 @@ which the property holds. Of course, we must provide an upper bound.
 \begin{code}
 
 maximal-from-given : (A : ℕ → 𝓤 ̇) → (b : ℕ) → complemented A → Σ k ꞉ ℕ , A k × k < b → maximal-element A b
-maximal-from-given A b δ (k , a) = f (bounded-maximisation A δ b)
+maximal-from-given A b δ (k , a) = f (bm A δ b)
  where
   f : (Σ m ꞉ ℕ , (m < b) × A m × ((n : ℕ) → n < b → A n → n ≤ m)) + ((n : ℕ) → A n → n ≥ b) → maximal-element A b
   f (inl x) = x
