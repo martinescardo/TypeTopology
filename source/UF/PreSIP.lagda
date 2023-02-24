@@ -62,25 +62,27 @@ module presip where
  homomorphism-lemma (ι , ρ , θ) (X , s) (X , t) (refl {X}) = γ
   where
    γ : (s ＝ t) ↪ ι (X , s) (X , t) (≃-refl X)
-   γ = (canonical-map ι ρ s t , θ s t)
+   γ = (canonical-map ι ρ s t ,
+        θ s t)
 
  ＝-embedding : is-preunivalent 𝓤
-                       → {S : 𝓤 ̇ → 𝓥 ̇ } (σ : SNS S 𝓦)
-                       → (A B : Σ S)
+              → {S : 𝓤 ̇ → 𝓥 ̇ } (σ : SNS S 𝓦)
+              → (A B : Σ S)
 
-                       → (A ＝ B) ↪ (A ≃[ σ ] B)
+              → (A ＝ B) ↪ (A ≃[ σ ] B)
  ＝-embedding pua {S} σ A B =
-    (A ＝ B)                                                           ↪⟨ i ⟩
+    (A ＝ B)                                                            ↪⟨ i ⟩
     (Σ p ꞉ ⟨ A ⟩ ＝ ⟨ B ⟩ , transport S p (structure A) ＝ structure B) ↪⟨ ii ⟩
     (Σ p ꞉ ⟨ A ⟩ ＝ ⟨ B ⟩ , ι A B (idtoeq ⟨ A ⟩ ⟨ B ⟩ p))               ↪⟨ iii ⟩
-    (Σ e ꞉ ⟨ A ⟩ ≃ ⟨ B ⟩ , ι A B e)                                   ↪⟨ iv ⟩
-    (A ≃[ σ ] B)                                                      □
+    (Σ e ꞉ ⟨ A ⟩ ≃ ⟨ B ⟩ , ι A B e)                                     ↪⟨ iv ⟩
+    (A ≃[ σ ] B)                                                        □
   where
    open import UF.PairFun
    ι   = homomorphic σ
    i   = ≃-gives-↪ Σ-＝-≃
    ii  = NatΣ-embedding (homomorphism-lemma σ A B)
-   iii = Σ-change-of-variable-embedding (ι A B) (idtoeq ⟨ A ⟩ ⟨ B ⟩) (pua ⟨ A ⟩ ⟨ B ⟩)
+   iii = Σ-change-of-variable-embedding
+          (ι A B) (idtoeq ⟨ A ⟩ ⟨ B ⟩) (pua ⟨ A ⟩ ⟨ B ⟩)
    iv  = ≃-gives-↪ Σ-assoc
 
 module presip-with-axioms where
@@ -121,7 +123,8 @@ module presip-with-axioms where
      j = pr₁-is-embedding (i X)
 
      k : {s' t' : S' X} → is-embedding (ap π {s'} {t'})
-     k {s'} {t'} = equivs-are-embeddings (ap π) (embedding-gives-embedding' π j s' t')
+     k {s'} {t'} = equivs-are-embeddings (ap π)
+                    (embedding-gives-embedding' π j s' t')
 
      l : canonical-map ι' ρ' (s , a) (t , b)
        ∼ canonical-map ι ρ s t ∘ ap π {s , a} {t , b}
@@ -134,16 +137,14 @@ module presip-with-axioms where
      γ : is-embedding (canonical-map ι' ρ' (s , a) (t , b))
      γ = embedding-closed-under-∼ _ _ e l
 
- ＝-embedding-with-axioms :
-     is-preunivalent 𝓤
-   → {S : 𝓤 ̇ → 𝓥 ̇ }
-     (σ : SNS S 𝓣)
-     (axioms : (X : 𝓤 ̇ ) → S X → 𝓦 ̇ )
-   → ((X : 𝓤 ̇ ) (s : S X) → is-prop (axioms X s))
-   → (A B : Σ X ꞉ 𝓤 ̇ , Σ s ꞉ S X , axioms X s)
-   → (A ＝ B) ↪ ([ A ] ≃[ σ ] [ B ])
- ＝-embedding-with-axioms ua σ axioms i =
-   ＝-embedding ua (add-axioms axioms i σ)
+ ＝-embedding-with-axioms : is-preunivalent 𝓤
+                          → {S : 𝓤 ̇ → 𝓥 ̇ }
+                            (σ : SNS S 𝓣)
+                            (axioms : (X : 𝓤 ̇ ) → S X → 𝓦 ̇ )
+                          → ((X : 𝓤 ̇ ) (s : S X) → is-prop (axioms X s))
+                          → (A B : Σ X ꞉ 𝓤 ̇ , Σ s ꞉ S X , axioms X s)
+                          → (A ＝ B) ↪ ([ A ] ≃[ σ ] [ B ])
+ ＝-embedding-with-axioms ua σ axioms i = ＝-embedding ua (add-axioms axioms i σ)
 
 {- TODO. Not needed yet. Only the technical lemma needs to be proved to conclude.
 

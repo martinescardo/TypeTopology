@@ -1355,7 +1355,8 @@ module generalized-metric-space
 
  characterization-of-M-＝ ua = characterization-of-＝-with-axioms ua
                                 sns-data
-                                axioms axiomss
+                                axioms
+                                axiomss
 
  _≅'_  : M → M → 𝓤 ⊔ 𝓥 ̇
  (X , d , _) ≅' (Y , e , _)

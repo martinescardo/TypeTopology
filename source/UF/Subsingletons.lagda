@@ -450,12 +450,15 @@ inr-lc-is-section refl = refl
 
 \end{code}
 
-Formulation of the K axiom for a universe U.
+Formulation of the K axiom for a universe 𝓤.
 
 \begin{code}
 
 K-axiom : ∀ 𝓤 → 𝓤 ⁺ ̇
 K-axiom 𝓤 = (X : 𝓤 ̇ ) → is-set X
+
+K-Axiom : 𝓤ω
+K-Axiom = (𝓤 : Universe) → K-axiom 𝓤
 
 \end{code}
 
