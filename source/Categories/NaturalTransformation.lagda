@@ -197,7 +197,7 @@ module natural-transformation (𝓒 : precategory 𝓤 𝓥) (𝓓 : precategory
    nat-transf-assoc
 
   precat : precategory (𝓤 ⊔ 𝓥 ⊔ 𝓤' ⊔ 𝓥') (𝓤 ⊔ 𝓥 ⊔ 𝓥')
-  precat = make structure axioms
+  precat = make functor nat-transf nat-transf-idn nat-transf-seq axioms
 
 module _ {𝓒 : precategory 𝓣 𝓤} {𝓓 : precategory 𝓣' 𝓤'} {𝓔 : precategory 𝓥 𝓦} where
  private
