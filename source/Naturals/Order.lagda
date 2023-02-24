@@ -583,35 +583,50 @@ Given a complemented predicate A on naturals numbers and strict upper bound k,
 either there exists a maximal element m such that m < k , A m holds and
 (∀ n , A n → n ≤ m), or our predicate only holds for n ≥ k.
 
-Proof: We proceed by induction on the upper bound. Given an upper bound of 0, we
-are done, because there are no natural numbers less than 0.
+Proof:
+ We proceed by induction on the upper bound. Given an upper bound of 0, we
+ are done, because there are no natural numbers less than 0.
 
-Now we consider the induction hypothesis that our statement is true for an upper
-bound k. We consider each case.
+ Now we consider the induction hypothesis that our statement is true for an upper
+ bound k. We consider each case.
 
-Case 1: We have some maximal element m such that A m holds, with m < k.
-Since A is decidable, we find that either A k holds, or it doesn't. If it holds,
-then have a new maximal element A k, with k < k + 1.
+ Case 1: We have some maximal element m such that A m holds, with m < k.
+ Since A is decidable, we find that either A k holds, or it doesn't. If it holds,
+ then have a new maximal element A k, with k < k + 1.
 
-Case 2: The predicate does not hold for any m < k. Again, we inspect A k. If it
-holds, then we have found a maximal (and the only) element m < k + 1. Otherwise,
-the statement does not hold for any n is our range.
+ Case 2: The predicate does not hold for any m < k. Again, we inspect A k. If it
+ holds, then we have found a maximal (and the only) element m < k + 1. Otherwise,
+ the statement does not hold for any n is our range.
+
+Also given are the types of maximal element m : ℕ such that A m holds, given an
+upper bound k
 
 \begin{code}
+ 
+maximal-element : (A : ℕ → 𝓤 ̇) → (k : ℕ) → 𝓤 ̇
+maximal-element A k
+ = Σ m ꞉ ℕ , (m < k × A m × ((n : ℕ) → n < k → A n → n ≤ m))
 
-bm : (A : ℕ → 𝓤 ̇)
-   → complemented A
-   → (k : ℕ)
-   → (Σ m ꞉ ℕ , m < k × A m × ((n : ℕ) → n < k → A n → n ≤ m))
-   + ((n : ℕ) → A n → n ≥ k)
-bm A δ 0        = inr (λ n _ → zero-least n)
-bm A δ (succ k) = γ (δ k) (bm A δ k)
+maximal-element' : (A : ℕ → 𝓤 ̇) → (k : ℕ) → 𝓤 ̇
+maximal-element' A k
+ = Σ m ꞉ ℕ , (m ≤ k × A m × ((n : ℕ) → n ≤ k → A n → n ≤ m))
+
+no-maximal-element : (A : ℕ → 𝓤 ̇) → (k : ℕ) → 𝓤 ̇
+no-maximal-element A k = (n : ℕ) → A n → n ≥ k
+
+no-maximal-element' : (A : ℕ → 𝓤 ̇) → (k : ℕ) → 𝓤 ̇
+no-maximal-element' A k = (n : ℕ) → A n → k < n
+
+bounded-maximisation : (A : ℕ → 𝓤 ̇)
+                     → complemented A
+                     → (k : ℕ)
+                     → maximal-element A k + no-maximal-element A k
+bounded-maximisation A δ 0        = inr (λ n _ → zero-least n)
+bounded-maximisation A δ (succ k) = γ (δ k) (bounded-maximisation A δ k)
  where
   γ : A k + ¬ A k
-   → (Σ m ꞉ ℕ , m < k × A m × ((n : ℕ) → n < k → A n → n ≤ m))
-   + ((n : ℕ) → A n → n ≥ k)
-   → (Σ m' ꞉ ℕ , m' < succ k × A m' × ((n : ℕ) → n < succ k → A n → n ≤ m'))
-   + ((n : ℕ) → A n → n ≥ succ k)
+   → maximal-element A k + no-maximal-element A k
+   → maximal-element A (succ k) + no-maximal-element A (succ k)
    
   -- Case 1
   γ (inl Ak)  (inl (m , l , Am , ψ)) = inl (k , <-succ k , Ak , ψ')
@@ -643,39 +658,55 @@ bm A δ (succ k) = γ (δ k) (bm A δ k)
       ρ (inl l') = l'
       ρ (inr e)  = 𝟘-elim (¬Ak (transport A (e ⁻¹) An))
 
-bounded-maximisation' : (A : ℕ → 𝓤 ̇) → complemented A
-   → (k : ℕ)
-   → (Σ m ꞉ ℕ , (m ≤ k × A m × ((n : ℕ) → n ≤ k → A n → n ≤ m))) + ((n : ℕ) → A n → k < n)
-bounded-maximisation' A δ k = result (bm A δ k) (δ k)
+\end{code}
+
+We can use the above result to prove the same statement for inclusive order.
+
+\begin{code}
+
+bounded-maximisation' : (A : ℕ → 𝓤 ̇)
+                      → complemented A
+                      → (k : ℕ)
+                      → maximal-element' A k + no-maximal-element' A k
+bounded-maximisation' A δ k = γ (bounded-maximisation A δ k) (δ k)
  where
-  result : (Σ m ꞉ ℕ , (m < k) × A m × ((n : ℕ) → n < k → A n → n ≤ m)) + ((n : ℕ) → A n → n ≥ k) → A k + ¬ A k
-         → (Σ m ꞉ ℕ , (m ≤ k) × A m × ((n : ℕ) → n ≤ k → A n → n ≤ m)) + ((n : ℕ) → A n → k < n)
-  result (inl z) (inl k-holds) = inl (k , (≤-refl k , (k-holds , (λ _ t _ → t))))
-  result (inr z) (inl k-holds) = inl (k , ≤-refl k , k-holds , (λ _ t _ → t))
-  result (inl (m , l , a , ψ)) (inr k-fails) = inl (m , (<-coarser-than-≤ m k l) , a , g)
+  γ : maximal-element A k + no-maximal-element A k -- previous proof
+    → A k + ¬ A k                                  -- and use decidability of A
+    → maximal-element A (succ k) + no-maximal-element A (succ k)
+    
+  -- If we have a bounded max, but Ak holds, k is new max
+  γ (inl _) (inl Ak)      = inl (k , ≤-refl k , Ak , ψ)
    where
-    g : (n : ℕ) → n ≤ k → A n → n ≤ m
-    g n l' a' = ψ n (h (<-split n k l')) a'
+    ψ : (n : ℕ) → n ≤ k → A n → n ≤ k
+    ψ n l An = l
+    
+  --  If we have no bounded max, but Ak holds, k is new max
+  γ (inr _) (inl Ak) = inl (k , ≤-refl k , Ak , ψ)
+   where
+    ψ : (n : ℕ) → n ≤ k → A n → n ≤ k
+    ψ n l An = l
+
+  -- If we have a bounded max m, and Ak doesn't hold, then m remains max
+  γ (inl (m , l , Am , ψ)) (inr ¬Ak) = inl (m , l' , Am , ψ')
+   where
+    l' : m ≤ℕ k
+    l' = <-coarser-than-≤ m k l
+    ψ' : (n : ℕ) → n ≤ k → A n → n ≤ m
+    ψ' n l' An = ψ n (ρ (<-split n k l')) An
      where
-      h : (n < k) + (n ＝ k) → n < k
-      h (inl j) = j
-      h (inr j) = 𝟘-elim (k-fails (transport (λ - → A -) j a'))
-  result (inr z) (inr k-fails) = inr f
+      ρ : (n < k) + (n ＝ k) → n < k
+      ρ (inl l'') = l''
+      ρ (inr e) = 𝟘-elim (¬Ak (transport A e An))
+
+  -- If we do not have a bounded max, and Ak doesn't hold, then we have nothing
+  γ (inr ω) (inr ¬Ak) = inr f
    where
     f : (n : ℕ) → A n → k < n
-    f n a = g (<-split k n (z n a))
+    f n An = g (<-split k n (ω n An))
      where
       g : (k < n) + (k ＝ n) → k < n
       g (inl j) = j
-      g (inr j) = 𝟘-elim (k-fails (transport (λ - → A -) (j ⁻¹) a))
-
--- type of maximal element m : ℕ such that A m holds, given an upper bound
-
-maximal-element : (A : ℕ → 𝓤 ̇) → (k : ℕ) → 𝓤 ̇
-maximal-element A k = Σ m ꞉ ℕ , (m < k × A m × ((n : ℕ) → n < k → A n → n ≤ m))
-
-maximal-element' : (A : ℕ → 𝓤 ̇) → (k : ℕ) → 𝓤 ̇
-maximal-element' A k = Σ m ꞉ ℕ , (m ≤ k × A m × ((n : ℕ) → n ≤ k → A n → n ≤ m))
+      g (inr j) = 𝟘-elim (¬Ak (transport A (j ⁻¹) An))
 
 \end{code}
 
@@ -686,7 +717,7 @@ which the property holds. Of course, we must provide an upper bound.
 \begin{code}
 
 maximal-from-given : (A : ℕ → 𝓤 ̇) → (b : ℕ) → complemented A → Σ k ꞉ ℕ , A k × k < b → maximal-element A b
-maximal-from-given A b δ (k , a) = f (bm A δ b)
+maximal-from-given A b δ (k , a) = f (bounded-maximisation A δ b)
  where
   f : (Σ m ꞉ ℕ , (m < b) × A m × ((n : ℕ) → n < b → A n → n ≤ m)) + ((n : ℕ) → A n → n ≥ b) → maximal-element A b
   f (inl x) = x
