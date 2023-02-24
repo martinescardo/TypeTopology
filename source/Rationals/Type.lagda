@@ -31,8 +31,15 @@ module Rationals.Type where
 ℚ : 𝓤₀ ̇
 ℚ = Σ q ꞉ ℚₙ , is-in-lowest-terms q
 
+is-in-lowest-terms-is-discrete : Fun-Ext
+                               → (q : ℚₙ)
+                               → is-discrete (is-in-lowest-terms q)
+is-in-lowest-terms-is-discrete fe q α β
+ = inl (is-in-lowest-terms-is-prop fe q α β)
+
 ℚ-is-discrete : Fun-Ext → is-discrete ℚ
-ℚ-is-discrete fe = Σ-is-discrete ℚₙ-is-discrete (λ q x y → inl (is-in-lowest-terms-is-prop fe q x y))
+ℚ-is-discrete fe
+ = Σ-is-discrete ℚₙ-is-discrete (is-in-lowest-terms-is-discrete fe)
 
 ℚ-is-set : Fun-Ext → is-set ℚ
 ℚ-is-set fe = discrete-types-are-sets (ℚ-is-discrete fe)
@@ -45,10 +52,20 @@ toℚₙ (q , _) = q
 I would like to rewrite this function to move h out of a sigma type (h = hcf' x (succ a))
 
 \begin{code}
+
 {-
 toℚ' : ℚₙ → ℚ
-toℚ' (x , a) = {!!}
+toℚ' (pos a , b) = f (divbyhcf a (succ b))
+ where
+  f : Σ h ꞉ ℕ , Σ x ꞉ ℕ , Σ y ꞉ ℕ , ((h ℕ* x ＝ a)
+                                  × (h ℕ* y ＝ succ b))
+                                  × coprime x y
+    → ℚ
+  f (h , x , 0 , (γ₁ , γ₂) , r) = 𝟘-elim (positive-not-zero b (γ₂ ⁻¹))
+  f (h , x , (succ y) , (γ₁ , γ₂) , r) = 𝟘-elim (positive-not-zero {!!} {!!})
+toℚ' (negsucc x , a) = {!!}
 -}
+
 toℚlemma : ((x , a) : ℚₙ) → Σ ((x' , a') , p) ꞉ ℚ , (Σ h ꞉ ℕ , (x ＝ (pos (succ h)) ℤ* x') × (succ a ＝ (succ h) ℕ* succ a'))
 toℚlemma (pos a , b) = f (divbyhcf a (succ b))
  where
