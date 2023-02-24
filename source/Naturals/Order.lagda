@@ -388,7 +388,8 @@ minus-property zero     zero     ⋆  = refl
 minus-property (succ m) zero     ⋆  = refl
 minus-property (succ m) (succ n) le = ap succ (minus-property m n le)
 
-max-minus-property : (m n : ℕ) → minus (max m n) m (max-≤-upper-bound m n) ∔ m ＝ max m n
+max-minus-property : (m n : ℕ)
+                   → minus (max m n) m (max-≤-upper-bound m n) ∔ m ＝ max m n
 max-minus-property m n = minus-property (max m n) m (max-≤-upper-bound m n)
 
 \end{code}
@@ -548,10 +549,11 @@ order-split 0        (succ y) = inl (zero-least (succ y))
 order-split (succ x) 0        = inr (zero-least (succ x))
 order-split (succ x) (succ y) = order-split x y
 
-least-element-unique : {A : ℕ → 𝓤 ̇} → (σ : complemented A)
-                                     → ((α , αₚ) : Σ k ꞉ ℕ , A k × ((z : ℕ) → A z → k ≤ z))
-                                     → ((β , βₚ) : Σ n ꞉ ℕ , A n × ((z : ℕ) → A z → n ≤ z))
-                                     → α ＝ β
+least-element-unique : {A : ℕ → 𝓤 ̇}
+                     → (σ : complemented A)
+                     → ((α , αₚ) : Σ k ꞉ ℕ , A k × ((z : ℕ) → A z → k ≤ z))
+                     → ((β , βₚ) : Σ n ꞉ ℕ , A n × ((z : ℕ) → A z → n ≤ z))
+                     → α ＝ β
 least-element-unique σ (α , α₀ , α₁) (β , β₀ , β₁) = ≤-anti α β I II
  where
   I : α ≤ β
@@ -560,10 +562,13 @@ least-element-unique σ (α , α₀ , α₁) (β , β₀ , β₁) = ≤-anti α 
   II : β ≤ α
   II = β₁ α α₀
 
-least-element-unique' : {A : ℕ → 𝓤 ̇} → (σ : complemented A)
-                                      → (x y : ℕ)
-                                      → (δ : Σ A) → x ＝ pr₁ (least-from-given A σ δ) → y ＝ pr₁ (least-from-given A σ δ)
-                                      → x ＝ y
+least-element-unique' : {A : ℕ → 𝓤 ̇}
+                      → (σ : complemented A)
+                      → (x y : ℕ)
+                      → (δ : Σ A)
+                      → x ＝ pr₁ (least-from-given A σ δ)
+                      → y ＝ pr₁ (least-from-given A σ δ)
+                      → x ＝ y
 least-element-unique' σ x y δ e₁ e₂ = e₁ ∙ e₂ ⁻¹
 
 \end{code}
