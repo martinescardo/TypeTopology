@@ -24,7 +24,7 @@ open import DomainTheory.Basics.Dcpo pt fe 𝓥
 open import DomainTheory.Basics.Miscelanea pt fe 𝓥
 open import DomainTheory.Presentation.Presentation pt fe {𝓤} {𝓥} {𝓦}
 
-module C-Ideal
+module C-Ideal {𝓣'}
   (G : 𝓤 ̇)
   (_≲_ : G → G → 𝓣 ̇)
   (_◃_ : Cover-set G _≲_)
@@ -44,5 +44,22 @@ module C-Ideal
   being-C-ideal-is-prop = ×-is-prop
     (Π₄-is-prop fe λ _ _ _ _ → ∈-is-prop ℑ _)
     (Π₅-is-prop fe λ _ _ _ _ _ → ∈-is-prop ℑ _)
+
+module _ {𝓣'}
+  (G : 𝓤 ̇)
+  (_≲_ : G → G → 𝓣 ̇)
+  (_◃_ : Cover-set G _≲_) where
+  open C-Ideal {𝓣' = 𝓣'} G _≲_ _◃_
+
+  C-Idl = Σ is-C-ideal
+
+  carrier : C-Idl → G → Ω 𝓣'
+  carrier (ℑ , _) = ℑ
+
+  C-ideality : (𝓘 : C-Idl) → is-C-ideal (carrier 𝓘)
+  C-ideality (_ , i) = i
+
+  _⊑_ : C-Idl → C-Idl → 𝓤 ⊔ 𝓣' ̇
+  (ℑ , ℑ-is-ideal) ⊑ (𝔍 , 𝔍-is-ideal) = ℑ ⊆ 𝔍
 
 \end{code}
