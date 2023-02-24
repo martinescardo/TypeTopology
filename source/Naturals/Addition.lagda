@@ -148,6 +148,6 @@ commutativity of addition. This function is needed in the HCF file.
 
 sum-to-zero-gives-zero : (x y : ℕ) → x + y ＝ 0 → y ＝ 0
 sum-to-zero-gives-zero x 0        e = refl
-sum-to-zero-gives-zero x (succ y) e = have positive-not-zero (x + y) which-contradicts e
+sum-to-zero-gives-zero x (succ y) e = 𝟘-elim (positive-not-zero (x + y) e)
 
 \end{code}
