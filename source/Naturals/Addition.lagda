@@ -94,17 +94,19 @@ succ-right x y = refl
 
 succ-left : (x y : ℕ) → succ x + y ＝ succ (x + y)
 succ-left x = induction base step 
-  where
-    base : succ x + 0 ＝ succ (x + 0)
-    base = succ x + 0   ＝⟨ refl         ⟩
-           succ x       ＝⟨ ap succ refl ⟩ 
-           succ (x + 0) ∎
+ where
+  base : succ x + 0 ＝ succ (x + 0)
+  base = succ x + 0   ＝⟨ refl         ⟩
+         succ x       ＝⟨ ap succ refl ⟩ 
+         succ (x + 0) ∎
 
-    step : (k : ℕ) → succ x + k ＝ succ (x + k) → succ x + succ k ＝ succ (x + succ k)
-    step k IH = succ x + succ k     ＝⟨ refl ⟩
-                succ (succ x + k)   ＝⟨ ap succ IH ⟩
-                succ (succ (x + k)) ＝⟨ refl ⟩
-                succ (x + succ k)   ∎
+  step : (k : ℕ)
+       → succ x + k ＝ succ (x + k)
+       → succ x + succ k ＝ succ (x + succ k)
+  step k IH = succ x + succ k     ＝⟨ refl       ⟩
+              succ (succ x + k)   ＝⟨ ap succ IH ⟩
+              succ (succ (x + k)) ＝⟨ refl       ⟩
+              succ (x + succ k)   ∎
 
 addition-left-cancellable : (x y z : ℕ) → z + x ＝ z + y → x ＝ y
 addition-left-cancellable x y = induction base step
