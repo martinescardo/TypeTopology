@@ -34,14 +34,15 @@ import UF.PairFun
 import UF.Powerset
 import UF.Powerset-Fin
 import UF.Powerset-Resizing
+import UF.PreSIP
+import UF.PreSIP-Examples
+import UF.PreUnivalence
 import UF.PropIndexedPiSigma
 import UF.PropTrunc
 import UF.PropTrunc-F
 import UF.Quotient
 import UF.Quotient-F
 import UF.Quotient-Replacement
-import UF.PreSIP
-import UF.PreUnivalence
 import UF.Retracts
 import UF.Retracts-FunExt
 import UF.SIP

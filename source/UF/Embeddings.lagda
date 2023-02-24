@@ -219,7 +219,7 @@ embedding'-embedding {𝓤} {𝓥} {X} {Y} f ise = g
 pr₁-is-embedding : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
                  → ((x : X) → is-prop (Y x))
                  → is-embedding (pr₁ {𝓤} {𝓥} {X} {Y})
-pr₁-is-embedding f x ((.x , y') , refl) ((.x , y'') , refl) = g
+pr₁-is-embedding f x ((x , y') , refl) ((x , y'') , refl) = g
  where
   g : (x , y') , refl ＝ (x , y'') , refl
   g = ap (λ - → (x , -) , refl) (f x y' y'')
@@ -386,7 +386,7 @@ This can be deduced directly from Yoneda.
 
 inl-is-embedding : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ )
                  → is-embedding (inl {𝓤} {𝓥} {X} {Y})
-inl-is-embedding {𝓤} {𝓥} X Y (inl a) (.a , refl) (.a , refl) = refl
+inl-is-embedding {𝓤} {𝓥} X Y (inl a) (a , refl) (a , refl) = refl
 inl-is-embedding {𝓤} {𝓥} X Y (inr b) (x , p) (x' , p') = 𝟘-elim (+disjoint p)
 
 inr-is-embedding : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ )

@@ -1,8 +1,9 @@
 Martin Escardo, 23rd Feb 2023
 
-Modified from Sip. We assume pre-univalence, instead of
-univalence. This means that the canonical map from the identity type
-to the equivalence type is an embedding, rather than an equivalence.
+Modified from SIP. We assume pre-univalence, instead of univalence,
+after a suggestion by Peter Lumsdaine. This means that the canonical
+map from the identity type to the equivalence type is an embedding,
+rather than an equivalence.
 
 \begin{code}
 
@@ -12,13 +13,13 @@ module UF.PreSIP where
 
 open import MLTT.Spartan
 open import UF.Base
-open import UF.Equiv hiding (_≅_)
-open import UF.PreUnivalence
-open import UF.EquivalenceExamples
-open import UF.Subsingletons
 open import UF.Embeddings
-open import UF.Yoneda
+open import UF.Equiv
+open import UF.EquivalenceExamples
+open import UF.PreUnivalence
 open import UF.Retracts
+open import UF.Subsingletons
+open import UF.Yoneda
 
 module presip where
 
@@ -67,8 +68,7 @@ module presip where
 
  ＝-embedding : is-preunivalent 𝓤
               → {S : 𝓤 ̇ → 𝓥 ̇ } (σ : SNS S 𝓦)
-              → (A B : Σ S)
-
+                (A B : Σ S)
               → (A ＝ B) ↪ (A ≃[ σ ] B)
  ＝-embedding pua {S} σ A B =
     (A ＝ B)                                                            ↪⟨ i ⟩
