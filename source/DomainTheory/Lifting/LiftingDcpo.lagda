@@ -240,14 +240,14 @@ dcpo.
    where
     γ : (I : 𝓥 ̇) (α : I → ⟨ 𝓛-DCPO ⟩) (δ : is-Directed 𝓛-DCPO α)
       → f̃ (∐ 𝓛-DCPO {I} {α} δ) ⊑⟪ 𝓔 ⟫
-        ∐ (𝓔 ⁻) (image-is-directed 𝓛-DCPO (𝓔 ⁻) f̃-is-monotone {I} {α} δ)
+        ∐ (𝓔 ⁻) (image-is-Directed 𝓛-DCPO (𝓔 ⁻) f̃-is-monotone {I} {α} δ)
     γ I α δ = ∐ˢˢ-is-lowerbound-of-upperbounds 𝓔 (f ∘ value s)
                (being-defined-is-prop s) (∐ (𝓔 ⁻) ε) lem
      where
       s : ⟨ 𝓛-DCPO ⟩
       s = ∐ 𝓛-DCPO {I} {α} δ
       ε : is-Directed (𝓔 ⁻) (f̃ ∘ α)
-      ε = image-is-directed 𝓛-DCPO (𝓔 ⁻) f̃-is-monotone {I} {α} δ
+      ε = image-is-Directed 𝓛-DCPO (𝓔 ⁻) f̃-is-monotone {I} {α} δ
       lem : (q : is-defined s) → f (value s q) ⊑⟪ 𝓔 ⟫ ∐ (𝓔 ⁻) ε
       lem q = f (value s q) ⊑⟪ 𝓔 ⟫[ ⦅1⦆ ]
               f (∐ 𝓓 δ')    ⊑⟪ 𝓔 ⟫[ ⦅2⦆ ]

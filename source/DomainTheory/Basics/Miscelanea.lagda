@@ -98,19 +98,28 @@ Lemmas for establishing Scott continuity of maps between dcpos.
 
 \begin{code}
 
-image-is-directed : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
+image-is-directed : {D : 𝓤 ̇} {E : 𝓤' ̇}
+  → (_⊑_ : D → D → 𝓣 ̇ ) (_≤_ : E → E → 𝓣' ̇ )
+  → {f : D → E} → ((x y : D) → x ⊑ y → f x ≤ f y)
+  → {I : 𝓥 ̇ } → {α : I → D}
+  → is-directed _⊑_ α
+  → is-directed _≤_ (f ∘ α)
+image-is-directed _⊑_ _≤_ {f} m {I} {α} δ =
+  inhabited-if-directed _⊑_ α δ , γ
+   where
+    γ : is-semidirected _≤_ (f ∘ α)
+    γ i j = ∥∥-functor (λ (k , u , v) → k , m (α i) (α k) u , m (α j) (α k) v)
+      (semidirected-if-directed _⊑_ α δ i j)
+
+image-is-Directed : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
                     {f : ⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩}
                   → is-monotone 𝓓 𝓔 f
                   → {I : 𝓥 ̇ }
                   → {α : I → ⟨ 𝓓 ⟩}
                   → is-Directed 𝓓 α
                   → is-Directed 𝓔 (f ∘ α)
-image-is-directed 𝓓 𝓔 {f} m {I} {α} δ =
- inhabited-if-Directed 𝓓 α δ , γ
-  where
-   γ : is-semidirected (underlying-order 𝓔) (f ∘ α)
-   γ i j = ∥∥-functor (λ (k , u , v) → k , m (α i) (α k) u , m (α j) (α k) v)
-                      (semidirected-if-Directed 𝓓 α δ i j)
+image-is-Directed 𝓓 𝓔 m δ =
+  image-is-directed (underlying-order 𝓓) (underlying-order 𝓔) m δ
 
 continuity-criterion : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
                        (f : ⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩)
@@ -118,14 +127,14 @@ continuity-criterion : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
                      → ((I : 𝓥 ̇ )
                         (α : I → ⟨ 𝓓 ⟩)
                         (δ : is-Directed 𝓓 α)
-                     → f (∐ 𝓓 δ) ⊑⟨ 𝓔 ⟩ ∐ 𝓔 (image-is-directed 𝓓 𝓔 m δ))
+                     → f (∐ 𝓓 δ) ⊑⟨ 𝓔 ⟩ ∐ 𝓔 (image-is-Directed 𝓓 𝓔 m δ))
                      → is-continuous 𝓓 𝓔 f
 continuity-criterion 𝓓 𝓔 f m e I α δ = ub , lb-of-ubs
  where
   ub : (i : I) → f (α i) ⊑⟨ 𝓔 ⟩ f (∐ 𝓓 δ)
   ub i = m (α i) (∐ 𝓓 δ) (∐-is-upperbound 𝓓 δ i)
   ε : is-Directed 𝓔 (f ∘ α)
-  ε = image-is-directed 𝓓 𝓔 m δ
+  ε = image-is-Directed 𝓓 𝓔 m δ
   lb-of-ubs : is-lowerbound-of-upperbounds (underlying-order 𝓔)
               (f (∐ 𝓓 δ)) (f ∘ α)
   lb-of-ubs y u = f (∐ 𝓓 δ) ⊑⟨ 𝓔 ⟩[ e I α δ  ]
@@ -180,7 +189,7 @@ image-is-directed' : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
                      (f : DCPO[ 𝓓 , 𝓔 ]) {I : 𝓥 ̇} {α : I → ⟨ 𝓓 ⟩}
                    → is-Directed 𝓓 α
                    → is-Directed 𝓔 ([ 𝓓 , 𝓔 ]⟨ f ⟩ ∘ α)
-image-is-directed' 𝓓 𝓔 f {I} {α} δ = image-is-directed 𝓓 𝓔 m δ
+image-is-directed' 𝓓 𝓔 f {I} {α} δ = image-is-Directed 𝓓 𝓔 m δ
  where
   m : is-monotone 𝓓 𝓔 [ 𝓓 , 𝓔 ]⟨ f ⟩
   m = monotone-if-continuous 𝓓 𝓔 f
@@ -245,9 +254,9 @@ id-is-continuous : (𝓓 : DCPO {𝓤} {𝓣}) → is-continuous 𝓓 𝓓 id
 id-is-continuous 𝓓 = continuity-criterion 𝓓 𝓓 id (id-is-monotone 𝓓) γ
  where
   γ : (I : 𝓥 ̇) (α : I → ⟨ 𝓓 ⟩) (δ : is-Directed 𝓓 α)
-    → ∐ 𝓓 δ ⊑⟨ 𝓓 ⟩ ∐ 𝓓 (image-is-directed 𝓓 𝓓 (λ x y l → l) δ)
+    → ∐ 𝓓 δ ⊑⟨ 𝓓 ⟩ ∐ 𝓓 (image-is-Directed 𝓓 𝓓 (λ x y l → l) δ)
   γ I α δ = ＝-to-⊑ 𝓓 (∐-independent-of-directedness-witness 𝓓
-             δ (image-is-directed 𝓓 𝓓 (λ x y l → l) δ))
+             δ (image-is-Directed 𝓓 𝓓 (λ x y l → l) δ))
 
 ∘-is-continuous : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'}) (𝓔' : DCPO {𝓦} {𝓦'})
                   (f : ⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩) (g : ⟨ 𝓔 ⟩ → ⟨ 𝓔' ⟩)
@@ -263,14 +272,14 @@ id-is-continuous 𝓓 = continuity-criterion 𝓓 𝓓 id (id-is-monotone 𝓓) 
   m : is-monotone 𝓓 𝓔' (g ∘ f)
   m x y l = mg (f x) (f y) (mf x y l)
   ψ : (I : 𝓥 ̇) (α : I → ⟨ 𝓓 ⟩) (δ : is-Directed 𝓓 α)
-    → g (f (∐ 𝓓 δ)) ⊑⟨ 𝓔' ⟩ ∐ 𝓔' (image-is-directed 𝓓 𝓔' m δ)
+    → g (f (∐ 𝓓 δ)) ⊑⟨ 𝓔' ⟩ ∐ 𝓔' (image-is-Directed 𝓓 𝓔' m δ)
   ψ I α δ = g (f (∐ 𝓓 δ)) ⊑⟨ 𝓔' ⟩[ l₁ ]
             g (∐ 𝓔 εf)    ⊑⟨ 𝓔' ⟩[ l₂ ]
             ∐ 𝓔' εg       ⊑⟨ 𝓔' ⟩[ l₃ ]
             ∐ 𝓔' ε        ∎⟨ 𝓔' ⟩
    where
     ε : is-Directed 𝓔' (g ∘ f ∘ α)
-    ε = image-is-directed 𝓓 𝓔' m δ
+    ε = image-is-Directed 𝓓 𝓔' m δ
     εf : is-Directed 𝓔 (f ∘ α)
     εf = image-is-directed' 𝓓 𝓔 (f , cf) δ
     εg : is-Directed 𝓔' (g ∘ f ∘ α)
