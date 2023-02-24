@@ -7,25 +7,24 @@ In this file I define rational numbers.
 {-# OPTIONS --without-K --exact-split --safe #-}
 
 open import MLTT.Spartan renaming (_+_ to _∔_)
-
 open import Notation.CanonicalMap
+
+open import Integers.Abs
+open import Integers.Multiplication renaming (_*_ to _ℤ*_)
+open import Integers.Negation
+open import Integers.Order
+open import Integers.Type
+open import Naturals.Division
+open import Naturals.HCF
+open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
+open import Naturals.Properties
+open import Rationals.Fractions
 open import TypeTopology.DiscreteAndSeparated
 open import TypeTopology.SigmaDiscreteAndTotallySeparated
-open import Naturals.Properties
 open import UF.Base hiding (_≈_)
 open import UF.FunExt
 open import UF.Miscelanea
 open import UF.Subsingletons
-
-open import Naturals.HCF
-open import Integers.Abs
-open import Integers.Type
-open import Integers.Multiplication renaming (_*_ to _ℤ*_)
-open import Integers.Negation
-open import Integers.Order
-open import Naturals.Division
-open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
-open import Rationals.Fractions
 
 module Rationals.Type where
 
