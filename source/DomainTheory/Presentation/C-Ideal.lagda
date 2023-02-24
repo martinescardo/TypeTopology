@@ -35,14 +35,14 @@ module C-Ideal
   is-C-ideal = downward-closed × cover-closed
     where
       downward-closed = ∀ x y → x ≲ y
-        → ℑ x holds → ℑ y holds
+        → x ∈ ℑ → y ∈ ℑ
       cover-closed = ∀ I x (U : I → G) → (x ◃ U) holds
-        → (∀ y → y ∈image U → ℑ y holds)
-        → ℑ x holds
+        → (∀ y → y ∈image U → y ∈ ℑ)
+        → x ∈ ℑ
 
   being-C-ideal-is-prop : is-prop is-C-ideal
   being-C-ideal-is-prop = ×-is-prop
-    (Π₄-is-prop fe λ _ _ _ _ → holds-is-prop (ℑ _))
-    (Π₅-is-prop fe λ _ _ _ _ _ → holds-is-prop (ℑ _))
+    (Π₄-is-prop fe λ _ _ _ _ → ∈-is-prop ℑ _)
+    (Π₅-is-prop fe λ _ _ _ _ _ → ∈-is-prop ℑ _)
 
 \end{code}
