@@ -40,8 +40,10 @@ module Duploids.Duploid (fe : Fun-Ext) (pt : propositional-truncations-exist) wh
 
 open PropositionalTruncation pt
 
+
 open import MLTT.Spartan
 open import UF.Base
+open import UF.Equiv
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
@@ -74,7 +76,6 @@ module _ (𝓓 : deductive-system 𝓤 𝓥) where
    (Σ unwrap ꞉ ⇓A ⊢ A ,
     is-inverse wrap unwrap
     × is-thunkable wrap)
-
 
   module upshift-data (ush : upshift-data A) where
    upshift : ob
@@ -119,7 +120,6 @@ module _ (𝓓 : deductive-system 𝓤 𝓥) where
 
    wrap-thunkable : is-thunkable wrap
    wrap-thunkable = pr₂ (pr₂ (pr₂ ax))
-
 
   upshift-axioms-is-prop : {ush : _} → is-prop (upshift-axioms ush)
   upshift-axioms-is-prop ax0 ax1 =
@@ -169,42 +169,175 @@ module _ (𝓓 : deductive-system 𝓤 𝓥) where
  has-all-shifts : 𝓤 ⊔ 𝓥 ̇
  has-all-shifts = (A : ob) → has-upshift A × has-downshift A
 
- -- This is not necessarily a proposition, because we do not yet know how to
- -- state the property that a deductive system is univalent.
-
  duploid-structure : 𝓤 ⊔ 𝓥 ̇
- duploid-structure =
-  preduploid-axioms 𝓓
-  × has-all-shifts
+ duploid-structure = ((A : ob) → is-polarized str A) × has-all-shifts
 
- module duploid-structure (str : duploid-structure) where
+ module duploid-structure (dup-str : duploid-structure) where
   underlying-preduploid : preduploid 𝓤 𝓥
-  underlying-preduploid = make 𝓓 (pr₁ str)
+  underlying-preduploid = make ob _⊢_ idn cut' (ax , pr₁ dup-str)
 
   module _ (A : ob) where
    private
-    A-has-shifts = pr₂ str A
+    A-has-shifts = pr₂ dup-str A
     module ⇑A = has-upshift A (pr₁ A-has-shifts)
     module ⇓A = has-downshift A (pr₂ A-has-shifts)
 
-   ⇑_ = ⇑A.upshift
-   ⇓_ = ⇓A.downshift
+   ⇑ = ⇑A.upshift
+   ⇓ = ⇓A.downshift
+
+   ⇑-negative = ⇑A.upshift-negative
+   ⇓-positive = ⇓A.downshift-positive
 
   module _ {A : ob} where
    private
-    A-has-shifts = pr₂ str A
+    A-has-shifts = pr₂ dup-str A
     module ⇑A = has-upshift A (pr₁ A-has-shifts)
     module ⇓A = has-downshift A (pr₂ A-has-shifts)
 
    open ⇑A hiding (upshift) public
    open ⇓A hiding (downshift) public
 
-duploid : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
-duploid 𝓤 𝓥 = Σ 𝓓 ꞉ deductive-system 𝓤 𝓥 , duploid-structure 𝓓
+  open preduploid underlying-preduploid public
 
-module duploid (𝓓 : duploid 𝓤 𝓥) where
- open duploid-structure (pr₁ 𝓓) (pr₂ 𝓓) public
- open preduploid underlying-preduploid public
+
+
+ -- This is not necessarily a proposition, because we do not yet know how to
+ -- state the property that a deductive system is univalent.
+
+record duploid 𝓤 𝓥 : (𝓤 ⊔ 𝓥)⁺ ̇ where
+ field
+  ob : 𝓤 ̇
+  _⊢_ : ob → ob → 𝓥 ̇
+  idn : (A : ob) → A ⊢ A
+  cut' : (A B C : ob) (f : A ⊢ B) (g : B ⊢ C) → A ⊢ C
+  ⇑ : ob → ob
+  ⇓ : ob → ob
+
+  force : {A : ob} → ⇑ A ⊢ A
+  delay : {A : ob} → A ⊢ ⇑ A
+
+  wrap : {A : ob} → A ⊢ ⇓ A
+  unwrap : {A : ob} → ⇓ A ⊢ A
+
+ cut : {A B C : ob} (f : A ⊢ B) (g : B ⊢ C) → A ⊢ C
+ cut = cut' _ _ _
+
+ str : deductive-system-structure 𝓤 𝓥
+ str = ob , _⊢_ , idn , cut'
+
+ field
+  ax-preduploid : preduploid-axioms str
+
+ underlying-preduploid : preduploid 𝓤 𝓥
+ underlying-preduploid = make ob _⊢_ idn cut' ax-preduploid
+
+ underlying-deductive-system : deductive-system 𝓤 𝓥
+ underlying-deductive-system = preduploid.underlying-deductive-system underlying-preduploid
+
+ open deductive-system-axioms str (deductive-system.ax underlying-deductive-system)  public
+
+
+ open ⊢-properties str
+
+ field
+  ⇑-negative : (A : ob) → is-negative (⇑ A)
+  ⇓-positive : (A : ob) → is-positive (⇓ A)
+
+  force-linear : {A : ob} → is-linear (force {A})
+  wrap-thunkable : {A : ob} → is-thunkable (wrap {A})
+  force-delay-inverse : {A : ob} → is-inverse (force {A}) (delay {A})
+  wrap-unwrap-inverse : {A : ob} → is-inverse (wrap {A}) (unwrap {A})
+
+ delay-thunkable : {A : ob} → is-thunkable (delay {A})
+ delay-thunkable {A} = ⇑-negative A A delay
+
+ unwrap-linear : {A : ob} → is-linear (unwrap {A})
+ unwrap-linear {A} = ⇓-positive A A unwrap
+
+ open ⊢-properties str public
+
+module duploids-as-sums where
+ module _ (𝓓 : Σ D ꞉ deductive-system 𝓤 𝓥 , duploid-structure D) where
+  private
+   D = pr₁ 𝓓
+   str = pr₂ 𝓓
+
+  module str = duploid-structure D str
+
+  duploid-from-sum : duploid 𝓤 𝓥
+  duploid.ob duploid-from-sum = str.ob
+  duploid._⊢_ duploid-from-sum = str._⊢_
+  duploid.idn duploid-from-sum = str.idn
+  duploid.cut' duploid-from-sum = str.cut'
+  duploid.⇑ duploid-from-sum = str.⇑
+  duploid.⇓ duploid-from-sum = str.⇓
+  duploid.force duploid-from-sum = str.force
+  duploid.delay duploid-from-sum = str.delay
+  duploid.wrap duploid-from-sum = str.wrap
+  duploid.unwrap duploid-from-sum = str.unwrap
+  duploid.ax-preduploid duploid-from-sum = str.ax
+  duploid.⇑-negative duploid-from-sum = str.⇑-negative
+  duploid.⇓-positive duploid-from-sum = str.⇓-positive
+  duploid.force-linear duploid-from-sum = str.force-linear
+  duploid.wrap-thunkable duploid-from-sum = str.wrap-thunkable
+  duploid.force-delay-inverse duploid-from-sum = str.force-delay-inverse
+  duploid.wrap-unwrap-inverse duploid-from-sum = str.wrap-unwrap-inverse
+
+ module _ (𝓓 : duploid 𝓤 𝓥) where
+  private module 𝓓 = duploid 𝓓
+
+  private 𝓓₀ = 𝓓.underlying-deductive-system
+
+  module _ (A : 𝓓.ob) where
+   duploid-upshift-data : upshift-data 𝓓₀ A
+   pr₁ duploid-upshift-data = 𝓓.⇑ A
+   pr₂ duploid-upshift-data = 𝓓.force
+
+   duploid-upshift-axioms : upshift-axioms 𝓓₀ duploid-upshift-data
+   pr₁ duploid-upshift-axioms = 𝓓.⇑-negative A
+   pr₁ (pr₂ duploid-upshift-axioms) = 𝓓.delay
+   pr₁ (pr₂ (pr₂ duploid-upshift-axioms)) = 𝓓.force-delay-inverse
+   pr₂ (pr₂ (pr₂ duploid-upshift-axioms)) = 𝓓.force-linear
+
+   duploid-has-upshifts : has-upshift 𝓓₀ A
+   pr₁ duploid-has-upshifts = duploid-upshift-data
+   pr₂ duploid-has-upshifts = duploid-upshift-axioms
+
+   duploid-downshift-data : downshift-data 𝓓₀ A
+   pr₁ duploid-downshift-data = 𝓓.⇓ A
+   pr₂ duploid-downshift-data = 𝓓.wrap
+
+   duploid-downshift-axioms : downshift-axioms 𝓓₀ duploid-downshift-data
+   pr₁ duploid-downshift-axioms = 𝓓.⇓-positive A
+   pr₁ (pr₂ duploid-downshift-axioms) = 𝓓.unwrap
+   pr₁ (pr₂ (pr₂ duploid-downshift-axioms)) = 𝓓.wrap-unwrap-inverse
+   pr₂ (pr₂ (pr₂ duploid-downshift-axioms)) = 𝓓.wrap-thunkable
+
+   duploid-has-downshifts : has-downshift 𝓓₀ A
+   pr₁ duploid-has-downshifts = duploid-downshift-data
+   pr₂ duploid-has-downshifts = duploid-downshift-axioms
+
+  duploid-has-all-shifts : has-all-shifts 𝓓.underlying-deductive-system
+  pr₁ (duploid-has-all-shifts A) = duploid-has-upshifts A
+  pr₂ (duploid-has-all-shifts A) = duploid-has-downshifts A
+
+
+  duploid-duploid-structure : duploid-structure 𝓓₀
+  pr₁ duploid-duploid-structure = preduploid.ob-is-polarized 𝓓.underlying-preduploid
+  pr₂ duploid-duploid-structure = duploid-has-all-shifts
+
+  duploid-to-sum : Σ D ꞉ deductive-system 𝓤 𝓥 , duploid-structure D
+  duploid-to-sum = 𝓓₀ , duploid-duploid-structure
+
+ duploid-to-sum-is-equiv : is-equiv (duploid-to-sum {𝓤} {𝓥})
+ pr₁ (pr₁ duploid-to-sum-is-equiv) = duploid-from-sum
+ pr₂ (pr₁ duploid-to-sum-is-equiv) _ = refl
+ pr₁ (pr₂ duploid-to-sum-is-equiv) = duploid-from-sum
+ pr₂ (pr₂ duploid-to-sum-is-equiv) _ = refl
+
+ duploid-sum-equiv : duploid 𝓤 𝓥 ≃ (Σ D ꞉ deductive-system 𝓤 𝓥 , duploid-structure D)
+ duploid-sum-equiv = _ , duploid-to-sum-is-equiv
+
 
 -- Some preliminary "quick notation" for working with duploids
 module duploid-notation (𝓓 : duploid 𝓤 𝓥) where
@@ -220,71 +353,177 @@ module duploid-extras (𝓓 : duploid 𝓤 𝓥) where
   module 𝓓 = duploid 𝓓
  open preduploid-extras 𝓓.underlying-preduploid public
 
+-- forget linearity
+module 𝓢⇒𝓝 (𝓓 : duploid 𝓤 𝓥) where
+ private
+  module 𝓓 = duploid 𝓓
+  𝓝 = NegativesAndAllMaps.precat 𝓓.underlying-preduploid
+  𝓢 = NegativesAndLinearMaps.precat 𝓓.underlying-preduploid
 
-module unrestricted-upshift-functor (𝓓 : duploid 𝓤 𝓥) where
- module 𝓓 = duploid 𝓓
- 𝓝 = NegativesAndAllMaps.precat 𝓓.underlying-preduploid
- 𝓟 = PositivesAndAllMaps.precat 𝓓.underlying-preduploid
- module 𝓝 = precategory 𝓝
- module 𝓟 = precategory 𝓟
+ open functor-of-precategories
+ open duploid-notation 𝓓
+
+ structure : functor-structure 𝓢 𝓝
+ pr₁ structure A = A
+ pr₂ structure A B f = pr₁ f
+
+ axioms : functor-axioms 𝓢 𝓝 structure
+ pr₁ axioms _ = refl
+ pr₂ axioms _ _ _ _ _ = refl
+
+ fun : functor 𝓢 𝓝
+ fun = make structure axioms
+
+-- forget thunkability
+module 𝓒⇒𝓟 (𝓓 : duploid 𝓤 𝓥) where
+ private
+  module 𝓓 = duploid 𝓓
+  𝓒 = PositivesAndThunkableMaps.precat 𝓓.underlying-preduploid
+  𝓟 = PositivesAndAllMaps.precat 𝓓.underlying-preduploid
+
+ open functor-of-precategories
+ open duploid-notation 𝓓
+
+ structure : functor-structure 𝓒 𝓟
+ pr₁ structure A = A
+ pr₂ structure A B f = pr₁ f
+
+ axioms : functor-axioms 𝓒 𝓟 structure
+ pr₁ axioms _ = refl
+ pr₂ axioms _ _ _ _ _ = refl
+
+ fun : functor 𝓒 𝓟
+ fun = make structure axioms
+
+
+module 𝓟⇒𝓢 (𝓓 : duploid 𝓤 𝓥) where
+ private
+  module 𝓓 = duploid 𝓓
+  𝓟 = PositivesAndAllMaps.precat 𝓓.underlying-preduploid
+  𝓝 = NegativesAndAllMaps.precat 𝓓.underlying-preduploid
+  𝓢 = NegativesAndLinearMaps.precat 𝓓.underlying-preduploid
+
+  module 𝓟 = precategory 𝓟
+  module 𝓝 = precategory 𝓝
+  module 𝓢 = precategory 𝓢
 
  open functor-of-precategories
  open duploid-notation 𝓓
 
  module str where
-  ob : 𝓟.ob → 𝓝.ob
-  ob (A , A-pos) = 𝓓.⇑ A , 𝓓.upshift-negative
+  ob : 𝓟.ob → 𝓢.ob
+  ob (A , A-pos) = 𝓓.⇑ A , 𝓓.⇑-negative A
 
-  hom : (A B : 𝓟.ob) → pr₁ A 𝓓.⊢ pr₁ B → (𝓓.⇑ pr₁ A) 𝓓.⊢ (𝓓.⇑ pr₁ B)
-  hom A B f = 𝒻 >> (f >> 𝒹)
+  hom-𝓝 : (A B : 𝓟.ob) → 𝓟.hom A B → 𝓝.hom (ob A) (ob B)
+  hom-𝓝 A B f = 𝒻 >> (f >> 𝒹)
 
-  structure : functor-structure 𝓟 𝓝
+  hom-linear : (A B : 𝓟.ob) (f : 𝓟.hom A B) → 𝓓.is-linear (hom-𝓝 A B f)
+  hom-linear A B f U V g h =
+   ((h >> g) >> (𝒻 >> (f >> 𝒹))) ＝⟨ hg-th _ _ _ _ ⁻¹ ⟩
+   ((h >> g) >> 𝒻) >> (f >> 𝒹) ＝⟨ ap (_>> (f >> 𝒹)) (𝓓.force-linear _ _ _ _) ⟩
+   (h >> (g >> 𝒻)) >> (f >> 𝒹) ＝⟨ f𝒹-lin _ _ _ _ ⟩
+   (h >> ((g >> 𝒻) >> (f >> 𝒹))) ＝⟨ ap (h >>_) (g-th _ _ _ _) ⟩
+   h >> (g >> (𝒻 >> (f >> 𝒹))) ∎
+   where
+    f𝒹-lin : 𝓓.is-linear (f >> 𝒹)
+    f𝒹-lin = pr₂ A (𝓓.⇑ (pr₁ B)) (f >> 𝒹)
+
+    g-th : 𝓓.is-thunkable g
+    g-th = 𝓓.⇑-negative (pr₁ A) V g
+
+    hg-th : 𝓓.is-thunkable (h >> g)
+    hg-th = 𝓓.⇑-negative (pr₁ A) U (h >> g)
+
+  hom : (A B : 𝓟.ob) (f : 𝓟.hom A B) → 𝓢.hom (ob A) (ob B)
+  hom A B f = hom-𝓝 A B f , hom-linear A B f
+
+  structure : functor-structure 𝓟 𝓢
   structure = ob , hom
 
  module ax where
   private
    abstract
-    preserves-idn : (A : 𝓟.ob) → 𝒻 >> (𝓓.idn _ >> 𝒹) ＝ 𝓓.idn (𝓓.⇑ pr₁ A)
-    preserves-idn (A , A-pos) =
+    preserves-idn-𝓝 : (A : 𝓟.ob) → 𝒻 >> (𝓓.idn _ >> 𝒹) ＝ 𝓓.idn (𝓓.⇑ (pr₁ A))
+    preserves-idn-𝓝 (A , A-pos) =
      𝒻 >> (𝓓.idn A >> 𝒹) ＝⟨ ap (𝒻 >>_) (𝓓.idn-L _ _ _) ⟩
      𝒻 >> 𝒹 ＝⟨ pr₁ 𝓓.force-delay-inverse ⟩
      𝓓.idn (𝓓.⇑ A) ∎
 
-   preserves-seq
-    : (A B C : 𝓟.ob)
-    → (f : 𝓟.hom A B)
-    → (g : 𝓟.hom B C)
-    → 𝒻 >> ((f >> g) >> 𝒹) ＝ (𝒻 >> (f >> 𝒹)) >> (𝒻 >> (g >> 𝒹))
-   preserves-seq (A , A-pos) (B , B-pos) (C , C-pos) f g =
-    𝒻 >> ((f >> g) >> 𝒹) ＝⟨ ap (𝒻 >>_) (𝒹-linear _ _ _ _) ⟩
-    𝒻 >> (f >> (g >> 𝒹)) ＝⟨ g-𝒹-linear _ _ _ _ ⁻¹ ⟩
-    ((𝒻 >> f) >> (g >> 𝒹)) ＝⟨ ap (_>> (g >> 𝒹)) (help1 ⁻¹) ⟩
-    ((𝒻 >> (f >> 𝒹)) >> 𝒻) >> (g >> 𝒹) ＝⟨ g-𝒹-linear _ _ _ _ ⟩
-    (𝒻 >> (f >> 𝒹)) >> (𝒻 >> (g >> 𝒹)) ∎
-    where
-     help2 : (f >> 𝒹) >> 𝒻 ＝ f
-     help2 =
-      (f >> 𝒹) >> 𝒻 ＝⟨ 𝓓.force-linear _ _ _ _ ⟩
-      f >> (𝒹 >> 𝒻) ＝⟨ ap (f >>_) (pr₂ 𝓓.force-delay-inverse) ⟩
-      f >> 𝓓.idn _ ＝⟨ 𝓓.idn-R _ _ _ ⟩
-      f ∎
+    preserves-seq-𝓝
+     : (A B C : 𝓟.ob)
+     → (f : 𝓟.hom A B)
+     → (g : 𝓟.hom B C)
+     → 𝒻 >> ((f >> g) >> 𝒹) ＝ (𝒻 >> (f >> 𝒹)) >> (𝒻 >> (g >> 𝒹))
+    preserves-seq-𝓝 (A , A-pos) (B , B-pos) (C , C-pos) f g =
+     𝒻 >> ((f >> g) >> 𝒹) ＝⟨ ap (𝒻 >>_) (𝒹-linear _ _ _ _) ⟩
+     𝒻 >> (f >> (g >> 𝒹)) ＝⟨ g-𝒹-linear _ _ _ _ ⁻¹ ⟩
+     ((𝒻 >> f) >> (g >> 𝒹)) ＝⟨ ap (_>> (g >> 𝒹)) (help1 ⁻¹) ⟩
+     ((𝒻 >> (f >> 𝒹)) >> 𝒻) >> (g >> 𝒹) ＝⟨ g-𝒹-linear _ _ _ _ ⟩
+     (𝒻 >> (f >> 𝒹)) >> (𝒻 >> (g >> 𝒹)) ∎
+     where
+      help2 : (f >> 𝒹) >> 𝒻 ＝ f
+      help2 =
+       (f >> 𝒹) >> 𝒻 ＝⟨ 𝓓.force-linear _ _ _ _ ⟩
+       f >> (𝒹 >> 𝒻) ＝⟨ ap (f >>_) (pr₂ 𝓓.force-delay-inverse) ⟩
+       f >> 𝓓.idn _ ＝⟨ 𝓓.idn-R _ _ _ ⟩
+       f ∎
 
-     help1 : ((𝒻 >> (f >> 𝒹)) >> 𝒻) ＝ 𝒻 >> f
-     help1 =
-      ((𝒻 >> (f >> 𝒹)) >> 𝒻) ＝⟨ 𝓓.force-linear _ _ _ _ ⟩
-      (𝒻 >> ((f >> 𝒹) >> 𝒻)) ＝⟨ ap (𝒻 >>_) help2 ⟩
-      (𝒻 >> f) ∎
+      help1 : ((𝒻 >> (f >> 𝒹)) >> 𝒻) ＝ 𝒻 >> f
+      help1 =
+       ((𝒻 >> (f >> 𝒹)) >> 𝒻) ＝⟨ 𝓓.force-linear _ _ _ _ ⟩
+       (𝒻 >> ((f >> 𝒹) >> 𝒻)) ＝⟨ ap (𝒻 >>_) help2 ⟩
+       (𝒻 >> f) ∎
 
-     g-𝒹-linear : 𝓓.is-linear (g >> 𝒹)
-     g-𝒹-linear = B-pos (𝓓.⇑ C) (g >> 𝒹)
+      g-𝒹-linear : 𝓓.is-linear (g >> 𝒹)
+      g-𝒹-linear = B-pos (𝓓.⇑ C) (g >> 𝒹)
 
-     𝒹-linear : 𝓓.is-linear (𝒹 {C})
-     𝒹-linear = C-pos (𝓓.⇑ C) 𝒹
+      𝒹-linear : 𝓓.is-linear (𝒹 {C})
+      𝒹-linear = C-pos (𝓓.⇑ C) 𝒹
 
-  axioms : functor-axioms 𝓟 𝓝 str.structure
+
+    preserves-idn : statement-preserves-idn 𝓟 𝓢 str.structure
+    preserves-idn A =
+     NegativesAndLinearMaps.to-hom-＝ 𝓓.underlying-preduploid (str.ob A) (str.ob A) _ _
+      (preserves-idn-𝓝 A)
+
+    preserves-seq : statement-preserves-seq 𝓟 𝓢 str.structure
+    preserves-seq A B C f g =
+     NegativesAndLinearMaps.to-hom-＝ 𝓓.underlying-preduploid (str.ob A) (str.ob C) _ _
+      (preserves-seq-𝓝 A B C f g)
+
+
+  axioms : functor-axioms 𝓟 𝓢 str.structure
   axioms = preserves-idn , preserves-seq
 
- ⇑-functor : functor 𝓟 𝓝
- ⇑-functor = make str.structure ax.axioms
+ fun : functor 𝓟 𝓢
+ fun = make str.structure ax.axioms
+
+
+-- The ↑ functor
+module 𝓒⇒𝓢 (𝓓 : duploid 𝓤 𝓥) where
+ private
+  module 𝓓 = duploid 𝓓
+  𝓒 = PositivesAndThunkableMaps.precat 𝓓.underlying-preduploid
+  𝓟 = PositivesAndAllMaps.precat 𝓓.underlying-preduploid
+  𝓝 = NegativesAndAllMaps.precat 𝓓.underlying-preduploid
+  𝓢 = NegativesAndLinearMaps.precat 𝓓.underlying-preduploid
+
+ open functor-of-precategories
+
+ fun : functor 𝓒 𝓢
+ fun = composite-functor.fun (𝓒⇒𝓟.fun 𝓓) (𝓟⇒𝓢.fun 𝓓)
+
+-- The ⇑ functor
+module 𝓟⇒𝓝 (𝓓 : duploid 𝓤 𝓥) where
+ private
+  module 𝓓 = duploid 𝓓
+  𝓟 = PositivesAndAllMaps.precat 𝓓.underlying-preduploid
+  𝓝 = NegativesAndAllMaps.precat 𝓓.underlying-preduploid
+  𝓢 = NegativesAndLinearMaps.precat 𝓓.underlying-preduploid
+
+ open functor-of-precategories
+
+ fun : functor 𝓟 𝓝
+ fun = composite-functor.fun (𝓟⇒𝓢.fun 𝓓) (𝓢⇒𝓝.fun 𝓓)
 
 \end{code}

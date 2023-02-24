@@ -55,7 +55,11 @@ when postcomposing by it is associative; such morphisms correspond to "stacks" i
 programming languages.
 
 \begin{code}
+module ⊢-properties (𝓓 : deductive-system-structure 𝓤 𝓥) where
+ open deductive-system-structure 𝓓
+
  module _ {A B : ob} (f : A ⊢ B) where
+
   is-thunkable : 𝓤 ⊔ 𝓥  ̇
   is-thunkable =
    (C D : ob) (g : B ⊢ C) (h : C ⊢ D)
@@ -65,6 +69,7 @@ programming languages.
   is-linear =
    (U V : ob) (g : V ⊢ A) (h : U ⊢ V)
    → cut (cut h g) f ＝ (cut h (cut g f))
+
 \end{code}
 
 Just as in a category, we can speak of a map being inverse to another map. Note
@@ -99,6 +104,7 @@ the syntactical phenomenon of polarity in structural proof theory.
 \begin{code}
 module _ (𝓓 : deductive-system-structure 𝓤 𝓥) where
  open deductive-system-structure 𝓓
+ open ⊢-properties 𝓓
  open category-axiom-statements 𝓓
 
  deductive-system-axioms : 𝓤 ⊔ 𝓥 ̇
@@ -106,6 +112,13 @@ module _ (𝓓 : deductive-system-structure 𝓤 𝓥) where
   statement-hom-is-set
   × statement-idn-L
   × statement-idn-R
+
+ deductive-system-axioms-is-prop : is-prop deductive-system-axioms
+ deductive-system-axioms-is-prop =
+  Σ-is-prop statement-hom-is-set-is-prop λ p →
+  ×-is-prop
+   (statement-idn-L-is-prop p)
+   (statement-idn-R-is-prop p)
 
  module deductive-system-axioms (ax : deductive-system-axioms) where
   ⊢-is-set : statement-hom-is-set
@@ -189,10 +202,24 @@ either linear or thunkable.
 record deductive-system (𝓤 𝓥 : Universe) : (𝓤 ⊔ 𝓥)⁺ ̇ where
  constructor make
  field
-  str : deductive-system-structure 𝓤 𝓥
+  ob : 𝓤 ̇
+  _⊢_ : ob → ob → 𝓥 ̇
+  idn : (A : ob) → A ⊢ A
+  cut' : (A B C : ob) (f : A ⊢ B) (g : B ⊢ C) → A ⊢ C
+
+ cut : {A B C : ob} (f : A ⊢ B) (g : B ⊢ C) → A ⊢ C
+ cut = cut' _ _ _
+
+ str : deductive-system-structure 𝓤 𝓥
+ str = ob , _⊢_ , idn , cut'
+
+ open ⊢-properties str public
+
+ field
   ax : deductive-system-axioms str
- open deductive-system-structure str public
+
  open deductive-system-axioms str ax public
+
 
 module deductive-system-as-sum {𝓤 𝓥 : Universe} where
  to-sum
@@ -200,10 +227,11 @@ module deductive-system-as-sum {𝓤 𝓥 : Universe} where
   → Σ str ꞉ deductive-system-structure 𝓤 𝓥 , deductive-system-axioms str
  to-sum 𝓓 = let open deductive-system 𝓓 in str , ax
 
+
  from-sum
   : (Σ str ꞉ deductive-system-structure 𝓤 𝓥 , deductive-system-axioms str)
   → deductive-system 𝓤 𝓥
- from-sum 𝓓 = make (pr₁ 𝓓) (pr₂ 𝓓)
+ from-sum 𝓓 = let open deductive-system-structure (pr₁ 𝓓) in make ob _⊢_ idn (λ _ _ _ → cut) (pr₂ 𝓓)
 
  to-sum-is-equiv : is-equiv to-sum
  pr₁ (pr₁ to-sum-is-equiv) = from-sum
@@ -223,7 +251,8 @@ thunkable. Furthermore, the composition of (linear, thunkable) morphisms is
 
 \begin{code}
 module deductive-system-extras (𝓓 : deductive-system 𝓤 𝓥) where
- open deductive-system 𝓓
+ private module 𝓓 = deductive-system 𝓓
+ open 𝓓
 
  module _ (A : ob) where
   abstract

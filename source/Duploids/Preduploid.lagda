@@ -29,8 +29,9 @@ open import UF.Subsingletons-FunExt
 open import Categories.Category fe
 open import Duploids.DeductiveSystem fe
 
-module _ (𝓓 : deductive-system 𝓤 𝓥) where
- open deductive-system 𝓓
+module _ (𝓓 : deductive-system-structure 𝓤 𝓥) where
+ open deductive-system-structure 𝓓
+ open ⊢-properties 𝓓
 
  is-polarized : (A : ob) → 𝓤 ⊔ 𝓥 ̇
  is-polarized A = ∥ is-positive A + is-negative A ∥
@@ -39,33 +40,56 @@ module _ (𝓓 : deductive-system 𝓤 𝓥) where
  being-polarized-is-prop = ∥∥-is-prop
 
  preduploid-axioms : 𝓤 ⊔ 𝓥 ̇
- preduploid-axioms = (A : ob) → is-polarized A
+ preduploid-axioms = deductive-system-axioms 𝓓 × ((A : ob) → is-polarized A)
 
  preduploid-axioms-is-prop : is-prop preduploid-axioms
  preduploid-axioms-is-prop =
-  Π-is-prop fe λ _ →
-  being-polarized-is-prop
+  ×-is-prop
+   (deductive-system-axioms-is-prop 𝓓)
+   (Π-is-prop fe λ _ →
+    being-polarized-is-prop)
 
--- TODO: consider flattening the structure
 record preduploid (𝓤 𝓥 : Universe) : (𝓤 ⊔ 𝓥)⁺ ̇ where
  constructor make
  field
-  str : deductive-system 𝓤 𝓥
+  ob : 𝓤 ̇
+  _⊢_ : ob → ob → 𝓥 ̇
+  idn : (A : ob) → A ⊢ A
+  cut' : (A B C : ob) (f : A ⊢ B) (g : B ⊢ C) → A ⊢ C
+
+ cut : {A B C : ob} (f : A ⊢ B) (g : B ⊢ C) → A ⊢ C
+ cut = cut' _ _ _
+
+ str : deductive-system-structure 𝓤 𝓥
+ str = ob , _⊢_ , idn , cut'
+
+ field
   ax : preduploid-axioms str
 
- underlying-deductive-system = str
+ underlying-deductive-system : deductive-system 𝓤 𝓥
+ underlying-deductive-system = make ob _⊢_ idn cut' (pr₁ ax)
 
- open deductive-system underlying-deductive-system hiding (str ; ax) public
+ ob-is-polarized = pr₂ ax
+ open ⊢-properties str public
 
- ob-is-polarized : (A : ob) → is-polarized str A
- ob-is-polarized = ax
+ open deductive-system-axioms str (pr₁ ax) public
 
 module preduploid-as-sum (𝓤 𝓥 : Universe) where
- to-sum : preduploid 𝓤 𝓥 → Σ str ꞉ deductive-system 𝓤 𝓥 , preduploid-axioms str
+ to-sum : preduploid 𝓤 𝓥 → Σ str ꞉ deductive-system-structure 𝓤 𝓥 , preduploid-axioms str
  to-sum 𝓓 = let open preduploid 𝓓 in str , ax
 
- from-sum : (Σ str ꞉ deductive-system 𝓤 𝓥 , preduploid-axioms str) → preduploid 𝓤 𝓥
- from-sum 𝓓 = make (pr₁ 𝓓) (pr₂ 𝓓)
+ module _ (𝓓 : (Σ str ꞉ deductive-system-structure 𝓤 𝓥 , preduploid-axioms str)) where
+  private
+   str = pr₁ 𝓓
+   ax = pr₂ 𝓓
+   module str = deductive-system-structure str
+
+  from-sum : preduploid 𝓤 𝓥
+  preduploid.ob from-sum = str.ob
+  preduploid._⊢_ from-sum = str._⊢_
+  preduploid.idn from-sum = str.idn
+  preduploid.cut' from-sum _ _ _ = str.cut
+  preduploid.ax from-sum = ax
 
  to-sum-is-equiv : is-equiv to-sum
  pr₁ (pr₁ to-sum-is-equiv) = from-sum
@@ -73,13 +97,11 @@ module preduploid-as-sum (𝓤 𝓥 : Universe) where
  pr₁ (pr₂ to-sum-is-equiv) = from-sum
  pr₂ (pr₂ to-sum-is-equiv) _ = refl
 
- equiv : preduploid 𝓤 𝓥 ≃ (Σ str ꞉ deductive-system 𝓤 𝓥 , preduploid-axioms str)
+ equiv : preduploid 𝓤 𝓥 ≃ (Σ str ꞉ deductive-system-structure 𝓤 𝓥 , preduploid-axioms str)
  equiv = to-sum , to-sum-is-equiv
 
 module preduploid-extras (𝓓 : preduploid 𝓤 𝓥) where
- private
-  module 𝓓 = preduploid 𝓓
- open deductive-system-extras 𝓓.underlying-deductive-system public
+ open deductive-system-extras (preduploid.underlying-deductive-system 𝓓) public
 \end{code}
 
 It is currently not totally clear what the correct statement of univalence for a
@@ -158,11 +180,11 @@ module NegativesAndAllMaps (𝓓 : preduploid 𝓤 𝓥) where
  idn : (A : ob) → hom A A
  idn A = 𝓓.idn (pr₁ A)
 
- seq : (A B C : ob) → hom A B → hom B C → hom A C
- seq _ _ _ f g = 𝓓.cut f g
+ seq' : (A B C : ob) → hom A B → hom B C → hom A C
+ seq' A B C f g = 𝓓.cut f g
 
  cat-data : category-structure (𝓤 ⊔ 𝓥) 𝓥
- cat-data = ob , hom , idn , seq
+ cat-data = ob , hom , idn , seq'
 
  module _ (open category-axiom-statements) where
   hom-is-set : statement-hom-is-set cat-data
@@ -178,7 +200,7 @@ module NegativesAndAllMaps (𝓓 : preduploid 𝓤 𝓥) where
   assoc A B C D f g h = pr₂ B (pr₁ A) f (pr₁ C) (pr₁ D) g h ⁻¹
 
   precat : precategory (𝓤 ⊔ 𝓥) 𝓥
-  precat = make cat-data (hom-is-set , idn-L , idn-R , assoc)
+  precat = make ob hom idn seq' (hom-is-set , idn-L , idn-R , assoc)
 
 module PositivesAndAllMaps (𝓓 : preduploid 𝓤 𝓥) where
  module 𝓓 = preduploid 𝓓
@@ -192,11 +214,11 @@ module PositivesAndAllMaps (𝓓 : preduploid 𝓤 𝓥) where
  idn : (A : ob) → hom A A
  idn A = 𝓓.idn (pr₁ A)
 
- seq : (A B C : ob) → hom A B → hom B C → hom A C
- seq _ _ _ f g = 𝓓.cut f g
+ seq' : (A B C : ob) → hom A B → hom B C → hom A C
+ seq' _ _ _ f g = 𝓓.cut f g
 
  cat-data : category-structure (𝓤 ⊔ 𝓥) 𝓥
- cat-data = ob , hom , idn , seq
+ cat-data = ob , hom , idn , seq'
 
  module _ (open category-axiom-statements) where
   hom-is-set : statement-hom-is-set cat-data
@@ -212,11 +234,11 @@ module PositivesAndAllMaps (𝓓 : preduploid 𝓤 𝓥) where
   assoc A B C D f g h = pr₂ C (pr₁ D) h (pr₁ A) (pr₁ B) g f ⁻¹
 
   precat : precategory (𝓤 ⊔ 𝓥) 𝓥
-  precat = make cat-data (hom-is-set , idn-L , idn-R , assoc)
+  precat = make ob hom idn seq' (hom-is-set , idn-L , idn-R , assoc)
 
 
 module NegativesAndLinearMaps (𝓓 : preduploid 𝓤 𝓥) where
- module 𝓓 = preduploid 𝓓
+ private module 𝓓 = preduploid 𝓓
  open preduploid-extras 𝓓
 
  ob : 𝓤 ⊔ 𝓥 ̇
@@ -229,12 +251,12 @@ module NegativesAndLinearMaps (𝓓 : preduploid 𝓤 𝓥) where
  pr₁ (idn A) = 𝓓.idn (pr₁ A)
  pr₂ (idn A) = idn-linear (pr₁ A)
 
- seq : (A B C : ob) → hom A B → hom B C → hom A C
- pr₁ (seq _ _ _ f g) = 𝓓.cut (pr₁ f) (pr₁ g)
- pr₂ (seq _ _ _ f g) = cut-linear (pr₁ f) (pr₁ g) (pr₂ f) (pr₂ g)
+ seq' : (A B C : ob) → hom A B → hom B C → hom A C
+ pr₁ (seq' _ _ _ f g) = 𝓓.cut (pr₁ f) (pr₁ g)
+ pr₂ (seq' _ _ _ f g) = cut-linear (pr₁ f) (pr₁ g) (pr₂ f) (pr₂ g)
 
  cat-data : category-structure (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
- cat-data = ob , hom , idn , seq
+ cat-data = ob , hom , idn , seq'
 
  open category-axiom-statements
 
@@ -259,7 +281,7 @@ module NegativesAndLinearMaps (𝓓 : preduploid 𝓤 𝓥) where
    (pr₂ B (pr₁ A) (pr₁ f) (pr₁ C) (pr₁ D) (pr₁ g) (pr₁ h) ⁻¹)
 
  precat : precategory (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
- precat = make cat-data (hom-is-set , idn-L , idn-R , assoc)
+ precat = make ob hom idn seq' (hom-is-set , idn-L , idn-R , assoc)
 
 
 module PositivesAndThunkableMaps (𝓓 : preduploid 𝓤 𝓥) where
@@ -276,12 +298,12 @@ module PositivesAndThunkableMaps (𝓓 : preduploid 𝓤 𝓥) where
  pr₁ (idn A) = 𝓓.idn (pr₁ A)
  pr₂ (idn A) = idn-thunkable (pr₁ A)
 
- seq : (A B C : ob) → hom A B → hom B C → hom A C
- pr₁ (seq _ _ _ f g) = 𝓓.cut (pr₁ f) (pr₁ g)
- pr₂ (seq _ _ _ f g) = cut-thunkable (pr₁ f) (pr₁ g) (pr₂ f) (pr₂ g)
+ seq' : (A B C : ob) → hom A B → hom B C → hom A C
+ pr₁ (seq' _ _ _ f g) = 𝓓.cut (pr₁ f) (pr₁ g)
+ pr₂ (seq' _ _ _ f g) = cut-thunkable (pr₁ f) (pr₁ g) (pr₂ f) (pr₂ g)
 
  cat-data : category-structure (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
- cat-data = ob , hom , idn , seq
+ cat-data = ob , hom , idn , seq'
 
  open category-axiom-statements
 
@@ -306,6 +328,6 @@ module PositivesAndThunkableMaps (𝓓 : preduploid 𝓤 𝓥) where
    (pr₂ C (pr₁ D) (pr₁ h) (pr₁ A) (pr₁ B) (pr₁ g) (pr₁ f) ⁻¹)
 
  precat : precategory (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
- precat = make cat-data (hom-is-set , idn-L , idn-R , assoc)
+ precat = make ob hom idn seq' (hom-is-set , idn-L , idn-R , assoc)
 
 \end{code}

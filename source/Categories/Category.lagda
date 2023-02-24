@@ -129,18 +129,29 @@ module _ (𝓒 : category-structure 𝓤 𝓥) where
 record precategory (𝓤 𝓥 : Universe) : (𝓤 ⊔ 𝓥)⁺ ̇ where
  constructor make
  field
-  str : category-structure 𝓤 𝓥
+  ob : 𝓤 ̇
+  hom : ob → ob → 𝓥 ̇
+  idn : (A : ob) → hom A A
+  seq' : (A B C : ob) → hom A B → hom B C → hom A C
+
+ seq : {A B C : ob} → hom A B → hom B C → hom A C
+ seq = seq' _ _ _
+
+ str : category-structure 𝓤 𝓥
+ str = ob , hom , idn , seq'
+
+ field
   ax : precategory-axioms str
 
- open category-structure str public
  open precategory-axioms str ax public
+
 
 module precategory-as-sum {𝓤 𝓥} where
  to-sum : precategory 𝓤 𝓥 → (Σ 𝓒 ꞉ category-structure 𝓤 𝓥 , precategory-axioms 𝓒)
  to-sum 𝓒 = let open precategory 𝓒 in str , ax
 
  from-sum : (Σ 𝓒 ꞉ category-structure 𝓤 𝓥 , precategory-axioms 𝓒) → precategory 𝓤 𝓥
- from-sum 𝓒 = make (pr₁ 𝓒) (pr₂ 𝓒)
+ from-sum 𝓒 = let open category-structure (pr₁ 𝓒) in make ob hom idn (λ _ _ _ → seq) (pr₂ 𝓒)
 
  to-sum-is-equiv : is-equiv to-sum
  pr₁ (pr₁ to-sum-is-equiv) = from-sum
