@@ -18,11 +18,7 @@ open import UF.PreUnivalence
 open import UF.EquivalenceExamples
 open import UF.Subsingletons
 open import UF.Embeddings
-open import UF.Subsingletons-FunExt
 open import UF.FunExt
-open import UF.UA-FunExt
-open import UF.Retracts
-open import UF.Yoneda
 
 module generalized-metric-space
         {𝓤 𝓥 𝓦  : Universe}
