@@ -19,6 +19,7 @@ open import Posets.Poset fe
 open PosetAxioms
 
 open import DomainTheory.Basics.Dcpo pt fe 𝓥
+open import DomainTheory.Basics.Miscelanea pt fe 𝓥
 
 module _
   (G : 𝓤 ̇)  -- Generators
@@ -36,5 +37,26 @@ module _
       ≲-transitive = {x y z : G} → x ≲ y → y ≲ z → x ≲ z
       cover-directed = {x : G} {I : 𝓥 ̇} {U : I → G} → (x ◃ U) holds
         → is-directed _≲_ U
+
+  -- TODO: Define structure and projections
+  -- and characterize paths (better paths using powersets)
+
+  module Interpretation
+    (_◃_ : cover-set)
+    (◃-is-dcpo-presentation : is-dcpo-presentation _◃_)
+    {D : DCPO {𝓤} {𝓣}}
+    where  -- Defines maps from a presentation into dcpos
+
+    private
+      U-is-directed : {x : G} {I : 𝓥 ̇} {U : I → G} → (x ◃ U) holds
+        → is-directed _≲_ U
+      U-is-directed = ◃-is-dcpo-presentation .pr₂ .pr₂ .pr₂
+
+    preserves-covers : (f : G → ⟨ D ⟩)
+      → ({x y : G} → x ≲ y → f x ⊑⟨ D ⟩ f y)
+      → 𝓤 ⊔ 𝓥 ⁺ ⊔ 𝓦 ⊔ 𝓣 ̇
+    preserves-covers f m = {x : G} {I : 𝓥 ̇} {U : I → G}
+      → (c : (x ◃ U) holds)
+      → f x ⊑⟨ D ⟩ ∐ D {! U-is-directed c  !}
 
 \end{code}
