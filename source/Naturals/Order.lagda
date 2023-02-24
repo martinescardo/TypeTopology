@@ -54,7 +54,10 @@ subtraction (succ m) (succ n) l = pr₁ IH , ap succ (pr₂ IH)
 cosubtraction : (m n : ℕ) → (Σ k ꞉ ℕ , k +' m ＝ n) → m ≤ n
 cosubtraction zero n (.n , refl) = ⋆
 cosubtraction (succ m) zero (k , p) = positive-not-zero (k +' m) p
-cosubtraction (succ m) (succ .(k +' m)) (k , refl) = cosubtraction m (k +' m) (k , refl)
+cosubtraction (succ m) (succ .(k +' m)) (k , refl) = γ
+ where
+  γ : m ≤ k +' m
+  γ = cosubtraction m (k +' m) (k , refl)
 
 zero-least : (n : ℕ) → zero ≤ n
 zero-least n = ⋆
@@ -151,7 +154,10 @@ not-less-bigger-or-equal (succ m) zero = ¬¬-intro (zero-least m)
 not-less-bigger-or-equal (succ m) (succ n) = not-less-bigger-or-equal m n
 
 bigger-or-equal-not-less : (m n : ℕ) → n ≥ m → ¬ (n < m)
-bigger-or-equal-not-less m n l u = not-less-than-itself n (≤-trans (succ n) m n u l)
+bigger-or-equal-not-less m n l u = not-less-than-itself n γ
+ where
+  γ : succ n ≤ℕ n
+  γ = ≤-trans (succ n) m n u l
 
 less-not-bigger-or-equal : (m n : ℕ) → m < n → ¬ (n ≤ m)
 less-not-bigger-or-equal m n l u = bigger-or-equal-not-less n m u l
@@ -217,7 +223,13 @@ course-of-values-induction = transfinite-induction _<_ <-is-well-founded
 <-is-extensional zero     zero     f g = refl
 <-is-extensional zero     (succ n) f g = unique-from-𝟘 (g zero (zero-least n))
 <-is-extensional (succ m) (zero)   f g = unique-from-𝟘 (f zero (zero-least m))
-<-is-extensional (succ m) (succ n) f g = ap succ (≤-anti m n (f m (≤-refl m)) (g n (≤-refl n)))
+<-is-extensional (succ m) (succ n) f g = ap succ (≤-anti m n γ₁ γ₂)
+ where
+  γ₁ : m ≤ℕ n
+  γ₁ = f m (≤-refl m)
+
+  γ₂ : n ≤ℕ m
+  γ₂ = g n (≤-refl n)
 
 ℕ-ordinal : is-well-order _<_
 ℕ-ordinal = <-is-prop-valued , <-is-well-founded , <-is-extensional , <-trans
@@ -403,7 +415,8 @@ Tom de Jong, 5 November 2021.
 \end{code}
 
 Added 12/05/2020 by Andrew Sneap.
-Following are proofs of common properties of strict and non-strict order of Natural Numbers.
+Following are proofs of common properties of strict and non-strict order of
+Natural Numbers.
 
 \begin{code}
 
@@ -430,12 +443,25 @@ Following are proofs of common properties of strict and non-strict order of Natu
 ≤-n-monotone-right x y (succ n) l = ≤-n-monotone-right x y n l
 
 ≤-n-monotone-left : (x y z : ℕ) → x ≤ y → (z +' x) ≤ (z +' y)
-≤-n-monotone-left x y z l
- = transport₂ _≤_ (addition-commutativity x z) (addition-commutativity y z) (≤-n-monotone-right x y z l)
+≤-n-monotone-left x y z l = transport₂ _≤_ γ₁ γ₂ γ₃
+  where
+   γ₁ : x ∔ z ＝ z ∔ x
+   γ₁ = addition-commutativity x z
+
+   γ₂ : y ∔ z ＝ z ∔ y
+   γ₂ = addition-commutativity y z
+
+   γ₃ : x ∔ z ≤ y ∔ z
+   γ₃ = ≤-n-monotone-right x y z l
 
 ≤-adding : (x y u v : ℕ) → x ≤ y → u ≤ v → (x +' u) ≤ (y +' v)
-≤-adding x y u v l₁ l₂
- = ≤-trans (x +' u) (y +' u) (y +' v) (≤-n-monotone-right x y u l₁) (≤-n-monotone-left u v y l₂)
+≤-adding x y u v l₁ l₂ = ≤-trans (x +' u) (y +' u) (y +' v) γ₁ γ₂
+ where
+  γ₁ : x ∔ u ≤ y ∔ u
+  γ₁ = ≤-n-monotone-right x y u l₁
+  
+  γ₂ : y ∔ u ≤ y ∔ v
+  γ₂ = ≤-n-monotone-left u v y l₂
 
 <-succ-monotone : (x y : ℕ) → x < y → succ x < succ y
 <-succ-monotone x y = id
@@ -445,12 +471,25 @@ Following are proofs of common properties of strict and non-strict order of Natu
 <-n-monotone-right x y (succ z) l = <-n-monotone-right x y z l
 
 <-n-monotone-left : (x y z : ℕ) → x < y → (z +' x) < (z +' y)
-<-n-monotone-left x y z l
- = transport₂ _<_ (addition-commutativity x z) (addition-commutativity y z) (<-n-monotone-right x y z l)
+<-n-monotone-left x y z l = transport₂ _<_ γ₁ γ₂ γ₃
+ where
+  γ₁ : x ∔ z ＝ z ∔ x
+  γ₁ = addition-commutativity x z
+  
+  γ₂ : y ∔ z ＝ z ∔ y
+  γ₂ = addition-commutativity y z
+  
+  γ₃ : x ∔ z < y ∔ z
+  γ₃ = <-n-monotone-right x y z l
 
 <-adding : (x y u v : ℕ) → x < y → u < v → (x +' u) < (y +' v)
-<-adding x y u v l₁ l₂
- = <-trans (x +' u) (y +' u) (y +' v) (<-n-monotone-right x y u l₁) (<-n-monotone-left u v y l₂)
+<-adding x y u v l₁ l₂ = <-trans (x +' u) (y +' u) (y +' v) γ₁ γ₂
+ where
+  γ₁ : x ∔ u < y ∔ u
+  γ₁ = <-n-monotone-right x y u l₁
+  
+  γ₂ : y ∔ u < y ∔ v
+  γ₂ = <-n-monotone-left u v y l₂
 
 <-+ : (x y z : ℕ) → x < y → x < y +' z
 <-+ x y z l₁ = ≤-trans (succ x) y (y +' z) l₁ l₂
@@ -462,16 +501,20 @@ equal-gives-less-than-or-equal : (x y : ℕ) → x ＝ y → x ≤ y
 equal-gives-less-than-or-equal x y p = transport (_≤ y) (p ⁻¹) (≤-refl y)
 
 less-than-not-equal : (x y : ℕ) → x < y → ¬ (x ＝ y)
-less-than-not-equal x y r p = less-not-bigger-or-equal x y r (equal-gives-less-than-or-equal y x (p ⁻¹))
+less-than-not-equal x y r p = less-not-bigger-or-equal x y r γ
+ where
+  γ : y ≤ℕ x
+  γ = equal-gives-less-than-or-equal y x (p ⁻¹)
 
 less-than-one-is-zero : (x : ℕ) → x < 1 → x ＝ 0
 less-than-one-is-zero 0        l = refl
 less-than-one-is-zero (succ x) l = 𝟘-elim l
 
-not-less-or-equal-is-bigger : (x y : ℕ) → ¬(x ≤ y) → y < x
+not-less-or-equal-is-bigger : (x y : ℕ) → ¬ (x ≤ y) → y < x
 not-less-or-equal-is-bigger 0        y        l = l (zero-least y)
 not-less-or-equal-is-bigger (succ x) 0        l = zero-least x
-not-less-or-equal-is-bigger (succ x) (succ y) l = not-less-or-equal-is-bigger x y l
+not-less-or-equal-is-bigger (succ x) (succ y) l
+ = not-less-or-equal-is-bigger x y l
 
 ≤-dichotomous : (x y : ℕ) → (x ≤ y) + (y ≤ x)
 ≤-dichotomous zero     y        = inl ⋆
@@ -492,19 +535,12 @@ subtraction' (succ x) (succ y) l = pr₁ IH , ap succ (pr₂ IH)
   IH = subtraction' x y l
 
 subtraction'' : (x y : ℕ) → x < y → Σ z ꞉ ℕ , (succ z +' x ＝ y)
-subtraction'' 0        0        l = 𝟘-elim l
+subtraction'' x 0               l = 𝟘-elim l
 subtraction'' 0        (succ y) l = y , refl
-subtraction'' (succ x) 0        l = 𝟘-elim l
-subtraction'' (succ x) (succ y) l = z , ap succ e
+subtraction'' (succ x) (succ y) l = pr₁ IH , ap succ (pr₂ IH)
  where
-  I : Σ z ꞉ ℕ , succ z +' x ＝ y
-  I = subtraction'' x y l
-
-  z : ℕ
-  z = pr₁ I
-
-  e : succ z +' x ＝ y
-  e = pr₂ I
+  IH : Σ z ꞉ ℕ , (succ z +' x ＝ y)
+  IH = subtraction'' x y l
 
 order-split : (x y : ℕ) → (x < y) + (x ≥ y)
 order-split 0        0        = inr (zero-least 0)
