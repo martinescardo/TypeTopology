@@ -708,6 +708,18 @@ bounded-maximisation' A δ k = γ (bounded-maximisation A δ k) (δ k)
       g (inl j) = j
       g (inr j) = 𝟘-elim (¬Ak (transport A (j ⁻¹) An))
 
+no-maximal-lemma : (A : ℕ → 𝓤 ̇)
+                 → (k : ℕ)
+                 → no-maximal-element A k
+                 → ¬ maximal-element A k
+no-maximal-lemma A k ω (m , l , Am , ψ) = not-less-than-itself k β
+ where
+  α : k ≤ m
+  α = ω m Am
+
+  β : k < k
+  β = ≤-<-trans k m k α l
+
 \end{code}
 
 With above machinery in mind, we can now produce maximal elements of
@@ -716,19 +728,31 @@ which the property holds. Of course, we must provide an upper bound.
 
 \begin{code}
 
-maximal-from-given : (A : ℕ → 𝓤 ̇) → (b : ℕ) → complemented A → Σ k ꞉ ℕ , A k × k < b → maximal-element A b
-maximal-from-given A b δ (k , a) = f (bounded-maximisation A δ b)
+maximal-from-given : (A : ℕ → 𝓤 ̇)
+                   → (b : ℕ)
+                   → complemented A
+                   → Σ k ꞉ ℕ , A k × k < b
+                   → maximal-element A b
+maximal-from-given A b δ (k , Ak , l) = Cases (bounded-maximisation A δ b) γ₁ γ₂
  where
-  f : (Σ m ꞉ ℕ , (m < b) × A m × ((n : ℕ) → n < b → A n → n ≤ m)) + ((n : ℕ) → A n → n ≥ b) → maximal-element A b
-  f (inl x) = x
-  f (inr x) = 𝟘-elim (less-not-bigger-or-equal k b (pr₂ a) (x k (pr₁ a)))
+  γ₁ : maximal-element A b → maximal-element A b
+  γ₁ = id
 
-maximal-from-given' : (A : ℕ → 𝓤 ̇) → (b : ℕ) → complemented A → Σ k ꞉ ℕ , A k × k ≤ b → maximal-element' A b
-maximal-from-given' A b δ (k , a , c) = f (bounded-maximisation' A δ b)
- where
-  f : (Σ m ꞉ ℕ , (m ≤ b) × A m × ((n : ℕ) → n ≤ b → A n → n ≤ m)) + ((n : ℕ) → A n → b < n) → maximal-element' A b
-  f (inr x) = 𝟘-elim (bigger-or-equal-not-less k b c (x k a))
-  f (inl x) = x
+  γ₂ : no-maximal-element A b → maximal-element A b
+  γ₂ ω = 𝟘-elim (not-less-than-itself b β)
+   where
+    α : b ≤ℕ k
+    α = ω k Ak
+
+    β : b < b
+    β = ≤-<-trans b k b α l
+
+maximal-from-given' : (A : ℕ → 𝓤 ̇)
+                    → (b : ℕ)
+                    → complemented A
+                    → Σ k ꞉ ℕ , A k × k ≤ b
+                    → maximal-element' A b
+maximal-from-given' A b = maximal-from-given A (succ b)
 
 \end{code}
 
