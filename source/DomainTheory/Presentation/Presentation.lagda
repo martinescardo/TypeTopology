@@ -11,7 +11,11 @@ open import UF.Subsingletons
 module DomainTheory.Presentation.Presentation
         (pt : propositional-truncations-exist)
         (fe : Fun-Ext)
-        {𝓤 𝓥 𝓦 : Universe}  -- TODO clear universe levels
+        {𝓤 𝓣 𝓥 𝓦 : Universe}
+        -- 𝓤 : the universe of the underlying set
+        -- 𝓣 : the universe of the preorder
+        -- 𝓥 : the universe of the indices of directed sets
+        -- 𝓦 : the universe of covering sets
        where
 
 open import UF.Powerset
@@ -26,7 +30,7 @@ module _
   (_≲_ : G → G → 𝓣 ̇)
   where
 
-  Cover-set : 𝓤 ⊔ 𝓥 ⁺ ⊔ 𝓦 ⁺ ̇
+  Cover-set : 𝓤 ⊔ 𝓥 ⁺ ⊔ 𝓦 ⁺ ̇ -- This one has spurious assumptions
   Cover-set = G → {I : 𝓥 ̇} → (I → G) → Ω 𝓦
 
   is-dcpo-presentation : Cover-set → 𝓤 ⊔ 𝓥 ⁺ ⊔ 𝓦 ⊔ 𝓣 ̇
@@ -38,11 +42,11 @@ module _
       Cover-directed = {x : G} {I : 𝓥 ̇} {U : I → G} → (x ◃ U) holds
         → is-directed _≲_ U
 
-DCPO-Presentation : {𝓣 : Universe} → (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓣)⁺ ̇
-DCPO-Presentation {𝓣} = Σ G ꞉ 𝓤 ̇ , Σ _⊑_ ꞉ (G → G → 𝓣 ̇) ,
+DCPO-Presentation : (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓣)⁺ ̇
+DCPO-Presentation = Σ G ꞉ 𝓤 ̇ , Σ _⊑_ ꞉ (G → G → 𝓣 ̇) ,
   Σ _◃_ ꞉ (Cover-set G _⊑_) , (is-dcpo-presentation G _⊑_ _◃_)
 
-module _ (𝓖 : DCPO-Presentation {𝓣}) where
+module _ (𝓖 : DCPO-Presentation) where
   ⟨_⟩ₚ : 𝓤 ̇ -- We need a uniform way to refer to underlying sets
   ⟨_⟩ₚ = 𝓖 .pr₁
 
@@ -53,7 +57,7 @@ module _ (𝓖 : DCPO-Presentation {𝓣}) where
   cover-directed = 𝓖 .pr₂ .pr₂ .pr₂ .pr₂
 
 module Interpretation
-  (𝓖 : DCPO-Presentation {𝓣})
+  (𝓖 : DCPO-Presentation)
   (𝓓 : DCPO {𝓤} {𝓣})
   where  -- Defines maps from a presentation into dcpos
 

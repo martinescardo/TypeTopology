@@ -12,7 +12,7 @@ open import UF.Subsingletons-FunExt
 module DomainTheory.Presentation.C-Ideal
         (pt : propositional-truncations-exist)
         (fe : Fun-Ext)
-        {𝓤 𝓥 𝓦 : Universe}
+        {𝓤 𝓣 𝓥 𝓦 : Universe}
        where
 
 open import UF.Powerset
@@ -22,11 +22,11 @@ open PosetAxioms
 
 open import DomainTheory.Basics.Dcpo pt fe 𝓥
 open import DomainTheory.Basics.Miscelanea pt fe 𝓥
-open import DomainTheory.Presentation.Presentation pt fe {𝓤} {𝓥} {𝓦}
+open import DomainTheory.Presentation.Presentation pt fe {𝓤} {𝓣} {𝓥} {𝓦}
 
 
 -- TODO put this at the right place
-Conjunction : (I : 𝓣' ̇) → (I → Ω 𝓣) → Ω (𝓣 ⊔ 𝓣')
+Conjunction : (I : 𝓤' ̇) → (I → Ω 𝓥') → Ω (𝓤' ⊔ 𝓥')
 Conjunction I ps = (∀ i → ps i holds) , Π-is-prop fe λ _ → holds-is-prop (ps _)
 
 syntax Conjunction I (λ i → p) = ⋀ i ꞉ I , p
@@ -73,7 +73,7 @@ module C-Ideal
     (ℑ , ℑ-is-ideal) ⊑ (𝔍 , 𝔍-is-ideal) = ℑ ⊆ 𝔍
 
   -- The impredicatively generated C-ideal from a set
-  Generated : (𝓣' : Universe) → (G → Ω 𝓥') → C-Idl (𝓤 ⊔ (𝓥 ⁺) ⊔ 𝓦 ⊔ 𝓣 ⊔ 𝓥' ⊔ (𝓣' ⁺))
+  Generated : ∀ 𝓣' → (G → Ω 𝓥') → C-Idl (𝓤 ⊔ 𝓥 ⁺ ⊔ 𝓦 ⊔ 𝓣 ⊔ 𝓥' ⊔ 𝓣' ⁺)
   Generated 𝓣' S = (λ g → ⋀ ((ℑ , _) , _) ꞉  -- Too messy
     (Σ (ℑ , _) ꞉ C-Idl 𝓣' , S ⊆ ℑ), ℑ g) ,
     intersection-is-C-ideal (pr₁ ∘ pr₁) (pr₂ ∘ pr₁)
