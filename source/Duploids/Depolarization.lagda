@@ -82,7 +82,7 @@ gives rise to a precategory.
 
   precategory-of-depolarized-deductive-system : precategory 𝓤 𝓥
   precategory-of-depolarized-deductive-system =
-   make 𝓓.str depolarization-gives-precategory-axioms
+   make 𝓓.ob 𝓓._⊢_ 𝓓.idn 𝓓.cut' depolarization-gives-precategory-axioms
 \end{code}
 
 Conversely, any deductive system enjoying the axioms of a precategory is
@@ -156,7 +156,13 @@ precategory-to-depolarized-deductive-system 𝓒 =
   open precategory 𝓒
   open depolarization-and-precategories
   𝓓 : deductive-system _ _
-  𝓓 = make (precategory.str 𝓒) (hom-is-set , idn-L , idn-R)
+  𝓓 =
+   make
+   (precategory.ob 𝓒)
+   (precategory.hom 𝓒)
+   (precategory.idn 𝓒)
+   (precategory.seq' 𝓒)
+   (hom-is-set , idn-L , idn-R)
 
 depolarized-deductive-system-to-precategory-is-equiv
  : is-equiv (depolarized-deductive-system-to-precategory {𝓤} {𝓥})
