@@ -65,5 +65,7 @@ import Duploids.DeductiveSystem
 import Duploids.Depolarization
 import Duploids.Preduploid
 import Duploids.Duploid
+import Duploids.Categories
+import Duploids.ShiftFunctors
 
 \end{code}
