@@ -668,45 +668,7 @@ bounded-maximisation' : (A : ℕ → 𝓤 ̇)
                       → complemented A
                       → (k : ℕ)
                       → maximal-element' A k + no-maximal-element' A k
-bounded-maximisation' A δ k = γ (bounded-maximisation A δ k) (δ k)
- where
-  γ : maximal-element A k + no-maximal-element A k -- previous proof
-    → A k + ¬ A k                                  -- and use decidability of A
-    → maximal-element A (succ k) + no-maximal-element A (succ k)
-    
-  -- If we have a bounded max, but Ak holds, k is new max
-  γ (inl _) (inl Ak)      = inl (k , ≤-refl k , Ak , ψ)
-   where
-    ψ : (n : ℕ) → n ≤ k → A n → n ≤ k
-    ψ n l An = l
-    
-  --  If we have no bounded max, but Ak holds, k is new max
-  γ (inr _) (inl Ak) = inl (k , ≤-refl k , Ak , ψ)
-   where
-    ψ : (n : ℕ) → n ≤ k → A n → n ≤ k
-    ψ n l An = l
-
-  -- If we have a bounded max m, and Ak doesn't hold, then m remains max
-  γ (inl (m , l , Am , ψ)) (inr ¬Ak) = inl (m , l' , Am , ψ')
-   where
-    l' : m ≤ℕ k
-    l' = <-coarser-than-≤ m k l
-    ψ' : (n : ℕ) → n ≤ k → A n → n ≤ m
-    ψ' n l' An = ψ n (ρ (<-split n k l')) An
-     where
-      ρ : (n < k) + (n ＝ k) → n < k
-      ρ (inl l'') = l''
-      ρ (inr e) = 𝟘-elim (¬Ak (transport A e An))
-
-  -- If we do not have a bounded max, and Ak doesn't hold, then we have nothing
-  γ (inr ω) (inr ¬Ak) = inr f
-   where
-    f : (n : ℕ) → A n → k < n
-    f n An = g (<-split k n (ω n An))
-     where
-      g : (k < n) + (k ＝ n) → k < n
-      g (inl j) = j
-      g (inr j) = 𝟘-elim (¬Ak (transport A (j ⁻¹) An))
+bounded-maximisation' A δ k = bounded-maximisation A δ (succ k)
 
 no-maximal-lemma : (A : ℕ → 𝓤 ̇)
                  → (k : ℕ)
