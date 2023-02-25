@@ -28,7 +28,7 @@ and syntax for reasoning about the order ⊑.
 
 \begin{code}
 
-record SupLattice (𝓥 𝓤 𝓣 : Universe) : 𝓤ω where
+record SupLattice (𝓥 𝓤 𝓣 : Universe) : 𝓥 ⁺ ⊔ 𝓤 ⁺ ⊔ 𝓣 ⁺ ̇ where
   constructor
     lattice
   field

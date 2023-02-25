@@ -16,9 +16,11 @@ module DomainTheory.Presentation.C-Ideal
        where
 
 open import UF.Powerset
+open PropositionalTruncation pt
 open import UF.ImageAndSurjection pt
 open import Posets.Poset fe
 open PosetAxioms
+open import Posets.FreeSupLattice pt
 
 open import DomainTheory.Basics.Dcpo pt fe 𝓥
 open import DomainTheory.Basics.Miscelanea pt fe 𝓥
@@ -82,5 +84,22 @@ module C-Ideal
   Generated-contains S g g∈S ((ℑ , ι), S⊆ℑ) = S⊆ℑ g g∈S
 
   -- Universal property
+
+  -- C-Ideals form a suplattice
+  -- set assumptions not included yet
+  C-Idl-SupLattice : ∀ 𝓣' 𝓦' → SupLattice 𝓦' _ _
+  C-Idl-SupLattice 𝓣' 𝓦' = record {
+      L = C-Idl (𝓤 ⊔ 𝓣 ⊔ (𝓥 ⁺) ⊔ 𝓦 ⊔ (𝓣' ⁺) ⊔ 𝓦') ;
+      L-is-set = _ ;
+      _⊑_ = λ (ℑ , ι) (𝔍 , υ) → ℑ ⊆ 𝔍 ;
+      ⊑-is-prop-valued = _ ;
+      ⊑-is-reflexive = λ _ _ → id ;
+      ⊑-is-transitive = λ _ _ _ ℑ⊆𝔍 𝔍⊆𝔎 u i∈ℑ → 𝔍⊆𝔎 u (ℑ⊆𝔍 u i∈ℑ) ;
+      ⊑-is-antisymmetric = {!   !} ;
+      ⋁ = λ ℑs → Generated 𝓣' λ g →
+        (∃ i ꞉ _ , g ∈ carrier (ℑs i)) , ∃-is-prop ;
+      ⋁-is-upperbound = {!   !} ;
+      ⋁-is-lowerbound-of-upperbounds = {!   !}
+    }
 
 \end{code}
