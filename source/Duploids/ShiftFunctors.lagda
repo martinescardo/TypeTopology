@@ -94,6 +94,12 @@ module _ (𝓓 : duploid 𝓤 𝓥) where
     (𝓌 >> 𝓊) >> f ＝⟨ lem-rewrite-idn-L (pr₁ 𝓓.wrap-unwrap-inverse) ⟩
     f ∎
 
+   lem-[-𝒹]𝒻 : (f >> 𝒹) >> 𝒻 ＝ f
+   lem-[-𝒹]𝒻 =
+    (f >> 𝒹) >> 𝒻 ＝⟨ 𝓓.force-linear _ _ _ _ ⟩
+    f >> (𝒹 >> 𝒻) ＝⟨ lem-rewrite-idn-R (pr₂ 𝓓.force-delay-inverse) ⟩
+    f ∎
+
  module _ {U V : _} {f : 𝓓.⇓ U 𝓓.⊢ V} where
   abstract
    lem-𝓊[𝓌-] : 𝓊 >> (𝓌 >> f) ＝ f
@@ -105,13 +111,6 @@ module _ (𝓓 : duploid 𝓤 𝓥) where
      f-lin : 𝓓.is-linear f
      f-lin = 𝓓.⇓-positive U V f
 
- module _ {U V : _} {f : U 𝓓.⊢ V} where
-  abstract
-   lem-[-𝒹]𝒻 : (f >> 𝒹) >> 𝒻 ＝ f
-   lem-[-𝒹]𝒻 =
-    (f >> 𝒹) >> 𝒻 ＝⟨ 𝓓.force-linear _ _ _ _ ⟩
-    f >> (𝒹 >> 𝒻) ＝⟨ lem-rewrite-idn-R (pr₂ 𝓓.force-delay-inverse) ⟩
-    f ∎
 
  -- forget linearity
  module ForgetLinearity where
@@ -325,7 +324,17 @@ module _ (𝓓 : duploid 𝓤 𝓥) where
  [⇓] : functor 𝓝 𝓟
  [⇓] = composite-functor.fun 𝓝⇒𝓒 𝓒⇒𝓟
 
+ [⇑-⇓] : functor 𝓟 𝓟
+ [⇑-⇓] = composite-functor.fun [⇑] [⇓]
 
+ [⇓-⇑] : functor 𝓝 𝓝
+ [⇓-⇑] = composite-functor.fun [⇓] [⇑]
+
+ 1[𝓝] : functor 𝓝 𝓝
+ 1[𝓝] = identity-functor.fun 𝓝
+
+ 1[𝓟] : functor 𝓟 𝓟
+ 1[𝓟] = identity-functor.fun 𝓟
 
 
  module effectful-adjunction where
@@ -336,11 +345,11 @@ module _ (𝓓 : duploid 𝓤 𝓥) where
   module [𝓝,𝓝] = precategory [𝓝,𝓝]
 
   module unit where
-   str : transf 𝓝 𝓝 (identity-functor.fun 𝓝) (composite-functor.fun [⇓] [⇑])
+   str : transf _ _ 1[𝓝] [⇓-⇑]
    str M = 𝓌 >> 𝒹
 
    abstract
-    ax : is-natural 𝓝 𝓝 (identity-functor.fun 𝓝) (composite-functor.fun [⇓] [⇑]) str
+    ax : is-natural _ _ 1[𝓝] [⇓-⇑] str
     ax M N f =
      f >> (𝓌 >> 𝒹 {𝓓.⇓ (pr₁ N)}) ＝⟨ 𝒹[⇓]-linear _ _ _ _ ⁻¹ ⟩
      (f >> 𝓌) >> 𝒹 ＝⟨ ap (_>> 𝒹) lem ⟩
@@ -359,15 +368,15 @@ module _ (𝓓 : duploid 𝓤 𝓥) where
        𝓌 >> (𝒹 >> (𝒻 >> (𝓊 >> (f >> 𝓌)))) ＝⟨ 𝓓.wrap-thunkable _ _ _ _ ⁻¹ ⟩
        (𝓌 >> 𝒹) >> (𝒻 >> (𝓊 >> (f >> 𝓌))) ∎
 
-   unit : nat-transf 𝓝 𝓝 (identity-functor.fun 𝓝) (composite-functor.fun [⇓] [⇑])
+   unit : nat-transf _ _ 1[𝓝] [⇓-⇑]
    unit = make str ax
 
   module counit where
-   str : transf 𝓟 𝓟 (composite-functor.fun [⇑] [⇓]) (identity-functor.fun 𝓟)
+   str : transf _ _ [⇑-⇓] 1[𝓟]
    str P = 𝓊 >> 𝒻
 
    abstract
-    ax : is-natural 𝓟 𝓟 (composite-functor.fun [⇑] [⇓]) (identity-functor.fun 𝓟) str
+    ax : is-natural _ _ [⇑-⇓] 1[𝓟] str
     ax P Q f =
      (𝓊 >> ((𝒻 >> (f >> 𝒹)) >> 𝓌)) >> (𝓊 >> 𝒻) ＝⟨ 𝓓.force-linear _ _ _ _ ⁻¹ ⟩
      ((𝓊 >> ((𝒻 >> (f >> 𝒹)) >> 𝓌)) >> 𝓊) >> 𝒻 ＝⟨ ap (_>> 𝒻) lem1 ⟩
@@ -390,9 +399,9 @@ module _ (𝓓 : duploid 𝓤 𝓥) where
       lem2 =
        (𝒻 >> (f >> 𝒹)) >> 𝒻 ＝⟨ 𝓓.force-linear _ _ _ _ ⟩
        𝒻 >> ((f >> 𝒹) >> 𝒻) ＝⟨ ap (𝒻 >>_) lem-[-𝒹]𝒻 ⟩
-       (𝒻 >> f) ∎
+       𝒻 >> f ∎
 
-   counit : nat-transf 𝓟 𝓟 (composite-functor.fun [⇑] [⇓]) (identity-functor.fun 𝓟)
+   counit : nat-transf _ _ [⇑-⇓] 1[𝓟]
    counit = make str ax
 
   str : adjunction-structure [⇓] [⇑]
