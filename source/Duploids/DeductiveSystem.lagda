@@ -291,4 +291,25 @@ module deductive-system-extras (𝓓 : deductive-system 𝓤 𝓥) where
     cut f (cut (cut g h) k) ＝⟨ ap (cut f) (g-th D E h k) ⟩
     cut f (cut g (cut h k)) ＝⟨ f-th C E g (cut h k) ⁻¹ ⟩
     cut (cut f g) (cut h k) ∎
+
+ module _ {U V : _} {i : U ⊢ U} {f : U ⊢ V} where
+  abstract
+   lem-rewrite-idn-L
+    : i ＝ idn _
+    → cut i f ＝ f
+   lem-rewrite-idn-L p =
+    cut i f ＝⟨ ap (λ ■ → cut ■ f) p ⟩
+    cut (idn _) f ＝⟨ idn-L _ _ _ ⟩
+    f ∎
+
+ module _ {U V : _} {i : V ⊢ V} {f : U ⊢ V} where
+  abstract
+   lem-rewrite-idn-R
+    : i ＝ idn _
+    → cut f i ＝ f
+   lem-rewrite-idn-R p =
+    cut f i ＝⟨ ap (cut f) p ⟩
+    cut f (idn _) ＝⟨ idn-R _ _ _ ⟩
+    f ∎
+
 \end{code}

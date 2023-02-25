@@ -333,5 +333,44 @@ module duploid-extras (𝓓 : duploid 𝓤 𝓥) where
  private
   module 𝓓 = duploid 𝓓
  open preduploid-extras 𝓓.underlying-preduploid public
+ open duploid-notation 𝓓
+
+ module _ {U V : _} {f : U 𝓓.⊢ V} where
+  abstract
+   lem-𝒹[𝒻-] : 𝒹 >> (𝒻 >> f) ＝ f
+   lem-𝒹[𝒻-] =
+    𝒹 >> (𝒻 >> f) ＝⟨ 𝓓.delay-thunkable _ _ _ _ ⁻¹ ⟩
+    (𝒹 >> 𝒻) >> f ＝⟨ lem-rewrite-idn-L (pr₂ 𝓓.force-delay-inverse) ⟩
+    f ∎
+
+   lem-[-𝓌]𝓊 : (f >> 𝓌) >> 𝓊 ＝ f
+   lem-[-𝓌]𝓊 =
+    (f >> 𝓌) >> 𝓊 ＝⟨ 𝓓.unwrap-linear _ _ _ _ ⟩
+    f >> (𝓌 >> 𝓊) ＝⟨ lem-rewrite-idn-R (pr₁ 𝓓.wrap-unwrap-inverse) ⟩
+    f ∎
+
+   lem-𝓌[𝓊-] : 𝓌 >> (𝓊 >> f) ＝ f
+   lem-𝓌[𝓊-] =
+    𝓌 >> (𝓊 >> f) ＝⟨ 𝓓.wrap-thunkable _ _ _ _ ⁻¹ ⟩
+    (𝓌 >> 𝓊) >> f ＝⟨ lem-rewrite-idn-L (pr₁ 𝓓.wrap-unwrap-inverse) ⟩
+    f ∎
+
+   lem-[-𝒹]𝒻 : (f >> 𝒹) >> 𝒻 ＝ f
+   lem-[-𝒹]𝒻 =
+    (f >> 𝒹) >> 𝒻 ＝⟨ 𝓓.force-linear _ _ _ _ ⟩
+    f >> (𝒹 >> 𝒻) ＝⟨ lem-rewrite-idn-R (pr₂ 𝓓.force-delay-inverse) ⟩
+    f ∎
+
+ module _ {U V : _} {f : 𝓓.⇓ U 𝓓.⊢ V} where
+  abstract
+   lem-𝓊[𝓌-] : 𝓊 >> (𝓌 >> f) ＝ f
+   lem-𝓊[𝓌-] =
+    (𝓊 >> (𝓌 >> f)) ＝⟨ f-lin _ _ _ _ ⁻¹ ⟩
+    (𝓊 >> 𝓌) >> f ＝⟨ lem-rewrite-idn-L (pr₂ 𝓓.wrap-unwrap-inverse) ⟩
+    f ∎
+    where
+     f-lin : 𝓓.is-linear f
+     f-lin = 𝓓.⇓-positive U V f
+
 
 \end{code}
