@@ -212,7 +212,7 @@ only-odd-divides-odd d n on (k , e) = I (even-or-odd d) (even-or-odd k)
 2-exponents-even (succ n) = even*even 2 (2^ (succ n)) ⋆ (2-exponents-even n)
 
 odd-factors-of-2-exponents : (d n : ℕ) → d ∣ 2^ n → odd d → d ＝ 1
-odd-factors-of-2-exponents d 0        (k , e) od = product-one-gives-one d k e
+odd-factors-of-2-exponents d 0        (k , e) od = left-factor-one d k e
 odd-factors-of-2-exponents d (succ n) (k , e) od = Cases (even-or-odd k) γ₁ γ₂
  where
   I : even (2^ (succ n))

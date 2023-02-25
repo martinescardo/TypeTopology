@@ -251,7 +251,7 @@ divbyhcf (succ a) b = I (HCF (succ a) b)
             b                 ∎
 
       III : (succ h) * f' ∣ (succ h) → f' ∣ 1
-      III (δ , δₚ) = 1 , product-one-gives-one f' δ (mult-left-cancellable (f' * δ) 1 h e)
+      III (δ , δₚ) = 1 , left-factor-one f' δ (mult-left-cancellable (f' * δ) 1 h e)
        where
         e : succ h * (f' * δ) ＝ succ h * 1
         e = succ h * (f' * δ) ＝⟨ mult-associativity (succ h) f' δ ⁻¹ ⟩
