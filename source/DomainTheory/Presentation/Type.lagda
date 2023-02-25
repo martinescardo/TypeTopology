@@ -8,7 +8,7 @@ open import UF.FunExt
 open import UF.PropTrunc
 open import UF.Subsingletons
 
-module DomainTheory.Presentation.Presentation
+module DomainTheory.Presentation.Type
   (pt : propositional-truncations-exist)
   (fe : Fun-Ext)
   {𝓤 𝓣 𝓥 𝓦 : Universe}
