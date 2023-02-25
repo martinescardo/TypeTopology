@@ -40,6 +40,8 @@ open import UF.Subsingletons
 
 open import Categories.Category fe
 open import Categories.Functor fe
+open import Categories.NaturalTransformation fe
+open import Categories.Adjunction fe
 open import Duploids.Preduploid
 open import Duploids.Duploid fe pt
 
@@ -276,5 +278,197 @@ module _ (𝓓 : duploid 𝓤 𝓥) where
 
  [⇓] : functor 𝓝 𝓟
  [⇓] = composite-functor.fun 𝓝⇒𝓒 𝓒⇒𝓟
+
+
+
+
+ module effectful-adjunction where
+  open adjunction-of-precategories 𝓝 𝓟
+  open natural-transformation
+
+  [𝓝,𝓝] = functor-category.precat 𝓝 𝓝
+  module [𝓝,𝓝] = precategory [𝓝,𝓝]
+
+  module unit where
+   str : transf 𝓝 𝓝 (identity-functor.fun 𝓝) (composite-functor.fun [⇓] [⇑])
+   str M = 𝓌 >> 𝒹
+
+   abstract
+    ax : is-natural 𝓝 𝓝 (identity-functor.fun 𝓝) (composite-functor.fun [⇓] [⇑]) str
+    ax M N f =
+     f >> (𝓌 >> 𝒹 {𝓓.⇓ (pr₁ N)}) ＝⟨ 𝒹[⇓]-linear _ _ _ _ ⁻¹ ⟩
+     (f >> 𝓌) >> 𝒹 ＝⟨ ap (_>> 𝒹) lem2 ⟩
+     ((𝓌 >> 𝒹) >> (𝒻 >> (𝓊 >> (f >> 𝓌)))) >> 𝒹 ＝⟨ 𝒹[⇓]-linear _ _ _ _ ⟩
+     (𝓌 >> 𝒹) >> ((𝒻 >> (𝓊 >> (f >> 𝓌))) >> 𝒹) ＝⟨ ap ((𝓌 >> 𝒹) >>_) (𝒹[⇓]-linear _ _ _ _) ⟩
+     (𝓌 >> 𝒹) >> (𝒻 >> ((𝓊 >> (f >> 𝓌)) >> 𝒹)) ∎
+
+     where
+      𝒹[⇓]-linear : {Z : _} → 𝓓.is-linear (𝒹 {𝓓.⇓ Z})
+      𝒹[⇓]-linear = 𝓓.⇓-positive _ _ _
+
+      lem0 : {U V : _} (g : U 𝓓.⊢ V) → g ＝ 𝒹 >> (𝒻 >> g)
+      lem0 g =
+       g ＝⟨ 𝓓.idn-L _ _ _ ⁻¹ ⟩
+       𝓓.idn _ >> g ＝⟨ ap (_>> g) (pr₂ 𝓓.force-delay-inverse ⁻¹) ⟩
+       (𝒹 >> 𝒻) >> g ＝⟨ 𝓓.delay-thunkable _ _ _ _ ⟩
+       𝒹 >> (𝒻 >> g) ∎
+
+      lem1 : {U V : _} (g : U 𝓓.⊢ V) → g ＝ 𝓌 >> (𝓊 >> g)
+      lem1 g =
+       g ＝⟨ 𝓓.idn-L _ _ _ ⁻¹ ⟩
+       𝓓.idn _ >> g ＝⟨ ap (_>> g) (pr₁ 𝓓.wrap-unwrap-inverse ⁻¹) ⟩
+       (𝓌 >> 𝓊) >> g ＝⟨ 𝓓.wrap-thunkable _ _ _ _ ⟩
+       𝓌 >> (𝓊 >> g) ∎
+
+      lem2 : (f >> 𝓌) ＝ (𝓌 >> 𝒹) >> (𝒻 >> (𝓊 >> (f >> 𝓌)))
+      lem2 =
+       f >> 𝓌 ＝⟨ lem1 _ ⟩
+       𝓌 >> (𝓊 >> (f >> 𝓌)) ＝⟨ ap (𝓌 >>_) (lem0 _) ⟩
+       𝓌 >> (𝒹 >> (𝒻 >> (𝓊 >> (f >> 𝓌)))) ＝⟨ 𝓓.wrap-thunkable _ _ _ _ ⁻¹ ⟩
+       (𝓌 >> 𝒹) >> (𝒻 >> (𝓊 >> (f >> 𝓌))) ∎
+
+   unit : nat-transf 𝓝 𝓝 (identity-functor.fun 𝓝) (composite-functor.fun [⇓] [⇑])
+   unit = make str ax
+
+  module counit where
+   str : transf 𝓟 𝓟 (composite-functor.fun [⇑] [⇓]) (identity-functor.fun 𝓟)
+   str P = 𝓊 >> 𝒻
+
+   abstract
+    ax : is-natural 𝓟 𝓟 (composite-functor.fun [⇑] [⇓]) (identity-functor.fun 𝓟) str
+    ax P Q f =
+     (𝓊 >> ((𝒻 >> (f >> 𝒹)) >> 𝓌)) >> (𝓊 >> 𝒻) ＝⟨ 𝓓.force-linear _ _ _ _ ⁻¹ ⟩
+     ((𝓊 >> ((𝒻 >> (f >> 𝒹)) >> 𝓌)) >> 𝓊) >> 𝒻 ＝⟨ ap (_>> 𝒻) lem1 ⟩
+     (𝓊 >> (𝒻 >> (f >> 𝒹))) >> 𝒻 ＝⟨ 𝓓.force-linear _ _ _ _ ⟩
+     𝓊 >> ((𝒻 >> (f >> 𝒹)) >> 𝒻) ＝⟨ ap (𝓊 >>_) lem3 ⟩
+     𝓊 >> (𝒻 >> f) ＝⟨ f-lin _ _ _ _ ⁻¹ ⟩
+     (𝓊 >> 𝒻) >> f ∎
+
+     where
+      f-lin : 𝓓.is-linear f
+      f-lin = pr₂ P (pr₁ Q) f
+
+      lem0 : {U V : _} (g : U 𝓓.⊢ V) → (g >> 𝓌) >> 𝓊 ＝ g
+      lem0 g =
+       (g >> 𝓌) >> 𝓊 ＝⟨ 𝓓.unwrap-linear _ _ _ _ ⟩
+       g >> (𝓌 >> 𝓊) ＝⟨ ap (g >>_) (pr₁ 𝓓.wrap-unwrap-inverse) ⟩
+       g >> 𝓓.idn _ ＝⟨ 𝓓.idn-R _ _ _ ⟩
+       g ∎
+
+      lem1 : (𝓊 >> ((𝒻 >> (f >> 𝒹)) >> 𝓌)) >> 𝓊 ＝ (𝓊 >> (𝒻 >> (f >> 𝒹)))
+      lem1 =
+       (𝓊 >> ((𝒻 >> (f >> 𝒹)) >> 𝓌)) >> 𝓊 ＝⟨ 𝓓.unwrap-linear _ _ _ _ ⟩
+       𝓊 >> (((𝒻 >> (f >> 𝒹)) >> 𝓌) >> 𝓊) ＝⟨ ap (𝓊 >>_) (lem0 _) ⟩
+       𝓊 >> (𝒻 >> (f >> 𝒹)) ∎
+
+      lem2 : (f >> 𝒹) >> 𝒻 ＝ f
+      lem2 =
+       (f >> 𝒹) >> 𝒻 ＝⟨ 𝓓.force-linear _ _ _ _ ⟩
+       f >> (𝒹 >> 𝒻) ＝⟨ ap (f >>_) (pr₂ 𝓓.force-delay-inverse) ⟩
+       f >> 𝓓.idn _ ＝⟨ 𝓓.idn-R _ _ _ ⟩
+       f ∎
+
+      lem3 : (𝒻 >> (f >> 𝒹)) >> 𝒻 ＝ 𝒻 >> f
+      lem3 =
+       (𝒻 >> (f >> 𝒹)) >> 𝒻 ＝⟨ 𝓓.force-linear _ _ _ _ ⟩
+       𝒻 >> ((f >> 𝒹) >> 𝒻) ＝⟨ ap (𝒻 >>_) lem2 ⟩
+       (𝒻 >> f) ∎
+
+   counit : nat-transf 𝓟 𝓟 (composite-functor.fun [⇑] [⇓]) (identity-functor.fun 𝓟)
+   counit = make str ax
+
+  str : adjunction-structure [⇓] [⇑]
+  pr₁ str = unit.unit
+  pr₂ str = counit.counit
+
+  abstract
+   ax : adjunction-axioms [⇓] [⇑] str
+   pr₁ ax =
+    to-nat-transf-＝ 𝓝 𝓟 [⇓] [⇓]
+     (dfunext fe λ M →
+      (𝓓.idn _ >> (𝓊 >> ((𝓌 >> 𝒹) >> 𝓌))) >> ((𝓓.idn _) >> ((𝓊 >> 𝒻) >> 𝓓.idn _))
+       ＝⟨ ap (_>> (𝓓.idn _ >> ((𝓊 >> 𝒻) >> 𝓓.idn _))) (𝓓.idn-L _ _ _) ⟩
+      (𝓊 >> ((𝓌 >> 𝒹) >> 𝓌)) >> ((𝓓.idn _) >> ((𝓊 >> 𝒻) >> 𝓓.idn _))
+       ＝⟨ ap ((𝓊 >> ((𝓌 >> 𝒹) >> 𝓌)) >>_) (𝓓.idn-L _ _ _) ⟩
+      (𝓊 >> ((𝓌 >> 𝒹) >> 𝓌)) >> ((𝓊 >> 𝒻) >> 𝓓.idn _)
+       ＝⟨ ap ((𝓊 >> ((𝓌 >> 𝒹) >> 𝓌)) >>_) (𝓓.idn-R _ _ _) ⟩
+      (𝓊 >> ((𝓌 >> 𝒹) >> 𝓌)) >> (𝓊 >> 𝒻)
+       ＝⟨ 𝓓.force-linear _ _ _ _ ⁻¹ ⟩
+      ((𝓊 >> ((𝓌 >> 𝒹) >> 𝓌)) >> 𝓊) >> 𝒻
+       ＝⟨ ap (_>> 𝒻) lem0 ⟩
+      (𝓊 >> (𝓌 >> 𝒹)) >> 𝒻
+       ＝⟨ 𝓓.force-linear _ _ _ _ ⟩
+      𝓊 >> ((𝓌 >> 𝒹) >> 𝒻)
+       ＝⟨ ap (𝓊 >>_) (lem1 𝓌) ⟩
+      𝓊 >> 𝓌
+       ＝⟨ pr₂ 𝓓.wrap-unwrap-inverse ⟩
+      𝓓.idn _ ∎)
+
+    where
+     lem0·1 : {A B : _} (f : A 𝓓.⊢ B) → (f >> 𝓌) >> 𝓊 ＝ f
+     lem0·1 f =
+      (f >> 𝓌) >> 𝓊 ＝⟨ 𝓓.unwrap-linear _ _ _ _ ⟩
+      f >> (𝓌 >> 𝓊) ＝⟨ ap (f >>_) (pr₁ 𝓓.wrap-unwrap-inverse) ⟩
+      f >> 𝓓.idn _ ＝⟨ 𝓓.idn-R _ _ _ ⟩
+      f ∎
+
+     lem0 : {A : _} → (𝓊 {A} >> ((𝓌 >> 𝒹) >> 𝓌)) >> 𝓊 ＝ (𝓊 >> (𝓌 >> 𝒹))
+     lem0 =
+      (𝓊 >> ((𝓌 >> 𝒹) >> 𝓌)) >> 𝓊 ＝⟨ 𝓓.unwrap-linear _ _ _ _ ⟩
+      (𝓊 >> (((𝓌 >> 𝒹) >> 𝓌) >> 𝓊)) ＝⟨ ap (𝓊 >>_) (lem0·1 (𝓌 >> 𝒹)) ⟩
+      (𝓊 >> (𝓌 >> 𝒹)) ∎
+
+     lem1 : {A B : _} (f : A 𝓓.⊢ B) → (f >> 𝒹) >> 𝒻 ＝ f
+     lem1 f =
+      (f >> 𝒹) >> 𝒻 ＝⟨ 𝓓.force-linear _ _ _ _ ⟩
+      f >> (𝒹 >> 𝒻) ＝⟨ ap (f >>_) (pr₂ 𝓓.force-delay-inverse) ⟩
+      f >> 𝓓.idn _ ＝⟨ 𝓓.idn-R _ _ _ ⟩
+      f ∎
+
+   pr₂ ax =
+    to-nat-transf-＝ 𝓟 𝓝 [⇑] [⇑]
+     (dfunext fe λ P →
+      (𝓓.idn _ >> (𝓌 >> 𝒹)) >> (𝓓.idn _ >> ((𝒻 >> ((𝓊 >> 𝒻) >> 𝒹)) >> 𝓓.idn _))
+       ＝⟨ ap (_>> (𝓓.idn _ >> ((𝒻 >> ((𝓊 >> 𝒻) >> 𝒹)) >> 𝓓.idn _))) (𝓓.idn-L _ _ _) ⟩
+      (𝓌 >> 𝒹) >> (𝓓.idn _ >> ((𝒻 >> ((𝓊 >> 𝒻) >> 𝒹)) >> 𝓓.idn _))
+       ＝⟨ ap ((𝓌 >> 𝒹) >>_) (lem0 ((𝓊 >> 𝒻) >> 𝒹)) ⟩
+      (𝓌 >> 𝒹) >> (𝒻 >> ((𝓊 >> 𝒻) >> 𝒹))
+       ＝⟨ 𝓓.wrap-thunkable _ _ _ _ ⟩
+      𝓌 >> (𝒹 >> (𝒻 >> ((𝓊 >> 𝒻) >> 𝒹)))
+       ＝⟨ ap (𝓌 >>_) (lem1 ((𝓊 >> 𝒻) >> 𝒹)) ⟩
+      𝓌 >> ((𝓊 >> 𝒻) >> 𝒹)
+       ＝⟨ 𝓓.wrap-thunkable _ _ _ _ ⁻¹ ⟩
+      (𝓌 >> (𝓊 >> 𝒻)) >> 𝒹
+       ＝⟨ ap (_>> 𝒹) (lem2 𝒻) ⟩
+      𝒻 >> 𝒹
+       ＝⟨ pr₁ 𝓓.force-delay-inverse ⟩
+      𝓓.idn _ ∎ )
+    where
+     lem0
+      : {U V : _} (f : 𝓓.⇓ (𝓓.⇑ U) 𝓓.⊢ V)
+      → (𝓓.idn _ >>  ((𝒻 >> f) >> 𝓓.idn _)) ＝ (𝒻 >> f)
+     lem0 f =
+      𝓓.idn _ >> ((𝒻 >> f) >> 𝓓.idn _)
+       ＝⟨ 𝓓.idn-L _ _ _ ⟩
+      (𝒻 >> f) >> 𝓓.idn _
+       ＝⟨ 𝓓.idn-R _ _ _ ⟩
+      𝒻 >> f ∎
+
+     lem1 : {U V : _} (f : 𝓓.⇓ (𝓓.⇑ U) 𝓓.⊢ V) → (𝒹 >> (𝒻 >> f)) ＝ f
+     lem1 f =
+      (𝒹 >> (𝒻 >> f)) ＝⟨ 𝓓.delay-thunkable _ _ _ _ ⁻¹ ⟩
+      ((𝒹 >> 𝒻) >> f) ＝⟨ ap (_>> f) (pr₂ 𝓓.force-delay-inverse) ⟩
+      𝓓.idn _ >> f ＝⟨ 𝓓.idn-L _ _ _ ⟩
+      f ∎
+
+     lem2 : {U V : _} (f : U 𝓓.⊢ V) → 𝓌 >> (𝓊 >> f) ＝ f
+     lem2 f =
+      𝓌 >> (𝓊 >> f) ＝⟨ 𝓓.wrap-thunkable _ _ _ _ ⁻¹ ⟩
+      (𝓌 >> 𝓊) >> f ＝⟨ ap (_>> f) (pr₁ 𝓓.wrap-unwrap-inverse) ⟩
+      𝓓.idn _ >> f ＝⟨ 𝓓.idn-L _ _ _ ⟩
+      f ∎
+
+  adj : adjunction [⇓] [⇑]
+  adj = make str ax
 
 \end{code}
