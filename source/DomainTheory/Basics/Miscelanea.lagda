@@ -105,11 +105,11 @@ image-is-directed : {D : 𝓤 ̇} {E : 𝓤' ̇}
   → is-directed _⊑_ α
   → is-directed _≤_ (f ∘ α)
 image-is-directed _⊑_ _≤_ {f} m {I} {α} δ =
-  inhabited-if-directed _⊑_ α δ , γ
-   where
-    γ : is-semidirected _≤_ (f ∘ α)
-    γ i j = ∥∥-functor (λ (k , u , v) → k , m (α i) (α k) u , m (α j) (α k) v)
-      (semidirected-if-directed _⊑_ α δ i j)
+ inhabited-if-directed _⊑_ α δ , γ
+  where
+   γ : is-semidirected _≤_ (f ∘ α)
+   γ i j = ∥∥-functor (λ (k , u , v) → k , m (α i) (α k) u , m (α j) (α k) v)
+     (semidirected-if-directed _⊑_ α δ i j)
 
 image-is-Directed : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
                     {f : ⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩}
@@ -119,7 +119,7 @@ image-is-Directed : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
                   → is-Directed 𝓓 α
                   → is-Directed 𝓔 (f ∘ α)
 image-is-Directed 𝓓 𝓔 m δ =
-  image-is-directed (underlying-order 𝓓) (underlying-order 𝓔) m δ
+ image-is-directed (underlying-order 𝓓) (underlying-order 𝓔) m δ
 
 continuity-criterion : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
                        (f : ⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩)
