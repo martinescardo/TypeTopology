@@ -8,11 +8,13 @@ Equivalence of ordinals.
 
 open import MLTT.Spartan
 open import Ordinals.Notions
+open import Ordinals.Maps
 open import Ordinals.Type
 open import Ordinals.Underlying
 open import UF.Base
 open import UF.Embeddings
 open import UF.Equiv
+open import UF.Equiv-FunExt
 open import UF.EquivalenceExamples
 open import UF.FunExt
 open import UF.PreSIP-Examples
@@ -50,17 +52,6 @@ of ordinal equivalence, which we take as the official one:
 
 \begin{code}
 
-is-order-preserving : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
-                    → (⟨ α ⟩ → ⟨ β ⟩) → 𝓤 ⊔ 𝓥 ̇
-is-order-preserving α β f = (x y : ⟨ α ⟩) → x ≺⟨ α ⟩ y → f x ≺⟨ β ⟩ f y
-
-being-order-preserving-is-prop : Fun-Ext
-                               → (α : Ordinal 𝓤) (β : Ordinal 𝓥)
-                                 (f : ⟨ α ⟩ → ⟨ β ⟩)
-                               → is-prop (is-order-preserving α β f)
-being-order-preserving-is-prop fe α β f =
- Π₃-is-prop fe (λ x y l → Prop-valuedness β (f x) (f y))
-
 is-order-equiv : (α : Ordinal 𝓤) (β : Ordinal 𝓥) → (⟨ α ⟩ → ⟨ β ⟩) → 𝓤 ⊔ 𝓥 ̇
 is-order-equiv α β f = is-order-preserving α β f
                      × (Σ e ꞉ is-equiv f , is-order-preserving β α (inverse f e))
@@ -77,6 +68,31 @@ order-equivs-are-equivs : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
                         → (i : is-order-equiv α β f)
                         → is-equiv f
 order-equivs-are-equivs α β = pr₁ ∘ pr₂
+
+inverses-of-order-equivs-are-order-preserving : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
+                                                {f : ⟨ α ⟩ → ⟨ β ⟩}
+                                              → (i : is-order-equiv α β f)
+                                              → is-order-preserving β α
+                                                  (inverse f (order-equivs-are-equivs α β i))
+inverses-of-order-equivs-are-order-preserving α β = pr₂ ∘ pr₂
+
+being-order-equiv-is-prop : Fun-Ext
+                          → (α : Ordinal 𝓤) (β : Ordinal 𝓥)
+                            (f : ⟨ α ⟩ → ⟨ β ⟩)
+                          → is-prop (is-order-equiv α β f)
+being-order-equiv-is-prop fe α β f = ×-is-prop
+                                      (being-order-preserving-is-prop fe α β f)
+                                      (Σ-is-prop
+                                         (being-equiv-is-prop (λ _ _ → fe) f)
+                                         (λ e → being-order-preserving-is-prop fe β α
+                                                   (inverse f e)))
+
+\end{code}
+
+Our official definition of ordinal equivalence (see below for
+equivalent definitions):
+
+\begin{code}
 
 _≃ₒ_ : Ordinal 𝓤 → Ordinal 𝓥 → 𝓤 ⊔ 𝓥 ̇
 α ≃ₒ β = Σ f ꞉ (⟨ α ⟩ → ⟨ β ⟩) , is-order-equiv α β f
@@ -104,6 +120,23 @@ doesn't use the structure identity principle.)
   ∘-is-equiv e e' ,
   (λ x y l → q (inverse f' e' x) (inverse f' e' y) (q' x y l))
 
+order-equivs-are-simulations : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
+                               (f : ⟨ α ⟩ → ⟨ β ⟩)
+                             → is-order-equiv α β f
+                             → is-simulation α β f
+order-equivs-are-simulations α β f (p , e , q) = h (equivs-are-qinvs f e) q , p
+ where
+  h : (d : qinv f)
+    → is-order-preserving β α (pr₁ d)
+    → is-initial-segment α β f
+  h (g , ε , η) q x y l = g y , r , η y
+   where
+    m : g y ≺⟨ α ⟩ g (f x)
+    m = q y (f x) l
+
+    r : g y ≺⟨ α ⟩ x
+    r = transport (λ - → g y ≺⟨ α ⟩ -) (ε x) m
+
 ≃ₒ-to-fun : (α : Ordinal 𝓤) (β : Ordinal 𝓥) → α ≃ₒ β → ⟨ α ⟩ → ⟨ β ⟩
 ≃ₒ-to-fun α β = pr₁
 
@@ -115,62 +148,7 @@ doesn't use the structure identity principle.)
                    → is-equiv (≃ₒ-to-fun α β e)
 ≃ₒ-to-fun-is-equiv α β e = order-equivs-are-equivs α β (≃ₒ-to-fun-is-order-equiv α β e)
 
-inverses-of-order-equivs-are-order-preserving : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
-                                                {f : ⟨ α ⟩ → ⟨ β ⟩}
-                                              → (i : is-order-equiv α β f)
-                                              → is-order-preserving β α
-                                                  (inverse f (order-equivs-are-equivs α β i))
-inverses-of-order-equivs-are-order-preserving α β = pr₂ ∘ pr₂
 
-is-order-reflecting : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
-                    → (⟨ α ⟩ → ⟨ β ⟩) → 𝓤 ⊔ 𝓥 ̇
-is-order-reflecting α β f = (x y : ⟨ α ⟩) → f x ≺⟨ β ⟩ f y → x ≺⟨ α ⟩ y
-
-being-order-reflecting-is-prop : Fun-Ext
-                               → (α : Ordinal 𝓤) (β : Ordinal 𝓥)
-                                 (f : ⟨ α ⟩ → ⟨ β ⟩)
-                               → is-prop (is-order-reflecting α β f)
-being-order-reflecting-is-prop fe α β f =
- Π₃-is-prop fe (λ x y l → Prop-valuedness α x y)
-
-order-reflecting-gives-inverse-order-preserving : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
-                                                  (f : ⟨ α ⟩ → ⟨ β ⟩)
-                                                → (e : is-equiv f)
-                                                → is-order-reflecting α β f
-                                                → is-order-preserving β α (inverse f e)
-order-reflecting-gives-inverse-order-preserving α β f e r x y l = m
- where
-  g : ⟨ β ⟩ → ⟨ α ⟩
-  g = inverse f e
-
-  l' : f (g x) ≺⟨ β ⟩ f (g y)
-  l' = transport₂ (λ x y → x ≺⟨ β ⟩ y)
-        ((inverses-are-sections f e x)⁻¹)
-        ((inverses-are-sections f e y)⁻¹) l
-
-  s : f (g x) ≺⟨ β ⟩ f (g y) → g x ≺⟨ α ⟩ g y
-  s = r (g x) (g y)
-
-  m : g x ≺⟨ α ⟩ g y
-  m = s l'
-
-inverse-order-reflecting-gives-order-preserving : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
-                                                  (f : ⟨ α ⟩ → ⟨ β ⟩)
-                                                  (e : is-equiv f)
-                                                → is-order-preserving β α (inverse f e)
-                                                → is-order-reflecting α β f
-inverse-order-reflecting-gives-order-preserving α β f e q x y l = r
- where
-  g : ⟨ β ⟩ → ⟨ α ⟩
-  g = inverse f e
-
-  s : g (f x) ≺⟨ α ⟩ g (f y)
-  s = q (f x) (f y) l
-
-  r : x ≺⟨ α ⟩ y
-  r = transport₂ (λ x y → x ≺⟨ α ⟩ y)
-       (inverses-are-retractions f e x)
-       (inverses-are-retractions f e y) s
 
 order-preserving-reflecting-equivs-are-order-equivs : (α : Ordinal 𝓤)
                                                       (β : Ordinal 𝓥)

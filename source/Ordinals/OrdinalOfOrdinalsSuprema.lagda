@@ -38,6 +38,7 @@ module Ordinals.OrdinalOfOrdinalsSuprema
 
 open import MLTT.Spartan
 open import Ordinals.Equivalence
+open import Ordinals.Maps
 open import Ordinals.Notions hiding (is-prop-valued)
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.Type
@@ -397,12 +398,12 @@ Next, we show that the quotient α/ is the least upper bound of α.
  α/-is-upper-bound i = ([_] ∘ ι i , sim)
   where
    sim : is-simulation (α i) α/-Ord (λ x → [ i , x ])
-   sim = simulation-unprime pt (α i) α/-Ord (λ x → [ i , x ])
+   sim = simulation-unprime pt fe (α i) α/-Ord (λ x → [ i , x ])
           (init-seg , order-pres)
     where
      order-pres : is-order-preserving (α i) α/-Ord (λ x → [ i , x ])
      order-pres x y l = ≺-to-≺/ {i , x} {i , y} (ι-is-order-preserving i x y l)
-     init-seg : is-initial-segment' pt (α i) α/-Ord (λ x → [ i , x ])
+     init-seg : is-initial-segment' pt fe (α i) α/-Ord (λ x → [ i , x ])
      init-seg x = /-induction ≋ (λ y → Π-is-prop fe' λ _ → ∃-is-prop) claim
       where
        claim : (p : Σα) → [ p ] ≺/ [ i , x ]
@@ -441,12 +442,12 @@ Next, we show that the quotient α/ is the least upper bound of α.
                  f/-＝-f̃ f/-＝-f̃
                  (f̃-is-order-preserving p q (≺/-to-≺ l))
    f/-is-simulation : is-simulation α/-Ord β f/
-   f/-is-simulation = simulation-unprime pt α/-Ord β f/ σ
+   f/-is-simulation = simulation-unprime pt fe α/-Ord β f/ σ
     where
-     σ : is-simulation' pt α/-Ord β f/
+     σ : is-simulation' pt fe α/-Ord β f/
      σ = init-seg , f/-is-order-preserving
       where
-       init-seg : is-initial-segment' pt α/-Ord β f/
+       init-seg : is-initial-segment' pt fe α/-Ord β f/
        init-seg = /-induction ≋ prp ρ
         where
          prp : (x : α/)

@@ -34,7 +34,9 @@ open import MLTT.Plus-Properties
 open import MLTT.Spartan
 open import Notation.CanonicalMap
 open import Ordinals.Arithmetic fe
+open import Ordinals.ConvergentSequence ua
 open import Ordinals.Equivalence
+open import Ordinals.Maps
 open import Ordinals.Notions
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.Type
@@ -1009,7 +1011,7 @@ also is not a successor ordinal unless LPO holds:
    b = transport (_⊴ ⌊ ℕ∞ₒ ⌋) (⌊⌋-of-successor' ω) I
     where
      I : ⌊ ω +ₒ 𝟙ₒ ⌋ ⊴ ⌊ ℕ∞ₒ ⌋
-     I = ⌊⌋-monotone (ω +ₒ 𝟙ₒ) ℕ∞ₒ ℕ∞-in-Ord.fact
+     I = ⌊⌋-monotone (ω +ₒ 𝟙ₒ) ℕ∞ₒ ω+𝟙-is-⊴-ℕ∞
 
    c : ⌊ ℕ∞ₒ ⌋ ＝ ω
    c = ⊴-antisym _ _ a b
@@ -1057,7 +1059,7 @@ also is not a successor ordinal unless LPO holds:
    III = transport (ℕ∞ₒ ⊴_) II (⊴-refl ℕ∞ₒ)
 
    IV : LPO
-   IV = ℕ∞-in-Ord.converse-fails-constructively III
+   IV = ℕ∞-⊴-ω+𝟙-gives-LPO III
 
  open PropositionalTruncation pt
 
@@ -1065,7 +1067,7 @@ also is not a successor ordinal unless LPO holds:
  ℕ∞-successor-gives-LPO' = ∥∥-rec LPO-is-prop ℕ∞-successor-gives-LPO
 
  LPO-gives-ℕ∞-successor : LPO → (Σ α ꞉ Ordinal 𝓤₀ , (ℕ∞ₒ ＝ (α +ₒ 𝟙ₒ)))
- LPO-gives-ℕ∞-successor lpo = ω , ℕ∞-in-Ord.corollary₃ lpo
+ LPO-gives-ℕ∞-successor lpo = ω , ℕ∞-is-successor₃ lpo
 
 \end{code}
 

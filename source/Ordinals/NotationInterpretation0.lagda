@@ -43,6 +43,7 @@ open import Ordinals.Arithmetic-Properties ua
 open import Ordinals.Brouwer
 open import Ordinals.Equivalence
 open import Ordinals.Injectivity
+open import Ordinals.Maps
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.OrdinalOfOrdinalsSuprema ua
 open import Ordinals.ToppedArithmetic fe

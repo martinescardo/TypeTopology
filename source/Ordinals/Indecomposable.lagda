@@ -48,10 +48,11 @@ private
 ⇁_ = not fe'
 
 open import Ordinals.Arithmetic fe
+open import Ordinals.Equivalence
+open import Ordinals.Maps
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.Type
 open import Ordinals.Underlying
-open import Ordinals.Equivalence
 
 \end{code}
 

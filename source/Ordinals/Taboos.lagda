@@ -9,6 +9,7 @@ module Ordinals.Taboos where
 open import MLTT.Plus-Properties
 open import MLTT.Spartan hiding (𝟚 ; ₀ ; ₁)
 open import Ordinals.Equivalence
+open import Ordinals.Maps
 open import Ordinals.Notions
 open import Ordinals.Type
 open import Ordinals.Underlying

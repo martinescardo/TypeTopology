@@ -13,6 +13,7 @@ module Ordinals.Injectivity where
 open import MLTT.Spartan
 open import Notation.CanonicalMap
 open import Ordinals.Equivalence
+open import Ordinals.Maps
 open import Ordinals.Type
 open import Ordinals.Underlying
 open import Ordinals.WellOrderArithmetic
