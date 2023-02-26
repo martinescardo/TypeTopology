@@ -527,7 +527,7 @@ Next, we resize α/ using:
    ≈⁻r : reflexive _≈⁻_
    ≈⁻r (i , x) = ≃ₒ-refl (α i ↓ x)
    ≈⁻p : is-prop-valued _≈⁻_
-   ≈⁻p (i , x) (j , y) = ≃ₒ-is-prop-valued (α i ↓ x) (α j ↓ y)
+   ≈⁻p (i , x) (j , y) = ≃ₒ-is-prop-valued fe' (α i ↓ x) (α j ↓ y)
 
  ≋-≃-≋⁻ : {p q : Σα} → p ≈[ ≋ ] q ⇔ p ≈[ ≋⁻ ] q
  ≋-≃-≋⁻ {(i , x)} {(j , y)} = (idtoeqₒ (α i ↓ x) (α j ↓ y))

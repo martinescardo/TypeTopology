@@ -196,6 +196,25 @@ inverses-of-order-equivs-are-order-equivs α β {f} (p , e , q) =
 ≃ₒ-to-fun⁻¹-is-equiv α β e = inverses-are-equivs (≃ₒ-to-fun α β e)
                                 (≃ₒ-to-fun-is-equiv α β e)
 
+≃ₒ-gives-≃ : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
+           → α ≃ₒ β → ⟨ α ⟩ ≃ ⟨ β ⟩
+≃ₒ-gives-≃ α β (f , p , e , q) = (f , e)
+
+≃ₒ-is-prop-valued : Fun-Ext
+                  → (α : Ordinal 𝓤) (β : Ordinal 𝓥)
+                  → is-prop (α ≃ₒ β)
+≃ₒ-is-prop-valued fe α β (f , p , e , q) (f' , p' , e' , q')  = γ
+  where
+   r : f ∼ f'
+   r = at-most-one-simulation α β f f'
+        (order-equivs-are-simulations α β f  (p  , e ,  q ))
+        (order-equivs-are-simulations α β f' (p' , e' , q'))
+
+   γ : (f , p , e , q) ＝ (f' , p' , e' , q')
+   γ = to-subtype-＝
+        (being-order-equiv-is-prop fe α β)
+        (dfunext fe r)
+
 order-equivs-preserve-largest : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
                               → (f : ⟨ α ⟩ → ⟨ β ⟩)
                               → is-order-equiv α β f
@@ -295,5 +314,15 @@ idtoeqₒ-is-embedding {𝓤} pua fe pe α β = II
   II : (α ＝ β) ↪ (α ≃ₒ β)
   II = ≃-gives-↪ (≃ₐ-coincides-with-≃ₒ fe α β)
      ∘↪ I
+
+Ordinal-is-set-under-preunivalence : is-preunivalent 𝓤
+                                   → FunExt
+                                   → PropExt
+                                   → is-set (Ordinal 𝓤)
+Ordinal-is-set-under-preunivalence pua fe pe {α} {β} =
+ subtype-of-prop-is-prop
+  ⌊ idtoeqₒ-is-embedding pua fe pe α β ⌋
+  (embeddings-are-lc _ ⌊ idtoeqₒ-is-embedding pua fe pe α β ⌋-is-embedding)
+  (≃ₒ-is-prop-valued (fe _ _) α β)
 
 \end{code}

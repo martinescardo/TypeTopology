@@ -50,58 +50,6 @@ The simulations make the ordinals into a poset:
 
 \begin{code}
 
-at-most-one-simulation : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
-                         (f f' : ⟨ α ⟩ → ⟨ β ⟩)
-                       → is-simulation α β f
-                       → is-simulation α β f'
-                       → f ∼ f'
-at-most-one-simulation α β f f' (i , p) (i' , p') x = γ
- where
-  φ : ∀ x
-    → is-accessible (underlying-order α) x
-    → f x ＝ f' x
-  φ x (step u) = Extensionality β (f x) (f' x) a b
-   where
-    IH : ∀ y → y ≺⟨ α ⟩ x → f y ＝ f' y
-    IH y l = φ y (u y l)
-
-    a : (z : ⟨ β ⟩) → z ≺⟨ β ⟩ f x → z ≺⟨ β ⟩ f' x
-    a z l = transport (λ - → - ≺⟨ β ⟩ f' x) t m
-     where
-      s : Σ y ꞉ ⟨ α ⟩ , (y ≺⟨ α ⟩ x) × (f y ＝ z)
-      s = i x z l
-
-      y : ⟨ α ⟩
-      y = pr₁ s
-
-      m : f' y ≺⟨ β ⟩ f' x
-      m = p' y x (pr₁ (pr₂ s))
-
-      t : f' y ＝ z
-      t = f' y  ＝⟨ (IH y (pr₁ (pr₂ s)))⁻¹ ⟩
-          f y   ＝⟨ pr₂ (pr₂ s) ⟩
-          z     ∎
-
-    b : (z : ⟨ β ⟩) → z ≺⟨ β ⟩ f' x → z ≺⟨ β ⟩ f x
-    b z l = transport (λ - → - ≺⟨ β ⟩ f x) t m
-     where
-      s : Σ y ꞉ ⟨ α ⟩ , (y ≺⟨ α ⟩ x) × (f' y ＝ z)
-      s = i' x z l
-
-      y : ⟨ α ⟩
-      y = pr₁ s
-
-      m : f y ≺⟨ β ⟩ f x
-      m = p y x (pr₁ (pr₂ s))
-
-      t : f y ＝ z
-      t = f y  ＝⟨ IH y (pr₁ (pr₂ s)) ⟩
-          f' y ＝⟨ pr₂ (pr₂ s) ⟩
-          z    ∎
-
-  γ : f x ＝ f' x
-  γ = φ x (Well-foundedness α x)
-
 _⊴_ : Ordinal 𝓤 → Ordinal 𝓥 → 𝓤 ⊔ 𝓥 ̇
 α ⊴ β = Σ f ꞉ (⟨ α ⟩ → ⟨ β ⟩) , is-simulation α β f
 
@@ -133,24 +81,6 @@ _⊴_ : Ordinal 𝓤 → Ordinal 𝓥 → 𝓤 ⊔ 𝓥 ̇
 
     b : Σ x' ꞉ ⟨ α ⟩ , (x' ≺⟨ α ⟩ x) × (f x' ＝ y)
     b = i x y (pr₁ (pr₂ a))
-
-≃ₒ-gives-≃ : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
-           → α ≃ₒ β → ⟨ α ⟩ ≃ ⟨ β ⟩
-≃ₒ-gives-≃ α β (f , p , e , q) = (f , e)
-
-≃ₒ-is-prop-valued : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
-                  → is-prop (α ≃ₒ β)
-≃ₒ-is-prop-valued α β (f , p , e , q) (f' , p' , e' , q')  = γ
-  where
-   r : f ∼ f'
-   r = at-most-one-simulation α β f f'
-        (order-equivs-are-simulations α β f  (p  , e ,  q ))
-        (order-equivs-are-simulations α β f' (p' , e' , q'))
-
-   γ : (f , p , e , q) ＝ (f' , p' , e' , q')
-   γ = to-subtype-＝
-        (being-order-equiv-is-prop fe' α β)
-        (dfunext fe' r)
 
 ≃ₒ-to-⊴ : (α : Ordinal 𝓤) (β : Ordinal 𝓥) → α ≃ₒ β → α ⊴ β
 ≃ₒ-to-⊴ α β (f , e) = (f , order-equivs-are-simulations α β f e)
@@ -234,12 +164,12 @@ UAₒ {𝓤} α = nats-with-sections-are-equivs α
  where
   η : (β : Ordinal 𝓤) (e : α ≃ₒ β)
     → idtoeqₒ α β (eqtoidₒ α β e) ＝ e
-  η β e = ≃ₒ-is-prop-valued α β (idtoeqₒ α β (eqtoidₒ α β e)) e
+  η β e = ≃ₒ-is-prop-valued fe' α β (idtoeqₒ α β (eqtoidₒ α β e)) e
 
 the-type-of-ordinals-is-a-set : is-set (Ordinal 𝓤)
 the-type-of-ordinals-is-a-set {𝓤} {α} {β} = equiv-to-prop
                                               (idtoeqₒ α β , UAₒ α β)
-                                              (≃ₒ-is-prop-valued α β)
+                                              (≃ₒ-is-prop-valued fe' α β)
 
 UAₒ-≃ : (α β : Ordinal 𝓤) → (α ＝ β) ≃ (α ≃ₒ β)
 UAₒ-≃ α β = idtoeqₒ α β , UAₒ α β

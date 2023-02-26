@@ -308,6 +308,58 @@ simulations-are-monotone α β f (i , p) = φ
     d : f z ≺⟨ β ⟩ f y
     d = p z y c
 
+at-most-one-simulation : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
+                         (f f' : ⟨ α ⟩ → ⟨ β ⟩)
+                       → is-simulation α β f
+                       → is-simulation α β f'
+                       → f ∼ f'
+at-most-one-simulation α β f f' (i , p) (i' , p') x = γ
+ where
+  φ : ∀ x
+    → is-accessible (underlying-order α) x
+    → f x ＝ f' x
+  φ x (step u) = Extensionality β (f x) (f' x) a b
+   where
+    IH : ∀ y → y ≺⟨ α ⟩ x → f y ＝ f' y
+    IH y l = φ y (u y l)
+
+    a : (z : ⟨ β ⟩) → z ≺⟨ β ⟩ f x → z ≺⟨ β ⟩ f' x
+    a z l = transport (λ - → - ≺⟨ β ⟩ f' x) t m
+     where
+      s : Σ y ꞉ ⟨ α ⟩ , (y ≺⟨ α ⟩ x) × (f y ＝ z)
+      s = i x z l
+
+      y : ⟨ α ⟩
+      y = pr₁ s
+
+      m : f' y ≺⟨ β ⟩ f' x
+      m = p' y x (pr₁ (pr₂ s))
+
+      t : f' y ＝ z
+      t = f' y  ＝⟨ (IH y (pr₁ (pr₂ s)))⁻¹ ⟩
+          f y   ＝⟨ pr₂ (pr₂ s) ⟩
+          z     ∎
+
+    b : (z : ⟨ β ⟩) → z ≺⟨ β ⟩ f' x → z ≺⟨ β ⟩ f x
+    b z l = transport (λ - → - ≺⟨ β ⟩ f x) t m
+     where
+      s : Σ y ꞉ ⟨ α ⟩ , (y ≺⟨ α ⟩ x) × (f' y ＝ z)
+      s = i' x z l
+
+      y : ⟨ α ⟩
+      y = pr₁ s
+
+      m : f y ≺⟨ β ⟩ f x
+      m = p y x (pr₁ (pr₂ s))
+
+      t : f y ＝ z
+      t = f y  ＝⟨ IH y (pr₁ (pr₂ s)) ⟩
+          f' y ＝⟨ pr₂ (pr₂ s) ⟩
+          z    ∎
+
+  γ : f x ＝ f' x
+  γ = φ x (Well-foundedness α x)
+
 \end{code}
 
 Added 29th March 2022 by Martin Escardo.

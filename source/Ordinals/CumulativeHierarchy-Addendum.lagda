@@ -756,7 +756,7 @@ ordinal to the total space 𝕋xᵒʳᵈ of x.
     prop-valued : (x : 𝕍)
                 → is-prop ((σ : is-set-theoretic-ordinal x) → 𝕍ᵒʳᵈ-to-Ord (x , σ)
                                                             ≃ₒ total-spaceᵒʳᵈ x σ)
-    prop-valued x = Π-is-prop fe (λ σ → ≃ₒ-is-prop-valued _ _)
+    prop-valued x = Π-is-prop fe (λ σ → ≃ₒ-is-prop-valued fe _ _)
     γ : {A : 𝓤 ̇ } (f : A → 𝕍) (σ : is-set-theoretic-ordinal (𝕍-set f))
       → 𝕍ᵒʳᵈ-to-Ord (𝕍-set f , σ) ≃ₒ total-spaceᵒʳᵈ (𝕍-set f) σ
     γ {A} f σ = ≃ₒ-trans (𝕍ᵒʳᵈ-to-Ord (𝕍-set f , σ))
