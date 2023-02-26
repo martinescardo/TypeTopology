@@ -439,8 +439,8 @@ prop-univalent-≃' : propext 𝓤
                   → (P ＝ X) ≃ (P ≃ X)
 prop-univalent-≃' pe fe X P i = (P ＝ X) ≃⟨ ＝-flip ⟩
                                 (X ＝ P) ≃⟨ prop-univalent-≃ pe fe X P i ⟩
-                                (X ≃ P) ≃⟨ ≃-Sym'' fe ⟩
-                                (P ≃ X) ■
+                                (X ≃ P)  ≃⟨ ≃-Sym'' fe ⟩
+                                (P ≃ X)  ■
 \end{code}
 
 Added 24th Feb 2023
@@ -463,11 +463,11 @@ prop-≃-≃-⇔ fe i j = qinveq (λ f → ⌜ f ⌝ ,  ⌜ f ⌝⁻¹)
                       (λ _ → refl))
 
 prop-＝-≃-⇔ : Prop-Ext
-           → Fun-Ext
-           → {P Q : 𝓤 ̇ }
-           → is-prop P
-           → is-prop Q
-           → (P ＝ Q) ≃ (P ⇔ Q)
+            → Fun-Ext
+            → {P Q : 𝓤 ̇ }
+            → is-prop P
+            → is-prop Q
+            → (P ＝ Q) ≃ (P ⇔ Q)
 prop-＝-≃-⇔ pe fe i j = prop-univalent-≃ pe fe _ _ j
                       ● prop-≃-≃-⇔ fe i j
 

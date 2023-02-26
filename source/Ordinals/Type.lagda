@@ -306,34 +306,33 @@ being-order-reflecting-is-prop : Fun-Ext
 being-order-reflecting-is-prop fe α β f =
  Π₃-is-prop fe (λ x y l → Prop-valuedness α x y)
 
-order-preserving-reflecting-equivs-are-order-equivs : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
-                                                      (f : ⟨ α ⟩ → ⟨ β ⟩)
-                                                    → is-equiv f
-                                                    → is-order-preserving α β f
-                                                    → is-order-reflecting α β f
-                                                    → is-order-equiv α β f
-order-preserving-reflecting-equivs-are-order-equivs α β f e p r = p , e , q
+order-reflecting-gives-inverse-order-preserving : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
+                                                  (f : ⟨ α ⟩ → ⟨ β ⟩)
+                                                → (e : is-equiv f)
+                                                → is-order-reflecting α β f
+                                                → is-order-preserving β α (inverse f e)
+order-reflecting-gives-inverse-order-preserving α β f e r x y l = m
  where
   g : ⟨ β ⟩ → ⟨ α ⟩
   g = inverse f e
 
-  q : is-order-preserving β α g
-  q x y l = m
-   where
-    l' : f (g x) ≺⟨ β ⟩ f (g y)
-    l' = transport₂ (λ x y → x ≺⟨ β ⟩ y)
-           ((inverses-are-sections f e x)⁻¹) ((inverses-are-sections f e y)⁻¹) l
+  l' : f (g x) ≺⟨ β ⟩ f (g y)
+  l' = transport₂ (λ x y → x ≺⟨ β ⟩ y)
+        ((inverses-are-sections f e x)⁻¹)
+        ((inverses-are-sections f e y)⁻¹) l
 
-    s : f (g x) ≺⟨ β ⟩ f (g y) → g x ≺⟨ α ⟩ g y
-    s = r (g x) (g y)
+  s : f (g x) ≺⟨ β ⟩ f (g y) → g x ≺⟨ α ⟩ g y
+  s = r (g x) (g y)
 
-    m : g x ≺⟨ α ⟩ g y
-    m = s l'
+  m : g x ≺⟨ α ⟩ g y
+  m = s l'
 
-order-equivs-are-order-reflecting : (α : Ordinal 𝓤) (β : Ordinal 𝓥) (f : ⟨ α ⟩ → ⟨ β ⟩)
-                                  → is-order-equiv α β f
-                                  → is-order-reflecting α β f
-order-equivs-are-order-reflecting α β f (p , e , q) x y l = r
+inverse-order-reflecting-gives-order-preserving : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
+                                                  (f : ⟨ α ⟩ → ⟨ β ⟩)
+                                                  (e : is-equiv f)
+                                                → is-order-preserving β α (inverse f e)
+                                                → is-order-reflecting α β f
+inverse-order-reflecting-gives-order-preserving α β f e q x y l = r
  where
   g : ⟨ β ⟩ → ⟨ α ⟩
   g = inverse f e
@@ -343,7 +342,26 @@ order-equivs-are-order-reflecting α β f (p , e , q) x y l = r
 
   r : x ≺⟨ α ⟩ y
   r = transport₂ (λ x y → x ≺⟨ α ⟩ y)
-       (inverses-are-retractions f e x) (inverses-are-retractions f e y) s
+       (inverses-are-retractions f e x)
+       (inverses-are-retractions f e y) s
+
+order-preserving-reflecting-equivs-are-order-equivs : (α : Ordinal 𝓤)
+                                                      (β : Ordinal 𝓥)
+                                                      (f : ⟨ α ⟩ → ⟨ β ⟩)
+                                                    → is-equiv f
+                                                    → is-order-preserving α β f
+                                                    → is-order-reflecting α β f
+                                                    → is-order-equiv α β f
+order-preserving-reflecting-equivs-are-order-equivs α β f e p r =
+ p , e , order-reflecting-gives-inverse-order-preserving α β f e r
+
+
+order-equivs-are-order-reflecting : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
+                                    (f : ⟨ α ⟩ → ⟨ β ⟩)
+                                  → is-order-equiv α β f
+                                  → is-order-reflecting α β f
+order-equivs-are-order-reflecting α β f (_ , e , q) =
+ inverse-order-reflecting-gives-order-preserving α β f e q
 
 inverses-of-order-equivs-are-order-reflecting : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
                                                 {f : ⟨ α ⟩ → ⟨ β ⟩}
@@ -351,7 +369,9 @@ inverses-of-order-equivs-are-order-reflecting : (α : Ordinal 𝓤) (β : Ordina
                                               → is-order-reflecting β α
                                                   (inverse f (order-equivs-are-equivs α β i))
 inverses-of-order-equivs-are-order-reflecting α β {f} (p , e , q) =
- order-equivs-are-order-reflecting β α (inverse f e) (q , inverses-are-equivs f e , p)
+ order-equivs-are-order-reflecting β α
+  (inverse f e)
+  (q , inverses-are-equivs f e , p)
 
 inverses-of-order-equivs-are-order-equivs : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
                                             {f : ⟨ α ⟩ → ⟨ β ⟩}
@@ -360,7 +380,6 @@ inverses-of-order-equivs-are-order-equivs : (α : Ordinal 𝓤) (β : Ordinal �
                                               (inverse f (order-equivs-are-equivs α β i))
 inverses-of-order-equivs-are-order-equivs α β {f} (p , e , q) =
  (q , inverses-are-equivs f e , p)
-
 
 ≃ₒ-to-fun⁻¹ : (α : Ordinal 𝓤) (β : Ordinal 𝓥) → α ≃ₒ β → ⟨ β ⟩ → ⟨ α ⟩
 ≃ₒ-to-fun⁻¹ α β e = inverse (≃ₒ-to-fun α β e)
@@ -397,5 +416,84 @@ order-equivs-preserve-largest α β f (o , e , p) x ℓ = δ
 
     IV : t ≺⟨ β ⟩ f x
     IV = transport (λ - → - ≺⟨ β ⟩ f x) (inverses-are-sections f e t) III
+
+\end{code}
+
+Added 25th Feb 2023. Alternative definition of ordinal equivalence
+
+\begin{code}
+
+_≃ₐ_ : Ordinal 𝓤 → Ordinal 𝓥 → 𝓤 ⊔ 𝓥 ̇
+α ≃ₐ β = Σ f ꞉ (⟨ α ⟩ → ⟨ β ⟩)
+             , is-equiv f
+             × ((x x' : ⟨ α ⟩) → x ≺⟨ α ⟩ x' ⇔ f x ≺⟨ β ⟩ f x')
+
+open import UF.EquivalenceExamples
+
+≃ₐ-coincides-with-≃ₒ : FunExt
+                     → (α : Ordinal 𝓤) (β : Ordinal 𝓥)
+                     → (α ≃ₐ β) ≃ (α ≃ₒ β)
+≃ₐ-coincides-with-≃ₒ fe α β =
+ (Σ f ꞉ (⟨ α ⟩ → ⟨ β ⟩)
+      , is-equiv f
+      × ((x x' : ⟨ α ⟩) → x ≺⟨ α ⟩ x' ⇔ f x ≺⟨ β ⟩ f x'))     ≃⟨ I ⟩
+
+ (Σ f ꞉ (⟨ α ⟩ → ⟨ β ⟩)
+      , is-equiv f
+      × (is-order-preserving α β f)
+      × (is-order-reflecting α β f))                          ≃⟨ II ⟩
+
+ (Σ f ꞉ (⟨ α ⟩ → ⟨ β ⟩)
+      , (Σ e ꞉ is-equiv f
+             , (is-order-preserving α β f)
+             × (is-order-preserving β α (inverse f e))))      ≃⟨ III ⟩
+
+ (Σ f ꞉ (⟨ α ⟩ → ⟨ β ⟩)
+      , (is-order-preserving α β f)
+      × (Σ e ꞉ is-equiv f
+             , (is-order-preserving β α (inverse f e))))      ■
+  where
+   I  = Σ-cong (λ f → ×-cong (≃-refl _) Π×-distr₂)
+   II = Σ-cong (λ f → Σ-cong (λ e → ×-cong (≃-refl _) (b f e)))
+    where
+     fe' = FunExt-to-Fun-Ext fe
+     b = λ f e → logically-equivalent-props-are-equivalent
+                  (being-order-reflecting-is-prop fe' α β f)
+                  (being-order-preserving-is-prop fe' β α (inverse f e))
+                  (order-reflecting-gives-inverse-order-preserving α β f e)
+                  (inverse-order-reflecting-gives-order-preserving α β f e)
+   III = Σ-cong (λ f → Σ-flip)
+
+\end{code}
+
+If we only assume preunivalence, meaning that idtoeq is an embedding
+(rather than an equivalence), which is implied by each of univalence
+and the K axiom, we get that idtoeqₒ is an embedding (rather than an
+equivalence). This was suggested to me by Peter Lumbsdaine in August
+2022.
+
+\begin{code}
+
+open import UF.PreUnivalence
+open import UF.PreSIP-Examples
+
+idtoeqₒ-is-embedding : is-preunivalent 𝓤
+                     → FunExt
+                     → PropExt
+                     → (α β : Ordinal 𝓤)
+                     → (α ＝ β) ↪ (α ≃ₒ β)
+idtoeqₒ-is-embedding {𝓤} pua fe pe α β = II
+ where
+  open relational-space
+        (λ (X : 𝓤 ̇ ) (_<_ : X → X → 𝓤 ̇) → is-well-order _<_)
+        (λ (X : 𝓤 ̇ ) (_<_ : X → X → 𝓤 ̇) → being-well-order-is-prop _<_ fe)
+        (λ {X R} w {x} {y} → prop-valuedness R w x y)
+
+  I : (α ＝ β) ↪ (α ≅₂ β)
+  I = M-embedding₂ pua (fe _ _) (pe _) α β
+
+  II : (α ＝ β) ↪ (α ≃ₒ β)
+  II = ≃-gives-↪ (≃ₐ-coincides-with-≃ₒ fe α β)
+     ∘↪ I
 
 \end{code}

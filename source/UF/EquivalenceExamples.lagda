@@ -105,12 +105,25 @@ curry-uncurry {𝓤} {𝓥} {𝓦} fe = curry-uncurry' (fe 𝓤 (𝓥 ⊔ 𝓦))
   gf : (w : Σ Y) → g (f w) ＝ w
   gf (x , y) = to-Σ-＝' (inverses-are-retractions ⌜ φ x ⌝ ⌜ φ x ⌝-is-equiv y)
 
-
-
 ΠΣ-distr-≃ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {P : (x : X) → A x → 𝓦 ̇ }
            → (Π x ꞉ X , Σ a ꞉ A x , P x a)
            ≃ (Σ f ꞉ Π A , Π x ꞉ X , P x (f x))
 ΠΣ-distr-≃ = qinveq ΠΣ-distr (ΠΣ-distr⁻¹ , (λ _ → refl) , (λ _ → refl))
+
+Π×-distr : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {B : X → 𝓦 ̇ }
+         → (Π x ꞉ X , A x × B x)
+         ≃ ((Π x ꞉ X , A x) × (Π x ꞉ X , B x))
+Π×-distr = ΠΣ-distr-≃
+
+Π×-distr₂ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+            {A : X → Y → 𝓦 ̇ } {B : X → Y → 𝓣 ̇ }
+          → (Π x ꞉ X , Π y ꞉ Y , A x y × B x y)
+          ≃ ((Π x ꞉ X , Π y ꞉ Y , A x y) × (Π x ꞉ X , Π y ꞉ Y , B x y))
+Π×-distr₂ = qinveq
+             (λ f → (λ x y → pr₁ (f x y)) , (λ x y → pr₂ (f x y)))
+             ((λ (g , h) x y → g x y , h x y) ,
+              (λ _ → refl) ,
+              (λ _ → refl))
 
 Σ+-distr : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ )
          → (Σ x ꞉ X , A x + B x)
@@ -622,8 +635,8 @@ NatΣ-equiv-gives-fiberwise-equiv = NatΣ-equiv-converse _ _
 
 NatΠ-fiber-equiv : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ ) (ζ : Nat A B)
                  → funext 𝓤 𝓦
-                 → (g : Π B) → (Π x ꞉ X , fiber (ζ x) (g x))
-                 ≃ fiber (NatΠ ζ) g
+                 → (g : Π B)
+                 → (Π x ꞉ X , fiber (ζ x) (g x)) ≃ fiber (NatΠ ζ) g
 NatΠ-fiber-equiv {𝓤} {𝓥} {𝓦} {X} A B ζ fe g =
   (Π x ꞉ X , fiber (ζ x) (g x))           ≃⟨ i ⟩
   (Π x ꞉ X , Σ a ꞉ A x , ζ x a ＝ g x)     ≃⟨ ii ⟩
