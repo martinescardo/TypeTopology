@@ -366,7 +366,7 @@ e : ⟨ sup α ⟩ → Ordinal 𝓤 and ⟨ sup α ⟩ is discrete by assumption
                       (f (₀ , inr ⋆)) (f (₁ , inr ⋆)))
         ⦅2⦆ = ＝-cong _ _ (e-after-f-lemma (₀ , inr ⋆))
                          (e-after-f-lemma (₁ , inr ⋆))
-        ⦅3⦆ = UAₒ-≃ (α ₀ ↓ inr ⋆) (α ₁ ↓ inr ⋆)
+        ⦅3⦆ = UAₒ-≃ (ua 𝓤) (fe _ _) (α ₀ ↓ inr ⋆) (α ₁ ↓ inr ⋆)
 
 \end{code}
 

@@ -468,8 +468,10 @@ preserving and reflecting.
                                 image-fᵒʳᵈ ＝⟨ ⦅2⦆ ⟩
                                 A/~ᵒʳᵈ     ∎
     where
-     ⦅1⦆ = eqtoidₒ 𝕋xᵒʳᵈ image-fᵒʳᵈ 𝕋xᵒʳᵈ-≃-image-fᵒʳᵈ
-     ⦅2⦆ = eqtoidₒ image-fᵒʳᵈ A/~ᵒʳᵈ (≃ₒ-sym A/~ᵒʳᵈ image-fᵒʳᵈ (ϕ , ϕ-is-order-equiv))
+     ⦅1⦆ = eqtoidₒ (ua (𝓤 ⁺)) fe 𝕋xᵒʳᵈ image-fᵒʳᵈ 𝕋xᵒʳᵈ-≃-image-fᵒʳᵈ
+     ⦅2⦆ = eqtoidₒ (ua (𝓤 ⁺)) fe
+           image-fᵒʳᵈ A/~ᵒʳᵈ
+           (≃ₒ-sym A/~ᵒʳᵈ image-fᵒʳᵈ (ϕ , ϕ-is-order-equiv))
       where
        ϕ-is-order-equiv : is-order-equiv A/~ᵒʳᵈ image-fᵒʳᵈ ϕ
        ϕ-is-order-equiv =

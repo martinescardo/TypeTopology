@@ -419,7 +419,7 @@ an arbitrary well founded order) also appears at the bottom of [Acz77, p. 743].
                                           (r : A → Ordinal 𝓤)
                                        → ϕ (𝕍-set f) ＝ 𝕍-to-Ord-aux f r)
    𝕍-to-Ord-packaged =
-    𝕍-recursion-with-computation the-type-of-ordinals-is-a-set ρ τ
+    𝕍-recursion-with-computation (the-type-of-ordinals-is-a-set (ua 𝓤) fe) ρ τ
     where
      ρ = 𝕍-to-Ord-aux
      monotone-lemma : {A B : 𝓤 ̇} (f : A → 𝕍) (g : B → 𝕍)

@@ -5,8 +5,8 @@ modifications in some of the definitions and arguments.
 
 This is an example where we are studying sets only, but the univalence
 axiom is used to show that (1) the type of ordinals forms a (large)
-set, (2) its order is extensions, (3) hence it is itself a (large)
-ordinal, (4) the type of ordinals is locally small,
+set, (2) its order is extensional, (3) hence it is itself a (large)
+ordinal, (4) the type of ordinals is locally small.
 
 \begin{code}
 
@@ -19,23 +19,17 @@ module Ordinals.OrdinalOfOrdinals
        where
 
 open import MLTT.Spartan
-open import Notation.CanonicalMap
 open import Ordinals.Equivalence
 open import Ordinals.Maps
 open import Ordinals.Notions
 open import Ordinals.Type
 open import Ordinals.Underlying
 open import UF.Base
-open import UF.Embeddings
 open import UF.Equiv
-open import UF.Equiv-FunExt
 open import UF.EquivalenceExamples
 open import UF.FunExt
-open import UF.Size
 open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
 open import UF.UA-FunExt
-open import UF.Yoneda
 
 private
  fe : FunExt
@@ -100,7 +94,6 @@ ordinal-equiv-gives-bisimilarity α β (f , p , e , q) = γ
   γ = (f , order-equivs-are-simulations α β f (p , e , q)) ,
       (g , order-equivs-are-simulations β α g (q , d , p))
 
-
 bisimilarity-gives-ordinal-equiv : (α β : Ordinal 𝓤)
                                  → α ⊴ β
                                  → β ⊴ α
@@ -123,65 +116,7 @@ bisimilarity-gives-ordinal-equiv α β (f , s) (g , t) = γ
   γ : α ≃ₒ β
   γ =  f , pr₂ s , qinvs-are-equivs f (g , ε , η) , pr₂ t
 
-idtoeqₒ : (α β : Ordinal 𝓤) → α ＝ β → α ≃ₒ β
-idtoeqₒ α α refl = ≃ₒ-refl α
-
-eqtoidₒ : (α β : Ordinal 𝓤) → α ≃ₒ β → α ＝ β
-eqtoidₒ {𝓤} α β (f , p , e , q) = γ
- where
-  A : (Y : 𝓤 ̇ ) → ⟨ α ⟩ ≃ Y → 𝓤 ⁺ ̇
-  A Y e = (σ : OrdinalStructure Y)
-        → is-order-preserving α (Y , σ) ⌜ e ⌝
-        → is-order-preserving (Y , σ) α ⌜ e ⌝⁻¹
-        → α ＝ (Y , σ)
-
-  a : A ⟨ α ⟩ (≃-refl ⟨ α ⟩)
-  a σ φ ψ = g
-   where
-    b : (x x' : ⟨ α ⟩) → (x ≺⟨ α ⟩ x') ＝ (x ≺⟨ ⟨ α ⟩ , σ ⟩ x')
-    b x x' = univalence-gives-propext (ua 𝓤)
-              (Prop-valuedness α x x')
-              (Prop-valuedness (⟨ α ⟩ , σ) x x')
-              (φ x x')
-              (ψ x x')
-
-    c : underlying-order α ＝ underlying-order (⟨ α ⟩ , σ)
-    c = dfunext fe' (λ x → dfunext fe' (b x))
-
-    d : structure α ＝ σ
-    d = pr₁-lc (λ {_<_} → being-well-order-is-prop _<_ fe) c
-
-    g : α ＝ (⟨ α ⟩ , σ)
-    g = to-Σ-＝' d
-
-  γ : α ＝ β
-  γ = JEq (ua 𝓤) ⟨ α ⟩ A a ⟨ β ⟩ (f , e) (structure β) p q
-
-UAₒ : (α β : Ordinal 𝓤) → is-equiv (idtoeqₒ α β)
-UAₒ {𝓤} α = nats-with-sections-are-equivs α
-             (idtoeqₒ α)
-             (λ β → eqtoidₒ α β , η β)
- where
-  η : (β : Ordinal 𝓤) (e : α ≃ₒ β)
-    → idtoeqₒ α β (eqtoidₒ α β e) ＝ e
-  η β e = ≃ₒ-is-prop-valued fe' α β (idtoeqₒ α β (eqtoidₒ α β e)) e
-
-the-type-of-ordinals-is-a-set : is-set (Ordinal 𝓤)
-the-type-of-ordinals-is-a-set {𝓤} {α} {β} = equiv-to-prop
-                                              (idtoeqₒ α β , UAₒ α β)
-                                              (≃ₒ-is-prop-valued fe' α β)
-
-UAₒ-≃ : (α β : Ordinal 𝓤) → (α ＝ β) ≃ (α ≃ₒ β)
-UAₒ-≃ α β = idtoeqₒ α β , UAₒ α β
-
-the-type-of-ordinals-is-locally-small : is-locally-small (Ordinal 𝓤)
-the-type-of-ordinals-is-locally-small α β = (α ≃ₒ β) , ≃-sym (UAₒ-≃ α β)
-
 \end{code}
-
-One of the many applications of the univalence axiom is to manufacture
-examples of types which are not sets. Here we have instead used it to
-prove that a certain type is a set.
 
 A corollary of the above is that the ordinal order _⊴_ is
 antisymmetric.
@@ -192,7 +127,8 @@ antisymmetric.
           → α ⊴ β
           → β ⊴ α
           → α ＝ β
-⊴-antisym α β l m = eqtoidₒ α β (bisimilarity-gives-ordinal-equiv α β l m)
+⊴-antisym α β l m =
+ eqtoidₒ (ua _) fe' α β (bisimilarity-gives-ordinal-equiv α β l m)
 
 \end{code}
 
@@ -212,16 +148,18 @@ _↓_ : (α : Ordinal 𝓤) → ⟨ α ⟩ → Ordinal 𝓤
   w : is-well-founded _<_
   w (x , l) = f x (Well-foundedness α x) l
    where
-    f : ∀ x → is-accessible (underlying-order α) x → ∀ l → is-accessible _<_ (x , l)
+    f : ∀ x
+      → is-accessible (underlying-order α) x
+      → ∀ l → is-accessible _<_ (x , l)
     f x (step s) l = step (λ σ m → f (pr₁ σ) (s (pr₁ σ) m) (pr₂ σ))
 
   e : is-extensional _<_
   e (x , l) (y , m) f g =
     to-subtype-＝
-      (λ z → Prop-valuedness α z a)
-      (Extensionality α x y
-        (λ u n → f (u , Transitivity α u x a n l) n)
-        (λ u n → g (u , Transitivity α u y a n m) n))
+     (λ z → Prop-valuedness α z a)
+     (Extensionality α x y
+       (λ u n → f (u , Transitivity α u x a n l) n)
+       (λ u n → g (u , Transitivity α u y a n m) n))
 
   t : is-transitive _<_
   t (x , _) (y , _) (z , _) = Transitivity α x y z
@@ -300,7 +238,7 @@ _⊲_ : Ordinal 𝓤 → Ordinal 𝓤 → 𝓤 ⁺ ̇
   r = ↓-lc β b b' q
 
   γ : (b , p) ＝ (b' , p')
-  γ = to-subtype-＝ (λ x → the-type-of-ordinals-is-a-set) r
+  γ = to-subtype-＝ (λ x → the-type-of-ordinals-is-a-set (ua 𝓤) fe') r
 
 \end{code}
 
@@ -319,7 +257,7 @@ _⊲⁻_ : Ordinal 𝓤 → Ordinal 𝓥 → 𝓤 ⊔ 𝓥 ̇
 α ⊲⁻ β = Σ b ꞉ ⟨ β ⟩ , α ≃ₒ (β ↓ b)
 
 ⊲-is-equivalent-to-⊲⁻ : (α β : Ordinal 𝓤) → (α ⊲ β) ≃ (α ⊲⁻ β)
-⊲-is-equivalent-to-⊲⁻ α β = Σ-cong (λ (b : ⟨ β ⟩) → UAₒ-≃ α (β ↓ b))
+⊲-is-equivalent-to-⊲⁻ α β = Σ-cong (λ (b : ⟨ β ⟩) → UAₒ-≃ (ua _) fe' α (β ↓ b))
 
 \end{code}
 
@@ -663,7 +601,7 @@ from-≼ {𝓤} {α} {β} l a = l (α ↓ a) m
     o = simulations-are-order-reflecting α β f f-is-simulation x x' t
 
   q : (α ↓ a) ＝ (β ↓ f a)
-  q = eqtoidₒ (α ↓ a) (β ↓ f a)
+  q = eqtoidₒ (ua _) fe' (α ↓ a) (β ↓ f a)
         (g ,
          g-is-order-preserving ,
          qinvs-are-equivs g (h , η , ε) ,

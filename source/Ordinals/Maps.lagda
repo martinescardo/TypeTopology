@@ -79,8 +79,8 @@ being-order-preserving-is-prop fe α β f =
 
 being-order-reflecting-is-prop : Fun-Ext
                                → (α : Ordinal 𝓤) (β : Ordinal 𝓥)
-                               (f : ⟨ α ⟩ → ⟨ β ⟩)
-                         → is-prop (is-order-reflecting α β f)
+                                 (f : ⟨ α ⟩ → ⟨ β ⟩)
+                               → is-prop (is-order-reflecting α β f)
 being-order-reflecting-is-prop fe α β f =
   Π₃-is-prop fe (λ x y l → Prop-valuedness α x y)
 
@@ -88,15 +88,17 @@ being-order-embedding-is-prop : Fun-Ext
                               → (α : Ordinal 𝓤) (β : Ordinal 𝓥)
                                 (f : ⟨ α ⟩ → ⟨ β ⟩)
                               → is-prop (is-order-embedding α β f)
-being-order-embedding-is-prop fe α β f = ×-is-prop
-                                          (being-order-preserving-is-prop fe α β f)
-                                          (being-order-reflecting-is-prop fe α β f)
+being-order-embedding-is-prop fe α β f =
+ ×-is-prop
+ (being-order-preserving-is-prop fe α β f)
+ (being-order-reflecting-is-prop fe α β f)
 
-order-reflecting-gives-inverse-order-preserving : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
-                                                  (f : ⟨ α ⟩ → ⟨ β ⟩)
-                                                → (e : is-equiv f)
-                                                → is-order-reflecting α β f
-                                                → is-order-preserving β α (inverse f e)
+order-reflecting-gives-inverse-order-preserving :
+   (α : Ordinal 𝓤) (β : Ordinal 𝓥)
+   (f : ⟨ α ⟩ → ⟨ β ⟩)
+ → (e : is-equiv f)
+ → is-order-reflecting α β f
+ → is-order-preserving β α (inverse f e)
 order-reflecting-gives-inverse-order-preserving α β f e r x y l = m
  where
   g : ⟨ β ⟩ → ⟨ α ⟩
@@ -113,11 +115,12 @@ order-reflecting-gives-inverse-order-preserving α β f e r x y l = m
   m : g x ≺⟨ α ⟩ g y
   m = s l'
 
-inverse-order-reflecting-gives-order-preserving : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
-                                                  (f : ⟨ α ⟩ → ⟨ β ⟩)
-                                                  (e : is-equiv f)
-                                                → is-order-preserving β α (inverse f e)
-                                                → is-order-reflecting α β f
+inverse-order-reflecting-gives-order-preserving :
+   (α : Ordinal 𝓤) (β : Ordinal 𝓥)
+   (f : ⟨ α ⟩ → ⟨ β ⟩)
+   (e : is-equiv f)
+ → is-order-preserving β α (inverse f e)
+ → is-order-reflecting α β f
 inverse-order-reflecting-gives-order-preserving α β f e q x y l = r
  where
   g : ⟨ β ⟩ → ⟨ α ⟩
@@ -187,7 +190,9 @@ being-initial-segment-is-prop fe α β f p = prop-criterion γ
    γ : is-initial-segment α β f → is-prop (is-initial-segment α β f)
    γ i = Π₃-is-prop fe (λ x z l → φ x z l)
     where
-     φ : ∀ x y → y ≺⟨ β ⟩ f x → is-prop (Σ x' ꞉ ⟨ α ⟩ , (x' ≺⟨ α ⟩ x) × (f x' ＝ y))
+     φ : ∀ x y
+       → y ≺⟨ β ⟩ f x
+       → is-prop (Σ x' ꞉ ⟨ α ⟩ , (x' ≺⟨ α ⟩ x) × (f x' ＝ y))
      φ x y l (x' , (m , r)) (x'' , (m' , r')) = to-Σ-＝ (a , b)
       where
        c : f x' ＝ f x''
@@ -217,11 +222,10 @@ being-simulation-is-prop : Fun-Ext
                          → (α : Ordinal 𝓤) (β : Ordinal 𝓥)
                            (f : ⟨ α ⟩ → ⟨ β ⟩)
                          → is-prop (is-simulation α β f)
-being-simulation-is-prop fe α β f = ×-prop-criterion
-                                     (being-initial-segment-is-prop fe α β f ,
-                                      (λ _ → being-order-preserving-is-prop fe α β f))
-
-
+being-simulation-is-prop fe α β f =
+ ×-prop-criterion
+  (being-initial-segment-is-prop fe α β f ,
+   (λ _ → being-order-preserving-is-prop fe α β f))
 
 lc-initial-segments-are-order-reflecting : (α β : Ordinal 𝓤)
                                            (f : ⟨ α ⟩ → ⟨ β ⟩)
@@ -241,8 +245,8 @@ simulations-are-order-reflecting : (α β : Ordinal 𝓤)
                                  → is-simulation α β f
                                  → is-order-reflecting α β f
 simulations-are-order-reflecting α β f (i , p) =
-  lc-initial-segments-are-order-reflecting α β f i
-    (simulations-are-lc α β f (i , p))
+ lc-initial-segments-are-order-reflecting α β f i
+  (simulations-are-lc α β f (i , p))
 
 order-embeddings-are-lc : (α β : Ordinal 𝓤) (f : ⟨ α ⟩ → ⟨ β ⟩)
                         → is-order-embedding α β f
@@ -368,13 +372,14 @@ Simulations preserve least elements.
 
 \begin{code}
 
-initial-segments-preserve-least : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
-                                  (x : ⟨ α ⟩) (y : ⟨ β ⟩)
-                                  (f : ⟨ α ⟩ → ⟨ β ⟩)
-                                → is-initial-segment α β f
-                                → is-least α x
-                                → is-least β y
-                                → f x ＝ y
+initial-segments-preserve-least :
+   (α : Ordinal 𝓤) (β : Ordinal 𝓥)
+   (x : ⟨ α ⟩) (y : ⟨ β ⟩)
+   (f : ⟨ α ⟩ → ⟨ β ⟩)
+ → is-initial-segment α β f
+ → is-least α x
+ → is-least β y
+ → f x ＝ y
 initial-segments-preserve-least α β x y f i m n = c
  where
   a : f x ≼⟨ β ⟩ y
@@ -408,21 +413,23 @@ simulations-preserve-least : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
                            → is-least α x
                            → is-least β y
                            → f x ＝ y
-simulations-preserve-least α β x y f (i , _) = initial-segments-preserve-least α β x y f i
+simulations-preserve-least α β x y f (i , _) =
+ initial-segments-preserve-least α β x y f i
 
 \end{code}
 
 Added in March 2022 by Tom de Jong:
 
-Notice that we defined "is-initial-segment" using Σ (rather than ∃). This is
-fine, because if f is a simulation from α to β, then for every x : ⟨ α ⟩ and
-y : ⟨ β ⟩ with y ≺⟨ β ⟩ f x, the type (Σ x' ꞉ ⟨ α ⟩ , (x' ≺⟨ α ⟩ x) × (f x' ＝ y))
-is a proposition. It follows (see the proof above) that being a simulation is
-property.
+Notice that we defined "is-initial-segment" using Σ (rather than ∃).
+This is fine, because if f is a simulation from α to β, then for
+every x : ⟨ α ⟩ and y : ⟨ β ⟩ with y ≺⟨ β ⟩ f x, the type
+(Σ x' ꞉ ⟨ α ⟩ , (x' ≺⟨ α ⟩ x) × (f x' ＝ y)) is a proposition. It
+follows (see the proof above) that being a simulation is property.
 
-However, for some purposes, notably for constructing suprema of ordinals in
-OrdinalSupOfOrdinals.lagda, it is useful to formulate the notion of initial
-segment and the notion of simulation using ∃, rather than Σ.
+However, for some purposes, notably for constructing suprema of
+ordinals in OrdinalSupOfOrdinals.lagda, it is useful to formulate the
+notion of initial segment and the notion of simulation using ∃, rather
+than Σ.
 
 Using the techniques that were used above to prove that being a simulation is
 property, we show the definition of simulation with ∃ to be equivalent to the

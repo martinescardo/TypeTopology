@@ -16,6 +16,7 @@ of ordinals agree.
 open import MLTT.Spartan
 open import NotionsOfDecidability.Decidable
 open import Ordinals.Arithmetic
+open import Ordinals.Equivalence
 open import Ordinals.Notions
 open import Ordinals.Type
 open import Ordinals.Underlying
@@ -189,7 +190,7 @@ The following properties of f should be self-explanatory:
                          → α ＝ β
    f-is-conditionally-lc α β i j p =
      ¬¬-elim
-       (em (α ＝ β) the-type-of-ordinals-is-a-set)
+       (em (α ＝ β) (the-type-of-ordinals-is-a-set (ua 𝓤) fe'))
        (λ (ν : α ≠ β) → f-is-conditionally-1-1 α β i j ν p)
 
 \end{code}

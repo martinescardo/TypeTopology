@@ -7,8 +7,8 @@ Equivalence of ordinals.
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import MLTT.Spartan
-open import Ordinals.Notions
 open import Ordinals.Maps
+open import Ordinals.Notions
 open import Ordinals.Type
 open import Ordinals.Underlying
 open import UF.Base
@@ -19,9 +19,11 @@ open import UF.EquivalenceExamples
 open import UF.FunExt
 open import UF.PreSIP-Examples
 open import UF.PreUnivalence
+open import UF.Size
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.Univalence
+open import UF.Yoneda
 
 module Ordinals.Equivalence where
 
@@ -97,16 +99,56 @@ equivalent definitions):
 _≃ₒ_ : Ordinal 𝓤 → Ordinal 𝓥 → 𝓤 ⊔ 𝓥 ̇
 α ≃ₒ β = Σ f ꞉ (⟨ α ⟩ → ⟨ β ⟩) , is-order-equiv α β f
 
+≃ₒ-refl : (α : Ordinal 𝓤) → α ≃ₒ α
+≃ₒ-refl α = id , (λ x y → id) , id-is-equiv ⟨ α ⟩ , (λ x y → id)
+
+idtoeqₒ : (α β : Ordinal 𝓤) → α ＝ β → α ≃ₒ β
+idtoeqₒ α α refl = ≃ₒ-refl α
+
+eqtoidₒ : is-univalent 𝓤
+        → Fun-Ext
+        → (α β : Ordinal 𝓤) → α ≃ₒ β → α ＝ β
+eqtoidₒ {𝓤} ua fe α β (f , p , e , q) = γ
+ where
+  A : (Y : 𝓤 ̇ ) → ⟨ α ⟩ ≃ Y → 𝓤 ⁺ ̇
+  A Y e = (σ : OrdinalStructure Y)
+        → is-order-preserving α (Y , σ) ⌜ e ⌝
+        → is-order-preserving (Y , σ) α ⌜ e ⌝⁻¹
+        → α ＝ (Y , σ)
+
+  a : A ⟨ α ⟩ (≃-refl ⟨ α ⟩)
+  a σ φ ψ = g
+   where
+    b : (x x' : ⟨ α ⟩) → (x ≺⟨ α ⟩ x') ＝ (x ≺⟨ ⟨ α ⟩ , σ ⟩ x')
+    b x x' = univalence-gives-propext ua
+              (Prop-valuedness α x x')
+              (Prop-valuedness (⟨ α ⟩ , σ) x x')
+              (φ x x')
+              (ψ x x')
+
+    c : underlying-order α ＝ underlying-order (⟨ α ⟩ , σ)
+    c = dfunext fe (λ x → dfunext fe (b x))
+
+    d : structure α ＝ σ
+    d = pr₁-lc (λ {_<_} → being-well-order-is-prop _<_ (λ _ _ → fe)) c
+
+    g : α ＝ (⟨ α ⟩ , σ)
+    g = to-Σ-＝' d
+
+  γ : α ＝ β
+  γ = JEq ua ⟨ α ⟩ A a ⟨ β ⟩ (f , e) (structure β) p q
+
 \end{code}
 
 See the module OrdinalOfOrdinals for a proof that α ≃ₒ β is
 canonically equivalent to α ＝ β. (For historical reasons, that proof
 doesn't use the structure identity principle.)
 
-\begin{code}
+One of the many applications of the univalence axiom is to manufacture
+examples of types which are not sets. Here we have instead used it to
+prove that a certain type is a set.
 
-≃ₒ-refl : (α : Ordinal 𝓤) → α ≃ₒ α
-≃ₒ-refl α = id , (λ x y → id) , id-is-equiv ⟨ α ⟩ , (λ x y → id)
+\begin{code}
 
 ≃ₒ-sym : (α : Ordinal 𝓤) (β : Ordinal 𝓥 )
        → α ≃ₒ β → β ≃ₒ α
@@ -147,8 +189,6 @@ order-equivs-are-simulations α β f (p , e , q) = h (equivs-are-qinvs f e) q , 
 ≃ₒ-to-fun-is-equiv : (α : Ordinal 𝓤) (β : Ordinal 𝓥) (e : α ≃ₒ β)
                    → is-equiv (≃ₒ-to-fun α β e)
 ≃ₒ-to-fun-is-equiv α β e = order-equivs-are-equivs α β (≃ₒ-to-fun-is-order-equiv α β e)
-
-
 
 order-preserving-reflecting-equivs-are-order-equivs : (α : Ordinal 𝓤)
                                                       (β : Ordinal 𝓥)
@@ -214,6 +254,34 @@ inverses-of-order-equivs-are-order-equivs α β {f} (p , e , q) =
    γ = to-subtype-＝
         (being-order-equiv-is-prop fe α β)
         (dfunext fe r)
+
+UAₒ : is-univalent 𝓤
+    → Fun-Ext
+    → (α β : Ordinal 𝓤) → is-equiv (idtoeqₒ α β)
+UAₒ {𝓤} ua fe α = nats-with-sections-are-equivs α
+                   (idtoeqₒ α)
+                   (λ β → (eqtoidₒ ua fe α β , η β))
+ where
+  η : (β : Ordinal 𝓤) (e : α ≃ₒ β)
+    → idtoeqₒ α β (eqtoidₒ ua fe α β e) ＝ e
+  η β e = ≃ₒ-is-prop-valued fe α β (idtoeqₒ α β (eqtoidₒ ua fe α β e)) e
+
+the-type-of-ordinals-is-a-set : is-univalent 𝓤
+                              → Fun-Ext
+                              → is-set (Ordinal 𝓤)
+the-type-of-ordinals-is-a-set ua fe {α} {β} = equiv-to-prop
+                                             (idtoeqₒ α β , UAₒ ua fe α β)
+                                             (≃ₒ-is-prop-valued fe α β)
+
+UAₒ-≃ : is-univalent 𝓤
+      → Fun-Ext
+      → (α β : Ordinal 𝓤) → (α ＝ β) ≃ (α ≃ₒ β)
+UAₒ-≃ ua fe α β = idtoeqₒ α β , UAₒ ua fe α β
+
+the-type-of-ordinals-is-locally-small : is-univalent 𝓤
+                                      → Fun-Ext
+                                      → is-locally-small (Ordinal 𝓤)
+the-type-of-ordinals-is-locally-small ua fe α β = (α ≃ₒ β) , ≃-sym (UAₒ-≃ ua fe α β)
 
 order-equivs-preserve-largest : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
                               → (f : ⟨ α ⟩ → ⟨ β ⟩)
@@ -292,7 +360,8 @@ If we only assume preunivalence, meaning that idtoeq is an embedding
 (rather than an equivalence), which is implied by each of univalence
 and the K axiom, we get that idtoeqₒ is an embedding (rather than an
 equivalence). This was suggested to me by Peter Lumbsdaine in August
-2022.
+2022. But we seem to need propositional extensionality when we relax
+univalence to preunivalence.
 
 \begin{code}
 

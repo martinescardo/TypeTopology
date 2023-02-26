@@ -43,7 +43,7 @@ open import Ordinals.Type
 open import Ordinals.Underlying
 
 𝟘ₒ-left-neutral : (α : Ordinal 𝓤) → 𝟘ₒ +ₒ α ＝ α
-𝟘ₒ-left-neutral {𝓤} α = eqtoidₒ (𝟘ₒ +ₒ α) α h
+𝟘ₒ-left-neutral {𝓤} α = eqtoidₒ (ua 𝓤) fe' (𝟘ₒ +ₒ α) α h
  where
   f : 𝟘 + ⟨ α ⟩ → ⟨ α ⟩
   f = ⌜ 𝟘-lneutral ⌝
@@ -60,7 +60,7 @@ open import Ordinals.Underlying
            (⌜⌝-is-equiv 𝟘-lneutral) f-preserves-order f-reflects-order
 
 𝟘ₒ-right-neutral : (α : Ordinal 𝓤) → α  +ₒ 𝟘ₒ ＝ α
-𝟘ₒ-right-neutral α = eqtoidₒ (α +ₒ 𝟘ₒ) α h
+𝟘ₒ-right-neutral α = eqtoidₒ (ua _) fe' (α +ₒ 𝟘ₒ) α h
  where
   f : ⟨ α ⟩ + 𝟘 → ⟨ α ⟩
   f = ⌜ 𝟘-rneutral' ⌝
@@ -77,7 +77,7 @@ open import Ordinals.Underlying
            (⌜⌝-is-equiv 𝟘-rneutral') f-preserves-order f-reflects-order
 
 +ₒ-assoc : (α β γ : Ordinal 𝓤) → (α  +ₒ β) +ₒ γ ＝ α  +ₒ (β +ₒ γ)
-+ₒ-assoc α β γ = eqtoidₒ ((α  +ₒ β) +ₒ γ) (α  +ₒ (β +ₒ γ)) h
++ₒ-assoc α β γ = eqtoidₒ (ua _) fe' ((α  +ₒ β) +ₒ γ) (α  +ₒ (β +ₒ γ)) h
  where
   f : ⟨ (α +ₒ β) +ₒ γ ⟩ → ⟨ α +ₒ (β +ₒ γ) ⟩
   f = ⌜ +assoc ⌝
@@ -137,7 +137,8 @@ open import Ordinals.Underlying
   g-is-order-preserving (inl x , _) (inl x' , _) l = l
 
   h : γ ＝ δ
-  h = eqtoidₒ γ δ (f , f-is-order-preserving , f-is-equiv , g-is-order-preserving)
+  h = eqtoidₒ (ua 𝓤) fe' γ δ
+       (f , f-is-order-preserving , f-is-equiv , g-is-order-preserving)
 
 
 +ₒ-↓-right : {α β : Ordinal 𝓤} (b : ⟨ β ⟩)
@@ -177,7 +178,8 @@ open import Ordinals.Underlying
   g-is-order-preserving (inr _ , _) (inr _ , _) l = l
 
   h : γ ＝ δ
-  h = eqtoidₒ γ δ (f , f-is-order-preserving , f-is-equiv , g-is-order-preserving)
+  h = eqtoidₒ (ua 𝓤) fe' γ δ
+       (f , f-is-order-preserving , f-is-equiv , g-is-order-preserving)
 
 \end{code}
 
@@ -192,7 +194,7 @@ neutral, but we give a direct proof instead.
 \begin{code}
 
 +ₒ-𝟙ₒ-↓-right : (α : Ordinal 𝓤) → (α +ₒ 𝟙ₒ) ↓ inr ⋆ ＝ α
-+ₒ-𝟙ₒ-↓-right α = eqtoidₒ ((α +ₒ 𝟙ₒ) ↓ inr ⋆) α h
++ₒ-𝟙ₒ-↓-right α = eqtoidₒ (ua _) fe' ((α +ₒ 𝟙ₒ) ↓ inr ⋆) α h
  where
   f : ⟨ (α +ₒ 𝟙ₒ) ↓ inr ⋆ ⟩ → ⟨ α ⟩
   f (inl x , l) = x
@@ -381,8 +383,7 @@ lemma₃ b (inr c) p = c , refl
 left-+ₒ-is-embedding : (α : Ordinal 𝓤) → is-embedding (α +ₒ_)
 left-+ₒ-is-embedding α = lc-maps-into-sets-are-embeddings (α +ₒ_)
                            (λ {β} {γ} → +ₒ-left-cancellable α β γ)
-                           the-type-of-ordinals-is-a-set
-
+                           (the-type-of-ordinals-is-a-set (ua _) fe')
 \end{code}
 
 This implies that the function α +ₒ_ reflects the _⊲_ ordering:
@@ -999,7 +1000,7 @@ also is not a successor ordinal unless LPO holds:
            gop (k , l) (k' , l') ℓ = k , refl , <-gives-⊏ _ _ ℓ
 
          IX : ℕ∞ₒ ↓ ι n ＝ ω ↓ n
-         IX = eqtoidₒ _ _ V
+         IX = eqtoidₒ (ua 𝓤₀) fe' _ _ V
 
          X : (ℕ∞ₒ ↓ (ι n)) ⊲ ω
          X = n , IX
@@ -1123,6 +1124,6 @@ alternative-plusₒ τ₀ τ₁ = e
 
 alternative-plus : (τ₀ τ₁ : Ordinalᵀ 𝓤)
                  → [ τ₀ +ᵒ τ₁ ] ＝ ([ τ₀ ] +ₒ [ τ₁ ])
-alternative-plus τ₀ τ₁ = eqtoidₒ _ _ (alternative-plusₒ τ₀ τ₁)
+alternative-plus τ₀ τ₁ = eqtoidₒ (ua _) fe' _ _ (alternative-plusₒ τ₀ τ₁)
 
 \end{code}

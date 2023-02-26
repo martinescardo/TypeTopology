@@ -291,7 +291,7 @@ induced order on Σα.
 \begin{code}
 
  ≋ : EqRel Σα
- ≋ = _≈_ , (λ _ _   → the-type-of-ordinals-is-a-set)
+ ≋ = _≈_ , (λ _ _   → the-type-of-ordinals-is-a-set (ua 𝓤) fe')
          , (λ _     → refl)
          , (λ _ _   → _⁻¹)
          , (λ _ _ _ → _∙_)
@@ -531,7 +531,7 @@ Next, we resize α/ using:
 
  ≋-≃-≋⁻ : {p q : Σα} → p ≈[ ≋ ] q ⇔ p ≈[ ≋⁻ ] q
  ≋-≃-≋⁻ {(i , x)} {(j , y)} = (idtoeqₒ (α i ↓ x) (α j ↓ y))
-                            , (eqtoidₒ (α i ↓ x) (α j ↓ y))
+                            , (eqtoidₒ (ua 𝓤) fe' (α i ↓ x) (α j ↓ y))
 
  private
   α/⁻ : 𝓤 ̇
@@ -921,8 +921,8 @@ Next, we resize α⁺ using:
   private
    small-image : is-small (image σ)
    small-image = replacement σ ((Σ i ꞉ I , ⟨ α i ⟩) , ≃-refl _)
-                               (λ β γ → β ≃ₒ γ , ≃-sym (UAₒ-≃ β γ))
-                               the-type-of-ordinals-is-a-set
+                               (λ β γ → β ≃ₒ γ , ≃-sym (UAₒ-≃ (ua 𝓤) fe' β γ))
+                               (the-type-of-ordinals-is-a-set (ua 𝓤) fe')
    α⁻ : 𝓤 ̇
    α⁻ = pr₁ small-image
 
@@ -945,7 +945,7 @@ Next, we resize α⁺ using:
 
   α⁻-is-upper-bound : (i : I) → α i ⊴ α⁻-Ord
   α⁻-is-upper-bound i = ⊴-trans (α i) α⁺-Ord α⁻-Ord
-                        (α⁺-is-upper-bound i)
+                       (α⁺-is-upper-bound i)
                         (≃ₒ-to-⊴ α⁺-Ord α⁻-Ord α⁺-≃ₒ-α⁻)
 
 \end{code}
