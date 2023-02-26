@@ -17,11 +17,11 @@ module Ordinals.OrdinalOfOrdinals
        where
 
 open import MLTT.Spartan
+open import Notation.CanonicalMap
+open import Ordinals.Equivalence
 open import Ordinals.Notions
 open import Ordinals.Type
 open import Ordinals.Underlying
-open import Notation.CanonicalMap
-
 open import UF.Base
 open import UF.Embeddings
 open import UF.Equiv

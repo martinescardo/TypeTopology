@@ -114,6 +114,7 @@ private
  pe : Prop-Ext
  pe = Univalence-gives-Prop-Ext ua
 
+open import Ordinals.Equivalence
 open import Ordinals.Notions
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.Type hiding (Ord)

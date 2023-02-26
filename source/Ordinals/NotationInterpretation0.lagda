@@ -34,18 +34,14 @@ private
 
 open PropositionalTruncation pt
 
+open import CoNaturals.GenericConvergentSequence
 open import MLTT.Plus-Properties
 open import MLTT.Spartan
-
 open import Notation.CanonicalMap
-
-open import UF.Embeddings
-open import UF.ImageAndSurjection pt
-open import UF.Size
-
 open import Ordinals.Arithmetic fe
 open import Ordinals.Arithmetic-Properties ua
 open import Ordinals.Brouwer
+open import Ordinals.Equivalence
 open import Ordinals.Injectivity
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.OrdinalOfOrdinalsSuprema ua
@@ -55,15 +51,15 @@ open import Ordinals.TrichotomousArithmetic fe
 open import Ordinals.TrichotomousType fe
 open import Ordinals.Type
 open import Ordinals.Underlying
-
-open ordinals-injectivity fe
-
 open import TypeTopology.CompactTypes
 open import TypeTopology.GenericConvergentSequenceCompactness
 open import TypeTopology.PropTychonoff
 open import TypeTopology.SquashedSum fe
+open import UF.Embeddings
+open import UF.ImageAndSurjection pt
+open import UF.Size
 
-open import CoNaturals.GenericConvergentSequence
+open ordinals-injectivity fe
 
 module _ (sr : Set-Replacement pt) where
 

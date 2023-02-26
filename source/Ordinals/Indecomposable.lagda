@@ -47,10 +47,11 @@ private
 ⇁_ : Ω 𝓤 → Ω 𝓤
 ⇁_ = not fe'
 
-open import Ordinals.Type
-open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.Arithmetic fe
+open import Ordinals.OrdinalOfOrdinals ua
+open import Ordinals.Type
 open import Ordinals.Underlying
+open import Ordinals.Equivalence
 
 \end{code}
 

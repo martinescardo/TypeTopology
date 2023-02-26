@@ -30,12 +30,11 @@ private
  pe : PropExt
  pe = Univalence-gives-PropExt ua
 
-open import MLTT.Spartan
 open import MLTT.Plus-Properties
-
+open import MLTT.Spartan
 open import Notation.CanonicalMap
-
 open import Ordinals.Arithmetic fe
+open import Ordinals.Equivalence
 open import Ordinals.Notions
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.Type

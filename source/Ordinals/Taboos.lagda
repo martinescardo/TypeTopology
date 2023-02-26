@@ -8,6 +8,7 @@ module Ordinals.Taboos where
 
 open import MLTT.Plus-Properties
 open import MLTT.Spartan hiding (𝟚 ; ₀ ; ₁)
+open import Ordinals.Equivalence
 open import Ordinals.Notions
 open import Ordinals.Type
 open import Ordinals.Underlying
@@ -38,8 +39,8 @@ indexed by a discrete type is again discrete.
 
 Every-Discrete-Ordinal-Is-Trichotomous : (𝓤 : Universe) → 𝓤 ⁺ ̇
 Every-Discrete-Ordinal-Is-Trichotomous 𝓤 =
-   ((α : Ordinal 𝓤) → is-discrete ⟨ α ⟩
-                    → is-trichotomous-order (underlying-order α))
+ ((α : Ordinal 𝓤) → is-discrete ⟨ α ⟩
+                  → is-trichotomous-order (underlying-order α))
 
 module suprema-of-ordinals-assumptions
         (pt : propositional-truncations-exist)

@@ -29,6 +29,7 @@ module Ordinals.SupSum
 
 open import MLTT.Spartan
 open import Notation.CanonicalMap
+open import Ordinals.Equivalence
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.OrdinalOfOrdinalsSuprema ua
 open import Ordinals.Type

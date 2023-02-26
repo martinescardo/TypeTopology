@@ -18,6 +18,7 @@ module Ordinals.OrdinalOfTruthValues
 open import UF.Subsingletons-FunExt
 
 open import Ordinals.Arithmetic fe
+open import Ordinals.Equivalence
 open import Ordinals.Type
 open import Ordinals.Notions
 open import Ordinals.Type

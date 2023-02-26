@@ -142,11 +142,12 @@ private
 
 open import MLTT.Spartan
 
+open import Ordinals.Arithmetic fe
+open import Ordinals.Equivalence
 open import Ordinals.Notions
+open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.Type
 open import Ordinals.WellOrderTransport
-open import Ordinals.OrdinalOfOrdinals ua
-open import Ordinals.Arithmetic fe
 
 \end{code}
 

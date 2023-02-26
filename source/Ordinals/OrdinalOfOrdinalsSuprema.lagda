@@ -37,19 +37,19 @@ module Ordinals.OrdinalOfOrdinalsSuprema
        where
 
 open import MLTT.Spartan
-
-open import UF.Base hiding (_≈_)
-open import UF.Equiv
-open import UF.FunExt
-open import UF.UA-FunExt
-open import UF.PropTrunc
-open import UF.Size
-open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
+open import Ordinals.Equivalence
 open import Ordinals.Notions hiding (is-prop-valued)
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.Type
 open import Ordinals.Underlying
+open import UF.Base hiding (_≈_)
+open import UF.Equiv
+open import UF.FunExt
+open import UF.PropTrunc
+open import UF.Size
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
+open import UF.UA-FunExt
 
 private
  fe : FunExt
