@@ -75,7 +75,8 @@ inverses-of-order-equivs-are-order-preserving : (α : Ordinal 𝓤) (β : Ordina
                                                 {f : ⟨ α ⟩ → ⟨ β ⟩}
                                               → (i : is-order-equiv α β f)
                                               → is-order-preserving β α
-                                                  (inverse f (order-equivs-are-equivs α β i))
+                                                  (inverse f
+                                                   (order-equivs-are-equivs α β i))
 inverses-of-order-equivs-are-order-preserving α β = pr₂ ∘ pr₂
 
 being-order-equiv-is-prop : Fun-Ext
@@ -85,9 +86,9 @@ being-order-equiv-is-prop : Fun-Ext
 being-order-equiv-is-prop fe α β f = ×-is-prop
                                       (being-order-preserving-is-prop fe α β f)
                                       (Σ-is-prop
-                                         (being-equiv-is-prop (λ _ _ → fe) f)
-                                         (λ e → being-order-preserving-is-prop fe β α
-                                                   (inverse f e)))
+                                        (being-equiv-is-prop (λ _ _ → fe) f)
+                                        (λ e → being-order-preserving-is-prop fe β α
+                                                  (inverse f e)))
 
 \end{code}
 
