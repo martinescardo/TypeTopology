@@ -357,7 +357,7 @@ at-most-one-simulation α β f f' (i , p) (i' , p') x = γ
 
 \end{code}
 
-Added 29th March 2022 by Martin Escardo.
+Added 29th March 2022.
 
 Simulations preserve least elements.
 
