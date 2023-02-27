@@ -1,7 +1,7 @@
 Martin Escardo 23 February 2022
 
 The pre-univalence axiom, first suggested by Evan Cavallo in November
-2017 [1] and then again by Peter Lumsdaine in August 2023
+2017 [1] and then again by Peter Lumsdaine in August 2022
 verbally to me.
 
 [1] https://groups.google.com/g/homotopytypetheory/c/bKti7krHM-c/m/vxRU3FwADQAJ

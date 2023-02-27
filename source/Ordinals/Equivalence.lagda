@@ -110,33 +110,34 @@ eqtoidₒ : is-univalent 𝓤
         → (α β : Ordinal 𝓤) → α ≃ₒ β → α ＝ β
 eqtoidₒ {𝓤} ua fe α β (f , p , e , q) = γ
  where
-  A : (Y : 𝓤 ̇ ) → ⟨ α ⟩ ≃ Y → 𝓤 ⁺ ̇
-  A Y e = (σ : OrdinalStructure Y)
-        → is-order-preserving α (Y , σ) ⌜ e ⌝
-        → is-order-preserving (Y , σ) α ⌜ e ⌝⁻¹
-        → α ＝ (Y , σ)
+  abstract
+   A : (Y : 𝓤 ̇ ) → ⟨ α ⟩ ≃ Y → 𝓤 ⁺ ̇
+   A Y e = (σ : OrdinalStructure Y)
+         → is-order-preserving α (Y , σ) ⌜ e ⌝
+         → is-order-preserving (Y , σ) α ⌜ e ⌝⁻¹
+         → α ＝ (Y , σ)
 
-  a : A ⟨ α ⟩ (≃-refl ⟨ α ⟩)
-  a σ φ ψ = g
-   where
-    b : (x x' : ⟨ α ⟩) → (x ≺⟨ α ⟩ x') ＝ (x ≺⟨ ⟨ α ⟩ , σ ⟩ x')
-    b x x' = univalence-gives-propext ua
-              (Prop-valuedness α x x')
-              (Prop-valuedness (⟨ α ⟩ , σ) x x')
-              (φ x x')
-              (ψ x x')
+   a : A ⟨ α ⟩ (≃-refl ⟨ α ⟩)
+   a σ φ ψ = g
+    where
+     b : (x x' : ⟨ α ⟩) → (x ≺⟨ α ⟩ x') ＝ (x ≺⟨ ⟨ α ⟩ , σ ⟩ x')
+     b x x' = univalence-gives-propext ua
+               (Prop-valuedness α x x')
+               (Prop-valuedness (⟨ α ⟩ , σ) x x')
+               (φ x x')
+               (ψ x x')
 
-    c : underlying-order α ＝ underlying-order (⟨ α ⟩ , σ)
-    c = dfunext fe (λ x → dfunext fe (b x))
+     c : underlying-order α ＝ underlying-order (⟨ α ⟩ , σ)
+     c = dfunext fe (λ x → dfunext fe (b x))
 
-    d : structure α ＝ σ
-    d = pr₁-lc (λ {_<_} → being-well-order-is-prop _<_ (λ _ _ → fe)) c
+     d : structure α ＝ σ
+     d = pr₁-lc (λ {_<_} → being-well-order-is-prop _<_ (λ _ _ → fe)) c
 
-    g : α ＝ (⟨ α ⟩ , σ)
-    g = to-Σ-＝' d
+     g : α ＝ (⟨ α ⟩ , σ)
+     g = to-Σ-＝' d
 
-  γ : α ＝ β
-  γ = JEq ua ⟨ α ⟩ A a ⟨ β ⟩ (f , e) (structure β) p q
+   γ : α ＝ β
+   γ = JEq ua ⟨ α ⟩ A a ⟨ β ⟩ (f , e) (structure β) p q
 
 \end{code}
 
@@ -365,33 +366,32 @@ univalence to preunivalence.
 
 \begin{code}
 
-idtoeqₒ-is-embedding : is-preunivalent 𝓤
-                     → FunExt
-                     → PropExt
-                     → (α β : Ordinal 𝓤)
-                     → (α ＝ β) ↪ (α ≃ₒ β)
-idtoeqₒ-is-embedding {𝓤} pua fe pe α β = II
+idtoeqₒ-embedding : is-preunivalent 𝓤
+                  → FunExt
+                  → PropExt
+                  → (α β : Ordinal 𝓤)
+                  → (α ＝ β) ↪ (α ≃ₒ β)
+idtoeqₒ-embedding {𝓤} pua fe pe α β = II
  where
-  open relational-space
+  open relational-space {𝓤} {𝓤} {𝓤}
         (λ (X : 𝓤 ̇ ) (_<_ : X → X → 𝓤 ̇) → is-well-order _<_)
         (λ (X : 𝓤 ̇ ) (_<_ : X → X → 𝓤 ̇) → being-well-order-is-prop _<_ fe)
         (λ {X R} w {x} {y} → prop-valuedness R w x y)
 
   I : (α ＝ β) ↪ (α ≅₂ β)
-  I = M-embedding₂ pua (fe _ _) (pe _) α β
+  I = M-embedding₂ pua (FunExt-to-Fun-Ext fe) (PropExt-to-Prop-Ext pe) α β
 
   II : (α ＝ β) ↪ (α ≃ₒ β)
-  II = ≃-gives-↪ (≃ₐ-coincides-with-≃ₒ fe α β)
-     ∘↪ I
+  II = ≃-gives-↪ (≃ₐ-coincides-with-≃ₒ fe α β) ∘↪ I
 
 Ordinal-is-set-under-preunivalence : is-preunivalent 𝓤
                                    → FunExt
                                    → PropExt
                                    → is-set (Ordinal 𝓤)
-Ordinal-is-set-under-preunivalence pua fe pe {α} {β} =
+Ordinal-is-set-under-preunivalence {𝓤} pua fe pe {α} {β} =
  subtype-of-prop-is-prop
-  ⌊ idtoeqₒ-is-embedding pua fe pe α β ⌋
-  (embeddings-are-lc _ ⌊ idtoeqₒ-is-embedding pua fe pe α β ⌋-is-embedding)
-  (≃ₒ-is-prop-valued (fe _ _) α β)
+  ⌊ idtoeqₒ-embedding pua fe pe α β ⌋
+  (embeddings-are-lc ⌊ idtoeqₒ-embedding pua fe pe α β ⌋ ⌊ idtoeqₒ-embedding pua fe pe α β ⌋-is-embedding)
+  (≃ₒ-is-prop-valued (FunExt-to-Fun-Ext fe) α β)
 
 \end{code}
