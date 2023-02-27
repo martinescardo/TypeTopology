@@ -55,20 +55,17 @@ is-initial-segment  α β f = (x : ⟨ α ⟩) (y : ⟨ β ⟩)
 
 is-simulation       α β f = is-initial-segment α β f × is-order-preserving α β f
 
-
 simulations-are-order-preserving : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
                                    (f : ⟨ α ⟩ → ⟨ β ⟩)
                                  → is-simulation α β f
                                  → is-order-preserving α β f
 simulations-are-order-preserving α β f (i , p) = p
 
-
 simulations-are-initial-segments : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
                                    (f : ⟨ α ⟩ → ⟨ β ⟩)
                                  → is-simulation α β f
                                  → is-initial-segment α β f
 simulations-are-initial-segments α β f (i , p) = i
-
 
 being-order-preserving-is-prop : Fun-Ext
                                → (α : Ordinal 𝓤) (β : Ordinal 𝓥)
@@ -90,8 +87,8 @@ being-order-embedding-is-prop : Fun-Ext
                               → is-prop (is-order-embedding α β f)
 being-order-embedding-is-prop fe α β f =
  ×-is-prop
- (being-order-preserving-is-prop fe α β f)
- (being-order-reflecting-is-prop fe α β f)
+  (being-order-preserving-is-prop fe α β f)
+  (being-order-reflecting-is-prop fe α β f)
 
 order-reflecting-gives-inverse-order-preserving :
    (α : Ordinal 𝓤) (β : Ordinal 𝓥)
@@ -212,12 +209,6 @@ being-initial-segment-is-prop fe α β f p = prop-criterion γ
        b : transport (λ - →  (- ≺⟨ α ⟩ x) × (f - ＝ y)) a (m , r) ＝ m' , r'
        b = k _ _
 
-\end{code}
-
-The simulations make the ordinals into a poset:
-
-\begin{code}
-
 being-simulation-is-prop : Fun-Ext
                          → (α : Ordinal 𝓤) (β : Ordinal 𝓥)
                            (f : ⟨ α ⟩ → ⟨ β ⟩)
@@ -283,8 +274,8 @@ order-embedings-are-embeddings : FunExt
                                → is-embedding f
 order-embedings-are-embeddings fe α β f (p , r) =
   lc-maps-into-sets-are-embeddings f
-    (order-embeddings-are-lc α β f (p , r))
-    (underlying-type-is-set fe β)
+   (order-embeddings-are-lc α β f (p , r))
+   (underlying-type-is-set fe β)
 
 simulations-are-monotone : (α β : Ordinal 𝓤)
                            (f : ⟨ α ⟩ → ⟨ β ⟩)
@@ -471,23 +462,27 @@ module _ (pt : propositional-truncations-exist)
       where
        a : f u ≺⟨ β ⟩ f y
        a = transport (λ - → f u ≺⟨ β ⟩ -) r (p u x l)
+
        b : (Σ v ꞉ ⟨ α ⟩ , (v ≺⟨ α ⟩ y) × (f v ＝ f u))
          → u ≺⟨ α ⟩ y
        b (v , k , e) = transport (λ - → - ≺⟨ α ⟩ y) (c ⁻¹) k
         where
          c : u ＝ v
          c = φ u v (s u l) (t v k) (e ⁻¹)
+
      h : (u : ⟨ α ⟩) → u ≺⟨ α ⟩ y → u ≺⟨ α ⟩ x
      h u l = ∥∥-rec (Prop-valuedness α u x) b (i x (f u) a)
       where
        a : f u ≺⟨ β ⟩ f x
        a = transport (λ - → f u ≺⟨ β ⟩ -) (r ⁻¹) (p u y l)
+
        b : (Σ v ꞉ ⟨ α ⟩ , (v ≺⟨ α ⟩ x) × (f v ＝ f u))
          → u ≺⟨ α ⟩ x
        b (v , k , e) = transport (λ - → - ≺⟨ α ⟩ x) c k
         where
          c : v ＝ u
          c = φ v u (s v k) (t u l) e
+
    γ : left-cancellable f
    γ {x} {y} = φ x y (Well-foundedness α x) (Well-foundedness α y)
 
@@ -514,6 +509,7 @@ module _ (pt : propositional-truncations-exist)
       where
        ⦅1⦆ : (x' : ⟨ α ⟩) → is-prop ((x' ≺⟨ α ⟩ x) × (f x' ＝ y))
        ⦅1⦆ x' = ×-is-prop (Prop-valuedness α x' x) (underlying-type-is-set fe β)
+
        ⦅2⦆ : z ＝ z'
        ⦅2⦆ = simulations-are-lc' α β f (i , p) (e ∙ e' ⁻¹)
 \end{code}

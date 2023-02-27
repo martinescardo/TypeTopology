@@ -49,8 +49,9 @@ _⊴_ : Ordinal 𝓤 → Ordinal 𝓥 → 𝓤 ⊔ 𝓥 ̇
 
 ⊴-is-prop-valued : (α : Ordinal 𝓤) (β : Ordinal 𝓥) → is-prop (α ⊴ β)
 ⊴-is-prop-valued {𝓤} {𝓥} α β (f , s) (g , t) =
-  to-subtype-＝ (being-simulation-is-prop fe' α β)
-               (dfunext fe' (at-most-one-simulation α β f g s t))
+ to-subtype-＝
+  (being-simulation-is-prop fe' α β)
+  (dfunext fe' (at-most-one-simulation α β f g s t))
 
 ⊴-refl : (α : Ordinal 𝓤) → α ⊴ α
 ⊴-refl α = id ,
@@ -99,7 +100,6 @@ bisimilarity-gives-ordinal-equiv : (α β : Ordinal 𝓤)
                                  → β ⊴ α
                                  → α ≃ₒ β
 bisimilarity-gives-ordinal-equiv α β (f , s) (g , t) = γ
-
  where
   ηs : is-simulation β β (f ∘ g)
   ηs = pr₂ (⊴-trans β α β (g , t) (f , s))
@@ -169,7 +169,8 @@ segment-inclusion : (α : Ordinal 𝓤) (a : ⟨ α ⟩)
 segment-inclusion α a = pr₁
 
 segment-inclusion-bound : (α : Ordinal 𝓤) (a : ⟨ α ⟩)
-                        → (x : ⟨ α ↓ a ⟩) → segment-inclusion α a x ≺⟨ α ⟩ a
+                        → (x : ⟨ α ↓ a ⟩)
+                        → segment-inclusion α a x ≺⟨ α ⟩ a
 segment-inclusion-bound α a = pr₂
 
 segment-inclusion-is-simulation : (α : Ordinal 𝓤) (a : ⟨ α ⟩)
@@ -187,7 +188,8 @@ segment-⊴ : (α : Ordinal 𝓤) (a : ⟨ α ⟩)
 segment-⊴ α a = segment-inclusion α a , segment-inclusion-is-simulation α a
 
 ↓-⊴-lc : (α : Ordinal 𝓤) (a b : ⟨ α ⟩)
-       → (α ↓ a) ⊴ (α ↓ b ) → a ≼⟨ α ⟩ b
+       → (α ↓ a) ⊴ (α ↓ b )
+       → a ≼⟨ α ⟩ b
 ↓-⊴-lc {𝓤} α a b (f , s) u l = n
  where
   h : segment-inclusion α a ∼ segment-inclusion α b ∘ f
@@ -212,7 +214,8 @@ segment-⊴ α a = segment-inclusion α a , segment-inclusion-is-simulation α a
   n = transport⁻¹ (λ - → - ≺⟨ α ⟩ b) q m
 
 ↓-lc : (α : Ordinal 𝓤) (a b : ⟨ α ⟩)
-     → α ↓ a ＝ α ↓ b → a ＝ b
+     → α ↓ a ＝ α ↓ b
+     → a ＝ b
 ↓-lc α a b p =
  Extensionality α a b
   (↓-⊴-lc α a b (transport      (λ - → (α ↓ a) ⊴ -) p (⊴-refl (α ↓ a))))
@@ -517,7 +520,8 @@ _≼_ _≾_ : Ordinal 𝓤 → Ordinal 𝓤 → 𝓤 ⁺ ̇
 
 
 to-≼ : {α β : Ordinal 𝓤}
-     → ((a : ⟨ α ⟩) → (α ↓ a) ⊲ β)
+     → ((a : ⟨ α ⟩)
+     → (α ↓ a) ⊲ β)
      → α ≼ β
 to-≼ {𝓤} {α} {β} ϕ α' (a , p) = m
  where
@@ -529,7 +533,8 @@ to-≼ {𝓤} {α} {β} ϕ α' (a , p) = m
 
 from-≼ : {α β : Ordinal 𝓤}
        → α ≼ β
-       → (a : ⟨ α ⟩) → (α ↓ a) ⊲ β
+       → (a : ⟨ α ⟩)
+       → (α ↓ a) ⊲ β
 from-≼ {𝓤} {α} {β} l a = l (α ↓ a) m
  where
   m : (α ↓ a) ⊲ α
@@ -678,20 +683,6 @@ to-⊴ α β ϕ = g
 
 \end{code}
 
-Added 7 November 2022 by Tom de Jong.
-A consequence of the above constructions is that a simulation preserves initial
-segments in the following sense:
-
-\begin{code}
-
-simulations-preserve-↓ : (α β : Ordinal 𝓤) ((f , _) : α ⊴ β)
-                       → ((a : ⟨ α ⟩) → α ↓ a ＝ β ↓ f a)
-simulations-preserve-↓ α β 𝕗 a = pr₂ (from-≼ (⊴-gives-≼ α β 𝕗) a)
-
-\end{code}
-
-End of addition.
-
 Transfinite induction on the ordinal of ordinals:
 
 \begin{code}
@@ -710,41 +701,6 @@ transfinite-recursion-on-OO : (X : 𝓥 ̇ )
                             → ((α : Ordinal 𝓤) → (⟨ α ⟩ → X) → X)
                             → Ordinal 𝓤 → X
 transfinite-recursion-on-OO {𝓤} {𝓥} X = transfinite-induction-on-OO (λ _ → X)
-
-\end{code}
-
-Added 31 October 2022 by Tom de Jong.
-We record the (computational) behaviour of transfinite induction on OO for use
-in other constructions.
-
-\begin{code}
-
-transfinite-induction-on-OO-behaviour :
-   (P : Ordinal 𝓤 → 𝓥 ̇ )
- → (f : (α : Ordinal 𝓤) → ((a : ⟨ α ⟩) → P (α ↓ a)) → P α)
- → (α : Ordinal 𝓤) → transfinite-induction-on-OO P f α
-                     ＝ f α (λ a → transfinite-induction-on-OO P f (α ↓ a))
-transfinite-induction-on-OO-behaviour {𝓤} {𝓥} P f =
- Transfinite-induction-behaviour fe (OO 𝓤) P f'
-  where
-   f' : (α : Ordinal 𝓤)
-      → ((α' : Ordinal 𝓤) → α' ⊲ α → P α')
-      → P α
-   f' α g = f α (λ a → g (α ↓ a) (a , refl))
-
-transfinite-recursion-on-OO-behaviour :
-   (X : 𝓥 ̇ )
- → (f : (α : Ordinal 𝓤) → (⟨ α ⟩ → X) → X)
- → (α : Ordinal 𝓤) → transfinite-recursion-on-OO X f α
-                     ＝ f α (λ a → transfinite-recursion-on-OO X f (α ↓ a))
-transfinite-recursion-on-OO-behaviour X f =
- transfinite-induction-on-OO-behaviour (λ _ → X) f
-
-\end{code}
-
-End of addition.
-
-\begin{code}
 
 has-minimal-element : Ordinal 𝓤 → 𝓤 ̇
 has-minimal-element α = Σ a ꞉ ⟨ α ⟩ , ((x : ⟨ α ⟩) → a ≾⟨ α ⟩ x)
@@ -803,7 +759,7 @@ NB-minimal α a = f , g
 
 \end{code}
 
-Added 2nd May 2022 by Martin Escardo.
+Added 2nd May 2022.
 
 \begin{code}
 
@@ -849,5 +805,48 @@ order-preserving-gives-≼ em α β σ = δ
 
   δ : α ≼ β
   δ = γ (≼-or-> _⊲_ fe' em ⊲-is-well-order α β)
+
+\end{code}
+
+Added 7 November 2022 by Tom de Jong.
+
+A consequence of the above constructions is that a simulation
+preserves initial segments in the following sense:
+
+\begin{code}
+
+simulations-preserve-↓ : (α β : Ordinal 𝓤) ((f , _) : α ⊴ β)
+                       → ((a : ⟨ α ⟩) → α ↓ a ＝ β ↓ f a)
+simulations-preserve-↓ α β 𝕗 a = pr₂ (from-≼ (⊴-gives-≼ α β 𝕗) a)
+
+\end{code}
+
+Added 31 October 2022 by Tom de Jong.
+
+We record the (computational) behaviour of transfinite induction on OO
+for use in other constructions.
+
+\begin{code}
+
+transfinite-induction-on-OO-behaviour :
+   (P : Ordinal 𝓤 → 𝓥 ̇ )
+ → (f : (α : Ordinal 𝓤) → ((a : ⟨ α ⟩) → P (α ↓ a)) → P α)
+ → (α : Ordinal 𝓤) → transfinite-induction-on-OO P f α
+                   ＝ f α (λ a → transfinite-induction-on-OO P f (α ↓ a))
+transfinite-induction-on-OO-behaviour {𝓤} {𝓥} P f =
+ Transfinite-induction-behaviour fe (OO 𝓤) P f'
+  where
+   f' : (α : Ordinal 𝓤)
+      → ((α' : Ordinal 𝓤) → α' ⊲ α → P α')
+      → P α
+   f' α g = f α (λ a → g (α ↓ a) (a , refl))
+
+transfinite-recursion-on-OO-behaviour :
+   (X : 𝓥 ̇ )
+ → (f : (α : Ordinal 𝓤) → (⟨ α ⟩ → X) → X)
+ → (α : Ordinal 𝓤) → transfinite-recursion-on-OO X f α
+                   ＝ f α (λ a → transfinite-recursion-on-OO X f (α ↓ a))
+transfinite-recursion-on-OO-behaviour X f =
+ transfinite-induction-on-OO-behaviour (λ _ → X) f
 
 \end{code}
