@@ -142,9 +142,8 @@ eqtoidₒ {𝓤} ua fe α β (f , p , e , q) = γ
 
 \end{code}
 
-See the module OrdinalOfOrdinals for a proof that α ≃ₒ β is
-canonically equivalent to α ＝ β. (For historical reasons, that proof
-doesn't use the structure identity principle.)
+For historical reasons, the above proof doesn't use the structure
+identity principle.
 
 One of the many applications of the univalence axiom is to manufacture
 examples of types which are not sets. Here we have instead used it to
