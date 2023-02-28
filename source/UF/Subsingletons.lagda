@@ -475,12 +475,6 @@ PropExt = ∀ 𝓤 → propext 𝓤
 Prop-Ext : 𝓤ω
 Prop-Ext = ∀ {𝓤} → propext 𝓤
 
-PropExt-to-Prop-Ext : PropExt → Prop-Ext
-PropExt-to-Prop-Ext pe {𝓤} = pe 𝓤
-
-Prop-Ext-to-PropExt : Prop-Ext → PropExt
-Prop-Ext-to-PropExt pe 𝓤 = pe {𝓤}
-
 \end{code}
 
 The following says that, in particular, for any proposition P, we have

@@ -458,7 +458,7 @@ prop-≃-≃-⇔ fe i j = qinveq (λ f → ⌜ f ⌝ ,  ⌜ f ⌝⁻¹)
                                     (λ p → i (h (g p)) p) ,
                                     (λ q → j (g (h q)) q))) ,
                       (λ f → to-subtype-＝
-                              (being-equiv-is-prop (Fun-Ext-to-FunExt fe))
+                              (being-equiv-is-prop (λ _ _ → fe))
                                refl) ,
                       (λ _ → refl))
 

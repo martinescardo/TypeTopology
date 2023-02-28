@@ -282,7 +282,8 @@ UAₒ-≃ ua fe α β = idtoeqₒ α β , UAₒ ua fe α β
 the-type-of-ordinals-is-locally-small : is-univalent 𝓤
                                       → Fun-Ext
                                       → is-locally-small (Ordinal 𝓤)
-the-type-of-ordinals-is-locally-small ua fe α β = (α ≃ₒ β) , ≃-sym (UAₒ-≃ ua fe α β)
+the-type-of-ordinals-is-locally-small ua fe α β =
+ (α ≃ₒ β) , ≃-sym (UAₒ-≃ ua fe α β)
 
 order-equivs-preserve-largest : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
                               → (f : ⟨ α ⟩ → ⟨ β ⟩)
@@ -327,32 +328,33 @@ _≃ₐ_ : Ordinal 𝓤 → Ordinal 𝓥 → 𝓤 ⊔ 𝓥 ̇
 ≃ₐ-coincides-with-≃ₒ fe α β =
  (Σ f ꞉ (⟨ α ⟩ → ⟨ β ⟩)
       , is-equiv f
-      × ((x x' : ⟨ α ⟩) → x ≺⟨ α ⟩ x' ⇔ f x ≺⟨ β ⟩ f x'))     ≃⟨ I ⟩
+      × ((x x' : ⟨ α ⟩) → x ≺⟨ α ⟩ x' ⇔ f x ≺⟨ β ⟩ f x')) ≃⟨ I ⟩
 
  (Σ f ꞉ (⟨ α ⟩ → ⟨ β ⟩)
       , is-equiv f
       × (is-order-preserving α β f)
-      × (is-order-reflecting α β f))                          ≃⟨ II ⟩
+      × (is-order-reflecting α β f))                      ≃⟨ II ⟩
 
  (Σ f ꞉ (⟨ α ⟩ → ⟨ β ⟩)
       , (Σ e ꞉ is-equiv f
              , (is-order-preserving α β f)
-             × (is-order-preserving β α (inverse f e))))      ≃⟨ III ⟩
+             × (is-order-preserving β α (inv f e))))      ≃⟨ III ⟩
 
  (Σ f ꞉ (⟨ α ⟩ → ⟨ β ⟩)
       , (is-order-preserving α β f)
       × (Σ e ꞉ is-equiv f
-             , (is-order-preserving β α (inverse f e))))      ■
+             , (is-order-preserving β α (inv f e))))      ■
   where
-   I  = Σ-cong (λ f → ×-cong (≃-refl _) Π×-distr₂)
-   II = Σ-cong (λ f → Σ-cong (λ e → ×-cong (≃-refl _) (b f e)))
+   inv = inverse
+   I   = Σ-cong (λ f → ×-cong (≃-refl _) Π×-distr₂)
+   II  = Σ-cong (λ f → Σ-cong (λ e → ×-cong (≃-refl _) (b f e)))
     where
-     fe' = FunExt-to-Fun-Ext fe
-     b = λ f e → logically-equivalent-props-are-equivalent
-                  (being-order-reflecting-is-prop fe' α β f)
-                  (being-order-preserving-is-prop fe' β α (inverse f e))
-                  (order-reflecting-gives-inverse-order-preserving α β f e)
-                  (inverse-order-reflecting-gives-order-preserving α β f e)
+     b = λ f e
+       → logically-equivalent-props-are-equivalent
+          (being-order-reflecting-is-prop (λ {𝓤} {𝓥} → fe 𝓤 𝓥) α β f)
+          (being-order-preserving-is-prop (λ {𝓤} {𝓥} → fe 𝓤 𝓥) β α (inv f e))
+          (order-reflecting-gives-inverse-order-preserving α β f e)
+          (inverse-order-reflecting-gives-order-preserving α β f e)
    III = Σ-cong (λ f → Σ-flip)
 
 \end{code}
@@ -360,7 +362,7 @@ _≃ₐ_ : Ordinal 𝓤 → Ordinal 𝓥 → 𝓤 ⊔ 𝓥 ̇
 If we only assume preunivalence, meaning that idtoeq is an embedding
 (rather than an equivalence), which is implied by each of univalence
 and the K axiom, we get that idtoeqₒ is an embedding (rather than an
-equivalence). This was suggested to me by Peter Lumbsdaine in August
+equivalence). This was suggested to me by Peter Lumsdaine in August
 2022. But we seem to need propositional extensionality when we relax
 univalence to preunivalence.
 
@@ -379,7 +381,7 @@ idtoeqₒ-embedding {𝓤} pua fe pe α β = II
         (λ {X R} w {x} {y} → prop-valuedness R w x y)
 
   I : (α ＝ β) ↪ (α ≅₂ β)
-  I = M-embedding₂ pua (FunExt-to-Fun-Ext fe) (PropExt-to-Prop-Ext pe) α β
+  I = M-embedding₂ pua (λ {𝓤} {𝓥} → fe 𝓤 𝓥) (λ {𝓤} → pe 𝓤) α β
 
   II : (α ＝ β) ↪ (α ≃ₒ β)
   II = ≃-gives-↪ (≃ₐ-coincides-with-≃ₒ fe α β) ∘↪ I
@@ -391,7 +393,24 @@ Ordinal-is-set-under-preunivalence : is-preunivalent 𝓤
 Ordinal-is-set-under-preunivalence {𝓤} pua fe pe {α} {β} =
  subtype-of-prop-is-prop
   ⌊ idtoeqₒ-embedding pua fe pe α β ⌋
-  (embeddings-are-lc ⌊ idtoeqₒ-embedding pua fe pe α β ⌋ ⌊ idtoeqₒ-embedding pua fe pe α β ⌋-is-embedding)
-  (≃ₒ-is-prop-valued (FunExt-to-Fun-Ext fe) α β)
+  (embeddings-are-lc
+    ⌊ idtoeqₒ-embedding pua fe pe α β ⌋
+    ⌊ idtoeqₒ-embedding pua fe pe α β ⌋-is-embedding)
+  (≃ₒ-is-prop-valued (fe _ _) α β)
 
 \end{code}
+
+Peter Lumsdaine says the following (personal communication, 27th February 2023):
+
+> Funext I agree seems necessary — but I don’t think this should need propext?
+> Pre-univalence implies “pre-propext”, and I’m sure that should suffice for
+> this. Looking at your code, I think:
+>
+> - Ordinal-is-set-under-preunivalence uses prop-ext only via  M-embedding₂
+> - M-embedding₂ uses prop-ext via ≅₁-coincides-with-≅₂
+> - The full ≃ statement of ≅₁-coincides-with-≅₂ does indeed need prop-ext, but
+>   M-embedding₂ doesn’t use that full statement: M-embedding₂ only uses it under
+>   ≃-gives-↪ — so it would work with a weaker variant ≅₁-embeds-into-≅₂ , for
+>   which pre-propext should suffice.
+
+TODO. Implement the above thoughts by Peter.
