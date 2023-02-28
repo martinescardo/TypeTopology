@@ -69,3 +69,24 @@ Added 25 August 2022, but added elsewhere in TypeTopology much earlier (June
   posets-are-sets = type-with-prop-valued-refl-antisym-rel-is-set _⊑_
 
 \end{code}
+
+Defines monotone functions.
+
+\begin{code}
+
+ module MonotoneAxioms  -- TODO find occurences of monotonicity and refactor
+         {D : 𝓤 ̇ }
+         (_⊑_ : D → D → 𝓣 ̇ )
+         {E : 𝓤' ̇ }
+         (_≼_ : E → E → 𝓣' ̇ )
+         (f : D → E)
+        where
+
+  is-monotone = ∀ x y → x ⊑ y → f x ≼ f y
+
+  open PosetAxioms _≼_
+
+  being-monotone-is-prop : is-prop-valued → is-prop is-monotone
+  being-monotone-is-prop p = Π₃-is-prop fe λ _ _ _ → p _ _
+
+\end{code}
