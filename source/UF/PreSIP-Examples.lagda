@@ -75,9 +75,7 @@ module generalized-metric-space
  ≅₀-coincides-with-≅₁ fe (X , d , _) (Y , e , _) =
   Σ-cong (λ f → ×-cong
                  (≃-refl (is-equiv f))
-                 (≃-funext₂ fe fe
-                   (λ x y → d x y)
-                   (λ x x' → e (f x) (f x'))))
+                 (≃-funext₂ fe fe d (λ x x' → e (f x) (f x'))))
 
  M-embedding₁ : is-preunivalent 𝓤
               → Fun-Ext

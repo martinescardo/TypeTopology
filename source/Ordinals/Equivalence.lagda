@@ -376,8 +376,8 @@ idtoeqₒ-embedding : is-preunivalent 𝓤
 idtoeqₒ-embedding {𝓤} pua fe pe α β = II
  where
   open relational-space {𝓤} {𝓤} {𝓤}
-        (λ (X : 𝓤 ̇ ) (_<_ : X → X → 𝓤 ̇) → is-well-order _<_)
-        (λ (X : 𝓤 ̇ ) (_<_ : X → X → 𝓤 ̇) → being-well-order-is-prop _<_ fe)
+        (λ (X : 𝓤 ̇ ) (_<_ : X → X → 𝓤 ̇ ) → is-well-order _<_)
+        (λ (X : 𝓤 ̇ ) (_<_ : X → X → 𝓤 ̇ ) → being-well-order-is-prop _<_ fe)
         (λ {X R} w {x} {y} → prop-valuedness R w x y)
 
   I : (α ＝ β) ↪ (α ≅₂ β)
