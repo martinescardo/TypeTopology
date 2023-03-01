@@ -28,9 +28,11 @@ document, we provide a list of conventions and practices that we expect
   of the closing bracket in some browsers in its HTMl rendering, including
   Firefox.
 - Each module should contain a preamble that includes:
+
   * the author(s) of the module,
   * a brief summary of contents,
   * starting date of the development and dates of major additions.
+
   See [`DomainTheory.Basics.Dcpo`][2] for an example.
 
 [1]: https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Universes.html
