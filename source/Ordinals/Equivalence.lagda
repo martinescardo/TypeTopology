@@ -399,3 +399,33 @@ Ordinal-is-set-under-preunivalence {𝓤} pua fe {α} {β} =
   (≃ₒ-is-prop-valued (fe _ _) α β)
 
 \end{code}
+
+NB. The above idtoeqₒ-embedding is constructed by a non-trivial
+procedure using preunivalence and function extensionality as
+assumptions, and so we may wonder whether it really is idtoeqₒ. It
+isn't on the nose, but it is pointwise equal to it on the nose:
+
+\begin{code}
+
+idtoeqₒ-embedding-really-is-idtoeqₒ : (pua : is-preunivalent 𝓤)
+                                      (fe : FunExt)
+                                      (α β : Ordinal 𝓤)
+                                    →  ⌊ idtoeqₒ-embedding pua fe α β ⌋
+                                    ∼ idtoeqₒ α β
+idtoeqₒ-embedding-really-is-idtoeqₒ pua fe α β refl = refl
+
+\end{code}
+
+And so equal:
+
+\begin{code}
+
+idtoeqₒ-embedding-really-is-idtoeqₒ' : (pua : is-preunivalent 𝓤)
+                                       (fe : FunExt)
+                                       (α β : Ordinal 𝓤)
+                                     →  ⌊ idtoeqₒ-embedding pua fe α β ⌋
+                                     ＝ idtoeqₒ α β
+idtoeqₒ-embedding-really-is-idtoeqₒ' pua fe α β =
+ dfunext (fe _ _) (idtoeqₒ-embedding-really-is-idtoeqₒ pua fe α β)
+
+\end{code}
