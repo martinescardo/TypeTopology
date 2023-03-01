@@ -123,3 +123,63 @@ module relational-space
   (A ≅₂ B) □
 
 \end{code}
+
+After a comment by Peter Lumsdaine, we don't need propositional
+extensionality if we prove the above directly without the detour via
+the equivalence:
+
+\begin{code}
+
+ ≅₁-embeds-into-≅₂ : is-preunivalent 𝓥
+                   → Fun-Ext
+                   → (A B : M) → (A ≅₁ B) ↪ (A ≅₂ B)
+ ≅₁-embeds-into-≅₂ pua fe A@(X , R , a) B@(Y , S , b) =
+  NatΣ-embedding
+   (λ f → (λ (f-is-equiv , φ) → f-is-equiv , (λ x x' → g f x x' (φ x x'))) ,
+          (×-is-embedding
+            id
+            (λ (φ : (x x' : X) → R x x' ＝ S (f x) (f x')) x x' → g f x x' (φ x x'))
+            id-is-embedding
+            (NatΠ-is-embedding
+              (λ x → ∀ x' → R x x' ＝ S (f x) (f x'))
+              (λ x → ∀ x' → R x x' ⇔ S (f x) (f x'))
+              (λ x (ψ : (x' : X) → R x x' ＝ S (f x) (f x')) → NatΠ (g f x) ψ)
+              fe
+              (λ x → NatΠ-is-embedding
+                      (λ x' → R x x' ＝ S (f x) (f x'))
+                      (λ x' → R x x' ⇔ S (f x) (f x'))
+                      (g f x)
+                      fe
+                      (g-is-embedding f x)))))
+  where
+   g : (f : X → Y) (x x' : X)
+     → R x x' ＝ S (f x) (f x')
+     → R x x' ⇔ S (f x) (f x')
+   g f x x' p = Idtofun p , Idtofun (p ⁻¹)
+
+   g-is-embedding : (f : X → Y) (x x' : X)
+                  → is-embedding (g f x x')
+   g-is-embedding f x x' =
+    maps-of-props-are-embeddings
+     (g f x x')
+     (subtype-of-prop-is-prop
+       (idtoeq (R x x') (S (f x) (f x')))
+       (embeddings-are-lc (idtoeq _ _) (pua _ _))
+       (Σ-is-prop
+         (Π-is-prop fe (λ _ → rel-is-prop-valued b))
+         (being-equiv-is-prop'' fe)))
+       (×-is-prop
+         (Π-is-prop fe (λ _ → rel-is-prop-valued b))
+         (Π-is-prop fe (λ _ → rel-is-prop-valued a)))
+
+ M-embedding₂-bis : is-preunivalent 𝓤
+                  → is-preunivalent 𝓥
+                  → Fun-Ext
+                  → (A B : M) → (A ＝ B) ↪ (A ≅₂ B)
+ M-embedding₂-bis pua pua' fe A B =
+  (A ＝ B) ↪⟨ M-embedding₁ pua fe A B ⟩
+  (A ≅₁ B) ↪⟨ ≅₁-embeds-into-≅₂ pua' fe A B ⟩
+  (A ≅₂ B) □
+
+
+\end{code}
