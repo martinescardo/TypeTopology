@@ -327,7 +327,7 @@ being-totally-separated-is-prop {𝓤} fe X = γ
   l = ap f
 
   γ : is-prop (is-totally-separated X)
-  γ = subtype-of-prop-is-prop g l (prop-criterion p)
+  γ = subtypes-of-props-are-props' g l (prop-criterion p)
 
 \end{code}
 

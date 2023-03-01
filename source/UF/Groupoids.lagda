@@ -32,21 +32,8 @@ is-groupoid : 𝓤 ̇ → 𝓤 ̇
 is-groupoid X = {x y : X} → is-set (x ＝ y)
 
 being-groupoid-is-prop : funext 𝓤 𝓤 → {X : 𝓤 ̇} → is-prop (is-groupoid X)
-being-groupoid-is-prop fe {X} = subtype-of-prop-is-prop g (ap f) (being-groupoid-is-prop' fe)
-  where
-    is-groupoid' : 𝓤 ̇ → 𝓤 ̇
-    is-groupoid' X = (x y : X) → is-set (x ＝ y)
-
-    being-groupoid-is-prop' : funext 𝓤 𝓤 → {X : 𝓤 ̇} → is-prop (is-groupoid' X)
-    being-groupoid-is-prop' fe {X} = Π-is-prop fe
-                                     (λ x → Π-is-prop fe (λ y → being-set-is-prop fe))
-
-    f : {X : 𝓤 ̇} → is-groupoid' X → is-groupoid X
-    f i {x} {y} = i x y
-
-    g : {X : 𝓤 ̇} → is-groupoid X → is-groupoid' X
-    g i x y = i {x} {y}
-
+being-groupoid-is-prop fe = Π-is-prop' fe (λ x →
+                            Π-is-prop' fe (λ x' → being-set-is-prop fe))
 \end{code}
 
 UF.hlevels uses global univalence.
@@ -57,7 +44,7 @@ module hleveltwo (ua : Univalence)  where
 
   open import UF.hlevels ua
 
-  private  
+  private
     fe : funext 𝓤 𝓤
     fe {𝓤} = univalence-gives-funext (ua 𝓤)
 
@@ -89,7 +76,7 @@ This is here for want of a better place.
 
   is-set-is-of-hlevel-one-equivalent : (X : 𝓤 ̇) →
                                        is-set X ≃ X is-of-hlevel 1
-  is-set-is-of-hlevel-one-equivalent X = logically-equivalent-props-are-equivalent 
+  is-set-is-of-hlevel-one-equivalent X = logically-equivalent-props-are-equivalent
                                                 (being-set-is-prop fe)
                                                 (hlevel-relation-is-prop 1 X)
                                                 (is-set-is-of-hlevel-one X)

@@ -55,7 +55,7 @@ module _ {𝓤 𝓥 𝓦 𝓣}
  pair-fun-is-embedding e d (y , b) = h
   where
    i : is-prop (pair-fun-fiber' y b)
-   i = subtype-of-prop-is-prop
+   i = subtypes-of-props-are-props'
         pr₁
         (pr₁-lc (λ {w} → d (pr₁ w) (transport⁻¹ B (pr₂ w) b)))
         (e y)

@@ -47,7 +47,7 @@ id-is-embedding = singleton-types'-are-props
   T z = Σ (y , _) ꞉ fiber g z , fiber f y
 
   T-is-prop : (z : Z) → is-prop (T z)
-  T-is-prop z = subtype-of-prop-is-prop pr₁ (pr₁-lc (λ {t} → e (pr₁ t))) (d z)
+  T-is-prop z = subtypes-of-props-are-props' pr₁ (pr₁-lc (λ {t} → e (pr₁ t))) (d z)
 
   φ : (z : Z) → fiber (g ∘ f) z → T z
   φ z (x , p) = (f x , p) , x , refl
@@ -59,7 +59,7 @@ id-is-embedding = singleton-types'-are-props
   γφ .(g (f x)) (x , refl) = refl
 
   h : (z : Z) → is-prop (fiber (g ∘ f) z)
-  h z = subtype-of-prop-is-prop
+  h z = subtypes-of-props-are-props'
          (φ z)
          (sections-are-lc (φ z) (γ z , (γφ z)))
          (T-is-prop z)
@@ -154,6 +154,20 @@ equivs-embedding e = ⌜ e ⌝ , equivs-are-embeddings ⌜ e ⌝ (⌜⌝-is-equi
 embeddings-are-lc : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                   → is-embedding f → left-cancellable f
 embeddings-are-lc f e {x} {x'} p = ap pr₁ (e (f x) (x , refl) (x' , (p ⁻¹)))
+
+subtypes-of-props-are-props : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (e : X → Y)
+                             → is-embedding e
+                             → is-prop Y
+                             → is-prop X
+subtypes-of-props-are-props e i =
+ subtypes-of-props-are-props' e (embeddings-are-lc e i)
+
+subtypes-of-sets-are-sets : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (e : X → Y)
+                          → is-embedding e
+                          → is-set Y
+                          → is-set X
+subtypes-of-sets-are-sets e i =
+ subtypes-of-sets-are-sets' e (embeddings-are-lc e i)
 
 is-embedding' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 is-embedding' f = ∀ x x' → is-equiv (ap f {x} {x'})

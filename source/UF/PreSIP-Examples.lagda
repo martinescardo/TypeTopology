@@ -162,9 +162,9 @@ the equivalence:
    g-is-embedding f x x' =
     maps-of-props-are-embeddings
      (g f x x')
-     (subtype-of-prop-is-prop
+     (subtypes-of-props-are-props
        (idtoeq (R x x') (S (f x) (f x')))
-       (embeddings-are-lc (idtoeq _ _) (pua _ _))
+       (pua (R x x') (S (f x) (f x')))
        (Σ-is-prop
          (Π-is-prop fe (λ _ → rel-is-prop-valued b))
          (being-equiv-is-prop'' fe)))

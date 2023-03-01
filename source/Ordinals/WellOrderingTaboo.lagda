@@ -137,7 +137,7 @@ module swan
    S' : 𝓤 ⁺ ̇
    S' = Σ Q ꞉ Ω 𝓤 , ¬¬ (Q holds ＝ P)
    S'-is-set : is-set S'
-   S'-is-set = subtypes-of-sets-are-sets pr₁ (pr₁-lc (negations-are-props fe))
+   S'-is-set = subtypes-of-sets-are-sets' pr₁ (pr₁-lc (negations-are-props fe))
                 (Ω-is-set fe pe)
 
  all-elements-are-¬¬-equal : (x y : S) → ¬¬ (x ＝ y)

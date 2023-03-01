@@ -393,11 +393,9 @@ Ordinal-is-set-under-preunivalence : is-preunivalent 𝓤
                                    → FunExt
                                    → is-set (Ordinal 𝓤)
 Ordinal-is-set-under-preunivalence {𝓤} pua fe {α} {β} =
- subtype-of-prop-is-prop
+ subtypes-of-props-are-props
   ⌊ idtoeqₒ-embedding pua fe α β ⌋
-  (embeddings-are-lc
-    ⌊ idtoeqₒ-embedding pua fe α β ⌋
-    ⌊ idtoeqₒ-embedding pua fe α β ⌋-is-embedding)
+  ⌊ idtoeqₒ-embedding pua fe α β ⌋-is-embedding
   (≃ₒ-is-prop-valued (fe _ _) α β)
 
 \end{code}

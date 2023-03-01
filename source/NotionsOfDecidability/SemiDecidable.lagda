@@ -404,7 +404,7 @@ instance
                          Ωˢᵈ-to-Ω-left-cancellable (Ω-is-set fe pe)
 
 Ωˢᵈ-is-set : is-set (Ωˢᵈ 𝓤)
-Ωˢᵈ-is-set = subtypes-of-sets-are-sets ι Ωˢᵈ-to-Ω-left-cancellable
+Ωˢᵈ-is-set = subtypes-of-sets-are-sets' ι Ωˢᵈ-to-Ω-left-cancellable
               (Ω-is-set fe pe)
 
 Ωᵈᵉᶜ : (𝓤 : Universe) → 𝓤 ⁺ ̇
