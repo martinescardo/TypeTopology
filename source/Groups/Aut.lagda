@@ -38,7 +38,7 @@ must take it into account whenever using this group structure on
 Aut(X).
 
 \begin{code}
-module _ (fe : funext 𝓤 𝓤) (X : 𝓤 ̇) (i : is-set X) where
+module _ (fe : funext 𝓤 𝓤) (X : 𝓤 ̇ )(i : is-set X) where
 
   is-set-Aut : is-set (Aut X)
   is-set-Aut = Σ-is-set
@@ -110,11 +110,11 @@ being-equiv-is-prop.
 \end{code}
 
 If φ is an equivalence between X and Y, then it induces a morphism
-from Aut X to Aut Y. 
+from Aut X to Aut Y.
 
 \begin{code}
 
-𝓐ut : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (X ≃ Y) → Aut X → Aut Y
+𝓐ut : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X ≃ Y) → Aut X → Aut Y
 𝓐ut φ = λ f → (≃-sym φ ● f ) ● φ
 
 \end{code}
@@ -125,8 +125,8 @@ structures defined above.
 \begin{code}
 
 module _ (fe : FunExt)
-         (X : 𝓤 ̇) (i : is-set X)
-         (Y : 𝓥 ̇) (j : is-set Y)
+         (X : 𝓤 ̇ )(i : is-set X)
+         (Y : 𝓥 ̇ )(j : is-set Y)
          (φ : X ≃ Y)  where
 
    is-hom-𝓐ut : is-hom (𝔸ut (fe 𝓤 𝓤) X i) (𝔸ut (fe 𝓥 𝓥) Y j) (𝓐ut φ)
@@ -140,10 +140,6 @@ module _ (fe : FunExt)
            (g ● ≃-refl X) ● f       ＝⟨ ap (_● f) (ap (g ●_) (≃-sym-right-inverse fe φ) ⁻¹) ⟩
            (g ● (φ ● ≃-sym φ)) ● f  ＝⟨ ap (_● f) (≃-assoc fe g φ (≃-sym φ) ) ⟩
            ((g ● φ) ● ≃-sym φ) ● f  ＝⟨ (≃-assoc fe (g ● φ) (≃-sym φ) f) ⁻¹   ⟩
-           (g ● φ) ● (≃-sym φ ● f) ∎ 
+           (g ● φ) ● (≃-sym φ ● f) ∎
 
 \end{code}
-
-
-
-

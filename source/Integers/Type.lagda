@@ -67,14 +67,14 @@ standard induction principle.
 
 \begin{code}
 
-ℤ-cases : {A : ℤ → 𝓤 ̇} → (x : ℤ)
+ℤ-cases : {A : ℤ → 𝓤 ̇ } → (x : ℤ)
                         → ((y : ℤ) → x ＝ succℤ y → A x)
                         → ((y : ℤ) → x ＝ predℤ y → A x)
                         → A x
 ℤ-cases (pos x)     cₛ cₚ = cₚ (pos (succ x)) refl
 ℤ-cases (negsucc x) cₛ cₚ = cₛ (negsucc (succ x)) refl
 
-ℤ-induction : {A : ℤ → 𝓤 ̇} → A (pos 0)
+ℤ-induction : {A : ℤ → 𝓤 ̇ } → A (pos 0)
                             → ((k : ℤ) → A k → A (succℤ k))
                             → ((k : ℤ) → A (succℤ k) → A k)
                             → (x : ℤ)
@@ -84,7 +84,7 @@ standard induction principle.
 ℤ-induction c₀ cₛ cₙ (negsucc 0)        = cₙ (negsucc 0) c₀
 ℤ-induction c₀ cₛ cₙ (negsucc (succ x)) = cₙ (negsucc (succ x)) (ℤ-induction c₀ cₛ cₙ (negsucc x))
 
-ℤ-induction' : {A : ℤ → 𝓤 ̇} → A (pos 0)
+ℤ-induction' : {A : ℤ → 𝓤 ̇ } → A (pos 0)
                             → ((k : ℤ) → A k → A (succℤ k))
                             → ((k : ℤ) → A k → A (predℤ k))
                             → (x : ℤ)
@@ -158,7 +158,7 @@ succℤ-no-fp (negsucc (succ x)) e = succ-no-fp x (negsucc-lc (e ⁻¹))
 
 is-pos-succ-succℤ : (x : ℤ) → is-pos-succ x → is-pos-succ (succℤ x)
 is-pos-succ-succℤ (pos 0)        g = 𝟘-elim g
-is-pos-succ-succℤ (pos (succ x)) g = g 
+is-pos-succ-succℤ (pos (succ x)) g = g
 is-pos-succ-succℤ (negsucc x)    g = 𝟘-elim g
 
 from-is-zero : (z : ℤ) → is-zero z → z ＝ pos 0

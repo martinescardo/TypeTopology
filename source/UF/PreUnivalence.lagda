@@ -41,7 +41,7 @@ K-gives-preunivalence : K-axiom 𝓤
                       → K-axiom (𝓤 ⁺)
                       → is-preunivalent 𝓤
 K-gives-preunivalence {𝓤} k k' X Y e (p , _) (p' , _) =
- to-subtype-＝ (λ _ → k (X ≃ Y)) (k' (𝓤  ̇) p p')
+ to-subtype-＝ (λ _ → k (X ≃ Y)) (k' (𝓤  ̇ )p p')
 
 K-gives-Preunivalence : K-Axiom → Preunivalence
 K-gives-Preunivalence k 𝓤 = K-gives-preunivalence (k 𝓤) (k (𝓤 ⁺))

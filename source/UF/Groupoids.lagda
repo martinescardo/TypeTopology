@@ -31,7 +31,7 @@ open import UF.EquivalenceExamples
 is-groupoid : 𝓤 ̇ → 𝓤 ̇
 is-groupoid X = {x y : X} → is-set (x ＝ y)
 
-being-groupoid-is-prop : funext 𝓤 𝓤 → {X : 𝓤 ̇} → is-prop (is-groupoid X)
+being-groupoid-is-prop : funext 𝓤 𝓤 → {X : 𝓤 ̇ } → is-prop (is-groupoid X)
 being-groupoid-is-prop fe = Π-is-prop' fe (λ x →
                             Π-is-prop' fe (λ x' → being-set-is-prop fe))
 \end{code}
@@ -48,14 +48,14 @@ module hleveltwo (ua : Univalence)  where
     fe : funext 𝓤 𝓤
     fe {𝓤} = univalence-gives-funext (ua 𝓤)
 
-  is-groupoid-is-of-hlevel-two : (X : 𝓤 ̇) → is-groupoid X → X is-of-hlevel 2
+  is-groupoid-is-of-hlevel-two : (X : 𝓤 ̇ )→ is-groupoid X → X is-of-hlevel 2
   is-groupoid-is-of-hlevel-two X i x y = λ p q → i
 
-  is-of-hlevel-two-is-groupoid : (X : 𝓤 ̇) → X is-of-hlevel 2 → is-groupoid X
+  is-of-hlevel-two-is-groupoid : (X : 𝓤 ̇ )→ X is-of-hlevel 2 → is-groupoid X
   is-of-hlevel-two-is-groupoid X h {x} {y} = h x y _ _
 
 
-  is-groupoid-is-of-hlevel-two-equivalent : (X : 𝓤 ̇) →
+  is-groupoid-is-of-hlevel-two-equivalent : (X : 𝓤 ̇ )→
                                             is-groupoid X ≃ X is-of-hlevel 2
   is-groupoid-is-of-hlevel-two-equivalent X = logically-equivalent-props-are-equivalent
                                               (being-groupoid-is-prop fe)
@@ -68,13 +68,13 @@ This is here for want of a better place.
 
 \begin{code}
 
-  is-of-hlevel-one-is-set : (X : 𝓤 ̇) → X is-of-hlevel 1 → is-set X
+  is-of-hlevel-one-is-set : (X : 𝓤 ̇ )→ X is-of-hlevel 1 → is-set X
   is-of-hlevel-one-is-set X h {x} {y} = h x y
 
-  is-set-is-of-hlevel-one : (X : 𝓤 ̇) → is-set X → X is-of-hlevel 1
+  is-set-is-of-hlevel-one : (X : 𝓤 ̇ )→ is-set X → X is-of-hlevel 1
   is-set-is-of-hlevel-one X i x y = i {x} {y}
 
-  is-set-is-of-hlevel-one-equivalent : (X : 𝓤 ̇) →
+  is-set-is-of-hlevel-one-equivalent : (X : 𝓤 ̇ )→
                                        is-set X ≃ X is-of-hlevel 1
   is-set-is-of-hlevel-one-equivalent X = logically-equivalent-props-are-equivalent
                                                 (being-set-is-prop fe)

@@ -52,7 +52,7 @@ abstract
               → happly (dfunext fe h) ＝ h
  happly-funext fe f g = inverses-are-sections happly (fe f g)
 
- funext-happly : {X : 𝓤 ̇} {A : X → 𝓥 ̇} (fe : funext 𝓤 𝓥)
+ funext-happly : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (fe : funext 𝓤 𝓥)
                → (f g : Π A) (h : f ＝ g)
                → dfunext fe (happly h) ＝ h
  funext-happly fe f g refl = inverses-are-retractions happly (fe f f) refl
@@ -70,7 +70,7 @@ happly-lc : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
 happly-lc fe f g = section-lc happly (equivs-are-sections happly (fe f g))
 
 inverse-happly-is-dfunext : {𝓤 𝓥 : Universe}
-                            {A : 𝓤 ̇} {B : 𝓥 ̇}
+                            {A : 𝓤 ̇ } {B : 𝓥 ̇ }
                             (fe0 : funext 𝓤 𝓥)
                             (fe1 : funext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥))
                             (f g : A → B)
@@ -106,7 +106,7 @@ ap-funext f g k h fe x = ap (λ - → k (- x)) (dfunext fe h)    ＝⟨ refl ⟩
                            I  = (ap-ap (λ - → - x) k (dfunext fe h))⁻¹
                            II = ap (λ - → ap k (- x)) (happly-funext fe f g h)
 
-ap-precomp-funext : {X : 𝓤 ̇} {Y : 𝓥 ̇} {A : 𝓦 ̇}
+ap-precomp-funext : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ }
                     (f g : X → Y)
                     (k : A → X) (h : f ∼ g)
                     (fe₀ : funext 𝓤 𝓥)

@@ -97,7 +97,7 @@ sns-data = (ι , ρ , θ)
   h : {X : 𝓤₀ ̇ } {f g : Tℤ-structure X}
     → canonical-map ι ρ f g ∼ id {𝓤₀} {f ＝ g}
   h refl = refl
-  θ : {X : 𝓤₀ ̇} (f g : Tℤ-structure X)
+  θ : {X : 𝓤₀ ̇ } (f g : Tℤ-structure X)
     → is-equiv (canonical-map ι ρ f g)
   θ f g = equiv-closed-under-∼ _ _ (id-is-equiv (f ＝ g)) h
 

@@ -52,7 +52,7 @@ This holds for various functions (-, + , *, _², sin, cos), doesn't seem to be t
 
 \begin{code}
 
-is-continuous : {M₁ : 𝓤 ̇} {M₂ : 𝓥 ̇}
+is-continuous : {M₁ : 𝓤 ̇ } {M₂ : 𝓥 ̇ }
            → (m₁ : metric-space M₁)
            → (m₂ : metric-space M₂)
            → (f : M₁ → M₂)
@@ -60,7 +60,7 @@ is-continuous : {M₁ : 𝓤 ̇} {M₂ : 𝓥 ̇}
 is-continuous {𝓤} {𝓥} {M₁} {M₂} (B₁ , _) (B₂ , _) f =
  (x y : M₁) → ((ε , ε>0) : ℚ₊) → Σ (δ , δ>0) ꞉ ℚ₊ , (B₁ x y δ δ>0 → B₂ (f x) (f y) ε ε>0)
 
-is-uniformly-continuous : {M₁ : 𝓤 ̇} {M₂ : 𝓥 ̇}
+is-uniformly-continuous : {M₁ : 𝓤 ̇ } {M₂ : 𝓥 ̇ }
            → (m₁ : metric-space M₁)
            → (m₂ : metric-space M₂)
            → (f : M₁ → M₂)
@@ -68,7 +68,7 @@ is-uniformly-continuous : {M₁ : 𝓤 ̇} {M₂ : 𝓥 ̇}
 is-uniformly-continuous {𝓤} {𝓥} {M₁} {M₂} (B₁ , _) (B₂ , _) f =
  ((ε , ε>0) : ℚ₊) → Σ (δ , δ>0) ꞉ ℚ₊ , ((x y : M₁) → (B₁ x y δ δ>0 → B₂ (f x) (f y) ε ε>0))
 
-uniform-modulus : {M₁ : 𝓤 ̇} {M₂ : 𝓥 ̇}
+uniform-modulus : {M₁ : 𝓤 ̇ } {M₂ : 𝓥 ̇ }
         → (m₁ : metric-space M₁)
         → (m₂ : metric-space M₂)
         → (f : M₁ → M₂)
@@ -77,7 +77,7 @@ uniform-modulus : {M₁ : 𝓤 ̇} {M₂ : 𝓥 ̇}
         → ℚ₊
 uniform-modulus _ _ f is-cont ε = pr₁ (is-cont ε)
 
-modulus : {M₁ : 𝓤 ̇} {M₂ : 𝓥 ̇}
+modulus : {M₁ : 𝓤 ̇ } {M₂ : 𝓥 ̇ }
         → (m₁ : metric-space M₁)
         → (m₂ : metric-space M₂)
         → (f : M₁ → M₂)
@@ -93,7 +93,7 @@ _ℚ₊≤_ : ℚ₊ → ℚ₊ → 𝓤₀ ̇
 _ℚ₊+_ : ℚ₊ → ℚ₊ → ℚ₊
 (ε₁ , 0<ε₁) ℚ₊+ (ε₂ , 0<ε₂) = (ε₁ + ε₂) , ℚ<-adding-zero ε₁ ε₂ 0<ε₁ 0<ε₂
 
-modulus-superadditive : {M₁ : 𝓤 ̇} {M₂ : 𝓥 ̇}
+modulus-superadditive : {M₁ : 𝓤 ̇ } {M₂ : 𝓥 ̇ }
                       → (m₁ : metric-space M₁)
                       → (m₂ : metric-space M₂)
                       → (f : M₁ → M₂)
@@ -104,7 +104,7 @@ modulus-superadditive : {M₁ : 𝓤 ̇} {M₂ : 𝓥 ̇}
 modulus-superadditive m₁ m₂ f is-cont  = λ x y ε₁ ε₂ →
  (modulus m₁ m₂ f is-cont x y ε₁ ℚ₊+ modulus m₁ m₂ f is-cont x y ε₂) ℚ₊≤ modulus m₁ m₂ f is-cont x y (ε₁ ℚ₊+ ε₂)
 
-uniform-modulus-superadditive : {M₁ : 𝓤 ̇} {M₂ : 𝓥 ̇}
+uniform-modulus-superadditive : {M₁ : 𝓤 ̇ } {M₂ : 𝓥 ̇ }
                               → (m₁ : metric-space M₁)
                               → (m₂ : metric-space M₂)
                               → (f : M₁ → M₂)

@@ -310,7 +310,7 @@ decomposition-of-Ω-gives-WEM {𝓤} (f , (p₀@(P₀ , i₀) , e₀) , (p₁@(P
   III₁ : (q : Ω 𝓤) → f (g q) ＝ ₁ → ¬ (q holds) + ¬¬ (q holds)
   III₁ q e = inl (contrapositive (I₀ q) (equal-₁-different-from-₀ e))
 
-  IV : (Q : 𝓤  ̇) → is-prop Q → ¬ Q + ¬¬ Q
+  IV : (Q : 𝓤  ̇ )→ is-prop Q → ¬ Q + ¬¬ Q
   IV Q j = 𝟚-equality-cases (III₀ (Q , j)) (III₁ (Q , j))
 
 decomposition-of-type-with-Ω-paths-gives-WEM : {X : 𝓤 ̇ }

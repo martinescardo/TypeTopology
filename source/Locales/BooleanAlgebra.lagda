@@ -59,7 +59,7 @@ ba-data 𝓥 A = (A → A → Ω 𝓥 )  -- order
 
 \begin{code}
 
-module Complementation {A : 𝓤  ̇} (iss : is-set A) (𝟎 𝟏 : A) (_⋏_ _⋎_ : A → A → A) where
+module Complementation {A : 𝓤  ̇ } (iss : is-set A) (𝟎 𝟏 : A) (_⋏_ _⋎_ : A → A → A) where
 
  _complements_ : A → A → Ω 𝓤
  x′ complements x = (x ⋏ x′ ＝[ iss ]＝ 𝟎) ∧ (x ⋎ x′ ＝[ iss ]＝ 𝟏)
@@ -68,7 +68,7 @@ module Complementation {A : 𝓤  ̇} (iss : is-set A) (𝟎 𝟏 : A) (_⋏_ _�
 
 \begin{code}
 
-satisfies-ba-laws : {A : 𝓤  ̇} → ba-data 𝓥 A → 𝓤 ⊔ 𝓥  ̇
+satisfies-ba-laws : {A : 𝓤  ̇ } → ba-data 𝓥 A → 𝓤 ⊔ 𝓥  ̇
 satisfies-ba-laws {𝓤 = 𝓤} {𝓥 = 𝓥} {A = A} (_≤_ , 𝟏 , _⊓_ , 𝟎 , _⋎_ , ¬_) =
  Σ p ꞉ is-partial-order A _≤_ , rest p holds
   where
