@@ -1196,4 +1196,62 @@ module AdditionalLemmata (X : Locale (𝓤 ⁺) 𝓤 𝓤) where
                        Ⅰ = ∨[ 𝒪 X ]-left-monotone (⋁[ 𝒪 X ]-upper S i)
                        Ⅱ = ∨[ 𝒪 X ]-right-monotone (⋁[ 𝒪 X ]-upper T j)
 
+module SomeOtherLemmata
+        (A   X               : Locale (𝓤 ⁺) 𝓤 𝓤)
+        (σᴰ                  : spectralᴰ (𝒪 A))
+        (𝕜                   : is-compact (𝒪 X) holds)
+        (𝕫ᴰ                  : zero-dimensionalᴰ (𝒪 X))
+        (𝒻                   : X ─c→ A)
+        (f-is-a-spectral-map : is-spectral-map (𝒪 A) (𝒪 X) 𝒻 holds)
+         where
+
+ open BasicComplements (𝒪 X) 𝕜 𝕫ᴰ
+ open ContinuousMapNotation X A
+
+ ℬA : Fam 𝓤 ⟨ 𝒪 A ⟩
+ ℬA = basisₛ (𝒪 A) σᴰ
+
+ ℬX : Fam 𝓤 ⟨ 𝒪 X ⟩
+ ℬX = pr₁ 𝕫ᴰ
+
+ ¬𝒻 : index ℬA → ⟨ 𝒪 X ⟩
+ ¬𝒻 i = ¬ₓ (𝒻 ⋆∙ (ℬA [ i ]) , κ)
+         where
+          κ : is-compact-open (𝒪 X) (𝒻 ⋆∙ (ℬA [ i ])) holds
+          κ = f-is-a-spectral-map (ℬA [ i ]) (pr₁ (pr₂ (pr₂ σᴰ)) i)
+
+ ¬𝒻-lemma : (i : index ℬA) (ℬᵢ′ : ⟨ 𝒪 A ⟩)
+         → is-complement-of (𝒪 A) ℬᵢ′ (ℬA [ i ])
+         → ¬𝒻 i ＝ 𝒻 ⋆∙ ℬᵢ′
+ ¬𝒻-lemma i ℬᵢ′ (p , q) =
+  complements-are-unique (𝒪 X) (𝒻 ⋆∙ (ℬA [ i ])) (¬𝒻 i) (𝒻 ⋆∙ ℬᵢ′) † ‡
+   where
+   † : is-complement-of (𝒪 X) (¬𝒻 i) (𝒻 ⋆∙ (ℬA [ i ]))
+   † = ¬ₓ-gives-complement (𝒻 ⋆∙ (ℬA [ i ])) {!!}
+
+   ‡₁ : ℬᵢ′ ∧[ 𝒪 A ] (ℬA [ i ]) ＝ 𝟎[ 𝒪 A ]
+   ‡₁ = ℬᵢ′     ∧[ 𝒪 A ] (ℬA [ i ]) ＝⟨ ∧[ 𝒪 A ]-is-commutative ℬᵢ′ (ℬA [ i ]) ⟩
+         ℬA [ i ] ∧[ 𝒪 A ] ℬᵢ′      ＝⟨ p                                     ⟩
+         𝟎[ 𝒪 A ]                   ∎
+
+   ‡₂ : ℬᵢ′ ∨[ 𝒪 A ] (ℬA [ i ]) ＝ 𝟏[ 𝒪 A ]
+   ‡₂ = ℬᵢ′ ∨[ 𝒪 A ] (ℬA [ i ])     ＝⟨ ∨[ 𝒪 A ]-is-commutative ℬᵢ′ (ℬA [ i ]) ⟩
+         (ℬA [ i ]) ∨[ 𝒪 A ] ℬᵢ′    ＝⟨ q ⟩
+         𝟏[ 𝒪 A ]                   ∎
+
+   ‡ : is-complement-of (𝒪 X) (𝒻 ⋆∙ ℬᵢ′) (𝒻 ⋆∙ (ℬA [ i ]))
+   ‡ = frame-homomorphisms-preserve-complements (𝒪 A) (𝒪 X) 𝒻 (‡₁ , ‡₂)
+
+ ¬𝒻-antitone : (i j : index ℬA)
+             → ((ℬA [ i ]) ≤[ poset-of (𝒪 A) ] (ℬA [ j ])) holds
+             → (¬𝒻 j ≤[ poset-of (𝒪 X) ] ¬𝒻 i) holds
+ ¬𝒻-antitone i j p = {!!}
+  where
+   open PosetReasoning (poset-of (𝒪 X))
+
+   ♣ : ((¬𝒻 j ∧[ 𝒪 X ] 𝒻 ⋆∙ (ℬA [ j ])) ≤[ poset-of (𝒪 X) ] 𝟎[ 𝒪 X ]) holds
+   ♣ = ¬𝒻 j ∧[ 𝒪 X ] 𝒻 ⋆∙ (ℬA [ j ])                   ≤⟨ {!!} ⟩
+       𝒻 ⋆∙ (¬ₓ (ℬA [ i ])) ∧[ 𝒪 X ] 𝒻 ⋆∙ (ℬA [ j ])   ≤⟨ {!!} ⟩
+       𝟎[ 𝒪 X ]                                        ■
+
 \end{code}
