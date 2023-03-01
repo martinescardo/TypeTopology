@@ -10,10 +10,26 @@ open import UF.FunExt
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
+open import Posets.JoinSemiLattices
+
 module Posets.KuratowskiClosure
         (fe : Fun-Ext)
        where
 open import Posets.Poset fe
 open import Posets.Closure fe
+
+module _ (D : JoinSemiLattice 𝓥 𝓣) where
+  open JoinSemiLattice D
+  open MonotoneAxioms _⊑_ _⊑_
+  open Closure _⊑_
+
+  kuratowski-closure-axioms : (L → L) → _
+  kuratowski-closure-axioms f
+    = is-monotone f
+    × (closure-η f × closure-μ f)
+    × (preserves-⊥ × preserves-∨)
+   where
+    preserves-⊥ = f ⊥ ＝ ⊥
+    preserves-∨ = ∀ x y → f (x ∨ y) ＝ f x ∨ f y
 
 \end{code}

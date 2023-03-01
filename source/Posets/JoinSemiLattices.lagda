@@ -16,7 +16,7 @@ open import Fin.Type
 
 open import UF.Subsingletons
 
-record JoinSemiLattice (𝓥 𝓣 : Universe) : 𝓤ω where
+record JoinSemiLattice (𝓥 𝓣 : Universe) : 𝓣 ⁺ ⊔ 𝓥 ⁺ ̇ where
   field
     L : 𝓥 ̇
     L-is-set : is-set L
