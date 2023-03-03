@@ -21,7 +21,7 @@ open import TypeTopology.DiscreteAndSeparated
 open import UF.Equiv
 open import UF.Retracts
 
-+𝟙-cancellable : {X : 𝓤 ̇ } {Y : 𝓥 ̇}
++𝟙-cancellable : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                → (X + 𝟙 {𝓦} ≃ Y + 𝟙 {𝓣})
                → X ≃ Y
 +𝟙-cancellable {𝓤} {𝓥} {𝓦} {𝓣} {X} {Y} (φ , i) = qinveq f' (g' , η' , ε')

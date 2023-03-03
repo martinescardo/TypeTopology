@@ -34,19 +34,16 @@ private
 
 open PropositionalTruncation pt
 
+open import CoNaturals.GenericConvergentSequence
 open import MLTT.Plus-Properties
 open import MLTT.Spartan
-
 open import Notation.CanonicalMap
-
-open import UF.Embeddings
-open import UF.ImageAndSurjection pt
-open import UF.Size
-
 open import Ordinals.Arithmetic fe
 open import Ordinals.Arithmetic-Properties ua
 open import Ordinals.Brouwer
+open import Ordinals.Equivalence
 open import Ordinals.Injectivity
+open import Ordinals.Maps
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.OrdinalOfOrdinalsSuprema ua
 open import Ordinals.ToppedArithmetic fe
@@ -55,15 +52,15 @@ open import Ordinals.TrichotomousArithmetic fe
 open import Ordinals.TrichotomousType fe
 open import Ordinals.Type
 open import Ordinals.Underlying
-
-open ordinals-injectivity fe
-
 open import TypeTopology.CompactTypes
 open import TypeTopology.GenericConvergentSequenceCompactness
 open import TypeTopology.PropTychonoff
 open import TypeTopology.SquashedSum fe
+open import UF.Embeddings
+open import UF.ImageAndSurjection pt
+open import UF.Size
 
-open import CoNaturals.GenericConvergentSequence
+open ordinals-injectivity fe
 
 module _ (sr : Set-Replacement pt) where
 
@@ -197,7 +194,7 @@ is if excluded middle holds.
    I n = comparison₀₂ em (b n)
 
    II : (n : ℕ) → extension (λ i → ⟦ b i ⟧₂) (ℕ-to-ℕ∞ n) ＝ ⟦ b n ⟧₂
-   II n = eqtoidₒ _ _ (↗-property (λ i → ⟦ b i ⟧₂) (embedding-ℕ-to-ℕ∞ fe') n)
+   II n = eqtoidₒ (ua 𝓤₀) fe' _ _ (↗-property (λ i → ⟦ b i ⟧₂) (embedding-ℕ-to-ℕ∞ fe') n)
 
    III : (n : ℕ) → ⟦ b n ⟧₀ ⊴ extension (λ i → ⟦ b i ⟧₂) (ℕ-to-ℕ∞ n)
    III n = transport (⟦_⟧₀ (b n) ⊴_) ((II n)⁻¹) (I n)

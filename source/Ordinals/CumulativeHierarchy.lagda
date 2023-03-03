@@ -114,6 +114,7 @@ private
  pe : Prop-Ext
  pe = Univalence-gives-Prop-Ext ua
 
+open import Ordinals.Equivalence
 open import Ordinals.Notions
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.Type hiding (Ord)
@@ -414,14 +415,14 @@ an arbitrary well founded order) also appears at the bottom of [Acz77, p. 743].
    𝕍-to-Ord-aux : {A : 𝓤 ̇ } → (A → 𝕍) → (A → Ord) → Ord
    𝕍-to-Ord-aux _ r = sup (λ a → r a +ₒ 𝟙ₒ)
 
-   𝕍-to-Ord-packaged : Σ ϕ ꞉ (𝕍 → Ord) , ({A : 𝓤 ̇} (f : A → 𝕍)
+   𝕍-to-Ord-packaged : Σ ϕ ꞉ (𝕍 → Ord) , ({A : 𝓤 ̇ } (f : A → 𝕍)
                                           (r : A → Ordinal 𝓤)
                                        → ϕ (𝕍-set f) ＝ 𝕍-to-Ord-aux f r)
    𝕍-to-Ord-packaged =
-    𝕍-recursion-with-computation the-type-of-ordinals-is-a-set ρ τ
+    𝕍-recursion-with-computation (the-type-of-ordinals-is-a-set (ua 𝓤) fe) ρ τ
     where
      ρ = 𝕍-to-Ord-aux
-     monotone-lemma : {A B : 𝓤 ̇} (f : A → 𝕍) (g : B → 𝕍)
+     monotone-lemma : {A B : 𝓤 ̇ } (f : A → 𝕍) (g : B → 𝕍)
                     → (r₁ : A → Ord) (r₂ : B → Ord)
                     → ((a : A) → ∥ Σ b ꞉ B , Σ p ꞉ f a ＝ g b , r₁ a ＝ r₂ b ∥)
                     → ρ f r₁ ⊴ ρ g r₂
@@ -439,7 +440,7 @@ an arbitrary well founded order) also appears at the bottom of [Acz77, p. 743].
             k = ≃ₒ-to-⊴ _ _ (idtoeqₒ _ _ (ap (_+ₒ 𝟙ₒ) q))
             l : (r₂ b +ₒ 𝟙ₒ) ⊴ ρ g r₂
             l = sup-is-upper-bound _ b
-     τ : {A B : 𝓤 ̇} (f : A → 𝕍) (g : B → 𝕍)
+     τ : {A B : 𝓤 ̇ } (f : A → 𝕍) (g : B → 𝕍)
        → (r₁ : A → Ord) (r₂ : B → Ord)
        → ((a : A) → ∥ Σ b ꞉ B , Σ p ꞉ f a ＝ g b , r₁ a ＝ r₂ b ∥)
        → ((b : B) → ∥ Σ a ꞉ A , Σ p ꞉ g b ＝ f a , r₂ b ＝ r₁ a ∥)
@@ -481,7 +482,7 @@ ordinals is crucial in proving one of the inequalities.
   𝕍-to-Ord-is-section-of-Ord-to-𝕍 =
    𝕍-prop-induction _ (λ x → Π-is-prop fe (λ _ → 𝕍-is-large-set)) ρ
     where
-     ρ : {A : 𝓤 ̇} (f : A → 𝕍)
+     ρ : {A : 𝓤 ̇ } (f : A → 𝕍)
        → ((a : A) → is-set-theoretic-ordinal (f a)
                   → Ord-to-𝕍 (𝕍-to-Ord (f a)) ＝ f a)
        → is-set-theoretic-ordinal (𝕍-set f)

@@ -799,7 +799,7 @@ module subgroup
                              h unitH           ∎))
 
      j : is-set X
-     j = subtypes-of-sets-are-sets h h-lc (group-is-set G)
+     j = subtypes-of-sets-are-sets' h h-lc (group-is-set G)
 
      τ : T X
      τ = ((_*_ , unitH) , (j , unitH-left , unitH-right , assocH)) , group-axiomH
@@ -1355,7 +1355,8 @@ module generalized-metric-space
 
  characterization-of-M-＝ ua = characterization-of-＝-with-axioms ua
                                 sns-data
-                                axioms axiomss
+                                axioms
+                                axiomss
 
  _≅'_  : M → M → 𝓤 ⊔ 𝓥 ̇
  (X , d , _) ≅' (Y , e , _)

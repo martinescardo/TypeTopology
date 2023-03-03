@@ -37,19 +37,20 @@ module Ordinals.OrdinalOfOrdinalsSuprema
        where
 
 open import MLTT.Spartan
-
-open import UF.Base hiding (_≈_)
-open import UF.Equiv
-open import UF.FunExt
-open import UF.UA-FunExt
-open import UF.PropTrunc
-open import UF.Size
-open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
+open import Ordinals.Equivalence
+open import Ordinals.Maps
 open import Ordinals.Notions hiding (is-prop-valued)
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.Type
 open import Ordinals.Underlying
+open import UF.Base hiding (_≈_)
+open import UF.Equiv
+open import UF.FunExt
+open import UF.PropTrunc
+open import UF.Size
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
+open import UF.UA-FunExt
 
 private
  fe : FunExt
@@ -290,7 +291,7 @@ induced order on Σα.
 \begin{code}
 
  ≋ : EqRel Σα
- ≋ = _≈_ , (λ _ _   → the-type-of-ordinals-is-a-set)
+ ≋ = _≈_ , (λ _ _   → the-type-of-ordinals-is-a-set (ua 𝓤) fe')
          , (λ _     → refl)
          , (λ _ _   → _⁻¹)
          , (λ _ _ _ → _∙_)
@@ -397,12 +398,12 @@ Next, we show that the quotient α/ is the least upper bound of α.
  α/-is-upper-bound i = ([_] ∘ ι i , sim)
   where
    sim : is-simulation (α i) α/-Ord (λ x → [ i , x ])
-   sim = simulation-unprime pt (α i) α/-Ord (λ x → [ i , x ])
+   sim = simulation-unprime pt fe (α i) α/-Ord (λ x → [ i , x ])
           (init-seg , order-pres)
     where
      order-pres : is-order-preserving (α i) α/-Ord (λ x → [ i , x ])
      order-pres x y l = ≺-to-≺/ {i , x} {i , y} (ι-is-order-preserving i x y l)
-     init-seg : is-initial-segment' pt (α i) α/-Ord (λ x → [ i , x ])
+     init-seg : is-initial-segment' pt fe (α i) α/-Ord (λ x → [ i , x ])
      init-seg x = /-induction ≋ (λ y → Π-is-prop fe' λ _ → ∃-is-prop) claim
       where
        claim : (p : Σα) → [ p ] ≺/ [ i , x ]
@@ -441,12 +442,12 @@ Next, we show that the quotient α/ is the least upper bound of α.
                  f/-＝-f̃ f/-＝-f̃
                  (f̃-is-order-preserving p q (≺/-to-≺ l))
    f/-is-simulation : is-simulation α/-Ord β f/
-   f/-is-simulation = simulation-unprime pt α/-Ord β f/ σ
+   f/-is-simulation = simulation-unprime pt fe α/-Ord β f/ σ
     where
-     σ : is-simulation' pt α/-Ord β f/
+     σ : is-simulation' pt fe α/-Ord β f/
      σ = init-seg , f/-is-order-preserving
       where
-       init-seg : is-initial-segment' pt α/-Ord β f/
+       init-seg : is-initial-segment' pt fe α/-Ord β f/
        init-seg = /-induction ≋ prp ρ
         where
          prp : (x : α/)
@@ -526,11 +527,11 @@ Next, we resize α/ using:
    ≈⁻r : reflexive _≈⁻_
    ≈⁻r (i , x) = ≃ₒ-refl (α i ↓ x)
    ≈⁻p : is-prop-valued _≈⁻_
-   ≈⁻p (i , x) (j , y) = ≃ₒ-is-prop-valued (α i ↓ x) (α j ↓ y)
+   ≈⁻p (i , x) (j , y) = ≃ₒ-is-prop-valued fe' (α i ↓ x) (α j ↓ y)
 
  ≋-≃-≋⁻ : {p q : Σα} → p ≈[ ≋ ] q ⇔ p ≈[ ≋⁻ ] q
  ≋-≃-≋⁻ {(i , x)} {(j , y)} = (idtoeqₒ (α i ↓ x) (α j ↓ y))
-                            , (eqtoidₒ (α i ↓ x) (α j ↓ y))
+                            , (eqtoidₒ (ua 𝓤) fe' (α i ↓ x) (α j ↓ y))
 
  private
   α/⁻ : 𝓤 ̇
@@ -920,8 +921,8 @@ Next, we resize α⁺ using:
   private
    small-image : is-small (image σ)
    small-image = replacement σ ((Σ i ꞉ I , ⟨ α i ⟩) , ≃-refl _)
-                               (λ β γ → β ≃ₒ γ , ≃-sym (UAₒ-≃ β γ))
-                               the-type-of-ordinals-is-a-set
+                               (λ β γ → β ≃ₒ γ , ≃-sym (UAₒ-≃ (ua 𝓤) fe' β γ))
+                               (the-type-of-ordinals-is-a-set (ua 𝓤) fe')
    α⁻ : 𝓤 ̇
    α⁻ = pr₁ small-image
 
@@ -944,7 +945,7 @@ Next, we resize α⁺ using:
 
   α⁻-is-upper-bound : (i : I) → α i ⊴ α⁻-Ord
   α⁻-is-upper-bound i = ⊴-trans (α i) α⁺-Ord α⁻-Ord
-                        (α⁺-is-upper-bound i)
+                       (α⁺-is-upper-bound i)
                         (≃ₒ-to-⊴ α⁺-Ord α⁻-Ord α⁺-≃ₒ-α⁻)
 
 \end{code}

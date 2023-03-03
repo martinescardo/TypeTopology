@@ -208,7 +208,7 @@ module _ (G : Group 𝓤) where
                                      h unitH ∎)
 
      j : is-set X
-     j = subtypes-of-sets-are-sets h h-lc (group-is-set G)
+     j = subtypes-of-sets-are-sets' h h-lc (group-is-set G)
 
      τ : T X
      τ = _*_ , (j , (assocH , unitH , (unitH-left , (unitH-right , group-axiomH))))

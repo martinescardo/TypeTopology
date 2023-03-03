@@ -61,7 +61,7 @@ NatΣ-embedding.:
 \begin{code}
 
 ζ-is-embedding : funext 𝓣 𝓣 → (X : 𝓤 ̇ ) (P : 𝓣 ̇ ) → is-embedding (ζ X P)
-ζ-is-embedding fe X P = ×-embedding
+ζ-is-embedding fe X P = ×-is-embedding
                          id
                          singletons-are-props
                          id-is-embedding

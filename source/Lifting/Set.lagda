@@ -35,7 +35,7 @@ lifting-of-set-is-set fe' fe pe  X i {l} {m} p q  = retract-of-prop r j p q
   j : is-prop (Σ (λ p₁ → transport (λ P → (P → X) × is-prop P)
                p₁ (pr₂ l) ＝ pr₂ m))
   j = Σ-is-prop
-       (identifications-of-props-are-props pe fe (is-defined m)
+       (identifications-with-props-are-props pe fe (is-defined m)
         (being-defined-is-prop m) (is-defined l))
        (λ d → ×-is-set (Π-is-set fe' λ _ → i)
                        (props-are-sets (being-prop-is-prop fe)))

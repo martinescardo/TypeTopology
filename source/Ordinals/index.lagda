@@ -10,13 +10,16 @@ import Ordinals.Arithmetic-Properties
 import Ordinals.Arithmetic
 import Ordinals.Brouwer
 import Ordinals.BuraliForti                   -- by Bezem, Coquand, Dybjer and Escardo.
+import Ordinals.ConvergentSequence
 import Ordinals.Closure
 import Ordinals.Codes
 import Ordinals.CumulativeHierarchy           -- by de Jong, Kraus, Nordvall Forsberg, and Xu.
 import Ordinals.CumulativeHierarchy-Addendum  -- by de Jong, Kraus, Nordvall Forsberg, and Xu.
+import Ordinals.Equivalence
 import Ordinals.Indecomposable
 import Ordinals.Injectivity
 import Ordinals.LexicographicOrder
+import Ordinals.Maps
 import Ordinals.NotationInterpretation
 import Ordinals.NotationInterpretation0
 import Ordinals.NotationInterpretation1

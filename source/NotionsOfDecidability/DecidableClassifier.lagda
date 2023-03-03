@@ -65,7 +65,7 @@ module _
   where
    σ : (P : Ω 𝓤) → is-prop (decidable (P holds))
    σ P = decidability-of-prop-is-prop (lower-funext 𝓤 𝓤 fe) (holds-is-prop P)
-   τ : (X : 𝓤 ̇) → is-prop (is-prop X)
+   τ : (X : 𝓤 ̇ )→ is-prop (is-prop X)
    τ _ = being-prop-is-prop fe
 
  𝟚-is-the-type-of-decidable-propositions : 𝟚 ≃ Ωᵈ 𝓤

@@ -54,6 +54,7 @@ open import Naturals.Binary hiding (_+_)
 open import Notation.CanonicalMap hiding (ι)
 open import Ordinals.Arithmetic fe
 open import Ordinals.Closure fe
+open import Ordinals.Equivalence
 open import Ordinals.Injectivity
 open import Ordinals.ToppedArithmetic fe
 open import Ordinals.ToppedType fe

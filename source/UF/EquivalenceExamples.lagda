@@ -105,12 +105,25 @@ curry-uncurry {𝓤} {𝓥} {𝓦} fe = curry-uncurry' (fe 𝓤 (𝓥 ⊔ 𝓦))
   gf : (w : Σ Y) → g (f w) ＝ w
   gf (x , y) = to-Σ-＝' (inverses-are-retractions ⌜ φ x ⌝ ⌜ φ x ⌝-is-equiv y)
 
-
-
 ΠΣ-distr-≃ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {P : (x : X) → A x → 𝓦 ̇ }
            → (Π x ꞉ X , Σ a ꞉ A x , P x a)
            ≃ (Σ f ꞉ Π A , Π x ꞉ X , P x (f x))
 ΠΣ-distr-≃ = qinveq ΠΣ-distr (ΠΣ-distr⁻¹ , (λ _ → refl) , (λ _ → refl))
+
+Π×-distr : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {B : X → 𝓦 ̇ }
+         → (Π x ꞉ X , A x × B x)
+         ≃ ((Π x ꞉ X , A x) × (Π x ꞉ X , B x))
+Π×-distr = ΠΣ-distr-≃
+
+Π×-distr₂ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+            {A : X → Y → 𝓦 ̇ } {B : X → Y → 𝓣 ̇ }
+          → (Π x ꞉ X , Π y ꞉ Y , A x y × B x y)
+          ≃ ((Π x ꞉ X , Π y ꞉ Y , A x y) × (Π x ꞉ X , Π y ꞉ Y , B x y))
+Π×-distr₂ = qinveq
+             (λ f → (λ x y → pr₁ (f x y)) , (λ x y → pr₂ (f x y)))
+             ((λ (g , h) x y → g x y , h x y) ,
+              (λ _ → refl) ,
+              (λ _ → refl))
 
 Σ+-distr : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ )
          → (Σ x ꞉ X , A x + B x)
@@ -157,7 +170,8 @@ curry-uncurry {𝓤} {𝓥} {𝓦} fe = curry-uncurry' (fe 𝓤 (𝓥 ⊔ 𝓦))
 Π-cong : funext 𝓤 𝓥
        → funext 𝓤 𝓦
        → (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ ) (Y' : X → 𝓦 ̇ )
-       → ((x : X) → Y x ≃ Y' x) → Π Y ≃ Π Y'
+       → ((x : X) → Y x ≃ Y' x)
+       → Π Y ≃ Π Y'
 Π-cong fe fe' X Y Y' φ = qinveq f (g , gf , fg)
  where
   f : ((x : X) → Y x) → ((x : X) → Y' x)
@@ -621,8 +635,8 @@ NatΣ-equiv-gives-fiberwise-equiv = NatΣ-equiv-converse _ _
 
 NatΠ-fiber-equiv : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ ) (ζ : Nat A B)
                  → funext 𝓤 𝓦
-                 → (g : Π B) → (Π x ꞉ X , fiber (ζ x) (g x))
-                 ≃ fiber (NatΠ ζ) g
+                 → (g : Π B)
+                 → (Π x ꞉ X , fiber (ζ x) (g x)) ≃ fiber (NatΠ ζ) g
 NatΠ-fiber-equiv {𝓤} {𝓥} {𝓦} {X} A B ζ fe g =
   (Π x ꞉ X , fiber (ζ x) (g x))           ≃⟨ i ⟩
   (Π x ꞉ X , Σ a ꞉ A x , ζ x a ＝ g x)     ≃⟨ ii ⟩
@@ -653,12 +667,13 @@ NatΠ-equiv A B ζ fe i = vv-equivs-are-equivs
                              (NatΠ-vv-equiv A B ζ fe
                                (λ x → equivs-are-vv-equivs (ζ x) (i x)))
 
-Π-cong' : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ )
+Π-cong' : {X : 𝓤 ̇ }
         → funext 𝓤 (𝓥 ⊔ 𝓦)
+        → {A : X → 𝓥 ̇ } {B : X → 𝓦 ̇ }
         → ((x : X) → A x ≃ B x)
         → Π A ≃ Π B
-Π-cong' A B fe e = NatΠ (λ x → pr₁ (e x)) ,
-                   NatΠ-equiv A B (λ x → pr₁ (e x)) fe (λ x → pr₂ (e x))
+Π-cong' fe {A} {B} e = NatΠ (λ x → pr₁ (e x)) ,
+                       NatΠ-equiv A B (λ x → pr₁ (e x)) fe (λ x → pr₂ (e x))
 
 ＝-cong : {X : 𝓤 ̇ } (x y : X) {x' y' : X}
         → x ＝ x'
@@ -706,7 +721,7 @@ singleton-≃-𝟙' = singleton-≃ 𝟙-is-singleton
   η p = i (Idtofun (f p) ⋆) p
 
   ε : (q : 𝟙 ＝ P) → f (Idtofun q ⋆) ＝ q
-  ε q = identifications-of-props-are-props pe fe P i 𝟙 (f (Idtofun q ⋆)) q
+  ε q = identifications-with-props-are-props pe fe P i 𝟙 (f (Idtofun q ⋆)) q
 
 empty-≃-𝟘 : {X : 𝓤 ̇ } → (X → 𝟘 {𝓥}) → X ≃ 𝟘 {𝓦}
 empty-≃-𝟘 i = qinveq

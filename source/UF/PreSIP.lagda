@@ -1,8 +1,9 @@
 Martin Escardo, 23rd Feb 2023
 
-Modified from Sip. We assume pre-univalence, instead of
-univalence. This means that the canonical map from the identity type
-to the equivalence type is an embedding, rather than an equivalence.
+Modified from SIP. We assume pre-univalence, instead of univalence,
+after a suggestion by Peter Lumsdaine. This means that the canonical
+map from the identity type to the equivalence type is an embedding,
+rather than an equivalence.
 
 \begin{code}
 
@@ -11,14 +12,12 @@ to the equivalence type is an embedding, rather than an equivalence.
 module UF.PreSIP where
 
 open import MLTT.Spartan
-open import UF.Base
-open import UF.Equiv hiding (_≅_)
-open import UF.PreUnivalence
-open import UF.EquivalenceExamples
-open import UF.Subsingletons
 open import UF.Embeddings
-open import UF.Yoneda
-open import UF.Retracts
+open import UF.Equiv
+open import UF.EquivalenceExamples
+open import UF.PreUnivalence
+open import UF.Subsingletons
+
 
 module presip where
 
@@ -38,8 +37,8 @@ module presip where
 
  SNS : (𝓤 ̇ → 𝓥 ̇ ) → (𝓦 : Universe) → 𝓤 ⁺ ⊔ 𝓥 ⊔ (𝓦 ⁺) ̇
  SNS {𝓤} {𝓥} S 𝓦 = Σ ι ꞉ ((A B : Σ S) → (⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓦 ̇ ))
-                  , Σ ρ ꞉ ((A : Σ S) → ι A A (≃-refl ⟨ A ⟩))
-                  , ({X : 𝓤 ̇ } (s t : S X) → is-embedding (canonical-map ι ρ s t))
+                 , Σ ρ ꞉ ((A : Σ S) → ι A A (≃-refl ⟨ A ⟩))
+                 , ({X : 𝓤 ̇ } (s t : S X) → is-embedding (canonical-map ι ρ s t))
 
  homomorphic : {S : 𝓤 ̇ → 𝓥 ̇ } → SNS S 𝓦
              → (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓦 ̇
@@ -62,25 +61,26 @@ module presip where
  homomorphism-lemma (ι , ρ , θ) (X , s) (X , t) (refl {X}) = γ
   where
    γ : (s ＝ t) ↪ ι (X , s) (X , t) (≃-refl X)
-   γ = (canonical-map ι ρ s t , θ s t)
+   γ = (canonical-map ι ρ s t ,
+        θ s t)
 
  ＝-embedding : is-preunivalent 𝓤
-                       → {S : 𝓤 ̇ → 𝓥 ̇ } (σ : SNS S 𝓦)
-                       → (A B : Σ S)
-
-                       → (A ＝ B) ↪ (A ≃[ σ ] B)
+              → {S : 𝓤 ̇ → 𝓥 ̇ } (σ : SNS S 𝓦)
+                (A B : Σ S)
+              → (A ＝ B) ↪ (A ≃[ σ ] B)
  ＝-embedding pua {S} σ A B =
-    (A ＝ B)                                                           ↪⟨ i ⟩
+    (A ＝ B)                                                            ↪⟨ i ⟩
     (Σ p ꞉ ⟨ A ⟩ ＝ ⟨ B ⟩ , transport S p (structure A) ＝ structure B) ↪⟨ ii ⟩
     (Σ p ꞉ ⟨ A ⟩ ＝ ⟨ B ⟩ , ι A B (idtoeq ⟨ A ⟩ ⟨ B ⟩ p))               ↪⟨ iii ⟩
-    (Σ e ꞉ ⟨ A ⟩ ≃ ⟨ B ⟩ , ι A B e)                                   ↪⟨ iv ⟩
-    (A ≃[ σ ] B)                                                      □
+    (Σ e ꞉ ⟨ A ⟩ ≃ ⟨ B ⟩ , ι A B e)                                     ↪⟨ iv ⟩
+    (A ≃[ σ ] B)                                                        □
   where
    open import UF.PairFun
    ι   = homomorphic σ
    i   = ≃-gives-↪ Σ-＝-≃
    ii  = NatΣ-embedding (homomorphism-lemma σ A B)
-   iii = Σ-change-of-variable-embedding (ι A B) (idtoeq ⟨ A ⟩ ⟨ B ⟩) (pua ⟨ A ⟩ ⟨ B ⟩)
+   iii = Σ-change-of-variable-embedding
+          (ι A B) (idtoeq ⟨ A ⟩ ⟨ B ⟩) (pua ⟨ A ⟩ ⟨ B ⟩)
    iv  = ≃-gives-↪ Σ-assoc
 
 module presip-with-axioms where
@@ -121,7 +121,8 @@ module presip-with-axioms where
      j = pr₁-is-embedding (i X)
 
      k : {s' t' : S' X} → is-embedding (ap π {s'} {t'})
-     k {s'} {t'} = equivs-are-embeddings (ap π) (embedding-gives-embedding' π j s' t')
+     k {s'} {t'} = equivs-are-embeddings (ap π)
+                    (embedding-gives-embedding' π j s' t')
 
      l : canonical-map ι' ρ' (s , a) (t , b)
        ∼ canonical-map ι ρ s t ∘ ap π {s , a} {t , b}
@@ -134,16 +135,14 @@ module presip-with-axioms where
      γ : is-embedding (canonical-map ι' ρ' (s , a) (t , b))
      γ = embedding-closed-under-∼ _ _ e l
 
- ＝-embedding-with-axioms :
-     is-preunivalent 𝓤
-   → {S : 𝓤 ̇ → 𝓥 ̇ }
-     (σ : SNS S 𝓣)
-     (axioms : (X : 𝓤 ̇ ) → S X → 𝓦 ̇ )
-   → ((X : 𝓤 ̇ ) (s : S X) → is-prop (axioms X s))
-   → (A B : Σ X ꞉ 𝓤 ̇ , Σ s ꞉ S X , axioms X s)
-   → (A ＝ B) ↪ ([ A ] ≃[ σ ] [ B ])
- ＝-embedding-with-axioms ua σ axioms i =
-   ＝-embedding ua (add-axioms axioms i σ)
+ ＝-embedding-with-axioms : is-preunivalent 𝓤
+                          → {S : 𝓤 ̇ → 𝓥 ̇ }
+                            (σ : SNS S 𝓣)
+                            (axioms : (X : 𝓤 ̇ ) → S X → 𝓦 ̇ )
+                          → ((X : 𝓤 ̇ ) (s : S X) → is-prop (axioms X s))
+                          → (A B : Σ X ꞉ 𝓤 ̇ , Σ s ꞉ S X , axioms X s)
+                          → (A ＝ B) ↪ ([ A ] ≃[ σ ] [ B ])
+ ＝-embedding-with-axioms ua σ axioms i = ＝-embedding ua (add-axioms axioms i σ)
 
 {- TODO. Not needed yet. Only the technical lemma needs to be proved to conclude.
 

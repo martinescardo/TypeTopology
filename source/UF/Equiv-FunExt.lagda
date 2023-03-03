@@ -422,7 +422,7 @@ propext-funext-give-prop-ua {𝓤} pe fe X P i = (eqtoid , η) , (eqtoid , ε)
   η e = m (idtoeq X P (eqtoid e)) e
 
   ε : (q : X ＝ P) → eqtoid (idtoeq X P q) ＝ q
-  ε q = identifications-of-props-are-props pe fe P i X (eqtoid (idtoeq X P q)) q
+  ε q = identifications-with-props-are-props pe fe P i X (eqtoid (idtoeq X P q)) q
 
 prop-univalent-≃ : propext 𝓤
                  → funext 𝓤 𝓤
@@ -439,6 +439,36 @@ prop-univalent-≃' : propext 𝓤
                   → (P ＝ X) ≃ (P ≃ X)
 prop-univalent-≃' pe fe X P i = (P ＝ X) ≃⟨ ＝-flip ⟩
                                 (X ＝ P) ≃⟨ prop-univalent-≃ pe fe X P i ⟩
-                                (X ≃ P) ≃⟨ ≃-Sym'' fe ⟩
-                                (P ≃ X) ■
+                                (X ≃ P)  ≃⟨ ≃-Sym'' fe ⟩
+                                (P ≃ X)  ■
+\end{code}
+
+Added 24th Feb 2023
+
+\begin{code}
+
+prop-≃-≃-⇔ : Fun-Ext
+           → {P : 𝓤 ̇ } {Q : 𝓥 ̇ }
+           → is-prop P
+           → is-prop Q
+           → (P ≃ Q) ≃ (P ⇔ Q)
+prop-≃-≃-⇔ fe i j = qinveq (λ f → ⌜ f ⌝ ,  ⌜ f ⌝⁻¹)
+                     ((λ (g , h) → qinveq g
+                                    (h ,
+                                    (λ p → i (h (g p)) p) ,
+                                    (λ q → j (g (h q)) q))) ,
+                      (λ f → to-subtype-＝
+                              (being-equiv-is-prop (λ _ _ → fe))
+                               refl) ,
+                      (λ _ → refl))
+
+prop-＝-≃-⇔ : Prop-Ext
+            → Fun-Ext
+            → {P Q : 𝓤 ̇ }
+            → is-prop P
+            → is-prop Q
+            → (P ＝ Q) ≃ (P ⇔ Q)
+prop-＝-≃-⇔ pe fe i j = prop-univalent-≃ pe fe _ _ j
+                      ● prop-≃-≃-⇔ fe i j
+
 \end{code}

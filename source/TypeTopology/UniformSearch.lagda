@@ -19,7 +19,7 @@ open import TypeTopology.TotallySeparated
 open import TypeTopology.CompactTypes
 open import UF.FunExt
 
-module TypeTopology.UniformSearch (X : 𝓤  ̇) (fe : funext 𝓤₀ 𝓤) (κ : compact∙ X) where
+module TypeTopology.UniformSearch (X : 𝓤  ̇ )(fe : funext 𝓤₀ 𝓤) (κ : compact∙ X) where
 
 \end{code}
 

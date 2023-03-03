@@ -73,12 +73,19 @@ being-prop-is-prop {𝓤} {X} fe f g = c₁
                                        (Π-is-prop fe  (λ _ → Y-is-prop))
                                        (Π-is-prop fe' (λ _ → X-is-prop))
 
-identifications-of-props-are-props : propext 𝓤
-                                   → funext 𝓤 𝓤
-                                   → (P : 𝓤 ̇ )
-                                   → is-prop P
-                                   → (X : 𝓤 ̇ ) → is-prop (X ＝ P)
-identifications-of-props-are-props {𝓤} pe fe P i = γ
+\end{code}
+
+The following means that propositions are h-isolated elements of type
+universes:
+
+\begin{code}
+
+identifications-with-props-are-props : propext 𝓤
+                                     → funext 𝓤 𝓤
+                                     → (P : 𝓤 ̇ )
+                                     → is-prop P
+                                     → (X : 𝓤 ̇ ) → is-prop (X ＝ P)
+identifications-with-props-are-props {𝓤} pe fe P i = γ
  where
   f : (X : 𝓤 ̇ ) → X ＝ P → is-prop X × (X ⇔ P)
   f X refl = i , (id , id)
@@ -156,7 +163,7 @@ being-set-is-prop {𝓤} fe {X} = h
   g s x y = s {x} {y}
 
   h : is-prop (is-set X)
-  h = subtype-of-prop-is-prop g (ap f) (being-set-is-prop' fe)
+  h = subtypes-of-props-are-props' g (ap f) (being-set-is-prop' fe)
 
 negations-are-props : {X : 𝓤 ̇ } → funext 𝓤 𝓤₀ → is-prop (¬ X)
 negations-are-props fe = Π-is-prop fe (λ x → 𝟘-is-prop)
@@ -516,5 +523,13 @@ boiler-plate code.)
            → ((a : A) (b : B a) (c : C a b) (d : D a b c) (e : E a b c d) → is-prop (F a b c d e))
            → is-prop ((a : A) (b : B a) (c : C a b) (d : D a b c) (e : E a b c d) → F a b c d e)
 Π₅-is-prop fe i = Π-is-prop fe (λ x → Π₄-is-prop fe (i x))
+
+Π₂-is-prop' : Fun-Ext
+           → {X : 𝓤 ̇ }
+             {Y : X → 𝓥 ̇ }
+             {Z : (x : X) → Y x → 𝓦 ̇ }
+           → ((x : X) (y : Y x) → is-prop (Z x y))
+           → is-prop ({x : X} {y : Y x} → Z x y)
+Π₂-is-prop' fe i = Π-is-prop' fe (λ x → Π-is-prop' fe (i x))
 
 \end{code}

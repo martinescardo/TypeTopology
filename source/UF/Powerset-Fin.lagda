@@ -220,7 +220,7 @@ module _
                  (subset-extensionality pe fe s t)
 
    𝓚-is-set : is-set (𝓚 X)
-   𝓚-is-set = subtypes-of-sets-are-sets ⟨_⟩ s (powersets-are-sets fe pe)
+   𝓚-is-set = subtypes-of-sets-are-sets' ⟨_⟩ s (powersets-are-sets fe pe)
      where
       s : left-cancellable ⟨_⟩
       s e = to-subtype-＝ (λ _ → being-Kuratowski-finite-is-prop) e
