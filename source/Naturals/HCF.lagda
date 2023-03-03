@@ -235,7 +235,7 @@ highest common factor of x and y. (In the proof I use y in the IH, but this is
 not necessary.
 
 \begin{code}
-
+{-
 hcf' : ℕ → ℕ → ℕ
 hcf' = course-of-values-induction (λ x → (y : ℕ) → ℕ) step
  where
@@ -310,6 +310,8 @@ HCF' = course-of-values-induction (λ x → (y : ℕ) → is-hcf (hcf' x y) x y)
 
 HCF'' : (x y : ℕ) → Σ h ꞉ ℕ , is-hcf h x y
 HCF'' x y = (hcf' x y) , (HCF' x y)
+
+-}
 
 HCF : (x y : ℕ) → Σ h ꞉ ℕ , is-hcf h x y
 HCF = course-of-values-induction (λ x → (y : ℕ) → Σ h ꞉ ℕ , is-hcf h x y) step
