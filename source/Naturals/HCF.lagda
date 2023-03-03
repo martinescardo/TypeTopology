@@ -99,6 +99,36 @@ hcf-comm' x y (h , is-hcf) = h , (hcf-comm x y h is-hcf)
 
 \end{code}
 
+TODO: Comment
+
+\begin{code}
+
+hcf-one-left : {x : ℕ} → is-hcf 1 1 x
+hcf-one-left {x} = (∣-refl , 1-divides-all x) , γ
+ where
+  γ : (d : ℕ) → is-common-divisor d 1 x → d ∣ 1
+  γ d (d-divides-1 , _) = d-divides-1
+
+hcf-one-right : {x : ℕ} → is-hcf 1 x 1
+hcf-one-right {x} = hcf-comm 1 x 1 hcf-one-left
+
+hcf-refl : {x : ℕ} → is-hcf x x x
+hcf-refl {x} = (∣-refl , ∣-refl) , γ
+ where
+  γ : (d : ℕ) → is-common-divisor d x x → d ∣ x
+  γ d (d-divides-x , _) = d-divides-x
+
+hcf-zero-left : {x : ℕ} → is-hcf x 0 x
+hcf-zero-left {x} = (everything-divides-zero , ∣-refl) , γ
+ where
+  γ : (d : ℕ) → is-common-divisor d 0 x → d ∣ x
+  γ d (_ , d-divides-0) = d-divides-0
+
+hcf-zero-right : {x : ℕ} → is-hcf x x 0
+hcf-zero-right {x} = hcf-comm 0 x x hcf-zero-left
+
+\end{code}
+
 With an eye towards implement Euclid's algorithm to compute the
 highest common factor, we now prove two lemmas; each direction of the
 following proof:
@@ -205,6 +235,81 @@ highest common factor of x and y. (In the proof I use y in the IH, but this is
 not necessary.
 
 \begin{code}
+
+hcf' : ℕ → ℕ → ℕ
+hcf' = course-of-values-induction (λ x → (y : ℕ) → ℕ) step
+ where
+  step : (x : ℕ)
+       → ((m : ℕ) → m < x → ℕ → ℕ)
+       → (y : ℕ)
+       → ℕ
+  step 0        IH y = y
+  step (succ x) IH y = II (division y x)
+   where
+    II : Σ q ꞉ ℕ , Σ r ꞉ ℕ , (y ＝ q * succ x + r) × (r < succ x) → ℕ
+    II (q , r , e , l) = IH r l (succ x)
+
+hcf'-0 : (y : ℕ) → hcf' 0 y ＝ y
+hcf'-0 y = refl
+
+hcf'-step : (x y : ℕ)
+          → ((q , r , e , l) : Σ q ꞉ ℕ , Σ r ꞉ ℕ , (y ＝ q * succ x + r) × (r < succ x))
+          → hcf' (succ x) y ＝ hcf' r (succ x)
+hcf'-step x y (q , r , e , l) =
+ 
+ hcf' (succ x) y                ＝⟨ ap (λ - → hcf' (succ x) -) e ⟩
+ hcf' (succ x) (q * succ x + r) ＝⟨ refl ⟩
+ (λ σ → {!!}) {!!}                           ＝⟨ {!!} ⟩
+ {!!}                           ＝⟨ {!!} ⟩
+ {!!}                           ∎
+  where
+   this : {!!}
+   this = {!!}
+
+ff : (x y : ℕ) → hcf' x y ∣ x
+ff 0        y = everything-divides-zero
+ff (succ x) y with division y x
+... | q , zero , e , l   = q , {!!}
+... | q , succ r , e , l = r , {!!}
+
+ea : (x y r q : ℕ)
+   → y ＝ q * succ x + r
+   → r < succ x
+   → is-hcf (hcf' r (succ x)) r (succ x)
+   → is-hcf (hcf' (succ x) y) (succ x) y
+ea x y r q e l ich = γ
+ where
+ --   is-hcf (hcf' r (succ x)) r (succ x)
+  I : is-hcf (hcf' (succ x) (q * succ x + r)) (succ x) (q * succ x + r)
+  I = ({!!} , {!!}) , {!!}
+
+  -- hcf' r (succ x)
+
+  γ : is-hcf (hcf' (succ x) y) (succ x) y
+  γ = transport (λ - → is-hcf (hcf' (succ x) -) (succ x) - ) (e ⁻¹) I
+
+HCF' : (x y : ℕ) → is-hcf (hcf' x y) x y
+HCF' = course-of-values-induction (λ x → (y : ℕ) → is-hcf (hcf' x y) x y) step
+ where
+  step : (x : ℕ)
+       → ((r : ℕ) → r < x → (y : ℕ) → is-hcf (hcf' r y) r y)
+       → (y : ℕ)
+       → is-hcf (hcf' x y) x y
+  step 0        IH y = (everything-divides-zero , ∣-refl) , γ
+   where
+    γ : (d : ℕ) → is-common-divisor d 0 y → d ∣ hcf' 0 y
+    γ d (_ , d-div-y) = d-div-y
+  step (succ x) IH y = I (division y x)
+   where
+    I : Σ q ꞉ ℕ , Σ r ꞉ ℕ , (y ＝ q * succ x + r) × (r < succ x)
+      → is-hcf (hcf' (succ x) y) (succ x) y
+    I (q , r , e , l) = {!!} , {!!}
+     where
+      II : is-hcf (hcf' r (succ x)) r (succ x)
+      II = IH r l (succ x)
+
+HCF'' : (x y : ℕ) → Σ h ꞉ ℕ , is-hcf h x y
+HCF'' x y = (hcf' x y) , (HCF' x y)
 
 HCF : (x y : ℕ) → Σ h ꞉ ℕ , is-hcf h x y
 HCF = course-of-values-induction (λ x → (y : ℕ) → Σ h ꞉ ℕ , is-hcf h x y) step
@@ -325,18 +430,15 @@ has-hcf : (x y : ℕ) → 𝓤₀ ̇
 has-hcf x y = Σ d ꞉ ℕ , is-hcf (succ d) x y
 
 has-hcf-is-prop : Fun-Ext → (x y : ℕ) → is-prop (has-hcf x y)
-has-hcf-is-prop fe x y (h₁ , h₁-cf , f) (h₂ , h₂-cf , g) = to-subtype-＝ I II
+has-hcf-is-prop fe x y (h₁ , h₁-hcf) (h₂ , h₂-hcf) = to-subtype-＝ γ₁ γ₂
  where
-  I : (d : ℕ) → is-prop (is-hcf (succ d) x y)
-  I d = is-hcf-is-prop fe d x y
+  γ₁ : (d : ℕ) → is-prop (is-hcf (succ d) x y)
+  γ₁ d = is-hcf-is-prop fe d x y
 
-  II : h₁ ＝ h₂
-  II = succ-lc (∣-anti (succ h₁) (succ h₂) α β)
-   where
-    α : succ h₁ ∣ succ h₂
-    α = g (succ h₁) h₁-cf
+  I : succ h₁ ＝ succ h₂
+  I = hcf-unique x y (succ h₁ , h₁-hcf) (succ h₂ , h₂-hcf)
 
-    β : succ h₂ ∣ succ h₁
-    β = f (succ h₂) h₂-cf
+  γ₂ : h₁ ＝ h₂
+  γ₂ = succ-lc I
 
 \end{code}
