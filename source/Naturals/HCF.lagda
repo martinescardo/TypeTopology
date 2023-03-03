@@ -17,6 +17,7 @@ open import Naturals.Order
 open import Notation.Order 
 open import UF.Base 
 open import UF.FunExt
+open import UF.Miscelanea
 open import UF.Subsingletons 
 open import UF.Subsingletons-FunExt
 
@@ -347,6 +348,12 @@ consequence of hcf being a proposition for all values of h.
 Two numbers are coprime in the special case that the hcf is 1.
 
 \begin{code}
+
+coprime' : ℕ → ℕ → 𝓤₀ ̇
+coprime' x y = hcf x y ＝ 1
+
+coprime'-is-prop : (x y : ℕ) → is-prop (coprime' x y)
+coprime'-is-prop _ _ = ℕ-is-set
 
 coprime : (a b : ℕ) → 𝓤₀ ̇
 coprime a b = is-hcf 1 a b
