@@ -43,7 +43,7 @@ also a suplattice.
 open import Posets.FreeSupLattice pt
 -- TODO we don't want the "free" part, factor the definition out
 module _ (𝕃 : SupLattice 𝓤 𝓥 𝓦) where
- module 𝕃 = SupLattice 𝕃
+ private module 𝕃 = SupLattice 𝕃
  open Closure 𝕃._⊑_
 
  module SupLattice-Closure
