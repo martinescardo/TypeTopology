@@ -43,16 +43,18 @@ also a suplattice.
 open import Posets.FreeSupLattice pt
 -- TODO we don't want the "free" part, factor the definition out
 module _ (𝕃 : SupLattice 𝓤 𝓥 𝓦) where
- open SupLattice 𝕃
- open Closure _⊑_
+ module 𝕃 = SupLattice 𝕃
+ open Closure 𝕃._⊑_
 
  module SupLattice-Closure
-  (f : L → L)
-  (f-is-monotone : ∀ x y → x ⊑ y → f x ⊑ f y)
-  (f-closure-η : closure-η f)
-  (f-closure-μ : closure-μ f) where
+  {D : 𝓤 ̇ }
+  (_⊑_ : D → D → 𝓣 ̇ )
+  (f : 𝕃.L → D)
+  (f-is-monotone : ∀ x y → x 𝕃.⊑ y → f x ⊑ f y)
+  (ι : D → 𝕃.L)
+  (ι-is-monotome : ∀ x y → x ⊑ y → ι x 𝕃.⊑ ι y)
+  (ι∘f-closure-η : closure-η (ι ∘ f))
+  (ι∘f-closure-μ : closure-μ (ι ∘ f)) where
 
-  -- To avoid using UA early, image should be
-  -- defined using the universal property
 
 \end{code}
