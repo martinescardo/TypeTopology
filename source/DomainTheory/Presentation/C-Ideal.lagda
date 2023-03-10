@@ -12,9 +12,11 @@ open import UF.Subsingletons-FunExt
 module DomainTheory.Presentation.C-Ideal
   (pt : propositional-truncations-exist)
   (fe : Fun-Ext)
+  (pe : Prop-Ext)
   {𝓤 𝓣 𝓥 𝓦 : Universe}
  where
 
+open import UF.Retracts
 open import UF.Powerset
 open PropositionalTruncation pt
 open import UF.ImageAndSurjection pt
@@ -24,7 +26,7 @@ open import Posets.FreeSupLattice pt
 
 open import DomainTheory.Basics.Dcpo pt fe 𝓥
 open import DomainTheory.Basics.Miscelanea pt fe 𝓥
-open import DomainTheory.Presentation.Presentation pt fe {𝓤} {𝓣} {𝓥} {𝓦}
+open import DomainTheory.Presentation.Type pt fe {𝓤} {𝓣} {𝓥} {𝓦}
 
 
 -- TODO put this at the right place
@@ -90,19 +92,20 @@ module C-Ideal
   private module SL = SupLattice
 
   -- C-Ideals form a suplattice
-  -- set assumptions not included yet
+  -- TODO clean up fe and pe assumptions
   C-Idl-SupLattice : ∀ 𝓣' 𝓦' → SupLattice 𝓦' _ _
   SL.L (C-Idl-SupLattice 𝓣' 𝓦') =
    C-Idl (𝓤 ⊔ 𝓣 ⊔ (𝓥 ⁺) ⊔ 𝓦 ⊔ (𝓣' ⁺) ⊔ 𝓦')
 
   SL.L-is-set (C-Idl-SupLattice 𝓣' 𝓦') =
-   {!!}
+   Σ-is-set (Π-is-set fe λ _ → Ω-is-set fe pe) λ ℑ →
+    props-are-sets (being-C-ideal-is-prop ℑ)
 
   SL._⊑_ (C-Idl-SupLattice 𝓣' 𝓦') (ℑ , ι) (𝔍 , υ) =
    ℑ ⊆ 𝔍
 
-  SL.⊑-is-prop-valued (C-Idl-SupLattice 𝓣' 𝓦') =
-   {!!}
+  SL.⊑-is-prop-valued (C-Idl-SupLattice 𝓣' 𝓦') _ 𝔍 =
+   Π₂-is-prop fe λ g _ → holds-is-prop (carrier 𝔍 g)
 
   SL.⊑-is-reflexive (C-Idl-SupLattice 𝓣' 𝓦') _ _ =
    id
@@ -117,8 +120,8 @@ module C-Ideal
    Generated 𝓣' λ g →
    (∃ i ꞉ _ , g ∈ carrier (ℑs i)) , ∃-is-prop
 
-  SL.⋁-is-upperbound (C-Idl-SupLattice 𝓣' 𝓦') =
-   {!!}
+  SL.⋁-is-upperbound (C-Idl-SupLattice 𝓣' 𝓦') ℑ i g g∈ℑi ((𝔍 , _ , _) , ℑ'⊆𝔍) =
+   ℑ'⊆𝔍 g ∣ i , g∈ℑi ∣
 
   SL.⋁-is-lowerbound-of-upperbounds (C-Idl-SupLattice 𝓣' 𝓦') =
    {!!}
