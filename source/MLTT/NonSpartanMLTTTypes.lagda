@@ -151,24 +151,27 @@ type-from-list-is-listable {X} [] = [] , g
  where
   g : (σ : type-from-list []) → member σ []
   g (x , ())
-type-from-list-is-listable {X} (x ∷ xs) = h (type-from-list-is-listable xs)
+type-from-list-is-listable {X} (x ∷ xs) = g
  where
-  f : (x : X) → type-from-list (x ∷ xs)
-  f x = x , in-head
+  h : (x : X) → type-from-list (x ∷ xs)
+  h x = x , in-head
 
-  g : type-from-list xs → type-from-list (x ∷ xs)
-  g (x , m) = x , in-tail m
+  t : type-from-list xs → type-from-list (x ∷ xs)
+  t (x , m) = x , in-tail m
 
   α : List (type-from-list xs) → List (type-from-list (x ∷ xs))
-  α σs = f x ∷ map g σs
+  α σs = h x ∷ map t σs
 
   β : ((σs , μ) : listable (type-from-list xs))
     → (τ : type-from-list (x ∷ xs)) → member τ (α σs)
   β (σs , μ) (y , in-head)   = in-head
-  β (σs , μ) (y , in-tail m) = in-tail (member-map g (y , m) σs (μ (y , m)))
+  β (σs , μ) (y , in-tail m) = in-tail (member-map t (y , m) σs (μ (y , m)))
 
-  h : listable (type-from-list xs) → listable (type-from-list (x ∷ xs))
-  h (σs , μ) = α σs , β (σs , μ)
+  f : listable (type-from-list xs) → listable (type-from-list (x ∷ xs))
+  f (σs , μ) = α σs , β (σs , μ)
+
+  g : listable (type-from-list (x ∷ xs))
+  g = f (type-from-list-is-listable xs)
 
 module list-util
         {𝓤 : Universe}
