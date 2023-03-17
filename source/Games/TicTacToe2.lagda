@@ -132,8 +132,8 @@ predicate q:
   arg O (m ∷ ms) e q = argmin m ms (q (m , ||-left-intro (m is-in ms) (==-refl m))) q
 
   play : (b : Board) → Move (available-moves b) → Board
-  play (board X as xs os) (c , e) = board O (remove-first c as) (insert c xs) os
-  play (board O as xs os) (c , e) = board X (remove-first c as) xs            (insert c os)
+  play (board X as xs os) (c , e) = board O (remove c as) (insert c xs) os
+  play (board O as xs os) (c , e) = board X (remove c as) xs            (insert c os)
 
   transition : Board → 𝟛 + (Σ M ꞉ Type , (M → Board) × J M)
   transition b@(board next as xs os) =
