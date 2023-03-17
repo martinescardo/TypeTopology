@@ -388,17 +388,20 @@ larger proofs.
                               y * (x * z) ∎
 
 ℤ-mult-rearrangement'' : (w x y z : ℤ) → x * y * (w * z) ＝ w * y * (x * z)
-ℤ-mult-rearrangement'' w x y z = x * y * (w * z)     ＝⟨ ℤ-mult-rearrangement x y (w * z)     ⟩
-                                 x * (w * z) * y     ＝⟨ ap (_* y) (ℤ*-assoc x w z ⁻¹)        ⟩
-                                 x * w * z * y       ＝⟨ ap (λ a → (a * z) * y) (ℤ*-comm x w) ⟩
-                                 w * x * z * y       ＝⟨ ℤ*-assoc (w * x) z y                 ⟩
-                                 w * x * (z * y)     ＝⟨ ap ((w * x) *_) (ℤ*-comm z y)        ⟩
-                                 w * x * (y * z)     ＝⟨ ℤ*-assoc (w * x) y z ⁻¹              ⟩
-                                 w * x * y * z       ＝⟨ ap (_* z) (ℤ*-assoc w x y )          ⟩
-                                 w * (x * y) * z     ＝⟨ ap (λ a → (w * a) * z) (ℤ*-comm x y) ⟩
-                                 w * (y * x) * z     ＝⟨ ap (_* z) (ℤ*-assoc w y x ⁻¹)        ⟩
-                                 w * y * x * z       ＝⟨ ℤ*-assoc (w * y) x z                 ⟩
-                                 w * y * (x * z)     ∎
+ℤ-mult-rearrangement'' w x y z = γ
+ where
+  γ : x * y * (w * z) ＝ w * y * (x * z)
+  γ = x * y * (w * z)     ＝⟨ ℤ-mult-rearrangement x y (w * z)     ⟩
+      x * (w * z) * y     ＝⟨ ap (_* y) (ℤ*-assoc x w z ⁻¹)        ⟩
+      x * w * z * y       ＝⟨ ap (λ a → (a * z) * y) (ℤ*-comm x w) ⟩
+      w * x * z * y       ＝⟨ ℤ*-assoc (w * x) z y                 ⟩
+      w * x * (z * y)     ＝⟨ ap ((w * x) *_) (ℤ*-comm z y)        ⟩
+      w * x * (y * z)     ＝⟨ ℤ*-assoc (w * x) y z ⁻¹              ⟩
+      w * x * y * z       ＝⟨ ap (_* z) (ℤ*-assoc w x y )          ⟩
+      w * (x * y) * z     ＝⟨ ap (λ a → (w * a) * z) (ℤ*-comm x y) ⟩
+      w * (y * x) * z     ＝⟨ ap (_* z) (ℤ*-assoc w y x ⁻¹)        ⟩
+      w * y * x * z       ＝⟨ ℤ*-assoc (w * y) x z                 ⟩
+      w * y * (x * z)     ∎
 
 ℤ-mult-rearrangement''' : (x y z : ℤ) → x * (y * z) ＝ y * (x * z)
 ℤ-mult-rearrangement''' x y z = x * (y * z) ＝⟨ ℤ*-assoc x y z ⁻¹       ⟩
