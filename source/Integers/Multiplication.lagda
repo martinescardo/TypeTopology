@@ -41,9 +41,9 @@ pos-multiplication-equiv-to-ℕ x = induction base step
     step : (k : ℕ)
          → pos x * pos k ＝ pos (x ℕ* k)
          → pos x * pos (succ k) ＝ pos (x ℕ* succ k)
-    step k IH = pos x * pos (succ k)     ＝⟨ ap (pos x +_) IH                       ⟩
-                pos x + pos (x ℕ* k)     ＝⟨ distributivity-pos-addition x (x ℕ* k) ⟩
-                pos (x ℕ* succ k)        ∎
+    step k IH = pos x * pos (succ k) ＝⟨ ap (pos x +_) IH                       ⟩
+                pos x + pos (x ℕ* k) ＝⟨ distributivity-pos-addition x (x ℕ* k) ⟩
+                pos (x ℕ* succ k)    ∎
 
 
 \end{code}
@@ -56,13 +56,15 @@ To choose a specific example, the left identity element of multiplication is 1.
 The two bases cases are 0 and -1, and definitionally we have that 1 * 0 = 0, and
 1 * (- 1) = (- 1).
 
-Induction on positives: 1 * pos (succ x) ＝ 1 + 1 * pos x (by definition)
-                                         ＝ 1 + pos x     (by applying (_+ 1) to the IH)
-                                         ＝ pos (succ x)  (by commutativity of addition).
+Induction on positives:
+ 1 * pos (succ x) ＝ 1 + 1 * pos x (by definition)
+                  ＝ 1 + pos x     (by applying (_+ 1) to the IH)
+                  ＝ pos (succ x)  (by commutativity of addition).
 
-Induction on negatives: 1 * negsucc (succ x) ＝ (- 1) + 1 * negsucc x (by definition)
-                                             ＝ (- 1) + negsucc x     (by applying (_- 1) to the IH)
-                                             ＝ negsucc (succ x)      (by  commutativity of addition).
+Induction on negatives:
+ 1 * negsucc (succ x) ＝ (- 1) + 1 * negsucc x (by definition)
+                      ＝ (- 1) + negsucc x     (by applying (_- 1) to the IH)
+                      ＝ negsucc (succ x)      (by  commutativity of addition).
 \begin{code}
 
 ℤ-zero-right-is-zero : (x : ℤ) → x * pos 0 ＝ pos 0
@@ -92,8 +94,9 @@ and associativity (and distributivity of negation).
 
 \begin{code}
 
-distributivity-mult-over-ℤ₀ : (x y : ℤ) → (z : ℕ) → (x + y) * pos z ＝ x * pos z + y * pos z
-distributivity-mult-over-ℤ₀ x y = induction base step
+distributivity-mult-ℤ₀ : (x y : ℤ) (z : ℕ)
+                            → (x + y) * pos z ＝ x * pos z + y * pos z
+distributivity-mult-ℤ₀ x y = induction base step
  where
   base : (x + y) * pos 0 ＝ x * pos 0 + y * pos 0
   base = refl
@@ -101,21 +104,22 @@ distributivity-mult-over-ℤ₀ x y = induction base step
   step : (k : ℕ)
        → (x + y) * pos k ＝ x * pos k + y * pos k
        → (x + y) * pos (succ k) ＝ x * pos (succ k) + y * pos (succ k)
-  step k IH = (x + y) * pos (succ k)    ＝⟨ ap ((x + y) +_) IH                   ⟩
-              (x + y) + (u + v)         ＝⟨ ℤ+-assoc (x + y) u v ⁻¹              ⟩
-              (x + y) + u + v           ＝⟨ ap (_+ v) (ℤ+-assoc x y u)           ⟩
-              x + (y + u) + v           ＝⟨ ap (λ z → (x + z) + v) (ℤ+-comm y u) ⟩
-              x + (u + y) + v           ＝⟨ ap (_+ v) (ℤ+-assoc x u y ⁻¹)        ⟩
-              x + u + y + v             ＝⟨ ℤ+-assoc (x + u) y v                 ⟩
-              x + u + (y + v)           ＝⟨ refl ⟩
+  step k IH = (x + y) * pos (succ k)  ＝⟨ ap ((x + y) +_) IH                   ⟩
+              (x + y) + (u + v)       ＝⟨ ℤ+-assoc (x + y) u v ⁻¹              ⟩
+              (x + y) + u + v         ＝⟨ ap (_+ v) (ℤ+-assoc x y u)           ⟩
+              x + (y + u) + v         ＝⟨ ap (λ z → (x + z) + v) (ℤ+-comm y u) ⟩
+              x + (u + y) + v         ＝⟨ ap (_+ v) (ℤ+-assoc x u y ⁻¹)        ⟩
+              x + u + y + v           ＝⟨ ℤ+-assoc (x + u) y v                 ⟩
+              x + u + (y + v)         ＝⟨ refl ⟩
               x * pos (succ k) + y * pos (succ k) ∎
      where
        u v : ℤ
        u = x * pos k
        v = y * pos k
 
-distributivity-mult-over-ℤ₁ : (x y : ℤ) → (z : ℕ) → (x + y) * negsucc z ＝ x * negsucc z + y * negsucc z
-distributivity-mult-over-ℤ₁ x y = induction base step
+distributivity-mult-ℤ₁ : (x y : ℤ) → (z : ℕ)
+                            → (x + y) * negsucc z ＝ x * negsucc z + y * negsucc z
+distributivity-mult-ℤ₁ x y = induction base step
  where
   base : (x + y) * negsucc 0 ＝ x * negsucc 0 + y * negsucc 0
   base = (x + y) * negsucc 0           ＝⟨ refl                  ⟩
@@ -126,23 +130,30 @@ distributivity-mult-over-ℤ₁ x y = induction base step
   step : (k : ℕ)
        → (x + y) * negsucc k               ＝ x * negsucc k + y * negsucc k
        → (- (x + y)) + (x + y) * negsucc k ＝ (- x) + x * negsucc k + ((- y) + y * negsucc k)
-  step k IH = (- (x + y)) + (x + y) * negsucc k  ＝⟨ ap ((- (x + y)) +_) IH               ⟩
-              (- (x + y)) + (u + v)              ＝⟨ ap (_+ (((u) + (v)))) (negation-dist x y ⁻¹)  ⟩
-              (- x) - y + (u + v)                ＝⟨ ℤ+-assoc (- x) (- y) (u + v)                  ⟩
-              (- x) + ((- y) + (u + v))          ＝⟨ ap ((- x) +_) (ℤ+-assoc (- y) u v ⁻¹)         ⟩
-              (- x) + ((- y) + u + v)            ＝⟨ ap (λ z → (- x) + (z + v)) (ℤ+-comm (- y) u)  ⟩
-              (- x) + (u - y + v)                ＝⟨ ap ((- x) +_) (ℤ+-assoc u (- y) v)            ⟩
-              (- x) + (u + ((- y) + v))          ＝⟨ ℤ+-assoc (- x) u ((- y) + v) ⁻¹               ⟩
-              (- x) + u + ((- y) + v)            ＝⟨ refl ⟩
+  step k IH = (- (x + y)) + (x + y) * negsucc k               ＝⟨ i    ⟩
+              (- (x + y)) + (u + w)                           ＝⟨ ii   ⟩
+              (- x) - y + (u + w)                             ＝⟨ iii  ⟩
+              (- x) + ((- y) + (u + w))                       ＝⟨ iv   ⟩
+              (- x) + ((- y) + u + w)                         ＝⟨ v    ⟩
+              (- x) + (u - y + w)                             ＝⟨ vi   ⟩
+              (- x) + (u + ((- y) + w))                       ＝⟨ vii  ⟩
+              (- x) + u + ((- y) + w)                         ＝⟨ refl ⟩
               (- x) + x * negsucc k + ((- y) + y * negsucc k) ∎
     where
-      u v : ℤ
-      u = x * negsucc k
-      v = y * negsucc k
+      u w : ℤ
+      u   = x * negsucc k
+      w   = y * negsucc k
+      i   = ap ((- (x + y)) +_) IH
+      ii  = ap (_+ ((u + w))) (negation-dist x y ⁻¹)
+      iii = ℤ+-assoc (- x) (- y) (u + w)
+      iv  = ap ((- x) +_) (ℤ+-assoc (- y) u w ⁻¹)
+      v   = ap (λ z → (- x) + (z + w)) (ℤ+-comm (- y) u)
+      vi  = ap ((- x) +_) (ℤ+-assoc u (- y) w)
+      vii = ℤ+-assoc (- x) u ((- y) + w) ⁻¹
 
 distributivity-mult-over-ℤ : (x y z : ℤ) → (x + y) * z ＝ (x * z) + (y * z)
-distributivity-mult-over-ℤ x y (pos z)     = distributivity-mult-over-ℤ₀ x y z
-distributivity-mult-over-ℤ x y (negsucc z) = distributivity-mult-over-ℤ₁ x y z
+distributivity-mult-over-ℤ x y (pos z)     = distributivity-mult-ℤ₀ x y z
+distributivity-mult-over-ℤ x y (negsucc z) = distributivity-mult-ℤ₁ x y z
 
 \end{code}
 
