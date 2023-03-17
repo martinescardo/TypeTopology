@@ -1,7 +1,8 @@
 Andrew Sneap, 26 November 2021
 Updated 18 July 2022
 
-This file defines addition of integers, and commonly used properties used in proofs, for example commutativity and associativity.
+This file defines addition of integers, and commonly used properties used in
+proofs, for example commutativity and associativity.
 
 \begin{code}
 
@@ -69,21 +70,24 @@ distributivity-pos-addition x = induction base step
 
 ℤ-left-pred-pos : (x : ℤ) → (y : ℕ) → predℤ x +pos y ＝ predℤ (x +pos y)
 ℤ-left-pred-pos x 0        = refl
-ℤ-left-pred-pos x (succ y) = succℤ (predℤ x +pos y)    ＝⟨ ℤ-left-succ-pos (predℤ x) y ⁻¹ ⟩
-                             succℤ (predℤ x) +pos y    ＝⟨ ap (_+pos y) (succpredℤ x)     ⟩
-                             x +pos y                  ＝⟨ predsuccℤ (x +pos y) ⁻¹        ⟩
-                             predℤ (succℤ (x +pos y))  ∎
+ℤ-left-pred-pos x (succ y)
+ = succℤ (predℤ x +pos y)    ＝⟨ ℤ-left-succ-pos (predℤ x) y ⁻¹ ⟩
+   succℤ (predℤ x) +pos y    ＝⟨ ap (_+pos y) (succpredℤ x)     ⟩
+   x +pos y                  ＝⟨ predsuccℤ (x +pos y) ⁻¹        ⟩
+   predℤ (succℤ (x +pos y))  ∎
 
 ℤ-left-pred-negsucc : (x : ℤ) → (y : ℕ) → predℤ x +negsucc y ＝ predℤ (x +negsucc y)
 ℤ-left-pred-negsucc x 0        = refl
 ℤ-left-pred-negsucc x (succ y) = ap predℤ (ℤ-left-pred-negsucc x y)
 
-ℤ-left-succ-negsucc : (x : ℤ) → (y : ℕ) → succℤ x +negsucc y ＝ succℤ (x +negsucc y)
+ℤ-left-succ-negsucc : (x : ℤ) (y : ℕ)
+                    → succℤ x +negsucc y ＝ succℤ (x +negsucc y)
 ℤ-left-succ-negsucc x 0        = predsuccℤ x ∙ (succpredℤ x ⁻¹)
-ℤ-left-succ-negsucc x (succ y) = succℤ x +negsucc succ y      ＝⟨ ℤ-left-pred-negsucc (succℤ x) y ⁻¹  ⟩
-                                 predℤ (succℤ x) +negsucc y   ＝⟨ ap (_+ (negsucc y)) (predsuccℤ x)   ⟩
-                                 x + negsucc y                ＝⟨ succpredℤ (x +negsucc y) ⁻¹         ⟩
-                                 succℤ (x +negsucc succ y)    ∎
+ℤ-left-succ-negsucc x (succ y)
+ = succℤ x +negsucc succ y      ＝⟨ ℤ-left-pred-negsucc (succℤ x) y ⁻¹  ⟩
+   predℤ (succℤ x) +negsucc y   ＝⟨ ap (_+ (negsucc y)) (predsuccℤ x)   ⟩
+   x + negsucc y                ＝⟨ succpredℤ (x +negsucc y) ⁻¹         ⟩
+   succℤ (x +negsucc succ y)    ∎
 
 ℤ-right-succ : (x y : ℤ) → x + succℤ y ＝ succℤ (x + y)
 ℤ-right-succ x (pos y)            = refl
@@ -146,7 +150,7 @@ is commutative, both proved by induction.
 
 \end{code}
 
-As a corollary of commutativity, we can prove that predℤ x ＝ -1 + x.
+As a corollary of commutativity, we prove that predℤ x ＝ -1 + x.
 
 \begin{code}
 
@@ -162,7 +166,7 @@ As a corollary of commutativity, we can prove that predℤ x ＝ -1 + x.
   step₁ : (k : ℤ)
         → (a + b) + k       ＝ a + (b + k)
         → (a + b) + succℤ k ＝ a + (b + succℤ k)
-  step₁ k IH = (a + b) + succℤ k   ＝⟨ ℤ-right-succ (a + b) k           ⟩
+  step₁ k IH = (a + b) + succℤ k   ＝⟨ ℤ-right-succ (a + b) k          ⟩
                succℤ ((a + b) + k) ＝⟨ ap succℤ IH                     ⟩
                succℤ (a + (b + k)) ＝⟨ ℤ-right-succ a (b + k) ⁻¹       ⟩
                a + succℤ (b + k)   ＝⟨ ap (a +_) (ℤ-right-succ b k ⁻¹) ⟩
@@ -261,10 +265,10 @@ negation-dist₁ x = induction base step
   step : (k : ℕ)
        → (- x) + pos (succ k)         ＝ - (x + negsucc k)
        → (- x) + (- negsucc (succ k)) ＝ - (x + negsucc (succ k))
-  step k IH = (- x) + succℤ (pos (succ k))   ＝⟨ ℤ-right-succ (- x) (pos (succ k)) ⟩
-              succℤ ((- x) + pos (succ k))   ＝⟨ ap succℤ IH                       ⟩
-              succℤ (- (x +negsucc k))       ＝⟨ succℤtominuspredℤ (x +negsucc k) ⟩
-              - (x + negsucc (succ k))       ∎
+  step k IH = (- x) + succℤ (pos (succ k)) ＝⟨ ℤ-right-succ (- x) (pos (succ k)) ⟩
+              succℤ ((- x) + pos (succ k)) ＝⟨ ap succℤ IH                       ⟩
+              succℤ (- (x +negsucc k))     ＝⟨ succℤtominuspredℤ (x +negsucc k)  ⟩
+              - (x + negsucc (succ k))     ∎
 
 negation-dist : (x y : ℤ) → (- x) + (- y) ＝ - (x + y)
 negation-dist x (pos y)     = negation-dist₀ x y
