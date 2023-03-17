@@ -98,6 +98,21 @@ record Eq {𝓤} (X : 𝓤 ̇ ) : 𝓤 ̇  where
 
 open Eq {{...}} public
 
+ℕ-== : ℕ → ℕ → Bool
+ℕ-== 0        0        = true
+ℕ-== 0        (succ y) = false
+ℕ-== (succ x) 0        = false
+ℕ-== (succ x) (succ y) = ℕ-== x y
+
+ℕ-refl : (n : ℕ) → (ℕ-== n n) ＝ true
+ℕ-refl 0        = refl
+ℕ-refl (succ n) = ℕ-refl n
+
+instance
+ eqℕ : Eq ℕ
+ _==_    {{eqℕ}} = ℕ-==
+ ==-refl {{eqℕ}} = ℕ-refl
+
 data List {𝓤 : Universe} (X : 𝓤 ̇ ) : 𝓤 ̇ where
  []  : List X
  _∷_ : X → List X → List X
@@ -293,10 +308,10 @@ Remove first occurrence:
     h (in-tail in-head)     0        () false q
     h (in-tail (in-tail m)) 0        () false q
     h (in-tail m)           (succ n) p  false q =
-     length (remove x (z ∷ zs))                        ＝⟨ I ⟩
-     length (z ∷ remove x zs)                          ＝⟨ refl ⟩
-     succ (length (remove x zs))                       ＝⟨ II ⟩
-     succ n                                            ∎
+     length (remove x (z ∷ zs))  ＝⟨ I ⟩
+     length (z ∷ remove x zs)    ＝⟨ refl ⟩
+     succ (length (remove x zs)) ＝⟨ II ⟩
+     succ n                      ∎
       where
        I  = ap length (remove-tail x z zs q)
        II = ap succ (remove-length x zs m n (succ-lc p))
@@ -314,7 +329,7 @@ data Fin : ℕ → 𝓤₀ ̇  where
  suc : {n : ℕ} → Fin n → Fin (succ n)
 
 ℕ-to-Fin : (n : ℕ) → Fin (succ n)
-ℕ-to-Fin zero     = 𝟎
+ℕ-to-Fin 0     = 𝟎
 ℕ-to-Fin (succ n) = suc (ℕ-to-Fin n)
 
 pattern 𝟏 = suc 𝟎
@@ -328,7 +343,7 @@ pattern 𝟖 = suc 𝟕
 pattern 𝟗 = suc 𝟖
 
 list-Fin : (n : ℕ) → List (Fin n)
-list-Fin zero     = []
+list-Fin 0        = []
 list-Fin (succ n) = 𝟎 ∷ map suc (list-Fin n)
 
 list-Fin-correct : (n : ℕ) (i : Fin n) → member i (list-Fin n)
