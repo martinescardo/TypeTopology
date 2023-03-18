@@ -209,6 +209,16 @@ predℤ-lc {x} {y} p = x               ＝⟨ succpredℤ x ⁻¹ ⟩
 
 \end{code}
 
+We define here some shorthand notation for (pos ∘ succ) and negsucc.
+
+\begin{code}
+
+ps ns : ℕ → ℤ
+ps = pos ∘ succ
+ns = negsucc
+
+\end{code}
+
 There is a natural injection of natural numbers to integers by mapping
 any natural number n to pos n. As with other canonical inclusions in
 this development, ι is used.
