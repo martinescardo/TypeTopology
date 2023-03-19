@@ -4,6 +4,7 @@
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 open import MLTT.Spartan hiding (J)
 
+open import UF.Base
 open import UF.FunExt
 open import UF.PropTrunc
 open import UF.Subsingletons
@@ -77,7 +78,12 @@ module C-Ideal
    C-ideality (_ , ι) = ι
 
    _⊑_ : C-Idl 𝓣' → C-Idl 𝓣' → 𝓤 ⊔ 𝓣' ̇
-   (ℑ , ℑ-is-ideal) ⊑ (𝔍 , 𝔍-is-ideal) = ℑ ⊆ 𝔍
+   (ℑ , _) ⊑ (𝔍 , _) = ℑ ⊆ 𝔍
+
+  -- Characterize the equality of C-ideals
+  to-C-ideal-＝ : (I J : C-Idl 𝓣') → carrier I ＝ carrier J → I ＝ J
+  to-C-ideal-＝ (ℑ , _) (𝔍 , υ) p = to-Σ-＝
+   (p , being-C-ideal-is-prop 𝔍 _ _)
 
   -- The impredicatively generated C-ideal from a set
   Generated : ∀ 𝓣' → (G → Ω 𝓥') → C-Idl (𝓤 ⊔ 𝓥 ⁺ ⊔ 𝓦 ⊔ 𝓣 ⊔ 𝓥' ⊔ 𝓣' ⁺)
@@ -113,16 +119,19 @@ module C-Ideal
   SL.⊑-is-transitive (C-Idl-SupLattice 𝓣' 𝓦') _ _ _ ℑ⊆𝔍 𝔍⊆𝔎 u i∈ℑ =
    𝔍⊆𝔎 u (ℑ⊆𝔍 u i∈ℑ)
 
-  SL.⊑-is-antisymmetric (C-Idl-SupLattice 𝓣' 𝓦') =
-   {!!}
+  SL.⊑-is-antisymmetric (C-Idl-SupLattice 𝓣' 𝓦') (ℑ , ι) (𝔍 , υ) ℑ⊆𝔍 𝔍⊆ℑ =
+   to-C-ideal-＝ _ _ (dfunext fe (λ g → to-Σ-＝
+    (pe (pr₂ (ℑ g)) (pr₂ (𝔍 g)) (ℑ⊆𝔍 g) (𝔍⊆ℑ g) ,
+     being-prop-is-prop fe _ _)))
+      -- This needs to-Ω-＝ somewhere in the library
 
   SL.⋁ (C-Idl-SupLattice 𝓣' 𝓦') ℑs =
    Generated 𝓣' λ g →
    (∃ i ꞉ _ , g ∈ carrier (ℑs i)) , ∃-is-prop
 
-  SL.⋁-is-upperbound (C-Idl-SupLattice 𝓣' 𝓦') ℑ i g g∈ℑi ((𝔍 , _ , _) , ℑ'⊆𝔍) =
-   ℑ'⊆𝔍 g ∣ i , g∈ℑi ∣
+  SL.⋁-is-upperbound (C-Idl-SupLattice 𝓣' 𝓦') I i g g∈Ii ((𝔍 , _ , _) , ℑ⊆𝔍) =
+   ℑ⊆𝔍 g ∣ i , g∈Ii ∣
 
-  SL.⋁-is-lowerbound-of-upperbounds (C-Idl-SupLattice 𝓣' 𝓦') =
-   {!!}
+  SL.⋁-is-lowerbound-of-upperbounds (C-Idl-SupLattice 𝓣' 𝓦') = {!   !}
+    -- This is not correct for universe reasons
 \end{code}
