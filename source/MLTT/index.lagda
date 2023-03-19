@@ -23,7 +23,7 @@ import MLTT.Plus-Type
 import MLTT.Sigma
 import MLTT.Sigma-Type
 import MLTT.Spartan
-import MLTT.SpartanMLTT-List
+import MLTT.SpartanList
 import MLTT.Two
 import MLTT.Two-Properties
 import MLTT.Unit
