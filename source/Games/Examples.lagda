@@ -14,7 +14,7 @@ open import Games.TypeTrees
 
 module permutations where
 
- open import MLTT.NonSpartanMLTTTypes
+ open import MLTT.Athenian
 
  no-repetitions : ℕ → Type → 𝕋
  no-repetitions 0        X = []
@@ -37,7 +37,7 @@ open import UF.FunExt
 
 module search (fe : Fun-Ext) where
 
- open import MLTT.NonSpartanMLTTTypes
+ open import MLTT.Athenian
  open import Games.FiniteHistoryDependent Bool
 
  ε₂ : J Bool
