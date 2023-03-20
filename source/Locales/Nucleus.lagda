@@ -100,6 +100,12 @@ is-prenucleus L j = is-inflationary L j  ∧ preserves-binary-meets L L j
 Prenucleus : Frame 𝓤 𝓥 𝓦 → (𝓤 ⊔ 𝓥) ̇
 Prenucleus L = Σ j ꞉ (⟨ L ⟩ → ⟨ L ⟩) , is-prenucleus L j holds
 
+prenucleus-eq : (F : Frame 𝓤 𝓥 𝓦) (𝒿 𝓀 : Prenucleus F)
+              → ((x : ⟨ F ⟩) → 𝒿 .pr₁ x ＝ 𝓀 .pr₁ x)
+              → 𝒿 ＝ 𝓀
+prenucleus-eq F 𝒿 𝓀 φ =
+ to-subtype-＝ (λ - → holds-is-prop (is-prenucleus F -)) (dfunext fe φ)
+
 module PrenucleusApplicationSyntax (L : Frame 𝓤 𝓥 𝓦) where
 
  _$ₚ_ : Prenucleus L → ⟨ L ⟩ → ⟨ L ⟩
