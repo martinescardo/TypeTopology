@@ -698,7 +698,7 @@ The definition of the join:
    β i U = ⋁[ 𝒪 X ]-upper ⁅ α U ∣ α ε 𝔡𝔦𝔯 K₀ ⁆ (i ∷ [])
 
    γ : (Ɐ (𝒾 , _) ∶ Joins.upper-bound _≼_ K , (⋁ₙ K) ≼ 𝒾) holds
-   γ (𝓀@(k , (n₁ , n₂ , n₃) , ζ) , φ) U =
+   γ (𝓀@(k , (n₁ , n₂ , n₃) , _) , φ) U =
     ⋁[ 𝒪 X ]-least ⁅ α U ∣ α ε 𝔡𝔦𝔯 K₀ ⁆ (𝓀 $ U , λ is → † is U)
      where
       open Joins (λ x y → x ≤[ poset-of (𝒪 X) ] y)
