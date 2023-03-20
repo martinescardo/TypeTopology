@@ -68,7 +68,7 @@ It is also convenient to have a type of boards:
 
 \begin{code}
 
-Grid   = R × R
+Grid   = Fin 3 × Fin 3
 Matrix = Grid → Maybe Player
 Board  = Player × Matrix
 
