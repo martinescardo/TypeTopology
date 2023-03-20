@@ -6,7 +6,7 @@ Based on `ayberkt/formal-topology-in-UF`.
 
 {-# OPTIONS --without-K --exact-split --safe --lossy-unification #-}
 
-open import MLTT.Spartan
+open import MLTT.Spartan hiding (𝟚)
 open import UF.Base
 open import UF.PropTrunc
 open import UF.FunExt
