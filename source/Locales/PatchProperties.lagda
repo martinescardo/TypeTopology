@@ -1254,4 +1254,63 @@ module SomeOtherLemmata
  --       𝒻 ⋆∙ (¬ₓ (ℬA [ i ])) ∧[ 𝒪 X ] 𝒻 ⋆∙ (ℬA [ j ])   ≤⟨ {!!} ⟩
  --       𝟎[ 𝒪 X ]                                        ■
 
+module Hauptsatz (X : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (𝒪 X) holds) where
+
+ open PatchConstruction X σ
+
+ hauptsatz₁ : (U : ⟨ 𝒪 X ⟩) (j k : ⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩)
+            → is-nucleus (𝒪 X) j holds
+            → is-nucleus (𝒪 X) k holds
+            → cofinal-in
+               (𝒪 X)
+               ⁅ α U     ∣ α ε 𝔡𝔦𝔯 (binary-family 𝓤 j k) ⁆
+               ⁅ α (j U) ∣ α ε 𝔡𝔦𝔯 (binary-family 𝓤 j k) ⁆
+              holds
+ hauptsatz₁ U j k φ ψ is = ∣ is , † ∣
+  where
+   S : Fam 𝓤 (⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩)
+   S = ⁅ j , k ⁆
+
+   both-j-and-k-are-prenuclei : (b : (𝟙 + 𝟙))
+                              → is-prenucleus (𝒪 X) (⁅ j , k ⁆ [ b ]) holds
+   both-j-and-k-are-prenuclei (inl ⋆) = pr₂ (nucleus-pre (𝒪 X) (j , φ))
+   both-j-and-k-are-prenuclei (inr ⋆) = pr₂ (nucleus-pre (𝒪 X) (k , ψ))
+
+   † : ((𝔡𝔦𝔯 (binary-family 𝓤 j k) [ is ]) U
+         ≤[ poset-of (𝒪 X) ]
+        (𝔡𝔦𝔯 (binary-family 𝓤 j k) [ is ]) (j U)) holds
+   † = prenuclei-are-monotone
+        (𝒪 X)
+        ( 𝔡𝔦𝔯 (binary-family 𝓤 j k) [ is ]
+        , 𝔡𝔦𝔯-prenuclei (binary-family 𝓤 j k) both-j-and-k-are-prenuclei is)
+        (U , j U)
+        (𝓃₁ (𝒪 X) (j , φ) U)
+
+ hauptsatz₂ : (U : ⟨ 𝒪 X ⟩) (j k : ⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩)
+            → is-nucleus (𝒪 X) j holds
+            → cofinal-in
+               (𝒪 X)
+               ⁅ α (j U) ∣ α ε 𝔡𝔦𝔯 (binary-family 𝓤 j k) ⁆
+               ⁅ α U     ∣ α ε 𝔡𝔦𝔯 (binary-family 𝓤 j k) ⁆
+              holds
+ hauptsatz₂ U j k φ is = ∣ (inl ⋆ ∷ is) , † ∣
+  where
+   † : ((𝔡𝔦𝔯 (binary-family 𝓤 j k) [ is ]) (j U)
+         ≤[ poset-of (𝒪 X) ]
+        ((𝔡𝔦𝔯 (binary-family 𝓤 j k) [ inl ⋆ ∷ is ]) U)) holds
+   † = ≤-is-reflexive (poset-of (𝒪 X)) ((𝔡𝔦𝔯 (binary-family 𝓤 j k) [ is ]) (j U))
+
+ lemma₁ : (j k : ⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩)
+        → is-prenucleus (𝒪 X) j holds
+        → is-prenucleus (𝒪 X) k holds
+        → (j ≼₀ (j ∘ k)) holds
+ lemma₁ j k (jn₁ , jn₂) (kn₁ , kn₂) x =
+  prenuclei-are-monotone (𝒪 X) (j , jn₁ , jn₂) (x , k x) (kn₁ x)
+
+ lemma₂ : (j k : ⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩)
+        → is-prenucleus (𝒪 X) j holds
+        → is-prenucleus (𝒪 X) k holds
+        → (k ≼₀ (j ∘ k)) holds
+ lemma₂ j k (jn₁ , jn₂) (kn₁ , kn₂) x = jn₁ (k x)
+
 \end{code}
