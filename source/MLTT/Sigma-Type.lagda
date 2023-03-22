@@ -13,4 +13,6 @@ record Σ {𝓤 𝓥} {X : 𝓤 ̇ } (Y : X → 𝓥 ̇ ) : 𝓤 ⊔ 𝓥 ̇  wh
    pr₁ : X
    pr₂ : Y pr₁
 
+infixr 50 _,_
+
 \end{code}
