@@ -40,6 +40,6 @@ import Ordinals.Underlying
 import Ordinals.WellOrderArithmetic
 import Ordinals.WellOrderTransport
 import Ordinals.WellOrderingPrinciple
-import Ordinals.WellOrderingTaboo            -- by Tom de Jong
+import Ordinals.WellOrderingTaboo            -- by Tom de Jong (after Andrew Swan)
 
 \end{code}
