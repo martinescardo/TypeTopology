@@ -33,6 +33,10 @@ data ℤ : 𝓤₀ ̇ where
  pos     : ℕ → ℤ
  negsucc : ℕ → ℤ
 
+{-# BUILTIN INTEGER       ℤ       #-}
+{-# BUILTIN INTEGERPOS    pos     #-}
+{-# BUILTIN INTEGERNEGSUC negsucc #-}
+
 \end{code}
 
 Now we have the predecessor and successor functions on integers.

@@ -15,6 +15,8 @@ data Maybe {𝓤 : Universe} (A : 𝓤 ̇ ) : 𝓤 ̇ where
  Nothing : Maybe A
  Just    : A → Maybe A
 
+{-# BUILTIN MAYBE Maybe #-}
+
 Just-is-not-Nothing : {A : 𝓤 ̇ } {a : A} → Just a ≠ Nothing
 Just-is-not-Nothing ()
 
@@ -39,6 +41,10 @@ Nothing-is-h-isolated' x = equiv-to-prop ＝-flip (Nothing-is-h-isolated x)
 
 data Bool : 𝓤₀ ̇ where
  true false : Bool
+
+{-# BUILTIN BOOL  Bool  #-}
+{-# BUILTIN FALSE false #-}
+{-# BUILTIN TRUE  true  #-}
 
 true-is-not-false : true ≠ false
 true-is-not-false ()
@@ -117,6 +123,8 @@ data List {𝓤 : Universe} (X : 𝓤 ̇ ) : 𝓤 ̇ where
  []  : List X
  _∷_ : X → List X → List X
 
+{-# BUILTIN LIST List #-}
+
 infixr 3 _∷_
 
 length : {X : 𝓤 ̇ } → List X → ℕ
@@ -164,7 +172,7 @@ listable⁺ : Type → Type
 listable⁺ X = X × listable X
 
 type-from-list : {X : Type} → List X → Type
-type-from-list {X} xs = (Σ x ꞉ X , member x xs)
+type-from-list {X} xs = Σ x ꞉ X , member x xs
 
 type-from-list-is-listable : {X : Type} (xs : List X)
                            → listable (type-from-list xs)
