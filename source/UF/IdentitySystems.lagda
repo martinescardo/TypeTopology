@@ -98,9 +98,7 @@ record dep-id-sys (A : 𝓤 ̇ ) (B : A → 𝓤 ̇ ) {a : A} ([a] : id-sys A a)
   sys : has-id-sys (B a) b (fam a [a].ctr)
  open has-id-sys sys public
 
-
-
-module _ (A : 𝓤 ̇ ) (B : A → 𝓤 ̇ ) (a : A) (b : B a) ([a] : id-sys A a) ([b] : dep-id-sys A B [a] b) where
+module _ {A : 𝓤 ̇ } {B : A → 𝓤 ̇ } {a : A} {b : B a} ([a] : id-sys A a) ([b] : dep-id-sys A B [a] b) where
  module [a] = id-sys [a]
  module [b] = dep-id-sys [b]
 
