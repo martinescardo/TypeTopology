@@ -49,43 +49,43 @@ module id-sys-to-path-characterization {A : 𝓤 ̇ } {a : A} ([a] : id-sys A a)
 
 
 
-module path-characterization-to-id-sys {A : 𝓤 ̇ } (Q : A → A → 𝓤 ̇ ) (eqv : (x y : A) → (x ＝ y) ≃ Q x y) (a : A) where
+module path-characterization-to-id-sys {A : 𝓤 ̇ } (Q : A → A → 𝓤 ̇ ) (eqv : {x y : A} → (x ＝ y) ≃ Q x y) (a : A) where
  open id-sys
  open has-id-sys
 
  private
-  aux : (P : (x : A) (q : Q a x) → 𝓤 ̇ ) (p : P a (⌜ eqv _ _ ⌝ refl)) (x : A) → (q : a ＝ x) → P x (⌜ eqv _ _ ⌝ q)
+  aux : (P : (x : A) (q : Q a x) → 𝓤 ̇ ) (p : P a (⌜ eqv ⌝ refl)) (x : A) → (q : a ＝ x) → P x (⌜ eqv ⌝ q)
   aux P p x refl = p
 
  based-sys : id-sys A a
  fam based-sys = Q a
- ctr (sys based-sys) = ⌜ eqv _ _ ⌝ refl
+ ctr (sys based-sys) = ⌜ eqv ⌝ refl
  ind (sys based-sys) P p x q =
   transport (P x)
-   (inverses-are-sections _ ⌜ eqv _ _ ⌝-is-equiv q)
-   (aux P p x (⌜ eqv _ _ ⌝⁻¹ q))
+   (inverses-are-sections _ ⌜ eqv ⌝-is-equiv q)
+   (aux P p x (⌜ eqv ⌝⁻¹ q))
  ind-β (sys based-sys) P p =
   ap gen
    (Aux-is-prop
-    (⌜ eqv _ _ ⌝⁻¹ (⌜ eqv _ _ ⌝ refl) ,
-     inverses-are-sections _ ⌜ eqv _ _ ⌝-is-equiv  (⌜ eqv _ _ ⌝ refl))
+    (⌜ eqv ⌝⁻¹ (⌜ eqv ⌝ refl) ,
+     inverses-are-sections _ ⌜ eqv ⌝-is-equiv  (⌜ eqv ⌝ refl))
     (refl , refl))
   where
-   Aux = Σ ϕ ꞉ a ＝ a , ⌜ eqv _ _ ⌝ ϕ ＝ ⌜ eqv _ _ ⌝ refl
+   Aux = Σ ϕ ꞉ a ＝ a , ⌜ eqv ⌝ ϕ ＝ ⌜ eqv ⌝ refl
 
    Aux-singl : singleton-type' refl ≃ Aux
    Aux-singl =
     pair-fun-equiv (≃-refl (a ＝ a)) λ ϕ →
-    ap ⌜ eqv _ _ ⌝ ,
+    ap ⌜ eqv ⌝ ,
     embedding-gives-embedding' _
-     (equivs-are-embeddings _ ⌜ eqv _ _ ⌝-is-equiv)
+     (equivs-are-embeddings _ ⌜ eqv ⌝-is-equiv)
      ϕ
      refl
 
    Aux-is-prop : is-prop Aux
    Aux-is-prop = retract-of-prop (≃-gives-◁ (≃-sym Aux-singl)) (singleton-types'-are-props refl)
 
-   gen : Aux → P a (⌜ eqv _ _ ⌝ refl)
+   gen : Aux → P a (⌜ eqv ⌝ refl)
    gen (ϕ , ψ ) = transport (P a) ψ (aux P p a ϕ)
 
 
@@ -129,10 +129,6 @@ module _ (A : 𝓤 ̇ ) (a : A) where
 
 module _ (fe : funext 𝓤 𝓤) {A B : 𝓤 ̇ } (f : A → B) where
  homotopy-id-sys : id-sys (A → B) f
- homotopy-id-sys =
-  path-characterization-to-id-sys.based-sys
-   _∼_
-   (λ _ _ → happly , fe _ _)
-   f
+ homotopy-id-sys = path-characterization-to-id-sys.based-sys _∼_ (happly-≃ fe) f
 
 \end{code}
