@@ -12,11 +12,16 @@ document, we provide a list of conventions and practices that we expect
   file and that it is imported in the global `index.lagda` file.
 - The indentation length used in `TypeTopology` is **a single space**. Please be
   careful about this as it is a nonstandard convention.
-- `TypeTopology` does not use the level notation of Agda and instead provides a
-  wrapper (in module [`MLTT.Universes`][1]) around this to keep the notation
-  close to pen-and-paper conventions. We use the variables `𝓤 𝓥 𝓦` for universe
-  levels and use the notation `𝓤  ̇` to denote the universe at level `𝓤`. Please
-  make sure that your code uses this and avoids the level notation.
+- `TypeTopology` does not use the level notation of Agda (i.e. `Type ℓ`) and
+  instead provides a wrapper (in module [`MLTT.Universes`][1]) around this to
+  keep the notation close to pen-and-paper conventions. We use the variables `𝓤
+  𝓥 𝓦` for universe levels and use the notation `𝓤  ̇` to denote the universe at
+  level `𝓤`. Please make sure that your code uses this and avoids the level
+  notation.
+
+  * To type `𝓤 ̇`, you can add the symbol `\^.` just after a space using Agda
+    mode in Emacs.
+
 - We use the symbol `＝` for the identity type. The Emacs Agda mode does not
   provide a built-in abbreviation to type this so it's a good idea to insert
   this binding to your `agda-input-user-translations` i.e.
