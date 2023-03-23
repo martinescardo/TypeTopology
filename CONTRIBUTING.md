@@ -41,6 +41,13 @@ document, we provide a list of conventions and practices that we expect
   See [`DomainTheory.Basics.Dcpo`][2] for an example.
 - We adhere to a limit of _80 characters per line_. Please make sure to use
   `where` and `let` bindings to avoid lines exceeding this limit.
+- The casing convention we use is as follows:
+
+  * all function names should lower case and should use [_kebab casing_][3]
+    e.g. `idtoeq-eqtoid`;
+  * all type names should be upper case and should still use kebab casing if
+    involves multiple words `Perfect-Nucleus`.
 
 [1]: https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Universes.html
 [2]: https://www.cs.bham.ac.uk/~mhe/TypeTopology/DomainTheory.Basics.Dcpo.html
+[3]: https://en.wikipedia.org/wiki/Letter_case#Kebab_case
