@@ -12,7 +12,7 @@
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split #-}
+{-# OPTIONS --without-K --exact-split --no-sized-types --no-guardedness --auto-inline #-}
 
 import index -- of safe modules
 import Unsafe.index

@@ -7,7 +7,7 @@ July 1, 2021
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe #-}
+{-# OPTIONS --without-K --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 
 open import MLTT.Spartan
@@ -49,7 +49,7 @@ triv = 𝟙 , (group-structure-t ,
 
     left-neutral-t : left-neutral unit-t group-structure-t
     left-neutral-t = λ { * → refl}
- 
+
     right-neutral-t : right-neutral unit-t group-structure-t
     right-neutral-t = λ { * → refl}
 
@@ -65,7 +65,7 @@ The trivial group is initial and terminal in the obvious sense.
 
 triv-initial : ∀ {𝓤 𝓥} → (G : Group 𝓤) → ⟨ triv {𝓥} ⟩ → ⟨ G ⟩
 triv-initial G = λ _ → e⟨ G ⟩
-  
+
 triv-initial-is-hom : ∀ {𝓤 𝓥} → (G : Group 𝓤) → (is-hom (triv {𝓥}) G (triv-initial G))
 triv-initial-is-hom G = e⟨ G ⟩ ＝⟨ (unit-left G e⟨ G ⟩) ⁻¹ ⟩
                         e⟨ G ⟩ ·⟨ G ⟩  e⟨ G ⟩ ∎
@@ -73,7 +73,7 @@ triv-initial-is-hom G = e⟨ G ⟩ ＝⟨ (unit-left G e⟨ G ⟩) ⁻¹ ⟩
 -- trivial group is terminal
 
 triv-terminal : (G : Group 𝓤) → (⟨ G ⟩ → ⟨ triv {𝓥} ⟩)
-triv-terminal G = unique-to-𝟙 
+triv-terminal G = unique-to-𝟙
 
 triv-terminal-is-hom : (G : Group 𝓤) → (is-hom G (triv {𝓥}) (triv-terminal G))
 triv-terminal-is-hom G = refl
@@ -109,5 +109,3 @@ pr₂ (pr₁ (pr₂ (group-is-singl-is-triv' G is))) = (triv-terminal G) , (λ {
 pr₂ (pr₂ (group-is-singl-is-triv' G is)) {x} {y} = triv-initial-is-hom G {x} {y}
 
 \end{code}
-
-

@@ -10,7 +10,7 @@ motivation coming from univalent type theory is also discussed.)
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 module Various.DummettDisjunction where
 

@@ -87,7 +87,7 @@ Philosophy of the repository
 
    * We work in a minimal subset of Agda to implement Spartan MLTT and
      work with it. In particular, we restrict ourselves to safe
-     features (with the flag --safe).
+     features (with the flag --safe --no-sized-types --no-guardedness).
 
    * Some functions, and theorems, and definitions need HoTT/UF
      axioms. They are always given explicitly as
@@ -123,7 +123,7 @@ Click at the imported module names to navigate to them:
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 module index where
 

@@ -7,7 +7,7 @@ July 1, 2021
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 
 open import MLTT.Spartan
@@ -27,7 +27,7 @@ We define the kernel of a group homomorphism $f : A → B$ as the fiber of f at 
 
 module Groups.Kernel where
 
-module _ (A : Group 𝓤) (B : Group 𝓥) 
+module _ (A : Group 𝓤) (B : Group 𝓥)
          (f : ⟨ A ⟩ → ⟨ B ⟩) (isf : is-hom A B f) where
 
   kernel : Group (𝓤 ⊔ 𝓥)
@@ -89,7 +89,7 @@ module _ (A : Group 𝓤) (B : Group 𝓥)
   kernel-map-is-hom : is-hom kernel A kernel-map
   kernel-map-is-hom = refl
 
-  -- Canonical map is left cancellable  
+  -- Canonical map is left cancellable
   kernel-map-is-lc : left-cancellable kernel-map
   kernel-map-is-lc {a , p} {a' , p'} u = to-Σ-＝ (u , (group-is-set B _ _))
 
@@ -98,7 +98,7 @@ module _ (A : Group 𝓤) (B : Group 𝓥)
   kernel-map-is-embedding = lc-maps-into-sets-are-embeddings kernel-map kernel-map-is-lc (group-is-set A)
 
   -- Kernel is normal
-  kernel-is-normal : ⟨ A ⟩ → ⟨ kernel ⟩ → ⟨ kernel ⟩ 
+  kernel-is-normal : ⟨ A ⟩ → ⟨ kernel ⟩ → ⟨ kernel ⟩
   pr₁ (kernel-is-normal x (a , p)) = (x ·⟨ A ⟩ a) ·⟨ A ⟩ (inv A x)
   pr₂ (kernel-is-normal x (a , p)) = f ((x ·⟨ A ⟩ a) ·⟨ A ⟩ (inv A x))      ＝⟨ isf ⟩
                                      f (x ·⟨ A ⟩ a) ·⟨ B ⟩ f (inv A x)      ＝⟨ ap (λ v → v ·⟨ B ⟩ f (inv A x)) isf ⟩
@@ -133,7 +133,7 @@ extra axioms
   kernel-universal-map-is-hom G u isu γ {x} {y} = to-Σ-＝ (isu , group-is-set B _ _)
 
 
-  {- 
+  {-
      FIXME: to claim universality we must show that v : ⟨ G ⟩ → ⟨ kernel ⟩
             is unique.
             We should also prove it with equality kernel-map ∘ v ＝ u using

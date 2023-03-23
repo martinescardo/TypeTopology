@@ -4,7 +4,7 @@ In this file I define negation of real numbers.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --lossy-unification #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --lossy-unification --auto-inline #-}
 
 open import MLTT.Spartan renaming (_+_ to _∔_)
 

@@ -4,7 +4,7 @@ Non-spartan types in MLTT, which are definable from spartan MLTT, but we include
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe --auto-inline #-} -- --exact-split
+{-# OPTIONS --without-K --safe --no-sized-types --no-guardedness --auto-inline #-} -- --exact-split
 
 module MLTT.Athenian where
 

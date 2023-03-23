@@ -1,6 +1,6 @@
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 open import MLTT.Spartan renaming (_+_ to _∔_)
 open import Naturals.Addition
@@ -93,7 +93,7 @@ even*even n 1               even-n even-m = even-n
 even*even n (succ (succ m)) even-n even-m = even+even n (n + n * m) even-n I
  where
   IH : even (n * m)
-  IH = even*even n m even-n even-m 
+  IH = even*even n m even-n even-m
   I : even (n + n * m)
   I = even+even n (n * m) even-n IH
 
@@ -132,7 +132,7 @@ multiple-of-two-even-lemma n (succ (succ k)) e = transport even (e ⁻¹) III
   II = even+even 2 (2 * k) ⋆ I
   III : even (2 + (2 + 2 * k))
   III = even+even 2 (2 + 2 * k) ⋆ II
-  
+
 multiple-of-two-even : (n : ℕ) → Σ k ꞉ ℕ , n ＝ 2 * k → even n
 multiple-of-two-even n (k , e) = multiple-of-two-even-lemma n k e
 
@@ -159,7 +159,7 @@ even-is-multiple-of-two (succ (succ n)) even-sn = II IH
 
 odd-is-succ-multiple-of-two : (n : ℕ) → odd n → Σ k ꞉ ℕ , n ＝ succ (2 * k)
 odd-is-succ-multiple-of-two 0        odd-n = 𝟘-elim odd-n
-odd-is-succ-multiple-of-two (succ n) odd-sn = II I 
+odd-is-succ-multiple-of-two (succ n) odd-sn = II I
  where
   I : Σ k ꞉ ℕ , n ＝ 2 * k
   I = even-is-multiple-of-two n odd-sn
@@ -216,7 +216,7 @@ factors-of-2-exponents d n d|2^n = I (even-or-odd d)
   I (inr od) = inl (odd-factors-of-2-exponents d n d|2^n od)
 
 odd-power-of-two-coprime : (d x n : ℕ) → odd x → d ∣ x → d ∣ 2^ n → d ∣ 1
-odd-power-of-two-coprime d x n ox d|x d|2^n = I (factors-of-2-exponents d n d|2^n) (only-odd-divides-odd d x ox d|x) 
+odd-power-of-two-coprime d x n ox d|x d|2^n = I (factors-of-2-exponents d n d|2^n) (only-odd-divides-odd d x ox d|x)
  where
   I : (d ＝ 1) ∔ even d → odd d → d ∣ 1
   I (inl d＝1) od = 1 , d＝1

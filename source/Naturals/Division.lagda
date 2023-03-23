@@ -6,9 +6,9 @@ proofs of properties of division are also provided.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
-open import MLTT.Spartan renaming (_+_ to _∔_) 
+open import MLTT.Spartan renaming (_+_ to _∔_)
 
 open import Naturals.Addition
 open import Naturals.Multiplication
@@ -48,7 +48,7 @@ _∣_-is-prop x y (a , p) (b , p') = to-subtype-＝ (λ _ → ℕ-is-set) II
  where
   I : succ x * a ＝ succ x * b
   I = p ∙ p' ⁻¹
-  
+
   II : a ＝ b
   II = mult-left-cancellable a b x I
 
@@ -176,7 +176,7 @@ multiplication.
   I = ∣-divisor-divides-multiple a b k p₁
   II : a ∣ (l * c)
   II = ∣-divisor-divides-multiple a c l p₂
-                                                                            
+
 ∣-trans : (a b c : ℕ) → a ∣ b → b ∣ c → a ∣ c
 ∣-trans a b c (x , p) (y , q) = (x * y) , I
  where
@@ -226,7 +226,7 @@ follows from the inductive hypothesis and r ＝ d.
 division : (a d : ℕ) → division-theorem a d
 division a d = induction base step a
  where
-  base : Σ q ꞉ ℕ , Σ r ꞉ ℕ , (0 ＝ q * succ d + r) × (r < succ d)  
+  base : Σ q ꞉ ℕ , Σ r ꞉ ℕ , (0 ＝ q * succ d + r) × (r < succ d)
   base = 0 , (0 , (I , II))
    where
     I : 0 ＝ 0 * succ d + 0
@@ -252,8 +252,8 @@ division a d = induction base step a
           succ (q + q * d + d)          ＝⟨ ap succ (addition-associativity q (q * d) d)        ⟩
           succ (q + (q * d + d))        ＝⟨ succ-left q (q * d + d) ⁻¹                          ⟩
           succ q + (q * d + d)          ＝⟨ ap (succ q +_) (ap (_+ d) (mult-commutativity q d)) ⟩
-          succ q + (d * q + d)          ＝⟨ ap (succ q +_) (addition-commutativity (d * q) d)   ⟩ 
-          succ q + (d + d * q)          ＝⟨ ap (succ q +_) (mult-commutativity d (succ q))      ⟩ 
+          succ q + (d * q + d)          ＝⟨ ap (succ q +_) (addition-commutativity (d * q) d)   ⟩
+          succ q + (d + d * q)          ＝⟨ ap (succ q +_) (mult-commutativity d (succ q))      ⟩
           succ q + succ q * d           ∎
 
 \end{code}
@@ -341,7 +341,7 @@ division-is-prop a d (q₀ , r₀ , e₀ , l₀) (q₁ , r₁ , e₁ , l₁) wit
 ... | inl      qₒ<q₁  = 𝟘-elim (division-is-prop-lemma a d q₀ q₁ r₀ r₁ l₀ e₀ e₁ qₒ<q₁)
 ... | inr (inl q₀＝q₁) = to-subtype-＝ (division-is-prop' a d) q₀＝q₁
 ... | inr (inr q₁<q₀) = 𝟘-elim (division-is-prop-lemma a d q₁ q₀ r₁ r₀ l₁ e₁ e₀ q₁<q₀)
- 
+
 \end{code}
 
 A property of division which is sometimes useful is the following.
@@ -365,7 +365,5 @@ factor-of-sum-consequence a 0        (succ c) d e = 0 , (sum-to-zero-gives-zero 
 factor-of-sum-consequence a (succ b) (succ c) d e =
  let e' = (addition-left-cancellable (a * b) (a * c + d) a (e ∙ addition-associativity a (a * c) d))
  in factor-of-sum-consequence a b c d e'
-                                      
+
 \end{code}
-
-

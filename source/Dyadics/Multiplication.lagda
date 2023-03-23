@@ -2,7 +2,7 @@ Andrew Sneap, 17 February 2022
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 open import MLTT.Spartan renaming (_+_ to _∔_)
 open import Dyadics.Type
@@ -98,11 +98,11 @@ multiplication operation.
  where
   e' : p ℤ* pos (2^ b) ＝ q ℤ* pos (2^ a) -- Unfolded goal type
   e' = e
-  
+
   γ : p ℤ* r ℤ* pos (2^ (b ℕ+ c)) ＝ q ℤ* r ℤ* pos (2^ (a ℕ+ c))
   γ = p ℤ* r ℤ* pos (2^ (b ℕ+ c))          ＝⟨ i   ⟩
       p ℤ* pos (2^ b) ℤ* r ℤ* pos (2^ c)   ＝⟨ ii  ⟩
-      q ℤ* pos (2^ a) ℤ* r ℤ* pos (2^ c)   ＝⟨ iii ⟩      
+      q ℤ* pos (2^ a) ℤ* r ℤ* pos (2^ c)   ＝⟨ iii ⟩
       q ℤ* r ℤ* pos (2^ (a ℕ+ c)) ∎
    where
     i   = ℤ[1/2]-rearrangement-lemma p r b c
@@ -163,8 +163,8 @@ same dyadic, and using the above two proofs.
   γ = (p , α) * (q , β) * (r , δ)              ＝⟨ refl ⟩
       normalise-pos (p *' q) * (r , δ)         ＝⟨ i    ⟩
       normalise-pos (p *' q) * normalise-pos r ＝⟨ ii   ⟩
-      normalise-pos ((p *' q) *' r)            ＝⟨ iii  ⟩ 
-      normalise-pos (p *' (q *' r))            ＝⟨ iv   ⟩ 
+      normalise-pos ((p *' q) *' r)            ＝⟨ iii  ⟩
+      normalise-pos (p *' (q *' r))            ＝⟨ iv   ⟩
       normalise-pos p * normalise-pos (q *' r) ＝⟨ v    ⟩
       (p , α) * normalise-pos (q *' r)         ＝⟨ refl ⟩
       (p , α) * ((q , β) * (r , δ))            ∎
@@ -187,7 +187,7 @@ we prove one side, and the other follows by commutativity.
  where
   x = pr₁ p -- numerator   of p
   a = pr₂ p -- denominator of p
-  
+
   γ : 0ℤ[1/2] * (p , α) ＝ 0ℤ[1/2]
   γ = 0ℤ[1/2] * (p , α)                           ＝⟨ i    ⟩
       0ℤ[1/2] * normalise-pos p                   ＝⟨ refl ⟩
@@ -219,14 +219,14 @@ we prove one side, and the other follows by commutativity.
       pos 1 ℤ* x , 0 ℕ+ a    ＝⟨ ap (_, 0 ℕ+ a) (ℤ-mult-left-id x) ⟩
       x , 0 ℕ+ a             ＝⟨ ap (x ,_) (zero-left-neutral a) ⟩
       x , a ∎
-  
+
   γ : 1ℤ[1/2] * (p , α) ＝ (p , α)
   γ = 1ℤ[1/2] * (p , α)                           ＝⟨ i    ⟩
       1ℤ[1/2] * normalise-pos p                   ＝⟨ ii   ⟩
       normalise-pos (pos 1 , 0) * normalise-pos p ＝⟨ iii  ⟩
       normalise-pos ((pos 1 , 0) *' (x , a))      ＝⟨ iv   ⟩
       normalise-pos (x , a)                       ＝⟨ refl ⟩
-      normalise-pos p                             ＝⟨ v    ⟩      
+      normalise-pos p                             ＝⟨ v    ⟩
       (p , α) ∎
    where
     i  = ap (1ℤ[1/2] *_) (ℤ[1/2]-to-normalise-pos (p , α))

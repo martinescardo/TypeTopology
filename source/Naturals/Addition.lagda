@@ -2,7 +2,7 @@ Chuangjie Xu 2011, with changes by Martin Escardo later.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 module Naturals.Addition where
 
