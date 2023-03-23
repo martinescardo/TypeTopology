@@ -33,6 +33,7 @@ document, we provide a list of conventions and practices that we expect
   ```
   '(agda-input-user-translations '(("=" "＝")))
   ```
+  so that you can type it as `\=`.
 - Each module should contain a preamble that includes:
 
   * the author(s) of the module,
