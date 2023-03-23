@@ -58,6 +58,10 @@ document, we provide a list of conventions and practices that we expect
   `--exact-split` and `--auto-inline.` Any modules that use unsafe features
   should be placed under the directory `Unsafe` and should be imported from
   `Unsafe/index.lagda`.
+- For `Σ` types, we use the notation `Σ x ꞉ A , B x`. Note that the colon
+  character here is `꞉` (the Unicode symbol `MODIFIER LETTER COLON`) and **not**
+  `∶` (i.e. the Unicode symbol `RATIO`), which is what you get by typing `\:` in
+  Agda mode. To get the former, you have to type `\:4`
 
 [1]: https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Universes.html
 [2]: https://www.cs.bham.ac.uk/~mhe/TypeTopology/DomainTheory.Basics.Dcpo.html
