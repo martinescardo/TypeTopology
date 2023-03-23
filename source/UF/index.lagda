@@ -23,6 +23,7 @@ import UF.Groupoids
 import UF.IdEmbedding
 import UF.ImageAndSurjection
 import UF.ImageAndSurjection-F
+import UF.IdentitySystems
 import UF.Knapp-UA
 import UF.KrausLemma
 import UF.Large-Quotient
