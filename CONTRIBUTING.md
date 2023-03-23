@@ -19,8 +19,13 @@ document, we provide a list of conventions and practices that we expect
   level `𝓤`. Please make sure that your code uses this and avoids the level
   notation.
 
-  * To type `𝓤 ̇`, you can add the symbol `\^.` just after a space using Agda
+  * To type `𝓤  ̇`, you can add the symbol `\^.` just after a space using Agda
     mode in Emacs.
+
+  * Always leave a single space character between the universe dot superscript
+    and the following bracket. This is needed in order for the dot not to show
+    on top of the closing bracket in some browsers in its HTML rendering,
+    including Firefox.
 
 - We use the symbol `＝` for the identity type. The Emacs Agda mode does not
   provide a built-in abbreviation to type this so it's a good idea to insert
@@ -28,10 +33,6 @@ document, we provide a list of conventions and practices that we expect
   ```
   '(agda-input-user-translations '(("=" "＝")))
   ```
-- Always leave a single space character between the universe dot superscript and
-  the following bracket. This is needed in order for the dot not to show on top
-  of the closing bracket in some browsers in its HTMl rendering, including
-  Firefox.
 - Each module should contain a preamble that includes:
 
   * the author(s) of the module,
@@ -46,7 +47,7 @@ document, we provide a list of conventions and practices that we expect
   * all function names should lower case and should use [_kebab casing_][3]
     e.g. `idtoeq-eqtoid`;
   * all type names should be upper case and should still use kebab casing if
-    involves multiple words `Perfect-Nucleus`.
+    involves multiple words e.g. `Perfect-Nucleus`.
 - We use [`.lagda` files][4] with `\begin{code}` and `\end{code}` blocks. There
   are some plans to migrate all files to `.lagda.md`, but until this happens,
   we'll continue to use `.lagda` for the sake of consistency.
