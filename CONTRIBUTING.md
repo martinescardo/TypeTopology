@@ -39,6 +39,8 @@ document, we provide a list of conventions and practices that we expect
   * starting date of the development and dates of major additions.
 
   See [`DomainTheory.Basics.Dcpo`][2] for an example.
+- We adhere to a limit of _80 characters per line_. Please make sure to use
+  `where` and `let` bindings to avoid lines exceeding this limit.
 
 [1]: https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Universes.html
 [2]: https://www.cs.bham.ac.uk/~mhe/TypeTopology/DomainTheory.Basics.Dcpo.html
