@@ -70,7 +70,7 @@ open import Naturals.Order
 -- This is standard continuity
 -- May not be possible to prove with this. Should consider uniform continuity and\bishop continuity
 
-continuous : {M₁ : 𝓤 ̇} {M₂ : 𝓥 ̇}
+continuous : {M₁ : 𝓤 ̇ } {M₂ : 𝓥 ̇ }
            → (m₁ : metric-space M₁)
            → (m₂ : metric-space M₂)
            → (f : M₁ → M₂)
@@ -78,11 +78,11 @@ continuous : {M₁ : 𝓤 ̇} {M₂ : 𝓥 ̇}
 continuous {𝓤} {𝓥} {M₁} {M₂} (B₁ , _) (B₂ , _) f =
  (c : M₁) → ((ε , l) : ℚ₊) → Σ (δ , l₂) ꞉ ℚ₊ , ((x : M₁) → B₁ c x δ l₂ → B₂ (f c) (f x) ε l)
 
-obtain-delta : {M₁ : 𝓤 ̇} {M₂ : 𝓥 ̇} → (m₁ : metric-space M₁) → (m₂ : metric-space M₂) → (f : M₁ → M₂) → continuous m₁ m₂ f → (M₁ → ℚ₊ → ℚ₊)
+obtain-delta : {M₁ : 𝓤 ̇ } {M₂ : 𝓥 ̇ } → (m₁ : metric-space M₁) → (m₂ : metric-space M₂) → (f : M₁ → M₂) → continuous m₁ m₂ f → (M₁ → ℚ₊ → ℚ₊)
 obtain-delta _ _ f f-cont x ε = pr₁ (f-cont x ε)
 
 {-
-continuous→continuous' : {M₁ : 𝓤 ̇} {M₂ : 𝓥 ̇} → (m₁ : metric-space M₁) → (m₂ : metric-space M₂) → (f : M₁ → M₂) → continuous m₁ m₂ f → continuous' m₁ m₂ f
+continuous→continuous' : {M₁ : 𝓤 ̇ } {M₂ : 𝓥 ̇ } → (m₁ : metric-space M₁) → (m₂ : metric-space M₂) → (f : M₁ → M₂) → continuous m₁ m₂ f → continuous' m₁ m₂ f
 continuous→continuous' m₁ m₂ f f-cont (ε , l) = δ , λ c x B → {!!}
  where
   δ : ℚ₊
@@ -233,7 +233,7 @@ open import Rationals.Addition
            ε * 1ℚ               ＝⟨ ℚ-mult-right-id fe ε               ⟩
            ε                    ∎
 -}
-composition-preserves-continuity : {M₁ : 𝓤 ̇} {M₂ : 𝓥 ̇} {M₃ : 𝓦 ̇}
+composition-preserves-continuity : {M₁ : 𝓤 ̇ } {M₂ : 𝓥 ̇ } {M₃ : 𝓦 ̇ }
                                  → (m₁ : metric-space M₁)
                                  → (m₂ : metric-space M₂)
                                  → (m₃ : metric-space M₃)

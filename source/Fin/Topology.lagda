@@ -18,7 +18,7 @@ open import Fin.Properties
 open import Fin.Type
 open import MLTT.Plus-Properties
 open import MLTT.Spartan
-open import MLTT.SpartanMLTT-List
+open import MLTT.SpartanList
 open import Notation.Order
 open import TypeTopology.CompactTypes
 open import TypeTopology.DiscreteAndSeparated

@@ -366,7 +366,7 @@ module Diagram
  ε∞-is-continuous : (i : I) → is-continuous (𝓓 i) 𝓓∞ (ε∞ i)
  ε∞-is-continuous i = continuity-criterion' (𝓓 i) 𝓓∞ (ε∞ i) (ε∞-is-monotone i) γ
   where
-   γ : (𝓐 : 𝓥 ̇) (α : 𝓐 → ⟨ 𝓓 i ⟩) (δ : is-Directed (𝓓 i) α)
+   γ : (𝓐 : 𝓥 ̇ )(α : 𝓐 → ⟨ 𝓓 i ⟩) (δ : is-Directed (𝓓 i) α)
      → is-lowerbound-of-upperbounds (underlying-order 𝓓∞)
         (ε∞ i (∐ (𝓓 i) δ)) (ε∞ i ∘ α)
    γ 𝓐 α δ σ ub j =
@@ -459,7 +459,7 @@ indeed the limit of the diagram.
     m = limit-mediating-arrow
     mon : is-monotone 𝓔 𝓓∞ m
     mon = limit-mediating-arrow-is-monotone
-    γ : (A : 𝓥 ̇) (α : A → ⟨ 𝓔 ⟩) (δ : is-Directed 𝓔 α)
+    γ : (A : 𝓥 ̇ )(α : A → ⟨ 𝓔 ⟩) (δ : is-Directed 𝓔 α)
       → is-lowerbound-of-upperbounds (underlying-order 𝓓∞) (m (∐ 𝓔 δ)) (m ∘ α)
     γ A α δ σ ub i = ⦅ m (∐ 𝓔 δ) ⦆ i ⊑⟨ 𝓓 i ⟩[ u₁ ]
                      f i (∐ 𝓔 δ)     ⊑⟨ 𝓓 i ⟩[ u₂ ]
@@ -744,7 +744,7 @@ We now show that 𝓓∞ is the colimit of the diagram.
     m = colimit-mediating-arrow
     mon : is-monotone 𝓓∞ 𝓔 colimit-mediating-arrow
     mon = colimit-mediating-arrow-is-monotone
-    γ : (A : 𝓥 ̇) (α : A → ⟨ 𝓓∞ ⟩) (δ : is-Directed 𝓓∞ α)
+    γ : (A : 𝓥 ̇ )(α : A → ⟨ 𝓓∞ ⟩) (δ : is-Directed 𝓓∞ α)
       → is-lowerbound-of-upperbounds (underlying-order 𝓔) (m (∐ 𝓓∞ {A} {α} δ)) (m ∘ α)
     γ A α δ y ub =
      ∐-is-lowerbound-of-upperbounds 𝓔

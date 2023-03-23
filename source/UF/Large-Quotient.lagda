@@ -135,9 +135,7 @@ is the successor of the universe 𝓥:
 \end{code}
 
 Then η is the universal solution to the problem of transforming
-equivalence _≈_ into equality _＝_ (in Agda the notation for the
-identity type is _＝_ - we can't use _=_ because this is a reserved
-symbol for definitional equality).
+equivalence _≈_ into equality _＝_ (identity type).
 
 By construction, η is a surjection, of course:
 

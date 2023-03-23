@@ -38,7 +38,7 @@ We will define the dyadics as a sigma type. Hence, we begin by stating
 the type of the property which defines a dyadic. The condition is that
 either the denominator is zero, or the denominator is greater than
 zero, but the numerator is odd. This type contains "simplified"
-dyadics. 
+dyadics.
 
 By properties of order, naturals, integers it follows that the dyadics
 are a set.
@@ -66,7 +66,7 @@ is-ℤ[1/2]-is-discrete (z , n) = +-is-discrete I II
   II : is-discrete (n > 0 × ℤodd z)
   II = ×-is-discrete (λ x y → inl (<-is-prop-valued 0 n x y))
                      (λ x y → inl (ℤodd-is-prop z x y))
-  
+
 ℤ[1/2] : 𝓤₀ ̇
 ℤ[1/2] = Σ (z , n) ꞉ ℤ × ℕ , is-ℤ[1/2] z n
 
@@ -113,7 +113,7 @@ normalise-pos-lemma z (succ n) =
    where
     divide-by-two : Σ k ꞉ ℤ , z ＝ pos 2 * k
     divide-by-two = ℤeven-is-multiple-of-two z ez
-  
+
   case-odd : ℤodd z → ℤ[1/2]
   case-odd oz = (z , succ n) , inr (⋆ , oz)
 
@@ -144,7 +144,7 @@ normalise-pos-odd-num (p , succ a) odd-p = equality-cases (ℤeven-or-odd p) I I
   I : (ep : ℤeven p) → ℤeven-or-odd p ＝ inl ep
                      → dnum (normalise-pos (p , succ a)) ＝ p
   I ep _ = 𝟘-elim (ℤeven-not-odd p ep odd-p)
-  
+
   II : (op : ℤodd p) → ℤeven-or-odd p ＝ inr op
                      → dnum (normalise-pos (p , succ a)) ＝ p
   II op e = ap dnum (Cases-equality-r _ _ (ℤeven-or-odd p) op e)
@@ -157,7 +157,7 @@ normalise-pos-odd-denom (p , succ a) odd-p = equality-cases (ℤeven-or-odd p) I
   I : (ep : ℤeven p) → ℤeven-or-odd p ＝ inl ep
                       → dden (normalise-pos (p , succ a)) ＝ succ a
   I ep e = 𝟘-elim (ℤeven-not-odd p ep odd-p)
-  
+
   II : (op : ℤodd p) → ℤeven-or-odd p ＝ inr op
                       → dden (normalise-pos (p , succ a)) ＝ succ a
   II op e = ap dden (Cases-equality-r _ _ (ℤeven-or-odd p) op e)
@@ -245,7 +245,7 @@ normalise-pos-info' p  (succ a) = equality-cases (ℤeven-or-odd p) I II
                  (pos-multiplication-equiv-to-ℕ 2 (2^ k'))
           vi  = ap (λ - → dnum - * pos (2^ (succ k')))
                  (normalise-pos-even-prev p a ep (p/2 , e₂))
-            
+
         β : succ a ＝ dden (normalise-pos (p , succ a)) + succ k'
         β = succ a                                       ＝⟨ i    ⟩
              succ (dden (normalise-pos (p/2 , a)) + k')  ＝⟨ refl ⟩
@@ -262,10 +262,10 @@ normalise-pos-info' p  (succ a) = equality-cases (ℤeven-or-odd p) I II
               × (succ a ＝ dden (normalise-pos (p , succ a)) + k)
   II op e = 0 , i , ii
    where
-    i : p ＝ dnum (normalise-pos (p , succ a)) 
+    i : p ＝ dnum (normalise-pos (p , succ a))
     i = normalise-pos-odd-num (p , succ a) op ⁻¹
 
-    ii : succ a ＝ dden (normalise-pos (p , succ a)) 
+    ii : succ a ＝ dden (normalise-pos (p , succ a))
     ii = normalise-pos-odd-denom (p , succ a) op ⁻¹
 
 \end{code}
@@ -471,7 +471,7 @@ infix 0 _≈_
      i   = ℤ*-assoc x (n') (pos 2)
      ii  = ap (x *_) (pos-multiplication-equiv-to-ℕ (2^ (succ n)) 2)
      iii = ap (λ - → x * pos -) (mult-commutativity (2^ (succ n)) 2)
-     iv  = ap (λ - → y * pos -) (mult-commutativity 2 (2^ (succ m))) 
+     iv  = ap (λ - → y * pos -) (mult-commutativity 2 (2^ (succ m)))
      v   = ap (y *_) (pos-multiplication-equiv-to-ℕ (2^ (succ m)) 2 ⁻¹)
      vi  = ℤ*-assoc y m' (pos 2) ⁻¹
 
@@ -505,7 +505,7 @@ infix 0 _≈_
 
   II : x , n ＝ y , m
   II = ≈-to-＝-lemma (x , n) (y , m) eq p q
- 
+
 ＝-to-≈ : (x y : ℤ[1/2]) → x ＝ y → x ≈ y
 ＝-to-≈ ((x , a) , α) ((y , b) , β) e = γ
  where
@@ -517,7 +517,7 @@ infix 0 _≈_
   γ = x * pos (2^ b) ＝⟨ ap (_* pos (2^ b)) γ₁ ⟩
       y * pos (2^ b) ＝⟨ ap (λ - → y * pos (2^ -)) γ₂ ⟩
       y * pos (2^ a) ∎
-  
+
 ℤ[1/2]-to-normalise-pos : ((p , e) : ℤ[1/2]) → (p , e) ＝ normalise-pos p
 ℤ[1/2]-to-normalise-pos ((x , 0) , inl n＝0)
  = to-subtype-＝ (λ (x , n) → is-ℤ[1/2]-is-prop x n) refl
@@ -529,7 +529,7 @@ infix 0 _≈_
  where
   e : inr oz ＝ ℤeven-or-odd x
   e = ℤeven-or-odd-is-prop x (inr oz) (ℤeven-or-odd x)
- 
+
   f : ℤeven x ∔ ℤodd x → ℤ[1/2]
   f = dep-cases case-even case-odd
    where
@@ -549,10 +549,10 @@ infix 0 _≈_
  where
   p' : ℤ
   p' = dnum (normalise-pos (p , a))
-  
+
   a' : ℕ
   a' = dden (normalise-pos (p , a))
-  
+
   γ : Σ k ꞉ ℕ , (p ＝ p' * pos (2^ k))
               × (a ＝ a' + k)
     → (p , a) ≈' (p' , a')
@@ -570,7 +570,7 @@ infix 0 _≈_
     iv  = ap (λ - → p' * pos -) (prod-of-powers 2 k a')
     v   = ap (λ - → p' * pos (2^ -)) (addition-commutativity k a')
     vi  = ap (λ - → p' * pos (2^ -)) (e₂ ⁻¹)
-  
+
 ≈-normalise-pos : ((z , α) : ℤ[1/2]) → (z , α) ≈ normalise-pos z
 ≈-normalise-pos (z , α)
  = ＝-to-≈ (z , α) (normalise-pos z) (ℤ[1/2]-to-normalise-pos (z , α))
@@ -578,7 +578,7 @@ infix 0 _≈_
 ≈-ap : (f : ℤ[1/2] → ℤ[1/2]) (x y : ℤ[1/2]) → x ≈ y → f x ≈ f y
 ≈-ap f x y e = ＝-to-≈ (f x) (f y) (ap f (≈-to-＝ x y e))
 
-≈-transport : (A : ℤ[1/2] → 𝓤 ̇) {x y : ℤ[1/2]} → x ≈ y → A x → A y
+≈-transport : (A : ℤ[1/2] → 𝓤 ̇ ){x y : ℤ[1/2]} → x ≈ y → A x → A y
 ≈-transport A {x} {y} e = transport A (≈-to-＝ x y e)
 
 ≈'-to-＝ : (p q : ℤ × ℕ) → p ≈' q → normalise-pos p ＝ normalise-pos q
@@ -586,7 +586,7 @@ infix 0 _≈_
  where
   I : from-ℤ[1/2] (normalise-pos p) ≈' p
   I = (≈'-normalise-pos p) ⁻¹
-  
+
   II : q ≈' from-ℤ[1/2] (normalise-pos q)
   II = ≈'-normalise-pos q
 
@@ -600,7 +600,7 @@ infix 0 _≈_
       (from-ℤ[1/2] (normalise-pos q))
       III II
 
-ℤ[1/2]-numerator-zero-is-zero' : (a : ℕ) → normalise-pos (pos 0 , a) ＝ 0ℤ[1/2] 
+ℤ[1/2]-numerator-zero-is-zero' : (a : ℕ) → normalise-pos (pos 0 , a) ＝ 0ℤ[1/2]
 ℤ[1/2]-numerator-zero-is-zero' 0        = refl
 ℤ[1/2]-numerator-zero-is-zero' (succ a) = I ⁻¹ ∙ IH
  where
@@ -613,7 +613,7 @@ infix 0 _≈_
 ℤ[1/2]-numerator-zero-is-zero : ((x , a) : ℤ × ℕ)
                               → x ＝ pos 0
                               → normalise-pos (x , a) ＝ 0ℤ[1/2]
-ℤ[1/2]-numerator-zero-is-zero (pos 0 , a) e = ℤ[1/2]-numerator-zero-is-zero' a      
+ℤ[1/2]-numerator-zero-is-zero (pos 0 , a) e = ℤ[1/2]-numerator-zero-is-zero' a
 ℤ[1/2]-numerator-zero-is-zero (pos (succ x) , a) e
  = 𝟘-elim (pos-succ-not-zero x e)
 ℤ[1/2]-numerator-zero-is-zero (negsucc x , a) e = 𝟘-elim (negsucc-not-pos e)
@@ -630,7 +630,7 @@ The following proofs relate dyadic rationals to rationals.
 ℤ[1/2]-lt-lemma x n ox = (γ₁ , γ₂) , γ₃
  where
   n' = 2^ (succ n)
-  
+
   γ₁ : 1 ∣ abs x
   γ₁ = 1-divides-all (abs x)
 
@@ -645,7 +645,7 @@ The following proofs relate dyadic rationals to rationals.
 
     II : is-common-divisor d (abs x) n'
     II = transport (λ - → is-common-divisor d (abs x) -) i icd-d
-    
+
     III : is-common-divisor d (abs x) n' → d ∣ 1
     III (d|x , d|n') = odd-power-of-two-coprime d (abs x) (succ n) ox d|x d|n'
 

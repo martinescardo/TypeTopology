@@ -376,7 +376,7 @@ We collect the quasidecidable propositions in the type 𝓠:
 
  𝓠-is-set : is-set 𝓠
  𝓠-is-set = subtypes-of-sets-are-sets 𝓠→Ω
-             (embeddings-are-lc 𝓠→Ω 𝓠→Ω-is-embedding)
+             𝓠→Ω-is-embedding
              (Ω-is-set fe pe)
 
  ⊥ : 𝓠

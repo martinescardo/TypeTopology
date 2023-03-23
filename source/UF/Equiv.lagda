@@ -641,7 +641,7 @@ equiv-to-set : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
              → X ≃ Y
              → is-set Y
              → is-set X
-equiv-to-set e = subtypes-of-sets-are-sets ⌜ e ⌝
+equiv-to-set e = subtypes-of-sets-are-sets' ⌜ e ⌝
                   (equivs-are-lc ⌜ e ⌝ (⌜⌝-is-equiv e))
 \end{code}
 

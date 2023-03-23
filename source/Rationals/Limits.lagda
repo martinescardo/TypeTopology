@@ -311,12 +311,12 @@ We want to have a universal property for dependent types
 
 \begin{code}
 {-
-dependent-type-universal-property : {X : 𝓤 ̇} → (A B : X → 𝓤 ̇) → ((x : X) → A x × B x) → ((x : X) → A x) × ((x : X) → B x)
+dependent-type-universal-property : {X : 𝓤 ̇ } → (A B : X → 𝓤 ̇ )→ ((x : X) → A x × B x) → ((x : X) → A x) × ((x : X) → B x)
 dependent-type-universal-property A B f = (λ x → pr₁ (f x)) , (λ x → pr₂ (f x))
 
 open import UF.Subsingletons-FunExt
 
-dependent-type-universal-property-equivalence : {X : 𝓤 ̇} → (A B : X → 𝓤 ̇) → ((x : X) → A x × B x) ≃ ((x : X) → A x) × ((x : X) → B x)
+dependent-type-universal-property-equivalence : {X : 𝓤 ̇ } → (A B : X → 𝓤 ̇ )→ ((x : X) → A x × B x) ≃ ((x : X) → A x) × ((x : X) → B x)
 dependent-type-universal-property-equivalence A B = dependent-type-universal-property A B , ((I , II) , III , IV)
  where
   I : (∀ x → A x) × (∀ x → B x) → ∀ x → A x × B x
@@ -329,7 +329,7 @@ dependent-type-universal-property-equivalence A B = dependent-type-universal-pro
   IV _ = refl
 -}
 
-generalised-dependent-type-universal-property : {X : 𝓤 ̇} → (A : X → 𝓤 ̇) → (P : (x : X) → A x → 𝓤 ̇)
+generalised-dependent-type-universal-property : {X : 𝓤 ̇ } → (A : X → 𝓤 ̇ )→ (P : (x : X) → A x → 𝓤 ̇)
                                                           → (∀ x → Σ a ꞉ A x , P x a)
                                                           → Σ g ꞉ ((x : X) → A x) , ((x : X) → P x (g x))
 generalised-dependent-type-universal-property A P f = (λ x → pr₁ (f x)) , λ x → pr₂ (f x)

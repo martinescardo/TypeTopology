@@ -508,7 +508,7 @@ order-split 0        (succ y) = inl (zero-least (succ y))
 order-split (succ x) 0        = inr (zero-least (succ x))
 order-split (succ x) (succ y) = order-split x y
 
-least-element-unique : {A : ℕ → 𝓤 ̇} → (σ : complemented A)
+least-element-unique : {A : ℕ → 𝓤 ̇ } → (σ : complemented A)
                                      → ((α , αₚ) : Σ k ꞉ ℕ , A k × ((z : ℕ) → A z → k ≤ z))
                                      → ((β , βₚ) : Σ n ꞉ ℕ , A n × ((z : ℕ) → A z → n ≤ z))
                                      → α ＝ β
@@ -520,7 +520,7 @@ least-element-unique σ (α , α₀ , α₁) (β , β₀ , β₁) = ≤-anti α 
   II : β ≤ α
   II = β₁ α α₀
 
-least-element-unique' : {A : ℕ → 𝓤 ̇} → (σ : complemented A)
+least-element-unique' : {A : ℕ → 𝓤 ̇ } → (σ : complemented A)
                                       → (x y : ℕ)
                                       → (δ : Σ A) → x ＝ pr₁ (least-from-given A σ δ) → y ＝ pr₁ (least-from-given A σ δ)
                                       → x ＝ y
@@ -537,7 +537,7 @@ The strategy is simple.
 
 \begin{code}
 
-bounded-maximisation : (A : ℕ → 𝓤 ̇) → complemented A
+bounded-maximisation : (A : ℕ → 𝓤 ̇ )→ complemented A
                      → (k : ℕ)
                      → (Σ m ꞉ ℕ , (m < k × A m × ((n : ℕ) → n < k → A n → n ≤ m))) + ((n : ℕ) → A n → n ≥ k)
 bounded-maximisation A δ zero = inr (λ n _ → zero-least n)
@@ -575,7 +575,7 @@ bounded-maximisation A δ (succ k) = f (bounded-maximisation A δ k)
         τ (inr w) = 𝟘-elim (k-fails (transport (λ - → A -) (w ⁻¹) n-holds))
         τ (inl w) = w
 
-bounded-maximisation' : (A : ℕ → 𝓤 ̇) → complemented A
+bounded-maximisation' : (A : ℕ → 𝓤 ̇ )→ complemented A
    → (k : ℕ)
    → (Σ m ꞉ ℕ , (m ≤ k × A m × ((n : ℕ) → n ≤ k → A n → n ≤ m))) + ((n : ℕ) → A n → k < n)
 bounded-maximisation' A δ k = result (bounded-maximisation A δ k) (δ k)
@@ -603,10 +603,10 @@ bounded-maximisation' A δ k = result (bounded-maximisation A δ k) (δ k)
 
 -- type of maximal element m : ℕ such that A m holds, given an upper bound
 
-maximal-element : (A : ℕ → 𝓤 ̇) → (k : ℕ) → 𝓤 ̇
+maximal-element : (A : ℕ → 𝓤 ̇ )→ (k : ℕ) → 𝓤 ̇
 maximal-element A k = Σ m ꞉ ℕ , (m < k × A m × ((n : ℕ) → n < k → A n → n ≤ m))
 
-maximal-element' : (A : ℕ → 𝓤 ̇) → (k : ℕ) → 𝓤 ̇
+maximal-element' : (A : ℕ → 𝓤 ̇ )→ (k : ℕ) → 𝓤 ̇
 maximal-element' A k = Σ m ꞉ ℕ , (m ≤ k × A m × ((n : ℕ) → n ≤ k → A n → n ≤ m))
 
 \end{code}
@@ -617,14 +617,14 @@ which the property holds. Of course, we must provide an upper bound.
 
 \begin{code}
 
-maximal-from-given : (A : ℕ → 𝓤 ̇) → (b : ℕ) → complemented A → Σ k ꞉ ℕ , A k × k < b → maximal-element A b
+maximal-from-given : (A : ℕ → 𝓤 ̇ )→ (b : ℕ) → complemented A → Σ k ꞉ ℕ , A k × k < b → maximal-element A b
 maximal-from-given A b δ (k , a) = f (bounded-maximisation A δ b)
  where
   f : (Σ m ꞉ ℕ , (m < b) × A m × ((n : ℕ) → n < b → A n → n ≤ m)) + ((n : ℕ) → A n → n ≥ b) → maximal-element A b
   f (inl x) = x
   f (inr x) = 𝟘-elim (less-not-bigger-or-equal k b (pr₂ a) (x k (pr₁ a)))
 
-maximal-from-given' : (A : ℕ → 𝓤 ̇) → (b : ℕ) → complemented A → Σ k ꞉ ℕ , A k × k ≤ b → maximal-element' A b
+maximal-from-given' : (A : ℕ → 𝓤 ̇ )→ (b : ℕ) → complemented A → Σ k ꞉ ℕ , A k × k ≤ b → maximal-element' A b
 maximal-from-given' A b δ (k , a , c) = f (bounded-maximisation' A δ b)
  where
   f : (Σ m ꞉ ℕ , (m ≤ b) × A m × ((n : ℕ) → n ≤ b → A n → n ≤ m)) + ((n : ℕ) → A n → b < n) → maximal-element' A b

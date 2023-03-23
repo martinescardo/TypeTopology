@@ -43,7 +43,7 @@ UF.SIP-Examples.
 \begin{code}
 
 monoid-axioms-is-prop : funext 𝓤 𝓤
-                      → (X : 𝓤 ̇) (m : monoid-structure X)
+                      → (X : 𝓤 ̇ )(m : monoid-structure X)
                       → is-prop (monoid-axioms X m)
 monoid-axioms-is-prop fe X (_·_ , e) a = γ a
   where
@@ -72,7 +72,7 @@ UF.SIP-Examples.
 group-structure₁ : 𝓤 ̇ → 𝓤 ̇
 group-structure₁ X = Σ m ꞉ monoid-structure X , monoid-axioms X m
 
-group-axiom₁ : (X : 𝓤 ̇) → monoid-structure X → 𝓤 ̇
+group-axiom₁ : (X : 𝓤 ̇ )→ monoid-structure X → 𝓤 ̇
 group-axiom₁ X (_·_ , e) = (x : X) → Σ x' ꞉ X , (x' · x ＝ e) × (x · x' ＝ e)
 
 group-axiom₁-is-prop : funext 𝓤 𝓤

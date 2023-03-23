@@ -799,7 +799,7 @@ module subgroup
                              h unitH           ∎))
 
      j : is-set X
-     j = subtypes-of-sets-are-sets h h-lc (group-is-set G)
+     j = subtypes-of-sets-are-sets' h h-lc (group-is-set G)
 
      τ : T X
      τ = ((_*_ , unitH) , (j , unitH-left , unitH-right , assocH)) , group-axiomH

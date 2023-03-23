@@ -8,7 +8,7 @@ standard properties of multiplication.
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import MLTT.Spartan renaming (_+_ to _∔_) 
+open import MLTT.Spartan renaming (_+_ to _∔_)
 
 open import Naturals.Addition
 open import Naturals.Properties
@@ -29,6 +29,8 @@ x * succ y = x + x * y
 
 infixl 32 _*_
 
+{-# BUILTIN NATTIMES _*_ #-}
+
 \end{code}
 
 Zero is the base for multiplication. On the right, this is true by
@@ -44,7 +46,7 @@ Then 0 * succ k ≡ 0 + 0 * k (by definition)
 
 \begin{code}
 
-zero-right-base : (x : ℕ) → x * 0 ＝ 0 
+zero-right-base : (x : ℕ) → x * 0 ＝ 0
 zero-right-base x = refl
 
 zero-left-base : (x : ℕ) → 0 * x ＝ 0
@@ -77,7 +79,7 @@ mult-left-id = induction base step
   step : (x : ℕ)
        → 1 * x     ＝ x
        → 1 + 1 * x ＝ succ x
-         
+
   step x IH = 1 + 1 * x  ＝⟨ ap (1 +_) IH        ⟩
               1 + x      ＝⟨ addition-commutativity 1 x ⟩
               x + 1      ＝⟨ refl                       ⟩
@@ -131,7 +133,7 @@ proof is clear by observing the chain of equations.
 
 \begin{code}
 
-distributivity-mult-over-addition : (x y z : ℕ) → x * (y + z) ＝ x * y + x * z 
+distributivity-mult-over-addition : (x y z : ℕ) → x * (y + z) ＝ x * y + x * z
 distributivity-mult-over-addition x y = induction refl step
  where
   step : (k : ℕ)
@@ -140,10 +142,10 @@ distributivity-mult-over-addition x y = induction refl step
 
   step k IH = x * (y + succ k)        ＝⟨ refl                                                ⟩
               x + x * (y + k)         ＝⟨ ap (x +_ ) IH                                       ⟩
-              x + (x * y + x * k)     ＝⟨ ap (x +_ ) (addition-commutativity (x * y) (x * k)) ⟩ 
+              x + (x * y + x * k)     ＝⟨ ap (x +_ ) (addition-commutativity (x * y) (x * k)) ⟩
               x + (x * k + x * y)     ＝⟨ addition-associativity x (x * k) (x * y) ⁻¹         ⟩
               x + x * k + x * y       ＝⟨ addition-commutativity (x + x * k) (x * y)          ⟩
-              x * y + (x + x * k)     ＝⟨ refl                                                ⟩  
+              x * y + (x + x * k)     ＝⟨ refl                                                ⟩
               x * y + (x * (succ k))  ∎
 
 \end{code}

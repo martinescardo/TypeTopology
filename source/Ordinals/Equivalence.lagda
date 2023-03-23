@@ -145,10 +145,6 @@ eqtoidₒ {𝓤} ua fe α β (f , p , e , q) = γ
 For historical reasons, the above proof doesn't use the structure
 identity principle.
 
-One of the many applications of the univalence axiom is to manufacture
-examples of types which are not sets. Here we have instead used it to
-prove that a certain type is a set.
-
 \begin{code}
 
 ≃ₒ-sym : (α : Ordinal 𝓤) (β : Ordinal 𝓥 )
@@ -271,8 +267,8 @@ the-type-of-ordinals-is-a-set : is-univalent 𝓤
                               → Fun-Ext
                               → is-set (Ordinal 𝓤)
 the-type-of-ordinals-is-a-set ua fe {α} {β} = equiv-to-prop
-                                             (idtoeqₒ α β , UAₒ ua fe α β)
-                                             (≃ₒ-is-prop-valued fe α β)
+                                               (idtoeqₒ α β , UAₒ ua fe α β)
+                                               (≃ₒ-is-prop-valued fe α β)
 
 UAₒ-≃ : is-univalent 𝓤
       → Fun-Ext
@@ -284,6 +280,15 @@ the-type-of-ordinals-is-locally-small : is-univalent 𝓤
                                       → is-locally-small (Ordinal 𝓤)
 the-type-of-ordinals-is-locally-small ua fe α β =
  (α ≃ₒ β) , ≃-sym (UAₒ-≃ ua fe α β)
+
+\end{code}
+
+One of the many applications of the univalence axiom is to manufacture
+examples of types that are not sets. Here we have instead used it to
+prove that a certain type is a set. But see below for a proof that
+uses a weaker assumption.
+
+\begin{code}
 
 order-equivs-preserve-largest : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
                               → (f : ⟨ α ⟩ → ⟨ β ⟩)
@@ -363,17 +368,15 @@ If we only assume preunivalence, meaning that idtoeq is an embedding
 (rather than an equivalence), which is implied by each of univalence
 and the K axiom, we get that idtoeqₒ is an embedding (rather than an
 equivalence). This was suggested to me by Peter Lumsdaine in August
-2022. But we seem to need propositional extensionality when we relax
-univalence to preunivalence.
+2022.
 
 \begin{code}
 
 idtoeqₒ-embedding : is-preunivalent 𝓤
                   → FunExt
-                  → PropExt
                   → (α β : Ordinal 𝓤)
                   → (α ＝ β) ↪ (α ≃ₒ β)
-idtoeqₒ-embedding {𝓤} pua fe pe α β = II
+idtoeqₒ-embedding {𝓤} pua fe α β = II
  where
   open relational-space {𝓤} {𝓤} {𝓤}
         (λ (X : 𝓤 ̇ ) (_<_ : X → X → 𝓤 ̇ ) → is-well-order _<_)
@@ -381,36 +384,48 @@ idtoeqₒ-embedding {𝓤} pua fe pe α β = II
         (λ {X R} w {x} {y} → prop-valuedness R w x y)
 
   I : (α ＝ β) ↪ (α ≅₂ β)
-  I = M-embedding₂ pua (λ {𝓤} {𝓥} → fe 𝓤 𝓥) (λ {𝓤} → pe 𝓤) α β
+  I = M-embedding₂-bis pua pua (λ {𝓤} {𝓥} → fe 𝓤 𝓥) α β
 
   II : (α ＝ β) ↪ (α ≃ₒ β)
   II = ≃-gives-↪ (≃ₐ-coincides-with-≃ₒ fe α β) ∘↪ I
 
 Ordinal-is-set-under-preunivalence : is-preunivalent 𝓤
                                    → FunExt
-                                   → PropExt
                                    → is-set (Ordinal 𝓤)
-Ordinal-is-set-under-preunivalence {𝓤} pua fe pe {α} {β} =
- subtype-of-prop-is-prop
-  ⌊ idtoeqₒ-embedding pua fe pe α β ⌋
-  (embeddings-are-lc
-    ⌊ idtoeqₒ-embedding pua fe pe α β ⌋
-    ⌊ idtoeqₒ-embedding pua fe pe α β ⌋-is-embedding)
+Ordinal-is-set-under-preunivalence {𝓤} pua fe {α} {β} =
+ subtypes-of-props-are-props
+  ⌊ idtoeqₒ-embedding pua fe α β ⌋
+  ⌊ idtoeqₒ-embedding pua fe α β ⌋-is-embedding
   (≃ₒ-is-prop-valued (fe _ _) α β)
 
 \end{code}
 
-Peter Lumsdaine says the following (personal communication, 27th February 2023):
+NB. The above idtoeqₒ-embedding is constructed by a non-trivial
+procedure using preunivalence and function extensionality as
+assumptions, and so we may wonder whether it really is idtoeqₒ. It
+isn't on the nose, but it is pointwise equal to it on the nose:
 
-> Funext I agree seems necessary — but I don’t think this should need propext?
-> Pre-univalence implies “pre-propext”, and I’m sure that should suffice for
-> this. Looking at your code, I think:
->
-> - Ordinal-is-set-under-preunivalence uses prop-ext only via  M-embedding₂
-> - M-embedding₂ uses prop-ext via ≅₁-coincides-with-≅₂
-> - The full ≃ statement of ≅₁-coincides-with-≅₂ does indeed need prop-ext, but
->   M-embedding₂ doesn’t use that full statement: M-embedding₂ only uses it under
->   ≃-gives-↪ — so it would work with a weaker variant ≅₁-embeds-into-≅₂ , for
->   which pre-propext should suffice.
+\begin{code}
 
-TODO. Implement the above thoughts by Peter.
+idtoeqₒ-embedding-really-is-idtoeqₒ : (pua : is-preunivalent 𝓤)
+                                      (fe : FunExt)
+                                      (α β : Ordinal 𝓤)
+                                    →  ⌊ idtoeqₒ-embedding pua fe α β ⌋
+                                    ∼ idtoeqₒ α β
+idtoeqₒ-embedding-really-is-idtoeqₒ pua fe α β refl = refl
+
+\end{code}
+
+And so equal:
+
+\begin{code}
+
+idtoeqₒ-embedding-really-is-idtoeqₒ' : (pua : is-preunivalent 𝓤)
+                                       (fe : FunExt)
+                                       (α β : Ordinal 𝓤)
+                                     →  ⌊ idtoeqₒ-embedding pua fe α β ⌋
+                                     ＝ idtoeqₒ α β
+idtoeqₒ-embedding-really-is-idtoeqₒ' pua fe α β =
+ dfunext (fe _ _) (idtoeqₒ-embedding-really-is-idtoeqₒ pua fe α β)
+
+\end{code}

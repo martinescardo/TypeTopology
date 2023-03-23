@@ -16,7 +16,7 @@ open import UF.FunExt
 
 homotopy-precomp
   : {𝓤 𝓥 𝓦 : Universe}
-  → {U : 𝓤 ̇} {X : 𝓥 ̇} {Y : 𝓦 ̇}
+  → {U : 𝓤 ̇ } {X : 𝓥 ̇ } {Y : 𝓦 ̇ }
   → (f g : X → Y)
   → (i : U → X)
   → f ∼ g
@@ -36,7 +36,7 @@ homotopy-precomp-by-embedding-is-equiv
  → (fe1 : funext 𝓤 𝓦)
  → (fe2 : funext (𝓥 ⊔ 𝓦) (𝓤 ⊔ 𝓦))
  → (fe3 : funext (𝓥 ⊔ 𝓦) (𝓥 ⊔ 𝓦))
- → {U : 𝓤 ̇} {X : 𝓥 ̇} {Y : 𝓦 ̇}
+ → {U : 𝓤 ̇ } {X : 𝓥 ̇ } {Y : 𝓦 ̇ }
  → (f g : X → Y)
  → (i : U → X)
  → (precomp-i-is-emb : is-embedding λ (- : X → Y) → - ∘ i)

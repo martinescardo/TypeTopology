@@ -15,6 +15,8 @@ _+_ : ℕ → ℕ → ℕ
 n + 0 = n
 n + (succ m) = succ (n + m)
 
+{-# BUILTIN NATPLUS _+_ #-}
+
 zero-right-neutral : (n : ℕ) → n + 0 ＝ n
 zero-right-neutral n = refl
 
@@ -93,11 +95,11 @@ succ-right : (x y : ℕ) → x + succ y ＝ succ (x + y)
 succ-right x y = refl
 
 succ-left : (x y : ℕ) → succ x + y ＝ succ (x + y)
-succ-left x = induction base step 
+succ-left x = induction base step
   where
     base : succ x + 0 ＝ succ (x + 0)
     base = succ x + 0   ＝⟨ refl         ⟩
-           succ x       ＝⟨ ap succ refl ⟩ 
+           succ x       ＝⟨ ap succ refl ⟩
            succ (x + 0) ∎
 
     step : (k : ℕ) → succ x + k ＝ succ (x + k) → succ x + succ k ＝ succ (x + succ k)
@@ -124,7 +126,7 @@ addition-left-cancellable x y = induction base step
     lemma₁ r = succ (k + x)           ＝⟨ succ-left k x ⁻¹ ⟩
                succ k + x             ＝⟨ r                ⟩
                succ k + y             ＝⟨ succ-left k y    ⟩
-               succ (k + y) ∎        
+               succ (k + y) ∎
 
 
 addition-right-cancellable : (x y z : ℕ) → x + z ＝ y + z → x ＝ y
@@ -133,7 +135,7 @@ addition-right-cancellable x y z r = addition-left-cancellable x y z lemma₀
   lemma₀ : z + x ＝ z + y
   lemma₀ = z + x      ＝⟨ addition-commutativity z x ⟩
            x + z      ＝⟨ r                          ⟩
-           y + z      ＝⟨ addition-commutativity y z ⟩ 
+           y + z      ＝⟨ addition-commutativity y z ⟩
            z + y ∎
 
 \end{code}

@@ -552,7 +552,7 @@ doesn't refer to the notion of f-point.
 
     iv : is-prop (Σ (x , p) ꞉ fiber f y , ¬ is-g-point x)
     iv = have f-is-emb y ∶ is-prop (fiber f y)
-         so-apply subtype-of-prop-is-prop pr₁ (pr₁-lc (λ {σ} → negations-are-props fe))
+         so-apply subtypes-of-props-are-props' pr₁ (pr₁-lc (λ {σ} → negations-are-props fe))
 
     v : Σ (x , p) ꞉ fiber f y , ¬ is-g-point x
     v = double-negation-elim excluded-middle _ iv iii
@@ -807,7 +807,7 @@ EM-gives-Cantor-Schröder-Bernstein' {𝓤} {𝓥} fe excluded-middle {X} {Y} ((
    iii = double-contrapositive ii i
 
    iv : is-prop (Σ (x , p) ꞉ fiber f y , ¬ is-g-point x)
-   iv = subtype-of-prop-is-prop pr₁ (pr₁-lc (λ {σ} → negations-are-props fe)) (f-is-emb y)
+   iv = subtypes-of-props-are-props' pr₁ (pr₁-lc (λ {σ} → negations-are-props fe)) (f-is-emb y)
 
    v : Σ (x , p) ꞉ fiber f y , ¬ is-g-point x
    v = double-negation-elim excluded-middle _ iv iii
