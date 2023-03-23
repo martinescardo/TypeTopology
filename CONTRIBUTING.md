@@ -50,6 +50,8 @@ document, we provide a list of conventions and practices that we expect
 - We use [`.lagda` files][4] with `\begin{code}` and `\end{code}` blocks. There
   are some plans to migrate all files to `.lagda.md`, but until this happens,
   we'll continue to use `.lagda` for the sake of consistency.
+- Comments and discussions in files are encouraged. Ideally, files should follow
+  a literate programming in style.
 
 [1]: https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Universes.html
 [2]: https://www.cs.bham.ac.uk/~mhe/TypeTopology/DomainTheory.Basics.Dcpo.html
