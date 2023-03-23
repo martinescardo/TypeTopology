@@ -52,6 +52,10 @@ document, we provide a list of conventions and practices that we expect
   we'll continue to use `.lagda` for the sake of consistency.
 - Comments and discussions in files are encouraged. Ideally, files should follow
   a literate programming in style.
+- All modules should use the flags `--safe` and `--without-K`, and if possible,
+  `--exact-split` and `--auto-inline.` Any modules that use unsafe features
+  should be placed under the directory `Unsafe` and should be imported from
+  `Unsafe/index.lagda`.
 
 [1]: https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Universes.html
 [2]: https://www.cs.bham.ac.uk/~mhe/TypeTopology/DomainTheory.Basics.Dcpo.html
