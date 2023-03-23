@@ -47,7 +47,11 @@ document, we provide a list of conventions and practices that we expect
     e.g. `idtoeq-eqtoid`;
   * all type names should be upper case and should still use kebab casing if
     involves multiple words `Perfect-Nucleus`.
+- We use [`.lagda` files][4] with `\begin{code}` and `\end{code}` blocks. There
+  are some plans to migrate all files to `.lagda.md`, but until this happens,
+  we'll continue to use `.lagda` for the sake of consistency.
 
 [1]: https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Universes.html
 [2]: https://www.cs.bham.ac.uk/~mhe/TypeTopology/DomainTheory.Basics.Dcpo.html
 [3]: https://en.wikipedia.org/wiki/Letter_case#Kebab_case
+[4]: https://agda.readthedocs.io/en/v2.6.3/tools/literate-programming.html
