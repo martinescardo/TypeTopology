@@ -3,6 +3,10 @@ Jon Sterling, started 24th March 2023
 Based on the comments of Martín Escardó on the HoTT Mailing List:
 https://groups.google.com/g/homotopytypetheory/c/FfiZj1vrkmQ/m/GJETdy0AAgAJ
 
+This module defines a "semistrict" version of the identity type, i.e. one for
+which the composition is definitionally associative and unital but for which the
+interchange laws are weak.
+
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
