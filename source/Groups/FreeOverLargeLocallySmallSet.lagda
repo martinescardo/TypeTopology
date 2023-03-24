@@ -392,6 +392,7 @@ FA/∾, which lives in the higher universe 𝓤⁺⁺.
    γ : Σ F ꞉ 𝓤⁺ ̇ , F ≃ ⟨ free-group A ⟩
    γ = FA/∥≏∥ , ≃-sym FA/∾-is-equivalent-to-FA/∥≏∥
 
+
 \end{code}
 
 With this we get the proof of the first lemma needed for the main
@@ -407,6 +408,10 @@ identity type, and so this transport has to be done manually).
  small-free-group = resized-group (free-group A) resized-free-group-carrier
 
 \end{code}
+
+NB. If we assume cumulativity in our type theory, the above can be
+done with univalence directly. TODO. Write down the proof here in
+English (and perhaps also in Agda using --cumulativity).
 
 We say that a type has size 𝓥 if it is equivalent to some type in the
 universe 𝓥, and that a map has size 𝓥 if its fibers all have size 𝓥.

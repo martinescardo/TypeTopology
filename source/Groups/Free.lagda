@@ -255,7 +255,7 @@ induction on u₀ and u₁:
 
 It is noteworthy and remarkable that the above doesn't need decidable
 equality on A. We repeat that this construction is due to Mines,
-Richman and Ruttenberg
+Richman and Ruitenburg.
 
 The following import defines
 
