@@ -45,6 +45,9 @@ module _ (A : 𝓤 ̇ ) (a : A) where
    sys : Has-Id-Sys fam
   open Has-Id-Sys sys public
 
+Unbiased-Id-Sys : 𝓤 ̇ → 𝓤 ⁺ ̇
+Unbiased-Id-Sys A = (a : A) → Id-Sys A a
+
 
 module from-path-characterization
   {A : 𝓤 ̇ }
@@ -67,14 +70,14 @@ module from-path-characterization
     → P x (eqtofun H q)
    aux P p x refl = p
 
-  based-sys : Id-Sys A a
-  fam based-sys = Q a
-  ctr (sys based-sys) = Q-refl
-  ind (sys based-sys) P p x q =
+  id-sys : Id-Sys A a
+  fam id-sys = Q a
+  ctr (sys id-sys) = Q-refl
+  ind (sys id-sys) P p x q =
    transport (P x)
     (inverses-are-sections _ (eqtofun- H) q)
     (aux P p x (back-eqtofun H q))
-  ind-β (sys based-sys) P p =
+  ind-β (sys id-sys) P p =
    ap gen
     (Aux-is-prop
      (back-eqtofun H Q-refl ,
@@ -135,18 +138,18 @@ module _
   ind-β (sys pair-id-sys) P p =
    happly (happly ([a].ind-β _ _) b) [b].ctr ∙ [b].ind-β _ _
 
-module _ (A : 𝓤 ̇ ) (a : A) where
+module _ (A : 𝓤 ̇ ) where
  open Id-Sys
  open Has-Id-Sys
 
- ＝-id-sys : Id-Sys A a
- fam ＝-id-sys = a ＝_
- ctr (sys ＝-id-sys) = refl
- ind (sys ＝-id-sys) P p x refl = p
- ind-β (sys ＝-id-sys) _ _ = refl
+ ＝-id-sys : Unbiased-Id-Sys A
+ fam (＝-id-sys a) = a ＝_
+ ctr (sys (＝-id-sys a)) = refl
+ ind (sys (＝-id-sys a)) P p x refl = p
+ ind-β (sys (＝-id-sys a)) _ _ = refl
 
 module _ (fe : funext 𝓤 𝓤) {A B : 𝓤 ̇ } (f : A → B) where
  homotopy-id-sys : Id-Sys (A → B) f
- homotopy-id-sys = from-path-characterization.based-sys _∼_ (happly-≃ fe) f
+ homotopy-id-sys = from-path-characterization.id-sys _∼_ (happly-≃ fe) f
 
 \end{code}
