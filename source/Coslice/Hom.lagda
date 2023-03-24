@@ -18,42 +18,42 @@ open import UF.EquivalenceExamples
 open import Coslice.Type
 
 module _ {A : 𝓤 ̇ } where
- hom-str-type : coslice A → coslice A → 𝓤 ̇
- hom-str-type X Y = target X → target Y
+ Hom-Str-Type : Coslice A → Coslice A → 𝓤 ̇
+ Hom-Str-Type X Y = target X → target Y
 
- hom-coh-type : (X Y : coslice A) → hom-str-type X Y → 𝓤 ̇
- hom-coh-type X Y f = alg Y ∼ f ∘ alg X
+ Hom-Coh-Type : (X Y : Coslice A) → Hom-Str-Type X Y → 𝓤 ̇
+ Hom-Coh-Type X Y f = alg Y ∼ f ∘ alg X
 
- hom : coslice A → coslice A → 𝓤 ̇
- hom X Y = Σ f ꞉ hom-str-type X Y , hom-coh-type X Y f
+ Hom : Coslice A → Coslice A → 𝓤 ̇
+ Hom X Y = Σ f ꞉ Hom-Str-Type X Y , Hom-Coh-Type X Y f
 
- hom-fun : {X Y : coslice A} → hom X Y → hom-str-type X Y
+ hom-fun : {X Y : Coslice A} → Hom X Y → Hom-Str-Type X Y
  hom-fun (f , α[f]) = f
 
- hom-alg : {X Y : coslice A} (f : hom X Y) → hom-coh-type X Y (hom-fun f)
+ hom-alg : {X Y : Coslice A} (f : Hom X Y) → Hom-Coh-Type X Y (hom-fun f)
  hom-alg (f , α[f]) = α[f]
 
- module _ {X Y : coslice A} (f g : hom X Y) where
-  htpy-str-type : 𝓤 ̇
-  htpy-str-type = hom-fun f ∼ hom-fun g
+ module _ {X Y : Coslice A} (f g : Hom X Y) where
+  Homotopy-Str-Type : 𝓤 ̇
+  Homotopy-Str-Type = hom-fun f ∼ hom-fun g
 
-  htpy-coh-type : htpy-str-type → 𝓤 ̇
-  htpy-coh-type ϕ = Π a ꞉ A , hom-alg g a ＝ hom-alg f a ∙ ϕ (alg X a)
+  Homotopy-Coh-Type : Homotopy-Str-Type → 𝓤 ̇
+  Homotopy-Coh-Type ϕ = Π a ꞉ A , hom-alg g a ＝ hom-alg f a ∙ ϕ (alg X a)
 
-  hom-≈ : 𝓤 ̇
-  hom-≈ = Σ htpy-coh-type
+  Hom-≈ : 𝓤 ̇
+  Hom-≈ = Σ Homotopy-Coh-Type
 
- module _ (fe : FunExt) (X Y : coslice A) (f : hom X Y) where
-  open id-sys
-  open has-id-sys
-  open dep-id-sys
+ module _ (fe : FunExt) (X Y : Coslice A) (f : Hom X Y) where
+  open Id-Sys
+  open Has-Id-Sys
+  open Dep-Id-Sys
   private [f] = homotopy-id-sys (fe 𝓤 𝓤) (hom-fun f)
-  private module [f] = id-sys [f]
+  private module [f] = Id-Sys [f]
 
   private
    Aux =
-    Σ ϕ ꞉ hom-coh-type X Y (hom-fun f) ,
-    htpy-coh-type f (hom-fun f , ϕ) (λ _ → refl)
+    Σ ϕ ꞉ Hom-Coh-Type X Y (hom-fun f) ,
+    Homotopy-Coh-Type f (hom-fun f , ϕ) (λ _ → refl)
 
    Aux-singleton-type : singleton-type' (dfunext (fe 𝓤 𝓤) (hom-alg f)) ≃ Aux
    Aux-singleton-type =
@@ -75,8 +75,8 @@ module _ {A : 𝓤 ̇ } where
       (singletons-are-props
        (singleton-types'-are-singletons _))
 
-  hom-coh-id-sys : dep-id-sys (hom-str-type X Y) (hom-coh-type X Y) [f] (hom-alg f)
-  fam hom-coh-id-sys g ϕ α[g] = htpy-coh-type f (g , α[g]) ϕ
+  hom-coh-id-sys : Dep-Id-Sys (Hom-Str-Type X Y) (Hom-Coh-Type X Y) [f] (hom-alg f)
+  fam hom-coh-id-sys g ϕ α[g] = Homotopy-Coh-Type f (g , α[g]) ϕ
   ctr (sys hom-coh-id-sys) a = refl
   ind (sys hom-coh-id-sys) P p α[f] H =
    transport (uncurry P) (Aux-is-prop _ _) p
@@ -86,17 +86,17 @@ module _ {A : 𝓤 ̇ } where
     lem : Aux-is-prop (hom-alg f , λ _ → refl) (hom-alg f , λ _ → refl) ＝ refl
     lem = props-are-sets Aux-is-prop _ _
 
-  hom-id-sys : id-sys (hom X Y) f
+  hom-id-sys : Id-Sys (Hom X Y) f
   hom-id-sys = pair-id-sys [f] hom-coh-id-sys
 
- module _ (fe : FunExt) (X Y : coslice A) (f g : hom X Y) where
+ module _ (fe : FunExt) (X Y : Coslice A) (f g : Hom X Y) where
   private
    [f] = hom-id-sys fe X Y f
-   module [f] = id-sys [f]
+   module [f] = Id-Sys [f]
 
-  from-hom-≈ : hom-≈ f g → f ＝ g
-  from-hom-≈ = id-sys-to-path-characterization.to-＝ [f] g
+  from-hom-≈ : Hom-≈ f g → f ＝ g
+  from-hom-≈ = [f].to-＝ g
 
   to-hom-≈-is-equiv : is-equiv from-hom-≈
-  to-hom-≈-is-equiv = id-sys-to-path-characterization.to-＝-is-equiv [f] g
+  to-hom-≈-is-equiv = [f].to-＝-is-equiv g
 \end{code}

@@ -7,14 +7,14 @@ module Coslice.Type where
 
 open import MLTT.Spartan
 
-coslice : 𝓤 ̇ → 𝓤 ⁺ ̇
-coslice {𝓤} A = Σ I ꞉ 𝓤 ̇ , (A → I)
+Coslice : 𝓤 ̇ → 𝓤 ⁺ ̇
+Coslice {𝓤} A = Σ I ꞉ 𝓤 ̇ , (A → I)
 
 module _ {A : 𝓤 ̇ } where
- target : coslice A → 𝓤 ̇
+ target : Coslice A → 𝓤 ̇
  target (I , α) = I
 
- alg : (X : coslice A) → A → target X
+ alg : (X : Coslice A) → A → target X
  alg (I , α) = α
 
 \end{code}

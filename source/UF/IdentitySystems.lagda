@@ -18,45 +18,42 @@ open import UF.Subsingletons
 open import UF.PairFun as PairFun
 
 module _ (A : 𝓤 ̇ ) (a : A) where
- record has-id-sys (fam : A → 𝓤 ̇) : 𝓤 ⁺ ̇ where
+ record Has-Id-Sys (fam : A → 𝓤 ̇) : 𝓤 ⁺ ̇ where
   field
    ctr : fam a
    ind : (P : (x : A) (q : fam x) → 𝓤 ̇) (p : P a ctr) (x : A) (q : fam x) → P x q
    ind-β : (P : (x : A) (q : fam x) → 𝓤 ̇) (p : P a ctr) → ind P p a ctr ＝ p
 
- record id-sys : 𝓤 ⁺ ̇ where
+  to-＝ : (x : A) → fam x → a ＝ x
+  to-＝ = ind _ refl
+
+  from-＝ : (x : A) → a ＝ x → fam x
+  from-＝ x refl = ctr
+
+  to-＝-is-equiv : (x : A) → is-equiv (to-＝ x)
+  pr₁ (pr₁ (to-＝-is-equiv x)) = from-＝ x
+  pr₂ (pr₁ (to-＝-is-equiv x)) refl = ind-β _ _
+  pr₁ (pr₂ (to-＝-is-equiv x)) = from-＝ x
+  pr₂ (pr₂ (to-＝-is-equiv x)) q = aux x q
+   where
+    aux : (x : A) (q : fam x) → from-＝ x (to-＝ x q) ＝ q
+    aux = ind _ (ap (from-＝ a) (ind-β _ _))
+
+ record Id-Sys : 𝓤 ⁺ ̇ where
   field
    fam : A → 𝓤 ̇
-   sys : has-id-sys fam
-  open has-id-sys sys public
+   sys : Has-Id-Sys fam
+  open Has-Id-Sys sys public
 
-module id-sys-to-path-characterization {A : 𝓤 ̇ } {a : A} ([a] : id-sys A a) where
- private
-  module [a] = id-sys [a]
 
- to-＝ : (x : A) → [a].fam x → a ＝ x
- to-＝ = [a].ind _ refl
-
- from-＝ : (x : A) → a ＝ x → [a].fam x
- from-＝ x refl = [a].ctr
-
- to-＝-is-equiv : (x : A) → is-equiv (to-＝ x)
- pr₁ (pr₁ (to-＝-is-equiv x)) = from-＝ x
- pr₂ (pr₁ (to-＝-is-equiv x)) refl = [a].ind-β _ _
- pr₁ (pr₂ (to-＝-is-equiv x)) = from-＝ x
- pr₂ (pr₂ (to-＝-is-equiv x)) q = aux x q
-  where
-   aux : (x : A) (q : [a].fam x) → from-＝ x (to-＝ x q) ＝ q
-   aux = [a].ind _ (ap (from-＝ a) ([a].ind-β _ _))
-
-module path-characterization-to-id-sys
+module from-path-characterization
   {A : 𝓤 ̇ }
   (Q : A → A → 𝓤 ̇ )
   (H : {x y : A} → (x ＝ y) ≃ Q x y)
   (a : A)
  where
-  open id-sys
-  open has-id-sys
+  open Id-Sys
+  open Has-Id-Sys
 
   private
    Q-refl : {x : A} → Q x x
@@ -70,7 +67,7 @@ module path-characterization-to-id-sys
     → P x (eqtofun H q)
    aux P p x refl = p
 
-  based-sys : id-sys A a
+  based-sys : Id-Sys A a
   fam based-sys = Q a
   ctr (sys based-sys) = Q-refl
   ind (sys based-sys) P p x q =
@@ -106,27 +103,27 @@ module path-characterization-to-id-sys
 
 
 module _ (A : 𝓤 ̇ ) (B : A → 𝓤 ̇ ) where
- record dep-id-sys {a : A} ([a] : id-sys A a) (b : B a) : 𝓤 ⁺ ̇ where
+ record Dep-Id-Sys {a : A} ([a] : Id-Sys A a) (b : B a) : 𝓤 ⁺ ̇ where
   private
-   module [a] = id-sys [a]
+   module [a] = Id-Sys [a]
   field
    fam : (x : A) (q : [a].fam x) (y : B x) → 𝓤 ̇
-   sys : has-id-sys (B a) b (fam a [a].ctr)
-  open has-id-sys sys public
+   sys : Has-Id-Sys (B a) b (fam a [a].ctr)
+  open Has-Id-Sys sys public
 
 module _
   {A : 𝓤 ̇ } {B : A → 𝓤 ̇ }
   {a : A} {b : B a}
-  ([a] : id-sys A a)
-  ([b] : dep-id-sys A B [a] b)
+  ([a] : Id-Sys A a)
+  ([b] : Dep-Id-Sys A B [a] b)
  where
-  module [a] = id-sys [a]
-  module [b] = dep-id-sys [b]
+  module [a] = Id-Sys [a]
+  module [b] = Dep-Id-Sys [b]
 
-  open id-sys
-  open has-id-sys
+  open Id-Sys
+  open Has-Id-Sys
 
-  pair-id-sys : id-sys (Σ B) (a , b)
+  pair-id-sys : Id-Sys (Σ B) (a , b)
   fam pair-id-sys (x , y) = Σ ϕ ꞉ [a].fam x , [b].fam x ϕ y
   pr₁ (ctr (sys pair-id-sys)) = [a].ctr
   pr₂ (ctr (sys pair-id-sys)) = [b].ctr
@@ -139,17 +136,17 @@ module _
    happly (happly ([a].ind-β _ _) b) [b].ctr ∙ [b].ind-β _ _
 
 module _ (A : 𝓤 ̇ ) (a : A) where
- open id-sys
- open has-id-sys
+ open Id-Sys
+ open Has-Id-Sys
 
- ＝-id-sys : id-sys A a
+ ＝-id-sys : Id-Sys A a
  fam ＝-id-sys = a ＝_
  ctr (sys ＝-id-sys) = refl
  ind (sys ＝-id-sys) P p x refl = p
  ind-β (sys ＝-id-sys) _ _ = refl
 
 module _ (fe : funext 𝓤 𝓤) {A B : 𝓤 ̇ } (f : A → B) where
- homotopy-id-sys : id-sys (A → B) f
- homotopy-id-sys = path-characterization-to-id-sys.based-sys _∼_ (happly-≃ fe) f
+ homotopy-id-sys : Id-Sys (A → B) f
+ homotopy-id-sys = from-path-characterization.based-sys _∼_ (happly-≃ fe) f
 
 \end{code}
