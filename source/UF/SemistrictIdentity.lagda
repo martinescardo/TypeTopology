@@ -60,10 +60,6 @@ module _ {A : 𝓤 ̇ } where
    pr₁ to-＝s-equiv = to-＝s
    pr₂ to-＝s-equiv = to-＝s-is-equiv
 
-
- open Id-Sys
- open Has-Id-Sys
-
  ＝s-id-sys : funext 𝓤 𝓤 → Unbiased-Id-Sys A
  ＝s-id-sys fe = from-path-characterization.id-sys _＝s_ (to-＝s-equiv fe)
 
