@@ -18,11 +18,11 @@ open import UF.Subsingletons
 open import UF.PairFun as PairFun
 
 module _ (A : 𝓤 ̇ ) (a : A) where
- record Has-Id-Sys (fam : A → 𝓤 ̇) : 𝓤 ⁺ ̇ where
+ record Has-Id-Sys (fam : A → 𝓤 ̇) : 𝓤ω where
   field
    ctr : fam a
-   ind : (P : (x : A) (q : fam x) → 𝓤 ̇) (p : P a ctr) (x : A) (q : fam x) → P x q
-   ind-β : (P : (x : A) (q : fam x) → 𝓤 ̇) (p : P a ctr) → ind P p a ctr ＝ p
+   ind : {𝓥 : Universe} (P : (x : A) (q : fam x) → 𝓥 ̇) (p : P a ctr) (x : A) (q : fam x) → P x q
+   ind-β : {𝓥 : Universe} (P : (x : A) (q : fam x) → 𝓥 ̇) (p : P a ctr) → ind P p a ctr ＝ p
 
   to-＝ : (x : A) → fam x → a ＝ x
   to-＝ = ind _ refl
@@ -39,14 +39,15 @@ module _ (A : 𝓤 ̇ ) (a : A) where
     aux : (x : A) (q : fam x) → from-＝ x (to-＝ x q) ＝ q
     aux = ind _ (ap (from-＝ a) (ind-β _ _))
 
- record Id-Sys : 𝓤 ⁺ ̇ where
+ record Id-Sys : 𝓤ω where
   field
    fam : A → 𝓤 ̇
    sys : Has-Id-Sys fam
   open Has-Id-Sys sys public
 
-Unbiased-Id-Sys : 𝓤 ̇ → 𝓤 ⁺ ̇
+Unbiased-Id-Sys : 𝓤 ̇ → 𝓤ω
 Unbiased-Id-Sys A = (a : A) → Id-Sys A a
+
 
 
 module from-path-characterization
@@ -62,8 +63,9 @@ module from-path-characterization
    Q-refl : {x : A} → Q x x
    Q-refl = eqtofun H refl
 
+
    aux
-    : (P : (x : A) (q : Q a x) → 𝓤 ̇ )
+    : (P : (x : A) (q : Q a x) → 𝓥 ̇ )
     → (p : P a Q-refl)
     → (x : A)
     → (q : a ＝ x)
@@ -106,13 +108,14 @@ module from-path-characterization
 
 
 module _ (A : 𝓤 ̇ ) (B : A → 𝓤 ̇ ) where
- record Dep-Id-Sys {a : A} ([a] : Id-Sys A a) (b : B a) : 𝓤 ⁺ ̇ where
+ record Dep-Id-Sys {a : A} ([a] : Id-Sys A a) (b : B a) : 𝓤ω where
   private
    module [a] = Id-Sys [a]
   field
    fam : (x : A) (q : [a].fam x) (y : B x) → 𝓤 ̇
    sys : Has-Id-Sys (B a) b (fam a [a].ctr)
   open Has-Id-Sys sys public
+
 
 module _
   {A : 𝓤 ̇ } {B : A → 𝓤 ̇ }
