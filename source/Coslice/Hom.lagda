@@ -27,22 +27,22 @@ module _ {A : 𝓦 ̇ } where
  Hom : A ↓ 𝓤 → A ↓ 𝓥 → 𝓦 ⊔ 𝓤 ⊔ 𝓥 ̇
  Hom X Y = Σ f ꞉ Hom-Str-Type X Y , Hom-Coh-Type X Y f
 
- hom-fun : {X : A ↓ 𝓤} {Y : A ↓ 𝓥} → Hom X Y → Hom-Str-Type X Y
- hom-fun (f , α[f]) = f
+ module _ {X : A ↓ 𝓤} {Y : A ↓ 𝓥} where
+  hom-fun : Hom X Y → Hom-Str-Type X Y
+  hom-fun (f , α[f]) = f
 
- hom-alg : {X : A ↓ 𝓤} {Y : A ↓ 𝓥} (f : Hom X Y) → Hom-Coh-Type X Y (hom-fun f)
- hom-alg (f , α[f]) = α[f]
+  hom-alg : (f : Hom X Y) → Hom-Coh-Type X Y (hom-fun f)
+  hom-alg (f , α[f]) = α[f]
 
+  module _ (f g : Hom X Y) where
+   Homotopy-Str-Type : 𝓤 ⊔ 𝓥 ̇
+   Homotopy-Str-Type = hom-fun f ∼ hom-fun g
 
- module _ {X : A ↓ 𝓤} {Y : A ↓ 𝓥} (f g : Hom X Y) where
-  Homotopy-Str-Type : 𝓤 ⊔ 𝓥 ̇
-  Homotopy-Str-Type = hom-fun f ∼ hom-fun g
+   Homotopy-Coh-Type : Homotopy-Str-Type → 𝓦 ⊔ 𝓥 ̇
+   Homotopy-Coh-Type ϕ = Π a ꞉ A , hom-alg g a ＝ hom-alg f a ∙ ϕ (alg X a)
 
-  Homotopy-Coh-Type : Homotopy-Str-Type → 𝓦 ⊔ 𝓥 ̇
-  Homotopy-Coh-Type ϕ = Π a ꞉ A , hom-alg g a ＝ hom-alg f a ∙ ϕ (alg X a)
-
-  Hom-≈ : 𝓦 ⊔ 𝓤 ⊔ 𝓥 ̇
-  Hom-≈ = Σ Homotopy-Coh-Type
+   Hom-≈ : 𝓦 ⊔ 𝓤 ⊔ 𝓥 ̇
+   Hom-≈ = Σ Homotopy-Coh-Type
 
  module _ (fe : FunExt) (X : A ↓ 𝓤) (Y : A ↓ 𝓥) (f : Hom X Y) where
   open Id-Sys
@@ -76,7 +76,12 @@ module _ {A : 𝓦 ̇ } where
       (singletons-are-props
        (singleton-types'-are-singletons _))
 
-  hom-coh-id-sys : Dep-Id-Sys (𝓤 ⊔ 𝓥) (𝓦 ⊔ 𝓥) (Hom-Str-Type X Y) (Hom-Coh-Type X Y) [f] (hom-alg f)
+  hom-coh-id-sys
+   : Dep-Id-Sys (𝓤 ⊔ 𝓥) (𝓦 ⊔ 𝓥)
+      (Hom-Str-Type X Y)
+      (Hom-Coh-Type X Y)
+      [f]
+      (hom-alg f)
   fam hom-coh-id-sys g ϕ α[g] = Homotopy-Coh-Type f (g , α[g]) ϕ
   ctr (sys hom-coh-id-sys) a = refl
   ind (sys hom-coh-id-sys) P p α[f] H =
