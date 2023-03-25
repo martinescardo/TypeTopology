@@ -17,37 +17,36 @@ open import UF.Retracts
 open import UF.Subsingletons
 open import UF.PairFun as PairFun
 
-module _ (A : 𝓤 ̇ ) (a : A) where
- record Has-Id-Sys (fam : A → 𝓤 ̇) : 𝓤ω where
-  field
-   ctr : fam a
-   ind : {𝓥 : Universe} (P : (x : A) (q : fam x) → 𝓥 ̇) (p : P a ctr) (x : A) (q : fam x) → P x q
-   ind-β : {𝓥 : Universe} (P : (x : A) (q : fam x) → 𝓥 ̇) (p : P a ctr) → ind P p a ctr ＝ p
+record Has-Id-Sys {𝓦} (A : 𝓤 ̇ ) (a : A) (fam : A → 𝓦 ̇) : 𝓤ω where
+ field
+  ctr : fam a
+  ind : {𝓥 : Universe} (P : (x : A) (q : fam x) → 𝓥 ̇) (p : P a ctr) (x : A) (q : fam x) → P x q
+  ind-β : {𝓥 : Universe} (P : (x : A) (q : fam x) → 𝓥 ̇) (p : P a ctr) → ind P p a ctr ＝ p
 
-  to-＝ : (x : A) → fam x → a ＝ x
-  to-＝ = ind _ refl
+ to-＝ : (x : A) → fam x → a ＝ x
+ to-＝ = ind _ refl
 
-  from-＝ : (x : A) → a ＝ x → fam x
-  from-＝ x refl = ctr
+ from-＝ : (x : A) → a ＝ x → fam x
+ from-＝ x refl = ctr
 
-  to-＝-is-equiv : (x : A) → is-equiv (to-＝ x)
-  pr₁ (pr₁ (to-＝-is-equiv x)) = from-＝ x
-  pr₂ (pr₁ (to-＝-is-equiv x)) refl = ind-β _ _
-  pr₁ (pr₂ (to-＝-is-equiv x)) = from-＝ x
-  pr₂ (pr₂ (to-＝-is-equiv x)) q = aux x q
-   where
-    aux : (x : A) (q : fam x) → from-＝ x (to-＝ x q) ＝ q
-    aux = ind _ (ap (from-＝ a) (ind-β _ _))
+ to-＝-is-equiv : (x : A) → is-equiv (to-＝ x)
+ pr₁ (pr₁ (to-＝-is-equiv x)) = from-＝ x
+ pr₂ (pr₁ (to-＝-is-equiv x)) refl = ind-β _ _
+ pr₁ (pr₂ (to-＝-is-equiv x)) = from-＝ x
+ pr₂ (pr₂ (to-＝-is-equiv x)) q = aux x q
+  where
+   aux : (x : A) (q : fam x) → from-＝ x (to-＝ x q) ＝ q
+   aux = ind _ (ap (from-＝ a) (ind-β _ _))
 
- record Id-Sys : 𝓤ω where
-  field
-   fam : A → 𝓤 ̇
-   sys : Has-Id-Sys fam
-  open Has-Id-Sys sys public
+record Id-Sys 𝓦 (A : 𝓤 ̇ ) (a : A) : 𝓤ω where
+ field
+  fam : A → 𝓦  ̇
+  sys : Has-Id-Sys A a fam
+ open Has-Id-Sys sys public
 
-Unbiased-Id-Sys : 𝓤 ̇ → 𝓤ω
-Unbiased-Id-Sys A = (a : A) → Id-Sys A a
 
+Unbiased-Id-Sys : Universe → 𝓤 ̇ → 𝓤ω
+Unbiased-Id-Sys 𝓦 A = (a : A) → Id-Sys 𝓦 A a
 
 
 module from-path-characterization
@@ -63,7 +62,6 @@ module from-path-characterization
    Q-refl : {x : A} → Q x x
    Q-refl = eqtofun H refl
 
-
    aux
     : (P : (x : A) (q : Q a x) → 𝓥 ̇ )
     → (p : P a Q-refl)
@@ -72,7 +70,7 @@ module from-path-characterization
     → P x (eqtofun H q)
    aux P p x refl = p
 
-  id-sys : Id-Sys A a
+  id-sys : Id-Sys 𝓤 A a
   fam id-sys = Q a
   ctr (sys id-sys) = Q-refl
   ind (sys id-sys) P p x q =
@@ -107,21 +105,22 @@ module from-path-characterization
     gen (ϕ , ψ ) = transport (P a) ψ (aux P p a ϕ)
 
 
-module _ (A : 𝓤 ̇ ) (B : A → 𝓤 ̇ ) where
- record Dep-Id-Sys {a : A} ([a] : Id-Sys A a) (b : B a) : 𝓤ω where
+module _ 𝓦 𝓦' (A : 𝓤 ̇ ) (B : A → 𝓥 ̇ ) where
+ record Dep-Id-Sys {a : A} ([a] : Id-Sys 𝓦 A a) (b : B a) : 𝓤ω where
   private
    module [a] = Id-Sys [a]
   field
-   fam : (x : A) (q : [a].fam x) (y : B x) → 𝓤 ̇
+   fam : (x : A) (q : [a].fam x) (y : B x) → 𝓦' ̇
    sys : Has-Id-Sys (B a) b (fam a [a].ctr)
+
   open Has-Id-Sys sys public
 
 
 module _
-  {A : 𝓤 ̇ } {B : A → 𝓤 ̇ }
+  {A : 𝓤 ̇ } {B : A → 𝓥 ̇ }
   {a : A} {b : B a}
-  ([a] : Id-Sys A a)
-  ([b] : Dep-Id-Sys A B [a] b)
+  ([a] : Id-Sys 𝓦 A a)
+  ([b] : Dep-Id-Sys 𝓦 𝓦' A B [a] b)
  where
   module [a] = Id-Sys [a]
   module [b] = Dep-Id-Sys [b]
@@ -129,7 +128,7 @@ module _
   open Id-Sys
   open Has-Id-Sys
 
-  pair-id-sys : Id-Sys (Σ B) (a , b)
+  pair-id-sys : Id-Sys (𝓦 ⊔ 𝓦') (Σ B) (a , b)
   fam pair-id-sys (x , y) = Σ ϕ ꞉ [a].fam x , [b].fam x ϕ y
   pr₁ (ctr (sys pair-id-sys)) = [a].ctr
   pr₂ (ctr (sys pair-id-sys)) = [b].ctr
@@ -145,14 +144,14 @@ module _ (A : 𝓤 ̇ ) where
  open Id-Sys
  open Has-Id-Sys
 
- ＝-id-sys : Unbiased-Id-Sys A
+ ＝-id-sys : Unbiased-Id-Sys 𝓤 A
  fam (＝-id-sys a) = a ＝_
  ctr (sys (＝-id-sys a)) = refl
  ind (sys (＝-id-sys a)) P p x refl = p
  ind-β (sys (＝-id-sys a)) _ _ = refl
 
-module _ (fe : funext 𝓤 𝓤) {A B : 𝓤 ̇ } (f : A → B) where
- homotopy-id-sys : Id-Sys (A → B) f
+module _ (fe : funext 𝓤 𝓥) {A : 𝓤 ̇ } {B : 𝓥 ̇ } (f : A → B) where
+ homotopy-id-sys : Id-Sys (𝓤 ⊔ 𝓥) (A → B) f
  homotopy-id-sys = from-path-characterization.id-sys _∼_ (happly-≃ fe) f
 
 \end{code}

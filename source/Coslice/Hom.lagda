@@ -75,7 +75,7 @@ module _ {A : 𝓤 ̇ } where
       (singletons-are-props
        (singleton-types'-are-singletons _))
 
-  hom-coh-id-sys : Dep-Id-Sys (Hom-Str-Type X Y) (Hom-Coh-Type X Y) [f] (hom-alg f)
+  hom-coh-id-sys : Dep-Id-Sys 𝓤 𝓤 (Hom-Str-Type X Y) (Hom-Coh-Type X Y) [f] (hom-alg f)
   fam hom-coh-id-sys g ϕ α[g] = Homotopy-Coh-Type f (g , α[g]) ϕ
   ctr (sys hom-coh-id-sys) a = refl
   ind (sys hom-coh-id-sys) P p α[f] H =
@@ -86,7 +86,7 @@ module _ {A : 𝓤 ̇ } where
     lem : Aux-is-prop (hom-alg f , λ _ → refl) (hom-alg f , λ _ → refl) ＝ refl
     lem = props-are-sets Aux-is-prop _ _
 
-  hom-id-sys : Id-Sys (Hom X Y) f
+  hom-id-sys : Id-Sys 𝓤 (Hom X Y) f
   hom-id-sys = pair-id-sys [f] hom-coh-id-sys
 
  module _ (fe : FunExt) (X Y : Coslice A) (f g : Hom X Y) where
