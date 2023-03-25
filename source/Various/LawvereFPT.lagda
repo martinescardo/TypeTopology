@@ -224,8 +224,14 @@ Mathematics, via the nLab: https://ncatlab.org/nlab/show/Cantor%27s+theorem.
     holds-is-prop (U b)
 
    retr : A → (A → Ω₀)
-   pr₁ (retr a b) = resize psz (retr-large a b holds) (holds-is-prop (retr-large a b))
-   pr₂ (retr a b) = resize-is-prop psz (retr-large a b holds) (holds-is-prop (retr-large a b))
+   pr₁ (retr a b) =
+    resize psz
+     (retr-large a b holds)
+     (holds-is-prop (retr-large a b))
+   pr₂ (retr a b) =
+    resize-is-prop psz
+     (retr-large a b holds)
+     (holds-is-prop (retr-large a b))
 
    retr-has-section : has-section· retr
    pr₁ retr-has-section U = ϕ U
