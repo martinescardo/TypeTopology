@@ -77,13 +77,6 @@ resize-Ω-≃ : Ω 𝓤 ≃ Ω 𝓥
 pr₁ resize-Ω-≃ = resize-Ω
 pr₂ resize-Ω-≃ = resize-Ω-is-equiv
 
--- Ω'-is-set : is-set (Ω' 𝓤)
--- Ω'-is-set =
---  subtypes-of-sets-are-sets
---   (eqtofun Ω'-equiv)
---   (equivs-are-lc _ (eqtofun- Ω'-equiv))
---   (Ω-is-set (fe _ _) (pe _))
-
 module _ {𝓤 : Universe} where
  powerset : (A : 𝓤 ̇ ) → hSet (𝓤 ⁺)
  pr₁ (powerset A) = A → Ω 𝓤
