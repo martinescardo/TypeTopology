@@ -49,6 +49,7 @@ import UF.Retracts-FunExt
 import UF.SIP
 import UF.SIP-Examples
 import UF.Section-Embedding
+import UF.SetTrunc
 import UF.Size
 import UF.StructureIdentityPrinciple -- obsolete but keep
 import UF.Subsingletons
