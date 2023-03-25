@@ -95,7 +95,10 @@ module _ {𝓤 : Universe} where
       (transport id (ap pr₁ (happly (Hv ∙ Hu ⁻¹) v)) refl ,
        Π-is-set (fe _ _) (λ _ → Ω-is-set (fe _ _) (pe _)) _ _)
 
-[weak-successor] : (A : hSet 𝓤) → Σ β ꞉ Card (𝓤 ⁺) , (set-trunc-in A < β) holds
+
+[weak-successor]
+ : (A : hSet 𝓤)
+ → Σ β ꞉ Card (𝓤 ⁺) , (set-trunc-in A < β) holds
 
 pr₁ ([weak-successor] A) =
  set-trunc-in
