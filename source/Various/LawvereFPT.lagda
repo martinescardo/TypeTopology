@@ -197,6 +197,7 @@ As a simple application, it follows that negation doesn't have fixed points:
 
 \end{code}
 
+Addition by Jon Sterling 25th March 2023.
 
 Assuming function extensionality, propositional extensionality, and
 propositional resizing, we may further prove the statement of Cantor's theorem
@@ -257,6 +258,8 @@ Mathematics, via the nLab: https://ncatlab.org/nlab/show/Cantor%27s+theorem.
        (to-resize psz _ _ ∘ bwd)
 
 \end{code}
+
+End of addition by Jon Sterling.
 
 The original LFPT has surjection, rather than retraction, as an
 assumption. The retraction version can be formulated and proved in
