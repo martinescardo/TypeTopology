@@ -26,7 +26,6 @@ module Cardinals.Successor
  (st : set-truncations-exist)
  (pt : propositional-truncations-exist)
  (psz : Propositional-Resizing)
- (impred : (𝓤 𝓥 : Universe) → Ω-Resizing 𝓤 𝓥)
  where
 
 open import UF.Embeddings
@@ -39,13 +38,6 @@ import UF.Logic
 open set-truncations-exist st
 open propositional-truncations-exist pt
 open UF.Logic.AllCombinators pt (fe _ _)
-
--- TODO: find a way to get rid of this Ω' stuff.
-Ω' : (𝓤 : Universe) → 𝓤 ̇
-Ω' 𝓤 = resized 𝓤 (Ω 𝓤) (impred _ _)
-
-Ω'-equiv : Ω' 𝓤 ≃ Ω 𝓤
-Ω'-equiv = resizing-condition _ (Ω _) (impred _ _)
 
 resize-Ω : Ω 𝓤 → Ω 𝓥
 pr₁ (resize-Ω ϕ) = resize psz (ϕ holds) (holds-is-prop ϕ)
@@ -85,24 +77,24 @@ resize-Ω-≃ : Ω 𝓤 ≃ Ω 𝓥
 pr₁ resize-Ω-≃ = resize-Ω
 pr₂ resize-Ω-≃ = resize-Ω-is-equiv
 
-Ω'-is-set : is-set (Ω' 𝓤)
-Ω'-is-set =
- subtypes-of-sets-are-sets
-  (eqtofun Ω'-equiv)
-  (equivs-are-lc _ (eqtofun- Ω'-equiv))
-  (Ω-is-set (fe _ _) (pe _))
+-- Ω'-is-set : is-set (Ω' 𝓤)
+-- Ω'-is-set =
+--  subtypes-of-sets-are-sets
+--   (eqtofun Ω'-equiv)
+--   (equivs-are-lc _ (eqtofun- Ω'-equiv))
+--   (Ω-is-set (fe _ _) (pe _))
 
 module _ {𝓤 : Universe} where
- powerset : (A : 𝓤 ̇ ) → hSet 𝓤
- pr₁ (powerset A) = A → Ω' 𝓤
+ powerset : (A : 𝓤 ̇ ) → hSet (𝓤 ⁺)
+ pr₁ (powerset A) = A → Ω 𝓤
  pr₂ (powerset A) =
   Π-is-set (fe _ _) λ _ →
-  Ω'-is-set
+  Ω-is-set (fe _ _) (pe _)
 
  module _ (A : hSet 𝓤) where
-  singleton-embedding' : underlying-set A ↪ (underlying-set A → Ω 𝓤)
-  pr₁ singleton-embedding' x y = (x ＝ y) , underlying-set-is-set A
-  pr₂ singleton-embedding' ϕ = main
+  singleton-embedding : underlying-set A ↪ (underlying-set A → Ω 𝓤)
+  pr₁ singleton-embedding x y = (x ＝ y) , underlying-set-is-set A
+  pr₂ singleton-embedding ϕ = main
    where
     main : is-prop (Σ z ꞉ underlying-set A , (λ y → (z ＝ y) , pr₂ A) ＝ ϕ)
     main (u , Hu) (v , Hv) =
@@ -110,47 +102,29 @@ module _ {𝓤 : Universe} where
       (transport id (ap pr₁ (happly (Hv ∙ Hu ⁻¹) v)) refl ,
        Π-is-set (fe _ _) (λ _ → Ω-is-set (fe _ _) (pe _)) _ _)
 
-  singleton-embedding : underlying-set A ↪ (underlying-set A → Ω' 𝓤)
-  singleton-embedding = aux ∘↪ singleton-embedding'
-   where
-    aux : _ ↪ _
-    pr₁ aux = back-eqtofun Ω'-equiv ∘_
-    pr₂ aux =
-     equivs-are-embeddings _
-      (equiv-post
-       (back-eqtofun (≃-funext (fe _ _) _ _))
-       (back-eqtofun (≃-funext (fe _ _) _ _))
-       (back-eqtofun Ω'-equiv)
-       (inverses-are-equivs
-        (eqtofun Ω'-equiv)
-        (eqtofun- Ω'-equiv)))
+[weak-successor] : (A : hSet 𝓤) → Σ β ꞉ Card (𝓤 ⁺) , (set-trunc-in A < β) holds
 
-[weak-successor] : (A : hSet 𝓤) → Σ β ꞉ Card 𝓤 , (set-trunc-in A < β) holds
 pr₁ ([weak-successor] A) =
- set-trunc-in (powerset (underlying-set A))
+ set-trunc-in
+  (powerset
+   (underlying-set A))
+
 pr₁ (pr₂ ([weak-successor] A)) =
- transport⁻¹
-  _holds
-  ≤-compute
-  ∣ singleton-embedding A ∣
+ ≤-compute-in ∣ singleton-embedding A ∣
+
 pr₂ (pr₂ ([weak-successor] A)) H =
- ∥∥-rec 𝟘-is-prop main lem2
+ ∥∥-rec 𝟘-is-prop (𝟘-elim ∘ main) (≤-compute-out H)
+
  where
-  lem : (set-trunc-in (powerset (underlying-set A)) ≤ set-trunc-in A) holds
-  lem = transport (λ β → (β ≤ set-trunc-in A) holds) H (≤-refl _)
-
-  lem2 : (powerset (underlying-set A) [≤] A) holds
-  lem2 = transport _holds ≤-compute lem
-
-  main : ((underlying-set A → Ω' 𝓤) ↪ underlying-set A) → 𝟘
+  main : ((underlying-set A → Ω 𝓤) ↪ underlying-set A) → 𝟘
   main ι =
    LFTP.retract-version.cantor-theorem-for-embeddings fe pe psz
     (underlying-set A)
     ι'
     ι'-emb
    where
-    Q : Ω₀ ≃ Ω' 𝓤
-    Q = resize-Ω-≃ ● (≃-sym Ω'-equiv)
+    Q : Ω₀ ≃ Ω 𝓤
+    Q = resize-Ω-≃
 
     ι' : (underlying-set A → Ω₀) → underlying-set A
     ι' U = pr₁ ι (eqtofun Q ∘ U)
@@ -167,12 +141,13 @@ pr₂ (pr₂ ([weak-successor] A)) H =
       ι'-lc
       (underlying-set-is-set A)
 
-weak-successor : (α : Card 𝓤) → Σ β ꞉ Card 𝓤 , (α < β) holds
+
+weak-successor : (α : Card 𝓤) → Σ β ꞉ Card (𝓤 ⁺) , (α < β) holds
 weak-successor =
  set-trunc-ind _ lem [weak-successor]
  where
   abstract
-   lem : (α : Card 𝓤) → is-set (Σ β ꞉ Card 𝓤 , (α < β) holds)
+   lem : (α : Card 𝓤) → is-set (Σ β ꞉ Card (𝓤 ⁺) , (α < β) holds)
    lem α =
     Σ-is-set Card-is-set λ β →
     props-are-sets (holds-is-prop (α < β))
