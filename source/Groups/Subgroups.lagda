@@ -14,7 +14,7 @@ that the group axioms, as defined in Groups, form a proposition.
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe --auto-inline --exact-split #-}
+{-# OPTIONS --without-K --safe --no-sized-types --no-guardedness --auto-inline --exact-split #-}
 
 open import MLTT.Spartan
 open import UF.Base hiding (_≈_)

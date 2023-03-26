@@ -5,7 +5,7 @@ of abs, along with positive and negative properties of integers.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 open import MLTT.Spartan renaming (_+_ to _∔_)
 

@@ -2,7 +2,7 @@ Andrew Sneap, 17 February 2022
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 open import MLTT.Spartan renaming (_+_ to _∔_)
 open import Naturals.Exponentiation
@@ -80,14 +80,14 @@ cancellation that x * pos (2^ c) ≤ z * pos (2^ a).
 
   VII : x * pos (2^ c) * pos (2^ b) < y * pos (2^ a) * pos (2^ c)
   VII = transport (_<  y * pos (2^ a) * pos (2^ c)) III I
-  
+
   VIII : x * pos (2^ c) * pos (2^ b) < z * pos (2^ a) * pos (2^ b)
   VIII = ℤ<-trans
           (x * pos (2^ c) * pos (2^ b))
            (y * pos (2^ a) * pos (2^ c))
             (z * pos (2^ a) * pos (2^ b))
              VII VI
-  
+
   γ : x * pos (2^ c) < z * pos (2^ a)
   γ = ordering-right-cancellable
        (x * pos (2^ c))
@@ -127,14 +127,14 @@ cancellation that x * pos (2^ c) ≤ z * pos (2^ a).
 
   VII : x * pos (2^ c) * pos (2^ b) ≤ y * pos (2^ a) * pos (2^ c)
   VII = transport (_≤  y * pos (2^ a) * pos (2^ c)) III I
-  
+
   VIII : x * pos (2^ c) * pos (2^ b) ≤ z * pos (2^ a) * pos (2^ b)
   VIII = ℤ≤-trans
           (x * pos (2^ c) * pos (2^ b))
            (y * pos (2^ a) * pos (2^ c))
             (z * pos (2^ a) * pos (2^ b))
              VII VI
-  
+
   γ : x * pos (2^ c) ≤ z * pos (2^ a)
   γ = ℤ≤-ordering-right-cancellable
       (x * pos (2^ c))

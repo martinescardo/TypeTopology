@@ -2,7 +2,7 @@ Martin Escardo and Paulo Oliva, October 2021.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 module Fin.ArgMinMax where
 
@@ -15,7 +15,7 @@ open import Fin.Topology
 open import Fin.Type
 open import MLTT.Plus-Properties
 open import MLTT.Spartan
-open import MLTT.SpartanMLTT-List
+open import MLTT.SpartanList
 open import Naturals.Order
 open import Notation.Order
 open import NotionsOfDecidability.Complemented

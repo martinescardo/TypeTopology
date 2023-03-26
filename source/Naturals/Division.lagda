@@ -6,9 +6,9 @@ proofs of properties of division are also provided.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
-open import MLTT.Spartan renaming (_+_ to _∔_) 
+open import MLTT.Spartan renaming (_+_ to _∔_)
 
 open import Naturals.Addition
 open import Naturals.Multiplication
@@ -48,7 +48,7 @@ _∣_-is-prop x y (a , p) (b , p') = to-subtype-＝ (λ _ → ℕ-is-set) II
  where
   I : succ x * a ＝ succ x * b
   I = p ∙ p' ⁻¹
-  
+
   II : a ＝ b
   II = mult-left-cancellable a b x I
 
@@ -196,7 +196,7 @@ multiplication.
   I = ∣-divisor-divides-multiple a b k p₁
   II : a ∣ (l * c)
   II = ∣-divisor-divides-multiple a c l p₂
-                                                                            
+
 ∣-trans : (a b c : ℕ) → a ∣ b → b ∣ c → a ∣ c
 ∣-trans a b c (x , p) (y , q) = (x * y) , I
  where
@@ -246,8 +246,8 @@ follows from the inductive hypothesis and r ＝ d.
 division : (a d : ℕ) → division-theorem a d
 division a d = induction base step a
  where
-  base : Σ q ꞉ ℕ , Σ r ꞉ ℕ , (0 ＝ q * succ d + r) × (r < succ d)  
-  base = 0 , 0 , I , II
+  base : Σ q ꞉ ℕ , Σ r ꞉ ℕ , (0 ＝ q * succ d + r) × (r < succ d)
+  base = 0 , (0 , (I , II))
    where
     I : 0 ＝ 0 * succ d + 0
     I = 0         ＝⟨ refl                               ⟩
@@ -271,10 +271,10 @@ division a d = induction base step a
       I = succ k                        ＝⟨ i   ⟩
           succ (q + q * d + r)          ＝⟨ ii  ⟩
           succ (q + q * d + d)          ＝⟨ iii ⟩
-          succ (q + (q * d + d))        ＝⟨ iv  ⟩ 
+          succ (q + (q * d + d))        ＝⟨ iv  ⟩
           succ q + (q * d + d)          ＝⟨ v   ⟩
-          succ q + (d * q + d)          ＝⟨ vi  ⟩ 
-          succ q + (d + d * q)          ＝⟨ vii ⟩ 
+          succ q + (d * q + d)          ＝⟨ vi  ⟩
+          succ q + (d + d * q)          ＝⟨ vii ⟩
           succ q + succ q * d           ∎
        where
         i   = ap succ e
@@ -299,7 +299,7 @@ This is easy to prove using cancellation of addition.
 
 division-is-prop' : (a d q : ℕ)
                   → is-prop (Σ r ꞉ ℕ , (a ＝ q * succ d + r) × r < succ d)
-division-is-prop' a d q (r₀ , e₀ , l₀) (r₁ , e₁ , l₁) = γ 
+division-is-prop' a d q (r₀ , e₀ , l₀) (r₁ , e₁ , l₁) = γ
   where
    γ₁ : (r : ℕ) → is-prop ((a ＝ q * succ d + r) × r < succ d)
    γ₁ r = ×-is-prop ℕ-is-set (<-is-prop-valued r (succ d))
@@ -353,11 +353,11 @@ division-is-prop-lemma : (a d q₀ q₁ r₀ r₁ : ℕ)
                        → a ＝ q₀ * succ d + r₀
                        → a ＝ q₁ * succ d + r₁
                        → ¬ (q₀ < q₁)
-division-is-prop-lemma a d q₀ q₁ r₀ r₁ l₁ e₁ e₂ l₂ = not-less-than-itself d γ 
+division-is-prop-lemma a d q₀ q₁ r₀ r₁ l₁ e₁ e₂ l₂ = not-less-than-itself d γ
  where
   t : Σ k ꞉ ℕ , k + succ q₀ ＝ q₁
   t = subtraction (succ q₀) q₁ l₂
-  
+
   k = pr₁ t
   e₃ = pr₂ t
 
@@ -441,13 +441,11 @@ factor-of-sum-consequence a (succ b) (succ c) d e = γ
    I = a * succ b      ＝⟨ e                                  ⟩
        a * succ c + d  ＝⟨ addition-associativity a (a * c) d ⟩
        a + (a * c + d) ∎
-       
+
    II : a * b ＝ a * c + d
    II = addition-left-cancellable (a * b) (a * c + d) a I
-   
+
    γ : a ∣ d
    γ = factor-of-sum-consequence a b c d II
-                                      
+
 \end{code}
-
-

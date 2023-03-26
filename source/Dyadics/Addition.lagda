@@ -2,7 +2,7 @@ Andrew Sneap, 17 February 2022
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 open import MLTT.Spartan renaming (_+_ to _∔_)
 open import Dyadics.Type
@@ -66,7 +66,7 @@ calculations. The idea of the associativity proof is as follows:
 (p , α) + (q , β) + (r , γ)
  = normalise-pos p + normalise-pos q + normalise-pos r
  = normalise-pos (p +' q) + normalise-pos r
- = normalise-pos (p +' q +' r)                          
+ = normalise-pos (p +' q +' r)
  = normalise-pos (p +' (q +' r))
  = normalise-pos p + normalise (q +' r)
  = normalise-pos p + (normalise pos q + normalise-pos r)
@@ -121,13 +121,13 @@ unsimplified rationals.
       p * b' * pos (2^ (c ℕ+ c))   ＝⟨ ap (_* pos (2^ (c ℕ+ c))) e ⟩
       q * a' * pos (2^ (c ℕ+ c))   ＝⟨ rearrangement₁ q a c c      ⟩
       q * c' * pos (2^ (a ℕ+ c))   ∎
-  
+
   γ : (p * c' ℤ+ r * a') * pos (2^ (b ℕ+ c)) -- lhs of unfolded type
     ＝ (q * c' ℤ+ r * b') * pos (2^ (a ℕ+ c)) -- rhs of unfolded type
   γ = (p * c' ℤ+ r * a') * pos (2^ (b ℕ+ c))                   ＝⟨ i   ⟩
       p * c' * pos (2^ (b ℕ+ c)) ℤ+ r * a' * pos (2^ (b ℕ+ c)) ＝⟨ ii  ⟩
       p * c' * pos (2^ (b ℕ+ c)) ℤ+ r * b' * pos (2^ (a ℕ+ c)) ＝⟨ iii ⟩
-      q * c' * pos (2^ (a ℕ+ c)) ℤ+ r * b' * pos (2^ (a ℕ+ c)) ＝⟨ iv  ⟩       
+      q * c' * pos (2^ (a ℕ+ c)) ℤ+ r * b' * pos (2^ (a ℕ+ c)) ＝⟨ iv  ⟩
       (q * c' ℤ+ r * b') * pos (2^ (a ℕ+ c))                   ∎
    where
     i   = distributivity-mult-over-ℤ (p * c') (r * a') (pos (2^ (b ℕ+ c)))
@@ -147,7 +147,7 @@ unsimplified rationals.
 
   II : q ≈' q'
   II = ≈'-normalise-pos q
-  
+
   III : (p +' q) ≈' (p' +' q)
   III = ℤ[1/2]+'-≈' p p' q I
 
@@ -166,17 +166,17 @@ unsimplified rationals.
   a' = pos (2^ a)
   b' = pos (2^ b)
   c' = pos (2^ c)
-  
+
   I : (p * b' ℤ+ q * a') * c' ＝ p * (b' * c') ℤ+ q * c' * a'
   I = (p * b' ℤ+ q * a') * c'      ＝⟨ i   ⟩
       p * b' * c' ℤ+ q * a' * c'   ＝⟨ ii  ⟩
-      p * b' * c' ℤ+ q * c' * a'   ＝⟨ iii ⟩    
+      p * b' * c' ℤ+ q * c' * a'   ＝⟨ iii ⟩
       p * (b' * c') ℤ+ q * c' * a' ∎
    where
     i   = distributivity-mult-over-ℤ (p * b') (q * a') c'
     ii  = ap ( p * b' * c' ℤ+_) (ℤ-mult-rearrangement q a' c')
     iii = ap (_ℤ+ q * c' * a') (ℤ*-assoc p b' c')
-  
+
   γ₁ : (p * b' ℤ+ q * a') * c' ℤ+ r * pos (2^ (a ℕ+ b))
      ＝ p * pos (2^ (b ℕ+ c)) ℤ+ (q * c' ℤ+ r * b') * a'
   γ₁ = (p * b' ℤ+ q * a') * c' ℤ+ r * pos (2^ (a ℕ+ b))  ＝⟨ i    ⟩
@@ -187,7 +187,7 @@ unsimplified rationals.
        p * (b' * c') ℤ+ q * c' * a' ℤ+ r * b' * a'       ＝⟨ vi   ⟩
        p * (b' * c') ℤ+ (q * c' * a' ℤ+ r * b' * a')     ＝⟨ vii  ⟩
        p * (b' * c') ℤ+ (q * c' ℤ+ r * b') * a'          ＝⟨ viii ⟩
-       p * pos (2^ b ℕ* 2^ c) ℤ+ (q * c' ℤ+ r * b') * a' ＝⟨ ix   ⟩      
+       p * pos (2^ b ℕ* 2^ c) ℤ+ (q * c' ℤ+ r * b') * a' ＝⟨ ix   ⟩
        p * pos (2^ (b ℕ+ c)) ℤ+ (q * c' ℤ+ r * b') * a'  ∎
         where
          iₐₚ : 2^ (a ℕ+ b) ＝ 2^ a ℕ* 2^ b
@@ -202,7 +202,7 @@ unsimplified rationals.
          viiiₐₚ = pos-multiplication-equiv-to-ℕ (2^ b) (2^ c)
          ixₐₚ : 2^ b ℕ* 2^ c ＝ 2 ℕ^ (b ℕ+ c)
          ixₐₚ = prod-of-powers 2 b c
-         
+
          i    = ap (λ - → (p * b' ℤ+ q * a') * c' ℤ+ r * pos -) iₐₚ
          ii   = ap (λ - → (p * b' ℤ+ q * a') * c' ℤ+ r * -) iiₐₚ
          iii  = ap (λ - → - ℤ+ r * (a' * b')) I
@@ -212,7 +212,7 @@ unsimplified rationals.
          vii  = ap (λ - → p * (b' * c') ℤ+ -) viiₐₚ
          viii = ap (λ - → p * - ℤ+ (q * c' ℤ+ r * b') * a') viiiₐₚ
          ix = ap (λ - → p * pos - ℤ+ (q * c' ℤ+ r * b') * a') ixₐₚ
-        
+
   γ₂ : a ℕ+ b ℕ+ c ＝ a ℕ+ (b ℕ+ c)
   γ₂ = addition-associativity a b c
 
@@ -231,7 +231,7 @@ unsimplified rationals.
       normalise-pos ((p +' q) +' r)            ＝⟨ iii  ⟩
       normalise-pos (p +' (q +' r))            ＝⟨ iv   ⟩
       normalise-pos p + normalise-pos (q +' r) ＝⟨ v    ⟩
-      (p , α) + normalise-pos (q +' r)         ＝⟨ refl ⟩      
+      (p , α) + normalise-pos (q +' r)         ＝⟨ refl ⟩
       (p , α) + ((q , β) + (r , δ)) ∎
    where
     i   = ap (λ - → normalise-pos (p +' q) + -) r'
@@ -250,10 +250,10 @@ unsimplified rationals.
    where
     i  = ap (_ℤ+ p * pos (2^ 0)) (ℤ-zero-left-base (pos (2^ a)))
     ii = ℤ-zero-left-neutral p
-    
+
   γ₂ : 0 ℕ+ a ＝ a
   γ₂ = zero-left-neutral a
-  
+
 ℤ[1/2]-zero-left-neutral : (q : ℤ[1/2]) → 0ℤ[1/2] + q ＝ q
 ℤ[1/2]-zero-left-neutral (q , α) = γ
  where
@@ -284,7 +284,7 @@ unsimplified rationals.
   p' = ℤ[1/2]-to-normalise-pos ((p , a) , α)
   q' : (q , b) , β ＝ normalise-pos (q , b)
   q' = ℤ[1/2]-to-normalise-pos ((q , b) , β)
-  
+
   γ : - ((p , a) , α) + ((q , b) , β) ＝ (- ((p , a) , α)) + (- ((q , b) , β))
   γ = - ((p , a) , α) + ((q , b) , β)                       ＝⟨ i    ⟩
       - ((p , a) , α) + normalise-pos (q , b)               ＝⟨ ii   ⟩
@@ -299,7 +299,7 @@ unsimplified rationals.
       normalise-pos (ℤ- p , a) + normalise-pos (ℤ- q , b)   ＝⟨ ix   ⟩
       (- normalise-pos (p , a)) + normalise-pos (ℤ- q , b)  ＝⟨ x    ⟩
       (- normalise-pos (p , a)) + (- normalise-pos (q , b)) ＝⟨ xi   ⟩
-      (- normalise-pos (p , a)) + (- ((q , b) , β))         ＝⟨ xii  ⟩            
+      (- normalise-pos (p , a)) + (- ((q , b) , β))         ＝⟨ xii  ⟩
       (- ((p , a) , α)) + (- ((q , b) , β))                 ∎
    where
     vₐₚ : ℤ- (p * b' ℤ+ q * a') ＝ (ℤ- p * b') ℤ+ (ℤ- q * a')
@@ -308,7 +308,7 @@ unsimplified rationals.
     viₐₚ = negation-dist-over-mult' p b' ⁻¹
     viiₐₚ : ℤ- q * a' ＝ (ℤ- q) * a'
     viiₐₚ = negation-dist-over-mult' q a' ⁻¹
-    
+
     i    = ap (λ z → - ((p , a) , α) + z) q'
     ii   = ap (λ z → - z + normalise-pos (q , b)) p'
     iii  = ap -_ (ℤ[1/2]+-normalise-pos (p , a) (q , b) ⁻¹)

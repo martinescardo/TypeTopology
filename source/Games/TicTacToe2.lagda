@@ -5,7 +5,7 @@ another file.
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe --auto-inline #-} -- --exact-split
+{-# OPTIONS --without-K --safe --no-sized-types --no-guardedness --auto-inline #-} -- --exact-split
 
 
 module Games.TicTacToe2 where
@@ -18,7 +18,7 @@ data 𝟛 : Type where
 open import Games.Constructor 𝟛
 open import Games.FiniteHistoryDependent 𝟛
 open import Games.TypeTrees
-open import MLTT.NonSpartanMLTTTypes
+open import MLTT.Athenian
 open import TypeTopology.SigmaDiscreteAndTotallySeparated
 
 open list-util
@@ -174,7 +174,7 @@ l₂-test = refl
 
 {- slow
 
-open import NonSpartanMLTTTypes
+open import Athenian
 
 u₂-test : s₂ ＝ (𝟎 :: refl)
            :: ((𝟒 :: refl)

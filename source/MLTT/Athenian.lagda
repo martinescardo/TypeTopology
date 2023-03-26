@@ -4,9 +4,9 @@ Non-spartan types in MLTT, which are definable from spartan MLTT, but we include
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe --auto-inline #-} -- --exact-split
+{-# OPTIONS --without-K --safe --no-sized-types --no-guardedness --auto-inline #-} -- --exact-split
 
-module MLTT.NonSpartanMLTTTypes where
+module MLTT.Athenian where
 
 open import MLTT.Spartan
 open import Naturals.Properties
@@ -14,6 +14,8 @@ open import Naturals.Properties
 data Maybe {𝓤 : Universe} (A : 𝓤 ̇ ) : 𝓤 ̇ where
  Nothing : Maybe A
  Just    : A → Maybe A
+
+{-# BUILTIN MAYBE Maybe #-}
 
 Just-is-not-Nothing : {A : 𝓤 ̇ } {a : A} → Just a ≠ Nothing
 Just-is-not-Nothing ()
@@ -39,6 +41,10 @@ Nothing-is-h-isolated' x = equiv-to-prop ＝-flip (Nothing-is-h-isolated x)
 
 data Bool : 𝓤₀ ̇ where
  true false : Bool
+
+{-# BUILTIN BOOL  Bool  #-}
+{-# BUILTIN FALSE false #-}
+{-# BUILTIN TRUE  true  #-}
 
 true-is-not-false : true ≠ false
 true-is-not-false ()
@@ -98,19 +104,42 @@ record Eq {𝓤} (X : 𝓤 ̇ ) : 𝓤 ̇  where
 
 open Eq {{...}} public
 
+ℕ-== : ℕ → ℕ → Bool
+ℕ-== 0        0        = true
+ℕ-== 0        (succ y) = false
+ℕ-== (succ x) 0        = false
+ℕ-== (succ x) (succ y) = ℕ-== x y
+
+ℕ-refl : (n : ℕ) → (ℕ-== n n) ＝ true
+ℕ-refl 0        = refl
+ℕ-refl (succ n) = ℕ-refl n
+
+instance
+ eqℕ : Eq ℕ
+ _==_    {{eqℕ}} = ℕ-==
+ ==-refl {{eqℕ}} = ℕ-refl
+
 data List {𝓤 : Universe} (X : 𝓤 ̇ ) : 𝓤 ̇ where
  []  : List X
  _∷_ : X → List X → List X
 
-infixr 3 _∷_
+{-# BUILTIN LIST List #-}
 
-foldr : {X : 𝓤 ̇ } {R : 𝓥 ̇ } → List X → (X → R → R) → R → R
-foldr []       f r = r
-foldr (x ∷ xs) f r = f x (foldr xs f r)
+infixr 3 _∷_
 
 length : {X : 𝓤 ̇ } → List X → ℕ
 length []       = 0
 length (x ∷ xs) = succ (length xs)
+
+Vector' : 𝓤 ̇ → ℕ → 𝓤 ̇
+Vector' X n = (Σ xs ꞉ List X , length xs ＝ n)
+
+_∷'_ : {X : 𝓤 ̇ } {n : ℕ} → X → Vector' X n → Vector' X (succ n)
+x ∷' (xs , p) = (x ∷ xs) , ap succ p
+
+foldr : {X : 𝓤 ̇ } {R : 𝓥 ̇ } → List X → (X → R → R) → R → R
+foldr []       f r = r
+foldr (x ∷ xs) f r = f x (foldr xs f r)
 
 _++_ : {𝓤 : Universe} {X : 𝓤 ̇ } → List X → List X → List X
 []       ++ ys = ys
@@ -143,7 +172,7 @@ listable⁺ : Type → Type
 listable⁺ X = X × listable X
 
 type-from-list : {X : Type} → List X → Type
-type-from-list {X} xs = (Σ x ꞉ X , member x xs)
+type-from-list {X} xs = Σ x ꞉ X , member x xs
 
 type-from-list-is-listable : {X : Type} (xs : List X)
                            → listable (type-from-list xs)
@@ -173,69 +202,81 @@ type-from-list-is-listable {X} (x ∷ xs) = g
   g : listable (type-from-list (x ∷ xs))
   g = f (type-from-list-is-listable xs)
 
+module _ {X : 𝓤 ̇ } where
+
+ delete : {n : ℕ}
+          {y : X}
+          ((xs , _) : Vector' X (succ n))
+        → member y xs
+        → Vector' X n
+ delete {0}      _              in-head     = [] , refl
+ delete {0}      _              (in-tail _) = [] , refl
+ delete {succ _} ((_ ∷ xs) , p) in-head     = xs , succ-lc p
+ delete {succ n} ((x ∷ xs) , p) (in-tail m) = x ∷' delete {n} (xs , succ-lc p) m
+
 module list-util
         {𝓤 : Universe}
         {X : 𝓤 ̇ }
         {{_ : Eq X}}
        where
 
-  _is-in_ : X → List X → Bool
-  x is-in []       = false
-  x is-in (y ∷ ys) = (x == y) || (x is-in ys)
+ _is-in_ : X → List X → Bool
+ x is-in []       = false
+ x is-in (y ∷ ys) = (x == y) || (x is-in ys)
 
-  insert : X → List X → List X
-  insert x xs = x ∷ xs
+ insert : X → List X → List X
+ insert x xs = x ∷ xs
 
-  _contained-in_ : List X → List X → Bool
-  []       contained-in ys = true
-  (x ∷ xs) contained-in ys = (x is-in ys) && (xs contained-in ys)
+ _contained-in_ : List X → List X → Bool
+ []       contained-in ys = true
+ (x ∷ xs) contained-in ys = (x is-in ys) && (xs contained-in ys)
 
-  contained-lemma₀ : (x z : X) (xs ys : List X)
-                   → ys contained-in (x ∷ xs) ＝ true
-                   → ys contained-in (x ∷ z ∷ xs) ＝ true
-  contained-lemma₀ x z xs []       e = e
-  contained-lemma₀ x z xs (y ∷ ys) e = γ
-   where
-    IH : ys contained-in (x ∷ xs) ＝ true → ys contained-in (x ∷ z ∷ xs) ＝ true
-    IH = contained-lemma₀ x z xs ys
+ contained-lemma₀ : (x z : X) (xs ys : List X)
+                  → ys contained-in (x ∷ xs) ＝ true
+                  → ys contained-in (x ∷ z ∷ xs) ＝ true
+ contained-lemma₀ x z xs []       e = e
+ contained-lemma₀ x z xs (y ∷ ys) e = γ
+  where
+   IH : ys contained-in (x ∷ xs) ＝ true → ys contained-in (x ∷ z ∷ xs) ＝ true
+   IH = contained-lemma₀ x z xs ys
 
-    e₁ : (y == x) || (y is-in xs) ＝ true
-    e₁ = pr₁ (&&-gives-× e)
+   e₁ : (y == x) || (y is-in xs) ＝ true
+   e₁ = pr₁ (&&-gives-× e)
 
-    e₂ : ys contained-in (x ∷ xs) ＝ true
-    e₂ = pr₂ (&&-gives-× e)
+   e₂ : ys contained-in (x ∷ xs) ＝ true
+   e₂ = pr₂ (&&-gives-× e)
 
-    a : (y == x) || ((y == z) || (y is-in xs)) ＝ true
-    a = Cases (||-gives-+ e₁)
-         (λ (e : (y == x) ＝ true)   → ||-left-intro ((y == z) || (y is-in xs)) e)
-         (λ (e : y is-in xs ＝ true) → ||-right-intro {y == x} ((y == z) || (y is-in xs)) (||-right-intro (y is-in xs) e))
+   a : (y == x) || ((y == z) || (y is-in xs)) ＝ true
+   a = Cases (||-gives-+ e₁)
+        (λ (e : (y == x) ＝ true)   → ||-left-intro ((y == z) || (y is-in xs)) e)
+        (λ (e : y is-in xs ＝ true) → ||-right-intro {y == x} ((y == z) || (y is-in xs)) (||-right-intro (y is-in xs) e))
 
-    b : ys contained-in (x ∷ z ∷ xs) ＝ true
-    b = IH e₂
+   b : ys contained-in (x ∷ z ∷ xs) ＝ true
+   b = IH e₂
 
-    γ : ((y == x) || ((y == z) || (y is-in xs))) && (ys contained-in (x ∷ z ∷ xs)) ＝ true
-    γ = &&-intro a b
+   γ : ((y == x) || ((y == z) || (y is-in xs))) && (ys contained-in (x ∷ z ∷ xs)) ＝ true
+   γ = &&-intro a b
 
-  contained-lemma₁ : (x : X) (ys : List X)
-                   → ys contained-in (x ∷ ys) ＝ true
-  contained-lemma₁ x []       = refl
-  contained-lemma₁ x (y ∷ ys) = γ
-   where
-    IH : ys contained-in (x ∷ ys) ＝ true
-    IH = contained-lemma₁ x ys
+ contained-lemma₁ : (x : X) (ys : List X)
+                  → ys contained-in (x ∷ ys) ＝ true
+ contained-lemma₁ x []       = refl
+ contained-lemma₁ x (y ∷ ys) = γ
+  where
+   IH : ys contained-in (x ∷ ys) ＝ true
+   IH = contained-lemma₁ x ys
 
-    a : y == x || (y == y || (y is-in ys)) ＝ true
-    a = ||-right-intro {y == x} ((y == y) || (y is-in ys)) (||-left-intro (y is-in ys) (==-refl y))
+   a : y == x || (y == y || (y is-in ys)) ＝ true
+   a = ||-right-intro {y == x} ((y == y) || (y is-in ys)) (||-left-intro (y is-in ys) (==-refl y))
 
-    b : ys contained-in (x ∷ y ∷ ys) ＝ true
-    b = contained-lemma₀ x y ys ys IH
+   b : ys contained-in (x ∷ y ∷ ys) ＝ true
+   b = contained-lemma₀ x y ys ys IH
 
-    γ : (y == x || (y == y || (y is-in ys))) && (ys contained-in (x ∷ y ∷ ys)) ＝ true
-    γ = &&-intro a b
+   γ : (y == x || (y == y || (y is-in ys))) && (ys contained-in (x ∷ y ∷ ys)) ＝ true
+   γ = &&-intro a b
 
-  some-contained : List (List X) → List X → Bool
-  some-contained []         ys = false
-  some-contained (xs ∷ xss) ys = xs contained-in ys || some-contained xss ys
+ some-contained : List (List X) → List X → Bool
+ some-contained []         ys = false
+ some-contained (xs ∷ xss) ys = xs contained-in ys || some-contained xss ys
 
 \end{code}
 
@@ -243,78 +284,85 @@ Remove first occurrence:
 
 \begin{code}
 
-  remove : X → List X → List X
-  remove x []       = []
-  remove x (y ∷ ys) = if x == y then ys else (y ∷ remove x ys)
+ remove : X → List X → List X
+ remove x []       = []
+ remove x (y ∷ ys) = if x == y then ys else (y ∷ remove x ys)
 
-  remove-head : (x y : X) (ys : List X)
-              → (x == y) ＝ true
-              → remove x (y ∷ ys) ＝ ys
-  remove-head x y ys q =
-   remove x (y ∷ ys)                          ＝⟨ refl ⟩
-   (if x == y then ys else (y ∷ remove x ys)) ＝⟨ I ⟩
-   (if true then ys else (y ∷ remove x ys))   ＝⟨ refl ⟩
-   ys                                         ∎
-    where
-     I = ap (λ - → if - then ys else (y ∷ remove x ys)) q
-
-  remove-tail : (x y : X) (ys : List X)
-              → (x == y) ＝ false
-              → remove x (y ∷ ys) ＝ y ∷ remove x ys
-  remove-tail x y ys q =
-   remove x (y ∷ ys)                        ＝⟨ refl ⟩
-   if x == y then ys else (y ∷ remove x ys) ＝⟨ I ⟩
-   if false then ys else (y ∷ remove x ys)  ＝⟨ refl ⟩
-   y ∷ remove x ys                          ∎
-    where
-     I  = ap (λ - → if - then ys else (y ∷ remove x ys)) q
-
-  remove-length : (x : X) (ys : List X)
-                → member x ys
-                → (n : ℕ)
-                → length ys ＝ succ n
-                → length (remove x ys) ＝ n
-  remove-length x ys@(z ∷ zs) m n p = h m n p (x == z) refl
+ remove-head : (x y : X) (ys : List X)
+             → (x == y) ＝ true
+             → remove x (y ∷ ys) ＝ ys
+ remove-head x y ys q =
+  remove x (y ∷ ys)                          ＝⟨ refl ⟩
+  (if x == y then ys else (y ∷ remove x ys)) ＝⟨ I ⟩
+  (if true then ys else (y ∷ remove x ys))   ＝⟨ refl ⟩
+  ys                                         ∎
    where
-    h : member x ys
-      → (n : ℕ)
-      → length ys ＝ succ n
-      → (b : Bool) → (x == z) ＝ b → length (remove x ys) ＝ n
-    h _ n p true q =
-     length (remove x (z ∷ zs)) ＝⟨ ap length (remove-head x z zs q) ⟩
-     length zs                  ＝⟨ succ-lc p ⟩
-     n                          ∎
+    I = ap (λ - → if - then ys else (y ∷ remove x ys)) q
 
-    h in-head n p false q =
-     𝟘-elim (true-is-not-false
-              (true    ＝⟨ (==-refl x)⁻¹ ⟩
-              (x == x) ＝⟨ q ⟩
-              false    ∎))
-    h (in-tail in-head)     0        () false q
-    h (in-tail (in-tail m)) 0        () false q
-    h (in-tail m)           (succ n) p  false q =
-     length (remove x (z ∷ zs))                        ＝⟨ I ⟩
-     length (z ∷ remove x zs)                          ＝⟨ refl ⟩
-     succ (length (remove x zs))                       ＝⟨ II ⟩
-     succ n                                            ∎
-      where
-       I  = ap length (remove-tail x z zs q)
-       II = ap succ (remove-length x zs m n (succ-lc p))
+ remove-tail : (x y : X) (ys : List X)
+             → (x == y) ＝ false
+             → remove x (y ∷ ys) ＝ y ∷ remove x ys
+ remove-tail x y ys q =
+  remove x (y ∷ ys)                        ＝⟨ refl ⟩
+  if x == y then ys else (y ∷ remove x ys) ＝⟨ I ⟩
+  if false then ys else (y ∷ remove x ys)  ＝⟨ refl ⟩
+  y ∷ remove x ys                          ∎
+   where
+    I  = ap (λ - → if - then ys else (y ∷ remove x ys)) q
 
-  remove-all : X → List X → List X
-  remove-all x []       = []
-  remove-all x (y ∷ ys) = if x == y then remove-all x ys else (y ∷ remove-all x ys)
+ remove-length : (x : X) (ys : List X)
+               → member x ys
+               → (n : ℕ)
+               → length ys ＝ succ n
+               → length (remove x ys) ＝ n
+ remove-length x ys@(z ∷ zs) m n p = h m n p (x == z) refl
+  where
+   h : member x ys
+     → (n : ℕ)
+     → length ys ＝ succ n
+     → (b : Bool) → (x == z) ＝ b → length (remove x ys) ＝ n
+   h _ n p true q =
+    length (remove x (z ∷ zs)) ＝⟨ ap length (remove-head x z zs q) ⟩
+    length zs                  ＝⟨ succ-lc p ⟩
+    n                          ∎
 
-  _minus_ : List X → List X → List X
-  xs minus []       = xs
-  xs minus (y ∷ ys) = (remove-all y xs) minus ys
+   h in-head n p false q =
+    𝟘-elim (true-is-not-false
+             (true    ＝⟨ (==-refl x)⁻¹ ⟩
+             (x == x) ＝⟨ q ⟩
+             false    ∎))
+   h (in-tail in-head)     0        () false q
+   h (in-tail (in-tail m)) 0        () false q
+   h (in-tail m)           (succ n) p  false q =
+    length (remove x (z ∷ zs))  ＝⟨ I ⟩
+    length (z ∷ remove x zs)    ＝⟨ refl ⟩
+    succ (length (remove x zs)) ＝⟨ II ⟩
+    succ n                      ∎
+     where
+      I  = ap length (remove-tail x z zs q)
+      II = ap succ (remove-length x zs m n (succ-lc p))
+
+ delete' : {n : ℕ}
+           (x : X)
+           ((xs , _) : Vector' X (succ n))
+         → member x xs
+         → Vector' X n
+ delete' {n} x (xs , p) m = remove x xs , remove-length x xs m n p
+
+ remove-all : X → List X → List X
+ remove-all x []       = []
+ remove-all x (y ∷ ys) = if x == y then remove-all x ys else (y ∷ remove-all x ys)
+
+ _minus_ : List X → List X → List X
+ xs minus []       = xs
+ xs minus (y ∷ ys) = (remove-all y xs) minus ys
 
 data Fin : ℕ → 𝓤₀ ̇  where
  𝟎   : {n : ℕ} → Fin (succ n)
  suc : {n : ℕ} → Fin n → Fin (succ n)
 
 ℕ-to-Fin : (n : ℕ) → Fin (succ n)
-ℕ-to-Fin zero     = 𝟎
+ℕ-to-Fin 0     = 𝟎
 ℕ-to-Fin (succ n) = suc (ℕ-to-Fin n)
 
 pattern 𝟏 = suc 𝟎
@@ -328,7 +376,7 @@ pattern 𝟖 = suc 𝟕
 pattern 𝟗 = suc 𝟖
 
 list-Fin : (n : ℕ) → List (Fin n)
-list-Fin zero     = []
+list-Fin 0        = []
 list-Fin (succ n) = 𝟎 ∷ map suc (list-Fin n)
 
 list-Fin-correct : (n : ℕ) (i : Fin n) → member i (list-Fin n)

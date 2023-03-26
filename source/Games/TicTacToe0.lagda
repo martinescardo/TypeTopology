@@ -5,7 +5,7 @@ history dependent game.
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe --auto-inline --exact-split #-}
+{-# OPTIONS --without-K --safe --no-sized-types --no-guardedness --auto-inline --exact-split #-}
 
 module Games.TicTacToe0 where
 
@@ -14,7 +14,7 @@ open import TypeTopology.DiscreteAndSeparated
 open import TypeTopology.SigmaDiscreteAndTotallySeparated
 
 open import MLTT.Spartan hiding (J)
-open import MLTT.NonSpartanMLTTTypes
+open import MLTT.Athenian
             hiding (Fin ; 𝟎 ; 𝟏 ; 𝟐 ; 𝟑 ; 𝟒 ; 𝟓 ; 𝟔 ; 𝟕 ; 𝟖 ; 𝟗)
 open import Fin.Type
 open import Fin.Topology
@@ -68,7 +68,7 @@ It is also convenient to have a type of boards:
 
 \begin{code}
 
-Grid   = R × R
+Grid   = Fin 3 × Fin 3
 Matrix = Grid → Maybe Player
 Board  = Player × Matrix
 

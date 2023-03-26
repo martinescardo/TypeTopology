@@ -2,7 +2,7 @@ Andrew Sneap
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 open import MLTT.Spartan renaming (_+_ to _∔_)
 
@@ -20,7 +20,7 @@ module Integers.Exponentiation where
  Integers exponentiation is defined in the same way as natural number
  exponentiation. Note that (pos 1) is used as the base element, and
  that we allow positive exponents, since exponentiation is not closed
- for negative exponents. 
+ for negative exponents.
 
 \begin{code}
 

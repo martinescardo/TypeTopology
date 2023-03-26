@@ -9,7 +9,7 @@ canonical inclusion of natural numbers in the integers.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 open import MLTT.Spartan renaming (_+_ to _∔_)
 open import TypeTopology.DiscreteAndSeparated
@@ -32,6 +32,10 @@ For example, negsucc 0 = -1
 data ℤ : 𝓤₀ ̇ where
  pos     : ℕ → ℤ
  negsucc : ℕ → ℤ
+
+{-# BUILTIN INTEGER       ℤ       #-}
+{-# BUILTIN INTEGERPOS    pos     #-}
+{-# BUILTIN INTEGERNEGSUC negsucc #-}
 
 \end{code}
 

@@ -2,7 +2,7 @@ Martin Escardo, 19th December 2020
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 module MLTT.W-Properties where
 

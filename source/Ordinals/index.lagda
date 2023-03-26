@@ -2,7 +2,7 @@ Martin Escardo
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 module Ordinals.index where
 
@@ -40,6 +40,6 @@ import Ordinals.Underlying
 import Ordinals.WellOrderArithmetic
 import Ordinals.WellOrderTransport
 import Ordinals.WellOrderingPrinciple
-import Ordinals.WellOrderingTaboo            -- by Tom de Jong
+import Ordinals.WellOrderingTaboo            -- by Tom de Jong (after Andrew Swan)
 
 \end{code}

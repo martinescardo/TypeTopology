@@ -2,7 +2,7 @@ Andrew Sneap, 7 February 2021
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --lossy-unification #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --lossy-unification #-}
 
 open import MLTT.Spartan renaming (_+_ to _∔_)
 

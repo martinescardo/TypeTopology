@@ -1,6 +1,6 @@
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe  --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness  --auto-inline #-}
 
 open import MLTT.Spartan renaming (_+_ to _∔_)
 open import Naturals.Addition
@@ -35,7 +35,7 @@ prod-of-powers n a (succ b) = I
     i   = mult-associativity (n ℕ^ a) n (n ℕ^ b) ⁻¹
     ii  = ap (_* (n ℕ^ b)) (mult-commutativity (n ℕ^ a) n)
     iii = mult-associativity n (n ℕ^ a) (n ℕ^ b)
-    iv  = ap (n *_) (prod-of-powers n a b) 
+    iv  = ap (n *_) (prod-of-powers n a b)
 
 power-of-power : (n a b : ℕ) → (n ℕ^ a) ℕ^ b ＝ n ℕ^ (a * b)
 power-of-power n a 0        = refl

@@ -2,7 +2,7 @@ Martin Escardo, January 2018, May 2020
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 open import Dominance.Definition
 open import MLTT.Spartan

@@ -5,9 +5,9 @@ Vectors with a different type for each entry (vec), usual vectors
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
-module MLTT.SpartanMLTT-List where
+module MLTT.SpartanList where
 
 open import MLTT.Spartan
 open import Fin.Type

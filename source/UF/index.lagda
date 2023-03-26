@@ -1,6 +1,6 @@
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 module UF.index where
 
@@ -21,6 +21,7 @@ import UF.FunExt-Properties
 import UF.FunExt-from-Naive-FunExt
 import UF.Groupoids
 import UF.IdEmbedding
+import UF.IdentitySystems
 import UF.ImageAndSurjection
 import UF.ImageAndSurjection-F
 import UF.Knapp-UA
@@ -48,6 +49,7 @@ import UF.Retracts-FunExt
 import UF.SIP
 import UF.SIP-Examples
 import UF.Section-Embedding
+import UF.SetTrunc
 import UF.Size
 import UF.StructureIdentityPrinciple -- obsolete but keep
 import UF.Subsingletons

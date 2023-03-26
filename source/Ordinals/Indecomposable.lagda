@@ -15,7 +15,7 @@ property unless weak excluded middle holds.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness #-}
 
 open import UF.Univalence
 
@@ -114,6 +114,7 @@ WEM-gives-decomposition-of-two-pointed-types wem X ((x₀ , x₁) , d) = γ
 
   f : X → 𝟚
   f x = g x (h x)
+
 
   g₀ : (δ : ¬ (x₀ ≠ x₀) + ¬¬ (x₀ ≠ x₀)) → g x₀ δ ＝ ₀
   g₀ (inl _) = refl

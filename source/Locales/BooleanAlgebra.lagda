@@ -4,7 +4,7 @@ The main result needed in this module is the extension lemma.
 
 \begin{code}[hide]
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline --lossy-unification #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline --lossy-unification #-}
 
 open import MLTT.Spartan hiding (𝟚)
 open import UF.Base

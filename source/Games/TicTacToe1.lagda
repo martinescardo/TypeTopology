@@ -7,7 +7,7 @@ TODO. Organaze this module better, following the organization of TicTacToe0.
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe --auto-inline #-} -- --exact-split
+{-# OPTIONS --without-K --safe --no-sized-types --no-guardedness --auto-inline #-} -- --exact-split
 
 
 
@@ -18,7 +18,7 @@ open import TypeTopology.DiscreteAndSeparated
 open import TypeTopology.SigmaDiscreteAndTotallySeparated
 
 open import MLTT.Spartan hiding (J)
-open import MLTT.NonSpartanMLTTTypes hiding (Fin ; 𝟎 ; 𝟏 ; 𝟐 ; 𝟑 ; 𝟒 ; 𝟓 ; 𝟔 ; 𝟕 ; 𝟖 ; 𝟗)
+open import MLTT.Athenian hiding (Fin ; 𝟎 ; 𝟏 ; 𝟐 ; 𝟑 ; 𝟒 ; 𝟓 ; 𝟔 ; 𝟕 ; 𝟖 ; 𝟗)
 open import Fin.Type
 open import Fin.Topology
 open import Fin.ArgMinMax

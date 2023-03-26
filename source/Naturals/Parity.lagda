@@ -1,6 +1,6 @@
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 open import MLTT.Spartan renaming (_+_ to _∔_)
 open import Naturals.Addition
@@ -96,7 +96,7 @@ even*even n 1               even-n even-m = even-n
 even*even n (succ (succ m)) even-n even-m = even+even n (n + n * m) even-n I
  where
   IH : even (n * m)
-  IH = even*even n m even-n even-m 
+  IH = even*even n m even-n even-m
   I : even (n + n * m)
   I = even+even n (n * m) even-n IH
 
@@ -138,7 +138,7 @@ multiple-of-two-even-lemma n (succ (succ k)) e = transport even (e ⁻¹) III
   II = even+even 2 (2 * k) ⋆ I
   III : even (2 + (2 + 2 * k))
   III = even+even 2 (2 + 2 * k) ⋆ II
-  
+
 multiple-of-two-even : (n : ℕ) → Σ k ꞉ ℕ , n ＝ 2 * k → even n
 multiple-of-two-even n (k , e) = multiple-of-two-even-lemma n k e
 
@@ -165,7 +165,7 @@ even-is-multiple-of-two (succ (succ n)) even-sn = II IH
 
 odd-is-succ-multiple-of-two : (n : ℕ) → odd n → Σ k ꞉ ℕ , n ＝ succ (2 * k)
 odd-is-succ-multiple-of-two 0        odd-n = 𝟘-elim odd-n
-odd-is-succ-multiple-of-two (succ n) odd-sn = II I 
+odd-is-succ-multiple-of-two (succ n) odd-sn = II I
  where
   I : Σ k ꞉ ℕ , n ＝ 2 * k
   I = even-is-multiple-of-two n odd-sn
@@ -195,10 +195,10 @@ only-odd-divides-odd d n on (k , e) = I (even-or-odd d) (even-or-odd k)
    where
     en : even n
     en = transport even e (even*even d k ed ek)
-    
+
     γ : 𝟘
     γ = even-not-odd n en on
-    
+
   I (inl ed) (inr ok) = 𝟘-elim γ
    where
     en : even n
@@ -234,7 +234,7 @@ odd-factors-of-2-exponents d (succ n) (k , e) od = Cases (even-or-odd k) γ₁ �
 
       IV : d * k' ＝ 2^ n
       IV = mult-left-cancellable (d * k') (2^ n) 1 III
-      
+
       γ₃ : d ∣ 2^ n
       γ₃ = k' , IV
 
@@ -259,13 +259,13 @@ odd-power-of-two-coprime d x n ox d|x d|2^n = Cases α γ₁ γ₂
 
   od : odd d
   od = only-odd-divides-odd d x ox d|x
-  
+
   γ₁ : d ＝ 1 → d ∣ 1
   γ₁ e = 1 , e
 
   γ₂ : even d → d ∣ 1
   γ₂ ed = 𝟘-elim (odd-not-even d od ed)
- 
+
 even-transport : (z : ℕ) → (ez : even z) (p : even z ∔ odd z) → p ＝ inl ez
 even-transport z ez (inl ez') = ap inl (even-is-prop z ez' ez)
 even-transport z ez (inr oz)  = 𝟘-elim (even-not-odd z ez oz)

@@ -5,7 +5,7 @@ Examples of type trees.
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe --auto-inline --exact-split #-}
+{-# OPTIONS --without-K --safe --no-sized-types --no-guardedness --auto-inline --exact-split --auto-inline #-}
 
 module Games.Examples where
 
@@ -14,7 +14,7 @@ open import Games.TypeTrees
 
 module permutations where
 
- open import MLTT.NonSpartanMLTTTypes
+ open import MLTT.Athenian
 
  no-repetitions : ℕ → Type → 𝕋
  no-repetitions 0        X = []
@@ -37,7 +37,7 @@ open import UF.FunExt
 
 module search (fe : Fun-Ext) where
 
- open import MLTT.NonSpartanMLTTTypes
+ open import MLTT.Athenian
  open import Games.FiniteHistoryDependent Bool
 
  ε₂ : J Bool

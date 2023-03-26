@@ -6,9 +6,9 @@ standard properties of multiplication.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
-open import MLTT.Spartan renaming (_+_ to _∔_) 
+open import MLTT.Spartan renaming (_+_ to _∔_)
 
 open import Naturals.Addition
 open import Naturals.Properties
@@ -29,6 +29,8 @@ x * succ y = x + x * y
 
 infixl 32 _*_
 
+{-# BUILTIN NATTIMES _*_ #-}
+
 \end{code}
 
 Zero is the base for multiplication. On the right, this is true by
@@ -44,7 +46,7 @@ Then 0 * succ k ≡ 0 + 0 * k (by definition)
 
 \begin{code}
 
-zero-right-base : (x : ℕ) → x * 0 ＝ 0 
+zero-right-base : (x : ℕ) → x * 0 ＝ 0
 zero-right-base x = refl
 
 zero-left-base : (x : ℕ) → 0 * x ＝ 0
@@ -77,7 +79,7 @@ mult-left-id = induction base step
   step : (x : ℕ)
        → 1 * x     ＝ x
        → 1 + 1 * x ＝ succ x
-         
+
   step x IH = 1 + 1 * x  ＝⟨ ap (1 +_) IH        ⟩
               1 + x      ＝⟨ addition-commutativity 1 x ⟩
               x + 1      ＝⟨ refl                       ⟩
@@ -134,7 +136,7 @@ mult-commutativity (succ x) (succ y) = γ
     vi   = ap succ (addition-associativity y x (x * y))
     vii  = succ-left y (x + x * y) ⁻¹
     viii = ap (succ y +_) (mult-commutativity (succ y) x ⁻¹)
- 
+
 \end{code}
 
 Distributivity of multiplication over addition is proved using induction on z.
@@ -146,7 +148,7 @@ proof is clear by observing the chain of equations.
 
 \begin{code}
 
-distributivity-mult-over-addition : (x y z : ℕ) → x * (y + z) ＝ x * y + x * z 
+distributivity-mult-over-addition : (x y z : ℕ) → x * (y + z) ＝ x * y + x * z
 distributivity-mult-over-addition x y = induction refl step
  where
   step : (k : ℕ)
@@ -155,13 +157,13 @@ distributivity-mult-over-addition x y = induction refl step
 
   step k IH = x * (y + succ k)        ＝⟨ refl ⟩
               x + x * (y + k)         ＝⟨ i    ⟩
-              x + (x * y + x * k)     ＝⟨ ii   ⟩ 
+              x + (x * y + x * k)     ＝⟨ ii   ⟩
               x + (x * k + x * y)     ＝⟨ iii  ⟩
               x + x * k + x * y       ＝⟨ iv   ⟩
-              x * y + (x + x * k)     ＝⟨ refl ⟩  
+              x * y + (x + x * k)     ＝⟨ refl ⟩
               x * y + (x * (succ k))  ∎
    where
-    i   = ap (x +_ ) IH 
+    i   = ap (x +_ ) IH
     ii  = ap (x +_ ) (addition-commutativity (x * y) (x * k))
     iii = addition-associativity x (x * k) (x * y) ⁻¹
     iv  = addition-commutativity (x + x * k) (x * y)
@@ -237,12 +239,12 @@ mult-left-cancellable-lemma x y e = γ
  where
   I : succ (succ x + succ (succ x) * y) ＝ succ (succ x) + succ (succ x) * y
   I = succ-left (succ x) (succ (succ x) * y) ⁻¹
-  
+
   II : succ (succ x + succ (succ x) * y) ＝ 0
   II = succ (succ x + succ (succ x) * y) ＝⟨ I    ⟩
        succ (succ x) + succ (succ x) * y ＝⟨ e ⁻¹ ⟩
        succ (succ x) * 0                 ∎
-  
+
   γ : 𝟘
   γ = positive-not-zero (succ x + succ (succ x) * y) II
 
@@ -256,7 +258,7 @@ mult-left-cancellable x y 0 e = γ
       y     ∎
 mult-left-cancellable 0 0 (succ z) e = refl
 mult-left-cancellable 0 (succ y) (succ z) e
- = 𝟘-elim (mult-left-cancellable-lemma z y e) 
+ = 𝟘-elim (mult-left-cancellable-lemma z y e)
 mult-left-cancellable (succ x) 0 (succ z) e
  = 𝟘-elim (mult-left-cancellable-lemma z x (e ⁻¹))
 mult-left-cancellable (succ x) (succ y) (succ z) e = ap succ (IH I)
@@ -298,7 +300,7 @@ succ-pred in many proofs.
   I = succ (x + succ x * succ y) ＝⟨ succ-left x (succ x * succ y) ⁻¹ ⟩
       succ x + succ x * succ y   ＝⟨ e                                ⟩
       0                          ∎
-  
+
   γ : 𝟘
   γ = positive-not-zero (x + succ x * succ y) I
 

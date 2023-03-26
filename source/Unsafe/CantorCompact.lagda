@@ -8,7 +8,7 @@ and other modules.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split #-}
+{-# OPTIONS --without-K --exact-split --auto-inline #-}
 
 open import MLTT.Spartan
 open import MLTT.Two-Properties

@@ -22,7 +22,7 @@ way to do it is already present in the module Fin.lagda.)
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe --auto-inline #-} -- --exact-split
+{-# OPTIONS --without-K --safe --no-sized-types --no-guardedness --auto-inline #-} -- --exact-split
 
 \end{code}
 
@@ -255,7 +255,7 @@ induction on u₀ and u₁:
 
 It is noteworthy and remarkable that the above doesn't need decidable
 equality on A. We repeat that this construction is due to Mines,
-Richman and Ruttenberg
+Richman and Ruitenburg.
 
 The following import defines
 

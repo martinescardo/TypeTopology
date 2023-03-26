@@ -5,20 +5,20 @@ In this file I define common divisors, and HCF's, along with a proof
 that the Euclidean Algorithm produces HCF's.
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
-open import MLTT.Spartan renaming (_+_ to _∔_) 
+open import MLTT.Spartan renaming (_+_ to _∔_)
 
 open import Naturals.Addition
 open import Naturals.Division
 open import Naturals.Multiplication
 open import Naturals.Properties
-open import Naturals.Order 
-open import Notation.Order 
-open import UF.Base 
+open import Naturals.Order
+open import Notation.Order
+open import UF.Base
 open import UF.FunExt
 open import UF.Miscelanea
-open import UF.Subsingletons 
+open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
 module Naturals.HCF where
@@ -79,7 +79,7 @@ is-hcf-is-prop fe h x y p q = ×-is-prop (is-common-divisor-is-prop h x y) II p 
     I : (d : ℕ) → is-common-divisor d x y → is-prop (d ∣ succ h)
     I 0        i x = 𝟘-elim (zero-does-not-divide-positive h x)
     I (succ d) i   = d ∣ (succ h) -is-prop
-  
+
     II : is-prop ((d : ℕ) → is-common-divisor d x y → d ∣ succ h)
     II p' q' = Π₂-is-prop fe I p' q'
 
@@ -174,7 +174,7 @@ euclids-algorithm-lemma x y q r h e (((a , e₀) , b , e₁) , f) = I , II
         q * h * b + r   ＝⟨ ap (λ - → - * b + r) (mult-commutativity q h) ⟩
         h * q * b + r   ＝⟨ ap (_+ r) (mult-associativity h q b)          ⟩
         h * (q * b) + r ∎
-        
+
   II : (d : ℕ) → is-common-divisor d y r → d ∣ h
   II d ((u , e₁) , v , e₂) = f d ((q * u + v , i) , u , e₁)
    where
@@ -205,7 +205,7 @@ euclids-algorithm-lemma' x y q r h e (((a , e₀) , b , e₁) , f) = I , II
         q * h * a + r       ＝⟨ ap (_+ r) (mult-associativity q h a)          ⟩
         q * (h * a) + r     ＝⟨ ap (λ - → q * - + r) e₀                       ⟩
         q * y + r           ＝⟨ e ⁻¹                                          ⟩
-        x                   ∎  
+        x                   ∎
   II : (d : ℕ) → is-common-divisor d x y → d ∣ h
   II d ((u , e₂) , v , e₃)  = f d ((v , e₃) , ii)
    where
@@ -257,7 +257,7 @@ hcf'-step : (x y : ℕ)
           → ((q , r , e , l) : Σ q ꞉ ℕ , Σ r ꞉ ℕ , (y ＝ q * succ x + r) × (r < succ x))
           → hcf' (succ x) y ＝ hcf' r (succ x)
 hcf'-step x y (q , r , e , l) =
- 
+
  hcf' (succ x) y                ＝⟨ ap (λ - → hcf' (succ x) -) e ⟩
  hcf' (succ x) (q * succ x + r) ＝⟨ refl ⟩
  (λ σ → {!!}) {!!}                           ＝⟨ {!!} ⟩
@@ -375,7 +375,7 @@ divbyhcf 0 b = b , 0 , 1 , I , II , III
   III d (_ , d-divides-one) = d-divides-one
 divbyhcf (succ a) b = I (HCF (succ a) b)
  where
-  I : Σ c ꞉ ℕ , is-hcf c (succ a) b → Σ h ꞉ ℕ , Σ x ꞉ ℕ , Σ y ꞉ ℕ , ((h * x ＝ succ a) × (h * y ＝ b)) × coprime x y 
+  I : Σ c ꞉ ℕ , is-hcf c (succ a) b → Σ h ꞉ ℕ , Σ x ꞉ ℕ , Σ y ꞉ ℕ , ((h * x ＝ succ a) × (h * y ＝ b)) × coprime x y
   I (0 , ((x , xₚ) , y , yₚ) , γ) = 𝟘-elim (positive-not-zero a II)
    where
     II : succ a ＝ 0
@@ -407,7 +407,7 @@ divbyhcf (succ a) b = I (HCF (succ a) b)
             succ h * f' * δ   ＝⟨ δₚ ⟩
             succ h            ∎
 
-    goal : Σ h ꞉ ℕ , Σ x ꞉ ℕ , Σ y ꞉ ℕ , ((h * x ＝ succ a) × (h * y ＝ b)) × coprime x y 
+    goal : Σ h ꞉ ℕ , Σ x ꞉ ℕ , Σ y ꞉ ℕ , ((h * x ＝ succ a) × (h * y ＝ b)) × coprime x y
     goal = (succ h) , (x , (y , ((xₚ , yₚ) , (((x , mult-commutativity 1 x) , y , (mult-commutativity 1 y)) , II))))
 
 hcf-unique : (a b : ℕ)

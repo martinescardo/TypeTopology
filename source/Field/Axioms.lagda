@@ -4,8 +4,7 @@ In this file I define the constructive field axioms.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
-
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 open import MLTT.Spartan renaming (_+_ to _∔_)
 
