@@ -429,3 +429,171 @@ idtoeqₒ-embedding-really-is-idtoeqₒ' pua fe α β =
  dfunext (fe _ _) (idtoeqₒ-embedding-really-is-idtoeqₒ pua fe α β)
 
 \end{code}
+
+Added 26 March 2023 by Tom de Jong, following a discussion with Nicolai Kraus on
+24 March 2023.
+
+We show that having an identification of the ordinals (𝟚 , ₀ ≺ ₁) and
+(𝟚 , ₁ ≺ ₀) contradicts the K-axiom.
+
+It follows that pre-univalence cannot be sufficient to show that the simulation
+ordering on the type of ordinals is antisymmetric: The ordinals (𝟚 , ₀ ≺ ₁) and
+(𝟚 , ₁ ≺ ₀) are equivalent, while pre-univalence is derivable from the K-axiom.
+
+  α ＝ β ----> ⟨ α ⟩ ＝ ⟨ β ⟩
+    |                |
+    |                |
+    v                v
+  α ≃ₒ β ----> ⟨ α ⟩ ≃ ⟨ β ⟩
+
+
+\begin{code}
+
+private
+
+ idtoeqₒ-naturality : (α β : Ordinal 𝓤) → (p : α ＝ β)
+                    → idtoeq ⟨ α ⟩ ⟨ β ⟩ (ap ⟨_⟩ p)
+                    ＝ ≃ₒ-gives-≃ α β (idtoeqₒ α β p)
+ idtoeqₒ-naturality α β refl = refl
+
+ 𝟚ₒ : Ordinal 𝓤₀
+ 𝟚ₒ = 𝟚 , (_≺_ , p , w , e , t)
+  where
+   _≺_ : 𝟚 → 𝟚 → 𝓤₀ ̇
+   ₀ ≺ ₀ = 𝟘
+   ₀ ≺ ₁ = 𝟙
+   ₁ ≺ ₀ = 𝟘
+   ₁ ≺ ₁ = 𝟘
+   p : is-prop-valued _≺_
+   p ₀ ₀ = 𝟘-is-prop
+   p ₀ ₁ = 𝟙-is-prop
+   p ₁ ₀ = 𝟘-is-prop
+   p ₁ ₁ = 𝟘-is-prop
+   w : is-well-founded _≺_
+   w ₀ = step a
+    where
+     a : (y : 𝟚) → y ≺ ₀ → is-accessible _≺_ y
+     a ₀ l = 𝟘-elim l
+     a ₁ l = 𝟘-elim l
+   w ₁ = step a
+    where
+     a : (y : 𝟚) → y ≺ ₁ → is-accessible _≺_ y
+     a ₀ l = w ₀
+     a ₁ l = 𝟘-elim l
+   e : is-extensional _≺_
+   e ₀ ₀ u v = refl
+   e ₀ ₁ u v = 𝟘-elim (v ₀ ⋆)
+   e ₁ ₀ u v = 𝟘-elim (u ₀ ⋆)
+   e ₁ ₁ u v = refl
+   t : is-transitive _≺_
+   t ₀ ₀ ₀ k l = l
+   t ₀ ₁ ₀ k l = l
+   t ₁ ₀ ₀ k l = l
+   t ₁ ₁ ₀ k l = l
+   t ₀ ₀ ₁ k l = l
+   t ₀ ₁ ₁ k l = k
+   t ₁ ₀ ₁ k l = k
+   t ₁ ₁ ₁ k l = l
+
+ 𝟚ₒ' : Ordinal 𝓤₀
+ 𝟚ₒ' = 𝟚 , (_≺_ , p , w , e , t)
+  where
+   _≺_ : 𝟚 → 𝟚 → 𝓤₀ ̇
+   ₀ ≺ ₀ = 𝟘
+   ₀ ≺ ₁ = 𝟘
+   ₁ ≺ ₀ = 𝟙
+   ₁ ≺ ₁ = 𝟘
+   p : is-prop-valued _≺_
+   p ₀ ₀ = 𝟘-is-prop
+   p ₀ ₁ = 𝟘-is-prop
+   p ₁ ₀ = 𝟙-is-prop
+   p ₁ ₁ = 𝟘-is-prop
+   w : is-well-founded _≺_
+   w ₀ = step a
+    where
+     a : (y : 𝟚) → y ≺ ₀ → is-accessible _≺_ y
+     a ₀ l = 𝟘-elim l
+     a ₁ l = w ₁
+   w ₁ = step a
+    where
+     a : (y : 𝟚) → y ≺ ₁ → is-accessible _≺_ y
+     a ₀ l = 𝟘-elim l
+     a ₁ l = 𝟘-elim l
+   e : is-extensional _≺_
+   e ₀ ₀ u v = refl
+   e ₀ ₁ u v = 𝟘-elim (u ₁ ⋆)
+   e ₁ ₀ u v = 𝟘-elim (v ₁ ⋆)
+   e ₁ ₁ u v = refl
+   t : is-transitive _≺_
+   t ₀ ₀ ₀ k l = l
+   t ₀ ₁ ₀ k l = k
+   t ₁ ₀ ₀ k l = ⋆
+   t ₁ ₁ ₀ k l = l
+   t ₀ ₀ ₁ k l = l
+   t ₀ ₁ ₁ k l = l
+   t ₁ ₀ ₁ k l = l
+   t ₁ ₁ ₁ k l = l
+
+ open import MLTT.Two-Properties
+
+ 𝟚ₒ-≃ₒ-𝟚ₒ' : 𝟚ₒ ≃ₒ 𝟚ₒ'
+ 𝟚ₒ-≃ₒ-𝟚ₒ' = f , f-preserves-order , f-is-equiv , f-preserves-order'
+  where
+   f : 𝟚 → 𝟚
+   f = complement
+   f-preserves-order : is-order-preserving 𝟚ₒ 𝟚ₒ' f
+   f-preserves-order ₀ ₁ l = l
+   f-preserves-order ₀ ₀ l = 𝟘-elim l
+   f-preserves-order ₁ ₀ l = 𝟘-elim l
+   f-preserves-order ₁ ₁ l = 𝟘-elim l
+   f-is-equiv : is-equiv f
+   f-is-equiv = qinvs-are-equivs f (f , complement-involutive , complement-involutive)
+   f-preserves-order' : is-order-preserving 𝟚ₒ' 𝟚ₒ f
+   f-preserves-order' ₀ ₀ l = 𝟘-elim l
+   f-preserves-order' ₀ ₁ l = 𝟘-elim l
+   f-preserves-order' ₁ ₀ l = l
+   f-preserves-order' ₁ ₁ l = 𝟘-elim l
+
+ complement-is-the-only-ordinal-equivalence-of-𝟚 : (e : 𝟚ₒ ≃ₒ 𝟚ₒ')
+                                                 → ≃ₒ-to-fun 𝟚ₒ 𝟚ₒ' e ∼ complement
+ complement-is-the-only-ordinal-equivalence-of-𝟚 e ₀ = different-from-₀-equal-₁ h
+  where
+   f : 𝟚 → 𝟚
+   f = ≃ₒ-to-fun 𝟚ₒ 𝟚ₒ' e
+   h : ≃ₒ-to-fun 𝟚ₒ 𝟚ₒ' e ₀ ≠ ₀
+   h p = l' (f ₁) (order-equivs-are-order-preserving 𝟚ₒ 𝟚ₒ' (≃ₒ-to-fun-is-order-equiv 𝟚ₒ 𝟚ₒ' e) ₀ ₁ ⋆)
+    where
+     l : (b : 𝟚) → ¬ (₀ ≺⟨ 𝟚ₒ' ⟩ b)
+     l ₀ l = 𝟘-elim l
+     l ₁ l = 𝟘-elim l
+     l' : (b : 𝟚) → ¬ (f ₀ ≺⟨ 𝟚ₒ' ⟩ b)
+     l' b = idtofun _ _ (ap (λ - → ¬ (- ≺⟨ 𝟚ₒ' ⟩ b)) (p ⁻¹)) (l b)
+ complement-is-the-only-ordinal-equivalence-of-𝟚 e ₁ = different-from-₁-equal-₀ h
+  where
+   f : 𝟚 → 𝟚
+   f = ≃ₒ-to-fun 𝟚ₒ 𝟚ₒ' e
+   h : ≃ₒ-to-fun 𝟚ₒ 𝟚ₒ' e ₁ ≠ ₁
+   h p = l' (f ₀) (order-equivs-are-order-preserving 𝟚ₒ 𝟚ₒ' (≃ₒ-to-fun-is-order-equiv 𝟚ₒ 𝟚ₒ' e) ₀ ₁ ⋆)
+    where
+     l : (b : 𝟚) → ¬ (b ≺⟨ 𝟚ₒ' ⟩ ₁)
+     l ₀ l = 𝟘-elim l
+     l ₁ l = 𝟘-elim l
+     l' : (b : 𝟚) → ¬ (b ≺⟨ 𝟚ₒ' ⟩ f ₁)
+     l' b = idtofun _ _ (ap (λ - → ¬ (b ≺⟨ 𝟚ₒ' ⟩ -)) (p ⁻¹)) (l b)
+
+ identification-of-𝟚ₒ-and-𝟚ₒ'-contradicts-K : 𝟚ₒ ＝ 𝟚ₒ' → ¬ K-axiom 𝓤₁
+ identification-of-𝟚ₒ-and-𝟚ₒ'-contradicts-K pₒ K = p-is-not-refl (K (𝓤₀ ̇  ) p refl)
+  where
+   p : 𝟚 ＝ 𝟚
+   p = ap ⟨_⟩ pₒ
+   f : 𝟚 ≃ 𝟚
+   f = idtoeq 𝟚 𝟚 p
+   p-is-not-refl : ¬ (p ＝ refl)
+   p-is-not-refl e = zero-is-not-one (₀                     ＝⟨ refl ⟩
+                                      ⌜ idtoeq 𝟚 𝟚 refl ⌝ ₀ ＝⟨ ap (λ - → ⌜ idtoeq 𝟚 𝟚 - ⌝ ₀) (e ⁻¹) ⟩
+                                      ⌜ f ⌝ ₀               ＝⟨ ap (λ - → ⌜ - ⌝ ₀) (idtoeqₒ-naturality 𝟚ₒ 𝟚ₒ' pₒ) ⟩
+                                      ⌜ ≃ₒ-gives-≃ 𝟚ₒ 𝟚ₒ' (idtoeqₒ 𝟚ₒ 𝟚ₒ' pₒ) ⌝ ₀ ＝⟨ refl ⟩
+                                      ≃ₒ-to-fun 𝟚ₒ 𝟚ₒ' (idtoeqₒ 𝟚ₒ 𝟚ₒ' pₒ) ₀ ＝⟨ complement-is-the-only-ordinal-equivalence-of-𝟚 (idtoeqₒ 𝟚ₒ 𝟚ₒ' pₒ) ₀ ⟩
+                                      ₁                     ∎)
+
+\end{code}
