@@ -85,7 +85,9 @@ is-hcf-is-prop fe h x y p q = ×-is-prop (is-common-divisor-is-prop h x y) II p 
 
 \end{code}
 
-Of course, hcf is commutative, which is easily proved by re-ordering projections.
+Of course, hcf is commutative, which is easily proved by re-ordering
+projections, and other properties of hcf are simple corollaries of the
+definition.
 
 \begin{code}
 
@@ -97,12 +99,6 @@ hcf-comm x y h ((h∣x , h∣y) , f) = (h∣y , h∣x) , γ
 
 hcf-comm' : (x y : ℕ) → Σ h ꞉ ℕ , is-hcf h x y → Σ h ꞉ ℕ , is-hcf h y x
 hcf-comm' x y (h , is-hcf) = h , (hcf-comm x y h is-hcf)
-
-\end{code}
-
-TODO: Comment
-
-\begin{code}
 
 hcf-one-left : {x : ℕ} → is-hcf 1 1 x
 hcf-one-left {x} = (∣-refl , 1-divides-all x) , γ
@@ -232,87 +228,9 @@ The step function includes an induction, which says the following:
 
 If for any number x, we can find a number r with r < x, and for any number k
 there exists a highest common factor of r and k, then for any y there exists a
-highest common factor of x and y. (In the proof I use y in the IH, but this is
-not necessary.
+highest common factor of x and y.
 
 \begin{code}
-{-
-hcf' : ℕ → ℕ → ℕ
-hcf' = course-of-values-induction (λ x → (y : ℕ) → ℕ) step
- where
-  step : (x : ℕ)
-       → ((m : ℕ) → m < x → ℕ → ℕ)
-       → (y : ℕ)
-       → ℕ
-  step 0        IH y = y
-  step (succ x) IH y = II (division y x)
-   where
-    II : Σ q ꞉ ℕ , Σ r ꞉ ℕ , (y ＝ q * succ x + r) × (r < succ x) → ℕ
-    II (q , r , e , l) = IH r l (succ x)
-
-hcf'-0 : (y : ℕ) → hcf' 0 y ＝ y
-hcf'-0 y = refl
-
-hcf'-step : (x y : ℕ)
-          → ((q , r , e , l) : Σ q ꞉ ℕ , Σ r ꞉ ℕ , (y ＝ q * succ x + r) × (r < succ x))
-          → hcf' (succ x) y ＝ hcf' r (succ x)
-hcf'-step x y (q , r , e , l) =
-
- hcf' (succ x) y                ＝⟨ ap (λ - → hcf' (succ x) -) e ⟩
- hcf' (succ x) (q * succ x + r) ＝⟨ refl ⟩
- (λ σ → {!!}) {!!}                           ＝⟨ {!!} ⟩
- {!!}                           ＝⟨ {!!} ⟩
- {!!}                           ∎
-  where
-   this : {!!}
-   this = {!!}
-
-ff : (x y : ℕ) → hcf' x y ∣ x
-ff 0        y = everything-divides-zero
-ff (succ x) y with division y x
-... | q , zero , e , l   = q , {!!}
-... | q , succ r , e , l = r , {!!}
-
-ea : (x y r q : ℕ)
-   → y ＝ q * succ x + r
-   → r < succ x
-   → is-hcf (hcf' r (succ x)) r (succ x)
-   → is-hcf (hcf' (succ x) y) (succ x) y
-ea x y r q e l ich = γ
- where
- --   is-hcf (hcf' r (succ x)) r (succ x)
-  I : is-hcf (hcf' (succ x) (q * succ x + r)) (succ x) (q * succ x + r)
-  I = ({!!} , {!!}) , {!!}
-
-  -- hcf' r (succ x)
-
-  γ : is-hcf (hcf' (succ x) y) (succ x) y
-  γ = transport (λ - → is-hcf (hcf' (succ x) -) (succ x) - ) (e ⁻¹) I
-
-HCF' : (x y : ℕ) → is-hcf (hcf' x y) x y
-HCF' = course-of-values-induction (λ x → (y : ℕ) → is-hcf (hcf' x y) x y) step
- where
-  step : (x : ℕ)
-       → ((r : ℕ) → r < x → (y : ℕ) → is-hcf (hcf' r y) r y)
-       → (y : ℕ)
-       → is-hcf (hcf' x y) x y
-  step 0        IH y = (everything-divides-zero , ∣-refl) , γ
-   where
-    γ : (d : ℕ) → is-common-divisor d 0 y → d ∣ hcf' 0 y
-    γ d (_ , d-div-y) = d-div-y
-  step (succ x) IH y = I (division y x)
-   where
-    I : Σ q ꞉ ℕ , Σ r ꞉ ℕ , (y ＝ q * succ x + r) × (r < succ x)
-      → is-hcf (hcf' (succ x) y) (succ x) y
-    I (q , r , e , l) = {!!} , {!!}
-     where
-      II : is-hcf (hcf' r (succ x)) r (succ x)
-      II = IH r l (succ x)
-
-HCF'' : (x y : ℕ) → Σ h ꞉ ℕ , is-hcf h x y
-HCF'' x y = (hcf' x y) , (HCF' x y)
-
--}
 
 HCF : (x y : ℕ) → Σ h ꞉ ℕ , is-hcf h x y
 HCF = course-of-values-induction (λ x → (y : ℕ) → Σ h ꞉ ℕ , is-hcf h x y) step
@@ -332,13 +250,19 @@ HCF = course-of-values-induction (λ x → (y : ℕ) → Σ h ꞉ ℕ , is-hcf h
     I (q , r , e₀ , l) = II (IH r l (succ x))
      where
       II : Σ h ꞉ ℕ , is-hcf h r (succ x) → Σ h ꞉ ℕ , is-hcf h (succ x) y
-      II (h , h-is-hcf) = h , hcf-comm y (succ x) h i
+      II (h , h-is-hcf) = h , hcf-comm y (succ x) h ii
        where
-        i : is-hcf h y (succ x)
-        i = euclids-algorithm-lemma' y (succ x) q r h e₀ (hcf-comm r (succ x) h h-is-hcf)
+        i : is-hcf h (succ x) r
+        i = hcf-comm r (succ x) h h-is-hcf
 
-hcf : (a b : ℕ) → ℕ
-hcf a b = pr₁ (HCF a b)
+        ii : is-hcf h y (succ x)
+        ii = euclids-algorithm-lemma' y (succ x) q r h e₀ i
+
+hcf : (x y : ℕ) → ℕ
+hcf x y = pr₁ (HCF x y)
+
+hcf-is-HCF : (x y : ℕ) → is-hcf (hcf x y) x y
+hcf-is-HCF x y = pr₂ (HCF x y)
 
 \end{code}
 
@@ -361,6 +285,9 @@ coprime a b = is-hcf 1 a b
 coprime-is-prop : Fun-Ext → (a b : ℕ) → is-prop (coprime a b)
 coprime-is-prop fe a b = is-hcf-is-prop fe 0 a b
 
+coprime'-to-coprime : (x y : ℕ) → coprime' x y → coprime x y
+coprime'-to-coprime x y p = transport (λ - → is-hcf - x y) p (hcf-is-HCF x y)
+
 divbyhcf : (a b : ℕ)
          → Σ h ꞉ ℕ , Σ x ꞉ ℕ , Σ y ꞉ ℕ , ((h * x ＝ a)
                                        × (h * y ＝ b))
@@ -375,17 +302,20 @@ divbyhcf 0 b = b , 0 , 1 , I , II , III
   III d (_ , d-divides-one) = d-divides-one
 divbyhcf (succ a) b = I (HCF (succ a) b)
  where
-  I : Σ c ꞉ ℕ , is-hcf c (succ a) b → Σ h ꞉ ℕ , Σ x ꞉ ℕ , Σ y ꞉ ℕ , ((h * x ＝ succ a) × (h * y ＝ b)) × coprime x y
-  I (0 , ((x , xₚ) , y , yₚ) , γ) = 𝟘-elim (positive-not-zero a II)
+  I : Σ c ꞉ ℕ , is-hcf c (succ a) b
+    → Σ h ꞉ ℕ , Σ x ꞉ ℕ , Σ y ꞉ ℕ , ((h * x ＝ succ a)
+                                  × (h * y ＝ b))
+                                  × coprime x y
+  I (0 , ((x , xₚ) , y , yₚ) , τ) = 𝟘-elim (positive-not-zero a II)
    where
     II : succ a ＝ 0
     II = succ a  ＝⟨ xₚ ⁻¹                     ⟩
          0 * x   ＝⟨ mult-commutativity zero x ⟩
          0       ∎
-  I (succ h , ((x , xₚ) , y , yₚ) , γ) = goal
+  I (succ h , ((x , xₚ) , y , yₚ) , τ) = succ h , x , y , (xₚ , yₚ) , goal
    where
     II : (f' : ℕ) → is-common-divisor f' x y → f' ∣ 1
-    II f' ((α , αₚ) , β , βₚ) = III (γ (succ h * f') ((α , αₚ') , β , βₚ'))
+    II f' ((α , αₚ) , β , βₚ) = III (τ (succ h * f') ((α , αₚ') , β , βₚ'))
      where
       αₚ' : succ h * f' * α ＝ succ a
       αₚ' = succ h * f' * α     ＝⟨ mult-associativity (succ h) f' α ⟩
@@ -400,15 +330,18 @@ divbyhcf (succ a) b = I (HCF (succ a) b)
             b                 ∎
 
       III : (succ h) * f' ∣ (succ h) → f' ∣ 1
-      III (δ , δₚ) = 1 , left-factor-one f' δ (mult-left-cancellable (f' * δ) 1 h e)
+      III (δ , δₚ) = 1 , left-factor-one f' δ γ
        where
         e : succ h * (f' * δ) ＝ succ h * 1
         e = succ h * (f' * δ) ＝⟨ mult-associativity (succ h) f' δ ⁻¹ ⟩
             succ h * f' * δ   ＝⟨ δₚ ⟩
             succ h            ∎
 
-    goal : Σ h ꞉ ℕ , Σ x ꞉ ℕ , Σ y ꞉ ℕ , ((h * x ＝ succ a) × (h * y ＝ b)) × coprime x y
-    goal = (succ h) , (x , (y , ((xₚ , yₚ) , (((x , mult-commutativity 1 x) , y , (mult-commutativity 1 y)) , II))))
+        γ : f' * δ ＝ 1
+        γ = mult-left-cancellable (f' * δ) 1 h e
+
+    goal : coprime x y
+    goal = (1-divides-all x , 1-divides-all y) , II
 
 hcf-unique : (a b : ℕ)
            → ((h , p) : Σ h ꞉ ℕ , is-hcf h a b)
