@@ -1871,6 +1871,57 @@ bicofinal-implies-same-join F R S φ ψ =
   (cofinal-implies-join-covered F R S φ)
   (cofinal-implies-join-covered F S R ψ)
 
+bicofinal-with-directed-family-implies-directed : (F : Frame 𝓤 𝓥 𝓦)
+                                                  (R S : Fam 𝓦 ⟨ F ⟩)
+                                                → cofinal-in F R S holds
+                                                → cofinal-in F S R holds
+                                                → is-directed F R holds
+                                                → is-directed F S holds
+bicofinal-with-directed-family-implies-directed F R S φ ψ (δ₁ , δ₂) = † , ‡
+ where
+  open PropositionalTruncation pt
+  open PosetNotation (poset-of F)
+
+  † : ∥ index S ∥Ω holds
+  † = ∥∥-rec (holds-is-prop ∥ index S ∥Ω) †₁ δ₁
+   where
+    †₁ : index R → ∥ index S ∥Ω holds
+    †₁ i = ∥∥-rec (holds-is-prop ∥ index S ∥Ω) †₂ (φ i)
+     where
+      †₂ : Σ j ꞉ index S , (R [ i ] ≤ S [ j ]) holds
+         → ∥ index S ∥Ω holds
+      †₂ = ∣_∣ ∘ pr₁
+
+  ‡ : (j₁ j₂ : index S)
+    → (Ǝ j ∶ index S , (S [ j₁ ] ≤ S [ j ]) holds
+                     × (S [ j₂ ] ≤ S [ j ]) holds) holds
+  ‡ j₁ j₂ = ∥∥-rec₂ ∃-is-prop ‡₁ (ψ j₁) (ψ j₂)
+   where
+    ‡₁ : Σ i₁ ꞉ index R , (S [ j₁ ] ≤ R [ i₁ ]) holds
+       → Σ i₂ ꞉ index R , (S [ j₂ ] ≤ R [ i₂ ]) holds
+       → (Ǝ j ∶ index S , (S [ j₁ ] ≤ S [ j ]) holds
+                        × (S [ j₂ ] ≤ S [ j ]) holds) holds
+    ‡₁ (i₁ , p₁) (i₂ , p₂) = ∥∥-rec ∃-is-prop ‡₂ (δ₂ i₁ i₂)
+     where
+      ‡₂ : Σ i ꞉ index R , (R [ i₁ ] ≤ R [ i ]) holds
+                         × (R [ i₂ ] ≤ R [ i ]) holds
+         → (Ǝ j ∶ index S , (S [ j₁ ] ≤ S [ j ]) holds
+                          × (S [ j₂ ] ≤ S [ j ]) holds) holds
+      ‡₂ (i , q₁ , q₂) = ∥∥-rec ∃-is-prop ‡₃ (φ i)
+       where
+        ‡₃ : Σ j ꞉ (index S) , (R [ i ] ≤ S [ j ]) holds
+           → (Ǝ j ∶ index S , (S [ j₁ ] ≤ S [ j ]) holds
+                            × (S [ j₂ ] ≤ S [ j ]) holds) holds
+        ‡₃ (j , p) = ∣ j , r₁ , r₂ ∣
+         where
+          open PosetReasoning (poset-of F)
+
+          r₁ : (S [ j₁ ] ≤ S [ j ]) holds
+          r₁ = S [ j₁ ] ≤⟨ p₁ ⟩ R [ i₁ ] ≤⟨ q₁ ⟩ R [ i ] ≤⟨ p ⟩ S [ j ] ■
+
+          r₂ : (S [ j₂ ] ≤ S [ j ]) holds
+          r₂ = S [ j₂ ] ≤⟨ p₂ ⟩ R [ i₂ ] ≤⟨ q₂ ⟩ R [ i ] ≤⟨ p ⟩ S [ j ] ■
+
 open PropositionalTruncation pt
 
 ∨[_]-iterated-join : (F : Frame 𝓤 𝓥 𝓦) (S₁ S₂ : Fam 𝓦 ⟨ F ⟩)
