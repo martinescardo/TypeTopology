@@ -290,9 +290,11 @@ The strategy above is used to prove that x - x ＝ (- x) + x ＝ 0 for all integ
        → pos k + (- pos k)               ＝ pos 0
        → pos (succ k) + (- pos (succ k)) ＝ pos 0
   step 0        IH = refl
-  step (succ k) IH = predℤ (pos (succ (succ k)) + negsucc k) ＝⟨ ℤ-left-pred (pos (succ (succ k))) (negsucc k) ⁻¹ ⟩
-                     (pos (succ k) + (- pos (succ k)))       ＝⟨ IH                                               ⟩
+  step (succ k) IH = predℤ (pos (succ (succ k)) + negsucc k) ＝⟨ i  ⟩
+                     (pos (succ k) + (- pos (succ k)))       ＝⟨ IH ⟩
                      pos 0                                   ∎
+   where
+    i = ℤ-left-pred (pos (succ (succ k))) (negsucc k) ⁻¹
 
 ℤ-sum-of-inverse-is-zero₁ : (x : ℕ) → negsucc x - negsucc x ＝ pos 0
 ℤ-sum-of-inverse-is-zero₁ = induction base step
@@ -303,9 +305,11 @@ The strategy above is used to prove that x - x ＝ (- x) + x ＝ 0 for all integ
   step : (k : ℕ)
        → negsucc k + (- negsucc k)               ＝ pos 0
        → negsucc (succ k) + (- negsucc (succ k)) ＝ pos 0
-  step k IH = negsucc (succ k) + (- negsucc (succ k))  ＝⟨ ap succℤ (ℤ-left-succ (negsucc (succ k)) (pos k) ⁻¹) ⟩
-              succℤ (succℤ (negsucc (succ k)) + pos k) ＝⟨ IH                                                   ⟩
+  step k IH = negsucc (succ k) + (- negsucc (succ k))  ＝⟨ i  ⟩
+              succℤ (succℤ (negsucc (succ k)) + pos k) ＝⟨ IH ⟩
               pos 0                                    ∎
+   where
+    i = ap succℤ (ℤ-left-succ (negsucc (succ k)) (pos k) ⁻¹)
 
 ℤ-sum-of-inverse-is-zero : (x : ℤ) → x + (- x) ＝ pos 0
 ℤ-sum-of-inverse-is-zero (pos x)     = ℤ-sum-of-inverse-is-zero₀ x
