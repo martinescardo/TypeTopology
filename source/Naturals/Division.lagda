@@ -135,6 +135,27 @@ left-factor-one (succ (succ x)) (succ (succ y)) e = 𝟘-elim γ
   γ : 𝟘
   γ = less-than-not-equal _ _ l₃ (e ⁻¹)
 
+division-refl-right-unit : (x y : ℕ) → succ x * y ∣ succ x → y ＝ 1
+division-refl-right-unit x y (k , e) = left-factor-one y k II
+ where
+  I : succ x * (y * k) ＝ succ x * 1
+  I = mult-associativity (succ x) y k ⁻¹ ∙ e
+
+  II : y * k ＝ 1
+  II = mult-left-cancellable (y * k) 1 x I
+
+division-refl-right-factor : (x y : ℕ) → succ x * y ∣ succ x → y ∣ 1
+division-refl-right-factor x y (k , e) = γ
+ where
+  I : y ＝ 1
+  I = division-refl-right-unit x y (k , e)
+
+  II : 1 ∣ 1
+  II = 1-divides-all 1
+
+  γ : y ∣ 1
+  γ = transport (_∣ 1) (I ⁻¹) II
+
 \end{code}
 
 And we can finally prove that division is anti-symmetric property,

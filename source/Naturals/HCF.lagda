@@ -288,12 +288,53 @@ coprime-is-prop fe a b = is-hcf-is-prop fe 0 a b
 coprime'-to-coprime : (x y : ℕ) → coprime' x y → coprime x y
 coprime'-to-coprime x y p = transport (λ - → is-hcf - x y) p (hcf-is-HCF x y)
 
+
+
+coprime-0-1 : coprime 0 1
+coprime-0-1 = (1-divides-all 0 , 1-divides-all 1) , γ
+ where
+  γ : (d : ℕ) → is-common-divisor d 0 1 → d ∣ 1
+  γ d (_ , d-divides-one) = d-divides-one
+
+divbyhcf' : (a b : ℕ)
+          → Σ h ꞉ ℕ , Σ x ꞉ ℕ , Σ y ꞉ ℕ , ((h * x ＝ a) × (h * y ＝ b))
+                                        × coprime x y
+divbyhcf' 0 b = b , 0 , 1 , (refl , refl) , coprime-0-1
+divbyhcf' (succ a) b = γ' (HCF (succ a) b)
+ where
+  γ' : Σ h ꞉ ℕ , is-hcf h (succ a) b
+     → Σ h ꞉ ℕ , Σ x ꞉ ℕ , Σ y ꞉ ℕ , ((h * x ＝ succ a) × (h * y ＝ b))
+                                   × coprime x y
+  γ' (0 , (p , _) , τ) = 𝟘-elim (zero-does-not-divide-positive a p)
+  γ' (succ h , ((x , α) , (y , β)) , τ) = succ h , x , y , (α , β) , γ
+   where
+    γ₁ : is-common-divisor 1 x y
+    γ₁ = 1-divides-all x , 1-divides-all y
+
+    γ₂ : (d : ℕ) → is-common-divisor d x y → d ∣ 1
+    γ₂ d ((k , δ) , (l , ψ)) = division-refl-right-factor h d II
+     where
+      I : (k x a : ℕ)
+        → d * k ＝ x
+        → succ h * x ＝ a
+        → succ h * d ∣ a
+      I k x a e₁ e₂ = k , (succ h * d * k  ＝⟨ mult-associativity (succ h) d k ⟩
+                          succ h * (d * k) ＝⟨ ap (succ h *_) e₁               ⟩
+                          succ h * x       ＝⟨ e₂                              ⟩
+                          a ∎)
+
+      II : (succ h * d) ∣ succ h
+      II = τ (succ h * d) (I k x (succ a) δ α , I l y b ψ β)
+
+    γ : coprime x y
+    γ = γ₁ , γ₂
+
 divbyhcf : (a b : ℕ)
          → Σ h ꞉ ℕ , Σ x ꞉ ℕ , Σ y ꞉ ℕ , ((h * x ＝ a)
                                        × (h * y ＝ b))
                                        × coprime x y
 divbyhcf 0 b = b , 0 , 1 , I , II , III
- where
+  where
   I : (b * 0 ＝ zero) × (b * 1 ＝ b)
   I = refl , refl
   II : (1 ∣ 0) × (1 ∣ 1)
