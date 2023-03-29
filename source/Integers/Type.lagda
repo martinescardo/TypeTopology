@@ -22,10 +22,10 @@ module Integers.Type where
 
 \end{code}
 
-In order to avoid having positive and negative 0, a standard solutions
-to have the negative constructor denote λ n → - (n + 1).
-For example, negsucc 0 = -1
-             negsucc 4 = -5.
+In order to avoid having positive and negative 0, a standard solution is to have
+the negative constructor denote λ n → - (n + 1).
+
+For example, negsucc 0 = -1, negsucc 4 = -5.
 
 \begin{code}
 
