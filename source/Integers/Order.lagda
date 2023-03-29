@@ -22,10 +22,10 @@ module Integers.Order where
 
 \end{code}
 
-First, the definition of < and ≤ for the integers. See the
-NaturalsOrder import to see how < is defined similarly to < for the
-natural numbers.  Following the definitions are the proofs that the
-relations are propositions, and some simple proofs for each.
+First, the definition of < and ≤ for the integers. See the NaturalsOrder import
+to see how < is defined similarly to < for the natural numbers.  Following the
+definitions are the proofs that the relations are propositions, and some simple
+proofs for each.
 
 \begin{code}
 
@@ -112,12 +112,15 @@ instance
     k' = pos (succ k)
     m' = pos (succ m)
     n' = pos (succ n)
-    
+
     II : k' + m' ＝ n'
-    II = k' + m'                ＝⟨ distributivity-pos-addition (succ k) (succ m) ⟩
-         pos (succ k ℕ+ succ m) ＝⟨ ap (pos ∘ succ) e                             ⟩
+    II = k' + m'                ＝⟨ i  ⟩
+         pos (succ k ℕ+ succ m) ＝⟨ ii ⟩
          n'                     ∎
-    
+     where
+      i  = distributivity-pos-addition (succ k) (succ m)
+      ii = ap (pos ∘ succ) e
+
     γ : succℤ (negsucc n) + pos k ＝ negsucc m
     γ = succℤ (negsucc n) + pos k         ＝⟨ i    ⟩
         negsucc n + k'                    ＝⟨ ii   ⟩
@@ -136,23 +139,23 @@ instance
       where
        ivₐₚ : pos 0 ＝ m' - m'
        ivₐₚ = ℤ-sum-of-inverse-is-zero m' ⁻¹
-       
-       i     = ℤ-left-succ (negsucc n) (pos k)
-       ii    = ℤ+-comm (negsucc n) k'
-       iii   = ℤ-zero-right-neutral (k' + negsucc n)
-       iv    = ap ((k' + negsucc n) +_) ivₐₚ
-       v     = ℤ+-assoc (k' + negsucc n) m' (negsucc m) ⁻¹
-       vi    = ap (_+ negsucc m) (ℤ+-assoc k' (negsucc n) m')
-       vii   = ap (λ p → k' + p + negsucc m) (ℤ+-comm (negsucc n) m')
-       viii  = ap (_+ negsucc m) (ℤ+-assoc k' m' (negsucc n) ⁻¹)
-       ix    = ℤ+-assoc (k' + m') (negsucc n) (negsucc m)
-       x     = ap (λ p → p + (negsucc n + negsucc m)) II
-       xi    = ℤ+-assoc n' (negsucc n) (negsucc m) ⁻¹
-       xii   = ap (_+ negsucc m) (ℤ-sum-of-inverse-is-zero n')
-       xiii  = ℤ-zero-left-neutral (negsucc m)
+
+       i    = ℤ-left-succ (negsucc n) (pos k)
+       ii   = ℤ+-comm (negsucc n) k'
+       iii  = ℤ-zero-right-neutral (k' + negsucc n)
+       iv   = ap ((k' + negsucc n) +_) ivₐₚ
+       v    = ℤ+-assoc (k' + negsucc n) m' (negsucc m) ⁻¹
+       vi   = ap (_+ negsucc m) (ℤ+-assoc k' (negsucc n) m')
+       vii  = ap (λ p → k' + p + negsucc m) (ℤ+-comm (negsucc n) m')
+       viii = ap (_+ negsucc m) (ℤ+-assoc k' m' (negsucc n) ⁻¹)
+       ix   = ℤ+-assoc (k' + m') (negsucc n) (negsucc m)
+       x    = ap (λ p → p + (negsucc n + negsucc m)) II
+       xi   = ℤ+-assoc n' (negsucc n) (negsucc m) ⁻¹
+       xii  = ap (_+ negsucc m) (ℤ-sum-of-inverse-is-zero n')
+       xiii = ℤ-zero-left-neutral (negsucc m)
 
 ℤ-bigger-or-equal-not-less : (x y : ℤ) → x ≤ y → ¬ (y < x)
-ℤ-bigger-or-equal-not-less x y (α , p) (β , q) = 𝟘-elim γ 
+ℤ-bigger-or-equal-not-less x y (α , p) (β , q) = 𝟘-elim γ
  where
   I : x + succℤ (pos (α ℕ+ β)) ＝ x + pos 0
   I = x + succℤ (pos (α ℕ+ β))    ＝⟨ i             ⟩
@@ -168,7 +171,7 @@ instance
     iii = ap succℤ (ℤ+-assoc x (pos α) (pos β) ⁻¹)
     iv  = ℤ-left-succ (x + pos α) (pos β) ⁻¹
     v   = transport (λ - → succℤ - + (pos β) ＝ x) (p ⁻¹) q
-      
+
   II : succℤ (pos (α ℕ+ β)) ＝ pos 0
   II = ℤ+-lc (succℤ (pos (α ℕ+ β))) (pos 0) x I
 
@@ -324,7 +327,7 @@ trich-locate x y = (x < y) ∔ (x ＝ y) ∔ (y < x)
     III e l = ℤ-equal-not-less-than y (transport (y <_) e l)
 
   γ : x < y → ¬ ((x ＝ y) ∔ y < x)
-  γ l (inl e ) = ℤ-equal-not-less-than x (transport (x <_) (e ⁻¹) l)  
+  γ l (inl e ) = ℤ-equal-not-less-than x (transport (x <_) (e ⁻¹) l)
   γ l (inr l') = ℤ-bigger-or-equal-not-less x y (<-is-≤ x y l) l'
 
 ℤ≤-adding : (a b c d : ℤ) → a ≤ b → c ≤ d → a + c ≤ b + d
@@ -508,7 +511,7 @@ negative-multiplication-changes-order' a b (negsucc x) g l = I (ℤ≤-split a b
    where
     γ₁ : b * negsucc x ＝ a * negsucc x
     γ₁ = ap (_* negsucc x) (a＝b ⁻¹)
-    
+
     γ₂ : b * negsucc x ≤ b * negsucc x
     γ₂ = ℤ≤-refl (b * negsucc x)
 
@@ -521,10 +524,10 @@ negative-multiplication-changes-order' a b (negsucc x) g l = I (ℤ≤-split a b
    where
     I : x * pos (succ z) < y * pos (succ z)
     I = positive-multiplication-preserves-order x y (pos (succ z)) ⋆ l
-    
+
     II : x * pos (succ z) < x * pos (succ z)
     II = transport (x * pos (succ z) <_) (e ⁻¹) I
-    
+
   tri-split (inr (inl m)) = m
   tri-split (inr (inr r)) = 𝟘-elim (ℤ-equal-not-less-than (y * pos (succ z)) II)
    where
@@ -543,7 +546,7 @@ negative-multiplication-changes-order' a b (negsucc x) g l = I (ℤ≤-split a b
 
     II : y * negsucc z < y * negsucc z
     II = transport (y * negsucc z <_) e I
-    
+
   tri-split (inr (inl r)) = r
   tri-split (inr (inr r)) = 𝟘-elim (ℤ-equal-not-less-than (x * negsucc z) II)
    where
