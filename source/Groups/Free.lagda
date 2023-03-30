@@ -348,7 +348,7 @@ steps:
  ++-▷-left s s' t (u , v , x , p , q) = u , (v ++ t) , x , p' , q'
   where
    p' = s ++ t                            ＝⟨ ap (_++ t) p ⟩
-        (u ++ [ x ] ++ [ x ⁻ ] ++ v) ++ t ＝⟨ ++-assoc u ([ x ] ++ [ x ⁻ ] ++ v) t ⟩
+        (u ++ [ x ] ++ [ x ⁻ ] ++ v) ++ t ＝⟨ ++-assoc u _ t ⟩
         u ++ [ x ] ++ [ x ⁻ ] ++ v ++ t   ∎
 
    q' = s' ++ t       ＝⟨ ap (_++ t) q ⟩
@@ -709,20 +709,22 @@ The following proofs rely on the above naturality conditions:
 
    assoc/ : associative _·_
    assoc/ = /-induction -∾- (λ x → ∀ y z → (x · y) · z ＝ x · (y · z))
-              (λ x → Π₂-is-prop fe (λ y z → quotient-is-set -∾-))
-              (λ s → /-induction -∾- (λ y → ∀ z → (η/∾ s · y) · z ＝ η/∾ s · (y · z))
-                       (λ y → Π-is-prop fe (λ z → quotient-is-set -∾-))
-                       (λ t → /-induction -∾- (λ z → (η/∾ s · η/∾ t) · z ＝ η/∾ s · (η/∾ t · z))
-                                (λ z → quotient-is-set -∾-)
-                                (γ s t)))
-    where
-     γ : (s t u : FA) → (η/∾ s · η/∾ t) · η/∾ u ＝ η/∾ s · (η/∾ t · η/∾ u)
-     γ s t u = (η/∾ s · η/∾ t) · η/∾ u ＝⟨ ap (_· η/∾ u) (·-natural s t) ⟩
-               η/∾ (s ++ t) · η/∾ u    ＝⟨ ·-natural (s ++ t) u ⟩
-               η/∾ ((s ++ t) ++ u)     ＝⟨ ap η/∾ (++-assoc s t u) ⟩
-               η/∾ (s ++ (t ++ u))     ＝⟨ (·-natural s (t ++ u))⁻¹ ⟩
-               η/∾ s · η/∾ (t ++ u)    ＝⟨ ap (η/∾ s ·_) ((·-natural t u)⁻¹) ⟩
-               η/∾ s · (η/∾ t · η/∾ u) ∎
+             (λ x → Π₂-is-prop fe (λ y z → quotient-is-set -∾-))
+             (λ s → /-induction -∾-
+                      (λ y → ∀ z → (η/∾ s · y) · z ＝ η/∾ s · (y · z))
+                      (λ y → Π-is-prop fe (λ z → quotient-is-set -∾-))
+                      (λ t → /-induction -∾-
+                               (λ z → (η/∾ s · η/∾ t) · z ＝ η/∾ s · (η/∾ t · z))
+                               (λ z → quotient-is-set -∾-)
+                               (γ s t)))
+          where
+           γ : (s t u : FA) → (η/∾ s · η/∾ t) · η/∾ u ＝ η/∾ s · (η/∾ t · η/∾ u)
+           γ s t u = (η/∾ s · η/∾ t) · η/∾ u ＝⟨ ap (_· η/∾ u) (·-natural s t) ⟩
+                 η/∾ (s ++ t) · η/∾ u    ＝⟨ ·-natural (s ++ t) u ⟩
+                 η/∾ ((s ++ t) ++ u)     ＝⟨ ap η/∾ (++-assoc s t u) ⟩
+                 η/∾ (s ++ (t ++ u))     ＝⟨ (·-natural s (t ++ u))⁻¹ ⟩
+                 η/∾ s · η/∾ (t ++ u)    ＝⟨ ap (η/∾ s ·_) ((·-natural t u)⁻¹) ⟩
+                 η/∾ s · (η/∾ t · η/∾ u) ∎
 \end{code}
 
 So we have constructed a group with underlying set FA/∾ and a map
@@ -938,20 +940,20 @@ But for this one we do:
              e           ＝⟨ (homs-preserve-unit 𝓕 𝓖 f₁ i₁)⁻¹ ⟩
              f₁ (η/∾ []) ∎
       δ ((₀ , a) ∷ s) =
-             f₀ (η/∾ (η a ++ s))    ＝⟨ ap f₀ ((·-natural (η a) s)⁻¹) ⟩
+             f₀ (η/∾ (η a ++ s))      ＝⟨ ap f₀ ((·-natural (η a) s)⁻¹) ⟩
              f₀ (ηᴳʳᵖ a · η/∾ s)      ＝⟨ i₀  ⟩
              f₀ (ηᴳʳᵖ a) * f₀ (η/∾ s) ＝⟨ ap₂ _*_ (p a) (δ s) ⟩
              f₁ (ηᴳʳᵖ a) * f₁ (η/∾ s) ＝⟨ i₁ ⁻¹ ⟩
              f₁ (ηᴳʳᵖ a · η/∾ s)      ＝⟨ ap f₁ (·-natural (η a) s) ⟩
-             f₁ (η/∾ (η a ++ s))    ∎
+             f₁ (η/∾ (η a ++ s))      ∎
       δ ((₁ , a) ∷ s) =
              f₀ (η/∾ (finv (η a) ++ s))         ＝⟨ I ⟩
              f₀ (η/∾ (finv (η a)) · η/∾ s)      ＝⟨ II ⟩
              f₀ (η/∾ (finv (η a))) * f₀ (η/∾ s) ＝⟨ III ⟩
-             f₀ (inv/ (ηᴳʳᵖ a)) * f₀ (η/∾ s)      ＝⟨ IV ⟩
-             invG (f₀ (ηᴳʳᵖ a)) * f₀ (η/∾ s)      ＝⟨ IH ⟩
-             invG (f₁ (ηᴳʳᵖ a)) * f₁ (η/∾ s)      ＝⟨ IV' ⟩
-             f₁ (inv/ (ηᴳʳᵖ a)) * f₁ (η/∾ s)      ＝⟨ III' ⟩
+             f₀ (inv/ (ηᴳʳᵖ a)) * f₀ (η/∾ s)    ＝⟨ IV ⟩
+             invG (f₀ (ηᴳʳᵖ a)) * f₀ (η/∾ s)    ＝⟨ IH ⟩
+             invG (f₁ (ηᴳʳᵖ a)) * f₁ (η/∾ s)    ＝⟨ IV' ⟩
+             f₁ (inv/ (ηᴳʳᵖ a)) * f₁ (η/∾ s)    ＝⟨ III' ⟩
              f₁ (η/∾ (finv (η a))) * f₁ (η/∾ s) ＝⟨ II' ⟩
              f₁ (η/∾ (finv (η a)) · η/∾ s)      ＝⟨ I' ⟩
              f₁ (η/∾ (finv (η a) ++ s))         ∎
@@ -984,7 +986,8 @@ But for this one we do:
                          (Π-is-prop fe (λ a → group-is-set 𝓖))
 
         b : f' ＝ f₀
-        b = dfunext fe (f'-uniqueness' f' f₀ f'-is-hom f₀-is-hom f'-triangle f₀-triangle)
+        b = dfunext fe
+             (f'-uniqueness' f' f₀ f'-is-hom f₀-is-hom f'-triangle f₀-triangle)
 
       γ : ∃! f' ꞉ (⟨ 𝓕 ⟩ → ⟨ 𝓖 ⟩) , is-hom 𝓕 𝓖 f' × f' ∘ ηᴳʳᵖ ∼ f
       γ = c , i

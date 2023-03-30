@@ -694,7 +694,7 @@ is-large : 𝓤 ⁺ ̇ → 𝓤 ⁺ ̇
 is-large X = ¬ is-small X
 
 _is_small-map : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → (𝓦 : Universe) → 𝓤 ⊔ 𝓥 ⊔ (𝓦 ⁺) ̇
-f is 𝓦 small-map = ∀ y → (fiber f y) is 𝓦 small
+f is 𝓦 small-map = ∀ y → fiber f y is 𝓦 small
 
 _is-small-map : {X Y : 𝓤 ⁺ ̇ } → (X → Y) → 𝓤 ⁺ ̇
 _is-small-map {𝓤} f = f is 𝓤 small-map
