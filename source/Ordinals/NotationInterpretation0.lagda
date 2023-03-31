@@ -39,7 +39,7 @@ open import MLTT.Plus-Properties
 open import MLTT.Spartan
 open import Notation.CanonicalMap
 open import Ordinals.Arithmetic fe
-open import Ordinals.Arithmetic-Properties ua
+open import Ordinals.ArithmeticProperties ua
 open import Ordinals.Brouwer
 open import Ordinals.Equivalence
 open import Ordinals.Injectivity

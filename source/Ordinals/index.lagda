@@ -6,7 +6,7 @@ Martin Escardo
 
 module Ordinals.index where
 
-import Ordinals.Arithmetic-Properties
+import Ordinals.ArithmeticProperties
 import Ordinals.Arithmetic
 import Ordinals.Brouwer
 import Ordinals.BuraliForti                   -- by Bezem, Coquand, Dybjer and Escardo.

@@ -400,7 +400,7 @@ an arbitrary well founded order) also appears at the bottom of [Acz77, p. 743].
 \begin{code}
 
  open import Ordinals.Arithmetic fe'
- open import Ordinals.Arithmetic-Properties ua hiding (lemma₁ ; lemma₂)
+ open import Ordinals.ArithmeticProperties ua
  open import Ordinals.OrdinalOfOrdinalsSuprema ua
 
  open import UF.Quotient hiding (is-prop-valued)

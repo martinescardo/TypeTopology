@@ -471,7 +471,7 @@ module _ (pt : propositional-truncations-exist)
  open import Ordinals.OrdinalOfOrdinals ua
  open import Ordinals.OrdinalOfOrdinalsSuprema ua
  open import Ordinals.Injectivity
- open import Ordinals.Arithmetic-Properties ua
+ open import Ordinals.ArithmeticProperties ua
 
  open import UF.ImageAndSurjection pt
  open ordinals-injectivity fe

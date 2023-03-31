@@ -530,7 +530,7 @@ Monoids:
 
 \begin{code}
 
- open import Ordinals.Arithmetic-Properties ua
+ open import Ordinals.ArithmeticProperties ua
 
  monoid-structure : 𝓤 ̇ → 𝓤 ̇
  monoid-structure X = (X → X → X) × X

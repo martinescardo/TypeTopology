@@ -60,7 +60,7 @@ equivalent to a type in the universe 𝓥:
 _is_small : 𝓤 ̇ → (𝓥 : Universe) → 𝓥 ⁺  ⊔ 𝓤 ̇
 X is 𝓥 small = Σ Y ꞉ 𝓥 ̇ , Y ≃ X
 
-resized : (𝓥 : Universe) → (X : 𝓤 ̇ )→ X is 𝓥 small → 𝓥 ̇
+resized : (𝓥 : Universe) → (X : 𝓤 ̇ ) → X is 𝓥 small → 𝓥 ̇
 resized 𝓥 X = pr₁
 
 resizing-condition : (𝓥 : Universe) (X : 𝓤 ̇ )(s : X is 𝓥 small)
