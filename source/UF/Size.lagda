@@ -63,7 +63,8 @@ X is 𝓥 small = Σ Y ꞉ 𝓥 ̇ , Y ≃ X
 resized : (𝓥 : Universe) → (X : 𝓤 ̇ )→ X is 𝓥 small → 𝓥 ̇
 resized 𝓥 X = pr₁
 
-resizing-condition : (𝓥 : Universe) (X : 𝓤 ̇ )(s : X is 𝓥 small) → resized 𝓥 X s ≃ X
+resizing-condition : (𝓥 : Universe) (X : 𝓤 ̇ )(s : X is 𝓥 small)
+                   → resized 𝓥 X s ≃ X
 resizing-condition 𝓥 X = pr₂
 
 \end{code}
@@ -693,7 +694,10 @@ is-small {𝓤} X = X is 𝓤 small
 is-large : 𝓤 ⁺ ̇ → 𝓤 ⁺ ̇
 is-large X = ¬ is-small X
 
-_is_small-map : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → (𝓦 : Universe) → 𝓤 ⊔ 𝓥 ⊔ (𝓦 ⁺) ̇
+_is_small-map : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+              → (X → Y)
+              → (𝓦 : Universe)
+              → 𝓤 ⊔ 𝓥 ⊔ (𝓦 ⁺) ̇
 f is 𝓦 small-map = ∀ y → fiber f y is 𝓦 small
 
 _is-small-map : {X Y : 𝓤 ⁺ ̇ } → (X → Y) → 𝓤 ⁺ ̇

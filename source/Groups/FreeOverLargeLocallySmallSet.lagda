@@ -426,8 +426,8 @@ group is rather large - it jumps up two universe levels:
 
 \begin{code}
 
- ηᴳʳᵖ-native-size : ηᴳʳᵖ is 𝓤⁺⁺ small-map
- ηᴳʳᵖ-native-size y = fiber ηᴳʳᵖ y , ≃-refl _
+ NB-ηᴳʳᵖ-native-size : ηᴳʳᵖ is 𝓤⁺⁺ small-map
+ NB-ηᴳʳᵖ-native-size y = fiber ηᴳʳᵖ y , ≃-refl _
 
 \end{code}
 
@@ -474,7 +474,8 @@ suffices to prove it for elements of the form η/∾ s with s : FA.
 \end{code}
 
 But the above resizing of the map ηᴳʳᵖ is not small enough for our
-purposes.
+purposes. Recall that ηᴳʳᵖ a = η/∾ (η a). We first discuss the fibers
+of η, then those of η/∾, and finally those of ηᴳʳᵖ.
 
 The fiber type Σ a ꞉ A , η a ＝ s lives in the universe 𝓤⁺. In the next
 step we construct a copy of this fiber type in the first universe 𝓤₀.
@@ -485,8 +486,8 @@ pattern matching.
 
 \begin{code}
 
- native-universe-fiber-η : (s : FA) → universe-of (Σ a ꞉ A , η a ＝ s) ＝ 𝓤⁺
- native-universe-fiber-η s = refl
+ NB-native-universe-fiber-η : (s : FA) → universe-of (Σ a ꞉ A , η a ＝ s) ＝ 𝓤⁺
+ NB-native-universe-fiber-η s = refl
 
  fiber₀-η : FA → 𝓤₀ ̇
  fiber₀-η []             = 𝟘
@@ -501,10 +502,10 @@ pattern matching.
  NB-fiber₀-η-is-decidable ((₁ , a) ∷ []) = inr id
 
  fiber-η→ : (s : FA) → fiber₀-η s → (Σ a ꞉ A , η a ＝ s)
- fiber-η→ [] ()
- fiber-η→ (x ∷ y ∷ s) ()
- fiber-η→ (₀ , a ∷ []) ⋆ = a , refl
- fiber-η→ (₁ , a ∷ []) ()
+ fiber-η→ []             ()
+ fiber-η→ (x ∷ y ∷ s)    ()
+ fiber-η→ ((₀ , a) ∷ []) ⋆ = a , refl
+ fiber-η→ ((₁ , a) ∷ []) ()
 
  fiber-η← : (s : FA) → (Σ a ꞉ A , η a ＝ s) → fiber₀-η s
  fiber-η← .(η a) (a , refl) = ⋆
@@ -675,3 +676,25 @@ large-group-with-no-small-copy {𝓤} (A , A-is-set , A-is-large , A-ls) = δ
 In the module BuraliForti we instantiate A to the set of ordinals,
 which is large and locally small, to construct a large group with no
 small copy.
+
+Remarks.
+
+What can we choose for the large, locally small set?
+
+ * Our choice is the type of ordinals.
+
+ * One may wonder whether there are simpler choices such as
+
+    (i) The function type 𝓤 → 𝟚.
+    (ii) The set truncation of 𝓤.
+
+   The choice (i) doesn't work in the absence of classical logic,
+   because there is a non-constant function 𝓤 → 𝟚 if and only if de
+   Morgan Law holds (which is equivalent to excluded middle for
+   negative propositions). https://doi.org/10.1016/j.apal.2016.04.010
+
+   The choice (ii) may work, but so far we haven't succeeded.
+
+ * Another question is whether there is a large, discrete set, as this
+   would considerably simplify the construction of the free group. One
+   of us conjectures that there isn't, in general, such a set.
