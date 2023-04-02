@@ -138,23 +138,23 @@ is why we defined the base cases to be 𝟙 rather than 𝟘.
 
 \begin{code}
 
- ⟦_⟧₂-is-compact∙ : (b : B) → compact∙ ⟨ ⟦ b ⟧₂ ⟩
- ⟦ Z ⟧₂-is-compact∙   = 𝟙-compact∙
- ⟦ S b ⟧₂-is-compact∙ = +-compact∙ ⟦ b ⟧₂-is-compact∙ (𝟙-compact∙)
+ ⟦_⟧₂-is-compact∙ : (b : B) → is-compact∙ ⟨ ⟦ b ⟧₂ ⟩
+ ⟦ Z ⟧₂-is-compact∙   = 𝟙-is-compact∙
+ ⟦ S b ⟧₂-is-compact∙ = +-is-compact∙ ⟦ b ⟧₂-is-compact∙ (𝟙-is-compact∙)
  ⟦ L b ⟧₂-is-compact∙ =
-   surjection-compact∙ pt
+   codomain-of-surjection-is-compact∙ pt
     (sum-to-sup (extension (λ i → ⟦ b i ⟧₂)))
     (sum-to-sup-is-surjection (extension (λ i → ⟦ b i ⟧₂)))
     (Σ¹-compact∙
        (λ i → ⟨ ⟦ b i ⟧₂ ⟩)
        (λ i → ⟦ b i ⟧₂-is-compact∙ ))
 
- ⟦_⟧₁-is-compact∙ : (b : B) → compact∙ ⟨ ⟦ b ⟧₁ ⟩
- ⟦ Z ⟧₁-is-compact∙   = 𝟙-compact∙
- ⟦ S b ⟧₁-is-compact∙ = Σ-compact∙ 𝟙+𝟙-compact∙
+ ⟦_⟧₁-is-compact∙ : (b : B) → is-compact∙ ⟨ ⟦ b ⟧₁ ⟩
+ ⟦ Z ⟧₁-is-compact∙   = 𝟙-is-compact∙
+ ⟦ S b ⟧₁-is-compact∙ = Σ-is-compact∙ 𝟙+𝟙-is-compact∙
                          (dep-cases
                            (λ _ → ⟦ b ⟧₁-is-compact∙)
-                           (λ _ → 𝟙-compact∙))
+                           (λ _ → 𝟙-is-compact∙))
  ⟦ L b ⟧₁-is-compact∙ = Σ¹-compact∙
                           (λ i → ⟨ ⟦ b i ⟧₁ ⟩)
                           (λ i → ⟦ b i ⟧₁-is-compact∙)

@@ -67,12 +67,12 @@ LPO-gives-ℕ∞-⊴-ω+𝟙-gives lpo = (λ x → ι𝟙-inverse x (lpo x)) ,
                                        (λ x → i x (lpo x)) ,
                                        (λ x y → p x y (lpo x) (lpo y))
  where
-  ι𝟙-inverse-inl : (u : ℕ∞) (d : decidable (Σ n ꞉ ℕ , u ＝ ι n))
+  ι𝟙-inverse-inl : (u : ℕ∞) (d : is-decidable (Σ n ꞉ ℕ , u ＝ ι n))
                      → (m : ℕ) → u ＝ ι m → ι𝟙-inverse u d ＝ inl m
   ι𝟙-inverse-inl . (ι n) (inl (n , refl)) m q = ap inl (ℕ-to-ℕ∞-lc q)
   ι𝟙-inverse-inl u          (inr g)          m q = 𝟘-elim (g (m , q))
 
-  i : (x : ℕ∞) (d : decidable (Σ n ꞉ ℕ , x ＝ ι n)) (y : ℕ + 𝟙)
+  i : (x : ℕ∞) (d : is-decidable (Σ n ꞉ ℕ , x ＝ ι n)) (y : ℕ + 𝟙)
     → y ≺⟨ ω +ₒ 𝟙ₒ ⟩ ι𝟙-inverse x d
     → Σ x' ꞉ ℕ∞ , (x' ≺⟨ ℕ∞ₒ ⟩ x) × (ι𝟙-inverse x' (lpo x') ＝ y)
   i .(ι n) (inl (n , refl)) (inl m) l =
@@ -88,7 +88,8 @@ LPO-gives-ℕ∞-⊴-ω+𝟙-gives lpo = (λ x → ι𝟙-inverse x (lpo x)) ,
     ι𝟙-inverse-inl (ι n) (lpo (ι n)) n refl
   i x (inr g) (inr *) l = 𝟘-elim l
 
-  p : (x y : ℕ∞)  (d : decidable (Σ n ꞉ ℕ , x ＝ ι n)) (e : decidable (Σ m ꞉ ℕ , y ＝ ι m))
+  p : (x y : ℕ∞)  (d : is-decidable (Σ n ꞉ ℕ , x ＝ ι n))
+      (e : is-decidable (Σ m ꞉ ℕ , y ＝ ι m))
     →  x ≺⟨ ℕ∞ₒ ⟩ y
     → ι𝟙-inverse x d ≺⟨ ω +ₒ 𝟙ₒ ⟩ ι𝟙-inverse y e
   p .(ι n) .(ι m) (inl (n , refl)) (inl (m , refl)) (k , r , l) =

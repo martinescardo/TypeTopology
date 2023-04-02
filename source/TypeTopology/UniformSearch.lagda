@@ -19,7 +19,7 @@ open import TypeTopology.TotallySeparated
 open import TypeTopology.CompactTypes
 open import UF.FunExt
 
-module TypeTopology.UniformSearch (X : 𝓤  ̇ )(fe : funext 𝓤₀ 𝓤) (κ : compact∙ X) where
+module TypeTopology.UniformSearch (X : 𝓤  ̇ )(fe : funext 𝓤₀ 𝓤) (κ : is-compact∙ X) where
 
 \end{code}
 
@@ -89,7 +89,7 @@ Since `X` is assumed to be `compact∙` it must be pointed. Call this point `x�
 \begin{code}
 
 x₀ : X
-x₀ = compact∙-gives-pointed κ
+x₀ = compact∙-types-are-pointed κ
 
 \end{code}
 
@@ -97,8 +97,8 @@ There must be a selection functional `ϵₓ` for `X`:
 
 \begin{code}
 
-X-is-compact∙' : compact∙' X
-X-is-compact∙' = compact∙-gives-compact∙' κ
+X-is-compact∙' : is-compact∙' X
+X-is-compact∙' = compact∙-types-are-compact∙' κ
 
 ϵₓ : (X → 𝟚) → X
 ϵₓ = pr₁ X-is-compact∙'

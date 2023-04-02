@@ -31,7 +31,7 @@ data simple-type : 𝓤₀ ̇ → 𝓤₁ ̇ where
 
 open import TypeTopology.DiscreteAndSeparated
 open import TypeTopology.TotallySeparated
-open import TypeTopology.WeaklyCompactTypes fe pt renaming (Π-compact to compact)
+open import TypeTopology.WeaklyCompactTypes fe pt renaming (is-Π-compact to is-compact)
 
 simple-types-are-totally-separated : {X : 𝓤₀ ̇ }
                                    → simple-type X
@@ -55,11 +55,11 @@ simple-types-r rn (step s t) = retracts-of-closed-under-exponentials
 cfdbce : {X Y : 𝓤₀ ̇ }
        → simple-type X
        → simple-type Y
-       → compact (X → Y)
-       → is-discrete X × compact Y
+       → is-compact (X → Y)
+       → is-discrete X × is-compact Y
 cfdbce s t c = tscd₀
                 (simple-types-are-totally-separated s)
-                (simple-types-r ℕ-disconnected t) c ,
+                (simple-types-r ℕ-is-disconnected t) c ,
                Π-compact-exponential-with-pointed-domain-has-Π-compact-domain
                 (simple-types-pointed s) c
 \end{code}
@@ -72,9 +72,9 @@ We have that simple types are "not" compact:
 \begin{code}
 
 WLPO' : 𝓤₀ ̇
-WLPO' = compact ℕ
+WLPO' = is-compact ℕ
 
-stcwlpo : {X : 𝓤₀ ̇ } → simple-type X → compact X → WLPO'
+stcwlpo : {X : 𝓤₀ ̇ } → simple-type X → is-compact X → WLPO'
 stcwlpo base c = c
 stcwlpo (step s t) c = stcwlpo t (pr₂ (cfdbce s t c))
 
@@ -90,8 +90,8 @@ on the notion of total separatedness:
 simple-types-rℕ : {X : 𝓤₀ ̇ } → simple-type X → retract ℕ of X
 simple-types-rℕ = simple-types-r identity-retraction
 
-stcwlpo' : {X : 𝓤₀ ̇ } → simple-type X → compact X → WLPO'
-stcwlpo' s = retract-Π-compact (simple-types-rℕ s)
+stcwlpo' : {X : 𝓤₀ ̇ } → simple-type X → is-compact X → WLPO'
+stcwlpo' s = retract-is-Π-compact (simple-types-rℕ s)
 
 \end{code}
 
@@ -127,9 +127,9 @@ simple-types₂-pointed base₂      = ₀
 simple-types₂-pointed base       = zero
 simple-types₂-pointed (step s t) = λ x → simple-types₂-pointed t
 
-simple-types₂-disconnected : {X : 𝓤₀ ̇ } → simple-type₂ X → disconnected X
+simple-types₂-disconnected : {X : 𝓤₀ ̇ } → simple-type₂ X → is-disconnected X
 simple-types₂-disconnected base₂      = identity-retraction
-simple-types₂-disconnected base       = ℕ-disconnected
+simple-types₂-disconnected base       = ℕ-is-disconnected
 simple-types₂-disconnected (step s t) = retracts-of-closed-under-exponentials
                                          (fe 𝓤₀ 𝓤₀)
                                          (simple-types₂-pointed s)
@@ -139,8 +139,8 @@ simple-types₂-disconnected (step s t) = retracts-of-closed-under-exponentials
 cfdbce₂ : {X Y : 𝓤₀ ̇ }
         → simple-type₂ X
         → simple-type₂ Y
-        → compact (X → Y)
-        → is-discrete X × compact Y
+        → is-compact (X → Y)
+        → is-discrete X × is-compact Y
 cfdbce₂ s t c = tscd₀ (simple-types₂-totally-separated s) (simple-types₂-disconnected t) c ,
                 Π-compact-exponential-with-pointed-domain-has-Π-compact-domain (simple-types₂-pointed s) c
 

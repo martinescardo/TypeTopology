@@ -32,9 +32,11 @@ open import UF.Base
 open import UF.Miscelanea
 
 right-addition-is-embedding : (m n : ℕ) → is-prop (Σ k ꞉ ℕ , k +' m ＝ n)
-right-addition-is-embedding zero n (.n , refl) (.n , refl) = refl
-right-addition-is-embedding (succ m) zero (k , p) (k' , p') = 𝟘-elim (positive-not-zero (k +' m) p)
-right-addition-is-embedding (succ m) (succ n) (k , p) (k' , p') = to-Σ-＝ (ap pr₁ IH , ℕ-is-set _ _)
+right-addition-is-embedding zero n (n , refl) (n , refl) = refl
+right-addition-is-embedding (succ m) zero (k , p) (k' , p') =
+  𝟘-elim (positive-not-zero (k +' m) p)
+right-addition-is-embedding (succ m) (succ n) (k , p) (k' , p') =
+ to-Σ-＝ (ap pr₁ IH , ℕ-is-set _ _)
  where
   IH : k , succ-lc p ＝ k' , succ-lc p'
   IH = right-addition-is-embedding m n (k , succ-lc p) (k' , succ-lc p')
@@ -50,7 +52,8 @@ subtraction (succ m) (succ n) l = pr₁ IH , ap succ (pr₂ IH)
 cosubtraction : (m n : ℕ) → (Σ k ꞉ ℕ , k +' m ＝ n) → m ≤ n
 cosubtraction zero n (.n , refl) = ⋆
 cosubtraction (succ m) zero (k , p) = positive-not-zero (k +' m) p
-cosubtraction (succ m) (succ .(k +' m)) (k , refl) = cosubtraction m (k +' m) (k , refl)
+cosubtraction (succ m) (succ .(k +' m)) (k , refl) =
+ cosubtraction m (k +' m) (k , refl)
 
 zero-least : (n : ℕ) → zero ≤ n
 zero-least n = ⋆
@@ -69,7 +72,9 @@ succ-order-injective m n l = l
 
 ≤-induction : (P : (m n : ℕ) (l : m ≤ n) → 𝓤 ̇ )
             → ((n : ℕ) → P zero n (zero-least n))
-            → ((m n : ℕ) (l : m ≤ n) → P m n l → P (succ m) (succ n) (succ-monotone m n l))
+            → ((m n : ℕ) (l : m ≤ n)
+                    → P m n l
+                    → P (succ m) (succ n) (succ-monotone m n l))
             → (m n : ℕ) (l : m ≤ n) → P m n l
 ≤-induction P b f zero n ⋆            = b n
 ≤-induction P b f (succ m) zero l     = 𝟘-elim l
@@ -245,12 +250,12 @@ Added December 2019.
 open import NotionsOfDecidability.Decidable
 open import NotionsOfDecidability.Complemented
 
-≤-decidable : (m n : ℕ ) → decidable (m ≤ n)
+≤-decidable : (m n : ℕ ) → is-decidable (m ≤ n)
 ≤-decidable zero     n        = inl (zero-least n)
 ≤-decidable (succ m) zero     = inr (zero-least' m)
 ≤-decidable (succ m) (succ n) = ≤-decidable m n
 
-<-decidable : (m n : ℕ ) → decidable (m < n)
+<-decidable : (m n : ℕ ) → is-decidable (m < n)
 <-decidable m n = ≤-decidable (succ m) n
 
 \end{code}
@@ -259,9 +264,11 @@ Bounded minimization (added 14th December 2019):
 
 \begin{code}
 
-βμ : (A : ℕ → 𝓤 ̇ ) → complemented A
-  → (k : ℕ) → (Σ m ꞉ ℕ , (m < k) × A m × ((n : ℕ) → A n → m ≤ n))
-            + ((n : ℕ) → A n → n ≥ k)
+βμ : (A : ℕ → 𝓤 ̇ )
+  → is-complemented A
+  → (k : ℕ)
+  → (Σ m ꞉ ℕ , (m < k) × A m × ((n : ℕ) → A n → m ≤ n))
+  + ((n : ℕ) → A n → n ≥ k)
 
 βμ A δ 0 = inr (λ n a → zero-least n)
 βμ A δ (succ k) = γ
@@ -308,7 +315,7 @@ bounded minimization:
 Σμ : (ℕ → 𝓤 ̇ ) → 𝓤 ̇
 Σμ A = Σ m ꞉ ℕ , A m × ((n : ℕ) → A n → m ≤ n)
 
-least-from-given : (A : ℕ → 𝓤 ̇ ) → complemented A → Σ A → Σμ A
+least-from-given : (A : ℕ → 𝓤 ̇ ) → is-complemented A → Σ A → Σμ A
 least-from-given A δ (k , a) = γ
  where
   f : (Σ m ꞉ ℕ , (m < k) × A m × ((n : ℕ) → A n → m ≤ n)) → Σμ A
@@ -372,7 +379,9 @@ minus-property zero     zero     ⋆  = refl
 minus-property (succ m) zero     ⋆  = refl
 minus-property (succ m) (succ n) le = ap succ (minus-property m n le)
 
-max-minus-property : (m n : ℕ) → minus (max m n) m (max-≤-upper-bound m n) ∔ m ＝ max m n
+max-minus-property : (m n : ℕ)
+                   → minus (max m n) m (max-≤-upper-bound m n) ∔ m
+                   ＝ max m n
 max-minus-property m n = minus-property (max m n) m (max-≤-upper-bound m n)
 
 \end{code}
@@ -508,7 +517,7 @@ order-split 0        (succ y) = inl (zero-least (succ y))
 order-split (succ x) 0        = inr (zero-least (succ x))
 order-split (succ x) (succ y) = order-split x y
 
-least-element-unique : {A : ℕ → 𝓤 ̇ } → (σ : complemented A)
+least-element-unique : {A : ℕ → 𝓤 ̇ } → (σ : is-complemented A)
                                      → ((α , αₚ) : Σ k ꞉ ℕ , A k × ((z : ℕ) → A z → k ≤ z))
                                      → ((β , βₚ) : Σ n ꞉ ℕ , A n × ((z : ℕ) → A z → n ≤ z))
                                      → α ＝ β
@@ -520,7 +529,7 @@ least-element-unique σ (α , α₀ , α₁) (β , β₀ , β₁) = ≤-anti α 
   II : β ≤ α
   II = β₁ α α₀
 
-least-element-unique' : {A : ℕ → 𝓤 ̇ } → (σ : complemented A)
+least-element-unique' : {A : ℕ → 𝓤 ̇ } → (σ : is-complemented A)
                                       → (x y : ℕ)
                                       → (δ : Σ A) → x ＝ pr₁ (least-from-given A σ δ) → y ＝ pr₁ (least-from-given A σ δ)
                                       → x ＝ y
@@ -537,7 +546,7 @@ The strategy is simple.
 
 \begin{code}
 
-bounded-maximisation : (A : ℕ → 𝓤 ̇ )→ complemented A
+bounded-maximisation : (A : ℕ → 𝓤 ̇ )→ is-complemented A
                      → (k : ℕ)
                      → (Σ m ꞉ ℕ , (m < k × A m × ((n : ℕ) → n < k → A n → n ≤ m))) + ((n : ℕ) → A n → n ≥ k)
 bounded-maximisation A δ zero = inr (λ n _ → zero-least n)
@@ -575,7 +584,7 @@ bounded-maximisation A δ (succ k) = f (bounded-maximisation A δ k)
         τ (inr w) = 𝟘-elim (k-fails (transport (λ - → A -) (w ⁻¹) n-holds))
         τ (inl w) = w
 
-bounded-maximisation' : (A : ℕ → 𝓤 ̇ )→ complemented A
+bounded-maximisation' : (A : ℕ → 𝓤 ̇ )→ is-complemented A
    → (k : ℕ)
    → (Σ m ꞉ ℕ , (m ≤ k × A m × ((n : ℕ) → n ≤ k → A n → n ≤ m))) + ((n : ℕ) → A n → k < n)
 bounded-maximisation' A δ k = result (bounded-maximisation A δ k) (δ k)
@@ -601,7 +610,11 @@ bounded-maximisation' A δ k = result (bounded-maximisation A δ k) (δ k)
       g (inl j) = j
       g (inr j) = 𝟘-elim (k-fails (transport (λ - → A -) (j ⁻¹) a))
 
--- type of maximal element m : ℕ such that A m holds, given an upper bound
+\end{code}
+
+Type of maximal element m : ℕ such that A m holds, given an upper bound.
+
+\begin{code}
 
 maximal-element : (A : ℕ → 𝓤 ̇ )→ (k : ℕ) → 𝓤 ̇
 maximal-element A k = Σ m ꞉ ℕ , (m < k × A m × ((n : ℕ) → n < k → A n → n ≤ m))
@@ -617,17 +630,26 @@ which the property holds. Of course, we must provide an upper bound.
 
 \begin{code}
 
-maximal-from-given : (A : ℕ → 𝓤 ̇ )→ (b : ℕ) → complemented A → Σ k ꞉ ℕ , A k × k < b → maximal-element A b
+maximal-from-given : (A : ℕ → 𝓤 ̇ ) (b : ℕ)
+                   → is-complemented A
+                   → Σ k ꞉ ℕ , A k × k < b → maximal-element A b
 maximal-from-given A b δ (k , a) = f (bounded-maximisation A δ b)
  where
-  f : (Σ m ꞉ ℕ , (m < b) × A m × ((n : ℕ) → n < b → A n → n ≤ m)) + ((n : ℕ) → A n → n ≥ b) → maximal-element A b
+  f : (Σ m ꞉ ℕ , (m < b) × A m × ((n : ℕ) → n < b → A n → n ≤ m))
+    + ((n : ℕ) → A n → n ≥ b)
+    → maximal-element A b
   f (inl x) = x
   f (inr x) = 𝟘-elim (less-not-bigger-or-equal k b (pr₂ a) (x k (pr₁ a)))
 
-maximal-from-given' : (A : ℕ → 𝓤 ̇ )→ (b : ℕ) → complemented A → Σ k ꞉ ℕ , A k × k ≤ b → maximal-element' A b
+maximal-from-given' : (A : ℕ → 𝓤 ̇ ) (b : ℕ)
+                    → is-complemented A
+                    → Σ k ꞉ ℕ , A k × k ≤ b
+                    → maximal-element' A b
 maximal-from-given' A b δ (k , a , c) = f (bounded-maximisation' A δ b)
  where
-  f : (Σ m ꞉ ℕ , (m ≤ b) × A m × ((n : ℕ) → n ≤ b → A n → n ≤ m)) + ((n : ℕ) → A n → b < n) → maximal-element' A b
+  f : (Σ m ꞉ ℕ , (m ≤ b) × A m × ((n : ℕ) → n ≤ b → A n → n ≤ m))
+    + ((n : ℕ) → A n → b < n)
+    → maximal-element' A b
   f (inr x) = 𝟘-elim (bigger-or-equal-not-less k b c (x k a))
   f (inl x) = x
 
@@ -662,7 +684,9 @@ proof.
 
 \begin{code}
 
-multiplication-preserves-strict-order : (m n k : ℕ) → m < n → m * succ k < n * succ k
+multiplication-preserves-strict-order : (m n k : ℕ)
+                                      → m < n
+                                      → m * succ k < n * succ k
 multiplication-preserves-strict-order m n 0        l = l
 multiplication-preserves-strict-order m n (succ k) l = <-adding m n (m * succ k) (n * succ k) l (multiplication-preserves-strict-order m n k l)
 

@@ -310,8 +310,14 @@ fiber-identification : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f : X → Y} {y : Y} (w : 
                      → f (fiber-point w) ＝ y
 fiber-identification = pr₂
 
+each-fiber-of : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+              → (X → Y)
+              → (𝓤 ⊔ 𝓥 ̇ → 𝓦 ̇)
+              → 𝓥 ⊔ 𝓦 ̇
+each-fiber-of f P = ∀ y → P (fiber f y)
+
 is-vv-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
-is-vv-equiv f = ∀ y → is-singleton (fiber f y)
+is-vv-equiv f = each-fiber-of f is-singleton
 
 is-vv-equiv-NB : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                → is-vv-equiv f ＝ (Π y ꞉ Y , ∃! x ꞉ X , f x ＝ y)

@@ -314,11 +314,11 @@ the image of Κ are compact:
 \begin{code}
 
  Κ-Compact : {𝓥 : Universe} (ν : E)
-           → Compact ⟨ Κ ν ⟩ {𝓥}
+           → is-Compact ⟨ Κ ν ⟩ {𝓥}
  Κ-Compact ν = has-inf-gives-Compact _ (K-has-infs-of-complemented-subsets ν)
 
  𝓚-Compact : {𝓥 : Universe} (ν : E) (A : ⟨ Δ ν ⟩ → E) (x : ⟨ Κ ν ⟩)
-            → Compact ⟨ 𝓚 ν A x ⟩ {𝓥}
+            → is-Compact ⟨ 𝓚 ν A x ⟩ {𝓥}
  𝓚-Compact ν A x = has-inf-gives-Compact _ (𝓚-has-infs-of-complemented-subsets ν A x)
 
 \end{code}
@@ -469,7 +469,7 @@ We define limit points as follows:
 
 private
  recall-notion-of-isolatedness  : {X : 𝓤 ̇ } (x : X)
-                                → is-isolated x ＝ ((y : X) → decidable (x ＝ y))
+                                → is-isolated x ＝ ((y : X) → is-decidable (x ＝ y))
  recall-notion-of-isolatedness x = refl
 
 is-limit-point : {X : 𝓤 ̇ } → X → 𝓤 ̇
@@ -566,7 +566,7 @@ module _ (pe : propext 𝓤₀) where
 
  isolatedness-decision' : ¬ WLPO
                         → (ν : E) (x : ⟨ Δ ν ⟩)
-                        → decidable (is-isolated (ι ν x))
+                        → is-decidable (is-isolated (ι ν x))
  isolatedness-decision' f ν x =
    Cases (isolatedness-decision ν x)
     inl

@@ -30,24 +30,23 @@ which seems to be a new result.
 module UF.Size where
 
 open import MLTT.Spartan
-
 open import UF.Base
-open import UF.FunExt
-open import UF.Subsingletons renaming (⊤Ω to ⊤ ; ⊥Ω to ⊥)
-open import UF.Subsingletons-FunExt
+open import UF.Embeddings
 open import UF.Equiv
 open import UF.Equiv-FunExt
-open import UF.Retracts
-open import UF.Embeddings
 open import UF.EquivalenceExamples
 open import UF.ExcludedMiddle
-open import UF.Univalence
-open import UF.UA-FunExt
-open import UF.UniverseEmbedding
+open import UF.FunExt
+open import UF.KrausLemma
 open import UF.PropIndexedPiSigma
 open import UF.PropTrunc
-open import UF.KrausLemma
+open import UF.Retracts
 open import UF.Section-Embedding
+open import UF.Subsingletons renaming (⊤Ω to ⊤ ; ⊥Ω to ⊥)
+open import UF.Subsingletons-FunExt
+open import UF.UA-FunExt
+open import UF.Univalence
+open import UF.UniverseEmbedding
 
 \end{code}
 
@@ -153,27 +152,27 @@ excluded middle, which is consistent (with or without univalence):
 
 decidable-propositions-have-any-size : (P : 𝓤  ̇ )
                                      → is-prop P
-                                     → decidable P
+                                     → is-decidable P
                                      → P is 𝓥 small
 decidable-propositions-have-any-size {𝓤} {𝓥} P i d = Q d , e d
  where
-  Q : decidable P → 𝓥 ̇
+  Q : is-decidable P → 𝓥 ̇
   Q (inl p) = 𝟙
   Q (inr n) = 𝟘
 
-  j : (d : decidable P) → is-prop (Q d)
+  j : (d : is-decidable P) → is-prop (Q d)
   j (inl p) = 𝟙-is-prop
   j (inr n) = 𝟘-is-prop
 
-  f : (d : decidable P) → P → Q d
+  f : (d : is-decidable P) → P → Q d
   f (inl p) p' = ⋆
   f (inr n) p  = 𝟘-elim (n p)
 
-  g : (d : decidable P) → Q d → P
+  g : (d : is-decidable P) → Q d → P
   g (inl p) q = p
   g (inr n) q = 𝟘-elim q
 
-  e : (d : decidable P) → Q d ≃ P
+  e : (d : is-decidable P) → Q d ≃ P
   e d = logically-equivalent-props-are-equivalent
          (j d) i (g d) (f d)
 
@@ -350,17 +349,17 @@ universe, and of all other universes, of course:
   φ (inl x) = ⊥
   φ (inr y) = ⊤
 
-  ψ : (p : Ω 𝓤) → decidable (p holds) → 𝟙 + 𝟙
+  ψ : (p : Ω 𝓤) → is-decidable (p holds) → 𝟙 + 𝟙
   ψ p (inl h) = inr ⋆
   ψ p (inr n) = inl ⋆
 
-  ψφ : (z : 𝟙 + 𝟙) (d : decidable ((φ z) holds)) → ψ (φ z) d ＝ z
+  ψφ : (z : 𝟙 + 𝟙) (d : is-decidable ((φ z) holds)) → ψ (φ z) d ＝ z
   ψφ (inl x) (inl h) = 𝟘-elim h
   ψφ (inl x) (inr n) = ap inl (𝟙-is-prop ⋆ x)
   ψφ (inr y) (inl h) = ap inr (𝟙-is-prop ⋆ y)
   ψφ (inr y) (inr n) = 𝟘-elim (n ⋆)
 
-  φψ : (p : Ω 𝓤) (d : decidable (p holds)) → φ (ψ p d) ＝ p
+  φψ : (p : Ω 𝓤) (d : is-decidable (p holds)) → φ (ψ p d) ＝ p
   φψ p (inl h) = (true-is-equal-⊤  pe fe (p holds) (holds-is-prop p) h)⁻¹
   φψ p (inr n) = (false-is-equal-⊥ pe fe (p holds) (holds-is-prop p) n)⁻¹
 

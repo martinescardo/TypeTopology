@@ -20,11 +20,11 @@ data Maybe {𝓤 : Universe} (A : 𝓤 ̇ ) : 𝓤 ̇ where
 Just-is-not-Nothing : {A : 𝓤 ̇ } {a : A} → Just a ≠ Nothing
 Just-is-not-Nothing ()
 
-Nothing-is-isolated : {A : 𝓤 ̇ } (x : Maybe A) → decidable (Nothing ＝ x)
+Nothing-is-isolated : {A : 𝓤 ̇ } (x : Maybe A) → is-decidable (Nothing ＝ x)
 Nothing-is-isolated Nothing  = inl refl
 Nothing-is-isolated (Just a) = inr (λ (p : Nothing ＝ Just a) → Just-is-not-Nothing (p ⁻¹))
 
-Nothing-is-isolated' : {A : 𝓤 ̇ } (x : Maybe A) → decidable (x ＝ Nothing)
+Nothing-is-isolated' : {A : 𝓤 ̇ } (x : Maybe A) → is-decidable (x ＝ Nothing)
 Nothing-is-isolated' Nothing  = inl refl
 Nothing-is-isolated' (Just a) = inr Just-is-not-Nothing
 

@@ -1909,7 +1909,7 @@ We also consider the following notion of locator for families:
                       + (Π i ꞉ 𝐼 , x i < q)
 
  pointwise-locator-gives-bishop-locator : (𝐼 : 𝓤 ̇ ) (x : 𝐼 → ℝ)
-                                        → compact∙ 𝐼
+                                        → is-compact∙ 𝐼
                                         → ((i : 𝐼) → locator (x i))
                                         → bishop-locator x
  pointwise-locator-gives-bishop-locator 𝐼 x κ ℓ p q l = γ
@@ -1917,18 +1917,18 @@ We also consider the following notion of locator for families:
    γ : (Σ i ꞉ 𝐼 , p < x i) + (Π i ꞉ 𝐼 , x i < q)
    γ = compact-gives-Σ+Π 𝐼
         (λ i → p < x i ) (λ i → x i < q)
-        (compact∙-gives-compact κ)
+        (compact∙-types-are-compact κ)
         (λ i → ℓ i p q l)
 
  lub-with-locators : (𝐼 : 𝓤 ̇ ) (x : 𝐼 → ℝ)
-                   → compact∙ 𝐼
+                   → is-compact∙ 𝐼
                    → is-upper-bounded x
                    → ((i : 𝐼) → locator (x i))
                    → Σ y ꞉ ℝ , (x has-lub y) × locator y
  lub-with-locators 𝐼 x κ β ℓ = γ
   where
    h : ∥ 𝐼 ∥
-   h = ∣ compact∙-gives-pointed κ ∣
+   h = ∣ compact∙-types-are-pointed κ ∣
 
    I : bishop-locator x
    I = pointwise-locator-gives-bishop-locator 𝐼 x κ ℓ

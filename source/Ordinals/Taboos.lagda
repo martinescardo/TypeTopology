@@ -327,7 +327,7 @@ e : ⟨ sup α ⟩ → Ordinal 𝓤 and ⟨ sup α ⟩ is discrete by assumption
   fact-III : (α ₀ ↓ inr ⋆) ≃ₒ (α ₁ ↓ inr ⋆) → P
   fact-III e = fact-I (≃ₒ-to-fun⁻¹ (α ₀ ↓ inr ⋆) (α ₁ ↓ inr ⋆) e (inl ⋆ , ⋆))
 
-  decidability-if-sup-of-α-discrete : is-discrete ⟨ sup α ⟩ → decidable P
+  decidability-if-sup-of-α-discrete : is-discrete ⟨ sup α ⟩ → is-decidable P
   decidability-if-sup-of-α-discrete δ = decidable-⇔ (fact-III , fact-II) dec
    where
     r : image (sum-to-ordinals α) → Ordinal 𝓤
@@ -354,7 +354,7 @@ e : ⟨ sup α ⟩ → Ordinal 𝓤 and ⟨ sup α ⟩ is discrete by assumption
       where
        h = ap r (inverses-are-sections ⌜ φ ⌝ (⌜⌝-is-equiv φ) (c (i , x)))
 
-    dec : decidable ((α ₀ ↓ inr ⋆) ≃ₒ (α ₁ ↓ inr ⋆))
+    dec : is-decidable ((α ₀ ↓ inr ⋆) ≃ₒ (α ₁ ↓ inr ⋆))
     dec = decidable-cong γ (δ (f (₀ , inr ⋆)) (f (₁ , inr ⋆)))
      where
       γ = (f (₀ , inr ⋆)     ＝  f (₁ , inr ⋆))     ≃⟨ ⦅1⦆ ⟩

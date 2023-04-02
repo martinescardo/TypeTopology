@@ -23,7 +23,7 @@ open import UF.Univalence
 open import UF.UA-FunExt
 
 is-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
-is-embedding f = ∀ y → is-prop (fiber f y)
+is-embedding f = each-fiber-of f is-prop
 
 being-embedding-is-prop : funext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
                         → {X : 𝓤 ̇ }

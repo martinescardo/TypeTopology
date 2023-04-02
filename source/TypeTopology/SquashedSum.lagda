@@ -59,8 +59,8 @@ X n is compact then so is its squashed sum Σ¹ X.
 Σ¹ X = Σ (X / ι)
 
 Σ¹-compact∙ : (X : ℕ → 𝓤 ̇ )
-            → ((n : ℕ) → compact∙(X n))
-            → compact∙(Σ¹ X)
+            → ((n : ℕ) → is-compact∙(X n))
+            → is-compact∙(Σ¹ X)
 Σ¹-compact∙ X ε = extended-sum-compact∙
                    ℕ-to-ℕ∞
                    (ℕ-to-ℕ∞-is-embedding fe₀)
@@ -458,7 +458,9 @@ module original-version-and-equivalence-with-new-version where
 
 \begin{code}
 
- extension-compact∙ : {X : ℕ → 𝓤₀ ̇ } → ((n : ℕ) → compact∙(X n)) → (u : ℕ∞) → compact∙(X [ u ])
+ extension-compact∙ : {X : ℕ → 𝓤₀ ̇ }
+                    → ((n : ℕ) → is-compact∙(X n))
+                    → (u : ℕ∞) → is-compact∙(X [ u ])
  extension-compact∙ {X} ε u p = y₀ , lemma
   where
    Y : 𝓤₀ ̇
@@ -507,8 +509,8 @@ module original-version-and-equivalence-with-new-version where
 
 \begin{code}
 
- Σᴵ-compact∙ : {X : ℕ → 𝓤₀ ̇ } → ((n : ℕ) → compact∙(X n)) → compact∙(Σᴵ X)
- Σᴵ-compact∙ {X} f = Σ-compact∙ ℕ∞-compact∙ (extension-compact∙ {X} f)
+ Σᴵ-compact∙ : {X : ℕ → 𝓤₀ ̇ } → ((n : ℕ) → is-compact∙(X n)) → is-compact∙(Σᴵ X)
+ Σᴵ-compact∙ {X} f = Σ-is-compact∙ ℕ∞-compact∙ (extension-compact∙ {X} f)
 
 \end{code}
 

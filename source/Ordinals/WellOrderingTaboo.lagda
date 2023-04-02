@@ -727,7 +727,7 @@ OrdinalsWellOrderTransport.lagda.)
      wf : is-well-founded _≺_
      wf = transfinite-induction-converse _≺_ ω
       where
-       ω : Well-founded _≺_
+       ω : is-Well-founded _≺_
        ω P h x = transfinite-induction _≺'_ wf' P' h' (ι x)
         where
          P' : X' → 𝓤 ⊔ 𝓣 ̇

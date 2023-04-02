@@ -204,7 +204,7 @@ theoretic ordinal.
  ∈ᵒʳᵈ-is-well-founded : is-well-founded _∈ᵒʳᵈ_
  ∈ᵒʳᵈ-is-well-founded = transfinite-induction-converse _∈ᵒʳᵈ_ W
   where
-   W : Well-founded _∈ᵒʳᵈ_
+   W : is-Well-founded _∈ᵒʳᵈ_
    W P IH = (λ (x , σ) → Q-holds-everywhere x σ)
     where
      Q : 𝕍 → 𝓤 ⁺ ̇

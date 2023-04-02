@@ -92,27 +92,27 @@ rather than surjections, for simplicity:
 
 Pradic-Brown-lemma : {X : 𝓤 ̇ } {A : 𝓥 ̇ }
                    → retract (A + X) of X
-                   → Compact X
-                   → decidable A
+                   → is-Compact X
+                   → is-decidable A
 Pradic-Brown-lemma {𝓤} {𝓥} {X} {A} (r , s , η) c = γ e
  where
   P : X → 𝓤 ⊔ 𝓥 ̇
   P x = Σ a ꞉ A , r x ＝ inl a
 
-  d : (x : X) → decidable (P x)
+  d : (x : X) → is-decidable (P x)
   d x = equality-cases (r x)
          (λ (a : A) (u : r x ＝ inl a) → inl (a , u))
          (λ (y : X) (v : r x ＝ inr y) → inr (λ (a , u) → +disjoint (inl a ＝⟨ u ⁻¹ ⟩
                                                                     r x   ＝⟨ v ⟩
                                                                     inr y ∎)))
 
-  e : decidable (Σ x ꞉ X , P x)
+  e : is-decidable (Σ x ꞉ X , P x)
   e = c P d
 
   f : A → Σ x ꞉ X , P x
   f a = s (inl a) , a , η (inl a)
 
-  γ : decidable (Σ x ꞉ X , P x) → decidable A
+  γ : is-decidable (Σ x ꞉ X , P x) → is-decidable A
   γ (inl (x , a , u)) = inl a
   γ (inr φ)           = inr (contrapositive f φ)
 
@@ -365,10 +365,10 @@ it:
 
 \begin{code}
 
-  recall-the-notion-of-decidability : {𝓦 : Universe} {A : 𝓦 ̇ } → decidable A ＝ (A + ¬ A)
+  recall-the-notion-of-decidability : {𝓦 : Universe} {A : 𝓦 ̇ } → is-decidable A ＝ (A + ¬ A)
   recall-the-notion-of-decidability = by-definition
 
-  δ : (x : X) → decidable (is-g-point x)
+  δ : (x : X) → is-decidable (is-g-point x)
   δ x = excluded-middle (is-g-point x) (being-g-point-is-prop x)
 
 \end{code}
@@ -460,7 +460,7 @@ prove properties of H and then specialize them to h:
 
 \begin{code}
 
-  H : (x : X) → decidable (is-g-point x) → Y
+  H : (x : X) → is-decidable (is-g-point x) → Y
   H x d = Cases d
            (γ ꞉   is-g-point x ↦ g⁻¹ x γ)
            (ν ꞉ ¬ is-g-point x ↦ f x)
@@ -471,7 +471,9 @@ prove properties of H and then specialize them to h:
   h-lc : left-cancellable h
   h-lc {x} {x'} = l (δ x) (δ x')
    where
-    l : (d : decidable (is-g-point x)) (d' : decidable (is-g-point x')) → H x d ＝ H x' d' → x ＝ x'
+    l : (d : is-decidable (is-g-point x)) (d' : is-decidable (is-g-point x'))
+      → H x d ＝ H x' d'
+      → x ＝ x'
 
     l (inl γ) (inl γ') p = have p ∶ g⁻¹ x γ ＝ g⁻¹ x' γ'
                            so (x             ＝⟨ (g⁻¹-is-rinv x γ)⁻¹ ⟩
@@ -570,10 +572,11 @@ purpose.
   h-split-surjection : (y : Y) → Σ x ꞉ X , h x ＝ y
   h-split-surjection y = x , p
    where
-    a : decidable (is-g-point (g y)) → Σ x ꞉ X , ((d : decidable (is-g-point x)) → H x d ＝ y)
+    a : is-decidable (is-g-point (g y))
+      → Σ x ꞉ X , ((d : is-decidable (is-g-point x)) → H x d ＝ y)
     a (inl γ) = g y , ψ
      where
-      ψ : (d : decidable (is-g-point (g y))) → H (g y) d ＝ y
+      ψ : (d : is-decidable (is-g-point (g y))) → H (g y) d ＝ y
       ψ (inl γ') = H (g y) (inl γ') ＝⟨ by-definition ⟩
                    g⁻¹ (g y) γ'     ＝⟨ g⁻¹-is-linv y γ' ⟩
                    y                ∎
@@ -591,14 +594,14 @@ purpose.
       p : f x ＝ y
       p = fiber-identification (pr₁ w)
 
-      ψ : (d : decidable (is-g-point x)) → H x d ＝ y
+      ψ : (d : is-decidable (is-g-point x)) → H x d ＝ y
       ψ (inl γ) = have γ ∶ is-g-point x
                   which-is-impossible-by (pr₂ w ∶ ¬ is-g-point x)
       ψ (inr ν) = H x (inr ν) ＝⟨ by-definition ⟩
                   f x         ＝⟨ p ⟩
                   y           ∎
 
-    b : Σ x ꞉ X , ((d : decidable (is-g-point x)) → H x d ＝ y)
+    b : Σ x ꞉ X , ((d : is-decidable (is-g-point x)) → H x d ＝ y)
     b = a (δ (g y))
 
     x : X
@@ -753,10 +756,10 @@ EM-gives-Cantor-Schröder-Bernstein' {𝓤} {𝓥} fe excluded-middle {X} {Y} ((
   being-g-point-is-prop : (x : X) → is-prop (is-g-point x)
   being-g-point-is-prop x = Π₃-is-prop fe (λ x₀ _ _ → g-is-emb x₀)
 
-  δ : (x : X) → decidable (is-g-point x)
+  δ : (x : X) → is-decidable (is-g-point x)
   δ x = excluded-middle (is-g-point x) (being-g-point-is-prop x)
 
-  H : (x : X) → decidable (is-g-point x) → Y
+  H : (x : X) → is-decidable (is-g-point x) → Y
   H x (inl γ) = g⁻¹ x γ
   H x (inr _) = f x
 
@@ -766,7 +769,9 @@ EM-gives-Cantor-Schröder-Bernstein' {𝓤} {𝓥} fe excluded-middle {X} {Y} ((
   h-lc : left-cancellable h
   h-lc {x} {x'} = l (δ x) (δ x')
    where
-    l : (d : decidable (is-g-point x)) (d' : decidable (is-g-point x')) → H x d ＝ H x' d' → x ＝ x'
+    l : (d : is-decidable (is-g-point x)) (d' : is-decidable (is-g-point x'))
+      → H x d ＝ H x' d'
+      → x ＝ x'
     l (inl γ) (inl γ') p = x             ＝⟨ (g⁻¹-is-rinv x γ)⁻¹ ⟩
                            g (g⁻¹ x γ)   ＝⟨ ap g p ⟩
                            g (g⁻¹ x' γ') ＝⟨ g⁻¹-is-rinv x' γ' ⟩
@@ -815,10 +820,11 @@ EM-gives-Cantor-Schröder-Bernstein' {𝓤} {𝓥} fe excluded-middle {X} {Y} ((
   h-split-surjection : (y : Y) → Σ x ꞉ X , h x ＝ y
   h-split-surjection y = x , p
    where
-    a : decidable (is-g-point (g y)) → Σ x ꞉ X , ((d : decidable (is-g-point x)) → H x d ＝ y)
+    a : is-decidable (is-g-point (g y))
+      → Σ x ꞉ X , ((d : is-decidable (is-g-point x)) → H x d ＝ y)
     a (inl γ) = g y , ψ
      where
-      ψ : (d : decidable (is-g-point (g y))) → H (g y) d ＝ y
+      ψ : (d : is-decidable (is-g-point (g y))) → H (g y) d ＝ y
       ψ (inl γ') = g⁻¹-is-linv y γ'
       ψ (inr ν)  = 𝟘-elim (ν γ)
     a (inr ν) = x , ψ
@@ -829,11 +835,11 @@ EM-gives-Cantor-Schröder-Bernstein' {𝓤} {𝓥} fe excluded-middle {X} {Y} ((
       x : X
       x = fiber-point (pr₁ w)
 
-      ψ : (d : decidable (is-g-point x)) → H x d ＝ y
+      ψ : (d : is-decidable (is-g-point x)) → H x d ＝ y
       ψ (inl γ) = 𝟘-elim (pr₂ w γ)
       ψ (inr ν) = fiber-identification (pr₁ w)
 
-    b : Σ x ꞉ X , ((d : decidable (is-g-point x)) → H x d ＝ y)
+    b : Σ x ꞉ X , ((d : is-decidable (is-g-point x)) → H x d ＝ y)
     b = a (δ (g y))
 
     x : X
@@ -875,7 +881,7 @@ dominance from synthetic domain theory and topology.
 \begin{code}
 
 Rosolini-data : 𝓤 ̇ → 𝓤 ⁺ ̇
-Rosolini-data {𝓤} P = Σ A ꞉ (ℕ → 𝓤 ̇ ) , ((n : ℕ) → decidable (A n))
+Rosolini-data {𝓤} P = Σ A ꞉ (ℕ → 𝓤 ̇ ) , ((n : ℕ) → is-decidable (A n))
                                       × is-prop (Σ A)
                                       × (P ⇔ Σ A)
 
@@ -922,7 +928,7 @@ is easily seen to be equivalent to the traditional formulation using ∃
 \begin{code}
 
 MP : (𝓤 : Universe) → 𝓤 ⁺ ̇
-MP 𝓤 = (A : ℕ → 𝓤 ̇ ) → ((n : ℕ) → decidable (A n)) → is-prop (Σ A) → ¬¬ Σ A → Σ A
+MP 𝓤 = (A : ℕ → 𝓤 ̇ ) → ((n : ℕ) → is-decidable (A n)) → is-prop (Σ A) → ¬¬ Σ A → Σ A
 
 \end{code}
 
@@ -934,7 +940,7 @@ and MP, is formulated and proved in pure (spartan) MLTT:
 dBKS⁺-and-MP-give-DNE : dBKS⁺ 𝓤 → MP 𝓤 → DNE 𝓤
 dBKS⁺-and-MP-give-DNE {𝓤} bks mp P i = γ (bks P i)
  where
-  γ : (Σ A ꞉ (ℕ → 𝓤 ̇ ) , ((n : ℕ) → decidable (A n)) × is-prop (Σ A) × (P ⇔ Σ A))
+  γ : (Σ A ꞉ (ℕ → 𝓤 ̇ ) , ((n : ℕ) → is-decidable (A n)) × is-prop (Σ A) × (P ⇔ Σ A))
     → ¬¬ P → P
   γ (A , d , j , f , g) = δ
    where
@@ -969,13 +975,13 @@ blemma : (P : 𝓤 ̇ ) {X : 𝓥 ̇ }
        → is-set X
        → is-prop P
        → X ≃ P + X
-       → Σ A ꞉ (X → 𝓤 ⊔ 𝓥 ̇ ) , ((x : X) → decidable (A x)) × is-prop (Σ A) × (P ⇔ Σ A)
+       → Σ A ꞉ (X → 𝓤 ⊔ 𝓥 ̇ ) , ((x : X) → is-decidable (A x)) × is-prop (Σ A) × (P ⇔ Σ A)
 blemma {𝓤} {𝓥 } P {X} j i (f , (s , η) , (r , ε)) = A , d , l , (φ , γ)
  where
   A : X → 𝓤 ⊔ 𝓥 ̇
   A x = Σ p ꞉ P , f x ＝ inl p
 
-  d : (x : X) → decidable (A x)
+  d : (x : X) → is-decidable (A x)
   d x = equality-cases (f x)
          (λ (p : P) (u : f x ＝ inl p) → inl (p , u))
          (λ (y : X) (v : f x ＝ inr y) → inr (λ (a , u) → +disjoint (inl a ＝⟨ u ⁻¹ ⟩
