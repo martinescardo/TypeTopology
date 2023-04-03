@@ -93,12 +93,12 @@ abs-over-mult (negsucc x) (pos b) = I
 abs-over-mult (negsucc x) (negsucc b) = I
  where
   I : abs (negsucc x * negsucc b) ＝ abs (negsucc x) ℕ* abs (negsucc b)
-  I = abs (negsucc x * negsucc b)               ＝⟨ i    ⟩
-      abs (- negsucc x * pos (succ b) )         ＝⟨ ii   ⟩
-      abs (- (- pos (succ x) * pos (succ b)))   ＝⟨ iii  ⟩
-      abs (pos (succ x) * pos (succ b))         ＝⟨ iv   ⟩
-      (succ x) ℕ* (succ b)                      ＝⟨ refl ⟩
-      abs (negsucc x) ℕ* abs (negsucc b)        ∎
+  I = abs (negsucc x * negsucc b)             ＝⟨ i    ⟩
+      abs (- negsucc x * pos (succ b) )       ＝⟨ ii   ⟩
+      abs (- (- pos (succ x) * pos (succ b))) ＝⟨ iii  ⟩
+      abs (pos (succ x) * pos (succ b))       ＝⟨ iv   ⟩
+      (succ x) ℕ* (succ b)                    ＝⟨ refl ⟩
+      abs (negsucc x) ℕ* abs (negsucc b)      ∎
    where
     iiₐₚ : (- pos (succ x)) * pos (succ b) ＝ - pos (succ x) * pos (succ b)
     iiₐₚ = negation-dist-over-mult' (pos (succ x)) (pos (succ b))
