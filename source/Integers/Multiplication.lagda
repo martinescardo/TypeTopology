@@ -9,8 +9,9 @@ properties of multiplication.
 
 open import MLTT.Spartan renaming (_+_ to _∔_)
 
-open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
 open import Naturals.Addition renaming (_+_ to _ℕ+_)
+open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
+open import Naturals.Properties
 open import Integers.Type
 open import Integers.Addition
 open import Integers.Negation
@@ -442,6 +443,63 @@ negatives-equal x y e = I
       - (- x) ＝⟨ ap -_ e                  ⟩
       - (- y) ＝⟨ minus-minus-is-plus y    ⟩
       y       ∎
+
+ppnnp-lemma : (a b : ℕ) → Σ c ꞉ ℕ , negsucc a + negsucc b ＝ negsucc c
+ppnnp-lemma a = induction base step
+ where
+  base : Σ c ꞉ ℕ , negsucc a + negsucc 0 ＝ negsucc c
+  base = succ a , refl
+
+  step : (k : ℕ) → Σ c ꞉ ℕ , negsucc a + negsucc k ＝ negsucc c
+                 → Σ c ꞉ ℕ , negsucc a + negsucc (succ k) ＝ negsucc c
+  step k (c , IH) = succ c , ap predℤ IH
+
+product-positive-negative-not-positive : (a b c : ℕ)
+                                       → ¬ (pos a * negsucc b ＝ pos (succ c))
+product-positive-negative-not-positive 0 0 c e = 𝟘-elim (positive-not-zero c I)
+ where
+  I : succ c ＝ 0
+  I = pos-lc e ⁻¹
+product-positive-negative-not-positive 0 (succ b) c e = 𝟘-elim II
+ where
+  I : pos 0 ＝ pos (succ c)
+  I = pos 0                     ＝⟨ ℤ-zero-left-base (negsucc (succ b)) ⁻¹ ⟩
+      pos 0 * negsucc (succ b)  ＝⟨ e                                      ⟩
+      pos (succ c)              ∎
+
+  II : 𝟘
+  II = positive-not-zero c (pos-lc I ⁻¹)
+product-positive-negative-not-positive (succ a) (succ b) c e₁ = γ I
+ where
+  I : Σ z ꞉ ℕ , succ z ＝ succ a ℕ* succ b
+  I = pos-mult-is-succ a b
+
+  γ : ¬ (Σ z ꞉ ℕ , succ z ＝ succ a ℕ* succ b)
+  γ (z , e₂) = γ' II
+   where
+    II : Σ d ꞉ ℕ  , negsucc a + negsucc z ＝ negsucc d
+    II = ppnnp-lemma a z
+
+    γ' : ¬ (Σ d ꞉ ℕ , negsucc a + negsucc z ＝ negsucc d)
+    γ' (d , e₃) = negsucc-not-pos IV
+     where
+      III : negsucc z ＝ pos (succ a) * negsucc b
+      III = negsucc z                     ＝⟨ refl ⟩
+            - pos (succ z)                ＝⟨ i    ⟩
+            - pos (succ a ℕ* succ b)      ＝⟨ ii   ⟩
+            - pos (succ a) * pos (succ b) ＝⟨ iii  ⟩
+            pos (succ a) * negsucc b      ∎
+       where
+        i   = ap (λ α → -_ (pos α)) e₂
+        ii  = ap -_ (pos-multiplication-equiv-to-ℕ (succ a) (succ b)) ⁻¹
+        iii =  negation-dist-over-mult (pos (succ a)) (pos (succ b)) ⁻¹
+
+      IV : negsucc d ＝ pos (succ c)
+      IV = negsucc d                            ＝⟨ e₃ ⁻¹                 ⟩
+           negsucc a + negsucc z                ＝⟨ ap (negsucc a +_) III ⟩
+           negsucc a + pos (succ a) * negsucc b ＝⟨ refl                  ⟩
+           pos (succ a) * negsucc (succ b)      ＝⟨ e₁                    ⟩
+           pos (succ c)                         ∎
 
 \end{code}
 
