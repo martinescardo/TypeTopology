@@ -116,21 +116,27 @@ distributivity-mult-ℤ₀ x y = induction base step
   step : (k : ℕ)
        → (x + y) * pos k ＝ x * pos k + y * pos k
        → (x + y) * pos (succ k) ＝ x * pos (succ k) + y * pos (succ k)
-  step k IH = (x + y) * pos (succ k)  ＝⟨ ap ((x + y) +_) IH                   ⟩
-              (x + y) + (u + v)       ＝⟨ ℤ+-assoc (x + y) u v ⁻¹              ⟩
-              (x + y) + u + v         ＝⟨ ap (_+ v) (ℤ+-assoc x y u)           ⟩
-              x + (y + u) + v         ＝⟨ ap (λ z → (x + z) + v) (ℤ+-comm y u) ⟩
-              x + (u + y) + v         ＝⟨ ap (_+ v) (ℤ+-assoc x u y ⁻¹)        ⟩
-              x + u + y + v           ＝⟨ ℤ+-assoc (x + u) y v                 ⟩
-              x + u + (y + v)         ＝⟨ refl ⟩
+  step k IH = (x + y) * pos (succ k)              ＝⟨ i    ⟩
+              (x + y) + (u + w)                   ＝⟨ ii   ⟩
+              (x + y) + u + w                     ＝⟨ iii  ⟩
+              x + (y + u) + w                     ＝⟨ iv   ⟩
+              x + (u + y) + w                     ＝⟨ v    ⟩
+              x + u + y + w                       ＝⟨ vi   ⟩
+              x + u + (y + w)                     ＝⟨ refl ⟩
               x * pos (succ k) + y * pos (succ k) ∎
      where
-       u v : ℤ
+       u w : ℤ
        u = x * pos k
-       v = y * pos k
+       w = y * pos k
+       i   = ap ((x + y) +_) IH
+       ii  = ℤ+-assoc (x + y) u w ⁻¹
+       iii = ap (_+ w) (ℤ+-assoc x y u)
+       iv  = ap (λ z → (x + z) + w) (ℤ+-comm y u)
+       v   = ap (_+ w) (ℤ+-assoc x u y ⁻¹)
+       vi  = ℤ+-assoc (x + u) y w
 
 distributivity-mult-ℤ₁ : (x y : ℤ) → (z : ℕ)
-                            → (x + y) * negsucc z ＝ x * negsucc z + y * negsucc z
+                       → (x + y) * negsucc z ＝ x * negsucc z + y * negsucc z
 distributivity-mult-ℤ₁ x y = induction base step
  where
   base : (x + y) * negsucc 0 ＝ x * negsucc 0 + y * negsucc 0
@@ -395,7 +401,10 @@ is-pos-succ-addition x (pos (succ (succ y))) x>0 y>0 =
   (x + pos (succ y))
    (is-pos-succ-addition x (pos (succ y)) x>0 y>0)
 
-is-pos-succ-mult : (x y : ℤ) → is-pos-succ x → is-pos-succ y → is-pos-succ (x * y)
+is-pos-succ-mult : (x y : ℤ)
+                 → is-pos-succ x
+                 → is-pos-succ y
+                 → is-pos-succ (x * y)
 is-pos-succ-mult x (negsucc y)           x>0 y>0 = 𝟘-elim y>0
 is-pos-succ-mult x (pos 0)               x>0 y>0 = 𝟘-elim y>0
 is-pos-succ-mult x (pos (succ 0))        x>0 y>0 = x>0
@@ -429,10 +438,10 @@ negatives-equal : (x y : ℤ) → (- x) ＝ (- y) → x ＝ y
 negatives-equal x y e = I
  where
   I : x ＝ y
-  I = x        ＝⟨ minus-minus-is-plus x ⁻¹ ⟩
-      - (- x)  ＝⟨ ap -_ e                  ⟩
-      - (- y)  ＝⟨ minus-minus-is-plus y    ⟩
-      y        ∎
+  I = x       ＝⟨ minus-minus-is-plus x ⁻¹ ⟩
+      - (- x) ＝⟨ ap -_ e                  ⟩
+      - (- y) ＝⟨ minus-minus-is-plus y    ⟩
+      y       ∎
 
 \end{code}
 
