@@ -282,11 +282,19 @@ negative-less-than-positive x y = (x ℕ+ y) , I
   I (inr r) = inr (ℕ≤-to-ℤ≤ y x r)
 ℤ-dichotomous (pos x) (negsucc y) = inr (negative-less-than-positive (succ y) x)
 ℤ-dichotomous (negsucc x) (pos y) = inl (negative-less-than-positive (succ x) y)
-ℤ-dichotomous (negsucc x) (negsucc y) = I (≤-dichotomous x y)
+ℤ-dichotomous (negsucc x) (negsucc y) = Cases (≤-dichotomous x y) γ₁ γ₂
  where
-  I : (x ≤ y) ∔ (y ≤ x) → (negsucc x ≤ negsucc y) ∔ (negsucc y ≤ negsucc x)
-  I (inl l) = inr (ℤ≤-swap (pos (succ x)) (pos (succ y)) (ℕ≤-to-ℤ≤ (succ x) (succ y) l))
-  I (inr r) = inl (ℤ≤-swap (pos (succ y)) (pos (succ x)) (ℕ≤-to-ℤ≤ (succ y) (succ x) r))
+  I : (a b : ℕ) → a ≤ b → negsucc b ≤ negsucc a
+  I a b l = ℤ≤-swap (pos (succ a)) (pos (succ b)) II
+   where
+    II : pos (succ a) ≤ pos (succ b)
+    II = ℕ≤-to-ℤ≤ (succ a) (succ b) l
+
+  γ₁ : x ≤ y → negsucc x ≤ negsucc y ∔ negsucc y ≤ negsucc x
+  γ₁ l = inr (I x y l)
+
+  γ₂ : y ≤ x → negsucc x ≤ negsucc y ∔ negsucc y ≤ negsucc x
+  γ₂ l = inl (I y x l)
 
 trich-locate : (x y : ℤ) → 𝓤₀ ̇
 trich-locate x y = (x < y) ∔ (x ＝ y) ∔ (y < x)
@@ -358,8 +366,10 @@ trich-locate x y = (x < y) ∔ (x ＝ y) ∔ (y < x)
  where
   I : succℤ a + succℤ c ≤ b + d
   I = ℤ≤-adding (succℤ a) b (succℤ c) d l₁ l₂
+
   II : a + c < a + succℤ c
   II = 0 , (ℤ-right-succ a c ⁻¹)
+
   III : a + succℤ c < b + d
   III = transport (_≤ b + d) (ℤ-left-succ a (succℤ c)) I
 
@@ -407,8 +417,8 @@ pmpo-lemma a b = induction base step
   step k IH l = ℤ<-adding a b (a + (a * pos k)) (b + (b * pos k)) l (IH l)
 
 positive-multiplication-preserves-order : (a b c : ℤ)
-                                        → is-pos-succ c →
-                                        a < b
+                                        → is-pos-succ c
+                                        → a < b
                                         → a * c < b * c
 positive-multiplication-preserves-order a b (negsucc x)    p l = 𝟘-elim p
 positive-multiplication-preserves-order a b (pos 0)        p l = 𝟘-elim p
@@ -569,8 +579,14 @@ negative-multiplication-changes-order' a b (negsucc x) g l = I (ℤ≤-split a b
 
 non-zero-multiplication : (x y : ℤ) → ¬ (x ＝ pos 0) → ¬ (y ＝ pos 0) → ¬ (x * y ＝ pos 0)
 non-zero-multiplication (pos 0)        y xnz ynz e = xnz refl
-non-zero-multiplication (pos (succ x)) y xnz ynz e = ynz (ℤ-mult-left-cancellable y (pos 0) (pos (succ x)) id e)
-non-zero-multiplication (negsucc x)    y xnz ynz e = ynz (ℤ-mult-left-cancellable y (pos 0) (negsucc x) id e)
+non-zero-multiplication (pos (succ x)) y xnz ynz e = ynz γ
+ where
+  γ : y ＝ pos 0
+  γ = ℤ-mult-left-cancellable y (pos 0) (pos (succ x)) id e
+non-zero-multiplication (negsucc x)    y xnz ynz e = ynz γ
+ where
+  γ : y ＝ pos 0
+  γ = ℤ-mult-left-cancellable y (pos 0) (negsucc x) id e
 
 orcl : (a b : ℤ) → (n : ℕ) → a * (pos (succ n)) ≤ b * (pos (succ n)) → a ≤ b
 orcl a b = induction base step
@@ -582,18 +598,27 @@ orcl a b = induction base step
        → (a * pos (succ k) ≤ b * pos (succ k) → a ≤ b)
        → a * pos (succ (succ k)) ≤ b * pos (succ (succ k))
        → a ≤ b
-  step k IH (α , γ) = I (ℤ-trichotomous a b)
+  step k IH (α , β) = cases₃ γ₁ γ₂ γ₃ (ℤ-trichotomous a b)
    where
-    I : a < b ∔ (a ＝ b) ∔ b < a → a ≤ b
-    I (inl l)             = <-is-≤ a b l
-    I (inr (inl e))       = 0 , e
-    I (inr (inr (β , δ))) = 𝟘-elim (ℤ-bigger-or-equal-not-less (a * pos (succ (succ k))) (b * pos (succ (succ k))) II III)
-     where
-      II : a * pos (succ (succ k)) ≤ b * pos (succ (succ k))
-      II = α , γ
+    k' = pos (succ (succ k))
 
-      III : b * pos (succ (succ k)) < a * pos (succ (succ k))
-      III = positive-multiplication-preserves-order b a (pos (succ (succ k))) ⋆ (β , δ)
+    γ₁ : a < b → a ≤ b
+    γ₁ = <-is-≤ a b
+
+    γ₂ : a ＝ b → a ≤ b
+    γ₂ e = transport (a ≤_) e (ℤ≤-refl a)
+
+    γ₃ : b < a → a ≤ b
+    γ₃ l = 𝟘-elim III
+     where
+      I : a * k' ≤ b * k'
+      I = α , β
+
+      II : b * k' < a * k'
+      II = positive-multiplication-preserves-order b a k' ⋆ l
+
+      III : 𝟘
+      III = ℤ-bigger-or-equal-not-less (a * k') (b * k') I II
 
 orcl' : (a b : ℤ) → (n : ℕ) → a * (pos (succ n)) < b * (pos (succ n)) → a < b
 orcl' a b n l = II (ℤ≤-split a b I)
@@ -612,7 +637,8 @@ ordering-right-cancellable a b (negsucc x) p l    = 𝟘-elim p
 ordering-right-cancellable a b (pos 0) p l        = 𝟘-elim p
 ordering-right-cancellable a b (pos (succ x)) p l = orcl' a b x l
 
-ℤ≤-ordering-right-cancellable : (a b c : ℤ) → is-pos-succ c → a * c ≤ b * c → a ≤ b
+ℤ≤-ordering-right-cancellable : (a b c : ℤ)
+                              → is-pos-succ c → a * c ≤ b * c → a ≤ b
 ℤ≤-ordering-right-cancellable a b (pos zero) p l     = 𝟘-elim p
 ℤ≤-ordering-right-cancellable a b (pos (succ x)) p l = orcl a b x l
 ℤ≤-ordering-right-cancellable a b (negsucc x) p l    = 𝟘-elim p
@@ -622,10 +648,16 @@ ordering-right-cancellable a b (pos (succ x)) p l = orcl' a b x l
  where
   I : x < y ∔ (x ＝ y) → y < x ∔ (y ＝ x)
     → x ＝ y
-  I (inl x<y) (inl y<x) = 𝟘-elim (ℤ-equal-not-less-than x (ℤ<-trans x y x x<y y<x))
   I (inl x<y) (inr e)   = e ⁻¹
   I (inr e)   (inl y<x) = e
   I (inr e)   (inr e')  = e
+  I (inl x<y) (inl y<x) = 𝟘-elim III
+   where
+    II : x < x
+    II = ℤ<-trans x y x x<y y<x
+
+    III : 𝟘
+    III = ℤ-equal-not-less-than x II
 
 maxℤ : ℤ → ℤ → ℤ
 maxℤ x y with ℤ-dichotomous x y
@@ -649,15 +681,16 @@ min₂ x y z = minℤ (minℤ x y) z
 min₃ : ℤ → ℤ → ℤ → ℤ → ℤ
 min₃ w x y z = minℤ (min₂ w x y) z
 
+{-
 difference : (f : ℤ → ℤ → ℤ)             -- Given an integer function
            → (x y : ℤ)                   -- and two bounds
            → ℤ                           -- find the integer difference
 difference f l r = max₃ (f l r) (f l (r + pos 2)) (f (l + pos 2) r) (f (l + pos 2) (r + pos 2))
                   - min₃ (f l r) (f l (r + pos 2)) (f (l + pos 2) r) (f (l + pos 2) (r + pos 2))
-
+-}
 \end{code}
 
-Added by Todd for paper
+Added by Todd
 
 \begin{code}
 
