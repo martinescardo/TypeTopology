@@ -414,7 +414,7 @@ module _
       I = index-of-approximating-family x
       α : I → ⟨ 𝓓 ⟩
       α = approximating-family x
-      ψ = (∀ (i : I) → α i ≪ₛ     y) ≃⟨ Π-cong fe fe I _ _ (λ i → ≪ₛ-≃-≪) ⟩
+      ψ = (∀ (i : I) → α i ≪ₛ     y) ≃⟨ Π-cong fe fe (λ i → ≪ₛ-≃-≪) ⟩
           (∀ (i : I) → α i ≪⟨ 𝓓 ⟩ y) ≃⟨ e ⟩
           x ⊑⟨ 𝓓 ⟩ y                 ■
        where

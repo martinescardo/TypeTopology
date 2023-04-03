@@ -134,7 +134,7 @@ module Circle.Integers-SymmetricInduction where
     where
      γ : (hₒ : Π (A ∘ ⌜𝟎⌝)) (hₙ : Π (A ∘ neg))
        → Qₙ' (hₒ ⋆) hₙ ≃ Qₙ (hₒ ⋆) hₙ
-     γ hₒ hₙ = ×-cong γ₀ (Π-cong fe fe ℕ _ _ γₙ)
+     γ hₒ hₙ = ×-cong γ₀ (Π-cong fe fe γₙ)
       where
        f₀ = ⌜ f (neg 0) ⌝
        f₀⁻¹ = ⌜ (f (neg 0)) ⌝⁻¹
