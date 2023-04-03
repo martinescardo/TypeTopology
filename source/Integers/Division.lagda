@@ -24,45 +24,6 @@ open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
 
 module Integers.Division where
 
-ppnnp-lemma : (a b : ℕ) → Σ c ꞉ ℕ , negsucc a + negsucc b ＝ negsucc c
-ppnnp-lemma a = induction base step
- where
-  base : Σ c ꞉ ℕ , negsucc a + negsucc 0 ＝ negsucc c
-  base = succ a , refl
-
-  step : (k : ℕ) → Σ c ꞉ ℕ , negsucc a + negsucc k ＝ negsucc c
-                 → Σ c ꞉ ℕ , negsucc a + negsucc (succ k) ＝ negsucc c
-  step k (c , IH) = succ c , ap predℤ IH
-
-product-positive-negative-not-positive : (a b c : ℕ) → ¬ (pos a ℤ* negsucc b ＝ pos (succ c))
-product-positive-negative-not-positive 0 0 c e        = 𝟘-elim (positive-not-zero c (pos-lc e ⁻¹))
-product-positive-negative-not-positive 0 (succ b) c e = 𝟘-elim (positive-not-zero c (pos-lc I ⁻¹))
- where
-  I : pos 0 ＝ pos (succ c)
-  I = pos 0                     ＝⟨ ℤ-zero-left-base (negsucc (succ b)) ⁻¹ ⟩
-      pos 0 ℤ* negsucc (succ b) ＝⟨ e                                         ⟩
-      pos (succ c)              ∎
-product-positive-negative-not-positive (succ a) (succ b) c e₁ = I (pos-mult-is-succ a b)
-  where
-   I : ¬ (Σ z ꞉ ℕ , succ z ＝ succ a ℕ* succ b)
-   I (z , e₂) = II (ppnnp-lemma a z)
-    where
-     II : ¬ (Σ d ꞉ ℕ , negsucc a + negsucc z ＝ negsucc d)
-     II (d , e₃) = negsucc-not-pos IV
-      where
-       III : negsucc z ＝ pos (succ a) ℤ* negsucc b
-       III = negsucc z                      ＝⟨ refl                                                        ⟩
-             - pos (succ z)                 ＝⟨ ap (λ α → -_ (pos α)) e₂                                    ⟩
-             - pos (succ a ℕ* succ b)       ＝⟨ ap -_ (pos-multiplication-equiv-to-ℕ (succ a) (succ b)) ⁻¹  ⟩
-             - pos (succ a) ℤ* pos (succ b) ＝⟨ negation-dist-over-mult (pos (succ a)) (pos (succ b)) ⁻¹ ⟩
-             pos (succ a) ℤ* negsucc b      ∎
-       IV : negsucc d ＝ pos (succ c)
-       IV = negsucc d                                 ＝⟨ e₃ ⁻¹                 ⟩
-            negsucc a + negsucc z                     ＝⟨ ap (negsucc a +_) III ⟩
-            negsucc a + pos (succ a) ℤ* negsucc b     ＝⟨ refl                  ⟩
-            pos (succ a) ℤ* negsucc (succ b)          ＝⟨ e₁                    ⟩
-            pos (succ c)                              ∎
-
 _∣_ : ℤ → ℤ → 𝓤₀ ̇
 a ∣ b = Σ x ꞉ ℤ , a ℤ* x ＝ b
 
