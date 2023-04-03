@@ -394,6 +394,15 @@ hcf-unique a b (h , h-icd , f) (h' , h'-icd , f') = ∣-anti h h' I II
   II : h' ∣ h
   II = f h' h'-icd
 
+coprime-to-coprime' : (x y : ℕ) → coprime x y → coprime' x y
+coprime-to-coprime' x y p = γ
+ where
+  I : is-hcf (hcf x y) x y
+  I = hcf-is-HCF x y
+
+  γ : hcf x y ＝ 1
+  γ = hcf-unique x y (hcf x y , I) (1 , p)
+
 \end{code}
 
 The statement "x and y have a highest-common-factor" is also a
