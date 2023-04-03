@@ -76,7 +76,8 @@ distributivity-pos-addition x = induction base step
    x +pos y                  ＝⟨ predsuccℤ (x +pos y) ⁻¹        ⟩
    predℤ (succℤ (x +pos y))  ∎
 
-ℤ-left-pred-negsucc : (x : ℤ) → (y : ℕ) → predℤ x +negsucc y ＝ predℤ (x +negsucc y)
+ℤ-left-pred-negsucc : (x : ℤ) → (y : ℕ)
+                    → predℤ x +negsucc y ＝ predℤ (x +negsucc y)
 ℤ-left-pred-negsucc x 0        = refl
 ℤ-left-pred-negsucc x (succ y) = ap predℤ (ℤ-left-pred-negsucc x y)
 
