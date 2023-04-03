@@ -288,8 +288,6 @@ coprime-is-prop fe a b = is-hcf-is-prop fe 0 a b
 coprime'-to-coprime : (x y : ℕ) → coprime' x y → coprime x y
 coprime'-to-coprime x y p = transport (λ - → is-hcf - x y) p (hcf-is-HCF x y)
 
-
-
 coprime-0-1 : coprime 0 1
 coprime-0-1 = (1-divides-all 0 , 1-divides-all 1) , γ
  where
