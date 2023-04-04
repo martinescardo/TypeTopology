@@ -2,45 +2,23 @@ Martin Escardo, 31st March 2023
 
 In collaboration with Marc Bezem, Thierry Coquand, Peter Dybjer.
 
- (1) 𝓤-small types are closed under sigma types.
-
- (2) 𝓤-small maps are closed by composition.
-
- (3) The map A → A + B is 𝓤-small for any A, B.
-
- (4) The map A → List A is 𝓤-small for any A.
-
- (5) Embeddings with decidable fibers are 𝓤₀ small maps.
-
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 module UF.SmallnessProperties where
 
-open import MLTT.Spartan
 open import MLTT.Athenian
 open import MLTT.Plus-Properties
+open import MLTT.Spartan
 open import MLTT.Two-Properties
-
 open import UF.Base
 open import UF.Embeddings
 open import UF.Equiv
 open import UF.Equiv-FunExt
 open import UF.EquivalenceExamples
-open import UF.ExcludedMiddle
 open import UF.FunExt
-open import UF.KrausLemma
-open import UF.PropIndexedPiSigma
-open import UF.PropTrunc
-open import UF.Retracts
-open import UF.Section-Embedding
 open import UF.Size
-open import UF.Subsingletons renaming (⊤Ω to ⊤ ; ⊥Ω to ⊥)
-open import UF.Subsingletons-FunExt
-open import UF.UA-FunExt
-open import UF.Univalence
-open import UF.UniverseEmbedding
 
 Σ-is-small : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
            → X is 𝓤' small
@@ -190,6 +168,4 @@ pair₀-has-any-size = decidable-embeddings-have-any-size
 []-has-any-size = decidable-embeddings-have-any-size
                       []-is-embedding
                       []-is-decidable
-
-
 \end{code}
