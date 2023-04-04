@@ -628,7 +628,7 @@ NatΣ-equiv-gives-fiberwise-equiv = NatΣ-equiv-converse _ _
                        → (Σ y ꞉ Y , A (⌜ e ⌝ y)) ≃ (Σ x ꞉ X , A x)
 Σ-change-of-variable-≃ A (g , i) = Σ-change-of-variable A g i
 
-Σ-bicong : {X : 𝓤 ̇ } (Y : X → 𝓥 ̇ )
+Σ-bicong : {X  : 𝓤 ̇  } (Y  : X  → 𝓥 ̇  )
            {X' : 𝓤' ̇ } (Y' : X' → 𝓥' ̇ )
            (𝕗 : X ≃ X')
          → ((x : X) → Y x ≃ Y' (⌜ 𝕗 ⌝ x))
@@ -697,7 +697,7 @@ dprecomp-is-equiv fe fe' {X} {Y} A f i = qinvs-are-equivs φ ((ψ , ψφ , φψ)
  ≃-sym (Π-change-of-variable (fe _ _) (fe _ _) A f i)
 
 Π-bicong : FunExt
-         → {X : 𝓤 ̇ } (Y : X → 𝓥 ̇ )
+         → {X  : 𝓤 ̇  } (Y  : X  → 𝓥 ̇  )
            {X' : 𝓤' ̇ } (Y' : X' → 𝓥' ̇ )
            (𝕗 : X ≃ X')
          → ((x : X) → Y x ≃ Y' (⌜ 𝕗 ⌝ x))

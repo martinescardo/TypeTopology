@@ -127,6 +127,33 @@ data List {𝓤 : Universe} (X : 𝓤 ̇ ) : 𝓤 ̇ where
 
 infixr 3 _∷_
 
+[]-is-not-cons : {X : 𝓤 ̇ } (x : X) (xs : List X)
+               → [] ≠ x ∷ xs
+[]-is-not-cons x []        ()
+[]-is-not-cons x (x₀ ∷ xs) ()
+
+[_] : {X : 𝓤 ̇ } → X → List X
+[ x ] = x ∷ []
+
+equal-heads : {X : 𝓤 ̇ } {x y : X} {xs ys : List X}
+            → x ∷ xs ＝ y ∷ ys
+            → x ＝ y
+equal-heads {𝓤} {X} {x} = ap head
+ where
+  head : List X → X
+  head []       = x
+  head (z ∷ zs) = z
+
+equal-tails : {X : 𝓤 ̇ } {x y : X} {xs ys : List X}
+            → x ∷ xs ＝ y ∷ ys
+            → xs ＝ ys
+equal-tails {𝓤} {X} = ap tail
+ where
+  tail : List X → List X
+  tail []       = []
+  tail (x ∷ xs) = xs
+
+
 length : {X : 𝓤 ̇ } → List X → ℕ
 length []       = 0
 length (x ∷ xs) = succ (length xs)

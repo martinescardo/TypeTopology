@@ -59,12 +59,12 @@ equivalent to a type in the universe 𝓥:
 _is_small : 𝓤 ̇ → (𝓥 : Universe) → 𝓥 ⁺  ⊔ 𝓤 ̇
 X is 𝓥 small = Σ Y ꞉ 𝓥 ̇ , Y ≃ X
 
-resized : (𝓥 : Universe) → (X : 𝓤 ̇ ) → X is 𝓥 small → 𝓥 ̇
-resized 𝓥 X = pr₁
+resized : (X : 𝓤 ̇ ) → X is 𝓥 small → 𝓥 ̇
+resized X = pr₁
 
-resizing-condition : (𝓥 : Universe) (X : 𝓤 ̇ )(s : X is 𝓥 small)
-                   → resized 𝓥 X s ≃ X
-resizing-condition 𝓥 X = pr₂
+resizing-condition : {X : 𝓤 ̇ } (s : X is 𝓥 small)
+                   → resized X s ≃ X
+resizing-condition = pr₂
 
 \end{code}
 
@@ -133,12 +133,12 @@ Definitions:
 
 \begin{code}
 
-resize               {𝓤} {𝓥} ρ P i = resized 𝓥 P (ρ P i)
-resize-is-prop       {𝓤} {𝓥} ρ P i = equiv-to-prop (resizing-condition 𝓥 P (ρ P i)) i
-to-resize            {𝓤} {𝓥} ρ P i = ⌜ resizing-condition 𝓥 P (ρ P i) ⌝⁻¹
-from-resize          {𝓤} {𝓥} ρ P i = ⌜ resizing-condition 𝓥 P (ρ P i) ⌝
-to-resize-is-equiv   {𝓤} {𝓥} ρ P i = ⌜⌝⁻¹-is-equiv (resizing-condition 𝓥 P (ρ P i))
-from-resize-is-equiv {𝓤} {𝓥} ρ P i = ⌜⌝-is-equiv (resizing-condition 𝓥 P (ρ P i))
+resize               {𝓤} {𝓥} ρ P i = resized P (ρ P i)
+resize-is-prop       {𝓤} {𝓥} ρ P i = equiv-to-prop (resizing-condition (ρ P i)) i
+to-resize            {𝓤} {𝓥} ρ P i = ⌜ resizing-condition (ρ P i) ⌝⁻¹
+from-resize          {𝓤} {𝓥} ρ P i = ⌜ resizing-condition (ρ P i) ⌝
+to-resize-is-equiv   {𝓤} {𝓥} ρ P i = ⌜⌝⁻¹-is-equiv (resizing-condition (ρ P i))
+from-resize-is-equiv {𝓤} {𝓥} ρ P i = ⌜⌝-is-equiv (resizing-condition (ρ P i))
 
 Propositional-resizing : 𝓤ω
 Propositional-resizing = {𝓤 𝓥 : Universe} → propositional-resizing 𝓤 𝓥
@@ -439,7 +439,7 @@ the second universe 𝓤₁:
                             → FunExt
                             → Ω 𝓤 ≃ Ω 𝓤₀
 Ω-resizing₁-≃-from-pr-pe-fe {𝓤} ρ pe fe =
-  ≃-sym (resizing-condition 𝓤₁ (Ω 𝓤) (Ω-resizing₁-from-pr-pe-fe {𝓤} ρ pe fe))
+  ≃-sym (resizing-condition (Ω-resizing₁-from-pr-pe-fe {𝓤} ρ pe fe))
 
 Ω-𝓤₀-lives-in-𝓤₁ : universe-of (Ω 𝓤₀) ＝ 𝓤₁
 Ω-𝓤₀-lives-in-𝓤₁ = refl
@@ -622,23 +622,23 @@ being-small-is-idempotent : (ua : Univalence) (𝓤 𝓥 : Universe) (Y : 𝓤 �
 being-small-is-idempotent ua 𝓤 𝓥 Y i (H , e) = X , γ
  where
   X : 𝓥 ̇
-  X = Σ h ꞉ H , resized 𝓥 Y (eqtofun e h)
+  X = Σ h ꞉ H , resized Y (eqtofun e h)
 
-  γ = X  ≃⟨ Σ-change-of-variable (resized 𝓥 Y) (eqtofun e) (eqtofun- e) ⟩
+  γ = X  ≃⟨ Σ-change-of-variable (resized Y) (eqtofun e) (eqtofun- e) ⟩
       X' ≃⟨ ϕ ⟩
       Y  ■
    where
     X' : 𝓥 ⁺ ⊔ 𝓤 ̇
-    X' = Σ h ꞉ Y is 𝓥 small , resized 𝓥 Y h
+    X' = Σ h ꞉ Y is 𝓥 small , resized Y h
 
     ϕ = logically-equivalent-props-are-equivalent j i f g
      where
       j : is-prop X'
       j = Σ-is-prop (being-small-is-prop ua Y 𝓥)
-            (λ (h : Y is 𝓥 small) → equiv-to-prop (resizing-condition 𝓥 Y h) i)
+            (λ (h : Y is 𝓥 small) → equiv-to-prop (resizing-condition h) i)
 
       f : X' → Y
-      f (e' , x) = eqtofun (resizing-condition 𝓥 Y e') x
+      f (e' , x) = eqtofun (resizing-condition e') x
 
       g : Y → X'
       g y = (𝟙{𝓥} , singleton-≃-𝟙' (pointed-props-are-singletons y i)) , ⋆
@@ -725,10 +725,10 @@ size-contravariance : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
 size-contravariance {𝓤} {𝓥} {𝓦} {X} {Y} f f-size (Y' , 𝕘) = γ
  where
   F : Y → 𝓦 ̇
-  F y = resized 𝓦 (fiber f y) (f-size y)
+  F y = resized (fiber f y) (f-size y)
 
   F-is-fiber : (y : Y) → F y ≃ fiber f y
-  F-is-fiber y = resizing-condition 𝓦 (fiber f y) (f-size y)
+  F-is-fiber y = resizing-condition (f-size y)
 
   X' : 𝓦 ̇
   X' = Σ y' ꞉ Y' , F (⌜ 𝕘 ⌝ y')
@@ -855,19 +855,19 @@ For example, by univalence, universes are locally small, and so is the
 \begin{code}
 
 _＝⟦_⟧_ : {X : 𝓤 ⁺ ̇ } → X → is-locally-small X → X → 𝓤 ̇
-x ＝⟦ ls ⟧ y = resized _ (x ＝ y) (ls x y)
+x ＝⟦ ls ⟧ y = resized (x ＝ y) (ls x y)
 
 Id⟦_⟧ : {X : 𝓤 ⁺ ̇ } → is-locally-small X → X → X → 𝓤 ̇
 Id⟦ ls ⟧ x y = x ＝⟦ ls ⟧ y
 
 ＝⟦_⟧-gives-＝ : {X : 𝓤 ⁺ ̇ } (ls : is-locally-small X) {x y : X} → x ＝⟦ ls ⟧ y → x ＝ y
-＝⟦ ls ⟧-gives-＝ {x} {y} = ⌜ resizing-condition _ (x ＝ y) (ls x y) ⌝
+＝⟦ ls ⟧-gives-＝ {x} {y} = ⌜ resizing-condition (ls x y) ⌝
 
 ＝-gives-＝⟦_⟧ : {X : 𝓤 ⁺ ̇ } (ls : is-locally-small X) {x y : X} → x ＝ y → x ＝⟦ ls ⟧ y
-＝-gives-＝⟦ ls ⟧ {x} {y} = ⌜ resizing-condition _ (x ＝ y) (ls x y) ⌝⁻¹
+＝-gives-＝⟦ ls ⟧ {x} {y} = ⌜ resizing-condition (ls x y) ⌝⁻¹
 
 ⟦_⟧-refl : {X : 𝓤 ⁺ ̇ } (ls : is-locally-small X) {x : X} → x ＝⟦ ls ⟧ x
-⟦ ls ⟧-refl {x} = ⌜ ≃-sym (resizing-condition _ (x ＝ x) (ls x x)) ⌝ refl
+⟦ ls ⟧-refl {x} = ⌜ ≃-sym (resizing-condition (ls x x)) ⌝ refl
 
 ＝⟦_⟧-sym : {X : 𝓤 ⁺ ̇ } (ls : is-locally-small X) → {x y : X} → x ＝⟦ ls ⟧ y → y ＝⟦ ls ⟧ x
 ＝⟦ ls ⟧-sym p = ＝-gives-＝⟦ ls ⟧ (＝⟦ ls ⟧-gives-＝ p ⁻¹)
