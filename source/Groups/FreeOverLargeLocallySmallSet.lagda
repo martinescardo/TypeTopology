@@ -411,9 +411,16 @@ identity type, and so this transport has to be done manually).
 
 \end{code}
 
-NB. If we assume cumulativity in our type theory, the above can be
-done with univalence directly. TODO. Write down the proof here in
-English (and perhaps also in Agda using --cumulativity).
+NB. If we assume cumulativity in our type theory, the above transport
+can be done with univalence directly. TODO. Write down the proof here
+in English (and perhaps also in Agda using --cumulativity).
+
+Next we want to show that the underlying set of the above free group
+doesn't have a copy in 𝓤 (we say that this set is large).
+
+It may happen that for an embedding f : X → Y, the type X is large but
+the type Y is small. This is the case, for instance, if X is a
+proposition, Y is the unit type, and f is the unique map.
 
 We say that a type has size 𝓥 if it is equivalent to some type in the
 universe 𝓥, and that a map has size 𝓥 if its fibers all have size 𝓥.

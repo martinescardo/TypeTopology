@@ -166,6 +166,7 @@ pair₀-has-any-size = decidable-embeddings-have-any-size
 
 []-has-any-size : {X : 𝓤 ̇ } → (λ (x : X) → [ x ]) is 𝓦 small-map
 []-has-any-size = decidable-embeddings-have-any-size
-                      []-is-embedding
-                      []-is-decidable
+                   []-is-embedding
+                   []-is-decidable
+
 \end{code}
