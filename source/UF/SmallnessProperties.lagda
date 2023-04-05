@@ -8,17 +8,39 @@ In collaboration with Marc Bezem, Thierry Coquand, Peter Dybjer.
 
 module UF.SmallnessProperties where
 
-open import MLTT.Athenian
+open import MLTT.List
 open import MLTT.Plus-Properties
 open import MLTT.Spartan
 open import MLTT.Two-Properties
+open import NotionsOfDecidability.Decidable
 open import UF.Base
 open import UF.Embeddings
 open import UF.Equiv
 open import UF.Equiv-FunExt
 open import UF.EquivalenceExamples
 open import UF.FunExt
+open import UF.PropTrunc
 open import UF.Size
+open import UF.Subsingletons
+
+native-size : (X : 𝓤 ̇ ) → X is 𝓤 small
+native-size X = X , ≃-refl X
+
+native-map-size : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                → f is 𝓤 ⊔ 𝓥 small-map
+native-map-size f y = native-size (fiber f y)
+
+smallness-closed-under-≃ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                         → X is 𝓦 small
+                         → X ≃ Y
+                         → Y is 𝓦 small
+smallness-closed-under-≃ (X' , 𝕗) 𝕘 = (X' , (𝕗 ● 𝕘))
+
+smallness-closed-under-≃' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                         → X is 𝓦 small
+                         → Y ≃ X
+                         → Y is 𝓦 small
+smallness-closed-under-≃' s 𝕘 = smallness-closed-under-≃ s (≃-sym 𝕘)
 
 Σ-is-small : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
            → X is 𝓤' small
@@ -53,24 +75,35 @@ open import UF.Size
   γ = (Π (A' ∘ ⌜ 𝕗 ⌝)) ,
       Π-bicong fe (A' ∘ ⌜ 𝕗 ⌝) A 𝕗 (λ x → 𝕘 (⌜ 𝕗 ⌝ x))
 
-native-map-size : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                → f is 𝓤 ⊔ 𝓥 small-map
-native-map-size f y = fiber f y , ≃-refl _
-
-decidable-embeddings-have-any-size : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f : X → Y}
+decidable-embeddings-have-any-size : (𝓦 : Universe)
+                                     {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f : X → Y}
                                    → is-embedding f
                                    → each-fiber-of f is-decidable
                                    → f is 𝓦 small-map
-decidable-embeddings-have-any-size {𝓤} {𝓥} {𝓦} {X} {Y} {f} e δ y =
+decidable-embeddings-have-any-size 𝓦 {X} {Y} {f} e δ y =
  decidable-propositions-have-any-size (fiber f y) (e y) (δ y)
 
 id-is-decidable : {X : 𝓤 ̇ } → each-fiber-of (id {𝓤} {X}) is-decidable
 id-is-decidable x = inl (x , refl)
 
-id-has-any-size : {X : 𝓤 ̇ } → (id {𝓤} {X}) is 𝓦 small-map
-id-has-any-size = decidable-embeddings-have-any-size
-                   id-is-embedding
-                   id-is-decidable
+id-has-any-size : (𝓦 : Universe) {X : 𝓤 ̇ } → (id {𝓤} {X}) is 𝓦 small-map
+id-has-any-size 𝓦 = decidable-embeddings-have-any-size 𝓦
+                      id-is-embedding
+                      id-is-decidable
+
+∘-decidable-embeddings : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
+                         (f : X → Y) (g : Y → Z)
+                       → is-embedding g
+                       → each-fiber-of f is-decidable
+                       → each-fiber-of g is-decidable
+                       → each-fiber-of (g ∘ f) is-decidable
+∘-decidable-embeddings f g ge σ τ z = γ
+ where
+  δ : is-decidable (Σ (y , _) ꞉ fiber g z , fiber f y)
+  δ = decidable-closed-under-Σ (ge z) (τ z) (λ (y , _) → σ y)
+
+  γ : is-decidable (fiber (g ∘ f) z)
+  γ = decidability-is-closed-under-≃ (≃-sym (fiber-of-composite f g z)) δ
 
 ∘-small-maps : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
                {f : X → Y} {g : Y → Z}
@@ -119,19 +152,19 @@ NatΣ-is-small {𝓤} {𝓥} {𝓦} {𝓣} {X} {A} {B} τ τ-small = γ
               fiber (τ x) b          ≃⟨ NatΣ-fiber-equiv A B τ x b ⟩
               fiber (NatΣ τ) (x , b) ■)
 
-inl-has-any-size : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+inl-has-any-size : (𝓦 : Universe) {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                  → inl {𝓤} {𝓥} {X} {Y} is 𝓦 small-map
-inl-has-any-size {𝓤} {𝓥} {𝓦} {X} {Y} =
- decidable-embeddings-have-any-size (inl-is-embedding _ _) γ
+inl-has-any-size 𝓦 =
+ decidable-embeddings-have-any-size 𝓦 (inl-is-embedding _ _) γ
  where
   γ : each-fiber-of inl is-decidable
   γ (inl x) = inl (x , refl)
   γ (inr y) = inr (λ ((x , p) : fiber inl (inr y)) → +disjoint p)
 
-inr-has-any-size : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+inr-has-any-size : (𝓦 : Universe) {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                  → inr {𝓤} {𝓥} {X} {Y} is 𝓦 small-map
-inr-has-any-size {𝓤} {𝓥} {𝓦} {X} {Y} =
- decidable-embeddings-have-any-size (inr-is-embedding _ _) γ
+inr-has-any-size 𝓦 =
+ decidable-embeddings-have-any-size 𝓦 (inr-is-embedding _ _) γ
  where
   γ : each-fiber-of inr is-decidable
   γ (inl x) = inr (λ ((y , p) : fiber inr (inl x)) → +disjoint' p)
@@ -147,10 +180,10 @@ pair₀-is-decidable : {X : 𝓤 ̇ } → each-fiber-of (pair₀ {𝓤} {X}) is-
 pair₀-is-decidable (₀ , x) = inl (x , refl)
 pair₀-is-decidable (₁ , x) = inr (λ (y , p) → zero-is-not-one (ap pr₁ p))
 
-pair₀-has-any-size : {X : 𝓤 ̇ } → (pair₀ {𝓤} {X}) is 𝓦 small-map
-pair₀-has-any-size = decidable-embeddings-have-any-size
-                      pair₀-is-embedding
-                      pair₀-is-decidable
+pair₀-has-any-size : (𝓦 : Universe) {X : 𝓤 ̇ } → (pair₀ {𝓤} {X}) is 𝓦 small-map
+pair₀-has-any-size 𝓦 = decidable-embeddings-have-any-size 𝓦
+                         pair₀-is-embedding
+                         pair₀-is-decidable
 
 []-is-embedding : {X : 𝓤 ̇ } → is-embedding (λ (x : X) → [ x ])
 []-is-embedding (x ∷ []) (x , refl) (x , refl) = refl
@@ -164,9 +197,23 @@ pair₀-has-any-size = decidable-embeddings-have-any-size
 []-is-decidable {𝓤} {X} (x₀ ∷ x₁ ∷ xs) =
   inr λ (x , p) → []-is-not-cons x₁ xs (equal-tails p)
 
-[]-has-any-size : {X : 𝓤 ̇ } → (λ (x : X) → [ x ]) is 𝓦 small-map
-[]-has-any-size = decidable-embeddings-have-any-size
-                   []-is-embedding
-                   []-is-decidable
+[]-has-any-size : (𝓦 : Universe) {X : 𝓤 ̇ } → (λ (x : X) → [ x ]) is 𝓦 small-map
+[]-has-any-size 𝓦 = decidable-embeddings-have-any-size 𝓦
+                      []-is-embedding
+                      []-is-decidable
+
+
+module _ (pt : propositional-truncations-exist) where
+
+ open PropositionalTruncation pt
+
+ ∥∥-is-small : {X : 𝓤 ̇ }
+             → X is 𝓦 small
+             → ∥ X ∥ is 𝓦 small
+ ∥∥-is-small (X' , 𝕗) = ∥ X' ∥ ,
+                       qinveq (∥∥-functor ⌜ 𝕗 ⌝ )
+                        (∥∥-functor ⌜ 𝕗 ⌝⁻¹ ,
+                         (λ _ → ∥∥-is-prop _ _) ,
+                         (λ _ → ∥∥-is-prop _ _))
 
 \end{code}

@@ -184,7 +184,7 @@ EM-gives-PR em P i = decidable-propositions-have-any-size P i (em P i)
 To show that the axiom of propositional resizing is itself a
 proposition, we use univalence here (and there is a proof with weaker
 hypotheses below). But notice that the type "X is 𝓥 small" is a
-proposition if and only if univalence holds.
+proposition for every type X if and only if univalence holds.
 
 \begin{code}
 
@@ -212,10 +212,12 @@ being-small-is-prop {𝓤} ua X 𝓥 = c
   c : is-prop (Σ Y ꞉ 𝓥 ̇ , Y ≃ X)
   c = equiv-to-prop b (Lift-is-embedding ua (Lift 𝓥 X))
 
-propositional-resizing-is-prop : Univalence → is-prop (propositional-resizing 𝓤 𝓥)
-propositional-resizing-is-prop {𝓤} {𝓥} ua =  Π-is-prop (fe (𝓤 ⁺) (𝓥 ⁺ ⊔ 𝓤))
-                                                (λ P → Π-is-prop (fe 𝓤 (𝓥 ⁺ ⊔ 𝓤))
-                                                (λ i → being-small-is-prop ua P 𝓥))
+propositional-resizing-is-prop : Univalence
+                               → is-prop (propositional-resizing 𝓤 𝓥)
+propositional-resizing-is-prop {𝓤} {𝓥} ua =
+ Π-is-prop (fe (𝓤 ⁺) (𝓥 ⁺ ⊔ 𝓤))
+  (λ P → Π-is-prop (fe 𝓤 (𝓥 ⁺ ⊔ 𝓤))
+  (λ i → being-small-is-prop ua P 𝓥))
  where
   fe : FunExt
   fe = Univalence-gives-FunExt ua
@@ -232,8 +234,8 @@ prop-being-small-is-prop : PropExt
                          → FunExt
                          → (P : 𝓤 ̇ )
                          → is-prop P
-                         → (𝓥 :  Universe) → is-prop (P is 𝓥 small)
-prop-being-small-is-prop {𝓤} pe fe P i 𝓥 = c
+                         → {𝓥 :  Universe} → is-prop (P is 𝓥 small)
+prop-being-small-is-prop {𝓤} pe fe P i {𝓥} = c
  where
   j : is-prop (Lift 𝓥 P)
   j = equiv-to-prop (Lift-is-universe-embedding 𝓥 P) i
@@ -241,7 +243,7 @@ prop-being-small-is-prop {𝓤} pe fe P i 𝓥 = c
   a : (Y : 𝓥 ̇ ) → (Y ≃ P) ≃ (Lift 𝓤 Y ＝ Lift 𝓥 P)
   a Y = (Y ≃ P)                ≃⟨ a₀ ⟩
         (Lift 𝓤 Y ≃ Lift 𝓥 P)  ≃⟨ a₁ ⟩
-        (Lift 𝓤 Y ＝ Lift 𝓥 P)  ■
+        (Lift 𝓤 Y ＝ Lift 𝓥 P) ■
    where
     a₀ = ≃-cong fe
            (≃-sym (Lift-is-universe-embedding 𝓤 Y))
@@ -259,10 +261,9 @@ prop-being-small-is-prop {𝓤} pe fe P i 𝓥 = c
 propositional-resizing-is-prop' : PropExt
                                 → FunExt
                                 → is-prop (propositional-resizing 𝓤 𝓥)
-propositional-resizing-is-prop' {𝓤} {𝓥} pe fe =
-  Π-is-prop (fe (𝓤 ⁺) (𝓥 ⁺ ⊔ 𝓤))
-   (λ P → Π-is-prop (fe 𝓤 (𝓥 ⁺ ⊔ 𝓤))
-           (λ i → prop-being-small-is-prop pe fe P i 𝓥))
+propositional-resizing-is-prop' pe fe =
+ Π₂-is-prop (fe _ _) (λ P i → prop-being-small-is-prop pe fe P i)
+
 \end{code}
 
 Impredicativity. We begin with this strong notion, which says that the

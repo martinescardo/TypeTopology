@@ -156,7 +156,7 @@ module _
   Π-is-prop fe (λ x →
    ×₃-is-prop (Π-is-prop fe
                (λ b → prop-being-small-is-prop (λ _ → pe) (λ _ _ → fe)
-                       (β b ≪⟨ 𝓓 ⟩ x) (≪-is-prop-valued 𝓓) 𝓥))
+                       (β b ≪⟨ 𝓓 ⟩ x) (≪-is-prop-valued 𝓓)))
               (being-directed-is-prop (underlying-order 𝓓) (↡-inclusion 𝓓 β x))
               (is-sup-is-prop (underlying-order 𝓓) (pr₁ (axioms-of-dcpo 𝓓))
                               x (↡-inclusion 𝓓 β x)))

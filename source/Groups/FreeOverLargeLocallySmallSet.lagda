@@ -54,17 +54,16 @@ from which we borrow other techniques in the development below.
 {-# OPTIONS --without-K --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 open import MLTT.Spartan
+open import UF.FunExt
 open import UF.PropTrunc
-open import UF.Univalence
+open import UF.Subsingletons
 
 module Groups.FreeOverLargeLocallySmallSet
+        (fe : Fun-Ext)
+        (pe : Prop-Ext)
         (pt : propositional-truncations-exist)
-        (ua : Univalence)
        where
 
-open import UF.FunExt
-open import UF.UA-FunExt
-open import UF.Subsingletons
 open import UF.Base
 open import UF.Embeddings
 open import UF.Equiv hiding (_≅_)
@@ -76,14 +75,16 @@ open import Groups.SRTclosure
 open import Groups.Type
 open import Groups.Free
 
-fe : Fun-Ext
-fe = Univalence-gives-Fun-Ext ua
-
-pe : Prop-Ext
-pe = Univalence-gives-Prop-Ext ua
-
 open import UF.Large-Quotient pt fe pe
 open FreeGroupInterface pt fe pe
+
+private
+
+ fe' : FunExt
+ fe' 𝓤 𝓥 = fe {𝓤} {𝓥}
+
+ pe' : PropExt
+ pe' 𝓤 = pe {𝓤}
 
 \end{code}
 
@@ -424,8 +425,8 @@ proposition, Y is the unit type, and f is the unique map.
 
 We say that a type has size 𝓥 if it is equivalent to some type in the
 universe 𝓥, and that a map has size 𝓥 if its fibers all have size 𝓥.
-See the module UF.Size. This notion of size for maps is
-introduced and developed in the paper https://arxiv.org/abs/2102.08812
+See the module UF.Size. This notion of size for maps is introduced and
+developed in the paper https://dx.doi.org/10.4230/LIPIcs.FSCD.2021.8
 by Tom de Jong and Martin Escardo.
 
 The native size of the universal map ηᴳʳᵖ : A → FA/∾ into the free
@@ -441,25 +442,38 @@ group is rather large - it jumps up two universe levels:
 Using the above development, we can make it smaller.
 
 In the following, the function η/∾ : FA → FA/∾ is the universal map
-into the quotient (constructed in the module Groups.FreeGroup), and, by
-definition, the universal map ηᴳʳᵖ : A → FA/∾ into the free group is
-the composite η/∾ ∘ η where η : A → FA is the insertion of generators
-before quotienting.
+into the quotient (constructed in the module Groups.FreeGroup), and,
+by definition, the universal map ηᴳʳᵖ : A → FA/∾ into the free group
+is the composite η/∾ ∘ η where η : A → FA is the insertion of
+generators before quotienting and η/∾ is the universal map into the
+quotient.
 
-The following result is proved by quotient induction, which says that
+\begin{code}
+
+ smallness-of-ηᴳʳᵖ-fibers-is-prop : {𝓦 : Universe} (y : FA/∾)
+                                  → is-prop (fiber ηᴳʳᵖ y is 𝓦 small)
+ smallness-of-ηᴳʳᵖ-fibers-is-prop y = prop-being-small-is-prop pe' fe'
+                                       (fiber ηᴳʳᵖ y)
+                                       (ηᴳʳᵖ-is-embedding A-is-set y)
+
+\end{code}
+
+The following remark is proved by quotient induction, which says that
 in order to prove a property of all elements of the quotient, it
 suffices to prove it for elements of the form η/∾ s with s : FA.
 
 \begin{code}
 
- ηᴳʳᵖ-is-medium : ηᴳʳᵖ is 𝓤⁺ small-map
- ηᴳʳᵖ-is-medium = /-induction -∾- (λ y → fiber ηᴳʳᵖ y is 𝓤⁺ small)
-                   (λ y → being-small-is-prop ua (fiber ηᴳʳᵖ y) 𝓤⁺) γ
+ NB-ηᴳʳᵖ-is-medium : ηᴳʳᵖ is 𝓤⁺ small-map
+ NB-ηᴳʳᵖ-is-medium = /-induction -∾-
+                      (λ y → fiber ηᴳʳᵖ y is 𝓤⁺ small)
+                      smallness-of-ηᴳʳᵖ-fibers-is-prop
+                      induction-step
   where
-   e : (a : A) (s : FA) → (η/∾ (η a) ＝ η/∾ s) ≃ (η a ∥≏∥ s)
-   e a s = (η/∾ (η a) ＝ η/∾ s) ≃⟨ I ⟩
-           (η a ∾ s)            ≃⟨ II ⟩
-           (η a ∥≏∥ s)          ■
+   III : (a : A) (s : FA) → (η/∾ (η a) ＝ η/∾ s) ≃ (η a ∥≏∥ s)
+   III a s = (η/∾ (η a) ＝ η/∾ s) ≃⟨ I ⟩
+             (η a ∾ s)            ≃⟨ II ⟩
+             (η a ∥≏∥ s)          ■
     where
      I = logically-equivalent-props-are-equivalent
             (quotient-is-set -∾-)
@@ -468,15 +482,15 @@ suffices to prove it for elements of the form η/∾ s with s : FA.
             η/∾-identifies-related-points
      II = ∿-is-equivalent-to-∥≏∥ (η a) s
 
-   d : (s : FA) → fiber ηᴳʳᵖ (η/∾ s) ≃ (Σ a ꞉ A , η a ∥≏∥ s)
-   d s = (Σ a ꞉ A , η/∾ (η a) ＝ η/∾ s) ≃⟨ Σ-cong (λ a → e a s) ⟩
-         (Σ a ꞉ A , η a ∥≏∥ s)          ■
+   IV : (s : FA) → fiber ηᴳʳᵖ (η/∾ s) ≃ (Σ a ꞉ A , η a ∥≏∥ s)
+   IV s = (Σ a ꞉ A , η/∾ (η a) ＝ η/∾ s) ≃⟨ Σ-cong (λ a → III a s) ⟩
+          (Σ a ꞉ A , η a ∥≏∥ s)          ■
 
-   γ : (s : FA) → fiber ηᴳʳᵖ (η/∾ s) is 𝓤⁺ small
-   γ s = (Σ a ꞉ A , η a ∥≏∥ s) , ≃-sym (d s)
-    where
-     notice : universe-of (fiber ηᴳʳᵖ (η/∾ s)) ＝ 𝓤⁺⁺
-     notice = refl
+   notice : (s : FA) → universe-of (fiber ηᴳʳᵖ (η/∾ s)) ＝ 𝓤⁺⁺
+   notice s = refl
+
+   induction-step : (s : FA) → fiber ηᴳʳᵖ (η/∾ s) is 𝓤⁺ small
+   induction-step s = (Σ a ꞉ A , η a ∥≏∥ s) , ≃-sym (IV s)
 
 \end{code}
 
@@ -493,46 +507,31 @@ pattern matching.
 
 \begin{code}
 
- NB-native-universe-fiber-η : (s : FA) → universe-of (Σ a ꞉ A , η a ＝ s) ＝ 𝓤⁺
+ NB-native-universe-fiber-η : (s : FA) → universe-of (fiber η s) ＝ 𝓤⁺
  NB-native-universe-fiber-η s = refl
 
- fiber₀-η : FA → 𝓤₀ ̇
- fiber₀-η []             = 𝟘
- fiber₀-η (x ∷ y ∷ s)    = 𝟘
- fiber₀-η ((₀ , a) ∷ []) = 𝟙
- fiber₀-η ((₁ , a) ∷ []) = 𝟘
+ open import UF.SmallnessProperties
 
- NB-fiber₀-η-is-decidable : (s : FA) → fiber₀-η s + ¬ (fiber₀-η s)
- NB-fiber₀-η-is-decidable []             = inr id
- NB-fiber₀-η-is-decidable (x ∷ y ∷ s)    = inr id
- NB-fiber₀-η-is-decidable ((₀ , a) ∷ []) = inl ⋆
- NB-fiber₀-η-is-decidable ((₁ , a) ∷ []) = inr id
+ η-is-decidable : each-fiber-of η is-decidable
+ η-is-decidable = ∘-decidable-embeddings pair₀ [_]
+                   []-is-embedding
+                   pair₀-is-decidable
+                   []-is-decidable
 
- fiber-η→ : (s : FA) → fiber₀-η s → (Σ a ꞉ A , η a ＝ s)
- fiber-η→ []             ()
- fiber-η→ (x ∷ y ∷ s)    ()
- fiber-η→ ((₀ , a) ∷ []) ⋆ = a , refl
- fiber-η→ ((₁ , a) ∷ []) ()
+ η-is-embedding : is-embedding η
+ η-is-embedding = ∘-is-embedding pair₀-is-embedding []-is-embedding
 
- fiber-η← : (s : FA) → (Σ a ꞉ A , η a ＝ s) → fiber₀-η s
- fiber-η← .(η a) (a , refl) = ⋆
-
- η-fiber₀-η : (a : A) → fiber₀-η (η a)
- η-fiber₀-η a = ⋆
-
+ η-has-any-size : (𝓦 : Universe) → η is 𝓦 small-map
+ η-has-any-size 𝓦 = decidable-embeddings-have-any-size 𝓦
+                      η-is-embedding
+                      η-is-decidable
 \end{code}
 
 Using this, next we want to reduce the size of the type
 Σ a ꞉ A , η a ∾ s, which we informally refer to
-as "the ∾-fiber of s over η".
+as "the ∾-fiber of s over η". First, this type is a proposition:
 
 \begin{code}
-
- generator : FA → 𝓤 ̇
- generator s = Σ n ꞉ ℕ , Σ ρ ꞉ redex-chain n s , fiber₀-η (chain-reduct s n ρ)
-
- is-generator : FA → 𝓤 ̇
- is-generator s = ∥ generator s ∥
 
  the-∾-fibers-of-η-are-props : (s : FA) → is-prop (Σ a ꞉ A , η a ∾ s)
  the-∾-fibers-of-η-are-props s (a , e) (a' , e') = γ
@@ -546,10 +545,25 @@ as "the ∾-fiber of s over η".
    γ : (a , e) ＝ (a' , e')
    γ = to-subtype-＝ (λ x → ∥∥-is-prop) β
 
+ generator : FA → 𝓤 ⁺ ̇
+ generator s = Σ n ꞉ ℕ , Σ ρ ꞉ redex-chain n s , fiber η (chain-reduct s n ρ)
+
+ is-generator : FA → 𝓤 ⁺ ̇
+ is-generator s = ∥ generator s ∥
+
+ being-generator-is-small : (s : FA) → is-generator s is 𝓤 small
+ being-generator-is-small s =
+  ∥∥-is-small pt
+   (Σ-is-small
+     (native-size ℕ)
+     (λ n → Σ-is-small
+             (native-size (redex-chain n s))
+             (λ ρ → η-has-any-size 𝓤 (chain-reduct s n ρ))))
+
  ∾-fiber-η-lemma→ : (s : FA) → (Σ a ꞉ A , η a ∾ s) → is-generator s
  ∾-fiber-η-lemma→ s (a , e) = ∥∥-functor γ e
   where
-   γ : η a ∿ s → Σ n ꞉ ℕ , Σ ρ ꞉ redex-chain n s , fiber₀-η (chain-reduct s n ρ)
+   γ : η a ∿ s → generator s
    γ e = δ (d c)
     where
      c : Σ u ꞉ FA , (η a ▷⋆ u) × (s ▷⋆ u)
@@ -567,14 +581,14 @@ as "the ∾-fiber of s over η".
        δ : s  ▷⋆ η a → Σ n ꞉ ℕ , Σ ρ ꞉ redex-chain n s , chain-reduct s n ρ ＝ η a
        δ (n , r₃) = (n , chain-lemma← s (η a) n r₃)
 
-     δ : type-of (d c) → codomain γ
-     δ (n , ρ , p) = n , ρ , transport fiber₀-η (p ⁻¹) (η-fiber₀-η a)
+     δ : type-of (d c) → generator s
+     δ (n , ρ , p) = n , ρ , a , (p ⁻¹)
 
  ∾-fiber-η-lemma← : (s : FA) → is-generator s → (Σ a ꞉ A , η a ∾ s)
  ∾-fiber-η-lemma← s = ∥∥-rec (the-∾-fibers-of-η-are-props s) γ
   where
    γ : generator s → (Σ a ꞉ A , η a ∾ s)
-   γ (n , ρ , i) = δ σ
+   γ (n , ρ , i) = δ i
     where
      r : s ▷[ n ] chain-reduct s n ρ
      r = chain-lemma→ s n ρ
@@ -582,10 +596,7 @@ as "the ∾-fiber of s over η".
      e : chain-reduct s n ρ ∾ s
      e = ∣ to-∿ (chain-reduct s n ρ) s (chain-reduct s n ρ , (0 , refl) , (n , r)) ∣
 
-     σ : Σ a ꞉ A , η a ＝ chain-reduct s n ρ
-     σ = fiber-η→ (chain-reduct s n ρ) i
-
-     δ : type-of σ → Σ a ꞉ A , η a ∾ s
+     δ : fiber η (chain-reduct s n ρ) → Σ a ꞉ A , η a ∾ s
      δ (a , p) = a , transport (_∾ s) (p ⁻¹) e
 
 \end{code}
@@ -606,31 +617,34 @@ With this we can further reduce the size of the universal map ηᴳʳᵖ:
 
 \begin{code}
 
+ fiber-η/∾-lemma : (a : A) (s : FA) → (η/∾ (η a) ＝ η/∾ s) ≃ (η a ∾ s)
+ fiber-η/∾-lemma a s = logically-equivalent-props-are-equivalent
+                        (quotient-is-set -∾-)
+                        ∥∥-is-prop
+                        η/∾-relates-identified-points
+                        η/∾-identifies-related-points
+
+ fiber-ηηᴳʳᵖ-lemma : (s : FA) → fiber ηᴳʳᵖ (η/∾ s) ≃ is-generator s
+ fiber-ηηᴳʳᵖ-lemma s =
+  (Σ a ꞉ A , η/∾ (η a) ＝ η/∾ s) ≃⟨ Σ-cong (λ a → fiber-η/∾-lemma a s) ⟩
+  (Σ a ꞉ A , η a ∾ s)            ≃⟨ ∾-fiber-η-lemma s ⟩
+  is-generator s                 ■
+
+ the-ηᴳʳᵖ-fibers-of-generators-are-small : (s : FA)
+                                         → fiber ηᴳʳᵖ (η/∾ s) is 𝓤 small
+ the-ηᴳʳᵖ-fibers-of-generators-are-small s =
+  smallness-closed-under-≃'
+   (being-generator-is-small s)
+   (fiber-ηηᴳʳᵖ-lemma s)
+
  ηᴳʳᵖ-is-small : ηᴳʳᵖ is 𝓤 small-map
- ηᴳʳᵖ-is-small = /-induction -∾- (λ y → fiber ηᴳʳᵖ y is 𝓤 small)
-                  (λ y → being-small-is-prop ua (fiber ηᴳʳᵖ y) 𝓤) γ
-  where
-   e : (a : A) (s : FA) → (η/∾ (η a) ＝ η/∾ s) ≃ (η a ∾ s)
-   e a s = logically-equivalent-props-are-equivalent
-             (quotient-is-set -∾-)
-             ∥∥-is-prop
-             η/∾-relates-identified-points
-             η/∾-identifies-related-points
-
-   d : (s : FA) → fiber ηᴳʳᵖ (η/∾ s) ≃ is-generator s
-   d s = (Σ a ꞉ A , η/∾ (η a) ＝ η/∾ s) ≃⟨ Σ-cong (λ a → e a s) ⟩
-         (Σ a ꞉ A , η a ∾ s)           ≃⟨ ∾-fiber-η-lemma s ⟩
-         is-generator s                ■
-
-   γ : (s : FA) → fiber ηᴳʳᵖ (η/∾ s) is 𝓤 small
-   γ s = is-generator s , ≃-sym (d s)
-
+ ηᴳʳᵖ-is-small = /-induction -∾-
+                  (λ y → fiber ηᴳʳᵖ y is 𝓤 small)
+                  smallness-of-ηᴳʳᵖ-fibers-is-prop
+                  the-ηᴳʳᵖ-fibers-of-generators-are-small
 \end{code}
 
-A result by Tom de Jong and Martin Escardo (https://arxiv.org/abs/2102.08812),
-recorded in the module UF.Size and recently submitted for
-publication in a paper about size, says that if a map has size 𝓥, and
-if also its codomain has size 𝓥, then so does its domain.
+And with this we get our desired result as a corollary:
 
 \begin{code}
 
@@ -638,7 +652,6 @@ if also its codomain has size 𝓥, then so does its domain.
                                              → A is 𝓤 small
  free-group-small-gives-generating-set-small h =
   size-contravariance ηᴳʳᵖ ηᴳʳᵖ-is-small h
-
 
 \end{code}
 
@@ -648,9 +661,8 @@ a large group:
 \begin{code}
 
 large-group-with-no-small-copy : (Σ A ꞉ 𝓤 ⁺ ̇  , is-set A
-                                               × is-large A
-                                               × is-locally-small A)
-
+                                              × is-large A
+                                              × is-locally-small A)
                                → Σ F ꞉ Group (𝓤 ⁺) , ((G : Group 𝓤) → ¬ (G ≅ F))
 
 large-group-with-no-small-copy {𝓤} (A , A-is-set , A-is-large , A-ls) = δ

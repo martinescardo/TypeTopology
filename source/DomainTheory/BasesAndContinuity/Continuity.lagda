@@ -437,7 +437,7 @@ module _
   where
    p : is-prop (is-small (x ≪⟨ 𝓓 ⟩ y))
    p = prop-being-small-is-prop (λ _ → pe) (λ _ _ → fe)
-        (x ≪⟨ 𝓓 ⟩ y) (≪-is-prop-valued 𝓓) 𝓥
+        (x ≪⟨ 𝓓 ⟩ y) (≪-is-prop-valued 𝓓)
 
  ≪-is-small-valued-converse : ((x y : ⟨ 𝓓 ⟩) → is-small (x ≪⟨ 𝓓 ⟩ y))
                             → is-locally-small 𝓓

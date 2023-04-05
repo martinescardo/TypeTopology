@@ -11,6 +11,7 @@ open import MLTT.Spartan
 open import MLTT.Plus-Properties
 open import MLTT.Two-Properties
 open import UF.Subsingletons
+open import UF.Equiv
 
 ¬¬-elim : {A : 𝓤 ̇ } → is-decidable A → ¬¬ A → A
 ¬¬-elim (inl a) f = a
@@ -20,8 +21,14 @@ map-is-decidable : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → (A → B) → (B → A) →
 map-is-decidable f g (inl x) = inl (f x)
 map-is-decidable f g (inr h) = inr (λ y → h (g y))
 
-map-is-decidable-corollary : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → (A ⇔ B) → (is-decidable A ⇔ is-decidable B)
-map-is-decidable-corollary (f , g) = map-is-decidable f g , map-is-decidable g f
+map-is-decidable-⇔ : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → (A ⇔ B) → (is-decidable A ⇔ is-decidable B)
+map-is-decidable-⇔ (f , g) = map-is-decidable f g , map-is-decidable g f
+
+decidability-is-closed-under-≃ : {A : 𝓤 ̇ } {B : 𝓥 ̇ }
+                               → (A ≃ B)
+                               → is-decidable A
+                               → is-decidable B
+decidability-is-closed-under-≃ (f , e) = map-is-decidable f (inverse f e)
 
 map-is-decidable' : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → (A → ¬ B) → (¬ A → B) → is-decidable A → is-decidable B
 map-is-decidable' f g (inl x) = inr (f x)

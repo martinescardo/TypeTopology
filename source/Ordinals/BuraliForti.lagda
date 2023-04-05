@@ -137,11 +137,15 @@ open import UF.FunExt
 open import UF.Size
 
 private
+
  fe : FunExt
  fe = Univalence-gives-FunExt ua
 
  fe' : Fun-Ext
  fe' = Univalence-gives-Fun-Ext ua
+
+ pe : Prop-Ext
+ pe = Univalence-gives-Prop-Ext ua
 
 open import MLTT.Spartan
 
@@ -609,7 +613,7 @@ open import UF.PropTrunc
 module _ (pt : propositional-truncations-exist) where
 
  there-is-a-large-group : Σ F ꞉ Group (𝓤 ⁺) , ((G : Group 𝓤) → ¬ (G ≅ F))
- there-is-a-large-group {𝓤} = large-group-with-no-small-copy pt ua
+ there-is-a-large-group {𝓤} = large-group-with-no-small-copy fe' pe pt
                                (Ordinal 𝓤 ,
                                 (the-type-of-ordinals-is-a-set (ua 𝓤) fe') ,
                                 the-type-of-ordinals-is-large ,
