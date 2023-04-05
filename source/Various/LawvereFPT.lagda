@@ -15,9 +15,7 @@ extensions of MLTT, or hypotheses, such as propositional truncation.
 Many other things have been added since the above abstract was
 written.
 
-On 25th March 2023, Jon Sterling added a proof of Cantor's theorem stated for
-embeddings from the powerset of A onto A. This proof uses function
-extensionality, propositional extensionality, and propositional resizing.
+See also the file Various.CantorTheoremForSurjections by Jon Sterling.
 
 \begin{code}
 
