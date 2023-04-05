@@ -538,7 +538,7 @@ NB. If 𝓥 is 𝓤 or 𝓤', then X : A → 𝓤 ⁺ ̇.
 
 \end{code}
 
-See also http://www.cs.bham.ac.uk/~mhe/TypeTopology/Type-in-Type-False.html
+See also the module Unsafe.Type-in-Type-False.
 
 Added 12 October 2018. The paper
 
