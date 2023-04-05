@@ -26,9 +26,9 @@ open import UF.Subsingletons
 native-size : (X : 𝓤 ̇ ) → X is 𝓤 small
 native-size X = X , ≃-refl X
 
-native-map-size : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                → f is 𝓤 ⊔ 𝓥 small-map
-native-map-size f y = native-size (fiber f y)
+native-size-of-map : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                   → f is 𝓤 ⊔ 𝓥 small-map
+native-size-of-map f y = native-size (fiber f y)
 
 smallness-closed-under-≃ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                          → X is 𝓦 small
@@ -123,7 +123,6 @@ id-has-any-size 𝓦 = decidable-embeddings-have-any-size 𝓦
 
   ψ : B ≃ fiber g z
   ψ = resizing-condition (τ z)
-
 
   δ = (Σ b ꞉ B , A (pr₁ (⌜ ψ ⌝ b)))       ≃⟨ I ⟩
       (Σ (y , _) ꞉ fiber g z , A y)       ≃⟨ II ⟩

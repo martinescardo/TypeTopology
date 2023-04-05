@@ -69,6 +69,7 @@ open import UF.Embeddings
 open import UF.Equiv hiding (_≅_)
 open import UF.EquivalenceExamples
 open import UF.Size
+open import UF.SmallnessProperties
 
 open import MLTT.List
 open import Groups.SRTclosure
@@ -435,7 +436,7 @@ group is rather large - it jumps up two universe levels:
 \begin{code}
 
  NB-ηᴳʳᵖ-native-size : ηᴳʳᵖ is 𝓤⁺⁺ small-map
- NB-ηᴳʳᵖ-native-size y = fiber ηᴳʳᵖ y , ≃-refl _
+ NB-ηᴳʳᵖ-native-size = native-size-of-map ηᴳʳᵖ
 
 \end{code}
 
@@ -509,8 +510,6 @@ pattern matching.
 
  NB-native-universe-fiber-η : (s : FA) → universe-of (fiber η s) ＝ 𝓤⁺
  NB-native-universe-fiber-η s = refl
-
- open import UF.SmallnessProperties
 
  η-is-decidable : each-fiber-of η is-decidable
  η-is-decidable = ∘-decidable-embeddings pair₀ [_]
@@ -704,16 +703,20 @@ What can we choose for the large, locally small set?
 
  * One may wonder whether there are simpler choices such as
 
-    (i) The function type 𝓤 → 𝟚.
-    (ii) The set truncation of 𝓤.
+    (i)   The function type 𝓤 → 𝟚.
+    (ii)  The function type 𝓤 → Ω 𝓤.
+    (iii) The set truncation of 𝓤.
 
-   The choice (i) doesn't work in the absence of classical logic,
+   The candidate (i) doesn't work in the absence of classical logic,
    because there is a non-constant function 𝓤 → 𝟚 if and only if de
    Morgan Law holds (which is equivalent to excluded middle for
    negative propositions). https://doi.org/10.1016/j.apal.2016.04.010
 
-   The choice (ii) may work, but so far we haven't succeeded.
+   The candidates (ii) and (iii) may work, but so far we haven't
+   succeeded.
 
  * Another question is whether there is a large, discrete set, as this
    would considerably simplify the construction of the free group. One
    of us conjectures that there isn't, in general, such a set.
+
+\begin{code}
