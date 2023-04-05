@@ -512,7 +512,7 @@ pattern matching.
  NB-native-universe-fiber-η s = refl
 
  η-is-decidable : each-fiber-of η is-decidable
- η-is-decidable = ∘-decidable-embeddings pair₀ [_]
+ η-is-decidable = ∘-decidable-embeddings
                    []-is-embedding
                    pair₀-is-decidable
                    []-is-decidable
@@ -629,9 +629,9 @@ With this we can further reduce the size of the universal map ηᴳʳᵖ:
   (Σ a ꞉ A , η a ∾ s)            ≃⟨ ∾-fiber-η-lemma s ⟩
   is-generator s                 ■
 
- the-ηᴳʳᵖ-fibers-of-generators-are-small : (s : FA)
-                                         → fiber ηᴳʳᵖ (η/∾ s) is 𝓤 small
- the-ηᴳʳᵖ-fibers-of-generators-are-small s =
+ the-ηᴳʳᵖ-fibers-of-equivalence-classes-are-small : (s : FA)
+                                                  → fiber ηᴳʳᵖ (η/∾ s) is 𝓤 small
+ the-ηᴳʳᵖ-fibers-of-equivalence-classes-are-small s =
   smallness-closed-under-≃'
    (being-generator-is-small s)
    (fiber-ηηᴳʳᵖ-lemma s)
@@ -640,7 +640,7 @@ With this we can further reduce the size of the universal map ηᴳʳᵖ:
  ηᴳʳᵖ-is-small = /-induction -∾-
                   (λ y → fiber ηᴳʳᵖ y is 𝓤 small)
                   smallness-of-ηᴳʳᵖ-fibers-is-prop
-                  the-ηᴳʳᵖ-fibers-of-generators-are-small
+                  the-ηᴳʳᵖ-fibers-of-equivalence-classes-are-small
 \end{code}
 
 And with this we get our desired result as a corollary:
@@ -712,11 +712,14 @@ What can we choose for the large, locally small set?
    Morgan Law holds (which is equivalent to excluded middle for
    negative propositions). https://doi.org/10.1016/j.apal.2016.04.010
 
-   The candidates (ii) and (iii) may work, but so far we haven't
-   succeeded.
+   The candidates (ii) and (iii) may work, but so far we haven't succeeded.
 
  * Another question is whether there is a large, discrete set, as this
    would considerably simplify the construction of the free group. One
    of us conjectures that there isn't, in general, such a set.
 
 \begin{code}
+
+
+
+\end{code}

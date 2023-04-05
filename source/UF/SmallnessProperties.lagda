@@ -92,12 +92,12 @@ id-has-any-size 𝓦 = decidable-embeddings-have-any-size 𝓦
                       id-is-decidable
 
 ∘-decidable-embeddings : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
-                         (f : X → Y) (g : Y → Z)
+                         {f : X → Y} {g : Y → Z}
                        → is-embedding g
                        → each-fiber-of f is-decidable
                        → each-fiber-of g is-decidable
                        → each-fiber-of (g ∘ f) is-decidable
-∘-decidable-embeddings f g ge σ τ z = γ
+∘-decidable-embeddings {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {f} {g} ge σ τ z = γ
  where
   δ : is-decidable (Σ (y , _) ꞉ fiber g z , fiber f y)
   δ = decidable-closed-under-Σ (ge z) (τ z) (λ (y , _) → σ y)
