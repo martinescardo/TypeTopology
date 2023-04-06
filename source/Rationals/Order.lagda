@@ -61,67 +61,60 @@ instance
 ℚ<-coarser-than-≤ (p , _) (q , _) l = 𝔽<-coarser-than-≤ p q l
 
 toℚ-< : (p q : 𝔽) → p 𝔽< q → toℚ p < toℚ q
-toℚ-< (x , a) (y , b) l = ordering-right-cancellable (x' ℤ* pos (succ b')) (y' ℤ* (pos (succ a'))) (pos (succ h ℕ* succ h')) IV V
+toℚ-< (x , a) (y , b) l = γ
  where
-  I : Σ ((x' , a') , p) ꞉ ℚ , (Σ h ꞉ ℕ , (x ＝ (pos (succ h)) ℤ* x') × (succ a ＝ (succ h) ℕ* succ a'))
-  I = toℚlemma (x , a)
+  x' = numℚ (x , a)
+  a' = dnomℚ (x , a)
+  h  = hcf𝔽 (x , a)
+  y' = numℚ (y , b)
+  b' = dnomℚ (y , b)
+  h' = hcf𝔽 (y , b)
+  pb' = (pos ∘ succ) b'
+  pa' = (pos ∘ succ) a'
+  ph  = (pos ∘ succ) h
+  pb  = (pos ∘ succ) b
+  ph' = (pos ∘ succ) h'
+  pa  = (pos ∘ succ) a
 
-  II : Σ ((y' , b') , p) ꞉ ℚ , (Σ h' ꞉ ℕ , (y ＝ (pos (succ h')) ℤ* y') × (succ b ＝ (succ h') ℕ* succ b'))
-  II = toℚlemma (y , b)
+  I : is-pos-succ (ph ℤ* ph')
+  I = is-pos-succ-mult ph ph' ⋆ ⋆
 
-  x' y' : ℤ
-  x' = pr₁ (pr₁ (pr₁ I))
-  y' = pr₁ (pr₁ (pr₁ II))
-
-  a' b' : ℕ
-  a' = pr₂ (pr₁ (pr₁ I))
-  b' = pr₂ (pr₁ (pr₁ II))
-
-  h h' : ℕ
-  h = pr₁ (pr₂ I)
-  h' = pr₁ (pr₂ II)
-
-  α : x ＝ (pos (succ h)) ℤ* x'
-  α = pr₁ (pr₂ (pr₂ I))
-
-  β : succ a ＝ (succ h) ℕ* succ a'
-  β = pr₂ (pr₂ (pr₂ I))
-
-  α' : y ＝ (pos (succ h')) ℤ* y'
-  α' = pr₁ (pr₂ (pr₂ II))
-
-  β' : succ b ＝ (succ h') ℕ* succ b'
-  β' = pr₂ (pr₂ (pr₂ II))
-
-  III : is-pos-succ (pos (succ h) ℤ* pos (succ h'))
-  III = is-pos-succ-mult (pos (succ h)) (pos (succ h')) ⋆ ⋆
-
-  IV : is-pos-succ (pos (succ h ℕ* succ h'))
-  IV = transport (λ z → is-pos-succ z) (pos-multiplication-equiv-to-ℕ (succ h) (succ h')) III
-
-  V : ((x' ℤ* pos (succ b')) ℤ* pos (succ h ℕ* succ h')) < ((y' ℤ* pos (succ a')) ℤ* pos (succ h ℕ* succ h'))
-  V = transport₂ (λ z z' → z < z') VI VII l
+  lemma : (p q r s : ℤ) → p ℤ* q ℤ* (r ℤ* s) ＝ q ℤ* s ℤ* (p ℤ* r)
+  lemma p q r s = p ℤ* q ℤ* (r ℤ* s)   ＝⟨ i   ⟩
+                  q ℤ* p ℤ* (r ℤ* s)   ＝⟨ ii  ⟩
+                  q ℤ* (p ℤ* (r ℤ* s)) ＝⟨ iii ⟩
+                  q ℤ* (p ℤ* (s ℤ* r)) ＝⟨ iv  ⟩
+                  q ℤ* (p ℤ* s ℤ* r)   ＝⟨ v   ⟩
+                  q ℤ* (s ℤ* p ℤ* r)   ＝⟨ vi  ⟩
+                  q ℤ* (s ℤ* (p ℤ* r)) ＝⟨ vii ⟩
+                  q ℤ* s ℤ* (p ℤ* r)   ∎
    where
-    VI : x ℤ* pos (succ b) ＝ x' ℤ* pos (succ b') ℤ* pos (succ h ℕ* succ h')
-    VI = x ℤ* pos (succ b)                                         ＝⟨ ap₂ (λ z z' → z ℤ* z') α (ap pos β') ⟩
-          pos (succ h) ℤ* x' ℤ* pos (succ h' ℕ* succ b')            ＝⟨ ap (pos (succ h) ℤ* x' ℤ*_) (pos-multiplication-equiv-to-ℕ (succ h') (succ b') ⁻¹) ⟩
-          pos (succ h) ℤ* x' ℤ* (pos (succ h') ℤ* (pos (succ b')))  ＝⟨ ap₂ (λ z z' → z ℤ* z') (ℤ*-comm (pos (succ h)) x') (ℤ*-comm (pos (succ h')) (pos (succ b'))) ⟩
-          x' ℤ* pos (succ h) ℤ* (pos (succ b') ℤ* pos (succ h'))    ＝⟨ ℤ*-assoc x' (pos (succ h)) (pos (succ b') ℤ* pos (succ h')) ⟩
-          x' ℤ* (pos (succ h) ℤ* (pos (succ b') ℤ* pos (succ h')))  ＝⟨ ap (x' ℤ*_) (ℤ-mult-rearrangement''' (pos (succ h)) (pos (succ b')) (pos (succ h'))) ⟩
-          x' ℤ* (pos (succ b') ℤ* (pos (succ h) ℤ* pos (succ h')))  ＝⟨ ℤ*-assoc x' (pos (succ b')) (pos (succ h) ℤ* pos (succ h')) ⁻¹ ⟩
-          x' ℤ* pos (succ b') ℤ* (pos (succ h) ℤ* pos (succ h'))    ＝⟨ ap ( x' ℤ* pos (succ b') ℤ*_) (pos-multiplication-equiv-to-ℕ (succ h) (succ h')) ⟩
-          x' ℤ* pos (succ b') ℤ* pos (succ h ℕ* succ h') ∎
+    i   = ap (_ℤ* (r ℤ* s)) (ℤ*-comm p q)
+    ii  = ℤ*-assoc q p (r ℤ* s)
+    iii = ap (λ - → q ℤ* (p ℤ* -)) (ℤ*-comm r s)
+    iv  = ap (q ℤ*_) (ℤ*-assoc p s r ⁻¹)
+    v   = ap (λ - → q ℤ* (- ℤ* r)) (ℤ*-comm p s)
+    vi  = ap (q ℤ*_) (ℤ*-assoc s p r)
+    vii = ℤ*-assoc q s (p ℤ* r) ⁻¹
 
-    VII : y ℤ* pos (succ a) ＝ y' ℤ* pos (succ a') ℤ* pos (succ h ℕ* succ h')
-    VII = y ℤ* pos (succ a)                                         ＝⟨ ap₂ (λ z z' → z ℤ* z') α' (ap pos β) ⟩
-           pos (succ h') ℤ* y' ℤ* pos (succ h ℕ* succ a')            ＝⟨ ap (pos (succ h') ℤ* y' ℤ*_) (pos-multiplication-equiv-to-ℕ (succ h) (succ a') ⁻¹) ⟩
-           pos (succ h') ℤ* y' ℤ* (pos (succ h) ℤ* pos (succ a'))    ＝⟨ ap₂ (λ z z' → z ℤ* z') (ℤ*-comm (pos (succ h')) y') (ℤ*-comm (pos (succ h)) (pos (succ a'))) ⟩
-           y' ℤ* pos (succ h') ℤ* (pos (succ a') ℤ* pos (succ h))    ＝⟨ ℤ*-assoc y' (pos (succ h')) (pos (succ a') ℤ* pos (succ h)) ⟩
-           y' ℤ* (pos (succ h') ℤ* (pos (succ a') ℤ* pos (succ h)))  ＝⟨ ap (y' ℤ*_) (ℤ-mult-rearrangement''' (pos (succ h')) (pos (succ a')) (pos (succ h))) ⟩
-           y' ℤ* (pos (succ a') ℤ* (pos (succ h') ℤ* pos (succ h)))  ＝⟨ ℤ*-assoc y' (pos (succ a')) (pos (succ h') ℤ* pos (succ h)) ⁻¹ ⟩
-           y' ℤ* pos (succ a') ℤ* (pos (succ h') ℤ* pos (succ h))    ＝⟨ ap (y' ℤ* pos (succ a') ℤ*_) (pos-multiplication-equiv-to-ℕ (succ h') (succ h)) ⟩
-           y' ℤ* pos (succ a') ℤ* pos (succ h' ℕ* succ h)            ＝⟨ ap (λ z → y' ℤ* pos (succ a') ℤ* pos z) (mult-commutativity (succ h') (succ h)) ⟩
-           y' ℤ* pos (succ a') ℤ* pos (succ h ℕ* succ h') ∎
+  II : x ℤ* pb ＝ x' ℤ* pb' ℤ* (ph ℤ* ph')
+  II = x ℤ* pb                  ＝⟨ ap (_ℤ* pb) (numr (x , a))          ⟩
+       ph ℤ* x' ℤ* pb           ＝⟨ ap (ph ℤ* x' ℤ*_) (dnomrP' (y , b)) ⟩
+       ph ℤ* x' ℤ* (ph' ℤ* pb') ＝⟨ lemma ph x' ph' pb'                 ⟩
+       x' ℤ* pb' ℤ* (ph ℤ* ph') ∎
+
+  III : y ℤ* pa ＝ y' ℤ* pa' ℤ* (ph ℤ* ph')
+  III = y ℤ* pa                  ＝⟨ ap (_ℤ* pa) (numr (y , b))           ⟩
+        ph' ℤ* y' ℤ* pa          ＝⟨ ap (ph' ℤ* y' ℤ*_) (dnomrP' (x , a)) ⟩
+        ph' ℤ* y' ℤ* (ph ℤ* pa') ＝⟨ lemma ph' y' ph pa'                  ⟩
+        y' ℤ* pa' ℤ* (ph' ℤ* ph) ＝⟨ ap (y' ℤ* pa' ℤ*_) (ℤ*-comm ph' ph)  ⟩
+        y' ℤ* pa' ℤ* (ph ℤ* ph') ∎
+
+  γ' : x' ℤ* pb' ℤ* (ph ℤ* ph') < y' ℤ* pa' ℤ* (ph ℤ* ph')
+  γ' = transport₂ _<_ II III l
+
+  γ : x' ℤ* pb' < y' ℤ* pa'
+  γ = ordering-right-cancellable (x' ℤ* pb') (y' ℤ* pa') (ph ℤ* ph') I γ'
 
 toℚ-≤ : (p q : 𝔽) → p 𝔽≤ q → toℚ p ≤ toℚ q
 toℚ-≤ (x , a) (y , b) l = ℤ≤-ordering-right-cancellable (x' ℤ* pos (succ b')) (y' ℤ* (pos (succ a'))) (pos (succ h ℕ* succ h')) III IV
