@@ -23,7 +23,6 @@ open import Naturals.Properties
 open import TypeTopology.DiscreteAndSeparated
 open import TypeTopology.SigmaDiscreteAndTotallySeparated
 open import UF.Base hiding (_≈_)
-open import UF.FunExt
 open import UF.Miscelanea
 open import UF.Subsingletons
 
@@ -33,16 +32,25 @@ module Rationals.Fractions where
 ℚₙ = ℤ × ℕ
 
 is-in-lowest-terms : ℚₙ → 𝓤₀ ̇
-is-in-lowest-terms (x , y) = coprime (abs x) (succ y)
+is-in-lowest-terms (x , y) = coprime' (abs x) (succ y)
+
+is-in-lowest-terms' : ℚₙ → 𝓤₀ ̇
+is-in-lowest-terms' (x , y) = coprime (abs x) (succ y)
 
 denom-zero-lt : (x : ℤ) → is-in-lowest-terms (x , 0)
-denom-zero-lt x = ((1-divides-all (abs x)) , 1-divides-all 1) , I
+denom-zero-lt x = γ
  where
   I : (d : ℕ) → is-common-divisor d (abs x) 1 → d ∣ 1
   I d (_ , d-divides-1) = d-divides-1
 
-is-in-lowest-terms-is-prop : Fun-Ext → (q : ℚₙ) → is-prop (is-in-lowest-terms q)
-is-in-lowest-terms-is-prop fe (x , y) = coprime-is-prop fe (abs x) (succ y)
+  II : coprime (abs x) 1
+  II = ((1-divides-all (abs x)) , 1-divides-all 1) , I
+
+  γ : coprime' (abs x) 1
+  γ = coprime-to-coprime' (abs x) 1 II
+
+is-in-lowest-terms-is-prop : (q : ℚₙ) → is-prop (is-in-lowest-terms q)
+is-in-lowest-terms-is-prop (x , y) = coprime'-is-prop (abs x) (succ y)
 
 ℚₙ-is-discrete : is-discrete ℚₙ
 ℚₙ-is-discrete = Σ-is-discrete ℤ-is-discrete (λ _ → ℕ-is-discrete)
@@ -84,52 +92,61 @@ equiv-with-lowest-terms-is-equal : (a b : ℚₙ)
                                  → is-in-lowest-terms a
                                  → is-in-lowest-terms b
                                  → a ＝ b
-equiv-with-lowest-terms-is-equal (x , a) (y , b) e ((m₁ , m₂) , n) ((m₁' , m₂') , n') = to-×-＝ xyequal abequal
+equiv-with-lowest-terms-is-equal (x , a) (y , b) e lt₁ lt₂ = γ
  where
-  e' : x * pos (succ b) ＝ y * pos (succ a)
-  e' = e
+  α : coprime (abs x) (succ a)
+  α = coprime'-to-coprime (abs x) (succ a) lt₁
 
-  γ : abs (x * pos (succ b)) ＝ abs (y * pos (succ a))
-  γ = ap abs e'
+  β : coprime (abs y) (succ b)
+  β = coprime'-to-coprime (abs y) (succ b) lt₂
 
   δ : abs x ℕ* succ b ＝ abs y ℕ* succ a
   δ = abs x ℕ* abs (pos (succ b)) ＝⟨ abs-over-mult x (pos (succ b)) ⁻¹ ⟩
-      abs (x * pos (succ b))      ＝⟨ γ                                 ⟩
+      abs (x * pos (succ b))      ＝⟨ ap abs e                          ⟩
       abs (y * pos (succ a))      ＝⟨ abs-over-mult y (pos (succ a))    ⟩
       abs y ℕ* abs (pos (succ a)) ∎
 
-  s : (succ a) ∣ (abs x) ℕ* (succ b)
-  s = abs y , I
-   where
-    I : succ a ℕ* abs y ＝ abs x ℕ* succ b
-    I = succ a ℕ* abs y ＝⟨ mult-commutativity (succ a) (abs y) ⟩
-        abs y ℕ* succ a ＝⟨ δ ⁻¹                                ⟩
-        abs x ℕ* succ b ∎
+  I : succ a ℕ* abs y ＝ abs x ℕ* succ b
+  I = succ a ℕ* abs y ＝⟨ mult-commutativity (succ a) (abs y) ⟩
+      abs y ℕ* succ a ＝⟨ δ ⁻¹                                ⟩
+      abs x ℕ* succ b ∎
 
-  s' : succ b ∣ abs y ℕ* succ a
-  s' = abs x , I
-   where
-    I : succ b ℕ* abs x ＝ abs y ℕ* succ a
-    I = succ b ℕ* abs x ＝⟨ mult-commutativity (succ b) (abs x) ⟩
+  II : (succ a) ∣ (abs x) ℕ* (succ b)
+  II = abs y , I
+
+  III : succ b ℕ* abs x ＝ abs y ℕ* succ a
+  III = succ b ℕ* abs x ＝⟨ mult-commutativity (succ b) (abs x) ⟩
         abs x ℕ* succ b ＝⟨ δ                                   ⟩
         abs y ℕ* succ a ∎
 
+  IV : succ b ∣ abs y ℕ* succ a
+  IV = abs x , III
+
+  V : coprime (succ a) (abs x)
+  V = hcf-comm (abs x) (succ a) 1 α
+
+  VI : coprime (succ b) (abs y)
+  VI = hcf-comm (abs y) (succ b) 1 β
+
   a-divides-b : succ a ∣ succ b
-  a-divides-b = coprime-with-division (succ a) (abs x) (succ b) ((m₂ , m₁) , λ f' (h₁ , h₂) → n f' (h₂ , h₁)) s
+  a-divides-b = coprime-with-division (succ a) (abs x) (succ b) V II
 
   b-divides-a : succ b ∣ succ a
-  b-divides-a = coprime-with-division (succ b) (abs y) (succ a) ((m₂' , m₁') , λ f (h₁ , h₂) → n' f (h₂ , h₁)) s'
+  b-divides-a = coprime-with-division (succ b) (abs y) (succ a) VI IV
 
-  abequal : a ＝ b
-  abequal = succ-lc (∣-anti (succ a) (succ b) a-divides-b b-divides-a)
+  γ₁ : a ＝ b
+  γ₁ = succ-lc (∣-anti (succ a) (succ b) a-divides-b b-divides-a)
 
   e'' : x * pos (succ a) ＝ y * pos (succ a)
-  e'' = x * pos (succ a) ＝⟨ ap (x *_) (ap pos (ap succ abequal)) ⟩
-        x * pos (succ b) ＝⟨ e                                    ⟩
+  e'' = x * pos (succ a) ＝⟨ ap (x *_) (ap pos (ap succ γ₁)) ⟩
+        x * pos (succ b) ＝⟨ e                               ⟩
         y * pos (succ a) ∎
 
-  xyequal : x ＝ y
-  xyequal = ℤ-mult-right-cancellable x y (pos (succ a)) id e''
+  γ₂ : x ＝ y
+  γ₂ = ℤ-mult-right-cancellable x y (pos (succ a)) id e''
+
+  γ : x , a ＝ y , b
+  γ = to-×-＝ γ₂ γ₁
 
 open import Notation.CanonicalMap
 
