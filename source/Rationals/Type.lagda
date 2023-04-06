@@ -27,23 +27,23 @@ open import UF.Subsingletons
 module Rationals.Type where
 
 ℚ : 𝓤₀ ̇
-ℚ = Σ q ꞉ ℚₙ , is-in-lowest-terms q
+ℚ = Σ q ꞉ 𝔽 , is-in-lowest-terms q
 
-is-in-lowest-terms-is-discrete : (q : ℚₙ)
+is-in-lowest-terms-is-discrete : (q : 𝔽)
                                → is-discrete (is-in-lowest-terms q)
 is-in-lowest-terms-is-discrete q α β
  = inl (is-in-lowest-terms-is-prop q α β)
 
 ℚ-is-discrete : is-discrete ℚ
-ℚ-is-discrete = Σ-is-discrete ℚₙ-is-discrete is-in-lowest-terms-is-discrete
+ℚ-is-discrete = Σ-is-discrete 𝔽-is-discrete is-in-lowest-terms-is-discrete
 
 ℚ-is-set : is-set ℚ
 ℚ-is-set = discrete-types-are-sets ℚ-is-discrete
 
-toℚₙ : ℚ → ℚₙ
-toℚₙ (q , _) = q
+to𝔽 : ℚ → 𝔽
+to𝔽 (q , _) = q
 
-toℚlemma : ((x , a) : ℚₙ)
+toℚlemma : ((x , a) : 𝔽)
          → Σ ((x' , a') , p) ꞉ ℚ , (Σ h ꞉ ℕ , (x ＝ (pos (succ h)) ℤ* x')
                                             × (succ a ＝ (succ h) ℕ* succ a'))
 toℚlemma (pos a , b) = f (divbyhcf a (succ b))
@@ -101,37 +101,36 @@ toℚlemma (negsucc a , b) = f (divbyhcf (succ a) (succ b))
     γ : _
     γ = q , h , II , (γ₂ ⁻¹)
 
-toℚ : ℚₙ → ℚ
+toℚ : 𝔽 → ℚ
 toℚ q = pr₁ (toℚlemma q)
 
-numℚ : ℚₙ → ℤ
+numℚ : 𝔽 → ℤ
 numℚ q = (pr₁ ∘ pr₁ ∘ pr₁) (toℚlemma q)
 
-dnomℚ : ℚₙ → ℕ
+dnomℚ : 𝔽 → ℕ
 dnomℚ q = (pr₂ ∘ pr₁ ∘ pr₁) (toℚlemma q)
 
-hcfℚₙ : ℚₙ → ℕ
-hcfℚₙ q = pr₁ (pr₂ (toℚlemma q))
+hcf𝔽 : 𝔽 → ℕ
+hcf𝔽 q = pr₁ (pr₂ (toℚlemma q))
 
-iltℚ : (q : ℚₙ) → is-in-lowest-terms (numℚ q , dnomℚ q)
+iltℚ : (q : 𝔽) → is-in-lowest-terms (numℚ q , dnomℚ q)
 iltℚ (x , a) = (pr₂ ∘ pr₁) (toℚlemma (x , a))
 
-numr : ((x , a) : ℚₙ) → x ＝ (pos (succ (hcfℚₙ (x , a)))) ℤ* numℚ (x , a)
+numr : ((x , a) : 𝔽) → x ＝ (pos (succ (hcf𝔽 (x , a)))) ℤ* numℚ (x , a)
 numr (x , a) = pr₁ (pr₂ (pr₂ (toℚlemma (x , a))))
 
-dnomr : ((x , a) : ℚₙ) → succ a ＝ succ (hcfℚₙ (x , a)) ℕ* succ (dnomℚ (x , a))
+dnomr : ((x , a) : 𝔽) → succ a ＝ succ (hcf𝔽 (x , a)) ℕ* succ (dnomℚ (x , a))
 dnomr (x , a) = pr₂ (pr₂ (pr₂ (toℚlemma (x , a))))
 
-dnomrP : ((x , a) : ℚₙ)
-       → pos (succ a) ＝ pos (succ (hcfℚₙ (x , a)) ℕ* succ (dnomℚ (x , a)))
+dnomrP : ((x , a) : 𝔽)
+       → pos (succ a) ＝ pos (succ (hcf𝔽 (x , a)) ℕ* succ (dnomℚ (x , a)))
 dnomrP (x , a) = ap pos (dnomr (x , a))
 
-dnomrP' : ((x , a) : ℚₙ)
-        → pos (succ a) ＝ pos (succ (hcfℚₙ (x , a)))
-                        ℤ* pos (succ (dnomℚ (x , a)))
+dnomrP' : ((x , a) : 𝔽)
+        → pos (succ a) ＝ pos (succ (hcf𝔽 (x , a))) ℤ* pos (succ (dnomℚ (x , a)))
 dnomrP' (x , a) = γ
  where
-  h  = hcfℚₙ (x , a)
+  h  = hcf𝔽 (x , a)
   a' = dnomℚ (x , a)
 
   γ : pos (succ a) ＝ pos (succ h) ℤ* pos (succ a')
@@ -155,14 +154,14 @@ dnomrP' (x , a) = γ
 1/4 = toℚ (pos 1 , 3)
 3/4 = toℚ (pos 3 , 3)
 
-equiv-equality : (p q : ℚₙ) → p ≈ q ⇔ toℚ p ＝ toℚ q
+equiv-equality : (p q : 𝔽) → p ≈ q ⇔ toℚ p ＝ toℚ q
 equiv-equality (x , a) (y , b) = γ₁ , γ₂
  where
   a' b' h h' : ℕ
   a' = dnomℚ (x , a)
   b' = dnomℚ (y , b)
-  h  = hcfℚₙ (x , a)
-  h' = hcfℚₙ (y , b)
+  h  = hcf𝔽 (x , a)
+  h' = hcf𝔽 (y , b)
 
   x' y' ph ph' pa' pb' : ℤ
   x'  = numℚ (x , a)
@@ -240,18 +239,18 @@ equiv-equality (x , a) (y , b) = γ₁ , γ₂
     II : pb' ＝ pa'
     II = ap (pos ∘ succ ∘ pr₂ ∘ pr₁) (e ⁻¹)
 
-equiv→equality : (p q : ℚₙ) → p ≈ q → toℚ p ＝ toℚ q
+equiv→equality : (p q : 𝔽) → p ≈ q → toℚ p ＝ toℚ q
 equiv→equality p q = pr₁ (equiv-equality p q)
 
-equality→equiv : (p q : ℚₙ) → toℚ p ＝ toℚ q → p ≈ q
+equality→equiv : (p q : 𝔽) → toℚ p ＝ toℚ q → p ≈ q
 equality→equiv p q = pr₂ (equiv-equality p q)
 
-toℚ-toℚₙ : ((p , α) : ℚ) → (p , α) ＝ toℚ p
-toℚ-toℚₙ ((x , a) , α) = to-subtype-＝ is-in-lowest-terms-is-prop γ
+toℚ-to𝔽 : ((p , α) : ℚ) → (p , α) ＝ toℚ p
+toℚ-to𝔽 ((x , a) , α) = to-subtype-＝ is-in-lowest-terms-is-prop γ
  where
   x'  = numℚ (x , a)
   a'  = dnomℚ (x , a)
-  h   = hcfℚₙ (x , a)
+  h   = hcf𝔽 (x , a)
   pa' = (pos ∘ succ) a'
   pa  = (pos ∘ succ) a
   ph  = (pos ∘ succ) h
@@ -269,13 +268,13 @@ toℚ-toℚₙ ((x , a) , α) = to-subtype-＝ is-in-lowest-terms-is-prop γ
   γ : (x , a) ＝ (x' , a')
   γ = equiv-with-lowest-terms-is-equal (x , a) (x' , a') II α (iltℚ (x , a))
 
-≈-toℚ : (p : ℚₙ) → p ≈ toℚₙ (toℚ p)
-≈-toℚ p = equality→equiv p p' (toℚ-toℚₙ (toℚ p))
+≈-toℚ : (p : 𝔽) → p ≈ to𝔽 (toℚ p)
+≈-toℚ p = equality→equiv p p' (toℚ-to𝔽 (toℚ p))
  where
-  p' = toℚₙ (toℚ p)
+  p' = to𝔽 (toℚ p)
 
-q-has-qn : (q : ℚ) → Σ q' ꞉ ℚₙ , q ＝ toℚ q'
-q-has-qn (q , α) =  q , toℚ-toℚₙ (q , α)
+q-has-qn : (q : ℚ) → Σ q' ꞉ 𝔽 , q ＝ toℚ q'
+q-has-qn (q , α) =  q , toℚ-to𝔽 (q , α)
 
 ℚ-zero-not-one :  ¬ (0ℚ ＝ 1ℚ)
 ℚ-zero-not-one e = positive-not-zero 0 (pos-lc γ ⁻¹)
@@ -303,14 +302,14 @@ numerator-zero-is-zero ((pos 0 , a) , p) e = γ
       pos 0 ℤ* pos (succ a) ∎
 
   γ : (pos 0 , a) , p ＝ 0ℚ
-  γ = (pos 0 , a) , p ＝⟨ toℚ-toℚₙ ((pos 0 , a) , p) ⟩
+  γ = (pos 0 , a) , p ＝⟨ toℚ-to𝔽 ((pos 0 , a) , p) ⟩
       toℚ (pos 0 , a) ＝⟨ equiv→equality (pos 0 , a) (pos 0 , 0) I ⟩
       toℚ (pos 0 , 0) ＝⟨ refl ⟩
       0ℚ ∎
 
 instance
- canonical-map-ℚₙ-to-ℚ : Canonical-Map ℚₙ ℚ
- ι {{canonical-map-ℚₙ-to-ℚ}} = toℚ
+ canonical-map-𝔽-to-ℚ : Canonical-Map 𝔽 ℚ
+ ι {{canonical-map-𝔽-to-ℚ}} = toℚ
 
 ℤ-to-ℚ : ℤ → ℚ
 ℤ-to-ℚ z = ι (ι z)

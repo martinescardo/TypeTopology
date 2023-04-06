@@ -121,7 +121,7 @@ constant-sequence-converges q ε l = 0 , (λ n l₂ → transport (_< ε) I l)
 
 open import Integers.Type hiding (abs)
 open import Rationals.FractionsOrder
-open import Rationals.FractionsOperations renaming (_*_ to _ℚₙ*_ ; _+_ to _ℚₙ+_ ; -_ to ℚₙ-_ ; abs to ℚₙ-abs)
+open import Rationals.FractionsOperations renaming (_*_ to _𝔽*_ ; _+_ to _𝔽+_ ; -_ to 𝔽-_ ; abs to 𝔽-abs)
 
 open import Notation.CanonicalMap
 
@@ -139,8 +139,8 @@ open import Integers.Multiplication renaming (_*_ to _ℤ*_)
 open import Integers.Addition renaming (_+_ to _ℤ+_) hiding (_-_)
 open import Integers.Order
 
-positive-order-flip : (m n a b : ℕ) → ((pos (succ m)) , a) ℚₙ< ((pos (succ n)) , b)
-                                    → ((pos (succ a)) , m) ℚₙ> ((pos (succ b)) , n)
+positive-order-flip : (m n a b : ℕ) → ((pos (succ m)) , a) 𝔽< ((pos (succ n)) , b)
+                                    → ((pos (succ a)) , m) 𝔽> ((pos (succ b)) , n)
 positive-order-flip m n a b l = transport₂ _<_ I II l
  where
   I : pos (succ m) ℤ* pos (succ b) ＝ pos (succ b) ℤ* pos (succ m)
@@ -184,7 +184,7 @@ open import Rationals.Fractions
      I : pos (succ q) ≤ pos (succ n)
      I = ℕ≤-to-ℤ≤ (succ q) (succ n) l'
 
-     II : (pos (succ a) , x) ℚₙ< (pos (succ n) , 0)
+     II : (pos (succ a) , x) 𝔽< (pos (succ n) , 0)
      II = β (ℤ≤-split (pos (succ q)) (pos (succ n)) I)
       where
        τ : pos (succ x ℕ* (q ℕ+ 1)) ＝ pos (succ q) ℤ* pos (succ x)
@@ -194,11 +194,11 @@ open import Rationals.Fractions
            pos (succ q) ℤ* pos (succ x) ∎
        α : pos (succ a) ℤ* pos 1 < pos (succ q) ℤ* pos (succ x)
        α = transport₂ _<_ (ℤ-mult-right-id (pos (succ a))) τ ζ
-       β : pos (succ q) < pos (succ n) ∔ (pos (succ q) ＝ pos (succ n)) → (pos (succ a) , x) ℚₙ< (pos (succ n) , 0)
-       β (inl less) = ℚₙ<-trans (pos (succ a) , x) (pos (succ q) , 0) (pos (succ n) , 0) α less
-       β (inr equal) = transport (λ - → (pos (succ a) , x) ℚₙ< (- , 0)) equal α
+       β : pos (succ q) < pos (succ n) ∔ (pos (succ q) ＝ pos (succ n)) → (pos (succ a) , x) 𝔽< (pos (succ n) , 0)
+       β (inl less) = 𝔽<-trans (pos (succ a) , x) (pos (succ q) , 0) (pos (succ n) , 0) α less
+       β (inr equal) = transport (λ - → (pos (succ a) , x) 𝔽< (- , 0)) equal α
 
-     III : (pos (succ x) , a) ℚₙ> (pos 1 , n)
+     III : (pos (succ x) , a) 𝔽> (pos 1 , n)
      III = positive-order-flip a n x 0 II
 
      IV : abs (toℚ ((pos 1) , n) - 0ℚ) < ((pos (succ x) , a) , ε)
@@ -206,22 +206,22 @@ open import Rationals.Fractions
       where
        i : toℚ (pos 1 , n) ＝ abs (toℚ ((pos 1) , n) - 0ℚ)
        i = toℚ (pos 1 , n)                               ＝⟨ by-definition                                                ⟩
-           toℚ (ℚₙ-abs (pos 1 , n))                      ＝⟨ toℚ-abs fe (pos 1 , n) ⁻¹                                     ⟩
-           abs (toℚ (pos 1 , n))                         ＝⟨ ap (λ - → abs (toℚ -)) (ℚₙ-zero-right-neutral (pos 1 , n) ⁻¹) ⟩
-           abs (toℚ ((pos 1 , n) ℚₙ+ (pos 0 , 0)))       ＝⟨ by-definition                                                 ⟩
-           abs (toℚ ((pos 1 , n) ℚₙ+ (ℚₙ- (pos 0 , 0)))) ＝⟨ ap abs (toℚ-subtraction fe (pos 1 , n) (pos 0 , 0) ⁻¹)        ⟩
+           toℚ (𝔽-abs (pos 1 , n))                      ＝⟨ toℚ-abs fe (pos 1 , n) ⁻¹                                     ⟩
+           abs (toℚ (pos 1 , n))                         ＝⟨ ap (λ - → abs (toℚ -)) (𝔽-zero-right-neutral (pos 1 , n) ⁻¹) ⟩
+           abs (toℚ ((pos 1 , n) 𝔽+ (pos 0 , 0)))       ＝⟨ by-definition                                                 ⟩
+           abs (toℚ ((pos 1 , n) 𝔽+ (𝔽- (pos 0 , 0)))) ＝⟨ ap abs (toℚ-subtraction fe (pos 1 , n) (pos 0 , 0) ⁻¹)        ⟩
            abs (toℚ (pos 1 , n) - 0ℚ)                   ∎
 
        ii : toℚ (pos 1 , n) < toℚ (pos (succ x) , a)
        ii = toℚ-< (pos 1 , n) (pos (succ x) , a) III
 
        iii : (pos (succ x) , a) , ε ＝ toℚ (pos (succ x) , a)
-       iii = toℚ-toℚₙ fe ((pos (succ x) , a) , ε)
+       iii = toℚ-to𝔽 fe ((pos (succ x) , a) , ε)
 
        iv : toℚ (pos 1 , n) < ((pos (succ x) , a) , ε)
        iv = transport (toℚ (pos 1 , n) <_) (iii ⁻¹) ii
 
-limits-lemma : (k : ℕ) → ((pos 1 , succ k) ℚₙ* (pos 2 , 2)) ℚₙ≤ (pos 1 , succ (succ k))
+limits-lemma : (k : ℕ) → ((pos 1 , succ k) 𝔽* (pos 2 , 2)) 𝔽≤ (pos 1 , succ (succ k))
 limits-lemma k = k , I
  where
   I : pos 2 ℤ* pos (succ (succ (succ k))) ℤ+ pos k ＝ pos 1 ℤ* pos (succ (pred (succ (succ k) ℕ* 3)))
@@ -286,10 +286,10 @@ limits-lemma k = k , I
         ii = transport (_≤ ⟨1/n⟩ (succ (succ k))) (iii ⁻¹) iv
          where
           abstract
-           iii : (⟨1/n⟩ (succ k)) * 2/3 ＝ toℚ ((pos 1 , succ k) ℚₙ* (pos 2 , 2))
+           iii : (⟨1/n⟩ (succ k)) * 2/3 ＝ toℚ ((pos 1 , succ k) 𝔽* (pos 2 , 2))
            iii = toℚ-* fe (pos 1 , succ k) (pos 2 , 2) ⁻¹
-           iv : toℚ ((pos 1 , succ k) ℚₙ* (pos 2 , 2)) ≤ℚ ⟨1/n⟩ (succ (succ k))
-           iv = toℚ-≤ ((pos 1 , succ k) ℚₙ* (pos 2 , 2)) (pos 1 , succ (succ k)) (limits-lemma k)
+           iv : toℚ ((pos 1 , succ k) 𝔽* (pos 2 , 2)) ≤ℚ ⟨1/n⟩ (succ (succ k))
+           iv = toℚ-≤ ((pos 1 , succ k) 𝔽* (pos 2 , 2)) (pos 1 , succ (succ k)) (limits-lemma k)
 
 ⟨2/3⟩^n-converges : 0ℚ limit-of ⟨2/3⟩^_
 ⟨2/3⟩^n-converges = sandwich-theorem 0ℚ 0f ⟨2/3⟩^_ ⟨1/sn⟩ ⟨2/3⟩^n-squeezed 0f-converges ⟨1/sn⟩-converges

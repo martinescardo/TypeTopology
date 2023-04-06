@@ -20,7 +20,7 @@ open import Integers.Multiplication renaming (_*_ to _ℤ*_)
 open import Integers.Order
 open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
 open import Rationals.Fractions
-open import Rationals.FractionsOperations renaming (abs to ℚₙ-abs) renaming (-_ to ℚₙ-_) hiding (_+_) hiding (_*_)
+open import Rationals.FractionsOperations renaming (abs to 𝔽-abs) renaming (-_ to 𝔽-_) hiding (_+_) hiding (_*_)
 open import Rationals.Type
 open import Rationals.Addition
 open import Rationals.Negation
@@ -30,12 +30,12 @@ open import Rationals.Multiplication
 module Rationals.Abs where
 
 abs : ℚ → ℚ
-abs (q , _) = toℚ (ℚₙ-abs q)
+abs (q , _) = toℚ (𝔽-abs q)
 
 ℚ-abs-zero : 0ℚ ＝ abs 0ℚ
 ℚ-abs-zero = by-definition
 
-toℚ-abs : Fun-Ext → (q : ℚₙ) → abs (toℚ q) ＝ toℚ (ℚₙ-abs q)
+toℚ-abs : Fun-Ext → (q : 𝔽) → abs (toℚ q) ＝ toℚ (𝔽-abs q)
 toℚ-abs fe (x , a) = conclusion
  where
   rational-q : Σ ((x' , a') , lxp) ꞉ ℚ , Σ h ꞉ ℕ , (x ＝ pos (succ h) ℤ* x') × (succ a ＝ succ h ℕ* succ a')
@@ -60,10 +60,10 @@ toℚ-abs fe (x , a) = conclusion
   sa' = succ a'
   psa' = pos (succ a')
 
-  helper : ℚₙ-abs (x' , a') ≈ ℚₙ-abs (x , a) → toℚ (ℚₙ-abs (x' , a')) ＝ toℚ (ℚₙ-abs (x , a))
-  helper = equiv→equality fe (ℚₙ-abs (x' , a')) (ℚₙ-abs (x , a))
+  helper : 𝔽-abs (x' , a') ≈ 𝔽-abs (x , a) → toℚ (𝔽-abs (x' , a')) ＝ toℚ (𝔽-abs (x , a))
+  helper = equiv→equality fe (𝔽-abs (x' , a')) (𝔽-abs (x , a))
 
-  I : ℚₙ-abs (x' , a') ≈ ℚₙ-abs (x , a)
+  I : 𝔽-abs (x' , a') ≈ 𝔽-abs (x , a)
   I = ℤ-mult-left-cancellable (absℤ x' ℤ* psa) (absℤ x ℤ* psa') psh id II
    where
     II : psh ℤ* (absℤ x' ℤ* psa) ＝ psh ℤ* (absℤ x ℤ* psa')
@@ -76,7 +76,7 @@ toℚ-abs fe (x , a) = conclusion
          absℤ x ℤ* (psh ℤ* psa')       ＝⟨ ℤ-mult-rearrangement''' (absℤ x) psh psa'                 ⟩
          psh ℤ* (absℤ x ℤ* psa')       ∎
 
-  conclusion : abs (toℚ (x , a)) ＝ toℚ (ℚₙ-abs (x , a))
+  conclusion : abs (toℚ (x , a)) ＝ toℚ (𝔽-abs (x , a))
   conclusion = helper I
 
 abs-of-pos-is-pos : Fun-Ext → (p : ℚ) → 0ℚ ≤ p → abs p ＝ p
@@ -84,8 +84,8 @@ abs-of-pos-is-pos fe ((pos x , a) , α) l = I
  where
   I : abs ((pos x , a) , α) ＝ (pos x , a) , α
   I = abs ((pos x , a) , α)    ＝⟨ by-definition ⟩
-      toℚ (ℚₙ-abs (pos x , a)) ＝⟨ by-definition ⟩
-      toℚ (pos x , a)          ＝⟨ toℚ-toℚₙ fe ((pos x , a) , α) ⁻¹ ⟩
+      toℚ (𝔽-abs (pos x , a)) ＝⟨ by-definition ⟩
+      toℚ (pos x , a)          ＝⟨ toℚ-to𝔽 fe ((pos x , a) , α) ⁻¹ ⟩
       ((pos x , a) , α) ∎
 abs-of-pos-is-pos fe ((negsucc x , a) , α) l = 𝟘-elim (III II)
  where
@@ -102,25 +102,25 @@ abs-of-pos-is-pos' fe p l = abs-of-pos-is-pos fe p (ℚ<-coarser-than-≤ 0ℚ p
 ℚ-abs-neg-equals-pos : Fun-Ext → (q : ℚ) → abs q ＝ abs (- q)
 ℚ-abs-neg-equals-pos fe (q , p) = conclusion
  where
-  helper : ℚₙ-abs q ≈ ℚₙ-abs (ℚₙ- q) → toℚ (ℚₙ-abs q) ＝ toℚ (ℚₙ-abs (ℚₙ- q))
-  helper = equiv→equality fe (ℚₙ-abs q) (ℚₙ-abs (ℚₙ- q))
+  helper : 𝔽-abs q ≈ 𝔽-abs (𝔽- q) → toℚ (𝔽-abs q) ＝ toℚ (𝔽-abs (𝔽- q))
+  helper = equiv→equality fe (𝔽-abs q) (𝔽-abs (𝔽- q))
 
-  I : ℚₙ-abs q ≈ ℚₙ-abs (ℚₙ- q)
-  I = ℚₙ-abs-neg-equals-pos q
+  I : 𝔽-abs q ≈ 𝔽-abs (𝔽- q)
+  I = 𝔽-abs-neg-equals-pos q
 
   conclusion : abs (q , p) ＝ abs (- (q , p))
   conclusion = abs (q , p)           ＝⟨ by-definition ⟩
-               toℚ (ℚₙ-abs q)         ＝⟨ helper I ⟩
-               toℚ (ℚₙ-abs (ℚₙ- q))   ＝⟨ toℚ-abs fe (ℚₙ- q) ⁻¹ ⟩
-               abs (toℚ (ℚₙ- q))      ＝⟨ by-definition ⟩
+               toℚ (𝔽-abs q)         ＝⟨ helper I ⟩
+               toℚ (𝔽-abs (𝔽- q))   ＝⟨ toℚ-abs fe (𝔽- q) ⁻¹ ⟩
+               abs (toℚ (𝔽- q))      ＝⟨ by-definition ⟩
                abs (- (q , p)) ∎
 
 ℚ-abs-inverse : Fun-Ext → (q : ℚ) → (abs q ＝ q) ∔ (abs q ＝ - q)
 ℚ-abs-inverse fe ((pos x , a) , q) = inl conclusion
  where
-  I : (pos x , a) ≈ toℚₙ (toℚ (pos x , a))
+  I : (pos x , a) ≈ to𝔽 (toℚ (pos x , a))
   I = ≈-toℚ (pos x , a)
-  II : Σ (x' , a') ꞉ ℚₙ , ((pos x , a) , q ＝ toℚ (x' , a'))
+  II : Σ (x' , a') ꞉ 𝔽 , ((pos x , a) , q ＝ toℚ (x' , a'))
   II = q-has-qn fe ((pos x , a) , q)
   x' = pr₁ (pr₁ II)
   a' = pr₂ (pr₁ II)
@@ -142,7 +142,7 @@ abs-of-pos-is-pos' fe p l = abs-of-pos-is-pos fe p (ℚ<-coarser-than-≤ 0ℚ p
   conclusion = abs ((negsucc x , a) , q)     ＝⟨ by-definition ⟩
                toℚ ((absℤ (negsucc x)) , a)  ＝⟨ by-definition ⟩
                toℚ (pos (succ x) , a)        ＝⟨ by-definition ⟩
-               toℚ (ℚₙ- (negsucc x , a))     ＝⟨ by-definition ⟩
+               toℚ (𝔽- (negsucc x , a))     ＝⟨ by-definition ⟩
                - ((negsucc x , a) , q)      ∎
 
 ℚ-positive-not-zero : Fun-Ext → (x a : ℕ) → ¬ (toℚ (pos (succ x) , a) ＝ 0ℚ)

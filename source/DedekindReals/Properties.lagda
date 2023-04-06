@@ -39,7 +39,7 @@ exists-2/3-n : (x y p : ℚ) → x < y → 0ℚ < p → Σ n ꞉ ℕ , (((⟨2/3
 exists-2/3-n x y (p , α) l₁ l₂ = V use-limit
  where
   p-convert : p , α ＝ toℚ p
-  p-convert = toℚ-toℚₙ fe (p , α)
+  p-convert = toℚ-to𝔽 fe (p , α)
   I : ¬ (y - x ＝ 0ℚ)
   I e = ℚ<-not-itself x (transport (x <_) δ l₁)
    where

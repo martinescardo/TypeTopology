@@ -23,25 +23,25 @@ open import Rationals.FractionsOperations
 
 module Rationals.FractionsOrder where
 
-_ℚₙ≤_ _ℚₙ≥_ : ℚₙ → ℚₙ → 𝓤₀ ̇
-(x , a) ℚₙ≤ (y , b) = x ℤ* pos (succ b) ≤ y ℤ* pos (succ a)
-p ℚₙ≥ q = q ℚₙ≤ p
+_𝔽≤_ _𝔽≥_ : 𝔽 → 𝔽 → 𝓤₀ ̇
+(x , a) 𝔽≤ (y , b) = x ℤ* pos (succ b) ≤ y ℤ* pos (succ a)
+p 𝔽≥ q = q 𝔽≤ p
 
-ℚₙ≤-is-prop : (p q : ℚₙ) → is-prop (p ℚₙ≤ q)
-ℚₙ≤-is-prop (x , a) (y , b) = ℤ≤-is-prop (x ℤ* pos (succ b)) (y ℤ* pos (succ a))
+𝔽≤-is-prop : (p q : 𝔽) → is-prop (p 𝔽≤ q)
+𝔽≤-is-prop (x , a) (y , b) = ℤ≤-is-prop (x ℤ* pos (succ b)) (y ℤ* pos (succ a))
 
-_ℚₙ<_ _ℚₙ>_ : ℚₙ → ℚₙ → 𝓤₀ ̇
-(x , a) ℚₙ< (y , b) = x ℤ* pos (succ b) < y ℤ* pos (succ a)
-p ℚₙ> q = q ℚₙ< p
+_𝔽<_ _𝔽>_ : 𝔽 → 𝔽 → 𝓤₀ ̇
+(x , a) 𝔽< (y , b) = x ℤ* pos (succ b) < y ℤ* pos (succ a)
+p 𝔽> q = q 𝔽< p
 
-ℚₙ<-coarser-than-≤ : (p q : ℚₙ) → p ℚₙ< q → p ℚₙ≤ q
-ℚₙ<-coarser-than-≤ (x , a) (y , b) l = <-is-≤ (x ℤ* pos (succ b)) (y ℤ* pos (succ a)) l
+𝔽<-coarser-than-≤ : (p q : 𝔽) → p 𝔽< q → p 𝔽≤ q
+𝔽<-coarser-than-≤ (x , a) (y , b) l = <-is-≤ (x ℤ* pos (succ b)) (y ℤ* pos (succ a)) l
 
-ℚₙ<-is-prop : (p q : ℚₙ) → is-prop (p ℚₙ< q)
-ℚₙ<-is-prop (x , a) (y , b) = ℤ<-is-prop (x ℤ* pos (succ b)) (y ℤ* pos (succ a))
+𝔽<-is-prop : (p q : 𝔽) → is-prop (p 𝔽< q)
+𝔽<-is-prop (x , a) (y , b) = ℤ<-is-prop (x ℤ* pos (succ b)) (y ℤ* pos (succ a))
 
-ℚₙ<-trans : (p q r : ℚₙ) → p ℚₙ< q → q ℚₙ< r → p ℚₙ< r
-ℚₙ<-trans (x , a) (y , b) (z , c) α β = ordering-right-cancellable (x ℤ* c') (z ℤ* a') b' ⋆ I
+𝔽<-trans : (p q r : 𝔽) → p 𝔽< q → q 𝔽< r → p 𝔽< r
+𝔽<-trans (x , a) (y , b) (z , c) α β = ordering-right-cancellable (x ℤ* c') (z ℤ* a') b' ⋆ I
  where
   a' = pos (succ a)
   b' = pos (succ b)
@@ -70,8 +70,8 @@ p ℚₙ> q = q ℚₙ< p
       γ₃ : y ℤ* c' ℤ* a' < z ℤ* b' ℤ* a'
       γ₃ = positive-multiplication-preserves-order (y ℤ* c') (z ℤ* b') a' ⋆ β
 
-ℚₙ<-addition-preserves-order : (p q r : ℚₙ) → p ℚₙ< q → p + r ℚₙ< q + r
-ℚₙ<-addition-preserves-order (x , a) (y , b) (z , c) (n , e) = pred (succ c ℕ* succ c ℕ* succ n) , III
+𝔽<-addition-preserves-order : (p q r : 𝔽) → p 𝔽< q → p + r 𝔽< q + r
+𝔽<-addition-preserves-order (x , a) (y , b) (z , c) (n , e) = pred (succ c ℕ* succ c ℕ* succ n) , III
  where
   a' = pos (succ a)
   b' = pos (succ b)
@@ -145,23 +145,23 @@ p ℚₙ> q = q ℚₙ< p
     xxi   = distributivity-mult-over-ℤ (y ℤ* c') (z ℤ* b') (a' ℤ* c') ⁻¹
     xxii  = ap (λ - → (y ℤ* c' ℤ+ z ℤ* b') ℤ* -) (denom-setup a c ⁻¹)
 
-ℚₙ<-adding : (p q r s : ℚₙ) → p ℚₙ< q → r ℚₙ< s → p + r ℚₙ< q + s
-ℚₙ<-adding p q r s l₁ l₂ = ℚₙ<-trans (p + r) (q + r) (q + s) I III
+𝔽<-adding : (p q r s : 𝔽) → p 𝔽< q → r 𝔽< s → p + r 𝔽< q + s
+𝔽<-adding p q r s l₁ l₂ = 𝔽<-trans (p + r) (q + r) (q + s) I III
  where
-  I : (p + r) ℚₙ< (q + r)
-  I = ℚₙ<-addition-preserves-order p q r l₁
+  I : (p + r) 𝔽< (q + r)
+  I = 𝔽<-addition-preserves-order p q r l₁
 
-  II : (r + q) ℚₙ< (s + q)
-  II = ℚₙ<-addition-preserves-order r s q l₂
+  II : (r + q) 𝔽< (s + q)
+  II = 𝔽<-addition-preserves-order r s q l₂
 
-  III : (q + r) ℚₙ< (q + s)
-  III = transport₂ _ℚₙ<_ (ℚₙ+-comm r q) (ℚₙ+-comm s q) II
+  III : (q + r) 𝔽< (q + s)
+  III = transport₂ _𝔽<_ (𝔽+-comm r q) (𝔽+-comm s q) II
 
-ℚₙ<-adding-zero : (p q : ℚₙ) → (pos 0 , 0) ℚₙ< p → (pos 0 , 0) ℚₙ< q → (pos 0 , 0) ℚₙ< (p + q)
-ℚₙ<-adding-zero p q l₁ l₂ = ℚₙ<-adding (pos 0 , 0) p (pos 0 , 0) q l₁ l₂
+𝔽<-adding-zero : (p q : 𝔽) → (pos 0 , 0) 𝔽< p → (pos 0 , 0) 𝔽< q → (pos 0 , 0) 𝔽< (p + q)
+𝔽<-adding-zero p q l₁ l₂ = 𝔽<-adding (pos 0 , 0) p (pos 0 , 0) q l₁ l₂
 
-ℚₙ-pos-multiplication-preserves-order : (p q : ℚₙ) → (pos 0 , 0) ℚₙ< p → (pos 0 , 0) ℚₙ< q → (pos 0 , 0) ℚₙ< (p * q)
-ℚₙ-pos-multiplication-preserves-order (x , a) (y , b) (c , e₁) (d , e₂) = pred (succ c ℕ* succ d) , I
+𝔽-pos-multiplication-preserves-order : (p q : 𝔽) → (pos 0 , 0) 𝔽< p → (pos 0 , 0) 𝔽< q → (pos 0 , 0) 𝔽< (p * q)
+𝔽-pos-multiplication-preserves-order (x , a) (y , b) (c , e₁) (d , e₂) = pred (succ c ℕ* succ d) , I
  where
   α : pos (succ c) ＝ x
   α = pos (succ c)                                 ＝⟨ ℤ-zero-left-neutral (pos (succ c)) ⁻¹                               ⟩
@@ -194,8 +194,8 @@ p ℚₙ> q = q ℚₙ< p
       x ℤ* y                                                                                 ＝⟨ ℤ-mult-right-id (x ℤ* y)                                                        ⟩
       x ℤ* y ℤ* pos 1                                                                        ∎
 
-ℚₙ≤-pos-multiplication-preserves-order : (p q : ℚₙ) → (pos 0 , 0) ℚₙ≤ p → (pos 0 , 0) ℚₙ≤ q → (pos 0 , 0) ℚₙ≤ (p * q)
-ℚₙ≤-pos-multiplication-preserves-order (x , a) (y , b) (c , e₁) (d , e₂) = c ℕ* d , I
+𝔽≤-pos-multiplication-preserves-order : (p q : 𝔽) → (pos 0 , 0) 𝔽≤ p → (pos 0 , 0) 𝔽≤ q → (pos 0 , 0) 𝔽≤ (p * q)
+𝔽≤-pos-multiplication-preserves-order (x , a) (y , b) (c , e₁) (d , e₂) = c ℕ* d , I
  where
   I : pos 0 ℤ* pos (succ (pred (succ a ℕ* succ b))) ℤ+ pos (c ℕ* d) ＝ x ℤ* y ℤ* pos 1
   I = pos 0 ℤ* pos (succ (pred (succ a ℕ* succ b))) ℤ+ pos (c ℕ* d)        ＝⟨ ap (_ℤ+ pos (c ℕ* d)) (ℤ-zero-left-base (pos (succ (pred (succ a ℕ* succ b)))))                  ⟩
@@ -209,16 +209,16 @@ p ℚₙ> q = q ℚₙ< p
       x ℤ* pos 1 ℤ* (y ℤ* pos 1)                                           ＝⟨ ap (_ℤ* (y ℤ* pos 1)) (ℤ-mult-right-id x ⁻¹)                                                        ⟩
       x ℤ* y ℤ* pos 1                                                      ∎
 
-0ℚₙ≤1 : (pos 0 , 0) ℚₙ≤ (pos 1 , 0)
-0ℚₙ≤1 = 1 , refl
+0𝔽≤1 : (pos 0 , 0) 𝔽≤ (pos 1 , 0)
+0𝔽≤1 = 1 , refl
 
-1ℚₙ≤1 : (pos 1 , 0) ℚₙ≤ (pos 1 , 0)
-1ℚₙ≤1 = 0 , refl
+1𝔽≤1 : (pos 1 , 0) 𝔽≤ (pos 1 , 0)
+1𝔽≤1 = 0 , refl
 
-2/3ℚₙ≤1 : (pos 2 , 2) ℚₙ≤ (pos 1 , 0)
-2/3ℚₙ≤1 = 1 , refl
+2/3𝔽≤1 : (pos 2 , 2) 𝔽≤ (pos 1 , 0)
+2/3𝔽≤1 = 1 , refl
 
-negative-not-greater-than-zero : (x a : ℕ) → ¬ ((pos 0 , 0) ℚₙ<( negsucc x , a))
+negative-not-greater-than-zero : (x a : ℕ) → ¬ ((pos 0 , 0) 𝔽<( negsucc x , a))
 negative-not-greater-than-zero x a (n , l) = negsucc-not-pos I
  where
   I : negsucc x ℤ* pos 1 ＝ pos (succ n)

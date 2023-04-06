@@ -24,7 +24,7 @@ open import Integers.Multiplication renaming (_*_ to _ℤ*_)
 open import Integers.Order
 open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
 open import Rationals.Fractions
-open import Rationals.FractionsOperations renaming (_+_ to _ℚₙ+_ ; _*_ to _ℚₙ*_) hiding (-_)
+open import Rationals.FractionsOperations renaming (_+_ to _𝔽+_ ; _*_ to _𝔽*_) hiding (-_)
 open import Rationals.FractionsOrder
 open import Rationals.Type
 open import Rationals.Addition
@@ -34,35 +34,35 @@ open import Rationals.Negation
 module Rationals.Order where
 
 _≤ℚ_ : (p q : ℚ) → 𝓤₀ ̇
-(p , _) ≤ℚ (q , _) = p ℚₙ≤ q
+(p , _) ≤ℚ (q , _) = p 𝔽≤ q
 
 instance
  Order-ℚ-ℚ : Order ℚ ℚ
  _≤_ {{Order-ℚ-ℚ}} = _≤ℚ_
 
 ℚ≤-is-prop : (p q : ℚ) → is-prop (p ≤ q)
-ℚ≤-is-prop (p , _) (q , _) = ℚₙ≤-is-prop p q
+ℚ≤-is-prop (p , _) (q , _) = 𝔽≤-is-prop p q
 
 _<ℚ_ : (p q : ℚ) → 𝓤₀ ̇
-(p , _) <ℚ (q , _) = p ℚₙ< q
+(p , _) <ℚ (q , _) = p 𝔽< q
 
 instance
  Strict-Order-ℚ-ℚ : Strict-Order ℚ ℚ
  _<_ {{Strict-Order-ℚ-ℚ}} = _<ℚ_
 
 ℚ<-is-prop : (p q : ℚ) → is-prop (p < q)
-ℚ<-is-prop (p , _) (q , _) = ℚₙ<-is-prop p q
+ℚ<-is-prop (p , _) (q , _) = 𝔽<-is-prop p q
 
 ℚ<-trans : (p q r : ℚ) → p < q → q < r → p < r
-ℚ<-trans (p , _) (q , _) (r , _) α β = ℚₙ<-trans p q r α β
+ℚ<-trans (p , _) (q , _) (r , _) α β = 𝔽<-trans p q r α β
 
 ℚ≤-refl : (q : ℚ) → q ≤ q
 ℚ≤-refl q = 0 , by-definition
 
 ℚ<-coarser-than-≤ : (p q : ℚ) → p < q → p ≤ q
-ℚ<-coarser-than-≤ (p , _) (q , _) l = ℚₙ<-coarser-than-≤ p q l
+ℚ<-coarser-than-≤ (p , _) (q , _) l = 𝔽<-coarser-than-≤ p q l
 
-toℚ-< : (p q : ℚₙ) → p ℚₙ< q → toℚ p < toℚ q
+toℚ-< : (p q : 𝔽) → p 𝔽< q → toℚ p < toℚ q
 toℚ-< (x , a) (y , b) l = ordering-right-cancellable (x' ℤ* pos (succ b')) (y' ℤ* (pos (succ a'))) (pos (succ h ℕ* succ h')) IV V
  where
   I : Σ ((x' , a') , p) ꞉ ℚ , (Σ h ꞉ ℕ , (x ＝ (pos (succ h)) ℤ* x') × (succ a ＝ (succ h) ℕ* succ a'))
@@ -125,7 +125,7 @@ toℚ-< (x , a) (y , b) l = ordering-right-cancellable (x' ℤ* pos (succ b')) (
            y' ℤ* pos (succ a') ℤ* pos (succ h' ℕ* succ h)            ＝⟨ ap (λ z → y' ℤ* pos (succ a') ℤ* pos z) (mult-commutativity (succ h') (succ h)) ⟩
            y' ℤ* pos (succ a') ℤ* pos (succ h ℕ* succ h') ∎
 
-toℚ-≤ : (p q : ℚₙ) → p ℚₙ≤ q → toℚ p ≤ toℚ q
+toℚ-≤ : (p q : 𝔽) → p 𝔽≤ q → toℚ p ≤ toℚ q
 toℚ-≤ (x , a) (y , b) l = ℤ≤-ordering-right-cancellable (x' ℤ* pos (succ b')) (y' ℤ* (pos (succ a'))) (pos (succ h ℕ* succ h')) III IV
  where
   I : Σ ((x' , a') , p) ꞉ ℚ , (Σ h ꞉ ℕ , (x ＝ (pos (succ h)) ℤ* x') × (succ a ＝ (succ h) ℕ* succ a'))
@@ -260,8 +260,8 @@ located-property fe p q x l = f (ℚ-trichotomous fe x q)
   f (inr (inl z)) = inl (transport (p <_) (z ⁻¹) l)
   f (inr (inr z)) = inl (ℚ<-trans p q x l z)
 
-half-ℚₙ : ℚₙ → ℚₙ
-half-ℚₙ (x , a) = x , (succ (2 ℕ* a))
+half-𝔽 : 𝔽 → 𝔽
+half-𝔽 (x , a) = x , (succ (2 ℕ* a))
 
 rounded-lemma₀ : (a : ℕ) → succ (2 ℕ* pred (succ a)) ＝ pred (2 ℕ* (succ a))
 rounded-lemma₀ zero = refl
@@ -286,22 +286,22 @@ rounded-lemma₀ (succ a) = succ (2 ℕ* pred (succ (succ a))) ＝⟨ ap (λ - �
 
 ℚ<-addition-preserves-order : (p q r : ℚ) → p < q → (p + r) < (q + r)
 ℚ<-addition-preserves-order (p , _) (q , _) (r , _) l =
- toℚ-< (p ℚₙ+ r) (q ℚₙ+ r) (ℚₙ<-addition-preserves-order p q r l)
+ toℚ-< (p 𝔽+ r) (q 𝔽+ r) (𝔽<-addition-preserves-order p q r l)
 
 ℚ<-adding : (p q r s : ℚ) → p < q → r < s → p + r < q + s
-ℚ<-adding (p , _) (q , _) (r , _) (s , _) l₁ l₂ = toℚ-< (p ℚₙ+ r) (q ℚₙ+ s) I
+ℚ<-adding (p , _) (q , _) (r , _) (s , _) l₁ l₂ = toℚ-< (p 𝔽+ r) (q 𝔽+ s) I
  where
-  I : p ℚₙ+ r ℚₙ< q ℚₙ+ s
-  I = ℚₙ<-adding p q r s l₁ l₂
+  I : p 𝔽+ r 𝔽< q 𝔽+ s
+  I = 𝔽<-adding p q r s l₁ l₂
 
 ℚ<-addition-preserves-order' : Fun-Ext → (p q r : ℚ) → p < q → 0ℚ < r → p < q + r
 ℚ<-addition-preserves-order' fe p q r l m = transport (_< q + r) (ℚ-zero-right-neutral fe p) (ℚ<-adding p q 0ℚ r l m)
 
 ℚ<-pos-multiplication-preserves-order : (p q : ℚ) → 0ℚ < p → 0ℚ < q → 0ℚ < p * q
-ℚ<-pos-multiplication-preserves-order (p , _) (q , _) l₁ l₂ = toℚ-< (pos 0 , 0) (p ℚₙ* q) (ℚₙ-pos-multiplication-preserves-order p q l₁ l₂)
+ℚ<-pos-multiplication-preserves-order (p , _) (q , _) l₁ l₂ = toℚ-< (pos 0 , 0) (p 𝔽* q) (𝔽-pos-multiplication-preserves-order p q l₁ l₂)
 
 ℚ≤-pos-multiplication-preserves-order : (p q : ℚ) → 0ℚ ≤ p → 0ℚ ≤ q → 0ℚ ≤ (p * q)
-ℚ≤-pos-multiplication-preserves-order (p , _) (q , _) l₁ l₂ = toℚ-≤ (pos 0 , 0) (p ℚₙ* q) (ℚₙ≤-pos-multiplication-preserves-order p q l₁ l₂)
+ℚ≤-pos-multiplication-preserves-order (p , _) (q , _) l₁ l₂ = toℚ-≤ (pos 0 , 0) (p 𝔽* q) (𝔽≤-pos-multiplication-preserves-order p q l₁ l₂)
 
 ℚ<-addition-preserves-order'' : Fun-Ext → (p q : ℚ) → 0ℚ < q → p < p + q
 ℚ<-addition-preserves-order'' fe p q l = transport₂ _<_ (ℚ-zero-left-neutral fe p) (ℚ+-comm q p) (ℚ<-addition-preserves-order 0ℚ q p l)
@@ -553,9 +553,9 @@ multiplicative-inverse-preserves-pos fe ((pos (succ x) , a) , α) l nz = toℚ-<
 multiplicative-inverse-preserves-pos fe ((negsucc x , a) , α) l nz = 𝟘-elim (ℚ<-not-itself ((negsucc x , a) , α) (ℚ<-trans (((negsucc x , a) , α)) 0ℚ (((negsucc x , a) , α)) I l))
  where
   I : ((negsucc x , a) , α) < 0ℚ
-  I = transport (_< 0ℚ) (toℚ-toℚₙ fe ((negsucc x , a) , α) ⁻¹) (toℚ-< (negsucc x , a) (pos 0 , 0) II)
+  I = transport (_< 0ℚ) (toℚ-to𝔽 fe ((negsucc x , a) , α) ⁻¹) (toℚ-< (negsucc x , a) (pos 0 , 0) II)
    where
-    II : (negsucc x , a) ℚₙ< (pos 0 , 0)
+    II : (negsucc x , a) 𝔽< (pos 0 , 0)
     II = x , III
      where
       III : succℤ (negsucc x ℤ* pos 1) ℤ+ pos x ＝ pos 0 ℤ* pos (succ a)

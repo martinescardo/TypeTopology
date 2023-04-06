@@ -17,22 +17,22 @@ open import Integers.Type
 open import Integers.Multiplication renaming (_*_ to _ℤ*_)
 open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
 open import Rationals.Fractions
-open import Rationals.FractionsOperations renaming (_*_ to _ℚₙ*_ ; _+_ to _ℚₙ+_)
+open import Rationals.FractionsOperations renaming (_*_ to _𝔽*_ ; _+_ to _𝔽+_)
 open import Rationals.Type
 open import Rationals.Addition
 
 module Rationals.Multiplication where
 
 _*_ : ℚ → ℚ → ℚ
-(p , _) * (q , _) = toℚ (p ℚₙ* q)
+(p , _) * (q , _) = toℚ (p 𝔽* q)
 
 infixl 33 _*_
 
-toℚ-* : (p q : ℚₙ) → toℚ (p ℚₙ* q) ＝ toℚ p * toℚ q
-toℚ-* p q = equiv→equality (p ℚₙ* q) (p' ℚₙ* q') conclusion
+toℚ-* : (p q : 𝔽) → toℚ (p 𝔽* q) ＝ toℚ p * toℚ q
+toℚ-* p q = equiv→equality (p 𝔽* q) (p' 𝔽* q') conclusion
  where
-  p' = toℚₙ (toℚ p)
-  q' = toℚₙ (toℚ q)
+  p' = to𝔽 (toℚ p)
+  q' = to𝔽 (toℚ q)
 
   I : p ≈ p'
   I = ≈-toℚ p
@@ -40,55 +40,55 @@ toℚ-* p q = equiv→equality (p ℚₙ* q) (p' ℚₙ* q') conclusion
   II : q ≈ q'
   II = ≈-toℚ q
 
-  III : p ℚₙ* q ≈ p' ℚₙ* q
+  III : p 𝔽* q ≈ p' 𝔽* q
   III = ≈-over-* p p' q I
 
-  IV : q ℚₙ* p' ≈ q' ℚₙ* p'
+  IV : q 𝔽* p' ≈ q' 𝔽* p'
   IV = ≈-over-* q q' p' II
 
-  V : p' ℚₙ* q ≈ p' ℚₙ* q'
-  V = transport₂ _≈_ (ℚₙ*-comm q p') (ℚₙ*-comm q' p') IV
+  V : p' 𝔽* q ≈ p' 𝔽* q'
+  V = transport₂ _≈_ (𝔽*-comm q p') (𝔽*-comm q' p') IV
 
-  conclusion : p ℚₙ* q ≈ p' ℚₙ* q'
-  conclusion = ≈-trans (p ℚₙ* q) (p' ℚₙ* q) (p' ℚₙ* q') III V
+  conclusion : p 𝔽* q ≈ p' 𝔽* q'
+  conclusion = ≈-trans (p 𝔽* q) (p' 𝔽* q) (p' 𝔽* q') III V
 
 ℚ*-comm : (p q : ℚ) → p * q ＝ q * p
-ℚ*-comm (p , _) (q , _) = ap toℚ (ℚₙ*-comm p q)
+ℚ*-comm (p , _) (q , _) = ap toℚ (𝔽*-comm p q)
 
 ℚ*-assoc : (p q r : ℚ) → p * q * r ＝ p * (q * r)
 ℚ*-assoc (p , α) (q , β) (r , δ) = γ
  where
   γ : (p , α) * (q , β) * (r , δ) ＝ (p , α) * ((q , β) * (r , δ))
   γ = (p , α) * (q , β) * (r , δ)   ＝⟨ refl ⟩
-      toℚ (p ℚₙ* q) * (r , δ)       ＝⟨ i    ⟩
-      toℚ (p ℚₙ* q) * toℚ r         ＝⟨ ii   ⟩
-      toℚ (p ℚₙ* q ℚₙ* r)            ＝⟨ iii ⟩
-      toℚ (p ℚₙ* (q ℚₙ* r))         ＝⟨ iv   ⟩
-      toℚ p * toℚ (q ℚₙ* r)         ＝⟨ v    ⟩
-      (p , α) * toℚ (q ℚₙ* r)       ＝⟨ refl ⟩
+      toℚ (p 𝔽* q) * (r , δ)        ＝⟨ i    ⟩
+      toℚ (p 𝔽* q) * toℚ r          ＝⟨ ii   ⟩
+      toℚ (p 𝔽* q 𝔽* r)             ＝⟨ iii  ⟩
+      toℚ (p 𝔽* (q 𝔽* r))           ＝⟨ iv   ⟩
+      toℚ p * toℚ (q 𝔽* r)          ＝⟨ v    ⟩
+      (p , α) * toℚ (q 𝔽* r)        ＝⟨ refl ⟩
       (p , α) * ((q , β) * (r , δ)) ∎
    where
-    i   = ap (toℚ (p ℚₙ* q) *_) (toℚ-toℚₙ (r , δ))
-    ii  = toℚ-* (p ℚₙ* q) r ⁻¹
-    iii = ap toℚ (ℚₙ*-assoc p q r)
-    iv  = toℚ-* p (q ℚₙ* r)
-    v   = ap (_* toℚ (q ℚₙ* r)) (toℚ-toℚₙ (p , α) ⁻¹)
+    i   = ap (toℚ (p 𝔽* q) *_) (toℚ-to𝔽 (r , δ))
+    ii  = toℚ-* (p 𝔽* q) r ⁻¹
+    iii = ap toℚ (𝔽*-assoc p q r)
+    iv  = toℚ-* p (q 𝔽* r)
+    v   = ap (_* toℚ (q 𝔽* r)) (toℚ-to𝔽 (p , α) ⁻¹)
 
 ℚ-zero-left-is-zero : (q : ℚ) → 0ℚ * q ＝ 0ℚ
 ℚ-zero-left-is-zero ((x , a) , q) = γ
  where
   γ : 0ℚ * ((x , a) , q) ＝ 0ℚ
-  γ = 0ℚ * ((x , a) , q)             ＝⟨ i  ⟩
-      toℚ (pos 0 , 0) * toℚ (x , a)  ＝⟨ ii ⟩
-      toℚ ((pos 0 , 0) ℚₙ* (x , a))  ＝⟨ iii ⟩
-      0ℚ ∎
+  γ = 0ℚ * ((x , a) , q)            ＝⟨ i  ⟩
+      toℚ (pos 0 , 0) * toℚ (x , a) ＝⟨ ii ⟩
+      toℚ ((pos 0 , 0) 𝔽* (x , a))  ＝⟨ iii ⟩
+      0ℚ                            ∎
    where
-    iiiₐₚ : ((pos 0 , 0) ℚₙ* (x , a)) ≈ (pos 0 , 0)
-    iiiₐₚ = ℚₙ-zero-left-is-zero (x , a)
+    iiiₐₚ : ((pos 0 , 0) 𝔽* (x , a)) ≈ (pos 0 , 0)
+    iiiₐₚ = 𝔽-zero-left-is-zero (x , a)
 
-    i   = ap (0ℚ *_) (toℚ-toℚₙ ((x , a) , q))
+    i   = ap (0ℚ *_) (toℚ-to𝔽 ((x , a) , q))
     ii  = toℚ-* (pos 0 , 0) (x , a) ⁻¹
-    iii = equiv→equality ((pos 0 , 0) ℚₙ* (x , a)) (pos 0 , 0) iiiₐₚ
+    iii = equiv→equality ((pos 0 , 0) 𝔽* (x , a)) (pos 0 , 0) iiiₐₚ
 
 ℚ-zero-right-is-zero : (q : ℚ) → q * 0ℚ ＝ 0ℚ
 ℚ-zero-right-is-zero q = ℚ*-comm q 0ℚ ∙ ℚ-zero-left-is-zero q
@@ -97,10 +97,10 @@ toℚ-* p q = equiv→equality (p ℚₙ* q) (p' ℚₙ* q') conclusion
 ℚ-mult-left-id (q , α) = γ
  where
   γ : 1ℚ * (q , α) ＝ (q , α)
-  γ = 1ℚ * (q , α)            ＝⟨ ap (toℚ (pos 1 , 0) *_) (toℚ-toℚₙ (q , α)) ⟩
-      toℚ (pos 1 , 0) * toℚ q ＝⟨ toℚ-* (pos 1 , 0) q ⁻¹ ⟩
-      toℚ ((pos 1 , 0) ℚₙ* q) ＝⟨ ap toℚ (ℚₙ-mult-left-id q) ⟩
-      toℚ q                   ＝⟨ toℚ-toℚₙ (q , α) ⁻¹ ⟩
+  γ = 1ℚ * (q , α)            ＝⟨ ap (toℚ (pos 1 , 0) *_) (toℚ-to𝔽 (q , α)) ⟩
+      toℚ (pos 1 , 0) * toℚ q ＝⟨ toℚ-* (pos 1 , 0) q ⁻¹                    ⟩
+      toℚ ((pos 1 , 0) 𝔽* q)  ＝⟨ ap toℚ (𝔽-mult-left-id q)                 ⟩
+      toℚ q                   ＝⟨ toℚ-to𝔽 (q , α) ⁻¹                        ⟩
       (q , α)                 ∎
 
 ℚ-mult-right-id : (q : ℚ) → q * 1ℚ ＝ q
@@ -110,27 +110,27 @@ toℚ-* p q = equiv→equality (p ℚₙ* q) (p' ℚₙ* q') conclusion
 ℚ-distributivity (p , α) (q , β) (r , δ) = γ
  where
   γ : (p , α) * ((q , β) + (r , δ)) ＝ (p , α) * (q , β) + (p , α) * (r , δ)
-  γ = (p , α) * ((q , β) + (r , δ))          ＝⟨ refl ⟩
-      (p , α) * toℚ (q ℚₙ+ r)                ＝⟨ i    ⟩
-      toℚ p * toℚ (q ℚₙ+ r)                  ＝⟨ ii   ⟩
-      toℚ (p ℚₙ* (q ℚₙ+ r))                   ＝⟨ iii ⟩
-      toℚ (p ℚₙ* q ℚₙ+ p ℚₙ* r)               ＝⟨ iv  ⟩
-      toℚ (p ℚₙ* q) + toℚ (p ℚₙ* r)          ＝⟨ v   ⟩
-      toℚ (p ℚₙ* q) + toℚ p * toℚ r         ＝⟨ vi   ⟩
+  γ = (p , α) * ((q , β) + (r , δ))         ＝⟨ refl ⟩
+      (p , α) * toℚ (q 𝔽+ r)                ＝⟨ i    ⟩
+      toℚ p * toℚ (q 𝔽+ r)                  ＝⟨ ii   ⟩
+      toℚ (p 𝔽* (q 𝔽+ r))                   ＝⟨ iii  ⟩
+      toℚ (p 𝔽* q 𝔽+ p 𝔽* r)                ＝⟨ iv   ⟩
+      toℚ (p 𝔽* q) + toℚ (p 𝔽* r)           ＝⟨ v    ⟩
+      toℚ (p 𝔽* q) + toℚ p * toℚ r          ＝⟨ vi   ⟩
       toℚ p * toℚ q + toℚ p * toℚ r         ＝⟨ vii  ⟩
       (p , α) * toℚ q + (p , α) * toℚ r     ＝⟨ viii ⟩
       (p , α) * (q , β) + (p , α) * toℚ r   ＝⟨ ix   ⟩
       (p , α) * (q , β) + (p , α) * (r , δ) ∎
    where
-    i    = ap (_* toℚ (q ℚₙ+ r)) (toℚ-toℚₙ (p , α))
-    ii   = toℚ-* p (q ℚₙ+ r) ⁻¹
-    iii  = equiv→equality (p ℚₙ* (q ℚₙ+ r)) (p ℚₙ* q ℚₙ+ p ℚₙ* r) (ℚₙ-dist p q r)
-    iv   = toℚ-+ (p ℚₙ* q) (p ℚₙ* r)
-    v    = ap (toℚ (p ℚₙ* q) +_) (toℚ-* p r)
+    i    = ap (_* toℚ (q 𝔽+ r)) (toℚ-to𝔽 (p , α))
+    ii   = toℚ-* p (q 𝔽+ r) ⁻¹
+    iii  = equiv→equality (p 𝔽* (q 𝔽+ r)) (p 𝔽* q 𝔽+ p 𝔽* r) (𝔽-dist p q r)
+    iv   = toℚ-+ (p 𝔽* q) (p 𝔽* r)
+    v    = ap (toℚ (p 𝔽* q) +_) (toℚ-* p r)
     vi   = ap (_+ toℚ p * toℚ r) (toℚ-* p q)
-    vii  = ap (λ - → - * toℚ q + - * toℚ r) (toℚ-toℚₙ (p , α) ⁻¹)
-    viii = ap (λ - → (p , α) * - + (p , α) * toℚ r) (toℚ-toℚₙ (q , β) ⁻¹)
-    ix   = ap (λ - → (p , α) * (q , β) + (p , α) * -) (toℚ-toℚₙ (r , δ) ⁻¹)
+    vii  = ap (λ - → - * toℚ q + - * toℚ r) (toℚ-to𝔽 (p , α) ⁻¹)
+    viii = ap (λ - → (p , α) * - + (p , α) * toℚ r) (toℚ-to𝔽 (q , β) ⁻¹)
+    ix   = ap (λ - → (p , α) * (q , β) + (p , α) * -) (toℚ-to𝔽 (r , δ) ⁻¹)
 
 ℚ-distributivity' : (p q r : ℚ) → (q + r) * p ＝ q * p + r * p
 ℚ-distributivity' p q r = γ
@@ -149,7 +149,7 @@ multiplicative-inverse ((pos 0        , a) , p) nz = 𝟘-elim (nz γ)
 multiplicative-inverse ((pos (succ x) , a) , p) nz = toℚ ((pos (succ a)) , x)
 multiplicative-inverse ((negsucc x , a) , p) nz = toℚ ((negsucc  a) , x)
 
-division-by-self-is-one : ((x , a) : ℚₙ) → x ＝ pos (succ a) → toℚ (x , a) ＝ 1ℚ
+division-by-self-is-one : ((x , a) : 𝔽) → x ＝ pos (succ a) → toℚ (x , a) ＝ 1ℚ
 division-by-self-is-one (negsucc x , a) e = 𝟘-elim (negsucc-not-pos e)
 division-by-self-is-one (pos 0 , a) e = 𝟘-elim (zero-not-positive a γ)
  where
@@ -179,9 +179,9 @@ division-by-self-is-one (pos (succ x) , a) e = I II
       pos (succ (pred (succ a ℕ* succ x))) ∎
 
   γ : ((pos (succ x) , a) , p) * toℚ ((pos (succ a)) , x) ＝ 1ℚ
-  γ = ((pos (succ x) , a) , p) * toℚ ((pos (succ a)) , x)              ＝⟨ ap (_* toℚ (pos (succ a) , x)) (toℚ-toℚₙ (((pos (succ x) , a) , p))) ⟩
+  γ = ((pos (succ x) , a) , p) * toℚ ((pos (succ a)) , x)              ＝⟨ ap (_* toℚ (pos (succ a) , x)) (toℚ-to𝔽 (((pos (succ x) , a) , p))) ⟩
       toℚ (pos (succ x) , a) * toℚ (pos (succ a) , x)                  ＝⟨ toℚ-* (pos (succ x) , a) (pos (succ a) , x) ⁻¹                       ⟩
-      toℚ ((pos (succ x) , a) ℚₙ* (pos (succ a) , x))                  ＝⟨ refl                                                                    ⟩
+      toℚ ((pos (succ x) , a) 𝔽* (pos (succ a) , x))                  ＝⟨ refl                                                                    ⟩
       toℚ ((pos (succ x) ℤ* pos (succ a)) , (pred (succ a ℕ* succ x))) ＝⟨ division-by-self-is-one ((pos (succ x) ℤ* pos (succ a)) , (pred (succ a ℕ* succ x))) ψ ⟩
       toℚ (pos 1 , 0)                                                  ＝⟨ refl                                                                    ⟩
       1ℚ                                                               ∎
@@ -194,13 +194,13 @@ division-by-self-is-one (pos (succ x) , a) e = I II
       pos (succ (pred (succ a ℕ* succ x))) ∎
 
   γ : ((negsucc x , a) , p) * toℚ ((negsucc  a) , x) ＝ 1ℚ
-  γ = ((negsucc x , a) , p) * toℚ (negsucc a , x) ＝⟨ ap (_* toℚ (negsucc a , x)) (toℚ-toℚₙ ((negsucc x , a) , p))                 ⟩
+  γ = ((negsucc x , a) , p) * toℚ (negsucc a , x) ＝⟨ ap (_* toℚ (negsucc a , x)) (toℚ-to𝔽 ((negsucc x , a) , p))                 ⟩
       (toℚ (negsucc x , a) * toℚ (negsucc a , x)) ＝⟨ toℚ-* (negsucc x , a) (negsucc a , x) ⁻¹                                     ⟩
-      toℚ ((negsucc x , a) ℚₙ* (negsucc a , x))   ＝⟨ division-by-self-is-one (negsucc x ℤ* negsucc a , pred (succ a ℕ* succ x)) ψ ⟩
+      toℚ ((negsucc x , a) 𝔽* (negsucc a , x))   ＝⟨ division-by-self-is-one (negsucc x ℤ* negsucc a , pred (succ a ℕ* succ x)) ψ ⟩
       1ℚ                                          ∎
 
 ℚ*-inverse : (q : ℚ) → ¬ (q ＝ 0ℚ) → Σ q' ꞉ ℚ , q * q' ＝ 1ℚ
-ℚ*-inverse q nz = (multiplicative-inverse q nz) , ℚ*-inverse-product-is-one q nz
+ℚ*-inverse q nz = multiplicative-inverse q nz , ℚ*-inverse-product-is-one q nz
 
 ⟨2/3⟩^_ : ℕ → ℚ
 ⟨2/3⟩^ 0         = toℚ (pos 1 , 0)

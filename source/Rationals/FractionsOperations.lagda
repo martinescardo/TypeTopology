@@ -10,13 +10,11 @@ open import Naturals.Addition renaming (_+_ to _ℕ+_)
 open import Naturals.Properties
 open import UF.Base hiding (_≈_)
 open import UF.Subsingletons
-
 open import Integers.Type hiding (abs)
 open import Integers.Abs
 open import Integers.Addition renaming (_+_ to _ℤ+_)
 open import Integers.Multiplication renaming (_*_ to _ℤ*_)
 open import Integers.Negation renaming (-_ to ℤ-_)
-
 open import Rationals.Fractions
 open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
 
@@ -33,35 +31,35 @@ denom-setup a b = pos (succ (pred (succ a ℕ* succ b))) ＝⟨ ap pos (succ-pre
                   pos (succ a ℕ* succ b)               ＝⟨ pos-multiplication-equiv-to-ℕ (succ a) (succ b) ⁻¹ ⟩
                   pos (succ a) ℤ* pos (succ b)         ∎
 
--_ : ℚₙ → ℚₙ
+-_ : 𝔽 → 𝔽
 -_ (x , a) = ℤ- x , a
 
-_+_ : ℚₙ → ℚₙ → ℚₙ
+_+_ : 𝔽 → 𝔽 → 𝔽
 (x , y) + (x' , y') = x ℤ* pos (succ y') ℤ+ x' ℤ* pos (succ y) , pred (succ y ℕ* succ y')
 
 infixl 33 _+_
 
-ℚₙ-zero-right-neutral : (q : ℚₙ) → q + (pos 0 , 0) ＝ q
-ℚₙ-zero-right-neutral (x , a) = (x , a) + (pos 0 , 0)             ＝⟨ refl ⟩
+𝔽-zero-right-neutral : (q : 𝔽) → q + (pos 0 , 0) ＝ q
+𝔽-zero-right-neutral (x , a) = (x , a) + (pos 0 , 0)             ＝⟨ refl ⟩
                                 x ℤ+ (pos 0 ℤ* pos (succ a)) , a  ＝⟨ ap (λ - → x ℤ+ - , a) (ℤ*-comm (pos 0) (pos (succ a))) ⟩
                                 x ℤ+ pos 0 , a                    ＝⟨ refl ⟩
                                 x , a                             ∎
 
-ℚₙ+-comm : (p q : ℚₙ) → p + q ＝ q + p
-ℚₙ+-comm (x , a) (y , b) = ap₂ _,_ I II
+𝔽+-comm : (p q : 𝔽) → p + q ＝ q + p
+𝔽+-comm (x , a) (y , b) = ap₂ _,_ I II
  where
   I : x ℤ* pos (succ b) ℤ+ y ℤ* pos (succ a) ＝ y ℤ* pos (succ a) ℤ+ x ℤ* pos (succ b)
   I = ℤ+-comm (x ℤ* pos (succ b)) (y ℤ* (pos (succ a)))
   II : pred (succ a ℕ* succ b) ＝ pred (succ b ℕ* succ a)
   II = ap pred (mult-commutativity (succ a) (succ b))
 
-ℚₙ+-assoc : (a b c : ℚₙ) → a + b + c ＝ a + (b + c)
-ℚₙ+-assoc (x , a) (y , b) (z , c) = ap₂ _,_ I II
+𝔽+-assoc : (a b c : 𝔽) → a + b + c ＝ a + (b + c)
+𝔽+-assoc (x , a) (y , b) (z , c) = ap₂ _,_ I II
  where
-  left : ℚₙ
+  left : 𝔽
   left = (x , a) + (y , b)
 
-  right : ℚₙ
+  right : 𝔽
   right = (y , b) + (z , c)
 
   α δ : ℤ
@@ -102,7 +100,7 @@ infixl 33 _+_
        pred (succ a ℕ* (succ b ℕ* succ c))                  ＝⟨ ap (λ - → pred (succ a ℕ* -)) (succ-pred-multiplication b c)    ⟩
        pred (succ a ℕ* succ (pred (succ b ℕ+ succ b ℕ* c))) ∎
 
-≈-addition : (p q r : ℚₙ) → p ≈ q → (p + r) ≈ (q + r)
+≈-addition : (p q r : 𝔽) → p ≈ q → (p + r) ≈ (q + r)
 ≈-addition (x , a) (y , b) (z , c) e₁ = III
  where
   I :  pos (succ (pred (succ b ℕ* succ c))) ＝ pos (succ b) ℤ* pos (succ c)
@@ -128,12 +126,12 @@ infixl 33 _+_
         (y ℤ* c' ℤ+ z ℤ* b') ℤ* (a' ℤ* c')                             ＝⟨ ap (λ - → (y ℤ* c' ℤ+ (z ℤ* b')) ℤ* -) II                                                       ⟩
         (y ℤ* c' ℤ+ (z ℤ* b')) ℤ* pos (succ (pred (succ a ℕ* succ c))) ∎
 
-_*_ : ℚₙ → ℚₙ → ℚₙ
+_*_ : 𝔽 → 𝔽 → 𝔽
 (x , y) * (x' , y') = x ℤ* x' , pred (succ y ℕ* succ y')
 
 infixl 34 _*_
 
-≈-over-* : (p q r : ℚₙ) → p ≈ q → (p * r) ≈ (q * r)
+≈-over-* : (p q r : 𝔽) → p ≈ q → (p * r) ≈ (q * r)
 ≈-over-* (x , a) (y , b) (z , c) e = I
  where
   a' b' c' : ℤ
@@ -164,21 +162,21 @@ infixl 34 _*_
 1/3+2/3≈1 = pos 9 ℤ* pos 1 ＝⟨ ℤ*-comm (pos 9) (pos 1) ⟩
             pos 1 ℤ* pos 9 ∎
 
-ℚₙ-mult-left-id : (q : ℚₙ) → (pos 1 , 0) * q ＝ q
-ℚₙ-mult-left-id (x , a) = (pos 1 , 0) * (x , a)             ＝⟨ refl                                                     ⟩
+𝔽-mult-left-id : (q : 𝔽) → (pos 1 , 0) * q ＝ q
+𝔽-mult-left-id (x , a) = (pos 1 , 0) * (x , a)             ＝⟨ refl                                                     ⟩
                           pos 1 ℤ* x , pred (1 ℕ* succ a)   ＝⟨ ap (λ z → (pos 1 ℤ* x) , pred z) (mult-left-id (succ a)) ⟩
                           pos 1 ℤ* x , pred (succ a)        ＝⟨ ap (λ z → z , pred (succ a)) (ℤ-mult-left-id x)          ⟩
                           x , pred (succ a)                 ＝⟨ refl                                                     ⟩
                           x , a                             ∎
 
-ℚₙ-zero-left-is-zero : (q : ℚₙ) → (pos 0 , 0) * q ≈ (pos 0 , 0)
-ℚₙ-zero-left-is-zero (x , a) = pos 0 ℤ* x ℤ* pos 1                      ＝⟨ ℤ*-assoc (pos 0) x (pos 1)                               ⟩
+𝔽-zero-left-is-zero : (q : 𝔽) → (pos 0 , 0) * q ≈ (pos 0 , 0)
+𝔽-zero-left-is-zero (x , a) = pos 0 ℤ* x ℤ* pos 1                      ＝⟨ ℤ*-assoc (pos 0) x (pos 1)                               ⟩
                                pos 0 ℤ* (x ℤ* pos 1)                    ＝⟨ ℤ-zero-left-base (x ℤ* pos 1)                         ⟩
                                pos 0                                    ＝⟨ ℤ-zero-left-base (pos (succ (pred (1 ℕ* succ a)))) ⁻¹ ⟩
                                pos 0 ℤ* pos (succ (pred (1 ℕ* succ a))) ∎
 
-ℚₙ*-comm : (p q : ℚₙ) → p * q ＝ q * p
-ℚₙ*-comm (x , a) (y , b) = ap₂ _,_ I II
+𝔽*-comm : (p q : 𝔽) → p * q ＝ q * p
+𝔽*-comm (x , a) (y , b) = ap₂ _,_ I II
  where
   I : x ℤ* y ＝ y ℤ* x
   I = ℤ*-comm x y
@@ -186,8 +184,8 @@ infixl 34 _*_
   II : pred (succ a ℕ* succ b) ＝ pred (succ b ℕ* succ a)
   II = ap pred (mult-commutativity (succ a) (succ b))
 
-ℚₙ*-assoc : (p q r : ℚₙ) → p * q * r ＝ p * (q * r)
-ℚₙ*-assoc (x , a) (y , b) (z , c) = ap₂ _,_ I II
+𝔽*-assoc : (p q r : 𝔽) → p * q * r ＝ p * (q * r)
+𝔽*-assoc (x , a) (y , b) (z , c) = ap₂ _,_ I II
  where
   I : x ℤ* y ℤ* z ＝ x ℤ* (y ℤ* z)
   I = ℤ*-assoc x y z
@@ -203,8 +201,8 @@ infixl 34 _*_
        pred (a' ℕ* (b' ℕ* c'))             ＝⟨ ap (λ - → pred (a' ℕ* -)) (succ-pred-multiplication b c)    ⟩
        pred (a' ℕ* succ (pred (b' ℕ* c'))) ∎
 
-ℚₙ-dist : (p q r : ℚₙ) → p * (q + r) ≈ p * q + p * r
-ℚₙ-dist (x , a) (y , b) (z , c) = I
+𝔽-dist : (p q r : 𝔽) → p * (q + r) ≈ p * q + p * r
+𝔽-dist (x , a) (y , b) (z , c) = I
  where
   a' b' c' : ℕ
   a' = succ a
@@ -255,24 +253,24 @@ infixl 34 _*_
     xii  = ap  (λ α → (x ℤ* y ℤ* k ℤ+ (x ℤ* z ℤ* l)) ℤ* (pos (a' ℕ* α))) (succ-pred-multiplication b c)
     xiii = ap (λ α → (x ℤ* y ℤ* k ℤ+ (x ℤ* z ℤ* l)) ℤ* pos α) (succ-pred-multiplication a (pred (b' ℕ* c')))
 
-abs : ℚₙ → ℚₙ
+abs : 𝔽 → 𝔽
 abs (x , a) = absℤ x , a
 
-ℚₙ-abs-0 : pos 0 , 0 ＝ abs (pos 0 , 0)
-ℚₙ-abs-0 = by-definition
+𝔽-abs-0 : pos 0 , 0 ＝ abs (pos 0 , 0)
+𝔽-abs-0 = by-definition
 
-ℚₙ-abs-neg-equals-pos : (q : ℚₙ) → abs q ≈ abs (- q)
-ℚₙ-abs-neg-equals-pos (x , a) = absℤ x ℤ* pos (succ a)      ＝⟨ ap (_ℤ* (pos (succ a))) (absℤ-removes-neg-sign x) ⟩
+𝔽-abs-neg-equals-pos : (q : 𝔽) → abs q ≈ abs (- q)
+𝔽-abs-neg-equals-pos (x , a) = absℤ x ℤ* pos (succ a)      ＝⟨ ap (_ℤ* (pos (succ a))) (absℤ-removes-neg-sign x) ⟩
                                 absℤ (ℤ- x) ℤ* pos (succ a) ∎
 
-ℚₙ-subtraction-dist-over-mult : (p q : ℚₙ) → (- p) * q ≈ (- (p * q))
-ℚₙ-subtraction-dist-over-mult (x , a) (y , b) = ap (_ℤ* pos (succ (pred (succ a ℕ* succ b)))) I
+𝔽-subtraction-dist-over-mult : (p q : 𝔽) → (- p) * q ≈ (- (p * q))
+𝔽-subtraction-dist-over-mult (x , a) (y , b) = ap (_ℤ* pos (succ (pred (succ a ℕ* succ b)))) I
  where
   I : (ℤ- x) ℤ* y ＝ ℤ- (x ℤ* y)
   I = negation-dist-over-mult' x y
 
-ℚₙ-add-same-denom : ((x , a) (y , a) : ℚₙ) →  (((x , a) + (y , a)) ≈ (x ℤ+ y , a))
-ℚₙ-add-same-denom (x , a) (y , b) = (x ℤ* pos (succ b) ℤ+ y ℤ* pos (succ b)) ℤ* pos (succ b)   ＝⟨ ap (_ℤ* pos (succ b)) (distributivity-mult-over-ℤ x y (pos (succ b)) ⁻¹) ⟩
+𝔽-add-same-denom : ((x , a) (y , a) : 𝔽) →  (((x , a) + (y , a)) ≈ (x ℤ+ y , a))
+𝔽-add-same-denom (x , a) (y , b) = (x ℤ* pos (succ b) ℤ+ y ℤ* pos (succ b)) ℤ* pos (succ b)   ＝⟨ ap (_ℤ* pos (succ b)) (distributivity-mult-over-ℤ x y (pos (succ b)) ⁻¹) ⟩
                                     (x ℤ+ y) ℤ* pos (succ b) ℤ* pos (succ b)                   ＝⟨ ℤ*-assoc (x ℤ+ y ) (pos (succ b)) (pos (succ b))                         ⟩
                                     (x ℤ+ y) ℤ* (pos (succ b) ℤ* pos (succ b))                 ＝⟨ ap ((x ℤ+ y) ℤ*_) (denom-setup b b ⁻¹)                                   ⟩
                                     (x ℤ+ y) ℤ* pos (succ (pred (succ b ℕ* succ b)))           ∎
