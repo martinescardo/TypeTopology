@@ -269,6 +269,26 @@ abs (x , a) = absℤ x , a
   I : (ℤ- x) ℤ* y ＝ ℤ- (x ℤ* y)
   I = negation-dist-over-mult' x y
 
+𝔽-minus-dist : ((x , a) (y , b) : 𝔽)
+             → (ℤ- x , a) + (ℤ- y , b) ≈ (- ((x , a) + (y , b)))
+𝔽-minus-dist (x , a) (y , b) = γ
+ where
+  pa = (pos ∘ succ) a
+  pb = (pos ∘ succ) b
+
+  γ' : (ℤ- x) ℤ* pb ℤ+ (ℤ- y) ℤ* pa ＝ ℤ- (x ℤ* pb ℤ+ y ℤ* pa)
+  γ' = (ℤ- x) ℤ* pb ℤ+ (ℤ- y) ℤ* pa ＝⟨ i   ⟩
+       (ℤ- x ℤ* pb) ℤ+ (ℤ- y) ℤ* pa ＝⟨ ii  ⟩
+       (ℤ- x ℤ* pb) ℤ+ (ℤ- y ℤ* pa) ＝⟨ iii ⟩
+       ℤ- (x ℤ* pb ℤ+ y ℤ* pa)      ∎
+   where
+    i   = ap (_ℤ+ (ℤ- y) ℤ* pa) (negation-dist-over-mult' x pb)
+    ii  = ap ((ℤ- x ℤ* pb) ℤ+_) (negation-dist-over-mult' y pa)
+    iii = negation-dist (x ℤ* pb) (y ℤ* pa)
+
+  γ : ((ℤ- x , a) + (ℤ- y , b)) ≈ (- ((x , a) + (y , b)))
+  γ = ap (_ℤ* pos (succ (pred (succ a ℕ* succ b)))) γ'
+
 𝔽-add-same-denom : ((x , a) (y , a) : 𝔽) →  (((x , a) + (y , a)) ≈ (x ℤ+ y , a))
 𝔽-add-same-denom (x , a) (y , b) = (x ℤ* pos (succ b) ℤ+ y ℤ* pos (succ b)) ℤ* pos (succ b)   ＝⟨ ap (_ℤ* pos (succ b)) (distributivity-mult-over-ℤ x y (pos (succ b)) ⁻¹) ⟩
                                     (x ℤ+ y) ℤ* pos (succ b) ℤ* pos (succ b)                   ＝⟨ ℤ*-assoc (x ℤ+ y ) (pos (succ b)) (pos (succ b))                         ⟩
