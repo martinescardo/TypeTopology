@@ -171,8 +171,8 @@ infixl 34 _*_
                           x , pred (succ a)                 ＝⟨ refl                                                     ⟩
                           x , a                             ∎
 
-ℚₙ-zero-left-neutral : (q : ℚₙ) → (pos 0 , 0) * q ≈ (pos 0 , 0)
-ℚₙ-zero-left-neutral (x , a) = pos 0 ℤ* x ℤ* pos 1                      ＝⟨ ℤ*-assoc (pos 0) x (pos 1)                               ⟩
+ℚₙ-zero-left-is-zero : (q : ℚₙ) → (pos 0 , 0) * q ≈ (pos 0 , 0)
+ℚₙ-zero-left-is-zero (x , a) = pos 0 ℤ* x ℤ* pos 1                      ＝⟨ ℤ*-assoc (pos 0) x (pos 1)                               ⟩
                                pos 0 ℤ* (x ℤ* pos 1)                    ＝⟨ ℤ-zero-left-base (x ℤ* pos 1)                         ⟩
                                pos 0                                    ＝⟨ ℤ-zero-left-base (pos (succ (pred (1 ℕ* succ a)))) ⁻¹ ⟩
                                pos 0 ℤ* pos (succ (pred (1 ℕ* succ a))) ∎
