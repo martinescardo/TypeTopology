@@ -289,6 +289,45 @@ abs (x , a) = absℤ x , a
   γ : ((ℤ- x , a) + (ℤ- y , b)) ≈ (- ((x , a) + (y , b)))
   γ = ap (_ℤ* pos (succ (pred (succ a ℕ* succ b)))) γ'
 
+𝔽+-inverse : ((x , a) : 𝔽) → ((ℤ- x , a) + (x , a)) ≈ (pos 0 , 0)
+𝔽+-inverse (x , a) = γ
+ where
+  pa = (pos ∘ succ) a
+
+  γ : ((ℤ- x , a) + (x , a)) ≈ (pos 0 , 0)
+  γ = ((ℤ- x) ℤ* pa ℤ+ x ℤ* pa) ℤ* pos 1            ＝⟨ i   ⟩
+      ((ℤ- x) ℤ* pa ℤ+ x ℤ* pa)                     ＝⟨ ii  ⟩
+      ((ℤ- x) ℤ+ x) ℤ* pa                           ＝⟨ iii ⟩
+      (x ℤ+ (ℤ- x)) ℤ* pa                           ＝⟨ iv  ⟩
+      pos 0 ℤ* pa                                   ＝⟨ v   ⟩
+      pos 0                                         ＝⟨ vi  ⟩
+      pos 0 ℤ* pos (succ (pred (succ a ℕ* succ a))) ∎
+   where
+    i   = ℤ-mult-right-id ((ℤ- x) ℤ* pa ℤ+ (x ℤ* pa))
+    ii  = distributivity-mult-over-ℤ (ℤ- x) x pa ⁻¹
+    iii = ap (_ℤ* pa) (ℤ+-comm (ℤ- x) x)
+    iv  = ap (_ℤ* pa) (ℤ-sum-of-inverse-is-zero x)
+    v   = ℤ-zero-left-base pa
+    vi  = ℤ-zero-left-base (pos (succ (pred (succ a ℕ* succ a)))) ⁻¹
+
+𝔽+-inverse' : ((x , a) : 𝔽) → ((x , a) + (ℤ- x , a)) ≈ (pos 0 , 0)
+𝔽+-inverse' (x , a) = γ
+ where
+  I : (x , a) + (ℤ- x , a) ＝ (ℤ- x , a) + (x , a)
+  I = 𝔽+-comm (x , a) (ℤ- x , a)
+
+  II : ((x , a) + (ℤ- x , a)) ≈ ((x , a) + (ℤ- x , a))
+  II = ≈-refl ((x , a) + (ℤ- x , a))
+
+  III : ((x , a) + (ℤ- x , a)) ≈ ((ℤ- x , a) + (x , a))
+  III = transport (((x , a) + (ℤ- x , a)) ≈_) I II
+
+  IV : ((ℤ- x , a) + (x , a)) ≈ (pos 0 , 0)
+  IV = 𝔽+-inverse (x , a)
+
+  γ : ((x , a) + (ℤ- x , a)) ≈ (pos 0 , 0)
+  γ = ≈-trans ((x , a) + (ℤ- x , a)) ((ℤ- x , a) + (x , a)) (pos 0 , 0) III IV
+
 𝔽-add-same-denom : ((x , a) (y , a) : 𝔽) →  (((x , a) + (y , a)) ≈ (x ℤ+ y , a))
 𝔽-add-same-denom (x , a) (y , b) = (x ℤ* pos (succ b) ℤ+ y ℤ* pos (succ b)) ℤ* pos (succ b)   ＝⟨ ap (_ℤ* pos (succ b)) (distributivity-mult-over-ℤ x y (pos (succ b)) ⁻¹) ⟩
                                     (x ℤ+ y) ℤ* pos (succ b) ℤ* pos (succ b)                   ＝⟨ ℤ*-assoc (x ℤ+ y ) (pos (succ b)) (pos (succ b))                         ⟩

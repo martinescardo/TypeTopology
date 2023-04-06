@@ -52,7 +52,6 @@ toℚ-neg (x , a) = equiv→equality (ℤ- x' , a') (𝔽- (x , a)) γ
       ℤ- x ℤ* pa'   ＝⟨ negation-dist-over-mult' x pa' ⁻¹ ⟩
       (ℤ- x) ℤ* pa' ∎
 
-
 ℚ-minus-dist : (p q : ℚ) → (- p) + (- q) ＝ - (p + q)
 ℚ-minus-dist ((x , a) , p) ((y , b) , q) = γ
  where
@@ -71,57 +70,24 @@ toℚ-neg (x , a) = equiv→equality (ℤ- x' , a') (𝔽- (x , a)) γ
       - toℚ ((x , a) 𝔽+ (y , b))        ＝⟨ refl ⟩
       - (((x , a) , p) + ((y , b) , q)) ∎
 
-ℚ+-inverse-lemma : ((x , a) : 𝔽) → ((ℤ- x , a) 𝔽+ (x , a)) ≈ (pos 0 , 0)
-ℚ+-inverse-lemma (x , a) = I
- where
-  I : ((ℤ- x , a) 𝔽+ (x , a)) ≈ (pos zero , zero)
-  I = ((ℤ- x) ℤ* pos (succ a) ℤ+ (x ℤ* pos (succ a))) ℤ* pos 1 ＝⟨ ℤ-mult-right-id ((ℤ- x) ℤ* pos (succ a) ℤ+ (x ℤ* pos (succ a))) ⟩
-      ((ℤ- x) ℤ* pos (succ a) ℤ+ (x ℤ* pos (succ a)))          ＝⟨ distributivity-mult-over-ℤ (ℤ- x) x (pos (succ a)) ⁻¹ ⟩
-      ((ℤ- x) ℤ+ x) ℤ* pos (succ a)                            ＝⟨ ap (λ - → - ℤ* pos (succ a)) (ℤ+-comm (ℤ- x) x)  ⟩
-      (x ℤ+ (ℤ- x)) ℤ* pos (succ a)                            ＝⟨ ap (λ - → - ℤ* pos (succ a)) (ℤ-sum-of-inverse-is-zero x) ⟩
-      pos 0 ℤ* pos (succ a)                                    ＝⟨ ℤ-zero-left-base (pos (succ a)) ⟩
-      pos 0                                                    ＝⟨ ℤ-zero-left-base (pos (succ (pred (succ a ℕ* succ a)))) ⁻¹  ⟩
-      pos zero ℤ* pos (succ (pred (succ a ℕ* succ a)))         ∎
-
-ℚ-inverse-sum-to-zero : (q : ℚ) → q + (- q) ＝ 0ℚ
+ℚ-inverse-sum-to-zero : (q : ℚ) → q - q ＝ 0ℚ
 ℚ-inverse-sum-to-zero ((x , a) , p) = γ
  where
-  -qnc : Σ (x' , y') ꞉ 𝔽 , toℚ (ℤ- x , a) ＝ toℚ (x' , y')
-  -qnc = q-has-qn (toℚ (ℤ- x , a))
+  I : ((x , a) 𝔽+ (𝔽- (x , a))) ≈ (pos 0 , 0)
+    → toℚ ((x , a) 𝔽+ (𝔽- (x , a))) ＝ toℚ (pos 0 , 0)
+  I = equiv→equality ((x , a) 𝔽+ (𝔽- (x , a))) (pos 0 , 0)
 
-  x' : ℤ
-  x' = pr₁ (pr₁ -qnc)
-
-  y' : ℕ
-  y' = pr₂ (pr₁ -qnc)
-
-  I : ((x , a) 𝔽+ (x' , y')) ≈ (pos 0 , 0) → toℚ ((x , a) 𝔽+ (x' , y')) ＝ toℚ (pos 0 , 0)
-  I = equiv→equality ((x , a) 𝔽+ (x' , y')) (pos 0 , 0)
-
-  II : (x , a) 𝔽+ (x' , y') ≈ ((x' , y') 𝔽+ (x , a))
-  II = transport ((x , a) 𝔽+ (x' , y') ≈_) (𝔽+-comm (x , a) (x' , y')) (≈-refl ((x , a) 𝔽+ (x' , y')))
-
-  IIIᵢ : (x' , y') ≈ (ℤ- x , a)
-  IIIᵢ = ≈-sym (ℤ- x , a) (x' , y') (equality→equiv (ℤ- x , a) (x' , y') (pr₂ -qnc))
-
-  III : ((x' , y') 𝔽+ (x , a)) ≈ ((ℤ- x , a) 𝔽+ (x , a))
-  III = ≈-addition (x' , y') (ℤ- x , a) (x , a) IIIᵢ
-
-  IVᵢ : (x , a) 𝔽+ (x' , y') ≈ ((ℤ- x , a) 𝔽+ (x , a))
-  IVᵢ = ≈-trans ((x , a) 𝔽+ (x' , y')) ((x' , y') 𝔽+ (x , a)) ((ℤ- x , a) 𝔽+ (x , a)) II III
-
-  IV : ((ℤ- x , a) 𝔽+ (x , a)) ≈ (pos 0 , 0)
-  IV = ℚ+-inverse-lemma (x , a)
-
-  V : ((x , a) 𝔽+ (x' , y')) ≈ (pos 0 , 0)
-  V = ≈-trans ((x , a) 𝔽+ (x' , y')) ((ℤ- x , a) 𝔽+ (x , a)) ((pos 0 , 0)) IVᵢ IV
-
-  γ : (((x , a) , p) + (- ((x , a) , p))) ＝ 0ℚ
-  γ = (((x , a) , p) + (- ((x , a) , p)))     ＝⟨ refl ⟩
-      (((x , a) , p) + toℚ (ℤ- x , a))        ＝⟨ refl ⟩
-      toℚ ((x , a) 𝔽+ (x' , y'))             ＝⟨ I V ⟩
-      toℚ (pos 0 , 0)                         ＝⟨ refl ⟩
+  γ : ((x , a) , p) - ((x , a) , p) ＝ 0ℚ
+  γ = ((x , a) , p) - ((x , a) , p)  ＝⟨ i   ⟩
+      toℚ (x , a) - toℚ (x , a)      ＝⟨ ii  ⟩
+      toℚ (x , a) + toℚ (𝔽- (x , a)) ＝⟨ iii ⟩
+      toℚ ((x , a) 𝔽+ (𝔽- (x , a)))  ＝⟨ iv  ⟩
       0ℚ ∎
+   where
+    i   = ap (λ z → z - z) (toℚ-to𝔽 ((x , a) , p))
+    ii  = ap (toℚ (x , a) +_) (toℚ-neg (x , a))
+    iii = toℚ-+ (x , a) (𝔽- (x , a)) ⁻¹
+    iv  = I (𝔽+-inverse' (x , a))
 
 ℚ-inverse-sum-to-zero' : (q : ℚ) → (- q) + q ＝ 0ℚ
 ℚ-inverse-sum-to-zero' q = ℚ+-comm (- q) q ∙ ℚ-inverse-sum-to-zero q
