@@ -21,7 +21,6 @@ open import Rationals.Fractions
 open import TypeTopology.DiscreteAndSeparated
 open import TypeTopology.SigmaDiscreteAndTotallySeparated
 open import UF.Base hiding (_≈_)
-open import UF.FunExt
 open import UF.Miscelanea
 open import UF.Subsingletons
 
