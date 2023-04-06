@@ -117,64 +117,25 @@ toℚ-< (x , a) (y , b) l = γ
   γ = ordering-right-cancellable (x' ℤ* pb') (y' ℤ* pa') (ph ℤ* ph') I γ'
 
 toℚ-≤ : (p q : 𝔽) → p 𝔽≤ q → toℚ p ≤ toℚ q
-toℚ-≤ (x , a) (y , b) l = ℤ≤-ordering-right-cancellable (x' ℤ* pos (succ b')) (y' ℤ* (pos (succ a'))) (pos (succ h ℕ* succ h')) III IV
+toℚ-≤ (x , a) (y , b) l = Cases I II III
  where
-  I : Σ ((x' , a') , p) ꞉ ℚ , (Σ h ꞉ ℕ , (x ＝ (pos (succ h)) ℤ* x') × (succ a ＝ (succ h) ℕ* succ a'))
-  I = toℚlemma (x , a)
+  pa = (pos ∘ succ) a
+  pb = (pos ∘ succ) b
 
-  II : Σ ((y' , b') , p) ꞉ ℚ , (Σ h' ꞉ ℕ , (y ＝ (pos (succ h')) ℤ* y') × (succ b ＝ (succ h') ℕ* succ b'))
-  II = toℚlemma (y , b)
+  I : x ℤ* pb < y ℤ* pa ∔ (x ℤ* pb ＝ y ℤ* pa)
+  I = ℤ≤-split (x ℤ* pb) (y ℤ* pa) l
 
-  x' y' : ℤ
-  x' = pr₁ (pr₁ (pr₁ I))
-  y' = pr₁ (pr₁ (pr₁ II))
-
-  a' b' : ℕ
-  a' = pr₂ (pr₁ (pr₁ I))
-  b' = pr₂ (pr₁ (pr₁ II))
-
-  h h' : ℕ
-  h = pr₁ (pr₂ I)
-  h' = pr₁ (pr₂ II)
-
-  α : x ＝ (pos (succ h)) ℤ* x'
-  α = pr₁ (pr₂ (pr₂ I))
-
-  β : succ a ＝ (succ h) ℕ* succ a'
-  β = pr₂ (pr₂ (pr₂ I))
-
-  α' : y ＝ (pos (succ h')) ℤ* y'
-  α' = pr₁ (pr₂ (pr₂ II))
-
-  β' : succ b ＝ (succ h') ℕ* succ b'
-  β' = pr₂ (pr₂ (pr₂ II))
-
-  III : is-pos-succ (pos (succ h ℕ* succ h'))
-  III = transport (λ - → is-pos-succ -) (pos-multiplication-equiv-to-ℕ (succ h) (succ h')) (is-pos-succ-mult (pos (succ h)) (pos (succ h')) ⋆ ⋆)
-
-  IV : (x' ℤ* pos (succ b') ℤ* pos (succ h ℕ* succ h')) ≤ (y' ℤ* pos (succ a') ℤ* pos (succ h ℕ* succ h'))
-  IV = transport₂ (λ z z' → z ≤ z') VI VII l
+  II : x ℤ* pb < y ℤ* pa → toℚ (x , a) ≤ toℚ (y , b)
+  II l = ℚ<-coarser-than-≤ (toℚ (x , a)) (toℚ (y , b)) l'
    where
-    VI : x ℤ* pos (succ b) ＝ x' ℤ* pos (succ b') ℤ* pos (succ h ℕ* succ h')
-    VI = x ℤ* pos (succ b)                                         ＝⟨ ap₂ (λ z z' → z ℤ* z') α (ap pos β') ⟩
-          pos (succ h) ℤ* x' ℤ* pos (succ h' ℕ* succ b')            ＝⟨ ap (pos (succ h) ℤ* x' ℤ*_) (pos-multiplication-equiv-to-ℕ (succ h') (succ b') ⁻¹) ⟩
-          pos (succ h) ℤ* x' ℤ* (pos (succ h') ℤ* (pos (succ b')))  ＝⟨ ap₂ (λ z z' → z ℤ* z') (ℤ*-comm (pos (succ h)) x') (ℤ*-comm (pos (succ h')) (pos (succ b'))) ⟩
-          x' ℤ* pos (succ h) ℤ* (pos (succ b') ℤ* pos (succ h'))    ＝⟨ ℤ*-assoc x' (pos (succ h)) (pos (succ b') ℤ* pos (succ h')) ⟩
-          x' ℤ* (pos (succ h) ℤ* (pos (succ b') ℤ* pos (succ h')))  ＝⟨ ap (x' ℤ*_) (ℤ-mult-rearrangement''' (pos (succ h)) (pos (succ b')) (pos (succ h'))) ⟩
-          x' ℤ* (pos (succ b') ℤ* (pos (succ h) ℤ* pos (succ h')))  ＝⟨ ℤ*-assoc x' (pos (succ b')) (pos (succ h) ℤ* pos (succ h')) ⁻¹ ⟩
-          x' ℤ* pos (succ b') ℤ* (pos (succ h) ℤ* pos (succ h'))    ＝⟨ ap ( x' ℤ* pos (succ b') ℤ*_) (pos-multiplication-equiv-to-ℕ (succ h) (succ h')) ⟩
-          x' ℤ* pos (succ b') ℤ* pos (succ h ℕ* succ h') ∎
+    l' : toℚ (x , a) < toℚ (y , b)
+    l' = toℚ-< (x , a) (y , b) l
 
-    VII : y ℤ* pos (succ a) ＝ y' ℤ* pos (succ a') ℤ* pos (succ h ℕ* succ h')
-    VII = y ℤ* pos (succ a)                                         ＝⟨ ap₂ (λ z z' → z ℤ* z') α' (ap pos β) ⟩
-           pos (succ h') ℤ* y' ℤ* pos (succ h ℕ* succ a')            ＝⟨ ap (pos (succ h') ℤ* y' ℤ*_) (pos-multiplication-equiv-to-ℕ (succ h) (succ a') ⁻¹) ⟩
-           pos (succ h') ℤ* y' ℤ* (pos (succ h) ℤ* pos (succ a'))    ＝⟨ ap₂ (λ z z' → z ℤ* z') (ℤ*-comm (pos (succ h')) y') (ℤ*-comm (pos (succ h)) (pos (succ a'))) ⟩
-           y' ℤ* pos (succ h') ℤ* (pos (succ a') ℤ* pos (succ h))    ＝⟨ ℤ*-assoc y' (pos (succ h')) (pos (succ a') ℤ* pos (succ h)) ⟩
-           y' ℤ* (pos (succ h') ℤ* (pos (succ a') ℤ* pos (succ h)))  ＝⟨ ap (y' ℤ*_) (ℤ-mult-rearrangement''' (pos (succ h')) (pos (succ a')) (pos (succ h))) ⟩
-           y' ℤ* (pos (succ a') ℤ* (pos (succ h') ℤ* pos (succ h)))  ＝⟨ ℤ*-assoc y' (pos (succ a')) (pos (succ h') ℤ* pos (succ h)) ⁻¹ ⟩
-           y' ℤ* pos (succ a') ℤ* (pos (succ h') ℤ* pos (succ h))    ＝⟨ ap (y' ℤ* pos (succ a') ℤ*_) (pos-multiplication-equiv-to-ℕ (succ h') (succ h)) ⟩
-           y' ℤ* pos (succ a') ℤ* pos (succ h' ℕ* succ h)            ＝⟨ ap (λ z → y' ℤ* pos (succ a') ℤ* pos z) (mult-commutativity (succ h') (succ h)) ⟩
-           y' ℤ* pos (succ a') ℤ* pos (succ h ℕ* succ h') ∎
+  III : x ℤ* pb ＝ y ℤ* pa → toℚ (x , a) ≤ toℚ (y , b)
+  III e = transport (toℚ (x , a) ≤_) e' (ℚ≤-refl (toℚ (x , a)))
+   where
+    e' : toℚ (x , a) ＝ toℚ (y , b)
+    e' = equiv→equality (x , a) (y , b) e
 
 ℚ-no-max-element : (p : ℚ) → Σ q ꞉ ℚ , (p < q)
 ℚ-no-max-element ((x , a) , α) = q , III
