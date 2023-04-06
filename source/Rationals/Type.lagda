@@ -8,7 +8,6 @@ In this file I define rational numbers.
 
 open import MLTT.Spartan renaming (_+_ to _∔_)
 open import Notation.CanonicalMap
-
 open import Integers.Abs
 open import Integers.Multiplication renaming (_*_ to _ℤ*_)
 open import Integers.Negation
@@ -31,296 +30,284 @@ module Rationals.Type where
 ℚ : 𝓤₀ ̇
 ℚ = Σ q ꞉ ℚₙ , is-in-lowest-terms q
 
-is-in-lowest-terms-is-discrete : Fun-Ext
-                               → (q : ℚₙ)
+is-in-lowest-terms-is-discrete : (q : ℚₙ)
                                → is-discrete (is-in-lowest-terms q)
-is-in-lowest-terms-is-discrete fe q α β
- = inl (is-in-lowest-terms-is-prop fe q α β)
+is-in-lowest-terms-is-discrete q α β
+ = inl (is-in-lowest-terms-is-prop q α β)
 
-ℚ-is-discrete : Fun-Ext → is-discrete ℚ
-ℚ-is-discrete fe
- = Σ-is-discrete ℚₙ-is-discrete (is-in-lowest-terms-is-discrete fe)
+ℚ-is-discrete : is-discrete ℚ
+ℚ-is-discrete = Σ-is-discrete ℚₙ-is-discrete is-in-lowest-terms-is-discrete
 
-ℚ-is-set : Fun-Ext → is-set ℚ
-ℚ-is-set fe = discrete-types-are-sets (ℚ-is-discrete fe)
+ℚ-is-set : is-set ℚ
+ℚ-is-set = discrete-types-are-sets ℚ-is-discrete
 
 toℚₙ : ℚ → ℚₙ
 toℚₙ (q , _) = q
 
-\end{code}
-
-I would like to rewrite this function to move h out of a sigma type (h = hcf' x (succ a))
-
-\begin{code}
-
-{-
-toℚ' : ℚₙ → ℚ
-toℚ' (pos a , b) = f (divbyhcf a (succ b))
- where
-  f : Σ h ꞉ ℕ , Σ x ꞉ ℕ , Σ y ꞉ ℕ , ((h ℕ* x ＝ a)
-                                  × (h ℕ* y ＝ succ b))
-                                  × coprime x y
-    → ℚ
-  f (h , x , 0 , (γ₁ , γ₂) , r) = 𝟘-elim (positive-not-zero b (γ₂ ⁻¹))
-  f (h , x , (succ y) , (γ₁ , γ₂) , r) = 𝟘-elim (positive-not-zero {!!} {!!})
-toℚ' (negsucc x , a) = {!!}
--}
-
-toℚlemma : ((x , a) : ℚₙ) → Σ ((x' , a') , p) ꞉ ℚ , (Σ h ꞉ ℕ , (x ＝ (pos (succ h)) ℤ* x') × (succ a ＝ (succ h) ℕ* succ a'))
+toℚlemma : ((x , a) : ℚₙ)
+         → Σ ((x' , a') , p) ꞉ ℚ , (Σ h ꞉ ℕ , (x ＝ (pos (succ h)) ℤ* x')
+                                            × (succ a ＝ (succ h) ℕ* succ a'))
 toℚlemma (pos a , b) = f (divbyhcf a (succ b))
  where
-  f : Σ h ꞉ ℕ , Σ x ꞉ ℕ , Σ y ꞉ ℕ , ((h ℕ* x ＝ a) × (h ℕ* y ＝ succ b)) × coprime x y → _
-  f (h      , x , zero   , (γ₁ , γ₂) , r) = 𝟘-elim (positive-not-zero b (γ₂ ⁻¹))
-  f (0      , x , succ y , (γ₁ , γ₂) , r) = 𝟘-elim (positive-not-zero b (γ₂ ⁻¹ ∙ zero-left-base (succ y)))
-  f (succ h , x , succ y , (γ₁ , γ₂) , r) = (((pos x) , y) , r) , h , I , (γ₂ ⁻¹)
+  f : Σ h ꞉ ℕ , Σ x ꞉ ℕ , Σ y ꞉ ℕ , ((h ℕ* x ＝ a) × (h ℕ* y ＝ succ b))
+                                  × coprime x y → _
+  f (h , x , 0 , (γ₁ , γ₂) , r) = 𝟘-elim (positive-not-zero b (γ₂ ⁻¹))
+  f (0 , x , succ y , (γ₁ , γ₂) , r) = 𝟘-elim (positive-not-zero b γ)
+   where
+    γ : succ b ＝ 0
+    γ = succ b      ＝⟨ γ₂ ⁻¹                   ⟩
+        0 ℕ* succ y ＝⟨ zero-left-base (succ y) ⟩
+        0           ∎
+  f (succ h , x , succ y , (γ₁ , γ₂) , r) = γ
    where
     I : pos a ＝ pos (succ h) ℤ* pos x
-    I = pos a                 ＝⟨ ap pos γ₁ ⁻¹                                 ⟩
+    I = pos a                 ＝⟨ ap pos γ₁ ⁻¹                                ⟩
         pos (succ h ℕ* x)     ＝⟨ pos-multiplication-equiv-to-ℕ (succ h) x ⁻¹ ⟩
         pos (succ h) ℤ* pos x ∎
+
+    γ : _
+    γ = ((pos x , y) , coprime-to-coprime' x (succ y) r) , h , I , (γ₂ ⁻¹)
 toℚlemma (negsucc a , b) = f (divbyhcf (succ a) (succ b))
  where
-  f : ((Σ h ꞉ ℕ , Σ x ꞉ ℕ , Σ y ꞉ ℕ , ((h ℕ* x ＝ (succ a)) × (h ℕ* y ＝ succ b)) × coprime x y)) → _
-  f (h      , x      , 0      , (γ₁ , γ₂) , r) = 𝟘-elim (positive-not-zero b (γ₂ ⁻¹))
-  f (h      , 0      , succ y , (γ₁ , γ₂) , r) = 𝟘-elim (positive-not-zero a (γ₁ ⁻¹))
-  f (0      , succ x , succ y , (γ₁ , γ₂) , r) = 𝟘-elim (positive-not-zero b (γ₂ ⁻¹ ∙ zero-left-base (succ y)))
-  f (succ h , succ x , succ y , (γ₁ , γ₂) , r) = (((negsucc x) , y) , r) , (h , (I , (γ₂ ⁻¹)))
+  f : (Σ h ꞉ ℕ , Σ x ꞉ ℕ , Σ y ꞉ ℕ , ((h ℕ* x ＝ (succ a))
+                               × (h ℕ* y ＝ succ b))
+                               × coprime x y) → _
+  f (h , x , 0 , (γ₁ , γ₂) , r) = 𝟘-elim (positive-not-zero b (γ₂ ⁻¹))
+  f (h , 0 , succ y , (γ₁ , γ₂) , r) = 𝟘-elim (positive-not-zero a (γ₁ ⁻¹))
+  f (0 , succ x , succ y , (γ₁ , γ₂) , r) = 𝟘-elim (positive-not-zero b γ)
    where
-    i : pos (succ a) ＝ (pos (succ h) ℤ* pos (succ x))
-    i = pos (succ a)                 ＝⟨ ap pos γ₁ ⁻¹                                       ⟩
-        pos (succ h ℕ* succ x)       ＝⟨ pos-multiplication-equiv-to-ℕ (succ h) (succ x) ⁻¹ ⟩
+    γ : succ b ＝ 0
+    γ = succ b      ＝⟨ γ₂ ⁻¹                   ⟩
+        0 ℕ* succ y ＝⟨ zero-left-base (succ y) ⟩
+        0 ∎
+  f (succ h , succ x , succ y , (γ₁ , γ₂) , r) = γ
+   where
+    I : pos (succ a) ＝ (pos (succ h) ℤ* pos (succ x))
+    I = pos (succ a)                 ＝⟨ ap pos γ₁ ⁻¹ ⟩
+        pos (succ h ℕ* succ x)       ＝⟨ i            ⟩
         pos (succ h) ℤ* pos (succ x) ∎
+     where
+      i = pos-multiplication-equiv-to-ℕ (succ h) (succ x) ⁻¹
 
-    I : negsucc a ＝ pos (succ h) ℤ* negsucc x
-    I = negsucc a                          ＝⟨ ap -_ i                                                  ⟩
-        - (pos (succ h) ℤ* pos (succ x))   ＝⟨ negation-dist-over-mult (pos (succ h)) (pos (succ x)) ⁻¹ ⟩
-        pos (succ h) ℤ* (- pos (succ x))   ∎
+    II : negsucc a ＝ pos (succ h) ℤ* negsucc x
+    II = negsucc a                       ＝⟨ ap -_ I ⟩
+        - (pos (succ h) ℤ* pos (succ x)) ＝⟨ i       ⟩
+        pos (succ h) ℤ* (- pos (succ x)) ∎
+     where
+      i = negation-dist-over-mult (pos (succ h)) (pos (succ x)) ⁻¹
+
+    q : ℚ
+    q = (negsucc x , y) , coprime-to-coprime' (succ x) (succ y) r
+
+    γ : _
+    γ = q , h , II , (γ₂ ⁻¹)
 
 toℚ : ℚₙ → ℚ
 toℚ q = pr₁ (toℚlemma q)
 
-0ℚ : ℚ
-0ℚ = toℚ (pos 0 , 0)
+numℚ : ℚₙ → ℤ
+numℚ q = (pr₁ ∘ pr₁ ∘ pr₁) (toℚlemma q)
 
-1ℚ : ℚ
-1ℚ = toℚ (pos 1 , 0)
+dnomℚ : ℚₙ → ℕ
+dnomℚ q = (pr₂ ∘ pr₁ ∘ pr₁) (toℚlemma q)
 
--1ℚ : ℚ
+hcfℚₙ : ℚₙ → ℕ
+hcfℚₙ q = pr₁ (pr₂ (toℚlemma q))
+
+iltℚ : (q : ℚₙ) → is-in-lowest-terms (numℚ q , dnomℚ q)
+iltℚ (x , a) = (pr₂ ∘ pr₁) (toℚlemma (x , a))
+
+numr : ((x , a) : ℚₙ) → x ＝ (pos (succ (hcfℚₙ (x , a)))) ℤ* numℚ (x , a)
+numr (x , a) = pr₁ (pr₂ (pr₂ (toℚlemma (x , a))))
+
+dnomr : ((x , a) : ℚₙ) → succ a ＝ succ (hcfℚₙ (x , a)) ℕ* succ (dnomℚ (x , a))
+dnomr (x , a) = pr₂ (pr₂ (pr₂ (toℚlemma (x , a))))
+
+dnomrP : ((x , a) : ℚₙ)
+       → pos (succ a) ＝ pos (succ (hcfℚₙ (x , a)) ℕ* succ (dnomℚ (x , a)))
+dnomrP (x , a) = ap pos (dnomr (x , a))
+
+dnomrP' : ((x , a) : ℚₙ)
+        → pos (succ a) ＝ pos (succ (hcfℚₙ (x , a)))
+                        ℤ* pos (succ (dnomℚ (x , a)))
+dnomrP' (x , a) = γ
+ where
+  h  = hcfℚₙ (x , a)
+  a' = dnomℚ (x , a)
+
+  γ : pos (succ a) ＝ pos (succ h) ℤ* pos (succ a')
+  γ = pos (succ a)                  ＝⟨ i  ⟩
+      pos (succ h ℕ* succ a')       ＝⟨ ii ⟩
+      pos (succ h) ℤ* pos (succ a') ∎
+   where
+    i  = dnomrP (x , a)
+    ii = pos-multiplication-equiv-to-ℕ (succ h) (succ a') ⁻¹
+
+0ℚ 1ℚ -1ℚ 1/3 2/3 1/2 1/5 2/5 3/5 1/4 3/4 : ℚ
 -1ℚ = toℚ (negsucc 0 , 0)
-
-1/3 2/3 : ℚ
+0ℚ  = toℚ (pos 0 , 0)
+1ℚ  = toℚ (pos 1 , 0)
 1/3 = toℚ (pos 1 , 2)
 2/3 = toℚ (pos 2 , 2)
-
-1/2 : ℚ
 1/2 = toℚ (pos 1 , 1)
-
-1/5 : ℚ
 1/5 = toℚ (pos 1 , 4)
-
-2/5 : ℚ
 2/5 = toℚ (pos 2 , 4)
-
-3/5 : ℚ
 3/5 = toℚ (pos 3 , 4)
-
-1/4 : ℚ
 1/4 = toℚ (pos 1 , 3)
-
-3/4 : ℚ
 3/4 = toℚ (pos 3 , 3)
 
-\end{code}
-I would like to rewrite the following proof as it is difficult to
-follow, and having ⇔ introduces many projections later in the code.
-\begin{code}
-
-equiv-equality : Fun-Ext → (p q : ℚₙ) → p ≈ q ⇔ toℚ p ＝ toℚ q
-equiv-equality fe (x , a) (y , b) = I , II
+equiv-equality : (p q : ℚₙ) → p ≈ q ⇔ toℚ p ＝ toℚ q
+equiv-equality (x , a) (y , b) = γ₁ , γ₂
  where
-  α : Σ ((x' , a') , p)  ꞉ ℚ , Σ h ꞉ ℕ  , (x ＝ pos (succ h) ℤ* x')  × (succ a ＝ succ h ℕ* succ a')
-  α = toℚlemma (x , a)
+  a' b' h h' : ℕ
+  a' = dnomℚ (x , a)
+  b' = dnomℚ (y , b)
+  h  = hcfℚₙ (x , a)
+  h' = hcfℚₙ (y , b)
 
-  β : Σ ((y' , b') , p') ꞉ ℚ , Σ h' ꞉ ℕ , (y ＝ pos (succ h') ℤ* y') × (succ b ＝ succ h' ℕ* succ b')
-  β = toℚlemma (y , b)
+  x' y' ph ph' pa' pb' : ℤ
+  x'  = numℚ (x , a)
+  y'  = numℚ (y , b)
+  ph  = (pos ∘ succ) h
+  ph' = (pos ∘ succ) h'
+  pa  = (pos ∘ succ) a
+  pa' = (pos ∘ succ) a'
+  pb  = (pos ∘ succ) b
+  pb' = (pos ∘ succ) b'
 
-  h h' : ℕ
-  h = pr₁ (pr₂ α)
-  h' = pr₁ (pr₂ β)
+  γ-lemma : (p q r s : ℤ)
+          → p ℤ* q ℤ* (r ℤ* s) ＝ p ℤ* r ℤ* (q ℤ* s)
+  γ-lemma p q r s =
+   p ℤ* q ℤ* (r ℤ* s)   ＝⟨ ℤ*-assoc p q (r ℤ* s)                  ⟩
+   p ℤ* (q ℤ* (r ℤ* s)) ＝⟨ ap (p ℤ*_) (ℤ*-assoc q r s ⁻¹)         ⟩
+   p ℤ* (q ℤ* r ℤ* s)   ＝⟨ ap (λ - → p ℤ* (- ℤ* s)) (ℤ*-comm q r) ⟩
+   p ℤ* (r ℤ* q ℤ* s)   ＝⟨ ap (p ℤ*_) (ℤ*-assoc r q s)            ⟩
+   p ℤ* (r ℤ* (q ℤ* s)) ＝⟨ ℤ*-assoc p r (q ℤ* s) ⁻¹               ⟩
+   p ℤ* r ℤ* (q ℤ* s)   ∎
 
-  a' b' : ℕ
-  a' = pr₂ (pr₁ (pr₁ α))
-  b' = pr₂ (pr₁ (pr₁ β))
-
-  x' y' : ℤ
-  x' = pr₁ (pr₁ (pr₁ α))
-  y' = pr₁ (pr₁ (pr₁ β))
-
-  p : is-in-lowest-terms (x' , a')
-  p = pr₂ (pr₁ α)
-
-  p' : is-in-lowest-terms (y' , b')
-  p' = pr₂ (pr₁ β)
-
-  αₚ₁ : x ＝ pos (succ h) ℤ* x'
-  αₚ₁ = pr₁ (pr₂ (pr₂ α))
-
-  αₚ₂ : succ a ＝ succ h ℕ* succ a'
-  αₚ₂ = pr₂ (pr₂ (pr₂ α))
-
-  αₚ₂' : pos (succ a) ＝ pos (succ h) ℤ* pos (succ a')
-  αₚ₂' = pos (succ a)                  ＝⟨ ap pos αₚ₂                                          ⟩
-         pos (succ h ℕ* succ a')       ＝⟨ pos-multiplication-equiv-to-ℕ (succ h) (succ a') ⁻¹ ⟩
-         pos (succ h) ℤ* pos (succ a') ∎
-
-  βₚ₁ : y ＝ pos (succ h') ℤ* y'
-  βₚ₁ = pr₁ (pr₂ (pr₂ β))
-
-  βₚ₂ : succ b ＝ succ h' ℕ* succ b'
-  βₚ₂ = pr₂ (pr₂ (pr₂ β))
-
-  βₚ₂' : pos (succ b) ＝ pos (succ h') ℤ* pos (succ b')
-  βₚ₂' = pos (succ b)                   ＝⟨ ap pos βₚ₂                                           ⟩
-         pos (succ h' ℕ* succ b')       ＝⟨ pos-multiplication-equiv-to-ℕ (succ h') (succ b') ⁻¹ ⟩
-         pos (succ h') ℤ* pos (succ b') ∎
-
-  I : (x , a) ≈ (y , b) → (x' , a') , p ＝ (y' , b') , p'
-  I e = to-subtype-＝ (λ z → is-in-lowest-terms-is-prop fe z) (equiv-with-lowest-terms-is-equal (x' , a') (y' , b') f p p')
+  γ₁ : (x , a) ≈ (y , b) → toℚ (x , a) ＝ toℚ (y , b)
+  γ₁ e = to-subtype-＝ is-in-lowest-terms-is-prop γ
    where
-    f : x' ℤ* pos (succ b') ＝ y' ℤ* pos (succ a')
-    f = ℤ-mult-left-cancellable (x' ℤ* pos (succ b')) (y' ℤ* pos (succ a')) (pos (succ h)) id g
+    I : is-in-lowest-terms (x' , a')
+    I = iltℚ (x , a)
+
+    II : is-in-lowest-terms (y' , b')
+    II = iltℚ (y , b)
+
+    III : ph ℤ* ph' ℤ* (x' ℤ* pb') ＝ ph ℤ* ph' ℤ* (y' ℤ* pa')
+    III = ph ℤ* ph' ℤ* (x' ℤ* pb') ＝⟨ γ-lemma ph ph' x' pb'                  ⟩
+          ph ℤ* x' ℤ* (ph' ℤ* pb') ＝⟨ ap (ph ℤ* x' ℤ*_) (dnomrP' (y , b) ⁻¹) ⟩
+          ph ℤ* x' ℤ* pb           ＝⟨ ap (_ℤ* pb) (numr (x , a) ⁻¹)          ⟩
+          x ℤ* pb                  ＝⟨ e                                      ⟩
+          y ℤ* pa                  ＝⟨ ap (_ℤ* pa) (numr (y , b))             ⟩
+          ph' ℤ* y' ℤ* pa          ＝⟨ ap (ph' ℤ* y' ℤ*_) (dnomrP' (x , a))   ⟩
+          ph' ℤ* y' ℤ* (ph ℤ* pa') ＝⟨ γ-lemma ph' ph y' pa' ⁻¹               ⟩
+          ph' ℤ* ph ℤ* (y' ℤ* pa') ＝⟨ ap (_ℤ* (y' ℤ* pa')) (ℤ*-comm ph' ph)  ⟩
+          ph ℤ* ph' ℤ* (y' ℤ* pa') ∎
+
+    IV : not-zero (ph ℤ* ph')
+    IV iz = non-zero-multiplication ph ph' hnz hnz' piz
      where
-      g : pos (succ h) ℤ* (x' ℤ* pos (succ b')) ＝ pos (succ h) ℤ* (y' ℤ* pos (succ a'))
-      g = ℤ-mult-left-cancellable (pos (succ h) ℤ* (x' ℤ* pos (succ b'))) (pos (succ h) ℤ* (y' ℤ* pos (succ a'))) (pos (succ h')) id k
-       where
-        k : pos (succ h') ℤ* (pos (succ h) ℤ* (x' ℤ* pos (succ b'))) ＝ pos (succ h') ℤ* (pos (succ h) ℤ* (y' ℤ* pos (succ a')))
-        k = pos (succ h') ℤ* (pos (succ h) ℤ* (x' ℤ* pos (succ b')))     ＝⟨ ap (pos (succ h') ℤ*_) (ℤ*-assoc (pos (succ h)) x' (pos (succ b')) ⁻¹)             ⟩
-            pos (succ h') ℤ* (pos (succ h) ℤ* x' ℤ* pos (succ b'))       ＝⟨ ap (λ z → pos (succ h') ℤ* (z ℤ* pos (succ b'))) (αₚ₁ ⁻¹)                          ⟩
-            pos (succ h') ℤ* (x ℤ* pos (succ b'))                        ＝⟨ ℤ-mult-rearrangement''' (pos (succ h')) x (pos (succ b'))                          ⟩
-            x ℤ* (pos (succ h') ℤ* pos (succ b'))                        ＝⟨ ap (x ℤ*_) (βₚ₂' ⁻¹)                                                               ⟩
-            x ℤ* pos (succ b)                                            ＝⟨ e                                                                                  ⟩
-            y ℤ* pos (succ a)                                            ＝⟨ ap₂ _ℤ*_ βₚ₁ αₚ₂'                                                                   ⟩
-            pos (succ h') ℤ* y' ℤ* (pos (succ h) ℤ* pos (succ a'))       ＝⟨ ℤ*-assoc (pos (succ h')) y' (pos (succ h) ℤ* pos (succ a'))                        ⟩
-            pos (succ h') ℤ* (y' ℤ* (pos (succ h) ℤ* pos (succ a')))     ＝⟨ ap (pos (succ h') ℤ*_) (ℤ-mult-rearrangement''' y' (pos (succ h)) (pos (succ a'))) ⟩
-            pos (succ h') ℤ* (pos (succ h) ℤ* (y' ℤ* pos (succ a')))     ∎
+      hnz : ph ≠ pos 0
+      hnz = pos-succ-not-zero h
 
-  II : toℚ (x , a) ＝ toℚ (y , b) → (x , a) ≈ (y , b)
-  II e = x ℤ* pos (succ b)                                              ＝⟨ ap₂ _ℤ*_ αₚ₁ (ap pos βₚ₂)                                                            ⟩
-         pos (succ h) ℤ* x' ℤ* pos (succ h' ℕ* succ b')                 ＝⟨ ap₂ (λ z z' → (pos (succ h) ℤ* z ℤ* pos (succ h' ℕ* succ z'))) iv (v ⁻¹)            ⟩
-         pos (succ h) ℤ* y' ℤ* pos (succ h' ℕ* succ a')                 ＝⟨ ap (pos (succ h) ℤ* y' ℤ*_) (pos-multiplication-equiv-to-ℕ (succ h') (succ a')) ⁻¹  ⟩
-         pos (succ h) ℤ* y' ℤ* (pos (succ h') ℤ* pos (succ a'))         ＝⟨ ℤ-mult-rearrangement'' (pos (succ h')) (pos (succ h)) y' (pos (succ a'))            ⟩
-         pos (succ h') ℤ* y' ℤ* (pos (succ h) ℤ* pos (succ a'))         ＝⟨ ap (pos (succ h') ℤ* y' ℤ*_) (pos-multiplication-equiv-to-ℕ (succ h) (succ a'))     ⟩
-         pos (succ h') ℤ* y' ℤ* pos (succ h ℕ* succ a')                 ＝⟨ ap₂ _ℤ*_ (βₚ₁ ⁻¹) (ap pos (αₚ₂ ⁻¹))                                                  ⟩
-         y ℤ* pos (succ a)                                              ∎
-    where
-     i : Σ δ ꞉ (x' , a') ＝ (y' , b') , _
-     i = from-Σ-＝ e
+      hnz' : ph' ≠ pos 0
+      hnz' = pos-succ-not-zero h'
 
-     ii : x' , a' ＝ y' , b'
-     ii = pr₁ i
+      piz : ph ℤ* ph' ＝ pos 0
+      piz = from-is-zero (ph ℤ* ph') iz
 
-     iii : (x' ＝ y') × (a' ＝ b')
-     iii = from-×-＝' ii
+    V : x' ℤ* pb' ＝ y' ℤ* pa'
+    V = ℤ-mult-left-cancellable (x' ℤ* pb') (y' ℤ* pa') (ph ℤ* ph') IV III
 
-     iv = pr₁ iii
-     v = pr₂ iii
+    γ : (x' , a') ＝ (y' , b')
+    γ = equiv-with-lowest-terms-is-equal (x' , a') (y' , b') V I II
 
-equiv→equality : Fun-Ext → (p q : ℚₙ) → p ≈ q → toℚ p ＝ toℚ q
-equiv→equality fe p q = I
+  γ₂ : toℚ (x , a) ＝ toℚ (y , b) → (x , a) ≈ (y , b)
+  γ₂ e = x ℤ* pos (succ b)        ＝⟨ ap (x ℤ*_) (dnomrP' (y , b))           ⟩
+         x ℤ* (ph' ℤ* pb')        ＝⟨ ap (_ℤ* (ph' ℤ* pb')) (numr (x , a))   ⟩
+         ph ℤ* x' ℤ* (ph' ℤ* pb') ＝⟨ γ-lemma ph x' ph' pb'                  ⟩
+         ph ℤ* ph' ℤ* (x' ℤ* pb') ＝⟨ ap (_ℤ* (x' ℤ* pb')) (ℤ*-comm ph ph')  ⟩
+         ph' ℤ* ph ℤ* (x' ℤ* pb') ＝⟨ ap (λ - → ph' ℤ* ph ℤ* (- ℤ* pb')) I   ⟩
+         ph' ℤ* ph ℤ* (y' ℤ* pb') ＝⟨ ap (λ - → ph' ℤ* ph ℤ* (y' ℤ* -) ) II  ⟩
+         ph' ℤ* ph ℤ* (y' ℤ* pa') ＝⟨ γ-lemma ph' y' ph pa' ⁻¹               ⟩
+         ph' ℤ* y' ℤ* (ph ℤ* pa') ＝⟨ ap (_ℤ* (ph ℤ* pa')) (numr (y , b) ⁻¹) ⟩
+         y ℤ* (ph ℤ* pa')         ＝⟨ ap (y ℤ*_) (dnomrP' (x , a) ⁻¹)        ⟩
+         y ℤ* pos (succ a)        ∎
+   where
+    I : x' ＝ y'
+    I = ap (pr₁ ∘ pr₁) e
+
+    II : pb' ＝ pa'
+    II = ap (pos ∘ succ ∘ pr₂ ∘ pr₁) (e ⁻¹)
+
+equiv→equality : (p q : ℚₙ) → p ≈ q → toℚ p ＝ toℚ q
+equiv→equality p q = pr₁ (equiv-equality p q)
+
+equality→equiv : (p q : ℚₙ) → toℚ p ＝ toℚ q → p ≈ q
+equality→equiv p q = pr₂ (equiv-equality p q)
+
+toℚ-toℚₙ : ((p , α) : ℚ) → (p , α) ＝ toℚ p
+toℚ-toℚₙ ((x , a) , α) = to-subtype-＝ is-in-lowest-terms-is-prop γ
  where
-  I : p ≈ q → toℚ p ＝ toℚ q
-  I = pr₁ (equiv-equality fe p q)
+  x'  = numℚ (x , a)
+  a'  = dnomℚ (x , a)
+  h   = hcfℚₙ (x , a)
+  pa' = (pos ∘ succ) a'
+  pa  = (pos ∘ succ) a
+  ph  = (pos ∘ succ) h
 
-equality→equiv : Fun-Ext → (p q : ℚₙ) → toℚ p ＝ toℚ q → p ≈ q
-equality→equiv fe p q = I
- where
-  I : toℚ p ＝ toℚ q → p ≈ q
-  I = pr₂ (equiv-equality fe p q)
+  I : coprime (abs x) (succ a)
+  I = coprime'-to-coprime (abs x) (succ a) α
+
+  II : (x , a) ≈ (x' , a')
+  II = x ℤ* pa'          ＝⟨ ap (_ℤ* pa') (numr (x , a))      ⟩
+       ph ℤ* x' ℤ* pa'   ＝⟨ ap (_ℤ* pa') (ℤ*-comm ph x')     ⟩
+       x' ℤ* ph ℤ* pa'   ＝⟨ ℤ*-assoc x' ph pa'               ⟩
+       x' ℤ* (ph ℤ* pa') ＝⟨ ap (x' ℤ*_) (dnomrP' (x , a) ⁻¹) ⟩
+       x' ℤ* pa          ∎
+
+  γ : (x , a) ＝ (x' , a')
+  γ = equiv-with-lowest-terms-is-equal (x , a) (x' , a') II α (iltℚ (x , a))
 
 ≈-toℚ : (p : ℚₙ) → p ≈ toℚₙ (toℚ p)
-≈-toℚ (x , a) = conclusion
+≈-toℚ p = equality→equiv p p' (toℚ-toℚₙ (toℚ p))
  where
-  right-l : Σ ((x' , a') , p) ꞉ ℚ , (Σ h ꞉ ℕ , (x ＝ pos (succ h) ℤ* x') × (succ a ＝ (succ h) ℕ* succ a'))
-  right-l = toℚlemma (x , a)
+  p' = toℚₙ (toℚ p)
 
-  right : ℚ
-  right = toℚ (x , a)
+q-has-qn : (q : ℚ) → Σ q' ꞉ ℚₙ , q ＝ toℚ q'
+q-has-qn (q , α) =  q , toℚ-toℚₙ (q , α)
 
-  x' : ℤ
-  x' = pr₁ (pr₁ right)
-  a' : ℕ
-  a' = pr₂ (pr₁ right)
-
-  h : ℕ
-  h = pr₁ (pr₂ right-l)
-
-  a'' = pos (succ a')
-  h' = pos (succ h)
-
-  e₁ : x ＝ pos (succ h) ℤ* x'
-  e₁ = pr₁ (pr₂ (pr₂ right-l))
-
-  e₂ : succ a ＝ (succ h) ℕ* succ a'
-  e₂ = pr₂ (pr₂ (pr₂ right-l))
-
-  conclusion : x ℤ* a'' ＝ x' ℤ* pos (succ a)
-  conclusion = x ℤ* a''                           ＝⟨ ap (_ℤ* a'') e₁                                                ⟩
-               h' ℤ* x' ℤ* a''                    ＝⟨ ap (_ℤ* a'') (ℤ*-comm h' x')                                   ⟩
-               x' ℤ* h' ℤ* a''                    ＝⟨ ℤ*-assoc x' h' a''                                             ⟩
-               x' ℤ* (h' ℤ* a'')                  ＝⟨ ap (x' ℤ*_) (pos-multiplication-equiv-to-ℕ (succ h) (succ a')) ⟩
-               x' ℤ* pos ((succ h) ℕ* succ a')    ＝⟨ ap (x' ℤ*_) (ap pos e₂ ⁻¹)                                     ⟩
-               x' ℤ* pos (succ a)                 ∎
-
-q-has-qn : Fun-Ext → (q : ℚ) → Σ q' ꞉ ℚₙ , q ＝ toℚ q'
-q-has-qn fe (q , p) = q , (to-subtype-＝ (is-in-lowest-terms-is-prop fe) (equiv-with-lowest-terms-is-equal q q' (≈-toℚ q) p (pr₂ right)))
+ℚ-zero-not-one :  ¬ (0ℚ ＝ 1ℚ)
+ℚ-zero-not-one e = positive-not-zero 0 (pos-lc γ ⁻¹)
  where
-  right : ℚ
-  right = toℚ q
+  I : toℚ (pos 0 , 0) ＝ toℚ (pos 1 , 0) → (pos 0 , 0) ≈ (pos 1 , 0)
+  I = equality→equiv (pos 0 , 0) (pos 1 , 0)
 
-  q' : ℚₙ
-  q' = pr₁ right
-
-ℚ-zero-not-one : Fun-Ext → ¬ (0ℚ ＝ 1ℚ)
-ℚ-zero-not-one fe e = positive-not-zero 0 (pos-lc V ⁻¹)
- where
-  I : (pos 0 , 0) ≈ (pos 1 , 0) ⇔ toℚ (pos 0 , 0) ＝ toℚ (pos 1 , 0)
-  I = equiv-equality fe ((pos 0) , 0) ((pos 1) , 0)
-
-  II : toℚ (pos 0 , 0) ＝ toℚ (pos 1 , 0) → (pos 0 , 0) ≈ (pos 1 , 0)
-  II = pr₂ I
-
-  III : (pos 0 , 0) ≈ (pos 1 , 0)
-  III = II e
-
-  IV : pos 0 ℤ* pos 1 ＝ pos 1 ℤ* pos 1
-  IV = III
-
-  V : pos 0 ＝ pos 1
-  V = pos 0          ＝⟨ refl ⟩
-      pos 0 ℤ* pos 1 ＝⟨ IV   ⟩
+  γ : pos 0 ＝ pos 1
+  γ = pos 0          ＝⟨ refl ⟩
+      pos 0 ℤ* pos 1 ＝⟨ I e  ⟩
       pos 1 ℤ* pos 1 ＝⟨ refl ⟩
       pos 1          ∎
 
-numerator-zero-is-zero : Fun-Ext → (((x , a) , p) : ℚ) → x ＝ pos zero → (x , a) , p ＝ 0ℚ
-numerator-zero-is-zero fe ((negsucc x , a) , p) e = 𝟘-elim (negsucc-not-pos e)
-numerator-zero-is-zero fe ((pos zero  , a) , (_ , icd) , f) e = to-subtype-＝ (is-in-lowest-terms-is-prop fe) I
+numerator-zero-is-zero : (((x , a) , p) : ℚ) → x ＝ pos 0 → (x , a) , p ＝ 0ℚ
+numerator-zero-is-zero ((negsucc x , a) , p) e = 𝟘-elim (negsucc-not-pos e)
+numerator-zero-is-zero ((pos (succ x) , a) , p) e = 𝟘-elim γ
  where
-  I : pos zero , a ＝ pos zero , 0
-  I = ap₂ _,_ refl (succ-lc II)
-   where
-    II : succ a ＝ 1
-    II = ∣-anti (succ a) 1 (f (succ a) ((0 , refl) , 1 , refl)) icd
-numerator-zero-is-zero fe ((pos (succ x) , a) , p) e = 𝟘-elim (positive-not-zero x (pos-lc e))
+  γ : 𝟘
+  γ = positive-not-zero x (pos-lc e)
+numerator-zero-is-zero ((pos 0 , a) , p) e = γ
+ where
+  I : (pos 0 , a) ≈ (pos 0 , 0)
+  I = pos 0 ℤ* pos 1        ＝⟨ refl                               ⟩
+      pos 0                 ＝⟨ ℤ-zero-left-base (pos (succ a)) ⁻¹ ⟩
+      pos 0 ℤ* pos (succ a) ∎
 
-toℚ-toℚₙ : Fun-Ext → ((r , p) : ℚ) → r , p ＝ toℚ r
-toℚ-toℚₙ fe (r , p) = II
- where
-  rp' = toℚ r
-  r' = pr₁ (toℚ r)
-  r'lt = pr₂ (toℚ r)
-  I = equiv-with-lowest-terms-is-equal r r' (≈-toℚ r) p r'lt
-  II : r , p ＝ toℚ r
-  II = to-subtype-＝ (is-in-lowest-terms-is-prop fe) I
+  γ : (pos 0 , a) , p ＝ 0ℚ
+  γ = (pos 0 , a) , p ＝⟨ toℚ-toℚₙ ((pos 0 , a) , p) ⟩
+      toℚ (pos 0 , a) ＝⟨ equiv→equality (pos 0 , a) (pos 0 , 0) I ⟩
+      toℚ (pos 0 , 0) ＝⟨ refl ⟩
+      0ℚ ∎
 
 instance
  canonical-map-ℚₙ-to-ℚ : Canonical-Map ℚₙ ℚ
