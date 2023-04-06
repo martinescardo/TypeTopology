@@ -101,90 +101,85 @@ toℚ-neg (x , a) = equiv→equality (ℤ- x' , a') (𝔽- (x , a)) γ
    f : Σ q' ꞉ ℚ , q + q' ＝ 0ℚ → Σ q' ꞉ ℚ , q' + q ＝ 0ℚ
    f (q' , e) = q' , (ℚ+-comm q' q ∙ e)
 
-ℚ-minus-minus : (p : ℚ) → p ＝ (- (- p))
-ℚ-minus-minus p = IV
+ℚ-minus-minus : (p : ℚ) → p ＝ - (- p)
+ℚ-minus-minus ((x , a) , α) = γ
  where
-  p-constructed : Σ (x , a) ꞉ 𝔽 , p ＝ toℚ (x , a)
-  p-constructed = q-has-qn p
+  γ : ((x , a) , α) ＝ - (- ((x , a) , α))
+  γ = ((x , a) , α)         ＝⟨ i    ⟩
+      toℚ (x , a)           ＝⟨ ii   ⟩
+      toℚ (ℤ- (ℤ- x) , a)   ＝⟨ refl ⟩
+      toℚ (𝔽- (𝔽- (x , a))) ＝⟨ iii  ⟩
+      - toℚ (𝔽- (x , a))    ＝⟨ iv   ⟩
+      - (- toℚ (x , a))     ＝⟨ v    ⟩
+      - (- ((x , a) , α))   ∎
+   where
+    i   = toℚ-to𝔽 ((x , a) , α)
+    ii  = ap (λ z → toℚ (z , a)) (minus-minus-is-plus x ⁻¹)
+    iii = toℚ-neg (𝔽- (x , a)) ⁻¹
+    iv  = ap -_ (toℚ-neg (x , a) ⁻¹)
+    v   = ap (-_ ∘ -_) (toℚ-to𝔽 ((x , a) , α) ⁻¹)
 
-  x = pr₁ (pr₁ p-constructed)
-  a = pr₂ (pr₁ p-constructed)
-
-  I : (- toℚ (x , a)) ＝ toℚ (ℤ- x , a)
-  I = toℚ-neg (x , a)
-
-  II : - toℚ (ℤ- x , a) ＝ toℚ ((ℤ- (ℤ- x)) , a)
-  II = toℚ-neg (ℤ- x , a)
-
-  III : toℚ ((ℤ- (ℤ- x)) , a) ＝ toℚ (x , a)
-  III = ap (λ k → toℚ (k , a)) (minus-minus-is-plus x)
-
-  IV : p ＝ (- (- p))
-  IV = p                     ＝⟨ pr₂ p-constructed ⟩
-       toℚ (x , a)           ＝⟨ III ⁻¹ ⟩
-       toℚ (ℤ- (ℤ- x) , a)   ＝⟨ II ⁻¹ ⟩
-       (- toℚ (ℤ- x , a))    ＝⟨ ap -_ (I ⁻¹) ⟩
-       (- (- toℚ (x , a)))   ＝⟨ ap (λ k → - (- k)) (pr₂ p-constructed ⁻¹) ⟩
-       (- (- p)) ∎
-
-ℚ-add-zero : (x y z : ℚ) → (x + y) ＝ ((x - z) + (z + y))
-ℚ-add-zero x y z = I
+ℚ-add-zero : (x y z : ℚ) → (x + y) ＝ (x - z) + (z + y)
+ℚ-add-zero x y z = γ
  where
-  I : (x + y) ＝ ((x - z) + (z + y))
-  I = (x + y)                    ＝⟨ ap (_+ y) (ℚ-zero-right-neutral x ⁻¹) ⟩
-      ((x + 0ℚ) + y)             ＝⟨ ap (λ k → (x + k) + y) (ℚ-inverse-sum-to-zero' z ⁻¹) ⟩
-      ((x + ((- z) + z)) + y)    ＝⟨ ap (_+ y) (ℚ+-assoc x (- z) z ⁻¹) ⟩
-      (((x + (- z)) + z) + y)    ＝⟨ ℚ+-assoc (x - z) z y ⟩
-      ((x - z) + (z + y)) ∎
+  i   = ap (_+ y) (ℚ-zero-right-neutral x ⁻¹)
+  ii  = ap (λ k → (x + k) + y) (ℚ-inverse-sum-to-zero' z ⁻¹)
+  iii = ap (_+ y) (ℚ+-assoc x (- z) z ⁻¹)
+  iv  = ℚ+-assoc (x - z) z y
+
+  γ : (x + y) ＝ (x - z) + (z + y)
+  γ = (x + y)             ＝⟨ i   ⟩
+      (x + 0ℚ) + y        ＝⟨ ii  ⟩
+      x + ((- z) + z) + y ＝⟨ iii ⟩
+      x + (- z) + z + y   ＝⟨ iv  ⟩
+      (x - z) + (z + y)   ∎
 
 ℚ-negation-dist-over-mult : (p q : ℚ) → (- p) * q ＝ - (p * q)
-ℚ-negation-dist-over-mult ((x , a) , α) ((y , b) , β) = I
+ℚ-negation-dist-over-mult ((x , a) , α) ((y , b) , β) = γ
  where
-  xa : Σ (x' , a') ꞉ 𝔽 , ((x , a) , α) ＝ toℚ (x' , a')
-  xa = q-has-qn ((x , a) , α)
-  yb : Σ (y' , b') ꞉ 𝔽 , ((y , b) , β) ＝ toℚ (y' , b')
-  yb = q-has-qn ((y , b) , β)
-  x' = pr₁ (pr₁ xa)
-  a' = pr₂ (pr₁ xa)
-  y' = pr₁ (pr₁ yb)
-  b' = pr₂ (pr₁ yb)
+  I : ((𝔽- (x , a)) 𝔽* (y , b)) ≈ (𝔽- ((x , a) 𝔽* (y , b)))
+    → toℚ ((𝔽- (x , a)) 𝔽* (y , b)) ＝ toℚ (𝔽- ((x , a) 𝔽* (y , b)))
+  I = equiv→equality ((𝔽- (x , a)) 𝔽* (y , b)) (𝔽- ((x , a) 𝔽* (y , b)))
 
-  II : ((𝔽- (x' , a')) 𝔽* (y' , b')) ≈ (𝔽- ((x' , a') 𝔽* (y' , b')))
-  II = 𝔽-subtraction-dist-over-mult (x' , a') (y' , b')
+  i   = ap (toℚ (𝔽- (x , a)) *_) (toℚ-to𝔽 ((y , b) , β))
+  ii  = toℚ-* (𝔽- (x , a)) (y , b) ⁻¹
+  iii = I (𝔽-subtraction-dist-over-mult (x , a) (y , b))
+  iv  = toℚ-neg ((x , a) 𝔽* (y , b)) ⁻¹
 
-  I : (- ((x , a) , α)) * ((y , b) , β) ＝ - ((x , a) , α) * ((y , b) , β)
-  I = (- ((x , a) , α)) * ((y , b) , β)    ＝⟨ ap (λ z → (- ((x , a) , α)) * z) (pr₂ yb) ⟩
-      toℚ (𝔽- (x , a)) * toℚ (y' , b')     ＝⟨ toℚ-* (𝔽- (x , a)) (y' , b') ⁻¹ ⟩
-      toℚ ((𝔽- (x' , a')) 𝔽* (y' , b'))   ＝⟨ equiv→equality ((𝔽- (x' , a')) 𝔽* (y' , b')) (𝔽- ((x' , a') 𝔽* (y' , b'))) II ⟩
-      toℚ (𝔽- ((x' , a') 𝔽* (y' , b')))   ＝⟨ toℚ-neg ((x' , a') 𝔽* (y' , b')) ⁻¹ ⟩
-      - toℚ ((x' , a') 𝔽* (y' , b'))      ＝⟨ ap -_ (toℚ-* (x' , a') (y' , b')) ⟩
-      - toℚ (x' , a') * toℚ (y' , b')      ＝⟨ ap₂ (λ z z' → - (z * z')) (pr₂ xa ⁻¹) (pr₂ yb ⁻¹) ⟩
-      - ((x , a) , α) * ((y , b) , β)      ∎
+  γ : (- ((x , a) , α)) * ((y , b) , β) ＝ - ((x , a) , α) * ((y , b) , β)
+  γ = (- ((x , a) , α)) * ((y , b) , β) ＝⟨ refl ⟩
+      toℚ (𝔽- (x , a)) * ((y , b) , β)  ＝⟨ i    ⟩
+      toℚ (𝔽- (x , a)) * toℚ (y , b)    ＝⟨ ii   ⟩
+      toℚ ((𝔽- (x , a)) 𝔽* (y , b))     ＝⟨ iii  ⟩
+      toℚ (𝔽- ((x , a) 𝔽* (y , b)))     ＝⟨ iv   ⟩
+      - toℚ ((x , a) 𝔽* (y , b))        ＝⟨ refl ⟩
+      - ((x , a) , α) * ((y , b) , β)   ∎
 
 toℚ-subtraction : (p q : 𝔽) → toℚ p - toℚ q ＝ toℚ (p 𝔽+ (𝔽- q))
-toℚ-subtraction p q = II
+toℚ-subtraction p q = γ
  where
-  I : toℚ (p 𝔽+ (𝔽- q)) ＝ toℚ p + toℚ (𝔽- q)
-  I = toℚ-+ p (𝔽- q)
-  II : toℚ p - toℚ q ＝ toℚ (p 𝔽+ (𝔽- q))
-  II = toℚ p - toℚ q       ＝⟨ ap (toℚ p +_) (toℚ-neg q) ⟩
-       toℚ p + toℚ (𝔽- q) ＝⟨ I ⁻¹ ⟩
-       toℚ (p 𝔽+ (𝔽- q)) ∎
+  γ : toℚ p - toℚ q ＝ toℚ (p 𝔽+ (𝔽- q))
+  γ = toℚ p - toℚ q      ＝⟨ ap (toℚ p +_) (toℚ-neg q) ⟩
+      toℚ p + toℚ (𝔽- q) ＝⟨ toℚ-+ p (𝔽- q) ⁻¹         ⟩
+      toℚ (p 𝔽+ (𝔽- q))  ∎
 
 1-2/5＝3/5 : 1ℚ - 2/5 ＝ 3/5
-1-2/5＝3/5 = 1ℚ - 2/5              ＝⟨ ap (λ α → α - 2/5) (2/5+3/5 ⁻¹) ⟩
-               2/5 + 3/5 - 2/5       ＝⟨ ℚ+-assoc 2/5 3/5 (- 2/5) ⟩
-               2/5 + (3/5 - 2/5)     ＝⟨ ap (2/5 +_) (ℚ+-comm 3/5 (- 2/5)) ⟩
-               2/5 + ((- 2/5) + 3/5) ＝⟨ ℚ+-assoc 2/5 (- 2/5) 3/5 ⁻¹ ⟩
-               2/5 - 2/5 + 3/5       ＝⟨ ap (_+ 3/5) (ℚ-inverse-sum-to-zero 2/5) ⟩
-               0ℚ + 3/5              ＝⟨ ℚ-zero-left-neutral 3/5 ⟩
-               3/5                   ∎
+1-2/5＝3/5 = γ
+ where
+  γ : 1ℚ - 2/5 ＝ 3/5
+  γ = 1ℚ - 2/5              ＝⟨ ap (λ α → α - 2/5) (2/5+3/5 ⁻¹)         ⟩
+      2/5 + 3/5 - 2/5       ＝⟨ ℚ+-assoc 2/5 3/5 (- 2/5)                ⟩
+      2/5 + (3/5 - 2/5)     ＝⟨ ap (2/5 +_) (ℚ+-comm 3/5 (- 2/5))       ⟩
+      2/5 + ((- 2/5) + 3/5) ＝⟨ ℚ+-assoc 2/5 (- 2/5) 3/5 ⁻¹             ⟩
+      2/5 - 2/5 + 3/5       ＝⟨ ap (_+ 3/5) (ℚ-inverse-sum-to-zero 2/5) ⟩
+      0ℚ + 3/5              ＝⟨ ℚ-zero-left-neutral 3/5                 ⟩
+      3/5                   ∎
 
 
 ℚ-inverse-intro : (p q : ℚ) → p ＝ p + (q - q)
-ℚ-inverse-intro p q = p           ＝⟨ ℚ-zero-right-neutral p ⁻¹ ⟩
-                         p + 0ℚ      ＝⟨ ap (p +_) (ℚ-inverse-sum-to-zero q ⁻¹) ⟩
-                         p + (q - q) ∎
+ℚ-inverse-intro p q = p           ＝⟨ ℚ-zero-right-neutral p ⁻¹              ⟩
+                      p + 0ℚ      ＝⟨ ap (p +_) (ℚ-inverse-sum-to-zero q ⁻¹) ⟩
+                      p + (q - q) ∎
 
 ℚ-inverse-intro'' : (p q : ℚ) → p ＝ p + q - q
 ℚ-inverse-intro'' p q = ℚ-inverse-intro p q ∙ ℚ+-assoc p q (- q) ⁻¹
