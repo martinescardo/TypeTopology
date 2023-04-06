@@ -18,7 +18,6 @@ open import Naturals.Order
 open import Notation.Order
 open import UF.Base
 open import UF.Subsingletons
-
 open import Integers.Type
 open import Integers.Addition
 open import Integers.Negation
