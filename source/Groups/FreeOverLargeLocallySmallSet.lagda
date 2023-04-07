@@ -717,9 +717,3 @@ What can we choose for the large, locally small set?
  * Another question is whether there is a large, discrete set, as this
    would considerably simplify the construction of the free group. One
    of us conjectures that there isn't, in general, such a set.
-
-\begin{code}
-
-
-
-\end{code}
