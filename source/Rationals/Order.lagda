@@ -913,4 +913,28 @@ order-lemma a b c d l = I (ℚ-trichotomous a c)
     iii : - b < - d
     iii = transport₂ _<_ (iv a b) (iv c d) ii
 
+ℚ-num-neg-not-pos : (x a : ℕ) (α : is-in-lowest-terms (negsucc x , a))
+                  → ¬ (0ℚ < ((negsucc x , a) , α))
+ℚ-num-neg-not-pos x a α l = 𝟘-elim (γ IV)
+ where
+  I : pos 0 ℤ* pos (succ a) < negsucc x ℤ* pos 1
+  I = l
+
+  II : pos 0 ℤ* pos (succ a) ＝ pos 0
+  II = ℤ-zero-left-base (pos (succ a))
+
+  III : negsucc x ℤ+ pos 0 ＝ negsucc x
+  III = ℤ-zero-right-neutral (negsucc x)
+
+  IV : pos 0 < negsucc x
+  IV = transport₂ _<_ II III I
+
+  γ : ¬ (pos 0 < negsucc x)
+  γ (k , e) = pos-not-negsucc γ'
+   where
+    γ' : pos (succ k) ＝ negsucc x
+    γ' = pos (succ k)   ＝⟨ ℤ+-comm (pos k) (pos 1) ⟩
+         pos 1 ℤ+ pos k ＝⟨ e                       ⟩
+         negsucc x      ∎
+
 \end{code}
