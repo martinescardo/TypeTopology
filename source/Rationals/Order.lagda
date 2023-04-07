@@ -141,21 +141,23 @@ toℚ-≤ (x , a) (y , b) l = Cases I II III
 ℚ-no-max-element ((x , a) , α) = q , III
  where
   q : ℚ
-  q = toℚ ((succℤ x) , a)
+  q = toℚ (succℤ x , a)
 
   x' : ℤ
   x' = pr₁ (pr₁ q)
   a' : ℕ
-  a' = pr₂ (pr₁ q)
+  a'  = pr₂ (pr₁ q)
+  pa  = (pos ∘ succ) a
+  pa' = (pos ∘ succ) a'
 
-  I : succℤ x ℤ* pos (succ a') ＝ x' ℤ* pos (succ a)
-  I = ≈-toℚ ((succℤ x) , a)
+  I : succℤ x ℤ* pa' ＝ x' ℤ* pa
+  I = ≈-toℚ (succℤ x , a)
 
-  II : (x ℤ* pos (succ a')) < (succℤ x ℤ* pos (succ a'))
-  II = positive-multiplication-preserves-order x (succℤ x) (pos (succ a')) ⋆ (<-incrℤ x)
+  II : x ℤ* pa' < succℤ x ℤ* pa'
+  II = positive-multiplication-preserves-order x (succℤ x) pa' ⋆ (<-incrℤ x)
 
-  III : x ℤ* pos (succ a') < (x' ℤ* pos (succ a))
-  III = transport (x ℤ* pos (succ a') <_) I II
+  III : x ℤ* pa' < x' ℤ* pa
+  III = transport (x ℤ* pa' <_) I II
 
 ℚ-no-least-element : (q : ℚ) → Σ p ꞉ ℚ , p < q
 ℚ-no-least-element ((x , a) , α) = p , III
@@ -168,73 +170,92 @@ toℚ-≤ (x , a) (y , b) l = Cases I II III
   a' : ℕ
   a' = pr₂ (pr₁ p)
 
-  I : predℤ x ℤ* pos (succ a') ＝ x' ℤ* pos (succ a)
-  I = ≈-toℚ ((predℤ x) , a)
+  pa = (pos ∘ succ) a
+  pa' = (pos ∘ succ) a'
 
-  II : (predℤ x ℤ* pos (succ a')) < (x ℤ* pos (succ a'))
-  II = positive-multiplication-preserves-order (predℤ x) x (pos (succ a')) ⋆ (<-predℤ x)
+  I : predℤ x ℤ* pa' ＝ x' ℤ* pa
+  I = ≈-toℚ (predℤ x , a)
 
-  III : x' ℤ* pos (succ a) < (x ℤ* pos (succ a'))
-  III = transport (_< x ℤ* pos (succ a')) I II
+  II : predℤ x ℤ* pa' < x ℤ* pa'
+  II = positive-multiplication-preserves-order (predℤ x) x pa' ⋆ (<-predℤ x)
 
-ℚ-trichotomous-lemma : ((p , α) (q , β) : ℚ) → p ≈ q → p , α ＝ q , β
-ℚ-trichotomous-lemma (p , α) (q , β) e = to-subtype-＝ (λ - → is-in-lowest-terms-is-prop -) (equiv-with-lowest-terms-is-equal p q e α β)
+  III : x' ℤ* pa < (x ℤ* pa')
+  III = transport (_< x ℤ* pa') I II
 
 ℚ-trichotomous : (p q : ℚ) → (p < q) ∔ (p ＝ q) ∔ (q < p)
-ℚ-trichotomous ((x , a) , α) ((y , b) , β) = f (ℤ-trichotomous (x ℤ* pos (succ b)) (y ℤ* pos (succ a)))
+ℚ-trichotomous ((x , a) , α) ((y , b) , β) =
+ γ (ℤ-trichotomous (x ℤ* pos (succ b)) (y ℤ* pos (succ a)))
  where
-  f : (x ℤ* pos (succ b)) < (y ℤ* pos (succ a))
+  γ : (x ℤ* pos (succ b)) < (y ℤ* pos (succ a))
      ∔ (x ℤ* pos (succ b) ＝ y ℤ* pos (succ a))
      ∔ (y ℤ* pos (succ a)) < (x ℤ* pos (succ b))
     →  ((x , a) , α) < ((y , b) , β)
      ∔ ((x , a) , α ＝ (y , b) , β)
      ∔ ((y , b) , β) < ((x , a) , α)
-  f (inl z)       = inl z
-  f (inr (inl z)) = inr (inl (ℚ-trichotomous-lemma ((x , a) , α) ((y , b) , β) z))
-  f (inr (inr z)) = inr (inr z)
+  γ (inl z)       = inl z
+  γ (inr (inr z)) = inr (inr z)
+  γ (inr (inl z)) = inr (inl γ')
+   where
+    I : x , a ＝ y , b
+    I = equiv-with-lowest-terms-is-equal (x , a) (y , b) z α β
+
+    γ' : (x , a) , α ＝ (y , b) , β
+    γ' = to-subtype-＝ is-in-lowest-terms-is-prop I
 
 ℚ-dichotomous : (p q : ℚ) → p ≤ q ∔ q ≤ p
-ℚ-dichotomous ((x , a) , α) ((y , b) , β) = ℤ-dichotomous (x ℤ* pos (succ b)) (y ℤ* pos (succ a))
+ℚ-dichotomous ((x , a) , α) ((y , b) , β) = γ
+ where
+  γ : ((x , a) , α) ≤ ((y , b) , β) ∔ ((y , b) , β) ≤ ((x , a) , α)
+  γ = ℤ-dichotomous (x ℤ* pos (succ b)) (y ℤ* pos (succ a))
 
 ℚ-dichotomous' : (p q : ℚ) → p < q ∔ q ≤ p
-ℚ-dichotomous' p q = I (ℚ-trichotomous p q)
+ℚ-dichotomous' p q = γ (ℚ-trichotomous p q)
  where
-  I : p < q ∔ (p ＝ q) ∔ q < p → p < q ∔ q ≤ p
-  I (inl l) = inl l
-  I (inr (inl e)) = inr (transport (_≤ p) e (ℚ≤-refl p))
-  I (inr (inr l)) = inr (ℚ<-coarser-than-≤ q p l)
+  γ : p < q ∔ (p ＝ q) ∔ q < p → p < q ∔ q ≤ p
+  γ (inl l) = inl l
+  γ (inr (inl e)) = inr (transport (_≤ p) e (ℚ≤-refl p))
+  γ (inr (inr l)) = inr (ℚ<-coarser-than-≤ q p l)
 
 located-property : (p q x : ℚ) → p < q → (p < x) ∔ (x < q)
-located-property p q x l = f (ℚ-trichotomous x q)
+located-property p q x l = γ (ℚ-trichotomous x q)
  where
-  f : (x < q) ∔ (x ＝ q) ∔ (q < x) → (p < x) ∔ (x < q)
-  f (inl z)       = inr z
-  f (inr (inl z)) = inl (transport (p <_) (z ⁻¹) l)
-  f (inr (inr z)) = inl (ℚ<-trans p q x l z)
+  γ : (x < q) ∔ (x ＝ q) ∔ (q < x) → (p < x) ∔ (x < q)
+  γ (inl z)       = inr z
+  γ (inr (inl z)) = inl (transport (p <_) (z ⁻¹) l)
+  γ (inr (inr z)) = inl (ℚ<-trans p q x l z)
 
 half-𝔽 : 𝔽 → 𝔽
-half-𝔽 (x , a) = x , (succ (2 ℕ* a))
+half-𝔽 (x , a) = x , succ (2 ℕ* a)
 
 rounded-lemma₀ : (a : ℕ) → succ (2 ℕ* pred (succ a)) ＝ pred (2 ℕ* (succ a))
-rounded-lemma₀ zero = refl
-rounded-lemma₀ (succ a) = succ (2 ℕ* pred (succ (succ a))) ＝⟨ ap (λ - → succ (2 ℕ* -)) (pred-succ (succ a)) ⟩
-                   succ (2 ℕ* succ a)                ＝⟨ pred-succ (succ (2 ℕ* succ a)) ⁻¹ ⟩
-                   pred (succ (succ (2 ℕ* succ a)))  ＝⟨ refl ⟩
-                   pred (2 ℕ* succ a ℕ+ 2)           ＝⟨ refl ⟩
-                   pred (2 ℕ* (succ a) ℕ+ 2 ℕ* 1)    ＝⟨ ap pred (distributivity-mult-over-addition 2 (succ a) 1 ⁻¹) ⟩
-                   pred (2 ℕ+ (2 ℕ* (succ a)))       ＝⟨ refl ⟩
-                   pred (2 ℕ* succ (succ a)) ∎
+rounded-lemma₀ 0 = refl
+rounded-lemma₀ (succ a) =
+ succ (2 ℕ* pred (succ (succ a))) ＝⟨ i    ⟩
+ succ (2 ℕ* succ a)               ＝⟨ ii   ⟩
+ pred (succ (succ (2 ℕ* succ a))) ＝⟨ refl ⟩
+ pred (2 ℕ* succ a ℕ+ 2)          ＝⟨ refl ⟩
+ pred (2 ℕ* (succ a) ℕ+ 2 ℕ* 1)   ＝⟨ iii  ⟩
+ pred (2 ℕ+ (2 ℕ* (succ a)))      ＝⟨ refl ⟩
+ pred (2 ℕ* succ (succ a))        ∎
+  where
+   i   = ap (λ - → succ (2 ℕ* -)) (pred-succ (succ a))
+   ii  = pred-succ (succ (2 ℕ* succ a)) ⁻¹
+   iii = ap pred (distributivity-mult-over-addition 2 (succ a) 1 ⁻¹)
 
 ℚ-zero-less-than-positive : (x y : ℕ) → 0ℚ < toℚ ((pos (succ x)) , y)
-ℚ-zero-less-than-positive x y = toℚ-< (pos 0 , 0) (pos (succ x) , y) (x , I)
+ℚ-zero-less-than-positive x y = toℚ-< (pos 0 , 0) (pos (succ x) , y) (x , γ)
  where
-  I : succℤ (pos 0 ℤ* pos (succ y)) ℤ+ pos x ＝ pos (succ x) ℤ* pos 1
-  I = succℤ (pos 0 ℤ* pos (succ y)) ℤ+ pos x ＝⟨ ap (λ α → succℤ α ℤ+ pos x) (ℤ-zero-left-base (pos (succ y))) ⟩
-      succℤ (pos 0) ℤ+ pos x                 ＝⟨ ℤ-left-succ (pos 0) (pos x) ⟩
-      succℤ (pos 0 ℤ+ pos x)                 ＝⟨ ap succℤ (ℤ+-comm (pos 0) (pos x)) ⟩
-      succℤ (pos x)                          ＝⟨ by-definition ⟩
-      pos (succ x)                           ＝⟨ by-definition ⟩
+  γ : succℤ (pos 0 ℤ* pos (succ y)) ℤ+ pos x ＝ pos (succ x) ℤ* pos 1
+  γ = succℤ (pos 0 ℤ* pos (succ y)) ℤ+ pos x ＝⟨ i   ⟩
+      succℤ (pos 0) ℤ+ pos x                 ＝⟨ ii   ⟩
+      succℤ (pos 0 ℤ+ pos x)                 ＝⟨ iii  ⟩
+      succℤ (pos x)                          ＝⟨ refl ⟩
+      pos (succ x)                           ＝⟨ refl ⟩
       pos (succ x) ℤ* pos 1                  ∎
+   where
+    i   = ap (λ α → succℤ α ℤ+ pos x) (ℤ-zero-left-base (pos (succ y)))
+    ii  = ℤ-left-succ (pos 0) (pos x)
+    iii = ap succℤ (ℤ+-comm (pos 0) (pos x))
 
 ℚ<-addition-preserves-order : (p q r : ℚ) → p < q → (p + r) < (q + r)
 ℚ<-addition-preserves-order (p , _) (q , _) (r , _) l =
@@ -247,38 +268,87 @@ rounded-lemma₀ (succ a) = succ (2 ℕ* pred (succ (succ a))) ＝⟨ ap (λ - �
   I = 𝔽<-adding p q r s l₁ l₂
 
 ℚ<-addition-preserves-order' : (p q r : ℚ) → p < q → 0ℚ < r → p < q + r
-ℚ<-addition-preserves-order' p q r l m = transport (_< q + r) (ℚ-zero-right-neutral p) (ℚ<-adding p q 0ℚ r l m)
+ℚ<-addition-preserves-order' p q r l m = γ
+ where
+  I : p + 0ℚ ＝ p
+  I = ℚ-zero-right-neutral p
+
+  II  : p + 0ℚ < q + r
+  II = ℚ<-adding p q 0ℚ r l m
+
+  γ : p < q + r
+  γ = transport (_< q + r) I II
 
 ℚ<-pos-multiplication-preserves-order : (p q : ℚ) → 0ℚ < p → 0ℚ < q → 0ℚ < p * q
-ℚ<-pos-multiplication-preserves-order (p , _) (q , _) l₁ l₂ = toℚ-< (pos 0 , 0) (p 𝔽* q) (𝔽-pos-multiplication-preserves-order p q l₁ l₂)
+ℚ<-pos-multiplication-preserves-order (p , _) (q , _) l₁ l₂ = γ
+ where
+  I : (pos 0 , 0) 𝔽< (p 𝔽* q)
+  I = 𝔽-pos-multiplication-preserves-order p q l₁ l₂
 
-ℚ≤-pos-multiplication-preserves-order : (p q : ℚ) → 0ℚ ≤ p → 0ℚ ≤ q → 0ℚ ≤ (p * q)
-ℚ≤-pos-multiplication-preserves-order (p , _) (q , _) l₁ l₂ = toℚ-≤ (pos 0 , 0) (p 𝔽* q) (𝔽≤-pos-multiplication-preserves-order p q l₁ l₂)
+  γ : toℚ (pos 0 , 0) < toℚ (p 𝔽* q)
+  γ = toℚ-< (pos 0 , 0) (p 𝔽* q) I
+
+ℚ≤-pos-multiplication-preserves-order : (p q : ℚ)
+                                      → 0ℚ ≤ p → 0ℚ ≤ q → 0ℚ ≤ (p * q)
+ℚ≤-pos-multiplication-preserves-order (p , _) (q , _) l₁ l₂ = γ
+ where
+  I : (pos 0 , 0) 𝔽≤ (p 𝔽* q)
+  I = 𝔽≤-pos-multiplication-preserves-order p q l₁ l₂
+
+  γ : toℚ (pos 0 , 0) ≤ toℚ (p 𝔽* q)
+  γ = toℚ-≤ (pos 0 , 0) (p 𝔽* q) I
 
 ℚ<-addition-preserves-order'' : (p q : ℚ) → 0ℚ < q → p < p + q
-ℚ<-addition-preserves-order'' p q l = transport₂ _<_ (ℚ-zero-left-neutral p) (ℚ+-comm q p) (ℚ<-addition-preserves-order 0ℚ q p l)
+ℚ<-addition-preserves-order'' p q l = γ
+ where
+  I : 0ℚ + p ＝ p
+  I = ℚ-zero-left-neutral p
+
+  II : q + p ＝ p + q
+  II = ℚ+-comm q p
+
+  III : 0ℚ + p < q + p
+  III = ℚ<-addition-preserves-order 0ℚ q p l
+
+  γ : p < p + q
+  γ = transport₂ _<_ I II III
 
 ℚ<-subtraction-preserves-order : (p q : ℚ) → 0ℚ < q → p - q < p
-ℚ<-subtraction-preserves-order p q l = transport ((p - q) <_) III II
+ℚ<-subtraction-preserves-order p q l = transport (p - q <_) III II
  where
   I : p < p + q
   I = ℚ<-addition-preserves-order'' p q l
+
   II : p - q < p + q - q
   II = ℚ<-addition-preserves-order p (p + q) (- q) I
+
   III : p + q - q ＝ p
-  III = ℚ+-assoc p q (- q) ∙ (ap (p +_) (ℚ-inverse-sum-to-zero q) ∙ ℚ-zero-right-neutral p)
+  III = p + q - q   ＝⟨ ℚ+-assoc p q (- q)                  ⟩
+        p + (q - q) ＝⟨ ap (p +_) (ℚ-inverse-sum-to-zero q) ⟩
+        p + 0ℚ      ＝⟨ ℚ-zero-right-neutral p              ⟩
+        p           ∎
 
 ℚ<-subtraction-preserves-order' : (p q : ℚ) → q < 0ℚ → p + q < p
-ℚ<-subtraction-preserves-order' p q l = transport₂ _<_ (ℚ+-comm q p) (ℚ-zero-left-neutral p) I
+ℚ<-subtraction-preserves-order' p q l = γ
  where
   I : q + p < 0ℚ + p
   I = ℚ<-addition-preserves-order q 0ℚ p l
+
+  II : q + p ＝ p + q
+  II = ℚ+-comm q p
+
+  III : 0ℚ + p ＝ p
+  III = ℚ-zero-left-neutral p
+
+  γ : p + q < p
+  γ = transport₂ _<_ II III I
 
 ℚ<-subtraction-preserves-order'' : (p q r : ℚ) → p < q - r → p + r < q
 ℚ<-subtraction-preserves-order'' p q r l = transport (p + r <_) II I
  where
   I : p + r < q - r + r
   I = ℚ<-addition-preserves-order p (q - r) r l
+
   II : q - r + r ＝ q
   II = q - r + r       ＝⟨ ℚ+-assoc q (- r) r                   ⟩
        q + ((- r) + r) ＝⟨ ap (q +_) (ℚ-inverse-sum-to-zero' r) ⟩
@@ -297,83 +367,125 @@ rounded-lemma₀ (succ a) = succ (2 ℕ* pred (succ (succ a))) ＝⟨ ap (λ - �
        p ∎
 
 ℚ<-difference-positive' : (p q : ℚ) → p < q → p - q < 0ℚ
-ℚ<-difference-positive' p q l = transport (p - q <_) (ℚ-inverse-sum-to-zero q) (ℚ<-addition-preserves-order p q (- q) l)
+ℚ<-difference-positive' p q l = γ
+ where
+  I : q - q ＝ 0ℚ
+  I = ℚ-inverse-sum-to-zero q
+
+  II : p - q < q - q
+  II = ℚ<-addition-preserves-order p q (- q) l
+
+  γ : p - q <  0ℚ
+  γ = transport (p - q <_) I II
 
 ℚ<-swap' : (p q r : ℚ) → p - q < r → p - r < q
-ℚ<-swap' p q r l = transport₂ _<_ I II (ℚ<-addition-preserves-order (p - q) r (q - r) l  )
+ℚ<-swap' p q r l = transport₂ _<_ I II III
  where
   I : p - q + (q - r) ＝ p - r
-  I = p - q + (q - r)         ＝⟨ ℚ+-assoc p (- q) (q - r) ⟩
-      p + ((- q) + (q - r))   ＝⟨ ap (p +_) (ℚ+-assoc (- q) q (- r) ⁻¹) ⟩
-      p + ((- q) + q - r)     ＝⟨ ap (λ z → p + (z - r)) (ℚ-inverse-sum-to-zero' q) ⟩
-      p + (0ℚ - r)            ＝⟨ ap (p +_) (ℚ-zero-left-neutral (- r)) ⟩
-      p - r ∎
+  I = p - q + (q - r)       ＝⟨ i   ⟩
+      p + ((- q) + (q - r)) ＝⟨ ii  ⟩
+      p + ((- q) + q - r)   ＝⟨ iii ⟩
+      p + (0ℚ - r)          ＝⟨ iv  ⟩
+      p - r                 ∎
+   where
+    i   = ℚ+-assoc p (- q) (q - r)
+    ii  = ap (p +_) (ℚ+-assoc (- q) q (- r) ⁻¹)
+    iii = ap (λ z → p + (z - r)) (ℚ-inverse-sum-to-zero' q)
+    iv  = ap (p +_) (ℚ-zero-left-neutral (- r))
+
   II : r + (q - r) ＝ q
-  II = r + (q - r)     ＝⟨ ap (r +_) (ℚ+-comm q (- r)) ⟩
-       r + ((- r) + q) ＝⟨ ℚ+-assoc r (- r) q ⁻¹ ⟩
+  II = r + (q - r)     ＝⟨ ap (r +_) (ℚ+-comm q (- r))         ⟩
+       r + ((- r) + q) ＝⟨ ℚ+-assoc r (- r) q ⁻¹               ⟩
        r - r + q       ＝⟨ ap (_+ q) (ℚ-inverse-sum-to-zero r) ⟩
-       0ℚ + q          ＝⟨ ℚ-zero-left-neutral q ⟩
+       0ℚ + q          ＝⟨ ℚ-zero-left-neutral q               ⟩
        q ∎
+
+  III : p - q + (q - r) < r + (q - r)
+  III = ℚ<-addition-preserves-order (p - q) r (q - r) l
 
 ℚ<-adding-zero : (p q : ℚ) → 0ℚ < p → 0ℚ < q → 0ℚ < p + q
 ℚ<-adding-zero p q l₁ l₂ = ℚ<-adding 0ℚ p 0ℚ q l₁ l₂
 
 ℚ<-not-itself : (p : ℚ) → ¬ (p < p)
-ℚ<-not-itself ((x , a) , _) (n , e) = positive-not-zero n (pos-lc (ℤ+-lc (pos (succ n)) (pos 0) (x ℤ* pos (succ a)) I))
- where
-  I : x ℤ* pos (succ a) ℤ+ pos (succ n) ＝ x ℤ* pos (succ a) ℤ+ pos 0
-  I = x ℤ* pos (succ a) ℤ+ pos (succ n)  ＝⟨ by-definition ⟩
-      x ℤ* pos (succ a) ℤ+ succℤ (pos n) ＝⟨ ℤ-right-succ (x ℤ* pos (succ a)) (pos n) ⟩
-      succℤ (x ℤ* pos (succ a) ℤ+ pos n) ＝⟨ ℤ-left-succ (x ℤ* pos (succ a)) (pos n) ⁻¹ ⟩
-      succℤ (x ℤ* pos (succ a)) ℤ+ pos n ＝⟨ e ⟩
-      x ℤ* pos (succ a)                  ＝⟨ by-definition ⟩
-      x ℤ* pos (succ a) ℤ+ pos 0 ∎
+ℚ<-not-itself ((x , a) , _) l = ℤ-equal-not-less-than (x ℤ* (pos (succ a))) l
 
 ℚ≤-split : (p q : ℚ) → p ≤ q → (p < q) ∔ (p ＝ q)
-ℚ≤-split (p , α) (q , β) (0 , e) = inr (to-subtype-＝ (is-in-lowest-terms-is-prop) I)
+ℚ≤-split ((x , a) , α) ((y , b) , β) l = cases II III I
  where
-  I : p ＝ q
-  I = equiv-with-lowest-terms-is-equal p q e α β
-ℚ≤-split ((x , a) , _) ((y , b) , _) (succ n , e) = inl (n , (ℤ-left-succ (x ℤ* pos (succ b)) (pos n) ∙ e))
+  I : x ℤ* pos (succ b) < y ℤ* pos (succ a)
+    ∔ (x ℤ* pos (succ b) ＝ y ℤ* pos (succ a))
+  I = ℤ≤-split (x ℤ* pos (succ b)) (y ℤ* pos (succ a)) l
+
+  II : x ℤ* pos (succ b) < y ℤ* pos (succ a)
+     → x ℤ* pos (succ b) < y ℤ* pos (succ a)
+     ∔ ((x , a) , α ＝ (y , b) , β)
+  II = inl
+
+  III : (x ℤ* pos (succ b) ＝ y ℤ* pos (succ a))
+      → x ℤ* pos (succ b) < y ℤ* pos (succ a)
+      ∔ ((x , a) , α ＝ (y , b) , β)
+  III e = inr (ℚ-＝ ((x , a) , α) ((y , b) , β) e)
 
 ℚ≤-addition-preserves-order : (p q r : ℚ) → p ≤ q → (p + r) ≤ (q + r)
 ℚ≤-addition-preserves-order p q r l = I (ℚ≤-split p q l)
  where
   I : (p < q) ∔ (p ＝ q) → (p + r) ≤ (q + r)
-  I (inl l) = ℚ<-coarser-than-≤ (p + r) (q + r) (ℚ<-addition-preserves-order p q r l)
+  I (inl l) = ℚ<-coarser-than-≤ (p + r) (q + r) II
+   where
+    II : p + r < q + r
+    II = ℚ<-addition-preserves-order p q r l
   I (inr e) = transport (p + r ≤_) II (ℚ≤-refl (p + r))
    where
     II : p + r ＝ q + r
     II = ap (_+ r) e
 
 ℚ≤-addition-preserves-order'' : (p q : ℚ) → 0ℚ ≤ q → p ≤ p + q
-ℚ≤-addition-preserves-order'' p q l = transport₂ _≤_ (ℚ-zero-left-neutral p) (ℚ+-comm q p) (ℚ≤-addition-preserves-order 0ℚ q p l)
+ℚ≤-addition-preserves-order'' p q l = transport₂ _≤_ I II III
+ where
+  I : 0ℚ + p ＝ p
+  I = ℚ-zero-left-neutral p
 
-ℚ≤-difference-positive :(p q : ℚ) → p ≤ q → 0ℚ ≤ q - p
+  II : q + p ＝ p + q
+  II = ℚ+-comm q p
+
+  III : 0ℚ + p ≤ q + p
+  III = ℚ≤-addition-preserves-order 0ℚ q p l
+
+ℚ≤-difference-positive : (p q : ℚ) → p ≤ q → 0ℚ ≤ q - p
 ℚ≤-difference-positive p q l = transport (_≤ q - p) (ℚ-inverse-sum-to-zero p) I
  where
   I : p - p ≤ q - p
   I = ℚ≤-addition-preserves-order p q (- p) l
 
-ℚ≤-pos-multiplication-preserves-order' : (p q r : ℚ) → (p ≤ q) → 0ℚ ≤ r → p * r ≤ q * r
+ℚ≤-pos-multiplication-preserves-order' : (p q r : ℚ)
+                                       → (p ≤ q) → 0ℚ ≤ r → p * r ≤ q * r
 ℚ≤-pos-multiplication-preserves-order' p q r l₁ l₂ = transport₂ _≤_ III IV II
  where
-  I : 0ℚ ≤ ((q - p) * r)
-  I = ℚ≤-pos-multiplication-preserves-order (q - p) r (ℚ≤-difference-positive p q l₁) l₂
+  I-lem : 0ℚ ≤ q - p
+  I-lem = ℚ≤-difference-positive p q l₁
 
-  II : (0ℚ + p * r) ≤ ((q - p) * r + p * r)
+  I : 0ℚ ≤ (q - p) * r
+  I = ℚ≤-pos-multiplication-preserves-order (q - p) r I-lem l₂
+
+  II : 0ℚ + p * r ≤ (q - p) * r + p * r
   II = ℚ≤-addition-preserves-order 0ℚ ((q - p) * r) (p * r) I
 
   III : 0ℚ + p * r ＝ p * r
   III = ℚ-zero-left-neutral (p * r)
 
-  IV : ((q - p) * r) + p * r ＝ q * r
-  IV = (q - p) * r + p * r         ＝⟨ ap (_+ p * r) (ℚ-distributivity' r q (- p)) ⟩
-       q * r + (- p) * r + p * r   ＝⟨ ℚ+-assoc (q * r) ((- p) * r) (p * r) ⟩
-       q * r + ((- p) * r + p * r) ＝⟨ ap (λ z → (q * r) + (z + p * r)) (ℚ-negation-dist-over-mult p r) ⟩
-       q * r + ((- p * r) + p * r) ＝⟨ ap (q * r +_) (ℚ-inverse-sum-to-zero' (p * r)) ⟩
-       q * r + 0ℚ                  ＝⟨ ℚ-zero-right-neutral (q * r) ⟩
-       q * r ∎
+  IV : (q - p) * r + p * r ＝ q * r
+  IV = (q - p) * r + p * r         ＝⟨ i   ⟩
+       q * r + (- p) * r + p * r   ＝⟨ ii  ⟩
+       q * r + ((- p) * r + p * r) ＝⟨ iii ⟩
+       q * r + ((- p * r) + p * r) ＝⟨ iv  ⟩
+       q * r + 0ℚ                  ＝⟨ v   ⟩
+       q * r                       ∎
+   where
+    i   = ap (_+ p * r) (ℚ-distributivity' r q (- p))
+    ii  = ℚ+-assoc (q * r) ((- p) * r) (p * r)
+    iii = ap (λ z → (q * r) + (z + p * r)) (ℚ-negation-dist-over-mult p r)
+    iv  = ap (q * r +_) (ℚ-inverse-sum-to-zero' (p * r))
+    v   = ℚ-zero-right-neutral (q * r)
 
 ℚ<-difference-positive : (p q : ℚ) → p < q → 0ℚ < q - p
 ℚ<-difference-positive p q l = transport (_< q - p) (ℚ-inverse-sum-to-zero p) I
@@ -381,25 +493,35 @@ rounded-lemma₀ (succ a) = succ (2 ℕ* pred (succ (succ a))) ＝⟨ ap (λ - �
   I : p - p < q - p
   I = ℚ<-addition-preserves-order p q (- p) l
 
-ℚ<-pos-multiplication-preserves-order' : (p q r : ℚ) → p < q → 0ℚ < r → p * r < q * r
+ℚ<-pos-multiplication-preserves-order' : (p q r : ℚ)
+                                       → p < q → 0ℚ < r → p * r < q * r
 ℚ<-pos-multiplication-preserves-order' p q r l₁ l₂ = transport₂ _<_ III IV II
  where
-  I : 0ℚ < ((q - p) * r)
-  I = ℚ<-pos-multiplication-preserves-order (q - p) r (ℚ<-difference-positive p q l₁) l₂
+  I-lem : 0ℚ < q - p
+  I-lem = (ℚ<-difference-positive p q l₁)
 
-  II : (0ℚ + p * r) < ((q - p) * r + p * r)
+  I : 0ℚ < (q - p) * r
+  I = ℚ<-pos-multiplication-preserves-order (q - p) r I-lem l₂
+
+  II : 0ℚ + p * r < (q - p) * r + p * r
   II = ℚ<-addition-preserves-order 0ℚ ((q - p) * r) (p * r) I
 
   III : 0ℚ + p * r ＝ p * r
   III = ℚ-zero-left-neutral (p * r)
 
-  IV : ((q - p) * r) + p * r ＝ q * r
-  IV = (q - p) * r + p * r         ＝⟨ ap (_+ p * r) (ℚ-distributivity' r q (- p)) ⟩
-       q * r + (- p) * r + p * r   ＝⟨ ℚ+-assoc (q * r) ((- p) * r) (p * r) ⟩
-       q * r + ((- p) * r + p * r) ＝⟨ ap (λ z → (q * r) + (z + p * r)) (ℚ-negation-dist-over-mult p r) ⟩
-       q * r + ((- p * r) + p * r) ＝⟨ ap (q * r +_) (ℚ-inverse-sum-to-zero' (p * r)) ⟩
-       q * r + 0ℚ                  ＝⟨ ℚ-zero-right-neutral (q * r) ⟩
-       q * r ∎
+  IV : (q - p) * r + p * r ＝ q * r
+  IV = (q - p) * r + p * r         ＝⟨ i   ⟩
+       q * r + (- p) * r + p * r   ＝⟨ ii  ⟩
+       q * r + ((- p) * r + p * r) ＝⟨ iii ⟩
+       q * r + ((- p * r) + p * r) ＝⟨ iv  ⟩
+       q * r + 0ℚ                  ＝⟨ v   ⟩
+       q * r                       ∎
+   where
+    i   = ap (_+ p * r) (ℚ-distributivity' r q (- p))
+    ii  = ℚ+-assoc (q * r) ((- p) * r) (p * r)
+    iii = ap (λ z → (q * r) + (z + p * r)) (ℚ-negation-dist-over-mult p r)
+    iv  = ap (q * r +_) (ℚ-inverse-sum-to-zero' (p * r))
+    v   = ℚ-zero-right-neutral (q * r)
 
 order1ℚ : (p : ℚ) → p < p + 1ℚ
 order1ℚ p = ℚ<-addition-preserves-order'' p 1ℚ (0 , refl)
@@ -456,40 +578,50 @@ order1ℚ' p = ℚ<-subtraction-preserves-order p 1ℚ (0 , refl)
    where
     α : x - x - y ＝ - y
     α = x - x - y             ＝⟨ ap (_- y) (ℚ-inverse-sum-to-zero x) ⟩
-        0ℚ - y                ＝⟨ ℚ-zero-left-neutral (- y) ⟩
+        0ℚ - y                ＝⟨ ℚ-zero-left-neutral (- y)           ⟩
         - y                   ∎
     β : y - x - y ＝ - x
-    β = y - x - y             ＝⟨ ap (_- y) (ℚ+-comm y (- x)) ⟩
-        (- x) + y - y         ＝⟨ ℚ+-assoc (- x) y (- y) ⟩
+    β = y - x - y             ＝⟨ ap (_- y) (ℚ+-comm y (- x))             ⟩
+        (- x) + y - y         ＝⟨ ℚ+-assoc (- x) y (- y)                  ⟩
         (- x) + (y - y)       ＝⟨ ap ((- x) +_) (ℚ-inverse-sum-to-zero y) ⟩
-        (- x) + 0ℚ            ＝⟨ ℚ-zero-right-neutral (- x) ⟩
-        (- x) ∎
+        (- x) + 0ℚ            ＝⟨ ℚ-zero-right-neutral (- x)              ⟩
+        (- x)                 ∎
 
 ℚ≤-swap' : (x : ℚ) → x ≤ 0ℚ → 0ℚ ≤ - x
 ℚ≤-swap' x l = transport (_≤ - x) ℚ-minus-zero-is-zero (ℚ≤-swap x 0ℚ l)
 
 ℚ<-swap : (x y : ℚ) → x < y → - y < - x
-ℚ<-swap x y l = split (ℚ≤-split (- y) (- x) I)
+ℚ<-swap x y l = γ (ℚ≤-split (- y) (- x) I)
  where
   I : - y ≤ - x
   I = ℚ≤-swap x y (ℚ<-coarser-than-≤ x y l)
-  split : - y < - x ∔ (- y ＝ - x) → - y < - x
-  split (inl il) = il
-  split (inr ir) = 𝟘-elim (ℚ<-not-itself x (transport (x <_) III l))
+
+  γ : - y < - x ∔ (- y ＝ - x) → - y < - x
+  γ (inl il) = il
+  γ (inr ir) = 𝟘-elim (ℚ<-not-itself x (transport (x <_) γ' l))
    where
-    II : - (- y) ＝ - (- x)
-    II = ap -_ ir
-    III : y ＝ x
-    III = y       ＝⟨ ℚ-minus-minus y ⟩
-          - (- y) ＝⟨ II ⟩
-          - (- x) ＝⟨ ℚ-minus-minus x ⁻¹ ⟩
-          x ∎
+    γ' : y ＝ x
+    γ' = y       ＝⟨ ℚ-minus-minus y    ⟩
+         - (- y) ＝⟨ ap -_ ir           ⟩
+         - (- x) ＝⟨ ℚ-minus-minus x ⁻¹ ⟩
+         x       ∎
 
 ℚ<-swap'' : (p : ℚ) → p < 0ℚ → 0ℚ < - p
 ℚ<-swap'' p l = transport (_< - p) ℚ-minus-zero-is-zero (ℚ<-swap p 0ℚ l)
 
 ℚ<-swap''' : (x y : ℚ) → - y < - x → x < y
-ℚ<-swap''' x y l = transport₂ _<_ (ℚ-minus-minus x ⁻¹) (ℚ-minus-minus y ⁻¹) (ℚ<-swap (- y) (- x) l)
+ℚ<-swap''' x y l = transport₂ _<_ I II III
+ where
+  I : - (- x) ＝ x
+  I = ℚ-minus-minus x ⁻¹
+
+  II : - (- y) ＝ y
+  II = ℚ-minus-minus y ⁻¹
+
+  III : - (- x) < - (- y)
+  III = ℚ<-swap (- y) (- x) l
+
+-- TODO : Cleanup from here
 
 multiplicative-inverse-preserves-pos : (p : ℚ) → 0ℚ < p → (nz : ¬ (p ＝ 0ℚ)) → 0ℚ < multiplicative-inverse p nz
 multiplicative-inverse-preserves-pos ((pos 0 , a) , α) l nz = 𝟘-elim (nz (numerator-zero-is-zero ((pos zero , a) , α) by-definition))

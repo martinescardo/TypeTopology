@@ -268,6 +268,12 @@ toℚ-to𝔽 ((x , a) , α) = to-subtype-＝ is-in-lowest-terms-is-prop γ
   γ : (x , a) ＝ (x' , a')
   γ = equiv-with-lowest-terms-is-equal (x , a) (x' , a') II α (iltℚ (x , a))
 
+ℚ-＝ : ((p , α) (q , β) : ℚ) → p ≈ q → (p , α) ＝ (q , β)
+ℚ-＝ (p , α) (q , β) e = to-subtype-＝ is-in-lowest-terms-is-prop I
+ where
+  I : p ＝ q
+  I = equiv-with-lowest-terms-is-equal p q e α β
+
 ≈-toℚ : (p : 𝔽) → p ≈ to𝔽 (toℚ p)
 ≈-toℚ p = equality→equiv p p' (toℚ-to𝔽 (toℚ p))
  where
