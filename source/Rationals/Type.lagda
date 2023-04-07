@@ -294,6 +294,18 @@ q-has-qn (q , α) =  q , toℚ-to𝔽 (q , α)
       pos 1 ℤ* pos 1 ＝⟨ refl ⟩
       pos 1          ∎
 
+ℚ-positive-not-zero : (x a : ℕ) → ¬ (toℚ (pos (succ x) , a) ＝ 0ℚ)
+ℚ-positive-not-zero x a e = pos-succ-not-zero x III
+ where
+  I : (pos (succ x) , a) ≈ (pos 0 , 0)
+  I = equality→equiv (pos (succ x) , a) (pos 0 , 0) e
+
+  III : pos (succ x) ＝ pos 0
+  III = pos (succ x)            ＝⟨ by-definition                   ⟩
+        pos (succ x) ℤ* (pos 1) ＝⟨ I                                ⟩
+        pos 0 ℤ* pos (succ a)   ＝⟨ ℤ-zero-left-base (pos (succ a))  ⟩
+        pos 0 ∎
+
 numerator-zero-is-zero : (((x , a) , p) : ℚ) → x ＝ pos 0 → (x , a) , p ＝ 0ℚ
 numerator-zero-is-zero ((negsucc x , a) , p) e = 𝟘-elim (negsucc-not-pos e)
 numerator-zero-is-zero ((pos (succ x) , a) , p) e = 𝟘-elim γ
