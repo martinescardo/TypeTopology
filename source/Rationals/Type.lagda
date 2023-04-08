@@ -332,9 +332,9 @@ numerator-zero-is-zero ((pos 0 , a) , p) e = γ
       pos 0 ℤ* pos (succ a) ∎
 
   γ : (pos 0 , a) , p ＝ 0ℚ
-  γ = (pos 0 , a) , p ＝⟨ toℚ-to𝔽 ((pos 0 , a) , p) ⟩
+  γ = (pos 0 , a) , p ＝⟨ toℚ-to𝔽 ((pos 0 , a) , p)                ⟩
       toℚ (pos 0 , a) ＝⟨ equiv→equality (pos 0 , a) (pos 0 , 0) I ⟩
-      toℚ (pos 0 , 0) ＝⟨ refl ⟩
+      toℚ (pos 0 , 0) ＝⟨ refl                                     ⟩
       0ℚ ∎
 
 instance
