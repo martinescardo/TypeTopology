@@ -31,7 +31,7 @@ greatest element.
 \begin{code}
 
 Fin-wf : {n : ℕ} (A : Fin n → 𝓤  ̇ ) (r₀ : Fin n)
-       → complemented A
+       → is-complemented A
        → A r₀
        → Σ r ꞉ Fin n , A r × ((s : Fin n) → A s → r ≤ s)
 Fin-wf {𝓤} {succ n} A 𝟎 d a = 𝟎 , a , λ s a' → ⟨⟩
@@ -59,12 +59,12 @@ Fin-wf {𝓤} {succ n} A (suc r₀) d a = γ
        (λ (ν : ¬ A 𝟎) → suc r , b , l ν)
 
 Fin-co-wf : {n : ℕ} (A : Fin n → 𝓤  ̇ ) (r₀ : Fin n)
-          → complemented A
+          → is-complemented A
           → A r₀
           → Σ r ꞉ Fin n , A r × ((s : Fin n) → A s → s ≤ r)
 Fin-co-wf {𝓤} {succ n} A 𝟎 d a = γ
  where
-  δ : decidable (Σ i ꞉ Fin n , A (suc i))
+  δ : is-decidable (Σ i ꞉ Fin n , A (suc i))
   δ = Fin-Compact (A ∘ suc) (d ∘ suc)
 
   Γ = Σ r ꞉ Fin (succ n) , A r × ((s : Fin (succ n)) → A s → s ≤ r)
@@ -108,7 +108,7 @@ Fin-co-wf {𝓤} {succ n} A (suc x) d a = suc (pr₁ IH) , pr₁ (pr₂ IH) , h
   h (suc x) b = pr₂ (pr₂ IH) x b
 
 compact-argmax : {X : 𝓤  ̇ } {n : ℕ } (p : X → Fin n)
-               → Compact X
+               → is-Compact X
                → X
                → Σ x ꞉ X , ((y : X) → p y ≤ p x)
 compact-argmax {𝓤} {X} {n} p κ x₀ = II I
@@ -119,7 +119,7 @@ compact-argmax {𝓤} {X} {n} p κ x₀ = II I
   a₀ : A (p x₀)
   a₀ = x₀ , refl
 
-  δ : complemented A
+  δ : is-complemented A
   δ r = κ (λ x → p x ＝ r) (λ x → Fin-is-discrete (p x) r)
 
   I : Σ r ꞉ Fin n , A r × ((s : Fin n) → A s → s ≤ r)
@@ -129,7 +129,7 @@ compact-argmax {𝓤} {X} {n} p κ x₀ = II I
   II (.(p y) , ((y , refl) , ϕ)) = y , (λ y → ϕ (p y) (y , refl))
 
 compact-argmin : {X : 𝓤  ̇ } {n : ℕ } (p : X → Fin n)
-               → Compact X
+               → is-Compact X
                → X
                → Σ x ꞉ X , ((y : X) → p x ≤ p y)
 compact-argmin {𝓤} {X} {n} p κ x₀ = II I
@@ -140,7 +140,7 @@ compact-argmin {𝓤} {X} {n} p κ x₀ = II I
   a₀ : A (p x₀)
   a₀ = x₀ , refl
 
-  δ : complemented A
+  δ : is-complemented A
   δ r = κ (λ x → p x ＝ r) (λ x → Fin-is-discrete (p x) r)
 
   I : Σ r ꞉ Fin n , A r × ((s : Fin n) → A s → r ≤ s)
@@ -166,7 +166,7 @@ Fin-argmin {succ a} p = γ
   γ : Σ x' ꞉ Fin (succ (succ a)) , ((y : Fin (succ (succ a))) → p x' ≤ p y)
   γ = h (≤-decidable ⟦ p 𝟎 ⟧ ⟦ p (suc x) ⟧)
    where
-    h : decidable (p 𝟎 ≤ p (suc x)) → type-of γ
+    h : is-decidable (p 𝟎 ≤ p (suc x)) → type-of γ
     h (inl l) = 𝟎 , α
      where
       α : (y : (Fin (succ (succ a)))) → p 𝟎 ≤ p y
@@ -203,7 +203,7 @@ Fin-argmax {succ a} p = γ
   γ : Σ x' ꞉ Fin (succ (succ a)) , ((y : Fin (succ (succ a))) → p y ≤ p x')
   γ = h (≤-decidable ⟦ p (suc x) ⟧ ⟦ p 𝟎 ⟧)
    where
-    h : decidable (p (suc x) ≤ p 𝟎) → type-of γ
+    h : is-decidable (p (suc x) ≤ p 𝟎) → type-of γ
     h (inl l) = 𝟎 , α
      where
       α : (y : (Fin (succ (succ a)))) → p y ≤ p 𝟎

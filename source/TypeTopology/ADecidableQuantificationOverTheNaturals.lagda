@@ -97,11 +97,11 @@ Lemma-8·1 p = cases claim₀ claim₁ claim₂
                              (pr₂ (pr₂ f y) (h y)))
 
 abstract
- Theorem-8·2 : (p : ℕ∞ → 𝟚) → decidable ((n : ℕ) → p (ι n) ＝ ₁)
+ Theorem-8·2 : (p : ℕ∞ → 𝟚) → is-decidable ((n : ℕ) → p (ι n) ＝ ₁)
  Theorem-8·2 p = cases claim₀ claim₁ (Lemma-8·1 p)
   where
-   claim₀ : (Σ x ꞉ ℕ∞ , (x ≠ ∞) × (p x ＝ ₀)) →
-             decidable ((n : ℕ) → p (ι n) ＝ ₁)
+   claim₀ : (Σ x ꞉ ℕ∞ , (x ≠ ∞) × (p x ＝ ₀))
+          → is-decidable ((n : ℕ) → p (ι n) ＝ ₁)
    claim₀ e = inr c₁
     where
      x : ℕ∞
@@ -116,7 +116,7 @@ abstract
        d : (n : ℕ) → x ≠ ι n
        d n r = equal-₀-different-from-₁ (pr₂ (pr₂ e)) (ap p r ∙ g n)
 
-   claim₁ : ((n : ℕ) → p (ι n) ＝ ₁) → decidable ((n : ℕ) → p (ι n) ＝ ₁)
+   claim₁ : ((n : ℕ) → p (ι n) ＝ ₁) → is-decidable ((n : ℕ) → p (ι n) ＝ ₁)
    claim₁ f = inl f
 
 \end{code}
@@ -127,7 +127,7 @@ Some examples:
 
 module examples where
 
-    to-ℕ : {A : 𝓤 ̇ } → decidable A → ℕ
+    to-ℕ : {A : 𝓤 ̇ } → is-decidable A → ℕ
     to-ℕ (inl _) = 0
     to-ℕ (inr _) = 1
 
@@ -181,7 +181,7 @@ module examples where
     p₄ : ℕ∞ → 𝟚
     p₄ (α , _) = α 5 == α 100
 
-    to-something : (p : ℕ∞ → 𝟚) → decidable ((n : ℕ) → p (ι n) ＝ ₁) → (p (ι 17) ＝ ₁) + ℕ
+    to-something : (p : ℕ∞ → 𝟚) → is-decidable ((n : ℕ) → p (ι n) ＝ ₁) → (p (ι 17) ＝ ₁) + ℕ
     to-something p (inl f) = inl (f 17)
     to-something p (inr _) = inr 1070
 

@@ -117,25 +117,25 @@ P→𝟚-discreteness-criterion-necessity : {P : 𝓤 ̇ }
                                      → ¬ P + is-pseudo-inhabited P
 P→𝟚-discreteness-criterion-necessity {𝓤} {P} i δ = ϕ (δ (κ P ₀) (κ P ₁))
  where
-  ϕ : decidable (κ P ₀ ＝ κ P ₁) → ¬ P + is-pseudo-inhabited P
+  ϕ : is-decidable (κ P ₀ ＝ κ P ₁) → ¬ P + is-pseudo-inhabited P
   ϕ (inl e) = inl (fact e)
    where
     fact : κ P ₀ ＝ κ P ₁ → ¬ P
     fact e p = zero-is-not-one (ap (λ f → f p) e)
   ϕ (inr n) = inr (pseudo-inhabitedness-criterion i (γ , γκ))
    where
-    h : (f : P → 𝟚) → decidable (f ＝ κ P ₀) → 𝟚
+    h : (f : P → 𝟚) → is-decidable (f ＝ κ P ₀) → 𝟚
     h f (inl _) = ₀
     h f (inr _) = ₁
 
     γ : (P → 𝟚) → 𝟚
     γ f = h f (δ f (κ P ₀))
 
-    h₀ : (d : decidable (κ P ₀ ＝ κ P ₀)) → h (κ P ₀) d ＝ ₀
+    h₀ : (d : is-decidable (κ P ₀ ＝ κ P ₀)) → h (κ P ₀) d ＝ ₀
     h₀ (inl _) = refl
     h₀ (inr d) = 𝟘-elim (d refl)
 
-    h₁ : (d : decidable (κ P ₁ ＝ κ P ₀)) → h (κ P ₁) d ＝ ₁
+    h₁ : (d : is-decidable (κ P ₁ ＝ κ P ₀)) → h (κ P ₁) d ＝ ₁
     h₁ (inl e) = 𝟘-elim (n (e ⁻¹))
     h₁ (inr _) = refl
 

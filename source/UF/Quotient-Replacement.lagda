@@ -65,7 +65,7 @@ module _
           S       ■
        where
         I : (f ∼ g) ≃ S
-        I = Π-cong fe fe X (λ x → f x ＝ g x) (λ x → f x holds ⇔ g x holds) II
+        I = Π-cong fe fe II
          where
           II : (x : X) → (f x ＝ g x) ≃ (f x holds ⇔ g x holds)
           II x = logically-equivalent-props-are-equivalent
@@ -119,8 +119,7 @@ UF.Quotient.lagda.
      where
       ⦅1⦆ = Σ-cong (λ f' → ≃-funext fe (f' ∘ η/ ≋) f)
       ⦅2⦆ = Σ-cong
-            (λ f' → Π-cong fe fe X _ _
-                    (λ x → ＝-cong-l (f' (η/ ≋ x)) (f x)
+            (λ f' → Π-cong fe fe (λ x → ＝-cong-l (f' (η/ ≋ x)) (f x)
                                     (ap f' ((≃-sym-is-rinv φ (η/ ≋ x)) ⁻¹))))
       ⦅3⦆ = Σ-change-of-variable _ (_∘ ⌜ φ ⌝)
             (qinvs-are-equivs (_∘ ⌜ φ ⌝)

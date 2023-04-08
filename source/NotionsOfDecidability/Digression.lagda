@@ -13,7 +13,7 @@ open import MLTT.Spartan
 open import UF.Equiv
 
 T : 𝓤 ̇ → 𝓤 ̇
-T = decidable
+T = is-decidable
 
 η : (X : 𝓤 ̇ ) → X → T X
 η X = inl

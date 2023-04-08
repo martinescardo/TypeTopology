@@ -414,7 +414,7 @@ module _
       I = index-of-approximating-family x
       α : I → ⟨ 𝓓 ⟩
       α = approximating-family x
-      ψ = (∀ (i : I) → α i ≪ₛ     y) ≃⟨ Π-cong fe fe I _ _ (λ i → ≪ₛ-≃-≪) ⟩
+      ψ = (∀ (i : I) → α i ≪ₛ     y) ≃⟨ Π-cong fe fe (λ i → ≪ₛ-≃-≪) ⟩
           (∀ (i : I) → α i ≪⟨ 𝓓 ⟩ y) ≃⟨ e ⟩
           x ⊑⟨ 𝓓 ⟩ y                 ■
        where
@@ -437,7 +437,7 @@ module _
   where
    p : is-prop (is-small (x ≪⟨ 𝓓 ⟩ y))
    p = prop-being-small-is-prop (λ _ → pe) (λ _ _ → fe)
-        (x ≪⟨ 𝓓 ⟩ y) (≪-is-prop-valued 𝓓) 𝓥
+        (x ≪⟨ 𝓓 ⟩ y) (≪-is-prop-valued 𝓓)
 
  ≪-is-small-valued-converse : ((x y : ⟨ 𝓓 ⟩) → is-small (x ≪⟨ 𝓓 ⟩ y))
                             → is-locally-small 𝓓

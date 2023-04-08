@@ -54,10 +54,10 @@ Ordinal-indexed sums of topped ordinals are closed under compactness:
 \begin{code}
 
 ∑-compact∙ : (τ : Ordᵀ) (υ : ⟨ τ ⟩ → Ordᵀ)
-           → compact∙ ⟨ τ ⟩
-           → ((x : ⟨ τ ⟩) → compact∙ ⟨ υ x ⟩)
-           → compact∙ ⟨ ∑ τ υ ⟩
-∑-compact∙ τ υ ε δ = Σ-compact∙ ε δ
+           → is-compact∙ ⟨ τ ⟩
+           → ((x : ⟨ τ ⟩) → is-compact∙ ⟨ υ x ⟩)
+           → is-compact∙ ⟨ ∑ τ υ ⟩
+∑-compact∙ τ υ ε δ = Σ-is-compact∙ ε δ
 
 \end{code}
 

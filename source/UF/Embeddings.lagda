@@ -23,7 +23,7 @@ open import UF.Univalence
 open import UF.UA-FunExt
 
 is-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
-is-embedding f = ∀ y → is-prop (fiber f y)
+is-embedding f = each-fiber-of f is-prop
 
 being-embedding-is-prop : funext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
                         → {X : 𝓤 ̇ }
@@ -338,8 +338,7 @@ embedding-exponential {𝓤} {𝓥} {𝓦} fe {X} {Y} {A} f i = γ
   g φ φ' a = ap f {φ a} {φ' a} , embedding-gives-embedding' f i (φ a) (φ' a)
 
   h : (φ φ' : A → X) → φ ∼ φ' ≃ f ∘ φ ∼ f ∘ φ'
-  h φ φ' = Π-cong (fe 𝓦 𝓤) (fe 𝓦 𝓥) A
-            (λ a → φ a ＝ φ' a) (λ a → f (φ a) ＝ f (φ' a)) (g φ φ')
+  h φ φ' = Π-cong (fe 𝓦 𝓤) (fe 𝓦 𝓥) (g φ φ')
 
   k : (φ φ' : A → X) → (f ∘ φ ＝ f ∘ φ') ≃ (φ ＝ φ')
   k φ φ' = (f ∘ φ ＝ f ∘ φ') ≃⟨ ≃-funext (fe 𝓦 𝓥) (f ∘ φ) (f ∘ φ') ⟩

@@ -1667,10 +1667,10 @@ module type-valued-preorder
             , (∀ x y → is-equiv (𝓕 x y)))                             ■
     where
      i   = ≃-funext₂ fe fe (hom 𝓧 )  λ x y → hom 𝓐 (F x) (F y)
-     ii  = Π-cong fe fe _ _ _
-            (λ x → Π-cong fe fe _ _ _
-            (λ y → univalence-≃ (ua 𝓥) (hom 𝓧 x y) (hom 𝓐 (F x) (F y))))
-     iii = Π-cong fe fe _ _ _ (λ y → ΠΣ-distr-≃)
+     ii  = Π-cong fe fe
+            (λ x → Π-cong fe fe
+                    (λ y → univalence-≃ (ua 𝓥) (hom 𝓧 x y) (hom 𝓐 (F x) (F y))))
+     iii = Π-cong fe fe (λ y → ΠΣ-distr-≃)
      iv  = ΠΣ-distr-≃
 
    v : (p : hom 𝓧 ＝ λ x y → hom 𝓐 (F x) (F y))

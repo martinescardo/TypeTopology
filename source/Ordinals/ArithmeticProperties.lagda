@@ -6,7 +6,7 @@ Martin Escardo, 18 January 2021.
 
 open import UF.Univalence
 
-module Ordinals.Arithmetic-Properties
+module Ordinals.ArithmeticProperties
        (ua : Univalence)
        where
 
@@ -282,38 +282,38 @@ TODO. Find better names for the following lemmas.
 
 \begin{code}
 
-lemma₀ : {α β : Ordinal 𝓤}
-       → α ≼ (α +ₒ β)
-lemma₀ {𝓤} {α} {β} = to-≼ ϕ
+AP-lemma₀ : {α β : Ordinal 𝓤}
+          → α ≼ (α +ₒ β)
+AP-lemma₀ {𝓤} {α} {β} = to-≼ ϕ
  where
   ϕ : (a : ⟨ α ⟩) → Σ z ꞉ ⟨ α +ₒ β ⟩ , (α ↓ a) ＝ ((α +ₒ β) ↓ z)
   ϕ a = inl a , (+ₒ-↓-left a)
 
-lemma₁ : {α β : Ordinal 𝓤}
-         (a : ⟨ α ⟩)
-       → (α +ₒ β) ≠ (α ↓ a)
-lemma₁ {𝓤} {α} {β} a p = irrefl (OO 𝓤) (α +ₒ β) m
+AP-lemma₁ : {α β : Ordinal 𝓤}
+            (a : ⟨ α ⟩)
+          → (α +ₒ β) ≠ (α ↓ a)
+AP-lemma₁ {𝓤} {α} {β} a p = irrefl (OO 𝓤) (α +ₒ β) m
  where
   l : (α +ₒ β) ⊲ α
   l = (a , p)
 
   m : (α +ₒ β) ⊲ (α +ₒ β)
-  m = lemma₀ (α +ₒ β) l
+  m = AP-lemma₀ (α +ₒ β) l
 
-lemma₂ : {α β : Ordinal 𝓤} (a : ⟨ α ⟩)
-       → α ＝ β
-       → Σ b ꞉ ⟨ β ⟩ , (α ↓ a) ＝ (β ↓ b)
-lemma₂ a refl = a , refl
+AP-lemma₂ : {α β : Ordinal 𝓤} (a : ⟨ α ⟩)
+          → α ＝ β
+          → Σ b ꞉ ⟨ β ⟩ , (α ↓ a) ＝ (β ↓ b)
+AP-lemma₂ a refl = a , refl
 
-lemma₃ : {α β γ : Ordinal 𝓤} (b : ⟨ β ⟩) (z : ⟨ α +ₒ γ ⟩)
-       → ((α +ₒ β) ↓ inr b) ＝ ((α +ₒ γ) ↓ z)
-       → Σ c ꞉ ⟨ γ ⟩ , z ＝ inr c
-lemma₃ {𝓤} {α} {β} {γ} b (inl a) p = 𝟘-elim (lemma₁ a q)
+AP-lemma₃ : {α β γ : Ordinal 𝓤} (b : ⟨ β ⟩) (z : ⟨ α +ₒ γ ⟩)
+          → ((α +ₒ β) ↓ inr b) ＝ ((α +ₒ γ) ↓ z)
+          → Σ c ꞉ ⟨ γ ⟩ , z ＝ inr c
+AP-lemma₃ {𝓤} {α} {β} {γ} b (inl a) p = 𝟘-elim (AP-lemma₁ a q)
  where
   q : (α +ₒ (β ↓ b)) ＝ (α ↓ a)
   q = +ₒ-↓-right b ∙ p ∙ (+ₒ-↓-left a)⁻¹
 
-lemma₃ b (inr c) p = c , refl
+AP-lemma₃ b (inr c) p = c , refl
 
 +ₒ-left-cancellable : (α β γ : Ordinal 𝓤)
                     → (α +ₒ β) ＝ (α +ₒ γ)
@@ -332,16 +332,16 @@ lemma₃ b (inr c) p = c , refl
     u b = c , t
      where
       z : ⟨ α +ₒ γ ⟩
-      z = pr₁ (lemma₂ (inr b) p)
+      z = pr₁ (AP-lemma₂ (inr b) p)
 
       r : ((α +ₒ β) ↓ inr b) ＝ ((α +ₒ γ) ↓ z)
-      r = pr₂ (lemma₂ (inr b) p)
+      r = pr₂ (AP-lemma₂ (inr b) p)
 
       c : ⟨ γ ⟩
-      c = pr₁ (lemma₃ b z r)
+      c = pr₁ (AP-lemma₃ b z r)
 
       s : z ＝ inr c
-      s = pr₂ (lemma₃ b z r)
+      s = pr₂ (AP-lemma₃ b z r)
 
       q = (α +ₒ (β ↓ b))     ＝⟨ +ₒ-↓-right b ⟩
           ((α +ₒ β) ↓ inr b) ＝⟨ r ⟩
@@ -356,16 +356,16 @@ lemma₃ b (inr c) p = c , refl
     v c = b , (t ⁻¹)
      where
       z : ⟨ α +ₒ β ⟩
-      z = pr₁ (lemma₂ (inr c) (p ⁻¹))
+      z = pr₁ (AP-lemma₂ (inr c) (p ⁻¹))
 
       r : ((α +ₒ γ) ↓ inr c) ＝ ((α +ₒ β) ↓ z)
-      r = pr₂ (lemma₂ (inr c) (p ⁻¹))
+      r = pr₂ (AP-lemma₂ (inr c) (p ⁻¹))
 
       b : ⟨ β ⟩
-      b = pr₁ (lemma₃ c z r)
+      b = pr₁ (AP-lemma₃ c z r)
 
       s : z ＝ inr b
-      s = pr₂ (lemma₃ c z r)
+      s = pr₂ (AP-lemma₃ c z r)
 
       q = (α +ₒ (γ ↓ c))     ＝⟨ +ₒ-↓-right c ⟩
           ((α +ₒ γ) ↓ inr c) ＝⟨ r ⟩
@@ -393,7 +393,7 @@ This implies that the function α +ₒ_ reflects the _⊲_ ordering:
 +ₒ-left-reflects-⊲ : (α β γ : Ordinal 𝓤)
                    → (α +ₒ β) ⊲ (α +ₒ γ)
                    → β ⊲ γ
-+ₒ-left-reflects-⊲ α β γ (inl a , p) = 𝟘-elim (lemma₁ a q)
++ₒ-left-reflects-⊲ α β γ (inl a , p) = 𝟘-elim (AP-lemma₁ a q)
    where
     q : (α +ₒ β) ＝ (α ↓ a)
     q = p ∙ (+ₒ-↓-left a)⁻¹

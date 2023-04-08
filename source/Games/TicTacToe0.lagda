@@ -129,15 +129,15 @@ quantification.
 Grid-is-discrete : is-discrete Grid
 Grid-is-discrete = ×-is-discrete Fin-is-discrete Fin-is-discrete
 
-Grid-compact : Compact Grid {𝓤₀}
-Grid-compact = ×-Compact Fin-Compact Fin-Compact
+Grid-compact : is-Compact Grid {𝓤₀}
+Grid-compact = ×-is-Compact Fin-Compact Fin-Compact
 
-Move-decidable : (b : Board) → decidable (Move b)
+Move-decidable : (b : Board) → is-decidable (Move b)
 Move-decidable (_ , A) = Grid-compact
                           (λ g → A g ＝ Nothing)
                           (λ g → Nothing-is-isolated' (A g))
 
-Move-compact : (b : Board) → Compact (Move b)
+Move-compact : (b : Board) → is-Compact (Move b)
 Move-compact (x , A) = complemented-subset-of-compact-type
                         Grid-compact
                         (λ g → Nothing-is-isolated' (A g))
@@ -194,7 +194,7 @@ Selection functions for players, namely argmin for X and argmax for O:
 
 \begin{code}
 
-selection : (p : Player) {M : Type} → M → Compact M {𝓤₀} → J M
+selection : (p : Player) {M : Type} → M → is-Compact M {𝓤₀} → J M
 selection X m κ p = pr₁ (compact-argmin p κ m)
 selection O m κ p = pr₁ (compact-argmax p κ m)
 
@@ -204,7 +204,7 @@ And their derived quantifiers:
 
 \begin{code}
 
-quantifier : Player → {M : Type} → Compact M → decidable M → K M
+quantifier : Player → {M : Type} → is-Compact M → is-decidable M → K M
 quantifier p κ (inl m) = overline (selection p m κ)
 quantifier p κ (inr _) = λ _ → draw
 

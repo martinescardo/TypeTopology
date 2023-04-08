@@ -88,8 +88,8 @@ Convention: in a board (p , A), p is the opponent of the the current player.
   Grid-is-discrete : is-discrete Grid
   Grid-is-discrete = ×-is-discrete Fin-is-discrete Fin-is-discrete
 
-  Grid-compact : Compact Grid {𝓤₀}
-  Grid-compact = ×-Compact Fin-Compact Fin-Compact
+  Grid-compact : is-Compact Grid {𝓤₀}
+  Grid-compact = ×-is-Compact Fin-Compact Fin-Compact
 
   board₀ : Board
   board₀ = X , (λ _ → Nothing)
@@ -97,12 +97,12 @@ Convention: in a board (p , A), p is the opponent of the the current player.
   Move : Board → Type
   Move (_ , A) = Σ g ꞉ Grid , A g ＝ Nothing
 
-  Move-decidable : (b : Board) → decidable (Move b)
+  Move-decidable : (b : Board) → is-decidable (Move b)
   Move-decidable (_ , A) = Grid-compact
                             (λ g → A g ＝ Nothing)
                             (λ g → Nothing-is-isolated' (A g))
 
-  Move-compact : (b : Board) → Compact (Move b)
+  Move-compact : (b : Board) → is-Compact (Move b)
   Move-compact (x , A) = complemented-subset-of-compact-type
                           Grid-compact
                           (λ g → Nothing-is-isolated' (A g))
@@ -117,7 +117,7 @@ Convention: in a board (p , A), p is the opponent of the the current player.
          → Matrix
   update p A (m , _) m' = f (Grid-is-discrete m m')
    where
-    f : decidable (m ＝ m') → Maybe Player
+    f : is-decidable (m ＝ m') → Maybe Player
     f (inl _) = Just p
     f (inr _) = A m
 

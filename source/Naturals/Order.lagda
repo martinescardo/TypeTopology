@@ -32,16 +32,14 @@ open import UF.Base
 open import UF.Miscelanea
 
 right-addition-is-embedding : (m n : ℕ) → is-prop (Σ k ꞉ ℕ , k +' m ＝ n)
-right-addition-is-embedding m n (k , p) (k' , p')
- = to-Σ-＝ (γ , ℕ-is-set _ _)
-  where
-   δ : k +' m ＝ k' +' m
-   δ = k +' m  ＝⟨ p     ⟩
-       n       ＝⟨ p' ⁻¹ ⟩
-       k' +' m ∎
-   
-   γ : k ＝ k'
-   γ = addition-right-cancellable k k' m δ
+right-addition-is-embedding zero n (n , refl) (n , refl) = refl
+right-addition-is-embedding (succ m) zero (k , p) (k' , p') =
+  𝟘-elim (positive-not-zero (k +' m) p)
+right-addition-is-embedding (succ m) (succ n) (k , p) (k' , p') =
+ to-Σ-＝ (ap pr₁ IH , ℕ-is-set _ _)
+ where
+  IH : k , succ-lc p ＝ k' , succ-lc p'
+  IH = right-addition-is-embedding m n (k , succ-lc p) (k' , succ-lc p')
 
 subtraction : (m n : ℕ) → m ≤ n → Σ k ꞉ ℕ , k +' m ＝ n
 subtraction zero n l = n , refl
@@ -54,10 +52,8 @@ subtraction (succ m) (succ n) l = pr₁ IH , ap succ (pr₂ IH)
 cosubtraction : (m n : ℕ) → (Σ k ꞉ ℕ , k +' m ＝ n) → m ≤ n
 cosubtraction zero n (.n , refl) = ⋆
 cosubtraction (succ m) zero (k , p) = positive-not-zero (k +' m) p
-cosubtraction (succ m) (succ .(k +' m)) (k , refl) = γ
- where
-  γ : m ≤ k +' m
-  γ = cosubtraction m (k +' m) (k , refl)
+cosubtraction (succ m) (succ .(k +' m)) (k , refl) =
+ cosubtraction m (k +' m) (k , refl)
 
 zero-least : (n : ℕ) → zero ≤ n
 zero-least n = ⋆
@@ -76,7 +72,9 @@ succ-order-injective m n l = l
 
 ≤-induction : (P : (m n : ℕ) (l : m ≤ n) → 𝓤 ̇ )
             → ((n : ℕ) → P zero n (zero-least n))
-            → ((m n : ℕ) (l : m ≤ n) → P m n l → P (succ m) (succ n) (succ-monotone m n l))
+            → ((m n : ℕ) (l : m ≤ n)
+                    → P m n l
+                    → P (succ m) (succ n) (succ-monotone m n l))
             → (m n : ℕ) (l : m ≤ n) → P m n l
 ≤-induction P b f zero n ⋆            = b n
 ≤-induction P b f (succ m) zero l     = 𝟘-elim l
@@ -261,12 +259,12 @@ Added December 2019.
 open import NotionsOfDecidability.Decidable
 open import NotionsOfDecidability.Complemented
 
-≤-decidable : (m n : ℕ ) → decidable (m ≤ n)
+≤-decidable : (m n : ℕ ) → is-decidable (m ≤ n)
 ≤-decidable zero     n        = inl (zero-least n)
 ≤-decidable (succ m) zero     = inr (zero-least' m)
 ≤-decidable (succ m) (succ n) = ≤-decidable m n
 
-<-decidable : (m n : ℕ ) → decidable (m < n)
+<-decidable : (m n : ℕ ) → is-decidable (m < n)
 <-decidable m n = ≤-decidable (succ m) n
 
 \end{code}
@@ -275,9 +273,11 @@ Bounded minimization (added 14th December 2019):
 
 \begin{code}
 
-βμ : (A : ℕ → 𝓤 ̇ ) → complemented A
-  → (k : ℕ) → (Σ m ꞉ ℕ , (m < k) × A m × ((n : ℕ) → A n → m ≤ n))
-            + ((n : ℕ) → A n → n ≥ k)
+βμ : (A : ℕ → 𝓤 ̇ )
+  → is-complemented A
+  → (k : ℕ)
+  → (Σ m ꞉ ℕ , (m < k) × A m × ((n : ℕ) → A n → m ≤ n))
+  + ((n : ℕ) → A n → n ≥ k)
 
 βμ A δ 0 = inr (λ n a → zero-least n)
 βμ A δ (succ k) = γ
@@ -324,7 +324,7 @@ bounded minimization:
 Σμ : (ℕ → 𝓤 ̇ ) → 𝓤 ̇
 Σμ A = Σ m ꞉ ℕ , A m × ((n : ℕ) → A n → m ≤ n)
 
-least-from-given : (A : ℕ → 𝓤 ̇ ) → complemented A → Σ A → Σμ A
+least-from-given : (A : ℕ → 𝓤 ̇ ) → is-complemented A → Σ A → Σμ A
 least-from-given A δ (k , a) = γ
  where
   f : (Σ m ꞉ ℕ , (m < k) × A m × ((n : ℕ) → A n → m ≤ n)) → Σμ A
@@ -460,7 +460,7 @@ Natural Numbers.
  where
   γ₁ : x ∔ u ≤ y ∔ u
   γ₁ = ≤-n-monotone-right x y u l₁
-  
+
   γ₂ : y ∔ u ≤ y ∔ v
   γ₂ = ≤-n-monotone-left u v y l₂
 
@@ -476,10 +476,10 @@ Natural Numbers.
  where
   γ₁ : x ∔ z ＝ z ∔ x
   γ₁ = addition-commutativity x z
-  
+
   γ₂ : y ∔ z ＝ z ∔ y
   γ₂ = addition-commutativity y z
-  
+
   γ₃ : x ∔ z < y ∔ z
   γ₃ = <-n-monotone-right x y z l
 
@@ -488,7 +488,7 @@ Natural Numbers.
  where
   γ₁ : x ∔ u < y ∔ u
   γ₁ = <-n-monotone-right x y u l₁
-  
+
   γ₂ : y ∔ u < y ∔ v
   γ₂ = <-n-monotone-left u v y l₂
 
@@ -550,7 +550,7 @@ order-split (succ x) 0        = inr (zero-least (succ x))
 order-split (succ x) (succ y) = order-split x y
 
 least-element-unique : {A : ℕ → 𝓤 ̇}
-                     → (σ : complemented A)
+                     → (σ : is-complemented A)
                      → ((α , αₚ) : Σ k ꞉ ℕ , A k × ((z : ℕ) → A z → k ≤ z))
                      → ((β , βₚ) : Σ n ꞉ ℕ , A n × ((z : ℕ) → A z → n ≤ z))
                      → α ＝ β
@@ -564,12 +564,13 @@ least-element-unique σ (α , α₀ , α₁) (β , β₀ , β₁) = ≤-anti α 
   II = β₁ α α₀
 
 least-element-unique' : {A : ℕ → 𝓤 ̇}
-                      → (σ : complemented A)
+                      → (σ : is-complemented A)
                       → (x y : ℕ)
                       → (δ : Σ A)
                       → x ＝ pr₁ (least-from-given A σ δ)
                       → y ＝ pr₁ (least-from-given A σ δ)
                       → x ＝ y
+
 least-element-unique' σ x y δ e₁ e₂ = e₁ ∙ e₂ ⁻¹
 
 \end{code}
@@ -603,7 +604,7 @@ Also given are the types of maximal element m : ℕ such that A m holds, given a
 upper bound k
 
 \begin{code}
- 
+
 maximal-element : (A : ℕ → 𝓤 ̇) → (k : ℕ) → 𝓤 ̇
 maximal-element A k
  = Σ m ꞉ ℕ , (m < k × A m × ((n : ℕ) → n < k → A n → n ≤ m))
@@ -619,7 +620,7 @@ no-maximal-element' : (A : ℕ → 𝓤 ̇) → (k : ℕ) → 𝓤 ̇
 no-maximal-element' A k = (n : ℕ) → A n → k < n
 
 bounded-maximisation : (A : ℕ → 𝓤 ̇)
-                     → complemented A
+                     → is-complemented A
                      → (k : ℕ)
                      → maximal-element A k + no-maximal-element A k
 bounded-maximisation A δ 0        = inr (λ n _ → zero-least n)
@@ -628,18 +629,18 @@ bounded-maximisation A δ (succ k) = γ (δ k) (bounded-maximisation A δ k)
   γ : A k + ¬ A k
    → maximal-element A k + no-maximal-element A k
    → maximal-element A (succ k) + no-maximal-element A (succ k)
-   
+
   -- Case 1
   γ (inl Ak)  (inl (m , l , Am , ψ)) = inl (k , <-succ k , Ak , ψ')
    where
    ψ' : (n : ℕ) → n < succ k → A n → n ≤ k
-   ψ' n l' An = l'                       -- n < succ k → succ n ≤ succ k → n ≤ k
+   ψ' n l' An = l'
   γ (inr ¬Ak) (inl (m , l , Am , ψ)) = inl (m , l' , Am , ψ')
    where
     l' : m < succ k
     l' = <-trans m k (succ k) l (<-succ k)
     ψ' : (n : ℕ) → n < succ k → A n → n < succ m
-    ψ' n l' An = ρ (<-split n k l') 
+    ψ' n l' An = ρ (<-split n k l')
      where
       ρ : (n < k) + (n ＝ k) → n < succ m
       ρ (inl l'') = ψ n l'' An
@@ -666,7 +667,7 @@ We can use the above result to prove the same statement for inclusive order.
 \begin{code}
 
 bounded-maximisation' : (A : ℕ → 𝓤 ̇)
-                      → complemented A
+                      → is-complemented A
                       → (k : ℕ)
                       → maximal-element' A k + no-maximal-element' A k
 bounded-maximisation' A δ k = bounded-maximisation A δ (succ k)
@@ -693,7 +694,7 @@ which the property holds. Of course, we must provide an upper bound.
 
 maximal-from-given : (A : ℕ → 𝓤 ̇)
                    → (b : ℕ)
-                   → complemented A
+                   → is-complemented A
                    → Σ k ꞉ ℕ , A k × k < b
                    → maximal-element A b
 maximal-from-given A b δ (k , Ak , l) = Cases (bounded-maximisation A δ b) γ₁ γ₂
@@ -712,7 +713,7 @@ maximal-from-given A b δ (k , Ak , l) = Cases (bounded-maximisation A δ b) γ�
 
 maximal-from-given' : (A : ℕ → 𝓤 ̇)
                     → (b : ℕ)
-                    → complemented A
+                    → is-complemented A
                     → Σ k ꞉ ℕ , A k × k ≤ b
                     → maximal-element' A b
 maximal-from-given' A b = maximal-from-given A (succ b)
@@ -759,7 +760,7 @@ multiplication-preserves-strict-order m n (succ k) l = γ
  where
   IH : m * succ k < n * succ k
   IH = multiplication-preserves-strict-order m n k l
-  
+
   γ : m * succ (succ k) < n * succ (succ k)
   γ = <-adding m n (m * succ k) (n * succ k) l IH
 
@@ -778,7 +779,7 @@ product-order-cancellable x (succ y) z l = γ
  where
   I : x ≤ x ∔ x * succ y
   I = ≤-+ x (x * succ y)
-  
+
   γ : x ≤ z
   γ = ≤-trans x (x * succ (succ y)) z I l
 
