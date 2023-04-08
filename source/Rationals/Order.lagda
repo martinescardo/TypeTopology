@@ -590,6 +590,18 @@ order1ℚ' p = ℚ<-subtraction-preserves-order p 1ℚ (0 , refl)
 ℚ≤-swap' : (x : ℚ) → x ≤ 0ℚ → 0ℚ ≤ - x
 ℚ≤-swap' x l = transport (_≤ - x) ℚ-minus-zero-is-zero (ℚ≤-swap x 0ℚ l)
 
+ℚ≤-swap''' : (x y : ℚ) → - y ≤ - x → x ≤ y
+ℚ≤-swap''' x y l = transport₂ _≤_ I II III
+ where
+  I : - (- x) ＝ x
+  I = ℚ-minus-minus x ⁻¹
+
+  II : - (- y) ＝ y
+  II = ℚ-minus-minus y ⁻¹
+
+  III : - (- x) ≤ - (- y)
+  III = ℚ≤-swap (- y) (- x) l
+
 ℚ<-swap : (x y : ℚ) → x < y → - y < - x
 ℚ<-swap x y l = γ (ℚ≤-split (- y) (- x) I)
  where

@@ -148,32 +148,47 @@ abs-of-pos-is-pos' p l = abs-of-pos-is-pos p (ℚ<-coarser-than-≤ 0ℚ p l)
     r = transport (_≤ abs q) (IV ⁻¹) III
 
 ℚ≤-to-abs : (x y : ℚ) → (- y ≤ x) × (x ≤ y) → abs x ≤ y
-ℚ≤-to-abs x y (l₁ , l₂) = I (ℚ-abs-inverse x)
+ℚ≤-to-abs x y (l₁ , l₂) = γ (ℚ-abs-inverse x)
  where
   α : - x ≤ - (- y)
   α = ℚ≤-swap (- y) x l₁
-  I : (abs x ＝ x) ∔ (abs x ＝ - x) → abs x ≤ y
-  I (inl l) = transport (_≤ y) (l ⁻¹) l₂
-  I (inr r) = transport₂ _≤_ (r ⁻¹) (ℚ-minus-minus y ⁻¹) α
+
+  γ : (abs x ＝ x) ∔ (abs x ＝ - x) → abs x ≤ y
+  γ (inl l) = transport (_≤ y) (l ⁻¹) l₂
+  γ (inr r) = transport₂ _≤_ (r ⁻¹) (ℚ-minus-minus y ⁻¹) α
 
 ℚ<-to-abs : (x y : ℚ) → (- y < x) × (x < y) → abs x < y
-ℚ<-to-abs x y (l₁ , l₂) = II (ℚ≤-split (abs x) y I)
+ℚ<-to-abs x y (l₁ , l₂) = γ
  where
-  I : abs x ≤ y
-  I = ℚ≤-to-abs x y (ℚ<-coarser-than-≤ (- y) x l₁ , ℚ<-coarser-than-≤ x y l₂)
-  II : abs x < y ∔ (abs x ＝ y) → abs x < y
-  II (inl l) = l
-  II (inr r) = III (ℚ-abs-inverse x)
-   where
+  I : - y ≤ x
+  I = ℚ<-coarser-than-≤ (- y) x l₁
 
-    III : (abs x ＝ x) ∔ (abs x ＝ - x) → abs x < y
-    III (inl s) = 𝟘-elim (ℚ<-not-itself x (transport (x <_) (r ⁻¹ ∙ s) l₂))
-    III (inr s) = 𝟘-elim (ℚ<-not-itself x (transport (_< x) IV l₁))
+  II : x ≤ y
+  II = ℚ<-coarser-than-≤ x y l₂
+
+  III : abs x ≤ y
+  III = ℚ≤-to-abs x y (I , II)
+
+  IV : abs x < y → abs x < y
+  IV = id
+
+  V : abs x ＝ y → abs x < y
+  V e = 𝟘-elim (cases Vγ₁ Vγ₂ (ℚ-abs-inverse x))
+   where
+    Vγ₁ : ¬ (abs x ＝ x)
+    Vγ₁ e' = ℚ<-not-itself x (transport (x <_) (e ⁻¹ ∙ e') l₂)
+
+    Vγ₂ : ¬ (abs x ＝ - x)
+    Vγ₂ e' = ℚ<-not-itself x (transport (_< x) VI l₁)
      where
-      IV : - y ＝ x
-      IV = - y     ＝⟨ ap -_ (r ⁻¹ ∙ s) ⟩
+      VI : - y ＝ x
+      VI = - y     ＝⟨ ap -_ (e ⁻¹)       ⟩
+           - abs x ＝⟨ ap -_ e'           ⟩
            - (- x) ＝⟨ ℚ-minus-minus x ⁻¹ ⟩
-           x ∎
+           x       ∎
+
+  γ : abs x < y
+  γ = cases IV V (ℚ≤-split (abs x) y III)
 
 ℚ-abs-<-unpack :  (q ε : ℚ) → abs q < ε → (- ε < q) × (q < ε)
 ℚ-abs-<-unpack q ε o = cases γ₁ γ₂ (ℚ-abs-inverse q)
@@ -214,42 +229,66 @@ abs-of-pos-is-pos' p l = abs-of-pos-is-pos p (ℚ<-coarser-than-≤ 0ℚ p l)
     r = ℚ<-swap''' q ε (transport (- ε <_) e IV)
 
 ℚ-abs-≤-unpack : (q ε : ℚ) → abs q ≤ ε → (- ε ≤ q) × (q ≤ ε)
-ℚ-abs-≤-unpack q ε l = locate-q (ℚ-abs-inverse q)
+ℚ-abs-≤-unpack q ε l' = cases γ₁ γ₂ (ℚ-abs-inverse q)
  where
-  abs-q-positive : 0ℚ ≤ abs q
-  abs-q-positive = ℚ-abs-is-positive q
+  I : 0ℚ ≤ abs q
+  I = ℚ-abs-is-positive q
 
-  ε-positive : 0ℚ ≤ ε
-  ε-positive = ℚ≤-trans 0ℚ (abs q) ε abs-q-positive l
+  II : 0ℚ ≤ ε
+  II = ℚ≤-trans 0ℚ (abs q) ε I l'
 
-  neg-epsilon-negative : - ε ≤ 0ℚ
-  neg-epsilon-negative = ℚ≤-swap 0ℚ ε ε-positive
+  III : - ε ≤ 0ℚ
+  III = ℚ≤-swap 0ℚ ε II
 
-  locate-q : (abs q ＝ q) ∔ (abs q ＝ - q) → - ε ≤ q × q ≤ ε
-  locate-q (inl i) = ℚ≤-trans (- ε) 0ℚ q neg-epsilon-negative (transport (0ℚ ≤_) i abs-q-positive) , (transport (_≤ ε) i l)
-  locate-q (inr i) = transport (- ε ≤_) (ℚ-minus-minus q ⁻¹) β , ℚ≤-trans q 0ℚ ε δ ε-positive
+  IV : - ε ≤ abs q
+  IV = ℚ≤-trans (- ε) 0ℚ (abs q) III I
+
+  γ₁ : abs q ＝ q → (- ε ≤ q) × (q ≤ ε)
+  γ₁ e = l , r
    where
-    α : - q ≤ ε
-    α = transport (_≤ ε) i l
-    β : - ε ≤ - (- q)
-    β = ℚ≤-swap (- q) ε α
-    γ : - (- q) ≤ 0ℚ
-    γ = transport (λ z → - z ≤ 0ℚ) i (ℚ≤-swap 0ℚ (abs q) abs-q-positive)
-    δ : q ≤ 0ℚ
-    δ = transport (_≤ 0ℚ) (ℚ-minus-minus q ⁻¹) γ
+    l : - ε ≤ q
+    l = transport (- ε ≤_) e IV
+
+    r : q ≤ ε
+    r = transport (_≤ ε) e l'
+
+  γ₂ : abs q ＝ - q → (- ε ≤ q) × (q ≤ ε)
+  γ₂ e = l , r
+   where
+    α : q ＝ - abs q
+    α = q       ＝⟨ ℚ-minus-minus q ⟩
+        - (- q) ＝⟨ ap -_ (e ⁻¹)    ⟩
+        - abs q ∎
+
+    l : - ε ≤ q
+    l = transport (- ε ≤_) (α ⁻¹) (ℚ≤-swap (abs q) ε l')
+
+    r : q ≤ ε
+    r = ℚ≤-swap''' q ε (transport (- ε ≤_) e IV)
 
 ℚ-triangle-inequality : (x y : ℚ) → abs (x + y) ≤ abs x + abs y
-ℚ-triangle-inequality x y = ℚ≤-to-abs (x + y) (abs x + abs y) (I (ℚ-abs-≤ x) (ℚ-abs-≤ y))
+ℚ-triangle-inequality x y = ℚ≤-to-abs (x + y) (abs x + abs y) (γ I II)
  where
-  I : - (abs x) ≤ x × x ≤ abs x → - abs y ≤ y × y ≤ abs y → - (abs x + abs y) ≤ x + y × x + y ≤ abs x + abs y
-  I (l₁ , l₂) (l₃ , l₄) = transport (_≤ x + y) γ α , β
+  I : - abs x ≤ x × x ≤ abs x
+  I = ℚ-abs-≤ x
+
+  II : - abs y ≤ y × y ≤ abs y
+  II = ℚ-abs-≤ y
+
+  γ : - abs x ≤ x × x ≤ abs x
+    → - abs y ≤ y × y ≤ abs y
+    → - (abs x + abs y) ≤ x + y
+    × x + y ≤ abs x + abs y
+  γ (l₁ , l₂) (l₃ , l₄) = (transport (_≤ x + y) IV III) , V
    where
-    α : (- abs x) - abs y ≤ x + y
-    α = ℚ≤-adding (- abs x) x (- abs y) y l₁ l₃
-    γ : (- abs x) - abs y ＝ - (abs x + abs y)
-    γ = ℚ-minus-dist (abs x) (abs y)
-    β : x + y ≤ abs x + abs y
-    β = ℚ≤-adding x (abs x) y (abs y) l₂ l₄
+    III : (- abs x) - abs y ≤ x + y
+    III = ℚ≤-adding (- abs x) x (- abs y) y l₁ l₃
+
+    IV : (- abs x) - abs y ＝ - (abs x + abs y)
+    IV = ℚ-minus-dist (abs x) (abs y)
+
+    V : x + y ≤ abs x + abs y
+    V = ℚ≤-adding x (abs x) y (abs y) l₂ l₄
 
 pos-abs-no-increase : (q ε : ℚ) → (0ℚ < q) × (q < ε) → abs q < ε
 pos-abs-no-increase q ε (l₁ , l₂) = IV
