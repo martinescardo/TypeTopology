@@ -8,10 +8,8 @@ In this file I define min and max for rationals.
 open import MLTT.Spartan renaming (_+_ to _∔_)
 
 open import Notation.Order
-open import UF.Base --Typetopology
-open import UF.FunExt
+open import UF.Base
 open import MLTT.Plus-Properties
-
 open import Rationals.Type
 open import Rationals.Order
 
