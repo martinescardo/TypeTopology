@@ -305,6 +305,4 @@ negative-not-greater-than-zero x a (n , l) = negsucc-not-pos γ
     iii = ap (_ℤ+ pos (succ n)) (ℤ-zero-left-base (pos (succ a)))
     iv  = ℤ-zero-left-neutral (pos (succ n))
 
-
-
 \end{code}
