@@ -291,95 +291,105 @@ abs-of-pos-is-pos' p l = abs-of-pos-is-pos p (ℚ<-coarser-than-≤ 0ℚ p l)
     V = ℚ≤-adding x (abs x) y (abs y) l₂ l₄
 
 pos-abs-no-increase : (q ε : ℚ) → (0ℚ < q) × (q < ε) → abs q < ε
-pos-abs-no-increase q ε (l₁ , l₂) = IV
+pos-abs-no-increase q ε (l₁ , l₂) = γ
  where
   I : 0ℚ < ε
   I = ℚ<-trans 0ℚ q ε l₁ l₂
-  II : - ε < 0ℚ
-  II = transport (- ε <_) ℚ-minus-zero-is-zero i
-   where
-    i : - ε < - 0ℚ
-    i = ℚ<-swap 0ℚ ε I
+
+  II : - ε < - 0ℚ
+  II = ℚ<-swap 0ℚ ε I
+
   III : - ε < q
   III = ℚ<-trans (- ε) 0ℚ q II l₁
-  IV : abs q < ε
-  IV = ℚ<-to-abs q ε (III , l₂)
+
+  γ : abs q < ε
+  γ = ℚ<-to-abs q ε (III , l₂)
 
 abs-mult : (x y : ℚ) → abs x * abs y ＝ abs (x * y)
-abs-mult x y = case-split (ℚ-dichotomous' x 0ℚ) (ℚ-dichotomous' y 0ℚ)
+abs-mult x y = γ (ℚ-dichotomous' x 0ℚ) (ℚ-dichotomous' y 0ℚ)
  where
-  case1 : 0ℚ ≤ x → 0ℚ ≤ y → abs x * abs y ＝ abs (x * y)
-  case1 l₁ l₂ = abs x * abs y  ＝⟨ ap (_* abs y) (abs-of-pos-is-pos x l₁)                                         ⟩
-                x * abs y      ＝⟨ ap (x *_) (abs-of-pos-is-pos y l₂)                                             ⟩
-                x * y          ＝⟨ abs-of-pos-is-pos (x * y) (ℚ≤-pos-multiplication-preserves-order x y l₁ l₂) ⁻¹ ⟩
-                abs (x * y)    ∎
-
-  case2 : (0ℚ > x) → (0ℚ > y) → abs x * abs y ＝ abs (x * y)
-  case2 l₁ l₂ = goal
+  γ₁ : 0ℚ ≤ x → 0ℚ ≤ y → abs x * abs y ＝ abs (x * y)
+  γ₁ l₁ l₂ = abs x * abs y  ＝⟨ ap (_* abs y) (abs-of-pos-is-pos x l₁) ⟩
+                x * abs y   ＝⟨ ap (x *_) (abs-of-pos-is-pos y l₂)     ⟩
+                x * y       ＝⟨ abs-of-pos-is-pos (x * y) I ⁻¹         ⟩
+                abs (x * y) ∎
    where
-    0<-x : 0ℚ < - x
-    0<-x = ℚ<-swap'' x l₁
-    0<-y : 0ℚ < - y
-    0<-y = ℚ<-swap'' y l₂
+    I : 0ℚ ≤ x * y
+    I = ℚ≤-pos-multiplication-preserves-order x y l₁ l₂
 
-    remove-negatives : (- x) * (- y) ＝ x * y
-    remove-negatives = (- x) * (- y)     ＝⟨ ℚ-negation-dist-over-mult x (- y)        ⟩
-                       - x * (- y)       ＝⟨ ap -_ (ℚ*-comm x (- y))                     ⟩
-                       - (- y) * x       ＝⟨ ap -_ (ℚ-negation-dist-over-mult y x)    ⟩
-                       - (- y * x)       ＝⟨ ℚ-minus-minus (y * x) ⁻¹                 ⟩
-                       y * x             ＝⟨ ℚ*-comm y x                                 ⟩
-                       x * y             ∎
-
-    0<x*y : 0ℚ < x * y
-    0<x*y = transport (0ℚ <_) remove-negatives (ℚ<-pos-multiplication-preserves-order (- x) (- y) 0<-x 0<-y)
-
-    goal : abs x * abs y ＝ abs (x * y)
-    goal = abs x * abs y     ＝⟨ ap (_* abs y) (ℚ-abs-neg-equals-pos x)        ⟩
-           abs (- x) * abs y ＝⟨ ap (_* abs y) (abs-of-pos-is-pos' (- x) 0<-x) ⟩
-           (- x) * abs y     ＝⟨ ap ((- x) *_) (ℚ-abs-neg-equals-pos y)        ⟩
-           (- x) * abs (- y) ＝⟨ ap ((- x) *_) (abs-of-pos-is-pos' (- y) 0<-y) ⟩
-           (- x) * (- y)     ＝⟨ remove-negatives                                 ⟩
-           x * y             ＝⟨ abs-of-pos-is-pos' (x * y) 0<x*y ⁻¹           ⟩
-           abs (x * y)       ∎
-
-  case3 : (a b : ℚ) → 0ℚ ≤ a → b < 0ℚ → abs a * abs b ＝ abs (a * b)
-  case3 a b l₁ l₂ = abs a * abs b ＝⟨ ap (_* abs b) (abs-of-pos-is-pos a l₁)                   ⟩
-                    a * abs b     ＝⟨ ap (a *_) (ℚ-abs-neg-equals-pos b)                       ⟩
-                    a * abs (- b) ＝⟨ ap (a *_) (abs-of-pos-is-pos' (- b) (ℚ<-swap'' b l₂)) ⟩
-                    a * (- b)     ＝⟨ ℚ*-comm a (- b)                                             ⟩
-                    (- b) * a     ＝⟨ ℚ-negation-dist-over-mult b a                            ⟩
-                    - b * a       ＝⟨ ap -_ (ℚ*-comm b a)                                         ⟩
-                    - a * b       ＝⟨ abs-of-pos-is-pos (- a * b) (ℚ≤-swap' (a * b) I) ⁻¹   ⟩
-                    abs (- a * b) ＝⟨ ℚ-abs-neg-equals-pos (a * b) ⁻¹                          ⟩
-                    abs (a * b)   ∎
-
+  γ₂ : (0ℚ > x) → (0ℚ > y) → abs x * abs y ＝ abs (x * y)
+  γ₂ l₁ l₂ = VI
    where
-    first : 0ℚ ≤ - b
-    first = ℚ≤-swap' b (ℚ<-coarser-than-≤ b 0ℚ l₂)
-    second : 0ℚ ≤ a * (- b)
-    second = ℚ≤-pos-multiplication-preserves-order a (- b) l₁ first
-    third : - (a * (- b)) ≤ - 0ℚ
-    third = ℚ≤-swap 0ℚ (a * (- b)) second
-    I : a * b ≤ 0ℚ
-    I = transport₂ _≤_ II ℚ-minus-zero-is-zero third
-     where
-      II : - (a * (- b)) ＝ a * b
-      II = - a * (- b) ＝⟨ ap -_ (ℚ*-comm a (- b))                     ⟩
-           - (- b) * a ＝⟨ ap -_ (ℚ-negation-dist-over-mult b a)    ⟩
-           - (- b * a) ＝⟨ ℚ-minus-minus (b * a) ⁻¹                 ⟩
-           b * a       ＝⟨ ℚ*-comm b a                                 ⟩
-           a * b       ∎
+    I : 0ℚ < - x
+    I = ℚ<-swap'' x l₁
 
-  case-split : x < 0ℚ ∔ 0ℚ ≤ x → y < 0ℚ ∔ 0ℚ ≤ y → abs x * abs y ＝ abs (x * y)
-  case-split (inl l₁) (inl l₂) = case2 l₁ l₂
-  case-split (inl l₁) (inr l₂) = goal
+    II : 0ℚ < - y
+    II = ℚ<-swap'' y l₂
+
+    III : (- x) * (- y) ＝ x * y
+    III = (- x) * (- y) ＝⟨ ℚ-negation-dist-over-mult x (- y)     ⟩
+          - x * (- y)   ＝⟨ ap -_ (ℚ*-comm x (- y))               ⟩
+          - (- y) * x   ＝⟨ ap -_ (ℚ-negation-dist-over-mult y x) ⟩
+          - (- y * x)   ＝⟨ ℚ-minus-minus (y * x) ⁻¹              ⟩
+          y * x         ＝⟨ ℚ*-comm y x                           ⟩
+          x * y         ∎
+
+    IV : 0ℚ < (- x) * (- y)
+    IV = ℚ<-pos-multiplication-preserves-order (- x) (- y) I II
+
+    V : 0ℚ < x * y
+    V = transport (0ℚ <_) III IV
+
+    VI : abs x * abs y ＝ abs (x * y)
+    VI = abs x * abs y     ＝⟨ ap (_* abs y) (ℚ-abs-neg-equals-pos x)      ⟩
+         abs (- x) * abs y ＝⟨ ap (_* abs y) (abs-of-pos-is-pos' (- x) I)  ⟩
+         (- x) * abs y     ＝⟨ ap ((- x) *_) (ℚ-abs-neg-equals-pos y)      ⟩
+         (- x) * abs (- y) ＝⟨ ap ((- x) *_) (abs-of-pos-is-pos' (- y) II) ⟩
+         (- x) * (- y)     ＝⟨ III                                         ⟩
+         x * y             ＝⟨ abs-of-pos-is-pos' (x * y) V ⁻¹             ⟩
+         abs (x * y)       ∎
+
+  γ₃ : (a b : ℚ) → 0ℚ ≤ a → b < 0ℚ → abs a * abs b ＝ abs (a * b)
+  γ₃ a b l₁ l₂ =
+   abs a * abs b ＝⟨ ap (_* abs b) (abs-of-pos-is-pos a l₁)                ⟩
+   a * abs b     ＝⟨ ap (a *_) (ℚ-abs-neg-equals-pos b)                    ⟩
+   a * abs (- b) ＝⟨ ap (a *_) (abs-of-pos-is-pos' (- b) (ℚ<-swap'' b l₂)) ⟩
+   a * (- b)     ＝⟨ ℚ*-comm a (- b)                                       ⟩
+   (- b) * a     ＝⟨ ℚ-negation-dist-over-mult b a                         ⟩
+   - b * a       ＝⟨ ap -_ (ℚ*-comm b a)                                   ⟩
+   - a * b       ＝⟨ abs-of-pos-is-pos (- a * b) (ℚ≤-swap' (a * b) V) ⁻¹   ⟩
+   abs (- a * b) ＝⟨ ℚ-abs-neg-equals-pos (a * b) ⁻¹                       ⟩
+   abs (a * b)   ∎
    where
-    goal : abs x * abs y ＝ abs (x * y)
-    goal = abs x * abs y ＝⟨ ℚ*-comm (abs x) (abs y) ⟩
-           abs y * abs x ＝⟨ case3 y x l₂ l₁         ⟩
-           abs (y * x)   ＝⟨ ap abs (ℚ*-comm y x)    ⟩
-           abs (x * y)   ∎
-  case-split (inr l₁) (inl l₂) = case3 x y l₁ l₂
-  case-split (inr l₁) (inr l₂) = case1 l₁ l₂
+    I : 0ℚ ≤ - b
+    I = ℚ≤-swap' b (ℚ<-coarser-than-≤ b 0ℚ l₂)
+
+    II : 0ℚ ≤ a * (- b)
+    II = ℚ≤-pos-multiplication-preserves-order a (- b) l₁ I
+
+    III : - (a * (- b)) ≤ - 0ℚ
+    III = ℚ≤-swap 0ℚ (a * (- b)) II
+
+    IV : - (a * (- b)) ＝ a * b
+    IV = - a * (- b) ＝⟨ ap -_ (ℚ*-comm a (- b))               ⟩
+        - (- b) * a  ＝⟨ ap -_ (ℚ-negation-dist-over-mult b a) ⟩
+        - (- b * a)  ＝⟨ ℚ-minus-minus (b * a) ⁻¹              ⟩
+        b * a        ＝⟨ ℚ*-comm b a                           ⟩
+        a * b        ∎
+
+    V : a * b ≤ 0ℚ
+    V = transport₂ _≤_ IV ℚ-minus-zero-is-zero III
+
+  γ₄ : x < 0ℚ → 0ℚ ≤ y → abs x * abs y ＝ abs (x * y)
+  γ₄ l₁ l₂ = abs x * abs y ＝⟨ ℚ*-comm (abs x) (abs y) ⟩
+             abs y * abs x ＝⟨ γ₃ y x l₂ l₁            ⟩
+             abs (y * x)   ＝⟨ ap abs (ℚ*-comm y x)    ⟩
+             abs (x * y)   ∎
+
+  γ : x < 0ℚ ∔ 0ℚ ≤ x → y < 0ℚ ∔ 0ℚ ≤ y → abs x * abs y ＝ abs (x * y)
+  γ (inl l₁) (inl l₂) = γ₂ l₁ l₂
+  γ (inl l₁) (inr l₂) = γ₄ l₁ l₂
+  γ (inr l₁) (inl l₂) = γ₃ x y l₁ l₂
+  γ (inr l₁) (inr l₂) = γ₁ l₁ l₂
 
 \end{code}
