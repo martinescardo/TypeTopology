@@ -27,16 +27,16 @@ module MetricSpaces.Rationals
          (pe : Prop-Ext)
  where
 
-open import Rationals.MinMax fe
+open import Rationals.MinMax
 
 open import MetricSpaces.Definition pt fe pe
 
 ℚ-metric : ℚ → ℚ → ℚ
 ℚ-metric p q = abs (p - q)
 
-ℚ-self-dist : Fun-Ext → (q : ℚ) → ℚ-metric q q ＝ 0ℚ
-ℚ-self-dist fe q = ℚ-metric q q ＝⟨ by-definition ⟩
-                   abs (q - q)   ＝⟨ ap abs (ℚ-inverse-sum-to-zero fe q) ⟩
+ℚ-self-dist : (q : ℚ) → ℚ-metric q q ＝ 0ℚ
+ℚ-self-dist q = ℚ-metric q q ＝⟨ by-definition ⟩
+                   abs (q - q)   ＝⟨ ap abs (ℚ-inverse-sum-to-zero q) ⟩
                    abs 0ℚ        ＝⟨ by-definition ⟩
                    0ℚ ∎
 
@@ -45,19 +45,19 @@ open import MetricSpaces.Definition pt fe pe
  where
   conclusion : ℚ-metric p q ＝ ℚ-metric q p
   conclusion = ℚ-metric p q                   ＝⟨ by-definition ⟩
-               abs (p - q)                    ＝⟨ ℚ-abs-neg-equals-pos fe (p - q) ⟩
+               abs (p - q)                    ＝⟨ ℚ-abs-neg-equals-pos (p - q) ⟩
                abs (- (p - q))                ＝⟨ by-definition ⟩
                abs (- (p + (- q)))            ＝⟨ ap (λ z → abs (- z)) (ℚ+-comm p (- q)) ⟩
-               abs (- ((- q) + p))            ＝⟨ ap abs (ℚ-minus-dist fe (- q) p ⁻¹) ⟩
-               abs ((- (- q)) + (- p))        ＝⟨ ap (λ z → abs (z + (- p))) (ℚ-minus-minus fe q ⁻¹) ⟩
+               abs (- ((- q) + p))            ＝⟨ ap abs (ℚ-minus-dist (- q) p ⁻¹) ⟩
+               abs ((- (- q)) + (- p))        ＝⟨ ap (λ z → abs (z + (- p))) (ℚ-minus-minus q ⁻¹) ⟩
                abs (q + (- p))                ＝⟨ by-definition ⟩
                abs (q - p)                    ＝⟨ by-definition ⟩
                ℚ-metric q p                   ∎
 
-ℚ<-abs : Fun-Ext → (x y : ℚ) → x < y → y - x ＝ abs (x - y)
-ℚ<-abs fe x y l = y - x       ＝⟨ abs-of-pos-is-pos' fe (y - x) (ℚ<-difference-positive fe x y l) ⁻¹ ⟩
-                  abs (y - x) ＝⟨ ℚ-metric-commutes y x ⟩
-                  abs (x - y) ∎
+ℚ<-abs : (x y : ℚ) → x < y → y - x ＝ abs (x - y)
+ℚ<-abs x y l = y - x       ＝⟨ abs-of-pos-is-pos' (y - x) (ℚ<-difference-positive x y l) ⁻¹ ⟩
+               abs (y - x) ＝⟨ ℚ-metric-commutes y x ⟩
+               abs (x - y) ∎
 
 inequality-chain-to-metric : (w y z : ℚ) → w ≤ y
                                          → y ≤ z
@@ -65,20 +65,20 @@ inequality-chain-to-metric : (w y z : ℚ) → w ≤ y
 inequality-chain-to-metric w y z l₁ l₂ = conclusion
  where
   l₃ : w ≤ z
-  l₃ = ℚ≤-trans fe w y z l₁ l₂
+  l₃ = ℚ≤-trans w y z l₁ l₂
   conclusion : ℚ-metric w z ＝ ℚ-metric w y + ℚ-metric y z
   conclusion = ℚ-metric w z                ＝⟨ by-definition ⟩
                abs (w - z)                 ＝⟨ ℚ-metric-commutes w z ⟩
-               abs (z - w)                 ＝⟨ abs-of-pos-is-pos fe (z - w) (ℚ≤-difference-positive fe w z l₃) ⟩
-               z - w                       ＝⟨ ℚ-zero-left-neutral fe (z - w) ⁻¹ ⟩
-               0ℚ + (z - w)                ＝⟨ ap (_+ (z - w)) (ℚ-inverse-sum-to-zero fe y ⁻¹) ⟩
-               y + (- y) + (z - w)         ＝⟨ ℚ+-assoc fe y (- y) (z - w) ⟩
+               abs (z - w)                 ＝⟨ abs-of-pos-is-pos (z - w) (ℚ≤-difference-positive w z l₃) ⟩
+               z - w                       ＝⟨ ℚ-zero-left-neutral (z - w) ⁻¹ ⟩
+               0ℚ + (z - w)                ＝⟨ ap (_+ (z - w)) (ℚ-inverse-sum-to-zero y ⁻¹) ⟩
+               y + (- y) + (z - w)         ＝⟨ ℚ+-assoc y (- y) (z - w) ⟩
                y + ((- y) + (z - w))       ＝⟨ ap (y +_) (ℚ+-comm (- y) (z - w)) ⟩
                y + (z - w + (- y))         ＝⟨ ap (λ α → y + (α + (- y))) (ℚ+-comm z (- w)) ⟩
-               y + ((- w) + z + (- y))     ＝⟨ ℚ+-assoc fe y ((- w) + z) (- y) ⁻¹ ⟩
-               y + ((- w) + z) + (- y)     ＝⟨ ap (_+ (- y)) (ℚ+-assoc fe y (- w) z ⁻¹) ⟩
-               (y - w) + z + (- y)         ＝⟨ ℚ+-assoc fe (y - w) z (- y) ⟩
-               y - w + (z - y)             ＝⟨ ap₂ _+_ (abs-of-pos-is-pos fe (y - w) (ℚ≤-difference-positive fe w y l₁) ⁻¹) (abs-of-pos-is-pos fe (z - y) (ℚ≤-difference-positive fe y z l₂) ⁻¹) ⟩
+               y + ((- w) + z + (- y))     ＝⟨ ℚ+-assoc y ((- w) + z) (- y) ⁻¹ ⟩
+               y + ((- w) + z) + (- y)     ＝⟨ ap (_+ (- y)) (ℚ+-assoc y (- w) z ⁻¹) ⟩
+               (y - w) + z + (- y)         ＝⟨ ℚ+-assoc (y - w) z (- y) ⟩
+               y - w + (z - y)             ＝⟨ ap₂ _+_ (abs-of-pos-is-pos (y - w) (ℚ≤-difference-positive w y l₁) ⁻¹) (abs-of-pos-is-pos (z - y) (ℚ≤-difference-positive y z l₂) ⁻¹) ⟩
                abs (y - w) + abs (z - y)   ＝⟨ ap₂ _+_ (ℚ-metric-commutes y w) (ℚ-metric-commutes z y) ⟩
                abs (w - y) + abs (y - z)   ＝⟨ by-definition ⟩
                ℚ-metric w y + ℚ-metric y z ∎
@@ -94,18 +94,18 @@ inequality-chain-with-metric x y w z ε₁ ε₂ l₁ l₂ l₃ l₄ = conclusio
   from-previous-result = inequality-chain-to-metric w y z l₁ l₂
   I : ℚ-metric x z ＝ ℚ-metric (x - y) (z - y)
   I = ℚ-metric x z                  ＝⟨ by-definition ⟩
-      abs (x - z)                   ＝⟨ ap abs (ℚ-add-zero fe x (- z) y) ⟩
+      abs (x - z)                   ＝⟨ ap abs (ℚ-add-zero x (- z) y) ⟩
       abs (x - y + (y - z))         ＝⟨ ap (λ α → abs (x - y + α)) (ℚ+-comm y (- z)) ⟩
-      abs (x - y + ((- z) + y))     ＝⟨ ap (λ α → abs (x - y + ((- z) + α))) (ℚ-minus-minus fe y) ⟩
-      abs (x - y + ((- z) - (- y))) ＝⟨ ap (λ α → abs (x - y + α)) (ℚ-minus-dist fe z (- y)) ⟩
+      abs (x - y + ((- z) + y))     ＝⟨ ap (λ α → abs (x - y + ((- z) + α))) (ℚ-minus-minus y) ⟩
+      abs (x - y + ((- z) - (- y))) ＝⟨ ap (λ α → abs (x - y + α)) (ℚ-minus-dist z (- y)) ⟩
       abs (x - y - (z - y))         ＝⟨ by-definition ⟩
       ℚ-metric (x - y) (z - y) ∎
 
   II : ℚ-metric (x - y) (z - y) ≤ (abs (x - y) + abs (- (z - y)))
-  II = ℚ-triangle-inequality fe (x - y) (- (z - y))
+  II = ℚ-triangle-inequality (x - y) (- (z - y))
 
   III : (abs (x - y) + abs (- (z - y))) ＝ ℚ-metric x y + ℚ-metric y z
-  III = abs (x - y) + abs (- (z - y))   ＝⟨ ap (abs (x - y) +_) (ℚ-abs-neg-equals-pos fe (z - y) ⁻¹) ⟩
+  III = abs (x - y) + abs (- (z - y))   ＝⟨ ap (abs (x - y) +_) (ℚ-abs-neg-equals-pos (z - y) ⁻¹) ⟩
         abs (x - y) + abs (z - y)       ＝⟨ ap (abs (x - y) +_) (ℚ-metric-commutes z y) ⟩
         abs (x - y) + ℚ-metric y z      ＝⟨ by-definition ⟩
         ℚ-metric x y + ℚ-metric y z ∎
@@ -117,7 +117,7 @@ inequality-chain-with-metric x y w z ε₁ ε₂ l₁ l₂ l₃ l₄ = conclusio
   V = transport (ℚ-metric y z ≤_) (from-previous-result ⁻¹) ii
    where
     i : ℚ-metric y z ≤ (ℚ-metric y z + ℚ-metric w y)
-    i = ℚ≤-addition-preserves-order'' fe (ℚ-metric y z) (ℚ-metric w y) (ℚ-abs-is-positive (w - y))
+    i = ℚ≤-addition-preserves-order'' (ℚ-metric y z) (ℚ-metric w y) (ℚ-abs-is-positive (w - y))
     ii : ℚ-metric y z ≤ (ℚ-metric w y + ℚ-metric y z)
     ii = transport (ℚ-metric y z ≤_) (ℚ+-comm (ℚ-metric y z) (ℚ-metric w y)) i
 
@@ -128,18 +128,18 @@ inequality-chain-with-metric x y w z ε₁ ε₂ l₁ l₂ l₃ l₄ = conclusio
   VII = transport (_≤ (ℚ-metric x y + ℚ-metric w z)) (I ⁻¹) ii
    where
     i : (ℚ-metric x y + ℚ-metric y z) ≤ (ℚ-metric x y + ℚ-metric w z)
-    i = transport₂ _≤_ (ℚ+-comm (ℚ-metric y z) (ℚ-metric x y)) (ℚ+-comm (ℚ-metric w z) (ℚ-metric x y)) (ℚ≤-addition-preserves-order fe (ℚ-metric y z) (ℚ-metric w z) (ℚ-metric x y) V)
+    i = transport₂ _≤_ (ℚ+-comm (ℚ-metric y z) (ℚ-metric x y)) (ℚ+-comm (ℚ-metric w z) (ℚ-metric x y)) (ℚ≤-addition-preserves-order (ℚ-metric y z) (ℚ-metric w z) (ℚ-metric x y) V)
     ii : ℚ-metric (x - y) (z - y) ≤ (ℚ-metric x y + ℚ-metric w z)
-    ii = ℚ≤-trans fe (ℚ-metric (x - y) (z - y)) ((ℚ-metric x y + ℚ-metric y z)) ((ℚ-metric x y + ℚ-metric w z)) IV i
+    ii = ℚ≤-trans (ℚ-metric (x - y) (z - y)) ((ℚ-metric x y + ℚ-metric y z)) ((ℚ-metric x y + ℚ-metric w z)) IV i
 
   conclusion : ℚ-metric x z < (ε₁ + ε₂)
-  conclusion = ℚ≤-<-trans fe (ℚ-metric x z) (ℚ-metric x y + ℚ-metric w z) (ε₁ + ε₂) VII VI
+  conclusion = ℚ≤-<-trans (ℚ-metric x z) (ℚ-metric x y + ℚ-metric w z) (ε₁ + ε₂) VII VI
 
 B-ℚ : (x y ε : ℚ) → 0ℚ < ε → 𝓤₀ ̇
 B-ℚ x y ε l = ℚ-metric x y < ε
 
 ℚ-m1a : m1a ℚ B-ℚ
-ℚ-m1a x y f = I (ℚ≤-split fe 0ℚ (abs (x - y)) (ℚ-abs-is-positive (x - y)))
+ℚ-m1a x y f = I (ℚ≤-split 0ℚ (abs (x - y)) (ℚ-abs-is-positive (x - y)))
  where
   α : ℚ
   α = ℚ-metric x y
@@ -151,18 +151,18 @@ B-ℚ x y ε l = ℚ-metric x y < ε
   I (inr z) = ii
    where
     i : (x - y) ＝ 0ℚ
-    i = ℚ-abs-zero-is-zero fe (x - y) (z ⁻¹)
+    i = ℚ-abs-zero-is-zero (x - y) (z ⁻¹)
     ii : x ＝ y
-    ii = x                      ＝⟨ ℚ-zero-right-neutral fe x ⁻¹ ⟩
-         x + 0ℚ                 ＝⟨ ap (x +_) (ℚ-inverse-sum-to-zero fe y ⁻¹) ⟩
+    ii = x                      ＝⟨ ℚ-zero-right-neutral x ⁻¹ ⟩
+         x + 0ℚ                 ＝⟨ ap (x +_) (ℚ-inverse-sum-to-zero y ⁻¹) ⟩
          x + (y - y)            ＝⟨ ap (x +_) (ℚ+-comm y (- y)) ⟩
-         x + ((- y) + y)        ＝⟨ ℚ+-assoc fe x (- y) y ⁻¹ ⟩
+         x + ((- y) + y)        ＝⟨ ℚ+-assoc x (- y) y ⁻¹ ⟩
          x + (- y) + y          ＝⟨ ap (_+ y) i ⟩
-         0ℚ + y                 ＝⟨ ℚ-zero-left-neutral fe y ⟩
+         0ℚ + y                 ＝⟨ ℚ-zero-left-neutral y ⟩
          y                      ∎
 
 ℚ-m1b : m1b ℚ B-ℚ
-ℚ-m1b x y l = transport (λ v → v < y) (ℚ-self-dist fe x ⁻¹) l
+ℚ-m1b x y l = transport (λ v → v < y) (ℚ-self-dist x ⁻¹) l
 
 ℚ-m2 : m2 ℚ B-ℚ
 ℚ-m2 x y ε l₁ B = transport (λ z → z < ε) (ℚ-metric-commutes x y) B
@@ -174,16 +174,16 @@ B-ℚ x y ε l = ℚ-metric x y < ε
 ℚ-m4 x y z ε₁ ε₂ l₁ l₂ B₁ B₂ = conclusion α
  where
   α : abs ((x - y) + (y - z)) ≤ (abs (x - y) + abs (y - z))
-  α = ℚ-triangle-inequality fe (x - y) (y - z)
+  α = ℚ-triangle-inequality (x - y) (y - z)
 
   β : (abs (x - y) + abs (y - z)) < (ε₁ + ε₂)
   β = ℚ<-adding (abs (x - y)) ε₁ (abs(y - z)) ε₂ B₁ B₂
 
   δ : abs ((x - y) + (y + (- z))) ＝ abs (x - z)
-  δ = ap abs (ℚ-add-zero fe x (- z) y ⁻¹)
+  δ = ap abs (ℚ-add-zero x (- z) y ⁻¹)
 
   conclusion : abs ((x - y) + (y - z)) ≤ (abs (x - y) + abs (y - z)) → abs (x - z) < (ε₁ + ε₂)
-  conclusion l = I (ℚ≤-split fe (abs ((x - y) + (y - z))) ((abs (x - y) + abs (y - z))) l)
+  conclusion l = I (ℚ≤-split (abs ((x - y) + (y - z))) ((abs (x - y) + abs (y - z))) l)
    where
     I : (abs ((x - y) + (y - z)) < (abs (x - y) + abs (y - z)))
       ∔ (abs ((x - y) + (y - z)) ＝ abs (x - y) + abs (y - z))
@@ -196,4 +196,5 @@ B-ℚ x y ε l = ℚ-metric x y < ε
 
 ℚ-metric-space : metric-space ℚ
 ℚ-metric-space = B-ℚ , ℚ-m1a , ℚ-m1b , ℚ-m2 , ℚ-m3 , ℚ-m4
+
 \end{code}
