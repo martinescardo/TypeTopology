@@ -152,6 +152,9 @@ file has compilation issues.
    I : toℚ (pos 1 , 2) + toℚ (pos 2 , 2) ＝ toℚ (pos 1 ℤ+ pos 2 , 2)
    I = add-same-denom (pos 1 , 2) (pos 2 , 2)
 
+2/3+1/3 : 2/3 + 1/3 ＝ 1ℚ
+2/3+1/3 = ℚ+-comm 2/3 1/3 ∙ 1/3+2/3
+
 1/2+1/2 : 1/2 + 1/2 ＝ 1ℚ
 1/2+1/2 = I refl
  where

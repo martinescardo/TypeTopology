@@ -116,6 +116,21 @@ toℚ-< (x , a) (y , b) l = γ
   γ : x' ℤ* pb' < y' ℤ* pa'
   γ = ordering-right-cancellable (x' ℤ* pb') (y' ℤ* pa') (ph ℤ* ph') I γ'
 
+0<1/2 : 0ℚ < 1/2
+0<1/2 = toℚ-< (pos 0 , 0) (pos 1 , 1) (0 , refl)
+
+0<1/3 : 0ℚ < 1/3
+0<1/3 = toℚ-< (pos 0 , 0) (pos 1 , 2) (0 , refl)
+
+0<1/4 : 0ℚ < 1/4
+0<1/4 = toℚ-< (pos 0 , 0) (pos 1 , 3) (0 , refl)
+
+0<1/5 : 0ℚ < 1/5
+0<1/5 = toℚ-< (pos 0 , 0) (pos 1 , 5) (0 , refl)
+
+1/2<1 : 1/2 < 1ℚ
+1/2<1 = toℚ-< (pos 1 , 1) (pos 1 , 0) (0 , refl)
+
 toℚ-≤ : (p q : 𝔽) → p 𝔽≤ q → toℚ p ≤ toℚ q
 toℚ-≤ (x , a) (y , b) l = Cases I II III
  where
@@ -633,48 +648,77 @@ order1ℚ' p = ℚ<-subtraction-preserves-order p 1ℚ (0 , refl)
   III : - (- x) < - (- y)
   III = ℚ<-swap (- y) (- x) l
 
-multiplicative-inverse-preserves-pos : (p : ℚ)
-                                     → 0ℚ < p
-                                     → (nz : ¬ (p ＝ 0ℚ))
-                                     → 0ℚ < multiplicative-inverse p nz
-multiplicative-inverse-preserves-pos ((pos 0 , a) , α) l nz = 𝟘-elim (nz (numerator-zero-is-zero ((pos zero , a) , α) by-definition))
-multiplicative-inverse-preserves-pos ((pos (succ x) , a) , α) l nz = toℚ-< (pos 0 , 0) (pos (succ a) , x) (a , I)
+ℚ-num-neg-not-pos : (x a : ℕ) (α : is-in-lowest-terms (negsucc x , a))
+                  → ¬ (0ℚ ≤ ((negsucc x , a) , α))
+ℚ-num-neg-not-pos x a α l = 𝟘-elim (γ IV)
  where
-  I : succℤ (pos 0 ℤ* pos (succ x)) ℤ+ pos a ＝ pos (succ a) ℤ* pos 1
-  I = succℤ (pos 0 ℤ* pos (succ x)) ℤ+ pos a ＝⟨ ℤ-left-succ (pos 0 ℤ* pos (succ x)) (pos a) ⟩
-      succℤ (pos 0 ℤ* pos (succ x) ℤ+ pos a) ＝⟨ ℤ-right-succ (pos 0 ℤ* pos (succ x)) (pos a) ⁻¹ ⟩
-      pos 0 ℤ* pos (succ x) ℤ+ pos (succ a)  ＝⟨ ap (_ℤ+ pos (succ a)) (ℤ-zero-left-base (pos (succ x))) ⟩
-      pos 0 ℤ+ pos (succ a) ＝⟨ ℤ-zero-left-neutral (pos (succ a)) ⟩
-      pos (succ a) ＝⟨ ℤ-mult-right-id (pos (succ a)) ⟩
-      pos (succ a) ℤ* pos 1 ∎
-multiplicative-inverse-preserves-pos ((negsucc x , a) , α) l nz = 𝟘-elim (ℚ<-not-itself ((negsucc x , a) , α) (ℚ<-trans (((negsucc x , a) , α)) 0ℚ (((negsucc x , a) , α)) I l))
- where
-  I : ((negsucc x , a) , α) < 0ℚ
-  I = transport (_< 0ℚ) (toℚ-to𝔽 ((negsucc x , a) , α) ⁻¹) (toℚ-< (negsucc x , a) (pos 0 , 0) II)
+  I : pos 0 ℤ* pos (succ a) ≤ negsucc x ℤ* pos 1
+  I = l
+
+  II : pos 0 ℤ* pos (succ a) ＝ pos 0
+  II = ℤ-zero-left-base (pos (succ a))
+
+  III : negsucc x ℤ+ pos 0 ＝ negsucc x
+  III = ℤ-zero-right-neutral (negsucc x)
+
+  IV : pos 0 ≤ negsucc x
+  IV = transport₂ _≤_ II III I
+
+  γ : ¬ (pos 0 ≤ negsucc x)
+  γ (k , e) = pos-not-negsucc γ'
    where
-    II : (negsucc x , a) 𝔽< (pos 0 , 0)
-    II = x , III
-     where
-      III : succℤ (negsucc x ℤ* pos 1) ℤ+ pos x ＝ pos 0 ℤ* pos (succ a)
-      III = succℤ (negsucc x ℤ* pos 1) ℤ+ pos x ＝⟨ ℤ-left-succ (negsucc x ℤ* pos 1) (pos x) ⟩
-            succℤ (negsucc x ℤ* pos 1 ℤ+ pos x) ＝⟨ by-definition ⟩
-            negsucc x ℤ* pos 1 ℤ+ pos (succ x)  ＝⟨ ap (_ℤ+ pos (succ x)) (ℤ-mult-right-id (negsucc x)) ⟩
-            negsucc x ℤ+ pos (succ x)           ＝⟨ ℤ-sum-of-inverse-is-zero' (pos (succ x)) ⟩
-            pos 0                               ＝⟨ ℤ-zero-left-base (pos (succ a)) ⁻¹ ⟩
-            pos 0 ℤ* pos (succ a)               ∎
+    γ' : pos k ＝ negsucc x
+    γ' = pos k          ＝⟨ ℤ-zero-left-neutral (pos k) ⁻¹  ⟩
+         pos 0 ℤ+ pos k ＝⟨ e                               ⟩
+         negsucc x      ∎
+
+ℚ-num-neg-not-pos' : (x a : ℕ) (α : is-in-lowest-terms (negsucc x , a))
+                   → ¬ (0ℚ < ((negsucc x , a) , α))
+ℚ-num-neg-not-pos' x a α l = ℚ-num-neg-not-pos x a α γ
+ where
+  γ : 0ℚ ≤ ((negsucc x , a) , α)
+  γ = ℚ<-coarser-than-≤ 0ℚ ((negsucc x , a) , α) l
+
+ℚ-inv-preserves-pos : (p : ℚ)
+                    → 0ℚ < p
+                    → (nz : ¬ (p ＝ 0ℚ))
+                    → 0ℚ < ℚ*-inv p nz
+ℚ-inv-preserves-pos ((pos 0 , a) , α) l nz = 𝟘-elim (nz γ)
+ where
+  γ : (pos 0 , a) , α ＝ 0ℚ
+  γ = numerator-zero-is-zero ((pos 0 , a) , α) refl
+ℚ-inv-preserves-pos ((negsucc x , a) , α) l nz = 𝟘-elim γ
+ where
+  γ : 𝟘
+  γ = ℚ-num-neg-not-pos' x a α l
+ℚ-inv-preserves-pos ((pos (succ x) , a) , α) l nz = γ
+ where
+  γ : 0ℚ < toℚ (pos (succ a) , x)
+  γ = ℚ-zero-less-than-positive a x
 
 ℚ-equal-or-less-than-is-prop : (x y : ℚ) → is-prop ((x ＝ y) ∔ (y < x))
 ℚ-equal-or-less-than-is-prop x y (inl l) (inl r) = ap inl (ℚ-is-set l r)
-ℚ-equal-or-less-than-is-prop x y (inl l) (inr r) = 𝟘-elim (ℚ<-not-itself y ((transport (y <_) l r)))
-ℚ-equal-or-less-than-is-prop x y (inr l) (inl r) = 𝟘-elim ((ℚ<-not-itself x (transport (_< x) (r ⁻¹) l)))
+ℚ-equal-or-less-than-is-prop x y (inl l) (inr r) = 𝟘-elim (ℚ<-not-itself y γ)
+ where
+  γ : y < y
+  γ = transport (y <_) l r
+ℚ-equal-or-less-than-is-prop x y (inr l) (inl r) = 𝟘-elim (ℚ<-not-itself x γ)
+ where
+  γ : x < x
+  γ = transport (_< x) (r ⁻¹) l
 ℚ-equal-or-less-than-is-prop x y (inr l) (inr r) = ap inr (ℚ<-is-prop y x l r)
 
 ℚ-trich-a : (x y : ℚ) → (l : x < y) → ℚ-trichotomous x y ＝ inl l
 ℚ-trich-a x y l = equality-cases (ℚ-trichotomous x y) I II
  where
-  I : (l₂ : x < y) → ℚ-trichotomous x y ＝ inl l₂ → ℚ-trichotomous x y ＝ inl l
+  I : (l₂ : x < y)
+    → ℚ-trichotomous x y ＝ inl l₂
+    → ℚ-trichotomous x y ＝ inl l
   I l₂ e = e ∙ ap inl (ℚ<-is-prop x y l₂ l)
-  II : (y₁ : (x ＝ y) ∔ (y < x)) → ℚ-trichotomous x y ＝ inr y₁ → ℚ-trichotomous x y ＝ inl l
+
+  II : (y₁ : (x ＝ y) ∔ (y < x))
+     → ℚ-trichotomous x y ＝ inr y₁
+     → ℚ-trichotomous x y ＝ inl l
   II (inl e) _ = 𝟘-elim (ℚ<-not-itself y (transport (_< y) e l))
   II (inr lt) _ = 𝟘-elim (ℚ<-not-itself x (ℚ<-trans x y x l lt))
 
@@ -684,7 +728,9 @@ multiplicative-inverse-preserves-pos ((negsucc x , a) , α) l nz = 𝟘-elim (�
   I : (l : x < y) → ℚ-trichotomous x y ＝ inl l → ℚ-trichotomous x y ＝ inr r
   I l _ = Cases r (λ e → 𝟘-elim (ℚ<-not-itself y (transport (_< y) e l)))
                    λ e → 𝟘-elim (ℚ<-not-itself x (ℚ<-trans x y x l e))
-  II : (s : (x ＝ y) ∔ (y < x)) → ℚ-trichotomous x y ＝ inr s → ℚ-trichotomous x y ＝ inr r
+  II : (s : (x ＝ y) ∔ (y < x))
+     → ℚ-trichotomous x y ＝ inr s
+     → ℚ-trichotomous x y ＝ inr r
   II s e = e ∙ (ap inr III)
    where
     III : s ＝ r
@@ -696,88 +742,78 @@ multiplicative-inverse-preserves-pos ((negsucc x , a) , α) l nz = 𝟘-elim (�
   I : (k : x < x) → ℚ-trichotomous x x ＝ inl k → ℚ-trichotomous x x ＝ inr e
   I k f = 𝟘-elim (ℚ<-not-itself x k)
 
-  II : (k : (x ＝ x) ∔ (x < x)) → ℚ-trichotomous x x ＝ inr k → ℚ-trichotomous x x ＝ inr e
-  II k l = Cases k III
-                   (λ - → 𝟘-elim (ℚ<-not-itself x -) )
+  II : (k : (x ＝ x) ∔ (x < x))
+     → ℚ-trichotomous x x ＝ inr k
+     → ℚ-trichotomous x x ＝ inr e
+  II k l = Cases k III (λ - → 𝟘-elim (ℚ<-not-itself x -) )
    where
     III : x ＝ x → ℚ-trichotomous x x ＝ inr e
     III z = l ∙ ap inr (ℚ-equal-or-less-than-is-prop x x k e)
 
-trisect : (x y : ℚ) → x < y → Σ (x' , y') ꞉ ℚ × ℚ , (x < x') × (x' < y') × (y' < y) × (y - x' ＝ 2/3 * (y - x)) × (y' - x ＝ 2/3 * (y - x))
-trisect x y l = (x + d * 1/3 , x + d * 2/3) , I , II , III , IV , V
+trisect : (x y : ℚ) → x < y
+        → Σ (x' , y') ꞉ ℚ × ℚ , (x < x') × (x' < y') × (y' < y)
+                              × (y - x' ＝ 2/3 * (y - x))
+                              × (y' - x ＝ 2/3 * (y - x))
+trisect x y l = (x + d * 1/3 , x + d * 2/3) , γ₁ , γ₂ , γ₃ , γ₄  , γ₅
  where
   d : ℚ
-  d = y - x
-  α : 0ℚ < d
-  α = ℚ<-difference-positive x y l
+  d  = y - x
 
-  β : 0ℚ < 1/3
-  β = ℚ-zero-less-than-positive 0 2
+  I : 0ℚ < d
+  I = ℚ<-difference-positive x y l
 
-  γ : 0ℚ < d * 1/3
-  γ = ℚ<-pos-multiplication-preserves-order d 1/3 α β
+  II : 0ℚ < d * 1/3
+  II = ℚ<-pos-multiplication-preserves-order d 1/3 I 0<1/3
 
-  ψ : (x + d * 1/3) < (x + d * 1/3 + d * 1/3)
-  ψ = ℚ<-addition-preserves-order'' (x + d * 1/3) (d * 1/3) γ
+  γ₁ : x < x + d * 1/3
+  γ₁ = ℚ<-addition-preserves-order'' x (d * 1/3) II
 
-  η : d * 2/3 < d
-  η = transport₂ _<_ ii iii i
-   where
-    i : (0ℚ + d * 2/3) < (d * 1/3 + d * 2/3)
-    i = ℚ<-addition-preserves-order 0ℚ (d * 1/3) (d * 2/3) γ
-    ii : 0ℚ + d * 2/3 ＝ d * 2/3
-    ii = ℚ-zero-left-neutral (d * 2/3)
-    iii : d * 1/3 + d * 2/3 ＝ d
-    iii = d * 1/3 + d * 2/3 ＝⟨ ℚ-distributivity d 1/3 2/3 ⁻¹ ⟩
-          d * (1/3 + 2/3)   ＝⟨ ap (d *_) (1/3+2/3) ⟩
-          d * 1ℚ            ＝⟨ ℚ-mult-right-id d ⟩
-          d                 ∎
+  III : x + d * 1/3 < x + d * 1/3 + d * 1/3
+  III = ℚ<-addition-preserves-order'' (x + d * 1/3) (d * 1/3) II
 
-  I : x < (x + d * 1/3)
-  I = ℚ<-addition-preserves-order'' x (d * 1/3) γ
+  IV : x + d * 1/3 + d * 1/3 ＝ x + d * 2/3
+  IV = x + d * 1/3 + d * 1/3   ＝⟨ ℚ+-assoc x (d * 1/3) (d * 1/3)            ⟩
+       x + (d * 1/3 + d * 1/3) ＝⟨ ap (x +_) (ℚ-distributivity d 1/3 1/3 ⁻¹) ⟩
+       x + d * (1/3 + 1/3)     ＝⟨ ap (λ - → x + d * -) 1/3+1/3              ⟩
+       x + d * 2/3             ∎
 
-  II : (x + d * 1/3) < (x + d * 2/3)
-  II = transport (x + d * 1/3 <_) i ψ
-   where
-    i : x + d * 1/3 + d * 1/3 ＝ x + d * 2/3
-    i = x + d * 1/3 + d * 1/3   ＝⟨ ℚ+-assoc x (d * 1/3) (d * 1/3) ⟩
-        x + (d * 1/3 + d * 1/3) ＝⟨ ap (x +_) (ℚ-distributivity d 1/3 1/3 ⁻¹) ⟩
-        x + d * (1/3 + 1/3)     ＝⟨ ap (λ z → x + (d * z)) (1/3+1/3) ⟩
-        x + d * 2/3             ∎
+  γ₂ : x + d * 1/3 < x + d * 2/3
+  γ₂ = transport (x + d * 1/3 <_) IV III
 
+  V : x + d * 2/3 < x + d * 2/3 + d * 1/3
+  V = ℚ<-addition-preserves-order'' (x + d * 2/3) (d * 1/3) II
 
-  III : x + d * 2/3 < y
-  III = transport₂ _<_ ii iii i
-   where
-    i : d * 2/3 + x < d + x
-    i = ℚ<-addition-preserves-order (d * 2/3) d x η
-    ii : d * 2/3 + x ＝ x + d * 2/3
-    ii = ℚ+-comm (d * 2/3) x
-    iii : d + x ＝ y
-    iii = d + x            ＝⟨ ℚ+-assoc y (- x) x ⟩
-          y + ((- x) + x)  ＝⟨ ap (y +_) (ℚ-inverse-sum-to-zero' x) ⟩
-          y + 0ℚ           ＝⟨ ℚ-zero-right-neutral y ⟩
-          y                ∎
+  VI : x + d * 2/3 + d * 1/3 ＝ y
+  VI = x + d * 2/3 + d * 1/3   ＝⟨ ℚ+-assoc x (d * 2/3) (d * 1/3)            ⟩
+       x + (d * 2/3 + d * 1/3) ＝⟨ ap (x +_) (ℚ-distributivity d 2/3 1/3 ⁻¹) ⟩
+       x + d * (2/3 + 1/3)     ＝⟨ ap (λ - → x + d * -) 2/3+1/3              ⟩
+       x + d * 1ℚ              ＝⟨ ap (x +_) (ℚ-mult-right-id d)             ⟩
+       x + (y - x)             ＝⟨ ap (x +_) (ℚ+-comm y (- x))               ⟩
+       x + ((- x) + y)         ＝⟨ ℚ+-assoc x (- x) y ⁻¹                     ⟩
+       x - x + y               ＝⟨ ℚ-inverse-intro' y x ⁻¹                   ⟩
+       y                        ∎
 
-  IV : y - (x + d * 1/3) ＝ 2/3 * d
-  IV = y - (x + d * 1/3)                 ＝⟨ ap (y +_) (ℚ-minus-dist x (d * 1/3)) ⁻¹ ⟩
-       y + ((- x) + (- d * 1/3))         ＝⟨ ℚ+-assoc y (- x) (- d * 1/3) ⁻¹ ⟩
-       d + (- d * 1/3)                   ＝⟨ ap (_+ (- (d * 1/3))) (ℚ-mult-left-id d ⁻¹) ⟩
-       1ℚ * d + (- d * 1/3)              ＝⟨ ap (λ z → (z * d) + (- (d * 1/3))) (1/3+2/3) ⟩
-       1ℚ * d + (- d * 1/3)              ＝⟨ ap (_+ (- (d * 1/3))) (ℚ*-comm (1/3 + 2/3) d)  ⟩
-       d * (1/3 + 2/3) + (- d * 1/3)     ＝⟨ ap (λ z → (d * z) + (- (d * 1/3))) (ℚ+-comm 1/3 2/3) ⟩
-       d * (2/3 + 1/3) + (- d * 1/3)     ＝⟨ ap (_+ - (d * 1/3)) (ℚ-distributivity d 2/3 1/3) ⟩
-       d * 2/3 + d * 1/3 + (- d * 1/3)   ＝⟨ ℚ+-assoc (d * 2/3) (d * 1/3) (- (d * 1/3)) ⟩
-       d * 2/3 + (d * 1/3 + (- d * 1/3)) ＝⟨ ap₂ _+_ (ℚ*-comm d 2/3) (ℚ-inverse-sum-to-zero (d * 1/3)) ⟩
-       2/3 * d + 0ℚ                      ＝⟨ ℚ-zero-right-neutral (2/3 * d) ⟩
-       2/3 * d ∎
+  γ₃ : x + d * 2/3 < y
+  γ₃ = transport (x + d * 2/3 <_) VI V
 
-  V : x + d * 2/3 - x ＝ 2/3 * d
-  V = x + d * 2/3 - x       ＝⟨ ap (_+ (- x)) (ℚ+-comm x (d * 2/3)) ⟩
-      d * 2/3 + x + (- x)   ＝⟨ ℚ+-assoc (d * 2/3) x (- x) ⟩
-      d * 2/3 + (x - x)     ＝⟨ ap₂ _+_ (ℚ*-comm d 2/3) (ℚ-inverse-sum-to-zero x) ⟩
-      2/3 * d + 0ℚ          ＝⟨ ℚ-zero-right-neutral (2/3 * d) ⟩
-      2/3 * d ∎
+  γ₅ : x + d * 2/3 - x ＝ 2/3 * d
+  γ₅ = x + d * 2/3 - x ＝⟨ ℚ+-rearrange x (d * 2/3) (- x)  ⟩
+       x - x + d * 2/3 ＝⟨ ℚ-inverse-intro' (d * 2/3) x ⁻¹ ⟩
+       d * 2/3         ＝⟨ ℚ*-comm d 2/3                   ⟩
+       2/3 * d         ∎
+
+  VII : d * (- 1/3) ＝ - d * 1/3
+  VII = ℚ-negation-dist-over-mult' d 1/3
+
+  γ₄ : y - (x + d * 1/3) ＝ 2/3 * d
+  γ₄ = y - (x + d * 1/3)     ＝⟨ ap (y +_) (ℚ-minus-dist x (d * 1/3) ⁻¹) ⟩
+       y + ((- x) - d * 1/3) ＝⟨ ℚ+-assoc y (- x) (- d * 1/3) ⁻¹         ⟩
+       d - d * 1/3           ＝⟨ ap (_- d * 1/3) (ℚ-mult-right-id d ⁻¹)  ⟩
+       d * 1ℚ - d * 1/3      ＝⟨ ap (d * 1ℚ +_) VII ⁻¹                   ⟩
+       d * 1ℚ + d * (- 1/3)  ＝⟨ ℚ-distributivity d 1ℚ (- 1/3) ⁻¹        ⟩
+       d * (1ℚ - 1/3)        ＝⟨ ap (d *_) 1-1/3                         ⟩
+       d * 2/3               ＝⟨ ℚ*-comm d 2/3                           ⟩
+       2/3 * d               ∎
 
 ℚ≤-anti : (p q : ℚ) → p ≤ q → q ≤ p → p ＝ q
 ℚ≤-anti p q l₁ l₂ = I (ℚ≤-split p q l₁) (ℚ≤-split q p l₂)
@@ -788,45 +824,39 @@ trisect x y l = (x + d * 1/3 , x + d * 2/3) , I , II , III , IV , V
   I (inr e) (inl f) = e
   I (inr e) (inr f) = e
 
-0<1/2 : 0ℚ < 1/2
-0<1/2 = toℚ-< (pos 0 , 0) (pos 1 , 1) (0 , refl)
-
-0<1/4 : 0ℚ < 1/4
-0<1/4 = toℚ-< (pos 0 , 0) (pos 1 , 3) (0 , refl)
-
-0<1/5 : 0ℚ < 1/5
-0<1/5 = toℚ-< (pos 0 , 0) (pos 1 , 5) (0 , refl)
-
-1/2<1 : 1/2 < 1ℚ
-1/2<1 = toℚ-< (pos 1 , 1) (pos 1 , 0) (0 , refl)
-
 halving-preserves-order : (p : ℚ) → 0ℚ < p → 0ℚ < p * 1/2
-halving-preserves-order p l = ℚ<-pos-multiplication-preserves-order p 1/2 l 0<1/2
+halving-preserves-order p l
+ = ℚ<-pos-multiplication-preserves-order p 1/2 l 0<1/2
 
 halving-preserves-order' : (p : ℚ) → 0ℚ < p → 0ℚ < 1/2 * p
-halving-preserves-order' p l = ℚ<-pos-multiplication-preserves-order 1/2 p 0<1/2 l
+halving-preserves-order' p l
+ = ℚ<-pos-multiplication-preserves-order 1/2 p 0<1/2 l
 
 quarter-preserves-order : (p : ℚ) → 0ℚ < p → 0ℚ < p * 1/4
-quarter-preserves-order p l = ℚ<-pos-multiplication-preserves-order p 1/4 l 0<1/4
+quarter-preserves-order p l
+ = ℚ<-pos-multiplication-preserves-order p 1/4 l 0<1/4
 
 quarter-preserves-order' : (p : ℚ) → 0ℚ < p → 0ℚ < 1/4 * p
-quarter-preserves-order' p l = ℚ<-pos-multiplication-preserves-order 1/4 p 0<1/4 l
+quarter-preserves-order' p l
+ = ℚ<-pos-multiplication-preserves-order 1/4 p 0<1/4 l
 
 half-of-pos-is-less : (p : ℚ) → 0ℚ < p → 1/2 * p < p
 half-of-pos-is-less p l = transport (1/2 * p <_) III II
  where
   I : 0ℚ < 1/2 * p
   I = halving-preserves-order' p l
+
   II : 1/2 * p < 1/2 * p + 1/2 * p
   II = ℚ<-addition-preserves-order'' (1/2 * p) (1/2 * p) I
+
   III : 1/2 * p + 1/2 * p ＝ p
   III = 1/2 * p + 1/2 * p ＝⟨ ℚ-distributivity' p 1/2 1/2 ⁻¹ ⟩
-        (1/2 + 1/2) * p   ＝⟨ ap (_* p) (1/2+1/2) ⟩
-        1ℚ * p            ＝⟨ ℚ-mult-left-id p ⟩
-        p ∎
+        (1/2 + 1/2) * p   ＝⟨ ap (_* p) (1/2+1/2)            ⟩
+        1ℚ * p            ＝⟨ ℚ-mult-left-id p               ⟩
+        p                 ∎
 
 ℚ-dense : (p q : ℚ) → p < q → Σ x ꞉ ℚ , (p < x) × (x < q)
-ℚ-dense p q l = p + (1/2 * (q - p)) , left-inequality , right-inequality
+ℚ-dense p q l = p + 1/2 * (q - p) , γ₁ , γ₂
  where
   I : 0ℚ < (q - p) * 1/2
   I = halving-preserves-order (q - p) (ℚ<-difference-positive p q l)
@@ -838,31 +868,49 @@ half-of-pos-is-less p l = transport (1/2 * p <_) III II
   III = ℚ<-addition-preserves-order'' (p + 1/2 * (q - p)) (1/2 * (q - p)) II
 
   IV : p + 1/2 * (q - p) + 1/2 * (q - p) ＝ q
-  IV = p + 1/2 * (q - p) + 1/2 * (q - p)    ＝⟨ ℚ+-assoc p (1/2 * (q - p)) (1/2 * (q - p))       ⟩
-       p + (1/2 * (q - p) + 1/2 * (q - p))  ＝⟨ ap (p +_) (ℚ-distributivity' (q - p) 1/2 1/2 ⁻¹) ⟩
-       p + (1/2 + 1/2) * (q - p)            ＝⟨ ap (λ α → p + α * (q - p)) (1/2+1/2)             ⟩
-       p + 1ℚ * (q - p)                     ＝⟨ ap (p +_) (ℚ-mult-left-id (q - p))               ⟩
-       p + (q - p)                          ＝⟨ ap (p +_) (ℚ+-comm q (- p))                         ⟩
-       p + ((- p) + q)                      ＝⟨ ℚ+-assoc p (- p) q ⁻¹                            ⟩
-       p - p + q                            ＝⟨ ap (_+ q) (ℚ-inverse-sum-to-zero p)              ⟩
-       0ℚ + q                               ＝⟨ ℚ-zero-left-neutral q                            ⟩
-       q                                    ∎
+  IV = p + 1/2 * (q - p) + 1/2 * (q - p)   ＝⟨ i    ⟩
+       p + (1/2 * (q - p) + 1/2 * (q - p)) ＝⟨ ii   ⟩
+       p + (1/2 + 1/2) * (q - p)           ＝⟨ iii  ⟩
+       p + 1ℚ * (q - p)                    ＝⟨ iv   ⟩
+       p + (q - p)                         ＝⟨ v    ⟩
+       p + ((- p) + q)                     ＝⟨ vi   ⟩
+       p - p + q                           ＝⟨ vii  ⟩
+       0ℚ + q                              ＝⟨ viii ⟩
+       q                                   ∎
+   where
+    i    = ℚ+-assoc p (1/2 * (q - p)) (1/2 * (q - p))
+    ii   = ap (p +_) (ℚ-distributivity' (q - p) 1/2 1/2 ⁻¹)
+    iii  = ap (λ α → p + α * (q - p)) 1/2+1/2
+    iv   = ap (p +_) (ℚ-mult-left-id (q - p))
+    v    = ap (p +_) (ℚ+-comm q (- p))
+    vi   = ℚ+-assoc p (- p) q ⁻¹
+    vii  = ap (_+ q) (ℚ-inverse-sum-to-zero p)
+    viii = ℚ-zero-left-neutral q
 
-  left-inequality : p < p + 1/2 * (q - p)
-  left-inequality = ℚ<-addition-preserves-order'' p (1/2 * (q - p)) II
+  γ₁ : p < p + 1/2 * (q - p)
+  γ₁ = ℚ<-addition-preserves-order'' p (1/2 * (q - p)) II
 
-  right-inequality : p + 1/2 * (q - p) < q
-  right-inequality = transport (p + 1/2 * (q - p) <_) IV III
+  γ₂ : p + 1/2 * (q - p) < q
+  γ₂ = transport (p + 1/2 * (q - p) <_) IV III
 
-inequality-chain-outer-bounds-inner : (a b c d : ℚ) → a < b → b < c → c < d → c - b < d - a
-inequality-chain-outer-bounds-inner a b c d l₁ l₂ l₃ = ℚ<-trans (c - b) (d - b) (d - a) I III
+inequality-chain-outer-bounds-inner : (a b c d : ℚ)
+                                    → a < b → b < c → c < d → c - b < d - a
+inequality-chain-outer-bounds-inner a b c d l₁ l₂ l₃ = γ
  where
   I : c - b < d - b
   I = ℚ<-addition-preserves-order c d (- b) l₃
+
   II : - b < - a
   II = ℚ<-swap a b l₁
-  III : d - b < d - a
-  III = transport₂ _<_ (ℚ+-comm (- b) d) (ℚ+-comm (- a) d) (ℚ<-addition-preserves-order (- b) (- a) d II)
+
+  III : (- b) + d < (- a) + d
+  III = ℚ<-addition-preserves-order (- b) (- a) d II
+
+  IV : d - b < d - a
+  IV = transport₂ _<_ (ℚ+-comm (- b) d) (ℚ+-comm (- a) d) III
+
+  γ : c - b < d - a
+  γ = ℚ<-trans (c - b) (d - b) (d - a) I IV
 
 ℚ<-trans₂ : (p q r s : ℚ) → p < q → q < r → r < s → p < s
 ℚ<-trans₂ p q r s l₁ l₂ l₃ = ℚ<-trans p r s I l₃
@@ -889,65 +937,50 @@ inequality-chain-outer-bounds-inner a b c d l₁ l₂ l₃ = ℚ<-trans (c - b) 
   I = ℚ≤-trans₂ p q r s l₁ l₂ l₃
 
 ℚ<-addition-cancellable : (a b c : ℚ) → a + b < c + b → a < c
-ℚ<-addition-cancellable a b c l = transport₂ _<_ (I a b) (I c b) (ℚ<-addition-preserves-order (a + b) (c + b) (- b) l)
+ℚ<-addition-cancellable a b c l = transport₂ _<_ (I a b) (I c b) γ
  where
   I : (a b : ℚ) → a + b - b ＝ a
-  I a b = a + b - b   ＝⟨ ℚ+-assoc a b (- b) ⟩
+  I a b = a + b - b   ＝⟨ ℚ+-assoc a b (- b)                  ⟩
           a + (b - b) ＝⟨ ap (a +_) (ℚ-inverse-sum-to-zero b) ⟩
-          a + 0ℚ      ＝⟨ ℚ-zero-right-neutral a ⟩
+          a + 0ℚ      ＝⟨ ℚ-zero-right-neutral a              ⟩
           a           ∎
 
+  γ : a + b - b < c + b - b
+  γ = ℚ<-addition-preserves-order (a + b) (c + b) (- b) l
+
 ℚ<-addition-cancellable' : (a b c : ℚ) → b + a < b + c → a < c
-ℚ<-addition-cancellable' a b c l = ℚ<-addition-cancellable a b c
-                                       (transport₂ _<_ (ℚ+-comm b a) (ℚ+-comm b c) l)
+ℚ<-addition-cancellable' a b c l = ℚ<-addition-cancellable a b c γ
+ where
+  γ : a + b < c + b
+  γ = transport₂ _<_ (ℚ+-comm b a) (ℚ+-comm b c) l
 
 order-lemma : (a b c d : ℚ) → a - b < c - d → d < b ∔ a < c
-order-lemma a b c d l = I (ℚ-trichotomous a c)
+order-lemma a b c d l = γ (ℚ-trichotomous a c)
  where
-  I : (a < c) ∔ (a ＝ c) ∔ (c < a) → d < b ∔ a < c
-  I (inl a<c) = inr a<c
-  I (inr (inl a＝c)) = inl (ℚ<-swap''' d b ii)
+  γ : (a < c) ∔ (a ＝ c) ∔ (c < a) → d < b ∔ a < c
+  γ (inl a<c) = inr a<c
+  γ (inr (inl a＝c)) = inl (ℚ<-swap''' d b II)
    where
-    i : c - b < c - d
-    i = transport (λ z → z - b < c - d) a＝c l
-    ii : - b < - d
-    ii = ℚ<-addition-cancellable' (- b) c (- d) i
-  I (inr (inr c<a)) = inl (ℚ<-swap''' d b iii)
+    I : c - b < c - d
+    I = transport (λ z → z - b < c - d) a＝c l
+
+    II : - b < - d
+    II = ℚ<-addition-cancellable' (- b) c (- d) I
+  γ (inr (inr c<a)) = inl (ℚ<-swap''' d b IV)
    where
-    i :  - a < - c
-    i = ℚ<-swap c a c<a
-    ii : (- a) + (a - b) < (- c) + (c - d)
-    ii = ℚ<-adding (- a) (- c) (a - b) (c - d) i l
-    iv : (a b : ℚ) → (- a) + (a - b) ＝ - b
-    iv a b = (- a) + (a - b)   ＝⟨ ℚ+-assoc (- a) a (- b) ⁻¹ ⟩
-             (- a) + a - b     ＝⟨ ap (_- b) (ℚ-inverse-sum-to-zero' a) ⟩
-             0ℚ - b            ＝⟨ ℚ-zero-left-neutral (- b) ⟩
-             - b ∎
-    iii : - b < - d
-    iii = transport₂ _<_ (iv a b) (iv c d) ii
+    I :  - a < - c
+    I = ℚ<-swap c a c<a
 
-ℚ-num-neg-not-pos : (x a : ℕ) (α : is-in-lowest-terms (negsucc x , a))
-                  → ¬ (0ℚ ≤ ((negsucc x , a) , α))
-ℚ-num-neg-not-pos x a α l = 𝟘-elim (γ IV)
- where
-  I : pos 0 ℤ* pos (succ a) ≤ negsucc x ℤ* pos 1
-  I = l
+    II : (- a) + (a - b) < (- c) + (c - d)
+    II = ℚ<-adding (- a) (- c) (a - b) (c - d) I l
 
-  II : pos 0 ℤ* pos (succ a) ＝ pos 0
-  II = ℤ-zero-left-base (pos (succ a))
+    III : (a b : ℚ) → (- a) + (a - b) ＝ - b
+    III a b = (- a) + (a - b) ＝⟨ ℚ+-assoc (- a) a (- b) ⁻¹            ⟩
+             (- a) + a - b    ＝⟨ ap (_- b) (ℚ-inverse-sum-to-zero' a) ⟩
+             0ℚ - b           ＝⟨ ℚ-zero-left-neutral (- b)            ⟩
+             - b              ∎
 
-  III : negsucc x ℤ+ pos 0 ＝ negsucc x
-  III = ℤ-zero-right-neutral (negsucc x)
-
-  IV : pos 0 ≤ negsucc x
-  IV = transport₂ _≤_ II III I
-
-  γ : ¬ (pos 0 ≤ negsucc x)
-  γ (k , e) = pos-not-negsucc γ'
-   where
-    γ' : pos k ＝ negsucc x
-    γ' = pos k          ＝⟨ ℤ-zero-left-neutral (pos k) ⁻¹  ⟩
-         pos 0 ℤ+ pos k ＝⟨ e                               ⟩
-         negsucc x      ∎
+    IV : - b < - d
+    IV = transport₂ _<_ (III a b) (III c d) II
 
 \end{code}
