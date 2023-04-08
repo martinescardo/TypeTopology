@@ -633,9 +633,10 @@ order1ℚ' p = ℚ<-subtraction-preserves-order p 1ℚ (0 , refl)
   III : - (- x) < - (- y)
   III = ℚ<-swap (- y) (- x) l
 
--- TODO : Cleanup from here
-
-multiplicative-inverse-preserves-pos : (p : ℚ) → 0ℚ < p → (nz : ¬ (p ＝ 0ℚ)) → 0ℚ < multiplicative-inverse p nz
+multiplicative-inverse-preserves-pos : (p : ℚ)
+                                     → 0ℚ < p
+                                     → (nz : ¬ (p ＝ 0ℚ))
+                                     → 0ℚ < multiplicative-inverse p nz
 multiplicative-inverse-preserves-pos ((pos 0 , a) , α) l nz = 𝟘-elim (nz (numerator-zero-is-zero ((pos zero , a) , α) by-definition))
 multiplicative-inverse-preserves-pos ((pos (succ x) , a) , α) l nz = toℚ-< (pos 0 , 0) (pos (succ a) , x) (a , I)
  where

@@ -175,7 +175,6 @@ toℚ-subtraction p q = γ
       0ℚ + 3/5              ＝⟨ ℚ-zero-left-neutral 3/5                 ⟩
       3/5                   ∎
 
-
 ℚ-inverse-intro : (p q : ℚ) → p ＝ p + (q - q)
 ℚ-inverse-intro p q = p           ＝⟨ ℚ-zero-right-neutral p ⁻¹              ⟩
                       p + 0ℚ      ＝⟨ ap (p +_) (ℚ-inverse-sum-to-zero q ⁻¹) ⟩

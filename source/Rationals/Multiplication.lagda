@@ -78,8 +78,8 @@ toℚ-* p q = equiv→equality (p 𝔽* q) (p' 𝔽* q') conclusion
 ℚ-zero-left-is-zero ((x , a) , q) = γ
  where
   γ : 0ℚ * ((x , a) , q) ＝ 0ℚ
-  γ = 0ℚ * ((x , a) , q)            ＝⟨ i  ⟩
-      toℚ (pos 0 , 0) * toℚ (x , a) ＝⟨ ii ⟩
+  γ = 0ℚ * ((x , a) , q)            ＝⟨ i   ⟩
+      toℚ (pos 0 , 0) * toℚ (x , a) ＝⟨ ii  ⟩
       toℚ ((pos 0 , 0) 𝔽* (x , a))  ＝⟨ iii ⟩
       0ℚ                            ∎
    where
@@ -141,66 +141,74 @@ toℚ-* p q = equiv→equality (p 𝔽* q) (p' 𝔽* q') conclusion
       p * q + p * r ＝⟨ ap₂ _+_ (ℚ*-comm p q) (ℚ*-comm p r) ⟩
       q * p + r * p ∎
 
-multiplicative-inverse : (q : ℚ) → ¬ (q ＝ 0ℚ) → ℚ
-multiplicative-inverse ((pos 0        , a) , p) nz = 𝟘-elim (nz γ)
+ℚ*-inv : (q : ℚ) → ¬ (q ＝ 0ℚ) → ℚ
+ℚ*-inv ((pos 0 , a) , p) nz = 𝟘-elim (nz γ)
  where
   γ : (pos 0 , a) , p ＝ 0ℚ
   γ = numerator-zero-is-zero (((pos 0 , a) , p)) refl
-multiplicative-inverse ((pos (succ x) , a) , p) nz = toℚ ((pos (succ a)) , x)
-multiplicative-inverse ((negsucc x , a) , p) nz = toℚ ((negsucc  a) , x)
+ℚ*-inv ((pos (succ x) , a) , p) nz = toℚ ((pos (succ a)) , x)
+ℚ*-inv ((negsucc x , a) , p) nz = toℚ ((negsucc  a) , x)
 
-division-by-self-is-one : ((x , a) : 𝔽) → x ＝ pos (succ a) → toℚ (x , a) ＝ 1ℚ
-division-by-self-is-one (negsucc x , a) e = 𝟘-elim (negsucc-not-pos e)
-division-by-self-is-one (pos 0 , a) e = 𝟘-elim (zero-not-positive a γ)
+ℚ*-inverse-product : (q : ℚ)
+                   → (nz : ¬ (q ＝ 0ℚ))
+                   → q * ℚ*-inv q nz ＝ 1ℚ
+ℚ*-inverse-product ((pos 0 , a) , α) nz = 𝟘-elim (nz γ)
  where
-  γ : 0 ＝ succ a
-  γ = pos-lc e
-division-by-self-is-one (pos (succ x) , a) e = I II
+  γ : (pos 0 , a) , α ＝ 0ℚ
+  γ = numerator-zero-is-zero ((pos 0 , a) , α) refl
+ℚ*-inverse-product ((pos (succ x) , a) , α) nz = γ
  where
-  I : (pos (succ x) , a) ≈ (pos 1 , 0)
-    → toℚ (pos (succ x) , a) ＝ toℚ (pos 1 , 0)
-  I = equiv→equality (pos (succ x) , a) (pos (succ 0) , 0)
+  px = pos (succ x)
+  pa = pos (succ a)
 
-  II : (pos (succ x) , a) ≈ (pos 1 , 0)
-  II = pos (succ x)          ＝⟨ e                                ⟩
-       pos (succ a)          ＝⟨ ℤ-mult-left-id (pos (succ a)) ⁻¹ ⟩
-       pos 1 ℤ* pos (succ a) ∎
+  I : ((px , a) 𝔽* (pa , x)) ≈ (pos 1 , 0)
+  I = px ℤ* pa                                      ＝⟨ i   ⟩
+      pa ℤ* px                                      ＝⟨ ii  ⟩
+      pos 1 ℤ* (pa ℤ* px)                           ＝⟨ iii ⟩
+      pos 1 ℤ* pos (succ (pred (succ a ℕ* succ x))) ∎
+   where
+    i   = ℤ*-comm px pa
+    ii  = ℤ-mult-left-id (pa ℤ* px) ⁻¹
+    iii = ap (pos 1 ℤ*_) (denom-setup a x ⁻¹)
 
-ℚ*-inverse-product-is-one : (q : ℚ) → (nz : ¬ (q ＝ 0ℚ)) → q * multiplicative-inverse q nz ＝ 1ℚ
-ℚ*-inverse-product-is-one ((pos 0 , a) , p) nz = 𝟘-elim (nz γ)
+  γ : ((px , a) , α) * toℚ (pa , x) ＝ 1ℚ
+  γ = ((px , a) , α) * toℚ (pa , x) ＝⟨ i   ⟩
+      toℚ (px , a) * toℚ (pa , x)   ＝⟨ ii  ⟩
+      toℚ ((px , a) 𝔽* (pa , x))    ＝⟨ iii ⟩
+      toℚ (pos 1 , 0) ∎
+   where
+    i   = ap (_* toℚ (pa , x)) (toℚ-to𝔽 ((px , a) , α))
+    ii  = toℚ-* (px , a) (pa , x) ⁻¹
+    iii = equiv→equality ((px , a) 𝔽* (pa , x)) (pos 1 , 0) I
+ℚ*-inverse-product ((negsucc x , a) , α) nz = γ
  where
-  γ : (pos 0 , a) , p ＝ 0ℚ
-  γ = numerator-zero-is-zero ((pos 0 , a) , p) refl
-ℚ*-inverse-product-is-one ((pos (succ x) , a) , p) nz = γ
- where
-  ψ : pos (succ x) ℤ* pos (succ a) ＝ pos (succ (pred (succ a ℕ* succ x)))
-  ψ = pos (succ x) ℤ* pos (succ a)         ＝⟨ ℤ*-comm (pos (succ x)) (pos (succ a)) ⟩
-      pos (succ a) ℤ* pos (succ x)         ＝⟨ denom-setup a x ⁻¹                    ⟩
-      pos (succ (pred (succ a ℕ* succ x))) ∎
+  px = pos (succ x)
+  pa = pos (succ a)
 
-  γ : ((pos (succ x) , a) , p) * toℚ ((pos (succ a)) , x) ＝ 1ℚ
-  γ = ((pos (succ x) , a) , p) * toℚ ((pos (succ a)) , x)              ＝⟨ ap (_* toℚ (pos (succ a) , x)) (toℚ-to𝔽 (((pos (succ x) , a) , p))) ⟩
-      toℚ (pos (succ x) , a) * toℚ (pos (succ a) , x)                  ＝⟨ toℚ-* (pos (succ x) , a) (pos (succ a) , x) ⁻¹                       ⟩
-      toℚ ((pos (succ x) , a) 𝔽* (pos (succ a) , x))                  ＝⟨ refl                                                                    ⟩
-      toℚ ((pos (succ x) ℤ* pos (succ a)) , (pred (succ a ℕ* succ x))) ＝⟨ division-by-self-is-one ((pos (succ x) ℤ* pos (succ a)) , (pred (succ a ℕ* succ x))) ψ ⟩
-      toℚ (pos 1 , 0)                                                  ＝⟨ refl                                                                    ⟩
-      1ℚ                                                               ∎
-ℚ*-inverse-product-is-one ((negsucc x    , a) , p) nz = γ
- where
-  ψ : negsucc x ℤ* negsucc a ＝ pos (succ (pred (succ a ℕ* succ x)))
-  ψ = negsucc x ℤ* negsucc a               ＝⟨ minus-times-minus-is-positive (pos (succ x)) (pos (succ a)) ⟩
-      pos (succ x) ℤ* pos (succ a)         ＝⟨ ℤ*-comm (pos (succ x)) (pos (succ a))                       ⟩
-      pos (succ a) ℤ* pos (succ x)         ＝⟨ denom-setup a x ⁻¹                                          ⟩
-      pos (succ (pred (succ a ℕ* succ x))) ∎
+  I : ((negsucc x , a) 𝔽* (negsucc a , x)) ≈ (pos 1 , 0)
+  I = negsucc x ℤ* negsucc a                        ＝⟨ i   ⟩
+      px ℤ* pa                                      ＝⟨ ii  ⟩
+      pa ℤ* px                                      ＝⟨ iii ⟩
+      pos 1 ℤ* (pa ℤ* px)                           ＝⟨ iv  ⟩
+      pos 1 ℤ* pos (succ (pred (succ a ℕ* succ x))) ∎
+   where
+    i   = minus-times-minus-is-positive px pa
+    ii  = ℤ*-comm px pa
+    iii = ℤ-mult-left-id (pa ℤ* px) ⁻¹
+    iv  = ap (pos 1 ℤ*_) (denom-setup a x ⁻¹)
 
-  γ : ((negsucc x , a) , p) * toℚ ((negsucc  a) , x) ＝ 1ℚ
-  γ = ((negsucc x , a) , p) * toℚ (negsucc a , x) ＝⟨ ap (_* toℚ (negsucc a , x)) (toℚ-to𝔽 ((negsucc x , a) , p))                 ⟩
-      (toℚ (negsucc x , a) * toℚ (negsucc a , x)) ＝⟨ toℚ-* (negsucc x , a) (negsucc a , x) ⁻¹                                     ⟩
-      toℚ ((negsucc x , a) 𝔽* (negsucc a , x))   ＝⟨ division-by-self-is-one (negsucc x ℤ* negsucc a , pred (succ a ℕ* succ x)) ψ ⟩
-      1ℚ                                          ∎
+  γ : ((negsucc x , a) , α) * ℚ*-inv ((negsucc x , a) , α) nz ＝ 1ℚ
+  γ = ((negsucc x , a) , α) * toℚ (negsucc a , x) ＝⟨ i   ⟩
+      toℚ (negsucc x , a) * toℚ (negsucc a , x)   ＝⟨ ii  ⟩
+      toℚ ((negsucc x , a) 𝔽* (negsucc a , x))    ＝⟨ iii ⟩
+      toℚ (pos 1 , 0)                             ∎
+   where
+    i   = ap (_* toℚ (negsucc a , x)) (toℚ-to𝔽 ((negsucc x , a) , α))
+    ii  = toℚ-* (negsucc x , a) (negsucc a , x) ⁻¹
+    iii = equiv→equality ((negsucc x , a) 𝔽* (negsucc a , x)) (pos 1 , 0) I
 
 ℚ*-inverse : (q : ℚ) → ¬ (q ＝ 0ℚ) → Σ q' ꞉ ℚ , q * q' ＝ 1ℚ
-ℚ*-inverse q nz = multiplicative-inverse q nz , ℚ*-inverse-product-is-one q nz
+ℚ*-inverse q nz = ℚ*-inv q nz , ℚ*-inverse-product q nz
 
 ⟨2/3⟩^_ : ℕ → ℚ
 ⟨2/3⟩^ 0         = toℚ (pos 1 , 0)
