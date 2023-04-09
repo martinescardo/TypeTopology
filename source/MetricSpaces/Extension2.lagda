@@ -5,6 +5,7 @@ Andrew Sneap
 {-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --lossy-unification --auto-inline #-}
 
 open import MLTT.Spartan renaming (_+_ to _∔_)
+open import Notation.CanonicalMap
 open import Notation.Order
 open import Rationals.Type
 open import Rationals.Order
@@ -261,7 +262,15 @@ f→f̂ f ic x = (L , R) , il , ir , rl , rr , d , lo
           I = ℚ<-trans (f x₀ + ε) p q l' l
 
   d : disjoint L R
-  d = {!!}
+  d p q (l₁ , l₂) = ∥∥-rec (ℚ<-is-prop p q) γ (binary-choice l₁ l₂)
+   where
+    γ : (Σ (x₀ , ε , 0<ε) ꞉ ℚ × ℚ₊ , (x ℝ∈𝐁 δ⦅⦆ f ic (ε , 0<ε) ⟦ x₀ ⟧)
+                                   × p < f x₀ - ε)
+      × (Σ (x₀ , ε , 0<ε) ꞉ ℚ × ℚ₊ , (x ℝ∈𝐁 δ⦅⦆ f ic (ε , 0<ε) ⟦ x₀ ⟧)
+                                   × f x₀ + ε < q)
+      → p < q
+    γ (((x₀ , ε , 0<ε) , h , l) , ((x₀' , ε' , 0<ε') , h' , l'))
+     = ?
 
   lo : located L R
   lo = {!!}
