@@ -106,7 +106,7 @@ _∈𝐁_⟦_⟧ : ℚ → ℚ₊ → ℚ → 𝓤₀ ̇
 x ∈𝐁 (δ , _) ⟦ x₀ ⟧ = x ∈⟦ x₀ - δ , x₀ + δ ⟧
 
 _ℝ∈𝐁_⟦_⟧ : ℝ → ℚ₊ → ℚ → 𝓤₀ ̇
-x ℝ∈𝐁 (δ , _) ⟦ x₀ ⟧ = x ℝ∈⦅ (x₀ - δ , x₀ + δ) ⦆
+x ℝ∈𝐁 (δ , _) ⟦ x₀ ⟧ = x ℝ∈⦅ x₀ - δ , x₀ + δ ⦆
 
 \end{code}
 
@@ -142,17 +142,17 @@ Prove some nice lemmas
 ℚ-rounded-left₁ : (y : ℚ) (x : ℚ) → x < y → Σ p ꞉ ℚ , x < p < y
 ℚ-rounded-left₁ y x l = ℚ-dense x y l
 
-ℚ-rounded-left₂ : (y : ℚ) (x : ℚ) → Σ p ꞉ ℚ , (x < p) × p < y → x < y
+ℚ-rounded-left₂ : (y : ℚ) (x : ℚ) → Σ p ꞉ ℚ , x < p < y → x < y
 ℚ-rounded-left₂ y x (p , l₁ , l₂) = ℚ<-trans x p y l₁ l₂
 
-ℚ-rounded-right₁ : (y : ℚ) (x : ℚ) → y < x → Σ q ꞉ ℚ , (q < x) × y < q
+ℚ-rounded-right₁ : (y : ℚ) (x : ℚ) → y < x → Σ q ꞉ ℚ , (q < x) × (y < q)
 ℚ-rounded-right₁ y x l = I (ℚ-dense y x l)
  where
   I : Σ q ꞉ ℚ , y < q < x
     → Σ q ꞉ ℚ , (q < x) × (y < q)
   I (q , l₁ , l₂) = q , l₂ , l₁
 
-ℚ-rounded-right₂ : (y : ℚ) (x : ℚ) → Σ q ꞉ ℚ , (q < x) × y < q → y < x
+ℚ-rounded-right₂ : (y : ℚ) (x : ℚ) → Σ q ꞉ ℚ , (q < x) × (y < q) → y < x
 ℚ-rounded-right₂ y x (q , l₁ , l₂) = ℚ<-trans y q x l₂ l₁
 
 \end{code}
@@ -174,13 +174,13 @@ f→f̂ f ic x = (L , R) , il , ir , rl , rr , d , lo
   L p = L' p , ∃-is-prop
   R q = R' q , ∃-is-prop
 
-  Bx : ∃ (x₀ , ε , 0<ε) ꞉ ℚ × ℚ₊ , (x ℝ∈𝐁 δ⦅⦆ f ic (ε , 0<ε) ⟦ x₀ ⟧)
+  Bx : ∃ (x₀ , ε , 0<ε) ꞉ ℚ × ℚ₊ , x ℝ∈𝐁 δ⦅⦆ f ic (ε , 0<ε) ⟦ x₀ ⟧
   Bx = {!!}
 
   il : inhabited-left L
   il = ∥∥-functor γ Bx
    where
-    γ : Σ (x₀ , ε , 0<ε) ꞉ ℚ × ℚ₊ , (x ℝ∈𝐁 δ⦅⦆ f ic (ε , 0<ε) ⟦ x₀ ⟧)
+    γ : Σ (x₀ , ε , 0<ε) ꞉ ℚ × ℚ₊ , x ℝ∈𝐁 δ⦅⦆ f ic (ε , 0<ε) ⟦ x₀ ⟧
       → Σ p ꞉ ℚ , p ∈ L
     γ ((x₀ , ε , 0<ε) , h) = let (p , l) = ℚ-no-least-element (f x₀ - ε)
                              in p , ∣ (x₀ , ε , 0<ε) , h , l ∣
@@ -188,7 +188,7 @@ f→f̂ f ic x = (L , R) , il , ir , rl , rr , d , lo
   ir : inhabited-right R
   ir = ∥∥-functor γ Bx
    where
-    γ : Σ (x₀ , ε , 0<ε) ꞉ ℚ × ℚ₊ , (x ℝ∈𝐁 δ⦅⦆ f ic (ε , 0<ε) ⟦ x₀ ⟧)
+    γ : Σ (x₀ , ε , 0<ε) ꞉ ℚ × ℚ₊ , x ℝ∈𝐁 δ⦅⦆ f ic (ε , 0<ε) ⟦ x₀ ⟧
       → Σ p ꞉ ℚ , p ∈ R
     γ ((x₀ , ε , 0<ε) , h) = let (p , l) = ℚ-no-max-element (f x₀ + ε)
                              in p , ∣ (x₀ , ε , 0<ε) , h , l ∣
@@ -196,12 +196,12 @@ f→f̂ f ic x = (L , R) , il , ir , rl , rr , d , lo
   rl : rounded-left L
   rl p = γ₁ , γ₂
    where
-    γ₁ : ∃ (x₀ , ε , 0<ε) ꞉ ℚ × ℚ₊ , (x ℝ∈𝐁 δ⦅⦆ f ic (ε , 0<ε) ⟦ x₀ ⟧)
+    γ₁ : ∃ (x₀ , ε , 0<ε) ꞉ ℚ × ℚ₊ , x ℝ∈𝐁 δ⦅⦆ f ic (ε , 0<ε) ⟦ x₀ ⟧
                                    × p < f x₀ - ε
        → ∃ q ꞉ ℚ , p < q × q ∈ L
     γ₁ = ∥∥-functor γ
      where
-      γ : Σ (x₀ , ε , 0<ε) ꞉ ℚ × ℚ₊ , (x ℝ∈𝐁 δ⦅⦆ f ic (ε , 0<ε) ⟦ x₀ ⟧)
+      γ : Σ (x₀ , ε , 0<ε) ꞉ ℚ × ℚ₊ , x ℝ∈𝐁 δ⦅⦆ f ic (ε , 0<ε) ⟦ x₀ ⟧
                                     × p < f x₀ - ε
         → Σ q ꞉ ℚ , p < q × q ∈ L
       γ ((x₀ , ε , 0<ε) , h , l)
@@ -209,18 +209,18 @@ f→f̂ f ic x = (L , R) , il , ir , rl , rr , d , lo
          in q , l₁ , ∣ (x₀ , ε , 0<ε) , h , l₂ ∣
 
     γ₂ : ∃ q ꞉ ℚ , p < q × q ∈ L
-       → ∃ (x₀ , ε , 0<ε) ꞉ ℚ × ℚ₊ , (x ℝ∈𝐁 δ⦅⦆ f ic (ε , 0<ε) ⟦ x₀ ⟧)
+       → ∃ (x₀ , ε , 0<ε) ꞉ ℚ × ℚ₊ , x ℝ∈𝐁 δ⦅⦆ f ic (ε , 0<ε) ⟦ x₀ ⟧
                                    × p < f x₀ - ε
     γ₂ = ∥∥-rec ∃-is-prop γ
      where
       γ : Σ q ꞉ ℚ , p < q × q ∈ L
-        → ∃ (x₀ , ε , 0<ε) ꞉ ℚ × ℚ₊ , (x ℝ∈𝐁 δ⦅⦆ f ic (ε , 0<ε) ⟦ x₀ ⟧)
+        → ∃ (x₀ , ε , 0<ε) ꞉ ℚ × ℚ₊ , x ℝ∈𝐁 δ⦅⦆ f ic (ε , 0<ε) ⟦ x₀ ⟧
                                     × p < f x₀ - ε
       γ (q , l , ex) = ∥∥-functor γ' ex
        where
-        γ' : Σ (x₀ , ε , 0<ε) ꞉ ℚ × ℚ₊ , (x ℝ∈𝐁 δ⦅⦆ f ic (ε , 0<ε) ⟦ x₀ ⟧)
+        γ' : Σ (x₀ , ε , 0<ε) ꞉ ℚ × ℚ₊ , x ℝ∈𝐁 δ⦅⦆ f ic (ε , 0<ε) ⟦ x₀ ⟧
                                        × q < f x₀ - ε
-           → Σ (x₀ , ε , 0<ε) ꞉ ℚ × ℚ₊ , (x ℝ∈𝐁 δ⦅⦆ f ic (ε , 0<ε) ⟦ x₀ ⟧)
+           → Σ (x₀ , ε , 0<ε) ꞉ ℚ × ℚ₊ , x ℝ∈𝐁 δ⦅⦆ f ic (ε , 0<ε) ⟦ x₀ ⟧
                                        × p < f x₀ - ε
         γ' ((x₀ , ε , 0<ε) , h , l') = (x₀ , ε , 0<ε) , h , I
          where
@@ -230,12 +230,12 @@ f→f̂ f ic x = (L , R) , il , ir , rl , rr , d , lo
   rr : rounded-right R
   rr q = γ₁ , γ₂
    where
-    γ₁ : ∃ (x₀ , ε , 0<ε) ꞉ ℚ × ℚ₊ , (x ℝ∈𝐁 δ⦅⦆ f ic (ε , 0<ε) ⟦ x₀ ⟧)
+    γ₁ : ∃ (x₀ , ε , 0<ε) ꞉ ℚ × ℚ₊ , x ℝ∈𝐁 δ⦅⦆ f ic (ε , 0<ε) ⟦ x₀ ⟧
                                    × f x₀ + ε < q
        → ∃ p ꞉ ℚ , p < q × p ∈ R
     γ₁ = ∥∥-functor γ
      where
-      γ : Σ (x₀ , ε , 0<ε) ꞉ ℚ × ℚ₊ , (x ℝ∈𝐁 δ⦅⦆ f ic (ε , 0<ε) ⟦ x₀ ⟧)
+      γ : Σ (x₀ , ε , 0<ε) ꞉ ℚ × ℚ₊ , x ℝ∈𝐁 δ⦅⦆ f ic (ε , 0<ε) ⟦ x₀ ⟧
                                     × f x₀ + ε < q
         → Σ p ꞉ ℚ , p < q × p ∈ R
       γ ((x₀ , ε , 0<ε) , h , l)
@@ -243,18 +243,18 @@ f→f̂ f ic x = (L , R) , il , ir , rl , rr , d , lo
          in p , l₁ , ∣ (x₀ , ε , 0<ε) , h , l₂ ∣
 
     γ₂ : ∃ p ꞉ ℚ , p < q × p ∈ R
-       → ∃ (x₀ , ε , 0<ε) ꞉ ℚ × ℚ₊ , (x ℝ∈𝐁 δ⦅⦆ f ic (ε , 0<ε) ⟦ x₀ ⟧)
+       → ∃ (x₀ , ε , 0<ε) ꞉ ℚ × ℚ₊ , x ℝ∈𝐁 δ⦅⦆ f ic (ε , 0<ε) ⟦ x₀ ⟧
                                    × f x₀ + ε < q
     γ₂ = ∥∥-rec ∃-is-prop γ
      where
       γ : Σ p ꞉ ℚ , p < q × p ∈ R
-        → ∃ (x₀ , ε , 0<ε) ꞉ ℚ × ℚ₊ , (x ℝ∈𝐁 δ⦅⦆ f ic (ε , 0<ε) ⟦ x₀ ⟧)
+        → ∃ (x₀ , ε , 0<ε) ꞉ ℚ × ℚ₊ , x ℝ∈𝐁 δ⦅⦆ f ic (ε , 0<ε) ⟦ x₀ ⟧
                                     × f x₀ + ε < q
       γ (p , l , ex) = ∥∥-functor γ' ex
        where
-        γ' : Σ (x₀ , ε , 0<ε) ꞉ ℚ × ℚ₊ , (x ℝ∈𝐁 δ⦅⦆ f ic (ε , 0<ε) ⟦ x₀ ⟧)
+        γ' : Σ (x₀ , ε , 0<ε) ꞉ ℚ × ℚ₊ , x ℝ∈𝐁 δ⦅⦆ f ic (ε , 0<ε) ⟦ x₀ ⟧
                                        × f x₀ + ε < p
-           → Σ (x₀ , ε , 0<ε) ꞉ ℚ × ℚ₊ , (x ℝ∈𝐁 δ⦅⦆ f ic (ε , 0<ε) ⟦ x₀ ⟧)
+           → Σ (x₀ , ε , 0<ε) ꞉ ℚ × ℚ₊ , x ℝ∈𝐁 δ⦅⦆ f ic (ε , 0<ε) ⟦ x₀ ⟧
                                        × f x₀ + ε < q
         γ' ((x₀ , ε , 0<ε) , h , l') = (x₀ , ε , 0<ε) , h , I
          where
@@ -264,13 +264,13 @@ f→f̂ f ic x = (L , R) , il , ir , rl , rr , d , lo
   d : disjoint L R
   d p q (l₁ , l₂) = ∥∥-rec (ℚ<-is-prop p q) γ (binary-choice l₁ l₂)
    where
-    γ : (Σ (x₀ , ε , 0<ε) ꞉ ℚ × ℚ₊ , (x ℝ∈𝐁 δ⦅⦆ f ic (ε , 0<ε) ⟦ x₀ ⟧)
+    γ : (Σ (x₀ , ε , 0<ε) ꞉ ℚ × ℚ₊ , x ℝ∈𝐁 δ⦅⦆ f ic (ε , 0<ε) ⟦ x₀ ⟧
                                    × p < f x₀ - ε)
-      × (Σ (x₀ , ε , 0<ε) ꞉ ℚ × ℚ₊ , (x ℝ∈𝐁 δ⦅⦆ f ic (ε , 0<ε) ⟦ x₀ ⟧)
+      × (Σ (x₀ , ε , 0<ε) ꞉ ℚ × ℚ₊ , x ℝ∈𝐁 δ⦅⦆ f ic (ε , 0<ε) ⟦ x₀ ⟧
                                    × f x₀ + ε < q)
       → p < q
     γ (((x₀ , ε , 0<ε) , h , l) , ((x₀' , ε' , 0<ε') , h' , l'))
-     = ?
+     = {!!}
 
   lo : located L R
   lo = {!!}
