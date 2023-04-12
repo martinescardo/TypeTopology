@@ -132,6 +132,19 @@ module C-Ideal
   SL.⋁-is-upperbound (C-Idl-SupLattice 𝓣' 𝓦') I i g g∈Ii ((𝔍 , _ , _) , ℑ⊆𝔍) =
    ℑ⊆𝔍 g ∣ i , g∈Ii ∣
 
-  SL.⋁-is-lowerbound-of-upperbounds (C-Idl-SupLattice 𝓣' 𝓦') = {!   !}
-    -- This is not correct for universe reasons
+  SL.⋁-is-lowerbound-of-upperbounds (C-Idl-SupLattice 𝓣' 𝓦')
+    I (𝔍 , υ) Ii⊆𝔍 g g∈SupI = 𝔍'→𝔍 g (g∈SupI ((𝔍' , υ') ,
+      λ g → ∥∥-rec (holds-is-prop (𝔍' g)) λ (i , e) → 𝔍→𝔍' g (Ii⊆𝔍 i g e)))
+      where
+        𝔍' : G → Ω 𝓣'
+        𝔍' = {!   !}  -- requires resizing
+
+        𝔍'→𝔍 : ∀ g → 𝔍' g holds → 𝔍 g holds
+        𝔍'→𝔍 = {!   !}
+
+        𝔍→𝔍' : ∀ g → 𝔍 g holds → 𝔍' g holds
+        𝔍→𝔍' = {!   !}
+
+        υ' : is-C-ideal 𝔍'
+        υ' = {!   !}  -- deducible from propositional equivalence
 \end{code}
