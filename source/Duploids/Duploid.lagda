@@ -398,6 +398,8 @@ record duploid 𝓤 𝓥 : (𝓤 ⊔ 𝓥)⁺ ̇ where
   _⊢_ : ob → ob → 𝓥 ̇
   idn : (A : ob) → A ⊢ A
   cut' : (A B C : ob) (f : A ⊢ B) (g : B ⊢ C) → A ⊢ C
+
+  -- TODO: restrct the upshift to positives and the downshift to negatives
   ⇑ : ob → ob
   ⇓ : ob → ob
 
@@ -428,7 +430,6 @@ record duploid 𝓤 𝓥 : (𝓤 ⊔ 𝓥)⁺ ̇ where
  open ⊢-properties str
 
  field
-  -- TODO: restrct the upshift to positives and the downshift to negatives
   ⇑-negative : (A : ob) → is-negative (⇑ A)
   ⇓-positive : (A : ob) → is-positive (⇓ A)
 
