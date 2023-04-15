@@ -181,6 +181,18 @@ module _ (𝓓 : deductive-system 𝓤 𝓥) where
   → is-positive P
   → is-singleton (positive-thunkable-isomorph P)
 
+ being-positively-univalent-is-prop : is-prop is-positively-univalent
+ being-positively-univalent-is-prop =
+  Π-is-prop fe λ P →
+  Π-is-prop fe λ P-pos →
+  being-singleton-is-prop fe
+
+ being-negatively-univalent-is-prop : is-prop is-negatively-univalent
+ being-negatively-univalent-is-prop =
+  Π-is-prop fe λ N →
+  Π-is-prop fe λ N-neg →
+  being-singleton-is-prop fe
+
  module _ (puni : is-positively-univalent) (N : ob) (N-neg : is-negative N) where
   open deductive-system-extras 𝓓
 
@@ -349,48 +361,71 @@ module _ (𝓓 : deductive-system 𝓤 𝓥) where
      (N' , cut (cut force' ax.delay) force) ＝⟨ ap (N' ,_) lem ⟩
      N' , force' ∎
 
+ has-all-upshifts : 𝓤 ⊔ 𝓥 ̇
+ has-all-upshifts = (A : ob) → is-positive A → has-upshift A
+
+ has-all-downshifts : 𝓤 ⊔ 𝓥 ̇
+ has-all-downshifts = (A : ob) → is-negative A → has-downshift A
+
+ has-all-upshifts-is-prop : is-negatively-univalent → is-prop has-all-upshifts
+ has-all-upshifts-is-prop nuni =
+  Π-is-prop fe λ P →
+  Π-is-prop fe λ P-pos →
+  has-upshift-is-prop nuni P P-pos
+
+ has-all-downshifts-is-prop : is-positively-univalent → is-prop has-all-downshifts
+ has-all-downshifts-is-prop puni =
+  Π-is-prop fe λ N →
+  Π-is-prop fe λ N-neg →
+  has-downshift-is-prop puni N N-neg
+
+ duploid-axioms : 𝓤 ⊔ 𝓥 ̇
+ duploid-axioms =
+  is-positively-univalent
+  × is-negatively-univalent
+  × ((A : ob) → is-polarized str A)
+  × has-all-upshifts
+  × has-all-downshifts
+
+ duploid-axioms-is-prop : is-prop duploid-axioms
+ duploid-axioms-is-prop =
+  Σ-is-prop being-positively-univalent-is-prop λ puni →
+  Σ-is-prop being-negatively-univalent-is-prop λ nuni →
+  Σ-is-prop (Π-is-prop fe (λ _ → being-polarized-is-prop str)) λ _ →
+  Σ-is-prop (has-all-upshifts-is-prop nuni) λ _ →
+  has-all-downshifts-is-prop puni
 
 
+ module duploid-axioms (dup-ax : duploid-axioms) where
+  puni : is-positively-univalent
+  puni = pr₁ dup-ax
 
- -- This should most likely be revised to only require upshifts for positives
- -- and downshifts for negatives.
- has-all-shifts : 𝓤 ⊔ 𝓥 ̇
- has-all-shifts = (A : ob) → has-upshift A × has-downshift A
+  nuni : is-negatively-univalent
+  nuni = pr₁ (pr₂ dup-ax)
 
- duploid-structure : 𝓤 ⊔ 𝓥 ̇
- duploid-structure = ((A : ob) → is-polarized str A) × has-all-shifts
+  pol : (A : ob) → is-polarized str A
+  pol = pr₁ (pr₂ (pr₂ dup-ax))
 
- module duploid-structure (dup-str : duploid-structure) where
+  private
+   upsh : has-all-upshifts
+   upsh = pr₁ (pr₂ (pr₂ (pr₂ dup-ax)))
+
+   dsh : has-all-downshifts
+   dsh = pr₂ (pr₂ (pr₂ (pr₂ dup-ax)))
+
   underlying-preduploid : preduploid 𝓤 𝓥
-  underlying-preduploid = make ob _⊢_ idn cut' (ax , pr₁ dup-str)
+  underlying-preduploid = make ob _⊢_ idn cut' (ax , pol)
 
-  module _ (A : ob) where
-   private
-    A-has-shifts = pr₂ dup-str A
-    module ⇑A = has-upshift A (pr₁ A-has-shifts)
-    module ⇓A = has-downshift A (pr₂ A-has-shifts)
+  module _ (A : ob) (A-pos : is-positive A) where
+   open has-upshift A (upsh A A-pos) renaming (upshift to ⇑) public
 
-   ⇑ = ⇑A.upshift
-   ⇓ = ⇓A.downshift
-
-   ⇑-negative = ⇑A.upshift-negative
-   ⇓-positive = ⇓A.downshift-positive
-
-  module _ {A : ob} where
-   private
-    A-has-shifts = pr₂ dup-str A
-    module ⇑A = has-upshift A (pr₁ A-has-shifts)
-    module ⇓A = has-downshift A (pr₂ A-has-shifts)
-
-   open ⇑A hiding (upshift) public
-   open ⇓A hiding (downshift) public
+  module _ (A : ob) (A-neg : is-negative A) where
+   open has-downshift A (dsh A A-neg) renaming (downshift to ⇓) public
 
   open preduploid underlying-preduploid public
 
 
 
- -- This is not necessarily a proposition, because we do not yet know how to
- -- state the property that a deductive system is univalent.
 
 record duploid 𝓤 𝓥 : (𝓤 ⊔ 𝓥)⁺ ̇ where
  field
@@ -398,16 +433,6 @@ record duploid 𝓤 𝓥 : (𝓤 ⊔ 𝓥)⁺ ̇ where
   _⊢_ : ob → ob → 𝓥 ̇
   idn : (A : ob) → A ⊢ A
   cut' : (A B C : ob) (f : A ⊢ B) (g : B ⊢ C) → A ⊢ C
-
-  -- TODO: restrct the upshift to positives and the downshift to negatives
-  ⇑ : ob → ob
-  ⇓ : ob → ob
-
-  force : {A : ob} → ⇑ A ⊢ A
-  delay : {A : ob} → A ⊢ ⇑ A
-
-  wrap : {A : ob} → A ⊢ ⇓ A
-  unwrap : {A : ob} → ⇓ A ⊢ A
 
  cut : {A B C : ob} (f : A ⊢ B) (g : B ⊢ C) → A ⊢ C
  cut = cut' _ _ _
@@ -421,85 +446,106 @@ record duploid 𝓤 𝓥 : (𝓤 ⊔ 𝓥)⁺ ̇ where
  underlying-preduploid : preduploid 𝓤 𝓥
  underlying-preduploid = make ob _⊢_ idn cut' ax-preduploid
 
- underlying-deductive-system : deductive-system 𝓤 𝓥
- underlying-deductive-system = preduploid.underlying-deductive-system underlying-preduploid
-
- open deductive-system-axioms str (deductive-system.ax underlying-deductive-system)  public
-
-
- open ⊢-properties str
+ open preduploid underlying-preduploid hiding (ob ; _⊢_ ; idn ; cut ; str) public
 
  field
-  ⇑-negative : (A : ob) → is-negative (⇑ A)
-  ⇓-positive : (A : ob) → is-positive (⇓ A)
+  puni : is-positively-univalent underlying-deductive-system
+  nuni : is-negatively-univalent underlying-deductive-system
 
-  force-linear : {A : ob} → is-linear (force {A})
-  wrap-thunkable : {A : ob} → is-thunkable (wrap {A})
-  force-delay-inverse : {A : ob} → is-inverse (force {A}) (delay {A})
-  wrap-unwrap-inverse : {A : ob} → is-inverse (wrap {A}) (unwrap {A})
+  ⇑ : (A : ob) → is-positive A → ob
+  ⇓ : (A : ob) → is-negative A → ob
 
- delay-thunkable : {A : ob} → is-thunkable (delay {A})
- delay-thunkable {A} = ⇑-negative A A delay
+  force : {A : ob} (A-pos : is-positive A) → ⇑ A A-pos ⊢ A
+  delay : {A : ob} (A-pos : is-positive A) → A ⊢ ⇑ A A-pos
 
- unwrap-linear : {A : ob} → is-linear (unwrap {A})
- unwrap-linear {A} = ⇓-positive A A unwrap
+  wrap : {A : ob} (A-neg : is-negative A) → A ⊢ ⇓ A A-neg
+  unwrap : {A : ob} (A-neg : is-negative A) → ⇓ A A-neg ⊢ A
 
- open ⊢-properties str public
+ field
+  ⇑-negative : (A : ob) (A-pos : is-positive A) → is-negative (⇑ A A-pos)
+  ⇓-positive : (A : ob) (A-neg : is-negative A) → is-positive (⇓ A A-neg)
+
+  force-linear : {A : ob} {A-pos : is-positive A} → is-linear (force A-pos)
+  wrap-thunkable : {A : ob} {A-neg : is-negative A} → is-thunkable (wrap A-neg)
+  force-delay-inverse : {A : ob} {A-pos : is-positive A} → is-inverse (force A-pos) (delay _)
+  wrap-unwrap-inverse : {A : ob} {A-neg : is-negative A} → is-inverse (wrap A-neg) (unwrap _)
+
+ delay-thunkable : {A : ob} {A-pos : is-positive A} → is-thunkable (delay A-pos)
+ delay-thunkable {A} = ⇑-negative A _ A (delay _)
+
+ unwrap-linear : {A : ob} {A-neg : is-negative A} → is-linear (unwrap A-neg)
+ unwrap-linear {A} = ⇓-positive A _ A (unwrap _)
+
+
 
 module duploids-as-sums where
- module _ (𝓓 : Σ D ꞉ deductive-system 𝓤 𝓥 , duploid-structure D) where
+ module _ (𝓓 : Σ D ꞉ deductive-system 𝓤 𝓥 , duploid-axioms D) where
   private
    D = pr₁ 𝓓
-   str = pr₂ 𝓓
+   ax = pr₂ 𝓓
 
-  module str = duploid-structure D str
+  module ax = duploid-axioms D ax
 
   duploid-from-sum : duploid 𝓤 𝓥
-  duploid.ob duploid-from-sum = str.ob
-  duploid._⊢_ duploid-from-sum = str._⊢_
-  duploid.idn duploid-from-sum = str.idn
-  duploid.cut' duploid-from-sum = str.cut'
-  duploid.⇑ duploid-from-sum = str.⇑
-  duploid.⇓ duploid-from-sum = str.⇓
-  duploid.force duploid-from-sum = str.force
-  duploid.delay duploid-from-sum = str.delay
-  duploid.wrap duploid-from-sum = str.wrap
-  duploid.unwrap duploid-from-sum = str.unwrap
-  duploid.ax-preduploid duploid-from-sum = str.ax
-  duploid.⇑-negative duploid-from-sum = str.⇑-negative
-  duploid.⇓-positive duploid-from-sum = str.⇓-positive
-  duploid.force-linear duploid-from-sum = str.force-linear
-  duploid.wrap-thunkable duploid-from-sum = str.wrap-thunkable
-  duploid.force-delay-inverse duploid-from-sum = str.force-delay-inverse
-  duploid.wrap-unwrap-inverse duploid-from-sum = str.wrap-unwrap-inverse
+  duploid.ob duploid-from-sum = ax.ob
+  duploid._⊢_ duploid-from-sum = ax._⊢_
+  duploid.idn duploid-from-sum = ax.idn
+  duploid.cut' duploid-from-sum = ax.cut'
+
+  duploid.puni duploid-from-sum = ax.puni
+  duploid.nuni duploid-from-sum = ax.nuni
+
+  duploid.⇑ duploid-from-sum = ax.⇑
+  duploid.⇓ duploid-from-sum = ax.⇓
+
+  duploid.force duploid-from-sum = ax.force _
+  duploid.delay duploid-from-sum = ax.delay _
+
+  duploid.wrap duploid-from-sum = ax.wrap _
+  duploid.unwrap duploid-from-sum = ax.unwrap _
+  duploid.ax-preduploid duploid-from-sum = ax.ax
+
+  duploid.⇑-negative duploid-from-sum = ax.upshift-negative
+  duploid.⇓-positive duploid-from-sum = ax.downshift-positive
+
+  duploid.force-linear duploid-from-sum = ax.force-linear _ _
+  duploid.wrap-thunkable duploid-from-sum = ax.wrap-thunkable _ _
+  duploid.force-delay-inverse duploid-from-sum = ax.force-delay-inverse _ _
+  duploid.wrap-unwrap-inverse duploid-from-sum = ax.wrap-unwrap-inverse _ _
+
 
  module _ (𝓓 : duploid 𝓤 𝓥) where
   private module 𝓓 = duploid 𝓓
 
   private 𝓓₀ = 𝓓.underlying-deductive-system
 
-  module _ (A : 𝓓.ob) where
+
+  module _ (A : 𝓓.ob) (A-pos : 𝓓.is-positive A) where
    duploid-upshift-data : upshift-data 𝓓₀ A
-   pr₁ duploid-upshift-data = 𝓓.⇑ A
-   pr₂ duploid-upshift-data = 𝓓.force
+   pr₁ duploid-upshift-data = 𝓓.⇑ A A-pos
+   pr₂ duploid-upshift-data = 𝓓.force _
+
 
    duploid-upshift-axioms : upshift-axioms 𝓓₀ duploid-upshift-data
-   pr₁ duploid-upshift-axioms = 𝓓.⇑-negative A
-   pr₁ (pr₂ duploid-upshift-axioms) = 𝓓.delay
+   pr₁ duploid-upshift-axioms = 𝓓.⇑-negative A A-pos
+   pr₁ (pr₂ duploid-upshift-axioms) = 𝓓.delay _
    pr₁ (pr₂ (pr₂ duploid-upshift-axioms)) = 𝓓.force-delay-inverse
    pr₂ (pr₂ (pr₂ duploid-upshift-axioms)) = 𝓓.force-linear
+
 
    duploid-has-upshifts : has-upshift 𝓓₀ A
    pr₁ duploid-has-upshifts = duploid-upshift-data
    pr₂ duploid-has-upshifts = duploid-upshift-axioms
 
+  module _ (A : 𝓓.ob) (A-neg : 𝓓.is-negative A) where
    duploid-downshift-data : downshift-data 𝓓₀ A
-   pr₁ duploid-downshift-data = 𝓓.⇓ A
-   pr₂ duploid-downshift-data = 𝓓.wrap
+   pr₁ duploid-downshift-data = 𝓓.⇓ A A-neg
+   pr₂ duploid-downshift-data = 𝓓.wrap _
+
 
    duploid-downshift-axioms : downshift-axioms 𝓓₀ duploid-downshift-data
-   pr₁ duploid-downshift-axioms = 𝓓.⇓-positive A
-   pr₁ (pr₂ duploid-downshift-axioms) = 𝓓.unwrap
+   pr₁ duploid-downshift-axioms = 𝓓.⇓-positive A A-neg
+   pr₁ (pr₂ duploid-downshift-axioms) = 𝓓.unwrap _
    pr₁ (pr₂ (pr₂ duploid-downshift-axioms)) = 𝓓.wrap-unwrap-inverse
    pr₂ (pr₂ (pr₂ duploid-downshift-axioms)) = 𝓓.wrap-thunkable
 
@@ -507,17 +553,16 @@ module duploids-as-sums where
    pr₁ duploid-has-downshifts = duploid-downshift-data
    pr₂ duploid-has-downshifts = duploid-downshift-axioms
 
-  duploid-has-all-shifts : has-all-shifts 𝓓.underlying-deductive-system
-  pr₁ (duploid-has-all-shifts A) = duploid-has-upshifts A
-  pr₂ (duploid-has-all-shifts A) = duploid-has-downshifts A
+  duploid-duploid-axioms : duploid-axioms 𝓓₀
+  pr₁ duploid-duploid-axioms = 𝓓.puni
+  pr₁ (pr₂ duploid-duploid-axioms) = 𝓓.nuni
+  pr₁ (pr₂ (pr₂ duploid-duploid-axioms)) = 𝓓.ob-is-polarized
+  pr₁ (pr₂ (pr₂ (pr₂ duploid-duploid-axioms))) = duploid-has-upshifts
+  pr₂ (pr₂ (pr₂ (pr₂ duploid-duploid-axioms))) = duploid-has-downshifts
 
+  duploid-to-sum : Σ D ꞉ deductive-system 𝓤 𝓥 , duploid-axioms D
+  duploid-to-sum = 𝓓₀ , duploid-duploid-axioms
 
-  duploid-duploid-structure : duploid-structure 𝓓₀
-  pr₁ duploid-duploid-structure = preduploid.ob-is-polarized 𝓓.underlying-preduploid
-  pr₂ duploid-duploid-structure = duploid-has-all-shifts
-
-  duploid-to-sum : Σ D ꞉ deductive-system 𝓤 𝓥 , duploid-structure D
-  duploid-to-sum = 𝓓₀ , duploid-duploid-structure
 
  duploid-to-sum-is-equiv : is-equiv (duploid-to-sum {𝓤} {𝓥})
  pr₁ (pr₁ duploid-to-sum-is-equiv) = duploid-from-sum
@@ -525,7 +570,7 @@ module duploids-as-sums where
  pr₁ (pr₂ duploid-to-sum-is-equiv) = duploid-from-sum
  pr₂ (pr₂ duploid-to-sum-is-equiv) _ = refl
 
- duploid-sum-equiv : duploid 𝓤 𝓥 ≃ (Σ D ꞉ deductive-system 𝓤 𝓥 , duploid-structure D)
+ duploid-sum-equiv : duploid 𝓤 𝓥 ≃ (Σ D ꞉ deductive-system 𝓤 𝓥 , duploid-axioms D)
  duploid-sum-equiv = _ , duploid-to-sum-is-equiv
 
 
@@ -538,48 +583,51 @@ module duploid-notation (𝓓 : duploid 𝓤 𝓥) where
  𝓌 = wrap
  𝓊 = unwrap
 
+
 module duploid-extras (𝓓 : duploid 𝓤 𝓥) where
  private
   module 𝓓 = duploid 𝓓
  open preduploid-extras 𝓓.underlying-preduploid public
  open duploid-notation 𝓓
 
+
  module _ {U V : _} {f : U 𝓓.⊢ V} where
   abstract
-   lem-𝒹[𝒻-] : 𝒹 >> (𝒻 >> f) ＝ f
+   lem-𝒹[𝒻-] : {U-pos : 𝓓.is-positive U} → 𝒹 U-pos >> (𝒻 U-pos >> f) ＝ f
    lem-𝒹[𝒻-] =
-    𝒹 >> (𝒻 >> f) ＝⟨ 𝓓.delay-thunkable _ _ _ _ ⁻¹ ⟩
-    (𝒹 >> 𝒻) >> f ＝⟨ lem-rewrite-idn-L (pr₂ 𝓓.force-delay-inverse) ⟩
+    𝒹 _ >> (𝒻 _ >> f) ＝⟨ 𝓓.delay-thunkable _ _ _ _ ⁻¹ ⟩
+    (𝒹 _ >> 𝒻 _) >> f ＝⟨ lem-rewrite-idn-L (pr₂ 𝓓.force-delay-inverse) ⟩
     f ∎
 
-   lem-[-𝓌]𝓊 : (f >> 𝓌) >> 𝓊 ＝ f
+   lem-[-𝓌]𝓊 : {V-neg : 𝓓.is-negative V} → (f >> 𝓌 V-neg) >> 𝓊 _ ＝ f
    lem-[-𝓌]𝓊 =
-    (f >> 𝓌) >> 𝓊 ＝⟨ 𝓓.unwrap-linear _ _ _ _ ⟩
-    f >> (𝓌 >> 𝓊) ＝⟨ lem-rewrite-idn-R (pr₁ 𝓓.wrap-unwrap-inverse) ⟩
+    (f >> 𝓌 _) >> 𝓊 _ ＝⟨ 𝓓.unwrap-linear _ _ _ _ ⟩
+    f >> (𝓌 _ >> 𝓊 _) ＝⟨ lem-rewrite-idn-R (pr₁ 𝓓.wrap-unwrap-inverse) ⟩
     f ∎
 
-   lem-𝓌[𝓊-] : 𝓌 >> (𝓊 >> f) ＝ f
+   lem-𝓌[𝓊-] : {U-neg : 𝓓.is-negative U} → 𝓌 U-neg >> (𝓊 U-neg >> f) ＝ f
    lem-𝓌[𝓊-] =
-    𝓌 >> (𝓊 >> f) ＝⟨ 𝓓.wrap-thunkable _ _ _ _ ⁻¹ ⟩
-    (𝓌 >> 𝓊) >> f ＝⟨ lem-rewrite-idn-L (pr₁ 𝓓.wrap-unwrap-inverse) ⟩
+    𝓌 _ >> (𝓊 _ >> f) ＝⟨ 𝓓.wrap-thunkable _ _ _ _ ⁻¹ ⟩
+    (𝓌 _ >> 𝓊 _) >> f ＝⟨ lem-rewrite-idn-L (pr₁ 𝓓.wrap-unwrap-inverse) ⟩
     f ∎
 
-   lem-[-𝒹]𝒻 : (f >> 𝒹) >> 𝒻 ＝ f
+
+   lem-[-𝒹]𝒻 : {V-pos : 𝓓.is-positive V} → (f >> 𝒹 V-pos) >> 𝒻 V-pos ＝ f
    lem-[-𝒹]𝒻 =
-    (f >> 𝒹) >> 𝒻 ＝⟨ 𝓓.force-linear _ _ _ _ ⟩
-    f >> (𝒹 >> 𝒻) ＝⟨ lem-rewrite-idn-R (pr₂ 𝓓.force-delay-inverse) ⟩
+    (f >> 𝒹 _) >> 𝒻 _ ＝⟨ 𝓓.force-linear _ _ _ _ ⟩
+    f >> (𝒹 _ >> 𝒻 _) ＝⟨ lem-rewrite-idn-R (pr₂ 𝓓.force-delay-inverse) ⟩
     f ∎
 
- module _ {U V : _} {f : 𝓓.⇓ U 𝓓.⊢ V} where
+
+ module _ {U V : _} {U-neg : 𝓓.is-negative U} {f : 𝓓.⇓ U U-neg 𝓓.⊢ V} where
   abstract
-   lem-𝓊[𝓌-] : 𝓊 >> (𝓌 >> f) ＝ f
+   lem-𝓊[𝓌-] : 𝓊 U-neg >> (𝓌 U-neg >> f) ＝ f
    lem-𝓊[𝓌-] =
-    (𝓊 >> (𝓌 >> f)) ＝⟨ f-lin _ _ _ _ ⁻¹ ⟩
-    (𝓊 >> 𝓌) >> f ＝⟨ lem-rewrite-idn-L (pr₂ 𝓓.wrap-unwrap-inverse) ⟩
+    (𝓊 _ >> (𝓌 _ >> f)) ＝⟨ f-lin _ _ _ _ ⁻¹ ⟩
+    (𝓊 _ >> 𝓌 _) >> f ＝⟨ lem-rewrite-idn-L (pr₂ 𝓓.wrap-unwrap-inverse) ⟩
     f ∎
     where
      f-lin : 𝓓.is-linear f
-     f-lin = 𝓓.⇓-positive U V f
-
+     f-lin = 𝓓.⇓-positive U U-neg V f
 
 \end{code}

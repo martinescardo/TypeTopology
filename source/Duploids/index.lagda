@@ -67,5 +67,6 @@ import Duploids.Preduploid
 import Duploids.Duploid
 import Duploids.Categories
 import Duploids.ShiftFunctors
+import Duploids.EffectfulShiftAdjunction
 
 \end{code}
