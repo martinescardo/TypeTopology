@@ -149,7 +149,6 @@ module _ (𝓓 : deductive-system 𝓤 𝓥) where
    open downshift-data (pr₁ h) public
    open downshift-axioms (pr₂ h) public
 
-
  negative-linear-isomorph : (A : ob) → 𝓤 ⊔ 𝓥 ̇
  negative-linear-isomorph A =
   Σ N ꞉ ob ,
@@ -160,14 +159,122 @@ module _ (𝓓 : deductive-system 𝓤 𝓥) where
   × is-linear g
   × is-inverse f g
 
+ positive-thunkable-isomorph : (A : ob) → 𝓤 ⊔ 𝓥 ̇
+ positive-thunkable-isomorph A =
+  Σ P ꞉ ob ,
+  Σ f ꞉ P ⊢ A ,
+  Σ g ꞉ A ⊢ P ,
+  is-positive P
+  × is-thunkable f
+  × is-thunkable g
+  × is-inverse f g
+
  is-negatively-univalent : 𝓤 ⊔ 𝓥 ̇
  is-negatively-univalent =
   (N : ob)
   → is-negative N
   → is-singleton (negative-linear-isomorph N)
 
+ is-positively-univalent : 𝓤 ⊔ 𝓥 ̇
+ is-positively-univalent =
+  (P : ob)
+  → is-positive P
+  → is-singleton (positive-thunkable-isomorph P)
+
+ module _ (puni : is-positively-univalent) (N : ob) (N-neg : is-negative N) where
+  open deductive-system-extras 𝓓
+
+  has-downshift-is-prop : is-prop (has-downshift N)
+  has-downshift-is-prop ((P , wrap) , ax) ((P' , wrap') , ax') =
+   to-Σ-＝ (main , downshift-axioms-is-prop _ _)
+   where
+    module ax = downshift-axioms ax
+    module ax' = downshift-axioms ax'
+
+    fwd : P' ⊢ P
+    fwd = cut ax'.unwrap wrap
+
+    bwd : P ⊢ P'
+    bwd = cut ax.unwrap wrap'
+
+    fwd-thunkable : is-thunkable fwd
+    fwd-thunkable = cut-thunkable _ _ (N-neg _ _) ax.wrap-thunkable
+
+    bwd-thunkable : is-thunkable bwd
+    bwd-thunkable = cut-thunkable _ _ (N-neg _ _) ax'.wrap-thunkable
+
+    lem : cut wrap (cut ax.unwrap wrap') ＝ wrap'
+    lem =
+     cut wrap (cut ax.unwrap wrap')
+      ＝⟨ ax.wrap-thunkable _ _ _ _ ⁻¹ ⟩
+     cut (cut wrap ax.unwrap) wrap'
+      ＝⟨ ap (λ - → cut - wrap') (pr₁ ax.wrap-unwrap-inverse) ⟩
+     cut (idn _) wrap'
+      ＝⟨ idn-L _ _ _ ⟩
+     wrap' ∎
+
+    lem' : cut wrap' (cut ax'.unwrap wrap) ＝ wrap
+    lem' =
+     cut wrap' (cut ax'.unwrap wrap)
+      ＝⟨ ax'.wrap-thunkable _ _ _ _ ⁻¹ ⟩
+     cut (cut wrap' ax'.unwrap) wrap
+      ＝⟨ ap (λ - → cut - wrap) (pr₁ ax'.wrap-unwrap-inverse) ⟩
+     cut (idn _) wrap
+      ＝⟨ idn-L _ _ _ ⟩
+     wrap ∎
+
+    fwd-bwd : cut fwd bwd ＝ idn P'
+    fwd-bwd =
+      cut (cut ax'.unwrap wrap) (cut ax.unwrap wrap')
+       ＝⟨ N-neg _ _ _ _ _ _ ⟩
+      cut ax'.unwrap (cut wrap (cut ax.unwrap wrap'))
+       ＝⟨ ap (cut ax'.unwrap) lem ⟩
+      cut ax'.unwrap wrap'
+       ＝⟨ pr₂ ax'.wrap-unwrap-inverse ⟩
+      idn P' ∎
+
+    bwd-fwd : cut bwd fwd ＝ idn P
+    bwd-fwd =
+     cut (cut ax.unwrap wrap') (cut ax'.unwrap wrap)
+      ＝⟨ N-neg _ _ _ _ _ _ ⟩
+     cut ax.unwrap (cut wrap' (cut ax'.unwrap wrap))
+      ＝⟨ ap (cut ax.unwrap) lem' ⟩
+     cut ax.unwrap wrap
+      ＝⟨ pr₂ ax.wrap-unwrap-inverse ⟩
+     idn P ∎
+
+    isomorph : positive-thunkable-isomorph P
+    isomorph =
+     P' , fwd , bwd , ax'.downshift-positive , fwd-thunkable , bwd-thunkable ,
+     fwd-bwd , bwd-fwd
+
+    base : positive-thunkable-isomorph P
+    base =
+     P , idn P , idn P , ax.downshift-positive ,  idn-thunkable _ , idn-thunkable _ ,
+     idn-L _ _ _ , idn-L _ _ _
+
+    base-isomorph : base ＝ isomorph
+    base-isomorph =
+     pr₂ (puni P ax.downshift-positive) base ⁻¹
+     ∙ pr₂ (puni P ax.downshift-positive) isomorph
+
+    main : P , wrap ＝ P' , wrap'
+    main =
+     P , wrap ＝⟨ ap (P ,_) (idn-R _ _ _ ⁻¹) ⟩
+     P , cut wrap (idn _)
+      ＝⟨ ap (λ (X , f , g , _) → X , cut wrap g) base-isomorph ⟩
+     P' , cut wrap (cut ax.unwrap wrap')
+      ＝⟨ ap (P' ,_) (ax.wrap-thunkable _ _ _ _ ⁻¹) ⟩
+     P' , cut (cut wrap ax.unwrap) wrap'
+      ＝⟨ ap (λ - → P' , cut - wrap') (pr₁ ax.wrap-unwrap-inverse) ⟩
+     P' , cut (idn _) wrap'
+      ＝⟨ ap (P' ,_) (idn-L _ _ _) ⟩
+     P' , wrap' ∎
+
+
  module _ (nuni : is-negatively-univalent) (P : ob) (P-pos : is-positive P) where
   open deductive-system-extras 𝓓
+
   has-upshift-is-prop : is-prop (has-upshift P)
   has-upshift-is-prop ((N , force), ax) ((N' , force'), ax') =
    to-Σ-＝ (main , upshift-axioms-is-prop _ _)
@@ -222,12 +329,8 @@ module _ (𝓓 : deductive-system 𝓤 𝓥) where
 
     isomorph : negative-linear-isomorph N
     isomorph =
-     N' , fwd , bwd ,
-     ax'.upshift-negative ,
-     fwd-linear ,
-     bwd-linear ,
-     fwd-bwd ,
-     bwd-fwd
+     N' , fwd , bwd , ax'.upshift-negative , fwd-linear , bwd-linear ,
+     fwd-bwd , bwd-fwd
 
     base : negative-linear-isomorph N
     base =
