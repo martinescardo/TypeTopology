@@ -147,6 +147,8 @@ module _ (𝓓 : deductive-system 𝓤 𝓥) where
    open downshift-data (pr₁ h) public
    open downshift-axioms (pr₂ h) public
 
+ -- This should most likely be revised to only require upshifts for positives
+ -- and downshifts for negatives.
  has-all-shifts : 𝓤 ⊔ 𝓥 ̇
  has-all-shifts = (A : ob) → has-upshift A × has-downshift A
 
@@ -221,6 +223,7 @@ record duploid 𝓤 𝓥 : (𝓤 ⊔ 𝓥)⁺ ̇ where
  open ⊢-properties str
 
  field
+  -- TODO: restrct the upshift to positives and the downshift to negatives
   ⇑-negative : (A : ob) → is-negative (⇑ A)
   ⇓-positive : (A : ob) → is-positive (⇓ A)
 
