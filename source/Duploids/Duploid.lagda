@@ -17,6 +17,8 @@ Note that the inverses to the maps specified above are uniquely determined.
 
 open import UF.FunExt
 open import UF.PropTrunc
+open import UF.IdentitySystems
+open import UF.SIP
 
 module Duploids.Duploid (fe : Fun-Ext) (pt : propositional-truncations-exist) where
 
@@ -146,6 +148,107 @@ module _ (𝓓 : deductive-system 𝓤 𝓥) where
   module has-downshift (h : has-downshift) where
    open downshift-data (pr₁ h) public
    open downshift-axioms (pr₂ h) public
+
+
+ negative-linear-isomorph : (A : ob) → 𝓤 ⊔ 𝓥 ̇
+ negative-linear-isomorph A =
+  Σ N ꞉ ob ,
+  Σ f ꞉ N ⊢ A ,
+  Σ g ꞉ A ⊢ N ,
+  is-negative N
+  × is-linear f
+  × is-linear g
+  × is-inverse f g
+
+ is-negatively-univalent : 𝓤 ⊔ 𝓥 ̇
+ is-negatively-univalent =
+  (N : ob)
+  → is-negative N
+  → is-singleton (negative-linear-isomorph N)
+
+ module _ (nuni : is-negatively-univalent) (P : ob) (P-pos : is-positive P) where
+  open deductive-system-extras 𝓓
+  has-upshift-is-prop : is-prop (has-upshift P)
+  has-upshift-is-prop ((N , force), ax) ((N' , force'), ax') =
+   to-Σ-＝ (lem1 , upshift-axioms-is-prop _ _)
+
+   where
+    module ax = upshift-axioms ax
+    module ax' = upshift-axioms ax'
+
+    fwd : N' ⊢ N
+    fwd = cut force' ax.delay
+
+    bwd : N ⊢ N'
+    bwd = cut force ax'.delay
+
+    fwd-linear : is-linear fwd
+    fwd-linear = cut-linear force' ax.delay ax'.force-linear (P-pos _ _)
+
+    bwd-linear : is-linear bwd
+    bwd-linear = cut-linear force ax'.delay ax.force-linear (P-pos _ _)
+
+    lem3 : cut (cut force' ax.delay) force ＝ force'
+    lem3 =
+     cut (cut force' ax.delay) force ＝⟨ ax.force-linear _ _ _ _ ⟩
+     cut force' (cut ax.delay force) ＝⟨ ap (cut force') (pr₂ ax.force-delay-inverse) ⟩
+     cut force' (idn _) ＝⟨ idn-R _ _ _ ⟩
+     force' ∎
+
+    lem3' : cut (cut force ax'.delay) force' ＝ force
+    lem3' =
+     cut (cut force ax'.delay) force' ＝⟨ ax'.force-linear _ _ _ _ ⟩
+     cut force (cut ax'.delay force') ＝⟨ ap (cut force) (pr₂ ax'.force-delay-inverse) ⟩
+     cut force (idn _) ＝⟨ idn-R _ _ _ ⟩
+     force ∎
+
+    fwd-bwd : cut fwd bwd ＝ idn N'
+    fwd-bwd =
+     cut (cut force' ax.delay) (cut force ax'.delay)
+      ＝⟨ P-pos _ _ _ _ _ _ ⁻¹ ⟩
+     cut (cut (cut force' ax.delay) force) ax'.delay
+      ＝⟨ ap (λ - → cut - ax'.delay) lem3 ⟩
+     cut force' ax'.delay ＝⟨ pr₁ ax'.force-delay-inverse ⟩
+     idn N' ∎
+
+    bwd-fwd : cut bwd fwd ＝ idn N
+    bwd-fwd =
+     cut (cut force ax'.delay) (cut force' ax.delay)
+     ＝⟨ P-pos _ _ _ _ _ _ ⁻¹ ⟩
+     cut (cut (cut force ax'.delay) force') ax.delay
+     ＝⟨ ap (λ - → cut - ax.delay) lem3' ⟩
+     cut force ax.delay ＝⟨ pr₁ ax.force-delay-inverse ⟩
+     idn N ∎
+
+    isomorph : negative-linear-isomorph N
+    isomorph =
+     N' , fwd , bwd ,
+     ax'.upshift-negative ,
+     fwd-linear ,
+     bwd-linear ,
+     fwd-bwd ,
+     bwd-fwd
+
+    base : negative-linear-isomorph N
+    base =
+     N , idn N , idn N , ax.upshift-negative ,  idn-linear _ , idn-linear _ ,
+     idn-L _ _ _ , idn-L _ _ _
+
+    base-isomorph : base ＝ isomorph
+    base-isomorph =
+     pr₂ (nuni N ax.upshift-negative) base ⁻¹
+     ∙ pr₂ (nuni N ax.upshift-negative) isomorph
+
+    lem1 : N , force ＝ N' , force'
+    lem1 =
+     (N , force) ＝⟨ ap (N ,_) (idn-L _ _ _ ⁻¹) ⟩
+     (N , cut (idn N) force) ＝⟨ ap (λ (X , f , _) → X , cut f force) base-isomorph ⟩
+     (N' , cut (cut force' ax.delay) force) ＝⟨ ap (N' ,_) (ax.force-linear _ _ _ _) ⟩
+     (N' , cut force' (cut ax.delay force)) ＝⟨ ap (λ f → N' , cut force' f) (pr₂ ax.force-delay-inverse) ⟩
+     (N' , cut force' (idn _)) ＝⟨ ap (N' ,_) (idn-R _ _ _) ⟩
+     N' , force' ∎
+
+
 
  -- This should most likely be revised to only require upshifts for positives
  -- and downshifts for negatives.
