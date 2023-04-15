@@ -170,7 +170,7 @@ module _ (𝓓 : deductive-system 𝓤 𝓥) where
   open deductive-system-extras 𝓓
   has-upshift-is-prop : is-prop (has-upshift P)
   has-upshift-is-prop ((N , force), ax) ((N' , force'), ax') =
-   to-Σ-＝ (lem1 , upshift-axioms-is-prop _ _)
+   to-Σ-＝ (main , upshift-axioms-is-prop _ _)
 
    where
     module ax = upshift-axioms ax
@@ -188,15 +188,15 @@ module _ (𝓓 : deductive-system 𝓤 𝓥) where
     bwd-linear : is-linear bwd
     bwd-linear = cut-linear force ax'.delay ax.force-linear (P-pos _ _)
 
-    lem3 : cut (cut force' ax.delay) force ＝ force'
-    lem3 =
+    lem : cut (cut force' ax.delay) force ＝ force'
+    lem =
      cut (cut force' ax.delay) force ＝⟨ ax.force-linear _ _ _ _ ⟩
      cut force' (cut ax.delay force) ＝⟨ ap (cut force') (pr₂ ax.force-delay-inverse) ⟩
      cut force' (idn _) ＝⟨ idn-R _ _ _ ⟩
      force' ∎
 
-    lem3' : cut (cut force ax'.delay) force' ＝ force
-    lem3' =
+    lem' : cut (cut force ax'.delay) force' ＝ force
+    lem' =
      cut (cut force ax'.delay) force' ＝⟨ ax'.force-linear _ _ _ _ ⟩
      cut force (cut ax'.delay force') ＝⟨ ap (cut force) (pr₂ ax'.force-delay-inverse) ⟩
      cut force (idn _) ＝⟨ idn-R _ _ _ ⟩
@@ -207,7 +207,7 @@ module _ (𝓓 : deductive-system 𝓤 𝓥) where
      cut (cut force' ax.delay) (cut force ax'.delay)
       ＝⟨ P-pos _ _ _ _ _ _ ⁻¹ ⟩
      cut (cut (cut force' ax.delay) force) ax'.delay
-      ＝⟨ ap (λ - → cut - ax'.delay) lem3 ⟩
+      ＝⟨ ap (λ - → cut - ax'.delay) lem ⟩
      cut force' ax'.delay ＝⟨ pr₁ ax'.force-delay-inverse ⟩
      idn N' ∎
 
@@ -216,7 +216,7 @@ module _ (𝓓 : deductive-system 𝓤 𝓥) where
      cut (cut force ax'.delay) (cut force' ax.delay)
      ＝⟨ P-pos _ _ _ _ _ _ ⁻¹ ⟩
      cut (cut (cut force ax'.delay) force') ax.delay
-     ＝⟨ ap (λ - → cut - ax.delay) lem3' ⟩
+     ＝⟨ ap (λ - → cut - ax.delay) lem' ⟩
      cut force ax.delay ＝⟨ pr₁ ax.force-delay-inverse ⟩
      idn N ∎
 
@@ -239,14 +239,13 @@ module _ (𝓓 : deductive-system 𝓤 𝓥) where
      pr₂ (nuni N ax.upshift-negative) base ⁻¹
      ∙ pr₂ (nuni N ax.upshift-negative) isomorph
 
-    lem1 : N , force ＝ N' , force'
-    lem1 =
+    main : N , force ＝ N' , force'
+    main =
      (N , force) ＝⟨ ap (N ,_) (idn-L _ _ _ ⁻¹) ⟩
      (N , cut (idn N) force) ＝⟨ ap (λ (X , f , _) → X , cut f force) base-isomorph ⟩
-     (N' , cut (cut force' ax.delay) force) ＝⟨ ap (N' ,_) (ax.force-linear _ _ _ _) ⟩
-     (N' , cut force' (cut ax.delay force)) ＝⟨ ap (λ f → N' , cut force' f) (pr₂ ax.force-delay-inverse) ⟩
-     (N' , cut force' (idn _)) ＝⟨ ap (N' ,_) (idn-R _ _ _) ⟩
+     (N' , cut (cut force' ax.delay) force) ＝⟨ ap (N' ,_) lem ⟩
      N' , force' ∎
+
 
 
 
