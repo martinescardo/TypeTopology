@@ -149,15 +149,15 @@ module NegativesAndLinearMaps where
  precat = make ob hom idn seq' (hom-is-set , idn-L , idn-R , assoc)
 
  module _ (nuni : is-negatively-univalent) where
+  open hom-properties precat
+
   precat-is-univalent : is-univalent-precategory precat
   precat-is-univalent A (B0 , f0 , g0 , fg0 , gf0) (B1 , f1 , g1 , fg1 , gf1) =
    B0 , f0 , g0 , fg0 , gf0
-    ＝⟨ ap (λ - → B0 , f0 , g0 , -)
-         (hom-properties.being-inverse-is-prop precat {B0} {A} _ _ _ _) ⟩
+    ＝⟨ ap (λ - → B0 , f0 , g0 , -) (being-inverse-is-prop {B0} {A} _ _ _ _) ⟩
    B0 , f0 , g0 , _ , _ ＝⟨ lem ⟩
    B1 , f1 , g1 , _ , _
-    ＝⟨ ap (λ - → B1 , f1 , g1 , -)
-         (hom-properties.being-inverse-is-prop precat {B1} {A} _ _ _ _) ⟩
+    ＝⟨ ap (λ - → B1 , f1 , g1 , -) (being-inverse-is-prop {B1} {A} _ _ _ _) ⟩
    B1 , f1 , g1 , fg1 , gf1 ∎
    where
     nliso0 : negative-linear-isomorph (pr₁ A)
@@ -223,6 +223,39 @@ module PositivesAndThunkableMaps where
 
  precat : precategory (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
  precat = make ob hom idn seq' (hom-is-set , idn-L , idn-R , assoc)
+
+
+ module _ (puni : is-positively-univalent) where
+  open hom-properties precat
+
+  precat-is-univalent : is-univalent-precategory precat
+  precat-is-univalent A (B0 , f0 , g0 , fg0 , gf0) (B1 , f1 , g1 , fg1 , gf1) =
+   B0 , f0 , g0 , fg0 , gf0
+    ＝⟨ ap (λ - → B0 , f0 , g0 , -) (being-inverse-is-prop {B0} {A} _ _ _ _) ⟩
+   B0 , f0 , g0 , _ , _ ＝⟨ lem ⟩
+   B1 , f1 , g1 , _ , _
+    ＝⟨ ap (λ - → B1 , f1 , g1 , -) (being-inverse-is-prop {B1} {A} _ _ _ _) ⟩
+   B1 , f1 , g1 , fg1 , gf1 ∎
+   where
+    pthiso0 : positive-thunkable-isomorph (pr₁ A)
+    pthiso0 = pr₁ B0 , pr₁ f0 , pr₁ g0 , pr₂ B0 , pr₂ f0 , pr₂ g0 , ap pr₁ fg0 , ap pr₁ gf0
+
+    pthiso1 : positive-thunkable-isomorph (pr₁ A)
+    pthiso1 = pr₁ B1 , pr₁ f1 , pr₁ g1 , pr₂ B1 , pr₂ f1 , pr₂ g1 , ap pr₁ fg1 , ap pr₁ gf1
+
+    pthiso01 : pthiso0 ＝ pthiso1
+    pthiso01 = puni (pr₁ A) (pr₂ A) pthiso0 pthiso1
+
+    lem : _＝_ {_} {isomorph precat A} (B0 , f0 , g0 , _) (B1 , f1 , g1 , _)
+    lem =
+     ap (λ (B , f , g , B-pos , f-th , g-th , fg , gf) →
+      (B , B-pos) , (f , f-th) , (g , g-th) ,
+      to-Σ-＝ (fg , 𝓓.being-thunkable-is-prop _ _) ,
+      to-Σ-＝ (gf , 𝓓.being-thunkable-is-prop _ _)
+     ) pthiso01
+
+  cat : category (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
+  cat = precat , precat-is-univalent
 
 \end{code}
 
