@@ -6,7 +6,6 @@ Andrew Sneap
 
 module MetricSpaces.index where
 
-import MetricSpaces.ContinuousExtensionTheorem
 import MetricSpaces.Extension
 import MetricSpaces.Definition
 import MetricSpaces.DedekindReals

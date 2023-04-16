@@ -13,13 +13,12 @@ open import MLTT.Spartan renaming (_+_ to _∔_)
 open import Notation.CanonicalMap
 open import Notation.Order
 open import UF.Base
-open import UF.FunExt
 open import UF.PropTrunc
 open import UF.Powerset
 open import UF.Retracts
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-
+open import UF.FunExt
 open import Rationals.Type
 open import Rationals.Order
 
@@ -70,7 +69,7 @@ inhabited-right-is-prop : (R : 𝓟 ℚ) → is-prop (inhabited-right R)
 inhabited-right-is-prop R = ∃-is-prop
 
 rounded-left-a : (L : 𝓟 ℚ) → rounded-left L → (x y : ℚ) → x ≤ y → y ∈ L → x ∈ L
-rounded-left-a L r x y l y-L = II (ℚ≤-split fe x y l)
+rounded-left-a L r x y l y-L = II (ℚ≤-split x y l)
  where
   I : (∃ p ꞉ ℚ , (x < p) × p ∈ L) → x ∈ L
   I = pr₂ (r x)
@@ -85,7 +84,7 @@ rounded-left-c : (L : 𝓟 ℚ) → rounded-left L → (x y : ℚ) → x < y →
 rounded-left-c L r x y l yL = pr₂ (r x) ∣ y , (l , yL) ∣
 
 rounded-right-a : (R : 𝓟 ℚ) → rounded-right R → (x y : ℚ) → x ≤ y → x ∈ R → y ∈ R
-rounded-right-a R r x y l x-R = II (ℚ≤-split fe x y l)
+rounded-right-a R r x y l x-R = II (ℚ≤-split x y l)
  where
   I : (∃ p ꞉ ℚ , (p < y) × p ∈ R) → y ∈ R
   I = pr₂ (r y)
@@ -200,7 +199,7 @@ embedding-ℚ-to-ℝ x = (L , R) , inhabited-left'
   rounded-left' p = α , β
    where
     α : p < x →  (∃ p' ꞉ ℚ , (p < p') × p' < x)
-    α l = ∣ ℚ-dense fe p x l ∣
+    α l = ∣ ℚ-dense p x l ∣
 
     β :  (∃ p' ꞉ ℚ , (p < p') × p' < x) → p < x
     β l = ∥∥-rec (ℚ<-is-prop p x) δ l
@@ -212,7 +211,7 @@ embedding-ℚ-to-ℝ x = (L , R) , inhabited-left'
   rounded-right' q = α , β
    where
     α : q > x → ∃ q' ꞉ ℚ , (q' < q) × q' > x
-    α r = ∣ δ (ℚ-dense fe x q r) ∣
+    α r = ∣ δ (ℚ-dense x q r) ∣
      where
       δ : (Σ q' ꞉ ℚ , (x < q') × (q' < q)) → Σ q' ꞉ ℚ , (q' < q) × q' > x
       δ (q' , a , b) = q' , b , a
@@ -227,7 +226,7 @@ embedding-ℚ-to-ℝ x = (L , R) , inhabited-left'
   disjoint' p q (l , r) = ℚ<-trans p x q l r
 
   located' : (p q : ℚ) → p < q → p < x ∨ q > x
-  located' p q l = ∣ located-property fe p q x l ∣
+  located' p q l = ∣ located-property p q x l ∣
 
 instance
  canonical-map-ℚ-to-ℝ : Canonical-Map ℚ ℝ

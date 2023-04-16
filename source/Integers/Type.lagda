@@ -22,10 +22,10 @@ module Integers.Type where
 
 \end{code}
 
-In order to avoid having positive and negative 0, a standard solutions
-to have the negative constructor denote λ n → - (n + 1).
-For example, negsucc 0 = -1
-             negsucc 4 = -5.
+In order to avoid having positive and negative 0, a standard solution is to have
+the negative constructor denote λ n → - (n + 1).
+
+For example, negsucc 0 = -1, negsucc 4 = -5.
 
 \begin{code}
 
@@ -210,6 +210,16 @@ predℤ-lc {x} {y} p = x               ＝⟨ succpredℤ x ⁻¹ ⟩
                      succℤ (predℤ x) ＝⟨ ap succℤ p     ⟩
                      succℤ (predℤ y) ＝⟨ succpredℤ y    ⟩
                      y               ∎
+
+\end{code}
+
+We define here some shorthand notation for (pos ∘ succ) and negsucc.
+
+\begin{code}
+
+ps ns : ℕ → ℤ
+ps = pos ∘ succ
+ns = negsucc
 
 \end{code}
 

@@ -17,5 +17,4 @@ import Naturals.HCF
 import Naturals.Parity
 import Naturals.Exponentiation
 
-
 \end{code}

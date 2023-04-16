@@ -178,7 +178,7 @@ embedding-preserves-order : (p q : ℚ) → p < q → ι p < ι q
 embedding-preserves-order p q l = I (use-rationals-density)
  where
   use-rationals-density : Σ k ꞉ ℚ , p < k × k < q
-  use-rationals-density = ℚ-dense fe p q l
+  use-rationals-density = ℚ-dense p q l
 
   I : (Σ k ꞉ ℚ , p < k × k < q) → ∃ k ꞉ ℚ , p < k × k < q
   I (k , p<k , k<q) = ∣ k , p<k , k<q ∣
