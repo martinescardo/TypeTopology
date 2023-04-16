@@ -31,12 +31,14 @@ module Duploids.Categories
 open import UF.Base
 open import UF.Retracts
 open import UF.Subsingletons
+open import Duploids.Duploid fe pt
 
 open import Categories.Category fe
 open preduploid-extras fe pt 𝓓
-
 private
  module 𝓓 = preduploid 𝓓
+
+open duploid-axioms 𝓓.underlying-deductive-system
 
 module NegativesAndAllMaps where
  ob : 𝓤 ⊔ 𝓥 ̇
@@ -145,6 +147,38 @@ module NegativesAndLinearMaps where
 
  precat : precategory (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
  precat = make ob hom idn seq' (hom-is-set , idn-L , idn-R , assoc)
+
+ module _ (nuni : is-negatively-univalent) where
+  precat-is-univalent : is-univalent-precategory precat
+  precat-is-univalent A (B0 , f0 , g0 , fg0 , gf0) (B1 , f1 , g1 , fg1 , gf1) =
+   B0 , f0 , g0 , fg0 , gf0
+    ＝⟨ ap (λ - → B0 , f0 , g0 , -)
+         (hom-properties.being-inverse-is-prop precat {B0} {A} _ _ _ _) ⟩
+   B0 , f0 , g0 , _ , _ ＝⟨ lem ⟩
+   B1 , f1 , g1 , _ , _
+    ＝⟨ ap (λ - → B1 , f1 , g1 , -)
+         (hom-properties.being-inverse-is-prop precat {B1} {A} _ _ _ _) ⟩
+   B1 , f1 , g1 , fg1 , gf1 ∎
+   where
+    nliso0 : negative-linear-isomorph (pr₁ A)
+    nliso0 = pr₁ B0 , pr₁ f0 , pr₁ g0 , pr₂ B0 , pr₂ f0 , pr₂ g0 , ap pr₁ fg0 , ap pr₁ gf0
+
+    nliso1 : negative-linear-isomorph (pr₁ A)
+    nliso1 = pr₁ B1 , pr₁ f1 , pr₁ g1 , pr₂ B1 , pr₂ f1 , pr₂ g1 , ap pr₁ fg1 , ap pr₁ gf1
+
+    nliso01 : nliso0 ＝ nliso1
+    nliso01 = nuni (pr₁ A) (pr₂ A) nliso0 nliso1
+
+    lem : _＝_ {_} {isomorph precat A} (B0 , f0 , g0 , _) (B1 , f1 , g1 , _)
+    lem =
+     ap (λ (B , f , g , B-neg , f-lin , g-lin , fg , gf) →
+      (B , B-neg) , (f , f-lin) , (g , g-lin) ,
+      to-Σ-＝ (fg , 𝓓.being-linear-is-prop _ _) ,
+      to-Σ-＝ (gf , 𝓓.being-linear-is-prop _ _)
+     ) nliso01
+
+  cat : category (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
+  cat = precat , precat-is-univalent
 
 
 module PositivesAndThunkableMaps where

@@ -90,8 +90,6 @@ module category-axiom-statements (𝓒 : category-structure 𝓤 𝓥) where
    Π-is-prop fe λ _ →
    hom-is-set _ _
 
- -- TODO: univalence statement
-
 -- Precategories are an intermediate notion in univalent 1-category theory.
 module _ (𝓒 : category-structure 𝓤 𝓥) where
  open category-axiom-statements 𝓒
@@ -205,14 +203,19 @@ module _ (𝓒 : precategory 𝓤 𝓥) where
   ＝-to-iso : A ＝ B → iso A B
   ＝-to-iso refl = idn A , idn-is-iso
 
+ isomorph : ob → 𝓤 ⊔ 𝓥 ̇
+ isomorph A =
+  Σ B ꞉ ob ,
+  Σ f ꞉ hom B A ,
+  hom-properties.is-iso f
+
  is-univalent-precategory : 𝓤 ⊔ 𝓥 ̇
- is-univalent-precategory = (A B : ob) → is-equiv (＝-to-iso A B)
+ is-univalent-precategory = (A : ob) → is-prop (isomorph A)
 
  being-univalent-is-prop : is-prop is-univalent-precategory
  being-univalent-is-prop =
   Π-is-prop fe λ _ →
-  Π-is-prop fe λ _ →
-  being-equiv-is-prop (λ _ _ → fe) _
+  being-prop-is-prop fe
 
 category : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
 category 𝓤 𝓥 = Σ 𝓒 ꞉ precategory 𝓤 𝓥 , is-univalent-precategory 𝓒

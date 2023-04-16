@@ -35,7 +35,7 @@ open import Categories.Functor fe
 open import Duploids.DeductiveSystem fe
 open import Duploids.Preduploid fe pt
 
-module _ (𝓓 : deductive-system 𝓤 𝓥) where
+module duploid-axioms (𝓓 : deductive-system 𝓤 𝓥) where
  open deductive-system 𝓓
 
  module _ (A : ob) where
@@ -173,25 +173,25 @@ module _ (𝓓 : deductive-system 𝓤 𝓥) where
  is-negatively-univalent =
   (N : ob)
   → is-negative N
-  → is-singleton (negative-linear-isomorph N)
+  → is-prop (negative-linear-isomorph N)
 
  is-positively-univalent : 𝓤 ⊔ 𝓥 ̇
  is-positively-univalent =
   (P : ob)
   → is-positive P
-  → is-singleton (positive-thunkable-isomorph P)
+  → is-prop (positive-thunkable-isomorph P)
 
  being-positively-univalent-is-prop : is-prop is-positively-univalent
  being-positively-univalent-is-prop =
   Π-is-prop fe λ P →
   Π-is-prop fe λ P-pos →
-  being-singleton-is-prop fe
+  being-prop-is-prop fe
 
  being-negatively-univalent-is-prop : is-prop is-negatively-univalent
  being-negatively-univalent-is-prop =
   Π-is-prop fe λ N →
   Π-is-prop fe λ N-neg →
-  being-singleton-is-prop fe
+  being-prop-is-prop fe
 
  module _ (puni : is-positively-univalent) (N : ob) (N-neg : is-negative N) where
   open deductive-system-extras 𝓓
@@ -255,8 +255,8 @@ module _ (𝓓 : deductive-system 𝓤 𝓥) where
       ＝⟨ pr₂ ax.wrap-unwrap-inverse ⟩
      idn P ∎
 
-    isomorph : positive-thunkable-isomorph P
-    isomorph =
+    P'-isomorph : positive-thunkable-isomorph P
+    P'-isomorph =
      P' , fwd , bwd , ax'.downshift-positive , fwd-thunkable , bwd-thunkable ,
      fwd-bwd , bwd-fwd
 
@@ -265,10 +265,8 @@ module _ (𝓓 : deductive-system 𝓤 𝓥) where
      P , idn P , idn P , ax.downshift-positive ,  idn-thunkable _ , idn-thunkable _ ,
      idn-L _ _ _ , idn-L _ _ _
 
-    base-isomorph : base ＝ isomorph
-    base-isomorph =
-     pr₂ (puni P ax.downshift-positive) base ⁻¹
-     ∙ pr₂ (puni P ax.downshift-positive) isomorph
+    base-isomorph : base ＝ P'-isomorph
+    base-isomorph = puni P ax.downshift-positive base P'-isomorph
 
     main : P , wrap ＝ P' , wrap'
     main =
@@ -339,8 +337,8 @@ module _ (𝓓 : deductive-system 𝓤 𝓥) where
      cut force ax.delay ＝⟨ pr₁ ax.force-delay-inverse ⟩
      idn N ∎
 
-    isomorph : negative-linear-isomorph N
-    isomorph =
+    N'-isomorph : negative-linear-isomorph N
+    N'-isomorph =
      N' , fwd , bwd , ax'.upshift-negative , fwd-linear , bwd-linear ,
      fwd-bwd , bwd-fwd
 
@@ -349,10 +347,8 @@ module _ (𝓓 : deductive-system 𝓤 𝓥) where
      N , idn N , idn N , ax.upshift-negative ,  idn-linear _ , idn-linear _ ,
      idn-L _ _ _ , idn-L _ _ _
 
-    base-isomorph : base ＝ isomorph
-    base-isomorph =
-     pr₂ (nuni N ax.upshift-negative) base ⁻¹
-     ∙ pr₂ (nuni N ax.upshift-negative) isomorph
+    base-isomorph : base ＝ N'-isomorph
+    base-isomorph = nuni N ax.upshift-negative base N'-isomorph
 
     main : N , force ＝ N' , force'
     main =
@@ -449,8 +445,8 @@ record duploid 𝓤 𝓥 : (𝓤 ⊔ 𝓥)⁺ ̇ where
  open preduploid underlying-preduploid hiding (ob ; _⊢_ ; idn ; cut ; str) public
 
  field
-  puni : is-positively-univalent underlying-deductive-system
-  nuni : is-negatively-univalent underlying-deductive-system
+  puni : duploid-axioms.is-positively-univalent underlying-deductive-system
+  nuni : duploid-axioms.is-negatively-univalent underlying-deductive-system
 
   ⇑ : (A : ob) → is-positive A → ob
   ⇓ : (A : ob) → is-negative A → ob
@@ -479,12 +475,12 @@ record duploid 𝓤 𝓥 : (𝓤 ⊔ 𝓥)⁺ ̇ where
 
 
 module duploids-as-sums where
- module _ (𝓓 : Σ D ꞉ deductive-system 𝓤 𝓥 , duploid-axioms D) where
+ module _ (𝓓 : Σ D ꞉ deductive-system 𝓤 𝓥 , duploid-axioms.duploid-axioms D) where
   private
    D = pr₁ 𝓓
    ax = pr₂ 𝓓
 
-  module ax = duploid-axioms D ax
+  module ax = duploid-axioms.duploid-axioms D ax
 
   duploid-from-sum : duploid 𝓤 𝓥
   duploid.ob duploid-from-sum = ax.ob
@@ -518,49 +514,50 @@ module duploids-as-sums where
   private module 𝓓 = duploid 𝓓
 
   private 𝓓₀ = 𝓓.underlying-deductive-system
+  open duploid-axioms 𝓓₀
 
 
   module _ (A : 𝓓.ob) (A-pos : 𝓓.is-positive A) where
-   duploid-upshift-data : upshift-data 𝓓₀ A
+   duploid-upshift-data : upshift-data A
    pr₁ duploid-upshift-data = 𝓓.⇑ A A-pos
    pr₂ duploid-upshift-data = 𝓓.force _
 
 
-   duploid-upshift-axioms : upshift-axioms 𝓓₀ duploid-upshift-data
+   duploid-upshift-axioms : upshift-axioms duploid-upshift-data
    pr₁ duploid-upshift-axioms = 𝓓.⇑-negative A A-pos
    pr₁ (pr₂ duploid-upshift-axioms) = 𝓓.delay _
    pr₁ (pr₂ (pr₂ duploid-upshift-axioms)) = 𝓓.force-delay-inverse
    pr₂ (pr₂ (pr₂ duploid-upshift-axioms)) = 𝓓.force-linear
 
 
-   duploid-has-upshifts : has-upshift 𝓓₀ A
+   duploid-has-upshifts : has-upshift A
    pr₁ duploid-has-upshifts = duploid-upshift-data
    pr₂ duploid-has-upshifts = duploid-upshift-axioms
 
   module _ (A : 𝓓.ob) (A-neg : 𝓓.is-negative A) where
-   duploid-downshift-data : downshift-data 𝓓₀ A
+   duploid-downshift-data : downshift-data A
    pr₁ duploid-downshift-data = 𝓓.⇓ A A-neg
    pr₂ duploid-downshift-data = 𝓓.wrap _
 
 
-   duploid-downshift-axioms : downshift-axioms 𝓓₀ duploid-downshift-data
+   duploid-downshift-axioms : downshift-axioms duploid-downshift-data
    pr₁ duploid-downshift-axioms = 𝓓.⇓-positive A A-neg
    pr₁ (pr₂ duploid-downshift-axioms) = 𝓓.unwrap _
    pr₁ (pr₂ (pr₂ duploid-downshift-axioms)) = 𝓓.wrap-unwrap-inverse
    pr₂ (pr₂ (pr₂ duploid-downshift-axioms)) = 𝓓.wrap-thunkable
 
-   duploid-has-downshifts : has-downshift 𝓓₀ A
+   duploid-has-downshifts : has-downshift A
    pr₁ duploid-has-downshifts = duploid-downshift-data
    pr₂ duploid-has-downshifts = duploid-downshift-axioms
 
-  duploid-duploid-axioms : duploid-axioms 𝓓₀
+  duploid-duploid-axioms : duploid-axioms
   pr₁ duploid-duploid-axioms = 𝓓.puni
   pr₁ (pr₂ duploid-duploid-axioms) = 𝓓.nuni
   pr₁ (pr₂ (pr₂ duploid-duploid-axioms)) = 𝓓.ob-is-polarized
   pr₁ (pr₂ (pr₂ (pr₂ duploid-duploid-axioms))) = duploid-has-upshifts
   pr₂ (pr₂ (pr₂ (pr₂ duploid-duploid-axioms))) = duploid-has-downshifts
 
-  duploid-to-sum : Σ D ꞉ deductive-system 𝓤 𝓥 , duploid-axioms D
+  duploid-to-sum : Σ D ꞉ deductive-system 𝓤 𝓥 , duploid-axioms.duploid-axioms D
   duploid-to-sum = 𝓓₀ , duploid-duploid-axioms
 
 
@@ -570,7 +567,7 @@ module duploids-as-sums where
  pr₁ (pr₂ duploid-to-sum-is-equiv) = duploid-from-sum
  pr₂ (pr₂ duploid-to-sum-is-equiv) _ = refl
 
- duploid-sum-equiv : duploid 𝓤 𝓥 ≃ (Σ D ꞉ deductive-system 𝓤 𝓥 , duploid-axioms D)
+ duploid-sum-equiv : duploid 𝓤 𝓥 ≃ (Σ D ꞉ deductive-system 𝓤 𝓥 , duploid-axioms.duploid-axioms D)
  duploid-sum-equiv = _ , duploid-to-sum-is-equiv
 
 
