@@ -72,6 +72,7 @@ module NegativesAndAllMaps where
   precat : precategory (𝓤 ⊔ 𝓥) 𝓥
   precat = make ob hom idn seq' (hom-is-set , idn-L , idn-R , assoc)
 
+
 module PositivesAndAllMaps where
  ob : 𝓤 ⊔ 𝓥 ̇
  ob = Σ A ꞉ 𝓓.ob , 𝓓.is-positive A
@@ -173,8 +174,8 @@ module NegativesAndLinearMaps where
     lem =
      ap (λ (B , f , g , B-neg , f-lin , g-lin , fg , gf) →
       (B , B-neg) , (f , f-lin) , (g , g-lin) ,
-      to-Σ-＝ (fg , 𝓓.being-linear-is-prop _ _) ,
-      to-Σ-＝ (gf , 𝓓.being-linear-is-prop _ _)
+      to-hom-＝ (B , B-neg) (B , B-neg) _ _ fg ,
+      to-hom-＝ A A _ _ gf
      ) nliso01
 
   cat : category (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
@@ -250,8 +251,8 @@ module PositivesAndThunkableMaps where
     lem =
      ap (λ (B , f , g , B-pos , f-th , g-th , fg , gf) →
       (B , B-pos) , (f , f-th) , (g , g-th) ,
-      to-Σ-＝ (fg , 𝓓.being-thunkable-is-prop _ _) ,
-      to-Σ-＝ (gf , 𝓓.being-thunkable-is-prop _ _)
+      to-hom-＝ (B , B-pos) (B , B-pos) _ _ fg ,
+      to-hom-＝ A A _ _ gf
      ) pthiso01
 
   cat : category (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
