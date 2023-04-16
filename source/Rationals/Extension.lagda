@@ -293,21 +293,21 @@ open import Rationals.Negation
     iii : p + 1ℚ - 1ℚ < q + 1ℚ - 1ℚ
     iii = ℚ<-addition-preserves-order (p + 1ℚ) (q + 1ℚ) (- 1ℚ) l
     iv : p + 1ℚ - 1ℚ ＝ p
-    iv = ℚ+-assoc fe p 1ℚ (- 1ℚ) ∙ ℚ-inverse-intro fe p 1ℚ ⁻¹
+    iv = ℚ+-assoc p 1ℚ (- 1ℚ) ∙ ℚ-inverse-intro p 1ℚ ⁻¹
     v : q + 1ℚ - 1ℚ ＝ q
-    v =  ℚ+-assoc fe q 1ℚ (- 1ℚ) ∙ ℚ-inverse-intro fe q 1ℚ ⁻¹
+    v =  ℚ+-assoc q 1ℚ (- 1ℚ) ∙ ℚ-inverse-intro q 1ℚ ⁻¹
 
 ℚ-succ-pred : (r : ℚ) → (ℚ-pred (ℚ-succ r) ＝ r) × (ℚ-succ (ℚ-pred r) ＝ r)
 ℚ-succ-pred r = i , ii
  where
   i : ℚ-pred (ℚ-succ r) ＝ r
-  i = ℚ+-assoc fe r 1ℚ (- 1ℚ) ∙ ℚ-inverse-intro fe r 1ℚ ⁻¹
+  i = ℚ+-assoc r 1ℚ (- 1ℚ) ∙ ℚ-inverse-intro r 1ℚ ⁻¹
   ii : ℚ-succ (ℚ-pred r) ＝ r
   ii = ℚ-succ (ℚ-pred r) ＝⟨ by-definition                           ⟩
-       r - 1ℚ + 1ℚ       ＝⟨ ℚ+-assoc fe r (- 1ℚ) 1ℚ                 ⟩
+       r - 1ℚ + 1ℚ       ＝⟨ ℚ+-assoc r (- 1ℚ) 1ℚ                 ⟩
        r + ((- 1ℚ) + 1ℚ) ＝⟨ ap (r +_) (ℚ+-comm (- 1ℚ) 1ℚ)           ⟩
-       r + (1ℚ - 1ℚ)     ＝⟨ ap (r +_) (ℚ-inverse-sum-to-zero fe 1ℚ) ⟩
-       r + 0ℚ            ＝⟨ ℚ-zero-right-neutral fe r ⟩
+       r + (1ℚ - 1ℚ)     ＝⟨ ap (r +_) (ℚ-inverse-sum-to-zero 1ℚ) ⟩
+       r + 0ℚ            ＝⟨ ℚ-zero-right-neutral r ⟩
        r                 ∎
 
 ℝ-succ : ℝ → ℝ
@@ -333,7 +333,7 @@ any real.
 open import DedekindReals.Order pe pt fe
 
 ℚ-succ-preserves-order : (p : ℚ) → p < ℚ-succ p
-ℚ-succ-preserves-order p = ℚ<-addition-preserves-order'' fe p 1ℚ (0 , refl)
+ℚ-succ-preserves-order p = ℚ<-addition-preserves-order'' p 1ℚ (0 , refl)
 
 test : (x : ℚ) -> (ι x) < ℝ-succ (ι x) -- With Todds Help
 test x = transport (ι x <_) (ℚ-succ-behaviour-preserved x ⁻¹)

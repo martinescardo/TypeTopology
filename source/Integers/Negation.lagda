@@ -21,7 +21,8 @@ infix 31 -_
 
 \end{code}
 
-These proofs are all by definition, however we must consider each case seperately.
+These proofs are all by definition, however we must consider each case
+seperately.
 
 \begin{code}
 

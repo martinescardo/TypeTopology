@@ -16,7 +16,6 @@ open import UF.Equiv
 open import UF.FunExt
 open import UF.Subsingletons
 open import UF.PropTrunc
-
 open import Rationals.Type
 open import Rationals.Addition
 open import Rationals.Abs
@@ -75,7 +74,7 @@ sandwich-theorem L f g h (k , k-greater) lim-f lim-h = lim-g
       α = k-greater N k-small
 
       g-close : (n : ℕ) → ℕ-max (ℕ-max N₁ N₂) k ≤ n → ℚ-metric (g n) L < ε
-      g-close n less = obtain-inequalities (ℚ-abs-<-unpack fe (f n - L) ε f-close') (ℚ-abs-<-unpack fe (h n - L) ε h-close')
+      g-close n less = obtain-inequalities (ℚ-abs-<-unpack (f n - L) ε f-close') (ℚ-abs-<-unpack (h n - L) ε h-close')
        where
         f-close' : ℚ-metric (f n) L < ε
         f-close' = f-close n (≤-trans N₁ N n (≤-trans N₁ (ℕ-max N₁ N₂) N N₁-small N₁N₂-small) less)
@@ -85,15 +84,15 @@ sandwich-theorem L f g h (k , k-greater) lim-f lim-h = lim-g
         obtain-inequalities : - ε < f n - L × f n - L < ε
                             → - ε < h n - L × h n - L < ε
                             → ℚ-metric (g n) L < ε
-        obtain-inequalities (l₁ , l₂) (l₃ , l₄) = ℚ<-to-abs fe (g n - L) ε (I , II)
+        obtain-inequalities (l₁ , l₂) (l₃ , l₄) = ℚ<-to-abs (g n - L) ε (I , II)
          where
           k-greater' : f n ≤ g n × g n ≤ h n
           k-greater' = k-greater n (≤-trans k N n k-small less)
 
           I : - ε < g n - L
-          I = ℚ<-≤-trans fe (- ε) (f n - L) (g n - L) l₁ (ℚ≤-addition-preserves-order fe (f n) (g n) (- L) (pr₁ k-greater'))
+          I = ℚ<-≤-trans (- ε) (f n - L) (g n - L) l₁ (ℚ≤-addition-preserves-order (f n) (g n) (- L) (pr₁ k-greater'))
           II : g n - L < ε
-          II = ℚ≤-<-trans fe (g n - L) (h n - L) ε (ℚ≤-addition-preserves-order fe (g n) (h n) (- L) (pr₂ k-greater')) l₄
+          II = ℚ≤-<-trans (g n - L) (h n - L) ε (ℚ≤-addition-preserves-order (g n) (h n) (- L) (pr₂ k-greater')) l₄
 
 0f : ℕ → ℚ
 0f _ = 0ℚ
@@ -117,11 +116,11 @@ constant-sequence-converges : (q : ℚ) → q limit-of (constant-sequence q)
 constant-sequence-converges q ε l = 0 , (λ n l₂ → transport (_< ε) I l)
  where
   I : 0ℚ ＝ ℚ-metric q q
-  I = ℚ-self-dist fe q ⁻¹
+  I = ℚ-self-dist q ⁻¹
 
 open import Integers.Type hiding (abs)
 open import Rationals.FractionsOrder
-open import Rationals.FractionsOperations renaming (_*_ to _ℚₙ*_ ; _+_ to _ℚₙ+_ ; -_ to ℚₙ-_ ; abs to ℚₙ-abs)
+open import Rationals.FractionsOperations renaming (_*_ to _𝔽*_ ; _+_ to _𝔽+_ ; -_ to 𝔽-_ ; abs to 𝔽-abs)
 
 open import Notation.CanonicalMap
 
@@ -139,8 +138,8 @@ open import Integers.Multiplication renaming (_*_ to _ℤ*_)
 open import Integers.Addition renaming (_+_ to _ℤ+_) hiding (_-_)
 open import Integers.Order
 
-positive-order-flip : (m n a b : ℕ) → ((pos (succ m)) , a) ℚₙ< ((pos (succ n)) , b)
-                                    → ((pos (succ a)) , m) ℚₙ> ((pos (succ b)) , n)
+positive-order-flip : (m n a b : ℕ) → ((pos (succ m)) , a) 𝔽< ((pos (succ n)) , b)
+                                    → ((pos (succ a)) , m) 𝔽> ((pos (succ b)) , n)
 positive-order-flip m n a b l = transport₂ _<_ I II l
  where
   I : pos (succ m) ℤ* pos (succ b) ＝ pos (succ b) ℤ* pos (succ m)
@@ -152,7 +151,7 @@ positive-order-flip m n a b l = transport₂ _<_ I II l
 open import Rationals.Fractions
 
 ⟨1/sn⟩-converges : 0ℚ limit-of ⟨1/sn⟩
-⟨1/sn⟩-converges ((pos 0 , a) , ε)        l = 𝟘-elim (ℚ<-not-itself 0ℚ (transport (0ℚ <_) (numerator-zero-is-zero fe ((pos 0 , a) , ε) refl) l))
+⟨1/sn⟩-converges ((pos 0 , a) , ε)        l = 𝟘-elim (ℚ<-not-itself 0ℚ (transport (0ℚ <_) (numerator-zero-is-zero ((pos 0 , a) , ε) refl) l))
 ⟨1/sn⟩-converges ((negsucc x , a) , ε)    l = 𝟘-elim (negative-not-greater-than-zero x a l)
 ⟨1/sn⟩-converges ((pos (succ x) , a) , ε) l = q ℕ+ 1 , conclusion
  where
@@ -184,7 +183,7 @@ open import Rationals.Fractions
      I : pos (succ q) ≤ pos (succ n)
      I = ℕ≤-to-ℤ≤ (succ q) (succ n) l'
 
-     II : (pos (succ a) , x) ℚₙ< (pos (succ n) , 0)
+     II : (pos (succ a) , x) 𝔽< (pos (succ n) , 0)
      II = β (ℤ≤-split (pos (succ q)) (pos (succ n)) I)
       where
        τ : pos (succ x ℕ* (q ℕ+ 1)) ＝ pos (succ q) ℤ* pos (succ x)
@@ -194,11 +193,11 @@ open import Rationals.Fractions
            pos (succ q) ℤ* pos (succ x) ∎
        α : pos (succ a) ℤ* pos 1 < pos (succ q) ℤ* pos (succ x)
        α = transport₂ _<_ (ℤ-mult-right-id (pos (succ a))) τ ζ
-       β : pos (succ q) < pos (succ n) ∔ (pos (succ q) ＝ pos (succ n)) → (pos (succ a) , x) ℚₙ< (pos (succ n) , 0)
-       β (inl less) = ℚₙ<-trans (pos (succ a) , x) (pos (succ q) , 0) (pos (succ n) , 0) α less
-       β (inr equal) = transport (λ - → (pos (succ a) , x) ℚₙ< (- , 0)) equal α
+       β : pos (succ q) < pos (succ n) ∔ (pos (succ q) ＝ pos (succ n)) → (pos (succ a) , x) 𝔽< (pos (succ n) , 0)
+       β (inl less) = 𝔽<-trans (pos (succ a) , x) (pos (succ q) , 0) (pos (succ n) , 0) α less
+       β (inr equal) = transport (λ - → (pos (succ a) , x) 𝔽< (- , 0)) equal α
 
-     III : (pos (succ x) , a) ℚₙ> (pos 1 , n)
+     III : (pos (succ x) , a) 𝔽> (pos 1 , n)
      III = positive-order-flip a n x 0 II
 
      IV : abs (toℚ ((pos 1) , n) - 0ℚ) < ((pos (succ x) , a) , ε)
@@ -206,22 +205,22 @@ open import Rationals.Fractions
       where
        i : toℚ (pos 1 , n) ＝ abs (toℚ ((pos 1) , n) - 0ℚ)
        i = toℚ (pos 1 , n)                               ＝⟨ by-definition                                                ⟩
-           toℚ (ℚₙ-abs (pos 1 , n))                      ＝⟨ toℚ-abs fe (pos 1 , n) ⁻¹                                     ⟩
-           abs (toℚ (pos 1 , n))                         ＝⟨ ap (λ - → abs (toℚ -)) (ℚₙ-zero-right-neutral (pos 1 , n) ⁻¹) ⟩
-           abs (toℚ ((pos 1 , n) ℚₙ+ (pos 0 , 0)))       ＝⟨ by-definition                                                 ⟩
-           abs (toℚ ((pos 1 , n) ℚₙ+ (ℚₙ- (pos 0 , 0)))) ＝⟨ ap abs (toℚ-subtraction fe (pos 1 , n) (pos 0 , 0) ⁻¹)        ⟩
+           toℚ (𝔽-abs (pos 1 , n))                      ＝⟨ toℚ-abs (pos 1 , n) ⁻¹                                     ⟩
+           abs (toℚ (pos 1 , n))                         ＝⟨ ap (λ - → abs (toℚ -)) (𝔽-zero-right-neutral (pos 1 , n) ⁻¹) ⟩
+           abs (toℚ ((pos 1 , n) 𝔽+ (pos 0 , 0)))       ＝⟨ by-definition                                                 ⟩
+           abs (toℚ ((pos 1 , n) 𝔽+ (𝔽- (pos 0 , 0)))) ＝⟨ ap abs (toℚ-subtraction (pos 1 , n) (pos 0 , 0) ⁻¹)        ⟩
            abs (toℚ (pos 1 , n) - 0ℚ)                   ∎
 
        ii : toℚ (pos 1 , n) < toℚ (pos (succ x) , a)
        ii = toℚ-< (pos 1 , n) (pos (succ x) , a) III
 
        iii : (pos (succ x) , a) , ε ＝ toℚ (pos (succ x) , a)
-       iii = toℚ-toℚₙ fe ((pos (succ x) , a) , ε)
+       iii = toℚ-to𝔽 ((pos (succ x) , a) , ε)
 
        iv : toℚ (pos 1 , n) < ((pos (succ x) , a) , ε)
        iv = transport (toℚ (pos 1 , n) <_) (iii ⁻¹) ii
 
-limits-lemma : (k : ℕ) → ((pos 1 , succ k) ℚₙ* (pos 2 , 2)) ℚₙ≤ (pos 1 , succ (succ k))
+limits-lemma : (k : ℕ) → ((pos 1 , succ k) 𝔽* (pos 2 , 2)) 𝔽≤ (pos 1 , succ (succ k))
 limits-lemma k = k , I
  where
   I : pos 2 ℤ* pos (succ (succ (succ k))) ℤ+ pos k ＝ pos 1 ℤ* pos (succ (pred (succ (succ k) ℕ* 3)))
@@ -243,7 +242,7 @@ limits-lemma k = k , I
 
 
 4/9<1/2 : (⟨2/3⟩^ succ (succ 0)) ≤ℚ ⟨1/sn⟩ (succ (succ 0))
-4/9<1/2 =  transport (_≤ℚ toℚ (pos 1 , 1)) (toℚ-* fe (pos 2 , 2) (pos 2 , 2)) (toℚ-≤ (pos 4 , 8) (pos 1 , 1) (1 , refl))
+4/9<1/2 =  transport (_≤ℚ toℚ (pos 1 , 1)) (toℚ-* (pos 2 , 2) (pos 2 , 2)) (toℚ-≤ (pos 4 , 8) (pos 1 , 1) (1 , refl))
 
 ⟨2/3⟩^n-squeezed : Σ N ꞉ ℕ  , ((n : ℕ) → N ≤ n → (0f n ≤ (⟨2/3⟩^ n)) × (⟨2/3⟩^ n) ≤ ⟨1/sn⟩ n)
 ⟨2/3⟩^n-squeezed = 1 , I
@@ -263,7 +262,7 @@ limits-lemma k = k , I
       step k IH = i
        where
         i : (0ℚ * 2/3) ≤ ((⟨2/3⟩^ succ k) * 2/3)
-        i = ℚ≤-pos-multiplication-preserves-order' fe 0ℚ (⟨2/3⟩^ (succ k)) 2/3 IH γ
+        i = ℚ≤-pos-multiplication-preserves-order' 0ℚ (⟨2/3⟩^ (succ k)) 2/3 IH γ
 
     III : (⟨2/3⟩^ succ n) ≤ ⟨1/sn⟩ (succ n)
     III = induction base step n
@@ -278,18 +277,18 @@ limits-lemma k = k , I
         abstract
          goal : (⟨2/3⟩^ succ (succ 0)) ≤ℚ ⟨1/sn⟩ (succ (succ 0))
          goal = 4/9<1/2
-      step (succ k) IH = ℚ≤-trans fe (((⟨2/3⟩^ succ (succ k)) * 2/3)) ((⟨1/n⟩ (succ k) * 2/3)) (⟨1/n⟩ (succ (succ k))) i ii
+      step (succ k) IH = ℚ≤-trans (((⟨2/3⟩^ succ (succ k)) * 2/3)) ((⟨1/n⟩ (succ k) * 2/3)) (⟨1/n⟩ (succ (succ k))) i ii
        where
         i : ((⟨2/3⟩^ succ (succ k)) * 2/3) ≤ (⟨1/n⟩ (succ k) * 2/3)
-        i = ℚ≤-pos-multiplication-preserves-order' fe (⟨2/3⟩^ (succ (succ k))) (⟨1/n⟩ (succ k)) 2/3 IH γ
+        i = ℚ≤-pos-multiplication-preserves-order' (⟨2/3⟩^ (succ (succ k))) (⟨1/n⟩ (succ k)) 2/3 IH γ
         ii : (⟨1/n⟩ (succ k) * 2/3) ≤ ⟨1/n⟩ (succ (succ k))
         ii = transport (_≤ ⟨1/n⟩ (succ (succ k))) (iii ⁻¹) iv
          where
           abstract
-           iii : (⟨1/n⟩ (succ k)) * 2/3 ＝ toℚ ((pos 1 , succ k) ℚₙ* (pos 2 , 2))
-           iii = toℚ-* fe (pos 1 , succ k) (pos 2 , 2) ⁻¹
-           iv : toℚ ((pos 1 , succ k) ℚₙ* (pos 2 , 2)) ≤ℚ ⟨1/n⟩ (succ (succ k))
-           iv = toℚ-≤ ((pos 1 , succ k) ℚₙ* (pos 2 , 2)) (pos 1 , succ (succ k)) (limits-lemma k)
+           iii : (⟨1/n⟩ (succ k)) * 2/3 ＝ toℚ ((pos 1 , succ k) 𝔽* (pos 2 , 2))
+           iii = toℚ-* (pos 1 , succ k) (pos 2 , 2) ⁻¹
+           iv : toℚ ((pos 1 , succ k) 𝔽* (pos 2 , 2)) ≤ℚ ⟨1/n⟩ (succ (succ k))
+           iv = toℚ-≤ ((pos 1 , succ k) 𝔽* (pos 2 , 2)) (pos 1 , succ (succ k)) (limits-lemma k)
 
 ⟨2/3⟩^n-converges : 0ℚ limit-of ⟨2/3⟩^_
 ⟨2/3⟩^n-converges = sandwich-theorem 0ℚ 0f ⟨2/3⟩^_ ⟨1/sn⟩ ⟨2/3⟩^n-squeezed 0f-converges ⟨1/sn⟩-converges
@@ -303,31 +302,13 @@ limits-lemma k = k , I
   II : 0ℚ < (⟨2/3⟩^ n) * 2/3
   II = ℚ<-pos-multiplication-preserves-order (⟨2/3⟩^ n) 2/3 I (1 , refl)
   III : (⟨2/3⟩^ n) * 2/3 ＝ (⟨2/3⟩^ (succ n))
-  III = ⟨2/3⟩-to-mult fe n ⁻¹
+  III = ⟨2/3⟩-to-mult n ⁻¹
 
 \end{code}
 
 We want to have a universal property for dependent types
 
 \begin{code}
-{-
-dependent-type-universal-property : {X : 𝓤 ̇ } → (A B : X → 𝓤 ̇ )→ ((x : X) → A x × B x) → ((x : X) → A x) × ((x : X) → B x)
-dependent-type-universal-property A B f = (λ x → pr₁ (f x)) , (λ x → pr₂ (f x))
-
-open import UF.Subsingletons-FunExt
-
-dependent-type-universal-property-equivalence : {X : 𝓤 ̇ } → (A B : X → 𝓤 ̇ )→ ((x : X) → A x × B x) ≃ ((x : X) → A x) × ((x : X) → B x)
-dependent-type-universal-property-equivalence A B = dependent-type-universal-property A B , ((I , II) , III , IV)
- where
-  I : (∀ x → A x) × (∀ x → B x) → ∀ x → A x × B x
-  I (f , g) x = f x , g x
-  II : dependent-type-universal-property A B ∘ I ∼ id
-  II _ = refl
-  III : (∀ x → A x) × (∀ x → B x) → ∀ x → A x × B x
-  III (f , g) x = f x , g x
-  IV : III ∘ dependent-type-universal-property A B ∼ id
-  IV _ = refl
--}
 
 generalised-dependent-type-universal-property : {X : 𝓤 ̇ } → (A : X → 𝓤 ̇ )→ (P : (x : X) → A x → 𝓤 ̇)
                                                           → (∀ x → Σ a ꞉ A x , P x a)

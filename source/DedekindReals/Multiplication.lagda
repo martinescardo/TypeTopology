@@ -21,7 +21,7 @@ module DedekindReals.Multiplication
        where
 
 open import Rationals.Multiplication renaming (_*_ to _ℚ*_)
-open import Rationals.MinMax fe
+open import Rationals.MinMax
 open import DedekindReals.Type pe pt fe
 open PropositionalTruncation pt
 

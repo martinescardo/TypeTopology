@@ -627,7 +627,7 @@ The following proofs relate dyadic rationals to rationals.
 ℤ[1/2]-lt-lemma : (x : ℤ) (n : ℕ)
                 → ℤodd x
                 → is-in-lowest-terms (x , pred (2^ (succ n)))
-ℤ[1/2]-lt-lemma x n ox = (γ₁ , γ₂) , γ₃
+ℤ[1/2]-lt-lemma x n ox = coprime-to-coprime' _ _ γ₄
  where
   n' = 2^ (succ n)
 
@@ -648,6 +648,9 @@ The following proofs relate dyadic rationals to rationals.
 
     III : is-common-divisor d (abs x) n' → d ∣ 1
     III (d|x , d|n') = odd-power-of-two-coprime d (abs x) (succ n) ox d|x d|n'
+
+  γ₄ : is-in-lowest-terms' (x , pred (2^ (succ n)))
+  γ₄ = (γ₁ , γ₂) , γ₃
 
 ℤ[1/2]-to-ℚ : ℤ[1/2] → ℚ
 ℤ[1/2]-to-ℚ ((x , n)      , inl n＝0)       = (x , 0) , (denom-zero-lt x)
