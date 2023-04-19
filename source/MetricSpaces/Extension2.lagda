@@ -416,7 +416,7 @@ f→f̂ f ic x = (L , R) , il , ir , rl , rr , d , lo
       → (p ∈ L) ∔ (q ∈ R)
     γ  (x₀ , b) = γ' (order-lemma' p q (f x₀) l)
      where
-      γ' : (p < f x₀ - 1/4 * (q - p)) ∔ (f x₀ + 1/4 * (q - p) < q)
+      γ' : (p < f x₀ - ε) ∔ (f x₀ + ε < q)
          → p ∈ L ∔ q ∈ R
       γ' (inl l₄) = inl ∣ (x₀ , ε , 0<ε) , b , l₄ ∣
       γ' (inr l₄) = inr ∣ (x₀ , ε , 0<ε) , b , l₄ ∣
