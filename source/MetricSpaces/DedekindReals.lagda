@@ -344,8 +344,7 @@ cauchy-approximation-limit-exists (f , approximation-condition) = y , y-is-limit
     ε = 1ℚ
     δ : ℚ
     δ = 1ℚ
-    0<1 : 0ℚ < 1ℚ
-    0<1 = 0 , refl
+
     obtain-p' : ∃ p' ꞉ ℚ , p' < (f (ε , 0<1))
     obtain-p' = inhabited-from-real-L (f (ε , 0<1))
 
@@ -374,8 +373,7 @@ cauchy-approximation-limit-exists (f , approximation-condition) = y , y-is-limit
     ε = 1ℚ
     δ : ℚ
     δ = 1ℚ
-    0<1 : 0ℚ < 1ℚ
-    0<1 = 0 , refl
+
     obtain-q' : ∃ q' ꞉ ℚ , q' > (f (ε , 0<1))
     obtain-q' = inhabited-from-real-R (f (ε , 0<1))
     γ : Σ q' ꞉ ℚ , q' > (f (ε , 0<1)) → ∃ q ꞉ ℚ , q ∈ Ry

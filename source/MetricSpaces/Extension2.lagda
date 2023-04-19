@@ -10,6 +10,7 @@ open import Notation.Order
 open import Rationals.Type
 open import Rationals.Order
 open import Rationals.Addition
+open import Rationals.Multiplication
 open import Rationals.MinMax
 open import Rationals.Negation
 open import UF.Base
@@ -26,6 +27,7 @@ module MetricSpaces.Extension2
 
 open PropositionalTruncation pt
 
+open import DedekindReals.Properties fe pt pe
 open import DedekindReals.Type pe pt fe
 open import MetricSpaces.Definition pt fe pe
 open import MetricSpaces.Rationals fe pt pe
@@ -212,6 +214,48 @@ restrict-balls₂ x₀ x₀' x' (δ₁ , 0<δ₁) (δ₂ , 0<δ₂) (l₁ , l₂
    γ₂ : x' < min (x₀' + δ₂) (x₀ + δ₁)
    γ₂ = transport (x' <_) (min-comm (x₀ + δ₁) (x₀' + δ₂)) l₂
 
+ball-around-real : (x : ℝ)
+                 → (ε : ℚ₊)
+                 → (f : ℚ → ℚ)
+                 → (ic : ℚ-is-uniformly-continuous f)
+                 → ∃ x₀ ꞉ ℚ , x ℝ∈𝐁 δ⦅⦆ f ic ε ⦅ x₀ ⦆
+ball-around-real x ε f ic = ∥∥-functor γ (ℝ-arithmetically-located x δ 0<δ)
+ where
+  δ₊ : ℚ₊
+  δ₊ = δ⦅⦆ f ic ε
+
+  δ : ℚ
+  δ = pr₁ δ₊
+
+  0<δ : 0ℚ < δ
+  0<δ =  pr₂ δ₊
+
+  γ : Σ (u , v) ꞉ ℚ × ℚ , (u < x) × (x < v) × (0ℚ < v - u) × (v - u < δ)
+    → Σ x₀ ꞉ ℚ , x ℝ∈𝐁 δ₊ ⦅ x₀ ⦆
+  γ ((u , v) , l₁ , l₂ , l₃ , l₄) = u , (γ₁ , γ₂)
+   where
+    I : u - δ < u
+    I = ℚ<-subtraction-preserves-order u δ 0<δ
+
+    II : v < u + δ
+    II = ℚ<-subtraction-order v u δ l₄
+
+    γ₁ : u - δ < x
+    γ₁ = rounded-left-c (lower-cut-of x) (rounded-from-real-L x) (u - δ) u I l₁
+
+    γ₂ : x < u + δ
+    γ₂ = rounded-right-c (upper-cut-of x) (rounded-from-real-R x) v (u + δ) II l₂
+
+ball-around-real' : (x : ℝ)
+                  → (f : ℚ → ℚ)
+                  → (ic : ℚ-is-uniformly-continuous f)
+                  → ∃ (x₀ , ε) ꞉ ℚ × ℚ₊ , x ℝ∈𝐁 δ⦅⦆ f ic ε ⦅ x₀ ⦆
+ball-around-real' x f ic = ∥∥-functor γ (ball-around-real x (1ℚ , 0<1) f ic)
+ where
+  γ : Σ x₀ ꞉ ℚ , x ℝ∈𝐁 δ⦅⦆ f ic (1ℚ , 0<1) ⦅ x₀ ⦆
+    → Σ (x₀ , ε , 0<ε) ꞉ ℚ × ℚ₊ , x ℝ∈𝐁 δ⦅⦆ f ic (ε , 0<ε) ⦅ x₀ ⦆
+  γ (x₀ , b) = (x₀ , 1ℚ , 0<1) , b
+
 f→f̂ : extension-theorem
 f→f̂ f ic x = (L , R) , il , ir , rl , rr , d , lo
  where
@@ -226,7 +270,7 @@ f→f̂ f ic x = (L , R) , il , ir , rl , rr , d , lo
   R q = R' q , ∃-is-prop
 
   Bx : ∃ (x₀ , ε , 0<ε) ꞉ ℚ × ℚ₊ , x ℝ∈𝐁 δ⦅⦆ f ic (ε , 0<ε) ⦅ x₀ ⦆
-  Bx = {!!}
+  Bx = ball-around-real' x f ic
 
   il : inhabited-left L
   il = ∥∥-functor γ Bx
@@ -357,6 +401,24 @@ f→f̂ f ic x = (L , R) , il , ir , rl , rr , d , lo
         VI = ℚ<-trans (f x') (f x₀' + ε') q (pr₂ IV) l'
 
   lo : located L R
-  lo = {!!}
+  lo p q l = ∥∥-functor γ (ball-around-real x (ε , 0<ε) f ic)
+   where
+    ε : ℚ
+    ε = 1/4 * (q - p)
+
+    l₁ : 0ℚ < q - p
+    l₁ = ℚ<-difference-positive p q l
+
+    0<ε : 0ℚ < ε
+    0<ε = ℚ<-pos-multiplication-preserves-order 1/4 (q - p) 0<1/4 l₁
+
+    γ : Σ x₀ ꞉ ℚ , x ℝ∈𝐁 δ⦅⦆ f ic (ε , 0<ε) ⦅ x₀ ⦆
+      → (p ∈ L) ∔ (q ∈ R)
+    γ  (x₀ , b) = γ' (order-lemma' p q (f x₀) l)
+     where
+      γ' : (p < f x₀ - 1/4 * (q - p)) ∔ (f x₀ + 1/4 * (q - p) < q)
+         → p ∈ L ∔ q ∈ R
+      γ' (inl l₄) = inl ∣ (x₀ , ε , 0<ε) , b , l₄ ∣
+      γ' (inr l₄) = inr ∣ (x₀ , ε , 0<ε) , b , l₄ ∣
 
 \end{code}
