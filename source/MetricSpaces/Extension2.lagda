@@ -1,4 +1,7 @@
-Andrew Sneap
+Andrew Sneap - 19 April 2023
+
+This file proves an extension theorem, which takes lifts functions (f : ℚ → ℚ)
+to functions (f̂ : ℝ → ℝ), given that f is uniformly continuous.
 
 \begin{code}
 
@@ -420,5 +423,39 @@ f→f̂ f ic x = (L , R) , il , ir , rl , rr , d , lo
          → p ∈ L ∔ q ∈ R
       γ' (inl l₄) = inl ∣ (x₀ , ε , 0<ε) , b , l₄ ∣
       γ' (inr l₄) = inr ∣ (x₀ , ε , 0<ε) , b , l₄ ∣
+
+\end{code}
+
+To illustrate the use of the extension theorem, the following example is
+provided which lifts the increment function on rationals to a function on reals.
+
+The function which adds one is clearly uniformly continuous (and this is proved
+below). Hence we simply apply the extension thereom and we are done.
+
+\begin{code}
+
+ℚ-incr : ℚ → ℚ
+ℚ-incr q = q + 1ℚ
+
+ℚ-incr-uc : ℚ-is-uniformly-continuous ℚ-incr
+ℚ-incr-uc (ε , 0<ε) = (ε , 0<ε) , γ
+ where
+  γ : (x x₀ : ℚ) → x ∈𝐁 (ε , 0<ε) ⦅ x₀ ⦆ → ℚ-incr x ∈𝐁 (ε , 0<ε) ⦅ ℚ-incr x₀ ⦆
+  γ x x₀ (l₁ , l₂) = γ₁ , γ₂
+   where
+    I : x + 1ℚ < x₀ + ε + 1ℚ
+    I = ℚ<-addition-preserves-order x (x₀ + ε) 1ℚ l₂
+
+    II : x₀ - ε + 1ℚ < x + 1ℚ
+    II = ℚ<-addition-preserves-order (x₀ - ε) x 1ℚ l₁
+
+    γ₁ : x₀ + 1ℚ - ε < x + 1ℚ
+    γ₁ = transport (_< x + 1ℚ) (ℚ+-rearrange x₀ (- ε) 1ℚ) II
+
+    γ₂ : x + 1ℚ < x₀ + 1ℚ + ε
+    γ₂ = transport (x + 1ℚ <_) (ℚ+-rearrange x₀ ε 1ℚ) I
+
+ℝ-incr : ℝ → ℝ
+ℝ-incr = f→f̂ ℚ-incr ℚ-incr-uc
 
 \end{code}
