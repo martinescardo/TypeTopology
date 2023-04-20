@@ -134,7 +134,7 @@ add-same-denom (x , a) (y , b) = γ
 \end{code}
 
 For the following code, the flag lossy-unification must be added, otherwise the
-file has compilation issues.
+type checking takes too long to complete.
 
 \begin{code}
 
