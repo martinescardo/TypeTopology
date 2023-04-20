@@ -158,6 +158,22 @@ rounded-from-real-R ((L , R) , _ , _ , _ , rounded-R , _) = rounded-R
 disjoint-from-real : (((L , R) , i) : ℝ) → disjoint L R
 disjoint-from-real ((L , R) , _ , _ , _ , _ , disjoint , _) = disjoint
 
+ℚ-rounded-left₁ : (y : ℚ) (x : ℚ) → x < y → Σ p ꞉ ℚ , (x < p) × (p < y)
+ℚ-rounded-left₁ y x l = ℚ-dense x y l
+
+ℚ-rounded-left₂ : (y : ℚ) (x : ℚ) → Σ p ꞉ ℚ , (x < p) × (p < y) → x < y
+ℚ-rounded-left₂ y x (p , l₁ , l₂) = ℚ<-trans x p y l₁ l₂
+
+ℚ-rounded-right₁ : (y : ℚ) (x : ℚ) → y < x → Σ q ꞉ ℚ , (q < x) × (y < q)
+ℚ-rounded-right₁ y x l = I (ℚ-dense y x l)
+ where
+  I : Σ q ꞉ ℚ , (y < q) × (q < x)
+    → Σ q ꞉ ℚ , (q < x) × (y < q)
+  I (q , l₁ , l₂) = q , l₂ , l₁
+
+ℚ-rounded-right₂ : (y : ℚ) (x : ℚ) → Σ q ꞉ ℚ , (q < x) × (y < q) → y < x
+ℚ-rounded-right₂ y x (q , l₁ , l₂) = ℚ<-trans y q x l₂ l₁
+
 open import Notation.Order
 
 _ℚ<ℝ_  : ℚ → ℝ → 𝓤₀ ̇

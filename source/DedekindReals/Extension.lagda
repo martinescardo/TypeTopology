@@ -39,29 +39,6 @@ open import DedekindReals.Type pe pt fe
 
 \end{code}
 
-Define various forms of continuity
-
-\begin{code}
-
-{-
-is-continuous : {M₁ : 𝓤 ̇ } {M₂ : 𝓥 ̇ }
-              → (m₁ : metric-space M₁)
-              → (m₂ : metric-space M₂)
-              → (f : M₁ → M₂)
-              → 𝓤 ̇
-is-continuous {𝓤} {𝓥} {M₁} {M₂} m₁ m₂ f
- = (x x₀ : M₁) → (ε₊ : ℚ₊) → {!!}
-
-is-bishop-continuous : {M₁ : 𝓤 ̇ } {M₂ : 𝓥 ̇ }
-                     → (m₁ : metric-space M₁)
-                     → (m₂ : metric-space M₂)
-                     → (f : M₁ → M₂)
-                     → 𝓤 ̇
-is-bishop-continuous = {!!}
--}
-
-\end{code}
-
 Introduce some useful notation
 
 \begin{code}
@@ -119,9 +96,26 @@ x ℝ∈𝐁 (δ , _) ⦅ x₀ ⦆ = x ℝ∈⦅ x₀ - δ , x₀ + δ ⦆
 
 \end{code}
 
-Modulus of uniform continuity
+Define various forms of continuity
 
 \begin{code}
+
+{-
+is-continuous : {M₁ : 𝓤 ̇ } {M₂ : 𝓥 ̇ }
+              → (m₁ : metric-space M₁)
+              → (m₂ : metric-space M₂)
+              → (f : M₁ → M₂)
+              → 𝓤 ̇
+is-continuous {𝓤} {𝓥} {M₁} {M₂} m₁ m₂ f
+ = (x x₀ : M₁) → (ε₊ : ℚ₊) → {!!}
+
+is-bishop-continuous : {M₁ : 𝓤 ̇ } {M₂ : 𝓥 ̇ }
+                     → (m₁ : metric-space M₁)
+                     → (m₂ : metric-space M₂)
+                     → (f : M₁ → M₂)
+                     → 𝓤 ̇
+is-bishop-continuous = {!!}
+-}
 
 ℚ-is-uniformly-continuous : (f : ℚ → ℚ)
                           → 𝓤₀ ̇
@@ -131,46 +125,11 @@ Modulus of uniform continuity
 δ⦅⦆ : (f : ℚ → ℚ) → (ℚ-is-uniformly-continuous f) → ℚ₊ → ℚ₊
 δ⦅⦆ f ic ε = pr₁ (ic ε)
 
-\end{code}
-
-Statement of theorem : ?
-
-\begin{code}
-
-
-\end{code}
-
-Prove some nice lemmas
-
-\begin{code}
-
-ℚ-rounded-left₁ : (y : ℚ) (x : ℚ) → x < y → Σ p ꞉ ℚ , x < p < y
-ℚ-rounded-left₁ y x l = ℚ-dense x y l
-
-ℚ-rounded-left₂ : (y : ℚ) (x : ℚ) → Σ p ꞉ ℚ , x < p < y → x < y
-ℚ-rounded-left₂ y x (p , l₁ , l₂) = ℚ<-trans x p y l₁ l₂
-
-ℚ-rounded-right₁ : (y : ℚ) (x : ℚ) → y < x → Σ q ꞉ ℚ , (q < x) × (y < q)
-ℚ-rounded-right₁ y x l = I (ℚ-dense y x l)
- where
-  I : Σ q ꞉ ℚ , y < q < x
-    → Σ q ꞉ ℚ , (q < x) × (y < q)
-  I (q , l₁ , l₂) = q , l₂ , l₁
-
-ℚ-rounded-right₂ : (y : ℚ) (x : ℚ) → Σ q ꞉ ℚ , (q < x) × (y < q) → y < x
-ℚ-rounded-right₂ y x (q , l₁ , l₂) = ℚ<-trans y q x l₂ l₁
-
-\end{code}
-
-Prove the theorem
-
-\begin{code}
-
 find-rational-con : (x₀ x₀' : ℚ) ((δ , 0<δ) (δ' , 0<δ') : ℚ₊)
-                  → (x : ℝ)
-                  → x ℝ∈𝐁 (δ , 0<δ) ⦅ x₀ ⦆
-                  → x ℝ∈𝐁 (δ' , 0<δ') ⦅ x₀' ⦆
-                  → Σ x' ꞉ ℚ , max (x₀ - δ) (x₀' - δ') < x' < min (x₀ + δ) (x₀' + δ')
+             → (x : ℝ)
+             → x ℝ∈𝐁 (δ , 0<δ) ⦅ x₀ ⦆
+             → x ℝ∈𝐁 (δ' , 0<δ') ⦅ x₀' ⦆
+             → Σ x' ꞉ ℚ , max (x₀ - δ) (x₀' - δ') < x' < min (x₀ + δ) (x₀' + δ')
 find-rational-con x₀ x₀' (δ , _) (δ' , _) x (l₁ , l₂) (l₃ , l₄)
  = γ (decide-max (x₀ - δ) (x₀' - δ')) (decide-min (x₀ + δ) (x₀' + δ'))
   where
@@ -215,6 +174,17 @@ restrict-balls₂ x₀ x₀' x' (δ₁ , 0<δ₁) (δ₂ , 0<δ₂) (l₁ , l₂
    γ₂ : x' < min (x₀' + δ₂) (x₀ + δ₁)
    γ₂ = transport (x' <_) (min-comm (x₀ + δ₁) (x₀' + δ₂)) l₂
 
+\end{code}
+
+The extension relies on being able to find a rational δ-close to arbitrary close
+to arbitrary reals. This is a simple corollary of arithmetic locatedness. Hence,
+for any given uniformly continuous function (f : ℚ → ℚ), and a given ε and
+(x : ℝ), we can find (x₀ : ℚ) δ-close to x, meaning f x is ε-close to f x₀.
+
+This property is used multiple times when defining the extension.
+
+\begin{code}
+
 ball-around-real : (x : ℝ)
                  → (ε : ℚ₊)
                  → (f : ℚ → ℚ)
@@ -256,6 +226,12 @@ ball-around-real' x f ic = ∥∥-functor γ (ball-around-real x (1ℚ , 0<1) f 
   γ : Σ x₀ ꞉ ℚ , x ℝ∈𝐁 δ⦅⦆ f ic (1ℚ , 0<1) ⦅ x₀ ⦆
     → Σ (x₀ , ε , 0<ε) ꞉ ℚ × ℚ₊ , x ℝ∈𝐁 δ⦅⦆ f ic (ε , 0<ε) ⦅ x₀ ⦆
   γ (x₀ , b) = (x₀ , 1ℚ , 0<1) , b
+
+\end{code}
+
+With the above machinery, we can now define the extension.
+
+\begin{code}
 
 extend : (f : ℚ → ℚ)
        → (ic : ℚ-is-uniformly-continuous f)
@@ -426,7 +402,9 @@ extend f ic x = (L , R) , il , ir , rl , rr , d , lo
 
 \end{code}
 
-We now prove that the extend construction is indeed an extension.
+We now prove that the extend construction is indeed an extension. This means
+that for any rational input, the extension output agrees with the function
+output.
 
 TODO : And is uniformly continuous and unique
 
