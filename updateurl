@@ -81,5 +81,6 @@ ln -s UF.Large-Quotient.html Published.UF.Large-Quotient.html
 ln -s Various.Dedekind.html Published.Various.Dedekind.html
 
 # Further links using the Published.* scheme
-# Added by Tom de Jong - 31 March 2023
+# Added by Tom de Jong - 31 March 2023, 18 April 2023
 ln -s UF.Size.html Published.UF.Size.html
+ln -s UF.ImageAndSurjection.html Published.UF.ImageAndSurjection.html

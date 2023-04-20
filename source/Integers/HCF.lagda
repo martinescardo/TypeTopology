@@ -3,7 +3,11 @@ Andrew Sneap, 27 April 2021
 This file arises as a result of using an equivalence relation to facilitate
 proofs of property of rational numbers. We can prove that two fractions which
 are in lowest terms, and satisfy an equivalence relation are equal. This proof
+<<<<<<< HEAD
 relies on Bezout's lemma, particularly the version of Bezout's lemma which
+=======
+relies on bezouts lemma, particularly the version of bezouts lemma which
+>>>>>>> master
 involves the highest common factor of integers. This files defines such a
 highest common factor, and proves the required property.
 
