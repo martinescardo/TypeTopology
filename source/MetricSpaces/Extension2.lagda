@@ -36,8 +36,6 @@ open PropositionalTruncation pt
 
 open import DedekindReals.Properties fe pt pe
 open import DedekindReals.Type pe pt fe
-open import MetricSpaces.Definition pt fe pe
-open import MetricSpaces.Rationals fe pt pe
 
 \end{code}
 
@@ -109,6 +107,9 @@ x₀ ∈⟦ a , b ⟧ = a ≤ x₀ ≤ b
 
 _ℝ∈⦅_⦆ : ℝ → ℚ × ℚ → 𝓤₀ ̇
 x ℝ∈⦅ a , b ⦆ = a < x < b
+
+ℚ₊ : 𝓤₀ ̇
+ℚ₊ = Σ q ꞉ ℚ , 0ℚ < q
 
 _∈𝐁_⦅_⦆ : ℚ → ℚ₊ → ℚ → 𝓤₀ ̇
 x ∈𝐁 (δ , _) ⦅ x₀ ⦆ = x ∈⦅ x₀ - δ , x₀ + δ ⦆
