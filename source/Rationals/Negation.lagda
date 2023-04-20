@@ -163,6 +163,15 @@ toℚ-neg (x , a) = equiv→equality (ℤ- x' , a') (𝔽- (x , a)) γ
       (- q) * p ＝⟨ ℚ-negation-dist-over-mult q p ⟩
       - q * p   ＝⟨ ap -_ (ℚ*-comm q p)           ⟩
       - p * q   ∎
+
+ℚ-negation-dist-over-mult'' : (p q : ℚ) → p * (- q) ＝ (- p) * q
+ℚ-negation-dist-over-mult'' p q = γ
+ where
+  γ : p * (- q) ＝ (- p) * q
+  γ = p * (- q) ＝⟨ ℚ-negation-dist-over-mult' p q   ⟩
+      - p * q   ＝⟨ ℚ-negation-dist-over-mult p q ⁻¹ ⟩
+      (- p) * q ∎
+
 toℚ-subtraction : (p q : 𝔽) → toℚ p - toℚ q ＝ toℚ (p 𝔽+ (𝔽- q))
 toℚ-subtraction p q = γ
  where
@@ -211,5 +220,10 @@ toℚ-subtraction p q = γ
       2/5 - 2/5 + 3/5       ＝⟨ ap (_+ 3/5) (ℚ-inverse-sum-to-zero 2/5) ⟩
       0ℚ + 3/5              ＝⟨ ℚ-zero-left-neutral 3/5                 ⟩
       3/5                   ∎
+
+1-1/2 : 1ℚ - 1/2 ＝ 1/2
+1-1/2 = 1ℚ - 1/2        ＝⟨ ap (_- 1/2) (1/2+1/2 ⁻¹)     ⟩
+        1/2 + 1/2 - 1/2 ＝⟨ ℚ-inverse-intro'' 1/2 1/2 ⁻¹ ⟩
+        1/2             ∎
 
 \end{code}

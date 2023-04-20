@@ -135,10 +135,6 @@ Statement of theorem : ?
 
 \begin{code}
 
-extension-theorem : 𝓤₁ ̇
-extension-theorem = (f : ℚ → ℚ)
-                  → (ic : ℚ-is-uniformly-continuous f)
-                  → ℝ → ℝ
 
 \end{code}
 
@@ -259,8 +255,10 @@ ball-around-real' x f ic = ∥∥-functor γ (ball-around-real x (1ℚ , 0<1) f 
     → Σ (x₀ , ε , 0<ε) ꞉ ℚ × ℚ₊ , x ℝ∈𝐁 δ⦅⦆ f ic (ε , 0<ε) ⦅ x₀ ⦆
   γ (x₀ , b) = (x₀ , 1ℚ , 0<1) , b
 
-f→f̂ : extension-theorem
-f→f̂ f ic x = (L , R) , il , ir , rl , rr , d , lo
+extend : (f : ℚ → ℚ)
+       → (ic : ℚ-is-uniformly-continuous f)
+       → ℝ → ℝ
+extend f ic x = (L , R) , il , ir , rl , rr , d , lo
  where
   L' R' : ℚ → 𝓤₀ ̇
   L' p = ∃ (x₀ , ε , 0<ε) ꞉ ℚ × ℚ₊ , (x ℝ∈𝐁 δ⦅⦆ f ic (ε , 0<ε) ⦅ x₀ ⦆)
@@ -426,6 +424,107 @@ f→f̂ f ic x = (L , R) , il , ir , rl , rr , d , lo
 
 \end{code}
 
+We now prove that the extend construction is indeed an extension.
+
+TODO : And is uniformly continuous and unique
+
+\begin{code}
+
+extend-is-extension : (q : ℚ)
+                    → (f : ℚ → ℚ)
+                    → (ic : ℚ-is-uniformly-continuous f)
+                    → (extend f ic) (ι q) ＝ ι (f q)
+extend-is-extension q f ic = γ
+ where
+  L  = lower-cut-of ((extend f ic) (ι q))
+
+  γ₁ : (p : ℚ) → p ∈ L → p < f q
+  γ₁ p = ∥∥-rec (ℚ<-is-prop p (f q)) I
+   where
+    I : Σ (x₀ , ε , 0<ε) ꞉ ℚ × ℚ₊ , ι q ℝ∈𝐁 δ⦅⦆ f ic (ε , 0<ε) ⦅ x₀ ⦆
+                                  × p < f x₀ - ε
+      → p < f q
+    I ((x₀ , ε , 0<ε) , b , l) = ℚ<-trans p (f x₀ - ε) (f q) l (pr₁ II)
+     where
+      II : f q ∈𝐁 ε , 0<ε ⦅ f x₀ ⦆
+      II = pr₂ (ic (ε , 0<ε)) q x₀ b
+
+  γ₂ : (p : ℚ)
+     → p < f q
+     → ∃ (x₀ , ε , 0<ε) ꞉ ℚ × ℚ₊ , ι q ℝ∈𝐁 δ⦅⦆ f ic (ε , 0<ε) ⦅ x₀ ⦆
+                                 × p < f x₀ - ε
+  γ₂ p l = ∥∥-functor γ (ball-around-real (ι q) (ε , 0<ε) f ic)
+   where
+    ε : ℚ
+    ε = 1/2 * (f q - p)
+
+    I : 0ℚ < f q - p
+    I = ℚ<-difference-positive p (f q) l
+
+    0<ε : 0ℚ < ε
+    0<ε = ℚ<-pos-multiplication-preserves-order 1/2 (f q - p) 0<1/2 I
+
+    δ₊ : ℚ₊
+    δ₊ = δ⦅⦆ f ic (ε , 0<ε)
+
+    γ : Σ x₀ ꞉ ℚ , (ι q ℝ∈𝐁 δ₊ ⦅ x₀ ⦆)
+      → Σ (x₀ , ε , 0<ε) ꞉ ℚ × ℚ₊ , ι q ℝ∈𝐁 δ⦅⦆ f ic (ε , 0<ε) ⦅ x₀ ⦆
+                                  × p < f x₀ - ε
+    γ (x₀ , b) = (x₀ , ε , 0<ε) , (b , γ')
+     where
+      II : f q < f x₀ + ε
+      II = pr₂ (pr₂ (ic (ε , 0<ε)) q x₀ b)
+
+      IV : f q + (p - f q) < f x₀ + ε + (p - f q)
+      IV = ℚ<-addition-preserves-order
+            (f q) (f x₀ + ε) (p - f q) II
+
+      V : f q + (p - f q) ＝ p
+      V = f q + (p - f q) ＝⟨ ℚ+-comm (f q) (p - f q)        ⟩
+          p - f q + f q   ＝⟨ ℚ-inverse-intro'''' p (f q) ⁻¹ ⟩
+          p               ∎
+
+      VI : f q - p ＝ - (p - f q)
+      VI = f q - p         ＝⟨ ℚ+-comm (f q) (- p)                 ⟩
+           (- p) + f q     ＝⟨ ap ((- p) +_) (ℚ-minus-minus (f q)) ⟩
+           (- p) - (- f q) ＝⟨ ℚ-minus-dist p (- f q)              ⟩
+           - (p - f q)     ∎
+
+      VII : ε + (p - f q) ＝ - ε
+      VII = ε + (p - f q)                        ＝⟨ i    ⟩
+            1/2 * (- (p - f q)) + (p - f q)      ＝⟨ ii   ⟩
+            (- 1/2) * (p - f q) + (p - f q)      ＝⟨ iii  ⟩
+            (- 1/2) * (p - f q) + 1ℚ * (p - f q) ＝⟨ iv   ⟩
+            ((- 1/2) + 1ℚ) * (p - f q)           ＝⟨ v    ⟩
+            (1ℚ - 1/2) * (p - f q)               ＝⟨ vi   ⟩
+            1/2 * (p - f q)                      ＝⟨ vii  ⟩
+            - (- 1/2 * (p - f q))                ＝⟨ viii ⟩
+            - 1/2 * (- (p - f q))                ＝⟨ ix   ⟩
+            - ε                    ∎
+       where
+        i    = ap (λ z → 1/2 * z + (p - f q)) VI
+        ii   = ap (_+ (p - f q)) (ℚ-negation-dist-over-mult'' 1/2 (p - f q))
+        iii  = ap ((- 1/2) * (p - f q) +_) (ℚ-mult-left-id (p - f q) ⁻¹)
+        iv   = ℚ-distributivity' (p - f q) (- 1/2) 1ℚ ⁻¹
+        v    = ap (_* (p - f q)) (ℚ+-comm (- 1/2) 1ℚ)
+        vi   = ap (_* (p - f q)) 1-1/2
+        vii  = ℚ-minus-minus (1/2 * (p - f q))
+        viii = ap -_  (ℚ-negation-dist-over-mult' 1/2 (p - f q) ⁻¹)
+        ix   = ap (λ z → - 1/2 * z) (VI ⁻¹)
+
+      VIII : f x₀ + ε + (p - f q) ＝ f x₀ - ε
+      VIII = f x₀ + ε + (p - f q)   ＝⟨ ℚ+-assoc (f x₀) ε (p - f q) ⟩
+             f x₀ + (ε + (p - f q)) ＝⟨ ap (f x₀ +_) VII            ⟩
+             f x₀ - ε               ∎
+
+      γ' : p <ℚ f x₀ - ε
+      γ' = transport₂ _<_ V VIII IV
+
+  γ : (extend f ic) (ι q) ＝ ι (f q)
+  γ = ℝ-equality-from-left-cut' ((extend f ic) (ι q)) (ι (f q)) γ₁ γ₂
+
+\end{code}
+
 To illustrate the use of the extension theorem, the following example is
 provided which lifts the increment function on rationals to a function on reals.
 
@@ -456,6 +555,6 @@ below). Hence we simply apply the extension thereom and we are done.
     γ₂ = transport (x + 1ℚ <_) (ℚ+-rearrange x₀ ε 1ℚ) I
 
 ℝ-incr : ℝ → ℝ
-ℝ-incr = f→f̂ ℚ-incr ℚ-incr-uc
+ℝ-incr = extend ℚ-incr ℚ-incr-uc
 
 \end{code}
