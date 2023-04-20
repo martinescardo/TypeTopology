@@ -561,4 +561,7 @@ below). Hence we simply apply the extension thereom and we are done.
 ℝ-incr : ℝ → ℝ
 ℝ-incr = extend ℚ-incr ℚ-incr-uc
 
+ℝ-incr-agrees-with-ℚ-incr : (q : ℚ) → ℝ-incr (ι q) ＝ ι (ℚ-incr q)
+ℝ-incr-agrees-with-ℚ-incr q = extend-is-extension q ℚ-incr ℚ-incr-uc
+
 \end{code}
