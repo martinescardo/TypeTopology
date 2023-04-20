@@ -3,6 +3,10 @@ Andrew Sneap - 19 April 2023
 This file proves an extension theorem, which takes lifts functions (f : ℚ → ℚ)
 to functions (f̂ : ℝ → ℝ), given that f is uniformly continuous.
 
+Escardo contributed the Dedekind cut definition of the extension construction,
+suggested the "ball" notation and the paper proof that the "extend" function is
+disjoint, as well as verbally discussing the other cut conditions of "extend".
+
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --lossy-unification --auto-inline #-}
