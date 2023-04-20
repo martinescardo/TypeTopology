@@ -26,7 +26,7 @@ open import UF.Powerset
 open import UF.PropTrunc
 open import UF.Subsingletons
 
-module MetricSpaces.Extension2
+module DedekindReals.Extension
   (fe : Fun-Ext)
   (pe : Prop-Ext)
   (pt : propositional-truncations-exist)
