@@ -99,6 +99,9 @@ max-to-≤ p q = I (max'-to-≤ p q (ℚ-trichotomous p q))
   I (inl t) = inl t
   I (inr t) = inr t
 
+decide-max : (p q : ℚ) → (max p q ＝ q) ∔ (max p q ＝ p)
+decide-max p q = +functor pr₂ pr₂ (max-to-≤ p q)
+
 max≤ : (p q : ℚ) → p ≤ max p q
 max≤ p q = I (max-to-≤ p q)
  where
@@ -189,6 +192,9 @@ min-to-≤ p q = I (min'-to-≤ p q (ℚ-trichotomous p q))
     → p ≤ q × (min p q ＝ p) ∔ q ≤ p × (min p q ＝ q)
   I (inl t) = inl t
   I (inr t) = inr t
+
+decide-min : (p q : ℚ) → (min p q ＝ p) ∔ (min p q ＝ q)
+decide-min p q = +functor pr₂ pr₂ (min-to-≤ p q)
 
 min≤ : (p q : ℚ) → min p q ≤ p
 min≤ p q = I (min-to-≤ p q)

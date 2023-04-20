@@ -3,7 +3,7 @@ Andrew Sneap, 27 April 2021
 This file arises as a result of using an equivalence relation to facilitate
 proofs of property of rational numbers. We can prove that two fractions which
 are in lowest terms, and satisfy an equivalence relation are equal. This proof
-relies on bezouts lemma, particularly the version of bezouts lemma which
+relies on Bezout's lemma, particularly the version of Bezout's lemma which
 involves the highest common factor of integers. This files defines such a
 highest common factor, and proves the required property.
 
@@ -196,7 +196,7 @@ module Integers.HCF where
   I : Σ h ꞉ ℕ , is-hcf h a b
     × (Σ (x , y) ꞉ ℤ × ℤ , pos h ＝ (pos a) * x + (pos b) * y)
     → Σ h ꞉ ℕ , is-hcf h a b
-  I (h , is-hcf , bezout) = h , is-hcf
+  I (h , is-hcf , _) = h , is-hcf
 
 coprime-bezout : (a b : ℕ)
                → coprime a b
@@ -207,7 +207,7 @@ coprime-bezout a b = I (ℤ-HCF a b)
     × (Σ (x , y) ꞉ ℤ × ℤ , pos h ＝ (pos a) * x + (pos b) * y)
     → coprime a b
     → Σ (x , y) ꞉ ℤ × ℤ , pos 1 ＝ pos a * x + pos b * y
-  I (h , is-hcf , (x , y) , bezout) h' = (x , y) , (III ⁻¹ ∙ bezout)
+  I (h , is-hcf , (x , y) , α) h' = (x , y) , (III ⁻¹ ∙ α)
    where
     II : h ＝ 1
     II = hcf-unique a b (h , is-hcf) (1 , h')
