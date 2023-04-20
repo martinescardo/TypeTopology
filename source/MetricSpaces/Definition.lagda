@@ -69,9 +69,6 @@ It is also useful to define the type of positive rationals.
 
 \begin{code}
 
-ℚ₊ : 𝓤₀ ̇
-ℚ₊ = Σ ε ꞉ ℚ , 0ℚ < ε
-
 bounded-sequence : {𝓤 : Universe} → (X : 𝓤 ̇ )→ metric-space X → (S : ℕ → X) → 𝓤₀ ̇
 bounded-sequence X (B , _) S = ∃ K ꞉ ℚ , ((x y : ℕ) → (l : (0ℚ < K)) → B (S x) (S y) K l)
 

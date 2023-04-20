@@ -48,6 +48,9 @@ instance
  Strict-Order-ℚ-ℚ : Strict-Order ℚ ℚ
  _<_ {{Strict-Order-ℚ-ℚ}} = _<ℚ_
 
+ℚ₊ : 𝓤₀ ̇
+ℚ₊ = Σ q ꞉ ℚ , 0ℚ < q
+
 ℚ<-is-prop : (p q : ℚ) → is-prop (p < q)
 ℚ<-is-prop (p , _) (q , _) = 𝔽<-is-prop p q
 
@@ -130,6 +133,9 @@ toℚ-< (x , a) (y , b) l = γ
 
 1/2<1 : 1/2 < 1ℚ
 1/2<1 = toℚ-< (pos 1 , 1) (pos 1 , 0) (0 , refl)
+
+0<1 : 0ℚ < 1ℚ
+0<1 = ℚ<-trans 0ℚ 1/2 1ℚ 0<1/2 1/2<1
 
 toℚ-≤ : (p q : 𝔽) → p 𝔽≤ q → toℚ p ≤ toℚ q
 toℚ-≤ (x , a) (y , b) l = Cases I II III
@@ -375,11 +381,27 @@ rounded-lemma₀ (succ a) =
  where
   I : p + q - q < r - q
   I = ℚ<-addition-preserves-order (p + q) r (- q) l
+
   II : p + q - q ＝ p
-  II = p + q - q       ＝⟨ ℚ+-assoc p q (- q)                  ⟩
-       p + (q - q)     ＝⟨ ap (p +_) (ℚ-inverse-sum-to-zero q) ⟩
-       p + 0ℚ          ＝⟨ ℚ-zero-right-neutral p              ⟩
-       p ∎
+  II = p + q - q   ＝⟨ ℚ+-assoc p q (- q)                  ⟩
+       p + (q - q) ＝⟨ ap (p +_) (ℚ-inverse-sum-to-zero q) ⟩
+       p + 0ℚ      ＝⟨ ℚ-zero-right-neutral p              ⟩
+       p           ∎
+
+ℚ<-subtraction-order : (p q r : ℚ) → p - q < r → p < q + r
+ℚ<-subtraction-order p q r l = γ
+ where
+  I : p - q + q ＝ p
+  I = ℚ-inverse-intro'''' p q ⁻¹
+
+  II : r + q ＝ q + r
+  II = ℚ+-comm r q
+
+  III : p - q + q < r + q
+  III = ℚ<-addition-preserves-order (p - q) r q l
+
+  γ : p < q + r
+  γ = transport₂ _<_ I II III
 
 ℚ<-difference-positive' : (p q : ℚ) → p < q → p - q < 0ℚ
 ℚ<-difference-positive' p q l = γ
@@ -982,5 +1004,44 @@ order-lemma a b c d l = γ (ℚ-trichotomous a c)
 
     IV : - b < - d
     IV = transport₂ _<_ (III a b) (III c d) II
+
+order-lemma' : (p q r : ℚ)
+             → p < q
+             → (p < r - 1/4 * (q - p)) ∔ (r + 1/4 * (q - p) < q)
+order-lemma' p q r l = γ
+ where
+  ε = q - p
+
+  I : 0ℚ < ε
+  I = ℚ<-difference-positive p q l
+
+  II : 1/2 * ε < ε
+  II = half-of-pos-is-less ε I
+
+  III : 1/2 * ε ＝ (r + 1/4 * ε) - (r - 1/4 * ε)
+  III = 1/2 * ε                               ＝⟨ i    ⟩
+        (1/4 + 1/4) * ε                       ＝⟨ ii   ⟩
+        1/4 * ε + 1/4 * ε                     ＝⟨ iii  ⟩
+        1/4 * ε - (- 1/4 * ε)                 ＝⟨ iv   ⟩
+        1/4 * ε + (r - r - (- 1/4 * ε))       ＝⟨ v    ⟩
+        1/4 * ε + (r + ((- r) - (- 1/4 * ε))) ＝⟨ vi   ⟩
+        1/4 * ε + r + ((- r) - (- 1/4 * ε))   ＝⟨ vii  ⟩
+        1/4 * ε + r - (r - 1/4 * ε)           ＝⟨ viii ⟩
+        r + 1/4 * ε - (r - 1/4 * ε)           ∎
+   where
+    i    = ap (_* ε) 1/4+1/4
+    ii   = ℚ-distributivity' ε 1/4 1/4
+    iii  = ap (1/4 * ε +_) (ℚ-minus-minus (1/4 * ε))
+    iv   = ap (1/4 * ε +_) (ℚ-inverse-intro' (- (- 1/4 * ε)) r)
+    v    = ap (1/4 * ε +_) (ℚ+-assoc r (- r) (- (- 1/4 * ε)))
+    vi   = ℚ+-assoc (1/4 * ε) r ((- r) - (- 1/4 * ε)) ⁻¹
+    vii  = ap (1/4 * ε + r +_) (ℚ-minus-dist r (- 1/4 * ε))
+    viii = ap (_- (r - 1/4 * ε)) (ℚ+-comm (1/4 * ε) r)
+
+  IV : (r + 1/4 * ε) - (r - 1/4 * ε) < q - p
+  IV = transport (_< q - p) III II
+
+  γ : p < r - 1/4 * ε ∔ r + 1/4 * ε < q
+  γ = order-lemma (r + 1/4 * ε) (r - 1/4 * ε) q p IV
 
 \end{code}
