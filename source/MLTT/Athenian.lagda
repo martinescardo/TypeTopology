@@ -452,6 +452,12 @@ _!!_ : {X : 𝓤 ̇ } {n : ℕ} → Vector X n → Fin n → X
 (x ∷ xs) !! 𝟎     = x
 (x ∷ xs) !! suc n = xs !! n
 
+vmap : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+    → (X → Y)
+    → {n : ℕ} → Vector X n → Vector Y n
+vmap f []       = []
+vmap f (x ∷ xs) = f x ∷ vmap f xs
+
 
 module vector-util
         {𝓤 : Universe}
