@@ -13,6 +13,7 @@ import Various.HiggsInvolutionTheorem
 import Various.LawvereFPT
 import Various.Lumsdaine
 import Various.NonCollapsibleFamily
-import Various.UnivalenceFromScratch
 import Various.RootsOfBooleanFunctions
+import Various.UnivalenceFromScratch
+
 \end{code}
