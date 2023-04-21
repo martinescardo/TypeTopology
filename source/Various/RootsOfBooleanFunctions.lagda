@@ -32,11 +32,13 @@ given n, and prove that it indeed gives a putative root.
 
 Because this file is intended for a general public of mathematicians
 and computer scientists, we include some remarks that are expected to
-be obvious to Agda practioners.
+be obvious to Agda practioners, but not necessarily for everybody.
 
 Agda is a computer language based on Martin-Löf Type Theory, which in
 turn is the core of HoTT/UF. In this development we adopt the UF
-approach to mathematics.
+approach to mathematics, but this particular file doesn't rely on that
+(other than function extensionality to prove the correctness of some
+constructions).
 
 \begin{code}
 
