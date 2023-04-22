@@ -16,7 +16,7 @@ Example. If f doesn't have any root, then any x in 𝟚ⁿ is putative root.
 Example. If x is a root, then x is a putative root.
 
 Theorem. For any n, there is a formula that mentions only the variable
-𝕗 and the constant 0 such that for any given function f: 𝟚^n → 𝟚, the
+𝕗 and the constant 0 such that for any given function f: 𝟚ⁿ → 𝟚, the
 formula gives a putative root of f when the variable is substituted
 for f.
 
@@ -64,7 +64,7 @@ X ^ n = Fin n → X
 
 \end{code}
 
-The unique element of the empty tuple:
+The unique element of the tuple X ^ 0:
 
 \begin{code}
 
@@ -390,7 +390,7 @@ We will prove them here on another occasion. But we emphasize, for
 now, that we need to prove something stronger, involving not only n
 but also k.
 
-In any case, notice that the desired property of for Aˢ follows
+In any case, notice that the desired property of Aˢ follows
 directly rom the desired property for εˢ:
 
 \begin{code}
