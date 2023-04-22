@@ -361,7 +361,7 @@ Aˢ f = f (εˢ f)
 
 \end{code}
 
-Notice now the definitions look exactly the same as those given above,
+Notice how the definitions look exactly the same as those given above,
 even if the types of the functions are diffent.
 
 \begin{code}
