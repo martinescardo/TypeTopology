@@ -91,7 +91,7 @@ value of f 0:
 
 \begin{code}
 
-motivating-fact : (f : 𝟚 → 𝟚) →  f (f ₀) ＝ ₁ → (n : 𝟚) → f n ＝ ₁
+motivating-fact : (f : 𝟚 → 𝟚) → f (f ₀) ＝ ₁ → (n : 𝟚) → f n ＝ ₁
 motivating-fact f r = γ (f ₀) refl r
  where
   γ : (n₀ : 𝟚) → f ₀ ＝ n₀ → f n₀ ＝ ₁ → (n : 𝟚) → f n ＝ ₁
