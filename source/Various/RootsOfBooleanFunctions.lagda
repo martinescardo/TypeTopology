@@ -91,10 +91,10 @@ value of f 0:
 
 \begin{code}
 
-motivating-fact : (f : 𝟚 → 𝟚) → f (f ₀) ＝ ₁ → (n : 𝟚) → f n ＝ ₁
+motivating-fact : (f : 𝟚 → 𝟚) → f (f ₀) ＝ ₁ → (b : 𝟚) → f b ＝ ₁
 motivating-fact f r = γ (f ₀) refl r
  where
-  γ : (n₀ : 𝟚) → f ₀ ＝ n₀ → f n₀ ＝ ₁ → (n : 𝟚) → f n ＝ ₁
+  γ : (b₀ : 𝟚) → f ₀ ＝ b₀ → f b₀ ＝ ₁ → (b : 𝟚) → f b ＝ ₁
   γ ₀ s r ₀ = r
   γ ₀ s r ₁ = 𝟘-elim
                (zero-is-not-one
@@ -358,9 +358,10 @@ Aˢ : {n k : ℕ} → (F k ^ n → F k) → F k
 
 Aˢ f = f (εˢ f)
 
-εˢ {0}      f = λ (_ : Fin 0) → f !0
-εˢ {succ n} f = cons b₀ (εˢ (f ∘ cons b₀))
+εˢ {0}      {k} f = λ (_ : Fin 0) → f !0
+εˢ {succ n} {k} f = cons b₀ (εˢ (f ∘ cons b₀))
  where
+  b₀ : F k
   b₀ = ε𝟚ˢ (λ b → Aˢ (f ∘ cons b))
 
 \end{code}
