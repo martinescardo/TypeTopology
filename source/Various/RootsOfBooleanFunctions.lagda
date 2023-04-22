@@ -96,7 +96,11 @@ motivating-fact f r = γ (f ₀) refl r
  where
   γ : (n₀ : 𝟚) → f ₀ ＝ n₀ → f n₀ ＝ ₁ → (n : 𝟚) → f n ＝ ₁
   γ ₀ s r ₀ = r
-  γ ₀ s r ₁ = 𝟘-elim (zero-is-not-one (s ⁻¹ ∙ r))
+  γ ₀ s r ₁ = 𝟘-elim
+               (zero-is-not-one
+                 (₀   ＝⟨ s ⁻¹ ⟩
+                  f ₀ ＝⟨ r ⟩
+                  ₁   ∎))
   γ ₁ s r ₀ = s
   γ ₁ s r ₁ = r
 
