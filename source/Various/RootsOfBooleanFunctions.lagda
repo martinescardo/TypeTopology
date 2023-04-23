@@ -45,43 +45,11 @@ constructions).
 {-# OPTIONS --safe --without-K --exact-split --no-sized-types --no-guardedness --auto-inline #-}
 
 open import MLTT.Spartan hiding (_^_)
-open import UF.FunExt
 
-module Various.RootsOfBooleanFunctions (fe : Fun-Ext) where
+module Various.RootsOfBooleanFunctions where
 
 open import MLTT.Athenian
 open import MLTT.Two-Properties
-
-\end{code}
-
-A version of the type of n-tuples of elements of a type X, where Fin n
-is the type of numbers 0, ..., n-1 (and is empty when n is 0):
-
-\begin{code}
-
-_^_ : 𝓤 ̇ → ℕ → 𝓤 ̇
-X ^ n = Fin n → X
-
-\end{code}
-
-The unique element of the tuple X ^ 0:
-
-\begin{code}
-
-!0 : {X : 𝓤 ̇ } → X ^ 0
-!0 ()
-
-\end{code}
-
-Any two elements of this type are equal:
-
-\begin{code}
-
-!0-uniqueness' : {X : 𝓤 ̇ } {x y : X ^ 0} (i : Fin 0) → x i ＝ y i
-!0-uniqueness' ()
-
-!0-uniqueness : {X : 𝓤 ̇ } {x y : X ^ 0} → x ＝ y
-!0-uniqueness = dfunext fe !0-uniqueness'
 
 \end{code}
 
@@ -92,7 +60,7 @@ value of f 0:
 \begin{code}
 
 motivating-fact : (f : 𝟚 → 𝟚) → f (f ₀) ＝ ₁ → (b : 𝟚) → f b ＝ ₁
-motivating-fact f r = γ (f ₀) refl r
+motivating-fact f = γ (f ₀) refl
  where
   γ : (b₀ : 𝟚) → f ₀ ＝ b₀ → f b₀ ＝ ₁ → (b : 𝟚) → f b ＝ ₁
   γ ₀ s r ₀ = r
@@ -158,55 +126,27 @@ The functional ε𝟚 computes a putative root:
 
 \end{code}
 
-We now pause briefly to define some standard functions on tuples.
-
-The head, or first element of a tuple:
-
-\begin{code}
-
-hd : {X : 𝓤 ̇ } {n : ℕ} → X ^ (succ n) → X
-hd xs = xs 𝟎
-
-\end{code}
-
-Removing the head of a tuple, we get its tail:
+We now pause briefly to define the type X ^ n of n-tuples of elements
+of a type X by induction:
 
 \begin{code}
 
-tl : {X : 𝓤 ̇ } {n : ℕ} → X ^ (succ n) → X ^ n
-tl xs i = xs (suc i)
+data _^_ (X : 𝓤 ̇ ) : ℕ → 𝓤 ̇ where
+ ⋆   : X ^ 0
+ _,_ : {n : ℕ} → X → X ^ n → X ^ (succ n)
 
-\end{code}
+hd : {n : ℕ} {X : 𝓤 ̇ } → X ^ (succ n) → X
+hd (x , xs) = x
 
-Prepending a new head to a tuple:
-
-\begin{code}
+tl : {n : ℕ} {X : 𝓤 ̇ } → X ^ (succ n) → X ^ n
+tl (x , xs) = xs
 
 cons : {X : 𝓤 ̇ } {n : ℕ} → X → X ^ n → X ^ (succ n)
-cons x xs 𝟎       = x
-cons x xs (suc i) = xs i
-
-\end{code}
-
-The fundamental properties of the above three functions:
-
-\begin{code}
-
-head-cons : {X : 𝓤 ̇ } {n : ℕ} (x : X) (xs : X ^ n)
-          → hd (cons x xs) ＝ x
-head-cons x xs = refl
-
-tail-cons : {X : 𝓤 ̇ } {n : ℕ} (x : X) (xs : X ^ n)
-          → tl (cons x xs) ＝ xs
-tail-cons x xs = refl
+cons = _,_
 
 cons-head-tail : {X : 𝓤 ̇ } {n : ℕ} (xs : X ^ (succ n))
-               → cons (hd xs) (tl xs) ＝ xs
-cons-head-tail xs = dfunext fe γ
- where
-  γ : ∀ i → cons (hd xs) (tl xs) i ＝ xs i
-  γ  𝟎      = refl
-  γ (suc i) = refl
+               → (hd xs , tl xs) ＝ xs
+cons-head-tail (x , xs) = refl
 
 \end{code}
 
@@ -224,7 +164,7 @@ A : {n : ℕ} → (𝟚 ^ n → 𝟚) → 𝟚
 
 A f = f (ε f)
 
-ε {0}      f = λ (_ : Fin 0) → f !0
+ε {0}      f = ⋆
 ε {succ n} f = cons b₀ (ε (f ∘ cons b₀))
   where
    b₀ : 𝟚
@@ -237,15 +177,17 @@ then A directly from ε as follows:
 
 \begin{code}
 
-ε' : {n : ℕ} → (𝟚 ^ n → 𝟚) → 𝟚 ^ n
-ε' {0}      f = λ (_ : Fin 0) → f !0
-ε' {succ n} f = cons b₀ (ε (f ∘ cons b₀))
-  where
-   b₀ : 𝟚
-   b₀ = ε𝟚 (λ b → (f ∘ cons b) (ε' (f ∘ cons b)))
+private
 
-A' : {n : ℕ} → (𝟚 ^ n → 𝟚) → 𝟚
-A' f = f (ε' f)
+ ε' : {n : ℕ} → (𝟚 ^ n → 𝟚) → 𝟚 ^ n
+ ε' {0}      f = ⋆
+ ε' {succ n} f = cons b₀ (ε (f ∘ cons b₀))
+   where
+    b₀ : 𝟚
+    b₀ = ε𝟚 (λ b → (f ∘ cons b) (ε' (f ∘ cons b)))
+
+ A' : {n : ℕ} → (𝟚 ^ n → 𝟚) → 𝟚
+ A' f = f (ε' f)
 
 \end{code}
 
@@ -264,7 +206,7 @@ A-property→ : {n : ℕ}
               (f : 𝟚 ^ n → 𝟚)
             → A f ＝ ₁
             → (x : 𝟚 ^ n) → f x ＝ ₁
-A-property→ {0} f r x = f x         ＝⟨ ap f !0-uniqueness ⟩
+A-property→ {0} f r ⋆ = f ⋆         ＝⟨ refl ⟩
                         f (ε {0} f) ＝⟨ r ⟩
                         ₁           ∎
 A-property→ {succ n} f r x = IV
@@ -304,7 +246,7 @@ That is, if f has a root, then ε f is a root of f:
 
 \begin{code}
 
-ε-gives-putative-root : {n : ℕ} (f : 𝟚 ^ n → 𝟚)
+ε-gives-putative-root : {n : ℕ}  (f : 𝟚 ^ n → 𝟚)
                       → (Σ x ꞉ 𝟚 ^ n , f x ＝ ₀)
                       → f (ε f) ＝ ₀
 ε-gives-putative-root {n} f (x , r) =
@@ -316,7 +258,8 @@ That is, if f has a root, then ε f is a root of f:
 \end{code}
 
 The above computes a putative root. But what we want to do in this
-file is to give a formula for computing putative roots.
+file is to give a formula for computing putative roots using only 0
+and f, as discussed above.
 
 So we now introduce a type of formulas, using only the symbol O and a
 "variable" 𝕗, defined by induction as follows for any n fixed in
@@ -337,28 +280,35 @@ use the letter ϕs to range over tuples of formulas:
 
 \begin{code}
 
-eval : {n : ℕ} → (𝟚 ^ n → 𝟚) → F n → 𝟚
-eval f O      = ₀
-eval f (𝕗 ϕs) = f (λ i → eval f (ϕs i))
+module _ {n : ℕ} (f : 𝟚 ^ n → 𝟚) where
+
+ eval       : F n → 𝟚
+ eval-tuple : {k : ℕ} → F n ^ k → 𝟚 ^ k
+
+ eval O     = ₀
+ eval (𝕗 ϕ) = f (eval-tuple ϕ)
+
+ eval-tuple ⋆        = ⋆
+ eval-tuple (ϕ , ϕs) = eval ϕ , eval-tuple ϕs
 
 \end{code}
 
-Now, for any k, we think of the type F k as that of "formulas for
+Now, for any n, we think of the type F n as that of "formulas for
 defining booleans", and we repeat the above definitions of the above
 functions ε𝟚, A and ε, replacing booleans by formulas for booleans, in
 order to compute them symbolically (indicated by the superscript s).
 
 \begin{code}
 
-ε𝟚ˢ : {k : ℕ} → (F k → F k) → F k
+ε𝟚ˢ : {n : ℕ} → (F n → F n) → F n
 ε𝟚ˢ f = f O
 
-Aˢ : {n k : ℕ} → (F k ^ n → F k) → F k
-εˢ : {n k : ℕ} → (F k ^ n → F k) → F k ^ n
+Aˢ : {k n : ℕ} → (F n ^ k → F n) → F n
+εˢ : {k n : ℕ} → (F n ^ k → F n) → F n ^ k
 
 Aˢ f = f (εˢ f)
 
-εˢ {0}      {k} f = λ (_ : Fin 0) → f !0
+εˢ {0}      {k} f = ⋆
 εˢ {succ n} {k} f = cons b₀ (εˢ (f ∘ cons b₀))
  where
   b₀ : F k
@@ -384,7 +334,7 @@ Aˢ-desired-property = {n : ℕ} (f : 𝟚 ^ n → 𝟚)
                     → eval f (Aˢ 𝕗) ＝ A f
 
 εˢ-desired-property = {n : ℕ} (f : 𝟚 ^ n → 𝟚)
-                    → (i : Fin n) → eval f (εˢ 𝕗 i) ＝ ε f i
+                    → eval-tuple f (εˢ 𝕗) ＝ ε f
 \end{code}
 
 We will prove them here on another occasion. But we emphasize, for
@@ -392,74 +342,59 @@ now, that we need to prove something stronger, involving not only n
 but also k.
 
 In any case, notice that the desired property of Aˢ follows
-directly rom the desired property for εˢ:
+directly from the desired property for εˢ:
 
 \begin{code}
 
 Aˢ-observation : εˢ-desired-property → Aˢ-desired-property
-Aˢ-observation d {0} f      = ap f !0-uniqueness
+Aˢ-observation d {0} f      = refl
 Aˢ-observation d {succ n} f =
- eval f (Aˢ 𝕗)             ＝⟨ refl ⟩
- f (λ i → eval f (εˢ 𝕗 i)) ＝⟨ ap f (dfunext fe (d f)) ⟩
- f (ε f)                   ＝⟨ refl ⟩
- A f                       ∎
+ eval f (Aˢ 𝕗)           ＝⟨ refl ⟩
+ f (eval-tuple f (εˢ 𝕗)) ＝⟨ ap f (d f) ⟩
+ f (ε f)                 ＝⟨ refl ⟩
+ A f                     ∎
 
 \end{code}
 
-Before we prove the desired property for εˢ, we can give an example.
-
-First notice that Agda can't display functions in a nice, visualizable
-way. In order to do that, we consider a type of n-tuples of elements
-of a type X, which is in bijection with the type X ^ n, and which can
-be nicely displayed. This copy of X ^ n can be inductively defined as
-follows:
+Before we prove the desired property for εˢ, we can give some
+examples.
 
 \begin{code}
 
-data tuple (X : 𝓤 ̇ ) : ℕ → 𝓤 ̇ where
- ⋆   : tuple X 0
- _,_ : {n : ℕ} → X → tuple X n → tuple X (succ n)
+putative-root-formula₂ : F 2 ^ 2
+putative-root-formula₂ = putative-root-formula
+
+putative-root-formula₂-works : (f : 𝟚 ^ 2 → 𝟚)
+                             → (Σ x ꞉ 𝟚 ^ 2 , f x ＝ ₀)
+                             → f (eval-tuple f putative-root-formula₂) ＝ ₀
+putative-root-formula₂-works = ε-gives-putative-root
+
+putative-root-formula₂-explicitly :
+
+  putative-root-formula {2}
+  ＝ (𝕗 (O , 𝕗 (O , O , ⋆) , ⋆) , 𝕗 (𝕗 (O , 𝕗 (O , O , ⋆) , ⋆) , O , ⋆) , ⋆)
+
+putative-root-formula₂-explicitly = refl
+
+putative-root-formula₃ : F 3 ^ 3
+putative-root-formula₃ = putative-root-formula {3}
+
+putative-root-formula₃-works : (f : 𝟚 ^ 3 → 𝟚)
+                             → (Σ x ꞉ 𝟚 ^ 3 , f x ＝ ₀)
+                             → f (eval-tuple f putative-root-formula₃) ＝ ₀
+putative-root-formula₃-works = ε-gives-putative-root
+
+putative-root-formula₃-explicitly :
+ let
+  y  = 𝕗 (O , O , 𝕗 (O , O , O , ⋆) , ⋆)
+  x₀ = 𝕗 (O , y , 𝕗 (O , y , O , ⋆) , ⋆)
+  x₁ = 𝕗 (x₀ , O , 𝕗 (x₀ , O , O , ⋆) , ⋆)
+  x₂ = 𝕗 (x₀ , x₁ , O , ⋆)
+ in
+  putative-root-formula {3} ＝ (x₀ , x₁ , x₂ , ⋆)
+putative-root-formula₃-explicitly = refl
 
 \end{code}
-
-With this, we can define an equivalent copy F' of F as follows:
-
-\begin{code}
-
-data F' (n : ℕ) : 𝓤₀ ̇ where
- O : F' n
- 𝕗 : tuple (F' n) n → F' n
-
-tuplify : {n : ℕ} {X : 𝓤 ̇ } → X ^ n → tuple X n
-tuplify {𝓤} {0}      f = ⋆
-tuplify {𝓤} {succ n} f = f 𝟎 , tuplify (f ∘ suc)
-
-translate : {n : ℕ} → F n → F' n
-translate O      = O
-translate (𝕗 ϕs) = 𝕗 (tuplify (λ i → translate (ϕs i)))
-
-\end{code}
-
-With this, we can visualize our formula for e.g. the putative root
-when n = 2 as follows:
-
-\begin{code}
-
-example₂ : tuple (F' 2) 2
-example₂ = tuplify (λ i → translate (putative-root-formula i))
-
-example₂-explicitly : example₂ ＝
-                      (𝕗 (O , (𝕗 (O , (O , ⋆)) , ⋆)) ,
-                       𝕗 (𝕗 (O , (𝕗 (O , (O , ⋆)) , ⋆)) , (O , ⋆)) , ⋆)
-example₂-explicitly = refl
-
-\end{code}
-
-This says that for any f : 𝟚 ^ 2 → 𝟚, our putative root is
-(x₀ , x₁) where
-
-  x₀ = 𝕗 (O , 𝕗 (O , O))
-  x₁ = 𝕗 (𝕗 (O , 𝕗 (O , O)) , O)
 
 TODO. Prove the above desired properties and use them to show that the
 formula for putative roots indeed gives putative roots.
@@ -490,22 +425,5 @@ that we may need for other purposes in the future.
   γ : is-decidable (Σ x ꞉ 𝟚 ^ n , f x ＝ ₀) → is-decidable ((x : 𝟚 ^ n) → f x ＝ ₁)
   γ (inl (x , r)) = inr (λ ϕ → zero-is-not-one (r ⁻¹ ∙ ϕ x))
   γ (inr ν)       = inl (λ x → different-from-₀-equal-₁ (λ r → ν (x , r)))
-
-F-rec : {n : ℕ} {X : 𝓤 ̇ } → X → (X ^ n → X) → F n → X
-F-rec {𝓤} {n} {X} x₀ p = h
- where
-  h : F n → X
-  h O     = x₀
-  h (𝕗 t) = p (λ i → h (t i))
-
-F-ind : {n : ℕ} {X : F n → 𝓤 ̇ }
-      → X O
-      → ((ts : F n ^ n) → ((i : Fin n) → X (ts i)) → X (𝕗 ts))
-      → (t : F n) → X t
-F-ind {𝓤} {n} {X} x₀ p = h
- where
-  h : (t : F n) → X t
-  h O      = x₀
-  h (𝕗 ts) = p ts (λ i → h (ts i))
 
 \end{code}
