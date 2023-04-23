@@ -53,18 +53,19 @@ value of f 0:
 
 \begin{code}
 
+
 motivating-fact : (f : 𝟚 → 𝟚) → f (f ₀) ＝ ₁ → (b : 𝟚) → f b ＝ ₁
 motivating-fact f = γ (f ₀) refl
  where
   γ : (b₀ : 𝟚) → f ₀ ＝ b₀ → f b₀ ＝ ₁ → (b : 𝟚) → f b ＝ ₁
-  γ ₀ s r ₀ = r
-  γ ₀ s r ₁ = 𝟘-elim
+  γ ₀ p q ₀ = q
+  γ ₀ p q ₁ = 𝟘-elim
                (zero-is-not-one
-                 (₀   ＝⟨ s ⁻¹ ⟩
-                  f ₀ ＝⟨ r ⟩
+                 (₀   ＝⟨ p ⁻¹ ⟩
+                  f ₀ ＝⟨ q ⟩
                   ₁   ∎))
-  γ ₁ s r ₀ = s
-  γ ₁ s r ₁ = r
+  γ ₁ p q ₀ = p
+  γ ₁ p q ₁ = q
 
 \end{code}
 
@@ -189,10 +190,10 @@ A-property→ : {n : ℕ}
               (f : 𝟚 ^ n → 𝟚)
             → A f ＝ ₁
             → (x : 𝟚 ^ n) → f x ＝ ₁
-A-property→ {0}      f r ⋆ = f ⋆         ＝⟨ refl ⟩
-                             f (ε {0} f) ＝⟨ r ⟩
+A-property→ {0}      f p ⋆ = f ⋆         ＝⟨ refl ⟩
+                             f (ε {0} f) ＝⟨ p ⟩
                              ₁           ∎
-A-property→ {succ n} f r ( x , xs) = II
+A-property→ {succ n} f p (x , xs) = II
  where
   IH : (b : 𝟚) → A (f ∘ prepend b) ＝ ₁ → (xs : 𝟚 ^ n) → f (prepend b xs) ＝ ₁
   IH b = A-property→ {n} (f ∘ prepend b)
@@ -204,7 +205,7 @@ A-property→ {succ n} f r ( x , xs) = II
   I = A𝟚-property→ (b ↦ A (f ∘ prepend b))
 
   II : f (x , xs) ＝ ₁
-  II = IH x (I r x) xs
+  II = IH x (I p x) xs
 
 σ : {n : ℕ} (f : 𝟚 ^ n → 𝟚)
   → Σ x₀ ꞉ 𝟚 ^ n , (f x₀ ＝ ₁ → (x : 𝟚 ^ n) → f x ＝ ₁)
@@ -274,60 +275,53 @@ order to compute them symbolically (indicated by the superscript s).
 ε𝟚ˢ : {n : ℕ} → (F n → F n) → F n
 ε𝟚ˢ f = f O
 
-Aˢ : {k n : ℕ} → (F n ^ k → F n) → F n
-εˢ : {k n : ℕ} → (F n ^ k → F n) → F n ^ k
+Aˢ : {n k : ℕ} → (F k ^ n → F k) → F k
+εˢ : {n k : ℕ} → (F k ^ n → F k) → F k ^ n
 
 Aˢ f = f (εˢ f)
 
-εˢ {0}      {n} f = ⋆
-εˢ {succ k} {n} f = prepend b₀ (εˢ (f ∘ prepend b₀))
+εˢ {0}      {k} f = ⋆
+εˢ {succ n} {k} f = prepend b₀ (εˢ (f ∘ prepend b₀))
  where
-  b₀ : F n
+  b₀ : F k
   b₀ = ε𝟚ˢ (b ↦ Aˢ (f ∘ prepend b))
 
 \end{code}
 
 Notice how the definitions look exactly the same as those given above,
-even if the types of the functions are diffent.
+even if the types of the functions are different.
 
 \begin{code}
 
-putative-root-formula : {n : ℕ} → F n ^ n
-putative-root-formula = εˢ 𝕗
+putative-root-formula : (n : ℕ) → F n ^ n
+putative-root-formula n = εˢ {n} {n} 𝕗
 
 \end{code}
 
-The intended properties of these functions are, of course:
+The intended properties of these functions are, of course that
 
-\begin{code}
+  eval f (Aˢ 𝕗) ＝ A f
+  eval-tuple f (εˢ 𝕗) ＝ ε f
 
-Aˢ-desired-property = {n : ℕ} (f : 𝟚 ^ n → 𝟚)
-                    → eval f (Aˢ 𝕗) ＝ A f
-
-εˢ-desired-property = {n : ℕ} (f : 𝟚 ^ n → 𝟚)
-                    → eval-tuple f (εˢ 𝕗) ＝ ε f
-\end{code}
-
-Before we prove these desired properties, we can give some
-examples.
+Before we prove this, we can give some examples.
 
 \begin{code}
 
 putative-root-formula₂-works : (f : 𝟚 ^ 2 → 𝟚)
                              → (Σ x ꞉ 𝟚 ^ 2 , f x ＝ ₀)
-                             → f (eval-tuple f putative-root-formula) ＝ ₀
+                             → f (eval-tuple f (putative-root-formula 2)) ＝ ₀
 putative-root-formula₂-works = ε-gives-putative-root
 
 putative-root-formula₂-explicitly :
 
-  putative-root-formula {2}
+  putative-root-formula 2
   ＝ (𝕗 (O , 𝕗 (O , O , ⋆) , ⋆) , 𝕗 (𝕗 (O , 𝕗 (O , O , ⋆) , ⋆) , O , ⋆) , ⋆)
 
 putative-root-formula₂-explicitly = refl
 
 putative-root-formula₃-works : (f : 𝟚 ^ 3 → 𝟚)
                              → (Σ x ꞉ 𝟚 ^ 3 , f x ＝ ₀)
-                             → f (eval-tuple f putative-root-formula) ＝ ₀
+                             → f (eval-tuple f (putative-root-formula 3)) ＝ ₀
 putative-root-formula₃-works = ε-gives-putative-root
 
 putative-root-formula₃-explicitly :
@@ -337,29 +331,13 @@ putative-root-formula₃-explicitly :
   x₁ = 𝕗 (x₀ , O , 𝕗 (x₀ , O , O , ⋆) , ⋆)
   x₂ = 𝕗 (x₀ , x₁ , O , ⋆)
  in
-  putative-root-formula {3} ＝ (x₀ , x₁ , x₂ , ⋆)
+  putative-root-formula 3 ＝ (x₀ , x₁ , x₂ , ⋆)
 putative-root-formula₃-explicitly = refl
 
 \end{code}
 
 TODO. Prove the above desired properties and use them to show that the
 formula for putative roots indeed gives putative roots.
-
-In any case, notice that the desired property of Aˢ follows
-directly from the desired property for εˢ:
-
-\begin{code}
-
-Aˢ-observation : εˢ-desired-property → Aˢ-desired-property
-Aˢ-observation d {0} f      = refl
-Aˢ-observation d {succ n} f =
- eval f (Aˢ 𝕗)           ＝⟨ refl ⟩
- f (eval-tuple f (εˢ 𝕗)) ＝⟨ ap f (d f) ⟩
- f (ε f)                 ＝⟨ refl ⟩
- A f                     ∎
-
-\end{code}
-
 
 Appendix. Things that are not needed for the above discussion, but
 that we may need for other purposes in the future.
