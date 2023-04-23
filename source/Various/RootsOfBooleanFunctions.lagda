@@ -4,7 +4,7 @@ Based on Section 8.1 of the paper https://doi.org/10.2168/LMCS-4(3:3)2008
 
 Let 𝟚 be the two-point set with elements 0 and 1.
 
-Consider a given boolean function f : 𝟚ⁿ → 𝟚.
+Consider a given boolean function f: 𝟚ⁿ → 𝟚.
 
 Definition. A *root* of f is some x in 𝟚ⁿ such that f x = 0.
 
@@ -33,21 +33,15 @@ given n, and prove that it indeed gives a putative root.
 Because this file is intended for a general public of mathematicians
 and computer scientists, we include some remarks that are expected to
 be obvious to Agda practioners, but not necessarily for everybody.
-
-Agda is a computer language based on Martin-Löf Type Theory, which in
-turn is the core of HoTT/UF. In this development we adopt the UF
-approach to mathematics, but this particular file doesn't rely on that
-(other than function extensionality to prove the correctness of some
-constructions).
+Agda is a computer language based on Martin-Löf Type Theory.
 
 \begin{code}
 
 {-# OPTIONS --safe --without-K --exact-split --no-sized-types --no-guardedness --auto-inline #-}
 
-open import MLTT.Spartan hiding (_^_)
-
 module Various.RootsOfBooleanFunctions where
 
+open import MLTT.Spartan hiding (_^_)
 open import MLTT.Athenian
 open import MLTT.Two-Properties
 
@@ -110,7 +104,7 @@ boolean b₀ such that if f b₀ ＝ ₁ then f n ＝ ₁ for every boolean b:
 
 \end{code}
 
-The functional ε𝟚 computes a putative root:
+The functional ε𝟚 computes the putative root ε f for any f: 𝟚 → 𝟚:
 
 \begin{code}
 
@@ -123,11 +117,10 @@ The functional ε𝟚 computes a putative root:
                        (₀   ＝⟨ r ⁻¹ ⟩
                         f b ＝⟨ A𝟚-property→ f s b ⟩
                         ₁   ∎))
-
 \end{code}
 
-We now pause briefly to define the type X ^ n of n-tuples of elements
-of a type X by induction:
+We define the type X ^ n of n-tuples of elements of a type X by
+induction as follows.
 
 \begin{code}
 
@@ -135,18 +128,8 @@ data _^_ (X : 𝓤 ̇ ) : ℕ → 𝓤 ̇ where
  ⋆   : X ^ 0
  _,_ : {n : ℕ} → X → X ^ n → X ^ (succ n)
 
-hd : {n : ℕ} {X : 𝓤 ̇ } → X ^ (succ n) → X
-hd (x , xs) = x
-
-tl : {n : ℕ} {X : 𝓤 ̇ } → X ^ (succ n) → X ^ n
-tl (x , xs) = xs
-
-cons : {X : 𝓤 ̇ } {n : ℕ} → X → X ^ n → X ^ (succ n)
-cons = _,_
-
-cons-head-tail : {X : 𝓤 ̇ } {n : ℕ} (xs : X ^ (succ n))
-               → (hd xs , tl xs) ＝ xs
-cons-head-tail (x , xs) = refl
+prepend : {X : 𝓤 ̇ } {n : ℕ} → X → X ^ n → X ^ (succ n)
+prepend x = (xs ↦ (x , xs))
 
 \end{code}
 
@@ -165,10 +148,10 @@ A : {n : ℕ} → (𝟚 ^ n → 𝟚) → 𝟚
 A f = f (ε f)
 
 ε {0}      f = ⋆
-ε {succ n} f = cons b₀ (ε (f ∘ cons b₀))
+ε {succ n} f = prepend b₀ (ε (f ∘ prepend b₀))
   where
    b₀ : 𝟚
-   b₀ = ε𝟚 (λ b → A (f ∘ cons b))
+   b₀ = ε𝟚 (b ↦ A (f ∘ prepend b))
 
 \end{code}
 
@@ -181,10 +164,10 @@ private
 
  ε' : {n : ℕ} → (𝟚 ^ n → 𝟚) → 𝟚 ^ n
  ε' {0}      f = ⋆
- ε' {succ n} f = cons b₀ (ε (f ∘ cons b₀))
+ ε' {succ n} f = prepend b₀ (ε (f ∘ prepend b₀))
    where
     b₀ : 𝟚
-    b₀ = ε𝟚 (λ b → (f ∘ cons b) (ε' (f ∘ cons b)))
+    b₀ = ε𝟚 (b ↦ (f ∘ prepend b) (ε' (f ∘ prepend b)))
 
  A' : {n : ℕ} → (𝟚 ^ n → 𝟚) → 𝟚
  A' f = f (ε' f)
@@ -206,34 +189,22 @@ A-property→ : {n : ℕ}
               (f : 𝟚 ^ n → 𝟚)
             → A f ＝ ₁
             → (x : 𝟚 ^ n) → f x ＝ ₁
-A-property→ {0} f r ⋆ = f ⋆         ＝⟨ refl ⟩
-                        f (ε {0} f) ＝⟨ r ⟩
-                        ₁           ∎
-A-property→ {succ n} f r x = IV
+A-property→ {0}      f r ⋆ = f ⋆         ＝⟨ refl ⟩
+                             f (ε {0} f) ＝⟨ r ⟩
+                             ₁           ∎
+A-property→ {succ n} f r ( x , xs) = II
  where
-  IH : (b : 𝟚) → A (f ∘ cons b) ＝ ₁ → (β : 𝟚 ^ n) → f (cons b β) ＝ ₁
-  IH b = A-property→ {n} (f ∘ cons b)
+  IH : (b : 𝟚) → A (f ∘ prepend b) ＝ ₁ → (xs : 𝟚 ^ n) → f (prepend b xs) ＝ ₁
+  IH b = A-property→ {n} (f ∘ prepend b)
 
   b₀ : 𝟚
-  b₀ = ε𝟚 (λ b → A (f ∘ cons b))
+  b₀ = ε𝟚 (b ↦ A (f ∘ prepend b))
 
-  I : A (f ∘ cons b₀) ＝ ₁ → (b : 𝟚) → A (f ∘ cons b) ＝ ₁
-  I = A𝟚-property→ (λ b → A (f ∘ cons b))
+  I : A (f ∘ prepend b₀) ＝ ₁ → (b : 𝟚) → A (f ∘ prepend b) ＝ ₁
+  I = A𝟚-property→ (b ↦ A (f ∘ prepend b))
 
-  observation₀ : A f ＝ ₁
-  observation₀ = r
-
-  observation₁ : A f ＝ A (f ∘ cons b₀)
-  observation₁ = refl
-
-  II : (b : 𝟚) (β : 𝟚 ^ n) → f (cons b β) ＝ ₁
-  II b = IH b (I r b)
-
-  III : f (cons (hd x) (tl x)) ＝ ₁
-  III = II (hd x) (tl x)
-
-  IV : f x ＝ ₁
-  IV = transport (λ - → f - ＝ ₁) (cons-head-tail x) III
+  II : f (x , xs) ＝ ₁
+  II = IH x (I r x) xs
 
 σ : {n : ℕ} (f : 𝟚 ^ n → 𝟚)
   → Σ x₀ ꞉ 𝟚 ^ n , (f x₀ ＝ ₁ → (x : 𝟚 ^ n) → f x ＝ ₁)
@@ -249,11 +220,11 @@ That is, if f has a root, then ε f is a root of f:
 ε-gives-putative-root : {n : ℕ}  (f : 𝟚 ^ n → 𝟚)
                       → (Σ x ꞉ 𝟚 ^ n , f x ＝ ₀)
                       → f (ε f) ＝ ₀
-ε-gives-putative-root {n} f (x , r) =
+ε-gives-putative-root {n} f (x , p) =
  different-from-₁-equal-₀
-  (λ (s : A f ＝ ₁) → zero-is-not-one
-                       (₀   ＝⟨ r ⁻¹ ⟩
-                        f x ＝⟨ A-property→ f s x ⟩
+  (λ (q : A f ＝ ₁) → zero-is-not-one
+                       (₀   ＝⟨ p ⁻¹ ⟩
+                        f x ＝⟨ A-property→ f q x ⟩
                         ₁   ∎))
 \end{code}
 
@@ -308,11 +279,11 @@ Aˢ : {k n : ℕ} → (F n ^ k → F n) → F n
 
 Aˢ f = f (εˢ f)
 
-εˢ {0}      {k} f = ⋆
-εˢ {succ n} {k} f = cons b₀ (εˢ (f ∘ cons b₀))
+εˢ {0}      {n} f = ⋆
+εˢ {succ k} {n} f = prepend b₀ (εˢ (f ∘ prepend b₀))
  where
-  b₀ : F k
-  b₀ = ε𝟚ˢ (λ b → Aˢ (f ∘ cons b))
+  b₀ : F n
+  b₀ = ε𝟚ˢ (b ↦ Aˢ (f ∘ prepend b))
 
 \end{code}
 
@@ -337,36 +308,14 @@ Aˢ-desired-property = {n : ℕ} (f : 𝟚 ^ n → 𝟚)
                     → eval-tuple f (εˢ 𝕗) ＝ ε f
 \end{code}
 
-We will prove them here on another occasion. But we emphasize, for
-now, that we need to prove something stronger, involving not only n
-but also k.
-
-In any case, notice that the desired property of Aˢ follows
-directly from the desired property for εˢ:
-
-\begin{code}
-
-Aˢ-observation : εˢ-desired-property → Aˢ-desired-property
-Aˢ-observation d {0} f      = refl
-Aˢ-observation d {succ n} f =
- eval f (Aˢ 𝕗)           ＝⟨ refl ⟩
- f (eval-tuple f (εˢ 𝕗)) ＝⟨ ap f (d f) ⟩
- f (ε f)                 ＝⟨ refl ⟩
- A f                     ∎
-
-\end{code}
-
-Before we prove the desired property for εˢ, we can give some
+Before we prove these desired properties, we can give some
 examples.
 
 \begin{code}
 
-putative-root-formula₂ : F 2 ^ 2
-putative-root-formula₂ = putative-root-formula
-
 putative-root-formula₂-works : (f : 𝟚 ^ 2 → 𝟚)
                              → (Σ x ꞉ 𝟚 ^ 2 , f x ＝ ₀)
-                             → f (eval-tuple f putative-root-formula₂) ＝ ₀
+                             → f (eval-tuple f putative-root-formula) ＝ ₀
 putative-root-formula₂-works = ε-gives-putative-root
 
 putative-root-formula₂-explicitly :
@@ -376,12 +325,9 @@ putative-root-formula₂-explicitly :
 
 putative-root-formula₂-explicitly = refl
 
-putative-root-formula₃ : F 3 ^ 3
-putative-root-formula₃ = putative-root-formula {3}
-
 putative-root-formula₃-works : (f : 𝟚 ^ 3 → 𝟚)
                              → (Σ x ꞉ 𝟚 ^ 3 , f x ＝ ₀)
-                             → f (eval-tuple f putative-root-formula₃) ＝ ₀
+                             → f (eval-tuple f putative-root-formula) ＝ ₀
 putative-root-formula₃-works = ε-gives-putative-root
 
 putative-root-formula₃-explicitly :
@@ -399,6 +345,22 @@ putative-root-formula₃-explicitly = refl
 TODO. Prove the above desired properties and use them to show that the
 formula for putative roots indeed gives putative roots.
 
+In any case, notice that the desired property of Aˢ follows
+directly from the desired property for εˢ:
+
+\begin{code}
+
+Aˢ-observation : εˢ-desired-property → Aˢ-desired-property
+Aˢ-observation d {0} f      = refl
+Aˢ-observation d {succ n} f =
+ eval f (Aˢ 𝕗)           ＝⟨ refl ⟩
+ f (eval-tuple f (εˢ 𝕗)) ＝⟨ ap f (d f) ⟩
+ f (ε f)                 ＝⟨ refl ⟩
+ A f                     ∎
+
+\end{code}
+
+
 Appendix. Things that are not needed for the above discussion, but
 that we may need for other purposes in the future.
 
@@ -412,18 +374,20 @@ that we may need for other purposes in the future.
   x = ε f
 
   γ : (k : 𝟚) → f x ＝ k → is-decidable (Σ x ꞉ 𝟚 ^ n , f x ＝ ₀)
-  γ ₀ r = inl (x  , r)
-  γ ₁ r = inr (λ ((β , s) : Σ x ꞉ 𝟚 ^ n , f x ＝ ₀) → zero-is-not-one
-                                                      (₀   ＝⟨ s ⁻¹ ⟩
-                                                       f β ＝⟨ A-property→ f r β ⟩
-                                                       ₁   ∎))
+  γ ₀ p = inl (x  , p)
+  γ ₁ p = inr (λ ((x , q) : Σ x ꞉ 𝟚 ^ n , f x ＝ ₀)
+                 → zero-is-not-one
+                    (₀   ＝⟨ q ⁻¹ ⟩
+                     f x ＝⟨ A-property→ f p x ⟩
+                     ₁   ∎))
 
 δΠ : {n : ℕ} (f : 𝟚 ^ n → 𝟚)
    → is-decidable (Π x ꞉ 𝟚 ^ n , f x ＝ ₁)
 δΠ {n} f = γ (δΣ f)
  where
-  γ : is-decidable (Σ x ꞉ 𝟚 ^ n , f x ＝ ₀) → is-decidable ((x : 𝟚 ^ n) → f x ＝ ₁)
-  γ (inl (x , r)) = inr (λ ϕ → zero-is-not-one (r ⁻¹ ∙ ϕ x))
-  γ (inr ν)       = inl (λ x → different-from-₀-equal-₁ (λ r → ν (x , r)))
+  γ : is-decidable (Σ x ꞉ 𝟚 ^ n , f x ＝ ₀)
+    → is-decidable ((x : 𝟚 ^ n) → f x ＝ ₁)
+  γ (inl (x , p)) = inr (λ ϕ → zero-is-not-one (p ⁻¹ ∙ ϕ x))
+  γ (inr ν)       = inl (λ x → different-from-₀-equal-₁ (λ p → ν (x , p)))
 
 \end{code}
