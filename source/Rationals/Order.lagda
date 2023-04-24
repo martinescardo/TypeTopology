@@ -1044,4 +1044,30 @@ order-lemma' p q r l = γ
   γ : p < r - 1/4 * ε ∔ r + 1/4 * ε < q
   γ = order-lemma (r + 1/4 * ε) (r - 1/4 * ε) q p IV
 
+ℚ<-swap-right-add : (p q r : ℚ) → p < q + r → (- q) - r < - p
+ℚ<-swap-right-add p q r l = γ
+ where
+  I : - (q + r) < - p
+  I = ℚ<-swap p (q + r) l
+
+  II : - (q + r) ＝ (- q) - r
+  II = ℚ-minus-dist q r ⁻¹
+
+  γ : (- q) - r < - p
+  γ = transport (_< - p) II I
+
+ℚ<-swap-left-neg : (p q r : ℚ) → p - q < r → - r < (- p) + q
+ℚ<-swap-left-neg p q r l = γ
+ where
+  I : - r <ℚ - (p - q)
+  I = ℚ<-swap (p - q) r l
+
+  II : - (p - q) ＝ (- p) + q
+  II = - (p - q)     ＝⟨ ℚ-minus-dist p (- q) ⁻¹            ⟩
+       (- p) - (- q) ＝⟨ ap ((- p) +_) (ℚ-minus-minus q ⁻¹) ⟩
+       (- p) + q     ∎
+
+  γ : - r < (- p) + q
+  γ = transport (- r <_) II I
+
 \end{code}
