@@ -148,4 +148,28 @@ module HeytingImplicationConstruction (X : Locale 𝓤  𝓥  𝓥)
        𝟎[ 𝒪 X ]                    ≤⟨ 𝟎-is-bottom (𝒪 X) U ⟩
        U                           ■
 
+ H₈ : (U V : ⟨ 𝒪 X ⟩) → U ＝ (U ∨[ 𝒪 X ] V) ∧[ 𝒪 X ] (V ==> U)
+ H₈ U V = ≤-is-antisymmetric (poset-of (𝒪 X)) † ‡
+  where
+   open PosetReasoning (poset-of (𝒪 X))
+
+   † : (U ≤[ poset-of (𝒪 X) ] ((U ∨[ 𝒪 X ] V) ∧[ 𝒪 X ] V ==> U)) holds
+   † = ∧[ 𝒪 X ]-greatest (U ∨[ 𝒪 X ] V) (V ==> U) U
+        (∨[ 𝒪 X ]-upper₁ U V)
+        (weakening V U)
+
+   ‡ : (((U ∨[ 𝒪 X ] V) ∧[ 𝒪 X ] (V ==> U)) ≤[ poset-of (𝒪 X) ] U) holds
+   ‡ = (U ∨[ 𝒪 X ] V) ∧[ 𝒪 X ] (V ==> U)                        ＝⟨ Ⅰ ⟩ₚ
+       (V ==> U) ∧[ 𝒪 X ] (U ∨[ 𝒪 X ] V)                        ＝⟨ Ⅱ ⟩ₚ
+       ((V ==> U) ∧[ 𝒪 X ] U) ∨[ 𝒪 X ] ((V ==> U) ∧[ 𝒪 X ] V)   ≤⟨ Ⅲ ⟩
+       ((V ==> U) ∧[ 𝒪 X ] U) ∨[ 𝒪 X ] U                        ≤⟨ Ⅳ ⟩
+       U ∨[ 𝒪 X ] U                                             ＝⟨ Ⅴ ⟩ₚ
+       U                                                        ■
+        where
+         Ⅰ = ∧[ 𝒪 X ]-is-commutative (U ∨[ 𝒪 X ] V) (V ==> U)
+         Ⅱ = binary-distributivity (𝒪 X) (V ==> U) U V
+         Ⅲ = ∨[ 𝒪 X ]-right-monotone (mp-right V U)
+         Ⅳ = ∨[ 𝒪 X ]-left-monotone (∧[ 𝒪 X ]-lower₂ (V ==> U) U)
+         Ⅴ = ∨[ 𝒪 X ]-is-idempotent U ⁻¹
+
 \end{code}
