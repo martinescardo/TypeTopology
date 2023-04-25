@@ -392,4 +392,13 @@ abs-mult x y = γ (ℚ-dichotomous' x 0ℚ) (ℚ-dichotomous' y 0ℚ)
   γ (inr l₁) (inl l₂) = γ₃ x y l₁ l₂
   γ (inr l₁) (inr l₂) = γ₁ l₁ l₂
 
+ℚ≤-abs-neg : (p : ℚ) → - abs p ≤ abs p
+ℚ≤-abs-neg p = γ (ℚ-abs-≤ p)
+ where
+  γ : - abs p ≤ p × p ≤ abs p → - abs p ≤ abs p
+  γ (l₁ , l₂) = ℚ≤-trans (- abs p) p (abs p) l₁ l₂
+
+ℚ≤-abs-all : (p : ℚ) → p ≤ abs p
+ℚ≤-abs-all p = pr₂ (ℚ-abs-≤ p)
+
 \end{code}

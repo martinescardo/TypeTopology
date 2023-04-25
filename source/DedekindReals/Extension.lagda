@@ -1,7 +1,7 @@
 Andrew Sneap - 19 April 2023
 
-This file proves an extension theorem, which takes lifts functions (f : ℚ → ℚ)
-to functions (f̂ : ℝ → ℝ), given that f is uniformly continuous.
+This file proves an extension theorem, which extends functions (f : ℚ → ℚ) to
+functions (f̂ : ℝ → ℝ), given that f is uniformly continuous.
 
 Escardo contributed the Dedekind cut definition of the extension construction,
 suggested the "ball" notation and the paper proof that the "extend" function is
@@ -539,5 +539,90 @@ below). Hence we simply apply the extension thereom and we are done.
 
 ℝ-incr-agrees-with-ℚ-incr : (q : ℚ) → ℝ-incr (ι q) ＝ ι (ℚ-incr q)
 ℝ-incr-agrees-with-ℚ-incr q = extend-is-extension q ℚ-incr ℚ-incr-uc
+
+ℚ-neg-is-uc : ℚ-is-uniformly-continuous (-_)
+ℚ-neg-is-uc (ε , 0<ε) = (ε , 0<ε) , γ
+ where
+  γ : (x x₀ : ℚ) → x ∈𝐁 ε , 0<ε ⦅ x₀ ⦆ → (- x) ∈𝐁 ε , 0<ε ⦅ - x₀ ⦆
+  γ x x₀ (l₁ , l₂) = l₃ , l₄
+   where
+    l₃ : (- x₀) - ε < - x
+    l₃ = ℚ<-swap-right-add x x₀ ε l₂
+
+    l₄ : - x < (- x₀) + ε
+    l₄ = ℚ<-swap-left-neg x₀ ε x l₁
+
+ℝ-_ : ℝ → ℝ
+ℝ-_ = extend -_ ℚ-neg-is-uc
+
+open import Rationals.Abs
+
+abs-uc : ℚ-is-uniformly-continuous abs
+abs-uc (ε , 0<ε) = (ε , 0<ε) , γ
+ where
+  γ : (x x₀ : ℚ) → x ∈𝐁 ε , 0<ε ⦅ x₀ ⦆ → abs x ∈𝐁 ε , 0<ε ⦅ abs x₀ ⦆
+  γ x x₀ (l₁ , l₂) = γ' (ℚ-abs-inverse x) (ℚ-abs-inverse x₀)
+   where
+    I : (- x₀) - ε < - x
+    I = ℚ<-swap-right-add x x₀ ε l₂
+
+    II : - x < (- x₀) + ε
+    II = ℚ<-swap-left-neg x₀ ε x l₁
+
+    γ' : (abs x ＝ x) ∔ (abs x ＝ - x)
+       → (abs x₀ ＝ x₀) ∔ (abs x₀ ＝ - x₀)
+       → abs x ∈𝐁 ε , 0<ε ⦅ abs x₀ ⦆
+    γ' (inl e₁) (inl e₂) = l₃ , l₄
+     where
+      l₃ : abs x₀ - ε < abs x
+      l₃ = transport₂ (λ a b → a - ε < b) (e₂ ⁻¹) (e₁ ⁻¹) l₁
+
+      l₄ : abs x < abs x₀ + ε
+      l₄ = transport₂ (λ a b → b < a + ε) (e₂ ⁻¹) (e₁ ⁻¹) l₂
+
+    γ' (inl e₁) (inr e₂) = l₃ , l₄
+     where
+      III : abs x₀ - ε < - abs x
+      III = transport₂ (λ a b → a - ε < - b) (e₂ ⁻¹) (e₁ ⁻¹) I
+
+      l₃ : abs x₀ - ε < abs x
+      l₃ = ℚ<-≤-trans (abs x₀ - ε) (- abs x) (abs x) III (ℚ≤-abs-neg x)
+
+      IV : abs x < x₀ + ε
+      IV = transport (_< x₀ + ε) (e₁ ⁻¹) l₂
+
+      V : x₀ + ε ≤ abs x₀ + ε
+      V = ℚ≤-addition-preserves-order x₀ (abs x₀) ε (ℚ≤-abs-all x₀)
+
+      l₄ : abs x <ℚ abs x₀ + ε
+      l₄ = ℚ<-≤-trans (abs x) (x₀ + ε) (abs x₀ + ε) IV V
+
+    γ' (inr e₁) (inl e₂) = l₃ , l₄
+     where
+      III : abs x₀ - ε < x
+      III = transport (λ a → a - ε < x) (e₂ ⁻¹) l₁
+
+      l₃ : abs x₀ - ε < abs x
+      l₃ = ℚ<-≤-trans (abs x₀ - ε) x (abs x) III (ℚ≤-abs-all x)
+
+      IV : abs x < (- abs x₀) + ε
+      IV = transport₂ (λ a b → b < (- a) + ε) (e₂ ⁻¹) (e₁ ⁻¹) II
+
+      V : (- abs x₀) + ε ≤ abs x₀ + ε
+      V = ℚ≤-addition-preserves-order (- abs x₀) (abs x₀) ε (ℚ≤-abs-neg x₀)
+
+      l₄ : abs x < abs x₀ + ε
+      l₄ = ℚ<-≤-trans (abs x) ((- abs x₀) + ε) (abs x₀ + ε) IV V
+
+    γ' (inr e₁) (inr e₂) = l₃ , l₄
+     where
+      l₃ : abs x₀ - ε < abs x
+      l₃ = transport₂ (λ a b → a - ε < b) (e₂ ⁻¹) (e₁ ⁻¹) I
+
+      l₄ : abs x < abs x₀ + ε
+      l₄ = transport₂ (λ a b → b < a + ε) (e₂ ⁻¹) (e₁ ⁻¹) II
+
+ℝ-abs : ℝ → ℝ
+ℝ-abs = extend abs abs-uc
 
 \end{code}
