@@ -1375,4 +1375,12 @@ module IgorsLemma (X Y : Locale (𝓤 ⁺) 𝓤 𝓤) (𝒷 : has-basis (𝒪 Y)
 
     ♣ = ap (λ - → W ∨[ 𝒪 X ] -) ♣₀
 
+ igors-lemma-⇐ : (f : X ─c→ Y) (U V : ⟨ 𝒪 Y ⟩) (W : ⟨ 𝒪 X ⟩)
+               → ((T : ⟨ 𝒪 Y ⟩)
+                  → ((f ⋆∙ (U ∨[ 𝒪 Y ] T) ∧[ 𝒪 X ] (f ⋆∙ (V ==> T)))
+                      ≤[ poset-of (𝒪 X) ]
+                     (W ∨[ 𝒪 X ] f ⋆∙ T)) holds)
+               → ((f ⋆∙ U) ≤[ poset-of (𝒪 X) ] (W ∨[ 𝒪 X ] (f ⋆∙ V))) holds
+ igors-lemma-⇐ = {!!}
+
 \end{code}
