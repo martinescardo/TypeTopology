@@ -1314,3 +1314,65 @@ module Hauptsatz (X : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (𝒪 X) ho
  lemma₂ j k (jn₁ , jn₂) (kn₁ , kn₂) x = jn₁ (k x)
 
 \end{code}
+
+The following lemma was proved by Igor Arrieta.
+
+\begin{code}
+
+module IgorsLemma (X Y : Locale (𝓤 ⁺) 𝓤 𝓤) (𝒷 : has-basis (𝒪 Y) holds) where
+
+ open ContinuousMapNotation X Y
+ open HeytingImplicationConstruction Y 𝒷
+
+ igors-lemma-⇒ : (f : X ─c→ Y) (U V : ⟨ 𝒪 Y ⟩) (W : ⟨ 𝒪 X ⟩)
+               → ((f ⋆∙ U) ≤[ poset-of (𝒪 X) ] (W ∨[ 𝒪 X ] (f ⋆∙ V))) holds
+               → (T : ⟨ 𝒪 Y ⟩)
+               → ((f ⋆∙ (U ∨[ 𝒪 Y ] T) ∧[ 𝒪 X ] (f ⋆∙ (V ==> T)))
+                  ≤[ poset-of (𝒪 X) ]
+                  (W ∨[ 𝒪 X ] f ⋆∙ T))
+                 holds
+ igors-lemma-⇒ f U V W p T =
+  f ⋆∙ (U ∨[ 𝒪 Y ] T) ∧[ 𝒪 X ] f ⋆∙ (V ==> T)                                        ＝⟨ Ⅰ ⟩ₚ
+  (f ⋆∙ U ∨[ 𝒪 X ] f ⋆∙ T) ∧[ 𝒪 X ] f ⋆∙ (V ==> T)                                   ≤⟨ Ⅱ  ⟩
+  ((W ∨[ 𝒪 X ] (f ⋆∙ V)) ∨[ 𝒪 X ] f ⋆∙ T) ∧[ 𝒪 X ] f ⋆∙ (V ==> T)                    ＝⟨ Ⅲ ⟩ₚ
+  (W ∨[ 𝒪 X ] ((f ⋆∙ V) ∨[ 𝒪 X ] f ⋆∙ T)) ∧[ 𝒪 X ] f ⋆∙ (V ==> T)                    ＝⟨ Ⅳ ⟩ₚ
+  (W ∨[ 𝒪 X ] (f ⋆∙ (V ∨[ 𝒪 Y ] T))) ∧[ 𝒪 X ] f ⋆∙ (V ==> T)                         ＝⟨ Ⅴ ⟩ₚ
+  f ⋆∙ (V ==> T) ∧[ 𝒪 X ] (W ∨[ 𝒪 X ] (f ⋆∙ (V ∨[ 𝒪 Y ] T)))                         ＝⟨ Ⅵ ⟩ₚ
+  ((f ⋆∙ (V ==> T)) ∧[ 𝒪 X ] W) ∨[ 𝒪 X ] (f ⋆∙ (V ==> T) ∧[ 𝒪 X ] f ⋆∙ (V ∨[ 𝒪 Y ] T)) ≤⟨ Ⅷ ⟩
+  W ∨[ 𝒪 X ] (f ⋆∙ (V ==> T) ∧[ 𝒪 X ] f ⋆∙ (V ∨[ 𝒪 Y ] T))                           ＝⟨ Ⅸ ⟩ₚ
+  W ∨[ 𝒪 X ] (f ⋆∙ ((V ==> T) ∧[ 𝒪 Y ] (V ∨[ 𝒪 Y ] T)))                              ＝⟨ ♣ ⟩ₚ
+  W ∨[ 𝒪 X ] (f ⋆∙ T)                                                                ■
+   where
+    open PosetReasoning (poset-of (𝒪 X))
+
+    Ⅰ = ap
+         (λ - → - ∧[ 𝒪 X ] f ⋆∙ (V ==> T))
+         (frame-homomorphisms-preserve-binary-joins (𝒪 Y) (𝒪 X) f U T)
+    Ⅱ = ∧[ 𝒪 X ]-left-monotone (∨[ 𝒪 X ]-left-monotone p)
+    Ⅲ = ap
+         (λ - → - ∧[ 𝒪 X ] f ⋆∙ (V ==> T))
+         (∨[ 𝒪 X ]-assoc W (f ⋆∙ V) (f ⋆∙ T))
+    Ⅳ = ap
+         (λ - → (W ∨[ 𝒪 X ] -) ∧[ 𝒪 X ] (f ⋆∙ (V ==> T)))
+         (frame-homomorphisms-preserve-binary-joins (𝒪 Y) (𝒪 X) f V T ⁻¹)
+
+    Ⅴ = ∧[ 𝒪 X ]-is-commutative
+         (W ∨[ 𝒪 X ] (f ⋆∙ (V ∨[ 𝒪 Y ] T)))
+         (f ⋆∙ (V ==> T))
+
+    Ⅵ = binary-distributivity (𝒪 X) (f ⋆∙ (V ==> T)) W (f ⋆∙ (V ∨[ 𝒪 Y ] T))
+
+    Ⅷ = ∨[ 𝒪 X ]-left-monotone (∧[ 𝒪 X ]-lower₂ (f ⋆∙ (V ==> T)) W)
+
+    Ⅸ = ap
+         (λ - → W ∨[ 𝒪 X ] -)
+         (frame-homomorphisms-preserve-meets (𝒪 Y) (𝒪 X) f (V ==> T) (V ∨[ 𝒪 Y ] T) ⁻¹)
+
+    ♣₀ = f ⋆∙ ((V ==> T) ∧[ 𝒪 Y ] (V ∨[ 𝒪 Y ] T))  ＝⟨ ap (λ - → f ⋆∙ ((V ==> T) ∧[ 𝒪 Y ] -)) (∨[ 𝒪 Y ]-is-commutative V T) ⟩
+         f ⋆∙ ((V ==> T) ∧[ 𝒪 Y ] (T ∨[ 𝒪 Y ] V))  ＝⟨ ap (f ⋆∙_) (∧[ 𝒪 Y ]-is-commutative (V ==> T) (T ∨[ 𝒪 Y ] V)) ⟩
+         f ⋆∙ ((T ∨[ 𝒪 Y ] V) ∧[ 𝒪 Y ]  (V ==> T)) ＝⟨ ap (f ⋆∙_) (H₈ T V ⁻¹) ⟩
+         (f ⋆∙ T) ∎
+
+    ♣ = ap (λ - → W ∨[ 𝒪 X ] -) ♣₀
+
+\end{code}
