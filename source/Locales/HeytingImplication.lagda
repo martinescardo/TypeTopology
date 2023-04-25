@@ -172,4 +172,35 @@ module HeytingImplicationConstruction (X : Locale 𝓤  𝓥  𝓥)
          Ⅳ = ∨[ 𝒪 X ]-left-monotone (∧[ 𝒪 X ]-lower₂ (V ==> U) U)
          Ⅴ = ∨[ 𝒪 X ]-is-idempotent U ⁻¹
 
+ heyting-implication-law₄ : (U V : ⟨ 𝒪 X ⟩) → (U ==> V) ＝ U ==> (U ∧[ 𝒪 X ] V)
+ heyting-implication-law₄ U V = ≤-is-antisymmetric (poset-of (𝒪 X)) † ‡
+  where
+   open PosetReasoning (poset-of (𝒪 X))
+
+   † : (U ==> V ≤[ poset-of (𝒪 X) ] U ==> (U ∧[ 𝒪 X ] V)) holds
+   † = heyting-implication₁ U (U ∧[ 𝒪 X ] V) (U ==> V) †₁
+    where
+     †₁ : (((U ==> V) ∧[ 𝒪 X ] U) ≤ (U ∧[ 𝒪 X ] V)) holds
+     †₁ = (U ==> V) ∧[ 𝒪 X ] U                  ＝⟨ I   ⟩ₚ
+          U ∧[ 𝒪 X ] (U ==> V)                  ＝⟨ II  ⟩ₚ
+          (U ∧[ 𝒪 X ] U) ∧[ 𝒪 X ] (U ==> V)     ＝⟨ III ⟩ₚ
+          U ∧[ 𝒪 X ] (U ∧[ 𝒪 X ] (U ==> V))     ≤⟨ IV   ⟩
+          U ∧[ 𝒪 X ] V                          ■
+           where
+            I   = ∧[ 𝒪 X ]-is-commutative (U ==> V) U
+            II  = ap (λ - → - ∧[ 𝒪 X ] (U ==> V)) (∧[ 𝒪 X ]-is-idempotent U)
+            III = ∧[ 𝒪 X ]-is-associative U U (U ==> V) ⁻¹
+            IV  = ∧[ 𝒪 X ]-right-monotone (mp-left U V)
+
+   ‡ : (U ==> (U ∧[ 𝒪 X ] V) ≤[ poset-of (𝒪 X) ] (U ==> V)) holds
+   ‡ = heyting-implication₁ U V (U ==> (U ∧[ 𝒪 X ] V)) ‡₁
+    where
+     I  = mp-right U (U ∧[ 𝒪 X ] V)
+     II = ∧[ 𝒪 X ]-lower₂ U V
+
+     ‡₁ : ((U ==> (U ∧[ 𝒪 X ] V) ∧[ 𝒪 X ] U) ≤ V) holds
+     ‡₁ = (U ==> (U ∧[ 𝒪 X ] V)) ∧[ 𝒪 X ] U     ≤⟨ I  ⟩
+          U ∧[ 𝒪 X ] V                          ≤⟨ II ⟩
+          V                                     ■
+
 \end{code}
