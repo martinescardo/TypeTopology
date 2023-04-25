@@ -151,6 +151,8 @@ Poset 𝓤 𝓥 = Σ A ꞉ 𝓤 ̇ , poset-structure 𝓥 A
 rel-syntax : (P : Poset 𝓤 𝓥)  → ∣ P ∣ₚ → ∣ P ∣ₚ → Ω 𝓥
 rel-syntax (_ , _≤_ , _) = _≤_
 
+infix 5 rel-syntax
+
 syntax rel-syntax P x y = x ≤[ P ] y
 
 poset-eq-syntax : (P : Poset 𝓤 𝓥) → ∣ P ∣ₚ → ∣ P ∣ₚ → Ω 𝓥
