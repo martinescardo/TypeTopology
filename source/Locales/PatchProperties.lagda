@@ -1315,7 +1315,9 @@ module Hauptsatz (X : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (𝒪 X) ho
 
 \end{code}
 
-The following lemma was proved by Igor Arrieta.
+The following lemma was proved by Igor Arrieta for the purpose of solving the
+binary join preservation problem that arose when proving the universal property
+of Patch.
 
 \begin{code}
 
@@ -1381,6 +1383,64 @@ module IgorsLemma (X Y : Locale (𝓤 ⁺) 𝓤 𝓤) (𝒷 : has-basis (𝒪 Y)
                       ≤[ poset-of (𝒪 X) ]
                      (W ∨[ 𝒪 X ] f ⋆∙ T)) holds)
                → ((f ⋆∙ U) ≤[ poset-of (𝒪 X) ] (W ∨[ 𝒪 X ] (f ⋆∙ V))) holds
- igors-lemma-⇐ = {!!}
+ igors-lemma-⇐ f U V W φ =
+  f ⋆∙ U                           ≤⟨ I  ⟩
+  W ∨[ 𝒪 X ] f ⋆∙ (U ∧[ 𝒪 Y ] V)   ≤⟨ II ⟩
+  W ∨[ 𝒪 X ] f ⋆∙ V                ■
+   where
+    open PosetReasoning (poset-of (𝒪 X))
+
+    foo : ((f ⋆∙ (U ∨[ 𝒪 Y ] (V ∧[ 𝒪 Y ] U)) ∧[ 𝒪 X ] f ⋆∙ (V ==> (V ∧[ 𝒪 Y ] U)))
+            ≤[ poset-of (𝒪 X) ]
+           (W ∨[ 𝒪 X ] f ⋆∙ (V ∧[ 𝒪 Y ] U))) holds
+    foo = φ (V ∧[ 𝒪 Y ] U)
+
+    II : ((W ∨[ 𝒪 X ] (f ⋆∙ (U ∧[ 𝒪 Y ] V)))
+           ≤[ poset-of (𝒪 X) ]
+          (W ∨[ 𝒪 X ] f ⋆∙ V)) holds
+    II = ∨[ 𝒪 X ]-right-monotone
+          (frame-morphisms-are-monotonic
+            (𝒪 Y)
+            (𝒪 X)
+            (f .pr₁)
+            (f .pr₂)
+            (_ , _)
+            (∧[ 𝒪 Y ]-lower₂ U V))
+
+    I : ((f ⋆∙ U) ≤[ poset-of (𝒪 X) ] (W ∨[ 𝒪 X ] f ⋆∙ (U ∧[ 𝒪 Y ] V))) holds
+    I =
+     f ⋆∙ U                                                                  ≤⟨ 𝕒 ⟩
+     f ⋆∙ (U ∧[ 𝒪 Y ] (V ==> U))                                             ＝⟨ 𝕓 ⟩ₚ
+     (f ⋆∙ U) ∧[ 𝒪 X ] (f ⋆∙ (V ==> U))                                      ＝⟨ 𝕔 ⟩ₚ
+     (f ⋆∙ U) ∧[ 𝒪 X ] (f ⋆∙ (V ==> (V ∧[ 𝒪 Y ] U)))                         ≤⟨ 𝕕 ⟩
+     f ⋆∙ (U ∨[ 𝒪 Y ] (V ∧[ 𝒪 Y ] U)) ∧[ 𝒪 X ] f ⋆∙ (V ==> (V ∧[ 𝒪 Y ] U))   ≤⟨ 𝕖 ⟩
+     W ∨[ 𝒪 X ] f ⋆∙ (V ∧[ 𝒪 Y ] U)                                          ＝⟨ 𝕗 ⟩ₚ
+     W ∨[ 𝒪 X ] f ⋆∙ (U ∧[ 𝒪 Y ] V)                                          ■
+      where
+       𝕒 = frame-morphisms-are-monotonic
+            (𝒪 Y)
+            (𝒪 X)
+            (f .pr₁)
+            (f .pr₂)
+            (_ , _)
+            (∧[ 𝒪 Y ]-greatest _ _ _
+              (≤-is-reflexive (poset-of (𝒪 Y)) U) (weakening V U))
+
+       𝕓 = frame-homomorphisms-preserve-meets (𝒪 Y) (𝒪 X) f U (V ==> U)
+
+       𝕔 = ap (λ - → f ⋆∙ U ∧[ 𝒪 X ] (f ⋆∙ -)) (heyting-implication-law₄ V U)
+
+       𝕕 = ∧[ 𝒪 X ]-left-monotone
+            (frame-morphisms-are-monotonic
+              (𝒪 Y)
+              (𝒪 X)
+              (f .pr₁)
+              (f .pr₂)
+              (_ , _)
+              (∨[ 𝒪 Y ]-upper₁ U (V ∧[ 𝒪 Y ] U)))
+
+       𝕖 = foo
+
+       𝕗 = ap (λ - → W ∨[ 𝒪 X ] (f ⋆∙ -)) (∧[ 𝒪 Y ]-is-commutative V U)
 
 \end{code}
