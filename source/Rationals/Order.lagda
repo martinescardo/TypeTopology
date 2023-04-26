@@ -334,6 +334,19 @@ rounded-lemma₀ (succ a) =
   γ : p < p + q
   γ = transport₂ _<_ I II III
 
+ℚ<-addition-preserves-order''' : (p q r : ℚ)
+                               → p < q → r + p < r + q
+ℚ<-addition-preserves-order''' p q r l₁ = transport₂ _<_ I II III
+ where
+  I : p + r ＝ r + p
+  I = ℚ+-comm p r
+
+  II : q + r ＝ r + q
+  II = ℚ+-comm q r
+
+  III : p + r < q + r
+  III = ℚ<-addition-preserves-order p q r l₁
+
 ℚ<-subtraction-preserves-order : (p q : ℚ) → 0ℚ < q → p - q < p
 ℚ<-subtraction-preserves-order p q l = transport (p - q <_) III II
  where
@@ -535,7 +548,7 @@ rounded-lemma₀ (succ a) =
 ℚ<-pos-multiplication-preserves-order' p q r l₁ l₂ = transport₂ _<_ III IV II
  where
   I-lem : 0ℚ < q - p
-  I-lem = (ℚ<-difference-positive p q l₁)
+  I-lem = ℚ<-difference-positive p q l₁
 
   I : 0ℚ < (q - p) * r
   I = ℚ<-pos-multiplication-preserves-order (q - p) r I-lem l₂
@@ -559,6 +572,19 @@ rounded-lemma₀ (succ a) =
     iii = ap (λ z → (q * r) + (z + p * r)) (ℚ-negation-dist-over-mult p r)
     iv  = ap (q * r +_) (ℚ-inverse-sum-to-zero' (p * r))
     v   = ℚ-zero-right-neutral (q * r)
+
+ℚ<-pos-multiplication-preserves-order'' : (p q r : ℚ)
+                                        → p < q → 0ℚ < r → r * p < r * q
+ℚ<-pos-multiplication-preserves-order'' p q r l₁ l₂ = transport₂ _<_ I II III
+ where
+  I : p * r ＝ r * p
+  I = ℚ*-comm p r
+
+  II : q * r ＝ r * q
+  II = ℚ*-comm q r
+
+  III : p * r < q * r
+  III = ℚ<-pos-multiplication-preserves-order' p q r l₁ l₂
 
 order1ℚ : (p : ℚ) → p < p + 1ℚ
 order1ℚ p = ℚ<-addition-preserves-order'' p 1ℚ (0 , refl)
@@ -877,8 +903,8 @@ half-of-pos-is-less p l = transport (1/2 * p <_) III II
         1ℚ * p            ＝⟨ ℚ-mult-left-id p               ⟩
         p                 ∎
 
-ℚ-dense : (p q : ℚ) → p < q → Σ x ꞉ ℚ , (p < x) × (x < q)
-ℚ-dense p q l = p + 1/2 * (q - p) , γ₁ , γ₂
+bisect : (p q : ℚ) → p < q → (p < p + 1/2 * (q - p)) × (p + 1/2 * (q - p) < q)
+bisect p q l = γ₁ , γ₂
  where
   I : 0ℚ < (q - p) * 1/2
   I = halving-preserves-order (q - p) (ℚ<-difference-positive p q l)
@@ -914,6 +940,9 @@ half-of-pos-is-less p l = transport (1/2 * p <_) III II
 
   γ₂ : p + 1/2 * (q - p) < q
   γ₂ = transport (p + 1/2 * (q - p) <_) IV III
+
+ℚ-dense : (p q : ℚ) → p < q → Σ x ꞉ ℚ , (p < x) × (x < q)
+ℚ-dense p q l =  p + 1/2 * (q - p) , bisect p q l
 
 inequality-chain-outer-bounds-inner : (a b c d : ℚ)
                                     → a < b → b < c → c < d → c - b < d - a
