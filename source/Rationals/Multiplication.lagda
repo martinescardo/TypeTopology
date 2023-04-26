@@ -245,6 +245,12 @@ toℚ-* p q = equiv→equality (p 𝔽* q) (p' 𝔽* q') conclusion
                 q * (1/2 + 1/2)   ＝⟨ ℚ-distributivity q 1/2 1/2 ⟩
                 q * 1/2 + q * 1/2 ∎
 
+ℚ-into-half' : (q : ℚ) → q ＝ 1/2 * q + 1/2 * q
+ℚ-into-half' q = q                 ＝⟨ ℚ-into-half q                   ⟩
+                 q * 1/2 + q * 1/2 ＝⟨ ap (q * 1/2 +_) (ℚ*-comm q 1/2) ⟩
+                 q * 1/2 + 1/2 * q ＝⟨ ap (_+ 1/2 * q) (ℚ*-comm q 1/2) ⟩
+                 1/2 * q + 1/2 * q ∎
+
 ℚ*-rearrange : (x y z : ℚ) → x * y * z ＝ x * z * y
 ℚ*-rearrange x y z = x * y * z     ＝⟨ ℚ*-assoc x y z          ⟩
                      x * (y * z)   ＝⟨ ap (x *_) (ℚ*-comm y z) ⟩

@@ -529,128 +529,6 @@ extend-is-extension q f ic = γ
   γ : (extend f ic) (ι q) ＝ ι (f q)
   γ = ℝ-equality-from-left-cut' ((extend f ic) (ι q)) (ι (f q)) γ₁ γ₂
 
-\end{code}
-
-To illustrate the use of the extension theorem, the following example is
-provided which lifts the increment function on rationals to a function on reals.
-
-The function which adds one is clearly uniformly continuous (and this is proved
-below). Hence we simply apply the extension thereom and we are done.
-
-\begin{code}
-
-ℚ-incr : ℚ → ℚ
-ℚ-incr q = q + 1ℚ
-
-ℚ-incr-uc : ℚ-is-uniformly-continuous ℚ-incr
-ℚ-incr-uc (ε , 0<ε) = (ε , 0<ε) , γ
- where
-  γ : (x x₀ : ℚ) → x ∈𝐁 (ε , 0<ε) ⦅ x₀ ⦆ → ℚ-incr x ∈𝐁 (ε , 0<ε) ⦅ ℚ-incr x₀ ⦆
-  γ x x₀ (l₁ , l₂) = γ₁ , γ₂
-   where
-    I : x + 1ℚ < x₀ + ε + 1ℚ
-    I = ℚ<-addition-preserves-order x (x₀ + ε) 1ℚ l₂
-
-    II : x₀ - ε + 1ℚ < x + 1ℚ
-    II = ℚ<-addition-preserves-order (x₀ - ε) x 1ℚ l₁
-
-    γ₁ : x₀ + 1ℚ - ε < x + 1ℚ
-    γ₁ = transport (_< x + 1ℚ) (ℚ+-rearrange x₀ (- ε) 1ℚ) II
-
-    γ₂ : x + 1ℚ < x₀ + 1ℚ + ε
-    γ₂ = transport (x + 1ℚ <_) (ℚ+-rearrange x₀ ε 1ℚ) I
-
-ℝ-incr : ℝ → ℝ
-ℝ-incr = extend ℚ-incr ℚ-incr-uc
-
-ℝ-incr-agrees-with-ℚ-incr : (q : ℚ) → ℝ-incr (ι q) ＝ ι (ℚ-incr q)
-ℝ-incr-agrees-with-ℚ-incr q = extend-is-extension q ℚ-incr ℚ-incr-uc
-
-ℚ-neg-is-uc : ℚ-is-uniformly-continuous (-_)
-ℚ-neg-is-uc (ε , 0<ε) = (ε , 0<ε) , γ
- where
-  γ : (x x₀ : ℚ) → x ∈𝐁 ε , 0<ε ⦅ x₀ ⦆ → (- x) ∈𝐁 ε , 0<ε ⦅ - x₀ ⦆
-  γ x x₀ (l₁ , l₂) = l₃ , l₄
-   where
-    l₃ : (- x₀) - ε < - x
-    l₃ = ℚ<-swap-right-add x x₀ ε l₂
-
-    l₄ : - x < (- x₀) + ε
-    l₄ = ℚ<-swap-left-neg x₀ ε x l₁
-
-ℝ-_ : ℝ → ℝ
-ℝ-_ = extend -_ ℚ-neg-is-uc
-
-open import Rationals.Abs
-
-abs-uc : ℚ-is-uniformly-continuous abs
-abs-uc (ε , 0<ε) = (ε , 0<ε) , γ
- where
-  γ : (x x₀ : ℚ) → x ∈𝐁 ε , 0<ε ⦅ x₀ ⦆ → abs x ∈𝐁 ε , 0<ε ⦅ abs x₀ ⦆
-  γ x x₀ (l₁ , l₂) = γ' (ℚ-abs-inverse x) (ℚ-abs-inverse x₀)
-   where
-    I : (- x₀) - ε < - x
-    I = ℚ<-swap-right-add x x₀ ε l₂
-
-    II : - x < (- x₀) + ε
-    II = ℚ<-swap-left-neg x₀ ε x l₁
-
-    γ' : (abs x ＝ x) ∔ (abs x ＝ - x)
-       → (abs x₀ ＝ x₀) ∔ (abs x₀ ＝ - x₀)
-       → abs x ∈𝐁 ε , 0<ε ⦅ abs x₀ ⦆
-    γ' (inl e₁) (inl e₂) = l₃ , l₄
-     where
-      l₃ : abs x₀ - ε < abs x
-      l₃ = transport₂ (λ a b → a - ε < b) (e₂ ⁻¹) (e₁ ⁻¹) l₁
-
-      l₄ : abs x < abs x₀ + ε
-      l₄ = transport₂ (λ a b → b < a + ε) (e₂ ⁻¹) (e₁ ⁻¹) l₂
-
-    γ' (inl e₁) (inr e₂) = l₃ , l₄
-     where
-      III : abs x₀ - ε < - abs x
-      III = transport₂ (λ a b → a - ε < - b) (e₂ ⁻¹) (e₁ ⁻¹) I
-
-      l₃ : abs x₀ - ε < abs x
-      l₃ = ℚ<-≤-trans (abs x₀ - ε) (- abs x) (abs x) III (ℚ≤-abs-neg x)
-
-      IV : abs x < x₀ + ε
-      IV = transport (_< x₀ + ε) (e₁ ⁻¹) l₂
-
-      V : x₀ + ε ≤ abs x₀ + ε
-      V = ℚ≤-addition-preserves-order x₀ (abs x₀) ε (ℚ≤-abs-all x₀)
-
-      l₄ : abs x <ℚ abs x₀ + ε
-      l₄ = ℚ<-≤-trans (abs x) (x₀ + ε) (abs x₀ + ε) IV V
-
-    γ' (inr e₁) (inl e₂) = l₃ , l₄
-     where
-      III : abs x₀ - ε < x
-      III = transport (λ a → a - ε < x) (e₂ ⁻¹) l₁
-
-      l₃ : abs x₀ - ε < abs x
-      l₃ = ℚ<-≤-trans (abs x₀ - ε) x (abs x) III (ℚ≤-abs-all x)
-
-      IV : abs x < (- abs x₀) + ε
-      IV = transport₂ (λ a b → b < (- a) + ε) (e₂ ⁻¹) (e₁ ⁻¹) II
-
-      V : (- abs x₀) + ε ≤ abs x₀ + ε
-      V = ℚ≤-addition-preserves-order (- abs x₀) (abs x₀) ε (ℚ≤-abs-neg x₀)
-
-      l₄ : abs x < abs x₀ + ε
-      l₄ = ℚ<-≤-trans (abs x) ((- abs x₀) + ε) (abs x₀ + ε) IV V
-
-    γ' (inr e₁) (inr e₂) = l₃ , l₄
-     where
-      l₃ : abs x₀ - ε < abs x
-      l₃ = transport₂ (λ a b → a - ε < b) (e₂ ⁻¹) (e₁ ⁻¹) I
-
-      l₄ : abs x < abs x₀ + ε
-      l₄ = transport₂ (λ a b → b < a + ε) (e₂ ⁻¹) (e₁ ⁻¹) II
-
-ℝ-abs : ℝ → ℝ
-ℝ-abs = extend abs abs-uc
-
 ℚ⁴ = ℚ × ℚ × ℚ × ℚ
 
 -- TODO : Abstract γ proof
@@ -810,7 +688,86 @@ expand-interval-within-bound : (p : ℚ)
                              → Σ (a , b) ꞉ ℚ × ℚ , (a < p - 1/4 * ε)
                                                  × (p + 1/4 * ε < b)
                                                  × B-ℚ a b ε 0<ε
-expand-interval-within-bound = {!!}
+expand-interval-within-bound p (ε , 0<ε) = γ X IX
+ where
+  I : 1/4 * ε < 1/2 * ε
+  I = ℚ<-pos-multiplication-preserves-order' 1/4 1/2 ε 1/4<1/2 0<ε
+
+  II :  - 1/2 * ε < - 1/4 * ε
+  II = ℚ<-swap (1/4 * ε) (1/2 * ε) I
+
+  III : p + 1/4 * ε < p + 1/2 * ε
+  III = ℚ<-addition-preserves-order''' (1/4 * ε) (1/2 * ε) p I
+
+  IV : p - 1/2 * ε < p - 1/4 * ε
+  IV = ℚ<-addition-preserves-order''' (- 1/2 * ε) (- 1/4 * ε)  p II
+
+  V : 0ℚ < 1/4 * ε
+  V = quarter-preserves-order' ε 0<ε
+
+  VI : p - 1/4 * ε < p
+  VI = ℚ<-subtraction-preserves-order p (1/4 * ε) V
+
+  VII : p < p + 1/4 * ε
+  VII = ℚ<-addition-preserves-order'' p (1/4 * ε) V
+
+  VIII : p - 1/4 * ε < p + 1/4 * ε
+  VIII = ℚ<-trans (p - 1/4 * ε) p (p + 1/4 * ε) VI VII
+
+  IX : Σ a ꞉ ℚ , p + 1/4 * ε < a < p + 1/2 * ε
+  IX = ℚ-dense (p + 1/4 * ε) (p + 1/2 * ε) III
+
+  X : Σ b ꞉ ℚ , p - 1/2 * ε < b < p - 1/4 * ε
+  X = ℚ-dense (p - 1/2 * ε) (p - 1/4 * ε) IV
+
+  XI : p + 1/4 * ε - (p - 1/4 * ε) < p + 1/2 * ε - (p - 1/2 * ε)
+  XI = inequality-chain-outer-bounds-inner
+       (p - 1/2 * ε) (p - 1/4 * ε) (p + 1/4 * ε) (p + 1/2 * ε)
+        IV VIII III
+
+  γ : Σ a ꞉ ℚ , p - 1/2 * ε < a < p - 1/4 * ε
+    → Σ b ꞉ ℚ , p + 1/4 * ε < b < p + 1/2 * ε
+    → Σ (a , b) ꞉ ℚ × ℚ , (a < p - 1/4 * ε)
+                × (p + 1/4 * ε < b)
+                × B-ℚ a b ε 0<ε
+  γ (a , l₁ , l₂) (b , l₃ , l₄) = (a , b) , l₂ , l₃ , γ'
+   where
+    XII : a < b
+    XII = ℚ<-trans₂ a (p - 1/4 * ε) (p + 1/4 * ε) b l₂ VIII l₃
+
+    XIII : b - a < p + 1/2 * ε - (p - 1/2 * ε)
+    XIII = inequality-chain-outer-bounds-inner
+           (p - 1/2 * ε) a b (p + 1/2 * ε)
+            l₁ XII l₄
+
+    XIV : 0ℚ < (b - a)
+    XIV = ℚ<-difference-positive a b XII
+
+    XV : b - a ＝ abs (a - b)
+    XV = b - a       ＝⟨ abs-of-pos-is-pos' (b - a) XIV ⁻¹ ⟩
+         abs (b - a) ＝⟨ ℚ-metric-commutes b a             ⟩
+         abs (a - b) ∎
+
+    XVI : p + 1/2 * ε - (p - 1/2 * ε) ＝ ε
+    XVI = p + 1/2 * ε - (p - 1/2 * ε)           ＝⟨ i   ⟩
+          1/2 * ε + p - (p - 1/2 * ε)           ＝⟨ ii  ⟩
+          1/2 * ε + p + ((- p) - (- 1/2 * ε))   ＝⟨ iii ⟩
+          1/2 * ε + (p + ((- p) - (- 1/2 * ε))) ＝⟨ iv  ⟩
+          1/2 * ε + (p - p - (- 1/2 * ε))       ＝⟨ v   ⟩
+          1/2 * ε - (- 1/2 * ε)                 ＝⟨ vi  ⟩
+          1/2 * ε + 1/2 * ε                     ＝⟨ vii ⟩
+          ε                                     ∎
+     where
+      i   = ap (_- (p - 1/2 * ε)) (ℚ+-comm p (1/2 * ε))
+      ii  = ap (1/2 * ε + p +_) (ℚ-minus-dist p (- 1/2 * ε) ⁻¹)
+      iii = ℚ+-assoc (1/2 * ε) p ((- p) - (- 1/2 * ε))
+      iv  = ap (1/2 * ε +_) (ℚ+-assoc p (- p) (- (- 1/2 * ε)) ⁻¹)
+      v   = ap (1/2 * ε +_) (ℚ-inverse-intro' (- (- 1/2 * ε)) p ⁻¹)
+      vi  = ap (1/2 * ε +_) (ℚ-minus-minus (1/2 * ε) ⁻¹)
+      vii = ℚ-into-half' ε ⁻¹
+
+    γ' : abs (a - b) < ε
+    γ' = transport₂ _<_ XV XVI XIII
 
 extensions-uc : (f : ℚ → ℚ)
               → (ic : ℚ-is-uniformly-continuous f)
@@ -883,5 +840,140 @@ extensions-uc f ic (ε , 0<ε) = δ₊ , γ
 
         γ''' : B-ℚ (min a a) (max b b) ε 0<ε
         γ''' = transport₂ (λ α β → B-ℚ α β ε 0<ε) II III IV
+
+\end{code}
+
+To illustrate the use of the extension theorem, the following example is
+provided which lifts the increment function on rationals to a function on reals.
+
+The function which adds one is clearly uniformly continuous (and this is proved
+below). Hence we simply apply the extension thereom and we are done.
+
+\begin{code}
+
+ℚ-incr : ℚ → ℚ
+ℚ-incr q = q + 1ℚ
+
+ℚ-incr-uc : ℚ-is-uniformly-continuous ℚ-incr
+ℚ-incr-uc (ε , 0<ε) = (ε , 0<ε) , γ
+ where
+  γ : (x x₀ : ℚ) → x ∈𝐁 (ε , 0<ε) ⦅ x₀ ⦆ → ℚ-incr x ∈𝐁 (ε , 0<ε) ⦅ ℚ-incr x₀ ⦆
+  γ x x₀ (l₁ , l₂) = γ₁ , γ₂
+   where
+    I : x + 1ℚ < x₀ + ε + 1ℚ
+    I = ℚ<-addition-preserves-order x (x₀ + ε) 1ℚ l₂
+
+    II : x₀ - ε + 1ℚ < x + 1ℚ
+    II = ℚ<-addition-preserves-order (x₀ - ε) x 1ℚ l₁
+
+    γ₁ : x₀ + 1ℚ - ε < x + 1ℚ
+    γ₁ = transport (_< x + 1ℚ) (ℚ+-rearrange x₀ (- ε) 1ℚ) II
+
+    γ₂ : x + 1ℚ < x₀ + 1ℚ + ε
+    γ₂ = transport (x + 1ℚ <_) (ℚ+-rearrange x₀ ε 1ℚ) I
+
+ℝ-incr : ℝ → ℝ
+ℝ-incr = extend ℚ-incr ℚ-incr-uc
+
+ℝ-incr-agrees-with-ℚ-incr : (q : ℚ) → ℝ-incr (ι q) ＝ ι (ℚ-incr q)
+ℝ-incr-agrees-with-ℚ-incr q = extend-is-extension q ℚ-incr ℚ-incr-uc
+
+ℝ-incr-is-uc : ℝ-is-uniformly-continuous ℝ-incr
+ℝ-incr-is-uc = extensions-uc ℚ-incr ℚ-incr-uc
+
+ℚ-neg-is-uc : ℚ-is-uniformly-continuous (-_)
+ℚ-neg-is-uc (ε , 0<ε) = (ε , 0<ε) , γ
+ where
+  γ : (x x₀ : ℚ) → x ∈𝐁 ε , 0<ε ⦅ x₀ ⦆ → (- x) ∈𝐁 ε , 0<ε ⦅ - x₀ ⦆
+  γ x x₀ (l₁ , l₂) = l₃ , l₄
+   where
+    l₃ : (- x₀) - ε < - x
+    l₃ = ℚ<-swap-right-add x x₀ ε l₂
+
+    l₄ : - x < (- x₀) + ε
+    l₄ = ℚ<-swap-left-neg x₀ ε x l₁
+
+ℝ-_ : ℝ → ℝ
+ℝ-_ = extend -_ ℚ-neg-is-uc
+
+ℝ-neg-agrees-with-ℚ : (q : ℚ) → ℝ- (ι q) ＝ ι (- q)
+ℝ-neg-agrees-with-ℚ q = extend-is-extension q -_ ℚ-neg-is-uc
+
+ℝ-neg-is-uc : ℝ-is-uniformly-continuous ℝ-_
+ℝ-neg-is-uc = extensions-uc -_ ℚ-neg-is-uc
+
+abs-uc : ℚ-is-uniformly-continuous abs
+abs-uc (ε , 0<ε) = (ε , 0<ε) , γ
+ where
+  γ : (x x₀ : ℚ) → x ∈𝐁 ε , 0<ε ⦅ x₀ ⦆ → abs x ∈𝐁 ε , 0<ε ⦅ abs x₀ ⦆
+  γ x x₀ (l₁ , l₂) = γ' (ℚ-abs-inverse x) (ℚ-abs-inverse x₀)
+   where
+    I : (- x₀) - ε < - x
+    I = ℚ<-swap-right-add x x₀ ε l₂
+
+    II : - x < (- x₀) + ε
+    II = ℚ<-swap-left-neg x₀ ε x l₁
+
+    γ' : (abs x ＝ x) ∔ (abs x ＝ - x)
+       → (abs x₀ ＝ x₀) ∔ (abs x₀ ＝ - x₀)
+       → abs x ∈𝐁 ε , 0<ε ⦅ abs x₀ ⦆
+    γ' (inl e₁) (inl e₂) = l₃ , l₄
+     where
+      l₃ : abs x₀ - ε < abs x
+      l₃ = transport₂ (λ a b → a - ε < b) (e₂ ⁻¹) (e₁ ⁻¹) l₁
+
+      l₄ : abs x < abs x₀ + ε
+      l₄ = transport₂ (λ a b → b < a + ε) (e₂ ⁻¹) (e₁ ⁻¹) l₂
+
+    γ' (inl e₁) (inr e₂) = l₃ , l₄
+     where
+      III : abs x₀ - ε < - abs x
+      III = transport₂ (λ a b → a - ε < - b) (e₂ ⁻¹) (e₁ ⁻¹) I
+
+      l₃ : abs x₀ - ε < abs x
+      l₃ = ℚ<-≤-trans (abs x₀ - ε) (- abs x) (abs x) III (ℚ≤-abs-neg x)
+
+      IV : abs x < x₀ + ε
+      IV = transport (_< x₀ + ε) (e₁ ⁻¹) l₂
+
+      V : x₀ + ε ≤ abs x₀ + ε
+      V = ℚ≤-addition-preserves-order x₀ (abs x₀) ε (ℚ≤-abs-all x₀)
+
+      l₄ : abs x <ℚ abs x₀ + ε
+      l₄ = ℚ<-≤-trans (abs x) (x₀ + ε) (abs x₀ + ε) IV V
+
+    γ' (inr e₁) (inl e₂) = l₃ , l₄
+     where
+      III : abs x₀ - ε < x
+      III = transport (λ a → a - ε < x) (e₂ ⁻¹) l₁
+
+      l₃ : abs x₀ - ε < abs x
+      l₃ = ℚ<-≤-trans (abs x₀ - ε) x (abs x) III (ℚ≤-abs-all x)
+
+      IV : abs x < (- abs x₀) + ε
+      IV = transport₂ (λ a b → b < (- a) + ε) (e₂ ⁻¹) (e₁ ⁻¹) II
+
+      V : (- abs x₀) + ε ≤ abs x₀ + ε
+      V = ℚ≤-addition-preserves-order (- abs x₀) (abs x₀) ε (ℚ≤-abs-neg x₀)
+
+      l₄ : abs x < abs x₀ + ε
+      l₄ = ℚ<-≤-trans (abs x) ((- abs x₀) + ε) (abs x₀ + ε) IV V
+
+    γ' (inr e₁) (inr e₂) = l₃ , l₄
+     where
+      l₃ : abs x₀ - ε < abs x
+      l₃ = transport₂ (λ a b → a - ε < b) (e₂ ⁻¹) (e₁ ⁻¹) I
+
+      l₄ : abs x < abs x₀ + ε
+      l₄ = transport₂ (λ a b → b < a + ε) (e₂ ⁻¹) (e₁ ⁻¹) II
+
+ℝ-abs : ℝ → ℝ
+ℝ-abs = extend abs abs-uc
+
+ℝ-abs-agrees-with-ℚ-abs : (q : ℚ) → ℝ-abs (ι q) ＝ ι (abs q)
+ℝ-abs-agrees-with-ℚ-abs q = extend-is-extension q abs abs-uc
+
+ℝ-abs-uc : ℝ-is-uniformly-continuous ℝ-abs
+ℝ-abs-uc = extensions-uc abs abs-uc
 
 \end{code}
