@@ -146,7 +146,10 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
                            patchₛ-is-spectral
 
      open AdjointFunctorTheorem X Patchₛ-A Patchₛ-A-has-basis
-     open AdjointFunctorTheorem X A A-has-basis using () renaming (right-adjoint-of to right-adjoint-ofₓ)
+     open AdjointFunctorTheorem X A A-has-basis
+      using ()
+      renaming (right-adjoint-of to right-adjoint-ofₓ;
+                adjunction-inequality-forward to adjunction-inequality-forwardₓ)
      open GaloisConnectionBetween (poset-of (𝒪 Patchₛ-A)) (poset-of (𝒪 X))
 
      𝒻* : ⟨ 𝒪 X ⟩ → ⟨ 𝒪 A ⟩
@@ -162,7 +165,11 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
 
      closed-image-is-inflationary : (U : ⟨ 𝒪 X ⟩) (V : ⟨ 𝒪 A ⟩)
                                   → (V ≤[ poset-of (𝒪 A) ] closed-image U V) holds
-     closed-image-is-inflationary U V = {!!}
+     closed-image-is-inflationary U V =
+      adjunction-inequality-forwardₓ 𝒻 (U ∨[ 𝒪 X ] 𝒻 ⋆∙ V) V †
+       where
+        † : (𝒻 ⋆∙ V ≤[ poset-of (𝒪 X) ] (U ∨[ 𝒪 X ] 𝒻 ⋆∙ V)) holds
+        † = ∨[ 𝒪 X ]-upper₂ U (𝒻 ⋆∙ V)
 
      f⁻⋆-preserves-joins : is-join-preserving (𝒪 Patchₛ-A) (𝒪 X) f⁻⋆ holds
      f⁻⋆-preserves-joins = aft-forward 𝒻⁻⋆ₘ †
