@@ -102,34 +102,33 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
                         (poset-of (𝒪 X))
                         𝒻⁻⋆
                        holds
-     𝒻⁻⋆-is-monotone (𝒿 , 𝓀) p =
-      cofinal-implies-join-covered (𝒪 X) 𝒮 𝒯 †
-       where
-        𝒮 : Fam 𝓤 ⟨ 𝒪 X ⟩
-        𝒮 = ⁅ (𝒻 ⋆∙ β m) ∧[ 𝒪 X ] ¬𝒻⋆ n
-              ∣ (m , n , p) ∶ Σ m ꞉ Bₐ , Σ n ꞉ Bₐ , 𝕃 𝒿 m n holds ⁆
+     𝒻⁻⋆-is-monotone (𝒿 , 𝓀) p = cofinal-implies-join-covered (𝒪 X) 𝒮 𝒯 †
+      where
+       𝒮 : Fam 𝓤 ⟨ 𝒪 X ⟩
+       𝒮 = ⁅ (𝒻 ⋆∙ β m) ∧[ 𝒪 X ] ¬𝒻⋆ n
+             ∣ (m , n , p) ∶ Σ m ꞉ Bₐ , Σ n ꞉ Bₐ , 𝕃 𝒿 m n holds ⁆
 
-        𝒯 : Fam 𝓤 ⟨ 𝒪 X ⟩
-        𝒯 = ⁅ (𝒻 ⋆∙ β m) ∧[ 𝒪 X ] ¬𝒻⋆ n
-              ∣ (m , n , p) ∶ Σ m ꞉ Bₐ , Σ n ꞉ Bₐ , 𝕃 𝓀 m n holds ⁆
+       𝒯 : Fam 𝓤 ⟨ 𝒪 X ⟩
+       𝒯 = ⁅ (𝒻 ⋆∙ β m) ∧[ 𝒪 X ] ¬𝒻⋆ n
+             ∣ (m , n , p) ∶ Σ m ꞉ Bₐ , Σ n ꞉ Bₐ , 𝕃 𝓀 m n holds ⁆
 
-        † : cofinal-in (𝒪 X) 𝒮 𝒯 holds
-        † (m , n , q) = ∣ (m , n , ‡) , ♣ ∣
-         where
-          open PosetReasoning (poset-of (𝒪 Patch-A))
+       † : cofinal-in (𝒪 X) 𝒮 𝒯 holds
+       † (m , n , q) = ∣ (m , n , ‡) , ♣ ∣
+        where
+         open PosetReasoning (poset-of (𝒪 Patch-A))
 
-          ‡₁ : ((‘ β m ’ ∧[ 𝒪 Patch-A ] ¬‘ βₖ n ’) ≼ 𝓀) holds
-          ‡₁ = ‘ β m ’ ∧[ 𝒪 Patch-A ] ¬‘ βₖ n ’    ≤⟨ Ⅰ ⟩
-               𝒿                                   ≤⟨ p ⟩
-               𝓀                                   ■
-                where
-                 Ⅰ = ≼ᵏ-implies-≼ (‘ β m ’ ∧[ 𝒪 Patch-A ] ¬‘ βₖ n ’) 𝒿 q
+         ‡₁ : ((‘ β m ’ ∧[ 𝒪 Patch-A ] ¬‘ βₖ n ’) ≼ 𝓀) holds
+         ‡₁ = ‘ β m ’ ∧[ 𝒪 Patch-A ] ¬‘ βₖ n ’    ≤⟨ Ⅰ ⟩
+              𝒿                                   ≤⟨ p ⟩
+              𝓀                                   ■
+               where
+                Ⅰ = ≼ᵏ-implies-≼ (‘ β m ’ ∧[ 𝒪 Patch-A ] ¬‘ βₖ n ’) 𝒿 q
 
-          ‡ : 𝕃 𝓀 m n holds
-          ‡ = ≼-implies-≼ᵏ (‘ β m ’ ∧[ 𝒪 Patch-A ] ¬‘ βₖ n ’) 𝓀 ‡₁
+         ‡ : 𝕃 𝓀 m n holds
+         ‡ = ≼-implies-≼ᵏ (‘ β m ’ ∧[ 𝒪 Patch-A ] ¬‘ βₖ n ’) 𝓀 ‡₁
 
-          ♣ : (_ ≤[ poset-of (𝒪 X) ] _) holds
-          ♣ = ≤-is-reflexive (poset-of (𝒪 X)) ((𝒻 ⋆∙ β m) ∧[ 𝒪 X ] ¬𝒻⋆ n)
+         ♣ : (_ ≤[ poset-of (𝒪 X) ] _) holds
+         ♣ = ≤-is-reflexive (poset-of (𝒪 X)) ((𝒻 ⋆∙ β m) ∧[ 𝒪 X ] ¬𝒻⋆ n)
 
      open AdjointFunctorTheorem Patchₛ-A X X-has-basis
 
