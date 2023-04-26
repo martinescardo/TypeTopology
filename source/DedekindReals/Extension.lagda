@@ -653,9 +653,52 @@ abs-uc (ε , 0<ε) = (ε , 0<ε) , γ
 
 ℚ⁴ = ℚ × ℚ × ℚ × ℚ
 
+-- TODO : Abstract γ proof
+
 midpoint-switch : (p q : ℚ)
+                → p < q
                 → p + 1/2 * abs (p - q) ＝ q - 1/2 * abs (p - q)
-midpoint-switch = {!!}
+midpoint-switch p q l = γ
+ where
+  I : 0ℚ < q - p
+  I = ℚ<-difference-positive p q l
+
+  II : abs (p - q) ＝ q - p
+  II = abs (p - q) ＝⟨ ℚ-metric-commutes p q        ⟩
+       abs (q - p) ＝⟨ abs-of-pos-is-pos' (q - p) I ⟩
+       q - p       ∎
+
+  γ : p + 1/2 * abs (p - q) ＝ q - 1/2 * abs (p - q)
+  γ = p + 1/2 * abs (p - q)           ＝⟨ i    ⟩
+      p + 1/2 * (q - p)               ＝⟨ ii   ⟩
+      p + (1/2 * q + 1/2 * (- p))     ＝⟨ iii  ⟩
+      p + (1/2 * (- p) + 1/2 * q)     ＝⟨ iv   ⟩
+      p + 1/2 * (- p) + 1/2 * q       ＝⟨ v    ⟩
+      p - 1/2 * p + 1/2 * q           ＝⟨ vi   ⟩
+      1/2 * p + 1/2 * q               ＝⟨ vii  ⟩
+      1/2 * q + 1/2 * p               ＝⟨ viii ⟩
+      1/2 * q - (- 1/2 * p)           ＝⟨ ix   ⟩
+      1/2 * q - 1/2 * (- p)           ＝⟨ x    ⟩
+      q - 1/2 * q - 1/2 * (- p)       ＝⟨ xi   ⟩
+      q + ((- 1/2 * q) - 1/2 * (- p)) ＝⟨ xii  ⟩
+      q - (1/2 * q + 1/2 * (- p))     ＝⟨ xiii ⟩
+      q - 1/2 * (q - p)               ＝⟨ xiv  ⟩
+      q - 1/2 * abs (p - q)           ∎
+   where
+    i    = ap (λ z → p + 1/2 * z) II
+    ii   = ap (p +_) (ℚ-distributivity 1/2 q (- p))
+    iii  = ap (p +_) (ℚ+-comm (1/2 * q) (1/2 * (- p)))
+    iv   = ℚ+-assoc p (1/2 * (- p)) (1/2 * q) ⁻¹
+    v    = ap (λ z → p + z + 1/2 * q) (ℚ-negation-dist-over-mult' 1/2 p)
+    vi   = ap (_+ 1/2 * q) (ℚ-minus-half p)
+    vii  = ℚ+-comm (1/2 * p) (1/2 * q)
+    viii = ap (1/2 * q +_) (ℚ-minus-minus (1/2 * p))
+    ix   = ap (λ z → 1/2 * q - z) (ℚ-negation-dist-over-mult' 1/2 p ⁻¹)
+    x    = ap (_- 1/2 * (- p)) (ℚ-minus-half q ⁻¹)
+    xi   = ℚ+-assoc q (- 1/2 * q) (- 1/2 * (- p))
+    xii  = ap (q +_) (ℚ-minus-dist (1/2 * q) (1/2 * (- p)))
+    xiii = ap (λ z → q - z) (ℚ-distributivity 1/2 q (- p) ⁻¹)
+    xiv  = ap (λ z → q - 1/2 * z) (II ⁻¹)
 
 ball-around-close-reals : (x x₀ : ℝ)
                         → ((ε , 0<ε) : ℚ₊)
@@ -663,7 +706,7 @@ ball-around-close-reals : (x x₀ : ℝ)
                         → ∃ p ꞉ ℚ , (x ℝ∈𝐁 (ε , 0<ε) ⦅ p ⦆)
                                   × (x₀ ℝ∈𝐁 (ε , 0<ε) ⦅ p ⦆)
 ball-around-close-reals
- x@((Lx , Rx) , _ , _ , rlx , rrx , _ , _)
+ x@((Lx , Rx) , _ , _ , rlx , rrx , djx , _)
  x₀@((Lx₀ , Rx₀) , _ , _ , rlx₀ , rrx₀ , _ , _)
  (ε , 0<ε) = ∥∥-functor γ
  where
@@ -692,6 +735,10 @@ ball-around-close-reals
 
     l₈ : 0ℚ < ε - k
     l₈ = ℚ<-difference-positive k ε l₇
+
+    l₉ : m₁ < m₂
+    l₉ = djx m₁ m₂ ((rounded-left-a Lx rlx m₁ a (min≤ a c) l₁)
+                   , rounded-right-a Rx rrx b m₂ (max≤ b d) l₃)
 
     I : m₁ + k < m₁ + 1/2 * ε
     I = ℚ<-addition-preserves-order''' k (1/2 * ε) m₁ l₅
@@ -725,7 +772,7 @@ ball-around-close-reals
     VII : m₂ + (ε - k) ＝ m₁ + k + ε
     VII = m₂ + (ε - k)     ＝⟨ ap (m₂ +_) (ℚ+-comm ε (- k)) ⟩
           m₂ + ((- k) + ε) ＝⟨ ℚ+-assoc m₂ (- k) ε ⁻¹ ⟩
-          m₂ - k + ε       ＝⟨ ap (_+ ε) (midpoint-switch m₁ m₂ ⁻¹) ⟩
+          m₂ - k + ε       ＝⟨ ap (_+ ε) (midpoint-switch m₁ m₂ l₉ ⁻¹) ⟩
           m₁ + k + ε       ∎
 
     VIII : m₂ < m₂ + (ε - k)

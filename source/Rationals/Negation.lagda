@@ -212,4 +212,12 @@ toℚ-subtraction p q = γ
 1/2-1 : 1/2 - 1ℚ ＝ - 1/2
 1/2-1 = refl
 
+ℚ-minus-half : (p : ℚ) → p - 1/2 * p ＝ 1/2 * p
+ℚ-minus-half p
+ = p - 1/2 * p          ＝⟨ ap (_- 1/2 * p) (ℚ-mult-left-id p ⁻¹)               ⟩
+   1ℚ * p - 1/2 * p     ＝⟨ ap (1ℚ * p +_) (ℚ-negation-dist-over-mult 1/2 p ⁻¹) ⟩
+   1ℚ * p + (- 1/2) * p ＝⟨ ℚ-distributivity' p 1ℚ (- 1/2) ⁻¹                   ⟩
+   (1ℚ - 1/2) * p       ＝⟨ refl                                                ⟩
+   1/2 * p              ∎
+
 \end{code}
