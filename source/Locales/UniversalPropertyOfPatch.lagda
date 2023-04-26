@@ -76,6 +76,9 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
      X-has-basis : has-basis (𝒪 X) holds
      X-has-basis = ∣ pr₁ 𝕫ᴰ , pr₁ (pr₁ (pr₂ 𝕫ᴰ)) ∣
 
+     A-has-basis : has-basis (𝒪 A) holds
+     A-has-basis = ∣ pr₁ σᴰ , pr₁ (pr₁ (pr₂ σᴰ)) ∣
+
      open HeytingImplicationConstruction X X-has-basis
 
      Bₐ : 𝓤  ̇
@@ -143,15 +146,31 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
                            patchₛ-is-spectral
 
      open AdjointFunctorTheorem X Patchₛ-A Patchₛ-A-has-basis
+     open AdjointFunctorTheorem X A A-has-basis using () renaming (right-adjoint-of to right-adjoint-ofₓ)
      open GaloisConnectionBetween (poset-of (𝒪 Patchₛ-A)) (poset-of (𝒪 X))
+
+     𝒻* : ⟨ 𝒪 X ⟩ → ⟨ 𝒪 A ⟩
+     𝒻* = pr₁ (right-adjoint-ofₓ 𝒻)
+
+     open ClosedNucleus X (stone-locales-are-spectral (𝒪 X) 𝕤)
+      using ()
+      renaming (‘_’ to ‘_’ₓ)
+
+     -- Igor's definition.
+     closed-image : ⟨ 𝒪 X ⟩ → ⟨ 𝒪 A ⟩ → ⟨ 𝒪 A ⟩
+     closed-image U = 𝒻* ∘ ‘ U ’ₓ .pr₁ ∘ 𝒻 ⋆∙_
+
+     closed-image-is-inflationary : (U : ⟨ 𝒪 X ⟩) (V : ⟨ 𝒪 A ⟩)
+                                  → (V ≤[ poset-of (𝒪 A) ] closed-image U V) holds
+     closed-image-is-inflationary U V = {!!}
 
      f⁻⋆-preserves-joins : is-join-preserving (𝒪 Patchₛ-A) (𝒪 X) f⁻⋆ holds
      f⁻⋆-preserves-joins = aft-forward 𝒻⁻⋆ₘ †
       where
-       f⁻* : {!!}
-       f⁻* = {!!}
+       f⁻* : ⟨ 𝒪 X ⟩ → ⟨ 𝒪 Patchₛ-A ⟩
+       f⁻* U = {!!}
 
        † : has-right-adjoint 𝒻⁻⋆ₘ
-       † = {!!} , {!!}
+       † = (f⁻* , {!!}) , {!!}
 
 \end{code}
