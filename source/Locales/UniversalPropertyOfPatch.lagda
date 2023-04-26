@@ -37,6 +37,7 @@ open import Locales.PatchProperties pt fe
 open import Locales.HeytingImplication pt fe
 open import Locales.GaloisConnection pt fe
 open import Locales.AdjointFunctorTheoremForFrames pt fe
+open import Locales.Nucleus pt fe
 
 open PropositionalTruncation pt
 
@@ -151,9 +152,17 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
       renaming (right-adjoint-of to right-adjoint-ofₓ;
                 adjunction-inequality-forward to adjunction-inequality-forwardₓ)
      open GaloisConnectionBetween (poset-of (𝒪 Patchₛ-A)) (poset-of (𝒪 X))
+     open GaloisConnectionBetween (poset-of (𝒪 X)) (poset-of (𝒪 A))
+      using () renaming (counit to counitₓ)
 
      𝒻* : ⟨ 𝒪 X ⟩ → ⟨ 𝒪 A ⟩
      𝒻* = pr₁ (right-adjoint-ofₓ 𝒻)
+
+     𝒻⁺ₘ : poset-of (𝒪 A) ─m→ poset-of (𝒪 X)
+     𝒻⁺ₘ = pr₁ 𝒻 , frame-morphisms-are-monotonic (𝒪 A) (𝒪 X) (𝒻 ⋆∙_) (pr₂ 𝒻)
+
+     𝒻₊ₘ : poset-of (𝒪 X) ─m→ poset-of (𝒪 A)
+     𝒻₊ₘ = right-adjoint-ofₓ 𝒻
 
      open ClosedNucleus X (stone-locales-are-spectral (𝒪 X) 𝕤)
       using ()
@@ -170,6 +179,54 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
        where
         † : (𝒻 ⋆∙ V ≤[ poset-of (𝒪 X) ] (U ∨[ 𝒪 X ] 𝒻 ⋆∙ V)) holds
         † = ∨[ 𝒪 X ]-upper₂ U (𝒻 ⋆∙ V)
+
+     closed-image-is-idempotent : (U : ⟨ 𝒪 X ⟩)
+                                → is-idempotent (𝒪 A) (closed-image U) holds
+     closed-image-is-idempotent U V =
+      let
+        open PosetReasoning (poset-of (𝒪 A))
+      in
+       closed-image U (closed-image U V)                    ＝⟨ refl    ⟩ₚ
+       𝒻* (U ∨[ 𝒪 X ] 𝒻 ⋆∙ (𝒻* (U ∨[ 𝒪 X ] (𝒻 ⋆∙ V))))      ≤⟨ †        ⟩
+       𝒻* (U ∨[ 𝒪 X ] 𝒻 ⋆∙ V)                               ＝⟨ refl    ⟩ₚ
+       closed-image U V                                     ■
+      where
+        ♣ : (𝒻 ⋆∙ (𝒻* (U ∨[ 𝒪 X ] (𝒻 ⋆∙ V)))
+              ≤[ poset-of (𝒪 X) ]
+             (U ∨[ 𝒪 X ] 𝒻 ⋆∙ V))
+            holds
+        ♣ = 𝒻 ⋆∙ (𝒻* (U ∨[ 𝒪 X ] (𝒻 ⋆∙ V)))      ＝⟨ Ⅰ ⟩ₚ
+            𝒻 ⋆∙ ((𝒻* U) ∨[ 𝒪 A ] 𝒻* (𝒻 ⋆∙ V))   ≤⟨ {!!} ⟩
+            {!!}                                 ≤⟨ {!!} ⟩
+            U ∨[ 𝒪 X ] 𝒻 ⋆∙ V                    ■
+         where
+          open PosetReasoning (poset-of (𝒪 X))
+
+          Ⅰ = ap
+               (𝒻 ⋆∙_)
+               (frame-homomorphisms-preserve-binary-joins
+                 (𝒪 X)
+                 (𝒪 A)
+                 {!𝒻⁺ₘ!}
+                 {!𝒻!}
+                 {!!})
+
+        ‡ : (𝒻 ⋆∙ 𝒻* (U ∨[ 𝒪 X ] (𝒻 ⋆∙ 𝒻* (U ∨[ 𝒪 X ] 𝒻 ⋆∙ V)))
+              ≤[ poset-of (𝒪 X) ]
+             (U ∨[ 𝒪 X ] 𝒻 ⋆∙ V)) holds
+        ‡ = 𝒻 ⋆∙ 𝒻* (U ∨[ 𝒪 X ] (𝒻 ⋆∙ 𝒻* (U ∨[ 𝒪 X ] 𝒻 ⋆∙ V)))   ≤⟨ Ⅰ ⟩
+            U ∨[ 𝒪 X ] (𝒻 ⋆∙ 𝒻* (U ∨[ 𝒪 X ] 𝒻 ⋆∙ V))             ≤⟨ {!!} ⟩
+            U ∨[ 𝒪 X ] 𝒻 ⋆∙ V                                    ■
+         where
+          open PosetReasoning (poset-of (𝒪 X))
+
+          Ⅰ = {!counitₓ ? ? ? ?!}
+
+        † = adjunction-inequality-forwardₓ
+             𝒻
+             (U ∨[ 𝒪 X ] 𝒻 ⋆∙ V)
+             (𝒻* (U ∨[ 𝒪 X ] (𝒻 ⋆∙ 𝒻* (U ∨[ 𝒪 X ] 𝒻 ⋆∙ V))))
+             ‡
 
      f⁻⋆-preserves-joins : is-join-preserving (𝒪 Patchₛ-A) (𝒪 X) f⁻⋆ holds
      f⁻⋆-preserves-joins = aft-forward 𝒻⁻⋆ₘ †
