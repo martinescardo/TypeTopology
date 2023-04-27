@@ -215,11 +215,7 @@ toℚ-* p q = equiv→equality (p 𝔽* q) (p' 𝔽* q') conclusion
 ⟨2/3⟩^ (succ n)  = rec 2/3 (_* 2/3) n
 
 ⟨2/3⟩-to-mult : (n : ℕ) → ⟨2/3⟩^ (succ n) ＝ (⟨2/3⟩^ n) * 2/3
-⟨2/3⟩-to-mult 0 = f
- where
-  abstract
-   f : ⟨2/3⟩^ (succ 0) ＝ ((⟨2/3⟩^ 0) * 2/3)
-   f = (ℚ-mult-left-id 2/3) ⁻¹
+⟨2/3⟩-to-mult 0 = refl
 ⟨2/3⟩-to-mult (succ n) = refl
 
 ⟨1/n⟩ : ℕ → ℚ
@@ -230,10 +226,10 @@ toℚ-* p q = equiv→equality (p 𝔽* q) (p' 𝔽* q') conclusion
 ⟨1/sn⟩ (succ n) = ⟨1/n⟩ n
 
 ⟨1/n⟩-1 : ⟨1/n⟩ 0 ＝ 1ℚ
-⟨1/n⟩-1 = equiv→equality (pos 1 , 0) (pos 1 , 0) refl
+⟨1/n⟩-1 = refl
 
 ⟨1/n⟩-1/2 : ⟨1/n⟩ 1 ＝ 1/2
-⟨1/n⟩-1/2 = equiv→equality (pos 1 , 1) (pos 1 , 1) refl
+⟨1/n⟩-1/2 = refl
 
 ⟨1/2⟩^_ : ℕ → ℚ
 ⟨1/2⟩^ 0         = toℚ (pos 1 , 0)
@@ -263,6 +259,6 @@ toℚ-* p q = equiv→equality (p 𝔽* q) (p' 𝔽* q') conclusion
                       z * x * y   ∎
 
 half-of-quarter : 1/2 * 1/2 ＝ 1/4
-half-of-quarter = toℚ-* (pos 1 , 1) (pos 1 , 1)
+half-of-quarter = refl
 
 \end{code}
