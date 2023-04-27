@@ -42,7 +42,9 @@ open import MetricSpaces.Rationals fe pt pe
 
 \end{code}
 
-Introduce some useful notation
+Introduce some useful notation. Order chains are defined, which are sometimes
+useful when we want to see the underlying order behind intervals and
+balls. Interval and ball notation is defined as the standard definitions.
 
 \begin{code}
 
@@ -99,26 +101,18 @@ x ℝ∈𝐁 (δ , _) ⦅ x₀ ⦆ = x ℝ∈⦅ x₀ - δ , x₀ + δ ⦆
 
 \end{code}
 
-Define various forms of continuity
+Defined below is continuity for functions (f : ℚ → ℚ) and (g : ℝ → ℝ). For
+rationals, this uses the ball notation defined above. For reals, a closeness
+function defined in the reals metric spaces file is used, primarily to avoid
+using real functions in the work (since the extension theorem will itself be
+used to define functions on reals.
+
+Uniformly continuous functions allow us to define functions which retrieve a
+modulus of continuity.
+
+TODO: In future work, define bishop continuity, non-uniform continuity.
 
 \begin{code}
-
-{-
-is-continuous : {M₁ : 𝓤 ̇ } {M₂ : 𝓥 ̇ }
-              → (m₁ : metric-space M₁)
-              → (m₂ : metric-space M₂)
-              → (f : M₁ → M₂)
-              → 𝓤 ̇
-is-continuous {𝓤} {𝓥} {M₁} {M₂} m₁ m₂ f
- = (x x₀ : M₁) → (ε₊ : ℚ₊) → {!!}
-
-is-bishop-continuous : {M₁ : 𝓤 ̇ } {M₂ : 𝓥 ̇ }
-                     → (m₁ : metric-space M₁)
-                     → (m₂ : metric-space M₂)
-                     → (f : M₁ → M₂)
-                     → 𝓤 ̇
-is-bishop-continuous = {!!}
--}
 
 ℚ-is-uniformly-continuous : (f : ℚ → ℚ) → 𝓤₀ ̇
 ℚ-is-uniformly-continuous f
@@ -150,6 +144,14 @@ is-bishop-continuous = {!!}
       → let (δ , 0<δ) = δ'⦅⦆ f ic (ε , 0<ε) in B-ℝ x x₀ δ 0<δ
       → B-ℝ (f x) (f x₀) ε 0<ε
 δ'-uc f ic ε = pr₂ (ic ε)
+
+\end{code}
+
+The extension theorem requires some lemmas. First, it is proved that given a
+real located in two rational balls, we can find a new rational ball which takes
+the closest bound on each side, or restrict either of the balls we already have.
+
+\begin{code}
 
 find-rational-con : (x₀ x₀' : ℚ) ((δ , 0<δ) (δ' , 0<δ') : ℚ₊)
              → (x : ℝ)
@@ -433,6 +435,13 @@ that for any rational input, the extension output agrees with the function
 output, and is uniformly continuous.
 
 TODO : And is and unique
+
+One lemma required to prove uniform continuity is that ε-close reals x and y can
+be found in an ε sized ball around some rational p. This is almost a restatement
+of the metric on reals, but requires a bit of juggling around order proofs and
+is not so trivial to write down. It is a good idea to redefine the metric on
+reals (there is a simpler variation) which should trim down the following proofs
+somewhat.
 
 \begin{code}
 

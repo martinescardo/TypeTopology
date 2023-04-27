@@ -1,5 +1,11 @@
 Andrew Sneap - 27 April 2023
 
+This file defines various functions on real number, using the extension defined
+in DedekindReals.Extension.
+
+By the uniformly continuous extension theorem, it is also proved that these
+functions are indeed extensions, and are uniformly continuous.
+
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --lossy-unification --auto-inline #-}
@@ -31,11 +37,11 @@ open import DedekindReals.Extension fe pe pt
 
 \end{code}
 
-To illustrate the use of the extension theorem, the following examples is
-provided which lifts the increment function on rationals to a function on reals.
-
-The function which increments by one is clearly uniformly continuous (and this
-is proved below). Hence we simply apply the extension thereom and we are done.
+The following examples extends the increment function on rationals to a function
+on reals. The function which increments by one is clearly uniformly continuous
+(and this is proved below). Hence we simply apply the extension, and by the
+extension theorem we see that ℝ-incr agrees with ℚ-incr for every rational
+input.
 
 \begin{code}
 
@@ -80,6 +86,12 @@ is proved below). Hence we simply apply the extension thereom and we are done.
 
     l₄ : - x < (- x₀) + ε
     l₄ = ℚ<-swap-left-neg x₀ ε x l₁
+
+\end{code}
+
+Also given is negation of reals, and the absolute value of reals.
+
+\begin{code}
 
 ℝ-_ : ℝ → ℝ
 ℝ-_ = extend -_ ℚ-neg-is-uc
