@@ -1,4 +1,4 @@
-Andrew Sneap - 27 April 2023
+Andrew Sneap - 19 April 2023 - 27 April 2023
 
 This file defines various functions on real number, using the extension defined
 in DedekindReals.Extension.

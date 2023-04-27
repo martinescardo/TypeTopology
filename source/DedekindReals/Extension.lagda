@@ -1,4 +1,4 @@
-Andrew Sneap - 19 April 2023
+Andrew Sneap - 19 April 2023 - 27 April 2023
 
 This file proves an extension theorem, which extends functions (f : ℚ → ℚ) to
 functions (f̂ : ℝ → ℝ), given that f is uniformly continuous.
