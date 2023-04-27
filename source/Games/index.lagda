@@ -24,7 +24,7 @@ open import Games.TicTacToe2              -- More efficient and less elegant ver
 open import Games.TypeTrees               -- Dependent type trees.
 open import Games.alpha-beta              -- Many new things for efficiency.
 -- open import Games.Main                 -- To be able to compile for efficieny.
-                                          -- Can't e imported here as it's not --safe.
+                                          -- Can't be imported here as it's not --safe.
                                           -- This is for Agda compilation to Haskell of
                                           -- examples to be able to run them more efficiently.
 
