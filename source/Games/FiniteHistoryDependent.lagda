@@ -34,6 +34,9 @@ We assume a given type R of outcomes for games as a module parameter.
 {-# OPTIONS --without-K --safe --no-sized-types --no-guardedness --auto-inline #-} -- --exact-split
 
 open import MLTT.Spartan hiding (J)
+open import Games.Monad
+open import Games.J
+open import Games.K
 open import UF.Base
 open import UF.FunExt
 
@@ -55,7 +58,7 @@ Quantifiers as in Section 1 of reference [1]:
 \begin{code}
 
 K : Type → Type
-K X = (X → R) → R
+K = functor (𝕂 R)
 
 \end{code}
 
@@ -86,36 +89,31 @@ but using our tree representation of games instead:
 sub : {X : Type} {Y : X → Type} → (Σ Y → R) → (x : X) → Y x → R
 sub q x xs = q (x , xs)
 
-_⊗ᴷ_ : {X : Type} {Y : X → Type}
-     → K X
-     → ((x : X) → K (Y x))
-     → K (Σ x ꞉ X , Y x)
-(ϕ ⊗ᴷ γ) q = ϕ (λ x → γ x (sub q x))
+private
+ _⊗ᴷ_ : {X : Type} {Y : X → Type}
+      → K X
+      → ((x : X) → K (Y x))
+      → K (Σ x ꞉ X , Y x)
+ _⊗ᴷ_ = _⊗_ (𝕂 R)
+
+ ⊗ᴷ-direct-definition : {X : Type} {Y : X → Type}
+                        (ϕ : K X)
+                        (γ : (x : X) → K (Y x))
+                      → ϕ ⊗ᴷ γ ∼ (λ q → ϕ (λ x → γ x (sub q x)))
+ ⊗ᴷ-direct-definition ϕ γ q = refl
+
+ ηᴷ : {X : Type} → X → K X
+ ηᴷ = η (𝕂 R)
+
+ K-ext : {X Y : Type} → (X → K Y) → K X → K Y
+ K-ext = ext (𝕂 R)
+
+ K-map : {X Y : Type} → (X → Y) → K X → K Y
+ K-map = map (𝕂 R)
 
 K-sequence : {Xt : 𝕋} → 𝓚 Xt → K (Path Xt)
 K-sequence {[]}     ⟨⟩        = λ q → q ⟨⟩
 K-sequence {X ∷ Xf} (ϕ :: ϕf) = ϕ ⊗ᴷ (λ x → K-sequence {Xf x} (ϕf x))
-
-\end{code}
-
-We remark that ⊗ᴷ can be defined from the strong monad structure on K:
-
-\begin{code}
-
-ηᴷ : {X : Type} → X → K X
-ηᴷ x p = p x
-
-K-ext : {X Y : Type} → (X → K Y) → K X → K Y
-K-ext f ϕ p = ϕ (λ x → f x p)
-
-K-map : {X Y : Type} → (X → Y) → K X → K Y
-K-map f = K-ext (ηᴷ ∘ f)
-
-⊗ᴷ-alternative-definition : {X : Type} {Y : X → Type}
-                            (ϕ : K X)
-                            (γ : (x : X) → K (Y x))
-                          → ϕ ⊗ᴷ γ ∼ K-ext (λ x → K-map (λ y → x , y) (γ x)) ϕ
-⊗ᴷ-alternative-definition ϕ γ q = refl
 
 \end{code}
 
@@ -292,7 +290,7 @@ Selection functions, as in Section 2 of reference [1]:
 \begin{code}
 
 J : Type → Type
-J X = (X → R) → X
+J = functor (𝕁 R)
 
 \end{code}
 
@@ -315,40 +313,34 @@ reference [1], but using our tree representation of games instead:
 
 \begin{code}
 
-_⊗ᴶ_ : {X : Type} {Y : X → Type}
-     → J X
-     → ((x : X) → J (Y x))
-     → J (Σ x ꞉ X , Y x)
-(ε ⊗ᴶ δ) q = x₀ :: ν x₀
- where
-  ν  = λ x → δ x (sub q x)
-  x₀ = ε (λ x → sub q x (ν x))
+private
+ _⊗ᴶ_ : {X : Type} {Y : X → Type}
+      → J X
+      → ((x : X) → J (Y x))
+      → J (Σ x ꞉ X , Y x)
+ _⊗ᴶ_ = _⊗_ (𝕁 R)
+
+ ⊗ᴶ-direct-definition : {X : Type} {Y : X → Type}
+                        (ε : J X)
+                        (δ : (x : X) → J (Y x))
+                      → ε ⊗ᴶ δ ∼ (λ q → let
+                                         ν  = λ x → δ x (sub q x)
+                                         x₀ = ε (λ x → sub q x (ν x))
+                                        in x₀ :: ν x₀)
+ ⊗ᴶ-direct-definition ε δ q = refl
+
+ ηᴶ : {X : Type} → X → J X
+ ηᴶ = η (𝕁 R)
+
+ J-ext : {X Y : Type} → (X → J Y) → J X → J Y
+ J-ext = ext (𝕁 R)
+
+ J-map : {X Y : Type} → (X → Y) → J X → J Y
+ J-map = map (𝕁 R)
 
 J-sequence : {Xt : 𝕋} → 𝓙 Xt → J (Path Xt)
 J-sequence {[]}     ⟨⟩        = λ q → ⟨⟩
 J-sequence {X ∷ Xf} (ε :: εf) = ε ⊗ᴶ (λ x → J-sequence {Xf x} (εf x))
-
-\end{code}
-
-We remark that ⊗ᴶ can be defined from the strong monad structure on J,
-as is the case for K:
-
-\begin{code}
-
-ηᴶ : {X : Type} → X → J X
-ηᴶ x p = x
-
-J-ext : {X Y : Type} → (X → J Y) → J X → J Y
-J-ext f ε p = f (ε (λ x → p (f x p))) p
-
-J-map : {X Y : Type} → (X → Y) → J X → J Y
-J-map f = J-ext (ηᴶ ∘ f)
-
-⊗ᴶ-alternative-definition : {X : Type} {Y : X → Type}
-                            (ε : J X)
-                            (δ : (x : X) → J (Y x))
-                          → ε ⊗ᴶ δ ∼ J-ext (λ x → J-map (λ y → x , y) (δ x)) ε
-⊗ᴶ-alternative-definition ε δ q = refl
 
 \end{code}
 
@@ -379,6 +371,8 @@ overline : {X : Type} → J X → K X
 overline ε = λ p → p (ε p)
 
 \end{code}
+
+TODO. Define overline as a monad morphism in the module J.
 
 The following definition is in Section 1 on [1].
 
@@ -530,5 +524,25 @@ Selection-Strategy-Theorem : Fun-Ext
                            → εt are-selections-of (ϕt G)
                            → is-optimal G (selection-strategy εt (q G))
 Selection-Strategy-Theorem fe (game Xt ϕt q) εt = selection-strategy-theorem fe εt q ϕt
+
+\end{code}
+
+Added 27th August 2023 after the above was submitted for publication.
+
+\begin{code}
+
+Selection-Strategy-Corollary : Fun-Ext
+                             → (G : Game) (εt : 𝓙 (Xt G))
+                             → εt are-selections-of (ϕt G)
+                             → q G (J-sequence εt (q G)) ＝ optimal-outcome G
+Selection-Strategy-Corollary fe G εt a =
+ q G (J-sequence εt (q G))                          ＝⟨ I ⟩
+ q G (strategic-path (selection-strategy εt (q G))) ＝⟨ II ⟩
+ optimal-outcome G                                  ∎
+  where
+   I  = ap (q G) ((main-lemma εt (q G))⁻¹)
+   II = sgpe-lemma fe (Xt G) (ϕt G) (q G)
+         (selection-strategy εt (q G))
+         (Selection-Strategy-Theorem fe G εt a)
 
 \end{code}
