@@ -1425,11 +1425,8 @@ module IgorsLemma (X Y : Locale (𝓤 ⁺) 𝓤 𝓤) (𝒷 : has-basis (𝒪 Y)
             (_ , _)
             (∧[ 𝒪 Y ]-greatest _ _ _
               (≤-is-reflexive (poset-of (𝒪 Y)) U) (weakening V U))
-
        𝕓 = frame-homomorphisms-preserve-meets (𝒪 Y) (𝒪 X) f U (V ==> U)
-
        𝕔 = ap (λ - → f ⋆∙ U ∧[ 𝒪 X ] (f ⋆∙ -)) (heyting-implication-law₄ V U)
-
        𝕕 = ∧[ 𝒪 X ]-left-monotone
             (frame-morphisms-are-monotonic
               (𝒪 Y)
@@ -1438,9 +1435,7 @@ module IgorsLemma (X Y : Locale (𝓤 ⁺) 𝓤 𝓤) (𝒷 : has-basis (𝒪 Y)
               (f .pr₂)
               (_ , _)
               (∨[ 𝒪 Y ]-upper₁ U (V ∧[ 𝒪 Y ] U)))
-
        𝕖 = ♣
-
        𝕗 = ap (λ - → W ∨[ 𝒪 X ] (f ⋆∙ -)) (∧[ 𝒪 Y ]-is-commutative V U)
 
 \end{code}

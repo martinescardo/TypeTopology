@@ -861,6 +861,9 @@ frame-morphisms-are-monotonic F G f (_ , ψ , _) (x , y) p =
    i  = reflexivity+ (poset-of G) (ap f (connecting-lemma₁ F p))
    ii = reflexivity+ (poset-of G) (ψ x y)
 
+monotone-map-of : ?
+monotone-map-of = ?
+
 yoneda : (F : Frame 𝓤 𝓥 𝓦)
        → (x y : ⟨ F ⟩)
        → ((z : ⟨ F ⟩) → ((z ≤[ poset-of F ] x) ⇒ (z ≤[ poset-of F ] y)) holds)

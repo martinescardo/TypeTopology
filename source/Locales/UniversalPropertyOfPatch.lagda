@@ -154,6 +154,8 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
      open GaloisConnectionBetween (poset-of (𝒪 Patchₛ-A)) (poset-of (𝒪 X))
      open GaloisConnectionBetween (poset-of (𝒪 X)) (poset-of (𝒪 A))
       using () renaming (counit to counitₓ)
+     open GaloisConnectionBetween (poset-of (𝒪 A)) (poset-of (𝒪 X))
+      using () renaming (counit to counitₐ)
 
      𝒻* : ⟨ 𝒪 X ⟩ → ⟨ 𝒪 A ⟩
      𝒻* = pr₁ (right-adjoint-ofₓ 𝒻)
@@ -191,36 +193,20 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
        𝒻* (U ∨[ 𝒪 X ] 𝒻 ⋆∙ V)                               ＝⟨ refl    ⟩ₚ
        closed-image U V                                     ■
       where
-        ♣ : (𝒻 ⋆∙ (𝒻* (U ∨[ 𝒪 X ] (𝒻 ⋆∙ V)))
-              ≤[ poset-of (𝒪 X) ]
-             (U ∨[ 𝒪 X ] 𝒻 ⋆∙ V))
-            holds
-        ♣ = 𝒻 ⋆∙ (𝒻* (U ∨[ 𝒪 X ] (𝒻 ⋆∙ V)))      ＝⟨ Ⅰ ⟩ₚ
-            𝒻 ⋆∙ ((𝒻* U) ∨[ 𝒪 A ] 𝒻* (𝒻 ⋆∙ V))   ≤⟨ {!!} ⟩
-            {!!}                                 ≤⟨ {!!} ⟩
-            U ∨[ 𝒪 X ] 𝒻 ⋆∙ V                    ■
-         where
-          open PosetReasoning (poset-of (𝒪 X))
-
-          Ⅰ = ap
-               (𝒻 ⋆∙_)
-               (frame-homomorphisms-preserve-binary-joins
-                 (𝒪 X)
-                 (𝒪 A)
-                 {!𝒻⁺ₘ!}
-                 {!𝒻!}
-                 {!!})
-
         ‡ : (𝒻 ⋆∙ 𝒻* (U ∨[ 𝒪 X ] (𝒻 ⋆∙ 𝒻* (U ∨[ 𝒪 X ] 𝒻 ⋆∙ V)))
               ≤[ poset-of (𝒪 X) ]
              (U ∨[ 𝒪 X ] 𝒻 ⋆∙ V)) holds
-        ‡ = 𝒻 ⋆∙ 𝒻* (U ∨[ 𝒪 X ] (𝒻 ⋆∙ 𝒻* (U ∨[ 𝒪 X ] 𝒻 ⋆∙ V)))   ≤⟨ Ⅰ ⟩
+        ‡ = 𝒻 ⋆∙ 𝒻* (U ∨[ 𝒪 X ] (𝒻 ⋆∙ 𝒻* (U ∨[ 𝒪 X ] 𝒻 ⋆∙ V)))   ≤⟨ {!!} ⟩
             U ∨[ 𝒪 X ] (𝒻 ⋆∙ 𝒻* (U ∨[ 𝒪 X ] 𝒻 ⋆∙ V))             ≤⟨ {!!} ⟩
             U ∨[ 𝒪 X ] 𝒻 ⋆∙ V                                    ■
          where
           open PosetReasoning (poset-of (𝒪 X))
 
-          Ⅰ = {!counitₓ ? ? ? ?!}
+          Ⅰ : (𝒻 ⋆∙ 𝒻* (U ∨[ 𝒪 X ] (𝒻 ⋆∙ 𝒻* (U ∨[ 𝒪 X ] 𝒻 ⋆∙ V)))
+                ≤[ poset-of (𝒪 X) ]
+               (U ∨[ 𝒪 X ] (𝒻 ⋆∙ 𝒻* (U ∨[ 𝒪 X ] 𝒻 ⋆∙ V))))
+              holds
+          Ⅰ = counitₐ 𝒻⁺ₘ 𝒻₊ₘ {!!} (U ∨[ 𝒪 X ] (𝒻 ⋆∙ 𝒻* (U ∨[ 𝒪 X ] 𝒻 ⋆∙ V)))
 
         † = adjunction-inequality-forwardₓ
              𝒻

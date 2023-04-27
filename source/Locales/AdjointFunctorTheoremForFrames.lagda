@@ -205,4 +205,11 @@ module AdjointFunctorTheorem (X : Locale 𝓤' 𝓥 𝓥)
     γ : is-join-preserving (𝒪 Y) (𝒪 X) (𝒻ₘ .pr₁) holds
     γ S = ⋁[ 𝒪 X ]-unique ⁅ f V ∣ V ε S ⁆ (f (⋁[ 𝒪 Y ] S)) (p S)
 
+ f₊-is-right-adjoint-of-f⁺ : (𝒻@(f , _) : X ─c→ Y)
+                           → let
+                              𝒻ₘ = f , {!frame-homomorphisms-are-monotonic!}
+                             in
+                              {!( ⊣ ?) holds!}
+ f₊-is-right-adjoint-of-f⁺ = {!!}
+
 \end{code}
