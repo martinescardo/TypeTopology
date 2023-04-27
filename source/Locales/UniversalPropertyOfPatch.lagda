@@ -150,6 +150,7 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
      open AdjointFunctorTheorem X A A-has-basis
       using (f₊-is-right-adjoint-of-f⁺)
       renaming (right-adjoint-of to right-adjoint-ofₓ;
+                f₊-preserves-binary-meets to f₊-preserves-binary-meetsₓ;
                 adjunction-inequality-forward to adjunction-inequality-forwardₓ)
      open GaloisConnectionBetween (poset-of (𝒪 Patchₛ-A)) (poset-of (𝒪 X))
      open GaloisConnectionBetween (poset-of (𝒪 X)) (poset-of (𝒪 A))
@@ -233,7 +234,7 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
              (λ - → 𝒻* (U ∨[ 𝒪 X ] -))
              (frame-homomorphisms-preserve-meets (𝒪 A) (𝒪 X) 𝒻 V₁ V₂)
         Ⅱ = ap 𝒻* (binary-distributivity-op (𝒪 X) U (𝒻 ⋆∙ V₁) (𝒻 ⋆∙ V₂))
-        Ⅲ = {!!}
+        Ⅲ = f₊-preserves-binary-meetsₓ 𝒻 (U ∨[ 𝒪 X ] 𝒻 ⋆∙ V₁) (U ∨[ 𝒪 X ] (𝒻 ⋆∙ V₂))
 
      f⁻⋆-preserves-joins : is-join-preserving (𝒪 Patchₛ-A) (𝒪 X) f⁻⋆ holds
      f⁻⋆-preserves-joins = aft-forward 𝒻⁻⋆ₘ †
