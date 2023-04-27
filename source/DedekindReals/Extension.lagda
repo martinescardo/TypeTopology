@@ -434,7 +434,7 @@ We now prove that the extend construction is indeed an extension. This means
 that for any rational input, the extension output agrees with the function
 output, and is uniformly continuous.
 
-TODO : And is and unique
+TODO : And is unique
 
 One lemma required to prove uniform continuity is that ε-close reals x and y can
 be found in an ε sized ball around some rational p. This is almost a restatement
