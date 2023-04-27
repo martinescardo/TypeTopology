@@ -220,4 +220,13 @@ toℚ-subtraction p q = γ
    (1ℚ - 1/2) * p       ＝⟨ refl                                                ⟩
    1/2 * p              ∎
 
+ℚ+-right-cancellable : (p q r : ℚ) → p + r ＝ q + r → p ＝ q
+ℚ+-right-cancellable p q r e = γ
+ where
+  γ : p ＝ q
+  γ = p         ＝⟨ ℚ-inverse-intro'' p r    ⟩
+      p + r - r ＝⟨ ap (_- r) e              ⟩
+      q + r - r ＝⟨ ℚ-inverse-intro'' q r ⁻¹ ⟩
+      q         ∎
+
 \end{code}
