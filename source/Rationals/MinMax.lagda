@@ -109,6 +109,9 @@ max≤ p q = I (max-to-≤ p q)
   I (inl (p≤q , e)) = transport (p ≤_) (e ⁻¹) p≤q
   I (inr (q≤p , e)) = transport (p ≤_) (e ⁻¹) (ℚ≤-refl p)
 
+max≤' : (p q : ℚ) → q ≤ max p q
+max≤' p q = transport (q ≤_) (max-comm q p) (max≤ q p)
+
 min' : (x y : ℚ) → x < y ∔ (x ＝ y) ∔ y < x → ℚ
 min' x y (inl _) = x
 min' x y (inr _) = y
@@ -203,6 +206,9 @@ min≤ p q = I (min-to-≤ p q)
     → min p q ≤ p
   I (inl (p≤q , e)) = transport (_≤ p) (e ⁻¹) (ℚ≤-refl p)
   I (inr (q≤p , e)) = transport (_≤ p) (e ⁻¹) q≤p
+
+min≤' : (p q : ℚ) → min p q ≤ q
+min≤' p q = transport (_≤ q) (min-comm q p) (min≤ q p)
 
 ≤-to-min' : (x y : ℚ) → x ≤ y → (t : x < y ∔ (x ＝ y) ∔ y < x) → x ＝ min' x y t
 ≤-to-min' x y l (inl t) = refl

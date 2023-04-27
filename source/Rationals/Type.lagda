@@ -29,6 +29,8 @@ module Rationals.Type where
 ℚ : 𝓤₀ ̇
 ℚ = Σ q ꞉ 𝔽 , is-in-lowest-terms q
 
+ℚ⁴ = ℚ × ℚ × ℚ × ℚ
+
 is-in-lowest-terms-is-discrete : (q : 𝔽)
                                → is-discrete (is-in-lowest-terms q)
 is-in-lowest-terms-is-discrete q α β

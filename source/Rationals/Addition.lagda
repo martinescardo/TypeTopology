@@ -115,82 +115,36 @@ add-same-denom (x , a) (y , b) = γ
       toℚ (x ℤ+ y , b)          ∎
 
 1/3+1/3 : 1/3 + 1/3 ＝ 2/3
-1/3+1/3 = add-same-denom (pos 1 , 2) (pos 1 , 2)
+1/3+1/3 = refl
 
 1/4+1/4 : 1/4 + 1/4 ＝ 1/2
-1/4+1/4 = γ
- where
-  γ : toℚ (pos 1 , 3) + toℚ (pos 1 , 3) ＝ toℚ (pos 1 , 1)
-  γ = toℚ (pos 1 , 3) + toℚ (pos 1 , 3) ＝⟨ i  ⟩
-      toℚ (pos 1 ℤ+ pos 1 , 3)          ＝⟨ ii ⟩
-      toℚ (pos 1 , 1)                   ∎
-   where
-    i  = add-same-denom (pos 1 , 3) (pos 1 , 3)
-    ii = equiv→equality (pos 2 , 3) (pos 1 , 1) refl
+1/4+1/4 = refl
 
 1/2+1/4 : 1/2 + 1/4 ＝ 3/4
-1/2+1/4 = equiv→equality ((pos 1 , 1) 𝔽+ (pos 1 , 3)) (pos 3 , 3) refl
-
-\end{code}
-
-For the following code, the flag lossy-unification must be added, otherwise the
-type checking takes too long to complete.
-
-\begin{code}
+1/2+1/4 = refl
 
 1/4+3/4 : 1/4 + 3/4 ＝ 1ℚ
-1/4+3/4 = I ⁻¹ ∙ equiv→equality ((pos 1 , 3) 𝔽+ (pos 3 , 3)) (pos 1 , 0) refl
- where
-  abstract
-   I : toℚ ((pos 1 , 3) 𝔽+ (pos 3 , 3)) ＝  toℚ (pos 1 , 3) + toℚ (pos 3 , 3)
-   I = toℚ-+ (pos 1 , 3) (pos 3 , 3)
+1/4+3/4 = refl
 
 1/3+2/3 : 1/3 + 2/3 ＝ 1ℚ
-1/3+2/3 = I ∙ equiv→equality (pos 3 , 2) (pos 1 , 0) refl
- where
-  abstract
-   I : toℚ (pos 1 , 2) + toℚ (pos 2 , 2) ＝ toℚ (pos 1 ℤ+ pos 2 , 2)
-   I = add-same-denom (pos 1 , 2) (pos 2 , 2)
+1/3+2/3 = refl
 
 2/3+1/3 : 2/3 + 1/3 ＝ 1ℚ
-2/3+1/3 = ℚ+-comm 2/3 1/3 ∙ 1/3+2/3
+2/3+1/3 = refl
 
 1/2+1/2 : 1/2 + 1/2 ＝ 1ℚ
-1/2+1/2 = I refl
- where
-  I : ((pos 1 , 1) 𝔽+ (pos 1 , 1)) ≈ (pos 1 , 0)
-    → toℚ ((pos 1 , 1) 𝔽+ (pos 1 , 1)) ＝ toℚ (pos 1 , 0)
-  I = equiv→equality ((pos 1 , 1) 𝔽+ (pos 1 , 1)) (pos 1 , 0)
+1/2+1/2 = refl
 
 1/5+1/5 : 1/5 + 1/5 ＝ 2/5
-1/5+1/5 = I
- where
-  abstract
-   I : 1/5 + 1/5 ＝ 2/5
-   I = add-same-denom (pos 1 , 4) (pos 1 , 4)
+1/5+1/5 = refl
 
 1/5+2/5 : 1/5 + 2/5 ＝ 3/5
-1/5+2/5 = I
- where
-  abstract
-   I : 1/5 + 2/5 ＝ 3/5
-   I = add-same-denom (pos 1 , 4) (pos 2 , 4)
+1/5+2/5 = refl
 
 2/5+1/5 : 2/5 + 1/5 ＝ 3/5
-2/5+1/5 = (ℚ+-comm 2/5 1/5) ∙ (1/5+2/5)
-
-2/5+3/5-lemma : toℚ (pos 2 , 4) + toℚ (pos 3 , 4) ＝ toℚ (pos 2 ℤ+ pos 3 , 4)
-2/5+3/5-lemma = I
- where
-  abstract
-   I : toℚ (pos 2 , 4) + toℚ (pos 3 , 4) ＝ toℚ (pos 2 ℤ+ pos 3 , 4)
-   I = add-same-denom (pos 2 , 4) (pos 3 , 4)
+2/5+1/5 = refl
 
 2/5+3/5 : 2/5 + 3/5 ＝ 1ℚ
-2/5+3/5 = I
- where
-  abstract
-   I : 2/5 + 3/5 ＝ 1ℚ
-   I = 2/5+3/5-lemma ∙ equiv→equality (pos 5 , 4) (pos 1 , 0) refl
+2/5+3/5 = refl
 
 \end{code}

@@ -198,32 +198,35 @@ toℚ-subtraction p q = γ
 ℚ-inverse-intro'''' p q = ℚ-inverse-intro''' p q ∙ ℚ+-assoc p (- q) q ⁻¹
 
 1-2/3 : 1ℚ - 2/3 ＝ 1/3
-1-2/3 = 1ℚ - 2/3          ＝⟨ ap (_- 2/3) (1/3+2/3 ⁻¹)  ⟩
-        1/3 + 2/3 - 2/3   ＝⟨ ℚ+-assoc 1/3 2/3 (- 2/3)  ⟩
-        1/3 + (2/3 - 2/3) ＝⟨ ℚ-inverse-intro'' 1/3 2/3 ⟩
-        1/3 ∎
+1-2/3 = refl
 
 1-1/3 : 1ℚ - 1/3 ＝ 2/3
-1-1/3 = 1ℚ - 1/3          ＝⟨ ap (_- 1/3) (2/3+1/3 ⁻¹)  ⟩
-        2/3 + 1/3 - 1/3   ＝⟨ ℚ+-assoc 2/3 1/3 (- 1/3)  ⟩
-        2/3 + (1/3 - 1/3) ＝⟨ ℚ-inverse-intro'' 2/3 1/3 ⟩
-        2/3 ∎
+1-1/3 = refl
 
 1-2/5＝3/5 : 1ℚ - 2/5 ＝ 3/5
-1-2/5＝3/5 = γ
- where
-  γ : 1ℚ - 2/5 ＝ 3/5
-  γ = 1ℚ - 2/5              ＝⟨ ap (λ α → α - 2/5) (2/5+3/5 ⁻¹)         ⟩
-      2/5 + 3/5 - 2/5       ＝⟨ ℚ+-assoc 2/5 3/5 (- 2/5)                ⟩
-      2/5 + (3/5 - 2/5)     ＝⟨ ap (2/5 +_) (ℚ+-comm 3/5 (- 2/5))       ⟩
-      2/5 + ((- 2/5) + 3/5) ＝⟨ ℚ+-assoc 2/5 (- 2/5) 3/5 ⁻¹             ⟩
-      2/5 - 2/5 + 3/5       ＝⟨ ap (_+ 3/5) (ℚ-inverse-sum-to-zero 2/5) ⟩
-      0ℚ + 3/5              ＝⟨ ℚ-zero-left-neutral 3/5                 ⟩
-      3/5                   ∎
+1-2/5＝3/5 = refl
 
 1-1/2 : 1ℚ - 1/2 ＝ 1/2
-1-1/2 = 1ℚ - 1/2        ＝⟨ ap (_- 1/2) (1/2+1/2 ⁻¹) ⟩
-        1/2 + 1/2 - 1/2 ＝⟨ ℚ-inverse-intro'' 1/2 1/2 ⁻¹ ⟩
-        1/2             ∎
+1-1/2 = refl
+
+1/2-1 : 1/2 - 1ℚ ＝ - 1/2
+1/2-1 = refl
+
+ℚ-minus-half : (p : ℚ) → p - 1/2 * p ＝ 1/2 * p
+ℚ-minus-half p
+ = p - 1/2 * p          ＝⟨ ap (_- 1/2 * p) (ℚ-mult-left-id p ⁻¹)               ⟩
+   1ℚ * p - 1/2 * p     ＝⟨ ap (1ℚ * p +_) (ℚ-negation-dist-over-mult 1/2 p ⁻¹) ⟩
+   1ℚ * p + (- 1/2) * p ＝⟨ ℚ-distributivity' p 1ℚ (- 1/2) ⁻¹                   ⟩
+   (1ℚ - 1/2) * p       ＝⟨ refl                                                ⟩
+   1/2 * p              ∎
+
+ℚ+-right-cancellable : (p q r : ℚ) → p + r ＝ q + r → p ＝ q
+ℚ+-right-cancellable p q r e = γ
+ where
+  γ : p ＝ q
+  γ = p         ＝⟨ ℚ-inverse-intro'' p r    ⟩
+      p + r - r ＝⟨ ap (_- r) e              ⟩
+      q + r - r ＝⟨ ℚ-inverse-intro'' q r ⁻¹ ⟩
+      q         ∎
 
 \end{code}
