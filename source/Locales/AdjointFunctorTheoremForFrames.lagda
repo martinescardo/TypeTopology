@@ -207,9 +207,10 @@ module AdjointFunctorTheorem (X : Locale 𝓤' 𝓥 𝓥)
 
  f₊-is-right-adjoint-of-f⁺ : (𝒻@(f , _) : X ─c→ Y)
                            → let
-                              𝒻ₘ = f , {!frame-homomorphisms-are-monotonic!}
+                              𝒻ₘ = monotone-map-of (𝒪 Y) (𝒪 X) 𝒻
                              in
-                              {!( ⊣ ?) holds!}
- f₊-is-right-adjoint-of-f⁺ = {!!}
+                              (𝒻ₘ ⊣ right-adjoint-of 𝒻) holds
+ f₊-is-right-adjoint-of-f⁺ 𝒻 V U =
+  adjunction-inequality-forward 𝒻 U V , adjunction-inequality-backward 𝒻 U V
 
 \end{code}
