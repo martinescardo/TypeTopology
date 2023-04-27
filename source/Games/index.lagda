@@ -15,7 +15,7 @@ open import Games.FiniteHistoryDependent  -- Theory of finite history dependent 
 open import Games.FiniteHistoryDependentMonadic -- With additional monad for irrational players.
 open import Games.J                       -- Selection monad.
 open import Games.K                       -- Continuation (or quantifier) monad.
-open import Games.Monad                   -- (Automaticall strong, wild) monads on types.
+open import Games.Monad                   -- (Automatically strong, wild) monads on types.
 open import Games.Reader
 open import Games.Structure               -- Equips game trees with structure.
 open import Games.TicTacToe0
