@@ -52,8 +52,8 @@ Definition of a pair of opposing monotonic maps forming an adjoint pair:
       → (x ≤[ P ] (g .pr₁ ∘ f .pr₁) x) holds
  unit (f , _) g p x = pr₁ (p x (f x)) (≤-is-reflexive Q (f x))
 
- counit : (f : P ─m→ Q) (g : Q ─m→ P)
-        → (f ⊣ g) holds → (y : ∣ Q ∣ₚ) → (((f .pr₁ ∘ g .pr₁) y) ≤[ Q ] y) holds
+ counit : (f⁺ : P ─m→ Q) (f₊ : Q ─m→ P)
+        → (f⁺ ⊣ f₊) holds → (y : ∣ Q ∣ₚ) → ((f⁺ .pr₁ ∘ f₊ .pr₁) y ≤[ Q ] y) holds
  counit (f , _) (g , _) η y = pr₂ (η (g y) y) (≤-is-reflexive P (g y))
 
 \end{code}
