@@ -146,9 +146,9 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
                            (𝒪 Patchₛ-A)
                            patchₛ-is-spectral
 
-     open AdjointFunctorTheorem X Patchₛ-A Patchₛ-A-has-basis
+     open AdjointFunctorTheorem X Patchₛ-A Patchₛ-A-has-basis hiding (f₊-is-right-adjoint-of-f⁺)
      open AdjointFunctorTheorem X A A-has-basis
-      using ()
+      using (f₊-is-right-adjoint-of-f⁺)
       renaming (right-adjoint-of to right-adjoint-ofₓ;
                 adjunction-inequality-forward to adjunction-inequality-forwardₓ)
      open GaloisConnectionBetween (poset-of (𝒪 Patchₛ-A)) (poset-of (𝒪 X))
@@ -196,17 +196,23 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
         ‡ : (𝒻 ⋆∙ 𝒻* (U ∨[ 𝒪 X ] (𝒻 ⋆∙ 𝒻* (U ∨[ 𝒪 X ] 𝒻 ⋆∙ V)))
               ≤[ poset-of (𝒪 X) ]
              (U ∨[ 𝒪 X ] 𝒻 ⋆∙ V)) holds
-        ‡ = 𝒻 ⋆∙ 𝒻* (U ∨[ 𝒪 X ] (𝒻 ⋆∙ 𝒻* (U ∨[ 𝒪 X ] 𝒻 ⋆∙ V)))   ≤⟨ {!!} ⟩
-            U ∨[ 𝒪 X ] (𝒻 ⋆∙ 𝒻* (U ∨[ 𝒪 X ] 𝒻 ⋆∙ V))             ≤⟨ {!!} ⟩
-            U ∨[ 𝒪 X ] 𝒻 ⋆∙ V                                    ■
+        ‡ = 𝒻 ⋆∙ 𝒻* (U ∨[ 𝒪 X ] (𝒻 ⋆∙ 𝒻* (U ∨[ 𝒪 X ] 𝒻 ⋆∙ V)))  ≤⟨ Ⅰ   ⟩
+            U ∨[ 𝒪 X ] (𝒻 ⋆∙ 𝒻* (U ∨[ 𝒪 X ] 𝒻 ⋆∙ V))            ≤⟨ Ⅱ   ⟩
+            U ∨[ 𝒪 X ] (U ∨[ 𝒪 X ] 𝒻 ⋆∙ V)                      ＝⟨ Ⅲ  ⟩ₚ
+            (U ∨[ 𝒪 X ] U) ∨[ 𝒪 X ] 𝒻 ⋆∙ V                      ＝⟨ Ⅳ  ⟩ₚ
+            U ∨[ 𝒪 X ] 𝒻 ⋆∙ V                                   ■
          where
           open PosetReasoning (poset-of (𝒪 X))
 
-          Ⅰ : (𝒻 ⋆∙ 𝒻* (U ∨[ 𝒪 X ] (𝒻 ⋆∙ 𝒻* (U ∨[ 𝒪 X ] 𝒻 ⋆∙ V)))
-                ≤[ poset-of (𝒪 X) ]
-               (U ∨[ 𝒪 X ] (𝒻 ⋆∙ 𝒻* (U ∨[ 𝒪 X ] 𝒻 ⋆∙ V))))
-              holds
-          Ⅰ = counitₐ 𝒻⁺ₘ 𝒻₊ₘ {!!} (U ∨[ 𝒪 X ] (𝒻 ⋆∙ 𝒻* (U ∨[ 𝒪 X ] 𝒻 ⋆∙ V)))
+          Ⅰ = counitₐ
+               𝒻⁺ₘ
+               𝒻₊ₘ
+               (f₊-is-right-adjoint-of-f⁺ 𝒻)
+               (U ∨[ 𝒪 X ] (𝒻 ⋆∙ 𝒻* (U ∨[ 𝒪 X ] 𝒻 ⋆∙ V)))
+          Ⅱ = ∨[ 𝒪 X ]-right-monotone
+               (counitₐ 𝒻⁺ₘ 𝒻₊ₘ (f₊-is-right-adjoint-of-f⁺ 𝒻) (U ∨[ 𝒪 X ] 𝒻 ⋆∙ V))
+          Ⅲ = ∨[ 𝒪 X ]-assoc U U (𝒻 ⋆∙ V) ⁻¹
+          Ⅳ = ap (λ - → - ∨[ 𝒪 X ] 𝒻 ⋆∙ V) (∨[ 𝒪 X ]-is-idempotent U ⁻¹)
 
         † = adjunction-inequality-forwardₓ
              𝒻
