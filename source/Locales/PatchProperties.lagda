@@ -1390,10 +1390,10 @@ module IgorsLemma (X Y : Locale (𝓤 ⁺) 𝓤 𝓤) (𝒷 : has-basis (𝒪 Y)
    where
     open PosetReasoning (poset-of (𝒪 X))
 
-    foo : ((f ⋆∙ (U ∨[ 𝒪 Y ] (V ∧[ 𝒪 Y ] U)) ∧[ 𝒪 X ] f ⋆∙ (V ==> (V ∧[ 𝒪 Y ] U)))
+    ♣ : ((f ⋆∙ (U ∨[ 𝒪 Y ] (V ∧[ 𝒪 Y ] U)) ∧[ 𝒪 X ] f ⋆∙ (V ==> (V ∧[ 𝒪 Y ] U)))
             ≤[ poset-of (𝒪 X) ]
            (W ∨[ 𝒪 X ] f ⋆∙ (V ∧[ 𝒪 Y ] U))) holds
-    foo = φ (V ∧[ 𝒪 Y ] U)
+    ♣ = φ (V ∧[ 𝒪 Y ] U)
 
     II : ((W ∨[ 𝒪 X ] (f ⋆∙ (U ∧[ 𝒪 Y ] V)))
            ≤[ poset-of (𝒪 X) ]
@@ -1439,7 +1439,7 @@ module IgorsLemma (X Y : Locale (𝓤 ⁺) 𝓤 𝓤) (𝒷 : has-basis (𝒪 Y)
               (_ , _)
               (∨[ 𝒪 Y ]-upper₁ U (V ∧[ 𝒪 Y ] U)))
 
-       𝕖 = foo
+       𝕖 = ♣
 
        𝕗 = ap (λ - → W ∨[ 𝒪 X ] (f ⋆∙ -)) (∧[ 𝒪 Y ]-is-commutative V U)
 
