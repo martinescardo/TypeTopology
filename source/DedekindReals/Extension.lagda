@@ -529,10 +529,6 @@ extend-is-extension q f ic = γ
   γ : (extend f ic) (ι q) ＝ ι (f q)
   γ = ℝ-equality-from-left-cut' ((extend f ic) (ι q)) (ι (f q)) γ₁ γ₂
 
-ℚ⁴ = ℚ × ℚ × ℚ × ℚ
-
--- TODO : Abstract γ proof
-
 midpoint-switch : (p q : ℚ)
                 → p < q
                 → p + 1/2 * abs (p - q) ＝ q - 1/2 * abs (p - q)
@@ -546,37 +542,26 @@ midpoint-switch p q l = γ
        abs (q - p) ＝⟨ abs-of-pos-is-pos' (q - p) I ⟩
        q - p       ∎
 
-  γ : p + 1/2 * abs (p - q) ＝ q - 1/2 * abs (p - q)
-  γ = p + 1/2 * abs (p - q)           ＝⟨ i    ⟩
-      p + 1/2 * (q - p)               ＝⟨ ii   ⟩
-      p + (1/2 * q + 1/2 * (- p))     ＝⟨ iii  ⟩
-      p + (1/2 * (- p) + 1/2 * q)     ＝⟨ iv   ⟩
-      p + 1/2 * (- p) + 1/2 * q       ＝⟨ v    ⟩
-      p - 1/2 * p + 1/2 * q           ＝⟨ vi   ⟩
-      1/2 * p + 1/2 * q               ＝⟨ vii  ⟩
-      1/2 * q + 1/2 * p               ＝⟨ viii ⟩
-      1/2 * q - (- 1/2 * p)           ＝⟨ ix   ⟩
-      1/2 * q - 1/2 * (- p)           ＝⟨ x    ⟩
-      q - 1/2 * q - 1/2 * (- p)       ＝⟨ xi   ⟩
-      q + ((- 1/2 * q) - 1/2 * (- p)) ＝⟨ xii  ⟩
-      q - (1/2 * q + 1/2 * (- p))     ＝⟨ xiii ⟩
-      q - 1/2 * (q - p)               ＝⟨ xiv  ⟩
-      q - 1/2 * abs (p - q)           ∎
-   where
-    i    = ap (λ z → p + 1/2 * z) II
-    ii   = ap (p +_) (ℚ-distributivity 1/2 q (- p))
-    iii  = ap (p +_) (ℚ+-comm (1/2 * q) (1/2 * (- p)))
-    iv   = ℚ+-assoc p (1/2 * (- p)) (1/2 * q) ⁻¹
-    v    = ap (λ z → p + z + 1/2 * q) (ℚ-negation-dist-over-mult' 1/2 p)
-    vi   = ap (_+ 1/2 * q) (ℚ-minus-half p)
-    vii  = ℚ+-comm (1/2 * p) (1/2 * q)
-    viii = ap (1/2 * q +_) (ℚ-minus-minus (1/2 * p))
-    ix   = ap (λ z → 1/2 * q - z) (ℚ-negation-dist-over-mult' 1/2 p ⁻¹)
-    x    = ap (_- 1/2 * (- p)) (ℚ-minus-half q ⁻¹)
-    xi   = ℚ+-assoc q (- 1/2 * q) (- 1/2 * (- p))
-    xii  = ap (q +_) (ℚ-minus-dist (1/2 * q) (1/2 * (- p)))
-    xiii = ap (λ z → q - z) (ℚ-distributivity 1/2 q (- p) ⁻¹)
-    xiv  = ap (λ z → q - 1/2 * z) (II ⁻¹)
+  r = 1/2 * abs (p - q)
+
+  III : r + r ＝ q - p
+  III = r + r            ＝⟨ ℚ-distributivity' (abs (p - q)) 1/2 1/2 ⁻¹ ⟩
+        1ℚ * abs (p - q) ＝⟨ ℚ-mult-left-id (abs (p - q))               ⟩
+        abs (p - q)      ＝⟨ ℚ-metric-commutes p q                      ⟩
+        abs (q - p)      ＝⟨ abs-of-pos-is-pos' (q - p) I               ⟩
+        q - p            ∎
+
+  IV : p + r + r ＝ q - r + r
+  IV = p + r + r       ＝⟨ ℚ+-assoc p r r              ⟩
+       p + (r + r)     ＝⟨ ap (p +_) III               ⟩
+       p + (q - p)     ＝⟨ ap (p +_) (ℚ+-comm q (- p)) ⟩
+       p + ((- p) + q) ＝⟨ ℚ+-assoc p (- p) q ⁻¹       ⟩
+       p - p + q       ＝⟨ ℚ-inverse-intro' q p ⁻¹     ⟩
+       q               ＝⟨ ℚ-inverse-intro'''' q r     ⟩
+       q - r + r       ∎
+
+  γ : p + r ＝ q - r
+  γ = ℚ+-right-cancellable (p + r) (q - r) r IV
 
 ball-around-close-reals : (x x₀ : ℝ)
                         → ((ε , 0<ε) : ℚ₊)
