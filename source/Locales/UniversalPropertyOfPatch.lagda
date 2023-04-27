@@ -220,6 +220,21 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
              (𝒻* (U ∨[ 𝒪 X ] (𝒻 ⋆∙ 𝒻* (U ∨[ 𝒪 X ] 𝒻 ⋆∙ V))))
              ‡
 
+     closed-image-preserves-meets : (U : ⟨ 𝒪 X ⟩)
+                                  → preserves-binary-meets (𝒪 A) (𝒪 A) (closed-image U) holds
+     closed-image-preserves-meets U V₁ V₂ =
+      𝒻* (U ∨[ 𝒪 X ] 𝒻 ⋆∙ (V₁ ∧[ 𝒪 A ] V₂))                        ＝⟨ Ⅰ    ⟩
+      𝒻* (U ∨[ 𝒪 X ] (𝒻 ⋆∙ V₁ ∧[ 𝒪 X ] 𝒻 ⋆∙ V₂))                   ＝⟨ Ⅱ    ⟩
+      𝒻* ((U ∨[ 𝒪 X ] 𝒻 ⋆∙ V₁) ∧[ 𝒪 X ] (U ∨[ 𝒪 X ] 𝒻 ⋆∙ V₂))      ＝⟨ Ⅲ    ⟩
+      𝒻* (U ∨[ 𝒪 X ] 𝒻 ⋆∙ V₁) ∧[ 𝒪 A ] 𝒻* (U ∨[ 𝒪 X ] 𝒻 ⋆∙ V₂)     ＝⟨ refl ⟩
+      closed-image U V₁ ∧[ 𝒪 A ] closed-image U V₂                 ∎
+       where
+        Ⅰ = ap
+             (λ - → 𝒻* (U ∨[ 𝒪 X ] -))
+             (frame-homomorphisms-preserve-meets (𝒪 A) (𝒪 X) 𝒻 V₁ V₂)
+        Ⅱ = ap 𝒻* (binary-distributivity-op (𝒪 X) U (𝒻 ⋆∙ V₁) (𝒻 ⋆∙ V₂))
+        Ⅲ = {!!}
+
      f⁻⋆-preserves-joins : is-join-preserving (𝒪 Patchₛ-A) (𝒪 X) f⁻⋆ holds
      f⁻⋆-preserves-joins = aft-forward 𝒻⁻⋆ₘ †
       where
