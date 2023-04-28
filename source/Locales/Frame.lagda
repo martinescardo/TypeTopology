@@ -948,6 +948,19 @@ frame-homomorphisms-preserve-bottom {𝓦 = 𝓦}F G 𝒽@(h , _ , _ , γ) =
    † : (h 𝟎[ F ] ≤[ poset-of G ] 𝟎[ G ]) holds
    † = pr₂ (γ (∅ _)) ((⋁[ G ] ∅ 𝓦) , λ ())
 
+frame-homomorphisms-preserve-all-joins : (F : Frame 𝓤 𝓥 𝓦) (G : Frame 𝓤′ 𝓥′ 𝓦)
+                                       → (h : F ─f→ G)
+                                       → is-join-preserving F G (h .pr₁) holds
+frame-homomorphisms-preserve-all-joins F G h = †
+ where
+  open Joins (λ x y → x ≤[ poset-of G ] y)
+
+  † : is-join-preserving F G (h .pr₁) holds
+  † S = ⋁[ G ]-unique
+         ⁅ h .pr₁ x ∣ x ε S ⁆
+         (h .pr₁ (⋁[ F ] S))
+         (pr₂ (pr₂ (pr₂ h)) S)
+
 frame-homomorphisms-preserve-binary-joins : (F : Frame 𝓤 𝓥 𝓦) (G : Frame 𝓤′ 𝓥′ 𝓦)
                                           → (h : F ─f→ G)
                                           → (x y : ⟨ F ⟩)
