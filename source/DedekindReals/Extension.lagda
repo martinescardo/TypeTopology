@@ -430,113 +430,15 @@ extend f ic x = (L , R) , il , ir , rl , rr , d , lo
 
 \end{code}
 
-We now prove that the extend construction is indeed an extension. This means
-that for any rational input, the extension output agrees with the function
-output, and is uniformly continuous.
-
-TODO : And is unique
-
-One lemma required to prove uniform continuity is that ε-close reals x and y can
-be found in an ε sized ball around some rational p. This is almost a restatement
-of the metric on reals, but requires a bit of juggling around order proofs and
-is not so trivial to write down. It is a good idea to redefine the metric on
-reals (there is a simpler variation) which should trim down the following proofs
+We now prove that the extend construction is uniformly continuous. One lemma
+required to prove uniform continuity is that ε-close reals x and y can be found
+in an ε sized ball around some rational p. This is almost a restatement of the
+metric on reals, but requires a bit of juggling around order proofs and is not
+so trivial to write down. It is a good idea to redefine the metric on reals
+(there is a simpler variation) which should trim down the following proofs
 somewhat.
 
 \begin{code}
-
-extend-is-extension : (q : ℚ)
-                    → (f : ℚ → ℚ)
-                    → (ic : ℚ-is-uniformly-continuous f)
-                    → (extend f ic) (ι q) ＝ ι (f q)
-extend-is-extension q f ic = γ
- where
-  L  = lower-cut-of ((extend f ic) (ι q))
-
-  γ₁ : (p : ℚ) → p ∈ L → p < f q
-  γ₁ p = ∥∥-rec (ℚ<-is-prop p (f q)) I
-   where
-    I : Σ (x₀ , ε , 0<ε) ꞉ ℚ × ℚ₊ , ι q ℝ∈𝐁 δ⦅⦆ f ic (ε , 0<ε) ⦅ x₀ ⦆
-                                  × p < f x₀ - ε
-      → p < f q
-    I ((x₀ , ε , 0<ε) , b , l) = ℚ<-trans p (f x₀ - ε) (f q) l (pr₁ II)
-     where
-      II : f q ∈𝐁 ε , 0<ε ⦅ f x₀ ⦆
-      II = δ-uc f ic (ε , 0<ε) q x₀ b
-
-  γ₂ : (p : ℚ)
-     → p < f q
-     → ∃ (x₀ , ε , 0<ε) ꞉ ℚ × ℚ₊ , ι q ℝ∈𝐁 δ⦅⦆ f ic (ε , 0<ε) ⦅ x₀ ⦆
-                                 × p < f x₀ - ε
-  γ₂ p l = ∥∥-functor γ (ball-around-real (ι q) (ε , 0<ε) f ic)
-   where
-    ε : ℚ
-    ε = 1/2 * (f q - p)
-
-    I : 0ℚ < f q - p
-    I = ℚ<-difference-positive p (f q) l
-
-    0<ε : 0ℚ < ε
-    0<ε = ℚ<-pos-multiplication-preserves-order 1/2 (f q - p) 0<1/2 I
-
-    δ₊ : ℚ₊
-    δ₊ = δ⦅⦆ f ic (ε , 0<ε)
-
-    γ : Σ x₀ ꞉ ℚ , (ι q ℝ∈𝐁 δ₊ ⦅ x₀ ⦆)
-      → Σ (x₀ , ε , 0<ε) ꞉ ℚ × ℚ₊ , ι q ℝ∈𝐁 δ⦅⦆ f ic (ε , 0<ε) ⦅ x₀ ⦆
-                                  × p < f x₀ - ε
-    γ (x₀ , b) = (x₀ , ε , 0<ε) , (b , γ')
-     where
-      II : f q < f x₀ + ε
-      II = pr₂ (δ-uc f ic (ε , 0<ε) q x₀ b)
-
-      IV : f q + (p - f q) < f x₀ + ε + (p - f q)
-      IV = ℚ<-addition-preserves-order
-            (f q) (f x₀ + ε) (p - f q) II
-
-      V : f q + (p - f q) ＝ p
-      V = f q + (p - f q) ＝⟨ ℚ+-comm (f q) (p - f q)        ⟩
-          p - f q + f q   ＝⟨ ℚ-inverse-intro'''' p (f q) ⁻¹ ⟩
-          p               ∎
-
-      VI : f q - p ＝ - (p - f q)
-      VI = f q - p         ＝⟨ ℚ+-comm (f q) (- p)                 ⟩
-           (- p) + f q     ＝⟨ ap ((- p) +_) (ℚ-minus-minus (f q)) ⟩
-           (- p) - (- f q) ＝⟨ ℚ-minus-dist p (- f q)              ⟩
-           - (p - f q)     ∎
-
-      VII : ε + (p - f q) ＝ - ε
-      VII = ε + (p - f q)                        ＝⟨ i    ⟩
-            1/2 * (- (p - f q)) + (p - f q)      ＝⟨ ii   ⟩
-            (- 1/2) * (p - f q) + (p - f q)      ＝⟨ iii  ⟩
-            (- 1/2) * (p - f q) + 1ℚ * (p - f q) ＝⟨ iv   ⟩
-            ((- 1/2) + 1ℚ) * (p - f q)           ＝⟨ v    ⟩
-            (1ℚ - 1/2) * (p - f q)               ＝⟨ vi   ⟩
-            1/2 * (p - f q)                      ＝⟨ vii  ⟩
-            - (- 1/2 * (p - f q))                ＝⟨ viii ⟩
-            - 1/2 * (- (p - f q))                ＝⟨ ix   ⟩
-            - ε                    ∎
-       where
-        i    = ap (λ z → 1/2 * z + (p - f q)) VI
-        ii   = ap (_+ (p - f q)) (ℚ-negation-dist-over-mult'' 1/2 (p - f q))
-        iii  = ap ((- 1/2) * (p - f q) +_) (ℚ-mult-left-id (p - f q) ⁻¹)
-        iv   = ℚ-distributivity' (p - f q) (- 1/2) 1ℚ ⁻¹
-        v    = ap (_* (p - f q)) (ℚ+-comm (- 1/2) 1ℚ)
-        vi   = ap (_* (p - f q)) 1-1/2
-        vii  = ℚ-minus-minus (1/2 * (p - f q))
-        viii = ap -_  (ℚ-negation-dist-over-mult' 1/2 (p - f q) ⁻¹)
-        ix   = ap (λ z → - 1/2 * z) (VI ⁻¹)
-
-      VIII : f x₀ + ε + (p - f q) ＝ f x₀ - ε
-      VIII = f x₀ + ε + (p - f q)   ＝⟨ ℚ+-assoc (f x₀) ε (p - f q) ⟩
-             f x₀ + (ε + (p - f q)) ＝⟨ ap (f x₀ +_) VII            ⟩
-             f x₀ - ε               ∎
-
-      γ' : p <ℚ f x₀ - ε
-      γ' = transport₂ _<_ V VIII IV
-
-  γ : (extend f ic) (ι q) ＝ ι (f q)
-  γ = ℝ-equality-from-left-cut' ((extend f ic) (ι q)) (ι (f q)) γ₁ γ₂
 
 midpoint-switch : (p q : ℚ)
                 → p < q
@@ -834,5 +736,142 @@ extensions-uc f ic (ε , 0<ε) = δ₊ , γ
 
         γ''' : B-ℚ (min a a) (max b b) ε 0<ε
         γ''' = transport₂ (λ α β → B-ℚ α β ε 0<ε) II III IV
+
+\end{code}
+
+We now prove that the uniformly continuous "extend" construction is indeed an
+extension of the given rational function. This means that for any rational
+input, the extension output agrees with the function output.
+
+\begin{code}
+
+is-extension : (f : ℚ → ℚ)
+             → (fuc : ℚ-is-uniformly-continuous f)
+             → (g : ℝ → ℝ)
+             → (guc : ℝ-is-uniformly-continuous g)
+             → 𝓤₁ ̇
+is-extension f fuc g guc = (q : ℚ) → g (ι q) ＝ ι (f q)
+
+extend-is-extension : (f : ℚ → ℚ)
+                    → (ic : ℚ-is-uniformly-continuous f)
+                    → is-extension f ic (extend f ic) (extensions-uc f ic)
+extend-is-extension f ic q = γ
+ where
+  L  = lower-cut-of ((extend f ic) (ι q))
+
+  γ₁ : (p : ℚ) → p ∈ L → p < f q
+  γ₁ p = ∥∥-rec (ℚ<-is-prop p (f q)) I
+   where
+    I : Σ (x₀ , ε , 0<ε) ꞉ ℚ × ℚ₊ , ι q ℝ∈𝐁 δ⦅⦆ f ic (ε , 0<ε) ⦅ x₀ ⦆
+                                  × p < f x₀ - ε
+      → p < f q
+    I ((x₀ , ε , 0<ε) , b , l) = ℚ<-trans p (f x₀ - ε) (f q) l (pr₁ II)
+     where
+      II : f q ∈𝐁 ε , 0<ε ⦅ f x₀ ⦆
+      II = δ-uc f ic (ε , 0<ε) q x₀ b
+
+  γ₂ : (p : ℚ)
+     → p < f q
+     → ∃ (x₀ , ε , 0<ε) ꞉ ℚ × ℚ₊ , ι q ℝ∈𝐁 δ⦅⦆ f ic (ε , 0<ε) ⦅ x₀ ⦆
+                                 × p < f x₀ - ε
+  γ₂ p l = ∥∥-functor γ (ball-around-real (ι q) (ε , 0<ε) f ic)
+   where
+    ε : ℚ
+    ε = 1/2 * (f q - p)
+
+    I : 0ℚ < f q - p
+    I = ℚ<-difference-positive p (f q) l
+
+    0<ε : 0ℚ < ε
+    0<ε = ℚ<-pos-multiplication-preserves-order 1/2 (f q - p) 0<1/2 I
+
+    δ₊ : ℚ₊
+    δ₊ = δ⦅⦆ f ic (ε , 0<ε)
+
+    γ : Σ x₀ ꞉ ℚ , (ι q ℝ∈𝐁 δ₊ ⦅ x₀ ⦆)
+      → Σ (x₀ , ε , 0<ε) ꞉ ℚ × ℚ₊ , ι q ℝ∈𝐁 δ⦅⦆ f ic (ε , 0<ε) ⦅ x₀ ⦆
+                                  × p < f x₀ - ε
+    γ (x₀ , b) = (x₀ , ε , 0<ε) , (b , γ')
+     where
+      II : f q < f x₀ + ε
+      II = pr₂ (δ-uc f ic (ε , 0<ε) q x₀ b)
+
+      IV : f q + (p - f q) < f x₀ + ε + (p - f q)
+      IV = ℚ<-addition-preserves-order
+            (f q) (f x₀ + ε) (p - f q) II
+
+      V : f q + (p - f q) ＝ p
+      V = f q + (p - f q) ＝⟨ ℚ+-comm (f q) (p - f q)        ⟩
+          p - f q + f q   ＝⟨ ℚ-inverse-intro'''' p (f q) ⁻¹ ⟩
+          p               ∎
+
+      VI : f q - p ＝ - (p - f q)
+      VI = f q - p         ＝⟨ ℚ+-comm (f q) (- p)                 ⟩
+           (- p) + f q     ＝⟨ ap ((- p) +_) (ℚ-minus-minus (f q)) ⟩
+           (- p) - (- f q) ＝⟨ ℚ-minus-dist p (- f q)              ⟩
+           - (p - f q)     ∎
+
+      VII : ε + (p - f q) ＝ - ε
+      VII = ε + (p - f q)                        ＝⟨ i    ⟩
+            1/2 * (- (p - f q)) + (p - f q)      ＝⟨ ii   ⟩
+            (- 1/2) * (p - f q) + (p - f q)      ＝⟨ iii  ⟩
+            (- 1/2) * (p - f q) + 1ℚ * (p - f q) ＝⟨ iv   ⟩
+            ((- 1/2) + 1ℚ) * (p - f q)           ＝⟨ v    ⟩
+            (1ℚ - 1/2) * (p - f q)               ＝⟨ vi   ⟩
+            1/2 * (p - f q)                      ＝⟨ vii  ⟩
+            - (- 1/2 * (p - f q))                ＝⟨ viii ⟩
+            - 1/2 * (- (p - f q))                ＝⟨ ix   ⟩
+            - ε                    ∎
+       where
+        i    = ap (λ z → 1/2 * z + (p - f q)) VI
+        ii   = ap (_+ (p - f q)) (ℚ-negation-dist-over-mult'' 1/2 (p - f q))
+        iii  = ap ((- 1/2) * (p - f q) +_) (ℚ-mult-left-id (p - f q) ⁻¹)
+        iv   = ℚ-distributivity' (p - f q) (- 1/2) 1ℚ ⁻¹
+        v    = ap (_* (p - f q)) (ℚ+-comm (- 1/2) 1ℚ)
+        vi   = ap (_* (p - f q)) 1-1/2
+        vii  = ℚ-minus-minus (1/2 * (p - f q))
+        viii = ap -_  (ℚ-negation-dist-over-mult' 1/2 (p - f q) ⁻¹)
+        ix   = ap (λ z → - 1/2 * z) (VI ⁻¹)
+
+      VIII : f x₀ + ε + (p - f q) ＝ f x₀ - ε
+      VIII = f x₀ + ε + (p - f q)   ＝⟨ ℚ+-assoc (f x₀) ε (p - f q) ⟩
+             f x₀ + (ε + (p - f q)) ＝⟨ ap (f x₀ +_) VII            ⟩
+             f x₀ - ε               ∎
+
+      γ' : p <ℚ f x₀ - ε
+      γ' = transport₂ _<_ V VIII IV
+
+  γ : (extend f ic) (ι q) ＝ ι (f q)
+  γ = ℝ-equality-from-left-cut' ((extend f ic) (ι q)) (ι (f q)) γ₁ γ₂
+
+\end{code}
+
+Now we show that the extension is unique. We do this by showing that if we have
+a uniformly continuous function (f : ℚ → ℚ), and a uniformly continuous function
+(g : ℝ → ℝ) that agrees with f for every rational input, then the extension of
+f agrees with g everywhere.
+
+\begin{code}
+
+{-
+extend-is-unique : (f : ℚ → ℚ)
+                 → (fuc : ℚ-is-uniformly-continuous f)
+                 → (g : ℝ → ℝ)
+                 → (guc : ℝ-is-uniformly-continuous g)
+                 → is-extension f fuc g guc
+                 → g ∼ extend f fuc
+extend-is-unique f fuc g guc gie x = γ
+ where
+  f' = extend f fuc
+
+  γ₁ : (p : ℚ) → p < g x → p < f' x
+  γ₁ p l = {!!}
+
+  γ₂ : (p : ℚ) → p < f' x → p < g x
+  γ₂ p l = {!!}
+
+  γ : g x ＝ f' x
+  γ = ℝ-equality-from-left-cut' (g x) (f' x) γ₁ γ₂
+-}
 
 \end{code}
