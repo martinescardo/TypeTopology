@@ -173,7 +173,7 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
 
      -- Igor's definition.
      closed-image : ⟨ 𝒪 X ⟩ → ⟨ 𝒪 A ⟩ → ⟨ 𝒪 A ⟩
-     closed-image U = 𝒻* ∘ ‘ U ’ₓ .pr₁ ∘ 𝒻 ⋆∙_
+     closed-image U = (𝒻* ∘ ‘ U ’ₓ .pr₁) ∘ 𝒻 ⋆∙_
 
      closed-image-is-inflationary : (U : ⟨ 𝒪 X ⟩) (V : ⟨ 𝒪 A ⟩)
                                   → (V ≤[ poset-of (𝒪 A) ] closed-image U V) holds
@@ -235,6 +235,28 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
              (frame-homomorphisms-preserve-meets (𝒪 A) (𝒪 X) 𝒻 V₁ V₂)
         Ⅱ = ap 𝒻* (binary-distributivity-op (𝒪 X) U (𝒻 ⋆∙ V₁) (𝒻 ⋆∙ V₂))
         Ⅲ = f₊-preserves-binary-meetsₓ 𝒻 (U ∨[ 𝒪 X ] 𝒻 ⋆∙ V₁) (U ∨[ 𝒪 X ] (𝒻 ⋆∙ V₂))
+
+     closed-image-is-sc : (U : ⟨ 𝒪 X ⟩)
+                        → is-scott-continuous (𝒪 A) (𝒪 A) (closed-image U) holds
+     closed-image-is-sc U =
+      ∘-of-scott-cont-is-scott-cont (𝒪 A) (𝒪 X) (𝒪 A) (𝒻* ∘ ‘ U ’ₓ .pr₁) (𝒻 ⋆∙_) † ‡
+       where
+        † : is-scott-continuous (𝒪 X) (𝒪 A) (𝒻* ∘ ‘ U ’ₓ .pr₁) holds
+        † = ∘-of-scott-cont-is-scott-cont
+             (𝒪 X)
+             (𝒪 X)
+             (𝒪 A)
+             𝒻*
+             (‘ U ’ₓ .pr₁)
+             {!!}
+             (∨-is-scott-continuous (𝒪 X) U)
+
+        ‡ : is-scott-continuous (𝒪 A) (𝒪 X) (𝒻 ⋆∙_) holds
+        ‡ = join-preserving-implies-scott-continuous
+             (𝒪 A)
+             (𝒪 X)
+             (𝒻 ⋆∙_)
+             (frame-homomorphisms-preserve-all-joins (𝒪 A) (𝒪 X) 𝒻)
 
      f⁻⋆-preserves-joins : is-join-preserving (𝒪 Patchₛ-A) (𝒪 X) f⁻⋆ holds
      f⁻⋆-preserves-joins = aft-forward 𝒻⁻⋆ₘ †

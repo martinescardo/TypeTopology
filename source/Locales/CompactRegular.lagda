@@ -1183,87 +1183,6 @@ is-spectral-map F G (f , _) =
 
 \end{code}
 
-\begin{code}
-
-open Locale
-
-module PerfectMaps (X : Locale 𝓤 𝓥 𝓥) (Y : Locale 𝓤' 𝓥 𝓥)
-                                      (𝒷 : has-basis (𝒪 Y) holds) where
-
- open AdjointFunctorTheorem pt fe X Y 𝒷
- open ContinuousMapNotation X Y
-
-\end{code}
-
-A continuous map `f : X → Y` is called *perfect* if its right adjoint is
-Scott-continuous.
-
-\begin{code}
-
- is-perfect-map : (X ─c→ Y) → Ω (𝓤 ⊔ 𝓤' ⊔ 𝓥 ⁺)
- is-perfect-map f = is-scott-continuous (𝒪 X) (𝒪 Y) (pr₁ (right-adjoint-of f))
-
-\end{code}
-
-\begin{code}
-
- perfect-preserves-way-below : (𝒻 : X ─c→ Y)
-                             → is-perfect-map 𝒻 holds
-                             → (U V : ⟨ 𝒪 Y ⟩)
-                             → (U ≪[ 𝒪 Y ] V) holds
-                             → (𝒻 ⋆∙ U ≪[ 𝒪 X ] 𝒻 ⋆∙ V) holds
- perfect-preserves-way-below f φ U V ϑ S δ p = γ
-  where
-   open GaloisConnectionBetween (poset-of (𝒪 Y)) (poset-of (𝒪 X))
-   open PosetReasoning (poset-of (𝒪 Y))
-
-   T : Fam 𝓥 ⟨ 𝒪 Y ⟩
-   T = ⁅ f ⁎· V ∣ V ε S ⁆
-
-   ζ₁ : (V ≤[ poset-of (𝒪 Y) ] (f ⁎· (⋁[ 𝒪 X ] S))) holds
-   ζ₁ = adjunction-inequality-forward f (join-of (𝒪 X) S) V p
-
-   ζ₂ : (V ≤[ poset-of (𝒪 Y) ] (⋁[ 𝒪 Y ] ⁅ f ⁎· V ∣ V ε S ⁆)) holds
-   ζ₂ = V                             ≤⟨ ζ₁ ⟩
-        f ⁎· (⋁[ 𝒪 X ] S)             ＝⟨ †  ⟩ₚ
-        ⋁[ 𝒪 Y ] ⁅ f ⁎· V ∣ V ε S ⁆   ■
-         where
-          † = scott-continuous-join-eq (𝒪 X) (𝒪 Y) (f ⁎·_) φ S δ
-
-   T-is-directed : is-directed (poset-of (𝒪 Y)) T holds
-   T-is-directed =
-    monotone-image-on-directed-family-is-directed (𝒪 X) (𝒪 Y) S δ (f ⁎·_) μ
-     where
-      μ : is-monotonic (poset-of (𝒪 X)) (poset-of (𝒪 Y)) (f ⁎·_) holds
-      μ = pr₂ (right-adjoint-of f)
-
-   γ : (Ǝ k ∶ index S , ((f ⋆∙ U) ≤[ poset-of (𝒪 X) ] (S [ k ])) holds) holds
-   γ = ∥∥-rec ∃-is-prop ϵ (ϑ T T-is-directed ζ₂)
-    where
-     ϵ : _
-     ϵ (k , q) = ∣ k , † ∣
-      where
-       † : ((f ⋆∙ U) ≤[ poset-of (𝒪 X) ] (S [ k ])) holds
-       † = adjunction-inequality-backward f (S [ k ]) U q
-
- compact-codomain-of-perfect-map-implies-compact-domain : (𝒻 : X ─c→ Y)
-                                                        → is-perfect-map 𝒻 holds
-                                                        → is-compact (𝒪 Y) holds
-                                                        → is-compact (𝒪 X) holds
- compact-codomain-of-perfect-map-implies-compact-domain 𝒻@(f , φ , _) p κ = γ
-  where
-   β : (f 𝟏[ 𝒪 Y ] ≪[ 𝒪 X ] f 𝟏[ 𝒪 Y ]) holds
-   β = perfect-preserves-way-below 𝒻 p 𝟏[ 𝒪 Y ] 𝟏[ 𝒪 Y ] κ
-
-   γ : (𝟏[ 𝒪 X ] ≪[ 𝒪 X ] 𝟏[ 𝒪 X ]) holds
-   γ = transport (λ - → (- ≪[ 𝒪 X ] -) holds) φ β
-
- perfect-implies-spectral : (f : X ─c→ Y)
-                          → (is-perfect-map f ⇒ is-spectral-map (𝒪 Y) (𝒪 X) f) holds
- perfect-implies-spectral 𝒻@(f , _) φ U κ = perfect-preserves-way-below 𝒻 φ U U κ
-
-\end{code}
-
 -- directification-preserves-coherence : (F : Frame 𝓤 𝓥 𝓦)
 --                                     → (ℬ : Fam 𝓦 ⟨ F ⟩)
 --                                     → (σ : closed-under-finite-meets F ℬ holds)
@@ -1356,6 +1275,123 @@ spectral-yoneda {𝓦 = 𝓦} F σ U V χ =
      ii = ⋁[ F ]-least ⁅ ℬ [ i ] ∣ i ε ℐ ⁆ (V , ξ)
 
 \end{code}
+
+\begin{code}
+
+open Locale
+
+module PerfectMaps (X : Locale 𝓤 𝓥 𝓥) (Y : Locale 𝓤' 𝓥 𝓥)
+                                      (𝒷 : has-basis (𝒪 Y) holds) where
+
+ open AdjointFunctorTheorem pt fe X Y 𝒷
+ open ContinuousMapNotation X Y
+
+\end{code}
+
+A continuous map `f : X → Y` is called *perfect* if its right adjoint is
+Scott-continuous.
+
+\begin{code}
+
+ is-perfect-map : (X ─c→ Y) → Ω (𝓤 ⊔ 𝓤' ⊔ 𝓥 ⁺)
+ is-perfect-map f = is-scott-continuous (𝒪 X) (𝒪 Y) (pr₁ (right-adjoint-of f))
+
+\end{code}
+
+\begin{code}
+
+ perfect-preserves-way-below : (𝒻 : X ─c→ Y)
+                             → is-perfect-map 𝒻 holds
+                             → (U V : ⟨ 𝒪 Y ⟩)
+                             → (U ≪[ 𝒪 Y ] V) holds
+                             → (𝒻 ⋆∙ U ≪[ 𝒪 X ] 𝒻 ⋆∙ V) holds
+ perfect-preserves-way-below f φ U V ϑ S δ p = γ
+  where
+   open GaloisConnectionBetween (poset-of (𝒪 Y)) (poset-of (𝒪 X))
+   open PosetReasoning (poset-of (𝒪 Y))
+
+   T : Fam 𝓥 ⟨ 𝒪 Y ⟩
+   T = ⁅ f ⁎· V ∣ V ε S ⁆
+
+   ζ₁ : (V ≤[ poset-of (𝒪 Y) ] (f ⁎· (⋁[ 𝒪 X ] S))) holds
+   ζ₁ = adjunction-inequality-forward f (join-of (𝒪 X) S) V p
+
+   ζ₂ : (V ≤[ poset-of (𝒪 Y) ] (⋁[ 𝒪 Y ] ⁅ f ⁎· V ∣ V ε S ⁆)) holds
+   ζ₂ = V                             ≤⟨ ζ₁ ⟩
+        f ⁎· (⋁[ 𝒪 X ] S)             ＝⟨ †  ⟩ₚ
+        ⋁[ 𝒪 Y ] ⁅ f ⁎· V ∣ V ε S ⁆   ■
+         where
+          † = scott-continuous-join-eq (𝒪 X) (𝒪 Y) (f ⁎·_) φ S δ
+
+   T-is-directed : is-directed (poset-of (𝒪 Y)) T holds
+   T-is-directed =
+    monotone-image-on-directed-family-is-directed (𝒪 X) (𝒪 Y) S δ (f ⁎·_) μ
+     where
+      μ : is-monotonic (poset-of (𝒪 X)) (poset-of (𝒪 Y)) (f ⁎·_) holds
+      μ = pr₂ (right-adjoint-of f)
+
+   γ : (Ǝ k ∶ index S , ((f ⋆∙ U) ≤[ poset-of (𝒪 X) ] (S [ k ])) holds) holds
+   γ = ∥∥-rec ∃-is-prop ϵ (ϑ T T-is-directed ζ₂)
+    where
+     ϵ : _
+     ϵ (k , q) = ∣ k , † ∣
+      where
+       † : ((f ⋆∙ U) ≤[ poset-of (𝒪 X) ] (S [ k ])) holds
+       † = adjunction-inequality-backward f (S [ k ]) U q
+
+ compact-codomain-of-perfect-map-implies-compact-domain : (𝒻 : X ─c→ Y)
+                                                        → is-perfect-map 𝒻 holds
+                                                        → is-compact (𝒪 Y) holds
+                                                        → is-compact (𝒪 X) holds
+ compact-codomain-of-perfect-map-implies-compact-domain 𝒻@(f , φ , _) p κ = γ
+  where
+   β : (f 𝟏[ 𝒪 Y ] ≪[ 𝒪 X ] f 𝟏[ 𝒪 Y ]) holds
+   β = perfect-preserves-way-below 𝒻 p 𝟏[ 𝒪 Y ] 𝟏[ 𝒪 Y ] κ
+
+   γ : (𝟏[ 𝒪 X ] ≪[ 𝒪 X ] 𝟏[ 𝒪 X ]) holds
+   γ = transport (λ - → (- ≪[ 𝒪 X ] -) holds) φ β
+
+ perfect-implies-spectral : (f : X ─c→ Y)
+                          → (is-perfect-map f ⇒ is-spectral-map (𝒪 Y) (𝒪 X) f) holds
+ perfect-implies-spectral 𝒻@(f , _) φ U κ = perfect-preserves-way-below 𝒻 φ U U κ
+
+ spectral-maps-are-perfect : (f : X ─c→ Y)
+                           → is-spectral (𝒪 Y) holds
+                           → (is-spectral-map (𝒪 Y) (𝒪 X) f ⇒ is-perfect-map f) holds
+ spectral-maps-are-perfect f 𝕤 σ S δ = † , ‡
+  where
+   open Joins (λ U V → U ≤[ poset-of (𝒪 Y) ] V)
+   open PosetReasoning (poset-of (𝒪 Y))
+
+   f⁺ : 𝒪 Y ─f→ 𝒪 X
+   f⁺ = f
+
+   f₊ : ⟨ 𝒪 X ⟩ → ⟨ 𝒪 Y ⟩
+   f₊ = right-adjoint-of f⁺ .pr₁
+
+   f₊-is-monotone : is-monotonic (poset-of (𝒪 X)) (poset-of (𝒪 Y)) f₊ holds
+   f₊-is-monotone = right-adjoint-of f⁺ .pr₂
+
+   † : (f₊ (⋁[ 𝒪 X ] S) is-an-upper-bound-of ⁅ f₊ V ∣ V ε S ⁆) holds
+   † i = f₊ (S [ i ]) ≤⟨ ※ ⟩ f₊ (⋁[ 𝒪 X ] S) ■
+    where
+     ※ = f₊-is-monotone (S [ i ] , ⋁[ 𝒪 X ] S) (⋁[ 𝒪 X ]-upper S i)
+
+   ‡ : ((W , _) : upper-bound ⁅ f₊ V ∣ V ε S ⁆)
+     → (f₊ (⋁[ 𝒪 X ] S) ≤[ poset-of (𝒪 Y) ] W) holds
+   ‡ (W , p) = spectral-yoneda (𝒪 Y) 𝕤 (f₊ (⋁[ 𝒪 X ] S)) W {!!}
+    where
+     ※ : (C : ⟨ 𝒪 Y ⟩)
+       → is-compact-open (𝒪 Y) C holds
+       → (C ≤[ poset-of (𝒪 Y) ] (f₊ (⋁[ 𝒪 X ] S))) holds
+       → (C ≤[ poset-of (𝒪 Y) ] W) holds
+     ※ C κ q = {!!}
+      where
+       foo : (f ⋆∙ C ≤[ poset-of (𝒪 X) ] (⋁[ 𝒪 X ] S)) holds
+       foo = adjunction-inequality-backward f⁺ (⋁[ 𝒪 X ] S) C q
+
+\end{code}
+
 
 
 \begin{code}
