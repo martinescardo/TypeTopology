@@ -147,6 +147,9 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
                            patchₛ-is-spectral
 
      open AdjointFunctorTheorem X Patchₛ-A Patchₛ-A-has-basis hiding (f₊-is-right-adjoint-of-f⁺)
+     open AdjointFunctorTheorem Patchₛ-A X X-has-basis
+      using ()
+      renaming (adjunction-inequality-forward to adjunction-inequality-forward₀)
      open AdjointFunctorTheorem X A A-has-basis
       using (f₊-is-right-adjoint-of-f⁺)
       renaming (right-adjoint-of to right-adjoint-ofₓ;
@@ -238,6 +241,12 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
         Ⅱ = ap 𝒻* (binary-distributivity-op (𝒪 X) U (𝒻 ⋆∙ V₁) (𝒻 ⋆∙ V₂))
         Ⅲ = f₊-preserves-binary-meetsₓ 𝒻 (U ∨[ 𝒪 X ] 𝒻 ⋆∙ V₁) (U ∨[ 𝒪 X ] (𝒻 ⋆∙ V₂))
 
+     closed-image-is-nucleus : (U : ⟨ 𝒪 X ⟩)
+                             → is-nucleus (𝒪 A) (closed-image U) holds
+     closed-image-is-nucleus U = closed-image-is-inflationary U
+                               , closed-image-is-idempotent U
+                               , closed-image-preserves-meets U
+
      closed-image-is-sc : (U : ⟨ 𝒪 X ⟩)
                         → is-scott-continuous (𝒪 A) (𝒪 A) (closed-image U) holds
      closed-image-is-sc U =
@@ -263,10 +272,34 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
      f⁻⋆-preserves-joins : is-join-preserving (𝒪 Patchₛ-A) (𝒪 X) f⁻⋆ holds
      f⁻⋆-preserves-joins = aft-forward 𝒻⁻⋆ₘ †
       where
-       f⁻* : ⟨ 𝒪 X ⟩ → ⟨ 𝒪 Patchₛ-A ⟩
-       f⁻* U = {!!}
+       f⁻₊ : ⟨ 𝒪 X ⟩ → ⟨ 𝒪 Patchₛ-A ⟩
+       f⁻₊ U = closed-image U , closed-image-is-nucleus U , closed-image-is-sc U
+
+       f⁻*-is-monotone : is-monotonic
+                          (poset-of (𝒪 X))
+                          (poset-of (𝒪 Patchₛ-A))
+                          f⁻₊
+                         holds
+       f⁻*-is-monotone U V p = {!!}
+
+       f⁻₊ₘ : poset-of (𝒪 X) ─m→ poset-of (𝒪 Patchₛ-A)
+       f⁻₊ₘ = f⁻₊ , f⁻*-is-monotone
+
+       f⁻₊-is-right-adjoint-of-f⁻⁺ : (𝒻⁻⋆ₘ ⊣ f⁻₊ₘ) holds
+       f⁻₊-is-right-adjoint-of-f⁻⁺ 𝒿 U = ϑ₁ , ϑ₂
+        where
+         ϑ₁ : (f⁻⋆ 𝒿 ≤[ poset-of (𝒪 X) ] U) holds
+            → (𝒿 ≤[ poset-of (𝒪 Patchₛ-A) ] (f⁻₊ U)) holds
+         ϑ₁ φ C = adjunction-inequality-forwardₓ 𝒻 _ _ ψ
+          where
+           ψ : (𝒻 ⋆∙ 𝒿 .pr₁ {!!} ≤[ poset-of (𝒪 X) ] (U ∨[ 𝒪 X ] 𝒻 ⋆∙ {!!})) holds
+           ψ = {!!}
+
+         ϑ₂ : (𝒿 ≤[ poset-of (𝒪 Patchₛ-A) ] (f⁻₊ U)) holds
+            → (f⁻⋆ 𝒿 ≤[ poset-of (𝒪 X) ] U) holds
+         ϑ₂ = {!!}
 
        † : has-right-adjoint 𝒻⁻⋆ₘ
-       † = (f⁻* , {!!}) , {!!}
+       † = f⁻₊ₘ , f⁻₊-is-right-adjoint-of-f⁻⁺
 
 \end{code}
