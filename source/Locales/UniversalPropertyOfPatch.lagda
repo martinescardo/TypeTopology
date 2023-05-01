@@ -81,6 +81,9 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
      A-has-basis = ∣ pr₁ σᴰ , pr₁ (pr₁ (pr₂ σᴰ)) ∣
 
      open HeytingImplicationConstruction X X-has-basis
+     open HeytingImplicationConstruction A A-has-basis
+      using ()
+      renaming (_==>_ to _==>ₐ_)
 
      Bₐ : 𝓤  ̇
      Bₐ = pr₁ (pr₁ σᴰ)
@@ -101,6 +104,28 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
      f⁻⋆ j =
       ⋁[ 𝒪 X ] ⁅ (𝒻 ⋆∙ β m) ∧[ 𝒪 X ] ¬𝒻⋆ n
                  ∣ (m , n , p) ∶ Σ m ꞉ Bₐ , Σ n ꞉ Bₐ , 𝕃 j m n holds ⁆
+
+     f⁻⋆₂ : ⟨ 𝒪 Patchₛ-A ⟩ → ⟨ 𝒪 X ⟩
+     f⁻⋆₂ 𝒿@(j , _) =
+      ⋁[ 𝒪 X ] ⁅ 𝒻 ⋆∙ j (β n) ∧[ 𝒪 X ] ¬𝒻⋆ n ∣ n ∶ Bₐ ⁆
+
+     f⁻⋆₂-equiv-f⁻⋆₁ : (𝒿 : ⟨ 𝒪 Patchₛ-A ⟩) → f⁻⋆ 𝒿 ＝ f⁻⋆₂ 𝒿
+     f⁻⋆₂-equiv-f⁻⋆₁ 𝒿@(j , _) = bicofinal-implies-same-join (𝒪 X) S T † ‡
+      where
+       S : Fam 𝓤 ⟨ 𝒪 X ⟩
+       S = ⁅ (𝒻 ⋆∙ β m) ∧[ 𝒪 X ] ¬𝒻⋆ n ∣ (m , n , p) ∶ Σ m ꞉ Bₐ , Σ n ꞉ Bₐ , 𝕃 𝒿 m n holds ⁆
+
+       T : Fam 𝓤 ⟨ 𝒪 X ⟩
+       T = ⁅ 𝒻 ⋆∙ j (β n) ∧[ 𝒪 X ] ¬𝒻⋆ n ∣ n ∶ Bₐ ⁆
+
+       † : cofinal-in (𝒪 X) S T holds
+       † (m , n , p) = ∣ n , ※ ∣
+        where
+         ※ : (S [ m , n , p ] ≤[ poset-of (𝒪 X) ] T [ n ]) holds
+         ※ = {!!}
+
+       ‡ : cofinal-in (𝒪 X) T S holds
+       ‡ n = {!!}
 
      f⁻⋆-is-monotone : is-monotonic
                         (poset-of (𝒪 Patchₛ-A))
@@ -161,8 +186,8 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
      open GaloisConnectionBetween (poset-of (𝒪 A)) (poset-of (𝒪 X))
       using () renaming (counit to counitₐ)
 
-     𝒻* : ⟨ 𝒪 X ⟩ → ⟨ 𝒪 A ⟩
-     𝒻* = pr₁ (right-adjoint-ofₓ 𝒻)
+     𝒻₊ : ⟨ 𝒪 X ⟩ → ⟨ 𝒪 A ⟩
+     𝒻₊ = pr₁ (right-adjoint-ofₓ 𝒻)
 
      𝒻⁺ₘ : poset-of (𝒪 A) ─m→ poset-of (𝒪 X)
      𝒻⁺ₘ = pr₁ 𝒻 , frame-morphisms-are-monotonic (𝒪 A) (𝒪 X) (𝒻 ⋆∙_) (pr₂ 𝒻)
@@ -176,7 +201,7 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
 
      -- Igor's definition.
      closed-image : ⟨ 𝒪 X ⟩ → ⟨ 𝒪 A ⟩ → ⟨ 𝒪 A ⟩
-     closed-image U = (𝒻* ∘ ‘ U ’ₓ .pr₁) ∘ 𝒻 ⋆∙_
+     closed-image U = (𝒻₊ ∘ ‘ U ’ₓ .pr₁) ∘ 𝒻 ⋆∙_
 
      closed-image-is-inflationary : (U : ⟨ 𝒪 X ⟩) (V : ⟨ 𝒪 A ⟩)
                                   → (V ≤[ poset-of (𝒪 A) ] closed-image U V) holds
@@ -195,15 +220,15 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
         open PosetReasoning (poset-of (𝒪 A))
       in
        closed-image U (closed-image U V)                    ＝⟨ refl    ⟩ₚ
-       𝒻* (U ∨[ 𝒪 X ] 𝒻 ⋆∙ (𝒻* (U ∨[ 𝒪 X ] (𝒻 ⋆∙ V))))      ≤⟨ †        ⟩
-       𝒻* (U ∨[ 𝒪 X ] 𝒻 ⋆∙ V)                               ＝⟨ refl    ⟩ₚ
+       𝒻₊ (U ∨[ 𝒪 X ] 𝒻 ⋆∙ (𝒻₊ (U ∨[ 𝒪 X ] (𝒻 ⋆∙ V))))      ≤⟨ †        ⟩
+       𝒻₊ (U ∨[ 𝒪 X ] 𝒻 ⋆∙ V)                               ＝⟨ refl    ⟩ₚ
        closed-image U V                                     ■
       where
-        ‡ : (𝒻 ⋆∙ 𝒻* (U ∨[ 𝒪 X ] (𝒻 ⋆∙ 𝒻* (U ∨[ 𝒪 X ] 𝒻 ⋆∙ V)))
+        ‡ : (𝒻 ⋆∙ 𝒻₊ (U ∨[ 𝒪 X ] (𝒻 ⋆∙ 𝒻₊ (U ∨[ 𝒪 X ] 𝒻 ⋆∙ V)))
               ≤[ poset-of (𝒪 X) ]
              (U ∨[ 𝒪 X ] 𝒻 ⋆∙ V)) holds
-        ‡ = 𝒻 ⋆∙ 𝒻* (U ∨[ 𝒪 X ] (𝒻 ⋆∙ 𝒻* (U ∨[ 𝒪 X ] 𝒻 ⋆∙ V)))  ≤⟨ Ⅰ   ⟩
-            U ∨[ 𝒪 X ] (𝒻 ⋆∙ 𝒻* (U ∨[ 𝒪 X ] 𝒻 ⋆∙ V))            ≤⟨ Ⅱ   ⟩
+        ‡ = 𝒻 ⋆∙ 𝒻₊ (U ∨[ 𝒪 X ] (𝒻 ⋆∙ 𝒻₊ (U ∨[ 𝒪 X ] 𝒻 ⋆∙ V)))  ≤⟨ Ⅰ   ⟩
+            U ∨[ 𝒪 X ] (𝒻 ⋆∙ 𝒻₊ (U ∨[ 𝒪 X ] 𝒻 ⋆∙ V))            ≤⟨ Ⅱ   ⟩
             U ∨[ 𝒪 X ] (U ∨[ 𝒪 X ] 𝒻 ⋆∙ V)                      ＝⟨ Ⅲ  ⟩ₚ
             (U ∨[ 𝒪 X ] U) ∨[ 𝒪 X ] 𝒻 ⋆∙ V                      ＝⟨ Ⅳ  ⟩ₚ
             U ∨[ 𝒪 X ] 𝒻 ⋆∙ V                                   ■
@@ -214,7 +239,7 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
                𝒻⁺ₘ
                𝒻₊ₘ
                (f₊-is-right-adjoint-of-f⁺ 𝒻)
-               (U ∨[ 𝒪 X ] (𝒻 ⋆∙ 𝒻* (U ∨[ 𝒪 X ] 𝒻 ⋆∙ V)))
+               (U ∨[ 𝒪 X ] (𝒻 ⋆∙ 𝒻₊ (U ∨[ 𝒪 X ] 𝒻 ⋆∙ V)))
           Ⅱ = ∨[ 𝒪 X ]-right-monotone
                (counitₐ 𝒻⁺ₘ 𝒻₊ₘ (f₊-is-right-adjoint-of-f⁺ 𝒻) (U ∨[ 𝒪 X ] 𝒻 ⋆∙ V))
           Ⅲ = ∨[ 𝒪 X ]-assoc U U (𝒻 ⋆∙ V) ⁻¹
@@ -223,22 +248,22 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
         † = adjunction-inequality-forwardₓ
              𝒻
              (U ∨[ 𝒪 X ] 𝒻 ⋆∙ V)
-             (𝒻* (U ∨[ 𝒪 X ] (𝒻 ⋆∙ 𝒻* (U ∨[ 𝒪 X ] 𝒻 ⋆∙ V))))
+             (𝒻₊ (U ∨[ 𝒪 X ] (𝒻 ⋆∙ 𝒻₊ (U ∨[ 𝒪 X ] 𝒻 ⋆∙ V))))
              ‡
 
      closed-image-preserves-meets : (U : ⟨ 𝒪 X ⟩)
                                   → preserves-binary-meets (𝒪 A) (𝒪 A) (closed-image U) holds
      closed-image-preserves-meets U V₁ V₂ =
-      𝒻* (U ∨[ 𝒪 X ] 𝒻 ⋆∙ (V₁ ∧[ 𝒪 A ] V₂))                        ＝⟨ Ⅰ    ⟩
-      𝒻* (U ∨[ 𝒪 X ] (𝒻 ⋆∙ V₁ ∧[ 𝒪 X ] 𝒻 ⋆∙ V₂))                   ＝⟨ Ⅱ    ⟩
-      𝒻* ((U ∨[ 𝒪 X ] 𝒻 ⋆∙ V₁) ∧[ 𝒪 X ] (U ∨[ 𝒪 X ] 𝒻 ⋆∙ V₂))      ＝⟨ Ⅲ    ⟩
-      𝒻* (U ∨[ 𝒪 X ] 𝒻 ⋆∙ V₁) ∧[ 𝒪 A ] 𝒻* (U ∨[ 𝒪 X ] 𝒻 ⋆∙ V₂)     ＝⟨ refl ⟩
+      𝒻₊ (U ∨[ 𝒪 X ] 𝒻 ⋆∙ (V₁ ∧[ 𝒪 A ] V₂))                        ＝⟨ Ⅰ    ⟩
+      𝒻₊ (U ∨[ 𝒪 X ] (𝒻 ⋆∙ V₁ ∧[ 𝒪 X ] 𝒻 ⋆∙ V₂))                   ＝⟨ Ⅱ    ⟩
+      𝒻₊ ((U ∨[ 𝒪 X ] 𝒻 ⋆∙ V₁) ∧[ 𝒪 X ] (U ∨[ 𝒪 X ] 𝒻 ⋆∙ V₂))      ＝⟨ Ⅲ    ⟩
+      𝒻₊ (U ∨[ 𝒪 X ] 𝒻 ⋆∙ V₁) ∧[ 𝒪 A ] 𝒻₊ (U ∨[ 𝒪 X ] 𝒻 ⋆∙ V₂)     ＝⟨ refl ⟩
       closed-image U V₁ ∧[ 𝒪 A ] closed-image U V₂                 ∎
        where
         Ⅰ = ap
-             (λ - → 𝒻* (U ∨[ 𝒪 X ] -))
+             (λ - → 𝒻₊ (U ∨[ 𝒪 X ] -))
              (frame-homomorphisms-preserve-meets (𝒪 A) (𝒪 X) 𝒻 V₁ V₂)
-        Ⅱ = ap 𝒻* (binary-distributivity-op (𝒪 X) U (𝒻 ⋆∙ V₁) (𝒻 ⋆∙ V₂))
+        Ⅱ = ap 𝒻₊ (binary-distributivity-op (𝒪 X) U (𝒻 ⋆∙ V₁) (𝒻 ⋆∙ V₂))
         Ⅲ = f₊-preserves-binary-meetsₓ 𝒻 (U ∨[ 𝒪 X ] 𝒻 ⋆∙ V₁) (U ∨[ 𝒪 X ] (𝒻 ⋆∙ V₂))
 
      closed-image-is-nucleus : (U : ⟨ 𝒪 X ⟩)
@@ -250,14 +275,14 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
      closed-image-is-sc : (U : ⟨ 𝒪 X ⟩)
                         → is-scott-continuous (𝒪 A) (𝒪 A) (closed-image U) holds
      closed-image-is-sc U =
-      ∘-of-scott-cont-is-scott-cont (𝒪 A) (𝒪 X) (𝒪 A) (𝒻* ∘ ‘ U ’ₓ .pr₁) (𝒻 ⋆∙_) † ‡
+      ∘-of-scott-cont-is-scott-cont (𝒪 A) (𝒪 X) (𝒪 A) (𝒻₊ ∘ ‘ U ’ₓ .pr₁) (𝒻 ⋆∙_) † ‡
        where
-        † : is-scott-continuous (𝒪 X) (𝒪 A) (𝒻* ∘ ‘ U ’ₓ .pr₁) holds
+        † : is-scott-continuous (𝒪 X) (𝒪 A) (𝒻₊ ∘ ‘ U ’ₓ .pr₁) holds
         † = ∘-of-scott-cont-is-scott-cont
              (𝒪 X)
              (𝒪 X)
              (𝒪 A)
-             𝒻*
+             𝒻₊
              (‘ U ’ₓ .pr₁)
              (spectral-maps-are-perfect 𝒻 σ μ)
              (∨-is-scott-continuous (𝒪 X) U)
@@ -285,15 +310,23 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
        f⁻₊ₘ : poset-of (𝒪 X) ─m→ poset-of (𝒪 Patchₛ-A)
        f⁻₊ₘ = f⁻₊ , f⁻*-is-monotone
 
+       open IgorsLemma X A A-has-basis
+
        f⁻₊-is-right-adjoint-of-f⁻⁺ : (𝒻⁻⋆ₘ ⊣ f⁻₊ₘ) holds
-       f⁻₊-is-right-adjoint-of-f⁻⁺ 𝒿 U = ϑ₁ , ϑ₂
+       f⁻₊-is-right-adjoint-of-f⁻⁺ 𝒿@(j , _) U = ϑ₁ , ϑ₂
         where
          ϑ₁ : (f⁻⋆ 𝒿 ≤[ poset-of (𝒪 X) ] U) holds
             → (𝒿 ≤[ poset-of (𝒪 Patchₛ-A) ] (f⁻₊ U)) holds
-         ϑ₁ φ C = adjunction-inequality-forwardₓ 𝒻 _ _ ψ
+         ϑ₁ φ i = adjunction-inequality-forwardₓ 𝒻 _ _ ψ
           where
-           ψ : (𝒻 ⋆∙ 𝒿 .pr₁ {!!} ≤[ poset-of (𝒪 X) ] (U ∨[ 𝒪 X ] 𝒻 ⋆∙ {!!})) holds
-           ψ = {!!}
+           ψ : (𝒻 ⋆∙ j (β i) ≤[ poset-of (𝒪 X) ] (U ∨[ 𝒪 X ] 𝒻 ⋆∙ β i)) holds
+           ψ = igors-lemma-⇐ 𝒻 (j (β i)) (β i) U χ
+            where
+             χ : (T : ⟨ 𝒪 A ⟩)
+               → ((𝒻 ⋆∙ (j (β i) ∨[ 𝒪 A ] T) ∧[ 𝒪 X ] (𝒻 ⋆∙ (β i ==>ₐ T)))
+                   ≤[ poset-of (𝒪 X) ]
+                  (U ∨[ 𝒪 X ] 𝒻 ⋆∙ T)) holds
+             χ = {!!}
 
          ϑ₂ : (𝒿 ≤[ poset-of (𝒪 Patchₛ-A) ] (f⁻₊ U)) holds
             → (f⁻⋆ 𝒿 ≤[ poset-of (𝒪 X) ] U) holds
