@@ -1351,9 +1351,9 @@ Scott-continuous.
    γ : (𝟏[ 𝒪 X ] ≪[ 𝒪 X ] 𝟏[ 𝒪 X ]) holds
    γ = transport (λ - → (- ≪[ 𝒪 X ] -) holds) φ β
 
- perfect-implies-spectral : (f : X ─c→ Y)
+ perfect-maps-are-spectral : (f : X ─c→ Y)
                           → (is-perfect-map f ⇒ is-spectral-map (𝒪 Y) (𝒪 X) f) holds
- perfect-implies-spectral 𝒻@(f , _) φ U κ = perfect-preserves-way-below 𝒻 φ U U κ
+ perfect-maps-are-spectral 𝒻@(f , _) φ U κ = perfect-preserves-way-below 𝒻 φ U U κ
 
  spectral-maps-are-perfect : (f : X ─c→ Y)
                            → is-spectral (𝒪 Y) holds
