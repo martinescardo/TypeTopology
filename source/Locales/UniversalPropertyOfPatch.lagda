@@ -78,12 +78,13 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
      X-has-basis = ∣ pr₁ 𝕫ᴰ , pr₁ (pr₁ (pr₂ 𝕫ᴰ)) ∣
 
      A-has-basis : has-basis (𝒪 A) holds
-     A-has-basis = ∣ pr₁ σᴰ , pr₁ (pr₁ (pr₂ σᴰ)) ∣
+     A-has-basis = spectral-frames-have-bases (𝒪 A) σ
 
      open HeytingImplicationConstruction X X-has-basis
      open HeytingImplicationConstruction A A-has-basis
       using ()
-      renaming (_==>_ to _==>ₐ_)
+      renaming (_==>_ to _==>ₐ_; H₈ to H₈ₐ;
+                heyting-implication-identity to heyting-implication-identityₐ)
 
      Bₐ : 𝓤  ̇
      Bₐ = pr₁ (pr₁ σᴰ)
@@ -121,8 +122,35 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
        † : cofinal-in (𝒪 X) S T holds
        † (m , n , p) = ∣ n , ※ ∣
         where
-         ※ : (S [ m , n , p ] ≤[ poset-of (𝒪 X) ] T [ n ]) holds
-         ※ = {!!}
+         q : (β m ≤[ poset-of (𝒪 A) ] j (β n)) holds
+         q = β m                                                ≤⟨ Ⅰ     ⟩
+             β m ∨[ 𝒪 A ] β n                                   ＝⟨ Ⅱ    ⟩ₚ
+             (β m ∨[ 𝒪 A ] β n) ∧[ 𝒪 A ] 𝟏[ 𝒪 A ]               ＝⟨ Ⅲ    ⟩ₚ
+             (β m ∨[ 𝒪 A ] β n) ∧[ 𝒪 A ] (β n ==>ₐ β n)         ＝⟨ refl ⟩ₚ
+             (β m ∨[ 𝒪 A ] β n) ∧[ 𝒪 A ] (¬‘ βₖ n ’ .pr₁ (β n)) ＝⟨ refl ⟩ₚ
+             (‘ β m ’ ∧[ 𝒪 Patchₛ-A ] ¬‘ βₖ n ’) .pr₁ (β n)     ≤⟨ p n   ⟩
+             j (β n)                                            ■
+          where
+           open PosetReasoning (poset-of (𝒪 A))
+
+           Ⅰ = ∨[ 𝒪 A ]-upper₁ (β m) (β n)
+           Ⅱ = 𝟏-right-unit-of-∧ (𝒪 A) (β m ∨[ 𝒪 A ] β n) ⁻¹
+           Ⅲ = ap
+                (λ - → (β m ∨[ 𝒪 A ] β n) ∧[ 𝒪 A ] -)
+                (heyting-implication-identityₐ (β n) ⁻¹)
+
+         ※ : ((𝒻 ⋆∙ β m ∧[ 𝒪 X ] ¬𝒻⋆ n)
+               ≤[ poset-of (𝒪 X) ]
+              (𝒻 ⋆∙ j (β n) ∧[ 𝒪 X ] (¬𝒻⋆ n))) holds
+         ※ = ∧[ 𝒪 X ]-left-monotone
+              (frame-morphisms-are-monotonic
+                (𝒪 A)
+                (𝒪 X)
+                (𝒻 ⋆∙_)
+                (𝒻 .pr₂)
+                (β m , j (β n)) q)
+          where
+           open PosetReasoning (poset-of (𝒪 X))
 
        ‡ : cofinal-in (𝒪 X) T S holds
        ‡ n = {!!}
