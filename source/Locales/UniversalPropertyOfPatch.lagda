@@ -183,6 +183,8 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
         † : (𝒻 ⋆∙ V ≤[ poset-of (𝒪 X) ] (U ∨[ 𝒪 X ] 𝒻 ⋆∙ V)) holds
         † = ∨[ 𝒪 X ]-upper₂ U (𝒻 ⋆∙ V)
 
+     open PerfectMaps X A A-has-basis
+
      closed-image-is-idempotent : (U : ⟨ 𝒪 X ⟩)
                                 → is-idempotent (𝒪 A) (closed-image U) holds
      closed-image-is-idempotent U V =
@@ -248,7 +250,7 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
              (𝒪 A)
              𝒻*
              (‘ U ’ₓ .pr₁)
-             {!!}
+             (spectral-maps-are-perfect 𝒻 σ μ)
              (∨-is-scott-continuous (𝒪 X) U)
 
         ‡ : is-scott-continuous (𝒪 A) (𝒪 X) (𝒻 ⋆∙_) holds
