@@ -1379,16 +1379,26 @@ Scott-continuous.
 
    ‡ : ((W , _) : upper-bound ⁅ f₊ V ∣ V ε S ⁆)
      → (f₊ (⋁[ 𝒪 X ] S) ≤[ poset-of (𝒪 Y) ] W) holds
-   ‡ (W , p) = spectral-yoneda (𝒪 Y) 𝕤 (f₊ (⋁[ 𝒪 X ] S)) W {!!}
+   ‡ (W , p) = spectral-yoneda (𝒪 Y) 𝕤 (f₊ (⋁[ 𝒪 X ] S)) W ※
     where
      ※ : (C : ⟨ 𝒪 Y ⟩)
        → is-compact-open (𝒪 Y) C holds
        → (C ≤[ poset-of (𝒪 Y) ] (f₊ (⋁[ 𝒪 X ] S))) holds
        → (C ≤[ poset-of (𝒪 Y) ] W) holds
-     ※ C κ q = {!!}
+     ※ C κ q = ∥∥-rec (holds-is-prop (C ≤[ poset-of (𝒪 Y) ] W)) γ (κ′ S δ β)
       where
-       foo : (f ⋆∙ C ≤[ poset-of (𝒪 X) ] (⋁[ 𝒪 X ] S)) holds
-       foo = adjunction-inequality-backward f⁺ (⋁[ 𝒪 X ] S) C q
+       κ′ : is-compact-open (𝒪 X) (f ⋆∙ C) holds
+       κ′ = σ C κ
+
+       β : (f ⋆∙ C ≤[ poset-of (𝒪 X) ] (⋁[ 𝒪 X ] S)) holds
+       β = adjunction-inequality-backward f⁺ (⋁[ 𝒪 X ] S) C q
+
+       γ : (Σ i ꞉ index S , (f ⋆∙ C ≤[ poset-of (𝒪 X) ] S [ i ]) holds)
+         → (C ≤[ poset-of (𝒪 Y) ] W) holds
+       γ (i , r) = C ≤⟨ Ⅰ ⟩ f₊ (S [ i ]) ≤⟨ Ⅱ ⟩ W ■
+        where
+         Ⅰ = adjunction-inequality-forward f (S [ i ]) C r
+         Ⅱ = p i
 
 \end{code}
 
