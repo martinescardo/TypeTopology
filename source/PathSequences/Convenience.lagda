@@ -16,7 +16,7 @@ open import UF.Base
 open import PathSequences.Base
 open import PathSequences.Concat
 
-module PathSequences.Convenience {X : 𝓤 ̇} where
+module PathSequences.Convenience {X : 𝓤 ̇ } where
 
 \end{code}
 

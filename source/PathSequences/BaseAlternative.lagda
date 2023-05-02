@@ -31,7 +31,7 @@ Pathsequences with a built-in length.
 
 \begin{code}
 
-data PathSeq {X : 𝓤 ̇} : ℕ → X → X → 𝓤 ̇ where
+data PathSeq {X : 𝓤 ̇ } : ℕ → X → X → 𝓤 ̇ where
   [] : {x : X} → PathSeq zero x x
   _∙▹_ : {n : ℕ}{x y z : X} → PathSeq n x y → y ＝ z → PathSeq (succ n) x z
 
@@ -39,10 +39,10 @@ syntax PathSeq n x y = x ≡[ n ] y
 
 -- Convenience: to have a more practical and visible Path Sequence
 -- termination
-∎▹_ : {X : 𝓤 ̇} {x y : X} → x ＝ y → x ≡[ 1 ] y
+∎▹_ : {X : 𝓤 ̇ } {x y : X} → x ＝ y → x ≡[ 1 ] y
 ∎▹ p = [] ∙▹ p
 
-length : {X : 𝓤 ̇} {x y : X} {n : ℕ} → x ≡[ n ] y → ℕ
+length : {X : 𝓤 ̇ } {x y : X} {n : ℕ} → x ≡[ n ] y → ℕ
 length {x = x} {.x} [] = 0
 length {x = x} {y} (s ∙▹ p) = length s + 1
 
@@ -55,7 +55,7 @@ We then use the conversion to establish a criterion for equality,
 which intentionally ignores the length parameter.
 
 \begin{code}
-≡-to-＝ : {X : 𝓤 ̇} {x y : X} {n : ℕ}
+≡-to-＝ : {X : 𝓤 ̇ } {x y : X} {n : ℕ}
         → x ≡[ n ] y → x ＝ y
 ≡-to-＝ [] = refl
 ≡-to-＝ (s ∙▹ p) = (≡-to-＝ s) ∙ p
@@ -66,7 +66,7 @@ syntax ≡-to-＝ s = [ s ↓]
 -- Two path-sequences are equal precisely when their resulting
 -- identity types are.
 
-record _＝ₛ_ {X : 𝓤 ̇}{x y : X}{m n : ℕ}
+record _＝ₛ_ {X : 𝓤 ̇ }{x y : X}{m n : ℕ}
             (s : x ≡[ m ] y) (t : x ≡[ n ] y) : 𝓤 ̇ where
   constructor ＝ₛ-in
   field
@@ -93,23 +93,23 @@ kind of equality ignores the dependece on the natural numbers.
 
 \begin{code}
 
-_∙ₛ_ : {X : 𝓤 ̇} {x y z : X} {m n : ℕ}
+_∙ₛ_ : {X : 𝓤 ̇ } {x y z : X} {m n : ℕ}
      → x ≡[ m ] y → y ≡[ n ] z → x ≡[ m + n ] z
 s ∙ₛ [] = s
 s ∙ₛ (t ∙▹ p) = (s ∙ₛ t) ∙▹ p
 
--- ∙ₛ-assoc : {X : 𝓤 ̇} {x y z w : X} {l m n : ℕ}
+-- ∙ₛ-assoc : {X : 𝓤 ̇ } {x y z w : X} {l m n : ℕ}
 --          → (s : x ≡[ l ] y) (t : y ≡[ m ] z) (u : z ≡[ n ] w)
 --          → (s ∙ₛ t) ∙ₛ u ＝ s ∙ₛ (t ∙ₛ u) -- <-- Problem!
 -- ∙ₛ-assoc s t u = ?
 
-∙ₛ-assoc-＝ₛ : {X : 𝓤 ̇} {x y z w : X} {l m n : ℕ}
+∙ₛ-assoc-＝ₛ : {X : 𝓤 ̇ } {x y z w : X} {l m n : ℕ}
             → (s : x ≡[ l ] y) (t : y ≡[ m ] z) (u : z ≡[ n ] w)
             → (s ∙ₛ t) ∙ₛ u ＝ₛ s ∙ₛ (t ∙ₛ u)
 ∙ₛ-assoc-＝ₛ s t [] = ＝ₛ-in refl
 ∙ₛ-assoc-＝ₛ s t (u ∙▹ p) = ＝ₛ-in (ap (_∙ p) (＝ₛ-out (∙ₛ-assoc-＝ₛ s t u)) )
 
-_◃∙_ : {X : 𝓤 ̇} {x y z : X}{n : ℕ}
+_◃∙_ : {X : 𝓤 ̇ } {x y z : X}{n : ℕ}
      → x ＝ y → y ≡[ n ] z → x ≡[ 1 + n ] z
 p ◃∙ s = ∎▹ p ∙ₛ s
 
@@ -119,30 +119,30 @@ p ◃∙ s = ∎▹ p ∙ₛ s
 
 \begin{code}
 
-point-from-end : {X : 𝓤 ̇} {x y : X} {m : ℕ}
+point-from-end : {X : 𝓤 ̇ } {x y : X} {m : ℕ}
                → (n : ℕ) → n ≤ m → x ≡[ m ] y → X
 point-from-end {y = y} zero _ _ = y
 point-from-end (succ n) () []
 point-from-end (succ n) l (s ∙▹ p) = point-from-end n l s
 
-_ : {X : 𝓤 ̇} {x y z : X} {p : x ＝ y} {q : y ＝ z} 
+_ : {X : 𝓤 ̇ } {x y z : X} {p : x ＝ y} {q : y ＝ z} 
   → point-from-end 0 _ (∎▹ p ∙▹ q) ＝ z
 _ = refl
 
-_ : {X : 𝓤 ̇} {x y z : X} {p : x ＝ y} {q : y ＝ z} 
+_ : {X : 𝓤 ̇ } {x y z : X} {p : x ＝ y} {q : y ＝ z} 
   → point-from-end 1 _ (∎▹ p ∙▹ q) ＝ y
 _ = refl
 
-_ : {X : 𝓤 ̇} {x y z : X} {p : x ＝ y} {q : y ＝ z} 
+_ : {X : 𝓤 ̇ } {x y z : X} {p : x ＝ y} {q : y ＝ z} 
   → point-from-end 2 _ (∎▹ p ∙▹ q) ＝ x
 _ = refl
 
-_ : {X : 𝓤 ̇} {x y z : X} {p : x ＝ y} {q : y ＝ z} (l : 𝟘)
+_ : {X : 𝓤 ̇ } {x y z : X} {p : x ＝ y} {q : y ＝ z} (l : 𝟘)
   → point-from-end 3 l (∎▹ p ∙▹ q) ＝ z
 _ = λ ()
 
 -- something does not work here
-point-from-start : {X : 𝓤 ̇} {x y : X} {m : ℕ}
+point-from-start : {X : 𝓤 ̇ } {x y : X} {m : ℕ}
                  → (n : ℕ) → n ≤ m → x ≡[ m ] y → X
 point-from-start {x = x} {y} zero ⋆ _ = x
 point-from-start (succ n) () []

@@ -25,11 +25,11 @@ module PathSequences.Reasoning where
 
 \begin{code}
 
-_＝↓_ : {X : 𝓤 ̇} {x y : X} → x ≡ y → x ≡ y → 𝓤 ̇
+_＝↓_ : {X : 𝓤 ̇ } {x y : X} → x ≡ y → x ≡ y → 𝓤 ̇
 s ＝↓ t = [ s ↓] ＝ [ t ↓]
 
 
-module _ {X : 𝓤 ̇} {x y : X} where
+module _ {X : 𝓤 ̇ } {x y : X} where
 
   ＝-＝ₛ-equiv : (s t : x ≡ y) → (s ＝↓ t) ≃ (s ＝ₛ t)
   ＝-＝ₛ-equiv s t = ＝ₛ-in , (＝ₛ-out , λ _ → refl) , (＝ₛ-out , λ _ → refl)

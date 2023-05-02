@@ -24,38 +24,38 @@ is very close to the module `Concat` in the original repository.
 
 \begin{code}
 
-_∙≡_ : {X : 𝓤 ̇} {x y z : X}
+_∙≡_ : {X : 𝓤 ̇ } {x y z : X}
      → x ≡ y → y ≡ z → x ≡ z
 [] ∙≡ t = t
 (p ◃∙ s) ∙≡ t = p ◃∙ (s ∙≡ t)
 
-∙≡-assoc : {X : 𝓤 ̇} {x y z w : X}
+∙≡-assoc : {X : 𝓤 ̇ } {x y z w : X}
          → (s : x ≡ y) (t : y ≡ z) (u : z ≡ w)
          → (s ∙≡ t) ∙≡ u ＝ s ∙≡ (t ∙≡ u)
 ∙≡-assoc [] t u = refl
 ∙≡-assoc (p ◃∙ s) t u = ap (p ◃∙_) (∙≡-assoc s t u)
 
-∙≡-assoc-＝ₛ : {X : 𝓤 ̇} {x y z w : X}
+∙≡-assoc-＝ₛ : {X : 𝓤 ̇ } {x y z w : X}
             → (s : x ≡ y) (t : y ≡ z) (u : z ≡ w)
             → ((s ∙≡ t) ∙≡ u) ＝ₛ (s ∙≡ (t ∙≡ u))
 ∙≡-assoc-＝ₛ s t u = ＝ₛ-in (ap (λ v → [ v ↓]) (∙≡-assoc s t u))
 
-[]-∙≡-right-neutral : {X : 𝓤 ̇} {x y : X}
+[]-∙≡-right-neutral : {X : 𝓤 ̇ } {x y : X}
                     → (s : x ≡ y)
                     → s ∙≡ [] ＝ s
 []-∙≡-right-neutral [] = refl
 []-∙≡-right-neutral (p ◃∙ s) = ap (p ◃∙_) ([]-∙≡-right-neutral s)
 
-[]-∙≡-right-neutral-＝ₛ : {X : 𝓤 ̇} {x y : X}
+[]-∙≡-right-neutral-＝ₛ : {X : 𝓤 ̇ } {x y : X}
                        → (s : x ≡ y)
                        → s ∙≡ [] ＝ₛ s
 []-∙≡-right-neutral-＝ₛ s = ＝ₛ-in (ap (λ v → [ v ↓]) ([]-∙≡-right-neutral s))
 
-_∙▹_ : {X : 𝓤 ̇} {x y z : X}
+_∙▹_ : {X : 𝓤 ̇ } {x y z : X}
      → x ≡ y → y ＝ z → x ≡ z
 s ∙▹ p = s ∙≡ (p ◃∎)
 
-≡-to-＝-hom : {X : 𝓤 ̇} {x y z : X}
+≡-to-＝-hom : {X : 𝓤 ̇ } {x y z : X}
             → (s : x ≡ y) (t : y ≡ z)
             → ([ s ↓]) ∙ ([ t ↓]) ＝ [ (s ∙≡ t) ↓]
 ≡-to-＝-hom [] t = refl-left-neutral
@@ -78,7 +78,7 @@ Tests
 
 \begin{code}
 
-module _ {X : 𝓤 ̇} {x y z t u : X} where
+module _ {X : 𝓤 ̇ } {x y z t u : X} where
   
   _ : (a : x ＝ y) (b : y ＝ z) (c : z ＝ t) (d : t ＝ u)
     → [ (a ◃∙ b ◃∎ ∙≡ c ◃∙ d ◃∎) ↓] ＝ a ∙ (b ∙ (c ∙ (d ∙ refl)))

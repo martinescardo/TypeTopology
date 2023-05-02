@@ -63,7 +63,7 @@ manipulations are no longer necessary.
 
 \begin{code}
 
-data PathSeq {X : 𝓤 ̇} : X → X → 𝓤 ̇ where
+data PathSeq {X : 𝓤 ̇ } : X → X → 𝓤 ̇ where
   [] : {x : X} → PathSeq x x
   _◃∙_ : {x y z : X} (p : x ＝ y) (s : PathSeq y z) → PathSeq x z
 
@@ -75,7 +75,7 @@ Convenience: to have a more practical and visible Path Sequence
 termination
 
 \begin{code}
-_◃∎ : {X : 𝓤 ̇} {x y : X} → x ＝ y → x ≡ y
+_◃∎ : {X : 𝓤 ̇ } {x y : X} → x ＝ y → x ≡ y
 p ◃∎ = p ◃∙ []
 
 \end{code}
@@ -85,7 +85,7 @@ of identity types is normalized. This will be (is) shown in
 PathSequences.Concat
 
 \begin{code}
-≡-to-＝ : {X : 𝓤 ̇} {x y : X}
+≡-to-＝ : {X : 𝓤 ̇ } {x y : X}
         → x ≡ y → x ＝ y
 ≡-to-＝ [] = refl
 ≡-to-＝ (p ◃∙ s) = p ∙ ≡-to-＝ s
@@ -102,7 +102,7 @@ TODO: Find better names for the field and constructor.
 
 \begin{code}
 
-record _＝ₛ_ {X : 𝓤 ̇}{x y : X} (s t : x ≡ y) : 𝓤 ̇ where
+record _＝ₛ_ {X : 𝓤 ̇ }{x y : X} (s t : x ≡ y) : 𝓤 ̇ where
   constructor ＝ₛ-in
   field
     ＝ₛ-out : (≡-to-＝ s) ＝ (≡-to-＝ t)
@@ -115,13 +115,13 @@ PathSequences.Concat.
 
 \begin{code}
 
-_≡⟨_⟩_ : {X : 𝓤 ̇} (x : X) {y z : X} → x ＝ y → y ≡ z → x ≡ z
+_≡⟨_⟩_ : {X : 𝓤 ̇ } (x : X) {y z : X} → x ＝ y → y ≡ z → x ≡ z
 _ ≡⟨ p ⟩ s = p ◃∙ s 
 
-_≡⟨⟩_ : {X : 𝓤 ̇} (x : X) {y : X} → x ≡ y → x ≡ y
+_≡⟨⟩_ : {X : 𝓤 ̇ } (x : X) {y : X} → x ≡ y → x ≡ y
 x ≡⟨⟩ s = s
 
-_∎∎ : {X : 𝓤 ̇} (x : X) → x ≡ x
+_∎∎ : {X : 𝓤 ̇ } (x : X) → x ≡ x
 _ ∎∎ = []
 
 \end{code}

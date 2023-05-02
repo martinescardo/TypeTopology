@@ -17,7 +17,7 @@ open import UF.Base
 open import PathSequences.Base
 open import PathSequences.Concat
 
-module PathSequences.Split {X : 𝓤 ̇} where
+module PathSequences.Split {X : 𝓤 ̇ } where
 
 \end{code}
 
