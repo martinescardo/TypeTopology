@@ -71,7 +71,7 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
      → ∃! 𝒻⁻ ꞉ (X ─c→ Patch-A) , ((x : ⟨ 𝒪 A ⟩) → 𝒻 .pr₁ x  ＝ 𝒻⁻ .pr₁ ‘ x ’)
    γ σᴰ 𝕫ᴰ = ((f⁻⋆ , {!!} , {!!} , {!!}) , {!!}) , {!!}
     where
-     open SmallPatchConstruction A σᴰ using (≼-implies-≼ᵏ; ≼ᵏ-implies-≼; _≼ᵏ_) renaming (SmallPatch to Patchₛ-A)
+     open SmallPatchConstruction A σᴰ using (𝟎-is-id; ≼-implies-≼ᵏ; ≼ᵏ-implies-≼; _≼ᵏ_) renaming (SmallPatch to Patchₛ-A)
      open ContinuousMapNotation X A
 
      X-has-basis : has-basis (𝒪 X) holds
@@ -91,6 +91,9 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
 
      β : Bₐ → ⟨ 𝒪 A ⟩
      β = pr₂ (pr₁ σᴰ)
+
+     β-is-basis-for-A : is-basis-for (𝒪 A) (Bₐ , β)
+     β-is-basis-for-A = {!!}
 
      βₖ : Bₐ → 𝒦
      βₖ m = β m , pr₁ (pr₂ (pr₂ σᴰ)) m
@@ -153,7 +156,32 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
            open PosetReasoning (poset-of (𝒪 X))
 
        ‡ : cofinal-in (𝒪 X) T S holds
-       ‡ n = {!!}
+       ‡ n = ∣ (n , n , ξ) , ※ ∣
+        where
+         ξ : 𝕃 𝒿 n n holds
+         ξ m = (‘ β n ’ ∧[ 𝒪 Patchₛ-A ] ¬‘ βₖ n ’) .pr₁ (β m)    ＝⟨ refl  ⟩ₚ
+               ((β n ∨[ 𝒪 A ] β m) ∧[ 𝒪 A ] (β n ==>ₐ β m))      ＝⟨ Ⅰ     ⟩ₚ
+               ((β m ∨[ 𝒪 A ] β n) ∧[ 𝒪 A ] (β n ==>ₐ β m))      ＝⟨ Ⅱ     ⟩ₚ
+               β m                                               ≤⟨ Ⅲ  ⟩
+               j (β m)                                           ■
+          where
+           open PosetReasoning (poset-of (𝒪 A))
+
+           Ⅰ = ap
+                (λ - → - ∧[ 𝒪 A ] (β n ==>ₐ β m))
+                (∨[ 𝒪 A ]-is-commutative (β n) (β m))
+           Ⅱ = H₈ₐ (β m) (β n) ⁻¹
+           Ⅲ = 𝓃₁ (𝒪 A) (nucleus-of 𝒿) (β m)
+
+         ※ : ((T [ n ]) ≤[ poset-of (𝒪 X) ] (S [ n , n , ξ ])) holds
+         ※ = 𝒻 ⋆∙ j (β n) ∧[ 𝒪 X ] ¬𝒻⋆ n                       ≤⟨ {!!} ⟩
+             𝒻 ⋆∙ (⋁[ 𝒪 A ] ⁅ β i ∣ i ε 𝒥 ⁆) ∧[ 𝒪 X ] ¬𝒻⋆ n    ＝⟨ {!!} ⟩ₚ
+             (⋁[ 𝒪 X ] ⁅ 𝒻 ⋆∙ (β i) ∣ i ε 𝒥 ⁆) ∧[ 𝒪 X ] ¬𝒻⋆ n  ＝⟨ {!!} ⟩ₚ
+             {!!}                                              ■
+          where
+           open PosetReasoning (poset-of (𝒪 X))
+
+           𝒥 = covering-index-family (𝒪 A) (Bₐ , β) β-is-basis-for-A (j (β n))
 
      f⁻⋆-is-monotone : is-monotonic
                         (poset-of (𝒪 Patchₛ-A))
