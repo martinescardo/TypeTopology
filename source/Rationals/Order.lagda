@@ -1099,4 +1099,16 @@ order-lemma' p q r l = γ
   γ : - r < (- p) + q
   γ = transport (- r <_) II I
 
+ℚ≤-addition-preserves-order-left : (p q r : ℚ) → p ≤ q → r + p ≤ r + q
+ℚ≤-addition-preserves-order-left p q r l = γ
+ where
+  I : p + r ＝ r + p
+  I = ℚ+-comm p r
+
+  II : q + r ＝ r + q
+  II = ℚ+-comm q r
+
+  γ : r + p ≤ r + q
+  γ = transport₂ _≤_ I II (ℚ≤-addition-preserves-order p q r l)
+
 \end{code}

@@ -290,6 +290,21 @@ abs-of-pos-is-pos' p l = abs-of-pos-is-pos p (ℚ<-coarser-than-≤ 0ℚ p l)
     V : x + y ≤ abs x + abs y
     V = ℚ≤-adding x (abs x) y (abs y) l₂ l₄
 
+ℚ-triangle-inequality' : (x y z : ℚ) → abs (x - z) ≤ abs (x - y) + abs (y - z)
+ℚ-triangle-inequality' x y z = γ
+ where
+  I : x - z ＝ x - y + (y - z)
+  I = ℚ-add-zero x (- z) y
+
+  II : abs (x - z) ＝ abs (x - y + (y - z))
+  II = ap abs I
+
+  III : abs (x - y + (y - z)) ≤ abs (x - y) + abs (y - z)
+  III = ℚ-triangle-inequality (x - y) (y - z)
+
+  γ : abs (x - z) ≤ abs (x - y) + abs (y - z)
+  γ = transport (_≤ abs (x - y) + abs (y - z)) (II ⁻¹) III
+
 pos-abs-no-increase : (q ε : ℚ) → (0ℚ < q) × (q < ε) → abs q < ε
 pos-abs-no-increase q ε (l₁ , l₂) = γ
  where
@@ -400,5 +415,38 @@ abs-mult x y = γ (ℚ-dichotomous' x 0ℚ) (ℚ-dichotomous' y 0ℚ)
 
 ℚ≤-abs-all : (p : ℚ) → p ≤ abs p
 ℚ≤-abs-all p = pr₂ (ℚ-abs-≤ p)
+
+abs-comm : (p q : ℚ) → abs (p - q) ＝ abs (q - p)
+abs-comm p q = γ
+ where
+  γ : abs (p - q) ＝ abs (q - p)
+  γ = abs (p - q)         ＝⟨ ℚ-abs-neg-equals-pos (p - q)                ⟩
+      abs (- (p - q))     ＝⟨ ap (λ z → abs (- z)) (ℚ+-comm p (- q))      ⟩
+      abs (- ((- q) + p)) ＝⟨ ap abs (ℚ-minus-dist (- q) p ⁻¹)            ⟩
+      abs ((- (- q)) - p) ＝⟨ ap (λ z → abs (z - p)) (ℚ-minus-minus q ⁻¹) ⟩
+      abs (q - p)         ∎
+
+ℚ≤-to-abs' : (p q : ℚ) → p ≤ q → abs (p - q) ＝ q - p
+ℚ≤-to-abs' p q l = γ
+ where
+  I : 0ℚ ≤ q - p
+  I = ℚ≤-difference-positive p q l
+
+  γ : abs (p - q) ＝ q - p
+  γ = abs (p - q) ＝⟨ abs-comm p q                 ⟩
+      abs (q - p) ＝⟨ abs-of-pos-is-pos (q -  p) I ⟩
+      q - p       ∎
+
+ℚ-abs-≤-pos : (p q : ℚ) → p ≤ q → 0ℚ < p → 0ℚ < q → abs p ≤ abs q
+ℚ-abs-≤-pos p q l 0<p 0<q = γ
+ where
+  I : p ＝ abs p
+  I = abs-of-pos-is-pos p (ℚ<-coarser-than-≤ 0ℚ p 0<p ) ⁻¹
+
+  II : q ＝ abs q
+  II = abs-of-pos-is-pos q (ℚ<-coarser-than-≤ 0ℚ q 0<q) ⁻¹
+
+  γ : abs p ≤ abs q
+  γ = transport₂ _≤_ I II l
 
 \end{code}

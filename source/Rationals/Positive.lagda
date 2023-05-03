@@ -8,8 +8,10 @@ This file defines positive rationals, which are useful for metric spaces.
 open import MLTT.Spartan renaming (_+_ to _∔_)
 open import Notation.Order
 open import Rationals.Type
+open import Rationals.Abs
 open import Rationals.Addition renaming (_+_ to _ℚ+_)
 open import Rationals.Order
+open import UF.Base
 
 module Rationals.Positive where
 
@@ -31,6 +33,9 @@ instance
  _≤_ {{Order-ℚ₊-ℚ₊}} = _≤ℚ₊_
 
 _+_ : ℚ₊ → ℚ₊ → ℚ₊
-(p , ε₁) + (q , ε₂) = p ℚ+ q , ℚ<-adding-zero p q ε₁ ε₂
+(p , 0<p) + (q , 0<q) = p ℚ+ q , ℚ<-adding-zero p q 0<p 0<q
+
+1ℚ₊ : ℚ₊
+1ℚ₊ = 1ℚ , 0<1
 
 \end{code}

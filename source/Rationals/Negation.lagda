@@ -119,6 +119,26 @@ toℚ-neg (x , a) = equiv→equality (ℤ- x' , a') (𝔽- (x , a)) γ
     iv  = ap -_ (toℚ-neg (x , a) ⁻¹)
     v   = ap (-_ ∘ -_) (toℚ-to𝔽 ((x , a) , α) ⁻¹)
 
+ℚ-minus-dist' : (p q : ℚ) → - (p - q) ＝ q - p
+ℚ-minus-dist' p q = γ
+ where
+  γ : - (p - q) ＝ q - p
+  γ = - (p - q)     ＝⟨ ℚ-minus-dist p (- q) ⁻¹            ⟩
+      (- p) - (- q) ＝⟨ ap ((- p) +_) (ℚ-minus-minus q ⁻¹) ⟩
+      (- p) + q     ＝⟨ ℚ+-comm (- p) q                    ⟩
+      q - p         ∎
+
+ℚ-minus-minus' : (p q : ℚ) → p - q ＝ - (q - p)
+ℚ-minus-minus' p q = γ
+ where
+  I : - (p - q) ＝ q - p
+  I = ℚ-minus-dist' p q
+
+  γ : p - q ＝ - (q - p)
+  γ = p - q         ＝⟨ ℚ-minus-minus (p - q) ⟩
+      - (- (p - q)) ＝⟨ ap -_ I               ⟩
+      - (q - p)     ∎
+
 ℚ-add-zero : (x y z : ℚ) → (x + y) ＝ (x - z) + (z + y)
 ℚ-add-zero x y z = γ
  where

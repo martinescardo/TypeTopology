@@ -15,6 +15,7 @@ import Rationals.MinMax
 import Rationals.Multiplication
 import Rationals.Negation
 import Rationals.Order
+import Rationals.Positive
 import Rationals.Fractions
 import Rationals.FractionsOperations
 import Rationals.FractionsOrder
