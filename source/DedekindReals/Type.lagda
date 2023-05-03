@@ -23,9 +23,9 @@ open import Rationals.Type
 open import Rationals.Order
 
 module DedekindReals.Type
+         (fe : Fun-Ext)
          (pe : Prop-Ext)
          (pt : propositional-truncations-exist)
-         (fe : Fun-Ext)
        where
 
 open PropositionalTruncation pt

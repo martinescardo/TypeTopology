@@ -28,12 +28,12 @@ open import Naturals.Order renaming (max to ℕ-max ; max-comm to ℕ-max-comm)
 
 module Rationals.Limits
         (fe : Fun-Ext)
-        (pt : propositional-truncations-exist)
         (pe : Prop-Ext)
+        (pt : propositional-truncations-exist)
  where
 
-open import MetricSpaces.Rationals fe pt pe
-open import MetricSpaces.Definition pt fe pe
+open import MetricSpaces.Rationals fe pe pt
+open import MetricSpaces.Definition fe pe pt
 
 _limit-of_ : (L : ℚ) → (f : ℕ → ℚ) → 𝓤₀ ̇
 L limit-of f = ∀ (ε : ℚ) → 0ℚ < ε

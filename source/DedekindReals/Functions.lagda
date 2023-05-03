@@ -31,8 +31,8 @@ module DedekindReals.Functions
 
 open PropositionalTruncation pt
 
-open import DedekindReals.Properties fe pt pe
-open import DedekindReals.Type pe pt fe
+open import DedekindReals.Properties fe pe pt
+open import DedekindReals.Type fe pe pt
 open import DedekindReals.Extension fe pe pt
 
 \end{code}

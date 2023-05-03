@@ -27,12 +27,11 @@ module MetricSpaces.Extension
 open PropositionalTruncation pt
 
 open import Rationals.MinMax
-open import DedekindReals.Type pe pt fe
-open import DedekindReals.Properties fe pt pe
-open import MetricSpaces.Definition pt fe pe
-open import MetricSpaces.Rationals fe pt pe
-open import MetricSpaces.DedekindReals pt fe pe
-
+open import DedekindReals.Type fe pe pt
+open import DedekindReals.Properties fe pe pt
+open import MetricSpaces.Definition fe pe pt
+open import MetricSpaces.Rationals fe pe pt
+open import MetricSpaces.DedekindReals fe pe pt
 
 \end{code}
 

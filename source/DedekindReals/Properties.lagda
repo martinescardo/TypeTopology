@@ -24,13 +24,13 @@ open import Rationals.Negation
 open import Rationals.Order
 
 module DedekindReals.Properties
-        (fe : Fun-Ext)
-        (pt : propositional-truncations-exist)
-        (pe : Prop-Ext)
-      where
-open import DedekindReals.Type pe pt fe
-open import MetricSpaces.Rationals fe pt pe
-open import Rationals.Limits fe pt pe
+  (fe : Fun-Ext)
+  (pe : Prop-Ext)
+  (pt : propositional-truncations-exist)
+ where
+open import DedekindReals.Type fe pe pt
+open import MetricSpaces.Rationals fe pe pt
+open import Rationals.Limits fe pe pt
 
 open PropositionalTruncation pt
 

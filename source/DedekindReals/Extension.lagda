@@ -35,10 +35,10 @@ module DedekindReals.Extension
 
 open PropositionalTruncation pt
 
-open import DedekindReals.Properties fe pt pe
-open import DedekindReals.Type pe pt fe
-open import MetricSpaces.DedekindReals pt fe pe
-open import MetricSpaces.Rationals fe pt pe
+open import DedekindReals.Properties fe pe pt
+open import DedekindReals.Type fe pe pt
+open import MetricSpaces.DedekindReals fe pe pt
+open import MetricSpaces.Rationals fe pe pt
 
 \end{code}
 

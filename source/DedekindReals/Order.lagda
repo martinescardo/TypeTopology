@@ -22,12 +22,12 @@ open import UF.Subsingletons-FunExt
 open import Rationals.Type
 
 module DedekindReals.Order
+         (fe : Fun-Ext)
          (pe : Prop-Ext)
          (pt : propositional-truncations-exist)
-         (fe : Fun-Ext)
        where
 
-open import DedekindReals.Type pe pt fe
+open import DedekindReals.Type fe pe pt
 open PropositionalTruncation pt
 
 _<ℝ_ : ℝ → ℝ → 𝓤₀ ̇

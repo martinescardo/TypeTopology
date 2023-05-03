@@ -14,28 +14,32 @@ open import UF.FunExt
 open import UF.Powerset
 open import UF.PropTrunc
 open import UF.Subsingletons
-
-open import Naturals.Order hiding (max ;  max-comm ;  max-assoc)
+open import Naturals.Addition renaming (_+_ to _ℕ+_)
+open import Naturals.Order renaming ( max to ℕmax
+                                    ; max-comm to ℕmax-comm
+                                    ; max-assoc to ℕmax-assoc)
 open import Rationals.Addition
 open import Rationals.Type
 open import Rationals.Abs
 open import Rationals.Negation
 open import Rationals.Order
+open import Rationals.MinMax
 open import Rationals.Multiplication
 
 module MetricSpaces.DedekindReals
-        (pt : propositional-truncations-exist)
-        (fe : Fun-Ext)
-        (pe : Prop-Ext)
+  (fe : Fun-Ext)
+  (pe : Prop-Ext)
+  (pt : propositional-truncations-exist)
  where
 
 open PropositionalTruncation pt
 
-open import MetricSpaces.Definition pt fe pe
-open import DedekindReals.Type pe pt fe
-open import MetricSpaces.Rationals fe pt pe
-open import Rationals.MinMax
-open import DedekindReals.Properties fe pt pe
+open import Rationals.Limits fe pe pt
+open import MetricSpaces.Definition fe pe pt
+open import MetricSpaces.Rationals fe pe pt
+open import DedekindReals.Type fe pe pt
+open import DedekindReals.Properties fe pe pt
+open import DedekindReals.Order fe pe pt
 
 \end{code}
 
@@ -44,6 +48,7 @@ one either side of each real such that the the distance between the
 furthest value on each side is less than ε.
 
 \begin{code}
+
 B-ℝ : (x y : ℝ) → (ε : ℚ) → 0ℚ < ε → 𝓤₀ ̇
 B-ℝ x y ε l =
  ∃ (p , q , u , v) ꞉ ℚ × ℚ × ℚ × ℚ , (p < x)
@@ -308,9 +313,6 @@ abstract a proof in the first condition.
 
 ℝ-metric-space : metric-space ℝ
 ℝ-metric-space = B-ℝ , ℝ-m1a , ℝ-m1b , ℝ-m2 , ℝ-m3 , ℝ-m4
-
-open import DedekindReals.Order pe pt fe
-open import Rationals.Multiplication
 
 cauchy-approximation : 𝓤₁ ̇
 cauchy-approximation
@@ -815,8 +817,6 @@ cauchy-approximation-limit-exists (f , approximation-condition) = y , y-is-limit
         vii : B-ℚ (min u (u - ε - 1/2 * θ)) (max v v) (ε + θ) l₃
         vii = transport₂ (λ α β → B-ℚ α β (ε + θ) l₃) (ii ∙ min-comm (u - ε - 1/2 * θ) u) (i ⁻¹) (transport (_< ε + θ) iv ψ)
 
-open import Rationals.Limits fe pt pe
-
 RealsCauchySequence : (S : ℕ → ℝ) → 𝓤₀ ̇
 RealsCauchySequence = cauchy-sequence ℝ ℝ-metric-space
 
@@ -833,10 +833,6 @@ modulus-of-convergence' S RCS = II I
   II : Σ M ꞉ (ℚ₊ → ℕ) , (((ε , l) : ℚ₊) → condition _ (M _)) → Sigma (ℚ₊ → ℕ)
                                                                  (λ M → (ε : ℚ) (l : 0ℚ <  ε) (m n : ℕ) → M (ε , l) ≤ m → M (ε , l) ≤ n → B-ℝ (S m) (S n) ε l)
   II (M , f) = M , (λ ε l m n x x₁ → f (ε , l) m n x x₁)
-
-
-open import Naturals.Addition renaming (_+_ to _ℕ+_)
-open import Naturals.Order renaming (max to ℕmax ; max-comm to ℕmax-comm)
 
 mod-convergence-property : (S : ℕ → ℝ) → (RCS : RealsCauchySequence S)
                          → ((M , f) : Σ M ꞉ (ℚ₊ → ℕ) , ((ε : ℚ) → (l : 0ℚ < ε) → (m n : ℕ) → M (ε , l) ≤ m → M (ε , l) ≤ n → B-ℝ (S m) (S n) ε l))

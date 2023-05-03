@@ -20,14 +20,14 @@ open import Rationals.Addition
 open import Rationals.Order
 
 module MetricSpaces.Definition
-  (pt : propositional-truncations-exist)
   (fe : Fun-Ext)
   (pe : Prop-Ext)
+  (pt : propositional-truncations-exist)
  where
 
 open PropositionalTruncation pt
-open import DedekindReals.Type pe pt fe
-open import DedekindReals.Order pe pt fe
+open import DedekindReals.Type fe pe pt
+open import DedekindReals.Order fe pe pt
 
 m1a : {𝓤 : Universe} → (X : 𝓤 ̇ )→ (B : X → X → (ε : ℚ) → 0ℚ < ε → 𝓤₀ ̇ )→ 𝓤 ̇
 m1a X B = (x y : X) → ((ε : ℚ) → (l : 0ℚ < ε) → B x y ε l) → x ＝ y

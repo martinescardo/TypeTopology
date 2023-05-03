@@ -22,13 +22,13 @@ open import Rationals.Negation renaming (_-_ to _ℚ-_ ; -_ to ℚ-_)
 open import Rationals.Order
 
 module DedekindReals.Addition
+         (fe : Fun-Ext)
          (pe : Prop-Ext)
          (pt : propositional-truncations-exist)
-         (fe : Fun-Ext)
        where
 
-open import DedekindReals.Type pe pt fe
-open import DedekindReals.Order pe pt fe
+open import DedekindReals.Type fe pe pt
+open import DedekindReals.Order fe pe pt
 open PropositionalTruncation pt
 
 _+_ : ℝ → ℝ → ℝ
@@ -160,7 +160,7 @@ _+_ : ℝ → ℝ → ℝ
       goal = transport₂ _<_ (e₁ ⁻¹) (e₂ ⁻¹) (ℚ<-adding r r' s s' I II)
 
   located-z : located L-z R-z
-  located-z p q l = I (ℝ-arithmetically-located fe pt pe x (q ℚ- p) (ℚ<-difference-positive p q l))
+  located-z p q l = I (ℝ-arithmetically-located fe pe pt x (q ℚ- p) (ℚ<-difference-positive p q l))
    where
     I : ∃ (e , t) ꞉ ℚ × ℚ , e ∈ L-x × t ∈ R-x × 0ℚ < t ℚ- e × t ℚ- e < q ℚ- p → p ∈ L-z ∨ q ∈ R-z
     I = ∥∥-rec ∨-is-prop δ
@@ -511,7 +511,7 @@ x - y = x + (- y)
   rtl p p<0 = ∥∥-rec (∈-is-prop (lower-cut-of (x - x)) p) II I
    where
     I : ∃ (a , b) ꞉ ℚ × ℚ , a < x × b > x × 0ℚ < b ℚ- a × b ℚ- a < ℚ- p
-    I = ℝ-arithmetically-located fe pt pe x (ℚ- p) (ℚ<-swap p 0ℚ p<0)
+    I = ℝ-arithmetically-located fe pe pt x (ℚ- p) (ℚ<-swap p 0ℚ p<0)
     II : Σ (a , b) ꞉ ℚ × ℚ , a < x × b > x × 0ℚ < b ℚ- a × b ℚ- a < ℚ- p → p < (x - x)
     II ((a , b) , a<x , x<b , 0<b-a , b-a<-p) = ∣ (a , p ℚ- a) , a<x , ∣ (a ℚ- p) , (i , ii) ∣ , iii ∣
      where

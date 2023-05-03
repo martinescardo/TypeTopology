@@ -23,13 +23,14 @@ open import Rationals.Order
 
 module MetricSpaces.Rationals
          (fe : Fun-Ext)
-         (pt : propositional-truncations-exist)
          (pe : Prop-Ext)
+         (pt : propositional-truncations-exist)
+
  where
 
 open import Rationals.MinMax
 
-open import MetricSpaces.Definition pt fe pe
+open import MetricSpaces.Definition fe pe pt
 
 ℚ-metric : ℚ → ℚ → ℚ
 ℚ-metric p q = abs (p - q)
