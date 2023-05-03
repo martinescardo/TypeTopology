@@ -203,4 +203,14 @@ module HeytingImplicationConstruction (X : Locale 𝓤  𝓥  𝓥)
           U ∧[ 𝒪 X ] V                          ≤⟨ II ⟩
           V                                     ■
 
+ ==>-right-monotone : {U V W : ⟨ 𝒪 X ⟩}
+                    → (V ≤[ poset-of (𝒪 X) ] W) holds
+                    → ((U ==> V) ≤[ poset-of (𝒪 X ) ] (U ==> W)) holds
+ ==>-right-monotone {U} {V} {W} p = heyting-implication₁ U W (U ==> V) †
+  where
+   open PosetReasoning (poset-of (𝒪 X))
+
+   † : (((U ==> V) ∧[ 𝒪 X ] U) ≤[ poset-of (𝒪 X) ] W) holds
+   † = (U ==> V) ∧[ 𝒪 X ] U ≤⟨ mp-right U V ⟩ V ≤⟨ p ⟩ W ■
+
 \end{code}
