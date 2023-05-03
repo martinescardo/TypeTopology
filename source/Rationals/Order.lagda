@@ -48,9 +48,6 @@ instance
  Strict-Order-ℚ-ℚ : Strict-Order ℚ ℚ
  _<_ {{Strict-Order-ℚ-ℚ}} = _<ℚ_
 
-ℚ₊ : 𝓤₀ ̇
-ℚ₊ = Σ q ꞉ ℚ , 0ℚ < q
-
 ℚ<-is-prop : (p q : ℚ) → is-prop (p < q)
 ℚ<-is-prop (p , _) (q , _) = 𝔽<-is-prop p q
 
