@@ -199,3 +199,51 @@ prenucleus-property₂ L (j , ζj , _) (k , _) x = ζj (k x)
                  , ∨-preserves-binary-meets L x
 
 \end{code}
+
+\begin{code}
+
+open import Locales.HeytingImplication pt fe
+open Locale
+
+module NucleusHeytingImplicationLaw (X : Locale 𝓤 𝓥 𝓥)
+                                    (𝒷 : has-basis (𝒪 X) holds)
+                                    (𝒿 : Nucleus (𝒪 X))
+                                     where
+
+ open HeytingImplicationConstruction X 𝒷
+
+ j = pr₁ 𝒿
+
+ nucleus-heyting-implication-law : (U V : ⟨ 𝒪 X ⟩)
+                                 → (U ==> j V) ＝ j U ==> j V
+ nucleus-heyting-implication-law U V =
+  ≤-is-antisymmetric (poset-of (𝒪 X)) † ‡
+   where
+    open PosetReasoning (poset-of (𝒪 X))
+
+    ♣ : (((U ==> j V) ∧[ 𝒪 X ] j U) ≤[ poset-of (𝒪 X) ] j V) holds
+    ♣ = (U ==> j V)   ∧[ 𝒪 X ] j U     ≤⟨ Ⅰ  ⟩
+        j (U ==> j V) ∧[ 𝒪 X ] j U     ＝⟨ Ⅱ ⟩ₚ
+        j ((U ==> j V) ∧[ 𝒪 X ] U)     ≤⟨ Ⅲ ⟩
+        j (j V)                        ≤⟨ Ⅳ ⟩
+        j V                           ■
+         where
+          Ⅰ = ∧[ 𝒪 X ]-left-monotone (𝓃₁ (𝒪 X) 𝒿 (U ==> j V))
+          Ⅱ = 𝓃₃ (𝒪 X) 𝒿 (U ==> j V) U ⁻¹
+          Ⅲ = nuclei-are-monotone (𝒪 X) 𝒿 (_ , _) (mp-right U (j V))
+          Ⅳ = 𝓃₂ (𝒪 X) 𝒿 V
+
+    ♥ = (j U ==> j V) ∧[ 𝒪 X ] U       ≤⟨ Ⅰ ⟩
+        (j U ==> j V) ∧[ 𝒪 X ] j U     ≤⟨ Ⅱ ⟩
+        j V ■
+         where
+          Ⅰ = ∧[ 𝒪 X ]-right-monotone (𝓃₁ (𝒪 X) 𝒿 U)
+          Ⅱ = mp-right (j U) (j V)
+
+    † : ((U ==> j V) ≤[ poset-of (𝒪 X) ] (j U ==> j V)) holds
+    † = heyting-implication₁ (j U) (j V) (U ==> j V) ♣
+
+    ‡ : ((j U ==> j V) ≤[ poset-of (𝒪 X) ] (U ==> j V)) holds
+    ‡ = heyting-implication₁ U (j V) (j U ==> j V) ♥
+
+\end{code}
