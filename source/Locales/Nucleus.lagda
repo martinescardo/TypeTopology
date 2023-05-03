@@ -212,7 +212,8 @@ module NucleusHeytingImplicationLaw (X : Locale 𝓤 𝓥 𝓥)
 
  open HeytingImplicationConstruction X 𝒷
 
- j = pr₁ 𝒿
+ private
+  j = pr₁ 𝒿
 
  nucleus-heyting-implication-law : (U V : ⟨ 𝒪 X ⟩)
                                  → (U ==> j V) ＝ j U ==> j V

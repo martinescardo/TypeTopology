@@ -84,7 +84,8 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
      open HeytingImplicationConstruction A A-has-basis
       using ()
       renaming (_==>_ to _==>ₐ_; H₈ to H₈ₐ;
-                heyting-implication-identity to heyting-implication-identityₐ)
+                heyting-implication-identity to heyting-implication-identityₐ;
+                ==>-right-monotone to ==>ₐ-right-monotone)
 
      Bₐ : 𝓤  ̇
      Bₐ = pr₁ (pr₁ σᴰ)
@@ -93,7 +94,7 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
      β = pr₂ (pr₁ σᴰ)
 
      β-is-basis-for-A : is-basis-for (𝒪 A) (Bₐ , β)
-     β-is-basis-for-A = {!!}
+     β-is-basis-for-A U = {!pr₁ (pr₁ (pr₂ σᴰ)) U!} , {!!}
 
      βₖ : Bₐ → 𝒦
      βₖ m = β m , pr₁ (pr₂ (pr₂ σᴰ)) m
@@ -114,7 +115,7 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
       ⋁[ 𝒪 X ] ⁅ 𝒻 ⋆∙ j (β n) ∧[ 𝒪 X ] ¬𝒻⋆ n ∣ n ∶ Bₐ ⁆
 
      f⁻⋆₂-equiv-f⁻⋆₁ : (𝒿 : ⟨ 𝒪 Patchₛ-A ⟩) → f⁻⋆ 𝒿 ＝ f⁻⋆₂ 𝒿
-     f⁻⋆₂-equiv-f⁻⋆₁ 𝒿@(j , _) = bicofinal-implies-same-join (𝒪 X) S T † {!!}
+     f⁻⋆₂-equiv-f⁻⋆₁ 𝒿@(j , _) = ≤-is-antisymmetric (poset-of (𝒪 X)) †′ ‡
       where
        S : Fam 𝓤 ⟨ 𝒪 X ⟩
        S = ⁅ (𝒻 ⋆∙ β m) ∧[ 𝒪 X ] ¬𝒻⋆ n ∣ (m , n , p) ∶ Σ m ꞉ Bₐ , Σ n ꞉ Bₐ , 𝕃 𝒿 m n holds ⁆
@@ -155,81 +156,77 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
           where
            open PosetReasoning (poset-of (𝒪 X))
 
+       †′ : ((⋁[ 𝒪 X ] S) ≤[ poset-of (𝒪 X) ] (⋁[ 𝒪 X ] T)) holds
+       †′ = cofinal-implies-join-covered (𝒪 X) S T †
+
        ‡ : ((⋁[ 𝒪 X ] T) ≤[ poset-of (𝒪 X) ] (⋁[ 𝒪 X ] S)) holds
        ‡ = ⋁[ 𝒪 X ]-least T ((⋁[ 𝒪 X ] S) , ξ)
         where
          open Joins (λ x y → x ≤[ poset-of (𝒪 X) ] y)
 
          ξ : ((⋁[ 𝒪 X ] S) is-an-upper-bound-of T) holds
-         ξ n = {!!}
-         -- ξ : 𝕃 𝒿 n n holds
-         -- ξ m = (‘ β n ’ ∧[ 𝒪 Patchₛ-A ] ¬‘ βₖ n ’) .pr₁ (β m)    ＝⟨ refl  ⟩ₚ
-         --       ((β n ∨[ 𝒪 A ] β m) ∧[ 𝒪 A ] (β n ==>ₐ β m))      ＝⟨ Ⅰ     ⟩ₚ
-         --       ((β m ∨[ 𝒪 A ] β n) ∧[ 𝒪 A ] (β n ==>ₐ β m))      ＝⟨ Ⅱ     ⟩ₚ
-         --       β m                                               ≤⟨ Ⅲ  ⟩
-         --       j (β m)                                           ■
-         --  where
-         --   open PosetReasoning (poset-of (𝒪 A))
+         ξ n =
+          let
+           open PosetReasoning (poset-of (𝒪 X))
+          in
+           𝒻 ⋆∙ j (β n) ∧[ 𝒪 X ] ¬𝒻⋆ n                          ＝⟨ Ⅰ  ⟩ₚ
+           𝒻 ⋆∙ (⋁[ 𝒪 A ] ⁅ β i ∣ i ε 𝒥 ⁆) ∧[ 𝒪 X ] ¬𝒻⋆ n       ＝⟨ Ⅱ  ⟩ₚ
+           (⋁[ 𝒪 X ] ⁅ 𝒻 ⋆∙ (β i) ∣ i ε 𝒥 ⁆) ∧[ 𝒪 X ] ¬𝒻⋆ n     ＝⟨ Ⅲ  ⟩ₚ
+           ⋁[ 𝒪 X ] ⁅ 𝒻 ⋆∙ (β i) ∧[ 𝒪 X ] ¬𝒻⋆ n ∣ i ε 𝒥 ⁆       ≤⟨ Ⅳ   ⟩
+           ⋁[ 𝒪 X ] S                                           ■
+          where
+           𝒥 = covering-index-family (𝒪 A) (Bₐ , β) β-is-basis-for-A (j (β n))
 
-         --   Ⅰ = ap
-         --        (λ - → - ∧[ 𝒪 A ] (β n ==>ₐ β m))
-         --        (∨[ 𝒪 A ]-is-commutative (β n) (β m))
-         --   Ⅱ = H₈ₐ (β m) (β n) ⁻¹
-         --   Ⅲ = 𝓃₁ (𝒪 A) (nucleus-of 𝒿) (β m)
+           ※ : ((⋁[ 𝒪 X ] S)
+                 is-an-upper-bound-of
+                ⁅ 𝒻 ⋆∙ (β i) ∧[ 𝒪 X ] ¬𝒻⋆ n ∣ i ε 𝒥 ⁆) holds
+           ※ i = ⋁[ 𝒪 X ]-upper S (𝒥 [ i ] , n , foo)
+                  where
+                   open PosetReasoning (poset-of (𝒪 A))
+                   open NucleusHeytingImplicationLaw A A-has-basis (nucleus-of 𝒿)
 
+                   foo : 𝕃 𝒿 (𝒥 [ i ]) n holds
+                   foo m =
+                    (‘ β (𝒥 [ i ]) ’ ∧[ 𝒪 Patchₛ-A ] ¬‘ βₖ n ’) .pr₁ (β m)      ＝⟨ refl ⟩ₚ
+                    ((β (𝒥 [ i ]) ∨[ 𝒪 A ] β m) ∧[ 𝒪 A ] (β n ==>ₐ β m))        ≤⟨ Ⅰ     ⟩
+                    (j (β n) ∨[ 𝒪 A ] β m) ∧[ 𝒪 A ] (β n ==>ₐ β m)              ≤⟨ Ⅱ     ⟩
+                    (j (β n) ∨[ 𝒪 A ] β m) ∧[ 𝒪 A ] (β n ==>ₐ j (β m))          ＝⟨ Ⅲ    ⟩ₚ
+                    (j (β n) ∨[ 𝒪 A ] β m) ∧[ 𝒪 A ] (j (β n) ==>ₐ j (β m))      ≤⟨ Ⅳ     ⟩
+                    (j (β n) ∨[ 𝒪 A ] j (β m)) ∧[ 𝒪 A ] (j (β n) ==>ₐ j (β m))  ＝⟨ Ⅴ    ⟩ₚ
+                    (j (β m) ∨[ 𝒪 A ] j (β n)) ∧[ 𝒪 A ] (j (β n) ==>ₐ j (β m))  ＝⟨ Ⅵ    ⟩ₚ
+                    j (β m)                                                     ■
+                     where
+                      ♣ = β (𝒥 [ i ]) ≤⟨ 𝕒 ⟩ ⋁[ 𝒪 A ] ⁅ β i ∣ i ε 𝒥 ⁆  ＝⟨ 𝕓 ⟩ₚ j (β n) ■
+                           where
+                            𝕒 = ⋁[ 𝒪 A ]-upper (⁅ β i ∣ i ε 𝒥 ⁆) (𝒥 [ i ])
+                            𝕓 = covers (𝒪 A) ⁅ β i ∣ i ε 𝒥 ⁆ β-is-basis-for-A (j (β n)) ⁻¹
 
-         -- ※ : ((T [ n ]) ≤[ poset-of (𝒪 X) ] (S [ n , n , ξ ])) holds
-         -- ※ =
-         --  let
-         --   open PosetReasoning (poset-of (𝒪 X))
-         --  in
-         --   𝒻 ⋆∙ j (β n) ∧[ 𝒪 X ] ¬𝒻⋆ n                          ＝⟨ Ⅰ  ⟩ₚ
-         --   𝒻 ⋆∙ (⋁[ 𝒪 A ] ⁅ β i ∣ i ε 𝒥 ⁆) ∧[ 𝒪 X ] ¬𝒻⋆ n       ＝⟨ Ⅱ  ⟩ₚ
-         --   (⋁[ 𝒪 X ] ⁅ 𝒻 ⋆∙ (β i) ∣ i ε 𝒥 ⁆) ∧[ 𝒪 X ] ¬𝒻⋆ n     ＝⟨ Ⅲ  ⟩ₚ
-         --   ⋁[ 𝒪 X ] ⁅ 𝒻 ⋆∙ (β i) ∧[ 𝒪 X ] ¬𝒻⋆ n ∣ i ε 𝒥 ⁆       ≤⟨ {!!}   ⟩
-         --   𝒻 ⋆∙ β n ∧[ 𝒪 X ] ¬𝒻⋆ n                              ■
-         --  where
-         --   𝒥 = covering-index-family (𝒪 A) (Bₐ , β) β-is-basis-for-A (j (β n))
+                      Ⅰ = ∧[ 𝒪 A ]-left-monotone (∨[ 𝒪 A ]-left-monotone ♣)
+                      Ⅱ = ∧[ 𝒪 A ]-right-monotone
+                           (==>ₐ-right-monotone (𝓃₁ (𝒪 A) (nucleus-of 𝒿) (β m)))
+                      Ⅲ = ap
+                           (λ - → (j (β n) ∨[ 𝒪 A ] β m) ∧[ 𝒪 A ] -)
+                           (nucleus-heyting-implication-law (β n) (β m))
+                      Ⅳ = ∧[ 𝒪 A ]-left-monotone (∨[ 𝒪 A ]-right-monotone (𝓃₁ (𝒪 A) (nucleus-of 𝒿) (β m)))
+                      Ⅴ = ap
+                           (λ - → - ∧[ 𝒪 A ] (j (β n) ==>ₐ j (β m)))
+                           (∨[ 𝒪 A ]-is-commutative (j (β n)) (j (β m)))
+                      Ⅵ = H₈ₐ (j (β m)) (j (β n)) ⁻¹
 
-         --   Ⅰ = ap
-         --        (λ - → 𝒻 ⋆∙ - ∧[ 𝒪 X ] ¬𝒻⋆ n)
-         --        (covers (𝒪 A) (Bₐ , β) β-is-basis-for-A (j (β n)))
-         --   Ⅱ = ap
-         --        (λ - → - ∧[ 𝒪 X ] ¬𝒻⋆ n)
-         --        (frame-homomorphisms-preserve-all-joins
-         --          (𝒪 A)
-         --          (𝒪 X)
-         --          𝒻
-         --          ⁅ β i ∣ i ε 𝒥 ⁆)
-         --   Ⅲ  = distributivity′-right (𝒪 X) (¬𝒻⋆ n) ⁅ 𝒻 ⋆∙ (β i) ∣ i ε 𝒥 ⁆
-         --   Ⅳ  = ⋁[ 𝒪 X ]-least
-         --         ⁅ 𝒻 ⋆∙ (β i) ∧[ 𝒪 X ] ¬𝒻⋆ n ∣ i ε 𝒥 ⁆
-         --         ((𝒻 ⋆∙ β n ∧[ 𝒪 X ] ¬𝒻⋆ n) , ζ)
-         --          where
-         --           open Joins (λ x y → x ≤[ poset-of (𝒪 X) ] y)
-
-
-         --           ζ : ((𝒻 ⋆∙ (β n) ∧[ 𝒪 X ] (¬𝒻⋆ n))
-         --                 is-an-upper-bound-of
-         --                ⁅ 𝒻 ⋆∙ (β i) ∧[ 𝒪 X ] ¬𝒻⋆ n ∣ i ε 𝒥 ⁆) holds
-         --           ζ i = ∧[ 𝒪 X ]-left-monotone
-         --                  (frame-morphisms-are-monotonic
-         --                    (𝒪 A)
-         --                    (𝒪 X)
-         --                    (𝒻 ⋆∙_)
-         --                    (pr₂ 𝒻)
-         --                    (_ , _)
-         --                    υ)
-         --                  where
-         --                   open PosetReasoning (poset-of (𝒪 A))
-
-         --                   υ : (β (𝒥 [ i ]) ≤[ poset-of (𝒪 A) ] β n) holds
-         --                   υ = β (𝒥 [ i ])               ≤⟨ 𝕒     ⟩
-         --                       ⋁[ 𝒪 A ] ⁅ β i ∣ i ε 𝒥 ⁆  ＝⟨ 𝕓 ⟩ₚ
-         --                       {!β n!}                      ■
-         --                        where
-         --                         𝕒 = ⋁[ 𝒪 A ]-upper ⁅ β i ∣ i ε 𝒥 ⁆ i
-         --                         𝕓 = {!!}
+           Ⅰ = ap
+                (λ - → 𝒻 ⋆∙ - ∧[ 𝒪 X ] ¬𝒻⋆ n)
+                (covers (𝒪 A) (Bₐ , β) β-is-basis-for-A (j (β n)))
+           Ⅱ = ap
+                (λ - → - ∧[ 𝒪 X ] ¬𝒻⋆ n)
+                (frame-homomorphisms-preserve-all-joins
+                  (𝒪 A)
+                  (𝒪 X)
+                  𝒻
+                  ⁅ β i ∣ i ε 𝒥 ⁆)
+           Ⅲ = distributivity′-right (𝒪 X) (¬𝒻⋆ n) ⁅ 𝒻 ⋆∙ (β i) ∣ i ε 𝒥 ⁆
+           Ⅳ = ⋁[ 𝒪 X ]-least
+                ⁅ 𝒻 ⋆∙ (β i) ∧[ 𝒪 X ] ¬𝒻⋆ n ∣ i ε 𝒥 ⁆
+                ((⋁[ 𝒪 X ] S) , ※)
 
      f⁻⋆-is-monotone : is-monotonic
                         (poset-of (𝒪 Patchₛ-A))
