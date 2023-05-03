@@ -77,6 +77,15 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
      X-has-basis : has-basis (𝒪 X) holds
      X-has-basis = ∣ pr₁ 𝕫ᴰ , pr₁ (pr₁ (pr₂ 𝕫ᴰ)) ∣
 
+     Bₐ : 𝓤  ̇
+     Bₐ = pr₁ (pr₁ σᴰ)
+
+     β : Bₐ → ⟨ 𝒪 A ⟩
+     β = pr₂ (pr₁ σᴰ)
+
+     β-is-basis-for-A : is-basis-for (𝒪 A) (Bₐ , β)
+     β-is-basis-for-A U = pr₁ (pr₁ (pr₂ σᴰ)) U
+
      A-has-basis : has-basis (𝒪 A) holds
      A-has-basis = spectral-frames-have-bases (𝒪 A) σ
 
@@ -86,15 +95,6 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
       renaming (_==>_ to _==>ₐ_; H₈ to H₈ₐ;
                 heyting-implication-identity to heyting-implication-identityₐ;
                 ==>-right-monotone to ==>ₐ-right-monotone)
-
-     Bₐ : 𝓤  ̇
-     Bₐ = pr₁ (pr₁ σᴰ)
-
-     β : Bₐ → ⟨ 𝒪 A ⟩
-     β = pr₂ (pr₁ σᴰ)
-
-     β-is-basis-for-A : is-basis-for (𝒪 A) (Bₐ , β)
-     β-is-basis-for-A U = {!pr₁ (pr₁ (pr₂ σᴰ)) U!} , {!!}
 
      βₖ : Bₐ → 𝒦
      βₖ m = β m , pr₁ (pr₂ (pr₂ σᴰ)) m
@@ -175,7 +175,8 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
            ⋁[ 𝒪 X ] ⁅ 𝒻 ⋆∙ (β i) ∧[ 𝒪 X ] ¬𝒻⋆ n ∣ i ε 𝒥 ⁆       ≤⟨ Ⅳ   ⟩
            ⋁[ 𝒪 X ] S                                           ■
           where
-           𝒥 = covering-index-family (𝒪 A) (Bₐ , β) β-is-basis-for-A (j (β n))
+           𝒥 : Fam 𝓤 Bₐ
+           𝒥 = pr₁ (pr₁ (pr₁ (pr₂ σᴰ)) (j (β n)))
 
            ※ : ((⋁[ 𝒪 X ] S)
                  is-an-upper-bound-of
@@ -198,8 +199,8 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
                      where
                       ♣ = β (𝒥 [ i ]) ≤⟨ 𝕒 ⟩ ⋁[ 𝒪 A ] ⁅ β i ∣ i ε 𝒥 ⁆  ＝⟨ 𝕓 ⟩ₚ j (β n) ■
                            where
-                            𝕒 = ⋁[ 𝒪 A ]-upper (⁅ β i ∣ i ε 𝒥 ⁆) (𝒥 [ i ])
-                            𝕓 = covers (𝒪 A) ⁅ β i ∣ i ε 𝒥 ⁆ β-is-basis-for-A (j (β n)) ⁻¹
+                            𝕒 = ⋁[ 𝒪 A ]-upper ⁅ β i ∣ i ε 𝒥 ⁆ i
+                            𝕓 = covers (𝒪 A) (Bₐ , β) β-is-basis-for-A (j (β n)) ⁻¹
 
                       Ⅰ = ∧[ 𝒪 A ]-left-monotone (∨[ 𝒪 A ]-left-monotone ♣)
                       Ⅱ = ∧[ 𝒪 A ]-right-monotone
