@@ -37,7 +37,7 @@ open import MetricSpaces.Definition fe pe pt
 
 _limit-of_ : (L : ℚ) → (f : ℕ → ℚ) → 𝓤₀ ̇
 L limit-of f = ∀ (ε : ℚ) → 0ℚ < ε
-                         → Σ N ꞉ ℕ , ((n : ℕ) → N ≤ n → ℚ-metric (f n) L < ε)
+                         → Σ N ꞉ ℕ , ((n : ℕ) → N ≤ n → abs (f n - L) < ε)
 
 sandwich-theorem : (L : ℚ)
                  → (f g h : ℕ → ℚ)
@@ -50,9 +50,9 @@ sandwich-theorem L f g h (k , k-greater) lim-f lim-h = lim-g
   lim-g : L limit-of g
   lim-g ε l = getN's (lim-f ε l) (lim-h ε l)
    where
-    getN's : Σ N₁ ꞉ ℕ , ((n : ℕ) → N₁ ≤ n → ℚ-metric (f n) L < ε)
-           → Σ N₂ ꞉ ℕ , ((n : ℕ) → N₂ ≤ n → ℚ-metric (h n) L < ε)
-           → Σ N ꞉ ℕ  , ((n : ℕ) → N  ≤ n → ℚ-metric (g n) L < ε)
+    getN's : Σ N₁ ꞉ ℕ , ((n : ℕ) → N₁ ≤ n → abs (f n - L) < ε)
+           → Σ N₂ ꞉ ℕ , ((n : ℕ) → N₂ ≤ n → abs (h n - L) < ε)
+           → Σ N ꞉ ℕ  , ((n : ℕ) → N  ≤ n → abs (g n - L) < ε)
     getN's (N₁ , f-close) (N₂ , h-close) = N , g-close
      where
       N : ℕ
@@ -73,17 +73,17 @@ sandwich-theorem L f g h (k , k-greater) lim-f lim-h = lim-g
       α : (f N ≤ g N) × (g N ≤ h N)
       α = k-greater N k-small
 
-      g-close : (n : ℕ) → ℕ-max (ℕ-max N₁ N₂) k ≤ n → ℚ-metric (g n) L < ε
+      g-close : (n : ℕ) → ℕ-max (ℕ-max N₁ N₂) k ≤ n → abs (g n - L) < ε
       g-close n less = obtain-inequalities (ℚ-abs-<-unpack (f n - L) ε f-close') (ℚ-abs-<-unpack (h n - L) ε h-close')
        where
-        f-close' : ℚ-metric (f n) L < ε
+        f-close' : abs (f n - L) < ε
         f-close' = f-close n (≤-trans N₁ N n (≤-trans N₁ (ℕ-max N₁ N₂) N N₁-small N₁N₂-small) less)
-        h-close' : ℚ-metric (h n) L < ε
+        h-close' : abs (h n - L) < ε
         h-close' = h-close n (≤-trans N₂ N n (≤-trans N₂ (ℕ-max N₁ N₂) N N₂-small N₁N₂-small) less)
 
         obtain-inequalities : - ε < f n - L × f n - L < ε
                             → - ε < h n - L × h n - L < ε
-                            → ℚ-metric (g n) L < ε
+                            → abs (g n - L) < ε
         obtain-inequalities (l₁ , l₂) (l₃ , l₄) = ℚ<-to-abs (g n - L) ε (I , II)
          where
           k-greater' : f n ≤ g n × g n ≤ h n
@@ -100,14 +100,13 @@ sandwich-theorem L f g h (k , k-greater) lim-f lim-h = lim-g
 0f-converges : 0ℚ limit-of 0f
 0f-converges ε l = 0 , f-conv
  where
-  f-conv : (n : ℕ) → 0 ≤ n → ℚ-metric (0f n) 0ℚ < ε
+  f-conv : (n : ℕ) → 0 ≤ n → abs (0f 0 - 0ℚ) < ε
   f-conv n less = transport (_< ε) I l
    where
-    I : ℚ-metric (0f n) 0ℚ ＝ 0ℚ
-    I = ℚ-metric (0f n) 0ℚ    ＝⟨ by-definition ⟩
-        abs (0ℚ - 0ℚ)         ＝⟨ by-definition ⟩
-        abs 0ℚ                ＝⟨ by-definition ⟩
-        0ℚ ∎
+    I : abs (0f n - 0ℚ) ＝ 0ℚ
+    I = abs (0ℚ - 0ℚ) ＝⟨ by-definition ⟩
+        abs 0ℚ        ＝⟨ by-definition ⟩
+        0ℚ            ∎
 
 constant-sequence : (q : ℚ) → (n : ℕ) → ℚ
 constant-sequence q n = q
@@ -115,8 +114,8 @@ constant-sequence q n = q
 constant-sequence-converges : (q : ℚ) → q limit-of (constant-sequence q)
 constant-sequence-converges q ε l = 0 , (λ n l₂ → transport (_< ε) I l)
  where
-  I : 0ℚ ＝ ℚ-metric q q
-  I = ℚ-self-dist q ⁻¹
+  I : 0ℚ ＝ abs (q - q)
+  I = ℚ-zero-dist q ⁻¹
 
 open import Integers.Type hiding (abs)
 open import Rationals.FractionsOrder
@@ -176,7 +175,7 @@ open import Rationals.Fractions
   ζ : pos (succ a) < pos (succ x ℕ* (q ℕ+ 1))
   ζ = ℕ-order-respects-ℤ-order (succ a) (succ x ℕ* (q ℕ+ 1)) γ
 
-  conclusion : (n : ℕ) → q ℕ+ 1 ≤ n → ℚ-metric (⟨1/sn⟩ n) 0ℚ < ((pos (succ x) , a) , ε)
+  conclusion : (n : ℕ) → q ℕ+ 1 ≤ n → abs (⟨1/sn⟩ n - 0ℚ) < ((pos (succ x) , a) , ε)
   conclusion 0 l' = 𝟘-elim l'
   conclusion (succ n) l' = IV
    where
