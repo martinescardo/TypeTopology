@@ -63,24 +63,23 @@ exists-2/3-n x y (p , α) l₁ l₂ = V use-limit
   IV : 0ℚ < (toℚ p * ℚ*-inv (y - x) I)
   IV = ℚ<-pos-multiplication-preserves-order (toℚ p) (ℚ*-inv (y - x) I) (transport (0ℚ <_) p-convert l₂) III
 
-  use-limit : Σ N ꞉ ℕ , ((n : ℕ) → N ≤ n → ℚ-metric (⟨2/3⟩^ n) 0ℚ < (toℚ p * ℚ*-inv (y - x) I))
+  use-limit : Σ N ꞉ ℕ , ((n : ℕ) → N ≤ n → abs ((⟨2/3⟩^ n) - 0ℚ) < (toℚ p * ℚ*-inv (y - x) I))
   use-limit = ⟨2/3⟩^n-converges (toℚ p * ℚ*-inv (y - x) I) IV
 
-  V : (Σ N ꞉ ℕ , ((n : ℕ) → N ≤ n → ℚ-metric (⟨2/3⟩^ n) 0ℚ < (toℚ p * ℚ*-inv (y - x) I)))
+  V : (Σ N ꞉ ℕ , ((n : ℕ) → N ≤ n → abs ((⟨2/3⟩^ n) - 0ℚ) < (toℚ p * ℚ*-inv (y - x) I)))
      → Σ n ꞉ ℕ , (((⟨2/3⟩^ n) * (y - x)) < (p , α))
   V (N , f) = (succ N) , transport₂ _<_ VIII IX VII
    where
     abstract
-     VI : ℚ-metric (⟨2/3⟩^ succ N) 0ℚ <ℚ (toℚ p * ℚ*-inv (y - x) I)
+     VI : abs ((⟨2/3⟩^ succ N) - 0ℚ) <ℚ (toℚ p * ℚ*-inv (y - x) I)
      VI = f (succ N) (≤-succ N)
-     VII : ℚ-metric  (⟨2/3⟩^ succ N) 0ℚ  * (y - x) <ℚ (toℚ p * ℚ*-inv (y - x) I) * (y - x)
-     VII = ℚ<-pos-multiplication-preserves-order' (ℚ-metric (⟨2/3⟩^ succ N) 0ℚ) ((toℚ p * ℚ*-inv (y - x) I)) (y - x) VI II
-     VIII : ℚ-metric (⟨2/3⟩^ succ N) 0ℚ * (y - x) ＝ ((⟨2/3⟩^ (succ N)) * (y - x))
+     VII : abs ((⟨2/3⟩^ succ N) - 0ℚ)  * (y - x) <ℚ (toℚ p * ℚ*-inv (y - x) I) * (y - x)
+     VII = ℚ<-pos-multiplication-preserves-order' (abs ((⟨2/3⟩^ succ N) - 0ℚ)) ((toℚ p * ℚ*-inv (y - x) I)) (y - x) VI II
+     VIII : abs ((⟨2/3⟩^ succ N) - 0ℚ) * (y - x) ＝ ((⟨2/3⟩^ (succ N)) * (y - x))
      VIII = ap (_* (y - x)) i
       where
-       i : ℚ-metric (⟨2/3⟩^ succ N) 0ℚ ＝ (⟨2/3⟩^ (succ N))
-       i = ℚ-metric (⟨2/3⟩^ succ N) 0ℚ ＝⟨ by-definition ⟩
-           abs ((⟨2/3⟩^ succ N) - 0ℚ)     ＝⟨ ap (λ β → abs ((⟨2/3⟩^ succ N) + β) ) (ℚ-minus-zero-is-zero ⁻¹) ⟩
+       i : abs ((⟨2/3⟩^ succ N) - 0ℚ) ＝ (⟨2/3⟩^ (succ N))
+       i = abs ((⟨2/3⟩^ succ N) - 0ℚ)     ＝⟨ ap (λ β → abs ((⟨2/3⟩^ succ N) + β) ) (ℚ-minus-zero-is-zero ⁻¹) ⟩
            abs ((⟨2/3⟩^ succ N) + 0ℚ)     ＝⟨ ap abs (ℚ-zero-right-neutral ((⟨2/3⟩^ succ N))) ⟩
            abs (⟨2/3⟩^ succ N)            ＝⟨ abs-of-pos-is-pos (⟨2/3⟩^ succ N) (ℚ<-coarser-than-≤ 0ℚ (⟨2/3⟩^ succ N) (⟨2/3⟩^n-positive (succ N))) ⟩
            (⟨2/3⟩^ succ N) ∎
