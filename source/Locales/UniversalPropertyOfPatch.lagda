@@ -414,25 +414,44 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
 
        open IgorsLemma X A A-has-basis
 
+       negation-lemma : {U V W : ⟨ 𝒪 X ⟩}
+                      → is-clopen₀ (𝒪 X) V
+                      → (U ≤[ poset-of (𝒪 X) ] (V ∨[ 𝒪 X ] W)) holds
+                      → ((U ∧[ 𝒪 X ] (V ==> 𝟎[ 𝒪 X ]))
+                          ≤[ poset-of (𝒪 X) ]
+                         W) holds
+       negation-lemma {U} {V} {W} (V′ , p , q) φ =
+        heyting-implication₂ (V ==> 𝟎[ 𝒪 X ]) W U †
+         where
+          † : (U ≤[ poset-of (𝒪 X) ] (V ==> 𝟎[ 𝒪 X ]) ==> W) holds
+          † = {!!}
+
        f⁻₊-is-right-adjoint-of-f⁻⁺ : (𝒻⁻⋆ₘ ⊣ f⁻₊ₘ) holds
        f⁻₊-is-right-adjoint-of-f⁻⁺ 𝒿@(j , _) U = ϑ₁ , ϑ₂
         where
          ϑ₁ : (f⁻⋆ 𝒿 ≤[ poset-of (𝒪 X) ] U) holds
             → (𝒿 ≤[ poset-of (𝒪 Patchₛ-A) ] (f⁻₊ U)) holds
-         ϑ₁ φ i = adjunction-inequality-forwardₓ 𝒻 _ _ ψ
-          where
-           ψ : (𝒻 ⋆∙ j (β i) ≤[ poset-of (𝒪 X) ] (U ∨[ 𝒪 X ] 𝒻 ⋆∙ β i)) holds
-           ψ = igors-lemma-⇐ 𝒻 (j (β i)) (β i) U χ
-            where
-             χ : (T : ⟨ 𝒪 A ⟩)
-               → ((𝒻 ⋆∙ (j (β i) ∨[ 𝒪 A ] T) ∧[ 𝒪 X ] (𝒻 ⋆∙ (β i ==>ₐ T)))
-                   ≤[ poset-of (𝒪 X) ]
-                  (U ∨[ 𝒪 X ] 𝒻 ⋆∙ T)) holds
-             χ = {!!}
+         ϑ₁ φ i = {!!}
+
+         S =
+          ⁅ (𝒻 ⋆∙ β m) ∧[ 𝒪 X ] ¬𝒻⋆ n
+           ∣ (m , n , p) ∶ Σ m ꞉ Bₐ , Σ n ꞉ Bₐ , 𝕃 𝒿 m n holds ⁆
 
          ϑ₂ : (𝒿 ≤[ poset-of (𝒪 Patchₛ-A) ] (f⁻₊ U)) holds
             → (f⁻⋆ 𝒿 ≤[ poset-of (𝒪 X) ] U) holds
-         ϑ₂ = {!!}
+         ϑ₂ φ = ⋁[ 𝒪 X ]-least S (U , †)
+          where
+           open Joins (λ x y → x ≤[ poset-of (𝒪 X) ] y)
+
+           † : (U is-an-upper-bound-of S) holds
+           † (m , n , p) = goal
+            where
+             ψ : (U : ⟨ 𝒪 A ⟩)
+               → (((‘ β m ’ ∧[ 𝒪 Patchₛ-A ] ¬‘ βₖ n ’) .pr₁ U) ≤[ poset-of (𝒪 A)  ] j U) holds
+             ψ = ≼ᵏ-implies-≼ (‘ β m ’ ∧[ 𝒪 Patchₛ-A ] ¬‘ βₖ n ’) 𝒿 p
+
+             goal : (((𝒻 ⋆∙ β m) ∧[ 𝒪 X ] ¬𝒻⋆ n) ≤[ poset-of (𝒪 X) ] U) holds
+             goal = {!!}
 
        † : has-right-adjoint 𝒻⁻⋆ₘ
        † = f⁻₊ₘ , f⁻₊-is-right-adjoint-of-f⁻⁺

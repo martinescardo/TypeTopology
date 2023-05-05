@@ -1833,3 +1833,56 @@ compact-join-lemma F σ U V K κ ψ = ∥∥-rec ∃-is-prop † φ₁
     φ₂ = characterisation-of-continuity-op F F σ c₂ ζ₂ K V κ q₁
 
 \end{code}
+
+\begin{code}
+
+open import Locales.HeytingImplication pt fe
+
+module LemmasAboutHeytingComplementation (X : Locale 𝓤 𝓥 𝓥)
+                                         (𝒷 : has-basis (𝒪 X) holds) where
+
+ open HeytingImplicationConstruction X 𝒷
+
+ material-implication : (C U : ⟨ 𝒪 X ⟩)
+                      → is-clopen₀ (𝒪 X) C
+                      → (C ==> U) ＝ (C ==> 𝟎[ 𝒪 X ]) ∨[ 𝒪 X ] U
+ material-implication C U (C′ , p , q) = ≤-is-antisymmetric (poset-of (𝒪 X)) † ‡
+  where
+   † : ((C ==> U) ≤[ poset-of (𝒪 X) ] ((C ==> 𝟎[ 𝒪 X ]) ∨[ 𝒪 X ] U)) holds
+   † = {!!}
+
+   ‡ : (((C ==> 𝟎[ 𝒪 X ]) ∨[ 𝒪 X ] U) ≤[ poset-of (𝒪 X) ] (C ==> U)) holds
+   ‡ = heyting-implication₁ C U ((C ==> 𝟎[ 𝒪 X ]) ∨[ 𝒪 X ] U) ‡₁
+    where
+     open PosetReasoning (poset-of (𝒪 X))
+
+     ‡₁ : ((((C ==> 𝟎[ 𝒪 X ]) ∨[ 𝒪 X ] U) ∧[ 𝒪 X ] C)
+            ≤[ poset-of (𝒪 X) ]
+           U) holds
+     ‡₁ = ((C ==> 𝟎[ 𝒪 X ]) ∨[ 𝒪 X ] U) ∧[ 𝒪 X ] C               ＝⟨ Ⅰ ⟩ₚ
+          ((C ==> 𝟎[ 𝒪 X ]) ∧[ 𝒪 X ] C) ∨[ 𝒪 X ] (U ∧[ 𝒪 X ] C)  ≤⟨ Ⅱ ⟩
+          U                                                      ■
+           where
+            ※ = (C ==> 𝟎[ 𝒪 X ]) ∧[ 𝒪 X ] C    ≤⟨ mp-right C 𝟎[ 𝒪 X ] ⟩
+                𝟎[ 𝒪 X ]                       ≤⟨ 𝟎-is-bottom (𝒪 X) U ⟩
+                U                              ■
+
+            Ⅰ = binary-distributivity-right (𝒪 X)
+            Ⅱ = ∨[ 𝒪 X ]-least ※ (∧[ 𝒪 X ]-lower₁ U C)
+
+ double-negation-elimination : (C : ⟨ 𝒪 X ⟩)
+                             → is-clopen₀ (𝒪 X) C
+                             → (C ==> 𝟎[ 𝒪 X ]) ==> 𝟎[ 𝒪 X ] ＝ C
+ double-negation-elimination C (C′ , p , q) =
+  ≤-is-antisymmetric (poset-of (𝒪 X)) † ‡
+   where
+    † : (((C ==> 𝟎[ 𝒪 X ]) ==> 𝟎[ 𝒪 X ]) ≤[ poset-of (𝒪 X) ] C) holds
+    † = {!!}
+
+    ‡ : (C ≤[ poset-of (𝒪 X) ] (C ==> 𝟎[ 𝒪 X ]) ==> 𝟎[ 𝒪 X ]) holds
+    ‡ = heyting-implication₁ (C ==> 𝟎[ 𝒪 X ]) 𝟎[ 𝒪 X ] C ‡₁
+     where
+      ‡₁ : ((C ∧[ 𝒪 X ] (C ==> 𝟎[ 𝒪 X ])) ≤[ poset-of (𝒪 X) ] 𝟎[ 𝒪 X ]) holds
+      ‡₁ = mp-left C 𝟎[ 𝒪 X ]
+
+\end{code}
