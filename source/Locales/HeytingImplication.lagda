@@ -213,4 +213,20 @@ module HeytingImplicationConstruction (X : Locale 𝓤  𝓥  𝓥)
    † : (((U ==> V) ∧[ 𝒪 X ] U) ≤[ poset-of (𝒪 X) ] W) holds
    † = (U ==> V) ∧[ 𝒪 X ] U ≤⟨ mp-right U V ⟩ V ≤⟨ p ⟩ W ■
 
+ 𝟏-==>-law : (U : ⟨ 𝒪 X ⟩) → U ＝ 𝟏[ 𝒪 X ] ==> U
+ 𝟏-==>-law U = ≤-is-antisymmetric (poset-of (𝒪 X)) † ‡
+  where
+   open PosetReasoning (poset-of (𝒪 X))
+
+   † : (U ≤[ poset-of (𝒪 X) ] 𝟏[ 𝒪 X ] ==> U) holds
+   † = weakening 𝟏[ 𝒪 X ] U
+
+   ‡ : (𝟏[ 𝒪 X ] ==> U ≤[ poset-of (𝒪 X) ] U) holds
+   ‡ = (𝟏[ 𝒪 X ] ==> U)                    ＝⟨ Ⅰ ⟩ₚ
+       (𝟏[ 𝒪 X ] ==> U) ∧[ 𝒪 X ] 𝟏[ 𝒪 X ]  ≤⟨ Ⅱ ⟩
+       U                                   ■
+        where
+         Ⅰ = 𝟏-right-unit-of-∧ (𝒪 X) (𝟏[ 𝒪 X ] ==> U) ⁻¹
+         Ⅱ = mp-right 𝟏[ 𝒪 X ] U
+
 \end{code}
