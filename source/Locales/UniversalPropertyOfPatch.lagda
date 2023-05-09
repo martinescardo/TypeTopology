@@ -421,10 +421,25 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
                           ≤[ poset-of (𝒪 X) ]
                          W) holds
        negation-lemma {U} {V} {W} (V′ , p , q) φ =
-        heyting-implication₂ (V ==> 𝟎[ 𝒪 X ]) W U †
+        U ∧[ 𝒪 X ] (V ==> 𝟎[ 𝒪 X ])               ＝⟨ Ⅰ ⟩ₚ
+        U ∧[ 𝒪 X ] V′                             ≤⟨ Ⅱ  ⟩
+        (V ∨[ 𝒪 X ] W) ∧[ 𝒪 X ] V′                ＝⟨ Ⅲ ⟩ₚ
+        (V ∧[ 𝒪 X ] V′) ∨[ 𝒪 X ] (W ∧[ 𝒪 X ] V′)  ＝⟨ Ⅳ ⟩ₚ
+        𝟎[ 𝒪 X ] ∨[ 𝒪 X ] (W ∧[ 𝒪 X ] V′)         ＝⟨ Ⅴ ⟩ₚ
+        W ∧[ 𝒪 X ] V′                             ≤⟨  Ⅵ ⟩
+        W                                         ■
          where
-          † : (U ≤[ poset-of (𝒪 X) ] (V ==> 𝟎[ 𝒪 X ]) ==> W) holds
-          † = {!!}
+          open PosetReasoning (poset-of (𝒪 X))
+          open LemmasAboutHeytingComplementation X X-has-basis
+
+          Ⅰ = ap
+               (λ - → U ∧[ 𝒪 X ] -)
+               (heyting-complement-is-complement V V′ (p , q) ⁻¹)
+          Ⅱ = ∧[ 𝒪 X ]-left-monotone φ
+          Ⅲ = binary-distributivity-right (𝒪 X)
+          Ⅳ = ap (λ - → - ∨[ 𝒪 X ] (W ∧[ 𝒪 X ] V′)) p
+          Ⅴ = 𝟎-right-unit-of-∨ (𝒪 X) (W ∧[ 𝒪 X ] V′)
+          Ⅵ = ∧[ 𝒪 X ]-lower₁ W V′
 
        f⁻₊-is-right-adjoint-of-f⁻⁺ : (𝒻⁻⋆ₘ ⊣ f⁻₊ₘ) holds
        f⁻₊-is-right-adjoint-of-f⁻⁺ 𝒿@(j , _) U = ϑ₁ , ϑ₂
