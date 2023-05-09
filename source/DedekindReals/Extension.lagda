@@ -48,39 +48,6 @@ balls. Interval and ball notation is defined as the standard definitions.
 
 \begin{code}
 
-record Strict-Order-Chain {𝓤} {𝓥} {𝓦} {𝓣} {𝓧 : Universe}
- (X : 𝓤 ̇) (Y : 𝓥 ̇) (Z : 𝓦 ̇)
- (_<₁_ : X → Y → 𝓣 ̇)
- (_<₂_ : Y → Z → 𝓧 ̇) :  (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓣 ⊔ 𝓧)⁺ ̇ where
- field
-  _<_<_ : X → Y → Z → 𝓦 ⊔ 𝓧 ̇
-
- infix 30 _<_<_
-
-open Strict-Order-Chain {{...}} public
-
-instance
- Strict-Order-Chain-ℚ-ℚ-ℚ : Strict-Order-Chain ℚ ℚ ℚ _<_ _<_
- _<_<_ {{Strict-Order-Chain-ℚ-ℚ-ℚ}} p q r = (p < q) × (q < r)
-
- Strict-Order-Chain-ℚ-ℝ-ℚ : Strict-Order-Chain ℚ ℝ ℚ _<_ _<_
- _<_<_ {{Strict-Order-Chain-ℚ-ℝ-ℚ}} p x q = (p < x) × (x < q)
-
-record Order-Chain {𝓤} {𝓥} {𝓦} {𝓣} {𝓧 : Universe}
- (X : 𝓤 ̇) (Y : 𝓥 ̇) (Z : 𝓦 ̇)
- (_≤₁_ : X → Y → 𝓣 ̇)
- (_≤₂_ : Y → Z → 𝓧 ̇) :  (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓣 ⊔ 𝓧)⁺ ̇ where
- field
-  _≤_≤_ : X → Y → Z → 𝓦 ⊔ 𝓧 ̇
-
- infix 30 _≤_≤_
-
-open Order-Chain {{...}} public
-
-instance
- Order-Chain-ℚ-ℚ-ℚ : Order-Chain ℚ ℚ ℚ _≤_ _≤_
- _≤_≤_ {{Order-Chain-ℚ-ℚ-ℚ}} p q r = (p ≤ q) × (q ≤ r)
-
 _∈⦅_⦆ : ℚ → ℚ × ℚ → 𝓤₀ ̇
 x₀ ∈⦅ a , b ⦆ = a < x₀ < b
 

@@ -134,6 +134,9 @@ toℚ-< (x , a) (y , b) l = γ
 1/4<1/2 : 1/4 < 1/2
 1/4<1/2 = toℚ-< (pos 1 , 3) (pos 1 , 1) (1 , refl)
 
+0<4/5 : 0ℚ < 4/5
+0<4/5 = toℚ-< (pos 0 , 0) (pos 4 , 4) (3 , refl)
+
 0<1 : 0ℚ < 1ℚ
 0<1 = ℚ<-trans 0ℚ 1/2 1ℚ 0<1/2 1/2<1
 
@@ -415,6 +418,38 @@ rounded-lemma₀ (succ a) =
 
   γ : p < q + r
   γ = transport₂ _<_ I II III
+
+ℚ<-subtraction-order' : (p q : ℚ) → p + q < q → p < 0ℚ
+ℚ<-subtraction-order' p q l = transport (p <_) (ℚ-inverse-sum-to-zero q) I
+ where
+  I : p < q - q
+  I = ℚ<-subtraction-preserves-order''' p q q l
+
+ℚ-addition-order : (p q r : ℚ) → 0ℚ < q + r → p < p + q + r
+ℚ-addition-order p q r l = γ
+ where
+  I : p < p + (q + r)
+  I = ℚ<-addition-preserves-order'' p (q + r) l
+
+  II : p + (q + r) ＝ p + q + r
+  II = ℚ+-assoc p q r ⁻¹
+
+  γ : p < p + q + r
+  γ = transport (p <_) II I
+
+ℚ-subtraction-order : (p q r : ℚ) → 0ℚ < q + r → p - q - r < p
+ℚ-subtraction-order p q r l = γ
+ where
+  I : p - (q + r) < p
+  I = ℚ<-subtraction-preserves-order p (q + r) l
+
+  II : p - (q + r) ＝ p - q - r
+  II = p - (q + r)     ＝⟨ ap (p +_) (ℚ-minus-dist q r ⁻¹) ⟩
+       p + ((- q) - r) ＝⟨ ℚ+-assoc p (- q) (- r) ⁻¹       ⟩
+       p - q - r       ∎
+
+  γ : p - q - r < p
+  γ = transport (_< p) II I
 
 ℚ<-difference-positive' : (p q : ℚ) → p < q → p - q < 0ℚ
 ℚ<-difference-positive' p q l = γ

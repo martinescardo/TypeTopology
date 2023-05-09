@@ -426,6 +426,17 @@ abs-comm p q = γ
       abs ((- (- q)) - p) ＝⟨ ap (λ z → abs (z - p)) (ℚ-minus-minus q ⁻¹) ⟩
       abs (q - p)         ∎
 
+ℚ<-to-abs' : (p q : ℚ) → p < q → abs (p - q) ＝ q - p
+ℚ<-to-abs' p q l = γ
+ where
+  I : 0ℚ < q - p
+  I = ℚ<-difference-positive p q l
+
+  γ : abs (p - q) ＝ q - p
+  γ = abs (p - q) ＝⟨ abs-comm p q                  ⟩
+      abs (q - p) ＝⟨ abs-of-pos-is-pos' (q -  p) I ⟩
+      q - p       ∎
+
 ℚ≤-to-abs' : (p q : ℚ) → p ≤ q → abs (p - q) ＝ q - p
 ℚ≤-to-abs' p q l = γ
  where
@@ -434,14 +445,14 @@ abs-comm p q = γ
 
   γ : abs (p - q) ＝ q - p
   γ = abs (p - q) ＝⟨ abs-comm p q                 ⟩
-      abs (q - p) ＝⟨ abs-of-pos-is-pos (q -  p) I ⟩
+      abs (q - p) ＝⟨ abs-of-pos-is-pos (q - p) I  ⟩
       q - p       ∎
 
 ℚ-abs-≤-pos : (p q : ℚ) → p ≤ q → 0ℚ < p → 0ℚ < q → abs p ≤ abs q
 ℚ-abs-≤-pos p q l 0<p 0<q = γ
  where
   I : p ＝ abs p
-  I = abs-of-pos-is-pos p (ℚ<-coarser-than-≤ 0ℚ p 0<p ) ⁻¹
+  I = abs-of-pos-is-pos p (ℚ<-coarser-than-≤ 0ℚ p 0<p) ⁻¹
 
   II : q ＝ abs q
   II = abs-of-pos-is-pos q (ℚ<-coarser-than-≤ 0ℚ q 0<q) ⁻¹

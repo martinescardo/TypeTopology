@@ -153,6 +153,7 @@ dnomrP' (x , a) = γ
 1/5 = toℚ (pos 1 , 4)
 2/5 = toℚ (pos 2 , 4)
 3/5 = toℚ (pos 3 , 4)
+4/5 = toℚ (pos 4 , 4)
 1/4 = toℚ (pos 1 , 3)
 3/4 = toℚ (pos 3 , 3)
 

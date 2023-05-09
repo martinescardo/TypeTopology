@@ -128,16 +128,8 @@ toℚ-neg (x , a) = equiv→equality (ℤ- x' , a') (𝔽- (x , a)) γ
       (- p) + q     ＝⟨ ℚ+-comm (- p) q                    ⟩
       q - p         ∎
 
-ℚ-minus-minus' : (p q : ℚ) → p - q ＝ - (q - p)
-ℚ-minus-minus' p q = γ
- where
-  I : - (p - q) ＝ q - p
-  I = ℚ-minus-dist' p q
-
-  γ : p - q ＝ - (q - p)
-  γ = p - q         ＝⟨ ℚ-minus-minus (p - q) ⟩
-      - (- (p - q)) ＝⟨ ap -_ I               ⟩
-      - (q - p)     ∎
+ℚ-minus-dist'' : (p q : ℚ) → p - q ＝ - (q - p)
+ℚ-minus-dist'' p q = ℚ-minus-dist' q p ⁻¹
 
 ℚ-add-zero : (x y z : ℚ) → (x + y) ＝ (x - z) + (z + y)
 ℚ-add-zero x y z = γ
@@ -248,5 +240,34 @@ toℚ-subtraction p q = γ
       p + r - r ＝⟨ ap (_- r) e              ⟩
       q + r - r ＝⟨ ℚ-inverse-intro'' q r ⁻¹ ⟩
       q         ∎
+
+ℚ-add-zero-twice'' : (p q r : ℚ) → p ＝ p + q + r - q - r
+ℚ-add-zero-twice'' p q r = γ
+ where
+  γ : p ＝ p + q + r - q - r
+  γ = p                   ＝⟨ ℚ-inverse-intro'' p q                        ⟩
+      p + q - q           ＝⟨ ap (λ ■ → p + ■ - q) (ℚ-inverse-intro'' q r) ⟩
+      p + (q + r - r) - q ＝⟨ ap (_- q) (ℚ+-assoc p (q + r) (- r) ⁻¹)      ⟩
+      p + (q + r) - r - q ＝⟨ ap (λ ■ → ■ - r - q) (ℚ+-assoc p q r ⁻¹)     ⟩
+      p + q + r - r - q   ＝⟨ ℚ+-rearrange (p + q + r) (- q) (- r) ⁻¹      ⟩
+      p + q + r - q - r   ∎
+
+ℚ-add-zero-twice''' : (p q r : ℚ) → p ＝ p - q - r + q + r
+ℚ-add-zero-twice''' p q r = γ
+ where
+  γ : p ＝ p - q - r + q + r
+  γ = p                         ＝⟨ ℚ-add-zero-twice'' p q r                    ⟩
+      p + q + r - q - r         ＝⟨ ℚ+-assoc (p + q + r) (- q) (- r)            ⟩
+      p + q + r + ((- q) - r)   ＝⟨ ap (_+ ((- q) - r)) (ℚ+-assoc p q r)        ⟩
+      p + (q + r) + ((- q) - r) ＝⟨ ℚ+-rearrange p (q + r) ((- q) - r)          ⟩
+      p + ((- q) - r) + (q + r) ＝⟨ ap (_+ (q + r)) (ℚ+-assoc p (- q) (- r) ⁻¹) ⟩
+      p - q - r + (q + r)       ＝⟨ ℚ+-assoc (p - q - r) q r ⁻¹                 ⟩
+      p - q - r + q + r         ∎
+
+ℚ-add-zero-twice : (p q : ℚ) → p ＝ p - q - q + q + q
+ℚ-add-zero-twice p q = ℚ-add-zero-twice''' p q q
+
+ℚ-add-zero-twice' : (p q : ℚ) → p ＝ p + q + q - q - q
+ℚ-add-zero-twice' p q = ℚ-add-zero-twice'' p q q
 
 \end{code}

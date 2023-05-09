@@ -352,6 +352,30 @@ instance
                           → ((Lx , Rx) , isCutx) ＝ ((Ly , Ry) , isCuty)
 ℝ-equality-from-left-cut' x y s t = ℝ-equality-from-left-cut x y (subset-extensionality pe fe s t)
 
+rounded-left-d : (x : ℝ) → (p : ℚ) → p < x → ∃ q ꞉ ℚ , p < q × q < x
+rounded-left-d x@((L , _) , _ , _ , rl , _) = rounded-left-b L rl
+
+use-rounded-real-L : (x : ℝ) (p q : ℚ) → p < q → q < x → p < x
+use-rounded-real-L x@((L , _) , _ , _ , rl , _) = rounded-left-c L rl
+
+use-rounded-real-L' : (x : ℝ) (p q : ℚ) → p ≤ q → q < x → p < x
+use-rounded-real-L' x@((L , _) , _ , _ , rl , _) = rounded-left-a L rl
+
+use-rounded-real-R : (x : ℝ) (p q : ℚ) → p < q → x < p → x < q
+use-rounded-real-R x@((_ , R) , _ , _ , _ , rr , _) = rounded-right-c R rr
+
+use-rounded-real-R' : (x : ℝ) (p q : ℚ) → p ≤ q → x < p → x < q
+use-rounded-real-R' x@((_ , R) , _ , _ , _ , rr , _) = rounded-right-a R rr
+
+disjoint-from-real' : (x : ℝ) → (p q : ℚ) → (p < x) × (x < q) → p ≤ q
+disjoint-from-real' x p q (l₁ , l₂) = γ
+ where
+  I : p < q
+  I = disjoint-from-real x p q (l₁ , l₂)
+
+  γ : p ≤ q
+  γ = ℚ<-coarser-than-≤ p q I
+
 type-of-locator-for-reals : 𝓤₁ ̇
 type-of-locator-for-reals = (x : ℝ) → (p q : ℚ) → p < x ∔ x < q
 
