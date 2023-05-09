@@ -1843,45 +1843,50 @@ module LemmasAboutHeytingComplementation (X : Locale 𝓤 𝓥 𝓥)
 
  open HeytingImplicationConstruction X 𝒷
 
+ heyting-complement-is-complement : (C C′ : ⟨ 𝒪 X ⟩)
+                                  → is-complement-of (𝒪 X) C′ C
+                                  → C′ ＝ C ==> 𝟎[ 𝒪 X ]
+ heyting-complement-is-complement C C′ (p , q) =
+  ≤-is-antisymmetric (poset-of (𝒪 X)) † ‡
+   where
+    open PosetReasoning (poset-of (𝒪 X))
+
+    ※ : (((C ==> 𝟎[ 𝒪 X ]) ∧[ 𝒪 X ] (C ∨[ 𝒪 X ] C′)) ≤[ poset-of (𝒪 X) ] C′) holds
+    ※ =
+     (C ==> 𝟎[ 𝒪 X ]) ∧[ 𝒪 X ] (C ∨[ 𝒪 X ] C′)                             ＝⟨ Ⅰ ⟩ₚ
+     ((C ==> 𝟎[ 𝒪 X ]) ∧[ 𝒪 X ] C) ∨[ 𝒪 X ] ((C ==> 𝟎[ 𝒪 X ]) ∧[ 𝒪 X ] C′) ≤⟨ Ⅱ  ⟩
+     C′                                                                    ■
+      where
+       Ⅰ = binary-distributivity (𝒪 X) (C ==> 𝟎[ 𝒪 X ]) C C′
+       Ⅱ = ∨[ 𝒪 X ]-least
+            ((C ==> 𝟎[ 𝒪 X ]) ∧[ 𝒪 X ] C    ≤⟨ mp-right C 𝟎[ 𝒪 X ]  ⟩
+             𝟎[ 𝒪 X ]                       ≤⟨ 𝟎-is-bottom (𝒪 X) C′ ⟩
+             C′                             ■)
+            (∧[ 𝒪 X ]-lower₂ (C ==> 𝟎[ 𝒪 X ]) C′)
+
+    † : (C′ ≤[ poset-of (𝒪 X) ] (C ==> 𝟎[ 𝒪 X ])) holds
+    † = heyting-implication₁ C 𝟎[ 𝒪 X ] C′ †₁
+     where
+      †₁ : ((C′ ∧[ 𝒪 X ] C) ≤[ poset-of (𝒪 X) ] 𝟎[ 𝒪 X ]) holds
+      †₁ = C′ ∧[ 𝒪 X ] C   ＝⟨ ∧[ 𝒪 X ]-is-commutative C′ C ⟩ₚ
+           C  ∧[ 𝒪 X ] C′  ＝⟨ p ⟩ₚ
+           𝟎[ 𝒪 X ]        ■
+
+    ‡ : (C ==> 𝟎[ 𝒪 X ] ≤[ poset-of (𝒪 X) ] C′) holds
+    ‡ = C ==> 𝟎[ 𝒪 X ]          ≤⟨ Ⅰ                ⟩
+        (C ∨[ 𝒪 X ] C′) ==> C′  ＝⟨ Ⅱ               ⟩ₚ
+        𝟏[ 𝒪 X ] ==> C′         ＝⟨ 𝟏-==>-law C′ ⁻¹ ⟩ₚ
+        C′                      ■
+         where
+          Ⅰ = heyting-implication₁ (C ∨[ 𝒪 X ] C′) C′ (C ==> 𝟎[ 𝒪 X ]) ※
+          Ⅱ = ap (λ - → - ==> C′) q
+
  material-implication : (C U : ⟨ 𝒪 X ⟩)
                       → is-clopen₀ (𝒪 X) C
                       → (C ==> U) ＝ (C ==> 𝟎[ 𝒪 X ]) ∨[ 𝒪 X ] U
  material-implication C U (C′ , p , q) = ≤-is-antisymmetric (poset-of (𝒪 X)) † ‡
   where
    open PosetReasoning (poset-of (𝒪 X))
-
-   C′-is-heyting-complement : C′ ＝ (C ==> 𝟎[ 𝒪 X ])
-   C′-is-heyting-complement = ≤-is-antisymmetric (poset-of (𝒪 X)) † ‡
-    where
-     ※ : (((C ==> 𝟎[ 𝒪 X ]) ∧[ 𝒪 X ] (C ∨[ 𝒪 X ] C′)) ≤[ poset-of (𝒪 X) ] C′) holds
-     ※ =
-      (C ==> 𝟎[ 𝒪 X ]) ∧[ 𝒪 X ] (C ∨[ 𝒪 X ] C′)                             ＝⟨ Ⅰ ⟩ₚ
-      ((C ==> 𝟎[ 𝒪 X ]) ∧[ 𝒪 X ] C) ∨[ 𝒪 X ] ((C ==> 𝟎[ 𝒪 X ]) ∧[ 𝒪 X ] C′) ≤⟨ Ⅱ  ⟩
-      C′                                                                    ■
-       where
-        Ⅰ = binary-distributivity (𝒪 X) (C ==> 𝟎[ 𝒪 X ]) C C′
-        Ⅱ = ∨[ 𝒪 X ]-least
-             ((C ==> 𝟎[ 𝒪 X ]) ∧[ 𝒪 X ] C    ≤⟨ mp-right C 𝟎[ 𝒪 X ]  ⟩
-              𝟎[ 𝒪 X ]                       ≤⟨ 𝟎-is-bottom (𝒪 X) C′ ⟩
-              C′                             ■)
-             (∧[ 𝒪 X ]-lower₂ (C ==> 𝟎[ 𝒪 X ]) C′)
-
-     † : (C′ ≤[ poset-of (𝒪 X) ] (C ==> 𝟎[ 𝒪 X ])) holds
-     † = heyting-implication₁ C 𝟎[ 𝒪 X ] C′ †₁
-      where
-       †₁ : ((C′ ∧[ 𝒪 X ] C) ≤[ poset-of (𝒪 X) ] 𝟎[ 𝒪 X ]) holds
-       †₁ = C′ ∧[ 𝒪 X ] C   ＝⟨ ∧[ 𝒪 X ]-is-commutative C′ C ⟩ₚ
-            C  ∧[ 𝒪 X ] C′  ＝⟨ p ⟩ₚ
-            𝟎[ 𝒪 X ]        ■
-
-     ‡ : (C ==> 𝟎[ 𝒪 X ] ≤[ poset-of (𝒪 X) ] C′) holds
-     ‡ = C ==> 𝟎[ 𝒪 X ]          ≤⟨ Ⅰ                ⟩
-         (C ∨[ 𝒪 X ] C′) ==> C′  ＝⟨ Ⅱ               ⟩ₚ
-         𝟏[ 𝒪 X ] ==> C′         ＝⟨ 𝟏-==>-law C′ ⁻¹ ⟩ₚ
-         C′                      ■
-          where
-           Ⅰ = heyting-implication₁ (C ∨[ 𝒪 X ] C′) C′ (C ==> 𝟎[ 𝒪 X ]) ※
-           Ⅱ = ap (λ - → - ==> C′) q
 
    † : ((C ==> U) ≤[ poset-of (𝒪 X) ] ((C ==> 𝟎[ 𝒪 X ]) ∨[ 𝒪 X ] U)) holds
    † = (C ==> U)                                         ≤⟨ Ⅰ ⟩
@@ -1900,7 +1905,9 @@ module LemmasAboutHeytingComplementation (X : Locale 𝓤 𝓥 𝓥)
                Ⅱ = ∨[ 𝒪 X ]-left-monotone (mp-right C U)
                Ⅲ = ∨[ 𝒪 X ]-right-monotone (∧[ 𝒪 X ]-lower₂ (C ==> U) C′)
                Ⅳ = ∨[ 𝒪 X ]-is-commutative U C′
-               Ⅴ = ap (λ - → - ∨[ 𝒪 X ] U) C′-is-heyting-complement
+               Ⅴ = ap
+                    (λ - → - ∨[ 𝒪 X ] U)
+                    (heyting-complement-is-complement C C′ (p , q))
 
          Ⅰ = heyting-implication₁
               (C ∨[ 𝒪 X ] C′)
@@ -1936,7 +1943,21 @@ module LemmasAboutHeytingComplementation (X : Locale 𝓤 𝓥 𝓥)
     open PosetReasoning (poset-of (𝒪 X))
 
     † : (((C ==> 𝟎[ 𝒪 X ]) ==> 𝟎[ 𝒪 X ]) ≤[ poset-of (𝒪 X) ] C) holds
-    † = {!? ≤⟨ ? ⟩ ? ■!}
+    † = (C ==> 𝟎[ 𝒪 X ]) ==> 𝟎[ 𝒪 X ]        ＝⟨ Ⅰ ⟩ₚ
+        C′ ==> 𝟎[ 𝒪 X ]                      ＝⟨ Ⅱ ⟩ₚ
+        C                                    ■
+         where
+          Ⅰ = ap
+               (λ - → - ==> 𝟎[ 𝒪 X ])
+               (heyting-complement-is-complement C C′ (p , q) ⁻¹)
+          Ⅱ = heyting-complement-is-complement C′ C (Ⅱ₁ , Ⅱ₂) ⁻¹
+               where
+                Ⅱ₁ = C′ ∧[ 𝒪 X ] C     ＝⟨ ∧[ 𝒪 X ]-is-commutative C′ C ⟩
+                     C  ∧[ 𝒪 X ] C′    ＝⟨ p                            ⟩
+                     𝟎[ 𝒪 X ]          ∎
+                Ⅱ₂ = C′ ∨[ 𝒪 X ] C     ＝⟨ ∨[ 𝒪 X ]-is-commutative C′ C ⟩
+                     C  ∨[ 𝒪 X ] C′    ＝⟨ q                            ⟩
+                     𝟏[ 𝒪 X ]          ∎
 
     ‡ : (C ≤[ poset-of (𝒪 X) ] (C ==> 𝟎[ 𝒪 X ]) ==> 𝟎[ 𝒪 X ]) holds
     ‡ = heyting-implication₁ (C ==> 𝟎[ 𝒪 X ]) 𝟎[ 𝒪 X ] C ‡₁
