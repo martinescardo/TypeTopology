@@ -1044,6 +1044,14 @@ zero-dimensional-locales-are-regular {𝓦 = 𝓦} F =
          η : ((ℬ [ 𝒥 [ i ] ]) ≤[ poset-of F ] (ℬ [ 𝒥 [ i ] ])) holds
          η = ≤-is-reflexive (poset-of F) (ℬ [ 𝒥 [ i ] ])
 
+compacts-are-clopen-in-zero-dimensional-locales : (F : Frame 𝓤 𝓥 𝓦)
+                                                → is-zero-dimensional F holds
+                                                → (C : ⟨ F ⟩)
+                                                → is-compact-open F C holds
+                                                → is-clopen F C holds
+compacts-are-clopen-in-zero-dimensional-locales F =
+ compacts-are-clopen-in-regular-frames F ∘ zero-dimensional-locales-are-regular F
+
 \end{code}
 
 \section{Stone Locales}
