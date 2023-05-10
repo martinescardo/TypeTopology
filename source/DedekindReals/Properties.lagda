@@ -34,6 +34,9 @@ open import Rationals.Limits fe pe pt
 
 open PropositionalTruncation pt
 
+-- bound-⟨2/3⟩ : {!!}
+-- bound-⟨2/3⟩ = {!!}
+
  -- Need to generalise this , y - x ＝ a , 0 < a
 exists-2/3-n : (x y p : ℚ) → x < y → 0ℚ < p → Σ n ꞉ ℕ , (((⟨2/3⟩^ n) * (y - x)) < p)
 exists-2/3-n x y (p , α) l₁ l₂ = V use-limit
@@ -109,16 +112,16 @@ ral-lemma α β n e = ((rec 2/3 (λ k → k * 2/3) n * 2/3) * α) ＝⟨ refl �
 ℝ-arithmetically-located : (z : ℝ)
                          → (p : ℚ)
                          → 0ℚ < p
-                         → ∃ (x , y) ꞉ ℚ × ℚ , (x < z) × (z < y) × 0ℚ < (y - x) × (y - x) < p
+                         → ∃ (x , y) ꞉ ℚ × ℚ , (x < z) × (z < y) × (0ℚ < (y - x)) × ((y - x) < p)
 ℝ-arithmetically-located ((L , R) , inhabited-left , inhabited-right , rounded-left , rounded-right , disjoint , located) p l = ∥∥-rec ∃-is-prop I (binary-choice inhabited-left inhabited-right)
  where
-  I : (Σ x ꞉ ℚ , x ∈ L) × (Σ y ꞉ ℚ , y ∈ R) → ∃ (x , y) ꞉ ℚ × ℚ , x ∈ L × y ∈ R × (0ℚ < (y - x) × (y - x) < p)
+  I : (Σ x ꞉ ℚ , x ∈ L) × (Σ y ꞉ ℚ , y ∈ R) → ∃ (x , y) ꞉ ℚ × ℚ , x ∈ L × y ∈ R × ((0ℚ < (y - x)) × ((y - x) < p))
   I ((x , x-L) , (y , y-R)) = II x y x-L y-R (pr₁ γ) (trisect x y (disjoint x y (x-L , y-R))) (pr₂ γ)
    where
     γ : Sigma ℕ (λ n → ((⟨2/3⟩^ n) * (y - x)) < p)
     γ = exists-2/3-n x y p (disjoint x y (x-L , y-R)) l
 
-    II : (x y : ℚ) → x ∈ L → y ∈ R → (n : ℕ) → (Σ (x' , y') ꞉ ℚ × ℚ , x < x' × x' < y' × y' < y × ((y - x') ＝ (2/3 * (y - x))) × (y' - x ＝ 2/3 * (y - x)))
+    II : (x y : ℚ) → x ∈ L → y ∈ R → (n : ℕ) → (Σ (x' , y') ꞉ ℚ × ℚ , (x < x') × (x' < y') × (y' < y) × ((y - x') ＝ (2/3 * (y - x))) × (y' - x ＝ 2/3 * (y - x)))
        → ((⟨2/3⟩^ n) * (y - x)) < p
        → ∃ (x , y) ꞉ ℚ × ℚ , x ∈ L × y ∈ R × (0ℚ < (y - x)) × ((y - x) < p)
     II x y x-L y-R zero ((x' , y') , l₁ , l₂ , l₃ , e₁ , e₂) l₄            = ∣ (x , y) , x-L , y-R , α , β ∣
@@ -131,7 +134,7 @@ ral-lemma α β n e = ((rec 2/3 (λ k → k * 2/3) n * 2/3) * α) ＝⟨ refl �
 
     II x y x-L y-R (succ zero) ((x' , y') , l₁ , l₂ , l₃ , e₁ , e₂) l₄     = ∥∥-rec ∃-is-prop III (located x' y' l₂)
      where
-      III : (x' ∈ L) ∔ (y' ∈ R) → ∃ (x , y) ꞉ ℚ × ℚ , x ∈ L × y ∈ R × (0ℚ < y - x × y - x < p)
+      III : (x' ∈ L) ∔ (y' ∈ R) → ∃ (x , y) ꞉ ℚ × ℚ , x ∈ L × y ∈ R × (0ℚ < y - x < p)
       III (inl x'-L) = ∣ (x' , y) , x'-L , y-R , α , β ∣
        where
         abstract
@@ -166,7 +169,7 @@ trans→disjoint L R dis q (qL , qR) = ℚ<-not-itself q I
 disjoint→trans : (L R : 𝓟 ℚ) → located L R →  ((q : ℚ) → ¬ (q ∈ L × q ∈ R)) → disjoint L R
 disjoint→trans L R loc dis p q (pL , qR) = I (ℚ-trichotomous p q)
  where
-  I : p < q ∔ (p ＝ q) ∔ q < p → p < q
+  I : (p < q) ∔ (p ＝ q) ∔ (q < p) → p < q
   I (inl l) = l
   I (inr (inl e)) = 𝟘-elim (dis q ((transport (_∈ L) e pL) , qR))
   I (inr (inr r)) = 𝟘-elim (∥∥-rec 𝟘-is-prop III II)

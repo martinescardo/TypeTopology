@@ -403,7 +403,7 @@ Tom de Jong, 5 November 2021.
 
 \begin{code}
 
-<-trichotomous : (n m : ℕ) → n < m + (n ＝ m) + m < n
+<-trichotomous : (n m : ℕ) → (n < m) + (n ＝ m) + (m < n)
 <-trichotomous zero     zero     = inr (inl refl)
 <-trichotomous zero     (succ m) = inl ⋆
 <-trichotomous (succ n) zero     = inr (inr ⋆)

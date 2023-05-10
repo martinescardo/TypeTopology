@@ -162,10 +162,10 @@ _+_ : ℝ → ℝ → ℝ
   located-z : located L-z R-z
   located-z p q l = I (ℝ-arithmetically-located fe pe pt x (q ℚ- p) (ℚ<-difference-positive p q l))
    where
-    I : ∃ (e , t) ꞉ ℚ × ℚ , e ∈ L-x × t ∈ R-x × 0ℚ < t ℚ- e × t ℚ- e < q ℚ- p → p ∈ L-z ∨ q ∈ R-z
+    I : ∃ (e , t) ꞉ ℚ × ℚ , e ∈ L-x × t ∈ R-x × (0ℚ < t ℚ- e) × (t ℚ- e < q ℚ- p) → p ∈ L-z ∨ q ∈ R-z
     I = ∥∥-rec ∨-is-prop δ
      where
-      δ : Σ (e , t) ꞉ ℚ × ℚ , e ∈ L-x × t ∈ R-x × 0ℚ < t ℚ- e × t ℚ- e < q ℚ- p → p ∈ L-z ∨ q ∈ R-z
+      δ : Σ (e , t) ꞉ ℚ × ℚ , e ∈ L-x × t ∈ R-x × (0ℚ < t ℚ- e) × (t ℚ- e < q ℚ- p) → p ∈ L-z ∨ q ∈ R-z
       δ ((e , t) , eLx , tRx , l₁ , l₂) = IV II III
        where
         l₃ : p ℚ- e < q ℚ- t
@@ -188,9 +188,9 @@ _+_ : ℝ → ℝ → ℝ
         II : Σ z ꞉ ℚ , (p ℚ- e < z) × (z < q ℚ- t)
         II = ℚ-dense (p ℚ- e) (q ℚ- t) l₃
 
-        III : Σ y ꞉ ℚ , p ℚ- e < y × y < (pr₁ II)
+        III : Σ y ꞉ ℚ , p ℚ- e < y < (pr₁ II)
         III = ℚ-dense (p ℚ- e) (pr₁ II) (pr₁ (pr₂ II))
-        IV : ((y , _) : Σ y ꞉ ℚ , (p ℚ- e < y) × (y < q ℚ- t)) → Σ z ꞉ ℚ , p ℚ- e < z × z < y → ∥ p ∈ L-z ∔ q ∈ R-z ∥
+        IV : ((y , _) : Σ y ꞉ ℚ , (p ℚ- e < y) × (y < q ℚ- t)) → Σ z ꞉ ℚ , p ℚ- e < z < y → ∥ p ∈ L-z ∔ q ∈ R-z ∥
         IV (y , l₄ , l₅) (z , l₆ , l₇) = ∥∥-functor η (located-y z y l₇)
          where
           η : z ∈ L-y ∔ y ∈ R-y → p ∈ L-z ∔ q ∈ R-z
@@ -261,14 +261,14 @@ infixl 35 _+_
   I : lower-cut-of (x + y) ⊆ lower-cut-of (y + x)
   I p p<x+y = ∥∥-functor i p<x+y
    where
-    i : Σ (r , s) ꞉ ℚ × ℚ , r < x × s < y × (p ＝ r ℚ+ s)
-      → Σ (r , s) ꞉ ℚ × ℚ , r < y × s < x × (p ＝ r ℚ+ s)
+    i : Σ (r , s) ꞉ ℚ × ℚ , (r < x) × (s < y) × (p ＝ r ℚ+ s)
+      → Σ (r , s) ꞉ ℚ × ℚ , (r < y) × (s < x) × (p ＝ r ℚ+ s)
     i ((r , s) , rLx , sLy , e) = (s , r) , (sLy , rLx , (e ∙ ℚ+-comm r s))
   II : lower-cut-of (y + x) ⊆ lower-cut-of (x + y)
   II q x+y<q = ∥∥-functor i x+y<q
    where
-    i : Σ (r , s) ꞉ ℚ × ℚ , r < y × s < x × (q ＝ r ℚ+ s)
-      → Σ (r , s) ꞉ ℚ × ℚ , r < x × s < y × (q ＝ r ℚ+ s)
+    i : Σ (r , s) ꞉ ℚ × ℚ , (r < y) × (s < x) × (q ＝ r ℚ+ s)
+      → Σ (r , s) ꞉ ℚ × ℚ , (r < x) × (s < y) × (q ＝ r ℚ+ s)
     i ((r , s) , rLy , sLx , e) = (s , r) , (sLx , rLy , (e ∙ ℚ+-comm r s))
 
 ℝ-zero-left-neutral : (x : ℝ) → 0ℝ + x ＝ x
@@ -277,7 +277,7 @@ infixl 35 _+_
   I : lower-cut-of (0ℝ + x) ⊆ lower-cut-of x
   I p 0+x<x = ∥∥-rec (∈-is-prop (lower-cut-of x) p) i 0+x<x
    where
-    i : Σ (r , s) ꞉ ℚ × ℚ , r < 0ℝ × s < x × (p ＝ r ℚ+ s) → p < x
+    i : Σ (r , s) ꞉ ℚ × ℚ , (r < 0ℝ) × (s < x) × (p ＝ r ℚ+ s) → p < x
     i ((r , s) , r<0 , s<x , e) = rounded-left-c (lower-cut-of x) (rounded-from-real-L x) p s iv s<x
      where
       ii : p ℚ+ r < p
@@ -297,9 +297,9 @@ infixl 35 _+_
   II : lower-cut-of x ⊆ lower-cut-of (0ℝ + x)
   II q q<x = ∥∥-functor i by-rounded-x
    where
-    by-rounded-x : ∃ q' ꞉ ℚ , q < q' × q' < x
+    by-rounded-x : ∃ q' ꞉ ℚ , q < q' < x
     by-rounded-x = rounded-left-b (lower-cut-of x) (rounded-from-real-L x) q q<x
-    i : Σ q' ꞉ ℚ , q < q' × q' < x → Σ (r , s) ꞉ ℚ × ℚ , r < 0ℝ × s < x × (q ＝ r ℚ+ s)
+    i : Σ q' ꞉ ℚ , q < q' < x → Σ (r , s) ꞉ ℚ × ℚ , (r < 0ℝ) × (s < x) × (q ＝ r ℚ+ s)
     i (q' , l , q'Lx) = (q ℚ- q' , q') , iii , q'Lx , ii
      where
       ii : q ＝ q ℚ- q' ℚ+ q'
@@ -323,12 +323,12 @@ infixl 35 _+_
   ltr : lower-cut-of (x + y + z) ⊆ lower-cut-of (x + (y + z))
   ltr p p<x+y+z = ∥∥-rec ∃-is-prop I p<x+y+z
    where
-    I : Σ (a  , b) ꞉ ℚ × ℚ , a  < (x + y) × b < z        × (p ＝ a ℚ+ b)
-      → ∃ (r  , s) ꞉ ℚ × ℚ , r  < x       × s < (y + z)  × (p ＝ r ℚ+ s)
+    I : Σ (a  , b) ꞉ ℚ × ℚ , (a  < (x + y)) × (b < z)        × (p ＝ a ℚ+ b)
+      → ∃ (r  , s) ꞉ ℚ × ℚ , (r  < x)       × (s < (y + z))  × (p ＝ r ℚ+ s)
     I ((a , b) , a<x+y , b<z , e) = ∥∥-rec ∃-is-prop II a<x+y
      where
-      II : Σ (c , d) ꞉ ℚ × ℚ , c < x × d < y        × (a ＝ c ℚ+ d)
-         → ∃ (r , s) ꞉ ℚ × ℚ , r < x × s < (y + z)  × (p ＝ r ℚ+ s)
+      II : Σ (c , d) ꞉ ℚ × ℚ , (c < x) × (d < y)        × (a ＝ c ℚ+ d)
+         → ∃ (r , s) ꞉ ℚ × ℚ , (r < x) × (s < (y + z))  × (p ＝ r ℚ+ s)
       II ((c , d) , c<x , d<y , e') = ∣ (c , (b ℚ+ d)) , c<x , III , i ∣
        where
         i : p ＝ c ℚ+ (b ℚ+ d)
@@ -343,12 +343,12 @@ infixl 35 _+_
   rtl :  lower-cut-of (x + (y + z)) ⊆ lower-cut-of (x + y + z)
   rtl p p<x+y+z-r = ∥∥-rec ∃-is-prop I p<x+y+z-r
    where
-    I : Σ (a  , b) ꞉ ℚ × ℚ , a  < x        × b < (y + z)  × (p ＝ a ℚ+ b)
-      → ∃ (r  , s) ꞉ ℚ × ℚ , r  < (x + y)  × s < z        × (p ＝ r ℚ+ s)
+    I : Σ (a  , b) ꞉ ℚ × ℚ , (a  < x)        × (b < (y + z))  × (p ＝ a ℚ+ b)
+      → ∃ (r  , s) ꞉ ℚ × ℚ , (r  < (x + y))  × (s < z)        × (p ＝ r ℚ+ s)
     I ((a , b) , a<x , b<y+z , e) = ∥∥-rec ∃-is-prop II b<y+z
      where
-      II : Σ (c , d) ꞉ ℚ × ℚ , c < y       × d < z  × (b ＝ c ℚ+ d)
-         → ∃ (r , s) ꞉ ℚ × ℚ , r < (x + y) × s < z  × (p ＝ r ℚ+ s)
+      II : Σ (c , d) ꞉ ℚ × ℚ , (c < y)       × (d < z)  × (b ＝ c ℚ+ d)
+         → ∃ (r , s) ꞉ ℚ × ℚ , (r < (x + y)) × (s < z)  × (p ＝ r ℚ+ s)
       II ((c , d) , c<y , d<z , e') = ∣ ((a ℚ+ c) , d) , III , d<z , i ∣
        where
         i : p ＝ a ℚ+ c ℚ+ d
@@ -424,9 +424,9 @@ open import Rationals.Multiplication renaming (_*_ to _ℚ*_)
       I : Σ r ꞉ ℚ , r < x × (q ＝ ℚ- r) → ∃ q' ꞉ ℚ , q' < q × q' ∈ R
       I (r , r<x , e) = ∥∥-functor III II
        where
-        II : ∃ r' ꞉ ℚ , r < r' × r' < x
+        II : ∃ r' ꞉ ℚ , r < r' < x
         II = rounded-left-b (lower-cut-of x) (rounded-from-real-L x) r r<x
-        III : (Σ r' ꞉ ℚ , r < r' × r' < x) → Σ q' ꞉ ℚ , q' < q × q' ∈ R
+        III : (Σ r' ꞉ ℚ , r < r' < x) → Σ q' ꞉ ℚ , q' < q × q' ∈ R
         III (r' , l , x<r') = ℚ- r' , (transport (ℚ- r' <_) (e ⁻¹) (ℚ<-swap r r' l) , ∣ r' , x<r' , refl ∣)
     rtl : ∃ q' ꞉ ℚ , q' < q × q' ∈ R → q ∈ R
     rtl exists-q' = ∥∥-rec ∃-is-prop I exists-q'
@@ -469,7 +469,7 @@ x - y = x + (- y)
   ltr : lower-cut-of (x - x) ⊆ lower-cut-of 0ℝ
   ltr p p<x-x = ∥∥-rec (∈-is-prop (lower-cut-of 0ℝ) p) I p<x-x
    where
-    I : Σ (r , s) ꞉ ℚ × ℚ , r < x × s < (- x) × (p ＝ r ℚ+ s)
+    I : Σ (r , s) ꞉ ℚ × ℚ , (r < x) × (s < (- x)) × (p ＝ r ℚ+ s)
       → p < 0ℝ
     I ((r , s) , r<x , s<-x , e) = ∥∥-rec (∈-is-prop (lower-cut-of 0ℝ) p) II s<-x
      where
@@ -480,7 +480,7 @@ x - y = x + (- y)
         r<k = disjoint-from-real x r k (r<x , x<k)
         e'' : p ＝ r ℚ- k
         e'' = e ∙ ap (r ℚ+_) e'
-        III : p < 0ℚ ∔ (p ＝ 0ℚ) ∔ 0ℚ < p → p < 0ℝ
+        III : (p < 0ℚ) ∔ (p ＝ 0ℚ) ∔ (0ℚ < p) → p < 0ℝ
         III (inl p<0)       = p<0
         III (inr (inl p＝0)) = 𝟘-elim (ℚ<-not-itself k (transport (_< k) i r<k))
          where
@@ -510,9 +510,9 @@ x - y = x + (- y)
   rtl : lower-cut-of 0ℝ ⊆ lower-cut-of (x - x)
   rtl p p<0 = ∥∥-rec (∈-is-prop (lower-cut-of (x - x)) p) II I
    where
-    I : ∃ (a , b) ꞉ ℚ × ℚ , a < x × b > x × 0ℚ < b ℚ- a × b ℚ- a < ℚ- p
+    I : ∃ (a , b) ꞉ ℚ × ℚ , (a < x) × (x < b) × (0ℚ < b ℚ- a) × (b ℚ- a < ℚ- p)
     I = ℝ-arithmetically-located fe pe pt x (ℚ- p) (ℚ<-swap p 0ℚ p<0)
-    II : Σ (a , b) ꞉ ℚ × ℚ , a < x × b > x × 0ℚ < b ℚ- a × b ℚ- a < ℚ- p → p < (x - x)
+    II : Σ (a , b) ꞉ ℚ × ℚ , (a < x) × (x < b) × (0ℚ < b ℚ- a) × (b ℚ- a < ℚ- p) → p < (x - x)
     II ((a , b) , a<x , x<b , 0<b-a , b-a<-p) = ∣ (a , p ℚ- a) , a<x , ∣ (a ℚ- p) , (i , ii) ∣ , iii ∣
      where
       i : (a ℚ- p) > x

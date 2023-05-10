@@ -34,19 +34,24 @@ module Rationals.Order where
 _≤ℚ_ : (p q : ℚ) → 𝓤₀ ̇
 (p , _) ≤ℚ (q , _) = p 𝔽≤ q
 
-instance
- Order-ℚ-ℚ : Order ℚ ℚ
- _≤_ {{Order-ℚ-ℚ}} = _≤ℚ_
-
-ℚ≤-is-prop : (p q : ℚ) → is-prop (p ≤ q)
-ℚ≤-is-prop (p , _) (q , _) = 𝔽≤-is-prop p q
-
 _<ℚ_ : (p q : ℚ) → 𝓤₀ ̇
 (p , _) <ℚ (q , _) = p 𝔽< q
 
 instance
  Strict-Order-ℚ-ℚ : Strict-Order ℚ ℚ
  _<_ {{Strict-Order-ℚ-ℚ}} = _<ℚ_
+
+ Strict-Order-Chain-ℚ-ℚ-ℚ : Strict-Order-Chain ℚ ℚ ℚ _<_ _<_
+ _<_<_ {{Strict-Order-Chain-ℚ-ℚ-ℚ}} p q r = (p < q) × (q < r)
+
+ Order-ℚ-ℚ : Order ℚ ℚ
+ _≤_ {{Order-ℚ-ℚ}} = _≤ℚ_
+
+ Order-Chain-ℚ-ℚ-ℚ : Order-Chain ℚ ℚ ℚ _≤_ _≤_
+ _≤_≤_ {{Order-Chain-ℚ-ℚ-ℚ}} p q r = (p ≤ q) × (q ≤ r)
+
+ℚ≤-is-prop : (p q : ℚ) → is-prop (p ≤ q)
+ℚ≤-is-prop (p , _) (q , _) = 𝔽≤-is-prop p q
 
 ℚ<-is-prop : (p q : ℚ) → is-prop (p < q)
 ℚ<-is-prop (p , _) (q , _) = 𝔽<-is-prop p q
@@ -210,12 +215,12 @@ toℚ-≤ (x , a) (y , b) l = Cases I II III
 ℚ-trichotomous ((x , a) , α) ((y , b) , β) =
  γ (ℤ-trichotomous (x ℤ* pos (succ b)) (y ℤ* pos (succ a)))
  where
-  γ : (x ℤ* pos (succ b)) < (y ℤ* pos (succ a))
+  γ : ((x ℤ* pos (succ b)) < (y ℤ* pos (succ a)))
      ∔ (x ℤ* pos (succ b) ＝ y ℤ* pos (succ a))
-     ∔ (y ℤ* pos (succ a)) < (x ℤ* pos (succ b))
-    →  ((x , a) , α) < ((y , b) , β)
+     ∔ ((y ℤ* pos (succ a)) < (x ℤ* pos (succ b)))
+    →  (((x , a) , α) < ((y , b) , β))
      ∔ ((x , a) , α ＝ (y , b) , β)
-     ∔ ((y , b) , β) < ((x , a) , α)
+     ∔ (((y , b) , β) < ((x , a) , α))
   γ (inl z)       = inl z
   γ (inr (inr z)) = inr (inr z)
   γ (inr (inl z)) = inr (inl γ')
@@ -226,16 +231,16 @@ toℚ-≤ (x , a) (y , b) l = Cases I II III
     γ' : (x , a) , α ＝ (y , b) , β
     γ' = to-subtype-＝ is-in-lowest-terms-is-prop I
 
-ℚ-dichotomous : (p q : ℚ) → p ≤ q ∔ q ≤ p
+ℚ-dichotomous : (p q : ℚ) → (p ≤ q) ∔ (q ≤ p)
 ℚ-dichotomous ((x , a) , α) ((y , b) , β) = γ
  where
-  γ : ((x , a) , α) ≤ ((y , b) , β) ∔ ((y , b) , β) ≤ ((x , a) , α)
+  γ : (((x , a) , α) ≤ ((y , b) , β)) ∔ (((y , b) , β) ≤ ((x , a) , α))
   γ = ℤ-dichotomous (x ℤ* pos (succ b)) (y ℤ* pos (succ a))
 
 ℚ-dichotomous' : (p q : ℚ) → p < q ∔ q ≤ p
 ℚ-dichotomous' p q = γ (ℚ-trichotomous p q)
  where
-  γ : p < q ∔ (p ＝ q) ∔ q < p → p < q ∔ q ≤ p
+  γ : (p < q) ∔ (p ＝ q) ∔ (q < p) → (p < q) ∔ (q ≤ p)
   γ (inl l) = inl l
   γ (inr (inl e)) = inr (transport (_≤ p) e (ℚ≤-refl p))
   γ (inr (inr l)) = inr (ℚ<-coarser-than-≤ q p l)
@@ -671,7 +676,7 @@ order1ℚ' p = ℚ<-subtraction-preserves-order p 1ℚ (0 , refl)
   II : x - x - y ≤ y - x - y
   II = ℚ≤-addition-preserves-order (x - x) (y - x) (- y) I
 
-  III : x - x - y ≤ y - x - y ＝ - y ≤ - x
+  III : (x - x - y ≤ y - x - y) ＝ (- y ≤ - x)
   III = ap₂ _≤_ α β
    where
     α : x - x - y ＝ - y
@@ -1040,10 +1045,10 @@ inequality-chain-outer-bounds-inner a b c d l₁ l₂ l₃ = γ
   γ : a + b < c + b
   γ = transport₂ _<_ (ℚ+-comm b a) (ℚ+-comm b c) l
 
-order-lemma : (a b c d : ℚ) → a - b < c - d → d < b ∔ a < c
+order-lemma : (a b c d : ℚ) → a - b < c - d → (d < b) ∔ (a < c)
 order-lemma a b c d l = γ (ℚ-trichotomous a c)
  where
-  γ : (a < c) ∔ (a ＝ c) ∔ (c < a) → d < b ∔ a < c
+  γ : (a < c) ∔ (a ＝ c) ∔ (c < a) → (d < b) ∔ (a < c)
   γ (inl a<c) = inr a<c
   γ (inr (inl a＝c)) = inl (ℚ<-swap''' d b II)
    where
@@ -1105,7 +1110,7 @@ order-lemma' p q r l = γ
   IV : (r + 1/4 * ε) - (r - 1/4 * ε) < q - p
   IV = transport (_< q - p) III II
 
-  γ : p < r - 1/4 * ε ∔ r + 1/4 * ε < q
+  γ : (p < r - 1/4 * ε) ∔ (r + 1/4 * ε < q)
   γ = order-lemma (r + 1/4 * ε) (r - 1/4 * ε) q p IV
 
 ℚ<-swap-right-add : (p q r : ℚ) → p < q + r → (- q) - r < - p

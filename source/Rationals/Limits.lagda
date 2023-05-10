@@ -23,6 +23,7 @@ open import Rationals.MinMax
 open import Rationals.Multiplication
 open import Rationals.Negation
 open import Rationals.Order
+open import Rationals.Positive hiding (_+_ ; _*_)
 
 open import Naturals.Order renaming (max to ℕ-max ; max-comm to ℕ-max-comm)
 
@@ -35,13 +36,27 @@ module Rationals.Limits
 open import MetricSpaces.Rationals fe pe pt
 open import MetricSpaces.Type fe pe pt
 
+-- _⟶_ : (f : ℕ → ℚ) → (L : ℚ) → 𝓤₀ ̇
+-- f ⟶ L = (ε₊@(ε , _) : ℚ₊) → Σ N ꞉ ℕ , ((n : ℕ) → N ≤ n → abs (f n - L) < ε)
+
+{-
+sandwich-theorem : (L : ℚ)
+                 → (f g h : ℕ → ℚ)
+                 → Σ N ꞉ ℕ , ((n : ℕ) → {!? ≤ ? ≤ ?!})
+                 → f ⟶ L
+                 → g ⟶ L
+                 → h ⟶ L
+                 → {!!}
+sandwich-theorem = {!!}
+-}
+
 _limit-of_ : (L : ℚ) → (f : ℕ → ℚ) → 𝓤₀ ̇
-L limit-of f = ∀ (ε : ℚ) → 0ℚ < ε
-                         → Σ N ꞉ ℕ , ((n : ℕ) → N ≤ n → abs (f n - L) < ε)
+L limit-of f = (ε : ℚ) → 0ℚ < ε
+                       → Σ N ꞉ ℕ , ((n : ℕ) → N ≤ n → abs (f n - L) < ε)
 
 sandwich-theorem : (L : ℚ)
                  → (f g h : ℕ → ℚ)
-                 → (Σ k ꞉ ℕ , ((k' : ℕ) → k ≤ k' → f k' ≤ g k' × g k' ≤ h k'))
+                 → (Σ k ꞉ ℕ , ((k' : ℕ) → k ≤ k' → f k' ≤ g k' ≤ h k'))
                  → L limit-of f
                  → L limit-of h
                  → L limit-of g
@@ -81,12 +96,12 @@ sandwich-theorem L f g h (k , k-greater) lim-f lim-h = lim-g
         h-close' : abs (h n - L) < ε
         h-close' = h-close n (≤-trans N₂ N n (≤-trans N₂ (ℕ-max N₁ N₂) N N₂-small N₁N₂-small) less)
 
-        obtain-inequalities : - ε < f n - L × f n - L < ε
-                            → - ε < h n - L × h n - L < ε
+        obtain-inequalities : - ε < f n - L < ε
+                            → - ε < h n - L < ε
                             → abs (g n - L) < ε
         obtain-inequalities (l₁ , l₂) (l₃ , l₄) = ℚ<-to-abs (g n - L) ε (I , II)
          where
-          k-greater' : f n ≤ g n × g n ≤ h n
+          k-greater' : f n ≤ g n ≤ h n
           k-greater' = k-greater n (≤-trans k N n k-small less)
 
           I : - ε < g n - L

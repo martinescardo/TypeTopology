@@ -33,17 +33,22 @@ _≤ℤ_ _≥ℤ_ : (x y : ℤ) → 𝓤₀ ̇
 x ≤ℤ y = Σ n ꞉ ℕ , x + pos n ＝ y
 x ≥ℤ y = y ≤ℤ x
 
+_<ℤ_ _>ℤ_ : (x y : ℤ) → 𝓤₀ ̇
+x <ℤ y = succℤ x ≤ℤ y
+x >ℤ y = y <ℤ x
+
 instance
  Order-ℤ-ℤ : Order ℤ ℤ
  _≤_ {{Order-ℤ-ℤ}} = _≤ℤ_
 
-_<ℤ_ _>ℤ_ : (x y : ℤ) → 𝓤₀ ̇
-x <ℤ y = succℤ x ≤ y
-x >ℤ y = y <ℤ x
-
-instance
  Strict-Order-ℤ-ℤ : Strict-Order ℤ ℤ
  _<_ {{Strict-Order-ℤ-ℤ}} = _<ℤ_
+
+ Strict-Order-Chain-ℤ-ℤ-ℤ : Strict-Order-Chain ℤ ℤ ℤ _<_ _<_
+ _<_<_ {{Strict-Order-Chain-ℤ-ℤ-ℤ}} p q r = (p < q) × (q < r)
+
+ Order-Chain-ℤ-ℤ-ℤ : Order-Chain ℤ ℤ ℤ _≤_ _≤_
+ _≤_≤_ {{Order-Chain-ℤ-ℤ-ℤ}} p q r = (p ≤ q) × (q ≤ r)
 
 ℤ≤-is-prop : (x y : ℤ) → is-prop (x ≤ y)
 ℤ≤-is-prop x y (n , p) (m , q) = to-subtype-＝ I II
@@ -259,7 +264,7 @@ negative-less-than-positive x y = (x ℕ+ y) , I
     v   = ap (y +_) (ℤ-sum-of-inverse-is-zero x ⁻¹)
     vi  = ℤ+-assoc y x (- x) ⁻¹
 
-ℤ≤-swap₂ : (x y z : ℤ) → x ≤ y × y ≤ z → - y ≤ - x × - z ≤ - y
+ℤ≤-swap₂ : (x y z : ℤ) → x ≤ y ≤ z → (- y ≤ - x) × (- z ≤ - y)
 ℤ≤-swap₂ x y z (l₁ , l₂) = (ℤ≤-swap x y l₁) , (ℤ≤-swap y z l₂)
 
 ℕ≤-to-ℤ≤ : (x y : ℕ) → x ≤ y → pos x ≤ pos y
@@ -274,7 +279,7 @@ negative-less-than-positive x y = (x ℕ+ y) , I
          pos (k ℕ+ x)  ＝⟨ ap pos e                            ⟩
          pos y         ∎
 
-ℤ-dichotomous : (x y : ℤ) → x ≤ y ∔ y ≤ x
+ℤ-dichotomous : (x y : ℤ) → (x ≤ y) ∔ (y ≤ x)
 ℤ-dichotomous (pos x) (pos y) = I (≤-dichotomous x y)
  where
   I : (x ≤ y) ∔ (y ≤ x) → (pos x ≤ pos y) ∔ (pos y ≤ pos x)
@@ -290,10 +295,10 @@ negative-less-than-positive x y = (x ℕ+ y) , I
     II : pos (succ a) ≤ pos (succ b)
     II = ℕ≤-to-ℤ≤ (succ a) (succ b) l
 
-  γ₁ : x ≤ y → negsucc x ≤ negsucc y ∔ negsucc y ≤ negsucc x
+  γ₁ : x ≤ y → (negsucc x ≤ negsucc y) ∔ (negsucc y ≤ negsucc x)
   γ₁ l = inr (I x y l)
 
-  γ₂ : y ≤ x → negsucc x ≤ negsucc y ∔ negsucc y ≤ negsucc x
+  γ₂ : y ≤ x → (negsucc x ≤ negsucc y) ∔ (negsucc y ≤ negsucc x)
   γ₂ l = inl (I y x l)
 
 trich-locate : (x y : ℤ) → 𝓤₀ ̇
@@ -383,7 +388,7 @@ trich-locate x y = (x < y) ∔ (x ＝ y) ∔ (y < x)
       a + pos k + c   ＝⟨ ap (_+ c) p                   ⟩
       b + c           ∎
 
-ℤ≤-adding₂ : (a b c d : ℤ) → a ≤ b × b ≤ c → (a + d ≤ b + d) × (b + d ≤ c + d)
+ℤ≤-adding₂ : (a b c d : ℤ) → a ≤ b ≤ c → (a + d ≤ b + d) × (b + d ≤ c + d)
 ℤ≤-adding₂ a b c d (l₁ , l₂) = (ℤ≤-adding' a b d l₁) , (ℤ≤-adding' b c d l₂)
 
 ℤ<-adding' : (a b c : ℤ) → a < b → a + c < b + c
@@ -529,7 +534,7 @@ negative-multiplication-changes-order' a b (negsucc x) g l = I (ℤ≤-split a b
 ℤ-mult-right-cancellable x y (pos 0)        nz e = 𝟘-elim (nz ⋆)
 ℤ-mult-right-cancellable x y (pos (succ z)) nz e = tri-split (ℤ-trichotomous x y)
  where
-  tri-split : x < y ∔ (x ＝ y) ∔ y < x → x ＝ y
+  tri-split : (x < y) ∔ (x ＝ y) ∔ (y < x) → x ＝ y
   tri-split (inl l) = 𝟘-elim (ℤ-equal-not-less-than (x * pos (succ z)) II)
    where
     I : x * pos (succ z) < y * pos (succ z)
@@ -548,7 +553,7 @@ negative-multiplication-changes-order' a b (negsucc x) g l = I (ℤ≤-split a b
     II = transport (y * pos (succ z) <_) e I
 ℤ-mult-right-cancellable x y (negsucc z)    nz e = tri-split (ℤ-trichotomous x y)
  where
-  tri-split : x < y ∔ (x ＝ y) ∔ y < x → x ＝ y
+  tri-split : (x < y) ∔ (x ＝ y) ∔ (y < x) → x ＝ y
   tri-split (inl l) = 𝟘-elim (ℤ-equal-not-less-than (y * negsucc z) II)
    where
     I : y * negsucc z < x * negsucc z

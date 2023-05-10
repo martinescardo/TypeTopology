@@ -269,16 +269,15 @@ abs-of-pos-is-pos' p l = abs-of-pos-is-pos p (ℚ<-coarser-than-≤ 0ℚ p l)
 ℚ-triangle-inequality : (x y : ℚ) → abs (x + y) ≤ abs x + abs y
 ℚ-triangle-inequality x y = ℚ≤-to-abs (x + y) (abs x + abs y) (γ I II)
  where
-  I : - abs x ≤ x × x ≤ abs x
+  I : - abs x ≤ x ≤ abs x
   I = ℚ-abs-≤ x
 
-  II : - abs y ≤ y × y ≤ abs y
+  II : - abs y ≤ y ≤ abs y
   II = ℚ-abs-≤ y
 
-  γ : - abs x ≤ x × x ≤ abs x
-    → - abs y ≤ y × y ≤ abs y
-    → - (abs x + abs y) ≤ x + y
-    × x + y ≤ abs x + abs y
+  γ : - abs x ≤ x ≤ abs x
+    → - abs y ≤ y ≤ abs y
+    → - (abs x + abs y) ≤ x + y ≤ abs x + abs y
   γ (l₁ , l₂) (l₃ , l₄) = (transport (_≤ x + y) IV III) , V
    where
     III : (- abs x) - abs y ≤ x + y
@@ -410,7 +409,7 @@ abs-mult x y = γ (ℚ-dichotomous' x 0ℚ) (ℚ-dichotomous' y 0ℚ)
 ℚ≤-abs-neg : (p : ℚ) → - abs p ≤ abs p
 ℚ≤-abs-neg p = γ (ℚ-abs-≤ p)
  where
-  γ : - abs p ≤ p × p ≤ abs p → - abs p ≤ abs p
+  γ : - abs p ≤ p ≤ abs p → - abs p ≤ abs p
   γ (l₁ , l₂) = ℚ≤-trans (- abs p) p (abs p) l₁ l₂
 
 ℚ≤-abs-all : (p : ℚ) → p ≤ abs p
