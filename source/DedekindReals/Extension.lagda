@@ -21,6 +21,7 @@ open import Rationals.Addition
 open import Rationals.Multiplication
 open import Rationals.MinMax
 open import Rationals.Negation
+open import Rationals.Positive hiding (_+_ ; _*_)
 open import UF.Base
 open import UF.FunExt
 open import UF.Powerset
@@ -87,8 +88,7 @@ TODO: In future work, define bishop continuity, non-uniform continuity.
 
 ℝ-is-uniformly-continuous : (f : ℝ → ℝ) → 𝓤₁ ̇
 ℝ-is-uniformly-continuous f
- = ((ε , 0<ε) : ℚ₊)
- → Σ (δ , 0<δ) ꞉ ℚ₊ , ((x x₀ : ℝ) → B-ℝ x x₀ δ 0<δ → B-ℝ (f x) (f x₀) ε 0<ε)
+ = (ε : ℚ₊) → Σ δ ꞉ ℚ₊ , ((x x₀ : ℝ) → B-ℝ x x₀ δ → B-ℝ (f x) (f x₀) ε)
 
 δ⦅⦆ : (f : ℚ → ℚ) → (ℚ-is-uniformly-continuous f) → ℚ₊ → ℚ₊
 δ⦅⦆ f ic ε = pr₁ (ic ε)
@@ -106,10 +106,10 @@ TODO: In future work, define bishop continuity, non-uniform continuity.
 
 δ'-uc : (f : ℝ → ℝ)
       → (ic : ℝ-is-uniformly-continuous f)
-      → ((ε , 0<ε) : ℚ₊)
+      → (ε : ℚ₊)
       → (x x₀ : ℝ)
-      → let (δ , 0<δ) = δ'⦅⦆ f ic (ε , 0<ε) in B-ℝ x x₀ δ 0<δ
-      → B-ℝ (f x) (f x₀) ε 0<ε
+      → let δ = δ'⦅⦆ f ic ε in B-ℝ x x₀ δ
+      → B-ℝ (f x) (f x₀) ε
 δ'-uc f ic ε = pr₂ (ic ε)
 
 \end{code}
@@ -416,7 +416,7 @@ midpoint-switch p q l = γ
   I = ℚ<-difference-positive p q l
 
   II : abs (p - q) ＝ q - p
-  II = abs (p - q) ＝⟨ ℚ-metric-commutes p q        ⟩
+  II = abs (p - q) ＝⟨ abs-comm p q                 ⟩
        abs (q - p) ＝⟨ abs-of-pos-is-pos' (q - p) I ⟩
        q - p       ∎
 
@@ -425,7 +425,7 @@ midpoint-switch p q l = γ
   III : r + r ＝ q - p
   III = r + r            ＝⟨ ℚ-distributivity' (abs (p - q)) 1/2 1/2 ⁻¹ ⟩
         1ℚ * abs (p - q) ＝⟨ ℚ-mult-left-id (abs (p - q))               ⟩
-        abs (p - q)      ＝⟨ ℚ-metric-commutes p q                      ⟩
+        abs (p - q)      ＝⟨ abs-comm p q                               ⟩
         abs (q - p)      ＝⟨ abs-of-pos-is-pos' (q - p) I               ⟩
         q - p            ∎
 
@@ -442,31 +442,35 @@ midpoint-switch p q l = γ
   γ = ℚ+-right-cancellable (p + r) (q - r) r IV
 
 ball-around-close-reals : (x x₀ : ℝ)
-                        → ((ε , 0<ε) : ℚ₊)
-                        → B-ℝ x x₀ ε 0<ε
-                        → ∃ p ꞉ ℚ , (x ℝ∈𝐁 (ε , 0<ε) ⦅ p ⦆)
-                                  × (x₀ ℝ∈𝐁 (ε , 0<ε) ⦅ p ⦆)
+                        → (ε : ℚ₊)
+                        → B-ℝ x x₀ ε
+                        → ∃ p ꞉ ℚ , (x ℝ∈𝐁 ε ⦅ p ⦆)
+                                  × (x₀ ℝ∈𝐁 ε ⦅ p ⦆)
 ball-around-close-reals
  x@((Lx , Rx) , _ , _ , rlx , rrx , djx , _)
  x₀@((Lx₀ , Rx₀) , _ , _ , rlx₀ , rrx₀ , _ , _)
- (ε , 0<ε) = ∥∥-functor γ
+ ε₊@(ε , 0<ε) = ∥∥-functor γ
  where
-  γ : Σ (a , b , c , d) ꞉ ℚ⁴ , (a < x)
-                             × (c < x₀)
-                             × (x < b)
-                             × (x₀ < d)
-                             × B-ℚ (min a c) (max b d) ε 0<ε
+  γ : Σ (a , b) ꞉ ℚ × ℚ , (a < x < b) × (a < x₀ < b) × B-ℚ a b ε₊
     → Σ p ꞉ ℚ , (x ℝ∈𝐁 ε , 0<ε ⦅ p ⦆) × (x₀ ℝ∈𝐁 ε , 0<ε ⦅ p ⦆)
-  γ ((a , b , c , d) , l₁ , l₂ , l₃ , l₄ , m)
-   = m₁ + k , (γ₁ , γ₂) , (γ₃ , γ₄)
+  γ ((a , b) , (l₁ , l₂) , (l₃ , l₄) , m)
+   = (a + k) , (γ₁ , γ₂) , (γ₃ , γ₄)
    where
-    m₁ = min a c
-    m₂ = max b d
+    k = 1/2 * (b - a)
 
-    k = 1/2 * abs (m₁ - m₂)
+    a<b : a < b
+    a<b = djx a b (l₁ , l₂)
+
+    0<b-a = ℚ<-difference-positive a b a<b
+
+    e₁ : abs (a - b) ＝ b - a
+    e₁ = ℚ<-to-abs' a b a<b
+
+    b-a<ε : b - a < ε
+    b-a<ε = transport (_< ε) e₁ m
 
     l₅ : k < 1/2 * ε
-    l₅ = ℚ<-pos-multiplication-preserves-order'' (abs (m₁ - m₂)) ε 1/2 m 0<1/2
+    l₅ = ℚ<-pos-multiplication-preserves-order'' (b - a) ε 1/2 b-a<ε 0<1/2
 
     l₆ : 0ℚ < 1/2 * ε
     l₆ = ℚ<-pos-multiplication-preserves-order 1/2 ε 0<1/2 0<ε
@@ -477,81 +481,74 @@ ball-around-close-reals
     l₈ : 0ℚ < ε - k
     l₈ = ℚ<-difference-positive k ε l₇
 
-    l₉ : m₁ < m₂
-    l₉ = djx m₁ m₂ ((rounded-left-a Lx rlx m₁ a (min≤ a c) l₁)
-                   , rounded-right-a Rx rrx b m₂ (max≤ b d) l₃)
+    I : a + k < a + 1/2 * ε
+    I = ℚ<-addition-preserves-order''' k (1/2 * ε) a l₅
 
-    I : m₁ + k < m₁ + 1/2 * ε
-    I = ℚ<-addition-preserves-order''' k (1/2 * ε) m₁ l₅
+    II : a + k - ε < a + 1/2 * ε - ε
+    II = ℚ<-addition-preserves-order (a + k) (a + 1/2 * ε) (- ε) I
 
-    II : m₁ + k - ε < m₁ + 1/2 * ε - ε
-    II = ℚ<-addition-preserves-order (m₁ + k) (m₁ + 1/2 * ε) (- ε) I
-
-    III : m₁ + 1/2 * ε - ε ＝ m₁ - 1/2 * ε
-    III = m₁ + 1/2 * ε - ε            ＝⟨ i   ⟩
-          m₁ + (1/2 * ε - ε)          ＝⟨ ii  ⟩
-          m₁ + (1/2 * ε - 1ℚ * ε)     ＝⟨ iii ⟩
-          m₁ + (1/2 * ε + (- 1ℚ) * ε) ＝⟨ iv  ⟩
-          m₁ + (1/2 - 1ℚ) * ε         ＝⟨ v   ⟩
-          m₁ - 1/2 * ε                ∎
+    III : a + 1/2 * ε - ε ＝ a - 1/2 * ε
+    III = a + 1/2 * ε - ε            ＝⟨ i   ⟩
+          a + (1/2 * ε - ε)          ＝⟨ ii  ⟩
+          a + (1/2 * ε - 1ℚ * ε)     ＝⟨ iii ⟩
+          a + (1/2 * ε + (- 1ℚ) * ε) ＝⟨ iv  ⟩
+          a + (1/2 - 1ℚ) * ε         ＝⟨ v   ⟩
+          a - 1/2 * ε                ∎
      where
-      i   = ℚ+-assoc m₁ (1/2 * ε) (- ε)
-      ii  = ap (λ z → m₁ + (1/2 * ε - z)) (ℚ-mult-left-id ε ⁻¹)
-      iii = ap (λ z → m₁ + ((1/2 * ε) + z)) (ℚ-negation-dist-over-mult 1ℚ ε ⁻¹)
-      iv  = ap (m₁ +_) (ℚ-distributivity' ε 1/2 (- 1ℚ) ⁻¹)
-      v   = ap (m₁ +_) (ℚ-negation-dist-over-mult 1/2 ε)
+      i   = ℚ+-assoc a (1/2 * ε) (- ε)
+      ii  = ap (λ z → a + (1/2 * ε - z)) (ℚ-mult-left-id ε ⁻¹)
+      iii = ap (λ z → a + ((1/2 * ε) + z)) (ℚ-negation-dist-over-mult 1ℚ ε ⁻¹)
+      iv  = ap (a +_) (ℚ-distributivity' ε 1/2 (- 1ℚ) ⁻¹)
+      v   = ap (a +_) (ℚ-negation-dist-over-mult 1/2 ε)
 
-    IV : m₁ + k - ε < m₁ - 1/2 * ε
-    IV = transport (m₁ + k - ε <_) III II
+    IV : a + k - ε < a - 1/2 * ε
+    IV = transport (a + k - ε <_) III II
 
-    V : m₁ - 1/2 * ε < m₁
-    V = ℚ<-subtraction-preserves-order m₁ (1/2 * ε) l₆
+    V : a - 1/2 * ε < a
+    V = ℚ<-subtraction-preserves-order a (1/2 * ε) l₆
 
-    VI : m₁ + k - ε < m₁
-    VI = ℚ<-trans (m₁ + k - ε) (m₁ - 1/2 * ε) m₁ IV V
+    VI : a + k - ε < a
+    VI = ℚ<-trans (a + k - ε) (a - 1/2 * ε) a IV V
 
-    VII : m₂ + (ε - k) ＝ m₁ + k + ε
-    VII = m₂ + (ε - k)     ＝⟨ ap (m₂ +_) (ℚ+-comm ε (- k)) ⟩
-          m₂ + ((- k) + ε) ＝⟨ ℚ+-assoc m₂ (- k) ε ⁻¹ ⟩
-          m₂ - k + ε       ＝⟨ ap (_+ ε) (midpoint-switch m₁ m₂ l₉ ⁻¹) ⟩
-          m₁ + k + ε       ∎
+    e₂ : abs (a - b) ＝ b - a
+    e₂ = ℚ<-to-abs' a b a<b
 
-    VIII : m₂ < m₂ + (ε - k)
-    VIII = ℚ<-addition-preserves-order'' m₂ (ε - k) l₈
+    e₃ : b - k ＝ a + k
+    e₃ = b - 1/2 * (b - a)     ＝⟨ ap (λ ■ → b - 1/2 * ■) (e₂ ⁻¹) ⟩
+         b - 1/2 * abs (a - b) ＝⟨ midpoint-switch a b a<b ⁻¹     ⟩
+         a + 1/2 * abs (a - b) ＝⟨ ap (λ ■ → a + 1/2 * ■) e₂      ⟩
+         a + 1/2 * (b - a)     ∎
 
-    IX : m₂ <ℚ (m₁ + k + ε)
-    IX = transport (m₂ <_) VII VIII
+    VII : b + (ε - k) ＝ a + k + ε
+    VII = b + (ε - k)     ＝⟨ ap (b +_) (ℚ+-comm ε (- k)) ⟩
+          b + ((- k) + ε) ＝⟨ ℚ+-assoc b (- k) ε ⁻¹       ⟩
+          b - k + ε       ＝⟨ ap (λ ■ → ■ + ε) e₃         ⟩
+          a + k + ε       ∎
 
-    γ₁ : m₁ + k - ε < x
-    γ₁ = rounded-left-c Lx rlx (m₁ + k - ε) a γ' l₁
-     where
-      γ' : m₁ + k - ε < a
-      γ' = ℚ<-≤-trans (m₁ + k - ε) m₁ a VI (min≤ a c)
+    VIII : b < b + (ε - k)
+    VIII = ℚ<-addition-preserves-order'' b (ε - k) l₈
 
-    γ₂ : x < m₁ + k + ε
-    γ₂ = rounded-right-c Rx rrx b (m₁ + k + ε) γ' l₃
-     where
-      γ' : b < m₁ + k + ε
-      γ' = ℚ≤-<-trans b m₂ (m₁ + k + ε) (max≤ b d) IX
+    IX : b <ℚ (a + k + ε)
+    IX = transport (b <_) VII VIII
 
-    γ₃ : m₁ + k - ε < x₀
-    γ₃ = rounded-left-c Lx₀ rlx₀ (m₁ + k - ε) c γ' l₂
-     where
-      γ' : m₁ + k - ε < c
-      γ' = ℚ<-≤-trans (m₁ + k - ε) m₁ c VI (min≤' a c)
+    γ₁ : a + k - ε < x
+    γ₁ = rounded-left-c Lx rlx (a + k - ε) a VI l₁
 
-    γ₄ : x₀ < m₁ + k + ε
-    γ₄ = rounded-right-c Rx₀ rrx₀ d (m₁ + k + ε) γ' l₄
-     where
-      γ' : d < m₁ + k + ε
-      γ' = ℚ≤-<-trans d m₂ (m₁ + k + ε) (max≤' b d) IX
+    γ₂ : x < a + k + ε
+    γ₂ = rounded-right-c Rx rrx b (a + k + ε) IX l₂
+
+    γ₃ : a + k - ε < x₀
+    γ₃ = rounded-left-c Lx₀ rlx₀ (a + k - ε) a VI l₃
+
+    γ₄ : x₀ < a + k + ε
+    γ₄ = rounded-right-c Rx₀ rrx₀ b (a + k + ε) IX l₄
 
 expand-interval-within-bound : (p : ℚ)
-                             → ((ε , 0<ε) : ℚ₊)
+                             → (ε₊@(ε , 0<ε) : ℚ₊)
                              → Σ (a , b) ꞉ ℚ × ℚ , (a < p - 1/4 * ε)
                                                  × (p + 1/4 * ε < b)
-                                                 × B-ℚ a b ε 0<ε
-expand-interval-within-bound p (ε , 0<ε) = γ X IX
+                                                 × B-ℚ a b ε₊
+expand-interval-within-bound p ε₊@(ε , 0<ε) = γ X IX
  where
   I : 1/4 * ε < 1/2 * ε
   I = ℚ<-pos-multiplication-preserves-order' 1/4 1/2 ε 1/4<1/2 0<ε
@@ -592,7 +589,7 @@ expand-interval-within-bound p (ε , 0<ε) = γ X IX
     → Σ b ꞉ ℚ , p + 1/4 * ε < b < p + 1/2 * ε
     → Σ (a , b) ꞉ ℚ × ℚ , (a < p - 1/4 * ε)
                 × (p + 1/4 * ε < b)
-                × B-ℚ a b ε 0<ε
+                × B-ℚ a b ε₊
   γ (a , l₁ , l₂) (b , l₃ , l₄) = (a , b) , l₂ , l₃ , γ'
    where
     XII : a < b
@@ -608,7 +605,7 @@ expand-interval-within-bound p (ε , 0<ε) = γ X IX
 
     XV : b - a ＝ abs (a - b)
     XV = b - a       ＝⟨ abs-of-pos-is-pos' (b - a) XIV ⁻¹ ⟩
-         abs (b - a) ＝⟨ ℚ-metric-commutes b a             ⟩
+         abs (b - a) ＝⟨ abs-comm b a                      ⟩
          abs (a - b) ∎
 
     XVI : p + 1/2 * ε - (p - 1/2 * ε) ＝ ε
@@ -635,7 +632,7 @@ expand-interval-within-bound p (ε , 0<ε) = γ X IX
 extensions-uc : (f : ℚ → ℚ)
               → (ic : ℚ-is-uniformly-continuous f)
               → ℝ-is-uniformly-continuous (extend f ic)
-extensions-uc f ic (ε , 0<ε) = δ₊ , γ
+extensions-uc f ic ε₊@(ε , 0<ε) = δ₊ , γ
  where
   ε' : ℚ
   ε' = 1/4 * ε
@@ -649,60 +646,40 @@ extensions-uc f ic (ε , 0<ε) = δ₊ , γ
   0<δ = pr₂ δ₊
 
   γ : (x x₀ : ℝ)
-    → B-ℝ x x₀ δ 0<δ
-    → B-ℝ (extend f ic x) (extend f ic x₀) ε 0<ε
+    → B-ℝ x x₀ δ₊
+    → B-ℝ (extend f ic x) (extend f ic x₀) ε₊
   γ x x₀ b = ∥∥-functor γ' (ball-around-close-reals x x₀ (δ , 0<δ) b)
    where
     f̂x = extend f ic x
     f̂x₀ = extend f ic x₀
 
     γ' : Σ p ꞉ ℚ , (x ℝ∈𝐁 δ , 0<δ ⦅ p ⦆) × (x₀ ℝ∈𝐁 δ , 0<δ ⦅ p ⦆)
-       → Σ (a , b , c , d) ꞉ ℚ⁴ , (a < f̂x)
-                                × (c < f̂x₀)
-                                × (f̂x < b)
-                                × (f̂x₀ < d)
-                                × B-ℚ (min a c) (max b d) ε 0<ε
+       → Σ (a , b) ꞉ ℚ × ℚ , (a < f̂x < b) × (a < f̂x₀ < b) × B-ℚ a b ε₊
     γ' (p , B₁ , B₂) = γ'' I
      where
       I : Σ (a , b) ꞉ ℚ × ℚ , (a < f p - 1/4 * ε)
                             × (f p + 1/4 * ε < b)
-                            × B-ℚ a b ε 0<ε
-      I = expand-interval-within-bound (f p) (ε , 0<ε)
+                            × B-ℚ a b ε₊
+      I = expand-interval-within-bound (f p) ε₊
 
       γ'' : Σ (a , b) ꞉ ℚ × ℚ , (a < f p - 1/4 * ε)
-                               × (f p + 1/4 * ε < b)
-                               × B-ℚ a b ε 0<ε
-          → Σ (a , b , c , d) ꞉ ℚ⁴ , (a < f̂x)
-                                × (c < f̂x₀)
-                                × (f̂x < b)
-                                × (f̂x₀ < d)
-                                × B-ℚ (min a c) (max b d) ε 0<ε
+                              × (f p + 1/4 * ε < b)
+                              × B-ℚ a b ε₊
+          → Σ (a , b) ꞉ ℚ × ℚ , (a < f̂x < b) × (a < f̂x₀ < b) × B-ℚ a b ε₊
       γ'' ((a , b) , l₅ , l₆ , m)
-       = (a , b , a , b) , a<f̂x , b<f̂x₀ , f̂x<b , f̂x₀<b , γ'''
+       = (a , b) , (a<f̂x , f̂x<b) , (a<f̂x₀ , f̂x₀<b) , m
        where
         a<f̂x : a < f̂x
         a<f̂x = ∣ (p , ε' , 0<ε') , B₁ , l₅ ∣
 
-        b<f̂x₀ : a < f̂x₀
-        b<f̂x₀ = ∣ (p , ε' , 0<ε') , B₂ , l₅ ∣
+        a<f̂x₀ : a < f̂x₀
+        a<f̂x₀ = ∣ (p , ε' , 0<ε') , B₂ , l₅ ∣
 
         f̂x<b : f̂x < b
         f̂x<b = ∣ (p , ε' , 0<ε') , B₁ , l₆ ∣
 
         f̂x₀<b : f̂x₀ < b
         f̂x₀<b = ∣ (p , ε' , 0<ε') , B₂ , l₆ ∣
-
-        II : a ＝ min a a
-        II = min-refl a ⁻¹
-
-        III : b ＝ max b b
-        III = max-refl b ⁻¹
-
-        IV : B-ℚ a b ε 0<ε
-        IV = m
-
-        γ''' : B-ℚ (min a a) (max b b) ε 0<ε
-        γ''' = transport₂ (λ α β → B-ℚ α β ε 0<ε) II III IV
 
 \end{code}
 
