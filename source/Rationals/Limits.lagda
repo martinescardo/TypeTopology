@@ -33,7 +33,7 @@ module Rationals.Limits
  where
 
 open import MetricSpaces.Rationals fe pe pt
-open import MetricSpaces.Definition fe pe pt
+open import MetricSpaces.Type fe pe pt
 
 _limit-of_ : (L : ℚ) → (f : ℕ → ℚ) → 𝓤₀ ̇
 L limit-of f = ∀ (ε : ℚ) → 0ℚ < ε

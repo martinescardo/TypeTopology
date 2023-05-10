@@ -42,7 +42,7 @@ module MetricSpaces.DedekindReals
 open PropositionalTruncation pt
 
 open import Rationals.Limits fe pe pt
-open import MetricSpaces.Definition fe pe pt
+open import MetricSpaces.Type fe pe pt
 open import MetricSpaces.Rationals fe pe pt
 open import DedekindReals.Type fe pe pt
 open import DedekindReals.Properties fe pe pt

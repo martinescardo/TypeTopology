@@ -17,7 +17,7 @@ open import UF.Subsingletons
 open import Rationals.Type
 open import Rationals.Positive
 
-module MetricSpaces.Definition
+module MetricSpaces.Type
   (fe : Fun-Ext)
   (pe : Prop-Ext)
   (pt : propositional-truncations-exist)

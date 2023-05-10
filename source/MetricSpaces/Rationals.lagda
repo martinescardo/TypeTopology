@@ -28,7 +28,7 @@ module MetricSpaces.Rationals
  where
 
 open import Rationals.MinMax
-open import MetricSpaces.Definition fe pe pt
+open import MetricSpaces.Type fe pe pt
 
 ℚ-zero-dist : (q : ℚ) → abs (q - q) ＝ 0ℚ
 ℚ-zero-dist q = abs (q - q)  ＝⟨ ap abs (ℚ-inverse-sum-to-zero q) ⟩

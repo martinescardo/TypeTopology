@@ -6,7 +6,7 @@ Andrew Sneap
 
 module MetricSpaces.index where
 
-import MetricSpaces.Definition
+import MetricSpaces.Type
 import MetricSpaces.DedekindReals
 import MetricSpaces.Rationals
 
