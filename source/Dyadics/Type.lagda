@@ -340,9 +340,9 @@ _≈'_ : (p q : ℤ × ℕ) → 𝓤₀ ̇
 
   I : x * p' * m' ＝ z * n' * m'
   I = x * p' * m' ＝⟨ ℤ-mult-rearrangement x p' m' ⟩
-      x * m' * p' ＝⟨ ap (_* p') e₁ ⟩
+      x * m' * p' ＝⟨ ap (_* p') e₁                ⟩
       y * n' * p' ＝⟨ ℤ-mult-rearrangement y n' p' ⟩
-      y * p' * n' ＝⟨ ap (_* n') e₂ ⟩
+      y * p' * n' ＝⟨ ap (_* n') e₂                ⟩
       z * m' * n' ＝⟨ ℤ-mult-rearrangement z m' n' ⟩
       z * n' * m' ∎
 
