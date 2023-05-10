@@ -378,6 +378,11 @@ max-≤-upper-bound zero     n        = ⋆
 max-≤-upper-bound (succ m) zero     = ≤-refl m
 max-≤-upper-bound (succ m) (succ n) = max-≤-upper-bound m n
 
+max-≤-upper-bound' : (m n : ℕ) → m ≤ max n m
+max-≤-upper-bound' zero n = ⋆
+max-≤-upper-bound' (succ m) zero = ≤-refl m
+max-≤-upper-bound' (succ m) (succ n) = max-≤-upper-bound' m n
+
 minus : (m n : ℕ) → n ≤ m → ℕ
 minus zero     n        le = zero
 minus (succ m) zero     ⋆  = succ m

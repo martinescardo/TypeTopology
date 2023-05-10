@@ -10,6 +10,7 @@ open import Notation.Order
 open import Rationals.Type
 open import Rationals.Abs
 open import Rationals.Addition renaming (_+_ to _ℚ+_)
+open import Rationals.Multiplication renaming (_*_ to _ℚ*_)
 open import Rationals.Order
 open import UF.Base
 
@@ -37,5 +38,15 @@ _+_ : ℚ₊ → ℚ₊ → ℚ₊
 
 1ℚ₊ : ℚ₊
 1ℚ₊ = 1ℚ , 0<1
+
+_*_ : ℚ₊ → ℚ₊ → ℚ₊
+(p , 0<p) * (q , 0<q)
+ = p ℚ* q , ℚ<-pos-multiplication-preserves-order p q 0<p 0<q
+
+1/2*_ : ℚ₊ → ℚ₊
+1/2* p = (1/2 , 0<1/2) * p
+
+1/4*_ : ℚ₊ → ℚ₊
+1/4* p = (1/4 , 0<1/4) * p
 
 \end{code}

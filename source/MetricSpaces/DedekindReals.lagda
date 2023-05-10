@@ -1,7 +1,13 @@
 Andrew Sneap, 10 March 2022
+Updated 9th May 2023
 
-In this file, I prove that the Dedekind reals are a complete metric space.
-The core result (that cauchy sequences converge) requires cleaning.
+This file proves that the Dedekind reals are a complete metric space.
+A complete metric space is a metric space where every Cauchy Sequence is a
+convergent sequence. The proof is an implementation of the one described in
+the HoTT Book, section 11.2.2.
+
+Cauchy approximation sequences, limits of such sequences, and the corollary that
+any cauchy sequence has a limit is are implemented as described.
 
 \begin{code}
 {-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --lossy-unification --auto-inline #-}
@@ -25,7 +31,7 @@ open import Rationals.Negation
 open import Rationals.Order
 open import Rationals.MinMax
 open import Rationals.Multiplication
-open import Rationals.Positive renaming (_+_ to _ℚ₊+_)
+open import Rationals.Positive renaming (_+_ to _ℚ₊+_ ; _*_ to _ℚ₊*_)
 
 module MetricSpaces.DedekindReals
   (fe : Fun-Ext)
@@ -803,114 +809,143 @@ ca-limit-is-limit (f , α) = y , y-is-limit
       γ₂ : (p < y) ∨ (y < q)
       γ₂ = located-from-real y p q p<q
 
-{-
-Proof was 500 lines
--}
+ℝ-CauchySequence : (S : ℕ → ℝ) → 𝓤₀ ̇
+ℝ-CauchySequence = cauchy-sequence ℝ ℝ-metric-space
 
--- RealsCauchySequence : (S : ℕ → ℝ) → 𝓤₀ ̇
--- RealsCauchySequence = cauchy-sequence ℝ ℝ-metric-space
+δc⦅⦆ : (S : ℕ → ℝ)
+     → (RCS : ℝ-CauchySequence S)
+     → ℚ₊ → ℕ
+δc⦅⦆ S RCS ε = pr₁ (RCS ε)
 
+δc⦅⦆-ic : (S : ℕ → ℝ)
+        → (RCS : ℝ-CauchySequence S)
+        → (ε : ℚ₊) → (m n : ℕ)
+        → let δ = δc⦅⦆ S RCS ε
+          in δ ≤ m → δ ≤ n → B-ℝ (S m) (S n) ε
+δc⦅⦆-ic S RCS ε = pr₂ (RCS ε)
 
--- modulus-of-convergence' : (S : ℕ → ℝ)
---                         → (RCS : RealsCauchySequence S)
---                         → Σ M ꞉ (ℚ₊ → ℕ) , ((ε : ℚ) → (l : 0ℚ < ε) → (m n : ℕ) → M (ε , l) ≤ m → M (ε , l) ≤ n → B-ℝ (S m) (S n) ε l)
--- modulus-of-convergence' S RCS = II I
---  where
---   condition : (ε : ℚ₊) → ℕ → 𝓤₀ ̇
---   condition (ε , l) N = (m n : ℕ) → N ≤ m → N ≤ n → B-ℝ (S m) (S n) ε l
---   I : Σ M ꞉ (ℚ₊ → ℕ) , ((x : ℚ₊) → condition x (M x))
---   I = generalised-dependent-type-universal-property (λ _ → ℕ) condition RCS
---   II : Σ M ꞉ (ℚ₊ → ℕ) , (((ε , l) : ℚ₊) → condition _ (M _)) → Sigma (ℚ₊ → ℕ)
---                                                                  (λ M → (ε : ℚ) (l : 0ℚ <  ε) (m n : ℕ) → M (ε , l) ≤ m → M (ε , l) ≤ n → B-ℝ (S m) (S n) ε l)
---   II (M , f) = M , (λ ε l m n x x₁ → f (ε , l) m n x x₁)
+modulus-convergent-property : (S : ℕ → ℝ)
+ → (RCS : ℝ-CauchySequence S)
+ → (ε₁ ε₂ : ℚ₊)
+ → let f = δc⦅⦆ S RCS
+   in B-ℝ (S (f (1/2* ε₁))) (S (f (1/2* ε₂))) (1/2* (ε₁ ℚ₊+ ε₂))
+modulus-convergent-property S RCS ε₁₊@(ε₁ , _) ε₂₊@(ε₂ , _) = γ
+ where
+  M = δc⦅⦆ S RCS (1/2* ε₁₊)
+  N = δc⦅⦆ S RCS (1/2* ε₂₊)
 
--- mod-convergence-property : (S : ℕ → ℝ) → (RCS : RealsCauchySequence S)
---                          → ((M , f) : Σ M ꞉ (ℚ₊ → ℕ) , ((ε : ℚ) → (l : 0ℚ < ε) → (m n : ℕ) → M (ε , l) ≤ m → M (ε , l) ≤ n → B-ℝ (S m) (S n) ε l))
---                          → ((ε  , l₁) : ℚ₊) → ((δ , l₂) : ℚ₊)
---                          → B-ℝ (S (M (1/2 * δ , halving-preserves-order' δ l₂))) (S (M (1/2 * ε , halving-preserves-order' ε l₁))) (1/2 * (δ + ε)) (ℚ<-pos-multiplication-preserves-order 1/2 (δ + ε) 0<1/2 (ℚ<-adding-zero δ ε l₂ l₁))
--- mod-convergence-property S RCS (M , f) (ε , l₁) (δ , l₂) = B-ℝ-ε-transport (S Mδ/2) (S Mε/2) (1/2 * δ + 1/2 * ε) (1/2 * (δ + ε)) I II III use-triangle-inequality
---  where
---   1/2-delta-pos : 0ℚ < 1/2 * δ
---   1/2-delta-pos = halving-preserves-order' δ l₂
---   1/2-epsilon-pos : 0ℚ < 1/2 * ε
---   1/2-epsilon-pos = halving-preserves-order' ε l₁
---   Mε/2 : ℕ
---   Mε/2 = M (1/2 * ε , 1/2-epsilon-pos)
---   Mδ/2 : ℕ
---   Mδ/2 = M (1/2 * δ , 1/2-delta-pos)
---   yₙ : ℕ
---   yₙ = ℕmax Mδ/2 Mε/2
---   delta-y : B-ℝ (S Mδ/2) (S yₙ) (1/2 * δ) 1/2-delta-pos
---   delta-y = f (1/2 * δ) 1/2-delta-pos Mδ/2 yₙ (≤-refl Mδ/2) (max-≤-upper-bound Mδ/2 Mε/2)
---   epsilon-y : B-ℝ (S Mε/2) (S yₙ) (1/2 * ε) 1/2-epsilon-pos
---   epsilon-y = f (1/2 * ε) 1/2-epsilon-pos Mε/2 yₙ (≤-refl Mε/2) (transport (Mε/2 ≤_) (ℕmax-comm Mε/2 Mδ/2) (max-≤-upper-bound Mε/2 Mδ/2))
---   y-epsilon : B-ℝ (S yₙ) (S Mε/2) (1/2 * ε) 1/2-epsilon-pos
---   y-epsilon = ℝ-m2 (S Mε/2) (S yₙ) (1/2 * ε) 1/2-epsilon-pos epsilon-y
---   use-triangle-inequality : B-ℝ (S Mδ/2) (S Mε/2) (1/2 * δ + 1/2 * ε) (ℚ<-adding-zero (1/2 * δ) (1/2 * ε) 1/2-delta-pos 1/2-epsilon-pos)
---   use-triangle-inequality = ℝ-m4 (S Mδ/2) (S yₙ) (S Mε/2) (1/2 * δ) (1/2 * ε) 1/2-delta-pos 1/2-epsilon-pos delta-y y-epsilon
---   I : 1/2 * δ + 1/2 * ε ＝ 1/2 * (δ + ε)
---   I = ℚ-distributivity 1/2 δ ε ⁻¹
---   III : 0ℚ < 1/2 * (δ + ε)
---   III = ℚ<-pos-multiplication-preserves-order 1/2 (δ + ε) 0<1/2 (ℚ<-adding-zero δ ε l₂ l₁)
---   II : 0ℚ < 1/2 * δ + 1/2 * ε
---   II = transport (0ℚ <_) (I ⁻¹) III
+  L = ℕmax M N
 
--- ℝ-cauchy-sequences-are-convergent : (S : ℕ → ℝ) → cauchy→convergent ℝ ℝ-metric-space S
--- ℝ-cauchy-sequences-are-convergent S RCS = I (modulus-of-convergence' S RCS)
---  where
---   I : Σ M ꞉ (ℚ₊ → ℕ) , ((ε : ℚ) → (l : 0ℚ < ε) (m n : ℕ) → M (ε , l) ≤ m → M (ε , l) ≤ n → B-ℝ (S m) (S n) ε l) → convergent-sequence ℝ ℝ-metric-space S
---   I (M , f) = II (cauchy-approximation-limit-exists property-satisfies-cauchy-approximation)
---    where
---     by-convergence-property : ((ε , l₁) : ℚ₊)
---                             → ((δ , l₂) : ℚ₊)
---                             → B-ℝ (S (M (1/2 * δ , halving-preserves-order' δ l₂))) (S (M (1/2 * ε , halving-preserves-order' ε l₁))) (1/2 * (δ + ε)) (ℚ<-pos-multiplication-preserves-order 1/2 (δ + ε) 0<1/2 (ℚ<-adding-zero δ ε l₂ l₁))
---     by-convergence-property = mod-convergence-property S RCS (M , f)
+  M≤M = ≤-refl M
+  N≤N = ≤-refl N
+  M≤L = max-≤-upper-bound M N
+  N≤L = max-≤-upper-bound' N M
 
---     property-satisfies-cauchy-approximation : cauchy-approximation
---     property-satisfies-cauchy-approximation = (λ (ε , l) → S (M ((1/2 * ε) , halving-preserves-order' ε l))) , sub-proof
---      where
---       sub-proof : ((ε , l) (δ , l₂) : ℚ₊) → B-ℝ (S (M (1/2 * ε , halving-preserves-order' ε l))) (S (M (1/2 * δ , halving-preserves-order' δ l₂))) (ε + δ) (ℚ<-adding-zero ε δ l l₂)
---       sub-proof (ε , l) (δ , l₂) = ℝ-m3 (S (M (1/2 * ε , halving-preserves-order' ε l))) (S (M (1/2 * δ , halving-preserves-order' δ l₂))) (1/2 * (ε + δ)) (ε + δ) (ℚ<-pos-multiplication-preserves-order 1/2 (ε + δ) 0<1/2 less) less (half-of-pos-is-less (ε + δ) less) (by-convergence-property (δ , l₂) (ε , l))
---        where
---         less : 0ℚ <ℚ ε + δ
---         less = ℚ<-adding-zero ε δ l l₂
---     II : Σ y ꞉ ℝ , (((ε , l₁) : ℚ₊) → ((δ , l₂) : ℚ₊) → B-ℝ (S (M (1/2 * ε  , halving-preserves-order' ε l₁))) y (ε + δ) (ℚ<-adding-zero ε δ l₁ l₂)) → convergent-sequence ℝ ℝ-metric-space S
---     II (y , g) = ∣ y , III ∣
---      where
---       III : ((ε , l) : ℚ₊) → Σ N ꞉ ℕ , ((n : ℕ) → N < n → B-ℝ y (S n) ε l)
---       III (ε , l) = (M (1/4 * ε , l₅)) , IV
---        where
---         l₅ : 0ℚ < 1/4 * ε
---         l₅ = ℚ<-pos-multiplication-preserves-order 1/4 ε (0 , refl) l
---         l₆ : 0ℚ < 1/2 * ε
---         l₆ = halving-preserves-order' ε l
---         l₇ : 0ℚ < 1/2 * ε + 1/4 * ε
---         l₇ = ℚ<-adding-zero (1/2 * ε) (1/4 * ε) l₆ l₅
---         IV : (n : ℕ) → M (1/4 * ε , l₅) < n → B-ℝ y (S n) ε l
---         IV n l₃ = B-ℝ-ε-transport y (S n) (1/2 * ε + 1/4 * ε + 1/4 * ε) ε vi (transport (0ℚ <_) (vi ⁻¹) l) l v
---          where
---            i : B-ℝ (S (M (1/4 * ε , l₅))) (S n) (1/4 * ε) l₅
---            i = f (1/4 * ε) l₅ (M (1/4 * ε , l₅)) n (≤-refl (M (1/4 * ε , l₅))) (<-coarser-than-≤ (M (1/4 * ε , l₅)) n l₃)
---            ii : B-ℝ (S (M (1/2 * (1/2 * ε) , halving-preserves-order' (1/2 * ε) l₆))) y (1/2 * ε + 1/4 * ε) (ℚ<-adding-zero (1/2 * ε) (1/4 * ε) l₆ l₅)
---            ii = g (1/2 * ε , l₆) (1/4 * ε , l₅)
---            iii : B-ℝ (S (M (1/4 * ε , l₅))) y (1/2 * ε + 1/4 * ε) (ℚ<-adding-zero (1/2 * ε) (1/4 * ε) l₆ l₅)
---            iii = transport (λ z → B-ℝ z y (1/2 * ε + 1/4 * ε) (ℚ<-adding-zero (1/2 * ε) (1/4 * ε) l₆ l₅)) α ii
---             where
---              α : S (M (1/2 * (1/2 * ε) , halving-preserves-order' (1/2 * ε) l₆)) ＝ S (M (1/4 * ε , l₅))
---              α = ap (λ z → S (M z)) (to-subtype-＝ (ℚ<-is-prop 0ℚ) (ℚ*-assoc 1/2 1/2 ε ⁻¹ ∙ ap (_* ε) half-of-quarter))
---            iv : B-ℝ y (S (M (1/4 * ε , l₅))) (1/2 * ε + 1/4 * ε) l₇
---            iv = ℝ-m2 (S (M (1/4 * ε , l₅))) y (1/2 * ε + 1/4 * ε) l₇ iii
---            v : B-ℝ y (S n) (1/2 * ε + 1/4 * ε + 1/4 * ε) (ℚ<-adding-zero (1/2 * ε + 1/4 * ε) (1/4 * ε) l₇ l₅)
---            v = ℝ-m4 y (S (M (1/4 * ε , l₅))) (S n) (1/2 * ε + 1/4 * ε) (1/4 * ε) l₇ l₅ iv i
---            vi : 1/2 * ε + 1/4 * ε + 1/4 * ε ＝ ε
---            vi = 1/2 * ε + 1/4 * ε + 1/4 * ε ＝⟨ ap (_+ 1/4 * ε) (ℚ-distributivity' ε 1/2 1/4 ⁻¹) ⟩
---                 (1/2 + 1/4) * ε + 1/4 * ε   ＝⟨ ap (λ z → z * ε + 1/4 * ε) 1/2+1/4 ⟩
---                 3/4 * ε + 1/4 * ε           ＝⟨ ℚ-distributivity' ε 3/4 1/4 ⁻¹ ⟩
---                 (3/4 + 1/4) * ε             ＝⟨ ap (_* ε) (ℚ+-comm 3/4 1/4 ∙ 1/4+3/4) ⟩
---                 1ℚ * ε                      ＝⟨ ℚ-mult-left-id ε ⟩
---                 ε ∎
+  I : B-ℝ (S M) (S L) (1/2* ε₁₊)
+  I = δc⦅⦆-ic S RCS (1/2* ε₁₊) M L M≤M M≤L
 
--- ℝ-complete-metric-space : complete-metric-space ℝ
--- ℝ-complete-metric-space = ℝ-metric-space , ℝ-cauchy-sequences-are-convergent
+  II : B-ℝ (S L) (S N) (1/2* ε₂₊)
+  II = δc⦅⦆-ic S RCS (1/2* ε₂₊) L N N≤L N≤N
 
--- \end{code}
+  III : B-ℝ (S M) (S N) ((1/2* ε₁₊) ℚ₊+ (1/2* ε₂₊))
+  III = ℝ-m4 (S M) (S L) (S N) (1/2* ε₁₊) (1/2* ε₂₊) I II
+
+  IV : 1/2 * ε₁ + 1/2 * ε₂ ＝ 1/2 * (ε₁ + ε₂)
+  IV = ℚ-distributivity 1/2 ε₁ ε₂ ⁻¹
+
+  V : (1/2* ε₁₊) ℚ₊+ (1/2* ε₂₊) ＝ 1/2* (ε₁₊ ℚ₊+ ε₂₊)
+  V = to-subtype-＝ (ℚ<-is-prop 0ℚ) IV
+
+  γ : B-ℝ (S M) (S N) (1/2* (ε₁₊ ℚ₊+ ε₂₊))
+  γ = transport (B-ℝ (S M) (S N)) V III
+
+ℝ-CauchySequenceConvergent : (S : ℕ → ℝ) → cauchy→convergent ℝ ℝ-metric-space S
+ℝ-CauchySequenceConvergent S RCS = γ
+ where
+  δ = δc⦅⦆ S RCS
+
+  I : (ε₁ ε₂ : ℚ₊) → B-ℝ (S (δ (1/2* ε₁))) (S (δ (1/2* ε₂))) (1/2* (ε₁ ℚ₊+ ε₂))
+  I = modulus-convergent-property S RCS
+
+  II : (ε : ℚ₊) (m n : ℕ) → δ ε ≤ m → δ ε ≤ n → B-ℝ (S m) (S n) ε
+  II = δc⦅⦆-ic S RCS
+
+  S' : ℚ₊ → ℝ
+  S' ε = S (δ (1/2* ε))
+
+  S'-is-ca : (ε₁ ε₂ : ℚ₊) → B-ℝ (S' ε₁) (S' ε₂) (ε₁ ℚ₊+ ε₂)
+  S'-is-ca ε₁₊@(ε₁ , 0<ε₁) ε₂₊@(ε₂ , 0<ε₂) = γ
+   where
+    l₁ : 0ℚ < ε₁ + ε₂
+    l₁ = ℚ<-adding-zero ε₁ ε₂ 0<ε₁ 0<ε₂
+
+    l₂ : 1/2 * (ε₁ + ε₂) < (ε₁ + ε₂)
+    l₂ = half-of-pos-is-less (ε₁ + ε₂) l₁
+
+    γ : B-ℝ (S' ε₁₊) (S' ε₂₊) (ε₁₊ ℚ₊+ ε₂₊)
+    γ = ℝ-m3 (S' ε₁₊) (S' ε₂₊) (1/2* (ε₁₊ ℚ₊+ ε₂₊)) (ε₁₊ ℚ₊+ ε₂₊) l₂ (I ε₁₊ ε₂₊)
+
+  ca : cauchy-approximation
+  ca = S' , S'-is-ca
+
+  y : ℝ
+  y = ca-limit ca
+
+  f : (ε₁ ε₂ : ℚ₊) → B-ℝ (S' ε₁) y (ε₁ ℚ₊+ ε₂)
+  f = pr₂ (ca-limit-is-limit ca)
+
+  y-is-limit : (ε : ℚ₊) → Σ M ꞉ ℕ , ((n : ℕ) → M < n → B-ℝ y (S n) ε)
+  y-is-limit ε@(ε' , 0<ε') = N , γ'
+   where
+    N = δ (1/4* ε)
+
+    γ' : (n : ℕ) → N < n → B-ℝ y (S n) ε
+    γ' n N<n = γ''
+     where
+      e₁ : 1/2 * (1/2 * ε') ＝ 1/4 * ε'
+      e₁ = ℚ*-assoc 1/2 1/2 ε' ⁻¹
+
+      e₂ : 1/2* (1/2* ε) ＝ 1/4 * ε' , _
+      e₂ = to-subtype-＝ (ℚ<-is-prop 0ℚ) e₁
+
+      III : B-ℝ (S (δ (1/2* (1/2* ε)))) y ((1/2* ε) ℚ₊+ (1/4* ε))
+      III = f (1/2* ε) (1/4* ε)
+
+      IV : B-ℝ (S N) y ((1/2* ε) ℚ₊+ (1/4* ε))
+      IV = transport (λ ■ → B-ℝ (S (δ ■)) y ((1/2* ε) ℚ₊+ (1/4* ε))) e₂ III
+
+      V : B-ℝ y (S N) ((1/2* ε) ℚ₊+ (1/4* ε))
+      V = ℝ-m2 (S N) y ((1/2* ε) ℚ₊+ (1/4* ε)) IV
+
+      N≤N = ≤-refl N
+      N≤n = <-coarser-than-≤ N n N<n
+
+      VI : B-ℝ (S N) (S n) (1/4* ε)
+      VI = II (1/4* ε) N n N≤N N≤n
+
+      VII : B-ℝ y (S n) (((1/2* ε) ℚ₊+ (1/4* ε)) ℚ₊+ (1/4* ε))
+      VII = ℝ-m4 y (S N) (S n) ((1/2* ε) ℚ₊+ (1/4* ε)) (1/4* ε) V VI
+
+      VIII : 1/2 * ε' + 1/4 * ε' + 1/4 * ε' ＝ ε'
+      VIII = 1/2 * ε' + 1/4 * ε' + 1/4 * ε' ＝⟨ i   ⟩
+             3/4 * ε' + 1/4 * ε'            ＝⟨ ii  ⟩
+             1ℚ * ε'                        ＝⟨ iii ⟩
+             ε'                             ∎
+       where
+        i   = ap (_+ 1/4 * ε') (ℚ-distributivity' ε' 1/2 1/4 ⁻¹)
+        ii  = ℚ-distributivity' ε' 3/4 1/4 ⁻¹
+        iii = ℚ-mult-left-id ε'
+
+      IX : (((1/2* ε) ℚ₊+ (1/4* ε)) ℚ₊+ (1/4* ε)) ＝ ε
+      IX = to-subtype-＝ (ℚ<-is-prop 0ℚ) VIII
+
+      γ'' : B-ℝ y (S n) (ε' , 0<ε')
+      γ'' = transport (B-ℝ y (S n)) IX VII
+
+  γ : ∃ y ꞉ ℝ , ((ε : ℚ₊) → Σ N ꞉ ℕ , ((n : ℕ) → N < n → B-ℝ y (S n) ε))
+  γ = ∣ y , y-is-limit ∣
+
+ℝ-complete-metric-space : complete-metric-space ℝ
+ℝ-complete-metric-space = ℝ-metric-space , ℝ-CauchySequenceConvergent
+
+\end{code}
