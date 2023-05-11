@@ -281,7 +281,8 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
       using (f₊-is-right-adjoint-of-f⁺)
       renaming (right-adjoint-of to right-adjoint-ofₓ;
                 f₊-preserves-binary-meets to f₊-preserves-binary-meetsₓ;
-                adjunction-inequality-forward to adjunction-inequality-forwardₓ)
+                adjunction-inequality-forward to adjunction-inequality-forwardₓ;
+                adjunction-inequality-backward to adjunction-inequality-backwardₓ)
      open GaloisConnectionBetween (poset-of (𝒪 Patchₛ-A)) (poset-of (𝒪 X))
      open GaloisConnectionBetween (poset-of (𝒪 X)) (poset-of (𝒪 A))
       using () renaming (counit to counitₓ)
@@ -407,7 +408,7 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
                           (poset-of (𝒪 Patchₛ-A))
                           f⁻₊
                          holds
-       f⁻*-is-monotone U V p = {!!}
+       f⁻*-is-monotone U V p = {!adjunction-inequality-backwardₓ!}
 
        f⁻₊ₘ : poset-of (𝒪 X) ─m→ poset-of (𝒪 Patchₛ-A)
        f⁻₊ₘ = f⁻₊ , f⁻*-is-monotone
@@ -446,7 +447,7 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
         where
          ϑ₁ : (f⁻⋆ 𝒿 ≤[ poset-of (𝒪 X) ] U) holds
             → (𝒿 ≤[ poset-of (𝒪 Patchₛ-A) ] (f⁻₊ U)) holds
-         ϑ₁ φ i = {!!}
+         ϑ₁ φ i = {!? ≤⟨ ? ⟩ ? ■!}
 
          S =
           ⁅ (𝒻 ⋆∙ β m) ∧[ 𝒪 X ] ¬𝒻⋆ n
@@ -465,8 +466,61 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
                → (((‘ β m ’ ∧[ 𝒪 Patchₛ-A ] ¬‘ βₖ n ’) .pr₁ U) ≤[ poset-of (𝒪 A)  ] j U) holds
              ψ = ≼ᵏ-implies-≼ (‘ β m ’ ∧[ 𝒪 Patchₛ-A ] ¬‘ βₖ n ’) 𝒿 p
 
+             κ : is-clopen₀ (𝒪 X) (𝒻 ⋆∙ β n)
+             κ = compacts-are-clopen-in-zero-dimensional-locales
+                  (𝒪 X)
+                  (pr₂ 𝕤)
+                  (𝒻 ⋆∙ β n)
+                  (μ (β n) (pr₂ (βₖ n)))
+
+             ϡ : (T : ⟨ 𝒪 A ⟩)
+               → (((𝒻 ⋆∙ (β m ∨[ 𝒪 A ] T)) ∧[ 𝒪 X ] 𝒻 ⋆∙ (β n ==>ₐ T))
+                   ≤[ poset-of (𝒪 X) ]
+                  (U ∨[ 𝒪 X ] (𝒻 ⋆∙ T))) holds
+             ϡ T =
+              let
+               open PosetReasoning (poset-of (𝒪 X))
+              in
+               𝒻 ⋆∙ (β m ∨[ 𝒪 A ] T) ∧[ 𝒪 X ] 𝒻 ⋆∙ (β n ==>ₐ T)  ＝⟨ Ⅰ ⟩ₚ
+               𝒻 ⋆∙ ((β m ∨[ 𝒪 A ] T) ∧[ 𝒪 A ] (β n ==>ₐ T))     ≤⟨ Ⅱ  ⟩
+               U ∨[ 𝒪 X ] (𝒻 ⋆∙ T)                               ■
+              where
+               ♣ : (((β m ∨[ 𝒪 A ] T) ∧[ 𝒪 A ] (β n ==>ₐ T))
+                     ≤[ poset-of (𝒪 A) ]
+                    𝒻₊ (U ∨[ 𝒪 X ] (𝒻 ⋆∙ T))) holds
+               ♣ = (β m ∨[ 𝒪 A ] T) ∧[ 𝒪 A ] (β n ==>ₐ T)    ≤⟨ Ⅰ ⟩
+                   j T                                       ≤⟨ Ⅱ ⟩
+                   𝒻₊ (U ∨[ 𝒪 X ] 𝒻 ⋆∙ T)                    ■
+                where
+                 open PosetReasoning (poset-of (𝒪 A))
+
+                 Ⅰ = ≼ᵏ-implies-≼ (‘ β m ’ ∧[ 𝒪 Patchₛ-A ] ¬‘ βₖ n ’) 𝒿 p T
+                 Ⅱ = ≼ᵏ-implies-≼ 𝒿 (f⁻₊ U) φ T
+
+               Ⅰ = frame-homomorphisms-preserve-meets
+                    (𝒪 A)
+                    (𝒪 X)
+                    𝒻
+                    (β m ∨[ 𝒪 A ] T)
+                    (β n ==>ₐ T) ⁻¹
+               Ⅱ = adjunction-inequality-backwardₓ
+                    𝒻
+                    (U ∨[ 𝒪 X ] 𝒻 ⋆∙ T)
+                    ((β m ∨[ 𝒪 A ] T) ∧[ 𝒪 A ] (β n ==>ₐ T))
+                    ♣
+
+             ϟ : (𝒻 ⋆∙ β m ≤[ poset-of (𝒪 X) ] (U ∨[ 𝒪 X ] 𝒻 ⋆∙ β n)) holds
+             ϟ = igors-lemma-⇐ 𝒻 (β m) (β n) U ϡ
+
+             ϑ : (𝒻 ⋆∙ β m ≤[ poset-of (𝒪 X) ] (𝒻 ⋆∙ β n ∨[ 𝒪 X ] U)) holds
+             ϑ = 𝒻 ⋆∙ β m               ≤⟨ ϟ ⟩
+                 U ∨[ 𝒪 X ] 𝒻 ⋆∙ β n    ＝⟨ ∨[ 𝒪 X ]-is-commutative U (𝒻 ⋆∙ β n) ⟩ₚ
+                 𝒻 ⋆∙ β n ∨[ 𝒪 X ] U    ■
+                  where
+                   open PosetReasoning (poset-of (𝒪 X))
+
              goal : (((𝒻 ⋆∙ β m) ∧[ 𝒪 X ] ¬𝒻⋆ n) ≤[ poset-of (𝒪 X) ] U) holds
-             goal = {!!}
+             goal = negation-lemma κ ϑ
 
        † : has-right-adjoint 𝒻⁻⋆ₘ
        † = f⁻₊ₘ , f⁻₊-is-right-adjoint-of-f⁻⁺
