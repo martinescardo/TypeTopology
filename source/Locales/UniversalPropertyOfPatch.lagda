@@ -447,7 +447,10 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
         where
          ϑ₁ : (f⁻⋆ 𝒿 ≤[ poset-of (𝒪 X) ] U) holds
             → (𝒿 ≤[ poset-of (𝒪 Patchₛ-A) ] (f⁻₊ U)) holds
-         ϑ₁ φ i = {!? ≤⟨ ? ⟩ ? ■!}
+         ϑ₁ φ n = j (β n)                       ≤⟨ {!!} ⟩
+                  𝒻₊ (U ∨[ 𝒪 X ] 𝒻 ⋆∙ (β n))    ■
+          where
+           open PosetReasoning (poset-of (𝒪 A))
 
          S =
           ⁅ (𝒻 ⋆∙ β m) ∧[ 𝒪 X ] ¬𝒻⋆ n
