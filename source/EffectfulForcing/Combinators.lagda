@@ -1,4 +1,4 @@
-Martin Escardo 2012
+sMartin Escardo 2012
 
 \begin{code}
 
@@ -6,7 +6,7 @@ Martin Escardo 2012
 
 module EffectfulForcing.Combinators where
 
-open import MLTT.Spartan
+open import MLTT.Spartan hiding (rec)
 
 Ķ : {X Y : 𝓤 ̇ } → X → Y → X
 Ķ x y = x
@@ -17,5 +17,9 @@ open import MLTT.Spartan
 iter : {X : 𝓤 ̇ } → (X → X) → X → ℕ → X
 iter f x  zero    = x
 iter f x (succ n) = f (iter f x n)
+
+rec : {X : Set} → (ℕ → X → X) → X → ℕ → X
+rec f x  zero    = x
+rec f x (succ n) = f n (rec f x n)
 
 \end{code}

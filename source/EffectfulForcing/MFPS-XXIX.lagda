@@ -38,7 +38,7 @@ succ' : B ℕ → B ℕ
 succ' = B-functor succ
 
 iter' : {σ : type} → (B-Set⟦ σ ⟧ → B-Set⟦ σ ⟧) → B-Set⟦ σ ⟧ → B ℕ → B-Set⟦ σ ⟧
-iter' f x = kleisli-extension'(iter f x)
+iter' f x = kleisli-extension' (iter f x)
 
 B⟦_⟧ : {σ : type} → TΩ σ → B-Set⟦ σ ⟧
 B⟦ Ω ⟧     = generic
