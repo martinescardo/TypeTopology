@@ -94,9 +94,16 @@ main-lemma Succ = λ α n n' rn →
 
 main-lemma {(σ ⇒ .σ) ⇒ .σ ⇒ ι ⇒ .σ} Iter = lemma
  where
-  lemma :  (α : Baire) (f : Set⟦ σ ⟧ → Set⟦ σ ⟧)(f' : B-Set⟦ σ ⟧ → B-Set⟦ σ ⟧) → R {σ ⇒ σ} α f f'
-        → (x : Set⟦ σ ⟧)(x' : B-Set⟦ σ ⟧)
-        → R {σ} α x x' → (n : ℕ)(n' : B ℕ) → R {ι} α n n'
+  lemma :  (α : Baire)
+           (f  : Set⟦ σ ⟧ → Set⟦ σ ⟧)
+           (f' : B-Set⟦ σ ⟧ → B-Set⟦ σ ⟧)
+        → R {σ ⇒ σ} α f f'
+        → (x  : Set⟦ σ ⟧)
+          (x' : B-Set⟦ σ ⟧)
+        → R {σ} α x x'
+        → (n  : ℕ)
+          (n' : B ℕ)
+        → R {ι} α n n'
         → R {σ} α (iter f x n) (Kleisli-extension (iter f' x') n')
   lemma α f f' rf x x' rx = R-kleisli-lemma σ α g g' rg
     where
@@ -124,7 +131,8 @@ dialogue-tree-correct t α =
  dialogue (B⟦ t ⟧ generic) α  ＝⟨ refl ⟩
  dialogue (dialogue-tree t) α ∎
   where
-   lemma : (n : ℕ) (n' : B ℕ)
+   lemma : (n  : ℕ)
+           (n' : B ℕ)
          → n ＝ dialogue n' α
          → α n ＝ dialogue (generic n') α
    lemma n n' rn = α n                   ＝⟨ ap α rn ⟩
@@ -132,7 +140,9 @@ dialogue-tree-correct t α =
                    decode α (generic n') ＝⟨ refl ⟩
                    dialogue (generic n') α ∎
 
-eloquence-theorem : (f : Baire → ℕ) → is-T-definable f → eloquent f
+eloquence-theorem : (f : Baire → ℕ)
+                  → is-T-definable f
+                  → eloquent f
 eloquence-theorem f (t , r) =
  (dialogue-tree t ,
   (λ α → dialogue (dialogue-tree t) α ＝⟨ (dialogue-tree-correct t α)⁻¹ ⟩
@@ -148,7 +158,7 @@ eloquence-corollary₀ f d = eloquent-functions-are-continuous
 
 eloquence-corollary₁ : (f : Baire → ℕ)
                      → is-T-definable f
-                     → is-uniformly-continuous(C-restriction f)
+                     → is-uniformly-continuous (C-restriction f)
 eloquence-corollary₁ f d = eloquent-functions-are-UC
                             (C-restriction f)
                             (restriction-is-eloquent f (eloquence-theorem f d))
