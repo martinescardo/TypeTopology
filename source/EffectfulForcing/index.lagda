@@ -11,5 +11,6 @@ import EffectfulForcing.Combinators
 import EffectfulForcing.CombinatoryT
 import EffectfulForcing.Continuity
 import EffectfulForcing.Dialogue
+import EffectfulForcing.Dialogue-to-Brouwer
 
 \end{code}
