@@ -442,15 +442,99 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
           Ⅴ = 𝟎-right-unit-of-∨ (𝒪 X) (W ∧[ 𝒪 X ] V′)
           Ⅵ = ∧[ 𝒪 X ]-lower₁ W V′
 
+       negation-lemma′ : {U V W : ⟨ 𝒪 X ⟩}
+                      → is-clopen₀ (𝒪 X) V
+                       → ((U ∧[ 𝒪 X ] (V ==> 𝟎[ 𝒪 X ]))
+                           ≤[ poset-of (𝒪 X) ]
+                          W) holds
+                       → (U ≤[ poset-of (𝒪 X) ] (V ∨[ 𝒪 X ] W)) holds
+       negation-lemma′ {U} {V} {W} (V′ , p , q) φ =
+        U                                                      ＝⟨ Ⅰ ⟩ₚ
+        U ∧[ 𝒪 X ] 𝟏[ 𝒪 X ]                                    ＝⟨ Ⅱ ⟩ₚ
+        U ∧[ 𝒪 X ] (V ∨[ 𝒪 X ] V′)                             ＝⟨ Ⅲ ⟩ₚ
+        (U ∧[ 𝒪 X ] V) ∨[ 𝒪 X ] (U ∧[ 𝒪 X ] V′)                ＝⟨ Ⅳ ⟩ₚ
+        (U ∧[ 𝒪 X ] V) ∨[ 𝒪 X ] (U ∧[ 𝒪 X ] (V ==> 𝟎[ 𝒪 X ]))  ≤⟨ Ⅴ  ⟩
+        (U ∧[ 𝒪 X ] V) ∨[ 𝒪 X ] W                              ≤⟨ Ⅵ  ⟩
+        V ∨[ 𝒪 X ] W                                           ■
+         where
+          open PosetReasoning (poset-of (𝒪 X))
+
+          open LemmasAboutHeytingComplementation X X-has-basis
+
+          Ⅰ =  𝟏-right-unit-of-∧ (𝒪 X) U ⁻¹
+          Ⅱ = ap (λ - → U ∧[ 𝒪 X ] -) (q ⁻¹)
+          Ⅲ = binary-distributivity (𝒪 X) U V V′
+          Ⅳ = ap
+               (λ - → (U ∧[ 𝒪 X ] V) ∨[ 𝒪 X ] (U ∧[ 𝒪 X ] -))
+               (heyting-complement-is-complement V V′ (p , q))
+          Ⅴ = ∨[ 𝒪 X ]-right-monotone φ
+          Ⅵ = ∨[ 𝒪 X ]-left-monotone (∧[ 𝒪 X ]-lower₂ U V)
+
        f⁻₊-is-right-adjoint-of-f⁻⁺ : (𝒻⁻⋆ₘ ⊣ f⁻₊ₘ) holds
        f⁻₊-is-right-adjoint-of-f⁻⁺ 𝒿@(j , _) U = ϑ₁ , ϑ₂
         where
          ϑ₁ : (f⁻⋆ 𝒿 ≤[ poset-of (𝒪 X) ] U) holds
             → (𝒿 ≤[ poset-of (𝒪 Patchₛ-A) ] (f⁻₊ U)) holds
-         ϑ₁ φ n = j (β n)                       ≤⟨ {!!} ⟩
-                  𝒻₊ (U ∨[ 𝒪 X ] 𝒻 ⋆∙ (β n))    ■
-          where
-           open PosetReasoning (poset-of (𝒪 A))
+         ϑ₁ φ n =
+          adjunction-inequality-forwardₓ
+           𝒻
+           (U ∨[ 𝒪 X ] 𝒻 ⋆∙ β n)
+           (j (β n))
+           ψ
+            where
+             open PosetReasoning (poset-of (𝒪 X))
+
+             ♣ : (m n : Bₐ)
+               → ((‘ β m ’ ∧[ 𝒪 Patch-A ] ¬‘ βₖ n ’) ≤[ poset-of (𝒪 Patchₛ-A) ] 𝒿) holds
+               → (𝒻 ⋆∙ (β m) ≤[ poset-of (𝒪 X) ] (𝒻 ⋆∙ (β n) ∨[ 𝒪 X ] U)) holds
+             ♣ m n ν = negation-lemma′ κ ♥
+              where
+               κ : is-clopen₀ (𝒪 X) (𝒻 ⋆∙ β n)
+               κ = compacts-are-clopen-in-zero-dimensional-locales
+                    (𝒪 X)
+                    (pr₂ 𝕤)
+                    (𝒻 ⋆∙ β n)
+                    (μ (β n) (pr₂ (βₖ n)))
+
+               ♢ : ((𝒻 ⋆∙ β m ∧[ 𝒪 X ] ((𝒻 ⋆∙ β n) ==> 𝟎[ 𝒪 X ]))
+                     ≤[ poset-of (𝒪 X) ]
+                    f⁻⋆ 𝒿) holds
+               ♢ = ⋁[ 𝒪 X ]-upper
+                    (⁅ (𝒻 ⋆∙ β m) ∧[ 𝒪 X ] ¬𝒻⋆ n
+                      ∣ (m , n , p) ∶ Σ m ꞉ Bₐ , Σ n ꞉ Bₐ , 𝕃 𝒿 m n holds ⁆)
+                    (m , n , ν)
+
+               ♥ : ((𝒻 ⋆∙ β m ∧[ 𝒪 X ] ((𝒻 ⋆∙ β n) ==> 𝟎[ 𝒪 X ]))
+                     ≤[ poset-of (𝒪 X) ]
+                    U) holds
+               ♥ = 𝒻 ⋆∙ β m ∧[ 𝒪 X ] ((𝒻 ⋆∙ β n) ==> 𝟎[ 𝒪 X ])   ≤⟨ ♢ ⟩
+                   f⁻⋆ 𝒿                                         ≤⟨ φ ⟩
+                   U                                             ■
+
+             ♠ : (m n : Bₐ)
+               → ((‘ β m ’ ∧[ 𝒪 Patch-A ] ¬‘ βₖ n ’)
+                   ≤[ poset-of (𝒪 Patchₛ-A) ]
+                  𝒿) holds
+               → (T : ⟨ 𝒪 A ⟩)
+               → (𝒻 ⋆∙ (‘ β m ’ ∧[ 𝒪 Patch-A ] ¬‘ βₖ n ’) .pr₁ T
+                   ≤[ poset-of (𝒪 X) ]
+                  (U ∨[ 𝒪 X ] (𝒻 ⋆∙ β n))) holds
+             ♠ m n φ T = {!!}
+              where
+               foo : {!!}
+               foo = {!!}
+
+               ※ : {!!}
+               ※ = igors-lemma-⇒ 𝒻 ? (β n) U foo T
+
+             ξ : (T : ⟨ 𝒪 A ⟩)
+               → ((𝒻 ⋆∙ (j (β n) ∨[ 𝒪 A ] T) ∧[ 𝒪 X ] (𝒻 ⋆∙ (β n ==>ₐ T)))
+                   ≤[ poset-of (𝒪 X) ]
+                  (U ∨[ 𝒪 X ] 𝒻 ⋆∙ T)) holds
+             ξ T = {!!}
+
+             ψ : (𝒻 ⋆∙ j (β n) ≤[ poset-of (𝒪 X) ] (U ∨[ 𝒪 X ] 𝒻 ⋆∙ β n)) holds
+             ψ = igors-lemma-⇐ 𝒻 (j (β n)) (β n) U ξ
 
          S =
           ⁅ (𝒻 ⋆∙ β m) ∧[ 𝒪 X ] ¬𝒻⋆ n
