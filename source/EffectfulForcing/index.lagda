@@ -12,5 +12,6 @@ import EffectfulForcing.CombinatoryT
 import EffectfulForcing.Continuity
 import EffectfulForcing.Dialogue
 import EffectfulForcing.Dialogue-to-Brouwer
+import EffectfulForcing.WithoutOracle       -- By Vincent Rahli
 
 \end{code}
