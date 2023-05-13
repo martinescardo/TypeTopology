@@ -126,8 +126,7 @@ kleisli-extension⋆ : {X : 𝓦  ̇ } {Y : 𝓦'  ̇ } {A : 𝓣 ̇ }
                    → (X → B⋆ Y A)
                    → B⋆ X A
                    → B⋆ Y A
-kleisli-extension⋆ f d η' β' = D⋆-rec (λ x → f x η' β') β' d
-
+kleisli-extension⋆ f d η' β' = d (λ x → f x η' β') β'
 
 B⋆-functor : {X Y A : Type} → (X → Y) → B⋆ X A → B⋆ Y A
 B⋆-functor f = kleisli-extension⋆ (λ x → η⋆ (f x))
@@ -203,7 +202,7 @@ B↦B⋆ = church-encode
 
 ⌜β⌝ : {X Y Z A : type} {n : ℕ} {Γ : Cxt n}
     → T Γ (((Y ⇒ ⌜D⋆⌝ X Y Z A) ⇒ X ⇒ ⌜D⋆⌝ X Y Z A))
-⌜β⌝ = ƛ (ƛ (ƛ (ƛ (ν₀ · ƛ(ν₄ · ν₀ · ν₂ · ν₁) · ν₂))))
+⌜β⌝ = ƛ (ƛ (ƛ (ƛ (ν₀ · ƛ (ν₄ · ν₀ · ν₂ · ν₁) · ν₂))))
 
 β-behaviour : {X Y Z A : type} → ⟦ ⌜β⌝ {X} {Y} {Z} {A} ⟧₀ ＝ β⋆
 β-behaviour = refl
@@ -213,7 +212,7 @@ B↦B⋆ = church-encode
 
 ⌜kleisli-extension⌝ : {X Y A : type} {n : ℕ} {Γ : Cxt n}
                     → T Γ ((X ⇒ ⌜B⌝ Y A) ⇒ ⌜B⌝ X A ⇒ ⌜B⌝ Y A)
-⌜kleisli-extension⌝ = ƛ (ƛ (ƛ (ƛ (ν₂ · ƛ(ν₄ · ν₀ · ν₂ · ν₁) · ν₀))))
+⌜kleisli-extension⌝ = ƛ (ƛ (ƛ (ƛ (ν₂ · ƛ (ν₄ · ν₀ · ν₂ · ν₁) · ν₀))))
 
 kleisli-extension-behaviour : {X Y A : type}
                             → ⟦ ⌜kleisli-extension⌝ {X} {Y} {A} ⟧₀
@@ -222,7 +221,7 @@ kleisli-extension-behaviour = refl
 
 ⌜B-functor⌝ : {X Y A : type} {n : ℕ} {Γ : Cxt n}
             → T Γ ((X ⇒ Y) ⇒ ⌜B⌝ X A ⇒ ⌜B⌝ Y A)
-⌜B-functor⌝ = ƛ(⌜kleisli-extension⌝ · ƛ(⌜η⌝ · (ν₁ · ν₀)))
+⌜B-functor⌝ = ƛ(⌜kleisli-extension⌝ · ƛ (⌜η⌝ · (ν₁ · ν₀)))
 
 B-functor-behaviour : {X Y A : type}
                     → ⟦ ⌜B-functor⌝ {X} {Y} {A} ⟧₀
