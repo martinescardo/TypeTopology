@@ -22,7 +22,7 @@ open import EffectfulForcing.Dialogue
 open import EffectfulForcing.CombinatoryT
 
 B-Set⟦_⟧ : type → 𝓤₀ ̇
-B-Set⟦ ι ⟧ = B(Set⟦ ι ⟧)
+B-Set⟦ ι ⟧     = B ℕ
 B-Set⟦ σ ⇒ τ ⟧ = B-Set⟦ σ ⟧ → B-Set⟦ τ ⟧
 
 Kleisli-extension : {X : 𝓤₀ ̇ } {σ : type} → (X → B-Set⟦ σ ⟧) → B X → B-Set⟦ σ ⟧
@@ -135,9 +135,9 @@ dialogue-tree-correct t α =
            (n' : B ℕ)
          → n ＝ dialogue n' α
          → α n ＝ dialogue (generic n') α
-   lemma n n' rn = α n                   ＝⟨ ap α rn ⟩
-                   α (dialogue n' α)     ＝⟨ generic-diagram α n' ⟩
-                   decode α (generic n') ＝⟨ refl ⟩
+   lemma n n' rn = α n                     ＝⟨ ap α rn ⟩
+                   α (dialogue n' α)       ＝⟨ generic-diagram α n' ⟩
+                   decode α (generic n')   ＝⟨ refl ⟩
                    dialogue (generic n') α ∎
 
 eloquence-theorem : (f : Baire → ℕ)
