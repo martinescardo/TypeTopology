@@ -4,8 +4,8 @@ This is a variant of the proof given by Martin Escardo in
 https://doi.org/10.1016/j.entcs.2013.09.010 (MFPS XXIX) that does not
 use the formal oracle Ω, and instead directly shows the relation
 between ⟦_⟧ and B⟦_⟧ (see R's definition and main-lemma).  Then, as
-before in dialogue-tree-correct, we use generic to consult the
-``oracle'' α.
+before in dialogue-tree-correct, we use generic sequence to consult
+the ``oracle'' α.
 
 \begin{code}
 
