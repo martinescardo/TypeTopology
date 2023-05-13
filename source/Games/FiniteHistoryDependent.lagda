@@ -89,27 +89,27 @@ but using our tree representation of games instead:
 sub : {X : Type} {Y : X → Type} → (Σ Y → R) → (x : X) → Y x → R
 sub q x xs = q (x , xs)
 
-private
- _⊗ᴷ_ : {X : Type} {Y : X → Type}
-      → K X
-      → ((x : X) → K (Y x))
-      → K (Σ x ꞉ X , Y x)
- _⊗ᴷ_ = _⊗_ (𝕂 R)
+_⊗ᴷ_ : {X : Type} {Y : X → Type}
+     → K X
+     → ((x : X) → K (Y x))
+     → K (Σ x ꞉ X , Y x)
+_⊗ᴷ_ = _⊗_ (𝕂 R)
 
- ⊗ᴷ-direct-definition : {X : Type} {Y : X → Type}
-                        (ϕ : K X)
-                        (γ : (x : X) → K (Y x))
-                      → ϕ ⊗ᴷ γ ∼ (λ q → ϕ (λ x → γ x (sub q x)))
- ⊗ᴷ-direct-definition ϕ γ q = refl
+⊗ᴷ-direct-definition : {X : Type} {Y : X → Type}
+                       (ϕ : K X)
+                       (γ : (x : X) → K (Y x))
+                     → ϕ ⊗ᴷ γ ∼ (λ q → ϕ (λ x → γ x (sub q x)))
+⊗ᴷ-direct-definition ϕ γ q = refl
 
- ηᴷ : {X : Type} → X → K X
- ηᴷ = η (𝕂 R)
+ηᴷ : {X : Type} → X → K X
+ηᴷ = η (𝕂 R)
 
- K-ext : {X Y : Type} → (X → K Y) → K X → K Y
- K-ext = ext (𝕂 R)
+K-ext : {X Y : Type} → (X → K Y) → K X → K Y
+K-ext = ext (𝕂 R)
 
- K-map : {X Y : Type} → (X → Y) → K X → K Y
- K-map = map (𝕂 R)
+K-map : {X Y : Type} → (X → Y) → K X → K Y
+K-map = map (𝕂 R)
+
 
 K-sequence : {Xt : 𝕋} → 𝓚 Xt → K (Path Xt)
 K-sequence {[]}     ⟨⟩        = λ q → q ⟨⟩
@@ -313,30 +313,29 @@ reference [1], but using our tree representation of games instead:
 
 \begin{code}
 
-private
- _⊗ᴶ_ : {X : Type} {Y : X → Type}
-      → J X
-      → ((x : X) → J (Y x))
-      → J (Σ x ꞉ X , Y x)
- _⊗ᴶ_ = _⊗_ (𝕁 R)
+_⊗ᴶ_ : {X : Type} {Y : X → Type}
+     → J X
+     → ((x : X) → J (Y x))
+     → J (Σ x ꞉ X , Y x)
+_⊗ᴶ_ = _⊗_ (𝕁 R)
 
- ⊗ᴶ-direct-definition : {X : Type} {Y : X → Type}
-                        (ε : J X)
-                        (δ : (x : X) → J (Y x))
-                      → ε ⊗ᴶ δ ∼ (λ q → let
-                                         ν  = λ x → δ x (sub q x)
-                                         x₀ = ε (λ x → sub q x (ν x))
-                                        in x₀ :: ν x₀)
- ⊗ᴶ-direct-definition ε δ q = refl
+⊗ᴶ-direct-definition : {X : Type} {Y : X → Type}
+                       (ε : J X)
+                       (δ : (x : X) → J (Y x))
+                     → ε ⊗ᴶ δ ∼ (λ q → let
+                                        ν  = λ x → δ x (sub q x)
+                                        x₀ = ε (λ x → sub q x (ν x))
+                                       in x₀ :: ν x₀)
+⊗ᴶ-direct-definition ε δ q = refl
 
- ηᴶ : {X : Type} → X → J X
- ηᴶ = η (𝕁 R)
+ηᴶ : {X : Type} → X → J X
+ηᴶ = η (𝕁 R)
 
- J-ext : {X Y : Type} → (X → J Y) → J X → J Y
- J-ext = ext (𝕁 R)
+J-ext : {X Y : Type} → (X → J Y) → J X → J Y
+J-ext = ext (𝕁 R)
 
- J-map : {X Y : Type} → (X → Y) → J X → J Y
- J-map = map (𝕁 R)
+J-map : {X Y : Type} → (X → Y) → J X → J Y
+J-map = map (𝕁 R)
 
 J-sequence : {Xt : 𝕋} → 𝓙 Xt → J (Path Xt)
 J-sequence {[]}     ⟨⟩        = λ q → ⟨⟩
@@ -438,7 +437,7 @@ then εt are selections of ϕt, but we don't need this fact here.
 
 main-lemma : {Xt : 𝕋} (εt : 𝓙 Xt) (q : Path Xt → R)
            → strategic-path (selection-strategy εt q)
-             ＝ J-sequence εt q
+           ＝ J-sequence εt q
 main-lemma {[]}     ⟨⟩           q = refl
 main-lemma {X ∷ Xf} εt@(ε :: εf) q =
  strategic-path (selection-strategy (ε :: εf) q) ＝⟨ refl ⟩
@@ -531,11 +530,11 @@ Added 27th August 2023 after the above was submitted for publication.
 
 \begin{code}
 
-Selection-Strategy-Corollary : Fun-Ext
+selection-strategy-corollary : Fun-Ext
                              → (G : Game) (εt : 𝓙 (Xt G))
                              → εt are-selections-of (ϕt G)
                              → q G (J-sequence εt (q G)) ＝ optimal-outcome G
-Selection-Strategy-Corollary fe G εt a =
+selection-strategy-corollary fe G εt a =
  q G (J-sequence εt (q G))                          ＝⟨ I ⟩
  q G (strategic-path (selection-strategy εt (q G))) ＝⟨ II ⟩
  optimal-outcome G                                  ∎

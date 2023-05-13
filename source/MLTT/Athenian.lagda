@@ -389,7 +389,7 @@ data Fin : ℕ → 𝓤₀ ̇  where
  suc : {n : ℕ} → Fin n → Fin (succ n)
 
 ℕ-to-Fin : (n : ℕ) → Fin (succ n)
-ℕ-to-Fin 0     = 𝟎
+ℕ-to-Fin 0        = 𝟎
 ℕ-to-Fin (succ n) = suc (ℕ-to-Fin n)
 
 pattern 𝟏 = suc 𝟎
