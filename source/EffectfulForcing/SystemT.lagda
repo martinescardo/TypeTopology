@@ -96,7 +96,7 @@ T₀ = T 〈〉
 ⟦ t ⟧₀ = ⟦ t ⟧ ⟨⟩
 
 T-definable : {σ : type} → 〖 σ 〗 → Type
-T-definable x = Σ \t → ⟦ t ⟧₀ ＝ x
+T-definable {σ} x = Σ t ꞉ T₀ σ , ⟦ t ⟧₀ ＝ x
 
 \end{code}
 

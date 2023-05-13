@@ -25,9 +25,9 @@ B-Set⟦_⟧ : type → 𝓤₀ ̇
 B-Set⟦ ι ⟧ = B(Set⟦ ι ⟧)
 B-Set⟦ σ ⇒ τ ⟧ = B-Set⟦ σ ⟧ → B-Set⟦ τ ⟧
 
-kleisli-extension' : {X : 𝓤₀ ̇ } {σ : type} → (X → B-Set⟦ σ ⟧) → B X → B-Set⟦ σ ⟧
-kleisli-extension' {X} {ι}     = kleisli-extension
-kleisli-extension' {X} {σ ⇒ τ} = λ g d s → kleisli-extension' {X} {τ} (λ x → g x s) d
+Kleisli-extension : {X : 𝓤₀ ̇ } {σ : type} → (X → B-Set⟦ σ ⟧) → B X → B-Set⟦ σ ⟧
+Kleisli-extension {X} {ι}     = kleisli-extension
+Kleisli-extension {X} {σ ⇒ τ} = λ g d s → Kleisli-extension {X} {τ} (λ x → g x s) d
 
 zero' : B ℕ
 zero' = η zero
@@ -36,7 +36,7 @@ succ' : B ℕ → B ℕ
 succ' = B-functor succ
 
 iter' : {σ : type} → (B-Set⟦ σ ⟧ → B-Set⟦ σ ⟧) → B-Set⟦ σ ⟧ → B ℕ → B-Set⟦ σ ⟧
-iter' f x = kleisli-extension' (iter f x)
+iter' f x = Kleisli-extension (iter f x)
 
 B⟦_⟧ : {σ : type} → T σ → B-Set⟦ σ ⟧
 B⟦ Zero ⟧  = zero'
@@ -64,13 +64,13 @@ R-kleisli-lemma : (σ : type)
                 → (n  : ℕ)
                   (n' : B ℕ)
                 → R α n n'
-                → R α (g n) (kleisli-extension' g' n')
+                → R α (g n) (Kleisli-extension g' n')
 
 R-kleisli-lemma ι α g g' rg n n' rn =
  g n                                   ＝⟨ rg n ⟩
  dialogue (g' n) α                     ＝⟨ ap (λ - → dialogue (g' -) α) rn ⟩
  dialogue (g' (dialogue n' α)) α       ＝⟨ decode-kleisli-extension g' n' α ⟩
- dialogue (kleisli-extension' g' n') α ∎
+ dialogue (Kleisli-extension g' n') α  ∎
 
 R-kleisli-lemma (σ ⇒ τ) α g g' rg n n' rn
   = λ y y' ry → R-kleisli-lemma
@@ -97,7 +97,7 @@ main-lemma {(σ ⇒ .σ) ⇒ .σ ⇒ ι ⇒ .σ} Iter = lemma
   lemma :  (α : Baire) (f : Set⟦ σ ⟧ → Set⟦ σ ⟧)(f' : B-Set⟦ σ ⟧ → B-Set⟦ σ ⟧) → R {σ ⇒ σ} α f f'
         → (x : Set⟦ σ ⟧)(x' : B-Set⟦ σ ⟧)
         → R {σ} α x x' → (n : ℕ)(n' : B ℕ) → R {ι} α n n'
-        → R {σ} α (iter f x n) (kleisli-extension' (iter f' x') n')
+        → R {σ} α (iter f x n) (Kleisli-extension (iter f' x') n')
   lemma α f f' rf x x' rx = R-kleisli-lemma σ α g g' rg
     where
       g : ℕ → Set⟦ σ ⟧

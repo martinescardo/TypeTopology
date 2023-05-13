@@ -21,7 +21,7 @@ dialogue (η z)   α = z
 dialogue (β φ x) α = dialogue (φ(α x)) α
 
 eloquent : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } → ((X → Y) → Z) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
-eloquent {𝓤} {𝓥} {𝓦} {X} {Y} {Z} f = Σ d ꞉ D X Y Z , (dialogue d ∼ f)
+eloquent {𝓤} {𝓥} {𝓦} {X} {Y} {Z} f = Σ d ꞉ D X Y Z , dialogue d ∼ f
 
 B : 𝓤₀ ̇  → 𝓤₀ ̇
 B = D ℕ ℕ

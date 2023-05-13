@@ -20,7 +20,7 @@ infix 0 _＝⟪_⟫_
 infixr 3 _∷_
 
 is-continuous : (Baire → ℕ) → 𝓤₀ ̇
-is-continuous f = (α : Baire) → Σ s ꞉ List ℕ , ((α' : Baire) → α ＝⟪ s ⟫ α' → f α ＝ f α')
+is-continuous f = ∀ α → Σ s ꞉ List ℕ , (∀ α' → α ＝⟪ s ⟫ α' → f α ＝ f α')
 
 continuity-extensional : (f g : Baire → ℕ)
                        → (f ∼ g)
@@ -45,7 +45,7 @@ data _＝⟦_⟧_ {X : 𝓤₀ ̇ } : (ℕ → X) → BT ℕ → (ℕ → X) →
          → α i ＝ α' i → ((j : 𝟚) → α ＝⟦ s j ⟧ α') → α ＝⟦ i ∷ s ⟧ α'
 
 is-uniformly-continuous : (Cantor → ℕ) → 𝓤₀ ̇
-is-uniformly-continuous f = Σ s ꞉ BT ℕ , ((α α' : Cantor) → α ＝⟦ s ⟧ α' → f α ＝ f α')
+is-uniformly-continuous f = Σ s ꞉ BT ℕ , (∀ α α' → α ＝⟦ s ⟧ α' → f α ＝ f α')
 
 UC-extensional : (f g : Cantor → ℕ)
                → (f ∼ g)

@@ -2,7 +2,7 @@ Martin Escardo 2012
 
 This is a version of the Agda code of the MFPS paper
 https://doi.org/10.1016/j.entcs.2013.09.010 with a number of
-additional extensions.
+extensions.
 
 The following imports are ordered chronologically. Please don't sort
 them in alphabetical order.

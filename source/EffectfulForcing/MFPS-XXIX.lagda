@@ -132,7 +132,8 @@ main-lemma {(σ ⇒ .σ) ⇒ .σ ⇒ ι ⇒ .σ} Iter = lemma
 
 main-lemma K = λ x x' rx y y' ry → rx
 
-main-lemma S = λ f f' rf g g' rg x x' rx → rf x x' rx (λ α → g α (x α)) (g' x') (rg x x' rx)
+main-lemma S = λ f f' rf g g' rg x x' rx
+                 → rf x x' rx (λ α → g α (x α)) (g' x') (rg x x' rx)
 
 main-lemma (t · u) = main-lemma t ⟦ u ⟧' B⟦ u ⟧ (main-lemma u)
 
@@ -150,8 +151,8 @@ eloquence-theorem f (t , r) =
          f α                          ∎))
 
 eloquence-corollary₀ : (f : Baire → ℕ)
-           → is-T-definable f
-           → is-continuous f
+                     → is-T-definable f
+                     → is-continuous f
 eloquence-corollary₀ f d = eloquent-functions-are-continuous
                             f
                             (eloquence-theorem f d)
@@ -165,8 +166,7 @@ eloquence-corollary₁ f d = eloquent-functions-are-UC
 
 \end{code}
 
-This concludes the development. Some experiments follow (results not
-included, see the pdf version, or evaluate the examples please):
+This concludes the development. Some experiments follow.
 
 \begin{code}
 
@@ -175,15 +175,16 @@ module experiments where
  mod-cont : T ((ι ⇒ ι) ⇒ ι) → Baire → List ℕ
  mod-cont t α = pr₁(eloquence-corollary₀ ⟦ t ⟧ (t , refl) α)
 
- mod-cont-obs : (t : T ((ι ⇒ ι) ⇒ ι)) (α : Baire) → mod-cont t α ＝ pr₁(dialogue-continuity (dialogue-tree t) α)
+ mod-cont-obs : (t : T ((ι ⇒ ι) ⇒ ι)) (α : Baire)
+              → mod-cont t α ＝ pr₁(dialogue-continuity (dialogue-tree t) α)
  mod-cont-obs t α = refl
 
  flatten : {X : 𝓤₀ ̇ } → BT X → List X
  flatten [] = []
- flatten (_∷_ x t) = x ∷ flatten(t ₀) ++ flatten(t ₁)
+ flatten (x ∷ t) = x ∷ flatten(t ₀) ++ flatten(t ₁)
 
  mod-unif : T ((ι ⇒ ι) ⇒ ι) → List ℕ
- mod-unif t = flatten(pr₁ (eloquence-corollary₁ ⟦ t ⟧ (t , refl)))
+ mod-unif t = flatten (pr₁ (eloquence-corollary₁ ⟦ t ⟧ (t , refl)))
 
  I : {σ : type} → T (σ ⇒ σ)
  I {σ} = S · K · (K {σ} {σ})
@@ -201,9 +202,11 @@ module experiments where
  t₀-interpretation : ⟦ t₀ ⟧ ＝ λ α → 17
  t₀-interpretation = refl
 
- example₀ example₀' : List ℕ
- example₀ = mod-cont t₀ (λ i → i)
- example₀' = mod-unif t₀
+ example₀ : mod-cont t₀ (λ i → i) ＝ []
+ example₀ = refl
+
+ example₀' : mod-unif t₀ ＝ []
+ example₀' = refl
 
  v : {γ : type} → T (γ ⇒ γ)
  v = I
@@ -222,8 +225,8 @@ module experiments where
  t₁-interpretation : ⟦ t₁ ⟧ ＝ λ α → α 17
  t₁-interpretation = refl
 
- example₁ : List ℕ
- example₁ = mod-unif t₁
+ example₁ : mod-unif t₁ ＝ 17 ∷ []
+ example₁ = refl
 
  t₂ : T ((ι ⇒ ι) ⇒ ι)
  t₂ = Iter • t₁ • t₁
@@ -231,9 +234,13 @@ module experiments where
  t₂-interpretation : ⟦ t₂ ⟧ ＝ λ α → iter α (α 17) (α 17)
  t₂-interpretation = refl
 
- example₂ example₂' : List ℕ
- example₂ = mod-unif t₂
- example₂' = mod-cont t₂ (λ i → i)
+ example₂ : mod-unif t₂ ＝ 17 ∷ 17 ∷ 17 ∷ 0 ∷ 1 ∷ []
+ example₂ = refl
+
+ example₂' : mod-cont t₂ (λ i → i)
+           ＝ 17 ∷ 17 ∷ 17 ∷ 17 ∷ 17 ∷ 17 ∷ 17 ∷ 17 ∷ 17
+             ∷ 17 ∷ 17 ∷ 17 ∷ 17 ∷ 17 ∷ 17 ∷ 17 ∷ 17 ∷ 17 ∷ 17 ∷ []
+ example₂' = refl
 
  Add : T (ι ⇒ ι ⇒ ι)
  Add = Iter · Succ
@@ -249,9 +256,13 @@ module experiments where
  t₃-interpretation : ⟦ t₃ ⟧ ＝ λ α → iter α (α 1) (iter succ (α 2) (α 3))
  t₃-interpretation = refl
 
- example₃ example₃' : List ℕ
- example₃ = mod-cont t₃ succ
- example₃' = mod-unif t₃
+ example₃ : mod-cont t₃ succ
+          ＝ 3 ∷ 2 ∷ 1 ∷ 2 ∷ 3 ∷ 4 ∷ 5 ∷ 6 ∷ 7 ∷ 8 ∷ []
+ example₃ = refl
+
+ example₃' : mod-unif t₃
+           ＝ 3 ∷ 2 ∷ 1 ∷ 1 ∷ 0 ∷ 1 ∷ 2 ∷ 1 ∷ 0 ∷ 1 ∷ 1 ∷ 0 ∷ 0 ∷ 1 ∷ 1 ∷ 0 ∷ 1 ∷ []
+ example₃' = refl
 
  max : ℕ → ℕ → ℕ
  max 0        y        = y
@@ -259,39 +270,60 @@ module experiments where
  max (succ x) (succ y) = succ (max x y)
 
  Max : List ℕ → ℕ
- Max [] = 0
+ Max []      = 0
  Max (x ∷ s) = max x (Max s)
 
  t₄ : T ((ι ⇒ ι) ⇒ ι)
  t₄ = Iter • ((v • (v • Number 2)) +ᵀ (v • Number 3)) • t₃
 
- t₄-interpretation : ⟦ t₄ ⟧ ＝ λ α → iter α (iter succ (α (α 2)) (α 3)) (iter α (α 1) (iter succ (α 2) (α 3)))
+ t₄-interpretation : ⟦ t₄ ⟧
+                   ＝ λ α → iter
+                             α
+                             (iter succ (α (α 2)) (α 3))
+                             (iter α (α 1) (iter succ (α 2) (α 3)))
  t₄-interpretation = refl
 
- example₄ example₄' : ℕ
- example₄ = length(mod-unif t₄)
- example₄' = Max(mod-unif t₄)
+ example₄ : length (mod-unif t₄) ＝ 215
+ example₄ = refl
+
+ example₄' : Max (mod-unif t₄) ＝ 3
+ example₄' = refl
 
  t₅ : T ((ι ⇒ ι) ⇒ ι)
  t₅ = Iter • (v • (v • t₂ +ᵀ t₄)) • (v • Number 2)
 
- t₅-explicitly : t₅ ＝  (S · (S · Iter · (S · I · (S · (S · (K · (Iter · Succ)) · (S · I · (S
-                     · (S · Iter · (S · I · (K · (number 17)))) · (S · I · (K · (number 17))))))
-                     · (S · (S · Iter · (S · (S · (K · (Iter · Succ)) · (S · I · (S · I · (K · (number 2)))))
-                     · (S · I · (K · (number 3))))) · (S · (S · Iter · (S · I · (K · (number 1))))
-                     · (S · (S · (K · (Iter · Succ)) · (S · I · (K · (number 2)))) · (S · I · (K
-                     · (number 3))))))))) · (S · I · (K · (number 2))))
+ t₅-explicitly : t₅ ＝
+  (S · (S · Iter · (S · I · (S · (S · (K · (Iter · Succ))
+  · (S · I · (S · (S · Iter · (S · I · (K · (number 17))))
+  · (S · I · (K · (number 17)))))) · (S · (S · Iter · (S · (S
+  · (K · (Iter · Succ)) · (S · I · (S · I · (K · (number 2)))))
+  · (S · I · (K · (number 3))))) · (S · (S · Iter · (S · I
+  · (K · (number 1)))) · (S · (S · (K · (Iter · Succ))
+  · (S · I · (K · (number 2)))) · (S · I · (K
+  · (number 3))))))))) · (S · I · (K · (number 2))))
 
  t₅-explicitly = refl
 
- t₅-interpretation : ⟦ t₅ ⟧ ＝ λ α → iter α (α(iter succ (α(iter α (α 17) (α 17)))
-                                               (iter α (iter succ (α (α 2)) (α 3))
-                                               (iter α (α 1) (iter succ (α 2) (α 3)))))) (α 2)
+ t₅-interpretation : ⟦ t₅ ⟧
+                   ＝ λ α → iter
+                             α
+                             (α (iter
+                                  succ
+                                  (α (iter α (α 17) (α 17)))
+                                  (iter
+                                    α
+                                    (iter succ (α (α 2)) (α 3))
+                                    (iter α (α 1) (iter succ (α 2) (α 3))))))
+                             (α 2)
  t₅-interpretation = refl
 
- example₅ example₅' example₅'' : ℕ
- example₅ = length(mod-unif t₅)
- example₅' = Max(mod-unif t₅)
- example₅'' = Max(mod-cont t₅ succ)
+ example₅ : length (mod-unif t₅) ＝ 15551
+ example₅ = refl
+
+ example₅' : Max (mod-unif t₅) ＝ 17
+ example₅' = refl
+
+ example₅'' : Max (mod-cont t₅ succ) ＝ 57
+ example₅'' = refl
 
 \end{code}

@@ -43,7 +43,7 @@ Set⟦ σ ⇒ τ ⟧ = Set⟦ σ ⟧ → Set⟦ τ ⟧
 ⟦ t · u ⟧ = ⟦ t ⟧ ⟦ u ⟧
 
 is-T-definable : {σ : type} → Set⟦ σ ⟧ → 𝓤₀ ̇
-is-T-definable x = Σ \t → ⟦ t ⟧ ＝ x
+is-T-definable {σ} x = Σ t ꞉ T σ , ⟦ t ⟧ ＝ x
 
 \end{code}
 
