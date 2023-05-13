@@ -75,7 +75,7 @@ _‚‚_ : {n : ℕ} {Γ : Cxt n} {σ : type} → B【 Γ 】 → B〖 σ 〗 �
 (xs ‚‚ x) 𝟎       = x
 (xs ‚‚ x) (suc i) = xs i
 
-infixl 6 _‚,_
+infixl 6 _‚‚_
 
 \end{code}
 
