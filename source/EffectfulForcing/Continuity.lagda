@@ -56,7 +56,6 @@ UC-extensional f g t (u , c) = (u ,
                                             f α  ＝⟨ c α α' r ⟩
                                             f α' ＝⟨ t α' ⟩
                                             g α' ∎))
-
 embedding-𝟚-ℕ : 𝟚 → ℕ
 embedding-𝟚-ℕ ₀ = zero
 embedding-𝟚-ℕ ₁ = succ zero
