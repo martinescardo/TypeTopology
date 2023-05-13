@@ -139,7 +139,7 @@ import Dominance.index
 import Duploids.index                 -- by Jon Sterling
 import Dyadics.index                  -- by Andrew Sneap
 import DyadicsInductive.index         -- by Tom de Jong
-import EffectfulForcing
+import EffectfulForcing.index
 import Factorial.index
 import Field.index                    -- by Andrew Sneap
 import Fin.index
