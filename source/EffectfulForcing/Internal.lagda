@@ -334,16 +334,16 @@ max (succ m) (succ n) = succ (max m n)
 max' : ℕ → ℕ → ℕ
 max' = rec {ℕ → ℕ} (λ m f → rec {ℕ} (λ n _ → succ (f n)) (succ m)) (λ n → n)
 
-max-is-max' : (m n : ℕ) → max m n ＝ max' m n
-max-is-max' 0        n        = refl
-max-is-max' (succ m) 0        = refl
-max-is-max' (succ m) (succ n) = ap succ (max-is-max' m n)
+max-agreement : (m n : ℕ) → max m n ＝ max' m n
+max-agreement 0        n        = refl
+max-agreement (succ m) 0        = refl
+max-agreement (succ m) (succ n) = ap succ (max-agreement m n)
 
 maxT : {n : ℕ} {Γ : Cxt n} → T Γ (ι ⇒ ι ⇒ ι)
 maxT = Rec · ƛ (ƛ (Rec · ƛ (ƛ (Succ · (ν₂ · ν₁))) · (Succ · ν₁))) · ƛ ν₀
 
-maxT-behaviour : ⟦ maxT ⟧₀ ＝ max'
-maxT-behaviour = refl
+maxT-meaning : ⟦ maxT ⟧₀ ＝ max'
+maxT-meaning = refl
 
 \end{code}
 
@@ -366,7 +366,7 @@ max-question-in-path-behaviour-η n α = refl
 max-question-in-path-behaviour-β :
 
  ∀ φ n α → ⟦ max-question-in-path ⟧₀ (⟦ ⌜β⌝ ⟧₀ φ n) α
-        ＝ ⟦ maxT ⟧₀ n (⟦ max-question-in-path ⟧₀ (φ (α n)) α)
+        ＝ max' n (⟦ max-question-in-path ⟧₀ (φ (α n)) α)
 
 max-question-in-path-behaviour-β φ n α = refl
 
@@ -391,9 +391,6 @@ Examples.
 
 module examples2 where
 
- open import MLTT.Athenian using (List)
- open List
-
  m₁ : (ℕ → ℕ) → ℕ
  m₁ = external-mod-cont (ƛ (ν₀ · numeral 17))
 
@@ -417,7 +414,6 @@ module examples2 where
 
  example₂''' : m₂ (succ ∘ succ) ＝ 19
  example₂''' = refl
-
 
  Add : {n : ℕ} {Γ : Cxt n} → T Γ (ι ⇒ ι ⇒ ι)
  Add = Rec · (ƛ Succ)

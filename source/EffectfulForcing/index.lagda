@@ -13,11 +13,11 @@ them in alphabetical order.
 
 module EffectfulForcing.index where
 
-import EffectfulForcing.MFPS-XXIX
 import EffectfulForcing.Combinators
 import EffectfulForcing.CombinatoryT
 import EffectfulForcing.Continuity
 import EffectfulForcing.Dialogue
+import EffectfulForcing.MFPS-XXIX
 import EffectfulForcing.SystemT
 import EffectfulForcing.LambdaCalculusVersionOfMFPS
 import EffectfulForcing.Internal
