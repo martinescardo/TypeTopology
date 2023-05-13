@@ -288,3 +288,75 @@ eloquence-corollary₁ f d = eloquent-functions-are-UC
                             (eloquence-theorem f d))
 
 \end{code}
+
+Examples:
+
+\begin{code}
+
+module examples where
+
+ open import MLTT.Athenian using (List)
+ open List
+
+ max : ℕ → ℕ → ℕ
+ max 0        y        = y
+ max (succ x) 0        = succ x
+ max (succ x) (succ y) = succ (max x y)
+
+ Max : List ℕ → ℕ
+ Max []      = 0
+ Max (x ∷ s) = max x (Max s)
+
+ mod-cont : T₀ ((ι ⇒ ι) ⇒ ι) → Baire → ℕ
+ mod-cont t α = Max (pr₁ (eloquence-corollary₀ ⟦ t ⟧₀ (t , refl) α))
+
+ m₁ : (ℕ → ℕ) → ℕ
+ m₁ = mod-cont (ƛ (ν₀ · numeral 17))
+
+ example₁ : m₁ id ＝ 17
+ example₁ = refl
+
+ example₁' : m₁ (λ i → 0) ＝ 17
+ example₁' = refl
+
+ m₂ : (ℕ → ℕ) → ℕ
+ m₂ = mod-cont (ƛ (ν₀ · (ν₀ · numeral 17)))
+
+ example₂ : m₂ succ ＝ 18
+ example₂ = refl
+
+ example₂' : m₂ (λ i → 0) ＝ 17
+ example₂' = refl
+
+ example₂'' : m₂ id ＝ 17
+ example₂'' = refl
+
+ example₂''' : m₂ (succ ∘ succ) ＝ 19
+ example₂''' = refl
+
+
+ Add : {n : ℕ} {Γ : Cxt n} → T Γ (ι ⇒ ι ⇒ ι)
+ Add = Rec · (ƛ Succ)
+
+ t₃ : T₀ ((ι ⇒ ι) ⇒ ι)
+ t₃ = ƛ (ν₀ · (ν₀ · (Add · (ν₀ · numeral 17) · (ν₀ · numeral 34))))
+
+ add : ℕ → ℕ → ℕ
+ add = rec (λ _ → succ)
+
+ t₃-meaning : ⟦ t₃ ⟧₀ ＝ λ α → α (α (add (α 17) (α 34)))
+ t₃-meaning = refl
+
+ m₃ : (ℕ → ℕ) → ℕ
+ m₃ = mod-cont t₃
+
+ example₃ : m₃ succ ＝ 54
+ example₃ = refl
+
+ example₃' : m₃ id ＝ 51
+ example₃' = refl
+
+ example₃'' : m₃ (λ i → 0) ＝ 34
+ example₃'' = refl
+
+\end{code}

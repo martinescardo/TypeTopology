@@ -1,6 +1,6 @@
 Martin Escardo 22-23 May 2013
 
-Gödel's System T and its standard set-theoretical semantics.
+Gödel's system T and its standard set-theoretical semantics.
 
 \begin{code}
 
@@ -152,4 +152,32 @@ preservation (ƛ t)   α = ap (λ f xs x → f (xs ‚ x)) (preservation t α)
 preservation (t · u) α = ap₂ (λ f g x → f x (g x))
                              (preservation t α)
                              (preservation u α)
+\end{code}
+
+Some shorthands to simplify examples of system T terms.
+
+\begin{code}
+
+numeral : {n : ℕ} {Γ : Cxt n} → ℕ → T Γ ι
+numeral 0        = Zero
+numeral (succ n) = Succ · (numeral n)
+
+ν₀ : {n : ℕ} {Γ : Cxt(succ n)} → T Γ (Γ [ 𝟎 ])
+ν₀ = ν 𝟎
+
+ν₁ : {n : ℕ} {Γ : Cxt(succ (succ n))} → T Γ (Γ [ suc 𝟎 ])
+ν₁ = ν (suc 𝟎)
+
+ν₂ : {n : ℕ} {Γ : Cxt(succ (succ (succ n)))}
+   → T Γ (Γ [ suc (suc 𝟎) ])
+ν₂ = ν (suc (suc 𝟎))
+
+ν₃ : {n : ℕ} {Γ : Cxt(succ (succ (succ (succ n))))}
+   → T Γ (Γ [ suc (suc (suc 𝟎)) ])
+ν₃ = ν (suc (suc (suc 𝟎)))
+
+ν₄ : {n : ℕ} {Γ : Cxt(succ (succ (succ (succ (succ n)))))}
+   → T Γ (Γ [ suc (suc (suc (suc 𝟎))) ])
+ν₄ = ν (suc (suc (suc (suc 𝟎))))
+
 \end{code}

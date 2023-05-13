@@ -27,9 +27,9 @@ B-Set⟦_⟧ : type → 𝓤₀ ̇
 B-Set⟦ ι ⟧     = B ℕ
 B-Set⟦ σ ⇒ τ ⟧ = B-Set⟦ σ ⟧ → B-Set⟦ τ ⟧
 
-kleisli-extension' : {X : 𝓤₀ ̇ } {σ : type} → (X → B-Set⟦ σ ⟧) → B X → B-Set⟦ σ ⟧
-kleisli-extension' {X} {ι}     = kleisli-extension
-kleisli-extension' {X} {σ ⇒ τ} = λ g d s → kleisli-extension' {X} {τ} (λ x → g x s) d
+Kleisli-extension : {X : 𝓤₀ ̇ } {σ : type} → (X → B-Set⟦ σ ⟧) → B X → B-Set⟦ σ ⟧
+Kleisli-extension {X} {ι}     = kleisli-extension
+Kleisli-extension {X} {σ ⇒ τ} = λ g d s → Kleisli-extension {X} {τ} (λ x → g x s) d
 
 zero' : B ℕ
 zero' = η zero
@@ -38,7 +38,7 @@ succ' : B ℕ → B ℕ
 succ' = B-functor succ
 
 iter' : {σ : type} → (B-Set⟦ σ ⟧ → B-Set⟦ σ ⟧) → B-Set⟦ σ ⟧ → B ℕ → B-Set⟦ σ ⟧
-iter' f x = kleisli-extension' (iter f x)
+iter' f x = Kleisli-extension (iter f x)
 
 B⟦_⟧ : {σ : type} → TΩ σ → B-Set⟦ σ ⟧
 B⟦ Ω ⟧     = generic
@@ -74,13 +74,13 @@ R-kleisli-lemma : (σ : type) (g : ℕ → Baire → Set⟦ σ ⟧) (g' : ℕ �
                 → ((k : ℕ) → R (g k) (g' k))
                 → (n : Baire → ℕ) (n' : B ℕ)
                 → R n n'
-                → R (λ α → g (n α) α) (kleisli-extension' g' n')
+                → R (λ α → g (n α) α) (Kleisli-extension g' n')
 
 R-kleisli-lemma ι g g' rg n n' rn α =
- g (n α) α                           ＝⟨ rg (n α) α ⟩
- decode α (g' (n α))                 ＝⟨ ap (λ - → decode α (g' -)) (rn α) ⟩
- decode α (g' (decode α n'))         ＝⟨ decode-kleisli-extension g' n' α ⟩
- decode α (kleisli-extension' g' n') ∎
+ g (n α) α                          ＝⟨ rg (n α) α ⟩
+ decode α (g' (n α))                ＝⟨ ap (λ - → decode α (g' -)) (rn α) ⟩
+ decode α (g' (decode α n'))        ＝⟨ decode-kleisli-extension g' n' α ⟩
+ decode α (Kleisli-extension g' n') ∎
 
 R-kleisli-lemma (σ ⇒ τ) g g' rg n n' rn
  = λ y y' ry → R-kleisli-lemma
@@ -117,7 +117,7 @@ main-lemma {(σ ⇒ .σ) ⇒ .σ ⇒ ι ⇒ .σ} Iter = lemma
          → (n : Baire → ℕ)
            (n' : B ℕ)
          → R {ι} n n'
-         → R {σ} (λ α → iter (f α) (x α) (n α)) (kleisli-extension' (iter f' x') n')
+         → R {σ} (λ α → iter (f α) (x α) (n α)) (Kleisli-extension (iter f' x') n')
    lemma f f' rf x x' rx = R-kleisli-lemma σ g g' rg
      where
        g : ℕ → Baire → Set⟦ σ ⟧
@@ -166,17 +166,17 @@ eloquence-corollary₁ f d = eloquent-functions-are-UC
 
 \end{code}
 
-This concludes the development. Some experiments follow.
+This concludes the development. Some examples follow.
 
 \begin{code}
 
-module experiments where
+module examples where
 
  mod-cont : T ((ι ⇒ ι) ⇒ ι) → Baire → List ℕ
- mod-cont t α = pr₁(eloquence-corollary₀ ⟦ t ⟧ (t , refl) α)
+ mod-cont t α = pr₁ (eloquence-corollary₀ ⟦ t ⟧ (t , refl) α)
 
  mod-cont-obs : (t : T ((ι ⇒ ι) ⇒ ι)) (α : Baire)
-              → mod-cont t α ＝ pr₁(dialogue-continuity (dialogue-tree t) α)
+              → mod-cont t α ＝ pr₁ (dialogue-continuity (dialogue-tree t) α)
  mod-cont-obs t α = refl
 
  flatten : {X : 𝓤₀ ̇ } → BT X → List X
@@ -192,12 +192,12 @@ module experiments where
  I-behaviour : {σ : type}{x : Set⟦ σ ⟧} → ⟦ I ⟧ x ＝ x
  I-behaviour = refl
 
- number : ℕ → T ι
- number zero = Zero
- number (succ n) = Succ · (number n)
+ numeral : ℕ → T ι
+ numeral zero     = Zero
+ numeral (succ n) = Succ · (numeral n)
 
  t₀ : T ((ι ⇒ ι) ⇒ ι)
- t₀ = K · (number 17)
+ t₀ = K · (numeral 17)
 
  t₀-interpretation : ⟦ t₀ ⟧ ＝ λ α → 17
  t₀-interpretation = refl
@@ -216,11 +216,11 @@ module experiments where
  _•_ : {γ σ τ : type} → T (γ ⇒ σ ⇒ τ) → T (γ ⇒ σ) → T (γ ⇒ τ)
  f • x = S · f · x
 
- Number : ∀ {γ} → ℕ → T (γ ⇒ ι)
- Number n = K · (number n)
+ Numeral : ∀ {γ} → ℕ → T (γ ⇒ ι)
+ Numeral n = K · (numeral n)
 
  t₁ : T ((ι ⇒ ι) ⇒ ι)
- t₁ = v • (Number 17)
+ t₁ = v • (Numeral 17)
 
  t₁-interpretation : ⟦ t₁ ⟧ ＝ λ α → α 17
  t₁-interpretation = refl
@@ -251,7 +251,7 @@ module experiments where
  x +ᵀ y = K · Add • x • y
 
  t₃ : T ((ι ⇒ ι) ⇒ ι)
- t₃ = Iter • (v • Number 1) • (v • Number 2 +ᵀ v • Number 3)
+ t₃ = Iter • (v • Numeral 1) • (v • Numeral 2 +ᵀ v • Numeral 3)
 
  t₃-interpretation : ⟦ t₃ ⟧ ＝ λ α → iter α (α 1) (iter succ (α 2) (α 3))
  t₃-interpretation = refl
@@ -274,7 +274,7 @@ module experiments where
  Max (x ∷ s) = max x (Max s)
 
  t₄ : T ((ι ⇒ ι) ⇒ ι)
- t₄ = Iter • ((v • (v • Number 2)) +ᵀ (v • Number 3)) • t₃
+ t₄ = Iter • ((v • (v • Numeral 2)) +ᵀ (v • Numeral 3)) • t₃
 
  t₄-interpretation : ⟦ t₄ ⟧
                    ＝ λ α → iter
@@ -290,17 +290,17 @@ module experiments where
  example₄' = refl
 
  t₅ : T ((ι ⇒ ι) ⇒ ι)
- t₅ = Iter • (v • (v • t₂ +ᵀ t₄)) • (v • Number 2)
+ t₅ = Iter • (v • (v • t₂ +ᵀ t₄)) • (v • Numeral 2)
 
  t₅-explicitly : t₅ ＝
   (S · (S · Iter · (S · I · (S · (S · (K · (Iter · Succ))
-  · (S · I · (S · (S · Iter · (S · I · (K · (number 17))))
-  · (S · I · (K · (number 17)))))) · (S · (S · Iter · (S · (S
-  · (K · (Iter · Succ)) · (S · I · (S · I · (K · (number 2)))))
-  · (S · I · (K · (number 3))))) · (S · (S · Iter · (S · I
-  · (K · (number 1)))) · (S · (S · (K · (Iter · Succ))
-  · (S · I · (K · (number 2)))) · (S · I · (K
-  · (number 3))))))))) · (S · I · (K · (number 2))))
+  · (S · I · (S · (S · Iter · (S · I · (K · (numeral 17))))
+  · (S · I · (K · (numeral 17)))))) · (S · (S · Iter · (S · (S
+  · (K · (Iter · Succ)) · (S · I · (S · I · (K · (numeral 2)))))
+  · (S · I · (K · (numeral 3))))) · (S · (S · Iter · (S · I
+  · (K · (numeral 1)))) · (S · (S · (K · (Iter · Succ))
+  · (S · I · (K · (numeral 2)))) · (S · I · (K
+  · (numeral 3))))))))) · (S · I · (K · (numeral 2))))
 
  t₅-explicitly = refl
 

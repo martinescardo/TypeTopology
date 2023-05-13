@@ -60,7 +60,7 @@ follow n (δ γ) = γ n
 
 \end{code}
 
-The function β' simulates D's constructor β in Brouwer trees:
+The function β' simulates the constructor β in Brouwer trees:
 
 \begin{code}
 

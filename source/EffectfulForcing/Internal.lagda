@@ -26,106 +26,111 @@ open Fin
 
 \end{code}
 
-We now internalize this to system T, using Church encoding of dialogue
-trees in system T.  (Of course, we need some encoding of dialogue
-trees, because T cannot directly define dialogue trees in its
-impoverished type system.)
-
-We first briefly discuss Church encoding of dialogue trees, denoted by
-D⋆. This is motivated by the recursion (or iteration, actually)
-principle for D:
+We first discuss Church encoding of dialogue trees, denoted by D⋆.
+This is motivated by the recursion (or iteration, actually) principle
+for D.
 
 \begin{code}
 
-D-rec : {X Y Z A : Type} → (Z → A) → ((Y → A) → X → A) → D X Y Z → A
-D-rec |η| |β| (η z) = |η| z
-D-rec |η| |β| (β φ x) = |β| (λ y → D-rec |η| |β| (φ y)) x
+D-rec : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {A : 𝓣 ̇ }
+      → (Z → A) → ((Y → A) → X → A) → D X Y Z → A
+D-rec η' β' (η z)   = η' z
+D-rec η' β' (β φ x) = β' (λ y → D-rec η' β' (φ y)) x
 
-D⋆ : Type → Type → Type → Type → Type
+D⋆ : 𝓤 ̇ → 𝓥 ̇ → 𝓦 ̇ → 𝓣 ̇ → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓣 ̇
 D⋆ X Y Z A = (Z → A) → ((Y → A) → X → A) → A
 
-D⋆-rec : {X Y Z A : Type} → (Z → A) → ((Y → A) → X → A) → D⋆ X Y Z A → A
-D⋆-rec |η| |β| d = d |η| |β|
+D⋆-rec : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {A : 𝓣 ̇ }
+       → (Z → A) → ((Y → A) → X → A) → D⋆ X Y Z A → A
+D⋆-rec η' β' d = d η' β'
 
-η⋆ : {X Y Z A : Type} → Z → D⋆ X Y Z A
-η⋆ z |η| |β| = |η| z
+η⋆ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {A : 𝓣 ̇ }
+   → Z → D⋆ X Y Z A
+η⋆ z η' β' = η' z
 
-β⋆ : {X Y Z A : Type} → (Y → D⋆ X Y Z A) → X → D⋆ X Y Z A
-β⋆ Φ x |η| |β| = |β| (λ y → Φ y |η| |β|) x
+β⋆ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {A : 𝓣 ̇ }
+   → (Y → D⋆ X Y Z A) → X → D⋆ X Y Z A
+β⋆ Φ x η' β' = β' (λ y → Φ y η' β') x
 
-church-encode : {X Y Z A : Type} → D X Y Z → D⋆ X Y Z A
+church-encode : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {A : 𝓣 ̇ }
+              → D X Y Z → D⋆ X Y Z A
 church-encode = D-rec η⋆ β⋆
-
-church-encode-bis : {X Y Z A : Type} → D X Y Z → D⋆ X Y Z A
-church-encode-bis (η z) = η⋆ z
-church-encode-bis (β φ x) = β⋆ (λ i → church-encode-bis(φ i)) x
 
 \end{code}
 
-To go back, we need A = D X Y Z:
+To go back, we need to take A = D X Y Z:
 
 \begin{code}
 
-church-decode : {X Y Z : Type} → D⋆ X Y Z (D X Y Z) → D X Y Z
+church-decode : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
+              → D⋆ X Y Z (D X Y Z) → D X Y Z
 church-decode = D⋆-rec η β
 
 \end{code}
 
-Extensional equality on dialogue trees (to avoid the axiom of function
-extensionality):
+Hereditarily extensional equality on dialogue trees, to avoid the
+axiom of function extensionality:
 
 \begin{code}
 
-data _≣_ {X Y Z : Type} : D X Y Z → D X Y Z → Type where
+data _≣_ {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } : D X Y Z → D X Y Z → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇ where
 
- congη : {z z' : Z}
-       → z ＝ z'
-       → η z ≣ η z'
+ ap-η : {z z' : Z}
+      → z ＝ z'
+      → η z ≣ η z'
 
- congβ : {φ φ' : Y → D X Y Z}
-         {x x' : X}
-       → ((y : Y) → φ y ≣ φ' y)
-       → x ＝ x'
-       → β φ x ≣ β φ' x'
+ ap-β : {φ φ' : Y → D X Y Z}
+        {x x' : X}
+      → ((y : Y) → φ y ≣ φ' y)
+      → x ＝ x'
+      → β φ x ≣ β φ' x'
 
-church-correctness : {X Y Z : Type}
+church-correctness : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
                      (d : D X Y Z)
                    → church-decode (church-encode d) ≣ d
-church-correctness (η z)   = congη refl
-church-correctness (β φ x) = congβ (λ y → church-correctness (φ y)) refl
+church-correctness (η z)   = ap-η refl
+church-correctness (β φ x) = ap-β (λ y → church-correctness (φ y)) refl
 
 \end{code}
 
 Using relational parametricity, we have the meta-theorem that
-church-encode(church-decode d⋆) is provable for each closed term
-d⋆. But we will be able to do better than that in our situation.
+church-encode(church-decode d⋆) is provable for each closed term d⋆.
+But we will be able to do better than that in our situation.
+
+In the following definition we take A = ((X → Y) → Z).
 
 \begin{code}
 
-dialogue⋆ : {X Y Z : Type} → D⋆ X Y Z ((X → Y) → Z) → (X → Y) → Z
+dialogue⋆ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
+          → D⋆ X Y Z ((X → Y) → Z) → (X → Y) → Z
 dialogue⋆ = D⋆-rec (λ z α → z) (λ φ x α → φ (α x) α)
 
-B⋆ : Type → Type → Type
+B⋆ : 𝓦 ̇ → 𝓣 ̇ → 𝓦 ⊔ 𝓣 ̇
 B⋆ = D⋆ ℕ ℕ
 
-church-encode-B : {A X : Type} → B X → B⋆ X A
+church-encode-B : {X : 𝓦 ̇ } {A : 𝓣  ̇ }
+                → B X → B⋆ X A
 church-encode-B = church-encode
 
-dialogues-agreement : {X Y Z : Type}
+dialogues-agreement : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
                       (d : D X Y Z)
                       (α : X → Y)
                     → dialogue d α ＝ dialogue⋆ (church-encode d) α
 dialogues-agreement (η z)   α = refl
 dialogues-agreement (β φ x) α = dialogues-agreement (φ (α x)) α
 
-decode⋆ : {X : Type} → Baire → B⋆ X (Baire → X) → X
+decode⋆ : {X : 𝓦 ̇ } → Baire → B⋆ X (Baire → X) → X
 decode⋆ α d = dialogue⋆ d α
 
-kleisli-extension⋆ : {X Y A : Type} → (X → B⋆ Y A) → B⋆ X A → B⋆ Y A
-kleisli-extension⋆ f d η⋆ β⋆ = d (λ x → f x η⋆ β⋆) β⋆
+kleisli-extension⋆ : {X : 𝓦  ̇ } {Y : 𝓦'  ̇ } {A : 𝓣 ̇ }
+                   → (X → B⋆ Y A)
+                   → B⋆ X A
+                   → B⋆ Y A
+kleisli-extension⋆ f d η' β' = D⋆-rec (λ x → f x η' β') β' d
+
 
 B⋆-functor : {X Y A : Type} → (X → Y) → B⋆ X A → B⋆ Y A
-B⋆-functor f = kleisli-extension⋆(λ x → η⋆(f x))
+B⋆-functor f = kleisli-extension⋆ (λ x → η⋆ (f x))
 
 B⋆〖_〗 : type → Type → Type
 B⋆〖 ι 〗     A = B⋆(〖 ι 〗) A
@@ -185,30 +190,6 @@ dialogue-tree⋆ t = B⋆⟦ (embed t) · Ω ⟧ ⟪⟫⋆
 
 B↦B⋆ : {X A : Type} → B X → B⋆ X A
 B↦B⋆ = church-encode
-
-\end{code}
-
-Some shorthands to simplify the following definitions:
-
-\begin{code}
-
-ν₀ : {n : ℕ} {Γ : Cxt(succ n)} → T Γ (Γ [ 𝟎 ])
-ν₀ = ν 𝟎
-
-ν₁ : {n : ℕ} {Γ : Cxt(succ (succ n))} → T Γ (Γ [ suc 𝟎 ])
-ν₁ = ν (suc 𝟎)
-
-ν₂ : {n : ℕ} {Γ : Cxt(succ (succ (succ n)))}
-   → T Γ (Γ [ suc (suc 𝟎) ])
-ν₂ = ν (suc (suc 𝟎))
-
-ν₃ : {n : ℕ} {Γ : Cxt(succ (succ (succ (succ n))))}
-   → T Γ (Γ [ suc (suc (suc 𝟎)) ])
-ν₃ = ν (suc (suc (suc 𝟎)))
-
-ν₄ : {n : ℕ} {Γ : Cxt(succ (succ (succ (succ (succ n)))))}
-   → T Γ (Γ [ suc (suc (suc (suc 𝟎))) ])
-ν₄ = ν (suc (suc (suc (suc 𝟎))))
 
 ⌜D⋆⌝ : type → type → type → type → type
 ⌜D⋆⌝ X Y Z A = (Z ⇒ A) ⇒ ((Y ⇒ A) ⇒ X ⇒ A) ⇒ A
@@ -323,7 +304,7 @@ infix 10 B-context【_】
 
 \end{code}
 
- Given a term of type (ι ⇒ ι) ⇒ ι, we calculate a term defining its dialogue tree:
+Given a term of type (ι ⇒ ι) ⇒ ι, we calculate a term defining its dialogue tree.
 
 \begin{code}
 
@@ -338,9 +319,10 @@ infix 10 B-context【_】
 
 \end{code}
 
-TODO. Formulate and prove the correctness of
+TODO. Formulate and prove the correctness of ⌜dialogue-tree⌝.
 
-Internal modulus of continuity:
+Given a term t of type (ι ⇒ ι) ⇒ ι, we calculate a term defining a
+modulus of continuity for t.
 
 \begin{code}
 
@@ -357,8 +339,11 @@ max-is-max' 0        n        = refl
 max-is-max' (succ m) 0        = refl
 max-is-max' (succ m) (succ n) = ap succ (max-is-max' m n)
 
-Max :  {n : ℕ} {Γ : Cxt n} → T Γ (ι ⇒ ι ⇒ ι)
-Max = Rec · ƛ (ƛ (Rec · ƛ (ƛ (Succ · (ν₂ · ν₁))) · (Succ · ν₁))) · ƛ ν₀
+maxT : {n : ℕ} {Γ : Cxt n} → T Γ (ι ⇒ ι ⇒ ι)
+maxT = Rec · ƛ (ƛ (Rec · ƛ (ƛ (Succ · (ν₂ · ν₁))) · (Succ · ν₁))) · ƛ ν₀
+
+maxT-behaviour : ⟦ maxT ⟧₀ ＝ max'
+maxT-behaviour = refl
 
 \end{code}
 
@@ -369,18 +354,21 @@ A modulus of continuity can be calculated from a dialogue tree.
 max-question-in-path : {n : ℕ} {Γ : Cxt n}
                      → T (B-context【 Γ 】 ((ι ⇒ ι) ⇒ ι))
                          ((⌜B⌝ ι ((ι ⇒ ι) ⇒ ι)) ⇒ (ι ⇒ ι) ⇒ ι)
-max-question-in-path = ƛ(ν₀ · (ƛ(ƛ(Zero))) · (ƛ(ƛ(ƛ(Max · (Succ · ν₁) · (ν₂ · (ν₀ · ν₁) · ν₀))))))
+max-question-in-path =
+ ƛ (ν₀ · ƛ (ƛ Zero) · ƛ (ƛ (ƛ (maxT · ν₁ · (ν₂ · (ν₀ · ν₁) · ν₀)))))
 
-max-question-in-path-behaviour₀ : ∀ n α → ⟦ max-question-in-path ⟧₀ (⟦ ⌜η⌝ ⟧₀ n) α ＝ 0
-max-question-in-path-behaviour₀ n α = refl
+max-question-in-path-behaviour-η :
 
+ ∀ n α → ⟦ max-question-in-path ⟧₀ (⟦ ⌜η⌝ ⟧₀ n) α ＝ 0
 
-max-question-in-path-behaviour₁ :
+max-question-in-path-behaviour-η n α = refl
+
+max-question-in-path-behaviour-β :
 
  ∀ φ n α → ⟦ max-question-in-path ⟧₀ (⟦ ⌜β⌝ ⟧₀ φ n) α
-        ＝ ⟦ Max ⟧₀ (succ n) (⟦ max-question-in-path ⟧₀ (φ(α n)) α)
+        ＝ ⟦ maxT ⟧₀ n (⟦ max-question-in-path ⟧₀ (φ (α n)) α)
 
-max-question-in-path-behaviour₁ φ n α = refl
+max-question-in-path-behaviour-β φ n α = refl
 
 internal-mod-cont : {n : ℕ} {Γ : Cxt n}
                   → T Γ ((ι ⇒ ι) ⇒ ι)
@@ -397,36 +385,62 @@ external-mod-cont t = ⟦ internal-mod-cont₀ t ⟧₀
 
 TODO. Prove the correctness of the internal modulus of continuity.
 
-Examples:
+Examples.
 
 \begin{code}
 
-module example where
+module examples2 where
 
- numeral : {n : ℕ} {Γ : Cxt n} → ℕ → T Γ ι
- numeral 0        = Zero
- numeral (succ n) = Succ · (numeral n)
+ open import MLTT.Athenian using (List)
+ open List
 
- example₁ : (ℕ → ℕ) → ℕ
- example₁ = external-mod-cont(ƛ(ν₀ · (numeral 17)))
+ m₁ : (ℕ → ℕ) → ℕ
+ m₁ = external-mod-cont (ƛ (ν₀ · numeral 17))
 
- m₁ : ℕ
- m₁ = example₁ (λ i → i)
+ example₁ : m₁ id ＝ 17
+ example₁ = refl
 
- example₂ : (ℕ → ℕ) → ℕ
- example₂ = external-mod-cont(ƛ(ν₀ · (ν₀ · (numeral 17))))
+ example₁' : m₁ (λ i → 0) ＝ 17
+ example₁' = refl
 
- m₂ : ℕ
- m₂ = example₂ succ
+ m₂ : (ℕ → ℕ) → ℕ
+ m₂ = external-mod-cont (ƛ (ν₀ · (ν₀ · numeral 17)))
+
+ example₂ : m₂ succ ＝ 18
+ example₂ = refl
+
+ example₂' : m₂ (λ i → 0) ＝ 17
+ example₂' = refl
+
+ example₂'' : m₂ id ＝ 17
+ example₂'' = refl
+
+ example₂''' : m₂ (succ ∘ succ) ＝ 19
+ example₂''' = refl
+
 
  Add : {n : ℕ} {Γ : Cxt n} → T Γ (ι ⇒ ι ⇒ ι)
- Add = Rec · ƛ (ƛ (Succ · ν₀))
+ Add = Rec · (ƛ Succ)
 
- example₃ : (ℕ → ℕ) → ℕ
- example₃ = external-mod-cont
-             (ƛ (ν₀ · (ν₀ · (Add · (ν₀ · (numeral 17)) · (ν₀ · (numeral 34))))))
+ t₃ : T₀ ((ι ⇒ ι) ⇒ ι)
+ t₃ = ƛ (ν₀ · (ν₀ · (Add · (ν₀ · numeral 17) · (ν₀ · numeral 34))))
 
- m₃ : ℕ
- m₃ = example₃ succ
+ add : ℕ → ℕ → ℕ
+ add = rec (λ _ → succ)
+
+ t₃-meaning : ⟦ t₃ ⟧₀ ＝ λ α → α (α (add (α 17) (α 34)))
+ t₃-meaning = refl
+
+ m₃ : (ℕ → ℕ) → ℕ
+ m₃ = external-mod-cont t₃
+
+ example₃ : m₃ succ ＝ 54
+ example₃ = refl
+
+ example₃' : m₃ id ＝ 51
+ example₃' = refl
+
+ example₃'' : m₃ (λ i → 0) ＝ 34
+ example₃'' = refl
 
 \end{code}
