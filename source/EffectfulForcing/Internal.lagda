@@ -190,6 +190,12 @@ dialogue-tree⋆ t = B⋆⟦ (embed t) · Ω ⟧ ⟪⟫⋆
 B↦B⋆ : {X A : Type} → B X → B⋆ X A
 B↦B⋆ = church-encode
 
+\end{code}
+
+We know internalize the above to system T.
+
+\begin{code}
+
 ⌜D⋆⌝ : type → type → type → type → type
 ⌜D⋆⌝ X Y Z A = (Z ⇒ A) ⇒ ((Y ⇒ A) ⇒ X ⇒ A) ⇒ A
 
@@ -197,15 +203,15 @@ B↦B⋆ = church-encode
     → T Γ (Z ⇒ ⌜D⋆⌝ X Y Z A)
 ⌜η⌝ = ƛ (ƛ (ƛ (ν₁ · ν₂)))
 
-η-behaviour : {X Y Z A : type} → ⟦ ⌜η⌝ {X} {Y} {Z} {A} ⟧₀ ＝ η⋆
-η-behaviour = refl
+η-meaning : {X Y Z A : type} → ⟦ ⌜η⌝ {X} {Y} {Z} {A} ⟧₀ ＝ η⋆
+η-meaning = refl
 
 ⌜β⌝ : {X Y Z A : type} {n : ℕ} {Γ : Cxt n}
     → T Γ (((Y ⇒ ⌜D⋆⌝ X Y Z A) ⇒ X ⇒ ⌜D⋆⌝ X Y Z A))
 ⌜β⌝ = ƛ (ƛ (ƛ (ƛ (ν₀ · ƛ (ν₄ · ν₀ · ν₂ · ν₁) · ν₂))))
 
-β-behaviour : {X Y Z A : type} → ⟦ ⌜β⌝ {X} {Y} {Z} {A} ⟧₀ ＝ β⋆
-β-behaviour = refl
+β-meaning : {X Y Z A : type} → ⟦ ⌜β⌝ {X} {Y} {Z} {A} ⟧₀ ＝ β⋆
+β-meaning = refl
 
 ⌜B⌝ : type → type → type
 ⌜B⌝ = ⌜D⋆⌝ ι ι
@@ -214,19 +220,19 @@ B↦B⋆ = church-encode
                     → T Γ ((X ⇒ ⌜B⌝ Y A) ⇒ ⌜B⌝ X A ⇒ ⌜B⌝ Y A)
 ⌜kleisli-extension⌝ = ƛ (ƛ (ƛ (ƛ (ν₂ · ƛ (ν₄ · ν₀ · ν₂ · ν₁) · ν₀))))
 
-kleisli-extension-behaviour : {X Y A : type}
-                            → ⟦ ⌜kleisli-extension⌝ {X} {Y} {A} ⟧₀
-                            ＝ λ f d η⋆ β⋆ → d (λ x → f x η⋆ β⋆) β⋆
-kleisli-extension-behaviour = refl
+kleisli-extension-meaning : {X Y A : type}
+                          → ⟦ ⌜kleisli-extension⌝ {X} {Y} {A} ⟧₀
+                          ＝ kleisli-extension⋆
+kleisli-extension-meaning = refl
 
 ⌜B-functor⌝ : {X Y A : type} {n : ℕ} {Γ : Cxt n}
             → T Γ ((X ⇒ Y) ⇒ ⌜B⌝ X A ⇒ ⌜B⌝ Y A)
 ⌜B-functor⌝ = ƛ(⌜kleisli-extension⌝ · ƛ (⌜η⌝ · (ν₁ · ν₀)))
 
-B-functor-behaviour : {X Y A : type}
-                    → ⟦ ⌜B-functor⌝ {X} {Y} {A} ⟧₀
-                    ＝ λ f → ⟦ ⌜kleisli-extension⌝ ⟧₀ (λ x → ⟦ ⌜η⌝ ⟧₀ (f x))
-B-functor-behaviour = refl
+B-functor-meaning : {X Y A : type}
+                  → ⟦ ⌜B-functor⌝ {X} {Y} {A} ⟧₀
+                  ＝ B⋆-functor
+B-functor-meaning = refl
 
 B-type〖_〗 : type → type → type
 B-type〖 ι 〗 A     = ⌜B⌝ ι A
@@ -238,13 +244,13 @@ B-type〖 σ ⇒ τ 〗 A = B-type〖 σ 〗 A ⇒ B-type〖 τ 〗 A
 ⌜Kleisli-extension⌝ {X} {A} {σ ⇒ τ} =
   ƛ (ƛ (ƛ (⌜Kleisli-extension⌝ {X} {A} {τ} · ƛ (ν₃ · ν₀ · ν₁) · ν₁)))
 
-Kleisli-extension-behaviour : {X A : type} {σ τ : type}
-                            → ⟦ ⌜Kleisli-extension⌝ {X} {A} {σ ⇒ τ}⟧₀
-                            ＝ λ g d s → ⟦ ⌜Kleisli-extension⌝ {X} {A} {τ} ⟧
-                                         (⟨⟩ ‚ g ‚ d ‚ s)
-                                         (λ x → g x s)
-                                         d
-Kleisli-extension-behaviour = refl
+Kleisli-extension-meaning : {X A : type} {σ τ : type}
+                          → ⟦ ⌜Kleisli-extension⌝ {X} {A} {σ ⇒ τ}⟧₀
+                          ＝ λ g d s → ⟦ ⌜Kleisli-extension⌝ {X} {A} {τ} ⟧
+                                       (⟨⟩ ‚ g ‚ d ‚ s)
+                                       (λ x → g x s)
+                                       d
+Kleisli-extension-meaning = refl
 
 ⌜zero⌝ : {A : type} {n : ℕ} {Γ : Cxt n} → T Γ (⌜B⌝ ι A)
 ⌜zero⌝ = ⌜η⌝ · Zero
@@ -262,12 +268,12 @@ Kleisli-extension-behaviour = refl
 ⌜rec⌝ {σ} {A} = ƛ (ƛ (⌜Kleisli-extension⌝ {ι} {A} {σ}
                         · (Rec · (ƛ (ν₂ · (⌜η⌝ · ν₀))) · ν₀)))
 
-rec-behaviour : {σ A : type}
-              → ⟦ ⌜rec⌝ {σ} {A} ⟧₀
-              ＝ λ f x → ⟦ ⌜Kleisli-extension⌝ {ι} {A} {σ} ⟧
-                          (⟨⟩ ‚ f ‚ x)
-                          (rec (f ∘ ⟦ ⌜η⌝ {ι} {ι} {ι} {A} ⟧₀) x)
-rec-behaviour = refl
+rec-meaning : {σ A : type}
+            → ⟦ ⌜rec⌝ {σ} {A} ⟧₀
+            ＝ λ f x → ⟦ ⌜Kleisli-extension⌝ {ι} {A} {σ} ⟧
+                        (⟨⟩ ‚ f ‚ x)
+                        (rec (f ∘ ⟦ ⌜η⌝ {ι} {ι} {ι} {A} ⟧₀) x)
+rec-meaning = refl
 
 B-context【_】 : {n : ℕ} → Cxt n → type → Cxt n
 B-context【_】 {0}      〈〉       A = 〈〉
@@ -294,12 +300,12 @@ infix 10 B-context【_】
 ⌜_⌝ : {n : ℕ} {Γ : Cxt n} {σ : type} {A : type}
     → T Γ σ
     → T (B-context【 Γ 】 A) (B-type〖 σ 〗 A)
-⌜ Zero ⌝             = ⌜zero⌝
-⌜ Succ ⌝             = ⌜succ⌝
-⌜ Rec {_} {_} {σ} ⌝  = ⌜rec⌝ {σ}
-⌜ ν i ⌝              = ⌜ν⌝ i
-⌜ ƛ t ⌝              = ƛ ⌜ t ⌝
-⌜ t · u ⌝            = ⌜ t ⌝ · ⌜ u ⌝
+⌜ Zero ⌝            = ⌜zero⌝
+⌜ Succ ⌝            = ⌜succ⌝
+⌜ Rec {_} {_} {σ} ⌝ = ⌜rec⌝ {σ}
+⌜ ν i ⌝             = ⌜ν⌝ i
+⌜ ƛ t ⌝             = ƛ ⌜ t ⌝
+⌜ t · u ⌝           = ⌜ t ⌝ · ⌜ u ⌝
 
 \end{code}
 
@@ -356,18 +362,18 @@ max-question-in-path : {n : ℕ} {Γ : Cxt n}
 max-question-in-path =
  ƛ (ν₀ · ƛ (ƛ Zero) · ƛ (ƛ (ƛ (maxT · ν₁ · (ν₂ · (ν₀ · ν₁) · ν₀)))))
 
-max-question-in-path-behaviour-η :
+max-question-in-path-meaning-η :
 
  ∀ n α → ⟦ max-question-in-path ⟧₀ (⟦ ⌜η⌝ ⟧₀ n) α ＝ 0
 
-max-question-in-path-behaviour-η n α = refl
+max-question-in-path-meaning-η n α = refl
 
-max-question-in-path-behaviour-β :
+max-question-in-path-meaning-β :
 
  ∀ φ n α → ⟦ max-question-in-path ⟧₀ (⟦ ⌜β⌝ ⟧₀ φ n) α
         ＝ max' n (⟦ max-question-in-path ⟧₀ (φ (α n)) α)
 
-max-question-in-path-behaviour-β φ n α = refl
+max-question-in-path-meaning-β φ n α = refl
 
 internal-mod-cont : {n : ℕ} {Γ : Cxt n}
                   → T Γ ((ι ⇒ ι) ⇒ ι)
