@@ -539,4 +539,27 @@ module examples2 where
  example₃'''' : m₃ (λ i → add i i) ＝ 204
  example₃'''' = refl
 
+ f : T₀ ((ι ⇒ ι) ⇒ ι)
+ f = ƛ (ν₀ · (ν₀ · (ν₀ · numeral 17)))
+
+ m₄ : (ℕ → ℕ) → ℕ
+ m₄ = external-mod-cont f
+
+ example₄ : m₄ id ＝ 17
+ example₄ = refl
+
+ example₄' : m₄ (λ i → 0) ＝ 17
+ example₄' = refl
+
+ example₄'' : m₄ succ ＝ 19
+ example₄'' = refl
+
+ example₄''' : m₄ (λ i → add i i) ＝ 68
+ example₄''' = refl
+
+ example₄'''' : ⟦ f ⟧₀ (λ i → add i i) ＝ 136
+ example₄'''' = refl
+
+
+
 \end{code}
