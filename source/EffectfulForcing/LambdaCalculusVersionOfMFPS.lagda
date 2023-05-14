@@ -313,6 +313,9 @@ module examples where
  m₁ : (ℕ → ℕ) → ℕ
  m₁ = mod-cont (ƛ (ν₀ · numeral 17))
 
+ m₁-explicitly : m₁ ＝ λ x → 17
+ m₁-explicitly = refl
+
  example₁ : m₁ id ＝ 17
  example₁ = refl
 
@@ -321,6 +324,9 @@ module examples where
 
  m₂ : (ℕ → ℕ) → ℕ
  m₂ = mod-cont (ƛ (ν₀ · (ν₀ · numeral 17)))
+
+ m₂-explicitly : m₂ ＝ λ α → max 17 (max (α 17) 0)
+ m₂-explicitly = refl
 
  example₂ : m₂ succ ＝ 18
  example₂ = refl
@@ -350,6 +356,12 @@ module examples where
  m₃ : (ℕ → ℕ) → ℕ
  m₃ = mod-cont t₃
 
+ m₃-explicitly : m₃ ＝ λ α →
+  max 34 (Max (pr₁ (dialogue-continuity (kleisli-extension (β η)
+  (kleisli-extension (β η) (rec (λ x → kleisli-extension (λ x₁ → η
+  (succ x₁))) (β η 17) (α 34)))) α)))
+ m₃-explicitly = refl
+
  example₃ : m₃ succ ＝ 54
  example₃ = refl
 
@@ -358,5 +370,11 @@ module examples where
 
  example₃'' : m₃ (λ i → 0) ＝ 34
  example₃'' = refl
+
+ example₃''' : m₃ (λ i → 300) ＝ 600
+ example₃''' = refl
+
+ example₃'''' : m₃ (λ i → add i i) ＝ 204
+ example₃'''' = refl
 
 \end{code}

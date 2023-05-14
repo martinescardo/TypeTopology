@@ -227,7 +227,7 @@ kleisli-extension-meaning = refl
 
 ⌜B-functor⌝ : {X Y A : type} {n : ℕ} {Γ : Cxt n}
             → T Γ ((X ⇒ Y) ⇒ ⌜B⌝ X A ⇒ ⌜B⌝ Y A)
-⌜B-functor⌝ = ƛ(⌜kleisli-extension⌝ · ƛ (⌜η⌝ · (ν₁ · ν₀)))
+⌜B-functor⌝ = ƛ (⌜kleisli-extension⌝ · ƛ (⌜η⌝ · (ν₁ · ν₀)))
 
 B-functor-meaning : {X Y A : type}
                   → ⟦ ⌜B-functor⌝ {X} {Y} {A} ⟧₀
@@ -390,14 +390,61 @@ external-mod-cont t = ⟦ internal-mod-cont₀ t ⟧₀
 
 TODO. Prove the correctness of the internal modulus of continuity.
 
-Examples.
+Examples to be compared with those of the lambda-calculus version of
+the MFPS paper file.
 
 \begin{code}
 
 module examples2 where
 
+
+ internal-mod-cont₀-explicitly :
+
+  internal-mod-cont₀
+  ＝ λ t → ƛ (ν₀ · ƛ (ƛ Zero) · ƛ (ƛ (ƛ (maxT · ν₁ · (ν₂ · (ν₀ · ν₁) ·
+    ν₀))))) · (⌜ t ⌝ · (ƛ (ƛ (ƛ (ƛ (ν₂ · ƛ (ν₄ · ν₀ · ν₂ · ν₁) ·
+    ν₀)))) · (ƛ (ƛ (ƛ (ƛ (ν₀ · ƛ (ν₄ · ν₀ · ν₂ · ν₁) · ν₂)))) · ƛ (ƛ
+    (ƛ (ν₁ · ν₂))))))
+
+ Y = ℕ → (ℕ → ℕ) → ℕ
+ Z = Y → Y
+ X = Y → Z → (ℕ → ℕ) → ℕ
+
+ internal-mod-cont₀-explicitly = refl
+
+ internal-mod-cont₀-explicitly' :
+
+  ∀ t → ⟦ internal-mod-cont₀ t ⟧₀
+  ＝ let ϕ = (λ (f : X) (g : Y) (h : Z) → f (λ (i : ℕ) → h (λ (j : ℕ) → g j) i) h)
+     in ⟦ ⌜ t ⌝ ⟧ ⟨⟩
+        ϕ
+        (λ (_ : ℕ) (_ : ℕ → ℕ) → 0)
+        (λ (u : Y) (k : ℕ) (α : ℕ → ℕ)
+           → ⟦ maxT ⟧
+              (⟨⟩ ‚ ⟦ ⌜ t ⌝ ⟧ ⟨⟩ ϕ ‚ u ‚ k ‚ α) k
+              (u (α k) α))
+
+ internal-mod-cont₀-explicitly' t = refl
+
+ internal-mod-cont₀-explicitly'' :
+
+  ∀ t → ⟦ internal-mod-cont₀ t ⟧₀
+  ＝ let ϕ = (λ f g h → f (λ i → h (λ j → g j) i) h)
+     in ⟦ ⌜ t ⌝ ⟧ ⟨⟩
+        ϕ
+        (λ _ _ → 0)
+        (λ u k α
+           → ⟦ maxT ⟧
+              (⟨⟩ ‚ ⟦ ⌜ t ⌝ ⟧ ⟨⟩ ϕ ‚ u ‚ k ‚ α) k
+              (u (α k) α))
+
+ internal-mod-cont₀-explicitly'' t = refl
+
  m₁ : (ℕ → ℕ) → ℕ
  m₁ = external-mod-cont (ƛ (ν₀ · numeral 17))
+
+ m₁-explicitly : m₁ ＝ λ x → 17
+ m₁-explicitly = refl
 
  example₁ : m₁ id ＝ 17
  example₁ = refl
@@ -407,6 +454,19 @@ module examples2 where
 
  m₂ : (ℕ → ℕ) → ℕ
  m₂ = external-mod-cont (ƛ (ν₀ · (ν₀ · numeral 17)))
+
+ m₂-explicitly : m₂ ＝ λ (α : ℕ → ℕ) →
+  rec (λ x₁ x₂ → succ (rec (λ x₃ x₄ → succ (rec (λ x₅ x₆ → succ (rec
+  (λ x₇ x₈ → succ (rec (λ x₉ x₁₀ → succ (rec (λ x₁₁ x₁₂ → succ (rec
+  (λ x₁₃ x₁₄ → succ (rec (λ x₁₅ x₁₆ → succ (rec (λ x₁₇ x₁₈ → succ
+  (rec (λ x₁₉ x₂₀ → succ (rec (λ x₂₁ x₂₂ → succ (rec (λ x₂₃ x₂₄ →
+  succ (rec (λ x₂₅ x₂₆ → succ (rec (λ x₂₇ x₂₈ → succ (rec (λ x₂₉
+  x₃₀ → succ (rec (λ x₃₁ x₃₂ → succ (rec (λ x₃₃ x₃₄ → succ x₃₃) 1
+  x₃₁)) 2 x₂₉)) 3 x₂₇)) 4 x₂₅)) 5 x₂₃)) 6 x₂₁)) 7 x₁₉)) 8 x₁₇)) 9
+  x₁₅)) 10 x₁₃)) 11 x₁₁)) 12 x₉)) 13 x₇)) 14 x₅)) 15 x₃)) 16 x₁))
+  17 (rec (λ x₁ x₂ → rec (λ x₃ x₄ → succ (x₂ x₃)) (succ x₁)) (λ x₁
+  → x₁) (α 17) 0)
+ m₂-explicitly = refl
 
  example₂ : m₂ succ ＝ 18
  example₂ = refl
@@ -435,6 +495,35 @@ module examples2 where
  m₃ : (ℕ → ℕ) → ℕ
  m₃ = external-mod-cont t₃
 
+
+{- This takes a long time to type check:
+ m₃-explicitly : m₃ ＝ λ α →
+   rec (λ x x₁ → succ (rec (λ x₂ x₃ → succ (rec (λ x₄ x₅ → succ (rec (λ x₆
+   x₇ → succ (rec (λ x₈ x₉ → succ (rec (λ x₁₀ x₁₁ → succ (rec (λ
+   x₁₂ x₁₃ → succ (rec (λ x₁₄ x₁₅ → succ (rec (λ x₁₆ x₁₇ → succ
+   (rec (λ x₁₈ x₁₉ → succ (rec (λ x₂₀ x₂₁ → succ (rec (λ x₂₂ x₂₃ →
+   succ (rec (λ x₂₄ x₂₅ → succ (rec (λ x₂₆ x₂₇ → succ (rec (λ x₂₈
+   x₂₉ → succ (rec (λ x₃₀ x₃₁ → succ (rec (λ x₃₂ x₃₃ → succ (rec (λ
+   x₃₄ x₃₅ → succ (rec (λ x₃₆ x₃₇ → succ (rec (λ x₃₈ x₃₉ → succ
+   (rec (λ x₄₀ x₄₁ → succ (rec (λ x₄₂ x₄₃ → succ (rec (λ x₄₄ x₄₅ →
+   succ (rec (λ x₄₆ x₄₇ → succ (rec (λ x₄₈ x₄₉ → succ (rec (λ x₅₀
+   x₅₁ → succ (rec (λ x₅₂ x₅₃ → succ (rec (λ x₅₄ x₅₅ → succ (rec (λ
+   x₅₆ x₅₇ → succ (rec (λ x₅₈ x₅₉ → succ (rec (λ x₆₀ x₆₁ → succ
+   (rec (λ x₆₂ x₆₃ → succ (rec (λ x₆₄ x₆₅ → succ (rec (λ x₆₆ x₆₇ →
+   succ x₆₆) 1 x₆₄)) 2 x₆₂)) 3 x₆₀)) 4 x₅₈)) 5 x₅₆)) 6 x₅₄)) 7
+   x₅₂)) 8 x₅₀)) 9 x₄₈)) 10 x₄₆)) 11 x₄₄)) 12 x₄₂)) 13 x₄₀)) 14
+   x₃₈)) 15 x₃₆)) 16 x₃₄)) 17 x₃₂)) 18 x₃₀)) 19 x₂₈)) 20 x₂₆)) 21
+   x₂₄)) 22 x₂₂)) 23 x₂₀)) 24 x₁₈)) 25 x₁₆)) 26 x₁₄)) 27 x₁₂)) 28
+   x₁₀)) 29 x₈)) 30 x₆)) 31 x₄)) 32 x₂)) 33 x)) 34 (rec (λ x x₁ x₂
+   x₃ → x₁ (λ x₄ → x₂ (succ x₄)) x₃) (λ x x₁ → x₁ (λ x₂ → x x₂) 17)
+   (α 34) (λ x x₁ → rec (λ x₂ x₃ → rec (λ x₄ x₅ → succ (x₃ x₄))
+   (succ x₂)) (λ x₂ → x₂) x (rec (λ x₂ x₃ → rec (λ x₄ x₅ → succ (x₃
+   x₄)) (succ x₂)) (λ x₂ → x₂) (x₁ x) 0)) (λ x x₁ x₂ → rec (λ x₃ x₄
+   → rec (λ x₅ x₆ → succ (x₄ x₅)) (succ x₃)) (λ x₃ → x₃) x₁ (x (x₂
+   x₁) x₂)) α)
+ m₃-explicitly = refl
+-}
+
  example₃ : m₃ succ ＝ 54
  example₃ = refl
 
@@ -443,5 +532,11 @@ module examples2 where
 
  example₃'' : m₃ (λ i → 0) ＝ 34
  example₃'' = refl
+
+ example₃''' : m₃ (λ i → 300) ＝ 600
+ example₃''' = refl
+
+ example₃'''' : m₃ (λ i → add i i) ＝ 204
+ example₃'''' = refl
 
 \end{code}
