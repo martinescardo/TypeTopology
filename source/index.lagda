@@ -58,9 +58,9 @@
 
      (https://www.cs.bham.ac.uk/~mhe/TypeTopology/Unsafe.index.html)
 
-   * In our last count, this development has 133k lines, including
-     comments and blank lines. But we don't update the count
-     frequently.
+   * In our last count, on 13th May 2023, this development has 141k
+     lines, including comments and blank lines. But we don't update
+     the count frequently.
 
    * A module dependency graph is available, updated manually from
      time to time last tine on 19th December 2022:
@@ -139,6 +139,7 @@ import Dominance.index
 import Duploids.index                 -- by Jon Sterling
 import Dyadics.index                  -- by Andrew Sneap
 import DyadicsInductive.index         -- by Tom de Jong
+import EffectfulForcing.index
 import Factorial.index
 import Field.index                    -- by Andrew Sneap
 import Fin.index

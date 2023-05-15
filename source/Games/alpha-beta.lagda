@@ -182,7 +182,7 @@ TODO. Prove the lemma formulated as an assumption of the above module (easy).
   theorem = Selection-Strategy-Theorem R fe G G-selections lemma
 
   corollary : q optimal-play ＝ optimal-outcome R G
-  corollary = Selection-Strategy-Corollary R fe G G-selections lemma
+  corollary = selection-strategy-corollary R fe G G-selections lemma
 
 \end{code}
 

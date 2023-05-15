@@ -1,6 +1,6 @@
 Martin Escardo, Paulo Oliva, 2023
 
-(Strong) monad on types.
+(Strong, wild) monads on types.
 
 TODO. We should also use this in FiniteHistoryDependentMonadic.
 

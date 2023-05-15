@@ -315,7 +315,8 @@ putative-root-formula₂-works = ε-gives-putative-root
 putative-root-formula₂-explicitly :
 
   putative-root-formula 2
-  ＝ (𝕗 (O , 𝕗 (O , O , ⋆) , ⋆) , 𝕗 (𝕗 (O , 𝕗 (O , O , ⋆) , ⋆) , O , ⋆) , ⋆)
+  ＝ (𝕗 (O , 𝕗 (O , O , ⋆) , ⋆) ,
+      𝕗 (𝕗 (O , 𝕗 (O , O , ⋆) , ⋆) , O , ⋆) , ⋆)
 
 putative-root-formula₂-explicitly = refl
 
