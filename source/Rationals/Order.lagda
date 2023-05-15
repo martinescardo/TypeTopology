@@ -29,7 +29,6 @@ open import Rationals.Addition
 open import Rationals.Multiplication
 open import Rationals.Negation
 
-
 module Rationals.Order where
 
 _≤ℚ_ : (p q : ℚ) → 𝓤₀ ̇

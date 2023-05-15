@@ -20,7 +20,6 @@ open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.FunExt
 open import Integers.Type
-
 open import Rationals.Type
 open import Rationals.Order
 
