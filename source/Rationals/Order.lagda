@@ -768,6 +768,12 @@ order1ℚ' p = ℚ<-subtraction-preserves-order p 1ℚ (0 , refl)
   γ : 0ℚ ≤ ((negsucc x , a) , α)
   γ = ℚ<-coarser-than-≤ 0ℚ ((negsucc x , a) , α) l
 
+ℚ<-positive-not-zero : (p : ℚ) → 0ℚ < p → ¬ (p ＝ 0ℚ)
+ℚ<-positive-not-zero p 0<p e = ℚ<-not-itself p γ
+ where
+  γ : p < p
+  γ = transport (_< p) (e ⁻¹) 0<p
+
 ℚ-inv-preserves-pos : (p : ℚ)
                     → 0ℚ < p
                     → (nz : ¬ (p ＝ 0ℚ))
@@ -1151,11 +1157,5 @@ order-lemma' p q r l = γ
 
   γ : r + p ≤ r + q
   γ = transport₂ _≤_ I II (ℚ≤-addition-preserves-order p q r l)
-
-ℚ<-positive-not-zero : (p : ℚ) → 0ℚ < p → ¬ (p ＝ 0ℚ)
-ℚ<-positive-not-zero p 0<p e = ℚ<-not-itself p γ
- where
-  γ : p < p
-  γ = transport (_< p) (e ⁻¹) 0<p
 
 \end{code}

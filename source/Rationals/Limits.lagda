@@ -380,4 +380,57 @@ constant-sequence-converges q (ε , 0<ε) = 0 , γ
    0f-converges
    ⟨1/sn⟩-converges
 
+⟨2/3⟩^n<ε : (ε : ℚ₊) → Σ n ꞉ ℕ , (⟨2/3⟩^ n) < ε
+⟨2/3⟩^n<ε ε = γ (⟨2/3⟩^n-converges ε)
+ where
+  γ : Σ N ꞉ ℕ , ((n : ℕ) → N ≤ n → abs ((⟨2/3⟩^ n) - 0ℚ) < ε)
+    → Σ n ꞉ ℕ , (⟨2/3⟩^ n) < ε
+  γ (N , f) = N , γ'
+   where
+    I : abs ((⟨2/3⟩^ N) - 0ℚ) < ε
+    I = f N (≤-refl N)
+
+    II : 0ℚ < (⟨2/3⟩^ N)
+    II = ⟨2/3⟩^n-positive N
+
+    III : abs ((⟨2/3⟩^ N) - 0ℚ) ＝ ⟨2/3⟩^ N
+    III = abs ((⟨2/3⟩^ N) + 0ℚ) ＝⟨ ap abs (ℚ-zero-right-neutral (⟨2/3⟩^ N)) ⟩
+          abs (⟨2/3⟩^ N)        ＝⟨ abs-of-pos-is-pos' (⟨2/3⟩^ N) II         ⟩
+          (⟨2/3⟩^ N)            ∎
+
+    γ' : (⟨2/3⟩^ N) < ε
+    γ' = transport (_< ε) III I
+
+⟨2/3⟩^n<ε-consequence : (ε (p , _) : ℚ₊) → Σ n ꞉ ℕ , (⟨2/3⟩^ n) * p < ε
+⟨2/3⟩^n<ε-consequence (ε , 0<ε) (p , 0<p) = γ (⟨2/3⟩^n<ε (ε * p' , 0<εp'))
+ where
+  p-not-zero : ¬ (p ＝ 0ℚ)
+  p-not-zero = ℚ<-positive-not-zero p 0<p
+
+  p' : ℚ
+  p' = ℚ*-inv p p-not-zero
+
+  0<p' : 0ℚ < p'
+  0<p' = ℚ-inv-preserves-pos p 0<p p-not-zero
+
+  0<εp' : 0ℚ < ε * p'
+  0<εp' = ℚ<-pos-multiplication-preserves-order ε p' 0<ε 0<p'
+
+  γ : Σ n ꞉ ℕ , (⟨2/3⟩^ n) < ε * p'
+    → Σ n ꞉ ℕ , (⟨2/3⟩^ n) * p < ε
+  γ (n , l) = n , γ'
+   where
+    I : (⟨2/3⟩^ n) * p < ε * p' * p
+    I = ℚ<-pos-multiplication-preserves-order' (⟨2/3⟩^ n) (ε * p') p l 0<p
+
+    II : ε * p' * p ＝ ε
+    II = ε * p' * p   ＝⟨ ℚ*-assoc ε p' p                             ⟩
+         ε * (p' * p) ＝⟨ ap (ε *_) (ℚ*-comm p' p)                    ⟩
+         ε * (p * p') ＝⟨ ap (ε *_) (ℚ*-inverse-product p p-not-zero) ⟩
+         ε * 1ℚ       ＝⟨ ℚ-mult-right-id ε                           ⟩
+         ε            ∎
+
+    γ' : (⟨2/3⟩^ n) * p < ε
+    γ' = transport ((⟨2/3⟩^ n) * p <_) II I
+
 \end{code}
