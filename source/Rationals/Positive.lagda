@@ -29,9 +29,14 @@ instance
  Strict-Order-ℚ₊-ℚ₊ : Strict-Order ℚ₊ ℚ₊
  _<_ {{Strict-Order-ℚ₊-ℚ₊}} = _<ℚ₊_
 
-instance
  Order-ℚ₊-ℚ₊ : Order ℚ₊ ℚ₊
  _≤_ {{Order-ℚ₊-ℚ₊}} = _≤ℚ₊_
+
+ Strict-Order-ℚ₊-ℚ : Strict-Order ℚ₊ ℚ
+ _<_ {{Strict-Order-ℚ₊-ℚ}} (p , _) q = p < q
+
+ Strict-Order-ℚ-ℚ₊ : Strict-Order ℚ ℚ₊
+ _<_ {{Strict-Order-ℚ-ℚ₊}} p (q , _) = p < q
 
 _+_ : ℚ₊ → ℚ₊ → ℚ₊
 (p , 0<p) + (q , 0<q) = p ℚ+ q , ℚ<-adding-zero p q 0<p 0<q

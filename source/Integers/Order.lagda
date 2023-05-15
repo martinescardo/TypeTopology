@@ -203,6 +203,30 @@ instance
   I : succℤ x ≤ succℤ y
   I = ℤ≤-trans (succℤ x) y (succℤ y) l₁ (≤-incrℤ y)
 
+ℤ<-≤-trans : (x y z : ℤ) → x < y → y ≤ z → x < z
+ℤ<-≤-trans x y z l₁ l₂ = cases γ₁ γ₂ I
+ where
+  I : (y < z) ∔ (y ＝ z)
+  I = ℤ≤-split y z l₂
+
+  γ₁ : y < z → x < z
+  γ₁ l₃ = ℤ<-trans x y z l₁ l₃
+
+  γ₂ : y ＝ z → x < z
+  γ₂ e = transport (x <_) e l₁
+
+ℤ≤-<-trans : (x y z : ℤ) → x ≤ y → y < z → x < z
+ℤ≤-<-trans x y z l₁ l₂ = cases γ₁ γ₂ I
+ where
+  I : (x < y) ∔ (x ＝ y)
+  I = ℤ≤-split x y l₁
+
+  γ₁ : x < y → x < z
+  γ₁ l₃ = ℤ<-trans x y z l₃ l₂
+
+  γ₂ : x ＝ y → x < z
+  γ₂ e = transport (_< z) (e ⁻¹) l₂
+
 ℤ≤-refl : (x : ℤ) → x ≤ x
 ℤ≤-refl x = 0 , refl
 
@@ -223,6 +247,19 @@ instance
 
 ℤ-zero-less-than-pos : (n : ℕ) → pos 0 < pos (succ n)
 ℤ-zero-less-than-pos n = ℕ-order-respects-ℤ-order 0 (succ n) (zero-least n)
+
+ℤ-zero-least-pos : (n : ℕ) → pos 0 ≤ pos n
+ℤ-zero-least-pos 0 = ℤ≤-refl (pos 0)
+ℤ-zero-least-pos (succ n) = γ
+ where
+  I : pos 0 ≤ pos n
+  I = ℤ-zero-least-pos n
+
+  II : pos n ≤ pos (succ n)
+  II = ≤-incrℤ (pos n)
+
+  γ : pos 0 ≤ pos (succ n)
+  γ = ℤ≤-trans (pos 0) (pos n) (pos (succ n)) I II
 
 negative-less-than-positive : (x y : ℕ) → negsucc x < pos y
 negative-less-than-positive x y = (x ℕ+ y) , I
@@ -388,7 +425,19 @@ trich-locate x y = (x < y) ∔ (x ＝ y) ∔ (y < x)
       a + pos k + c   ＝⟨ ap (_+ c) p                   ⟩
       b + c           ∎
 
-ℤ≤-adding₂ : (a b c d : ℤ) → a ≤ b ≤ c → (a + d ≤ b + d) × (b + d ≤ c + d)
+ℤ≤-adding-left : (a b c : ℤ) → a ≤ b → c + a ≤ c + b
+ℤ≤-adding-left a b c l = transport₂ _≤_ I II III
+ where
+  I : a + c ＝ c + a
+  I = ℤ+-comm a c
+
+  II : b + c ＝ c + b
+  II = ℤ+-comm b c
+
+  III : a + c ≤ b + c
+  III = ℤ≤-adding' a b c l
+
+ℤ≤-adding₂ : (a b c d : ℤ) → a ≤ b ≤ c → (a + d ≤ b + d ≤ c + d)
 ℤ≤-adding₂ a b c d (l₁ , l₂) = (ℤ≤-adding' a b d l₁) , (ℤ≤-adding' b c d l₂)
 
 ℤ<-adding' : (a b c : ℤ) → a < b → a + c < b + c
@@ -401,6 +450,18 @@ trich-locate x y = (x < y) ∔ (x ＝ y) ∔ (y < x)
     II = succℤ (a + c) + pos h ＝⟨ ap (_+ (pos h)) (ℤ-left-succ a c ⁻¹) ⟩
          succℤ a + c + pos h   ＝⟨ q                                    ⟩
          b + c                 ∎
+
+ℤ<-adding-left : (a b c : ℤ) → a < b → c + a < c + b
+ℤ<-adding-left a b c l = transport₂ _<_ I II III
+ where
+  I : a + c ＝ c + a
+  I = ℤ+-comm a c
+
+  II : b + c ＝ c + b
+  II = ℤ+-comm b c
+
+  III : a + c < b + c
+  III = ℤ<-adding' a b c l
 
 ℤ<-adding'' : (a b c : ℤ) → a < b → c + a < c + b
 ℤ<-adding'' a b c l = transport₂ _<_ (ℤ+-comm a c) (ℤ+-comm b c) I
@@ -444,6 +505,21 @@ positive-multiplication-preserves-order' a b c p l = I (ℤ≤-split a b l)
    where
     γ : b * c ＝ a * c
     γ = ap (_* c) (e ⁻¹)
+
+ℤ*-multiplication-order : (a b c : ℤ)
+                        → pos 0 ≤ c
+                        → a ≤ b
+                        → a * c ≤ b * c
+ℤ*-multiplication-order a b (pos 0) p l = ℤ≤-refl (pos 0)
+ℤ*-multiplication-order a b (pos (succ c)) p l
+ = positive-multiplication-preserves-order' a b (pos (succ c)) ⋆ l
+ℤ*-multiplication-order a b (negsucc c) p l = 𝟘-elim γ
+ where
+  I : negsucc c < pos 0
+  I = negative-less-than-positive c 0
+
+  γ : 𝟘
+  γ = ℤ-bigger-or-equal-not-less (pos 0) (negsucc c) p I
 
 nmco-lemma : (a b : ℤ) → (c : ℕ) → a < b → b * (negsucc c) < a * (negsucc c)
 nmco-lemma a b = induction base step
@@ -686,13 +762,6 @@ min₂ x y z = minℤ (minℤ x y) z
 min₃ : ℤ → ℤ → ℤ → ℤ → ℤ
 min₃ w x y z = minℤ (min₂ w x y) z
 
-{-
-difference : (f : ℤ → ℤ → ℤ)             -- Given an integer function
-           → (x y : ℤ)                   -- and two bounds
-           → ℤ                           -- find the integer difference
-difference f l r = max₃ (f l r) (f l (r + pos 2)) (f (l + pos 2) r) (f (l + pos 2) (r + pos 2))
-                  - min₃ (f l r) (f l (r + pos 2)) (f (l + pos 2) r) (f (l + pos 2) (r + pos 2))
--}
 \end{code}
 
 Added by Todd

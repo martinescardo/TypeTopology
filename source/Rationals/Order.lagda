@@ -29,6 +29,7 @@ open import Rationals.Addition
 open import Rationals.Multiplication
 open import Rationals.Negation
 
+
 module Rationals.Order where
 
 _≤ℚ_ : (p q : ℚ) → 𝓤₀ ̇
@@ -122,28 +123,28 @@ toℚ-< (x , a) (y , b) l = γ
   γ = ordering-right-cancellable (x' ℤ* pb') (y' ℤ* pa') (ph ℤ* ph') I γ'
 
 0<1/2 : 0ℚ < 1/2
-0<1/2 = toℚ-< (pos 0 , 0) (pos 1 , 1) (0 , refl)
+0<1/2 = 0 , refl
 
 0<1/3 : 0ℚ < 1/3
-0<1/3 = toℚ-< (pos 0 , 0) (pos 1 , 2) (0 , refl)
+0<1/3 = 0 , refl
 
 0<1/4 : 0ℚ < 1/4
-0<1/4 = toℚ-< (pos 0 , 0) (pos 1 , 3) (0 , refl)
+0<1/4 = 0 , refl
 
 0<1/5 : 0ℚ < 1/5
-0<1/5 = toℚ-< (pos 0 , 0) (pos 1 , 5) (0 , refl)
+0<1/5 = 0 , refl
 
 1/2<1 : 1/2 < 1ℚ
-1/2<1 = toℚ-< (pos 1 , 1) (pos 1 , 0) (0 , refl)
+1/2<1 = 0 , refl
 
 1/4<1/2 : 1/4 < 1/2
-1/4<1/2 = toℚ-< (pos 1 , 3) (pos 1 , 1) (1 , refl)
+1/4<1/2 = 1 , refl
 
 0<4/5 : 0ℚ < 4/5
-0<4/5 = toℚ-< (pos 0 , 0) (pos 4 , 4) (3 , refl)
+0<4/5 = 3 , refl
 
 0<1 : 0ℚ < 1ℚ
-0<1 = ℚ<-trans 0ℚ 1/2 1ℚ 0<1/2 1/2<1
+0<1 = 0 , refl
 
 toℚ-≤ : (p q : 𝔽) → p 𝔽≤ q → toℚ p ≤ toℚ q
 toℚ-≤ (x , a) (y , b) l = Cases I II III
@@ -1150,5 +1151,11 @@ order-lemma' p q r l = γ
 
   γ : r + p ≤ r + q
   γ = transport₂ _≤_ I II (ℚ≤-addition-preserves-order p q r l)
+
+ℚ<-positive-not-zero : (p : ℚ) → 0ℚ < p → ¬ (p ＝ 0ℚ)
+ℚ<-positive-not-zero p 0<p e = ℚ<-not-itself p γ
+ where
+  γ : p < p
+  γ = transport (_< p) (e ⁻¹) 0<p
 
 \end{code}
