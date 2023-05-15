@@ -269,7 +269,7 @@ eloquence-theorem : (f : Baire → ℕ)
 eloquence-theorem f (t , r) =
  (dialogue-tree t ,
   λ α → dialogue (dialogue-tree t) α ＝⟨ (dialogue-tree-correct t α)⁻¹ ⟩
-        ⟦ t ⟧₀ α                     ＝⟨ ap (λ h → h α) r ⟩
+        ⟦ t ⟧₀ α                     ＝⟨ ap (λ - → - α) r ⟩
         f α                          ∎)
 
 eloquence-corollary₀ : (f : Baire → ℕ)
@@ -303,41 +303,41 @@ module examples where
  max (succ x) 0        = succ x
  max (succ x) (succ y) = succ (max x y)
 
- Max : List ℕ → ℕ
- Max []      = 0
- Max (x ∷ s) = max x (Max s)
+ mod : List ℕ → ℕ
+ mod []      = 0
+ mod (x ∷ s) = max (succ x) (mod s)
 
  mod-cont : T₀ ((ι ⇒ ι) ⇒ ι) → Baire → ℕ
- mod-cont t α = Max (pr₁ (eloquence-corollary₀ ⟦ t ⟧₀ (t , refl) α))
+ mod-cont t α = mod (pr₁ (eloquence-corollary₀ ⟦ t ⟧₀ (t , refl) α))
 
  m₁ : (ℕ → ℕ) → ℕ
  m₁ = mod-cont (ƛ (ν₀ · numeral 17))
 
- m₁-explicitly : m₁ ＝ λ x → 17
+ m₁-explicitly : m₁ ＝ λ x → 18
  m₁-explicitly = refl
 
- example₁ : m₁ id ＝ 17
+ example₁ : m₁ id ＝ 18
  example₁ = refl
 
- example₁' : m₁ (λ i → 0) ＝ 17
+ example₁' : m₁ (λ i → 0) ＝ 18
  example₁' = refl
 
  m₂ : (ℕ → ℕ) → ℕ
  m₂ = mod-cont (ƛ (ν₀ · (ν₀ · numeral 17)))
 
- m₂-explicitly : m₂ ＝ λ α → max 17 (max (α 17) 0)
+ m₂-explicitly : m₂ ＝ λ α → succ (max 17 (α 17))
  m₂-explicitly = refl
 
- example₂ : m₂ succ ＝ 18
+ example₂ : m₂ succ ＝ 19
  example₂ = refl
 
- example₂' : m₂ (λ i → 0) ＝ 17
+ example₂' : m₂ (λ i → 0) ＝ 18
  example₂' = refl
 
- example₂'' : m₂ id ＝ 17
+ example₂'' : m₂ id ＝ 18
  example₂'' = refl
 
- example₂''' : m₂ (succ ∘ succ) ＝ 19
+ example₂''' : m₂ (succ ∘ succ) ＝ 20
  example₂''' = refl
 
 
@@ -356,25 +356,19 @@ module examples where
  m₃ : (ℕ → ℕ) → ℕ
  m₃ = mod-cont t₃
 
- m₃-explicitly : m₃ ＝ λ α →
-  max 34 (Max (pr₁ (dialogue-continuity (kleisli-extension (β η)
-  (kleisli-extension (β η) (rec (λ x → kleisli-extension (λ x₁ → η
-  (succ x₁))) (β η 17) (α 34)))) α)))
- m₃-explicitly = refl
-
- example₃ : m₃ succ ＝ 54
+ example₃ : m₃ succ ＝ 55
  example₃ = refl
 
- example₃' : m₃ id ＝ 51
+ example₃' : m₃ id ＝ 52
  example₃' = refl
 
- example₃'' : m₃ (λ i → 0) ＝ 34
+ example₃'' : m₃ (λ i → 0) ＝ 35
  example₃'' = refl
 
- example₃''' : m₃ (λ i → 300) ＝ 600
+ example₃''' : m₃ (λ i → 300) ＝ 601
  example₃''' = refl
 
- example₃'''' : m₃ (λ i → add i i) ＝ 204
+ example₃'''' : m₃ (λ i → add i i) ＝ 205
  example₃'''' = refl
 
  f : T₀ ((ι ⇒ ι) ⇒ ι)
@@ -383,16 +377,16 @@ module examples where
  m₄ : (ℕ → ℕ) → ℕ
  m₄ = mod-cont f
 
- example₄ : m₄ id ＝ 17
+ example₄ : m₄ id ＝ 18
  example₄ = refl
 
- example₄' : m₄ (λ i → 0) ＝ 17
+ example₄' : m₄ (λ i → 0) ＝ 18
  example₄' = refl
 
- example₄'' : m₄ succ ＝ 19
+ example₄'' : m₄ succ ＝ 20
  example₄'' = refl
 
- example₄''' : m₄ (λ i → add i i) ＝ 68
+ example₄''' : m₄ (λ i → add i i) ＝ 69
  example₄''' = refl
 
  example₄'''' : ⟦ f ⟧₀ (λ i → add i i) ＝ 136

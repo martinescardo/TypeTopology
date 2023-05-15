@@ -331,24 +331,24 @@ modulus of continuity for t.
 
 \begin{code}
 
-max : ℕ → ℕ → ℕ
-max 0        n        = n
-max (succ m) 0        = succ m
-max (succ m) (succ n) = succ (max m n)
-
 max' : ℕ → ℕ → ℕ
-max' = rec {ℕ → ℕ} (λ m f → rec {ℕ} (λ n _ → succ (f n)) (succ m)) (λ n → n)
+max' 0        n        = n
+max' (succ m) 0        = succ m
+max' (succ m) (succ n) = succ (max' m n)
+
+max : ℕ → ℕ → ℕ
+max = rec {ℕ → ℕ} (λ m f → rec {ℕ} (λ n _ → succ (f n)) (succ m)) (λ n → n)
 
 max-agreement : (m n : ℕ) → max m n ＝ max' m n
 max-agreement 0        n        = refl
 max-agreement (succ m) 0        = refl
 max-agreement (succ m) (succ n) = ap succ (max-agreement m n)
 
-maxT : {n : ℕ} {Γ : Cxt n} → T Γ (ι ⇒ ι ⇒ ι)
-maxT = Rec · ƛ (ƛ (Rec · ƛ (ƛ (Succ · (ν₂ · ν₁))) · (Succ · ν₁))) · ƛ ν₀
+maxᵀ : {n : ℕ} {Γ : Cxt n} → T Γ (ι ⇒ ι ⇒ ι)
+maxᵀ = Rec · ƛ (ƛ (Rec · ƛ (ƛ (Succ · (ν₂ · ν₁))) · (Succ · ν₁))) · ƛ ν₀
 
-maxT-meaning : ⟦ maxT ⟧₀ ＝ max'
-maxT-meaning = refl
+maxᵀ-meaning : ⟦ maxᵀ ⟧₀ ＝ max
+maxᵀ-meaning = refl
 
 \end{code}
 
@@ -360,7 +360,7 @@ max-question-in-path : {n : ℕ} {Γ : Cxt n}
                      → T (B-context【 Γ 】 ((ι ⇒ ι) ⇒ ι))
                          ((⌜B⌝ ι ((ι ⇒ ι) ⇒ ι)) ⇒ (ι ⇒ ι) ⇒ ι)
 max-question-in-path =
- ƛ (ν₀ · ƛ (ƛ Zero) · ƛ (ƛ (ƛ (maxT · ν₁ · (ν₂ · (ν₀ · ν₁) · ν₀)))))
+ ƛ (ν₀ · ƛ (ƛ Zero) · ƛ (ƛ (ƛ (maxᵀ · (Succ · ν₁) · (ν₂ · (ν₀ · ν₁) · ν₀)))))
 
 max-question-in-path-meaning-η :
 
@@ -371,7 +371,7 @@ max-question-in-path-meaning-η n α = refl
 max-question-in-path-meaning-β :
 
  ∀ φ n α → ⟦ max-question-in-path ⟧₀ (⟦ ⌜β⌝ ⟧₀ φ n) α
-        ＝ max' n (⟦ max-question-in-path ⟧₀ (φ (α n)) α)
+        ＝ max (succ n) (⟦ max-question-in-path ⟧₀ (φ (α n)) α)
 
 max-question-in-path-meaning-β φ n α = refl
 
@@ -397,87 +397,43 @@ the MFPS paper file.
 
 module examples2 where
 
-
- internal-mod-cont₀-explicitly :
-
-  internal-mod-cont₀
-  ＝ λ t → ƛ (ν₀ · ƛ (ƛ Zero) · ƛ (ƛ (ƛ (maxT · ν₁ · (ν₂ · (ν₀ · ν₁) ·
-    ν₀))))) · (⌜ t ⌝ · (ƛ (ƛ (ƛ (ƛ (ν₂ · ƛ (ν₄ · ν₀ · ν₂ · ν₁) ·
-    ν₀)))) · (ƛ (ƛ (ƛ (ƛ (ν₀ · ƛ (ν₄ · ν₀ · ν₂ · ν₁) · ν₂)))) · ƛ (ƛ
-    (ƛ (ν₁ · ν₂))))))
-
- Y = ℕ → (ℕ → ℕ) → ℕ
- Z = Y → Y
- X = Y → Z → (ℕ → ℕ) → ℕ
-
- internal-mod-cont₀-explicitly = refl
-
- internal-mod-cont₀-explicitly' :
-
-  ∀ t → ⟦ internal-mod-cont₀ t ⟧₀
-  ＝ let ϕ = (λ (f : X) (g : Y) (h : Z) → f (λ (i : ℕ) → h (λ (j : ℕ) → g j) i) h)
-     in ⟦ ⌜ t ⌝ ⟧ ⟨⟩
-        ϕ
-        (λ (_ : ℕ) (_ : ℕ → ℕ) → 0)
-        (λ (u : Y) (k : ℕ) (α : ℕ → ℕ)
-           → ⟦ maxT ⟧
-              (⟨⟩ ‚ ⟦ ⌜ t ⌝ ⟧ ⟨⟩ ϕ ‚ u ‚ k ‚ α) k
-              (u (α k) α))
-
- internal-mod-cont₀-explicitly' t = refl
-
- internal-mod-cont₀-explicitly'' :
-
-  ∀ t → ⟦ internal-mod-cont₀ t ⟧₀
-  ＝ let ϕ = (λ f g h → f (λ i → h (λ j → g j) i) h)
-     in ⟦ ⌜ t ⌝ ⟧ ⟨⟩
-        ϕ
-        (λ _ _ → 0)
-        (λ u k α
-           → ⟦ maxT ⟧
-              (⟨⟩ ‚ ⟦ ⌜ t ⌝ ⟧ ⟨⟩ ϕ ‚ u ‚ k ‚ α) k
-              (u (α k) α))
-
- internal-mod-cont₀-explicitly'' t = refl
-
  m₁ : (ℕ → ℕ) → ℕ
  m₁ = external-mod-cont (ƛ (ν₀ · numeral 17))
 
- m₁-explicitly : m₁ ＝ λ x → 17
+ m₁-explicitly : m₁ ＝ λ α → 18
  m₁-explicitly = refl
 
- example₁ : m₁ id ＝ 17
+ example₁ : m₁ id ＝ 18
  example₁ = refl
 
- example₁' : m₁ (λ i → 0) ＝ 17
+ example₁' : m₁ (λ i → 0) ＝ 18
  example₁' = refl
+
+ f₂ : T₀ ((ι ⇒ ι) ⇒ ι)
+ f₂ = ƛ (ν₀ · (ν₀ · numeral 17))
+
+ f₂-meaning : ⟦ f₂ ⟧₀ ＝ λ α → α (α 17)
+ f₂-meaning = refl
 
  m₂ : (ℕ → ℕ) → ℕ
  m₂ = external-mod-cont (ƛ (ν₀ · (ν₀ · numeral 17)))
 
- m₂-explicitly : m₂ ＝ λ (α : ℕ → ℕ) →
-  rec (λ x₁ x₂ → succ (rec (λ x₃ x₄ → succ (rec (λ x₅ x₆ → succ (rec
-  (λ x₇ x₈ → succ (rec (λ x₉ x₁₀ → succ (rec (λ x₁₁ x₁₂ → succ (rec
-  (λ x₁₃ x₁₄ → succ (rec (λ x₁₅ x₁₆ → succ (rec (λ x₁₇ x₁₈ → succ
-  (rec (λ x₁₉ x₂₀ → succ (rec (λ x₂₁ x₂₂ → succ (rec (λ x₂₃ x₂₄ →
-  succ (rec (λ x₂₅ x₂₆ → succ (rec (λ x₂₇ x₂₈ → succ (rec (λ x₂₉
-  x₃₀ → succ (rec (λ x₃₁ x₃₂ → succ (rec (λ x₃₃ x₃₄ → succ x₃₃) 1
-  x₃₁)) 2 x₂₉)) 3 x₂₇)) 4 x₂₅)) 5 x₂₃)) 6 x₂₁)) 7 x₁₉)) 8 x₁₇)) 9
-  x₁₅)) 10 x₁₃)) 11 x₁₁)) 12 x₉)) 13 x₇)) 14 x₅)) 15 x₃)) 16 x₁))
-  17 (rec (λ x₁ x₂ → rec (λ x₃ x₄ → succ (x₂ x₃)) (succ x₁)) (λ x₁
-  → x₁) (α 17) 0)
+ m₂-explicitly : m₂ ＝ λ α → succ (max 17 (α 17))
  m₂-explicitly = refl
 
- example₂ : m₂ succ ＝ 18
+ example₂ : m₂ succ ＝ 19
  example₂ = refl
 
- example₂' : m₂ (λ i → 0) ＝ 17
+ example₂' : m₂ (λ i → 0) ＝ 18
  example₂' = refl
 
- example₂'' : m₂ id ＝ 17
+ example₂'''' : m₂ (λ i → 1000) ＝ 1001
+ example₂'''' = refl
+
+ example₂'' : m₂ id ＝ 18
  example₂'' = refl
 
- example₂''' : m₂ (succ ∘ succ) ＝ 19
+ example₂''' : m₂ (succ ∘ succ) ＝ 20
  example₂''' = refl
 
  Add : {n : ℕ} {Γ : Cxt n} → T Γ (ι ⇒ ι ⇒ ι)
@@ -494,7 +450,6 @@ module examples2 where
 
  m₃ : (ℕ → ℕ) → ℕ
  m₃ = external-mod-cont t₃
-
 
 {- This takes a long time to type check:
  m₃-explicitly : m₃ ＝ λ α →
@@ -524,19 +479,19 @@ module examples2 where
  m₃-explicitly = refl
 -}
 
- example₃ : m₃ succ ＝ 54
+ example₃ : m₃ succ ＝ 55
  example₃ = refl
 
- example₃' : m₃ id ＝ 51
+ example₃' : m₃ id ＝ 52
  example₃' = refl
 
- example₃'' : m₃ (λ i → 0) ＝ 34
+ example₃'' : m₃ (λ i → 0) ＝ 35
  example₃'' = refl
 
- example₃''' : m₃ (λ i → 300) ＝ 600
+ example₃''' : m₃ (λ i → 300) ＝ 601
  example₃''' = refl
 
- example₃'''' : m₃ (λ i → add i i) ＝ 204
+ example₃'''' : m₃ (λ i → add i i) ＝ 205
  example₃'''' = refl
 
  f : T₀ ((ι ⇒ ι) ⇒ ι)
@@ -545,21 +500,19 @@ module examples2 where
  m₄ : (ℕ → ℕ) → ℕ
  m₄ = external-mod-cont f
 
- example₄ : m₄ id ＝ 17
+ example₄ : m₄ id ＝ 18
  example₄ = refl
 
- example₄' : m₄ (λ i → 0) ＝ 17
+ example₄' : m₄ (λ i → 0) ＝ 18
  example₄' = refl
 
- example₄'' : m₄ succ ＝ 19
+ example₄'' : m₄ succ ＝ 20
  example₄'' = refl
 
- example₄''' : m₄ (λ i → add i i) ＝ 68
+ example₄''' : m₄ (λ i → add i i) ＝ 69
  example₄''' = refl
 
  example₄'''' : ⟦ f ⟧₀ (λ i → add i i) ＝ 136
  example₄'''' = refl
-
-
 
 \end{code}
