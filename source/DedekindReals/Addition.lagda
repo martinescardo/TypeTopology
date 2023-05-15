@@ -160,13 +160,13 @@ _+_ : ℝ → ℝ → ℝ
       goal = transport₂ _<_ (e₁ ⁻¹) (e₂ ⁻¹) (ℚ<-adding r r' s s' I II)
 
   located-z : located L-z R-z
-  located-z p q l = I (ℝ-arithmetically-located fe pe pt x (q ℚ- p) (ℚ<-difference-positive p q l))
+  located-z p q l = I (ℝ-arithmetically-located' fe pe pt x ((q ℚ- p) , (ℚ<-difference-positive p q l)))
    where
-    I : ∃ (e , t) ꞉ ℚ × ℚ , e ∈ L-x × t ∈ R-x × (0ℚ < t ℚ- e) × (t ℚ- e < q ℚ- p) → p ∈ L-z ∨ q ∈ R-z
+    I : ∃ (e , t) ꞉ ℚ × ℚ , (e ∈ L-x × t ∈ R-x) × (0ℚ < t ℚ- e < q ℚ- p) → p ∈ L-z ∨ q ∈ R-z
     I = ∥∥-rec ∨-is-prop δ
      where
-      δ : Σ (e , t) ꞉ ℚ × ℚ , e ∈ L-x × t ∈ R-x × (0ℚ < t ℚ- e) × (t ℚ- e < q ℚ- p) → p ∈ L-z ∨ q ∈ R-z
-      δ ((e , t) , eLx , tRx , l₁ , l₂) = IV II III
+      δ : Σ (e , t) ꞉ ℚ × ℚ , (e ∈ L-x × t ∈ R-x) × (0ℚ < t ℚ- e < q ℚ- p) → p ∈ L-z ∨ q ∈ R-z
+      δ ((e , t) , (eLx , tRx) , (l₁ , l₂)) = IV II III
        where
         l₃ : p ℚ- e < q ℚ- t
         l₃ = transport₂ _<_ i ii (ℚ<-addition-preserves-order (t ℚ- e) (q ℚ- p) (p ℚ- t) l₂)
@@ -510,10 +510,10 @@ x - y = x + (- y)
   rtl : lower-cut-of 0ℝ ⊆ lower-cut-of (x - x)
   rtl p p<0 = ∥∥-rec (∈-is-prop (lower-cut-of (x - x)) p) II I
    where
-    I : ∃ (a , b) ꞉ ℚ × ℚ , (a < x) × (x < b) × (0ℚ < b ℚ- a) × (b ℚ- a < ℚ- p)
-    I = ℝ-arithmetically-located fe pe pt x (ℚ- p) (ℚ<-swap p 0ℚ p<0)
-    II : Σ (a , b) ꞉ ℚ × ℚ , (a < x) × (x < b) × (0ℚ < b ℚ- a) × (b ℚ- a < ℚ- p) → p < (x - x)
-    II ((a , b) , a<x , x<b , 0<b-a , b-a<-p) = ∣ (a , p ℚ- a) , a<x , ∣ (a ℚ- p) , (i , ii) ∣ , iii ∣
+    I : ∃ (a , b) ꞉ ℚ × ℚ , (a < x < b) × (0ℚ < b ℚ- a < ℚ- p)
+    I = ℝ-arithmetically-located' fe pe pt x ((ℚ- p) , (ℚ<-swap p 0ℚ p<0))
+    II : Σ (a , b) ꞉ ℚ × ℚ , (a < x < b) × (0ℚ < b ℚ- a < ℚ- p) → p < (x - x)
+    II ((a , b) , (a<x , x<b) , (0<b-a , b-a<-p)) = ∣ (a , p ℚ- a) , a<x , ∣ (a ℚ- p) , (i , ii) ∣ , iii ∣
      where
       i : (a ℚ- p) > x
       i = rounded-right-c (upper-cut-of x) (rounded-from-real-R x) b (a ℚ- p) (transport₂ _<_ α β (ℚ<-addition-preserves-order (b ℚ- a) (ℚ- p) a b-a<-p)) x<b

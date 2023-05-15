@@ -185,7 +185,7 @@ ball-around-real : (x : ℝ)
                  → (f : ℚ → ℚ)
                  → (ic : ℚ-is-uniformly-continuous f)
                  → ∃ x₀ ꞉ ℚ , x ℝ∈𝐁 δ⦅⦆ f ic ε ⦅ x₀ ⦆
-ball-around-real x ε f ic = ∥∥-functor γ (ℝ-arithmetically-located x δ 0<δ)
+ball-around-real x ε f ic = ∥∥-functor γ (ℝ-arithmetically-located' x (δ , 0<δ))
  where
   δ₊ : ℚ₊
   δ₊ = δ⦅⦆ f ic ε
@@ -196,9 +196,9 @@ ball-around-real x ε f ic = ∥∥-functor γ (ℝ-arithmetically-located x δ 
   0<δ : 0ℚ < δ
   0<δ =  pr₂ δ₊
 
-  γ : Σ (u , v) ꞉ ℚ × ℚ , (u < x) × (x < v) × (0ℚ < v - u) × (v - u < δ)
+  γ : Σ (u , v) ꞉ ℚ × ℚ , (u < x < v) × (0ℚ < v - u < δ)
     → Σ x₀ ꞉ ℚ , x ℝ∈𝐁 δ₊ ⦅ x₀ ⦆
-  γ ((u , v) , l₁ , l₂ , l₃ , l₄) = u , (γ₁ , γ₂)
+  γ ((u , v) , (l₁ , l₂) , (l₃ , l₄)) = u , (γ₁ , γ₂)
    where
     I : u - δ < u
     I = ℚ<-subtraction-preserves-order u δ 0<δ

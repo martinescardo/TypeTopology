@@ -141,11 +141,11 @@ B-ℝ x y ε = ∃ (p , q) ꞉ ℚ × ℚ , (p < x < q) × (p < y < q) × B-ℚ 
   γ₂ = ℝ-m1a-lemma y x f'
 
 ℝ-m1b : m1b ℝ B-ℝ
-ℝ-m1b x (ε , 0<ε) = ∥∥-functor γ (ℝ-arithmetically-located x ε 0<ε)
+ℝ-m1b x (ε , 0<ε) = ∥∥-functor γ (ℝ-arithmetically-located' x (ε , 0<ε))
  where
-  γ : Σ (p , q) ꞉ ℚ × ℚ , ((p < x) × (x < q) × (0ℚ < (q - p)) × (q - p) < ε)
+  γ : Σ (p , q) ꞉ ℚ × ℚ , (p < x < q) × (0ℚ < q - p < ε)
     → Σ (p , q) ꞉ ℚ × ℚ , (p < x < q) × (p < x < q) × B-ℚ p q (ε , 0<ε)
-  γ ((p , q) , p<x , x<q , 0<q-p , q-p<ε) = γ'
+  γ ((p , q) , (p<x , x<q) , (0<q-p , q-p<ε)) = γ'
    where
     I : abs (q - p) < ε
     I = pos-abs-no-increase (q - p) ε (0<q-p , q-p<ε)
@@ -719,16 +719,16 @@ ca-limit-is-limit (f , α) = y , y-is-limit
     ε₄ = ε₁ + ε₃
     0<ε₄ = ℚ<-adding-zero ε₁ ε₃ 0<ε₁ 0<ε₃
 
-    I : ∃ (p , q) ꞉ ℚ × ℚ , (p < f ε₁₊) × (f ε₁₊ < q)
-                          × (0ℚ < q - p) × (q - p < ε₃)
-    I = ℝ-arithmetically-located (f ε₁₊) ε₃ 0<ε₃
+    I : ∃ (p , q) ꞉ ℚ × ℚ , (p < f ε₁₊ < q)
+                          × (0ℚ < q - p < ε₃)
+    I = ℝ-arithmetically-located' (f ε₁₊) (ε₃ , 0<ε₃)
 
-    γ : Σ (p , q) ꞉ ℚ × ℚ , (p < f ε₁₊) × (f ε₁₊ < q)
-                          × (0ℚ < q - p) × (q - p < ε₃)
+    γ : Σ (p , q) ꞉ ℚ × ℚ , (p < f ε₁₊ < q)
+                          × (0ℚ < q - p < ε₃)
       → ∃ (p , r) ꞉ ℚ × ℚ , (p < (f ε₁₊) < r)
                           × (p < y < r)
                           × B-ℚ p r (ε₁₊ ℚ₊+ ε₂₊)
-    γ ((p , q) , l₁ , l₂ , l₃ , l₄) = ∥∥-functor γ₁ γ₂
+    γ ((p , q) , (l₁ , l₂) , (l₃ , l₄)) = ∥∥-functor γ₁ γ₂
      where
       p<q : p < q
       p<q = disjoint-from-real (f ε₁₊) p q (l₁ , l₂)
