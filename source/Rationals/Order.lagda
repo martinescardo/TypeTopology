@@ -34,13 +34,6 @@ module Rationals.Order where
 _≤ℚ_ : (p q : ℚ) → 𝓤₀ ̇
 (p , _) ≤ℚ (q , _) = p 𝔽≤ q
 
-instance
- Order-ℚ-ℚ : Order ℚ ℚ
- _≤_ {{Order-ℚ-ℚ}} = _≤ℚ_
-
-ℚ≤-is-prop : (p q : ℚ) → is-prop (p ≤ q)
-ℚ≤-is-prop (p , _) (q , _) = 𝔽≤-is-prop p q
-
 _<ℚ_ : (p q : ℚ) → 𝓤₀ ̇
 (p , _) <ℚ (q , _) = p 𝔽< q
 
@@ -48,8 +41,17 @@ instance
  Strict-Order-ℚ-ℚ : Strict-Order ℚ ℚ
  _<_ {{Strict-Order-ℚ-ℚ}} = _<ℚ_
 
-ℚ₊ : 𝓤₀ ̇
-ℚ₊ = Σ q ꞉ ℚ , 0ℚ < q
+ Strict-Order-Chain-ℚ-ℚ-ℚ : Strict-Order-Chain ℚ ℚ ℚ _<_ _<_
+ _<_<_ {{Strict-Order-Chain-ℚ-ℚ-ℚ}} p q r = (p < q) × (q < r)
+
+ Order-ℚ-ℚ : Order ℚ ℚ
+ _≤_ {{Order-ℚ-ℚ}} = _≤ℚ_
+
+ Order-Chain-ℚ-ℚ-ℚ : Order-Chain ℚ ℚ ℚ _≤_ _≤_
+ _≤_≤_ {{Order-Chain-ℚ-ℚ-ℚ}} p q r = (p ≤ q) × (q ≤ r)
+
+ℚ≤-is-prop : (p q : ℚ) → is-prop (p ≤ q)
+ℚ≤-is-prop (p , _) (q , _) = 𝔽≤-is-prop p q
 
 ℚ<-is-prop : (p q : ℚ) → is-prop (p < q)
 ℚ<-is-prop (p , _) (q , _) = 𝔽<-is-prop p q
@@ -120,25 +122,28 @@ toℚ-< (x , a) (y , b) l = γ
   γ = ordering-right-cancellable (x' ℤ* pb') (y' ℤ* pa') (ph ℤ* ph') I γ'
 
 0<1/2 : 0ℚ < 1/2
-0<1/2 = toℚ-< (pos 0 , 0) (pos 1 , 1) (0 , refl)
+0<1/2 = 0 , refl
 
 0<1/3 : 0ℚ < 1/3
-0<1/3 = toℚ-< (pos 0 , 0) (pos 1 , 2) (0 , refl)
+0<1/3 = 0 , refl
 
 0<1/4 : 0ℚ < 1/4
-0<1/4 = toℚ-< (pos 0 , 0) (pos 1 , 3) (0 , refl)
+0<1/4 = 0 , refl
 
 0<1/5 : 0ℚ < 1/5
-0<1/5 = toℚ-< (pos 0 , 0) (pos 1 , 5) (0 , refl)
+0<1/5 = 0 , refl
 
 1/2<1 : 1/2 < 1ℚ
-1/2<1 = toℚ-< (pos 1 , 1) (pos 1 , 0) (0 , refl)
+1/2<1 = 0 , refl
 
 1/4<1/2 : 1/4 < 1/2
-1/4<1/2 = toℚ-< (pos 1 , 3) (pos 1 , 1) (1 , refl)
+1/4<1/2 = 1 , refl
+
+0<4/5 : 0ℚ < 4/5
+0<4/5 = 3 , refl
 
 0<1 : 0ℚ < 1ℚ
-0<1 = ℚ<-trans 0ℚ 1/2 1ℚ 0<1/2 1/2<1
+0<1 = 0 , refl
 
 toℚ-≤ : (p q : 𝔽) → p 𝔽≤ q → toℚ p ≤ toℚ q
 toℚ-≤ (x , a) (y , b) l = Cases I II III
@@ -210,12 +215,12 @@ toℚ-≤ (x , a) (y , b) l = Cases I II III
 ℚ-trichotomous ((x , a) , α) ((y , b) , β) =
  γ (ℤ-trichotomous (x ℤ* pos (succ b)) (y ℤ* pos (succ a)))
  where
-  γ : (x ℤ* pos (succ b)) < (y ℤ* pos (succ a))
+  γ : ((x ℤ* pos (succ b)) < (y ℤ* pos (succ a)))
      ∔ (x ℤ* pos (succ b) ＝ y ℤ* pos (succ a))
-     ∔ (y ℤ* pos (succ a)) < (x ℤ* pos (succ b))
-    →  ((x , a) , α) < ((y , b) , β)
+     ∔ ((y ℤ* pos (succ a)) < (x ℤ* pos (succ b)))
+    →  (((x , a) , α) < ((y , b) , β))
      ∔ ((x , a) , α ＝ (y , b) , β)
-     ∔ ((y , b) , β) < ((x , a) , α)
+     ∔ (((y , b) , β) < ((x , a) , α))
   γ (inl z)       = inl z
   γ (inr (inr z)) = inr (inr z)
   γ (inr (inl z)) = inr (inl γ')
@@ -226,16 +231,16 @@ toℚ-≤ (x , a) (y , b) l = Cases I II III
     γ' : (x , a) , α ＝ (y , b) , β
     γ' = to-subtype-＝ is-in-lowest-terms-is-prop I
 
-ℚ-dichotomous : (p q : ℚ) → p ≤ q ∔ q ≤ p
+ℚ-dichotomous : (p q : ℚ) → (p ≤ q) ∔ (q ≤ p)
 ℚ-dichotomous ((x , a) , α) ((y , b) , β) = γ
  where
-  γ : ((x , a) , α) ≤ ((y , b) , β) ∔ ((y , b) , β) ≤ ((x , a) , α)
+  γ : (((x , a) , α) ≤ ((y , b) , β)) ∔ (((y , b) , β) ≤ ((x , a) , α))
   γ = ℤ-dichotomous (x ℤ* pos (succ b)) (y ℤ* pos (succ a))
 
 ℚ-dichotomous' : (p q : ℚ) → p < q ∔ q ≤ p
 ℚ-dichotomous' p q = γ (ℚ-trichotomous p q)
  where
-  γ : p < q ∔ (p ＝ q) ∔ q < p → p < q ∔ q ≤ p
+  γ : (p < q) ∔ (p ＝ q) ∔ (q < p) → (p < q) ∔ (q ≤ p)
   γ (inl l) = inl l
   γ (inr (inl e)) = inr (transport (_≤ p) e (ℚ≤-refl p))
   γ (inr (inr l)) = inr (ℚ<-coarser-than-≤ q p l)
@@ -418,6 +423,38 @@ rounded-lemma₀ (succ a) =
 
   γ : p < q + r
   γ = transport₂ _<_ I II III
+
+ℚ<-subtraction-order' : (p q : ℚ) → p + q < q → p < 0ℚ
+ℚ<-subtraction-order' p q l = transport (p <_) (ℚ-inverse-sum-to-zero q) I
+ where
+  I : p < q - q
+  I = ℚ<-subtraction-preserves-order''' p q q l
+
+ℚ-addition-order : (p q r : ℚ) → 0ℚ < q + r → p < p + q + r
+ℚ-addition-order p q r l = γ
+ where
+  I : p < p + (q + r)
+  I = ℚ<-addition-preserves-order'' p (q + r) l
+
+  II : p + (q + r) ＝ p + q + r
+  II = ℚ+-assoc p q r ⁻¹
+
+  γ : p < p + q + r
+  γ = transport (p <_) II I
+
+ℚ-subtraction-order : (p q r : ℚ) → 0ℚ < q + r → p - q - r < p
+ℚ-subtraction-order p q r l = γ
+ where
+  I : p - (q + r) < p
+  I = ℚ<-subtraction-preserves-order p (q + r) l
+
+  II : p - (q + r) ＝ p - q - r
+  II = p - (q + r)     ＝⟨ ap (p +_) (ℚ-minus-dist q r ⁻¹) ⟩
+       p + ((- q) - r) ＝⟨ ℚ+-assoc p (- q) (- r) ⁻¹       ⟩
+       p - q - r       ∎
+
+  γ : p - q - r < p
+  γ = transport (_< p) II I
 
 ℚ<-difference-positive' : (p q : ℚ) → p < q → p - q < 0ℚ
 ℚ<-difference-positive' p q l = γ
@@ -639,7 +676,7 @@ order1ℚ' p = ℚ<-subtraction-preserves-order p 1ℚ (0 , refl)
   II : x - x - y ≤ y - x - y
   II = ℚ≤-addition-preserves-order (x - x) (y - x) (- y) I
 
-  III : x - x - y ≤ y - x - y ＝ - y ≤ - x
+  III : (x - x - y ≤ y - x - y) ＝ (- y ≤ - x)
   III = ap₂ _≤_ α β
    where
     α : x - x - y ＝ - y
@@ -729,6 +766,12 @@ order1ℚ' p = ℚ<-subtraction-preserves-order p 1ℚ (0 , refl)
  where
   γ : 0ℚ ≤ ((negsucc x , a) , α)
   γ = ℚ<-coarser-than-≤ 0ℚ ((negsucc x , a) , α) l
+
+ℚ<-positive-not-zero : (p : ℚ) → 0ℚ < p → ¬ (p ＝ 0ℚ)
+ℚ<-positive-not-zero p 0<p e = ℚ<-not-itself p γ
+ where
+  γ : p < p
+  γ = transport (_< p) (e ⁻¹) 0<p
 
 ℚ-inv-preserves-pos : (p : ℚ)
                     → 0ℚ < p
@@ -1008,10 +1051,10 @@ inequality-chain-outer-bounds-inner a b c d l₁ l₂ l₃ = γ
   γ : a + b < c + b
   γ = transport₂ _<_ (ℚ+-comm b a) (ℚ+-comm b c) l
 
-order-lemma : (a b c d : ℚ) → a - b < c - d → d < b ∔ a < c
+order-lemma : (a b c d : ℚ) → a - b < c - d → (d < b) ∔ (a < c)
 order-lemma a b c d l = γ (ℚ-trichotomous a c)
  where
-  γ : (a < c) ∔ (a ＝ c) ∔ (c < a) → d < b ∔ a < c
+  γ : (a < c) ∔ (a ＝ c) ∔ (c < a) → (d < b) ∔ (a < c)
   γ (inl a<c) = inr a<c
   γ (inr (inl a＝c)) = inl (ℚ<-swap''' d b II)
    where
@@ -1073,7 +1116,7 @@ order-lemma' p q r l = γ
   IV : (r + 1/4 * ε) - (r - 1/4 * ε) < q - p
   IV = transport (_< q - p) III II
 
-  γ : p < r - 1/4 * ε ∔ r + 1/4 * ε < q
+  γ : (p < r - 1/4 * ε) ∔ (r + 1/4 * ε < q)
   γ = order-lemma (r + 1/4 * ε) (r - 1/4 * ε) q p IV
 
 ℚ<-swap-right-add : (p q r : ℚ) → p < q + r → (- q) - r < - p
@@ -1101,5 +1144,17 @@ order-lemma' p q r l = γ
 
   γ : - r < (- p) + q
   γ = transport (- r <_) II I
+
+ℚ≤-addition-preserves-order-left : (p q r : ℚ) → p ≤ q → r + p ≤ r + q
+ℚ≤-addition-preserves-order-left p q r l = γ
+ where
+  I : p + r ＝ r + p
+  I = ℚ+-comm p r
+
+  II : q + r ＝ r + q
+  II = ℚ+-comm q r
+
+  γ : r + p ≤ r + q
+  γ = transport₂ _≤_ I II (ℚ≤-addition-preserves-order p q r l)
 
 \end{code}

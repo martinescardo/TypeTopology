@@ -305,4 +305,15 @@ negative-not-greater-than-zero x a (n , l) = negsucc-not-pos γ
     iii = ap (_ℤ+ pos (succ n)) (ℤ-zero-left-base (pos (succ a)))
     iv  = ℤ-zero-left-neutral (pos (succ n))
 
+positive-order-flip : (m n a b : ℕ)
+                    → ((pos (succ m)) , a) 𝔽< ((pos (succ n)) , b)
+                    → ((pos (succ a)) , m) 𝔽> ((pos (succ b)) , n)
+positive-order-flip m n a b l = transport₂ _<_ I II l
+ where
+  I : pos (succ m) ℤ* pos (succ b) ＝ pos (succ b) ℤ* pos (succ m)
+  I = ℤ*-comm (pos (succ m)) (pos (succ b))
+
+  II : pos (succ n) ℤ* pos (succ a) ＝ pos (succ a) ℤ* pos (succ n)
+  II = ℤ*-comm (pos (succ n)) (pos (succ a))
+
 \end{code}

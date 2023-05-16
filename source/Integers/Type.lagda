@@ -196,6 +196,7 @@ always equal.
   f : (x ＝ y) ∔ ¬ (x ＝ y) → is-decidable (negsucc x ＝ negsucc y)
   f (inl e)  = inl (ap negsucc e)
   f (inr ne) = inr (λ e → ne (negsucc-lc e))
+
 ℤ-is-set : is-set ℤ
 ℤ-is-set = discrete-types-are-sets ℤ-is-discrete
 

@@ -33,17 +33,22 @@ _≤ℤ_ _≥ℤ_ : (x y : ℤ) → 𝓤₀ ̇
 x ≤ℤ y = Σ n ꞉ ℕ , x + pos n ＝ y
 x ≥ℤ y = y ≤ℤ x
 
+_<ℤ_ _>ℤ_ : (x y : ℤ) → 𝓤₀ ̇
+x <ℤ y = succℤ x ≤ℤ y
+x >ℤ y = y <ℤ x
+
 instance
  Order-ℤ-ℤ : Order ℤ ℤ
  _≤_ {{Order-ℤ-ℤ}} = _≤ℤ_
 
-_<ℤ_ _>ℤ_ : (x y : ℤ) → 𝓤₀ ̇
-x <ℤ y = succℤ x ≤ y
-x >ℤ y = y <ℤ x
-
-instance
  Strict-Order-ℤ-ℤ : Strict-Order ℤ ℤ
  _<_ {{Strict-Order-ℤ-ℤ}} = _<ℤ_
+
+ Strict-Order-Chain-ℤ-ℤ-ℤ : Strict-Order-Chain ℤ ℤ ℤ _<_ _<_
+ _<_<_ {{Strict-Order-Chain-ℤ-ℤ-ℤ}} p q r = (p < q) × (q < r)
+
+ Order-Chain-ℤ-ℤ-ℤ : Order-Chain ℤ ℤ ℤ _≤_ _≤_
+ _≤_≤_ {{Order-Chain-ℤ-ℤ-ℤ}} p q r = (p ≤ q) × (q ≤ r)
 
 ℤ≤-is-prop : (x y : ℤ) → is-prop (x ≤ y)
 ℤ≤-is-prop x y (n , p) (m , q) = to-subtype-＝ I II
@@ -198,6 +203,30 @@ instance
   I : succℤ x ≤ succℤ y
   I = ℤ≤-trans (succℤ x) y (succℤ y) l₁ (≤-incrℤ y)
 
+ℤ<-≤-trans : (x y z : ℤ) → x < y → y ≤ z → x < z
+ℤ<-≤-trans x y z l₁ l₂ = cases γ₁ γ₂ I
+ where
+  I : (y < z) ∔ (y ＝ z)
+  I = ℤ≤-split y z l₂
+
+  γ₁ : y < z → x < z
+  γ₁ l₃ = ℤ<-trans x y z l₁ l₃
+
+  γ₂ : y ＝ z → x < z
+  γ₂ e = transport (x <_) e l₁
+
+ℤ≤-<-trans : (x y z : ℤ) → x ≤ y → y < z → x < z
+ℤ≤-<-trans x y z l₁ l₂ = cases γ₁ γ₂ I
+ where
+  I : (x < y) ∔ (x ＝ y)
+  I = ℤ≤-split x y l₁
+
+  γ₁ : x < y → x < z
+  γ₁ l₃ = ℤ<-trans x y z l₃ l₂
+
+  γ₂ : x ＝ y → x < z
+  γ₂ e = transport (_< z) (e ⁻¹) l₂
+
 ℤ≤-refl : (x : ℤ) → x ≤ x
 ℤ≤-refl x = 0 , refl
 
@@ -218,6 +247,19 @@ instance
 
 ℤ-zero-less-than-pos : (n : ℕ) → pos 0 < pos (succ n)
 ℤ-zero-less-than-pos n = ℕ-order-respects-ℤ-order 0 (succ n) (zero-least n)
+
+ℤ-zero-least-pos : (n : ℕ) → pos 0 ≤ pos n
+ℤ-zero-least-pos 0 = ℤ≤-refl (pos 0)
+ℤ-zero-least-pos (succ n) = γ
+ where
+  I : pos 0 ≤ pos n
+  I = ℤ-zero-least-pos n
+
+  II : pos n ≤ pos (succ n)
+  II = ≤-incrℤ (pos n)
+
+  γ : pos 0 ≤ pos (succ n)
+  γ = ℤ≤-trans (pos 0) (pos n) (pos (succ n)) I II
 
 negative-less-than-positive : (x y : ℕ) → negsucc x < pos y
 negative-less-than-positive x y = (x ℕ+ y) , I
@@ -259,7 +301,7 @@ negative-less-than-positive x y = (x ℕ+ y) , I
     v   = ap (y +_) (ℤ-sum-of-inverse-is-zero x ⁻¹)
     vi  = ℤ+-assoc y x (- x) ⁻¹
 
-ℤ≤-swap₂ : (x y z : ℤ) → x ≤ y × y ≤ z → - y ≤ - x × - z ≤ - y
+ℤ≤-swap₂ : (x y z : ℤ) → x ≤ y ≤ z → (- y ≤ - x) × (- z ≤ - y)
 ℤ≤-swap₂ x y z (l₁ , l₂) = (ℤ≤-swap x y l₁) , (ℤ≤-swap y z l₂)
 
 ℕ≤-to-ℤ≤ : (x y : ℕ) → x ≤ y → pos x ≤ pos y
@@ -274,7 +316,7 @@ negative-less-than-positive x y = (x ℕ+ y) , I
          pos (k ℕ+ x)  ＝⟨ ap pos e                            ⟩
          pos y         ∎
 
-ℤ-dichotomous : (x y : ℤ) → x ≤ y ∔ y ≤ x
+ℤ-dichotomous : (x y : ℤ) → (x ≤ y) ∔ (y ≤ x)
 ℤ-dichotomous (pos x) (pos y) = I (≤-dichotomous x y)
  where
   I : (x ≤ y) ∔ (y ≤ x) → (pos x ≤ pos y) ∔ (pos y ≤ pos x)
@@ -290,10 +332,10 @@ negative-less-than-positive x y = (x ℕ+ y) , I
     II : pos (succ a) ≤ pos (succ b)
     II = ℕ≤-to-ℤ≤ (succ a) (succ b) l
 
-  γ₁ : x ≤ y → negsucc x ≤ negsucc y ∔ negsucc y ≤ negsucc x
+  γ₁ : x ≤ y → (negsucc x ≤ negsucc y) ∔ (negsucc y ≤ negsucc x)
   γ₁ l = inr (I x y l)
 
-  γ₂ : y ≤ x → negsucc x ≤ negsucc y ∔ negsucc y ≤ negsucc x
+  γ₂ : y ≤ x → (negsucc x ≤ negsucc y) ∔ (negsucc y ≤ negsucc x)
   γ₂ l = inl (I y x l)
 
 trich-locate : (x y : ℤ) → 𝓤₀ ̇
@@ -383,7 +425,19 @@ trich-locate x y = (x < y) ∔ (x ＝ y) ∔ (y < x)
       a + pos k + c   ＝⟨ ap (_+ c) p                   ⟩
       b + c           ∎
 
-ℤ≤-adding₂ : (a b c d : ℤ) → a ≤ b × b ≤ c → (a + d ≤ b + d) × (b + d ≤ c + d)
+ℤ≤-adding-left : (a b c : ℤ) → a ≤ b → c + a ≤ c + b
+ℤ≤-adding-left a b c l = transport₂ _≤_ I II III
+ where
+  I : a + c ＝ c + a
+  I = ℤ+-comm a c
+
+  II : b + c ＝ c + b
+  II = ℤ+-comm b c
+
+  III : a + c ≤ b + c
+  III = ℤ≤-adding' a b c l
+
+ℤ≤-adding₂ : (a b c d : ℤ) → a ≤ b ≤ c → (a + d ≤ b + d ≤ c + d)
 ℤ≤-adding₂ a b c d (l₁ , l₂) = (ℤ≤-adding' a b d l₁) , (ℤ≤-adding' b c d l₂)
 
 ℤ<-adding' : (a b c : ℤ) → a < b → a + c < b + c
@@ -396,6 +450,18 @@ trich-locate x y = (x < y) ∔ (x ＝ y) ∔ (y < x)
     II = succℤ (a + c) + pos h ＝⟨ ap (_+ (pos h)) (ℤ-left-succ a c ⁻¹) ⟩
          succℤ a + c + pos h   ＝⟨ q                                    ⟩
          b + c                 ∎
+
+ℤ<-adding-left : (a b c : ℤ) → a < b → c + a < c + b
+ℤ<-adding-left a b c l = transport₂ _<_ I II III
+ where
+  I : a + c ＝ c + a
+  I = ℤ+-comm a c
+
+  II : b + c ＝ c + b
+  II = ℤ+-comm b c
+
+  III : a + c < b + c
+  III = ℤ<-adding' a b c l
 
 ℤ<-adding'' : (a b c : ℤ) → a < b → c + a < c + b
 ℤ<-adding'' a b c l = transport₂ _<_ (ℤ+-comm a c) (ℤ+-comm b c) I
@@ -439,6 +505,21 @@ positive-multiplication-preserves-order' a b c p l = I (ℤ≤-split a b l)
    where
     γ : b * c ＝ a * c
     γ = ap (_* c) (e ⁻¹)
+
+ℤ*-multiplication-order : (a b c : ℤ)
+                        → pos 0 ≤ c
+                        → a ≤ b
+                        → a * c ≤ b * c
+ℤ*-multiplication-order a b (pos 0) p l = ℤ≤-refl (pos 0)
+ℤ*-multiplication-order a b (pos (succ c)) p l
+ = positive-multiplication-preserves-order' a b (pos (succ c)) ⋆ l
+ℤ*-multiplication-order a b (negsucc c) p l = 𝟘-elim γ
+ where
+  I : negsucc c < pos 0
+  I = negative-less-than-positive c 0
+
+  γ : 𝟘
+  γ = ℤ-bigger-or-equal-not-less (pos 0) (negsucc c) p I
 
 nmco-lemma : (a b : ℤ) → (c : ℕ) → a < b → b * (negsucc c) < a * (negsucc c)
 nmco-lemma a b = induction base step
@@ -529,7 +610,7 @@ negative-multiplication-changes-order' a b (negsucc x) g l = I (ℤ≤-split a b
 ℤ-mult-right-cancellable x y (pos 0)        nz e = 𝟘-elim (nz ⋆)
 ℤ-mult-right-cancellable x y (pos (succ z)) nz e = tri-split (ℤ-trichotomous x y)
  where
-  tri-split : x < y ∔ (x ＝ y) ∔ y < x → x ＝ y
+  tri-split : (x < y) ∔ (x ＝ y) ∔ (y < x) → x ＝ y
   tri-split (inl l) = 𝟘-elim (ℤ-equal-not-less-than (x * pos (succ z)) II)
    where
     I : x * pos (succ z) < y * pos (succ z)
@@ -548,7 +629,7 @@ negative-multiplication-changes-order' a b (negsucc x) g l = I (ℤ≤-split a b
     II = transport (y * pos (succ z) <_) e I
 ℤ-mult-right-cancellable x y (negsucc z)    nz e = tri-split (ℤ-trichotomous x y)
  where
-  tri-split : x < y ∔ (x ＝ y) ∔ y < x → x ＝ y
+  tri-split : (x < y) ∔ (x ＝ y) ∔ (y < x) → x ＝ y
   tri-split (inl l) = 𝟘-elim (ℤ-equal-not-less-than (y * negsucc z) II)
    where
     I : y * negsucc z < x * negsucc z
@@ -681,13 +762,6 @@ min₂ x y z = minℤ (minℤ x y) z
 min₃ : ℤ → ℤ → ℤ → ℤ → ℤ
 min₃ w x y z = minℤ (min₂ w x y) z
 
-{-
-difference : (f : ℤ → ℤ → ℤ)             -- Given an integer function
-           → (x y : ℤ)                   -- and two bounds
-           → ℤ                           -- find the integer difference
-difference f l r = max₃ (f l r) (f l (r + pos 2)) (f (l + pos 2) r) (f (l + pos 2) (r + pos 2))
-                  - min₃ (f l r) (f l (r + pos 2)) (f (l + pos 2) r) (f (l + pos 2) (r + pos 2))
--}
 \end{code}
 
 Added by Todd

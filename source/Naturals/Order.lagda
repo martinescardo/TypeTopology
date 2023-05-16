@@ -378,6 +378,11 @@ max-≤-upper-bound zero     n        = ⋆
 max-≤-upper-bound (succ m) zero     = ≤-refl m
 max-≤-upper-bound (succ m) (succ n) = max-≤-upper-bound m n
 
+max-≤-upper-bound' : (m n : ℕ) → m ≤ max n m
+max-≤-upper-bound' zero n = ⋆
+max-≤-upper-bound' (succ m) zero = ≤-refl m
+max-≤-upper-bound' (succ m) (succ n) = max-≤-upper-bound' m n
+
 minus : (m n : ℕ) → n ≤ m → ℕ
 minus zero     n        le = zero
 minus (succ m) zero     ⋆  = succ m
@@ -398,7 +403,7 @@ Tom de Jong, 5 November 2021.
 
 \begin{code}
 
-<-trichotomous : (n m : ℕ) → n < m + (n ＝ m) + m < n
+<-trichotomous : (n m : ℕ) → (n < m) + (n ＝ m) + (m < n)
 <-trichotomous zero     zero     = inr (inl refl)
 <-trichotomous zero     (succ m) = inl ⋆
 <-trichotomous (succ n) zero     = inr (inr ⋆)

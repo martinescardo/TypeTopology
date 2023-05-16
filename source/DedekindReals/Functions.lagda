@@ -31,8 +31,8 @@ module DedekindReals.Functions
 
 open PropositionalTruncation pt
 
-open import DedekindReals.Properties fe pt pe
-open import DedekindReals.Type pe pt fe
+open import DedekindReals.Properties fe pe pt
+open import DedekindReals.Type fe pe pt
 open import DedekindReals.Extension fe pe pt
 
 \end{code}
@@ -70,7 +70,7 @@ input.
 ℝ-incr = extend ℚ-incr ℚ-incr-uc
 
 ℝ-incr-agrees-with-ℚ-incr : (q : ℚ) → ℝ-incr (ι q) ＝ ι (ℚ-incr q)
-ℝ-incr-agrees-with-ℚ-incr q = extend-is-extension q ℚ-incr ℚ-incr-uc
+ℝ-incr-agrees-with-ℚ-incr = extend-is-extension ℚ-incr ℚ-incr-uc
 
 ℝ-incr-is-uc : ℝ-is-uniformly-continuous ℝ-incr
 ℝ-incr-is-uc = extensions-uc ℚ-incr ℚ-incr-uc
@@ -97,7 +97,7 @@ Also given is negation of reals, and the absolute value of reals.
 ℝ-_ = extend -_ ℚ-neg-is-uc
 
 ℝ-neg-agrees-with-ℚ : (q : ℚ) → ℝ- (ι q) ＝ ι (- q)
-ℝ-neg-agrees-with-ℚ q = extend-is-extension q -_ ℚ-neg-is-uc
+ℝ-neg-agrees-with-ℚ = extend-is-extension -_ ℚ-neg-is-uc
 
 ℝ-neg-is-uc : ℝ-is-uniformly-continuous ℝ-_
 ℝ-neg-is-uc = extensions-uc -_ ℚ-neg-is-uc
@@ -171,7 +171,7 @@ abs-uc (ε , 0<ε) = (ε , 0<ε) , γ
 ℝ-abs = extend abs abs-uc
 
 ℝ-abs-agrees-with-ℚ-abs : (q : ℚ) → ℝ-abs (ι q) ＝ ι (abs q)
-ℝ-abs-agrees-with-ℚ-abs q = extend-is-extension q abs abs-uc
+ℝ-abs-agrees-with-ℚ-abs = extend-is-extension abs abs-uc
 
 ℝ-abs-uc : ℝ-is-uniformly-continuous ℝ-abs
 ℝ-abs-uc = extensions-uc abs abs-uc
