@@ -421,6 +421,12 @@ module examples2 where
  m₂-explicitly : m₂ ＝ λ α → succ (max 17 (α 17))
  m₂-explicitly = refl
 
+\end{code}
+
+This is what m₂ evaluates to with Agda normalization:
+
+\begin{code}
+
  m₂-explicitly' : m₂ ＝
    λ α → succ (rec (λ x₁ x₂ → succ (rec (λ x₃ x₄ → succ (rec (λ x₅ x₆
   → succ (rec (λ x₇ x₈ → succ (rec (λ x₉ x₁₀ → succ (rec (λ x₁₁ x₁₂ →
