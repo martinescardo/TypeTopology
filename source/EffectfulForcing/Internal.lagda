@@ -337,7 +337,7 @@ max' (succ m) 0        = succ m
 max' (succ m) (succ n) = succ (max' m n)
 
 max : ℕ → ℕ → ℕ
-max = rec {ℕ → ℕ} (λ m f → rec {ℕ} (λ n _ → succ (f n)) (succ m)) (λ n → n)
+max = rec (λ (m : ℕ) (f : ℕ → ℕ) → rec (λ (n : ℕ) _ → succ (f n)) (succ m)) (λ n → n)
 
 max-agreement : (m n : ℕ) → max m n ＝ max' m n
 max-agreement 0        n        = refl
@@ -420,6 +420,17 @@ module examples2 where
 
  m₂-explicitly : m₂ ＝ λ α → succ (max 17 (α 17))
  m₂-explicitly = refl
+
+ m₂-explicitly' : m₂ ＝
+   λ α → succ (rec (λ x₁ x₂ → succ (rec (λ x₃ x₄ → succ (rec (λ x₅ x₆
+  → succ (rec (λ x₇ x₈ → succ (rec (λ x₉ x₁₀ → succ (rec (λ x₁₁ x₁₂ →
+  succ (rec (λ x₁₃ x₁₄ → succ (rec (λ x₁₅ x₁₆ → succ (rec (λ x₁₇ x₁₈ →
+  succ (rec (λ x₁₉ x₂₀ → succ (rec (λ x₂₁ x₂₂ → succ (rec (λ x₂₃ x₂₄ →
+  succ (rec (λ x₂₅ x₂₆ → succ (rec (λ x₂₇ x₂₈ → succ (rec (λ x₂₉ x₃₀ →
+  succ (rec (λ x₃₁ x₃₂ → succ (rec (λ x₃₃ x₃₄ → succ x₃₃) 1 x₃₁)) 2
+  x₂₉)) 3 x₂₇)) 4 x₂₅)) 5 x₂₃)) 6 x₂₁)) 7 x₁₉)) 8 x₁₇)) 9 x₁₅)) 10
+  x₁₃)) 11 x₁₁)) 12 x₉)) 13 x₇)) 14 x₅)) 15 x₃)) 16 x₁)) 17 (α 17))
+ m₂-explicitly' = refl
 
  example₂ : m₂ succ ＝ 19
  example₂ = refl
