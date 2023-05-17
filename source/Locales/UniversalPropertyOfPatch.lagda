@@ -69,7 +69,7 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
    γ : spectralᴰ (𝒪 A)
      → zero-dimensionalᴰ (𝒪 X)
      → ∃! 𝒻⁻ ꞉ (X ─c→ Patch-A) , ((x : ⟨ 𝒪 A ⟩) → 𝒻 .pr₁ x  ＝ 𝒻⁻ .pr₁ ‘ x ’)
-   γ σᴰ 𝕫ᴰ = ((f⁻⋆ , {!!} , {!!} , {!!}) , {!!}) , {!!}
+   γ σᴰ 𝕫ᴰ = ((f⁻⋆ , {!!} , {!!} , 𝒻⁻-γ) , {!!}) , {!!}
     where
      open SmallPatchConstruction A σᴰ using (𝟎-is-id; ≼-implies-≼ᵏ; ≼ᵏ-implies-≼; _≼ᵏ_) renaming (SmallPatch to Patchₛ-A)
      open ContinuousMapNotation X A
@@ -403,15 +403,15 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
        f⁻₊ : ⟨ 𝒪 X ⟩ → ⟨ 𝒪 Patchₛ-A ⟩
        f⁻₊ U = closed-image U , closed-image-is-nucleus U , closed-image-is-sc U
 
-       f⁻*-is-monotone : is-monotonic
+       f⁻₊-is-monotone : is-monotonic
                           (poset-of (𝒪 X))
                           (poset-of (𝒪 Patchₛ-A))
                           f⁻₊
                          holds
-       f⁻*-is-monotone U V p = {!adjunction-inequality-backwardₓ!}
+       f⁻₊-is-monotone (U , V) p n = pr₂ 𝒻₊ₘ _ (∨[ 𝒪 X ]-left-monotone p)
 
        f⁻₊ₘ : poset-of (𝒪 X) ─m→ poset-of (𝒪 Patchₛ-A)
-       f⁻₊ₘ = f⁻₊ , f⁻*-is-monotone
+       f⁻₊ₘ = f⁻₊ , f⁻₊-is-monotone
 
        open IgorsLemma X A A-has-basis
 
@@ -484,46 +484,34 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
             where
              open PosetReasoning (poset-of (𝒪 X))
 
-             ♣ : (m n : Bₐ)
-               → ((‘ β m ’ ∧[ 𝒪 Patch-A ] ¬‘ βₖ n ’) ≤[ poset-of (𝒪 Patchₛ-A) ] 𝒿)
-                  holds
-               → (𝒻 ⋆∙ (β m) ≤[ poset-of (𝒪 X) ] (𝒻 ⋆∙ (β n) ∨[ 𝒪 X ] U)) holds
-             ♣ m n ν = negation-lemma′ κ ♥
-              where
-               κ : is-clopen₀ (𝒪 X) (𝒻 ⋆∙ β n)
-               κ = compacts-are-clopen-in-zero-dimensional-locales
-                    (𝒪 X)
-                    (pr₂ 𝕤)
-                    (𝒻 ⋆∙ β n)
-                    (μ (β n) (pr₂ (βₖ n)))
+             κ : is-clopen₀ (𝒪 X) (𝒻 ⋆∙ β n)
+             κ = compacts-are-clopen-in-zero-dimensional-locales
+                  (𝒪 X)
+                  (pr₂ 𝕤)
+                  (𝒻 ⋆∙ β n)
+                  (μ (β n) (pr₂ (βₖ n)))
 
-               ♢ : ((𝒻 ⋆∙ β m ∧[ 𝒪 X ] ((𝒻 ⋆∙ β n) ==> 𝟎[ 𝒪 X ]))
-                     ≤[ poset-of (𝒪 X) ]
-                    f⁻⋆ 𝒿) holds
-               ♢ = ⋁[ 𝒪 X ]-upper
-                    ⁅ (𝒻 ⋆∙ β m) ∧[ 𝒪 X ] ¬𝒻⋆ n
-                      ∣ (m , n , p) ∶ Σ m ꞉ Bₐ , Σ n ꞉ Bₐ , 𝕃 𝒿 m n holds ⁆
-                    (m , n , ν)
+             ϟ : ((𝒻 ⋆∙ j (β n) ∧[ 𝒪 X ] ((𝒻 ⋆∙ β n) ==> 𝟎[ 𝒪 X ]))
+                       ≤[ poset-of (𝒪 X) ]
+                      U) holds
+             ϟ =
+              𝒻 ⋆∙ j (β n) ∧[ 𝒪 X ] ((𝒻 ⋆∙ β n) ==> 𝟎[ 𝒪 X ]) ≤⟨ Ⅰ ⟩
+              f⁻⋆₂ 𝒿                                          ＝⟨ Ⅱ   ⟩ₚ
+              f⁻⋆  𝒿                                          ≤⟨ φ    ⟩
+              U                                               ■
+               where
+                Ⅰ = ⋁[ 𝒪 X ]-upper
+                     ⁅ 𝒻 ⋆∙ j (β n) ∧[ 𝒪 X ] ¬𝒻⋆ n ∣ n ∶ Bₐ ⁆
+                     n
+                Ⅱ = f⁻⋆₂-equiv-f⁻⋆₁ 𝒿 ⁻¹
 
-               ♥ : ((𝒻 ⋆∙ β m ∧[ 𝒪 X ] ((𝒻 ⋆∙ β n) ==> 𝟎[ 𝒪 X ]))
-                     ≤[ poset-of (𝒪 X) ]
-                    U) holds
-               ♥ = 𝒻 ⋆∙ β m ∧[ 𝒪 X ] ((𝒻 ⋆∙ β n) ==> 𝟎[ 𝒪 X ])   ≤⟨ ♢ ⟩
-                   f⁻⋆ 𝒿                                         ≤⟨ φ ⟩
-                   U                                             ■
-
-             ♠ : (m n : Bₐ)
-               → ((‘ β m ’ ∧[ 𝒪 Patch-A ] ¬‘ βₖ n ’)
-                   ≤[ poset-of (𝒪 Patchₛ-A) ]
-                  𝒿) holds
-               → (T : ⟨ 𝒪 A ⟩)
-               → (𝒻 ⋆∙ (‘ β m ’ ∧[ 𝒪 Patch-A ] ¬‘ βₖ n ’) .pr₁ T
-                   ≤[ poset-of (𝒪 X) ]
-                 (U ∨[ 𝒪 X ] 𝒻 ⋆∙ T)) holds
-             ♠ m n φ = {!!}
+             ※ : (𝒻 ⋆∙ j (β n) ≤[ poset-of (𝒪 X) ] (𝒻 ⋆∙ β n ∨[ 𝒪 X ] U)) holds
+             ※ = negation-lemma′ κ ϟ
 
              ψ : (𝒻 ⋆∙ j (β n) ≤[ poset-of (𝒪 X) ] (U ∨[ 𝒪 X ] 𝒻 ⋆∙ β n)) holds
-             ψ = {!!}
+             ψ = 𝒻 ⋆∙ j (β n)          ≤⟨ ※ ⟩
+                 𝒻 ⋆∙ (β n) ∨[ 𝒪 X ] U ＝⟨ ∨[ 𝒪 X ]-is-commutative (𝒻 ⋆∙ β n) U ⟩ₚ
+                 U ∨[ 𝒪 X ] 𝒻 ⋆∙ (β n) ■
 
          S =
           ⁅ (𝒻 ⋆∙ β m) ∧[ 𝒪 X ] ¬𝒻⋆ n
@@ -600,5 +588,14 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
 
        † : has-right-adjoint 𝒻⁻⋆ₘ
        † = f⁻₊ₘ , f⁻₊-is-right-adjoint-of-f⁻⁺
+
+     open Joins (λ x y → x ≤[ poset-of (𝒪 X) ] y)
+
+     𝒻⁻-γ : (S : Fam 𝓤 ⟨ 𝒪 Patchₛ-A ⟩)
+          → ((f⁻⋆ (⋁[ 𝒪 Patchₛ-A ] S)) is-lub-of ⁅ f⁻⋆ 𝒿 ∣ 𝒿 ε S ⁆) holds
+     𝒻⁻-γ S =
+      transport (λ - → (- is-lub-of ⁅ f⁻⋆ 𝒿 ∣ 𝒿 ε S ⁆) holds)
+       (f⁻⋆-preserves-joins S ⁻¹)
+       (⋁[ 𝒪 X ]-upper ⁅ f⁻⋆ 𝒿 ∣ 𝒿 ε S ⁆ , ⋁[ 𝒪 X ]-least ⁅ f⁻⋆ 𝒿 ∣ 𝒿 ε S ⁆)
 
 \end{code}
