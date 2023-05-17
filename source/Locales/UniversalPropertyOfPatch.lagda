@@ -485,7 +485,8 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
              open PosetReasoning (poset-of (𝒪 X))
 
              ♣ : (m n : Bₐ)
-               → ((‘ β m ’ ∧[ 𝒪 Patch-A ] ¬‘ βₖ n ’) ≤[ poset-of (𝒪 Patchₛ-A) ] 𝒿) holds
+               → ((‘ β m ’ ∧[ 𝒪 Patch-A ] ¬‘ βₖ n ’) ≤[ poset-of (𝒪 Patchₛ-A) ] 𝒿)
+                  holds
                → (𝒻 ⋆∙ (β m) ≤[ poset-of (𝒪 X) ] (𝒻 ⋆∙ (β n) ∨[ 𝒪 X ] U)) holds
              ♣ m n ν = negation-lemma′ κ ♥
               where
@@ -500,8 +501,8 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
                      ≤[ poset-of (𝒪 X) ]
                     f⁻⋆ 𝒿) holds
                ♢ = ⋁[ 𝒪 X ]-upper
-                    (⁅ (𝒻 ⋆∙ β m) ∧[ 𝒪 X ] ¬𝒻⋆ n
-                      ∣ (m , n , p) ∶ Σ m ꞉ Bₐ , Σ n ꞉ Bₐ , 𝕃 𝒿 m n holds ⁆)
+                    ⁅ (𝒻 ⋆∙ β m) ∧[ 𝒪 X ] ¬𝒻⋆ n
+                      ∣ (m , n , p) ∶ Σ m ꞉ Bₐ , Σ n ꞉ Bₐ , 𝕃 𝒿 m n holds ⁆
                     (m , n , ν)
 
                ♥ : ((𝒻 ⋆∙ β m ∧[ 𝒪 X ] ((𝒻 ⋆∙ β n) ==> 𝟎[ 𝒪 X ]))
@@ -518,23 +519,11 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
                → (T : ⟨ 𝒪 A ⟩)
                → (𝒻 ⋆∙ (‘ β m ’ ∧[ 𝒪 Patch-A ] ¬‘ βₖ n ’) .pr₁ T
                    ≤[ poset-of (𝒪 X) ]
-                  (U ∨[ 𝒪 X ] (𝒻 ⋆∙ β n))) holds
-             ♠ m n φ T = {!!}
-              where
-               foo : {!!}
-               foo = {!!}
-
-               ※ : {!!}
-               ※ = igors-lemma-⇒ 𝒻 ? (β n) U foo T
-
-             ξ : (T : ⟨ 𝒪 A ⟩)
-               → ((𝒻 ⋆∙ (j (β n) ∨[ 𝒪 A ] T) ∧[ 𝒪 X ] (𝒻 ⋆∙ (β n ==>ₐ T)))
-                   ≤[ poset-of (𝒪 X) ]
-                  (U ∨[ 𝒪 X ] 𝒻 ⋆∙ T)) holds
-             ξ T = {!!}
+                 (U ∨[ 𝒪 X ] 𝒻 ⋆∙ T)) holds
+             ♠ m n φ = {!!}
 
              ψ : (𝒻 ⋆∙ j (β n) ≤[ poset-of (𝒪 X) ] (U ∨[ 𝒪 X ] 𝒻 ⋆∙ β n)) holds
-             ψ = igors-lemma-⇐ 𝒻 (j (β n)) (β n) U ξ
+             ψ = {!!}
 
          S =
           ⁅ (𝒻 ⋆∙ β m) ∧[ 𝒪 X ] ¬𝒻⋆ n
