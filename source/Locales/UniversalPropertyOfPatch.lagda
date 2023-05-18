@@ -83,6 +83,12 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
      β : Bₐ → ⟨ 𝒪 A ⟩
      β = pr₂ (pr₁ σᴰ)
 
+     Bₓ : 𝓤  ̇
+     Bₓ = pr₁ (pr₁ 𝕫ᴰ)
+
+     βₓ : Bₓ → ⟨ 𝒪 X ⟩
+     βₓ = pr₂ (pr₁ 𝕫ᴰ)
+
      β-is-basis-for-A : is-basis-for (𝒪 A) (Bₐ , β)
      β-is-basis-for-A U = pr₁ (pr₁ (pr₂ σᴰ)) U
 
@@ -590,6 +596,30 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
        † = f⁻₊ₘ , f⁻₊-is-right-adjoint-of-f⁻⁺
 
      open Joins (λ x y → x ≤[ poset-of (𝒪 X) ] y)
+
+     𝒻⁻-α : f⁻⋆ 𝟏[ 𝒪 Patchₛ-A ] ＝ 𝟏[ 𝒪 X ]
+     𝒻⁻-α = only-𝟏-is-above-𝟏 (𝒪 X) (f⁻⋆ 𝟏[ 𝒪 Patchₛ-A ]) †
+      where
+       † : (𝟏[ 𝒪 X ] ≤[ poset-of (𝒪 X) ] f⁻⋆ 𝟏[ 𝒪 Patchₛ-A ]) holds
+       † = ?
+        -- ∥∥-rec
+        --     (holds-is-prop (𝟏[ 𝒪 X ] ≤[ poset-of (𝒪 X) ] f⁻⋆ 𝟏[ 𝒪 Patchₛ-A ]))
+        --     ‡
+        --     (compact-opens-are-basic-in-compact-frames
+        --       (𝒪 X)
+        --       (pr₁ 𝕫ᴰ)
+        --       {!!}
+        --       (pr₁ 𝕤)
+        --       𝟏[ 𝒪 X ]
+        --       (pr₁ 𝕤))
+        --     where
+        --      open PosetReasoning (poset-of (𝒪 X))
+
+        --      ‡ : Σ i ꞉ Bₓ , (𝟏[ 𝒪 X ] ＝ pr₁ 𝕫ᴰ [ i ])
+        --        → (𝟏[ 𝒪 X ] ≤[ poset-of (𝒪 X) ] f⁻⋆ 𝟏[ 𝒪 Patchₛ-A ]) holds
+        --      ‡ (i , p) = 𝟏[ 𝒪 X ]              ＝⟨ p ⟩ₚ
+        --                  βₓ i                  ≤⟨ {!!} ⟩
+        --                  f⁻⋆ 𝟏[ 𝒪 Patchₛ-A ]   ■
 
      𝒻⁻-γ : (S : Fam 𝓤 ⟨ 𝒪 Patchₛ-A ⟩)
           → ((f⁻⋆ (⋁[ 𝒪 Patchₛ-A ] S)) is-lub-of ⁅ f⁻⋆ 𝒿 ∣ 𝒿 ε S ⁆) holds
