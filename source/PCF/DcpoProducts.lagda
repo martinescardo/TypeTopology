@@ -41,110 +41,122 @@ module DcpoProductsGeneral
   module _ {D : 𝓤 ̇} {E : 𝓤' ̇} where
 
     _⊑-×_ : (D → D → 𝓣 ̇)
-            → (E → E → 𝓣' ̇)
-            → (D × E → D × E → 𝓣 ⊔ 𝓣' ̇)
+          → (E → E → 𝓣' ̇)
+          → (D × E → D × E → 𝓣 ⊔ 𝓣' ̇)
     _⊑-×_ R₁ R₂ (a , b) (c , d) = R₁ a c × R₂ b d
 
     pr₁∘α-is-directed : {I : 𝓥 ̇}
-                        → {α : I → D × E}
-                        → (order₁ : D → D → 𝓣 ̇)
-                        → (order₂ : E → E → 𝓣' ̇)
-                        → is-directed (order₁ ⊑-× order₂) α
-                        → is-directed order₁ (pr₁ ∘ α)
-    pr₁∘α-is-directed {_} {_} {I} {α} order₁ order₂ δ = inhabited-if-directed (order₁ ⊑-× order₂) α δ , o
+                      → {α : I → D × E}
+                      → (order₁ : D → D → 𝓣 ̇)
+                      → (order₂ : E → E → 𝓣' ̇)
+                      → is-directed (order₁ ⊑-× order₂) α
+                      → is-directed order₁ (pr₁ ∘ α)
+    pr₁∘α-is-directed {_} {_} {I} {α} order₁ order₂ δ =
+     inhabited-if-directed (order₁ ⊑-× order₂) α δ , o
       where
-        o : (i j : I) →
-              ∃
-              (λ k →
-                 order₁ ((pr₁ ∘ α) i) ((pr₁ ∘ α) k) ×
-                 order₁ ((pr₁ ∘ α) j) ((pr₁ ∘ α) k))
-        o i j = ∥∥-functor (λ x → (pr₁ x) , (pr₁ (pr₁ (pr₂ x)) , pr₁ (pr₂ (pr₂ x)))) (semidirected-if-directed (order₁ ⊑-× order₂) α δ i j)
+       o : (i j : I)
+         → ∃ k ꞉ I , (order₁ ((pr₁ ∘ α) i) ((pr₁ ∘ α) k) ×
+                      order₁ ((pr₁ ∘ α) j) ((pr₁ ∘ α) k))
+       o i j = ∥∥-functor
+                (λ (a , (b , _) , c , _) → a , b , c)
+                (semidirected-if-directed (order₁ ⊑-× order₂) α δ i j)
 
     pr₂∘α-is-directed : {I : 𝓥 ̇}
-                        → {α : I → D × E}
-                        → (order₁ : D → D → 𝓣 ̇)
-                        → (order₂ : E → E → 𝓣' ̇)
-                        → is-directed (order₁ ⊑-× order₂) α
-                        → is-directed order₂ (pr₂ ∘ α)
-    pr₂∘α-is-directed {_} {_} {I} {α} order₁ order₂ δ = inhabited-if-directed (order₁ ⊑-× order₂) α δ , o
+                      → {α : I → D × E}
+                      → (order₁ : D → D → 𝓣 ̇)
+                      → (order₂ : E → E → 𝓣' ̇)
+                      → is-directed (order₁ ⊑-× order₂) α
+                      → is-directed order₂ (pr₂ ∘ α)
+    pr₂∘α-is-directed {_} {_} {I} {α} order₁ order₂ δ =
+     inhabited-if-directed (order₁ ⊑-× order₂) α δ , o
       where
-        o : (i j : I) →
-              ∃
-              (λ k →
-                 order₂ ((pr₂ ∘ α) i) ((pr₂ ∘ α) k) ×
-                 order₂ ((pr₂ ∘ α) j) ((pr₂ ∘ α) k))
-        o i j = ∥∥-functor (λ x → (pr₁ x) , (pr₂ (pr₁ (pr₂ x)) , pr₂ (pr₂ (pr₂ x)))) (semidirected-if-directed (order₁ ⊑-× order₂) α δ i j)
+       o : (i j : I)
+         → ∃ k ꞉ I , (order₂ ((pr₂ ∘ α) i) ((pr₂ ∘ α) k) ×
+                      order₂ ((pr₂ ∘ α) j) ((pr₂ ∘ α) k))
+       o i j = ∥∥-functor
+                (λ (a , (_  , b) , _ , c) → a , b , c)
+                (semidirected-if-directed (order₁ ⊑-× order₂) α δ i j)
 
   infixr 30 _×ᵈᶜᵖᵒ_
 
   _×ᵈᶜᵖᵒ_ : DCPO {𝓤} {𝓣} → DCPO {𝓤'} {𝓣'} → DCPO {𝓤 ⊔ 𝓤'} {𝓣 ⊔ 𝓣'}
   𝓓 ×ᵈᶜᵖᵒ 𝓔 = (⟨ 𝓓 ⟩ × ⟨ 𝓔 ⟩) ,
-                   (underlying-order 𝓓) ⊑-× (underlying-order 𝓔),
-                   axioms
-    where
-      axioms : dcpo-axioms (underlying-order 𝓓 ⊑-× underlying-order 𝓔)
-      axioms = ((×-is-set (sethood 𝓓) (sethood 𝓔)) , prop , r , t , a) , c
-        where
-          𝓓-order = underlying-order 𝓓
-          𝓔-order = underlying-order 𝓔
-          order = 𝓓-order ⊑-× 𝓔-order
+              (underlying-order 𝓓) ⊑-× (underlying-order 𝓔),
+              axioms
+   where
+    axioms : dcpo-axioms (underlying-order 𝓓 ⊑-× underlying-order 𝓔)
+    axioms = ((×-is-set (sethood 𝓓) (sethood 𝓔)) , prop , r , t , a) , c
+      where
+       𝓓-order = underlying-order 𝓓
+       𝓔-order = underlying-order 𝓔
+       order = 𝓓-order ⊑-× 𝓔-order
 
-          prop : is-prop-valued order
-          prop x y (a , b) (c , d) = to-×-＝ (prop-valuedness 𝓓 (pr₁ x) (pr₁ y) a c)
-                                             (prop-valuedness 𝓔 (pr₂ x) (pr₂ y) b d)
+       prop : is-prop-valued order
+       prop x y (a , b) (c , d) = to-×-＝
+                                   (prop-valuedness 𝓓 (pr₁ x) (pr₁ y) a c)
+                                   (prop-valuedness 𝓔 (pr₂ x) (pr₂ y) b d)
 
-          r : is-reflexive order
-          r a = (reflexivity 𝓓 (pr₁ a)) , (reflexivity 𝓔 (pr₂ a))
+       r : is-reflexive order
+       r a = (reflexivity 𝓓 (pr₁ a)) , (reflexivity 𝓔 (pr₂ a))
 
-          t : is-transitive order
-          t x y z x-⊑-y y-⊑-z = e₁ , e₂
+       t : is-transitive order
+       t x y z x-⊑-y y-⊑-z = e₁ , e₂
+         where
+           e₁ : pr₁ x ⊑⟨ 𝓓 ⟩ pr₁ z
+           e₁ = pr₁ x ⊑⟨ 𝓓 ⟩[ pr₁ x-⊑-y ]
+                pr₁ y ⊑⟨ 𝓓 ⟩[ pr₁ y-⊑-z ]
+                pr₁ z ∎⟨ 𝓓 ⟩
+
+           e₂ : pr₂ x ⊑⟨ 𝓔 ⟩ pr₂ z
+           e₂ = pr₂ x ⊑⟨ 𝓔 ⟩[ pr₂ x-⊑-y ]
+                pr₂ y ⊑⟨ 𝓔 ⟩[ pr₂ y-⊑-z ]
+                pr₂ z ∎⟨ 𝓔 ⟩
+
+       a : is-antisymmetric order
+       a (a , b) (c , d) (a-⊑-c , b-⊑-d) (c-⊑-a , d-⊑-b) =
+        to-×-＝
+         (antisymmetry 𝓓 a c a-⊑-c c-⊑-a)
+         (antisymmetry 𝓔 b d b-⊑-d d-⊑-b)
+
+       c : is-directed-complete order
+       c I α δ = (∐ 𝓓 pr₁∘α-is-dir , ∐ 𝓔 pr₂∘α-is-dir) , s
+         where
+           pr₁∘α-is-dir : is-Directed 𝓓 (pr₁ ∘ α)
+           pr₁∘α-is-dir = pr₁∘α-is-directed (underlying-order 𝓓) (underlying-order 𝓔) δ
+
+           pr₂∘α-is-dir : is-Directed 𝓔 (pr₂ ∘ α)
+           pr₂∘α-is-dir = pr₂∘α-is-directed (underlying-order 𝓓) (underlying-order 𝓔) δ
+
+           s : is-sup order (∐ 𝓓 pr₁∘α-is-dir , ∐ 𝓔 pr₂∘α-is-dir) α
+           s = is-upper , is-least-upper
             where
-              e₁ : pr₁ x ⊑⟨ 𝓓 ⟩ pr₁ z
-              e₁ = pr₁ x ⊑⟨ 𝓓 ⟩[ pr₁ x-⊑-y ]
-                   pr₁ y ⊑⟨ 𝓓 ⟩[ pr₁ y-⊑-z ]
-                   pr₁ z ∎⟨ 𝓓 ⟩
-              e₂ : pr₂ x ⊑⟨ 𝓔 ⟩ pr₂ z
-              e₂ = pr₂ x ⊑⟨ 𝓔 ⟩[ pr₂ x-⊑-y ]
-                   pr₂ y ⊑⟨ 𝓔 ⟩[ pr₂ y-⊑-z ]
-                   pr₂ z ∎⟨ 𝓔 ⟩
+             is-upper : is-upperbound order (∐ 𝓓 pr₁∘α-is-dir , ∐ 𝓔 pr₂∘α-is-dir) α
+             is-upper i = (∐-is-upperbound 𝓓 pr₁∘α-is-dir i ,
+                           ∐-is-upperbound 𝓔 pr₂∘α-is-dir i)
 
-          a : is-antisymmetric order
-          a (a , b) (c , d) (a-⊑-c , b-⊑-d) (c-⊑-a , d-⊑-b) = to-×-＝ (antisymmetry 𝓓 a c a-⊑-c c-⊑-a)
-                                                                       (antisymmetry 𝓔 b d b-⊑-d d-⊑-b)
+             is-least-upper : (u : ⟨ 𝓓 ⟩ × ⟨ 𝓔 ⟩)
+                            → is-upperbound order u α
+                            → order (∐ 𝓓 pr₁∘α-is-dir , ∐ 𝓔 pr₂∘α-is-dir) u
+             is-least-upper u u-is-upperbound = lub-in-pr₁ , lub-in-pr₂
+               where
+                lub-in-pr₁ = ∐-is-lowerbound-of-upperbounds 𝓓 pr₁∘α-is-dir
+                              (pr₁ u) pr₁-u-is-upperbound
+                  where
+                   pr₁-u-is-upperbound : is-upperbound (underlying-order 𝓓) (pr₁ u) (pr₁ ∘ α)
+                   pr₁-u-is-upperbound i = pr₁ (u-is-upperbound i)
 
-          c : is-directed-complete order
-          c I α δ = (∐ 𝓓 pr₁∘α-is-dir , ∐ 𝓔 pr₂∘α-is-dir) , s
-            where
-              pr₁∘α-is-dir : is-Directed 𝓓 (pr₁ ∘ α)
-              pr₁∘α-is-dir = pr₁∘α-is-directed (underlying-order 𝓓) (underlying-order 𝓔) δ
-              pr₂∘α-is-dir : is-Directed 𝓔 (pr₂ ∘ α)
-              pr₂∘α-is-dir = pr₂∘α-is-directed (underlying-order 𝓓) (underlying-order 𝓔) δ
-              s : is-sup order (∐ 𝓓 pr₁∘α-is-dir , ∐ 𝓔 pr₂∘α-is-dir) α
-              s = is-upper , is-least-upper
-                where
-                  is-upper : is-upperbound order (∐ 𝓓 pr₁∘α-is-dir , ∐ 𝓔 pr₂∘α-is-dir) α
-                  is-upper i = (∐-is-upperbound 𝓓 pr₁∘α-is-dir i) , (∐-is-upperbound 𝓔 pr₂∘α-is-dir i)
-                  is-least-upper : (u : ⟨ 𝓓 ⟩ × ⟨ 𝓔 ⟩)
-                                   → is-upperbound order u α
-                                   → order (∐ 𝓓 pr₁∘α-is-dir , ∐ 𝓔 pr₂∘α-is-dir) u
-                  is-least-upper u u-is-upperbound = lub-in-pr₁ , lub-in-pr₂
-                    where
-                      lub-in-pr₁ = ∐-is-lowerbound-of-upperbounds 𝓓 pr₁∘α-is-dir (pr₁ u) pr₁-u-is-upperbound
-                        where
-                          pr₁-u-is-upperbound : is-upperbound (underlying-order 𝓓) (pr₁ u) (pr₁ ∘ α)
-                          pr₁-u-is-upperbound i = pr₁ (u-is-upperbound i)
-                      lub-in-pr₂ = ∐-is-lowerbound-of-upperbounds 𝓔 pr₂∘α-is-dir (pr₂ u) pr₂-u-is-upperbound
-                        where
-                          pr₂-u-is-upperbound : is-upperbound (underlying-order 𝓔) (pr₂ u) (pr₂ ∘ α)
-                          pr₂-u-is-upperbound i = pr₂ (u-is-upperbound i)
+                lub-in-pr₂ = ∐-is-lowerbound-of-upperbounds 𝓔 pr₂∘α-is-dir
+                              (pr₂ u) pr₂-u-is-upperbound
+                  where
+                   pr₂-u-is-upperbound : is-upperbound (underlying-order 𝓔) (pr₂ u) (pr₂ ∘ α)
+                   pr₂-u-is-upperbound i = pr₂ (u-is-upperbound i)
 \end{code}
 
-Some useful proofs on products...
+Some useful proofs on products.
 
 \begin{code}
 
-  module _ (𝓓 : DCPO {𝓤} {𝓤'})
-        where
+  module _ (𝓓 : DCPO {𝓤} {𝓤'}) where
 
     constant-function-is-directed : ∀ { I : 𝓥 ̇} (inhabited : ∥ I ∥) (d : ⟨ 𝓓 ⟩) → is-Directed 𝓓 (λ (i : I) → d)
     constant-function-is-directed inhabited d = inhabited , λ i j → ∣ i , ((reflexivity 𝓓 d) , (reflexivity 𝓓 d)) ∣
@@ -288,11 +300,6 @@ Some useful proofs on products...
               where
                 ⊑₁ : pr₂ (∐ 𝓓 (pr₁∘α-is-Directed δ) , ∐ 𝓔 (pr₂∘α-is-Directed δ)) ⊑⟨ 𝓔 ⟩ u₁
                 ⊑₁ = ∐-is-lowerbound-of-upperbounds 𝓔 (pr₂∘α-is-Directed δ) u₁ p
-
-\end{code}
-
-\begin{code}
-
 
   infixr 30 _×ᵈᶜᵖᵒ⊥_
 

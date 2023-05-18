@@ -27,6 +27,8 @@ data type : 𝓤₀ ̇  where
  ι : type
  _⇒_ : type → type → type
 
+infixr 1 _⇒_
+
 Context : ℕ → 𝓤₀ ̇
 Context = Vec type
 
@@ -36,9 +38,9 @@ data _∋_ : {n : ℕ} → Context n → type → 𝓤₀ ̇ where
    → Γ ∋ σ
    → (Γ ’ τ) ∋ σ
 
-infixr 1 _⇒_
 
 data PCF : {n : ℕ} (Γ : Context n) (σ : type) → 𝓤₀ ̇ where
+
  Zero   : {n : ℕ} {Γ : Context n}
         → PCF Γ ι
 
@@ -84,50 +86,51 @@ count {.(succ _)} {Γ ’ x} zero     = Z
 count {.(succ _)} {Γ ’ x} (succ f) = S (count f)
 
 ext : ∀ {m n} {Γ : Context m} {Δ : Context n}
-      → (∀ {A} → Γ ∋ A → Δ ∋ A)
-      → (∀ {σ A} → (Γ ’ σ) ∋ A → (Δ ’ σ) ∋ A)
-ext f Z = Z
+    → (∀ {A} → Γ ∋ A → Δ ∋ A)
+    → (∀ {σ A} → (Γ ’ σ) ∋ A → (Δ ’ σ) ∋ A)
+ext f Z     = Z
 ext f (S t) = S (f t)
 
 rename : ∀ {m n} {Γ : Context m} {Δ : Context n}
-        → (∀ {A} → Γ ∋ A → Δ ∋ A)
-        → (∀ {A} → PCF Γ A → PCF Δ A)
+       → (∀ {A} → Γ ∋ A → Δ ∋ A)
+       → (∀ {A} → PCF Γ A → PCF Δ A)
 rename f Zero = Zero
-rename f (Succ t) = Succ (rename f t)
-rename f (Pred t) = Pred (rename f t)
+rename f (Succ t)         = Succ (rename f t)
+rename f (Pred t)         = Pred (rename f t)
 rename f (IfZero t t₁ t₂) = IfZero (rename f t) (rename f t₁) (rename f t₂)
-rename f (ƛ t) = ƛ (rename (ext f) t)
-rename f (t · t₁) = (rename f t) · (rename f t₁)
-rename f (v x) = v (f x)
-rename f (Fix t) = Fix (rename f t)
+rename f (ƛ t)            = ƛ (rename (ext f) t)
+rename f (t · t₁)         = rename f t · rename f t₁
+rename f (v x)            = v (f x)
+rename f (Fix t)          = Fix (rename f t)
 
 exts : ∀ {m n} {Γ : Context m} {Δ : Context n}
        → (∀ {A} → Γ ∋ A → PCF Δ A)
        → (∀ {σ A} → (Γ ’ σ) ∋ A → PCF (Δ ’ σ) A)
-exts f Z = v Z
+exts f Z     = v Z
 exts f (S t) = rename (_∋_.S) (f t)
 
 subst : ∀ {m n} {Γ : Context m} {Δ : Context n}
       → (∀ {A} → Γ ∋ A → PCF Δ A)
       → (∀ {A} → PCF Γ A → PCF Δ A)
 subst f Zero = Zero
-subst f (Succ t) = Succ (subst f t)
-subst f (Pred t) = Pred (subst f t)
+subst f (Succ t)         = Succ (subst f t)
+subst f (Pred t)         = Pred (subst f t)
 subst f (IfZero t t₁ t₂) = IfZero (subst f t) (subst f t₁) (subst f t₂)
-subst f (ƛ t) = ƛ (subst (exts f) t)
-subst f (t · t₁) = (subst f t) · (subst f t₁)
-subst f (v x) = f x
-subst f (Fix t) = Fix (subst f t)
+subst f (ƛ t)            = ƛ (subst (exts f) t)
+subst f (t · t₁)         = subst f t · subst f t₁
+subst f (v x)            = f x
+subst f (Fix t)          = Fix (subst f t)
 
 extend-with : {n : ℕ} {m : ℕ} {Γ : Context n} {Δ : Context m}
               {A : type} (N : PCF Δ A)
-              → (∀ {A} → Γ ∋ A → PCF Δ A)
-              → (∀ {B} → (Γ ’ A) ∋ B → PCF Δ B)
+            → (∀ {A} → Γ ∋ A → PCF Δ A)
+            → (∀ {B} → (Γ ’ A) ∋ B → PCF Δ B)
 extend-with N f Z = N
 extend-with N f (S x) = f x
 
-replace-first : {n : ℕ} (A : type) (Γ : Context n) (N : PCF Γ A) → (∀ {B} → (Γ ’ A) ∋ B → PCF Γ B)
-replace-first A Γ N Z = N
+replace-first : {n : ℕ} (A : type) (Γ : Context n) (N : PCF Γ A)
+              → (∀ {B} → (Γ ’ A) ∋ B → PCF Γ B)
+replace-first A Γ N Z     = N
 replace-first A Γ N (S t) = v t
 
 _[_] : {n : ℕ} {Γ : Context n} {σ A : type}
@@ -135,7 +138,7 @@ _[_] : {n : ℕ} {Γ : Context n} {σ A : type}
 _[_] {n} {Γ} {σ} {A} M N = subst (replace-first A Γ N) M
 
 numeral : ∀ {n} {Γ : Context n} → ℕ → PCF Γ ι
-numeral zero = Zero
+numeral zero     = Zero
 numeral (succ n) = Succ (numeral n)
 
 peano-axiom-for-PCF : ∀ {n Γ k} → numeral {n} {Γ} zero ≠ numeral (succ k)
