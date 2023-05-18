@@ -58,7 +58,7 @@
 
      (https://www.cs.bham.ac.uk/~mhe/TypeTopology/Unsafe.index.html)
 
-   * In our last count, on 13th May 2023, this development has 141k
+   * In our last count, on 18th May 2023, this development has 144k
      lines, including comments and blank lines. But we don't update
      the count frequently.
 
