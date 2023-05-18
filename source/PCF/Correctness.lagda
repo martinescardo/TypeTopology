@@ -26,6 +26,7 @@ open import Lifting.Miscelanea-PropExt-FunExt 𝓤₀ pe fe
 open import Lifting.Monad 𝓤₀ hiding (μ)
 open import Naturals.Properties
 open import PCF.AbstractSyntax pt
+open import PCF.BigStep pt
 open import PCF.Dcpo-Contexts pt fe pe
 open import PCF.DcpoProducts pt fe
 open import PCF.DcpoProducts-Curry pt fe 𝓤₀
@@ -37,10 +38,10 @@ open import UF.Miscelanea
 open DcpoProductsGeneral 𝓤₀
 open IfZeroDenotationalSemantics pe
 
-canonical-numeral-correctness : {n : ℕ} {Γ : Context n} (k : ℕ) (d : ⟨ (【 Γ 】 ⁻) ⟩) → pr₁ ⟦ ℕ-to-ι {_} {Γ} k ⟧ₑ d ＝ η k
+canonical-numeral-correctness : {n : ℕ} {Γ : Context n} (k : ℕ) (d : ⟨ (【 Γ 】 ⁻) ⟩) → pr₁ ⟦ numeral {_} {Γ} k ⟧ₑ d ＝ η k
 canonical-numeral-correctness zero d = refl
-canonical-numeral-correctness (succ n) d = pr₁ ⟦ Succ (ℕ-to-ι n) ⟧ₑ d ＝⟨ refl ⟩
-                                           (𝓛̇ succ ∘ pr₁ ⟦ ℕ-to-ι n ⟧ₑ) d ＝⟨ ap (𝓛̇ succ) ih ⟩
+canonical-numeral-correctness (succ n) d = pr₁ ⟦ Succ (numeral n) ⟧ₑ d ＝⟨ refl ⟩
+                                           (𝓛̇ succ ∘ pr₁ ⟦ numeral n ⟧ₑ) d ＝⟨ ap (𝓛̇ succ) ih ⟩
                                            𝓛̇ succ (η n) ＝⟨ refl ⟩
                                            η (succ n) ∎
     where
@@ -63,11 +64,11 @@ correctness-IfZero-zero N t t₁ t₂ c₁ c₂ d = ((⦅ifZero⦆₀ (pr₁ ⟦
 correctness-IfZero-succ : {n : ℕ} {Γ : Context n}
                      → (N t t₁ t₂ : PCF Γ ι)
                      → (k : ℕ)
-                     → pr₁ ⟦ t ⟧ₑ ∼ pr₁ ⟦ ℕ-to-ι {_} {Γ} (succ k) ⟧ₑ
+                     → pr₁ ⟦ t ⟧ₑ ∼ pr₁ ⟦ numeral {_} {Γ} (succ k) ⟧ₑ
                      → pr₁ ⟦ t₂ ⟧ₑ ∼ pr₁ ⟦ N ⟧ₑ
                      → pr₁ ⟦ IfZero t t₁ t₂ ⟧ₑ ∼ pr₁ ⟦ N ⟧ₑ
 correctness-IfZero-succ N t t₁ t₂ k c₁ c₂ d = ((⦅ifZero⦆₀ (pr₁ ⟦ t₁ ⟧ₑ d) (pr₁ ⟦ t₂ ⟧ₑ d)) ♯) (pr₁ ⟦ t ⟧ₑ d) ＝⟨ i ⟩
-                     (⦅ifZero⦆₀ (pr₁ ⟦ t₁ ⟧ₑ d) (pr₁ ⟦ t₂ ⟧ₑ d) ♯) (pr₁ ⟦ Succ (ℕ-to-ι k) ⟧ₑ d) ＝⟨ ii ⟩
+                     (⦅ifZero⦆₀ (pr₁ ⟦ t₁ ⟧ₑ d) (pr₁ ⟦ t₂ ⟧ₑ d) ♯) (pr₁ ⟦ Succ (numeral k) ⟧ₑ d) ＝⟨ ii ⟩
                      (⦅ifZero⦆₀ (pr₁ ⟦ t₁ ⟧ₑ d) (pr₁ ⟦ t₂ ⟧ₑ d) ♯) (η (succ k)) ＝⟨ iii ⟩
                      ⦅ifZero⦆₀ (pr₁ ⟦ t₁ ⟧ₑ d) (pr₁ ⟦ t₂ ⟧ₑ d) (succ k) ＝⟨ c₂ d ⟩
                      pr₁ ⟦ N ⟧ₑ d ∎
@@ -119,14 +120,14 @@ correctness' .(ƛ _) .(ƛ _) ƛ-id d = refl
 correctness' .Zero .Zero zero-id d = refl
 correctness' (Pred M) .Zero (pred-zero r) d =
                      ap (𝓛̇ pred) (correctness' M Zero r d)
-correctness' (Pred M) .(ℕ-to-ι _) (pred-succ {_} {_} {_} {k} r) d =
-                     ap (𝓛̇ pred) (correctness' M (ℕ-to-ι (succ k)) r d)
-correctness' (Succ M) .(Succ (ℕ-to-ι _)) (succ-arg {_} {_} {_} {k} r) d =
-                     ap (𝓛̇ succ) (correctness' M (ℕ-to-ι k) r d)
+correctness' (Pred M) .(numeral _) (pred-succ {_} {_} {_} {k} r) d =
+                     ap (𝓛̇ pred) (correctness' M (numeral (succ k)) r d)
+correctness' (Succ M) .(Succ (numeral _)) (succ-arg {_} {_} {_} {k} r) d =
+                     ap (𝓛̇ succ) (correctness' M (numeral k) r d)
 correctness' (IfZero t t₁ t₂) N (IfZero-zero r r₁) =
                      correctness-IfZero-zero N t t₁ t₂ (correctness' t Zero r) (correctness' t₁ N r₁)
 correctness' (IfZero t t₁ t₂) N (IfZero-succ {_} {_} {_} {_} {_} {_} {k} r r₁) =
-                     correctness-IfZero-succ N t t₁ t₂ k (correctness' t (ℕ-to-ι (succ k)) r) (correctness' t₂ N r₁)
+                     correctness-IfZero-succ N t t₁ t₂ k (correctness' t (numeral (succ k)) r) (correctness' t₂ N r₁)
 correctness' (Fix M) N (Fix-step r) =
                       correctness-Fix M N (correctness' (M · Fix M) N r)
 correctness' .(_ · _) N (·-step {_} {_} {_} {_} {M} {E} {T} {_} r r₁) =

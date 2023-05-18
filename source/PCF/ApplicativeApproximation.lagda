@@ -14,9 +14,10 @@ module PCF.ApplicativeApproximation
 open PropositionalTruncation pt
 
 open import PCF.AbstractSyntax pt
+open import PCF.BigStep pt
 
 _⊏̰_ : {σ : type} → PCF ⟨⟩ σ → PCF ⟨⟩ σ → 𝓤₀ ̇
-_⊏̰_ {ι} M N = ∀ (n : ℕ) → M ⇓ ℕ-to-ι n → N ⇓ ℕ-to-ι n
+_⊏̰_ {ι} M N = ∀ (n : ℕ) → M ⇓ numeral n → N ⇓ numeral n
 _⊏̰_ {σ ⇒ σ₁} M N = ∀ (P : PCF ⟨⟩ σ) → (M · P) ⊏̰ (N · P)
 
 ⊏̰-reflexive : {σ : type} → (M : PCF ⟨⟩ σ) → M ⊏̰ M
@@ -26,7 +27,7 @@ _⊏̰_ {σ ⇒ σ₁} M N = ∀ (P : PCF ⟨⟩ σ) → (M · P) ⊏̰ (N · P)
 ⊏̰-transitive : {σ : type} {M N L : PCF ⟨⟩ σ} → M ⊏̰ N → N ⊏̰ L → M ⊏̰ L
 ⊏̰-transitive {ι} {M} {N} {L} p₁ p₂ n step = γ
   where
-    γ : L ⇓ ℕ-to-ι n
+    γ : L ⇓ numeral n
     γ = p₂ n (p₁ n step)
 ⊏̰-transitive {σ ⇒ σ₁} {M} {N} {L} p₁ p₂ P = γ
   where
@@ -34,7 +35,7 @@ _⊏̰_ {σ ⇒ σ₁} M N = ∀ (P : PCF ⟨⟩ σ) → (M · P) ⊏̰ (N · P)
     γ = ⊏̰-transitive (p₁ P) (p₂ P)
 
 ⊏̰-lemma : {σ : type} → (M M' : PCF ⟨⟩ σ) → ((V : PCF ⟨⟩ σ) → M ⇓' V → M' ⇓' V) → M ⊏̰ M'
-⊏̰-lemma {ι} M M' f n x = ∥∥-functor (λ x₁ → f (ℕ-to-ι n) x₁) x
+⊏̰-lemma {ι} M M' f n x = ∥∥-functor (λ x₁ → f (numeral n) x₁) x
 ⊏̰-lemma {σ ⇒ τ} M M' f P = ⊏̰-lemma (M · P) (M' · P) γ
   where
     γ : (V : PCF ⟨⟩ τ) → (M · P) ⇓' V → (M' · P) ⇓' V

@@ -30,6 +30,7 @@ open import Lifting.Monad 𝓤₀ hiding (μ)
 open import Naturals.Properties hiding (pred-succ)
 open import PCF.AbstractSyntax pt
 open import PCF.ApplicativeApproximation pt
+open import PCF.BigStep pt
 open import PCF.Dcpo-Contexts pt fe pe
 open import PCF.ScottModelTerms pt fe pe
 open import PCF.ScottModelTypes pt fe pe
@@ -39,7 +40,7 @@ open import UF.Miscelanea
 open IfZeroDenotationalSemantics pe
 
 adequacy-relation : (σ : type) (d : ⟨ (⟦ σ ⟧ ⁻) ⟩) (M : PCF ⟨⟩ σ) → 𝓤₁ ̇
-adequacy-relation ι l t = 𝟙 × ∀ (p : is-defined l) → t ⇓ ℕ-to-ι (value l p)
+adequacy-relation ι l t = 𝟙 × ∀ (p : is-defined l) → t ⇓ numeral (value l p)
 adequacy-relation (σ ⇒ σ₁) l t = ∀ (d : ⟨ ( ⟦ σ ⟧ ⁻) ⟩) (M : PCF ⟨⟩ σ)
                                       → adequacy-relation σ d M
                                       → adequacy-relation σ₁ (pr₁ l d) (t · M)
@@ -53,8 +54,8 @@ lemma7-1-1 : {σ : type}
            → adequacy-relation σ d' M
 lemma7-1-1 {ι} d d' x M (_ , o) = ⋆ , f
  where
-   f : (p : is-defined d') → M ⇓ ℕ-to-ι (value d' p)
-   f p = transport (λ - → M ⇓ ℕ-to-ι -) (e₂ ⁻¹) (o (＝-to-is-defined e₁ p))
+   f : (p : is-defined d') → M ⇓ numeral (value d' p)
+   f p = transport (λ - → M ⇓ numeral -) (e₂ ⁻¹) (o (＝-to-is-defined e₁ p))
     where
      e₁ : d' ＝ d
      e₁ = x p
@@ -85,11 +86,11 @@ adequacy-lubs : {σ : type} {I : 𝓤₀ ̇}
 adequacy-lubs {ι} {I} u isdirec t rel = ⋆ , g
  where
   g : (p : is-defined (∐ ( ⟦ ι ⟧ ⁻) isdirec)) →
-        t ⇓ ℕ-to-ι (value (∐ ( ⟦ ι ⟧ ⁻) isdirec) p)
+        t ⇓ numeral (value (∐ ( ⟦ ι ⟧ ⁻) isdirec) p)
   g p = ∥∥-rec ∥∥-is-prop f p
     where
-     f : Σ (λ (i : I) → is-defined (u i)) → t ⇓ ℕ-to-ι (value (∐ ( ⟦ ι ⟧ ⁻) isdirec) p)
-     f i = transport (λ - → t ⇓ ℕ-to-ι -) value-lub-is-same (pr₂ (rel (pr₁ i)) (pr₂ i))
+     f : Σ (λ (i : I) → is-defined (u i)) → t ⇓ numeral (value (∐ ( ⟦ ι ⟧ ⁻) isdirec) p)
+     f i = transport (λ - → t ⇓ numeral -) value-lub-is-same (pr₂ (rel (pr₁ i)) (pr₂ i))
       where
        lub-is-same : u (pr₁ i) ＝ ∐ ( ⟦ ι ⟧ ⁻) isdirec
        lub-is-same = ∐-is-upperbound ( ⟦ ι ⟧ ⁻) isdirec (pr₁ i) (pr₂ i)
@@ -118,7 +119,7 @@ adequacy-step : {σ : type}
               → adequacy-relation σ a M'
 adequacy-step {ι} M M' r a (⋆ , rel) = ⋆ , f
  where
-  f : (p : is-defined a) → M' ⇓ ℕ-to-ι (value a p)
+  f : (p : is-defined a) → M' ⇓ numeral (value a p)
   f p = r (pr₁ (pr₂ a) p) (rel p)
 adequacy-step {σ ⇒ σ₁} M M' r a rel d M₁ x = IH
  where
@@ -174,13 +175,13 @@ adequacy-succ :  {n : ℕ} {Γ : Context n}
 adequacy-succ M d f (⋆ , rel) = ⋆ , g
  where
   g : (p : is-defined (pr₁ ⟦ Succ M ⟧ₑ d))
-    → subst f (Succ M) ⇓ ℕ-to-ι (value (pr₁ ⟦ Succ M ⟧ₑ d) p)
+    → subst f (Succ M) ⇓ numeral (value (pr₁ ⟦ Succ M ⟧ₑ d) p)
   g p = ∥∥-functor (λ x → succ-arg x) (rel p)
 
 pred-lemma : ∀ {n : ℕ} {Γ : Context n} {k : ℕ}
            → {M : PCF Γ ι}
-           → M ⇓' ℕ-to-ι k
-           → (Pred M) ⇓' ℕ-to-ι (pred k)
+           → M ⇓' numeral k
+           → (Pred M) ⇓' numeral (pred k)
 pred-lemma {n} {Γ} {zero}   x = pred-zero x
 pred-lemma {n} {Γ} {succ k} x = pred-succ x
 
@@ -189,24 +190,24 @@ ifzero-lemma : {n : ℕ} {Γ : Context n} {k : ℕ}
       → (M₁ : PCF Γ ι)
       → (M₂ : PCF Γ ι)
       → (f : ∀ {A} → Γ ∋ A → PCF ⟨⟩ A)
-      → (subst f M) ⇓ ℕ-to-ι k
+      → (subst f M) ⇓ numeral k
       → (d : ⟨ ( 【 Γ 】 ⁻) ⟩)
       → (M-is-defined : is-defined (pr₁ ⟦ M ⟧ₑ d))
       → (result-is-defined : is-defined (⦅ifZero⦆₀ (pr₁ ⟦ M₁ ⟧ₑ d) (pr₁ ⟦ M₂ ⟧ₑ d) k))
       → (M₁-rel : adequacy-relation ι (pr₁ ⟦ M₁ ⟧ₑ d) (subst f M₁))
       → (M₂-rel : adequacy-relation ι (pr₁ ⟦ M₂ ⟧ₑ d) (subst f M₂))
-      → subst f (IfZero M M₁ M₂) ⇓ ℕ-to-ι (value (⦅ifZero⦆₀ (pr₁ ⟦ M₁ ⟧ₑ d) (pr₁ ⟦ M₂ ⟧ₑ d) k) result-is-defined)
+      → subst f (IfZero M M₁ M₂) ⇓ numeral (value (⦅ifZero⦆₀ (pr₁ ⟦ M₁ ⟧ₑ d) (pr₁ ⟦ M₂ ⟧ₑ d) k) result-is-defined)
 ifzero-lemma {n} {Γ} {zero} M M₁ M₂ f x d M-is-defined result-is-defined (⋆ , M₁-rel) (⋆ , M₂-rel) = γ
   where
-    M₁-⇓ : subst f M₁ ⇓ ℕ-to-ι (value (pr₁ ⟦ M₁ ⟧ₑ d) result-is-defined)
+    M₁-⇓ : subst f M₁ ⇓ numeral (value (pr₁ ⟦ M₁ ⟧ₑ d) result-is-defined)
     M₁-⇓ = M₁-rel result-is-defined
-    γ : subst f (IfZero M M₁ M₂) ⇓ ℕ-to-ι (value (⦅ifZero⦆₀ (pr₁ ⟦ M₁ ⟧ₑ d) (pr₁ ⟦ M₂ ⟧ₑ d) zero) result-is-defined)
+    γ : subst f (IfZero M M₁ M₂) ⇓ numeral (value (⦅ifZero⦆₀ (pr₁ ⟦ M₁ ⟧ₑ d) (pr₁ ⟦ M₂ ⟧ₑ d) zero) result-is-defined)
     γ = ∥∥-functor (λ x → IfZero-zero (pr₁ x) (pr₂ x)) (binary-choice x M₁-⇓)
 ifzero-lemma {n} {Γ} {succ k} M M₁ M₂ f x d M-is-defined result-is-defined (⋆ , M₁-rel) (⋆ , M₂-rel) = γ
   where
-    M₂-⇓ : subst f M₂ ⇓ ℕ-to-ι (value (pr₁ ⟦ M₂ ⟧ₑ d) result-is-defined)
+    M₂-⇓ : subst f M₂ ⇓ numeral (value (pr₁ ⟦ M₂ ⟧ₑ d) result-is-defined)
     M₂-⇓ = M₂-rel result-is-defined
-    γ : subst f (IfZero M M₁ M₂) ⇓ ℕ-to-ι (value (⦅ifZero⦆₀ (pr₁ ⟦ M₁ ⟧ₑ d) (pr₁ ⟦ M₂ ⟧ₑ d) (succ k)) result-is-defined)
+    γ : subst f (IfZero M M₁ M₂) ⇓ numeral (value (⦅ifZero⦆₀ (pr₁ ⟦ M₁ ⟧ₑ d) (pr₁ ⟦ M₂ ⟧ₑ d) (succ k)) result-is-defined)
     γ = ∥∥-functor (λ x → IfZero-succ (pr₁ x) (pr₂ x)) (binary-choice x M₂-⇓)
 
 adequacy-pred :  {n : ℕ} {Γ : Context n}
@@ -218,7 +219,7 @@ adequacy-pred :  {n : ℕ} {Γ : Context n}
 adequacy-pred M d f (⋆ , rel) = ⋆ , g
   where
     g : (p : is-defined (pr₁ ⟦ Pred M ⟧ₑ d)) →
-          subst f (Pred M) ⇓ ℕ-to-ι (value (pr₁ ⟦ Pred M ⟧ₑ d) p)
+          subst f (Pred M) ⇓ numeral (value (pr₁ ⟦ Pred M ⟧ₑ d) p)
     g p = ∥∥-functor pred-lemma (rel p)
 
 adequacy-ifzero :   {n : ℕ} {Γ : Context n}
@@ -233,7 +234,7 @@ adequacy-ifzero {n} {Γ} M M₁ M₂ d f (⋆ , M-rel) M₁-rel M₂-rel = ⋆ ,
   where
     g : (p : is-defined (pr₁ ⟦ IfZero M M₁ M₂ ⟧ₑ d)) →
           subst f (IfZero M M₁ M₂) ⇓
-          ℕ-to-ι (value (pr₁ ⟦ IfZero M M₁ M₂ ⟧ₑ d) p)
+          numeral (value (pr₁ ⟦ IfZero M M₁ M₂ ⟧ₑ d) p)
     g (M-is-defined , result-is-defined) = ifzero-lemma M M₁ M₂ f (M-rel M-is-defined) d M-is-defined result-is-defined M₁-rel M₂-rel
 
 lemma7-4 : {n : ℕ} {Γ : Context n} {τ : type}
@@ -299,7 +300,7 @@ lemma7-4 {n} {Γ} {σ} (Fix M) d f g = lemma7-3 (subst f M) (pr₁ ⟦ M ⟧ₑ 
      → adequacy-relation σ (pr₁ (pr₁ ⟦ M ⟧ₑ d) d₁) (subst (λ {A} → f) M · M₁)
   IH = lemma7-4 M d f g
 
-adequacy : (M : PCF ⟨⟩ ι) (n : ℕ) → pr₁ ⟦ M ⟧ₑ ⋆ ＝ η n → M ⇓ ℕ-to-ι n
+adequacy : (M : PCF ⟨⟩ ι) (n : ℕ) → pr₁ ⟦ M ⟧ₑ ⋆ ＝ η n → M ⇓ numeral n
 adequacy M n p = pr₂ iv ⋆
  where
   i : adequacy-relation ι (pr₁ ⟦ M ⟧ₑ ⋆) (subst ids M)
