@@ -69,7 +69,7 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
    γ : spectralᴰ (𝒪 A)
      → zero-dimensionalᴰ (𝒪 X)
      → ∃! 𝒻⁻ ꞉ (X ─c→ Patch-A) , ((x : ⟨ 𝒪 A ⟩) → 𝒻 .pr₁ x  ＝ 𝒻⁻ .pr₁ ‘ x ’)
-   γ σᴰ 𝕫ᴰ = ((f⁻⋆ , {!!} , {!!} , 𝒻⁻-γ) , {!!}) , {!!}
+   γ σᴰ 𝕫ᴰ = ((f⁻⋆ , 𝒻⁻-α , {!!} , 𝒻⁻-γ) , {!!}) , {!!}
     where
      open SmallPatchConstruction A σᴰ using (𝟎-is-id; ≼-implies-≼ᵏ; ≼ᵏ-implies-≼; _≼ᵏ_) renaming (SmallPatch to Patchₛ-A)
      open ContinuousMapNotation X A
@@ -600,26 +600,50 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
      𝒻⁻-α : f⁻⋆ 𝟏[ 𝒪 Patchₛ-A ] ＝ 𝟏[ 𝒪 X ]
      𝒻⁻-α = only-𝟏-is-above-𝟏 (𝒪 X) (f⁻⋆ 𝟏[ 𝒪 Patchₛ-A ]) †
       where
-       † : (𝟏[ 𝒪 X ] ≤[ poset-of (𝒪 X) ] f⁻⋆ 𝟏[ 𝒪 Patchₛ-A ]) holds
-       † = ?
-        -- ∥∥-rec
-        --     (holds-is-prop (𝟏[ 𝒪 X ] ≤[ poset-of (𝒪 X) ] f⁻⋆ 𝟏[ 𝒪 Patchₛ-A ]))
-        --     ‡
-        --     (compact-opens-are-basic-in-compact-frames
-        --       (𝒪 X)
-        --       (pr₁ 𝕫ᴰ)
-        --       {!!}
-        --       (pr₁ 𝕤)
-        --       𝟏[ 𝒪 X ]
-        --       (pr₁ 𝕤))
-        --     where
-        --      open PosetReasoning (poset-of (𝒪 X))
+       open PosetReasoning (poset-of (𝒪 X))
 
-        --      ‡ : Σ i ꞉ Bₓ , (𝟏[ 𝒪 X ] ＝ pr₁ 𝕫ᴰ [ i ])
-        --        → (𝟏[ 𝒪 X ] ≤[ poset-of (𝒪 X) ] f⁻⋆ 𝟏[ 𝒪 Patchₛ-A ]) holds
-        --      ‡ (i , p) = 𝟏[ 𝒪 X ]              ＝⟨ p ⟩ₚ
-        --                  βₓ i                  ≤⟨ {!!} ⟩
-        --                  f⁻⋆ 𝟏[ 𝒪 Patchₛ-A ]   ■
+       † : (𝟏[ 𝒪 X ] ≤[ poset-of (𝒪 X) ] f⁻⋆ 𝟏[ 𝒪 Patchₛ-A ]) holds
+       † = ∥∥-rec
+            (holds-is-prop (𝟏[ 𝒪 X ] ≤[ poset-of (𝒪 X) ] f⁻⋆ 𝟏[ 𝒪 Patchₛ-A ]))
+            ‡
+            (compact-opens-are-basic-in-compact-frames
+              {!!}
+              {!!}
+              {!!}
+              {!!}
+              {!!}
+              {!!})
+            where
+             ‡ : Σ i ꞉ Bₐ , 𝟎[ 𝒪 A ] ＝ β i
+               → (𝟏[ 𝒪 X ] ≤[ poset-of (𝒪 X) ] f⁻⋆ 𝟏[ 𝒪 Patchₛ-A ]) holds
+             ‡ (i , p) =
+              𝟏[ 𝒪 X ]                                            ＝⟨ Ⅰ    ⟩ₚ
+              𝟏[ 𝒪 X ] ∧[ 𝒪 X ] 𝟏[ 𝒪 X ]                          ＝⟨ Ⅱ    ⟩ₚ
+              𝒻 ⋆∙ 𝟏[ 𝒪 A ] ∧[ 𝒪 X ] 𝟏[ 𝒪 X ]                     ＝⟨ Ⅲ    ⟩ₚ
+              𝒻 ⋆∙ 𝟏[ 𝒪 A ] ∧[ 𝒪 X ] ¬𝒻⋆ i                        ≤⟨  Ⅳ    ⟩
+              ⋁[ 𝒪 X ] ⁅ 𝒻 ⋆∙ 𝟏[ 𝒪 A ] ∧[ 𝒪 X ] ¬𝒻⋆ n ∣ n ∶ Bₐ ⁆  ＝⟨ refl ⟩ₚ
+              f⁻⋆₂ 𝟏[ 𝒪 Patchₛ-A ]                                ＝⟨ Ⅴ    ⟩ₚ
+              f⁻⋆  𝟏[ 𝒪 Patchₛ-A ]                                ■
+               where
+                𝕒   = heyting-implication-identity 𝟎[ 𝒪 X ] ⁻¹
+                𝕓   = ap
+                       (λ - → - ==> 𝟎[ 𝒪 X ])
+                       (frame-homomorphisms-preserve-bottom (𝒪 A) (𝒪 X) 𝒻 ⁻¹)
+                𝕔   = ap (λ - → (𝒻 ⋆∙ -) ==> 𝟎[ 𝒪 X ]) p
+
+                Ⅰ   = ∧[ 𝒪 X ]-is-idempotent 𝟏[ 𝒪 X ]
+                Ⅲ   = ap
+                       (λ - → 𝒻 ⋆∙ 𝟏[ 𝒪 A ] ∧[ 𝒪 X ] -)
+                       (𝟏[ 𝒪 X ]                     ＝⟨ 𝕒    ⟩
+                        𝟎[ 𝒪 X ] ==> 𝟎[ 𝒪 X ]        ＝⟨ 𝕓    ⟩
+                        (𝒻 ⋆∙ 𝟎[ 𝒪 A ]) ==> 𝟎[ 𝒪 X ] ＝⟨ 𝕔    ⟩
+                        (𝒻 ⋆∙ (β i)) ==> 𝟎[ 𝒪 X ]    ＝⟨ refl ⟩
+                        ¬𝒻⋆ i                        ∎)
+                Ⅳ   = ⋁[ 𝒪 X ]-upper ⁅ 𝒻 ⋆∙ 𝟏[ 𝒪 A ] ∧[ 𝒪 X ] ¬𝒻⋆ n ∣ n ∶ Bₐ ⁆ i
+                Ⅱ   = ap
+                       (λ - → - ∧[ 𝒪 X ] 𝟏[ 𝒪 X ])
+                       (frame-homomorphisms-preserve-top (𝒪 A) (𝒪 X) 𝒻 ⁻¹)
+                Ⅴ   = f⁻⋆₂-equiv-f⁻⋆₁ 𝟏[ 𝒪 Patchₛ-A ] ⁻¹
 
      𝒻⁻-γ : (S : Fam 𝓤 ⟨ 𝒪 Patchₛ-A ⟩)
           → ((f⁻⋆ (⋁[ 𝒪 Patchₛ-A ] S)) is-lub-of ⁅ f⁻⋆ 𝒿 ∣ 𝒿 ε S ⁆) holds
