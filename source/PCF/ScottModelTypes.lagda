@@ -22,8 +22,11 @@ open import DomainTheory.Lifting.LiftingSet pt fe 𝓤₀ pe
 open import PCF.AbstractSyntax pt
 open import UF.Miscelanea
 
+ℕ⊥ : DCPO⊥
+ℕ⊥ = 𝓛-DCPO⊥ ℕ-is-set
+
 ⟦_⟧ : type → DCPO⊥ {𝓤₁} {𝓤₁}
-⟦ ι ⟧     = 𝓛-DCPO⊥ ℕ-is-set
+⟦ ι ⟧     = ℕ⊥
 ⟦ σ ⇒ τ ⟧ = ⟦ σ ⟧ ⟹ᵈᶜᵖᵒ⊥ ⟦ τ ⟧
 
 \end{code}
