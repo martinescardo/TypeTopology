@@ -21,6 +21,7 @@ A full report in pdf is available in the above link.
 
 module PCF.index where
 
+import DomainTheory.index -- By Tom de Jong
 import PCF.AbstractSyntax
 import PCF.Adequacy
 import PCF.ApplicativeApproximation

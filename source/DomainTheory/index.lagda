@@ -102,10 +102,12 @@ import DomainTheory.Lifting.LiftingSetAlgebraic -- (3)
 
 {- ScottModelOfPCF
 
+0. Combinatory version of PCF
 1. Denotational semantics of the K, S and ifZero combinators of PCF
 2. The Scott model of the typed programming language PCF
 -}
 
+import DomainTheory.ScottModelOfPCF.PCF             -- (0)
 import DomainTheory.ScottModelOfPCF.PCFCombinators  -- (1)
 import DomainTheory.ScottModelOfPCF.ScottModelOfPCF -- (2)
 
