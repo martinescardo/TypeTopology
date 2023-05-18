@@ -69,9 +69,11 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
    γ : spectralᴰ (𝒪 A)
      → zero-dimensionalᴰ (𝒪 X)
      → ∃! 𝒻⁻ ꞉ (X ─c→ Patch-A) , ((x : ⟨ 𝒪 A ⟩) → 𝒻 .pr₁ x  ＝ 𝒻⁻ .pr₁ ‘ x ’)
-   γ σᴰ 𝕫ᴰ = ((f⁻⋆ , 𝒻⁻-α , {!!} , 𝒻⁻-γ) , {!!}) , {!!}
+   γ σᴰ 𝕫ᴰ = ((f⁻⋆ , 𝒻⁻-α , 𝒻⁻-β , 𝒻⁻-γ) , {!!}) , {!!}
     where
-     open SmallPatchConstruction A σᴰ using (𝟎-is-id; ≼-implies-≼ᵏ; ≼ᵏ-implies-≼; _≼ᵏ_) renaming (SmallPatch to Patchₛ-A)
+     open SmallPatchConstruction A σᴰ
+      using (𝟎-is-id; ≼-implies-≼ᵏ; ≼ᵏ-implies-≼; _≼ᵏ_)
+      renaming (SmallPatch to Patchₛ-A)
      open ContinuousMapNotation X A
 
      X-has-basis : has-basis (𝒪 X) holds
@@ -607,12 +609,12 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
             (holds-is-prop (𝟏[ 𝒪 X ] ≤[ poset-of (𝒪 X) ] f⁻⋆ 𝟏[ 𝒪 Patchₛ-A ]))
             ‡
             (compact-opens-are-basic-in-compact-frames
-              {!!}
-              {!!}
-              {!!}
-              {!!}
-              {!!}
-              {!!})
+              (𝒪 A)
+              (Bₐ , β)
+              (pr₁ (pr₂ σᴰ))
+              (spectral-implies-compact (𝒪 A) σ)
+              𝟎[ 𝒪 A ]
+              (𝟎-is-compact (𝒪 A)))
             where
              ‡ : Σ i ꞉ Bₐ , 𝟎[ 𝒪 A ] ＝ β i
                → (𝟏[ 𝒪 X ] ≤[ poset-of (𝒪 X) ] f⁻⋆ 𝟏[ 𝒪 Patchₛ-A ]) holds
@@ -644,6 +646,9 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
                        (λ - → - ∧[ 𝒪 X ] 𝟏[ 𝒪 X ])
                        (frame-homomorphisms-preserve-top (𝒪 A) (𝒪 X) 𝒻 ⁻¹)
                 Ⅴ   = f⁻⋆₂-equiv-f⁻⋆₁ 𝟏[ 𝒪 Patchₛ-A ] ⁻¹
+
+     𝒻⁻-β : preserves-binary-meets (𝒪 Patch-A) (𝒪 X) f⁻⋆ holds
+     𝒻⁻-β = {!!}
 
      𝒻⁻-γ : (S : Fam 𝓤 ⟨ 𝒪 Patchₛ-A ⟩)
           → ((f⁻⋆ (⋁[ 𝒪 Patchₛ-A ] S)) is-lub-of ⁅ f⁻⋆ 𝒿 ∣ 𝒿 ε S ⁆) holds
