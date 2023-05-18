@@ -15,6 +15,9 @@ _+_ : ℕ → ℕ → ℕ
 n + 0 = n
 n + (succ m) = succ (n + m)
 
+_+ᴸ_ : ℕ → ℕ → ℕ
+m +ᴸ n = n + m
+
 {-# BUILTIN NATPLUS _+_ #-}
 
 zero-right-neutral : (n : ℕ) → n + 0 ＝ n
