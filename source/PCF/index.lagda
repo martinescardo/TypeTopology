@@ -8,8 +8,8 @@ UK, jointly supervised by Martin Escardo and Tom de Jong.
 Tom de Jong, in work reported in this repository, defines the Scott
 model of PCF in the combinary version of PCF. This extends the work to
 the usual λ-calculus version of PCF.  Moreover, Tom proved, in
-Unimath, that the Scott model of (combinatory) PCF is fully
-abstract. Brendan's work also proves this, in Agda, here, for the
+Unimath, that the Scott model of (combinatory) PCF is computationally
+adequate.  Brendan's work also proves this, in Agda, here, for the
 λ-calculus version. In order to do all this, Brendan also had to
 extend Tom's work on domain theory.
 
