@@ -34,16 +34,17 @@ We assume a given type R of outcomes for games as a module parameter.
 {-# OPTIONS --without-K --safe --no-sized-types --no-guardedness --auto-inline #-} -- --exact-split
 
 open import MLTT.Spartan hiding (J)
+
+module Games.FiniteHistoryDependent (R : Type) where
+
 open import Games.Monad
 open import Games.Base
 open import Games.J
 open import Games.K
+open import Games.JK
 open import UF.Base
 open import UF.FunExt
 
-module Games.FiniteHistoryDependent (R : Type) where
-
-open import Games.JK R
 open K-definitions R
 open J-definitions R
 
@@ -308,19 +309,16 @@ selection-strategy {X ∷ Xf} εt@(ε :: εf) q = x₀ :: σf
 We convert a selection function into a quantifier as in Definition 10
 of [1], using the function overline, defined in another module.
 
-The following definition is in Section 1 on [1].
-
-\begin{code}
-
-_is-a-selection-of_ : {X : Type} → J X → K X → Type
-ε is-a-selection-of ϕ = overline ε ∼ ϕ
-
-\end{code}
+The work with the definition of a selection function being a selection
+function for a quantifier as in Section 1 on [1], defined in another
+module.
 
 We generalize it to selection-function and quantifier trees in the
 obvious way, by induction:
 
 \begin{code}
+
+open JK R
 
 _are-selections-of_ : {Xt : 𝕋} → 𝓙 Xt → 𝓚 Xt → Type
 _are-selections-of_ {[]}     ⟨⟩        ⟨⟩        = 𝟙

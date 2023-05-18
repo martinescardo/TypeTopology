@@ -34,7 +34,7 @@ R : Type
 R = Fin 3
 
 open import Games.FiniteHistoryDependent R
-open import Games.JK R
+open import Games.JK
 
 \end{code}
 
@@ -210,6 +210,7 @@ And their derived quantifiers:
 \begin{code}
 
 open K-definitions R
+open JK R
 
 quantifier : Player → {M : Type} → is-Compact M → is-decidable M → K M
 quantifier p κ (inl m) = overline (selection p m κ)

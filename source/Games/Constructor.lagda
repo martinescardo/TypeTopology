@@ -15,7 +15,7 @@ open import UF.FunExt
 open import Games.TypeTrees
 open import Games.FiniteHistoryDependent R
 open import Games.J
-open import Games.JK R
+open import Games.JK
 
 open J-definitions R
 
@@ -42,6 +42,8 @@ predicate (branch X Xf ε) (x :: xs) = predicate (Xf x) xs
 selections : (Γ : GameJ) → 𝓙 (dtt Γ)
 selections (leaf r)        = ⟨⟩
 selections (branch X Xf ε) = ε :: (λ x → selections (Xf x))
+
+open JK R
 
 quantifiers : (Γ : GameJ) → 𝓚 (dtt Γ)
 quantifiers (leaf r)        = ⟨⟩

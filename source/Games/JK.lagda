@@ -6,7 +6,7 @@ Martin Escardo, Paulo Oliva, 2023
 
 open import MLTT.Spartan hiding (J)
 
-module Games.JK (R : Type) where
+module Games.JK where
 
 open import UF.FunExt
 open import Games.Base
@@ -14,16 +14,21 @@ open import Games.Monad
 open import Games.J
 open import Games.K
 
-open J-definitions R
-open K-definitions R
+module JK (R : Type) where
 
-overline : {X : Type} → J X → K X
-overline ε = λ p → p (ε p)
+ open J-definitions R
+ open K-definitions R
 
-overline-theorem : {X : Type} {Y : X → Type}
-                   (ε : J X) (δ : (x : X) → J (Y x))
-                 → overline (ε ⊗ᴶ δ) ∼ overline ε ⊗ᴷ (λ x → overline (δ x))
-overline-theorem ε δ q = refl
+ overline : {X : Type} → J X → K X
+ overline ε = λ p → p (ε p)
+
+ overline-theorem : {X : Type} {Y : X → Type}
+                    (ε : J X) (δ : (x : X) → J (Y x))
+                  → overline (ε ⊗ᴶ δ) ∼ overline ε ⊗ᴷ (λ x → overline (δ x))
+ overline-theorem ε δ q = refl
+
+ _is-a-selection-of_ : {X : Type} → J X → K X → Type
+ ε is-a-selection-of ϕ = overline ε ∼ ϕ
 
 \end{code}
 
