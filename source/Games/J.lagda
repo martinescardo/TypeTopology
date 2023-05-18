@@ -9,6 +9,7 @@ open import MLTT.Spartan hiding (J)
 module Games.J where
 
 open import UF.FunExt
+open import Games.Base
 open import Games.Monad
 
 𝕁 : Type → Monad
@@ -64,5 +65,34 @@ open import Games.Monad
 
 𝕁' : Fun-Ext → Type → Monad
 𝕁' fe = 𝕁-transf fe 𝕀𝕕
+
+module J-definitions (R : Type) where
+
+ J : Type → Type
+ J = functor (𝕁 R)
+
+ _⊗ᴶ_ : {X : Type} {Y : X → Type}
+      → J X
+      → ((x : X) → J (Y x))
+      → J (Σ x ꞉ X , Y x)
+ _⊗ᴶ_ = _⊗_ (𝕁 R)
+
+ ⊗ᴶ-direct-definition : {X : Type} {Y : X → Type}
+                        (ε : J X)
+                        (δ : (x : X) → J (Y x))
+                      → ε ⊗ᴶ δ ∼ (λ q → let
+                                         ν  = λ x → δ x (sub q x)
+                                         x₀ = ε (λ x → sub q x (ν x))
+                                        in (x₀ , ν x₀))
+ ⊗ᴶ-direct-definition ε δ q = refl
+
+ ηᴶ : {X : Type} → X → J X
+ ηᴶ = η (𝕁 R)
+
+ J-ext : {X Y : Type} → (X → J Y) → J X → J Y
+ J-ext = ext (𝕁 R)
+
+ J-map : {X Y : Type} → (X → Y) → J X → J Y
+ J-map = map (𝕁 R)
 
 \end{code}

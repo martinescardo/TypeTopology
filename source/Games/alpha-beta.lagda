@@ -37,6 +37,8 @@ open import MLTT.Spartan hiding (J)
 open import Games.FiniteHistoryDependent
 open import Games.TypeTrees
 open import Games.Structure
+open import Games.K
+open import Games.J
 open import MLTT.Athenian
 open import UF.FunExt
 
@@ -85,7 +87,9 @@ Part 0.
 
 \begin{code}
 
- Min Max : {X : Type} → listable⁺ X → K R X
+ open K-definitions R
+
+ Min Max : {X : Type} → listable⁺ X → K X
  Min (x₀ , xs , _) p = foldr xs (λ x → min (p x)) (p x₀)
  Max (x₀ , xs , _) p = foldr xs (λ x → max (p x)) (p x₀)
 
@@ -136,7 +140,9 @@ Now we define selection functions for this game.
                  (λ (_ : p m < p x) → x)
                  (λ (_ : p m ≥ p x) → m)
 
- ArgMin ArgMax : {X : Type} → listable⁺ X → J R X
+ open J-definitions R
+
+ ArgMin ArgMax : {X : Type} → listable⁺ X → J X
  ArgMin (x₀ , xs , _) p = foldr xs (argmin p) x₀
  ArgMax (x₀ , xs , _) p = foldr xs (argmax p) x₀
 
@@ -375,7 +381,9 @@ module minimax'
                             (λ (_ : s < r) → (s , ys))
                             (λ (_ : s ≥ r) → (r , xs))
 
- Min' Max' : {X : Type} → listable⁺ X → K R' X
+ open K-definitions R'
+
+ Min' Max' : {X : Type} → listable⁺ X → K X
  Min' (x₀ , xs , _) p = foldr xs (λ x → min' (p x)) (p x₀)
  Max' (x₀ , xs , _) p = foldr xs (λ x → max' (p x)) (p x₀)
 

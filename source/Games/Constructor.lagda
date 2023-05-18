@@ -14,6 +14,10 @@ open import UF.FunExt
 
 open import Games.TypeTrees
 open import Games.FiniteHistoryDependent R
+open import Games.J
+open import Games.JK R
+
+open J-definitions R
 
 \end{code}
 

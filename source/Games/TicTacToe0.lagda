@@ -21,6 +21,8 @@ open import Fin.Topology
 open import Fin.ArgMinMax
 
 open import Games.TypeTrees
+open import Games.J
+open import Games.K
 
 \end{code}
 
@@ -32,6 +34,7 @@ R : Type
 R = Fin 3
 
 open import Games.FiniteHistoryDependent R
+open import Games.JK R
 
 \end{code}
 
@@ -194,6 +197,8 @@ Selection functions for players, namely argmin for X and argmax for O:
 
 \begin{code}
 
+open J-definitions R
+
 selection : (p : Player) {M : Type} → M → is-Compact M {𝓤₀} → J M
 selection X m κ p = pr₁ (compact-argmin p κ m)
 selection O m κ p = pr₁ (compact-argmax p κ m)
@@ -203,6 +208,8 @@ selection O m κ p = pr₁ (compact-argmax p κ m)
 And their derived quantifiers:
 
 \begin{code}
+
+open K-definitions R
 
 quantifier : Player → {M : Type} → is-Compact M → is-decidable M → K M
 quantifier p κ (inl m) = overline (selection p m κ)

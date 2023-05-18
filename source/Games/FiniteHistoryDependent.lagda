@@ -35,12 +35,17 @@ We assume a given type R of outcomes for games as a module parameter.
 
 open import MLTT.Spartan hiding (J)
 open import Games.Monad
+open import Games.Base
 open import Games.J
 open import Games.K
 open import UF.Base
 open import UF.FunExt
 
 module Games.FiniteHistoryDependent (R : Type) where
+
+open import Games.JK R
+open K-definitions R
+open J-definitions R
 
 \end{code}
 
@@ -53,14 +58,8 @@ open import Games.TypeTrees
 
 \end{code}
 
-Quantifiers as in Section 1 of reference [1]:
-
-\begin{code}
-
-K : Type → Type
-K = functor (𝕂 R)
-
-\end{code}
+We use quantifiers as in Section 1 of reference [1], defined in
+another module.
 
 In the same way as the type of moves at a given stage of the game
 depends on the previously played moves, so do the quantifiers and
@@ -85,31 +84,6 @@ Sequencing quantifiers, as constructed in Definition 2 of reference [1],
 but using our tree representation of games instead:
 
 \begin{code}
-
-sub : {X : Type} {Y : X → Type} → (Σ Y → R) → (x : X) → Y x → R
-sub q x xs = q (x , xs)
-
-_⊗ᴷ_ : {X : Type} {Y : X → Type}
-     → K X
-     → ((x : X) → K (Y x))
-     → K (Σ x ꞉ X , Y x)
-_⊗ᴷ_ = _⊗_ (𝕂 R)
-
-⊗ᴷ-direct-definition : {X : Type} {Y : X → Type}
-                       (ϕ : K X)
-                       (γ : (x : X) → K (Y x))
-                     → ϕ ⊗ᴷ γ ∼ (λ q → ϕ (λ x → γ x (sub q x)))
-⊗ᴷ-direct-definition ϕ γ q = refl
-
-ηᴷ : {X : Type} → X → K X
-ηᴷ = η (𝕂 R)
-
-K-ext : {X Y : Type} → (X → K Y) → K X → K Y
-K-ext = ext (𝕂 R)
-
-K-map : {X Y : Type} → (X → Y) → K X → K Y
-K-map = map (𝕂 R)
-
 
 K-sequence : {Xt : 𝕋} → 𝓚 Xt → K (Path Xt)
 K-sequence {[]}     ⟨⟩        = λ q → q ⟨⟩
@@ -285,14 +259,8 @@ optimality-theorem fe (game Xt ϕt q) = sgpe-lemma fe Xt q ϕt
 
 We now show how to use selection functions to compute a sgpe strategy.
 
-Selection functions, as in Section 2 of reference [1]:
-
-\begin{code}
-
-J : Type → Type
-J = functor (𝕁 R)
-
-\end{code}
+We use selection functions, as in Section 2 of reference [1], defined
+in another module.
 
 𝓙 assigns selection functions to the nodes.
 
@@ -312,30 +280,6 @@ Sequencing selection functions, as constructed in Definition 12 of
 reference [1], but using our tree representation of games instead:
 
 \begin{code}
-
-_⊗ᴶ_ : {X : Type} {Y : X → Type}
-     → J X
-     → ((x : X) → J (Y x))
-     → J (Σ x ꞉ X , Y x)
-_⊗ᴶ_ = _⊗_ (𝕁 R)
-
-⊗ᴶ-direct-definition : {X : Type} {Y : X → Type}
-                       (ε : J X)
-                       (δ : (x : X) → J (Y x))
-                     → ε ⊗ᴶ δ ∼ (λ q → let
-                                        ν  = λ x → δ x (sub q x)
-                                        x₀ = ε (λ x → sub q x (ν x))
-                                       in x₀ :: ν x₀)
-⊗ᴶ-direct-definition ε δ q = refl
-
-ηᴶ : {X : Type} → X → J X
-ηᴶ = η (𝕁 R)
-
-J-ext : {X Y : Type} → (X → J Y) → J X → J Y
-J-ext = ext (𝕁 R)
-
-J-map : {X Y : Type} → (X → Y) → J X → J Y
-J-map = map (𝕁 R)
 
 J-sequence : {Xt : 𝕋} → 𝓙 Xt → J (Path Xt)
 J-sequence {[]}     ⟨⟩        = λ q → ⟨⟩
@@ -361,17 +305,8 @@ selection-strategy {X ∷ Xf} εt@(ε :: εf) q = x₀ :: σf
 
 \end{code}
 
-We now convert a selection function into a quantifier as in
-Definition 10 of [1]:
-
-\begin{code}
-
-overline : {X : Type} → J X → K X
-overline ε = λ p → p (ε p)
-
-\end{code}
-
-TODO. Define overline as a monad morphism in the module J.
+We convert a selection function into a quantifier as in Definition 10
+of [1], using the function overline, defined in another module.
 
 The following definition is in Section 1 on [1].
 

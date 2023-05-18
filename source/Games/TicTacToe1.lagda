@@ -29,6 +29,7 @@ open import Fin.ArgMinMax
 open import Games.TypeTrees
 open import Games.FiniteHistoryDependent 𝟛
 open import Games.Constructor 𝟛
+open import Games.J
 
 tic-tac-toe₁ : Game
 tic-tac-toe₁ = build-Game draw Board transition 9 board₀
@@ -107,6 +108,8 @@ Convention: in a board (p , A), p is the opponent of the the current player.
                           Grid-compact
                           (λ g → Nothing-is-isolated' (A g))
                           (λ g → Nothing-is-h-isolated' (A g))
+
+  open J-definitions 𝟛
 
   selection : (b : Board) → Move b → J (Move b)
   selection b@(X , A) m p = pr₁ (compact-argmax p (Move-compact b) m)

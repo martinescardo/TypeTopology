@@ -11,6 +11,8 @@ module Games.Examples where
 
 open import MLTT.Spartan hiding (J)
 open import Games.TypeTrees
+open import Games.J
+open import Games.K
 
 module permutations where
 
@@ -39,6 +41,8 @@ module search (fe : Fun-Ext) where
 
  open import MLTT.Athenian
  open import Games.FiniteHistoryDependent Bool
+
+ open J-definitions Bool
 
  ε₂ : J Bool
  ε₂ p = p true
@@ -69,9 +73,11 @@ module another-game-representation (R : Type) where
 
  open import Games.FiniteHistoryDependent R
 
+ open K-definitions R
+
  data GameK : Type₁ where
-   leaf   : R → GameK
-   branch : (X : Type) (Xf : X → GameK) (ϕ : K X) → GameK
+  leaf   : R → GameK
+  branch : (X : Type) (Xf : X → GameK) (ϕ : K X) → GameK
 
 \end{code}
 
@@ -82,8 +88,8 @@ TODO. Define game isomorphism (and possibly homomorphism more generally).
 \begin{code}
 
  data 𝕋' (X : Type) : Type₁ where
-   []  : 𝕋' X
-   _∷_ : (A : X → Type) (Xf : (x : X) → A x → 𝕋' X) → 𝕋' X
+  []  : 𝕋' X
+  _∷_ : (A : X → Type) (Xf : (x : X) → A x → 𝕋' X) → 𝕋' X
 
  record Game⁻ : Type₁ where
   constructor game⁻
