@@ -40,7 +40,7 @@ open import UF.Miscelanea
 open IfZeroDenotationalSemantics pe
 
 adequate : (σ : type) (d : ⟨(⟦ σ ⟧ ⁻)⟩) (M : PCF ⟨⟩ σ) → 𝓤₁ ̇
-adequate ι l t        = 𝟙 × ((p : is-defined l) → t ⇓ numeral (value l p))
+adequate ι        l t = 𝟙 × ((p : is-defined l) → t ⇓ numeral (value l p))
 adequate (σ ⇒ σ₁) l t = (d : ⟨(⟦ σ ⟧ ⁻)⟩) (M : PCF ⟨⟩ σ)
                            → adequate σ d M
                            → adequate σ₁ (pr₁ l d) (t · M)
@@ -154,7 +154,7 @@ lemma7-3 {σ} M f rel = adequacy-lubs iter-M iter-M-is-directed (Fix M) fn
    where
     order : (i j : ℕ)
           → ∃ k ꞉ ℕ , ((iter-M i) ⊑⟨ ⟦ σ ⟧ ⁻ ⟩ (iter-M k) ×
-                      (iter-M j) ⊑⟨  ⟦ σ ⟧ ⁻ ⟩ (iter-M k))
+                       (iter-M j) ⊑⟨  ⟦ σ ⟧ ⁻ ⟩ (iter-M k))
     order i j = ∥∥-functor
                  (λ (n , g , h) → n , g f , h f)
                  (pr₂ (iter-is-directed ⟦ σ ⟧) i j)
@@ -205,22 +205,22 @@ ifzero-lemma :
 ifzero-lemma {n} {Γ} {zero} M M₁ M₂ f x d M-is-defined δ
              (⋆ , M₁-rel) (⋆ , M₂-rel) = γ
   where
-    M₁-⇓ : subst f M₁ ⇓ numeral (value (pr₁ ⟦ M₁ ⟧ₑ d) δ)
-    M₁-⇓ = M₁-rel δ
+   M₁-⇓ : subst f M₁ ⇓ numeral (value (pr₁ ⟦ M₁ ⟧ₑ d) δ)
+   M₁-⇓ = M₁-rel δ
 
-    γ : subst f (IfZero M M₁ M₂)
-      ⇓ numeral (value (⦅ifZero⦆₀ (pr₁ ⟦ M₁ ⟧ₑ d) (pr₁ ⟦ M₂ ⟧ₑ d) zero) δ)
-    γ = ∥∥-functor (λ x → IfZero-zero (pr₁ x) (pr₂ x)) (binary-choice x M₁-⇓)
+   γ : subst f (IfZero M M₁ M₂)
+     ⇓ numeral (value (⦅ifZero⦆₀ (pr₁ ⟦ M₁ ⟧ₑ d) (pr₁ ⟦ M₂ ⟧ₑ d) zero) δ)
+   γ = ∥∥-functor (λ x → IfZero-zero (pr₁ x) (pr₂ x)) (binary-choice x M₁-⇓)
 
 ifzero-lemma {n} {Γ} {succ k} M M₁ M₂ f x d M-is-defined δ
              (⋆ , M₁-rel) (⋆ , M₂-rel) = γ
-  where
-    M₂-⇓ : subst f M₂ ⇓ numeral (value (pr₁ ⟦ M₂ ⟧ₑ d) δ)
-    M₂-⇓ = M₂-rel δ
+ where
+   M₂-⇓ : subst f M₂ ⇓ numeral (value (pr₁ ⟦ M₂ ⟧ₑ d) δ)
+   M₂-⇓ = M₂-rel δ
 
-    γ : subst f (IfZero M M₁ M₂)
-      ⇓ numeral (value (⦅ifZero⦆₀ (pr₁ ⟦ M₁ ⟧ₑ d) (pr₁ ⟦ M₂ ⟧ₑ d) (succ k)) δ)
-    γ = ∥∥-functor (λ x → IfZero-succ (pr₁ x) (pr₂ x)) (binary-choice x M₂-⇓)
+   γ : subst f (IfZero M M₁ M₂)
+     ⇓ numeral (value (⦅ifZero⦆₀ (pr₁ ⟦ M₁ ⟧ₑ d) (pr₁ ⟦ M₂ ⟧ₑ d) (succ k)) δ)
+   γ = ∥∥-functor (λ x → IfZero-succ (pr₁ x) (pr₂ x)) (binary-choice x M₂-⇓)
 
 adequacy-pred : {n : ℕ} {Γ : Context n}
               → (M : PCF Γ ι)
@@ -229,10 +229,10 @@ adequacy-pred : {n : ℕ} {Γ : Context n}
               → adequate ι (pr₁ ⟦ M ⟧ₑ d) (subst f M)
               → adequate ι (pr₁ ⟦ Pred M ⟧ₑ d) (subst f (Pred M))
 adequacy-pred M d f (⋆ , rel) = ⋆ , g
-  where
-    g : (p : is-defined (pr₁ ⟦ Pred M ⟧ₑ d))
-      → subst f (Pred M) ⇓ numeral (value (pr₁ ⟦ Pred M ⟧ₑ d) p)
-    g p = ∥∥-functor pred-lemma (rel p)
+ where
+   g : (p : is-defined (pr₁ ⟦ Pred M ⟧ₑ d))
+     → subst f (Pred M) ⇓ numeral (value (pr₁ ⟦ Pred M ⟧ₑ d) p)
+   g p = ∥∥-functor pred-lemma (rel p)
 
 adequacy-ifzero : {n : ℕ} {Γ : Context n}
                   (M : PCF Γ ι) (M₁ : PCF Γ ι) (M₂ : PCF Γ ι)
@@ -243,20 +243,20 @@ adequacy-ifzero : {n : ℕ} {Γ : Context n}
                 → adequate ι (pr₁ ⟦ M₂ ⟧ₑ d) (subst f M₂)
                 → adequate ι (pr₁ ⟦ IfZero M M₁ M₂ ⟧ₑ d) (subst f (IfZero M M₁ M₂))
 adequacy-ifzero {n} {Γ} M M₁ M₂ d f (⋆ , M-rel) M₁-rel M₂-rel = ⋆ , g
-  where
-    g : (p : is-defined (pr₁ ⟦ IfZero M M₁ M₂ ⟧ₑ d))
-      → subst f (IfZero M M₁ M₂) ⇓ numeral (value (pr₁ ⟦ IfZero M M₁ M₂ ⟧ₑ d) p)
-    g (M-is-defined , δ) = ifzero-lemma
-                            M
-                            M₁
-                            M₂
-                            f
-                            (M-rel M-is-defined)
-                            d
-                            M-is-defined
-                            δ
-                            M₁-rel
-                            M₂-rel
+ where
+  g : (p : is-defined (pr₁ ⟦ IfZero M M₁ M₂ ⟧ₑ d))
+    → subst f (IfZero M M₁ M₂) ⇓ numeral (value (pr₁ ⟦ IfZero M M₁ M₂ ⟧ₑ d) p)
+  g (M-is-defined , δ) = ifzero-lemma
+                          M
+                          M₁
+                          M₂
+                          f
+                          (M-rel M-is-defined)
+                          d
+                          M-is-defined
+                          δ
+                          M₁-rel
+                          M₂-rel
 
 lemma7-4 : {n : ℕ} {Γ : Context n} {τ : type}
            (M : PCF Γ τ)
@@ -278,25 +278,25 @@ lemma7-4 {n} {Γ} {.ι} (Pred M) d f g = adequacy-pred M d f IH
 
 lemma7-4 {n} {Γ} {.ι} (IfZero M M₁ M₂) d f g =
  adequacy-ifzero M M₁ M₂ d f IH₀ IH₁ IH₂
-  where
-   IH₀ : adequate ι (pr₁ ⟦ M ⟧ₑ d) (subst f M)
-   IH₀ = lemma7-4 M d f g
+ where
+  IH₀ : adequate ι (pr₁ ⟦ M ⟧ₑ d) (subst f M)
+  IH₀ = lemma7-4 M d f g
 
-   IH₁ : adequate ι (pr₁ ⟦ M₁ ⟧ₑ d) (subst f M₁)
-   IH₁ = lemma7-4 M₁ d f g
+  IH₁ : adequate ι (pr₁ ⟦ M₁ ⟧ₑ d) (subst f M₁)
+  IH₁ = lemma7-4 M₁ d f g
 
-   IH₂ : adequate ι (pr₁ ⟦ M₂ ⟧ₑ d) (subst f M₂)
-   IH₂ = lemma7-4 M₂ d f g
+  IH₂ : adequate ι (pr₁ ⟦ M₂ ⟧ₑ d) (subst f M₂)
+  IH₂ = lemma7-4 M₂ d f g
 
 lemma7-4 {n} {Γ} {.(_ ⇒ _)} (ƛ {n} {Γ} {σ} {τ} M) d f g d₁ M₁ x = γ
  where
   IH : adequate τ (pr₁ ⟦ M ⟧ₑ (d , d₁)) (subst (extend-with M₁ f) M)
   IH = lemma7-4 M (d , d₁) (extend-with M₁ f) extended-g
-    where
-     extended-g : {A : type} (x₁ : (Γ ’ σ) ∋ A)
-                → adequate A (extract x₁ (d , d₁)) (extend-with M₁ f x₁)
-     extended-g Z      = x
-     extended-g (S x₁) = g x₁
+   where
+    extended-g : {A : type} (x₁ : (Γ ’ σ) ∋ A)
+               → adequate A (extract x₁ (d , d₁)) (extend-with M₁ f x₁)
+    extended-g Z      = x
+    extended-g (S x₁) = g x₁
 
   i : subst (extend-with M₁ f) M ＝ subst (exts f) M [ M₁ ]
   i = subst-ext M M₁ f
