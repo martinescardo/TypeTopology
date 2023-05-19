@@ -19,7 +19,7 @@ open import EffectfulForcing.CombinatoryT
 
 \end{code}
 
-The "forcing" dialogue semantics of combinatory System T.
+The "effectful forcing" dialogue semantics of combinatory System T.
 
 \begin{code}
 
@@ -56,7 +56,7 @@ The dialogue tree of a term of type (ι ⇒ ι) ⇒ ι.
 \begin{code}
 
 dialogue-tree : T ((ι ⇒ ι) ⇒ ι) → B ℕ
-dialogue-tree t = B⟦ (embedding t) · Ω ⟧
+dialogue-tree t = B⟦ embedding t · Ω ⟧
 
 \end{code}
 
@@ -67,12 +67,17 @@ tree:
 
 
 R : {σ : type} → (Baire → Set⟦ σ ⟧) → B-Set⟦ σ ⟧ → 𝓤₀ ̇
-R {ι} n n' =  (α : Baire) → n α ＝ decode α n'
-R {σ ⇒ τ} f f' = (x : Baire → Set⟦ σ ⟧)(x' : B-Set⟦ σ ⟧) → R {σ} x x' → R {τ} (λ α → f α (x α)) (f' x')
+R {ι}     n n' = (α : Baire) → n α ＝ decode α n'
+R {σ ⇒ τ} f f' = (x : Baire → Set⟦ σ ⟧)(x' : B-Set⟦ σ ⟧)
+               → R {σ} x x'
+               → R {τ} (λ α → f α (x α)) (f' x')
 
-R-kleisli-lemma : (σ : type) (g : ℕ → Baire → Set⟦ σ ⟧) (g' : ℕ → B-Set⟦ σ ⟧)
+R-kleisli-lemma : (σ : type)
+                  (g  : ℕ → Baire → Set⟦ σ ⟧)
+                  (g' : ℕ → B-Set⟦ σ ⟧)
                 → ((k : ℕ) → R (g k) (g' k))
-                → (n : Baire → ℕ) (n' : B ℕ)
+                → (n  : Baire → ℕ)
+                  (n' : B ℕ)
                 → R n n'
                 → R (λ α → g (n α) α) (Kleisli-extension g' n')
 
@@ -92,7 +97,8 @@ R-kleisli-lemma (σ ⇒ τ) g g' rg n n' rn
                 n'
                 rn
 
-main-lemma : {σ : type}(t : TΩ σ) → R ⟦ t ⟧' B⟦ t ⟧
+main-lemma : {σ : type} (t : TΩ σ)
+           → R ⟦ t ⟧' B⟦ t ⟧
 
 main-lemma Ω n n' rn α =
  α (n α)               ＝⟨ ap α (rn α) ⟩
@@ -107,28 +113,28 @@ main-lemma Succ n n' rn α =
  dialogue (succ' n') α ∎
 
 main-lemma {(σ ⇒ .σ) ⇒ .σ ⇒ ι ⇒ .σ} Iter = lemma
-  where
-   lemma : (f  : Baire → Set⟦ σ ⟧ → Set⟦ σ ⟧)
-           (f' : B-Set⟦ σ ⟧ → B-Set⟦ σ ⟧)
-         → R {σ ⇒ σ} f f'
-         → (x : Baire → Set⟦ σ ⟧)
-           (x' : B-Set⟦ σ ⟧)
-         → R {σ} x x'
-         → (n : Baire → ℕ)
-           (n' : B ℕ)
-         → R {ι} n n'
-         → R {σ} (λ α → iter (f α) (x α) (n α)) (Kleisli-extension (iter f' x') n')
-   lemma f f' rf x x' rx = R-kleisli-lemma σ g g' rg
-     where
-       g : ℕ → Baire → Set⟦ σ ⟧
-       g k α = iter (f α) (x α) k
+ where
+  lemma : (f  : Baire → Set⟦ σ ⟧ → Set⟦ σ ⟧)
+          (f' : B-Set⟦ σ ⟧ → B-Set⟦ σ ⟧)
+        → R {σ ⇒ σ} f f'
+        → (x : Baire → Set⟦ σ ⟧)
+          (x' : B-Set⟦ σ ⟧)
+        → R {σ} x x'
+        → (n : Baire → ℕ)
+          (n' : B ℕ)
+        → R {ι} n n'
+        → R {σ} (λ α → iter (f α) (x α) (n α)) (Kleisli-extension (iter f' x') n')
+  lemma f f' rf x x' rx = R-kleisli-lemma σ g g' rg
+    where
+     g : ℕ → Baire → Set⟦ σ ⟧
+     g k α = iter (f α) (x α) k
 
-       g' : ℕ → B-Set⟦ σ ⟧
-       g' k = iter f' x' k
+     g' : ℕ → B-Set⟦ σ ⟧
+     g' k = iter f' x' k
 
-       rg : (k : ℕ) → R (g k) (g' k)
-       rg zero     = rx
-       rg (succ k) = rf (g k) (g' k) (rg k)
+     rg : (k : ℕ) → R (g k) (g' k)
+     rg zero     = rx
+     rg (succ k) = rf (g k) (g' k) (rg k)
 
 main-lemma K = λ x x' rx y y' ry → rx
 
@@ -137,10 +143,11 @@ main-lemma S = λ f f' rf g g' rg x x' rx
 
 main-lemma (t · u) = main-lemma t ⟦ u ⟧' B⟦ u ⟧ (main-lemma u)
 
-dialogue-tree-correct : (t : T ((ι ⇒ ι) ⇒ ι)) (α : Baire) → ⟦ t ⟧ α ＝ decode α (dialogue-tree t)
+dialogue-tree-correct : (t : T ((ι ⇒ ι) ⇒ ι)) (α : Baire)
+                      → ⟦ t ⟧ α ＝ decode α (dialogue-tree t)
 dialogue-tree-correct t α =
     ⟦ t ⟧ α                    ＝⟨ ap (λ g → g α) (preservation t α) ⟩
-    ⟦ embedding t ⟧' α α       ＝⟨ main-lemma ((embedding t) · Ω) α ⟩
+    ⟦ embedding t ⟧' α α       ＝⟨ main-lemma (embedding t · Ω) α ⟩
     decode α (dialogue-tree t) ∎
 
 eloquence-theorem : (f : Baire → ℕ) → is-T-definable f → eloquent f

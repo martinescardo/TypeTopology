@@ -31,6 +31,7 @@ dialogue-continuity (η n) α = ([] , lemma)
  where
   lemma : ∀ α' → α ＝⟪ [] ⟫ α' → n ＝ n
   lemma α' r = refl
+
 dialogue-continuity (β φ i) α = ((i ∷ is) , lemma)
   where
    IH : (i : ℕ) → is-continuous (dialogue (φ (α i)))
@@ -59,7 +60,7 @@ dialogue-UC : (d : C ℕ) → is-uniformly-continuous (dialogue d)
 dialogue-UC (η n)   = ([] , λ α α' n → refl)
 dialogue-UC (β φ i) = ((i ∷ s) , lemma)
  where
-  IH : (j : 𝟚) → is-uniformly-continuous(dialogue(φ j))
+  IH : (j : 𝟚) → is-uniformly-continuous (dialogue(φ j))
   IH j = dialogue-UC (φ j)
 
   s : 𝟚 → BT ℕ
@@ -106,7 +107,7 @@ kleisli-extension f (η x)   = f x
 kleisli-extension f (β φ i) = β (λ j → kleisli-extension f (φ j)) i
 
 B-functor : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → B X → B Y
-B-functor f = kleisli-extension(η ∘ f)
+B-functor f = kleisli-extension (η ∘ f)
 
 decode : {X : 𝓤 ̇ } → Baire → B X → X
 decode α d = dialogue d α

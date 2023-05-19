@@ -79,7 +79,7 @@ infixl 6 _‚‚_
 
 \end{code}
 
-The auxiliary interpretation of system T terms:
+The auxiliary interpretation of system TΩ terms:
 
 \begin{code}
 
@@ -99,7 +99,7 @@ The dialogue tree of a closed term of type ((ι ⇒ ι) ⇒ ι):
 \begin{code}
 
 dialogue-tree : T₀ ((ι ⇒ ι) ⇒ ι) → B ℕ
-dialogue-tree t = B⟦ (embed t) · Ω ⟧ ⟪⟫
+dialogue-tree t = B⟦ embed t · Ω ⟧ ⟪⟫
 
 \end{code}
 
@@ -108,12 +108,11 @@ The logical relation is the same as in the original development:
 \begin{code}
 
 R : {σ : type} → (Baire → 〖 σ 〗) → B〖 σ 〗 → Type
-R {ι} n n' =  (α : Baire) → n α ＝ decode α n'
+R {ι}     n n' = (α : Baire) → n α ＝ decode α n'
 R {σ ⇒ τ} f f' = (x  : Baire → 〖 σ 〗)
                  (x' : B〖 σ 〗)
                → R {σ} x x'
                → R {τ} (λ α → f α (x α)) (f' x')
-
 \end{code}
 
 The following lemma is again the same as in the original development,
@@ -136,15 +135,15 @@ R-kleisli-lemma ι g g' rg n n' rn = λ α →
  decode α (g' (decode α n'))        ＝⟨ decode-kleisli-extension g' n' α ⟩
  decode α (kleisli-extension g' n') ∎
 
-R-kleisli-lemma (σ ⇒ τ) g g' rg n n' rn
-  = λ y y' ry → R-kleisli-lemma
-                 τ
-                 (λ k α → g k α (y α))
-                 (λ k → g' k y')
-                 (λ k → rg k y y' ry)
-                 n
-                 n'
-                 rn
+R-kleisli-lemma (σ ⇒ τ) g g' rg n n' rn =
+ λ y y' ry → R-kleisli-lemma
+              τ
+              (λ k α → g k α (y α))
+              (λ k → g' k y')
+              (λ k → rg k y y' ry)
+              n
+              n'
+              rn
 \end{code}
 
 The main lemma is a modification of the main lemma in the original
@@ -168,9 +167,9 @@ main-lemma : {n : ℕ} {Γ : Cxt n}
            → R (λ α → ⟦ t ⟧' α (xs α)) (B⟦ t ⟧ ys)
 
 main-lemma Ω xs ys cr = λ n n' rn α →
-    α (n α)               ＝⟨ ap α (rn α) ⟩
-    α (decode α n')       ＝⟨ generic-diagram α n' ⟩
-    decode α (generic n') ∎
+ α (n α)               ＝⟨ ap α (rn α) ⟩
+ α (decode α n')       ＝⟨ generic-diagram α n' ⟩
+ decode α (generic n') ∎
 
 main-lemma Zero xs ys cr = λ α → refl
 
@@ -180,55 +179,54 @@ main-lemma Succ xs ys cr = λ n n' rn α  →
  decode α (succ' n') ∎
 
 main-lemma (Rec {_} {_} {σ}) _ _ _ = lemma
-  where
-    lemma : (f  : Baire → ℕ → 〖 σ 〗 → 〖 σ 〗)
-            (f' : B ℕ → B〖 σ 〗 → B〖 σ 〗)
-          → R {ι ⇒ σ ⇒ σ} f f'
-          → (x  : Baire → 〖 σ 〗)
-            (x' : B〖 σ 〗)
-          → R {σ} x x'
-          → (n  : Baire → ℕ)
-            (n' : B ℕ) → R {ι} n n'
-          → R {σ} (λ α → rec (f α) (x α) (n α))
-                  (Kleisli-extension(rec (f' ∘ η) x') n')
-    lemma f f' rf x x' rx = R-kleisli-lemma σ g g' rg
-       where
-         g : ℕ → Baire → 〖 σ 〗
-         g k α = rec (f α) (x α) k
+ where
+  lemma : (f  : Baire → ℕ → 〖 σ 〗 → 〖 σ 〗)
+          (f' : B ℕ → B〖 σ 〗 → B〖 σ 〗)
+        → R {ι ⇒ σ ⇒ σ} f f'
+        → (x  : Baire → 〖 σ 〗)
+          (x' : B〖 σ 〗)
+        → R {σ} x x'
+        → (n  : Baire → ℕ)
+          (n' : B ℕ) → R {ι} n n'
+        → R {σ} (λ α → rec (f α) (x α) (n α))
+                (Kleisli-extension(rec (f' ∘ η) x') n')
+  lemma f f' rf x x' rx = R-kleisli-lemma σ g g' rg
+   where
+    g : ℕ → Baire → 〖 σ 〗
+    g k α = rec (f α) (x α) k
 
-         g' : ℕ → B〖 σ 〗
-         g' k = rec (f' ∘ η) x' k
+    g' : ℕ → B〖 σ 〗
+    g' k = rec (f' ∘ η) x' k
 
-         rg : (k : ℕ) → R (g k) (g' k)
-         rg 0        = rx
-         rg (succ k) = rf (λ α → k) (η k) (λ α → refl) (g k) (g' k) (rg k)
+    rg : (k : ℕ) → R (g k) (g' k)
+    rg 0        = rx
+    rg (succ k) = rf (λ α → k) (η k) (λ α → refl) (g k) (g' k) (rg k)
 
 main-lemma (ν i) xs ys cr = cr i
 
 main-lemma {n} {Γ} {σ ⇒ τ} (ƛ t) xs ys cr = IH
  where
-   IH : (x : Baire → 〖 σ 〗)
-        (y : B〖 σ 〗)
-       → R x y
-       → R (λ α → ⟦ t ⟧' α (xs α ‚ x α))
-           (B⟦ t ⟧ (ys ‚‚ y))
-   IH x y r = main-lemma t (λ α → xs α ‚ x α) (ys ‚‚ y) h
-     where
-      h : (i : Fin (succ n)) → R (λ α → (xs α ‚ x α) i) ((ys ‚‚ y) i)
-      h 𝟎       = r
-      h (suc i) = cr i
+  IH : (x : Baire → 〖 σ 〗)
+       (y : B〖 σ 〗)
+      → R x y
+      → R (λ α → ⟦ t ⟧' α (xs α ‚ x α)) (B⟦ t ⟧ (ys ‚‚ y))
+  IH x y r = main-lemma t (λ α → xs α ‚ x α) (ys ‚‚ y) h
+    where
+     h : (i : Fin (succ n)) → R (λ α → (xs α ‚ x α) i) ((ys ‚‚ y) i)
+     h 𝟎       = r
+     h (suc i) = cr i
 
 main-lemma (t · u) xs ys cr = IH-t (λ α → ⟦ u ⟧' α (xs α)) (B⟦ u ⟧ ys) IH-u
  where
-   IH-t : (x  : Baire → 〖 _ 〗)
-          (x' : B〖 _ 〗)
-        → R x x'
-        → R (λ α → ⟦ t ⟧' α (xs α) (x α))
-            (B⟦ t ⟧ ys x')
-   IH-t = main-lemma t xs ys cr
+  IH-t : (x  : Baire → 〖 _ 〗)
+         (x' : B〖 _ 〗)
+       → R x x'
+       → R (λ α → ⟦ t ⟧' α (xs α) (x α))
+           (B⟦ t ⟧ ys x')
+  IH-t = main-lemma t xs ys cr
 
-   IH-u : R (λ α → ⟦ u ⟧' α (xs α)) (B⟦ u ⟧ ys)
-   IH-u = main-lemma u xs ys cr
+  IH-u : R (λ α → ⟦ u ⟧' α (xs α)) (B⟦ u ⟧ ys)
+  IH-u = main-lemma u xs ys cr
 
 \end{code}
 
@@ -239,7 +237,8 @@ hypothesis, as usual.
 
 \begin{code}
 
-main-closed-ground : (t : T' 〈〉 ι) (α : Baire) → ⟦ t ⟧' α ⟨⟩ ＝ decode α (B⟦ t ⟧ ⟪⟫)
+main-closed-ground : (t : T' 〈〉 ι) (α : Baire)
+                   → ⟦ t ⟧' α ⟨⟩ ＝ decode α (B⟦ t ⟧ ⟪⟫)
 main-closed-ground t = main-lemma t (λ α → ⟨⟩) ⟪⟫ (λ())
 
 \end{code}
@@ -286,7 +285,6 @@ eloquence-corollary₁ f d = eloquent-functions-are-UC
                             (C-restriction f)
                             (restriction-is-eloquent f
                             (eloquence-theorem f d))
-
 \end{code}
 
 Examples:

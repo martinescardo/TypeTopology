@@ -93,16 +93,13 @@ church-correctness (β φ x) = ap-β (λ y → church-correctness (φ y)) refl
 
 \end{code}
 
-Using relational parametricity, we have the meta-theorem that
-church-encode(church-decode d⋆) is provable for each closed term d⋆.
-But we will be able to do better than that in our situation.
-
 In the following definition we take A = ((X → Y) → Z).
 
 \begin{code}
 
 dialogue⋆ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
-          → D⋆ X Y Z ((X → Y) → Z) → (X → Y) → Z
+          → D⋆ X Y Z ((X → Y) → Z)
+          → (X → Y) → Z
 dialogue⋆ = D⋆-rec (λ z α → z) (λ φ x α → φ (α x) α)
 
 B⋆ : 𝓦 ̇ → 𝓣 ̇ → 𝓦 ⊔ 𝓣 ̇

@@ -15,11 +15,11 @@ open import MLTT.Spartan hiding (rec)
 Ş f g x = f x (g x)
 
 iter : {X : 𝓤 ̇ } → (X → X) → X → ℕ → X
-iter f x  zero    = x
+iter f x  0       = x
 iter f x (succ n) = f (iter f x n)
 
 rec : {X : 𝓤 ̇ } → (ℕ → X → X) → X → ℕ → X
-rec f x  zero    = x
+rec f x  0       = x
 rec f x (succ n) = f n (rec f x n)
 
 \end{code}

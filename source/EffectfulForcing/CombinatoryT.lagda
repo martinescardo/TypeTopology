@@ -31,7 +31,7 @@ infixr 1 _⇒_
 infixl 1 _·_
 
 Set⟦_⟧ : type → 𝓤₀ ̇
-Set⟦ ι ⟧ = ℕ
+Set⟦ ι ⟧     = ℕ
 Set⟦ σ ⇒ τ ⟧ = Set⟦ σ ⟧ → Set⟦ τ ⟧
 
 ⟦_⟧ : {σ : type} → T σ → Set⟦ σ ⟧
@@ -83,6 +83,6 @@ preservation Succ    α = refl
 preservation Iter    α = refl
 preservation K       α = refl
 preservation S       α = refl
-preservation (t · u) α = ap₂ (λ f x → f x) (preservation t α) (preservation u α)
+preservation (t · u) α = ap₂ id (preservation t α) (preservation u α)
 
 \end{code}
