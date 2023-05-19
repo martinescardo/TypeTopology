@@ -169,7 +169,7 @@ lemma7-3 {σ} M f rel = adequacy-lubs iter-M iter-M-is-directed (Fix M) fn
     IH₁ : adequate σ (iter ⟦ σ ⟧ (succ n) f) (M · (Fix M))
     IH₁ = rel (iter ⟦ σ ⟧ n f) (Fix M) IH
 
-adequacy-succ :  {n : ℕ} {Γ : Context n}
+adequacy-succ : {n : ℕ} {Γ : Context n}
               → (M : PCF Γ ι)
               → (d : ⟨ 【 Γ 】 ⁻ ⟩)
               → (f : ∀ {A} → (x : Γ ∋ A) → PCF ⟨⟩ A)
@@ -201,7 +201,8 @@ ifzero-lemma :
    (δ : is-defined (⦅ifZero⦆₀ (pr₁ ⟦ M₁ ⟧ₑ d) (pr₁ ⟦ M₂ ⟧ₑ d) k))
    (M₁-rel : adequate ι (pr₁ ⟦ M₁ ⟧ₑ d) (subst f M₁))
    (M₂-rel : adequate ι (pr₁ ⟦ M₂ ⟧ₑ d) (subst f M₂))
- → subst f (IfZero M M₁ M₂) ⇓ numeral (value (⦅ifZero⦆₀ (pr₁ ⟦ M₁ ⟧ₑ d) (pr₁ ⟦ M₂ ⟧ₑ d) k) δ)
+ → subst f (IfZero M M₁ M₂)
+   ⇓ numeral (value (⦅ifZero⦆₀ (pr₁ ⟦ M₁ ⟧ₑ d) (pr₁ ⟦ M₂ ⟧ₑ d) k) δ)
 ifzero-lemma {n} {Γ} {zero} M M₁ M₂ f x d M-is-defined δ
              (⋆ , M₁-rel) (⋆ , M₂-rel) = γ
   where
@@ -241,7 +242,8 @@ adequacy-ifzero : {n : ℕ} {Γ : Context n}
                 → adequate ι (pr₁ ⟦ M ⟧ₑ d) (subst f M)
                 → adequate ι (pr₁ ⟦ M₁ ⟧ₑ d) (subst f M₁)
                 → adequate ι (pr₁ ⟦ M₂ ⟧ₑ d) (subst f M₂)
-                → adequate ι (pr₁ ⟦ IfZero M M₁ M₂ ⟧ₑ d) (subst f (IfZero M M₁ M₂))
+                → adequate ι (pr₁ ⟦ IfZero M M₁ M₂ ⟧ₑ d)
+                             (subst f (IfZero M M₁ M₂))
 adequacy-ifzero {n} {Γ} M M₁ M₂ d f (⋆ , M-rel) M₁-rel M₂-rel = ⋆ , g
  where
   g : (p : is-defined (pr₁ ⟦ IfZero M M₁ M₂ ⟧ₑ d))
