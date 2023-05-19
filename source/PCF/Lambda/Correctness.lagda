@@ -38,7 +38,9 @@ open import UF.Miscelanea
 open DcpoProductsGeneral 𝓤₀
 open IfZeroDenotationalSemantics pe
 
-canonical-numeral-correctness : {n : ℕ} {Γ : Context n} (k : ℕ) (d : ⟨ (【 Γ 】 ⁻) ⟩)
+canonical-numeral-correctness : {n : ℕ} {Γ : Context n}
+                                (k : ℕ)
+                                (d : ⟨(【 Γ 】 ⁻)⟩)
                               → pr₁ ⟦ numeral {_} {Γ} k ⟧ₑ d ＝ η k
 canonical-numeral-correctness zero d     = refl
 canonical-numeral-correctness (succ n) d =
@@ -55,13 +57,16 @@ correctness-IfZero-zero : {n : ℕ} {Γ : Context n}
                         → pr₁ ⟦ t₁ ⟧ₑ ∼ pr₁ ⟦ N ⟧ₑ
                         → pr₁ ⟦ IfZero t t₁ t₂ ⟧ₑ ∼ pr₁ ⟦ N ⟧ₑ
 correctness-IfZero-zero N t t₁ t₂ c₁ c₂ d =
- ((⦅ifZero⦆₀ (pr₁ ⟦ t₁ ⟧ₑ d) (pr₁ ⟦ t₂ ⟧ₑ d)) ♯) (pr₁ ⟦ t ⟧ₑ d) ＝⟨ i ⟩
- (⦅ifZero⦆₀ (pr₁ ⟦ t₁ ⟧ₑ d) (pr₁ ⟦ t₂ ⟧ₑ d) ♯) (η zero)         ＝⟨ ii ⟩
- ⦅ifZero⦆₀ (pr₁ ⟦ t₁ ⟧ₑ d) (pr₁ ⟦ t₂ ⟧ₑ d) zero                 ＝⟨ c₂ d ⟩
- pr₁ ⟦ N ⟧ₑ d                                                     ∎
+ (⦅ifZero⦆₀ T₁ T₂ ♯) (pr₁ ⟦ t ⟧ₑ d) ＝⟨ i ⟩
+ (⦅ifZero⦆₀ T₁ T₂ ♯) (η zero)       ＝⟨ ii ⟩
+ ⦅ifZero⦆₀ T₁ T₂ zero               ＝⟨ c₂ d ⟩
+ pr₁ ⟦ N ⟧ₑ d                       ∎
   where
-    i  = ap ((⦅ifZero⦆₀ (pr₁ ⟦ t₁ ⟧ₑ d) (pr₁ ⟦ t₂ ⟧ₑ d)) ♯) (c₁ d)
-    ii = ♯-on-total-element (⦅ifZero⦆₀ (pr₁ ⟦ t₁ ⟧ₑ d) (pr₁ ⟦ t₂ ⟧ₑ d)) {η zero} ⋆
+    T₁ = pr₁ ⟦ t₁ ⟧ₑ d
+    T₂ = pr₁ ⟦ t₂ ⟧ₑ d
+
+    i  = ap ((⦅ifZero⦆₀ T₁ T₂) ♯) (c₁ d)
+    ii = ♯-on-total-element (⦅ifZero⦆₀ T₁ T₂) {η zero} ⋆
 
 
 correctness-IfZero-succ : {n : ℕ} {Γ : Context n}
@@ -71,20 +76,19 @@ correctness-IfZero-succ : {n : ℕ} {Γ : Context n}
                         → pr₁ ⟦ t₂ ⟧ₑ ∼ pr₁ ⟦ N ⟧ₑ
                         → pr₁ ⟦ IfZero t t₁ t₂ ⟧ₑ ∼ pr₁ ⟦ N ⟧ₑ
 correctness-IfZero-succ N t t₁ t₂ k c₁ c₂ d =
- ((⦅ifZero⦆₀ (pr₁ ⟦ t₁ ⟧ₑ d) (pr₁ ⟦ t₂ ⟧ₑ d)) ♯) (pr₁ ⟦ t ⟧ₑ d)              ＝⟨ i ⟩
- (⦅ifZero⦆₀ (pr₁ ⟦ t₁ ⟧ₑ d) (pr₁ ⟦ t₂ ⟧ₑ d) ♯) (pr₁ ⟦ Succ (numeral k) ⟧ₑ d) ＝⟨ ii ⟩
- (⦅ifZero⦆₀ (pr₁ ⟦ t₁ ⟧ₑ d) (pr₁ ⟦ t₂ ⟧ₑ d) ♯) (η (succ k))                  ＝⟨ iii ⟩
- ⦅ifZero⦆₀ (pr₁ ⟦ t₁ ⟧ₑ d) (pr₁ ⟦ t₂ ⟧ₑ d) (succ k)                          ＝⟨ c₂ d ⟩
- pr₁ ⟦ N ⟧ₑ d                                                                  ∎
+ (⦅ifZero⦆₀ T₁ T₂ ♯) (pr₁ ⟦ t ⟧ₑ d)                ＝⟨ i ⟩
+ (⦅ifZero⦆₀ T₁ T₂ ♯) (pr₁ ⟦ Succ (numeral k) ⟧ₑ d) ＝⟨ ii ⟩
+ (⦅ifZero⦆₀ T₁ T₂ ♯) (η (succ k))                  ＝⟨ iii ⟩
+ ⦅ifZero⦆₀ T₁ T₂ (succ k)                          ＝⟨ c₂ d ⟩
+ pr₁ ⟦ N ⟧ₑ d                                      ∎
   where
-    i   = ap ((⦅ifZero⦆₀ (pr₁ ⟦ t₁ ⟧ₑ d) (pr₁ ⟦ t₂ ⟧ₑ d)) ♯ ) (c₁ d)
-    ii  = ap (⦅ifZero⦆₀ (pr₁ ⟦ t₁ ⟧ₑ d) (pr₁ ⟦ t₂ ⟧ₑ d) ♯)
+    T₁ = pr₁ ⟦ t₁ ⟧ₑ d
+    T₂ = pr₁ ⟦ t₂ ⟧ₑ d
+
+    i   = ap ((⦅ifZero⦆₀ T₁ T₂) ♯ ) (c₁ d)
+    ii  = ap (⦅ifZero⦆₀ T₁ T₂ ♯)
              (canonical-numeral-correctness (succ k) d)
-    iii = ♯-on-total-element
-           (⦅ifZero⦆₀ (pr₁ ⟦ t₁ ⟧ₑ d)
-           (pr₁ ⟦ t₂ ⟧ₑ d))
-           {η (succ k)}
-           ⋆
+    iii = ♯-on-total-element (⦅ifZero⦆₀ T₁ T₂) {η (succ k)} ⋆
 
 correctness-Fix : {n : ℕ} {Γ : Context n} {σ : type}
                   (M : PCF Γ (σ ⇒ σ))

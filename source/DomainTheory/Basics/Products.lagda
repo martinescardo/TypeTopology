@@ -91,9 +91,10 @@ module DcpoProductsGeneral
      _⊑_  = _⊑𝓓_ ⊑-× _⊑𝓔_
 
      prop : is-prop-valued _⊑_
-     prop x y (a , b) (c , d) = to-×-＝
-                                 (prop-valuedness 𝓓 (pr₁ x) (pr₁ y) a c)
-                                 (prop-valuedness 𝓔 (pr₂ x) (pr₂ y) b d)
+     prop (x₁ , x₂) (y₁ , y₂) (a₁ , a₂) (b₁ , b₂) =
+      to-×-＝
+       (prop-valuedness 𝓓 x₁ y₁ a₁ b₁)
+       (prop-valuedness 𝓔 x₂ y₂ a₂ b₂)
 
      r : is-reflexive _⊑_
      r a = reflexivity 𝓓 (pr₁ a) ,
@@ -207,6 +208,7 @@ Some useful proofs on products.
                          → is-Directed 𝓔 α₂
                          → is-Directed (𝓓 ×ᵈᶜᵖᵒ 𝓔)
                             (λ ((i₁ , i₂) : I × I) → (α₁ i₁ , α₂ i₂))
+
    ⟨pr₁,pr₂⟩-is-directed δ₁@(h₁ , s₁) δ₂@(h₂ , s₂) =
     (binary-choice h₁ h₂) ,
      λ (i₁ , i₂) (j₁ , j₂)
@@ -218,14 +220,16 @@ Some useful proofs on products.
                → (δ : is-Directed (𝓓 ×ᵈᶜᵖᵒ 𝓔) α)
                → ∐ (𝓓 ×ᵈᶜᵖᵒ 𝓔) δ
                ＝ (∐ 𝓓 (pr₁∘α-is-Directed δ) , ∐ 𝓔 (pr₂∘α-is-Directed δ))
-   ∐⟨,⟩＝⟨∐,∐⟩ {I} {α} δ = antisymmetry (𝓓 ×ᵈᶜᵖᵒ 𝓔)
-                            (∐ (𝓓 ×ᵈᶜᵖᵒ 𝓔) δ)
-                            (∐ 𝓓 (pr₁∘α-is-Directed δ) , ∐ 𝓔 (pr₂∘α-is-Directed δ))
-                            ∐⟨,⟩⊑⟨∐,∐⟩
-                            ⟨∐,∐⟩⊑∐⟨,⟩
+   ∐⟨,⟩＝⟨∐,∐⟩ {I} {α} δ =
+    antisymmetry (𝓓 ×ᵈᶜᵖᵒ 𝓔)
+     (∐ (𝓓 ×ᵈᶜᵖᵒ 𝓔) δ)
+     (∐ 𝓓 (pr₁∘α-is-Directed δ) , ∐ 𝓔 (pr₂∘α-is-Directed δ))
+     ∐⟨,⟩⊑⟨∐,∐⟩
+     ⟨∐,∐⟩⊑∐⟨,⟩
      where
        ∐⟨,⟩⊑⟨∐,∐⟩ : ∐ (𝓓 ×ᵈᶜᵖᵒ 𝓔) δ
-                  ⊑⟨ 𝓓 ×ᵈᶜᵖᵒ 𝓔 ⟩ (∐ 𝓓 (pr₁∘α-is-Directed δ) , ∐ 𝓔 (pr₂∘α-is-Directed δ))
+                     ⊑⟨ 𝓓 ×ᵈᶜᵖᵒ 𝓔 ⟩
+                    (∐ 𝓓 (pr₁∘α-is-Directed δ) , ∐ 𝓔 (pr₂∘α-is-Directed δ))
        ∐⟨,⟩⊑⟨∐,∐⟩ = ∐-is-lowerbound-of-upperbounds (𝓓 ×ᵈᶜᵖᵒ 𝓔)
                       δ
                       (∐ 𝓓 (pr₁∘α-is-Directed δ) , ∐ 𝓔 (pr₂∘α-is-Directed δ))
@@ -296,8 +300,8 @@ Some useful proofs on products.
                 (pr₂ (∐ (𝓓 ×ᵈᶜᵖᵒ 𝓔) (⟨pr₁,pr₂⟩-is-directed δ₁ δ₂)))
                 p
            where
-            p : (i : I) →
-                  (α₂ i) ⊑⟨ 𝓔 ⟩ (pr₂ (∐ (𝓓 ×ᵈᶜᵖᵒ 𝓔) (⟨pr₁,pr₂⟩-is-directed δ₁ δ₂)))
+            p : (i : I)
+              → (α₂ i) ⊑⟨ 𝓔 ⟩ (pr₂ (∐ (𝓓 ×ᵈᶜᵖᵒ 𝓔) (⟨pr₁,pr₂⟩-is-directed δ₁ δ₂)))
             p i = pr₂ (∐-is-upperbound (𝓓 ×ᵈᶜᵖᵒ 𝓔)
                         (⟨pr₁,pr₂⟩-is-directed δ₁ δ₂)
                         (i , i))
@@ -306,30 +310,31 @@ Some useful proofs on products.
        ∐⟨,⟩⊑⟨∐,∐⟩ : ∐ (𝓓 ×ᵈᶜᵖᵒ 𝓔) (⟨pr₁,pr₂⟩-is-directed δ₁ δ₂)
                   ⊑⟨ 𝓓 ×ᵈᶜᵖᵒ 𝓔 ⟩ (∐ 𝓓 δ₁ , ∐ 𝓔 δ₂)
        ∐⟨,⟩⊑⟨∐,∐⟩ = ∐-is-lowerbound-of-upperbounds (𝓓 ×ᵈᶜᵖᵒ 𝓔)
-                     (⟨pr₁,pr₂⟩-is-directed δ₁ δ₂)
-                     (∐ 𝓓 δ₁ , ∐ 𝓔 δ₂)
-                     upperbound
+                      (⟨pr₁,pr₂⟩-is-directed δ₁ δ₂)
+                      (∐ 𝓓 δ₁ , ∐ 𝓔 δ₂)
+                      upperbound
          where
           upperbound : (i : I × I)
                      → (α₁ (pr₁ i) , α₂ (pr₂ i)) ⊑⟨ 𝓓 ×ᵈᶜᵖᵒ 𝓔 ⟩ (∐ 𝓓 δ₁ , ∐ 𝓔 δ₂)
-          upperbound i = (∐-is-upperbound 𝓓 δ₁ (pr₁ i)) , (∐-is-upperbound 𝓔 δ₂ (pr₂ i))
+          upperbound i = ∐-is-upperbound 𝓓 δ₁ (pr₁ i) ,
+                         ∐-is-upperbound 𝓔 δ₂ (pr₂ i)
 
    pr₁-is-continuous : DCPO[ 𝓓 ×ᵈᶜᵖᵒ 𝓔 , 𝓓 ]
    pr₁-is-continuous = pr₁ , c
     where
      c : is-continuous (𝓓 ×ᵈᶜᵖᵒ 𝓔) 𝓓 pr₁
      c I α δ = u , v
-       where
-        u : is-upperbound (underlying-order 𝓓) (pr₁ (∐ (𝓓 ×ᵈᶜᵖᵒ 𝓔) δ)) (pr₁ ∘ α)
-        u i = pr₁ (∐-is-upperbound (𝓓 ×ᵈᶜᵖᵒ 𝓔) δ i)
+      where
+       u : is-upperbound (underlying-order 𝓓) (pr₁ (∐ (𝓓 ×ᵈᶜᵖᵒ 𝓔) δ)) (pr₁ ∘ α)
+       u i = pr₁ (∐-is-upperbound (𝓓 ×ᵈᶜᵖᵒ 𝓔) δ i)
 
-        v : (u₁ : ⟨ 𝓓 ⟩)
-          → ((i : I) → (pr₁ (α i)) ⊑⟨ 𝓓 ⟩ u₁)
-          → (pr₁ (∐ (𝓓 ×ᵈᶜᵖᵒ 𝓔) δ)) ⊑⟨ 𝓓 ⟩ u₁
-        v u₁ p = transport (λ - → pr₁ - ⊑⟨ 𝓓 ⟩ u₁) (∐⟨,⟩＝⟨∐,∐⟩ δ) d
-         where
-          d : pr₁ (∐ 𝓓 (pr₁∘α-is-Directed δ) , ∐ 𝓔 (pr₂∘α-is-Directed δ)) ⊑⟨ 𝓓 ⟩ u₁
-          d = ∐-is-lowerbound-of-upperbounds 𝓓 (pr₁∘α-is-Directed δ) u₁ p
+       v : (x : ⟨ 𝓓 ⟩)
+         → ((i : I) → (pr₁ (α i)) ⊑⟨ 𝓓 ⟩ x)
+         → (pr₁ (∐ (𝓓 ×ᵈᶜᵖᵒ 𝓔) δ)) ⊑⟨ 𝓓 ⟩ x
+       v x p = transport (λ - → pr₁ - ⊑⟨ 𝓓 ⟩ x) (∐⟨,⟩＝⟨∐,∐⟩ δ) d
+        where
+         d : pr₁ (∐ 𝓓 (pr₁∘α-is-Directed δ) , ∐ 𝓔 (pr₂∘α-is-Directed δ)) ⊑⟨ 𝓓 ⟩ x
+         d = ∐-is-lowerbound-of-upperbounds 𝓓 (pr₁∘α-is-Directed δ) x p
 
    pr₂-is-continuous : DCPO[ 𝓓 ×ᵈᶜᵖᵒ 𝓔 , 𝓔 ]
    pr₂-is-continuous = pr₂ , c
@@ -340,13 +345,13 @@ Some useful proofs on products.
        u : is-upperbound (underlying-order 𝓔) (pr₂ (∐ (𝓓 ×ᵈᶜᵖᵒ 𝓔) δ)) (pr₂ ∘ α)
        u i = pr₂ (∐-is-upperbound (𝓓 ×ᵈᶜᵖᵒ 𝓔) δ i)
 
-       v : (u₁ : ⟨ 𝓔 ⟩)
-         → ((i : I) → (pr₂ (α i)) ⊑⟨ 𝓔 ⟩ u₁)
-         → (pr₂ (∐ (𝓓 ×ᵈᶜᵖᵒ 𝓔) δ)) ⊑⟨ 𝓔 ⟩ u₁
-       v u₁ p = transport (λ - → pr₂ - ⊑⟨ 𝓔 ⟩ u₁) (∐⟨,⟩＝⟨∐,∐⟩ δ) e
+       v : (y : ⟨ 𝓔 ⟩)
+         → ((i : I) → (pr₂ (α i)) ⊑⟨ 𝓔 ⟩ y)
+         → (pr₂ (∐ (𝓓 ×ᵈᶜᵖᵒ 𝓔) δ)) ⊑⟨ 𝓔 ⟩ y
+       v y p = transport (λ - → pr₂ - ⊑⟨ 𝓔 ⟩ y) (∐⟨,⟩＝⟨∐,∐⟩ δ) e
         where
-         e : pr₂ (∐ 𝓓 (pr₁∘α-is-Directed δ) , ∐ 𝓔 (pr₂∘α-is-Directed δ)) ⊑⟨ 𝓔 ⟩ u₁
-         e = ∐-is-lowerbound-of-upperbounds 𝓔 (pr₂∘α-is-Directed δ) u₁ p
+         e : pr₂ (∐ 𝓓 (pr₁∘α-is-Directed δ) , ∐ 𝓔 (pr₂∘α-is-Directed δ)) ⊑⟨ 𝓔 ⟩ y
+         e = ∐-is-lowerbound-of-upperbounds 𝓔 (pr₂∘α-is-Directed δ) y p
 
  infixr 30 _×ᵈᶜᵖᵒ⊥_
 
@@ -398,11 +403,17 @@ Some useful proofs on products.
          where
           w' = x , (y , z)
 
-          w'-is-upperbound : is-upperbound (underlying-order (𝓓 ×ᵈᶜᵖᵒ 𝓔 ×ᵈᶜᵖᵒ 𝓕)) w' α
+          w'-is-upperbound : is-upperbound
+                              (underlying-order (𝓓 ×ᵈᶜᵖᵒ 𝓔 ×ᵈᶜᵖᵒ 𝓕))
+                              w'
+                              α
           w'-is-upperbound i = (pr₁ (pr₁ (p i))) , (pr₂ (pr₁ (p i))) , (pr₂ (p i))
 
           l : ∐ (𝓓 ×ᵈᶜᵖᵒ 𝓔 ×ᵈᶜᵖᵒ 𝓕) δ ⊑⟨ 𝓓 ×ᵈᶜᵖᵒ 𝓔 ×ᵈᶜᵖᵒ 𝓕 ⟩ w'
-          l = ∐-is-lowerbound-of-upperbounds (𝓓 ×ᵈᶜᵖᵒ 𝓔 ×ᵈᶜᵖᵒ 𝓕) δ w' w'-is-upperbound
+          l = ∐-is-lowerbound-of-upperbounds (𝓓 ×ᵈᶜᵖᵒ 𝓔 ×ᵈᶜᵖᵒ 𝓕)
+               δ
+               w'
+               w'-is-upperbound
 
    to-×-DCPO : DCPO[ 𝓓 , 𝓔 ] →  DCPO[ 𝓓 , 𝓕 ] → DCPO[ 𝓓 , 𝓔 ×ᵈᶜᵖᵒ 𝓕 ]
    to-×-DCPO 𝕗@(f , fc) 𝕘@(g , gc) = h , hc

@@ -95,10 +95,10 @@ module _ (𝓓 : DCPO {𝓤} {𝓤'})
           (underlying-function 𝓔 𝓕 (f (∐ 𝓓 δ)) e)
           (pointwise-family 𝓔 𝓕 (f ∘ α) e)
      u i = f-is-monotone (α i) (∐ 𝓓 δ) (∐-is-upperbound 𝓓 δ i) e
-     v : (u₁ : ⟨ 𝓕 ⟩)
-       → ((i : I) → (underlying-function 𝓔 𝓕 ((f ∘ α) i) e) ⊑⟨ 𝓕 ⟩ u₁)
-       → (underlying-function 𝓔 𝓕 (f (∐ 𝓓 δ)) e) ⊑⟨ 𝓕 ⟩ u₁
-     v u₁ p = transport (λ - → - ⊑⟨ 𝓕 ⟩ u₁) (ii ⁻¹) ∐-is-lowerbound
+     v : (z : ⟨ 𝓕 ⟩)
+       → ((i : I) → (underlying-function 𝓔 𝓕 ((f ∘ α) i) e) ⊑⟨ 𝓕 ⟩ z)
+       → (underlying-function 𝓔 𝓕 (f (∐ 𝓓 δ)) e) ⊑⟨ 𝓕 ⟩ z
+     v z p = transport (λ - → - ⊑⟨ 𝓕 ⟩ z) (ii ⁻¹) ∐-is-lowerbound
        where
          ⟨f∘α⟩i-is-directed : is-Directed (𝓔 ⟹ᵈᶜᵖᵒ 𝓕) (f ∘ α)
          ⟨f∘α⟩i-is-directed = image-is-directed 𝓓 (𝓔 ⟹ᵈᶜᵖᵒ 𝓕) {f}
@@ -112,10 +112,10 @@ module _ (𝓓 : DCPO {𝓤} {𝓤'})
                                 (f ∘ α)
                                 ⟨f∘α⟩i-is-directed e
 
-         ∐-is-lowerbound : (∐ 𝓕 ⟨f∘α⟩ie-is-directed) ⊑⟨ 𝓕 ⟩ u₁
+         ∐-is-lowerbound : (∐ 𝓕 ⟨f∘α⟩ie-is-directed) ⊑⟨ 𝓕 ⟩ z
          ∐-is-lowerbound = ∐-is-lowerbound-of-upperbounds 𝓕
                             ⟨f∘α⟩ie-is-directed
-                            u₁
+                            z
                             p
 
          i : f (∐ 𝓓 δ) ＝ ∐ (𝓔 ⟹ᵈᶜᵖᵒ 𝓕) ⟨f∘α⟩i-is-directed
@@ -176,10 +176,10 @@ module _ (𝓓 : DCPO {𝓤} {𝓤'})
               (∐ (𝓓 ⟹ᵈᶜᵖᵒ 𝓔) {I} {α} δ , d)
               (∐-is-upperbound (𝓓 ⟹ᵈᶜᵖᵒ 𝓔) {I} {α} δ i , reflexivity 𝓓 d)
 
-       v : (u₁ : ⟨ 𝓔 ⟩)
-         → ((i : I) → f (α i , d) ⊑⟨ 𝓔 ⟩ u₁)
-         → f (∐ (𝓓 ⟹ᵈᶜᵖᵒ 𝓔) {I} {α} δ , d) ⊑⟨ 𝓔 ⟩ u₁
-       v u₁ p = ∐-is-lowerbound-of-upperbounds 𝓔 isdir₁ u₁ p
+       v : (y : ⟨ 𝓔 ⟩)
+         → ((i : I) → f (α i , d) ⊑⟨ 𝓔 ⟩ y)
+         → f (∐ (𝓓 ⟹ᵈᶜᵖᵒ 𝓔) {I} {α} δ , d) ⊑⟨ 𝓔 ⟩ y
+       v y p = ∐-is-lowerbound-of-upperbounds 𝓔 isdir₁ y p
          where
           isdir₁ : is-Directed 𝓔 (pointwise-family 𝓓 𝓔 α d)
           isdir₁ = pointwise-family-is-directed 𝓓 𝓔 α δ d
@@ -196,20 +196,20 @@ module _ (𝓓 : DCPO {𝓤} {𝓤'})
               (g , ∐ 𝓓 δ)
               ((reflexivity (𝓓 ⟹ᵈᶜᵖᵒ 𝓔) g) , (∐-is-upperbound 𝓓 δ i))
 
-       v : (u₁ : ⟨ 𝓔 ⟩)
-         → ((i : I) → f (g , α i) ⊑⟨ 𝓔 ⟩ u₁)
-         → f (g , ∐ 𝓓 δ) ⊑⟨ 𝓔 ⟩ u₁
-       v u₁ p = transport (λ - → - ⊑⟨ 𝓔 ⟩ u₁) (e₁ ⁻¹) p₁
+       v : (y : ⟨ 𝓔 ⟩)
+         → ((i : I) → f (g , α i) ⊑⟨ 𝓔 ⟩ y)
+         → f (g , ∐ 𝓓 δ) ⊑⟨ 𝓔 ⟩ y
+       v y p = transport (λ - → - ⊑⟨ 𝓔 ⟩ y) (e ⁻¹) q
         where
-         e₁ : f (g , ∐ 𝓓 δ)
-            ＝  ∐ 𝓔 (image-is-directed 𝓓 𝓔 (monotone-if-continuous 𝓓 𝓔 g) δ)
-         e₁ = continuous-∐-＝ 𝓓 𝓔 g δ
+         e : f (g , ∐ 𝓓 δ)
+           ＝  ∐ 𝓔 (image-is-directed 𝓓 𝓔 (monotone-if-continuous 𝓓 𝓔 g) δ)
+         e = continuous-∐-＝ 𝓓 𝓔 g δ
 
-         p₁ : (∐ 𝓔 (image-is-directed 𝓓 𝓔 (monotone-if-continuous 𝓓 𝓔 g) δ))
-            ⊑⟨ 𝓔 ⟩ u₁
-         p₁ = ∐-is-lowerbound-of-upperbounds 𝓔
+         q : (∐ 𝓔 (image-is-directed 𝓓 𝓔 (monotone-if-continuous 𝓓 𝓔 g) δ))
+           ⊑⟨ 𝓔 ⟩ y
+         q = ∐-is-lowerbound-of-upperbounds 𝓔
                (image-is-directed 𝓓 𝓔 (monotone-if-continuous 𝓓 𝓔 g) δ)
-               u₁
+               y
                p
 
 module _ (𝓓 : DCPO⊥ {𝓤} {𝓤'})

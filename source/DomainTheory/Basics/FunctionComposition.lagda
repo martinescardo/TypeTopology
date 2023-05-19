@@ -48,10 +48,10 @@ open PosetAxioms
      u : is-upperbound (underlying-order 𝓕) (h (∐ 𝓓 δ)) (λ i → h (α i))
      u i = h-is-monotone (α i) (∐ 𝓓 δ) (∐-is-upperbound 𝓓 δ i)
 
-     v : (u₁ : ⟨ 𝓕 ⟩) →
-         ((i : I) → h (α i) ⊑⟨ 𝓕 ⟩ u₁) →
-         h (∐ 𝓓 δ) ⊑⟨ 𝓕 ⟩ u₁
-     v u₁ p = transport (λ - → - ⊑⟨ 𝓕 ⟩ u₁) (e₁ ⁻¹) p₁
+     v : (z : ⟨ 𝓕 ⟩) →
+         ((i : I) → h (α i) ⊑⟨ 𝓕 ⟩ z) →
+         h (∐ 𝓓 δ) ⊑⟨ 𝓕 ⟩ z
+     v z p = transport (λ - → - ⊑⟨ 𝓕 ⟩ z) (e ⁻¹) q
        where
         isdir₁ : is-Directed 𝓔 (λ i → pr₁ f (α i))
         isdir₁ = image-is-directed 𝓓 𝓔 (monotone-if-continuous 𝓓 𝓔 f) δ
@@ -59,13 +59,13 @@ open PosetAxioms
         isdir₂ : is-Directed 𝓕 (λ i → (pr₁ g ∘ pr₁ f) (α i))
         isdir₂ = image-is-directed 𝓔 𝓕 (monotone-if-continuous 𝓔 𝓕 g) isdir₁
 
-        e₁ : h (∐ 𝓓 δ) ＝ ∐ 𝓕 isdir₂
-        e₁ = h (∐ 𝓓 δ)         ＝⟨ ap (λ - → pr₁ g -) (continuous-∐-＝ 𝓓 𝓔 f δ) ⟩
-             pr₁ g (∐ 𝓔 isdir₁) ＝⟨ continuous-∐-＝ 𝓔 𝓕 g isdir₁ ⟩
-             ∐ 𝓕 isdir₂         ∎
+        e : h (∐ 𝓓 δ) ＝ ∐ 𝓕 isdir₂
+        e = h (∐ 𝓓 δ)          ＝⟨ ap (λ - → pr₁ g -) (continuous-∐-＝ 𝓓 𝓔 f δ) ⟩
+            pr₁ g (∐ 𝓔 isdir₁) ＝⟨ continuous-∐-＝ 𝓔 𝓕 g isdir₁ ⟩
+            ∐ 𝓕 isdir₂         ∎
 
-        p₁ : ∐ 𝓕 isdir₂ ⊑⟨ 𝓕 ⟩ u₁
-        p₁ = ∐-is-lowerbound-of-upperbounds 𝓕 isdir₂ u₁ p
+        q : ∐ 𝓕 isdir₂ ⊑⟨ 𝓕 ⟩ z
+        q = ∐-is-lowerbound-of-upperbounds 𝓕 isdir₂ z p
 
 [_,_,_]_∘ᵈᶜᵖᵒ⊥_ : (𝓓 : DCPO⊥ {𝓤} {𝓤'})
                   (𝓔 : DCPO⊥ {𝓣} {𝓣'})

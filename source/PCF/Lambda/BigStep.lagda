@@ -158,8 +158,8 @@ values-dont-reduce-further .(Succ M) (succ-val x)
 ⇓-deterministic (pred-succ {_} {_} {_} {k} step₁) (pred-zero step₂) =
  𝟘-elim (peano-axiom-for-PCF (IH ⁻¹))
  where
-   IH : numeral (succ k) ＝ numeral zero
-   IH = ⇓-deterministic step₁ step₂
+  IH : numeral (succ k) ＝ numeral zero
+  IH = ⇓-deterministic step₁ step₂
 
 ⇓-deterministic (pred-succ step₁) (pred-succ step₂) =
  succ-removal (⇓-deterministic step₁ step₂)
@@ -195,17 +195,17 @@ values-dont-reduce-further .(Succ M) (succ-val x)
 
 ⇓-deterministic (·-step {_} {_} {_} {_} {_} {E} {N} {L} step₁ step₃)
                 (·-step {_} {_} {_} {_} {_} {E₁} {N} {L₁} step₂ step₄) = γ
-  where
-    IH : ƛ E ＝ ƛ E₁
-    IH = ⇓-deterministic step₁ step₂
+ where
+  IH : ƛ E ＝ ƛ E₁
+  IH = ⇓-deterministic step₁ step₂
 
-    ƛ-removal-＝ : ∀ {A B} → ƛ A ＝ ƛ B → A ＝ B
-    ƛ-removal-＝ refl = refl
+  ƛ-removal-＝ : ∀ {A B} → ƛ A ＝ ƛ B → A ＝ B
+  ƛ-removal-＝ refl = refl
 
-    transported-step : (E [ N ]) ⇓' L₁
-    transported-step = transport (λ - → (- [ N ]) ⇓' L₁) (ƛ-removal-＝ IH ⁻¹) step₄
+  transported-step : (E [ N ]) ⇓' L₁
+  transported-step = transport (λ - → (- [ N ]) ⇓' L₁) (ƛ-removal-＝ IH ⁻¹) step₄
 
-    γ : L ＝ L₁
-    γ = ⇓-deterministic step₃ transported-step
+  γ : L ＝ L₁
+  γ = ⇓-deterministic step₃ transported-step
 
 \end{code}
