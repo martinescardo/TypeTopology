@@ -1,4 +1,6 @@
-This is an adaptation of Internal.lagda but for WithoutOracleLambda instead of LambdaCalculusVersionOfMFPS
+Martin Escardo & Vincent Rahli 20 May 2023
+
+This is an adaptation of Internal.lagda written by Martin but for WithoutOracleLambda instead of LambdaCalculusVersionOfMFPS
 
 \begin{code}
 

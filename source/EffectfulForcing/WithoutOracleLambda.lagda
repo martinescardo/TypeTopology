@@ -1,7 +1,9 @@
+Martin Escardo & Vincent Rahli 20 May 2023
+
 This is an adaptation of WithoutOracle where we're using SystemT instead of CombinatryT.
 
-Alternatively, it can be seen as adaptation of LambdaCalculusVersionOfMFPS, where we use
-a slighlty different relation instead of using T'
+Alternatively, it can be seen as adaptation of LambdaCalculusVersionOfMFPS written by Margin,
+where we use a slighlty different relation instead of using T'
 
 \begin{code}
 
@@ -35,7 +37,6 @@ succ' = B-functor succ
 
 rec' : {σ : type} → (B ℕ → B〖 σ 〗 → B〖 σ 〗) → B〖 σ 〗 → B ℕ → B〖 σ 〗
 rec' f x = Kleisli-extension(rec (f ∘ η) x)
-
 
 B【_】 : {n : ℕ} (Γ : Cxt n) → Type
 B【 Γ 】 = (i : Fin _) → B〖 (Γ [ i ]) 〗
