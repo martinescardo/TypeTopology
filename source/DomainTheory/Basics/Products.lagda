@@ -46,35 +46,35 @@ module DcpoProductsGeneral
 
    pr₁∘α-is-directed : {I : 𝓥 ̇}
                      → {α : I → D × E}
-                     → (order₁ : D → D → 𝓣 ̇)
-                     → (order₂ : E → E → 𝓣' ̇)
-                     → is-directed (order₁ ⊑-× order₂) α
-                     → is-directed order₁ (pr₁ ∘ α)
-   pr₁∘α-is-directed {_} {_} {I} {α} order₁ order₂ δ =
-    inhabited-if-directed (order₁ ⊑-× order₂) α δ , o
+                     → (_⊑₁_ : D → D → 𝓣 ̇)
+                     → (_⊑₂_ : E → E → 𝓣' ̇)
+                     → is-directed (_⊑₁_ ⊑-× _⊑₂_) α
+                     → is-directed _⊑₁_ (pr₁ ∘ α)
+   pr₁∘α-is-directed {_} {_} {I} {α} _⊑₁_ _⊑₂_ δ =
+    inhabited-if-directed (_⊑₁_ ⊑-× _⊑₂_) α δ , o
      where
       o : (i j : I)
-        → ∃ k ꞉ I , (order₁ ((pr₁ ∘ α) i) ((pr₁ ∘ α) k) ×
-                     order₁ ((pr₁ ∘ α) j) ((pr₁ ∘ α) k))
+        → ∃ k ꞉ I , ((pr₁ ∘ α) i ⊑₁ (pr₁ ∘ α) k ×
+                     (pr₁ ∘ α) j ⊑₁ (pr₁ ∘ α) k)
       o i j = ∥∥-functor
                (λ (a , (b , _) , c , _) → a , b , c)
-               (semidirected-if-directed (order₁ ⊑-× order₂) α δ i j)
+               (semidirected-if-directed (_⊑₁_ ⊑-× _⊑₂_) α δ i j)
 
    pr₂∘α-is-directed : {I : 𝓥 ̇}
                      → {α : I → D × E}
-                     → (order₁ : D → D → 𝓣 ̇)
-                     → (order₂ : E → E → 𝓣' ̇)
-                     → is-directed (order₁ ⊑-× order₂) α
-                     → is-directed order₂ (pr₂ ∘ α)
-   pr₂∘α-is-directed {_} {_} {I} {α} order₁ order₂ δ =
-    inhabited-if-directed (order₁ ⊑-× order₂) α δ , o
+                     → (_⊑₁_ : D → D → 𝓣 ̇)
+                     → (_⊑₂_ : E → E → 𝓣' ̇)
+                     → is-directed (_⊑₁_ ⊑-× _⊑₂_) α
+                     → is-directed _⊑₂_ (pr₂ ∘ α)
+   pr₂∘α-is-directed {_} {_} {I} {α} _⊑₁_ _⊑₂_ δ =
+    inhabited-if-directed (_⊑₁_ ⊑-× _⊑₂_) α δ , o
      where
       o : (i j : I)
-        → ∃ k ꞉ I , (order₂ ((pr₂ ∘ α) i) ((pr₂ ∘ α) k) ×
-                     order₂ ((pr₂ ∘ α) j) ((pr₂ ∘ α) k))
+        → ∃ k ꞉ I , ((pr₂ ∘ α) i ⊑₂ (pr₂ ∘ α) k ×
+                     (pr₂ ∘ α) j ⊑₂ (pr₂ ∘ α) k)
       o i j = ∥∥-functor
                (λ (a , (_  , b) , _ , c) → a , b , c)
-               (semidirected-if-directed (order₁ ⊑-× order₂) α δ i j)
+               (semidirected-if-directed (_⊑₁_ ⊑-× _⊑₂_) α δ i j)
 
  infixr 30 _×ᵈᶜᵖᵒ_
 
