@@ -39,16 +39,16 @@ open import UF.Miscelanea
 
 open IfZeroDenotationalSemantics pe
 
-adequate : (σ : type) (d : ⟨(⟦ σ ⟧ ⁻)⟩) (M : PCF ⟨⟩ σ) → 𝓤₁ ̇
+adequate : (σ : type) (d : ⟨ ⟦ σ ⟧ ⁻ ⟩) (M : PCF ⟨⟩ σ) → 𝓤₁ ̇
 adequate ι        l t = 𝟙 × ((p : is-defined l) → t ⇓ numeral (value l p))
-adequate (σ ⇒ σ₁) l t = (d : ⟨(⟦ σ ⟧ ⁻)⟩) (M : PCF ⟨⟩ σ)
+adequate (σ ⇒ σ₁) l t = (d : ⟨ ⟦ σ ⟧ ⁻ ⟩) (M : PCF ⟨⟩ σ)
                            → adequate σ d M
                            → adequate σ₁ (pr₁ l d) (t · M)
 
 lemma7-1-1 : {σ : type}
-           → (d : ⟨(⟦ σ ⟧ ⁻)⟩)
-           → (d' : ⟨(⟦ σ ⟧ ⁻)⟩)
-           → (d' ⊑⟨(⟦ σ ⟧ ⁻)⟩ d)
+           → (d : ⟨ ⟦ σ ⟧ ⁻ ⟩)
+           → (d' : ⟨ ⟦ σ ⟧ ⁻ ⟩)
+           → (d' ⊑⟨ ⟦ σ ⟧ ⁻ ⟩ d)
            → (M : PCF ⟨⟩ σ)
            → adequate σ d M
            → adequate σ d' M
@@ -65,21 +65,21 @@ lemma7-1-1 {ι} d d' x M (_ , o) = ⋆ , f
 
 lemma7-1-1 {σ ⇒ σ₁} f g x M p = γ
   where
-   γ : (d : ⟨(⟦ σ ⟧ ⁻)⟩)
+   γ : (d : ⟨ ⟦ σ ⟧ ⁻ ⟩)
      → ∀ N → adequate σ d N → adequate σ₁ (pr₁ g d) (M · N)
    γ d N a = IH
     where
      i : adequate σ₁ (pr₁ f d) (M · N)
      i = p d N a
 
-     ii : pr₁ g d ⊑⟨(⟦ σ₁ ⟧ ⁻)⟩ pr₁ f d
+     ii : pr₁ g d ⊑⟨ ⟦ σ₁ ⟧ ⁻ ⟩ pr₁ f d
      ii = x d
 
      IH : adequate σ₁ (pr₁ g d) (M · N)
      IH = lemma7-1-1 (pr₁ f d) (pr₁ g d) ii (M · N) i
 
 adequacy-lubs : {σ : type} {I : 𝓤₀ ̇}
-              → (u : I → ⟨(⟦ σ ⟧ ⁻)⟩)
+              → (u : I → ⟨ ⟦ σ ⟧ ⁻ ⟩)
               → (δ : is-Directed ( ⟦ σ ⟧ ⁻) u)
               → (t : PCF ⟨⟩ σ)
               → ((i : I) → adequate σ (u i) t)
@@ -102,7 +102,7 @@ adequacy-lubs {ι} {I} u δ t a = ⋆ , g
 
 adequacy-lubs {σ ⇒ σ₁} {I} u δ t a p M x = IH
  where
-  ptfam : I → ⟨(⟦ σ₁ ⟧ ⁻)⟩
+  ptfam : I → ⟨ ⟦ σ₁ ⟧ ⁻ ⟩
   ptfam = pointwise-family ( ⟦ σ ⟧ ⁻) ( ⟦ σ₁ ⟧ ⁻) u p
 
   ptfam-is-directed : is-Directed ( ⟦ σ₁ ⟧ ⁻) ptfam
@@ -117,7 +117,7 @@ adequacy-lubs {σ ⇒ σ₁} {I} u δ t a p M x = IH
 adequacy-step : {σ : type}
                 (M M' : PCF ⟨⟩ σ)
               → M ⊏̰ M'
-              → (a : ⟨(⟦ σ ⟧ ⁻)⟩)
+              → (a : ⟨ ⟦ σ ⟧ ⁻ ⟩)
               → adequate σ a M
               → adequate σ a M'
 adequacy-step {ι} M M' r a (⋆ , ρ) = ⋆ , f
@@ -141,12 +141,12 @@ adequacy-bottom {σ ⇒ σ₁} t = (λ _ M _ → adequacy-bottom (t · M))
 
 lemma7-3 : {σ : type}
          → (M : PCF ⟨⟩ (σ ⇒ σ))
-         → (f : ⟨(⟦ σ ⇒ σ ⟧ ⁻)⟩)
+         → (f : ⟨ ⟦ σ ⇒ σ ⟧ ⁻ ⟩)
          → adequate (σ ⇒ σ) f M
          → adequate σ (pr₁ (μ ⟦ σ ⟧) f) (Fix M)
 lemma7-3 {σ} M f rel = adequacy-lubs iter-M iter-M-is-directed (Fix M) fn
  where
-  iter-M : ℕ → ⟨(⟦ σ ⟧ ⁻)⟩
+  iter-M : ℕ → ⟨ ⟦ σ ⟧ ⁻ ⟩
   iter-M n = iter ⟦ σ ⟧ n f
 
   iter-M-is-directed : is-Directed ( ⟦ σ ⟧ ⁻) iter-M
@@ -171,7 +171,7 @@ lemma7-3 {σ} M f rel = adequacy-lubs iter-M iter-M-is-directed (Fix M) fn
 
 adequacy-succ :  {n : ℕ} {Γ : Context n}
               → (M : PCF Γ ι)
-              → (d : ⟨(【 Γ 】 ⁻)⟩)
+              → (d : ⟨ 【 Γ 】 ⁻ ⟩)
               → (f : ∀ {A} → (x : Γ ∋ A) → PCF ⟨⟩ A)
               → adequate ι (pr₁ ⟦ M ⟧ₑ d) (subst f M)
               → adequate ι (pr₁ ⟦ Succ M ⟧ₑ d) (subst f (Succ M))
@@ -196,7 +196,7 @@ ifzero-lemma :
   (M₂ : PCF Γ ι)
   (f : ∀ {A} → Γ ∋ A → PCF ⟨⟩ A)
  → subst f M ⇓ numeral k
- → (d : ⟨(【 Γ 】 ⁻)⟩)
+ → (d : ⟨ 【 Γ 】 ⁻ ⟩)
    (M-is-defined : is-defined (pr₁ ⟦ M ⟧ₑ d))
    (δ : is-defined (⦅ifZero⦆₀ (pr₁ ⟦ M₁ ⟧ₑ d) (pr₁ ⟦ M₂ ⟧ₑ d) k))
    (M₁-rel : adequate ι (pr₁ ⟦ M₁ ⟧ₑ d) (subst f M₁))
@@ -224,7 +224,7 @@ ifzero-lemma {n} {Γ} {succ k} M M₁ M₂ f x d M-is-defined δ
 
 adequacy-pred : {n : ℕ} {Γ : Context n}
               → (M : PCF Γ ι)
-              → (d : ⟨(【 Γ 】 ⁻)⟩)
+              → (d : ⟨ 【 Γ 】 ⁻ ⟩)
               → (f : ∀ {A} → (x : Γ ∋ A) → PCF ⟨⟩ A)
               → adequate ι (pr₁ ⟦ M ⟧ₑ d) (subst f M)
               → adequate ι (pr₁ ⟦ Pred M ⟧ₑ d) (subst f (Pred M))
@@ -236,7 +236,7 @@ adequacy-pred M d f (⋆ , rel) = ⋆ , g
 
 adequacy-ifzero : {n : ℕ} {Γ : Context n}
                   (M : PCF Γ ι) (M₁ : PCF Γ ι) (M₂ : PCF Γ ι)
-                  (d : ⟨(【 Γ 】 ⁻)⟩)
+                  (d : ⟨ 【 Γ 】 ⁻ ⟩)
                   (f : ∀ {A} → (x : Γ ∋ A) → PCF ⟨⟩ A)
                 → adequate ι (pr₁ ⟦ M ⟧ₑ d) (subst f M)
                 → adequate ι (pr₁ ⟦ M₁ ⟧ₑ d) (subst f M₁)
@@ -260,7 +260,7 @@ adequacy-ifzero {n} {Γ} M M₁ M₂ d f (⋆ , M-rel) M₁-rel M₂-rel = ⋆ ,
 
 lemma7-4 : {n : ℕ} {Γ : Context n} {τ : type}
            (M : PCF Γ τ)
-           (d : ⟨(【 Γ 】 ⁻)⟩)
+           (d : ⟨ 【 Γ 】 ⁻ ⟩)
            (f : ∀ {A} → (x : Γ ∋ A) → PCF ⟨⟩ A)
            (g : ∀ {A} → (x : Γ ∋ A) → adequate A (extract x d) (f x))
          → adequate τ (pr₁ ⟦ M ⟧ₑ d) (subst f M)
@@ -324,7 +324,7 @@ lemma7-4 {n} {Γ} {σ} (v x) d f g = g x
 
 lemma7-4 {n} {Γ} {σ} (Fix M) d f g = lemma7-3 (subst f M) (pr₁ ⟦ M ⟧ₑ d) IH
  where
-  IH : (d₁ : ⟨(⟦ σ ⟧ ⁻)⟩) (M₁ : PCF ⟨⟩ σ)
+  IH : (d₁ : ⟨ ⟦ σ ⟧ ⁻ ⟩) (M₁ : PCF ⟨⟩ σ)
      → adequate σ d₁ M₁
      → adequate σ (pr₁ (pr₁ ⟦ M ⟧ₑ d) d₁) (subst (λ {A} → f) M · M₁)
   IH = lemma7-4 M d f g
