@@ -21,7 +21,7 @@ open import DomainTheory.Basics.Exponential pt fe 𝓥
 open import DomainTheory.Basics.Miscelanea pt fe 𝓥
 open import DomainTheory.Basics.Pointed pt fe 𝓥
 open import DomainTheory.ScottModelOfPCF.PCFCombinators pt fe 𝓥
-open import PCF.Dcpo-FunctionComposition pt fe 𝓥
+open import PCF.DcpoFunctionComposition pt fe 𝓥
 open import PCF.DcpoProducts pt fe
 open import PCF.DcpoProducts-Continuity pt fe 𝓥
 open import UF.Miscelanea

@@ -9,7 +9,7 @@ open import UF.FunExt
 open import UF.PropTrunc
 open import UF.Subsingletons
 
-module PCF.ScottModelTypes
+module PCF.ScottModelOfTypes
         (pt : propositional-truncations-exist)
         (fe : ∀ {𝓤 𝓥} → funext 𝓤 𝓥)
         (pe : propext 𝓤₀)

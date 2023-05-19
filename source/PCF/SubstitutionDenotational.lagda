@@ -26,13 +26,13 @@ open import Lifting.Miscelanea-PropExt-FunExt 𝓤₀ pe fe
 open import Lifting.Monad 𝓤₀ hiding (μ)
 open import Naturals.Properties
 open import PCF.AbstractSyntax pt
-open import PCF.Dcpo-Contexts pt fe pe
-open import PCF.Dcpo-IfZero pt fe pe
 open import PCF.DcpoProducts pt fe
 open import PCF.DcpoProducts-Continuity pt fe 𝓤₀
 open import PCF.DcpoProducts-Curry pt fe 𝓤₀
-open import PCF.ScottModelTerms pt fe pe
-open import PCF.ScottModelTypes pt fe pe
+open import PCF.ScottModelOfContexts pt fe pe
+open import PCF.ScottModelOfIfZero pt fe pe
+open import PCF.ScottModelOfTerms pt fe pe
+open import PCF.ScottModelOfTypes pt fe pe
 open import UF.Base
 open import UF.Miscelanea
 open import UF.Subsingletons

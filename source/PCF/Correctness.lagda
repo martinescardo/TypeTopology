@@ -27,11 +27,11 @@ open import Lifting.Monad 𝓤₀ hiding (μ)
 open import Naturals.Properties
 open import PCF.AbstractSyntax pt
 open import PCF.BigStep pt
-open import PCF.Dcpo-Contexts pt fe pe
+open import PCF.ScottModelOfContexts pt fe pe
 open import PCF.DcpoProducts pt fe
 open import PCF.DcpoProducts-Curry pt fe 𝓤₀
-open import PCF.ScottModelTerms pt fe pe
-open import PCF.ScottModelTypes pt fe pe
+open import PCF.ScottModelOfTerms pt fe pe
+open import PCF.ScottModelOfTypes pt fe pe
 open import PCF.SubstitutionDenotational pt fe pe
 open import UF.Miscelanea
 

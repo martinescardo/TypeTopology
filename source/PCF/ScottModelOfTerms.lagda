@@ -9,7 +9,7 @@ open import UF.FunExt
 open import UF.PropTrunc
 open import UF.Subsingletons
 
-module PCF.ScottModelTerms
+module PCF.ScottModelOfTerms
         (pt : propositional-truncations-exist)
         (fe : ∀ {𝓤 𝓥} → funext 𝓤 𝓥)
         (pe : propext 𝓤₀)
@@ -23,27 +23,25 @@ open import DomainTheory.Basics.Miscelanea pt fe 𝓤₀
 open import DomainTheory.Basics.Pointed pt fe 𝓤₀
 open import DomainTheory.Lifting.LiftingSet pt fe 𝓤₀ pe
 open import DomainTheory.ScottModelOfPCF.PCFCombinators pt fe
+open import Lifting.Lifting 𝓤₀
+open import Lifting.Monad 𝓤₀ hiding (μ)
 open import Naturals.Properties
 open import PCF.AbstractSyntax pt
-open import PCF.Dcpo-Contexts pt fe pe
-open import PCF.Dcpo-FunctionComposition pt fe 𝓤₀
-open import PCF.Dcpo-IfZero pt fe pe
+open import PCF.DcpoFunctionComposition pt fe 𝓤₀
 open import PCF.DcpoProducts pt fe
 open import PCF.DcpoProducts-Curry pt fe 𝓤₀
-open import PCF.ScottModelTypes pt fe pe
+open import PCF.ScottModelOfContexts pt fe pe
+open import PCF.ScottModelOfIfZero pt fe pe
+open import PCF.ScottModelOfTypes pt fe pe
 open import UF.Miscelanea
 
 open DcpoProductsGeneral 𝓤₀
-
-open import Lifting.Lifting 𝓤₀
-open import Lifting.Monad 𝓤₀ hiding (μ)
 
 ⟦_⟧ₑ : {n : ℕ} {Γ : Context n} {σ : type} (t : PCF Γ σ)
      → DCPO⊥[ 【 Γ 】 , ⟦ σ ⟧ ]
 
 ⟦ Zero {_} {Γ} ⟧ₑ =
- (λ _ → η zero) ,
- constant-functions-are-continuous (【 Γ 】 ⁻) (⟦ ι ⟧ ⁻)
+ (λ _ → η zero) , constant-functions-are-continuous (【 Γ 】 ⁻) (⟦ ι ⟧ ⁻)
 
 ⟦ Succ {_} {Γ} t ⟧ₑ =
  [ 【 Γ 】 , ⟦ ι ⟧ , ⟦ ι ⟧ ]

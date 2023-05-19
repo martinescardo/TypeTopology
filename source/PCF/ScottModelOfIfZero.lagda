@@ -9,7 +9,7 @@ open import UF.FunExt
 open import UF.PropTrunc
 open import UF.Subsingletons
 
-module PCF.Dcpo-IfZero
+module PCF.ScottModelOfIfZero
        (pt : propositional-truncations-exist)
        (fe : ∀ {𝓤 𝓥} → funext 𝓤 𝓥)
        (pe : propext 𝓤₀)
@@ -23,8 +23,8 @@ open import DomainTheory.Basics.Pointed pt fe 𝓤₀
 open import DomainTheory.Lifting.LiftingSet pt fe 𝓤₀ pe
 open import DomainTheory.ScottModelOfPCF.PCFCombinators pt fe 𝓤₀
 open import PCF.AbstractSyntax pt
-open import PCF.Dcpo-Contexts pt fe pe
-open import PCF.Dcpo-FunctionComposition pt fe 𝓤₀
+open import PCF.ScottModelOfContexts pt fe pe
+open import PCF.DcpoFunctionComposition pt fe 𝓤₀
 open import PCF.DcpoProducts pt fe
 open import PCF.DcpoProducts-Curry pt fe 𝓤₀
 open import UF.Miscelanea

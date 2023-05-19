@@ -31,9 +31,9 @@ open import Naturals.Properties hiding (pred-succ)
 open import PCF.AbstractSyntax pt
 open import PCF.ApplicativeApproximation pt
 open import PCF.BigStep pt
-open import PCF.Dcpo-Contexts pt fe pe
-open import PCF.ScottModelTerms pt fe pe
-open import PCF.ScottModelTypes pt fe pe
+open import PCF.ScottModelOfContexts pt fe pe
+open import PCF.ScottModelOfTerms pt fe pe
+open import PCF.ScottModelOfTypes pt fe pe
 open import PCF.Substitution pt fe pe
 open import UF.Miscelanea
 

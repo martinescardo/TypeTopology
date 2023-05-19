@@ -27,14 +27,14 @@ import PCF.Adequacy
 import PCF.ApplicativeApproximation
 import PCF.BigStep
 import PCF.Correctness
-import PCF.Dcpo-Contexts
-import PCF.Dcpo-FunctionComposition
-import PCF.Dcpo-IfZero
+import PCF.DcpoFunctionComposition
 import PCF.DcpoProducts
 import PCF.DcpoProducts-Continuity
 import PCF.DcpoProducts-Curry
-import PCF.ScottModelTerms
-import PCF.ScottModelTypes
+import PCF.ScottModelOfContexts
+import PCF.ScottModelOfIfZero
+import PCF.ScottModelOfTerms
+import PCF.ScottModelOfTypes
 import PCF.Substitution
 import PCF.SubstitutionDenotational
 
