@@ -24,7 +24,7 @@ open import DomainTheory.ScottModelOfPCF.PCFCombinators pt fe 𝓤₀
 open import PCF.AbstractSyntax pt
 open import PCF.DcpoFunctionComposition pt fe 𝓤₀
 open import PCF.DcpoProducts pt fe
-open import PCF.DcpoProducts-Curry pt fe 𝓤₀
+open import PCF.DcpoProductsCurry pt fe 𝓤₀
 open import PCF.ScottModelOfTypes pt fe pe
 open import Posets.Poset fe
 open import UF.Miscelanea

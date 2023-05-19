@@ -29,8 +29,8 @@ import PCF.BigStep
 import PCF.Correctness
 import PCF.DcpoFunctionComposition
 import PCF.DcpoProducts
-import PCF.DcpoProducts-Continuity
-import PCF.DcpoProducts-Curry
+import PCF.DcpoProductsContinuity
+import PCF.DcpoProductsCurry
 import PCF.ScottModelOfContexts
 import PCF.ScottModelOfIfZero
 import PCF.ScottModelOfTerms

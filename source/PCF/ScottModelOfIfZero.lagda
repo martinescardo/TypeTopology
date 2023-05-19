@@ -23,10 +23,10 @@ open import DomainTheory.Basics.Pointed pt fe 𝓤₀
 open import DomainTheory.Lifting.LiftingSet pt fe 𝓤₀ pe
 open import DomainTheory.ScottModelOfPCF.PCFCombinators pt fe 𝓤₀
 open import PCF.AbstractSyntax pt
-open import PCF.ScottModelOfContexts pt fe pe
 open import PCF.DcpoFunctionComposition pt fe 𝓤₀
 open import PCF.DcpoProducts pt fe
-open import PCF.DcpoProducts-Curry pt fe 𝓤₀
+open import PCF.DcpoProductsCurry pt fe 𝓤₀
+open import PCF.ScottModelOfContexts pt fe pe
 open import UF.Miscelanea
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt

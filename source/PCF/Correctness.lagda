@@ -29,7 +29,7 @@ open import PCF.AbstractSyntax pt
 open import PCF.BigStep pt
 open import PCF.ScottModelOfContexts pt fe pe
 open import PCF.DcpoProducts pt fe
-open import PCF.DcpoProducts-Curry pt fe 𝓤₀
+open import PCF.DcpoProductsCurry pt fe 𝓤₀
 open import PCF.ScottModelOfTerms pt fe pe
 open import PCF.ScottModelOfTypes pt fe pe
 open import PCF.SubstitutionDenotational pt fe pe
