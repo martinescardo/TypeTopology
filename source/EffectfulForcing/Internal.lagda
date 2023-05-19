@@ -20,7 +20,6 @@ open import EffectfulForcing.Combinators
 open import EffectfulForcing.Continuity
 open import EffectfulForcing.Dialogue
 open import EffectfulForcing.SystemT
-open import EffectfulForcing.LambdaCalculusVersionOfMFPS
 
 open Fin
 
