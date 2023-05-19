@@ -9,7 +9,7 @@ open import UF.FunExt
 open import UF.PropTrunc
 open import UF.Subsingletons
 
-module PCF.ScottModelOfContexts
+module PCF.Lambda.ScottModelOfContexts
         (pt : propositional-truncations-exist)
         (fe : ∀ {𝓤 𝓥} → funext 𝓤 𝓥)
         (pe : propext 𝓤₀)
@@ -17,15 +17,14 @@ module PCF.ScottModelOfContexts
 
 open PropositionalTruncation pt
 
+open import DomainTheory.Basics.Curry pt fe 𝓤₀
 open import DomainTheory.Basics.Dcpo pt fe 𝓤₀
+open import DomainTheory.Basics.FunctionComposition pt fe 𝓤₀
 open import DomainTheory.Basics.Pointed pt fe 𝓤₀
+open import DomainTheory.Basics.Products pt fe
 open import DomainTheory.Lifting.LiftingSet pt fe 𝓤₀ pe
-open import DomainTheory.ScottModelOfPCF.PCFCombinators pt fe 𝓤₀
-open import PCF.AbstractSyntax pt
-open import PCF.DcpoFunctionComposition pt fe 𝓤₀
-open import PCF.DcpoProducts pt fe
-open import PCF.DcpoProductsCurry pt fe 𝓤₀
-open import PCF.ScottModelOfTypes pt fe pe
+open import PCF.Lambda.AbstractSyntax pt
+open import PCF.Lambda.ScottModelOfTypes pt fe pe
 open import Posets.Poset fe
 open import UF.Miscelanea
 

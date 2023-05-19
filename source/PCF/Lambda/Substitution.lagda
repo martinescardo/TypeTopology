@@ -9,7 +9,7 @@ open import UF.FunExt
 open import UF.PropTrunc
 open import UF.Subsingletons
 
-module PCF.Substitution
+module PCF.Lambda.Substitution
         (pt : propositional-truncations-exist)
         (fe : ∀ {𝓤 𝓥} → funext 𝓤 𝓥)
         (pe : propext 𝓤₀)
@@ -18,7 +18,7 @@ module PCF.Substitution
 open PropositionalTruncation pt
 
 open import Naturals.Properties
-open import PCF.AbstractSyntax pt
+open import PCF.Lambda.AbstractSyntax pt
 open import UF.Base
 open import UF.Miscelanea
 open import UF.Subsingletons

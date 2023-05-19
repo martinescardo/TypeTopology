@@ -8,7 +8,7 @@ open import MLTT.Spartan
 open import UF.FunExt
 open import UF.PropTrunc
 
-module PCF.DcpoProductsContinuity
+module DomainTheory.Basics.ProductsContinuity
         (pt : propositional-truncations-exist)
         (fe : ∀ {𝓤 𝓥} → funext 𝓤 𝓥)
         (𝓥 : Universe)
@@ -18,7 +18,7 @@ open PropositionalTruncation pt
 
 open import DomainTheory.Basics.Dcpo pt fe 𝓥
 open import DomainTheory.Basics.Miscelanea pt fe 𝓥
-open import PCF.DcpoProducts pt fe
+open import DomainTheory.Basics.Products pt fe
 open import UF.Miscelanea
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt

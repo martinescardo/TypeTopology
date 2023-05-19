@@ -8,7 +8,7 @@ We define PCF types and terms, substitution as in PLFA, and the big step semanti
 
 open import UF.PropTrunc
 
-module PCF.AbstractSyntax (pt : propositional-truncations-exist) where
+module PCF.Lambda.AbstractSyntax (pt : propositional-truncations-exist) where
 
 open PropositionalTruncation pt
 

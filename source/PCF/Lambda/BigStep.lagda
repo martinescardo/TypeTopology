@@ -1,6 +1,6 @@
 Brendan Hart 2019-2020
 
-We define big step semantics of PCF.
+We define big step semantics of PCF.Lambda.
 
 \begin{code}
 
@@ -8,13 +8,13 @@ We define big step semantics of PCF.
 
 open import UF.PropTrunc
 
-module PCF.BigStep (pt : propositional-truncations-exist) where
+module PCF.Lambda.BigStep (pt : propositional-truncations-exist) where
 
 open PropositionalTruncation pt
 
 open import MLTT.Spartan
 open import Naturals.Properties hiding (pred-succ)
-open import PCF.AbstractSyntax pt
+open import PCF.Lambda.AbstractSyntax pt
 
 data _⇓'_ : ∀ {n : ℕ} {Γ : Context n} {σ : type} → PCF Γ σ → PCF Γ σ → 𝓤₀ ̇ where
 

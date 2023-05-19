@@ -8,7 +8,7 @@ open import MLTT.Spartan
 open import UF.FunExt
 open import UF.PropTrunc
 
-module PCF.DcpoFunctionComposition
+module DomainTheory.Basics.FunctionComposition
         (pt : propositional-truncations-exist)
         (fe : ∀ {𝓤 𝓥} → funext 𝓤 𝓥)
         (𝓥 : Universe)
@@ -17,7 +17,7 @@ module PCF.DcpoFunctionComposition
 open import DomainTheory.Basics.Dcpo pt fe 𝓥
 open import DomainTheory.Basics.Miscelanea pt fe 𝓥
 open import DomainTheory.Basics.Pointed pt fe 𝓥
-open import DomainTheory.ScottModelOfPCF.PCFCombinators pt fe 𝓥
+
 open import Posets.Poset fe
 
 open PosetAxioms

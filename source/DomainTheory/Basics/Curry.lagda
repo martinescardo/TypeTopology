@@ -8,7 +8,7 @@ open import MLTT.Spartan
 open import UF.FunExt
 open import UF.PropTrunc
 
-module PCF.DcpoProductsCurry
+module DomainTheory.Basics.Curry
         (pt : propositional-truncations-exist)
         (fe : ∀ {𝓤 𝓥} → funext 𝓤 𝓥)
         (𝓥 : Universe)
@@ -20,10 +20,9 @@ open import DomainTheory.Basics.Dcpo pt fe 𝓥
 open import DomainTheory.Basics.Exponential pt fe 𝓥
 open import DomainTheory.Basics.Miscelanea pt fe 𝓥
 open import DomainTheory.Basics.Pointed pt fe 𝓥
-open import DomainTheory.ScottModelOfPCF.PCFCombinators pt fe 𝓥
-open import PCF.DcpoFunctionComposition pt fe 𝓥
-open import PCF.DcpoProducts pt fe
-open import PCF.DcpoProductsContinuity pt fe 𝓥
+open import DomainTheory.Basics.FunctionComposition pt fe 𝓥
+open import DomainTheory.Basics.Products pt fe
+open import DomainTheory.Basics.ProductsContinuity pt fe 𝓥
 open import UF.Miscelanea
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt

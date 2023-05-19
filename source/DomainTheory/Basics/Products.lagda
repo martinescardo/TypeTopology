@@ -8,7 +8,7 @@ open import MLTT.Spartan
 open import UF.PropTrunc
 open import UF.FunExt
 
-module PCF.DcpoProducts
+module DomainTheory.Basics.Products
         (pt : propositional-truncations-exist)
         (fe : ∀ {𝓤 𝓥} → funext 𝓤 𝓥)
        where
@@ -36,7 +36,6 @@ module DcpoProductsGeneral
  open import DomainTheory.Basics.Dcpo pt fe 𝓥
  open import DomainTheory.Basics.Miscelanea pt fe 𝓥
  open import DomainTheory.Basics.Pointed pt fe 𝓥
- open import DomainTheory.ScottModelOfPCF.PCFCombinators pt fe 𝓥
 
  module _ {D : 𝓤 ̇} {E : 𝓤' ̇} where
 

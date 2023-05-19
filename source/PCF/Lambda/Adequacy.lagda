@@ -9,7 +9,7 @@ open import UF.FunExt
 open import UF.PropTrunc
 open import UF.Subsingletons
 
-module PCF.Adequacy
+module PCF.Lambda.Adequacy
         (pt : propositional-truncations-exist)
         (fe : ∀ {𝓤 𝓥} → funext 𝓤 𝓥)
         (pe : propext 𝓤₀)
@@ -22,19 +22,19 @@ open import DomainTheory.Basics.Exponential pt fe 𝓤₀
 open import DomainTheory.Basics.LeastFixedPoint pt fe
 open import DomainTheory.Basics.Pointed pt fe 𝓤₀
 open import DomainTheory.Lifting.LiftingDcpo pt fe 𝓤₀ pe
-open import DomainTheory.ScottModelOfPCF.PCFCombinators pt fe 𝓤₀
 open import Lifting.Lifting 𝓤₀ hiding (⊥)
 open import Lifting.Miscelanea 𝓤₀
 open import Lifting.Miscelanea-PropExt-FunExt 𝓤₀ pe fe
 open import Lifting.Monad 𝓤₀ hiding (μ)
 open import Naturals.Properties hiding (pred-succ)
-open import PCF.AbstractSyntax pt
-open import PCF.ApplicativeApproximation pt
-open import PCF.BigStep pt
-open import PCF.ScottModelOfContexts pt fe pe
-open import PCF.ScottModelOfTerms pt fe pe
-open import PCF.ScottModelOfTypes pt fe pe
-open import PCF.Substitution pt fe pe
+open import PCF.Combinatory.PCFCombinators pt fe 𝓤₀
+open import PCF.Lambda.AbstractSyntax pt
+open import PCF.Lambda.ApplicativeApproximation pt
+open import PCF.Lambda.BigStep pt
+open import PCF.Lambda.ScottModelOfContexts pt fe pe
+open import PCF.Lambda.ScottModelOfTerms pt fe pe
+open import PCF.Lambda.ScottModelOfTypes pt fe pe
+open import PCF.Lambda.Substitution pt fe pe
 open import UF.Miscelanea
 
 open IfZeroDenotationalSemantics pe

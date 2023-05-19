@@ -158,7 +158,7 @@ import Naturals.index
 import Notation.index
 import NotionsOfDecidability.index    -- by Tom de Jong and Martin Escardo
 import Ordinals.index
-import PCF.index                      -- by Brendan Hart
+import PCF.index                      -- by Tom de Jong and Brendan Hart
 import Posets.index                   -- by Tom de Jong and Martin Escardo
 import Rationals.index                -- by Andrew Sneap
 import Slice.index

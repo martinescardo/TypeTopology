@@ -7,14 +7,14 @@ Brendan Hart 2019-2020
 open import MLTT.Spartan
 open import UF.PropTrunc
 
-module PCF.ApplicativeApproximation
+module PCF.Lambda.ApplicativeApproximation
         (pt : propositional-truncations-exist)
        where
 
 open PropositionalTruncation pt
 
-open import PCF.AbstractSyntax pt
-open import PCF.BigStep pt
+open import PCF.Lambda.AbstractSyntax pt
+open import PCF.Lambda.BigStep pt
 
 _⊏̰_ : {σ : type} → PCF ⟨⟩ σ → PCF ⟨⟩ σ → 𝓤₀ ̇
 _⊏̰_ {ι}      M N = (n : ℕ) → M ⇓ numeral n → N ⇓ numeral n
