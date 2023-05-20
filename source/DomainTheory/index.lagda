@@ -7,6 +7,15 @@ each directory, ordered almost¹ alphabetically by directory name.
 
 ¹ Basics is first
 
+─────────────────────────────────────────────────────────────────────
+This accompanies the PhD thesis
+  Domain Theory in Constructive and Predicative Univalent Foundations
+  Tom de Jong
+  School of Computer Science, University of Birmingham
+  September 2022
+  https://arxiv.org/abs/2301.12405
+─────────────────────────────────────────────────────────────────────
+
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
