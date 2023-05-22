@@ -21,6 +21,6 @@ module DomainTheory.ScottModelOfPCF.PCFCombinators
         (𝓥 : Universe)
        where
 
-open import PCF.Combinatory.PCFCombinators
+open import PCF.Combinatory.PCFCombinators pt fe 𝓥 public
 
 \end{code}
