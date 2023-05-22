@@ -1,7 +1,7 @@
 Martin Escardo & Vincent Rahli 20 May 2023
 
 This is an adaptation of Internal.lagda written by Martin, which defines dialogue-tree⋆ without using T'
-but directly using T,
+but directly using T.
 
 \begin{code}
 
