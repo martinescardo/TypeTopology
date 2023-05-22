@@ -1,9 +1,8 @@
-Martin Escardo & Vincent Rahli 20 May 2023
+Vincent Rahli 20 May 2023
 
 This is an adaptation of WithoutOracle where we're using SystemT instead of CombinatoryT.
 
-Alternatively, it can be seen as adaptation of LambdaCalculusVersionOfMFPS written by Margin,
-where we use a slighlty different relation instead of using T'
+Alternatively, it can be seen as adaptation of LambdaCalculusVersionOfMFPS written by Martin, where we use a slighlty different relation instead of using T'.
 
 \begin{code}
 
