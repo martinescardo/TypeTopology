@@ -100,15 +100,15 @@ induction step:
 \begin{code}
 
 β'-lemma : (n : ℕ) (φ : ℕ → Brouwer) (α : ℕ → ℕ)
-         → beval (φ(α n)) α ＝ beval (β' φ n) α
+         → beval (φ (α n)) α ＝ beval (β' φ n) α
 
 β'-lemma 0 φ α =
  beval (φ (α 0)) α                                 ＝⟨ I ⟩
  beval (follow (α 0) (φ (α 0))) (λ i → α (succ i)) ＝⟨ refl ⟩
  beval (δ (λ i → follow i (φ i))) α                ＝⟨ refl ⟩
  beval (β' φ 0) α                                  ∎
- where
-  I = follow-lemma (φ (α 0)) α
+  where
+   I = follow-lemma (φ (α 0)) α
 
 β'-lemma (succ n) φ α =
  beval (φ (α (succ n))) α                                   ＝⟨ I ⟩
@@ -116,9 +116,9 @@ induction step:
  beval (β' (λ j → follow (α 0) (φ j)) n) (λ i → α (succ i)) ＝⟨ refl ⟩
  beval (δ (λ i → β' (λ j → follow i (φ j)) n)) α            ＝⟨ refl ⟩
  beval (β' φ (succ n)) α                                    ∎
-   where
-    I  = follow-lemma (φ (α (succ n))) α
-    II = β'-lemma n (λ j → follow (α 0) (φ j)) (λ i → α (succ i))
+  where
+   I  = follow-lemma (φ (α (succ n))) α
+   II = β'-lemma n (λ j → follow (α 0) (φ j)) (λ i → α (succ i))
 
 \end{code}
 
