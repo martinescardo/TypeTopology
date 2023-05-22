@@ -12,8 +12,11 @@ This accompanies the PhD thesis
   Domain Theory in Constructive and Predicative Univalent Foundations
   Tom de Jong
   School of Computer Science, University of Birmingham
-  September 2022
   https://arxiv.org/abs/2301.12405
+
+  Submitted: 30 September 2022
+  Defended:  20 December  2022
+  Accepted:   1 February  2023
 ─────────────────────────────────────────────────────────────────────
 
 \begin{code}
