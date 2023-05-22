@@ -714,7 +714,7 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
                        (rhs₁ [ (m , n) ] ≤[ poset-of (𝒪 X) ] lhs₁ [ o ]) holds
                   ϡ (o , p) = ∣ o , ϟ ∣
                    where
-                    𝕒  = ∧[ 𝒪 X ]-left-monotone {!!}
+                    𝕒  = {!!}
                     𝕓₁ = j (β m) ∧[ 𝒪 A ] k (β n)   ≤⟨ ∧[ 𝒪 A ]-lower₁ (j (β m)) (k (β n)) ⟩
                          j (β m)                    ≤⟨ ♠                                   ⟩
                          j (β m ∨[ 𝒪 A ] β n)       ＝⟨ ap j p ⁻¹                          ⟩ₚ
@@ -746,19 +746,23 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
                             (pr₂ 𝒻)
                             ((j (β m) ∧[ 𝒪 A ] k (β n)) , (j (β o) ∧[ 𝒪 A ] k (β o)))
                             (∧[ 𝒪 A ]-greatest (j (β o)) (k (β o)) (meet-of (𝒪 A) (j (β m)) (k (β n))) 𝕓₁ 𝕓₂))
-                    𝕔 = ∧[ 𝒪 X ]-right-monotone
-                         (𝒻 ⋆∙ k (β n) ∧[ 𝒪 X ] (¬𝒻⋆ n) ≤⟨ {!!} ⟩ {!!} ■)
+
+                    ♣ : ((¬𝒻⋆ m ∧[ 𝒪 X ] ¬𝒻⋆ n) ≤[ poset-of (𝒪 X) ] ¬𝒻⋆ o) holds
+                    ♣ = {!!}
+
+                    𝕔 = ∧[ 𝒪 X ]-right-monotone ♣
+                    𝕕 = {!!}
                      where
                       open PosetReasoning (poset-of (𝒪 X))
 
                     open PosetReasoning (poset-of (𝒪 X))
 
-                    ϟ = (𝒻 ⋆∙ j (β m) ∧[ 𝒪 X ] ¬𝒻⋆ m) ∧[ 𝒪 X ] (𝒻 ⋆∙ k (β n) ∧[ 𝒪 X ] ¬𝒻⋆ n)     ≤⟨ 𝕒 ⟩
-                        (𝒻 ⋆∙ (j (β m) ∧[ 𝒪 A ] k (β n))) ∧[ 𝒪 X ] (𝒻 ⋆∙ k (β n) ∧[ 𝒪 X ] ¬𝒻⋆ n) ≤⟨ 𝕓 ⟩
-                        𝒻 ⋆∙ (j (β o) ∧[ 𝒪 A ] k (β o)) ∧[ 𝒪 X ] (𝒻 ⋆∙ k (β n) ∧[ 𝒪 X ] ¬𝒻⋆ n)   ≤⟨ 𝕔 ⟩
-                        𝒻 ⋆∙ (j (β o) ∧[ 𝒪 A ] k (β o)) ∧[ 𝒪 X ] ¬𝒻⋆ o                           ＝⟨ {!!} ⟩ₚ
-                        (𝒻 ⋆∙ j (β o) ∧[ 𝒪 X ] 𝒻 ⋆∙ k (β o)) ∧[ 𝒪 X ] ¬𝒻⋆ o                      ≤⟨ {!!} ⟩
-                        (𝒻 ⋆∙ j (β o) ∧[ 𝒪 X ] ¬𝒻⋆ o) ∧[ 𝒪 X ] (𝒻 ⋆∙ k (β o) ∧[ 𝒪 X ] ¬𝒻⋆ o)     ■
+                    ϟ = (𝒻 ⋆∙ j (β m) ∧[ 𝒪 X ] ¬𝒻⋆ m) ∧[ 𝒪 X ] (𝒻 ⋆∙ k (β n) ∧[ 𝒪 X ] ¬𝒻⋆ n)   ＝⟨ 𝕒 ⟩ₚ
+                        (𝒻 ⋆∙ (j (β m) ∧[ 𝒪 A ] k (β n))) ∧[ 𝒪 X ] (¬𝒻⋆ m ∧[ 𝒪 X ] ¬𝒻⋆ n)      ≤⟨ 𝕓  ⟩
+                        𝒻 ⋆∙ (j (β o) ∧[ 𝒪 A ] k (β o)) ∧[ 𝒪 X ] (¬𝒻⋆ m ∧[ 𝒪 X ] ¬𝒻⋆ n)        ≤⟨ 𝕔 ⟩
+                        𝒻 ⋆∙ (j (β o) ∧[ 𝒪 A ] k (β o)) ∧[ 𝒪 X ] ¬𝒻⋆ o                         ＝⟨ {!!} ⟩ₚ
+                        (𝒻 ⋆∙ j (β o) ∧[ 𝒪 X ] 𝒻 ⋆∙ k (β o)) ∧[ 𝒪 X ] ¬𝒻⋆ o                    ≤⟨ {!!} ⟩
+                        (𝒻 ⋆∙ j (β o) ∧[ 𝒪 X ] ¬𝒻⋆ o) ∧[ 𝒪 X ] (𝒻 ⋆∙ k (β o) ∧[ 𝒪 X ] ¬𝒻⋆ o)   ■
 
                   ※ : ∃ o ꞉ Bₐ , β o ＝ β m ∨[ 𝒪 A ] β n
                   ※ = ∥∥-rec
