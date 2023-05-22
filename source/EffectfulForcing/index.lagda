@@ -21,11 +21,12 @@ import EffectfulForcing.MFPS-XXIX                   -- (2012)
 import EffectfulForcing.SystemT
 import EffectfulForcing.LambdaCalculusVersionOfMFPS -- (2013)
 import EffectfulForcing.Internal                    -- (2013)
-import EffectfulForcing.InternalWithout             -- (2023)
 import EffectfulForcing.WithoutOracle               -- By Vincent Rahli (2015)
-import EffectfulForcing.WithoutOracleLambda         -- (2023)
 import EffectfulForcing.Dialogue-to-Brouwer         -- By Martin Escardo and
                                                     --    Paulo Oliva (2017)
+import EffectfulForcing.InternalWithout             -- (2023)
+import EffectfulForcing.WithoutOracleLambda         -- (2023)
+
 \end{code}
 
  * The file combinators defines S, K, iteration over the natural
