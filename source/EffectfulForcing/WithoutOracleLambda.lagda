@@ -1,6 +1,6 @@
 Martin Escardo & Vincent Rahli 20 May 2023
 
-This is an adaptation of WithoutOracle where we're using SystemT instead of CombinatryT.
+This is an adaptation of WithoutOracle where we're using SystemT instead of CombinatoryT.
 
 Alternatively, it can be seen as adaptation of LambdaCalculusVersionOfMFPS written by Margin,
 where we use a slighlty different relation instead of using T'
@@ -36,7 +36,7 @@ succ' : B ℕ → B ℕ
 succ' = B-functor succ
 
 rec' : {σ : type} → (B ℕ → B〖 σ 〗 → B〖 σ 〗) → B〖 σ 〗 → B ℕ → B〖 σ 〗
-rec' f x = Kleisli-extension(rec (f ∘ η) x)
+rec' f x = Kleisli-extension (rec (f ∘ η) x)
 
 B【_】 : {n : ℕ} (Γ : Cxt n) → Type
 B【 Γ 】 = (i : Fin _) → B〖 (Γ [ i ]) 〗
@@ -104,8 +104,8 @@ Rs {n} {Γ} α xs ys = (i : Fin n) → R {Γ [ i ]} α (xs i) (ys i)
 main-lemma : {n : ℕ} {Γ : Cxt n} {σ : type} (t : T Γ σ) (α : Baire)
              (xs : 【 Γ 】)
              (ys : B【 Γ 】)
-             → Rs α xs ys
-             → R α (⟦ t ⟧ xs) (B⟦ t ⟧ ys)
+           → Rs α xs ys
+           → R α (⟦ t ⟧ xs) (B⟦ t ⟧ ys)
 
 main-lemma Zero α xs ys cr = refl
 
@@ -116,11 +116,14 @@ main-lemma Succ α xs ys cr = λ n n' rn →
 
 main-lemma (Rec {_} {_} {σ}) α xs ys cr = lemma
  where
-  lemma :  (f  : ℕ → 〖 σ 〗 → 〖 σ 〗) (f' : B ℕ → B〖 σ 〗 → B〖 σ 〗)
+  lemma : (f  : ℕ → 〖 σ 〗 → 〖 σ 〗)
+          (f' : B ℕ → B〖 σ 〗 → B〖 σ 〗)
         → R {ι ⇒ σ ⇒ σ} α f f'
-        → (x  : 〖 σ 〗) (y : B〖 σ 〗)
+        → (x  : 〖 σ 〗)
+          (y : B〖 σ 〗)
         → R {σ} α x y
-        → (n  : ℕ) (n' : B ℕ)
+        → (n  : ℕ)
+          (n' : B ℕ)
         → R {ι} α n n'
         → R {σ} α (rec f x n) (Kleisli-extension (rec (f' ∘ η) y) n')
   lemma f f' rf x y rx = R-kleisli-lemma σ α g g' rg
@@ -139,9 +142,10 @@ main-lemma (ν i) α xs ys cr = cr i
 
 main-lemma {n} {Γ} {σ ⇒ τ} (ƛ t) α xs ys cr = lemma
   where
-    lemma : (x : 〖 σ 〗) (y : B〖 σ 〗)
-            → R α x y
-            → R α (⟦ t ⟧ (xs ‚ x)) (B⟦ t ⟧ (ys ‚‚ y))
+    lemma : (x : 〖 σ 〗)
+            (y : B〖 σ 〗)
+          → R α x y
+          → R α (⟦ t ⟧ (xs ‚ x)) (B⟦ t ⟧ (ys ‚‚ y))
     lemma x y r = main-lemma t α (xs ‚ x) (ys ‚‚ y) h
       where
         h : (i : Fin (succ n)) → R α ((xs ‚ x) i) ((ys ‚‚ y) i)
@@ -160,7 +164,7 @@ main-lemma (t · u) α xs ys cr = IH-t (⟦ u ⟧ xs) (B⟦ u ⟧ ys) IH-u
   IH-u = main-lemma u α xs ys cr
 
 main-lemma-closed : {σ : type} (t : T₀ σ) (α : Baire)
-                    → R α ⟦ t ⟧₀ (B⟦ t ⟧₀)
+                  → R α ⟦ t ⟧₀ (B⟦ t ⟧₀)
 main-lemma-closed {σ} t α = main-lemma t α ⟨⟩ ⟪⟫ (λ())
 
 dialogue-tree-correct : (t : T₀ ((ι ⇒ ι) ⇒ ι))
@@ -169,7 +173,7 @@ dialogue-tree-correct : (t : T₀ ((ι ⇒ ι) ⇒ ι))
 dialogue-tree-correct t α =
  ⟦ t ⟧₀ α                      ＝⟨ main-lemma-closed t α α generic lemma ⟩
  dialogue (B⟦ t ⟧₀ generic) α  ＝⟨ refl ⟩
- dialogue (dialogue-tree t) α ∎
+ dialogue (dialogue-tree t) α  ∎
   where
    lemma : (n  : ℕ)
            (n' : B ℕ)
@@ -186,7 +190,7 @@ eloquence-theorem : (f : Baire → ℕ)
 eloquence-theorem f (t , r) =
  (dialogue-tree t ,
   (λ α → dialogue (dialogue-tree t) α ＝⟨ (dialogue-tree-correct t α)⁻¹ ⟩
-         ⟦ t ⟧₀ α                      ＝⟨ ap (λ - → - α) r ⟩
+         ⟦ t ⟧₀ α                     ＝⟨ ap (λ - → - α) r ⟩
          f α                          ∎))
 
 eloquence-corollary₀ : (f : Baire → ℕ)
