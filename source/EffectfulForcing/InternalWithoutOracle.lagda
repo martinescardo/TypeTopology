@@ -7,7 +7,7 @@ but directly using T.
 
 {-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
-module EffectfulForcing.InternalWithout where
+module EffectfulForcing.InternalWithoutOracle where
 
 open import MLTT.Spartan hiding (rec ; _^_) renaming (⋆ to 〈〉)
 open import EffectfulForcing.SystemT

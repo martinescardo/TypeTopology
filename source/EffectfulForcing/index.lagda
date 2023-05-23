@@ -24,8 +24,8 @@ import EffectfulForcing.Internal                    -- (2013)
 import EffectfulForcing.WithoutOracle               -- By Vincent Rahli (2015)
 import EffectfulForcing.Dialogue-to-Brouwer         -- By Martin Escardo and
                                                     --    Paulo Oliva (2017)
-import EffectfulForcing.InternalWithout             -- (2023)
-import EffectfulForcing.WithoutOracleLambda         -- (2023)
+import EffectfulForcing.InternalWithoutOracle       -- By Vincent Rahli (2023)
+import EffectfulForcing.WithoutOracleLambda         -- By Vincent Rahil (2023)
 
 \end{code}
 
