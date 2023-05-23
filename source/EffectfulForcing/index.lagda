@@ -95,11 +95,14 @@ import EffectfulForcing.WithoutOracleLambda         -- By Vincent Rahil (2023)
    that it is not necessary to consider an extension of (combinatory)
    system T with oracles to reach the same conclusions.
 
-   TODO. Do the same in a file InternalWithout oracle. This should
-   probably be done before the previous TODO, and then used in the
-   previous TODO.
-
  * The file Dialogue-to-Brouwer, written by Martin Escardo and Paulo
    Oliva, shows how to translate dialogue trees for functions (ℕ → ℕ) → ℕ
    to Brouwer trees, including a formulation and proof of correctness
    of the translation.
+
+ * The file InternalWithoutOracle gives the dialogue tree semantics of
+   system T without an oracle.
+
+ * The file InternalWithoutOracle constructs dialogue trees and prove
+   their correctness without using an oracle. We intend to use this to
+   achieve the above TODO.
