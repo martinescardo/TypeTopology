@@ -229,4 +229,23 @@ module HeytingImplicationConstruction (X : Locale 𝓤  𝓥  𝓥)
          Ⅰ = 𝟏-right-unit-of-∧ (𝒪 X) (𝟏[ 𝒪 X ] ==> U) ⁻¹
          Ⅱ = mp-right 𝟏[ 𝒪 X ] U
 
+ ==>-left-reverses-joins : (U V W : ⟨ 𝒪 X ⟩)
+                         → U ==> W ∧[ 𝒪 X ] (V ==> W) ＝ (U ∨[ 𝒪 X ] V) ==> W
+ ==>-left-reverses-joins U V W = ≤-is-antisymmetric (poset-of (𝒪 X)) † ‡
+  where
+   open PosetReasoning (poset-of (𝒪 X))
+   lhs₁ = U ==> W
+   lhs₂ = V ==> W
+
+   ※ = ((U ==> W) ∧[ 𝒪 X ] (V ==> W)) ∧[ 𝒪 X ] (U ∨[ 𝒪 X ] V)   ≤⟨ {!!} ⟩
+       W                                                        ■
+
+   † : (((U ==> W) ∧[ 𝒪 X ] (V ==> W)) ≤[ poset-of (𝒪 X) ] ((U ∨[ 𝒪 X ] V) ==> W))
+        holds
+   † = heyting-implication₁ (U ∨[ 𝒪 X ] V) W ((U ==> W) ∧[ 𝒪 X ] (V ==> W)) ※
+    where
+
+   ‡ : {!!} holds
+   ‡ = {!!}
+
 \end{code}
