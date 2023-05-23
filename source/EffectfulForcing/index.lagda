@@ -100,9 +100,9 @@ import EffectfulForcing.WithoutOracleLambda         -- By Vincent Rahil (2023)
    to Brouwer trees, including a formulation and proof of correctness
    of the translation.
 
- * The file InternalWithoutOracle gives the dialogue tree semantics of
-   system T without an oracle.
+ * The file InternalWithoutOracle gives a Church-encoded dialogue tree
+   of system T into itself without an oracle.
 
- * The file InternalWithoutOracle constructs dialogue trees and prove
+ * The file WithoutOracleLambda constructs dialogue trees and prove
    their correctness without using an oracle. We intend to use this to
    achieve the above TODO.
