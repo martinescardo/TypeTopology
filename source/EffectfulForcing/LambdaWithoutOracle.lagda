@@ -63,7 +63,7 @@ B⟦ t ⟧₀ = B⟦ t ⟧ ⟪⟫
 dialogue-tree : T₀((ι ⇒ ι) ⇒ ι) → B ℕ
 dialogue-tree t = B⟦ t ⟧₀ generic
 
-R : {σ : type} → Baire → 〖 σ 〗 → B〖 σ 〗 → Set
+R : {σ : type} → Baire → 〖 σ 〗 → B〖 σ 〗 → Type
 R {ι}     α n d  = n ＝ dialogue d α
 R {σ ⇒ τ} α f f' = (x  : 〖 σ 〗)
                    (x' : B〖 σ 〗)
@@ -100,7 +100,9 @@ R-kleisli-lemma (σ ⇒ τ) α g g' rg n n' rn
 Rs : {n : ℕ} {Γ : Cxt n} → Baire → 【 Γ 】 → B【 Γ 】 → Type
 Rs {n} {Γ} α xs ys = (i : Fin n) → R {Γ [ i ]} α (xs i) (ys i)
 
-main-lemma : {n : ℕ} {Γ : Cxt n} {σ : type} (t : T Γ σ) (α : Baire)
+main-lemma : {n : ℕ} {Γ : Cxt n}
+             {σ : type} (t : T Γ σ)
+             (α : Baire)
              (xs : 【 Γ 】)
              (ys : B【 Γ 】)
            → Rs α xs ys
@@ -126,30 +128,30 @@ main-lemma (Rec {_} {_} {σ}) α xs ys cr = lemma
         → R {ι} α n n'
         → R {σ} α (rec f x n) (Kleisli-extension (rec (f' ∘ η) y) n')
   lemma f f' rf x y rx = R-kleisli-lemma σ α g g' rg
-    where
-      g : ℕ → 〖 σ 〗
-      g k = rec f x k
+   where
+    g : ℕ → 〖 σ 〗
+    g k = rec f x k
 
-      g' : ℕ → B〖 σ 〗
-      g' k = rec (f' ∘ η) y k
+    g' : ℕ → B〖 σ 〗
+    g' k = rec (f' ∘ η) y k
 
-      rg : (k : ℕ) → R α (g k) (g' k)
-      rg zero     = rx
-      rg (succ k) = rf k (η k) refl (g k) (g' k) (rg k)
+    rg : (k : ℕ) → R α (g k) (g' k)
+    rg zero     = rx
+    rg (succ k) = rf k (η k) refl (g k) (g' k) (rg k)
 
 main-lemma (ν i) α xs ys cr = cr i
 
 main-lemma {n} {Γ} {σ ⇒ τ} (ƛ t) α xs ys cr = lemma
-  where
-    lemma : (x : 〖 σ 〗)
-            (y : B〖 σ 〗)
-          → R α x y
-          → R α (⟦ t ⟧ (xs ‚ x)) (B⟦ t ⟧ (ys ‚‚ y))
-    lemma x y r = main-lemma t α (xs ‚ x) (ys ‚‚ y) h
-      where
-        h : (i : Fin (succ n)) → R α ((xs ‚ x) i) ((ys ‚‚ y) i)
-        h 𝟎       = r
-        h (suc i) = cr i
+ where
+  lemma : (x : 〖 σ 〗)
+          (y : B〖 σ 〗)
+        → R α x y
+        → R α (⟦ t ⟧ (xs ‚ x)) (B⟦ t ⟧ (ys ‚‚ y))
+  lemma x y r = main-lemma t α (xs ‚ x) (ys ‚‚ y) h
+    where
+      h : (i : Fin (succ n)) → R α ((xs ‚ x) i) ((ys ‚‚ y) i)
+      h 𝟎       = r
+      h (suc i) = cr i
 
 main-lemma (t · u) α xs ys cr = IH-t (⟦ u ⟧ xs) (B⟦ u ⟧ ys) IH-u
  where
