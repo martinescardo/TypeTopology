@@ -8,7 +8,7 @@ Alternatively, it can be seen as adaptation of LambdaCalculusVersionOfMFPS writt
 
 {-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
-module EffectfulForcing.WithoutOracleLambda where
+module EffectfulForcing.LambdaWithoutOracle where
 
 open import MLTT.Spartan hiding (rec ; _^_) renaming (⋆ to 〈〉)
 open import MLTT.Athenian using (Fin)
