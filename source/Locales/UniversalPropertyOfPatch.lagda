@@ -572,7 +572,10 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
    γ : spectralᴰ (𝒪 A)
      → zero-dimensionalᴰ (𝒪 X)
      → ∃! 𝒻⁻ ꞉ (X ─c→ Patch-A) , ((x : ⟨ 𝒪 A ⟩) → 𝒻 .pr₁ x  ＝ 𝒻⁻ .pr₁ ‘ x ’)
-   γ σᴰ 𝕫ᴰ = ((f⁻⋆ , 𝒻⁻-α , 𝒻⁻-β , 𝒻⁻-γ) , {!!}) , {!!}
+   γ σᴰ 𝕫ᴰ = UniversalPropertyOfPatch.proof-of-ump X σᴰ 𝕫ᴰ 𝒻 μ
+
+{--
+
     where
      open SmallPatchConstruction A σᴰ
       using (𝟎-is-id; ≼-implies-≼ᵏ; ≼ᵏ-implies-≼; _≼ᵏ_)
@@ -1372,5 +1375,9 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
       transport (λ - → (- is-lub-of ⁅ f⁻⋆ 𝒿 ∣ 𝒿 ε S ⁆) holds)
        (f⁻⋆-preserves-joins S ⁻¹)
        (⋁[ 𝒪 X ]-upper ⁅ f⁻⋆ 𝒿 ∣ 𝒿 ε S ⁆ , ⋁[ 𝒪 X ]-least ⁅ f⁻⋆ 𝒿 ∣ 𝒿 ε S ⁆)
+
+-- --}
+-- --}
+-- --}
 
 \end{code}
