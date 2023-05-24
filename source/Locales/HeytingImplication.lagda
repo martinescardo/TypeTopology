@@ -236,16 +236,42 @@ module HeytingImplicationConstruction (X : Locale 𝓤  𝓥  𝓥)
    open PosetReasoning (poset-of (𝒪 X))
    lhs₁ = U ==> W
    lhs₂ = V ==> W
+   lhs₃ = (U ∨[ 𝒪 X ] V) ==> W
 
-   ※ = ((U ==> W) ∧[ 𝒪 X ] (V ==> W)) ∧[ 𝒪 X ] (U ∨[ 𝒪 X ] V)   ≤⟨ {!!} ⟩
-       W                                                        ■
+   ※ =
+    (lhs₁ ∧[ 𝒪 X ] lhs₂) ∧[ 𝒪 X ] (U ∨[ 𝒪 X ] V)                                  ＝⟨ Ⅰ ⟩ₚ
+    ((lhs₁ ∧[ 𝒪 X ] lhs₂) ∧[ 𝒪 X ] U) ∨[ 𝒪 X ] ((lhs₁ ∧[ 𝒪 X ] lhs₂) ∧[ 𝒪 X ] V)  ≤⟨ Ⅱ  ⟩
+    (lhs₁ ∧[ 𝒪 X ] U) ∨[ 𝒪 X ] ((lhs₁ ∧[ 𝒪 X ] lhs₂) ∧[ 𝒪 X ] V)                  ≤⟨ Ⅲ  ⟩
+    (lhs₁ ∧[ 𝒪 X ] U) ∨[ 𝒪 X ] (lhs₂ ∧[ 𝒪 X ] V)                                  ≤⟨ Ⅳ  ⟩
+    W                                                                             ■
+     where
+      Ⅰ = binary-distributivity (𝒪 X) (lhs₁ ∧[ 𝒪 X ] lhs₂) U V
+      Ⅱ = ∨[ 𝒪 X ]-left-monotone (∧[ 𝒪 X ]-left-monotone (∧[ 𝒪 X ]-lower₁ lhs₁ lhs₂))
+      Ⅲ = ∨[ 𝒪 X ]-right-monotone (∧[ 𝒪 X ]-left-monotone (∧[ 𝒪 X ]-lower₂ lhs₁ lhs₂))
+      Ⅳ = ∨[ 𝒪 X ]-least (mp-right U W) (mp-right V W)
 
-   † : (((U ==> W) ∧[ 𝒪 X ] (V ==> W)) ≤[ poset-of (𝒪 X) ] ((U ∨[ 𝒪 X ] V) ==> W))
-        holds
+   † : ((lhs₁ ∧[ 𝒪 X ] lhs₂) ≤[ poset-of (𝒪 X) ] lhs₃) holds
    † = heyting-implication₁ (U ∨[ 𝒪 X ] V) W ((U ==> W) ∧[ 𝒪 X ] (V ==> W)) ※
-    where
 
-   ‡ : {!!} holds
-   ‡ = {!!}
+   ‡ : (lhs₃ ≤[ poset-of (𝒪 X) ] (lhs₁ ∧[ 𝒪 X ] lhs₂)) holds
+   ‡ = ∧[ 𝒪 X ]-greatest lhs₁ lhs₂ lhs₃ ♣ ♠
+        where
+         ♣ : (lhs₃ ≤[ poset-of (𝒪 X) ] lhs₁) holds
+         ♣ = heyting-implication₁ U W lhs₃ ♢
+          where
+           Ⅰ = ∧[ 𝒪 X ]-right-monotone (∨[ 𝒪 X ]-upper₁ U V)
+           Ⅱ = mp-right (U ∨[ 𝒪 X ] V) W
+           ♢ = lhs₃ ∧[ 𝒪 X ] U               ≤⟨ Ⅰ ⟩
+               lhs₃ ∧[ 𝒪 X ] (U ∨[ 𝒪 X ] V)  ≤⟨ Ⅱ ⟩
+               W                             ■
+
+         ♠ : (lhs₃ ≤[ poset-of (𝒪 X) ] lhs₂) holds
+         ♠ = heyting-implication₁ V W lhs₃ ♢
+          where
+           Ⅰ = ∧[ 𝒪 X ]-right-monotone (∨[ 𝒪 X ]-upper₂ U V)
+           Ⅱ = mp-right (U ∨[ 𝒪 X ] V) W
+           ♢ = lhs₃ ∧[ 𝒪 X ] V               ≤⟨ Ⅰ ⟩
+               lhs₃ ∧[ 𝒪 X ] (U ∨[ 𝒪 X ] V)  ≤⟨ Ⅱ ⟩
+               W                             ■
 
 \end{code}
