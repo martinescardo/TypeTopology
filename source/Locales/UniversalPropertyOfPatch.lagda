@@ -748,15 +748,19 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
                             (∧[ 𝒪 A ]-greatest (j (β o)) (k (β o)) (meet-of (𝒪 A) (j (β m)) (k (β n))) 𝕓₁ 𝕓₂))
 
                     ♣ : ((¬𝒻⋆ m ∧[ 𝒪 X ] ¬𝒻⋆ n) ≤[ poset-of (𝒪 X) ] ¬𝒻⋆ o) holds
-                    ♣ = ¬𝒻⋆ m ∧[ 𝒪 X ] ¬𝒻⋆ n                                            ＝⟨ refl ⟩ₚ
-                        ((𝒻 ⋆∙ β m) ==> 𝟎[ 𝒪 X ]) ∧[ 𝒪 X ] ((𝒻 ⋆∙ β n) ==> 𝟎[ 𝒪 X ])    ＝⟨ refl ⟩ₚ
-                        (𝒻 ⋆∙ (β m ∨[ 𝒪 A ] β n)) ==> 𝟎[ 𝒪 X ]                          ＝⟨ {!!} ⟩ₚ
-                        ¬𝒻⋆ o                                                           ■
+                    ♣ = ¬𝒻⋆ m ∧[ 𝒪 X ] ¬𝒻⋆ n                                          ＝⟨ refl ⟩ₚ
+                        ((𝒻 ⋆∙ β m) ==> 𝟎[ 𝒪 X ]) ∧[ 𝒪 X ] ((𝒻 ⋆∙ β n) ==> 𝟎[ 𝒪 X ])  ＝⟨ 𝟏    ⟩ₚ
+                        ((𝒻 ⋆∙ (β m) ∨[ 𝒪 X ] (𝒻 ⋆∙ (β n))) ==> 𝟎[ 𝒪 X ])             ＝⟨ 𝟐    ⟩ₚ
+                        ((𝒻 ⋆∙ (β m ∨[ 𝒪 A ] β n)) ==> 𝟎[ 𝒪 X ])                      ＝⟨ 𝟑    ⟩ₚ
+                        ¬𝒻⋆ o                                                         ■
                          where
                           open PosetReasoning (poset-of (𝒪 X))
 
-                          𝟏 = {! opn !}
-                          𝟐 = {!!}
+                          𝟏 = ==>-left-reverses-joins (𝒻 ⋆∙ (β m)) (𝒻 ⋆∙ (β n)) 𝟎[ 𝒪 X ]
+                          𝟐 = ap
+                               (λ - → - ==> 𝟎[ 𝒪 X ])
+                               (frame-homomorphisms-preserve-binary-joins (𝒪 A) (𝒪 X) 𝒻 (β m) (β n) ⁻¹)
+                          𝟑 = ap (λ - → (𝒻 ⋆∙ -) ==> 𝟎[ 𝒪 X ]) (p ⁻¹)
 
                     𝕔 = ∧[ 𝒪 X ]-right-monotone ♣
                     𝕕 = {!!}
