@@ -229,6 +229,71 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
              ⁅ 𝒻 ⋆∙ (β i) ∧[ 𝒪 X ] ¬𝒻⋆ n ∣ i ε 𝒥 ⁆
              ((⋁[ 𝒪 X ] S) , ※)
 
+  f⁻⋆-is-monotone : is-monotonic (poset-of (𝒪 Patchₛ-A)) (poset-of (𝒪 X)) f⁻⋆
+                     holds
+  f⁻⋆-is-monotone (𝒿 , 𝓀) p = cofinal-implies-join-covered (𝒪 X) 𝒮 𝒯 †
+   where
+    𝒮 : Fam 𝓤 ⟨ 𝒪 X ⟩
+    𝒮 = ⁅ (𝒻 ⋆∙ β m) ∧[ 𝒪 X ] ¬𝒻⋆ n
+          ∣ (m , n , p) ∶ Σ m ꞉ Bₐ , Σ n ꞉ Bₐ , 𝕃 𝒿 m n holds ⁆
+
+    𝒯 : Fam 𝓤 ⟨ 𝒪 X ⟩
+    𝒯 = ⁅ (𝒻 ⋆∙ β m) ∧[ 𝒪 X ] ¬𝒻⋆ n
+          ∣ (m , n , p) ∶ Σ m ꞉ Bₐ , Σ n ꞉ Bₐ , 𝕃 𝓀 m n holds ⁆
+
+    † : cofinal-in (𝒪 X) 𝒮 𝒯 holds
+    † (m , n , q) = ∣ (m , n , ‡) , ♣ ∣
+     where
+      open PosetReasoning (poset-of (𝒪 Patch-A))
+
+      ‡₁ : ((‘ β m ’ ∧[ 𝒪 Patch-A ] ¬‘ βₖ n ’) ≼ 𝓀) holds
+      ‡₁ = ‘ β m ’ ∧[ 𝒪 Patch-A ] ¬‘ βₖ n ’    ≤⟨ Ⅰ ⟩
+           𝒿                                   ≤⟨ Ⅱ ⟩
+           𝓀                                   ■
+            where
+             Ⅰ = ≼ᵏ-implies-≼ (‘ β m ’ ∧[ 𝒪 Patch-A ] ¬‘ βₖ n ’) 𝒿 q
+             Ⅱ = ≼ᵏ-implies-≼ 𝒿 𝓀 p
+
+      ‡ : 𝕃 𝓀 m n holds
+      ‡ = ≼-implies-≼ᵏ (‘ β m ’ ∧[ 𝒪 Patch-A ] ¬‘ βₖ n ’) 𝓀 ‡₁
+
+      ♣ : (_ ≤[ poset-of (𝒪 X) ] _) holds
+      ♣ = ≤-is-reflexive (poset-of (𝒪 X)) ((𝒻 ⋆∙ β m) ∧[ 𝒪 X ] ¬𝒻⋆ n)
+
+  𝒻⁻⋆ₘ : poset-of (𝒪 Patchₛ-A) ─m→ poset-of (𝒪 X)
+  𝒻⁻⋆ₘ = f⁻⋆ , f⁻⋆-is-monotone
+
+  open PatchStoneᴰ A σᴰ
+
+  Patchₛ-A-has-basis : has-basis (𝒪 Patchₛ-A) holds
+  Patchₛ-A-has-basis = spectral-frames-have-bases
+                        (𝒪 Patchₛ-A)
+                        patchₛ-is-spectral
+
+  open AdjointFunctorTheorem X Patchₛ-A Patchₛ-A-has-basis hiding (f₊-is-right-adjoint-of-f⁺)
+  open AdjointFunctorTheorem Patchₛ-A X X-has-basis
+   using ()
+   renaming (adjunction-inequality-forward to adjunction-inequality-forward₀)
+  open AdjointFunctorTheorem X A A-has-basis
+   using (f₊-is-right-adjoint-of-f⁺)
+   renaming (right-adjoint-of to right-adjoint-ofₓ;
+             f₊-preserves-binary-meets to f₊-preserves-binary-meetsₓ;
+             adjunction-inequality-forward to adjunction-inequality-forwardₓ;
+             adjunction-inequality-backward to adjunction-inequality-backwardₓ)
+  open GaloisConnectionBetween (poset-of (𝒪 Patchₛ-A)) (poset-of (𝒪 X))
+  open GaloisConnectionBetween (poset-of (𝒪 X)) (poset-of (𝒪 A))
+   using () renaming (counit to counitₓ)
+  open GaloisConnectionBetween (poset-of (𝒪 A)) (poset-of (𝒪 X))
+   using () renaming (counit to counitₐ)
+
+  𝒻₊ : ⟨ 𝒪 X ⟩ → ⟨ 𝒪 A ⟩
+  𝒻₊ = pr₁ (right-adjoint-ofₓ 𝒻)
+
+  𝒻⁺ₘ : poset-of (𝒪 A) ─m→ poset-of (𝒪 X)
+  𝒻⁺ₘ = pr₁ 𝒻 , frame-morphisms-are-monotonic (𝒪 A) (𝒪 X) (𝒻 ⋆∙_) (pr₂ 𝒻)
+
+  𝒻₊ₘ : poset-of (𝒪 X) ─m→ poset-of (𝒪 A)
+  𝒻₊ₘ = right-adjoint-ofₓ 𝒻
 
   𝒻⁻-α : f⁻⋆ 𝟏[ 𝒪 Patchₛ-A ] ＝ 𝟏[ 𝒪 X ]
   𝒻⁻-α = only-𝟏-is-above-𝟏 (𝒪 X) (f⁻⋆ 𝟏[ 𝒪 Patchₛ-A ]) †
