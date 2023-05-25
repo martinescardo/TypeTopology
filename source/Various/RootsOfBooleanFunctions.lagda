@@ -1,24 +1,37 @@
 Martin Escardo, 21th April 2023
-
 Based on Section 8.1 of the paper https://doi.org/10.2168/LMCS-4(3:3)2008
 
-Let 𝟚 be the two-point set with elements 0 and 1.
+Updated 25th May 2023 to (1) give an alternative formula for a
+putative root, and (ii) prove its correctness.
+
+We provide a formula for the the putative root of any boolean
+f : 𝟚ⁿ → 𝟚, using only f and ₀ and show its correctness.
+
+In more detail:
+
+Let 𝟚 be the two-point set with elements ₀ and ₁, referred to as the
+type of booleans.
 
 Consider a given boolean function f: 𝟚ⁿ → 𝟚.
 
-Definition. A *root* of f is some x in 𝟚ⁿ such that f x = 0.
+Definition. A *root* of f is some xs in 𝟚ⁿ such that f xs = ₀.
 
-Definition. A *putative root* of f is any x in 𝟚ⁿ such that if f has
-some root, then x is a root.
+Definition. A *putative root* of f is any xs in 𝟚ⁿ such that if f has
+some root, then xs is a root.
 
 Example. If f doesn't have any root, then any x in 𝟚ⁿ is putative root.
 
 Example. If x is a root, then x is a putative root.
 
-Theorem. For any n, there is a formula that mentions only the variable
-𝕗 and the constant 0 such that for any given function f: 𝟚ⁿ → 𝟚, the
-formula gives a putative root of f when the variable is substituted
-for f.
+Theorem. For any n, there is a formula that mentions only f and ₀ such
+that for any given function f: 𝟚ⁿ → 𝟚, the formula gives a putative
+root of.
+
+We will need to be more precise regarding the formal details of the
+statement of this theorem, where we will need to distinguish between
+(abstract syntax for) formulas for putative roots and actual putative
+roots, but, for the moment, the above imprecise formulation of the
+theorem should be good enough.
 
 Example. For n = 3, we have the putative root x := (x₀,x₁,x₂) where
 
@@ -42,17 +55,16 @@ Agda is a computer language based on Martin-Löf Type Theory.
 module Various.RootsOfBooleanFunctions where
 
 open import MLTT.Spartan hiding (_^_)
-open import MLTT.Athenian
 open import MLTT.Two-Properties
+open import UF.Base
 
 \end{code}
 
-For any f : 𝟚 → 𝟚, we can check whether it is constantly 1 by checking
-whether f (f 0) is 1, which is easily proved by case analysis on the
-value of f 0:
+For any f : 𝟚 → 𝟚, we can check whether it is constantly ₁ by checking
+whether f (f ₀) is ₁, which is easily proved by case analysis on the
+value of f ₀:
 
 \begin{code}
-
 
 motivating-fact : (f : 𝟚 → 𝟚) → f (f ₀) ＝ ₁ → (b : 𝟚) → f b ＝ ₁
 motivating-fact f = γ (f ₀) refl
@@ -109,16 +121,20 @@ The functional ε𝟚 computes the putative root ε f for any f: 𝟚 → 𝟚:
 
 \begin{code}
 
+is-putative-root : {X : 𝓤 ̇ } → X → (X → 𝟚) → 𝓤 ̇
+is-putative-root {𝓤} {X} x₀ f = (Σ x ꞉ X , f x ＝ ₀) → f x₀ ＝ ₀
+
 ε𝟚-gives-putative-root : {n : ℕ} (f : 𝟚 → 𝟚)
-                       → (Σ b ꞉ 𝟚 , f b ＝ ₀)
-                       → f (ε𝟚 f) ＝ ₀
+                       → is-putative-root (ε𝟚 f) f
 ε𝟚-gives-putative-root {n} f (b , r) =
  different-from-₁-equal-₀
-  (λ (s : A𝟚 f ＝ ₁) → zero-is-not-one
+  (λ (p : A𝟚 f ＝ ₁) → zero-is-not-one
                        (₀   ＝⟨ r ⁻¹ ⟩
-                        f b ＝⟨ A𝟚-property→ f s b ⟩
+                        f b ＝⟨ A𝟚-property→ f p b ⟩
                         ₁   ∎))
 \end{code}
+
+(This is just another notation for the type of so-called vectors.)
 
 We define the type X ^ n of n-tuples of elements of a type X by
 induction as follows.
@@ -126,16 +142,23 @@ induction as follows.
 \begin{code}
 
 data _^_ (X : 𝓤 ̇ ) : ℕ → 𝓤 ̇ where
- ⋆   : X ^ 0
+ ⟨⟩  : X ^ 0
  _,_ : {n : ℕ} → X → X ^ n → X ^ (succ n)
 
-prepend : {X : 𝓤 ̇ } {n : ℕ} → X → X ^ n → X ^ (succ n)
-prepend x = (xs ↦ (x , xs))
+\end{code}
+
+We will often use the "prepend" function (x ,_), for any given x,
+written "cons x", defined by cons x xs = (x , xs), or, equivalently:
+
+\begin{code}
+
+cons : {X : 𝓤 ̇ } {n : ℕ} → X → X ^ n → X ^ (succ n)
+cons x = (x ,_)
 
 \end{code}
 
 We are now ready to compute putative roots of boolean functions. We
-will later adapt this argument to give a formula for the putative
+will later adapt this argument to give a *formula* for the putative
 root.
 
 We define two functions A and ε by simulateous induction on n as
@@ -148,27 +171,28 @@ A : {n : ℕ} → (𝟚 ^ n → 𝟚) → 𝟚
 
 A f = f (ε f)
 
-ε {0}      f = ⋆
-ε {succ n} f = prepend b₀ (ε (f ∘ prepend b₀))
+ε {0}      f = ⟨⟩
+ε {succ n} f = cons b₀ (ε (f ∘ cons b₀) )
   where
    b₀ : 𝟚
-   b₀ = ε𝟚 (b ↦ A (f ∘ prepend b))
+   b₀ = ε𝟚 (b ↦ A (f ∘ cons b))
 
 \end{code}
 
 It is of course possible to first define ε, by induction on n, and
-then A directly from ε as follows:
+then A directly from ε as follows. If we also expand the definition of
+ε𝟚, we get:
 
 \begin{code}
 
 private
 
  ε' : {n : ℕ} → (𝟚 ^ n → 𝟚) → 𝟚 ^ n
- ε' {0}      f = ⋆
- ε' {succ n} f = prepend b₀ (ε (f ∘ prepend b₀))
-   where
-    b₀ : 𝟚
-    b₀ = ε𝟚 (b ↦ (f ∘ prepend b) (ε' (f ∘ prepend b)))
+ ε' {0}      f = ⟨⟩
+ ε' {succ n} f = cons b₀ (ε' (f ∘ cons b₀))
+  where
+   b₀ : 𝟚
+   b₀ = (f ∘ cons ₀) (ε' (f ∘ cons ₀))
 
  A' : {n : ℕ} → (𝟚 ^ n → 𝟚) → 𝟚
  A' f = f (ε' f)
@@ -190,19 +214,19 @@ A-property→ : {n : ℕ}
               (f : 𝟚 ^ n → 𝟚)
             → A f ＝ ₁
             → (x : 𝟚 ^ n) → f x ＝ ₁
-A-property→ {0}      f p ⋆ = f ⋆         ＝⟨ refl ⟩
-                             f (ε {0} f) ＝⟨ p ⟩
-                             ₁           ∎
+A-property→ {0}      f p ⟨⟩ = f ⟨⟩        ＝⟨ refl ⟩
+                              f (ε {0} f) ＝⟨ p ⟩
+                              ₁           ∎
 A-property→ {succ n} f p (x , xs) = II
  where
-  IH : (b : 𝟚) → A (f ∘ prepend b) ＝ ₁ → (xs : 𝟚 ^ n) → f (prepend b xs) ＝ ₁
-  IH b = A-property→ {n} (f ∘ prepend b)
+  IH : (b : 𝟚) → A (f ∘ cons b) ＝ ₁ → (xs : 𝟚 ^ n) → f (cons b xs) ＝ ₁
+  IH b = A-property→ {n} (f ∘ cons b)
 
   b₀ : 𝟚
-  b₀ = ε𝟚 (b ↦ A (f ∘ prepend b))
+  b₀ = ε𝟚 (b ↦ A (f ∘ cons b))
 
-  I : A (f ∘ prepend b₀) ＝ ₁ → (b : 𝟚) → A (f ∘ prepend b) ＝ ₁
-  I = A𝟚-property→ (b ↦ A (f ∘ prepend b))
+  I : A (f ∘ cons b₀) ＝ ₁ → (b : 𝟚) → A (f ∘ cons b) ＝ ₁
+  I = A𝟚-property→ (b ↦ A (f ∘ cons b))
 
   II : f (x , xs) ＝ ₁
   II = IH x (I p x) xs
@@ -214,13 +238,11 @@ A-property→ {succ n} f p (x , xs) = II
 \end{code}
 
 From this it follows that ε f computes a putative root of f.
-That is, if f has a root, then ε f is a root of f:
 
 \begin{code}
 
 ε-gives-putative-root : {n : ℕ}  (f : 𝟚 ^ n → 𝟚)
-                      → (Σ x ꞉ 𝟚 ^ n , f x ＝ ₀)
-                      → f (ε f) ＝ ₀
+                      → is-putative-root (ε f) f
 ε-gives-putative-root {n} f (x , p) =
  different-from-₁-equal-₀
   (λ (q : A f ＝ ₁) → zero-is-not-one
@@ -229,144 +251,202 @@ That is, if f has a root, then ε f is a root of f:
                         ₁   ∎))
 \end{code}
 
-The above computes a putative root. But what we want to do in this
-file is to give a formula for computing putative roots using only 0
-and f, as discussed above.
-
-So we now introduce a type of formulas, using only the symbol O and a
-"variable" 𝕗, defined by induction as follows for any n fixed in
-advance:
+The above computes a putative root, but what we want to do in this
+file is to give a *formula* for computing putative roots using only ₀
+and f, as discussed above. In a way, this is already achieved
+above. Here are some examples:
 
 \begin{code}
 
-data F (n : ℕ) : 𝓤₀ ̇ where
- O : F n
- 𝕗 : F n ^ n → F n
+example₂ : (f : 𝟚 ^ 2 → 𝟚)
+         → ε f ＝ (f (₀ , f (₀ , ₀ , ⟨⟩) , ⟨⟩) ,
+                   f (f (₀ , f (₀ , ₀ , ⟨⟩) , ⟨⟩) , ₀ , ⟨⟩) ,
+                   ⟨⟩)
+example₂ f = refl
+
+example₃ : (f : 𝟚 ^ 3 → 𝟚) →
+ let
+  y  = f (₀ , ₀ , f (₀ , ₀ , ₀ , ⟨⟩) , ⟨⟩)
+  x₀ = f (₀ , y , f (₀ , y , ₀ , ⟨⟩) , ⟨⟩)
+  x₁ = f (x₀ , ₀ , f (x₀ , ₀ , ₀ , ⟨⟩) , ⟨⟩)
+  x₂ = f (x₀ , x₁ , ₀ , ⟨⟩)
+ in
+  ε f ＝ (x₀ , x₁ , x₂ , ⟨⟩)
+example₃ f = refl
 
 \end{code}
 
-Given any function f : 𝟚 ^ n → 𝟚, any formula ϕ in the type F n can be
+But we want to make this explicit. For that puporse, we introduce a
+type E of symbolic expressions, using only the symbol O (standing for
+₀) and the symbol 𝕗 (standing for any given function f : 𝟚 ^ n → 𝟚),
+defined by induction as follows, with n as a fixed parameter:
+
+\begin{code}
+
+data E (n : ℕ) : 𝓤₀ ̇ where
+ O : E n
+ 𝕗 : E n ^ n → E n
+
+\end{code}
+
+Given a function f : 𝟚 ^ n → 𝟚, any expression e of type F n can be
 evaluated to a boolean by replacing the symbol O by the boolean ₀ and
-the variable 𝕗 by the function f, by induction on formulas, where we
-use the letter ϕs to range over tuples of formulas:
+the symbol 𝕗 by the function f, by induction on formulas, where we use
+the variable e to range over expressions, and the variable es to range
+over tuples of expressions.
 
 \begin{code}
 
 module _ {n : ℕ} (f : 𝟚 ^ n → 𝟚) where
 
- eval       : F n → 𝟚
- eval-tuple : {k : ℕ} → F n ^ k → 𝟚 ^ k
+ eval  : E n → 𝟚
+ evals : {k : ℕ} → E n ^ k → 𝟚 ^ k
 
- eval O     = ₀
- eval (𝕗 ϕ) = f (eval-tuple ϕ)
+ eval O      = ₀
+ eval (𝕗 es) = f (evals es)
 
- eval-tuple ⋆        = ⋆
- eval-tuple (ϕ , ϕs) = eval ϕ , eval-tuple ϕs
+ evals ⟨⟩       = ⟨⟩
+ evals (e , es) = eval e , evals es
 
 \end{code}
 
-Now, for any n, we think of the type F n as that of "formulas for
-defining booleans", and we repeat the above definitions of the above
-functions ε𝟚, A and ε, replacing booleans by formulas for booleans, in
-order to compute them symbolically (indicated by the superscript s).
+We use the following auxilary constructions to define a formula for a
+putative root of any n-ary boolean function:
 
 \begin{code}
 
-ε𝟚ˢ : {n : ℕ} → (F n → F n) → F n
-ε𝟚ˢ f = f O
+𝕔𝕠𝕟𝕤  : {n : ℕ}   (e₀ : E (succ n)) → E n     → E (succ n)
+𝕔𝕠𝕟𝕤s : {n k : ℕ} (e₀ : E (succ n)) → E n ^ k → E (succ n) ^ k
 
-Aˢ : {n k : ℕ} → (F k ^ n → F k) → F k
-εˢ : {n k : ℕ} → (F k ^ n → F k) → F k ^ n
+𝕔𝕠𝕟𝕤 e₀ O      = O
+𝕔𝕠𝕟𝕤 e₀ (𝕗 es) = (𝕗 ∘ cons e₀) (𝕔𝕠𝕟𝕤s e₀ es)
 
-Aˢ f = f (εˢ f)
+𝕔𝕠𝕟𝕤s e₀ ⟨⟩       = ⟨⟩
+𝕔𝕠𝕟𝕤s e₀ (e , es) = 𝕔𝕠𝕟𝕤 e₀ e , 𝕔𝕠𝕟𝕤s e₀ es
 
-εˢ {0}      {k} f = ⋆
-εˢ {succ n} {k} f = prepend b₀ (εˢ (f ∘ prepend b₀))
+\end{code}
+
+Their intended behaviour is as follows:
+
+\begin{code}
+
+𝕔𝕠𝕟𝕤-behaviour : {n : ℕ}
+                 (f : 𝟚 ^ succ n → 𝟚)
+                 (e₀ : E (succ n))
+                 (e  : E n)
+               → eval f (𝕔𝕠𝕟𝕤 e₀ e) ＝ eval (f ∘ cons (eval f e₀)) e
+
+𝕔𝕠𝕟𝕤s-behaviour : {n k : ℕ}
+                  (f : 𝟚 ^ succ n → 𝟚)
+                  (e₀ : E (succ n))
+                  (es : E n ^ k)
+                → evals f (𝕔𝕠𝕟𝕤s e₀ es) ＝ evals (f ∘ cons (eval f e₀)) es
+
+𝕔𝕠𝕟𝕤-behaviour f e₀ O      = refl
+𝕔𝕠𝕟𝕤-behaviour f e₀ (𝕗 es) = ap (f ∘ cons (eval f e₀)) (𝕔𝕠𝕟𝕤s-behaviour f e₀ es)
+
+𝕔𝕠𝕟𝕤s-behaviour f e₀ ⟨⟩       = refl
+𝕔𝕠𝕟𝕤s-behaviour f e₀ (e , es) = ap₂ _,_
+                                   (𝕔𝕠𝕟𝕤-behaviour  f e₀ e )
+                                   (𝕔𝕠𝕟𝕤s-behaviour f e₀ es)
+\end{code}
+
+With this, we can give a formula to compute ε (notice the similarity
+with the definition of ε, in particular with its incarnation ε'):
+
+\begin{code}
+
+ε-formula : (n : ℕ) → E n ^ n
+ε-formula 0        = ⟨⟩
+ε-formula (succ n) = cons c₀ (𝕔𝕠𝕟𝕤s c₀ (ε-formula n))
  where
-  b₀ : F k
-  b₀ = ε𝟚ˢ (b ↦ Aˢ (f ∘ prepend b))
+  c₀ : E (succ n)
+  c₀ = (𝕗 ∘ cons O) (𝕔𝕠𝕟𝕤s O (ε-formula n))
 
 \end{code}
 
-Notice how the definitions look exactly the same as those given above,
-even if the types of the functions are different.
+The desired property of the formula is that evaluating it with any
+concrete f gives the putative root ε f of f:
 
 \begin{code}
 
-putative-root-formula : (n : ℕ) → F n ^ n
-putative-root-formula n = εˢ {n} {n} 𝕗
-
-\end{code}
-
-The intended properties of these functions are, of course that
-
-  eval f (Aˢ 𝕗) ＝ A f
-  eval-tuple f (εˢ 𝕗) ＝ ε f
-
-Before we prove this, we can give some examples.
-
-\begin{code}
-
-putative-root-formula₂-works : (f : 𝟚 ^ 2 → 𝟚)
-                             → (Σ x ꞉ 𝟚 ^ 2 , f x ＝ ₀)
-                             → f (eval-tuple f (putative-root-formula 2)) ＝ ₀
-putative-root-formula₂-works = ε-gives-putative-root
-
-putative-root-formula₂-explicitly :
-
-  putative-root-formula 2
-  ＝ (𝕗 (O , 𝕗 (O , O , ⋆) , ⋆) ,
-      𝕗 (𝕗 (O , 𝕗 (O , O , ⋆) , ⋆) , O , ⋆) , ⋆)
-
-putative-root-formula₂-explicitly = refl
-
-putative-root-formula₃-works : (f : 𝟚 ^ 3 → 𝟚)
-                             → (Σ x ꞉ 𝟚 ^ 3 , f x ＝ ₀)
-                             → f (eval-tuple f (putative-root-formula 3)) ＝ ₀
-putative-root-formula₃-works = ε-gives-putative-root
-
-putative-root-formula₃-explicitly :
- let
-  y  = 𝕗 (O , O , 𝕗 (O , O , O , ⋆) , ⋆)
-  x₀ = 𝕗 (O , y , 𝕗 (O , y , O , ⋆) , ⋆)
-  x₁ = 𝕗 (x₀ , O , 𝕗 (x₀ , O , O , ⋆) , ⋆)
-  x₂ = 𝕗 (x₀ , x₁ , O , ⋆)
- in
-  putative-root-formula 3 ＝ (x₀ , x₁ , x₂ , ⋆)
-putative-root-formula₃-explicitly = refl
-
-\end{code}
-
-TODO. Prove the above desired properties and use them to show that the
-formula for putative roots indeed gives putative roots.
-
-Appendix. Things that are not needed for the above discussion, but
-that we may need for other purposes in the future.
-
-\begin{code}
-
-δΣ : {n : ℕ} (f : 𝟚 ^ n → 𝟚)
-   → is-decidable (Σ x ꞉ 𝟚 ^ n , f x ＝ ₀)
-δΣ {n} f = γ (f x) refl
+ε-formula-lemma : (n : ℕ) (f : 𝟚 ^ n → 𝟚)
+                → evals f (ε-formula n) ＝ ε f
+ε-formula-lemma 0        f = refl
+ε-formula-lemma (succ n) f = γ
  where
-  x : 𝟚 ^ n
-  x = ε f
+  es : E n ^ n
+  es = ε-formula n
 
-  γ : (k : 𝟚) → f x ＝ k → is-decidable (Σ x ꞉ 𝟚 ^ n , f x ＝ ₀)
-  γ ₀ p = inl (x  , p)
-  γ ₁ p = inr (λ ((x , q) : Σ x ꞉ 𝟚 ^ n , f x ＝ ₀)
-                 → zero-is-not-one
-                    (₀   ＝⟨ q ⁻¹ ⟩
-                     f x ＝⟨ A-property→ f p x ⟩
-                     ₁   ∎))
+  b₀ : 𝟚
+  b₀ = (f ∘ cons ₀) (ε (f ∘ cons ₀))
 
-δΠ : {n : ℕ} (f : 𝟚 ^ n → 𝟚)
-   → is-decidable (Π x ꞉ 𝟚 ^ n , f x ＝ ₁)
-δΠ {n} f = γ (δΣ f)
+  c₀ : E (succ n)
+  c₀ = (𝕗 ∘ cons O) (𝕔𝕠𝕟𝕤s O es)
+
+  IH : (b : 𝟚) → evals (f ∘ cons b) es ＝ ε (f ∘ cons b)
+  IH b = ε-formula-lemma n (f ∘ cons b)
+
+  b₀-property : (f ∘ cons ₀) (evals (f ∘ cons ₀) es) ＝ b₀
+  b₀-property = ap (f ∘ cons ₀) (IH ₀)
+
+  c₀-property : eval f c₀ ＝ b₀
+  c₀-property =
+   eval f c₀ ＝⟨ refl ⟩
+   (f ∘ cons ₀) (evals f (𝕔𝕠𝕟𝕤s O es))  ＝⟨ I ⟩
+   (f ∘ cons ₀) (evals (f ∘ cons ₀) es) ＝⟨ II ⟩
+   (f ∘ cons ₀) (ε (f ∘ cons ₀))        ＝⟨ refl ⟩
+   b₀ ∎
+    where
+     I  = ap (f ∘ cons ₀) (𝕔𝕠𝕟𝕤s-behaviour f O es)
+     II = ap (f ∘ cons ₀) (IH ₀)
+
+  γ : evals f (ε-formula (succ n)) ＝ ε f
+  γ = evals f (ε-formula (succ n))               ＝⟨ refl ⟩
+      cons (eval f c₀) (evals f (𝕔𝕠𝕟𝕤s c₀ es))   ＝⟨ I ⟩
+      cons b₀ (evals f (𝕔𝕠𝕟𝕤s c₀ es))            ＝⟨ II ⟩
+      cons b₀ (evals (f ∘ cons (eval f c₀)) es)  ＝⟨ III ⟩
+      cons b₀ (evals (f ∘ cons b₀) es)           ＝⟨ IV ⟩
+      cons b₀ (ε (f ∘ cons b₀))                  ＝⟨ refl ⟩
+      ε f                                        ∎
+       where
+        I    = ap (λ - → cons - (evals f (𝕔𝕠𝕟𝕤s c₀ es))) c₀-property
+        II   = ap (cons b₀) (𝕔𝕠𝕟𝕤s-behaviour f c₀ es)
+        III  = ap (λ - → cons b₀ (evals (f ∘ cons -) es)) c₀-property
+        IV   = ap (cons b₀) (IH b₀)
+
+\end{code}
+
+From this, together with "ε-gives-putative-root" proved above, it
+follows immediately that "ε-formula n" gives a formula for a putative
+root of any n-ary boolean function:
+
+\begin{code}
+
+ε-formula-theorem : (n : ℕ) (f : 𝟚 ^ n → 𝟚)
+                  → is-putative-root (evals f (ε-formula n)) f
+ε-formula-theorem n f = γ
  where
-  γ : is-decidable (Σ x ꞉ 𝟚 ^ n , f x ＝ ₀)
-    → is-decidable ((x : 𝟚 ^ n) → f x ＝ ₁)
-  γ (inl (x , p)) = inr (λ ϕ → zero-is-not-one (p ⁻¹ ∙ ϕ x))
-  γ (inr ν)       = inl (λ x → different-from-₀-equal-₁ (λ p → ν (x , p)))
+  δ : is-putative-root (ε f) f
+    → is-putative-root (evals f (ε-formula n)) f
+  δ i ρ = f (evals f (ε-formula n)) ＝⟨ ap f (ε-formula-lemma n f) ⟩
+          f (ε f)                   ＝⟨ i ρ ⟩
+          ₀                         ∎
 
+  γ : is-putative-root (evals f (ε-formula n)) f
+  γ = δ (ε-gives-putative-root f)
+
+\end{code}
+
+Which has our desired theorem as a corollary, namely that, for every n,
+there is a formula for a putative root of any n-ary boolean function:
+
+\begin{code}
+
+putative-root-formula-theorem :
+
+ (n : ℕ) → Σ es ꞉ E n ^ n , ((f : 𝟚 ^ n → 𝟚) → is-putative-root (evals f es) f)
+
+putative-root-formula-theorem n = ε-formula n ,
+                                  ε-formula-theorem n
 \end{code}
