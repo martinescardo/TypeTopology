@@ -289,7 +289,7 @@ data E (n : ℕ) : 𝓤₀ ̇ where
 
 \end{code}
 
-Given a function f : 𝟚 ^ n → 𝟚, any expression e of type F n can be
+Given a function f : 𝟚 ^ n → 𝟚, any expression e of type E n can be
 evaluated to a boolean by replacing the symbol O by the boolean ₀ and
 the symbol 𝕗 by the function f, by induction on formulas, where we use
 the variable e to range over expressions, and the variable es to range
