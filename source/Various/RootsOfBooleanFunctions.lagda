@@ -134,8 +134,6 @@ is-putative-root {𝓤} {X} x₀ f = (Σ x ꞉ X , f x ＝ ₀) → f x₀ ＝ �
                         ₁   ∎))
 \end{code}
 
-(This is just another notation for the type of so-called vectors.)
-
 We define the type X ^ n of n-tuples of elements of a type X by
 induction as follows.
 
@@ -146,6 +144,8 @@ data _^_ (X : 𝓤 ̇ ) : ℕ → 𝓤 ̇ where
  _,_ : {n : ℕ} → X → X ^ n → X ^ (succ n)
 
 \end{code}
+
+(This is just another notation for the type of so-called vectors.)
 
 We will often use the "prepend" function (x ,_), for any given x,
 written "cons x", defined by cons x xs = (x , xs), or, equivalently:
