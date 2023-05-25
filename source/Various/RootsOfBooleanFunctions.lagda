@@ -25,7 +25,7 @@ Example. If x is a root, then x is a putative root.
 
 Theorem. For any n, there is a formula that mentions only f and ₀ such
 that for any given function f: 𝟚ⁿ → 𝟚, the formula gives a putative
-root of.
+root of f.
 
 We will need to be more precise regarding the formal details of the
 statement of this theorem, where we will need to distinguish between
