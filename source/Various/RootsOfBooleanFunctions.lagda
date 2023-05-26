@@ -401,9 +401,6 @@ concrete f gives the putative root ε f of f:
   IH : (b : 𝟚) → evals (f ∘ cons b) es ＝ ε (f ∘ cons b)
   IH b = ε-formula-lemma n (f ∘ cons b)
 
-  b₀-property : (f ∘ cons ₀) (evals (f ∘ cons ₀) es) ＝ b₀
-  b₀-property = ap (f ∘ cons ₀) (IH ₀)
-
   c₀-property : eval f c₀ ＝ b₀
   c₀-property =
    eval f c₀ ＝⟨ refl ⟩
