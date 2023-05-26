@@ -1,7 +1,7 @@
 Martin Escardo, 21th April 2023
 Based on Section 8.1 of the paper https://doi.org/10.2168/LMCS-4(3:3)2008
 
-Updated 25th May 2023 to (1) give an alternative formula for a
+Updated 25th May 2023 to (i) give an alternative formula for a
 putative root, and (ii) prove its correctness.
 
 We provide a formula for the the putative root of any boolean function
