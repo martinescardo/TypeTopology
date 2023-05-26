@@ -750,7 +750,7 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
           κ : is-clopen₀ (𝒪 X) (𝒻 ⋆∙ β n)
           κ = compacts-are-clopen-in-zero-dimensional-locales
                (𝒪 X)
-               {!!}
+               ∣ 𝕫ᴰ ∣ 
                (𝒻 ⋆∙ β n)
                (μ (β n) (pr₂ (βₖ n)))
 
@@ -853,33 +853,64 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
     † = f⁻₊ₘ , f⁻₊-is-right-adjoint-of-f⁻⁺
 
   open Joins (λ x y → x ≤[ poset-of (𝒪 X) ] y)
+   using () renaming (_is-lub-of_ to _is-lub-ofₓ_)
 
   𝒻⁻-γ : (S : Fam 𝓤 ⟨ 𝒪 Patchₛ-A ⟩)
-       → ((f⁻⁺ (⋁[ 𝒪 Patchₛ-A ] S)) is-lub-of ⁅ f⁻⁺ 𝒿 ∣ 𝒿 ε S ⁆) holds
+       → ((f⁻⁺ (⋁[ 𝒪 Patchₛ-A ] S)) is-lub-ofₓ ⁅ f⁻⁺ 𝒿 ∣ 𝒿 ε S ⁆) holds
   𝒻⁻-γ S =
    transport
-    (λ - → (- is-lub-of ⁅ f⁻⁺ 𝒿 ∣ 𝒿 ε S ⁆) holds)
+    (λ - → (- is-lub-ofₓ ⁅ f⁻⁺ 𝒿 ∣ 𝒿 ε S ⁆) holds)
     (f⁻⁺-preserves-joins S ⁻¹)
     (⋁[ 𝒪 X ]-upper ⁅ f⁻⁺ 𝒿 ∣ 𝒿 ε S ⁆ , ⋁[ 𝒪 X ]-least ⁅ f⁻⁺ 𝒿 ∣ 𝒿 ε S ⁆)
 
   𝒻⁻-makes-the-diagram-commute : (U : ⟨ 𝒪 A ⟩) → 𝒻 ⋆∙ U  ＝ f⁻⁺ ‘ U ’
-  𝒻⁻-makes-the-diagram-commute U = {!!}
+  𝒻⁻-makes-the-diagram-commute U = ≤-is-antisymmetric (poset-of (𝒪 X)) † ‡
+   where
+    open PosetReasoning (poset-of (𝒪 X))
 
-  proof-of-ump : ∃! 𝒻⁻ ꞉ (X ─c→ Patch-A) , ((U : ⟨ 𝒪 A ⟩) → 𝒻 .pr₁ U  ＝ 𝒻⁻ .pr₁ ‘ U ’)
-  proof-of-ump = ((f⁻⁺ , 𝒻⁻-α , 𝒻⁻-β , 𝒻⁻-γ)
-               , 𝒻⁻-makes-the-diagram-commute)
-               , {!!}
+    ℒ : Fam 𝓤 Bₐ
+    ℒ = covering-index-family (𝒪 A) (Bₐ , β) β-is-basis-for-A U
 
- ump-of-patch : (X : Locale (𝓤 ⁺) 𝓤 𝓤)
-              → is-stone (𝒪 X) holds
-              → (𝒻 : X ─c→ A)
-              → is-spectral-map (𝒪 A) (𝒪 X) 𝒻 holds
-              → ∃! 𝒻⁻ ꞉ (X ─c→ Patch-A) , ((x : ⟨ 𝒪 A ⟩) → 𝒻 .pr₁ x  ＝ 𝒻⁻ .pr₁ ‘ x ’)
- ump-of-patch X 𝕤 𝒻 μ = ∥∥-rec₂ (being-singleton-is-prop fe) γ σ (pr₂ 𝕤)
-  where
-   γ : spectralᴰ (𝒪 A)
-     → zero-dimensionalᴰ (𝒪 X)
-     → ∃! 𝒻⁻ ꞉ (X ─c→ Patch-A) , ((x : ⟨ 𝒪 A ⟩) → 𝒻 .pr₁ x  ＝ 𝒻⁻ .pr₁ ‘ x ’)
-   γ σᴰ 𝕫ᴰ = UniversalPropertyOfPatch.proof-of-ump X σᴰ 𝕫ᴰ (pr₁ 𝕤) 𝒻 μ
+    ℒ-covers-U : U ＝ ⋁[ 𝒪 A ] ⁅ β l ∣ l ε ℒ ⁆
+    ℒ-covers-U = covers (𝒪 A) (Bₐ , β) β-is-basis-for-A U
+
+    Ⅲ : ((⋁[ 𝒪 X ] ⁅ 𝒻 ⋆∙ (β l) ∣ l ε ℒ ⁆) ≤[ poset-of (𝒪 X) ] f⁻⁺ ‘ U ’) holds
+    Ⅲ = ⋁[ 𝒪 X ]-least ⁅ 𝒻 ⋆∙ (β l) ∣ l ε ℒ ⁆ (f⁻⁺ ‘ U ’ , ※)
+     where
+      open Joins (λ x y → x ≤[ poset-of (𝒪 A) ] y)
+       using () renaming (_is-lub-of_ to _is-lub-ofₐ_;
+                          _is-an-upper-bound-of_ to _is-an-upper-bound-ofₐ_)
+
+      ※ : (l : index ℒ) → (𝒻 ⋆∙ (β (ℒ [ l ])) ≤[ poset-of (𝒪 X) ] f⁻⁺ ‘ U ’) holds
+      ※ l = {!!} ≤⟨ {!!} ⟩ {!!} ■
+
+    † : (𝒻 ⋆∙ U ≤[ poset-of (𝒪 X) ] f⁻⁺ ‘ U ’) holds
+    † = 𝒻 ⋆∙ U                            ＝⟨ Ⅰ ⟩ₚ
+        𝒻 ⋆∙ (⋁[ 𝒪 A ] ⁅ β l ∣ l ε ℒ ⁆)   ＝⟨ Ⅱ ⟩ₚ
+        ⋁[ 𝒪 X ] ⁅ 𝒻 ⋆∙ (β l) ∣ l ε ℒ ⁆   ≤⟨  Ⅲ ⟩
+        f⁻⁺ ‘ U ’                         ■
+         where
+          Ⅰ = ap (𝒻 ⋆∙_) ℒ-covers-U
+          Ⅱ = frame-homomorphisms-preserve-all-joins (𝒪 A) (𝒪 X) 𝒻 ⁅ β l ∣ l ε ℒ ⁆
+
+    ‡ : (f⁻⁺ ‘ U ’ ≤[ poset-of (𝒪 X) ] 𝒻 ⋆∙ U) holds
+    ‡ = {!!}
+
+ --  proof-of-ump : ∃! 𝒻⁻ ꞉ (X ─c→ Patch-A) , ((U : ⟨ 𝒪 A ⟩) → 𝒻 .pr₁ U  ＝ 𝒻⁻ .pr₁ ‘ U ’)
+ --  proof-of-ump = ((f⁻⁺ , 𝒻⁻-α , 𝒻⁻-β , 𝒻⁻-γ)
+ --               , 𝒻⁻-makes-the-diagram-commute)
+ --               , {!!}
+
+ -- ump-of-patch : (X : Locale (𝓤 ⁺) 𝓤 𝓤)
+ --              → is-stone (𝒪 X) holds
+ --              → (𝒻 : X ─c→ A)
+ --              → is-spectral-map (𝒪 A) (𝒪 X) 𝒻 holds
+ --              → ∃! 𝒻⁻ ꞉ (X ─c→ Patch-A) , ((x : ⟨ 𝒪 A ⟩) → 𝒻 .pr₁ x  ＝ 𝒻⁻ .pr₁ ‘ x ’)
+ -- ump-of-patch X 𝕤 𝒻 μ = ∥∥-rec₂ (being-singleton-is-prop fe) γ σ (pr₂ 𝕤)
+ --  where
+ --   γ : spectralᴰ (𝒪 A)
+ --     → zero-dimensionalᴰ (𝒪 X)
+ --     → ∃! 𝒻⁻ ꞉ (X ─c→ Patch-A) , ((x : ⟨ 𝒪 A ⟩) → 𝒻 .pr₁ x  ＝ 𝒻⁻ .pr₁ ‘ x ’)
+ --   γ σᴰ 𝕫ᴰ = UniversalPropertyOfPatch.proof-of-ump X σᴰ 𝕫ᴰ (pr₁ 𝕤) 𝒻 μ
 
 \end{code}
