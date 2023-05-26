@@ -506,7 +506,7 @@ The advantage of this definition is that it is almost literally the
 same as that of ε'.
 
 The disadvantage is that it is difficult to find a suitable induction
-hypothesis to prove its correctness of ε-formula'. We did find such a
+hypothesis to prove the correctness of ε-formula'. We did find such a
 proof, but it is long and messy, and we decided not to include it here
 for that reason.
 
