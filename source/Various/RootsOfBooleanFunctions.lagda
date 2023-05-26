@@ -43,11 +43,6 @@ Example. For n = 3, we have the putative root x := (x₀,x₁,x₂) where
 The purpose of this Agda file is to construct such a formula for any
 given n, and prove that it indeed gives a putative root.
 
-Because this file is intended for a general public of mathematicians
-and computer scientists, we include some remarks that are expected to
-be obvious to Agda practioners, but not necessarily for everybody.
-Agda is a computer language based on Martin-Löf Type Theory.
-
 \begin{code}
 
 {-# OPTIONS --safe --without-K --exact-split --no-sized-types --no-guardedness --auto-inline #-}
