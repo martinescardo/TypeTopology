@@ -116,8 +116,14 @@ The functional ε𝟚 computes the putative root ε f for any f : 𝟚 → 𝟚:
 
 \begin{code}
 
+is-root : {X : 𝓤 ̇ } → X → (X → 𝟚) → 𝓤₀ ̇
+is-root {𝓤} {X} x₀ f = f x₀ ＝ ₀
+
+has-root : {X : 𝓤 ̇ } → (X → 𝟚) → 𝓤 ̇
+has-root {𝓤} {X} f = Σ x ꞉ X , is-root x f
+
 is-putative-root : {X : 𝓤 ̇ } → X → (X → 𝟚) → 𝓤 ̇
-is-putative-root {𝓤} {X} x₀ f = (Σ x ꞉ X , f x ＝ ₀) → f x₀ ＝ ₀
+is-putative-root {𝓤} {X} x₀ f = has-root f → is-root x₀ f
 
 ε𝟚-gives-putative-root : {n : ℕ} (f : 𝟚 → 𝟚)
                        → is-putative-root (ε𝟚 f) f
@@ -244,6 +250,23 @@ From this it follows that ε f computes a putative root of f.
                        (₀   ＝⟨ p ⁻¹ ⟩
                         f x ＝⟨ A-property→ f q x ⟩
                         ₁   ∎))
+
+\end{code}
+
+Hence we can check whether f has a root by checking whether f (ε f) ＝ ₀.
+
+\begin{code}
+
+root-existence-criterion : {n : ℕ}  (f : 𝟚 ^ n → 𝟚)
+                         → has-root f ⇔ f (ε f) ＝ ₀
+root-existence-criterion {n} f = (I , II)
+ where
+  I : has-root f → f (ε f) ＝ ₀
+  I = ε-gives-putative-root f
+
+  II : f (ε f) ＝ ₀ → has-root f
+  II p = ε f , p
+
 \end{code}
 
 The above computes a putative root, but what we want to do in this
@@ -311,8 +334,8 @@ putative root of any n-ary boolean function:
 
 \begin{code}
 
-𝕔𝕠𝕟𝕤  : {n : ℕ}   (e₀ : E (succ n)) → E n     → E (succ n)
-𝕔𝕠𝕟𝕤s : {n k : ℕ} (e₀ : E (succ n)) → E n ^ k → E (succ n) ^ k
+𝕔𝕠𝕟𝕤  : {n : ℕ}   → E (succ n) → E n     → E (succ n)
+𝕔𝕠𝕟𝕤s : {n k : ℕ} → E (succ n) → E n ^ k → E (succ n) ^ k
 
 𝕔𝕠𝕟𝕤 e₀ O      = O
 𝕔𝕠𝕟𝕤 e₀ (𝕗 es) = (𝕗 ∘ cons e₀) (𝕔𝕠𝕟𝕤s e₀ es)
@@ -403,7 +426,7 @@ concrete f gives the putative root ε f of f:
 
   c₀-property : eval f c₀ ＝ b₀
   c₀-property =
-   eval f c₀ ＝⟨ refl ⟩
+   eval f c₀                            ＝⟨ refl ⟩
    (f ∘ cons ₀) (evals f (𝕔𝕠𝕟𝕤s O es))  ＝⟨ I ⟩
    (f ∘ cons ₀) (evals (f ∘ cons ₀) es) ＝⟨ II ⟩
    (f ∘ cons ₀) (ε (f ∘ cons ₀))        ＝⟨ refl ⟩
