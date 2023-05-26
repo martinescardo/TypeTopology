@@ -415,7 +415,7 @@ concrete f gives the putative root ε f of f:
    (f ∘ cons ₀) (evals f (𝕔𝕠𝕟𝕤s O es))  ＝⟨ I ⟩
    (f ∘ cons ₀) (evals (f ∘ cons ₀) es) ＝⟨ II ⟩
    (f ∘ cons ₀) (ε (f ∘ cons ₀))        ＝⟨ refl ⟩
-   b₀ ∎
+   b₀                                   ∎
     where
      I  = ap (f ∘ cons ₀) (𝕔𝕠𝕟𝕤s-behaviour f O es)
      II = ap (f ∘ cons ₀) (IH ₀)
@@ -429,10 +429,10 @@ concrete f gives the putative root ε f of f:
       cons b₀ (ε (f ∘ cons b₀))                  ＝⟨ refl ⟩
       ε f                                        ∎
        where
-        I    = ap (λ - → cons - (evals f (𝕔𝕠𝕟𝕤s c₀ es))) c₀-property
-        II   = ap (cons b₀) (𝕔𝕠𝕟𝕤s-behaviour f c₀ es)
-        III  = ap (λ - → cons b₀ (evals (f ∘ cons -) es)) c₀-property
-        IV   = ap (cons b₀) (IH b₀)
+        I   = ap (λ - → cons - (evals f (𝕔𝕠𝕟𝕤s c₀ es))) c₀-property
+        II  = ap (cons b₀) (𝕔𝕠𝕟𝕤s-behaviour f c₀ es)
+        III = ap (λ - → cons b₀ (evals (f ∘ cons -) es)) c₀-property
+        IV  = ap (cons b₀) (IH b₀)
 
 \end{code}
 
