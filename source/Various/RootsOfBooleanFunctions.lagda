@@ -117,13 +117,13 @@ The functional ε𝟚 computes the putative root ε f for any f : 𝟚 → 𝟚:
 \begin{code}
 
 is-root : {X : 𝓤 ̇ } → X → (X → 𝟚) → 𝓤₀ ̇
-is-root {𝓤} {X} x₀ f = f x₀ ＝ ₀
+is-root x₀ f = f x₀ ＝ ₀
 
 has-root : {X : 𝓤 ̇ } → (X → 𝟚) → 𝓤 ̇
 has-root {𝓤} {X} f = Σ x ꞉ X , is-root x f
 
 is-putative-root : {X : 𝓤 ̇ } → X → (X → 𝟚) → 𝓤 ̇
-is-putative-root {𝓤} {X} x₀ f = has-root f → is-root x₀ f
+is-putative-root x₀ f = has-root f → is-root x₀ f
 
 ε𝟚-gives-putative-root : {n : ℕ} (f : 𝟚 → 𝟚)
                        → is-putative-root (ε𝟚 f) f
@@ -485,3 +485,34 @@ putative-root-formula-theorem n = ε-formula n ,
                                   ε-formula-theorem n
 
 \end{code}
+
+Our original definition of the formula for the putative root was the following:
+
+\begin{code}
+
+εᵉ : {n k : ℕ} → (E k ^ n → E k) → E k ^ n
+εᵉ {0}      {k} f = ⟨⟩
+εᵉ {succ n} {k} f = cons c₀ (εᵉ (f ∘ cons c₀))
+ where
+  c₀ : E k
+  c₀ = (f ∘ cons O) (εᵉ (f ∘ cons O))
+
+ε-formula' : (n : ℕ) → E n ^ n
+ε-formula' n = εᵉ 𝕗
+
+\end{code}
+
+The advantage of this definition is that it is almost literally the
+same as that of ε'.
+
+The disadvantage is that it is difficult to find a suitable induction
+hypothesis to prove its correctness of ε-formula'. We did find such a
+proof, but it is long and messy, and we decided not to include it here
+for that reason.
+
+Challenges. (1) Find an elegant proof that the function ε-formula'
+gives a formulate for putative roots. (2) Moreover, show that
+ε-formula' = ε-formula.
+
+It may be that it is easier to prove (2) and then deduce (1), rather
+than prove (1) directly. We haven't tried that.
