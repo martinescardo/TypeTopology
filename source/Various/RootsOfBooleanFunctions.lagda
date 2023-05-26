@@ -12,7 +12,7 @@ In more detail:
 Let 𝟚 be the two-point set with elements ₀ and ₁, referred to as the
 type of booleans.
 
-Consider a given boolean function f: 𝟚ⁿ → 𝟚.
+Consider a given boolean function f : 𝟚ⁿ → 𝟚.
 
 Definition. A *root* of f is some xs in 𝟚ⁿ such that f xs = ₀.
 
@@ -24,7 +24,7 @@ Example. If f doesn't have any root, then any x in 𝟚ⁿ is putative root.
 Example. If x is a root, then x is a putative root.
 
 Theorem. For any n, there is a formula that mentions only f and ₀ such
-that for any given function f: 𝟚ⁿ → 𝟚, the formula gives a putative
+that for any given function f : 𝟚ⁿ → 𝟚, the formula gives a putative
 root of f.
 
 We will need to be more precise regarding the formal details of the
@@ -117,7 +117,7 @@ boolean b₀ such that if f b₀ ＝ ₁ then f n ＝ ₁ for every boolean b:
 
 \end{code}
 
-The functional ε𝟚 computes the putative root ε f for any f x: 𝟚 → 𝟚:
+The functional ε𝟚 computes the putative root ε f for any f : 𝟚 → 𝟚:
 
 \begin{code}
 
