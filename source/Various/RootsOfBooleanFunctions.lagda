@@ -1,8 +1,8 @@
 Martin Escardo, 21th April 2023
 Based on Section 8.1 of the paper https://doi.org/10.2168/LMCS-4(3:3)2008
 
-Updated 25th May 2023 to (i) give an alternative formula for a
-putative root, and (ii) prove its correctness.
+Updated 25th May 2023 to (i) give an alternative construction of our
+formula for a putative root, and (ii) prove its correctness.
 
 We provide a formula for a putative root of any boolean function
 f : 𝟚ⁿ → 𝟚, using only f and ₀, and show its correctness.
