@@ -4,7 +4,7 @@ Based on Section 8.1 of the paper https://doi.org/10.2168/LMCS-4(3:3)2008
 Updated 25th May 2023 to (i) give an alternative formula for a
 putative root, and (ii) prove its correctness.
 
-We provide a formula for the the putative root of any boolean function
+We provide a formula for a putative root of any boolean function
 f : 𝟚ⁿ → 𝟚, using only f and ₀, and show its correctness.
 
 In more detail:
@@ -126,7 +126,7 @@ is-putative-root {𝓤} {X} x₀ f = (Σ x ꞉ X , f x ＝ ₀) → f x₀ ＝ �
 
 ε𝟚-gives-putative-root : {n : ℕ} (f : 𝟚 → 𝟚)
                        → is-putative-root (ε𝟚 f) f
-ε𝟚-gives-putative-root {n} f (b , r) =
+ε𝟚-gives-putative-root f (b , r) =
  different-from-₁-equal-₀
   (λ (p : A𝟚 f ＝ ₁) → zero-is-not-one
                        (₀   ＝⟨ r ⁻¹ ⟩
