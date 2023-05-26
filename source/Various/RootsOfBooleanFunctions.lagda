@@ -19,9 +19,9 @@ Definition. A *root* of f is some xs in 𝟚ⁿ such that f xs = ₀.
 Definition. A *putative root* of f is any xs in 𝟚ⁿ such that if f has
 some root, then xs is a root.
 
-Example. If f doesn't have any root, then any x in 𝟚ⁿ is putative root.
+Example. If f doesn't have any root, then any xs in 𝟚ⁿ is putative root.
 
-Example. If x is a root, then x is a putative root.
+Example. If xs is a root, then xs is a putative root.
 
 Theorem. For any n, there is a formula that mentions only f and ₀ such
 that for any given function f : 𝟚ⁿ → 𝟚, the formula gives a putative
@@ -276,7 +276,7 @@ example₃ f = refl
 
 \end{code}
 
-But we want to make this explicit. For that puporse, we introduce a
+But we want to make this explicit. For that purpose, we introduce a
 type E of symbolic expressions, or formulas, using only the symbol O
 (standing for ₀) and the symbol 𝕗 (standing for any given function
 f : 𝟚 ^ n → 𝟚), defined by induction as follows, with n as a fixed
