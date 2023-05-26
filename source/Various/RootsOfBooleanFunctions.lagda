@@ -5,7 +5,7 @@ Updated 25th May 2023 to (1) give an alternative formula for a
 putative root, and (ii) prove its correctness.
 
 We provide a formula for the the putative root of any boolean function
-f : 𝟚ⁿ → 𝟚, using only f and ₀ and show its correctness.
+f : 𝟚ⁿ → 𝟚, using only f and ₀, and show its correctness.
 
 In more detail:
 
@@ -117,7 +117,7 @@ boolean b₀ such that if f b₀ ＝ ₁ then f n ＝ ₁ for every boolean b:
 
 \end{code}
 
-The functional ε𝟚 computes the putative root ε f for any f: 𝟚 → 𝟚:
+The functional ε𝟚 computes the putative root ε f for any f x: 𝟚 → 𝟚:
 
 \begin{code}
 
@@ -161,7 +161,7 @@ We are now ready to compute putative roots of boolean functions. We
 will later adapt this argument to give a *formula* for the putative
 root.
 
-We define two functions A and ε by simulateous induction on n as
+We define two functions A and ε by simultateous induction on n as
 follows:
 
 \begin{code}
@@ -173,9 +173,9 @@ A f = f (ε f)
 
 ε {0}      f = ⟨⟩
 ε {succ n} f = cons b₀ (ε (f ∘ cons b₀) )
-  where
-   b₀ : 𝟚
-   b₀ = ε𝟚 (b ↦ A (f ∘ cons b))
+ where
+  b₀ : 𝟚
+  b₀ = ε𝟚 (b ↦ A (f ∘ cons b))
 
 \end{code}
 
@@ -201,19 +201,19 @@ private
 
 However, we want to highlight the role of A in our definition of ε.
 
-We have that A f ＝ ₁ if and only if f x ＝ ₁ for all x in 𝟚 ^ n:
+We have that A f ＝ ₁ if and only if f xs ＝ ₁ for all xs in 𝟚 ^ n:
 
 \begin{code}
 
 A-property← : {n : ℕ} (f : 𝟚 ^ n → 𝟚)
-            → ((x : 𝟚 ^ n) → f x ＝ ₁)
+            → ((xs : 𝟚 ^ n) → f xs ＝ ₁)
             → A f ＝ ₁
 A-property← f α = α (ε f)
 
 A-property→ : {n : ℕ}
               (f : 𝟚 ^ n → 𝟚)
             → A f ＝ ₁
-            → (x : 𝟚 ^ n) → f x ＝ ₁
+            → (xs : 𝟚 ^ n) → f xs ＝ ₁
 A-property→ {0}      f p ⟨⟩ = f ⟨⟩        ＝⟨ refl ⟩
                               f (ε {0} f) ＝⟨ p ⟩
                               ₁           ∎
@@ -277,9 +277,10 @@ example₃ f = refl
 \end{code}
 
 But we want to make this explicit. For that puporse, we introduce a
-type E of symbolic expressions, using only the symbol O (standing for
-₀) and the symbol 𝕗 (standing for any given function f : 𝟚 ^ n → 𝟚),
-defined by induction as follows, with n as a fixed parameter:
+type E of symbolic expressions, or formulas, using only the symbol O
+(standing for ₀) and the symbol 𝕗 (standing for any given function
+f : 𝟚 ^ n → 𝟚), defined by induction as follows, with n as a fixed
+parameter:
 
 \begin{code}
 
@@ -351,8 +352,7 @@ Their intended behaviour is as follows:
                                    (𝕔𝕠𝕟𝕤s-behaviour f e₀ es)
 \end{code}
 
-With this, we can give a formula to compute ε (notice the similarity
-with the definition of ε, in particular with its incarnation ε'):
+With this, we can give a formula to compute ε:
 
 \begin{code}
 
@@ -362,6 +362,25 @@ with the definition of ε, in particular with its incarnation ε'):
  where
   c₀ : E (succ n)
   c₀ = (𝕗 ∘ cons O) (𝕔𝕠𝕟𝕤s O (ε-formula n))
+
+\end{code}
+
+Notice the similarity with the definition of ε, in particular with its
+incarnation ε'.
+
+Here is an example that illustrates this concretely:
+
+\begin{code}
+
+example₃-formula :
+ let
+  y  = 𝕗 (O , O , 𝕗 (O , O , O , ⟨⟩) , ⟨⟩)
+  x₀ = 𝕗 (O , y , 𝕗 (O , y , O , ⟨⟩) , ⟨⟩)
+  x₁ = 𝕗 (x₀ , O , 𝕗 (x₀ , O , O , ⟨⟩) , ⟨⟩)
+  x₂ = 𝕗 (x₀ , x₁ , O , ⟨⟩)
+ in
+  ε-formula 3 ＝ (x₀ , x₁ , x₂ , ⟨⟩)
+example₃-formula = refl
 
 \end{code}
 
@@ -449,4 +468,5 @@ putative-root-formula-theorem :
 
 putative-root-formula-theorem n = ε-formula n ,
                                   ε-formula-theorem n
+
 \end{code}
