@@ -85,8 +85,11 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
   βₓ : Bₓ → ⟨ 𝒪 X ⟩
   βₓ = pr₂ (pr₁ 𝕫ᴰ)
 
+  β-is-directed-basis : is-directed-basis (𝒪 A) (Bₐ , β)
+  β-is-directed-basis = pr₁ (pr₂ σᴰ)
+
   β-is-basis-for-A : is-basis-for (𝒪 A) (Bₐ , β)
-  β-is-basis-for-A U = pr₁ (pr₁ (pr₂ σᴰ)) U
+  β-is-basis-for-A = pr₁ β-is-directed-basis
 
   A-has-basis : has-basis (𝒪 A) holds
   A-has-basis = spectral-frames-have-bases (𝒪 A) σ
@@ -96,7 +99,8 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
    using ()
    renaming (_==>_ to _==>ₐ_; H₈ to H₈ₐ;
              heyting-implication-identity to heyting-implication-identityₐ;
-             ==>-right-monotone to ==>ₐ-right-monotone)
+             ==>-right-monotone to ==>ₐ-right-monotone;
+             ex-falso-quodlibet to ex-falso-quodlibetₐ)
 
   βₖ : Bₐ → 𝒦
   βₖ m = β m , pr₁ (pr₂ (pr₂ σᴰ)) m
@@ -105,7 +109,20 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
   ¬𝒻⋆ U = (𝒻 ⋆∙ U) ==> 𝟎[ 𝒪 X ]
 
   ¬𝒻⋆𝟎-is-𝟏 : ¬𝒻⋆ 𝟎[ 𝒪 A ] ＝ 𝟏[ 𝒪 X ]
-  ¬𝒻⋆𝟎-is-𝟏 = {!!}
+  ¬𝒻⋆𝟎-is-𝟏 = only-𝟏-is-above-𝟏 (𝒪 X) (¬𝒻⋆ 𝟎[ 𝒪 A ]) †
+   where
+    open PosetReasoning (poset-of (𝒪 X))
+
+    ‡ : ((𝟏[ 𝒪 X ] ∧[ 𝒪 X ] 𝒻 ⋆∙ 𝟎[ 𝒪 A ]) ≤[ poset-of (𝒪 X) ] 𝟎[ 𝒪 X ]) holds
+    ‡ = 𝟏[ 𝒪 X ] ∧[ 𝒪 X ] 𝒻 ⋆∙ 𝟎[ 𝒪 A ]    ≤⟨ Ⅰ  ⟩
+        𝒻 ⋆∙ 𝟎[ 𝒪 A ]                      ＝⟨ Ⅱ ⟩ₚ
+        𝟎[ 𝒪 X ]                           ■
+         where
+          Ⅰ = ∧[ 𝒪 X ]-lower₂ 𝟏[ 𝒪 X ] (𝒻 ⋆∙ 𝟎[ 𝒪 A ])
+          Ⅱ = frame-homomorphisms-preserve-bottom (𝒪 A) (𝒪 X) 𝒻
+
+    † : (𝟏[ 𝒪 X ] ≤[ poset-of (𝒪 X) ] ¬𝒻⋆ 𝟎[ 𝒪 A ]) holds
+    † = heyting-implication₁ (𝒻 ⋆∙ 𝟎[ 𝒪 A ]) 𝟎[ 𝒪 X ] 𝟏[ 𝒪 X ] ‡
 
   𝕃 : ⟨ 𝒪 Patch-A ⟩ → Bₐ → Bₐ → Ω 𝓤
   𝕃 𝒿 m n = (‘ β m ’ ∧[ 𝒪 Patch-A ] ¬‘ βₖ n ’) ≼ᵏ 𝒿
@@ -869,10 +886,14 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
   𝒻⁻-makes-the-diagram-commute : (U : ⟨ 𝒪 A ⟩) → 𝒻 ⋆∙ U  ＝ f⁻⁺ ‘ U ’
   𝒻⁻-makes-the-diagram-commute U = ≤-is-antisymmetric (poset-of (𝒪 X)) † ‡
    where
-    open PosetReasoning (poset-of (𝒪 X))
-
-    𝟏-is-basic : ∃ t ꞉ Bₐ , 𝟏[ 𝒪 A ] ＝ β t
-    𝟏-is-basic = ∥∥-rec ∃-is-prop ※ (pr₁ (pr₂ (pr₂ (pr₂ σᴰ))))
+    𝟎-is-basic : ∃ t ꞉ Bₐ , 𝟎[ 𝒪 A ] ＝ β t
+    𝟎-is-basic = compact-opens-are-basic-in-compact-frames
+                  (𝒪 A)
+                  (Bₐ , β)
+                  β-is-directed-basis
+                  (spectral-implies-compact (𝒪 A) ∣ σᴰ ∣)
+                  𝟎[ 𝒪 A ]
+                  (𝟎-is-compact (𝒪 A))
      where
       ※ : Σ t ꞉ Bₐ , is-top (𝒪 A) (β t) holds → ∃ (λ t → 𝟏[ 𝒪 A ] ＝ β t)
       ※ (t , p) = ∣ t , (𝟏-is-unique (𝒪 A) (β t) p ⁻¹) ∣
@@ -893,35 +914,50 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
       ※ : (l : index ℒ) → (𝒻 ⋆∙ (β (ℒ [ l ])) ≤[ poset-of (𝒪 X) ] f⁻⁺ ‘ U ’) holds
       ※ l = ∥∥-rec
              (holds-is-prop (𝒻 ⋆∙ (β (ℒ [ l ])) ≤[ poset-of (𝒪 X) ] f⁻⁺ ‘ U ’))
-             {!!}
-             {!!}
-              -- where
-               -- ♣ : Σ t ꞉ Bₐ , 𝟎[ 𝒪 A ] ＝ β t
-               --   → (𝒻 ⋆∙ β (ℒ [ l ]) ≤[ poset-of (𝒪 X) ] f⁻⁺ ‘ U ’) holds
-               -- ♣ (t , p) =
-               --  𝒻 ⋆∙ (β (ℒ [ l ]))                      ＝⟨ 𝟏 ⟩ₚ
-               --  𝒻 ⋆∙ (β (ℒ [ l ])) ∧[ 𝒪 X ] 𝟏[ 𝒪 X ]    ＝⟨ 𝟐 ⟩ₚ
-               --  𝒻 ⋆∙ (β (ℒ [ l ])) ∧[ 𝒪 X ] (¬𝒻⋆ t)     ＝⟨ {!!} ⟩ₚ
-               --  {!!}                                    ＝⟨ {!!} ⟩ₚ
-               --  {!!}                                    ■
-               --   where
-               --    𝟏 = 𝟏-right-unit-of-∧ (𝒪 X) (𝒻 ⋆∙ (β (ℒ [ l ]))) ⁻¹
-               --    𝟐 = ap (λ - → 𝒻 ⋆∙ (β (ℒ [ l ])) ∧[ 𝒪 X ] -) {!!}
-               --    𝟑 = {!!}
-                -- 𝒻 ⋆∙ (β (ℒ [ l ]))                      ＝⟨ Ⅰ ⟩ₚ
-                -- 𝒻 ⋆∙ (β (ℒ [ l ])) ∧[ 𝒪 X ] 𝟏[ 𝒪 X ]    ≤⟨ {!!}  ⟩
-                -- f⁻⁺ ‘ U ’                               ■
-                --  where
-                --   Ⅰ = 𝟏-right-unit-of-∧ (𝒪 X) (𝒻 ⋆∙ (β (ℒ [ l ]))) ⁻¹
+             ♣
+             𝟎-is-basic
+       where
+        ♣ : Σ t ꞉ Bₐ , 𝟎[ 𝒪 A ] ＝ β t
+          → (𝒻 ⋆∙ β (ℒ [ l ]) ≤[ poset-of (𝒪 X) ] f⁻⁺ ‘ U ’) holds
+        ♣ (t , p) =
+         let
+          open PosetReasoning (poset-of (𝒪 X))
+         in
+          𝒻 ⋆∙ (β (ℒ [ l ]))                         ＝⟨ 𝟏 ⟩ₚ
+          𝒻 ⋆∙ (β (ℒ [ l ])) ∧[ 𝒪 X ] 𝟏[ 𝒪 X ]       ＝⟨ 𝟐 ⟩ₚ
+          𝒻 ⋆∙ (β (ℒ [ l ])) ∧[ 𝒪 X ] ¬𝒻⋆ 𝟎[ 𝒪 A ]   ＝⟨ 𝟑 ⟩ₚ
+          𝒻 ⋆∙ (β (ℒ [ l ])) ∧[ 𝒪 X ] ¬𝒻⋆ (β t)      ≤⟨ 𝟒  ⟩
+          f⁻⁺ ‘ U ’                                  ■
+           where
+            ♠ = λ n →
+             let
+              open PosetReasoning (poset-of (𝒪 A))
+              𝕒 = ap (λ - → (β (ℒ [ l ]) ∨[ 𝒪 A ] β n) ∧[ 𝒪 A ] (- ==>ₐ β n)) (p ⁻¹)
+              𝕓 = ap (λ - → (β (ℒ [ l ]) ∨[ 𝒪 A ] β n) ∧[ 𝒪 A ] -) (only-𝟏-is-above-𝟏 ? ? ?)
+             in
+              (β (ℒ [ l ]) ∨[ 𝒪 A ] β n) ∧[ 𝒪 A ] (β t ==>ₐ β n)       ＝⟨ 𝕒 ⟩ₚ
+              (β (ℒ [ l ]) ∨[ 𝒪 A ] β n) ∧[ 𝒪 A ] (𝟎[ 𝒪 A ] ==>ₐ β n)  ≤⟨ {!!} ⟩
+              U ∨[ 𝒪 A ] β n                                           ■
+
+            𝟏 = 𝟏-right-unit-of-∧ (𝒪 X) (𝒻 ⋆∙ (β (ℒ [ l ]))) ⁻¹
+            𝟐 = ap (λ - → 𝒻 ⋆∙ β (ℒ [ l ]) ∧[ 𝒪 X ] -)   (¬𝒻⋆𝟎-is-𝟏 ⁻¹)
+            𝟑 = ap (λ - → 𝒻 ⋆∙ β (ℒ [ l ]) ∧[ 𝒪 X ] ¬𝒻⋆ -) p
+            𝟒 = ⋁[ 𝒪 X ]-upper
+                 ⁅ (𝒻 ⋆∙ β m) ∧[ 𝒪 X ] ¬𝒻⋆ (β n) ∣ (m , n , p) ∶ Σ m ꞉ Bₐ , Σ n ꞉ Bₐ , 𝕃 ‘ U ’ m n holds ⁆
+                 (ℒ [ l ] , t , ♠)
 
     † : (𝒻 ⋆∙ U ≤[ poset-of (𝒪 X) ] f⁻⁺ ‘ U ’) holds
-    † = 𝒻 ⋆∙ U                            ＝⟨ Ⅰ ⟩ₚ
-        𝒻 ⋆∙ (⋁[ 𝒪 A ] ⁅ β l ∣ l ε ℒ ⁆)   ＝⟨ Ⅱ ⟩ₚ
-        ⋁[ 𝒪 X ] ⁅ 𝒻 ⋆∙ (β l) ∣ l ε ℒ ⁆   ≤⟨  Ⅲ ⟩
-        f⁻⁺ ‘ U ’                         ■
-         where
-          Ⅰ = ap (𝒻 ⋆∙_) ℒ-covers-U
-          Ⅱ = frame-homomorphisms-preserve-all-joins (𝒪 A) (𝒪 X) 𝒻 ⁅ β l ∣ l ε ℒ ⁆
+    † =
+     let
+      open PosetReasoning (poset-of (𝒪 X))
+     in
+      𝒻 ⋆∙ U                            ＝⟨ Ⅰ ⟩ₚ
+      𝒻 ⋆∙ (⋁[ 𝒪 A ] ⁅ β l ∣ l ε ℒ ⁆)   ＝⟨ Ⅱ ⟩ₚ
+      ⋁[ 𝒪 X ] ⁅ 𝒻 ⋆∙ (β l) ∣ l ε ℒ ⁆   ≤⟨  Ⅲ ⟩
+      f⁻⁺ ‘ U ’                         ■
+       where
+        Ⅰ = ap (𝒻 ⋆∙_) ℒ-covers-U
+        Ⅱ = frame-homomorphisms-preserve-all-joins (𝒪 A) (𝒪 X) 𝒻 ⁅ β l ∣ l ε ℒ ⁆
 
     ‡ : (f⁻⁺ ‘ U ’ ≤[ poset-of (𝒪 X) ] 𝒻 ⋆∙ U) holds
     ‡ = {!!}
