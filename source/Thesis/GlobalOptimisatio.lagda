@@ -52,9 +52,12 @@ order-preserving {𝓤} {𝓥} {𝓦'} {𝓥'} {X} {Y} ox oy f
 -- Lemma 4.1.7 [ TODO ]
 
 -- Lemma 4.1.8 [ Should be a definition ]
-has-minimal : {X : 𝓤 ̇ } → ordered X 𝓦' → 𝓤 ⊔ 𝓦'  ̇
-has-minimal {𝓤} {𝓦'} {X} o = Σ x₀ ꞉ X , ((x : X) → x₀ ≤ x)
+is-minimal :  {X : 𝓤 ̇ } → ordered X 𝓦' → X → 𝓤 ⊔ 𝓦'  ̇
+is-minimal {𝓤} {𝓦'} {X} o x₀ = ((x : X) → x₀ ≤ x)
  where _≤_ = _≤'_ o
+
+has-minimal : {X : 𝓤 ̇ } → ordered X 𝓦' → 𝓤 ⊔ 𝓦'  ̇
+has-minimal = Σ ∘ is-minimal
 
 -- Lemma 4.1.9
 -- [ TODO paper needs the below? ]
@@ -140,11 +143,14 @@ totally-approx-ordered X o
  where open approx-ordered o
 
 -- Definition 4.1.12
+is_minimal : ℕ → {𝓤 : Universe} {X : ClosenessSpace 𝓤}
+            → approx-ordered X 𝓦' → ⟨ X ⟩ → 𝓤 ⊔ 𝓦'  ̇
+(is ϵ minimal) {𝓤} {X} o x₀ = ((x : ⟨ X ⟩) → (x₀ ≤ⁿ x) ϵ holds)
+ where open approx-ordered o
+
 has_minimal : ℕ → {𝓤 : Universe} {X : ClosenessSpace 𝓤}
             → approx-ordered X 𝓦' → 𝓤 ⊔ 𝓦'  ̇
-(has ϵ minimal) {𝓤} {X} o
- = Σ x₀ ꞉ ⟨ X ⟩ , ((x : ⟨ X ⟩) → (x₀ ≤ⁿ x) ϵ holds)
- where open approx-ordered o
+(has ϵ minimal) {𝓤} {X} o = Σ ((is ϵ minimal) {𝓤} {X} o)
 
 -- Definition 4.1.13
 has_global-minimal : ℕ → {𝓤 𝓥 : Universe} {X : 𝓤 ̇ }
@@ -155,6 +161,19 @@ has_global-minimal : ℕ → {𝓤 𝓥 : Universe} {X : 𝓤 ̇ }
  where open approx-ordered o
 
 -- Lemma 4.1.14
-
+lem : {X : ClosenessSpace 𝓤} → (o : approx-ordered X 𝓦)
+    → (ϵ : ℕ)
+    → ((X' , g , _) : (ϵ cover-of X) 𝓥)
+    → (o' : ordered X' 𝓦')
+    → order-preserving o' (approx-ordered.o o) g
+    → (x₀ : X') → is-minimal o' x₀ → (is ϵ minimal) o (g x₀)
+lem o ϵ (X' , g , η) o' p x₀ m x
+ = ?
+ where
+  open approx-ordered o
+  open ordered o'
+  γ : (x₀ ≤ pr₁ (η x)) holds
+  γ = m (pr₁ (η x))
+ 
 
 \end{code}
