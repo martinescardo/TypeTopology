@@ -973,7 +973,36 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
         Ⅱ = frame-homomorphisms-preserve-all-joins (𝒪 A) (𝒪 X) 𝒻 ⁅ β l ∣ l ε ℒ ⁆
 
     ‡ : (f⁻⁺ ‘ U ’ ≤[ poset-of (𝒪 X) ] 𝒻 ⋆∙ U) holds
-    ‡ = {!!}
+    ‡ = f⁻⁺  ‘ U ’  ＝⟨ f⁻⁺₂-equiv-f⁻⁺₁ ‘ U ’ ⟩ₚ
+        f⁻⁺₂ ‘ U ’  ≤⟨ ※                      ⟩
+        𝒻 ⋆∙ U      ■
+     where
+      open PosetReasoning (poset-of (𝒪 X))
+
+      ϟ : (n : Bₐ)
+        → ((𝒻 ⋆∙ (U ∨[ 𝒪 A ] β n) ∧[ 𝒪 X ] ¬𝒻⋆ (β n)) ≤[ poset-of (𝒪 X) ] 𝒻 ⋆∙ U) holds
+      ϟ n =
+       𝒻 ⋆∙ (U ∨[ 𝒪 A ] β n) ∧[ 𝒪 X ] ¬𝒻⋆ (β n)                             ＝⟨ 𝟏 ⟩ₚ
+       (𝒻 ⋆∙ U ∨[ 𝒪 X ] 𝒻 ⋆∙ β n) ∧[ 𝒪 X ] ((𝒻 ⋆∙ (β n)) ==> 𝟎[ 𝒪 X ])      ＝⟨ 𝟐 ⟩ₚ
+       (𝒻 ⋆∙ U ∧[ 𝒪 X ] ¬𝒻⋆ (β n)) ∨[ 𝒪 X ] (𝒻 ⋆∙ (β n) ∧[ 𝒪 X ] ¬𝒻⋆ (β n)) ≤⟨  𝟑 ⟩
+       (𝒻 ⋆∙ U) ∨[ 𝒪 X ] (𝒻 ⋆∙ (β n) ∧[ 𝒪 X ] ¬𝒻⋆ (β n))                    ≤⟨ 𝟒  ⟩
+       (𝒻 ⋆∙ U) ∨[ 𝒪 X ] 𝟎[ 𝒪 X ]                                           ＝⟨ 𝟓 ⟩ₚ
+       𝒻 ⋆∙ U                                                               ■
+        where
+         𝟏 = ap
+              (λ - → - ∧[ 𝒪 X ] ¬𝒻⋆ (β n))
+              (frame-homomorphisms-preserve-binary-joins (𝒪 A) (𝒪 X) 𝒻 U (β n))
+         𝟐 = binary-distributivity-right (𝒪 X)
+         𝟑 = ∨[ 𝒪 X ]-left-monotone
+              (∧[ 𝒪 X ]-lower₁
+                (𝒻 ⋆∙ U)
+                ((𝒻 ⋆∙ β n) ==> 𝟎[ 𝒪 X ]))
+         𝟒 = ∨[ 𝒪 X ]-right-monotone (mp-left (𝒻 ⋆∙ β n) 𝟎[ 𝒪 X ])
+         𝟓 =  𝟎-left-unit-of-∨ (𝒪 X) (𝒻 ⋆∙ U)
+
+      ※ = ⋁[ 𝒪 X ]-least
+           ⁅ 𝒻 ⋆∙ (U ∨[ 𝒪 A ] β n) ∧[ 𝒪 X ] ¬𝒻⋆ (β n) ∣ n ∶ Bₐ ⁆
+           (𝒻 ⋆∙ U , ϟ)
 
  --  proof-of-ump : ∃! 𝒻⁻ ꞉ (X ─c→ Patch-A) , ((U : ⟨ 𝒪 A ⟩) → 𝒻 .pr₁ U  ＝ 𝒻⁻ .pr₁ ‘ U ’)
  --  proof-of-ump = ((f⁻⁺ , 𝒻⁻-α , 𝒻⁻-β , 𝒻⁻-γ)
