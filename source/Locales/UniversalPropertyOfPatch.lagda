@@ -1004,10 +1004,29 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
            ⁅ 𝒻 ⋆∙ (U ∨[ 𝒪 A ] β n) ∧[ 𝒪 X ] ¬𝒻⋆ (β n) ∣ n ∶ Bₐ ⁆
            (𝒻 ⋆∙ U , ϟ)
 
+  -- 𝒻⁻⁺ : X ─c→ Patchₛ-A
+  -- 𝒻⁻⁺ = (f⁻⁺ , 𝒻⁻-α , 𝒻⁻-β , 𝒻⁻-γ)
+
+  𝒻⁻-is-unique : is-central
+                  (Σ 𝒻⁻₀ ꞉ (X ─c→ Patch-A) ,
+                   ((x : ⟨ 𝒪 A ⟩) → 𝒻 .pr₁ x  ＝ 𝒻⁻₀ .pr₁ ‘ x ’))
+                  ((f⁻⁺ , 𝒻⁻-α , 𝒻⁻-β , 𝒻⁻-γ) , 𝒻⁻-makes-the-diagram-commute)
+  𝒻⁻-is-unique (𝒻⁻₀ , p) = to-subtype-＝ ※ (to-subtype-＝ γ (dfunext fe †))
+   where
+    ※ : (𝒻⁻₀ : X ─c→ Patch-A)
+      → is-prop ((U : ⟨ 𝒪 A ⟩) → 𝒻 .pr₁ U  ＝ 𝒻⁻₀ .pr₁ ‘ U ’)
+    ※ 𝒻⁻₀ = Π-is-prop fe λ _ → carrier-of-[ poset-of (𝒪 X) ]-is-set
+
+    γ : (ℊ⁻ : ⟨ 𝒪 Patch-A ⟩ → ⟨ 𝒪 X ⟩)
+       → is-prop (is-a-frame-homomorphism (𝒪 Patch-A) (𝒪 X) ℊ⁻ holds)
+    γ ℊ⁻ = holds-is-prop (is-a-frame-homomorphism (𝒪 Patch-A) (𝒪 X) ℊ⁻)
+
+    † : (𝒿 : ⟨ 𝒪 Patchₛ-A ⟩) → f⁻⁺ 𝒿 ＝ 𝒻⁻₀ .pr₁ 𝒿
+    † 𝒿 = {!!}
+
   proof-of-ump : ∃! 𝒻⁻ ꞉ (X ─c→ Patch-A) , ((U : ⟨ 𝒪 A ⟩) → 𝒻 .pr₁ U  ＝ 𝒻⁻ .pr₁ ‘ U ’)
-  proof-of-ump = ((f⁻⁺ , 𝒻⁻-α , 𝒻⁻-β , 𝒻⁻-γ)
-               , 𝒻⁻-makes-the-diagram-commute)
-               , {!!}
+  proof-of-ump =
+   ((f⁻⁺ , 𝒻⁻-α , 𝒻⁻-β , 𝒻⁻-γ) , 𝒻⁻-makes-the-diagram-commute) , 𝒻⁻-is-unique
 
  ump-of-patch : (X : Locale (𝓤 ⁺) 𝓤 𝓤)
               → is-stone (𝒪 X) holds
