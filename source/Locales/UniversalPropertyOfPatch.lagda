@@ -1004,21 +1004,21 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
            ⁅ 𝒻 ⋆∙ (U ∨[ 𝒪 A ] β n) ∧[ 𝒪 X ] ¬𝒻⋆ (β n) ∣ n ∶ Bₐ ⁆
            (𝒻 ⋆∙ U , ϟ)
 
- --  proof-of-ump : ∃! 𝒻⁻ ꞉ (X ─c→ Patch-A) , ((U : ⟨ 𝒪 A ⟩) → 𝒻 .pr₁ U  ＝ 𝒻⁻ .pr₁ ‘ U ’)
- --  proof-of-ump = ((f⁻⁺ , 𝒻⁻-α , 𝒻⁻-β , 𝒻⁻-γ)
- --               , 𝒻⁻-makes-the-diagram-commute)
- --               , {!!}
+  proof-of-ump : ∃! 𝒻⁻ ꞉ (X ─c→ Patch-A) , ((U : ⟨ 𝒪 A ⟩) → 𝒻 .pr₁ U  ＝ 𝒻⁻ .pr₁ ‘ U ’)
+  proof-of-ump = ((f⁻⁺ , 𝒻⁻-α , 𝒻⁻-β , 𝒻⁻-γ)
+               , 𝒻⁻-makes-the-diagram-commute)
+               , {!!}
 
- -- ump-of-patch : (X : Locale (𝓤 ⁺) 𝓤 𝓤)
- --              → is-stone (𝒪 X) holds
- --              → (𝒻 : X ─c→ A)
- --              → is-spectral-map (𝒪 A) (𝒪 X) 𝒻 holds
- --              → ∃! 𝒻⁻ ꞉ (X ─c→ Patch-A) , ((x : ⟨ 𝒪 A ⟩) → 𝒻 .pr₁ x  ＝ 𝒻⁻ .pr₁ ‘ x ’)
- -- ump-of-patch X 𝕤 𝒻 μ = ∥∥-rec₂ (being-singleton-is-prop fe) γ σ (pr₂ 𝕤)
- --  where
- --   γ : spectralᴰ (𝒪 A)
- --     → zero-dimensionalᴰ (𝒪 X)
- --     → ∃! 𝒻⁻ ꞉ (X ─c→ Patch-A) , ((x : ⟨ 𝒪 A ⟩) → 𝒻 .pr₁ x  ＝ 𝒻⁻ .pr₁ ‘ x ’)
- --   γ σᴰ 𝕫ᴰ = UniversalPropertyOfPatch.proof-of-ump X σᴰ 𝕫ᴰ (pr₁ 𝕤) 𝒻 μ
+ ump-of-patch : (X : Locale (𝓤 ⁺) 𝓤 𝓤)
+              → is-stone (𝒪 X) holds
+              → (𝒻 : X ─c→ A)
+              → is-spectral-map (𝒪 A) (𝒪 X) 𝒻 holds
+              → ∃! 𝒻⁻ ꞉ (X ─c→ Patch-A) , ((x : ⟨ 𝒪 A ⟩) → 𝒻 .pr₁ x  ＝ 𝒻⁻ .pr₁ ‘ x ’)
+ ump-of-patch X 𝕤 𝒻 μ = ∥∥-rec₂ (being-singleton-is-prop fe) γ σ (pr₂ 𝕤)
+  where
+   γ : spectralᴰ (𝒪 A)
+     → zero-dimensionalᴰ (𝒪 X)
+     → ∃! 𝒻⁻ ꞉ (X ─c→ Patch-A) , ((x : ⟨ 𝒪 A ⟩) → 𝒻 .pr₁ x  ＝ 𝒻⁻ .pr₁ ‘ x ’)
+   γ σᴰ 𝕫ᴰ = UniversalPropertyOfPatch.proof-of-ump X σᴰ 𝕫ᴰ (pr₁ 𝕤) 𝒻 μ
 
 \end{code}
