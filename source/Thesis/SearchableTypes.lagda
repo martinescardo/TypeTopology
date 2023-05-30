@@ -190,13 +190,29 @@ ClosenessSpace : (𝓤 : Universe) → 𝓤 ⁺  ̇
 ClosenessSpace 𝓤
  = Σ X ꞉ 𝓤 ̇ , Σ c ꞉ (X → X → ℕ∞) , is-closeness c
 
--- Definition 3.2.23 [ Doesn't say in paper that this is an equiv rel ? TODO ]
-
-B : ((X , _) : ClosenessSpace 𝓤) → ℕ → X → X → 𝓤₀  ̇   
-B (X , c , _) n x y = (n ↑) ≼ c x y
-
 ⟨_⟩ : ClosenessSpace 𝓤 → 𝓤 ̇
 ⟨ X , _ ⟩ = X
+
+-- Definition 3.2.23 [ Doesn't say in paper that this is an equiv rel ? TODO ]
+
+B : (X : ClosenessSpace 𝓤) → ℕ → ⟨ X ⟩ → ⟨ X ⟩ → 𝓤₀  ̇   
+B (X , c , _) n x y = (n ↑) ≼ c x y
+
+B-refl : (X : ClosenessSpace 𝓤) → (n : ℕ) (x : ⟨ X ⟩)
+       → B X n x x
+B-refl X n x = {!!}
+
+B-sym : (X : ClosenessSpace 𝓤) → (n : ℕ) (x y : ⟨ X ⟩)
+      → B X n x y → B X n y x
+B-sym X n x y = {!!}
+
+B-trans : (X : ClosenessSpace 𝓤) → (n : ℕ) (x y z : ⟨ X ⟩)
+        → B X n x y → B X n y z → B X n x z
+B-trans X n x y z = {!!}
+
+B-decidable : (X : ClosenessSpace 𝓤) → (n : ℕ) → (x y : ⟨ X ⟩ )
+            → decidable (B X n x y)
+B-decidable (X , c , _) n x y = ≼-left-decidable n (c x y)
 
 B-is-eq : (C : ClosenessSpace 𝓤)
         → (n : ℕ) → is-equiv-relation (B C n)
