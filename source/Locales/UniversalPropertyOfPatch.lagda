@@ -1087,4 +1087,6 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
      → ∃! 𝒻⁻ ꞉ (X ─c→ Patch-A) , ((x : ⟨ 𝒪 A ⟩) → 𝒻 .pr₁ x  ＝ 𝒻⁻ .pr₁ ‘ x ’)
    γ σᴰ 𝕫ᴰ = UniversalPropertyOfPatch.proof-of-ump X σᴰ 𝕫ᴰ (pr₁ 𝕤) 𝒻 μ
 
+--}
+
 \end{code}
