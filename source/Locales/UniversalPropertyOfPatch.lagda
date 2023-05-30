@@ -717,7 +717,7 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
 
        Ⅰ = ap
             (λ - → U ∧[ 𝒪 X ] -)
-            (heyting-complement-is-complement V V′ (p , q) ⁻¹)
+            (complement-is-heyting-complement V V′ (p , q) ⁻¹)
        Ⅱ = ∧[ 𝒪 X ]-left-monotone φ
        Ⅲ = binary-distributivity-right (𝒪 X)
        Ⅳ = ap (λ - → - ∨[ 𝒪 X ] (W ∧[ 𝒪 X ] V′)) p
@@ -748,7 +748,7 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
        Ⅲ = binary-distributivity (𝒪 X) U V V′
        Ⅳ = ap
             (λ - → (U ∧[ 𝒪 X ] V) ∨[ 𝒪 X ] (U ∧[ 𝒪 X ] -))
-            (heyting-complement-is-complement V V′ (p , q))
+            (complement-is-heyting-complement V V′ (p , q))
        Ⅴ = ∨[ 𝒪 X ]-right-monotone φ
        Ⅵ = ∨[ 𝒪 X ]-left-monotone (∧[ 𝒪 X ]-lower₂ U V)
 
@@ -770,7 +770,7 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
           κ : is-clopen₀ (𝒪 X) (𝒻 ⋆∙ β n)
           κ = compacts-are-clopen-in-zero-dimensional-locales
                (𝒪 X)
-               ∣ 𝕫ᴰ ∣ 
+               ∣ 𝕫ᴰ ∣
                (𝒻 ⋆∙ β n)
                (μ (β n) (pr₂ (βₖ n)))
 
@@ -1026,7 +1026,7 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
     ψ n = complements-are-unique (𝒪 X) (𝒻 ⋆∙ (β n)) (¬𝒻⋆ (β n)) (f⁻₀ ¬‘ βₖ n ’) ψ₁ ψ₂
      where
       ψ₁ : is-complement-of (𝒪 X) (¬𝒻⋆ (β n)) (𝒻 ⋆∙ β n)
-      ψ₁ = ?
+      ψ₁ = {!!}
 
       ψ₂ : is-complement-of (𝒪 X) (f⁻₀ ¬‘ βₖ n ’) (𝒻 ⋆∙ β n)
       ψ₂ = {!!}

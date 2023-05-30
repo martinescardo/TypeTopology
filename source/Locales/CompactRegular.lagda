@@ -1851,10 +1851,10 @@ module LemmasAboutHeytingComplementation (X : Locale 𝓤 𝓥 𝓥)
 
  open HeytingImplicationConstruction X 𝒷
 
- heyting-complement-is-complement : (C C′ : ⟨ 𝒪 X ⟩)
+ complement-is-heyting-complement : (C C′ : ⟨ 𝒪 X ⟩)
                                   → is-complement-of (𝒪 X) C′ C
                                   → C′ ＝ C ==> 𝟎[ 𝒪 X ]
- heyting-complement-is-complement C C′ (p , q) =
+ complement-is-heyting-complement C C′ (p , q) =
   ≤-is-antisymmetric (poset-of (𝒪 X)) † ‡
    where
     open PosetReasoning (poset-of (𝒪 X))
@@ -1915,7 +1915,7 @@ module LemmasAboutHeytingComplementation (X : Locale 𝓤 𝓥 𝓥)
                Ⅳ = ∨[ 𝒪 X ]-is-commutative U C′
                Ⅴ = ap
                     (λ - → - ∨[ 𝒪 X ] U)
-                    (heyting-complement-is-complement C C′ (p , q))
+                    (complement-is-heyting-complement C C′ (p , q))
 
          Ⅰ = heyting-implication₁
               (C ∨[ 𝒪 X ] C′)
@@ -1957,8 +1957,8 @@ module LemmasAboutHeytingComplementation (X : Locale 𝓤 𝓥 𝓥)
          where
           Ⅰ = ap
                (λ - → - ==> 𝟎[ 𝒪 X ])
-               (heyting-complement-is-complement C C′ (p , q) ⁻¹)
-          Ⅱ = heyting-complement-is-complement C′ C (Ⅱ₁ , Ⅱ₂) ⁻¹
+               (complement-is-heyting-complement C C′ (p , q) ⁻¹)
+          Ⅱ = complement-is-heyting-complement C′ C (Ⅱ₁ , Ⅱ₂) ⁻¹
                where
                 Ⅱ₁ = C′ ∧[ 𝒪 X ] C     ＝⟨ ∧[ 𝒪 X ]-is-commutative C′ C ⟩
                      C  ∧[ 𝒪 X ] C′    ＝⟨ p                            ⟩
