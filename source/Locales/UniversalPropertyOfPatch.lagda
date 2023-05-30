@@ -1004,15 +1004,14 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
            ⁅ 𝒻 ⋆∙ (U ∨[ 𝒪 A ] β n) ∧[ 𝒪 X ] ¬𝒻⋆ (β n) ∣ n ∶ Bₐ ⁆
            (𝒻 ⋆∙ U , ϟ)
 
-  -- 𝒻⁻⁺ : X ─c→ Patchₛ-A
-  -- 𝒻⁻⁺ = (f⁻⁺ , 𝒻⁻-α , 𝒻⁻-β , 𝒻⁻-γ)
-
   𝒻⁻-is-unique : is-central
                   (Σ 𝒻⁻₀ ꞉ (X ─c→ Patch-A) ,
                    ((x : ⟨ 𝒪 A ⟩) → 𝒻 .pr₁ x  ＝ 𝒻⁻₀ .pr₁ ‘ x ’))
                   ((f⁻⁺ , 𝒻⁻-α , 𝒻⁻-β , 𝒻⁻-γ) , 𝒻⁻-makes-the-diagram-commute)
   𝒻⁻-is-unique (𝒻⁻₀ , p) = to-subtype-＝ ※ (to-subtype-＝ γ (dfunext fe †))
    where
+    f⁻₀ = pr₁ 𝒻⁻₀
+
     ※ : (𝒻⁻₀ : X ─c→ Patch-A)
       → is-prop ((U : ⟨ 𝒪 A ⟩) → 𝒻 .pr₁ U  ＝ 𝒻⁻₀ .pr₁ ‘ U ’)
     ※ 𝒻⁻₀ = Π-is-prop fe λ _ → carrier-of-[ poset-of (𝒪 X) ]-is-set
@@ -1021,8 +1020,27 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
        → is-prop (is-a-frame-homomorphism (𝒪 Patch-A) (𝒪 X) ℊ⁻ holds)
     γ ℊ⁻ = holds-is-prop (is-a-frame-homomorphism (𝒪 Patch-A) (𝒪 X) ℊ⁻)
 
+    open LemmasAboutHeytingComplementation X X-has-basis
+
+    ψ : (n : Bₐ) → ¬𝒻⋆ (β n) ＝ f⁻₀ ¬‘ βₖ n ’
+    ψ n = complements-are-unique (𝒪 X) (𝒻 ⋆∙ (β n)) (¬𝒻⋆ (β n)) (f⁻₀ ¬‘ βₖ n ’) ψ₁ ψ₂
+     where
+      ψ₁ : is-complement-of (𝒪 X) (¬𝒻⋆ (β n)) (𝒻 ⋆∙ β n)
+      ψ₁ = ?
+
+      ψ₂ : is-complement-of (𝒪 X) (f⁻₀ ¬‘ βₖ n ’) (𝒻 ⋆∙ β n)
+      ψ₂ = {!!}
+
     † : (𝒿 : ⟨ 𝒪 Patchₛ-A ⟩) → f⁻⁺ 𝒿 ＝ 𝒻⁻₀ .pr₁ 𝒿
-    † 𝒿 = {!!}
+    † 𝒿 = ≤-is-antisymmetric (poset-of (𝒪 X)) †₁ †₂
+     where
+      open PosetReasoning (poset-of (𝒪 X))
+
+      †₁ : (f⁻⁺ 𝒿 ≤[ poset-of (𝒪 X) ] 𝒻⁻₀ .pr₁ 𝒿) holds
+      †₁ = f⁻⁺ 𝒿 ≤⟨ {!!} ⟩ 𝒻⁻₀ .pr₁ 𝒿 ■
+
+      †₂ : (𝒻⁻₀ .pr₁ 𝒿 ≤[ poset-of (𝒪 X) ] f⁻⁺ 𝒿) holds
+      †₂ = {!!}
 
   proof-of-ump : ∃! 𝒻⁻ ꞉ (X ─c→ Patch-A) , ((U : ⟨ 𝒪 A ⟩) → 𝒻 .pr₁ U  ＝ 𝒻⁻ .pr₁ ‘ U ’)
   proof-of-ump =
