@@ -1889,6 +1889,30 @@ module LemmasAboutHeytingComplementation (X : Locale 𝓤 𝓥 𝓥)
           Ⅰ = heyting-implication₁ (C ∨[ 𝒪 X ] C′) C′ (C ==> 𝟎[ 𝒪 X ]) ※
           Ⅱ = ap (λ - → - ==> C′) q
 
+ heyting-complement-is-complement : (C C′ : ⟨ 𝒪 X ⟩)
+                                  → is-complement-of (𝒪 X) C′ C
+                                  → is-complement-of (𝒪 X) (C ==> 𝟎[ 𝒪 X ]) C
+ heyting-complement-is-complement C C′ (p , q) = † , ‡
+  where
+   † : C ∧[ 𝒪 X ] (C ==> 𝟎[ 𝒪 X ]) ＝ 𝟎[ 𝒪 X ]
+   † = C ∧[ 𝒪 X ] (C ==> 𝟎[ 𝒪 X ])  ＝⟨ ※ ⟩
+       C ∧[ 𝒪 X ] C′                ＝⟨ p ⟩
+       𝟎[ 𝒪 X ]                     ∎
+        where
+         ※ = ap
+              (λ - → C ∧[ 𝒪 X ] -)
+              (complement-is-heyting-complement C C′ (p , q) ⁻¹)
+
+
+   ‡ : C ∨[ 𝒪 X ] (C ==> 𝟎[ 𝒪 X ]) ＝ 𝟏[ 𝒪 X ]
+   ‡ = C ∨[ 𝒪 X ] (C ==> 𝟎[ 𝒪 X ])  ＝⟨ ※ ⟩
+       C ∨[ 𝒪 X ] C′                ＝⟨ q ⟩
+       𝟏[ 𝒪 X ]                     ∎
+        where
+         ※ = ap
+              (λ - → C ∨[ 𝒪 X ] -)
+              (complement-is-heyting-complement C C′ (p , q) ⁻¹)
+
  material-implication : (C U : ⟨ 𝒪 X ⟩)
                       → is-clopen₀ (𝒪 X) C
                       → (C ==> U) ＝ (C ==> 𝟎[ 𝒪 X ]) ∨[ 𝒪 X ] U
