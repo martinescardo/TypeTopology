@@ -883,6 +883,22 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
     (f⁻⁺-preserves-joins S ⁻¹)
     (⋁[ 𝒪 X ]-upper ⁅ f⁻⁺ 𝒿 ∣ 𝒿 ε S ⁆ , ⋁[ 𝒪 X ]-least ⁅ f⁻⁺ 𝒿 ∣ 𝒿 ε S ⁆)
 
+  main-lemma : (𝒻⁻₀ : X ─c→ Patchₛ-A)
+             → (n : Bₐ)
+             → is-complement-of (𝒪 X) (𝒻⁻₀ .pr₁ ¬‘ βₖ n ’) (𝒻⁻₀ .pr₁ ‘ β n ’)
+  main-lemma 𝒻⁻₀ n =
+   frame-homomorphisms-preserve-complements (𝒪 Patchₛ-A) (𝒪 X) 𝒻⁻₀ †
+    where
+     open PatchComplementation A σᴰ
+
+     ‡ : is-boolean-complement-of (𝒪 Patchₛ-A) ¬‘ βₖ n ’ ‘ β n ’ holds
+     ‡ = {!!}
+
+     † : is-complement-of (𝒪 Patchₛ-A) ‘ β n ’ ¬‘ βₖ n ’
+     † = complementation-is-symmetric (𝒪 Patchₛ-A) ¬‘ βₖ n ’ ‘ β n ’ ‡
+
+{--
+
   𝒻⁻-makes-the-diagram-commute : (U : ⟨ 𝒪 A ⟩) → 𝒻 ⋆∙ U  ＝ f⁻⁺ ‘ U ’
   𝒻⁻-makes-the-diagram-commute U = ≤-is-antisymmetric (poset-of (𝒪 X)) † ‡
    where
@@ -1025,22 +1041,35 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
     ψ : (n : Bₐ) → ¬𝒻⋆ (β n) ＝ f⁻₀ ¬‘ βₖ n ’
     ψ n = complements-are-unique (𝒪 X) (𝒻 ⋆∙ (β n)) (¬𝒻⋆ (β n)) (f⁻₀ ¬‘ βₖ n ’) ψ₁ ψ₂
      where
+      ν : is-clopen (𝒪 X) (𝒻 ⋆∙ β n) holds
+      ν = compacts-are-clopen-in-zero-dimensional-locales
+           (𝒪 X)
+           ∣ 𝕫ᴰ ∣
+           (𝒻 ⋆∙ (β n))
+           (μ (β n) (pr₂ (βₖ n)))
+
+      C = pr₁ ν
+
+      C-complements-𝒻⋆βn : is-complement-of (𝒪 X) C (𝒻 ⋆∙ (β n))
+      C-complements-𝒻⋆βn = pr₂ ν
+
       ψ₁ : is-complement-of (𝒪 X) (¬𝒻⋆ (β n)) (𝒻 ⋆∙ β n)
-      ψ₁ = {!!}
+      ψ₁ = transport
+            (λ - → is-complement-of (𝒪 X) - (𝒻 ⋆∙ β n))
+            (complement-is-heyting-complement (𝒻 ⋆∙ β n) C C-complements-𝒻⋆βn)
+            C-complements-𝒻⋆βn
+
+      ϟ : is-complement-of (𝒪 X) (f⁻₀ ¬‘ βₖ n ’) (𝒻⁻₀ .pr₁ ‘ β n ’)
+      ϟ = {!frame-homomorphisms-preserve-complements (𝒪 Patchₛ-A) (𝒪 X) 𝒻⁻₀ ? !}
 
       ψ₂ : is-complement-of (𝒪 X) (f⁻₀ ¬‘ βₖ n ’) (𝒻 ⋆∙ β n)
-      ψ₂ = {!!}
+      ψ₂ = transport
+            (λ - → is-complement-of (𝒪 X) (f⁻₀ ¬‘ βₖ n ’) -)
+            (p (β n) ⁻¹)
+            ϟ
 
     † : (𝒿 : ⟨ 𝒪 Patchₛ-A ⟩) → f⁻⁺ 𝒿 ＝ 𝒻⁻₀ .pr₁ 𝒿
-    † 𝒿 = ≤-is-antisymmetric (poset-of (𝒪 X)) †₁ †₂
-     where
-      open PosetReasoning (poset-of (𝒪 X))
-
-      †₁ : (f⁻⁺ 𝒿 ≤[ poset-of (𝒪 X) ] 𝒻⁻₀ .pr₁ 𝒿) holds
-      †₁ = f⁻⁺ 𝒿 ≤⟨ {!!} ⟩ 𝒻⁻₀ .pr₁ 𝒿 ■
-
-      †₂ : (𝒻⁻₀ .pr₁ 𝒿 ≤[ poset-of (𝒪 X) ] f⁻⁺ 𝒿) holds
-      †₂ = {!!}
+    † 𝒿 = {!!}
 
   proof-of-ump : ∃! 𝒻⁻ ꞉ (X ─c→ Patch-A) , ((U : ⟨ 𝒪 A ⟩) → 𝒻 .pr₁ U  ＝ 𝒻⁻ .pr₁ ‘ U ’)
   proof-of-ump =

@@ -592,7 +592,7 @@ We use Yoneda for the `β` direction.
 
 \begin{code}
 
-module Complementation (X : Locale (𝓤 ⁺) 𝓤 𝓤) (σᴰ : spectralᴰ (𝒪 X)) where
+module PatchComplementation (X : Locale (𝓤 ⁺) 𝓤 𝓤) (σᴰ : spectralᴰ (𝒪 X)) where
 
  open SmallPatchConstruction X σᴰ renaming (SmallPatch to Patchₛ-X)
  open PatchConstruction X ∣ σᴰ ∣ using (_$_; 𝔡𝔦𝔯)
@@ -696,7 +696,7 @@ We define the following basis for Patch:
  ℬ-patch-consists-of-clopens : consists-of-clopens (𝒪 Patch-X) ℬ-patch holds
  ℬ-patch-consists-of-clopens (k , l) = (𝔬 k ∨[ 𝒪 Patch-X ] 𝔠 l) , ※
   where
-   open Complementation X σᴰ
+   open PatchComplementation X σᴰ
 
    † : is-boolean-complement-of (𝒪 Patch-X) (𝔠 k) (𝔬 k) holds
    † = closed-complements-open (ℬ [ k ]) (κ k)
@@ -713,7 +713,7 @@ We define the following basis for Patch:
  ℬ-patchₛ-consists-of-clopens : consists-of-clopens (𝒪 Patchₛ-X) ℬ-patch holds
  ℬ-patchₛ-consists-of-clopens (k , l) = (𝔬 k ∨[ 𝒪 Patchₛ-X ] 𝔠 l) , ※
   where
-   open Complementation X σᴰ
+   open PatchComplementation X σᴰ
 
    † : is-boolean-complement-of (𝒪 Patchₛ-X) (𝔠 k) (𝔬 k) holds
    † = closed-complements-open (ℬ [ k ]) (κ k)
