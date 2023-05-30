@@ -655,6 +655,46 @@ module PatchComplementation (X : Locale (𝓤 ⁺) 𝓤 𝓤) (σᴰ : spectral�
 
 \end{code}
 
+I define below an alternative version of the module above due to a technical
+problem. Consider a spectral locale `A` with a proof `σ` of spectrality. When
+the module above is called with the data contained in `σ` (let's call this
+`σᴰ`), Agda does not recognise the fact that `σ = ∣ σᴰ ∣`. To circumvent this
+problem, I'm defining a version of this module that takes as argument the proof
+of spectrality instead of the structure contained within.
+
+\begin{code}
+
+module PatchComplementationAlternative (X : Locale (𝓤 ⁺) 𝓤 𝓤)
+                                       (σ : is-spectral (𝒪 X) holds) where
+
+ open PatchConstruction X σ renaming (Patch to Patch-X)
+ open ClosedNucleus     X σ
+ open OpenNucleus       X σ
+
+ X-has-basis : has-basis (𝒪 X) holds
+ X-has-basis = spectral-frames-have-bases (𝒪 X) σ
+
+ open HeytingImplicationConstruction X X-has-basis
+
+ open-complements-closed : (K : ⟨ 𝒪 X ⟩)
+                         → (κ : is-compact-open (𝒪 X) K holds)
+                         → (is-boolean-complement-of (𝒪 Patch-X) ¬‘ (K , κ) ’ ‘ K ’ ) holds
+ open-complements-closed K κ = † , ‡
+  where
+   ※ : (U : ⟨ 𝒪 X ⟩) → (K ∨[ 𝒪 X ] U) ∧[ 𝒪 X ] ? ＝ 𝟎[ 𝒪 Patch-X ] $ U
+   ※ U = {!H₈!}
+
+   † : ‘ K ’ ∧[ 𝒪 Patch-X ] ¬‘ (K , κ) ’ ＝ 𝟎[ 𝒪 Patch-X ]
+   † = perfect-nuclei-eq
+        (‘ K ’ ∧[ 𝒪 Patch-X ] ¬‘ K , κ ’)
+        𝟎[ 𝒪 Patch-X ]
+        (dfunext fe ※)
+
+   ‡ : {!!}
+   ‡ = {!!}
+
+\end{code}
+
 \section{Basis of Patch}
 
 \begin{code}
