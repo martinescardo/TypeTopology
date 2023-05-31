@@ -676,13 +676,33 @@ module PatchComplementationAlternative (X : Locale (𝓤 ⁺) 𝓤 𝓤)
 
  open HeytingImplicationConstruction X X-has-basis
 
+ 𝟎-is-id : (U : ⟨ 𝒪 X ⟩) → 𝟎[ 𝒪 Patch-X ] $ U ＝ U
+ 𝟎-is-id U = ≤-is-antisymmetric (poset-of (𝒪 X)) † (‡ U)
+  where
+   † : ((𝟎[ 𝒪 Patch-X ] $ U) ≤[ poset-of (𝒪 X) ] U) holds
+   † = 𝟎-is-bottom (𝒪 Patch-X) idₙ U
+
+   ‡ : (idₙ ≤[ poset-of (𝒪 Patch-X) ] 𝟎[ 𝒪 Patch-X ]) holds
+   ‡ U = U ≤⟨ ※ ⟩ (⋁[ 𝒪 Patch-X ] ∅ 𝓤) $ U ＝⟨ refl ⟩ₚ 𝟎[ 𝒪 Patch-X ] $ U ■
+    where
+     open PosetReasoning (poset-of (𝒪 X))
+
+     ※ : (U ≤[ poset-of (𝒪 X) ] (⋁[ 𝒪 Patch-X ] ∅ 𝓤) $ U) holds
+     ※ = ⋁[ 𝒪 X ]-upper ⁅ α U ∣ α ε 𝔡𝔦𝔯 (∅ 𝓤) ⁆ []
+
  open-complements-closed : (K : ⟨ 𝒪 X ⟩)
                          → (κ : is-compact-open (𝒪 X) K holds)
                          → (is-boolean-complement-of (𝒪 Patch-X) ¬‘ (K , κ) ’ ‘ K ’ ) holds
  open-complements-closed K κ = † , ‡
   where
-   ※ : (U : ⟨ 𝒪 X ⟩) → (K ∨[ 𝒪 X ] U) ∧[ 𝒪 X ] ? ＝ 𝟎[ 𝒪 Patch-X ] $ U
-   ※ U = {!H₈!}
+   ※ : (U : ⟨ 𝒪 X ⟩) → (K ∨[ 𝒪 X ] U) ∧[ 𝒪 X ] (K ==> U) ＝ 𝟎[ 𝒪 Patch-X ] $ U
+   ※ U = (K ∨[ 𝒪 X ] U) ∧[ 𝒪 X ] (K ==> U)  ＝⟨ Ⅰ            ⟩
+         (U ∨[ 𝒪 X ] K) ∧[ 𝒪 X ] (K ==> U)  ＝⟨ Ⅱ            ⟩
+         U                                  ＝⟨ 𝟎-is-id U ⁻¹ ⟩
+         𝟎[ 𝒪 Patch-X ] $ U                 ∎
+          where
+           Ⅰ = ap (λ - → - ∧[ 𝒪 X ] (K ==> U)) (∨[ 𝒪 X ]-is-commutative K U)
+           Ⅱ = H₈ U K ⁻¹
 
    † : ‘ K ’ ∧[ 𝒪 Patch-X ] ¬‘ (K , κ) ’ ＝ 𝟎[ 𝒪 Patch-X ]
    † = perfect-nuclei-eq
@@ -690,8 +710,27 @@ module PatchComplementationAlternative (X : Locale (𝓤 ⁺) 𝓤 𝓤)
         𝟎[ 𝒪 Patch-X ]
         (dfunext fe ※)
 
-   ‡ : {!!}
-   ‡ = {!!}
+   ϟ : (𝟏[ 𝒪 Patch-X ] ≤[ poset-of (𝒪 Patch-X) ] (‘ K ’ ∨[ 𝒪 Patch-X ] ¬‘ (K , κ) ’)) holds
+   ϟ U =
+    𝟏[ 𝒪 X ]                                ≤⟨ Ⅰ ⟩
+    K ==> (K ∨[ 𝒪 X ] U)                    ≤⟨ Ⅱ ⟩
+    (‘ K ’ ∨[ 𝒪 Patch-X ] ¬‘ (K , κ) ’) $ U ■
+     where
+      open PosetReasoning (poset-of (𝒪 X))
+
+      ϡ : ((𝟏[ 𝒪 X ] ∧[ 𝒪 X ] K) ≤[ poset-of (𝒪 X) ] (K ∨[ 𝒪 X ] U)) holds
+      ϡ = 𝟏[ 𝒪 X ] ∧[ 𝒪 X ] K   ≤⟨ ∧[ 𝒪 X ]-lower₂ 𝟏[ 𝒪 X ] K ⟩
+          K                     ≤⟨ ∨[ 𝒪 X ]-upper₁ K U        ⟩
+          K ∨[ 𝒪 X ] U          ■
+
+      Ⅰ = heyting-implication₁ K (K ∨[ 𝒪 X ] U) 𝟏[ 𝒪 X ] ϡ
+      Ⅱ = ⋁[ 𝒪 X ]-upper _ (inl ⋆ ∷ inr ⋆ ∷ [])
+
+   ‡ : ‘ K ’ ∨[ 𝒪 Patch-X ] ¬‘ (K , κ) ’ ＝ 𝟏[ 𝒪 Patch-X ]
+   ‡ = only-𝟏-is-above-𝟏
+        (𝒪 Patch-X)
+        (‘ K ’ ∨[ 𝒪 Patch-X ] ¬‘ (K , κ) ’)
+        ϟ
 
 \end{code}
 
