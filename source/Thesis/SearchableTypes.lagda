@@ -264,13 +264,20 @@ p-ucontinuous X p
 
 -- Definition 3.3.2 [ TODO in paper needs to be a closeness space, not a general type ]
 {- First, some things TODO put in Section 2 -}
+_is_-sect : {X : 𝓤 ̇ } → (Y : 𝓥 ̇ ) → EqRel {𝓤} {𝓤'} X
+          → 𝓤 ⊔ 𝓤' ⊔ 𝓥  ̇
+X' is (_≣_ , _) -sect
+ = Σ g ꞉ (X' → _) , ((x : _) → Σ x' ꞉ X' , (x ≣ g x'))
+
 _-sect : {X : 𝓤 ̇ } → EqRel {𝓤} {𝓤'} X
-      → (𝓥 : Universe) → 𝓤 ⊔ 𝓤' ⊔ (𝓥 ⁺)  ̇
-((_≣_ , _) -sect) 𝓥
- = Σ X' ꞉ 𝓥 ̇ , Σ g ꞉ (X' → _) , ((x : _) → Σ x' ꞉ X' , (x ≣ g x'))
+       → (𝓥 : Universe) → 𝓤 ⊔ 𝓤' ⊔ (𝓥 ⁺)  ̇
+(≣ -sect) 𝓥 = Σ X' ꞉ 𝓥 ̇ , X' is ≣ -sect
+
+_is_cover-of_ : (Y : 𝓥 ̇ ) → ℕ → ClosenessSpace 𝓤 → 𝓤 ⊔ 𝓥  ̇
+X' is ϵ cover-of X = X' is (B⁼ X ϵ) -sect
 
 _cover-of_ : ℕ → ClosenessSpace 𝓤 → (𝓥 : Universe) → 𝓤 ⊔ (𝓥 ⁺) ̇
-(ϵ cover-of X) 𝓥 = (B⁼ X ϵ -sect) 𝓥
+(ϵ cover-of X) 𝓥 = Σ X' ꞉ 𝓥 ̇ , X' is ϵ cover-of X
 
 -- Definition 3.3.3
 totally-bounded : ClosenessSpace 𝓤 → (𝓥 : Universe) → 𝓤 ⊔ (𝓥 ⁺) ̇ 
