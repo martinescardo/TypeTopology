@@ -376,12 +376,22 @@ separate proof
  f⁻⁺ₘ : poset-of (𝒪 Patchₛ-A) ─m→ poset-of (𝒪 X)
  f⁻⁺ₘ = f⁻⁺ , f⁻⁺-is-monotone
 
+\end{code}
+
+\begin{code}
+
  open PatchStoneᴰ A σᴰ
 
  Patchₛ-A-has-basis : has-basis (𝒪 Patchₛ-A) holds
  Patchₛ-A-has-basis = spectral-frames-have-bases
                        (𝒪 Patchₛ-A)
                        patchₛ-is-spectral
+
+\end{code}
+
+Some horrible import bureaucracy below 😬
+
+\begin{code}
 
  open AdjointFunctorTheorem X Patchₛ-A Patchₛ-A-has-basis hiding (f₊-is-right-adjoint-of-f⁺)
  open AdjointFunctorTheorem Patchₛ-A X X-has-basis
@@ -399,14 +409,33 @@ separate proof
  open GaloisConnectionBetween (poset-of (𝒪 A)) (poset-of (𝒪 X))
   using () renaming (counit to counitₐ)
 
+\end{code}
+
+We now define some notation that will keep coming up.
+
+We denote by `𝒻₊` the right adjoint of `𝒻⁺`, which is monotonic map denote by
+`𝒻₊ₘ`.
+
+\begin{code}
+
  𝒻₊ : ⟨ 𝒪 X ⟩ → ⟨ 𝒪 A ⟩
  𝒻₊ = pr₁ (right-adjoint-ofₓ 𝒻)
+
+ 𝒻₊ₘ : poset-of (𝒪 X) ─m→ poset-of (𝒪 A)
+ 𝒻₊ₘ = right-adjoint-ofₓ 𝒻
+
+\end{code}
+
+\begin{code}
 
  𝒻⁺ₘ : poset-of (𝒪 A) ─m→ poset-of (𝒪 X)
  𝒻⁺ₘ = pr₁ 𝒻 , frame-morphisms-are-monotonic (𝒪 A) (𝒪 X) (𝒻 ⋆∙_) (pr₂ 𝒻)
 
- 𝒻₊ₘ : poset-of (𝒪 X) ─m→ poset-of (𝒪 A)
- 𝒻₊ₘ = right-adjoint-ofₓ 𝒻
+\end{code}
+
+We prove that `f⁻⁺` preserves the top element of `𝒪(Patchₛ-A)`.
+
+\begin{code}
 
  𝒻⁻-α : f⁻⁺ 𝟏[ 𝒪 Patchₛ-A ] ＝ 𝟏[ 𝒪 X ]
  𝒻⁻-α = only-𝟏-is-above-𝟏 (𝒪 X) (f⁻⁺ 𝟏[ 𝒪 Patchₛ-A ]) †
