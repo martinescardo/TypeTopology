@@ -46,7 +46,7 @@ open PropositionalTruncation pt
 
 open Locale
 
-module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) where
+module UniversalProperty where
 
 \end{code}
 
@@ -54,7 +54,8 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) where
 
 \begin{code}
 
- module UniversalPropertyOfPatch (X  : Locale (𝓤 ⁺) 𝓤 𝓤)
+ module UniversalPropertyOfPatch (A : Locale (𝓤 ⁺) 𝓤 𝓤)
+                                 (X  : Locale (𝓤 ⁺) 𝓤 𝓤)
                                  (σᴰ : spectralᴰ (𝒪 A))
                                  (𝕫ᴰ : zero-dimensionalᴰ (𝒪 X))
                                  (𝕜  : is-compact (𝒪 X) holds)
@@ -1197,7 +1198,9 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) where
   proof-of-ump =
    ((f⁻⁺ , 𝒻⁻-α , 𝒻⁻-β , 𝒻⁻-γ) , 𝒻⁻-makes-the-diagram-commute) , 𝒻⁻-is-unique
 
- ump-of-patch : (σ : is-spectral (𝒪 A) holds)
+ ump-of-patch : {𝓤 : Universe}
+              → (A : Locale (𝓤 ⁺) 𝓤 𝓤)
+              → (σ : is-spectral (𝒪 A) holds)
               → (X : Locale (𝓤 ⁺) 𝓤 𝓤)
               → is-stone (𝒪 X) holds
               → (𝒻 : X ─c→ A)
@@ -1208,7 +1211,7 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) where
                  open OpenNucleus A σ
                 in
                  ∃! 𝒻⁻ ꞉ (X ─c→ Patch-A) , ((x : ⟨ 𝒪 A ⟩) → 𝒻 .pr₁ x  ＝ 𝒻⁻ .pr₁ ‘ x ’)
- ump-of-patch σ X 𝕤 𝒻 μ = ∥∥-rec₂ (being-singleton-is-prop fe) γ σ (pr₂ 𝕤)
+ ump-of-patch {𝓤} A σ X 𝕤 𝒻 μ = ∥∥-rec₂ (being-singleton-is-prop fe) γ σ (pr₂ 𝕤)
   where
    open PatchConstruction A σ renaming (Patch to Patch-A)
    open ClosedNucleus A σ
@@ -1219,7 +1222,7 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) where
      → ∃! 𝒻⁻ ꞉ (X ─c→ Patch-A) , ((x : ⟨ 𝒪 A ⟩) → 𝒻 .pr₁ x  ＝ 𝒻⁻ .pr₁ ‘ x ’)
    γ σᴰ 𝕫ᴰ = (𝒻⁻₀ , †) , ‡
     where
-     open UniversalPropertyOfPatch X σᴰ 𝕫ᴰ (pr₁ 𝕤) 𝒻 μ
+     open UniversalPropertyOfPatch A X σᴰ 𝕫ᴰ (pr₁ 𝕤) 𝒻 μ
      open SmallPatchConstruction A σᴰ renaming (SmallPatch to Patchₛ-A)
 
      f⁻₀ : ⟨ 𝒪 Patch-A ⟩ → ⟨ 𝒪 X ⟩
