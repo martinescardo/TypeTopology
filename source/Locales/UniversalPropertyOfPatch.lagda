@@ -342,6 +342,12 @@ equivalence of the two is quite important and is used in the proofs below.
 
 \end{code}
 
+The function `f⁻⁺` is monotone. This of course follows from both meet and join
+preservation but I have proved it separately for reasons that I don't remember.
+
+TODO: investigate if there was a good reason why this had to be done in a
+separate proof
+
 \begin{code}
 
  f⁻⁺-is-monotone : is-monotonic (poset-of (𝒪 Patchₛ-A)) (poset-of (𝒪 X)) f⁻⁺
@@ -367,8 +373,8 @@ equivalence of the two is quite important and is used in the proofs below.
      ♣ : (_ ≤[ poset-of (𝒪 X) ] _) holds
      ♣ = ≤-is-reflexive (poset-of (𝒪 X)) ((𝒻 ⋆∙ β m) ∧[ 𝒪 X ] ¬𝒻⋆ (β n))
 
- 𝒻⁻⋆ₘ : poset-of (𝒪 Patchₛ-A) ─m→ poset-of (𝒪 X)
- 𝒻⁻⋆ₘ = f⁻⁺ , f⁻⁺-is-monotone
+ f⁻⁺ₘ : poset-of (𝒪 Patchₛ-A) ─m→ poset-of (𝒪 X)
+ f⁻⁺ₘ = f⁻⁺ , f⁻⁺-is-monotone
 
  open PatchStoneᴰ A σᴰ
 
@@ -766,10 +772,8 @@ equivalence of the two is quite important and is used in the proofs below.
          (𝒻 ⋆∙_)
          (frame-homomorphisms-preserve-all-joins (𝒪 A) (𝒪 X) 𝒻)
 
-
-
  f⁻⁺-preserves-joins : is-join-preserving (𝒪 Patchₛ-A) (𝒪 X) f⁻⁺ holds
- f⁻⁺-preserves-joins = aft-forward 𝒻⁻⋆ₘ †
+ f⁻⁺-preserves-joins = aft-forward f⁻⁺ₘ †
   where
    f⁻₊ : ⟨ 𝒪 X ⟩ → ⟨ 𝒪 Patchₛ-A ⟩
    f⁻₊ U = closed-image U ,  closed-image-is-nucleus U  , closed-image-is-sc U
@@ -838,7 +842,7 @@ equivalence of the two is quite important and is used in the proofs below.
       Ⅴ = ∨[ 𝒪 X ]-right-monotone φ
       Ⅵ = ∨[ 𝒪 X ]-left-monotone (∧[ 𝒪 X ]-lower₂ U V)
 
-   f⁻₊-is-right-adjoint-of-f⁻⁺ : (𝒻⁻⋆ₘ ⊣ f⁻₊ₘ) holds
+   f⁻₊-is-right-adjoint-of-f⁻⁺ : (f⁻⁺ₘ ⊣ f⁻₊ₘ) holds
    f⁻₊-is-right-adjoint-of-f⁻⁺ 𝒿@(j , _) U = ϑ₁ , ϑ₂
     where
 
@@ -955,7 +959,7 @@ equivalence of the two is quite important and is used in the proofs below.
          goal : (((𝒻 ⋆∙ β m) ∧[ 𝒪 X ] ¬𝒻⋆ (β n)) ≤[ poset-of (𝒪 X) ] U) holds
          goal = negation-lemma κ ϑ
 
-   † : has-right-adjoint 𝒻⁻⋆ₘ
+   † : has-right-adjoint f⁻⁺ₘ
    † = f⁻₊ₘ , f⁻₊-is-right-adjoint-of-f⁻⁺
 
  open Joins (λ x y → x ≤[ poset-of (𝒪 X) ] y)
