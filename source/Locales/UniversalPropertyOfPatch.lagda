@@ -52,13 +52,13 @@ open Locale
 
 \begin{code}
 
-module UniversalPropertyOfPatch (A : Locale (𝓤 ⁺) 𝓤 𝓤)
-                                (X  : Locale (𝓤 ⁺) 𝓤 𝓤)
-                                (σᴰ : spectralᴰ (𝒪 A))
-                                (𝕫ᴰ : zero-dimensionalᴰ (𝒪 X))
-                                (𝕜  : is-compact (𝒪 X) holds)
-                                (𝒻 : X ─c→ A)
-                                (μ : is-spectral-map (𝒪 A) (𝒪 X) 𝒻 holds) where
+module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤)
+                         (X  : Locale (𝓤 ⁺) 𝓤 𝓤)
+                         (σᴰ : spectralᴰ (𝒪 A))
+                         (𝕫ᴰ : zero-dimensionalᴰ (𝒪 X))
+                         (𝕜  : is-compact (𝒪 X) holds)
+                         (𝒻 : X ─c→ A)
+                         (μ : is-spectral-map (𝒪 A) (𝒪 X) 𝒻 holds) where
 
  open PatchConstruction A ∣ σᴰ ∣  using (nucleus-of; _≼_; _$_; perfect-nuclei-eq; idₙ; 𝔡𝔦𝔯)
  open ClosedNucleus     A ∣ σᴰ ∣
@@ -1218,7 +1218,7 @@ ump-of-patch {𝓤} A σ X 𝕤 𝒻 μ = ∥∥-rec₂ (being-singleton-is-prop
     → ∃! 𝒻⁻ ꞉ (X ─c→ Patch-A) , ((x : ⟨ 𝒪 A ⟩) → 𝒻 .pr₁ x  ＝ 𝒻⁻ .pr₁ ‘ x ’)
   γ σᴰ 𝕫ᴰ = (𝒻⁻₀ , †) , ‡
    where
-    open UniversalPropertyOfPatch A X σᴰ 𝕫ᴰ (pr₁ 𝕤) 𝒻 μ
+    open UniversalProperty A X σᴰ 𝕫ᴰ (pr₁ 𝕤) 𝒻 μ
     open SmallPatchConstruction A σᴰ renaming (SmallPatch to Patchₛ-A)
 
     f⁻₀ : ⟨ 𝒪 Patch-A ⟩ → ⟨ 𝒪 X ⟩
