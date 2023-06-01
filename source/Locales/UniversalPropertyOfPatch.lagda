@@ -1210,9 +1210,15 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) where
    γ : spectralᴰ (𝒪 A)
      → zero-dimensionalᴰ (𝒪 X)
      → ∃! 𝒻⁻ ꞉ (X ─c→ Patch-A) , ((x : ⟨ 𝒪 A ⟩) → 𝒻 .pr₁ x  ＝ 𝒻⁻ .pr₁ ‘ x ’)
-   γ σᴰ 𝕫ᴰ = {!? , ?!} , {!!} -- UniversalPropertyOfPatch.proof-of-ump X σᴰ 𝕫ᴰ (pr₁ 𝕤) 𝒻 μ
+   γ σᴰ 𝕫ᴰ = ({!!} , {!!}) , {!!} -- UniversalPropertyOfPatch.proof-of-ump X σᴰ 𝕫ᴰ (pr₁ 𝕤) 𝒻 μ
     where
      open UniversalPropertyOfPatch X σᴰ 𝕫ᴰ (pr₁ 𝕤) 𝒻 μ
+
+     f⁻₀ : ⟨ 𝒪 Patch-A ⟩ → ⟨ 𝒪 X ⟩
+     f⁻₀ 𝒿 = f⁻⁺ 𝒿
+
+     𝒻⁻₀ : X ─c→ Patch-A
+     𝒻⁻₀ = f⁻₀ , {!!}
 
 -- --}
 -- --}
