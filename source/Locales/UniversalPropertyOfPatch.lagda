@@ -46,11 +46,7 @@ open PropositionalTruncation pt
 
 open Locale
 
-module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (𝒪 A) holds) where
-
- open PatchConstruction A σ using (nucleus-of; _≼_; _$_; perfect-nuclei-eq) renaming (Patch to Patch-A)
- open ClosedNucleus     A σ
- open OpenNucleus       A σ
+module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) where
 
 \end{code}
 
@@ -64,6 +60,10 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
                                  (𝕜  : is-compact (𝒪 X) holds)
                                  (𝒻 : X ─c→ A)
                                  (μ : is-spectral-map (𝒪 A) (𝒪 X) 𝒻 holds) where
+
+  open PatchConstruction A ∣ σᴰ ∣  using (nucleus-of; _≼_; _$_; perfect-nuclei-eq; idₙ; 𝔡𝔦𝔯)
+  open ClosedNucleus     A ∣ σᴰ ∣
+  open OpenNucleus       A ∣ σᴰ ∣
 
   open SmallPatchConstruction A σᴰ
    using (𝟎-is-id; ≼-implies-≼ᵏ; ≼ᵏ-implies-≼; _≼ᵏ_)
@@ -92,7 +92,7 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
   β-is-basis-for-A = pr₁ β-is-directed-basis
 
   A-has-basis : has-basis (𝒪 A) holds
-  A-has-basis = spectral-frames-have-bases (𝒪 A) σ
+  A-has-basis = spectral-frames-have-bases (𝒪 A) ∣ σᴰ ∣
 
   open HeytingImplicationConstruction X X-has-basis
   open HeytingImplicationConstruction A A-has-basis
@@ -126,7 +126,7 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
     † = heyting-implication₁ (𝒻 ⋆∙ 𝟎[ 𝒪 A ]) 𝟎[ 𝒪 X ] 𝟏[ 𝒪 X ] ‡
 
   𝕃 : ⟨ 𝒪 Patchₛ-A ⟩ → Bₐ → Bₐ → Ω 𝓤
-  𝕃 𝒿 m n = (‘ β m ’ ∧[ 𝒪 Patchₛ-A ] ¬‘ βₖ n ’) ≼ᵏ 𝒿
+  𝕃 𝒿 m n = (‘ β m ’ ∧[ 𝒪 Patchₛ-A ] ¬‘ βₖ n ’) ≤[ poset-of (𝒪 Patchₛ-A) ] 𝒿
 
   f⁻⁺ : ⟨ 𝒪 Patchₛ-A ⟩ → ⟨ 𝒪 X ⟩
   f⁻⁺ j =
@@ -266,18 +266,10 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
     † : cofinal-in (𝒪 X) 𝒮 𝒯 holds
     † (m , n , q) = ∣ (m , n , ‡) , ♣ ∣
      where
-      open PosetReasoning (poset-of (𝒪 Patch-A))
-
-      ‡₁ : ((‘ β m ’ ∧[ 𝒪 Patchₛ-A ] ¬‘ βₖ n ’) ≼ 𝓀) holds
-      ‡₁ = ‘ β m ’ ∧[ 𝒪 Patchₛ-A ] ¬‘ βₖ n ’    ≤⟨ ? ⟩
-           𝒿                                   ≤⟨ ? ⟩
-           𝓀                                   ■
-            where
-             Ⅰ = ≼ᵏ-implies-≼ (‘ β m ’ ∧[ 𝒪 Patchₛ-A ] ¬‘ βₖ n ’) 𝒿 q
-             Ⅱ = ≼ᵏ-implies-≼ 𝒿 𝓀 p
+      open PosetReasoning (poset-of (𝒪 A))
 
       ‡ : 𝕃 𝓀 m n holds
-      ‡ = ≼-implies-≼ᵏ (‘ β m ’ ∧[ 𝒪 Patchₛ-A ] ¬‘ βₖ n ’) 𝓀 ‡₁
+      ‡ l = (‘ β m ’ ∧[ 𝒪 Patchₛ-A ] ¬‘ βₖ n ’) .pr₁ (β l) ≤⟨ q l ⟩ 𝒿 $ (β l) ≤⟨ p l ⟩ 𝓀 $ (β l) ■
 
       ♣ : (_ ≤[ poset-of (𝒪 X) ] _) holds
       ♣ = ≤-is-reflexive (poset-of (𝒪 X)) ((𝒻 ⋆∙ β m) ∧[ 𝒪 X ] ¬𝒻⋆ (β n))
@@ -330,7 +322,7 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
            (𝒪 A)
            (Bₐ , β)
            (pr₁ (pr₂ σᴰ))
-           (spectral-implies-compact (𝒪 A) σ)
+           (spectral-implies-compact (𝒪 A) ∣ σᴰ ∣)
            𝟎[ 𝒪 A ]
            (𝟎-is-compact (𝒪 A)))
          where
@@ -563,7 +555,7 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
                       (𝒪 A)
                       (Bₐ , β)
                       (pr₁ (pr₂ σᴰ))
-                      (spectral-implies-compact (𝒪 A) σ)
+                      (spectral-implies-compact (𝒪 A) ∣ σᴰ ∣)
                       (β m ∨[ 𝒪 A ] β n)
                       (compacts-are-closed-under-joins
                         (𝒪 A)
@@ -668,7 +660,7 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
           (𝒪 A)
           𝒻₊
           (‘ U ’ₓ .pr₁)
-          (spectral-maps-are-perfect 𝒻 σ μ)
+          (spectral-maps-are-perfect 𝒻 ∣ σᴰ ∣ μ)
           (∨-is-scott-continuous (𝒪 X) U)
           where
            open PerfectMaps X A A-has-basis
@@ -884,17 +876,27 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
     (f⁻⁺-preserves-joins S ⁻¹)
     (⋁[ 𝒪 X ]-upper ⁅ f⁻⁺ 𝒿 ∣ 𝒿 ε S ⁆ , ⋁[ 𝒪 X ]-least ⁅ f⁻⁺ 𝒿 ∣ 𝒿 ε S ⁆)
 
+  𝟎-is-idₐ : (U : ⟨ 𝒪 A ⟩) → 𝟎[ 𝒪 Patchₛ-A ] $ U ＝ U
+  𝟎-is-idₐ U = ≤-is-antisymmetric (poset-of (𝒪 A)) † (≼ᵏ-implies-≼ idₙ 𝟎[ 𝒪 Patchₛ-A ] ‡ U)
+   where
+    † : ((𝟎[ 𝒪 Patchₛ-A ] $ U) ≤[ poset-of (𝒪 A) ] U) holds
+    † = ≼ᵏ-implies-≼ 𝟎[ 𝒪 Patchₛ-A ] idₙ (𝟎-is-bottom (𝒪 Patchₛ-A) idₙ) U
+
+    ‡ : (idₙ ≤[ poset-of (𝒪 Patchₛ-A) ] 𝟎[ 𝒪 Patchₛ-A ]) holds
+    ‡ n = β n ≤⟨ ※ ⟩ (⋁[ 𝒪 Patchₛ-A ] ∅ 𝓤) $ β n ＝⟨ refl ⟩ₚ 𝟎[ 𝒪 Patchₛ-A ] $ β n ■
+     where
+      open PosetReasoning (poset-of (𝒪 A))
+
+      ※ : (β n ≤[ poset-of (𝒪 A) ] (⋁[ 𝒪 Patchₛ-A ] ∅ 𝓤) $ (β n)) holds
+      ※ = β n ≤⟨ ⋁[ 𝒪 A ]-upper ⁅ α (β n) ∣ α ε 𝔡𝔦𝔯 (∅ 𝓤) ⁆ [] ⟩ ⋁[ 𝒪 A ] ⁅ α (β n) ∣ α ε 𝔡𝔦𝔯 (∅ 𝓤) ⁆ ＝⟨ refl ⟩ₚ (join-of (𝒪 Patchₛ-A) (∅ 𝓤) $ β n) ■
+
+
   main-lemma : (𝒻⁻₀ : X ─c→ Patchₛ-A)
              → (n : Bₐ)
              → is-complement-of (𝒪 X) (𝒻⁻₀ .pr₁ ¬‘ βₖ n ’) (𝒻⁻₀ .pr₁ ‘ β n ’)
   main-lemma 𝒻⁻₀ n =
    frame-homomorphisms-preserve-complements (𝒪 Patchₛ-A) (𝒪 X) 𝒻⁻₀ †
     where
-     open PatchComplementationAlternative A σ renaming (𝟎-is-id to 𝟎-is-idₐ)
-
-     ‡ : is-boolean-complement-of (𝒪 Patch-A) ¬‘ βₖ n ’ ‘ β n ’ holds
-     ‡ = open-complements-closed (β n) (pr₂ (βₖ n)) 
-
      ♣₁ : (U : ⟨ 𝒪 A ⟩)
         → (β n ∨[ 𝒪 A ] U) ∧[ 𝒪 A ] (β n ==>ₐ U) ＝ 𝟎[ 𝒪 Patchₛ-A ] $ U
      ♣₁ U = (β n ∨[ 𝒪 A ] U)   ∧[ 𝒪 A ] (β n ==>ₐ U)  ＝⟨ Ⅰ ⟩
@@ -935,6 +937,9 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
            (‘ β n ’ ∨[ 𝒪 Patchₛ-A ] ¬‘ βₖ n ’)
            𝟏[ 𝒪 Patchₛ-A ]
            (dfunext fe ♣₂)
+
+     ‡ : is-boolean-complement-of (𝒪 Patchₛ-A) ¬‘ βₖ n ’ ‘ β n ’ holds
+     ‡ = ‡₁ , ‡₂
 
      † : is-complement-of (𝒪 Patchₛ-A) ‘ β n ’ ¬‘ βₖ n ’
      † = complementation-is-symmetric (𝒪 Patchₛ-A) ¬‘ βₖ n ’ ‘ β n ’ (‡₁ , ‡₂)
@@ -1094,11 +1099,14 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
            ⁅ 𝒻 ⋆∙ (U ∨[ 𝒪 A ] β n) ∧[ 𝒪 X ] ¬𝒻⋆ (β n) ∣ n ∶ Bₐ ⁆
            (𝒻 ⋆∙ U , ϟ)
 
+  𝒻⁻⁺ : X ─c→ Patchₛ-A
+  𝒻⁻⁺ = f⁻⁺ , 𝒻⁻-α , 𝒻⁻-β , 𝒻⁻-γ
+
   𝒻⁻-is-unique : is-central
                   (Σ 𝒻⁻₀ ꞉ (X ─c→ Patchₛ-A) ,
                    ((x : ⟨ 𝒪 A ⟩) → 𝒻 .pr₁ x  ＝ 𝒻⁻₀ .pr₁ ‘ x ’))
                   ((f⁻⁺ , 𝒻⁻-α , 𝒻⁻-β , 𝒻⁻-γ) , 𝒻⁻-makes-the-diagram-commute)
-  𝒻⁻-is-unique (𝒻⁻₀@(_ , _ , _ , 𝒻⁻₀-γ) , p) = to-subtype-＝ ※ (to-subtype-＝ γ (dfunext fe †))
+  𝒻⁻-is-unique (𝒻⁻₀@(_ , _ , _ , 𝒻⁻₀-γ) , ϑ) = to-subtype-＝ ※ (to-subtype-＝ γ (dfunext fe †))
    where
     f⁻₀ = pr₁ 𝒻⁻₀
 
@@ -1115,7 +1123,7 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
     ψ₂ : (n : Bₐ) → is-complement-of (𝒪 X) (f⁻₀ ¬‘ βₖ n ’) (𝒻 ⋆∙ (β n))
     ψ₂ n = transport
             (λ - → is-complement-of (𝒪 X) (f⁻₀ ¬‘ βₖ n ’) -)
-            (p (β n) ⁻¹)
+            (ϑ (β n) ⁻¹)
             (main-lemma 𝒻⁻₀ n)
 
     ψ : (n : Bₐ) → ¬𝒻⋆ (β n) ＝ f⁻₀ ¬‘ βₖ n ’
@@ -1144,18 +1152,20 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
 
     † : (𝒿 : ⟨ 𝒪 Patchₛ-A ⟩) → f⁻⁺ 𝒿 ＝ f⁻₀ 𝒿
     † 𝒿 =
-     f⁻⁺ 𝒿                                                                             ＝⟨ ap f⁻⁺ Ⅰ ⟩
+     f⁻⁺ 𝒿                                                                             ＝⟨ ap f⁻⁺ ν ⟩
      f⁻⁺ (⋁[ 𝒪 Patchₛ-A ] ⁅ 𝔠 k ∧[ 𝒪 Patchₛ-A ] 𝔬 l ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆) ＝⟨ Ⅱ        ⟩
      ⋁[ 𝒪 X ] ⁅ f⁻⁺ (𝔠 k ∧[ 𝒪 Patchₛ-A ] 𝔬 l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆        ＝⟨ Ⅲ        ⟩
-     ⋁[ 𝒪 X ] ⁅ f⁻⁺ (𝔠 k) ∧[ 𝒪 X ] f⁻⁺ (𝔬 l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆         ＝⟨ ?        ⟩
-     ⋁[ 𝒪 X ] ⁅ f⁻⁺ (𝔠 k) ∧[ 𝒪 X ] ¬𝒻⋆ (β l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆         ＝⟨ {!!}     ⟩
-     ⋁[ 𝒪 X ] ⁅ 𝒻 ⋆∙ (β k) ∧[ 𝒪 X ] ¬𝒻⋆ (β l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆        ＝⟨ {!!}     ⟩
-     ⋁[ 𝒪 X ] ⁅ 𝒻 ⋆∙ (β k) ∧[ 𝒪 X ] f⁻₀ (𝔬 l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆        ＝⟨ {!!}     ⟩
-     ⋁[ 𝒪 X ] ⁅ f⁻₀ (𝔠 k) ∧[ 𝒪 X ] f⁻₀ (𝔬 l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆         ＝⟨ {!!}     ⟩
+     ⋁[ 𝒪 X ] ⁅ f⁻⁺ (𝔠 k) ∧[ 𝒪 X ] f⁻⁺ (𝔬 l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆         ＝⟨ Ⅳ        ⟩
+     ⋁[ 𝒪 X ] ⁅ f⁻⁺ (𝔠 k) ∧[ 𝒪 X ] ¬𝒻⋆ (β l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆         ＝⟨ Ⅴ        ⟩
+     ⋁[ 𝒪 X ] ⁅ 𝒻 ⋆∙ (β k) ∧[ 𝒪 X ] ¬𝒻⋆ (β l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆        ＝⟨ Ⅵ        ⟩
+     ⋁[ 𝒪 X ] ⁅ 𝒻 ⋆∙ (β k) ∧[ 𝒪 X ] f⁻₀ (𝔬 l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆        ＝⟨ Ⅶ        ⟩
+     ⋁[ 𝒪 X ] ⁅ f⁻₀ (𝔠 k) ∧[ 𝒪 X ] f⁻₀ (𝔬 l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆         ＝⟨ Ⅷ        ⟩
+     ⋁[ 𝒪 X ] ⁅ f⁻₀ (𝔠 k ∧[ 𝒪 Patchₛ-A ] 𝔬 l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆        ＝⟨ Ⅸ        ⟩
+     f⁻₀ (⋁[ 𝒪 Patchₛ-A ] ⁅ 𝔠 k ∧[ 𝒪 Patchₛ-A ] 𝔬 l ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆) ＝⟨ Ⅹ        ⟩
      f⁻₀ 𝒿                                                                             ∎
       where
-       Ⅰ : 𝒿 ＝ ⋁[ 𝒪 Patchₛ-A ] ⁅ 𝔠 k ∧[ 𝒪 Patchₛ-A ] 𝔬 l ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆
-       Ⅰ = main-covering-lemma 𝒿
+       ν : 𝒿 ＝ ⋁[ 𝒪 Patchₛ-A ] ⁅ 𝔠 k ∧[ 𝒪 Patchₛ-A ] 𝔬 l ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆
+       ν = main-covering-lemma 𝒿
 
        Ⅱ = ⋁[ 𝒪 X ]-unique
             ⁅ f⁻⁺ (𝔠 k ∧[ 𝒪 Patchₛ-A ] 𝔬 l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆
@@ -1164,27 +1174,45 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) (σ : is-spectral (�
        Ⅲ = ap
             (λ - → ⋁[ 𝒪 X ] (basic-below 𝒿 , -))
             (dfunext fe (λ { ((k , l) , p) → 𝒻⁻-β (𝔠 k) (𝔬 l) }))
+
+       Ⅳ : ⋁[ 𝒪 X ] ⁅ f⁻⁺ (𝔠 k) ∧[ 𝒪 X ] f⁻⁺ (𝔬 l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆ ＝ ⋁[ 𝒪 X ] ⁅ f⁻⁺ (𝔠 k) ∧[ 𝒪 X ] ¬𝒻⋆ (β l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆
        Ⅳ = ap
             (λ - → ⋁[ 𝒪 X ] (basic-below 𝒿 , -))
-            (dfunext fe (λ { ((k , l) , p) → ap (λ - → (f⁻⁺ (𝔠 k)) ∧[ 𝒪 X ] -) (preserves-closed-implies-preserves-open (f⁻⁺ , 𝒻⁻-α , 𝒻⁻-β , 𝒻⁻-γ) (λ n → 𝒻⁻-makes-the-diagram-commute (β n)) l ⁻¹) }))
-
-{--
+            (dfunext fe (λ { ((k , l) , p) → ap (λ - → (f⁻⁺ (𝔠 k)) ∧[ 𝒪 X ] -) (preserves-closed-implies-preserves-open 𝒻⁻⁺ (λ n → 𝒻⁻-makes-the-diagram-commute (β n)) l ⁻¹) }))
+       Ⅴ = ap (λ - → ⋁[ 𝒪 X ] (basic-below 𝒿 , -)) ((dfunext fe (λ { ((k , l) , p) → ap (λ - → - ∧[ 𝒪 X ] ¬𝒻⋆ (β l)) (𝒻⁻-makes-the-diagram-commute (β k) ⁻¹) })))
+       Ⅵ = ap (λ - → ⋁[ 𝒪 X ] (basic-below 𝒿 , -)) (dfunext fe λ { ((k , l) , p) → ap (λ - → 𝒻 ⋆∙ (β k) ∧[ 𝒪 X ] -) (preserves-closed-implies-preserves-open 𝒻⁻₀ (ϑ ∘ β) l) })
+       Ⅶ = ap (λ - → ⋁[ 𝒪 X ] (basic-below 𝒿 , -)) (dfunext fe λ { ((k , l) , p) → ap (λ - → - ∧[ 𝒪 X ] f⁻₀ (𝔬 l)) (ϑ (β k)) })
+       Ⅷ = ap (λ - → ⋁[ 𝒪 X ] (basic-below 𝒿 , -)) (dfunext fe λ { ((k , l) , p) → frame-homomorphisms-preserve-meets (𝒪 Patchₛ-A) (𝒪 X) 𝒻⁻₀ (𝔠 k) (𝔬 l) ⁻¹ } ) 
+       Ⅸ = frame-homomorphisms-preserve-all-joins (𝒪 Patchₛ-A) (𝒪 X) 𝒻⁻₀ ⁅ 𝔠 k ∧[ 𝒪 Patchₛ-A ] 𝔬 l ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆ ⁻¹
+       Ⅹ = ap f⁻₀ ν ⁻¹
 
   proof-of-ump : ∃! 𝒻⁻ ꞉ (X ─c→ Patchₛ-A) , ((U : ⟨ 𝒪 A ⟩) → 𝒻 .pr₁ U  ＝ 𝒻⁻ .pr₁ ‘ U ’)
   proof-of-ump =
    ((f⁻⁺ , 𝒻⁻-α , 𝒻⁻-β , 𝒻⁻-γ) , 𝒻⁻-makes-the-diagram-commute) , 𝒻⁻-is-unique
 
- ump-of-patch : (X : Locale (𝓤 ⁺) 𝓤 𝓤)
+ ump-of-patch : (σ : is-spectral (𝒪 A) holds)
+              → (X : Locale (𝓤 ⁺) 𝓤 𝓤)
               → is-stone (𝒪 X) holds
               → (𝒻 : X ─c→ A)
               → is-spectral-map (𝒪 A) (𝒪 X) 𝒻 holds
-              → ∃! 𝒻⁻ ꞉ (X ─c→ Patchₛ-A) , ((x : ⟨ 𝒪 A ⟩) → 𝒻 .pr₁ x  ＝ 𝒻⁻ .pr₁ ‘ x ’)
- ump-of-patch X 𝕤 𝒻 μ = ∥∥-rec₂ (being-singleton-is-prop fe) γ σ (pr₂ 𝕤)
+              → let
+                 open PatchConstruction A σ renaming (Patch to Patch-A)
+                 open ClosedNucleus A σ
+                 open OpenNucleus A σ
+                in
+                 ∃! 𝒻⁻ ꞉ (X ─c→ Patch-A) , ((x : ⟨ 𝒪 A ⟩) → 𝒻 .pr₁ x  ＝ 𝒻⁻ .pr₁ ‘ x ’)
+ ump-of-patch σ X 𝕤 𝒻 μ = ∥∥-rec₂ (being-singleton-is-prop fe) γ σ (pr₂ 𝕤)
   where
+   open PatchConstruction A σ renaming (Patch to Patch-A)
+   open ClosedNucleus A σ
+   open OpenNucleus A σ
+
    γ : spectralᴰ (𝒪 A)
      → zero-dimensionalᴰ (𝒪 X)
-     → ∃! 𝒻⁻ ꞉ (X ─c→ Patchₛ-A) , ((x : ⟨ 𝒪 A ⟩) → 𝒻 .pr₁ x  ＝ 𝒻⁻ .pr₁ ‘ x ’)
-   γ σᴰ 𝕫ᴰ = UniversalPropertyOfPatch.proof-of-ump X σᴰ 𝕫ᴰ (pr₁ 𝕤) 𝒻 μ
+     → ∃! 𝒻⁻ ꞉ (X ─c→ Patch-A) , ((x : ⟨ 𝒪 A ⟩) → 𝒻 .pr₁ x  ＝ 𝒻⁻ .pr₁ ‘ x ’)
+   γ σᴰ 𝕫ᴰ = {!? , ?!} , {!!} -- UniversalPropertyOfPatch.proof-of-ump X σᴰ 𝕫ᴰ (pr₁ 𝕤) 𝒻 μ
+    where
+     open UniversalPropertyOfPatch X σᴰ 𝕫ᴰ (pr₁ 𝕤) 𝒻 μ
 
 -- --}
 -- --}
