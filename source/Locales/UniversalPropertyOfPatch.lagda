@@ -50,6 +50,17 @@ open Locale
 
 \section{Proof of the Universal Property}
 
+In this module, we prove the following universal property:
+
+    given any continuous `f : X → A` from a Stone locale `X` into
+    a spectral locale `A`, there exists a unique map `f⁻` satisfying
+    `f⁺(U) = f⁻⁺(‘ U ’)` for any open `U : 𝒪(A)`.
+
+This proof is given at the very end of the module and is called `ump-of-patch`.
+In the following submodule `UniversalProperty` we assume the structures involved
+in spectrality and zero-dimensionality and use this to prove the universal
+property for the small version of Patch (which we often denote `Patchₛ`).
+
 \begin{code}
 
 module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤)
@@ -60,6 +71,20 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤)
                          (𝒻 : X ─c→ A)
                          (μ : is-spectral-map (𝒪 A) (𝒪 X) 𝒻 holds) where
 
+\end{code}
+
+As prevoiusly mentioned, we assume
+
+  * `A` and `X`: large and locally small locales,
+  * `σᴰ`: the spectrality data of `A`,
+  * `𝕫ᴰ`: the zero-dimensioality structure of `X`
+  * `𝕜`: compactness of `X`
+  * `𝒻`: an arbitrary spectral continuous map from `X` into a `A` (which amounts
+    to a spectral frame homomorphisms from frame `𝒪(A)` into frame `𝒪(X)`.
+  * `μ`: proof that `𝒻` is a spectral map.
+
+\begin{code}
+
  open PatchConstruction A ∣ σᴰ ∣  using (nucleus-of; _≼_; _$_; perfect-nuclei-eq; idₙ; 𝔡𝔦𝔯)
  open ClosedNucleus     A ∣ σᴰ ∣
  open OpenNucleus       A ∣ σᴰ ∣
@@ -69,8 +94,19 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤)
   renaming (SmallPatch to Patchₛ-A)
  open ContinuousMapNotation X A hiding (_⋆)
 
+\end{code}
+
+\begin{code}
+
  X-has-basis : has-basis (𝒪 X) holds
  X-has-basis = ∣ pr₁ 𝕫ᴰ , pr₁ (pr₁ (pr₂ 𝕫ᴰ)) ∣
+
+\end{code}
+
+We denote by `Bₐ` the index set of the basis of `A` and by `β` the enumeration
+function of the basis.
+
+\begin{code}
 
  Bₐ : 𝓤  ̇
  Bₐ = pr₁ (pr₁ σᴰ)
@@ -78,11 +114,22 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤)
  β : Bₐ → ⟨ 𝒪 A ⟩
  β = pr₂ (pr₁ σᴰ)
 
+\end{code}
+
+Similarly by `Bₓ`, we denote the index set of the basis of `X` and by `βₓ`
+the enumeration function.
+
+\begin{code}
+
  Bₓ : 𝓤  ̇
  Bₓ = pr₁ (pr₁ 𝕫ᴰ)
 
  βₓ : Bₓ → ⟨ 𝒪 X ⟩
  βₓ = pr₂ (pr₁ 𝕫ᴰ)
+
+\end{code}
+
+\begin{code}
 
  β-is-directed-basis : is-directed-basis (𝒪 A) (Bₐ , β)
  β-is-directed-basis = pr₁ (pr₂ σᴰ)
@@ -93,6 +140,15 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤)
  A-has-basis : has-basis (𝒪 A) holds
  A-has-basis = spectral-frames-have-bases (𝒪 A) ∣ σᴰ ∣
 
+ infixl 4 _∧ₓ_
+
+ _∧ₓ_ : ⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩
+ U ∧ₓ V = U ∧[ 𝒪 X ] V
+
+\end{code}
+
+\begin{code}
+
  open HeytingImplicationConstruction X X-has-basis
  open HeytingImplicationConstruction A A-has-basis
   using ()
@@ -102,8 +158,22 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤)
             ==>-right-monotone to ==>ₐ-right-monotone;
             ex-falso-quodlibet to ex-falso-quodlibetₐ)
 
+\end{code}
+
+It is often convenient to have a version of `β` that also gives the proof
+of compactness of the basic open it returns.
+
+\begin{code}
+
  βₖ : Bₐ → 𝒦
  βₖ m = β m , pr₁ (pr₂ (pr₂ σᴰ)) m
+
+\end{code}
+
+The following is shorthand notation for the negation of `𝒻 ⋆∙ U` which we know
+to be the complement of `𝒻 ⋆∙ U`.
+
+\begin{code}
 
  ¬𝒻⋆ : ⟨ 𝒪 A ⟩ → ⟨ 𝒪 X ⟩
  ¬𝒻⋆ U = (𝒻 ⋆∙ U) ==> 𝟎[ 𝒪 X ]
@@ -124,29 +194,60 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤)
    † : (𝟏[ 𝒪 X ] ≤[ poset-of (𝒪 X) ] ¬𝒻⋆ 𝟎[ 𝒪 A ]) holds
    † = heyting-implication₁ (𝒻 ⋆∙ 𝟎[ 𝒪 A ]) 𝟎[ 𝒪 X ] 𝟏[ 𝒪 X ] ‡
 
- 𝕃 : ⟨ 𝒪 Patchₛ-A ⟩ → Bₐ → Bₐ → Ω 𝓤
- 𝕃 𝒿 m n = (‘ β m ’ ∧[ 𝒪 Patchₛ-A ] ¬‘ βₖ n ’) ≤[ poset-of (𝒪 Patchₛ-A) ] 𝒿
+\end{code}
+
+The following is a ternary relation expressing, for a basic open
+`‘β(m)’ ∧ ¬‘β(n)’` to be below some perfect nucleus.
+
+TODO: improve the naming.
+
+\begin{code}
+
+ 𝔏 : ⟨ 𝒪 Patchₛ-A ⟩ → Bₐ → Bₐ → Ω 𝓤
+ 𝔏 𝒿 m n = (‘ β m ’ ∧[ 𝒪 Patchₛ-A ] ¬‘ βₖ n ’) ≼ᵏ 𝒿
+
+ below : ⟨ 𝒪 Patchₛ-A ⟩ → 𝓤  ̇
+ below 𝒿 = Σ m ꞉ Bₐ , Σ n ꞉ Bₐ , 𝔏 𝒿 m n holds
+
+\end{code}
+
+This is the unique function that we define that makes our diagram commute.
+
+\begin{code}
 
  f⁻⁺ : ⟨ 𝒪 Patchₛ-A ⟩ → ⟨ 𝒪 X ⟩
- f⁻⁺ j =
-  ⋁[ 𝒪 X ]
-   ⁅ (𝒻 ⋆∙ β m) ∧[ 𝒪 X ] ¬𝒻⋆ (β n) ∣ (m , n , p) ∶ Σ m ꞉ Bₐ , Σ n ꞉ Bₐ , 𝕃 j m n holds ⁆
+ f⁻⁺ 𝒿 = ⋁[ 𝒪 X ] ⁅ (𝒻 ⋆∙ β m) ∧ₓ ¬𝒻⋆ (β n) ∣ (m , n , p) ∶ below 𝒿 ⁆
+
+\end{code}
+
+There is an equivalent way to define `f⁻⁺`, given in `f⁻⁺₂` below. The
+equivalence of the two is quite important and is used in the proofs below.
+
+\begin{code}
 
  f⁻⁺₂ : ⟨ 𝒪 Patchₛ-A ⟩ → ⟨ 𝒪 X ⟩
  f⁻⁺₂ 𝒿@(j , _) = ⋁[ 𝒪 X ] ⁅ 𝒻 ⋆∙ j (β n) ∧[ 𝒪 X ] ¬𝒻⋆ (β n) ∣ n ∶ Bₐ ⁆
 
  f⁻⁺₂-equiv-f⁻⁺₁ : (𝒿 : ⟨ 𝒪 Patchₛ-A ⟩) → f⁻⁺ 𝒿 ＝ f⁻⁺₂ 𝒿
- f⁻⁺₂-equiv-f⁻⁺₁ 𝒿@(j , _) = ≤-is-antisymmetric (poset-of (𝒪 X)) †′ ‡
+ f⁻⁺₂-equiv-f⁻⁺₁ 𝒿@(j , _) = ≤-is-antisymmetric (poset-of (𝒪 X)) † ‡
   where
    S : Fam 𝓤 ⟨ 𝒪 X ⟩
-   S = ⁅ (𝒻 ⋆∙ β m) ∧[ 𝒪 X ] ¬𝒻⋆ (β n) ∣ (m , n , p) ∶ Σ m ꞉ Bₐ , Σ n ꞉ Bₐ , 𝕃 𝒿 m n holds ⁆
+   S = ⁅ (𝒻 ⋆∙ β m) ∧ₓ ¬𝒻⋆ (β n) ∣ (m , n , p) ∶ below 𝒿 ⁆
 
    T : Fam 𝓤 ⟨ 𝒪 X ⟩
-   T = ⁅ 𝒻 ⋆∙ j (β n) ∧[ 𝒪 X ] ¬𝒻⋆ (β n) ∣ n ∶ Bₐ ⁆
+   T = ⁅ 𝒻 ⋆∙ j (β n) ∧ₓ ¬𝒻⋆ (β n) ∣ n ∶ Bₐ ⁆
 
-   † : cofinal-in (𝒪 X) S T holds
-   † (m , n , p) = ∣ n , ※ ∣
+   †₀ : cofinal-in (𝒪 X) S T holds
+   †₀ (m , n , p) = ∣ n , ※ ∣
     where
+     open PosetReasoning (poset-of (𝒪 A))
+
+     Ⅰ = ∨[ 𝒪 A ]-upper₁ (β m) (β n)
+     Ⅱ = 𝟏-right-unit-of-∧ (𝒪 A) (β m ∨[ 𝒪 A ] β n) ⁻¹
+     Ⅲ = ap
+          (λ - → (β m ∨[ 𝒪 A ] β n) ∧[ 𝒪 A ] -)
+          (heyting-implication-identityₐ (β n) ⁻¹)
+
      q : (β m ≤[ poset-of (𝒪 A) ] j (β n)) holds
      q = β m                                                ≤⟨ Ⅰ     ⟩
          β m ∨[ 𝒪 A ] β n                                   ＝⟨ Ⅱ    ⟩ₚ
@@ -155,14 +256,6 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤)
          (β m ∨[ 𝒪 A ] β n) ∧[ 𝒪 A ] (¬‘ βₖ n ’ .pr₁ (β n)) ＝⟨ refl ⟩ₚ
          (‘ β m ’ ∧[ 𝒪 Patchₛ-A ] ¬‘ βₖ n ’) .pr₁ (β n)     ≤⟨ p n   ⟩
          j (β n)                                            ■
-      where
-       open PosetReasoning (poset-of (𝒪 A))
-
-       Ⅰ = ∨[ 𝒪 A ]-upper₁ (β m) (β n)
-       Ⅱ = 𝟏-right-unit-of-∧ (𝒪 A) (β m ∨[ 𝒪 A ] β n) ⁻¹
-       Ⅲ = ap
-            (λ - → (β m ∨[ 𝒪 A ] β n) ∧[ 𝒪 A ] -)
-            (heyting-implication-identityₐ (β n) ⁻¹)
 
      ※ : ((𝒻 ⋆∙ β m ∧[ 𝒪 X ] ¬𝒻⋆ (β n))
            ≤[ poset-of (𝒪 X) ]
@@ -174,66 +267,65 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤)
             (𝒻 ⋆∙_)
             (𝒻 .pr₂)
             (β m , j (β n)) q)
-      where
-       open PosetReasoning (poset-of (𝒪 X))
 
-   †′ : ((⋁[ 𝒪 X ] S) ≤[ poset-of (𝒪 X) ] (⋁[ 𝒪 X ] T)) holds
-   †′ = cofinal-implies-join-covered (𝒪 X) S T †
+   † : ((⋁[ 𝒪 X ] S) ≤[ poset-of (𝒪 X) ] (⋁[ 𝒪 X ] T)) holds
+   † = cofinal-implies-join-covered (𝒪 X) S T †₀
 
    ‡ : ((⋁[ 𝒪 X ] T) ≤[ poset-of (𝒪 X) ] (⋁[ 𝒪 X ] S)) holds
-   ‡ = ⋁[ 𝒪 X ]-least T ((⋁[ 𝒪 X ] S) , ξ)
+   ‡ = ⋁[ 𝒪 X ]-least T ((⋁[ 𝒪 X ] S) , ‡₁)
     where
      open Joins (λ x y → x ≤[ poset-of (𝒪 X) ] y)
 
-     ξ : ((⋁[ 𝒪 X ] S) is-an-upper-bound-of T) holds
-     ξ n =
+     ‡₁ : ((⋁[ 𝒪 X ] S) is-an-upper-bound-of T) holds
+     ‡₁ n =
       let
        open PosetReasoning (poset-of (𝒪 X))
       in
-       𝒻 ⋆∙ j (β n) ∧[ 𝒪 X ] ¬𝒻⋆ (β n)                          ＝⟨ Ⅰ  ⟩ₚ
-       𝒻 ⋆∙ (⋁[ 𝒪 A ] ⁅ β i ∣ i ε 𝒥 ⁆) ∧[ 𝒪 X ] ¬𝒻⋆ (β n)       ＝⟨ Ⅱ  ⟩ₚ
-       (⋁[ 𝒪 X ] ⁅ 𝒻 ⋆∙ (β i) ∣ i ε 𝒥 ⁆) ∧[ 𝒪 X ] ¬𝒻⋆ (β n)     ＝⟨ Ⅲ  ⟩ₚ
-       ⋁[ 𝒪 X ] ⁅ 𝒻 ⋆∙ (β i) ∧[ 𝒪 X ] ¬𝒻⋆ (β n) ∣ i ε 𝒥 ⁆       ≤⟨ Ⅳ   ⟩
-       ⋁[ 𝒪 X ] S                                           ■
+       𝒻 ⋆∙ j (β n) ∧[ 𝒪 X ] ¬𝒻⋆ (β n)                       ＝⟨ Ⅰ  ⟩ₚ
+       𝒻 ⋆∙ (⋁[ 𝒪 A ] ⁅ β i ∣ i ε 𝒥 ⁆) ∧[ 𝒪 X ] ¬𝒻⋆ (β n)    ＝⟨ Ⅱ  ⟩ₚ
+       (⋁[ 𝒪 X ] ⁅ 𝒻 ⋆∙ (β i) ∣ i ε 𝒥 ⁆) ∧[ 𝒪 X ] ¬𝒻⋆ (β n)  ＝⟨ Ⅲ  ⟩ₚ
+       ⋁[ 𝒪 X ] ⁅ 𝒻 ⋆∙ (β i) ∧[ 𝒪 X ] ¬𝒻⋆ (β n) ∣ i ε 𝒥 ⁆    ≤⟨ Ⅳ   ⟩
+       ⋁[ 𝒪 X ] S                                            ■
       where
        𝒥 : Fam 𝓤 Bₐ
        𝒥 = pr₁ (pr₁ (pr₁ (pr₂ σᴰ)) (j (β n)))
 
-       ※ : ((⋁[ 𝒪 X ] S)
+       ♠ : ((⋁[ 𝒪 X ] S)
              is-an-upper-bound-of
             ⁅ 𝒻 ⋆∙ (β i) ∧[ 𝒪 X ] ¬𝒻⋆ (β n) ∣ i ε 𝒥 ⁆) holds
-       ※ i = ⋁[ 𝒪 X ]-upper S (𝒥 [ i ] , n , foo)
-              where
-               open PosetReasoning (poset-of (𝒪 A))
-               open NucleusHeytingImplicationLaw A A-has-basis (nucleus-of 𝒿)
+       ♠ i = ⋁[ 𝒪 X ]-upper S (𝒥 [ i ] , n , ♢)
+        where
+         open PosetReasoning (poset-of (𝒪 A))
+         open NucleusHeytingImplicationLaw A A-has-basis (nucleus-of 𝒿)
 
-               foo : 𝕃 𝒿 (𝒥 [ i ]) n holds
-               foo m =
-                (‘ β (𝒥 [ i ]) ’ ∧[ 𝒪 Patchₛ-A ] ¬‘ βₖ n ’) .pr₁ (β m)      ＝⟨ refl ⟩ₚ
-                ((β (𝒥 [ i ]) ∨[ 𝒪 A ] β m) ∧[ 𝒪 A ] (β n ==>ₐ β m))        ≤⟨ Ⅰ     ⟩
-                (j (β n) ∨[ 𝒪 A ] β m) ∧[ 𝒪 A ] (β n ==>ₐ β m)              ≤⟨ Ⅱ     ⟩
-                (j (β n) ∨[ 𝒪 A ] β m) ∧[ 𝒪 A ] (β n ==>ₐ j (β m))          ＝⟨ Ⅲ    ⟩ₚ
-                (j (β n) ∨[ 𝒪 A ] β m) ∧[ 𝒪 A ] (j (β n) ==>ₐ j (β m))      ≤⟨ Ⅳ     ⟩
-                (j (β n) ∨[ 𝒪 A ] j (β m)) ∧[ 𝒪 A ] (j (β n) ==>ₐ j (β m))  ＝⟨ Ⅴ    ⟩ₚ
-                (j (β m) ∨[ 𝒪 A ] j (β n)) ∧[ 𝒪 A ] (j (β n) ==>ₐ j (β m))  ＝⟨ Ⅵ    ⟩ₚ
-                j (β m)                                                     ■
+         ♢ : 𝔏 𝒿 (𝒥 [ i ]) n holds
+         ♢ m =
+          (‘ β (𝒥 [ i ]) ’ ∧[ 𝒪 Patchₛ-A ] ¬‘ βₖ n ’) .pr₁ (β m)      ＝⟨ refl ⟩ₚ
+          ((β (𝒥 [ i ]) ∨[ 𝒪 A ] β m) ∧[ 𝒪 A ] (β n ==>ₐ β m))        ≤⟨ Ⅰ     ⟩
+          (j (β n) ∨[ 𝒪 A ] β m) ∧[ 𝒪 A ] (β n ==>ₐ β m)              ≤⟨ Ⅱ     ⟩
+          (j (β n) ∨[ 𝒪 A ] β m) ∧[ 𝒪 A ] (β n ==>ₐ j (β m))          ＝⟨ Ⅲ    ⟩ₚ
+          (j (β n) ∨[ 𝒪 A ] β m) ∧[ 𝒪 A ] (j (β n) ==>ₐ j (β m))      ≤⟨ Ⅳ     ⟩
+          (j (β n) ∨[ 𝒪 A ] j (β m)) ∧[ 𝒪 A ] (j (β n) ==>ₐ j (β m))  ＝⟨ Ⅴ    ⟩ₚ
+          (j (β m) ∨[ 𝒪 A ] j (β n)) ∧[ 𝒪 A ] (j (β n) ==>ₐ j (β m))  ＝⟨ Ⅵ    ⟩ₚ
+          j (β m)                                                     ■
+           where
+            ♣ = β (𝒥 [ i ]) ≤⟨ 𝕒 ⟩ ⋁[ 𝒪 A ] ⁅ β i ∣ i ε 𝒥 ⁆  ＝⟨ 𝕓 ⟩ₚ j (β n) ■
                  where
-                  ♣ = β (𝒥 [ i ]) ≤⟨ 𝕒 ⟩ ⋁[ 𝒪 A ] ⁅ β i ∣ i ε 𝒥 ⁆  ＝⟨ 𝕓 ⟩ₚ j (β n) ■
-                       where
-                        𝕒 = ⋁[ 𝒪 A ]-upper ⁅ β i ∣ i ε 𝒥 ⁆ i
-                        𝕓 = covers (𝒪 A) (Bₐ , β) β-is-basis-for-A (j (β n)) ⁻¹
+                  𝕒 = ⋁[ 𝒪 A ]-upper ⁅ β i ∣ i ε 𝒥 ⁆ i
+                  𝕓 = covers (𝒪 A) (Bₐ , β) β-is-basis-for-A (j (β n)) ⁻¹
 
-                  Ⅰ = ∧[ 𝒪 A ]-left-monotone (∨[ 𝒪 A ]-left-monotone ♣)
-                  Ⅱ = ∧[ 𝒪 A ]-right-monotone
-                       (==>ₐ-right-monotone (𝓃₁ (𝒪 A) (nucleus-of 𝒿) (β m)))
-                  Ⅲ = ap
-                       (λ - → (j (β n) ∨[ 𝒪 A ] β m) ∧[ 𝒪 A ] -)
-                       (nucleus-heyting-implication-law (β n) (β m))
-                  Ⅳ = ∧[ 𝒪 A ]-left-monotone (∨[ 𝒪 A ]-right-monotone (𝓃₁ (𝒪 A) (nucleus-of 𝒿) (β m)))
-                  Ⅴ = ap
-                       (λ - → - ∧[ 𝒪 A ] (j (β n) ==>ₐ j (β m)))
-                       (∨[ 𝒪 A ]-is-commutative (j (β n)) (j (β m)))
-                  Ⅵ = H₈ₐ (j (β m)) (j (β n)) ⁻¹
+            Ⅰ = ∧[ 𝒪 A ]-left-monotone (∨[ 𝒪 A ]-left-monotone ♣)
+            Ⅱ = ∧[ 𝒪 A ]-right-monotone
+                 (==>ₐ-right-monotone (𝓃₁ (𝒪 A) (nucleus-of 𝒿) (β m)))
+            Ⅲ = ap
+                 (λ - → (j (β n) ∨[ 𝒪 A ] β m) ∧[ 𝒪 A ] -)
+                 (nucleus-heyting-implication-law (β n) (β m))
+            Ⅳ = ∧[ 𝒪 A ]-left-monotone
+                 (∨[ 𝒪 A ]-right-monotone (𝓃₁ (𝒪 A) (nucleus-of 𝒿) (β m)))
+            Ⅴ = ap
+                 (λ - → - ∧[ 𝒪 A ] (j (β n) ==>ₐ j (β m)))
+                 (∨[ 𝒪 A ]-is-commutative (j (β n)) (j (β m)))
+            Ⅵ = H₈ₐ (j (β m)) (j (β n)) ⁻¹
 
        Ⅰ = ap
             (λ - → 𝒻 ⋆∙ - ∧[ 𝒪 X ] ¬𝒻⋆ (β n))
@@ -246,9 +338,11 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤)
               𝒻
               ⁅ β i ∣ i ε 𝒥 ⁆)
        Ⅲ = distributivity′-right (𝒪 X) (¬𝒻⋆ (β n)) ⁅ 𝒻 ⋆∙ (β i) ∣ i ε 𝒥 ⁆
-       Ⅳ = ⋁[ 𝒪 X ]-least
-            ⁅ 𝒻 ⋆∙ (β i) ∧[ 𝒪 X ] ¬𝒻⋆ (β n) ∣ i ε 𝒥 ⁆
-            ((⋁[ 𝒪 X ] S) , ※)
+       Ⅳ = ⋁[ 𝒪 X ]-least ⁅ 𝒻 ⋆∙ (β i) ∧ₓ ¬𝒻⋆ (β n) ∣ i ε 𝒥 ⁆ ((⋁[ 𝒪 X ] S) , ♠)
+
+\end{code}
+
+\begin{code}
 
  f⁻⁺-is-monotone : is-monotonic (poset-of (𝒪 Patchₛ-A)) (poset-of (𝒪 X)) f⁻⁺
                     holds
@@ -256,18 +350,18 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤)
   where
    𝒮 : Fam 𝓤 ⟨ 𝒪 X ⟩
    𝒮 = ⁅ (𝒻 ⋆∙ β m) ∧[ 𝒪 X ] ¬𝒻⋆ (β n)
-         ∣ (m , n , p) ∶ Σ m ꞉ Bₐ , Σ n ꞉ Bₐ , 𝕃 𝒿 m n holds ⁆
+         ∣ (m , n , p) ∶ Σ m ꞉ Bₐ , Σ n ꞉ Bₐ , 𝔏 𝒿 m n holds ⁆
 
    𝒯 : Fam 𝓤 ⟨ 𝒪 X ⟩
    𝒯 = ⁅ (𝒻 ⋆∙ β m) ∧[ 𝒪 X ] ¬𝒻⋆ (β n)
-         ∣ (m , n , p) ∶ Σ m ꞉ Bₐ , Σ n ꞉ Bₐ , 𝕃 𝓀 m n holds ⁆
+         ∣ (m , n , p) ∶ Σ m ꞉ Bₐ , Σ n ꞉ Bₐ , 𝔏 𝓀 m n holds ⁆
 
    † : cofinal-in (𝒪 X) 𝒮 𝒯 holds
    † (m , n , q) = ∣ (m , n , ‡) , ♣ ∣
     where
      open PosetReasoning (poset-of (𝒪 A))
 
-     ‡ : 𝕃 𝓀 m n holds
+     ‡ : 𝔏 𝓀 m n holds
      ‡ l = (‘ β m ’ ∧[ 𝒪 Patchₛ-A ] ¬‘ βₖ n ’) .pr₁ (β l) ≤⟨ q l ⟩ 𝒿 $ (β l) ≤⟨ p l ⟩ 𝓀 $ (β l) ■
 
      ♣ : (_ ≤[ poset-of (𝒪 X) ] _) holds
@@ -790,7 +884,7 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤)
 
      S =
       ⁅ (𝒻 ⋆∙ β m) ∧[ 𝒪 X ] ¬𝒻⋆ (β n)
-       ∣ (m , n , p) ∶ Σ m ꞉ Bₐ , Σ n ꞉ Bₐ , 𝕃 𝒿 m n holds ⁆
+       ∣ (m , n , p) ∶ Σ m ꞉ Bₐ , Σ n ꞉ Bₐ , 𝔏 𝒿 m n holds ⁆
 
      ϑ₂ : (𝒿 ≤[ poset-of (𝒪 Patchₛ-A) ] (f⁻₊ U)) holds
         → (f⁻⁺ 𝒿 ≤[ poset-of (𝒪 X) ] U) holds
@@ -1048,7 +1142,7 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤)
            𝟐 = ap (λ - → 𝒻 ⋆∙ β (ℒ [ l ]) ∧[ 𝒪 X ] -)   (¬𝒻⋆𝟎-is-𝟏 ⁻¹)
            𝟑 = ap (λ - → 𝒻 ⋆∙ β (ℒ [ l ]) ∧[ 𝒪 X ] ¬𝒻⋆ -) p
            𝟒 = ⋁[ 𝒪 X ]-upper
-                ⁅ (𝒻 ⋆∙ β m) ∧[ 𝒪 X ] ¬𝒻⋆ (β n) ∣ (m , n , p) ∶ Σ m ꞉ Bₐ , Σ n ꞉ Bₐ , 𝕃 ‘ U ’ m n holds ⁆
+                ⁅ (𝒻 ⋆∙ β m) ∧[ 𝒪 X ] ¬𝒻⋆ (β n) ∣ (m , n , p) ∶ Σ m ꞉ Bₐ , Σ n ꞉ Bₐ , 𝔏 ‘ U ’ m n holds ⁆
                 (ℒ [ l ] , t , ♠)
 
    † : (𝒻 ⋆∙ U ≤[ poset-of (𝒪 X) ] f⁻⁺ ‘ U ’) holds
