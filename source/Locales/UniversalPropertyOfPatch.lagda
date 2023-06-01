@@ -1102,6 +1102,46 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) where
   𝒻⁻⁺ : X ─c→ Patchₛ-A
   𝒻⁻⁺ = f⁻⁺ , 𝒻⁻-α , 𝒻⁻-β , 𝒻⁻-γ
 
+  𝒻⁻-is-unique-ext : (𝒻⁻′ : X ─c→ Patchₛ-A)
+                   → (((U : ⟨ 𝒪 A ⟩) → 𝒻 .pr₁ U  ＝ 𝒻⁻′ .pr₁ ‘ U ’) )
+                   → (𝒿 : ⟨ 𝒪 Patchₛ-A ⟩) → f⁻⁺ 𝒿 ＝ 𝒻⁻′ .pr₁ 𝒿
+  𝒻⁻-is-unique-ext 𝒻⁻₀@(f⁻₀ , _) ϑ 𝒿 =
+   f⁻⁺ 𝒿                                                                             ＝⟨ ap f⁻⁺ ν ⟩
+   f⁻⁺ (⋁[ 𝒪 Patchₛ-A ] ⁅ 𝔠 k ∧[ 𝒪 Patchₛ-A ] 𝔬 l ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆) ＝⟨ Ⅱ        ⟩
+   ⋁[ 𝒪 X ] ⁅ f⁻⁺ (𝔠 k ∧[ 𝒪 Patchₛ-A ] 𝔬 l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆        ＝⟨ Ⅲ        ⟩
+   ⋁[ 𝒪 X ] ⁅ f⁻⁺ (𝔠 k) ∧[ 𝒪 X ] f⁻⁺ (𝔬 l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆         ＝⟨ Ⅳ        ⟩
+   ⋁[ 𝒪 X ] ⁅ f⁻⁺ (𝔠 k) ∧[ 𝒪 X ] ¬𝒻⋆ (β l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆         ＝⟨ Ⅴ        ⟩
+   ⋁[ 𝒪 X ] ⁅ 𝒻 ⋆∙ (β k) ∧[ 𝒪 X ] ¬𝒻⋆ (β l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆        ＝⟨ Ⅵ        ⟩
+   ⋁[ 𝒪 X ] ⁅ 𝒻 ⋆∙ (β k) ∧[ 𝒪 X ] f⁻₀ (𝔬 l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆        ＝⟨ Ⅶ        ⟩
+   ⋁[ 𝒪 X ] ⁅ f⁻₀ (𝔠 k) ∧[ 𝒪 X ] f⁻₀ (𝔬 l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆         ＝⟨ Ⅷ        ⟩
+   ⋁[ 𝒪 X ] ⁅ f⁻₀ (𝔠 k ∧[ 𝒪 Patchₛ-A ] 𝔬 l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆        ＝⟨ Ⅸ        ⟩
+   f⁻₀ (⋁[ 𝒪 Patchₛ-A ] ⁅ 𝔠 k ∧[ 𝒪 Patchₛ-A ] 𝔬 l ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆) ＝⟨ Ⅹ        ⟩
+   f⁻₀ 𝒿                                                                             ∎
+    where
+     open BasisOfPatch A σᴰ
+
+     ν : 𝒿 ＝ ⋁[ 𝒪 Patchₛ-A ] ⁅ 𝔠 k ∧[ 𝒪 Patchₛ-A ] 𝔬 l ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆
+     ν = main-covering-lemma 𝒿
+
+     Ⅱ = ⋁[ 𝒪 X ]-unique
+          ⁅ f⁻⁺ (𝔠 k ∧[ 𝒪 Patchₛ-A ] 𝔬 l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆
+          (f⁻⁺ (⋁[ 𝒪 Patchₛ-A ] ⁅ 𝔠 k ∧[ 𝒪 Patchₛ-A ] 𝔬 l ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆))
+          (𝒻⁻-γ ⁅ 𝔠 k ∧[ 𝒪 Patchₛ-A ] 𝔬 l ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆)
+     Ⅲ = ap
+          (λ - → ⋁[ 𝒪 X ] (basic-below 𝒿 , -))
+          (dfunext fe (λ { ((k , l) , p) → 𝒻⁻-β (𝔠 k) (𝔬 l) }))
+
+     Ⅳ : ⋁[ 𝒪 X ] ⁅ f⁻⁺ (𝔠 k) ∧[ 𝒪 X ] f⁻⁺ (𝔬 l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆ ＝ ⋁[ 𝒪 X ] ⁅ f⁻⁺ (𝔠 k) ∧[ 𝒪 X ] ¬𝒻⋆ (β l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆
+     Ⅳ = ap
+          (λ - → ⋁[ 𝒪 X ] (basic-below 𝒿 , -))
+          (dfunext fe (λ { ((k , l) , p) → ap (λ - → (f⁻⁺ (𝔠 k)) ∧[ 𝒪 X ] -) (preserves-closed-implies-preserves-open 𝒻⁻⁺ (λ n → 𝒻⁻-makes-the-diagram-commute (β n)) l ⁻¹) }))
+     Ⅴ = ap (λ - → ⋁[ 𝒪 X ] (basic-below 𝒿 , -)) ((dfunext fe (λ { ((k , l) , p) → ap (λ - → - ∧[ 𝒪 X ] ¬𝒻⋆ (β l)) (𝒻⁻-makes-the-diagram-commute (β k) ⁻¹) })))
+     Ⅵ = ap (λ - → ⋁[ 𝒪 X ] (basic-below 𝒿 , -)) (dfunext fe λ { ((k , l) , p) → ap (λ - → 𝒻 ⋆∙ (β k) ∧[ 𝒪 X ] -) (preserves-closed-implies-preserves-open 𝒻⁻₀ (ϑ ∘ β) l) })
+     Ⅶ = ap (λ - → ⋁[ 𝒪 X ] (basic-below 𝒿 , -)) (dfunext fe λ { ((k , l) , p) → ap (λ - → - ∧[ 𝒪 X ] f⁻₀ (𝔬 l)) (ϑ (β k)) })
+     Ⅷ = ap (λ - → ⋁[ 𝒪 X ] (basic-below 𝒿 , -)) (dfunext fe λ { ((k , l) , p) → frame-homomorphisms-preserve-meets (𝒪 Patchₛ-A) (𝒪 X) 𝒻⁻₀ (𝔠 k) (𝔬 l) ⁻¹ } ) 
+     Ⅸ = frame-homomorphisms-preserve-all-joins (𝒪 Patchₛ-A) (𝒪 X) 𝒻⁻₀ ⁅ 𝔠 k ∧[ 𝒪 Patchₛ-A ] 𝔬 l ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆ ⁻¹
+     Ⅹ = ap f⁻₀ ν ⁻¹
+
   𝒻⁻-is-unique : is-central
                   (Σ 𝒻⁻₀ ꞉ (X ─c→ Patchₛ-A) ,
                    ((x : ⟨ 𝒪 A ⟩) → 𝒻 .pr₁ x  ＝ 𝒻⁻₀ .pr₁ ‘ x ’))
@@ -1151,40 +1191,7 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) where
     open BasisOfPatch A σᴰ
 
     † : (𝒿 : ⟨ 𝒪 Patchₛ-A ⟩) → f⁻⁺ 𝒿 ＝ f⁻₀ 𝒿
-    † 𝒿 =
-     f⁻⁺ 𝒿                                                                             ＝⟨ ap f⁻⁺ ν ⟩
-     f⁻⁺ (⋁[ 𝒪 Patchₛ-A ] ⁅ 𝔠 k ∧[ 𝒪 Patchₛ-A ] 𝔬 l ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆) ＝⟨ Ⅱ        ⟩
-     ⋁[ 𝒪 X ] ⁅ f⁻⁺ (𝔠 k ∧[ 𝒪 Patchₛ-A ] 𝔬 l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆        ＝⟨ Ⅲ        ⟩
-     ⋁[ 𝒪 X ] ⁅ f⁻⁺ (𝔠 k) ∧[ 𝒪 X ] f⁻⁺ (𝔬 l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆         ＝⟨ Ⅳ        ⟩
-     ⋁[ 𝒪 X ] ⁅ f⁻⁺ (𝔠 k) ∧[ 𝒪 X ] ¬𝒻⋆ (β l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆         ＝⟨ Ⅴ        ⟩
-     ⋁[ 𝒪 X ] ⁅ 𝒻 ⋆∙ (β k) ∧[ 𝒪 X ] ¬𝒻⋆ (β l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆        ＝⟨ Ⅵ        ⟩
-     ⋁[ 𝒪 X ] ⁅ 𝒻 ⋆∙ (β k) ∧[ 𝒪 X ] f⁻₀ (𝔬 l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆        ＝⟨ Ⅶ        ⟩
-     ⋁[ 𝒪 X ] ⁅ f⁻₀ (𝔠 k) ∧[ 𝒪 X ] f⁻₀ (𝔬 l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆         ＝⟨ Ⅷ        ⟩
-     ⋁[ 𝒪 X ] ⁅ f⁻₀ (𝔠 k ∧[ 𝒪 Patchₛ-A ] 𝔬 l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆        ＝⟨ Ⅸ        ⟩
-     f⁻₀ (⋁[ 𝒪 Patchₛ-A ] ⁅ 𝔠 k ∧[ 𝒪 Patchₛ-A ] 𝔬 l ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆) ＝⟨ Ⅹ        ⟩
-     f⁻₀ 𝒿                                                                             ∎
-      where
-       ν : 𝒿 ＝ ⋁[ 𝒪 Patchₛ-A ] ⁅ 𝔠 k ∧[ 𝒪 Patchₛ-A ] 𝔬 l ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆
-       ν = main-covering-lemma 𝒿
-
-       Ⅱ = ⋁[ 𝒪 X ]-unique
-            ⁅ f⁻⁺ (𝔠 k ∧[ 𝒪 Patchₛ-A ] 𝔬 l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆
-            (f⁻⁺ (⋁[ 𝒪 Patchₛ-A ] ⁅ 𝔠 k ∧[ 𝒪 Patchₛ-A ] 𝔬 l ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆))
-            (𝒻⁻-γ ⁅ 𝔠 k ∧[ 𝒪 Patchₛ-A ] 𝔬 l ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆)
-       Ⅲ = ap
-            (λ - → ⋁[ 𝒪 X ] (basic-below 𝒿 , -))
-            (dfunext fe (λ { ((k , l) , p) → 𝒻⁻-β (𝔠 k) (𝔬 l) }))
-
-       Ⅳ : ⋁[ 𝒪 X ] ⁅ f⁻⁺ (𝔠 k) ∧[ 𝒪 X ] f⁻⁺ (𝔬 l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆ ＝ ⋁[ 𝒪 X ] ⁅ f⁻⁺ (𝔠 k) ∧[ 𝒪 X ] ¬𝒻⋆ (β l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆
-       Ⅳ = ap
-            (λ - → ⋁[ 𝒪 X ] (basic-below 𝒿 , -))
-            (dfunext fe (λ { ((k , l) , p) → ap (λ - → (f⁻⁺ (𝔠 k)) ∧[ 𝒪 X ] -) (preserves-closed-implies-preserves-open 𝒻⁻⁺ (λ n → 𝒻⁻-makes-the-diagram-commute (β n)) l ⁻¹) }))
-       Ⅴ = ap (λ - → ⋁[ 𝒪 X ] (basic-below 𝒿 , -)) ((dfunext fe (λ { ((k , l) , p) → ap (λ - → - ∧[ 𝒪 X ] ¬𝒻⋆ (β l)) (𝒻⁻-makes-the-diagram-commute (β k) ⁻¹) })))
-       Ⅵ = ap (λ - → ⋁[ 𝒪 X ] (basic-below 𝒿 , -)) (dfunext fe λ { ((k , l) , p) → ap (λ - → 𝒻 ⋆∙ (β k) ∧[ 𝒪 X ] -) (preserves-closed-implies-preserves-open 𝒻⁻₀ (ϑ ∘ β) l) })
-       Ⅶ = ap (λ - → ⋁[ 𝒪 X ] (basic-below 𝒿 , -)) (dfunext fe λ { ((k , l) , p) → ap (λ - → - ∧[ 𝒪 X ] f⁻₀ (𝔬 l)) (ϑ (β k)) })
-       Ⅷ = ap (λ - → ⋁[ 𝒪 X ] (basic-below 𝒿 , -)) (dfunext fe λ { ((k , l) , p) → frame-homomorphisms-preserve-meets (𝒪 Patchₛ-A) (𝒪 X) 𝒻⁻₀ (𝔠 k) (𝔬 l) ⁻¹ } ) 
-       Ⅸ = frame-homomorphisms-preserve-all-joins (𝒪 Patchₛ-A) (𝒪 X) 𝒻⁻₀ ⁅ 𝔠 k ∧[ 𝒪 Patchₛ-A ] 𝔬 l ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆ ⁻¹
-       Ⅹ = ap f⁻₀ ν ⁻¹
+    † = 𝒻⁻-is-unique-ext 𝒻⁻₀ ϑ
 
   proof-of-ump : ∃! 𝒻⁻ ꞉ (X ─c→ Patchₛ-A) , ((U : ⟨ 𝒪 A ⟩) → 𝒻 .pr₁ U  ＝ 𝒻⁻ .pr₁ ‘ U ’)
   proof-of-ump =
@@ -1210,18 +1217,71 @@ module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤) where
    γ : spectralᴰ (𝒪 A)
      → zero-dimensionalᴰ (𝒪 X)
      → ∃! 𝒻⁻ ꞉ (X ─c→ Patch-A) , ((x : ⟨ 𝒪 A ⟩) → 𝒻 .pr₁ x  ＝ 𝒻⁻ .pr₁ ‘ x ’)
-   γ σᴰ 𝕫ᴰ = ({!!} , {!!}) , {!!} -- UniversalPropertyOfPatch.proof-of-ump X σᴰ 𝕫ᴰ (pr₁ 𝕤) 𝒻 μ
+   γ σᴰ 𝕫ᴰ = (𝒻⁻₀ , †) , ‡
     where
      open UniversalPropertyOfPatch X σᴰ 𝕫ᴰ (pr₁ 𝕤) 𝒻 μ
+     open SmallPatchConstruction A σᴰ renaming (SmallPatch to Patchₛ-A)
 
      f⁻₀ : ⟨ 𝒪 Patch-A ⟩ → ⟨ 𝒪 X ⟩
      f⁻₀ 𝒿 = f⁻⁺ 𝒿
 
      𝒻⁻₀ : X ─c→ Patch-A
-     𝒻⁻₀ = f⁻₀ , {!!}
+     𝒻⁻₀ = f⁻₀ , 𝒻⁻-α , 𝒻⁻-β , 𝒻⁻-γ
 
--- --}
--- --}
--- --}
+     † : (U : ⟨ 𝒪 A ⟩) → 𝒻 .pr₁ U ＝ 𝒻⁻₀ .pr₁ ‘ U ’
+     † = 𝒻⁻-makes-the-diagram-commute
+
+     ‡ : is-central
+          ((Σ 𝒻⁻₀ ꞉ (X ─c→ Patch-A) , ((U : ⟨ 𝒪 A ⟩) → 𝒻 .pr₁ U  ＝ 𝒻⁻₀ .pr₁ ‘ U ’)))
+          (𝒻⁻₀ , 𝒻⁻-makes-the-diagram-commute)
+     ‡ (𝒻⁻₁@(_ , α₁ , β₁ , γ₁) , p) = to-subtype-＝ ♣ (to-subtype-＝ ♠ (dfunext fe ϟ))
+      where
+       open Joins (λ x y → x ≤[ poset-of (𝒪 X) ] y)
+       open PosetReasoning (poset-of (𝒪 X))
+
+       𝒻⁻₁′ : X ─c→ Patchₛ-A
+       𝒻⁻₁′ = (𝒻⁻₁ .pr₁) , α₁ , β₁ , γ₁′
+        where
+         γ₁′ : (S : Fam 𝓤 ⟨ 𝒪 Patchₛ-A ⟩)
+             → (𝒻⁻₁ .pr₁ (join-of (𝒪 Patchₛ-A) S) is-lub-of ⁅ 𝒻⁻₁ .pr₁ x ∣ x ε S ⁆) holds
+         γ₁′ S = foo , bar
+          where
+           foo : ((𝒻⁻₁ .pr₁ (join-of (𝒪 Patchₛ-A) S)) is-an-upper-bound-of ⁅ 𝒻⁻₁ .pr₁ x ∣ x ε S ⁆) holds
+           foo i = 𝒻⁻₁ .pr₁ (S [ i ]) ≤⟨ meet-preserving-implies-monotone (𝒪 Patchₛ-A) (𝒪 X) (𝒻⁻₁ .pr₁) β₁ (_ , _) (⋁[ 𝒪 Patchₛ-A ]-upper S i)  ⟩ 𝒻⁻₁ .pr₁ (join-of (𝒪 Patchₛ-A) S) ■
+
+           eq : ⋁[ 𝒪 Patchₛ-A ] S ＝ ⋁[ 𝒪 Patch-A ] S
+           eq = ≤-is-antisymmetric (poset-of (𝒪 Patchₛ-A)) eq₁ eq₂
+            where
+             eq₁ : rel-syntax (poset-of (𝒪 Patchₛ-A)) (join-of (𝒪 Patchₛ-A) S) (join-of (𝒪 Patch-A) S) holds
+             eq₁ i = ⋁[ 𝒪 Patchₛ-A ]-least S (((join-of (𝒪 Patch-A) S)) , ♢) i
+              where
+               ♢ : (rel-syntax (poset-of (𝒪 Patchₛ-A)) Joins.is-an-upper-bound-of
+                      join-of (𝒪 Patch-A) S)
+                     S
+                     holds
+               ♢ i = ≼-implies-≼ᵏ (S [ i ]) (join-of (𝒪 Patch-A) S) (⋁[ 𝒪 Patch-A ]-upper S i)
+
+             eq₂ : rel-syntax (poset-of (𝒪 Patchₛ-A)) (join-of (𝒪 Patch-A) S) (join-of (𝒪 Patchₛ-A) S) holds
+             eq₂ i = ⋁[ 𝒪 Patch-A ]-least S ((join-of (𝒪 Patchₛ-A) S) , ♢) (β i)
+              where
+               ♢ : (rel-syntax (poset-of (𝒪 Patch-A)) Joins.is-an-upper-bound-of
+                      join-of (𝒪 Patchₛ-A) S)
+                     S
+                     holds
+               ♢ i = ≼ᵏ-implies-≼ (S [ i ]) (join-of (𝒪 Patchₛ-A) S) (⋁[ 𝒪 Patchₛ-A ]-upper S i)
+
+           bar : ((U , _) : upper-bound ⁅ 𝒻⁻₁ .pr₁ x ∣ x ε S ⁆) → (𝒻⁻₁ .pr₁ (⋁[ 𝒪 Patchₛ-A ] S) ≤[ poset-of (𝒪 X) ] U) holds
+           bar (U , p) = 𝒻⁻₁ .pr₁ (⋁[ 𝒪 Patchₛ-A ] S) ＝⟨ ap (𝒻⁻₁ .pr₁) eq ⟩ₚ 𝒻⁻₁ .pr₁ (⋁[ 𝒪 Patch-A ] S) ≤⟨ pr₂ (γ₁ S) (U , p) ⟩ U ■
+
+       ♣ : (𝒻⁻₂ : X ─c→ Patch-A)
+         → is-prop ((U : ⟨ 𝒪 A ⟩) → 𝒻 .pr₁ U ＝ 𝒻⁻₂ .pr₁ ‘ U ’)
+       ♣ 𝒻⁻₂ = Π-is-prop fe (λ _ → carrier-of-[ poset-of (𝒪 X) ]-is-set)
+
+       ♠ : (𝒻⁻₂ : ⟨ 𝒪 Patch-A ⟩ → ⟨ 𝒪 X ⟩)
+         → is-prop (is-a-frame-homomorphism (𝒪 Patch-A) (𝒪 X) 𝒻⁻₂ holds)
+       ♠ = holds-is-prop ∘ is-a-frame-homomorphism (𝒪 Patch-A) (𝒪 X)
+
+       ϟ : (𝒿 : ⟨ 𝒪 Patch-A ⟩) → f⁻₀ 𝒿 ＝ 𝒻⁻₁ .pr₁ 𝒿
+       ϟ 𝒿 = f⁻₀ 𝒿 ＝⟨ refl ⟩ f⁻⁺ 𝒿 ＝⟨ 𝒻⁻-is-unique-ext 𝒻⁻₁′ p 𝒿 ⟩ 𝒻⁻₁ .pr₁ 𝒿 ∎
 
 \end{code}
