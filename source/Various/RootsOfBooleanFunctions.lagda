@@ -516,3 +516,149 @@ gives a formulate for putative roots. (2) Moreover, show that
 
 It may be that it is easier to prove (2) and then deduce (1), rather
 than prove (1) directly. We haven't tried that.
+
+
+Here's a proof of (2)
+
+We define another pair of auxilliary constructions that will be used
+to reason about εᵉ
+
+\begin{code}
+
+𝕞𝕒𝕡 : {n m : ℕ} → (f : E m ^ n → E m ^ m) → E n → E m
+𝕞𝕒𝕡s : {n m k : ℕ} → (f : E m ^ n → E m ^ m) → E n ^ k → E m ^ k
+
+𝕞𝕒𝕡 f O = O
+𝕞𝕒𝕡 f (𝕗 es) = 𝕗 (f (𝕞𝕒𝕡s f es))
+
+𝕞𝕒𝕡s f ⟨⟩ = ⟨⟩
+𝕞𝕒𝕡s f (e , es) = 𝕞𝕒𝕡 f e , 𝕞𝕒𝕡s f es
+
+\end{code}
+
+Notice that 𝕔𝕠𝕟𝕤 and 𝕔𝕠𝕟𝕤 are more refined versions of 𝕞𝕒𝕡 and 𝕞𝕒𝕡s
+\begin{code}
+
+𝕞𝕒𝕡-cons-𝕔𝕠𝕟𝕤 : {n k : ℕ}
+               → (e₀ : E (succ n))
+               → (e : E n)
+               → 𝕞𝕒𝕡 (cons e₀ ) e ＝ 𝕔𝕠𝕟𝕤 e₀ e
+𝕞𝕒𝕡s-cons-𝕔𝕠𝕟𝕤s : {n k : ℕ}
+                → (e₀ : E (succ n))
+                → (es : E n ^ k)
+                → 𝕞𝕒𝕡s (cons e₀ ) es ＝ 𝕔𝕠𝕟𝕤s e₀ es
+
+𝕞𝕒𝕡-cons-𝕔𝕠𝕟𝕤 {n} {k} e₀ O = refl
+𝕞𝕒𝕡-cons-𝕔𝕠𝕟𝕤 {n} {k} e₀ (𝕗 es) = ap (𝕗 ∘ cons e₀) (𝕞𝕒𝕡s-cons-𝕔𝕠𝕟𝕤s e₀ es)
+
+𝕞𝕒𝕡s-cons-𝕔𝕠𝕟𝕤s {n} {k} e₀ ⟨⟩ = refl
+𝕞𝕒𝕡s-cons-𝕔𝕠𝕟𝕤s {n} {k} e₀ (e , es) = ap₂ _,_
+                                         (𝕞𝕒𝕡-cons-𝕔𝕠𝕟𝕤 {k = k} e₀ e)
+                                         (𝕞𝕒𝕡s-cons-𝕔𝕠𝕟𝕤s e₀ es)
+
+𝕞𝕒𝕡-𝕞𝕒𝕡  : {n m : ℕ}
+         → (f : E m ^ (succ n) → E m ^ m)
+         → (e₀ : E (succ n)) → (e : E n)
+         → 𝕞𝕒𝕡 f (𝕞𝕒𝕡 (cons e₀) e) ＝ 𝕞𝕒𝕡 (f ∘ cons (𝕞𝕒𝕡 f e₀)) e
+𝕞𝕒𝕡-𝕞𝕒𝕡s : {n m k : ℕ}
+         → (f : E m ^ (succ n) → E m ^ m)
+         → (e₀ : E (succ n)) → (es : E n ^ k)
+         → 𝕞𝕒𝕡s f (𝕞𝕒𝕡s (cons e₀) es) ＝ 𝕞𝕒𝕡s (f ∘ cons (𝕞𝕒𝕡 f e₀)) es
+
+𝕞𝕒𝕡-𝕞𝕒𝕡 f e₀ O = refl
+𝕞𝕒𝕡-𝕞𝕒𝕡 f e₀ (𝕗 es) = ap (𝕗 ∘ f ∘ cons (𝕞𝕒𝕡 f e₀)) (𝕞𝕒𝕡-𝕞𝕒𝕡s f e₀ es)
+
+𝕞𝕒𝕡-𝕞𝕒𝕡s f e₀ ⟨⟩       = refl
+𝕞𝕒𝕡-𝕞𝕒𝕡s f e₀ (e , es) = ap₂ _,_ (𝕞𝕒𝕡-𝕞𝕒𝕡 f e₀ e) (𝕞𝕒𝕡-𝕞𝕒𝕡s f e₀ es)
+
+\end{code}
+
+Using the addition flexibility given by those function we can show how
+to unroll the compositions that happen in εᵉ.
+
+\begin{code}
+
+unroll-εᵉ-lemma : {n k : ℕ}
+                → (f : E k ^ n → E k ^ k)
+                → εᵉ (𝕗 ∘ f) ＝ 𝕞𝕒𝕡s f (εᵉ 𝕗)
+unroll-εᵉ-lemma {0}      {k} f = refl
+unroll-εᵉ-lemma {succ n} {k} f = γ
+ where
+  c₀ : E k
+  c₀ = (𝕗 ∘ f ∘ cons O) (εᵉ (𝕗 ∘ f ∘ cons O))
+
+  c₁ : E (succ n)
+  c₁ = (𝕗 ∘ cons O) (εᵉ (𝕗 ∘ cons O))
+
+  c₀-property : c₀ ＝ 𝕞𝕒𝕡 f c₁
+  c₀-property = (𝕗 ∘ f ∘ cons O) (εᵉ (𝕗 ∘ f ∘ cons O))        ＝⟨ I ⟩
+                (𝕗 ∘ f ∘ cons O) (𝕞𝕒𝕡s (f ∘ cons O) (εᵉ 𝕗))   ＝⟨ refl ⟩
+                𝕞𝕒𝕡 (f ∘ cons O) (𝕗 (εᵉ 𝕗))                   ＝⟨ II ⟩
+                𝕞𝕒𝕡 f (𝕞𝕒𝕡 (cons O) (𝕗 (εᵉ 𝕗)))               ＝⟨ refl ⟩
+                𝕞𝕒𝕡 f ((𝕗 ∘ cons O) ((𝕞𝕒𝕡s (cons O) (εᵉ 𝕗)))) ＝⟨ III ⟩
+                𝕞𝕒𝕡 f ((𝕗 ∘ cons O) (εᵉ (𝕗 ∘ cons O)))        ＝⟨ refl ⟩
+                𝕞𝕒𝕡 f c₁ ∎
+   where
+     I = ap (𝕗 ∘ f ∘ cons O) (unroll-εᵉ-lemma (f ∘ cons O))
+     II = 𝕞𝕒𝕡-𝕞𝕒𝕡 f O (𝕗 (εᵉ 𝕗)) ⁻¹
+     III = ap (𝕞𝕒𝕡 f ∘ (𝕗 ∘ cons O)) (unroll-εᵉ-lemma (cons O) ⁻¹)
+
+  γ :  εᵉ (𝕗 ∘ f) ＝ 𝕞𝕒𝕡s f (εᵉ 𝕗)
+  γ = εᵉ (𝕗 ∘ f) ＝⟨ refl ⟩
+      c₀ , (εᵉ (𝕗 ∘ f ∘ cons c₀))                  ＝⟨ I ⟩
+      𝕞𝕒𝕡 f c₁ , (εᵉ (𝕗 ∘ f ∘ cons (𝕞𝕒𝕡 f c₁)))    ＝⟨ II ⟩
+      𝕞𝕒𝕡 f c₁ , 𝕞𝕒𝕡s (f ∘ cons (𝕞𝕒𝕡 f c₁)) (εᵉ 𝕗) ＝⟨ III ⟩
+      𝕞𝕒𝕡 f c₁ , 𝕞𝕒𝕡s f (𝕞𝕒𝕡s (cons c₁) (εᵉ 𝕗))    ＝⟨ IV ⟩
+      𝕞𝕒𝕡 f c₁ , 𝕞𝕒𝕡s f (εᵉ (𝕗 ∘ cons c₁))         ＝⟨ refl ⟩
+      𝕞𝕒𝕡s f (c₁ , (εᵉ (𝕗 ∘ cons c₁)))             ＝⟨ refl ⟩
+      𝕞𝕒𝕡s f (εᵉ 𝕗) ∎
+   where
+    I = ap (λ x → x , (εᵉ (𝕗 ∘ f ∘ cons x))) c₀-property
+    II = ap (𝕞𝕒𝕡 f c₁ ,_) (unroll-εᵉ-lemma (f ∘ cons (𝕞𝕒𝕡 f c₁)))
+    III = ap (𝕞𝕒𝕡 f c₁ ,_) (𝕞𝕒𝕡-𝕞𝕒𝕡s f c₁ (εᵉ 𝕗) ⁻¹)
+    IV = ap (λ x → 𝕞𝕒𝕡 f c₁ , 𝕞𝕒𝕡s f x) (unroll-εᵉ-lemma (cons c₁) ⁻¹)
+
+unroll-εᵉ : {n : ℕ}
+          → (e₀ : E (succ n))
+          → εᵉ (𝕗 ∘ (cons e₀)) ＝ 𝕔𝕠𝕟𝕤s e₀ (εᵉ 𝕗)
+unroll-εᵉ e₀ = unroll-εᵉ-lemma (cons e₀) ∙ 𝕞𝕒𝕡s-cons-𝕔𝕠𝕟𝕤s e₀ (εᵉ 𝕗)
+
+\end{code}
+
+From there we can show that ε-formula' n and ε-formula n are indeed
+equals.
+
+\begin{code}
+
+formulas-are-equal : (n : ℕ) → ε-formula' n ＝ ε-formula n
+formulas-are-equal 0 = refl
+formulas-are-equal (succ n) = γ
+ where
+  c₀ : E (succ n)
+  c₀ = (𝕗 ∘ cons O) (εᵉ (𝕗 ∘ cons O))
+
+  c₁ : E (succ n)
+  c₁ = (𝕗 ∘ cons O) (𝕔𝕠𝕟𝕤s O (ε-formula n))
+
+  c₀-property : c₀ ＝ c₁
+  c₀-property = (𝕗 ∘ cons O) (εᵉ (𝕗 ∘ cons O))  ＝⟨ I ⟩
+                (𝕗 ∘ cons O) (𝕔𝕠𝕟𝕤s O (εᵉ 𝕗))   ＝⟨ II ⟩
+                (𝕗 ∘ cons O) (𝕔𝕠𝕟𝕤s O (ε-formula n)) ∎
+   where
+    I = ap (𝕗 ∘ cons O) (unroll-εᵉ O)
+    II = ap (𝕗 ∘ cons O ∘ 𝕔𝕠𝕟𝕤s O) (formulas-are-equal n)
+
+  γ : ε-formula' (succ n) ＝ ε-formula (succ n)
+  γ = ε-formula' (succ n)            ＝⟨ refl ⟩
+      εᵉ 𝕗                           ＝⟨ refl ⟩
+      c₀ , εᵉ (𝕗 ∘ cons c₀)          ＝⟨ I ⟩
+      c₀ , (𝕔𝕠𝕟𝕤s c₀ (ε-formula' n)) ＝⟨ refl ⟩
+      c₀ , (𝕔𝕠𝕟𝕤s c₀ (εᵉ 𝕗))         ＝⟨ II ⟩
+      c₀ , (𝕔𝕠𝕟𝕤s c₀ (ε-formula n))  ＝⟨ III ⟩
+      c₁ , (𝕔𝕠𝕟𝕤s c₁ (ε-formula n))  ＝⟨ refl ⟩
+      ε-formula (succ n) ∎
+   where
+    I = ap (c₀ ,_) (unroll-εᵉ c₀)
+    II = ap (λ x → c₀ , (𝕔𝕠𝕟𝕤s c₀ x)) (formulas-are-equal n)
+    III = ap (λ x → x , (𝕔𝕠𝕟𝕤s x (ε-formula n))) c₀-property
+\end{code}
