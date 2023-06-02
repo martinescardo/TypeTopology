@@ -33,6 +33,7 @@ You can use the following BibTeX citation to cite `TypeTopology`:
 * Cory Knapp
 * Ettore Aldrovandi
 * Fredrik Nordvall Forsberg **
+* Igor Arrieta †
 * Jon Sterling
 * Keri D'Angelo
 * Marc Bezem *
@@ -53,3 +54,6 @@ of Martin Escardo.
 (**) These authors didn't write any single line of Agda code here, but
 they contributed to constructions, theorems and proofs via the hands
 of Tom de Jong.
+
+(†) These authors didn't write single line of Agda code here, but they
+contributed to constructions, theorems and proofs via the hands of Ayberk Tosun.
