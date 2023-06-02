@@ -1073,11 +1073,24 @@ diagram commute.
     † : is-complement-of (𝒪 Patchₛ-A) ‘ β n ’ ¬‘ βₖ n ’
     † = complementation-is-symmetric (𝒪 Patchₛ-A) ¬‘ βₖ n ’ ‘ β n ’ ‡
 
- preserves-closed-implies-preserves-open : (𝒻⁻₀@(f⁻₀ , _) : X ─c→ Patchₛ-A)
-                                         → ((n : Bₐ) → 𝒻 ⋆∙ (β n) ＝ f⁻₀ ‘ β n ’)
-                                         → (n : Bₐ) →  ¬𝒻⋆ (β n) ＝ f⁻₀ ¬‘ βₖ n ’
- preserves-closed-implies-preserves-open 𝒻⁻₀@(f⁻₀ , _) ϑ n =
-  complements-are-unique (𝒪 X) (𝒻 ⋆∙ (β n)) (¬𝒻⋆ (β n)) (f⁻₀ ¬‘ βₖ n ’) ψ₁ ψ₂
+\end{code}
+
+A corollary of the "easy lemma" is that any continuous map `𝒻⁻₀` from `X` into
+`Patch-A` that makes the diagram commute also satisfies
+
+```
+    𝒻⁻₀⁺ ¬‘ C ’ = ¬𝒻⁺ C ≡ 𝒻⁺ C ==> 𝟎
+```
+
+We call this lemma `commutes-with-open-nucleus`.
+
+\begin{code}
+
+ commutes-with-open-nucleus : (𝒻⁻₀@(f⁻₀ , _) : X ─c→ Patchₛ-A)
+                            → ((n : Bₐ) → 𝒻 ⋆∙ (β n) ＝ f⁻₀ ‘ β n ’)
+                            → (n : Bₐ) →  ¬𝒻⋆ (β n) ＝ f⁻₀ ¬‘ βₖ n ’
+ commutes-with-open-nucleus 𝒻⁻₀@(f⁻₀ , _) ϑ n =
+  complements-are-unique (𝒪 X) (𝒻 ⋆∙ (β n)) (¬𝒻⋆ (β n)) (f⁻₀ ¬‘ βₖ n ’) φ ψ
    where
     open LemmasAboutHeytingComplementation X X-has-basis
 
@@ -1093,17 +1106,24 @@ diagram commute.
     C-complements-𝒻⋆βn : is-complement-of (𝒪 X) C (𝒻 ⋆∙ (β n))
     C-complements-𝒻⋆βn = pr₂ ν
 
-    ψ₁ : is-complement-of (𝒪 X) (¬𝒻⋆ (β n)) (𝒻 ⋆∙ β n)
-    ψ₁ = transport
-          (λ - → is-complement-of (𝒪 X) - (𝒻 ⋆∙ β n))
-          (complement-is-heyting-complement (𝒻 ⋆∙ β n) C C-complements-𝒻⋆βn)
-          C-complements-𝒻⋆βn
+    φ : is-complement-of (𝒪 X) (¬𝒻⋆ (β n)) (𝒻 ⋆∙ β n)
+    φ = transport
+         (λ - → is-complement-of (𝒪 X) - (𝒻 ⋆∙ β n))
+         (complement-is-heyting-complement (𝒻 ⋆∙ β n) C C-complements-𝒻⋆βn)
+         C-complements-𝒻⋆βn
 
-    ψ₂ : is-complement-of (𝒪 X) (f⁻₀ ¬‘ βₖ n ’) (𝒻 ⋆∙ β n)
-    ψ₂ = transport
-          (λ - → is-complement-of (𝒪 X) (f⁻₀ ¬‘ βₖ n ’) -)
-          (ϑ n ⁻¹)
-          (easy-lemma 𝒻⁻₀ n)
+    ψ : is-complement-of (𝒪 X) (f⁻₀ ¬‘ βₖ n ’) (𝒻 ⋆∙ β n)
+    ψ = transport
+         (λ - → is-complement-of (𝒪 X) (f⁻₀ ¬‘ βₖ n ’) -)
+         (ϑ n ⁻¹)
+         (easy-lemma 𝒻⁻₀ n)
+
+\end{code}
+
+Using `commutes-with-open-nucleus` and the `easy-lemma`, it is not hard to
+prove that `𝒻⁻` makes the diagram commute.
+
+\begin{code}
 
  𝒻⁻-makes-the-diagram-commute : (U : ⟨ 𝒪 A ⟩) → 𝒻 ⋆∙ U  ＝ f⁻⁺ ‘ U ’
  𝒻⁻-makes-the-diagram-commute U = ≤-is-antisymmetric (poset-of (𝒪 X)) † ‡
@@ -1175,7 +1195,7 @@ diagram commute.
            𝟐 = ap (λ - → 𝒻 ⋆∙ β (ℒ [ l ]) ∧[ 𝒪 X ] -)   (¬𝒻⋆𝟎-is-𝟏 ⁻¹)
            𝟑 = ap (λ - → 𝒻 ⋆∙ β (ℒ [ l ]) ∧[ 𝒪 X ] ¬𝒻⋆ -) p
            𝟒 = ⋁[ 𝒪 X ]-upper
-                ⁅ (𝒻 ⋆∙ β m) ∧[ 𝒪 X ] ¬𝒻⋆ (β n) ∣ (m , n , p) ∶ Σ m ꞉ Bₐ , Σ n ꞉ Bₐ , 𝔏 ‘ U ’ m n holds ⁆
+                ⁅ 𝒻 ⋆∙ β m ∧[ 𝒪 X ] ¬𝒻⋆ (β n) ∣ (m , n , p) ∶ below ‘ U ’ ⁆
                 (ℒ [ l ] , t , ♠)
 
    † : (𝒻 ⋆∙ U ≤[ poset-of (𝒪 X) ] f⁻⁺ ‘ U ’) holds
@@ -1199,12 +1219,12 @@ diagram commute.
      open PosetReasoning (poset-of (𝒪 X))
 
      ϟ : (n : Bₐ)
-       → ((𝒻 ⋆∙ (U ∨[ 𝒪 A ] β n) ∧[ 𝒪 X ] ¬𝒻⋆ (β n)) ≤[ poset-of (𝒪 X) ] 𝒻 ⋆∙ U) holds
+       → ((𝒻 ⋆∙ (U ∨[ 𝒪 A ] β n) ∧[ 𝒪 X ] ¬𝒻⋆ (β n)) ≤ₓ 𝒻 ⋆∙ U) holds
      ϟ n =
       𝒻 ⋆∙ (U ∨[ 𝒪 A ] β n) ∧[ 𝒪 X ] ¬𝒻⋆ (β n)                             ＝⟨ 𝟏 ⟩ₚ
       (𝒻 ⋆∙ U ∨[ 𝒪 X ] 𝒻 ⋆∙ β n) ∧[ 𝒪 X ] ((𝒻 ⋆∙ (β n)) ==> 𝟎[ 𝒪 X ])      ＝⟨ 𝟐 ⟩ₚ
       (𝒻 ⋆∙ U ∧[ 𝒪 X ] ¬𝒻⋆ (β n)) ∨[ 𝒪 X ] (𝒻 ⋆∙ (β n) ∧[ 𝒪 X ] ¬𝒻⋆ (β n)) ≤⟨  𝟑 ⟩
-      (𝒻 ⋆∙ U) ∨[ 𝒪 X ] (𝒻 ⋆∙ (β n) ∧[ 𝒪 X ] ¬𝒻⋆ (β n))                    ≤⟨ 𝟒  ⟩
+      (𝒻 ⋆∙ U) ∨[ 𝒪 X ] (𝒻 ⋆∙ (β n) ∧[ 𝒪 X ] ¬𝒻⋆ (β n))                    ≤⟨  𝟒 ⟩
       (𝒻 ⋆∙ U) ∨[ 𝒪 X ] 𝟎[ 𝒪 X ]                                           ＝⟨ 𝟓 ⟩ₚ
       𝒻 ⋆∙ U                                                               ■
        where
@@ -1223,30 +1243,44 @@ diagram commute.
           ⁅ 𝒻 ⋆∙ (U ∨[ 𝒪 A ] β n) ∧[ 𝒪 X ] ¬𝒻⋆ (β n) ∣ n ∶ Bₐ ⁆
           (𝒻 ⋆∙ U , ϟ)
 
+\end{code}
+
+We now package up the function `f⁻` with the proof that it's a continuous map.
+
+\begin{code}
+
  𝒻⁻⁺ : X ─c→ Patchₛ-A
  𝒻⁻⁺ = f⁻⁺ , 𝒻⁻-α , 𝒻⁻-β , 𝒻⁻-γ
+
+\end{code}
+
+\section{Uniqueness}
+
+\begin{code}
 
  𝒻⁻-is-unique-ext : (𝒻⁻′ : X ─c→ Patchₛ-A)
                   → (((U : ⟨ 𝒪 A ⟩) → 𝒻 .pr₁ U  ＝ 𝒻⁻′ .pr₁ ‘ U ’) )
                   → (𝒿 : ⟨ 𝒪 Patchₛ-A ⟩) → f⁻⁺ 𝒿 ＝ 𝒻⁻′ .pr₁ 𝒿
  𝒻⁻-is-unique-ext 𝒻⁻₀@(f⁻₀ , _) ϑ 𝒿 =
-  f⁻⁺ 𝒿                                                                             ＝⟨ ap f⁻⁺ ν ⟩
-  f⁻⁺ (⋁[ 𝒪 Patchₛ-A ] ⁅ 𝔠 k ∧[ 𝒪 Patchₛ-A ] 𝔬 l ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆) ＝⟨ Ⅱ        ⟩
-  ⋁[ 𝒪 X ] ⁅ f⁻⁺ (𝔠 k ∧[ 𝒪 Patchₛ-A ] 𝔬 l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆        ＝⟨ Ⅲ        ⟩
-  ⋁[ 𝒪 X ] ⁅ f⁻⁺ (𝔠 k) ∧[ 𝒪 X ] f⁻⁺ (𝔬 l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆         ＝⟨ Ⅳ        ⟩
-  ⋁[ 𝒪 X ] ⁅ f⁻⁺ (𝔠 k) ∧[ 𝒪 X ] ¬𝒻⋆ (β l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆         ＝⟨ Ⅴ        ⟩
-  ⋁[ 𝒪 X ] ⁅ 𝒻 ⋆∙ (β k) ∧[ 𝒪 X ] ¬𝒻⋆ (β l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆        ＝⟨ Ⅵ        ⟩
-  ⋁[ 𝒪 X ] ⁅ 𝒻 ⋆∙ (β k) ∧[ 𝒪 X ] f⁻₀ (𝔬 l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆        ＝⟨ Ⅶ        ⟩
-  ⋁[ 𝒪 X ] ⁅ f⁻₀ (𝔠 k) ∧[ 𝒪 X ] f⁻₀ (𝔬 l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆         ＝⟨ Ⅷ        ⟩
-  ⋁[ 𝒪 X ] ⁅ f⁻₀ (𝔠 k ∧[ 𝒪 Patchₛ-A ] 𝔬 l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆        ＝⟨ Ⅸ        ⟩
-  f⁻₀ (⋁[ 𝒪 Patchₛ-A ] ⁅ 𝔠 k ∧[ 𝒪 Patchₛ-A ] 𝔬 l ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆) ＝⟨ Ⅹ        ⟩
-  f⁻₀ 𝒿                                                                             ∎
+  f⁻⁺ 𝒿                                                                      ＝⟨ Ⅰ ⟩
+  f⁻⁺ (⋁ₙ ⁅ (𝔠 k) ⋏ (𝔬 l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆)                 ＝⟨ Ⅱ ⟩
+  ⋁[ 𝒪 X ] ⁅ f⁻⁺ (𝔠 k ⋏ 𝔬 l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆               ＝⟨ Ⅲ ⟩
+  ⋁[ 𝒪 X ] ⁅ f⁻⁺ (𝔠 k) ∧ₓ f⁻⁺ (𝔬 l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆        ＝⟨ Ⅳ ⟩
+  ⋁[ 𝒪 X ] ⁅ f⁻⁺ (𝔠 k) ∧ₓ ¬𝒻⋆ (β l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆        ＝⟨ Ⅴ ⟩
+  ⋁[ 𝒪 X ] ⁅ 𝒻 ⋆∙ (β k) ∧ₓ ¬𝒻⋆ (β l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆       ＝⟨ Ⅵ ⟩
+  ⋁[ 𝒪 X ] ⁅ 𝒻 ⋆∙ (β k) ∧ₓ f⁻₀ (𝔬 l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆       ＝⟨ Ⅶ ⟩
+  ⋁[ 𝒪 X ] ⁅ f⁻₀ (𝔠 k) ∧ₓ f⁻₀ (𝔬 l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆        ＝⟨ Ⅷ ⟩
+  ⋁[ 𝒪 X ] ⁅ f⁻₀ (𝔠 k ∧[ 𝒪 Patchₛ-A ] 𝔬 l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆ ＝⟨ Ⅸ ⟩
+  f⁻₀ (⋁ₙ ⁅ 𝔠 k ∧[ 𝒪 Patchₛ-A ] 𝔬 l ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆)       ＝⟨ Ⅹ ⟩
+  f⁻₀ 𝒿                                                                      ∎
    where
     open BasisOfPatch A σᴰ
+    open PatchConstruction A ∣ σᴰ ∣ using (⋁ₙ; _⋏_)
 
     ν : 𝒿 ＝ ⋁[ 𝒪 Patchₛ-A ] ⁅ 𝔠 k ∧[ 𝒪 Patchₛ-A ] 𝔬 l ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆
     ν = main-covering-lemma 𝒿
 
+    Ⅰ = ap f⁻⁺ ν
     Ⅱ = ⋁[ 𝒪 X ]-unique
          ⁅ f⁻⁺ (𝔠 k ∧[ 𝒪 Patchₛ-A ] 𝔬 l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆
          (f⁻⁺ (⋁[ 𝒪 Patchₛ-A ] ⁅ 𝔠 k ∧[ 𝒪 Patchₛ-A ] 𝔬 l ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆))
@@ -1258,11 +1292,11 @@ diagram commute.
     Ⅳ : ⋁[ 𝒪 X ] ⁅ f⁻⁺ (𝔠 k) ∧[ 𝒪 X ] f⁻⁺ (𝔬 l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆ ＝ ⋁[ 𝒪 X ] ⁅ f⁻⁺ (𝔠 k) ∧[ 𝒪 X ] ¬𝒻⋆ (β l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆
     Ⅳ = ap
          (λ - → ⋁[ 𝒪 X ] (basic-below 𝒿 , -))
-         (dfunext fe (λ { ((k , l) , p) → ap (λ - → (f⁻⁺ (𝔠 k)) ∧[ 𝒪 X ] -) (preserves-closed-implies-preserves-open 𝒻⁻⁺ (λ n → 𝒻⁻-makes-the-diagram-commute (β n)) l ⁻¹) }))
+         (dfunext fe (λ { ((k , l) , p) → ap (λ - → (f⁻⁺ (𝔠 k)) ∧[ 𝒪 X ] -) (commutes-with-open-nucleus 𝒻⁻⁺ (λ n → 𝒻⁻-makes-the-diagram-commute (β n)) l ⁻¹) }))
     Ⅴ = ap (λ - → ⋁[ 𝒪 X ] (basic-below 𝒿 , -)) ((dfunext fe (λ { ((k , l) , p) → ap (λ - → - ∧[ 𝒪 X ] ¬𝒻⋆ (β l)) (𝒻⁻-makes-the-diagram-commute (β k) ⁻¹) })))
-    Ⅵ = ap (λ - → ⋁[ 𝒪 X ] (basic-below 𝒿 , -)) (dfunext fe λ { ((k , l) , p) → ap (λ - → 𝒻 ⋆∙ (β k) ∧[ 𝒪 X ] -) (preserves-closed-implies-preserves-open 𝒻⁻₀ (ϑ ∘ β) l) })
+    Ⅵ = ap (λ - → ⋁[ 𝒪 X ] (basic-below 𝒿 , -)) (dfunext fe λ { ((k , l) , p) → ap (λ - → 𝒻 ⋆∙ (β k) ∧[ 𝒪 X ] -) (commutes-with-open-nucleus 𝒻⁻₀ (ϑ ∘ β) l) })
     Ⅶ = ap (λ - → ⋁[ 𝒪 X ] (basic-below 𝒿 , -)) (dfunext fe λ { ((k , l) , p) → ap (λ - → - ∧[ 𝒪 X ] f⁻₀ (𝔬 l)) (ϑ (β k)) })
-    Ⅷ = ap (λ - → ⋁[ 𝒪 X ] (basic-below 𝒿 , -)) (dfunext fe λ { ((k , l) , p) → frame-homomorphisms-preserve-meets (𝒪 Patchₛ-A) (𝒪 X) 𝒻⁻₀ (𝔠 k) (𝔬 l) ⁻¹ } ) 
+    Ⅷ = ap (λ - → ⋁[ 𝒪 X ] (basic-below 𝒿 , -)) (dfunext fe λ { ((k , l) , p) → frame-homomorphisms-preserve-meets (𝒪 Patchₛ-A) (𝒪 X) 𝒻⁻₀ (𝔠 k) (𝔬 l) ⁻¹ } )
     Ⅸ = frame-homomorphisms-preserve-all-joins (𝒪 Patchₛ-A) (𝒪 X) 𝒻⁻₀ ⁅ 𝔠 k ∧[ 𝒪 Patchₛ-A ] 𝔬 l ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆ ⁻¹
     Ⅹ = ap f⁻₀ ν ⁻¹
 
