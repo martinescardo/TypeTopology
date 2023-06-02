@@ -5,6 +5,8 @@ Curry–Howard Interpretation (TLCA'2015).
 
 \begin{code}
 
+{-# OPTIONS --without-K --safe --exact-split --no-sized-types --no-guardedness --auto-inline #-}
+
 module ContinuityAxiom.index where
 
 import ContinuityAxiom.False

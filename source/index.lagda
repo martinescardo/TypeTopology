@@ -132,7 +132,7 @@ import CantorSchroederBernstein.index
 import Categories.index               -- by Jon Sterling
 import Circle.index                   -- by Tom de Jong
 import CoNaturals.index
-import ContinuityAxioms               -- by Martin Escardo and Chuangjie Xu
+import ContinuityAxiom.index          -- by Martin Escardo and Chuangjie Xu
 import CrossedModules.index           -- by Ettore Aldrovandi and Keri D'Angelo
 import DedekindReals.index            -- by Andrew Sneap
 import DomainTheory.index             -- by Tom de Jong

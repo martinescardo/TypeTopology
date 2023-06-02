@@ -18,7 +18,7 @@ for any f : ₂ℕ → ℕ and n : ℕ.
 
 \begin{code}
 
-{-# OPTIONS --without-K #-}
+{-# OPTIONS --without-K --safe --exact-split --no-sized-types --no-guardedness --auto-inline #-}
 
 module ContinuityAxiom.ExitingTruncations where
 
