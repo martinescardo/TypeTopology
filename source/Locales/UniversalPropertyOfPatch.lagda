@@ -34,7 +34,6 @@ open import UF.ImageAndSurjection
 
 open import Locales.Frame pt fe
 open import Locales.CompactRegular pt fe
-open import Locales.BooleanAlgebra pt fe
 open import Locales.PatchLocale pt fe
 open import Locales.PatchProperties pt fe
 open import Locales.HeytingImplication pt fe
