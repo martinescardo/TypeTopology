@@ -1256,23 +1256,26 @@ We now package up the function `f⁻` with the proof that it's a continuous map.
 
 \section{Uniqueness}
 
+First, the extensional equality which is the main content of the uniqueness
+proof.
+
 \begin{code}
 
  𝒻⁻-is-unique-ext : (𝒻⁻′ : X ─c→ Patchₛ-A)
                   → (((U : ⟨ 𝒪 A ⟩) → 𝒻 .pr₁ U  ＝ 𝒻⁻′ .pr₁ ‘ U ’) )
                   → (𝒿 : ⟨ 𝒪 Patchₛ-A ⟩) → f⁻⁺ 𝒿 ＝ 𝒻⁻′ .pr₁ 𝒿
  𝒻⁻-is-unique-ext 𝒻⁻₀@(f⁻₀ , _) ϑ 𝒿 =
-  f⁻⁺ 𝒿                                                                      ＝⟨ Ⅰ ⟩
-  f⁻⁺ (⋁ₙ ⁅ (𝔠 k) ⋏ (𝔬 l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆)                 ＝⟨ Ⅱ ⟩
-  ⋁[ 𝒪 X ] ⁅ f⁻⁺ (𝔠 k ⋏ 𝔬 l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆               ＝⟨ Ⅲ ⟩
-  ⋁[ 𝒪 X ] ⁅ f⁻⁺ (𝔠 k) ∧ₓ f⁻⁺ (𝔬 l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆        ＝⟨ Ⅳ ⟩
-  ⋁[ 𝒪 X ] ⁅ f⁻⁺ (𝔠 k) ∧ₓ ¬𝒻⋆ (β l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆        ＝⟨ Ⅴ ⟩
-  ⋁[ 𝒪 X ] ⁅ 𝒻 ⋆∙ (β k) ∧ₓ ¬𝒻⋆ (β l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆       ＝⟨ Ⅵ ⟩
-  ⋁[ 𝒪 X ] ⁅ 𝒻 ⋆∙ (β k) ∧ₓ f⁻₀ (𝔬 l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆       ＝⟨ Ⅶ ⟩
-  ⋁[ 𝒪 X ] ⁅ f⁻₀ (𝔠 k) ∧ₓ f⁻₀ (𝔬 l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆        ＝⟨ Ⅷ ⟩
-  ⋁[ 𝒪 X ] ⁅ f⁻₀ (𝔠 k ∧[ 𝒪 Patchₛ-A ] 𝔬 l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆ ＝⟨ Ⅸ ⟩
-  f⁻₀ (⋁ₙ ⁅ 𝔠 k ∧[ 𝒪 Patchₛ-A ] 𝔬 l ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆)       ＝⟨ Ⅹ ⟩
-  f⁻₀ 𝒿                                                                      ∎
+  f⁻⁺ 𝒿                                                                 ＝⟨ Ⅰ ⟩
+  f⁻⁺ (⋁ₙ ⁅ (𝔠 k) ⋏ (𝔬 l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆)            ＝⟨ Ⅱ ⟩
+  ⋁[ 𝒪 X ] ⁅ f⁻⁺ (𝔠 k ⋏ 𝔬 l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆          ＝⟨ Ⅲ ⟩
+  ⋁[ 𝒪 X ] ⁅ f⁻⁺ (𝔠 k) ∧ₓ f⁻⁺ (𝔬 l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆   ＝⟨ Ⅳ ⟩
+  ⋁[ 𝒪 X ] ⁅ f⁻⁺ (𝔠 k) ∧ₓ ¬𝒻⋆ (β l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆   ＝⟨ Ⅴ ⟩
+  ⋁[ 𝒪 X ] ⁅ 𝒻 ⋆∙ (β k) ∧ₓ ¬𝒻⋆ (β l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆  ＝⟨ Ⅵ ⟩
+  ⋁[ 𝒪 X ] ⁅ 𝒻 ⋆∙ (β k) ∧ₓ f⁻₀ (𝔬 l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆  ＝⟨ Ⅶ ⟩
+  ⋁[ 𝒪 X ] ⁅ f⁻₀ (𝔠 k) ∧ₓ f⁻₀ (𝔬 l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆   ＝⟨ Ⅷ ⟩
+  ⋁[ 𝒪 X ] ⁅ f⁻₀ (𝔠 k ⋏ 𝔬 l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆          ＝⟨ Ⅸ ⟩
+  f⁻₀ (⋁ₙ ⁅ 𝔠 k ⋏ 𝔬 l ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆)                ＝⟨ Ⅹ ⟩
+  f⁻₀ 𝒿                                                                 ∎
    where
     open BasisOfPatch A σᴰ
     open PatchConstruction A ∣ σᴰ ∣ using (⋁ₙ; _⋏_)
@@ -1283,21 +1286,54 @@ We now package up the function `f⁻` with the proof that it's a continuous map.
     Ⅰ = ap f⁻⁺ ν
     Ⅱ = ⋁[ 𝒪 X ]-unique
          ⁅ f⁻⁺ (𝔠 k ∧[ 𝒪 Patchₛ-A ] 𝔬 l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆
-         (f⁻⁺ (⋁[ 𝒪 Patchₛ-A ] ⁅ 𝔠 k ∧[ 𝒪 Patchₛ-A ] 𝔬 l ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆))
+         (f⁻⁺ (⋁[ 𝒪 Patchₛ-A ] ⁅ 𝔠 k ⋏ 𝔬 l ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆))
          (𝒻⁻-γ ⁅ 𝔠 k ∧[ 𝒪 Patchₛ-A ] 𝔬 l ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆)
     Ⅲ = ap
          (λ - → ⋁[ 𝒪 X ] (basic-below 𝒿 , -))
          (dfunext fe (λ { ((k , l) , p) → 𝒻⁻-β (𝔠 k) (𝔬 l) }))
 
-    Ⅳ : ⋁[ 𝒪 X ] ⁅ f⁻⁺ (𝔠 k) ∧[ 𝒪 X ] f⁻⁺ (𝔬 l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆ ＝ ⋁[ 𝒪 X ] ⁅ f⁻⁺ (𝔠 k) ∧[ 𝒪 X ] ¬𝒻⋆ (β l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆
+    ctx = λ - → ⋁[ 𝒪 X ] (basic-below 𝒿 , -)
+
     Ⅳ = ap
-         (λ - → ⋁[ 𝒪 X ] (basic-below 𝒿 , -))
-         (dfunext fe (λ { ((k , l) , p) → ap (λ - → (f⁻⁺ (𝔠 k)) ∧[ 𝒪 X ] -) (commutes-with-open-nucleus 𝒻⁻⁺ (λ n → 𝒻⁻-makes-the-diagram-commute (β n)) l ⁻¹) }))
-    Ⅴ = ap (λ - → ⋁[ 𝒪 X ] (basic-below 𝒿 , -)) ((dfunext fe (λ { ((k , l) , p) → ap (λ - → - ∧[ 𝒪 X ] ¬𝒻⋆ (β l)) (𝒻⁻-makes-the-diagram-commute (β k) ⁻¹) })))
-    Ⅵ = ap (λ - → ⋁[ 𝒪 X ] (basic-below 𝒿 , -)) (dfunext fe λ { ((k , l) , p) → ap (λ - → 𝒻 ⋆∙ (β k) ∧[ 𝒪 X ] -) (commutes-with-open-nucleus 𝒻⁻₀ (ϑ ∘ β) l) })
-    Ⅶ = ap (λ - → ⋁[ 𝒪 X ] (basic-below 𝒿 , -)) (dfunext fe λ { ((k , l) , p) → ap (λ - → - ∧[ 𝒪 X ] f⁻₀ (𝔬 l)) (ϑ (β k)) })
-    Ⅷ = ap (λ - → ⋁[ 𝒪 X ] (basic-below 𝒿 , -)) (dfunext fe λ { ((k , l) , p) → frame-homomorphisms-preserve-meets (𝒪 Patchₛ-A) (𝒪 X) 𝒻⁻₀ (𝔠 k) (𝔬 l) ⁻¹ } )
-    Ⅸ = frame-homomorphisms-preserve-all-joins (𝒪 Patchₛ-A) (𝒪 X) 𝒻⁻₀ ⁅ 𝔠 k ∧[ 𝒪 Patchₛ-A ] 𝔬 l ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆ ⁻¹
+         ctx
+         (dfunext fe (λ { ((k , l) , p) →
+           ap
+            (λ - → (f⁻⁺ (𝔠 k)) ∧[ 𝒪 X ] -)
+            (commutes-with-open-nucleus 𝒻⁻⁺ ※ l ⁻¹) }))
+             where
+              ※ = 𝒻⁻-makes-the-diagram-commute ∘ β
+    Ⅴ = ap
+         ctx
+         ((dfunext fe (λ { ((k , l) , p) →
+            ap
+             (λ - → - ∧[ 𝒪 X ] ¬𝒻⋆ (β l))
+             (𝒻⁻-makes-the-diagram-commute (β k) ⁻¹) })))
+    Ⅵ = ap
+         ctx
+         (dfunext fe λ { ((k , l) , p) →
+           ap
+            (λ - → 𝒻 ⋆∙ (β k) ∧[ 𝒪 X ] -)
+            (commutes-with-open-nucleus 𝒻⁻₀ (ϑ ∘ β) l) })
+    Ⅶ = ap
+         ctx
+         (dfunext fe λ { ((k , l) , p) →
+           ap
+            (λ - → - ∧[ 𝒪 X ] f⁻₀ (𝔬 l))
+            (ϑ (β k)) })
+    Ⅷ = ap
+         ctx
+         (dfunext fe λ { ((k , l) , p) →
+          frame-homomorphisms-preserve-meets
+           (𝒪 Patchₛ-A)
+           (𝒪 X)
+           𝒻⁻₀
+           (𝔠 k)
+           (𝔬 l) ⁻¹ } )
+    Ⅸ = frame-homomorphisms-preserve-all-joins
+         (𝒪 Patchₛ-A)
+         (𝒪 X)
+         𝒻⁻₀
+         ⁅ 𝔠 k ∧[ 𝒪 Patchₛ-A ] 𝔬 l ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆ ⁻¹
     Ⅹ = ap f⁻₀ ν ⁻¹
 
  𝒻⁻-is-unique : is-central
@@ -1351,7 +1387,7 @@ We now package up the function `f⁻` with the proof that it's a continuous map.
    † : (𝒿 : ⟨ 𝒪 Patchₛ-A ⟩) → f⁻⁺ 𝒿 ＝ f⁻₀ 𝒿
    † = 𝒻⁻-is-unique-ext 𝒻⁻₀ ϑ
 
- proof-of-ump : ∃! 𝒻⁻ ꞉ (X ─c→ Patchₛ-A) , ((U : ⟨ 𝒪 A ⟩) → 𝒻 .pr₁ U  ＝ 𝒻⁻ .pr₁ ‘ U ’)
+ proof-of-ump : ∃! 𝒻⁻ ꞉ (X ─c→ Patchₛ-A) , ((U : ⟨ 𝒪 A ⟩) → 𝒻 ⋆∙ U  ＝ 𝒻⁻ .pr₁ ‘ U ’)
  proof-of-ump =
   ((f⁻⁺ , 𝒻⁻-α , 𝒻⁻-β , 𝒻⁻-γ) , 𝒻⁻-makes-the-diagram-commute) , 𝒻⁻-is-unique
 
@@ -1360,14 +1396,14 @@ ump-of-patch : {𝓤 : Universe}
              → (σ : is-spectral (𝒪 A) holds)
              → (X : Locale (𝓤 ⁺) 𝓤 𝓤)
              → is-stone (𝒪 X) holds
-             → (𝒻 : X ─c→ A)
+             → (𝒻@(f , _) : X ─c→ A)
              → is-spectral-map (𝒪 A) (𝒪 X) 𝒻 holds
              → let
                 open PatchConstruction A σ renaming (Patch to Patch-A)
                 open ClosedNucleus A σ
                 open OpenNucleus A σ
                in
-                ∃! 𝒻⁻ ꞉ (X ─c→ Patch-A) , ((x : ⟨ 𝒪 A ⟩) → 𝒻 .pr₁ x  ＝ 𝒻⁻ .pr₁ ‘ x ’)
+                ∃! 𝒻⁻ ꞉ X ─c→ Patch-A , ((x : ⟨ 𝒪 A ⟩) → f x  ＝ 𝒻⁻ .pr₁ ‘ x ’)
 ump-of-patch {𝓤} A σ X 𝕤 𝒻 μ = ∥∥-rec₂ (being-singleton-is-prop fe) γ σ (pr₂ 𝕤)
  where
   open PatchConstruction A σ renaming (Patch to Patch-A)
@@ -1382,11 +1418,8 @@ ump-of-patch {𝓤} A σ X 𝕤 𝒻 μ = ∥∥-rec₂ (being-singleton-is-prop
     open UniversalProperty A X σᴰ 𝕫ᴰ (pr₁ 𝕤) 𝒻 μ
     open SmallPatchConstruction A σᴰ renaming (SmallPatch to Patchₛ-A)
 
-    f⁻₀ : ⟨ 𝒪 Patch-A ⟩ → ⟨ 𝒪 X ⟩
-    f⁻₀ 𝒿 = f⁻⁺ 𝒿
-
     𝒻⁻₀ : X ─c→ Patch-A
-    𝒻⁻₀ = f⁻₀ , 𝒻⁻-α , 𝒻⁻-β , 𝒻⁻-γ
+    𝒻⁻₀ = f⁻⁺ , 𝒻⁻-α , 𝒻⁻-β , 𝒻⁻-γ
 
     † : (U : ⟨ 𝒪 A ⟩) → 𝒻 .pr₁ U ＝ 𝒻⁻₀ .pr₁ ‘ U ’
     † = 𝒻⁻-makes-the-diagram-commute
@@ -1441,7 +1474,7 @@ ump-of-patch {𝓤} A σ X 𝕤 𝒻 μ = ∥∥-rec₂ (being-singleton-is-prop
         → is-prop (is-a-frame-homomorphism (𝒪 Patch-A) (𝒪 X) 𝒻⁻₂ holds)
       ♠ = holds-is-prop ∘ is-a-frame-homomorphism (𝒪 Patch-A) (𝒪 X)
 
-      ϟ : (𝒿 : ⟨ 𝒪 Patch-A ⟩) → f⁻₀ 𝒿 ＝ 𝒻⁻₁ .pr₁ 𝒿
-      ϟ 𝒿 = f⁻₀ 𝒿 ＝⟨ refl ⟩ f⁻⁺ 𝒿 ＝⟨ 𝒻⁻-is-unique-ext 𝒻⁻₁′ p 𝒿 ⟩ 𝒻⁻₁ .pr₁ 𝒿 ∎
+      ϟ : (𝒿 : ⟨ 𝒪 Patch-A ⟩) → f⁻⁺ 𝒿 ＝ 𝒻⁻₁ .pr₁ 𝒿
+      ϟ 𝒿 = f⁻⁺ 𝒿 ＝⟨ 𝒻⁻-is-unique-ext 𝒻⁻₁′ p 𝒿 ⟩ 𝒻⁻₁ .pr₁ 𝒿 ∎
 
 \end{code}
