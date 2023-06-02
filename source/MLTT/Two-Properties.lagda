@@ -411,6 +411,18 @@ complement-intro₁ {₁} p = refl
 ≤₂-remove-left ₀ b = id
 ≤₂-remove-left ₁ b = λ _ → ₁-top
 
+Lemma[b＝₀+b＝₁] : {b : 𝟚} → (b ＝ ₀) + (b ＝ ₁)
+Lemma[b＝₀+b＝₁] {₀} = inl refl
+Lemma[b＝₀+b＝₁] {₁} = inr refl
+
+Lemma[b≠₀→b＝₁] : {b : 𝟚} → ¬ (b ＝ ₀) → b ＝ ₁
+Lemma[b≠₀→b＝₁] {₀} f = 𝟘-elim (f refl)
+Lemma[b≠₀→b＝₁] {₁} f = refl
+
+Lemma[b≠₁→b＝₀] : {b : 𝟚} → ¬ (b ＝ ₁) → b ＝ ₀
+Lemma[b≠₁→b＝₀] {₀} f = refl
+Lemma[b≠₁→b＝₀] {₁} f = 𝟘-elim (f refl)
+
 \end{code}
 
 
