@@ -1340,52 +1340,22 @@ proof.
                  (Σ 𝒻⁻₀ ꞉ (X ─c→ Patchₛ-A) ,
                   ((x : ⟨ 𝒪 A ⟩) → 𝒻 .pr₁ x  ＝ 𝒻⁻₀ .pr₁ ‘ x ’))
                  ((f⁻⁺ , 𝒻⁻-α , 𝒻⁻-β , 𝒻⁻-γ) , 𝒻⁻-makes-the-diagram-commute)
- 𝒻⁻-is-unique (𝒻⁻₀@(_ , _ , _ , 𝒻⁻₀-γ) , ϑ) = to-subtype-＝ ※ (to-subtype-＝ γ (dfunext fe †))
-  where
-   f⁻₀ = pr₁ 𝒻⁻₀
+ 𝒻⁻-is-unique (𝒻⁻₀@(f⁻₀ , _ , _ , 𝒻⁻₀-γ) , ϑ) =
+  to-subtype-＝ ※ (to-subtype-＝ γ (dfunext fe †))
+   where
+    ※ : (𝒻⁻₀ : X ─c→ Patchₛ-A)
+      → is-prop ((U : ⟨ 𝒪 A ⟩) → 𝒻 .pr₁ U  ＝ 𝒻⁻₀ .pr₁ ‘ U ’)
+    ※ 𝒻⁻₀ = Π-is-prop fe λ _ → carrier-of-[ poset-of (𝒪 X) ]-is-set
 
-   ※ : (𝒻⁻₀ : X ─c→ Patchₛ-A)
-     → is-prop ((U : ⟨ 𝒪 A ⟩) → 𝒻 .pr₁ U  ＝ 𝒻⁻₀ .pr₁ ‘ U ’)
-   ※ 𝒻⁻₀ = Π-is-prop fe λ _ → carrier-of-[ poset-of (𝒪 X) ]-is-set
+    γ : (ℊ⁻ : ⟨ 𝒪 Patchₛ-A ⟩ → ⟨ 𝒪 X ⟩)
+       → is-prop (is-a-frame-homomorphism (𝒪 Patchₛ-A) (𝒪 X) ℊ⁻ holds)
+    γ ℊ⁻ = holds-is-prop (is-a-frame-homomorphism (𝒪 Patchₛ-A) (𝒪 X) ℊ⁻)
 
-   γ : (ℊ⁻ : ⟨ 𝒪 Patchₛ-A ⟩ → ⟨ 𝒪 X ⟩)
-      → is-prop (is-a-frame-homomorphism (𝒪 Patchₛ-A) (𝒪 X) ℊ⁻ holds)
-   γ ℊ⁻ = holds-is-prop (is-a-frame-homomorphism (𝒪 Patchₛ-A) (𝒪 X) ℊ⁻)
+    open LemmasAboutHeytingComplementation X X-has-basis
+    open BasisOfPatch A σᴰ
 
-   open LemmasAboutHeytingComplementation X X-has-basis
-
-   ψ₂ : (n : Bₐ) → is-complement-of (𝒪 X) (f⁻₀ ¬‘ βₖ n ’) (𝒻 ⋆∙ (β n))
-   ψ₂ n = transport
-           (λ - → is-complement-of (𝒪 X) (f⁻₀ ¬‘ βₖ n ’) -)
-           (ϑ (β n) ⁻¹)
-           (easy-lemma 𝒻⁻₀ n)
-
-   ψ : (n : Bₐ) → ¬𝒻⋆ (β n) ＝ f⁻₀ ¬‘ βₖ n ’
-   ψ n =
-    complements-are-unique (𝒪 X) (𝒻 ⋆∙ (β n)) (¬𝒻⋆ (β n)) (f⁻₀ ¬‘ βₖ n ’) ψ₁ (ψ₂ n)
-     where
-      ν : is-clopen (𝒪 X) (𝒻 ⋆∙ β n) holds
-      ν = compacts-are-clopen-in-zero-dimensional-locales
-           (𝒪 X)
-           ∣ 𝕫ᴰ ∣
-           (𝒻 ⋆∙ (β n))
-           (μ (β n) (pr₂ (βₖ n)))
-
-      C = pr₁ ν
-
-      C-complements-𝒻⋆βn : is-complement-of (𝒪 X) C (𝒻 ⋆∙ (β n))
-      C-complements-𝒻⋆βn = pr₂ ν
-
-      ψ₁ : is-complement-of (𝒪 X) (¬𝒻⋆ (β n)) (𝒻 ⋆∙ β n)
-      ψ₁ = transport
-            (λ - → is-complement-of (𝒪 X) - (𝒻 ⋆∙ β n))
-            (complement-is-heyting-complement (𝒻 ⋆∙ β n) C C-complements-𝒻⋆βn)
-            C-complements-𝒻⋆βn
-
-   open BasisOfPatch A σᴰ
-
-   † : (𝒿 : ⟨ 𝒪 Patchₛ-A ⟩) → f⁻⁺ 𝒿 ＝ f⁻₀ 𝒿
-   † = 𝒻⁻-is-unique-ext 𝒻⁻₀ ϑ
+    † : (𝒿 : ⟨ 𝒪 Patchₛ-A ⟩) → f⁻⁺ 𝒿 ＝ f⁻₀ 𝒿
+    † = 𝒻⁻-is-unique-ext 𝒻⁻₀ ϑ
 
  proof-of-ump : ∃! 𝒻⁻ ꞉ (X ─c→ Patchₛ-A) , ((U : ⟨ 𝒪 A ⟩) → 𝒻 ⋆∙ U  ＝ 𝒻⁻ .pr₁ ‘ U ’)
  proof-of-ump =
@@ -1439,7 +1409,7 @@ ump-of-patch {𝓤} A σ X 𝕤 𝒻 μ = ∥∥-rec₂ (being-singleton-is-prop
             → (𝒻⁻₁ .pr₁ (join-of (𝒪 Patchₛ-A) S) is-lub-of ⁅ 𝒻⁻₁ .pr₁ x ∣ x ε S ⁆) holds
         γ₁′ S = foo , bar
          where
-          foo : ((𝒻⁻₁ .pr₁ (join-of (𝒪 Patchₛ-A) S)) is-an-upper-bound-of ⁅ 𝒻⁻₁ .pr₁ x ∣ x ε S ⁆) holds
+          foo : _
           foo i = 𝒻⁻₁ .pr₁ (S [ i ]) ≤⟨ meet-preserving-implies-monotone (𝒪 Patchₛ-A) (𝒪 X) (𝒻⁻₁ .pr₁) β₁ (_ , _) (⋁[ 𝒪 Patchₛ-A ]-upper S i)  ⟩ 𝒻⁻₁ .pr₁ (join-of (𝒪 Patchₛ-A) S) ■
 
           eq : ⋁[ 𝒪 Patchₛ-A ] S ＝ ⋁[ 𝒪 Patch-A ] S
