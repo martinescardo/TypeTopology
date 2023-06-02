@@ -64,7 +64,7 @@ This gives us a poset structure at universe 𝓤:
                 , ⊑-is-antisymmetric pe
 
 𝟎F-poset : {𝓤 : Universe} → propext 𝓤 → Poset (𝓤 ⁺) 𝓤
-𝟎F-poset {𝓤 = 𝓤} ua = Ω 𝓤 , 𝟎F-poset-str ua
+𝟎F-poset {𝓤 = 𝓤} pe = Ω 𝓤 , 𝟎F-poset-str pe
 
 \end{code}
 
@@ -129,11 +129,11 @@ open propositional-truncations-exist pt
 \end{code}
 
 \begin{code}
-𝟎-of-IF-is-⊥ : {𝓦 : Universe} → (ua : propext 𝓦) → 𝟎[ 𝟎-𝔽𝕣𝕞 ua ] ＝ ⊥Ω
-𝟎-of-IF-is-⊥ ua =
- ≤-is-antisymmetric (poset-of (𝟎-𝔽𝕣𝕞 ua)) γ λ ()
+𝟎-of-IF-is-⊥ : {𝓦 : Universe} → (pe : propext 𝓦) → 𝟎[ 𝟎-𝔽𝕣𝕞 pe ] ＝ ⊥Ω
+𝟎-of-IF-is-⊥ pe =
+ ≤-is-antisymmetric (poset-of (𝟎-𝔽𝕣𝕞 pe)) γ λ ()
  where
-  γ : (𝟎[ 𝟎-𝔽𝕣𝕞 ua ] ≤[ poset-of (𝟎-𝔽𝕣𝕞 ua) ]  ⊥Ω) holds
+  γ : (𝟎[ 𝟎-𝔽𝕣𝕞 pe ] ≤[ poset-of (𝟎-𝔽𝕣𝕞 pe) ]  ⊥Ω) holds
   γ x = ∥∥-rec 𝟘-is-prop (λ ()) x
 \end{code}
 
@@ -141,38 +141,38 @@ open propositional-truncations-exist pt
 
 \begin{code}
 
-f : {𝓦 : Universe} → (ua : propext 𝓦) → (A : Frame 𝓤 𝓥 𝓦) → ⟨ 𝟎-𝔽𝕣𝕞 ua ⟩ → ⟨ A ⟩
-f ua A P = ⋁[ A ] ⁅ 𝟏[ A ] ∣ x ∶ P holds ⁆
+f : {𝓦 : Universe} → (pe : propext 𝓦) → (A : Frame 𝓤 𝓥 𝓦) → ⟨ 𝟎-𝔽𝕣𝕞 pe ⟩ → ⟨ A ⟩
+f pe A P = ⋁[ A ] ⁅ 𝟏[ A ] ∣ x ∶ P holds ⁆
 
 \end{code}
 
 \begin{code}
 
-f-respects-⊤ : {𝓦 : Universe} (ua : propext 𝓦) (A : Frame 𝓤 𝓥 𝓦)
-             → f ua A 𝟏[ 𝟎-𝔽𝕣𝕞 ua ] ＝ 𝟏[ A ]
-f-respects-⊤ ua A = ≤-is-antisymmetric (poset-of A) α β
+f-respects-⊤ : {𝓦 : Universe} (pe : propext 𝓦) (A : Frame 𝓤 𝓥 𝓦)
+             → f pe A 𝟏[ 𝟎-𝔽𝕣𝕞 pe ] ＝ 𝟏[ A ]
+f-respects-⊤ pe A = ≤-is-antisymmetric (poset-of A) α β
  where
   open PosetNotation (poset-of A) renaming (_≤_ to _≤A_)
 
-  α : (f ua A 𝟏[ 𝟎-𝔽𝕣𝕞 ua ] ≤A 𝟏[ A ]) holds
-  α = 𝟏-is-top A (f ua A 𝟏[ 𝟎-𝔽𝕣𝕞 ua ])
+  α : (f pe A 𝟏[ 𝟎-𝔽𝕣𝕞 pe ] ≤A 𝟏[ A ]) holds
+  α = 𝟏-is-top A (f pe A 𝟏[ 𝟎-𝔽𝕣𝕞 pe ])
 
-  β : (𝟏[ A ] ≤A f ua A 𝟏[ 𝟎-𝔽𝕣𝕞 ua ]) holds
+  β : (𝟏[ A ] ≤A f pe A 𝟏[ 𝟎-𝔽𝕣𝕞 pe ]) holds
   β = ⋁[ A ]-upper (⁅ 𝟏[ A ] ∣ x ∶ ⊤Ω holds ⁆) ⋆
 
 \end{code}
 
 \begin{code}
 
-f-respects-∧ : {𝓦 : Universe} (ua : propext 𝓦)
+f-respects-∧ : {𝓦 : Universe} (pe : propext 𝓦)
              → (A : Frame 𝓤 𝓥 𝓦)
              → (P Q : Ω 𝓦)
-             → f ua A (P ∧ Q) ＝ (f ua A P) ∧[ A ] (f ua A Q)
-f-respects-∧ ua A P Q =
- f ua A (P ∧ Q)                                      ＝⟨ refl ⟩
+             → f pe A (P ∧ Q) ＝ (f pe A P) ∧[ A ] (f pe A Q)
+f-respects-∧ pe A P Q =
+ f pe A (P ∧ Q)                                      ＝⟨ refl ⟩
  ⋁[ A ] ⁅ 𝟏[ A ] ∣ _ ∶ (P ∧ Q) holds ⁆               ＝⟨ i    ⟩
  ⋁[ A ] ⁅ 𝟏[ A ] ∧[ A ] 𝟏[ A ] ∣ _ ∶ (P ∧ Q) holds ⁆ ＝⟨ ii   ⟩
- (f ua A P) ∧[ A ] (f ua A Q)                        ∎
+ (f pe A P) ∧[ A ] (f pe A Q)                        ∎
  where
   i  = ap (λ - → ⋁[ A ] ⁅ - ∣ _ ∶ _ ⁆) (∧[ A ]-is-idempotent 𝟏[ A ])
   ii = distributivity+ A ⁅ 𝟏[ A ] ∣ _ ∶ P holds ⁆ ⁅ 𝟏[ A ] ∣ _ ∶ Q holds ⁆ ⁻¹
@@ -181,25 +181,25 @@ f-respects-∧ ua A P Q =
 
 \begin{code}
 
-f-respects-⋁ : {𝓦 : Universe} → (ua : propext 𝓦)
+f-respects-⋁ : {𝓦 : Universe} → (pe : propext 𝓦)
              → (A : Frame 𝓤 𝓥 𝓦) (U : Fam 𝓦 (Ω 𝓦))
              → let open Joins (λ x y → x ≤[ poset-of A ] y) in
-               ((f ua A (⋁[ 𝟎-𝔽𝕣𝕞 ua ] U)) is-lub-of ⁅ f ua A x ∣ x ε U ⁆) holds
-f-respects-⋁ ua A U = β , γ
+               ((f pe A (⋁[ 𝟎-𝔽𝕣𝕞 pe ] U)) is-lub-of ⁅ f pe A x ∣ x ε U ⁆) holds
+f-respects-⋁ pe A U = β , γ
  where
   open Joins (λ x y → x ≤[ poset-of A ] y)
   open PosetReasoning (poset-of A) renaming (_■ to _QED)
   open PosetNotation (poset-of A)
 
-  β : ((f ua A (⋁[ 𝟎-𝔽𝕣𝕞 ua ] U))
+  β : ((f pe A (⋁[ 𝟎-𝔽𝕣𝕞 pe ] U))
        is-an-upper-bound-of
-       ⁅ f ua A x ∣ x ε U ⁆) holds
+       ⁅ f pe A x ∣ x ε U ⁆) holds
   β i = ⋁[ A ]-least
          ⁅ 𝟏[ A ] ∣ _ ∶ (U [ i ]) holds ⁆
          (_ , λ p → ⋁[ A ]-upper _ ∣ i , p ∣)
 
-  γ : (Ɐ (x , _) ∶ upper-bound ⁅ f ua A u ∣ u ε U ⁆ ,
-        f ua A (⋁[ 𝟎-𝔽𝕣𝕞 ua ] U) ≤ x) holds
+  γ : (Ɐ (x , _) ∶ upper-bound ⁅ f pe A u ∣ u ε U ⁆ ,
+        f pe A (⋁[ 𝟎-𝔽𝕣𝕞 pe ] U) ≤ x) holds
   γ (x , p) =
    ⋁[ A ]-least _ (_ , ∥∥-rec (holds-is-prop (_ ≤ _)) ι)
    where
@@ -211,40 +211,40 @@ f-respects-⋁ ua A U = β , γ
 
 \begin{code}
 
-𝒻 : {𝓦 : Universe} (ua : propext 𝓦) (F : Frame 𝓤 𝓥 𝓦)
-  → (𝟎-𝔽𝕣𝕞 ua) ─f→ F
-𝒻 ua F = (f ua F)
-       , f-respects-⊤ ua F
-       , f-respects-∧ ua F
-       , f-respects-⋁ ua F
+𝒻 : {𝓦 : Universe} (pe : propext 𝓦) (F : Frame 𝓤 𝓥 𝓦)
+  → (𝟎-𝔽𝕣𝕞 pe) ─f→ F
+𝒻 pe F = (f pe F)
+       , f-respects-⊤ pe F
+       , f-respects-∧ pe F
+       , f-respects-⋁ pe F
 
 \end{code}
 
 \begin{code}
 
-main-lemma : {𝓦 : Universe} (ua : propext 𝓦) (P : Ω 𝓦)
-           → (P ⊑ (⋁[ 𝟎-𝔽𝕣𝕞 ua ] ⁅ 𝟏[ 𝟎-𝔽𝕣𝕞 ua ] ∣ x ∶ P holds ⁆)) holds
-main-lemma ua P p =
- ⋁[ 𝟎-𝔽𝕣𝕞 ua ]-upper (⁅ 𝟏[ 𝟎-𝔽𝕣𝕞 ua ] ∣ x ∶ P holds ⁆) p ⋆
+main-lemma : {𝓦 : Universe} (pe : propext 𝓦) (P : Ω 𝓦)
+           → (P ⊑ (⋁[ 𝟎-𝔽𝕣𝕞 pe ] ⁅ 𝟏[ 𝟎-𝔽𝕣𝕞 pe ] ∣ x ∶ P holds ⁆)) holds
+main-lemma pe P p =
+ ⋁[ 𝟎-𝔽𝕣𝕞 pe ]-upper (⁅ 𝟏[ 𝟎-𝔽𝕣𝕞 pe ] ∣ x ∶ P holds ⁆) p ⋆
 
 \end{code}
 
 \begin{code}
 
-𝒻-is-unique : {𝓦 : Universe} (ua : propext 𝓦) (F : Frame 𝓤 𝓥 𝓦)
-            → (ℊ : (𝟎-𝔽𝕣𝕞 ua) ─f→ F)
-            → 𝒻 ua F ＝ ℊ
-𝒻-is-unique ua F ℊ@ (g , ζ@ (ϕ , χ , ψ)) =
- to-subtype-＝ (holds-is-prop ∘ is-a-frame-homomorphism (𝟎-𝔽𝕣𝕞 ua) F) β
+𝒻-is-unique : {𝓦 : Universe} (pe : propext 𝓦) (F : Frame 𝓤 𝓥 𝓦)
+            → (ℊ : (𝟎-𝔽𝕣𝕞 pe) ─f→ F)
+            → 𝒻 pe F ＝ ℊ
+𝒻-is-unique pe F ℊ@ (g , ζ@ (ϕ , χ , ψ)) =
+ to-subtype-＝ (holds-is-prop ∘ is-a-frame-homomorphism (𝟎-𝔽𝕣𝕞 pe) F) β
  where
   open Joins (λ x y → x ≤[ poset-of F ] y)
   open PosetReasoning (poset-of F) renaming (_■ to _QED)
 
-  g-is-monotonic : is-monotonic (𝟎F-poset ua) (poset-of F) g holds
+  g-is-monotonic : is-monotonic (𝟎F-poset pe) (poset-of F) g holds
   g-is-monotonic =
-   frame-morphisms-are-monotonic (𝟎-𝔽𝕣𝕞 ua) F g ζ
+   frame-morphisms-are-monotonic (𝟎-𝔽𝕣𝕞 pe) F g ζ
 
-  γ : f ua F ∼ g
+  γ : f pe F ∼ g
   γ P = ⋁[ F ]-unique _ _ (δ , ε) ⁻¹
    where
     δ : (g P is-an-upper-bound-of (P holds , λ _ → 𝟏[ F ])) holds
@@ -257,14 +257,14 @@ main-lemma ua P p =
           g P ≤[ poset-of F ] u) holds
     ε (u , q) =
      g P                                    ≤⟨ i                      ⟩
-     g (⋁[ 𝟎-𝔽𝕣𝕞 ua ] ⁅ ⊤Ω ∣ _ ∶ P holds ⁆) ≤⟨ ii                     ⟩
+     g (⋁[ 𝟎-𝔽𝕣𝕞 pe ] ⁅ ⊤Ω ∣ _ ∶ P holds ⁆) ≤⟨ ii                     ⟩
      ⋁[ F ] ⁅ g ⊤Ω ∣ _ ∶ P holds ⁆          ≤⟨ iii                    ⟩
      ⋁[ F ] ⁅ 𝟏[ F ] ∣ _ ∶ P holds ⁆        ≤⟨ ⋁[ F ]-least _ (u , q) ⟩
      u                                      QED
      where
       i  = g-is-monotonic
-            (P , (⋁[ 𝟎-𝔽𝕣𝕞 ua ] ⁅ ⊤Ω ∣ _ ∶ (P holds) ⁆))
-            (main-lemma ua P)
+            (P , (⋁[ 𝟎-𝔽𝕣𝕞 pe ] ⁅ ⊤Ω ∣ _ ∶ (P holds) ⁆))
+            (main-lemma pe P)
       ii  = reflexivity+
              (poset-of F)
              ((⋁[ F ]-unique _ _ (ψ (⁅ ⊤Ω ∣ _ ∶ (P holds) ⁆))))
@@ -275,15 +275,15 @@ main-lemma ua P p =
         υ : (λ _ → g ⊤Ω) ∼ (λ _ → 𝟏[ F ])
         υ _ = ϕ
 
-  β : f ua F ＝ g
+  β : f pe F ＝ g
   β = dfunext fe γ
 
 \end{code}
 
 \begin{code}
 
-𝟎-𝔽𝕣𝕞-initial : {𝓦 : Universe} (ua : propext 𝓦) (F : Frame 𝓤 𝓥 𝓦)
-              → is-singleton (𝟎-𝔽𝕣𝕞 ua ─f→ F)
-𝟎-𝔽𝕣𝕞-initial ua F = (𝒻 ua F) , 𝒻-is-unique ua F
+𝟎-𝔽𝕣𝕞-initial : {𝓦 : Universe} (pe : propext 𝓦) (F : Frame 𝓤 𝓥 𝓦)
+              → is-singleton (𝟎-𝔽𝕣𝕞 pe ─f→ F)
+𝟎-𝔽𝕣𝕞-initial pe F = (𝒻 pe F) , 𝒻-is-unique pe F
 
 \end{code}
