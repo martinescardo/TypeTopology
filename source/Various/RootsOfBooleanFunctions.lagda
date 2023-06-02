@@ -510,17 +510,12 @@ hypothesis to prove the correctness of ε-formula'. We did find such a
 proof, but it is long and messy, and we decided not to include it here
 for that reason.
 
-Challenges. (1) Find an elegant proof that the function ε-formula'
-gives a formulate for putative roots. (2) Moreover, show that
-ε-formula' = ε-formula.
+Alice Laroche, 1st June 2023
 
-It may be that it is easier to prove (2) and then deduce (1), rather
-than prove (1) directly. We haven't tried that.
+We can however prove both definitions are equals, and from that deduce
+the correctness of ε-formula'
 
-
-Here's a proof of (2)
-
-We define another pair of auxilliary constructions that will be used
+We first define another pair of auxilliary constructions that will be used
 to reason about εᵉ
 
 \begin{code}
@@ -661,4 +656,17 @@ formulas-are-equal (succ n) = γ
     I = ap (c₀ ,_) (unroll-εᵉ c₀)
     II = ap (λ x → c₀ , (𝕔𝕠𝕟𝕤s c₀ x)) (formulas-are-equal n)
     III = ap (λ x → x , (𝕔𝕠𝕟𝕤s x (ε-formula n))) c₀-property
+\end{code}
+
+It then follow immediatly the correctness of ε-formula' n by
+transport
+
+\begin{code}
+
+ε-formula'-theorem : (n : ℕ) (f : 𝟚 ^ n → 𝟚)
+                  → is-putative-root (evals f (ε-formula' n)) f
+ε-formula'-theorem n f = transport (λ x → is-putative-root (evals f x) f)
+                                   (formulas-are-equal n ⁻¹)
+                                   (ε-formula-theorem n f)
+
 \end{code}
