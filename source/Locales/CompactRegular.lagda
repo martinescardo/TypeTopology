@@ -1250,7 +1250,9 @@ compact-rel-syntax F U V =
 
 syntax compact-rel-syntax F U V = U ≤ₖ[ F ] V
 
-spectral-yoneda : (F : Frame 𝓤 𝓥 𝓦) → is-spectral F holds → (U V : ⟨ F ⟩)
+spectral-yoneda : (F : Frame 𝓤 𝓥 𝓦)
+                → is-spectral F holds
+                → (U V : ⟨ F ⟩)
                 → (U ≤ₖ[ F ] V ⇒ U ≤[ poset-of F ] V) holds
 spectral-yoneda {𝓦 = 𝓦} F σ U V χ =
  ∥∥-rec (holds-is-prop (U ≤[ poset-of F ] V)) γ σ
