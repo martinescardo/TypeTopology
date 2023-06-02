@@ -196,7 +196,7 @@ well-inside₀-is-not-prop pe = IF , ε
   𝟎-is-not-𝟏 p = γ
    where
     γ : ⊥Ω holds
-    γ = transport _holds (𝟏[ IF ] ＝⟨ p ⁻¹ ⟩ 𝟎[ IF ] ＝⟨ 𝟎-of-IF-is-⊥ ua ⟩ ⊥Ω ∎) ⋆
+    γ = transport _holds (𝟏[ IF ] ＝⟨ p ⁻¹ ⟩ 𝟎[ IF ] ＝⟨ 𝟎-of-IF-is-⊥ pe ⟩ ⊥Ω ∎) ⋆
 
   ε : ¬ ((U V : ⟨ IF ⟩) → is-prop (well-inside₀ IF U V))
   ε ψ = 𝟎-is-not-𝟏 (pr₁ (from-Σ-＝ δ))
