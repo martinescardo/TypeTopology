@@ -1997,4 +1997,58 @@ module LemmasAboutHeytingComplementation (X : Locale 𝓤 𝓥 𝓥)
       ‡₁ : ((C ∧[ 𝒪 X ] (C ==> 𝟎[ 𝒪 X ])) ≤[ poset-of (𝒪 X) ] 𝟎[ 𝒪 X ]) holds
       ‡₁ = mp-left C 𝟎[ 𝒪 X ]
 
+ negation-∨-lemma₁ : {U V W : ⟨ 𝒪 X ⟩}
+                   → is-clopen₀ (𝒪 X) V
+                   → (U ≤[ poset-of (𝒪 X) ] (V ∨[ 𝒪 X ] W)) holds
+                   → ((U ∧[ 𝒪 X ] (V ==> 𝟎[ 𝒪 X ]))
+                       ≤[ poset-of (𝒪 X) ]
+                      W) holds
+ negation-∨-lemma₁ {U} {V} {W} (V′ , p , q) φ =
+  U ∧[ 𝒪 X ] (V ==> 𝟎[ 𝒪 X ])               ＝⟨ Ⅰ ⟩ₚ
+  U ∧[ 𝒪 X ] V′                             ≤⟨ Ⅱ  ⟩
+  (V ∨[ 𝒪 X ] W) ∧[ 𝒪 X ] V′                ＝⟨ Ⅲ ⟩ₚ
+  (V ∧[ 𝒪 X ] V′) ∨[ 𝒪 X ] (W ∧[ 𝒪 X ] V′)  ＝⟨ Ⅳ ⟩ₚ
+  𝟎[ 𝒪 X ] ∨[ 𝒪 X ] (W ∧[ 𝒪 X ] V′)         ＝⟨ Ⅴ ⟩ₚ
+  W ∧[ 𝒪 X ] V′                             ≤⟨  Ⅵ ⟩
+  W                                         ■
+   where
+    open PosetReasoning (poset-of (𝒪 X))
+
+    Ⅰ = ap
+         (λ - → U ∧[ 𝒪 X ] -)
+         (complement-is-heyting-complement V V′ (p , q) ⁻¹)
+    Ⅱ = ∧[ 𝒪 X ]-left-monotone φ
+    Ⅲ = binary-distributivity-right (𝒪 X)
+    Ⅳ = ap (λ - → - ∨[ 𝒪 X ] (W ∧[ 𝒪 X ] V′)) p
+    Ⅴ = 𝟎-right-unit-of-∨ (𝒪 X) (W ∧[ 𝒪 X ] V′)
+    Ⅵ = ∧[ 𝒪 X ]-lower₁ W V′
+
+ negation-∨-lemma₂ : {U V W : ⟨ 𝒪 X ⟩}
+                → is-clopen₀ (𝒪 X) V
+                 → ((U ∧[ 𝒪 X ] (V ==> 𝟎[ 𝒪 X ]))
+                     ≤[ poset-of (𝒪 X) ]
+                    W) holds
+                 → (U ≤[ poset-of (𝒪 X) ] (V ∨[ 𝒪 X ] W)) holds
+ negation-∨-lemma₂ {U} {V} {W} (V′ , p , q) φ =
+  U                                                      ＝⟨ Ⅰ ⟩ₚ
+  U ∧[ 𝒪 X ] 𝟏[ 𝒪 X ]                                    ＝⟨ Ⅱ ⟩ₚ
+  U ∧[ 𝒪 X ] (V ∨[ 𝒪 X ] V′)                             ＝⟨ Ⅲ ⟩ₚ
+  (U ∧[ 𝒪 X ] V) ∨[ 𝒪 X ] (U ∧[ 𝒪 X ] V′)                ＝⟨ Ⅳ ⟩ₚ
+  (U ∧[ 𝒪 X ] V) ∨[ 𝒪 X ] (U ∧[ 𝒪 X ] (V ==> 𝟎[ 𝒪 X ]))  ≤⟨ Ⅴ  ⟩
+  (U ∧[ 𝒪 X ] V) ∨[ 𝒪 X ] W                              ≤⟨ Ⅵ  ⟩
+  V ∨[ 𝒪 X ] W                                           ■
+   where
+    open PosetReasoning (poset-of (𝒪 X))
+
+    Ⅰ =  𝟏-right-unit-of-∧ (𝒪 X) U ⁻¹
+    Ⅱ = ap (λ - → U ∧[ 𝒪 X ] -) (q ⁻¹)
+    Ⅲ = binary-distributivity (𝒪 X) U V V′
+    Ⅳ = ap
+         (λ - → (U ∧[ 𝒪 X ] V) ∨[ 𝒪 X ] (U ∧[ 𝒪 X ] -))
+         (complement-is-heyting-complement V V′ (p , q))
+    Ⅴ = ∨[ 𝒪 X ]-right-monotone φ
+    Ⅵ = ∨[ 𝒪 X ]-left-monotone (∧[ 𝒪 X ]-lower₂ U V)
+
+
+
 \end{code}

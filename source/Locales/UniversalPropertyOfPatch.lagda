@@ -886,189 +886,143 @@ As mentioned previously, `closed-image U` is a perfect nucleus for any `U :
  f⁻₊ : ⟨ 𝒪 X ⟩ → ⟨ 𝒪 Patchₛ-A ⟩
  f⁻₊ U = closed-image U ,  closed-image-is-nucleus U  , closed-image-is-sc U
 
+\end{code}
+
+\begin{code}
+
+ f⁻₊-is-monotone : is-monotonic (poset-of (𝒪 X)) (poset-of (𝒪 Patchₛ-A)) f⁻₊ holds
+ f⁻₊-is-monotone (U , V) p n = pr₂ 𝒻₊ₘ _ (∨[ 𝒪 X ]-left-monotone p)
+
+ f⁻₊ₘ : poset-of (𝒪 X) ─m→ poset-of (𝒪 Patchₛ-A)
+ f⁻₊ₘ = f⁻₊ , f⁻₊-is-monotone
+
+\end{code}
+
+\begin{code}
+
+ f⁻₊-is-right-adjoint-of-f⁻⁺ : (f⁻⁺ₘ ⊣ f⁻₊ₘ) holds
+ f⁻₊-is-right-adjoint-of-f⁻⁺ 𝒿@(j , _) U = ϑ₁ , ϑ₂
+  where
+   open IgorsLemma  X A A-has-basis
+   open PerfectMaps X A A-has-basis
+   open LemmasAboutHeytingComplementation X X-has-basis
+
+   ϑ₁ : (f⁻⁺ 𝒿 ≤[ poset-of (𝒪 X) ] U) holds
+      → (𝒿 ≤[ poset-of (𝒪 Patchₛ-A) ] (f⁻₊ U)) holds
+   ϑ₁ φ n =
+    adjunction-inequality-forwardₓ
+     𝒻
+     (U ∨[ 𝒪 X ] 𝒻 ⋆∙ β n)
+     (j (β n))
+     ψ
+      where
+       open PosetReasoning (poset-of (𝒪 X))
+
+       κ : is-clopen₀ (𝒪 X) (𝒻 ⋆∙ β n)
+       κ = compacts-are-clopen-in-zero-dimensional-locales
+            (𝒪 X)
+            ∣ 𝕫ᴰ ∣
+            (𝒻 ⋆∙ β n)
+            (μ (β n) (pr₂ (βₖ n)))
+
+       ϟ : ((𝒻 ⋆∙ j (β n) ∧[ 𝒪 X ] ((𝒻 ⋆∙ β n) ==> 𝟎[ 𝒪 X ]))
+                 ≤[ poset-of (𝒪 X) ]
+                U) holds
+       ϟ =
+        𝒻 ⋆∙ j (β n) ∧[ 𝒪 X ] ((𝒻 ⋆∙ β n) ==> 𝟎[ 𝒪 X ]) ≤⟨ Ⅰ ⟩
+        f⁻⁺₂ 𝒿                                          ＝⟨ Ⅱ   ⟩ₚ
+        f⁻⁺  𝒿                                          ≤⟨ φ    ⟩
+        U                                               ■
+         where
+          Ⅰ = ⋁[ 𝒪 X ]-upper
+               ⁅ 𝒻 ⋆∙ j (β n) ∧[ 𝒪 X ] ¬𝒻⋆ (β n) ∣ n ∶ Bₐ ⁆
+               n
+          Ⅱ = f⁻⁺₂-equiv-f⁻⁺₁ 𝒿 ⁻¹
+
+       ※ : (𝒻 ⋆∙ j (β n) ≤[ poset-of (𝒪 X) ] (𝒻 ⋆∙ β n ∨[ 𝒪 X ] U)) holds
+       ※ = negation-∨-lemma₂ κ ϟ
+
+       ψ : (𝒻 ⋆∙ j (β n) ≤[ poset-of (𝒪 X) ] (U ∨[ 𝒪 X ] 𝒻 ⋆∙ β n)) holds
+       ψ = 𝒻 ⋆∙ j (β n)          ≤⟨ ※ ⟩
+           𝒻 ⋆∙ (β n) ∨[ 𝒪 X ] U ＝⟨ ∨[ 𝒪 X ]-is-commutative (𝒻 ⋆∙ β n) U ⟩ₚ
+           U ∨[ 𝒪 X ] 𝒻 ⋆∙ (β n) ■
+
+   S =
+    ⁅ (𝒻 ⋆∙ β m) ∧ₓ ¬𝒻⋆ (β n)
+     ∣ (m , n , p) ∶ Σ m ꞉ Bₐ , Σ n ꞉ Bₐ , 𝔏 𝒿 m n holds ⁆
+
+   ϑ₂ : (𝒿 ≤[ poset-of (𝒪 Patchₛ-A) ] (f⁻₊ U)) holds
+      → (f⁻⁺ 𝒿 ≤[ poset-of (𝒪 X) ] U) holds
+   ϑ₂ φ = ⋁[ 𝒪 X ]-least S (U , †)
+    where
+     open Joins (λ x y → x ≤[ poset-of (𝒪 X) ] y)
+
+     † : (U is-an-upper-bound-of S) holds
+     † (m , n , p) = goal
+      where
+       ψ : (U : ⟨ 𝒪 A ⟩)
+         → (((‘ β m ’ ∧[ 𝒪 Patchₛ-A ] ¬‘ βₖ n ’) .pr₁ U) ≤[ poset-of (𝒪 A)  ] j U) holds
+       ψ = ≼ᵏ-implies-≼ (‘ β m ’ ∧[ 𝒪 Patchₛ-A ] ¬‘ βₖ n ’) 𝒿 p
+
+       κ : is-clopen₀ (𝒪 X) (𝒻 ⋆∙ β n)
+       κ = compacts-are-clopen-in-zero-dimensional-locales
+            (𝒪 X)
+            ∣ 𝕫ᴰ ∣
+            (𝒻 ⋆∙ β n)
+            (μ (β n) (pr₂ (βₖ n)))
+
+       ϡ : (T : ⟨ 𝒪 A ⟩)
+         → (((𝒻 ⋆∙ (β m ∨[ 𝒪 A ] T)) ∧[ 𝒪 X ] 𝒻 ⋆∙ (β n ==>ₐ T))
+             ≤[ poset-of (𝒪 X) ]
+            (U ∨[ 𝒪 X ] (𝒻 ⋆∙ T))) holds
+       ϡ T =
+        let
+         open PosetReasoning (poset-of (𝒪 X))
+        in
+         𝒻 ⋆∙ (β m ∨[ 𝒪 A ] T) ∧[ 𝒪 X ] 𝒻 ⋆∙ (β n ==>ₐ T)  ＝⟨ Ⅰ ⟩ₚ
+         𝒻 ⋆∙ ((β m ∨[ 𝒪 A ] T) ∧[ 𝒪 A ] (β n ==>ₐ T))     ≤⟨ Ⅱ  ⟩
+         U ∨[ 𝒪 X ] (𝒻 ⋆∙ T)                               ■
+        where
+         ♣ : (((β m ∨[ 𝒪 A ] T) ∧[ 𝒪 A ] (β n ==>ₐ T))
+               ≤[ poset-of (𝒪 A) ]
+              𝒻₊ (U ∨[ 𝒪 X ] (𝒻 ⋆∙ T))) holds
+         ♣ = (β m ∨[ 𝒪 A ] T) ∧[ 𝒪 A ] (β n ==>ₐ T)    ≤⟨ Ⅰ ⟩
+             j T                                       ≤⟨ Ⅱ ⟩
+             𝒻₊ (U ∨[ 𝒪 X ] 𝒻 ⋆∙ T)                    ■
+          where
+           open PosetReasoning (poset-of (𝒪 A))
+
+           Ⅰ = ≼ᵏ-implies-≼ (‘ β m ’ ∧[ 𝒪 Patchₛ-A ] ¬‘ βₖ n ’) 𝒿 p T
+           Ⅱ = ≼ᵏ-implies-≼ 𝒿 (f⁻₊ U) φ T
+
+         Ⅰ = frame-homomorphisms-preserve-meets
+              (𝒪 A)
+              (𝒪 X)
+              𝒻
+              (β m ∨[ 𝒪 A ] T)
+              (β n ==>ₐ T) ⁻¹
+         Ⅱ = adjunction-inequality-backwardₓ
+              𝒻
+              (U ∨[ 𝒪 X ] 𝒻 ⋆∙ T)
+              ((β m ∨[ 𝒪 A ] T) ∧[ 𝒪 A ] (β n ==>ₐ T))
+              ♣
+
+       ϟ : (𝒻 ⋆∙ β m ≤[ poset-of (𝒪 X) ] (U ∨[ 𝒪 X ] 𝒻 ⋆∙ β n)) holds
+       ϟ = igors-lemma-⇐ 𝒻 (β m) (β n) U ϡ
+
+       ϑ : (𝒻 ⋆∙ β m ≤[ poset-of (𝒪 X) ] (𝒻 ⋆∙ β n ∨[ 𝒪 X ] U)) holds
+       ϑ = 𝒻 ⋆∙ β m               ≤⟨ ϟ ⟩
+           U ∨[ 𝒪 X ] 𝒻 ⋆∙ β n    ＝⟨ ∨[ 𝒪 X ]-is-commutative U (𝒻 ⋆∙ β n) ⟩ₚ
+           𝒻 ⋆∙ β n ∨[ 𝒪 X ] U    ■
+            where
+             open PosetReasoning (poset-of (𝒪 X))
+
+       goal : (((𝒻 ⋆∙ β m) ∧[ 𝒪 X ] ¬𝒻⋆ (β n)) ≤[ poset-of (𝒪 X) ] U) holds
+       goal = negation-∨-lemma₁ κ ϑ
+
  f⁻⁺-preserves-joins : is-join-preserving (𝒪 Patchₛ-A) (𝒪 X) f⁻⁺ holds
  f⁻⁺-preserves-joins = aft-forward f⁻⁺ₘ †
   where
-   f⁻₊-is-monotone : is-monotonic (poset-of (𝒪 X)) (poset-of (𝒪 Patchₛ-A)) f⁻₊ holds
-   f⁻₊-is-monotone (U , V) p n = pr₂ 𝒻₊ₘ _ (∨[ 𝒪 X ]-left-monotone p)
-
-   f⁻₊ₘ : poset-of (𝒪 X) ─m→ poset-of (𝒪 Patchₛ-A)
-   f⁻₊ₘ = f⁻₊ , f⁻₊-is-monotone
-
-   open IgorsLemma  X A A-has-basis
-   open PerfectMaps X A A-has-basis
-
-   negation-lemma : {U V W : ⟨ 𝒪 X ⟩}
-                  → is-clopen₀ (𝒪 X) V
-                  → (U ≤[ poset-of (𝒪 X) ] (V ∨[ 𝒪 X ] W)) holds
-                  → ((U ∧[ 𝒪 X ] (V ==> 𝟎[ 𝒪 X ]))
-                      ≤[ poset-of (𝒪 X) ]
-                     W) holds
-   negation-lemma {U} {V} {W} (V′ , p , q) φ =
-    U ∧[ 𝒪 X ] (V ==> 𝟎[ 𝒪 X ])               ＝⟨ Ⅰ ⟩ₚ
-    U ∧[ 𝒪 X ] V′                             ≤⟨ Ⅱ  ⟩
-    (V ∨[ 𝒪 X ] W) ∧[ 𝒪 X ] V′                ＝⟨ Ⅲ ⟩ₚ
-    (V ∧[ 𝒪 X ] V′) ∨[ 𝒪 X ] (W ∧[ 𝒪 X ] V′)  ＝⟨ Ⅳ ⟩ₚ
-    𝟎[ 𝒪 X ] ∨[ 𝒪 X ] (W ∧[ 𝒪 X ] V′)         ＝⟨ Ⅴ ⟩ₚ
-    W ∧[ 𝒪 X ] V′                             ≤⟨  Ⅵ ⟩
-    W                                         ■
-     where
-      open PosetReasoning (poset-of (𝒪 X))
-      open LemmasAboutHeytingComplementation X X-has-basis
-
-      Ⅰ = ap
-           (λ - → U ∧[ 𝒪 X ] -)
-           (complement-is-heyting-complement V V′ (p , q) ⁻¹)
-      Ⅱ = ∧[ 𝒪 X ]-left-monotone φ
-      Ⅲ = binary-distributivity-right (𝒪 X)
-      Ⅳ = ap (λ - → - ∨[ 𝒪 X ] (W ∧[ 𝒪 X ] V′)) p
-      Ⅴ = 𝟎-right-unit-of-∨ (𝒪 X) (W ∧[ 𝒪 X ] V′)
-      Ⅵ = ∧[ 𝒪 X ]-lower₁ W V′
-
-   negation-lemma′ : {U V W : ⟨ 𝒪 X ⟩}
-                  → is-clopen₀ (𝒪 X) V
-                   → ((U ∧[ 𝒪 X ] (V ==> 𝟎[ 𝒪 X ]))
-                       ≤[ poset-of (𝒪 X) ]
-                      W) holds
-                   → (U ≤[ poset-of (𝒪 X) ] (V ∨[ 𝒪 X ] W)) holds
-   negation-lemma′ {U} {V} {W} (V′ , p , q) φ =
-    U                                                      ＝⟨ Ⅰ ⟩ₚ
-    U ∧[ 𝒪 X ] 𝟏[ 𝒪 X ]                                    ＝⟨ Ⅱ ⟩ₚ
-    U ∧[ 𝒪 X ] (V ∨[ 𝒪 X ] V′)                             ＝⟨ Ⅲ ⟩ₚ
-    (U ∧[ 𝒪 X ] V) ∨[ 𝒪 X ] (U ∧[ 𝒪 X ] V′)                ＝⟨ Ⅳ ⟩ₚ
-    (U ∧[ 𝒪 X ] V) ∨[ 𝒪 X ] (U ∧[ 𝒪 X ] (V ==> 𝟎[ 𝒪 X ]))  ≤⟨ Ⅴ  ⟩
-    (U ∧[ 𝒪 X ] V) ∨[ 𝒪 X ] W                              ≤⟨ Ⅵ  ⟩
-    V ∨[ 𝒪 X ] W                                           ■
-     where
-      open PosetReasoning (poset-of (𝒪 X))
-
-      open LemmasAboutHeytingComplementation X X-has-basis
-
-      Ⅰ =  𝟏-right-unit-of-∧ (𝒪 X) U ⁻¹
-      Ⅱ = ap (λ - → U ∧[ 𝒪 X ] -) (q ⁻¹)
-      Ⅲ = binary-distributivity (𝒪 X) U V V′
-      Ⅳ = ap
-           (λ - → (U ∧[ 𝒪 X ] V) ∨[ 𝒪 X ] (U ∧[ 𝒪 X ] -))
-           (complement-is-heyting-complement V V′ (p , q))
-      Ⅴ = ∨[ 𝒪 X ]-right-monotone φ
-      Ⅵ = ∨[ 𝒪 X ]-left-monotone (∧[ 𝒪 X ]-lower₂ U V)
-
-   f⁻₊-is-right-adjoint-of-f⁻⁺ : (f⁻⁺ₘ ⊣ f⁻₊ₘ) holds
-   f⁻₊-is-right-adjoint-of-f⁻⁺ 𝒿@(j , _) U = ϑ₁ , ϑ₂
-    where
-     ϑ₁ : (f⁻⁺ 𝒿 ≤[ poset-of (𝒪 X) ] U) holds
-        → (𝒿 ≤[ poset-of (𝒪 Patchₛ-A) ] (f⁻₊ U)) holds
-     ϑ₁ φ n =
-      adjunction-inequality-forwardₓ
-       𝒻
-       (U ∨[ 𝒪 X ] 𝒻 ⋆∙ β n)
-       (j (β n))
-       ψ
-        where
-         open PosetReasoning (poset-of (𝒪 X))
-
-         κ : is-clopen₀ (𝒪 X) (𝒻 ⋆∙ β n)
-         κ = compacts-are-clopen-in-zero-dimensional-locales
-              (𝒪 X)
-              ∣ 𝕫ᴰ ∣
-              (𝒻 ⋆∙ β n)
-              (μ (β n) (pr₂ (βₖ n)))
-
-         ϟ : ((𝒻 ⋆∙ j (β n) ∧[ 𝒪 X ] ((𝒻 ⋆∙ β n) ==> 𝟎[ 𝒪 X ]))
-                   ≤[ poset-of (𝒪 X) ]
-                  U) holds
-         ϟ =
-          𝒻 ⋆∙ j (β n) ∧[ 𝒪 X ] ((𝒻 ⋆∙ β n) ==> 𝟎[ 𝒪 X ]) ≤⟨ Ⅰ ⟩
-          f⁻⁺₂ 𝒿                                          ＝⟨ Ⅱ   ⟩ₚ
-          f⁻⁺  𝒿                                          ≤⟨ φ    ⟩
-          U                                               ■
-           where
-            Ⅰ = ⋁[ 𝒪 X ]-upper
-                 ⁅ 𝒻 ⋆∙ j (β n) ∧[ 𝒪 X ] ¬𝒻⋆ (β n) ∣ n ∶ Bₐ ⁆
-                 n
-            Ⅱ = f⁻⁺₂-equiv-f⁻⁺₁ 𝒿 ⁻¹
-
-         ※ : (𝒻 ⋆∙ j (β n) ≤[ poset-of (𝒪 X) ] (𝒻 ⋆∙ β n ∨[ 𝒪 X ] U)) holds
-         ※ = negation-lemma′ κ ϟ
-
-         ψ : (𝒻 ⋆∙ j (β n) ≤[ poset-of (𝒪 X) ] (U ∨[ 𝒪 X ] 𝒻 ⋆∙ β n)) holds
-         ψ = 𝒻 ⋆∙ j (β n)          ≤⟨ ※ ⟩
-             𝒻 ⋆∙ (β n) ∨[ 𝒪 X ] U ＝⟨ ∨[ 𝒪 X ]-is-commutative (𝒻 ⋆∙ β n) U ⟩ₚ
-             U ∨[ 𝒪 X ] 𝒻 ⋆∙ (β n) ■
-
-     S =
-      ⁅ (𝒻 ⋆∙ β m) ∧[ 𝒪 X ] ¬𝒻⋆ (β n)
-       ∣ (m , n , p) ∶ Σ m ꞉ Bₐ , Σ n ꞉ Bₐ , 𝔏 𝒿 m n holds ⁆
-
-     ϑ₂ : (𝒿 ≤[ poset-of (𝒪 Patchₛ-A) ] (f⁻₊ U)) holds
-        → (f⁻⁺ 𝒿 ≤[ poset-of (𝒪 X) ] U) holds
-     ϑ₂ φ = ⋁[ 𝒪 X ]-least S (U , †)
-      where
-       open Joins (λ x y → x ≤[ poset-of (𝒪 X) ] y)
-
-       † : (U is-an-upper-bound-of S) holds
-       † (m , n , p) = goal
-        where
-         ψ : (U : ⟨ 𝒪 A ⟩)
-           → (((‘ β m ’ ∧[ 𝒪 Patchₛ-A ] ¬‘ βₖ n ’) .pr₁ U) ≤[ poset-of (𝒪 A)  ] j U) holds
-         ψ = ≼ᵏ-implies-≼ (‘ β m ’ ∧[ 𝒪 Patchₛ-A ] ¬‘ βₖ n ’) 𝒿 p
-
-         κ : is-clopen₀ (𝒪 X) (𝒻 ⋆∙ β n)
-         κ = compacts-are-clopen-in-zero-dimensional-locales
-              (𝒪 X)
-              ∣ 𝕫ᴰ ∣
-              (𝒻 ⋆∙ β n)
-              (μ (β n) (pr₂ (βₖ n)))
-
-         ϡ : (T : ⟨ 𝒪 A ⟩)
-           → (((𝒻 ⋆∙ (β m ∨[ 𝒪 A ] T)) ∧[ 𝒪 X ] 𝒻 ⋆∙ (β n ==>ₐ T))
-               ≤[ poset-of (𝒪 X) ]
-              (U ∨[ 𝒪 X ] (𝒻 ⋆∙ T))) holds
-         ϡ T =
-          let
-           open PosetReasoning (poset-of (𝒪 X))
-          in
-           𝒻 ⋆∙ (β m ∨[ 𝒪 A ] T) ∧[ 𝒪 X ] 𝒻 ⋆∙ (β n ==>ₐ T)  ＝⟨ Ⅰ ⟩ₚ
-           𝒻 ⋆∙ ((β m ∨[ 𝒪 A ] T) ∧[ 𝒪 A ] (β n ==>ₐ T))     ≤⟨ Ⅱ  ⟩
-           U ∨[ 𝒪 X ] (𝒻 ⋆∙ T)                               ■
-          where
-           ♣ : (((β m ∨[ 𝒪 A ] T) ∧[ 𝒪 A ] (β n ==>ₐ T))
-                 ≤[ poset-of (𝒪 A) ]
-                𝒻₊ (U ∨[ 𝒪 X ] (𝒻 ⋆∙ T))) holds
-           ♣ = (β m ∨[ 𝒪 A ] T) ∧[ 𝒪 A ] (β n ==>ₐ T)    ≤⟨ Ⅰ ⟩
-               j T                                       ≤⟨ Ⅱ ⟩
-               𝒻₊ (U ∨[ 𝒪 X ] 𝒻 ⋆∙ T)                    ■
-            where
-             open PosetReasoning (poset-of (𝒪 A))
-
-             Ⅰ = ≼ᵏ-implies-≼ (‘ β m ’ ∧[ 𝒪 Patchₛ-A ] ¬‘ βₖ n ’) 𝒿 p T
-             Ⅱ = ≼ᵏ-implies-≼ 𝒿 (f⁻₊ U) φ T
-
-           Ⅰ = frame-homomorphisms-preserve-meets
-                (𝒪 A)
-                (𝒪 X)
-                𝒻
-                (β m ∨[ 𝒪 A ] T)
-                (β n ==>ₐ T) ⁻¹
-           Ⅱ = adjunction-inequality-backwardₓ
-                𝒻
-                (U ∨[ 𝒪 X ] 𝒻 ⋆∙ T)
-                ((β m ∨[ 𝒪 A ] T) ∧[ 𝒪 A ] (β n ==>ₐ T))
-                ♣
-
-         ϟ : (𝒻 ⋆∙ β m ≤[ poset-of (𝒪 X) ] (U ∨[ 𝒪 X ] 𝒻 ⋆∙ β n)) holds
-         ϟ = igors-lemma-⇐ 𝒻 (β m) (β n) U ϡ
-
-         ϑ : (𝒻 ⋆∙ β m ≤[ poset-of (𝒪 X) ] (𝒻 ⋆∙ β n ∨[ 𝒪 X ] U)) holds
-         ϑ = 𝒻 ⋆∙ β m               ≤⟨ ϟ ⟩
-             U ∨[ 𝒪 X ] 𝒻 ⋆∙ β n    ＝⟨ ∨[ 𝒪 X ]-is-commutative U (𝒻 ⋆∙ β n) ⟩ₚ
-             𝒻 ⋆∙ β n ∨[ 𝒪 X ] U    ■
-              where
-               open PosetReasoning (poset-of (𝒪 X))
-
-         goal : (((𝒻 ⋆∙ β m) ∧[ 𝒪 X ] ¬𝒻⋆ (β n)) ≤[ poset-of (𝒪 X) ] U) holds
-         goal = negation-lemma κ ϑ
-
    † : has-right-adjoint f⁻⁺ₘ
    † = f⁻₊ₘ , f⁻₊-is-right-adjoint-of-f⁻⁺
 
