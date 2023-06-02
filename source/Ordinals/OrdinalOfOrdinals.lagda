@@ -831,8 +831,9 @@ for use in other constructions.
 transfinite-induction-on-OO-behaviour :
    (P : Ordinal 𝓤 → 𝓥 ̇ )
  → (f : (α : Ordinal 𝓤) → ((a : ⟨ α ⟩) → P (α ↓ a)) → P α)
- → (α : Ordinal 𝓤) → transfinite-induction-on-OO P f α
-                   ＝ f α (λ a → transfinite-induction-on-OO P f (α ↓ a))
+ → (α : Ordinal 𝓤)
+ → transfinite-induction-on-OO P f α
+   ＝ f α (λ a → transfinite-induction-on-OO P f (α ↓ a))
 transfinite-induction-on-OO-behaviour {𝓤} {𝓥} P f =
  Transfinite-induction-behaviour fe (OO 𝓤) P f'
   where
@@ -844,9 +845,32 @@ transfinite-induction-on-OO-behaviour {𝓤} {𝓥} P f =
 transfinite-recursion-on-OO-behaviour :
    (X : 𝓥 ̇ )
  → (f : (α : Ordinal 𝓤) → (⟨ α ⟩ → X) → X)
- → (α : Ordinal 𝓤) → transfinite-recursion-on-OO X f α
-                   ＝ f α (λ a → transfinite-recursion-on-OO X f (α ↓ a))
+ → (α : Ordinal 𝓤)
+ → transfinite-recursion-on-OO X f α
+   ＝ f α (λ a → transfinite-recursion-on-OO X f (α ↓ a))
 transfinite-recursion-on-OO-behaviour X f =
  transfinite-induction-on-OO-behaviour (λ _ → X) f
+
+\end{code}
+
+Added 1st June 2023 by Martin Escardo.
+
+\begin{code}
+
+definition-by-transfinite-recursion-on-OO :
+   (X : 𝓥 ̇ )
+ → (f : (α : Ordinal 𝓤) → (⟨ α ⟩ → X) → X)
+ → Σ h ꞉ (Ordinal 𝓤 → X) , (∀ α → h α ＝ f α (λ a → h (α ↓ a)))
+definition-by-transfinite-recursion-on-OO X f =
+ transfinite-recursion-on-OO X f  ,
+ transfinite-recursion-on-OO-behaviour X f
+
+definition-by-transfinite-induction-on-OO :
+   (X : Ordinal 𝓤 → 𝓥 ̇ )
+ → (f : (α : Ordinal 𝓤) → ((a : ⟨ α ⟩) → X (α ↓ a)) → X α)
+ → Σ h ꞉ ((α : Ordinal 𝓤) → X α) , (∀ α → h α ＝ f α (λ a → h (α ↓ a)))
+definition-by-transfinite-induction-on-OO X f =
+ transfinite-induction-on-OO X f  ,
+ transfinite-induction-on-OO-behaviour X f
 
 \end{code}

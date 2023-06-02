@@ -982,10 +982,13 @@ also is not a successor ordinal unless LPO holds:
            fg (k , l) = to-subtype-＝ (λ k → <-is-prop-valued k n) refl
 
            gf : g ∘ f ∼ id
-           gf (.(ι k) , k , refl , q) = to-subtype-＝ (λ u → ≺-prop-valued fe' u (ι n)) refl
+           gf (.(ι k) , k , refl , q) = to-subtype-＝
+                                         (λ u → ≺-prop-valued fe' u (ι n))
+                                         refl
 
            fop : is-order-preserving (ℕ∞ₒ ↓ ι n) (ω ↓ n) f
-           fop (.(ι k) , k , refl , q) (.(ι k') , k' , refl , q') (m , r , cc) = VIII
+           fop (.(ι k) , k , refl , q) (.(ι k') , k' , refl , q') (m , r , cc) =
+            VIII
             where
              VI : k ＝ m
              VI = ℕ-to-ℕ∞-lc r
@@ -1075,6 +1078,10 @@ also is not a successor ordinal unless LPO holds:
 Therefore, constructively, it is not necessarily the case that every
 ordinal is either a successor or a limit.
 
+TODO (1st June 2023). A classically equivalently definition of limit
+ordinal α is that there is some β < α, and for evert β < α there is γ
+with β < γ < α. We have that ℕ∞ is a limit ordinal in this sense.
+
 Added 4th May 2022.
 
 \begin{code}
@@ -1083,7 +1090,7 @@ open import Ordinals.ToppedType fe
 open import Ordinals.ToppedArithmetic fe
 
 alternative-plusₒ : (τ₀ τ₁ : Ordinalᵀ 𝓤)
-                 → [ τ₀ +ᵒ τ₁ ] ≃ₒ ([ τ₀ ] +ₒ [ τ₁ ])
+                  → [ τ₀ +ᵒ τ₁ ] ≃ₒ ([ τ₀ ] +ₒ [ τ₁ ])
 alternative-plusₒ τ₀ τ₁ = e
  where
   υ = cases (λ ⋆ → τ₀) (λ ⋆ → τ₁)

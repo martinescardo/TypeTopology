@@ -30,6 +30,7 @@ with only your name as author.
 
 ## Current contributors in alphabetical order of given name
 
+* Alice Laroche
 * Andrew Sneap
 * Ayberk Tosun
 * Brendan Hart

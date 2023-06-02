@@ -181,7 +181,7 @@ having-largest-is-prop fe α (⊥ , l) (⊥' , l') =
 \end{code}
 
 TODO. We should add further properties of the order from the module
-OrdinalNotions. For the moment, we add this:
+Notions. For the moment, we add this:
 
 \begin{code}
 
