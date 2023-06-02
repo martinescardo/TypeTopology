@@ -506,9 +506,14 @@ The advantage of this definition is that it is almost literally the
 same as that of ε'.
 
 The disadvantage is that it is difficult to find a suitable induction
-hypothesis to prove the correctness of ε-formula'. We did find such a
-proof, but it is long and messy, and we decided not to include it here
-for that reason.
+hypothesis to prove the correctness of ε-formula' directly. We did
+find such a proof, but it is long and messy, and we decided not to
+include it here for that reason.
+
+TODO. (1) Find an elegant proof that the function ε-formula' gives a
+formulate for putative roots. (2) Moreover, show that ε-formula' =
+ε-formula. It is easier to prove (2) and then deduce (1), using the
+idea of proof of ε-formula-theorem, rather than prove (1) directly.
 
 Alice Laroche, 1st June 2023
 
@@ -670,3 +675,32 @@ transport
                                    (ε-formula-theorem n f)
 
 \end{code}
+
+End of Alice's contribution.
+
+\begin{code}
+
+example₃-formula' :
+ let
+  y  = 𝕗 (O , O , 𝕗 (O , O , O , ⟨⟩) , ⟨⟩)
+  x₀ = 𝕗 (O , y , 𝕗 (O , y , O , ⟨⟩) , ⟨⟩)
+  x₁ = 𝕗 (x₀ , O , 𝕗 (x₀ , O , O , ⟨⟩) , ⟨⟩)
+  x₂ = 𝕗 (x₀ , x₁ , O , ⟨⟩)
+ in
+  ε-formula' 3 ＝ (x₀ , x₁ , x₂ , ⟨⟩)
+example₃-formula' = refl
+
+formulas-agreement₃ : ε-formula' 3 ＝ ε-formula 3
+formulas-agreement₃ = refl
+
+formulas-agreement₄ : ε-formula' 4 ＝ ε-formula 4
+formulas-agreement₄ = refl
+
+\end{code}
+
+TODO. The above formula grows doubly exponentially in size. However,
+using variables for common subexpressions, they grow
+exponentially. Define a type of expression accomodating variables for
+common subexpressions and produce a version ε-formula that produced
+such reduced-size expressions.
+
