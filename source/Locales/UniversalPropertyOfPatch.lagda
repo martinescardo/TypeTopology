@@ -1,4 +1,8 @@
-Ayberk Tosun, started 7th December 2022
+Ayberk Tosun.
+
+Originally started 7th of December 2022.
+Rewritten from scratch on 26th of April 2023.
+Completed on the 2nd of June 2023.
 
 \begin{code}[hide]
 
@@ -909,7 +913,8 @@ As mentioned previously, `closed-image U` is a perfect nucleus for any `U :
 
 \begin{code}
 
- f⁻₊-is-monotone : is-monotonic (poset-of (𝒪 X)) (poset-of (𝒪 Patchₛ-A)) f⁻₊ holds
+ f⁻₊-is-monotone : is-monotonic (poset-of (𝒪 X)) (poset-of (𝒪 Patchₛ-A)) f⁻₊
+                    holds
  f⁻₊-is-monotone (U , V) p n = pr₂ 𝒻₊ₘ _ (∨[ 𝒪 X ]-left-monotone p)
 
  f⁻₊ₘ : poset-of (𝒪 X) ─m→ poset-of (𝒪 Patchₛ-A)
@@ -1390,7 +1395,7 @@ ump-of-patch {𝓤} A σ X 𝕤 𝒻 μ = ∥∥-rec₂ (being-singleton-is-prop
   γ : spectralᴰ (𝒪 A)
     → zero-dimensionalᴰ (𝒪 X)
     → ∃! 𝒻⁻ ꞉ (X ─c→ Patch-A) , ((x : ⟨ 𝒪 A ⟩) → 𝒻 .pr₁ x  ＝ 𝒻⁻ .pr₁ ‘ x ’)
-  γ σᴰ 𝕫ᴰ = (𝒻⁻₀ , †) , ‡
+  γ σᴰ 𝕫ᴰ = (𝒻⁻₀ , 𝒻⁻-makes-the-diagram-commute) , 𝔠
    where
     open UniversalProperty A X σᴰ 𝕫ᴰ (pr₁ 𝕤) 𝒻 μ
     open SmallPatchConstruction A σᴰ renaming (SmallPatch to Patchₛ-A)
@@ -1398,60 +1403,76 @@ ump-of-patch {𝓤} A σ X 𝕤 𝒻 μ = ∥∥-rec₂ (being-singleton-is-prop
     𝒻⁻₀ : X ─c→ Patch-A
     𝒻⁻₀ = f⁻⁺ , 𝒻⁻-α , 𝒻⁻-β , 𝒻⁻-γ
 
-    † : (U : ⟨ 𝒪 A ⟩) → 𝒻 .pr₁ U ＝ 𝒻⁻₀ .pr₁ ‘ U ’
-    † = 𝒻⁻-makes-the-diagram-commute
-
-    ‡ : is-central
+    𝔠 : is-central
          ((Σ 𝒻⁻₀ ꞉ (X ─c→ Patch-A) , ((U : ⟨ 𝒪 A ⟩) → 𝒻 .pr₁ U  ＝ 𝒻⁻₀ .pr₁ ‘ U ’)))
          (𝒻⁻₀ , 𝒻⁻-makes-the-diagram-commute)
-    ‡ (𝒻⁻₁@(_ , α₁ , β₁ , γ₁) , p) = to-subtype-＝ ♣ (to-subtype-＝ ♠ (dfunext fe ϟ))
-     where
-      open Joins (λ x y → x ≤[ poset-of (𝒪 X) ] y)
-      open PosetReasoning (poset-of (𝒪 X))
+    𝔠 (𝒻⁻₁@(f⁻₁ , α₁ , β₁ , γ₁) , p) =
+     to-subtype-＝ ♣ (to-subtype-＝ ♠ (dfunext fe (𝒻⁻-is-unique-ext 𝒻⁻₁′ p)))
+      where
+       open Joins (λ x y → x ≤[ poset-of (𝒪 X) ] y)
+       open PosetReasoning (poset-of (𝒪 X))
 
-      𝒻⁻₁′ : X ─c→ Patchₛ-A
-      𝒻⁻₁′ = (𝒻⁻₁ .pr₁) , α₁ , β₁ , γ₁′
-       where
-        γ₁′ : (S : Fam 𝓤 ⟨ 𝒪 Patchₛ-A ⟩)
-            → (𝒻⁻₁ .pr₁ (join-of (𝒪 Patchₛ-A) S) is-lub-of ⁅ 𝒻⁻₁ .pr₁ x ∣ x ε S ⁆) holds
-        γ₁′ S = foo , bar
-         where
-          foo : _
-          foo i = 𝒻⁻₁ .pr₁ (S [ i ]) ≤⟨ meet-preserving-implies-monotone (𝒪 Patchₛ-A) (𝒪 X) (𝒻⁻₁ .pr₁) β₁ (_ , _) (⋁[ 𝒪 Patchₛ-A ]-upper S i)  ⟩ 𝒻⁻₁ .pr₁ (join-of (𝒪 Patchₛ-A) S) ■
+       𝒻⁻₁′ : X ─c→ Patchₛ-A
+       𝒻⁻₁′ = f⁻₁ , α₁ , β₁ , γ₁′
+        where
+         γ₁′ : (S : Fam 𝓤 ⟨ 𝒪 Patchₛ-A ⟩)
+             → (f⁻₁ (⋁[ 𝒪 Patchₛ-A ] S) is-lub-of ⁅ f⁻₁ U ∣ U ε S ⁆) holds
+         γ₁′ S = † , ‡
+          where
+           † = λ i →
+                meet-preserving-implies-monotone
+                 (𝒪 Patchₛ-A)
+                 (𝒪 X)
+                 f⁻₁
+                 β₁
+                 (_ , _)
+                 (⋁[ 𝒪 Patchₛ-A ]-upper S i)
 
-          eq : ⋁[ 𝒪 Patchₛ-A ] S ＝ ⋁[ 𝒪 Patch-A ] S
-          eq = ≤-is-antisymmetric (poset-of (𝒪 Patchₛ-A)) eq₁ eq₂
-           where
-            eq₁ : rel-syntax (poset-of (𝒪 Patchₛ-A)) (join-of (𝒪 Patchₛ-A) S) (join-of (𝒪 Patch-A) S) holds
-            eq₁ i = ⋁[ 𝒪 Patchₛ-A ]-least S (((join-of (𝒪 Patch-A) S)) , ♢) i
-             where
-              ♢ : (rel-syntax (poset-of (𝒪 Patchₛ-A)) Joins.is-an-upper-bound-of
-                     join-of (𝒪 Patch-A) S)
-                    S
-                    holds
-              ♢ i = ≼-implies-≼ᵏ (S [ i ]) (join-of (𝒪 Patch-A) S) (⋁[ 𝒪 Patch-A ]-upper S i)
+           open Joins _≼ᵏ_
+            using ()
+            renaming (_is-an-upper-bound-of_ to _is-an-upper-bound-ofₙ_)
+           open Joins _≼_
+            using ()
+            renaming (_is-an-upper-bound-of_ to _is-an-upper-bound-ofₖ_)
 
-            eq₂ : rel-syntax (poset-of (𝒪 Patchₛ-A)) (join-of (𝒪 Patch-A) S) (join-of (𝒪 Patchₛ-A) S) holds
-            eq₂ i = ⋁[ 𝒪 Patch-A ]-least S ((join-of (𝒪 Patchₛ-A) S) , ♢) (β i)
-             where
-              ♢ : (rel-syntax (poset-of (𝒪 Patch-A)) Joins.is-an-upper-bound-of
-                     join-of (𝒪 Patchₛ-A) S)
-                    S
-                    holds
-              ♢ i = ≼ᵏ-implies-≼ (S [ i ]) (join-of (𝒪 Patchₛ-A) S) (⋁[ 𝒪 Patchₛ-A ]-upper S i)
+           -- TODO: the following two things are definitionally equal and
+           -- I don't understand why Agda cannot realise this.
+           φ : ⋁[ 𝒪 Patchₛ-A ] S ＝ ⋁[ 𝒪 Patch-A ] S
+           φ = ≤-is-antisymmetric (poset-of (𝒪 Patchₛ-A)) φ₁ φ₂
+            where
+             ψ₁ : ((⋁[ 𝒪 Patchₛ-A ] S) is-an-upper-bound-ofₙ S) holds
+             ψ₁ i = ≼-implies-≼ᵏ
+                     (S [ i ])
+                     (⋁[ 𝒪 Patch-A ] S)
+                     (⋁[ 𝒪 Patch-A ]-upper S i)
 
-          bar : ((U , _) : upper-bound ⁅ 𝒻⁻₁ .pr₁ x ∣ x ε S ⁆) → (𝒻⁻₁ .pr₁ (⋁[ 𝒪 Patchₛ-A ] S) ≤[ poset-of (𝒪 X) ] U) holds
-          bar (U , p) = 𝒻⁻₁ .pr₁ (⋁[ 𝒪 Patchₛ-A ] S) ＝⟨ ap (𝒻⁻₁ .pr₁) eq ⟩ₚ 𝒻⁻₁ .pr₁ (⋁[ 𝒪 Patch-A ] S) ≤⟨ pr₂ (γ₁ S) (U , p) ⟩ U ■
+             φ₁ : ((⋁[ 𝒪 Patchₛ-A ] S) ≼ᵏ (⋁[ 𝒪 Patch-A ] S)) holds
+             φ₁ = ⋁[ 𝒪 Patchₛ-A ]-least S ((⋁[ 𝒪 Patch-A ] S) , ψ₁)
 
-      ♣ : (𝒻⁻₂ : X ─c→ Patch-A)
-        → is-prop ((U : ⟨ 𝒪 A ⟩) → 𝒻 .pr₁ U ＝ 𝒻⁻₂ .pr₁ ‘ U ’)
-      ♣ 𝒻⁻₂ = Π-is-prop fe (λ _ → carrier-of-[ poset-of (𝒪 X) ]-is-set)
+             ψ₂ : ((⋁[ 𝒪 Patch-A ] S) is-an-upper-bound-ofₖ S) holds
+             ψ₂ i = ≼ᵏ-implies-≼
+                     (S [ i ])
+                     (⋁[ 𝒪 Patchₛ-A ] S)
+                     (⋁[ 𝒪 Patchₛ-A ]-upper S i)
 
-      ♠ : (𝒻⁻₂ : ⟨ 𝒪 Patch-A ⟩ → ⟨ 𝒪 X ⟩)
-        → is-prop (is-a-frame-homomorphism (𝒪 Patch-A) (𝒪 X) 𝒻⁻₂ holds)
-      ♠ = holds-is-prop ∘ is-a-frame-homomorphism (𝒪 Patch-A) (𝒪 X)
+             φ₂ : ((⋁[ 𝒪 Patch-A ] S) ≼ᵏ (⋁[ 𝒪 Patchₛ-A ] S)) holds
+             φ₂ = ⋁[ 𝒪 Patch-A ]-least S ((⋁[ 𝒪 Patchₛ-A ] S) , ψ₂) ∘ β
 
-      ϟ : (𝒿 : ⟨ 𝒪 Patch-A ⟩) → f⁻⁺ 𝒿 ＝ 𝒻⁻₁ .pr₁ 𝒿
-      ϟ 𝒿 = f⁻⁺ 𝒿 ＝⟨ 𝒻⁻-is-unique-ext 𝒻⁻₁′ p 𝒿 ⟩ 𝒻⁻₁ .pr₁ 𝒿 ∎
+           ‡ : ((U , _) : upper-bound ⁅ f⁻₁ U ∣ U ε S ⁆)
+             → (f⁻₁ (⋁[ 𝒪 Patchₛ-A ] S) ≤ₓ U) holds
+           ‡ (U , p) = f⁻₁ (⋁[ 𝒪 Patchₛ-A ] S)   ＝⟨ ap (𝒻⁻₁ .pr₁) φ   ⟩ₚ
+                       f⁻₁ (⋁[ 𝒪 Patch-A ] S)    ≤⟨ pr₂ (γ₁ S) (U , p) ⟩
+                       U                         ■
+
+       ♣ : (𝒻⁻₂ : X ─c→ Patch-A)
+         → is-prop ((U : ⟨ 𝒪 A ⟩) → 𝒻 .pr₁ U ＝ 𝒻⁻₂ .pr₁ ‘ U ’)
+       ♣ 𝒻⁻₂ = Π-is-prop fe (λ _ → carrier-of-[ poset-of (𝒪 X) ]-is-set)
+
+       ♠ : (𝒻⁻₂ : ⟨ 𝒪 Patch-A ⟩ → ⟨ 𝒪 X ⟩)
+         → is-prop (is-a-frame-homomorphism (𝒪 Patch-A) (𝒪 X) 𝒻⁻₂ holds)
+       ♠ = holds-is-prop ∘ is-a-frame-homomorphism (𝒪 Patch-A) (𝒪 X)
+
+       ϟ : (𝒿 : ⟨ 𝒪 Patch-A ⟩) → f⁻⁺ 𝒿 ＝ f⁻₁ 𝒿
+       ϟ = 𝒻⁻-is-unique-ext 𝒻⁻₁′ p
 
 \end{code}
