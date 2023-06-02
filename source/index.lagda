@@ -170,6 +170,6 @@ import Various.index
 
 \end{code}
 
-The UF modules (univalent foundations) have been developed, on demand,
-for use in the other modules. The modules UF.Yoneda, UF.IdEmbedding
-and UF.Factorial contain new results.
+The above includes only the --safe modules. A list of all modules is here:
+
+https://www.cs.bham.ac.uk/~mhe/TypeTopology/AllModulesIndex.html
