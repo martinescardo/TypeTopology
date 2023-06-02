@@ -145,6 +145,11 @@ the enumeration function.
  _∧ₓ_ : ⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩
  U ∧ₓ V = U ∧[ 𝒪 X ] V
 
+ infix 5 _≤ₓ_
+
+ _≤ₓ_ : ⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩ → Ω 𝓤
+ _≤ₓ_ = λ U V → U ≤[ poset-of (𝒪 X) ] V
+
 \end{code}
 
 \begin{code}
@@ -368,7 +373,9 @@ separate proof
      open PosetReasoning (poset-of (𝒪 A))
 
      ‡ : 𝔏 𝓀 m n holds
-     ‡ l = (‘ β m ’ ∧[ 𝒪 Patchₛ-A ] ¬‘ βₖ n ’) .pr₁ (β l) ≤⟨ q l ⟩ 𝒿 $ (β l) ≤⟨ p l ⟩ 𝓀 $ (β l) ■
+     ‡ l = (‘ β m ’ ∧[ 𝒪 Patchₛ-A ] ¬‘ βₖ n ’) .pr₁ (β l)   ≤⟨ q l ⟩
+           𝒿 $ (β l)                                        ≤⟨ p l ⟩
+           𝓀 $ (β l)                                        ■
 
      ♣ : (_ ≤[ poset-of (𝒪 X) ] _) holds
      ♣ = ≤-is-reflexive (poset-of (𝒪 X)) ((𝒻 ⋆∙ β m) ∧[ 𝒪 X ] ¬𝒻⋆ (β n))
@@ -393,12 +400,13 @@ Some horrible import bureaucracy below 😬
 
 \begin{code}
 
- open AdjointFunctorTheorem X Patchₛ-A Patchₛ-A-has-basis hiding (f₊-is-right-adjoint-of-f⁺)
+ open AdjointFunctorTheorem X Patchₛ-A Patchₛ-A-has-basis
+  hiding (f₊-is-right-adjoint-of-f⁺)
  open AdjointFunctorTheorem Patchₛ-A X X-has-basis
   using ()
   renaming (adjunction-inequality-forward to adjunction-inequality-forward₀)
  open AdjointFunctorTheorem X A A-has-basis
-  using (f₊-is-right-adjoint-of-f⁺)
+  using    (f₊-is-right-adjoint-of-f⁺)
   renaming (right-adjoint-of to right-adjoint-ofₓ;
             f₊-preserves-binary-meets to f₊-preserves-binary-meetsₓ;
             adjunction-inequality-forward to adjunction-inequality-forwardₓ;
@@ -457,13 +465,13 @@ We prove that `f⁻⁺` preserves the top element of `𝒪(Patchₛ-A)`.
          ‡ : Σ i ꞉ Bₐ , 𝟎[ 𝒪 A ] ＝ β i
            → (𝟏[ 𝒪 X ] ≤[ poset-of (𝒪 X) ] f⁻⁺ 𝟏[ 𝒪 Patchₛ-A ]) holds
          ‡ (i , p) =
-          𝟏[ 𝒪 X ]                                            ＝⟨ Ⅰ    ⟩ₚ
-          𝟏[ 𝒪 X ] ∧[ 𝒪 X ] 𝟏[ 𝒪 X ]                          ＝⟨ Ⅱ    ⟩ₚ
-          𝒻 ⋆∙ 𝟏[ 𝒪 A ] ∧[ 𝒪 X ] 𝟏[ 𝒪 X ]                     ＝⟨ Ⅲ    ⟩ₚ
-          𝒻 ⋆∙ 𝟏[ 𝒪 A ] ∧[ 𝒪 X ] ¬𝒻⋆ (β i)                    ≤⟨  Ⅳ    ⟩
+          𝟏[ 𝒪 X ]                                                ＝⟨ Ⅰ    ⟩ₚ
+          𝟏[ 𝒪 X ] ∧[ 𝒪 X ] 𝟏[ 𝒪 X ]                              ＝⟨ Ⅱ    ⟩ₚ
+          𝒻 ⋆∙ 𝟏[ 𝒪 A ] ∧[ 𝒪 X ] 𝟏[ 𝒪 X ]                         ＝⟨ Ⅲ    ⟩ₚ
+          𝒻 ⋆∙ 𝟏[ 𝒪 A ] ∧[ 𝒪 X ] ¬𝒻⋆ (β i)                        ≤⟨  Ⅳ    ⟩
           ⋁[ 𝒪 X ] ⁅ 𝒻 ⋆∙ 𝟏[ 𝒪 A ] ∧[ 𝒪 X ] ¬𝒻⋆ (β n) ∣ n ∶ Bₐ ⁆  ＝⟨ refl ⟩ₚ
-          f⁻⁺₂ 𝟏[ 𝒪 Patchₛ-A ]                                ＝⟨ Ⅴ    ⟩ₚ
-          f⁻⁺  𝟏[ 𝒪 Patchₛ-A ]                                ■
+          f⁻⁺₂ 𝟏[ 𝒪 Patchₛ-A ]                                    ＝⟨ Ⅴ    ⟩ₚ
+          f⁻⁺  𝟏[ 𝒪 Patchₛ-A ]                                    ■
            where
             𝕒   = heyting-implication-identity 𝟎[ 𝒪 X ] ⁻¹
             𝕓   = ap
@@ -583,7 +591,8 @@ The function `f⁻⁺` preserves binary meets.
              ∎)
 
     lhs₁ = ⁅ (𝒻 ⋆∙ j (β n)  ∧ₓ ¬𝒻⋆ (β n)) ∧ₓ (𝒻 ⋆∙ k (β n) ∧ₓ ¬𝒻⋆ (β n)) ∣ n ∶ Bₐ ⁆
-    rhs₁ = ⁅ (𝒻 ⋆∙ j (β m)  ∧ₓ ¬𝒻⋆ (β m)) ∧ₓ (𝒻 ⋆∙ k (β n) ∧ₓ ¬𝒻⋆ (β n)) ∣ (m , n) ∶ Bₐ × Bₐ ⁆
+    rhs₁ = ⁅ (𝒻 ⋆∙ j (β m)  ∧ₓ ¬𝒻⋆ (β m)) ∧ₓ (𝒻 ⋆∙ k (β n) ∧ₓ ¬𝒻⋆ (β n))
+            ∣ (m , n) ∶ Bₐ × Bₐ ⁆
 
     † : cofinal-in (𝒪 X) lhs₁ rhs₁ holds
     † n = ∣ (n , n) , ≤-is-reflexive (poset-of (𝒪 X)) (lhs₁ [ n ]) ∣
@@ -827,7 +836,11 @@ due to him.
 \begin{code}
 
  closed-image-preserves-meets : (U : ⟨ 𝒪 X ⟩)
-                              → preserves-binary-meets (𝒪 A) (𝒪 A) (closed-image U) holds
+                              → preserves-binary-meets
+                                 (𝒪 A)
+                                 (𝒪 A)
+                                 (closed-image U)
+                                holds
  closed-image-preserves-meets U V₁ V₂ =
   𝒻₊ (U ∨[ 𝒪 X ] 𝒻 ⋆∙ (V₁ ∧[ 𝒪 A ] V₂))                        ＝⟨ Ⅰ    ⟩
   𝒻₊ (U ∨[ 𝒪 X ] (𝒻 ⋆∙ V₁ ∧[ 𝒪 X ] 𝒻 ⋆∙ V₂))                   ＝⟨ Ⅱ    ⟩
@@ -907,8 +920,7 @@ As mentioned previously, `closed-image U` is a perfect nucleus for any `U :
    open PerfectMaps X A A-has-basis
    open LemmasAboutHeytingComplementation X X-has-basis
 
-   ϑ₁ : (f⁻⁺ 𝒿 ≤[ poset-of (𝒪 X) ] U) holds
-      → (𝒿 ≤[ poset-of (𝒪 Patchₛ-A) ] (f⁻₊ U)) holds
+   ϑ₁ : (f⁻⁺ 𝒿 ≤ₓ U ⇒ 𝒿 ≤[ poset-of (𝒪 Patchₛ-A) ] (f⁻₊ U)) holds
    ϑ₁ φ n =
     adjunction-inequality-forwardₓ
      𝒻
@@ -974,7 +986,7 @@ As mentioned previously, `closed-image U` is a perfect nucleus for any `U :
        ϡ : (T : ⟨ 𝒪 A ⟩)
          → (((𝒻 ⋆∙ (β m ∨[ 𝒪 A ] T)) ∧[ 𝒪 X ] 𝒻 ⋆∙ (β n ==>ₐ T))
              ≤[ poset-of (𝒪 X) ]
-            (U ∨[ 𝒪 X ] (𝒻 ⋆∙ T))) holds
+            (U ∨[ 𝒪 X ] 𝒻 ⋆∙ T)) holds
        ϡ T =
         let
          open PosetReasoning (poset-of (𝒪 X))
@@ -1040,64 +1052,32 @@ Proof that `f⁻⁺` preserves joins.
    (f⁻⁺-preserves-joins S ⁻¹)
    (⋁[ 𝒪 X ]-upper ⁅ f⁻⁺ 𝒿 ∣ 𝒿 ε S ⁆ , ⋁[ 𝒪 X ]-least ⁅ f⁻⁺ 𝒿 ∣ 𝒿 ε S ⁆)
 
- main-lemma : (𝒻⁻₀ : X ─c→ Patchₛ-A)
+\end{code}
+
+Now, we start working towards proving that `f⁻⁺` makes the aforementioned
+diagram commute.
+
+\begin{code}
+
+ easy-lemma : (𝒻⁻₀@(f⁻₀ , _) : X ─c→ Patchₛ-A)
             → (n : Bₐ)
-            → is-complement-of (𝒪 X) (𝒻⁻₀ .pr₁ ¬‘ βₖ n ’) (𝒻⁻₀ .pr₁ ‘ β n ’)
- main-lemma 𝒻⁻₀ n =
+            → is-complement-of (𝒪 X) (f⁻₀ ¬‘ βₖ n ’) (f⁻₀ ‘ β n ’)
+ easy-lemma 𝒻⁻₀ n =
   frame-homomorphisms-preserve-complements (𝒪 Patchₛ-A) (𝒪 X) 𝒻⁻₀ †
    where
-    ♣₁ : (U : ⟨ 𝒪 A ⟩)
-       → (β n ∨[ 𝒪 A ] U) ∧[ 𝒪 A ] (β n ==>ₐ U) ＝ 𝟎[ 𝒪 Patchₛ-A ] $ U
-    ♣₁ U = (β n ∨[ 𝒪 A ] U)   ∧[ 𝒪 A ] (β n ==>ₐ U)  ＝⟨ Ⅰ ⟩
-           (U   ∨[ 𝒪 A ] β n) ∧[ 𝒪 A ] (β n ==>ₐ U)  ＝⟨ Ⅱ ⟩
-           U                                         ＝⟨ Ⅲ ⟩
-           𝟎[ 𝒪 Patchₛ-A ] $ U                        ∎
-     where
-      Ⅰ = ap (λ - → - ∧[ 𝒪 A ] (β n ==>ₐ U)) (∨[ 𝒪 A ]-is-commutative (β n) U)
-      Ⅱ = H₈ₐ U (β n) ⁻¹
-      Ⅲ = 𝟎-is-id U ⁻¹
-
-    ‡₁ : ‘ β n ’ ∧[ 𝒪 Patchₛ-A ] ¬‘ βₖ n ’ ＝ 𝟎[ 𝒪 Patchₛ-A ]
-    ‡₁ = perfect-nuclei-eq
-          (‘ β n ’ ∧[ 𝒪 Patchₛ-A ] ¬‘ βₖ n ’)
-          𝟎[ 𝒪 Patchₛ-A ]
-          (dfunext fe ♣₁)
-
-    ♣₂ : _$_ (‘ β n ’ ∨[ 𝒪 Patchₛ-A ] ¬‘ βₖ n ’) ∼ _$_ 𝟏[ 𝒪 Patchₛ-A ]
-    ♣₂ U = only-𝟏-is-above-𝟏 (𝒪 A) ((‘ β n ’ ∨[ 𝒪 Patchₛ-A ] ¬‘ βₖ n ’) $ U) ※
-     where
-      open PosetReasoning (poset-of (𝒪 A))
-
-      ϡ : ((𝟏[ 𝒪 A ] ∧[ 𝒪 A ] β n) ≤[ poset-of (𝒪 A) ] ((β n) ∨[ 𝒪 A ] U)) holds
-      ϡ = 𝟏[ 𝒪 A ] ∧[ 𝒪 A ] β n  ≤⟨ ∧[ 𝒪 A ]-lower₂ 𝟏[ 𝒪 A ] (β n) ⟩
-          β n                    ≤⟨ ∨[ 𝒪 A ]-upper₁ (β n) U        ⟩
-          β n ∨[ 𝒪 A ] U         ■
-
-      ※ : (𝟏[ 𝒪 A ] ≤[ poset-of (𝒪 A) ] (‘ β n ’ ∨[ 𝒪 Patchₛ-A ] ¬‘ βₖ n ’) $ U) holds
-      ※ = 𝟏[ 𝒪 A ]                                   ≤⟨ Ⅰ ⟩
-          (β n) ==>ₐ ((β n) ∨[ 𝒪 A ] U)              ≤⟨ Ⅱ ⟩
-          ((‘ β n ’ ∨[ 𝒪 Patchₛ-A ] ¬‘ βₖ n ’) $ U)  ■
-           where
-            Ⅰ = heyting-implication₁ₐ (β n) (β n ∨[ 𝒪 A ] U) 𝟏[ 𝒪 A ] ϡ 
-            Ⅱ = ⋁[ 𝒪 A ]-upper _ (inl ⋆ ∷ inr ⋆ ∷ [])
-
-    ‡₂ : ‘ β n ’ ∨[ 𝒪 Patchₛ-A ] ¬‘ βₖ n ’ ＝ 𝟏[ 𝒪 Patchₛ-A ]
-    ‡₂ = perfect-nuclei-eq
-          (‘ β n ’ ∨[ 𝒪 Patchₛ-A ] ¬‘ βₖ n ’)
-          𝟏[ 𝒪 Patchₛ-A ]
-          (dfunext fe ♣₂)
+    open PatchComplementation A σᴰ
 
     ‡ : is-boolean-complement-of (𝒪 Patchₛ-A) ¬‘ βₖ n ’ ‘ β n ’ holds
-    ‡ = ‡₁ , ‡₂
+    ‡ = open-complements-closed (β n) (pr₂ (βₖ n))
 
     † : is-complement-of (𝒪 Patchₛ-A) ‘ β n ’ ¬‘ βₖ n ’
-    † = complementation-is-symmetric (𝒪 Patchₛ-A) ¬‘ βₖ n ’ ‘ β n ’ (‡₁ , ‡₂)
+    † = complementation-is-symmetric (𝒪 Patchₛ-A) ¬‘ βₖ n ’ ‘ β n ’ ‡
 
- preserves-closed-implies-preserves-open : (𝒻⁻₀ : X ─c→ Patchₛ-A)
-                                         → ((n : Bₐ) → 𝒻 ⋆∙ (β n) ＝ 𝒻⁻₀ .pr₁ ‘ β n ’)
-                                         → (n : Bₐ) →  ¬𝒻⋆ (β n) ＝ 𝒻⁻₀ .pr₁ ¬‘ βₖ n ’
+ preserves-closed-implies-preserves-open : (𝒻⁻₀@(f⁻₀ , _) : X ─c→ Patchₛ-A)
+                                         → ((n : Bₐ) → 𝒻 ⋆∙ (β n) ＝ f⁻₀ ‘ β n ’)
+                                         → (n : Bₐ) →  ¬𝒻⋆ (β n) ＝ f⁻₀ ¬‘ βₖ n ’
  preserves-closed-implies-preserves-open 𝒻⁻₀@(f⁻₀ , _) ϑ n =
-  complements-are-unique (𝒪 X) (𝒻 ⋆∙ (β n)) (¬𝒻⋆ (β n)) (𝒻⁻₀ .pr₁ ¬‘ βₖ n ’) ψ₁ ψ₂
+  complements-are-unique (𝒪 X) (𝒻 ⋆∙ (β n)) (¬𝒻⋆ (β n)) (f⁻₀ ¬‘ βₖ n ’) ψ₁ ψ₂
    where
     open LemmasAboutHeytingComplementation X X-has-basis
 
@@ -1123,7 +1103,7 @@ Proof that `f⁻⁺` preserves joins.
     ψ₂ = transport
           (λ - → is-complement-of (𝒪 X) (f⁻₀ ¬‘ βₖ n ’) -)
           (ϑ n ⁻¹)
-          (main-lemma 𝒻⁻₀ n)
+          (easy-lemma 𝒻⁻₀ n)
 
  𝒻⁻-makes-the-diagram-commute : (U : ⟨ 𝒪 A ⟩) → 𝒻 ⋆∙ U  ＝ f⁻⁺ ‘ U ’
  𝒻⁻-makes-the-diagram-commute U = ≤-is-antisymmetric (poset-of (𝒪 X)) † ‡
@@ -1311,7 +1291,7 @@ Proof that `f⁻⁺` preserves joins.
    ψ₂ n = transport
            (λ - → is-complement-of (𝒪 X) (f⁻₀ ¬‘ βₖ n ’) -)
            (ϑ (β n) ⁻¹)
-           (main-lemma 𝒻⁻₀ n)
+           (easy-lemma 𝒻⁻₀ n)
 
    ψ : (n : Bₐ) → ¬𝒻⋆ (β n) ＝ f⁻₀ ¬‘ βₖ n ’
    ψ n =
