@@ -85,9 +85,10 @@ As prevoiusly mentioned, we assume
 
 \begin{code}
 
- open PatchConstruction A ∣ σᴰ ∣  using (nucleus-of; _≼_; _$_; perfect-nuclei-eq; idₙ; 𝔡𝔦𝔯)
- open ClosedNucleus     A ∣ σᴰ ∣
- open OpenNucleus       A ∣ σᴰ ∣
+ open PatchConstruction A ∣ σᴰ ∣
+  using (nucleus-of; _≼_; _$_; perfect-nuclei-eq; idₙ; 𝔡𝔦𝔯)
+ open ClosedNucleus A ∣ σᴰ ∣
+ open OpenNucleus A ∣ σᴰ ∣
 
  open SmallPatchConstruction A σᴰ
   using (𝟎-is-id; ≼-implies-≼ᵏ; ≼ᵏ-implies-≼; _≼ᵏ_)
@@ -662,7 +663,12 @@ The function `f⁻⁺` preserves binary meets.
                 (pr₁ 𝒻)
                 (pr₂ 𝒻)
                 ((j (β m) ∧[ 𝒪 A ] k (β n)) , (j (β o) ∧[ 𝒪 A ] k (β o)))
-                (∧[ 𝒪 A ]-greatest (j (β o)) (k (β o)) (meet-of (𝒪 A) (j (β m)) (k (β n))) 𝕓₁ 𝕓₂))
+                (∧[ 𝒪 A ]-greatest
+                  (j (β o))
+                  (k (β o))
+                  (j (β m) ∧[ 𝒪 A ] k (β n))
+                  𝕓₁
+                  𝕓₂))
 
         ♣ : ((¬𝒻⋆ (β m) ∧ₓ ¬𝒻⋆ (β n)) ≤[ poset-of (𝒪 X) ] ¬𝒻⋆ (β o)) holds
         ♣ = ¬𝒻⋆ (β m) ∧ₓ ¬𝒻⋆ (β n)                                  ＝⟨ refl ⟩ₚ
@@ -968,12 +974,13 @@ As mentioned previously, `closed-image U` is a perfect nucleus for any `U :
    ϑ₂ φ = ⋁[ 𝒪 X ]-least S (U , †)
     where
      open Joins (λ x y → x ≤[ poset-of (𝒪 X) ] y)
+     open PatchConstruction A ∣ σᴰ ∣ using (⋁ₙ; _⋏_)
 
      † : (U is-an-upper-bound-of S) holds
      † (m , n , p) = goal
       where
        ψ : (U : ⟨ 𝒪 A ⟩)
-         → (((‘ β m ’ ∧[ 𝒪 Patchₛ-A ] ¬‘ βₖ n ’) .pr₁ U) ≤[ poset-of (𝒪 A)  ] j U) holds
+         → (((‘ β m ’ ⋏ ¬‘ βₖ n ’) .pr₁ U) ≤[ poset-of (𝒪 A)  ] j U) holds
        ψ = ≼ᵏ-implies-≼ (‘ β m ’ ∧[ 𝒪 Patchₛ-A ] ¬‘ βₖ n ’) 𝒿 p
 
        κ : is-clopen₀ (𝒪 X) (𝒻 ⋆∙ β n)
@@ -1219,14 +1226,14 @@ prove that `𝒻⁻` makes the diagram commute.
      open PosetReasoning (poset-of (𝒪 X))
 
      ϟ : (n : Bₐ)
-       → ((𝒻 ⋆∙ (U ∨[ 𝒪 A ] β n) ∧[ 𝒪 X ] ¬𝒻⋆ (β n)) ≤ₓ 𝒻 ⋆∙ U) holds
+       → ((𝒻 ⋆∙ (U ∨[ 𝒪 A ] β n) ∧ₓ ¬𝒻⋆ (β n)) ≤ₓ 𝒻 ⋆∙ U) holds
      ϟ n =
-      𝒻 ⋆∙ (U ∨[ 𝒪 A ] β n) ∧[ 𝒪 X ] ¬𝒻⋆ (β n)                             ＝⟨ 𝟏 ⟩ₚ
-      (𝒻 ⋆∙ U ∨[ 𝒪 X ] 𝒻 ⋆∙ β n) ∧[ 𝒪 X ] ((𝒻 ⋆∙ (β n)) ==> 𝟎[ 𝒪 X ])      ＝⟨ 𝟐 ⟩ₚ
-      (𝒻 ⋆∙ U ∧[ 𝒪 X ] ¬𝒻⋆ (β n)) ∨[ 𝒪 X ] (𝒻 ⋆∙ (β n) ∧[ 𝒪 X ] ¬𝒻⋆ (β n)) ≤⟨  𝟑 ⟩
-      (𝒻 ⋆∙ U) ∨[ 𝒪 X ] (𝒻 ⋆∙ (β n) ∧[ 𝒪 X ] ¬𝒻⋆ (β n))                    ≤⟨  𝟒 ⟩
-      (𝒻 ⋆∙ U) ∨[ 𝒪 X ] 𝟎[ 𝒪 X ]                                           ＝⟨ 𝟓 ⟩ₚ
-      𝒻 ⋆∙ U                                                               ■
+      𝒻 ⋆∙ (U ∨[ 𝒪 A ] β n) ∧ₓ ¬𝒻⋆ (β n)                         ＝⟨ 𝟏 ⟩ₚ
+      (𝒻 ⋆∙ U ∨[ 𝒪 X ] 𝒻 ⋆∙ β n) ∧ₓ ((𝒻 ⋆∙ (β n)) ==> 𝟎[ 𝒪 X ])  ＝⟨ 𝟐 ⟩ₚ
+      (𝒻 ⋆∙ U ∧ₓ ¬𝒻⋆ (β n)) ∨[ 𝒪 X ] (𝒻 ⋆∙ (β n) ∧ₓ ¬𝒻⋆ (β n))   ≤⟨  𝟑 ⟩
+      𝒻 ⋆∙ U ∨[ 𝒪 X ] (𝒻 ⋆∙ (β n) ∧ₓ ¬𝒻⋆ (β n))                  ≤⟨  𝟒 ⟩
+      (𝒻 ⋆∙ U) ∨[ 𝒪 X ] 𝟎[ 𝒪 X ]                                 ＝⟨ 𝟓 ⟩ₚ
+      𝒻 ⋆∙ U                                                     ■
        where
         𝟏 = ap
              (λ - → - ∧[ 𝒪 X ] ¬𝒻⋆ (β n))
@@ -1261,9 +1268,9 @@ proof.
 
 \begin{code}
 
- 𝒻⁻-is-unique-ext : (𝒻⁻′ : X ─c→ Patchₛ-A)
-                  → (((U : ⟨ 𝒪 A ⟩) → 𝒻 .pr₁ U  ＝ 𝒻⁻′ .pr₁ ‘ U ’) )
-                  → (𝒿 : ⟨ 𝒪 Patchₛ-A ⟩) → f⁻⁺ 𝒿 ＝ 𝒻⁻′ .pr₁ 𝒿
+ 𝒻⁻-is-unique-ext : (𝒻⁻₀@(f⁻₀ , _) : X ─c→ Patchₛ-A)
+                  → (((U : ⟨ 𝒪 A ⟩) → 𝒻 ⋆∙ U  ＝ f⁻₀ ‘ U ’) )
+                  → (𝒿 : ⟨ 𝒪 Patchₛ-A ⟩) → f⁻⁺ 𝒿 ＝ f⁻₀ 𝒿
  𝒻⁻-is-unique-ext 𝒻⁻₀@(f⁻₀ , _) ϑ 𝒿 =
   f⁻⁺ 𝒿                                                                 ＝⟨ Ⅰ ⟩
   f⁻⁺ (⋁ₙ ⁅ (𝔠 k) ⋏ (𝔬 l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆)            ＝⟨ Ⅱ ⟩
@@ -1280,7 +1287,7 @@ proof.
     open BasisOfPatch A σᴰ
     open PatchConstruction A ∣ σᴰ ∣ using (⋁ₙ; _⋏_)
 
-    ν : 𝒿 ＝ ⋁[ 𝒪 Patchₛ-A ] ⁅ 𝔠 k ∧[ 𝒪 Patchₛ-A ] 𝔬 l ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆
+    ν : 𝒿 ＝ ⋁[ 𝒪 Patchₛ-A ] ⁅ 𝔠 k ⋏ 𝔬 l ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆
     ν = main-covering-lemma 𝒿
 
     Ⅰ = ap f⁻⁺ ν
