@@ -10,8 +10,6 @@ open import MLTT.Spartan
 open import UF.Base
 open import UF.PropTrunc
 open import UF.FunExt
-open import UF.Univalence
-open import UF.UA-FunExt
 
 module Locales.InitialFrame
         (pt : propositional-truncations-exist)
@@ -21,7 +19,6 @@ module Locales.InitialFrame
 open import UF.Subsingletons
 open import UF.Logic
 open import UF.Subsingletons-FunExt
-open import UF.Equiv
 open import Locales.Frame pt fe
 open AllCombinators pt fe
 
@@ -42,11 +39,18 @@ P ⊑ Q = P ⇒ Q
 ⊑-is-transitive : is-transitive {A = Ω 𝓤} _⊑_ holds
 ⊑-is-transitive _ _ _ p q = q ∘ p
 
-⊑-is-antisymmetric : {𝓤 : Universe} → is-univalent 𝓤 → is-antisymmetric {A = Ω 𝓤} _⊑_
-⊑-is-antisymmetric ua = Ω-ext-from-univalence ua
+⊑-is-antisymmetric : {𝓤 : Universe} → propext 𝓤 → is-antisymmetric {A = Ω 𝓤} _⊑_
+⊑-is-antisymmetric pe {P} {Q} φ ψ = Ω-ext pe fe † ‡
+ where
+  † : P ＝ ⊤Ω → Q ＝ ⊤Ω
+  † = holds-gives-equal-⊤ pe fe Q ∘ φ ∘ equal-⊤-is-true (P holds) (holds-is-prop P)
 
-⊑-is-partial-order : {𝓤 : Universe} → is-univalent 𝓤 → is-partial-order (Ω 𝓤) _⊑_
-⊑-is-partial-order ua = (⊑-is-reflexive , ⊑-is-transitive) , ⊑-is-antisymmetric ua
+  ‡ : Q ＝ ⊤Ω → P ＝ ⊤Ω
+  ‡ = holds-gives-equal-⊤ pe fe P ∘ ψ ∘ equal-⊤-is-true (Q holds) (holds-is-prop Q)
+
+⊑-is-partial-order : {𝓤 : Universe} → propext 𝓤 → is-partial-order (Ω 𝓤) _⊑_
+⊑-is-partial-order pe =
+ (⊑-is-reflexive , ⊑-is-transitive) , ⊑-is-antisymmetric pe
 
 \end{code}
 
@@ -54,12 +58,12 @@ This gives us a poset structure at universe 𝓤:
 
 \begin{code}
 
-𝟎F-poset-str : {𝓤 : Universe} → is-univalent 𝓤 → poset-structure 𝓤 (Ω 𝓤)
-𝟎F-poset-str ua = _⊑_
+𝟎F-poset-str : {𝓤 : Universe} → propext 𝓤 → poset-structure 𝓤 (Ω 𝓤)
+𝟎F-poset-str pe = _⊑_
                 , (⊑-is-reflexive , ⊑-is-transitive)
-                , ⊑-is-antisymmetric ua
+                , ⊑-is-antisymmetric pe
 
-𝟎F-poset : {𝓤 : Universe} → is-univalent 𝓤 → Poset (𝓤 ⁺) 𝓤
+𝟎F-poset : {𝓤 : Universe} → propext 𝓤 → Poset (𝓤 ⁺) 𝓤
 𝟎F-poset {𝓤 = 𝓤} ua = Ω 𝓤 , 𝟎F-poset-str ua
 
 \end{code}
@@ -70,9 +74,9 @@ This gives us a poset structure at universe 𝓤:
 
 open propositional-truncations-exist pt
 
-𝟎-𝔽𝕣𝕞 : {𝓤 : Universe} → is-univalent 𝓤 → Frame (𝓤 ⁺) 𝓤 𝓤
-𝟎-𝔽𝕣𝕞 {𝓤 = 𝓤} ua = Ω 𝓤 , (_⊑_ , ⊤Ω {𝓤} , _∧_ , ⋁_)
-      , ⊑-is-partial-order ua , top , meet , join , dist
+𝟎-𝔽𝕣𝕞 : {𝓤 : Universe} → propext 𝓤 → Frame (𝓤 ⁺) 𝓤 𝓤
+𝟎-𝔽𝕣𝕞 {𝓤 = 𝓤} pe = Ω 𝓤 , (_⊑_ , ⊤Ω {𝓤} , _∧_ , ⋁_)
+      , ⊑-is-partial-order pe , top , meet , join , dist
  where
   ⋁_ : Fam 𝓤 (Ω 𝓤) → Ω 𝓤
   ⋁ U = Ǝ i ∶ index U , ((U [ i ]) holds)
@@ -102,11 +106,11 @@ open propositional-truncations-exist pt
 
   abstract
    iss : is-set (Ω 𝓤)
-   iss = carrier-of-[ 𝟎F-poset ua ]-is-set
+   iss = carrier-of-[ 𝟎F-poset pe ]-is-set
 
    dist : (Ɐ(P , U) ∶ Ω 𝓤 × Fam 𝓤 (Ω 𝓤) ,
            (P ∧ (⋁ U) ＝[ iss ]＝  ⋁⟨ i ⟩ P ∧ U [ i ])) holds
-   dist (P , U) = Ω-ext-from-univalence ua β γ
+   dist (P , U) = ≤-is-antisymmetric (𝟎F-poset pe) β γ
     where
      β : (P ∧ ⋁ U ⇒ (⋁⟨ i ⟩ (P ∧ U [ i ]))) holds
      β (p , u) = ∥∥-rec (holds-is-prop (⋁⟨ i ⟩ (P ∧ U [ i ]))) α u
@@ -125,7 +129,7 @@ open propositional-truncations-exist pt
 \end{code}
 
 \begin{code}
-𝟎-of-IF-is-⊥ : {𝓦 : Universe} → (ua : is-univalent 𝓦) → 𝟎[ 𝟎-𝔽𝕣𝕞 ua ] ＝ ⊥Ω
+𝟎-of-IF-is-⊥ : {𝓦 : Universe} → (ua : propext 𝓦) → 𝟎[ 𝟎-𝔽𝕣𝕞 ua ] ＝ ⊥Ω
 𝟎-of-IF-is-⊥ ua =
  ≤-is-antisymmetric (poset-of (𝟎-𝔽𝕣𝕞 ua)) γ λ ()
  where
@@ -137,14 +141,14 @@ open propositional-truncations-exist pt
 
 \begin{code}
 
-f : {𝓦 : Universe} → (ua : is-univalent 𝓦) → (A : Frame 𝓤 𝓥 𝓦) → ⟨ 𝟎-𝔽𝕣𝕞 ua ⟩ → ⟨ A ⟩
+f : {𝓦 : Universe} → (ua : propext 𝓦) → (A : Frame 𝓤 𝓥 𝓦) → ⟨ 𝟎-𝔽𝕣𝕞 ua ⟩ → ⟨ A ⟩
 f ua A P = ⋁[ A ] ⁅ 𝟏[ A ] ∣ x ∶ P holds ⁆
 
 \end{code}
 
 \begin{code}
 
-f-respects-⊤ : {𝓦 : Universe} (ua : is-univalent 𝓦) (A : Frame 𝓤 𝓥 𝓦)
+f-respects-⊤ : {𝓦 : Universe} (ua : propext 𝓦) (A : Frame 𝓤 𝓥 𝓦)
              → f ua A 𝟏[ 𝟎-𝔽𝕣𝕞 ua ] ＝ 𝟏[ A ]
 f-respects-⊤ ua A = ≤-is-antisymmetric (poset-of A) α β
  where
@@ -160,7 +164,7 @@ f-respects-⊤ ua A = ≤-is-antisymmetric (poset-of A) α β
 
 \begin{code}
 
-f-respects-∧ : {𝓦 : Universe} (ua : is-univalent 𝓦)
+f-respects-∧ : {𝓦 : Universe} (ua : propext 𝓦)
              → (A : Frame 𝓤 𝓥 𝓦)
              → (P Q : Ω 𝓦)
              → f ua A (P ∧ Q) ＝ (f ua A P) ∧[ A ] (f ua A Q)
@@ -177,7 +181,7 @@ f-respects-∧ ua A P Q =
 
 \begin{code}
 
-f-respects-⋁ : {𝓦 : Universe} → (ua : is-univalent 𝓦)
+f-respects-⋁ : {𝓦 : Universe} → (ua : propext 𝓦)
              → (A : Frame 𝓤 𝓥 𝓦) (U : Fam 𝓦 (Ω 𝓦))
              → let open Joins (λ x y → x ≤[ poset-of A ] y) in
                ((f ua A (⋁[ 𝟎-𝔽𝕣𝕞 ua ] U)) is-lub-of ⁅ f ua A x ∣ x ε U ⁆) holds
@@ -207,7 +211,7 @@ f-respects-⋁ ua A U = β , γ
 
 \begin{code}
 
-𝒻 : {𝓦 : Universe} (ua : is-univalent 𝓦) (F : Frame 𝓤 𝓥 𝓦)
+𝒻 : {𝓦 : Universe} (ua : propext 𝓦) (F : Frame 𝓤 𝓥 𝓦)
   → (𝟎-𝔽𝕣𝕞 ua) ─f→ F
 𝒻 ua F = (f ua F)
        , f-respects-⊤ ua F
@@ -218,7 +222,7 @@ f-respects-⋁ ua A U = β , γ
 
 \begin{code}
 
-main-lemma : {𝓦 : Universe} (ua : is-univalent 𝓦) (P : Ω 𝓦)
+main-lemma : {𝓦 : Universe} (ua : propext 𝓦) (P : Ω 𝓦)
            → (P ⊑ (⋁[ 𝟎-𝔽𝕣𝕞 ua ] ⁅ 𝟏[ 𝟎-𝔽𝕣𝕞 ua ] ∣ x ∶ P holds ⁆)) holds
 main-lemma ua P p =
  ⋁[ 𝟎-𝔽𝕣𝕞 ua ]-upper (⁅ 𝟏[ 𝟎-𝔽𝕣𝕞 ua ] ∣ x ∶ P holds ⁆) p ⋆
@@ -227,7 +231,7 @@ main-lemma ua P p =
 
 \begin{code}
 
-𝒻-is-unique : {𝓦 : Universe} (ua : is-univalent 𝓦) (F : Frame 𝓤 𝓥 𝓦)
+𝒻-is-unique : {𝓦 : Universe} (ua : propext 𝓦) (F : Frame 𝓤 𝓥 𝓦)
             → (ℊ : (𝟎-𝔽𝕣𝕞 ua) ─f→ F)
             → 𝒻 ua F ＝ ℊ
 𝒻-is-unique ua F ℊ@ (g , ζ@ (ϕ , χ , ψ)) =
@@ -278,7 +282,7 @@ main-lemma ua P p =
 
 \begin{code}
 
-𝟎-𝔽𝕣𝕞-initial : {𝓦 : Universe} (ua : is-univalent 𝓦) (F : Frame 𝓤 𝓥 𝓦)
+𝟎-𝔽𝕣𝕞-initial : {𝓦 : Universe} (ua : propext 𝓦) (F : Frame 𝓤 𝓥 𝓦)
               → is-singleton (𝟎-𝔽𝕣𝕞 ua ─f→ F)
 𝟎-𝔽𝕣𝕞-initial ua F = (𝒻 ua F) , 𝒻-is-unique ua F
 
