@@ -47,7 +47,7 @@ idea (*) in the weakened form discussed above.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 module UF.IdEmbedding where
 
@@ -82,42 +82,56 @@ Id-Embedding-Lemma : FunExt
 Id-Embedding-Lemma {𝓤} fe {X} iflc A (x₀ , p₀) = h (x₀ , p₀)
  where
   T = Σ x ꞉ X , Id x ＝ A
+
   q : Σ (Id x₀) ＝ Σ A
   q = ap Σ p₀
+
   c : ∃! A
   c = yoneda-nat (singleton-type x₀) is-singleton (singleton-types-are-singletons x₀) (Σ A) q
+
   f₀ : (x : X) → Id x ＝ A → (y : X) → Id x y ＝ A y
   f₀ x = happly
+
   f₁ : (x : X) → ((y : X) → Id x y ＝ A y) → Nat (Id x) A
   f₁ x = NatΠ (λ y → idtofun (Id x y) (A y))
+
   f₂ : (x : X) → Nat (Id x) A → A x
   f₂ x = yoneda-elem x A
+
   f : (x : X) → Id x ＝ A → A x
   f x = f₂ x ∘ f₁ x ∘ f₀ x
+
   f₀-lc : (x : X) → left-cancellable(f₀ x)
   f₀-lc x = happly-lc (fe 𝓤 (𝓤 ⁺)) (Id x) A
+
   f₁-lc : (x : X) → left-cancellable(f₁ x)
   f₁-lc x = g
     where
       l : ∀ {φ φ'} → f₁ x φ ＝ f₁ x φ' → (x : X) → φ x ＝ φ' x
       l {φ} {φ'} = NatΠ-lc (λ y → idtofun (Id x y) (A y)) (λ y → iflc x y A)
+
       g : ∀ {φ φ'} → f₁ x φ ＝ f₁ x φ' → φ ＝ φ'
       g p = dfunext (fe 𝓤 (𝓤 ⁺)) (l p)
+
   f₂-lc : (x : X) → left-cancellable(f₂ x)
   f₂-lc x {η} {η'} p = dfunext (fe 𝓤 𝓤) (λ y → dfunext (fe 𝓤 𝓤) (l y))
     where
       l : η ≈ η'
       l = yoneda-elem-lc η η' p
+
   f-lc : (x : X) → left-cancellable(f x)
   f-lc x = left-cancellable-closed-under-∘
-               (f₀ x)
-               (f₂ x ∘ f₁ x)
-               (f₀-lc x)
-               (left-cancellable-closed-under-∘ (f₁ x) (f₂ x) (f₁-lc x) (f₂-lc x))
+            (f₀ x)
+            (f₂ x ∘ f₁ x)
+            (f₀-lc x)
+            (left-cancellable-closed-under-∘ (f₁ x) (f₂ x) (f₁-lc x) (f₂-lc x))
+
   g : T → Σ A
   g = NatΣ f
+
   g-lc : left-cancellable g
   g-lc = NatΣ-lc f f-lc
+
   h : is-prop T
   h = left-cancellable-reflects-is-prop g g-lc (singletons-are-props c)
 
@@ -138,6 +152,7 @@ eqtofun-lc ua fe X Y {f , jef} {g , jeg} p = γ
  where
   q : yoneda-nat f is-equiv jef g p ＝ jeg
   q = being-equiv-is-prop fe g _ _
+
   γ : f , jef ＝ g , jeg
   γ = to-Σ-Id (p , q)
 
@@ -151,9 +166,9 @@ is-univalent-idtofun-lc : is-univalent 𝓤
                         → FunExt
                         → (X Y : 𝓤 ̇ ) → left-cancellable(idtofun X Y)
 is-univalent-idtofun-lc  ua fe X Y = left-cancellable-closed-under-∘
-                                        (idtoeq X Y)
-                                        (Eqtofun X Y)
-                                        (is-univalent-idtoeq-lc ua X Y) (eqtofun-lc ua fe X Y)
+                                      (idtoeq X Y)
+                                      (Eqtofun X Y)
+                                      (is-univalent-idtoeq-lc ua X Y) (eqtofun-lc ua fe X Y)
 
 UA-Id-embedding : is-univalent 𝓤
                 → FunExt
@@ -205,8 +220,10 @@ Id-set-lc fe {X} i {x} {y} e = Id-lc d
 Id-set-is-embedding : funext  𝓤 (𝓤 ⁺)
                     → propext 𝓤
                     → {X : 𝓤 ̇ } (i : is-set X) → is-embedding (Id-set i)
-Id-set-is-embedding {𝓤} fe pe {X} i = lc-maps-into-sets-are-embeddings
-                                        (Id-set i)
-                                        (Id-set-lc (lower-funext 𝓤 (𝓤 ⁺) fe) i)
-                                        (Π-is-set fe (λ x → Ω-is-set (lower-funext 𝓤 (𝓤 ⁺) fe) pe))
+Id-set-is-embedding {𝓤} fe pe {X} i =
+ lc-maps-into-sets-are-embeddings
+  (Id-set i)
+  (Id-set-lc (lower-funext 𝓤 (𝓤 ⁺) fe) i)
+  (Π-is-set fe (λ x → Ω-is-set (lower-funext 𝓤 (𝓤 ⁺) fe) pe))
+
 \end{code}

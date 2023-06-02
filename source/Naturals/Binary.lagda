@@ -37,7 +37,7 @@ Applications:
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 module Naturals.Binary where
 
@@ -729,7 +729,7 @@ two-𝔹-plus-𝟙 = qinveq f (g , ε , η)
 
 two-ℕ-plus-𝟙 : ℕ ∔ ℕ ∔ 𝟙 ≃ ℕ
 two-ℕ-plus-𝟙 =
-    ℕ ∔ (ℕ ∔ 𝟙)    ≃⟨ +cong (≃-sym binary-equiv) (Ap+ 𝟙 (≃-sym binary-equiv)) ⟩
+    ℕ ∔ (ℕ ∔ 𝟙)    ≃⟨ +-cong (≃-sym binary-equiv) (Ap+ 𝟙 (≃-sym binary-equiv)) ⟩
     𝔹 ∔ (𝔹 ∔ 𝟙)    ≃⟨ two-𝔹-plus-𝟙 ⟩
     𝔹              ≃⟨ binary-equiv ⟩
     ℕ              ■

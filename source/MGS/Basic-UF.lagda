@@ -7,7 +7,7 @@ This is ported from the Midlands Graduate School 2019 lecture notes
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 module MGS.Basic-UF where
 
@@ -233,9 +233,6 @@ transport-ap : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : Y → 𝓦 ̇ )
              → transport (A ∘ f) p a ＝ transport A (ap f p) a
 
 transport-ap A f (refl x) a = refl a
-
-data Color : 𝓤₀ ̇  where
- Black White : Color
 
 apd : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (f : (x : X) → A x) {x y : X}
       (p : x ＝ y) → transport A p (f x) ＝ f y

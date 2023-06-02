@@ -19,7 +19,7 @@ Other local assumptions belonging to HoTT/UF are discussed below.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 open import UF.Univalence
 
@@ -29,6 +29,8 @@ module Ordinals.SupSum
 
 open import MLTT.Spartan
 open import Notation.CanonicalMap
+open import Ordinals.Equivalence
+open import Ordinals.Maps
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.OrdinalOfOrdinalsSuprema ua
 open import Ordinals.Type
@@ -132,15 +134,15 @@ module _ {𝓤 : Universe}
  open import Ordinals.ToppedArithmetic fe
  open suprema pt sr
 
- sup-bounded-by-sum-gives-WEM : ({𝓤 : Universe} (τ : Ordinalᵀ 𝓤) (υ : ⟨ τ ⟩ → Ordinalᵀ 𝓤)
-                                    → sup (λ x → [ υ x ]) ⊴ [ ∑ τ υ ])
-
-                              → {𝓤 : Universe} → WEM 𝓤
+ sup-bounded-by-sum-gives-WEM :
+    ({𝓤 : Universe} (τ : Ordinalᵀ 𝓤) (υ : ⟨ τ ⟩ → Ordinalᵀ 𝓤)
+        → sup (λ x → [ υ x ]) ⊴ [ ∑ τ υ ])
+  → {𝓤 : Universe} → WEM 𝓤
  sup-bounded-by-sum-gives-WEM ϕ {𝓤} = γ
   where
    open import Ordinals.OrdinalOfTruthValues fe 𝓤 (pe 𝓤)
    open Omega (pe 𝓤)
-   open import Ordinals.Arithmetic-Properties ua
+   open import Ordinals.ArithmeticProperties ua
 
    τ = 𝟚ᵒ
 

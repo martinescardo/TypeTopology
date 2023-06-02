@@ -11,7 +11,7 @@ development below offers an alternative proof for 𝕊¹.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 open import MLTT.Spartan
 open import UF.Base
@@ -596,7 +596,7 @@ closed under retracts, the claim follows.
     open import UF.Retracts
 
     Ω𝕊¹-is-set : is-set (base ＝ base)
-    Ω𝕊¹-is-set = subtypes-of-sets-are-sets (encode base)
+    Ω𝕊¹-is-set = subtypes-of-sets-are-sets' (encode base)
                   (sections-are-lc (encode base)
                    ((decode base) , (decode-encode base)))
                    (transport is-set (code-on-base ⁻¹) ℤ-is-set)

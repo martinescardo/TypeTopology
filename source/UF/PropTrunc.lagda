@@ -2,7 +2,7 @@ Martin Escardo
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 module UF.PropTrunc where
 
@@ -52,7 +52,8 @@ module PropositionalTruncation (pt : propositional-truncations-exist) where
  is-singleton'-is-prop : {X : 𝓤 ̇ } → funext 𝓤 𝓤 → is-prop (is-prop X × ∥ X ∥)
  is-singleton'-is-prop fe = Σ-is-prop (being-prop-is-prop fe) (λ _ → ∥∥-is-prop)
 
- the-singletons-are-the-inhabited-propositions : {X : 𝓤 ̇ } → is-singleton X ⇔ is-prop X × ∥ X ∥
+ the-singletons-are-the-inhabited-propositions : {X : 𝓤 ̇ }
+                                               → is-singleton X ⇔ is-prop X × ∥ X ∥
  the-singletons-are-the-inhabited-propositions {𝓤} {X} = f , g
   where
    f : is-singleton X → is-prop X × ∥ X ∥
@@ -81,9 +82,14 @@ module PropositionalTruncation (pt : propositional-truncations-exist) where
  Exists : {𝓤 𝓥 : Universe} (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
  Exists X Y = ∃ Y
 
+ ¬Exists : {𝓤 𝓥 : Universe} (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
+ ¬Exists X Y = ¬ (∃ Y)
+
  syntax Exists A (λ x → b) = ∃ x ꞉ A , b
+ syntax ¬Exists A (λ x → b) = ¬∃ x ꞉ A , b
 
  infixr -1 Exists
+ infixr -1 ¬Exists
 
  Nat∃ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {B : X → 𝓦 ̇ } → Nat A B → ∃ A → ∃ B
  Nat∃ ζ = ∥∥-functor (NatΣ ζ)
@@ -107,11 +113,20 @@ module PropositionalTruncation (pt : propositional-truncations-exist) where
            → P ∨ Q → R ∨ S
  ∨-functor f g = ∥∥-functor (+functor f g)
 
- left-fails-gives-right-holds : {P : 𝓤 ̇ } {Q : 𝓥 ̇ } → is-prop Q → P ∨ Q → ¬ P → Q
- left-fails-gives-right-holds i d u = ∥∥-rec i (λ d → Left-fails-gives-right-holds d u) d
+ left-fails-gives-right-holds : {P : 𝓤 ̇ } {Q : 𝓥 ̇ }
+                              → is-prop Q
+                              → P ∨ Q
+                              → ¬ P
+                              → Q
+ left-fails-gives-right-holds i d u =
+  ∥∥-rec i (λ d → Left-fails-gives-right-holds d u) d
 
- right-fails-gives-left-holds : {P : 𝓤 ̇ } {Q : 𝓥 ̇ } → is-prop P → P ∨ Q → ¬ Q → P
- right-fails-gives-left-holds i d u = ∥∥-rec i (λ d → Right-fails-gives-left-holds d u) d
+ right-fails-gives-left-holds : {P : 𝓤 ̇ } {Q : 𝓥 ̇ }
+                              → is-prop P
+                              → P ∨ Q
+                              → ¬ Q → P
+ right-fails-gives-left-holds i d u =
+  ∥∥-rec i (λ d → Right-fails-gives-left-holds d u) d
 
  pt-gdn : {X : 𝓤 ̇ } → ∥ X ∥ → ∀ {𝓥} (P : 𝓥 ̇ ) → is-prop P → (X → P) → P
  pt-gdn {𝓤} {X} s {𝓥} P isp u = ∥∥-rec isp u s
@@ -138,7 +153,8 @@ module PropositionalTruncation (pt : propositional-truncations-exist) where
  not-exists₀-implies-forall₁ : {X : 𝓤 ̇ } (p : X → 𝟚)
                              → ¬ (∃ x ꞉ X , p x ＝ ₀)
                              → ∀ (x : X) → p x ＝ ₁
- not-exists₀-implies-forall₁ p u x = different-from-₀-equal-₁ (not-Σ-implies-Π-not (u ∘ ∣_∣) x)
+ not-exists₀-implies-forall₁ p u x =
+  different-from-₀-equal-₁ (not-Σ-implies-Π-not (u ∘ ∣_∣) x)
 
  forall₁-implies-not-exists₀ : {X : 𝓤 ̇ } (p : X → 𝟚)
                              → (∀ (x : X) → p x ＝ ₁)

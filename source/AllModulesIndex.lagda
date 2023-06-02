@@ -3,7 +3,7 @@
    constructive univalent mathematics
    written in Agda
 
-   Tested with Agda 2.6.2.2 and the release candidate 3 of Agda 2.6.3
+   Tested with Agda 2.6.3
 
    Martin Escardo and collaborators, 2010--2023--∞
    Continuously evolving.
@@ -12,19 +12,21 @@
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split #-}
+{-# OPTIONS --without-K --exact-split --no-sized-types --no-guardedness --auto-inline #-}
 
-import index -- of safe modules
+import index              -- Of safe modules.
 import Unsafe.index
 import Redirection.index
+import Pigeon.index       -- Uses non-termination check for bar recursion.
 
 \end{code}
 
-There are only three, peripheral, unsafe modules. One of them is to get
+There are only four, peripheral, unsafe modules. One of them is to get
 a contradiction from type-in-type. The other two assume
 (meta-theoretically) the Brouwerian axiom "all functions are
 continuous" to prove a countable Tychonoff theorem and a form of the
-compactness of the Cantor type/space.
+compactness of the Cantor type/space. The last one interfaces with
+Haskell to be able to compile Agda files which print.
 
 Most modules rely on concepts and ingredients from univalent
 mathematics. However, instead of postulating these non-existing

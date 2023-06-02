@@ -24,7 +24,7 @@ Idl(B,⊑) and analogous remarks apply in this case.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline --experimental-lossy-unification #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline --lossy-unification #-}
 
 open import MLTT.Spartan hiding (J)
 
@@ -458,7 +458,7 @@ module Idl-algebraic
                             , from-Idl-section-of-to-Idl ,
           to-Idl-is-continuous , from-Idl-is-continuous)
   where
-   -- This is where we use --experimental-lossy-unification
+   -- This is where we use --lossy-unification
    from-Idl-section-of-to-Idl : (I : ⟨ Idl-DCPO ⟩) → to-Idl (from-Idl I) ＝ I
    from-Idl-section-of-to-Idl I =
     antisymmetry Idl-DCPO (to-Idl (from-Idl I)) I (Idl-deflation I) inflationary

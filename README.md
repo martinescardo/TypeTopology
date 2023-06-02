@@ -25,10 +25,15 @@ You can use the following BibTeX citation to cite `TypeTopology`:
 }
 ```
 
+If you are citing only your files, then create a different bibtex file
+with only your name as author.
+
 ## Current contributors in alphabetical order of given name
 
+* Alice Laroche
 * Andrew Sneap
 * Ayberk Tosun
+* Brendan Hart
 * Chuangjie Xu
 * Cory Knapp
 * Ettore Aldrovandi
@@ -46,6 +51,7 @@ You can use the following BibTeX citation to cite `TypeTopology`:
 * Thierry Coquand *
 * Todd Waugh Ambridge
 * Tom de Jong
+* Vincent Rahli
 
 (*) These authors didn't write any single line of Agda code here, but
 they contributed to constructions, theorems and proofs via the hands

@@ -1,6 +1,6 @@
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 module MLTT.Sigma where
 
@@ -36,6 +36,10 @@ uncurry f (x , y) = f x y
 curry :  {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {Z : 𝓦 ̇ }
       → (Σ Y → Z) → ((x : X) → Y x → Z)
 curry f x y = f (x , y)
+
+×functor : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } {B : 𝓣 ̇ }
+         → (X → A) → (Y → B) → X × Y → A × B
+×functor f g (x , y) = f x , g y
 
 \end{code}
 

@@ -5,7 +5,7 @@ Based in part by the `Cubical.Functions.Logic` module UF.of
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 module UF.Logic where
 
@@ -38,14 +38,14 @@ module Conjunction where
 
 module Universal (fe : Fun-Ext) where
 
- ∀[∶]-syntax : (I : 𝓤 ̇) → (I → Ω 𝓥) → Ω (𝓤 ⊔ 𝓥)
+ ∀[∶]-syntax : (I : 𝓤 ̇ )→ (I → Ω 𝓥) → Ω (𝓤 ⊔ 𝓥)
  ∀[∶]-syntax I P = ((i : I) → P i holds) , γ
   where
    γ : is-prop ((i : I) → P i holds)
    γ = Π-is-prop fe (holds-is-prop ∘ P)
 
 
- ∀[]-syntax : {I : 𝓤 ̇} → (I → Ω 𝓥) → Ω (𝓤 ⊔ 𝓥)
+ ∀[]-syntax : {I : 𝓤 ̇ } → (I → Ω 𝓥) → Ω (𝓤 ⊔ 𝓥)
  ∀[]-syntax {I = I} P = ∀[∶]-syntax I P
 
  infixr -1 ∀[∶]-syntax
@@ -116,10 +116,10 @@ module Existential (pt : propositional-truncations-exist) where
 
  open Truncation pt
 
- ∃[∶]-syntax : (I : 𝓤 ̇) → (I → 𝓥 ̇) → Ω (𝓤 ⊔ 𝓥)
+ ∃[∶]-syntax : (I : 𝓤 ̇ )→ (I → 𝓥 ̇ )→ Ω (𝓤 ⊔ 𝓥)
  ∃[∶]-syntax I A = ∥ Σ i ꞉ I , A i ∥Ω
 
- ∃[]-syntax : {I : 𝓤 ̇} → (I → 𝓥 ̇) → Ω (𝓤 ⊔ 𝓥)
+ ∃[]-syntax : {I : 𝓤 ̇ } → (I → 𝓥 ̇ )→ Ω (𝓤 ⊔ 𝓥)
  ∃[]-syntax {I = I} P = ∃[∶]-syntax I P
 
  infixr -1 ∃[∶]-syntax

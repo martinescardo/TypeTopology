@@ -17,7 +17,7 @@ and
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 module TypeTopology.DisconnectedTypes where
 
@@ -35,25 +35,25 @@ property.
 
 \begin{code}
 
-disconnected₀ : 𝓤 ̇ → 𝓤 ̇
-disconnected₀ X = retract 𝟚 of X
+is-disconnected₀ : 𝓤 ̇ → 𝓤 ̇
+is-disconnected₀ X = retract 𝟚 of X
 
-disconnected₁ : 𝓤 ̇ → 𝓤 ̇
-disconnected₁ X = Σ p ꞉ (X → 𝟚) , fiber p ₀ × fiber p ₁
+is-disconnected₁ : 𝓤 ̇ → 𝓤 ̇
+is-disconnected₁ X = Σ p ꞉ (X → 𝟚) , fiber p ₀ × fiber p ₁
 
-disconnected₂ : 𝓤 ̇ → 𝓤 ⁺ ̇
-disconnected₂ {𝓤} X = Σ X₀ ꞉ 𝓤 ̇ , Σ X₁ ꞉ 𝓤 ̇ , X₀ × X₁ × (X ≃ X₀ + X₁)
+is-disconnected₂ : 𝓤 ̇ → 𝓤 ⁺ ̇
+is-disconnected₂ {𝓤} X = Σ X₀ ꞉ 𝓤 ̇ , Σ X₁ ꞉ 𝓤 ̇ , X₀ × X₁ × (X ≃ X₀ + X₁)
 
-disconnected₃ : 𝓤 ̇ → 𝓤 ⁺ ̇
-disconnected₃ {𝓤} X = Σ X₀ ꞉ 𝓤 ̇ , Σ X₁ ꞉ 𝓤 ̇ , X₀ × X₁ × (retract (X₀ + X₁) of X)
+is-disconnected₃ : 𝓤 ̇ → 𝓤 ⁺ ̇
+is-disconnected₃ {𝓤} X = Σ X₀ ꞉ 𝓤 ̇ , Σ X₁ ꞉ 𝓤 ̇ , X₀ × X₁ × (retract (X₀ + X₁) of X)
 
-disconnected-eq : (X : 𝓤 ̇ )
-                → (disconnected₀ X → disconnected₁ X)
-                × (disconnected₁ X → disconnected₂ X)
-                × (disconnected₂ X → disconnected₃ X)
-                × (disconnected₃ X → disconnected₀ X)
+is-disconnected-eq : (X : 𝓤 ̇ )
+                → (is-disconnected₀ X → is-disconnected₁ X)
+                × (is-disconnected₁ X → is-disconnected₂ X)
+                × (is-disconnected₂ X → is-disconnected₃ X)
+                × (is-disconnected₃ X → is-disconnected₀ X)
 
-disconnected-eq {𝓤} X = (f , g , h , k)
+is-disconnected-eq {𝓤} X = (f , g , h , k)
  where
   f : (Σ p ꞉ (X → 𝟚) , Σ s ꞉ (𝟚 → X) , p ∘ s ∼ id)
     → Σ p ꞉ (X → 𝟚) , (Σ x ꞉ X , p x ＝ ₀) × (Σ x ꞉ X , p x ＝ ₁)
@@ -111,8 +111,8 @@ equivalent to the other ones):
 
 \begin{code}
 
-disconnected : 𝓤 ̇ → 𝓤 ̇
-disconnected = disconnected₀
+is-disconnected : 𝓤 ̇ → 𝓤 ̇
+is-disconnected = is-disconnected₀
 
 \end{code}
 
@@ -120,11 +120,11 @@ Some examples:
 
 \begin{code}
 
-𝟚-disconnected : disconnected 𝟚
-𝟚-disconnected = identity-retraction
+𝟚-is-disconnected : is-disconnected 𝟚
+𝟚-is-disconnected = identity-retraction
 
-ℕ-disconnected : disconnected ℕ
-ℕ-disconnected = (r , s , rs)
+ℕ-is-disconnected : is-disconnected ℕ
+ℕ-is-disconnected = (r , s , rs)
  where
   r : ℕ → 𝟚
   r zero     = ₀
@@ -138,35 +138,37 @@ Some examples:
   rs ₀ = refl
   rs ₁ = refl
 
-isolated-point-different-from-another-point-gives-disconnected :
+types-with-isolated-point-different-from-another-point-are-disconnected :
 
     {Y : 𝓥 ̇ }
   → (Σ y₀ ꞉ Y , Σ y₁ ꞉ Y , (y₀ ≠ y₁) × is-isolated y₀ )
-  → disconnected Y
+  → is-disconnected Y
 
-isolated-point-different-from-another-point-gives-disconnected (y₀ , y₁ , ne , i) =
+types-with-isolated-point-different-from-another-point-are-disconnected (y₀ , y₁ , ne , i) =
   𝟚-retract-of-non-trivial-type-with-isolated-point ne i
 
-discrete-type-with-two-different-points-gives-disconnected :
+discrete-types-with-two-different-points-are-disconnected :
 
     {Y : 𝓥 ̇ }
   → (Σ y₀ ꞉ Y , Σ y₁ ꞉ Y , y₀ ≠ y₁)
   → is-discrete Y
-  → disconnected Y
+  → is-disconnected Y
 
-discrete-type-with-two-different-points-gives-disconnected (y₀ , y₁ , ne) d =
-  isolated-point-different-from-another-point-gives-disconnected (y₀ , y₁ , ne , d y₀)
+discrete-types-with-two-different-points-are-disconnected (y₀ , y₁ , ne) d =
+  types-with-isolated-point-different-from-another-point-are-disconnected
+   (y₀ , y₁ , ne , d y₀)
 
-ℕ-disconnected' : disconnected ℕ
-ℕ-disconnected' = discrete-type-with-two-different-points-gives-disconnected
+
+ℕ-is-disconnected' : is-disconnected ℕ
+ℕ-is-disconnected' = discrete-types-with-two-different-points-are-disconnected
                      (0 , 1 , succ-no-fp 0)
                      ℕ-is-discrete
 
-disconnected-retract : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-                     → retract X of Y
-                     → disconnected X
-                     → disconnected Y
-disconnected-retract = retracts-compose
+retract-is-disconnected : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                        → retract X of Y
+                        → is-disconnected X
+                        → is-disconnected Y
+retract-is-disconnected = retracts-compose
 
 \end{code}
 
@@ -192,17 +194,17 @@ is-connected₁ : 𝓤 ̇ → 𝓤 ̇
 is-connected₁ X = (x y : X) → x ＝₂ y
 
 is-connected₂ : 𝓤 ̇ → 𝓤 ̇
-is-connected₂ X = ¬ disconnected X
+is-connected₂ X = ¬ is-disconnected X
 
 
-is-connected₀-gives-is-connected₁ : {X : 𝓤 ̇ } → is-connected₀ X → is-connected₁ X
-is-connected₀-gives-is-connected₁ i x y p = i p x y
+connected₀-types-are-connected₁ : {X : 𝓤 ̇ } → is-connected₀ X → is-connected₁ X
+connected₀-types-are-connected₁ i x y p = i p x y
 
-is-connected₁-gives-is-connected₀ : {X : 𝓤 ̇ } → is-connected₁ X → is-connected₀ X
-is-connected₁-gives-is-connected₀ ϕ f x y = ϕ x y f
+connected₁-types-are-connected₀ : {X : 𝓤 ̇ } → is-connected₁ X → is-connected₀ X
+connected₁-types-are-connected₀ ϕ f x y = ϕ x y f
 
-is-connected₀-gives-is-connected₂ : {X : 𝓤 ̇ } → is-connected₀ X → is-connected₂ X
-is-connected₀-gives-is-connected₂ c (r , s , rs) = n (c r)
+connected₀-types-are-connected₂ : {X : 𝓤 ̇ } → is-connected₀ X → is-connected₂ X
+connected₀-types-are-connected₂ c (r , s , rs) = n (c r)
  where
   n : ¬ wconstant r
   n κ = zero-is-not-one (₀       ＝⟨ (rs ₀)⁻¹ ⟩
@@ -210,11 +212,16 @@ is-connected₀-gives-is-connected₂ c (r , s , rs) = n (c r)
                          r (s ₁) ＝⟨ rs ₁ ⟩
                          ₁       ∎)
 
-disconnected-types-are-not-connected : {X : 𝓤 ̇ } → disconnected X → ¬ is-connected₀ X
-disconnected-types-are-not-connected c d = is-connected₀-gives-is-connected₂ d c
+disconnected-types-are-not-connected : {X : 𝓤 ̇ }
+                                     → is-disconnected X
+                                     → ¬ is-connected₀ X
+disconnected-types-are-not-connected c d = connected₀-types-are-connected₂ d c
 
-is-connected₂-gives-is-connected₀ : {X : 𝓤 ̇ } → is-connected₂ X → is-connected₀ X
-is-connected₂-gives-is-connected₀ {𝓤} {X} n f x y = 𝟚-is-¬¬-separated (f x) (f y) ϕ
+connected₂-types-are-is-connected₀ : {X : 𝓤 ̇ }
+                                   → is-connected₂ X
+                                   → is-connected₀ X
+connected₂-types-are-is-connected₀ {𝓤} {X} n f x y =
+ 𝟚-is-¬¬-separated (f x) (f y) ϕ
  where
   ϕ : ¬¬ (f x ＝ f y)
   ϕ u = n (f , s , fs)
@@ -236,18 +243,18 @@ is-connected₂-gives-is-connected₀ {𝓤} {X} n f x y = 𝟚-is-¬¬-separate
     fs : f ∘ s ∼ id
     fs ₀ = 𝟚-equality-cases
            (λ (p₀ : f x ＝ ₀) → f (s ₀) ＝⟨ ap f (𝟚-equality-cases₀ p₀) ⟩
-                               f x     ＝⟨ p₀ ⟩
-                               ₀       ∎)
+                               f x      ＝⟨ p₀ ⟩
+                               ₀        ∎)
            (λ (p₁ : f x ＝ ₁) → f (s ₀) ＝⟨ ap f (𝟚-equality-cases₁ p₁) ⟩
-                               f y     ＝⟨ a p₁ ⟩
-                               ₀       ∎)
+                               f y      ＝⟨ a p₁ ⟩
+                               ₀        ∎)
     fs ₁ = 𝟚-equality-cases
            (λ (p₀ : f x ＝ ₀) → f (s ₁) ＝⟨ ap f (𝟚-equality-cases₀ p₀) ⟩
-                               f y     ＝⟨ b p₀ ⟩
-                               ₁       ∎)
+                               f y      ＝⟨ b p₀ ⟩
+                               ₁        ∎)
            (λ (p₁ : f x ＝ ₁) → f (s ₁) ＝⟨ ap f (𝟚-equality-cases₁ p₁) ⟩
-                               f x     ＝⟨ p₁ ⟩
-                               ₁       ∎)
+                               f x      ＝⟨ p₁ ⟩
+                               ₁        ∎)
 
 is-connected : 𝓤 ̇ → 𝓤 ̇
 is-connected = is-connected₀
@@ -256,6 +263,3 @@ being-connected-is-prop : {X : 𝓤 ̇ } → Fun-Ext → is-prop (is-connected X
 being-connected-is-prop fe = Π₃-is-prop fe (λ f x y → 𝟚-is-set)
 
 \end{code}
-
-TODO. Is it possible to define sensible analogues for types of total
-disconnectedness and zero-dimensionality for topological spaces?

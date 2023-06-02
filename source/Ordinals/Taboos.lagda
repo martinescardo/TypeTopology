@@ -2,12 +2,14 @@ Tom de Jong, 1 and 4 April 2022.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 module Ordinals.Taboos where
 
 open import MLTT.Plus-Properties
 open import MLTT.Spartan hiding (𝟚 ; ₀ ; ₁)
+open import Ordinals.Equivalence
+open import Ordinals.Maps
 open import Ordinals.Notions
 open import Ordinals.Type
 open import Ordinals.Underlying
@@ -38,8 +40,8 @@ indexed by a discrete type is again discrete.
 
 Every-Discrete-Ordinal-Is-Trichotomous : (𝓤 : Universe) → 𝓤 ⁺ ̇
 Every-Discrete-Ordinal-Is-Trichotomous 𝓤 =
-   ((α : Ordinal 𝓤) → is-discrete ⟨ α ⟩
-                    → is-trichotomous-order (underlying-order α))
+ ((α : Ordinal 𝓤) → is-discrete ⟨ α ⟩
+                  → is-trichotomous-order (underlying-order α))
 
 module suprema-of-ordinals-assumptions
         (pt : propositional-truncations-exist)
@@ -325,7 +327,7 @@ e : ⟨ sup α ⟩ → Ordinal 𝓤 and ⟨ sup α ⟩ is discrete by assumption
   fact-III : (α ₀ ↓ inr ⋆) ≃ₒ (α ₁ ↓ inr ⋆) → P
   fact-III e = fact-I (≃ₒ-to-fun⁻¹ (α ₀ ↓ inr ⋆) (α ₁ ↓ inr ⋆) e (inl ⋆ , ⋆))
 
-  decidability-if-sup-of-α-discrete : is-discrete ⟨ sup α ⟩ → decidable P
+  decidability-if-sup-of-α-discrete : is-discrete ⟨ sup α ⟩ → is-decidable P
   decidability-if-sup-of-α-discrete δ = decidable-⇔ (fact-III , fact-II) dec
    where
     r : image (sum-to-ordinals α) → Ordinal 𝓤
@@ -352,7 +354,7 @@ e : ⟨ sup α ⟩ → Ordinal 𝓤 and ⟨ sup α ⟩ is discrete by assumption
       where
        h = ap r (inverses-are-sections ⌜ φ ⌝ (⌜⌝-is-equiv φ) (c (i , x)))
 
-    dec : decidable ((α ₀ ↓ inr ⋆) ≃ₒ (α ₁ ↓ inr ⋆))
+    dec : is-decidable ((α ₀ ↓ inr ⋆) ≃ₒ (α ₁ ↓ inr ⋆))
     dec = decidable-cong γ (δ (f (₀ , inr ⋆)) (f (₁ , inr ⋆)))
      where
       γ = (f (₀ , inr ⋆)     ＝  f (₁ , inr ⋆))     ≃⟨ ⦅1⦆ ⟩
@@ -364,7 +366,7 @@ e : ⟨ sup α ⟩ → Ordinal 𝓤 and ⟨ sup α ⟩ is discrete by assumption
                       (f (₀ , inr ⋆)) (f (₁ , inr ⋆)))
         ⦅2⦆ = ＝-cong _ _ (e-after-f-lemma (₀ , inr ⋆))
                          (e-after-f-lemma (₁ , inr ⋆))
-        ⦅3⦆ = UAₒ-≃ (α ₀ ↓ inr ⋆) (α ₁ ↓ inr ⋆)
+        ⦅3⦆ = UAₒ-≃ (ua 𝓤) (fe _ _) (α ₀ ↓ inr ⋆) (α ₁ ↓ inr ⋆)
 
 \end{code}
 

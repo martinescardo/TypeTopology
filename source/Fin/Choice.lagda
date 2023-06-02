@@ -2,7 +2,7 @@ Martin Escardo, November-December 2019
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 module Fin.Choice where
 
@@ -34,7 +34,7 @@ module _ (pt : propositional-truncations-exist) where
  open PropositionalTruncation pt
 
  Σ-min-from-∃ : FunExt → {n : ℕ} (A : Fin n → 𝓤 ̇ )
-             → complemented A
+             → is-complemented A
              → is-prop-valued-family A
              → ∃ A
              → Σ-min A
@@ -43,7 +43,7 @@ module _ (pt : propositional-truncations-exist) where
 
  Fin-Σ-from-∃' : FunExt
                → {n : ℕ} (A : Fin n → 𝓤 ̇ )
-               → complemented A
+               → is-complemented A
                → is-prop-valued-family A
                → ∃ A
                → Σ A
@@ -58,7 +58,7 @@ But the prop-valuedness of A is actually not needed, with more work:
 
  Fin-Σ-from-∃ : FunExt
               → {n : ℕ} (A : Fin n → 𝓤 ̇ )
-              → complemented A
+              → is-complemented A
               → ∃ A
               → Σ A
 
@@ -67,10 +67,10 @@ But the prop-valuedness of A is actually not needed, with more work:
    A' : Fin n → 𝓤 ̇
    A' x = ∥ A x ∥
 
-   δ' : complemented A'
+   δ' : is-complemented A'
    δ' x = d (δ x)
     where
-     d : decidable (A x) → decidable (A' x)
+     d : is-decidable (A x) → is-decidable (A' x)
      d (inl a) = inl ∣ a ∣
      d (inr u) = inr (∥∥-rec 𝟘-is-prop u)
 

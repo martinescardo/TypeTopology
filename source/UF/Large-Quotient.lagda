@@ -29,7 +29,7 @@ is postulated - any non-MLTT axiom has to be an explicit assumption
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 open import MLTT.Spartan
 
@@ -70,7 +70,7 @@ _≈_ is a variable:
 \begin{code}
 
 is-prop-valued is-equiv-relation : {X : 𝓤 ̇ } → (X → X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
-is-prop-valued _≈_ = ∀ x y → is-prop (x ≈ y)
+is-prop-valued _≈_    = ∀ x y → is-prop (x ≈ y)
 is-equiv-relation _≈_ = is-prop-valued _≈_ × reflexive _≈_ × symmetric _≈_ × transitive _≈_
 
 \end{code}
@@ -135,9 +135,7 @@ is the successor of the universe 𝓥:
 \end{code}
 
 Then η is the universal solution to the problem of transforming
-equivalence _≈_ into equality _＝_ (in Agda the notation for the
-identity type is _＝_ - we can't use _=_ because this is a reserved
-symbol for definitional equality).
+equivalence _≈_ into equality _＝_ (identity type).
 
 By construction, η is a surjection, of course:
 

@@ -4,7 +4,7 @@ Interface to code from my MGS 2019 lecture notes.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 module UF.Lower-FunExt where
 
@@ -43,9 +43,11 @@ abstract
     γ = MGS-equivs-are-equivs (happly' f g) c
 
   lower-funext : ∀ 𝓦 𝓣 → funext (𝓤 ⊔ 𝓦) (𝓥 ⊔ 𝓣) → funext 𝓤 𝓥
-  lower-funext {𝓤} {𝓥} 𝓦 𝓣 fe = DN-funext-gives-funext (lower-DN-funext 𝓦 𝓣 (dfunext fe))
+  lower-funext {𝓤} {𝓥} 𝓦 𝓣 fe = DN-funext-gives-funext
+                                   (lower-DN-funext 𝓦 𝓣 (dfunext fe))
 
   lower-fun-ext : ∀ {𝓦} 𝓣 → funext (𝓤 ⊔ 𝓦) (𝓥 ⊔ 𝓣) → funext 𝓤 𝓥
-  lower-fun-ext {𝓤} {𝓥} {𝓦} 𝓣 fe = DN-funext-gives-funext (lower-DN-funext 𝓦 𝓣 (dfunext fe))
+  lower-fun-ext {𝓤} {𝓥} {𝓦} 𝓣 fe = DN-funext-gives-funext
+                                      (lower-DN-funext 𝓦 𝓣 (dfunext fe))
 
 \end{code}

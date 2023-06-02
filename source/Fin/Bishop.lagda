@@ -2,7 +2,7 @@ Martin Escardo, 8th December 2019.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 module Fin.Bishop where
 
@@ -38,7 +38,7 @@ finite-linear-order X = Σ n ꞉ ℕ , X ≃ Fin n
 
 \end{code}
 
-Exercise: If X ≃ Fin n, then the type Finite X has n! elements (solved
+Exercise: If X ≃ Fin n, then the type finite-linear-order X has n! elements (solved
 elsewhere in TypeTopology).
 
 \begin{code}

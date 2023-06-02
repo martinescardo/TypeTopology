@@ -32,7 +32,7 @@ ln -s Locales.Frame.html Frame.html
 ln -s Locales.GaloisConnection.html GaloisConnection.html
 ln -s Locales.HeytingImplication.html HeytingImplication.html
 ln -s NotionsOfDecidability.SemiDecidable.html SemiDecidable.html
-ln -s Ordinals.Arithmetic-Properties.html OrdinalArithmetic-Properties.html
+ln -s Ordinals.ArithmeticProperties.html OrdinalArithmetic-Properties.html
 ln -s Ordinals.BuraliForti.html BuraliForti.html
 ln -s Ordinals.Notions.html Ordinal-Notions.html
 ln -s Ordinals.OrdinalOfOrdinals.html OrdinalOfOrdinals.html
@@ -57,3 +57,30 @@ ln -s Various.UnivalenceFromScratch.html UnivalenceFromScratch.html
 # ~/public_html/TypeTopology/Published.* Use symlinks as above to
 # create them. NB. Don't use subdirectories because the links in the
 # symlinked html files may break.
+
+# These are linked to in Tom de Jong's PhD thesis (2022) and duplicates some of
+# the above for consistency.
+ln -s DomainTheory.index.html Published.DomainTheory.index.html
+ln -s DomainTheory.Bilimits.Dinfinity.html Published.DomainTheory.Bilimits.Dinfinity.html
+ln -s DomainTheory.ScottModelOfPCF.ScottModelOfPCF.html Published.DomainTheory.ScottModelOfPCF.ScottModelOfPCF.html
+ln -s Lifting.IdentityViaSIP.html Published.Lifting.IdentityViaSIP.html
+ln -s NotionsOfDecidability.SemiDecidable.html Published.NotionsOfDecidability.SemiDecidable.html
+ln -s Slice.Slice.html Published.Slice.Slice.html
+ln -s Ordinals.BuraliForti.html Published.Ordinals.BuraliForti.html
+ln -s Ordinals.OrdinalOfOrdinals.html Published.Ordinals.OrdinalOfOrdinals.html
+ln -s Ordinals.OrdinalOfOrdinalsSuprema.html Published.Ordinals.OrdinalOfOrdinalsSuprema.html
+ln -s Ordinals.Type.html Published.Ordinals.Type.html
+ln -s TypeTopology.CompactTypes.html Published.TypeTopology.CompactTypes.html
+ln -s TypeTopology.Density.html Published.TypeTopology.Density.html
+ln -s TypeTopology.DiscreteAndSeparated.html Published.TypeTopology.DiscreteAndSeparated.html
+ln -s TypeTopology.SimpleTypes.html Published.TypeTopology.SimpleTypes.html
+ln -s UF.Quotient-F.html Published.UF.Quotient-F.html
+ln -s UF.Quotient.html Published.UF.Quotient.html
+ln -s UF.Quotient-Replacement.html Published.UF.Quotient-Replacement.html
+ln -s UF.Large-Quotient.html Published.UF.Large-Quotient.html
+ln -s Various.Dedekind.html Published.Various.Dedekind.html
+
+# Further links using the Published.* scheme
+# Added by Tom de Jong - 31 March 2023, 18 April 2023
+ln -s UF.Size.html Published.UF.Size.html
+ln -s UF.ImageAndSurjection.html Published.UF.ImageAndSurjection.html

@@ -1,6 +1,6 @@
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 module UF.Retracts where
 
@@ -46,7 +46,8 @@ retract-of-prop : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                 → retract Y of X
                 → is-prop X
                 → is-prop Y
-retract-of-prop (r , s , rs) = subtype-of-prop-is-prop s (sections-are-lc s (r , rs))
+retract-of-prop (r , s , rs) = subtypes-of-props-are-props' s
+                                (sections-are-lc s (r , rs))
 
 Σ-is-set : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
          → is-set X
@@ -73,13 +74,15 @@ has-section-closed-under-∼ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f g : X → Y)
                            → g ∼ f
                            → has-section g
 has-section-closed-under-∼ {𝓤} {𝓥} {X} {Y} f g (s , fs) h =
- (s , λ y → g (s y) ＝⟨ h (s y) ⟩ f (s y) ＝⟨ fs y ⟩ y ∎)
+ (s , λ y → g (s y) ＝⟨ h (s y) ⟩ f (s y) ＝⟨ fs y ⟩
+  y                 ∎)
 
 has-section-closed-under-∼' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f g : X → Y}
                             → has-section f
                             → f ∼ g
                             → has-section g
-has-section-closed-under-∼' ise h = has-section-closed-under-∼ _ _ ise (λ x → (h x)⁻¹)
+has-section-closed-under-∼' ise h =
+ has-section-closed-under-∼ _ _ ise (λ x → (h x)⁻¹)
 
 is-section-closed-under-∼ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f g : X → Y)
                           → is-section f
@@ -94,7 +97,8 @@ is-section-closed-under-∼' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f g : X → Y}
                            → is-section f
                            → f ∼ g
                            → is-section g
-is-section-closed-under-∼' ise h = is-section-closed-under-∼ _ _ ise (λ x → (h x)⁻¹)
+is-section-closed-under-∼' ise h =
+ is-section-closed-under-∼ _ _ ise (λ x → (h x)⁻¹)
 
 \end{code}
 
@@ -108,13 +112,17 @@ has-section' f = (y : codomain f) → Σ x ꞉ domain f , f x ＝ y
 retract_Of_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
 retract Y Of X = Σ f ꞉ (X → Y) , has-section' f
 
-retract-of-gives-retract-Of : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → retract Y of X → retract Y Of X
-retract-of-gives-retract-Of {𝓤} {𝓥} {X} {Y} ρ = (retraction ρ , hass)
+retract-of-gives-retract-Of : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                            → retract Y of X
+                            → retract Y Of X
+retract-of-gives-retract-Of {𝓤} {𝓥} {X} {Y} ρ = (retraction ρ , h)
  where
-  hass : (y : Y) → Σ x ꞉ X , retraction ρ x ＝ y
-  hass y = section ρ y , retract-condition ρ y
+  h : (y : Y) → Σ x ꞉ X , retraction ρ x ＝ y
+  h y = section ρ y , retract-condition ρ y
 
-retract-Of-gives-retract-of : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → retract Y Of X → retract Y of X
+retract-Of-gives-retract-of : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                            → retract Y Of X
+                            → retract Y of X
 retract-Of-gives-retract-of {𝓤} {𝓥} {X} {Y} (f , hass) = (f , φ)
  where
   φ : Σ s ꞉ (Y → X) , f ∘ s ∼ id
@@ -338,16 +346,6 @@ _◀ = ◁-refl
 
 \end{code}
 
-Fixities:
-
-\begin{code}
-
-infix  0 _◁_
-infix  1 _◀
-infixr 0 _◁⟨_⟩_
-
-\end{code}
-
 Added 20 February 2020 by Tom de Jong.
 
 \begin{code}
@@ -400,5 +398,15 @@ imports this file.
 
      ρσ : (p : g x ＝ y) → ρ (σ p) ＝ p
      ρσ = pr₂ (ap-of-section-is-section s ((r , rs)) (g x) y)
+
+\end{code}
+
+Fixities:
+
+\begin{code}
+
+infix  0 _◁_
+infix  1 _◀
+infixr 0 _◁⟨_⟩_
 
 \end{code}

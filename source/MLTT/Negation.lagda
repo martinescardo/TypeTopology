@@ -2,7 +2,7 @@ Negation (and emptiness).
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 module MLTT.Negation where
 
@@ -20,8 +20,17 @@ private
 ¬_ : 𝓤 ̇ → 𝓤 ̇
 ¬ A = A → 𝟘 {𝓤₀}
 
-decidable : 𝓤 ̇ → 𝓤 ̇
-decidable A = A + ¬ A
+\end{code}
+
+Notice that decidability is not a univalent proposition in general,
+but nevertheless we use "is" in our chosen terminology, against a
+convention adopted in some quarters that says that "is" should be used
+only for concepts that are propositions.
+
+\begin{code}
+
+is-decidable : 𝓤 ̇ → 𝓤 ̇
+is-decidable A = A + ¬ A
 
 _≠_ : {X : 𝓤 ̇ } → (x y : X) → 𝓤 ̇
 x ≠ y = ¬ (x ＝ y)
