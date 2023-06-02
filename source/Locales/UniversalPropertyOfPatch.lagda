@@ -1040,16 +1040,6 @@ Proof that `f⁻⁺` preserves joins.
    (f⁻⁺-preserves-joins S ⁻¹)
    (⋁[ 𝒪 X ]-upper ⁅ f⁻⁺ 𝒿 ∣ 𝒿 ε S ⁆ , ⋁[ 𝒪 X ]-least ⁅ f⁻⁺ 𝒿 ∣ 𝒿 ε S ⁆)
 
- 𝟎-is-idₐ : (U : ⟨ 𝒪 A ⟩) → 𝟎[ 𝒪 Patchₛ-A ] $ U ＝ U
- 𝟎-is-idₐ U =
-  ≤-is-antisymmetric (poset-of (𝒪 A)) † (≼ᵏ-implies-≼ idₙ 𝟎[ 𝒪 Patchₛ-A ] ‡ U)
-  where
-   † : ((𝟎[ 𝒪 Patchₛ-A ] $ U) ≤[ poset-of (𝒪 A) ] U) holds
-   † = ≼ᵏ-implies-≼ 𝟎[ 𝒪 Patchₛ-A ] idₙ (𝟎-is-bottom (𝒪 Patchₛ-A) idₙ) U
-
-   ‡ : (idₙ ≤[ poset-of (𝒪 Patchₛ-A) ] 𝟎[ 𝒪 Patchₛ-A ]) holds
-   ‡ n = ⋁[ 𝒪 A ]-upper ⁅ α (β n) ∣ α ε 𝔡𝔦𝔯 (∅ 𝓤) ⁆ []
-
  main-lemma : (𝒻⁻₀ : X ─c→ Patchₛ-A)
             → (n : Bₐ)
             → is-complement-of (𝒪 X) (𝒻⁻₀ .pr₁ ¬‘ βₖ n ’) (𝒻⁻₀ .pr₁ ‘ β n ’)
@@ -1065,7 +1055,7 @@ Proof that `f⁻⁺` preserves joins.
      where
       Ⅰ = ap (λ - → - ∧[ 𝒪 A ] (β n ==>ₐ U)) (∨[ 𝒪 A ]-is-commutative (β n) U)
       Ⅱ = H₈ₐ U (β n) ⁻¹
-      Ⅲ = 𝟎-is-idₐ U ⁻¹
+      Ⅲ = 𝟎-is-id U ⁻¹
 
     ‡₁ : ‘ β n ’ ∧[ 𝒪 Patchₛ-A ] ¬‘ βₖ n ’ ＝ 𝟎[ 𝒪 Patchₛ-A ]
     ‡₁ = perfect-nuclei-eq
