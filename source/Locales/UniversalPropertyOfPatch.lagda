@@ -757,9 +757,24 @@ auxiliary definitions and lemmas.
   using    ()
   renaming (‘_’ to ‘_’ₓ)
 
- -- Igor's definition.
+\end{code}
+
+The following function `closed-image` takes an open `X` and gives a perfect
+nucleus on `A`. It is the right adjoint to the function `f⁻⁺` that we have
+defined. We define this function and prove the adjunction to show that `f⁻⁺`
+preserves joins using the Adjoint Functor Theorem.
+\begin{code}
+
  closed-image : ⟨ 𝒪 X ⟩ → ⟨ 𝒪 A ⟩ → ⟨ 𝒪 A ⟩
  closed-image U = (𝒻₊ ∘ ‘ U ’ₓ .pr₁) ∘ 𝒻 ⋆∙_
+
+\end{code}
+
+The definition of this function was suggested by Igor Arrieta who also gave a
+summary of the proof. Even though our proof here differs from his, the idea is
+due to him.
+
+\begin{code}
 
  closed-image-is-inflationary : (U : ⟨ 𝒪 X ⟩) (V : ⟨ 𝒪 A ⟩)
                               → (V ≤[ poset-of (𝒪 A) ] closed-image U V) holds
@@ -807,6 +822,10 @@ auxiliary definitions and lemmas.
          (𝒻₊ (U ∨[ 𝒪 X ] (𝒻 ⋆∙ 𝒻₊ (U ∨[ 𝒪 X ] 𝒻 ⋆∙ V))))
          ‡
 
+\end{code}
+
+\begin{code}
+
  closed-image-preserves-meets : (U : ⟨ 𝒪 X ⟩)
                               → preserves-binary-meets (𝒪 A) (𝒪 A) (closed-image U) holds
  closed-image-preserves-meets U V₁ V₂ =
@@ -821,6 +840,13 @@ auxiliary definitions and lemmas.
          (frame-homomorphisms-preserve-meets (𝒪 A) (𝒪 X) 𝒻 V₁ V₂)
     Ⅱ = ap 𝒻₊ (binary-distributivity-op (𝒪 X) U (𝒻 ⋆∙ V₁) (𝒻 ⋆∙ V₂))
     Ⅲ = f₊-preserves-binary-meetsₓ 𝒻 (U ∨[ 𝒪 X ] 𝒻 ⋆∙ V₁) (U ∨[ 𝒪 X ] (𝒻 ⋆∙ V₂))
+
+\end{code}
+
+As mentioned previously, `closed-image U` is a perfect nucleus for any `U :
+𝒪(X)`. We now prove this fact.
+
+\begin{code}
 
  closed-image-is-nucleus : (U : ⟨ 𝒪 X ⟩)
                          → is-nucleus (𝒪 A) (closed-image U) holds
@@ -852,6 +878,10 @@ auxiliary definitions and lemmas.
          (𝒪 X)
          (𝒻 ⋆∙_)
          (frame-homomorphisms-preserve-all-joins (𝒪 A) (𝒪 X) 𝒻)
+
+\end{code}
+
+\begin{code}
 
  f⁻⁺-preserves-joins : is-join-preserving (𝒪 Patchₛ-A) (𝒪 X) f⁻⁺ holds
  f⁻⁺-preserves-joins = aft-forward f⁻⁺ₘ †
