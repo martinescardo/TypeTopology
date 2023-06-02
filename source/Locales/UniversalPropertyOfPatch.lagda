@@ -1020,17 +1020,20 @@ As mentioned previously, `closed-image U` is a perfect nucleus for any `U :
        goal : (((𝒻 ⋆∙ β m) ∧[ 𝒪 X ] ¬𝒻⋆ (β n)) ≤[ poset-of (𝒪 X) ] U) holds
        goal = negation-∨-lemma₁ κ ϑ
 
+\end{code}
+
+Proof that `f⁻⁺` preserves joins.
+
+\begin{code}
+
  f⁻⁺-preserves-joins : is-join-preserving (𝒪 Patchₛ-A) (𝒪 X) f⁻⁺ holds
- f⁻⁺-preserves-joins = aft-forward f⁻⁺ₘ †
-  where
-   † : has-right-adjoint f⁻⁺ₘ
-   † = f⁻₊ₘ , f⁻₊-is-right-adjoint-of-f⁻⁺
+ f⁻⁺-preserves-joins = aft-forward f⁻⁺ₘ (f⁻₊ₘ , f⁻₊-is-right-adjoint-of-f⁻⁺)
 
  open Joins (λ x y → x ≤[ poset-of (𝒪 X) ] y)
   using () renaming (_is-lub-of_ to _is-lub-ofₓ_)
 
  𝒻⁻-γ : (S : Fam 𝓤 ⟨ 𝒪 Patchₛ-A ⟩)
-      → ((f⁻⁺ (⋁[ 𝒪 Patchₛ-A ] S)) is-lub-ofₓ ⁅ f⁻⁺ 𝒿 ∣ 𝒿 ε S ⁆) holds
+      → (f⁻⁺ (⋁[ 𝒪 Patchₛ-A ] S) is-lub-ofₓ ⁅ f⁻⁺ 𝒿 ∣ 𝒿 ε S ⁆) holds
  𝒻⁻-γ S =
   transport
    (λ - → (- is-lub-ofₓ ⁅ f⁻⁺ 𝒿 ∣ 𝒿 ε S ⁆) holds)
@@ -1038,19 +1041,14 @@ As mentioned previously, `closed-image U` is a perfect nucleus for any `U :
    (⋁[ 𝒪 X ]-upper ⁅ f⁻⁺ 𝒿 ∣ 𝒿 ε S ⁆ , ⋁[ 𝒪 X ]-least ⁅ f⁻⁺ 𝒿 ∣ 𝒿 ε S ⁆)
 
  𝟎-is-idₐ : (U : ⟨ 𝒪 A ⟩) → 𝟎[ 𝒪 Patchₛ-A ] $ U ＝ U
- 𝟎-is-idₐ U = ≤-is-antisymmetric (poset-of (𝒪 A)) † (≼ᵏ-implies-≼ idₙ 𝟎[ 𝒪 Patchₛ-A ] ‡ U)
+ 𝟎-is-idₐ U =
+  ≤-is-antisymmetric (poset-of (𝒪 A)) † (≼ᵏ-implies-≼ idₙ 𝟎[ 𝒪 Patchₛ-A ] ‡ U)
   where
    † : ((𝟎[ 𝒪 Patchₛ-A ] $ U) ≤[ poset-of (𝒪 A) ] U) holds
    † = ≼ᵏ-implies-≼ 𝟎[ 𝒪 Patchₛ-A ] idₙ (𝟎-is-bottom (𝒪 Patchₛ-A) idₙ) U
 
    ‡ : (idₙ ≤[ poset-of (𝒪 Patchₛ-A) ] 𝟎[ 𝒪 Patchₛ-A ]) holds
-   ‡ n = β n ≤⟨ ※ ⟩ (⋁[ 𝒪 Patchₛ-A ] ∅ 𝓤) $ β n ＝⟨ refl ⟩ₚ 𝟎[ 𝒪 Patchₛ-A ] $ β n ■
-    where
-     open PosetReasoning (poset-of (𝒪 A))
-
-     ※ : (β n ≤[ poset-of (𝒪 A) ] (⋁[ 𝒪 Patchₛ-A ] ∅ 𝓤) $ (β n)) holds
-     ※ = β n ≤⟨ ⋁[ 𝒪 A ]-upper ⁅ α (β n) ∣ α ε 𝔡𝔦𝔯 (∅ 𝓤) ⁆ [] ⟩ ⋁[ 𝒪 A ] ⁅ α (β n) ∣ α ε 𝔡𝔦𝔯 (∅ 𝓤) ⁆ ＝⟨ refl ⟩ₚ (join-of (𝒪 Patchₛ-A) (∅ 𝓤) $ β n) ■
-
+   ‡ n = ⋁[ 𝒪 A ]-upper ⁅ α (β n) ∣ α ε 𝔡𝔦𝔯 (∅ 𝓤) ⁆ []
 
  main-lemma : (𝒻⁻₀ : X ─c→ Patchₛ-A)
             → (n : Bₐ)
