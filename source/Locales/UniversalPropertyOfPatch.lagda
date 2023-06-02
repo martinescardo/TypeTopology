@@ -1116,9 +1116,6 @@ diagram commute.
                  (spectral-implies-compact (𝒪 A) ∣ σᴰ ∣)
                  𝟎[ 𝒪 A ]
                  (𝟎-is-compact (𝒪 A))
-    where
-     ※ : Σ t ꞉ Bₐ , is-top (𝒪 A) (β t) holds → ∃ (λ t → 𝟏[ 𝒪 A ] ＝ β t)
-     ※ (t , p) = ∣ t , (𝟏-is-unique (𝒪 A) (β t) p ⁻¹) ∣
 
    ℒ : Fam 𝓤 Bₐ
    ℒ = covering-index-family (𝒪 A) (Bₐ , β) β-is-basis-for-A U
