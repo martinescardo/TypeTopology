@@ -34,6 +34,7 @@ correctness. (But we don't prove efficiency theorems.)
 {-# OPTIONS --without-K --safe --no-sized-types --no-guardedness --auto-inline #-} -- --exact-split
 
 open import MLTT.Spartan hiding (J)
+open import MLTT.Fin
 open import Games.FiniteHistoryDependent
 open import Games.TypeTrees
 open import Games.Structure
@@ -90,8 +91,8 @@ Part 0.
  open K-definitions R
 
  Min Max : {X : Type} → listable⁺ X → K X
- Min (x₀ , xs , _) p = foldr xs (λ x → min (p x)) (p x₀)
- Max (x₀ , xs , _) p = foldr xs (λ x → max (p x)) (p x₀)
+ Min (x₀ , xs , _) p = foldr (λ x → min (p x)) (p x₀) xs
+ Max (x₀ , xs , _) p = foldr (λ x → max (p x)) (p x₀) xs
 
 \end{code}
 
@@ -143,8 +144,8 @@ Now we define selection functions for this game.
  open J-definitions R
 
  ArgMin ArgMax : {X : Type} → listable⁺ X → J X
- ArgMin (x₀ , xs , _) p = foldr xs (argmin p) x₀
- ArgMax (x₀ , xs , _) p = foldr xs (argmax p) x₀
+ ArgMin (x₀ , xs , _) p = foldr (argmin p) x₀ xs
+ ArgMax (x₀ , xs , _) p = foldr (argmax p) x₀ xs
 
 \end{code}
 
@@ -384,8 +385,8 @@ module minimax'
  open K-definitions R'
 
  Min' Max' : {X : Type} → listable⁺ X → K X
- Min' (x₀ , xs , _) p = foldr xs (λ x → min' (p x)) (p x₀)
- Max' (x₀ , xs , _) p = foldr xs (λ x → max' (p x)) (p x₀)
+ Min' (x₀ , xs , _) p = foldr (λ x → min' (p x)) (p x₀) xs
+ Max' (x₀ , xs , _) p = foldr (λ x → max' (p x)) (p x₀) xs
 
  minmax' maxmin' : (Xt : 𝕋)
                  → structure listable⁺ Xt

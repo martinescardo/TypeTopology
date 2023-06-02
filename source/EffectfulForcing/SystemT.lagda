@@ -9,12 +9,10 @@ Gödel's system T and its standard set-theoretical semantics.
 module EffectfulForcing.SystemT where
 
 open import MLTT.Spartan  hiding (rec ; _^_) renaming (⋆ to 〈〉)
-open import MLTT.Athenian using (Fin)
+open import MLTT.Fin
 open import EffectfulForcing.Combinators
 open import EffectfulForcing.Continuity
 open import UF.Base
-
-open Fin
 
 data type : 𝓤₀ ̇ where
  ι   : type

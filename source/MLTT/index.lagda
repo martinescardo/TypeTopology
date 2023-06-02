@@ -32,5 +32,9 @@ import MLTT.Unit-Type
 import MLTT.Universes
 import MLTT.W
 import MLTT.W-Properties
+import MLTT.Fin
+import MLTT.Bool
+import MLTT.List
+import MLTT.Vector
 
 \end{code}

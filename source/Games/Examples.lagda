@@ -10,6 +10,7 @@ Examples of type trees.
 module Games.Examples where
 
 open import MLTT.Spartan hiding (J)
+open import MLTT.Fin
 open import Games.TypeTrees
 open import Games.J
 open import Games.K

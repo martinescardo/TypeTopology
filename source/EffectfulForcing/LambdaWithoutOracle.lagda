@@ -11,14 +11,12 @@ Alternatively, it can be seen as adaptation of LambdaCalculusVersionOfMFPS writt
 module EffectfulForcing.LambdaWithoutOracle where
 
 open import MLTT.Spartan hiding (rec ; _^_) renaming (⋆ to 〈〉)
-open import MLTT.Athenian using (Fin)
+open import MLTT.Fin
 open import UF.Base
 open import EffectfulForcing.Combinators
 open import EffectfulForcing.Continuity
 open import EffectfulForcing.Dialogue
 open import EffectfulForcing.SystemT
-
-open Fin
 
 B〖_〗 : type → 𝓤₀ ̇
 B〖 ι 〗     = B ℕ

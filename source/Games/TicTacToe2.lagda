@@ -11,6 +11,8 @@ another file.
 module Games.TicTacToe2 where
 
 open import MLTT.Spartan hiding (J)
+open import MLTT.Fin
+open import MLTT.List
 
 data 𝟛 : Type where
  O-wins draw X-wins : 𝟛

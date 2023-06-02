@@ -14,14 +14,12 @@ paper.
 module EffectfulForcing.Internal where
 
 open import MLTT.Spartan hiding (rec ; _^_) renaming (⋆ to 〈〉)
-open import MLTT.Athenian using (Fin)
+open import MLTT.Fin
 open import UF.Base
 open import EffectfulForcing.Combinators
 open import EffectfulForcing.Continuity
 open import EffectfulForcing.Dialogue
 open import EffectfulForcing.SystemT
-
-open Fin
 
 \end{code}
 
