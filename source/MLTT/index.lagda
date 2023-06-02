@@ -15,7 +15,6 @@ import MLTT.Fin
 import MLTT.Id
 import MLTT.Identity-Type
 import MLTT.List
-import MLTT.List
 import MLTT.Natural-Numbers-Type
 import MLTT.NaturalNumbers
 import MLTT.Negation
