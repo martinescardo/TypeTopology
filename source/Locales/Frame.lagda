@@ -12,7 +12,6 @@ Ported from `ayberkt/formal-topology-in-UF`.
 
 open import MLTT.Spartan hiding (𝟚)
 open import UF.Base
-open import UF.PropTrunc
 open import UF.FunExt
 open import UF.PropTrunc
 open import MLTT.List hiding ([_])
@@ -151,6 +150,8 @@ Poset 𝓤 𝓥 = Σ A ꞉ 𝓤 ̇ , poset-structure 𝓥 A
 
 rel-syntax : (P : Poset 𝓤 𝓥)  → ∣ P ∣ₚ → ∣ P ∣ₚ → Ω 𝓥
 rel-syntax (_ , _≤_ , _) = _≤_
+
+infix 5 rel-syntax
 
 syntax rel-syntax P x y = x ≤[ P ] y
 
@@ -686,6 +687,14 @@ preserves-binary-meets F G h =
    ψ : is-set ⟨ G ⟩
    ψ = carrier-of-[ poset-of G ]-is-set
 
+preserves-binary-joins : (F : Frame 𝓤 𝓥 𝓦) (G : Frame 𝓤′ 𝓥′ 𝓦)
+                       → (⟨ F ⟩ → ⟨ G ⟩) → Ω (𝓤 ⊔ 𝓤′)
+preserves-binary-joins F G h =
+ Ɐ x ∶ ⟨ F ⟩ , Ɐ y ∶ ⟨ F ⟩ , (h (x ∨[ F ] y) ＝[ ψ ]＝ h x ∨[ G ] h y)
+  where
+   ψ : is-set ⟨ G ⟩
+   ψ = carrier-of-[ poset-of G ]-is-set
+
 is-a-frame-homomorphism : (F : Frame 𝓤  𝓥  𝓦)
                           (G : Frame 𝓤′ 𝓥′ 𝓦)
                         → (⟨ F ⟩ → ⟨ G ⟩)
@@ -852,6 +861,14 @@ frame-morphisms-are-monotonic F G f (_ , ψ , _) (x , y) p =
    i  = reflexivity+ (poset-of G) (ap f (connecting-lemma₁ F p))
    ii = reflexivity+ (poset-of G) (ψ x y)
 
+monotone-map-of : (F : Frame 𝓤 𝓥 𝓦) (G : Frame 𝓤′ 𝓥′ 𝓦)
+                → (F ─f→ G)
+                → poset-of F ─m→ poset-of G
+monotone-map-of F G h = pr₁ h , †
+ where
+  † : is-monotonic (poset-of F) (poset-of G) (pr₁ h) holds
+  † = frame-morphisms-are-monotonic F G (pr₁ h) (pr₂ h)
+
 yoneda : (F : Frame 𝓤 𝓥 𝓦)
        → (x y : ⟨ F ⟩)
        → ((z : ⟨ F ⟩) → ((z ≤[ poset-of F ] x) ⇒ (z ≤[ poset-of F ] y)) holds)
@@ -911,6 +928,60 @@ meet-preserving-implies-monotone F G h μ (x , y) p =
    i   = ap h (connecting-lemma₁ F p)
    ii  = μ x y
    iii = ∧[ G ]-lower₂ (h x) (h y)
+
+frame-homomorphisms-preserve-meets : (F : Frame 𝓤 𝓥 𝓦) (G : Frame 𝓤′ 𝓥′ 𝓦)
+                                   → (h : F ─f→ G)
+                                   → preserves-binary-meets F G (h .pr₁) holds
+frame-homomorphisms-preserve-meets F G 𝒽@(_ , _ , β , _) = β
+
+frame-homomorphisms-preserve-top : (F : Frame 𝓤 𝓥 𝓦) (G : Frame 𝓤′ 𝓥′ 𝓦)
+                                 → (h : F ─f→ G)
+                                 → h .pr₁ 𝟏[ F ] ＝ 𝟏[ G ]
+frame-homomorphisms-preserve-top F G 𝒽@(_ , α , _ , _) = α
+
+frame-homomorphisms-preserve-bottom : (F : Frame 𝓤 𝓥 𝓦) (G : Frame 𝓤′ 𝓥′ 𝓦)
+                                    → (h : F ─f→ G)
+                                    → h .pr₁ 𝟎[ F ] ＝ 𝟎[ G ]
+frame-homomorphisms-preserve-bottom {𝓦 = 𝓦}F G 𝒽@(h , _ , _ , γ) =
+ only-𝟎-is-below-𝟎 G (𝒽 .pr₁ 𝟎[ F ]) †
+  where
+   † : (h 𝟎[ F ] ≤[ poset-of G ] 𝟎[ G ]) holds
+   † = pr₂ (γ (∅ _)) ((⋁[ G ] ∅ 𝓦) , λ ())
+
+frame-homomorphisms-preserve-all-joins : (F : Frame 𝓤 𝓥 𝓦) (G : Frame 𝓤′ 𝓥′ 𝓦)
+                                       → (h : F ─f→ G)
+                                       → is-join-preserving F G (h .pr₁) holds
+frame-homomorphisms-preserve-all-joins F G h = †
+ where
+  open Joins (λ x y → x ≤[ poset-of G ] y)
+
+  † : is-join-preserving F G (h .pr₁) holds
+  † S = ⋁[ G ]-unique
+         ⁅ h .pr₁ x ∣ x ε S ⁆
+         (h .pr₁ (⋁[ F ] S))
+         (pr₂ (pr₂ (pr₂ h)) S)
+
+frame-homomorphisms-preserve-binary-joins : (F : Frame 𝓤 𝓥 𝓦) (G : Frame 𝓤′ 𝓥′ 𝓦)
+                                          → (h : F ─f→ G)
+                                          → (x y : ⟨ F ⟩)
+                                          → h .pr₁ (x ∨[ F ] y)
+                                          ＝ (h .pr₁ x) ∨[ G ] (h .pr₁ y)
+frame-homomorphisms-preserve-binary-joins F G 𝒽@(h , _ , _ , γ) x y =
+ ⋁[ G ]-unique ⁅ h x , h y ⁆ (h (x ∨[ F ] y)) († , ‡)
+  where
+   open Joins (λ x y → x ≤[ poset-of G ] y)
+
+   † : (h (x ∨[ F ] y) is-an-upper-bound-of ⁅ h x , h y ⁆) holds
+   † (inl ⋆) = pr₁ (γ ⁅ x , y ⁆) (inl ⋆)
+   † (inr ⋆) = pr₁ (γ ⁅ x , y ⁆) (inr ⋆)
+
+   ‡ : ((u , _) : upper-bound ⁅ h x , h y ⁆)
+     → (h (x ∨[ F ] y) ≤[ poset-of G ] u) holds
+   ‡ (u , p) = pr₂ (γ ⁅ x , y ⁆) (u , q)
+    where
+     q : (u is-an-upper-bound-of ⁅ h z ∣ z ε ⁅ x , y ⁆ ⁆) holds
+     q (inl ⋆) = p (inl ⋆)
+     q (inr ⋆) = p (inr ⋆)
 
 scott-continuous-join-eq : (F : Frame 𝓤  𝓥  𝓦)
                          → (G : Frame 𝓤′ 𝓥′ 𝓦)
@@ -1465,6 +1536,28 @@ closed-under-finite-joins : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ �
 closed-under-finite-joins F S =
  contains-bottom F S ∧ closed-under-binary-joins F S
 
+closed-under-fin-joins-implies-directed : (F : Frame 𝓤 𝓥 𝓦) (S : Fam 𝓦 ⟨ F ⟩)
+                                        → (closed-under-finite-joins F S
+                                        ⇒ is-directed F S) holds
+closed-under-fin-joins-implies-directed F S (i₀ , ð) =
+ ∥∥-rec (holds-is-prop (is-directed F S)) γ i₀
+  where
+   open PropositionalTruncation pt
+   open PosetNotation (poset-of F)
+   open Joins (λ x y → x ≤[ poset-of F ] y)
+
+   γ : (Σ i ꞉ index S , is-bottom F (S [ i ]) holds)
+     → is-directed F S holds
+   γ (i , _) = ∣ i ∣ , δ
+    where
+     δ : (m n : index S)
+       → (Ǝ o ∶ index S , ((S [ m ] ≤ S [ o ]) ∧ (S [ n ] ≤ S [ o ])) holds) holds
+     δ m n = ∥∥-rec ∃-is-prop ϵ (ð m n)
+      where
+       ϵ : Σ o ꞉ index S , ((S [ o ]) is-lub-of (binary-family 𝓦 (S [ m ]) (S [ n ]))) holds
+         → (Ǝ o ∶ index S , ((S [ m ] ≤ S [ o ]) ∧ (S [ n ] ≤ S [ o ])) holds) holds
+       ϵ (o , ψ , _) = ∣ o , ψ (inl ⋆) , ψ (inr ⋆) ∣
+
 directify-is-closed-under-fin-joins : (F : Frame 𝓤 𝓥 𝓦) (S : Fam 𝓦 ⟨ F ⟩)
                                     → closed-under-finite-joins F (directify F S) holds
 directify-is-closed-under-fin-joins F S = † , ‡
@@ -1550,10 +1643,11 @@ directify-preserves-joins₀ F S x p =
  where
   open Joins (λ x y → x ≤[ poset-of F ] y)
 
-  q : x ＝ ⋁[ F ] directify F S
-  q = x                    ＝⟨ ⋁[ F ]-unique S x p           ⟩
-      ⋁[ F ] S             ＝⟨ directify-preserves-joins F S ⟩
-      ⋁[ F ] directify F S ∎
+  abstract
+   q : x ＝ ⋁[ F ] directify F S
+   q = x                    ＝⟨ ⋁[ F ]-unique S x p           ⟩
+       ⋁[ F ] S             ＝⟨ directify-preserves-joins F S ⟩
+       ⋁[ F ] directify F S ∎
 
 \end{code}
 
@@ -1576,12 +1670,13 @@ directified-basis-is-basis {𝓦 = 𝓦} F ℬ β = β↑
   𝒦 : ⟨ F ⟩ → Fam 𝓦 (List (index ℬ))
   𝒦 x = List (index (𝒥 x)) , (λ - → 𝒥 x [ - ]) <$>_
 
-  φ : (x : ⟨ F ⟩)
-    → (is : List (index (𝒥 x)))
-    → directify F ℬ [ (λ - → 𝒥 x [ - ]) <$> is ]
-    ＝ directify F ⁅ ℬ [ j ] ∣ j ε 𝒥 x ⁆ [ is ]
-  φ x []       = refl
-  φ x (i ∷ is) = ap (λ - → (_ ∨[ F ] -)) (φ x is)
+  abstract
+   φ : (x : ⟨ F ⟩)
+     → (is : List (index (𝒥 x)))
+     → directify F ℬ [ (λ - → 𝒥 x [ - ]) <$> is ]
+     ＝ directify F ⁅ ℬ [ j ] ∣ j ε 𝒥 x ⁆ [ is ]
+   φ x []       = refl
+   φ x (i ∷ is) = ap (λ - → (_ ∨[ F ] -)) (φ x is)
 
   ψ : (x : ⟨ F ⟩)
     → ⁅ directify F ℬ [ is ] ∣ is ε 𝒦 x ⁆ ＝ directify F ⁅ ℬ [ j ] ∣ j ε 𝒥 x ⁆
@@ -1612,7 +1707,7 @@ covers-of-directified-basis-are-directed : (F : Frame 𝓤 𝓥 𝓦)
                                             β↑ = directified-basis-is-basis F ℬ β
                                             𝒥↑ = pr₁ (β↑ x)
                                            in
-                                            is-directed F (⁅ ℬ↑ [ i ] ∣ i ε 𝒥↑ ⁆) holds
+                                            is-directed F ⁅ ℬ↑ [ i ] ∣ i ε 𝒥↑ ⁆ holds
 covers-of-directified-basis-are-directed {𝓦 = 𝓦} F ℬ β x =
  transport (λ - → is-directed F - holds) (ψ ⁻¹) ε
   where
@@ -1621,16 +1716,18 @@ covers-of-directified-basis-are-directed {𝓦 = 𝓦} F ℬ β x =
    𝒦 : Fam 𝓦 (List (index ℬ))
    𝒦 = ⁅ (λ - → 𝒥 [ - ]) <$> is ∣ is ∶ List (index 𝒥) ⁆
 
-   φ : (is : List (index 𝒥))
-     → directify F ℬ [ (λ - → 𝒥 [ - ]) <$> is ]
-     ＝ directify F ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆ [ is ]
-   φ []       = refl
-   φ (i ∷ is) = ap (λ - → (_ ∨[ F ] -)) (φ is)
+   abstract
+    φ : (is : List (index 𝒥))
+      → directify F ℬ [ (λ - → 𝒥 [ - ]) <$> is ]
+      ＝ directify F ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆ [ is ]
+    φ []       = refl
+    φ (i ∷ is) = ap (λ - → (_ ∨[ F ] -)) (φ is)
 
-   ψ : ⁅ directify F ℬ [ is ] ∣ is ε 𝒦 ⁆ ＝ directify F ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆
-   ψ = to-Σ-＝ (refl , dfunext fe φ)
+    ψ : ⁅ directify F ℬ [ is ] ∣ is ε 𝒦 ⁆ ＝ directify F ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆
+    ψ = to-Σ-＝ (refl , dfunext fe φ)
 
-   ε = directify-is-directed F ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆
+    ε : is-directed F (directify F ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆) holds
+    ε = directify-is-directed F ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆
 
 directify-basis : (F : Frame 𝓤 𝓥 𝓦)
                 → (has-basis F ⇒ has-directed-basis F) holds
@@ -1682,7 +1779,6 @@ record Locale (𝓤 𝓥 𝓦 : Universe) : 𝓤 ⁺ ⊔ 𝓥 ⁺ ⊔ 𝓦 ⁺ �
  𝒪 : Frame 𝓤 𝓥 𝓦
  𝒪 = ⟨_⟩ₗ , frame-str-of
 
-
 \end{code}
 
 The type of continuous maps from locale `X` to locale `Y`:
@@ -1707,6 +1803,61 @@ module ContinuousMapNotation (X : Locale 𝓤 𝓥 𝓦) (Y : Locale 𝓤' 𝓥'
  _⋆∙_ : (f : X ─c→ Y)
       → ⟨ 𝒪 Y ⟩ → ⟨ 𝒪 X ⟩
  _⋆∙_ f V = (_⋆ f) .pr₁ V
+
+\end{code}
+
+\begin{code}
+
+cont-comp : (X : Locale 𝓤   𝓥   𝓦)
+          → (Y : Locale 𝓤′  𝓥′  𝓦)
+          → (Z : Locale 𝓤′′ 𝓥′′ 𝓦)
+          → (Y ─c→ Z) → (X ─c→ Y) → X ─c→ Z
+cont-comp {𝓦 = 𝓦} X Y Z ℊ@(g , α₁ , α₂ , α₃) 𝒻@(f , β₁ , β₂ , β₃) = h , †
+ where
+  open ContinuousMapNotation X Y using () renaming (_⋆∙_ to _⋆₁∙_)
+  open ContinuousMapNotation Y Z using () renaming (_⋆∙_ to _⋆₂∙_)
+
+  h : ⟨ 𝒪 Z ⟩ → ⟨ 𝒪 X ⟩
+  h W = 𝒻 ⋆₁∙ (ℊ ⋆₂∙ W)
+
+  † : is-a-frame-homomorphism (𝒪 Z) (𝒪 X) h holds
+  † = †₁ , †₂ , †₃
+   where
+    †₁ : 𝒻 ⋆₁∙ (ℊ ⋆₂∙ 𝟏[ 𝒪 Z ]) ＝ 𝟏[ 𝒪 X ]
+    †₁ = 𝒻 ⋆₁∙ (ℊ ⋆₂∙ 𝟏[ 𝒪 Z ])     ＝⟨ Ⅰ ⟩
+         𝒻 ⋆₁∙ 𝟏[ 𝒪 Y ]             ＝⟨ Ⅱ ⟩
+         𝟏[ 𝒪 X ]                   ∎
+          where
+           Ⅰ = ap (λ - → 𝒻 ⋆₁∙ -) α₁
+           Ⅱ = β₁
+
+    †₂ : (U V : ⟨ 𝒪 Z ⟩)
+       → 𝒻 ⋆₁∙ (ℊ ⋆₂∙ (U ∧[ 𝒪 Z ] V))
+       ＝ (𝒻 ⋆₁∙ (ℊ ⋆₂∙ U)) ∧[ 𝒪 X ] (𝒻 ⋆₁∙ (ℊ ⋆₂∙ V))
+    †₂ U V = 𝒻 ⋆₁∙ (ℊ ⋆₂∙ (U ∧[ 𝒪 Z ] V))                   ＝⟨ Ⅰ ⟩
+             𝒻 ⋆₁∙ ((ℊ ⋆₂∙ U) ∧[ 𝒪 Y ] (ℊ ⋆₂∙ V))           ＝⟨ Ⅱ ⟩
+             (𝒻 ⋆₁∙ (ℊ ⋆₂∙ U)) ∧[ 𝒪 X ] (𝒻 ⋆₁∙ (ℊ ⋆₂∙ V))   ∎
+              where
+               Ⅰ = ap (λ - → 𝒻 ⋆₁∙ -) (α₂ U V)
+               Ⅱ = β₂ (ℊ ⋆₂∙ U) (ℊ ⋆₂∙ V)
+
+    open Joins (λ x y → x ≤[ poset-of (𝒪 X) ] y)
+
+    †₃ : (U : Fam 𝓦 ⟨ 𝒪 Z ⟩) → ((h (⋁[ 𝒪 Z ] U)) is-lub-of ⁅ h x ∣ x ε U ⁆) holds
+    †₃ U = transport
+            (λ - → (- is-lub-of ⁅ h x ∣ x ε U ⁆) holds)
+            (†₄ ⁻¹)
+            (⋁[ 𝒪 X ]-upper ⁅ h x ∣ x ε U ⁆ , ⋁[ 𝒪 X ]-least ⁅ h x ∣ x ε U ⁆)
+     where
+      open PosetReasoning (poset-of (𝒪 X))
+
+      †₄ : h (⋁[ 𝒪 Z ] U) ＝ ⋁[ 𝒪 X ] ⁅ h x ∣ x ε U ⁆
+      †₄ = 𝒻 ⋆₁∙ (ℊ ⋆₂∙ (⋁[ 𝒪 Z ] U))              ＝⟨ I  ⟩
+           𝒻 ⋆₁∙ (⋁[ 𝒪 Y ] ⁅ ℊ ⋆₂∙ x ∣ x ε U ⁆)    ＝⟨ II ⟩
+           ⋁[ 𝒪 X ] ⁅ h x ∣ x ε U ⁆                ∎
+            where
+             I  = ap (λ - → 𝒻 ⋆₁∙ -) (⋁[ 𝒪 Y ]-unique ⁅ ℊ ⋆₂∙ x ∣ x ε U ⁆ _ (α₃ _))
+             II = ⋁[ 𝒪 X ]-unique ⁅ h x ∣ x ε U ⁆ _ (β₃ _)
 
 \end{code}
 
@@ -1742,6 +1893,57 @@ bicofinal-implies-same-join F R S φ ψ =
   (poset-of F)
   (cofinal-implies-join-covered F R S φ)
   (cofinal-implies-join-covered F S R ψ)
+
+bicofinal-with-directed-family-implies-directed : (F : Frame 𝓤 𝓥 𝓦)
+                                                  (R S : Fam 𝓦 ⟨ F ⟩)
+                                                → cofinal-in F R S holds
+                                                → cofinal-in F S R holds
+                                                → is-directed F R holds
+                                                → is-directed F S holds
+bicofinal-with-directed-family-implies-directed F R S φ ψ (δ₁ , δ₂) = † , ‡
+ where
+  open PropositionalTruncation pt
+  open PosetNotation (poset-of F)
+
+  † : ∥ index S ∥Ω holds
+  † = ∥∥-rec (holds-is-prop ∥ index S ∥Ω) †₁ δ₁
+   where
+    †₁ : index R → ∥ index S ∥Ω holds
+    †₁ i = ∥∥-rec (holds-is-prop ∥ index S ∥Ω) †₂ (φ i)
+     where
+      †₂ : Σ j ꞉ index S , (R [ i ] ≤ S [ j ]) holds
+         → ∥ index S ∥Ω holds
+      †₂ = ∣_∣ ∘ pr₁
+
+  ‡ : (j₁ j₂ : index S)
+    → (Ǝ j ∶ index S , (S [ j₁ ] ≤ S [ j ]) holds
+                     × (S [ j₂ ] ≤ S [ j ]) holds) holds
+  ‡ j₁ j₂ = ∥∥-rec₂ ∃-is-prop ‡₁ (ψ j₁) (ψ j₂)
+   where
+    ‡₁ : Σ i₁ ꞉ index R , (S [ j₁ ] ≤ R [ i₁ ]) holds
+       → Σ i₂ ꞉ index R , (S [ j₂ ] ≤ R [ i₂ ]) holds
+       → (Ǝ j ∶ index S , (S [ j₁ ] ≤ S [ j ]) holds
+                        × (S [ j₂ ] ≤ S [ j ]) holds) holds
+    ‡₁ (i₁ , p₁) (i₂ , p₂) = ∥∥-rec ∃-is-prop ‡₂ (δ₂ i₁ i₂)
+     where
+      ‡₂ : Σ i ꞉ index R , (R [ i₁ ] ≤ R [ i ]) holds
+                         × (R [ i₂ ] ≤ R [ i ]) holds
+         → (Ǝ j ∶ index S , (S [ j₁ ] ≤ S [ j ]) holds
+                          × (S [ j₂ ] ≤ S [ j ]) holds) holds
+      ‡₂ (i , q₁ , q₂) = ∥∥-rec ∃-is-prop ‡₃ (φ i)
+       where
+        ‡₃ : Σ j ꞉ (index S) , (R [ i ] ≤ S [ j ]) holds
+           → (Ǝ j ∶ index S , (S [ j₁ ] ≤ S [ j ]) holds
+                            × (S [ j₂ ] ≤ S [ j ]) holds) holds
+        ‡₃ (j , p) = ∣ j , r₁ , r₂ ∣
+         where
+          open PosetReasoning (poset-of F)
+
+          r₁ : (S [ j₁ ] ≤ S [ j ]) holds
+          r₁ = S [ j₁ ] ≤⟨ p₁ ⟩ R [ i₁ ] ≤⟨ q₁ ⟩ R [ i ] ≤⟨ p ⟩ S [ j ] ■
+
+          r₂ : (S [ j₂ ] ≤ S [ j ]) holds
+          r₂ = S [ j₂ ] ≤⟨ p₂ ⟩ R [ i₂ ] ≤⟨ q₂ ⟩ R [ i ] ≤⟨ p ⟩ S [ j ] ■
 
 open PropositionalTruncation pt
 
@@ -1882,5 +2084,27 @@ sc-and-∨-preserving-⇒-⋁-preserving F G h ζ ψ φ S =
              ‡ = ⋁[ G ]-upper ⁅ h x⃗ ∣ x⃗ ε S↑ ⁆ (i ∷ [])
 
    ♥ = ≤-is-antisymmetric (poset-of G) ♥₁ ♥₂
+
+join-𝟎-lemma₁ : (F : Frame 𝓤 𝓥 𝓦)
+              → {x y : ⟨ F ⟩}
+              → x ∨[ F ] y ＝ 𝟎[ F ]
+              → x ＝ 𝟎[ F ]
+join-𝟎-lemma₁ F {x} {y} p = only-𝟎-is-below-𝟎 F x †
+ where
+  open PosetReasoning (poset-of F)
+
+  † : (x ≤[ poset-of F ] 𝟎[ F ]) holds
+  † = x ≤⟨ ∨[ F ]-upper₁ x y ⟩ x ∨[ F ] y ＝⟨ p ⟩ₚ 𝟎[ F ] ■
+
+join-𝟎-lemma₂ : (F : Frame 𝓤 𝓥 𝓦)
+              → {x y : ⟨ F ⟩}
+              → x ∨[ F ] y ＝ 𝟎[ F ]
+              → y ＝ 𝟎[ F ]
+join-𝟎-lemma₂ F {x} {y} p = only-𝟎-is-below-𝟎 F y †
+ where
+  open PosetReasoning (poset-of F)
+
+  † : (y ≤[ poset-of F ] 𝟎[ F ]) holds
+  † = y ≤⟨ ∨[ F ]-upper₂ x y ⟩ x ∨[ F ] y ＝⟨ p ⟩ₚ 𝟎[ F ] ■
 
 \end{code}
