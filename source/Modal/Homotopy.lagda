@@ -4,7 +4,7 @@ This file contains some lemmas about precomposing embeddings onto homotopies.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 module Modal.Homotopy where
 
@@ -16,7 +16,7 @@ open import UF.FunExt
 
 homotopy-precomp
   : {𝓤 𝓥 𝓦 : Universe}
-  → {U : 𝓤 ̇} {X : 𝓥 ̇} {Y : 𝓦 ̇}
+  → {U : 𝓤 ̇ } {X : 𝓥 ̇ } {Y : 𝓦 ̇ }
   → (f g : X → Y)
   → (i : U → X)
   → f ∼ g
@@ -36,7 +36,7 @@ homotopy-precomp-by-embedding-is-equiv
  → (fe1 : funext 𝓤 𝓦)
  → (fe2 : funext (𝓥 ⊔ 𝓦) (𝓤 ⊔ 𝓦))
  → (fe3 : funext (𝓥 ⊔ 𝓦) (𝓥 ⊔ 𝓦))
- → {U : 𝓤 ̇} {X : 𝓥 ̇} {Y : 𝓦 ̇}
+ → {U : 𝓤 ̇ } {X : 𝓥 ̇ } {Y : 𝓦 ̇ }
  → (f g : X → Y)
  → (i : U → X)
  → (precomp-i-is-emb : is-embedding λ (- : X → Y) → - ∘ i)
@@ -48,7 +48,7 @@ homotopy-precomp-by-embedding-is-equiv fe0 fe1 fe2 fe3 f g i precomp-i-is-emb =
   composite : f ∼ g ≃ (f ∘ i ∼ g ∘ i)
   composite =
    ≃-sym (≃-funext fe0 f g)
-    ● (ap (_∘ i) , embedding-embedding' _ precomp-i-is-emb _ _)
+    ● (ap (_∘ i) , embedding-gives-embedding' _ precomp-i-is-emb _ _)
     ● ≃-funext fe1 (f ∘ i) (g ∘ i)
 
   composite-is-precomp : eqtofun composite ＝ homotopy-precomp f g i

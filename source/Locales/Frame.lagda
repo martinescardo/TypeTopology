@@ -8,7 +8,7 @@ Ported from `ayberkt/formal-topology-in-UF`.
 
 \begin{code}[hide]
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 open import MLTT.Spartan hiding (𝟚)
 open import UF.Base
@@ -41,9 +41,9 @@ private
     𝓤′ 𝓥′ 𝓦′ 𝓤′′ 𝓥′′ : Universe
 
 Fam : (𝓤 : Universe) → 𝓥 ̇ → 𝓤 ⁺ ⊔ 𝓥 ̇
-Fam 𝓤 A = Σ I ꞉ (𝓤 ̇) , (I → A)
+Fam 𝓤 A = Σ I ꞉ (𝓤 ̇ ), (I → A)
 
-fmap-syntax : {A : 𝓤 ̇} {B : 𝓥 ̇}
+fmap-syntax : {A : 𝓤 ̇ } {B : 𝓥 ̇ }
             → (A → B) → Fam 𝓦 A → Fam 𝓦 B
 fmap-syntax h (I , f) = I , h ∘ f
 
@@ -51,7 +51,7 @@ infix 2 fmap-syntax
 
 syntax fmap-syntax (λ x → e) U = ⁅ e ∣ x ε U ⁆
 
-compr-syntax : {A : 𝓤 ̇} (I : 𝓦 ̇) → (I → A) → Fam 𝓦 A
+compr-syntax : {A : 𝓤 ̇ } (I : 𝓦 ̇ )→ (I → A) → Fam 𝓦 A
 compr-syntax I f = I , f
 
 infix 2 compr-syntax
@@ -65,10 +65,10 @@ and (2) for the enumeration function.
 
 \begin{code}
 
-index : {A : 𝓤 ̇} → Fam 𝓥 A → 𝓥 ̇
+index : {A : 𝓤 ̇ } → Fam 𝓥 A → 𝓥 ̇
 index (I , _) = I
 
-_[_] : {A : 𝓤 ̇} → (U : Fam 𝓥 A) → index U → A
+_[_] : {A : 𝓤 ̇ } → (U : Fam 𝓥 A) → index U → A
 (_ , f) [ i ] = f i
 
 infix 9 _[_]
@@ -81,14 +81,14 @@ module to be imported by both this module and the `Dcpo` module.
 
 \begin{code}
 
-is-reflexive : {A : 𝓤 ̇} → (A → A → Ω 𝓥) → Ω (𝓤 ⊔ 𝓥)
+is-reflexive : {A : 𝓤 ̇ } → (A → A → Ω 𝓥) → Ω (𝓤 ⊔ 𝓥)
 is-reflexive {A = A} _≤_ = Ɐ x ∶ A , x ≤ x
 
-is-transitive : {A : 𝓤 ̇} → (A → A → Ω 𝓥) → Ω (𝓤 ⊔ 𝓥)
+is-transitive : {A : 𝓤 ̇ } → (A → A → Ω 𝓥) → Ω (𝓤 ⊔ 𝓥)
 is-transitive {A = A} _≤_ =
  Ɐ x ∶ A , Ɐ y ∶ A , Ɐ z ∶ A , x ≤ y ⇒ y ≤ z ⇒ x ≤ z
 
-is-preorder : {A : 𝓤 ̇} → (A → A → Ω 𝓥) → Ω (𝓤 ⊔ 𝓥)
+is-preorder : {A : 𝓤 ̇ } → (A → A → Ω 𝓥) → Ω (𝓤 ⊔ 𝓥)
 is-preorder {A = A} _≤_ = is-reflexive _≤_ ∧ is-transitive _≤_
 
 \end{code}
@@ -99,19 +99,19 @@ equipment with an antisymmetric order so they are not sets a priori.
 
 \begin{code}
 
-is-antisymmetric : {A : 𝓤 ̇} → (A → A → Ω 𝓥) → (𝓤 ⊔ 𝓥) ̇
+is-antisymmetric : {A : 𝓤 ̇ } → (A → A → Ω 𝓥) → (𝓤 ⊔ 𝓥) ̇
 is-antisymmetric {A = A} _≤_ = {x y : A} → (x ≤ y) holds → (y ≤ x) holds → x ＝ y
 
-being-antisymmetric-is-prop : {A : 𝓤 ̇} (_≤_ : A → A → Ω 𝓥)
+being-antisymmetric-is-prop : {A : 𝓤 ̇ } (_≤_ : A → A → Ω 𝓥)
                             → is-set A
                             → is-prop (is-antisymmetric _≤_)
 being-antisymmetric-is-prop {𝓤} {A} _≤_ A-is-set =
  Π-is-prop' fe (λ x → Π-is-prop' fe (λ y → Π₂-is-prop fe (λ _ _ → A-is-set {x} {y})))
 
-is-partial-order : (A : 𝓤 ̇) → (A → A → Ω 𝓥) → 𝓤 ⊔ 𝓥 ̇
+is-partial-order : (A : 𝓤 ̇ )→ (A → A → Ω 𝓥) → 𝓤 ⊔ 𝓥 ̇
 is-partial-order A _≤_ = is-preorder _≤_ holds ×  is-antisymmetric _≤_
 
-being-partial-order-is-prop : (A : 𝓤 ̇) (_≤_ : A → A → Ω 𝓥)
+being-partial-order-is-prop : (A : 𝓤 ̇ )(_≤_ : A → A → Ω 𝓥)
                             → is-prop (is-partial-order A _≤_)
 being-partial-order-is-prop A _≤_ = prop-criterion γ
  where
@@ -222,7 +222,7 @@ module PosetReasoning (P : Poset 𝓤 𝓥) where
 
 infix 1 _＝[_]＝_
 
-_＝[_]＝_ : {A : 𝓤 ̇} → A → is-set A → A → Ω 𝓤
+_＝[_]＝_ : {A : 𝓤 ̇ } → A → is-set A → A → Ω 𝓤
 x ＝[ iss ]＝ y = (x ＝ y) , iss
 
 \end{code}
@@ -231,7 +231,7 @@ x ＝[ iss ]＝ y = (x ＝ y) , iss
 
 \begin{code}
 
-module Meets {A : 𝓤 ̇} (_≤_ : A → A → Ω 𝓥) where
+module Meets {A : 𝓤 ̇ } (_≤_ : A → A → Ω 𝓥) where
 
  is-top : A → Ω (𝓤 ⊔ 𝓥)
  is-top t = Ɐ x ∶ A , (x ≤ t)
@@ -253,7 +253,7 @@ module Meets {A : 𝓤 ̇} (_≤_ : A → A → Ω 𝓥) where
 
 \begin{code}
 
-module Joins {A : 𝓤 ̇} (_≤_ : A → A → Ω 𝓥) where
+module Joins {A : 𝓤 ̇ } (_≤_ : A → A → Ω 𝓥) where
 
  _is-an-upper-bound-of_ : A → Fam 𝓦 A → Ω (𝓥 ⊔ 𝓦)
  u is-an-upper-bound-of U = Ɐ i ∶ index U , (U [ i ]) ≤ u
@@ -275,12 +275,12 @@ module Joins {A : 𝓤 ̇} (_≤_ : A → A → Ω 𝓥) where
  u is-lub-of₂ (v , w) = (u is-an-upper-bound-of₂ (v , w))
                       ∧ (Ɐ (u′ , _) ∶ upper-bound₂ (v , w) , (u ≤ u′))
 
-module JoinNotation {A : 𝓤 ̇} (⋁_ : Fam 𝓦 A → A) where
+module JoinNotation {A : 𝓤 ̇ } (⋁_ : Fam 𝓦 A → A) where
 
- join-syntax : (I : 𝓦 ̇) → (I → A) → A
+ join-syntax : (I : 𝓦 ̇ )→ (I → A) → A
  join-syntax I f = ⋁ (I , f)
 
- ⋁⟨⟩-syntax : {I : 𝓦 ̇} → (I → A) → A
+ ⋁⟨⟩-syntax : {I : 𝓦 ̇ } → (I → A) → A
  ⋁⟨⟩-syntax {I = I} f = join-syntax I f
 
  infix 2 join-syntax
@@ -307,7 +307,7 @@ frame-data 𝓥 𝓦 A = (A → A → Ω 𝓥)   -- order
                  × (A → A → A)     -- binary meets
                  × (Fam 𝓦 A → A)   -- arbitrary joins
 
-satisfies-frame-laws : {A : 𝓤 ̇} → frame-data 𝓥 𝓦 A → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺ ̇
+satisfies-frame-laws : {A : 𝓤 ̇ } → frame-data 𝓥 𝓦 A → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺ ̇
 satisfies-frame-laws {𝓤 = 𝓤} {𝓥} {𝓦} {A = A}  (_≤_ , 𝟏 , _⊓_ , ⊔_) =
  Σ p ꞉ is-partial-order A _≤_ , rest p holds
  where
@@ -341,7 +341,7 @@ The type of (𝓤, 𝓥, 𝓦)-frames is then defined as:
 \begin{code}
 
 Frame : (𝓤 𝓥 𝓦 : Universe) → 𝓤 ⁺ ⊔ 𝓥 ⁺ ⊔ 𝓦 ⁺ ̇
-Frame 𝓤 𝓥 𝓦 = Σ A ꞉ (𝓤 ̇) , frame-structure 𝓥 𝓦 A
+Frame 𝓤 𝓥 𝓦 = Σ A ꞉ (𝓤 ̇ ), frame-structure 𝓥 𝓦 A
 
 \end{code}
 
@@ -593,7 +593,7 @@ map.
 
 \begin{code}
 
-∅ : {A : 𝓤  ̇} → (𝓦 : Universe) → Fam 𝓦 A
+∅ : {A : 𝓤  ̇ } → (𝓦 : Universe) → Fam 𝓦 A
 ∅ 𝓦 = 𝟘 {𝓦} , λ ()
 
 𝟎[_] : (F : Frame 𝓤 𝓥 𝓦) → ⟨ F ⟩
@@ -1299,7 +1299,7 @@ binary-distributivity-op F x y z =
 
 \begin{code}
 
-⋁[_]-iterated-join : (F : Frame 𝓤 𝓥 𝓦) (I : 𝓦 ̇) (J : I → 𝓦 ̇)
+⋁[_]-iterated-join : (F : Frame 𝓤 𝓥 𝓦) (I : 𝓦 ̇ )(J : I → 𝓦 ̇)
                 → (f : (i : I) → J i → ⟨ F ⟩)
                 → ⋁[ F ] ((Σ i ꞉ I , J i) , uncurry f)
                 ＝ ⋁[ F ] ⁅ ⋁[ F ] ⁅ f i j ∣ j ∶ J i ⁆ ∣ i ∶ I ⁆

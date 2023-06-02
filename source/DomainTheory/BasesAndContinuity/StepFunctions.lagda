@@ -12,8 +12,8 @@ completion, see below for details.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline --experimental-lossy-unification #-}
--- The flag --experimental-lossy-unification roughly reduces the timechecking
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline --lossy-unification #-}
+-- The flag --lossy-unification roughly reduces the timechecking
 -- time by 50%.
 
 open import MLTT.Spartan hiding (J)

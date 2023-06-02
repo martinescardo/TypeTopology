@@ -4,7 +4,7 @@ This module has functions to build games.
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe --auto-inline --exact-split #-}
+{-# OPTIONS --without-K --safe --no-sized-types --no-guardedness --auto-inline --exact-split #-}
 
 open import MLTT.Spartan hiding (J)
 
@@ -14,6 +14,10 @@ open import UF.FunExt
 
 open import Games.TypeTrees
 open import Games.FiniteHistoryDependent R
+open import Games.J
+open import Games.JK
+
+open J-definitions R
 
 \end{code}
 
@@ -38,6 +42,8 @@ predicate (branch X Xf ε) (x :: xs) = predicate (Xf x) xs
 selections : (Γ : GameJ) → 𝓙 (dtt Γ)
 selections (leaf r)        = ⟨⟩
 selections (branch X Xf ε) = ε :: (λ x → selections (Xf x))
+
+open JK R
 
 quantifiers : (Γ : GameJ) → 𝓚 (dtt Γ)
 quantifiers (leaf r)        = ⟨⟩

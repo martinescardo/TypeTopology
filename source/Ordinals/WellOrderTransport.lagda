@@ -5,21 +5,22 @@ be done with univalence when the types live in different universes.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 open import MLTT.Spartan
 open import UF.FunExt
 
 module Ordinals.WellOrderTransport (fe : FunExt) where
 
+open import Ordinals.Equivalence
 open import Ordinals.Notions
 open import Ordinals.Type
 open import Ordinals.Underlying
 open import Ordinals.WellOrderArithmetic
 open import UF.Base
-open import UF.Subsingletons
-open import UF.Retracts
 open import UF.Equiv
+open import UF.Retracts
+open import UF.Subsingletons
 open import UF.Univalence
 
 \end{code}
@@ -42,7 +43,7 @@ transport-ordinal-structure ua X Y = γ
 
 \end{code}
 
-The above can be done without univance.
+The above can be done without univalence.
 
 We could hope to get, more generally,
 
@@ -72,13 +73,13 @@ module order-transfer-lemma₁
    f : X → Y
    f = ⌜ 𝕗 ⌝
 
-   g : Y → X
-   g = inverse f (⌜⌝-is-equiv 𝕗)
+   f⁻¹ : Y → X
+   f⁻¹ = inverse f (⌜⌝-is-equiv 𝕗)
 
-   η : g ∘ f ∼ id
+   η : f⁻¹ ∘ f ∼ id
    η = inverses-are-retractions f (⌜⌝-is-equiv 𝕗)
 
-   ε : f ∘ g ∼ id
+   ε : f ∘ f⁻¹ ∼ id
    ε = inverses-are-sections f (⌜⌝-is-equiv 𝕗)
 
 \end{code}
@@ -99,14 +100,14 @@ So we make one further assumption and a definition:
   module _ (_<_ : X → X → 𝓥 ̇ ) where
     private
        _≺_ : Y → Y → 𝓥 ̇
-       y ≺ y' = g y < g y'
+       y ≺ y' = f⁻¹ y < f⁻¹ y'
 
     order = _≺_
 
     order-preservation→ : (x x' : X) → x < x' → f x ≺ f x'
     order-preservation→ x x' = transport₂ _<_ ((η x)⁻¹) ((η x')⁻¹)
 
-    order-preservation← : (y y' : Y) → y ≺ y' → g y < g y'
+    order-preservation← : (y y' : Y) → y ≺ y' → f⁻¹ y < f⁻¹ y'
     order-preservation← y y' = id
 
 \end{code}
@@ -144,10 +145,10 @@ However, we can easily establish their equivalence:
 
     transport-well-order-≃ : (is-well-order _<_) ≃ (is-well-order _≺_)
     transport-well-order-≃ = logically-equivalent-props-are-equivalent
-                               (being-well-order-is-prop (_<_) fe)
-                               (being-well-order-is-prop (_≺_) fe)
-                               (lr-implication transport-well-order)
-                               (rl-implication transport-well-order)
+                              (being-well-order-is-prop (_<_) fe)
+                              (being-well-order-is-prop (_≺_) fe)
+                              (lr-implication transport-well-order)
+                              (rl-implication transport-well-order)
 
 \end{code}
 
@@ -156,82 +157,82 @@ And now we provide all steps needed to establish transport-well-order.
 \begin{code}
 
     is-prop-valued→ : is-prop-valued _<_ → is-prop-valued _≺_
-    is-prop-valued→ j y y' = j (g y) (g y')
+    is-prop-valued→ j y y' = j (f⁻¹ y) (f⁻¹ y')
 
     is-prop-valued← : is-prop-valued _≺_ → is-prop-valued _<_
     is-prop-valued← i x x' = γ
      where
-      δ : is-prop (g (f x) < g (f x'))
+      δ : is-prop (f⁻¹ (f x) < f⁻¹ (f x'))
       δ = i (f x) (f x')
 
       γ : is-prop (x < x')
       γ = transport₂ (λ x x' → is-prop (x < x')) (η x) (η x') δ
 
     is-well-founded→ : is-well-founded _<_ → is-well-founded _≺_
-    is-well-founded→ = retract-well-founded _<_ _≺_ f g ε γ
+    is-well-founded→ = retract-well-founded _<_ _≺_ f f⁻¹ ε γ
      where
-      γ : (x : X) (y : Y) → y ≺ f x → g y < x
-      γ x y = transport ( g y <_) (η x)
+      γ : (x : X) (y : Y) → y ≺ f x → f⁻¹ y < x
+      γ x y = transport ( f⁻¹ y <_) (η x)
 
     is-well-founded← : is-well-founded _≺_ → is-well-founded _<_
-    is-well-founded← = retract-well-founded _≺_ _<_ g f η γ
+    is-well-founded← = retract-well-founded _≺_ _<_ f⁻¹ f η γ
      where
-      γ : (y : Y) (x : X) → x < g y → f x ≺ y
-      γ y x = transport (_< g y) ((η x)⁻¹)
+      γ : (y : Y) (x : X) → x < f⁻¹ y → f x ≺ y
+      γ y x = transport (_< f⁻¹ y) ((η x)⁻¹)
 
     is-extensional→ : is-extensional _<_ → is-extensional _≺_
     is-extensional→ e y y' ϕ γ = p
      where
-      α : (x : X) → x < g y → x < g y'
-      α x l = transport (_< g y') (η x) a
+      I : (x : X) → x < f⁻¹ y → x < f⁻¹ y'
+      I x l = transport (_< f⁻¹ y') (η x) a
        where
-        a : g (f x) < g y'
-        a = ϕ (f x) (transport (_< g y) ((η x)⁻¹) l)
+        a : f⁻¹ (f x) < f⁻¹ y'
+        a = ϕ (f x) (transport (_< f⁻¹ y) ((η x)⁻¹) l)
 
-      β : (x : X) → x < g y' → x < g y
-      β x l = transport (_< g y) (η x) b
+      II : (x : X) → x < f⁻¹ y' → x < f⁻¹ y
+      II x l = transport (_< f⁻¹ y) (η x) b
        where
-        b : g (f x) < g y
-        b = γ (f x) (transport (_< g y') ((η x)⁻¹) l)
+        b : f⁻¹ (f x) < f⁻¹ y
+        b = γ (f x) (transport (_< f⁻¹ y') ((η x)⁻¹) l)
 
-      q : g y ＝ g y'
-      q = e (g y) (g y') α β
+      q : f⁻¹ y ＝ f⁻¹ y'
+      q = e (f⁻¹ y) (f⁻¹ y') I II
 
       p : y ＝ y'
-      p = sections-are-lc g (f , ε) q
+      p = sections-are-lc f⁻¹ (f , ε) q
 
     is-extensional← : is-extensional _≺_ → is-extensional _<_
     is-extensional← e x x' ϕ γ = p
      where
-      α : (y : Y) → g y < g (f x) → g y < g (f x')
-      α y l = transport (g y <_) ((η x')⁻¹) a
+      I : (y : Y) → f⁻¹ y < f⁻¹ (f x) → f⁻¹ y < f⁻¹ (f x')
+      I y l = transport (f⁻¹ y <_) ((η x')⁻¹) a
        where
-        a : g y < x'
-        a = ϕ (g y) (transport (g y <_) (η x) l)
+        a : f⁻¹ y < x'
+        a = ϕ (f⁻¹ y) (transport (f⁻¹ y <_) (η x) l)
 
-      β : (y : Y) → g y < g (f x') → g y < g (f x)
-      β y l = transport (g y <_) ((η x)⁻¹) b
+      II : (y : Y) → f⁻¹ y < f⁻¹ (f x') → f⁻¹ y < f⁻¹ (f x)
+      II y l = transport (f⁻¹ y <_) ((η x)⁻¹) b
        where
-        b : g y < x
-        b = γ (g y) (transport (g y <_) (η x') l)
+        b : f⁻¹ y < x
+        b = γ (f⁻¹ y) (transport (f⁻¹ y <_) (η x') l)
 
       q : f x ＝ f x'
-      q = e (f x) (f x') α β
+      q = e (f x) (f x') I II
 
       p : x ＝ x'
-      p = sections-are-lc f (g , η) q
+      p = sections-are-lc f (f⁻¹ , η) q
 
     is-transitive→ : is-transitive _<_ → is-transitive _≺_
-    is-transitive→ t x y z = t (g x) (g y) (g z)
+    is-transitive→ t x y z = t (f⁻¹ x) (f⁻¹ y) (f⁻¹ z)
 
     is-transitive← : is-transitive _≺_ → is-transitive _<_
-    is-transitive← t x y z = γ
+    is-transitive← t x y z = II
      where
-      δ : g (f x) < g (f y) → g (f y) < g (f z) → g (f x) < g (f z)
-      δ = t (f x) (f y) (f z)
+      I : f⁻¹ (f x) < f⁻¹ (f y) → f⁻¹ (f y) < f⁻¹ (f z) → f⁻¹ (f x) < f⁻¹ (f z)
+      I = t (f x) (f y) (f z)
 
-      γ : x < y → y < z → x < z
-      γ = transport₃ (λ a b c → a < b → b < c → a < c) (η x) (η y) (η z) δ
+      II : x < y → y < z → x < z
+      II = transport₃ (λ a b c → a < b → b < c → a < c) (η x) (η y) (η z) I
 
 \end{code}
 
@@ -272,30 +273,30 @@ module order-transfer-lemma₂
       f : {x y : X} → x < y → x ≺ y
       f {x} {y} = ⌜ 𝕗 x y ⌝
 
-      g : {x y : X} → x ≺ y → x < y
-      g {x} {y} = inverse (f {x} {y}) (⌜⌝-is-equiv (𝕗 x y))
+      f⁻¹ : {x y : X} → x ≺ y → x < y
+      f⁻¹ {x} {y} = inverse (f {x} {y}) (⌜⌝-is-equiv (𝕗 x y))
 
     is-prop-valued→ : is-prop-valued _<_ → is-prop-valued _≺_
     is-prop-valued→ i x y = equiv-to-prop (≃-sym (𝕗 x y)) (i x y)
 
     is-well-founded→ : is-well-founded _<_ → is-well-founded _≺_
     is-well-founded→ = retract-well-founded _<_ _≺_ id id
-                        (λ x → refl) (λ x y → g {y} {x})
+                        (λ x → refl) (λ x y → f⁻¹ {y} {x})
 
     is-extensional→ : is-extensional _<_ → is-extensional _≺_
     is-extensional→ e x y ϕ γ = p
      where
-      α : (u : X) → u < x → u < y
-      α u l = g (ϕ u (f l))
+      I : (u : X) → u < x → u < y
+      I u l = f⁻¹ (ϕ u (f l))
 
-      β : (u : X) → u < y → u < x
-      β u l = g (γ u (f l))
+      II : (u : X) → u < y → u < x
+      II u l = f⁻¹ (γ u (f l))
 
       p : x ＝ y
-      p = e x y α β
+      p = e x y I II
 
     is-transitive→ : is-transitive _<_ → is-transitive _≺_
-    is-transitive→ t x y z l m = f (t x y z (g l) (g m))
+    is-transitive→ t x y z l m = f (t x y z (f⁻¹ l) (f⁻¹ m))
 
 module order-transfer-lemma₃
          (X   : 𝓤 ̇ )
@@ -349,10 +350,10 @@ transfer-structure {𝓤} {𝓥} X α 𝕗 (_<_ , <-is-equivalent-to-≺) = γ
   f : X → ⟨ α ⟩
   f = ⌜ 𝕗 ⌝
 
-  g : ⟨ α ⟩ → X
-  g = inverse f (⌜⌝-is-equiv 𝕗)
+  f⁻¹ : ⟨ α ⟩ → X
+  f⁻¹ = inverse f (⌜⌝-is-equiv 𝕗)
 
-  ε : f ∘ g ∼ id
+  ε : f ∘ f⁻¹ ∼ id
   ε = inverses-are-sections f (⌜⌝-is-equiv 𝕗)
 
   w⁻ : is-well-order _<_
@@ -365,20 +366,20 @@ transfer-structure {𝓤} {𝓥} X α 𝕗 (_<_ , <-is-equivalent-to-≺) = γ
   w : is-well-order _≺_
   w = order-transfer-lemma₁.well-order→ ⟨ α ⟩ X (≃-sym 𝕗) _<_ w⁻
 
-  g-preserves-order : (a b : ⟨ α ⟩) → a ≺⟨ α ⟩ b → g a ≺ g b
-  g-preserves-order a b l = γ
+  f⁻¹-preserves-order : (a b : ⟨ α ⟩) → a ≺⟨ α ⟩ b → f⁻¹ a ≺ f⁻¹ b
+  f⁻¹-preserves-order a b l = II
    where
-    δ : a < b
-    δ = ⌜ <-is-equivalent-to-≺ a b ⌝ l
+    I : a < b
+    I = ⌜ <-is-equivalent-to-≺ a b ⌝ l
 
-    γ : f (g a) < f (g b)
-    γ = transport₂ _<_ ((ε a)⁻¹) ((ε b)⁻¹) δ
+    II : f (f⁻¹ a) < f (f⁻¹ b)
+    II = transport₂ _<_ ((ε a)⁻¹) ((ε b)⁻¹) I
 
   f-preserves-order : (x y : X) → x ≺ y → f x ≺⟨ α ⟩ f y
   f-preserves-order x y = ⌜ <-is-equivalent-to-≺ (f x) (f y) ⌝⁻¹
 
   e : (X , _≺_ , w) ≃ₒ α
-  e = (f , f-preserves-order , ⌜⌝-is-equiv 𝕗 , g-preserves-order)
+  e = (f , f-preserves-order , ⌜⌝-is-equiv 𝕗 , f⁻¹-preserves-order)
 
   γ : Σ s ꞉ OrdinalStructure X , (X , s) ≃ₒ α
   γ = ((_≺_ , w) , e)

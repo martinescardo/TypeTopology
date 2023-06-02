@@ -5,7 +5,7 @@ In this file I define order of Dedekind Reals, and prove
 some key properties.
 
 \begin{code}
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 open import MLTT.Spartan renaming (_+_ to _∔_)
 
@@ -22,12 +22,12 @@ open import UF.Subsingletons-FunExt
 open import Rationals.Type
 
 module DedekindReals.Order
+         (fe : Fun-Ext)
          (pe : Prop-Ext)
          (pt : propositional-truncations-exist)
-         (fe : Fun-Ext)
        where
 
-open import DedekindReals.Type pe pt fe
+open import DedekindReals.Type fe pe pt
 open PropositionalTruncation pt
 
 _<ℝ_ : ℝ → ℝ → 𝓤₀ ̇
@@ -37,15 +37,18 @@ instance
  Strict-Order-ℝ-ℝ : Strict-Order ℝ ℝ
  _<_ {{Strict-Order-ℝ-ℝ}} = _<ℝ_
 
+ Strict-Order-Chain-ℝ-ℝ-ℝ : Strict-Order-Chain ℝ ℝ ℝ _<_ _<_
+ _<_<_ {{Strict-Order-Chain-ℝ-ℝ-ℝ}} p q r = (p < q) × (q < r)
+
 <-is-prop : (x y : ℝ) → is-prop (x < y)
 <-is-prop x y = ∃-is-prop
 
 ℝ<-trans : (x y z : ℝ) → x < y → y < z → x < z
 ℝ<-trans x y z x<y y<z = ∥∥-functor I (binary-choice x<y y<z)
  where
-  I : (Σ k ꞉ ℚ , x < k × k < y)
-    × (Σ l ꞉ ℚ , y < l × l < z)
-    →  Σ m ꞉ ℚ , x < m × m < z
+  I : (Σ k ꞉ ℚ , x < k < y)
+    × (Σ l ꞉ ℚ , y < l < z)
+    →  Σ m ꞉ ℚ , x < m < z
   I ((k , (x<k , k<y)) , l , (y<l , l<z)) = k , (x<k , k<z)
    where
     k<l : k < l
@@ -71,27 +74,26 @@ instance
               → ∃ q ꞉ ℚ , (x < q) × (q < y)
 ℝ-archimedean x y l = l
 
-
-weak-linearity : (x y z : ℝ) → x < y → x < z ∨ z < y
+weak-linearity : (x y z : ℝ) → x < y → (x < z) ∨ (z < y)
 weak-linearity x y z l = ∥∥-rec ∨-is-prop I l
  where
-  I : Σ q ꞉ ℚ , q > x × q < y → x < z ∨ z < y
+  I : Σ q ꞉ ℚ , q > x × q < y → (x < z) ∨ (z < y)
   I (q , qRx , qLy) = ∥∥-rec ∨-is-prop II (binary-choice exists-r exists-s)
    where
     exists-r : ∃ r ꞉ ℚ , r < q × r > x
     exists-r = rounded-right-b (upper-cut-of x) (rounded-from-real-R x) q qRx
-    exists-s : ∃ s ꞉ ℚ , q < s × s < y
+    exists-s : ∃ s ꞉ ℚ , q < s < y
     exists-s = rounded-left-b (lower-cut-of y) (rounded-from-real-L y) q qLy
-    II : (Σ r ꞉ ℚ , r < q × r > x) × (Σ s ꞉ ℚ , q < s × s < y) → x < z ∨ z < y
+    II : (Σ r ꞉ ℚ , r < q × r > x) × (Σ s ꞉ ℚ , q < s < y) → (x < z) ∨ (z < y)
     II ((r , r<q , rRx) , s , q<s , sLy) = ∥∥-rec ∨-is-prop IV III
      where
-      III : r < z ∨ s > z
+      III : (r < z) ∨ (z < s)
       III = located-from-real z r s (ℚ<-trans r q s r<q q<s)
-      IV : r < z ∔ s > z → x < z ∨ z < y
+      IV : (r < z) ∔ (z < s) → (x < z) ∨ (z < y)
       IV (inl rLz) = ∣ inl ∣ r , rRx , rLz ∣ ∣
       IV (inr sRz) = ∣ inr ∣ s , sRz , sLy ∣ ∣
 
-weak-linearity' : (x y z : ℝ) → x < y → x < z ∨ z < y
+weak-linearity' : (x y z : ℝ) → x < y → (x < z) ∨ (z < y)
 weak-linearity' x y z l = do
  (q , x<q , q<y) ← l
  (r , r<q , x<r) ← rounded-right-b (upper-cut-of x) (rounded-from-real-R x) q x<q
@@ -101,12 +103,12 @@ weak-linearity' x y z l = do
          (λ z<s → ∣ inr ∣ s , z<s , s<y ∣ ∣)
 
 _♯_ : (x y : ℝ) → 𝓤₀ ̇
-x ♯ y = x < y ∨ y < x
+x ♯ y = (x < y) ∨ (y < x)
 
 apartness-gives-inequality : (x y : ℝ) → x ♯ y → ¬ (x ＝ y)
 apartness-gives-inequality x y apart e = ∥∥-rec 𝟘-is-prop I apart
  where
-  I : ¬ (x < y ∔ y < x)
+  I : ¬ ((x < y) ∔ (y < x))
   I (inl l) = ∥∥-rec 𝟘-is-prop III II
    where
     II : x < x
@@ -129,7 +131,7 @@ apartness-gives-inequality x y apart e = ∥∥-rec 𝟘-is-prop I apart
 ℝ-less-than-or-equal-not-greater : (x y : ℝ) → x ≤ y → ¬ (y < x)
 ℝ-less-than-or-equal-not-greater x y x≤y y<x = ∥∥-rec 𝟘-is-prop I y<x
  where
-  I : ¬ (Σ q ꞉ ℚ , y < q × q < x)
+  I : ¬ (Σ q ꞉ ℚ , y < q < x)
   I (q , y<q , q<x) = ℚ<-not-itself-from-ℝ q y (x≤y q q<x , y<q)
 
 ℝ-less-than-not-greater-or-equal : (x y : ℝ) → x < y → ¬ (y ≤ x)
@@ -138,7 +140,7 @@ apartness-gives-inequality x y apart e = ∥∥-rec 𝟘-is-prop I apart
 ℝ-not-less-is-greater-or-equal : (x y : ℝ) → ¬ (x < y) → y ≤ x
 ℝ-not-less-is-greater-or-equal x y nl p pLy = ∥∥-rec (∈-is-prop (lower-cut-of x) p) I (rounded-left-b (lower-cut-of y) (rounded-from-real-L y) p pLy)
  where
-  I : Σ q ꞉ ℚ , p < q × q < y → p < x
+  I : Σ q ꞉ ℚ , p < q < y → p < x
   I (q , l , q<y) = ∥∥-rec (∈-is-prop (lower-cut-of x) p) II (located-from-real x p q l)
    where
     II : p < x ∔ q > x → p < x
@@ -165,7 +167,7 @@ apartness-gives-inequality x y apart e = ∥∥-rec 𝟘-is-prop I apart
 ℝ-less-than-not-itself : (x : ℝ) → x ≮ x
 ℝ-less-than-not-itself x l = ∥∥-rec 𝟘-is-prop I l
  where
-  I : ¬ (Σ k ꞉ ℚ , x < k × k < x)
+  I : ¬ (Σ k ꞉ ℚ , x < k < x)
   I (k , x<k , k<x) = ℚ<-not-itself-from-ℝ k x (k<x , x<k)
 
 ℝ-zero-less-than-one : 0ℝ < 1ℝ
@@ -177,10 +179,10 @@ apartness-gives-inequality x y apart e = ∥∥-rec 𝟘-is-prop I apart
 embedding-preserves-order : (p q : ℚ) → p < q → ι p < ι q
 embedding-preserves-order p q l = I (use-rationals-density)
  where
-  use-rationals-density : Σ k ꞉ ℚ , p < k × k < q
-  use-rationals-density = ℚ-dense fe p q l
+  use-rationals-density : Σ k ꞉ ℚ , p < k < q
+  use-rationals-density = ℚ-dense p q l
 
-  I : (Σ k ꞉ ℚ , p < k × k < q) → ∃ k ꞉ ℚ , p < k × k < q
+  I : (Σ k ꞉ ℚ , p < k < q) → ∃ k ꞉ ℚ , p < k < q
   I (k , p<k , k<q) = ∣ k , p<k , k<q ∣
 
 \end{code}

@@ -1,0 +1,5 @@
+The file dialogue.lagda generates LaTeX and then pdf using the script
+"do".  The script uses uses "sed" to fix a bug in --latex in Agda
+2.3.2, wwhich is already fixed in the development version.
+
+ 

@@ -493,7 +493,7 @@ is written 𝓤 ⊔ 𝓥, to avoid subscripts.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 module Various.UnivalenceFromScratch where
 

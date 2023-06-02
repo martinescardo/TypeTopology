@@ -2,7 +2,7 @@ Martin Escardo, November-December 2019
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 module Fin.Pigeonhole where
 
@@ -200,15 +200,15 @@ need more steps.
 
 \begin{code}
 
-  u : (i j : Fin m) → decidable ((i ≠ j) × (f i ＝ f j))
+  u : (i j : Fin m) → is-decidable ((i ≠ j) × (f i ＝ f j))
   u i j = ×-preserves-decidability
            (¬-preserves-decidability (Fin-is-discrete i j))
            (Fin-is-discrete (f i) (f j))
 
-  v : (i : Fin m) → decidable (Σ j ꞉ Fin m , (i ≠ j) × (f i ＝ f j))
+  v : (i : Fin m) → is-decidable (Σ j ꞉ Fin m , (i ≠ j) × (f i ＝ f j))
   v i = Fin-Compact _ (u i)
 
-  w : decidable (f has-a-repetition)
+  w : is-decidable (f has-a-repetition)
   w = Fin-Compact _ v
 
   γ : f has-a-repetition
@@ -277,7 +277,7 @@ We now consider further variations of the finite pigeonhole principle.
 
   repetitions-complemented : {m : ℕ} {Y : 𝓥 ̇ } (f : Fin m → Y)
                          → is-finite Y
-                         → complemented (repeated-values f)
+                         → is-complemented (repeated-values f)
 
   repetitions-complemented {𝓥} {m} {Y} f (n , t) i =
    Fin-Compact
@@ -403,7 +403,7 @@ because finite types are discrete:
       A : ℕ → 𝓤 ̇
       A n = x ↑ (succ n) ＝ e
 
-      γ : (n : ℕ) → decidable (x ↑ succ n ＝ e)
+      γ : (n : ℕ) → is-decidable (x ↑ succ n ＝ e)
       γ n = finite-types-are-discrete pt fe φ (x ↑ succ n) e
 
 \end{code}

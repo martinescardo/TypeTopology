@@ -24,7 +24,7 @@ GenericConvergentSequence)
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 open import UF.FunExt
 
@@ -48,7 +48,7 @@ private
  fe₀ = fe 𝓤₀ 𝓤₀
 
 LPO : 𝓤₀ ̇
-LPO = (x : ℕ∞) → decidable (Σ n ꞉ ℕ , x ＝ ι n)
+LPO = (x : ℕ∞) → is-decidable (Σ n ꞉ ℕ , x ＝ ι n)
 
 LPO-is-prop : is-prop LPO
 LPO-is-prop = Π-is-prop fe₀ f
@@ -56,7 +56,7 @@ LPO-is-prop = Π-is-prop fe₀ f
   a : (x : ℕ∞) → is-prop (Σ n ꞉ ℕ , x ＝ ι n)
   a x (n , p) (m , q) = to-Σ-＝ (ℕ-to-ℕ∞-lc (p ⁻¹ ∙ q) , ℕ∞-is-set fe₀ _ _)
 
-  f : (x : ℕ∞) → is-prop (decidable (Σ n ꞉ ℕ , x ＝ ι n))
+  f : (x : ℕ∞) → is-prop (is-decidable (Σ n ꞉ ℕ , x ＝ ι n))
   f x = decidability-of-prop-is-prop fe₀ (a x)
 
 \end{code}
@@ -68,7 +68,7 @@ sense of UF) to our formulation.
 
 \begin{code}
 
-LPO-gives-compact-ℕ : LPO → compact ℕ
+LPO-gives-compact-ℕ : LPO → is-compact ℕ
 LPO-gives-compact-ℕ ℓ β = γ
   where
     A = (Σ n ꞉ ℕ , β n ＝ ₀) + (Π n ꞉ ℕ , β n ＝ ₁)
@@ -79,7 +79,7 @@ LPO-gives-compact-ℕ ℓ β = γ
     x : ℕ∞
     x = (α , force-decreasing-is-decreasing β)
 
-    d : decidable(Σ n ꞉ ℕ , x ＝ ι n)
+    d : is-decidable(Σ n ꞉ ℕ , x ＝ ι n)
     d = ℓ x
 
     a : (Σ n ꞉ ℕ , x ＝ ι n) → A
@@ -109,10 +109,10 @@ LPO-gives-compact-ℕ ℓ β = γ
     γ : A
     γ = cases a b d
 
-compact-ℕ-gives-LPO : compact ℕ → LPO
+compact-ℕ-gives-LPO : is-compact ℕ → LPO
 compact-ℕ-gives-LPO κ x = γ
   where
-    A = decidable (Σ n ꞉ ℕ , x ＝ ι n)
+    A = is-decidable (Σ n ꞉ ℕ , x ＝ ι n)
 
     β : ℕ → 𝟚
     β = ι x
@@ -141,7 +141,7 @@ compact-ℕ-gives-LPO κ x = γ
         g : ¬ (Σ n ꞉ ℕ , x ＝ ι n)
         g = contrapositive f ψ
 
-    γ : decidable (Σ n ꞉ ℕ , x ＝ ι n)
+    γ : is-decidable (Σ n ꞉ ℕ , x ＝ ι n)
     γ = cases a b d
 
 \end{code}
@@ -163,17 +163,17 @@ knowing whether LPO holds or not!
 
 open import TypeTopology.PropTychonoff
 
-[LPO→ℕ]-compact∙ : compact∙ (LPO → ℕ)
-[LPO→ℕ]-compact∙ = prop-tychonoff-corollary' fe LPO-is-prop f
+[LPO→ℕ]-is-compact∙ : is-compact∙ (LPO → ℕ)
+[LPO→ℕ]-is-compact∙ = prop-tychonoff-corollary' fe LPO-is-prop f
  where
-   f : LPO → compact∙ ℕ
-   f lpo = compact-pointed-gives-compact∙ (LPO-gives-compact-ℕ lpo) 0
+   f : LPO → is-compact∙ ℕ
+   f lpo = compact-pointed-types-are-compact∙ (LPO-gives-compact-ℕ lpo) 0
 
-[LPO→ℕ]-compact : compact (LPO → ℕ)
-[LPO→ℕ]-compact = compact∙-gives-compact [LPO→ℕ]-compact∙
+[LPO→ℕ]-is-compact : is-compact (LPO → ℕ)
+[LPO→ℕ]-is-compact = compact∙-types-are-compact [LPO→ℕ]-is-compact∙
 
-[LPO→ℕ]-Compact : Compact (LPO → ℕ) {𝓤}
-[LPO→ℕ]-Compact = compact-gives-Compact [LPO→ℕ]-compact
+[LPO→ℕ]-is-Compact : is-Compact (LPO → ℕ) {𝓤}
+[LPO→ℕ]-is-Compact = compact-types-are-Compact [LPO→ℕ]-is-compact
 
 \end{code}
 
@@ -186,7 +186,7 @@ Feb 2020):
 open import TypeTopology.DiscreteAndSeparated
 open import Naturals.Properties
 
-[LPO→ℕ]-discrete-gives-¬LPO-decidable : is-discrete (LPO → ℕ) → decidable (¬ LPO)
+[LPO→ℕ]-discrete-gives-¬LPO-decidable : is-discrete (LPO → ℕ) → is-decidable (¬ LPO)
 [LPO→ℕ]-discrete-gives-¬LPO-decidable =
   discrete-exponential-has-decidable-emptiness-of-exponent
    fe₀
@@ -202,7 +202,7 @@ embedding ι𝟙 : ℕ + 𝟙 → ℕ∞ has a section:
 ι𝟙-has-section-gives-LPO : (Σ s ꞉ (ℕ∞ → ℕ + 𝟙) , ι𝟙 ∘ s ∼ id) → LPO
 ι𝟙-has-section-gives-LPO (s , ε) u = ψ (s u) refl
  where
-  ψ : (z : ℕ + 𝟙) → s u ＝ z → decidable (Σ n ꞉ ℕ , u ＝ ι n)
+  ψ : (z : ℕ + 𝟙) → s u ＝ z → is-decidable (Σ n ꞉ ℕ , u ＝ ι n)
   ψ (inl n) p = inl (n , (u        ＝⟨ (ε u) ⁻¹ ⟩
                           ι𝟙 (s u) ＝⟨ ap ι𝟙 p ⟩
                           ι n      ∎))
@@ -217,7 +217,7 @@ embedding ι𝟙 : ℕ + 𝟙 → ℕ∞ has a section:
 ι𝟙-is-equiv-gives-LPO : is-equiv ι𝟙 → LPO
 ι𝟙-is-equiv-gives-LPO i = ι𝟙-has-section-gives-LPO (equivs-have-sections ι𝟙 i)
 
-ι𝟙-inverse : (u : ℕ∞) → decidable (Σ n ꞉ ℕ , u ＝ ι n) → ℕ + 𝟙 {𝓤₀}
+ι𝟙-inverse : (u : ℕ∞) → is-decidable (Σ n ꞉ ℕ , u ＝ ι n) → ℕ + 𝟙 {𝓤₀}
 ι𝟙-inverse .(ι n) (inl (n , refl)) = inl n
 ι𝟙-inverse u (inr g) = inr ⋆
 
@@ -227,7 +227,7 @@ LPO-gives-has-section-ι𝟙 lpo = s , ε
   s : ℕ∞ → ℕ + 𝟙
   s u = ι𝟙-inverse u (lpo u)
 
-  φ : (u : ℕ∞) (d : decidable (Σ n ꞉ ℕ , u ＝ ι n)) → ι𝟙 (ι𝟙-inverse u d) ＝ u
+  φ : (u : ℕ∞) (d : is-decidable (Σ n ꞉ ℕ , u ＝ ι n)) → ι𝟙 (ι𝟙-inverse u d) ＝ u
   φ .(ι n) (inl (n , refl)) = refl
   φ u (inr g) = (not-finite-is-∞ fe₀ (curry g))⁻¹
 

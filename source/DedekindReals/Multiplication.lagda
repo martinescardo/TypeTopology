@@ -1,7 +1,7 @@
 Andrew Sneap
 
 \begin{code}
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 open import MLTT.Spartan renaming (_+_ to _∔_)
 
@@ -15,14 +15,14 @@ open import Rationals.Type
 open import Rationals.Order
 
 module DedekindReals.Multiplication
+         (fe : Fun-Ext)
          (pe : Prop-Ext)
          (pt : propositional-truncations-exist)
-         (fe : Fun-Ext)
        where
 
 open import Rationals.Multiplication renaming (_*_ to _ℚ*_)
-open import Rationals.MinMax fe
-open import DedekindReals.Type pe pt fe
+open import Rationals.MinMax
+open import DedekindReals.Type fe pe pt
 open PropositionalTruncation pt
 
 

@@ -12,7 +12,7 @@ LiftingDcpo.lagda.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 open import MLTT.Spartan
 
@@ -56,7 +56,7 @@ module _ {𝓤 : Universe}
          (s : is-set X)
        where
 
- family-value-map : {I : 𝓣 ̇}
+ family-value-map : {I : 𝓣 ̇ }
                   → (α : I → 𝓛 X)
                   → (Σ i ꞉ I , is-defined (α i)) → X
  family-value-map α (i , d) = value (α i) d
@@ -82,7 +82,7 @@ module _ {𝓤 : Universe}
        value (α i₁) d₁                         ＝⟨ refl ⟩
        f (i₁ , d₁)                             ∎
 
- lifting-sup-value : {I : 𝓣 ̇}
+ lifting-sup-value : {I : 𝓣 ̇ }
                    → (α : I → 𝓛 X)
                    → (δ : is-directed _⊑'_ α )
                    → (∃ i ꞉ I , is-defined (α i)) → X
@@ -91,11 +91,11 @@ module _ {𝓤 : Universe}
         s (family-value-map α)
         (directed-family-value-map-is-wconstant α δ))
 
- lifting-sup : {I : 𝓣 ̇} → (α : I → 𝓛 X) → (δ : is-directed _⊑'_ α) → 𝓛 X
+ lifting-sup : {I : 𝓣 ̇ } → (α : I → 𝓛 X) → (δ : is-directed _⊑'_ α) → 𝓛 X
  lifting-sup {I} α δ =
   (∃ i ꞉ I , is-defined (α i)) , lifting-sup-value α δ , ∥∥-is-prop
 
- lifting-sup-is-upperbound : {I : 𝓣 ̇} → (α : I → 𝓛 X)
+ lifting-sup-is-upperbound : {I : 𝓣 ̇ } → (α : I → 𝓛 X)
                              (δ : is-directed _⊑'_ α)
                            → (i : I) → α i ⊑' lifting-sup α δ
  lifting-sup-is-upperbound {I} α δ i = γ
@@ -115,7 +115,7 @@ module _ {𝓤 : Universe}
                   (directed-family-value-map-is-wconstant α δ)))
            (i , d)
 
- family-defined-somewhere-sup-＝ : {I : 𝓣 ̇} {α : I → 𝓛 X}
+ family-defined-somewhere-sup-＝ : {I : 𝓣 ̇ } {α : I → 𝓛 X}
                                 → (δ : is-directed _⊑'_ α)
                                 → (i : I)
                                 → is-defined (α i)
@@ -123,7 +123,7 @@ module _ {𝓤 : Universe}
  family-defined-somewhere-sup-＝ {I} {α} δ i d =
   (lifting-sup-is-upperbound α δ i) d
 
- lifting-sup-is-lowerbound-of-upperbounds : {I : 𝓣 ̇}
+ lifting-sup-is-lowerbound-of-upperbounds : {I : 𝓣 ̇ }
                                           → {α : I → 𝓛 X}
                                           → (δ : is-directed _⊑'_ α)
                                           → (v : 𝓛 X)

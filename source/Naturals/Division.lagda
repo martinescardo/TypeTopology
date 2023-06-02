@@ -6,9 +6,9 @@ proofs of properties of division are also provided.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
-open import MLTT.Spartan renaming (_+_ to _∔_) 
+open import MLTT.Spartan renaming (_+_ to _∔_)
 
 open import Naturals.Addition
 open import Naturals.Multiplication
@@ -48,7 +48,7 @@ _∣_-is-prop x y (a , p) (b , p') = to-subtype-＝ (λ _ → ℕ-is-set) II
  where
   I : succ x * a ＝ succ x * b
   I = p ∙ p' ⁻¹
-  
+
   II : a ＝ b
   II = mult-left-cancellable a b x I
 
@@ -68,7 +68,12 @@ Also, any number divides itself, and divides zero.
 1-divides-all x = x , mult-left-id x
 
 zero-does-not-divide-positive : (x : ℕ) → ¬(0 ∣ succ x)
-zero-does-not-divide-positive x (a , p) = positive-not-zero x (p ⁻¹ ∙ zero-left-base a)
+zero-does-not-divide-positive x (a , p) = positive-not-zero x γ
+ where
+  γ : succ x ＝ 0
+  γ = succ x ＝⟨ p ⁻¹             ⟩
+      0 * a  ＝⟨ zero-left-base a ⟩
+      0      ∎
 
 ∣-refl : {x : ℕ} → x ∣ x
 ∣-refl = 1 , refl
@@ -105,15 +110,51 @@ If x > 1, the consider y. In each case, we find a contradiction.
 
 \begin{code}
 
-product-one-gives-one : (x y : ℕ) → x * y ＝ 1 → x ＝ 1
-product-one-gives-one 0               y               e = 𝟘-elim (zero-not-positive 0 (zero-left-base y ⁻¹ ∙ e))
-product-one-gives-one 1               y               e = refl
-product-one-gives-one (succ (succ x)) 0               e = 𝟘-elim (zero-not-positive 0 e)
-product-one-gives-one (succ (succ x)) 1               e = 𝟘-elim (zero-not-positive x (succ-lc (e ⁻¹)))
-product-one-gives-one (succ (succ x)) (succ (succ y)) e = 𝟘-elim (less-than-not-equal _ _ l (e ⁻¹))
+left-factor-one : (x y : ℕ) → x * y ＝ 1 → x ＝ 1
+left-factor-one 0 y e = 𝟘-elim (zero-not-positive 0 γ)
  where
-  l : 1 < succ (succ x) * succ (succ y)
-  l = ∣-anti-lemma 1 (succ (succ x)) (succ (succ y)) (zero-least (succ x)) (zero-least (succ y))
+  γ : 0 ＝ 1
+  γ = zero-left-base y ⁻¹ ∙ e
+left-factor-one 1 y e = refl
+left-factor-one (succ (succ x)) 0 e = 𝟘-elim (zero-not-positive 0 e)
+left-factor-one (succ (succ x)) 1 e = 𝟘-elim (zero-not-positive x γ)
+ where
+  γ : 0 ＝ succ x
+  γ = succ-lc (e ⁻¹)
+left-factor-one (succ (succ x)) (succ (succ y)) e = 𝟘-elim γ
+ where
+  l₁ : 0 < succ x
+  l₁ = zero-least (succ x)
+
+  l₂ : 0 < succ y
+  l₂ = zero-least (succ y)
+
+  l₃ : 1 < succ (succ x) * succ (succ y)
+  l₃ = ∣-anti-lemma 1 (succ (succ x)) (succ (succ y)) l₁ l₂
+
+  γ : 𝟘
+  γ = less-than-not-equal _ _ l₃ (e ⁻¹)
+
+division-refl-right-unit : (x y : ℕ) → succ x * y ∣ succ x → y ＝ 1
+division-refl-right-unit x y (k , e) = left-factor-one y k II
+ where
+  I : succ x * (y * k) ＝ succ x * 1
+  I = mult-associativity (succ x) y k ⁻¹ ∙ e
+
+  II : y * k ＝ 1
+  II = mult-left-cancellable (y * k) 1 x I
+
+division-refl-right-factor : (x y : ℕ) → succ x * y ∣ succ x → y ∣ 1
+division-refl-right-factor x y (k , e) = γ
+ where
+  I : y ＝ 1
+  I = division-refl-right-unit x y (k , e)
+
+  II : 1 ∣ 1
+  II = 1-divides-all 1
+
+  γ : y ∣ 1
+  γ = transport (_∣ 1) (I ⁻¹) II
 
 \end{code}
 
@@ -141,7 +182,7 @@ prove that b ＝ 1, and conclude that division is anti-symmetric.
   b*a-is-1 = mult-left-cancellable (b * a) 1 y I
 
   b-is-1 : b ＝ 1
-  b-is-1 = product-one-gives-one b a b*a-is-1
+  b-is-1 = left-factor-one b a b*a-is-1
 
 \end{code}
 
@@ -156,8 +197,8 @@ multiplication.
  where
   I : x * (a + b) ＝ y + z
   I = x * (a + b)   ＝⟨ distributivity-mult-over-addition x a b ⟩
-      x * a + x * b ＝⟨ ap (_+ x * b) p                    ⟩
-      y + x * b     ＝⟨ ap (y +_) q                        ⟩
+      x * a + x * b ＝⟨ ap (_+ x * b) p                         ⟩
+      y + x * b     ＝⟨ ap (y +_) q                             ⟩
       y + z         ∎
 
 ∣-divisor-divides-multiple : (a b k : ℕ) → a ∣ b → a ∣ k * b
@@ -166,7 +207,7 @@ multiplication.
   I : a * (x * k) ＝ k * b
   I = a * (x * k) ＝⟨ mult-associativity a x k ⁻¹ ⟩
       a * x * k   ＝⟨ ap (_* k) p                 ⟩
-      b * k       ＝⟨ mult-commutativity b k ⟩
+      b * k       ＝⟨ mult-commutativity b k      ⟩
       k * b       ∎
 
 ∣-respects-multiples : (a b c k l : ℕ) → a ∣ b → a ∣ c → a ∣ (k * b + l * c)
@@ -176,7 +217,7 @@ multiplication.
   I = ∣-divisor-divides-multiple a b k p₁
   II : a ∣ (l * c)
   II = ∣-divisor-divides-multiple a c l p₂
-                                                                            
+
 ∣-trans : (a b c : ℕ) → a ∣ b → b ∣ c → a ∣ c
 ∣-trans a b c (x , p) (y , q) = (x * y) , I
  where
@@ -226,7 +267,7 @@ follows from the inductive hypothesis and r ＝ d.
 division : (a d : ℕ) → division-theorem a d
 division a d = induction base step a
  where
-  base : Σ q ꞉ ℕ , Σ r ꞉ ℕ , (0 ＝ q * succ d + r) × (r < succ d)  
+  base : Σ q ꞉ ℕ , Σ r ꞉ ℕ , (0 ＝ q * succ d + r) × (r < succ d)
   base = 0 , (0 , (I , II))
    where
     I : 0 ＝ 0 * succ d + 0
@@ -240,21 +281,30 @@ division a d = induction base step a
   step : (k : ℕ)
        → Σ q ꞉ ℕ , Σ r ꞉ ℕ , (k ＝ q * succ d + r) × (r < succ d)
        → Σ q ꞉ ℕ , Σ r ꞉ ℕ , (succ k ＝ q * succ d + r) × (r < succ d)
-  step k (q , r , e , l) = helper (<-split r d l)
+  step k (q , r , e , l) = γ (<-split r d l)
    where
-    helper : (r < d) ∔ (r ＝ d) →  Σ q ꞉ ℕ , Σ r ꞉ ℕ , (succ k ＝ q * succ d + r) × (r < succ d)
-    helper (inl x) = q , succ r , ap succ e , x
-    helper (inr x) = succ q , 0 , I , unique-to-𝟙 (0 < succ d)
+    γ : (r < d) ∔ (r ＝ d)
+      →  Σ q ꞉ ℕ , Σ r ꞉ ℕ , (succ k ＝ q * succ d + r) × (r < succ d)
+    γ (inl l) = q , succ r , ap succ e , l
+    γ (inr e') = succ q , 0 , I , unique-to-𝟙 (0 < succ d)
      where
       I : succ k ＝ succ q + succ q * d
-      I = succ k                        ＝⟨ ap succ e                                           ⟩
-          succ (q + q * d + r)          ＝⟨ ap succ (ap (q + q * d +_) x)                       ⟩
-          succ (q + q * d + d)          ＝⟨ ap succ (addition-associativity q (q * d) d)        ⟩
-          succ (q + (q * d + d))        ＝⟨ succ-left q (q * d + d) ⁻¹                          ⟩
-          succ q + (q * d + d)          ＝⟨ ap (succ q +_) (ap (_+ d) (mult-commutativity q d)) ⟩
-          succ q + (d * q + d)          ＝⟨ ap (succ q +_) (addition-commutativity (d * q) d)   ⟩ 
-          succ q + (d + d * q)          ＝⟨ ap (succ q +_) (mult-commutativity d (succ q))      ⟩ 
+      I = succ k                        ＝⟨ i   ⟩
+          succ (q + q * d + r)          ＝⟨ ii  ⟩
+          succ (q + q * d + d)          ＝⟨ iii ⟩
+          succ (q + (q * d + d))        ＝⟨ iv  ⟩
+          succ q + (q * d + d)          ＝⟨ v   ⟩
+          succ q + (d * q + d)          ＝⟨ vi  ⟩
+          succ q + (d + d * q)          ＝⟨ vii ⟩
           succ q + succ q * d           ∎
+       where
+        i   = ap succ e
+        ii  = ap succ (ap (q + q * d +_) e')
+        iii = ap succ (addition-associativity q (q * d) d)
+        iv  = succ-left q (q * d + d) ⁻¹
+        v   = ap (succ q +_) (ap (_+ d) (mult-commutativity q d))
+        vi  = ap (succ q +_) (addition-commutativity (d * q) d)
+        vii = ap (succ q +_) (mult-commutativity d (succ q))
 
 \end{code}
 
@@ -268,11 +318,23 @@ This is easy to prove using cancellation of addition.
 
 \begin{code}
 
-division-is-prop' : (a d q : ℕ) → is-prop (Σ r ꞉ ℕ , (a ＝ q * succ d + r) × r < succ d)
-division-is-prop' a d q (r₀ , e₀ , l₀) (r₁ , e₁ , l₁)
- = to-subtype-＝
-  (λ r → ×-is-prop ℕ-is-set (<-is-prop-valued r (succ d)))
-   (addition-left-cancellable r₀ r₁ (q * succ d) (e₀ ⁻¹ ∙ e₁))
+division-is-prop' : (a d q : ℕ)
+                  → is-prop (Σ r ꞉ ℕ , (a ＝ q * succ d + r) × r < succ d)
+division-is-prop' a d q (r₀ , e₀ , l₀) (r₁ , e₁ , l₁) = γ
+  where
+   γ₁ : (r : ℕ) → is-prop ((a ＝ q * succ d + r) × r < succ d)
+   γ₁ r = ×-is-prop ℕ-is-set (<-is-prop-valued r (succ d))
+
+   I : q * succ d + r₀ ＝ q * succ d + r₁
+   I = q * succ d + r₀ ＝⟨ e₀ ⁻¹ ⟩
+       a               ＝⟨ e₁    ⟩
+       q * succ d + r₁ ∎
+
+   γ₂ : r₀ ＝ r₁
+   γ₂ = addition-left-cancellable r₀ r₁ (q * succ d) I
+
+   γ : r₀ , e₀ , l₀ ＝ r₁ , e₁ , l₁
+   γ = to-subtype-＝ γ₁ γ₂
 
 \end{code}
 
@@ -312,17 +374,28 @@ division-is-prop-lemma : (a d q₀ q₁ r₀ r₁ : ℕ)
                        → a ＝ q₀ * succ d + r₀
                        → a ＝ q₁ * succ d + r₁
                        → ¬ (q₀ < q₁)
-division-is-prop-lemma a d q₀ q₁ r₀ r₁ l₁ e₁ e₂ l₂ with subtraction (succ q₀) q₁ l₂
-... | k , e₃ = not-less-than-itself d V
+division-is-prop-lemma a d q₀ q₁ r₀ r₁ l₁ e₁ e₂ l₂ = not-less-than-itself d γ
  where
+  t : Σ k ꞉ ℕ , k + succ q₀ ＝ q₁
+  t = subtraction (succ q₀) q₁ l₂
+
+  k = pr₁ t
+  e₃ = pr₂ t
+
   I : q₀ * succ d + r₀ ＝ q₀ * succ d + (succ k * succ d + r₁)
-  I = q₀ * succ d + r₀                     ＝⟨ e₁ ⁻¹                                                                ⟩
-      a                                    ＝⟨ e₂                                                                   ⟩
-      q₁ + q₁ * d + r₁                     ＝⟨ ap (λ - → - * succ d + r₁) (e₃ ⁻¹)                                   ⟩
-      succ (k + q₀) * succ d + r₁          ＝⟨ ap (λ - → succ - * succ d + r₁) (addition-commutativity k q₀)        ⟩
-      (q₀ + succ k) * succ d + r₁          ＝⟨ ap (_+ r₁) (distributivity-mult-over-addition' q₀ (succ k) (succ d)) ⟩
-      q₀ * succ d + succ k * succ d + r₁   ＝⟨ addition-associativity (q₀ * succ d) (succ k * succ d) r₁            ⟩
+  I = q₀ * succ d + r₀                     ＝⟨ e₁ ⁻¹ ⟩
+      a                                    ＝⟨ e₂    ⟩
+      q₁ + q₁ * d + r₁                     ＝⟨ refl  ⟩
+      q₁ * succ d + r₁                     ＝⟨ i     ⟩
+      succ (k + q₀) * succ d + r₁          ＝⟨ ii    ⟩
+      (q₀ + succ k) * succ d + r₁          ＝⟨ iii   ⟩
+      q₀ * succ d + succ k * succ d + r₁   ＝⟨ iv    ⟩
       q₀ * succ d + (succ k * succ d + r₁) ∎
+   where
+    i   = ap (λ - → - * succ d + r₁) (e₃ ⁻¹)
+    ii  = ap (λ - → succ - * succ d + r₁) (addition-commutativity k q₀)
+    iii = ap (_+ r₁) (distributivity-mult-over-addition' q₀ (succ k) (succ d))
+    iv  = addition-associativity (q₀ * succ d) (succ k * succ d) r₁
 
   II : r₀ ＝ succ k * succ d + r₁
   II = addition-left-cancellable r₀ (succ k * succ d + r₁) (q₀ * succ d)  I
@@ -330,18 +403,30 @@ division-is-prop-lemma a d q₀ q₁ r₀ r₁ l₁ e₁ e₂ l₂ with subtract
   III : succ k * succ d + r₁ ≤ d
   III = transport (_≤ d) II l₁
 
-  IV : succ k * succ d ≤ d
-  IV = ≤-trans (succ k * succ d) (succ k * succ d + r₁) d (≤-+ (succ k * succ d) r₁) III
+  IV : succ k * succ d ≤ succ k * succ d + r₁
+  IV = ≤-+ (succ k * succ d) r₁
 
-  V : succ d ≤ d
-  V = product-order-cancellable (succ d) k d (transport (_≤ d) (mult-commutativity (succ k) (succ d)) IV)
+  V : succ k * succ d ≤ d
+  V = ≤-trans (succ k * succ d) (succ k * succ d + r₁) d IV III
+
+  VI : succ d * succ k ≤ d
+  VI = transport (_≤ d) (mult-commutativity (succ k) (succ d)) V
+
+  γ : succ d ≤ d
+  γ = product-order-cancellable (succ d) k d VI
 
 division-is-prop : (a d : ℕ) → is-prop (division-theorem a d)
-division-is-prop a d (q₀ , r₀ , e₀ , l₀) (q₁ , r₁ , e₁ , l₁) with <-trichotomous q₀ q₁
-... | inl      qₒ<q₁  = 𝟘-elim (division-is-prop-lemma a d q₀ q₁ r₀ r₁ l₀ e₀ e₁ qₒ<q₁)
-... | inr (inl q₀＝q₁) = to-subtype-＝ (division-is-prop' a d) q₀＝q₁
-... | inr (inr q₁<q₀) = 𝟘-elim (division-is-prop-lemma a d q₁ q₀ r₁ r₀ l₁ e₁ e₀ q₁<q₀)
- 
+division-is-prop a d (q₀ , r₀ , e₀ , l₀) (q₁ , r₁ , e₁ , l₁) = γ I
+ where
+  I : (q₀ < q₁) ∔ (q₀ ＝ q₁) ∔ (q₁ < q₀)
+  I = <-trichotomous q₀ q₁
+
+  γ : (q₀ < q₁) ∔ (q₀ ＝ q₁) ∔ (q₁ < q₀)
+    → q₀ , r₀ , e₀ , l₀ ＝ q₁ , r₁ , e₁ , l₁
+  γ (inl l)       = 𝟘-elim (division-is-prop-lemma a d q₀ q₁ r₀ r₁ l₀ e₀ e₁ l)
+  γ (inr (inl e)) = to-subtype-＝ (division-is-prop' a d) e
+  γ (inr (inr l)) = 𝟘-elim (division-is-prop-lemma a d q₁ q₀ r₁ r₀ l₁ e₁ e₀ l)
+
 \end{code}
 
 A property of division which is sometimes useful is the following.
@@ -355,17 +440,33 @@ If b , c > 0, then we use induction.
 The inductive hypothesis is: a * b       ＝ a * c       + d → a ∣ d,
                  and we have a * (b + 1) ＝ a * (c + 1) + d.
 
-Since addition is left cancellable, we can find that a * b ＝ a * c + d and we are done.
+Since addition is left cancellable, we can find that a * b ＝ a * c + d and we
+are done.
 
 \begin{code}
 
 factor-of-sum-consequence : (a b c d : ℕ) → a * b ＝ a * c + d → a ∣ d
-factor-of-sum-consequence a b        0        d e = b , (e ∙ zero-left-neutral d)
-factor-of-sum-consequence a 0        (succ c) d e = 0 , (sum-to-zero-gives-zero (a * succ c) d (e ⁻¹) ⁻¹)
-factor-of-sum-consequence a (succ b) (succ c) d e =
- let e' = (addition-left-cancellable (a * b) (a * c + d) a (e ∙ addition-associativity a (a * c) d))
- in factor-of-sum-consequence a b c d e'
-                                      
+factor-of-sum-consequence a b 0 d e = b , γ
+ where
+  γ : a * b ＝ d
+  γ = a * b     ＝⟨ e                   ⟩
+      a * 0 + d ＝⟨ zero-left-neutral d ⟩
+      d         ∎
+factor-of-sum-consequence a 0 (succ c) d e = 0 , γ
+ where
+  γ : 0 ＝ d
+  γ = sum-to-zero-gives-zero (a * succ c) d (e ⁻¹) ⁻¹
+factor-of-sum-consequence a (succ b) (succ c) d e = γ
+  where
+   I : a * succ b ＝ a + (a * c + d)
+   I = a * succ b      ＝⟨ e                                  ⟩
+       a * succ c + d  ＝⟨ addition-associativity a (a * c) d ⟩
+       a + (a * c + d) ∎
+
+   II : a * b ＝ a * c + d
+   II = addition-left-cancellable (a * b) (a * c + d) a I
+
+   γ : a ∣ d
+   γ = factor-of-sum-consequence a b c d II
+
 \end{code}
-
-

@@ -30,7 +30,7 @@ https://www.cs.bham.ac.uk/~mhe/TypeTopology/OrdinalNotationInterpretation.pdf
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline --experimental-lossy-unification #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline --lossy-unification #-}
 
 open import MLTT.Spartan
 open import UF.FunExt
@@ -145,13 +145,13 @@ private
 
 \end{code}
 
-In the following, ⟪ τ ⟫ denotes the underlying set of an ordinal τ, and
-_≺⟪ τ ⟫_ denotes its underlying order.
+In the following, ⟨ τ ⟩ denotes the underlying set of an ordinal τ, and
+_≺⟨ τ ⟩_ denotes its underlying order.
 
 \begin{code}
 
 Κ                            : OE → Ordᵀ
-Κ-compact∙                   : (ν : OE) → compact∙ ⟨ Κ ν ⟩
+Κ-compact∙                   : (ν : OE) → is-compact∙ ⟨ Κ ν ⟩
 Κ-Cantor-retract             : (ν : OE) → retract ⟨ Κ ν ⟩ of (ℕ → 𝟚)
 Κ-is-totally-separated       : (ν : OE) → is-totally-separated ⟨ Κ ν ⟩
 
@@ -177,7 +177,7 @@ _≺⟪ τ ⟫_ denotes its underlying order.
 
 brouwer-to-oe                : B → OE
 ε₀-upper-bound               : Ordᵀ
-compact∙-ε₀-ub               : compact∙ ⟨ ε₀-upper-bound ⟩
+compact∙-ε₀-ub               : is-compact∙ ⟨ ε₀-upper-bound ⟩
 
 \end{code}
 
@@ -204,11 +204,11 @@ The underlying sets  of such ordinals are compact∙:
 
 \begin{code}
 
-Κ-compact∙ One       = 𝟙-compact∙
-Κ-compact∙ (Add ν μ) = Σ-compact∙
-                        𝟙+𝟙-compact∙
+Κ-compact∙ One       = 𝟙-is-compact∙
+Κ-compact∙ (Add ν μ) = Σ-is-compact∙
+                        𝟙+𝟙-is-compact∙
                         (dep-cases (λ _ → Κ-compact∙ ν) (λ _ → Κ-compact∙ μ))
-Κ-compact∙ (Mul ν μ) = Σ-compact∙ (Κ-compact∙ ν) (λ _ → Κ-compact∙ μ)
+Κ-compact∙ (Mul ν μ) = Σ-is-compact∙ (Κ-compact∙ ν) (λ _ → Κ-compact∙ μ)
 Κ-compact∙ (L ν)     = Σ¹-compact∙ (λ n → ⟨ Κ (ν n) ⟩) (λ n → Κ-compact∙ (ν n))
 
 \end{code}
@@ -371,14 +371,16 @@ much easier (given the mathematics we have already developed).
 
 \begin{code}
 
-Κ-has-infs-of-complemented-subsets pe One       = 𝟙ᵒ-has-infs-of-complemented-subsets
+Κ-has-infs-of-complemented-subsets pe One       =
+ 𝟙ᵒ-has-infs-of-complemented-subsets
 Κ-has-infs-of-complemented-subsets pe (Add ν μ) =
  ∑-has-infs-of-complemented-subsets pe
   𝟚ᵒ
   (cases (λ _ → Κ ν) (λ _ → Κ μ))
   𝟚ᵒ-has-infs-of-complemented-subsets
-  (dep-cases (λ _ → Κ-has-infs-of-complemented-subsets pe ν)
-                                                        (λ _ → Κ-has-infs-of-complemented-subsets pe μ))
+  (dep-cases
+    (λ _ → Κ-has-infs-of-complemented-subsets pe ν)
+    (λ _ → Κ-has-infs-of-complemented-subsets pe μ))
 Κ-has-infs-of-complemented-subsets pe (Mul ν μ) =
  ∑-has-infs-of-complemented-subsets pe
   (Κ ν)
@@ -469,7 +471,7 @@ module _ (pt : propositional-truncations-exist)
  open import Ordinals.OrdinalOfOrdinals ua
  open import Ordinals.OrdinalOfOrdinalsSuprema ua
  open import Ordinals.Injectivity
- open import Ordinals.Arithmetic-Properties ua
+ open import Ordinals.ArithmeticProperties ua
 
  open import UF.ImageAndSurjection pt
  open ordinals-injectivity fe
@@ -488,19 +490,18 @@ module _ (pt : propositional-truncations-exist)
   𝓢 (Mul ν μ) = 𝓢 ν ×ₒ 𝓢 μ
   𝓢 (L ν)     = sup (extension (𝓢 ∘ ν))
 
-  𝓢-compact∙ : (ν : OE) → compact∙ ⟨ 𝓢 ν ⟩
-  𝓢-compact∙ One       = 𝟙-compact∙
-  𝓢-compact∙ (Add ν μ) = +-compact∙ (𝓢-compact∙ ν) (𝓢-compact∙ μ)
-  𝓢-compact∙ (Mul ν μ) = ×-compact∙ (𝓢-compact∙ ν) (𝓢-compact∙ μ)
-  𝓢-compact∙ (L ν)     = surjection-compact∙ pt
+  𝓢-compact∙ : (ν : OE) → is-compact∙ ⟨ 𝓢 ν ⟩
+  𝓢-compact∙ One       = 𝟙-is-compact∙
+  𝓢-compact∙ (Add ν μ) = +-is-compact∙ (𝓢-compact∙ ν) (𝓢-compact∙ μ)
+  𝓢-compact∙ (Mul ν μ) = ×-is-compact∙ (𝓢-compact∙ ν) (𝓢-compact∙ μ)
+  𝓢-compact∙ (L ν)     = codomain-of-surjection-is-compact∙ pt
                            (sum-to-sup (extension (𝓢 ∘ ν)))
                            (sum-to-sup-is-surjection (extension (𝓢 ∘ ν)))
-                           (Σ-compact∙
+                           (Σ-is-compact∙
                              (ℕ∞-compact∙ fe₀)
                              (λ u → prop-tychonoff fe
                                      (ℕ-to-ℕ∞-is-embedding fe₀ u)
                                      (λ (i , _) → 𝓢-compact∙ (ν i))))
-
   σ : (ν : OE) → ⟨ Κ ν ⟩ → ⟨ 𝓢 ν ⟩
   σ One       x           = x
   σ (Add ν μ) (inl ⋆ , x) = inl (σ ν x)

@@ -15,9 +15,11 @@ extensions of MLTT, or hypotheses, such as propositional truncation.
 Many other things have been added since the above abstract was
 written.
 
+See also the file Various.CantorTheoremForSurjections by Jon Sterling.
+
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 module Various.LawvereFPT where
 
@@ -27,12 +29,14 @@ open import MLTT.Two-Properties
 open import Naturals.Properties
 
 open import UF.Base
+open import UF.Embeddings
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.Retracts
 open import UF.Equiv
 open import UF.Miscelanea
 open import UF.FunExt
+open import UF.Size
 
 designated-fixed-point-property : 𝓤 ̇ → 𝓤 ̇
 designated-fixed-point-property X = (f : X → X) → Σ x ꞉ X , x ＝ f x
@@ -311,7 +315,7 @@ The following proofs are originally due to Ingo Blechschmidt during
 the Autumn School "Proof and Computation", Fischbachau, 2018, after I
 posed the problem of showing that the universe is uncountable to
 him. This version is an adaptation jointly developed by the two of us
-to use LFTP, also extended to replace "discrete" by "set" at the cost
+to use LFPT, also extended to replace "discrete" by "set" at the cost
 of "jumping" a universe.
 
 \begin{code}
@@ -534,7 +538,7 @@ NB. If 𝓥 is 𝓤 or 𝓤', then X : A → 𝓤 ⁺ ̇.
 
 \end{code}
 
-See also http://www.cs.bham.ac.uk/~mhe/TypeTopology/Type-in-Type-False.html
+See also the module Unsafe.Type-in-Type-False.
 
 Added 12 October 2018. The paper
 
@@ -553,8 +557,8 @@ types, Π types, W types and a universe 𝓤 closed under them. In
 particular, extensionality and univalence are not needed. We again use
 Lawvere's fixed point theorem.
 
-NB. It should also be possible to replace the diagonal construction of
-Lemma₀ by a second application of LFPT (todo).
+TODO. It should also be possible to replace the diagonal construction
+of Lemma₀ by a second application of LFPT.
 
 \begin{code}
 
@@ -604,7 +608,7 @@ module GeneralizedCoquand where
            Rf : Σ H
            Rf = (R , f)
 
-           i = (transport-ap H pr₁ (η (Rf)))⁻¹
+           i = (transport-ap H pr₁ (η Rf))⁻¹
            ii = apd pr₂ (η Rf)
 
      δ : designated-fixed-point-property X

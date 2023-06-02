@@ -5,7 +5,7 @@ This is ported from the Midlands Graduate School 2019 lecture notes
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 module MGS.SIP where
 
@@ -1072,7 +1072,7 @@ module subgroup
                              h unitH           ∎))
 
      j : is-set X
-     j = subtypes-of-sets-are-sets h h-lc (group-is-set G)
+     j = subtypes-of-sets-are-sets' h h-lc (group-is-set G)
 
      τ : T X
      τ = ((_*_ , unitH) , (j , unitH-left , unitH-right , assocH)) , group-axiomH

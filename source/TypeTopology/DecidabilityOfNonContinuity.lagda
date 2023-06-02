@@ -15,7 +15,7 @@ called "Decidability of non-continuity".
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 open import MLTT.Spartan
 open import UF.FunExt
@@ -30,13 +30,13 @@ open import NotionsOfDecidability.Decidable
 open import Notation.CanonicalMap
 
 Lemma-3·1 : (q : ℕ∞ → ℕ∞ → 𝟚)
-          → decidable ((m : ℕ) → ¬ ((n : ℕ) → q (ι m) (ι n) ＝ ₁))
+          → is-decidable ((m : ℕ) → ¬ ((n : ℕ) → q (ι m) (ι n) ＝ ₁))
 Lemma-3·1 q = claim₄
  where
   A : ℕ∞ → 𝓤₀ ̇
   A u = (n : ℕ) → q u (ι n) ＝ ₁
 
-  claim₀ :  (u : ℕ∞) → decidable (A u)
+  claim₀ :  (u : ℕ∞) → is-decidable (A u)
   claim₀ u = Theorem-8·2 (q u)
 
   p : ℕ∞ → 𝟚
@@ -45,17 +45,17 @@ Lemma-3·1 q = claim₄
   p-spec : (x : ℕ∞) → (p x ＝ ₀ → A x) × (p x ＝ ₁ → ¬ A x)
   p-spec = pr₂ (indicator claim₀)
 
-  claim₁ : decidable ((n : ℕ) → p (ι n) ＝ ₁)
+  claim₁ : is-decidable ((n : ℕ) → p (ι n) ＝ ₁)
   claim₁ = Theorem-8·2 p
 
   claim₂ : ((n : ℕ) → ¬ A (ι n)) → (n : ℕ) → p (ι n) ＝ ₁
   claim₂ φ n = different-from-₀-equal-₁ (λ v → φ n (pr₁ (p-spec (ι n)) v))
 
-  claim₃ : decidable ((n : ℕ) → p (ι n) ＝ ₁) → decidable ((n : ℕ) → ¬ A (ι n))
+  claim₃ : is-decidable ((n : ℕ) → p (ι n) ＝ ₁) → is-decidable ((n : ℕ) → ¬ A (ι n))
   claim₃ (inl f) = inl (λ n → pr₂ (p-spec (ι n)) (f n))
   claim₃ (inr u) = inr (contrapositive claim₂ u)
 
-  claim₄ : decidable ((n : ℕ) → ¬ (A (ι n)))
+  claim₄ : is-decidable ((n : ℕ) → ¬ (A (ι n)))
   claim₄ = claim₃ claim₁
 
 \end{code}
@@ -88,7 +88,7 @@ and its negation to
 non-continuous : (ℕ∞ → ℕ) → 𝓤₀ ̇
 non-continuous f = (m : ℕ) → ¬ ((n : ℕ) → f (max (ι m) (ι n)) ＝[ℕ] f ∞)
 
-Theorem-3·2 : (f : ℕ∞ → ℕ) → decidable (non-continuous f)
+Theorem-3·2 : (f : ℕ∞ → ℕ) → is-decidable (non-continuous f)
 Theorem-3·2 f = Lemma-3·1 ((λ x y → χ＝ (f (max x y)) (f ∞)))
 
 \end{code}

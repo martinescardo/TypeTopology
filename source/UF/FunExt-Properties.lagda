@@ -4,7 +4,7 @@ Properties of function extensionality.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 module UF.FunExt-Properties where
 
@@ -43,7 +43,7 @@ naive-funext-gives-funext' {𝓤} {𝓥} nfe nfe' = funext-via-singletons γ
     f = pr₁
 
     f-is-equiv : is-equiv f
-    f-is-equiv = pr₁-equivalence X A φ
+    f-is-equiv = pr₁-is-equiv X A φ
 
     g : (X → Σ A) → (X → X)
     g h = f ∘ h

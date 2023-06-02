@@ -5,7 +5,7 @@ the resulting function.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 module UF.PairFun where
 
@@ -55,7 +55,7 @@ module _ {𝓤 𝓥 𝓦 𝓣}
  pair-fun-is-embedding e d (y , b) = h
   where
    i : is-prop (pair-fun-fiber' y b)
-   i = subtype-of-prop-is-prop
+   i = subtypes-of-props-are-props'
         pr₁
         (pr₁-lc (λ {w} → d (pr₁ w) (transport⁻¹ B (pr₂ w) b)))
         (e y)
@@ -89,7 +89,8 @@ module _ {𝓤 𝓥 𝓦 𝓣}
  pair-fun-is-equiv : is-equiv f
                    → ((x : X) → is-equiv (g x))
                    → is-equiv pair-fun
- pair-fun-is-equiv e d = vv-equivs-are-equivs pair-fun
+ pair-fun-is-equiv e d = vv-equivs-are-equivs
+                          pair-fun
                           (pair-fun-is-vv-equiv
                             (equivs-are-vv-equivs f e)
                             (λ x → equivs-are-vv-equivs (g x) (d x)))
@@ -127,15 +128,37 @@ module _ {𝓤 𝓥 𝓦 𝓣}
                            (t x b)})
          (s y)
 
-module _ {𝓤 𝓥 𝓦 𝓣} {X : 𝓤 ̇} {A : X → 𝓥 ̇} {Y : 𝓦 ̇} {B : Y → 𝓣 ̇} where
- pair-fun-equiv
-  : (f : X ≃ Y)
-  → (g : (x : X) → A x ≃ B (eqtofun f x))
-  → Σ A ≃ Σ B
- pr₁ (pair-fun-equiv f g) =
-  pair-fun (eqtofun f) λ x →
-  eqtofun (g x)
- pr₂ (pair-fun-equiv f g) =
-  pair-fun-is-equiv _ _ (eqtofun- f) λ x →
-  eqtofun- (g x)
+pair-fun-equiv : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
+                 {Y : 𝓦 ̇ } {B : Y → 𝓣 ̇ }
+                 (f : X ≃ Y)
+               → ((x : X) → A x ≃ B (⌜ f ⌝ x))
+               → Σ A ≃ Σ B
+pair-fun-equiv f g = pair-fun ⌜ f ⌝ (λ x → ⌜ g x ⌝) ,
+                     pair-fun-is-equiv _ _ ⌜ f ⌝-is-equiv (λ x → ⌜ g x ⌝-is-equiv)
+
+Σ-change-of-variable-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                                 (A : X → 𝓦 ̇ ) (g : Y → X)
+                               → is-embedding g
+                               → (Σ y ꞉ Y , A (g y)) ↪ (Σ x ꞉ X , A x)
+Σ-change-of-variable-embedding A g e = pair-fun g (λ _ → id) ,
+                                       pair-fun-is-embedding
+                                        g
+                                        (λ _ → id)
+                                        e
+                                        (λ _ → id-is-embedding)
+
+pair-fun-embedding : {X : 𝓤 ̇ }
+                     {A : X → 𝓥 ̇ }
+                     {Y : 𝓦 ̇ }
+                     {B : Y → 𝓣 ̇ }
+                   → (e : X ↪ Y)
+                   → ((x : X) → A x ↪ B (⌊ e ⌋ x))
+                   → Σ A ↪ Σ B
+pair-fun-embedding (f , i) g = pair-fun f (λ x → ⌊ g x ⌋) ,
+                               pair-fun-is-embedding
+                                f
+                                ((λ x → ⌊ g x ⌋))
+                                i
+                                (λ x → ⌊ g x ⌋-is-embedding)
+
 \end{code}

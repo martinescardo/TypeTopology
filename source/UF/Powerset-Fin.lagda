@@ -5,7 +5,7 @@ TODO: Comment
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 open import MLTT.Spartan
 
@@ -220,7 +220,7 @@ module _
                  (subset-extensionality pe fe s t)
 
    𝓚-is-set : is-set (𝓚 X)
-   𝓚-is-set = subtypes-of-sets-are-sets ⟨_⟩ s (powersets-are-sets fe pe)
+   𝓚-is-set = subtypes-of-sets-are-sets' ⟨_⟩ s (powersets-are-sets fe pe)
      where
       s : left-cancellable ⟨_⟩
       s e = to-subtype-＝ (λ _ → being-Kuratowski-finite-is-prop) e

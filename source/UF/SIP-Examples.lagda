@@ -36,7 +36,7 @@ notes:
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 module UF.SIP-Examples where
 
@@ -651,7 +651,7 @@ module subgroup
   ap-⟪⟫ S T = ap ⟪_⟫
 
   ap-⟪⟫-is-equiv : (S T : Subgroups) → is-equiv (ap-⟪⟫ S T)
-  ap-⟪⟫-is-equiv = embedding-embedding' ⟪_⟫ ⟪⟫-is-embedding
+  ap-⟪⟫-is-equiv = embedding-gives-embedding' ⟪_⟫ ⟪⟫-is-embedding
 
   subgroups-form-a-set : is-set Subgroups
   subgroups-form-a-set {S} {T} = equiv-to-prop
@@ -799,7 +799,7 @@ module subgroup
                              h unitH           ∎))
 
      j : is-set X
-     j = subtypes-of-sets-are-sets h h-lc (group-is-set G)
+     j = subtypes-of-sets-are-sets' h h-lc (group-is-set G)
 
      τ : T X
      τ = ((_*_ , unitH) , (j , unitH-left , unitH-right , assocH)) , group-axiomH
@@ -1355,7 +1355,8 @@ module generalized-metric-space
 
  characterization-of-M-＝ ua = characterization-of-＝-with-axioms ua
                                 sns-data
-                                axioms axiomss
+                                axioms
+                                axiomss
 
  _≅'_  : M → M → 𝓤 ⊔ 𝓥 ̇
  (X , d , _) ≅' (Y , e , _)
@@ -1666,10 +1667,10 @@ module type-valued-preorder
             , (∀ x y → is-equiv (𝓕 x y)))                             ■
     where
      i   = ≃-funext₂ fe fe (hom 𝓧 )  λ x y → hom 𝓐 (F x) (F y)
-     ii  = Π-cong fe fe _ _ _
-            (λ x → Π-cong fe fe _ _ _
-            (λ y → univalence-≃ (ua 𝓥) (hom 𝓧 x y) (hom 𝓐 (F x) (F y))))
-     iii = Π-cong fe fe _ _ _ (λ y → ΠΣ-distr-≃)
+     ii  = Π-cong fe fe
+            (λ x → Π-cong fe fe
+                    (λ y → univalence-≃ (ua 𝓥) (hom 𝓧 x y) (hom 𝓐 (F x) (F y))))
+     iii = Π-cong fe fe (λ y → ΠΣ-distr-≃)
      iv  = ΠΣ-distr-≃
 
    v : (p : hom 𝓧 ＝ λ x y → hom 𝓐 (F x) (F y))

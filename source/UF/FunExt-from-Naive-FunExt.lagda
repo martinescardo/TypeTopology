@@ -15,7 +15,7 @@ Point 2. is already proved in UF.Equiv-Funext.lagda
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 module UF.FunExt-from-Naive-FunExt where
 
@@ -42,7 +42,7 @@ equiv-post-gives-funext' {𝓤} {𝓥} eqc = funext-via-singletons γ
    f : Σ A → X
    f = pr₁
    eqf : is-equiv f
-   eqf = pr₁-equivalence X A φ
+   eqf = pr₁-is-equiv X A φ
    g : (X → Σ A) → (X → X)
    g h = f ∘ h
    eqg : is-equiv g

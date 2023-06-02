@@ -4,7 +4,7 @@ The definition is given in UF.Base. Here we prove things about them.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 module UF.LeftCancellable where
 
@@ -15,17 +15,25 @@ open import UF.Retracts
 open import UF.Equiv
 
 left-cancellable-reflects-is-prop : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                                 → left-cancellable f → is-prop Y → is-prop X
+                                 → left-cancellable f
+                                 → is-prop Y
+                                 → is-prop X
 left-cancellable-reflects-is-prop f lc i x x' = lc (i (f x) (f x'))
 
-section-lc : {X : 𝓤 ̇ } {A : 𝓥 ̇ } (s : X → A) → is-section s → left-cancellable s
+section-lc : {X : 𝓤 ̇ } {A : 𝓥 ̇ } (s : X → A)
+           → is-section s
+           → left-cancellable s
 section-lc {𝓤} {𝓥} {X} {Y} s (r , rs) {x} {y} p = (rs x)⁻¹ ∙ ap r p ∙ rs y
 
-is-equiv-lc : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) → is-equiv f → left-cancellable f
+is-equiv-lc : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+            → is-equiv f
+            → left-cancellable f
 is-equiv-lc f (_ , hasr) = section-lc f hasr
 
 left-cancellable-closed-under-∘ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (f : X → Y) (g : Y → Z)
-                                → left-cancellable f → left-cancellable g → left-cancellable (g ∘ f)
+                                → left-cancellable f
+                                → left-cancellable g
+                                → left-cancellable (g ∘ f)
 left-cancellable-closed-under-∘ f g lcf lcg = lcf ∘ lcg
 
 NatΣ-lc : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {B : X → 𝓦 ̇ } (f : Nat A B)

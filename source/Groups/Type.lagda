@@ -5,7 +5,7 @@ UF.SIP-Examples.
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe --auto-inline --exact-split #-}
+{-# OPTIONS --without-K --safe --no-sized-types --no-guardedness --auto-inline --exact-split #-}
 
 module Groups.Type where
 open import MLTT.Spartan
@@ -110,6 +110,11 @@ group-axioms-is-prop fe X _·_ s = γ s
     γ = ×-is-prop (being-set-is-prop fe)
         (×-is-prop α β)
 
+\end{code}
+
+End of addition.
+
+\begin{code}
 
 Group-structure : 𝓤 ̇ → 𝓤 ̇
 Group-structure X = Σ _·_ ꞉ group-structure X , (group-axioms X _·_)

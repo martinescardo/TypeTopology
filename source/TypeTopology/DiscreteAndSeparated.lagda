@@ -5,7 +5,7 @@ Martin Escardo 2011.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 module TypeTopology.DiscreteAndSeparated where
 
@@ -24,24 +24,26 @@ open import UF.Subsingletons renaming (⊤Ω to ⊤ ; ⊥Ω to ⊥)
 open import UF.Subsingletons-FunExt
 
 is-isolated : {X : 𝓤 ̇ } → X → 𝓤 ̇
-is-isolated x = ∀ y → decidable (x ＝ y)
+is-isolated x = ∀ y → is-decidable (x ＝ y)
 
 is-perfect : 𝓤 ̇ → 𝓤 ̇
 is-perfect X = is-empty (Σ x ꞉ X , is-isolated x)
 
 is-isolated' : {X : 𝓤 ̇ } → X → 𝓤 ̇
-is-isolated' x = ∀ y → decidable (y ＝ x)
+is-isolated' x = ∀ y → is-decidable (y ＝ x)
 
-decidable-eq-sym : {X : 𝓤 ̇ } (x y : X) → decidable (x ＝ y) → decidable (y ＝ x)
-decidable-eq-sym x y = cases
-                        (λ (p : x ＝ y) → inl (p ⁻¹))
-                        (λ (n : ¬ (x ＝ y)) → inr (λ (q : y ＝ x) → n (q ⁻¹)))
+is-decidable-eq-sym : {X : 𝓤 ̇ } (x y : X)
+                    → is-decidable (x ＝ y)
+                    → is-decidable (y ＝ x)
+is-decidable-eq-sym x y = cases
+                           (λ (p : x ＝ y) → inl (p ⁻¹))
+                           (λ (n : ¬ (x ＝ y)) → inr (λ (q : y ＝ x) → n (q ⁻¹)))
 
 is-isolated'-gives-is-isolated : {X : 𝓤 ̇ } (x : X) → is-isolated' x → is-isolated x
-is-isolated'-gives-is-isolated x i' y = decidable-eq-sym y x (i' y)
+is-isolated'-gives-is-isolated x i' y = is-decidable-eq-sym y x (i' y)
 
 is-isolated-gives-is-isolated' : {X : 𝓤 ̇ } (x : X) → is-isolated x → is-isolated' x
-is-isolated-gives-is-isolated' x i y = decidable-eq-sym x y (i y)
+is-isolated-gives-is-isolated' x i y = is-decidable-eq-sym x y (i y)
 
 is-discrete : 𝓤 ̇ → 𝓤 ̇
 is-discrete X = (x : X) → is-isolated x
@@ -78,27 +80,31 @@ props-are-discrete i x y = inl (i x y)
    step (inr f) = inr (λ s → f (succ-lc s))
 
 inl-is-isolated : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (x : X)
-                → is-isolated x → is-isolated (inl x)
+                → is-isolated x
+                → is-isolated (inl x)
 inl-is-isolated {𝓤} {𝓥} {X} {Y} x i = γ
  where
-  γ : (z : X + Y) → decidable (inl x ＝ z)
+  γ : (z : X + Y) → is-decidable (inl x ＝ z)
   γ (inl x') = Cases (i x')
                 (λ (p : x ＝ x') → inl (ap inl p))
                 (λ (n : ¬ (x ＝ x')) → inr (contrapositive inl-lc n))
   γ (inr y)  = inr +disjoint
 
 inr-is-isolated : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (y : Y)
-                → is-isolated y → is-isolated (inr y)
+                → is-isolated y
+                → is-isolated (inr y)
 inr-is-isolated {𝓤} {𝓥} {X} {Y} y i = γ
  where
-  γ : (z : X + Y) → decidable (inr y ＝ z)
+  γ : (z : X + Y) → is-decidable (inr y ＝ z)
   γ (inl x)  = inr +disjoint'
   γ (inr y') = Cases (i y')
                 (λ (p : y ＝ y') → inl (ap inr p))
                 (λ (n : ¬ (y ＝ y')) → inr (contrapositive inr-lc n))
 
 +-is-discrete : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-              → is-discrete X → is-discrete Y → is-discrete (X + Y)
+              → is-discrete X
+              → is-discrete Y
+              → is-discrete (X + Y)
 +-is-discrete d e (inl x) = inl-is-isolated x (d x)
 +-is-discrete d e (inr y) = inr-is-isolated y (e y)
 
@@ -112,9 +118,12 @@ General properties:
 
 \begin{code}
 
-discrete-is-cotransitive : {X : 𝓤 ̇ }
-                         → is-discrete X → {x y z : X} → x ≠ y → (x ≠ z) + (z ≠ y)
-discrete-is-cotransitive d {x} {y} {z} φ = f (d x z)
+discrete-types-are-cotransitive : {X : 𝓤 ̇ }
+                                → is-discrete X
+                                → {x y z : X}
+                                → x ≠ y
+                                → (x ≠ z) + (z ≠ y)
+discrete-types-are-cotransitive d {x} {y} {z} φ = f (d x z)
  where
   f : (x ＝ z) + (x ≠ z) → (x ≠ z) + (z ≠ y)
   f (inl r) = inr (λ s → φ (r ∙ s))
@@ -124,7 +133,7 @@ retract-is-discrete : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                     → retract Y of X → is-discrete X → is-discrete Y
 retract-is-discrete (f , (s , φ)) d y y' = g (d (s y) (s y'))
  where
-  g : decidable (s y ＝ s y') → decidable (y ＝ y')
+  g : is-decidable (s y ＝ s y') → is-decidable (y ＝ y')
   g (inl p) = inl ((φ y) ⁻¹ ∙ ap f p ∙ φ y')
   g (inr u) = inr (contrapositive (ap s) u)
 
@@ -164,8 +173,10 @@ is-¬¬-separated X = (x y : X) → ¬¬-stable (x ＝ y)
  where
   lemma₀ : f ＝ g → ∀ x → f x ＝ g x
   lemma₀ r x = ap (λ - → - x) r
+
   lemma₁ : ∀ x → ¬¬ (f x ＝ g x)
   lemma₁ = double-negation-unshift (¬¬-functor lemma₀ h)
+
   lemma₂ : ∀ x → f x ＝ g x
   lemma₂ x =  s x (f x) (g x) (lemma₁ x)
 
@@ -211,7 +222,8 @@ apart-is-cotransitive : {X : 𝓤 ̇ } → {Y : X → 𝓥 ̇ }
 apart-is-cotransitive d f g h (x , φ)  = lemma₁ (lemma₀ φ)
  where
   lemma₀ : f x ≠ g x → (f x ≠ h x)  +  (h x ≠ g x)
-  lemma₀ = discrete-is-cotransitive (d x)
+  lemma₀ = discrete-types-are-cotransitive (d x)
+
   lemma₁ : (f x ≠ h x) + (h x ≠ g x) → f ♯ h  +  h ♯ g
   lemma₁ (inl γ) = inl (x , γ)
   lemma₁ (inr δ) = inr (x , δ)
@@ -233,6 +245,7 @@ tight fe s f g h = dfunext fe lemma₁
  where
   lemma₀ : ∀ x → ¬¬ (f x ＝ g x)
   lemma₀ = not-Σ-implies-Π-not h
+
   lemma₁ : ∀ x → f x ＝ g x
   lemma₁ x = (s x (f x) (g x)) (lemma₀ x)
 
@@ -367,56 +380,6 @@ equality-of-¬¬stable-propositions fe pe p q f g a = γ
   γ : p ＝ q
   γ = to-subtype-＝ (λ _ → being-prop-is-prop fe) δ
 
-\end{code}
-
-Added by Tom de Jong in January 2022.
-
-Another logical place for these three lemmas would be Negation.lagda, but
-(1) the first lemma needs _⇔_ which is defined in Notation.General.lagda, which
-    imports Negation.lagda;
-(2) the second lemma needs _≃_ which is only defined in UF.Equiv.lagda;
-(3) the third lemma needs funext, which is only defined in UF.FunExt.lagda.
-
-\begin{code}
-
-¬¬-stable-⇔ : {X : 𝓤 ̇  } {Y : 𝓥 ̇  }
-            → X ⇔ Y
-            → ¬¬-stable X
-            → ¬¬-stable Y
-¬¬-stable-⇔ (f , g) σ h = f (σ (¬¬-functor g h))
-
-¬¬-stable-≃ : {X : 𝓤 ̇  } {Y : 𝓥 ̇  }
-            → X ≃ Y
-            → ¬¬-stable X
-            → ¬¬-stable Y
-¬¬-stable-≃ e = ¬¬-stable-⇔ (⌜ e ⌝ , ⌜ e ⌝⁻¹)
-
-being-¬¬-stable-is-prop : {X : 𝓤 ̇  }
-                        → funext 𝓤 𝓤
-                        → is-prop X → is-prop (¬¬-stable X)
-being-¬¬-stable-is-prop fe i = Π-is-prop fe (λ _ → i)
-
-\end{code}
-
-\begin{code}
-
-Ω¬¬ : (𝓤 : Universe)  → 𝓤 ⁺ ̇
-Ω¬¬ 𝓤 = Σ p ꞉ Ω 𝓤 , ¬¬-stable (p holds)
-
-Ω¬¬-is-¬¬-separated : funext 𝓤 𝓤
-                    → propext 𝓤
-                    → is-¬¬-separated (Ω¬¬ 𝓤)
-Ω¬¬-is-¬¬-separated fe pe (p , s) (q , t) ν = γ
- where
-  α : ¬¬ (p ＝ q)
-  α = ¬¬-functor (ap pr₁) ν
-
-  δ : p ＝ q
-  δ = equality-of-¬¬stable-propositions fe pe p q s t α
-
-  γ : (p , s) ＝ (q , t)
-  γ = to-subtype-＝ (λ p → Π-is-prop fe (λ _ → holds-is-prop p)) δ
-
 ⊥-⊤-Density : funext 𝓤 𝓤
             → propext 𝓤
             → {X : 𝓥 ̇ }
@@ -453,7 +416,7 @@ qinvs-preserve-isolatedness : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) → qi
                             → (x : X) → is-isolated x → is-isolated (f x)
 qinvs-preserve-isolatedness {𝓤} {𝓥} {X} {Y} f (g , ε , η) x i y = h (i (g y))
  where
-  h : decidable (x ＝ g y) → decidable (f x ＝ y)
+  h : is-decidable (x ＝ g y) → is-decidable (f x ＝ y)
   h (inl p) = inl (ap f p ∙ η y)
   h (inr u) = inr (contrapositive (λ (q : f x ＝ y) → (ε x)⁻¹ ∙ ap g q) u)
 
@@ -464,7 +427,7 @@ equivs-preserve-isolatedness f e = qinvs-preserve-isolatedness f (equivs-are-qin
 new-point-is-isolated : {X : 𝓤 ̇ } → is-isolated {𝓤 ⊔ 𝓥} {X + 𝟙 {𝓥}} (inr ⋆)
 new-point-is-isolated {𝓤} {𝓥} {X} = h
  where
-  h :  (y : X + 𝟙) → decidable (inr ⋆ ＝ y)
+  h :  (y : X + 𝟙) → is-decidable (inr ⋆ ＝ y)
   h (inl x) = inr +disjoint'
   h (inr ⋆) = inl refl
 
@@ -518,13 +481,13 @@ discrete-exponential-has-decidable-emptiness-of-exponent : {X : 𝓤 ̇ } {Y : �
                                                          → funext 𝓤 𝓥
                                                          → (Σ y₀ ꞉ Y , Σ y₁ ꞉ Y , y₀ ≠ y₁)
                                                          → is-discrete (X → Y)
-                                                         → decidable (is-empty X)
+                                                         → is-decidable (is-empty X)
 discrete-exponential-has-decidable-emptiness-of-exponent {𝓤} {𝓥} {X} {Y} fe (y₀ , y₁ , ne) d = γ
  where
-  a : decidable ((λ _ → y₀) ＝ (λ _ → y₁))
+  a : is-decidable ((λ _ → y₀) ＝ (λ _ → y₁))
   a = d (λ _ → y₀) (λ _ → y₁)
 
-  f : decidable ((λ _ → y₀) ＝ (λ _ → y₁)) → decidable (is-empty X)
+  f : is-decidable ((λ _ → y₀) ＝ (λ _ → y₁)) → is-decidable (is-empty X)
   f (inl p) = inl g
    where
     g : is-empty X
@@ -538,7 +501,53 @@ discrete-exponential-has-decidable-emptiness-of-exponent {𝓤} {𝓥} {X} {Y} f
     g : is-empty X → (λ _ → y₀) ＝ (λ _ → y₁)
     g ν = dfunext fe (λ x → 𝟘-elim (ν x))
 
-  γ : decidable (is-empty X)
+  γ : is-decidable (is-empty X)
   γ = f a
+
+\end{code}
+
+Added by Tom de Jong in January 2022.
+
+Another logical place for these three lemmas would be Negation.lagda, but
+(1) the first lemma needs _⇔_ which is defined in Notation.General.lagda, which
+    imports Negation.lagda;
+(2) the second lemma needs _≃_ which is only defined in UF.Equiv.lagda;
+(3) the third lemma needs funext, which is only defined in UF.FunExt.lagda.
+
+\begin{code}
+
+¬¬-stable-⇔ : {X : 𝓤 ̇  } {Y : 𝓥 ̇  }
+            → X ⇔ Y
+            → ¬¬-stable X
+            → ¬¬-stable Y
+¬¬-stable-⇔ (f , g) σ h = f (σ (¬¬-functor g h))
+
+¬¬-stable-≃ : {X : 𝓤 ̇  } {Y : 𝓥 ̇  }
+            → X ≃ Y
+            → ¬¬-stable X
+            → ¬¬-stable Y
+¬¬-stable-≃ e = ¬¬-stable-⇔ (⌜ e ⌝ , ⌜ e ⌝⁻¹)
+
+being-¬¬-stable-is-prop : {X : 𝓤 ̇  }
+                        → funext 𝓤 𝓤
+                        → is-prop X → is-prop (¬¬-stable X)
+being-¬¬-stable-is-prop fe i = Π-is-prop fe (λ _ → i)
+
+Ω¬¬ : (𝓤 : Universe)  → 𝓤 ⁺ ̇
+Ω¬¬ 𝓤 = Σ p ꞉ Ω 𝓤 , ¬¬-stable (p holds)
+
+Ω¬¬-is-¬¬-separated : funext 𝓤 𝓤
+                    → propext 𝓤
+                    → is-¬¬-separated (Ω¬¬ 𝓤)
+Ω¬¬-is-¬¬-separated fe pe (p , s) (q , t) ν = γ
+ where
+  α : ¬¬ (p ＝ q)
+  α = ¬¬-functor (ap pr₁) ν
+
+  δ : p ＝ q
+  δ = equality-of-¬¬stable-propositions fe pe p q s t α
+
+  γ : (p , s) ＝ (q , t)
+  γ = to-subtype-＝ (λ p → Π-is-prop fe (λ _ → holds-is-prop p)) δ
 
 \end{code}
