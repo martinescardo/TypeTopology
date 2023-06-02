@@ -1349,7 +1349,7 @@ proof.
 
  𝒻⁻-is-unique : is-central
                  (Σ 𝒻⁻₀ ꞉ (X ─c→ Patchₛ-A) ,
-                  ((x : ⟨ 𝒪 A ⟩) → 𝒻 .pr₁ x  ＝ 𝒻⁻₀ .pr₁ ‘ x ’))
+                  ((U : ⟨ 𝒪 A ⟩) → 𝒻 .pr₁ U  ＝ 𝒻⁻₀ .pr₁ ‘ U ’))
                  ((f⁻⁺ , 𝒻⁻-α , 𝒻⁻-β , 𝒻⁻-γ) , 𝒻⁻-makes-the-diagram-commute)
  𝒻⁻-is-unique (𝒻⁻₀@(f⁻₀ , _ , _ , 𝒻⁻₀-γ) , ϑ) =
   to-subtype-＝ ※ (to-subtype-＝ γ (dfunext fe †))
@@ -1384,7 +1384,7 @@ ump-of-patch : {𝓤 : Universe}
                 open ClosedNucleus A σ
                 open OpenNucleus A σ
                in
-                ∃! 𝒻⁻ ꞉ X ─c→ Patch-A , ((x : ⟨ 𝒪 A ⟩) → f x  ＝ 𝒻⁻ .pr₁ ‘ x ’)
+                ∃! 𝒻⁻ ꞉ X ─c→ Patch-A , ((U : ⟨ 𝒪 A ⟩) → f U  ＝ 𝒻⁻ .pr₁ ‘ U ’)
 ump-of-patch {𝓤} A σ X 𝕤 𝒻 μ = ∥∥-rec₂ (being-singleton-is-prop fe) γ σ (pr₂ 𝕤)
  where
   open PatchConstruction A σ renaming (Patch to Patch-A)
@@ -1393,7 +1393,7 @@ ump-of-patch {𝓤} A σ X 𝕤 𝒻 μ = ∥∥-rec₂ (being-singleton-is-prop
 
   γ : spectralᴰ (𝒪 A)
     → zero-dimensionalᴰ (𝒪 X)
-    → ∃! 𝒻⁻ ꞉ (X ─c→ Patch-A) , ((x : ⟨ 𝒪 A ⟩) → 𝒻 .pr₁ x  ＝ 𝒻⁻ .pr₁ ‘ x ’)
+    → ∃! 𝒻⁻ ꞉ (X ─c→ Patch-A) , ((U : ⟨ 𝒪 A ⟩) → 𝒻 .pr₁ U  ＝ 𝒻⁻ .pr₁ ‘ U ’)
   γ σᴰ 𝕫ᴰ = (𝒻⁻₀ , 𝒻⁻-makes-the-diagram-commute) , 𝔠
    where
     open UniversalProperty A X σᴰ 𝕫ᴰ (pr₁ 𝕤) 𝒻 μ
