@@ -883,12 +883,12 @@ As mentioned previously, `closed-image U` is a perfect nucleus for any `U :
 
 \begin{code}
 
+ f⁻₊ : ⟨ 𝒪 X ⟩ → ⟨ 𝒪 Patchₛ-A ⟩
+ f⁻₊ U = closed-image U ,  closed-image-is-nucleus U  , closed-image-is-sc U
+
  f⁻⁺-preserves-joins : is-join-preserving (𝒪 Patchₛ-A) (𝒪 X) f⁻⁺ holds
  f⁻⁺-preserves-joins = aft-forward f⁻⁺ₘ †
   where
-   f⁻₊ : ⟨ 𝒪 X ⟩ → ⟨ 𝒪 Patchₛ-A ⟩
-   f⁻₊ U = closed-image U ,  closed-image-is-nucleus U  , closed-image-is-sc U
-
    f⁻₊-is-monotone : is-monotonic (poset-of (𝒪 X)) (poset-of (𝒪 Patchₛ-A)) f⁻₊ holds
    f⁻₊-is-monotone (U , V) p n = pr₂ 𝒻₊ₘ _ (∨[ 𝒪 X ]-left-monotone p)
 
@@ -956,7 +956,6 @@ As mentioned previously, `closed-image U` is a perfect nucleus for any `U :
    f⁻₊-is-right-adjoint-of-f⁻⁺ : (f⁻⁺ₘ ⊣ f⁻₊ₘ) holds
    f⁻₊-is-right-adjoint-of-f⁻⁺ 𝒿@(j , _) U = ϑ₁ , ϑ₂
     where
-
      ϑ₁ : (f⁻⁺ 𝒿 ≤[ poset-of (𝒪 X) ] U) holds
         → (𝒿 ≤[ poset-of (𝒪 Patchₛ-A) ] (f⁻₊ U)) holds
      ϑ₁ φ n =
