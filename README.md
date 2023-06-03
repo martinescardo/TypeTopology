@@ -66,3 +66,9 @@ contributed to constructions, theorems and proofs via the hands of Ayberk Tosun.
 
 ## Publications resulting from TypeTopology
 
+1. Ayberk Tosun and Martín H. Escardó. Patch Locale of a Spectral Locale in
+   Univalent Type Theory. _Electronic Notes in Theoretical Informatics and
+   Computer Science_, Volume 1 - Proceedings of [MFPS XXXVIII][MFPS38], February
+   2023. https://10.46298/entics.10808
+
+[MFPS38]: https://www.cs.cornell.edu/mfps-2022/
