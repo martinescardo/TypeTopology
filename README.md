@@ -63,3 +63,6 @@ of Tom de Jong.
 
 (***) These authors didn't write single line of Agda code here, but they
 contributed to constructions, theorems and proofs via the hands of Ayberk Tosun.
+
+## Publications resulting from TypeTopology
+
