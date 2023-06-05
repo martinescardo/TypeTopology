@@ -15,3 +15,5 @@ ethnicity, background, or fluency in English -- here on GitHub, in online
 communication channels, and in person. Homotopy type theory is difficult enough
 without all the barriers that many of us have to face, so we hope to bring some
 of those down a bit.
+
+We have borrowed this statement literally from [agda-unimath](https://github.com/UniMath/agda-unimath/tree/master) with Egbert Rijke's permission.
