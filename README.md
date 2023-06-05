@@ -28,7 +28,7 @@ You can use the following BibTeX citation to cite `TypeTopology`:
 If you are citing only your files, then create a different bibtex file
 with only your name as author.
 
-## Current contributors in alphabetical order of given name
+## Current contributors in alphabetical order of first name
 
 * Alice Laroche
 * Andrew Sneap
