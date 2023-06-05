@@ -1,9 +1,7 @@
 # Various new theorems in constructive univalent mathematics written in Agda
 
-This development was started by Martin Escardo in 2010, and
-transferred to github Monday 5th February 2018. A few files are
-authored by collaborators or external contributors, with names added
-at the top.
+This development was started by Martin Escardo in 2010 as an `svn` project, and
+transferred to `github` Monday 5th February 2018.
 
 If you contribute, please add your full (legal or adopted) name and date
 at the place of contribution.
