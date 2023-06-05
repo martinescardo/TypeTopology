@@ -517,7 +517,7 @@ idea of proof of ε-formula-theorem, rather than prove (1) directly.
 
 Alice Laroche, 1st June 2023
 
-We can however prove both definitions are equals, and from that deduce
+We can however prove both definitions are equal, and from that deduce
 the correctness of ε-formula'
 
 We first define another pair of auxilliary constructions that will be used
@@ -537,6 +537,7 @@ to reason about εᵉ
 \end{code}
 
 Notice that 𝕔𝕠𝕟𝕤 and 𝕔𝕠𝕟𝕤 are more refined versions of 𝕞𝕒𝕡 and 𝕞𝕒𝕡s
+
 \begin{code}
 
 𝕞𝕒𝕡-cons-𝕔𝕠𝕟𝕤 : {n k : ℕ}
@@ -625,8 +626,8 @@ unroll-εᵉ e₀ = unroll-εᵉ-lemma (cons e₀) ∙ 𝕞𝕒𝕡s-cons-𝕔�
 
 \end{code}
 
-From there we can show that ε-formula' n and ε-formula n are indeed
-equals.
+From this we can show that ε-formula' n and ε-formula n are indeed
+equal.
 
 \begin{code}
 
@@ -663,8 +664,7 @@ formulas-are-equal (succ n) = γ
     III = ap (λ x → x , (𝕔𝕠𝕟𝕤s x (ε-formula n))) c₀-property
 \end{code}
 
-It then follow immediatly the correctness of ε-formula' n by
-transport
+It then follows immediately by transport that ε-formula' is correct.
 
 \begin{code}
 
@@ -704,3 +704,86 @@ exponentially. Define a type of expression accomodating variables for
 common subexpressions and produce a version ε-formula that produced
 such reduced-size expressions.
 
+Alice Laroche, 5th june 2023
+
+We can prove that ε f compute in fact the infimum of the set of roots
+ordered by the lexicographical order.
+
+\begin{code}
+
+open import Notation.Order
+
+lex-order : {X : 𝓤 ̇ } {n : ℕ} → (X → X →  𝓥 ̇ ) → (X ^ n → X ^ n → 𝓤 ⊔ 𝓥 ̇ )
+lex-order {n = 0}      _≤_ _        _        = 𝟙
+lex-order {n = succ n} _≤_ (x , xs) (y , ys) = (x ≤ y) × ((x ＝ y) → lex-order _≤_ xs ys)
+
+_≤₂ₗₑₓ_ : {n : ℕ} (xs ys : 𝟚 ^ n) → 𝓤₀ ̇
+_≤₂ₗₑₓ_ = lex-order _≤₂_
+
+open import TypeTopology.InfProperty
+
+ε-is-root-lower-bound : {n : ℕ} →
+                        (f : 𝟚 ^ n → 𝟚) →
+                        root-lower-bound _≤₂ₗₑₓ_ f (ε f)
+ε-is-root-lower-bound {0}      f _        fxs=₀ = ⋆
+ε-is-root-lower-bound {succ n} f (x , xs) fxs=₀ = γ (x , xs) fxs=₀
+ where
+  b₀ : 𝟚
+  b₀ = ε𝟚 (b ↦ A (f ∘ cons b))
+
+  b₀-property : (xs : 𝟚 ^ n) → f (₀ , xs) ＝ ₀ → b₀ ＝ ₀
+  b₀-property xs f₀xs=₀ = ε-gives-putative-root (f ∘ cons ₀) (xs , f₀xs=₀)
+
+  δ : (b : 𝟚) (xs : 𝟚 ^ n) → f (b , xs) ＝ ₀ → b₀ ＝ b → ε (f ∘ cons b₀) ≤₂ₗₑₓ xs
+  δ b xs fbxs=₀ refl = ε-is-root-lower-bound (f ∘ cons b₀) xs fbxs=₀
+
+  γ : (xs : 𝟚 ^ (succ n)) → f xs ＝ ₀ → ε f ≤₂ₗₑₓ  xs
+  γ (₀ , xs) f₀xs=₀ = ₀-minimal-converse (b₀-property xs f₀xs=₀) , δ ₀ xs f₀xs=₀
+  γ (₁ , xs) f₁xs=₀ = ₁-top , δ ₁ xs f₁xs=₀
+
+lower-bound-property : {n : ℕ} →
+                       (f : 𝟚 ^ (succ n) → 𝟚) →
+                       (b : 𝟚) →
+                       (xs : 𝟚 ^ n) →
+                       root-lower-bound _≤₂ₗₑₓ_ f (b , xs) →
+                       root-lower-bound _≤₂ₗₑₓ_ (f ∘ cons b) xs
+lower-bound-property f b xs lower-bound ys fbys=₀ = pr₂ (lower-bound (b , ys) fbys=₀) refl
+
+ε-is-upper-bound-of-root-lower-bounds : {n : ℕ} →
+                                        (f : 𝟚 ^ n → 𝟚) →
+                                        upper-bound-of-root-lower-bounds _≤₂ₗₑₓ_ f (ε f)
+ε-is-upper-bound-of-root-lower-bounds {0}      f xs lower-bound = ⋆
+ε-is-upper-bound-of-root-lower-bounds {succ n} f xs lower-bound = γ xs lower-bound
+ where
+
+  b₀ : 𝟚
+  b₀ = ε𝟚 (b ↦ A (f ∘ cons b))
+
+  b₀-property : (xs : 𝟚 ^ n) →
+                root-lower-bound _≤₂ₗₑₓ_ f (₁ , xs) →
+                (b : 𝟚) → b ＝ b₀ → ₁ ≤ b₀
+  b₀-property xs lower-bound ₀ eq = transport (₁ ≤_) eq
+                                     (pr₁ (lower-bound (₀ , ε (f ∘ cons ₀)) (eq ⁻¹)))
+  b₀-property xs lower-bound ₁ eq = transport (₁ ≤_) eq ⋆
+
+  δ : (b : 𝟚) (xs : 𝟚 ^ n) →
+      root-lower-bound _≤₂ₗₑₓ_ f (b , xs) →
+      b ＝ b₀ → xs ≤₂ₗₑₓ ε (f ∘ cons b₀)
+  δ b xs lower-bound refl = ε-is-upper-bound-of-root-lower-bounds
+                             (f ∘ cons b₀) xs
+                             (lower-bound-property f b₀ xs lower-bound)
+
+  γ : (xs : 𝟚 ^ (succ n)) → root-lower-bound _≤₂ₗₑₓ_ f xs → xs ≤₂ₗₑₓ ε f
+  γ (₀ , xs) lower-bound = ⋆                                  , δ ₀ xs lower-bound
+  γ (₁ , xs) lower-bound = b₀-property xs lower-bound b₀ refl , δ ₁ xs lower-bound
+
+ε-is-roots-infimum : {n : ℕ} (f : 𝟚 ^ n → 𝟚) → roots-infimum _≤₂ₗₑₓ_ f (ε f)
+ε-is-roots-infimum f = (ε-is-root-lower-bound f)
+                     , (ε-is-upper-bound-of-root-lower-bounds f)
+
+𝟚^n-has-inf : {n : ℕ} → has-inf {X = 𝟚 ^ n} _≤₂ₗₑₓ_
+𝟚^n-has-inf p = (ε p) , (ε-gives-putative-root p , ε-is-roots-infimum p)
+
+\end{code}
+
+End of Alice's contribution
