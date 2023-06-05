@@ -51,7 +51,7 @@ References
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 open import UF.FunExt
 open import UF.Subsingletons
@@ -355,7 +355,7 @@ subset relation (⊆) and proofs of ∈-extensionality and ∈-induction.
 
   to-∈-of-𝕍-set : {x : 𝕍} {A : 𝓤 ̇ } {f : A → 𝕍}
                   → (∃ a ꞉ A , f a ＝ x) → (x ∈ 𝕍-set f)
-  to-∈-of-𝕍-set {x} {A} {f} = back-Idtofun (∈-for-𝕍-sets x f)
+  to-∈-of-𝕍-set {x} {A} {f} = Idtofun⁻¹ (∈-for-𝕍-sets x f)
 
   _⊆_ : 𝕍 → 𝕍 → 𝓤 ⁺ ̇
   x ⊆ y = (v : 𝕍) → v ∈ x → v ∈ y

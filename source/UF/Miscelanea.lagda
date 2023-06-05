@@ -6,7 +6,7 @@ Find a better home for all of this.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 module UF.Miscelanea where
 
@@ -23,12 +23,12 @@ open import UF.Lower-FunExt
 open import UF.Subsingletons renaming (⊤Ω to ⊤ ; ⊥Ω to ⊥)
 open import UF.Subsingletons-FunExt
 
-decidable-is-collapsible : {X : 𝓤 ̇ } → decidable X → collapsible X
-decidable-is-collapsible (inl x) = pointed-types-are-collapsible x
-decidable-is-collapsible (inr u) = empty-types-are-collapsible u
+decidable-types-are-collapsible : {X : 𝓤 ̇ } → is-decidable X → collapsible X
+decidable-types-are-collapsible (inl x) = pointed-types-are-collapsible x
+decidable-types-are-collapsible (inr u) = empty-types-are-collapsible u
 
 discrete-is-Id-collapsible : {X : 𝓤 ̇ } → is-discrete X → Id-collapsible X
-discrete-is-Id-collapsible d = decidable-is-collapsible (d _ _)
+discrete-is-Id-collapsible d = decidable-types-are-collapsible (d _ _)
 
 discrete-types-are-sets : {X : 𝓤 ̇ } → is-discrete X → is-set X
 discrete-types-are-sets d = Id-collapsibles-are-sets (discrete-is-Id-collapsible d)
@@ -39,7 +39,7 @@ being-isolated-is-prop {𝓤} fe x = prop-criterion γ
   γ : is-isolated x → is-prop (is-isolated x)
   γ i = Π-is-prop (fe 𝓤 𝓤)
          (λ x → sum-of-contradictory-props
-                 (local-hedberg _ (λ y → decidable-is-collapsible (i y)) x)
+                 (local-hedberg _ (λ y → decidable-types-are-collapsible (i y)) x)
                  (negations-are-props (fe 𝓤 𝓤₀))
                  (λ p n → n p))
 
@@ -49,7 +49,7 @@ being-isolated'-is-prop {𝓤} fe x = prop-criterion γ
   γ : is-isolated' x → is-prop (is-isolated' x)
   γ i = Π-is-prop (fe 𝓤 𝓤)
          (λ x → sum-of-contradictory-props
-                 (local-hedberg' _ (λ y → decidable-is-collapsible (i y)) x)
+                 (local-hedberg' _ (λ y → decidable-types-are-collapsible (i y)) x)
                  (negations-are-props (fe 𝓤 𝓤₀))
                  (λ p n → n p))
 
@@ -59,7 +59,7 @@ being-discrete-is-prop {𝓤} fe = Π-is-prop (fe 𝓤 𝓤) (being-isolated-is-
 isolated-is-h-isolated : {X : 𝓤 ̇ } (x : X) → is-isolated x → is-h-isolated x
 isolated-is-h-isolated {𝓤} {X} x i {y} = local-hedberg x (λ y → γ y (i y)) y
  where
-  γ : (y : X) → decidable (x ＝ y) → Σ f ꞉ (x ＝ y → x ＝ y) , wconstant f
+  γ : (y : X) → is-decidable (x ＝ y) → Σ f ꞉ (x ＝ y → x ＝ y) , wconstant f
   γ y (inl p) = (λ _ → p) , (λ q r → refl)
   γ y (inr n) = id , (λ q r → 𝟘-elim (n r))
 
@@ -113,7 +113,7 @@ discrete-inr fe d x = isolated-inr fe x (d x)
 isolated-Id-is-prop : {X : 𝓤 ̇ } (x : X)
                     → is-isolated' x
                     → (y : X) → is-prop (y ＝ x)
-isolated-Id-is-prop x i = local-hedberg' x (λ y → decidable-is-collapsible (i y))
+isolated-Id-is-prop x i = local-hedberg' x (λ y → decidable-types-are-collapsible (i y))
 
 lc-maps-reflect-isolatedness : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                              → left-cancellable f
@@ -192,9 +192,9 @@ nonempty X = is-empty(is-empty X)
 stable : 𝓤 ̇ → 𝓤 ̇
 stable X = nonempty X → X
 
-decidable-is-stable : {X : 𝓤 ̇ } → decidable X → stable X
-decidable-is-stable (inl x) φ = x
-decidable-is-stable (inr u) φ = unique-from-𝟘(φ u)
+is-decidable-is-stable : {X : 𝓤 ̇ } → is-decidable X → stable X
+is-decidable-is-stable (inl x) φ = x
+is-decidable-is-stable (inr u) φ = unique-from-𝟘(φ u)
 
 stable-is-collapsible : funext 𝓤 𝓤₀
                       → {X : 𝓤 ̇ } → stable X → collapsible X

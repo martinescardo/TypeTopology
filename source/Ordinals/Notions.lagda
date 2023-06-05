@@ -6,7 +6,7 @@ Ordinals like in the HoTT book and variations.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 open import MLTT.Spartan
 open import TypeTopology.DiscreteAndSeparated
@@ -81,20 +81,20 @@ End of addition.
 is-well-founded : 𝓤 ⊔ 𝓥 ̇
 is-well-founded = (x : X) → is-accessible x
 
-Well-founded : 𝓤 ⊔ 𝓥 ⊔ 𝓦  ⁺ ̇
-Well-founded {𝓦} = (P : X → 𝓦 ̇ )
-                 → ((x : X) → ((y : X) → y < x → P y) → P x)
-                 → (x : X) → P x
+is-Well-founded : 𝓤 ⊔ 𝓥 ⊔ 𝓦  ⁺ ̇
+is-Well-founded {𝓦} = (P : X → 𝓦 ̇ )
+                    → ((x : X) → ((x' : X) → x' < x → P x') → P x)
+                    → (x : X) → P x
 
-transfinite-induction : is-well-founded → ∀ {𝓦} → Well-founded {𝓦}
+transfinite-induction : is-well-founded → ∀ {𝓦} → is-Well-founded {𝓦}
 transfinite-induction w P f x = transfinite-induction' P f x (w x)
 
-transfinite-induction-converse : Well-founded {𝓤 ⊔ 𝓥} → is-well-founded
+transfinite-induction-converse : is-Well-founded {𝓤 ⊔ 𝓥} → is-well-founded
 transfinite-induction-converse φ = φ is-accessible (λ _ → step)
 
 transfinite-recursion : is-well-founded
                       → ∀ {𝓦} {Y : 𝓦 ̇ }
-                      → ((x : X) → ((y : X) → y < x → Y) → Y)
+                      → ((x : X) → ((x' : X) → x' < x → Y) → Y)
                       → X → Y
 transfinite-recursion w {𝓦} {Y} = transfinite-induction w (λ x → Y)
 
@@ -702,7 +702,7 @@ is written down in Agda by Martin Escardo on the same date:
 \begin{code}
 
 is-decidable-order : 𝓤 ⊔ 𝓥 ̇
-is-decidable-order = (x y : X) → decidable (x < y)
+is-decidable-order = (x y : X) → is-decidable (x < y)
 
 trichotomy-from-decidable-order : is-transitive
                                 → is-extensional
@@ -761,7 +761,7 @@ decidable-order-from-trichotomy : is-transitive
                                 → is-decidable-order
 decidable-order-from-trichotomy t w τ = γ
  where
-  γ : (x y : X) → decidable (x < y)
+  γ : (x y : X) → is-decidable (x < y)
   γ x y = f (τ x y)
    where
     f : (x < y) + (x ＝ y) + (y < x) → (x < y) + ¬ (x < y)

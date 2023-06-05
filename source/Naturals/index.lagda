@@ -1,6 +1,6 @@
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 module Naturals.index where
 
@@ -15,7 +15,6 @@ import Naturals.Division
 import Naturals.Multiplication
 import Naturals.HCF
 import Naturals.Parity
-import Naturals.Exponents
-
+import Naturals.Exponentiation
 
 \end{code}

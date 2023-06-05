@@ -2,7 +2,7 @@ Martin Escardo, sometime between 2014 and 2021
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 module Fin.Properties where
 

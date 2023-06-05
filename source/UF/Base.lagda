@@ -4,7 +4,7 @@ This file needs reorganization and clean-up.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 module UF.Base where
 
@@ -75,8 +75,8 @@ Idtofun-retraction refl _ = refl
 Idtofun-section : {X Y : 𝓤 ̇ } (p : X ＝ Y) → Idtofun (p ⁻¹) ∘ Idtofun p ∼ id
 Idtofun-section refl _ = refl
 
-back-Idtofun : {X Y : 𝓤 ̇ } → X ＝ Y → Y → X
-back-Idtofun = transport⁻¹ id
+Idtofun⁻¹ : {X Y : 𝓤 ̇ } → X ＝ Y → Y → X
+Idtofun⁻¹ = transport⁻¹ id
 
 forth-and-back-transport : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
                            {x y : X} (p : x ＝ y) {a : A x}
@@ -110,12 +110,12 @@ transport-× A B refl = refl
 
 transport-∙ : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
               {x y z : X} (q : x ＝ y) (p : y ＝ z) {a : A x}
-            → transport A  (q ∙ p) a ＝ transport A p (transport A q a)
+            → transport A (q ∙ p) a ＝ transport A p (transport A q a)
 transport-∙ A refl refl = refl
 
 transport-∙' : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
                {x y z : X} (q : x ＝ y) (p : y ＝ z)
-             → transport A  (q ∙ p) ＝ transport A p ∘ transport A q
+             → transport A (q ∙ p) ＝ transport A p ∘ transport A q
 transport-∙' A refl refl = refl
 
 transport-ap : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : Y → 𝓦 ̇ )
@@ -203,6 +203,11 @@ ap₂ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (f : X → Y → Z) {x₀ x
     → y₀ ＝ y₁
     → f x₀ y₀ ＝ f x₁ y₁
 ap₂ f refl refl = refl
+
+ap₃ : {W : 𝓣 ̇} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
+      (f : W → X → Y → Z) {w₀ w₁ : W} {x₀ x₁ : X} {y₀ y₁ : Y}
+    → w₀ ＝ w₁ → x₀ ＝ x₁ → y₀ ＝ y₁ → f w₀ x₀ y₀ ＝ f w₁ x₁ y₁
+ap₃ f refl refl refl = refl
 
 refl-left-neutral : {X : 𝓤 ̇ } {x y : X} {p : x ＝ y}
                   → refl ∙ p ＝ p

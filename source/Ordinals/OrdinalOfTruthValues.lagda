@@ -3,7 +3,7 @@ Martin Escardo, 4th October 2018
 The ordinal of truth values in a universe 𝓤.
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 open import MLTT.Spartan
 open import UF.FunExt
@@ -18,7 +18,8 @@ module Ordinals.OrdinalOfTruthValues
 open import UF.Subsingletons-FunExt
 
 open import Ordinals.Arithmetic fe
-open import Ordinals.Type
+open import Ordinals.Equivalence
+open import Ordinals.Maps
 open import Ordinals.Notions
 open import Ordinals.Type
 open import Ordinals.Underlying

@@ -64,7 +64,7 @@ because the type (Σ y ꞉ 𝕍 , y ∈ x) of elements contained in x is a large
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline --lossy-unification #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline --lossy-unification #-}
 
 open import MLTT.Spartan
 
@@ -104,11 +104,13 @@ open import UF.CumulativeHierarchy pt fe pe
 open import UF.CumulativeHierarchy-LocallySmall pt fe pe
 
 open import Ordinals.CumulativeHierarchy pt ua 𝓤
+open import Ordinals.Equivalence
+open import Ordinals.Maps
 open import Ordinals.Notions
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.Type
-open import Ordinals.WellOrderTransport fe'
 open import Ordinals.Underlying
+open import Ordinals.WellOrderTransport fe'
 
 module _
         (ch : cumulative-hierarchy-exists 𝓤)
@@ -315,7 +317,7 @@ equivalent to a large one. We do *not* use resizing axioms.
   ≺-＝-∈ {a} {b} = ap (_holds) (extension-rel-triangle₂ ~EqRel _ _ a b)
 
   ∈-to-≺ : {a b : A} → f a ∈ f b → [ a ] ≺ [ b ]
-  ∈-to-≺ = back-Idtofun ≺-＝-∈
+  ∈-to-≺ = Idtofun⁻¹ ≺-＝-∈
 
   ≺-to-∈ : {a b : A} → [ a ] ≺ [ b ] → f a ∈ f b
   ≺-to-∈ = Idtofun ≺-＝-∈
@@ -466,8 +468,10 @@ preserving and reflecting.
                                 image-fᵒʳᵈ ＝⟨ ⦅2⦆ ⟩
                                 A/~ᵒʳᵈ     ∎
     where
-     ⦅1⦆ = eqtoidₒ 𝕋xᵒʳᵈ image-fᵒʳᵈ 𝕋xᵒʳᵈ-≃-image-fᵒʳᵈ
-     ⦅2⦆ = eqtoidₒ image-fᵒʳᵈ A/~ᵒʳᵈ (≃ₒ-sym A/~ᵒʳᵈ image-fᵒʳᵈ (ϕ , ϕ-is-order-equiv))
+     ⦅1⦆ = eqtoidₒ (ua (𝓤 ⁺)) fe 𝕋xᵒʳᵈ image-fᵒʳᵈ 𝕋xᵒʳᵈ-≃-image-fᵒʳᵈ
+     ⦅2⦆ = eqtoidₒ (ua (𝓤 ⁺)) fe
+           image-fᵒʳᵈ A/~ᵒʳᵈ
+           (≃ₒ-sym A/~ᵒʳᵈ image-fᵒʳᵈ (ϕ , ϕ-is-order-equiv))
       where
        ϕ-is-order-equiv : is-order-equiv A/~ᵒʳᵈ image-fᵒʳᵈ ϕ
        ϕ-is-order-equiv =
@@ -754,7 +758,7 @@ ordinal to the total space 𝕋xᵒʳᵈ of x.
     prop-valued : (x : 𝕍)
                 → is-prop ((σ : is-set-theoretic-ordinal x) → 𝕍ᵒʳᵈ-to-Ord (x , σ)
                                                             ≃ₒ total-spaceᵒʳᵈ x σ)
-    prop-valued x = Π-is-prop fe (λ σ → ≃ₒ-is-prop-valued _ _)
+    prop-valued x = Π-is-prop fe (λ σ → ≃ₒ-is-prop-valued fe _ _)
     γ : {A : 𝓤 ̇ } (f : A → 𝕍) (σ : is-set-theoretic-ordinal (𝕍-set f))
       → 𝕍ᵒʳᵈ-to-Ord (𝕍-set f , σ) ≃ₒ total-spaceᵒʳᵈ (𝕍-set f) σ
     γ {A} f σ = ≃ₒ-trans (𝕍ᵒʳᵈ-to-Ord (𝕍-set f , σ))

@@ -114,7 +114,7 @@ them, so to speak. This is Rice's Theorem for the universe U.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 open import UF.FunExt
 

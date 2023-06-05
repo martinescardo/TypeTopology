@@ -11,11 +11,12 @@ of ordinals agree.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline --lossy-unification #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline --lossy-unification #-}
 
 open import MLTT.Spartan
 open import NotionsOfDecidability.Decidable
 open import Ordinals.Arithmetic
+open import Ordinals.Equivalence
 open import Ordinals.Notions
 open import Ordinals.Type
 open import Ordinals.Underlying
@@ -87,7 +88,7 @@ the axiom of choice is formulated as in the HoTT book.
 
 every-set-can-be-well-ordered = {𝓤 : Universe} {X : 𝓤 ̇ }
                               → is-set X
-                              → ∃ _≺_ ꞉ (X → X → 𝓤 ̇) , (is-well-order _≺_)
+                              → ∃ _≺_ ꞉ (X → X → 𝓤 ̇ ), (is-well-order _≺_)
 
 choice-gives-well-ordering : Axiom-of-Choice
                            → every-set-can-be-well-ordered
@@ -116,7 +117,7 @@ choice-function-gives-well-ordering :
       → {X : 𝓤 ̇ }
       → is-set X
       → (Σ ε ꞉ (𝓟 X → X) , ((A : 𝓟 X) → is-inhabited A → ε A ∈ A))
-      → Σ _<_ ꞉ (X → X → 𝓤 ̇) , (is-well-order _<_)
+      → Σ _<_ ꞉ (X → X → 𝓤 ̇ ), (is-well-order _<_)
 
 choice-function-gives-well-ordering {𝓤} em {X} X-is-set (ε , ε-behaviour) = W
  where
@@ -189,7 +190,7 @@ The following properties of f should be self-explanatory:
                          → α ＝ β
    f-is-conditionally-lc α β i j p =
      ¬¬-elim
-       (em (α ＝ β) the-type-of-ordinals-is-a-set)
+       (em (α ＝ β) (the-type-of-ordinals-is-a-set (ua 𝓤) fe'))
        (λ (ν : α ≠ β) → f-is-conditionally-1-1 α β i j ν p)
 
 \end{code}
@@ -333,7 +334,7 @@ And our desired results follows directly from this:
 
 \begin{code}
 
-   W : Σ _<_ ꞉ (X → X → 𝓤 ̇) , (is-well-order _<_)
+   W : Σ _<_ ꞉ (X → X → 𝓤 ̇ ), (is-well-order _<_)
    W = ⌜ structure-equiv ⌝ (structure α₀)
 
 \end{code}
@@ -352,7 +353,7 @@ choice-gives-well-ordering = restatement
   restatement : Axiom-of-Choice
               → {𝓤 : Universe} {X : 𝓤 ̇ }
               → is-set X
-              → ∃ _<_ ꞉ (X → X → 𝓤 ̇) , (is-well-order _<_)
+              → ∃ _<_ ꞉ (X → X → 𝓤 ̇ ), (is-well-order _<_)
   restatement ac {𝓤} {X} X-is-set = III
    where
     choice-function : ∥ X ∥ → ∃ ε ꞉ (𝓟 X → X) , ((A : 𝓟 X) → is-inhabited A → ε A ∈ A)
@@ -361,15 +362,15 @@ choice-gives-well-ordering = restatement
     em : Excluded-Middle
     em = Choice-gives-Excluded-Middle pe' ac
 
-    I : ∥ X ∥ → ∃ _<_ ꞉ (X → X → 𝓤 ̇) , (is-well-order _<_)
+    I : ∥ X ∥ → ∃ _<_ ꞉ (X → X → 𝓤 ̇ ), (is-well-order _<_)
     I s = ∥∥-functor
             (choice-function-gives-well-ordering em X-is-set)
             (choice-function s)
 
-    II : ¬ ∥ X ∥ → ∃ _<_ ꞉ (X → X → 𝓤 ̇) , (is-well-order _<_)
+    II : ¬ ∥ X ∥ → ∃ _<_ ꞉ (X → X → 𝓤 ̇ ), (is-well-order _<_)
     II ν = ∣ structure (prop-ordinal fe X (empty-types-are-props (ν ∘ ∣_∣))) ∣
 
-    III : ∃ _<_ ꞉ (X → X → 𝓤 ̇) , (is-well-order _<_)
+    III : ∃ _<_ ꞉ (X → X → 𝓤 ̇ ), (is-well-order _<_)
     III = cases I II (em ∥ X ∥ ∥∥-is-prop)
 
 \end{code}
@@ -383,7 +384,7 @@ well-ordering-gives-choice-function :
         Excluded-Middle
       → {X : 𝓤 ̇ }
       → is-set X
-      → Σ _<_ ꞉ (X → X → 𝓤 ̇) , (is-well-order _<_)
+      → Σ _<_ ꞉ (X → X → 𝓤 ̇ ), (is-well-order _<_)
       → (Σ ε ꞉ (𝓟⁺ X → X) , ((𝓐 : 𝓟⁺ X) → ε 𝓐 ∈⁺ 𝓐))
 
 well-ordering-gives-choice-function {𝓤} em {X} X-is-set (_<_ , w) = ε , ε-behaviour

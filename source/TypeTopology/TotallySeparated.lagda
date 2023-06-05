@@ -59,7 +59,7 @@ apartness relation is a set, and so this reflection is always a set.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 module TypeTopology.TotallySeparated where
 
@@ -68,16 +68,16 @@ open import MLTT.Two-Properties
 open import NotionsOfDecidability.Complemented
 open import TypeTopology.DiscreteAndSeparated hiding (tight)
 open import UF.Base
+open import UF.Embeddings
+open import UF.Equiv
+open import UF.FunExt
+open import UF.LeftCancellable
+open import UF.Lower-FunExt
+open import UF.Miscelanea
+open import UF.PropTrunc
+open import UF.Retracts
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-open import UF.Retracts
-open import UF.Equiv
-open import UF.LeftCancellable
-open import UF.Embeddings
-open import UF.FunExt
-open import UF.Lower-FunExt
-open import UF.PropTrunc
-open import UF.Miscelanea
 
 \end{code}
 
@@ -148,7 +148,9 @@ totally-separated-gives-totally-separated₁ : funext 𝓤 𝓤₀
 totally-separated-gives-totally-separated₁ fe {X} ts x (y , a) (z , b) = γ
  where
   c : y ＝₂ z
-  c p = (a p)⁻¹ ∙ b p
+  c p = p y ＝⟨ (a p)⁻¹ ⟩
+        p x ＝⟨ b p ⟩
+        p z ∎
 
   q : y ＝ z
   q = ts c
@@ -196,7 +198,9 @@ discrete-types-are-totally-separated {𝓤} {X} d {x} {y} α = g
   b = different-from-₁-equal-₀ (λ s → pr₂ (φ x) s refl)
 
   a : p y ＝ ₀
-  a = (α p)⁻¹ ∙ b
+  a = p y ＝⟨ (α p)⁻¹ ⟩
+      p x ＝⟨ b ⟩
+      ₀   ∎
 
   g : x ＝ y
   g = pr₁ (φ y) a
@@ -246,7 +250,7 @@ totally-separated-types-are-sets : funext 𝓤 𝓤₀
                                  → is-totally-separated X
                                  → is-set X
 totally-separated-types-are-sets fe X t =
-  ¬¬-separated-types-are-sets fe (totally-separated-types-are-separated X t)
+ ¬¬-separated-types-are-sets fe (totally-separated-types-are-separated X t)
 
 \end{code}
 
@@ -315,18 +319,20 @@ being-totally-separated-is-prop {𝓤} fe X = γ
   g t x y φ = t {x} {y} φ
 
   p : T → is-prop T
-  p t = Π-is-prop fe
-           (λ x → Π-is-prop fe
-                    (λ y → Π-is-prop fe
-                              (λ p → totally-separated-types-are-sets
-                                      (lower-funext 𝓤 𝓤 fe) X (f t))))
+  p t = Π-is-prop fe (λ x →
+        Π-is-prop fe (λ y →
+        Π-is-prop fe (λ p → totally-separated-types-are-sets
+                             (lower-funext 𝓤 𝓤 fe) X (f t))))
+  l : left-cancellable g
+  l = ap f
 
   γ : is-prop (is-totally-separated X)
-  γ = subtype-of-prop-is-prop g (λ {t} {u} (r : g t ＝ g u) → ap f r) (prop-criterion p)
+  γ = subtypes-of-props-are-props' g l (prop-criterion p)
+
 \end{code}
 
 Old proof, which by-passes the step via ¬¬-separatedness and has a
-different extensionlity hypothesis:
+different extensionality hypothesis:
 
 \begin{code}
 
@@ -363,8 +369,9 @@ the following particular cases:
                     → is-totally-separated Y
                     → is-totally-separated (X × Y)
 ×-totally-separated X Y t u {a , b} {x , y} φ =
-   to-×-＝ (t (λ (p : X → 𝟚) → φ (λ (z : X × Y) → p (pr₁ z))))
-          (u (λ (q : Y → 𝟚) → φ (λ (z : X × Y) → q (pr₂ z))))
+ to-×-＝
+   (t (λ (p : X → 𝟚) → φ (λ ((x , y) : X × Y) → p x)))
+   (u (λ (q : Y → 𝟚) → φ (λ ((x , y) : X × Y) → q y)))
 
 Σ-is-totally-separated-if-index-type-is-discrete :
 
@@ -373,10 +380,11 @@ the following particular cases:
   → ((x : X) → is-totally-separated (Y x))
   → is-totally-separated (Σ Y)
 
-Σ-is-totally-separated-if-index-type-is-discrete X Y d t {a , b} {x , y} φ = to-Σ-＝ (r , s)
+Σ-is-totally-separated-if-index-type-is-discrete X Y d t {a , b} {x , y} φ = γ
  where
   r : a ＝ x
   r = discrete-types-are-totally-separated d (λ p → φ (λ z → p (pr₁ z)))
+
   s₂ : transport Y r b ＝₂ y
   s₂ q = g
    where
@@ -387,20 +395,16 @@ the following particular cases:
     p : Σ Y → 𝟚
     p (u , v) = f (d u x) v
 
-    i : p (a , b) ＝ q (transport Y r b)
-    i = ap (λ - → f - b) (discrete-inl d a x r)
-
-    j : p (a , b) ＝ p (x , y)
-    j = φ p
-
-    k : p (x , y) ＝ q (transport Y refl y)
-    k = ap (λ - → f - y) (discrete-inl d x x refl)
-
-    g : q (transport Y r b) ＝ q y
-    g = i ⁻¹ ∙ j ∙ k
+    g = q (transport Y r b)    ＝⟨ (ap (λ - → f - b) (discrete-inl d a x r))⁻¹ ⟩
+        p (a , b)              ＝⟨ φ p ⟩
+        p (x , y)              ＝⟨ ap (λ - → f - y) (discrete-inl d x x refl) ⟩
+        q (transport Y refl y) ∎
 
   s : transport Y r b ＝ y
   s = t x s₂
+
+  γ : (a , b) ＝ (x , y)
+  γ = to-Σ-＝ (r , s)
 
 \end{code}
 
@@ -453,13 +457,15 @@ The Cantor type ℕ → 𝟚 is totally separated:
    h x = t x (λ p → e(P x p))
 
 Cantor-is-totally-separated : funext 𝓤₀ 𝓤₀ → is-totally-separated (ℕ → 𝟚)
-Cantor-is-totally-separated fe = Π-is-totally-separated fe (λ n → 𝟚-is-totally-separated)
+Cantor-is-totally-separated fe =
+ Π-is-totally-separated fe (λ n → 𝟚-is-totally-separated)
 
 ℕ-is-totally-separated : is-totally-separated ℕ
 ℕ-is-totally-separated = discrete-types-are-totally-separated ℕ-is-discrete
 
 Baire-is-totally-separated : funext 𝓤₀ 𝓤₀ → is-totally-separated (ℕ → ℕ)
-Baire-is-totally-separated fe = Π-is-totally-separated fe (λ n → ℕ-is-totally-separated)
+Baire-is-totally-separated fe =
+ Π-is-totally-separated fe (λ n → ℕ-is-totally-separated)
 
 \end{code}
 
@@ -475,16 +481,19 @@ proper extension).
 
 module _ (fe : FunExt)  where
 
+ private
+  fe' : Fun-Ext
+  fe' {𝓤} {𝓥} = fe 𝓤 𝓥
+
  open import InjectiveTypes.Blackboard fe
 
- /-is-totally-separated : (fe : FunExt)
-                          {X : 𝓤 ̇ } {A : 𝓥 ̇ }
+ /-is-totally-separated : {X : 𝓤 ̇ } {A : 𝓥 ̇ }
                           (j : X → A)
                           (Y : X → 𝓦 ̇ )
                         → ((x : X) → is-totally-separated (Y x))
                         → (a : A) → is-totally-separated ((Y / j) a)
- /-is-totally-separated {𝓤} {𝓥} {𝓦} fe j Y t a = Π-is-totally-separated (fe (𝓤 ⊔ 𝓥) 𝓦)
-                                                    (λ (σ : fiber j a) → t (pr₁ σ))
+ /-is-totally-separated {𝓤} {𝓥} {𝓦} j Y t a =
+  Π-is-totally-separated fe' (λ (σ : fiber j a) → t (pr₁ σ))
 
 \end{code}
 
@@ -504,17 +513,25 @@ totally-separated-gives-totally-separated₂ : funext 𝓤 𝓤₀
                                            → {X : 𝓤 ̇ }
                                            → is-totally-separated X
                                            → is-totally-separated₂ X
-totally-separated-gives-totally-separated₂ fe {X} τ φ (x , p) (y , q) = to-Σ-＝ (t , r)
+totally-separated-gives-totally-separated₂ fe {X} τ φ (x , p) (y , q) = γ
   where
    s : eval X x ＝ eval X y
-   s = p ∙ q ⁻¹
+   s = eval X x ＝⟨ p ⟩
+       φ        ＝⟨ q ⁻¹ ⟩
+       eval X y ∎
 
    t : x ＝ y
    t = τ (happly s)
 
    r : transport (λ - → eval X - ＝ φ) t p ＝ q
    r = totally-separated-types-are-sets fe
-         ((X → 𝟚) → 𝟚) (Π-is-totally-separated fe (λ p → 𝟚-is-totally-separated)) _ q
+       ((X → 𝟚) → 𝟚)
+       (Π-is-totally-separated fe (λ p → 𝟚-is-totally-separated))
+       (transport (λ - → eval X - ＝ φ) t p)
+       q
+
+   γ : (x , p) ＝ (y , q)
+   γ = to-Σ-＝ (t , r)
 
 totally-separated₂-gives-totally-separated : funext 𝓤 𝓤₀
                                            → {X : 𝓤 ̇ }
@@ -536,17 +553,21 @@ totally-separated₂-gives-totally-separated fe {X} i {x} {y} e = ap pr₁ q
 
 \end{code}
 
- Now, if a type X is not (necessarily) totally separated, we can
- consider the image of the map eval X, and this gives the totally
- separated reflection, with the corestriction of eval X to its image
- as its reflector.
+Now, if a type X is not (necessarily) totally separated, we can
+consider the image of the map eval X, and this gives the totally
+separated reflection, with the corestriction of eval X to its image as
+its reflector.
 
 \begin{code}
 
-module TotallySeparatedReflection
+module totally-separated-reflection
          (fe : FunExt)
          (pt : propositional-truncations-exist)
  where
+
+ private
+  fe' : Fun-Ext
+  fe' {𝓤} {𝓥} = fe 𝓤 𝓥
 
  open PropositionalTruncation pt
  open import UF.ImageAndSurjection pt
@@ -567,7 +588,7 @@ We construct the reflection as the image of the evaluation map.
    f e p = e (λ (x' : 𝕋 X) → pr₁ x' p)
 
    g : (e : (q : 𝕋 X → 𝟚) → q (φ , s) ＝ q (γ , t)) → (φ , s) ＝ (γ , t)
-   g e = to-subtype-＝ (λ _ → ∥∥-is-prop) (dfunext (fe 𝓤 𝓤₀) (f e))
+   g e = to-subtype-＝ (λ _ → ∥∥-is-prop) (dfunext fe' (f e))
 
 \end{code}
 
@@ -585,9 +606,9 @@ the reflector.
 
  η-induction :  {X : 𝓤 ̇ } (P : 𝕋 X → 𝓦 ̇ )
              → ((x' : 𝕋 X) → is-prop (P x'))
-             → ((x : X) → P(η x))
+             → ((x : X) → P (η x))
              → (x' : 𝕋 X) → P x'
- η-induction {𝓤} {𝓦} {X} = surjection-induction η η-is-surjection
+ η-induction = surjection-induction η η-is-surjection
 
 \end{code}
 
@@ -598,54 +619,57 @@ rather than direct proofs (as in the proof of tight reflection below).
 
  totally-separated-reflection : {X : 𝓤 ̇ } {A : 𝓥 ̇ }
                               → is-totally-separated A
-                              → (f : X → A) → ∃! f' ꞉ (𝕋 X → A) , f' ∘ η ＝ f
+                              → (f : X → A)
+                              → ∃! f⁻ ꞉ (𝕋 X → A) , f⁻ ∘ η ＝ f
  totally-separated-reflection {𝓤} {𝓥} {X} {A} τ f = δ
   where
    A-is-set : is-set A
-   A-is-set = totally-separated-types-are-sets (fe 𝓥 𝓤₀) A τ
+   A-is-set = totally-separated-types-are-sets fe' A τ
 
    ie : (γ : (A → 𝟚) → 𝟚) → is-prop (Σ a ꞉ A , eval A a ＝ γ)
-   ie = totally-separated-gives-totally-separated₂ (fe 𝓥 𝓤₀) τ
+   ie = totally-separated-gives-totally-separated₂ fe' τ
 
    h : (φ : (X → 𝟚) → 𝟚) → (∃ x ꞉ X , eval X x ＝ φ)
-     → Σ a ꞉ A , eval A a ＝ (λ q → φ(q ∘ f))
+     → Σ a ꞉ A , eval A a ＝ (λ q → φ (q ∘ f))
    h φ = ∥∥-rec (ie γ) u
     where
      γ : (A → 𝟚) → 𝟚
      γ q = φ (q ∘ f)
 
      u : (Σ x ꞉ X , (λ p → p x) ＝ φ) → Σ a ꞉ A , eval A a ＝ γ
-     u (x , r) = f x , dfunext (fe 𝓥 𝓤₀) (λ q → happly r (q ∘ f))
+     u (x , r) = f x , dfunext fe' (λ q → happly r (q ∘ f))
 
    h' : (x' : 𝕋 X) → Σ a ꞉ A , eval A a ＝ (λ q → pr₁ x' (q ∘ f))
    h' (φ , s) = h φ s
 
-   f' : 𝕋 X → A
-   f' (φ , s) = pr₁ (h φ s)
+   f⁻ : 𝕋 X → A
+   f⁻ (φ , s) = pr₁ (h φ s)
 
-   b : (x' : 𝕋 X) (q : A → 𝟚) → q(f' x') ＝ pr₁ x' (q ∘ f)
+   b : (x' : 𝕋 X) (q : A → 𝟚) → q (f⁻ x') ＝ pr₁ x' (q ∘ f)
    b (φ , s) = happly (pr₂ (h φ s))
 
-   r : f' ∘ η ＝ f
-   r = dfunext (fe 𝓤 𝓥) (λ x → τ (b (η x)))
+   r : f⁻ ∘ η ＝ f
+   r = dfunext fe' (λ x → τ (b (η x)))
 
-   c : (σ : Σ f'' ꞉ (𝕋 X → A) , f'' ∘ η ＝ f) → (f' , r) ＝ σ
-   c (f'' , s) = to-Σ-＝ (t , v)
+   c : (σ : Σ f⁺ ꞉ (𝕋 X → A) , f⁺ ∘ η ＝ f) → (f⁻ , r) ＝ σ
+   c (f⁺ , s) = to-Σ-＝ (t , v)
     where
-     w : ∀ x → f'(η x) ＝ f''(η x)
-     w = happly (r ∙ s ⁻¹)
+     w : f⁻ ∘ η ∼ f⁺ ∘ η
+     w = happly (f⁻ ∘ η  ＝⟨ r ⟩
+                 f       ＝⟨ s ⁻¹ ⟩
+                 f⁺ ∘ η ∎ )
 
-     t : f' ＝ f''
-     t = dfunext (fe 𝓤 𝓥) (η-induction _ (λ _ → A-is-set) w)
+     t : f⁻ ＝ f⁺
+     t = dfunext fe' (η-induction _ (λ _ → A-is-set) w)
 
-     u : f'' ∘ η ＝ f
+     u : f⁺ ∘ η ＝ f
      u = transport (λ - → - ∘ η ＝ f) t r
 
      v : u ＝ s
-     v = Π-is-set (fe 𝓤 𝓥) (λ _ → A-is-set) u s
+     v = Π-is-set fe' (λ _ → A-is-set) u s
 
-   δ : ∃! f' ꞉ (𝕋 X → A) , f' ∘ η ＝ f
-   δ = (f' , r) , c
+   δ : ∃! f⁻ ꞉ (𝕋 X → A) , f⁻ ∘ η ＝ f
+   δ = (f⁻ , r) , c
 
 \end{code}
 
@@ -656,12 +680,15 @@ We package the above as follows for convenient use elsewhere
 
  totally-separated-reflection' : {X : 𝓤 ̇ } {A : 𝓥 ̇ }
                                → is-totally-separated A
-                               → is-equiv (λ (f' : 𝕋 X → A) → f' ∘ η)
- totally-separated-reflection' τ = vv-equivs-are-equivs _ (totally-separated-reflection τ)
+                               → is-equiv (λ (f⁻ : 𝕋 X → A) → f⁻ ∘ η)
+ totally-separated-reflection' τ =
+  vv-equivs-are-equivs _ (totally-separated-reflection τ)
 
- totally-separated-reflection'' : {X : 𝓤 ̇ } {A : 𝓥 ̇ } → is-totally-separated A
+ totally-separated-reflection'' : {X : 𝓤 ̇ } {A : 𝓥 ̇ }
+                                → is-totally-separated A
                                 → (𝕋 X → A) ≃ (X → A)
- totally-separated-reflection'' τ = (λ f' → f' ∘ η) , totally-separated-reflection' τ
+ totally-separated-reflection'' τ = (λ f⁻ → f⁻ ∘ η) ,
+                                    totally-separated-reflection' τ
 
 \end{code}
 
@@ -675,7 +702,8 @@ open neighbourhoods are equal).
 \begin{code}
 
 𝟚-sober : 𝓦 ̇ → 𝓤 ⁺ ⊔ 𝓦 ̇
-𝟚-sober {𝓦} {𝓤} A = 𝟚-separated A × ((X : 𝓤 ̇ ) (e : A → X) → is-equiv(dual 𝟚 e) → is-equiv e)
+𝟚-sober {𝓦} {𝓤} A = 𝟚-separated A
+                   × ((X : 𝓤 ̇ ) (e : A → X) → is-equiv (dual 𝟚 e) → is-equiv e)
 
 \end{code}
 
@@ -706,7 +734,14 @@ for the moment.
 
 \begin{code}
 
-module Apartness (pt : propositional-truncations-exist) where
+module Apartness
+        (fe : FunExt)
+        (pt : propositional-truncations-exist)
+       where
+
+ private
+  fe' : Fun-Ext
+  fe' {𝓤} {𝓥} = fe 𝓤 𝓥
 
  open PropositionalTruncation pt
  open import UF.ImageAndSurjection pt
@@ -719,7 +754,30 @@ module Apartness (pt : propositional-truncations-exist) where
  is-symmetric    _♯_ = ∀ x y → x ♯ y → y ♯ x
  is-cotransitive _♯_ = ∀ x y z → x ♯ y → x ♯ z ∨ y ♯ z
  is-tight        _♯_ = ∀ x y → ¬ (x ♯ y) → x ＝ y
- is-apartness    _♯_ = is-prop-valued _♯_ × is-irreflexive _♯_ × is-symmetric _♯_ × is-cotransitive _♯_
+ is-apartness    _♯_ = is-prop-valued _♯_
+                     × is-irreflexive _♯_
+                     × is-symmetric _♯_
+                     × is-cotransitive _♯_
+
+ apartness-is-prop-valued : {X : 𝓤 ̇ } (_♯_ : X → X → 𝓥 ̇ )
+                          → is-apartness _♯_
+                          → is-prop-valued _♯_
+ apartness-is-prop-valued _♯_ (p , i , s , c) = p
+
+ apartness-is-irreflexive : {X : 𝓤 ̇ } (_♯_ : X → X → 𝓥 ̇ )
+                          → is-apartness _♯_
+                          → is-irreflexive _♯_
+ apartness-is-irreflexive _♯_ (p , i , s , c) = i
+
+ apartness-is-symmetric : {X : 𝓤 ̇ } (_♯_ : X → X → 𝓥 ̇ )
+                          → is-apartness _♯_
+                          → is-symmetric _♯_
+ apartness-is-symmetric _♯_ (p , i , s , c) = s
+
+ apartness-is-cotransitive : {X : 𝓤 ̇ } (_♯_ : X → X → 𝓥 ̇ )
+                          → is-apartness _♯_
+                          → is-cotransitive _♯_
+ apartness-is-cotransitive _♯_ (p , i , s , c) = c
 
 \end{code}
 
@@ -727,39 +785,6 @@ We now show that a type is totally separated iff a particular
 apartness relation _♯₂ is tight:
 
 \begin{code}
-
--- Test
-
- _♯Ω_ : Ω 𝓤 → Ω 𝓤 → 𝓤 ̇
- (P , i) ♯Ω (Q , j) = (P × ¬ Q) + (¬ P × Q)
-
- ♯Ω-irrefl : is-irreflexive (_♯Ω_ {𝓤})
- ♯Ω-irrefl (P , i) (inl (p , nq)) = nq p
- ♯Ω-irrefl (P , i) (inr (np , q)) = np q
-
- ♯Ω-sym : is-symmetric (_♯Ω_ {𝓤})
- ♯Ω-sym (P , i) (Q , j) (inl (p , nq)) = inr (nq , p)
- ♯Ω-sym (P , i) (Q , j) (inr (np , q)) = inl (q , np)
-
-{-
- ♯Ω-cotran : is-cotransitive (_♯Ω_ {𝓤})
- ♯Ω-cotran (P , i) (Q , j) (R , k) (inl (p , nq)) = ∣ inl (inl (p , {!!})) ∣
- ♯Ω-cotran (P , i) (Q , j) (R , k) (inr (np , q)) = {!!}
--}
-
- ♯Ω-cotran-taboo : is-cotransitive (_♯Ω_ {𝓤})
-                 → (p : Ω 𝓤) → p holds ∨ ¬ (p holds)
- ♯Ω-cotran-taboo c p = ∥∥-functor II I
-  where
-   I : (⊥Ω ♯Ω p) ∨ (⊤Ω ♯Ω p)
-   I = c ⊥Ω ⊤Ω p (inr (𝟘-elim , ⋆))
-
-   II : (⊥Ω ♯Ω p) + (⊤Ω ♯Ω p) → (p holds) + ¬ (p holds)
-   II (inl (inr (a , b))) = inl b
-   II (inr (inl (a , b))) = inr b
-   II (inr (inr (a , b))) = inl b
-
--- End of test
 
  _♯₂_ : {X : 𝓤 ̇ } → X → X → 𝓤 ̇
  x ♯₂ y = ∃ p ꞉ (type-of x → 𝟚), p x ≠ p y
@@ -786,7 +811,7 @@ apartness relation _♯₂ is tight:
    d x y z = ∥∥-functor g
     where
      g : (Σ p ꞉ (X → 𝟚) , p x ≠ p y) → (x ♯₂ z) + (y ♯₂ z)
-     g (p , u) = h (discrete-is-cotransitive 𝟚-is-discrete {p x} {p y} {p z} u)
+     g (p , u) = h (discrete-types-are-cotransitive 𝟚-is-discrete {p x} {p y} {p z} u)
       where
        h : (p x ≠ p z) + (p z ≠ p y) → (x ♯₂ z) + (y ♯₂ z)
        h (inl u) = inl ∣ p , u ∣
@@ -819,8 +844,41 @@ apartness relation _♯₂ is tight:
 
 \end{code}
 
- 12 Feb 2018. This was prompted by the discussion
- https://nforum.ncatlab.org/discussion/8282/points-of-the-localic-quotient-with-respect-to-an-apartness-relation/
+ I don't think there is a tight apartness relation on Ω without
+ constructive taboos. The natural apartness relation seems to be the
+ following, but it isn't contrasitive unless excluded middle holds.
+
+\begin{code}
+
+ _♯Ω_ : Ω 𝓤 → Ω 𝓤 → 𝓤 ̇
+ (P , i) ♯Ω (Q , j) = (P × ¬ Q) + (¬ P × Q)
+
+ ♯Ω-irrefl : is-irreflexive (_♯Ω_ {𝓤})
+ ♯Ω-irrefl (P , i) (inl (p , nq)) = nq p
+ ♯Ω-irrefl (P , i) (inr (np , q)) = np q
+
+ ♯Ω-sym : is-symmetric (_♯Ω_ {𝓤})
+ ♯Ω-sym (P , i) (Q , j) (inl (p , nq)) = inr (nq , p)
+ ♯Ω-sym (P , i) (Q , j) (inr (np , q)) = inl (q , np)
+
+ ♯Ω-cotran-taboo : is-cotransitive (_♯Ω_ {𝓤})
+                 → (p : Ω 𝓤) → p holds ∨ ¬ (p holds)
+ ♯Ω-cotran-taboo c p = ∥∥-functor II I
+  where
+   I : (⊥Ω ♯Ω p) ∨ (⊤Ω ♯Ω p)
+   I = c ⊥Ω ⊤Ω p (inr (𝟘-elim , ⋆))
+
+   II : (⊥Ω ♯Ω p) + (⊤Ω ♯Ω p) → (p holds) + ¬ (p holds)
+   II (inl (inr (a , b))) = inl b
+   II (inr (inl (a , b))) = inr b
+   II (inr (inr (a , b))) = inl b
+
+\end{code}
+
+
+ 12 Feb 2018. The following was prompted by the discussion
+
+https://nforum.ncatlab.org/discussion/8282/points-of-the-localic-quotient-with-respect-to-an-apartness-relation/
 
  But is clearly related to the above characterization of total
  separatedness.
@@ -920,7 +978,8 @@ apartness relation _♯₂ is tight:
 
  not-not-equal-not-apart' : {X : 𝓤 ̇ } (x y : X) (_♯_ : X → X → 𝓥 ̇ )
                           → is-irreflexive _♯_
-                          → ¬¬ (x ＝ y) → ¬ (x ♯ y)
+                          → ¬¬ (x ＝ y)
+                          → ¬ (x ♯ y)
  not-not-equal-not-apart' x y _♯_ i = contrapositive f
   where
    f : x ♯ y → ¬ (x ＝ y)
@@ -945,8 +1004,10 @@ apartness relation _♯₂ is tight:
 
  not-not-equal-not-apart : {X : 𝓤 ̇ } (x y : X) (_♯_ : X → X → 𝓥 ̇ )
                          → is-apartness _♯_
-                         → ¬¬ (x ＝ y) → ¬ (x ♯ y)
- not-not-equal-not-apart x y _♯_ (_ , i , _ , _) = not-not-equal-not-apart' x y _♯_ i
+                         → ¬¬ (x ＝ y)
+                         → ¬ (x ♯ y)
+ not-not-equal-not-apart x y _♯_ (_ , i , _ , _) =
+  not-not-equal-not-apart' x y _♯_ i
 
  tight-is-¬¬-separated : {X : 𝓤 ̇ } (_♯_ : X → X → 𝓥 ̇ )
                        → is-apartness _♯_
@@ -974,7 +1035,8 @@ apartness relation _♯₂ is tight:
                   → is-¬¬-separated X
  tight-separated' {𝓤} fe {X} = ∥∥-rec (being-¬¬-separated-is-prop fe) f
    where
-    f : (Σ _♯_ ꞉ (X → X → 𝓤 ̇ ), is-apartness _♯_ × is-tight _♯_) → is-¬¬-separated X
+    f : (Σ _♯_ ꞉ (X → X → 𝓤 ̇ ), is-apartness _♯_ × is-tight _♯_)
+      → is-¬¬-separated X
     f (_♯_ , a , t) = tight-is-¬¬-separated _♯_ a t
 
  tight-is-set'' : funext 𝓤 𝓤
@@ -996,14 +1058,25 @@ apartness relation _♯₂ is tight:
 
  is-strongly-extensional : ∀ {𝓣} {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                          → (X → X → 𝓦 ̇ ) → (Y → Y → 𝓣 ̇ ) → (X → Y) → 𝓤 ⊔ 𝓦 ⊔ 𝓣 ̇
- is-strongly-extensional _♯_ _♯'_ f = ∀ {x x'} → f x ♯' f x' → x ♯ x'
+ is-strongly-extensional _♯_ _♯'_ f = ∀ x x' → f x ♯' f x' → x ♯ x'
+
+ private
+  is-se = is-strongly-extensional
+
+ being-strongly-extensional-is-prop : ∀ {𝓣} {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                                    → (_♯_ : X → X → 𝓦 ̇ )
+                                    → (_♯'_ : Y → Y → 𝓣 ̇ )
+                                    → is-prop-valued _♯_
+                                    → (f : X → Y)
+                                    → is-prop (is-strongly-extensional _♯_ _♯'_ f)
+ being-strongly-extensional-is-prop _♯_ _♯'_ ♯p f =
+  Π₃-is-prop  fe' (λ x x' a → ♯p x  x')
 
  preserves : ∀ {𝓣} {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
            → (X → X → 𝓦 ̇ ) → (Y → Y → 𝓣 ̇ ) → (X → Y) → 𝓤 ⊔ 𝓦 ⊔ 𝓣 ̇
  preserves R S f = ∀ {x x'} → R x x' → S (f x) (f x')
 
- module TightReflection
-          (fe : FunExt)
+ module tight-reflection
           (pe : propext 𝓥)
           (X : 𝓤 ̇ )
           (_♯_ : X → X → 𝓥 ̇ )
@@ -1024,7 +1097,7 @@ apartness relation _♯₂ is tight:
 
 \end{code}
 
-  For certain purposes we need the apartness axioms packed in to a
+  For certain purposes we need the apartness axioms packed into a
   single axiom.
 
 \begin{code}
@@ -1056,7 +1129,7 @@ apartness relation _♯₂ is tight:
 \begin{code}
 
   α-lemma : (x y : X) → x ~ y → α x ＝ α y
-  α-lemma x y na = dfunext (fe 𝓤 (𝓥 ⁺)) h
+  α-lemma x y na = dfunext fe' h
    where
     f : (z : X) → x ♯ z ⇔ y ♯ z
     f = not-apart-have-same-apart x y _♯_ ♯a na
@@ -1065,7 +1138,7 @@ apartness relation _♯₂ is tight:
     g z = pe (♯p x z) (♯p y z) (pr₁ (f z)) (pr₂ (f z))
 
     h : (z : X) → α x z ＝ α y z
-    h z = to-Σ-＝ (g z , being-prop-is-prop (fe 𝓥 𝓥) _ _)
+    h z = to-subtype-＝ (λ _ → being-prop-is-prop fe') (g z)
 
 \end{code}
 
@@ -1088,7 +1161,7 @@ apartness on it.
 
   X'-is-set : is-set X'
   X'-is-set = subsets-of-sets-are-sets (X → Ω 𝓥) _
-                (powersets-are-sets'' (fe 𝓤 (𝓥 ⁺)) (fe 𝓥 𝓥) pe) ∥∥-is-prop
+               (powersets-are-sets'' fe' fe' pe) ∥∥-is-prop
 
   η : X → X'
   η = corestriction α
@@ -1130,8 +1203,8 @@ apartness on it.
   η-preserves-apartness : preserves _♯_ _♯'_ η
   η-preserves-apartness {x} {y} a = ∣ x , y , a , refl , refl ∣
 
-  η-is-strongly-extensional : is-strongly-extensional _♯_ _♯'_ η
-  η-is-strongly-extensional {x} {y} = ∥∥-rec (♯p x y) g
+  η-is-se : is-se _♯_ _♯'_ η
+  η-is-se x y = ∥∥-rec (♯p x y) g
    where
     g : (Σ x' ꞉ X , Σ y' ꞉ X , (x' ♯ y') × (α x' ＝ α x) × (α y' ＝ α y))
       → x ♯ y
@@ -1147,14 +1220,9 @@ apartness on it.
 
   Of course, we must check that _♯'_ is indeed an apartness
   relation. We do this by η-induction. These proofs by induction need
-  routine proofs that some things are propositions. We include the
-  following abbreviation `fuv` to avoid some long lines in such
-  proofs.
+  routine proofs that some things are propositions.
 
 \begin{code}
-
-  fuv : funext (𝓤 ⊔ 𝓥 ⁺) (𝓤 ⊔ 𝓥 ⁺)
-  fuv = fe (𝓤 ⊔ 𝓥 ⁺) (𝓤 ⊔ 𝓥 ⁺)
 
   ♯'p : is-prop-valued _♯'_
   ♯'p _ _ = ∥∥-is-prop
@@ -1163,26 +1231,24 @@ apartness on it.
   ♯'i = by-induction
    where
     induction-step : ∀ x → ¬ (η x ♯' η x)
-    induction-step x a = ♯i x (η-is-strongly-extensional a)
+    induction-step x a = ♯i x (η-is-se x x a)
 
-    by-induction : _
     by-induction = η-induction (λ x' → ¬ (x' ♯' x'))
-                      (λ _ → Π-is-prop (fe (𝓤 ⊔ 𝓥 ⁺) 𝓤₀) (λ _ → 𝟘-is-prop))
-                      induction-step
+                    (λ _ → Π-is-prop fe' (λ _ → 𝟘-is-prop))
+                    induction-step
 
   ♯'s : is-symmetric _♯'_
   ♯'s = by-nested-induction
    where
     induction-step : ∀ x y → η x ♯' η y → η y ♯' η x
-    induction-step x y a = η-preserves-apartness(♯s x y (η-is-strongly-extensional a))
+    induction-step x y a = η-preserves-apartness
+                            (♯s x y (η-is-se x y a))
 
-    by-nested-induction : _
     by-nested-induction =
       η-induction (λ x' → ∀ y' → x' ♯' y' → y' ♯' x')
-       (λ x' → Π-is-prop fuv
-                (λ y' → Π-is-prop fuv (λ _ → ♯'p y' x')))
+       (λ x' → Π₂-is-prop fe' (λ y' _ → ♯'p y' x'))
        (λ x → η-induction (λ y' → η x ♯' y' → y' ♯' η x)
-                (λ y' → Π-is-prop fuv (λ _ → ♯'p y' (η x)))
+                (λ y' → Π-is-prop fe' (λ _ → ♯'p y' (η x)))
                 (induction-step x))
 
   ♯'c : is-cotransitive _♯'_
@@ -1192,7 +1258,7 @@ apartness on it.
     induction-step x y z a = ∥∥-functor c b
      where
       a' : x ♯ y
-      a' = η-is-strongly-extensional a
+      a' = η-is-se x y a
 
       b : x ♯ z ∨ y ♯ z
       b = ♯c x y z a'
@@ -1201,17 +1267,13 @@ apartness on it.
       c (inl e) = inl (η-preserves-apartness e)
       c (inr f) = inr (η-preserves-apartness f)
 
-    by-nested-induction : _
     by-nested-induction =
       η-induction (λ x' → ∀ y' z' → x' ♯' y' → (x' ♯' z') ∨ (y' ♯' z'))
-       (λ _ → Π-is-prop fuv
-                (λ _ → Π-is-prop fuv
-                         (λ _ → Π-is-prop fuv (λ _ → ∥∥-is-prop))))
+       (λ _ → Π₃-is-prop fe' (λ _ _ _ → ∥∥-is-prop))
        (λ x → η-induction (λ y' → ∀ z' → η x ♯' y' → (η x ♯' z') ∨ (y' ♯' z'))
-                (λ _ → Π-is-prop fuv
-                         (λ _ → Π-is-prop fuv (λ _ → ∥∥-is-prop)))
+                (λ _ → Π₂-is-prop fe' (λ _ _ → ∥∥-is-prop))
                 (λ y → η-induction (λ z' → η x ♯' η y → (η x ♯' z') ∨ (η y ♯' z'))
-                         (λ _ → Π-is-prop fuv (λ _ → ∥∥-is-prop))
+                         (λ _ → Π-is-prop fe' (λ _ → ∥∥-is-prop))
                          (induction-step x y)))
 
   ♯'a : is-apartness _♯'_
@@ -1231,17 +1293,17 @@ apartness on it.
     h : (Σ x ꞉ X , α x ＝ u) → (Σ y ꞉ X , α y ＝ v) → (u , e) ＝ (v , f)
     h (x , p) (y , q) = to-Σ-＝ (t , ∥∥-is-prop _ _)
      where
-      remark : (∃ x ꞉ X , Σ y ꞉ X , (x ♯ y) × (α x ＝ u) × (α y ＝ v)) → 𝟘
+      remark : ¬∃ x ꞉ X , Σ y ꞉ X , (x ♯ y) × (α x ＝ u) × (α y ＝ v)
       remark = n
 
-      r : x ♯ y → 𝟘
+      r : ¬ (x ♯ y)
       r a = n ∣ x , y , a , p , q ∣
 
-      s : α x ＝ α y
-      s = α-lemma x y r
-
       t : u ＝ v
-      t = p ⁻¹ ∙ s ∙ q
+      t = u   ＝⟨ p ⁻¹ ⟩
+          α x ＝⟨ α-lemma x y r ⟩
+          α y ＝⟨ q ⟩
+          v   ∎
 
 \end{code}
 
@@ -1251,11 +1313,15 @@ apartness on it.
 
 \begin{code}
 
-  η-equiv-equal : {x y : X} → x ~ y → η x ＝ η y
-  η-equiv-equal = ♯'t _ _ ∘ contrapositive η-is-strongly-extensional
+  η-equiv-gives-equal : {x y : X} → x ~ y → η x ＝ η y
+  η-equiv-gives-equal = ♯'t _ _ ∘ contrapositive (η-is-se _ _)
 
-  η-equal-equiv : {x y : X} → η x ＝ η y → x ~ y
-  η-equal-equiv {x} {y} p a = ♯'i (η y) (transport (λ - → - ♯' η y) p (η-preserves-apartness a))
+  η-equal-gives-equiv : {x y : X} → η x ＝ η y → x ~ y
+  η-equal-gives-equiv {x} {y} p a = ♯'i
+                                     (η y)
+                                     (transport (λ - → - ♯' η y)
+                                     p
+                                     (η-preserves-apartness a))
 
 \end{code}
 
@@ -1268,75 +1334,147 @@ apartness on it.
 
 \begin{code}
 
-  tight-reflection : (A : 𝓦 ̇ ) (_♯ᴬ_ : A → A → 𝓣 ̇ )
-                   → is-apartness _♯ᴬ_
-                   → is-tight _♯ᴬ_
-                   → (f : X → A)
-                   → is-strongly-extensional _♯_ _♯ᴬ_ f
-                   → ∃! f' ꞉ (X' → A) , f' ∘ η ＝ f
-  tight-reflection {𝓦} {𝓣} A  _♯ᴬ_  ♯ᴬa  ♯ᴬt  f  se = δ
-   where
+  module _
+          {𝓦 𝓣 : Universe}
+          (A : 𝓦 ̇ )
+          (_♯ᴬ_ : A → A → 𝓣 ̇ )
+          (♯ᴬa : is-apartness _♯ᴬ_)
+          (♯ᴬt : is-tight _♯ᴬ_)
+          (f : X → A)
+          (f-is-se : is-se _♯_ _♯ᴬ_ f)
+         where
+
+   private
     A-is-set : is-set A
-    A-is-set = tight-is-set _♯ᴬ_ (fe 𝓦 𝓤₀) ♯ᴬa ♯ᴬt
+    A-is-set = tight-is-set _♯ᴬ_ fe' ♯ᴬa ♯ᴬt
 
-    i : {x y : X} → x ~ y → f x ＝ f y
-    i = ♯ᴬt _ _ ∘ contrapositive se
+    f-transforms-~-into-= : {x y : X} → x ~ y → f x ＝ f y
+    f-transforms-~-into-= = ♯ᴬt _ _ ∘ contrapositive (f-is-se _ _)
 
-    φ : (x' : X') → is-prop (Σ a ꞉ A , ∃ x ꞉ X , (η x ＝ x') × (f x ＝ a))
-    φ = η-induction _ γ induction-step
+   tr-lemma : (x' : X') → is-prop (Σ a ꞉ A , ∃ x ꞉ X , (η x ＝ x') × (f x ＝ a))
+   tr-lemma = η-induction _ p induction-step
+     where
+      p : (x' : X')
+        → is-prop (is-prop (Σ a ꞉ A , ∃ x ꞉ X , (η x ＝ x') × (f x ＝ a)))
+      p x' = being-prop-is-prop fe'
+
+      induction-step : (y : X)
+                     → is-prop (Σ a ꞉ A , ∃ x ꞉ X , (η x ＝ η y) × (f x ＝ a))
+      induction-step x (a , d) (b , e) = to-Σ-＝ (IV , ∥∥-is-prop _ _)
+       where
+        I : (Σ x' ꞉ X , (η x' ＝ η x) × (f x' ＝ a))
+          → (Σ y' ꞉ X , (η y' ＝ η x) × (f y' ＝ b))
+          → a ＝ b
+        I (x' , r , s) (y' , t , u) =
+         a    ＝⟨ s ⁻¹ ⟩
+         f x' ＝⟨ f-transforms-~-into-= III ⟩
+         f y' ＝⟨ u ⟩
+         b    ∎
+          where
+            II : η x' ＝ η y'
+            II = η x' ＝⟨ r ⟩
+                 η x  ＝⟨ t ⁻¹ ⟩
+                 η y' ∎
+
+            III : x' ~ y'
+            III = η-equal-gives-equiv II
+
+        IV : a ＝ b
+        IV = ∥∥-rec A-is-set (λ σ → ∥∥-rec A-is-set (I σ) e) d
+
+   tr-construction : (x' : X') → Σ a ꞉ A , ∃ x ꞉ X , (η x ＝ x') × (f x ＝ a)
+   tr-construction = η-induction _ tr-lemma induction-step
+    where
+     induction-step : (y : X) → Σ a ꞉ A , ∃ x ꞉ X , (η x ＝ η y) × (f x ＝ a)
+     induction-step x = f x , ∣ x , refl , refl ∣
+
+   mediating-map : X' → A
+   mediating-map x' = pr₁ (tr-construction x')
+
+   private
+    f⁻ = mediating-map
+
+   mediating-map-property : (y : X) → ∃ x ꞉ X , (η x ＝ η y) × (f x ＝ f⁻ (η y))
+   mediating-map-property y = pr₂ (tr-construction (η y))
+
+   mediating-triangle : f⁻ ∘ η ＝ f
+   mediating-triangle = dfunext fe' II
+    where
+     I : (y : X) → (Σ x ꞉ X , (η x ＝ η y) × (f x ＝ f⁻ (η y))) → f⁻ (η y) ＝ f y
+     I y (x , p , q) =
+      f⁻ (η y) ＝⟨ q ⁻¹ ⟩
+      f x      ＝⟨ f-transforms-~-into-= (η-equal-gives-equiv p) ⟩
+      f y      ∎
+
+     II : (y : X) → f⁻ (η y) ＝ f y
+     II y = ∥∥-rec A-is-set (I y) (mediating-map-property y)
+
+   private
+    c' : is-central
+           (Σ f⁻ ꞉ (X' → A) , (f⁻ ∘ η ＝ f))
+           (f⁻ , mediating-triangle)
+    c' (f⁺ , f⁺-triangle) = IV
       where
-       induction-step : (y : X) → is-prop (Σ a ꞉ A , ∃ x ꞉ X , (η x ＝ η y) × (f x ＝ a))
-       induction-step x (a , d) (b , e) = to-Σ-＝ (p , ∥∥-is-prop _ _)
-        where
-         h : (Σ x' ꞉ X , (η x' ＝ η x) × (f x' ＝ a))
-           → (Σ y' ꞉ X , (η y' ＝ η x) × (f y' ＝ b))
-           → a ＝ b
-         h (x' , r , s) (y' , t , u) = s ⁻¹ ∙ i (η-equal-equiv (r ∙ t ⁻¹)) ∙ u
+       I : f⁻ ∘ η ∼ f⁺ ∘ η
+       I = happly (f⁻ ∘ η  ＝⟨ mediating-triangle ⟩
+                   f       ＝⟨ f⁺-triangle ⁻¹ ⟩
+                   f⁺ ∘ η  ∎)
 
-         p : a ＝ b
-         p = ∥∥-rec A-is-set (λ σ → ∥∥-rec A-is-set (h σ) e) d
+       II : f⁻ ＝ f⁺
+       II = dfunext fe' (η-induction _ (λ _ → A-is-set) I)
 
-       γ : (x' : X') → is-prop (is-prop (Σ a ꞉ A , ∃ x ꞉ X , (η x ＝ x') × (f x ＝ a)))
-       γ x' = being-prop-is-prop (fe (𝓤 ⊔ (𝓥 ⁺) ⊔ 𝓦) (𝓤 ⊔ (𝓥 ⁺) ⊔ 𝓦))
+       triangle : f⁺ ∘ η ＝ f
+       triangle = transport (λ - → - ∘ η ＝ f) II mediating-triangle
 
-    k : (x' : X') → Σ a ꞉ A , ∃ x ꞉ X , (η x ＝ x') × (f x ＝ a)
-    k = η-induction _ φ induction-step
-     where
-      induction-step : (y : X) → Σ a ꞉ A , ∃ x ꞉ X , (η x ＝ η y) × (f x ＝ a)
-      induction-step x = f x , ∣ x , refl , refl ∣
+       III : triangle ＝ f⁺-triangle
+       III = Π-is-set fe' (λ _ → A-is-set) triangle f⁺-triangle
 
-    f' : X' → A
-    f' x' = pr₁(k x')
+       IV : (f⁻ , mediating-triangle) ＝ (f⁺ , f⁺-triangle)
+       IV = to-subtype-＝ (λ h → Π-is-set fe' (λ _ → A-is-set)) II
 
-    r : f' ∘ η ＝ f
-    r = dfunext (fe 𝓤 𝓦) h
-     where
-      g : (y : X) → ∃ x ꞉ X , (η x ＝ η y) × (f x ＝ f' (η y))
-      g y = pr₂(k(η y))
+   pre-tight-reflection : ∃! f⁻ ꞉ (X' → A) , (f⁻ ∘ η ＝ f)
+   pre-tight-reflection = (f⁻ , mediating-triangle) , c'
 
-      j : (y : X) → (Σ x ꞉ X , (η x ＝ η y) × (f x ＝ f' (η y))) → f'(η y) ＝ f y
-      j y (x , p , q) = q ⁻¹ ∙ i (η-equal-equiv p)
+   mediating-map-is-se : is-strongly-extensional _♯'_ _♯ᴬ_ f⁻
+   mediating-map-is-se = V
+    where
+     I : (x y : X) → f⁻ (η x) ♯ᴬ f⁻ (η y) → η x ♯' η y
+     I x y a = IV
+      where
+       II : f x ♯ᴬ f y
+       II = transport₂ (_♯ᴬ_)
+             (happly mediating-triangle x)
+             (happly mediating-triangle y) a
 
-      h : (y : X) → f'(η y) ＝ f y
-      h y = ∥∥-rec A-is-set (j y) (g y)
+       III : x ♯ y
+       III = f-is-se x y II
 
-    c : (σ : Σ f'' ꞉ (X' → A), f'' ∘ η ＝ f) → (f' , r) ＝ σ
-    c (f'' , s) = to-Σ-＝ (t , v)
-     where
-      w : ∀ x → f'(η x) ＝ f''(η x)
-      w = happly (r ∙ s ⁻¹)
+       IV : η x ♯' η y
+       IV = η-preserves-apartness III
 
-      t : f' ＝ f''
-      t = dfunext (fe (𝓤 ⊔ 𝓥 ⁺) 𝓦) (η-induction _ (λ _ → A-is-set) w)
+     V : ∀ x' y' → f⁻ x' ♯ᴬ f⁻ y' → x' ♯' y'
+     V = η-induction (λ x' → (y' : X') → f⁻ x' ♯ᴬ f⁻ y' → x' ♯' y')
+           (λ x' → Π₂-is-prop fe' (λ y' _ → ♯'p x' y'))
+           (λ x → η-induction (λ y' → f⁻ (η x) ♯ᴬ f⁻ y' → η x ♯' y')
+                   (λ y' → Π-is-prop fe' (λ _ → ♯'p (η x) y'))
+                   (I x))
 
-      u : f'' ∘ η ＝ f
-      u = transport (λ - → - ∘ η ＝ f) t r
+   private
+    c : is-central
+         (Σ f⁻ ꞉ (X' → A) , (is-se _♯'_ _♯ᴬ_ f⁻) × (f⁻ ∘ η ＝ f))
+         (f⁻ , mediating-map-is-se , mediating-triangle)
+    c (f⁺ , f⁺-is-se , f⁺-triangle) =
+     to-subtype-＝
+       (λ h → ×-is-prop
+                (being-strongly-extensional-is-prop _♯'_ _♯ᴬ_ ♯'p h)
+                (Π-is-set fe' (λ _ → A-is-set)))
+       (ap pr₁ (c' (f⁺ , f⁺-triangle)))
 
-      v : u ＝ s
-      v = Π-is-set (fe 𝓤 𝓦) (λ _ → A-is-set) u s
 
-    δ : ∃! f' ꞉ (X' → A), f' ∘ η ＝ f
-    δ = (f' , r) , c
+   tight-reflection : ∃! f⁻ ꞉ (X' → A)
+                            , (is-strongly-extensional _♯'_ _♯ᴬ_ f⁻)
+                            × (f⁻ ∘ η ＝ f)
+   tight-reflection = (f⁻ , mediating-map-is-se , mediating-triangle) , c
 
 \end{code}
 
@@ -1361,25 +1499,25 @@ apartness on it.
   tight-η-equiv-abstract-nonsense ♯t = η , (θ , happly p₄) , (θ , happly p₀)
    where
     u : ∃! θ ꞉ (X' → X), θ ∘ η ＝ id
-    u = tight-reflection X _♯_ ♯a ♯t id id
+    u = pre-tight-reflection X _♯_ ♯a ♯t id (λ _ _ a → a)
 
     v : ∃! ζ ꞉ (X' → X'), ζ ∘ η ＝ η
-    v = tight-reflection X' _♯'_ ♯'a ♯'t η η-is-strongly-extensional
+    v = pre-tight-reflection X' _♯'_ ♯'a ♯'t η η-is-se
 
     θ : X' → X
-    θ = pr₁(pr₁ u)
+    θ = ∃!-witness u
 
     ζ : X' → X'
-    ζ = pr₁(pr₁ v)
+    ζ = ∃!-witness v
 
     φ : (ζ' : X' → X') → ζ' ∘ η ＝ η → ζ ＝ ζ'
-    φ ζ' p = ap pr₁ (pr₂ v (ζ' , p))
+    φ ζ' p = ap pr₁ (∃!-uniqueness' v (ζ' , p))
 
     p₀ : θ ∘ η ＝ id
-    p₀ = pr₂(pr₁ u)
+    p₀ = ∃!-is-witness u
 
     p₁ : η ∘ θ ∘ η ＝ η
-    p₁ = ap (_∘_ η) p₀
+    p₁ = ap (η ∘_) p₀
 
     p₂ : ζ ＝ η ∘ θ
     p₂ = φ (η ∘ θ) p₁
@@ -1387,23 +1525,24 @@ apartness on it.
     p₃ : ζ ＝ id
     p₃ = φ id refl
 
-    p₄ : η ∘ θ ＝ id
-    p₄ = p₂ ⁻¹ ∙ p₃
+    p₄ = η ∘ θ ＝⟨ p₂ ⁻¹ ⟩
+         ζ     ＝⟨ p₃ ⟩
+         id    ∎
 
   tight-η-equiv-direct : is-tight _♯_ → X ≃ X'
   tight-η-equiv-direct t = (η , vv-equivs-are-equivs η cm)
    where
     lc : left-cancellable η
-    lc {x} {y} p = i h
+    lc {x} {y} p = j h
      where
-      i : ¬ (η x ♯' η y) → x ＝ y
-      i = t x y ∘ contrapositive (η-preserves-apartness {x} {y})
+      j : ¬ (η x ♯' η y) → x ＝ y
+      j = t x y ∘ contrapositive (η-preserves-apartness {x} {y})
 
       h : ¬ (η x ♯' η y)
       h a = ♯'i (η y) (transport (λ - → - ♯' η y) p a)
 
     e : is-embedding η
-    e =  lc-maps-into-sets-are-embeddings η lc X'-is-set
+    e = lc-maps-into-sets-are-embeddings η lc X'-is-set
 
     cm : is-vv-equiv η
     cm = surjective-embeddings-are-vv-equivs η e η-is-surjection

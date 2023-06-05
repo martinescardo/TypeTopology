@@ -10,7 +10,7 @@ UniMath" by Bezem, Buchholtz, Grayson and Shulman
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 open import Naturals.UniversalProperty
 
@@ -134,7 +134,7 @@ module Circle.Integers-SymmetricInduction where
     where
      γ : (hₒ : Π (A ∘ ⌜𝟎⌝)) (hₙ : Π (A ∘ neg))
        → Qₙ' (hₒ ⋆) hₙ ≃ Qₙ (hₒ ⋆) hₙ
-     γ hₒ hₙ = ×-cong γ₀ (Π-cong fe fe ℕ _ _ γₙ)
+     γ hₒ hₙ = ×-cong γ₀ (Π-cong fe fe γₙ)
       where
        f₀ = ⌜ f (neg 0) ⌝
        f₀⁻¹ = ⌜ (f (neg 0)) ⌝⁻¹
