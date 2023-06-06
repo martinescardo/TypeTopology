@@ -112,7 +112,7 @@ Agda formulation of the Burali-Forti argument and its corollaries
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 \end{code}
 
@@ -137,16 +137,24 @@ open import UF.FunExt
 open import UF.Size
 
 private
+
  fe : FunExt
  fe = Univalence-gives-FunExt ua
 
+ fe' : Fun-Ext
+ fe' = Univalence-gives-Fun-Ext ua
+
+ pe : Prop-Ext
+ pe = Univalence-gives-Prop-Ext ua
+
 open import MLTT.Spartan
 
+open import Ordinals.Arithmetic fe
+open import Ordinals.Equivalence
 open import Ordinals.Notions
+open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.Type
 open import Ordinals.WellOrderTransport
-open import Ordinals.OrdinalOfOrdinals ua
-open import Ordinals.Arithmetic fe
 
 \end{code}
 
@@ -168,7 +176,7 @@ Burali-Forti {𝓤} (α , 𝕗) = γ
   c = ≃ₒ-trans (OO 𝓤) α (OO 𝓤 ↓ α) a b
 
   d : OO 𝓤 ＝ (OO 𝓤 ↓ α)
-  d = eqtoidₒ (OO 𝓤) (OO 𝓤 ↓ α) c
+  d = eqtoidₒ (ua (𝓤 ⁺)) fe' (OO 𝓤) (OO 𝓤 ↓ α) c
 
   e : OO 𝓤 ⊲ OO 𝓤
   e = α , d
@@ -318,7 +326,7 @@ Lift-hSet-doesnt-have-section : ¬ has-section (Lift-hSet {𝓤} (𝓤 ⁺))
 Lift-hSet-doesnt-have-section {𝓤} (s , η) = γ
  where
   𝕐 : hSet (𝓤 ⁺)
-  𝕐 = (Ordinal 𝓤 , the-type-of-ordinals-is-a-set)
+  𝕐 = (Ordinal 𝓤 , (the-type-of-ordinals-is-a-set (ua 𝓤) fe'))
 
   𝕏 : hSet 𝓤
   𝕏 = s 𝕐
@@ -442,7 +450,7 @@ hSet again:
  Lift-hSet-is-not-equiv-bis {𝓤} = Lift-𝓐-is-not-equiv
                                     is-set
                                     (λ 𝓥 {X} → Lift-is-set 𝓥 X)
-                                    the-type-of-ordinals-is-a-set
+                                    (the-type-of-ordinals-is-a-set (ua _) fe')
 \end{code}
 
 Pointed types:
@@ -518,7 +526,7 @@ Magmas:
   Lift-𝓐-is-not-equiv
     Magma-structure
     lift-Magma-structure
-    (the-type-of-ordinals-is-a-set , _+ₒ_)
+    (the-type-of-ordinals-is-a-set (ua _) fe' , _+ₒ_)
 
 \end{code}
 
@@ -526,7 +534,7 @@ Monoids:
 
 \begin{code}
 
- open import Ordinals.Arithmetic-Properties ua
+ open import Ordinals.ArithmeticProperties ua
 
  monoid-structure : 𝓤 ̇ → 𝓤 ̇
  monoid-structure X = (X → X → X) × X
@@ -580,7 +588,7 @@ We will consider A = Monoid-structure (with capital M), and
 
  type-of-ordinals-has-Monoid-structure : {𝓤 : Universe} → Monoid-structure (Ordinal 𝓤)
  type-of-ordinals-has-Monoid-structure {𝓤} = (_+ₒ_ , 𝟘ₒ) ,
-                                             the-type-of-ordinals-is-a-set ,
+                                             (the-type-of-ordinals-is-a-set (ua 𝓤) fe'),
                                              𝟘ₒ-left-neutral ,
                                              𝟘ₒ-right-neutral ,
                                              +ₒ-assoc
@@ -605,11 +613,11 @@ open import UF.PropTrunc
 module _ (pt : propositional-truncations-exist) where
 
  there-is-a-large-group : Σ F ꞉ Group (𝓤 ⁺) , ((G : Group 𝓤) → ¬ (G ≅ F))
- there-is-a-large-group {𝓤} = large-group-with-no-small-copy pt ua
+ there-is-a-large-group {𝓤} = large-group-with-no-small-copy fe' pe pt
                                (Ordinal 𝓤 ,
-                                the-type-of-ordinals-is-a-set ,
+                                (the-type-of-ordinals-is-a-set (ua 𝓤) fe') ,
                                 the-type-of-ordinals-is-large ,
-                                the-type-of-ordinals-is-locally-small)
+                                the-type-of-ordinals-is-locally-small (ua 𝓤) fe')
 \end{code}
 
 And from this it of course follows that the embedding of the type of

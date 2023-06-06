@@ -18,7 +18,7 @@ Table of contents
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 open import MLTT.Spartan
 open import UF.FunExt
@@ -177,7 +177,7 @@ monotone-if-continuous 𝓓 𝓔 (f , cts) x y l = γ
    γ = sup-is-upperbound (underlying-order 𝓔) b (inl ⋆)
 
 image-is-directed' : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
-                     (f : DCPO[ 𝓓 , 𝓔 ]) {I : 𝓥 ̇} {α : I → ⟨ 𝓓 ⟩}
+                     (f : DCPO[ 𝓓 , 𝓔 ]) {I : 𝓥 ̇ } {α : I → ⟨ 𝓓 ⟩}
                    → is-Directed 𝓓 α
                    → is-Directed 𝓔 ([ 𝓓 , 𝓔 ]⟨ f ⟩ ∘ α)
 image-is-directed' 𝓓 𝓔 f {I} {α} δ = image-is-directed 𝓓 𝓔 m δ
@@ -186,7 +186,7 @@ image-is-directed' 𝓓 𝓔 f {I} {α} δ = image-is-directed 𝓓 𝓔 m δ
   m = monotone-if-continuous 𝓓 𝓔 f
 
 continuous-∐-⊑ : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
-                 (f : DCPO[ 𝓓 , 𝓔 ]) {I : 𝓥 ̇} {α : I → ⟨ 𝓓 ⟩}
+                 (f : DCPO[ 𝓓 , 𝓔 ]) {I : 𝓥 ̇ } {α : I → ⟨ 𝓓 ⟩}
                  (δ : is-Directed 𝓓 α)
                → [ 𝓓 , 𝓔 ]⟨ f ⟩ (∐ 𝓓 δ) ⊑⟨ 𝓔 ⟩ ∐ 𝓔 (image-is-directed' 𝓓 𝓔 f δ)
 continuous-∐-⊑ 𝓓 𝓔 (f , c) {I} {α} δ =
@@ -198,7 +198,7 @@ continuous-∐-⊑ 𝓓 𝓔 (f , c) {I} {α} δ =
    u = ∐-is-upperbound 𝓔 ε
 
 continuous-∐-⊒ : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
-                 (f : DCPO[ 𝓓 , 𝓔 ]) {I : 𝓥 ̇} {α : I → ⟨ 𝓓 ⟩}
+                 (f : DCPO[ 𝓓 , 𝓔 ]) {I : 𝓥 ̇ } {α : I → ⟨ 𝓓 ⟩}
                  (δ : is-Directed 𝓓 α)
                → ∐ 𝓔 (image-is-directed' 𝓓 𝓔 f δ) ⊑⟨ 𝓔 ⟩ [ 𝓓 , 𝓔 ]⟨ f ⟩ (∐ 𝓓 δ)
 continuous-∐-⊒ 𝓓 𝓔 (f , c) {I} {α} δ =
@@ -210,7 +210,7 @@ continuous-∐-⊒ 𝓓 𝓔 (f , c) {I} {α} δ =
    u i = sup-is-upperbound (underlying-order 𝓔) (c I α δ) i
 
 continuous-∐-＝ : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
-                 (f : DCPO[ 𝓓 , 𝓔 ]) {I : 𝓥 ̇} {α : I → ⟨ 𝓓 ⟩}
+                 (f : DCPO[ 𝓓 , 𝓔 ]) {I : 𝓥 ̇ } {α : I → ⟨ 𝓓 ⟩}
                  (δ : is-Directed 𝓓 α)
                → [ 𝓓 , 𝓔 ]⟨ f ⟩ (∐ 𝓓 δ) ＝ ∐ 𝓔 (image-is-directed' 𝓓 𝓔 f δ)
 continuous-∐-＝ 𝓓 𝓔 (f , c) {I} {α} δ =
@@ -244,7 +244,7 @@ id-is-monotone 𝓓 x y l = l
 id-is-continuous : (𝓓 : DCPO {𝓤} {𝓣}) → is-continuous 𝓓 𝓓 id
 id-is-continuous 𝓓 = continuity-criterion 𝓓 𝓓 id (id-is-monotone 𝓓) γ
  where
-  γ : (I : 𝓥 ̇) (α : I → ⟨ 𝓓 ⟩) (δ : is-Directed 𝓓 α)
+  γ : (I : 𝓥 ̇ )(α : I → ⟨ 𝓓 ⟩) (δ : is-Directed 𝓓 α)
     → ∐ 𝓓 δ ⊑⟨ 𝓓 ⟩ ∐ 𝓓 (image-is-directed 𝓓 𝓓 (λ x y l → l) δ)
   γ I α δ = ＝-to-⊑ 𝓓 (∐-independent-of-directedness-witness 𝓓
              δ (image-is-directed 𝓓 𝓓 (λ x y l → l) δ))
@@ -262,7 +262,7 @@ id-is-continuous 𝓓 = continuity-criterion 𝓓 𝓓 id (id-is-monotone 𝓓) 
   mg = monotone-if-continuous 𝓔 𝓔' (g , cg)
   m : is-monotone 𝓓 𝓔' (g ∘ f)
   m x y l = mg (f x) (f y) (mf x y l)
-  ψ : (I : 𝓥 ̇) (α : I → ⟨ 𝓓 ⟩) (δ : is-Directed 𝓓 α)
+  ψ : (I : 𝓥 ̇ )(α : I → ⟨ 𝓓 ⟩) (δ : is-Directed 𝓓 α)
     → g (f (∐ 𝓓 δ)) ⊑⟨ 𝓔' ⟩ ∐ 𝓔' (image-is-directed 𝓓 𝓔' m δ)
   ψ I α δ = g (f (∐ 𝓓 δ)) ⊑⟨ 𝓔' ⟩[ l₁ ]
             g (∐ 𝓔 εf)    ⊑⟨ 𝓔' ⟩[ l₂ ]
@@ -475,7 +475,7 @@ alternative definitions of local smallness and proving their equivalence.
  being-locally-small'-is-prop : PropExt → is-prop is-locally-small'
  being-locally-small'-is-prop pe =
   Π₂-is-prop fe (λ x y → prop-being-small-is-prop pe fe'
-                          (x ⊑⟨ 𝓓 ⟩ y) (prop-valuedness 𝓓 x y) 𝓥)
+                          (x ⊑⟨ 𝓓 ⟩ y) (prop-valuedness 𝓓 x y))
 
  being-locally-small-is-prop : PropExt → is-prop is-locally-small
  being-locally-small-is-prop pe =

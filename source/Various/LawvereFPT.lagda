@@ -15,9 +15,11 @@ extensions of MLTT, or hypotheses, such as propositional truncation.
 Many other things have been added since the above abstract was
 written.
 
+See also the file Various.CantorTheoremForSurjections by Jon Sterling.
+
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 module Various.LawvereFPT where
 
@@ -27,12 +29,14 @@ open import MLTT.Two-Properties
 open import Naturals.Properties
 
 open import UF.Base
+open import UF.Embeddings
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.Retracts
 open import UF.Equiv
 open import UF.Miscelanea
 open import UF.FunExt
+open import UF.Size
 
 designated-fixed-point-property : 𝓤 ̇ → 𝓤 ̇
 designated-fixed-point-property X = (f : X → X) → Σ x ꞉ X , x ＝ f x
@@ -534,7 +538,7 @@ NB. If 𝓥 is 𝓤 or 𝓤', then X : A → 𝓤 ⁺ ̇.
 
 \end{code}
 
-See also http://www.cs.bham.ac.uk/~mhe/TypeTopology/Type-in-Type-False.html
+See also the module Unsafe.Type-in-Type-False.
 
 Added 12 October 2018. The paper
 

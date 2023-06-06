@@ -2,13 +2,11 @@ Andrew Sneap
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 module MetricSpaces.index where
 
-import MetricSpaces.ContinuousExtensionTheorem
-import MetricSpaces.Extension
-import MetricSpaces.Definition
+import MetricSpaces.Type
 import MetricSpaces.DedekindReals
 import MetricSpaces.Rationals
 

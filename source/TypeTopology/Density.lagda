@@ -5,7 +5,7 @@ A function is dense if the complement of its image is empty. Maybe
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 module TypeTopology.Density where
 
@@ -22,10 +22,10 @@ is-dense {𝓤} {𝓥} {X} {Y} f = ¬ (Σ y ꞉ Y , ¬ (Σ x ꞉ X , f x ＝ y))
 
 dense-maps-into-¬¬-separated-types-are-rc' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : Y → 𝓦 ̇ }
                                             {h : X → Y} {f g : Π Z}
-                                          → is-dense h
-                                          → ((y : Y) → is-¬¬-separated (Z y))
-                                          → f ∘ h ∼ g ∘ h
-                                          → f ∼ g
+                                           → is-dense h
+                                           → ((y : Y) → is-¬¬-separated (Z y))
+                                           → f ∘ h ∼ g ∘ h
+                                           → f ∼ g
 dense-maps-into-¬¬-separated-types-are-rc' {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {h} {f} {g} d s p = γ
  where
   a : (y : Y) → (Σ x ꞉ X , h x ＝ y) → ¬ (f y ≠ g y)
@@ -93,6 +93,5 @@ module _ {𝓤 𝓥} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } where
 
  is-dense-detofun : (e : X ↪ᵈ Y) → is-dense (detofun e)
  is-dense-detofun e = pr₂ (pr₂ e)
-
 
 \end{code}

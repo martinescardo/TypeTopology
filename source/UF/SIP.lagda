@@ -14,7 +14,7 @@ There are three submodules:
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 module UF.SIP where
 
@@ -79,11 +79,11 @@ module sip where
 
                        → (A ＝ B) ≃ (A ≃[ σ ] B)
  characterization-of-＝ ua {S} σ A B =
-    (A ＝ B)                                                           ≃⟨ i ⟩
+    (A ＝ B)                                                            ≃⟨ i ⟩
     (Σ p ꞉ ⟨ A ⟩ ＝ ⟨ B ⟩ , transport S p (structure A) ＝ structure B) ≃⟨ ii ⟩
     (Σ p ꞉ ⟨ A ⟩ ＝ ⟨ B ⟩ , ι A B (idtoeq ⟨ A ⟩ ⟨ B ⟩ p))               ≃⟨ iii ⟩
-    (Σ e ꞉ ⟨ A ⟩ ≃ ⟨ B ⟩ , ι A B e)                                   ≃⟨ iv ⟩
-    (A ≃[ σ ] B)                                                      ■
+    (Σ e ꞉ ⟨ A ⟩ ≃ ⟨ B ⟩ , ι A B e)                                     ≃⟨ iv ⟩
+    (A ≃[ σ ] B)                                                        ■
   where
    ι   = homomorphic σ
    i   = Σ-＝-≃
@@ -122,18 +122,19 @@ module sip where
     A = λ s t → ι (X , s) (X , t) (≃-refl X)
     τ = canonical-map ι ρ
 
-  canonical-map-equiv-criterion : ((s t : S X) → (s ＝ t) ≃ ι (X , s) (X , t) (≃-refl X))
+  canonical-map-equiv-criterion : ((s t : S X)
+                                → (s ＝ t) ≃ ι (X , s) (X , t) (≃-refl X))
                                 → (s t : S X) → is-equiv (canonical-map ι ρ s t)
   canonical-map-equiv-criterion φ s = fiberwise-equiv-criterion'
                                        (λ t → ι (X , s) (X , t) (≃-refl X))
                                        s (φ s) (canonical-map ι ρ s)
 
-  canonical-map-equiv-criterion' : ((s t : S X) → ι (X , s) (X , t) (≃-refl X) ◁ (s ＝ t))
+  canonical-map-equiv-criterion' : ((s t : S X)
+                                 → ι (X , s) (X , t) (≃-refl X) ◁ (s ＝ t))
                                  → (s t : S X) → is-equiv (canonical-map ι ρ s t)
   canonical-map-equiv-criterion' φ s = fiberwise-equiv-criterion
                                         (λ t → ι (X , s) (X , t) (≃-refl X))
                                         s (φ s) (canonical-map ι ρ s)
-
 
 module sip-with-axioms where
 
@@ -173,7 +174,7 @@ module sip-with-axioms where
      j = pr₁-is-embedding (i X)
 
      k : {s' t' : S' X} → is-equiv (ap π {s'} {t'})
-     k {s'} {t'} = embedding-embedding' π j s' t'
+     k {s'} {t'} = embedding-gives-embedding' π j s' t'
 
      l : canonical-map ι' ρ' (s , a) (t , b)
        ∼ canonical-map ι ρ s t ∘ ap π {s , a} {t , b}
@@ -186,17 +187,15 @@ module sip-with-axioms where
      γ : is-equiv (canonical-map ι' ρ' (s , a) (t , b))
      γ = equiv-closed-under-∼ _ _ e l
 
- characterization-of-＝-with-axioms :
-     is-univalent 𝓤
-   → {S : 𝓤 ̇ → 𝓥 ̇ }
-     (σ : SNS S 𝓣)
-     (axioms : (X : 𝓤 ̇ ) → S X → 𝓦 ̇ )
-   → ((X : 𝓤 ̇ ) (s : S X) → is-prop (axioms X s))
-   → (A B : Σ X ꞉ 𝓤 ̇ , Σ s ꞉ S X , axioms X s)
-   → (A ＝ B) ≃ ([ A ] ≃[ σ ] [ B ])
+ characterization-of-＝-with-axioms : is-univalent 𝓤
+                                    → {S : 𝓤 ̇ → 𝓥 ̇ }
+                                      (σ : SNS S 𝓣)
+                                      (axioms : (X : 𝓤 ̇ ) → S X → 𝓦 ̇ )
+                                    → ((X : 𝓤 ̇ ) (s : S X) → is-prop (axioms X s))
+                                    → (A B : Σ X ꞉ 𝓤 ̇ , Σ s ꞉ S X , axioms X s)
+                                    → (A ＝ B) ≃ ([ A ] ≃[ σ ] [ B ])
  characterization-of-＝-with-axioms ua σ axioms i =
-   characterization-of-＝ ua (add-axioms axioms i σ)
-
+  characterization-of-＝ ua (add-axioms axioms i σ)
 
 module sip-join where
 
@@ -209,15 +208,13 @@ module sip-join where
    → ((x₀ x₁ : X) → is-equiv (f x₀ x₁))
    → ((y₀ y₁ : Y) → is-equiv (g y₀ y₁))
 
-   → (z₀ z₁ : X × Y) → is-equiv (λ (p : z₀ ＝ z₁) → f (pr₁ z₀) (pr₁ z₁) (ap pr₁ p) ,
-                                                   g (pr₂ z₀) (pr₂ z₁) (ap pr₂ p))
+   → ((x₀ , y₀) (x₁ , y₁) : X × Y) →
+   is-equiv (λ (p : (x₀ , y₀) ＝ (x₁ , y₁)) → f x₀ x₁ (ap pr₁ p) ,
+                                              g y₀ y₁ (ap pr₂ p))
 
  technical-lemma {𝓤} {𝓥} {𝓦} {𝓣} {X} {A} {Y} {B} f g i j (x₀ , y₀) = γ
   where
-   module _ (z₁ : X × Y) where
-     x₁ = pr₁ z₁
-     y₁ = pr₂ z₁
-
+   module _ ((x₁ , y₁) : X × Y) where
      r : (x₀ , y₀) ＝ (x₁ , y₁) → A x₀ x₁ × B y₀ y₁
      r p = f x₀ x₁ (ap pr₁ p) , g y₀ y₁ (ap pr₂ p)
 
@@ -232,12 +229,12 @@ module sip-join where
 
      η : (c : A x₀ x₁ × B y₀ y₁) → r (s c) ＝ c
      η (a , b) =
-       r (s (a , b))                              ＝⟨ refl ⟩
+       r (s (a , b))                               ＝⟨ refl ⟩
        r (to-×-＝  (f' a) (g' b))                  ＝⟨ refl ⟩
        (f x₀ x₁ (ap pr₁ (to-×-＝ (f' a) (g' b))) ,
         g y₀ y₁ (ap pr₂ (to-×-＝ (f' a) (g' b))))  ＝⟨ ii ⟩
-       (f x₀ x₁ (f' a) , g y₀ y₁ (g' b))          ＝⟨ iii ⟩
-       a , b                                      ∎
+       (f x₀ x₁ (f' a) , g y₀ y₁ (g' b))           ＝⟨ iii ⟩
+       a , b                                       ∎
       where
        ii  = ap₂ (λ p q → f x₀ x₁ p , g y₀ y₁ q)
                  (ap-pr₁-to-×-＝ (f' a) (g' b))

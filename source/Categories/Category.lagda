@@ -2,7 +2,7 @@ Jon Sterling, started 16th Dec 2022
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 open import UF.FunExt
 
@@ -20,7 +20,7 @@ open import UF.Equiv-FunExt
 category-structure : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
 category-structure 𝓤 𝓥 =
  Σ ob ꞉ (𝓤 ̇),
- Σ hom ꞉ (ob → ob → 𝓥 ̇) ,
+ Σ hom ꞉ (ob → ob → 𝓥 ̇ ),
  Σ idn ꞉ ((A : ob) → hom A A) ,
  ((A B C : ob) (f : hom A B) (g : hom B C) → hom A C)
 

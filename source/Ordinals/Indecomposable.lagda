@@ -15,7 +15,7 @@ property unless weak excluded middle holds.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness #-}
 
 open import UF.Univalence
 
@@ -47,9 +47,11 @@ private
 ⇁_ : Ω 𝓤 → Ω 𝓤
 ⇁_ = not fe'
 
-open import Ordinals.Type
-open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.Arithmetic fe
+open import Ordinals.Equivalence
+open import Ordinals.Maps
+open import Ordinals.OrdinalOfOrdinals ua
+open import Ordinals.Type
 open import Ordinals.Underlying
 
 \end{code}
@@ -179,7 +181,7 @@ WEM-gives-decomposition-of-two-pointed-types⁺ {𝓤} wem X l ((x₀ , x₁) , 
 WEM-gives-decomposition-of-ordinals-type : WEM 𝓤 → decomposition (Ordinal 𝓤)
 WEM-gives-decomposition-of-ordinals-type {𝓤} wem =
  WEM-gives-decomposition-of-two-pointed-types⁺ wem (Ordinal 𝓤)
-  the-type-of-ordinals-is-locally-small
+  (the-type-of-ordinals-is-locally-small (ua 𝓤) fe')
   ((𝟙ₒ , 𝟘ₒ) , (λ (e : 𝟙ₒ ＝ 𝟘ₒ) → 𝟘-elim (idtofun 𝟙 𝟘 (ap ⟨_⟩ e) ⋆)))
 
 \end{code}
@@ -196,7 +198,7 @@ true to y. We collect all such functions in a type Ω-Path 𝓥 x y.
 
 \end{code}
 
-The ordinals in any universe have Ω-paths between any two points.
+The the of ordinals in any universe has Ω-paths between any two points.
 
 \begin{code}
 
@@ -210,7 +212,7 @@ type-of-ordinals-has-Ω-paths {𝓤} α β = f , γ⊥ , γ⊤
   f p = (Ω-to-ordinal (⇁ p) ×ₒ α) +ₒ (Ω-to-ordinal p ×ₒ β)
 
   γ⊥ : f ⊥Ω ＝ α
-  γ⊥ = eqtoidₒ (f ⊥Ω) α (u , o , e , p)
+  γ⊥ = eqtoidₒ (ua 𝓤) fe' (f ⊥Ω) α (u , o , e , p)
    where
     u : ⟨ f ⊥Ω ⟩ → ⟨ α ⟩
     u (inl (x , a)) = a
@@ -234,7 +236,7 @@ type-of-ordinals-has-Ω-paths {𝓤} α β = f , γ⊥ , γ⊤
     p a b l = inr (refl , l)
 
   γ⊤ : f ⊤Ω ＝ β
-  γ⊤ = eqtoidₒ (f ⊤Ω) β (u , o , e , p)
+  γ⊤ = eqtoidₒ (ua 𝓤) fe' (f ⊤Ω) β (u , o , e , p)
    where
     u : ⟨ f ⊤Ω ⟩ → ⟨ β ⟩
     u (inl (f , _)) = 𝟘-elim (f ⋆)
@@ -267,12 +269,10 @@ decomposition-of-Ω-gives-WEM {𝓤} (f , (p₀@(P₀ , i₀) , e₀) , (p₁@(P
   g (Q , j) = ((P₀ × Q) + (P₁ × ¬ Q)) , k
    where
     k : is-prop ((P₀ × Q) + (P₁ × ¬ Q))
-    k (inl (a , b)) (inl (u , v)) = ap inl (to-×-＝ (i₀ a u) (j b v))
-    k (inl (a , b)) (inr (u , v)) = 𝟘-elim (v b)
-    k (inr (a , b)) (inl (u , v)) = 𝟘-elim (b v)
-    k (inr (a , b)) (inr (u , v)) = ap inr (to-×-＝
-                                             (i₁ a u)
-                                             (negations-are-props fe' b v))
+    k = +-is-prop
+         (×-is-prop i₀ j)
+         (×-is-prop i₁ (negations-are-props fe'))
+         (λ (p₀ , q) (p₁ , ν) → ν q)
 
   I₀ : (q : Ω 𝓤) → q holds → f (g q) ＝ ₀
   I₀ q h = II
@@ -308,14 +308,15 @@ decomposition-of-Ω-gives-WEM {𝓤} (f , (p₀@(P₀ , i₀) , e₀) , (p₁@(P
   III₁ : (q : Ω 𝓤) → f (g q) ＝ ₁ → ¬ (q holds) + ¬¬ (q holds)
   III₁ q e = inl (contrapositive (I₀ q) (equal-₁-different-from-₀ e))
 
-  IV : (Q : 𝓤  ̇) → is-prop Q → ¬ Q + ¬¬ Q
+  IV : (Q : 𝓤  ̇ )→ is-prop Q → ¬ Q + ¬¬ Q
   IV Q j = 𝟚-equality-cases (III₀ (Q , j)) (III₁ (Q , j))
 
 decomposition-of-type-with-Ω-paths-gives-WEM : {X : 𝓤 ̇ }
                                              → decomposition X
                                              → has-Ω-paths 𝓥 X
                                              → WEM 𝓥
-decomposition-of-type-with-Ω-paths-gives-WEM {𝓤} {𝓥} {X} (f , (x₀ , e₀) , (x₁ , e₁)) c = γ
+decomposition-of-type-with-Ω-paths-gives-WEM {𝓤} {𝓥} {X}
+                                             (f , (x₀ , e₀) , (x₁ , e₁)) c = γ
  where
   g : Ω 𝓥 → X
   g = pr₁ (c x₀ x₁)

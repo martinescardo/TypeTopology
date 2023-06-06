@@ -33,7 +33,7 @@ a theorem rather than a metatheorem.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 open import UF.FunExt
 
@@ -119,9 +119,8 @@ module concrete-example where
 
  𝟚-indistinguishability : ¬ WLPO → (p : X → 𝟚) → p ∞₀ ＝ p ∞₁
  𝟚-indistinguishability nwlpo p = 𝟚-is-¬¬-separated (p ∞₀) (p ∞₁)
-                                    (not-Σ-implies-Π-not
-                                    (contrapositive (λ σ → failure (pr₁ σ) (pr₂ σ)) nwlpo) p)
-
+                                   (not-Σ-implies-Π-not
+                                   (contrapositive (λ σ → failure (pr₁ σ) (pr₂ σ)) nwlpo) p)
 \end{code}
 
  Precisely because one cannot construct maps from X into 𝟚 that
@@ -245,7 +244,7 @@ extensionality. (Cf. the module DiscreteAndSeparated.)
 \begin{code}
 
  weakly-isolated : {X : 𝓤 ̇ } (x : X) → 𝓤 ̇
- weakly-isolated x = ∀ x' → decidable (x' ≠ x)
+ weakly-isolated x = ∀ x' → is-decidable (x' ≠ x)
 
  Theorem : (Σ g ꞉ (Y → 𝟚), g a₀ ≠ g a₁) → weakly-isolated a
  Theorem (g , d) = λ x → 𝟚-equality-cases' (claim₀' x) (claim₁' x)

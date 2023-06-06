@@ -1,6 +1,6 @@
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 module UF.Retracts where
 
@@ -46,7 +46,7 @@ retract-of-prop : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                 → retract Y of X
                 → is-prop X
                 → is-prop Y
-retract-of-prop (r , s , rs) = subtype-of-prop-is-prop s
+retract-of-prop (r , s , rs) = subtypes-of-props-are-props' s
                                 (sections-are-lc s (r , rs))
 
 Σ-is-set : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }

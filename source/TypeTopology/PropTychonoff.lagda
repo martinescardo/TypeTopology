@@ -15,7 +15,7 @@ surprising, because
     (𝟘 → Y) = Y^𝟘 ≃ 𝟙 (which is always compact),
     (𝟙 → Y) = Y^𝟙 ≃ Y (which is compact if Y is),
 
-and excluded middle for a proposition X amounts to X=𝟘 or X=𝟙, so
+and excluded middle for a proposition X amounts to X = 𝟘 or X = 𝟙, so
 that
 
     Y^X is compact if Y is compact and X is a proposition.
@@ -39,7 +39,7 @@ we had a convoluted path to this supposedly natural way).
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 open import MLTT.Spartan
 
@@ -47,13 +47,13 @@ open import UF.FunExt
 
 module TypeTopology.PropTychonoff (fe : FunExt) where
 
-open import TypeTopology.CompactTypes
 open import MLTT.Two-Properties
+open import TypeTopology.CompactTypes
 open import UF.Base
-open import UF.Subsingletons
-open import UF.PropIndexedPiSigma
 open import UF.Equiv
 open import UF.EquivalenceExamples
+open import UF.PropIndexedPiSigma
+open import UF.Subsingletons
 
 \end{code}
 
@@ -78,11 +78,11 @@ Recall also that such an a₀ is called a universal witness for the predicate p.
 
 prop-tychonoff : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
                → is-prop X
-               → ((x : X) → compact∙ (Y x))
-               → compact∙ (Π Y)
+               → ((x : X) → is-compact∙ (Y x))
+               → is-compact∙ (Π Y)
 prop-tychonoff {𝓤} {𝓥} {X} {Y} X-is-prop ε p = γ
  where
-  have : (type-of ε ＝ ((x : X) → compact∙(Y x)))
+  have : (type-of ε ＝ ((x : X) → is-compact∙(Y x)))
        × (type-of p ＝ (Π Y → 𝟚))
   have = refl , refl
 
@@ -95,8 +95,8 @@ The essence of the first part of the proof is this:
 
 \begin{code}
 
-  crude : X → compact∙ (Π Y)
-  crude x = equiv-compact∙ (≃-sym(hip x)) (ε x)
+  crude : X → is-compact∙ (Π Y)
+  crude x = compact∙-types-are-closed-under-equiv(≃-sym(hip x)) (ε x)
 
 \end{code}
 
@@ -122,7 +122,7 @@ The following is what we get from prop-indexed-product, abstractly:
 \end{code}
 
 We define a predicate q x : Y x → 𝟚, for each x : X, from the
-predicate p : Π Y → 𝟚 via (part of) the above isomorphism:
+predicate p : Π Y → 𝟚 via (part of) the above equivalence:
 
 \begin{code}
 
@@ -168,8 +168,7 @@ By the definition of f in prop-indexed-product (namely f x φ = φ x):
 
 \end{code}
 
-(So we can't abstract away the definition/proof of
-prop-indexed-product.)
+(So we can't abstract away the construction of prop-indexed-product.)
 
 In particular, with y = f x φ, we get:
 
@@ -214,6 +213,7 @@ We get the same conclusion if X is empty:
    where
     claim : φ ＝ φ₀
     claim = dfunext (fe 𝓤 𝓥) (λ x → unique-from-𝟘 (u x))
+
 \end{code}
 
 So we would get what we want if we had excluded middle, because X is a
@@ -267,12 +267,17 @@ Finally, we do case analysis on the value of p φ:
   φ₀-is-universal-witness : p φ₀ ＝ ₁ → (φ : Π Y) → p φ ＝ ₁
   φ₀-is-universal-witness r φ = 𝟚-equality-cases (Claim₃ r φ) id
 
+\end{code}
+
+And we are done:
+
+\begin{code}
+
   γ : Σ φ₀ ꞉ Π Y , (p φ₀ ＝ ₁ → (φ : Π Y) → p φ ＝ ₁)
   γ = φ₀ , φ₀-is-universal-witness
 
 \end{code}
 
-And we are done.
 
 TODO. 9 Sep 2015. We can generalize from X being a subsingleton (or
 proposition) to X being subfinite (embedded into a finite type).
@@ -283,8 +288,8 @@ A particular case is the following:
 
 prop-tychonoff-corollary : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                          → is-prop X
-                         → compact∙ Y
-                         → compact∙ (X → Y)
+                         → is-compact∙ Y
+                         → is-compact∙ (X → Y)
 prop-tychonoff-corollary X-is-prop ε = prop-tychonoff X-is-prop (λ x → ε)
 
 \end{code}
@@ -299,8 +304,8 @@ Better (9 Sep 2015):
 
 prop-tychonoff-corollary' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                           → is-prop X
-                          → (X → compact∙ Y)
-                          → compact∙ (X → Y)
+                          → (X → is-compact∙ Y)
+                          → is-compact∙ (X → Y)
 prop-tychonoff-corollary' = prop-tychonoff
 
 \end{code}
@@ -321,21 +326,21 @@ open import UF.ExcludedMiddle
 
 compact-prop-tychonoff-gives-WEM : ((X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ )
                                        → is-prop X
-                                       → ((x : X) → compact (Y x))
-                                       → compact (Π Y))
+                                       → ((x : X) → is-compact (Y x))
+                                       → is-compact (Π Y))
                                  → WEM 𝓤
 compact-prop-tychonoff-gives-WEM {𝓤} {𝓥} τ X X-is-prop = δ γ
  where
   Y : X → 𝓥 ̇
   Y x = 𝟘
 
-  negation-compact : compact (X → 𝟘 {𝓥})
+  negation-compact : is-compact (X → 𝟘 {𝓥})
   negation-compact = τ X Y X-is-prop (λ p → 𝟘-compact)
 
-  γ : decidable (X → 𝟘 {𝓥})
-  γ = compact-decidable (X → 𝟘) negation-compact
+  γ : is-decidable (X → 𝟘 {𝓥})
+  γ = compact-types-are-decidable (X → 𝟘) negation-compact
 
-  δ : decidable (X → 𝟘 {𝓥}) → decidable (¬ X)
+  δ : is-decidable (X → 𝟘 {𝓥}) → is-decidable (¬ X)
   δ (inl f) = inl (𝟘-elim ∘ f)
   δ (inr ϕ) = inr (contrapositive (λ f → 𝟘-elim ∘ f) ϕ)
 

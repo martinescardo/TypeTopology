@@ -5,7 +5,7 @@ that a canonical map is something we decide to call a canonical map.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 module Notation.CanonicalMap where
 
@@ -20,7 +20,7 @@ open Canonical-Map {{...}} public
 canonical-map : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) → {{_ : Canonical-Map X Y}} → X → Y
 canonical-map X Y = ι
 
-[_] : {X : 𝓤 ̇} {Y : 𝓥 ̇} {{ r : Canonical-Map X Y }} → X → Y
+[_] : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {{ r : Canonical-Map X Y }} → X → Y
 [_] = ι
 
 \end{code}

@@ -60,7 +60,7 @@ References
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 open import MLTT.Spartan
 
@@ -251,7 +251,7 @@ singletons-are-semidecidable i = ∣ singletons-have-semidecidability-structure 
 
 decidable-props-are-semidecidable : {X : 𝓤 ̇  }
                                   → is-prop X
-                                  → decidable X
+                                  → is-decidable X
                                   → is-semidecidable X
 decidable-props-are-semidecidable i (inl  x) = singletons-are-semidecidable (x , i x)
 decidable-props-are-semidecidable i (inr nx) = empty-types-are-semidecidable nx
@@ -266,36 +266,36 @@ of X becomes semidecidable.
 decidability-is-semidecidable : (X : 𝓤 ̇  )
                               → is-semidecidable X
                               → is-semidecidable (¬ X)
-                              → is-semidecidable (decidable X)
+                              → is-semidecidable (is-decidable X)
 decidability-is-semidecidable X σ τ = ∥∥-rec being-semidecidable-is-prop ψ τ
  where
-  ψ : semidecidability-structure (¬ X) → is-semidecidable (decidable X)
+  ψ : semidecidability-structure (¬ X) → is-semidecidable (is-decidable X)
   ψ (β , g) = ∥∥-functor ϕ σ
    where
-    ϕ : semidecidability-structure X → semidecidability-structure (decidable X)
+    ϕ : semidecidability-structure X → semidecidability-structure (is-decidable X)
     ϕ (α , f) = γ , h
      where
       γ : ℕ → 𝟚
       γ n = max𝟚 (α n) (β n)
       X-is-prop : is-prop X
       X-is-prop = prop-if-semidecidable σ
-      dec-of-X-is-prop : is-prop (decidable X)
+      dec-of-X-is-prop : is-prop (is-decidable X)
       dec-of-X-is-prop = decidability-of-prop-is-prop fe X-is-prop
-      h : decidable X ≃ (∃ n ꞉ ℕ , γ n ＝ ₁)
+      h : is-decidable X ≃ (∃ n ꞉ ℕ , γ n ＝ ₁)
       h = logically-equivalent-props-are-equivalent
            dec-of-X-is-prop ∥∥-is-prop u v
        where
-        u : decidable X → ∃ n ꞉ ℕ , γ n ＝ ₁
+        u : is-decidable X → ∃ n ꞉ ℕ , γ n ＝ ₁
         u (inl  x) = ∥∥-functor
                       (λ (n , b) → n , max𝟚-lemma-converse (inl b))
                       (⌜ f ⌝ x)
         u (inr nx) = ∥∥-functor
                       (λ (n , b) → n , max𝟚-lemma-converse (inr b))
                       (⌜ g ⌝ nx)
-        v : ∃ n ꞉ ℕ , γ n ＝ ₁ → decidable X
+        v : ∃ n ꞉ ℕ , γ n ＝ ₁ → is-decidable X
         v = ∥∥-rec dec-of-X-is-prop ν
          where
-          ν : (Σ n ꞉ ℕ , γ n ＝ ₁) → decidable X
+          ν : (Σ n ꞉ ℕ , γ n ＝ ₁) → is-decidable X
           ν (n , p) = cases (λ a → inl (⌜ f ⌝⁻¹ ∣ n , a ∣))
                             (λ b → inr (⌜ g ⌝⁻¹ ∣ n , b ∣))
                             (max𝟚-lemma p)
@@ -404,11 +404,11 @@ instance
                          Ωˢᵈ-to-Ω-left-cancellable (Ω-is-set fe pe)
 
 Ωˢᵈ-is-set : is-set (Ωˢᵈ 𝓤)
-Ωˢᵈ-is-set = subtypes-of-sets-are-sets ι Ωˢᵈ-to-Ω-left-cancellable
+Ωˢᵈ-is-set = subtypes-of-sets-are-sets' ι Ωˢᵈ-to-Ω-left-cancellable
               (Ω-is-set fe pe)
 
 Ωᵈᵉᶜ : (𝓤 : Universe) → 𝓤 ⁺ ̇
-Ωᵈᵉᶜ 𝓤 = Σ P ꞉ Ω 𝓤 , decidable (P holds)
+Ωᵈᵉᶜ 𝓤 = Σ P ꞉ Ω 𝓤 , is-decidable (P holds)
 
 Ωᵈᵉᶜ-to-Ωˢᵈ : Ωᵈᵉᶜ 𝓤 → Ωˢᵈ 𝓤
 Ωᵈᵉᶜ-to-Ωˢᵈ ((P , i) , d) = (P , decidable-props-are-semidecidable i d)
@@ -451,13 +451,13 @@ Part II(a): LPO and semidecidability
 \begin{code}
 
 LPO : 𝓤₀ ̇
-LPO = (α : ℕ → 𝟚) → decidable (∃ n ꞉ ℕ , α n ＝ ₁)
+LPO = (α : ℕ → 𝟚) → is-decidable (∃ n ꞉ ℕ , α n ＝ ₁)
 
 LPO-is-prop : is-prop LPO
 LPO-is-prop = Π-is-prop fe (λ α → decidability-of-prop-is-prop fe ∥∥-is-prop)
 
 LPO' : (𝓤 : Universe) → 𝓤 ⁺ ̇
-LPO' 𝓤 = (X : 𝓤 ̇  ) → is-semidecidable X → decidable X
+LPO' 𝓤 = (X : 𝓤 ̇  ) → is-semidecidable X → is-decidable X
 
 LPO'-is-prop : is-prop (LPO' 𝓤)
 LPO'-is-prop = Π₂-is-prop fe (λ X σ → decidability-of-prop-is-prop fe
@@ -480,7 +480,7 @@ LPO-equivalence {𝓤} = logically-equivalent-props-are-equivalent
   f lpo X σ = ∥∥-rec (decidability-of-prop-is-prop fe
                        (prop-if-semidecidable σ)) γ σ
    where
-    γ : semidecidability-structure X → decidable X
+    γ : semidecidability-structure X → is-decidable X
     γ (α , e) = decidable-cong (≃-sym e) (lpo α)
   g : LPO' 𝓤 → LPO
   g τ α = decidable-cong (Lift-≃ 𝓤 X) (τ X' σ')
@@ -523,13 +523,13 @@ LPO-in-terms-of-Ωᵈᵉᶜ-and-Ωˢᵈ {𝓤} = logically-equivalent-props-are-
                            , to-subtype-＝ (λ _ → being-semidecidable-is-prop)
                               refl ∣)
     ⦅⇐⦆ : is-equiv ι → LPO' 𝓤
-    ⦅⇐⦆ ι-is-equiv X σ = transport decidable e Y-is-dec
+    ⦅⇐⦆ ι-is-equiv X σ = transport is-decidable e Y-is-dec
      where
       β : Ωˢᵈ 𝓤 → Ωᵈᵉᶜ 𝓤
       β = inverse ι ι-is-equiv
       Y : 𝓤 ̇
       Y = pr₁ (β (X , σ)) holds
-      Y-is-dec : decidable Y
+      Y-is-dec : is-decidable Y
       Y-is-dec = pr₂ (β (X , σ))
       e : Y ＝ X
       e = ap pr₁ (inverses-are-sections ι ι-is-equiv (X , σ))
@@ -728,7 +728,7 @@ open import UF.Size
 BKS⁺-gives-Propositional-Resizing : BKS⁺ 𝓤
                                   → propositional-resizing 𝓤 𝓤₀
 BKS⁺-gives-Propositional-Resizing bks X X-is-prop =
- ∥∥-rec (prop-being-small-is-prop (λ _ → pe) fe' X X-is-prop 𝓤₀) γ (bks X X-is-prop)
+ ∥∥-rec (prop-being-small-is-prop (λ _ → pe) fe' X X-is-prop) γ (bks X X-is-prop)
   where
    γ : semidecidability-structure X → X is 𝓤₀ small
    γ (α , e) = (∃ n ꞉ ℕ , α n ＝ ₁) , (≃-sym e)
@@ -774,10 +774,10 @@ semidecidable-negations-from-LPO lpo X σ =
 LPO-from-semidecidable-negations : MP' 𝓤
                                  → Semidecidable-Closed-Under-Negations 𝓤
                                  → LPO' 𝓤
-LPO-from-semidecidable-negations mp h X σ = mp (decidable X) τ
+LPO-from-semidecidable-negations mp h X σ = mp (is-decidable X) τ
                                              (all-types-are-¬¬-decidable X)
  where
-  τ : is-semidecidable (decidable X)
+  τ : is-semidecidable (is-decidable X)
   τ = decidability-is-semidecidable X σ (h X σ)
 
 \end{code}
@@ -1007,7 +1007,7 @@ EKC-implies-semidecidable-closed-under-Σ {𝓤} {𝓥} ekc =
          β p = pr₁ (σ⁺ p)
          φ : ℕ × ℕ → 𝓤₀ ̇
          φ (n , m) = Σ b ꞉ α n ＝ ₁ , β (to-P ∣ n , b ∣) m ＝ ₁
-         φ-is-complemented : complemented φ
+         φ-is-complemented : is-complemented φ
          φ-is-complemented (n , m) =
           decidable-closed-under-Σ 𝟚-is-set (𝟚-is-discrete (α n) ₁)
                                    (λ b → 𝟚-is-discrete (β (to-P ∣ n , b ∣) m) ₁)
@@ -1292,7 +1292,7 @@ semidecidability-structure-Σ  = γ
      where
       φ : ℕ → 𝓤₀ ̇
       φ = key-construction {𝓤₀} {_} {𝓤₀} {ℕ} {X} {λ m → Ψ m ＝ ₁} ⌜ e ⌝⁻¹ n
-      φ-is-complemented : complemented φ
+      φ-is-complemented : is-complemented φ
       φ-is-complemented m = decidable-closed-under-Σ 𝟚-is-set
                            (𝟚-is-discrete (Ψ m) ₁)
                            (λ (p : Ψ m ＝ ₁) → ℕ-is-discrete
@@ -1349,7 +1349,7 @@ subset-with-only-the-least-witness {𝓤} A A-is-decidable = B , B-is-decidable 
   B-is-decidable n = ×-preserves-decidability (A-is-decidable n)
                                               (¬-preserves-decidability σ)
    where
-    σ : decidable (Σ r ꞉ Fin' n , pr₁ r ∈ A)
+    σ : is-decidable (Σ r ꞉ Fin' n , pr₁ r ∈ A)
     σ = Compact-closed-under-≃ (≃-Fin n) Fin-Compact (pr₁ ∘ A ∘ pr₁)
          (λ r → A-is-decidable (pr₁ r))
   ΣB-is-prop : is-prop (Σ n ꞉ ℕ , n ∈ B)
@@ -1476,7 +1476,7 @@ closure-under-Σ-if-closure-under-subsingleton-countable-joins {𝓤} H P ρ Q �
        τ : (n : ℕ) → is-semidecidable (Q̃ n)
        τ n = κ (P̃-is-decidable n)
         where
-         κ : decidable (n ∈ P̃) → is-semidecidable (Q̃ n)
+         κ : is-decidable (n ∈ P̃) → is-semidecidable (Q̃ n)
          κ (inl  q₁) = is-semidecidable-cong claim (σ p)
           where
            p : P

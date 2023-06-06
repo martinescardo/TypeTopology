@@ -23,7 +23,7 @@ continuous and algebraic dcpos are actually examples of dcpos with small
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 open import MLTT.Spartan hiding (J)
 open import UF.FunExt
@@ -156,7 +156,7 @@ module _
   Π-is-prop fe (λ x →
    ×₃-is-prop (Π-is-prop fe
                (λ b → prop-being-small-is-prop (λ _ → pe) (λ _ _ → fe)
-                       (β b ≪⟨ 𝓓 ⟩ x) (≪-is-prop-valued 𝓓) 𝓥))
+                       (β b ≪⟨ 𝓓 ⟩ x) (≪-is-prop-valued 𝓓)))
               (being-directed-is-prop (underlying-order 𝓓) (↡-inclusion 𝓓 β x))
               (is-sup-is-prop (underlying-order 𝓓) (pr₁ (axioms-of-dcpo 𝓓))
                               x (↡-inclusion 𝓓 β x)))
@@ -258,10 +258,8 @@ module _
           (∀ (b : B) → β b ≪⟨ 𝓓 ⟩ x → β b ≪⟨ 𝓓 ⟩ y) ≃⟨ III ⟩
           x ⊑⟨ 𝓓 ⟩ y                                ■
        where
-        I   = Π-cong fe fe B _ _
-                     (λ b → →cong fe fe (≃-refl (b ≪ᴮₛ x)) ≪ᴮₛ-≃-≪ᴮ)
-        II  = Π-cong fe fe B _ _
-                     (λ b → →cong fe fe ≪ᴮₛ-≃-≪ᴮ (≃-refl (β b ≪⟨ 𝓓 ⟩ y)))
+        I   = Π-cong fe fe (λ b → →cong fe fe (≃-refl (b ≪ᴮₛ x)) ≪ᴮₛ-≃-≪ᴮ)
+        II  = Π-cong fe fe (λ b → →cong fe fe ≪ᴮₛ-≃-≪ᴮ (≃-refl (β b ≪⟨ 𝓓 ⟩ y)))
         III = ≃-sym (⊑-in-terms-of-≪ᴮ)
 
 \end{code}

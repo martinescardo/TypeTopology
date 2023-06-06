@@ -20,3 +20,10 @@ jobs:
         main-file: AllModulesIndex.lagda
         source-dir: source
         unsafe: true
+    - name: Upload HTML
+      id: html-upload
+      if: github.ref == 'refs/heads/master'
+      uses: actions/upload-artifact@v3
+      with:
+        name: html
+        path: source/html

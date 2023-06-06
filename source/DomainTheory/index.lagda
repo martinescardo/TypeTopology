@@ -7,9 +7,21 @@ each directory, ordered almost¹ alphabetically by directory name.
 
 ¹ Basics is first
 
+─────────────────────────────────────────────────────────────────────
+This accompanies the PhD thesis
+  Domain Theory in Constructive and Predicative Univalent Foundations
+  Tom de Jong
+  School of Computer Science, University of Birmingham
+  https://arxiv.org/abs/2301.12405
+
+  Submitted: 30 September 2022
+  Defended:  20 December  2022
+  Accepted:   1 February  2023
+─────────────────────────────────────────────────────────────────────
+
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 module DomainTheory.index where
 
@@ -102,10 +114,12 @@ import DomainTheory.Lifting.LiftingSetAlgebraic -- (3)
 
 {- ScottModelOfPCF
 
+0. Combinatory version of PCF
 1. Denotational semantics of the K, S and ifZero combinators of PCF
 2. The Scott model of the typed programming language PCF
 -}
 
+import DomainTheory.ScottModelOfPCF.PCF             -- (0)
 import DomainTheory.ScottModelOfPCF.PCFCombinators  -- (1)
 import DomainTheory.ScottModelOfPCF.ScottModelOfPCF -- (2)
 

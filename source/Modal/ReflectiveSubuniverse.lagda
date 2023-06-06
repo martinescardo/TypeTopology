@@ -4,7 +4,7 @@ Much of this file is based on the proofs from Egbert Rijke's PhD thesis.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 open import MLTT.Spartan
 open import UF.Subsingletons
@@ -25,36 +25,36 @@ module Modal.ReflectiveSubuniverse
  (P-is-reflective : subuniverse-is-reflective P)
  where
 
-is-modal : (A : 𝓤 ̇) → 𝓥 ̇
+is-modal : (A : 𝓤 ̇ )→ 𝓥 ̇
 is-modal = subuniverse-contains P
 
-reflection : (A : 𝓤 ̇) → reflection-candidate P A
+reflection : (A : 𝓤 ̇ )→ reflection-candidate P A
 reflection A = pr₁ (P-is-reflective A)
 
-○-packed : (A : 𝓤 ̇) → subuniverse-member P
+○-packed : (A : 𝓤 ̇ )→ subuniverse-member P
 ○-packed A = pr₁ (reflection A)
 
 ○ : 𝓤 ̇ → 𝓤 ̇
 ○ A = pr₁ (○-packed A)
 
-○-is-modal : (A : 𝓤 ̇) → is-modal (○ A)
+○-is-modal : (A : 𝓤 ̇ )→ is-modal (○ A)
 ○-is-modal A = pr₂ (○-packed A)
 
-η : (A : 𝓤 ̇) → A → ○ A
+η : (A : 𝓤 ̇ )→ A → ○ A
 η A = pr₂ (reflection A)
 
-precomp-η : {𝓥 : _} (A : 𝓤 ̇) (B : 𝓥 ̇) → (○ A → B) → A → B
+precomp-η : {𝓥 : _} (A : 𝓤 ̇ )(B : 𝓥 ̇ )→ (○ A → B) → A → B
 precomp-η A B f = f ∘ η A
 
 precomp-η-is-equiv
- : {A B : 𝓤 ̇}
+ : {A B : 𝓤 ̇ }
  → is-modal B
  → is-equiv (precomp-η A B)
 precomp-η-is-equiv =
  pr₂ (P-is-reflective _) _
 
 precomp-η-equiv
- : {A B : 𝓤 ̇}
+ : {A B : 𝓤 ̇ }
  → is-modal B
  → (○ A → B) ≃ (A → B)
 pr₁ (precomp-η-equiv B-modal) =
@@ -162,7 +162,7 @@ pr₂ (generic-precomp-η-is-equiv-gives-η-is-section A h) =
 The following is Lemma 5.1.18 of Egbert Rijke's thesis.
 
 \begin{code}
-module _ (fe : funext 𝓤 𝓤) (X Y : 𝓤 ̇) (Y-modal : is-modal Y) (f g : ○ X → Y) where
+module _ (fe : funext 𝓤 𝓤) (X Y : 𝓤 ̇ )(Y-modal : is-modal Y) (f g : ○ X → Y) where
  homotopy-precomp-η-is-equiv : is-equiv (homotopy-precomp f g (η _))
  homotopy-precomp-η-is-equiv =
   homotopy-precomp-by-embedding-is-equiv fe fe fe fe f g (η _)
@@ -180,7 +180,7 @@ useful later when we establish closure of modal types under identity types
 using closure of modal types under pullbacks.
 
 \begin{code}
-module _ (A : 𝓤 ̇) (x y : A) where
+module _ (A : 𝓤 ̇ )(x y : A) where
  private
   [x] [y] : 𝟙{𝓤} → A
   [x] _ = x
@@ -293,7 +293,7 @@ module _ (fe : funext 𝓤 𝓤) (P-is-replete : subuniverse-is-replete P) where
    cone : 𝓤 ̇ → 𝓤 ̇
    cone Z = Slice.to-span 𝓤 f g Z
 
-   cone-map-equiv : (Z : 𝓤 ̇) → (Z → C) ≃ cone Z
+   cone-map-equiv : (Z : 𝓤 ̇ )→ (Z → C) ≃ cone Z
    cone-map-equiv Z = Slice.→-pullback-≃ 𝓤 f g Z fe
 
    restrict-cone-equiv : cone (○ C) ≃ cone C

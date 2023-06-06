@@ -8,7 +8,7 @@ higher-type computation".
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 open import MLTT.Spartan
 open import MLTT.Two-Properties
@@ -320,22 +320,22 @@ Cantor-uniformly-searchable p (n , u) = ε n p , A-property→ p n u
 
 Δ : (p : Cantor → 𝟚)
   → uniformly-continuous p
-  → decidable (Σ α ꞉ Cantor , p α ＝ ₀)
+  → is-decidable (Σ α ꞉ Cantor , p α ＝ ₀)
 Δ p (n , u) = γ (p α) refl
  where
   α : Cantor
   α = ε n p
 
-  γ : (k : 𝟚) → p α ＝ k → decidable (Σ α ꞉ Cantor , p α ＝ ₀)
+  γ : (k : 𝟚) → p α ＝ k → is-decidable (Σ α ꞉ Cantor , p α ＝ ₀)
   γ ₀ r = inl (α  , r)
   γ ₁ r = inr (λ (β , s) → zero-is-not-one (s ⁻¹ ∙ A-property→ p n u r β))
 
 Δ' : (p : Cantor → 𝟚)
    → uniformly-continuous p
-   → decidable ((α : Cantor) → p α ＝ ₁)
+   → is-decidable ((α : Cantor) → p α ＝ ₁)
 Δ' p u = γ (Δ p u)
  where
-  γ : decidable (Σ α ꞉ Cantor , p α ＝ ₀) → decidable ((α : Cantor) → p α ＝ ₁)
+  γ : is-decidable (Σ α ꞉ Cantor , p α ＝ ₀) → is-decidable ((α : Cantor) → p α ＝ ₁)
   γ (inl (α , r)) = inr (λ ϕ → zero-is-not-one (r ⁻¹ ∙ ϕ α))
   γ (inr ν)       = inl (λ α → different-from-₀-equal-₁ (λ r → ν (α , r)))
 

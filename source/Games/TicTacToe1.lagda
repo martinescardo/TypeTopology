@@ -7,7 +7,7 @@ TODO. Organaze this module better, following the organization of TicTacToe0.
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe --auto-inline #-} -- --exact-split
+{-# OPTIONS --without-K --safe --no-sized-types --no-guardedness --auto-inline #-} -- --exact-split
 
 
 
@@ -18,7 +18,7 @@ open import TypeTopology.DiscreteAndSeparated
 open import TypeTopology.SigmaDiscreteAndTotallySeparated
 
 open import MLTT.Spartan hiding (J)
-open import MLTT.NonSpartanMLTTTypes hiding (Fin ; 𝟎 ; 𝟏 ; 𝟐 ; 𝟑 ; 𝟒 ; 𝟓 ; 𝟔 ; 𝟕 ; 𝟖 ; 𝟗)
+open import MLTT.Athenian
 open import Fin.Type
 open import Fin.Topology
 open import Fin.ArgMinMax
@@ -29,6 +29,7 @@ open import Fin.ArgMinMax
 open import Games.TypeTrees
 open import Games.FiniteHistoryDependent 𝟛
 open import Games.Constructor 𝟛
+open import Games.J
 
 tic-tac-toe₁ : Game
 tic-tac-toe₁ = build-Game draw Board transition 9 board₀
@@ -88,8 +89,8 @@ Convention: in a board (p , A), p is the opponent of the the current player.
   Grid-is-discrete : is-discrete Grid
   Grid-is-discrete = ×-is-discrete Fin-is-discrete Fin-is-discrete
 
-  Grid-compact : Compact Grid {𝓤₀}
-  Grid-compact = ×-Compact Fin-Compact Fin-Compact
+  Grid-compact : is-Compact Grid {𝓤₀}
+  Grid-compact = ×-is-Compact Fin-Compact Fin-Compact
 
   board₀ : Board
   board₀ = X , (λ _ → Nothing)
@@ -97,16 +98,18 @@ Convention: in a board (p , A), p is the opponent of the the current player.
   Move : Board → Type
   Move (_ , A) = Σ g ꞉ Grid , A g ＝ Nothing
 
-  Move-decidable : (b : Board) → decidable (Move b)
+  Move-decidable : (b : Board) → is-decidable (Move b)
   Move-decidable (_ , A) = Grid-compact
                             (λ g → A g ＝ Nothing)
                             (λ g → Nothing-is-isolated' (A g))
 
-  Move-compact : (b : Board) → Compact (Move b)
+  Move-compact : (b : Board) → is-Compact (Move b)
   Move-compact (x , A) = complemented-subset-of-compact-type
                           Grid-compact
                           (λ g → Nothing-is-isolated' (A g))
                           (λ g → Nothing-is-h-isolated' (A g))
+
+  open J-definitions 𝟛
 
   selection : (b : Board) → Move b → J (Move b)
   selection b@(X , A) m p = pr₁ (compact-argmax p (Move-compact b) m)
@@ -117,7 +120,7 @@ Convention: in a board (p , A), p is the opponent of the the current player.
          → Matrix
   update p A (m , _) m' = f (Grid-is-discrete m m')
    where
-    f : decidable (m ＝ m') → Maybe Player
+    f : is-decidable (m ＝ m') → Maybe Player
     f (inl _) = Just p
     f (inr _) = A m
 

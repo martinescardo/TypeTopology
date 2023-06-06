@@ -4,8 +4,7 @@ In this file I define the constructive field axioms.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
-
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 open import MLTT.Spartan renaming (_+_ to _∔_)
 
@@ -30,7 +29,7 @@ defined as (x < y) ∔ (y < x)
 
 \begin{code}
 
-field-axioms : (F : 𝓤 ̇) → { 𝓥 : Universe } → field-structure F { 𝓥 } → 𝓤 ⊔ 𝓥 ̇
+field-axioms : (F : 𝓤 ̇ )→ { 𝓥 : Universe } → field-structure F { 𝓥 } → 𝓤 ⊔ 𝓥 ̇
 field-axioms F { 𝓥 } (_⊕_ , _⊙_ , _#_) = is-set F × associative _⊕_
                                                    × associative _⊙_
                                                    × commutative _⊕_
@@ -44,13 +43,13 @@ field-axioms F { 𝓥 } (_⊕_ , _⊙_ , _#_) = is-set F × associative _⊕_
 Field-structure : 𝓤 ̇ → { 𝓥 : Universe } → 𝓤 ⊔ (𝓥 ⁺) ̇
 Field-structure F  { 𝓥 } = Σ fs ꞉ field-structure F { 𝓥 } , field-axioms F fs
 
-ordered-field-structure : {𝓤 𝓥 𝓦 : Universe} → (F : 𝓤 ̇) → (fs : field-structure F { 𝓥 }) → (fa : field-axioms F fs) → (𝓤 ⊔ (𝓦 ⁺)) ̇
+ordered-field-structure : {𝓤 𝓥 𝓦 : Universe} → (F : 𝓤 ̇ )→ (fs : field-structure F { 𝓥 }) → (fa : field-axioms F fs) → (𝓤 ⊔ (𝓦 ⁺)) ̇
 ordered-field-structure {𝓤} {𝓥} {𝓦} F fs fa = (F → F → 𝓦 ̇)
 
-ordered-field-axioms : {𝓤 𝓥 𝓦 : Universe} → (F : 𝓤 ̇) → (fs : field-structure F) → (fa : field-axioms F fs) →  ordered-field-structure { 𝓤 } { 𝓥 } { 𝓦 } F fs fa → (𝓤 ⊔ 𝓦) ̇
+ordered-field-axioms : {𝓤 𝓥 𝓦 : Universe} → (F : 𝓤 ̇ )→ (fs : field-structure F) → (fa : field-axioms F fs) →  ordered-field-structure { 𝓤 } { 𝓥 } { 𝓦 } F fs fa → (𝓤 ⊔ 𝓦) ̇
 ordered-field-axioms {𝓤} {𝓥} {𝓦} F (_⊕_ , _⊙_ , _#_) (s , a , a' , c , c' , d , (e , e') , i) _<_ = ((x y z : F) → x < y → (x ⊕ z) < (y ⊕ z))
                                                                                                      × ((x y : F) → e < x → e < y → e < (x ⊙ y))
-Ordered-field-structure : {𝓤 𝓥 𝓦 : Universe} → (F : 𝓤 ̇) → Field-structure F { 𝓥 } → 𝓤 ⊔ (𝓦 ⁺) ̇
+Ordered-field-structure : {𝓤 𝓥 𝓦 : Universe} → (F : 𝓤 ̇ )→ Field-structure F { 𝓥 } → 𝓤 ⊔ (𝓦 ⁺) ̇
 Ordered-field-structure {𝓤} {𝓥} {𝓦} F (fs , fa) = Σ ofa ꞉ (ordered-field-structure {𝓤} {𝓥} {𝓦} F fs fa) , ordered-field-axioms {𝓤} {𝓥} F fs fa ofa
 
 Field : (𝓤 : Universe) → { 𝓥  : Universe} → (𝓤 ⁺) ⊔ (𝓥 ⁺) ̇
