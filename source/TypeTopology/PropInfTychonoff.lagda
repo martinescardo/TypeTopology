@@ -5,7 +5,7 @@ file PropTychonoff has many comments, but this one doesn't.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 open import MLTT.Spartan
 open import UF.FunExt
@@ -61,6 +61,7 @@ prop-inf-tychonoff {𝓤} {𝓥} {𝓦} {X} {Y} hp _≺_ ε p =
    where
     s : p φ₀ ＝ p (h x (φ₀ x))
     s = ap p ((hf x φ₀)⁻¹)
+
     t : p (h x (φ₀ x)) ＝ ₀
     t = cr-particular-case x (φ , (ap p (hf x φ) ∙ r))
 

@@ -58,9 +58,9 @@
 
      (https://www.cs.bham.ac.uk/~mhe/TypeTopology/Unsafe.index.html)
 
-   * In our last count, this development has 126k lines, including
-     comments and blank lines. But we don't update the count
-     frequently.
+   * In our last count, on 18th May 2023, this development has 153k
+     lines, including comments and blank lines. But we don't update
+     the count frequently.
 
    * A module dependency graph is available, updated manually from
      time to time last tine on 19th December 2022:
@@ -87,7 +87,7 @@ Philosophy of the repository
 
    * We work in a minimal subset of Agda to implement Spartan MLTT and
      work with it. In particular, we restrict ourselves to safe
-     features (with the flag --safe).
+     features (with the flag --safe --no-sized-types --no-guardedness).
 
    * Some functions, and theorems, and definitions need HoTT/UF
      axioms. They are always given explicitly as
@@ -123,7 +123,7 @@ Click at the imported module names to navigate to them:
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 module index where
 
@@ -132,6 +132,7 @@ import CantorSchroederBernstein.index
 import Categories.index               -- by Jon Sterling
 import Circle.index                   -- by Tom de Jong
 import CoNaturals.index
+import ContinuityAxiom.index          -- by Martin Escardo and Chuangjie Xu
 import CrossedModules.index           -- by Ettore Aldrovandi and Keri D'Angelo
 import DedekindReals.index            -- by Andrew Sneap
 import DomainTheory.index             -- by Tom de Jong
@@ -139,6 +140,7 @@ import Dominance.index
 import Duploids.index                 -- by Jon Sterling
 import Dyadics.index                  -- by Andrew Sneap
 import DyadicsInductive.index         -- by Tom de Jong
+import EffectfulForcing.index
 import Factorial.index
 import Field.index                    -- by Andrew Sneap
 import Fin.index
@@ -157,6 +159,7 @@ import Naturals.index
 import Notation.index
 import NotionsOfDecidability.index    -- by Tom de Jong and Martin Escardo
 import Ordinals.index
+import PCF.index                      -- by Tom de Jong and Brendan Hart
 import Posets.index                   -- by Tom de Jong and Martin Escardo
 import Rationals.index                -- by Andrew Sneap
 import Slice.index
@@ -168,6 +171,6 @@ import Various.index
 
 \end{code}
 
-The UF modules (univalent foundations) have been developed, on demand,
-for use in the other modules. The modules UF.Yoneda, UF.IdEmbedding
-and UF.Factorial contain new results.
+The above includes only the --safe modules. A list of all modules is here:
+
+https://www.cs.bham.ac.uk/~mhe/TypeTopology/AllModulesIndex.html

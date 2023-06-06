@@ -17,7 +17,7 @@ induces a map from the ideal completion to the dcpo.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 open import MLTT.Spartan hiding (J)
 

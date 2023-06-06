@@ -8,7 +8,7 @@ _∔_ (\dotplus) here. An alternative is ⧾ ("C-x 8 RET TINY").
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 module Notation.Plus where
 

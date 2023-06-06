@@ -4,7 +4,7 @@ Based on `ayberkt/formal-topology-in-UF`.
 
 \begin{code}[hide]
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline --lossy-unification #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline --lossy-unification #-}
 
 open import MLTT.Spartan
 open import UF.Base
@@ -99,6 +99,13 @@ A nucleus is called perfect iff it is Scott-continuous:
    γ : (j : ⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩)
      → is-prop ((is-nucleus (𝒪 X) j ∧ is-perfect j) holds)
    γ j = holds-is-prop (is-nucleus (𝒪 X) j ∧ is-perfect j)
+
+ perfect-nuclei-eq-inverse : (𝒿 𝓀 : Perfect-Nucleus) → 𝒿 ＝ 𝓀 → 𝒿 $_ ∼ 𝓀 $_
+ perfect-nuclei-eq-inverse 𝒿 𝓀 p =
+  transport (λ - → 𝒿 $_ ∼ - $_) p λ _ → refl
+   where
+    † : 𝒿 .pr₁ ＝ 𝓀 .pr₁
+    † = pr₁ (from-Σ-＝ p)
 
 \end{code}
 
@@ -691,7 +698,7 @@ The definition of the join:
    β i U = ⋁[ 𝒪 X ]-upper ⁅ α U ∣ α ε 𝔡𝔦𝔯 K₀ ⁆ (i ∷ [])
 
    γ : (Ɐ (𝒾 , _) ∶ Joins.upper-bound _≼_ K , (⋁ₙ K) ≼ 𝒾) holds
-   γ (𝓀@(k , (n₁ , n₂ , n₃) , ζ) , φ) U =
+   γ (𝓀@(k , (n₁ , n₂ , n₃) , _) , φ) U =
     ⋁[ 𝒪 X ]-least ⁅ α U ∣ α ε 𝔡𝔦𝔯 K₀ ⁆ (𝓀 $ U , λ is → † is U)
      where
       open Joins (λ x y → x ≤[ poset-of (𝒪 X) ] y)
@@ -887,6 +894,9 @@ module SmallPatchConstruction (X : Locale 𝓤 𝓥 𝓦) (σᴰ : spectralᴰ (
  ℬ : Fam 𝓦 ⟨ 𝒪 X ⟩
  ℬ = basisₛ (𝒪 X) σᴰ
 
+ ℬₖ : Fam 𝓦 (Σ C ꞉ ⟨ 𝒪 X ⟩ , is-compact-open (𝒪 X) C holds)
+ ℬₖ = index ℬ , λ i → ℬ [ i ] , pr₁ (pr₂ (pr₂ σᴰ)) i
+
  ℬ-is-basis : is-basis-for (𝒪 X) ℬ
  ℬ-is-basis = pr₁ (pr₁ (pr₂ σᴰ))
 
@@ -906,6 +916,9 @@ module SmallPatchConstruction (X : Locale 𝓤 𝓥 𝓦) (σᴰ : spectralᴰ (
  _≼ᵏ_ : Perfect-Nucleus-on-X → Perfect-Nucleus-on-X → Ω (𝓥 ⊔ 𝓦)
  _≼ᵏ_ (j , ζⱼ) (k , ζₖ) =
   Ɐ i ∶ index ℬ , j (ℬ [ i ]) ≤[ poset-of (𝒪 X) ] k (ℬ [ i ])
+
+ _＝ᵏ_ : Perfect-Nucleus-on-X → Perfect-Nucleus-on-X → Ω (𝓥 ⊔ 𝓦)
+ _＝ᵏ_ 𝒿@(j , ζⱼ) 𝓀@(k , ζₖ) = (𝒿 ≼ᵏ 𝓀) ∧ (𝓀 ≼ᵏ 𝒿)
 
  open Meets (λ 𝒿 𝓀 → 𝒿 ≼ᵏ 𝓀)
   using ()

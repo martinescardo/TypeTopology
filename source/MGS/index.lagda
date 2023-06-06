@@ -4,7 +4,7 @@ Modular version of https://github.com/martinescardo/HoTT-UF-Agda-Lecture-Notes
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 module MGS.index where
 

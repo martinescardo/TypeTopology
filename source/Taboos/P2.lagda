@@ -5,7 +5,7 @@ Ordinals.NotationInterpretation2.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 open import MLTT.Spartan
 open import UF.FunExt
@@ -117,25 +117,25 @@ P→𝟚-discreteness-criterion-necessity : {P : 𝓤 ̇ }
                                      → ¬ P + is-pseudo-inhabited P
 P→𝟚-discreteness-criterion-necessity {𝓤} {P} i δ = ϕ (δ (κ P ₀) (κ P ₁))
  where
-  ϕ : decidable (κ P ₀ ＝ κ P ₁) → ¬ P + is-pseudo-inhabited P
+  ϕ : is-decidable (κ P ₀ ＝ κ P ₁) → ¬ P + is-pseudo-inhabited P
   ϕ (inl e) = inl (fact e)
    where
     fact : κ P ₀ ＝ κ P ₁ → ¬ P
     fact e p = zero-is-not-one (ap (λ f → f p) e)
   ϕ (inr n) = inr (pseudo-inhabitedness-criterion i (γ , γκ))
    where
-    h : (f : P → 𝟚) → decidable (f ＝ κ P ₀) → 𝟚
+    h : (f : P → 𝟚) → is-decidable (f ＝ κ P ₀) → 𝟚
     h f (inl _) = ₀
     h f (inr _) = ₁
 
     γ : (P → 𝟚) → 𝟚
     γ f = h f (δ f (κ P ₀))
 
-    h₀ : (d : decidable (κ P ₀ ＝ κ P ₀)) → h (κ P ₀) d ＝ ₀
+    h₀ : (d : is-decidable (κ P ₀ ＝ κ P ₀)) → h (κ P ₀) d ＝ ₀
     h₀ (inl _) = refl
     h₀ (inr d) = 𝟘-elim (d refl)
 
-    h₁ : (d : decidable (κ P ₁ ＝ κ P ₀)) → h (κ P ₁) d ＝ ₁
+    h₁ : (d : is-decidable (κ P ₁ ＝ κ P ₀)) → h (κ P ₁) d ＝ ₁
     h₁ (inl e) = 𝟘-elim (n (e ⁻¹))
     h₁ (inr _) = refl
 
@@ -226,7 +226,6 @@ TODO. Derive a constructive taboo from the hypothesis
 
       ((P : 𝓤 ̇ ) → is-prop P → is-pseudo-inhabited P → P).
 
-
 \begin{code}
 
 η : (X : 𝓤 ̇ ) → X → is-pseudo-inhabited' X
@@ -256,11 +255,15 @@ _♯ {𝓤} {𝓥} {X} {Y} h (r , rκ) = q
   q : is-pseudo-inhabited' Y
   q = u , v
 
-μ : (X : 𝓤 ̇ ) → is-pseudo-inhabited' (is-pseudo-inhabited' X) → is-pseudo-inhabited' X
+μ : (X : 𝓤 ̇ )
+  → is-pseudo-inhabited' (is-pseudo-inhabited' X)
+  → is-pseudo-inhabited' X
 μ X = id ♯
 
 being-pseudo-inhabited'-is-prop : {X : 𝓤 ̇ } → is-prop X → is-prop (is-pseudo-inhabited' X)
-being-pseudo-inhabited'-is-prop {𝓤} {X} i = prop-criterion
-                                              (λ (r , rκ) → sections-have-at-most-one-retraction fe (κ X)
-                                                             (r , retraction-of-κ-is-section i r rκ))
+being-pseudo-inhabited'-is-prop {𝓤} {X} i =
+ prop-criterion
+  (λ (r , rκ) → sections-have-at-most-one-retraction fe (κ X)
+               (r , retraction-of-κ-is-section i r rκ))
+
 \end{code}

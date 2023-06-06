@@ -2,7 +2,7 @@ Martin Escardo, 8th April 2021.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 open import UF.PropTrunc
 
@@ -48,16 +48,16 @@ being-Kuratowski-finite-is-prop = ∃-is-prop
 Kuratowski-finite-types-are-∃-compact : Fun-Ext
                                       → {X : 𝓤 ̇ }
                                       → is-Kuratowski-finite X
-                                      → ∃-Compact X {𝓤}
+                                      → is-∃-Compact X {𝓤}
 Kuratowski-finite-types-are-∃-compact fe {X} i = γ
  where
-  α : Kuratowski-data X → Compact X
+  α : Kuratowski-data X → is-Compact X
   α (n , f , s) = surjection-Compact f fe s Fin-Compact
 
-  β : ∥ Compact X ∥
+  β : ∥ is-Compact X ∥
   β = ∥∥-functor α i
 
-  γ : ∃-Compact X
+  γ : is-∃-Compact X
   γ = ∥Compact∥-gives-∃-Compact fe β
 
 finite-types-are-Kuratowski-finite : {X : 𝓤 ̇ }
@@ -94,13 +94,13 @@ dkf-lemma {𝓤} fe {X} δ (n , 𝕗) = γ X δ n 𝕗
     A : Fin n → 𝓤 ̇
     A j = f (suc j) ＝ f 𝟎
 
-    Δ : decidable (Σ A)
+    Δ : is-decidable (Σ A)
     Δ = Fin-Compact A (λ j → δ (f (suc j)) (f 𝟎))
 
     g : Fin n → X
     g i = f (suc i)
 
-    I : decidable (Σ A) → finite-linear-order X
+    I : is-decidable (Σ A) → finite-linear-order X
     I (inl (j , p)) = IH
      where
       II : (x : X) → (Σ i ꞉ Fin (succ n) , f i ＝ x) → (Σ i ꞉ Fin n , g i ＝ x)
@@ -234,11 +234,11 @@ doubletons-are-Kuratowki-finite x₀ x₁ = ∣ 2 , doubleton-map x₀ x₁ , do
 
 decidable-equality-gives-doubleton-finite : {X : 𝓤 ̇ } (x₀ x₁ : X)
                                           → is-set X
-                                          → decidable (x₀ ＝ x₁)
+                                          → is-decidable (x₀ ＝ x₁)
                                           → is-finite (Σ x ꞉ X , (x ＝ x₀) ∨ (x ＝ x₁))
 decidable-equality-gives-doubleton-finite x₀ x₁ X-is-set δ = γ δ
  where
-  γ : decidable (x₀ ＝ x₁) → is-finite (doubleton x₀ x₁)
+  γ : is-decidable (x₀ ＝ x₁) → is-finite (doubleton x₀ x₁)
   γ (inl p) = 1 , ∣ singleton-≃ m l ∣
    where
     l : is-singleton (Fin 1)
@@ -281,13 +281,13 @@ doubleton-finite-gives-decidable-equality : funext 𝓤 𝓤₀
                                           → {X : 𝓤 ̇ } (x₀ x₁ : X)
                                           → is-set X
                                           → is-finite (Σ x ꞉ X , (x ＝ x₀) ∨ (x ＝ x₁))
-                                          → decidable (x₀ ＝ x₁)
+                                          → is-decidable (x₀ ＝ x₁)
 doubleton-finite-gives-decidable-equality fe x₀ x₁ X-is-set ϕ = δ
  where
-  γ : is-finite (doubleton x₀ x₁) → decidable (x₀ ＝ x₁)
+  γ : is-finite (doubleton x₀ x₁) → is-decidable (x₀ ＝ x₁)
   γ (0 , s) = ∥∥-rec (decidability-of-prop-is-prop fe X-is-set) α s
    where
-    α : doubleton x₀ x₁ ≃ 𝟘 → decidable (x₀ ＝ x₁)
+    α : doubleton x₀ x₁ ≃ 𝟘 → is-decidable (x₀ ＝ x₁)
     α (g , i) = 𝟘-elim (g (x₀ , ∣ inl refl ∣))
 
   γ (1 , s) = inl (∥∥-rec X-is-set β s)
@@ -296,24 +296,29 @@ doubleton-finite-gives-decidable-equality fe x₀ x₁ X-is-set ϕ = δ
     α 𝟎 𝟎 = refl
 
     β : doubleton x₀ x₁ ≃ Fin 1 → x₀ ＝ x₁
-    β (g , i) = ap pr₁ (equivs-are-lc g i (α (g (doubleton-map x₀ x₁ 𝟎)) (g (doubleton-map x₀ x₁ 𝟏))))
+    β (g , i) = ap pr₁ (equivs-are-lc g i
+                         (α (g (doubleton-map x₀ x₁ 𝟎))
+                         (g (doubleton-map x₀ x₁ 𝟏))))
 
   γ (succ (succ n) , s) = ∥∥-rec (decidability-of-prop-is-prop fe X-is-set) f s
    where
-    f : doubleton x₀ x₁ ≃ Fin (succ (succ n)) → decidable (x₀ ＝ x₁)
+    f : doubleton x₀ x₁ ≃ Fin (succ (succ n)) → is-decidable (x₀ ＝ x₁)
     f (g , i) = β
      where
       h : x₀ ＝ x₁ → doubleton-map x₀ x₁ 𝟎 ＝ doubleton-map x₀ x₁ 𝟏
       h = to-subtype-＝ (λ _ → ∨-is-prop)
 
-      α : decidable (g (doubleton-map x₀ x₁ 𝟎) ＝ g (doubleton-map x₀ x₁ 𝟏)) → decidable (x₀ ＝ x₁)
+      α : is-decidable (g (doubleton-map x₀ x₁ 𝟎) ＝ g (doubleton-map x₀ x₁ 𝟏))
+        → is-decidable (x₀ ＝ x₁)
       α (inl p) = inl (ap pr₁ (equivs-are-lc g i p))
       α (inr ν) = inr (contrapositive (λ p → ap g (h p)) ν)
 
-      β : decidable (x₀ ＝ x₁)
-      β = α (Fin-is-discrete (g (doubleton-map x₀ x₁ 𝟎)) (g (doubleton-map x₀ x₁ 𝟏)))
+      β : is-decidable (x₀ ＝ x₁)
+      β = α (Fin-is-discrete
+              (g (doubleton-map x₀ x₁ 𝟎))
+              (g (doubleton-map x₀ x₁ 𝟏)))
 
-  δ : decidable (x₀ ＝ x₁)
+  δ : is-decidable (x₀ ＝ x₁)
   δ = γ ϕ
 
 all-K-finite-types-finite-gives-all-sets-discrete :
