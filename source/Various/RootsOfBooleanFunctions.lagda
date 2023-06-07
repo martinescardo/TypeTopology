@@ -500,7 +500,29 @@ Our original definition of the formula for the putative root was the following:
 ε-formula' : (n : ℕ) → E n ^ n
 ε-formula' n = εᵉ 𝕗
 
+example₃-formula' :
+ let
+  y  = 𝕗 (O , O , 𝕗 (O , O , O , ⟨⟩) , ⟨⟩)
+  x₀ = 𝕗 (O , y , 𝕗 (O , y , O , ⟨⟩) , ⟨⟩)
+  x₁ = 𝕗 (x₀ , O , 𝕗 (x₀ , O , O , ⟨⟩) , ⟨⟩)
+  x₂ = 𝕗 (x₀ , x₁ , O , ⟨⟩)
+ in
+  ε-formula' 3 ＝ (x₀ , x₁ , x₂ , ⟨⟩)
+example₃-formula' = refl
+
+formulas-agreement₃ : ε-formula' 3 ＝ ε-formula 3
+formulas-agreement₃ = refl
+
+formulas-agreement₄ : ε-formula' 4 ＝ ε-formula 4
+formulas-agreement₄ = refl
+
 \end{code}
+
+TODO. The above formula grows doubly exponentially in size. However,
+using variables for common subexpressions, they grow
+exponentially. Define a type of expression accomodating variables for
+common subexpressions and produce a version ε-formula that produced
+such reduced-size expressions.
 
 The advantage of this definition is that it is almost literally the
 same as that of ε'.
@@ -510,18 +532,29 @@ hypothesis to prove the correctness of ε-formula' directly. We did
 find such a proof, but it is long and messy, and we decided not to
 include it here for that reason.
 
-TODO. (1) Find an elegant proof that the function ε-formula' gives a
-formulate for putative roots. (2) Moreover, show that ε-formula' =
-ε-formula. It is easier to prove (2) and then deduce (1), using the
-idea of proof of ε-formula-theorem, rather than prove (1) directly.
+We proposed the following challenges in social media, which were
+solved by Alice Laroche.
 
-Alice Laroche, 1st June 2023
+Challenges.
 
-We can however prove both definitions are equal, and from that deduce
-the correctness of ε-formula'
+(1) Find an elegant proof that the function ε-formula' gives a
+formulate for putative roots.
+
+(2) Moreover, show that ε-formula' = ε-formula.
+
+(3) Show that ε gives the infimum of the (possibly empty) set of roots
+in the lexicographic order.
+
+It is easier to prove (2) and then deduce (1), using the idea of proof
+of ε-formula-theorem, rather than prove (1) directly.
+
+Added by Alice Laroche, 1st June 2023.
+
+We show that both definitions are equivalent, and from that deduce the
+correctness of ε-formula'.
 
 We first define another pair of auxilliary constructions that will be used
-to reason about εᵉ
+to reason about εᵉ.
 
 \begin{code}
 
@@ -541,8 +574,8 @@ Notice that 𝕔𝕠𝕟𝕤 and 𝕔𝕠𝕟𝕤 are more refined versions of �
 \begin{code}
 
 𝕞𝕒𝕡-cons-𝕔𝕠𝕟𝕤 : {n k : ℕ}
-               → (e₀ : E (succ n))
-               → (e : E n)
+                (e₀ : E (succ n))
+                (e : E n)
                → 𝕞𝕒𝕡 (cons e₀ ) e ＝ 𝕔𝕠𝕟𝕤 e₀ e
 𝕞𝕒𝕡s-cons-𝕔𝕠𝕟𝕤s : {n k : ℕ}
                 → (e₀ : E (succ n))
@@ -558,15 +591,16 @@ Notice that 𝕔𝕠𝕟𝕤 and 𝕔𝕠𝕟𝕤 are more refined versions of �
                                          (𝕞𝕒𝕡s-cons-𝕔𝕠𝕟𝕤s e₀ es)
 
 𝕞𝕒𝕡-𝕞𝕒𝕡  : {n m : ℕ}
-         → (f : E m ^ (succ n) → E m ^ m)
-         → (e₀ : E (succ n)) → (e : E n)
+            (f : E m ^ (succ n) → E m ^ m)
+            (e₀ : E (succ n)) → (e : E n)
          → 𝕞𝕒𝕡 f (𝕞𝕒𝕡 (cons e₀) e) ＝ 𝕞𝕒𝕡 (f ∘ cons (𝕞𝕒𝕡 f e₀)) e
+
 𝕞𝕒𝕡-𝕞𝕒𝕡s : {n m k : ℕ}
-         → (f : E m ^ (succ n) → E m ^ m)
-         → (e₀ : E (succ n)) → (es : E n ^ k)
+           (f : E m ^ (succ n) → E m ^ m)
+           (e₀ : E (succ n)) → (es : E n ^ k)
          → 𝕞𝕒𝕡s f (𝕞𝕒𝕡s (cons e₀) es) ＝ 𝕞𝕒𝕡s (f ∘ cons (𝕞𝕒𝕡 f e₀)) es
 
-𝕞𝕒𝕡-𝕞𝕒𝕡 f e₀ O = refl
+𝕞𝕒𝕡-𝕞𝕒𝕡 f e₀ O      = refl
 𝕞𝕒𝕡-𝕞𝕒𝕡 f e₀ (𝕗 es) = ap (𝕗 ∘ f ∘ cons (𝕞𝕒𝕡 f e₀)) (𝕞𝕒𝕡-𝕞𝕒𝕡s f e₀ es)
 
 𝕞𝕒𝕡-𝕞𝕒𝕡s f e₀ ⟨⟩       = refl
@@ -580,7 +614,7 @@ to unroll the compositions that happen in εᵉ.
 \begin{code}
 
 unroll-εᵉ-lemma : {n k : ℕ}
-                → (f : E k ^ n → E k ^ k)
+                  (f : E k ^ n → E k ^ k)
                 → εᵉ (𝕗 ∘ f) ＝ 𝕞𝕒𝕡s f (εᵉ 𝕗)
 unroll-εᵉ-lemma {0}      {k} f = refl
 unroll-εᵉ-lemma {succ n} {k} f = γ
@@ -620,7 +654,7 @@ unroll-εᵉ-lemma {succ n} {k} f = γ
     IV = ap (λ x → 𝕞𝕒𝕡 f c₁ , 𝕞𝕒𝕡s f x) (unroll-εᵉ-lemma (cons c₁) ⁻¹)
 
 unroll-εᵉ : {n : ℕ}
-          → (e₀ : E (succ n))
+            (e₀ : E (succ n))
           → εᵉ (𝕗 ∘ (cons e₀)) ＝ 𝕔𝕠𝕟𝕤s e₀ (εᵉ 𝕗)
 unroll-εᵉ e₀ = unroll-εᵉ-lemma (cons e₀) ∙ 𝕞𝕒𝕡s-cons-𝕔𝕠𝕟𝕤s e₀ (εᵉ 𝕗)
 
@@ -676,37 +710,9 @@ It then follows immediately by transport that ε-formula' is correct.
 
 \end{code}
 
-End of Alice's contribution.
+Added by Alice Laroche, 5th june 2023
 
-\begin{code}
-
-example₃-formula' :
- let
-  y  = 𝕗 (O , O , 𝕗 (O , O , O , ⟨⟩) , ⟨⟩)
-  x₀ = 𝕗 (O , y , 𝕗 (O , y , O , ⟨⟩) , ⟨⟩)
-  x₁ = 𝕗 (x₀ , O , 𝕗 (x₀ , O , O , ⟨⟩) , ⟨⟩)
-  x₂ = 𝕗 (x₀ , x₁ , O , ⟨⟩)
- in
-  ε-formula' 3 ＝ (x₀ , x₁ , x₂ , ⟨⟩)
-example₃-formula' = refl
-
-formulas-agreement₃ : ε-formula' 3 ＝ ε-formula 3
-formulas-agreement₃ = refl
-
-formulas-agreement₄ : ε-formula' 4 ＝ ε-formula 4
-formulas-agreement₄ = refl
-
-\end{code}
-
-TODO. The above formula grows doubly exponentially in size. However,
-using variables for common subexpressions, they grow
-exponentially. Define a type of expression accomodating variables for
-common subexpressions and produce a version ε-formula that produced
-such reduced-size expressions.
-
-Alice Laroche, 5th june 2023
-
-We can prove that ε f compute in fact the infimum of the set of roots
+We prove that ε f computes in fact the infimum of the set of roots
 ordered by the lexicographical order.
 
 \begin{code}
@@ -722,9 +728,9 @@ _≤₂ₗₑₓ_ = lex-order _≤₂_
 
 open import TypeTopology.InfProperty
 
-ε-is-root-lower-bound : {n : ℕ} →
-                        (f : 𝟚 ^ n → 𝟚) →
-                        root-lower-bound _≤₂ₗₑₓ_ f (ε f)
+ε-is-root-lower-bound : {n : ℕ}
+                        (f : 𝟚 ^ n → 𝟚)
+                      → root-lower-bound _≤₂ₗₑₓ_ f (ε f)
 ε-is-root-lower-bound {0}      f _        fxs=₀ = ⋆
 ε-is-root-lower-bound {succ n} f (x , xs) fxs=₀ = γ (x , xs) fxs=₀
  where
@@ -741,17 +747,17 @@ open import TypeTopology.InfProperty
   γ (₀ , xs) f₀xs=₀ = ₀-minimal-converse (b₀-property xs f₀xs=₀) , δ ₀ xs f₀xs=₀
   γ (₁ , xs) f₁xs=₀ = ₁-top , δ ₁ xs f₁xs=₀
 
-lower-bound-property : {n : ℕ} →
-                       (f : 𝟚 ^ (succ n) → 𝟚) →
-                       (b : 𝟚) →
-                       (xs : 𝟚 ^ n) →
-                       root-lower-bound _≤₂ₗₑₓ_ f (b , xs) →
-                       root-lower-bound _≤₂ₗₑₓ_ (f ∘ cons b) xs
+lower-bound-property : {n : ℕ}
+                       (f : 𝟚 ^ (succ n) → 𝟚)
+                       (b : 𝟚)
+                       (xs : 𝟚 ^ n)
+                     → root-lower-bound _≤₂ₗₑₓ_ f (b , xs)
+                     → root-lower-bound _≤₂ₗₑₓ_ (f ∘ cons b) xs
 lower-bound-property f b xs lower-bound ys fbys=₀ = pr₂ (lower-bound (b , ys) fbys=₀) refl
 
-ε-is-upper-bound-of-root-lower-bounds : {n : ℕ} →
-                                        (f : 𝟚 ^ n → 𝟚) →
-                                        upper-bound-of-root-lower-bounds _≤₂ₗₑₓ_ f (ε f)
+ε-is-upper-bound-of-root-lower-bounds : {n : ℕ}
+                                        (f : 𝟚 ^ n → 𝟚)
+                                      → upper-bound-of-root-lower-bounds _≤₂ₗₑₓ_ f (ε f)
 ε-is-upper-bound-of-root-lower-bounds {0}      f xs lower-bound = ⋆
 ε-is-upper-bound-of-root-lower-bounds {succ n} f xs lower-bound = γ xs lower-bound
  where
@@ -759,16 +765,17 @@ lower-bound-property f b xs lower-bound ys fbys=₀ = pr₂ (lower-bound (b , ys
   b₀ : 𝟚
   b₀ = ε𝟚 (b ↦ A (f ∘ cons b))
 
-  b₀-property : (xs : 𝟚 ^ n) →
-                root-lower-bound _≤₂ₗₑₓ_ f (₁ , xs) →
-                (b : 𝟚) → b ＝ b₀ → ₁ ≤ b₀
+  b₀-property : (xs : 𝟚 ^ n)
+              → root-lower-bound _≤₂ₗₑₓ_ f (₁ , xs)
+              → (b : 𝟚) → b ＝ b₀ → ₁ ≤ b₀
   b₀-property xs lower-bound ₀ eq = transport (₁ ≤_) eq
                                      (pr₁ (lower-bound (₀ , ε (f ∘ cons ₀)) (eq ⁻¹)))
   b₀-property xs lower-bound ₁ eq = transport (₁ ≤_) eq ⋆
 
-  δ : (b : 𝟚) (xs : 𝟚 ^ n) →
-      root-lower-bound _≤₂ₗₑₓ_ f (b , xs) →
-      b ＝ b₀ → xs ≤₂ₗₑₓ ε (f ∘ cons b₀)
+  δ : (b : 𝟚) (xs : 𝟚 ^ n)
+    → root-lower-bound _≤₂ₗₑₓ_ f (b , xs)
+    → b ＝ b₀
+    → xs ≤₂ₗₑₓ ε (f ∘ cons b₀)
   δ b xs lower-bound refl = ε-is-upper-bound-of-root-lower-bounds
                              (f ∘ cons b₀) xs
                              (lower-bound-property f b₀ xs lower-bound)
@@ -778,12 +785,14 @@ lower-bound-property f b xs lower-bound ys fbys=₀ = pr₂ (lower-bound (b , ys
   γ (₁ , xs) lower-bound = b₀-property xs lower-bound b₀ refl , δ ₁ xs lower-bound
 
 ε-is-roots-infimum : {n : ℕ} (f : 𝟚 ^ n → 𝟚) → roots-infimum _≤₂ₗₑₓ_ f (ε f)
-ε-is-roots-infimum f = (ε-is-root-lower-bound f)
-                     , (ε-is-upper-bound-of-root-lower-bounds f)
+ε-is-roots-infimum f = ε-is-root-lower-bound f ,
+                       ε-is-upper-bound-of-root-lower-bounds f
 
 𝟚^n-has-inf : {n : ℕ} → has-inf {X = 𝟚 ^ n} _≤₂ₗₑₓ_
-𝟚^n-has-inf p = (ε p) , (ε-gives-putative-root p , ε-is-roots-infimum p)
+𝟚^n-has-inf p =  ε p ,
+                 ε-gives-putative-root p ,
+                 ε-is-roots-infimum p
 
 \end{code}
 
-End of Alice's contribution
+End of Alice's contribution.
