@@ -4,8 +4,9 @@ Updated 12 and 14 June 2022
 
 Index for the formalization of domain theory, briefly describing the contents of
 each directory, ordered almost¹ alphabetically by directory name.
+(¹ Basics is first.)
 
-¹ Basics is first
+Several additional domain-theoretic formalization targets are listed at the end.
 
 ─────────────────────────────────────────────────────────────────────
 This accompanies the PhD thesis
@@ -124,3 +125,26 @@ import DomainTheory.ScottModelOfPCF.PCFCombinators  -- (1)
 import DomainTheory.ScottModelOfPCF.ScottModelOfPCF -- (2)
 
 \end{code}
+
+Additional formalization targets
+────────────────────────────────
+
+The Formalization chapter in the aforementioned PhD thesis
+(https://arxiv.org/abs/2301.12405) details a few things (in the form of specific
+lemmas) that have been left unformalized.
+
+We present a succinct list of domain-theoretic formalization targets here:
+
+1. Complete the formalization that bounded complete (continuous) dcpos with a
+   small basis are closed under exponentials. It follows from the case of
+   algebraic domains through a lemma that is left unformalized.
+   See DomainTheory.BasesAndContinuity.StepFunctions for details.
+
+2. Formalize the untyped λ-calculus and its interpretation in Scott's D∞.
+   See DomainTheory.Bilimits.Dinfinity for the construction of D∞.
+
+3. Formalize the results in reverse mathematics and delta-complete posets.
+   See Chapter 6 of the PhD thesis for details.
+
+Item 2 should be a fun challenge for a student with an interest in
+(domain-theoretic semantics of) programming languages.
