@@ -8,8 +8,10 @@ module MLTT.index where
 
 import MLTT.AlternativePlus
 import MLTT.Athenian
+import MLTT.Bool
 import MLTT.Empty
 import MLTT.Empty-Type
+import MLTT.Fin
 import MLTT.Id
 import MLTT.Identity-Type
 import MLTT.List
@@ -30,6 +32,7 @@ import MLTT.Unit
 import MLTT.Unit-Properties
 import MLTT.Unit-Type
 import MLTT.Universes
+import MLTT.Vector
 import MLTT.W
 import MLTT.W-Properties
 

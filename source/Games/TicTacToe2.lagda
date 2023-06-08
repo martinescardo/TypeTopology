@@ -11,6 +11,8 @@ another file.
 module Games.TicTacToe2 where
 
 open import MLTT.Spartan hiding (J)
+open import MLTT.Fin
+open import MLTT.List
 
 data 𝟛 : Type where
  O-wins draw X-wins : 𝟛
@@ -18,6 +20,7 @@ data 𝟛 : Type where
 open import Games.Constructor 𝟛
 open import Games.FiniteHistoryDependent 𝟛
 open import Games.TypeTrees
+open import Games.J
 open import MLTT.Athenian
 open import TypeTopology.SigmaDiscreteAndTotallySeparated
 
@@ -122,6 +125,8 @@ predicate q:
       k : 𝟛 → Move (m ∷ us)
       k X-wins = y , a
       k r      = g vs b
+
+  open J-definitions 𝟛
 
   argmin : (m : Cell) (ms : List Cell) → 𝟛 → (Move (m ∷ ms) → 𝟛) → Move (m ∷ ms)
   argmin m ms r q = argmax m ms (flip r) (λ xs → flip (q xs))

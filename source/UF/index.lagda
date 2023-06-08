@@ -51,6 +51,7 @@ import UF.SIP-Examples
 import UF.Section-Embedding
 import UF.SetTrunc
 import UF.Size
+import UF.SmallnessProperties
 import UF.StructureIdentityPrinciple -- obsolete but keep
 import UF.Subsingletons
 import UF.Subsingletons-FunExt

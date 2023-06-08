@@ -95,4 +95,26 @@ record Curly-Order {𝓤} {𝓥} {𝓦} (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) : (𝓤 �
 
 open Curly-Order {{...}} public
 
+record Strict-Order-Chain {𝓤} {𝓥} {𝓦} {𝓣} {𝓧 : Universe}
+ (X : 𝓤 ̇) (Y : 𝓥 ̇) (Z : 𝓦 ̇)
+ (_<₁_ : X → Y → 𝓣 ̇)
+ (_<₂_ : Y → Z → 𝓧 ̇) :  (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓣 ⊔ 𝓧)⁺ ̇ where
+ field
+  _<_<_ : X → Y → Z → 𝓣 ⊔ 𝓧 ̇
+
+ infix 30 _<_<_
+
+open Strict-Order-Chain {{...}} public
+
+record Order-Chain {𝓤} {𝓥} {𝓦} {𝓣} {𝓧 : Universe}
+ (X : 𝓤 ̇) (Y : 𝓥 ̇) (Z : 𝓦 ̇)
+ (_≤₁_ : X → Y → 𝓣 ̇)
+ (_≤₂_ : Y → Z → 𝓧 ̇) :  (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓣 ⊔ 𝓧)⁺ ̇ where
+ field
+  _≤_≤_ : X → Y → Z → 𝓣 ⊔ 𝓧 ̇
+
+ infix 30 _≤_≤_
+
+open Order-Chain {{...}} public
+
 \end{code}

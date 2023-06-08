@@ -204,7 +204,7 @@ theoretic ordinal.
  ∈ᵒʳᵈ-is-well-founded : is-well-founded _∈ᵒʳᵈ_
  ∈ᵒʳᵈ-is-well-founded = transfinite-induction-converse _∈ᵒʳᵈ_ W
   where
-   W : Well-founded _∈ᵒʳᵈ_
+   W : is-Well-founded _∈ᵒʳᵈ_
    W P IH = (λ (x , σ) → Q-holds-everywhere x σ)
     where
      Q : 𝕍 → 𝓤 ⁺ ̇
@@ -400,7 +400,7 @@ an arbitrary well founded order) also appears at the bottom of [Acz77, p. 743].
 \begin{code}
 
  open import Ordinals.Arithmetic fe'
- open import Ordinals.Arithmetic-Properties ua hiding (lemma₁ ; lemma₂)
+ open import Ordinals.ArithmeticProperties ua
  open import Ordinals.OrdinalOfOrdinalsSuprema ua
 
  open import UF.Quotient hiding (is-prop-valued)

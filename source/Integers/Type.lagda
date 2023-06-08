@@ -22,10 +22,10 @@ module Integers.Type where
 
 \end{code}
 
-In order to avoid having positive and negative 0, a standard solutions
-to have the negative constructor denote λ n → - (n + 1).
-For example, negsucc 0 = -1
-             negsucc 4 = -5.
+In order to avoid having positive and negative 0, a standard solution is to have
+the negative constructor denote λ n → - (n + 1).
+
+For example, negsucc 0 = -1, negsucc 4 = -5.
 
 \begin{code}
 
@@ -186,16 +186,17 @@ always equal.
 ℤ-is-discrete : is-discrete ℤ
 ℤ-is-discrete (pos x) (pos y) = f (ℕ-is-discrete x y)
  where
-  f : (x ＝ y) ∔ ¬ (x ＝ y) → decidable (pos x ＝ pos y)
+  f : (x ＝ y) ∔ ¬ (x ＝ y) → is-decidable (pos x ＝ pos y)
   f (inl e)  = inl (ap pos e)
   f (inr ne) = inr (λ e → ne (pos-lc e))
 ℤ-is-discrete (pos x) (negsucc y) = inr pos-not-negsucc
 ℤ-is-discrete (negsucc x) (pos y) = inr negsucc-not-pos
 ℤ-is-discrete (negsucc x) (negsucc y) = f (ℕ-is-discrete x y)
  where
-  f : (x ＝ y) ∔ ¬ (x ＝ y) → decidable (negsucc x ＝ negsucc y)
+  f : (x ＝ y) ∔ ¬ (x ＝ y) → is-decidable (negsucc x ＝ negsucc y)
   f (inl e)  = inl (ap negsucc e)
   f (inr ne) = inr (λ e → ne (negsucc-lc e))
+
 ℤ-is-set : is-set ℤ
 ℤ-is-set = discrete-types-are-sets ℤ-is-discrete
 
@@ -210,6 +211,16 @@ predℤ-lc {x} {y} p = x               ＝⟨ succpredℤ x ⁻¹ ⟩
                      succℤ (predℤ x) ＝⟨ ap succℤ p     ⟩
                      succℤ (predℤ y) ＝⟨ succpredℤ y    ⟩
                      y               ∎
+
+\end{code}
+
+We define here some shorthand notation for (pos ∘ succ) and negsucc.
+
+\begin{code}
+
+ps ns : ℕ → ℤ
+ps = pos ∘ succ
+ns = negsucc
 
 \end{code}
 

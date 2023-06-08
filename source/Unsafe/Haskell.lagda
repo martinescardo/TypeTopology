@@ -1,4 +1,4 @@
-Martin Escardo
+Martin Escardo, March 2023
 
 Adapted from the standard library, to be able to compile Agda via
 Haskell and print within compiled programs.
@@ -69,10 +69,10 @@ postulate
 primitive primShowInteger : ℤ → String
 
 showℤ : ℤ → String
-showℤ n = primShowInteger n
+showℤ = primShowInteger
 
 showℕ : ℕ → String
-showℕ n = primShowInteger (pos n)
+showℕ = primShowNat
 
 _+++_ : String → String → String
 _+++_ = primStringAppend

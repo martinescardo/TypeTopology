@@ -8,8 +8,10 @@ The main result needed in this module is the extension lemma.
 
 open import MLTT.Spartan hiding (𝟚)
 open import UF.Base
+open import UF.Equiv hiding (_■)
 open import UF.PropTrunc
 open import UF.FunExt
+open import UF.Size
 open import UF.PropTrunc
 open import MLTT.List hiding ([_])
 
@@ -76,7 +78,7 @@ satisfies-ba-laws {𝓤 = 𝓤} {𝓥 = 𝓥} {A = A} (_≤_ , 𝟏 , _⊓_ , �
    open Joins (λ x y → x ≤ y)
 
    rest : is-partial-order A _≤_ → Ω (𝓤 ⊔ 𝓥)
-   rest p = β ∧ γ ∧ δ ∧ ϵ ∧ ζ
+   rest p = β ∧ γ ∧ δ ∧ ϵ ∧ ζ ∧ η
     where
      P : Poset 𝓤 𝓥
      P = A , _≤_ , p
@@ -87,22 +89,22 @@ satisfies-ba-laws {𝓤 = 𝓤} {𝓥 = 𝓥} {A = A} (_≤_ , 𝟏 , _⊓_ , �
      open Complementation iss 𝟎 𝟏 _⊓_ _⋎_
 
      β : Ω (𝓤 ⊔ 𝓥)
-     β = Ɐ x ∶ A , Ɐ y ∶ A , (x ⊓ y) is-glb-of (x , y)
+     β = Ɐ x ꞉ A , Ɐ y ꞉ A , (x ⊓ y) is-glb-of (x , y)
 
      γ : Ω (𝓤 ⊔ 𝓥)
-     γ = Ɐ x ∶ A , x ≤ 𝟏
+     γ = Ɐ x ꞉ A , x ≤ 𝟏
 
      δ : Ω (𝓤 ⊔ 𝓥)
-     δ = Ɐ x ∶ A , Ɐ y ∶ A , _is-lub-of₂_ (x ⋎ y) (x , y)
+     δ = Ɐ x ꞉ A , Ɐ y ꞉ A , _is-lub-of₂_ (x ⋎ y) (x , y)
 
      ϵ : Ω (𝓤 ⊔ 𝓥)
-     ϵ = Ɐ x ∶ A , 𝟎 ≤ x
+     ϵ = Ɐ x ꞉ A , 𝟎 ≤ x
 
      ζ : Ω (𝓤 ⊔ 𝓤)
-     ζ = Ɐ x ∶ A , Ɐ y ∶ A , Ɐ z ∶ A , x ⊓ (y ⋎ z) ＝[ iss ]＝ (x ⊓ y) ⋎ (x ⊓ z)
+     ζ = Ɐ x ꞉ A , Ɐ y ꞉ A , Ɐ z ꞉ A , x ⊓ (y ⋎ z) ＝[ iss ]＝ (x ⊓ y) ⋎ (x ⊓ z)
 
      η : Ω (𝓤 ⊔ 𝓤)
-     η = Ɐ x ∶ A , (¬ x) complements x
+     η = Ɐ x ꞉ A , (¬ x) complements x
 
 \end{code}
 
@@ -156,8 +158,28 @@ infixl 3 join-of-ba
 
 syntax join-of-ba B x y = x ⋎[ B ] y
 
+⋎[_]-is-upper₁ : (B : BooleanAlgebra 𝓤 𝓥)
+               → (x y : ⟪ B ⟫) → (x ≤[ poset-of-ba B ] (x ⋎[ B ] y)) holds
+⋎[_]-is-upper₁ (_ , _ , (_ , _ , _ , φ , _)) x y = pr₁ (pr₁ (φ x y))
+
+⋎[_]-is-upper₂ : (B : BooleanAlgebra 𝓤 𝓥)
+               → (x y : ⟪ B ⟫) → (y ≤[ poset-of-ba B ] (x ⋎[ B ] y)) holds
+⋎[_]-is-upper₂ (_ , _ , (_ , _ , _ , φ , _)) x y = pr₂ (pr₁ (φ x y))
+
+⋎[_]-is-least : (B : BooleanAlgebra 𝓤 𝓥)
+              → {u x y : ⟪ B ⟫}
+              → (x ≤[ poset-of-ba B ] u) holds
+              → (y ≤[ poset-of-ba B ] u) holds
+              → ((x ⋎[ B ] y) ≤[ poset-of-ba B ] u) holds
+⋎[_]-is-least (_ , _ , (_ , _ , _ , φ , _)) {u} {x} {y} p q =
+ pr₂ (φ x y) (u , p , q)
+
 ⊤[_] : (B : BooleanAlgebra 𝓤 𝓥) → ⟪ B ⟫
 ⊤[ (_ , (_ , ⊤ , _ , _ , _ , _) , _) ] = ⊤
+
+⊤[_]-is-top : (B : BooleanAlgebra 𝓤 𝓥)
+            → (b : ⟪ B ⟫) → (b ≤[ poset-of-ba B ] ⊤[ B ]) holds
+⊤[ _ , _ , φ ]-is-top = pr₁ (pr₂ (pr₂ φ))
 
 ⊥[_] : (B : BooleanAlgebra 𝓤 𝓥) → ⟪ B ⟫
 ⊥[ (_ , (_ , _ , _ , ⊥ , _ , _) , _) ] = ⊥
@@ -165,6 +187,22 @@ syntax join-of-ba B x y = x ⋎[ B ] y
 ⊥[_]-is-bottom : (B : BooleanAlgebra 𝓤 𝓥)
                → (b : ⟪ B ⟫) → (⊥[ B ] ≤[ poset-of-ba B ] b) holds
 ⊥[ _ , _ , φ ]-is-bottom = pr₁ (pr₂ (pr₂ (pr₂ (pr₂ φ))))
+
+¬[_]_ : (B : BooleanAlgebra 𝓤 𝓥) → ⟪ B ⟫ → ⟪ B ⟫
+¬[ B ] x = pr₂ (pr₂ (pr₂ (pr₂ (pr₂ (pr₁ (pr₂ B)))))) x
+
+¬[_]-is-complement : (B : BooleanAlgebra 𝓤 𝓥)
+                   → let
+                      σ = carrier-of-[ poset-of-ba B ]-is-set
+                      open Complementation σ ⊥[ B ] ⊤[ B ] (meet-of-ba B) (join-of-ba B)
+                     in
+                      (x : ⟪ B ⟫) → ((¬[ B ] x) complements x) holds
+¬[_]-is-complement (_ , _ , (_ , _ , _ , _ , _ , _ , φ)) = φ
+
+⋏-distributes-over-⋎ : (B : BooleanAlgebra 𝓤 𝓥)
+                     → (x y z : ⟪ B ⟫)
+                     → x ⋏[ B ] (y ⋎[ B ] z) ＝ (x ⋏[ B ] y) ⋎[ B ] (x ⋏[ B ] z)
+⋏-distributes-over-⋎ (_ , _ , (_ , _ , _ , _ , _ , φ , _)) = φ
 
 \end{code}
 
@@ -181,13 +219,32 @@ is-lattice-homomorphism {𝓤′} {𝓥′} {𝓤} {𝓥} B L η = β ∧ γ ∧
   β = η ⊤[ B ] ＝[ iss ]＝ 𝟏[ L ]
 
   γ : Ω (𝓤′ ⊔ 𝓤)
-  γ = Ɐ x ∶ ⟪ B ⟫ , Ɐ y ∶ ⟪ B ⟫ , η (x ⋏[ B ] y) ＝[ iss ]＝ η x ∧[ L ] η y
+  γ = Ɐ x ꞉ ⟪ B ⟫ , Ɐ y ꞉ ⟪ B ⟫ , η (x ⋏[ B ] y) ＝[ iss ]＝ η x ∧[ L ] η y
 
   δ : Ω 𝓤
   δ = η ⊥[ B ] ＝[ iss ]＝ 𝟎[ L ]
 
   ϵ : Ω (𝓤′ ⊔ 𝓤)
-  ϵ = Ɐ x ∶ ⟪ B ⟫ , Ɐ y ∶ ⟪ B ⟫ , η (x ⋎[ B ] y) ＝[ iss ]＝ η x ∨[ L ] η y
+  ϵ = Ɐ x ꞉ ⟪ B ⟫ , Ɐ y ꞉ ⟪ B ⟫ , η (x ⋎[ B ] y) ＝[ iss ]＝ η x ∨[ L ] η y
+
+is-ba-homomorphism : (B₁ : BooleanAlgebra 𝓤 𝓥) (B₂ : BooleanAlgebra 𝓤' 𝓥')
+                   → (f : ⟪ B₁ ⟫ → ⟪ B₂ ⟫) → Ω (𝓤 ⊔ 𝓤')
+is-ba-homomorphism {𝓤} {𝓥} {𝓤'} {𝓥'} B₁ B₂ f = β ∧ γ ∧ δ ∧ ϵ
+ where
+  σ : is-set ⟪ B₂ ⟫
+  σ = carrier-of-[ poset-of-ba B₂ ]-is-set
+
+  β : Ω 𝓤'
+  β = f ⊤[ B₁ ] ＝[ σ ]＝ ⊤[ B₂ ]
+
+  γ : Ω (𝓤 ⊔ 𝓤')
+  γ = Ɐ x ꞉ ⟪ B₁ ⟫ , Ɐ y ꞉ ⟪ B₁ ⟫ , f (x ⋏[ B₁ ] y) ＝[ σ ]＝ f x ⋏[ B₂ ] f y
+
+  δ : Ω 𝓤'
+  δ = f ⊥[ B₁ ] ＝[ σ ]＝ ⊥[ B₂ ]
+
+  ϵ : Ω (𝓤 ⊔ 𝓤')
+  ϵ = Ɐ x ꞉ ⟪ B₁ ⟫ , Ɐ y ꞉ ⟪ B₁ ⟫ , f (x ⋎[ B₁ ] y) ＝[ σ ]＝ f x ⋎[ B₂ ] f y
 
 lattice-homomorphisms-are-monotone : (B : BooleanAlgebra 𝓤′ 𝓥′) (L : Frame 𝓤 𝓥 𝓦)
                                     → (h : ⟪ B ⟫ → ⟨ L ⟩)
@@ -210,9 +267,9 @@ lattice-homomorphisms-are-monotone B L h (β , γ , _) x y p =
        h (x ⋏[ B ] y)      ＝⟨ ap h ‡    ⟩
        h x                 ∎
 
-is-embedding : (B : BooleanAlgebra 𝓤′ 𝓥′) (L : Frame 𝓤 𝓥 𝓦)
+is-ba-embedding : (B : BooleanAlgebra 𝓤′ 𝓥′) (L : Frame 𝓤 𝓥 𝓦)
              → (⟪ B ⟫ → ⟨ L ⟩) → Ω (𝓤′ ⊔ 𝓤)
-is-embedding {𝓤′} {𝓥′} {𝓤} {𝓥} {𝓦} B L η =
+is-ba-embedding {𝓤′} {𝓥′} {𝓤} {𝓥} {𝓦} B L η =
  ι ∧ is-lattice-homomorphism B L η
   where
    iss : is-set ⟨ L ⟩
@@ -222,30 +279,30 @@ is-embedding {𝓤′} {𝓥′} {𝓤} {𝓥} {𝓦} B L η =
    iss₀ = carrier-of-[ poset-of-ba B ]-is-set
 
    ι : Ω (𝓤′ ⊔ 𝓤)
-   ι = Ɐ x ∶ ⟪ B ⟫ , Ɐ y ∶ ⟪ B ⟫ , (η x ＝[ iss ]＝ η y) ⇒ (x ＝[ iss₀ ]＝ y)
+   ι = Ɐ x ꞉ ⟪ B ⟫ , Ɐ y ꞉ ⟪ B ⟫ , (η x ＝[ iss ]＝ η y) ⇒ (x ＝[ iss₀ ]＝ y)
 
 embedding-preserves-meets : (B : BooleanAlgebra 𝓤′ 𝓥′) (L : Frame 𝓤 𝓥 𝓦)
                           → (η : ⟪ B ⟫ → ⟨ L ⟩)
-                          → is-embedding B L η holds
+                          → is-ba-embedding B L η holds
                           → (x y : ⟪ B ⟫) → η (x ⋏[ B ] y) ＝ η x ∧[ L ] η y
 embedding-preserves-meets B L η (_ , (_ , ξ , _)) = ξ
 
 embedding-injective : (B : BooleanAlgebra 𝓤′ 𝓥′) (L : Frame 𝓤 𝓥 𝓦)
                     → (η : ⟪ B ⟫ → ⟨ L ⟩)
-                    → is-embedding B L η holds
+                    → is-ba-embedding B L η holds
                     → (x y : ⟪ B ⟫) → η x ＝ η y → x ＝ y
 embedding-injective B L η (ι , _) = ι
 
 is-spectral′ : (B : BooleanAlgebra 𝓤′ 𝓥′) (L : Frame 𝓤 𝓥 𝓦)
             → (f : ⟪ B ⟫ → ⟨ L ⟩) → Ω (𝓤′ ⊔ 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
-is-spectral′ B L f = Ɐ x ∶ ⟪ B ⟫ , is-compact-open L (f x)
+is-spectral′ B L f = Ɐ x ꞉ ⟪ B ⟫ , is-compact-open L (f x)
 
 \end{code}
 
 \begin{code}
 
 _is-sublattice-of_ : BooleanAlgebra 𝓤′ 𝓥′ → Frame 𝓤 𝓥 𝓦 → Ω (𝓤′ ⊔ 𝓤)
-_is-sublattice-of_ B L = Ǝ η ∶ (⟪ B ⟫ → ⟨ L ⟩) , is-embedding B L η holds
+_is-sublattice-of_ B L = Ǝ η ꞉ (⟪ B ⟫ → ⟨ L ⟩) , is-ba-embedding B L η holds
 
 \end{code}
 
@@ -253,7 +310,7 @@ _is-sublattice-of_ B L = Ǝ η ∶ (⟪ B ⟫ → ⟨ L ⟩) , is-embedding B L 
 
 embedding-preserves-and-reflects-order : (B : BooleanAlgebra 𝓤′ 𝓥′) (L : Frame 𝓤 𝓥 𝓦)
                                        → (η : ⟪ B ⟫ → ⟨ L ⟩)
-                                       → (μ : is-embedding B L η holds)
+                                       → (μ : is-ba-embedding B L η holds)
                                        → (x y : ⟪ B ⟫)
                                        → (x ≤[ poset-of-ba B ] y
                                        ↔ η x ≤[ poset-of L ] η y) holds
@@ -294,7 +351,7 @@ embedding-preserves-and-reflects-order B L η μ x y = † , ‡
 
 embeddings-lemma : (B : BooleanAlgebra 𝓤′ 𝓥′) (L : Frame 𝓤 𝓥 𝓦)
                  → (η : ⟪ B ⟫ → ⟨ L ⟩)
-                 → is-embedding B L η holds
+                 → is-ba-embedding B L η holds
                  → (x : ⟪ B ⟫) → (η x ≤[ poset-of L ] 𝟎[ L ]) holds → x ＝ ⊥[ B ]
 embeddings-lemma B L η (ι , _ , (_ , ξ , _)) x p = ι x ⊥[ B ] †
  where
@@ -308,7 +365,7 @@ embeddings-lemma B L η (ι , _ , (_ , ξ , _)) x p = ι x ⊥[ B ] †
 is-generated-by : (L : Frame 𝓤 𝓦 𝓦) → (B : BooleanAlgebra 𝓦 𝓥)
                 → (⟪ B ⟫ → ⟨ L ⟩) → Ω 𝓤
 is-generated-by {𝓦 = 𝓦} L B η =
- Ɐ x ∶ ⟨ L ⟩ , x ＝[ σ ]＝ (⋁[ L ] ⁅ η b ∣ (b , _) ∶ (Σ b ꞉ ⟪ B ⟫ , η b ≤ x) ⁆)
+ Ɐ x ꞉ ⟨ L ⟩ , x ＝[ σ ]＝ (⋁[ L ] ⁅ η b ∣ (b , _) ∶ (Σ b ꞉ ⟪ B ⟫ , η b ≤ x) ⁆)
   where
    σ : is-set ⟨ L ⟩
    σ = carrier-of-[ poset-of L ]-is-set
@@ -318,17 +375,16 @@ is-generated-by {𝓦 = 𝓦} L B η =
 contains-compact-opens : (L : Frame 𝓤 𝓦 𝓦) (B : BooleanAlgebra 𝓦 𝓥)
                        → (⟪ B ⟫ → ⟨ L ⟩) → Ω (𝓤 ⊔ 𝓦 ⁺)
 contains-compact-opens L B η =
- Ɐ x ∶ ⟨ L ⟩ , is-compact-open L x ⇒ (Ǝ b ∶ ⟪ B ⟫ , η b ＝ x)
+ Ɐ x ꞉ ⟨ L ⟩ , is-compact-open L x ⇒ (Ǝ b ꞉ ⟪ B ⟫ , η b ＝ x)
 
 \end{code}
 
 \begin{code}
 
-extension-lemma : (B : BooleanAlgebra 𝓦 𝓥) (L L′ : Frame 𝓤 𝓦 𝓦)
+extension-lemma : (B : BooleanAlgebra 𝓦 𝓦) (L L′ : Frame 𝓤 𝓦 𝓦)
                 → (η : ⟪ B ⟫ → ⟨ L ⟩)
-                → is-embedding B L η holds
+                → is-ba-embedding B L η holds
                 → is-spectral L holds
-                → is-spectral L′ holds
                 → is-spectral′ B L η holds
                 → is-generated-by L B η holds
                 → contains-compact-opens L B η holds
@@ -336,7 +392,7 @@ extension-lemma : (B : BooleanAlgebra 𝓦 𝓥) (L L′ : Frame 𝓤 𝓦 𝓦)
                 → is-lattice-homomorphism B L′ h holds
                 → ∃! h₀ ꞉ (⟨ L ⟩ → ⟨ L′ ⟩) ,
                    is-a-frame-homomorphism L L′ h₀ holds × (h ＝ h₀ ∘ η)
-extension-lemma {𝓦} {𝓤} B L L′ η e@(_ , _ , _ , ♥₁ , ♥₂) σ σ′ s γ 𝕜 h μ@(♠₀ , ♠₁ , ♠₂ , ♠₃) =
+extension-lemma {𝓦} {𝓤} B L L′ η e@(_ , _ , _ , ♥₁ , ♥₂) σ s γ 𝕜 h μ@(♠₀ , ♠₁ , ♠₂ , ♠₃) =
  (h⁻ , φ , ψ) , ϑ
  where
   ↓↓_ : ⟨ L ⟩ → Fam 𝓦 ⟨ L′ ⟩
@@ -542,7 +598,7 @@ The function `h⁻` also preserves meets.
                     †₂
                     ॐ
        where
-        ॐ : (Ǝ (c , d) ∶ (⟨ L ⟩ × ⟨ L ⟩) ,
+        ॐ : (Ǝ (c , d) ꞉ (⟨ L ⟩ × ⟨ L ⟩) ,
                 (is-compact-open L c holds)
               × (is-compact-open L d holds)
               × (η b ≤[ poset-of L ] (c ∨[ L ] d)) holds
@@ -718,5 +774,236 @@ The map `h⁻` is the _unique_ map making the diagram commute.
        Ⅱ = ⋁[ L′ ]-unique _ _ (φ′₃ ⁅ η b ∣ (b , _) ∶ Σ b ꞉ ⟪ B ⟫ , η b ≤L x  ⁆) ⁻¹
 
        Ⅲ = ap h⁻₀ (γ x ⁻¹ )
+
+\end{code}
+
+\section{Transport}
+
+Given a Boolean algebra `L` on some set `X : 𝓤` that has a copy in universe `𝓥`,
+then `L` itself has a copy in universe `𝓥`
+
+\begin{code}
+
+transport-ba-structure : (X : 𝓤  ̇) (Y : 𝓤'  ̇) (f : X → Y)
+                       → is-equiv f
+                       → (b : ba-structure 𝓥 X)
+                       → Σ b′ ꞉ ba-structure 𝓥 Y ,
+                          (is-ba-homomorphism (X , b) (Y , b′) f holds)
+transport-ba-structure {𝓤} {𝓤'} {𝓥} X Y f e b = (d , †) , f-is-hom
+ where
+  B₁ : BooleanAlgebra 𝓤 𝓥
+  B₁ = X , b
+
+  P₁ : Poset 𝓤 𝓥
+  P₁ = poset-of-ba B₁
+
+  open PosetNotation P₁
+
+  g : Y → X
+  g = inverse f e
+
+  _≼ᵢ_ : Y → Y → Ω 𝓥
+  y₁ ≼ᵢ y₂ = g y₁ ≤[ P₁ ] g y₂
+
+  η : f ∘ g ∼ id
+  η = inverses-are-sections f e
+
+  ε : g ∘ f ∼ id
+  ε = inverses-are-retractions f e
+
+  f-reflects-order : {x₁ x₂ : X} → (f x₁ ≼ᵢ f x₂ ⇒ x₁ ≤ x₂) holds
+  f-reflects-order {x₁} {x₂} = transport _holds †
+   where
+    † : f x₁ ≼ᵢ f x₂ ＝ x₁ ≤ x₂
+    † = f x₁ ≼ᵢ f x₂         ＝⟨ refl                           ⟩
+        g (f x₁) ≤ g (f x₂)  ＝⟨ ap (λ - → - ≤ g (f x₂)) (ε x₁) ⟩
+        x₁ ≤ g (f x₂)        ＝⟨ ap (λ - → x₁ ≤ -) (ε x₂)       ⟩
+        x₁ ≤ x₂              ∎
+
+  ≼ᵢ-is-reflexive : is-reflexive _≼ᵢ_ holds
+  ≼ᵢ-is-reflexive = ≤-is-reflexive (poset-of-ba B₁) ∘ g
+
+  ≼ᵢ-is-transitive : is-transitive _≼ᵢ_ holds
+  ≼ᵢ-is-transitive x y z p q =
+   ≤-is-transitive (poset-of-ba B₁) (g x) (g y) (g z) † ‡
+    where
+     † : (g x ≤ g y) holds
+     † = f-reflects-order
+          (transport₂ (λ a b → (a ≤ b) holds) (ap g (η x) ⁻¹) (ap g (η y) ⁻¹) p)
+
+     ‡ : (g y ≤ g z) holds
+     ‡ = f-reflects-order
+          (transport₂ (λ a b → (a ≤ b) holds) (ap g (η y) ⁻¹) (ap g (η z) ⁻¹) q)
+
+  ≼ᵢ-is-antisymmetric : is-antisymmetric _≼ᵢ_
+  ≼ᵢ-is-antisymmetric {x} {y} p q =
+   x ＝⟨ η x ⁻¹ ⟩ f (g x) ＝⟨ ap f † ⟩ f (g y) ＝⟨ η y ⟩ y ∎
+    where
+     † : g x ＝ g y
+     † = ≤-is-antisymmetric (poset-of-ba B₁) p q
+
+  𝟏ᵢ : Y
+  𝟏ᵢ = f ⊤[ B₁ ]
+
+  𝟎ᵢ : Y
+  𝟎ᵢ = f ⊥[ B₁ ]
+
+  _⋏ᵢ_ : Y → Y → Y
+  y₁ ⋏ᵢ y₂ = f (g y₁ ⋏[ B₁ ] g y₂)
+
+  _⋎ᵢ_ : Y → Y → Y
+  y₁ ⋎ᵢ y₂ = f (g y₁ ⋎[ B₁ ] g y₂)
+
+  ¬ᵢ_ : Y → Y
+  ¬ᵢ y = f (¬[ B₁ ] g y)
+
+  g-preserves-meets : {y₁ y₂ : Y} → g (y₁ ⋏ᵢ y₂) ＝ g y₁ ⋏[ B₁ ] g y₂
+  g-preserves-meets {y₁} {y₂} = ε (g y₁ ⋏[ B₁ ] g y₂)
+
+  g-preserves-joins : {y₁ y₂ : Y} → g (y₁ ⋎ᵢ y₂) ＝ g y₁ ⋎[ B₁ ] g y₂
+  g-preserves-joins {y₁} {y₂} = ε (g y₁ ⋎[ B₁ ] g y₂)
+
+  d : ba-data 𝓥 Y
+  d = _≼ᵢ_ , f ⊤[ B₁ ] , _⋏ᵢ_ , f ⊥[ B₁ ] , _⋎ᵢ_ , ¬ᵢ_
+
+  open Meets (λ x y → x ≼ᵢ y)
+  open Joins (λ x y → x ≼ᵢ y)
+
+  ρ : is-partial-order Y _≼ᵢ_
+  ρ = (≼ᵢ-is-reflexive , ≼ᵢ-is-transitive) , ≼ᵢ-is-antisymmetric
+
+  P₂ : Poset 𝓤' 𝓥
+  P₂ = Y , (_≼ᵢ_ , ρ)
+
+  𝟏ᵢ-is-top : (y : Y) → (y ≼ᵢ 𝟏ᵢ) holds
+  𝟏ᵢ-is-top y = g y    ≤⟨ ⊤[ B₁ ]-is-top (g y) ⟩
+               ⊤[ B₁ ] ＝⟨ ε ⊤[ B₁ ] ⁻¹ ⟩ₚ
+               g (f ⊤[ B₁ ]) ■
+   where
+    open PosetReasoning P₁
+
+  𝟎ᵢ-is-bottom : (y : Y) → (𝟎ᵢ ≼ᵢ y) holds
+  𝟎ᵢ-is-bottom y = g 𝟎ᵢ           ＝⟨ refl                   ⟩ₚ
+                   g (f ⊥[ B₁ ])  ＝⟨ ε ⊥[ B₁ ]              ⟩ₚ
+                   ⊥[ B₁ ]        ≤⟨ ⊥[ B₁ ]-is-bottom (g y) ⟩
+                   g y            ■
+   where
+    open PosetReasoning P₁
+
+  ⋏ᵢ-is-glb : (y₁ y₂ : Y) → ((y₁ ⋏ᵢ y₂) is-glb-of (y₁ , y₂)) holds
+  ⋏ᵢ-is-glb y₁ y₂ = † , ‡
+   where
+    open PosetReasoning P₁
+
+    †₁ : ((y₁ ⋏ᵢ y₂) ≼ᵢ y₁) holds
+    †₁ = g (y₁ ⋏ᵢ y₂)       ＝⟨ g-preserves-meets ⟩ₚ
+         g y₁ ⋏[ B₁ ] g y₂  ≤⟨ ⋏[ B₁ ]-is-lower₁ (g y₁) (g y₂) ⟩
+         g y₁               ■
+
+    †₂ : ((y₁ ⋏ᵢ y₂) ≼ᵢ y₂) holds
+    †₂ = g (y₁ ⋏ᵢ y₂)       ＝⟨ g-preserves-meets ⟩ₚ
+         g y₁ ⋏[ B₁ ] g y₂  ≤⟨ ⋏[ B₁ ]-is-lower₂ (g y₁) (g y₂) ⟩
+         g y₂               ■
+
+    † : ((y₁ ⋏ᵢ y₂) is-a-lower-bound-of (y₁ , y₂)) holds
+    † = †₁ , †₂
+
+    ‡ : ((𝓁 , _) : lower-bound (y₁ , y₂)) → (g 𝓁 ≤[ P₁ ] g (y₁ ⋏ᵢ y₂)) holds
+    ‡ (𝓁 , p , q) = g 𝓁               ≤⟨ ⋏[ B₁ ]-is-greatest p q ⟩
+                    g y₁ ⋏[ B₁ ] g y₂ ＝⟨ g-preserves-meets ⁻¹   ⟩ₚ
+                    g (y₁ ⋏ᵢ y₂)      ■
+
+  ⋎ᵢ-is-lub : (y₁ y₂ : Y) → ((y₁ ⋎ᵢ y₂) is-lub-of₂ (y₁ , y₂)) holds
+  ⋎ᵢ-is-lub y₁ y₂ = † , ‡
+   where
+    open PosetReasoning P₁
+
+    † : ((y₁ ⋎ᵢ y₂) is-an-upper-bound-of₂ (y₁ , y₂)) holds
+    † = †₁ , †₂
+     where
+      †₁ : (y₁ ≼ᵢ (y₁ ⋎ᵢ y₂)) holds
+      †₁ = g y₁                 ≤⟨ ⋎[ B₁ ]-is-upper₁ (g y₁) (g y₂) ⟩
+           g y₁ ⋎[ B₁ ] g y₂    ＝⟨ g-preserves-joins ⁻¹           ⟩ₚ
+           g (y₁ ⋎ᵢ y₂)         ■
+
+      †₂ : (y₂ ≼ᵢ (y₁ ⋎ᵢ y₂)) holds
+      †₂ = g y₂                ≤⟨ ⋎[ B₁ ]-is-upper₂ (g y₁) (g y₂) ⟩
+           g y₁ ⋎[ B₁ ] g y₂   ＝⟨ g-preserves-joins ⁻¹ ⟩ₚ
+           g (y₁ ⋎ᵢ y₂)        ■
+
+    ‡ : ((𝓊 , _) : upper-bound₂ (y₁ , y₂)) → (g (y₁ ⋎ᵢ y₂) ≤[ P₁ ] g 𝓊) holds
+    ‡ (u , p , q) = g (y₁ ⋎ᵢ y₂)      ＝⟨ g-preserves-joins   ⟩ₚ
+                    g y₁ ⋎[ B₁ ] g y₂ ≤⟨ ⋎[ B₁ ]-is-least p q ⟩
+                    g u               ■
+
+  distributivityᵢ : (y₁ y₂ y₃ : Y) → y₁ ⋏ᵢ (y₂ ⋎ᵢ y₃) ＝ (y₁ ⋏ᵢ y₂) ⋎ᵢ (y₁ ⋏ᵢ y₃)
+  distributivityᵢ y₁ y₂ y₃ =
+   y₁ ⋏ᵢ (y₂ ⋎ᵢ y₃)                                        ＝⟨ refl ⟩
+   f (g y₁ ⋏[ B₁ ] g (y₂ ⋎ᵢ y₃))                           ＝⟨ Ⅰ    ⟩
+   f (g y₁ ⋏[ B₁ ] (g y₂ ⋎[ B₁ ] g y₃))                    ＝⟨ Ⅱ    ⟩
+   f ((g y₁ ⋏[ B₁ ] g y₂) ⋎[ B₁ ] (g y₁ ⋏[ B₁ ] g y₃))     ＝⟨ Ⅲ    ⟩
+   f (g (y₁ ⋏ᵢ y₂) ⋎[ B₁ ] g (y₁ ⋏ᵢ y₃))                   ＝⟨ refl ⟩
+   (y₁ ⋏ᵢ y₂) ⋎ᵢ (y₁ ⋏ᵢ y₃)                                ∎
+    where
+     ※ = λ x y → g-preserves-meets {x} {y} ⁻¹
+     Ⅰ = ap (λ - → f (g y₁ ⋏[ B₁ ] -)) g-preserves-joins
+     Ⅱ = ap f (⋏-distributes-over-⋎ B₁ (g y₁) (g y₂) (g y₃))
+     Ⅲ = ap₂ (λ a b → f (a ⋎[ B₁ ] b)) (※ y₁ y₂) (※ y₁ y₃)
+
+  σ = carrier-of-[ P₂ ]-is-set
+
+  open Complementation σ 𝟎ᵢ 𝟏ᵢ _⋏ᵢ_ _⋎ᵢ_
+
+  ¬ᵢ-is-complement : (y : Y) → ((¬ᵢ y) complements y) holds
+  ¬ᵢ-is-complement y = † , ‡
+   where
+    † : f (g y ⋏[ B₁ ] g (f (¬[ B₁ ] g y))) ＝ f ⊥[ B₁ ]
+    † = f (g y ⋏[ B₁ ] g (f (¬[ B₁ ] g y)))    ＝⟨ Ⅰ ⟩
+        f (g y ⋏[ B₁ ] ¬[ B₁ ] g y)            ＝⟨ Ⅱ ⟩
+        f ⊥[ B₁ ]                              ∎
+         where
+          Ⅰ = ap (λ - → f (g y ⋏[ B₁ ] -)) (ε (¬[ B₁ ] g y))
+          Ⅱ = ap f (pr₁ (¬[ B₁ ]-is-complement (g y)))
+
+    ‡ : f (g y ⋎[ B₁ ] g (f (¬[ B₁ ] g y)) ) ＝ f ⊤[ B₁ ]
+    ‡ = f (g y ⋎[ B₁ ] g (f (¬[ B₁ ] g y)) )   ＝⟨ Ⅰ ⟩
+        f (g y ⋎[ B₁ ] ¬[ B₁ ] g y)            ＝⟨ Ⅱ ⟩
+        f ⊤[ B₁ ]                              ∎
+         where
+          Ⅰ = ap (λ - → f (g y ⋎[ B₁ ] -)) (ε (¬[ B₁ ] g y))
+          Ⅱ = ap f (pr₂ (¬[ B₁ ]-is-complement (g y)))
+
+  † : satisfies-ba-laws d
+  † = ρ
+    , ⋏ᵢ-is-glb , 𝟏ᵢ-is-top , ⋎ᵢ-is-lub , 𝟎ᵢ-is-bottom
+    , distributivityᵢ , ¬ᵢ-is-complement
+
+  f-is-hom : is-ba-homomorphism (X , b) (Y , d , †) f holds
+  f-is-hom = refl , γ , refl , ϵ
+   where
+    γ : (x₁ x₂ : X) → f (x₁ ⋏[ B₁ ] x₂) ＝ f x₁ ⋏ᵢ f x₂
+    γ x₁ x₂ = f (x₁ ⋏[ B₁ ] x₂)               ＝⟨ Ⅰ    ⟩
+              f (g (f x₁) ⋏[ B₁ ] x₂)         ＝⟨ Ⅱ    ⟩
+              f (g (f x₁) ⋏[ B₁ ] g (f x₂))   ＝⟨ Ⅲ    ⟩
+              f (g (f x₁ ⋏ᵢ f x₂))            ＝⟨ Ⅳ    ⟩
+              f (g (f x₁) ⋏[ B₁ ] g (f x₂))   ＝⟨ refl ⟩
+              f x₁ ⋏ᵢ f x₂                    ∎
+               where
+                Ⅰ = ap (λ - → f (-        ⋏[ B₁ ] x₂)) (ε x₁ ⁻¹)
+                Ⅱ = ap (λ - → f (g (f x₁) ⋏[ B₁ ] -))  (ε x₂ ⁻¹)
+                Ⅲ = ap f g-preserves-meets ⁻¹
+                Ⅳ = η (f x₁ ⋏ᵢ f x₂)
+
+    ϵ : (x₁ x₂ : X) → f (x₁ ⋎[ B₁ ] x₂) ＝ f x₁ ⋎ᵢ f x₂
+    ϵ x₁ x₂ = f (x₁ ⋎[ B₁ ] x₂)               ＝⟨ Ⅰ ⟩
+              f (g (f x₁) ⋎[ B₁ ] x₂)         ＝⟨ Ⅱ ⟩
+              f (g (f x₁) ⋎[ B₁ ] g (f x₂))   ＝⟨ Ⅲ ⟩
+              f (g (f x₁ ⋎ᵢ f x₂))            ＝⟨ Ⅳ ⟩
+              f x₁ ⋎ᵢ f x₂                    ∎
+               where
+                Ⅰ = ap (λ - → f (- ⋎[ B₁ ] x₂))       (ε x₁ ⁻¹)
+                Ⅱ = ap (λ - → f (g (f x₁) ⋎[ B₁ ] -)) (ε x₂ ⁻¹)
+                Ⅲ = ap f (g-preserves-joins ⁻¹ )
+                Ⅳ = η (f x₁ ⋎ᵢ f x₂)
 
 \end{code}

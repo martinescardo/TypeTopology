@@ -273,10 +273,7 @@ and the way-below relation.
                                         → is-approximating L
                                         ≃ left-adjoint-to-∐-map L
  left-adjoint-to-∐-map-characterization L =
-  Π-cong fe fe ⟨ 𝓓 ⟩
-   (λ x → (L x) approximates x)
-   (λ x → (L x) is-left-adjunct-to x)
-   (λ x → approximate-left-adjunct-to-≃ (L x) x)
+  Π-cong fe fe (λ x → approximate-left-adjunct-to-≃ (L x) x)
 
 \end{code}
 

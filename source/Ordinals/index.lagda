@@ -6,13 +6,13 @@ Martin Escardo
 
 module Ordinals.index where
 
-import Ordinals.Arithmetic-Properties
 import Ordinals.Arithmetic
+import Ordinals.ArithmeticProperties
 import Ordinals.Brouwer
 import Ordinals.BuraliForti                   -- by Bezem, Coquand, Dybjer and Escardo.
-import Ordinals.ConvergentSequence
 import Ordinals.Closure
 import Ordinals.Codes
+import Ordinals.ConvergentSequence
 import Ordinals.CumulativeHierarchy           -- by de Jong, Kraus, Nordvall Forsberg, and Xu.
 import Ordinals.CumulativeHierarchy-Addendum  -- by de Jong, Kraus, Nordvall Forsberg, and Xu.
 import Ordinals.Equivalence

@@ -475,7 +475,7 @@ alternative definitions of local smallness and proving their equivalence.
  being-locally-small'-is-prop : PropExt → is-prop is-locally-small'
  being-locally-small'-is-prop pe =
   Π₂-is-prop fe (λ x y → prop-being-small-is-prop pe fe'
-                          (x ⊑⟨ 𝓓 ⟩ y) (prop-valuedness 𝓓 x y) 𝓥)
+                          (x ⊑⟨ 𝓓 ⟩ y) (prop-valuedness 𝓓 x y))
 
  being-locally-small-is-prop : PropExt → is-prop is-locally-small
  being-locally-small-is-prop pe =

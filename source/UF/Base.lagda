@@ -204,6 +204,11 @@ ap₂ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (f : X → Y → Z) {x₀ x
     → f x₀ y₀ ＝ f x₁ y₁
 ap₂ f refl refl = refl
 
+ap₃ : {W : 𝓣 ̇} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
+      (f : W → X → Y → Z) {w₀ w₁ : W} {x₀ x₁ : X} {y₀ y₁ : Y}
+    → w₀ ＝ w₁ → x₀ ＝ x₁ → y₀ ＝ y₁ → f w₀ x₀ y₀ ＝ f w₁ x₁ y₁
+ap₃ f refl refl refl = refl
+
 refl-left-neutral : {X : 𝓤 ̇ } {x y : X} {p : x ＝ y}
                   → refl ∙ p ＝ p
 refl-left-neutral {𝓤} {X} {x} {_} {refl} = refl

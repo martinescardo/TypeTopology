@@ -15,12 +15,13 @@ open import TypeTopology.SigmaDiscreteAndTotallySeparated
 
 open import MLTT.Spartan hiding (J)
 open import MLTT.Athenian
-            hiding (Fin ; 𝟎 ; 𝟏 ; 𝟐 ; 𝟑 ; 𝟒 ; 𝟓 ; 𝟔 ; 𝟕 ; 𝟖 ; 𝟗)
 open import Fin.Type
 open import Fin.Topology
 open import Fin.ArgMinMax
 
 open import Games.TypeTrees
+open import Games.J
+open import Games.K
 
 \end{code}
 
@@ -32,6 +33,7 @@ R : Type
 R = Fin 3
 
 open import Games.FiniteHistoryDependent R
+open import Games.JK
 
 \end{code}
 
@@ -129,15 +131,15 @@ quantification.
 Grid-is-discrete : is-discrete Grid
 Grid-is-discrete = ×-is-discrete Fin-is-discrete Fin-is-discrete
 
-Grid-compact : Compact Grid {𝓤₀}
-Grid-compact = ×-Compact Fin-Compact Fin-Compact
+Grid-compact : is-Compact Grid {𝓤₀}
+Grid-compact = ×-is-Compact Fin-Compact Fin-Compact
 
-Move-decidable : (b : Board) → decidable (Move b)
+Move-decidable : (b : Board) → is-decidable (Move b)
 Move-decidable (_ , A) = Grid-compact
                           (λ g → A g ＝ Nothing)
                           (λ g → Nothing-is-isolated' (A g))
 
-Move-compact : (b : Board) → Compact (Move b)
+Move-compact : (b : Board) → is-Compact (Move b)
 Move-compact (x , A) = complemented-subset-of-compact-type
                         Grid-compact
                         (λ g → Nothing-is-isolated' (A g))
@@ -194,7 +196,9 @@ Selection functions for players, namely argmin for X and argmax for O:
 
 \begin{code}
 
-selection : (p : Player) {M : Type} → M → Compact M {𝓤₀} → J M
+open J-definitions R
+
+selection : (p : Player) {M : Type} → M → is-Compact M {𝓤₀} → J M
 selection X m κ p = pr₁ (compact-argmin p κ m)
 selection O m κ p = pr₁ (compact-argmax p κ m)
 
@@ -204,7 +208,10 @@ And their derived quantifiers:
 
 \begin{code}
 
-quantifier : Player → {M : Type} → Compact M → decidable M → K M
+open K-definitions R
+open JK R
+
+quantifier : Player → {M : Type} → is-Compact M → is-decidable M → K M
 quantifier p κ (inl m) = overline (selection p m κ)
 quantifier p κ (inr _) = λ _ → draw
 

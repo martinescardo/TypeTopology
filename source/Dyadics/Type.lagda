@@ -58,14 +58,7 @@ is-ℤ[1/2]-is-prop z n = +-is-prop ℕ-is-set II I
   II = ×-is-prop (<-is-prop-valued 0 n) (ℤodd-is-prop z)
 
 is-ℤ[1/2]-is-discrete : ((z , n) : ℤ × ℕ) → is-discrete (is-ℤ[1/2] z n)
-is-ℤ[1/2]-is-discrete (z , n) = +-is-discrete I II
- where
-  I : is-discrete (n ＝ 0)
-  I x y = inl (ℕ-is-set x y)
-
-  II : is-discrete (n > 0 × ℤodd z)
-  II = ×-is-discrete (λ x y → inl (<-is-prop-valued 0 n x y))
-                     (λ x y → inl (ℤodd-is-prop z x y))
+is-ℤ[1/2]-is-discrete (z , n) = props-are-discrete (is-ℤ[1/2]-is-prop z n)
 
 ℤ[1/2] : 𝓤₀ ̇
 ℤ[1/2] = Σ (z , n) ꞉ ℤ × ℕ , is-ℤ[1/2] z n
@@ -347,9 +340,9 @@ _≈'_ : (p q : ℤ × ℕ) → 𝓤₀ ̇
 
   I : x * p' * m' ＝ z * n' * m'
   I = x * p' * m' ＝⟨ ℤ-mult-rearrangement x p' m' ⟩
-      x * m' * p' ＝⟨ ap (_* p') e₁ ⟩
+      x * m' * p' ＝⟨ ap (_* p') e₁                ⟩
       y * n' * p' ＝⟨ ℤ-mult-rearrangement y n' p' ⟩
-      y * p' * n' ＝⟨ ap (_* n') e₂ ⟩
+      y * p' * n' ＝⟨ ap (_* n') e₂                ⟩
       z * m' * n' ＝⟨ ℤ-mult-rearrangement z m' n' ⟩
       z * n' * m' ∎
 
@@ -627,7 +620,7 @@ The following proofs relate dyadic rationals to rationals.
 ℤ[1/2]-lt-lemma : (x : ℤ) (n : ℕ)
                 → ℤodd x
                 → is-in-lowest-terms (x , pred (2^ (succ n)))
-ℤ[1/2]-lt-lemma x n ox = (γ₁ , γ₂) , γ₃
+ℤ[1/2]-lt-lemma x n ox = coprime-to-coprime' _ _ γ₄
  where
   n' = 2^ (succ n)
 
@@ -648,6 +641,9 @@ The following proofs relate dyadic rationals to rationals.
 
     III : is-common-divisor d (abs x) n' → d ∣ 1
     III (d|x , d|n') = odd-power-of-two-coprime d (abs x) (succ n) ox d|x d|n'
+
+  γ₄ : is-in-lowest-terms' (x , pred (2^ (succ n)))
+  γ₄ = (γ₁ , γ₂) , γ₃
 
 ℤ[1/2]-to-ℚ : ℤ[1/2] → ℚ
 ℤ[1/2]-to-ℚ ((x , n)      , inl n＝0)       = (x , 0) , (denom-zero-lt x)

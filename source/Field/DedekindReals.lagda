@@ -19,8 +19,9 @@ module Field.DedekindReals
          (pe : Prop-Ext)
  where
 
-open import DedekindReals.Type pe pt fe
-open import DedekindReals.Order pe pt fe
+open import DedekindReals.Type fe pe pt
+open import DedekindReals.Order fe pe pt
+
 {-
 DedekindRealsField : Field-structure ℝ { 𝓤₀ }
 DedekindRealsField = ({!!} , {!!} , _♯_) , ℝ-is-set , {!!} , {!!} , {!!} , {!!} , {!!} , (0ℝ , 1ℝ) , ℝ-zero-apart-from-one , {!!} , {!!} , {!!} , {!!}

@@ -352,7 +352,7 @@ not-equal-⊤-gives-equal-⊥ fe pe p r = γ
 
 Ω-discrete-gives-EM : funext 𝓤 𝓤
                     → propext 𝓤
-                    → ((p q : Ω 𝓤) → decidable (p ＝ q))
+                    → ((p q : Ω 𝓤) → is-decidable (p ＝ q))
                     → (P : 𝓤 ̇ ) → is-prop P → P + ¬ P
 Ω-discrete-gives-EM {𝓤} fe pe δ P i = f (δ p q)
  where
@@ -360,7 +360,7 @@ not-equal-⊤-gives-equal-⊥ fe pe p r = γ
   p = (P , i)
   q = (𝟙 , 𝟙-is-prop)
 
-  f : decidable (p ＝ q) → P + ¬ P
+  f : is-decidable (p ＝ q) → P + ¬ P
   f (inl e) = inl (equal-𝟙-gives-holds P (ap pr₁ e))
   f (inr ν) = inr (λ (x : P) → ν (to-subtype-＝
                                    (λ _ → being-prop-is-prop fe)

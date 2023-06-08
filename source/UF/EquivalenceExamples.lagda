@@ -169,10 +169,10 @@ curry-uncurry {𝓤} {𝓥} {𝓦} fe = curry-uncurry' (fe 𝓤 (𝓥 ⊔ 𝓦))
 
 Π-cong : funext 𝓤 𝓥
        → funext 𝓤 𝓦
-       → (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ ) (Y' : X → 𝓦 ̇ )
+       → {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {Y' : X → 𝓦 ̇ }
        → ((x : X) → Y x ≃ Y' x)
        → Π Y ≃ Π Y'
-Π-cong fe fe' X Y Y' φ = qinveq f (g , gf , fg)
+Π-cong fe fe' {X} {Y} {Y'} φ = qinveq f (g , gf , fg)
  where
   f : ((x : X) → Y x) → ((x : X) → Y' x)
   f h x = ⌜ φ x ⌝ (h x)
@@ -200,14 +200,9 @@ An application of Π-cong is the following:
             (f g : (x : X) (y : Y x) → A x y)
           → (f ＝ g) ≃ (∀ x y → f x y ＝ g x y)
 ≃-funext₂ fe fe' {X} f g =
- (f ＝ g)            ≃⟨ ≃-funext fe f g ⟩
- (f ∼ g)            ≃⟨ I ⟩
+ (f ＝ g)           ≃⟨ ≃-funext fe f g ⟩
+ (f ∼ g)            ≃⟨ Π-cong fe fe (λ x → ≃-funext fe' (f x) (g x)) ⟩
  (∀ x → f x ∼ g x)  ■
-  where
-   I = Π-cong fe fe X
-        (λ x → f x ＝ g x)
-        (λ x → f x ∼ g x)
-        (λ x → ≃-funext fe' (f x) (g x))
 
 𝟙-lneutral : {Y : 𝓤 ̇ } → 𝟙 {𝓥} × Y ≃ Y
 𝟙-lneutral {𝓤} {𝓥} {Y} = qinveq f (g , ε , η)
@@ -633,16 +628,95 @@ NatΣ-equiv-gives-fiberwise-equiv = NatΣ-equiv-converse _ _
                        → (Σ y ꞉ Y , A (⌜ e ⌝ y)) ≃ (Σ x ꞉ X , A x)
 Σ-change-of-variable-≃ A (g , i) = Σ-change-of-variable A g i
 
+Σ-bicong : {X  : 𝓤 ̇  } (Y  : X  → 𝓥 ̇  )
+           {X' : 𝓤' ̇ } (Y' : X' → 𝓥' ̇ )
+           (𝕗 : X ≃ X')
+         → ((x : X) → Y x ≃ Y' (⌜ 𝕗 ⌝ x))
+         → Σ Y ≃ Σ Y'
+Σ-bicong {𝓤} {𝓥} {𝓤'} {𝓥'} {X} Y {X'} Y' 𝕗 φ =
+ Σ Y                      ≃⟨ Σ-cong φ ⟩
+ (Σ x ꞉ X , Y' (⌜ 𝕗 ⌝ x)) ≃⟨ Σ-change-of-variable-≃ Y' 𝕗 ⟩
+ Σ Y'                     ■
+
+dprecomp : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : Y → 𝓦 ̇ ) (f : X → Y)
+         → Π A → Π (A ∘ f)
+
+dprecomp A f = _∘ f
+
+dprecomp-is-equiv : funext 𝓤 𝓦
+                  → funext 𝓥 𝓦
+                  → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : Y → 𝓦 ̇ ) (f : X → Y)
+                  → is-equiv f
+                  → is-equiv (dprecomp A f)
+
+dprecomp-is-equiv fe fe' {X} {Y} A f i = qinvs-are-equivs φ ((ψ , ψφ , φψ))
+ where
+  g = inverse f i
+  η = inverses-are-retractions f i
+  ε = inverses-are-sections f i
+
+  τ : (x : X) → ap f (η x) ＝ ε (f x)
+  τ = half-adjoint-condition f i
+
+  φ : Π A → Π (A ∘ f)
+  φ = dprecomp A f
+
+  ψ : Π (A ∘ f) → Π A
+  ψ k y = transport A (ε y) (k (g y))
+
+  φψ₀ : (k : Π (A ∘ f)) (x : X) → transport A (ε (f x)) (k (g (f x))) ＝ k x
+  φψ₀ k x = transport A (ε (f x))   (k (g (f x))) ＝⟨ a ⟩
+            transport A (ap f (η x))(k (g (f x))) ＝⟨ b ⟩
+            transport (A ∘ f) (η x) (k (g (f x))) ＝⟨ c ⟩
+            k x                                   ∎
+    where
+     a = ap (λ - → transport A - (k (g (f x)))) ((τ x)⁻¹)
+     b = (transport-ap A f (η x)) ⁻¹
+     c = apd k (η x)
+
+  φψ : φ ∘ ψ ∼ id
+  φψ k = dfunext fe (φψ₀ k)
+
+  ψφ₀ : (h : Π A) (y : Y) → transport A (ε y) (h (f (g y))) ＝ h y
+  ψφ₀ h y = apd h (ε y)
+
+  ψφ : ψ ∘ φ ∼ id
+  ψφ h = dfunext fe' (ψφ₀ h)
+
+Π-change-of-variable : funext 𝓤 𝓦
+                     → funext 𝓥 𝓦
+                     → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : Y → 𝓦 ̇ ) (f : X → Y)
+                     → is-equiv f
+                     → (Π y ꞉ Y , A y) ≃ (Π x ꞉ X , A (f x))
+Π-change-of-variable fe fe' A f i = dprecomp A f , dprecomp-is-equiv fe fe' A f i
+
+Π-change-of-variable-≃ : FunExt
+                       → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : Y → 𝓦 ̇ ) (𝕗 : X ≃ Y)
+                       → (Π x ꞉ X , A (⌜ 𝕗 ⌝ x)) ≃ (Π y ꞉ Y , A y)
+Π-change-of-variable-≃ fe A (f , i) =
+ ≃-sym (Π-change-of-variable (fe _ _) (fe _ _) A f i)
+
+Π-bicong : FunExt
+         → {X  : 𝓤 ̇  } (Y  : X  → 𝓥 ̇  )
+           {X' : 𝓤' ̇ } (Y' : X' → 𝓥' ̇ )
+           (𝕗 : X ≃ X')
+         → ((x : X) → Y x ≃ Y' (⌜ 𝕗 ⌝ x))
+         → Π Y ≃ Π Y'
+Π-bicong {𝓤} {𝓥} {𝓤'} {𝓥'} fe {X} Y {X'} Y' 𝕗 φ =
+ Π Y                      ≃⟨ Π-cong (fe 𝓤 𝓥) (fe 𝓤 𝓥') φ ⟩
+ (Π x ꞉ X , Y' (⌜ 𝕗 ⌝ x)) ≃⟨ Π-change-of-variable-≃ fe Y' 𝕗 ⟩
+ Π Y'                     ■
+
 NatΠ-fiber-equiv : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ ) (ζ : Nat A B)
                  → funext 𝓤 𝓦
                  → (g : Π B)
                  → (Π x ꞉ X , fiber (ζ x) (g x)) ≃ fiber (NatΠ ζ) g
 NatΠ-fiber-equiv {𝓤} {𝓥} {𝓦} {X} A B ζ fe g =
-  (Π x ꞉ X , fiber (ζ x) (g x))           ≃⟨ i ⟩
+  (Π x ꞉ X , fiber (ζ x) (g x))            ≃⟨ i ⟩
   (Π x ꞉ X , Σ a ꞉ A x , ζ x a ＝ g x)     ≃⟨ ii ⟩
   (Σ f ꞉ Π A , Π x ꞉ X , ζ x (f x) ＝ g x) ≃⟨ iii ⟩
   (Σ f ꞉ Π A , (λ x → ζ x (f x)) ＝ g)     ≃⟨ iv ⟩
-  fiber (NatΠ ζ) g                        ■
+  fiber (NatΠ ζ) g                         ■
    where
     i   = ≃-refl _
     ii  = ΠΣ-distr-≃
