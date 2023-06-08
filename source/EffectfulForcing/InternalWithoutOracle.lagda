@@ -191,6 +191,4 @@ R⋆s α {n} {Γ} xs ys = (i : Fin n) → R⋆ α (xs i) (T₀-B-context-sel Γ 
             → R⋆ α (⟦ t ⟧ xs) (close ⌜ t ⌝ ys)
 ⌜main-lemma⌝ = {!!}
 
-
-
 \end{code}

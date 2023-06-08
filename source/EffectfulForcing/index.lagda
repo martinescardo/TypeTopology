@@ -32,19 +32,18 @@ import EffectfulForcing.LambdaWithoutOracle         -- By Vincent Rahil (2023)
  * The file combinators defines S, K, iteration over the natural
    numbers and primitive recursion.
 
- * The file CombinatoryT defines a combinatiry version of Gödel's system T.
+ * The file CombinatoryT defines a combinatory version of Gödel's system T.
 
-   Additionally it defines its "standard set-theoretical
-   interpretation": the ground type is interpreted as the set of
-   natural numbers, and functions types are interpreted as the set of
-   all functions.
+   Additionally it defines its "standard set-theoretical interpretation": the
+   ground type is interpreted as the set of natural numbers, and functions types
+   are interpreted as the set of all functions.
 
-   Moreover, a version of (combinatory) system T with an oracle Ω is
-   defined, with a standard semantics, totogether with its relation to
-   the system without oracles.
+   Moreover, a version of (combinatory) system T with an oracle Ω is defined,
+   with a standard semantics, together with its relation to the system without
+   oracles.
 
  * The file Continuity defined the Baire type and a notion of
-   continuity for function from it to the type of natural numbers, and
+   continuity for functions from it to the type of natural numbers, and
    the Cantor type and a notion of uniform continuity
 
    It also includes simple, but useful, lemmas and constructions.
@@ -58,7 +57,8 @@ import EffectfulForcing.LambdaWithoutOracle         -- By Vincent Rahil (2023)
 
      1. Conversion from dialogue trees to functions.
 
-     2. The fact that functions (ℕ → ℕ) → ℕ that come from dialogue trees are continuous.
+     2. The fact that functions (ℕ → ℕ) → ℕ that come from dialogue trees are
+        continuous.
 
      3. And that their restrictions to (ℕ → 𝟐) are uniformly continuous.
 
