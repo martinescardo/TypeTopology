@@ -125,7 +125,7 @@ module Existential (pt : propositional-truncations-exist) where
  infixr -1 ∃[∶]-syntax
  infixr -1 ∃[]-syntax
 
- syntax ∃[∶]-syntax I (λ i → e) = Ǝ i ∶ I , e
+ syntax ∃[∶]-syntax I (λ i → e) = Ǝ i ꞉ I , e
  syntax ∃[]-syntax    (λ i → e) = Ǝ i , e
 
 \end{code}
