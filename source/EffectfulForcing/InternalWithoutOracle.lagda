@@ -147,6 +147,16 @@ R⋆₁ {σ ⇒ τ} α f f' = (x  : 〖 σ 〗)
                  → R⋆₁ {σ} α x x'
                  → R⋆₁ {τ} α (f x) (dapp f' x')
 
+⌜main-lemma⌝₁ : {n : ℕ} {Γ : Cxt n}
+               {σ : type}
+               (t : T Γ σ)
+               (α : Baire)
+               (xs : 【 Γ 】)
+--               (ys : IB【 Γ 】 ((ι ⇒ ι) ⇒ ι))
+--             → R⋆s α xs ys
+             → R⋆₁ α (⟦ t ⟧ xs) {!!} --(close ⌜ t ⌝ ys)
+⌜main-lemma⌝₁ {n} {Γ} {σ} t α xs {--ys rxys--} = {!!}
+
 -- This can either be defined through substitution or a succession of applications
 close : {σ : type} {n : ℕ} {Γ : Cxt n} → T Γ σ → ((i : Fin n) → T₀ (Γ [ i ])) → T₀ σ
 close {σ} {zero} {Γ} t s = t
@@ -181,6 +191,10 @@ R⋆s : Baire → {n : ℕ} {Γ : Cxt n}
   → 【 Γ 】 → IB【 Γ 】 ((ι ⇒ ι) ⇒ ι) → Type
 R⋆s α {n} {Γ} xs ys = (i : Fin n) → R⋆ α (xs i) (T₀-B-context-sel Γ (ys i))
 
+close-zero : {n : ℕ} {Γ : Cxt n} (ys : IB【 Γ 】 ((ι ⇒ ι) ⇒ ι))
+          → ⟦ close (⌜zero⌝ {(ι ⇒ ι) ⇒ ι}) ys ⟧₀ ＝ ⟦ ⌜zero⌝ ⟧₀
+close-zero {n} {Γ} ys = {!!}
+
 ⌜main-lemma⌝ : {n : ℕ} {Γ : Cxt n}
               {σ : type}
               (t : T Γ σ)
@@ -189,6 +203,11 @@ R⋆s α {n} {Γ} xs ys = (i : Fin n) → R⋆ α (xs i) (T₀-B-context-sel Γ 
               (ys : IB【 Γ 】 ((ι ⇒ ι) ⇒ ι))
             → R⋆s α xs ys
             → R⋆ α (⟦ t ⟧ xs) (close ⌜ t ⌝ ys)
-⌜main-lemma⌝ = {!!}
+⌜main-lemma⌝ {n} {Γ} {.ι} Zero α xs ys rxys = {!!} -- use close-zero?
+⌜main-lemma⌝ {n} {Γ} {.(ι ⇒ ι)} Succ α xs ys rxys = {!!}
+⌜main-lemma⌝ {n} {Γ} {.((ι ⇒ _ ⇒ _) ⇒ _ ⇒ ι ⇒ _)} Rec α xs ys rxys = {!!}
+⌜main-lemma⌝ {n} {Γ} {.(Γ [ i ])} (ν i) α xs ys rxys = {!!}
+⌜main-lemma⌝ {n} {Γ} {.(_ ⇒ _)} (ƛ t) α xs ys rxys = {!!}
+⌜main-lemma⌝ {n} {Γ} {σ} (t · t₁) α xs ys rxys = {!!}
 
 \end{code}
