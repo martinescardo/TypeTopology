@@ -82,8 +82,8 @@ module 𝕍-is-locally-small
          where
 
    ＝⁻-aux₁ : {B : 𝓤 ̇ } → (B → 𝕍) → Ω 𝓤
-   ＝⁻-aux₁ {B} g = (Ɐ a ∶ A , Ǝ b ∶ B , r a (g b) holds)
-                  ∧ (Ɐ b ∶ B , Ǝ a ∶ A , r a (g b) holds)
+   ＝⁻-aux₁ {B} g = (Ɐ a ꞉ A , Ǝ b ∶ B , r a (g b) holds)
+                  ∧ (Ɐ b ꞉ B , Ǝ a ∶ A , r a (g b) holds)
 
    ＝⁻-aux₁-respects-≈ : {B' B : 𝓤 ̇ } (g' : B' → 𝕍) (g : B → 𝕍)
                        → g' ≈ g
