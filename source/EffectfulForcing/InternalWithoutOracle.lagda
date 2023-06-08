@@ -191,9 +191,9 @@ R⋆s : Baire → {n : ℕ} {Γ : Cxt n}
   → 【 Γ 】 → IB【 Γ 】 ((ι ⇒ ι) ⇒ ι) → Type
 R⋆s α {n} {Γ} xs ys = (i : Fin n) → R⋆ α (xs i) (T₀-B-context-sel Γ (ys i))
 
-close-zero : {n : ℕ} {Γ : Cxt n} (ys : IB【 Γ 】 ((ι ⇒ ι) ⇒ ι))
-          → ⟦ close (⌜zero⌝ {(ι ⇒ ι) ⇒ ι}) ys ⟧₀ ＝ ⟦ ⌜zero⌝ ⟧₀
-close-zero {n} {Γ} ys = {!!}
+close-zero : {A : type} {n : ℕ} {Γ : Cxt n} (ys : IB【 Γ 】 A)
+          → ⟦ close (⌜zero⌝ {A}) ys ⟧₀ ＝ ⟦ ⌜zero⌝ ⟧₀
+close-zero {A} {n} {Γ} ys = {!!}
 
 ⌜main-lemma⌝ : {n : ℕ} {Γ : Cxt n}
               {σ : type}
