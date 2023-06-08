@@ -17,7 +17,7 @@ open import UF.Miscelanea
 open import MLTT.Two-Properties
 open import UF.Equiv
 
-module Thesis.SearchableTypes (fe : FunExt) where
+module Thesis.Chapter3.SearchableTypes (fe : FunExt) where
 
 _≡_ = Id
 

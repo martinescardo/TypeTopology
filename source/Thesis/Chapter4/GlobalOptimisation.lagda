@@ -17,9 +17,9 @@ open import UF.Miscelanea
 open import MLTT.Two-Properties
 open import UF.Equiv
 
-module Thesis.GlobalOptimisatio (fe : FunExt) where
+module Thesis.Chapter4.GlobalOptimisation (fe : FunExt) where
 
-open import Thesis.SearchableTypes fe
+open import Thesis.Chapter3.SearchableTypes fe
 open import CoNaturals.GenericConvergentSequence
   renaming (ℕ-to-ℕ∞ to _↑
          ; Zero-smallest to zero-minimal
@@ -42,7 +42,7 @@ record preordered (X : 𝓤 ̇ ) (𝓦' : Universe) : 𝓤 ⊔ 𝓦' ⁺  ̇ whe
  reflex'  x y u refl = u (reflex x)
 -}
 
-open preordered hiding (_≤_) -- ;_<_;<-coarse;reflex')
+open preordered hiding (_≤_) -- ; reflex ; trans) -- ;_<_;<-coarse;reflex')
 
 totally-ordered : {X : 𝓤 ̇ } → preordered X 𝓦' → 𝓤 ⊔ 𝓦' ̇
 totally-ordered {𝓤} {𝓦'} {X} o = (x y : X) → (x ≤ y) + (y ≤ x)
@@ -150,12 +150,13 @@ finite-minimal x e o t d = finite-global-minimal x e o t d id
 -}
 
 -- Definition 4.1.10
-record approx-ordered (X : ClosenessSpace 𝓤 ) (𝓦' : Universe)
+record totally-approx-ordered (X : ClosenessSpace 𝓤 ) (𝓦' : Universe)
  : 𝓤 ⊔ 𝓦' ⁺  ̇ where
   field
-   o : preordered ⟨ X ⟩ 𝓦'
+   preorder : preordered ⟨ X ⟩ 𝓦'
    ApproxOrder : ⟨ X ⟩ → ⟨ X ⟩ → ℕ → Ω 𝓦'
-  open preordered o
+  open preordered preorder public
+    using (_≤_)
   _≤ⁿ_ : ⟨ X ⟩ → ⟨ X ⟩ → ℕ → 𝓦' ̇
   (x ≤ⁿ y) ϵ = ApproxOrder x y ϵ holds
   field
@@ -164,26 +165,25 @@ record approx-ordered (X : ClosenessSpace 𝓤 ) (𝓦' : Universe)
    far-ordereded
     : (ϵ : ℕ) (x y : ⟨ X ⟩) → ¬ (B X ϵ x y)
     → x ≤ y ⇔ (x ≤ⁿ y) ϵ
-   reflex-ao : (ϵ : ℕ) (x : ⟨ X ⟩) → (x ≤ⁿ x) ϵ
-   trans-ao : (ϵ : ℕ) (x y z : ⟨ X ⟩)
+   reflex-a : (ϵ : ℕ) (x : ⟨ X ⟩) → (x ≤ⁿ x) ϵ
+   trans-a  : (ϵ : ℕ) (x y z : ⟨ X ⟩)
             → (x ≤ⁿ y) ϵ
             → (y ≤ⁿ z) ϵ
             → (x ≤ⁿ z) ϵ
-   antisym-ao : (ϵ : ℕ) (x y : ⟨ X ⟩)
-              → ¬ (x ≤ⁿ y) ϵ
-              → (y ≤ⁿ x) ϵ             
+   total-a  : (ϵ : ℕ) (x y : ⟨ X ⟩) → (x ≤ⁿ y) ϵ + (y ≤ⁿ x) ϵ             
 
--- Definition 4.1.11 [ TODO says ℝ incorrectly in paper ]
+{- -- Definition 4.1.11 [ TODO says ℝ incorrectly in paper ]
 totally-approx-ordered : (X : ClosenessSpace 𝓤)
-                       → approx-ordered X 𝓦' → 𝓤 ⊔ 𝓦' ̇
+                       → totally-approx-ordered X 𝓦' → 𝓤 ⊔ 𝓦' ̇
 totally-approx-ordered X o
  = (x y : ⟨ X ⟩) (ϵ : ℕ) → decidable ((x ≤ⁿ y) ϵ)
  where open approx-ordered o
+-}
 
 -- Definition 4.1.12
 {-
 is_minimal : ℕ → {𝓤 : Universe} {X : ClosenessSpace 𝓤}
-            → approx-ordered X 𝓦' → ⟨ X ⟩ → 𝓤 ⊔ 𝓦'  ̇
+            → totally-approx-ordered X 𝓦' → ⟨ X ⟩ → 𝓤 ⊔ 𝓦'  ̇
 (is ϵ minimal) {𝓤} {X} o x₀ = ((x : ⟨ X ⟩) → (x₀ ≤ⁿ x) ϵ holds)
  where open approx-ordered o
 
@@ -194,49 +194,48 @@ has_minimal : ℕ → {𝓤 : Universe} {X : ClosenessSpace 𝓤}
 
 -- Definition 4.1.13
 is_global-minimal : ℕ → {𝓤 𝓥 : Universe} {X : 𝓤 ̇ }
-                   → {Y : ClosenessSpace 𝓥} → approx-ordered Y 𝓦'
+                   → {Y : ClosenessSpace 𝓥} → totally-approx-ordered Y 𝓦'
                    → (f : X → ⟨ Y ⟩) → X → (𝓦' ⊔ 𝓤) ̇ 
 (is ϵ global-minimal) {𝓤} {𝓥} {X} o f x₀
  = (x : X) → (f x₀ ≤ⁿ f x) ϵ
- where open approx-ordered o
+ where open totally-approx-ordered o
 
 has_global-minimal : ℕ → {𝓤 𝓥 : Universe} {X : 𝓤 ̇ }
-                   → {Y : ClosenessSpace 𝓥} → approx-ordered Y 𝓦'
+                   → {Y : ClosenessSpace 𝓥} → totally-approx-ordered Y 𝓦'
                    → (f : X → ⟨ Y ⟩) → (𝓦' ⊔ 𝓤) ̇ 
 (has ϵ global-minimal) {𝓤} {𝓥} {X} o f
  = Σ ((is ϵ global-minimal) o f)
 
 -- Lemma 4.1.23
 cover-order : {X : ClosenessSpace 𝓤} {Y : ClosenessSpace 𝓥}
-            → (o : approx-ordered Y 𝓦)
+            → (o : totally-approx-ordered Y 𝓦)
             → (ϵ : ℕ) → (f : ⟨ X ⟩ → ⟨ Y ⟩) → (ϕ : f-ucontinuous X Y f)
             → ((X' , g , _) : (pr₁ (ϕ ϵ) cover-of X) 𝓦')
-            → let _≤_ = approx-ordered._≤ⁿ_ o in
+            → let _≤_ = totally-approx-ordered._≤ⁿ_ o in
               (x : ⟨ X ⟩) → Σ x' ꞉ X' , (f x ≤ f (g x')) ϵ
 cover-order o ϵ f ϕ (X' , g , η) x
  = pr₁ (η x)
- , (approx-ordered.close-trivial o ϵ (f x) (f (g (pr₁ (η x))))
+ , (totally-approx-ordered.close-trivial o ϵ (f x) (f (g (pr₁ (η x))))
      (pr₂ (ϕ ϵ) x (g (pr₁ (η x))) (pr₂ (η x))))
 
-
 theorem'' : {Y : ClosenessSpace 𝓥}
-          → (o : approx-ordered Y 𝓦) (t : totally-approx-ordered Y o)
+          → (o : totally-approx-ordered Y 𝓦)
           → (ϵ n : ℕ) → (f : 𝔽 n → ⟨ Y ⟩) → 𝔽 n
           → (has ϵ global-minimal) o f
-theorem'' o t ϵ 1 f (inl ⋆)
+theorem'' o ϵ 1 f (inl ⋆)
  = inl ⋆ , γ
  where
-  open approx-ordered o hiding (o)
+  open totally-approx-ordered o
   γ : is ϵ global-minimal o f (inl ⋆)
-  γ (inl ⋆) = reflex-ao ϵ (f (inl ⋆))
-theorem'' o t ϵ (succ (succ n)) f _
- with theorem'' o t ϵ (succ n) (f ∘ inr) (inl ⋆)
-... | (x₀ , m) = Cases (t (f (inr x₀)) (f (inl ⋆)) ϵ) γ₁
-                   (γ₂ ∘ antisym-ao ϵ (f (inr x₀)) (f (inl ⋆)))
+  γ (inl ⋆) = reflex-a ϵ (f (inl ⋆)) -- reflex o ϵ (f (inl ⋆))
+theorem'' o ϵ (succ (succ n)) f _
+ with theorem'' o ϵ (succ n) (f ∘ inr) (inl ⋆)
+... | (x₀ , m) = Cases (total-a ϵ (f (inr x₀)) (f (inl ⋆)))
+                   γ₁ γ₂
  where
-  open approx-ordered o hiding (o)
+  open totally-approx-ordered o
   IH : has ϵ global-minimal o (f ∘ inr)
-  IH = theorem'' o t ϵ (succ n) (f ∘ inr) (inl ⋆)
+  IH = theorem'' o ϵ (succ n) (f ∘ inr) (inl ⋆)
   γ₁ : (f (inr x₀) ≤ⁿ f (inl ⋆)) ϵ → has ϵ global-minimal o f
   γ₁ x₀≤⋆ = inr x₀ , γ
    where
@@ -247,41 +246,41 @@ theorem'' o t ϵ (succ (succ n)) f _
   γ₂ ⋆≤x₀ = inl ⋆ , γ
    where
     γ : is ϵ global-minimal o f (inl ⋆)
-    γ (inl ⋆) = reflex-ao ϵ (f (inl ⋆))
-    γ (inr x) = trans-ao ϵ _ _ _ ⋆≤x₀ (m x)
+    γ (inl ⋆) = reflex-a ϵ (f (inl ⋆))
+    γ (inr x) = trans-a  ϵ _ _ _ ⋆≤x₀ (m x)
 
 theorem''' : {X : 𝓤 ̇ } {Y : ClosenessSpace 𝓥}
-           → (o : approx-ordered Y 𝓦) (t : totally-approx-ordered Y o)
+           → (o : totally-approx-ordered Y 𝓦)
            → (ϵ : ℕ) → (f : X → ⟨ Y ⟩)
            → X → finite X
            → (has ϵ global-minimal) o f
-theorem''' o t ϵ f x (zero , g , (h , _) , _) = 𝟘-elim (h x)
-theorem''' o t ϵ f x (succ n , g , (h , η) , _)
- with theorem'' o t ϵ (succ n) (f ∘ g) (inl ⋆)
+theorem''' o ϵ f x (zero , g , (h , _) , _) = 𝟘-elim (h x)
+theorem''' o ϵ f x (succ n , g , (h , η) , _)
+ with theorem'' o ϵ (succ n) (f ∘ g) (inl ⋆)
 ... | (x₀ , m) = g x₀ , λ x → transport (λ - → (f (g x₀) ≤ⁿ f -) ϵ) (η x) (m (h x))
- where open approx-ordered o
+ where open totally-approx-ordered o
 
 theorem'  : {X : ClosenessSpace 𝓤} {Y : ClosenessSpace 𝓥}
-          → (o : approx-ordered Y 𝓦) → totally-approx-ordered Y o
+          → (o : totally-approx-ordered Y 𝓦)
           → (ϵ : ℕ) → (f : ⟨ X ⟩ → ⟨ Y ⟩) → (ϕ : f-ucontinuous X Y f)
           → ((X' , g , _) : (pr₁ (ϕ ϵ) cover-of X) 𝓦')
           → ⟨ X ⟩ → finite X'
           → (has ϵ global-minimal) o f
-theorem' {𝓤} {𝓥} {𝓦} {𝓦'} {X} {Y} o t ϵ f ϕ (X' , g , η) x e
- with theorem''' o t ϵ (f ∘ g) (pr₁ (η x)) e
-... | (x₀ , m) = g x₀ , λ x → trans-ao ϵ _ _ _ (m (pr₁ (η x))) (close-trivial ϵ (f (g (pr₁ (η x)))) (f x) (pr₂ (ϕ ϵ) (g (pr₁ (η x))) x (B-sym X δ x (g (pr₁ (η x))) (pr₂ (η x)))))
+theorem' {𝓤} {𝓥} {𝓦} {𝓦'} {X} {Y} o ϵ f ϕ (X' , g , η) x e
+ with theorem''' o ϵ (f ∘ g) (pr₁ (η x)) e
+... | (x₀ , m) = g x₀ , λ x → trans-a ϵ _ _ _ (m (pr₁ (η x))) (close-trivial ϵ (f (g (pr₁ (η x)))) (f x) (pr₂ (ϕ ϵ) (g (pr₁ (η x))) x (B-sym X δ x (g (pr₁ (η x))) (pr₂ (η x)))))
  where
-  open approx-ordered o
+  open totally-approx-ordered o
   δ = pr₁ (ϕ ϵ)
 
 theorem : {X : ClosenessSpace 𝓤} {Y : ClosenessSpace 𝓥}
-        → (o : approx-ordered Y 𝓦) → totally-approx-ordered Y o
+        → (o : totally-approx-ordered Y 𝓦)
         → (f : ⟨ X ⟩ → ⟨ Y ⟩) → (ϕ : f-ucontinuous X Y f)
         → ⟨ X ⟩ → totally-bounded X 𝓤'
         → (ϵ : ℕ) → (has ϵ global-minimal) o f
-theorem {𝓤} {𝓥} {𝓦} {𝓤'} {X} {Y} o t f ϕ x b ϵ
+theorem {𝓤} {𝓥} {𝓦} {𝓤'} {X} {Y} o f ϕ x b ϵ
  = theorem' {𝓤} {𝓥} {𝓦} {𝓤'} {X} {Y}
-     o t ϵ f ϕ (pr₁ (b (pr₁ (ϕ ϵ)))) x (pr₂ (b (pr₁ (ϕ ϵ))))
+     o ϵ f ϕ (pr₁ (b (pr₁ (ϕ ϵ)))) x (pr₂ (b (pr₁ (ϕ ϵ))))
 
 \end{code}
 
