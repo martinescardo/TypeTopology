@@ -16,16 +16,16 @@ open import EffectfulForcing.Combinators
 open import UF.Base
 
 data type : 𝓤₀ ̇  where
-  ι   : type
-  _⇒_ : type → type → type
+ ι   : type
+ _⇒_ : type → type → type
 
 data T : (σ : type) → 𝓤₀ ̇  where
-  Zero  : T ι
-  Succ  : T (ι ⇒ ι)
-  Iter  : {σ : type}     → T ((σ ⇒ σ) ⇒ σ ⇒ ι ⇒ σ)
-  K     : {σ τ : type}   → T (σ ⇒ τ ⇒ σ)
-  S     : {ρ σ τ : type} → T ((ρ ⇒ σ ⇒ τ) ⇒ (ρ ⇒ σ) ⇒ ρ ⇒ τ)
-  _·_   : {σ τ : type}   → T (σ ⇒ τ) → T σ → T τ
+ Zero  : T ι
+ Succ  : T (ι ⇒ ι)
+ Iter  : {σ : type}     → T ((σ ⇒ σ) ⇒ σ ⇒ ι ⇒ σ)
+ K     : {σ τ : type}   → T (σ ⇒ τ ⇒ σ)
+ S     : {ρ σ τ : type} → T ((ρ ⇒ σ ⇒ τ) ⇒ (ρ ⇒ σ) ⇒ ρ ⇒ τ)
+ _·_   : {σ τ : type}   → T (σ ⇒ τ) → T σ → T τ
 
 infixr 1 _⇒_
 infixl 1 _·_
