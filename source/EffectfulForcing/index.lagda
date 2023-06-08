@@ -57,7 +57,8 @@ import EffectfulForcing.LambdaWithoutOracle         -- By Vincent Rahil (2023)
 
      1. Conversion from dialogue trees to functions.
 
-     2. The fact that functions (ℕ → ℕ) → ℕ that come from dialogue trees are continuous.
+     2. The fact that functions (ℕ → ℕ) → ℕ that come from dialogue trees are
+        continuous.
 
      3. And that their restrictions to (ℕ → 𝟐) are uniformly continuous.
 
