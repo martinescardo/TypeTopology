@@ -43,7 +43,7 @@ import EffectfulForcing.LambdaWithoutOracle         -- By Vincent Rahil (2023)
    oracles.
 
  * The file Continuity defined the Baire type and a notion of
-   continuity for function from it to the type of natural numbers, and
+   continuity for functions from it to the type of natural numbers, and
    the Cantor type and a notion of uniform continuity
 
    It also includes simple, but useful, lemmas and constructions.
