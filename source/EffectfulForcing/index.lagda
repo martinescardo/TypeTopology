@@ -34,14 +34,13 @@ import EffectfulForcing.LambdaWithoutOracle         -- By Vincent Rahil (2023)
 
  * The file CombinatoryT defines a combinatory version of Gödel's system T.
 
-   Additionally it defines its "standard set-theoretical
-   interpretation": the ground type is interpreted as the set of
-   natural numbers, and functions types are interpreted as the set of
-   all functions.
+   Additionally it defines its "standard set-theoretical interpretation": the
+   ground type is interpreted as the set of natural numbers, and functions types
+   are interpreted as the set of all functions.
 
-   Moreover, a version of (combinatory) system T with an oracle Ω is
-   defined, with a standard semantics, together with its relation to
-   the system without oracles.
+   Moreover, a version of (combinatory) system T with an oracle Ω is defined,
+   with a standard semantics, together with its relation to the system without
+   oracles.
 
  * The file Continuity defined the Baire type and a notion of
    continuity for function from it to the type of natural numbers, and
