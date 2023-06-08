@@ -28,13 +28,13 @@ open Locale
 
 is-heyting-implication-of : (X : Locale 𝓤 𝓥 𝓦) → ⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩ × ⟨ 𝒪 X ⟩ →  Ω (𝓤 ⊔ 𝓥)
 is-heyting-implication-of X z (x , y) =
- Ɐ w ∶ ⟨ 𝒪 X ⟩ , ((w ∧[ 𝒪 X ] x) ≤[ poset-of (𝒪 X) ] y) ↔ (w ≤[ poset-of (𝒪 X) ] z)
+ Ɐ w ꞉ ⟨ 𝒪 X ⟩ , ((w ∧[ 𝒪 X ] x) ≤[ poset-of (𝒪 X) ] y) ↔ (w ≤[ poset-of (𝒪 X) ] z)
 
 is-heyting-implication-operation : (X : Locale 𝓤 𝓥 𝓦)
                                  → (⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩)
                                  → Ω (𝓤 ⊔ 𝓥)
 is-heyting-implication-operation X _==>_ =
- Ɐ x ∶ ⟨ 𝒪 X ⟩ , Ɐ y ∶ ⟨ 𝒪 X ⟩ , is-heyting-implication-of X (x ==> y) (x , y)
+ Ɐ x ꞉ ⟨ 𝒪 X ⟩ , Ɐ y ꞉ ⟨ 𝒪 X ⟩ , is-heyting-implication-of X (x ==> y) (x , y)
 
 modus-ponens : (X : Locale 𝓤 𝓥 𝓦) {U V W : ⟨ 𝒪 X ⟩}
              → is-heyting-implication-of X W (U , V) holds

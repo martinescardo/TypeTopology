@@ -46,7 +46,7 @@ good idea to address this duplication at some point.
 is-directed : (P : Poset 𝓤 𝓥) → (S : Fam 𝓦 ∣ P ∣ₚ) → Ω (𝓥 ⊔ 𝓦)
 is-directed P (I , s) =
    ∥ I ∥Ω
- ∧ (Ɐ i ∶ I , Ɐ j ∶ I , Ǝ k ∶ I , ((s i ≤ s k) ∧ (s j ≤ s k)) holds)
+ ∧ (Ɐ i ꞉ I , Ɐ j ꞉ I , Ǝ k ꞉ I , ((s i ≤ s k) ∧ (s j ≤ s k)) holds)
   where open PosetNotation P using (_≤_)
 
 \end{code}
@@ -55,8 +55,8 @@ is-directed P (I , s) =
 
 way-below : (F : Frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
 way-below {𝓤 = 𝓤} {𝓦 = 𝓦} F U V =
- Ɐ S ∶ Fam 𝓦 ⟨ F ⟩ , is-directed (poset-of F) S ⇒
-  V ≤ (⋁[ F ] S) ⇒ (Ǝ i ∶ index S , (U ≤ S [ i ]) holds)
+ Ɐ S ꞉ Fam 𝓦 ⟨ F ⟩ , is-directed (poset-of F) S ⇒
+  V ≤ (⋁[ F ] S) ⇒ (Ǝ i ꞉ index S , (U ≤ S [ i ]) holds)
    where
     open PosetNotation (poset-of F) using (_≤_)
 
@@ -605,7 +605,7 @@ frame-homomorphisms-preserve-complements F G 𝒽@(h , _ , μ) {x} {x′} (φ , 
   β : ((U ∨[ F ] (⋁[ F ] S)) is-an-upper-bound-of ⁅ U ∨[ F ] Sᵢ ∣ Sᵢ ε S ⁆) holds
   β i = ∨[ F ]-right-monotone (⋁[ F ]-upper S i)
 
-  γ : (Ɐ (U′ , _) ∶ upper-bound ⁅ U ∨[ F ] Sᵢ ∣ Sᵢ ε S ⁆ ,
+  γ : (Ɐ (U′ , _) ꞉ upper-bound ⁅ U ∨[ F ] Sᵢ ∣ Sᵢ ε S ⁆ ,
         ((U ∨[ F ] (⋁[ F ] S)) ≤ U′)) holds
   γ (u′ , p) = ∨[ F ]-least γ₁ γ₂
    where
@@ -796,7 +796,7 @@ basic covering family for some open `U` is well inside `U`.
 is-regular-basis : (F : Frame 𝓤 𝓥 𝓦)
                  → (ℬ : Fam 𝓦 ⟨ F ⟩) → (β : is-basis-for F ℬ) → Ω (𝓤 ⊔ 𝓦)
 is-regular-basis F ℬ β =
- Ɐ U ∶ ⟨ F ⟩ , let 𝒥 = pr₁ (β U) in Ɐ j ∶ (index 𝒥) , ℬ [ 𝒥 [ j ] ] ⋜[ F ] U
+ Ɐ U ꞉ ⟨ F ⟩ , let 𝒥 = pr₁ (β U) in Ɐ j ꞉ (index 𝒥) , ℬ [ 𝒥 [ j ] ] ⋜[ F ] U
 
 \end{code}
 
@@ -835,7 +835,7 @@ directification-preserves-regularity F ℬ β r U = γ
   𝒥  = pr₁ (β U)
   𝒥↑ = pr₁ (β↑ U)
 
-  γ : (Ɐ js ∶ index 𝒥↑ , ℬ↑ [ 𝒥↑ [ js ] ] ⋜[ F ] U) holds
+  γ : (Ɐ js ꞉ index 𝒥↑ , ℬ↑ [ 𝒥↑ [ js ] ] ⋜[ F ] U) holds
   γ []       = 𝟎-is-well-inside-anything F U
   γ (j ∷ js) = well-inside-is-join-stable F (r U j) (γ js)
 
@@ -892,7 +892,7 @@ which the result we are interested in follows:
 
 compacts-are-clopen-in-regular-frames : (F : Frame 𝓤 𝓥 𝓦)
                                       → is-regular F holds
-                                      → (Ɐ U ∶ ⟨ F ⟩ ,
+                                      → (Ɐ U ꞉ ⟨ F ⟩ ,
                                           is-compact-open F U ⇒ is-clopen F U) holds
 compacts-are-clopen-in-regular-frames F r U =
  well-inside-itself-implies-clopen F U ∘ ≪-implies-⋜-in-regular-frames F r U U
@@ -907,7 +907,7 @@ clopen elements.
 \begin{code}
 
 consists-of-clopens : (F : Frame 𝓤 𝓥 𝓦) → (S : Fam 𝓦 ⟨ F ⟩) → Ω (𝓤 ⊔ 𝓦)
-consists-of-clopens F S = Ɐ i ∶ index S , is-clopen F (S [ i ])
+consists-of-clopens F S = Ɐ i ꞉ index S , is-clopen F (S [ i ])
 
 zero-dimensionalᴰ : Frame 𝓤 𝓥 𝓦 → (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺) ̇
 zero-dimensionalᴰ {𝓦 = 𝓦} F =
@@ -1092,12 +1092,12 @@ clopen-iff-compact-in-stone-frame F (κ , ζ) U = β , γ
 \begin{code}
 
 contains-top : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦)
-contains-top F U = Ǝ t ∶ index U , is-top F (U [ t ]) holds
+contains-top F U = Ǝ t ꞉ index U , is-top F (U [ t ]) holds
 
 closed-under-binary-meets : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦)
 closed-under-binary-meets F 𝒮 =
- Ɐ i ∶ index 𝒮 , Ɐ j ∶ index 𝒮 ,
-  Ǝ k ∶ index 𝒮 , ((𝒮 [ k ]) is-glb-of (𝒮 [ i ] , 𝒮 [ j ])) holds
+ Ɐ i ꞉ index 𝒮 , Ɐ j ꞉ index 𝒮 ,
+  Ǝ k ꞉ index 𝒮 , ((𝒮 [ k ]) is-glb-of (𝒮 [ i ] , 𝒮 [ j ])) holds
    where
     open Meets (λ x y → x ≤[ poset-of F ] y)
 
@@ -1105,7 +1105,7 @@ closed-under-finite-meets : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ �
 closed-under-finite-meets F S = contains-top F S ∧ closed-under-binary-meets F S
 
 consists-of-compact-opens : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
-consists-of-compact-opens F U = Ɐ i ∶ index U , is-compact-open F (U [ i ])
+consists-of-compact-opens F U = Ɐ i ꞉ index U , is-compact-open F (U [ i ])
 
 \end{code}
 
@@ -1167,7 +1167,7 @@ coherence-list F ℬ (φ , ψ) (i ∷ is) = ∥∥-rec ∥∥-is-prop † ih
       β : ((ℬ [ j ]) is-a-lower-bound-of (ℬ [ i ] , finite-meet F ℬ is)) holds
       β = transport (λ - → ((ℬ [ j ]) is-a-lower-bound-of (ℬ [ i ] , -)) holds) p ξ
 
-      γ : (Ɐ (l , _) ∶ lower-bound (ℬ [ i ] , finite-meet F ℬ is) ,
+      γ : (Ɐ (l , _) ꞉ lower-bound (ℬ [ i ] , finite-meet F ℬ is) ,
             l ≤[ poset-of F ] (ℬ [ j ])) holds
       γ (l , ζ) = l                                  ≤⟨ Ⅰ ⟩
                   ℬ [ i ] ∧[ F ] finite-meet F ℬ is  ＝⟨ Ⅱ ⟩ₚ
@@ -1187,7 +1187,7 @@ coherence-list F ℬ (φ , ψ) (i ∷ is) = ∥∥-rec ∥∥-is-prop † ih
 is-spectral-map : (F : Frame 𝓤 𝓥 𝓥) (G : Frame 𝓤' 𝓥 𝓥)
                 → (F ─f→ G) → Ω (𝓤 ⊔ 𝓤' ⊔ 𝓥 ⁺)
 is-spectral-map F G (f , _) =
- Ɐ x ∶ ⟨ F ⟩ , is-compact-open F x  ⇒ is-compact-open G (f x)
+ Ɐ x ꞉ ⟨ F ⟩ , is-compact-open F x  ⇒ is-compact-open G (f x)
 
 \end{code}
 
@@ -1246,7 +1246,7 @@ is-spectral-map F G (f , _) =
 
 compact-rel-syntax : (F : Frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
 compact-rel-syntax F U V =
- Ɐ W ∶ ⟨ F ⟩ , is-compact-open F W ⇒ W ≤[ poset-of F ] U ⇒ W ≤[ poset-of F ] V
+ Ɐ W ꞉ ⟨ F ⟩ , is-compact-open F W ⇒ W ≤[ poset-of F ] U ⇒ W ≤[ poset-of F ] V
 
 syntax compact-rel-syntax F U V = U ≤ₖ[ F ] V
 
@@ -1340,7 +1340,7 @@ Scott-continuous.
       μ : is-monotonic (poset-of (𝒪 X)) (poset-of (𝒪 Y)) (f ⁎·_) holds
       μ = pr₂ (right-adjoint-of f)
 
-   γ : (Ǝ k ∶ index S , ((f ⋆∙ U) ≤[ poset-of (𝒪 X) ] (S [ k ])) holds) holds
+   γ : (Ǝ k ꞉ index S , ((f ⋆∙ U) ≤[ poset-of (𝒪 X) ] (S [ k ])) holds) holds
    γ = ∥∥-rec ∃-is-prop ϵ (ϑ T T-is-directed ζ₂)
     where
      ϵ : _
@@ -1657,9 +1657,9 @@ L`, compact `b : M` with `b ≤ h(x)`, there is some compact `a : L` such that `
 continuity-condition : (L : Frame 𝓤 𝓥 𝓦) (M : Frame 𝓤' 𝓥' 𝓦)
                      → (⟨ L ⟩ → ⟨ M ⟩) → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺ ⊔ 𝓤' ⊔ 𝓥')
 continuity-condition L M h =
- Ɐ b ∶ ⟨ M ⟩ , Ɐ x ∶ ⟨ L ⟩ , is-compact-open M b ⇒
+ Ɐ b ꞉ ⟨ M ⟩ , Ɐ x ꞉ ⟨ L ⟩ , is-compact-open M b ⇒
   b ≤[ poset-of M ] h x ⇒
-   (Ǝ a ∶ ⟨ L ⟩ ,
+   (Ǝ a ꞉ ⟨ L ⟩ ,
      ((is-compact-open L a ∧ a ≤[ poset-of L ] x ∧ b ≤[ poset-of M ] h a) holds))
 
 \end{code}
@@ -1684,7 +1684,7 @@ characterisation-of-continuity L M σ h μ ζ S δ = β , γ
   β : (h (⋁[ L ] S) is-an-upper-bound-of ⁅ h s ∣ s ε S ⁆) holds
   β i = μ (S [ i ] , ⋁[ L ] S) (⋁[ L ]-upper S i)
 
-  γ : (Ɐ (u , _) ∶ upper-bound ⁅ h s ∣ s ε S ⁆ ,
+  γ : (Ɐ (u , _) ꞉ upper-bound ⁅ h s ∣ s ε S ⁆ ,
         h (⋁[ L ] S) ≤[ poset-of M ] u) holds
   γ (u , φ) = spectral-yoneda M σ (h (⋁[ L ] S)) u ε
    where

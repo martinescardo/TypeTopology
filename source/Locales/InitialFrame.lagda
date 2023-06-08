@@ -79,7 +79,7 @@ open propositional-truncations-exist pt
       , ⊑-is-partial-order pe , top , meet , join , dist
  where
   ⋁_ : Fam 𝓤 (Ω 𝓤) → Ω 𝓤
-  ⋁ U = Ǝ i ∶ index U , ((U [ i ]) holds)
+  ⋁ U = Ǝ i ꞉ index U , ((U [ i ]) holds)
 
   open Meets _⊑_ renaming (is-top to is-the-top)
 
@@ -92,23 +92,23 @@ open propositional-truncations-exist pt
     β : ((P ∧ Q) is-a-lower-bound-of (P , Q)) holds
     β = pr₁ , pr₂
 
-    γ : (Ɐ (R , _) ∶ lower-bound (P , Q ) , R ⊑ (P ∧ Q)) holds
+    γ : (Ɐ (R , _) ꞉ lower-bound (P , Q ) , R ⊑ (P ∧ Q)) holds
     γ (R , ϕ , ψ) r = ϕ r , ψ r
 
   open Joins        _⊑_
   open JoinNotation ⋁_
 
-  join : (Ɐ U ∶ Fam 𝓤 (Ω 𝓤) , ((⋁ U) is-lub-of U)) holds
+  join : (Ɐ U ꞉ Fam 𝓤 (Ω 𝓤) , ((⋁ U) is-lub-of U)) holds
   join U = (λ i u → ∣ i , u ∣) , γ
    where
-    γ : (Ɐ (P , _) ∶ upper-bound U , (⋁ U) ⊑ P) holds
+    γ : (Ɐ (P , _) ꞉ upper-bound U , (⋁ U) ⊑ P) holds
     γ ((A , A-prop) , q) r = ∥∥-rec A-prop (uncurry q) r
 
   abstract
    iss : is-set (Ω 𝓤)
    iss = carrier-of-[ 𝟎F-poset pe ]-is-set
 
-   dist : (Ɐ(P , U) ∶ Ω 𝓤 × Fam 𝓤 (Ω 𝓤) ,
+   dist : (Ɐ(P , U) ꞉ Ω 𝓤 × Fam 𝓤 (Ω 𝓤) ,
            (P ∧ (⋁ U) ＝[ iss ]＝  ⋁⟨ i ⟩ P ∧ U [ i ])) holds
    dist (P , U) = ≤-is-antisymmetric (𝟎F-poset pe) β γ
     where
@@ -198,7 +198,7 @@ f-respects-⋁ pe A U = β , γ
          ⁅ 𝟏[ A ] ∣ _ ∶ (U [ i ]) holds ⁆
          (_ , λ p → ⋁[ A ]-upper _ ∣ i , p ∣)
 
-  γ : (Ɐ (x , _) ∶ upper-bound ⁅ f pe A u ∣ u ε U ⁆ ,
+  γ : (Ɐ (x , _) ꞉ upper-bound ⁅ f pe A u ∣ u ε U ⁆ ,
         f pe A (⋁[ 𝟎-𝔽𝕣𝕞 pe ] U) ≤ x) holds
   γ (x , p) =
    ⋁[ A ]-least _ (_ , ∥∥-rec (holds-is-prop (_ ≤ _)) ι)
@@ -253,7 +253,7 @@ main-lemma pe P p =
           g P    QED
 
 
-    ε : (Ɐ (u , _) ∶ upper-bound (P holds , λ _ → 𝟏[ F ]) ,
+    ε : (Ɐ (u , _) ꞉ upper-bound (P holds , λ _ → 𝟏[ F ]) ,
           g P ≤[ poset-of F ] u) holds
     ε (u , q) =
      g P                                    ≤⟨ i                      ⟩
