@@ -418,7 +418,7 @@ module Epsilon (X : Locale (𝓤 ⁺) 𝓤 𝓤) (σᴰ : spectralᴰ (𝒪 X)) 
  ϵ-preserves-⋁ : let
                   open Joins (λ x y → x ≤[ poset-of (𝒪 Patchₛ-X) ] y)
                  in
-                  (Ɐ S ∶ Fam 𝓤 ⟨ 𝒪 X ⟩ , ‘ ⋁[ 𝒪 X ] S ’ is-lub-of ⁅ ‘ U ’ ∣ U ε S ⁆) holds
+                  (Ɐ S ꞉ Fam 𝓤 ⟨ 𝒪 X ⟩ , ‘ ⋁[ 𝒪 X ] S ’ is-lub-of ⁅ ‘ U ’ ∣ U ε S ⁆) holds
  ϵ-preserves-⋁ S = † , ‡
   where
    open Joins (λ x y → x ≤[ poset-of (𝒪 Patchₛ-X) ] y)
@@ -435,7 +435,7 @@ module Epsilon (X : Locale (𝓤 ⁺) 𝓤 𝓤) (σᴰ : spectralᴰ (𝒪 X)) 
        ♠ : ((ℬ [ j ]) ≤[ poset-of (𝒪 X) ] ((⋁[ 𝒪 X ] S) ∨[ 𝒪 X ] (ℬ [ j ]))) holds
        ♠ = ∨[ 𝒪 X ]-upper₂ (⋁[ 𝒪 X ] S) (ℬ [ j ])
 
-   ‡ : (Ɐ (𝒿 , _) ∶ upper-bound ⁅ ‘ U ’ ∣ U ε S ⁆ ,
+   ‡ : (Ɐ (𝒿 , _) ꞉ upper-bound ⁅ ‘ U ’ ∣ U ε S ⁆ ,
          ‘ ⋁[ 𝒪 X ] S ’ ≤[ poset-of (𝒪 Patchₛ-X) ] 𝒿) holds
    ‡ (𝒿@(j , _) , ψ) i =
     ∨[ 𝒪 X ]-least δ (𝓃₁ (𝒪 X) (nucleus-of 𝒿) (ℬ [ i ]))
@@ -558,7 +558,7 @@ We use Yoneda for the `β` direction.
     δ′ : is-directed (poset-of (𝒪 Patch-of-X)) 𝒦 holds
     δ′ = pr₁ δ , ζ
      where
-      ζ : (Ɐ i ∶ index 𝒦 , Ɐ j ∶ index 𝒦 ,
+      ζ : (Ɐ i ꞉ index 𝒦 , Ɐ j ꞉ index 𝒦 ,
             Ǝ k ∶ index 𝒦 , (((𝒦 [ i ]) ≼ (𝒦 [ k ])) holds)
                           × (((𝒦 [ j ]) ≼ (𝒦 [ k ])) holds)) holds
       ζ i j = ∥∥-rec ∃-is-prop η (pr₂ δ i j)

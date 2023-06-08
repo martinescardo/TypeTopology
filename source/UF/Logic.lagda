@@ -51,7 +51,7 @@ module Universal (fe : Fun-Ext) where
  infixr -1 ∀[∶]-syntax
  infixr -1 ∀[]-syntax
 
- syntax ∀[∶]-syntax I (λ i → e) = Ɐ i ∶ I , e
+ syntax ∀[∶]-syntax I (λ i → e) = Ɐ i ꞉ I , e
  syntax ∀[]-syntax    (λ i → e) = Ɐ i , e
 
 \end{code}

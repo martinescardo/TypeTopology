@@ -89,22 +89,22 @@ satisfies-ba-laws {𝓤 = 𝓤} {𝓥 = 𝓥} {A = A} (_≤_ , 𝟏 , _⊓_ , �
      open Complementation iss 𝟎 𝟏 _⊓_ _⋎_
 
      β : Ω (𝓤 ⊔ 𝓥)
-     β = Ɐ x ∶ A , Ɐ y ∶ A , (x ⊓ y) is-glb-of (x , y)
+     β = Ɐ x ꞉ A , Ɐ y ꞉ A , (x ⊓ y) is-glb-of (x , y)
 
      γ : Ω (𝓤 ⊔ 𝓥)
-     γ = Ɐ x ∶ A , x ≤ 𝟏
+     γ = Ɐ x ꞉ A , x ≤ 𝟏
 
      δ : Ω (𝓤 ⊔ 𝓥)
-     δ = Ɐ x ∶ A , Ɐ y ∶ A , _is-lub-of₂_ (x ⋎ y) (x , y)
+     δ = Ɐ x ꞉ A , Ɐ y ꞉ A , _is-lub-of₂_ (x ⋎ y) (x , y)
 
      ϵ : Ω (𝓤 ⊔ 𝓥)
-     ϵ = Ɐ x ∶ A , 𝟎 ≤ x
+     ϵ = Ɐ x ꞉ A , 𝟎 ≤ x
 
      ζ : Ω (𝓤 ⊔ 𝓤)
-     ζ = Ɐ x ∶ A , Ɐ y ∶ A , Ɐ z ∶ A , x ⊓ (y ⋎ z) ＝[ iss ]＝ (x ⊓ y) ⋎ (x ⊓ z)
+     ζ = Ɐ x ꞉ A , Ɐ y ꞉ A , Ɐ z ꞉ A , x ⊓ (y ⋎ z) ＝[ iss ]＝ (x ⊓ y) ⋎ (x ⊓ z)
 
      η : Ω (𝓤 ⊔ 𝓤)
-     η = Ɐ x ∶ A , (¬ x) complements x
+     η = Ɐ x ꞉ A , (¬ x) complements x
 
 \end{code}
 
@@ -219,13 +219,13 @@ is-lattice-homomorphism {𝓤′} {𝓥′} {𝓤} {𝓥} B L η = β ∧ γ ∧
   β = η ⊤[ B ] ＝[ iss ]＝ 𝟏[ L ]
 
   γ : Ω (𝓤′ ⊔ 𝓤)
-  γ = Ɐ x ∶ ⟪ B ⟫ , Ɐ y ∶ ⟪ B ⟫ , η (x ⋏[ B ] y) ＝[ iss ]＝ η x ∧[ L ] η y
+  γ = Ɐ x ꞉ ⟪ B ⟫ , Ɐ y ꞉ ⟪ B ⟫ , η (x ⋏[ B ] y) ＝[ iss ]＝ η x ∧[ L ] η y
 
   δ : Ω 𝓤
   δ = η ⊥[ B ] ＝[ iss ]＝ 𝟎[ L ]
 
   ϵ : Ω (𝓤′ ⊔ 𝓤)
-  ϵ = Ɐ x ∶ ⟪ B ⟫ , Ɐ y ∶ ⟪ B ⟫ , η (x ⋎[ B ] y) ＝[ iss ]＝ η x ∨[ L ] η y
+  ϵ = Ɐ x ꞉ ⟪ B ⟫ , Ɐ y ꞉ ⟪ B ⟫ , η (x ⋎[ B ] y) ＝[ iss ]＝ η x ∨[ L ] η y
 
 is-ba-homomorphism : (B₁ : BooleanAlgebra 𝓤 𝓥) (B₂ : BooleanAlgebra 𝓤' 𝓥')
                    → (f : ⟪ B₁ ⟫ → ⟪ B₂ ⟫) → Ω (𝓤 ⊔ 𝓤')
@@ -238,13 +238,13 @@ is-ba-homomorphism {𝓤} {𝓥} {𝓤'} {𝓥'} B₁ B₂ f = β ∧ γ ∧ δ 
   β = f ⊤[ B₁ ] ＝[ σ ]＝ ⊤[ B₂ ]
 
   γ : Ω (𝓤 ⊔ 𝓤')
-  γ = Ɐ x ∶ ⟪ B₁ ⟫ , Ɐ y ∶ ⟪ B₁ ⟫ , f (x ⋏[ B₁ ] y) ＝[ σ ]＝ f x ⋏[ B₂ ] f y
+  γ = Ɐ x ꞉ ⟪ B₁ ⟫ , Ɐ y ꞉ ⟪ B₁ ⟫ , f (x ⋏[ B₁ ] y) ＝[ σ ]＝ f x ⋏[ B₂ ] f y
 
   δ : Ω 𝓤'
   δ = f ⊥[ B₁ ] ＝[ σ ]＝ ⊥[ B₂ ]
 
   ϵ : Ω (𝓤 ⊔ 𝓤')
-  ϵ = Ɐ x ∶ ⟪ B₁ ⟫ , Ɐ y ∶ ⟪ B₁ ⟫ , f (x ⋎[ B₁ ] y) ＝[ σ ]＝ f x ⋎[ B₂ ] f y
+  ϵ = Ɐ x ꞉ ⟪ B₁ ⟫ , Ɐ y ꞉ ⟪ B₁ ⟫ , f (x ⋎[ B₁ ] y) ＝[ σ ]＝ f x ⋎[ B₂ ] f y
 
 lattice-homomorphisms-are-monotone : (B : BooleanAlgebra 𝓤′ 𝓥′) (L : Frame 𝓤 𝓥 𝓦)
                                     → (h : ⟪ B ⟫ → ⟨ L ⟩)
@@ -279,7 +279,7 @@ is-ba-embedding {𝓤′} {𝓥′} {𝓤} {𝓥} {𝓦} B L η =
    iss₀ = carrier-of-[ poset-of-ba B ]-is-set
 
    ι : Ω (𝓤′ ⊔ 𝓤)
-   ι = Ɐ x ∶ ⟪ B ⟫ , Ɐ y ∶ ⟪ B ⟫ , (η x ＝[ iss ]＝ η y) ⇒ (x ＝[ iss₀ ]＝ y)
+   ι = Ɐ x ꞉ ⟪ B ⟫ , Ɐ y ꞉ ⟪ B ⟫ , (η x ＝[ iss ]＝ η y) ⇒ (x ＝[ iss₀ ]＝ y)
 
 embedding-preserves-meets : (B : BooleanAlgebra 𝓤′ 𝓥′) (L : Frame 𝓤 𝓥 𝓦)
                           → (η : ⟪ B ⟫ → ⟨ L ⟩)
@@ -295,7 +295,7 @@ embedding-injective B L η (ι , _) = ι
 
 is-spectral′ : (B : BooleanAlgebra 𝓤′ 𝓥′) (L : Frame 𝓤 𝓥 𝓦)
             → (f : ⟪ B ⟫ → ⟨ L ⟩) → Ω (𝓤′ ⊔ 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
-is-spectral′ B L f = Ɐ x ∶ ⟪ B ⟫ , is-compact-open L (f x)
+is-spectral′ B L f = Ɐ x ꞉ ⟪ B ⟫ , is-compact-open L (f x)
 
 \end{code}
 
@@ -365,7 +365,7 @@ embeddings-lemma B L η (ι , _ , (_ , ξ , _)) x p = ι x ⊥[ B ] †
 is-generated-by : (L : Frame 𝓤 𝓦 𝓦) → (B : BooleanAlgebra 𝓦 𝓥)
                 → (⟪ B ⟫ → ⟨ L ⟩) → Ω 𝓤
 is-generated-by {𝓦 = 𝓦} L B η =
- Ɐ x ∶ ⟨ L ⟩ , x ＝[ σ ]＝ (⋁[ L ] ⁅ η b ∣ (b , _) ∶ (Σ b ꞉ ⟪ B ⟫ , η b ≤ x) ⁆)
+ Ɐ x ꞉ ⟨ L ⟩ , x ＝[ σ ]＝ (⋁[ L ] ⁅ η b ∣ (b , _) ∶ (Σ b ꞉ ⟪ B ⟫ , η b ≤ x) ⁆)
   where
    σ : is-set ⟨ L ⟩
    σ = carrier-of-[ poset-of L ]-is-set
@@ -375,7 +375,7 @@ is-generated-by {𝓦 = 𝓦} L B η =
 contains-compact-opens : (L : Frame 𝓤 𝓦 𝓦) (B : BooleanAlgebra 𝓦 𝓥)
                        → (⟪ B ⟫ → ⟨ L ⟩) → Ω (𝓤 ⊔ 𝓦 ⁺)
 contains-compact-opens L B η =
- Ɐ x ∶ ⟨ L ⟩ , is-compact-open L x ⇒ (Ǝ b ∶ ⟪ B ⟫ , η b ＝ x)
+ Ɐ x ꞉ ⟨ L ⟩ , is-compact-open L x ⇒ (Ǝ b ∶ ⟪ B ⟫ , η b ＝ x)
 
 \end{code}
 
