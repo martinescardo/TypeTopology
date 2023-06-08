@@ -1,12 +1,10 @@
 Martin Escardo, 22nd and 24th January 2020, with further additions
 after that.
 
-Parts of this file have been published as https://doi.org/10.1007/s40062-021-00284-6
-
 The Cantor-Schröder-Bernstein for homotopy types, or ∞-groupoids, in Agda
 -------------------------------------------------------------------------
 
-An unformalized version of this file was published in
+An unformalized version of parts of this file was published in
 the Journal of Homotopy and Related Structures, Springer, 28th June 2021.
 https://doi.org/10.1007/s40062-021-00284-6
 
@@ -24,7 +22,6 @@ assumption beyond MLTT is explicit in each claim).
     the searchability or omniscience) of ℕ∞.
 
     (See also Appendix II.)
-
 
 (2) A proof that excluded middle implies Cantor-Schröder-Bernstein for
     all homotopy types, or ∞-groupoids. (Added 24th January.)
@@ -101,10 +98,12 @@ Pradic-Brown-lemma {𝓤} {𝓥} {X} {A} (r , s , η) c = γ e
 
   d : (x : X) → is-decidable (P x)
   d x = equality-cases (r x)
-         (λ (a : A) (u : r x ＝ inl a) → inl (a , u))
-         (λ (y : X) (v : r x ＝ inr y) → inr (λ (a , u) → +disjoint (inl a ＝⟨ u ⁻¹ ⟩
-                                                                    r x   ＝⟨ v ⟩
-                                                                    inr y ∎)))
+         (λ (a : A) (u : r x ＝ inl a)
+            → inl (a , u))
+         (λ (y : X) (v : r x ＝ inr y)
+            → inr (λ (a , u) → +disjoint (inl a ＝⟨ u ⁻¹ ⟩
+                                          r x   ＝⟨ v ⟩
+                                          inr y ∎)))
 
   e : is-decidable (Σ x ꞉ X , P x)
   e = c P d
@@ -187,9 +186,19 @@ is a set, (2) its finite elements (in particular zero) are isolated,
 
 \begin{code}
 
-econstruction-ℕ∞ : funext 𝓤₀ 𝓤₀ → (P : 𝓤 ̇ ) → is-prop P → (ℕ∞ ↪ P + ℕ∞) × (P + ℕ∞ ↪ ℕ∞)
-econstruction-ℕ∞ fe P i = econstruction P Zero Succ
-                           (ℕ∞-is-set fe) i (finite-isolated fe zero) (x ↦ Zero-not-Succ) Succ-lc
+econstruction-ℕ∞ : funext 𝓤₀ 𝓤₀
+                 → (P : 𝓤 ̇ )
+                 → is-prop P
+                 → (ℕ∞ ↪ P + ℕ∞) × (P + ℕ∞ ↪ ℕ∞)
+econstruction-ℕ∞ fe P i = econstruction
+                           P
+                           Zero
+                           Succ
+                           (ℕ∞-is-set fe)
+                           i
+                           (finite-isolated fe zero)
+                           (x ↦ Zero-not-Succ)
+                           Succ-lc
 
 CSB-gives-EM : funext 𝓤₀ 𝓤₀
              → (P : 𝓤 ̇ )
@@ -291,7 +300,8 @@ reference to the blog post.
 EM-gives-Cantor-Schröder-Bernstein : Fun-Ext
                                    → EM (𝓤 ⊔ 𝓥)
                                    → Cantor-Schröder-Bernstein 𝓤 𝓥
-EM-gives-Cantor-Schröder-Bernstein {𝓤} {𝓥} fe excluded-middle {X} {Y} ((f , f-is-emb) , (g , g-is-emb)) =
+EM-gives-Cantor-Schröder-Bernstein {𝓤} {𝓥} fe excluded-middle {X} {Y}
+                                   ((f , f-is-emb) , (g , g-is-emb)) =
 
   need X ≃ Y which-is-given-by 𝒽
 
@@ -365,7 +375,9 @@ it:
 
 \begin{code}
 
-  recall-the-notion-of-decidability : {𝓦 : Universe} {A : 𝓦 ̇ } → is-decidable A ＝ (A + ¬ A)
+  recall-the-notion-of-decidability : {𝓦 : Universe}
+                                      {A : 𝓦 ̇ }
+                                      → is-decidable A ＝ (A + ¬ A)
   recall-the-notion-of-decidability = by-definition
 
   δ : (x : X) → is-decidable (is-g-point x)
@@ -434,11 +446,12 @@ left-cancellability of h:
                         → ¬ is-g-point x
                         → (γ : is-g-point x')
                         → f x ≠ g⁻¹ x' γ
-  f-g⁻¹-disjoint-images x x' ν γ p = have p ∶ f x ＝ g⁻¹ x' γ
-                                     so need contradiction
-                                        which-is-given-by
-                                         have γ ∶ is-g-point x'
-                                         which-is-impossible-by (v ∶ ¬ is-g-point x')
+  f-g⁻¹-disjoint-images x x' ν γ p =
+   have p ∶ f x ＝ g⁻¹ x' γ
+   so need contradiction
+      which-is-given-by
+       have γ ∶ is-g-point x'
+       which-is-impossible-by (v ∶ ¬ is-g-point x')
    where
     q : g (f x) ＝ x'
     q = have p ∶ f x ＝ g⁻¹ x' γ
@@ -471,7 +484,8 @@ prove properties of H and then specialize them to h:
   h-lc : left-cancellable h
   h-lc {x} {x'} = l (δ x) (δ x')
    where
-    l : (d : is-decidable (is-g-point x)) (d' : is-decidable (is-g-point x'))
+    l : (d  : is-decidable (is-g-point x ))
+        (d' : is-decidable (is-g-point x'))
       → H x d ＝ H x' d'
       → x ＝ x'
 
@@ -482,10 +496,12 @@ prove properties of H and then specialize them to h:
                                x'            ∎)
 
     l (inl γ) (inr ν') p = have p ∶ g⁻¹ x γ ＝ f x'
-                           which-is-impossible-by (- ↦ f-g⁻¹-disjoint-images x' x ν' γ (- ⁻¹))
+                           which-is-impossible-by
+                            (- ↦ f-g⁻¹-disjoint-images x' x ν' γ (- ⁻¹))
 
     l (inr ν) (inl γ') p = have p ∶ f x ＝ g⁻¹ x' γ'
-                           which-is-impossible-by f-g⁻¹-disjoint-images x x' ν γ'
+                           which-is-impossible-by
+                            f-g⁻¹-disjoint-images x x' ν γ'
 
     l (inr ν) (inr ν') p = have p ∶ f x ＝ f x'
                            so-apply embeddings-are-lc f f-is-emb
@@ -523,7 +539,9 @@ doesn't refer to the notion of f-point.
 
 \begin{code}
 
-  claim : (y : Y) → ¬ is-g-point (g y) → Σ (x , p) ꞉ fiber f y , ¬ is-g-point x
+  claim : (y : Y)
+        → ¬ is-g-point (g y)
+        → Σ (x , p) ꞉ fiber f y , ¬ is-g-point x
   claim y ν = v
    where
     i : ¬¬ f-point (g y)
@@ -554,7 +572,9 @@ doesn't refer to the notion of f-point.
 
     iv : is-prop (Σ (x , p) ꞉ fiber f y , ¬ is-g-point x)
     iv = have f-is-emb y ∶ is-prop (fiber f y)
-         so-apply subtypes-of-props-are-props' pr₁ (pr₁-lc (λ {σ} → negations-are-props fe))
+         so-apply subtypes-of-props-are-props'
+                   pr₁
+                   (pr₁-lc (λ {σ} → negations-are-props fe))
 
     v : Σ (x , p) ꞉ fiber f y , ¬ is-g-point x
     v = double-negation-elim excluded-middle _ iv iii
@@ -569,6 +589,7 @@ that this works. As above, we use the auxiliary function H for that
 purpose.
 
 \begin{code}
+
   h-split-surjection : (y : Y) → Σ x ꞉ X , h x ＝ y
   h-split-surjection y = x , p
    where
@@ -650,7 +671,9 @@ surjective. But a surjective embedding is an equivalence.
 
 \begin{code}
 
-module CSB-for-connected-types-without-EM (pt : propositional-truncations-exist) where
+module CSB-for-connected-types-without-EM
+        (pt : propositional-truncations-exist)
+       where
 
  open PropositionalTruncation pt public
  open import UF.Connected pt
@@ -664,7 +687,9 @@ and that it is connected if additionally ∥ X ∥ is pointed.
 \begin{code}
 
  lemma : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (g : Y → X)
-       → is-wconnected X → is-embedding g → is-equiv g
+       → is-wconnected X
+       → is-embedding g
+       → is-equiv g
  lemma f g w e = surjective-embeddings-are-equivs g e s
   where
    a : ∀ x → ∥ g (f (x)) ＝ x ∥
@@ -673,7 +698,9 @@ and that it is connected if additionally ∥ X ∥ is pointed.
    s : is-surjection g
    s x = ∥∥-functor (λ p → (f x , p)) (a x)
 
- cCSB : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → is-wconnected Y → CSB X Y
+ cCSB : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+      → is-wconnected Y
+      → CSB X Y
  cCSB  {𝓤} {𝓥} {X} {Y} w ((f , i) , (g , _)) = γ
   where
    γ : X ≃ Y
@@ -685,7 +712,9 @@ Of course, we can instead assume that X is wconnected:
 
 \begin{code}
 
- cCSB' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → is-wconnected X → CSB X Y
+ cCSB' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+       → is-wconnected X
+       → CSB X Y
  cCSB' w e = ≃-sym (cCSB w (pr₂ e , pr₁ e))
 
 \end{code}
@@ -697,7 +726,9 @@ finite:
 
  wconnected-types-are-Dedekind-finite : {X : 𝓤 ̇ }
                                       → is-wconnected X
-                                      → (f : X → X) → is-embedding f → is-equiv f
+                                      → (f : X → X)
+                                      → is-embedding f
+                                      → is-equiv f
  wconnected-types-are-Dedekind-finite w f = lemma f f w
 
 \end{code}
@@ -717,7 +748,8 @@ indicating types explicitly).
 EM-gives-Cantor-Schröder-Bernstein' : Fun-Ext
                                     → EM (𝓤 ⊔ 𝓥)
                                     → Cantor-Schröder-Bernstein 𝓤 𝓥
-EM-gives-Cantor-Schröder-Bernstein' {𝓤} {𝓥} fe excluded-middle {X} {Y} ((f , f-is-emb) , (g , g-is-emb)) = 𝒽
+EM-gives-Cantor-Schröder-Bernstein' {𝓤} {𝓥} fe excluded-middle {X} {Y}
+                                    ((f , f-is-emb) , (g , g-is-emb)) = 𝒽
  where
   is-g-point : (x : X) → 𝓤 ⊔ 𝓥 ̇
   is-g-point x = (x₀ : X) (n : ℕ) → ((g ∘ f) ^ n) x₀ ＝ x → fiber g x₀
@@ -897,7 +929,9 @@ proposition, as this is automatic because ℕ is a set:
 
 is-prop-total-gives-is-prop-each : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
                                  → is-set X
-                                 → is-prop (Σ A) → (x : X) → is-prop (A x)
+                                 → is-prop (Σ A)
+                                 → (x : X)
+                                 → is-prop (A x)
 is-prop-total-gives-is-prop-each A j i x a a' = t
  where
   q : (x , a) ＝ (x , a')
@@ -975,7 +1009,9 @@ blemma : (P : 𝓤 ̇ ) {X : 𝓥 ̇ }
        → is-set X
        → is-prop P
        → X ≃ P + X
-       → Σ A ꞉ (X → 𝓤 ⊔ 𝓥 ̇ ) , ((x : X) → is-decidable (A x)) × is-prop (Σ A) × (P ⇔ Σ A)
+       → Σ A ꞉ (X → 𝓤 ⊔ 𝓥 ̇ ) , ((x : X) → is-decidable (A x))
+                              × is-prop (Σ A)
+                              × (P ⇔ Σ A)
 blemma {𝓤} {𝓥 } P {X} j i (f , (s , η) , (r , ε)) = A , d , l , (φ , γ)
  where
   A : X → 𝓤 ⊔ 𝓥 ̇
@@ -983,10 +1019,12 @@ blemma {𝓤} {𝓥 } P {X} j i (f , (s , η) , (r , ε)) = A , d , l , (φ , γ
 
   d : (x : X) → is-decidable (A x)
   d x = equality-cases (f x)
-         (λ (p : P) (u : f x ＝ inl p) → inl (p , u))
-         (λ (y : X) (v : f x ＝ inr y) → inr (λ (a , u) → +disjoint (inl a ＝⟨ u ⁻¹ ⟩
-                                                                    f x   ＝⟨ v ⟩
-                                                                    inr y ∎)))
+         (λ (p : P) (u : f x ＝ inl p)
+            → inl (p , u))
+         (λ (y : X) (v : f x ＝ inr y)
+            → inr (λ (a , u) → +disjoint (inl a ＝⟨ u ⁻¹ ⟩
+                                 f x   ＝⟨ v ⟩
+                                 inr y ∎)))
 
   k : (x : X) → is-prop (A x)
   k x = Σ-is-prop i (λ p → +-is-set P X (props-are-sets i) j)
@@ -995,10 +1033,12 @@ blemma {𝓤} {𝓥 } P {X} j i (f , (s , η) , (r , ε)) = A , d , l , (φ , γ
   l (x , p , u) (x' , p' , u') = t
    where
     q : x ＝ x'
-    q = equivs-are-lc f ((s , η) , (r , ε)) (f x    ＝⟨ u ⟩
-                                             inl p  ＝⟨ ap inl (i p p') ⟩
-                                             inl p' ＝⟨ u' ⁻¹ ⟩
-                                             f x'   ∎)
+    q = equivs-are-lc f
+         ((s , η) , (r , ε))
+         (f x    ＝⟨ u ⟩
+          inl p  ＝⟨ ap inl (i p p') ⟩
+          inl p' ＝⟨ u' ⁻¹ ⟩
+          f x'   ∎)
 
     t : x , p , u ＝ x' , p' , u'
     t = to-subtype-＝ k q
@@ -1016,13 +1056,19 @@ rlemma : (P : 𝓤 ̇ )
 rlemma P = blemma P ℕ-is-set
 
 discrete-Cantor-Schröder-Bernstein : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
-discrete-Cantor-Schröder-Bernstein 𝓤 𝓥 = {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → is-discrete X → is-discrete Y → CSB X Y
+discrete-Cantor-Schröder-Bernstein 𝓤 𝓥 = {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                                         → is-discrete X
+                                         → is-discrete Y
+                                         → CSB X Y
 
-econstruction-ℕ : (P : 𝓤 ̇ ) → is-prop P → (ℕ ↪ P + ℕ) × (P + ℕ ↪ ℕ)
+econstruction-ℕ : (P : 𝓤 ̇ )
+                → is-prop P
+                → (ℕ ↪ P + ℕ) × (P + ℕ ↪ ℕ)
 econstruction-ℕ P i = econstruction P zero succ
                        ℕ-is-set i
                        (ℕ-is-discrete zero)
-                       (λ (x : ℕ) (p : zero ＝ succ x) → positive-not-zero x (p ⁻¹))
+                       (λ (x : ℕ) (p : zero ＝ succ x)
+                          → positive-not-zero x (p ⁻¹))
                        succ-lc
 
 dlemma : (P : 𝓥 ̇ )
@@ -1033,7 +1079,8 @@ dlemma P csb i = csb ℕ-is-discrete
                   (+-is-discrete (props-are-discrete i) ℕ-is-discrete)
                   (econstruction-ℕ P i)
 
-discrete-CSB-gives-dBKS⁺ : discrete-Cantor-Schröder-Bernstein 𝓤₀ 𝓥 → dBKS⁺ 𝓥
+discrete-CSB-gives-dBKS⁺ : discrete-Cantor-Schröder-Bernstein 𝓤₀ 𝓥
+                         → dBKS⁺ 𝓥
 discrete-CSB-gives-dBKS⁺ csb P i = γ
  where
   e : ℕ ≃ P + ℕ
@@ -1049,13 +1096,13 @@ expense of assuming propositional extensionality (univalence for
 propositions).
 
 If we have a uniform way to get an equivalence ℕ ≃ P + ℕ for any
-proposition P, given by a function
+proposition P, then given by a function
 
  φ : (P : 𝓤 ̇ ) → is-prop P → ℕ ≃ P + ℕ,
 
-then we can use φ to decide P for any proposition P. To see this,
-first consider P = 𝟙, and let x be the natural number that is mapped
-to inl * by the equivalence given by φ. Then, for an arbitrary
+we can use φ to decide P for any proposition P. To see this, first
+consider P = 𝟙, and let x be the natural number that is mapped to
+inl ⋆ by the equivalence given by φ. Then, for an arbitrary
 proposition P, if the equivalence maps x to inl p for some p, we have
 that P holds. Otherwise, if it maps x to inr y for some y : ℕ, then P
 can't hold, for if it did we would have p : P, and hence P ＝ 𝟙 by
@@ -1091,7 +1138,11 @@ ulemma {𝓤} fe pe {X} {Y} φ = em
   x : X
   x = f (𝟙 , 𝟙-is-prop , ⋆)
 
-  ν : (P : 𝓤 ̇ ) (i : is-prop P) (y : Y) → ⌜ φ P i ⌝ x ＝ inr y → ¬ P
+  ν : (P : 𝓤 ̇ )
+      (i : is-prop P)
+      (y : Y)
+    → ⌜ φ P i ⌝ x ＝ inr y
+    → ¬ P
   ν P i y r p = γ
    where
     a : x ＝ f (P , i , p)
@@ -1108,8 +1159,8 @@ ulemma {𝓤} fe pe {X} {Y} φ = em
 
   em : (P : 𝓤 ̇ ) → is-prop P → P + ¬ P
   em P i = equality-cases (⌜ φ P i ⌝ x)
-           (λ (p : P) (l : ⌜ φ P i ⌝ x ＝ inl p) → inl p)
-           (λ (y : Y) (r : ⌜ φ P i ⌝ x ＝ inr y) → inr (ν P i y r))
+            (λ (p : P) (l : ⌜ φ P i ⌝ x ＝ inl p) → inl p)
+            (λ (y : Y) (r : ⌜ φ P i ⌝ x ＝ inr y) → inr (ν P i y r))
 
 discrete-CSB-gives-EM : funext 𝓥 𝓥
                       → propext 𝓥
@@ -1169,7 +1220,10 @@ wCSB:
  open wCSB-still-gives-EM pt
 
  discrete-wCantor-Schröder-Bernstein : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
- discrete-wCantor-Schröder-Bernstein 𝓤 𝓥 = {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → is-discrete X → is-discrete Y → wCSB X Y
+ discrete-wCantor-Schröder-Bernstein 𝓤 𝓥 = {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                                           → is-discrete X
+                                           → is-discrete Y
+                                           → wCSB X Y
 
 \end{code}
 
@@ -1183,7 +1237,8 @@ We now consider the propositional version of BKS⁺:
  BKS⁺ : (𝓤 : Universe) → 𝓤 ⁺ ̇
  BKS⁺ 𝓤 = (P : 𝓤 ̇ ) → is-prop P → is-Rosolini P
 
- discrete-wCSB-gives-BKS⁺ : discrete-wCantor-Schröder-Bernstein 𝓤₀ 𝓥 → BKS⁺ 𝓥
+ discrete-wCSB-gives-BKS⁺ : discrete-wCantor-Schröder-Bernstein 𝓤₀ 𝓥
+                          → BKS⁺ 𝓥
  discrete-wCSB-gives-BKS⁺ w P i = γ
   where
    s : ∥ ℕ ≃ P + ℕ ∥

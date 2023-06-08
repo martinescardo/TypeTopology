@@ -83,7 +83,7 @@ is-well-founded = (x : X) → is-accessible x
 
 is-Well-founded : 𝓤 ⊔ 𝓥 ⊔ 𝓦  ⁺ ̇
 is-Well-founded {𝓦} = (P : X → 𝓦 ̇ )
-                    → ((x : X) → ((y : X) → y < x → P y) → P x)
+                    → ((x : X) → ((x' : X) → x' < x → P x') → P x)
                     → (x : X) → P x
 
 transfinite-induction : is-well-founded → ∀ {𝓦} → is-Well-founded {𝓦}
@@ -94,7 +94,7 @@ transfinite-induction-converse φ = φ is-accessible (λ _ → step)
 
 transfinite-recursion : is-well-founded
                       → ∀ {𝓦} {Y : 𝓦 ̇ }
-                      → ((x : X) → ((y : X) → y < x → Y) → Y)
+                      → ((x : X) → ((x' : X) → x' < x → Y) → Y)
                       → X → Y
 transfinite-recursion w {𝓦} {Y} = transfinite-induction w (λ x → Y)
 
