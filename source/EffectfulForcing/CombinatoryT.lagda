@@ -75,7 +75,7 @@ embedding Succ    = Succ
 embedding Iter    = Iter
 embedding K       = K
 embedding S       = S
-embedding (t · u) = (embedding t) · (embedding u)
+embedding (t · u) = embedding t · embedding u
 
 preservation : {σ : type} → (t : T σ) → (α : Baire) → ⟦ t ⟧ ＝ ⟦ embedding t ⟧' α
 preservation Zero    α = refl
