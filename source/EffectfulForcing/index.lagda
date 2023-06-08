@@ -40,7 +40,7 @@ import EffectfulForcing.LambdaWithoutOracle         -- By Vincent Rahil (2023)
    all functions.
 
    Moreover, a version of (combinatory) system T with an oracle Ω is
-   defined, with a standard semantics, totogether with its relation to
+   defined, with a standard semantics, together with its relation to
    the system without oracles.
 
  * The file Continuity defined the Baire type and a notion of
