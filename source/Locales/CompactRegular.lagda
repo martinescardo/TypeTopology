@@ -46,7 +46,7 @@ good idea to address this duplication at some point.
 is-directed : (P : Poset 𝓤 𝓥) → (S : Fam 𝓦 ∣ P ∣ₚ) → Ω (𝓥 ⊔ 𝓦)
 is-directed P (I , s) =
    ∥ I ∥Ω
- ∧ (Ɐ i ꞉ I , Ɐ j ꞉ I , Ǝ k ∶ I , ((s i ≤ s k) ∧ (s j ≤ s k)) holds)
+ ∧ (Ɐ i ꞉ I , Ɐ j ꞉ I , Ǝ k ꞉ I , ((s i ≤ s k) ∧ (s j ≤ s k)) holds)
   where open PosetNotation P using (_≤_)
 
 \end{code}
@@ -56,7 +56,7 @@ is-directed P (I , s) =
 way-below : (F : Frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
 way-below {𝓤 = 𝓤} {𝓦 = 𝓦} F U V =
  Ɐ S ꞉ Fam 𝓦 ⟨ F ⟩ , is-directed (poset-of F) S ⇒
-  V ≤ (⋁[ F ] S) ⇒ (Ǝ i ∶ index S , (U ≤ S [ i ]) holds)
+  V ≤ (⋁[ F ] S) ⇒ (Ǝ i ꞉ index S , (U ≤ S [ i ]) holds)
    where
     open PosetNotation (poset-of F) using (_≤_)
 
@@ -1092,12 +1092,12 @@ clopen-iff-compact-in-stone-frame F (κ , ζ) U = β , γ
 \begin{code}
 
 contains-top : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦)
-contains-top F U = Ǝ t ∶ index U , is-top F (U [ t ]) holds
+contains-top F U = Ǝ t ꞉ index U , is-top F (U [ t ]) holds
 
 closed-under-binary-meets : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦)
 closed-under-binary-meets F 𝒮 =
  Ɐ i ꞉ index 𝒮 , Ɐ j ꞉ index 𝒮 ,
-  Ǝ k ∶ index 𝒮 , ((𝒮 [ k ]) is-glb-of (𝒮 [ i ] , 𝒮 [ j ])) holds
+  Ǝ k ꞉ index 𝒮 , ((𝒮 [ k ]) is-glb-of (𝒮 [ i ] , 𝒮 [ j ])) holds
    where
     open Meets (λ x y → x ≤[ poset-of F ] y)
 
@@ -1340,7 +1340,7 @@ Scott-continuous.
       μ : is-monotonic (poset-of (𝒪 X)) (poset-of (𝒪 Y)) (f ⁎·_) holds
       μ = pr₂ (right-adjoint-of f)
 
-   γ : (Ǝ k ∶ index S , ((f ⋆∙ U) ≤[ poset-of (𝒪 X) ] (S [ k ])) holds) holds
+   γ : (Ǝ k ꞉ index S , ((f ⋆∙ U) ≤[ poset-of (𝒪 X) ] (S [ k ])) holds) holds
    γ = ∥∥-rec ∃-is-prop ϵ (ϑ T T-is-directed ζ₂)
     where
      ϵ : _
@@ -1659,7 +1659,7 @@ continuity-condition : (L : Frame 𝓤 𝓥 𝓦) (M : Frame 𝓤' 𝓥' 𝓦)
 continuity-condition L M h =
  Ɐ b ꞉ ⟨ M ⟩ , Ɐ x ꞉ ⟨ L ⟩ , is-compact-open M b ⇒
   b ≤[ poset-of M ] h x ⇒
-   (Ǝ a ∶ ⟨ L ⟩ ,
+   (Ǝ a ꞉ ⟨ L ⟩ ,
      ((is-compact-open L a ∧ a ≤[ poset-of L ] x ∧ b ≤[ poset-of M ] h a) holds))
 
 \end{code}

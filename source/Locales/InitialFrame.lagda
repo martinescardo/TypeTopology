@@ -79,7 +79,7 @@ open propositional-truncations-exist pt
       , ⊑-is-partial-order pe , top , meet , join , dist
  where
   ⋁_ : Fam 𝓤 (Ω 𝓤) → Ω 𝓤
-  ⋁ U = Ǝ i ∶ index U , ((U [ i ]) holds)
+  ⋁ U = Ǝ i ꞉ index U , ((U [ i ]) holds)
 
   open Meets _⊑_ renaming (is-top to is-the-top)
 

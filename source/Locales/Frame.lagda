@@ -652,7 +652,7 @@ distributivity (_ , _ , _ , (_ , _ , _ , d)) x U = d (x , U)
 is-directed : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓥 ⊔ 𝓦)
 is-directed F (I , β) =
    ∥ I ∥Ω
- ∧ (Ɐ i ꞉ I , Ɐ j ꞉ I , (Ǝ k ∶ I , ((β i ≤ β k) ∧ (β j ≤ β k)) holds))
+ ∧ (Ɐ i ꞉ I , Ɐ j ꞉ I , (Ǝ k ꞉ I , ((β i ≤ β k) ∧ (β j ≤ β k)) holds))
   where open PosetNotation (poset-of F)
 
 directedness-entails-inhabitation : (F : Frame 𝓤 𝓥 𝓦) (S : Fam 𝓦 ⟨ F ⟩)
@@ -738,7 +738,7 @@ monotone-image-on-directed-family-is-directed F G S (ι , υ) f μ = ι , γ
   I = index S
 
   γ : (Ɐ i ꞉ I , Ɐ j ꞉ I ,
-        (Ǝ k ∶ I ,
+        (Ǝ k ꞉ I ,
           ((f (S [ i ]) ≤[ poset-of G ] f (S [ k ]))
          ∧ (f (S [ j ]) ≤[ poset-of G ] f (S [ k ]))) holds)) holds
   γ i j = ∥∥-rec ∥∥-is-prop β (υ i j)
@@ -1499,7 +1499,7 @@ directify-is-directed F S@(I , α) = ∣ [] ∣ , υ
 
   υ : (Ɐ is ꞉ List I
      , Ɐ js ꞉ List I
-     , (Ǝ ks ∶ List I
+     , (Ǝ ks ꞉ List I
       , (((directify F S [ is ] ≤ directify F S [ ks ])
         ∧ (directify F S [ js ] ≤ directify F S [ ks ])) holds))) holds
   υ is js = ∣ (is ++ js) , β , γ ∣
@@ -1525,12 +1525,12 @@ directify-is-directed F S@(I , α) = ∣ [] ∣ , υ
 closed-under-binary-joins : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦)
 closed-under-binary-joins {𝓦 = 𝓦} F S =
  Ɐ i ꞉ index S , Ɐ j ꞉ index S ,
-  Ǝ k ∶ index S , ((S [ k ]) is-lub-of (binary-family 𝓦 (S [ i ]) (S [ j ]))) holds
+  Ǝ k ꞉ index S , ((S [ k ]) is-lub-of (binary-family 𝓦 (S [ i ]) (S [ j ]))) holds
    where
     open Joins (λ x y → x ≤[ poset-of F ] y)
 
 contains-bottom : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦)
-contains-bottom F U =  Ǝ i ∶ index U , is-bottom F (U [ i ]) holds
+contains-bottom F U =  Ǝ i ꞉ index U , is-bottom F (U [ i ]) holds
 
 closed-under-finite-joins : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦)
 closed-under-finite-joins F S =
@@ -1551,11 +1551,11 @@ closed-under-fin-joins-implies-directed F S (i₀ , ð) =
    γ (i , _) = ∣ i ∣ , δ
     where
      δ : (m n : index S)
-       → (Ǝ o ∶ index S , ((S [ m ] ≤ S [ o ]) ∧ (S [ n ] ≤ S [ o ])) holds) holds
+       → (Ǝ o ꞉ index S , ((S [ m ] ≤ S [ o ]) ∧ (S [ n ] ≤ S [ o ])) holds) holds
      δ m n = ∥∥-rec ∃-is-prop ϵ (ð m n)
       where
        ϵ : Σ o ꞉ index S , ((S [ o ]) is-lub-of (binary-family 𝓦 (S [ m ]) (S [ n ]))) holds
-         → (Ǝ o ∶ index S , ((S [ m ] ≤ S [ o ]) ∧ (S [ n ] ≤ S [ o ])) holds) holds
+         → (Ǝ o ꞉ index S , ((S [ m ] ≤ S [ o ]) ∧ (S [ n ] ≤ S [ o ])) holds) holds
        ϵ (o , ψ , _) = ∣ o , ψ (inl ⋆) , ψ (inr ⋆) ∣
 
 directify-is-closed-under-fin-joins : (F : Frame 𝓤 𝓥 𝓦) (S : Fam 𝓦 ⟨ F ⟩)
@@ -1867,7 +1867,7 @@ cont-comp {𝓦 = 𝓦} X Y Z ℊ@(g , α₁ , α₂ , α₃) 𝒻@(f , β₁ , 
 
 cofinal-in : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Fam 𝓦 ⟨ F ⟩ → Ω (𝓥 ⊔ 𝓦)
 cofinal-in F R S =
- Ɐ i ꞉ index R , Ǝ j ∶ index S , ((R [ i ]) ≤[ poset-of F ] (S [ j ])) holds
+ Ɐ i ꞉ index R , Ǝ j ꞉ index S , ((R [ i ]) ≤[ poset-of F ] (S [ j ])) holds
 
 cofinal-implies-join-covered : (F : Frame 𝓤 𝓥 𝓦) (R S : Fam 𝓦 ⟨ F ⟩)
                              → cofinal-in F R S holds
@@ -1916,24 +1916,24 @@ bicofinal-with-directed-family-implies-directed F R S φ ψ (δ₁ , δ₂) = �
       †₂ = ∣_∣ ∘ pr₁
 
   ‡ : (j₁ j₂ : index S)
-    → (Ǝ j ∶ index S , (S [ j₁ ] ≤ S [ j ]) holds
+    → (Ǝ j ꞉ index S , (S [ j₁ ] ≤ S [ j ]) holds
                      × (S [ j₂ ] ≤ S [ j ]) holds) holds
   ‡ j₁ j₂ = ∥∥-rec₂ ∃-is-prop ‡₁ (ψ j₁) (ψ j₂)
    where
     ‡₁ : Σ i₁ ꞉ index R , (S [ j₁ ] ≤ R [ i₁ ]) holds
        → Σ i₂ ꞉ index R , (S [ j₂ ] ≤ R [ i₂ ]) holds
-       → (Ǝ j ∶ index S , (S [ j₁ ] ≤ S [ j ]) holds
+       → (Ǝ j ꞉ index S , (S [ j₁ ] ≤ S [ j ]) holds
                         × (S [ j₂ ] ≤ S [ j ]) holds) holds
     ‡₁ (i₁ , p₁) (i₂ , p₂) = ∥∥-rec ∃-is-prop ‡₂ (δ₂ i₁ i₂)
      where
       ‡₂ : Σ i ꞉ index R , (R [ i₁ ] ≤ R [ i ]) holds
                          × (R [ i₂ ] ≤ R [ i ]) holds
-         → (Ǝ j ∶ index S , (S [ j₁ ] ≤ S [ j ]) holds
+         → (Ǝ j ꞉ index S , (S [ j₁ ] ≤ S [ j ]) holds
                           × (S [ j₂ ] ≤ S [ j ]) holds) holds
       ‡₂ (i , q₁ , q₂) = ∥∥-rec ∃-is-prop ‡₃ (φ i)
        where
         ‡₃ : Σ j ꞉ (index S) , (R [ i ] ≤ S [ j ]) holds
-           → (Ǝ j ∶ index S , (S [ j₁ ] ≤ S [ j ]) holds
+           → (Ǝ j ꞉ index S , (S [ j₁ ] ≤ S [ j ]) holds
                             × (S [ j₂ ] ≤ S [ j ]) holds) holds
         ‡₃ (j , p) = ∣ j , r₁ , r₂ ∣
          where

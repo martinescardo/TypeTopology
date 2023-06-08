@@ -559,7 +559,7 @@ We use Yoneda for the `β` direction.
     δ′ = pr₁ δ , ζ
      where
       ζ : (Ɐ i ꞉ index 𝒦 , Ɐ j ꞉ index 𝒦 ,
-            Ǝ k ∶ index 𝒦 , (((𝒦 [ i ]) ≼ (𝒦 [ k ])) holds)
+            Ǝ k ꞉ index 𝒦 , (((𝒦 [ i ]) ≼ (𝒦 [ k ])) holds)
                           × (((𝒦 [ j ]) ≼ (𝒦 [ k ])) holds)) holds
       ζ i j = ∥∥-rec ∃-is-prop η (pr₂ δ i j)
        where
@@ -1090,7 +1090,7 @@ module PatchStoneᴰ (X : Locale (𝓤 ⁺) 𝓤 𝓤) (σᴰ : spectralᴰ (�
    ζ : is-directed (poset-of (𝒪 Patchₛ-X)) S holds
    ζ = pr₁ δ , †
     where
-     † : (i j : index S) → (Ǝ k ∶ index S , (((S [ i ]) ≼ᵏ (S [ k ]))
+     † : (i j : index S) → (Ǝ k ꞉ index S , (((S [ i ]) ≼ᵏ (S [ k ]))
                                            ∧ ((S [ j ]) ≼ᵏ (S [ k ]))) holds) holds
      † i j = ∥∥-rec ∃-is-prop ‡ (pr₂ δ i j)
       where

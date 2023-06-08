@@ -302,7 +302,7 @@ is-spectral′ B L f = Ɐ x ꞉ ⟪ B ⟫ , is-compact-open L (f x)
 \begin{code}
 
 _is-sublattice-of_ : BooleanAlgebra 𝓤′ 𝓥′ → Frame 𝓤 𝓥 𝓦 → Ω (𝓤′ ⊔ 𝓤)
-_is-sublattice-of_ B L = Ǝ η ∶ (⟪ B ⟫ → ⟨ L ⟩) , is-ba-embedding B L η holds
+_is-sublattice-of_ B L = Ǝ η ꞉ (⟪ B ⟫ → ⟨ L ⟩) , is-ba-embedding B L η holds
 
 \end{code}
 
@@ -375,7 +375,7 @@ is-generated-by {𝓦 = 𝓦} L B η =
 contains-compact-opens : (L : Frame 𝓤 𝓦 𝓦) (B : BooleanAlgebra 𝓦 𝓥)
                        → (⟪ B ⟫ → ⟨ L ⟩) → Ω (𝓤 ⊔ 𝓦 ⁺)
 contains-compact-opens L B η =
- Ɐ x ꞉ ⟨ L ⟩ , is-compact-open L x ⇒ (Ǝ b ∶ ⟪ B ⟫ , η b ＝ x)
+ Ɐ x ꞉ ⟨ L ⟩ , is-compact-open L x ⇒ (Ǝ b ꞉ ⟪ B ⟫ , η b ＝ x)
 
 \end{code}
 
@@ -598,7 +598,7 @@ The function `h⁻` also preserves meets.
                     †₂
                     ॐ
        where
-        ॐ : (Ǝ (c , d) ∶ (⟨ L ⟩ × ⟨ L ⟩) ,
+        ॐ : (Ǝ (c , d) ꞉ (⟨ L ⟩ × ⟨ L ⟩) ,
                 (is-compact-open L c holds)
               × (is-compact-open L d holds)
               × (η b ≤[ poset-of L ] (c ∨[ L ] d)) holds
