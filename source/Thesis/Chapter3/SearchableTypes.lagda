@@ -153,20 +153,23 @@ pr₂ (≤-≼-relationship (succ n) 0) n≼m
  = Succ-not-≼-Zero (n ↑) n≼m
 pr₂ (≤-≼-relationship (succ n) (succ m)) n≼m
  = pr₂ (≤-≼-relationship n m) (Succ-loc (n ↑) (m ↑) n≼m)
-
--- Lemma 3.2.18
-≼-right-decidable : (u : ℕ∞) (m : ℕ) → is-decidable (u ≼ (m ↑))
-≼-right-decidable u m
- = Cases (𝟚-is-discrete (pr₁ u m) ₀) (inl ∘ γ₁) (inr ∘ γ₂)
- where
-   γ₁ : {!!}
-   γ₁ um=0 n un=1 = {!!}
-   γ₂ : {!!}
-   γ₂ um≠0 u≼m = {!!}
+ 
+-- Lemma 3.2.18 [ Remove from paper ]
 
 -- Lemma 3.2.19
+is-decreasing' : (v : ℕ∞) (n : ℕ) → (i : ℕ) → i ≤ n → pr₁ v n ＝ ₁ → pr₁ v i ＝ ₁
+is-decreasing' v = regress (λ z → pr₁ v z ＝ ₁) (λ n → ≤₂-criterion-converse (pr₂ v n))
+
+positive-below-n : (i n : ℕ) → pr₁ (Succ (n ↑)) i ＝ ₁ → i ≤ n 
+positive-below-n zero n snᵢ=1 = ⋆
+positive-below-n (succ i) (succ n) snᵢ=1 = positive-below-n i n snᵢ=1
+
 ≼-left-decidable : (n : ℕ) (v : ℕ∞) → is-decidable ((n ↑) ≼ v)
-≼-left-decidable = {!!}
+≼-left-decidable zero v = inl (zero-minimal v)
+≼-left-decidable (succ n) v
+ = Cases (𝟚-is-discrete (pr₁ v n) ₁)
+     (λ  vₙ=1 → inl (λ i snᵢ=1 → is-decreasing' v n i (positive-below-n i n snᵢ=1) vₙ=1))
+     (λ ¬vₙ=1 → inr (λ sn≼v → ¬vₙ=1 (sn≼v n (ℕ-to-ℕ∞-diagonal₁ n))))
 
 -- Definition 3.2.22
 open import TWA.Closeness fe hiding (is-ultra; is-closeness)
@@ -197,15 +200,18 @@ B (X , c , _) n x y = (n ↑) ≼ c x y
 
 B-refl : (X : ClosenessSpace 𝓤) → (n : ℕ) (x : ⟨ X ⟩)
        → B X n x x
-B-refl X n x = {!!}
+B-refl (X , c , i , e , s , u) n x
+ = transport ((n ↑) ≼_) (e x ⁻¹) (∞-maximal (n ↑))
 
 B-sym : (X : ClosenessSpace 𝓤) → (n : ℕ) (x y : ⟨ X ⟩)
       → B X n x y → B X n y x
-B-sym X n x y = {!!}
+B-sym (X , c , i , e , s , u) n x y Bxy
+ = transport ((n ↑) ≼_) (s x y) Bxy
 
 B-trans : (X : ClosenessSpace 𝓤) → (n : ℕ) (x y z : ⟨ X ⟩)
         → B X n x y → B X n y z → B X n x z
-B-trans X n x y z = {!!}
+B-trans (X , c , i , e , s , u) n x y z Bxy Byz m π
+ = u x y z n m (Lemma[a＝₁→b＝₁→min𝟚ab＝₁] (Bxy m π) (Byz m π))
 
 B-decidable : (X : ClosenessSpace 𝓤) → (n : ℕ) → (x y : ⟨ X ⟩ )
             → is-decidable (B X n x y)
@@ -215,12 +221,12 @@ B-is-eq : (C : ClosenessSpace 𝓤)
         → (n : ℕ) → is-equiv-relation (B C n)
 pr₁ (B-is-eq (X , c , i , j , k , l) n) x y
  = Π-is-prop (fe _ _) (λ _ → Π-is-prop (fe _ _) (λ _ → 𝟚-is-set))
-pr₁ (pr₂ (B-is-eq (X , c , i , j , k , l) n)) x m η
- = transport (λ - → ℕ∞-to-ℕ→𝟚 - m ＝ ₁) (j x ⁻¹) refl
-pr₁ (pr₂ (pr₂ (B-is-eq (X , c , i , j , k , l) n))) x y η m ρ
- = transport (λ - → ℕ∞-to-ℕ→𝟚 - m ＝ ₁) (k x y) (η m ρ)
-pr₂ (pr₂ (pr₂ (B-is-eq (X , c , i , j , k , l) n))) x y z η ρ m π
- = l x y z n m ((Lemma[a＝₁→b＝₁→min𝟚ab＝₁] (η m π) (ρ m π)))
+pr₁ (pr₂ (B-is-eq X n))
+ = B-refl X n
+pr₁ (pr₂ (pr₂ (B-is-eq X n)))
+ = B-sym X n
+pr₂ (pr₂ (pr₂ (B-is-eq X n)))
+ = B-trans X n
 
 B⁼ : ((X , ci) : ClosenessSpace 𝓤) → (n : ℕ) → EqRel X
 B⁼ C n = B C n , B-is-eq C n
