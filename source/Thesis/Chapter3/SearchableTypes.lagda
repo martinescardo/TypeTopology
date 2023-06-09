@@ -19,12 +19,10 @@ open import UF.Equiv
 
 module Thesis.Chapter3.SearchableTypes (fe : FunExt) where
 
-_≡_ = Id
-
 -- Definition 3.1.1
 decidable-predicate : (𝓦 : Universe) → 𝓤 ̇ → 𝓤 ⊔ 𝓦 ⁺  ̇
 decidable-predicate 𝓦 X
- = Σ p ꞉ (X → Ω 𝓦) , complemented (λ x → (p x) holds)
+ = Σ p ꞉ (X → Ω 𝓦) , is-complemented (λ x → (p x) holds)
 
 -- Definition 3.1.2/3
 searchable : (𝓦 : Universe) → 𝓤 ̇ → 𝓤 ⊔ (𝓦 ⁺)  ̇
@@ -43,16 +41,16 @@ searchable-inhabited 𝓦 X (𝓔 , S) = 𝓔 ((λ _ → ⊤Ω) , (λ _ → inl 
 𝔽 (succ n) = 𝟙 + 𝔽 n
 
 -- Definition 3.1.6
-finite : 𝓤 ̇ → 𝓤  ̇
-finite X = Σ n ꞉ ℕ , 𝔽 n ≃ X
+finite-discrete : 𝓤 ̇ → 𝓤  ̇
+finite-discrete X = Σ n ꞉ ℕ , 𝔽 n ≃ X
 
 -- Lemma 3.1.7
 𝔽-discrete : (n : ℕ) → is-discrete (𝔽 n)
 𝔽-discrete 0 = 𝟘-is-discrete
 𝔽-discrete (succ n) = +-is-discrete 𝟙-is-discrete (𝔽-discrete n)
 
-finite-discrete : {X : 𝓤 ̇ } → finite X → is-discrete X
-finite-discrete (n , e) = equiv-to-discrete e (𝔽-discrete n)
+finite-discrete-discrete : {X : 𝓤 ̇ } → finite-discrete X → is-discrete X
+finite-discrete-discrete (n , e) = equiv-to-discrete e (𝔽-discrete n)
 
 -- Lemma 3.1.8
 𝟙-searchable : searchable 𝓦 (𝟙 {𝓤})
@@ -131,9 +129,9 @@ equivs-preserve-searchability {𝓤} {𝓥} {𝓦} {X} {Y}
 ≃-searchable (f , e) = equivs-preserve-searchability f e
              
 -- Lemma 3.1.12
-finite-searchable : {X : 𝓤 ̇ } → X → finite X → searchable 𝓦 X
-finite-searchable x (0 , _ , (g , _) , _) = 𝟘-elim (g x)
-finite-searchable x (succ n , e)
+finite-discrete-searchable : {X : 𝓤 ̇ } → X → finite-discrete X → searchable 𝓦 X
+finite-discrete-searchable x (0 , _ , (g , _) , _) = 𝟘-elim (g x)
+finite-discrete-searchable x (succ n , e)
  = ≃-searchable e (𝔽-searchable (succ n) (inl ⋆))
 
 -- Lemma 3.1.13
@@ -157,7 +155,7 @@ pr₂ (≤-≼-relationship (succ n) (succ m)) n≼m
  = pr₂ (≤-≼-relationship n m) (Succ-loc (n ↑) (m ↑) n≼m)
 
 -- Lemma 3.2.18
-≼-right-decidable : (u : ℕ∞) (m : ℕ) → decidable (u ≼ (m ↑))
+≼-right-decidable : (u : ℕ∞) (m : ℕ) → is-decidable (u ≼ (m ↑))
 ≼-right-decidable u m
  = Cases (𝟚-is-discrete (pr₁ u m) ₀) (inl ∘ γ₁) (inr ∘ γ₂)
  where
@@ -167,7 +165,7 @@ pr₂ (≤-≼-relationship (succ n) (succ m)) n≼m
    γ₂ um≠0 u≼m = {!!}
 
 -- Lemma 3.2.19
-≼-left-decidable : (n : ℕ) (v : ℕ∞) → decidable ((n ↑) ≼ v)
+≼-left-decidable : (n : ℕ) (v : ℕ∞) → is-decidable ((n ↑) ≼ v)
 ≼-left-decidable = {!!}
 
 -- Definition 3.2.22
@@ -194,7 +192,6 @@ ClosenessSpace 𝓤
 ⟨ X , _ ⟩ = X
 
 -- Definition 3.2.23 [ Doesn't say in paper that this is an equiv rel ? TODO ]
-
 B : (X : ClosenessSpace 𝓤) → ℕ → ⟨ X ⟩ → ⟨ X ⟩ → 𝓤₀  ̇   
 B (X , c , _) n x y = (n ↑) ≼ c x y
 
@@ -211,7 +208,7 @@ B-trans : (X : ClosenessSpace 𝓤) → (n : ℕ) (x y z : ⟨ X ⟩)
 B-trans X n x y z = {!!}
 
 B-decidable : (X : ClosenessSpace 𝓤) → (n : ℕ) → (x y : ⟨ X ⟩ )
-            → decidable (B X n x y)
+            → is-decidable (B X n x y)
 B-decidable (X , c , _) n x y = ≼-left-decidable n (c x y)
 
 B-is-eq : (C : ClosenessSpace 𝓤)
@@ -219,9 +216,9 @@ B-is-eq : (C : ClosenessSpace 𝓤)
 pr₁ (B-is-eq (X , c , i , j , k , l) n) x y
  = Π-is-prop (fe _ _) (λ _ → Π-is-prop (fe _ _) (λ _ → 𝟚-is-set))
 pr₁ (pr₂ (B-is-eq (X , c , i , j , k , l) n)) x m η
- = transport (λ - → ℕ∞-to-ℕ→𝟚 - m ≡ ₁) (j x ⁻¹) refl
+ = transport (λ - → ℕ∞-to-ℕ→𝟚 - m ＝ ₁) (j x ⁻¹) refl
 pr₁ (pr₂ (pr₂ (B-is-eq (X , c , i , j , k , l) n))) x y η m ρ
- = transport (λ - → ℕ∞-to-ℕ→𝟚 - m ≡ ₁) (k x y) (η m ρ)
+ = transport (λ - → ℕ∞-to-ℕ→𝟚 - m ＝ ₁) (k x y) (η m ρ)
 pr₂ (pr₂ (pr₂ (B-is-eq (X , c , i , j , k , l) n))) x y z η ρ m π
  = l x y z n m ((Lemma[a＝₁→b＝₁→min𝟚ab＝₁] (η m π) (ρ m π)))
 
@@ -231,7 +228,6 @@ B⁼ C n = B C n , B-is-eq C n
 -- Definition 3.2.24 [ not needed ? ]
 
 -- Definition 3.2.25
-
 f-continuous : (X : ClosenessSpace 𝓤) (Y : ClosenessSpace 𝓥)
              → (f : ⟨ X ⟩ → ⟨ Y ⟩) → 𝓤 ̇  
 f-continuous X Y f
@@ -282,7 +278,7 @@ _cover-of_ : ℕ → ClosenessSpace 𝓤 → (𝓥 : Universe) → 𝓤 ⊔ (�
 -- Definition 3.3.3
 totally-bounded : ClosenessSpace 𝓤 → (𝓥 : Universe) → 𝓤 ⊔ (𝓥 ⁺) ̇ 
 totally-bounded X 𝓥
- = (ϵ : ℕ) → Σ (X' , _) ꞉ (ϵ cover-of X) 𝓥 , finite X'
+ = (ϵ : ℕ) → Σ (X' , _) ꞉ (ϵ cover-of X) 𝓥 , finite-discrete X'
 
 -- Definition 3.3.4
 decidable-uc-predicate : (𝓦 : Universe) → ClosenessSpace 𝓤
@@ -351,6 +347,6 @@ totally-bounded-csearchable : (X : ClosenessSpace 𝓤)
                             → csearchable' 𝓦 X
 totally-bounded-csearchable X t i
  = searchable-covers-csearchable X
-     (λ ϵ → (pr₁ (t ϵ)) , finite-searchable (i ϵ) (pr₂ (t ϵ)))
+     (λ ϵ → (pr₁ (t ϵ)) , finite-discrete-searchable (i ϵ) (pr₂ (t ϵ)))
 
 -- Theorem 3.3.9 [ TODO link to blog post ]
