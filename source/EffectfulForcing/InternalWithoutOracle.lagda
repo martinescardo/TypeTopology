@@ -16,6 +16,7 @@ open import EffectfulForcing.Dialogue
 open import EffectfulForcing.Internal hiding (B⋆⟦_⟧ ; dialogue-tree⋆)
 open import EffectfulForcing.LambdaWithoutOracle
 open import EffectfulForcing.SystemT
+open import UF.Base
 
 B⋆⟦_⟧ : {n : ℕ} {Γ : Cxt n} {σ : type} {A : Type}
       → T Γ σ
@@ -39,14 +40,16 @@ dialogue-tree⋆ t = B⋆⟦ t ⟧₀ generic⋆
 TODO. Formulate and prove the correctness of ⌜dialogue-tree⌝.
 
 \begin{code}
-{-
-R⋆ : (σ : type) → B⋆〖 σ 〗 (B ℕ) → B〖 σ 〗 → Type
-R⋆ ι       x y = church-decode x ≣ y
-R⋆ (σ ⇒ τ) f g = (x : B⋆〖 σ 〗 (B ℕ))
-                 (y : B〖 σ 〗)
-               → R⋆ σ x y
-               → R⋆ τ (f x) (g y)
 
+R⋆₀ : (σ : type) → B⋆〖 σ 〗 (B ℕ) → B〖 σ 〗 → Type
+R⋆₀ ι       x y = church-decode x ≣ y
+R⋆₀ (σ ⇒ τ) f g = (x : B⋆〖 σ 〗 (B ℕ))
+                 (y : B〖 σ 〗)
+               → R⋆₀ σ x y
+               → R⋆₀ τ (f x) (g y)
+
+
+{-
 Rs⋆ : {n : ℕ} {Γ : Cxt n}
     → B⋆【 Γ 】 (B ℕ) → B【 Γ 】 → Type
 Rs⋆ {n} {Γ} xs ys = (i : Fin n) → R⋆ (Γ [ i ]) (xs i) (ys i)
@@ -80,6 +83,42 @@ data ⊆Γ : {n : ℕ} (Γ₁ : Cxt n) {m : ℕ} (Γ₂ : Cxt m) → Type where
 ⊆Γ-refl {zero} 〈〉 = ⊆Γ0
 ⊆Γ-refl {succ n} (Γ , τ) = ⊆ΓS τ (⊆Γ-refl Γ)
 
+⊆Γ-trans : {n₁ : ℕ} {Γ₁ : Cxt n₁} {n₂ : ℕ} {Γ₂ : Cxt n₂} {n₃ : ℕ} {Γ₃ : Cxt n₃}
+         → ⊆Γ Γ₁ Γ₂ → ⊆Γ Γ₂ Γ₃ → ⊆Γ Γ₁ Γ₃
+⊆Γ-trans {.0} {.〈〉} {.0} {.〈〉} {n₃} {Γ₃} ⊆Γ0 q = q
+⊆Γ-trans {n₁} {Γ₁} {.(succ _)} {Γ₂ , σ} {.(succ _)} {Γ₃ , σ₁} (⊆ΓR σ h) (⊆ΓR σ₁ q) =
+ ⊆Γ-trans h (⊆ΓR σ₁ (⊆Γ-trans (⊆ΓR σ (⊆Γ-refl Γ₂)) q))
+⊆Γ-trans {n₁} {Γ₁} {.(succ _)} {.(_ , σ)} {.(succ _)} {.(_ , σ)} (⊆ΓR σ h) (⊆ΓS .σ q) =
+ ⊆ΓR σ (⊆Γ-trans h q)
+⊆Γ-trans {.(succ _)} {.(_ , σ)} {.(succ _)} {.(_ , σ)} {.(succ _)} {.(_ , σ₁)} (⊆ΓS σ h) (⊆ΓR σ₁ q) =
+ ⊆ΓR σ₁ (⊆Γ-trans (⊆ΓS σ h) q)
+⊆Γ-trans {.(succ _)} {.(_ , σ)} {.(succ _)} {.(_ , σ)} {.(succ _)} {.(_ , σ)} (⊆ΓS σ h) (⊆ΓS .σ q) =
+ ⊆ΓS σ (⊆Γ-trans h q)
+
+-- From the standard library. Is that defined somewhere? Can we import it from the standard library?
+data _≤_ : ℕ → ℕ → Type where
+  z≤n : ∀ {n}                 → zero  ≤ n
+  s≤s : ∀ {m n} (m≤n : m ≤ n) → succ m ≤ succ n
+
+¬s≤n : (n : ℕ) → ¬ (succ n ≤ n)
+¬s≤n (succ n) (s≤s h) = ¬s≤n n h
+
+n≤s : (n : ℕ) → n ≤ succ n
+n≤s zero = z≤n
+n≤s (succ n) = s≤s (n≤s n)
+
+≤-trans : {n1 n2 n3 : ℕ} → n1 ≤ n2 → n2 ≤ n3 → n1 ≤ n3
+≤-trans {.zero} {n2} {n3} z≤n q = z≤n
+≤-trans {.(succ _)} {.(succ _)} {.(succ _)} (s≤s h) (s≤s q) = s≤s (≤-trans h q)
+
+⊆Γ≤ : {n : ℕ} {Γ : Cxt n} {m : ℕ} {Δ : Cxt m} → ⊆Γ Γ Δ → n ≤ m
+⊆Γ≤ {.0} {.〈〉} {.0} {.〈〉} ⊆Γ0 = z≤n
+⊆Γ≤ {n} {Γ} {succ m} {.(_ , σ)} (⊆ΓR σ h) = ≤-trans (⊆Γ≤ h) (n≤s m)
+⊆Γ≤ {.(succ _)} {.(_ , σ)} {.(succ _)} {.(_ , σ)} (⊆ΓS σ h) = s≤s (⊆Γ≤ h)
+
+¬⊆Γ, : {n : ℕ} {Γ : Cxt n} {τ : type} → ¬ ⊆Γ (Γ , τ) Γ
+¬⊆Γ, {n} {Γ} {τ} h = ¬s≤n n (⊆Γ≤ h)
+
 ⊆〈〉 : {n : ℕ} (Γ : Cxt n) → ⊆Γ 〈〉 Γ
 ⊆〈〉 {zero} 〈〉 = ⊆Γ0
 ⊆〈〉 {succ n} (Γ , τ) = ⊆ΓR τ (⊆〈〉 Γ)
@@ -101,7 +140,7 @@ weaken : {n : ℕ} {Γ₁ : Cxt n} {m : ℕ} {Γ₂ : Cxt m} {σ : type}
 weaken {n} {Γ₁} {m} {Γ₂} {_} sub Zero = Zero
 weaken {n} {Γ₁} {m} {Γ₂} {_} sub Succ = Succ
 weaken {n} {Γ₁} {m} {Γ₂} {_} sub Rec = Rec
-weaken {n} {Γ₁} {m} {Γ₂} {.(Γ₁ [ i ])} sub (ν i) = transport⁻¹ (λ σ → T Γ₂ σ) (⊆Γ[] i sub) (ν _)
+weaken {n} {Γ₁} {m} {Γ₂} {.(Γ₁ [ i ])} sub (ν i) = transport⁻¹ (λ σ → T Γ₂ σ) (⊆Γ[] i sub) (ν (⊆ΓFin sub i))
 weaken {n} {Γ₁} {m} {Γ₂} {σ ⇒ τ} sub (ƛ t) = ƛ (weaken (⊆ΓS σ sub) t)
 weaken {n} {Γ₁} {m} {Γ₂} {σ} sub (t · t₁) = weaken sub t · weaken sub t₁
 
@@ -109,6 +148,37 @@ weaken₀ : {n : ℕ} {Γ : Cxt n} {σ : type}
         → T₀ σ
         → T Γ σ
 weaken₀ {n} {Γ} {σ} t = weaken (⊆〈〉 Γ) t
+
+⊆ΓFin-refl : {n : ℕ} {Γ₁ Γ₂ : Cxt n} (i : Fin n) (s : ⊆Γ Γ₁ Γ₂) → Γ₁ ＝ Γ₂ → ⊆ΓFin s i ＝ i
+⊆ΓFin-refl {.(succ _)} {Γ₁ , τ} {.Γ₁ , .τ} i (⊆ΓR .τ s) refl = 𝟘-elim (¬⊆Γ, s)
+⊆ΓFin-refl {.(succ _)} {Γ₁ , τ} {.(Γ₂ , τ)} Fin.𝟎 (⊆ΓS {Γ₂ = Γ₂} .τ s) e = refl
+⊆ΓFin-refl {.(succ _)} {Γ₁ , τ} {.(Γ₂ , τ)} (Fin.suc i) (⊆ΓS {Γ₂ = Γ₂} .τ s) e =
+ ap Fin.suc (⊆ΓFin-refl i s (pr₁ (from-×-＝' e)))
+
+-- Can't we prove that without K?
+transport⁻¹-T-type : {n : ℕ} {Γ : Cxt n} {σ : type} (e : σ ＝ σ) (t : T Γ σ) → transport⁻¹ (T Γ) e t ＝ t
+transport⁻¹-T-type {n} {Γ} {σ} e t = {!!}
+
+weaken₀-reflν : {n : ℕ} {Γ : Cxt n} (i : Fin n) (s : ⊆Γ Γ Γ)
+                (e : (Γ [ i ]) ＝ (Γ [ ⊆ΓFin s i ]))
+              → transport⁻¹ (T Γ) e (ν (⊆ΓFin s i)) ＝ ν i
+weaken₀-reflν {n} {Γ} i s =
+ transport⁻¹ (λ k → (e : (Γ [ i ]) ＝ (Γ [ k ])) → transport⁻¹ (T Γ) e (ν k) ＝ ν i)
+             (⊆ΓFin-refl i s refl) λ e → transport⁻¹-T-type e _
+
+weaken-id : {σ : type} {n : ℕ} {Γ : Cxt n} (s : ⊆Γ Γ Γ) (t : T Γ σ) → weaken s t ＝ t
+weaken-id {_} {n} {Γ} s Zero = refl
+weaken-id {_} {n} {Γ} s Succ = refl
+weaken-id {_} {n} {Γ} s Rec = refl
+weaken-id {.(Γ [ i ])} {n} {Γ} s (ν i) = {!!}
+weaken-id {σ ⇒ τ} {n} {Γ} s (ƛ t) = ap ƛ (weaken-id (⊆ΓS σ s) t)
+weaken-id {σ} {n} {Γ} s (t₁ · t₂) =
+ weaken s t₁ · weaken s t₂
+  ＝⟨ ap (λ k → k · weaken s t₂) (weaken-id s t₁) ⟩
+ t₁ · weaken s t₂
+  ＝⟨ ap (λ k → t₁ · k) (weaken-id s t₂) ⟩
+ t₁ · t₂
+  ∎
 
 ⊆Γ, : {n : ℕ} (Γ : Cxt n) (τ : type) → ⊆Γ Γ (Γ , τ)
 ⊆Γ, {n} Γ τ = ⊆ΓR τ (⊆Γ-refl Γ)
@@ -219,16 +289,31 @@ sub₀ : {σ : type} {n : ℕ} {Γ : Cxt n} {τ : type} → T (Γ , τ) σ → T
 sub₀ {σ} {n} {Γ} {τ} = sub Fin.𝟎
 
 -- This can either be defined through a succession of applications
-close· : {σ : type} {n : ℕ} {Γ : Cxt n} → T Γ σ → Sub₀ Γ → T₀ σ
-close· {σ} {zero} {Γ} t s = t
-close· {σ} {succ n} {Γ , τ} t s =
- close· (ƛ t · weaken₀ (s Fin.𝟎))
-        (λ i → s (Fin.suc i))
+close-ap : {σ : type} {n : ℕ} {Γ : Cxt n} → T Γ σ → Sub₀ Γ → T₀ σ
+close-ap {σ} {zero} {Γ} t s = t
+close-ap {σ} {succ n} {Γ , τ} t s =
+ close-ap (ƛ t · weaken₀ (s Fin.𝟎))
+          (λ i → s (Fin.suc i))
 
 -- ... or through substitution
 close : {σ : type} {n : ℕ} {Γ : Cxt n} → T Γ σ → Sub₀ Γ → T₀ σ
 close {σ} {zero} {Γ} t s = t
 close {σ} {succ n} {Γ , τ} t s = close (sub₀ t (s Fin.𝟎)) (λ i → s (Fin.suc i))
+
+close· : {σ τ : type} {n : ℕ} {Γ : Cxt n} → (t : T Γ (σ ⇒ τ)) (u : T Γ σ) (s : Sub₀ Γ)
+      → close (t · u) s ＝ close t s · close u s
+close· {σ} {τ} {zero} {Γ} t u s = refl
+close· {σ} {τ} {succ n} {Γ} t u s = close· (sub₀ t (s Fin.𝟎)) (sub₀ u (s Fin.𝟎)) (λ i → s (Fin.suc i))
+
+sub₀-weaken₀ : {σ τ : type} {n : ℕ} {Γ : Cxt n} (t : T₀ σ) (u : T₀ τ)
+             → sub₀ (weaken₀ {succ n} {Γ , τ} {σ} t) u ＝ weaken₀ {n} {Γ} {σ} t
+sub₀-weaken₀ {σ} {τ} {n} {Γ} t u = {!!}
+
+-- to use in the lambda case
+close₀ : {σ : type} {n : ℕ} {Γ : Cxt n} → (t : T₀ σ) (s : Sub₀ Γ)
+      → close (weaken₀ {n} {Γ} {σ} t) s ＝ t
+close₀ {σ} {zero} {〈〉} t s = weaken-id (⊆〈〉 〈〉) t
+close₀ {σ} {succ n} {Γ , τ} t s = {!!}
 
 -- Compared to R⋆₁, this version relates a T₀ (B-type〖 σ 〗 ((ι ⇒ ι) ⇒ ι))
 -- instead of T₀ (⌜B⌝ σ ((ι ⇒ ι) ⇒ ι))
@@ -242,6 +327,9 @@ R⋆ {σ ⇒ τ} α f f' = (x  : 〖 σ 〗)
                     (x' : T₀ (B-type〖 σ 〗 ((ι ⇒ ι) ⇒ ι)))
                  → R⋆ {σ} α x x'
                  → R⋆ {τ} α (f x) (f' · x')
+{-                    (x' : T₀ σ)
+                 → R⋆ {σ} α x ⌜ x' ⌝
+                 → R⋆ {τ} α (f x) (f' · ⌜ x' ⌝)-} -- would this be enough?
 
 -- internal semantics of context as dialogue trees
 IB【_】 : {n : ℕ} → Cxt n → type → Type
@@ -270,9 +358,49 @@ close-⌜succ⌝ : {σ : type} {n : ℕ} {Γ : Cxt n} (ys : IB【 Γ 】 σ)
 close-⌜succ⌝ {σ} {zero} {Γ} ys = refl
 close-⌜succ⌝ {σ} {succ n} {Γ , τ} ys = close-⌜succ⌝ (λ i → ys (Fin.suc i))
 
-succ-dialogue⋆ : {A : Type} (d : B⋆ ℕ (Baire → ℕ)) (α : Baire)
+-- provable without knowing what d is?
+succ-dialogue⋆ : (d : B⋆ ℕ (Baire → ℕ)) (α : Baire)
               → succ (dialogue⋆ d α) ＝ dialogue⋆ (succ⋆ d) α
-succ-dialogue⋆ {A} d α = {!!}
+succ-dialogue⋆ d α =
+ succ (dialogue⋆ d α)
+  ＝⟨ refl ⟩
+ succ (d (λ z α → z) (λ φ x α → φ (α x) α) α)
+  ＝⟨ {!!} ⟩
+ d (λ x α → succ x) (λ φ x α → φ (α x) α) α
+  ＝⟨ refl ⟩
+ dialogue⋆ (succ⋆ d) α
+  ∎
+
+succ-dialogue⋆-aux' : {A : Type} {σ τ : type} (d : T₀ (⌜B⌝ σ ((τ ⇒ τ) ⇒ σ))) (α : 〖 τ 〗 → 〖 τ 〗) (f : 〖 σ 〗 → 〖 σ 〗)
+                     (a : 〖 σ 〗 → (〖 τ 〗 → 〖 τ 〗) → 〖 σ 〗)
+                     (b : (ℕ → (〖 τ 〗 → 〖 τ 〗) → 〖 σ 〗) → ℕ → (〖 τ 〗 → 〖 τ 〗) → 〖 σ 〗)
+                   → f (⟦ d ⟧₀ a b α)
+                     ＝ ⟦ d ⟧₀ (λ x → a (f x)) b α
+succ-dialogue⋆-aux' {A} {σ} {τ} d α f a b = {!!}
+
+{-
+succ-dialogue⋆-aux : {A : Type} {σ τ : type} {n : ℕ} {Γ : Cxt n} (d : T Γ σ)
+                     (g : 【 B-context【 Γ 】 ((ι ⇒ ι) ⇒ ι) 】)
+                     (α : 〖 τ 〗 → 〖 τ 〗)
+                     (f : 〖 σ 〗 → 〖 σ 〗)
+                     (a : 〖 σ 〗 → (〖 τ 〗 → 〖 τ 〗) → 〖 σ 〗)
+                     (b : (ℕ → (〖 τ 〗 → 〖 τ 〗) → 〖 σ 〗) → ℕ → (〖 τ 〗 → 〖 τ 〗) → 〖 σ 〗)
+                   → f (⟦ ⌜ d ⌝ ⟧ g a b α)
+                     ＝ ⟦ ⌜ d ⌝ ⟧  g (λ x → a (f x)) b α
+succ-dialogue⋆-aux = ?
+-}
+
+succ-dialogue⋆' : (d : T₀ (⌜B⌝ ι ((ι ⇒ ι) ⇒ ι))) (α : Baire)
+              → succ (dialogue⋆ ⟦ d ⟧₀ α) ＝ dialogue⋆ (succ⋆ ⟦ d ⟧₀) α
+succ-dialogue⋆' d α =
+ succ (dialogue⋆ ⟦ d ⟧₀ α)
+  ＝⟨ refl ⟩
+ succ (⟦ d ⟧₀ (λ z α → z) (λ φ x α → φ (α x) α) α)
+  ＝⟨ {!!} ⟩
+ ⟦ d ⟧₀ (λ x α → succ x) (λ φ x α → φ (α x) α) α
+  ＝⟨ refl ⟩
+ dialogue⋆ (succ⋆ ⟦ d ⟧₀) α
+  ∎
 
 ⌜main-lemma⌝ : {n : ℕ} {Γ : Cxt n}
               {σ : type}
@@ -287,7 +415,7 @@ succ-dialogue⋆ {A} d α = {!!}
  succ x
   ＝⟨ ap succ rxy ⟩
  succ (dialogue⋆ ⟦ y ⟧₀ α)
-  ＝⟨ succ-dialogue⋆ {ℕ} ⟦ y ⟧₀ α ⟩
+  ＝⟨ succ-dialogue⋆ ⟦ y ⟧₀ α ⟩
  dialogue⋆ (succ⋆ ⟦ y ⟧₀) α
   ＝⟨ ap (λ k → dialogue⋆ ⟦ k · y ⟧₀ α) ((close-⌜succ⌝ ys) ⁻¹) ⟩
  dialogue⋆ ⟦ close ⌜succ⌝ ys · y ⟧₀ α
@@ -295,6 +423,12 @@ succ-dialogue⋆ {A} d α = {!!}
 ⌜main-lemma⌝ {n} {Γ} {_} Rec α xs ys rxys x y rxy x₁ y₁ rxy₁ x₂ y₂ rxyz₂ = {!!}
 ⌜main-lemma⌝ {n} {Γ} {.(Γ [ i ])} (ν i) α xs ys rxys = {!!}
 ⌜main-lemma⌝ {n} {Γ} {σ ⇒ τ} (ƛ t) α xs ys rxys x y rxy = {!!}
-⌜main-lemma⌝ {n} {Γ} {σ} (t · t₁) α xs ys rxys = {!!}
+⌜main-lemma⌝ {n} {Γ} {σ} (t · t₁) α xs ys rxys =
+ transport⁻¹
+  (λ k → R⋆ α (⟦ t ⟧ xs (⟦ t₁ ⟧ xs)) k)
+  (close· ⌜ t ⌝ ⌜ t₁ ⌝ ys)
+  (⌜main-lemma⌝
+    t α xs ys rxys (⟦ t₁ ⟧ xs) (close ⌜ t₁ ⌝ ys)
+    (⌜main-lemma⌝ t₁ α xs ys rxys ))
 
 \end{code}
