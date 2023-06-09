@@ -153,6 +153,13 @@ contributed to constructions, theorems and proofs via the hands of Ayberk Tosun.
 
    https://doi.org/10.4230/LIPIcs.CSL.2021.28
 
+1. Dan R. Ghica and Todd Waugh Ambridge. *Global Optimisation with
+   Constructive Reals.* 
+   [Logic in Computer Science (LICS)](https://easyconferences.eu/lics2021/](https://dl.acm.org/conference/lics),
+   Proceedings of [LICS 2021][LICS21], June 2021.
+   
+   https://doi.org/10.1109/LICS52264.2021.9470549
+
 1. Tom de Jong and Martín H. Escardó. *Predicative Aspects of Order
    Theory in Univalent Foundations.* [Leibniz International Proceedings
    in Informatics
@@ -184,5 +191,6 @@ contributed to constructions, theorems and proofs via the hands of Ayberk Tosun.
 
 [CSL21]:  https://csl2021.fmf.uni-lj.si/
 [FSCD21]: https://fscd2021.dc.uba.ar/
+[LICS21]: https://easyconferences.eu/lics2021/
 [LICS23]: https://lics.siglog.org/lics23/
 [MFPS38]: https://www.cs.cornell.edu/mfps-2022/
