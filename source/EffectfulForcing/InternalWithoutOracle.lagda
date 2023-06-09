@@ -180,7 +180,7 @@ R⋆₁ {σ ⇒ τ} α f f' = (x  : 〖 σ 〗)
                (xs : 【 Γ 】)
 --               (ys : IB【 Γ 】 ((ι ⇒ ι) ⇒ ι))
 --             → R⋆s α xs ys
-             → R⋆₁ α (⟦ t ⟧ xs) {!!} --(close ⌜ t ⌝ ys)
+             → R⋆₁ α (⟦ t ⟧ xs) (ƛ (ƛ (ƛ Zero))) --(close ⌜ t ⌝ ys)
 ⌜main-lemma⌝₁ {n} {Γ} {σ} t α xs {--ys rxys--} = {!!}
 
 Sub₀ : {n : ℕ} (Γ : Cxt n) → Type
@@ -201,17 +201,17 @@ Fin.suc i =? Fin.suc j with i =? j
 ... | inl p = inl (ap Fin.suc p)
 ... | inr p = inr λ q → p (suc-inj i j q)
 
-subV : {n : ℕ} {Γ : Cxt (succ n)} (i j : Fin (succ n)) → T₀ (Γ [ i ]) → T (rmCxt Γ i) (Γ [ j ])
-subV {n} {Γ , τ} Fin.𝟎 Fin.𝟎 u = weaken₀ u
-subV {n} {Γ , τ} Fin.𝟎 (Fin.suc j) u = ν j
-subV {succ n} {Γ , τ} (Fin.suc i) Fin.𝟎 u = ν Fin.𝟎
-subV {succ n} {Γ , τ} (Fin.suc i) (Fin.suc j) u = weaken, τ (subV i j u)
+subν : {n : ℕ} {Γ : Cxt (succ n)} (i j : Fin (succ n)) → T₀ (Γ [ i ]) → T (rmCxt Γ i) (Γ [ j ])
+subν {n} {Γ , τ} Fin.𝟎 Fin.𝟎 u = weaken₀ u
+subν {n} {Γ , τ} Fin.𝟎 (Fin.suc j) u = ν j
+subν {succ n} {Γ , τ} (Fin.suc i) Fin.𝟎 u = ν Fin.𝟎
+subν {succ n} {Γ , τ} (Fin.suc i) (Fin.suc j) u = weaken, τ (subν i j u)
 
 sub : {σ : type} {n : ℕ} {Γ : Cxt (succ n)} (i : Fin (succ n)) → T Γ σ → T₀ (Γ [ i ]) → T (rmCxt Γ i) σ
 sub {_} {n} {Γ} i Zero u = Zero
 sub {_} {n} {Γ} i Succ u = Succ
 sub {_} {n} {Γ} i Rec u = Rec
-sub {.(Γ [ j ])} {n} {Γ} i (ν j) u = subV i j u
+sub {.(Γ [ j ])} {n} {Γ} i (ν j) u = subν i j u
 sub {σ₁ ⇒ σ₂} {n} {Γ} i (ƛ t) u = ƛ (sub {σ₂} {succ n} {Γ , σ₁} (Fin.suc i) t u)
 sub {σ} {n} {Γ} i (t₁ · t₂) u = sub i t₁ u · sub i t₂ u
 
@@ -260,19 +260,19 @@ R⋆s α {n} {Γ} xs ys = (i : Fin n) → R⋆ α (xs i) (T₀-B-context-sel Γ 
 【sub】 : {n : ℕ} {Γ : Cxt n} (s : Sub₀ Γ) → 【 Γ 】
 【sub】 {n} {Γ} s i = ⟦ s i ⟧₀
 
-sub₀-⌜zero⌝ : {σ : type} {n : ℕ} (Γ : Cxt n) {τ : type} (u : T₀ τ) → sub₀ {_} {n} {Γ} (⌜zero⌝ {σ}) u ＝ ⌜zero⌝
-sub₀-⌜zero⌝ {σ} {n} Γ {τ} u = refl
-
 close-⌜zero⌝ : {σ : type} {n : ℕ} {Γ : Cxt n} (ys : IB【 Γ 】 σ)
             → close (⌜zero⌝ {σ}) ys ＝ ⌜zero⌝
 close-⌜zero⌝ {σ} {zero} {Γ} ys = refl
-close-⌜zero⌝ {σ} {succ n} {Γ , τ} ys =
- close (sub₀ ⌜zero⌝ (ys Fin.𝟎)) (λ i → ys (Fin.suc i))
-  ＝⟨ ap (λ k → close k (λ i → ys (Fin.suc i))) (sub₀-⌜zero⌝ _ (ys Fin.𝟎)) ⟩
- close ⌜zero⌝ (λ i → ys (Fin.suc i))
-  ＝⟨ close-⌜zero⌝ (λ i → ys (Fin.suc i)) ⟩
- ⌜zero⌝
-  ∎
+close-⌜zero⌝ {σ} {succ n} {Γ , τ} ys = close-⌜zero⌝ (λ i → ys (Fin.suc i))
+
+close-⌜succ⌝ : {σ : type} {n : ℕ} {Γ : Cxt n} (ys : IB【 Γ 】 σ)
+            → close (⌜succ⌝ {σ}) ys ＝ ⌜succ⌝
+close-⌜succ⌝ {σ} {zero} {Γ} ys = refl
+close-⌜succ⌝ {σ} {succ n} {Γ , τ} ys = close-⌜succ⌝ (λ i → ys (Fin.suc i))
+
+succ-dialogue⋆ : {A : Type} (d : B⋆ ℕ (Baire → ℕ)) (α : Baire)
+              → succ (dialogue⋆ d α) ＝ dialogue⋆ (succ⋆ d) α
+succ-dialogue⋆ {A} d α = {!!}
 
 ⌜main-lemma⌝ : {n : ℕ} {Γ : Cxt n}
               {σ : type}
@@ -282,9 +282,17 @@ close-⌜zero⌝ {σ} {succ n} {Γ , τ} ys =
               (ys : IB【 Γ 】 ((ι ⇒ ι) ⇒ ι))
             → R⋆s α xs ys
             → R⋆ α (⟦ t ⟧ xs) (close ⌜ t ⌝ ys)
-⌜main-lemma⌝ {n} {Γ} {.ι} Zero α xs ys rxys = ap (λ k → ⟦ k ⟧₀ (λ z α₁ → z) (λ φ x α₁ → φ (α₁ x) α₁) α) ((close-⌜zero⌝ ys) ⁻¹)
-⌜main-lemma⌝ {n} {Γ} {.(ι ⇒ ι)} Succ α xs ys rxys = {!!}
-⌜main-lemma⌝ {n} {Γ} {.((ι ⇒ _ ⇒ _) ⇒ _ ⇒ ι ⇒ _)} Rec α xs ys rxys = {!!}
+⌜main-lemma⌝ {n} {Γ} {_} Zero α xs ys rxys = ap (λ k → dialogue⋆ ⟦ k ⟧₀ α) ((close-⌜zero⌝ ys) ⁻¹)
+⌜main-lemma⌝ {n} {Γ} {_} Succ α xs ys rxys x y rxy =
+ succ x
+  ＝⟨ ap succ rxy ⟩
+ succ (dialogue⋆ ⟦ y ⟧₀ α)
+  ＝⟨ succ-dialogue⋆ {ℕ} ⟦ y ⟧₀ α ⟩
+ dialogue⋆ (succ⋆ ⟦ y ⟧₀) α
+  ＝⟨ ap (λ k → dialogue⋆ ⟦ k · y ⟧₀ α) ((close-⌜succ⌝ ys) ⁻¹) ⟩
+ dialogue⋆ ⟦ close ⌜succ⌝ ys · y ⟧₀ α
+  ∎
+⌜main-lemma⌝ {n} {Γ} {_} Rec α xs ys rxys x y rxy x₁ y₁ rxy₁ x₂ y₂ rxyz₂ = {!!}
 ⌜main-lemma⌝ {n} {Γ} {.(Γ [ i ])} (ν i) α xs ys rxys = {!!}
 ⌜main-lemma⌝ {n} {Γ} {σ ⇒ τ} (ƛ t) α xs ys rxys x y rxy = {!!}
 ⌜main-lemma⌝ {n} {Γ} {σ} (t · t₁) α xs ys rxys = {!!}
