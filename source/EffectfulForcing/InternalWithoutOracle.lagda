@@ -67,30 +67,56 @@ The above should be true, but do we really need it?
 
 \begin{code}
 
-data subCxt : {n : ℕ} (Γ₁ : Cxt n) {m : ℕ} (Γ₂ : Cxt m) → Type where
-  subCxt0 : {m : ℕ} (Γ₂ : Cxt m) → subCxt {0} 〈〉 {m} Γ₂
-  subCxtS : {n : ℕ} {Γ₁ : Cxt n} {m : ℕ} {Γ₂ : Cxt m} (σ : type)
-            → subCxt Γ₁ Γ₂
-            → subCxt (Γ₁ , σ) (Γ₂ , σ)
+data ⊆Γ : {n : ℕ} (Γ₁ : Cxt n) {m : ℕ} (Γ₂ : Cxt m) → Type where
+  ⊆Γ0 : ⊆Γ {0} 〈〉 {0} 〈〉
+  ⊆ΓR : {n : ℕ} {Γ₁ : Cxt n} {m : ℕ} {Γ₂ : Cxt m} (σ : type)
+      → ⊆Γ Γ₁ Γ₂
+      → ⊆Γ Γ₁ (Γ₂ , σ)
+  ⊆ΓS : {n : ℕ} {Γ₁ : Cxt n} {m : ℕ} {Γ₂ : Cxt m} (σ : type)
+      → ⊆Γ Γ₁ Γ₂
+      → ⊆Γ (Γ₁ , σ) (Γ₂ , σ)
 
-subFin : {n : ℕ} {Γ₁ : Cxt n} {m : ℕ} {Γ₂ : Cxt m} → subCxt Γ₁ Γ₂ → Fin n → Fin m
-subFin {.(succ _)} {.(_ , σ)} {.(succ _)} {.(_ , σ)} (subCxtS σ sub) Fin.𝟎 = Fin.𝟎
-subFin {.(succ _)} {.(_ , σ)} {.(succ _)} {.(_ , σ)} (subCxtS σ sub) (Fin.suc f) = Fin.suc (subFin sub f)
+⊆Γ-refl : {n : ℕ} (Γ : Cxt n) → ⊆Γ Γ Γ
+⊆Γ-refl {zero} 〈〉 = ⊆Γ0
+⊆Γ-refl {succ n} (Γ , τ) = ⊆ΓS τ (⊆Γ-refl Γ)
 
-sub[] : {n : ℕ} {Γ₁ : Cxt n} {m : ℕ} {Γ₂ : Cxt m} (i : Fin n) (s : subCxt Γ₁ Γ₂) → Γ₁ [ i ] ＝ Γ₂ [ subFin s i ]
-sub[] {.(succ _)} {.(_ , σ)} {.(succ _)} {.(_ , σ)} Fin.𝟎 (subCxtS σ sub) = refl
-sub[] {(succ n)} {(Γ₁ , σ)} {(succ m)} {(Γ₂ , σ)} (Fin.suc i) (subCxtS σ sub) = sub[] i sub
+⊆〈〉 : {n : ℕ} (Γ : Cxt n) → ⊆Γ 〈〉 Γ
+⊆〈〉 {zero} 〈〉 = ⊆Γ0
+⊆〈〉 {succ n} (Γ , τ) = ⊆ΓR τ (⊆〈〉 Γ)
 
-Tweaken : {n : ℕ} {Γ₁ : Cxt n} {m : ℕ} {Γ₂ : Cxt m} {σ : type}
-          → subCxt Γ₁ Γ₂
+⊆ΓFin : {n : ℕ} {Γ₁ : Cxt n} {m : ℕ} {Γ₂ : Cxt m} → ⊆Γ Γ₁ Γ₂ → Fin n → Fin m
+⊆ΓFin {n} {Γ₁} {.(succ _)} {.(_ , σ)} (⊆ΓR σ h) i = Fin.suc (⊆ΓFin h i)
+⊆ΓFin {.(succ _)} {.(_ , σ)} {.(succ _)} {.(_ , σ)} (⊆ΓS σ h) Fin.𝟎 = Fin.𝟎
+⊆ΓFin {.(succ _)} {.(_ , σ)} {.(succ _)} {.(_ , σ)} (⊆ΓS σ h) (Fin.suc i) = Fin.suc (⊆ΓFin h i)
+
+⊆Γ[] : {n : ℕ} {Γ₁ : Cxt n} {m : ℕ} {Γ₂ : Cxt m} (i : Fin n) (s : ⊆Γ Γ₁ Γ₂) → Γ₁ [ i ] ＝ Γ₂ [ ⊆ΓFin s i ]
+⊆Γ[] {n} {Γ₁} {.(succ _)} {.(_ , σ)} i (⊆ΓR σ s) = ⊆Γ[] i s
+⊆Γ[] {.(succ _)} {.(_ , σ)} {.(succ _)} {.(_ , σ)} Fin.𝟎 (⊆ΓS σ s) = refl
+⊆Γ[] {.(succ _)} {.(_ , σ)} {.(succ _)} {.(_ , σ)} (Fin.suc i) (⊆ΓS σ s) = ⊆Γ[] i s
+
+weaken : {n : ℕ} {Γ₁ : Cxt n} {m : ℕ} {Γ₂ : Cxt m} {σ : type}
+          → ⊆Γ Γ₁ Γ₂
           → T Γ₁ σ
           → T Γ₂ σ
-Tweaken {n} {Γ₁} {m} {Γ₂} {_} sub Zero = Zero
-Tweaken {n} {Γ₁} {m} {Γ₂} {_} sub Succ = Succ
-Tweaken {n} {Γ₁} {m} {Γ₂} {_} sub Rec = Rec
-Tweaken {n} {Γ₁} {m} {Γ₂} {.(Γ₁ [ i ])} sub (ν i) = transport⁻¹ (λ σ → T Γ₂ σ) (sub[] i sub) (ν _)
-Tweaken {n} {Γ₁} {m} {Γ₂} {σ ⇒ τ} sub (ƛ t) = ƛ (Tweaken (subCxtS σ sub) t)
-Tweaken {n} {Γ₁} {m} {Γ₂} {σ} sub (t · t₁) = Tweaken sub t · Tweaken sub t₁
+weaken {n} {Γ₁} {m} {Γ₂} {_} sub Zero = Zero
+weaken {n} {Γ₁} {m} {Γ₂} {_} sub Succ = Succ
+weaken {n} {Γ₁} {m} {Γ₂} {_} sub Rec = Rec
+weaken {n} {Γ₁} {m} {Γ₂} {.(Γ₁ [ i ])} sub (ν i) = transport⁻¹ (λ σ → T Γ₂ σ) (⊆Γ[] i sub) (ν _)
+weaken {n} {Γ₁} {m} {Γ₂} {σ ⇒ τ} sub (ƛ t) = ƛ (weaken (⊆ΓS σ sub) t)
+weaken {n} {Γ₁} {m} {Γ₂} {σ} sub (t · t₁) = weaken sub t · weaken sub t₁
+
+weaken₀ : {n : ℕ} {Γ : Cxt n} {σ : type}
+        → T₀ σ
+        → T Γ σ
+weaken₀ {n} {Γ} {σ} t = weaken (⊆〈〉 Γ) t
+
+⊆Γ, : {n : ℕ} (Γ : Cxt n) (τ : type) → ⊆Γ Γ (Γ , τ)
+⊆Γ, {n} Γ τ = ⊆ΓR τ (⊆Γ-refl Γ)
+
+weaken, : {n : ℕ} {Γ : Cxt n} {σ : type} (τ : type)
+        → T Γ σ
+        → T (Γ , τ) σ
+weaken, {n} {Γ} {σ} τ t = weaken {n} {Γ} {succ n} {Γ , τ} (⊆Γ, Γ τ) t
 
 ⌜star⌝ : {X Y A : type} {n : ℕ} {Γ : Cxt n}
                     → T Γ ((⌜B⌝ (X ⇒ Y) A) ⇒ ⌜B⌝ X A ⇒ ⌜B⌝ Y A)
@@ -154,15 +180,55 @@ R⋆₁ {σ ⇒ τ} α f f' = (x  : 〖 σ 〗)
                (xs : 【 Γ 】)
 --               (ys : IB【 Γ 】 ((ι ⇒ ι) ⇒ ι))
 --             → R⋆s α xs ys
-             → R⋆₁ α (⟦ t ⟧ xs) {!!} --(close ⌜ t ⌝ ys)
+             → R⋆₁ α (⟦ t ⟧ xs) (ƛ (ƛ (ƛ Zero))) --(close ⌜ t ⌝ ys)
 ⌜main-lemma⌝₁ {n} {Γ} {σ} t α xs {--ys rxys--} = {!!}
 
--- This can either be defined through substitution or a succession of applications
-close : {σ : type} {n : ℕ} {Γ : Cxt n} → T Γ σ → ((i : Fin n) → T₀ (Γ [ i ])) → T₀ σ
+Sub₀ : {n : ℕ} (Γ : Cxt n) → Type
+Sub₀ {n} Γ = (i : Fin n) → T₀ (Γ [ i ])
+
+rmCxt : {n : ℕ} (Γ : Cxt (succ n)) (i : Fin (succ n)) → Cxt n
+rmCxt {n} (Γ , τ) Fin.𝟎 = Γ
+rmCxt {succ n} (Γ , τ) (Fin.suc i) = rmCxt Γ i , τ
+
+suc-inj : {n : ℕ} (i j : Fin n) → Fin.suc i ＝ Fin.suc j → i ＝ j
+suc-inj {n} i .i refl = refl
+
+_=?_ : {n : ℕ} (i j : Fin n) → (i ＝ j) + ¬ (i ＝ j)
+Fin.𝟎 =? Fin.𝟎 = inl refl
+Fin.𝟎 =? Fin.suc j = inr (λ ())
+Fin.suc i =? Fin.𝟎 = inr (λ ())
+Fin.suc i =? Fin.suc j with i =? j
+... | inl p = inl (ap Fin.suc p)
+... | inr p = inr λ q → p (suc-inj i j q)
+
+subν : {n : ℕ} {Γ : Cxt (succ n)} (i j : Fin (succ n)) → T₀ (Γ [ i ]) → T (rmCxt Γ i) (Γ [ j ])
+subν {n} {Γ , τ} Fin.𝟎 Fin.𝟎 u = weaken₀ u
+subν {n} {Γ , τ} Fin.𝟎 (Fin.suc j) u = ν j
+subν {succ n} {Γ , τ} (Fin.suc i) Fin.𝟎 u = ν Fin.𝟎
+subν {succ n} {Γ , τ} (Fin.suc i) (Fin.suc j) u = weaken, τ (subν i j u)
+
+sub : {σ : type} {n : ℕ} {Γ : Cxt (succ n)} (i : Fin (succ n)) → T Γ σ → T₀ (Γ [ i ]) → T (rmCxt Γ i) σ
+sub {_} {n} {Γ} i Zero u = Zero
+sub {_} {n} {Γ} i Succ u = Succ
+sub {_} {n} {Γ} i Rec u = Rec
+sub {.(Γ [ j ])} {n} {Γ} i (ν j) u = subν i j u
+sub {σ₁ ⇒ σ₂} {n} {Γ} i (ƛ t) u = ƛ (sub {σ₂} {succ n} {Γ , σ₁} (Fin.suc i) t u)
+sub {σ} {n} {Γ} i (t₁ · t₂) u = sub i t₁ u · sub i t₂ u
+
+sub₀ : {σ : type} {n : ℕ} {Γ : Cxt n} {τ : type} → T (Γ , τ) σ → T₀ τ → T Γ σ
+sub₀ {σ} {n} {Γ} {τ} = sub Fin.𝟎
+
+-- This can either be defined through a succession of applications
+close· : {σ : type} {n : ℕ} {Γ : Cxt n} → T Γ σ → Sub₀ Γ → T₀ σ
+close· {σ} {zero} {Γ} t s = t
+close· {σ} {succ n} {Γ , τ} t s =
+ close· (ƛ t · weaken₀ (s Fin.𝟎))
+        (λ i → s (Fin.suc i))
+
+-- ... or through substitution
+close : {σ : type} {n : ℕ} {Γ : Cxt n} → T Γ σ → Sub₀ Γ → T₀ σ
 close {σ} {zero} {Γ} t s = t
-close {σ} {succ n} {Γ , τ} t s =
- close (ƛ t · Tweaken (subCxt0 Γ) (s Fin.𝟎))
-       (λ i → s (Fin.suc i))
+close {σ} {succ n} {Γ , τ} t s = close (sub₀ t (s Fin.𝟎)) (λ i → s (Fin.suc i))
 
 -- Compared to R⋆₁, this version relates a T₀ (B-type〖 σ 〗 ((ι ⇒ ι) ⇒ ι))
 -- instead of T₀ (⌜B⌝ σ ((ι ⇒ ι) ⇒ ι))
@@ -179,7 +245,7 @@ R⋆ {σ ⇒ τ} α f f' = (x  : 〖 σ 〗)
 
 -- internal semantics of context as dialogue trees
 IB【_】 : {n : ℕ} → Cxt n → type → Type
-IB【 Γ 】 A = (i : Fin _) → T₀ ((B-context【 Γ 】 A) [ i ])
+IB【 Γ 】 A = Sub₀ (B-context【 Γ 】 A)
 
 T₀-B-context-sel : {A : type} {n : ℕ} (Γ : Cxt n) {i : Fin n}
                  → T₀ ((B-context【 Γ 】 A) [ i ])
@@ -191,9 +257,22 @@ R⋆s : Baire → {n : ℕ} {Γ : Cxt n}
   → 【 Γ 】 → IB【 Γ 】 ((ι ⇒ ι) ⇒ ι) → Type
 R⋆s α {n} {Γ} xs ys = (i : Fin n) → R⋆ α (xs i) (T₀-B-context-sel Γ (ys i))
 
-close-zero : {A : type} {n : ℕ} {Γ : Cxt n} (ys : IB【 Γ 】 A)
-          → ⟦ close (⌜zero⌝ {A}) ys ⟧₀ ＝ ⟦ ⌜zero⌝ ⟧₀
-close-zero {A} {n} {Γ} ys = {!!}
+【sub】 : {n : ℕ} {Γ : Cxt n} (s : Sub₀ Γ) → 【 Γ 】
+【sub】 {n} {Γ} s i = ⟦ s i ⟧₀
+
+close-⌜zero⌝ : {σ : type} {n : ℕ} {Γ : Cxt n} (ys : IB【 Γ 】 σ)
+            → close (⌜zero⌝ {σ}) ys ＝ ⌜zero⌝
+close-⌜zero⌝ {σ} {zero} {Γ} ys = refl
+close-⌜zero⌝ {σ} {succ n} {Γ , τ} ys = close-⌜zero⌝ (λ i → ys (Fin.suc i))
+
+close-⌜succ⌝ : {σ : type} {n : ℕ} {Γ : Cxt n} (ys : IB【 Γ 】 σ)
+            → close (⌜succ⌝ {σ}) ys ＝ ⌜succ⌝
+close-⌜succ⌝ {σ} {zero} {Γ} ys = refl
+close-⌜succ⌝ {σ} {succ n} {Γ , τ} ys = close-⌜succ⌝ (λ i → ys (Fin.suc i))
+
+succ-dialogue⋆ : {A : Type} (d : B⋆ ℕ (Baire → ℕ)) (α : Baire)
+              → succ (dialogue⋆ d α) ＝ dialogue⋆ (succ⋆ d) α
+succ-dialogue⋆ {A} d α = {!!}
 
 ⌜main-lemma⌝ : {n : ℕ} {Γ : Cxt n}
               {σ : type}
@@ -203,11 +282,19 @@ close-zero {A} {n} {Γ} ys = {!!}
               (ys : IB【 Γ 】 ((ι ⇒ ι) ⇒ ι))
             → R⋆s α xs ys
             → R⋆ α (⟦ t ⟧ xs) (close ⌜ t ⌝ ys)
-⌜main-lemma⌝ {n} {Γ} {.ι} Zero α xs ys rxys = {!!} -- use close-zero?
-⌜main-lemma⌝ {n} {Γ} {.(ι ⇒ ι)} Succ α xs ys rxys = {!!}
-⌜main-lemma⌝ {n} {Γ} {.((ι ⇒ _ ⇒ _) ⇒ _ ⇒ ι ⇒ _)} Rec α xs ys rxys = {!!}
+⌜main-lemma⌝ {n} {Γ} {_} Zero α xs ys rxys = ap (λ k → dialogue⋆ ⟦ k ⟧₀ α) ((close-⌜zero⌝ ys) ⁻¹)
+⌜main-lemma⌝ {n} {Γ} {_} Succ α xs ys rxys x y rxy =
+ succ x
+  ＝⟨ ap succ rxy ⟩
+ succ (dialogue⋆ ⟦ y ⟧₀ α)
+  ＝⟨ succ-dialogue⋆ {ℕ} ⟦ y ⟧₀ α ⟩
+ dialogue⋆ (succ⋆ ⟦ y ⟧₀) α
+  ＝⟨ ap (λ k → dialogue⋆ ⟦ k · y ⟧₀ α) ((close-⌜succ⌝ ys) ⁻¹) ⟩
+ dialogue⋆ ⟦ close ⌜succ⌝ ys · y ⟧₀ α
+  ∎
+⌜main-lemma⌝ {n} {Γ} {_} Rec α xs ys rxys x y rxy x₁ y₁ rxy₁ x₂ y₂ rxyz₂ = {!!}
 ⌜main-lemma⌝ {n} {Γ} {.(Γ [ i ])} (ν i) α xs ys rxys = {!!}
-⌜main-lemma⌝ {n} {Γ} {.(_ ⇒ _)} (ƛ t) α xs ys rxys = {!!}
+⌜main-lemma⌝ {n} {Γ} {σ ⇒ τ} (ƛ t) α xs ys rxys x y rxy = {!!}
 ⌜main-lemma⌝ {n} {Γ} {σ} (t · t₁) α xs ys rxys = {!!}
 
 \end{code}
