@@ -346,14 +346,10 @@ close· : {σ τ : type} {n : ℕ} {Γ : Cxt n} → (t : T Γ (σ ⇒ τ)) (u : 
 close· {σ} {τ} {zero} {Γ} t u s = refl
 close· {σ} {τ} {succ n} {Γ} t u s = close· (sub₀ t (s Fin.𝟎)) (sub₀ u (s Fin.𝟎)) (λ i → s (Fin.suc i))
 
-sub-weakenν : {n : ℕ} {Γ₁ : Cxt n} {m : ℕ} {Γ₂ : Cxt (succ m)} {σ : type} (i : Fin (succ m))
-              (s1 : ⊆Γ Γ₁ Γ₂) (s2 : ⊆Γ Γ₁ (rmCxt Γ₂ i))
-              (u : T₀ (Γ₂ [ i ])) (j : Fin n)
-              (e1 : Γ₁ [ j ] ＝ Γ₂ [ ⊆ΓFin s1 j ])
-              (e2 : Γ₁ [ j ] ＝ (rmCxt Γ₂ i) [ ⊆ΓFin s2 j ])
-           → sub i (transport⁻¹ (T Γ₂) e1 (ν (⊆ΓFin s1 j))) u
-             ＝ transport⁻¹ (T (rmCxt Γ₂ i)) e2 (ν (⊆ΓFin s2 j))
-sub-weakenν {n} {Γ₁} {m} {Γ₂} {σ} i s1 s2 u j e1 e2 = {!!}
+sub-transport⁻¹ : {m : ℕ} {Γ : Cxt (succ m)} (i : Fin (succ m)) (u : T₀ (Γ [ i ])) {σ τ : type} (e : τ ＝ σ) (t : T Γ σ)
+               → sub {τ} {m} {Γ} i (transport⁻¹ (T Γ) e t) u
+                  ＝ transport⁻¹ (T (rmCxt Γ i)) e (sub {σ} i t u)
+sub-transport⁻¹ {m} {Γ} i u {σ} {.σ} refl t = refl
 
 sub-weaken : {n : ℕ} {Γ₁ : Cxt n} {m : ℕ} {Γ₂ : Cxt (succ m)} {σ : type} (i : Fin (succ m))
              (s1 : ⊆Γ Γ₁ Γ₂) (s2 : ⊆Γ Γ₁ (rmCxt Γ₂ i))
@@ -362,7 +358,13 @@ sub-weaken : {n : ℕ} {Γ₁ : Cxt n} {m : ℕ} {Γ₂ : Cxt (succ m)} {σ : ty
 sub-weaken {n} {Γ₁} {m} {Γ₂} {_} i s1 s2 Zero u = refl
 sub-weaken {n} {Γ₁} {m} {Γ₂} {_} i s1 s2 Succ u = refl
 sub-weaken {n} {Γ₁} {m} {Γ₂} {_} i s1 s2 Rec u = refl
-sub-weaken {n} {Γ₁} {m} {Γ₂} {.(Γ₁ [ i₁ ])} i s1 s2 (ν i₁) u = {!!}
+sub-weaken {n} {Γ₁} {m} {Γ₂} {.(Γ₁ [ i₁ ])} i s1 s2 (ν i₁) u =
+ sub i (transport⁻¹ (T Γ₂) (⊆Γ[] i₁ s1) (ν (⊆ΓFin s1 i₁))) u
+  ＝⟨ sub-transport⁻¹ i u (⊆Γ[] i₁ s1) (ν (⊆ΓFin s1 i₁)) ⟩
+ transport⁻¹ (T (rmCxt Γ₂ i)) (⊆Γ[] i₁ s1) (subν i (⊆ΓFin s1 i₁) u)
+  ＝⟨ {!!} ⟩
+ transport⁻¹ (T (rmCxt Γ₂ i)) (⊆Γ[] i₁ s2) (ν (⊆ΓFin s2 i₁))
+  ∎
 sub-weaken {n} {Γ₁} {m} {Γ₂} {σ ⇒ τ} i s1 s2 (ƛ t) u =
  ap ƛ (sub-weaken (Fin.suc i) (⊆ΓS σ s1) (⊆ΓS σ s2) t u)
 sub-weaken {n} {Γ₁} {m} {Γ₂} {σ} i s1 s2 (t₁ · t₂) u =
