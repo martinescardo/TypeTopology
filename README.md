@@ -103,7 +103,7 @@ contributed to constructions, theorems and proofs via the hands of Ayberk Tosun.
    https://doi.org/10.4230/LIPIcs.TLCA.2015.153
 
 1. Martín H. Escardó and T. Streicher. *The intrinsic topology of
-   Martin-L\"of universes.* [Annals of Pure and Applied
+   Martin-Löf universes.* [Annals of Pure and Applied
    Logic](https://www.sciencedirect.com/journal/annals-of-pure-and-applied-logic),
    Volume 167, Issue 9, 2016, Pages 794-805.
 
