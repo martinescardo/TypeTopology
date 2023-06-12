@@ -154,10 +154,10 @@ contributed to constructions, theorems and proofs via the hands of Ayberk Tosun.
    https://doi.org/10.4230/LIPIcs.CSL.2021.28
 
 1. Dan R. Ghica and Todd Waugh Ambridge. *Global Optimisation with
-   Constructive Reals.* 
-   [Logic in Computer Science (LICS)](https://easyconferences.eu/lics2021/](https://dl.acm.org/conference/lics),
+   Constructive Reals.*
+   [Logic in Computer Science (LICS)](https://dl.acm.org/conference/lics),
    Proceedings of [LICS 2021][LICS21], June 2021.
-   
+
    https://doi.org/10.1109/LICS52264.2021.9470549
 
 1. Tom de Jong and Martín H. Escardó. *Predicative Aspects of Order
