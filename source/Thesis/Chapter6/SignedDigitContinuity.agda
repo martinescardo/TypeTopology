@@ -1,18 +1,19 @@
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --allow-unsolved-metas #-}
 
-open import UF-FunExt 
-open import Prelude
-open import NaturalsOrder
-open import SignedDigit
-open import DiscreteAndSeparated
-open import GenericConvergentSequence hiding (max)
+open import MLTT.Spartan
 
-module SignedDigitContinuity (fe : FunExt) where
+open import UF.FunExt 
+open import Thesis.Chapter5.Prelude
+open import Notation.Order
+open import Naturals.Order
+open import Thesis.Chapter5.SignedDigit
+open import TypeTopology.DiscreteAndSeparated
+open import CoNaturals.GenericConvergentSequence hiding (max)
 
-open import Codistances fe
-open import Codistance fe
-open import SearchableTypes fe
-open sequences
+module Thesis.Chapter6.SignedDigitContinuity (fe : FunExt) where
+
+open import Thesis.Chapter3.ClosenessSpaces fe {!!} {!!} {!!}
+open import Thesis.Chapter3.SearchableTypes fe
 
 _≈*_ : {X : 𝓤 ̇ } {d : ℕ}
      → ((ℕ → X) ^⟨succ d ⟩) → ((ℕ → X) ^⟨succ d ⟩)
@@ -58,25 +59,25 @@ vec-max : {n : ℕ} → ℕ ^⟨succ n ⟩ → ℕ
 vec-max {0} x = x
 vec-max {succ n} (x , xs) = max x (vec-max xs)
 
-max⊏ : (k n m : ℕ) → k ⊏ under n → k ⊏ under (max n m)
+max⊏ : (k n m : ℕ) → k ⊏ (n ↑) → k ⊏ ((max n m) ↑)
 max⊏ k (succ n) zero k⊏n = k⊏n
 max⊏ zero (succ n) (succ m) k⊏n = refl
 max⊏ (succ k) (succ n) (succ m) k⊏n = max⊏ k n m k⊏n
 
 max≼ : (n m : ℕ) (v : ℕ∞)
-     → under (max n m) ≼ v
-     → under n ≼ v
-     × under m ≼ v
+     → ((max n m) ↑) ≼ v
+     → (n ↑) ≼ v
+     × (m ↑) ≼ v
 max≼ n m v maxnm≼v
  = (λ k p → maxnm≼v k (max⊏ k n m p))
  , (λ k q → maxnm≼v k
-     (transport (λ - → k ⊏ under -)
+     (transport (λ - → k ⊏ (- ↑))
        (max-comm m n) (max⊏ k m n q)))
-
+{-
 ≈*→≼ : {X : 𝓤 ̇ } (dˣ : is-discrete X)
      → (n : ℕ) (x y : (ℕ → X) ^⟨succ n ⟩)
      → (ε : ℕ) → (x ≈* y) (vec-repeat ε)
-     → under ε ≼ ×ⁿ-codistance (codistance X dˣ) n x y
+     → (ε ↑) ≼ ×ⁿ-codistance (codistance X dˣ) n x y
 ≈*→≼ dˣ 0 = ≈→≼ dˣ
 ≈*→≼ {𝓤} {X} dˣ (succ n) (x , xs) (y , ys) ε (x≈y , xs≈ys)
  = ×-codistance-min
@@ -303,3 +304,4 @@ mid-continuous≼ = ≈→≼-continuous-𝟛ᴺ 1 0 (uncurry mid) mid-continuou
 
 mul-continuous≼ : continuous² c𝟛ᴺ×𝟛ᴺ c𝟛ᴺ (uncurry mul)
 mul-continuous≼ = ≈→≼-continuous-𝟛ᴺ 1 0 (uncurry mul) mul-continuous
+-}

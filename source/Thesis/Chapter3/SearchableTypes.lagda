@@ -176,7 +176,7 @@ open import TWA.Closeness fe hiding (is-ultra; is-closeness)
 
 is-ultra is-closeness : {X : 𝓤 ̇ } → (X → X → ℕ∞) → 𝓤 ̇
 is-ultra {𝓤} {X} c
- = (x y z : X) → (n : ℕ) → min (c x y) (c y z) ≼ c x z
+ = (x y z : X) → min (c x y) (c y z) ≼ c x z
 
 is-closeness c
  = indistinguishable-are-equal c
@@ -211,7 +211,7 @@ B-sym (X , c , i , e , s , u) n x y Bxy
 B-trans : (X : ClosenessSpace 𝓤) → (n : ℕ) (x y z : ⟨ X ⟩)
         → B X n x y → B X n y z → B X n x z
 B-trans (X , c , i , e , s , u) n x y z Bxy Byz m π
- = u x y z n m (Lemma[a＝₁→b＝₁→min𝟚ab＝₁] (Bxy m π) (Byz m π))
+ = u x y z m (Lemma[a＝₁→b＝₁→min𝟚ab＝₁] (Bxy m π) (Byz m π))
 
 B-decidable : (X : ClosenessSpace 𝓤) → (n : ℕ) → (x y : ⟨ X ⟩ )
             → is-decidable (B X n x y)
@@ -227,6 +227,10 @@ pr₁ (pr₂ (pr₂ (B-is-eq X n)))
  = B-sym X n
 pr₂ (pr₂ (pr₂ (B-is-eq X n)))
  = B-trans X n
+
+-- TODO: Align B and B*
+B* : (X : ClosenessSpace 𝓤) → ℕ → ⟨ X ⟩ → ⟨ X ⟩ → Ω 𝓤₀
+B* X ϵ x y = B X ϵ x y ,  Π-is-prop (fe _ _) (λ _ → Π-is-prop (fe _ _) (λ _ → 𝟚-is-set))
 
 B⁼ : ((X , ci) : ClosenessSpace 𝓤) → (n : ℕ) → EqRel X
 B⁼ C n = B C n , B-is-eq C n

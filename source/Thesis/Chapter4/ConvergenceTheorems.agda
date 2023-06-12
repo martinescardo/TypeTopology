@@ -1,71 +1,113 @@
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --allow-unsolved-metas #-}
 
-open import Prelude renaming (map to map')
-open import UF-FunExt
-open import SignedDigit
-open import Two-Properties
-open import SpartanMLTT
-open import NaturalsOrder
-open import DecidableAndDetachable
-open import GenericConvergentSequence
-open import DiscreteAndSeparated
+open import Thesis.Chapter5.Prelude renaming (map to map')
+open import UF.FunExt
+open import UF.Miscelanea
+open import UF.Subsingletons
+open import UF.Quotient
+open import Thesis.Chapter5.SignedDigit
+open import MLTT.Two-Properties
+open import MLTT.Spartan
+open import Notation.Order
+open import Naturals.Order
+open import Naturals.Properties
+open import NotionsOfDecidability.Complemented
+open import NotionsOfDecidability.Decidable
+open import CoNaturals.GenericConvergentSequence
+  renaming (ℕ-to-ℕ∞ to _↑
+         ; Zero-smallest to zero-minimal
+         ; ∞-largest to ∞-maximal)
+open import TypeTopology.DiscreteAndSeparated
 
-module ConvergenceTheorems (fe : FunExt) where
+module Thesis.Chapter4.ConvergenceTheorems (fe : FunExt) where
 
-open import Codistance fe
-open import Codistances fe
-open import SearchableTypes fe
-open import SignedDigitContinuity fe
+-- open import Thesis.Chapter3.ClosenessSpaces fe {!!} {!!} {!!}
+open import Thesis.Chapter3.SearchableTypes fe
+open import Thesis.Chapter6.SignedDigitContinuity fe
+open import UF.Subsingletons-FunExt 
 
-⊏-gives-≼ : (ε : ℕ) (v : ℕ∞) → ε ⊏ v → under (succ ε) ≼ v
-⊏-gives-≼ ε v ε⊏v n n⊏ε = ⊏-trans'' v ε n (⊏-gives-< n (succ ε) n⊏ε) ε⊏v
+-- Definition 4.2.10 (Does not have continuity of M!)
+regressor : (X : ClosenessSpace 𝓤) (Y : ClosenessSpace 𝓥) → 𝓤 ⊔ 𝓥  ̇
+regressor {𝓤} {𝓥} X Y
+ = (M : ⟨ X ⟩ → ⟨ Y ⟩) → f-ucontinuous X Y M → ⟨ Y ⟩ → ⟨ X ⟩
 
-≼-gives-⊏ : (ε : ℕ) (v : ℕ∞) → under (succ ε) ≼ v → ε ⊏ v
-≼-gives-⊏ ε v ε≼v = ε≼v ε (under-diagonal₁ ε)
+B-ucontinuous : (X : ClosenessSpace 𝓤)
+              → (ε : ℕ) (x : ⟨ X ⟩) → p-ucontinuous X (B* X ε x)
+B-ucontinuous X ε x = ε , γ
+ where
+  γ : (y z : ⟨ X ⟩) → B X ε y z → B* X ε x y holds → B* X ε x z holds
+  γ y z Byz Bxy = B-trans X ε x y z Bxy Byz
 
-¬⊏-gives-¬≼ : (ε : ℕ) (v : ℕ∞) → ¬ (ε ⊏ v) → ¬ (under (succ ε) ≼ v)
-¬⊏-gives-¬≼ ε v ¬ε⊏v sε≼v = ¬ε⊏v (≼-gives-⊏ ε v sε≼v)
-
-≼-decidable : (ε : ℕ) (v : ℕ∞) → decidable (under ε ≼ v)
-≼-decidable zero v = inl (Zero-minimal v)
-≼-decidable (succ ε) v = Cases (𝟚-is-discrete (incl v ε) ₁)
-                           (inl ∘ ⊏-gives-≼ ε v)
-                           (inr ∘ ¬⊏-gives-¬≼ ε v)
-
-≼-continuous : (ε : ℕ) (u v : ℕ∞)
-             → (incl u ≈ incl v) ε
-             → under ε ≼ u
-             → under ε ≼ v
-≼-continuous zero u v _ _ = Zero-minimal v
-≼-continuous (succ ε) u v ε≼cuv sε≼u
- = ⊏-gives-≼ ε v (ε≼cuv ε (<-succ ε) ⁻¹ ∙ ≼-gives-⊏ ε u sε≼u)
-
-regressor : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-          → (cx : X → X → ℕ∞) (cy : Y → Y → ℕ∞) → 𝓤 ⊔ 𝓥 ̇
-regressor {𝓤} {𝓥} {X} {Y} cx cy = (M : X → Y) → continuous² cx cy M → Y → X
-
-p-regressor : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-            → (cx : X → X → ℕ∞) (Φ : Y → Y → ℕ∞)
-            → (ϕᴸ : right-continuous Φ)
-            → (𝓔S : c-searchable cx)
-            → (ε : ℕ) → regressor cx Φ
-p-regressor {𝓤} {𝓥} {X} {Y} cx Φ ϕᴸ 𝓔S ε M cᴹ ΨΩ
- = 𝓔⟨ cx , 𝓔S ⟩ (p M cᴹ ΨΩ) (d M cᴹ ΨΩ) (ϕ M cᴹ ΨΩ)
-  where
-  p : (M : X → Y) (ϕᴹ : continuous² cx Φ M) (ΨΩ : Y) → (X → 𝓤₀ ̇ )
-  p M ϕᴹ ΨΩ x = under ε ≼ Φ ΨΩ (M x)
-  d : (M : X → Y) (ϕᴹ : continuous² cx Φ M) (ΨΩ : Y)
-    → detachable (p M ϕᴹ ΨΩ)
-  d M ϕᴹ ΨΩ x = ≼-decidable ε (Φ ΨΩ (M x))
-  ϕ : (M : X → Y) (ϕᴹ : continuous² cx Φ M) (ΨΩ : Y)
-    → continuous cx (p M ϕᴹ ΨΩ)
-  ϕ M ϕᴹ ΨΩ = δ , γ where
+-- TODO: Fix overloaded Ω
+p-regressor : (X : ClosenessSpace 𝓤) (Y : ClosenessSpace 𝓥)
+            → (𝓔S : csearchable 𝓤₀ X)
+            → (ε : ℕ) → regressor X Y
+p-regressor {𝓤} {𝓥} X Y (𝓔 , S) ε M ϕᴹ Ω' = 𝓔 ((p , d) , ϕ)
+ where
+  p : ⟨ X ⟩ → Ω 𝓤₀
+  p x = B* Y ε Ω' (M x)
+  d : is-complemented (λ x → p x holds)
+  d x = B-decidable Y ε Ω' (M x)
+  ϕ : p-ucontinuous X p
+  ϕ = δ , γ
+   where
     δ : ℕ
     δ = pr₁ (ϕᴹ ε)
-    γ : uc-mod-of cx (p M ϕᴹ ΨΩ) δ
-    γ x y δ≼cxy = ≼-continuous ε (Φ ΨΩ (M x)) (Φ ΨΩ (M y))
-                   (ϕᴸ ε ΨΩ (M x) (M y) (pr₂ (ϕᴹ ε) x y δ≼cxy))
+    γ : (x₁ x₂ : ⟨ X ⟩) → B X δ x₁ x₂ → p x₁ holds → p x₂ holds
+    γ x₁ x₂ Bδx₁x₂ px₁
+     = B-trans Y ε Ω' (M x₁) (M x₂) px₁ (pr₂ (ϕᴹ ε) x₁ x₂ Bδx₁x₂)
 
+open import Thesis.Chapter4.GlobalOptimisation fe
+
+ℕ∞-≽-preorder : is-preorder _≽_
+ℕ∞-≽-preorder = r , t , p
+ where
+  r : reflexive _≽_
+  r x n = id
+  t : transitive _≽_
+  t x y z x≽z y≽z n = x≽z n ∘ (y≽z n)
+  p : is-prop-valued _≽_
+  p x y = ≼-is-prop-valued (fe _ _) y x
+
+-- Global min of _≽_ is the global max of _≼_
+-- Not covered in paper on this section very well
+
+_≽ⁿ_ : ℕ∞ → ℕ∞ → ℕ → 𝓤₀ ̇
+(u ≽ⁿ v) n = (i : ℕ) → i < n → i ⊏ v → i ⊏ u
+
+open import TWA.Closeness fe hiding (is-ultra; is-closeness)
+
+Σ-clofun : {X : 𝓤 ̇ } (P : X → 𝓥 ̇ )
+         → ((x : X) → is-prop (P x))
+         → Σ cx ꞉ (X → X → ℕ∞) , is-closeness cx
+         → Σ c ꞉ (Σ P → Σ P → ℕ∞) , is-closeness c
+Σ-clofun {𝓤} {𝓥} {X} P p (cx , ex , ix , sx , ux) = c , e , i , s , u
+ where
+  c : Σ P → Σ P → ℕ∞
+  c (x , _) (y , _) = cx x y
+  e : indistinguishable-are-equal c
+  e (x , _) (y , _) cxy=∞ = to-subtype-＝ p (ex x y cxy=∞)
+  i : self-indistinguishable c
+  i (x , _) = ix x
+  s : is-symmetric c
+  s (x , _) (y , _) = sx x y
+  u : is-ultra c
+  u (x , _) (y , _) (z , _) = ux x y z
+
+Σ-ClosenessSpace : (X : ClosenessSpace 𝓤)
+                 → (P : ⟨ X ⟩ → 𝓥 ̇ ) → ((x : ⟨ X ⟩) → is-prop (P x))
+                 → ClosenessSpace (𝓤 ⊔ 𝓥)
+Σ-ClosenessSpace {𝓤} {𝓥} (X , cx) P p = Σ P  , Σ-clofun P p cx
+
+ℕ→𝟚-ClosenessSpace : ClosenessSpace 𝓤₀
+ℕ→𝟚-ClosenessSpace = ℕ→D-ClosenessSpace 𝟚-is-discrete
+
+ℕ∞-ClosenessSpace : ClosenessSpace 𝓤₀
+ℕ∞-ClosenessSpace = Σ-ClosenessSpace ℕ→𝟚-ClosenessSpace is-decreasing
+                     (being-decreasing-is-prop (fe _ _))
+
+
+{-
 _≼ⁿ_ : ℕ∞ → ℕ∞ → ℕ → 𝓤₀ ̇
 (u ≼ⁿ v) n = <ₙ (λ k → k ⊏ u → k ⊏ v) n
 
@@ -125,80 +167,59 @@ minimisation-convergence cx 𝓔S ε M Φ Ω ϕM ϕL
   γ ε = (pr₁ (ϕM (pr₁ (ϕL ε))))
       , (λ x y δ≼cxy → pr₂ (ϕL ε) (M x) (M y)
            (pr₂ (ϕM (pr₁ (ϕL ε))) x y δ≼cxy))
+-}
+-- Make sure the fixed oracle is on the left (in paper too)
 
+-- Theorem 4.2.12
 s-imperfect-convergence
-       : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-       → (cx : X → X → ℕ∞) (Φ : Y → Y → ℕ∞)
-       → (ϕᴸ : right-continuous Φ)
-       → (𝓔S : c-searchable cx)
+       : (X : ClosenessSpace 𝓤) (Y : ClosenessSpace 𝓥)
+       → (𝓔S : csearchable 𝓤₀ X)
        → (ε : ℕ)
-       → (M : X → Y) (ϕᴹ : continuous² cx Φ M)
-       → (Ψ : Y → Y) (k : X)
+       → (M : ⟨ X ⟩ → ⟨ Y ⟩) (ϕᴹ : f-ucontinuous X Y M)
+       → (Ψ : ⟨ Y ⟩ → ⟨ Y ⟩) (k : ⟨ X ⟩)
        → let
            Ω = M k
            ΨΩ = Ψ Ω
-           reg = p-regressor cx Φ ϕᴸ 𝓔S ε
+           reg = p-regressor X Y 𝓔S ε
            ω = M (reg M ϕᴹ ΨΩ)
-         in (under ε ≼ Φ ΨΩ Ω) → (under ε ≼ Φ ΨΩ ω)
-s-imperfect-convergence {𝓤} {𝓥} {X} {Y} cx Φ ϕᴸ 𝓔S ε M ϕᴹ Ψ k ε≼Ψ
- = S⟨ cx , 𝓔S ⟩ (p M ϕᴹ ΨΩ) (d M ϕᴹ ΨΩ) (ϕ M ϕᴹ ΨΩ) (k , ε≼Ψ)
+         in (B Y ε Ω ΨΩ) → (B Y ε Ω ω)
+s-imperfect-convergence X Y (𝓔 , S) ε M ϕᴹ Ψ k BεΩΨΩ
+ = B-trans Y ε Ω' ΨΩ ω BεΩΨΩ (S ((p , d) , ϕ) (k , B-sym Y ε Ω' ΨΩ BεΩΨΩ))
  where
-  ΨΩ = Ψ (M k)
-  p : (M : X → Y) (ϕᴹ : continuous² cx Φ M) (ΨΩ : Y)
-    → (X → 𝓤₀ ̇ )
-  p M ϕᴹ ΨΩ x = under ε ≼ Φ ΨΩ (M x)
-  d : (M : X → Y) (ϕᴹ : continuous² cx Φ M) (ΨΩ : Y)
-    → detachable (p M ϕᴹ ΨΩ)
-  d M ϕᴹ ΨΩ x = ≼-decidable ε (Φ ΨΩ (M x))
-  ϕ : (M : X → Y) (ϕᴹ : continuous² cx Φ M) (ΨΩ : Y)
-    → continuous cx (p M ϕᴹ ΨΩ)
-  ϕ M ϕᴹ ΨΩ = δ' , γ' where
-    δ' : ℕ
-    δ' = pr₁ (ϕᴹ ε)
-    γ' : uc-mod-of cx (p M ϕᴹ ΨΩ) δ'
-    γ' x y δ≼cxy = ≼-continuous ε (Φ ΨΩ (M x)) (Φ ΨΩ (M y))
-                     (ϕᴸ ε ΨΩ (M x) (M y)
-                     (pr₂ (ϕᴹ ε) x y δ≼cxy))
+  Ω' = M k -- fix Ω definition in paper and agda
+  ΨΩ = Ψ Ω'
+  reg = p-regressor X Y (𝓔 , S) ε
+  ω = M (reg M ϕᴹ ΨΩ)
+  p : ⟨ X ⟩ → Ω 𝓤₀
+  p x = B* Y ε ΨΩ (M x)
+  d : is-complemented (λ x → p x holds)
+  d x = B-decidable Y ε ΨΩ (M x)
+  ϕ : p-ucontinuous X p
+  ϕ = δ , γ
+   where
+    δ : ℕ
+    δ = pr₁ (ϕᴹ ε)
+    γ : (x₁ x₂ : ⟨ X ⟩) → B X δ x₁ x₂ → p x₁ holds → p x₂ holds
+    γ x₁ x₂ Bδx₁x₂ BεΨΩMx₂
+     = B-trans Y ε ΨΩ (M x₁) (M x₂) BεΨΩMx₂
+         (pr₂ (ϕᴹ ε) x₁ x₂ Bδx₁x₂)
+
 perfect-convergence
-       : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-       → (cx : X → X → ℕ∞) (Φ : Y → Y → ℕ∞)
-       → everywhere-sin Φ
-       → (ϕᴸ : right-continuous Φ)
-       → (𝓔S : c-searchable cx)
+       : (X : ClosenessSpace 𝓤) (Y : ClosenessSpace 𝓥)
+       → (𝓔S : csearchable 𝓤₀ X)
        → (ε : ℕ)
-       → (M : X → Y) (ϕᴹ : continuous² cx Φ M)
-       → (k : X)
+       → (M : ⟨ X ⟩ → ⟨ Y ⟩) (ϕᴹ : f-ucontinuous X Y M)
+       → (k : ⟨ X ⟩)
        → let
            Ω = M k
-           reg = p-regressor cx Φ ϕᴸ 𝓔S ε
+           reg = p-regressor X Y 𝓔S ε
            ω = M (reg M ϕᴹ Ω)
-         in (under ε ≼ Φ Ω ω)
-perfect-convergence {𝓤} {𝓥} {X} {Y} cx Φ ϕ→ ϕᴸ 𝓔S ε M ϕᴹ k
- = s-imperfect-convergence cx Φ ϕᴸ 𝓔S ε M ϕᴹ id k (λ n _ → ϕ→ (M k) n)
+         in B Y ε Ω ω
+perfect-convergence X Y 𝓔S ε M ϕᴹ k
+ = s-imperfect-convergence X Y 𝓔S ε M ϕᴹ id k (B-refl Y ε Ω')
+ where Ω' = M k
 
-w-imperfect-convergence : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-       → (cx : X → X → ℕ∞) (Φ : Y → Y → ℕ∞)
-       → (ϕᴸ : right-continuous Φ)
-       → (𝓔S : c-searchable cx)
-       → (ε : ℕ)
-       → (M : X → Y) (ϕᴹ : continuous² cx Φ M)
-       → (Ψ : Y → Y) (k : X)
-       → let
-           Ω = M k
-           ΨΩ = Ψ Ω
-           reg = p-regressor cx Φ ϕᴸ 𝓔S ε
-           ω = M (reg M ϕᴹ ΨΩ)
-         in (under ε ≼ Φ ΨΩ Ω)
-          → (under ε ≼ ℕ∞-codistance (Φ Ω ΨΩ) (Φ Ω ω))
-w-imperfect-convergence {𝓤} {𝓥} {X} {Y} cx Φ ϕᴸ 𝓔S ε M ϕᴹ Ψ k ε≼Φ
- = ≈→≼ 𝟚-is-discrete (incl (Φ Ω ΨΩ)) (incl (Φ Ω ω)) ε
-    (ϕᴸ ε Ω ΨΩ ω (s-imperfect-convergence cx Φ ϕᴸ 𝓔S ε M ϕᴹ Ψ k ε≼Φ))
- where
-   Ω = M k
-   ΨΩ = Ψ Ω
-   reg = p-regressor cx Φ ϕᴸ 𝓔S ε
-   ω = M (reg M ϕᴹ ΨΩ)
-
+{-
 sampled-loss-function : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                       → (Y → Y → ℕ∞) → (d : ℕ) → X ^⟨succ d ⟩
                       → (X → Y) → (X → Y) → ℕ∞
@@ -328,3 +349,4 @@ interpolation-theorem cx cy cy→ cy-r 𝓔S o d ys or ε M ϕᴹ k
   Ψ = c-interpolation o d ys
   Ω = M k
   ϕᴸ = sampled-loss-right-continuous cy cy-r d ys
+-}

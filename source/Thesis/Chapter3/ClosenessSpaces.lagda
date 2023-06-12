@@ -151,7 +151,7 @@ semi-searchable⇒c-searchable {𝓤} {𝓦} (X , ci) r S p (δ , ϕ)
   i₂' (x , a) (y , b) = i₂ x y
   i₃' : is-ultra' c'
   i₃' (x , a) (y , b) (z , c) = i₃ x y z
-
+{-
 ordered : (X : 𝓤 ̇ ) → 𝓤 ⊔ 𝓥 ⁺  ̇
 ordered {𝓤} {𝓥} X = Σ _≤_ ꞉ (X → X → 𝓥  ̇ )
                    , reflexive _≤_
@@ -159,7 +159,7 @@ ordered {𝓤} {𝓥} X = Σ _≤_ ꞉ (X → X → 𝓥  ̇ )
                    × ((x y : X) → ¬ (x ≤ y) → y ≤ x)
 
 totally-ordered : {X : 𝓤 ̇ } → ordered {𝓤} {𝓥} X → 𝓤 ⊔ 𝓥  ̇
-totally-ordered {𝓤} {𝓥} {X} (_≤_ , _) = (x y : X) → decidable (x ≤ y)
+totally-ordered {𝓤} {𝓥} {X} (_≤_ , _) = (x y : X) → is-complemented (x ≤ y)
 
 data List (X : 𝓤 ̇ ) : 𝓤 ̇ where
   [] : List X
@@ -300,4 +300,4 @@ quotient-subtype-equiv (_≊_ , e) P (ρ , q) v
    γ₁ (x , h) = {!!}
    γ₂ : (λ x → g (f x)) ∼ (λ x → x)
    γ₂ x = {!!}
-   
+-}

@@ -17,11 +17,13 @@ module Thesis.Chapter5.SignedDigitIntervalObject
 open import Thesis.Chapter5.IntervalObjectApproximation fe io
 open basic-interval-object-development fe io hiding (−1 ; O ; +1)
 
+-- Definition 5.2.7
 ⟨_⟩ : 𝟛 → 𝕀
 ⟨ −1 ⟩ = u
 ⟨  O ⟩ = u ⊕ v
 ⟨ +1 ⟩ = v
 
+-- Definition 5.2.8
 ⟪_⟫ : 𝟛ᴺ → 𝕀
 ⟪ α ⟫ = M (map ⟨_⟩ α)
 
@@ -47,12 +49,13 @@ id-realiser α = refl
 ∘-realiser {f} {g} {f'} {g'} f→ g→ α
  = ap f' (g→ α) ∙ f→ (g α)
 
+-- Lemma 5.2.10
 map-realiser : (f : 𝟛 → 𝟛) (f' : 𝕀 → 𝕀)
-              → f pw-realises¹ f'
-              → is-⊕-homomorphism fe 𝓘 𝓘 f'
-              → (map f) realises¹ f'
+             → f pw-realises¹ f'
+             → is-⊕-homomorphism fe 𝓘 𝓘 f'
+             → (map f) realises¹ f'
 map-realiser f f' f→ f⊕ α = ⊕-homs-are-M-homs f' f⊕ (map ⟨_⟩ α)
-                           ∙ ap M (dfunext (fe 𝓤₀ 𝓦) (λ i → f→ (α i)))
+                          ∙ ap M (dfunext (fe 𝓤₀ 𝓦) (λ i → f→ (α i)))
 
 map-realiser² : (f : 𝟛 → 𝟛ᴺ → 𝟛ᴺ) (f' : 𝕀 → 𝕀 → 𝕀)
               → f realises' f'
@@ -62,14 +65,18 @@ map-realiser² : (f : 𝟛 → 𝟛ᴺ → 𝟛ᴺ) (f' : 𝕀 → 𝕀 → 𝕀
               ≡ M (λ n → f' ⟨ α n ⟩ ⟪ β ⟫)
 map-realiser² f f' f→ f⊕ α β = ap M (dfunext (fe 𝓤₀ 𝓦) (λ i → f→ (α i) β))
 
-compl-realiser : compl pw-realises¹ −_
-compl-realiser −1 = −1-inverse
-compl-realiser  O =  O-inverse
-compl-realiser +1 = +1-inverse
+-- Lemma 5.2.12
+flip-realiser : flip pw-realises¹ −_
+flip-realiser −1 = −1-inverse
+flip-realiser  O =  O-inverse
+flip-realiser +1 = +1-inverse
 
+-- Lemma 5.2.13
 neg-realiser : neg realises¹ −_
-neg-realiser = map-realiser compl −_ compl-realiser −-is-⊕-homomorphism
+neg-realiser
+ = map-realiser flip −_ flip-realiser −-is-⊕-homomorphism
 
+-- Definition 5.2.18
 half : 𝟝 → 𝕀
 half −2 = u
 half −1 = u /2
@@ -84,6 +91,7 @@ half +2 = v
 ⊕-comm' = λ {a} {b}         → ⊕-comm a b
 ⊕-tran' = λ {a} {b} {c} {d} → ⊕-tran a b c d 
 
+-- Lemma 5.2.19
 div2-aux-＝ : (x y : 𝟝) (z : 𝕀) → let (a , b) = div2-aux x y in
              ⟨ a ⟩ ⊕ (half b ⊕ z) ＝ (half x ⊕ (half y ⊕ z))
 div2-aux-＝ −2 y z = refl
@@ -128,10 +136,16 @@ div2-approx' n f α
   z = pr₁ (pr₁ IH)
   w = pr₂ (pr₁ IH)
 
+-- Lemma 5.2.19
+div2-realiser : (α : 𝟝ᴺ) → ⟪ div2 α ⟫ ＝ M (map half α)
+div2-realiser = fg-approx-holds (map ⟨_⟩ ∘ div2) (map half) div2-approx'
+
+-- Lemma 5.2.21
 half-add-realiser : (α β : 𝟛ᴺ) → M (map half (add2 α β)) ＝ (⟪ α ⟫ ⊕ ⟪ β ⟫)
 half-add-realiser α β = ap M (dfunext (fe 𝓤₀ 𝓦) (λ i → γ (α i) (β i)))
                       ∙ M-hom (map ⟨_⟩ α) (map ⟨_⟩ β) ⁻¹
  where
+  -- Lemma 5.2.20
   γ : (a b : 𝟛) → half (a +𝟛 b) ＝ (⟨ a ⟩ ⊕ ⟨ b ⟩)
   γ −1 −1 = ⊕-idem' ⁻¹
   γ −1  O = refl
@@ -143,13 +157,12 @@ half-add-realiser α β = ap M (dfunext (fe 𝓤₀ 𝓦) (λ i → γ (α i) (�
   γ +1  O = refl
   γ +1 +1 = ⊕-idem' ⁻¹
 
-div2-realiser : (α : 𝟝ᴺ) → ⟪ div2 α ⟫ ＝ M (map half α)
-div2-realiser = fg-approx-holds (map ⟨_⟩ ∘ div2) (map half) div2-approx'
-
+-- Theorem 5.2.22
 mid-realiser : mid realises² _⊕_
 mid-realiser α β = div2-realiser (add2 α β)
                  ∙ half-add-realiser α β
 
+-- Definition 5.2.26
 quarter : 𝟡 → 𝕀
 quarter −4 = u
 quarter −3 = u ⊕ (u ⊕ (u ⊕ v))
@@ -161,30 +174,117 @@ quarter +2 = v ⊕ (u ⊕ v)
 quarter +3 = v ⊕ (v ⊕ (u ⊕ v))
 quarter +4 = v
 
+-- Lemma 5.2.27
+rearrange₁ : {a b z : 𝕀} → ((a ⊕ b) ⊕ ((a ⊕ b) ⊕ z)) ≡ ((a ⊕ (a ⊕ z)) ⊕ (b ⊕ (b ⊕ z)))
+rearrange₁ {a} {b} {z} = ap (λ - → ((a ⊕ b) ⊕ ((a ⊕ b) ⊕ -))) (⊕-idem' ⁻¹)
+                       ∙ ap ((a ⊕ b) ⊕_) ⊕-tran'
+                       ∙ ⊕-tran'         
+
+div4-aux-＝ : (x y : 𝟡) (z : 𝕀)
+            → let (a , b) = div4-aux x y in
+              ⟨ a ⟩ ⊕ (quarter b ⊕ z)
+            ＝ (quarter x ⊕ (quarter y ⊕ z))
+div4-aux-＝ −4  y z = refl
+div4-aux-＝ −3 −4 z
+ = ap (_⊕ (half −1 ⊕ z)) (⊕-idem' ⁻¹)
+ ∙ ⊕-tran'
+div4-aux-＝ −3 −3 z
+ = {!!}
+div4-aux-＝ −3 −2 z
+ = {!!}
+div4-aux-＝ −3 −1 z
+ = {!!}
+div4-aux-＝ −3  O z = {!!}
+div4-aux-＝ −3 +1 z = {!!}
+div4-aux-＝ −3 +2 z = {!!}
+div4-aux-＝ −3 +3 z = {!!}
+div4-aux-＝ −3 +4 z
+ = ⊕-tran'
+div4-aux-＝ −2 −4 z = div2-aux-＝ −1 −2 z
+div4-aux-＝ −2 −3 z
+ = {!!}
+div4-aux-＝ −2 −2 z = div2-aux-＝ −1 −1 z
+div4-aux-＝ −2 −1 z = {!!}
+div4-aux-＝ −2 O z  = div2-aux-＝ −1  O z
+div4-aux-＝ −2 +1 z = {!!}
+div4-aux-＝ −2 +2 z = div2-aux-＝ −1 +1 z
+div4-aux-＝ −2 +3 z = {!!}
+div4-aux-＝ −2 +4 z = div2-aux-＝ −1 +2 z
+div4-aux-＝ −1 −4 z = ap (_⊕ (quarter +2 ⊕ z)) (⊕-idem' ⁻¹)
+                    ∙ ⊕-tran'
+div4-aux-＝ −1 −3 z = ap (_⊕ (quarter +3 ⊕ z)) (⊕-idem' ⁻¹)
+                    ∙ ⊕-tran'
+                    ∙ {!!}
+div4-aux-＝ −1 −2 z = {!!}
+div4-aux-＝ −1 −1 z = {!!}
+div4-aux-＝ −1 O z = {!!}
+div4-aux-＝ −1 +1 z = {!!}
+div4-aux-＝ −1 +2 z = {!!}
+div4-aux-＝ −1 +3 z = {!!}
+div4-aux-＝ −1 +4 z = ⊕-tran'
+div4-aux-＝  O  y z = refl 
+div4-aux-＝ +1 −4 z = {!!}
+div4-aux-＝ +1 −3 z = {!!}
+div4-aux-＝ +1 −2 z = {!!}
+div4-aux-＝ +1 −1 z = {!!}
+div4-aux-＝ +1 O z = {!!}
+div4-aux-＝ +1 +1 z = {!!}
+div4-aux-＝ +1 +2 z = {!!}
+div4-aux-＝ +1 +3 z = {!!}
+div4-aux-＝ +1 +4 z = ap (_⊕ (half −1 ⊕ z)) (⊕-idem' ⁻¹)
+                    ∙ ⊕-tran'
+div4-aux-＝ +2 −4 z = div2-aux-＝ +1 −2 z
+div4-aux-＝ +2 −3 z = {!!}
+div4-aux-＝ +2 −2 z = div2-aux-＝ +1 −1 z
+div4-aux-＝ +2 −1 z = {!!}
+div4-aux-＝ +2 O z = div2-aux-＝ +1 O z
+div4-aux-＝ +2 +1 z = {!!}
+div4-aux-＝ +2 +2 z = div2-aux-＝ +1 +1 z
+div4-aux-＝ +2 +3 z = {!!}
+div4-aux-＝ +2 +4 z = div2-aux-＝ +1 +2 z
+div4-aux-＝ +3 −4 z
+ = ap (_⊕ (half +1 ⊕ z)) ⊕-comm'
+ ∙ ⊕-tran'
+div4-aux-＝ +3 −3 z = {!!}
+div4-aux-＝ +3 −2 z = {!!}
+div4-aux-＝ +3 −1 z = {!!}
+div4-aux-＝ +3 O z  = {!!} ∙ ⊕-tran'
+div4-aux-＝ +3 +1 z = {!!} ∙ ⊕-tran'
+div4-aux-＝ +3 +2 z = {!!}
+div4-aux-＝ +3 +3 z = {!!}
+div4-aux-＝ +3 +4 z
+ = ap (_⊕ (half +1 ⊕ z)) (⊕-idem' ⁻¹)
+ ∙ ⊕-tran'
+div4-aux-＝ +4  y z = refl
+
+div4-approx' : Π (fg-n-approx' (map ⟨_⟩ ∘ div4) (map quarter))
+div4-approx' n f α
+ = (z , w)
+ , (ap ((map ⟨_⟩ ∘ div4) α 0 ⊕_) (pr₂ IH)
+ ∙ div4-aux-＝ (α 0) (α 1)
+     (m (append-one w ((first- n) (tail (map quarter (b ∶∶ x)))))))
+ where
+  b = pr₂ (div4-aux (α 0) (α 1))
+  x = tail (tail α)
+  IH = f (b ∶∶ x)
+  z w : 𝕀
+  z = pr₁ (pr₁ IH)
+  w = pr₂ (pr₁ IH)
+
+quarter-realiser : (α : 𝟡ᴺ) → ⟪ div4 α ⟫ ＝ M (map quarter α)
+quarter-realiser = fg-approx-holds (map ⟨_⟩ ∘ div4) (map quarter)
+                     div4-approx'
+
 ⟪⟪_⟫⟫ : 𝟡ᴺ → 𝕀
 ⟪⟪ x ⟫⟫ = M (map quarter x)
 
 _realisesᴺ_ : ((ℕ → 𝟛ᴺ) → 𝟛ᴺ) → ((ℕ → 𝕀) → 𝕀) → 𝓦 ̇
 f realisesᴺ f' = (δs : ℕ → 𝟛ᴺ) → f' (map ⟪_⟫ δs) ＝ ⟪ f δs ⟫
 
-M-bigMid'-＝ : (x y : 𝟛ᴺ) (z : 𝕀)
-            → (⟪ x ⟫ ⊕ (⟪ y ⟫ ⊕ z))
-            ＝ (⟨ x 0 ⟩ ⊕ (⟨ x 1 ⟩ ⊕ ⟨ y 0 ⟩))
-            ⊕ ((⟪ mid (tail (tail x)) (tail y) ⟫) ⊕ z)
-M-bigMid'-＝ x y z
- = ap (_⊕ (⟪ y ⟫ ⊕ z))
-     (M-prop₁ (map ⟨_⟩ x)
- ∙ ap (⟨ x 0 ⟩ ⊕_) (M-prop₁ (map ⟨_⟩ (tail x))))
- ∙ ap ((⟨ x 0 ⟩ ⊕ (⟨ x 1 ⟩ ⊕ ⟪ tail (tail x) ⟫)) ⊕_)
-     (ap (_⊕ z) (M-prop₁ (map ⟨_⟩ y)))
- ∙ ap (_⊕ ((⟨ y 0 ⟩ ⊕ ⟪ tail y ⟫) ⊕ z)) (⊕-comm')
- ∙ ⊕-tran' ∙ ap (_⊕ (⟨ x 0 ⟩ ⊕ z)) ⊕-tran'
- ∙ ⊕-tran' ∙ ap (_⊕ ((⟪ tail (tail x) ⟫ ⊕ ⟪ tail y ⟫) ⊕ z)) ⊕-comm'
- ∙ ap (λ - → (⟨ x 0 ⟩ ⊕ (⟨ x 1 ⟩ ⊕ ⟨ y 0 ⟩)) ⊕ (- ⊕ z))
-     (mid-realiser (tail (tail x)) (tail y) ⁻¹)
-
+-- Lemma 5.2.29
 𝟡s-conv-＝ : (a b c : 𝟛)
-              → (⟨ a ⟩ ⊕ (⟨ b ⟩ ⊕ ⟨ c ⟩)) ＝ quarter ((a +𝟛 a) +𝟝 (b +𝟛 c))
+           → (⟨ a ⟩ ⊕ (⟨ b ⟩ ⊕ ⟨ c ⟩))
+           ＝ quarter ((a +𝟛 a) +𝟝 (b +𝟛 c))
 𝟡s-conv-＝ −1 −1 −1 = ap (u ⊕_) ⊕-idem' ∙ ⊕-idem'
 𝟡s-conv-＝ −1 −1  O = refl
 𝟡s-conv-＝ −1 −1 +1 = refl
@@ -215,6 +315,24 @@ M-bigMid'-＝ x y z
 𝟡s-conv-＝ +1 +1  O = refl
 𝟡s-conv-＝ +1 +1 +1 = ap (v ⊕_) ⊕-idem' ∙ ⊕-idem'
 
+-- Lemam 5.2.30
+M-bigMid'-＝ : (x y : 𝟛ᴺ) (z : 𝕀)
+            → (⟪ x ⟫ ⊕ (⟪ y ⟫ ⊕ z))
+            ＝ (⟨ x 0 ⟩ ⊕ (⟨ x 1 ⟩ ⊕ ⟨ y 0 ⟩))
+            ⊕ ((⟪ mid (tail (tail x)) (tail y) ⟫) ⊕ z)
+M-bigMid'-＝ x y z
+ = ap (_⊕ (⟪ y ⟫ ⊕ z))
+     (M-prop₁ (map ⟨_⟩ x)
+ ∙ ap (⟨ x 0 ⟩ ⊕_) (M-prop₁ (map ⟨_⟩ (tail x))))
+ ∙ ap ((⟨ x 0 ⟩ ⊕ (⟨ x 1 ⟩ ⊕ ⟪ tail (tail x) ⟫)) ⊕_)
+     (ap (_⊕ z) (M-prop₁ (map ⟨_⟩ y)))
+ ∙ ap (_⊕ ((⟨ y 0 ⟩ ⊕ ⟪ tail y ⟫) ⊕ z)) (⊕-comm')
+ ∙ ⊕-tran' ∙ ap (_⊕ (⟨ x 0 ⟩ ⊕ z)) ⊕-tran'
+ ∙ ⊕-tran' ∙ ap (_⊕ ((⟪ tail (tail x) ⟫ ⊕ ⟪ tail y ⟫) ⊕ z)) ⊕-comm'
+ ∙ ap (λ - → (⟨ x 0 ⟩ ⊕ (⟨ x 1 ⟩ ⊕ ⟨ y 0 ⟩)) ⊕ (- ⊕ z))
+     (mid-realiser (tail (tail x)) (tail y) ⁻¹)
+
+-- Lemma 5.2.31/32
 bigMid'-approx : Π (fg-n-approx' (map ⟪_⟫) (map quarter ∘ bigMid'))
 bigMid'-approx n f αs
  = (z , w)
@@ -234,37 +352,18 @@ bigMid'-approx n f αs
    z = pr₁ (pr₁ IH)
    w = pr₂ (pr₁ IH)
 
-div4-aux-＝ : (x y : 𝟡) (z : 𝕀) → let (a , b) = div4-aux x y in
-                    ⟨ a ⟩ ⊕ (quarter b ⊕ z) ＝ (quarter x ⊕ (quarter y ⊕ z))
-div4-aux-＝ = {!!}
-
-div4-approx' : Π (fg-n-approx' (map ⟨_⟩ ∘ div4) (map quarter))
-div4-approx' n f α
- = (z , w)
- , (ap ((map ⟨_⟩ ∘ div4) α 0 ⊕_) (pr₂ IH)
- ∙ div4-aux-＝ (α 0) (α 1)
-     (m (append-one w ((first- n) (tail (map quarter (b ∶∶ x)))))))
- where
-  b = pr₂ (div4-aux (α 0) (α 1))
-  x = tail (tail α)
-  IH = f (b ∶∶ x)
-  z w : 𝕀
-  z = pr₁ (pr₁ IH)
-  w = pr₂ (pr₁ IH)
-
-quarter-realiser : (α : 𝟡ᴺ) → ⟪ div4 α ⟫ ＝ M (map quarter α)
-quarter-realiser = fg-approx-holds (map ⟨_⟩ ∘ div4) (map quarter)
-                     div4-approx'
-
+-- Theorem 5.2.33
 M-realiser : bigMid realisesᴺ M
 M-realiser δs = fg-approx-holds (map ⟪_⟫) (map quarter ∘ bigMid')
                   bigMid'-approx δs ∙ quarter-realiser (bigMid' δs) ⁻¹
 
+-- Lemma 5.2.36
 digitMul-realiser : digitMul realises' _*_
 digitMul-realiser −1 α = neg-realiser α ⁻¹ ∙ *-gives-negation-r ⟪ α ⟫ ⁻¹
 digitMul-realiser  O α = M-idem (u ⊕ v)    ∙ *-gives-zero-r     ⟪ α ⟫ ⁻¹
 digitMul-realiser +1 α = id-realiser α ⁻¹  ∙ *-gives-id-r       ⟪ α ⟫ ⁻¹
 
+-- Theorem 5.2.37
 mul-realiser : mul realises² _*_
 mul-realiser α β = M-realiser (map2 digitMul α (λ _ → β)) ⁻¹
                  ∙ map-realiser² digitMul _*_ digitMul-realiser
