@@ -100,6 +100,7 @@ contributed to constructions, theorems and proofs via the hands of Ayberk Tosun.
    Brouwerian continuity principle with the Curry-Howard
    interpretation.* [13th International Conference on Typed Lambda
    Calculi and Applications (TLCA 2015)](https://drops.dagstuhl.de/opus/portals/lipics/index.php?semnr=15006).
+
    https://doi.org/10.4230/LIPIcs.TLCA.2015.153
 
 1. Martín H. Escardó and T. Streicher. *The intrinsic topology of
