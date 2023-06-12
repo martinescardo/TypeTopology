@@ -105,6 +105,9 @@ data _≤_ : ℕ → ℕ → Type where
   z≤n : ∀ {n}                 → zero  ≤ n
   s≤s : ∀ {m n} (m≤n : m ≤ n) → succ m ≤ succ n
 
+_<_ : ℕ → ℕ → Type
+i < j = succ i ≤ j
+
 ¬s≤n : (n : ℕ) → ¬ (succ n ≤ n)
 ¬s≤n (succ n) (s≤s h) = ¬s≤n n h
 
@@ -112,9 +115,31 @@ n≤s : (n : ℕ) → n ≤ succ n
 n≤s zero = z≤n
 n≤s (succ n) = s≤s (n≤s n)
 
+≤-refl : (n : ℕ) → n ≤ n
+≤-refl zero = z≤n
+≤-refl (succ n) = s≤s (≤-refl n)
+
 ≤-trans : {n1 n2 n3 : ℕ} → n1 ≤ n2 → n2 ≤ n3 → n1 ≤ n3
 ≤-trans {.zero} {n2} {n3} z≤n q = z≤n
 ≤-trans {.(succ _)} {.(succ _)} {.(succ _)} (s≤s h) (s≤s q) = s≤s (≤-trans h q)
+
+≤＝-trans : {n1 n2 n3 : ℕ} → n1 ≤ n2 → n2 ＝ n3 → n1 ≤ n3
+≤＝-trans {n1} {n2} {.n2} a refl = a
+
+≤<-trans : {n1 n2 n3 : ℕ} → n1 ≤ n2 → n2 < n3 → n1 < n3
+≤<-trans {n1} {n2} {n3} a b = ≤-trans (s≤s a) b
+
+<-irrefl : (n : ℕ) → ¬ (n < n)
+<-irrefl zero ()
+<-irrefl (succ n) (s≤s h) = <-irrefl n h
+
+Fin→ℕ : {n : ℕ} (i : Fin n) → ℕ
+Fin→ℕ {.(succ _)} Fin.𝟎 = 0
+Fin→ℕ {.(succ _)} (Fin.suc i) = succ (Fin→ℕ i)
+
+<Fin : {n : ℕ} (j : Fin n) → Fin→ℕ j < n
+<Fin {.(succ _)} Fin.𝟎 = s≤s z≤n
+<Fin {.(succ _)} (Fin.suc j) = s≤s (<Fin j)
 
 ⊆Γ≤ : {n : ℕ} {Γ : Cxt n} {m : ℕ} {Δ : Cxt m} → ⊆Γ Γ Δ → n ≤ m
 ⊆Γ≤ {.0} {.〈〉} {.0} {.〈〉} ⊆Γ0 = z≤n
@@ -346,6 +371,64 @@ close· : {σ τ : type} {n : ℕ} {Γ : Cxt n} → (t : T Γ (σ ⇒ τ)) (u : 
 close· {σ} {τ} {zero} {Γ} t u s = refl
 close· {σ} {τ} {succ n} {Γ} t u s = close· (sub₀ t (s Fin.𝟎)) (sub₀ u (s Fin.𝟎)) (λ i → s (Fin.suc i))
 
+Fin∈Γ : {n : ℕ} (i : Fin n) {m : ℕ} (Γ : Cxt m) → Type
+Fin∈Γ {n} i {m} Γ = Fin→ℕ i < m
+
+¬Fin∈Γ〈〉 : {n : ℕ} (i : Fin n) → ¬ Fin∈Γ {1} Fin.𝟎 〈〉
+¬Fin∈Γ〈〉 {n} i ()
+
+¬Fin∈Γsuc : {n : ℕ} (i : Fin n) {m : ℕ} (Γ : Cxt m) (σ : type)
+           → ¬ Fin∈Γ i Γ
+           → ¬ Fin∈Γ (Fin.suc i) (Γ , σ)
+¬Fin∈Γsuc {n} i {m} Γ σ h (s≤s q) = h q
+
+-- true if i is free in t
+is-free : (i : ℕ) {n : ℕ} {Γ : Cxt n} {σ : type} (t : T Γ σ) → Type
+is-free i {n} {Γ} {_} Zero = 𝟘
+is-free i {n} {Γ} {_} Succ = 𝟘
+is-free i {n} {Γ} {_} Rec = 𝟘
+is-free i {n} {Γ} {.(Γ [ i₁ ])} (ν i₁) = i ＝ Fin→ℕ i₁
+is-free i {n} {Γ} {σ ⇒ τ} (ƛ t) = is-free (succ i) t
+is-free i {n} {Γ} {σ} (t₁ · t₂) = is-free i t₁ + is-free i t₂
+
+-- a term is closed if it does not contain free variables
+closed : {n : ℕ} {Γ : Cxt n} {σ : type} (t : T Γ σ) → Type
+closed {n} {Γ} {σ} t = (i : ℕ) → ¬ is-free i t
+
+¬is-free≤ : (i : ℕ) {n : ℕ} {Γ : Cxt n} {σ : type} (t : T Γ σ)
+          → n ≤ i → ¬ is-free i t
+¬is-free≤ i {n} {Γ} {_} Zero ni = λ ()
+¬is-free≤ i {n} {Γ} {_} Succ ni = λ ()
+¬is-free≤ i {n} {Γ} {_} Rec  ni = λ ()
+¬is-free≤ i {n} {Γ} {.(Γ [ i₁ ])} (ν i₁) ni e = <-irrefl n (≤<-trans (≤＝-trans ni e) (<Fin i₁))
+¬is-free≤ i {n} {Γ} {σ ⇒ τ} (ƛ t) ni = ¬is-free≤ (succ i) t (s≤s ni)
+¬is-free≤ i {n} {Γ} {σ} (t₁ · t₂) ni (inl x) = ¬is-free≤ i t₁ ni x
+¬is-free≤ i {n} {Γ} {σ} (t₁ · t₂) ni (inr x) = ¬is-free≤ i t₂ ni x
+
+closed₀ : {σ : type} (t : T₀ σ) → closed t
+closed₀ {σ} t i = ¬is-free≤ i t z≤n
+
+is-free-transport⁻¹ : {m : ℕ} {Γ : Cxt m} {σ τ : type} (e : τ ＝ σ) (t : T Γ σ) (j : ℕ)
+                   → is-free j (transport⁻¹ (T Γ) e t)
+                    → is-free j t
+is-free-transport⁻¹ {m} {Γ} {σ} {.σ} refl t j h = h
+
+free-weaken : {n : ℕ} {Γ₁ : Cxt n} {m : ℕ} {Γ₂ : Cxt m} (s : ⊆Γ Γ₁ Γ₂) {σ : type} (t : T Γ₁ σ) (i : ℕ)
+            → is-free i (weaken s t)
+            → Σ p ꞉ Fin n , (Fin→ℕ (⊆ΓFin s p) ＝ i) × (is-free (Fin→ℕ p) t)
+free-weaken {n} {Γ₁} {m} {Γ₂} s {.(Γ₁ [ i₁ ])} (ν i₁) i h =
+ i₁ , (is-free-transport⁻¹ (⊆Γ[] i₁ s) (ν (⊆ΓFin s i₁)) i h ⁻¹) , refl
+free-weaken {n} {Γ₁} {m} {Γ₂} s {σ ⇒ τ} (ƛ t) i h with free-weaken (⊆ΓS σ s) t (succ i) h
+... | Fin.suc p , refl , h2 = p , refl , h2
+free-weaken {n} {Γ₁} {m} {Γ₂} s {σ} (t · t₁) i (inl x) with free-weaken s t i x
+... | p , h1 , h2 = p , h1 , inl h2
+free-weaken {n} {Γ₁} {m} {Γ₂} s {σ} (t · t₁) i (inr x) with free-weaken s t₁ i x
+... | p , h1 , h2 = p , h1 , inr h2
+
+closed-weaken₀ : {n : ℕ} {Γ : Cxt n} {σ : type} (t : T₀ σ) → closed {n} {Γ} (weaken₀ t)
+closed-weaken₀ {n} {Γ} {σ} t i h with free-weaken (⊆〈〉 Γ) t i h
+... | p , h1 , h2 = closed₀ t (Fin→ℕ p) h2
+
 sub-transport⁻¹ : {m : ℕ} {Γ : Cxt (succ m)} (i : Fin (succ m)) (u : T₀ (Γ [ i ])) {σ τ : type} (e : τ ＝ σ) (t : T Γ σ)
                → sub {τ} {m} {Γ} i (transport⁻¹ (T Γ) e t) u
                   ＝ transport⁻¹ (T (rmCxt Γ i)) e (sub {σ} i t u)
@@ -354,30 +437,31 @@ sub-transport⁻¹ {m} {Γ} i u {σ} {.σ} refl t = refl
 sub-weaken : {n : ℕ} {Γ₁ : Cxt n} {m : ℕ} {Γ₂ : Cxt (succ m)} {σ : type} (i : Fin (succ m))
              (s1 : ⊆Γ Γ₁ Γ₂) (s2 : ⊆Γ Γ₁ (rmCxt Γ₂ i))
              (t : T Γ₁ σ) (u : T₀ (Γ₂ [ i ]))
-           → sub i (weaken {n} {Γ₁} {succ m} {Γ₂} {σ} s1 t) u ＝ weaken {n} {Γ₁} {m} {rmCxt Γ₂ i} {σ} s2 t
-sub-weaken {n} {Γ₁} {m} {Γ₂} {_} i s1 s2 Zero u = refl
-sub-weaken {n} {Γ₁} {m} {Γ₂} {_} i s1 s2 Succ u = refl
-sub-weaken {n} {Γ₁} {m} {Γ₂} {_} i s1 s2 Rec u = refl
-sub-weaken {n} {Γ₁} {m} {Γ₂} {.(Γ₁ [ i₁ ])} i s1 s2 (ν i₁) u =
+             (nf : ¬ is-free (Fin→ℕ i) (weaken s1 t))
+           → sub i (weaken s1 t) u ＝ weaken {n} {Γ₁} {m} {rmCxt Γ₂ i} {σ} s2 t
+sub-weaken {n} {Γ₁} {m} {Γ₂} {_} i s1 s2 Zero u nf = refl
+sub-weaken {n} {Γ₁} {m} {Γ₂} {_} i s1 s2 Succ u nf = refl
+sub-weaken {n} {Γ₁} {m} {Γ₂} {_} i s1 s2 Rec  u nf = refl
+sub-weaken {n} {Γ₁} {m} {Γ₂} {.(Γ₁ [ i₁ ])} i s1 s2 (ν i₁) u nf =
  sub i (transport⁻¹ (T Γ₂) (⊆Γ[] i₁ s1) (ν (⊆ΓFin s1 i₁))) u
   ＝⟨ sub-transport⁻¹ i u (⊆Γ[] i₁ s1) (ν (⊆ΓFin s1 i₁)) ⟩
  transport⁻¹ (T (rmCxt Γ₂ i)) (⊆Γ[] i₁ s1) (subν i (⊆ΓFin s1 i₁) u)
   ＝⟨ {!!} ⟩
  transport⁻¹ (T (rmCxt Γ₂ i)) (⊆Γ[] i₁ s2) (ν (⊆ΓFin s2 i₁))
   ∎
-sub-weaken {n} {Γ₁} {m} {Γ₂} {σ ⇒ τ} i s1 s2 (ƛ t) u =
- ap ƛ (sub-weaken (Fin.suc i) (⊆ΓS σ s1) (⊆ΓS σ s2) t u)
-sub-weaken {n} {Γ₁} {m} {Γ₂} {σ} i s1 s2 (t₁ · t₂) u =
+sub-weaken {n} {Γ₁} {m} {Γ₂} {σ ⇒ τ} i s1 s2 (ƛ t) u nf =
+ ap ƛ (sub-weaken (Fin.suc i) (⊆ΓS σ s1) (⊆ΓS σ s2) t u nf)
+sub-weaken {n} {Γ₁} {m} {Γ₂} {σ} i s1 s2 (t₁ · t₂) u nf =
  sub i (weaken s1 t₁) u · sub i (weaken s1 t₂) u
-  ＝⟨ ap (λ k → k · sub i (weaken s1 t₂) u) (sub-weaken i s1 s2 t₁ u) ⟩
+  ＝⟨ ap (λ k → k · sub i (weaken s1 t₂) u) (sub-weaken i s1 s2 t₁ u λ z → nf (inl z)) ⟩
  weaken s2 t₁ · sub i (weaken s1 t₂) u
-  ＝⟨ ap (λ k → weaken s2 t₁ · k) (sub-weaken i s1 s2 t₂ u) ⟩
+  ＝⟨ ap (λ k → weaken s2 t₁ · k) (sub-weaken i s1 s2 t₂ u λ z → nf (inr z)) ⟩
  weaken s2 t₁ · weaken s2 t₂
   ∎
 
 sub₀-weaken₀ : {σ τ : type} {n : ℕ} {Γ : Cxt n} (t : T₀ σ) (u : T₀ τ)
              → sub₀ (weaken₀ {succ n} {Γ , τ} {σ} t) u ＝ weaken₀ {n} {Γ} {σ} t
-sub₀-weaken₀ {σ} {τ} {n} {Γ} t u = sub-weaken Fin.𝟎 (⊆〈〉 (Γ , τ)) (⊆〈〉 Γ) t u
+sub₀-weaken₀ {σ} {τ} {n} {Γ} t u = sub-weaken Fin.𝟎 (⊆〈〉 (Γ , τ)) (⊆〈〉 Γ) t u (closed-weaken₀ t 0)
 
 -- to use in the lambda case
 -- closing a closed term does not change the term
