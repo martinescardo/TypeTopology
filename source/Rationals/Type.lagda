@@ -4,7 +4,7 @@ In this file I define rational numbers.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan renaming (_+_ to _∔_)
 open import Notation.CanonicalMap

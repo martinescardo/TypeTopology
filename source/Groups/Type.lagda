@@ -5,7 +5,7 @@ UF.SIP-Examples.
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe --no-sized-types --no-guardedness --auto-inline --exact-split #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module Groups.Type where
 open import MLTT.Spartan

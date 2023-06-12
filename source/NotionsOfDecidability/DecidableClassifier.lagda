@@ -7,7 +7,7 @@ universe 𝓤 and we show that 𝟚 ≃ Ωᵈ 𝓤 (for any universe 𝓤).
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module NotionsOfDecidability.DecidableClassifier where
 

@@ -21,7 +21,7 @@ This is vestigial. The proof that group-axioms is prop is in Groups.Type
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe --no-sized-types --no-guardedness --auto-inline --exact-split #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module Groups.Type-Supplement where
 --open import SpartanMLTT

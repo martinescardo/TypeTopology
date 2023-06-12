@@ -34,7 +34,7 @@ infinite games instead.
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe --no-sized-types --no-guardedness --auto-inline #-} -- --exact-split
+{-# OPTIONS --safe --without-K #-} -- --exact-split
 
 open import Games.TypeTrees
 open import Games.Monad

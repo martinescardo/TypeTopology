@@ -15,7 +15,7 @@ property unless weak excluded middle holds.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import UF.Univalence
 

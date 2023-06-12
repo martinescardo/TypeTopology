@@ -24,7 +24,7 @@ definitions of the initial binary system.
 
 \begin{code}
 
-{-# OPTIONS --safe --no-sized-types --no-guardedness --auto-inline --cubical--auto-inline #-}
+{-# OPTIONS --safe --cubical#-}
 
 module BinarySystems.CubicalBinarySystem where
 

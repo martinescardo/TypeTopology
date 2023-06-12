@@ -56,7 +56,7 @@
      inconsistent (as is well known), countable Tychonoff, and
      compactness of the Cantor type using countable Tychonoff.
 
-     (https://www.cs.bham.ac.uk/~mhe/TypeTopology/AllModules.index.html)
+     (https://www.cs.bham.ac.uk/~mhe/TypeTopology/AllModulesIndex.html)
 
    * In our last count, on 7th June 2023, this development has 153k
      lines, including comments and blank lines. But we don't update
@@ -83,7 +83,7 @@ Philosophy of the repository
 
    * We work in a minimal subset of Agda to implement Spartan MLTT and
      work with it. In particular, we restrict ourselves to safe
-     features (with the flag --safe --no-sized-types --no-guardedness).
+     features (with the flags --safe --no-sized-types --no-guardedness).
 
    * Some functions, and theorems, and definitions need HoTT/UF
      axioms. They are always given explicitly as
@@ -119,7 +119,7 @@ Click at the imported module names to navigate to them:
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module index where
 

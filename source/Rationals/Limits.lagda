@@ -6,7 +6,7 @@ and that 1/(n+1) converges to 0.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline --lossy-unification #-}
+{-# OPTIONS --safe --without-K --exact-split --lossy-unification #-}
 
 open import MLTT.Spartan renaming (_+_ to _∔_)
 

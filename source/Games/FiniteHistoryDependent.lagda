@@ -31,7 +31,7 @@ We assume a given type R of outcomes for games as a module parameter.
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe --no-sized-types --no-guardedness --auto-inline #-} -- --exact-split
+{-# OPTIONS --safe --without-K #-} -- --exact-split
 
 open import MLTT.Spartan hiding (J)
 

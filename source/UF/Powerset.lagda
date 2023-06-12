@@ -12,7 +12,7 @@ type into X, or, equivalently, a map of X into the subtype classifier
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module UF.Powerset where
 

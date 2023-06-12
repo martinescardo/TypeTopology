@@ -1,6 +1,6 @@
 -- Martin Escardo and Paulo Oliva 2011
 
-{-# OPTIONS --without-K --exact-split --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --without-K --exact-split #-}
 
 module Pigeon.J-Shift where
 

@@ -2,7 +2,7 @@ Tom de Jong, 1 and 4 April 2022.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module Ordinals.Taboos where
 

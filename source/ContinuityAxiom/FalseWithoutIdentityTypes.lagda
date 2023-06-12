@@ -8,7 +8,7 @@ type we consider, and we name it ≡.
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe --exact-split --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module ContinuityAxiom.FalseWithoutIdentityTypes where
 

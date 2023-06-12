@@ -1,6 +1,6 @@
 -- Martin Escardo and Paulo Oliva 2011
 
-{-# OPTIONS --without-K --no-termination-check --exact-split --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --without-K --no-termination-check --exact-split #-}
 
 -- We use Berger's modified bar recursion functional to realize the
 -- K-Shift.

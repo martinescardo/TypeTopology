@@ -5,7 +5,7 @@ another file.
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe --no-sized-types --no-guardedness --auto-inline #-} -- --exact-split
+{-# OPTIONS --safe --without-K #-} -- --exact-split
 
 
 module Games.TicTacToe2 where

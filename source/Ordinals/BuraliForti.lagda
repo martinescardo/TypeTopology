@@ -112,7 +112,7 @@ Agda formulation of the Burali-Forti argument and its corollaries
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 \end{code}
 

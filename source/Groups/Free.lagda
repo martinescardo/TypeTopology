@@ -22,7 +22,7 @@ way to do it is already present in the module Fin.lagda.)
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe --no-sized-types --no-guardedness --auto-inline #-} -- --exact-split
+{-# OPTIONS --safe --without-K #-} -- --exact-split
 
 \end{code}
 
