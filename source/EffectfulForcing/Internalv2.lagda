@@ -277,13 +277,13 @@ B-context【_】 (Γ ,, σ) A = B-context【_】 Γ A ,, B-type〖 σ 〗 A
 
 infix 10 B-context【_】
 
+∈Cxt-B-type : {Γ : Cxt} {A : type} {σ : type} (i : ∈Cxt σ Γ) → ∈Cxt (B-type〖 σ 〗 A) (B-context【 Γ 】 A)
+∈Cxt-B-type {Γ ,, σ} {A} {σ} (∈Cxt0 Γ) = ∈Cxt0 (B-context【 Γ 】 A)
+∈Cxt-B-type {Γ ,, τ} {A} {σ} (∈CxtS τ i) = ∈CxtS (B-type〖 τ 〗 A) (∈Cxt-B-type i)
+
 ⌜ν⌝ : {Γ : Cxt} {A : type} {σ : type} (i : ∈Cxt σ Γ)
     → T (B-context【 Γ 】 A) (B-type〖 σ 〗 A)
-⌜ν⌝ {Γ} {A} {σ} i = ν (p i)
- where
-  p : {Γ : Cxt} (i : ∈Cxt σ Γ) → ∈Cxt (B-type〖 σ 〗 A) (B-context【 Γ 】 A)
-  p {Γ ,, σ} (∈Cxt0 Γ) = ∈Cxt0 (B-context【 Γ 】 A)
-  p {Γ ,, τ} (∈CxtS τ i) = ∈CxtS (B-type〖 τ 〗 A) (p i)
+⌜ν⌝ {Γ} {A} {σ} i = ν (∈Cxt-B-type i)
 
 \end{code}
 

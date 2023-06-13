@@ -382,7 +382,6 @@ close-ap {σ} {succ n} {Γ , τ} t s =
           (λ i → s (Fin.suc i))
 -}
 
--- ... or through substitution
 close : {σ : type} {Γ₁ Γ₂ : Cxt} → T Γ₁ σ → Sub Γ₁ Γ₂ → T Γ₂ σ
 close {_} {Γ₁} {Γ₂} Zero s = Zero
 close {_} {Γ₁} {Γ₂} Succ s = Succ
@@ -690,19 +689,14 @@ T₀-B-context-sel {A} {.(succ _)} Γ {Fin.suc i} t = T₀-B-context-sel (pr₁ 
 -}
 -}
 
-∈Cxt-B-context : {A : type} {σ : type} {Γ : Cxt}
-               → ∈Cxt σ Γ
-               → ∈Cxt (B-type〖 σ 〗 A) (B-context【 Γ 】 A)
-∈Cxt-B-context {A} {σ} {.(Γ ,, σ)} (∈Cxt0 Γ) = ∈Cxt0 _
-∈Cxt-B-context {A} {σ} {.(_ ,, τ)} (∈CxtS τ i) = ∈CxtS _ (∈Cxt-B-context i)
-
 R⋆s : Baire → {Γ : Cxt}
   → 【 Γ 】 → IB【 Γ 】 ((ι ⇒ ι) ⇒ ι) → Type
-R⋆s α {Γ} xs ys = {σ : type} (i : ∈Cxt σ Γ) → R⋆ α (xs i) (ys (∈Cxt-B-context i))
+R⋆s α {Γ} xs ys = {σ : type} (i : ∈Cxt σ Γ) → R⋆ α (xs i) (ys (∈Cxt-B-type i))
 
 【sub】 : {Γ : Cxt} (s : Sub₀ Γ) → 【 Γ 】
 【sub】 {Γ} s i = ⟦ s i ⟧₀
 
+{-
 close-⌜zero⌝ : {σ : type} {Γ : Cxt} (ys : IB【 Γ 】 σ)
             → close (⌜zero⌝ {σ}) ys ＝ ⌜zero⌝
 close-⌜zero⌝ {σ} {Γ} ys = refl
@@ -710,6 +704,7 @@ close-⌜zero⌝ {σ} {Γ} ys = refl
 close-⌜succ⌝ : {σ : type} {Γ : Cxt} (ys : IB【 Γ 】 σ)
             → close (⌜succ⌝ {σ}) ys ＝ ⌜succ⌝
 close-⌜succ⌝ {σ} {Γ} ys = refl
+-}
 
 -- testing...
 succ-dialogue⋆-aux' : {A : Type} {σ τ : type} (d : T₀ (⌜B⌝ σ ((τ ⇒ τ) ⇒ σ))) (α : 〖 τ 〗 → 〖 τ 〗) (f : 〖 σ 〗 → 〖 σ 〗)
@@ -802,6 +797,14 @@ step {n} {Γ} {σ} (f · a) with isVal? f
 ... | inl p = step· f a refl p
 -}
 
+xx : {α : Baire} {A σ τ : type}
+     (a : 〖 τ 〗)
+     (t : T (〈〉 ,, B-type〖 σ 〗 ((ι ⇒ ι) ⇒ ι)) (B-type〖 τ 〗 ((ι ⇒ ι) ⇒ ι)))
+     (y : T₀ (B-type〖 σ 〗 ((ι ⇒ ι) ⇒ ι)))
+   → R⋆ α a (sub₀ t y)
+   → R⋆ α a (ƛ t · y)
+xx {α} {A} {σ} {τ} a t y r = {!!}
+
 ⌜main-lemma⌝ : {Γ : Cxt} {σ : type} (t : T Γ σ)
                (α : Baire)
                (xs : 【 Γ 】) (ys : IB【 Γ 】 ((ι ⇒ ι) ⇒ ι))
@@ -818,9 +821,10 @@ step {n} {Γ} {σ} (f · a) with isVal? f
  dialogue⋆ ⟦ close ⌜succ⌝ ys · y ⟧₀ α
   ∎
 ⌜main-lemma⌝ {Γ} {_} Rec α xs ys rxys x y rxy x₁ y₁ rxy₁ x₂ y₂ rxyz₂ = {!!}
-⌜main-lemma⌝ {Γ} {σ} (ν i) α xs ys rxys = {!!}
+⌜main-lemma⌝ {Γ} {σ} (ν i) α xs ys rxys = rxys i
 ⌜main-lemma⌝ {Γ} {σ ⇒ τ} (ƛ t) α xs ys rxys x y rxy =
- {!!} {-transport
+ {!!}
+ {-transport
   (λ k → R⋆ α (⟦ t ⟧ (xs ‚ x)) (close (ƛ ⌜ t ⌝) ys · k))
   (close₀ y ys)
   (transport
