@@ -1,20 +1,11 @@
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split
-            --no-sized-types --no-guardedness --auto-inline
-            --allow-unsolved-metas #-}
+{-# OPTIONS --without-K --exact-split --safe #-}
 
 open import MLTT.Spartan
 open import UF.FunExt
 open import NotionsOfDecidability.Complemented
-open import TypeTopology.DiscreteAndSeparated
-open import Notation.Order
-open import Naturals.Order
 open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
-open import UF.Quotient
-open import UF.Miscelanea
-open import MLTT.Two-Properties
 open import UF.Equiv
 
 module Thesis.Chapter3.SearchableTypes (fe : FunExt) where
@@ -35,22 +26,8 @@ searchable-inhabited : (𝓦 : Universe) → (X : 𝓤 ̇ )
                      → searchable 𝓦 X → X
 searchable-inhabited 𝓦 X (𝓔 , S) = 𝓔 ((λ _ → ⊤Ω) , (λ _ → inl ⋆))
 
--- Definition 3.1.5
-𝔽 : ℕ → 𝓤₀  ̇
-𝔽 0 = 𝟘
-𝔽 (succ n) = 𝟙 + 𝔽 n
-
--- Definition 3.1.6
-finite-discrete : 𝓤 ̇ → 𝓤  ̇
-finite-discrete X = Σ n ꞉ ℕ , 𝔽 n ≃ X
-
--- Lemma 3.1.7
-𝔽-discrete : (n : ℕ) → is-discrete (𝔽 n)
-𝔽-discrete 0 = 𝟘-is-discrete
-𝔽-discrete (succ n) = +-is-discrete 𝟙-is-discrete (𝔽-discrete n)
-
-finite-discrete-discrete : {X : 𝓤 ̇ } → finite-discrete X → is-discrete X
-finite-discrete-discrete (n , e) = equiv-to-discrete e (𝔽-discrete n)
+-- Definition 3.1.5-7
+open import Thesis.Chapter2.FiniteDiscrete
 
 -- Lemma 3.1.8
 𝟙-searchable : searchable 𝓦 (𝟙 {𝓤})
@@ -137,158 +114,7 @@ finite-discrete-searchable x (succ n , e)
 -- Lemma 3.1.13
 -- TODO !!
 
--- Definition 3.2.13-16, 21
-open import CoNaturals.GenericConvergentSequence
-  renaming (ℕ-to-ℕ∞ to _↑
-         ; Zero-smallest to zero-minimal
-         ; ∞-largest to ∞-maximal)
-
--- Lemma 3.2.17
-≤-≼-relationship : (n m : ℕ) → n ≤ m ⇔ (n ↑) ≼ (m ↑)
-pr₁ (≤-≼-relationship 0 m) n≤m = zero-minimal (m ↑)
-pr₁ (≤-≼-relationship (succ n) (succ m)) n≤m
- = Succ-monotone (n ↑) (m ↑) (pr₁ (≤-≼-relationship n m) n≤m)
-pr₂ (≤-≼-relationship 0 m) n≼m = ⋆
-pr₂ (≤-≼-relationship (succ n) 0) n≼m
- = Succ-not-≼-Zero (n ↑) n≼m
-pr₂ (≤-≼-relationship (succ n) (succ m)) n≼m
- = pr₂ (≤-≼-relationship n m) (Succ-loc (n ↑) (m ↑) n≼m)
- 
--- Lemma 3.2.18 [ Remove from paper ]
-
--- Lemma 3.2.19
-is-decreasing' : (v : ℕ∞) (n : ℕ) → (i : ℕ) → i ≤ n → pr₁ v n ＝ ₁ → pr₁ v i ＝ ₁
-is-decreasing' v = regress (λ z → pr₁ v z ＝ ₁) (λ n → ≤₂-criterion-converse (pr₂ v n))
-
-positive-below-n : (i n : ℕ) → pr₁ (Succ (n ↑)) i ＝ ₁ → i ≤ n 
-positive-below-n zero n snᵢ=1 = ⋆
-positive-below-n (succ i) (succ n) snᵢ=1 = positive-below-n i n snᵢ=1
-
-≼-left-decidable : (n : ℕ) (v : ℕ∞) → is-decidable ((n ↑) ≼ v)
-≼-left-decidable zero v = inl (zero-minimal v)
-≼-left-decidable (succ n) v
- = Cases (𝟚-is-discrete (pr₁ v n) ₁)
-     (λ  vₙ=1 → inl (λ i snᵢ=1 → is-decreasing' v n i (positive-below-n i n snᵢ=1) vₙ=1))
-     (λ ¬vₙ=1 → inr (λ sn≼v → ¬vₙ=1 (sn≼v n (ℕ-to-ℕ∞-diagonal₁ n))))
-
--- Definition 3.2.22
-open import TWA.Closeness fe hiding (is-ultra; is-closeness)
-
-is-ultra is-closeness : {X : 𝓤 ̇ } → (X → X → ℕ∞) → 𝓤 ̇
-is-ultra {𝓤} {X} c
- = (x y z : X) → min (c x y) (c y z) ≼ c x z
-
-is-closeness c
- = indistinguishable-are-equal c
- × self-indistinguishable c
- × is-symmetric c
- × is-ultra c
-
-is-closeness-space : (X : 𝓤 ̇ ) → 𝓤 ̇
-is-closeness-space X = Σ c ꞉ (X → X → ℕ∞) , is-closeness c
-
-ClosenessSpace : (𝓤 : Universe) → 𝓤 ⁺  ̇ 
-ClosenessSpace 𝓤
- = Σ X ꞉ 𝓤 ̇ , Σ c ꞉ (X → X → ℕ∞) , is-closeness c
-
-⟨_⟩ : ClosenessSpace 𝓤 → 𝓤 ̇
-⟨ X , _ ⟩ = X
-
--- Definition 3.2.23 [ Doesn't say in paper that this is an equiv rel ? TODO ]
-B : (X : ClosenessSpace 𝓤) → ℕ → ⟨ X ⟩ → ⟨ X ⟩ → 𝓤₀  ̇   
-B (X , c , _) n x y = (n ↑) ≼ c x y
-
-B-refl : (X : ClosenessSpace 𝓤) → (n : ℕ) (x : ⟨ X ⟩)
-       → B X n x x
-B-refl (X , c , i , e , s , u) n x
- = transport ((n ↑) ≼_) (e x ⁻¹) (∞-maximal (n ↑))
-
-B-sym : (X : ClosenessSpace 𝓤) → (n : ℕ) (x y : ⟨ X ⟩)
-      → B X n x y → B X n y x
-B-sym (X , c , i , e , s , u) n x y Bxy
- = transport ((n ↑) ≼_) (s x y) Bxy
-
-B-trans : (X : ClosenessSpace 𝓤) → (n : ℕ) (x y z : ⟨ X ⟩)
-        → B X n x y → B X n y z → B X n x z
-B-trans (X , c , i , e , s , u) n x y z Bxy Byz m π
- = u x y z m (Lemma[a＝₁→b＝₁→min𝟚ab＝₁] (Bxy m π) (Byz m π))
-
-B-decidable : (X : ClosenessSpace 𝓤) → (n : ℕ) → (x y : ⟨ X ⟩ )
-            → is-decidable (B X n x y)
-B-decidable (X , c , _) n x y = ≼-left-decidable n (c x y)
-
-B-is-eq : (C : ClosenessSpace 𝓤)
-        → (n : ℕ) → is-equiv-relation (B C n)
-pr₁ (B-is-eq (X , c , i , j , k , l) n) x y
- = Π-is-prop (fe _ _) (λ _ → Π-is-prop (fe _ _) (λ _ → 𝟚-is-set))
-pr₁ (pr₂ (B-is-eq X n))
- = B-refl X n
-pr₁ (pr₂ (pr₂ (B-is-eq X n)))
- = B-sym X n
-pr₂ (pr₂ (pr₂ (B-is-eq X n)))
- = B-trans X n
-
--- TODO: Align B and B*
-B* : (X : ClosenessSpace 𝓤) → ℕ → ⟨ X ⟩ → ⟨ X ⟩ → Ω 𝓤₀
-B* X ϵ x y = B X ϵ x y ,  Π-is-prop (fe _ _) (λ _ → Π-is-prop (fe _ _) (λ _ → 𝟚-is-set))
-
-B⁼ : ((X , ci) : ClosenessSpace 𝓤) → (n : ℕ) → EqRel X
-B⁼ C n = B C n , B-is-eq C n
-
--- Definition 3.2.24 [ not needed ? ]
-
--- Definition 3.2.25
-f-continuous : (X : ClosenessSpace 𝓤) (Y : ClosenessSpace 𝓥)
-             → (f : ⟨ X ⟩ → ⟨ Y ⟩) → 𝓤 ̇  
-f-continuous X Y f
- = (ϵ : ℕ) → (x₁ : ⟨ X ⟩) → Σ δ ꞉ ℕ , ((x₂ : ⟨ X ⟩)
- → B X δ x₁ x₂ → B Y ϵ (f x₁) (f x₂))
-
--- Definition 3.2.26
-f-ucontinuous : (X : ClosenessSpace 𝓤) (Y : ClosenessSpace 𝓥)
-              → (f : ⟨ X ⟩ → ⟨ Y ⟩) → 𝓤 ̇  
-f-ucontinuous X Y f
- = (ϵ : ℕ) → Σ δ ꞉ ℕ , ((x₁ x₂ : ⟨ X ⟩)
- → B X δ x₁ x₂ → B Y ϵ (f x₁) (f x₂))
-
--- Lemma 3.2.27
-ucontinuous-continuous : (X : ClosenessSpace 𝓤)
-                       → (Y : ClosenessSpace 𝓥)
-                       → (f : ⟨ X ⟩ → ⟨ Y ⟩)
-                       → f-ucontinuous X Y f → f-continuous X Y f
-ucontinuous-continuous X Y f ϕ ϵ x₁ = pr₁ (ϕ ϵ)  , pr₂ (ϕ ϵ) x₁
-
--- Definition 3.2.28
-p-ucontinuous : (X : ClosenessSpace 𝓤)
-              → (p : ⟨ X ⟩ → Ω 𝓦) → 𝓤 ⊔ 𝓦  ̇  
-p-ucontinuous X p
- = Σ δ ꞉ ℕ , ((x₁ x₂ : ⟨ X ⟩)
- → B X δ x₁ x₂ → (p x₁ holds → p x₂ holds))
-           
-
--- Examples 3.2.3 [ TODO link to blog post ]
-
--- Definition 3.3.2 [ TODO in paper needs to be a closeness space, not a general type ]
-{- First, some things TODO put in Section 2 -}
-_is_-sect : {X : 𝓤 ̇ } → (Y : 𝓥 ̇ ) → EqRel {𝓤} {𝓤'} X
-          → 𝓤 ⊔ 𝓤' ⊔ 𝓥  ̇
-X' is (_≣_ , _) -sect
- = Σ g ꞉ (X' → _) , ((x : _) → Σ x' ꞉ X' , (x ≣ g x'))
-
-_-sect : {X : 𝓤 ̇ } → EqRel {𝓤} {𝓤'} X
-       → (𝓥 : Universe) → 𝓤 ⊔ 𝓤' ⊔ (𝓥 ⁺)  ̇
-(≣ -sect) 𝓥 = Σ X' ꞉ 𝓥 ̇ , X' is ≣ -sect
-
-_is_cover-of_ : (Y : 𝓥 ̇ ) → ℕ → ClosenessSpace 𝓤 → 𝓤 ⊔ 𝓥  ̇
-X' is ϵ cover-of X = X' is (B⁼ X ϵ) -sect
-
-_cover-of_ : ℕ → ClosenessSpace 𝓤 → (𝓥 : Universe) → 𝓤 ⊔ (𝓥 ⁺) ̇
-(ϵ cover-of X) 𝓥 = Σ X' ꞉ 𝓥 ̇ , X' is ϵ cover-of X
-
--- Definition 3.3.3
-totally-bounded : ClosenessSpace 𝓤 → (𝓥 : Universe) → 𝓤 ⊔ (𝓥 ⁺) ̇ 
-totally-bounded X 𝓥
- = (ϵ : ℕ) → Σ (X' , _) ꞉ (ϵ cover-of X) 𝓥 , finite-discrete X'
+open import Thesis.Chapter3.ClosenessSpaces fe
 
 -- Definition 3.3.4
 decidable-uc-predicate : (𝓦 : Universe) → ClosenessSpace 𝓤
@@ -328,7 +154,7 @@ searchable-covers-csearchable {𝓤} {𝓥} {𝓦} X C ((p , d) , δ , ϕ)
  where
   X' : 𝓥 ̇
   g  : X' → ⟨ X ⟩
-  η  : (x : ⟨ X ⟩) → Σ x' ꞉ X' , B X δ x (g x')
+  η  : (x : ⟨ X ⟩) → Σ x' ꞉ X' , C-holds X δ x (g x')
   𝓔' : decidable-predicate 𝓦 X' → X'
   S' : ((p' , d') : decidable-predicate 𝓦 X')
      → (Σ x' ꞉ X' , p' x' holds) → p' (𝓔' (p' , d')) holds
@@ -341,7 +167,7 @@ searchable-covers-csearchable {𝓤} {𝓥} {𝓦} X C ((p , d) , δ , ϕ)
    where
      x' : X'
      x' = pr₁ (η x)
-     η' : B X δ x (g x')
+     η' : C-holds X δ x (g x')
      η' = pr₂ (η x)
   X' = pr₁ (pr₁ (C δ))
   g  = pr₁ (pr₂ (pr₁ (C δ)))
