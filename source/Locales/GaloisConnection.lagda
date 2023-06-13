@@ -2,7 +2,7 @@ Ayberk Tosun, 28 February 2022.
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 open import UF.Base
@@ -33,7 +33,7 @@ Definition of a pair of opposing monotonic maps forming an adjoint pair:
 \begin{code}
 
  _⊣_ : (P ─m→ Q) → (Q ─m→ P) → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓤' ⊔ 𝓥')
- (f , _) ⊣ (g , _) = Ɐ x ∶ ∣ P ∣ₚ , Ɐ y ∶ ∣ Q ∣ₚ ,
+ (f , _) ⊣ (g , _) = Ɐ x ꞉ ∣ P ∣ₚ , Ɐ y ꞉ ∣ Q ∣ₚ ,
                       (f x ≤[ Q ] y ⇒ x ≤[ P ] g y) ∧ (x ≤[ P ] g y ⇒ f x ≤[ Q ] y)
 
  has-right-adjoint : (P ─m→ Q) → 𝓤 ⊔ 𝓥 ⊔ 𝓤' ⊔ 𝓥' ̇

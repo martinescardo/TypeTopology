@@ -8,7 +8,7 @@ Ported from `ayberkt/formal-topology-in-UF`.
 
 \begin{code}[hide]
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan hiding (𝟚)
 open import UF.Base
@@ -82,11 +82,11 @@ module to be imported by both this module and the `Dcpo` module.
 \begin{code}
 
 is-reflexive : {A : 𝓤 ̇ } → (A → A → Ω 𝓥) → Ω (𝓤 ⊔ 𝓥)
-is-reflexive {A = A} _≤_ = Ɐ x ∶ A , x ≤ x
+is-reflexive {A = A} _≤_ = Ɐ x ꞉ A , x ≤ x
 
 is-transitive : {A : 𝓤 ̇ } → (A → A → Ω 𝓥) → Ω (𝓤 ⊔ 𝓥)
 is-transitive {A = A} _≤_ =
- Ɐ x ∶ A , Ɐ y ∶ A , Ɐ z ∶ A , x ≤ y ⇒ y ≤ z ⇒ x ≤ z
+ Ɐ x ꞉ A , Ɐ y ꞉ A , Ɐ z ꞉ A , x ≤ y ⇒ y ≤ z ⇒ x ≤ z
 
 is-preorder : {A : 𝓤 ̇ } → (A → A → Ω 𝓥) → Ω (𝓤 ⊔ 𝓥)
 is-preorder {A = A} _≤_ = is-reflexive _≤_ ∧ is-transitive _≤_
@@ -234,7 +234,7 @@ x ＝[ iss ]＝ y = (x ＝ y) , iss
 module Meets {A : 𝓤 ̇ } (_≤_ : A → A → Ω 𝓥) where
 
  is-top : A → Ω (𝓤 ⊔ 𝓥)
- is-top t = Ɐ x ∶ A , (x ≤ t)
+ is-top t = Ɐ x ꞉ A , (x ≤ t)
 
  _is-a-lower-bound-of_ : A → A × A → Ω 𝓥
  l is-a-lower-bound-of (x , y) = (l ≤ x) ∧ (l ≤ y)
@@ -245,7 +245,7 @@ module Meets {A : 𝓤 ̇ } (_≤_ : A → A → Ω 𝓥) where
 
  _is-glb-of_ : A → A × A → Ω (𝓤 ⊔ 𝓥)
  l is-glb-of (x , y) = l is-a-lower-bound-of (x , y)
-                     ∧ (Ɐ (l′ , _) ∶ lower-bound (x , y) , (l′ ≤ l))
+                     ∧ (Ɐ (l′ , _) ꞉ lower-bound (x , y) , (l′ ≤ l))
 
 \end{code}
 
@@ -256,7 +256,7 @@ module Meets {A : 𝓤 ̇ } (_≤_ : A → A → Ω 𝓥) where
 module Joins {A : 𝓤 ̇ } (_≤_ : A → A → Ω 𝓥) where
 
  _is-an-upper-bound-of_ : A → Fam 𝓦 A → Ω (𝓥 ⊔ 𝓦)
- u is-an-upper-bound-of U = Ɐ i ∶ index U , (U [ i ]) ≤ u
+ u is-an-upper-bound-of U = Ɐ i ꞉ index U , (U [ i ]) ≤ u
 
  _is-an-upper-bound-of₂_ : A → A × A → Ω 𝓥
  u is-an-upper-bound-of₂ (v , w) = (v ≤ u) ∧ (w ≤ u)
@@ -269,11 +269,11 @@ module Joins {A : 𝓤 ̇ } (_≤_ : A → A → Ω 𝓥) where
 
  _is-lub-of_ : A → Fam 𝓦 A → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦)
  u is-lub-of U = (u is-an-upper-bound-of U)
-               ∧ (Ɐ (u′ , _) ∶ upper-bound U , (u ≤ u′))
+               ∧ (Ɐ (u′ , _) ꞉ upper-bound U , (u ≤ u′))
 
  _is-lub-of₂_ : A → A × A → Ω (𝓤 ⊔ 𝓥)
  u is-lub-of₂ (v , w) = (u is-an-upper-bound-of₂ (v , w))
-                      ∧ (Ɐ (u′ , _) ∶ upper-bound₂ (v , w) , (u ≤ u′))
+                      ∧ (Ɐ (u′ , _) ꞉ upper-bound₂ (v , w) , (u ≤ u′))
 
 module JoinNotation {A : 𝓤 ̇ } (⋁_ : Fam 𝓦 A → A) where
 
@@ -325,9 +325,9 @@ satisfies-frame-laws {𝓤 = 𝓤} {𝓥} {𝓦} {A = A}  (_≤_ , 𝟏 , _⊓_ 
     iss = carrier-of-[ P ]-is-set
 
     β = is-top 𝟏
-    γ = Ɐ (x , y) ∶ (A × A) , ((x ⊓ y) is-glb-of (x , y))
-    δ = Ɐ U ∶ Fam 𝓦 A , (⊔ U) is-lub-of U
-    ε = Ɐ (x , U) ∶ A × Fam 𝓦 A ,
+    γ = Ɐ (x , y) ꞉ (A × A) , ((x ⊓ y) is-glb-of (x , y))
+    δ = Ɐ U ꞉ Fam 𝓦 A , (⊔ U) is-lub-of U
+    ε = Ɐ (x , U) ꞉ A × Fam 𝓦 A ,
         (x ⊓ (⋁⟨ i ⟩ U [ i ]) ＝[ iss ]＝ ⋁⟨ i ⟩ x ⊓ (U [ i ]))
 
 frame-structure : (𝓥 𝓦 : Universe) → 𝓤 ̇ → 𝓤 ⊔ 𝓥 ⁺ ⊔ 𝓦 ⁺ ̇
@@ -365,7 +365,7 @@ Some projections.
 𝟏[ (A , (_ , 𝟏 , _ , _) , p , _) ] = 𝟏
 
 is-top : (F : Frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥)
-is-top F t = Ɐ x ∶ ⟨ F ⟩ , x ≤[ poset-of F ] t
+is-top F t = Ɐ x ꞉ ⟨ F ⟩ , x ≤[ poset-of F ] t
 
 𝟏-is-top : (F : Frame 𝓤 𝓥 𝓦) → (is-top F 𝟏[ F ]) holds
 𝟏-is-top (A , _ , _ , p , _) = p
@@ -600,7 +600,7 @@ map.
 𝟎[ F ] = ⋁[ F ] (∅ _)
 
 is-bottom : (F : Frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥)
-is-bottom F b = Ɐ x ∶ ⟨ F ⟩ , (b ≤[ poset-of F ] x)
+is-bottom F b = Ɐ x ꞉ ⟨ F ⟩ , (b ≤[ poset-of F ] x)
 
 𝟎-is-bottom : (F : Frame 𝓤 𝓥 𝓦)
             → (x : ⟨ F ⟩) → (𝟎[ F ] ≤[ poset-of F ] x) holds
@@ -652,7 +652,7 @@ distributivity (_ , _ , _ , (_ , _ , _ , d)) x U = d (x , U)
 is-directed : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓥 ⊔ 𝓦)
 is-directed F (I , β) =
    ∥ I ∥Ω
- ∧ (Ɐ i ∶ I , Ɐ j ∶ I , (Ǝ k ∶ I , ((β i ≤ β k) ∧ (β j ≤ β k)) holds))
+ ∧ (Ɐ i ꞉ I , Ɐ j ꞉ I , (Ǝ k ꞉ I , ((β i ≤ β k) ∧ (β j ≤ β k)) holds))
   where open PosetNotation (poset-of F)
 
 directedness-entails-inhabitation : (F : Frame 𝓤 𝓥 𝓦) (S : Fam 𝓦 ⟨ F ⟩)
@@ -664,7 +664,7 @@ is-scott-continuous : (F : Frame 𝓤  𝓥  𝓦)
                     → (f : ⟨ F ⟩ → ⟨ G ⟩)
                     → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺ ⊔ 𝓤′ ⊔ 𝓥′)
 is-scott-continuous {𝓦 = 𝓦} F G f =
- Ɐ S ∶ Fam 𝓦 ⟨ F ⟩ , is-directed F S ⇒ f (⋁[ F ] S) is-lub-of ⁅ f s ∣ s ε S ⁆
+ Ɐ S ꞉ Fam 𝓦 ⟨ F ⟩ , is-directed F S ⇒ f (⋁[ F ] S) is-lub-of ⁅ f s ∣ s ε S ⁆
   where
    open Joins (λ x y → x ≤[ poset-of G ] y) using (_is-lub-of_)
 
@@ -682,7 +682,7 @@ id-is-scott-continuous F S δ = ⋁[ F ]-upper S , ⋁[ F ]-least S
 preserves-binary-meets : (F : Frame 𝓤 𝓥 𝓦) (G : Frame 𝓤′ 𝓥′ 𝓦)
                 → (⟨ F ⟩ → ⟨ G ⟩) → Ω (𝓤 ⊔ 𝓤′)
 preserves-binary-meets F G h =
- Ɐ x ∶ ⟨ F ⟩ , Ɐ y ∶ ⟨ F ⟩ , (h (x ∧[ F ] y) ＝[ ψ ]＝ h x ∧[ G ] h y)
+ Ɐ x ꞉ ⟨ F ⟩ , Ɐ y ꞉ ⟨ F ⟩ , (h (x ∧[ F ] y) ＝[ ψ ]＝ h x ∧[ G ] h y)
   where
    ψ : is-set ⟨ G ⟩
    ψ = carrier-of-[ poset-of G ]-is-set
@@ -690,7 +690,7 @@ preserves-binary-meets F G h =
 preserves-binary-joins : (F : Frame 𝓤 𝓥 𝓦) (G : Frame 𝓤′ 𝓥′ 𝓦)
                        → (⟨ F ⟩ → ⟨ G ⟩) → Ω (𝓤 ⊔ 𝓤′)
 preserves-binary-joins F G h =
- Ɐ x ∶ ⟨ F ⟩ , Ɐ y ∶ ⟨ F ⟩ , (h (x ∨[ F ] y) ＝[ ψ ]＝ h x ∨[ G ] h y)
+ Ɐ x ꞉ ⟨ F ⟩ , Ɐ y ꞉ ⟨ F ⟩ , (h (x ∨[ F ] y) ＝[ ψ ]＝ h x ∨[ G ] h y)
   where
    ψ : is-set ⟨ G ⟩
    ψ = carrier-of-[ poset-of G ]-is-set
@@ -710,7 +710,7 @@ is-a-frame-homomorphism {𝓦 = 𝓦} F G f = α ∧ β ∧ γ
 
   α = f 𝟏[ F ] ＝[ iss ]＝ 𝟏[ G ]
   β = preserves-binary-meets F G f
-  γ = Ɐ U ∶ Fam 𝓦 ⟨ F ⟩ , f (⋁[ F ] U) is-lub-of ⁅ f x ∣ x ε U ⁆
+  γ = Ɐ U ꞉ Fam 𝓦 ⟨ F ⟩ , f (⋁[ F ] U) is-lub-of ⁅ f x ∣ x ε U ⁆
 
 _─f→_ : Frame 𝓤 𝓥 𝓦 → Frame 𝓤′ 𝓥′ 𝓦 → 𝓤 ⊔ 𝓦 ⁺ ⊔ 𝓤′ ⊔ 𝓥′ ̇
 F ─f→ G =
@@ -719,7 +719,7 @@ F ─f→ G =
 is-monotonic : (P : Poset 𝓤 𝓥) (Q : Poset 𝓤′ 𝓥′)
              → (pr₁ P → pr₁ Q) → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓥′)
 is-monotonic P Q f =
- Ɐ (x , y) ∶ (pr₁ P × pr₁ P) , ((x ≤[ P ] y) ⇒ f x ≤[ Q ] f y)
+ Ɐ (x , y) ꞉ (pr₁ P × pr₁ P) , ((x ≤[ P ] y) ⇒ f x ≤[ Q ] f y)
 
 _─m→_ : (P : Poset 𝓤 𝓥) (Q : Poset 𝓤′ 𝓥′) → 𝓤 ⊔ 𝓥 ⊔ 𝓤′ ⊔ 𝓥′ ̇
 P ─m→ Q = Σ f ꞉ (∣ P ∣ₚ → ∣ Q ∣ₚ) , (is-monotonic P Q f) holds
@@ -737,8 +737,8 @@ monotone-image-on-directed-family-is-directed F G S (ι , υ) f μ = ι , γ
 
   I = index S
 
-  γ : (Ɐ i ∶ I , Ɐ j ∶ I ,
-        (Ǝ k ∶ I ,
+  γ : (Ɐ i ꞉ I , Ɐ j ꞉ I ,
+        (Ǝ k ꞉ I ,
           ((f (S [ i ]) ≤[ poset-of G ] f (S [ k ]))
          ∧ (f (S [ j ]) ≤[ poset-of G ] f (S [ k ]))) holds)) holds
   γ i j = ∥∥-rec ∥∥-is-prop β (υ i j)
@@ -754,7 +754,7 @@ monotone-image-on-directed-family-is-directed F G S (ι , υ) f μ = ι , γ
 is-join-preserving : (F : Frame 𝓤 𝓥 𝓦) (G : Frame 𝓤' 𝓥' 𝓦)
                    → (⟨ F ⟩ → ⟨ G ⟩) → Ω (𝓤 ⊔ 𝓤' ⊔ 𝓦 ⁺)
 is-join-preserving {𝓦 = 𝓦} F G f =
- Ɐ S ∶ Fam 𝓦 ⟨ F ⟩ , f (⋁[ F ] S) ＝[ iss ]＝ ⋁[ G ] ⁅ f s ∣ s ε S ⁆
+ Ɐ S ꞉ Fam 𝓦 ⟨ F ⟩ , f (⋁[ F ] S) ＝[ iss ]＝ ⋁[ G ] ⁅ f s ∣ s ε S ⁆
   where
    iss = carrier-of-[ poset-of G ]-is-set
 
@@ -816,7 +816,7 @@ connecting-lemma₁ F {x} {y} p = ∧[ F ]-unique (β , γ)
   β : (x is-a-lower-bound-of (x , y)) holds
   β = ≤-is-reflexive (poset-of F) x , p
 
-  γ : (Ɐ (z , _) ∶ lower-bound (x , y) , z ≤[ poset-of F ] x) holds
+  γ : (Ɐ (z , _) ꞉ lower-bound (x , y) , z ≤[ poset-of F ] x) holds
   γ (z , q , _) = q
 
 connecting-lemma₂ : (F : Frame 𝓤 𝓥 𝓦) {x y : ⟨ F ⟩}
@@ -1028,7 +1028,7 @@ scott-continuous-join-eq F G f ζ S δ =
                   (g (⋁[ G ] ⁅ f s ∣ s ε S ⁆) , pr₁ (ζg ⁅ f s ∣ s ε S ⁆ †))
            iii = ap g (scott-continuous-join-eq F G f ζf S δ ⁻¹)
 
-   γ : (Ɐ (u , _) ∶ upper-bound ⁅ g (f s) ∣ s ε S ⁆ ,
+   γ : (Ɐ (u , _) ꞉ upper-bound ⁅ g (f s) ∣ s ε S ⁆ ,
          (g (f (⋁[ F ] S)) ≤[ poset-of H ] u)) holds
    γ (u , p) = g (f (⋁[ F ] S))              ≤⟨ i   ⟩
                g (⋁[ G ] ⁅ f s ∣ s ε S ⁆)    ＝⟨ ii  ⟩ₚ
@@ -1057,7 +1057,7 @@ scott-continuous-join-eq F G f ζ S δ =
   β : ((x ∧[ F ] y) is-a-lower-bound-of (y , x)) holds
   β = (∧[ F ]-lower₂ x y) , (∧[ F ]-lower₁ x y)
 
-  γ : (Ɐ (l , _) ∶ lower-bound (y , x) , l ≤ (x ∧[ F ] y)) holds
+  γ : (Ɐ (l , _) ꞉ lower-bound (y , x) , l ≤ (x ∧[ F ] y)) holds
   γ (l , p , q) = ∧[ F ]-greatest x y l q p
 
 ∧[_]-is-associative : (F : Frame 𝓤 𝓥 𝓦) (x y z : ⟨ F ⟩)
@@ -1313,7 +1313,7 @@ binary-distributivity-op F x y z =
       ⁅ ⋁[ F ] ⁅ f i j ∣ j ∶ J i ⁆ ∣ i ∶ I ⁆) holds
   β i = ⋁[ F ]-least _ (_ , λ jᵢ → ⋁[ F ]-upper _ (i , jᵢ))
 
-  γ : (Ɐ (u , _) ∶ upper-bound ⁅ ⋁[ F ] ⁅ f i j ∣ j ∶ J i ⁆ ∣ i ∶ I ⁆ ,
+  γ : (Ɐ (u , _) ꞉ upper-bound ⁅ ⋁[ F ] ⁅ f i j ∣ j ∶ J i ⁆ ∣ i ∶ I ⁆ ,
        (⋁[ F ] (Σ J , uncurry f)) ≤[ poset-of F ] _ ) holds
   γ (u , p) = ⋁[ F ]-least (Σ J , uncurry f) (_ , δ)
    where
@@ -1497,9 +1497,9 @@ directify-is-directed F S@(I , α) = ∣ [] ∣ , υ
   open PropositionalTruncation pt
   open PosetNotation (poset-of F)
 
-  υ : (Ɐ is ∶ List I
-     , Ɐ js ∶ List I
-     , (Ǝ ks ∶ List I
+  υ : (Ɐ is ꞉ List I
+     , Ɐ js ꞉ List I
+     , (Ǝ ks ꞉ List I
       , (((directify F S [ is ] ≤ directify F S [ ks ])
         ∧ (directify F S [ js ] ≤ directify F S [ ks ])) holds))) holds
   υ is js = ∣ (is ++ js) , β , γ ∣
@@ -1524,13 +1524,13 @@ directify-is-directed F S@(I , α) = ∣ [] ∣ , υ
 
 closed-under-binary-joins : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦)
 closed-under-binary-joins {𝓦 = 𝓦} F S =
- Ɐ i ∶ index S , Ɐ j ∶ index S ,
-  Ǝ k ∶ index S , ((S [ k ]) is-lub-of (binary-family 𝓦 (S [ i ]) (S [ j ]))) holds
+ Ɐ i ꞉ index S , Ɐ j ꞉ index S ,
+  Ǝ k ꞉ index S , ((S [ k ]) is-lub-of (binary-family 𝓦 (S [ i ]) (S [ j ]))) holds
    where
     open Joins (λ x y → x ≤[ poset-of F ] y)
 
 contains-bottom : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦)
-contains-bottom F U =  Ǝ i ∶ index U , is-bottom F (U [ i ]) holds
+contains-bottom F U =  Ǝ i ꞉ index U , is-bottom F (U [ i ]) holds
 
 closed-under-finite-joins : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦)
 closed-under-finite-joins F S =
@@ -1551,11 +1551,11 @@ closed-under-fin-joins-implies-directed F S (i₀ , ð) =
    γ (i , _) = ∣ i ∣ , δ
     where
      δ : (m n : index S)
-       → (Ǝ o ∶ index S , ((S [ m ] ≤ S [ o ]) ∧ (S [ n ] ≤ S [ o ])) holds) holds
+       → (Ǝ o ꞉ index S , ((S [ m ] ≤ S [ o ]) ∧ (S [ n ] ≤ S [ o ])) holds) holds
      δ m n = ∥∥-rec ∃-is-prop ϵ (ð m n)
       where
        ϵ : Σ o ꞉ index S , ((S [ o ]) is-lub-of (binary-family 𝓦 (S [ m ]) (S [ n ]))) holds
-         → (Ǝ o ∶ index S , ((S [ m ] ≤ S [ o ]) ∧ (S [ n ] ≤ S [ o ])) holds) holds
+         → (Ǝ o ꞉ index S , ((S [ m ] ≤ S [ o ]) ∧ (S [ n ] ≤ S [ o ])) holds) holds
        ϵ (o , ψ , _) = ∣ o , ψ (inl ⋆) , ψ (inr ⋆) ∣
 
 directify-is-closed-under-fin-joins : (F : Frame 𝓤 𝓥 𝓦) (S : Fam 𝓦 ⟨ F ⟩)
@@ -1867,7 +1867,7 @@ cont-comp {𝓦 = 𝓦} X Y Z ℊ@(g , α₁ , α₂ , α₃) 𝒻@(f , β₁ , 
 
 cofinal-in : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Fam 𝓦 ⟨ F ⟩ → Ω (𝓥 ⊔ 𝓦)
 cofinal-in F R S =
- Ɐ i ∶ index R , Ǝ j ∶ index S , ((R [ i ]) ≤[ poset-of F ] (S [ j ])) holds
+ Ɐ i ꞉ index R , Ǝ j ꞉ index S , ((R [ i ]) ≤[ poset-of F ] (S [ j ])) holds
 
 cofinal-implies-join-covered : (F : Frame 𝓤 𝓥 𝓦) (R S : Fam 𝓦 ⟨ F ⟩)
                              → cofinal-in F R S holds
@@ -1916,24 +1916,24 @@ bicofinal-with-directed-family-implies-directed F R S φ ψ (δ₁ , δ₂) = �
       †₂ = ∣_∣ ∘ pr₁
 
   ‡ : (j₁ j₂ : index S)
-    → (Ǝ j ∶ index S , (S [ j₁ ] ≤ S [ j ]) holds
+    → (Ǝ j ꞉ index S , (S [ j₁ ] ≤ S [ j ]) holds
                      × (S [ j₂ ] ≤ S [ j ]) holds) holds
   ‡ j₁ j₂ = ∥∥-rec₂ ∃-is-prop ‡₁ (ψ j₁) (ψ j₂)
    where
     ‡₁ : Σ i₁ ꞉ index R , (S [ j₁ ] ≤ R [ i₁ ]) holds
        → Σ i₂ ꞉ index R , (S [ j₂ ] ≤ R [ i₂ ]) holds
-       → (Ǝ j ∶ index S , (S [ j₁ ] ≤ S [ j ]) holds
+       → (Ǝ j ꞉ index S , (S [ j₁ ] ≤ S [ j ]) holds
                         × (S [ j₂ ] ≤ S [ j ]) holds) holds
     ‡₁ (i₁ , p₁) (i₂ , p₂) = ∥∥-rec ∃-is-prop ‡₂ (δ₂ i₁ i₂)
      where
       ‡₂ : Σ i ꞉ index R , (R [ i₁ ] ≤ R [ i ]) holds
                          × (R [ i₂ ] ≤ R [ i ]) holds
-         → (Ǝ j ∶ index S , (S [ j₁ ] ≤ S [ j ]) holds
+         → (Ǝ j ꞉ index S , (S [ j₁ ] ≤ S [ j ]) holds
                           × (S [ j₂ ] ≤ S [ j ]) holds) holds
       ‡₂ (i , q₁ , q₂) = ∥∥-rec ∃-is-prop ‡₃ (φ i)
        where
         ‡₃ : Σ j ꞉ (index S) , (R [ i ] ≤ S [ j ]) holds
-           → (Ǝ j ∶ index S , (S [ j₁ ] ≤ S [ j ]) holds
+           → (Ǝ j ꞉ index S , (S [ j₁ ] ≤ S [ j ]) holds
                             × (S [ j₂ ] ≤ S [ j ]) holds) holds
         ‡₃ (j , p) = ∣ j , r₁ , r₂ ∣
          where

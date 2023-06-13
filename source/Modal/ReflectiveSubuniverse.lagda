@@ -4,7 +4,7 @@ Much of this file is based on the proofs from Egbert Rijke's PhD thesis.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan
 open import UF.Subsingletons

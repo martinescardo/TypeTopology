@@ -4,7 +4,7 @@ Modified from SIP-Examples. Only the examples we need are included for the momen
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module UF.PreSIP-Examples where
 

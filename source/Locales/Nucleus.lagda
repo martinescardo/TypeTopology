@@ -4,7 +4,7 @@ Based on `ayberkt/formal-topology-in-UF`.
 
 \begin{code}[hide]
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan
 open import UF.Base
@@ -30,10 +30,10 @@ open AllCombinators pt fe
 \begin{code}
 
 is-inflationary : (L : Frame 𝓤 𝓥 𝓦) → (⟨ L ⟩ → ⟨ L ⟩) → Ω (𝓤 ⊔ 𝓥)
-is-inflationary L j = Ɐ x ∶ ⟨ L ⟩ , x ≤[ poset-of L ] j x
+is-inflationary L j = Ɐ x ꞉ ⟨ L ⟩ , x ≤[ poset-of L ] j x
 
 is-idempotent : (L : Frame 𝓤 𝓥 𝓦) → (⟨ L ⟩ → ⟨ L ⟩) → Ω (𝓤 ⊔ 𝓥)
-is-idempotent L j = Ɐ x ∶ ⟨ L ⟩ , j (j x) ≤[ poset-of L ] j x
+is-idempotent L j = Ɐ x ꞉ ⟨ L ⟩ , j (j x) ≤[ poset-of L ] j x
 
 is-nucleus : (L : Frame 𝓤 𝓥 𝓦) → (⟨ L ⟩ → ⟨ L ⟩) → Ω (𝓤 ⊔ 𝓥)
 is-nucleus {𝓤 = 𝓤} {𝓥} {𝓦} F j = 𝓃₁ ∧  𝓃₂ ∧ 𝓃₃
@@ -160,13 +160,13 @@ nuclei-are-idempotent L 𝒿@(j , _) x = ≤-is-antisymmetric (poset-of L) β γ
 
 prenucleus-property₁ : (L : Frame 𝓤 𝓥 𝓦)
                      → ((j , _) (k , _) : Prenucleus L)
-                     → (Ɐ x ∶ ⟨ L ⟩ , j x ≤[ poset-of L ] (j ∘ k) x) holds
+                     → (Ɐ x ꞉ ⟨ L ⟩ , j x ≤[ poset-of L ] (j ∘ k) x) holds
 prenucleus-property₁ L (j , _ , μj) (k , ζ , _) x =
  meet-preserving-implies-monotone L L j μj (x , k x) (ζ x)
 
 prenucleus-property₂ : (L : Frame 𝓤 𝓥 𝓦)
                      → ((j , _) (k , _) : Prenucleus L)
-                     → (Ɐ x ∶ ⟨ L ⟩ , k x ≤[ poset-of L ] (j ∘ k) x) holds
+                     → (Ɐ x ꞉ ⟨ L ⟩ , k x ≤[ poset-of L ] (j ∘ k) x) holds
 prenucleus-property₂ L (j , ζj , _) (k , _) x = ζj (k x)
 
 \end{code}

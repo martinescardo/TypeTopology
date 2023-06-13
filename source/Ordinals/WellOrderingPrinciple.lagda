@@ -11,7 +11,7 @@ of ordinals agree.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline --lossy-unification #-}
+{-# OPTIONS --safe --without-K --exact-split --lossy-unification #-}
 
 open import MLTT.Spartan
 open import NotionsOfDecidability.Decidable
@@ -130,7 +130,7 @@ as follows:
 \begin{code}
 
    ϕ : (α : Ordinal 𝓤) → (⟨ α ⟩ → X) → X
-   ϕ α s = ε ⁅ x ꞉ X ∣ Ɐ a ∶ ⟨ α ⟩ , s a ≢ x ⁆
+   ϕ α s = ε ⁅ x ꞉ X ∣ Ɐ a ꞉ ⟨ α ⟩ , s a ≢ x ⁆
 
    f : Ordinal 𝓤 → X
    f = transfinite-recursion-on-OO X ϕ
@@ -146,7 +146,7 @@ with this we can specify the recursive behaviour of f as follows:
 \begin{code}
 
    A : Ordinal 𝓤 → 𝓟 X
-   A α = ⁅ x ꞉ X ∣ Ɐ a ∶ ⟨ α ⟩ , f (α ↓ a) ≢ x ⁆
+   A α = ⁅ x ꞉ X ∣ Ɐ a ꞉ ⟨ α ⟩ , f (α ↓ a) ≢ x ⁆
 
    f-behaviour : (α : Ordinal 𝓤) → f α ＝ ε (A α)
    f-behaviour = transfinite-recursion-on-OO-behaviour X ϕ

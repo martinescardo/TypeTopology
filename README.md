@@ -72,7 +72,7 @@ contributed to constructions, theorems and proofs via the hands of Ayberk Tosun.
 
    https://doi.org/10.2178/jsl.7803040
 
-1. Martín H. Escardó. *Continuity of Godel's system T functionals via
+1. Martín H. Escardó. *Continuity of Gödel's system T functionals via
    effectful forcing.* [Electronic Notes in Theoretical Computer
    Science](https://www.sciencedirect.com/journal/electronic-notes-in-theoretical-computer-science),
    Volume 298, 2013, Pages 119-141. [MFPS XXIX](https://www.cs.cornell.edu/Conferences/MFPS29/)
@@ -100,10 +100,11 @@ contributed to constructions, theorems and proofs via the hands of Ayberk Tosun.
    Brouwerian continuity principle with the Curry-Howard
    interpretation.* [13th International Conference on Typed Lambda
    Calculi and Applications (TLCA 2015)](https://drops.dagstuhl.de/opus/portals/lipics/index.php?semnr=15006).
+
    https://doi.org/10.4230/LIPIcs.TLCA.2015.153
 
 1. Martín H. Escardó and T. Streicher. *The intrinsic topology of
-   Martin-L\"of universes.* [Annals of Pure and Applied
+   Martin-Löf universes.* [Annals of Pure and Applied
    Logic](https://www.sciencedirect.com/journal/annals-of-pure-and-applied-logic),
    Volume 167, Issue 9, 2016, Pages 794-805.
 
@@ -153,6 +154,13 @@ contributed to constructions, theorems and proofs via the hands of Ayberk Tosun.
 
    https://doi.org/10.4230/LIPIcs.CSL.2021.28
 
+1. Dan R. Ghica and Todd Waugh Ambridge. *Global Optimisation with
+   Constructive Reals.*
+   [Logic in Computer Science (LICS)](https://dl.acm.org/conference/lics),
+   Proceedings of [LICS 2021][LICS21], June 2021.
+
+   https://doi.org/10.1109/LICS52264.2021.9470549
+
 1. Tom de Jong and Martín H. Escardó. *Predicative Aspects of Order
    Theory in Univalent Foundations.* [Leibniz International Proceedings
    in Informatics
@@ -184,5 +192,6 @@ contributed to constructions, theorems and proofs via the hands of Ayberk Tosun.
 
 [CSL21]:  https://csl2021.fmf.uni-lj.si/
 [FSCD21]: https://fscd2021.dc.uba.ar/
+[LICS21]: https://easyconferences.eu/lics2021/
 [LICS23]: https://lics.siglog.org/lics23/
 [MFPS38]: https://www.cs.cornell.edu/mfps-2022/
