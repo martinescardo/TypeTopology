@@ -1,84 +1,173 @@
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe #-}
 
 open import MLTT.Spartan
-open import UF.FunExt
-open import CoNaturals.GenericConvergentSequence
 open import Notation.Order
+open import Naturals.Order
+open import TypeTopology.DiscreteAndSeparated
+open import UF.FunExt
 open import UF.Subsingletons
-open import UF.PropTrunc
 open import UF.Subsingletons-FunExt
 open import UF.Quotient
-open import UF.Base
-open import UF.Retracts
 open import UF.Miscelanea
 open import MLTT.Two-Properties
-open import UF.Equiv
 
-module Thesis.Chapter3.ClosenessSpaces
- (fe : FunExt)
- (pe : PropExt)
- (pt : propositional-truncations-exist)
- (sq : set-quotients-exist)
- where
+module Thesis.Chapter3.ClosenessSpaces (fe : FunExt) where
 
-open import CoNaturals.Arithmetic fe hiding (min)
-open import TWA.Closeness fe
-open PropositionalTruncation pt
+open import Thesis.Chapter2.FiniteDiscrete
 
-_≡_ = Id
-_↑ = ℕ-to-ℕ∞
+-- Definition 3.2.13-16, 21
+open import CoNaturals.GenericConvergentSequence
+  renaming (ℕ-to-ℕ∞ to _↑
+         ; Zero-smallest to zero-minimal
+         ; ∞-largest to ∞-maximal)
 
-is-ultra' is-closeness' : {X : 𝓤 ̇ } → (X → X → ℕ∞) → 𝓤 ̇
-is-ultra' {𝓤} {X} c
- = (x y z : X) → (n : ℕ) → min (c x y) (c y z) ≼ c x z
+-- Lemma 3.2.17 [ TODO: Not used anywhere? ]
+≤-≼-relationship : (n m : ℕ) → n ≤ m ⇔ (n ↑) ≼ (m ↑)
+pr₁ (≤-≼-relationship 0 m) n≤m = zero-minimal (m ↑)
+pr₁ (≤-≼-relationship (succ n) (succ m)) n≤m
+ = Succ-monotone (n ↑) (m ↑) (pr₁ (≤-≼-relationship n m) n≤m)
+pr₂ (≤-≼-relationship 0 m) n≼m = ⋆
+pr₂ (≤-≼-relationship (succ n) 0) n≼m
+ = Succ-not-≼-Zero (n ↑) n≼m
+pr₂ (≤-≼-relationship (succ n) (succ m)) n≼m
+ = pr₂ (≤-≼-relationship n m) (Succ-loc (n ↑) (m ↑) n≼m)
+ 
+-- Lemma 3.2.18 [ TODO: Remove from paper ]
 
-is-closeness' c
+-- Lemma 3.2.19
+is-decreasing' : (v : ℕ∞) (n : ℕ) → (i : ℕ) → i ≤ n
+               → pr₁ v n ＝ ₁ → pr₁ v i ＝ ₁
+is-decreasing' v
+ = regress (λ z → pr₁ v z ＝ ₁) (λ n → ≤₂-criterion-converse (pr₂ v n))
+
+positive-below-n : (i n : ℕ) → pr₁ (Succ (n ↑)) i ＝ ₁ → i ≤ n 
+positive-below-n zero n snᵢ=1 = ⋆
+positive-below-n (succ i) (succ n) snᵢ=1 = positive-below-n i n snᵢ=1
+
+≼-left-decidable : (n : ℕ) (v : ℕ∞) → is-decidable ((n ↑) ≼ v)
+≼-left-decidable zero v = inl (zero-minimal v)
+≼-left-decidable (succ n) v
+ = Cases (𝟚-is-discrete (pr₁ v n) ₁)
+     (λ  vₙ=1 → inl (λ i snᵢ=1 → is-decreasing' v n i
+                                   (positive-below-n i n snᵢ=1) vₙ=1))
+     (λ ¬vₙ=1 → inr (λ sn≼v → ¬vₙ=1 (sn≼v n (ℕ-to-ℕ∞-diagonal₁ n))))
+
+-- Definition 3.2.22
+open import TWA.Closeness fe hiding (is-ultra; is-closeness)
+
+is-ultra is-closeness : {X : 𝓤 ̇ } → (X → X → ℕ∞) → 𝓤 ̇
+is-ultra {𝓤} {X} c
+ = (x y z : X) → min (c x y) (c y z) ≼ c x z
+
+is-closeness c
  = indistinguishable-are-equal c
  × self-indistinguishable c
  × is-symmetric c
- × is-ultra' c
+ × is-ultra c
 
 is-closeness-space : (X : 𝓤 ̇ ) → 𝓤 ̇
-is-closeness-space X = Σ c ꞉ (X → X → ℕ∞) , is-closeness' c
+is-closeness-space X = Σ c ꞉ (X → X → ℕ∞) , is-closeness c
 
-ClosenessSpace : 𝓤 ⁺  ̇ 
-ClosenessSpace {𝓤}
- = Σ X ꞉ 𝓤 ̇ , Σ c ꞉ (X → X → ℕ∞) , is-closeness' c
+ClosenessSpace : (𝓤 : Universe) → 𝓤 ⁺  ̇ 
+ClosenessSpace 𝓤
+ = Σ X ꞉ 𝓤 ̇ , Σ c ꞉ (X → X → ℕ∞) , is-closeness c
 
-cloeq' : ((X , _) : ClosenessSpace {𝓤}) → ℕ → X → X → 𝓤₀  ̇   
-cloeq' (X , c , _) n x y = (n ↑) ≼ c x y 
+⟨_⟩ : ClosenessSpace 𝓤 → 𝓤 ̇
+⟨ X , _ ⟩ = X
 
-clotoeq : (C : ClosenessSpace {𝓤})
-        → (n : ℕ) → is-equiv-relation (cloeq' C n)
-pr₁ (clotoeq (X , c , i , j , k , l) n) x y
+-- Definition 3.2.23 [ Doesn't say in paper that this is an equiv rel ? TODO ]
+C-holds : (X : ClosenessSpace 𝓤) → ℕ → ⟨ X ⟩ → ⟨ X ⟩ → 𝓤₀ ̇   
+C-holds (X , c , _) n x y = (n ↑) ≼ c x y
+
+C-prop : (X : ClosenessSpace 𝓤) (n : ℕ) → is-prop-valued (C-holds X n)
+C-prop X n _ _
  = Π-is-prop (fe _ _) (λ _ → Π-is-prop (fe _ _) (λ _ → 𝟚-is-set))
-pr₁ (pr₂ (clotoeq (X , c , i , j , k , l) n)) x m η
- = transport (λ - → ℕ∞-to-ℕ→𝟚 - m ≡ ₁) (j x ⁻¹) refl
-pr₁ (pr₂ (pr₂ (clotoeq (X , c , i , j , k , l) n))) x y η m ρ
- = transport (λ - → ℕ∞-to-ℕ→𝟚 - m ≡ ₁) (k x y) (η m ρ)
-pr₂ (pr₂ (pr₂ (clotoeq (X , c , i , j , k , l) n))) x y z η ρ m π
- = l x y z n m ((Lemma[a＝₁→b＝₁→min𝟚ab＝₁] (η m π) (ρ m π)))
 
-cloeq : ((X , ci) : ClosenessSpace {𝓤}) → (n : ℕ) → EqRel X
-cloeq C n = cloeq' C n , clotoeq C n
+C-refl : (X : ClosenessSpace 𝓤) (n : ℕ) → reflexive (C-holds X n)
+C-refl (X , c , i , e , s , u) n x
+ = transport ((n ↑) ≼_) (e x ⁻¹) (∞-maximal (n ↑))
 
-searchable : (X : 𝓤 ̇ ) → 𝓤 ⊔ 𝓦 ⁺   ̇
-searchable {𝓤} {𝓦} X
- = (p : X → Ω 𝓦)
- → Σ x₀ ꞉ X , ((Σ x ꞉ X , (p x) holds) → (p x₀) holds)
+C-sym : (X : ClosenessSpace 𝓤) (n : ℕ) → symmetric (C-holds X n) 
+C-sym (X , c , i , e , s , u) n x y Cxy
+ = transport ((n ↑) ≼_) (s x y) Cxy
 
-u-continuous-pred
- : ((X , _) : ClosenessSpace {𝓤}) → (p : X → Ω 𝓦) → 𝓤 ⊔ 𝓦 ̇
-u-continuous-pred (X , c , i) p
- = Σ δ ꞉ ℕ
- , ((x₁ x₂ : X) → (δ ↑) ≼ c x₁ x₂ → (p x₁) holds ⇔ (p x₂) holds)
+C-trans : (X : ClosenessSpace 𝓤) (n : ℕ) → transitive (C-holds X n)
+C-trans (X , c , i , e , s , u) n x y z Cxy Cyz m π
+ = u x y z m (Lemma[a＝₁→b＝₁→min𝟚ab＝₁] (Cxy m π) (Cyz m π))
 
-c-searchable : ((X , cx) : ClosenessSpace {𝓤}) → 𝓤 ⊔ 𝓦 ⁺ ̇
-c-searchable {𝓤} {𝓦} (X , ci)
- = (p : X → Ω 𝓦) → u-continuous-pred (X , ci) p
- → Σ x₀ ꞉ X , ((Σ x ꞉ X , (p x) holds) → (p x₀) holds)
+C-decidable : (X : ClosenessSpace 𝓤) (n : ℕ)
+            → (x y : ⟨ X ⟩ ) → is-decidable (C-holds X n x y)
+C-decidable (X , c , _) n x y = ≼-left-decidable n (c x y)
+
+C-is-eq : (X : ClosenessSpace 𝓤) (n : ℕ)
+        → is-equiv-relation (C-holds X n)
+C-is-eq X n = C-prop X n , C-refl X n , C-sym X n , C-trans X n
+
+C : (X : ClosenessSpace 𝓤) → ℕ → ⟨ X ⟩ → ⟨ X ⟩ → Ω 𝓤₀   
+C X n x y = C-holds X n x y , C-prop X n x y
+
+C⁼ : (X : ClosenessSpace 𝓤) (n : ℕ) → EqRel ⟨ X ⟩
+C⁼ X n = C-holds X n , C-is-eq X n
+
+-- Definition 3.2.24 [ not needed ? ]
+
+-- Definition 3.2.25
+f-continuous : (X : ClosenessSpace 𝓤) (Y : ClosenessSpace 𝓥)
+             → (f : ⟨ X ⟩ → ⟨ Y ⟩) → 𝓤 ̇  
+f-continuous X Y f
+ = (ϵ : ℕ) → (x₁ : ⟨ X ⟩) → Σ δ ꞉ ℕ , ((x₂ : ⟨ X ⟩)
+ → C-holds X δ x₁ x₂ → C-holds Y ϵ (f x₁) (f x₂))
+
+-- Definition 3.2.26
+f-ucontinuous : (X : ClosenessSpace 𝓤) (Y : ClosenessSpace 𝓥)
+              → (f : ⟨ X ⟩ → ⟨ Y ⟩) → 𝓤 ̇  
+f-ucontinuous X Y f
+ = (ϵ : ℕ) → Σ δ ꞉ ℕ , ((x₁ x₂ : ⟨ X ⟩)
+ → C-holds X δ x₁ x₂ → C-holds Y ϵ (f x₁) (f x₂))
+
+-- Lemma 3.2.27
+ucontinuous-continuous : (X : ClosenessSpace 𝓤)
+                       → (Y : ClosenessSpace 𝓥)
+                       → (f : ⟨ X ⟩ → ⟨ Y ⟩)
+                       → f-ucontinuous X Y f → f-continuous X Y f
+ucontinuous-continuous X Y f ϕ ϵ x₁ = pr₁ (ϕ ϵ)  , pr₂ (ϕ ϵ) x₁
+
+-- Definition 3.2.28
+p-ucontinuous : (X : ClosenessSpace 𝓤)
+              → (p : ⟨ X ⟩ → Ω 𝓦) → 𝓤 ⊔ 𝓦  ̇  
+p-ucontinuous X p
+ = Σ δ ꞉ ℕ , ((x₁ x₂ : ⟨ X ⟩)
+ → C-holds X δ x₁ x₂ → (p x₁ holds → p x₂ holds))
+           
+-- Examples 3.2.3 [ TODO Finish file ]
+-- open import Thesis.Chapter3.ClosenessSpaces-Examples
+
+-- Definition 3.3.2 [ TODO in paper needs to be a closeness space, not a general type ]
+{- First, some things TODO put in Section 2 -}
+_is_-sect : {X : 𝓤 ̇ } → (Y : 𝓥 ̇ ) → EqRel {𝓤} {𝓤'} X
+          → 𝓤 ⊔ 𝓤' ⊔ 𝓥  ̇
+X' is (_≣_ , _) -sect
+ = Σ g ꞉ (X' → _) , ((x : _) → Σ x' ꞉ X' , (x ≣ g x'))
+
+_-sect : {X : 𝓤 ̇ } → EqRel {𝓤} {𝓤'} X
+       → (𝓥 : Universe) → 𝓤 ⊔ 𝓤' ⊔ (𝓥 ⁺)  ̇
+(≣ -sect) 𝓥 = Σ X' ꞉ 𝓥 ̇ , X' is ≣ -sect
+
+_is_cover-of_ : (Y : 𝓥 ̇ ) → ℕ → ClosenessSpace 𝓤 → 𝓤 ⊔ 𝓥  ̇
+X' is ϵ cover-of X = X' is (C⁼ X ϵ) -sect
+
+_cover-of_ : ℕ → ClosenessSpace 𝓤 → (𝓥 : Universe) → 𝓤 ⊔ (𝓥 ⁺) ̇
+(ϵ cover-of X) 𝓥 = Σ X' ꞉ 𝓥 ̇ , X' is ϵ cover-of X
+
+-- Definition 3.3.3
+totally-bounded : ClosenessSpace 𝓤 → (𝓥 : Universe) → 𝓤 ⊔ (𝓥 ⁺) ̇ 
+totally-bounded X 𝓥
+ = (ϵ : ℕ) → Σ (X' , _) ꞉ (ϵ cover-of X) 𝓥 , finite-discrete X'
+
+\end{code}
+[ TODO: Put the below in a module or remove it from paper entirely ]
 
 open set-quotients-exist sq
 
@@ -93,7 +182,7 @@ quotient-uc-predicate : ((X , ci) : ClosenessSpace {𝓤})
                       → ((δ , _) : u-continuous-pred (X , ci) p)
                       → Σ p' ꞉ (X / cloeq (X , ci) δ → Ω 𝓦)
                       , ((x : X)
-                      → (p' (η/ (cloeq (X , ci) δ) x)) ≡ (p x))
+                      → (p' (η/ (cloeq (X , ci) δ) x)) ＝ (p x))
 quotient-uc-predicate (X , c , i) p (δ , ϕ)
  = pr₁ (/-universality (cloeq (X , c , i) δ) (Ω-is-set (fe _ _) (pe _))
      p (λ η → Ω-extensionality (fe _ _) (pe _)
@@ -136,168 +225,3 @@ semi-searchable⇒c-searchable {𝓤} {𝓦} (X , ci) r S p (δ , ϕ)
    γ₀ : x₀/ ＝ η/ (cloeq (X , ci) δ) x₀
    γ₀ = pr₂ (r δ) x₀/ ⁻¹
    
-Σ-Closeness : {X : 𝓤 ̇ } → is-closeness-space X
-            → (P : X → 𝓥 ̇ ) → ((x : X) → is-prop (P x))
-            → is-closeness-space (Σ P)
-Σ-Closeness (c , i₀ , i₁ , i₂ , i₃) P i = c' , i₀' , i₁' , i₂' , i₃'
- where
-  c'  : Σ P → Σ P → ℕ∞
-  c'  (x , a) (y , b) = c x y
-  i₀' : indistinguishable-are-equal c'
-  i₀' (x , a) (y , b) q = to-Σ-＝ ((i₀ x y q) , i _ _ b)
-  i₁' : (x : Σ P) → c' x x ＝ ∞
-  i₁' (x , a) = i₁ x
-  i₂' : is-symmetric c'
-  i₂' (x , a) (y , b) = i₂ x y
-  i₃' : is-ultra' c'
-  i₃' (x , a) (y , b) (z , c) = i₃ x y z
-{-
-ordered : (X : 𝓤 ̇ ) → 𝓤 ⊔ 𝓥 ⁺  ̇
-ordered {𝓤} {𝓥} X = Σ _≤_ ꞉ (X → X → 𝓥  ̇ )
-                   , reflexive _≤_
-                   × transitive _≤_
-                   × ((x y : X) → ¬ (x ≤ y) → y ≤ x)
-
-totally-ordered : {X : 𝓤 ̇ } → ordered {𝓤} {𝓥} X → 𝓤 ⊔ 𝓥  ̇
-totally-ordered {𝓤} {𝓥} {X} (_≤_ , _) = (x y : X) → is-complemented (x ≤ y)
-
-data List (X : 𝓤 ̇ ) : 𝓤 ̇ where
-  [] : List X
-  _::_ : X → List X → List X
-
-_∈_ : {X : 𝓤 ̇ } → X → List X → 𝓤 ̇
-x ∈ [] = 𝟘
-x ∈ (y :: xs) = (x ≡ y) + (x ∈ xs)
-
-fin-has-minimal : {X : 𝓤 ̇ } → ((_≤_ , q) : ordered {𝓤} {𝓥} X)
-                → totally-ordered (_≤_ , q)
-                → (x : X) (xs : List X)
-                → Σ x₀ ꞉ X , (x₀ ∈ (x :: xs))
-                × ((x' : X) → x' ∈ (x :: xs) → x₀ ≤ x')
-fin-has-minimal (_≤_ , r , t , a) d x []
- = x , (inl refl , λ x' → cases (λ e → transport (_≤ x') e (r x')) 𝟘-elim)
-fin-has-minimal (_≤_ , r , t , a) d x (x' :: xs)
- = Cases (d x x₀)
-     (λ x≤x₀ → x , (inl refl , (λ x'' → cases
-       (λ e → transport (_≤ x'') e (r x''))
-       (t x x₀ x'' x≤x₀ ∘ (pr₂ γ₀ x'')))))
-     (λ ¬x≤x₀ → x₀ , (inr (pr₁ γ₀)) , (λ x'' → cases
-       (λ e → transport (x₀ ≤_) (e ⁻¹) (a x x₀ ¬x≤x₀))
-       (pr₂ γ₀ x'')))
- where
-   IH = fin-has-minimal (_≤_ , r , t , a) d x' xs
-   x₀ = pr₁ IH
-   γ₀ : (x₀ ∈ (x' :: xs)) × (∀ x'' → x'' ∈ (x' :: xs) → x₀ ≤ x'')
-   γ₀ = pr₂ IH
-
-approx-ordered : {(X , _) : ClosenessSpace {𝓤}} → ordered {𝓤} {𝓥} X
-               → 𝓤 ⊔ 𝓥 ⁺  ̇
-approx-ordered {𝓤} {𝓥} {(X , c , _)} (_≤_ , _)
- = Σ _≤'_ ꞉ (X → X → ℕ → 𝓥 ̇ )
- , ((x y : X) (ϵ : ℕ) → (ϵ ↑) ≼ c x y → (x ≤' y) ϵ)
- × ((x y : X) (ϵ : ℕ) → c x y ≺ (ϵ ↑) → (x ≤' y) ϵ ⇔ x ≤ y)
-
-approx-refl : {(X , ci) : ClosenessSpace {𝓤}} → (o : ordered {𝓤} {𝓥} X)
-            → ((_≤'_ , _) : approx-ordered {𝓤} {𝓥} {(X , ci)} o)
-            → (ϵ : ℕ) → reflexive (λ x y → (x ≤' y) ϵ)
-approx-refl {𝓤} {𝓥} {(X , c , i₀ , i₁ , i₂ , i₃)} (_≤_ , r , t , a)
- (_≤'_ , p , q) ϵ x
- = p x x ϵ (transport ((ϵ ↑) ≼_) (i₁ x ⁻¹) (∞-largest (ϵ ↑)))
-
-≼-decidable : (x : ℕ∞) (ϵ : ℕ) → ((ϵ ↑) ≼ x) + (x ≺ (ϵ ↑))
-≼-decidable = {!!}
-
-approx-trans : {(X , c , i) : ClosenessSpace {𝓤}} → (o : ordered {𝓤} {𝓥} X)
-             → ((_≤'_ , _) : approx-ordered {𝓤} {𝓥} {(X , c , i)} o)
-             → (ϵ : ℕ) → (x y z : X)
-             → ((ϵ ↑) ≼ c x y) + (c x y ≺ (ϵ ↑))
-             → ((ϵ ↑) ≼ c y z) + (c y z ≺ (ϵ ↑))
-             → ((ϵ ↑) ≼ c x z) + (c x z ≺ (ϵ ↑))
-             → (x ≤' y) ϵ → (y ≤' z) ϵ → (x ≤' z) ϵ
-approx-trans {𝓤} {𝓥} {X , c , i₀ , i₁ , i₂ , i₃} (_≤_ , r , t , a) (_≤'_ , p , q) ϵ x y z α β (inl x₁) x≤'y y≤'z = p x z ϵ x₁
-approx-trans {𝓤} {𝓥} {X , c , i₀ , i₁ , i₂ , i₃} (_≤_ , r , t , a) (_≤'_ , p , q) ϵ x y z (inl x₂) (inl x₃) (inr x₁) x≤'y y≤'z
- = {!!}
-approx-trans {𝓤} {𝓥} {X , c , i₀ , i₁ , i₂ , i₃} (_≤_ , r , t , a) (_≤'_ , p , q) ϵ x y z (inl x₂) (inr x₃) (inr x₁) x≤'y y≤'z
- = {!!}
-approx-trans {𝓤} {𝓥} {X , c , i₀ , i₁ , i₂ , i₃} (_≤_ , r , t , a) (_≤'_ , p , q) ϵ x y z (inr x₂) (inl x₃) (inr x₁) x≤'y y≤'z
- = {!!}
-approx-trans {𝓤} {𝓥} {X , c , i₀ , i₁ , i₂ , i₃} (_≤_ , r , t , a) (_≤'_ , p , q) ϵ x y z (inr x₂) (inr x₃) (inr x₁) x≤'y y≤'z
- = pr₂ (q x z ϵ x₁) (t x y z (pr₁ (q x y ϵ x₂) x≤'y) (pr₁ (q y z ϵ x₃) y≤'z))
-
-subtype : {X : 𝓤 ̇ } → (X → Ω 𝓥) → 𝓤 ⊔ 𝓥  ̇
-subtype P = Σ (λ x → P x holds)
-
-_is-_-covered-by_ : (X : 𝓤 ̇ ) → EqRel {𝓤} {𝓦} X → (X → Ω 𝓥) → 𝓤 ⊔ 𝓦 ⊔ 𝓥  ̇
-X is- (_≊_ , _) -covered-by P = (x : X) → Σ (x' , _) ꞉ subtype P , (x ≊ x')
-
-_is-_-covered-by'_ : (X : 𝓤 ̇ ) → EqRel {𝓤} {𝓦} X → (Y : 𝓥 ̇ ) → 𝓤 ⊔ 𝓦 ⊔ 𝓥 ̇
-X is- (_≊_ , _) -covered-by' Y = Σ f ꞉ (Y → X) , ((x : X) → Σ y ꞉ Y , (x ≊ f y))
-
-cover→cover' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → ((_≊_ , e) : EqRel {𝓤} {𝓦} X)
-             → (P : X → Ω 𝓣)
-             → X is- (_≊_ , e) -covered-by P
-             → X is- (_≊_ , e) -covered-by' (subtype P)
-cover→cover' (_≊_ , e) P v = pr₁ , v
-
-cover'→cover : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → ((_≊_ , e) : EqRel {𝓤} {𝓦} X)
-             → (P : X → Ω 𝓣)
-             → X is- (_≊_ , e) -covered-by' (subtype P)
-             → X is- (_≊_ , e) -covered-by P
-cover'→cover (_≊_ , e@(e₁ , e₂ , e₃ , e₄)) P (f , v) x
- = pr₁ (v x) , e₄ _ _ _ (pr₂ (v x)) {!!}
-
-quotient-covers : {X : 𝓤 ̇ } → ((_≊_ , e) : EqRel {𝓤} {𝓦} X)
-                → ((ρ , q) : is-section (η/ (_≊_ , e)))
-                → X is- (_≊_ , e) -covered-by' (X / (_≊_ , e))
-quotient-covers (_≊_ , e@(_ , r , _)) (ρ , q)
- = ρ , (λ x → (η/ (_≊_ , e) x) , transport (x ≊_) (q _ ⁻¹) (r _))
-
-List-to-Type : {X : 𝓤 ̇ } → List X → 𝓤 ̇
-List-to-Type {𝓤} {X} v = Σ x ꞉ X , (x ∈ v)
-
--- subtype-covers : {X : 𝓤 ̇ } → ((_≊_ , e) : EqRel {𝓤} {𝓦} X)
-   --            → s
-
-quotient-subtype-equiv' : {X : 𝓤 ̇ } → ((_≊_ , e) : EqRel {𝓤} {𝓦} X)
-                        → (∀ x y → decidable (x ≊ y))
-                        → is-section (η/ (_≊_ , e))
-                        → is-set X
-                        → Σ P ꞉ (X → Ω {!!})
-                        , ((X is- (_≊_ , e) -covered-by P)
-                        × (X / (_≊_ , e) ≃ subtype P))
-quotient-subtype-equiv' (_≊_ , e@(e₁ , e₂ , e₃ , e₄)) d (ρ , q) i = f , γ₁ , γ₂
- where
-  η  = η/ (_≊_ , e)
-  ρη = ρ ∘ η
-  ηρ = η ∘ ρ
-  f  : _ → Ω _
-  f x = x ≡ ρη x , i
-  f∀ : ∀ x → f (ρη x) holds
-  f∀ x = q (ρη x) ⁻¹
-  γ₁ : _ is- _≊_ , e -covered-by f
-  ext : ∀ x y → η x ≡ η y → x ≊ y
-  ext x y η≡ with d x y
-  ... | inl h = h
-  ... | inr h = 𝟘-elim (dni {!!} h)
-   where
-     dni : {A : 𝓤 ̇ } → A → ¬¬ A
-     dni A ¬A = ¬A A
-  γ₁ x = (ρη x , f∀ x) , ext x (ρη x) (ap η (q x ⁻¹))
-  γ₂ : (_ / (_≊_ , e)) ≃ subtype f
-  γ₂ = {!!}
-  
-quotient-subtype-equiv : {X : 𝓤 ̇ } → ((_≊_ , e) : EqRel {𝓤} {𝓦} X)
-                       → (P : X → Ω 𝓥)
-                       → is-section (η/ (_≊_ , e))
-                       → X is- (_≊_ , e) -covered-by P
-                       → (X / (_≊_ , e)) ≃ subtype P
-quotient-subtype-equiv (_≊_ , e) P (ρ , q) v
- = f , (g , γ₁) , (g , γ₂)
- where
-   f = (λ x → pr₁ (v (ρ x)))
-   g = (λ (x , h) → η/ (_≊_ , e) x)
-   γ₁ : (λ x → f (g x)) ∼ (λ x → x)
-   γ₁ (x , h) = {!!}
-   γ₂ : (λ x → g (f x)) ∼ (λ x → x)
-   γ₂ x = {!!}
--}
