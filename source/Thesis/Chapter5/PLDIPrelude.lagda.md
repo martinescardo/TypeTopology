@@ -1,6 +1,5 @@
 ```
-{-# OPTIONS --exact-split --without-K --auto-inline
-            --experimental-lossy-unification #-}
+{-# OPTIONS --without-K --exact-split --safe #-}
             
 open import Integers.Addition renaming (_+_ to _+ℤ_ ; _-_ to _ℤ-_)
 open import Integers.Multiplication renaming (_*_ to _ℤ*_)
@@ -11,7 +10,7 @@ open import MLTT.Spartan
 open import Naturals.Addition renaming (_+_ to _+ℕ_)
 open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
 open import Naturals.Order
-open import Notation.Order
+open import Notation.Order hiding (_≤_≤_)
 open import UF.Base
 open import UF.Subsingletons
 

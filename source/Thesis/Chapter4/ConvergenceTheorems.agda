@@ -1,4 +1,4 @@
-{-# OPTIONS --without-K --exact-split --allow-unsolved-metas #-}
+{-# OPTIONS --without-K --exact-split --safe #-}
 
 open import Thesis.Chapter5.Prelude renaming (map to map')
 open import UF.FunExt
@@ -21,22 +21,25 @@ open import TypeTopology.DiscreteAndSeparated
 
 module Thesis.Chapter4.ConvergenceTheorems (fe : FunExt) where
 
--- open import Thesis.Chapter3.ClosenessSpaces fe {!!} {!!} {!!}
+open import Thesis.Chapter3.ClosenessSpaces fe
+open import Thesis.Chapter3.ClosenessSpaces-Examples fe
 open import Thesis.Chapter3.SearchableTypes fe
-open import Thesis.Chapter6.SignedDigitContinuity fe
-open import UF.Subsingletons-FunExt 
+open import Thesis.Chapter4.ApproxOrder fe
+open import Thesis.Chapter4.ApproxOrder-Examples fe
+open import Thesis.Chapter4.GlobalOptimisation fe
+open import UF.Subsingletons-FunExt  
 
 -- Definition 4.2.10 (Does not have continuity of M!)
 regressor : (X : ClosenessSpace 𝓤) (Y : ClosenessSpace 𝓥) → 𝓤 ⊔ 𝓥  ̇
 regressor {𝓤} {𝓥} X Y
  = (M : ⟨ X ⟩ → ⟨ Y ⟩) → f-ucontinuous X Y M → ⟨ Y ⟩ → ⟨ X ⟩
 
-B-ucontinuous : (X : ClosenessSpace 𝓤)
-              → (ε : ℕ) (x : ⟨ X ⟩) → p-ucontinuous X (B* X ε x)
-B-ucontinuous X ε x = ε , γ
+C-ucontinuous : (X : ClosenessSpace 𝓤)
+              → (ε : ℕ) (x : ⟨ X ⟩) → p-ucontinuous X (CΩ X ε x)
+C-ucontinuous X ε x = ε , γ
  where
-  γ : (y z : ⟨ X ⟩) → B X ε y z → B* X ε x y holds → B* X ε x z holds
-  γ y z Byz Bxy = B-trans X ε x y z Bxy Byz
+  γ : (y z : ⟨ X ⟩) → C X ε y z → C X ε x y → C X ε x z
+  γ y z Cyz Cxy = C-trans X ε x y z Cxy Cyz
 
 -- TODO: Fix overloaded Ω
 p-regressor : (X : ClosenessSpace 𝓤) (Y : ClosenessSpace 𝓥)
@@ -45,19 +48,17 @@ p-regressor : (X : ClosenessSpace 𝓤) (Y : ClosenessSpace 𝓥)
 p-regressor {𝓤} {𝓥} X Y (𝓔 , S) ε M ϕᴹ Ω' = 𝓔 ((p , d) , ϕ)
  where
   p : ⟨ X ⟩ → Ω 𝓤₀
-  p x = B* Y ε Ω' (M x)
+  p x = CΩ Y ε Ω' (M x)
   d : is-complemented (λ x → p x holds)
-  d x = B-decidable Y ε Ω' (M x)
+  d x = C-decidable Y ε Ω' (M x)
   ϕ : p-ucontinuous X p
   ϕ = δ , γ
    where
     δ : ℕ
     δ = pr₁ (ϕᴹ ε)
-    γ : (x₁ x₂ : ⟨ X ⟩) → B X δ x₁ x₂ → p x₁ holds → p x₂ holds
-    γ x₁ x₂ Bδx₁x₂ px₁
-     = B-trans Y ε Ω' (M x₁) (M x₂) px₁ (pr₂ (ϕᴹ ε) x₁ x₂ Bδx₁x₂)
-
-open import Thesis.Chapter4.GlobalOptimisation fe
+    γ : (x₁ x₂ : ⟨ X ⟩) → C X δ x₁ x₂ → p x₁ holds → p x₂ holds
+    γ x₁ x₂ Cδx₁x₂ px₁
+     = C-trans Y ε Ω' (M x₁) (M x₂) px₁ (pr₂ (ϕᴹ ε) x₁ x₂ Cδx₁x₂)
 
 ℕ∞-≽-preorder : is-preorder _≽_
 ℕ∞-≽-preorder = r , t , p
@@ -71,105 +72,104 @@ open import Thesis.Chapter4.GlobalOptimisation fe
 
 -- Global min of _≽_ is the global max of _≼_
 -- Not covered in paper on this section very well
-
 _≽ⁿ_ : ℕ∞ → ℕ∞ → ℕ → 𝓤₀ ̇
 (u ≽ⁿ v) n = (i : ℕ) → i < n → i ⊏ v → i ⊏ u
 
-open import TWA.Closeness fe hiding (is-ultra; is-closeness)
+invert-rel : {X : 𝓤 ̇ } → (X → X → 𝓥 ̇ ) → (X → X → 𝓥 ̇ )
+invert-rel R x y = R y x
 
-Σ-clofun : {X : 𝓤 ̇ } (P : X → 𝓥 ̇ )
-         → ((x : X) → is-prop (P x))
-         → Σ cx ꞉ (X → X → ℕ∞) , is-closeness cx
-         → Σ c ꞉ (Σ P → Σ P → ℕ∞) , is-closeness c
-Σ-clofun {𝓤} {𝓥} {X} P p (cx , ex , ix , sx , ux) = c , e , i , s , u
+invert-rel' : {X : 𝓤 ̇ } → (X → X → ℕ → 𝓥 ̇ ) → (X → X → ℕ → 𝓥 ̇ )
+invert-rel' R x y = R y x 
+
+invert-preorder-is-preorder : {X : 𝓤 ̇ } → (_≤_ : X → X → 𝓥 ̇ )
+                            → is-preorder _≤_
+                            → let _≥_ = invert-rel _≤_ in
+                              is-preorder _≥_
+invert-preorder-is-preorder _≤_ (r' , t' , p') = r , t , p
  where
-  c : Σ P → Σ P → ℕ∞
-  c (x , _) (y , _) = cx x y
-  e : indistinguishable-are-equal c
-  e (x , _) (y , _) cxy=∞ = to-subtype-＝ p (ex x y cxy=∞)
-  i : self-indistinguishable c
-  i (x , _) = ix x
-  s : is-symmetric c
-  s (x , _) (y , _) = sx x y
-  u : is-ultra c
-  u (x , _) (y , _) (z , _) = ux x y z
+  r : reflexive (invert-rel _≤_)
+  r x = r' x
+  t : transitive (invert-rel _≤_)
+  t x y z q r = t' z y x r q
+  p : is-prop-valued (invert-rel _≤_)
+  p x y = p' y x
 
-Σ-ClosenessSpace : (X : ClosenessSpace 𝓤)
-                 → (P : ⟨ X ⟩ → 𝓥 ̇ ) → ((x : ⟨ X ⟩) → is-prop (P x))
-                 → ClosenessSpace (𝓤 ⊔ 𝓥)
-Σ-ClosenessSpace {𝓤} {𝓥} (X , cx) P p = Σ P  , Σ-clofun P p cx
-
-ℕ→𝟚-ClosenessSpace : ClosenessSpace 𝓤₀
-ℕ→𝟚-ClosenessSpace = ℕ→D-ClosenessSpace 𝟚-is-discrete
-
-ℕ∞-ClosenessSpace : ClosenessSpace 𝓤₀
-ℕ∞-ClosenessSpace = Σ-ClosenessSpace ℕ→𝟚-ClosenessSpace is-decreasing
-                     (being-decreasing-is-prop (fe _ _))
-
-
-{-
-_≼ⁿ_ : ℕ∞ → ℕ∞ → ℕ → 𝓤₀ ̇
-(u ≼ⁿ v) n = <ₙ (λ k → k ⊏ u → k ⊏ v) n
-
-≼ⁿ-back : (u v : ℕ∞) (n : ℕ) → ¬ (n ⊏ u) → (u ≼ⁿ v) n → (u ≼ⁿ v) (succ n)
-≼ⁿ-back u v n ¬n⊏u u≼ⁿv = <ₙ-succ n u≼ⁿv (𝟘-elim ∘ ¬n⊏u)
-
-≼ⁿ-top : (u v : ℕ∞) (n : ℕ) → n ⊏ v → (u ≼ⁿ v) (succ n)
-≼ⁿ-top u v zero n⊏v 0 _ _ = n⊏v
-≼ⁿ-top u v (succ n) n⊏v
- = <ₙ-succ (succ n) (≼ⁿ-top u v n (pr₂ v n n⊏v)) (λ _ → n⊏v)
-
-f-max-≼ⁿ : {X : 𝓤 ̇ } → ℕ → (X → ℕ∞) → 𝓤 ̇ 
-f-max-≼ⁿ {𝓤} {X} n f = Σ x₀ ꞉ X , Π x ꞉ X , (f x ≼ⁿ f x₀) n
-         
-f-minimisation : {X : 𝓤 ̇ } (c : X → X → ℕ∞)
-               → (𝓔S : c-searchable c)
-               → (n : ℕ) (f : X → ℕ∞)
-               → continuous² c ℕ∞-codistance f
-               → f-max-≼ⁿ n f
-f-minimisation {𝓤} {X} _ 𝓔S 0 _ _
- = pr₁ (𝓔S {𝓤₀} (λ _ → 𝟙) (λ _ → inl *) (0 , (λ _ _ _ _ → *))) , λ _ _ ()
-f-minimisation {𝓤} {X} c 𝓔S (succ n) f ϕf
- = Cases (𝓔S-dec c 𝓔S p d ϕ) γ₁ γ₂
+invert-approx-order-is-approx-order
+ : (X : ClosenessSpace 𝓤)
+ → (_≤_ : ⟨ X ⟩ → ⟨ X ⟩ → 𝓥 ̇ ) (_≤ⁿ_ : ⟨ X ⟩ → ⟨ X ⟩ → ℕ → 𝓥' ̇ )
+ → is-approx-order X _≤_ _≤ⁿ_
+ → let _≥_  = invert-rel  _≤_  in
+   let _≥ⁿ_ = invert-rel' _≤ⁿ_ in
+   is-approx-order X _≥_ _≥ⁿ_
+invert-approx-order-is-approx-order X _≤_ _≤ⁿ_ (pre' , lin' , c' , a')
+ = pre , lin , c , a
  where
-  p : X → 𝓤₀ ̇ 
-  p x = n ⊏ f x
-  d : detachable p
-  d x = 𝟚-is-discrete (incl (f x) n) ₁
-  ϕ : continuous c p
-  pr₁ ϕ = pr₁ (ϕf (succ n))
-  pr₂ ϕ x y δ≼cxy px = χ ⁻¹ ∙ px where
-    χ : incl (f x) n ≡ incl (f y) n
-    χ = sequences.codistance-conceptually₂
-          𝟚 𝟚-is-discrete (incl (f x)) (incl (f y)) n
-          (pr₂ (ϕf (succ n)) x y δ≼cxy n (under-diagonal₁ n)) n (≤-refl n)
-  γ₁ : Σ p → f-max-≼ⁿ (succ n) f
-  γ₁ (x₀ , px₀) = x₀ , λ x → ≼ⁿ-top (f x) (f x₀) n px₀
-  γ₂ : ((x : X) → ¬ p x) → f-max-≼ⁿ (succ n) f
-  γ₂ g = x₀ , λ x → ≼ⁿ-back (f x) (f x₀) n (g x) (γ₀ x)
+  pre : is-preorder (invert-rel _≤_)
+  pre = invert-preorder-is-preorder _≤_ pre'
+  lin : (ϵ : ℕ) → is-linear-order (λ x y → invert-rel' _≤ⁿ_ x y ϵ)
+  lin ϵ = (r'
+        , (λ x y z q r → t' z y x r q)
+        , λ x y → p' y x)
+        , λ x y → l' y x
    where
-    IH = f-minimisation c 𝓔S n f ϕf
-    x₀ = pr₁ IH
-    γ₀ = pr₂ IH
+    r' = (pr₁ ∘ pr₁)       (lin' ϵ)
+    t' = (pr₁ ∘ pr₂ ∘ pr₁) (lin' ϵ)
+    p' = (pr₂ ∘ pr₂ ∘ pr₁) (lin' ϵ)
+    l' = pr₂               (lin' ϵ)
+  c : (ϵ : ℕ) (x y : ⟨ X ⟩) → C X ϵ x y → invert-rel' _≤ⁿ_ x y ϵ
+  c ϵ x y Cxy = c' ϵ y x (C-sym X ϵ x y Cxy)
+  a : (ϵ : ℕ) (x y : ⟨ X ⟩) → ¬ C X ϵ x y → invert-rel' _≤ⁿ_ x y ϵ
+                                          ⇔ invert-rel _≤_ x y
+  a ϵ x y ¬Cxy = a' ϵ y x (λ Cyx → 𝟘-elim (¬Cxy (C-sym X ϵ y x Cyx)))
 
-minimisation-convergence
-       : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-       → (cx : X → X → ℕ∞)
-       → (𝓔S : c-searchable cx)
-       → (ε : ℕ) (M : X → Y) (Φ : Y → Y → ℕ∞) (Ω : Y)
-       → continuous² cx Φ M
-       → continuous² Φ ℕ∞-codistance (λ y → Φ Ω y)
-       → f-max-≼ⁿ ε (λ x → Φ Ω (M x))
-minimisation-convergence cx 𝓔S ε M Φ Ω ϕM ϕL
- = f-minimisation cx 𝓔S ε (λ x → Φ Ω (M x)) γ
+is_global-maximal : ℕ → {𝓤 𝓥 : Universe}
+                  → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                  → (_≤ⁿ_ : Y → Y → ℕ → 𝓦 ̇ )
+                  → (f : X → Y) → X → 𝓦 ⊔ 𝓤  ̇ 
+(is ϵ global-maximal) {𝓤} {𝓥} {X} _≤ⁿ_ f x₀
+ = is ϵ global-minimal (invert-rel' _≤ⁿ_) f x₀
+
+has_global-maximal : ℕ → {𝓤 𝓥 : Universe} {X : 𝓤 ̇ }
+                   → {Y : 𝓥 ̇ }
+                   → (_≤ⁿ_ : Y → Y → ℕ → 𝓦 ̇ )
+                   → (f : X → Y) → (𝓦 ⊔ 𝓤) ̇ 
+(has ϵ global-maximal) {𝓤} {𝓥} {𝓦} {X} _≤ⁿ_ f
+ = Σ ((is ϵ global-maximal) {𝓤} {𝓥} {𝓦} {X} _≤ⁿ_ f)
+
+global-max-ℕ∞ : (X : ClosenessSpace 𝓤) → ⟨ X ⟩
+              → totally-bounded X 𝓤'
+              → (f : ⟨ X ⟩ → ℕ∞)
+              → f-ucontinuous X ℕ∞-ClosenessSpace f
+              → (ϵ : ℕ)
+              → (has ϵ global-maximal) ℕ∞-approx-lexicorder f
+global-max-ℕ∞ X x₀ t f ϕ ϵ
+ = global-opt X ℕ∞-ClosenessSpace x₀
+     (invert-rel ℕ∞-lexicorder) (invert-rel' ℕ∞-approx-lexicorder)
+     (invert-approx-order-is-approx-order ℕ∞-ClosenessSpace
+       ℕ∞-lexicorder ℕ∞-approx-lexicorder
+         ℕ∞-approx-lexicorder-is-approx-order)
+     ϵ f ϕ t
+
+-- Theorem 4.2.8
+optimisation-convergence
+       : (X : ClosenessSpace 𝓤) (Y : ClosenessSpace 𝓥)
+       → ⟨ X ⟩ → totally-bounded X 𝓤'
+       → (M : ⟨ X ⟩ → ⟨ Y ⟩) (Ω : ⟨ Y ⟩)
+       → f-ucontinuous X Y M
+       → let c = pr₁ (pr₂ Y) in
+         f-ucontinuous Y ℕ∞-ClosenessSpace (c Ω)
+       → (ϵ : ℕ)
+       → (has ϵ global-maximal) ℕ∞-approx-lexicorder (λ x → c Ω (M x))
+optimisation-convergence X Y x₀ t M Ω ϕᴹ ϕᶜ
+ = global-max-ℕ∞ X x₀ t (c Ω ∘ M)
+     (λ ϵ → pr₁ (ϕᴹ (pr₁ (ϕᶜ ϵ)))
+          , λ x₁ x₂ Cδᶜx₁x₂ → pr₂ (ϕᶜ ϵ) (M x₁) (M x₂)
+                               (pr₂ (ϕᴹ (pr₁ (ϕᶜ ϵ))) x₁ x₂ Cδᶜx₁x₂))
  where
-  γ : continuous² cx ℕ∞-codistance (λ x → Φ Ω (M x))
-  γ ε = (pr₁ (ϕM (pr₁ (ϕL ε))))
-      , (λ x y δ≼cxy → pr₂ (ϕL ε) (M x) (M y)
-           (pr₂ (ϕM (pr₁ (ϕL ε))) x y δ≼cxy))
--}
--- Make sure the fixed oracle is on the left (in paper too)
+  c : ⟨ Y ⟩ → ⟨ Y ⟩ → ℕ∞
+  c = pr₁ (pr₂ Y)
 
+-- Make sure the fixed oracle is on the left (in paper too)
 -- Theorem 4.2.12
 s-imperfect-convergence
        : (X : ClosenessSpace 𝓤) (Y : ClosenessSpace 𝓥)
@@ -182,27 +182,27 @@ s-imperfect-convergence
            ΨΩ = Ψ Ω
            reg = p-regressor X Y 𝓔S ε
            ω = M (reg M ϕᴹ ΨΩ)
-         in (B Y ε Ω ΨΩ) → (B Y ε Ω ω)
-s-imperfect-convergence X Y (𝓔 , S) ε M ϕᴹ Ψ k BεΩΨΩ
- = B-trans Y ε Ω' ΨΩ ω BεΩΨΩ (S ((p , d) , ϕ) (k , B-sym Y ε Ω' ΨΩ BεΩΨΩ))
+         in (C Y ε Ω ΨΩ) → (C Y ε Ω ω)
+s-imperfect-convergence X Y (𝓔 , S) ε M ϕᴹ Ψ k CεΩΨΩ
+ = C-trans Y ε Ω' ΨΩ ω CεΩΨΩ (S ((p , d) , ϕ) (k , C-sym Y ε Ω' ΨΩ CεΩΨΩ))
  where
   Ω' = M k -- fix Ω definition in paper and agda
   ΨΩ = Ψ Ω'
   reg = p-regressor X Y (𝓔 , S) ε
   ω = M (reg M ϕᴹ ΨΩ)
   p : ⟨ X ⟩ → Ω 𝓤₀
-  p x = B* Y ε ΨΩ (M x)
+  p x = CΩ Y ε ΨΩ (M x)
   d : is-complemented (λ x → p x holds)
-  d x = B-decidable Y ε ΨΩ (M x)
+  d x = C-decidable Y ε ΨΩ (M x)
   ϕ : p-ucontinuous X p
   ϕ = δ , γ
    where
     δ : ℕ
     δ = pr₁ (ϕᴹ ε)
-    γ : (x₁ x₂ : ⟨ X ⟩) → B X δ x₁ x₂ → p x₁ holds → p x₂ holds
-    γ x₁ x₂ Bδx₁x₂ BεΨΩMx₂
-     = B-trans Y ε ΨΩ (M x₁) (M x₂) BεΨΩMx₂
-         (pr₂ (ϕᴹ ε) x₁ x₂ Bδx₁x₂)
+    γ : (x₁ x₂ : ⟨ X ⟩) → C X δ x₁ x₂ → p x₁ holds → p x₂ holds
+    γ x₁ x₂ Cδx₁x₂ CεΨΩMx₂
+     = C-trans Y ε ΨΩ (M x₁) (M x₂) CεΨΩMx₂
+         (pr₂ (ϕᴹ ε) x₁ x₂ Cδx₁x₂)
 
 perfect-convergence
        : (X : ClosenessSpace 𝓤) (Y : ClosenessSpace 𝓥)
@@ -214,9 +214,9 @@ perfect-convergence
            Ω = M k
            reg = p-regressor X Y 𝓔S ε
            ω = M (reg M ϕᴹ Ω)
-         in B Y ε Ω ω
+         in C Y ε Ω ω
 perfect-convergence X Y 𝓔S ε M ϕᴹ k
- = s-imperfect-convergence X Y 𝓔S ε M ϕᴹ id k (B-refl Y ε Ω')
+ = s-imperfect-convergence X Y 𝓔S ε M ϕᴹ id k (C-refl Y ε Ω')
  where Ω' = M k
 
 {-
