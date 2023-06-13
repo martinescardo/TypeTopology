@@ -14,7 +14,6 @@ import Groups.Image                        -- by Ettore Aldrovandi and Keri D'An
 import Groups.Kernel                       -- by Ettore Aldrovandi and Keri D'Angelo
 import Groups.Opposite                     -- by Ettore Aldrovandi and Keri D'Angelo
 import Groups.Quotient                     -- by Ettore Aldrovandi and Keri D'Angelo
-import Groups.SRTclosure                   -- by Martin Escardo
 import Groups.Subgroups                    -- by Martin Escardo, copied to this place by Ettore Aldrovandi and Keri D'Angelo
 import Groups.Torsors                      -- by Ettore Aldrovandi and Keri D'Angelo
 import Groups.Triv                         -- by Ettore Aldrovandi and Keri D'Angelo

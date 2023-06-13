@@ -270,8 +270,8 @@ consequences of the Church-Rosser property in a general setting.
 
 \begin{code}
 
- open import Groups.SRTclosure
- open Church-Rosser-consequences {𝓤} {𝓤} _▷_ public
+ open import Relations.SRTclosure
+ open import Relations.ChurchRosser {𝓤} {𝓤} _▷_ public
 
 \end{code}
 

@@ -157,6 +157,7 @@ import NotionsOfDecidability.index    -- by Tom de Jong and Martin Escardo
 import Ordinals.index
 import PCF.index                      -- by Tom de Jong and Brendan Hart
 import Posets.index                   -- by Tom de Jong and Martin Escardo
+import Relations.index
 import Rationals.index                -- by Andrew Sneap
 import Slice.index
 import TWA.index                      -- by Todd Waugh Ambridge
