@@ -390,6 +390,13 @@ close {σ} {Γ₁} {Γ₂} (ν i) s = s i
 close {σ₁ ⇒ σ₂} {Γ₁} {Γ₂} (ƛ t) s = ƛ (close t (Sub,, s))
 close {σ} {Γ₁} {Γ₂} (t₁ · t₂) s = close t₁ s · close t₂ s
 
+Sub1 : {Γ : Cxt} {τ : type} → T Γ τ → Sub (Γ ,, τ) Γ
+Sub1 {Γ} {τ} t {.τ} (∈Cxt0 .Γ) = t
+Sub1 {Γ} {τ} t {σ} (∈CxtS .τ i) = ν i
+
+close₀ : {σ τ : type} {Γ : Cxt} → T (Γ ,, τ) σ → T Γ τ → T Γ σ
+close₀ {σ} {τ} {Γ} t u = close {σ} {Γ ,, τ} {Γ} t (Sub1 u)
+
 close· : {σ τ : type} {Γ : Cxt} → (t : T Γ (σ ⇒ τ)) (u : T Γ σ) (s : Sub₀ Γ)
        → close (t · u) s ＝ close t s · close u s
 close· {σ} {τ} {Γ} t u s = refl
@@ -784,26 +791,40 @@ step· {n} {Γ} {_} {.(ι ⇒ _ ⇒ _)} Rec a refl isv = {!!}
 step· {n} {Γ} {.(Γ [ i ])} {τ} (ν i) a e isv = {!!}
 step· {n} {Γ} {σ₁ ⇒ σ₂} {τ} (ƛ f) a e isv = {!!}
 step· {n} {Γ} {.(τ ⇒ _)} {τ} (t · u) a refl isv = t · u · a -- not actually a step--}
-
--- call-by-name semantics
-step : {n : ℕ} {Γ : Cxt n} {σ : type} (t : T Γ σ) → T Γ σ
-step {n} {Γ} {_} Zero = Zero
-step {n} {Γ} {_} Succ = Succ
-step {n} {Γ} {_} Rec = Rec
-step {n} {Γ} {.(Γ [ i ])} (ν i) = ν i
-step {n} {Γ} {σ ⇒ τ} (ƛ t) = ƛ t
-step {n} {Γ} {σ} (f · a) with isVal? f
-... | inr p = step f · a
-... | inl p = step· f a refl p
 -}
 
-xx : {α : Baire} {A σ τ : type}
-     (a : 〖 τ 〗)
-     (t : T (〈〉 ,, B-type〖 σ 〗 ((ι ⇒ ι) ⇒ ι)) (B-type〖 τ 〗 ((ι ⇒ ι) ⇒ ι)))
-     (y : T₀ (B-type〖 σ 〗 ((ι ⇒ ι) ⇒ ι)))
-   → R⋆ α a (sub₀ t y)
-   → R⋆ α a (ƛ t · y)
-xx {α} {A} {σ} {τ} a t y r = {!!}
+-- call-by-name semantics
+step : {Γ : Cxt} {σ : type} (t : T Γ σ) → T Γ σ
+step {Γ} {_} Zero = Zero
+step {Γ} {_} Succ = Succ
+step {Γ} {_} Rec = Rec
+step {Γ} {σ} (ν i) = ν i
+step {Γ} {σ ⇒ τ} (ƛ t) = ƛ t
+-- app case
+step {Γ} {_} (Succ · a) = Succ · a
+step {Γ} {_} (Rec · a) = Rec · a
+step {Γ} {σ} (ν i · a) = ν i · a
+step {Γ} {σ} (ƛ f · a) = close₀ f a -- reduces (beta)
+step {Γ} {_} (Rec · a₁ · a₂) = Rec · a₁ · a₂
+step {Γ} {σ} (ν i · a₁ · a₂) = ν i · a₁ · a₂
+step {Γ} {σ} (ƛ f · a₁ · a₂) = (close₀ f a₁) · a₂ -- reduces (nested beta)
+step {Γ} {σ} (Rec · f · g · Zero) = g -- reduces (rec/zero)
+step {Γ} {σ} (Rec · f · g · ν i) = Rec · f · g · ν i
+step {Γ} {σ} (Rec · f · g · (Succ · a)) = f · a · (Rec · f · g · a) -- reduces (rec/succ)
+step {Γ} {σ} (Rec · f · g · (ν i · a)) = Rec · f · g · (ν i · a)
+step {Γ} {σ} (Rec · f · g · (ƛ h · a)) = Rec · f · g · close₀ h a -- reduces (nested beta)
+step {Γ} {σ} (Rec · f · g · (h · h₁ · a)) = Rec · f · g · step (h · h₁ · a) -- reduces (nested red)
+step {Γ} {σ} (ν i · a₁ · a₂ · a₃) = ν i · a₁ · a₂ · a₃
+step {Γ} {σ} (ƛ f · a₁ · a₂ · a₃) = (close₀ f a₁) · a₂ · a₃ -- reduces (nested beta)
+step {Γ} {σ} (f · a₁ · a₂ · a₃ · a₄) = step (f · a₁ · a₂ · a₃) · a₄ -- reduces (nested red)
+
+-- ?
+xx : {α : Baire} {A σ : type}
+     (a : 〖 σ 〗)
+     (t : T₀ σ)
+   → R⋆ α a ⌜ t ⌝
+   → R⋆ α a ⌜ step t ⌝
+xx {α} {A} {σ} a t r = {!!}
 
 ⌜main-lemma⌝ : {Γ : Cxt} {σ : type} (t : T Γ σ)
                (α : Baire)
