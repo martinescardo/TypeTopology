@@ -378,6 +378,39 @@ close· : {σ τ : type} {n : ℕ} {Γ : Cxt n} → (t : T Γ (σ ⇒ τ)) (u : 
 close· {σ} {τ} {zero} {Γ} t u s = refl
 close· {σ} {τ} {succ n} {Γ} t u s = close· (sub₀ t (s Fin.𝟎)) (sub₀ u (s Fin.𝟎)) (λ i → s (Fin.suc i))
 
+Sub⊆Γ : {n : ℕ} {Γ₁ : Cxt n} {m : ℕ} {Γ₂ : Cxt m} (s : ⊆Γ Γ₁ Γ₂) → Type
+Sub⊆Γ {.0} {.〈〉} {.0} {.〈〉} ⊆Γ0 = 𝟙
+Sub⊆Γ {n} {Γ₁} {succ m} {Γ₂ , σ} (⊆ΓR σ s) = Sub⊆Γ s × T₀ σ
+Sub⊆Γ {succ n} {Γ₁ , σ} {succ m} {Γ₂ , σ} (⊆ΓS σ s) = Sub⊆Γ s
+
+Sub⊆Γ〈〉 : {n : ℕ} {Γ : Cxt n} → Sub₀ Γ → Sub⊆Γ (⊆〈〉 Γ)
+Sub⊆Γ〈〉 {zero} {〈〉} s = MLTT.Spartan.⋆
+Sub⊆Γ〈〉 {succ n} {Γ , τ} s = Sub⊆Γ〈〉 {n} {Γ} (λ k → s (Fin.suc k)) , s Fin.𝟎
+
+-- A more general definition of close, which does not necessarily go down to a closed term
+close2 : {σ : type} {n : ℕ} {Γ₁ : Cxt n} {m : ℕ} {Γ₂ : Cxt m} → {s : ⊆Γ Γ₁ Γ₂} → T Γ₂ σ → Sub⊆Γ s  → T Γ₁ σ
+close2 {σ} {.0} {.〈〉} {.0} {.〈〉} {⊆Γ0} t subst = t
+close2 {σ} {n} {Γ₁} {succ m} {Γ₂ , σ₁} {⊆ΓR σ₁ s} t (subst , u) =
+ close2 {σ} {n} {Γ₁} {m} {Γ₂} {s} (sub {σ} {m} {Γ₂ , σ₁} Fin.𝟎 t u) subst
+close2 {σ} {succ n} {Γ₁ , σ₁} {succ m} {Γ₂ , σ₁} {⊆ΓS σ₁ s} t subst =
+ weaken, {n} {Γ₁} {σ₁ ⇒ σ} σ₁ (close2 {σ₁ ⇒ σ} {n} {Γ₁} {m} {Γ₂} {s} (ƛ t) subst) · ν₀
+
+-- close and close2 produce the same result
+close-as-close2 : {σ : type} {n : ℕ} {Γ : Cxt n} (t : T Γ σ) (s : Sub₀ Γ)
+                → close t s ＝ close2 {σ} {0} {〈〉} {n} {Γ} {⊆〈〉 Γ} t (Sub⊆Γ〈〉 s)
+close-as-close2 {σ} {zero} {〈〉} t s = refl
+close-as-close2 {σ} {succ n} {Γ , τ} t s = close-as-close2 (sub₀ t (s Fin.𝟎)) (λ i → s (Fin.suc i))
+
+closeƛ : {n : ℕ} {Γ : Cxt n} {σ τ : type} (t : T (Γ , σ) τ) (s : Sub₀ Γ)
+       → close (ƛ t) s ＝ ƛ (close2 {τ} {1} {〈〉 , σ} {succ n} {Γ , σ} {⊆ΓS σ (⊆〈〉 Γ)} t (Sub⊆Γ〈〉 s))
+closeƛ {n} {Γ} {σ} {τ} t s =
+ close (ƛ t) s
+  ＝⟨ {!!} ⟩
+ {!close2 {τ} {0} {〈〉} {n} {Γ} {⊆〈〉 Γ} (ƛ t) (Sub⊆Γ〈〉 s)!}
+  ＝⟨ {!!} ⟩
+ ƛ (close2 {τ} {1} {〈〉 , σ} {succ n} {Γ , σ} {⊆ΓS σ (⊆〈〉 Γ)} t (Sub⊆Γ〈〉 s))
+  ∎
+
 Fin∈Γ : {n : ℕ} (i : Fin n) {m : ℕ} (Γ : Cxt m) → Type
 Fin∈Γ {n} i {m} Γ = Fin→ℕ i < m
 
@@ -477,6 +510,7 @@ transport⁻¹ν-as-weaken, {n} {Γ₁} {m} {Γ₂} s i τ j .(Γ₂ [ j ]) refl
             (e : (Γ₂ [ j ]) ＝ (Γ₂ [ k ])) →
             transport⁻¹ (T (Γ₂ , τ)) e (ν (Fin.suc k)) ＝ ν (Fin.suc j))
          (⊆ΓFin-refl j s refl) (λ e → transport⁻¹-T-type e _)
+
 
 transport⁻¹ν-as-weaken,' : {n : ℕ} {Γ₁ : Cxt n} {m : ℕ} {Γ₂ : Cxt m} (s : ⊆Γ Γ₁ Γ₂) (i : Fin n) (τ : type)
                         → transport⁻¹ (T (Γ₂ , τ)) (⊆Γ[] i s) (ν (Fin.suc (⊆ΓFin s i)))
@@ -579,9 +613,7 @@ curryfy {n} {Γ} {.((ι ⇒ _ ⇒ _) ⇒ _ ⇒ ι ⇒ _)} Rec = $Rec
 curryfy {n} {Γ} {.(Γ [ i ])} (ν i) = $ν (Fin→ℕ i)
 curryfy {n} {Γ} {.(_ ⇒ _)} (ƛ t) = $ƛ (curryfy t)
 curryfy {n} {Γ} {σ} (t · t₁) = curryfy t $· curryfy t₁
--}
 
-{-
 -- Can we prove close₀ in a simpler way using an untyped version of System T?
 curryfy＝ : {n : ℕ} {Γ : Cxt n} {σ : type} (t₁ : T Γ σ) (t₂ : T Γ σ)
           → curryfy t₁ ＝ curryfy t₂
@@ -670,6 +702,13 @@ succ-dialogue⋆-aux : {A : Type} {σ τ : type} {n : ℕ} {Γ : Cxt n} (d : T �
 succ-dialogue⋆-aux = ?
 -}
 
+{-
+xx : (d : T₀ ι) (α : Baire)
+  → succ (⟦ ⌜ d ⌝ ⟧₀ (λ z α → z) (λ φ x α → φ (α x) α) α)
+    ＝ ⟦ ⌜ d ⌝ ⟧₀ (λ z α → succ z) (λ φ x α → φ (α x) α) α
+xx = {!!}
+-}
+
 succ-dialogue⋆ : (d : T₀ (⌜B⌝ ι ((ι ⇒ ι) ⇒ ι))) (α : Baire)
               → succ (dialogue⋆ ⟦ d ⟧₀ α) ＝ dialogue⋆ (succ⋆ ⟦ d ⟧₀) α
 succ-dialogue⋆ d α =
@@ -677,17 +716,64 @@ succ-dialogue⋆ d α =
   ＝⟨ refl ⟩
  succ (⟦ d ⟧₀ (λ z α → z) (λ φ x α → φ (α x) α) α)
   ＝⟨ {!!} ⟩
- ⟦ d ⟧₀ (λ x α → succ x) (λ φ x α → φ (α x) α) α
+ ⟦ d ⟧₀ (λ z α → succ z) (λ φ x α → φ (α x) α) α
   ＝⟨ refl ⟩
  dialogue⋆ (succ⋆ ⟦ d ⟧₀) α
   ∎
 
-⌜main-lemma⌝ : {n : ℕ} {Γ : Cxt n}
-              {σ : type}
-              (t : T Γ σ)
+Succ? : {n : ℕ} {Γ : Cxt n} {σ : type} (t : T Γ σ) → 𝟚
+Succ? {n} {Γ} {_} Zero = ₁
+Succ? {n} {Γ} {_} Succ = ₀
+Succ? {n} {Γ} {_} Rec  = ₀
+Succ? {n} {Γ} {.(Γ [ i ])} (ν i) = ₀
+Succ? {n} {Γ} {σ ⇒ τ} (ƛ t) = ₀
+Succ? {n} {Γ} {σ} (t · t₁) = ₀
+
+-- doesn't belong here
+_∧?_ : 𝟚 → 𝟚 → 𝟚
+₀ ∧? b = ₀
+₁ ∧? b = b
+
+val? : {n : ℕ} {Γ : Cxt n} {σ : type} (t : T Γ σ) → 𝟚
+val? {n} {Γ} {_} Zero = ₁
+val? {n} {Γ} {_} Succ = ₁
+val? {n} {Γ} {_} Rec = ₁
+val? {n} {Γ} {.(Γ [ i ])} (ν i) = ₀
+val? {n} {Γ} {σ ⇒ τ} (ƛ t) = ₁
+val? {n} {Γ} {σ} (t · u) = Succ? t ∧? val? u
+
+isVal : {n : ℕ} {Γ : Cxt n} {σ : type} (t : T Γ σ) → Type
+isVal {n} {Γ} {α} t = val? t ＝ ₁
+
+isVal?  : {n : ℕ} {Γ : Cxt n} {σ : type} (t : T Γ σ) → isVal t + ¬ (isVal t)
+isVal? {n} {Γ} {σ} t with val? t
+... | ₁ = inl refl
+... | ₀ = inr (λ ())
+
+step· : {n : ℕ} {Γ : Cxt n} {σ₀ σ τ : type} (f : T Γ σ₀) (a : T Γ σ) → σ₀ ＝ σ ⇒ τ → isVal f → T Γ τ
+step· {n} {Γ} {σ₀} {σ} {τ} t a e isv = {!!}
+--step· {n} {Γ} {σ₀} {σ} {τ} t a e isv = {!!}
+{--step· {n} {Γ} {_} {τ} Zero a () isv
+step· {n} {Γ} {_} {.ι} Succ a refl isv = Succ · a -- not actually a step
+step· {n} {Γ} {_} {.(ι ⇒ _ ⇒ _)} Rec a refl isv = {!!}
+step· {n} {Γ} {.(Γ [ i ])} {τ} (ν i) a e isv = {!!}
+step· {n} {Γ} {σ₁ ⇒ σ₂} {τ} (ƛ f) a e isv = {!!}
+step· {n} {Γ} {.(τ ⇒ _)} {τ} (t · u) a refl isv = t · u · a -- not actually a step--}
+
+-- call-by-name semantics
+step : {n : ℕ} {Γ : Cxt n} {σ : type} (t : T Γ σ) → T Γ σ
+step {n} {Γ} {_} Zero = Zero
+step {n} {Γ} {_} Succ = Succ
+step {n} {Γ} {_} Rec = Rec
+step {n} {Γ} {.(Γ [ i ])} (ν i) = ν i
+step {n} {Γ} {σ ⇒ τ} (ƛ t) = ƛ t
+step {n} {Γ} {σ} (f · a) with isVal? f
+... | inr p = step f · a
+... | inl p = step· f a refl p
+
+⌜main-lemma⌝ : {n : ℕ} {Γ : Cxt n} {σ : type} (t : T Γ σ)
               (α : Baire)
-              (xs : 【 Γ 】)
-              (ys : IB【 Γ 】 ((ι ⇒ ι) ⇒ ι))
+              (xs : 【 Γ 】) (ys : IB【 Γ 】 ((ι ⇒ ι) ⇒ ι))
             → R⋆s α xs ys
             → R⋆ α (⟦ t ⟧ xs) (close ⌜ t ⌝ ys)
 ⌜main-lemma⌝ {n} {Γ} {_} Zero α xs ys rxys = ap (λ k → dialogue⋆ ⟦ k ⟧₀ α) ((close-⌜zero⌝ ys) ⁻¹)
@@ -714,7 +800,7 @@ succ-dialogue⋆ d α =
 --   (close (ƛ ⌜ t ⌝) ys · y) into (close (ƛ ⌜ t ⌝) ys · close (weaken y) ys)
 -- [DONE] and then use close· to turn
 --   (close (ƛ ⌜ t ⌝) ys · close (weaken y) ys) into (close ((ƛ ⌜ t ⌝) · y) ys)
--- [TODO ]and then use the operational semantics of System T? to turn
+-- [TODO] and then use the operational semantics of System T? to turn
 --   (close ((ƛ ⌜ t ⌝) · y) ys) into (close ⌜ t ⌝ (y , ys))
 ⌜main-lemma⌝ {n} {Γ} {σ} (t · t₁) α xs ys rxys =
  transport⁻¹
