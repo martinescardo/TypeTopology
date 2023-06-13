@@ -1,0 +1,185 @@
+Martin Escardo 22-23 May 2013
+
+Gödel's system T and its standard set-theoretical semantics.
+
+\begin{code}
+
+{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+
+module EffectfulForcing.SystemTv2 where
+
+open import MLTT.Spartan  hiding (rec ; _^_)
+open import MLTT.Athenian using (Fin)
+open import EffectfulForcing.Combinators
+open import EffectfulForcing.Continuity
+open import UF.Base
+
+open Fin
+
+data type : 𝓤₀ ̇ where
+ ι   : type
+ _⇒_ : type → type → type
+
+infixr 6 _⇒_
+
+\end{code}
+
+We work with vector types which notational grow at the end rather than
+the head.  This is because we use vector types to represent contexts,
+which traditionally grow at the end:
+
+\begin{code}
+
+_^_ : 𝓤 ̇ → ℕ → 𝓤 ̇
+X ^ 0        = 𝟙
+X ^ (succ n) = X ^ n × X
+
+infixr 3 _^_
+
+_[_] : {X : Set} {n : ℕ} → X ^ n → Fin n → X
+_[_] {X} {succ n} (xs , x) 𝟎       = x
+_[_] {X} {succ n} (xs , x) (suc i) = xs [ i ]
+
+data Cxt : 𝓤₀ ̇  where
+ 〈〉 : Cxt
+ _,,_ : Cxt → type → Cxt
+
+infixl 6 _,,_
+
+data ∈Cxt (σ : type) : Cxt → 𝓤₀ ̇  where
+ ∈Cxt0 : (Γ : Cxt) → ∈Cxt σ (Γ ,, σ)
+ ∈CxtS : {Γ : Cxt} (τ : type) → ∈Cxt σ Γ → ∈Cxt σ (Γ ,, τ)
+
+data T : (Γ : Cxt) (σ : type) → Type where
+ Zero : {Γ : Cxt} → T Γ ι
+ Succ : {Γ : Cxt} → T Γ (ι ⇒ ι)
+ Rec  : {Γ : Cxt} {σ : type}   → T Γ ((ι ⇒ σ ⇒ σ) ⇒ σ ⇒ ι ⇒ σ)
+ ν    : {Γ : Cxt} {σ : type} (i : ∈Cxt σ Γ)  → T Γ σ
+ ƛ    : {Γ : Cxt} {σ τ : type} → T (Γ ,, σ) τ → T Γ (σ ⇒ τ)
+ _·_  : {Γ : Cxt} {σ τ : type} → T Γ (σ ⇒ τ) → T Γ σ → T Γ τ
+
+infixl 6 _·_
+
+\end{code}
+
+The standard interpretation of system T:
+
+\begin{code}
+
+〖_〗 : type → 𝓤₀ ̇
+〖 ι 〗     = ℕ
+〖 σ ⇒ τ 〗 = 〖 σ 〗 → 〖 τ 〗
+
+【_】 : (Γ : Cxt) → 𝓤₀ ̇
+【 Γ 】 = {σ : type} (i : ∈Cxt σ Γ) → 〖 σ 〗
+
+⟨⟩ : 【 〈〉 】
+⟨⟩ ()
+
+_‚_ : {Γ : Cxt} {σ : type} → 【 Γ 】 → 〖 σ 〗 → 【 Γ ,, σ 】
+(xs ‚ x) {σ} (∈Cxt0 _) = x
+(xs ‚ x) {σ} (∈CxtS _ i) = xs i
+
+infixl 6 _‚_
+
+⟦_⟧ : {Γ : Cxt} {σ : type} → T Γ σ → 【 Γ 】 → 〖 σ 〗
+⟦ Zero  ⟧  _ = 0
+⟦ Succ  ⟧  _ = succ
+⟦ Rec   ⟧  _ = rec
+⟦ ν i   ⟧ xs = xs i
+⟦ ƛ t   ⟧ xs = λ x → ⟦ t ⟧ (xs ‚ x)
+⟦ t · u ⟧ xs = (⟦ t ⟧ xs) (⟦ u ⟧ xs)
+
+\end{code}
+
+Closed terms can be interpreted in a special way:
+
+\begin{code}
+
+T₀ : type → Type
+T₀ = T 〈〉
+
+⟦_⟧₀  : {σ : type} → T₀ σ → 〖 σ 〗
+⟦ t ⟧₀ = ⟦ t ⟧ ⟨⟩
+
+T-definable : {σ : type} → 〖 σ 〗 → Type
+T-definable {σ} x = Σ t ꞉ T₀ σ , ⟦ t ⟧₀ ＝ x
+
+\end{code}
+
+System T extended with a formal oracle Ω, called T' (rather than TΩ as previously):
+
+\begin{code}
+
+data T' : (Γ : Cxt) (σ : type) → Type where
+ Ω    : {Γ : Cxt} → T' Γ (ι ⇒ ι)
+ Zero : {Γ : Cxt} → T' Γ ι
+ Succ : {Γ : Cxt} → T' Γ (ι ⇒ ι)
+ Rec  : {Γ : Cxt} → {σ : type}   → T' Γ ((ι ⇒ σ ⇒ σ) ⇒ σ ⇒ ι ⇒ σ)
+ ν    : {Γ : Cxt} {σ : type} (a : ∈Cxt σ Γ)  → T' Γ σ
+ ƛ    : {Γ : Cxt} → {σ τ : type} → T' (Γ ,, σ) τ → T' Γ (σ ⇒ τ)
+ _·_  : {Γ : Cxt} → {σ τ : type} → T' Γ (σ ⇒ τ) → T' Γ σ → T' Γ τ
+
+
+⟦_⟧' : {Γ : Cxt} {σ : type} → T' Γ σ → Baire → 【 Γ 】 → 〖 σ 〗
+⟦ Ω     ⟧' α  _ = α
+⟦ Zero  ⟧' _  _ = 0
+⟦ Succ  ⟧' _  _ = succ
+⟦ Rec   ⟧' _  _ = rec
+⟦ ν i   ⟧' _ xs = xs i
+⟦ ƛ t   ⟧' α xs = λ x → ⟦ t ⟧' α (xs ‚ x)
+⟦ t · u ⟧' α xs = (⟦ t ⟧' α xs) (⟦ u ⟧' α xs)
+
+\end{code}
+
+To regard system T as a sublanguage of T', we need to work with an
+explicit embedding:
+
+\begin{code}
+
+embed : {Γ : Cxt} {σ : type} → T Γ σ → T' Γ σ
+embed Zero    = Zero
+embed Succ    = Succ
+embed Rec     = Rec
+embed (ν i)   = ν i
+embed (ƛ t)   = ƛ (embed t)
+embed (t · u) = (embed t) · (embed u)
+
+preservation : {Γ : Cxt}
+               {σ : type}
+               (t : T Γ σ)
+               (α : Baire)
+             → ⟦ t ⟧ ＝ ⟦ embed t ⟧' α
+preservation Zero    α = refl
+preservation Succ    α = refl
+preservation Rec     α = refl
+preservation (ν i)   α = refl
+preservation (ƛ t)   α = ap (λ f xs x → f (xs ‚ x)) (preservation t α)
+preservation (t · u) α = ap₂ (λ f g x → f x (g x))
+                             (preservation t α)
+                             (preservation u α)
+\end{code}
+
+Some shorthands to simplify examples of system T terms.
+
+\begin{code}
+
+numeral : {Γ : Cxt} → ℕ → T Γ ι
+numeral 0        = Zero
+numeral (succ n) = Succ · (numeral n)
+
+ν₀ : {Γ : Cxt} {σ : type}  → T (Γ ,, σ) σ
+ν₀ {Γ} {σ} = ν (∈Cxt0 Γ)
+
+ν₁ : {Γ : Cxt} {σ₁ σ₂ : type} → T (Γ ,, σ₁ ,, σ₂) σ₁
+ν₁ {Γ} {σ₁} {σ₂} = ν (∈CxtS σ₂ (∈Cxt0 Γ))
+
+ν₂ : {Γ : Cxt} {σ₁ σ₂ σ₃ : type} → T (Γ ,, σ₁ ,, σ₂ ,, σ₃) σ₁
+ν₂ {Γ} {σ₁} {σ₂} {σ₃} = ν (∈CxtS σ₃ (∈CxtS σ₂ (∈Cxt0 Γ)))
+
+ν₃ : {Γ : Cxt} {σ₁ σ₂ σ₃ σ₄ : type} → T (Γ ,, σ₁ ,, σ₂ ,, σ₃ ,, σ₄) σ₁
+ν₃ {Γ} {σ₁} {σ₂} {σ₃} {σ₄} = ν (∈CxtS σ₄ (∈CxtS σ₃ (∈CxtS σ₂ (∈Cxt0 Γ))))
+
+ν₄ : {Γ : Cxt} {σ₁ σ₂ σ₃ σ₄ σ₅ : type} → T (Γ ,, σ₁ ,, σ₂ ,, σ₃ ,, σ₄ ,, σ₅) σ₁
+ν₄ {Γ} {σ₁} {σ₂} {σ₃} {σ₄} {σ₅} = ν (∈CxtS σ₅ (∈CxtS σ₄ (∈CxtS σ₃ (∈CxtS σ₂ (∈Cxt0 Γ)))))
+\end{code}
