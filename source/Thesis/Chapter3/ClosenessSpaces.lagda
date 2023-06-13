@@ -78,38 +78,38 @@ ClosenessSpace 𝓤
 ⟨ X , _ ⟩ = X
 
 -- Definition 3.2.23 [ Doesn't say in paper that this is an equiv rel ? TODO ]
-C-holds : (X : ClosenessSpace 𝓤) → ℕ → ⟨ X ⟩ → ⟨ X ⟩ → 𝓤₀ ̇   
-C-holds (X , c , _) n x y = (n ↑) ≼ c x y
+C : (X : ClosenessSpace 𝓤) → ℕ → ⟨ X ⟩ → ⟨ X ⟩ → 𝓤₀ ̇   
+C (X , c , _) n x y = (n ↑) ≼ c x y
 
-C-prop : (X : ClosenessSpace 𝓤) (n : ℕ) → is-prop-valued (C-holds X n)
+C-prop : (X : ClosenessSpace 𝓤) (n : ℕ) → is-prop-valued (C X n)
 C-prop X n _ _
  = Π-is-prop (fe _ _) (λ _ → Π-is-prop (fe _ _) (λ _ → 𝟚-is-set))
 
-C-refl : (X : ClosenessSpace 𝓤) (n : ℕ) → reflexive (C-holds X n)
+C-refl : (X : ClosenessSpace 𝓤) (n : ℕ) → reflexive (C X n)
 C-refl (X , c , i , e , s , u) n x
  = transport ((n ↑) ≼_) (e x ⁻¹) (∞-maximal (n ↑))
 
-C-sym : (X : ClosenessSpace 𝓤) (n : ℕ) → symmetric (C-holds X n) 
+C-sym : (X : ClosenessSpace 𝓤) (n : ℕ) → symmetric (C X n) 
 C-sym (X , c , i , e , s , u) n x y Cxy
  = transport ((n ↑) ≼_) (s x y) Cxy
 
-C-trans : (X : ClosenessSpace 𝓤) (n : ℕ) → transitive (C-holds X n)
+C-trans : (X : ClosenessSpace 𝓤) (n : ℕ) → transitive (C X n)
 C-trans (X , c , i , e , s , u) n x y z Cxy Cyz m π
  = u x y z m (Lemma[a＝₁→b＝₁→min𝟚ab＝₁] (Cxy m π) (Cyz m π))
 
 C-decidable : (X : ClosenessSpace 𝓤) (n : ℕ)
-            → (x y : ⟨ X ⟩ ) → is-decidable (C-holds X n x y)
+            → (x y : ⟨ X ⟩ ) → is-decidable (C X n x y)
 C-decidable (X , c , _) n x y = ≼-left-decidable n (c x y)
 
 C-is-eq : (X : ClosenessSpace 𝓤) (n : ℕ)
-        → is-equiv-relation (C-holds X n)
+        → is-equiv-relation (C X n)
 C-is-eq X n = C-prop X n , C-refl X n , C-sym X n , C-trans X n
 
-C : (X : ClosenessSpace 𝓤) → ℕ → ⟨ X ⟩ → ⟨ X ⟩ → Ω 𝓤₀   
-C X n x y = C-holds X n x y , C-prop X n x y
+CΩ : (X : ClosenessSpace 𝓤) → ℕ → ⟨ X ⟩ → ⟨ X ⟩ → Ω 𝓤₀   
+CΩ X n x y = C X n x y , C-prop X n x y
 
 C⁼ : (X : ClosenessSpace 𝓤) (n : ℕ) → EqRel ⟨ X ⟩
-C⁼ X n = C-holds X n , C-is-eq X n
+C⁼ X n = C X n , C-is-eq X n
 
 -- Definition 3.2.24 [ not needed ? ]
 
@@ -118,14 +118,14 @@ f-continuous : (X : ClosenessSpace 𝓤) (Y : ClosenessSpace 𝓥)
              → (f : ⟨ X ⟩ → ⟨ Y ⟩) → 𝓤 ̇  
 f-continuous X Y f
  = (ϵ : ℕ) → (x₁ : ⟨ X ⟩) → Σ δ ꞉ ℕ , ((x₂ : ⟨ X ⟩)
- → C-holds X δ x₁ x₂ → C-holds Y ϵ (f x₁) (f x₂))
+ → C X δ x₁ x₂ → C Y ϵ (f x₁) (f x₂))
 
 -- Definition 3.2.26
 f-ucontinuous : (X : ClosenessSpace 𝓤) (Y : ClosenessSpace 𝓥)
               → (f : ⟨ X ⟩ → ⟨ Y ⟩) → 𝓤 ̇  
 f-ucontinuous X Y f
  = (ϵ : ℕ) → Σ δ ꞉ ℕ , ((x₁ x₂ : ⟨ X ⟩)
- → C-holds X δ x₁ x₂ → C-holds Y ϵ (f x₁) (f x₂))
+ → C X δ x₁ x₂ → C Y ϵ (f x₁) (f x₂))
 
 -- Lemma 3.2.27
 ucontinuous-continuous : (X : ClosenessSpace 𝓤)
@@ -139,10 +139,10 @@ p-ucontinuous : (X : ClosenessSpace 𝓤)
               → (p : ⟨ X ⟩ → Ω 𝓦) → 𝓤 ⊔ 𝓦  ̇  
 p-ucontinuous X p
  = Σ δ ꞉ ℕ , ((x₁ x₂ : ⟨ X ⟩)
- → C-holds X δ x₁ x₂ → (p x₁ holds → p x₂ holds))
+ → C X δ x₁ x₂ → (p x₁ holds → p x₂ holds))
            
 -- Examples 3.2.3 [ TODO Finish file ]
--- open import Thesis.Chapter3.ClosenessSpaces-Examples
+-- in Thesis.Chapter3.ClosenessSpaces-Examples fe
 
 -- Definition 3.3.2 [ TODO in paper needs to be a closeness space, not a general type ]
 {- First, some things TODO put in Section 2 -}

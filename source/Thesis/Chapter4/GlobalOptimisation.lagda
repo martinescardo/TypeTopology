@@ -1,8 +1,6 @@
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split
-            --no-sized-types --no-guardedness --auto-inline
-            --allow-unsolved-metas #-}
+{-# OPTIONS --without-K --exact-split --safe #-}
 
 open import MLTT.Spartan
 open import UF.FunExt
@@ -21,6 +19,9 @@ open import UF.Equiv
 
 module Thesis.Chapter4.GlobalOptimisation (fe : FunExt) where
 
+open import Thesis.Chapter2.FiniteDiscrete
+open import Thesis.Chapter3.ClosenessSpaces fe
+open import Thesis.Chapter3.ClosenessSpaces-Examples fe
 open import Thesis.Chapter3.SearchableTypes fe
 open import CoNaturals.GenericConvergentSequence
   renaming (ℕ-to-ℕ∞ to _↑
@@ -70,9 +71,10 @@ inclusion-order : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                 → X → X → 𝓦 ̇
 inclusion-order f _≤_ x₁ x₂ = f x₁ ≤ f x₂
 
-inclusion-order-is-linear-order : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                                → (_≤_ : Y → Y → 𝓦 ̇) → is-linear-order _≤_
-                                → is-linear-order (inclusion-order f _≤_)
+inclusion-order-is-linear-order
+ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+ → (_≤_ : Y → Y → 𝓦 ̇) → is-linear-order _≤_
+ → is-linear-order (inclusion-order f _≤_)
 inclusion-order-is-linear-order
  {_} {_} {_} {X} {Y} f _≤_ ((p , r , t) , l)
  = (r→ , t→ , p→) , l→
@@ -83,7 +85,8 @@ inclusion-order-is-linear-order
   t→ x y z = r (f x) (f y) (f z)
   p→ : is-prop-valued (inclusion-order f _≤_)
   p→ x y = t (f x) (f y)
-  l→ : (x y : X) → inclusion-order f _≤_ x y + inclusion-order f _≤_ y x
+  l→ : (x y : X) → inclusion-order f _≤_ x y
+                 + inclusion-order f _≤_ y x
   l→ x y = l (f x) (f y)
 
 -- Corollary 4.1.10
@@ -96,9 +99,6 @@ finite-order-is-linear-order (n , _ , (h , _) , _)
  = inclusion-order-is-linear-order h _≤𝔽_ ≤𝔽-is-linear-order
 
 -- Definition 4.1.11
-_∼ⁿ_ : {X : 𝓤 ̇ } → (ℕ → X) → (ℕ → X) → ℕ → 𝓤 ̇
-(α ∼ⁿ β) n = (i : ℕ) → i < n → α i ＝ β i
-
 _<𝔽_ : {n : ℕ} → 𝔽 n → 𝔽 n → 𝓤₀ ̇
 _<𝔽_ {succ n} (inl x) (inl y) = 𝟘
 _<𝔽_ {succ n} (inl x) (inr y) = 𝟙
@@ -151,7 +151,8 @@ inclusion-order-is-strict-order
   i→ x e = i (f x) e
   t→ : transitive (inclusion-order f _<_)
   t→ x y z = t (f x) (f y) (f z)
-  a→ : (x y : X) → inclusion-order f _<_ x y → ¬ inclusion-order f _<_ y x
+  a→ : (x y : X) →   inclusion-order f _<_ x y
+                 → ¬ inclusion-order f _<_ y x
   a→ x y = a (f x) (f y)
   p→ : is-prop-valued (inclusion-order f _<_)
   p→ x y = p (f x) (f y)
@@ -169,11 +170,12 @@ discrete-lexicorder f _<_ α β
  = (α ∼ β) + (Σ n ꞉ ℕ , ((α ∼ⁿ β) n × (α n) < (β n)))
 
 -- TODO : Put in paper
-discrete-lexicorder-is-preorder : {D : 𝓤 ̇ } (d : is-discrete D) → is-set D
-                                → (_<_ : D → D → 𝓥 ̇ )
-                                → is-strict-order _<_
-                                → is-preorder (discrete-lexicorder d _<_)
-discrete-lexicorder-is-preorder d s _<_ (i' , t' , a' , p') = r , t , p
+discrete-lexicorder-is-preorder
+ : {D : 𝓤 ̇ } (d : is-discrete D) → is-set D
+ → (_<_ : D → D → 𝓥 ̇ ) → is-strict-order _<_
+ → is-preorder (discrete-lexicorder d _<_)
+discrete-lexicorder-is-preorder d s _<_ (i' , t' , a' , p')
+ = r , t , p
  where
   r : reflexive (discrete-lexicorder d _<_)
   r x = inl (λ _ → refl)
@@ -213,32 +215,16 @@ discrete-lexicorder-is-preorder d s _<_ (i' , t' , a' , p') = r , t , p
               (λ _ → s)))
           (p' (x _) (y _)))
             (Cases (<-trichotomous n m)
-              (λ n<m → 𝟘-elim (i' (y n) (transport (_< y n) (w n n<m) v)))
+              (λ n<m → 𝟘-elim (i' (y n)
+                         (transport (_< y n) (w n n<m) v)))
               (cases id
-              (λ m<n → 𝟘-elim (i' (x m) (transport (x m <_) (u m m<n ⁻¹) e)))))
+              (λ m<n → 𝟘-elim (i' (x m)
+                         (transport (x m <_) (u m m<n ⁻¹) e)))))
     c : _
     c g (n , w , v) = i' (y n) (transport (_< y n) (g n) v)
 
 -- Lemma 4.1.12
-𝔽-is-set : {n : ℕ} → is-set (𝔽 n)
-𝔽-is-set {succ n} = +-is-set 𝟙 (𝔽 n) 𝟙-is-set 𝔽-is-set
 
-finite-is-set : {F : 𝓤 ̇ } → (f : finite-discrete F) → is-set F
-finite-is-set (n , f) = equiv-to-set (≃-sym f) 𝔽-is-set
-
-𝔽-is-discrete : {n : ℕ} → is-discrete (𝔽 n)
-𝔽-is-discrete {succ n} (inl ⋆) (inl ⋆) = inl refl
-𝔽-is-discrete {succ n} (inl _) (inr _) = inr (λ ())
-𝔽-is-discrete {succ n} (inr _) (inl _) = inr (λ ())
-𝔽-is-discrete {succ n} (inr x) (inr y)
- = Cases (𝔽-is-discrete x y)
-     (inl ∘ ap inr)
-     (inr ∘ (_∘ inr-lc))
-
-finite-discrete-is-discrete
- : {F : 𝓤 ̇ } → (f : finite-discrete F) → is-discrete F
-finite-discrete-is-discrete (n , f)
- = equiv-to-discrete f 𝔽-is-discrete
 
 finite-lexicorder-is-preorder
  : {F : 𝓤 ̇ } (f : finite-discrete F)
@@ -263,8 +249,8 @@ is-approx-order : (X : ClosenessSpace 𝓤)
 is-approx-order X _≤_ _≤ⁿ_
  = is-preorder _≤_
  × ((ϵ : ℕ) → is-linear-order (λ x y → (x ≤ⁿ y) ϵ))
- × ((ϵ : ℕ) (x y : ⟨ X ⟩) →   B X ϵ x y → (x ≤ⁿ y) ϵ)
- × ((ϵ : ℕ) (x y : ⟨ X ⟩) → ¬ B X ϵ x y → (x ≤ⁿ y) ϵ ⇔ x ≤ y)
+ × ((ϵ : ℕ) (x y : ⟨ X ⟩) →   C X ϵ x y → (x ≤ⁿ y) ϵ)
+ × ((ϵ : ℕ) (x y : ⟨ X ⟩) → ¬ C X ϵ x y → (x ≤ⁿ y) ϵ ⇔ x ≤ y)
 
 -- Make clearer in thesis:
 approx-order-refl : (X : ClosenessSpace 𝓤)
@@ -273,7 +259,7 @@ approx-order-refl : (X : ClosenessSpace 𝓤)
                   → is-approx-order X _≤_ _≤ⁿ_
                   → (ϵ : ℕ) (x : ⟨ X ⟩) → (x ≤ⁿ x) ϵ
 approx-order-refl X _≤_ _≤ⁿ_ (p , l , c , a) ϵ x
- = c ϵ x x (B-refl X ϵ x)
+ = c ϵ x x (C-refl X ϵ x)
 
 approx-order-trans : (X : ClosenessSpace 𝓤)
                    → (_≤_  : ⟨ X ⟩ → ⟨ X ⟩ → 𝓦 ̇ )
@@ -299,11 +285,11 @@ apart-total : {X : ClosenessSpace 𝓤}
             → (_≤ⁿ_ : ⟨ X ⟩ → ⟨ X ⟩ → ℕ → 𝓦'  ̇ )
             → is-approx-order X _≤_ _≤ⁿ_
             → (ϵ : ℕ) (x y : ⟨ X ⟩) 
-            → ¬ B X ϵ x y → (x ≤ y) + (y ≤ x)
+            → ¬ C X ϵ x y → (x ≤ y) + (y ≤ x)
 apart-total {_} {_} {_} {X} _≤_ _≤ⁿ_ (p , l , c , a) ϵ x y ¬Bϵxy
  = Cases (pr₂ (l ϵ) x y)
      (inl ∘ pr₁ (a ϵ x y ¬Bϵxy))
-     (inr ∘ pr₁ (a ϵ y x λ Bϵxy → ¬Bϵxy (B-sym X ϵ y x Bϵxy)))
+     (inr ∘ pr₁ (a ϵ y x λ Bϵxy → ¬Bϵxy (C-sym X ϵ y x Bϵxy)))
 
 -- Definition 4.1.16
 -- TODO
@@ -317,159 +303,6 @@ discrete-approx-lexicorder d _<'_ α β n
 -- Move to closeness functions file:
 
 
-discrete-decidable-seq
- : {X : 𝓤 ̇ } → is-discrete X
- → (α β : ℕ → X) → (n : ℕ) → is-decidable ((α ∼ⁿ β) n)
-discrete-decidable-seq d α β 0 = inl (λ _ ())
-discrete-decidable-seq d α β (succ n)
- = Cases (discrete-decidable-seq d α β n) γ₁ (inr ∘ γ₂)
- where
-   γ₁ : (α ∼ⁿ β) n → is-decidable ((α ∼ⁿ β) (succ n))
-   γ₁ α∼ⁿβ = Cases (d (α n) (β n)) (inl ∘ γ₁₁) (inr ∘ γ₁₂)
-    where
-      γ₁₁ :    α n ＝ β n →     (α ∼ⁿ β) (succ n)
-      γ₁₁ e k k<sn = Cases (≤-split (succ k) n k<sn)
-                       (λ k<n → α∼ⁿβ k k<n)
-                       (λ sk=sn → transport (λ - → α - ＝ β -) (succ-lc sk=sn ⁻¹) e) -- α≈β k k<n
-      γ₁₂ : ¬ (α n ＝ β n) → ¬ ((α ∼ⁿ β) (succ n))
-      γ₁₂ g α∼ˢⁿβ = g (α∼ˢⁿβ n (<-succ n))
-   γ₂ : ¬ ((α ∼ⁿ β) n) → ¬ ((α ∼ⁿ β) (succ n))
-   γ₂ f = f ∘ λ α∼ˢⁿβ k k<n → α∼ˢⁿβ k (<-trans k n (succ n) k<n (<-succ n))
-
-decidable-𝟚 : {X : 𝓤 ̇ } → is-decidable X → 𝟚
-decidable-𝟚 (inl _) = ₁
-decidable-𝟚 (inr _) = ₀
-
-decidable-𝟚₁ : {X : 𝓤 ̇ } → (d : is-decidable X)
-             → X → decidable-𝟚 d ＝ ₁
-decidable-𝟚₁ (inl  x) _ = refl
-decidable-𝟚₁ (inr ¬x) x = 𝟘-elim (¬x x)
-
-decidable-𝟚₀ : {X : 𝓤 ̇ } → (d : is-decidable X)
-             → ¬ X → decidable-𝟚 d ＝ ₀
-decidable-𝟚₀ (inl  x) ¬x = 𝟘-elim (¬x x)
-decidable-𝟚₀ (inr ¬x)  _ = refl
-
-𝟚-decidable₁ : {X : 𝓤 ̇ } → (d : is-decidable X)
-             → decidable-𝟚 d ＝ ₁ → X
-𝟚-decidable₁ d e with d
-... | inl  x = x
-... | inr ¬x = 𝟘-elim (zero-is-not-one e)
-
-𝟚-decidable₀ : {X : 𝓤 ̇ } → (d : is-decidable X)
-             → decidable-𝟚 d ＝ ₀ → ¬ X
-𝟚-decidable₀ d e with d
-... | inl  x = 𝟘-elim (zero-is-not-one (e ⁻¹))
-... | inr ¬x = ¬x
-
-decidable-seq-𝟚 : {X : ℕ → 𝓤 ̇ } → is-complemented X → (ℕ → 𝟚)
-decidable-seq-𝟚 d n = decidable-𝟚 (d (succ n))
-
-discrete-seq-clofun'
- : {X : 𝓤 ̇ } → is-discrete X → (ℕ → X) → (ℕ → X) → (ℕ → 𝟚)
-discrete-seq-clofun' d α β
- = decidable-seq-𝟚 (discrete-decidable-seq d α β)
-
-discrete-seq-clofun'-e
- : {X : 𝓤 ̇ } → (d : is-discrete X) → (α β : ℕ → X)
- → ((n : ℕ) → discrete-seq-clofun' d α β n ＝ ₁)
- → α ＝ β
-discrete-seq-clofun'-e d α β f
- = dfunext (fe _ _)
-     (λ n → 𝟚-decidable₁ (discrete-decidable-seq d α β (succ n))
-              (f n) n (<-succ n))
-
-discrete-seq-clofun'-i
- : {X : 𝓤 ̇ } → (d : is-discrete X) → (α : ℕ → X)
- → (n : ℕ) → discrete-seq-clofun' d α α n ＝ ₁
-discrete-seq-clofun'-i d α n
- = decidable-𝟚₁ (discrete-decidable-seq d α α (succ n)) (λ _ _ → refl)
-
-discrete-seq-clofun'-s
- : {X : 𝓤 ̇ } → (d : is-discrete X) → (α β : ℕ → X)
- → (n : ℕ)
- → discrete-seq-clofun' d α β n ＝ discrete-seq-clofun' d β α n
-discrete-seq-clofun'-s d α β n
- with discrete-decidable-seq d α β (succ n)
-... | inl  α∼ⁿβ
- = decidable-𝟚₁ (discrete-decidable-seq d β α (succ n))
-     (λ i i<n → α∼ⁿβ i i<n ⁻¹) ⁻¹
-... | inr ¬α∼ⁿβ
- = decidable-𝟚₀ (discrete-decidable-seq d β α (succ n))
-     (λ α∼ⁿβ → ¬α∼ⁿβ (λ i i<n → α∼ⁿβ i i<n ⁻¹)) ⁻¹
-
-discrete-seq-clofun'-u
- : {X : 𝓤 ̇ } → (d : is-discrete X) → (α β ζ : ℕ → X)
- → (n : ℕ)
- → min𝟚 (discrete-seq-clofun' d α β n)
-        (discrete-seq-clofun' d β ζ n) ＝ ₁
- → discrete-seq-clofun' d α ζ n ＝ ₁
-discrete-seq-clofun'-u d α β ζ n minₙ=1
- with discrete-decidable-seq d α β (succ n)
-    | discrete-decidable-seq d β ζ (succ n)
-    | discrete-decidable-seq d α ζ (succ n)
-... |        _ |        _ | inl     _ = refl
-... | inl α∼ⁿβ | inl β∼ⁿζ | inr ¬α∼ⁿζ
- = 𝟘-elim (¬α∼ⁿζ (λ i i<n → α∼ⁿβ i i<n ∙ β∼ⁿζ i i<n))
-
-discrete-decidable-seq-𝟚-decreasing
- : {X : 𝓤 ̇ } → (d : is-discrete X) → (α β : ℕ → X)
- → is-decreasing (discrete-seq-clofun' d α β)
-discrete-decidable-seq-𝟚-decreasing d α β n
- with discrete-decidable-seq d α β (succ n)
-    | discrete-decidable-seq d α β (succ (succ n))
-... | inl     _ |          _ = ₁-top
-... | inr ¬α∼ⁿβ | inl  α∼ˢⁿβ
- = ¬α∼ⁿβ (λ i i≤n → α∼ˢⁿβ i (≤-trans i n (succ n)
-                      i≤n (≤-succ n)))
-... | inr     _ | inr      _ = ⋆
-
-discrete-seq-clofun
- : {X : 𝓤 ̇ } → is-discrete X → (ℕ → X) → (ℕ → X) → ℕ∞
-discrete-seq-clofun d α β
- = discrete-seq-clofun' d α β
- , discrete-decidable-seq-𝟚-decreasing d α β
-
-open import TWA.Closeness fe hiding (is-ultra; is-closeness)
-
-discrete-seq-clofun-e
- : {X : 𝓤 ̇ } → (d : is-discrete X)
- → indistinguishable-are-equal (discrete-seq-clofun d)
-discrete-seq-clofun-e d α β cαβ=∞
- = discrete-seq-clofun'-e d α β (λ n → ap (λ - → pr₁ - n) cαβ=∞) 
-     
-discrete-seq-clofun-i : {X : 𝓤 ̇ } → (d : is-discrete X)
-                      → self-indistinguishable (discrete-seq-clofun d)
-discrete-seq-clofun-i d α
- = to-subtype-＝ (being-decreasing-is-prop (fe _ _))
-     (dfunext (fe _ _) (discrete-seq-clofun'-i d α))
-
-discrete-seq-clofun-s : {X : 𝓤 ̇ } → (d : is-discrete X)
-                      → is-symmetric (discrete-seq-clofun d)
-discrete-seq-clofun-s d α β
- = to-subtype-＝ (being-decreasing-is-prop (fe _ _))
-     (dfunext (fe _ _) (discrete-seq-clofun'-s d α β))
-
-discrete-seq-clofun-u : {X : 𝓤 ̇ } → (d : is-discrete X)
-                      → is-ultra (discrete-seq-clofun d)
-discrete-seq-clofun-u = discrete-seq-clofun'-u
-
-discrete-seq-clofun-c : {X : 𝓤 ̇ } → (d : is-discrete X)
-                      → is-closeness (discrete-seq-clofun d)
-discrete-seq-clofun-c d = discrete-seq-clofun-e d
-                        , discrete-seq-clofun-i d
-                        , discrete-seq-clofun-s d
-                        , discrete-seq-clofun-u d
-
-ℕ→D-clofun : {X : 𝓤 ̇ } → (d : is-discrete X)
-           → Σ c ꞉ ((ℕ → X) → (ℕ → X) → ℕ∞)
-           , is-closeness c
-ℕ→D-clofun d = discrete-seq-clofun d
-             , discrete-seq-clofun-c d
-
-ℕ→D-ClosenessSpace : {X : 𝓤 ̇ } → (d : is-discrete X)
-                   → ClosenessSpace 𝓤
-ℕ→D-ClosenessSpace {𝓤} {X} d = (ℕ → X) , ℕ→D-clofun d
 
 -- ################
 discrete-approx-lexicorder-is-approx-order
@@ -487,9 +320,11 @@ discrete-approx-lexicorder-is-approx-order
  , c
  , a
  where
-  r : (n : ℕ) → reflexive (λ x y → discrete-approx-lexicorder d _<'_ x y n)
+  r : (n : ℕ)
+    → reflexive (λ x y → discrete-approx-lexicorder d _<'_ x y n)
   r n x = inl (λ _ _ → refl)
-  t : (n : ℕ) → transitive (λ x y → discrete-approx-lexicorder d _<'_ x y n)
+  t : (n : ℕ)
+    → transitive (λ x y → discrete-approx-lexicorder d _<'_ x y n)
   t n x y z (inl x∼ⁿy) (inl y∼ᵐz)
    = inl (λ i i<n → x∼ⁿy i i<n ∙ y∼ᵐz i i<n)
   t n x y z (inl x∼ⁿy) (inr (i , i<n , y∼ⁱz , yi<zi))
@@ -516,7 +351,8 @@ discrete-approx-lexicorder-is-approx-order
             , (λ j j<k → x∼ⁱy j (<-trans j k i j<k k<i)
                        ∙ y∼ᵏz j j<k)
             , transport (_<' z k) (x∼ⁱy k k<i ⁻¹) yk<zk)
-  p : (n : ℕ) → is-prop-valued (λ x y → discrete-approx-lexicorder d _<'_ x y n)
+  p : (n : ℕ)
+    → is-prop-valued (λ x y → discrete-approx-lexicorder d _<'_ x y n)
   p n x y = +-is-prop (a n) b c
    where
     a : (i : ℕ) → is-prop ((x ∼ⁿ y) i)
@@ -528,9 +364,11 @@ discrete-approx-lexicorder-is-approx-order
            (a k)
            (p' (x k) (y k)))
          (Cases (<-trichotomous i j)
-           (λ i<j → 𝟘-elim (i' (y i) (transport (_<' y i) (x∼ʲy i i<j) xi<yi)))
+           (λ i<j → 𝟘-elim (i' (y i)
+                      (transport (_<' y i) (x∼ʲy i i<j) xi<yi)))
            (cases id
-           (λ j<i → 𝟘-elim (i' (y j) (transport (_<' y j) (x∼ⁱy j j<i) xj<yj)))))
+           (λ j<i → 𝟘-elim (i' (y j)
+                      (transport (_<' y j) (x∼ⁱy j j<i) xj<yj)))))
     c : _
     c x∼ⁿy (i , i<n , x∼ⁱy , xi<yi)
      = i' (y i) (transport (_<' y i) (x∼ⁿy i i<n) xi<yi)
@@ -566,7 +404,7 @@ discrete-approx-lexicorder-is-approx-order
   ... | inr (inl y∼ⁿx) | inr (inr yn<xn)
    = inr (inr (n , <-succ n , y∼ⁿx , yn<xn))
   c : (n : ℕ) → (x y : ℕ → D)
-    → B (ℕ→D-ClosenessSpace d) n x y
+    → C (ℕ→D-ClosenessSpace d) n x y
     → discrete-approx-lexicorder d _<'_ x y n
   c 0 x y Bnxy
    = inl (λ _ ())
@@ -574,7 +412,7 @@ discrete-approx-lexicorder-is-approx-order
    = inl (𝟚-decidable₁ (discrete-decidable-seq d x y (succ n))
       (Bnxy n (ℕ-to-ℕ∞-diagonal₁ n)))
   a : (n : ℕ) → (x y : ℕ → D)
-    → ¬ B (ℕ→D-ClosenessSpace d) n x y
+    → ¬ C (ℕ→D-ClosenessSpace d) n x y
     → discrete-approx-lexicorder d _<'_ x y n
     ⇔ discrete-lexicorder d _<'_ x y
   pr₁ (a n x y ¬Bxy) (inl x∼ⁿy)
@@ -598,10 +436,12 @@ discrete-approx-lexicorder-is-approx-order
 -- TODO
 
 -- Definition 4.1.18
-is-global-minimal : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (_≤_ : Y → Y → 𝓦 ̇ ) → (X → Y) → X → 𝓤 ⊔ 𝓦  ̇
+is-global-minimal : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (_≤_ : Y → Y → 𝓦 ̇ )
+                  → (X → Y) → X → 𝓤 ⊔ 𝓦  ̇
 is-global-minimal {𝓤} {𝓥} {𝓦'} {X} _≤_ f x₀ = (x : X) → f x₀ ≤ f x
 
-has-global-minimal : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (_≤_ : Y → Y → 𝓦 ̇ ) → (X → Y) → 𝓤 ⊔ 𝓦  ̇
+has-global-minimal : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (_≤_ : Y → Y → 𝓦 ̇ )
+                   → (X → Y) → 𝓤 ⊔ 𝓦  ̇
 has-global-minimal f = Σ ∘ (is-global-minimal f)
 
 -- Lemma 4.1.19
@@ -633,7 +473,8 @@ has-global-minimal f = Σ ∘ (is-global-minimal f)
    where
     γ : (x : 𝔽 (succ (succ n))) → f (inl ⋆) ≤ f x
     γ (inl ⋆) = ≤𝔽-refl  (f (inl ⋆))
-    γ (inr x) = ≤𝔽-trans (f (inl ⋆)) (f (inr x'₀)) (f (inr x)) ⋆≤x'₀ (m x)
+    γ (inr x) = ≤𝔽-trans (f (inl ⋆)) (f (inr x'₀)) (f (inr x))
+                  ⋆≤x'₀ (m x)
 
 finite-global-minimal : {X : 𝓤 ̇ } {Y : 𝓥  ̇ }
                       → X → finite-discrete X
@@ -645,7 +486,8 @@ finite-global-minimal x (0 , (_ , (h , _) , _)) _≤_ l f
  = 𝟘-elim (h x)
 finite-global-minimal x (succ n , e@(g , (h , η) , _)) _≤_ l f
  with 𝔽-global-minimal (succ n) (inl ⋆) _≤_ l (f ∘ g)
-... | (x₀ , γ₀) = g x₀ , λ x → transport (f (g x₀) ≤_) (ap f (η x)) (γ₀ (h x))
+... | (x₀ , γ₀) = g x₀
+                , λ x → transport (f (g x₀) ≤_) (ap f (η x)) (γ₀ (h x))
 
 -- Definition 4.1.20
 is_global-minimal : ℕ → {𝓤 𝓥 : Universe}
@@ -723,7 +565,7 @@ cover-continuity-lemma
  X Y _≤_ _≤ⁿ_ (_ , _ , c , a) ϵ f ϕ (X' , g , η) e x
  = (pr₁ (η x))
  , c ϵ (f (g (pr₁ (η x)))) (f x)
-     (B-sym Y ϵ (f x) (f (g (pr₁ (η x))))
+     (C-sym Y ϵ (f x) (f (g (pr₁ (η x))))
        (pr₂ (ϕ ϵ) x (g (pr₁ (η x)))
          (pr₂ (η x))))
 
@@ -761,7 +603,8 @@ global-opt {𝓤} {𝓥} {𝓦} {𝓦'} {𝓤'} X Y x₁ _≤_ _≤ⁿ_ a ϵ f �
   h-min : (x : ⟨ X ⟩) → (f (g (h x)) ≤ⁿ f x) ϵ
   h-min x = pr₂ (η x)
   first  : has ϵ global-minimal _≤ⁿ_ (f ∘ g)
-  first  = F-ϵ-global-minimal Y (h x₁) X'-is-finite _≤_ _≤ⁿ_ a ϵ (f ∘ g)
+  first
+   = F-ϵ-global-minimal Y (h x₁) X'-is-finite _≤_ _≤ⁿ_ a ϵ (f ∘ g)
   x'₀ : X'
   x'₀ = pr₁ first
   m  : is ϵ global-minimal _≤ⁿ_ (f ∘ g) x'₀

@@ -106,7 +106,8 @@ equivs-preserve-searchability {𝓤} {𝓥} {𝓦} {X} {Y}
 ≃-searchable (f , e) = equivs-preserve-searchability f e
              
 -- Lemma 3.1.12
-finite-discrete-searchable : {X : 𝓤 ̇ } → X → finite-discrete X → searchable 𝓦 X
+finite-discrete-searchable : {X : 𝓤 ̇ } → X → finite-discrete X
+                           → searchable 𝓦 X
 finite-discrete-searchable x (0 , _ , (g , _) , _) = 𝟘-elim (g x)
 finite-discrete-searchable x (succ n , e)
  = ≃-searchable e (𝔽-searchable (succ n) (inl ⋆))
@@ -149,12 +150,12 @@ semi-searchable X 𝓥 𝓦
 searchable-covers-csearchable : (X : ClosenessSpace 𝓤)
                               → semi-searchable X 𝓥 𝓦
                               → csearchable' 𝓦 X
-searchable-covers-csearchable {𝓤} {𝓥} {𝓦} X C ((p , d) , δ , ϕ)
+searchable-covers-csearchable {𝓤} {𝓥} {𝓦} X S ((p , d) , δ , ϕ)
  = x₀ , γ
  where
   X' : 𝓥 ̇
   g  : X' → ⟨ X ⟩
-  η  : (x : ⟨ X ⟩) → Σ x' ꞉ X' , C-holds X δ x (g x')
+  η  : (x : ⟨ X ⟩) → Σ x' ꞉ X' , C X δ x (g x')
   𝓔' : decidable-predicate 𝓦 X' → X'
   S' : ((p' , d') : decidable-predicate 𝓦 X')
      → (Σ x' ꞉ X' , p' x' holds) → p' (𝓔' (p' , d')) holds
@@ -167,13 +168,13 @@ searchable-covers-csearchable {𝓤} {𝓥} {𝓦} X C ((p , d) , δ , ϕ)
    where
      x' : X'
      x' = pr₁ (η x)
-     η' : C-holds X δ x (g x')
+     η' : C X δ x (g x')
      η' = pr₂ (η x)
-  X' = pr₁ (pr₁ (C δ))
-  g  = pr₁ (pr₂ (pr₁ (C δ)))
-  η  = pr₂ (pr₂ (pr₁ (C δ)))
-  𝓔' = pr₁ (pr₂ (C δ))
-  S' = pr₂ (pr₂ (C δ))
+  X' = pr₁ (pr₁ (S δ))
+  g  = pr₁ (pr₂ (pr₁ (S δ)))
+  η  = pr₂ (pr₂ (pr₁ (S δ)))
+  𝓔' = pr₁ (pr₂ (S δ))
+  S' = pr₂ (pr₂ (S δ))
   
 -- Corollary 3.3.8
 -- Add inhabited assumption
@@ -186,3 +187,4 @@ totally-bounded-csearchable X t i
      (λ ϵ → (pr₁ (t ϵ)) , finite-discrete-searchable (i ϵ) (pr₂ (t ϵ)))
 
 -- Theorem 3.3.9 [ TODO link to blog post ]
+-- in Tychonoff
