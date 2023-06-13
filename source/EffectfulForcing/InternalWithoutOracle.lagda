@@ -90,15 +90,10 @@ data ⊆Γ : {n : ℕ} (Γ₁ : Cxt n) {m : ℕ} (Γ₂ : Cxt m) → Type where
 -- ⊆Γ is transitive
 ⊆Γ-trans : {n₁ : ℕ} {Γ₁ : Cxt n₁} {n₂ : ℕ} {Γ₂ : Cxt n₂} {n₃ : ℕ} {Γ₃ : Cxt n₃}
          → ⊆Γ Γ₁ Γ₂ → ⊆Γ Γ₂ Γ₃ → ⊆Γ Γ₁ Γ₃
-⊆Γ-trans {.0} {.〈〉} {.0} {.〈〉} {n₃} {Γ₃} ⊆Γ0 q = q
-⊆Γ-trans {n₁} {Γ₁} {.(succ _)} {Γ₂ , σ} {.(succ _)} {Γ₃ , σ₁} (⊆ΓR σ h) (⊆ΓR σ₁ q) =
- ⊆Γ-trans h (⊆ΓR σ₁ (⊆Γ-trans (⊆ΓR σ (⊆Γ-refl Γ₂)) q))
-⊆Γ-trans {n₁} {Γ₁} {.(succ _)} {.(_ , σ)} {.(succ _)} {.(_ , σ)} (⊆ΓR σ h) (⊆ΓS .σ q) =
- ⊆ΓR σ (⊆Γ-trans h q)
-⊆Γ-trans {.(succ _)} {.(_ , σ)} {.(succ _)} {.(_ , σ)} {.(succ _)} {.(_ , σ₁)} (⊆ΓS σ h) (⊆ΓR σ₁ q) =
- ⊆ΓR σ₁ (⊆Γ-trans (⊆ΓS σ h) q)
-⊆Γ-trans {.(succ _)} {.(_ , σ)} {.(succ _)} {.(_ , σ)} {.(succ _)} {.(_ , σ)} (⊆ΓS σ h) (⊆ΓS .σ q) =
- ⊆ΓS σ (⊆Γ-trans h q)
+⊆Γ-trans {n₁} {Γ₁} {.0} {.〈〉} {.0} {.〈〉} h ⊆Γ0 = h
+⊆Γ-trans {n₁} {Γ₁} {n₂} {Γ₂} {.(succ _)} {.(_ , σ)} h (⊆ΓR σ q) = ⊆ΓR σ (⊆Γ-trans h q)
+⊆Γ-trans {n₁} {Γ₁} {.(succ _)} {.(_ , σ)} {.(succ _)} {.(_ , σ)} (⊆ΓR .σ h) (⊆ΓS σ q) = ⊆ΓR σ (⊆Γ-trans h q)
+⊆Γ-trans {.(succ _)} {.(_ , σ)} {.(succ _)} {.(_ , σ)} {.(succ _)} {.(_ , σ)} (⊆ΓS .σ h) (⊆ΓS σ q) = ⊆ΓS σ (⊆Γ-trans h q)
 
 -- From the standard library. Is that defined somewhere? Can we import it from the standard library?
 data _≤_ : ℕ → ℕ → Type where
@@ -132,6 +127,14 @@ n≤s (succ n) = s≤s (n≤s n)
 <-irrefl : (n : ℕ) → ¬ (n < n)
 <-irrefl zero ()
 <-irrefl (succ n) (s≤s h) = <-irrefl n h
+
+<+> : (n m : ℕ) → ¬ (n ＝ m) → n < m + m < n
+<+> zero zero d = 𝟘-elim (d refl)
+<+> zero (succ m) d = inl (s≤s z≤n)
+<+> (succ n) zero d = inr (s≤s z≤n)
+<+> (succ n) (succ m) d with <+> n m (λ p → d (ap succ p))
+... | inl p = inl (s≤s p)
+... | inr p = inr (s≤s p)
 
 Fin→ℕ : {n : ℕ} (i : Fin n) → ℕ
 Fin→ℕ {.(succ _)} Fin.𝟎 = 0
@@ -175,9 +178,13 @@ rmCxt {n} (Γ , τ) Fin.𝟎 = Γ
 rmCxt {succ n} (Γ , τ) (Fin.suc i) = rmCxt Γ i , τ
 
 -- Removing a type from a context is a sub-context of the initial context
-⊆Γ-rmCxt→ : {m : ℕ} {Γ : Cxt (succ m)} (i : Fin (succ m)) → ⊆Γ (rmCxt Γ i) Γ
-⊆Γ-rmCxt→ {m} {Γ , τ} Fin.𝟎 = ⊆ΓR τ (⊆Γ-refl Γ)
-⊆Γ-rmCxt→ {succ m} {Γ , τ} (Fin.suc i) = ⊆ΓS τ (⊆Γ-rmCxt→ i)
+→⊆Γ-rmCxt : {m : ℕ} {Γ : Cxt (succ m)} (i : Fin (succ m)) → ⊆Γ (rmCxt Γ i) Γ
+→⊆Γ-rmCxt {m} {Γ , τ} Fin.𝟎 = ⊆ΓR τ (⊆Γ-refl Γ)
+→⊆Γ-rmCxt {succ m} {Γ , τ} (Fin.suc i) = ⊆ΓS τ (→⊆Γ-rmCxt i)
+
+⊆Γ-rmCxt→ : {n : ℕ} {Γ₁ : Cxt n} {m : ℕ} {Γ₂ : Cxt (succ m)} (i : Fin (succ m))
+           → ⊆Γ Γ₁ (rmCxt Γ₂ i) → ⊆Γ Γ₁ Γ₂
+⊆Γ-rmCxt→ {n} {Γ₁} {m} {Γ₂} i h = ⊆Γ-trans h (→⊆Γ-rmCxt i)
 
 T＝type : {n : ℕ} {Γ : Cxt n} {σ τ : type}
        → τ ＝ σ
@@ -263,9 +270,9 @@ weaken-id {σ} {n} {Γ} s (t₁ · t₂) =
 ⌜star⌝ =
  ƛ (ƛ (⌜kleisli-extension⌝
        · ƛ (⌜B-functor⌝
-            · ƛ (ν Fin.𝟎 · ν (Fin.suc Fin.𝟎))
-            · ν (Fin.suc (Fin.suc Fin.𝟎)))
-       · ν Fin.𝟎))
+            · ƛ (ν₀ · ν₁)
+            · ν₂)
+       · ν₀))
 
 -- λη.λβ.t (λs.f (λg.η(g s)) β) β
 ⌜app⌝ : {A : type} {σ τ : type} {n : ℕ} {Γ : Cxt n}
@@ -340,13 +347,13 @@ Fin.suc i =? Fin.suc j with i =? j
 subν : {n : ℕ} {Γ : Cxt (succ n)} (i j : Fin (succ n)) → T₀ (Γ [ i ]) → T (rmCxt Γ i) (Γ [ j ])
 subν {n} {Γ , τ} Fin.𝟎 Fin.𝟎 u = weaken₀ u
 subν {n} {Γ , τ} Fin.𝟎 (Fin.suc j) u = ν j
-subν {succ n} {Γ , τ} (Fin.suc i) Fin.𝟎 u = ν Fin.𝟎
+subν {succ n} {Γ , τ} (Fin.suc i) Fin.𝟎 u = ν₀
 subν {succ n} {Γ , τ} (Fin.suc i) (Fin.suc j) u = weaken, τ (subν i j u)
 
 sub : {σ : type} {n : ℕ} {Γ : Cxt (succ n)} (i : Fin (succ n)) → T Γ σ → T₀ (Γ [ i ]) → T (rmCxt Γ i) σ
 sub {_} {n} {Γ} i Zero u = Zero
 sub {_} {n} {Γ} i Succ u = Succ
-sub {_} {n} {Γ} i Rec u = Rec
+sub {_} {n} {Γ} i Rec u  = Rec
 sub {.(Γ [ j ])} {n} {Γ} i (ν j) u = subν i j u
 sub {σ₁ ⇒ σ₂} {n} {Γ} i (ƛ t) u = ƛ (sub {σ₂} {succ n} {Γ , σ₁} (Fin.suc i) t u)
 sub {σ} {n} {Γ} i (t₁ · t₂) u = sub i t₁ u · sub i t₂ u
@@ -371,6 +378,39 @@ close· : {σ τ : type} {n : ℕ} {Γ : Cxt n} → (t : T Γ (σ ⇒ τ)) (u : 
 close· {σ} {τ} {zero} {Γ} t u s = refl
 close· {σ} {τ} {succ n} {Γ} t u s = close· (sub₀ t (s Fin.𝟎)) (sub₀ u (s Fin.𝟎)) (λ i → s (Fin.suc i))
 
+Sub⊆Γ : {n : ℕ} {Γ₁ : Cxt n} {m : ℕ} {Γ₂ : Cxt m} (s : ⊆Γ Γ₁ Γ₂) → Type
+Sub⊆Γ {.0} {.〈〉} {.0} {.〈〉} ⊆Γ0 = 𝟙
+Sub⊆Γ {n} {Γ₁} {succ m} {Γ₂ , σ} (⊆ΓR σ s) = Sub⊆Γ s × T₀ σ
+Sub⊆Γ {succ n} {Γ₁ , σ} {succ m} {Γ₂ , σ} (⊆ΓS σ s) = Sub⊆Γ s
+
+Sub⊆Γ〈〉 : {n : ℕ} {Γ : Cxt n} → Sub₀ Γ → Sub⊆Γ (⊆〈〉 Γ)
+Sub⊆Γ〈〉 {zero} {〈〉} s = MLTT.Spartan.⋆
+Sub⊆Γ〈〉 {succ n} {Γ , τ} s = Sub⊆Γ〈〉 {n} {Γ} (λ k → s (Fin.suc k)) , s Fin.𝟎
+
+-- A more general definition of close, which does not necessarily go down to a closed term
+close2 : {σ : type} {n : ℕ} {Γ₁ : Cxt n} {m : ℕ} {Γ₂ : Cxt m} → {s : ⊆Γ Γ₁ Γ₂} → T Γ₂ σ → Sub⊆Γ s  → T Γ₁ σ
+close2 {σ} {.0} {.〈〉} {.0} {.〈〉} {⊆Γ0} t subst = t
+close2 {σ} {n} {Γ₁} {succ m} {Γ₂ , σ₁} {⊆ΓR σ₁ s} t (subst , u) =
+ close2 {σ} {n} {Γ₁} {m} {Γ₂} {s} (sub {σ} {m} {Γ₂ , σ₁} Fin.𝟎 t u) subst
+close2 {σ} {succ n} {Γ₁ , σ₁} {succ m} {Γ₂ , σ₁} {⊆ΓS σ₁ s} t subst =
+ weaken, {n} {Γ₁} {σ₁ ⇒ σ} σ₁ (close2 {σ₁ ⇒ σ} {n} {Γ₁} {m} {Γ₂} {s} (ƛ t) subst) · ν₀
+
+-- close and close2 produce the same result
+close-as-close2 : {σ : type} {n : ℕ} {Γ : Cxt n} (t : T Γ σ) (s : Sub₀ Γ)
+                → close t s ＝ close2 {σ} {0} {〈〉} {n} {Γ} {⊆〈〉 Γ} t (Sub⊆Γ〈〉 s)
+close-as-close2 {σ} {zero} {〈〉} t s = refl
+close-as-close2 {σ} {succ n} {Γ , τ} t s = close-as-close2 (sub₀ t (s Fin.𝟎)) (λ i → s (Fin.suc i))
+
+closeƛ : {n : ℕ} {Γ : Cxt n} {σ τ : type} (t : T (Γ , σ) τ) (s : Sub₀ Γ)
+       → close (ƛ t) s ＝ ƛ (close2 {τ} {1} {〈〉 , σ} {succ n} {Γ , σ} {⊆ΓS σ (⊆〈〉 Γ)} t (Sub⊆Γ〈〉 s))
+closeƛ {n} {Γ} {σ} {τ} t s =
+ close (ƛ t) s
+  ＝⟨ {!!} ⟩
+ {!close2 {τ} {0} {〈〉} {n} {Γ} {⊆〈〉 Γ} (ƛ t) (Sub⊆Γ〈〉 s)!}
+  ＝⟨ {!!} ⟩
+ ƛ (close2 {τ} {1} {〈〉 , σ} {succ n} {Γ , σ} {⊆ΓS σ (⊆〈〉 Γ)} t (Sub⊆Γ〈〉 s))
+  ∎
+
 Fin∈Γ : {n : ℕ} (i : Fin n) {m : ℕ} (Γ : Cxt m) → Type
 Fin∈Γ {n} i {m} Γ = Fin→ℕ i < m
 
@@ -386,7 +426,7 @@ Fin∈Γ {n} i {m} Γ = Fin→ℕ i < m
 is-free : (i : ℕ) {n : ℕ} {Γ : Cxt n} {σ : type} (t : T Γ σ) → Type
 is-free i {n} {Γ} {_} Zero = 𝟘
 is-free i {n} {Γ} {_} Succ = 𝟘
-is-free i {n} {Γ} {_} Rec = 𝟘
+is-free i {n} {Γ} {_} Rec  = 𝟘
 is-free i {n} {Γ} {.(Γ [ i₁ ])} (ν i₁) = i ＝ Fin→ℕ i₁
 is-free i {n} {Γ} {σ ⇒ τ} (ƛ t) = is-free (succ i) t
 is-free i {n} {Γ} {σ} (t₁ · t₂) = is-free i t₁ + is-free i t₂
@@ -413,6 +453,11 @@ is-free-transport⁻¹ : {m : ℕ} {Γ : Cxt m} {σ τ : type} (e : τ ＝ σ) (
                     → is-free j t
 is-free-transport⁻¹ {m} {Γ} {σ} {.σ} refl t j h = h
 
+is-free-¬transport⁻¹ : {m : ℕ} {Γ : Cxt m} {σ τ : type} (e : τ ＝ σ) (t : T Γ σ) (j : ℕ)
+                   → ¬ is-free j (transport⁻¹ (T Γ) e t)
+                    → ¬ is-free j t
+is-free-¬transport⁻¹ {m} {Γ} {σ} {.σ} refl t j h = h
+
 free-weaken : {n : ℕ} {Γ₁ : Cxt n} {m : ℕ} {Γ₂ : Cxt m} (s : ⊆Γ Γ₁ Γ₂) {σ : type} (t : T Γ₁ σ) (i : ℕ)
             → is-free i (weaken s t)
             → Σ p ꞉ Fin n , (Fin→ℕ (⊆ΓFin s p) ＝ i) × (is-free (Fin→ℕ p) t)
@@ -425,8 +470,8 @@ free-weaken {n} {Γ₁} {m} {Γ₂} s {σ} (t · t₁) i (inl x) with free-weake
 free-weaken {n} {Γ₁} {m} {Γ₂} s {σ} (t · t₁) i (inr x) with free-weaken s t₁ i x
 ... | p , h1 , h2 = p , h1 , inr h2
 
-closed-weaken₀ : {n : ℕ} {Γ : Cxt n} {σ : type} (t : T₀ σ) → closed {n} {Γ} (weaken₀ t)
-closed-weaken₀ {n} {Γ} {σ} t i h with free-weaken (⊆〈〉 Γ) t i h
+closed-weaken₀ : {n : ℕ} {Γ : Cxt n} {σ : type} (e : ⊆Γ 〈〉 Γ) (t : T₀ σ) → closed {n} {Γ} (weaken e t)
+closed-weaken₀ {n} {Γ} {σ} e t i h with free-weaken e t i h
 ... | p , h1 , h2 = closed₀ t (Fin→ℕ p) h2
 
 sub-transport⁻¹ : {m : ℕ} {Γ : Cxt (succ m)} (i : Fin (succ m)) (u : T₀ (Γ [ i ])) {σ τ : type} (e : τ ＝ σ) (t : T Γ σ)
@@ -434,34 +479,152 @@ sub-transport⁻¹ : {m : ℕ} {Γ : Cxt (succ m)} (i : Fin (succ m)) (u : T₀ 
                   ＝ transport⁻¹ (T (rmCxt Γ i)) e (sub {σ} i t u)
 sub-transport⁻¹ {m} {Γ} i u {σ} {.σ} refl t = refl
 
-sub-weaken : {n : ℕ} {Γ₁ : Cxt n} {m : ℕ} {Γ₂ : Cxt (succ m)} {σ : type} (i : Fin (succ m))
-             (s1 : ⊆Γ Γ₁ Γ₂) (s2 : ⊆Γ Γ₁ (rmCxt Γ₂ i))
-             (t : T Γ₁ σ) (u : T₀ (Γ₂ [ i ]))
-             (nf : ¬ is-free (Fin→ℕ i) (weaken s1 t))
-           → sub i (weaken s1 t) u ＝ weaken {n} {Γ₁} {m} {rmCxt Γ₂ i} {σ} s2 t
-sub-weaken {n} {Γ₁} {m} {Γ₂} {_} i s1 s2 Zero u nf = refl
-sub-weaken {n} {Γ₁} {m} {Γ₂} {_} i s1 s2 Succ u nf = refl
-sub-weaken {n} {Γ₁} {m} {Γ₂} {_} i s1 s2 Rec  u nf = refl
-sub-weaken {n} {Γ₁} {m} {Γ₂} {.(Γ₁ [ i₁ ])} i s1 s2 (ν i₁) u nf =
- sub i (transport⁻¹ (T Γ₂) (⊆Γ[] i₁ s1) (ν (⊆ΓFin s1 i₁))) u
-  ＝⟨ sub-transport⁻¹ i u (⊆Γ[] i₁ s1) (ν (⊆ΓFin s1 i₁)) ⟩
- transport⁻¹ (T (rmCxt Γ₂ i)) (⊆Γ[] i₁ s1) (subν i (⊆ΓFin s1 i₁) u)
-  ＝⟨ {!!} ⟩
- transport⁻¹ (T (rmCxt Γ₂ i)) (⊆Γ[] i₁ s2) (ν (⊆ΓFin s2 i₁))
+⊆Γ-trans-refl : {n : ℕ} {Γ₁ : Cxt n} {m : ℕ} {Γ₂ : Cxt m} (s : ⊆Γ Γ₁ Γ₂)
+              → ⊆Γ-trans s (⊆Γ-refl Γ₂) ＝ s
+⊆Γ-trans-refl {n} {Γ₁} {zero} {〈〉} s = refl
+⊆Γ-trans-refl {n} {Γ₁} {succ m} {Γ₂ , τ} (⊆ΓR .τ s) = ap (⊆ΓR τ) (⊆Γ-trans-refl s)
+⊆Γ-trans-refl {.(succ _)} {.(_ , τ)} {succ m} {Γ₂ , τ} (⊆ΓS .τ s) = ap (⊆ΓS τ) (⊆Γ-trans-refl s)
+
+⊆Γ-rmCxt→⊆〈〉 : {n : ℕ} (Γ : Cxt n) (τ : type) → ⊆Γ-rmCxt→ Fin.𝟎 (⊆〈〉 Γ) ＝ ⊆〈〉 (Γ , τ)
+⊆Γ-rmCxt→⊆〈〉 {n} Γ τ = ap (⊆ΓR τ) (⊆Γ-trans-refl (⊆〈〉 Γ))
+
+transport⁻¹ν-as-weaken, : {n : ℕ} {Γ₁ : Cxt n} {m : ℕ} {Γ₂ : Cxt m} (s : ⊆Γ Γ₁ Γ₂) (i : Fin n) (τ : type)
+                          (j : Fin m) (σ : type) (e : σ ＝ Γ₂ [ j ])
+                       → transport⁻¹ (T (Γ₂ , τ)) e (ν (Fin.suc j))
+                       ＝ weaken, τ (transport⁻¹ (T Γ₂) e (ν j))
+transport⁻¹ν-as-weaken, {n} {Γ₁} {m} {Γ₂} s i τ j .(Γ₂ [ j ]) refl =
+ transport⁻¹ (T (Γ₂ , τ)) refl (ν (Fin.suc j))
+  ＝⟨ refl ⟩
+ ν (Fin.suc j)
+  ＝⟨ (h (⊆Γ-refl Γ₂) (⊆Γ[] j (⊆Γ-refl Γ₂))) ⁻¹ ⟩
+ transport⁻¹ (T (Γ₂ , τ)) (⊆Γ[] j (⊆Γ-refl Γ₂)) (ν (Fin.suc (⊆ΓFin (⊆Γ-refl Γ₂) j)))
+  ＝⟨ refl ⟩
+ weaken, τ (transport⁻¹ (T Γ₂) refl (ν j))
   ∎
-sub-weaken {n} {Γ₁} {m} {Γ₂} {σ ⇒ τ} i s1 s2 (ƛ t) u nf =
- ap ƛ (sub-weaken (Fin.suc i) (⊆ΓS σ s1) (⊆ΓS σ s2) t u nf)
-sub-weaken {n} {Γ₁} {m} {Γ₂} {σ} i s1 s2 (t₁ · t₂) u nf =
- sub i (weaken s1 t₁) u · sub i (weaken s1 t₂) u
-  ＝⟨ ap (λ k → k · sub i (weaken s1 t₂) u) (sub-weaken i s1 s2 t₁ u λ z → nf (inl z)) ⟩
- weaken s2 t₁ · sub i (weaken s1 t₂) u
-  ＝⟨ ap (λ k → weaken s2 t₁ · k) (sub-weaken i s1 s2 t₂ u λ z → nf (inr z)) ⟩
- weaken s2 t₁ · weaken s2 t₂
+ where
+ h : (s : ⊆Γ Γ₂ Γ₂) (e : Γ₂ [ j ] ＝ Γ₂ [ ⊆ΓFin s j ])
+     → transport⁻¹ (T (Γ₂ , τ)) e (ν (Fin.suc (⊆ΓFin s j)))
+     ＝ ν (Fin.suc j)
+ h s = transport⁻¹
+         (λ k →
+            (e : (Γ₂ [ j ]) ＝ (Γ₂ [ k ])) →
+            transport⁻¹ (T (Γ₂ , τ)) e (ν (Fin.suc k)) ＝ ν (Fin.suc j))
+         (⊆ΓFin-refl j s refl) (λ e → transport⁻¹-T-type e _)
+
+
+transport⁻¹ν-as-weaken,' : {n : ℕ} {Γ₁ : Cxt n} {m : ℕ} {Γ₂ : Cxt m} (s : ⊆Γ Γ₁ Γ₂) (i : Fin n) (τ : type)
+                        → transport⁻¹ (T (Γ₂ , τ)) (⊆Γ[] i s) (ν (Fin.suc (⊆ΓFin s i)))
+                        ＝ weaken, τ (transport⁻¹ (T Γ₂) (⊆Γ[] i s) (ν (⊆ΓFin s i)))
+transport⁻¹ν-as-weaken,' {n} {Γ₁} {m} {Γ₂} s i τ =
+ transport⁻¹ν-as-weaken, s i τ (⊆ΓFin s i) (Γ₁ [ i ]) (⊆Γ[] i s)
+
+transport⁻¹-weaken, : {σ₁ σ₂ τ : type} {n : ℕ} {Γ : Cxt n} (t : T Γ σ₂) (e : σ₁ ＝ σ₂)
+                   → transport⁻¹ (T (Γ , τ)) e (weaken, τ t)
+                   ＝ weaken, τ (transport⁻¹ (T Γ ) e t)
+transport⁻¹-weaken, {σ₁} {.σ₁} {τ} {n} {Γ} t refl = refl
+
+subν-diff : {n : ℕ} {Γ₁ : Cxt n} {m : ℕ} {Γ₂ : Cxt (succ m)} {i : Fin (succ m)}
+            (s : ⊆Γ Γ₁ (rmCxt Γ₂ i)) (i₁ : Fin n) (u : T₀ (Γ₂ [ i ]))
+            (nf : ¬ (Fin→ℕ i ＝ Fin→ℕ (⊆ΓFin (⊆Γ-rmCxt→ i s) i₁)))
+         → transport⁻¹ (T (rmCxt Γ₂ i)) (⊆Γ[] i₁ (⊆Γ-rmCxt→ i s)) (subν i (⊆ΓFin (⊆Γ-rmCxt→ i s) i₁) u)
+         ＝ transport⁻¹ (T (rmCxt Γ₂ i)) (⊆Γ[] i₁ s) (ν (⊆ΓFin s i₁))
+subν-diff {n} {Γ₁} {succ m} {(Γ₂ , τ₁) , τ₂} {Fin.𝟎} (⊆ΓR τ₁ s) i₁ u nf =
+ transport⁻¹
+   (λ k →
+      transport⁻¹ (T (Γ₂ , τ₁)) (⊆Γ[] i₁ k) (ν (Fin.suc (⊆ΓFin k i₁))) ＝
+      transport⁻¹ (T (Γ₂ , τ₁)) (⊆Γ[] i₁ s) (ν (Fin.suc (⊆ΓFin s i₁))))
+   (⊆Γ-trans-refl s)
+   refl
+subν-diff {n} {Γ₁} {.(succ _)} {Γ₂ , τ} {Fin.suc i} (⊆ΓR τ s) i₁ u nf =
+ transport⁻¹ (T (rmCxt Γ₂ i , τ)) (⊆Γ[] i₁ (⊆Γ-trans s (→⊆Γ-rmCxt i))) (weaken, τ (subν i (⊆ΓFin (⊆Γ-trans s (→⊆Γ-rmCxt i)) i₁) u))
+  ＝⟨ transport⁻¹-weaken, (subν i (⊆ΓFin (⊆Γ-trans s (→⊆Γ-rmCxt i)) i₁) u) (⊆Γ[] i₁ (⊆Γ-trans s (→⊆Γ-rmCxt i))) ⟩
+ weaken, τ (transport⁻¹ (T (rmCxt Γ₂ i)) (⊆Γ[] i₁ (⊆Γ-trans s (→⊆Γ-rmCxt i))) (subν i (⊆ΓFin (⊆Γ-trans s (→⊆Γ-rmCxt i)) i₁) u))
+  ＝⟨ ap (weaken, τ) (subν-diff {_} {Γ₁} {_} {Γ₂} {i} s i₁ u (λ p → 𝟘-elim (nf (ap succ p)))) ⟩
+ weaken, τ (transport⁻¹ (T (rmCxt Γ₂ i)) (⊆Γ[] i₁ s) (ν (⊆ΓFin s i₁)))
+  ＝⟨ (transport⁻¹ν-as-weaken,' s i₁ τ) ⁻¹ ⟩
+ transport⁻¹ (T (rmCxt Γ₂ i , τ)) (⊆Γ[] i₁ s) (ν (Fin.suc (⊆ΓFin s i₁)))
+  ∎
+subν-diff {succ n} {Γ₁ , τ₂} {succ m} {(Γ₂ , τ₀) , τ₁} {Fin.𝟎} (⊆ΓS τ₂ s) i₁ u nf =
+ transport⁻¹
+   (λ k →
+      transport⁻¹ (T (Γ₂ , τ₂)) (⊆Γ[] i₁ (⊆ΓS τ₂ k)) (ν (⊆ΓFin (⊆ΓS τ₂ k) i₁))
+      ＝ transport⁻¹ (T (Γ₂ , τ₂)) (⊆Γ[] i₁ (⊆ΓS τ₂ s)) (ν (⊆ΓFin (⊆ΓS τ₂ s) i₁)))
+   (⊆Γ-trans-refl s)
+   refl
+subν-diff {succ n} {Γ₁ , τ₂} {succ m} {(Γ₂ , τ₀) , .τ₂} {Fin.suc i} (⊆ΓS τ₂ s) Fin.𝟎 u nf = refl
+subν-diff {succ n} {Γ₁ , τ₂} {succ m} {(Γ₂ , τ₀) , .τ₂} {Fin.suc i} (⊆ΓS τ₂ s) (Fin.suc i₁) u nf =
+ transport⁻¹ (T (rmCxt (Γ₂ , τ₀) i , τ₂)) (⊆Γ[] i₁ (⊆Γ-trans s (→⊆Γ-rmCxt i))) (weaken, τ₂ (subν i (⊆ΓFin (⊆Γ-trans s (→⊆Γ-rmCxt i)) i₁) u))
+  ＝⟨ transport⁻¹-weaken, (subν i (⊆ΓFin (⊆Γ-trans s (→⊆Γ-rmCxt i)) i₁) u) (⊆Γ[] i₁ (⊆Γ-trans s (→⊆Γ-rmCxt i))) ⟩
+ weaken, τ₂ (transport⁻¹ (T (rmCxt (Γ₂ , τ₀) i)) (⊆Γ[] i₁ (⊆Γ-trans s (→⊆Γ-rmCxt i))) (subν i (⊆ΓFin (⊆Γ-trans s (→⊆Γ-rmCxt i)) i₁) u))
+  ＝⟨ ap (weaken, τ₂) (subν-diff {_} {Γ₁} {_} {Γ₂ , τ₀} {i} s i₁ u (λ p → 𝟘-elim (nf (ap succ p)))) ⟩
+ weaken, τ₂ (transport⁻¹ (T (rmCxt (Γ₂ , τ₀) i)) (⊆Γ[] i₁ s) (ν (⊆ΓFin s i₁)))
+  ＝⟨ (transport⁻¹ν-as-weaken,' s i₁ τ₂) ⁻¹ ⟩
+ transport⁻¹ (T (rmCxt (Γ₂ , τ₀) i , τ₂)) (⊆Γ[] i₁ s) (ν (Fin.suc (⊆ΓFin s i₁)))
+  ∎
+
+sub-weaken : {n : ℕ} {Γ₁ : Cxt n} {m : ℕ} {Γ₂ : Cxt (succ m)} {σ : type} (i : Fin (succ m))
+             (s : ⊆Γ Γ₁ (rmCxt Γ₂ i))
+             (t : T Γ₁ σ) (u : T₀ (Γ₂ [ i ]))
+             (nf : ¬ is-free (Fin→ℕ i) (weaken (⊆Γ-rmCxt→ i s) t))
+           → sub i (weaken (⊆Γ-rmCxt→ i s) t) u ＝ weaken {n} {Γ₁} {m} {rmCxt Γ₂ i} {σ} s t
+sub-weaken {n} {Γ₁} {m} {Γ₂} {_} i s Zero u nf = refl
+sub-weaken {n} {Γ₁} {m} {Γ₂} {_} i s Succ u nf = refl
+sub-weaken {n} {Γ₁} {m} {Γ₂} {_} i s Rec  u nf = refl
+sub-weaken {n} {Γ₁} {m} {Γ₂} {.(Γ₁ [ i₁ ])} i s (ν i₁) u nf =
+ sub i (transport⁻¹ (T Γ₂) (⊆Γ[] i₁ (⊆Γ-rmCxt→ i s)) (ν (⊆ΓFin (⊆Γ-rmCxt→ i s) i₁))) u
+  ＝⟨ sub-transport⁻¹ i u (⊆Γ[] i₁ (⊆Γ-rmCxt→ i s)) (ν (⊆ΓFin (⊆Γ-rmCxt→ i s) i₁)) ⟩
+ transport⁻¹ (T (rmCxt Γ₂ i)) (⊆Γ[] i₁ (⊆Γ-rmCxt→ i s)) (subν i (⊆ΓFin (⊆Γ-rmCxt→ i s) i₁) u)
+  ＝⟨ subν-diff s i₁ u nf1 ⟩
+ transport⁻¹ (T (rmCxt Γ₂ i)) (⊆Γ[] i₁ s) (ν (⊆ΓFin s i₁))
+  ∎
+ where
+ nf1 : ¬ (Fin→ℕ i ＝ Fin→ℕ (⊆ΓFin (⊆Γ-rmCxt→ i s) i₁))
+ nf1 = is-free-¬transport⁻¹ (⊆Γ[] i₁ (⊆Γ-rmCxt→ i s)) (ν (⊆ΓFin (⊆Γ-rmCxt→ i s) i₁)) (Fin→ℕ i) nf
+sub-weaken {n} {Γ₁} {m} {Γ₂} {σ ⇒ τ} i s (ƛ t) u nf =
+ ap ƛ (sub-weaken (Fin.suc i) (⊆ΓS σ s) t u nf)
+sub-weaken {n} {Γ₁} {m} {Γ₂} {σ} i s (t₁ · t₂) u nf =
+ sub i (weaken (⊆Γ-rmCxt→ i s) t₁) u · sub i (weaken (⊆Γ-rmCxt→ i s) t₂) u
+  ＝⟨ ap (λ k → k · sub i (weaken (⊆Γ-rmCxt→ i s) t₂) u) (sub-weaken i s t₁ u λ z → nf (inl z)) ⟩
+ weaken s t₁ · sub i (weaken (⊆Γ-rmCxt→ i s) t₂) u
+  ＝⟨ ap (λ k → weaken s t₁ · k) (sub-weaken i s t₂ u λ z → nf (inr z)) ⟩
+ weaken s t₁ · weaken s t₂
   ∎
 
 sub₀-weaken₀ : {σ τ : type} {n : ℕ} {Γ : Cxt n} (t : T₀ σ) (u : T₀ τ)
              → sub₀ (weaken₀ {succ n} {Γ , τ} {σ} t) u ＝ weaken₀ {n} {Γ} {σ} t
-sub₀-weaken₀ {σ} {τ} {n} {Γ} t u = sub-weaken Fin.𝟎 (⊆〈〉 (Γ , τ)) (⊆〈〉 Γ) t u (closed-weaken₀ t 0)
+sub₀-weaken₀ {σ} {τ} {n} {Γ} t u =
+ transport (λ k → sub₀ (weaken k t) u ＝ weaken₀ t)
+           (⊆Γ-rmCxt→⊆〈〉 Γ τ) (sub-weaken Fin.𝟎 (⊆〈〉 Γ) t u (closed-weaken₀ (⊆Γ-rmCxt→ Fin.𝟎 (⊆〈〉 Γ)) t 0))
+
+{-
+-- untyped version of System T
+data $T : Type where
+ $Zero : $T
+ $Succ : $T
+ $Rec  : $T
+ $ν    : (i : ℕ)  → $T
+ $ƛ    : $T → $T
+ _$·_  : $T → $T → $T
+
+curryfy : {n : ℕ} {Γ : Cxt n} {σ : type} (t : T Γ σ) → $T
+curryfy {n} {Γ} {.ι} Zero = $Zero
+curryfy {n} {Γ} {.(ι ⇒ ι)} Succ = $Succ
+curryfy {n} {Γ} {.((ι ⇒ _ ⇒ _) ⇒ _ ⇒ ι ⇒ _)} Rec = $Rec
+curryfy {n} {Γ} {.(Γ [ i ])} (ν i) = $ν (Fin→ℕ i)
+curryfy {n} {Γ} {.(_ ⇒ _)} (ƛ t) = $ƛ (curryfy t)
+curryfy {n} {Γ} {σ} (t · t₁) = curryfy t $· curryfy t₁
+
+-- Can we prove close₀ in a simpler way using an untyped version of System T?
+curryfy＝ : {n : ℕ} {Γ : Cxt n} {σ : type} (t₁ : T Γ σ) (t₂ : T Γ σ)
+          → curryfy t₁ ＝ curryfy t₂
+          → t₁ ＝ t₂
+curryfy＝ {n} {Γ} {_} t₁ Zero p = {!!}
+curryfy＝ {n} {Γ} {_} t₁ Succ p = {!!}
+curryfy＝ {n} {Γ} {_} t₁ Rec p = {!!}
+curryfy＝ {n} {Γ} {.(Γ [ i ])} t₁ (ν i) p = {!!}
+curryfy＝ {n} {Γ} {.(_ ⇒ _)} t₁ (ƛ t₂) p = {!!}
+curryfy＝ {n} {Γ} {σ} (t₁ · t₄) (t₂ · t₃) p = {!!}
+-}
 
 -- to use in the lambda case
 -- closing a closed term does not change the term
@@ -539,6 +702,13 @@ succ-dialogue⋆-aux : {A : Type} {σ τ : type} {n : ℕ} {Γ : Cxt n} (d : T �
 succ-dialogue⋆-aux = ?
 -}
 
+{-
+xx : (d : T₀ ι) (α : Baire)
+  → succ (⟦ ⌜ d ⌝ ⟧₀ (λ z α → z) (λ φ x α → φ (α x) α) α)
+    ＝ ⟦ ⌜ d ⌝ ⟧₀ (λ z α → succ z) (λ φ x α → φ (α x) α) α
+xx = {!!}
+-}
+
 succ-dialogue⋆ : (d : T₀ (⌜B⌝ ι ((ι ⇒ ι) ⇒ ι))) (α : Baire)
               → succ (dialogue⋆ ⟦ d ⟧₀ α) ＝ dialogue⋆ (succ⋆ ⟦ d ⟧₀) α
 succ-dialogue⋆ d α =
@@ -546,17 +716,64 @@ succ-dialogue⋆ d α =
   ＝⟨ refl ⟩
  succ (⟦ d ⟧₀ (λ z α → z) (λ φ x α → φ (α x) α) α)
   ＝⟨ {!!} ⟩
- ⟦ d ⟧₀ (λ x α → succ x) (λ φ x α → φ (α x) α) α
+ ⟦ d ⟧₀ (λ z α → succ z) (λ φ x α → φ (α x) α) α
   ＝⟨ refl ⟩
  dialogue⋆ (succ⋆ ⟦ d ⟧₀) α
   ∎
 
-⌜main-lemma⌝ : {n : ℕ} {Γ : Cxt n}
-              {σ : type}
-              (t : T Γ σ)
+Succ? : {n : ℕ} {Γ : Cxt n} {σ : type} (t : T Γ σ) → 𝟚
+Succ? {n} {Γ} {_} Zero = ₁
+Succ? {n} {Γ} {_} Succ = ₀
+Succ? {n} {Γ} {_} Rec  = ₀
+Succ? {n} {Γ} {.(Γ [ i ])} (ν i) = ₀
+Succ? {n} {Γ} {σ ⇒ τ} (ƛ t) = ₀
+Succ? {n} {Γ} {σ} (t · t₁) = ₀
+
+-- doesn't belong here
+_∧?_ : 𝟚 → 𝟚 → 𝟚
+₀ ∧? b = ₀
+₁ ∧? b = b
+
+val? : {n : ℕ} {Γ : Cxt n} {σ : type} (t : T Γ σ) → 𝟚
+val? {n} {Γ} {_} Zero = ₁
+val? {n} {Γ} {_} Succ = ₁
+val? {n} {Γ} {_} Rec = ₁
+val? {n} {Γ} {.(Γ [ i ])} (ν i) = ₀
+val? {n} {Γ} {σ ⇒ τ} (ƛ t) = ₁
+val? {n} {Γ} {σ} (t · u) = Succ? t ∧? val? u
+
+isVal : {n : ℕ} {Γ : Cxt n} {σ : type} (t : T Γ σ) → Type
+isVal {n} {Γ} {α} t = val? t ＝ ₁
+
+isVal?  : {n : ℕ} {Γ : Cxt n} {σ : type} (t : T Γ σ) → isVal t + ¬ (isVal t)
+isVal? {n} {Γ} {σ} t with val? t
+... | ₁ = inl refl
+... | ₀ = inr (λ ())
+
+step· : {n : ℕ} {Γ : Cxt n} {σ₀ σ τ : type} (f : T Γ σ₀) (a : T Γ σ) → σ₀ ＝ σ ⇒ τ → isVal f → T Γ τ
+step· {n} {Γ} {σ₀} {σ} {τ} t a e isv = {!!}
+--step· {n} {Γ} {σ₀} {σ} {τ} t a e isv = {!!}
+{--step· {n} {Γ} {_} {τ} Zero a () isv
+step· {n} {Γ} {_} {.ι} Succ a refl isv = Succ · a -- not actually a step
+step· {n} {Γ} {_} {.(ι ⇒ _ ⇒ _)} Rec a refl isv = {!!}
+step· {n} {Γ} {.(Γ [ i ])} {τ} (ν i) a e isv = {!!}
+step· {n} {Γ} {σ₁ ⇒ σ₂} {τ} (ƛ f) a e isv = {!!}
+step· {n} {Γ} {.(τ ⇒ _)} {τ} (t · u) a refl isv = t · u · a -- not actually a step--}
+
+-- call-by-name semantics
+step : {n : ℕ} {Γ : Cxt n} {σ : type} (t : T Γ σ) → T Γ σ
+step {n} {Γ} {_} Zero = Zero
+step {n} {Γ} {_} Succ = Succ
+step {n} {Γ} {_} Rec = Rec
+step {n} {Γ} {.(Γ [ i ])} (ν i) = ν i
+step {n} {Γ} {σ ⇒ τ} (ƛ t) = ƛ t
+step {n} {Γ} {σ} (f · a) with isVal? f
+... | inr p = step f · a
+... | inl p = step· f a refl p
+
+⌜main-lemma⌝ : {n : ℕ} {Γ : Cxt n} {σ : type} (t : T Γ σ)
               (α : Baire)
-              (xs : 【 Γ 】)
-              (ys : IB【 Γ 】 ((ι ⇒ ι) ⇒ ι))
+              (xs : 【 Γ 】) (ys : IB【 Γ 】 ((ι ⇒ ι) ⇒ ι))
             → R⋆s α xs ys
             → R⋆ α (⟦ t ⟧ xs) (close ⌜ t ⌝ ys)
 ⌜main-lemma⌝ {n} {Γ} {_} Zero α xs ys rxys = ap (λ k → dialogue⋆ ⟦ k ⟧₀ α) ((close-⌜zero⌝ ys) ⁻¹)
@@ -571,7 +788,20 @@ succ-dialogue⋆ d α =
   ∎
 ⌜main-lemma⌝ {n} {Γ} {_} Rec α xs ys rxys x y rxy x₁ y₁ rxy₁ x₂ y₂ rxyz₂ = {!!}
 ⌜main-lemma⌝ {n} {Γ} {.(Γ [ i ])} (ν i) α xs ys rxys = {!!}
-⌜main-lemma⌝ {n} {Γ} {σ ⇒ τ} (ƛ t) α xs ys rxys x y rxy = {!!}
+⌜main-lemma⌝ {n} {Γ} {σ ⇒ τ} (ƛ t) α xs ys rxys x y rxy =
+ transport
+  (λ k → R⋆ α (⟦ t ⟧ (xs ‚ x)) (close (ƛ ⌜ t ⌝) ys · k))
+  (close₀ y ys)
+  (transport
+    (λ k → R⋆ α (⟦ t ⟧ (xs ‚ x)) k)
+    (close· (ƛ ⌜ t ⌝) (weaken₀ y) ys)
+    {!!})
+-- [DONE] The plan for ƛ is to use close₀ to turn
+--   (close (ƛ ⌜ t ⌝) ys · y) into (close (ƛ ⌜ t ⌝) ys · close (weaken y) ys)
+-- [DONE] and then use close· to turn
+--   (close (ƛ ⌜ t ⌝) ys · close (weaken y) ys) into (close ((ƛ ⌜ t ⌝) · y) ys)
+-- [TODO] and then use the operational semantics of System T? to turn
+--   (close ((ƛ ⌜ t ⌝) · y) ys) into (close ⌜ t ⌝ (y , ys))
 ⌜main-lemma⌝ {n} {Γ} {σ} (t · t₁) α xs ys rxys =
  transport⁻¹
   (λ k → R⋆ α (⟦ t ⟧ xs (⟦ t₁ ⟧ xs)) k)
