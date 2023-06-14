@@ -31,4 +31,7 @@ open import TWA.Thesis.Chapter5.IntervalObject
 open import TWA.Thesis.Chapter5.SignedDigit
 open import TWA.Thesis.Chapter5.SignedDigitIntervalObject
 
+-- Chapter 6.1
+open import TWA.Thesis.Chapter6.SignedDigitContinuity
+
 \end{code}
