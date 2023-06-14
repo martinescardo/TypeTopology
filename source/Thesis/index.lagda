@@ -24,6 +24,6 @@ open import Thesis.Chapter5.IntervalObject
 
 -- Chapter 5.2.1
 open import Thesis.Chapter5.SignedDigit
--- open import Thesis.Chapter5.SignedDigitIntervalObject
+open import Thesis.Chapter5.SignedDigitIntervalObject
 
 \end{code}

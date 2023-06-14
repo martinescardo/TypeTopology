@@ -90,6 +90,7 @@ half +2 = v
 ⊕-idem' = λ {a}             → ⊕-idem a
 ⊕-comm' = λ {a} {b}         → ⊕-comm a b
 ⊕-tran' = λ {a} {b} {c} {d} → ⊕-tran a b c d 
+⊕-canc' = λ {a} {b} {c}     → ⊕-canc a b c 
 
 -- Lemma 5.2.19
 div2-aux-＝ : (x y : 𝟝) (z : 𝕀) → let (a , b) = div2-aux x y in
@@ -175,10 +176,11 @@ quarter +3 = v ⊕ (v ⊕ (u ⊕ v))
 quarter +4 = v
 
 -- Lemma 5.2.27
-rearrange₁ : {a b z : 𝕀} → ((a ⊕ b) ⊕ ((a ⊕ b) ⊕ z)) ≡ ((a ⊕ (a ⊕ z)) ⊕ (b ⊕ (b ⊕ z)))
-rearrange₁ {a} {b} {z} = ap (λ - → ((a ⊕ b) ⊕ ((a ⊕ b) ⊕ -))) (⊕-idem' ⁻¹)
-                       ∙ ap ((a ⊕ b) ⊕_) ⊕-tran'
-                       ∙ ⊕-tran'         
+l : {a b c : 𝕀} → a ≡ b → (a ⊕ c) ≡ (b ⊕ c)
+l refl = refl
+
+r : {a b c : 𝕀} → b ≡ c → (a ⊕ b) ≡ (a ⊕ c)
+r refl = refl
 
 div4-aux-＝ : (x y : 𝟡) (z : 𝕀)
             → let (a , b) = div4-aux x y in
@@ -186,74 +188,336 @@ div4-aux-＝ : (x y : 𝟡) (z : 𝕀)
             ＝ (quarter x ⊕ (quarter y ⊕ z))
 div4-aux-＝ −4  y z = refl
 div4-aux-＝ −3 −4 z
- = ap (_⊕ (half −1 ⊕ z)) (⊕-idem' ⁻¹)
+ = l (⊕-idem' ⁻¹)
  ∙ ⊕-tran'
 div4-aux-＝ −3 −3 z
- = {!!}
+ = l (⊕-idem' ⁻¹)
+ ∙ ⊕-tran'
+ ∙ l (r (l (⊕-idem' ⁻¹
+         ∙ ⊕-comm')
+      ∙ ⊕-tran')
+   ∙ l (⊕-idem' ⁻¹)
+   ∙ ⊕-tran')
+ ∙ ⊕-tran'
+ ∙ l ⊕-comm'
 div4-aux-＝ −3 −2 z
- = {!!}
+ = l (⊕-idem' ⁻¹)
+ ∙ ⊕-tran'
+ ∙ l (⊕-idem' ⁻¹)
+ ∙ ⊕-tran'
+ ∙ l ⊕-comm'
 div4-aux-＝ −3 −1 z
- = {!!}
-div4-aux-＝ −3  O z = {!!}
-div4-aux-＝ −3 +1 z = {!!}
-div4-aux-＝ −3 +2 z = {!!}
-div4-aux-＝ −3 +3 z = {!!}
+ = l (⊕-idem' ⁻¹)
+ ∙ ⊕-tran'
+ ∙ l (l (⊕-idem' ⁻¹)
+   ∙ r (l (⊕-idem' ⁻¹)
+     ∙ ⊕-tran'
+     ∙ l ⊕-comm')
+   ∙ ⊕-tran')
+ ∙ ⊕-tran'
+ ∙ l ⊕-comm'
+div4-aux-＝ −3  O z
+ = l (⊕-idem' ⁻¹)
+ ∙ ⊕-tran'
+ ∙ l (r ⊕-comm'
+   ∙ l (⊕-idem' ⁻¹)
+   ∙ ⊕-tran')
+ ∙ ⊕-tran'
+ ∙ l ⊕-comm'
+div4-aux-＝ −3 +1 z
+ = l (⊕-idem' ⁻¹)
+ ∙ ⊕-tran'
+ ∙ l (l (⊕-idem' ⁻¹)
+   ∙ ⊕-tran'
+   ∙ r (l (⊕-idem' ⁻¹)
+     ∙ ⊕-tran')
+   ∙ ⊕-tran')
+ ∙ ⊕-tran'
+ ∙ l ⊕-comm'
+div4-aux-＝ −3 +2 z
+ = l (⊕-idem' ⁻¹
+   ∙ r (⊕-idem' ⁻¹)
+   ∙ ⊕-tran')
+ ∙ ⊕-tran'
+ ∙ l ⊕-comm'
+div4-aux-＝ −3 +3 z
+ = l (⊕-idem' ⁻¹
+   ∙ r (⊕-idem' ⁻¹
+     ∙ r (⊕-idem' ⁻¹))
+   ∙ r ⊕-tran'
+   ∙ ⊕-tran')
+ ∙ ⊕-tran'
+ ∙ l ⊕-idem'
 div4-aux-＝ −3 +4 z
  = ⊕-tran'
 div4-aux-＝ −2 −4 z = div2-aux-＝ −1 −2 z
 div4-aux-＝ −2 −3 z
- = {!!}
+ = l (⊕-idem' ⁻¹)
+ ∙ ⊕-tran'
+ ∙ l (l (⊕-idem' ⁻¹)
+   ∙ ⊕-tran')
+ ∙ ⊕-tran'
+ ∙ l ⊕-comm'
 div4-aux-＝ −2 −2 z = div2-aux-＝ −1 −1 z
-div4-aux-＝ −2 −1 z = {!!}
+div4-aux-＝ −2 −1 z
+ = l (⊕-idem' ⁻¹)
+ ∙ ⊕-tran'
+ ∙ l (l (⊕-idem' ⁻¹)
+   ∙ ⊕-tran')
+ ∙ ⊕-tran'
+ ∙ l ⊕-comm'
 div4-aux-＝ −2 O z  = div2-aux-＝ −1  O z
-div4-aux-＝ −2 +1 z = {!!}
+div4-aux-＝ −2 +1 z
+ = r ⊕-comm' ∙ ⊕-tran'
+ ∙ r (l (⊕-idem' ⁻¹)
+   ∙ ⊕-tran' ∙ l ⊕-comm')
+ ∙ ⊕-tran' ∙ r ⊕-comm'
 div4-aux-＝ −2 +2 z = div2-aux-＝ −1 +1 z
-div4-aux-＝ −2 +3 z = {!!}
+div4-aux-＝ −2 +3 z
+ = l (⊕-idem' ⁻¹)
+ ∙ ⊕-tran'
+ ∙ l (⊕-tran'
+   ∙ l ⊕-idem')
+ ∙ ⊕-tran'
 div4-aux-＝ −2 +4 z = div2-aux-＝ −1 +2 z
-div4-aux-＝ −1 −4 z = ap (_⊕ (quarter +2 ⊕ z)) (⊕-idem' ⁻¹)
-                    ∙ ⊕-tran'
-div4-aux-＝ −1 −3 z = ap (_⊕ (quarter +3 ⊕ z)) (⊕-idem' ⁻¹)
-                    ∙ ⊕-tran'
-                    ∙ {!!}
-div4-aux-＝ −1 −2 z = {!!}
-div4-aux-＝ −1 −1 z = {!!}
-div4-aux-＝ −1 O z = {!!}
-div4-aux-＝ −1 +1 z = {!!}
-div4-aux-＝ −1 +2 z = {!!}
-div4-aux-＝ −1 +3 z = {!!}
+div4-aux-＝ −1 −4 z
+ = l (⊕-idem' ⁻¹)
+ ∙ ⊕-tran'
+div4-aux-＝ −1 −3 z
+ = l (⊕-idem' ⁻¹)
+ ∙ ⊕-tran'
+ ∙ l (l (⊕-idem' ⁻¹)
+   ∙ ⊕-tran'
+   ∙ l ⊕-comm'
+   ∙ r (l (⊕-idem' ⁻¹)
+     ∙ ⊕-tran')
+   ∙ ⊕-tran')
+ ∙ ⊕-tran'
+ ∙ l ⊕-comm'
+div4-aux-＝ −1 −2 z
+ = l (⊕-idem' ⁻¹
+   ∙ l ⊕-comm'
+   ∙ r (⊕-idem' ⁻¹)
+   ∙ ⊕-tran')
+ ∙ ⊕-tran'
+ ∙ l ⊕-comm'
+div4-aux-＝ −1 −1 z
+ = l ⊕-comm'
+ ∙ ⊕-tran'
+ ∙ l (l (⊕-idem' ⁻¹)
+   ∙ ⊕-tran'
+   ∙ r (l (⊕-idem' ⁻¹)
+     ∙ ⊕-tran'
+     ∙ l ⊕-comm')
+   ∙ ⊕-tran')
+ ∙ ⊕-tran'
+ ∙ l ⊕-comm'
+div4-aux-＝ −1 O z
+ = l ⊕-comm'
+ ∙ ⊕-tran'
+ ∙ l (l (⊕-idem' ⁻¹)
+    ∙ r ⊕-comm'
+   ∙ ⊕-tran'
+   ∙ r ⊕-comm')
+ ∙ ⊕-tran'
+ ∙ l ⊕-comm'
+div4-aux-＝ −1 +1 z
+ = l ⊕-comm'
+ ∙ ⊕-tran'
+ ∙ l (r (l (⊕-idem' ⁻¹)
+      ∙ ⊕-tran')
+   ∙ l (⊕-idem' ⁻¹)
+   ∙ ⊕-tran')
+ ∙ ⊕-tran'
+ ∙ l ⊕-comm'
+div4-aux-＝ −1 +2 z
+ = r ⊕-comm' ∙ ⊕-tran'
+ ∙ r (⊕-idem' ⁻¹)
+ ∙ ⊕-tran'
+ ∙ r ⊕-comm'
+div4-aux-＝ −1 +3 z
+ = l ⊕-comm'
+ ∙ ⊕-tran'
+ ∙ l (r (l (⊕-idem' ⁻¹
+         ∙ ⊕-comm')
+      ∙ ⊕-tran'
+      ∙ l ⊕-comm'
+      ∙ ⊕-tran')
+   ∙ l (⊕-idem' ⁻¹)
+   ∙ ⊕-tran')
+ ∙ ⊕-tran'
+ ∙ l ⊕-comm'
 div4-aux-＝ −1 +4 z = ⊕-tran'
 div4-aux-＝  O  y z = refl 
-div4-aux-＝ +1 −4 z = {!!}
-div4-aux-＝ +1 −3 z = {!!}
-div4-aux-＝ +1 −2 z = {!!}
-div4-aux-＝ +1 −1 z = {!!}
-div4-aux-＝ +1 O z = {!!}
-div4-aux-＝ +1 +1 z = {!!}
-div4-aux-＝ +1 +2 z = {!!}
-div4-aux-＝ +1 +3 z = {!!}
-div4-aux-＝ +1 +4 z = ap (_⊕ (half −1 ⊕ z)) (⊕-idem' ⁻¹)
-                    ∙ ⊕-tran'
+div4-aux-＝ +1 −4 z
+ = l ⊕-comm'
+ ∙ ⊕-tran'
+div4-aux-＝ +1 −3 z
+ = ⊕-tran'
+ ∙ l (l (⊕-idem' ⁻¹)
+   ∙ ⊕-tran'
+   ∙ l ⊕-comm'
+   ∙ r (l (⊕-idem' ⁻¹)
+     ∙ ⊕-tran')
+   ∙ ⊕-tran')
+ ∙ ⊕-tran'
+ ∙ l ⊕-comm'
+div4-aux-＝ +1 −2 z
+ = ⊕-tran'
+ ∙ l (⊕-idem' ⁻¹)
+ ∙ ⊕-tran'
+ ∙ l ⊕-comm'
+div4-aux-＝ +1 −1 z
+ = ⊕-tran'
+ ∙ l (r (l (⊕-idem' ⁻¹)
+      ∙ ⊕-tran'
+      ∙ l ⊕-comm')
+   ∙ l (⊕-idem' ⁻¹)
+   ∙ ⊕-tran')
+ ∙ ⊕-tran'
+ ∙ l ⊕-comm'
+div4-aux-＝ +1 O z
+ = ⊕-tran'
+ ∙ l (r ⊕-comm'
+   ∙ l (⊕-idem' ⁻¹)
+   ∙ ⊕-tran')
+ ∙ ⊕-tran'
+ ∙ l ⊕-comm'
+div4-aux-＝ +1 +1 z
+ = ⊕-tran'
+ ∙ l (l (⊕-idem' ⁻¹)
+   ∙ ⊕-tran'
+   ∙ r (l (⊕-idem' ⁻¹)
+     ∙ ⊕-tran')
+   ∙ ⊕-tran')
+ ∙ ⊕-tran'
+ ∙ l ⊕-comm'
+div4-aux-＝ +1 +2 z
+ = ⊕-tran'
+ ∙ l (⊕-idem' ⁻¹
+   ∙ r (⊕-idem' ⁻¹)
+   ∙ ⊕-tran')
+ ∙ ⊕-tran'
+ ∙ l ⊕-comm'
+div4-aux-＝ +1 +3 z
+ = l (⊕-idem' ⁻¹)
+ ∙ ⊕-tran'
+ ∙ l (l (⊕-idem' ⁻¹)
+   ∙ ⊕-tran'
+   ∙ l ⊕-comm'
+   ∙ r (l (⊕-idem' ⁻¹)
+     ∙ ⊕-tran'
+     ∙ l ⊕-comm')
+   ∙ ⊕-tran')
+ ∙ ⊕-tran'
+ ∙ l ⊕-comm'
+div4-aux-＝ +1 +4 z
+ = l (⊕-idem' ⁻¹)
+ ∙ ⊕-tran'
 div4-aux-＝ +2 −4 z = div2-aux-＝ +1 −2 z
-div4-aux-＝ +2 −3 z = {!!}
+div4-aux-＝ +2 −3 z
+ = l (⊕-idem' ⁻¹)
+ ∙ ⊕-tran'
+ ∙ l (l ⊕-comm'
+   ∙ ⊕-tran'
+   ∙ l ⊕-idem')
+ ∙ ⊕-tran'
 div4-aux-＝ +2 −2 z = div2-aux-＝ +1 −1 z
-div4-aux-＝ +2 −1 z = {!!}
+div4-aux-＝ +2 −1 z
+ = l (⊕-idem' ⁻¹)
+ ∙ ⊕-tran'
+ ∙ l (l ⊕-comm'
+   ∙ ⊕-tran'
+   ∙ l ⊕-idem')
+ ∙ ⊕-tran'
 div4-aux-＝ +2 O z = div2-aux-＝ +1 O z
-div4-aux-＝ +2 +1 z = {!!}
+div4-aux-＝ +2 +1 z
+ = l (⊕-idem' ⁻¹)
+ ∙ ⊕-tran'
+ ∙ l (l (⊕-idem' ⁻¹)
+ ∙ ⊕-tran'
+ ∙ l ⊕-comm'
+ ∙ ⊕-tran')
+ ∙ ⊕-tran'
+ ∙ l ⊕-comm'
 div4-aux-＝ +2 +2 z = div2-aux-＝ +1 +1 z
-div4-aux-＝ +2 +3 z = {!!}
+div4-aux-＝ +2 +3 z
+ = l (⊕-idem' ⁻¹)
+ ∙ ⊕-tran'
+ ∙ l (l (⊕-idem' ⁻¹)
+ ∙ ⊕-tran'
+ ∙ l ⊕-comm'
+ ∙ ⊕-tran')
+ ∙ ⊕-tran'
+ ∙ l ⊕-comm'
 div4-aux-＝ +2 +4 z = div2-aux-＝ +1 +2 z
 div4-aux-＝ +3 −4 z
- = ap (_⊕ (half +1 ⊕ z)) ⊕-comm'
+ = l ⊕-comm'
  ∙ ⊕-tran'
-div4-aux-＝ +3 −3 z = {!!}
-div4-aux-＝ +3 −2 z = {!!}
-div4-aux-＝ +3 −1 z = {!!}
-div4-aux-＝ +3 O z  = {!!} ∙ ⊕-tran'
-div4-aux-＝ +3 +1 z = {!!} ∙ ⊕-tran'
-div4-aux-＝ +3 +2 z = {!!}
-div4-aux-＝ +3 +3 z = {!!}
+div4-aux-＝ +3 −3 z
+ = l (⊕-idem' ⁻¹
+   ∙ l ⊕-comm'
+   ∙ r (⊕-idem' ⁻¹
+     ∙ l ⊕-comm'
+     ∙ r (⊕-idem' ⁻¹)
+     ∙ ⊕-tran')
+   ∙ ⊕-tran')
+ ∙ ⊕-tran'
+ ∙ l ⊕-idem'
+div4-aux-＝ +3 −2 z
+ = l (⊕-idem' ⁻¹
+   ∙ l ⊕-comm'
+   ∙ r (⊕-idem' ⁻¹)
+   ∙ ⊕-tran')
+ ∙ ⊕-tran'
+ ∙ l ⊕-comm'
+div4-aux-＝ +3 −1 z
+ = l (⊕-idem' ⁻¹)
+ ∙ ⊕-tran'
+ ∙ l (l (⊕-idem' ⁻¹)
+   ∙ ⊕-tran'
+   ∙ r (l (⊕-idem' ⁻¹)
+     ∙ ⊕-tran'
+     ∙ l ⊕-comm')
+   ∙ ⊕-tran')
+ ∙ ⊕-tran'
+ ∙ l ⊕-comm'
+div4-aux-＝ +3  O z
+ = l (⊕-idem' ⁻¹)
+ ∙ ⊕-tran'
+ ∙ l (l (⊕-idem' ⁻¹)
+   ∙ r ⊕-comm'
+   ∙ ⊕-tran'
+   ∙ r ⊕-comm')
+ ∙ ⊕-tran'
+ ∙ l ⊕-comm'
+div4-aux-＝ +3 +1 z
+ = l (⊕-idem' ⁻¹)
+ ∙ ⊕-tran'
+ ∙ l (r (l (⊕-idem' ⁻¹)
+      ∙ ⊕-tran')
+   ∙ l (⊕-idem' ⁻¹)
+   ∙ ⊕-tran')
+ ∙ ⊕-tran'
+ ∙ l ⊕-comm'
+div4-aux-＝ +3 +2 z
+ = l (⊕-idem' ⁻¹)
+ ∙ ⊕-tran'
+ ∙ l (⊕-idem' ⁻¹)
+ ∙ ⊕-tran'
+ ∙ l ⊕-comm'
+div4-aux-＝ +3 +3 z
+ = l (⊕-idem' ⁻¹)
+ ∙ ⊕-tran'
+ ∙ l (r (l (⊕-idem' ⁻¹)
+      ∙ ⊕-tran'
+      ∙ l ⊕-comm')
+   ∙ l (⊕-idem' ⁻¹)
+   ∙ ⊕-tran')
+ ∙ ⊕-tran'
+ ∙ l ⊕-comm'
 div4-aux-＝ +3 +4 z
- = ap (_⊕ (half +1 ⊕ z)) (⊕-idem' ⁻¹)
+ = l (⊕-idem' ⁻¹)
  ∙ ⊕-tran'
 div4-aux-＝ +4  y z = refl
 
