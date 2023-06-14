@@ -5,7 +5,7 @@ open import Notation.Order
 open import Naturals.Order
 open import MLTT.Two-Properties
 
-module Thesis.Chapter5.Prelude where
+module TWA.Thesis.Chapter5.Prelude where
 
 _≡_ = Id
 

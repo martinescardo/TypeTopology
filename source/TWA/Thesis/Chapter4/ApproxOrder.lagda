@@ -6,9 +6,9 @@ open import MLTT.Spartan
 open import UF.FunExt
 open import UF.Quotient
 
-module Thesis.Chapter4.ApproxOrder (fe : FunExt) where
+module TWA.Thesis.Chapter4.ApproxOrder (fe : FunExt) where
 
-open import Thesis.Chapter3.ClosenessSpaces fe
+open import TWA.Thesis.Chapter3.ClosenessSpaces fe
 
 -- Definition 4.1.4
 is-preorder : {X : 𝓤  ̇ } → (X → X → 𝓦  ̇ ) → 𝓤 ⊔ 𝓦  ̇ 

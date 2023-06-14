@@ -18,10 +18,10 @@ open import UF.Miscelanea
 open import UF.Embeddings
 open import MLTT.Two-Properties
 
-module Thesis.Chapter3.ClosenessSpaces-Examples (fe : FunExt) where
+module TWA.Thesis.Chapter3.ClosenessSpaces-Examples (fe : FunExt) where
 
-open import Thesis.Chapter2.FiniteDiscrete
-open import Thesis.Chapter3.ClosenessSpaces fe
+open import TWA.Thesis.Chapter2.FiniteDiscrete
+open import TWA.Thesis.Chapter3.ClosenessSpaces fe
 open import TWA.Closeness fe hiding (is-ultra; is-closeness)
 
 -- [ TODO: Move to SequenceTypes file ]
@@ -229,7 +229,7 @@ discrete-seq-clofun-c d = discrete-seq-clofun-e d
 ℕ∞-ClosenessSpace = Σ-ClosenessSpace ℕ→𝟚-ClosenessSpace is-decreasing
                      (being-decreasing-is-prop (fe _ _))
 
-open import Thesis.Chapter5.PLDIPrelude
+open import TWA.Thesis.Chapter5.PLDIPrelude
 
 Vec-to-Seq : {X : 𝓤 ̇ } {n : ℕ} → X → Vec X n → (ℕ → X)
 Vec-to-Seq x₀ [] n = x₀

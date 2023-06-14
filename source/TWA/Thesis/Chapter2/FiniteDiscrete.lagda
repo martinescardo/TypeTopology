@@ -15,7 +15,7 @@ open import UF.Miscelanea
 open import MLTT.Two-Properties
 open import UF.Equiv
 
-module Thesis.Chapter2.FiniteDiscrete where
+module TWA.Thesis.Chapter2.FiniteDiscrete where
 
 -- Definition 3.1.5
 𝔽 : ℕ → 𝓤₀  ̇

@@ -8,7 +8,7 @@ open import NotionsOfDecidability.Complemented
 open import UF.Subsingletons
 open import UF.Equiv
 
-module Thesis.Chapter3.SearchableTypes (fe : FunExt) where
+module TWA.Thesis.Chapter3.SearchableTypes (fe : FunExt) where
 
 -- Definition 3.1.1
 decidable-predicate : (𝓦 : Universe) → 𝓤 ̇ → 𝓤 ⊔ 𝓦 ⁺  ̇
@@ -27,7 +27,7 @@ searchable-inhabited : (𝓦 : Universe) → (X : 𝓤 ̇ )
 searchable-inhabited 𝓦 X (𝓔 , S) = 𝓔 ((λ _ → ⊤Ω) , (λ _ → inl ⋆))
 
 -- Definition 3.1.5-7
-open import Thesis.Chapter2.FiniteDiscrete
+open import TWA.Thesis.Chapter2.FiniteDiscrete
 
 -- Lemma 3.1.8
 𝟙-searchable : searchable 𝓦 (𝟙 {𝓤})
@@ -115,7 +115,7 @@ finite-discrete-searchable x (succ n , e)
 -- Lemma 3.1.13
 -- TODO !!
 
-open import Thesis.Chapter3.ClosenessSpaces fe
+open import TWA.Thesis.Chapter3.ClosenessSpaces fe
 
 -- Definition 3.3.4
 decidable-uc-predicate : (𝓦 : Universe) → ClosenessSpace 𝓤

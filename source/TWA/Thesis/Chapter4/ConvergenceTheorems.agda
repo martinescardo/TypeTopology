@@ -1,32 +1,26 @@
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import Thesis.Chapter5.Prelude renaming (map to map')
 open import UF.FunExt
-open import UF.Miscelanea
 open import UF.Subsingletons
 open import UF.Quotient
-open import Thesis.Chapter5.SignedDigit
-open import MLTT.Two-Properties
 open import MLTT.Spartan
 open import Notation.Order
 open import Naturals.Order
-open import Naturals.Properties
 open import NotionsOfDecidability.Complemented
-open import NotionsOfDecidability.Decidable
 open import CoNaturals.GenericConvergentSequence
   renaming (ℕ-to-ℕ∞ to _↑
          ; Zero-smallest to zero-minimal
          ; ∞-largest to ∞-maximal)
 open import TypeTopology.DiscreteAndSeparated
 
-module Thesis.Chapter4.ConvergenceTheorems (fe : FunExt) where
+module TWA.Thesis.Chapter4.ConvergenceTheorems (fe : FunExt) where
 
-open import Thesis.Chapter3.ClosenessSpaces fe
-open import Thesis.Chapter3.ClosenessSpaces-Examples fe
-open import Thesis.Chapter3.SearchableTypes fe
-open import Thesis.Chapter4.ApproxOrder fe
-open import Thesis.Chapter4.ApproxOrder-Examples fe
-open import Thesis.Chapter4.GlobalOptimisation fe
+open import TWA.Thesis.Chapter3.ClosenessSpaces fe
+open import TWA.Thesis.Chapter3.ClosenessSpaces-Examples fe
+open import TWA.Thesis.Chapter3.SearchableTypes fe
+open import TWA.Thesis.Chapter4.ApproxOrder fe
+open import TWA.Thesis.Chapter4.ApproxOrder-Examples fe
+open import TWA.Thesis.Chapter4.GlobalOptimisation fe
 open import UF.Subsingletons-FunExt  
 
 -- Definition 4.2.10 (Does not have continuity of M!)

@@ -14,7 +14,7 @@ open import Notation.Order hiding (_≤_≤_)
 open import UF.Base
 open import UF.Subsingletons
 
-module Thesis.Chapter5.PLDIPrelude where
+module TWA.Thesis.Chapter5.PLDIPrelude where
 ```
 
 ℤ-elimination

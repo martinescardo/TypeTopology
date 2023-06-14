@@ -2,11 +2,11 @@
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-module Thesis.Chapter5.SignedDigit where
+module TWA.Thesis.Chapter5.SignedDigit where
 
 open import MLTT.Spartan
 open import TypeTopology.DiscreteAndSeparated
-open import Thesis.Chapter5.Prelude
+open import TWA.Thesis.Chapter5.Prelude
 
 -- Definition 5.2.5
 data 𝟛 : 𝓤₀ ̇ where

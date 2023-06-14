@@ -13,13 +13,13 @@ open import UF.Quotient
 open import UF.Embeddings
 open import UF.Equiv
 
-module Thesis.Chapter4.ApproxOrder-Examples (fe : FunExt) where
+module TWA.Thesis.Chapter4.ApproxOrder-Examples (fe : FunExt) where
 
-open import Thesis.Chapter2.FiniteDiscrete
-open import Thesis.Chapter3.ClosenessSpaces fe
-open import Thesis.Chapter3.ClosenessSpaces-Examples fe
-open import Thesis.Chapter3.SearchableTypes fe
-open import Thesis.Chapter4.ApproxOrder fe
+open import TWA.Thesis.Chapter2.FiniteDiscrete
+open import TWA.Thesis.Chapter3.ClosenessSpaces fe
+open import TWA.Thesis.Chapter3.ClosenessSpaces-Examples fe
+open import TWA.Thesis.Chapter3.SearchableTypes fe
+open import TWA.Thesis.Chapter4.ApproxOrder fe
 open import CoNaturals.GenericConvergentSequence
   renaming (ℕ-to-ℕ∞ to _↑
          ; Zero-smallest to zero-minimal

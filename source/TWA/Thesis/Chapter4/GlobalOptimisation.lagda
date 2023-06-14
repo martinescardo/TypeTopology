@@ -5,11 +5,11 @@
 open import MLTT.Spartan
 open import UF.FunExt
 
-module Thesis.Chapter4.GlobalOptimisation (fe : FunExt) where
+module TWA.Thesis.Chapter4.GlobalOptimisation (fe : FunExt) where
 
-open import Thesis.Chapter2.FiniteDiscrete
-open import Thesis.Chapter3.ClosenessSpaces fe
-open import Thesis.Chapter4.ApproxOrder fe
+open import TWA.Thesis.Chapter2.FiniteDiscrete
+open import TWA.Thesis.Chapter3.ClosenessSpaces fe
+open import TWA.Thesis.Chapter4.ApproxOrder fe
 
 -- Definition 4.1.18
 is-global-minimal : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (_≤_ : Y → Y → 𝓦 ̇ )

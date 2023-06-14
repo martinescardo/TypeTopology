@@ -4,17 +4,17 @@ open import MLTT.Spartan
 open import UF.FunExt
 open import Naturals.Addition renaming (_+_ to _+ℕ_)
 
-open import Thesis.Chapter5.Prelude
-open import Thesis.Chapter5.SignedDigit
-open import Thesis.Chapter5.IntervalObject hiding (⟨_⟩)
+open import TWA.Thesis.Chapter5.Prelude
+open import TWA.Thesis.Chapter5.SignedDigit
+open import TWA.Thesis.Chapter5.IntervalObject hiding (⟨_⟩)
 
-module Thesis.Chapter5.SignedDigitIntervalObject
+module TWA.Thesis.Chapter5.SignedDigitIntervalObject
  {𝓦 : Universe}
  (fe : FunExt)
  (io : Interval-object fe 𝓦)
  where
 
-open import Thesis.Chapter5.IntervalObjectApproximation fe io
+open import TWA.Thesis.Chapter5.IntervalObjectApproximation fe io
 open basic-interval-object-development fe io hiding (−1 ; O ; +1)
 
 -- Definition 5.2.7

@@ -6,10 +6,10 @@ open import UF.FunExt
 open import Naturals.Addition renaming (_+_ to _+ℕ_)
 open import UF.Base
 
-open import Thesis.Chapter5.Prelude
-open import Thesis.Chapter5.IntervalObject
+open import TWA.Thesis.Chapter5.Prelude
+open import TWA.Thesis.Chapter5.IntervalObject
 
-module Thesis.Chapter5.IntervalObjectApproximation
+module TWA.Thesis.Chapter5.IntervalObjectApproximation
  (fe : FunExt)
  (io : Interval-object fe 𝓤)
  where

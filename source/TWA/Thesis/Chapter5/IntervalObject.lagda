@@ -4,7 +4,7 @@
 
 open import UF.FunExt
 
-module Thesis.Chapter5.IntervalObject (fe : FunExt) where
+module TWA.Thesis.Chapter5.IntervalObject (fe : FunExt) where
 
 open import MLTT.Spartan
 open import Naturals.Addition renaming (_+_ to _+ℕ_)
