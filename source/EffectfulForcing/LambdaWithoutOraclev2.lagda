@@ -50,12 +50,12 @@ _‚‚_ : {Γ : Cxt} {σ : type} → B【 Γ 】 → B〖 σ 〗 → B【 Γ ,,
 infixl 6 _‚‚_
 
 B⟦_⟧ : {Γ : Cxt} {σ : type} → T Γ σ → B【 Γ 】 → B〖 σ 〗
-B⟦ Zero  ⟧  _ = zero'
-B⟦ Succ  ⟧  _ = succ'
-B⟦ Rec   ⟧  _ = rec'
-B⟦ ν i   ⟧ xs = xs i
-B⟦ ƛ t   ⟧ xs = λ x → B⟦ t ⟧ (xs ‚‚ x)
-B⟦ t · u ⟧ xs = (B⟦ t ⟧ xs) (B⟦ u ⟧ xs)
+B⟦ Zero      ⟧  _ = zero'
+B⟦ Succ t    ⟧ xs = succ' (B⟦ t ⟧ xs)
+B⟦ Rec f g t ⟧ xs = rec' (B⟦ f ⟧ xs) (B⟦ g ⟧ xs) (B⟦ t ⟧ xs)
+B⟦ ν i       ⟧ xs = xs i
+B⟦ ƛ t       ⟧ xs = λ x → B⟦ t ⟧ (xs ‚‚ x)
+B⟦ t · u     ⟧ xs = (B⟦ t ⟧ xs) (B⟦ u ⟧ xs)
 
 B⟦_⟧₀ : {σ : type} → T₀ σ → B〖 σ 〗
 B⟦ t ⟧₀ = B⟦ t ⟧ ⟪⟫
@@ -110,12 +110,15 @@ main-lemma : {Γ : Cxt}
 
 main-lemma Zero α xs ys cr = refl
 
-main-lemma Succ α xs ys cr = λ n n' rn →
- succ n               ＝⟨ ap succ rn ⟩
- succ (dialogue n' α) ＝⟨ decode-α-is-natural succ n' α ⟩
- decode α (succ' n')  ∎
+main-lemma (Succ t) α xs ys cr =
+ succ (⟦ t ⟧ xs)      ＝⟨ ap succ (main-lemma t α xs ys cr) ⟩
+ succ (dialogue (B⟦ t ⟧ ys) α) ＝⟨ decode-α-is-natural succ (B⟦ t ⟧ ys) α ⟩
+ decode α (succ' (B⟦ t ⟧ ys))  ∎
 
-main-lemma (Rec {_} {σ}) α xs ys cr = lemma
+main-lemma (Rec {_} {σ} a b t) α xs ys cr =
+ lemma (⟦ a ⟧ xs) (B⟦ a ⟧ ys) (main-lemma a α xs ys cr)
+       (⟦ b ⟧ xs) (B⟦ b ⟧ ys) (main-lemma b α xs ys cr)
+       (⟦ t ⟧ xs) (B⟦ t ⟧ ys) (main-lemma t α xs ys cr)
  where
   lemma : (f  : ℕ → 〖 σ 〗 → 〖 σ 〗)
           (f' : B ℕ → B〖 σ 〗 → B〖 σ 〗)

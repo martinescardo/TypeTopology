@@ -52,8 +52,8 @@ data ∈Cxt (σ : type) : Cxt → 𝓤₀ ̇  where
 
 data T : (Γ : Cxt) (σ : type) → Type where
  Zero : {Γ : Cxt} → T Γ ι
- Succ : {Γ : Cxt} → T Γ (ι ⇒ ι)
- Rec  : {Γ : Cxt} {σ : type} → T Γ ((ι ⇒ σ ⇒ σ) ⇒ σ ⇒ ι ⇒ σ)
+ Succ : {Γ : Cxt} → T Γ ι → T Γ ι
+ Rec  : {Γ : Cxt} {σ : type} → T Γ (ι ⇒ σ ⇒ σ) → T Γ σ → T Γ ι → T Γ σ
  ν    : {Γ : Cxt} {σ : type} (i : ∈Cxt σ Γ)  → T Γ σ
  ƛ    : {Γ : Cxt} {σ τ : type} → T (Γ ,, σ) τ → T Γ (σ ⇒ τ)
  _·_  : {Γ : Cxt} {σ τ : type} → T Γ (σ ⇒ τ) → T Γ σ → T Γ τ
@@ -83,12 +83,12 @@ _‚_ : {Γ : Cxt} {σ : type} → 【 Γ 】 → 〖 σ 〗 → 【 Γ ,, σ �
 infixl 6 _‚_
 
 ⟦_⟧ : {Γ : Cxt} {σ : type} → T Γ σ → 【 Γ 】 → 〖 σ 〗
-⟦ Zero  ⟧  _ = 0
-⟦ Succ  ⟧  _ = succ
-⟦ Rec   ⟧  _ = rec
-⟦ ν i   ⟧ xs = xs i
-⟦ ƛ t   ⟧ xs = λ x → ⟦ t ⟧ (xs ‚ x)
-⟦ t · u ⟧ xs = (⟦ t ⟧ xs) (⟦ u ⟧ xs)
+⟦ Zero      ⟧  _ = 0
+⟦ Succ t    ⟧ xs = succ (⟦ t ⟧ xs)
+⟦ Rec f g t ⟧ xs = rec (⟦ f ⟧ xs) (⟦ g ⟧ xs) (⟦ t ⟧ xs)
+⟦ ν i       ⟧ xs = xs i
+⟦ ƛ t       ⟧ xs = λ x → ⟦ t ⟧ (xs ‚ x)
+⟦ t · u     ⟧ xs = (⟦ t ⟧ xs) (⟦ u ⟧ xs)
 
 \end{code}
 
@@ -114,21 +114,21 @@ System T extended with a formal oracle Ω, called T' (rather than TΩ as previou
 data T' : (Γ : Cxt) (σ : type) → Type where
  Ω    : {Γ : Cxt} → T' Γ (ι ⇒ ι)
  Zero : {Γ : Cxt} → T' Γ ι
- Succ : {Γ : Cxt} → T' Γ (ι ⇒ ι)
- Rec  : {Γ : Cxt} → {σ : type}   → T' Γ ((ι ⇒ σ ⇒ σ) ⇒ σ ⇒ ι ⇒ σ)
+ Succ : {Γ : Cxt} → T' Γ ι → T' Γ ι
+ Rec  : {Γ : Cxt} → {σ : type} → T' Γ (ι ⇒ σ ⇒ σ) → T' Γ σ → T' Γ ι → T' Γ σ
  ν    : {Γ : Cxt} {σ : type} (a : ∈Cxt σ Γ)  → T' Γ σ
  ƛ    : {Γ : Cxt} → {σ τ : type} → T' (Γ ,, σ) τ → T' Γ (σ ⇒ τ)
  _·_  : {Γ : Cxt} → {σ τ : type} → T' Γ (σ ⇒ τ) → T' Γ σ → T' Γ τ
 
 
 ⟦_⟧' : {Γ : Cxt} {σ : type} → T' Γ σ → Baire → 【 Γ 】 → 〖 σ 〗
-⟦ Ω     ⟧' α  _ = α
-⟦ Zero  ⟧' _  _ = 0
-⟦ Succ  ⟧' _  _ = succ
-⟦ Rec   ⟧' _  _ = rec
-⟦ ν i   ⟧' _ xs = xs i
-⟦ ƛ t   ⟧' α xs = λ x → ⟦ t ⟧' α (xs ‚ x)
-⟦ t · u ⟧' α xs = (⟦ t ⟧' α xs) (⟦ u ⟧' α xs)
+⟦ Ω         ⟧' α  _ = α
+⟦ Zero      ⟧' _  _ = 0
+⟦ Succ t    ⟧' α xs = succ (⟦ t ⟧' α xs)
+⟦ Rec f g t ⟧' α xs = rec (⟦ f ⟧' α xs) (⟦ g ⟧' α xs) (⟦ t ⟧' α xs)
+⟦ ν i       ⟧' _ xs = xs i
+⟦ ƛ t       ⟧' α xs = λ x → ⟦ t ⟧' α (xs ‚ x)
+⟦ t · u     ⟧' α xs = (⟦ t ⟧' α xs) (⟦ u ⟧' α xs)
 
 \end{code}
 
@@ -138,24 +138,27 @@ explicit embedding:
 \begin{code}
 
 embed : {Γ : Cxt} {σ : type} → T Γ σ → T' Γ σ
-embed Zero    = Zero
-embed Succ    = Succ
-embed Rec     = Rec
-embed (ν i)   = ν i
-embed (ƛ t)   = ƛ (embed t)
-embed (t · u) = (embed t) · (embed u)
+embed Zero        = Zero
+embed (Succ t)    = Succ (embed t)
+embed (Rec f g t) = Rec (embed f) (embed g) (embed t)
+embed (ν i)       = ν i
+embed (ƛ t)       = ƛ (embed t)
+embed (t · u)     = (embed t) · (embed u)
 
 preservation : {Γ : Cxt}
                {σ : type}
                (t : T Γ σ)
                (α : Baire)
              → ⟦ t ⟧ ＝ ⟦ embed t ⟧' α
-preservation Zero    α = refl
-preservation Succ    α = refl
-preservation Rec     α = refl
-preservation (ν i)   α = refl
-preservation (ƛ t)   α = ap (λ f xs x → f (xs ‚ x)) (preservation t α)
-preservation (t · u) α = ap₂ (λ f g x → f x (g x))
+preservation Zero        α = refl
+preservation (Succ t)    α = ap (λ f xs → succ (f xs)) (preservation t α)
+preservation (Rec f g t) α = ap₃ (λ f g t xs → rec (f xs) (g xs) (t xs))
+                             (preservation f α)
+                             (preservation g α)
+                             (preservation t α)
+preservation (ν i)       α = refl
+preservation (ƛ t)       α = ap (λ f xs x → f (xs ‚ x)) (preservation t α)
+preservation (t · u)     α = ap₂ (λ f g x → f x (g x))
                              (preservation t α)
                              (preservation u α)
 \end{code}
@@ -166,7 +169,7 @@ Some shorthands to simplify examples of system T terms.
 
 numeral : {Γ : Cxt} → ℕ → T Γ ι
 numeral 0        = Zero
-numeral (succ n) = Succ · (numeral n)
+numeral (succ n) = Succ (numeral n)
 
 ν₀ : {Γ : Cxt} {σ : type}  → T (Γ ,, σ) σ
 ν₀ {Γ} {σ} = ν (∈Cxt0 Γ)
@@ -182,4 +185,10 @@ numeral (succ n) = Succ · (numeral n)
 
 ν₄ : {Γ : Cxt} {σ₁ σ₂ σ₃ σ₄ σ₅ : type} → T (Γ ,, σ₁ ,, σ₂ ,, σ₃ ,, σ₄ ,, σ₅) σ₁
 ν₄ {Γ} {σ₁} {σ₂} {σ₃} {σ₄} {σ₅} = ν (∈CxtS σ₅ (∈CxtS σ₄ (∈CxtS σ₃ (∈CxtS σ₂ (∈Cxt0 Γ)))))
+
+Succ' : {Γ : Cxt} → T Γ (ι ⇒ ι)
+Succ' {Γ} = ƛ (Succ ν₀)
+
+Rec' : {σ : type} {Γ : Cxt} → T Γ ((ι ⇒ σ ⇒ σ) ⇒ σ ⇒ ι ⇒ σ)
+Rec' {σ} {Γ} = ƛ (ƛ (ƛ (Rec ν₂ ν₁ ν₀)))
 \end{code}

@@ -24,12 +24,12 @@ B⋆⟦_⟧ : {Γ : Cxt} {σ : type} {A : Type}
       → T Γ σ
       → B⋆【 Γ 】 A
       → B⋆〖 σ 〗 A
-B⋆⟦ Zero        ⟧  _ = zero⋆
-B⋆⟦ Succ        ⟧  _ = succ⋆
-B⋆⟦ Rec {_} {σ} ⟧  _ = rec⋆ {σ}
-B⋆⟦ ν i         ⟧ xs = xs i
-B⋆⟦ ƛ t         ⟧ xs = λ x → B⋆⟦ t ⟧ (xs ‚‚⋆ x)
-B⋆⟦ t · u       ⟧ xs = (B⋆⟦ t ⟧ xs) (B⋆⟦ u ⟧ xs)
+B⋆⟦ Zero      ⟧  _ = zero⋆
+B⋆⟦ Succ t    ⟧ xs = succ⋆ (B⋆⟦ t ⟧ xs)
+B⋆⟦ Rec f g t ⟧ xs = rec⋆ (B⋆⟦ f ⟧ xs) (B⋆⟦ g ⟧ xs) (B⋆⟦ t ⟧ xs)
+B⋆⟦ ν i       ⟧ xs = xs i
+B⋆⟦ ƛ t       ⟧ xs = λ x → B⋆⟦ t ⟧ (xs ‚‚⋆ x)
+B⋆⟦ t · u     ⟧ xs = (B⋆⟦ t ⟧ xs) (B⋆⟦ u ⟧ xs)
 
 B⋆⟦_⟧₀ : {σ : type} {A : Type} → T₀ σ → B⋆〖 σ 〗 A
 B⋆⟦ t ⟧₀ = B⋆⟦ t ⟧ ⟪⟫⋆
@@ -72,16 +72,16 @@ The above should be true, but do we really need it?
 \begin{code}
 
 -- ⊆Γ Γ₁ Γ₂ states that Γ₁ is a sub context of Γ₂
-⊆Γ : (Γ₁ Γ₂ : Cxt) → Type
-⊆Γ Γ₁ Γ₂ = {σ : type} → ∈Cxt σ Γ₁ → ∈Cxt σ Γ₂
+_⊆_ : (Γ₁ Γ₂ : Cxt) → Type
+Γ₁ ⊆ Γ₂ = {σ : type} → ∈Cxt σ Γ₁ → ∈Cxt σ Γ₂
 
 -- ⊆Γ is reflexive
-⊆Γ-refl : (Γ : Cxt) → ⊆Γ Γ Γ
+⊆Γ-refl : (Γ : Cxt) → Γ ⊆ Γ
 ⊆Γ-refl Γ {σ} i = i
 
 -- ⊆Γ is transitive
 ⊆Γ-trans : {Γ₁ : Cxt} {Γ₂ : Cxt} {Γ₃ : Cxt}
-         → ⊆Γ Γ₁ Γ₂ → ⊆Γ Γ₂ Γ₃ → ⊆Γ Γ₁ Γ₃
+         → Γ₁ ⊆ Γ₂ → Γ₂ ⊆ Γ₃ → Γ₁ ⊆ Γ₃
 ⊆Γ-trans {Γ₁} {Γ₂} {Γ₃} p q {σ} i = q (p i)
 
 {-
@@ -143,11 +143,11 @@ Fin→ℕ {.(succ _)} (Fin.suc i) = succ (Fin→ℕ i)
 ¬⊆Γ, {n} {Γ} {τ} h = ¬s≤n n (⊆Γ≤ h)
 -}
 
-⊆Γ, : (Γ : Cxt) (τ : type) → ⊆Γ Γ (Γ ,, τ)
+⊆Γ, : (Γ : Cxt) (τ : type) → Γ ⊆ (Γ ,, τ)
 ⊆Γ, Γ τ {σ} i = ∈CxtS τ i
 
 -- 〈〉 is the smallest element w.r.t. the ⊆Γ order
-⊆〈〉 : (Γ : Cxt) → ⊆Γ 〈〉 Γ
+⊆〈〉 : (Γ : Cxt) → 〈〉 ⊆ Γ
 ⊆〈〉 Γ {σ} ()
 
 {-
@@ -187,22 +187,22 @@ T＝type {n} {Γ} {σ} {.σ} refl t = t
 -}
 
 ⊆Γ,, : {Γ₁ Γ₂ : Cxt} {σ : type}
-    → ⊆Γ Γ₁ Γ₂
-    → ⊆Γ (Γ₁ ,, σ) (Γ₂ ,, σ)
+    → Γ₁ ⊆ Γ₂
+    → (Γ₁ ,, σ) ⊆ (Γ₂ ,, σ)
 ⊆Γ,, {Γ₁} {Γ₂} {σ} s {.σ} (∈Cxt0 .Γ₁) = ∈Cxt0 Γ₂
 ⊆Γ,, {Γ₁} {Γ₂} {σ} s {τ} (∈CxtS .σ i) = ∈CxtS σ (s i)
 
 -- extends the context of a term
 weaken : {Γ₁ : Cxt} {Γ₂ : Cxt} {σ : type}
-          → ⊆Γ Γ₁ Γ₂
+          → Γ₁ ⊆ Γ₂
           → T Γ₁ σ
           → T Γ₂ σ
-weaken {Γ₁} {Γ₂} {_} sub Zero = Zero
-weaken {Γ₁} {Γ₂} {_} sub Succ = Succ
-weaken {Γ₁} {Γ₂} {_} sub Rec = Rec
-weaken {Γ₁} {Γ₂} {σ} sub (ν i) = ν (sub i)
-weaken {Γ₁} {Γ₂} {σ ⇒ τ} sub (ƛ t) = ƛ (weaken (⊆Γ,, sub) t)
-weaken {Γ₁} {Γ₂} {σ} sub (t · t₁) = weaken sub t · weaken sub t₁
+weaken {Γ₁} {Γ₂} {_}     sub Zero        = Zero
+weaken {Γ₁} {Γ₂} {_}     sub (Succ t)    = Succ (weaken sub t)
+weaken {Γ₁} {Γ₂} {_}     sub (Rec f g t) = Rec (weaken sub f) (weaken sub g) (weaken sub t)
+weaken {Γ₁} {Γ₂} {σ}     sub (ν i)       = ν (sub i)
+weaken {Γ₁} {Γ₂} {σ ⇒ τ} sub (ƛ t)       = ƛ (weaken (⊆Γ,, sub) t)
+weaken {Γ₁} {Γ₂} {σ}     sub (t · t₁)    = weaken sub t · weaken sub t₁
 
 -- extends the context of a closed term
 weaken₀ : {Γ : Cxt} {σ : type} → T₀ σ → T Γ σ
@@ -366,12 +366,12 @@ subν {.(_ ,, τ₁)} {σ} (∈CxtS τ₁ j) {.τ₁} (∈Cxt0 _) u = ν j
 subν {.(_ ,, τ₁)} {σ} (∈CxtS τ₁ j) {τ} (∈CxtS .τ₁ i) u = weaken, τ₁ (subν j i u)
 
 sub : {σ : type} {Γ : Cxt} {τ : type} → T Γ σ → (i : ∈Cxt τ Γ) → T₀ τ → T (rmCxt i) σ
-sub {_} {Γ} {τ} Zero i u = Zero
-sub {_} {Γ} {τ} Succ i u = Succ
-sub {_} {Γ} {τ} Rec i u  = Rec
-sub {σ} {Γ} {τ} (ν j) i u = subν j i u
-sub {σ₁ ⇒ σ₂} {Γ} {τ} (ƛ t) i u = ƛ (sub {σ₂} {Γ ,, σ₁} {τ} t (∈CxtS _ i) u)
-sub {σ} {Γ} {τ} (t₁ · t₂) i u = sub t₁ i u · sub t₂ i u
+sub {_}       {Γ} {τ} Zero        i u = Zero
+sub {_}       {Γ} {τ} (Succ t)    i u = Succ (sub t i u)
+sub {_}       {Γ} {τ} (Rec f g t) i u = Rec (sub f i u) (sub g i u) (sub t i u)
+sub {σ}       {Γ} {τ} (ν j)       i u = subν j i u
+sub {σ₁ ⇒ σ₂} {Γ} {τ} (ƛ t)       i u = ƛ (sub {σ₂} {Γ ,, σ₁} {τ} t (∈CxtS _ i) u)
+sub {σ}       {Γ} {τ} (t₁ · t₂)   i u = sub t₁ i u · sub t₂ i u
 
 sub₀ : {σ : type} {Γ : Cxt} {τ : type} → T (Γ ,, τ) σ → T₀ τ → T Γ σ
 sub₀ {σ} {Γ} {τ} t u = sub t (∈Cxt0 Γ) u
@@ -386,12 +386,12 @@ close-ap {σ} {succ n} {Γ , τ} t s =
 -}
 
 close : {σ : type} {Γ₁ Γ₂ : Cxt} → T Γ₁ σ → Sub Γ₁ Γ₂ → T Γ₂ σ
-close {_} {Γ₁} {Γ₂} Zero s = Zero
-close {_} {Γ₁} {Γ₂} Succ s = Succ
-close {_} {Γ₁} {Γ₂} Rec s = Rec
-close {σ} {Γ₁} {Γ₂} (ν i) s = s i
-close {σ₁ ⇒ σ₂} {Γ₁} {Γ₂} (ƛ t) s = ƛ (close t (Sub,, s))
-close {σ} {Γ₁} {Γ₂} (t₁ · t₂) s = close t₁ s · close t₂ s
+close {_}       {Γ₁} {Γ₂} Zero        s = Zero
+close {_}       {Γ₁} {Γ₂} (Succ t)    s = Succ (close t s)
+close {_}       {Γ₁} {Γ₂} (Rec f g t) s = Rec (close f s) (close g s) (close t s)
+close {σ}       {Γ₁} {Γ₂} (ν i)       s = s i
+close {σ₁ ⇒ σ₂} {Γ₁} {Γ₂} (ƛ t)       s = ƛ (close t (Sub,, s))
+close {σ}       {Γ₁} {Γ₂} (t₁ · t₂)   s = close t₁ s · close t₂ s
 
 Sub1 : {Γ : Cxt} {τ : type} → T Γ τ → Sub (Γ ,, τ) Γ
 Sub1 {Γ} {τ} t {.τ} (∈Cxt0 .Γ) = t
@@ -447,8 +447,11 @@ step· {n} {Γ} {σ₁ ⇒ σ₂} {τ} (ƛ f) a e isv = {!!}
 step· {n} {Γ} {.(τ ⇒ _)} {τ} (t · u) a refl isv = t · u · a -- not actually a step--}
 -}
 
+{-
 -- call-by-name semantics
 step : {Γ : Cxt} {σ : type} (t : T Γ σ) → T Γ σ
+step {Γ} {σ} t = {!!}
+{-
 step {Γ} {_} Zero = Zero
 step {Γ} {_} Succ = Succ
 step {Γ} {_} Rec = Rec
@@ -471,6 +474,8 @@ step {Γ} {σ} (Rec · f · g · (h · h₁ · a)) = Rec · f · g · step (h ·
 step {Γ} {σ} (ν i · a₁ · a₂ · a₃) = ν i · a₁ · a₂ · a₃
 step {Γ} {σ} (ƛ f · a₁ · a₂ · a₃) = (close₀ f a₁) · a₂ · a₃ -- reduces (nested beta)
 step {Γ} {σ} (f · a₁ · a₂ · a₃ · a₄) = step (f · a₁ · a₂ · a₃) · a₄ -- reduces (nested red)
+-}
+-}
 
 {-
 Sub⊆Γ : {n : ℕ} {Γ₁ : Cxt n} {m : ℕ} {Γ₂ : Cxt m} (s : ⊆Γ Γ₁ Γ₂) → Type
@@ -811,6 +816,15 @@ xx : (d : T₀ ι) (α : Baire)
 xx = {!!}
 -}
 
+{-
+RR⋆₀ : (σ : type) → (d :  T₀ σ) → Type
+RR⋆₀ ι       succ (⟦ ⌜ d ⌝ ⟧₀ η β α) ＝ ⟦ ⌜ d ⌝ ⟧₀ (η · succ) β α
+RR⋆₀ (σ ⇒ τ) f g = (x : B⋆〖 σ 〗 (B ℕ))
+                   (y : B〖 σ 〗)
+               → RR⋆₀ σ x y ?
+               → RR⋆₀ τ (f x η' β') (g y η' β') ?
+-}
+
 succ-dialogue⋆ : (d : T₀ (⌜B⌝ ι ((ι ⇒ ι) ⇒ ι))) (α : Baire)
               → succ (dialogue⋆ ⟦ d ⟧₀ α) ＝ dialogue⋆ (succ⋆ ⟦ d ⟧₀) α
 succ-dialogue⋆ d α =
@@ -851,19 +865,19 @@ Sub,,⌜Sub⌝ {A} {Γ} {Δ} {σ} s {τ} (∈CxtS .(B-type〖 σ 〗 A) i) = {!!
 
 ⌜close⌝ : {A : type} {σ : type} {Γ : Cxt} (t : T Γ σ) {Δ : Cxt} (s : Sub Γ Δ)
         → close ⌜ t ⌝ (⌜Sub⌝ {A} s) ＝ ⌜ close t s ⌝
-⌜close⌝ {A} {_} {Γ} Zero {Δ} s = refl
-⌜close⌝ {A} {_} {Γ} Succ {Δ} s = refl
-⌜close⌝ {A} {_} {Γ} Rec {Δ} s = {!!}
-⌜close⌝ {A} {σ} {Γ} (ν i) {Δ} s = {!!}
-⌜close⌝ {A} {σ₁ ⇒ σ₂} {Γ} (ƛ t) {Δ} s = ap ƛ {!!}
-⌜close⌝ {A} {σ} {Γ} (t · t₁) {Δ} s = {!!}
+⌜close⌝ {A} {_}       {Γ} Zero        {Δ} s = refl
+⌜close⌝ {A} {_}       {Γ} (Succ t)    {Δ} s = {!!}
+⌜close⌝ {A} {_}       {Γ} (Rec f g t) {Δ} s = {!!}
+⌜close⌝ {A} {σ}       {Γ} (ν i)       {Δ} s = {!!}
+⌜close⌝ {A} {σ₁ ⇒ σ₂} {Γ} (ƛ t)       {Δ} s = ap ƛ {!!}
+⌜close⌝ {A} {σ}       {Γ} (t · t₁)    {Δ} s = {!!}
 
 -- ? No, it probably has to be integrated into the relation/main lemma.
 xx : {α : Baire} {A σ : type}
      (a : 〖 σ 〗)
      (t : T₀ σ)
    → R⋆ α a ⌜ t ⌝
-   → R⋆ α a ⌜ step t ⌝
+   → R⋆ α a {!!} -- ⌜ step t ⌝
 xx {α} {A} {σ} a t r = {!!}
 
 ⌜main-lemma⌝ : {Γ : Cxt} {σ : type} (t : T Γ σ)
@@ -872,16 +886,16 @@ xx {α} {A} {σ} a t r = {!!}
              → R⋆s α xs ys
              → R⋆ α (⟦ t ⟧ xs) (close ⌜ t ⌝ ys)
 ⌜main-lemma⌝ {Γ} {_} Zero α xs ys rxys = refl
-⌜main-lemma⌝ {Γ} {_} Succ α xs ys rxys x y rxy =
- succ x
-  ＝⟨ ap succ rxy ⟩
- succ (dialogue⋆ ⟦ y ⟧₀ α)
-  ＝⟨ succ-dialogue⋆ y α ⟩
- dialogue⋆ (succ⋆ ⟦ y ⟧₀) α
+⌜main-lemma⌝ {Γ} {_} (Succ t) α xs ys rxys =
+ succ (⟦ t ⟧ xs)
+  ＝⟨ ap succ (⌜main-lemma⌝ t α xs ys rxys) ⟩
+ succ (dialogue⋆ ⟦ close ⌜ t ⌝ ys ⟧₀ α)
+  ＝⟨ succ-dialogue⋆ (close ⌜ t ⌝ ys) α ⟩
+ dialogue⋆ (succ⋆ ⟦ close ⌜ t ⌝ ys ⟧₀) α
   ＝⟨ refl ⟩
- dialogue⋆ ⟦ close ⌜succ⌝ ys · y ⟧₀ α
+ dialogue⋆ ⟦ close ⌜succ⌝ ys · (close ⌜ t ⌝ ys) ⟧₀ α
   ∎
-⌜main-lemma⌝ {Γ} {_} Rec α xs ys rxys x y rxy x₁ y₁ rxy₁ x₂ y₂ rxyz₂ = {!!}
+⌜main-lemma⌝ {Γ} {_} (Rec f g t) α xs ys rxys = {!!}
 ⌜main-lemma⌝ {Γ} {σ} (ν i) α xs ys rxys = rxys i
 ⌜main-lemma⌝ {Γ} {σ ⇒ τ} (ƛ t) α xs ys rxys x y rxy =
  {!!}

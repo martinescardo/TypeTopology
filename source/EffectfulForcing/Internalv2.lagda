@@ -172,13 +172,13 @@ B⋆⟦_⟧ : {Γ : Cxt} {σ : type} {A : Type}
       → T' Γ σ
       → B⋆【 Γ 】 A
       → B⋆〖 σ 〗 A
-B⋆⟦ Ω           ⟧  _ = generic⋆
-B⋆⟦ Zero        ⟧  _ = zero⋆
-B⋆⟦ Succ        ⟧  _ = succ⋆
-B⋆⟦ Rec {_} {σ} ⟧  _ = rec⋆ {σ}
-B⋆⟦ ν i         ⟧ xs = xs i
-B⋆⟦ ƛ t         ⟧ xs = λ x → B⋆⟦ t ⟧ (xs ‚‚⋆ x)
-B⋆⟦ t · u       ⟧ xs = (B⋆⟦ t ⟧ xs) (B⋆⟦ u ⟧ xs)
+B⋆⟦ Ω         ⟧  _ = generic⋆
+B⋆⟦ Zero      ⟧  _ = zero⋆
+B⋆⟦ Succ t    ⟧ xs = succ⋆ (B⋆⟦ t ⟧ xs)
+B⋆⟦ Rec f g t ⟧ xs = rec⋆ (B⋆⟦ f ⟧ xs) (B⋆⟦ g ⟧ xs) (B⋆⟦ t ⟧ xs)
+B⋆⟦ ν i       ⟧ xs = xs i
+B⋆⟦ ƛ t       ⟧ xs = λ x → B⋆⟦ t ⟧ (xs ‚‚⋆ x)
+B⋆⟦ t · u     ⟧ xs = (B⋆⟦ t ⟧ xs) (B⋆⟦ u ⟧ xs)
 
 dialogue-tree⋆ : {A : Type} → T₀ ((ι ⇒ ι) ⇒ ι) → B⋆ ℕ A
 dialogue-tree⋆ t = B⋆⟦ (embed t) · Ω ⟧ ⟪⟫⋆
@@ -252,7 +252,7 @@ Kleisli-extension-meaning = refl
 ⌜zero⌝ = ⌜η⌝ · Zero
 
 ⌜succ⌝ : {A : type} {Γ : Cxt} → T Γ (⌜B⌝ ι A ⇒ ⌜B⌝ ι A)
-⌜succ⌝ =  ⌜B-functor⌝ · Succ
+⌜succ⌝ =  ⌜B-functor⌝ · Succ'
 
 ⌜rec⌝ : {σ A : type} {Γ : Cxt}
       → T Γ ((⌜B⌝ ι A
@@ -262,7 +262,7 @@ Kleisli-extension-meaning = refl
             ⇒ ⌜B⌝ ι A
             ⇒ B-type〖 σ 〗 A)
 ⌜rec⌝ {σ} {A} = ƛ (ƛ (⌜Kleisli-extension⌝ {ι} {A} {σ}
-                        · (Rec · (ƛ (ν₂ · (⌜η⌝ · ν₀))) · ν₀)))
+                        · (Rec' · (ƛ (ν₂ · (⌜η⌝ · ν₀))) · ν₀)))
 
 rec-meaning : {σ A : type}
             → ⟦ ⌜rec⌝ {σ} {A} ⟧₀
@@ -294,12 +294,12 @@ infix 10 B-context【_】
 ⌜_⌝ : {Γ : Cxt} {σ : type} {A : type}
     → T Γ σ
     → T (B-context【 Γ 】 A) (B-type〖 σ 〗 A)
-⌜ Zero ⌝        = ⌜zero⌝
-⌜ Succ ⌝        = ⌜succ⌝
-⌜ Rec {_} {σ} ⌝ = ⌜rec⌝ {σ}
-⌜ ν i ⌝         = ⌜ν⌝ i
-⌜ ƛ t ⌝         = ƛ ⌜ t ⌝
-⌜ t · u ⌝       = ⌜ t ⌝ · ⌜ u ⌝
+⌜ Zero ⌝      = ⌜zero⌝
+⌜ Succ t ⌝    = ⌜succ⌝ · ⌜ t ⌝
+⌜ Rec f g t ⌝ = ⌜rec⌝ · ⌜ f ⌝ · ⌜ g ⌝ · ⌜ t ⌝
+⌜ ν i ⌝       = ⌜ν⌝ i
+⌜ ƛ t ⌝       = ƛ ⌜ t ⌝
+⌜ t · u ⌝     = ⌜ t ⌝ · ⌜ u ⌝
 
 \end{code}
 
@@ -339,7 +339,7 @@ max-agreement (succ m) 0        = refl
 max-agreement (succ m) (succ n) = ap succ (max-agreement m n)
 
 maxᵀ : {Γ : Cxt} → T Γ (ι ⇒ ι ⇒ ι)
-maxᵀ = Rec · ƛ (ƛ (Rec · ƛ (ƛ (Succ · (ν₂ · ν₁))) · (Succ · ν₁))) · ƛ ν₀
+maxᵀ = Rec' · ƛ (ƛ (Rec' · ƛ (ƛ (Succ (ν₂ · ν₁))) · (Succ ν₁))) · ƛ ν₀
 
 maxᵀ-meaning : ⟦ maxᵀ ⟧₀ ＝ max
 maxᵀ-meaning = refl
@@ -354,7 +354,7 @@ max-question-in-path : {Γ : Cxt}
                      → T (B-context【 Γ 】 ((ι ⇒ ι) ⇒ ι))
                          ((⌜B⌝ ι ((ι ⇒ ι) ⇒ ι)) ⇒ (ι ⇒ ι) ⇒ ι)
 max-question-in-path =
- ƛ (ν₀ · ƛ (ƛ Zero) · ƛ (ƛ (ƛ (maxᵀ · (Succ · ν₁) · (ν₂ · (ν₀ · ν₁) · ν₀)))))
+ ƛ (ν₀ · ƛ (ƛ Zero) · ƛ (ƛ (ƛ (maxᵀ · (Succ ν₁) · (ν₂ · (ν₀ · ν₁) · ν₀)))))
 
 max-question-in-path-meaning-η :
 
@@ -448,7 +448,7 @@ This is what m₂ evaluates to with Agda normalization:
  example₂''' = refl
 
  Add : {Γ : Cxt} → T Γ (ι ⇒ ι ⇒ ι)
- Add = Rec · (ƛ Succ)
+ Add = Rec' · ƛ Succ'
 
  t₃ : T₀ ((ι ⇒ ι) ⇒ ι)
  t₃ = ƛ (ν₀ · (ν₀ · (Add · (ν₀ · numeral 17) · (ν₀ · numeral 34))))
