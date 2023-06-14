@@ -94,7 +94,7 @@ tl α = α ∘ succ
 
 _＝⦅_⦆_ : Baire → ℕ → Baire → 𝓤₀  ̇
 α ＝⦅ 0      ⦆ β = 𝟙
-α ＝⦅ succ n ⦆ β = (hd α ＝hd β) × tl α ＝⦅ n ⦆ tl β
+α ＝⦅ succ n ⦆ β = (hd α ＝ hd β) × tl α ＝⦅ n ⦆ tl β
 
 \end{code}
 
@@ -248,7 +248,7 @@ We combine all these into a final lemma that we need:
 
 ＝⟪⟫-range-implies-＝⦅⦆ : (α α′ : Baire) (n : ℕ)
                         → α ＝⟪ range n ⟫ α′
-		        → α ＝⦅ n ⦆ α′
+                        → α ＝⦅ n ⦆ α′
 ＝⟪⟫-range-implies-＝⦅⦆ α α′ n p = agreement← α α′ n †
  where
   † : (j : ℕ) → j <ℕ n → α j ＝ α′ j
