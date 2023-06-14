@@ -337,6 +337,9 @@ Sub Γ₁ Γ₂ = {σ : type} (i : ∈Cxt σ Γ₁) → T Γ₂ σ
 Sub₀ : (Γ : Cxt) → Type
 Sub₀ Γ = Sub Γ 〈〉
 
+＝Sub : {Γ₁ Γ₂ : Cxt} (s1 s2 : Sub Γ₁ Γ₂) → Type
+＝Sub {Γ₁} {Γ₂} s1 s2 = {σ : type} (i : ∈Cxt σ Γ₁) → s1 i ＝ s2 i
+
 Sub,, : {Γ₁ Γ₂ : Cxt} {σ : type}
       → Sub Γ₁ Γ₂
       → Sub (Γ₁ ,, σ) (Γ₂ ,, σ)
@@ -397,9 +400,77 @@ Sub1 {Γ} {τ} t {σ} (∈CxtS .τ i) = ν i
 close₀ : {σ τ : type} {Γ : Cxt} → T (Γ ,, τ) σ → T Γ τ → T Γ σ
 close₀ {σ} {τ} {Γ} t u = close {σ} {Γ ,, τ} {Γ} t (Sub1 u)
 
+{-
 close· : {σ τ : type} {Γ : Cxt} → (t : T Γ (σ ⇒ τ)) (u : T Γ σ) (s : Sub₀ Γ)
        → close (t · u) s ＝ close t s · close u s
 close· {σ} {τ} {Γ} t u s = refl
+-}
+
+{-
+Succ? : {n : ℕ} {Γ : Cxt n} {σ : type} (t : T Γ σ) → 𝟚
+Succ? {n} {Γ} {_} Zero = ₁
+Succ? {n} {Γ} {_} Succ = ₀
+Succ? {n} {Γ} {_} Rec  = ₀
+Succ? {n} {Γ} {.(Γ [ i ])} (ν i) = ₀
+Succ? {n} {Γ} {σ ⇒ τ} (ƛ t) = ₀
+Succ? {n} {Γ} {σ} (t · t₁) = ₀
+
+-- doesn't belong here
+_∧?_ : 𝟚 → 𝟚 → 𝟚
+₀ ∧? b = ₀
+₁ ∧? b = b
+
+val? : {n : ℕ} {Γ : Cxt n} {σ : type} (t : T Γ σ) → 𝟚
+val? {n} {Γ} {_} Zero = ₁
+val? {n} {Γ} {_} Succ = ₁
+val? {n} {Γ} {_} Rec = ₁
+val? {n} {Γ} {.(Γ [ i ])} (ν i) = ₀
+val? {n} {Γ} {σ ⇒ τ} (ƛ t) = ₁
+val? {n} {Γ} {σ} (t · u) = Succ? t ∧? val? u
+
+isVal : {n : ℕ} {Γ : Cxt n} {σ : type} (t : T Γ σ) → Type
+isVal {n} {Γ} {α} t = val? t ＝ ₁
+
+isVal?  : {n : ℕ} {Γ : Cxt n} {σ : type} (t : T Γ σ) → isVal t + ¬ (isVal t)
+isVal? {n} {Γ} {σ} t with val? t
+... | ₁ = inl refl
+... | ₀ = inr (λ ())
+
+step· : {n : ℕ} {Γ : Cxt n} {σ₀ σ τ : type} (f : T Γ σ₀) (a : T Γ σ) → σ₀ ＝ σ ⇒ τ → isVal f → T Γ τ
+step· {n} {Γ} {σ₀} {σ} {τ} t a e isv = {!!}
+--step· {n} {Γ} {σ₀} {σ} {τ} t a e isv = {!!}
+{--step· {n} {Γ} {_} {τ} Zero a () isv
+step· {n} {Γ} {_} {.ι} Succ a refl isv = Succ · a -- not actually a step
+step· {n} {Γ} {_} {.(ι ⇒ _ ⇒ _)} Rec a refl isv = {!!}
+step· {n} {Γ} {.(Γ [ i ])} {τ} (ν i) a e isv = {!!}
+step· {n} {Γ} {σ₁ ⇒ σ₂} {τ} (ƛ f) a e isv = {!!}
+step· {n} {Γ} {.(τ ⇒ _)} {τ} (t · u) a refl isv = t · u · a -- not actually a step--}
+-}
+
+-- call-by-name semantics
+step : {Γ : Cxt} {σ : type} (t : T Γ σ) → T Γ σ
+step {Γ} {_} Zero = Zero
+step {Γ} {_} Succ = Succ
+step {Γ} {_} Rec = Rec
+step {Γ} {σ} (ν i) = ν i
+step {Γ} {σ ⇒ τ} (ƛ t) = ƛ t
+-- app case
+step {Γ} {_} (Succ · a) = Succ · a
+step {Γ} {_} (Rec · a) = Rec · a
+step {Γ} {σ} (ν i · a) = ν i · a
+step {Γ} {σ} (ƛ f · a) = close₀ f a -- reduces (beta)
+step {Γ} {_} (Rec · a₁ · a₂) = Rec · a₁ · a₂
+step {Γ} {σ} (ν i · a₁ · a₂) = ν i · a₁ · a₂
+step {Γ} {σ} (ƛ f · a₁ · a₂) = (close₀ f a₁) · a₂ -- reduces (nested beta)
+step {Γ} {σ} (Rec · f · g · Zero) = g -- reduces (rec/zero)
+step {Γ} {σ} (Rec · f · g · ν i) = Rec · f · g · ν i
+step {Γ} {σ} (Rec · f · g · (Succ · a)) = f · a · (Rec · f · g · a) -- reduces (rec/succ)
+step {Γ} {σ} (Rec · f · g · (ν i · a)) = Rec · f · g · (ν i · a)
+step {Γ} {σ} (Rec · f · g · (ƛ h · a)) = Rec · f · g · close₀ h a -- reduces (nested beta)
+step {Γ} {σ} (Rec · f · g · (h · h₁ · a)) = Rec · f · g · step (h · h₁ · a) -- reduces (nested red)
+step {Γ} {σ} (ν i · a₁ · a₂ · a₃) = ν i · a₁ · a₂ · a₃
+step {Γ} {σ} (ƛ f · a₁ · a₂ · a₃) = (close₀ f a₁) · a₂ · a₃ -- reduces (nested beta)
+step {Γ} {σ} (f · a₁ · a₂ · a₃ · a₄) = step (f · a₁ · a₂ · a₃) · a₄ -- reduces (nested red)
 
 {-
 Sub⊆Γ : {n : ℕ} {Γ₁ : Cxt n} {m : ℕ} {Γ₂ : Cxt m} (s : ⊆Γ Γ₁ Γ₂) → Type
@@ -682,7 +753,7 @@ R⋆ {σ ⇒ τ} α f f' = (x  : 〖 σ 〗)
                  → R⋆ {σ} α x ⌜ x' ⌝
                  → R⋆ {τ} α (f x) (f' · ⌜ x' ⌝)-} -- would this be enough?
 
--- internal semantics of context as dialogue trees
+-- internal semantics of contexts as dialogue trees
 IB【_】 : Cxt → type → Type
 IB【 Γ 】 A = Sub₀ (B-context【 Γ 】 A)
 
@@ -752,73 +823,42 @@ succ-dialogue⋆ d α =
  dialogue⋆ (succ⋆ ⟦ d ⟧₀) α
   ∎
 
+∈Cxt-B-context : {σ : type} {Γ : Cxt} {A : type} {Δ : Cxt}
+               → Δ ＝ B-context【 Γ 】 A
+               → ∈Cxt σ Δ
+               → Σ τ ꞉ type , ∈Cxt τ Γ × (σ ＝ B-type〖 τ 〗 A)
+∈Cxt-B-context {.(B-type〖 x 〗 A)} {Γ ,, x} {A} {.(B-context【 Γ 】 A ,, B-type〖 x 〗 A)} refl (∈Cxt0 .(B-context【 Γ 】 A)) =
+ x , ∈Cxt0 _ , refl
+∈Cxt-B-context {σ} {Γ ,, x} {A} {.(B-context【 Γ 】 A ,, B-type〖 x 〗 A)} refl (∈CxtS .(B-type〖 x 〗 A) i)
+ with ∈Cxt-B-context {σ} {Γ} {A} {B-context【 Γ 】 A} refl i
+... | τ , j , refl = τ , ∈CxtS x j , refl
+
+⌜Sub⌝ : {A : type} {Γ Δ : Cxt} (s : Sub Γ Δ) → Sub (B-context【 Γ 】 A) (B-context【 Δ 】 A)
+⌜Sub⌝ {A} {Γ} {Δ} s {σ} i
+ with ∈Cxt-B-context {σ} {Γ} {A} {B-context【 Γ 】 A} refl i
+... | τ , j , refl = ⌜ s j ⌝
+
+Sub,,⌜Sub⌝ : {A : type} {Γ Δ : Cxt} {σ : type} (s : Sub Γ Δ)
+           → ＝Sub (Sub,, {B-context【 Γ 】 A} {B-context【 Δ 】 A} {B-type〖 σ 〗 A} (⌜Sub⌝ s))
+                   (⌜Sub⌝ (Sub,, {Γ} {Δ} {σ} s))
+Sub,,⌜Sub⌝ {A} {Γ} {Δ} {σ} s {.(B-type〖 σ 〗 A)} (∈Cxt0 .(B-context【 Γ 】 A)) = refl
+Sub,,⌜Sub⌝ {A} {Γ} {Δ} {σ} s {τ} (∈CxtS .(B-type〖 σ 〗 A) i) = {!!}
 {-
-Succ? : {n : ℕ} {Γ : Cxt n} {σ : type} (t : T Γ σ) → 𝟚
-Succ? {n} {Γ} {_} Zero = ₁
-Succ? {n} {Γ} {_} Succ = ₀
-Succ? {n} {Γ} {_} Rec  = ₀
-Succ? {n} {Γ} {.(Γ [ i ])} (ν i) = ₀
-Succ? {n} {Γ} {σ ⇒ τ} (ƛ t) = ₀
-Succ? {n} {Γ} {σ} (t · t₁) = ₀
-
--- doesn't belong here
-_∧?_ : 𝟚 → 𝟚 → 𝟚
-₀ ∧? b = ₀
-₁ ∧? b = b
-
-val? : {n : ℕ} {Γ : Cxt n} {σ : type} (t : T Γ σ) → 𝟚
-val? {n} {Γ} {_} Zero = ₁
-val? {n} {Γ} {_} Succ = ₁
-val? {n} {Γ} {_} Rec = ₁
-val? {n} {Γ} {.(Γ [ i ])} (ν i) = ₀
-val? {n} {Γ} {σ ⇒ τ} (ƛ t) = ₁
-val? {n} {Γ} {σ} (t · u) = Succ? t ∧? val? u
-
-isVal : {n : ℕ} {Γ : Cxt n} {σ : type} (t : T Γ σ) → Type
-isVal {n} {Γ} {α} t = val? t ＝ ₁
-
-isVal?  : {n : ℕ} {Γ : Cxt n} {σ : type} (t : T Γ σ) → isVal t + ¬ (isVal t)
-isVal? {n} {Γ} {σ} t with val? t
-... | ₁ = inl refl
-... | ₀ = inr (λ ())
-
-step· : {n : ℕ} {Γ : Cxt n} {σ₀ σ τ : type} (f : T Γ σ₀) (a : T Γ σ) → σ₀ ＝ σ ⇒ τ → isVal f → T Γ τ
-step· {n} {Γ} {σ₀} {σ} {τ} t a e isv = {!!}
---step· {n} {Γ} {σ₀} {σ} {τ} t a e isv = {!!}
-{--step· {n} {Γ} {_} {τ} Zero a () isv
-step· {n} {Γ} {_} {.ι} Succ a refl isv = Succ · a -- not actually a step
-step· {n} {Γ} {_} {.(ι ⇒ _ ⇒ _)} Rec a refl isv = {!!}
-step· {n} {Γ} {.(Γ [ i ])} {τ} (ν i) a e isv = {!!}
-step· {n} {Γ} {σ₁ ⇒ σ₂} {τ} (ƛ f) a e isv = {!!}
-step· {n} {Γ} {.(τ ⇒ _)} {τ} (t · u) a refl isv = t · u · a -- not actually a step--}
+ with ∈Cxt-B-context {τ} {Γ ,, σ} {A} {B-context【 Γ ,, σ 】 A} refl (∈CxtS (B-type〖 σ 〗 A) i)
+... | τ₁ , j₁ , refl with ∈Cxt-B-context refl i
+... | τ₂ , j₂ , e = {!ap (weaken, (B-type〖 σ 〗 A))!}
 -}
 
--- call-by-name semantics
-step : {Γ : Cxt} {σ : type} (t : T Γ σ) → T Γ σ
-step {Γ} {_} Zero = Zero
-step {Γ} {_} Succ = Succ
-step {Γ} {_} Rec = Rec
-step {Γ} {σ} (ν i) = ν i
-step {Γ} {σ ⇒ τ} (ƛ t) = ƛ t
--- app case
-step {Γ} {_} (Succ · a) = Succ · a
-step {Γ} {_} (Rec · a) = Rec · a
-step {Γ} {σ} (ν i · a) = ν i · a
-step {Γ} {σ} (ƛ f · a) = close₀ f a -- reduces (beta)
-step {Γ} {_} (Rec · a₁ · a₂) = Rec · a₁ · a₂
-step {Γ} {σ} (ν i · a₁ · a₂) = ν i · a₁ · a₂
-step {Γ} {σ} (ƛ f · a₁ · a₂) = (close₀ f a₁) · a₂ -- reduces (nested beta)
-step {Γ} {σ} (Rec · f · g · Zero) = g -- reduces (rec/zero)
-step {Γ} {σ} (Rec · f · g · ν i) = Rec · f · g · ν i
-step {Γ} {σ} (Rec · f · g · (Succ · a)) = f · a · (Rec · f · g · a) -- reduces (rec/succ)
-step {Γ} {σ} (Rec · f · g · (ν i · a)) = Rec · f · g · (ν i · a)
-step {Γ} {σ} (Rec · f · g · (ƛ h · a)) = Rec · f · g · close₀ h a -- reduces (nested beta)
-step {Γ} {σ} (Rec · f · g · (h · h₁ · a)) = Rec · f · g · step (h · h₁ · a) -- reduces (nested red)
-step {Γ} {σ} (ν i · a₁ · a₂ · a₃) = ν i · a₁ · a₂ · a₃
-step {Γ} {σ} (ƛ f · a₁ · a₂ · a₃) = (close₀ f a₁) · a₂ · a₃ -- reduces (nested beta)
-step {Γ} {σ} (f · a₁ · a₂ · a₃ · a₄) = step (f · a₁ · a₂ · a₃) · a₄ -- reduces (nested red)
+⌜close⌝ : {A : type} {σ : type} {Γ : Cxt} (t : T Γ σ) {Δ : Cxt} (s : Sub Γ Δ)
+        → close ⌜ t ⌝ (⌜Sub⌝ {A} s) ＝ ⌜ close t s ⌝
+⌜close⌝ {A} {_} {Γ} Zero {Δ} s = refl
+⌜close⌝ {A} {_} {Γ} Succ {Δ} s = refl
+⌜close⌝ {A} {_} {Γ} Rec {Δ} s = {!!}
+⌜close⌝ {A} {σ} {Γ} (ν i) {Δ} s = {!!}
+⌜close⌝ {A} {σ₁ ⇒ σ₂} {Γ} (ƛ t) {Δ} s = ap ƛ {!!}
+⌜close⌝ {A} {σ} {Γ} (t · t₁) {Δ} s = {!!}
 
--- ?
+-- ? No, it probably has to be integrated into the relation/main lemma.
 xx : {α : Baire} {A σ : type}
      (a : 〖 σ 〗)
      (t : T₀ σ)
@@ -859,11 +899,8 @@ xx {α} {A} {σ} a t r = {!!}
 -- [TODO] and then use the operational semantics of System T? to turn
 --   (close ((ƛ ⌜ t ⌝) · y) ys) into (close ⌜ t ⌝ (y , ys))
 ⌜main-lemma⌝ {Γ} {σ} (t · t₁) α xs ys rxys =
- transport⁻¹
-  (λ k → R⋆ α (⟦ t ⟧ xs (⟦ t₁ ⟧ xs)) k)
-  (close· ⌜ t ⌝ ⌜ t₁ ⌝ ys)
-  (⌜main-lemma⌝
-    t α xs ys rxys (⟦ t₁ ⟧ xs) (close ⌜ t₁ ⌝ ys)
-    (⌜main-lemma⌝ t₁ α xs ys rxys ))
+ ⌜main-lemma⌝
+  t α xs ys rxys (⟦ t₁ ⟧ xs) (close ⌜ t₁ ⌝ ys)
+  (⌜main-lemma⌝ t₁ α xs ys rxys )
 
 \end{code}
