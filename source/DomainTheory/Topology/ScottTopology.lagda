@@ -49,6 +49,12 @@ y ∈imageₚ f = y ∈image f , ∃-is-prop
 
 module DefnOfScottTopology (𝓓 : DCPO {𝓤} {𝓣}) where
 
+\end{code}
+
+I find it convenient to define the type of directed families.
+
+\begin{code}
+
  Fam↑ : 𝓤 ⊔ 𝓥 ⁺ ⊔ 𝓣  ̇
  Fam↑ = Σ S ꞉ Fam 𝓥 ⟨ 𝓓 ⟩ , is-Directed 𝓓 (S [_])
 
