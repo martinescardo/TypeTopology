@@ -153,8 +153,11 @@ induction on u₀ and u₁:
          x₀      ＝⟨ equal-heads p ⟩
          y₁      ∎
 
+     r : v₀ ＝ x₁ ⁻ ∷ v₁
+     r = equal-tails (equal-tails p)
+
      γ : v₀ ＝ y₁ ∷ v₁
-     γ = transport (λ - → v₀ ＝ - ∷ v₁) q (equal-tails (equal-tails p))
+     γ = transport (λ - → v₀ ＝ - ∷ v₁) q r
 
    f [] (y₁ ∷ z₁ ∷ u₁) p = inr γ
     where
@@ -165,8 +168,11 @@ induction on u₀ and u₁:
      d' : u₁ ++ [ x₁ ] ++ [ x₁ ⁻ ] ++ v₁ ▷ u₁ ++ v₁
      d' = u₁ , v₁ , x₁ , refl , refl
 
+     p' : u₁ ++ [ x₁ ] ++ [ x₁ ⁻ ] ++ v₁ ＝ v₀
+     p' = (equal-tails (equal-tails p))⁻¹
+
      d : v₀ ▷ u₁ ++ v₁
-     d = transport (_▷ u₁ ++ v₁) ((equal-tails (equal-tails p))⁻¹) d'
+     d = transport (_▷ u₁ ++ v₁) p' d'
 
      q = y₁ ⁻ ＝⟨ (ap (_⁻) (equal-heads p)⁻¹) ⟩
          x₀ ⁻ ＝⟨ equal-heads (equal-tails p) ⟩
