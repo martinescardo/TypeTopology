@@ -16,9 +16,9 @@ open import EffectfulForcing.Dialogue
 open import EffectfulForcing.Internalv2 hiding (B⋆⟦_⟧ ; dialogue-tree⋆)
 open import EffectfulForcing.LambdaWithoutOraclev2
 open import EffectfulForcing.SystemTv2
-open import UF.Base using (ap₂ ; ap₃)
---open import MGS.hlevels using (hedberg)
---open import MGS.MLTT using (has-decidable-equality)
+open import UF.Base using (transport₂ ; ap₂ ; ap₃)
+open import MGS.hlevels using (hedberg)
+open import MGS.MLTT using (has-decidable-equality)
 
 B⋆⟦_⟧ : {Γ : Cxt} {σ : type} {A : Type}
       → T Γ σ
@@ -198,7 +198,8 @@ T＝type {n} {Γ} {σ} {.σ} refl t = t
 ＝⊆,, : {Γ₁ Γ₂ : Cxt} (s1 s2 : Γ₁ ⊆ Γ₂) (σ : type)
       → ＝⊆ s1 s2
       → ＝⊆ (⊆,, σ s1) (⊆,, σ s2)
-＝⊆,, {Γ₁} {Γ₂} s1 s2 σ e {τ} i = {!!}
+＝⊆,, {Γ₁} {Γ₂} s1 s2 σ e {.σ} (∈Cxt0 .Γ₁) = refl
+＝⊆,, {Γ₁} {Γ₂} s1 s2 σ e {τ} (∈CxtS .σ i) = ap (∈CxtS σ) (e i)
 
 -- extends the context of a term
 weaken : {Γ₁ : Cxt} {Γ₂ : Cxt} {σ : type}
@@ -226,25 +227,39 @@ weaken, {Γ} {σ} τ t = weaken {Γ} {Γ ,, τ} (⊆, Γ τ) t
 ⊆ΓFin-refl {.(succ _)} {Γ₁ , τ} {.(Γ₂ , τ)} Fin.𝟎 (⊆ΓS {Γ₂ = Γ₂} .τ s) e = refl
 ⊆ΓFin-refl {.(succ _)} {Γ₁ , τ} {.(Γ₂ , τ)} (Fin.suc i) (⊆ΓS {Γ₂ = Γ₂} .τ s) e =
  ap Fin.suc (⊆ΓFin-refl i s (pr₁ (from-×-＝' e)))
+-}
+
+＝⇒ : {σ₁ σ₂ τ₁ τ₂ : type} → σ₁ ⇒ σ₂ ＝ τ₁ ⇒ τ₂ → (σ₁ ＝ τ₁) × (σ₂ ＝ τ₂)
+＝⇒ {σ₁} {σ₂} {.σ₁} {.σ₂} refl = refl , refl
+
+＝,, : {Γ Δ : Cxt} {σ τ : type} → Γ ,, σ ＝ Δ ,, τ → (Γ ＝ Δ) × (σ ＝ τ)
+＝,, {Γ} {.Γ} {σ} {.σ} refl = refl , refl
 
 dec-type : has-decidable-equality type
 dec-type ι ι = inl refl
 dec-type ι (τ ⇒ τ₁) = inr (λ ())
 dec-type (σ ⇒ σ₁) ι = inr (λ ())
 dec-type (σ ⇒ σ₁) (τ ⇒ τ₁) with dec-type σ τ | dec-type σ₁ τ₁
-... | inl p | inl q = inl (transport₂ (λ τ τ₁ → σ ⇒ σ₁ ＝ τ ⇒ τ₁) p q refl)
-... | inl p | inr q = inr h
- where
- h : σ ⇒ σ₁ ＝ τ ⇒ τ₁ → 𝟘
- h refl = q refl
-... | inr p | _ = inr h
- where
- h : σ ⇒ σ₁ ＝ τ ⇒ τ₁ → 𝟘
- h refl = p refl
+... | inl refl | inl refl = inl refl
+... | inl refl | inr q = inr (λ z → q (pr₂ (＝⇒ z)))
+... | inr p | _ = inr (λ z → p (pr₁ (＝⇒ z)))
 
 ＝type-refl : {σ : type} (e : σ ＝ σ) → e ＝ refl
 ＝type-refl {σ} e = hedberg dec-type σ σ e refl
 
+dec-Cxt : has-decidable-equality Cxt
+dec-Cxt 〈〉 〈〉 = inl refl
+dec-Cxt 〈〉 (Δ ,, x) = inr (λ ())
+dec-Cxt (Γ ,, x) 〈〉 = inr (λ ())
+dec-Cxt (Γ ,, σ) (Δ ,, τ) with dec-Cxt Γ Δ | dec-type σ τ
+... | inl refl | inl refl = inl refl
+... | inl refl | inr q = inr (λ x → q (pr₂ (＝,, x)))
+... | inr p | _ = inr (λ x → p (pr₁ (＝,, x)))
+
+＝Cxt-refl : {Γ : Cxt} (e : Γ ＝ Γ) → e ＝ refl
+＝Cxt-refl {Γ} e = hedberg dec-Cxt Γ Γ e refl
+
+{-
 transport⁻¹-T-type : {n : ℕ} {Γ : Cxt n} {σ : type} (e : σ ＝ σ) (t : T Γ σ) → transport⁻¹ (T Γ) e t ＝ t
 transport⁻¹-T-type {n} {Γ} {σ} e t = transport⁻¹ (λ k → transport⁻¹ (T Γ) k t ＝ t) (＝type-refl e) refl
 
@@ -353,6 +368,12 @@ Sub,, : {Γ₁ Γ₂ : Cxt} {σ : type}
       → Sub (Γ₁ ,, σ) (Γ₂ ,, σ)
 Sub,, {Γ₁} {Γ₂} {σ} s {.σ} (∈Cxt0 .Γ₁) = ν₀
 Sub,, {Γ₁} {Γ₂} {σ} s {τ} (∈CxtS .σ i) = weaken, σ (s i)
+
+＝Sub,, : {Γ₁ Γ₂ : Cxt} (s1 s2 : Sub Γ₁ Γ₂) (σ : type)
+        → ＝Sub s1 s2
+        → ＝Sub (Sub,, {Γ₁} {Γ₂} {σ} s1) (Sub,, s2)
+＝Sub,, {Γ₁} {Γ₂} s1 s2 σ e {.σ} (∈Cxt0 .Γ₁) = refl
+＝Sub,, {Γ₁} {Γ₂} s1 s2 σ e {τ} (∈CxtS .σ i) = ap (weaken, σ) (e i)
 
 {-
 suc-inj : {n : ℕ} (i j : Fin n) → Fin.suc i ＝ Fin.suc j → i ＝ j
@@ -847,24 +868,55 @@ succ-dialogue⋆ d α =
 
 ∈Cxt-B-context : {σ : type} {Γ : Cxt} {A : type} {Δ : Cxt}
                → Δ ＝ B-context【 Γ 】 A
-               → ∈Cxt σ Δ
-               → Σ τ ꞉ type , ∈Cxt τ Γ × (σ ＝ B-type〖 τ 〗 A)
+               → (i : ∈Cxt σ Δ)
+               → Σ τ ꞉ type , ∈Cxt τ Γ × {-(i ＝ ∈Cxt-B-type j) ×-} (σ ＝ B-type〖 τ 〗 A)
 ∈Cxt-B-context {.(B-type〖 x 〗 A)} {Γ ,, x} {A} {.(B-context【 Γ 】 A ,, B-type〖 x 〗 A)} refl (∈Cxt0 .(B-context【 Γ 】 A)) =
  x , ∈Cxt0 _ , refl
 ∈Cxt-B-context {σ} {Γ ,, x} {A} {.(B-context【 Γ 】 A ,, B-type〖 x 〗 A)} refl (∈CxtS .(B-type〖 x 〗 A) i)
  with ∈Cxt-B-context {σ} {Γ} {A} {B-context【 Γ 】 A} refl i
-... | τ , j , refl = τ , ∈CxtS x j , refl
+... | τ , j , e = τ , ∈CxtS x j , e
+
+∈Cxt-B-context' : {σ : type} {Γ : Cxt} {A : type} {Δ : Cxt}
+                → (e : Δ ＝ B-context【 Γ 】 A)
+                → (i : ∈Cxt σ Δ)
+                → Σ τ ꞉ type , Σ z ꞉ σ ＝ B-type〖 τ 〗 A , Σ j ꞉ ∈Cxt τ Γ ,
+                   transport (λ σ → ∈Cxt σ (B-context【 Γ 】 A)) z (transport (∈Cxt σ) e i) ＝ ∈Cxt-B-type j
+∈Cxt-B-context' {.(B-type〖 x 〗 A)} {Γ ,, x} {A} {.(B-context【 Γ 】 A ,, B-type〖 x 〗 A)} refl (∈Cxt0 .(B-context【 Γ 】 A)) =
+ x , refl , ∈Cxt0 _ , refl
+∈Cxt-B-context' {σ} {Γ ,, x} {A} {.(B-context【 Γ 】 A ,, B-type〖 x 〗 A)} refl (∈CxtS .(B-type〖 x 〗 A) i)
+ with ∈Cxt-B-context' {σ} {Γ} {A} {B-context【 Γ 】 A} refl i
+... | τ , refl , j , w = τ , refl , ∈CxtS x j , ap (∈CxtS (B-type〖 x 〗 A)) w
+
+∈Cxt-B-context'' : {σ : type} {Γ : Cxt} {A : type}
+                 → (i : ∈Cxt σ (B-context【 Γ 】 A))
+                 → Σ τ ꞉ type , Σ z ꞉ σ ＝ B-type〖 τ 〗 A , Σ j ꞉ ∈Cxt τ Γ ,
+                    transport (λ σ → ∈Cxt σ (B-context【 Γ 】 A)) z i ＝ ∈Cxt-B-type j
+∈Cxt-B-context'' {σ} {Γ} {A} = ∈Cxt-B-context' refl
+
+{-
+∈Cxt-B-context {σ : type} {Γ : Cxt} {A : type} {Δ : Cxt}
+               → (e : Δ ＝ B-context【 Γ 】 A)
+               → (i : ∈Cxt σ Δ)
+               → i ＝ pr₁ (pr₂ (∈Cxt-B-context e i))
+-}
 
 ⌜Sub⌝ : {A : type} {Γ Δ : Cxt} (s : Sub Γ Δ) → Sub (B-context【 Γ 】 A) (B-context【 Δ 】 A)
 ⌜Sub⌝ {A} {Γ} {Δ} s {σ} i
- with ∈Cxt-B-context {σ} {Γ} {A} {B-context【 Γ 】 A} refl i
-... | τ , j , refl = ⌜ s j ⌝
+ with ∈Cxt-B-context'' {σ} {Γ} {A} i
+... | τ , refl , j , z = ⌜ s j ⌝
 
 ⊆-B-context : {A : type} {Γ₁ Γ₂ : Cxt}
             → Γ₁ ⊆ Γ₂
             → B-context【 Γ₁ 】 A ⊆ B-context【 Γ₂ 】 A
-⊆-B-context {A} {Γ₁} {Γ₂} s {σ} i with ∈Cxt-B-context {σ} {Γ₁} {A} {B-context【 Γ₁ 】 A} refl i
-... | τ , j , refl = ∈Cxt-B-type (s j)
+⊆-B-context {A} {Γ₁} {Γ₂} s {σ} i with ∈Cxt-B-context'' {σ} {Γ₁} {A} i
+... | τ , refl , j , z = ∈Cxt-B-type (s j)
+
+＝⊆-∈CxtS-B-type : {A : type} {Γ : Cxt} (σ : type)
+                 → ＝⊆ (∈CxtS {_} {B-context【 Γ 】 A} (B-type〖 σ 〗 A))
+                       (⊆-B-context (∈CxtS σ))
+＝⊆-∈CxtS-B-type {A} {Γ} σ {τ} i
+ with ∈Cxt-B-context'' i
+... | x , refl , j , z = ap (∈CxtS (B-type〖 σ 〗 A)) z
 
 -- weaken and ⌜kleisli-extension⌝
 weaken-⌜Kleisli-extension⌝ : {X A : type} {Γ₁ Γ₂ : Cxt}
@@ -881,14 +933,86 @@ weaken-⌜rec⌝ : {A : type} {Γ₁ Γ₂ : Cxt} (s : Γ₁ ⊆ Γ₂) {σ : ty
 weaken-⌜rec⌝ {A} {Γ₁} {Γ₂} s {σ} =
  ap ƛ (ap ƛ (ap₂ _·_ (weaken-⌜Kleisli-extension⌝ _) refl))
 
+-- close and ⌜kleisli-extension⌝
+close-⌜Kleisli-extension⌝ : {X A : type} {Γ₁ Γ₂ : Cxt}
+                             (s : Sub Γ₁ Γ₂)
+                             {σ : type}
+                           → ⌜Kleisli-extension⌝ {X} {A} {σ} ＝ close (⌜Kleisli-extension⌝ {X} {A} {σ}) s
+close-⌜Kleisli-extension⌝ {X} {A} {Γ₁} {Γ₂} s {ι} = refl
+close-⌜Kleisli-extension⌝ {X} {A} {Γ₁} {Γ₂} s {σ ⇒ σ₁} =
+ ap ƛ (ap ƛ (ap ƛ (ap₂ _·_ (ap₂ _·_ (close-⌜Kleisli-extension⌝ _) refl) refl)))
+
+-- close and ⌜rec⌝
+close-⌜rec⌝ : {A : type} {Γ₁ Γ₂ : Cxt} (s : Sub Γ₁ Γ₂) {σ : type}
+             → ⌜rec⌝ {σ} {A} ＝ close (⌜rec⌝ {σ} {A}) s
+close-⌜rec⌝ {A} {Γ₁} {Γ₂} s {σ} =
+ ap ƛ (ap ƛ (ap₂ _·_ (close-⌜Kleisli-extension⌝ _) refl))
+
+
+＝B-type : {A σ τ : type}
+         → B-type〖 σ 〗 A ＝ B-type〖 τ 〗 A
+         → σ ＝ τ
+＝B-type {A} {ι} {ι} e = refl
+＝B-type {A} {ι} {ι ⇒ σ₁} e with ＝⇒ e
+... | e₁ , e₂ with ＝⇒ e₁
+... | () , e₄
+＝B-type {A} {ι} {(ι ⇒ σ₃) ⇒ σ₁} e with ＝⇒ e
+... | e₁ , e₂ with ＝⇒ e₁
+... | () , e₄
+＝B-type {A} {ι} {((σ₄ ⇒ σ₅) ⇒ σ₃) ⇒ σ₁} e with ＝⇒ e
+... | e₁ , e₂ with ＝⇒ e₁
+... | () , e₄
+＝B-type {A} {ι ⇒ σ₁} {ι} e with ＝⇒ e
+... | e₁ , e₂ with ＝⇒ e₁
+... | () , e₄
+＝B-type {A} {(ι ⇒ σ₃) ⇒ σ₁} {ι} e with ＝⇒ e
+... | e₁ , e₂ with ＝⇒ e₁
+... | () , e₄
+＝B-type {A} {((σ₄ ⇒ σ₅) ⇒ σ₃) ⇒ σ₁} {ι} e with ＝⇒ e
+... | e₁ , e₂ with ＝⇒ e₁
+... | () , e₄
+-- Why do we need to split the LHS of the left type here???
+＝B-type {A} {ι ⇒ σ₁} {τ ⇒ τ₁} e with ＝⇒ e
+... | e₁ , e₂ with ＝B-type {A} {ι} e₁ | ＝B-type e₂
+... | refl | refl = refl
+＝B-type {A} {(ι ⇒ σ₃) ⇒ σ₁} {τ ⇒ τ₁} e with ＝⇒ e
+... | e₁ , e₂ with ＝B-type {A} {ι ⇒ σ₃} e₁ | ＝B-type e₂
+... | refl | refl = refl
+＝B-type {A} {((σ₄ ⇒ σ₅) ⇒ σ₃) ⇒ σ₁} {τ ⇒ τ₁} e with ＝⇒ e
+... | e₁ , e₂ with ＝B-type {A} {(σ₄ ⇒ σ₅) ⇒ σ₃} e₁ | ＝B-type e₂
+... | refl | refl = refl
+
+＝∈CxtS : {σ : type} {Γ : Cxt} (τ : type) → (i j : ∈Cxt σ Γ)
+        → ∈CxtS τ i ＝ ∈CxtS τ j
+        → i ＝ j
+＝∈CxtS {σ} {Γ} τ i .i refl = refl
+
+＝∈Cxt-B-type : {Γ : Cxt} {A : type} {σ : type} (i j : ∈Cxt σ Γ)
+              → ∈Cxt-B-type {Γ} {A} {σ} i ＝ ∈Cxt-B-type j
+              → i ＝ j
+＝∈Cxt-B-type {Γ ,, σ} {A} {σ} (∈Cxt0 Γ) j e = p (Γ ,, σ) j refl e
+ where
+  p : (Δ : Cxt) (j : ∈Cxt σ Δ) (z : Δ ＝ Γ ,, σ)
+      (e : ∈Cxt0 (B-context【 Γ 】 A) ＝ transport (λ Δ → ∈Cxt (B-type〖 σ 〗 A) (B-context【 Δ 】 A)) z (∈Cxt-B-type j))
+    → ∈Cxt0 Γ ＝ transport (∈Cxt σ) z j
+  p .(Γ ,, σ) (∈Cxt0 Γ) z e with ＝,, z
+  ... | refl , e2 with ＝Cxt-refl z
+  ... | refl = refl
+  p .(Γ ,, τ) (∈CxtS τ j) refl ()
+＝∈Cxt-B-type {Γ ,, τ} {A} {σ} (∈CxtS τ i) (∈CxtS τ j) e = ap (∈CxtS τ) (＝∈Cxt-B-type i j (＝∈CxtS _ _ _ e))
+
 -- weaken and ⌜ ⌝ - ν case
 ⊆-B-context-∈Cxt-B-type : {A : type} {Γ₁ Γ₂ : Cxt} {σ : type} (i : ∈Cxt σ Γ₁) (s : Γ₁ ⊆ Γ₂)
                         → ∈Cxt-B-type {_} {A} (s i) ＝ ⊆-B-context s (∈Cxt-B-type i)
 ⊆-B-context-∈Cxt-B-type {A} {Γ₁ ,, σ} {Γ₂} {σ} (∈Cxt0 Γ) s = refl
 ⊆-B-context-∈Cxt-B-type {A} {Γ₁ ,, τ} {Γ₂} {σ} (∈CxtS τ i) s
- with ∈Cxt-B-context {B-type〖 σ 〗 A} {Γ₁} {A} {B-context【 Γ₁ 】 A} refl (∈Cxt-B-type i)
+-- with ∈Cxt-B-context {σ} {Γ₁} {A} {Γ₁} {!!} i
+ with ∈Cxt-B-context'' {B-type〖 σ 〗 A} {Γ₁} {A} (∈Cxt-B-type i)
 -- ∈Cxt-B-context {B-type〖 σ 〗 A} {Γ₁ ,, τ} {A} {B-context【 Γ₁ ,, τ 】 A} refl (∈CxtS (B-type〖 τ 〗 A) (∈Cxt-B-type i))
-...| τ , j , e = {!!}
+... | τ₁ , e , j , z with ＝B-type e
+... | refl with ＝type-refl e
+... | refl with ＝∈Cxt-B-type i j z
+... | refl = refl
 
 weaken-eta : {Γ₁ : Cxt} {Γ₂ : Cxt} {σ : type} (s1 s2 : Γ₁ ⊆ Γ₂) (t : T Γ₁ σ)
            → ＝⊆ s1 s2
@@ -897,18 +1021,21 @@ weaken-eta {Γ₁} {Γ₂} {.ι}    s1 s2 Zero e = refl
 weaken-eta {Γ₁} {Γ₂} {.ι}    s1 s2 (Succ t) e = ap Succ (weaken-eta s1 s2 t e)
 weaken-eta {Γ₁} {Γ₂} {σ}     s1 s2 (Rec t t₁ t₂) e = ap₃ Rec (weaken-eta s1 s2 t e) (weaken-eta s1 s2 t₁ e) (weaken-eta s1 s2 t₂ e)
 weaken-eta {Γ₁} {Γ₂} {σ}     s1 s2 (ν i) e = ap ν (e i)
-weaken-eta {Γ₁} {Γ₂} {σ ⇒ τ} s1 s2 (ƛ t) e = ap ƛ (weaken-eta (⊆,, σ s1) (⊆,, σ s2) t {!!})
-weaken-eta {Γ₁} {Γ₂} {σ}     s1 s2 (t · t₁) e = {!!}
+weaken-eta {Γ₁} {Γ₂} {σ ⇒ τ} s1 s2 (ƛ t) e = ap ƛ (weaken-eta (⊆,, σ s1) (⊆,, σ s2) t (＝⊆,, s1 s2 σ e))
+weaken-eta {Γ₁} {Γ₂} {σ}     s1 s2 (t · t₁) e = ap₂ _·_ (weaken-eta s1 s2 t e) (weaken-eta s1 s2 t₁ e)
+
+＝⊆-⊆-B-context : {A : type} {Γ₁ Γ₂ : Cxt} {σ : type} (s : Γ₁ ⊆ Γ₂)
+               → ＝⊆ (⊆-B-context (⊆,, σ s)) (⊆,, (B-type〖 σ 〗 A) (⊆-B-context s))
+＝⊆-⊆-B-context {A} {Γ₁} {Γ₂} {σ} s {.(B-type〖 σ 〗 A)} (∈Cxt0 .(B-context【 Γ₁ 】 A)) = refl
+＝⊆-⊆-B-context {A} {Γ₁} {Γ₂} {σ} s {τ} (∈CxtS .(B-type〖 σ 〗 A) i)
+ with  ∈Cxt-B-context'' {τ} {Γ₁} {A} i
+... | x , refl , j , z = refl
 
 -- weaken and ⌜ ⌝
 ⌜weaken⌝ : {A : type} {Γ₁ Γ₂ : Cxt} (s : Γ₁ ⊆ Γ₂) {σ : type} (t : T Γ₁ σ)
    → ⌜ weaken s t ⌝ ＝ weaken (⊆-B-context {A} s) ⌜ t ⌝
 ⌜weaken⌝ {A} {Γ₁} {Γ₂} s {_} Zero = refl
-⌜weaken⌝ {A} {Γ₁} {Γ₂} s {_} (Succ t) =
- ⌜succ⌝ · ⌜ weaken s t ⌝
-  ＝⟨ ap (λ k → ⌜succ⌝ · k) (⌜weaken⌝ s t) ⟩
- ⌜succ⌝ · weaken (⊆-B-context {A} s) ⌜ t ⌝
-  ∎
+⌜weaken⌝ {A} {Γ₁} {Γ₂} s {_} (Succ t) = ap (λ k → ⌜succ⌝ · k) (⌜weaken⌝ s t)
 ⌜weaken⌝ {A} {Γ₁} {Γ₂} s {σ} (Rec t t₁ t₂) =
  ⌜rec⌝ · ⌜ weaken s t ⌝ · ⌜ weaken s t₁ ⌝ · ⌜ weaken s t₂ ⌝
   ＝⟨ ap₃ (λ k1 k2 k3 → ⌜rec⌝ · k1 · k2 · k3) (⌜weaken⌝ s t) (⌜weaken⌝ s t₁) (⌜weaken⌝ s t₂) ⟩
@@ -916,7 +1043,7 @@ weaken-eta {Γ₁} {Γ₂} {σ}     s1 s2 (t · t₁) e = {!!}
   ＝⟨ ap (λ k → k · weaken (⊆-B-context {A} s) ⌜ t ⌝ · weaken (⊆-B-context {A} s) ⌜ t₁ ⌝ · weaken (⊆-B-context {A} s) ⌜ t₂ ⌝) (weaken-⌜rec⌝ _) ⟩
  weaken (⊆-B-context {A} s) ⌜rec⌝ · weaken (⊆-B-context {A} s) ⌜ t ⌝ · weaken (⊆-B-context {A} s) ⌜ t₁ ⌝ · weaken (⊆-B-context {A} s) ⌜ t₂ ⌝
   ∎
-⌜weaken⌝ {A} {Γ₁} {Γ₂} s {σ} (ν i) = ap ν {!!}
+⌜weaken⌝ {A} {Γ₁} {Γ₂} s {σ} (ν i) = ap ν (⊆-B-context-∈Cxt-B-type i s)
 ⌜weaken⌝ {A} {Γ₁} {Γ₂} s {σ₁ ⇒ σ₂} (ƛ t) = ap ƛ p
  where
   p : ⌜ weaken (⊆,, σ₁ s) t ⌝ ＝ weaken (⊆,, (B-type〖 σ₁ 〗 A) (⊆-B-context s)) ⌜ t ⌝
@@ -924,7 +1051,7 @@ weaken-eta {Γ₁} {Γ₂} {σ}     s1 s2 (t · t₁) e = {!!}
    ⌜ weaken (⊆,, σ₁ s) t ⌝
     ＝⟨ ⌜weaken⌝ (⊆,, σ₁ s) t ⟩
    weaken (⊆-B-context {A} (⊆,, σ₁ s)) ⌜ t ⌝
-    ＝⟨ {!!} ⟩
+    ＝⟨ weaken-eta _ _ ⌜ t ⌝ (＝⊆-⊆-B-context s) ⟩
    weaken (⊆,, (B-type〖 σ₁ 〗 A) (⊆-B-context s)) ⌜ t ⌝
     ∎
 ⌜weaken⌝ {A} {Γ₁} {Γ₂} s {σ} (t · t₁) = ap₂ _·_ (⌜weaken⌝ s t) (⌜weaken⌝ s t₁)
@@ -933,18 +1060,55 @@ Sub,,⌜Sub⌝ : {A : type} {Γ Δ : Cxt} {σ : type} (s : Sub Γ Δ)
            → ＝Sub (Sub,, {B-context【 Γ 】 A} {B-context【 Δ 】 A} {B-type〖 σ 〗 A} (⌜Sub⌝ s))
                    (⌜Sub⌝ (Sub,, {Γ} {Δ} {σ} s))
 Sub,,⌜Sub⌝ {A} {Γ} {Δ} {σ} s {.(B-type〖 σ 〗 A)} (∈Cxt0 .(B-context【 Γ 】 A)) = refl
-Sub,,⌜Sub⌝ {A} {Γ} {Δ} {σ} s {τ} (∈CxtS .(B-type〖 σ 〗 A) i) with ∈Cxt-B-context refl i
-... | τ₂ , j₂ , refl = {!!}
+Sub,,⌜Sub⌝ {A} {Γ} {Δ} {σ} s {τ} (∈CxtS .(B-type〖 σ 〗 A) i) with ∈Cxt-B-context'' i
+... | τ₂ , refl , j₂ , z₂ =
+ weaken (∈CxtS (B-type〖 σ 〗 A)) ⌜ s j₂ ⌝
+  ＝⟨ weaken-eta _ _  ⌜ s j₂ ⌝ (＝⊆-∈CxtS-B-type {A} {Δ} σ) ⟩
+ weaken (⊆-B-context (λ i₁ → ∈CxtS σ i₁)) ⌜ s j₂ ⌝
+  ＝⟨ ⌜weaken⌝ (⊆, Δ σ) (s j₂) ⁻¹ ⟩
+ ⌜ weaken, σ (s j₂) ⌝
+  ∎
+
+-- cloes returns the same result given "equivalent" substitutions
+close-eta : {Γ₁ : Cxt} {Γ₂ : Cxt} {σ : type} (s1 s2 : Sub Γ₁ Γ₂) (t : T Γ₁ σ)
+           → ＝Sub s1 s2
+           → close t s1 ＝ close t s2
+close-eta {Γ₁} {Γ₂} {_}     s1 s2 Zero          e = refl
+close-eta {Γ₁} {Γ₂} {_}     s1 s2 (Succ t)      e = ap Succ (close-eta s1 s2 t e)
+close-eta {Γ₁} {Γ₂} {σ}     s1 s2 (Rec t t₁ t₂) e = ap₃ Rec (close-eta s1 s2 t e) (close-eta s1 s2 t₁ e) (close-eta s1 s2 t₂ e)
+close-eta {Γ₁} {Γ₂} {σ}     s1 s2 (ν i)         e = e i
+close-eta {Γ₁} {Γ₂} {σ ⇒ τ} s1 s2 (ƛ t)         e = ap ƛ (close-eta (Sub,, s1) (Sub,, s2) t (＝Sub,, s1 s2 σ e))
+close-eta {Γ₁} {Γ₂} {σ}     s1 s2 (t · t₁)      e = ap₂ _·_ (close-eta s1 s2 t e) (close-eta s1 s2 t₁ e)
 
 -- close and ⌜ ⌝
 ⌜close⌝ : {A : type} {σ : type} {Γ : Cxt} (t : T Γ σ) {Δ : Cxt} (s : Sub Γ Δ)
         → close ⌜ t ⌝ (⌜Sub⌝ {A} s) ＝ ⌜ close t s ⌝
-⌜close⌝ {A} {_}       {Γ} Zero        {Δ} s = refl
-⌜close⌝ {A} {_}       {Γ} (Succ t)    {Δ} s = {!!}
-⌜close⌝ {A} {_}       {Γ} (Rec f g t) {Δ} s = {!!}
-⌜close⌝ {A} {σ}       {Γ} (ν i)       {Δ} s = {!!}
-⌜close⌝ {A} {σ₁ ⇒ σ₂} {Γ} (ƛ t)       {Δ} s = ap ƛ {!!}
-⌜close⌝ {A} {σ}       {Γ} (t · t₁)    {Δ} s = {!!}
+⌜close⌝ {A} {_}       {Γ} Zero          {Δ} s = refl
+⌜close⌝ {A} {_}       {Γ} (Succ t)      {Δ} s = ap (λ k → ⌜succ⌝ · k) (⌜close⌝ t s)
+⌜close⌝ {A} {_}       {Γ} (Rec t t₁ t₂) {Δ} s =
+ close ⌜rec⌝ (⌜Sub⌝ {A} s) · close ⌜ t ⌝ (⌜Sub⌝ {A} s) · close ⌜ t₁ ⌝ (⌜Sub⌝ {A} s) · close ⌜ t₂ ⌝ (⌜Sub⌝ {A} s)
+  ＝⟨ ap (λ k → k · close ⌜ t ⌝ (⌜Sub⌝ {A} s) · close ⌜ t₁ ⌝ (⌜Sub⌝ {A} s) · close ⌜ t₂ ⌝ (⌜Sub⌝ {A} s)) ((close-⌜rec⌝ _) ⁻¹) ⟩
+ ⌜rec⌝ · close ⌜ t ⌝ (⌜Sub⌝ {A} s) · close ⌜ t₁ ⌝ (⌜Sub⌝ {A} s) · close ⌜ t₂ ⌝ (⌜Sub⌝ {A} s)
+  ＝⟨ ap₃ (λ k1 k2 k3 → ⌜rec⌝ · k1 · k2 · k3) (⌜close⌝ t s) (⌜close⌝ t₁ s) (⌜close⌝ t₂ s) ⟩
+ ⌜rec⌝ · ⌜ close t s ⌝ · ⌜ close t₁ s ⌝ · ⌜ close t₂ s ⌝
+  ∎
+⌜close⌝ {A} {σ}       {Γ} (ν i)       {Δ} s
+ with ∈Cxt-B-context'' {B-type〖 σ 〗 A} {Γ} {A} (∈Cxt-B-type i)
+... | τ , e , j , z with ＝B-type e
+... | refl with ＝type-refl e
+... | refl with ＝∈Cxt-B-type i j z
+... | refl = refl
+⌜close⌝ {A} {σ₁ ⇒ σ₂} {Γ} (ƛ t)       {Δ} s = ap ƛ p
+ where
+  p : close ⌜ t ⌝ (Sub,, (⌜Sub⌝ s)) ＝ ⌜ close t (Sub,, s) ⌝
+  p =
+   close ⌜ t ⌝ (Sub,, (⌜Sub⌝ s))
+    ＝⟨ close-eta {_} {_} {B-type〖 σ₂ 〗 A} (Sub,, (⌜Sub⌝ s)) (⌜Sub⌝ (Sub,, s)) ⌜ t ⌝ (Sub,,⌜Sub⌝ s) ⟩
+   close ⌜ t ⌝ (⌜Sub⌝ {A} (Sub,, s))
+    ＝⟨ ⌜close⌝ t (Sub,, s) ⟩
+   ⌜ close t (Sub,, s) ⌝
+    ∎
+⌜close⌝ {A} {σ}       {Γ} (t · t₁)    {Δ} s = ap₂ _·_ (⌜close⌝ t s) (⌜close⌝ t₁ s)
 
 -- ? No, it probably has to be integrated into the relation/main lemma.
 R⋆-preserves-⟦⟧ : {α : Baire} {A σ : type}
