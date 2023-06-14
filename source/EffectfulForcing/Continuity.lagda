@@ -81,8 +81,8 @@ TODO completed below by Ayberk Tosun on 13/06/2023.
 
 We first formulate the `α ＝⦅ n ⦆ β` relation that expresses that two sequences
 `α`, `β` of natural numbers are equal up to (not inclusive) some bound `n`.
-These have adapted from the `CantorSearch` module authored by Martín Escardó
-(including the proofs `agreement→` and `agreement←`).
+These have been adapted from the `CantorSearch` module authored by Martín
+Escardó (including the proofs `agreement→` and `agreement←`).
 
 \begin{code}
 
@@ -94,7 +94,7 @@ tl α = α ∘ succ
 
 _＝⦅_⦆_ : Baire → ℕ → Baire → 𝓤₀  ̇
 α ＝⦅ 0      ⦆ β = 𝟙
-α ＝⦅ succ n ⦆ β = (hd α ＝ hd β) × tl α ＝⦅ n ⦆ tl β
+α ＝⦅ succ n ⦆ β = (hd α ＝hd β) × tl α ＝⦅ n ⦆ tl β
 
 \end{code}
 
@@ -121,9 +121,9 @@ agreement← α α′ (succ n) φ = φ 0 ⋆ , (agreement← (tl α) (tl α′) 
 
 \end{code}
 
-Using the `_＝⦅_⦆_` relation, we express the "usual" notion of continuity
-mentioned in the TODO. We denote this `is-continuous₀`. At the end of the
-module, we prove that this is logically equivalent to `is-continuous`.
+Using the `_＝⦅_⦆_` relation, we express the “usual” notion of continuity
+mentioned in the TODO. We call this `is-continuous₀` and prove at the end of
+the module that it is logically equivalent to `is-continuous`.
 
 \begin{code}
 
@@ -179,7 +179,7 @@ maximum = foldr max 0
 \section{`is-continuous` implies `is-continuous₀`}
 
 The fact that `is-continuous` implies `is-continuous₀` is the easy direction of
-the proof. We need only need two minor lemmas to conclude this proof.
+the proof. We need only two minor lemmas to conclude this.
 
 \begin{code}
 
@@ -235,7 +235,7 @@ range-succ zero     (succ n) (in-tail p)  = in-tail (range-succ zero n p)
 range-succ (succ i) (succ i) in-head      = in-head
 range-succ (succ i) (succ n) (in-tail p)  = in-tail (range-succ (succ i) n p)
 
-range-is-complete : (i n : ℕ) → (i ≤ℕ n) → member i (range n)
+range-is-complete : (i n : ℕ) → i ≤ℕ n → member i (range n)
 range-is-complete zero     zero     p = in-head
 range-is-complete zero     (succ n) p = in-tail (range-is-complete zero n p)
 range-is-complete (succ i) (succ n) p = range-succ i n (range-is-complete i n p)
@@ -246,7 +246,9 @@ We combine all these into a final lemma that we need:
 
 \begin{code}
 
-＝⟪⟫-range-implies-＝⦅⦆ : (α α′ : Baire) (n : ℕ) → α ＝⟪ range n ⟫ α′ → α ＝⦅ n ⦆ α′
+＝⟪⟫-range-implies-＝⦅⦆ : (α α′ : Baire) (n : ℕ)
+                        → α ＝⟪ range n ⟫ α′
+		        → α ＝⦅ n ⦆ α′
 ＝⟪⟫-range-implies-＝⦅⦆ α α′ n p = agreement← α α′ n †
  where
   † : (j : ℕ) → j <ℕ n → α j ＝ α′ j
@@ -257,7 +259,7 @@ We combine all these into a final lemma that we need:
 
 \end{code}
 
-The result that we wanted now easily follows:
+The result we want now follows easily:
 
 \begin{code}
 
