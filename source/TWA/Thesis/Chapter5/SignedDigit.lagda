@@ -6,7 +6,7 @@ module TWA.Thesis.Chapter5.SignedDigit where
 
 open import MLTT.Spartan
 open import TypeTopology.DiscreteAndSeparated
-open import TWA.Thesis.Chapter5.Prelude
+open import TWA.Thesis.Chapter2.Sequences
 
 -- Definition 5.2.5
 data 𝟛 : 𝓤₀ ̇ where
@@ -56,7 +56,7 @@ _+𝟛_ : 𝟛 → 𝟛 → 𝟝
 (+1 +𝟛 +1) = +2
 
 add2 : 𝟛ᴺ → 𝟛ᴺ → 𝟝ᴺ
-add2 = map2 _+𝟛_
+add2 = zipWith _+𝟛_
 
 -- Definition 5.2.16
 div2-aux : 𝟝 → 𝟝 → 𝟛 × 𝟝
@@ -217,6 +217,6 @@ digitMul a = map (a *𝟛_)
 
 -- Definition 5.2.35
 mul : 𝟛ᴺ → 𝟛ᴺ → 𝟛ᴺ
-mul x y = bigMid (map2 digitMul x (repeat y))
+mul x y = bigMid (zipWith digitMul x (repeat y))
 
 \end{code}

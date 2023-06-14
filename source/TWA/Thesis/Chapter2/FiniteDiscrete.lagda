@@ -3,16 +3,9 @@
 {-# OPTIONS --without-K --exact-split --safe #-}
 
 open import MLTT.Spartan
-open import UF.FunExt
-open import NotionsOfDecidability.Complemented
 open import TypeTopology.DiscreteAndSeparated
-open import Notation.Order
-open import Naturals.Order
 open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
-open import UF.Quotient
 open import UF.Miscelanea
-open import MLTT.Two-Properties
 open import UF.Equiv
 
 module TWA.Thesis.Chapter2.FiniteDiscrete where

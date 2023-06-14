@@ -4,7 +4,8 @@ open import MLTT.Spartan
 open import UF.FunExt
 open import Naturals.Addition renaming (_+_ to _+ℕ_)
 
-open import TWA.Thesis.Chapter5.Prelude
+-- open import TWA.Thesis.Chapter5.Prelude
+open import TWA.Thesis.Chapter2.Sequences
 open import TWA.Thesis.Chapter5.SignedDigit
 open import TWA.Thesis.Chapter5.IntervalObject hiding (⟨_⟩)
 
@@ -28,16 +29,16 @@ open basic-interval-object-development fe io hiding (−1 ; O ; +1)
 ⟪ α ⟫ = M (map ⟨_⟩ α)
 
 _realises¹_ : (𝟛ᴺ → 𝟛ᴺ) → (𝕀 → 𝕀) → 𝓦  ̇
-f realises¹ f' = (α : 𝟛ᴺ) → f' ⟪ α ⟫ ≡  ⟪ f α ⟫
+f realises¹ f' = (α : 𝟛ᴺ) → f' ⟪ α ⟫ ＝ ⟪ f α ⟫
 
 _realises²_ : (𝟛ᴺ → 𝟛ᴺ → 𝟛ᴺ) → (𝕀 → 𝕀 → 𝕀) → 𝓦 ̇
-f realises² f' = (α β : 𝟛ᴺ) → ⟪ f α β ⟫ ≡ f' ⟪ α ⟫ ⟪ β ⟫
+f realises² f' = (α β : 𝟛ᴺ) → ⟪ f α β ⟫ ＝ f' ⟪ α ⟫ ⟪ β ⟫
 
 _pw-realises¹_ : (𝟛 → 𝟛) → (𝕀 → 𝕀) → 𝓦 ̇
-f pw-realises¹ f' = (a : 𝟛) → f' ⟨ a ⟩ ≡ ⟨ f a ⟩
+f pw-realises¹ f' = (a : 𝟛) → f' ⟨ a ⟩ ＝ ⟨ f a ⟩
 
 _realises'_ : (𝟛 → 𝟛ᴺ → 𝟛ᴺ) → (𝕀 → 𝕀 → 𝕀) → 𝓦 ̇
-f realises' f' = (a : 𝟛) (β : 𝟛ᴺ) → ⟪ f a β ⟫ ≡ f' ⟨ a ⟩ ⟪ β ⟫
+f realises' f' = (a : 𝟛) (β : 𝟛ᴺ) → ⟪ f a β ⟫ ＝ f' ⟨ a ⟩ ⟪ β ⟫
 
 id-realiser : id realises¹ id
 id-realiser α = refl
@@ -61,8 +62,8 @@ map-realiser² : (f : 𝟛 → 𝟛ᴺ → 𝟛ᴺ) (f' : 𝕀 → 𝕀 → 𝕀
               → f realises' f'
               → ((a : 𝟛) → is-⊕-homomorphism fe 𝓘 𝓘 (f' ⟨ a ⟩))
               → (α β : 𝟛ᴺ)
-              → M (map ⟪_⟫ (map2 f α (repeat β)))
-              ≡ M (λ n → f' ⟨ α n ⟩ ⟪ β ⟫)
+              → M (map ⟪_⟫ (zipWith f α (repeat β)))
+              ＝ M (λ n → f' ⟨ α n ⟩ ⟪ β ⟫)
 map-realiser² f f' f→ f⊕ α β = ap M (dfunext (fe 𝓤₀ 𝓦) (λ i → f→ (α i) β))
 
 -- Lemma 5.2.12
@@ -176,10 +177,10 @@ quarter +3 = v ⊕ (v ⊕ (u ⊕ v))
 quarter +4 = v
 
 -- Lemma 5.2.27
-l : {a b c : 𝕀} → a ≡ b → (a ⊕ c) ≡ (b ⊕ c)
+l : {a b c : 𝕀} → a ＝ b → (a ⊕ c) ＝ (b ⊕ c)
 l refl = refl
 
-r : {a b c : 𝕀} → b ≡ c → (a ⊕ b) ≡ (a ⊕ c)
+r : {a b c : 𝕀} → b ＝ c → (a ⊕ b) ＝ (a ⊕ c)
 r refl = refl
 
 div4-aux-＝ : (x y : 𝟡) (z : 𝕀)
@@ -629,7 +630,7 @@ digitMul-realiser +1 α = id-realiser α ⁻¹  ∙ *-gives-id-r       ⟪ α �
 
 -- Theorem 5.2.37
 mul-realiser : mul realises² _*_
-mul-realiser α β = M-realiser (map2 digitMul α (λ _ → β)) ⁻¹
+mul-realiser α β = M-realiser (zipWith digitMul α (λ _ → β)) ⁻¹
                  ∙ map-realiser² digitMul _*_ digitMul-realiser
                      (λ a → *-is-⊕-homomorphism-l ⟨ a ⟩) α β
                  ∙ ⊕-homs-are-M-homs (_* ⟪ β ⟫) (*-is-⊕-homomorphism-r ⟪ β ⟫)

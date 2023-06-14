@@ -173,8 +173,7 @@ discrete-seq-clofun-c d = discrete-seq-clofun-e d
                         , discrete-seq-clofun-u d
 
 ℕ→D-clofun : {X : 𝓤 ̇ } → (d : is-discrete X)
-           → Σ c ꞉ ((ℕ → X) → (ℕ → X) → ℕ∞)
-           , is-closeness c
+           → is-closeness-space (ℕ → X)
 ℕ→D-clofun d = discrete-seq-clofun d
              , discrete-seq-clofun-c d
 
@@ -226,10 +225,162 @@ discrete-seq-clofun-c d = discrete-seq-clofun-e d
 ℕ→𝟚-ClosenessSpace = ℕ→D-ClosenessSpace 𝟚-is-discrete
 
 ℕ∞-ClosenessSpace : ClosenessSpace 𝓤₀
-ℕ∞-ClosenessSpace = Σ-ClosenessSpace ℕ→𝟚-ClosenessSpace is-decreasing
-                     (being-decreasing-is-prop (fe _ _))
+ℕ∞-ClosenessSpace
+ = Σ-ClosenessSpace ℕ→𝟚-ClosenessSpace is-decreasing
+     (being-decreasing-is-prop (fe _ _))
 
-open import TWA.Thesis.Chapter5.PLDIPrelude
+c⟨_⟩ : (X : ClosenessSpace 𝓤) → ⟨ X ⟩ → ⟨ X ⟩ → ℕ∞
+c⟨ (X , c , _) ⟩ = c
+
+Π-clofun' : (T : ℕ → ClosenessSpace 𝓤)
+          → Π (⟨_⟩ ∘ T) → Π (⟨_⟩ ∘ T) → (ℕ → 𝟚)
+Π-clofun' T x y zero = pr₁ (c⟨ T 0 ⟩ (x 0) (y 0)) 0
+Π-clofun' T x y (succ n)
+ = min𝟚 (pr₁ (c⟨ T 0 ⟩ (x 0) (y 0)) (succ n))
+     (Π-clofun' (T ∘ succ) (x ∘ succ) (y ∘ succ) n)
+
+Π-clofun'-d : (T : ℕ → ClosenessSpace 𝓤)
+            → (x y : Π (⟨_⟩ ∘ T))
+            → is-decreasing (Π-clofun' T x y)
+Π-clofun'-d T x y zero
+ = ≤₂-trans _ _ _ Lemma[minab≤₂a] (pr₂ (c⟨ T 0 ⟩ (x 0) (y 0)) 0)
+Π-clofun'-d T x y (succ n)
+ = min𝟚-preserves-≤ (pr₂ (c⟨ T 0 ⟩ (x 0) (y 0)) (succ n))
+     (Π-clofun'-d (T ∘ succ) (x ∘ succ) (y ∘ succ) n)
+
+Π-clofun'-all : (T : ℕ → ClosenessSpace 𝓤)
+              → (x y : Π (⟨_⟩ ∘ T))
+              → Π-clofun' T x y ∼ (λ i → ₁)
+              → (n : ℕ) → (pr₁ (c⟨ T n ⟩ (x n) (y n))) ∼ (λ i → ₁)
+Π-clofun'-all T x y cxy∼∞ 0 zero = cxy∼∞ 0
+Π-clofun'-all T x y cxy∼∞ 0 (succ i)
+ = Lemma[min𝟚ab＝₁→a＝₁] (cxy∼∞ (succ i))
+Π-clofun'-all T x y cxy∼∞ (succ n)
+ = Π-clofun'-all (T ∘ succ) (x ∘ succ) (y ∘ succ)
+     (λ i → Lemma[min𝟚ab＝₁→b＝₁] (cxy∼∞ (succ i))) n
+
+Π-clofun'-e : (T : ℕ → ClosenessSpace 𝓤)
+            → (x y : Π (⟨_⟩ ∘ T))
+            → Π-clofun' T x y ∼ (λ i → ₁) → x ＝ y
+Π-clofun'-e T x y f
+ = dfunext (fe _ _)
+     (λ i → e i (x i) (y i)
+       (to-subtype-＝ (being-decreasing-is-prop (fe _ _))
+         (dfunext (fe _ _) (Π-clofun'-all T x y f i))))
+ where
+  e : (n : ℕ) → indistinguishable-are-equal c⟨ T n ⟩
+  e n = pr₁ (pr₂ (pr₂ (T n)))
+
+Π-clofun'-i : (T : ℕ → ClosenessSpace 𝓤)
+            → (x : Π (⟨_⟩ ∘ T)) → Π-clofun' T x x ∼ (λ i → ₁)
+Π-clofun'-i T x 0 = ap (λ - → pr₁ - 0) (i 0 (x 0))
+ where
+  i : (n : ℕ) → self-indistinguishable c⟨ T n ⟩
+  i n = pr₁ (pr₂ (pr₂ (pr₂ (T n))))
+Π-clofun'-i T x (succ n)
+ = Lemma[a＝₁→b＝₁→min𝟚ab＝₁]
+     (ap (λ - → pr₁ - (succ n)) (i 0 (x 0)))
+     (Π-clofun'-i (T ∘ succ) (x ∘ succ) n)
+ where
+  i : (n : ℕ) → self-indistinguishable c⟨ T n ⟩
+  i n = pr₁ (pr₂ (pr₂ (pr₂ (T n))))
+
+Π-clofun'-s : (T : ℕ → ClosenessSpace 𝓤)
+            → (x y : Π (⟨_⟩ ∘ T))
+            → Π-clofun' T x y ∼ Π-clofun' T y x
+Π-clofun'-s T x y zero
+ = ap (λ - → pr₁ - 0) (s 0 (x 0) (y 0))
+ where
+  s : (n : ℕ) → is-symmetric c⟨ T n ⟩
+  s n = pr₁ (pr₂ (pr₂ (pr₂ (pr₂ (T n))))) 
+Π-clofun'-s T x y (succ n)
+ = ap (λ - → min𝟚 - (Π-clofun' (T ∘ succ) (x ∘ succ) (y ∘ succ) n))
+     (ap (λ - → pr₁ - (succ n)) (s 0 (x 0) (y 0)))
+ ∙ ap (λ - → min𝟚 (pr₁ (c⟨ T 0 ⟩ (y 0) (x 0)) (succ n)) -)
+     (Π-clofun'-s (T ∘ succ) (x ∘ succ) (y ∘ succ) n)
+ where
+  s : (n : ℕ) → is-symmetric c⟨ T n ⟩
+  s n = pr₁ (pr₂ (pr₂ (pr₂ (pr₂ (T n)))))
+
+Lemma[min𝟚abcd＝₁→min𝟚ac＝₁] : (a b c d : 𝟚)
+                            → min𝟚 (min𝟚 a b) (min𝟚 c d) ＝ ₁
+                            → min𝟚 a c ＝ ₁
+Lemma[min𝟚abcd＝₁→min𝟚ac＝₁] ₁ ₁ ₁ ₁ e = refl
+ 
+Lemma[min𝟚abcd＝₁→min𝟚bd＝₁] : (a b c d : 𝟚)
+                            → min𝟚 (min𝟚 a b) (min𝟚 c d) ＝ ₁
+                            → min𝟚 b d ＝ ₁
+Lemma[min𝟚abcd＝₁→min𝟚bd＝₁] ₁ ₁ ₁ ₁ e = refl
+
+Π-clofun'-u : (T : ℕ → ClosenessSpace 𝓤)
+            → (x y z : Π (⟨_⟩ ∘ T))
+            → (n : ℕ)
+            → min𝟚 (Π-clofun' T x y n) (Π-clofun' T y z n) ＝ ₁
+            → Π-clofun' T x z n ＝ ₁
+Π-clofun'-u T x y z 0 η
+ = u 0 (x 0) (y 0) (z 0) 0 η
+ where
+  u : (n : ℕ) → is-ultra c⟨ T n ⟩
+  u n = pr₂ (pr₂ (pr₂ (pr₂ (pr₂ (T n)))))
+Π-clofun'-u T x y z (succ n) η
+ = Lemma[a＝₁→b＝₁→min𝟚ab＝₁]
+     (u 0 (x 0) (y 0) (z 0) (succ n)
+       (Lemma[min𝟚abcd＝₁→min𝟚ac＝₁]
+         (pr₁ (c⟨ T 0 ⟩ (x 0) (y 0)) (succ n))
+         (Π-clofun' (T ∘ succ) (x ∘ succ) (y ∘ succ) n)
+         (pr₁ (c⟨ T 0 ⟩ (y 0) (z 0)) (succ n))
+         (Π-clofun' (T ∘ succ) (y ∘ succ) (z ∘ succ) n)
+         η))
+     (Π-clofun'-u (T ∘ succ) (x ∘ succ) (y ∘ succ) (z ∘ succ) n
+       (Lemma[min𝟚abcd＝₁→min𝟚bd＝₁]
+         (pr₁ (c⟨ T 0 ⟩ (x 0) (y 0)) (succ n))
+         (Π-clofun' (T ∘ succ) (x ∘ succ) (y ∘ succ) n)
+         (pr₁ (c⟨ T 0 ⟩ (y 0) (z 0)) (succ n))
+         (Π-clofun' (T ∘ succ) (y ∘ succ) (z ∘ succ) n)
+         η))
+ where
+  u : (n : ℕ) → is-ultra c⟨ T n ⟩
+  u n = pr₂ (pr₂ (pr₂ (pr₂ (pr₂ (T n)))))
+
+Π-clofun : (T : ℕ → ClosenessSpace 𝓤)
+         → Π (⟨_⟩ ∘ T) → Π (⟨_⟩ ∘ T) → ℕ∞
+Π-clofun T x y = (Π-clofun' T x y) , (Π-clofun'-d T x y)
+
+Π-clofun-e : (T : ℕ → ClosenessSpace 𝓤)
+            → indistinguishable-are-equal (Π-clofun T)
+Π-clofun-e T x y f
+ = Π-clofun'-e T x y (λ i → ap (λ - → pr₁ - i) f)
+
+Π-clofun-i : (T : ℕ → ClosenessSpace 𝓤)
+           → self-indistinguishable (Π-clofun T)
+Π-clofun-i T x
+ = to-subtype-＝ (being-decreasing-is-prop (fe _ _))
+     (dfunext (fe _ _) (Π-clofun'-i T x))
+
+Π-clofun-s : (T : ℕ → ClosenessSpace 𝓤)
+           → is-symmetric (Π-clofun T)
+Π-clofun-s T x y
+ = to-subtype-＝ (being-decreasing-is-prop (fe _ _))
+     (dfunext (fe _ _) (Π-clofun'-s T x y))
+
+Π-clofun-u : (T : ℕ → ClosenessSpace 𝓤)
+           → is-ultra (Π-clofun T)
+Π-clofun-u = Π-clofun'-u
+
+Π-clofun-c : (T : ℕ → ClosenessSpace 𝓤)
+           → is-closeness (Π-clofun T)
+Π-clofun-c T = Π-clofun-e T , Π-clofun-i T
+             , Π-clofun-s T , Π-clofun-u T
+
+ΠT-clofun : (T : ℕ → ClosenessSpace 𝓤)
+          → is-closeness-space (Π (⟨_⟩ ∘ T))
+ΠT-clofun T = Π-clofun T , Π-clofun-c T
+
+Π-ClosenessSpace : (T : ℕ → ClosenessSpace 𝓤)
+                 → ClosenessSpace 𝓤
+Π-ClosenessSpace T = Π (⟨_⟩ ∘ T) , ΠT-clofun T
+
+open import TWA.Thesis.Chapter2.Vectors
 
 Vec-to-Seq : {X : 𝓤 ̇ } {n : ℕ} → X → Vec X n → (ℕ → X)
 Vec-to-Seq x₀ [] n = x₀
@@ -237,8 +388,6 @@ Vec-to-Seq x₀ (x ∷ xs) 0 = x
 Vec-to-Seq x₀ (x ∷ xs) (succ n) = Vec-to-Seq x₀ xs n
 
 open import UF.Equiv
-open import Naturals.Addition
-open import Naturals.Multiplication
 open import Fin.Type
 open import Fin.ArithmeticViaEquivalence
 open import UF.EquivalenceExamples

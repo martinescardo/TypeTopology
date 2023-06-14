@@ -72,7 +72,7 @@ is-closeness-space X = Σ c ꞉ (X → X → ℕ∞) , is-closeness c
 
 ClosenessSpace : (𝓤 : Universe) → 𝓤 ⁺  ̇ 
 ClosenessSpace 𝓤
- = Σ X ꞉ 𝓤 ̇ , Σ c ꞉ (X → X → ℕ∞) , is-closeness c
+ = Σ X ꞉ 𝓤 ̇ , is-closeness-space X
 
 ⟨_⟩ : ClosenessSpace 𝓤 → 𝓤 ̇
 ⟨ X , _ ⟩ = X

@@ -2,10 +2,10 @@
 
 module TWA.Thesis.index where
 
--- Prelude files [ TODO need combining ]
+-- Prelude files
 open import TWA.Thesis.Chapter2.FiniteDiscrete
-open import TWA.Thesis.Chapter5.Prelude
-open import TWA.Thesis.Chapter5.PLDIPrelude
+open import TWA.Thesis.Chapter2.Vectors
+open import TWA.Thesis.Chapter2.Sequences
 
 -- Chapter 3.2
 open import TWA.Thesis.Chapter3.ClosenessSpaces
