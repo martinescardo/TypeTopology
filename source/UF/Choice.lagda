@@ -31,7 +31,7 @@ choice where X is a proposition (see https://arxiv.org/abs/1610.03346).
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan
 open import TypeTopology.DiscreteAndSeparated

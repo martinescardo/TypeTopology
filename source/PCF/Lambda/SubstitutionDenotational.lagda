@@ -2,7 +2,7 @@ Brendan Hart 2019-2020
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe --exact-split --no-sized-types --no-guardedness --auto-inline --lossy-unification #-}
+{-# OPTIONS --safe --without-K --exact-split --lossy-unification #-}
 
 open import MLTT.Spartan
 open import UF.FunExt

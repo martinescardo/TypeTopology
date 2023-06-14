@@ -4,7 +4,7 @@ Based on Egbert Rijke's "Introduction to Homotopy Type Theory".
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module UF.IdentitySystems where
 

@@ -7,7 +7,7 @@ July 1, 2021
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 
 open import MLTT.Spartan

@@ -9,7 +9,7 @@ disjoint, as well as verbally discussing the other cut conditions of "extend".
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --lossy-unification --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split --lossy-unification #-}
 
 open import MLTT.Spartan renaming (_+_ to _∔_)
 open import Notation.CanonicalMap

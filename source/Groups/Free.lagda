@@ -22,7 +22,7 @@ way to do it is already present in the module Fin.lagda.)
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe --no-sized-types --no-guardedness --auto-inline #-} -- --exact-split
+{-# OPTIONS --safe --without-K #-} -- --exact-split
 
 \end{code}
 
@@ -270,8 +270,8 @@ consequences of the Church-Rosser property in a general setting.
 
 \begin{code}
 
- open import Groups.SRTclosure
- open Church-Rosser-consequences {𝓤} {𝓤} _▷_ public
+ open import Relations.SRTclosure
+ open import Relations.ChurchRosser {𝓤} {𝓤} _▷_ public
 
 \end{code}
 

@@ -22,7 +22,7 @@ This accompanies the PhD thesis
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module DomainTheory.index where
 
@@ -146,5 +146,15 @@ We present a succinct list of domain-theoretic formalization targets here:
 3. Formalize the results in reverse mathematics and delta-complete posets.
    See Chapter 6 of the PhD thesis for details.
 
+4. Formalize the definition of the Scott topology of a (continuous) dcpo and
+   show that the Scott opens form a frame, using Ayberk Tosun's formalization of
+   frames and locales, see Locales.index.
+
+   Additionally, show that the Scott topology of a continuous dcpo is spectral,
+   as defined in Locales.CompactRegular.
+
+
 Item 2 should be a fun challenge for a student with an interest in
 (domain-theoretic semantics of) programming languages.
+
+If you'd like to work on Item 4, please get in touch with Ayberk Tosun.

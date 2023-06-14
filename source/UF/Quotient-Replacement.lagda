@@ -16,7 +16,7 @@ replacement assumption (again, see UF.Size.lagda for details).
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import UF.FunExt
 open import UF.PropTrunc

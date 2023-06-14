@@ -51,7 +51,7 @@ from which we borrow other techniques in the development below.
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 open import UF.FunExt
@@ -64,19 +64,18 @@ module Groups.FreeOverLargeLocallySmallSet
         (pt : propositional-truncations-exist)
        where
 
+open import Groups.Free
+open import Groups.Type
+open import MLTT.List
+open import Relations.SRTclosure
 open import UF.Base
 open import UF.Embeddings
 open import UF.Equiv hiding (_≅_)
 open import UF.EquivalenceExamples
+open import UF.Large-Quotient pt fe pe
 open import UF.Size
 open import UF.SmallnessProperties
 
-open import MLTT.List
-open import Groups.SRTclosure
-open import Groups.Type
-open import Groups.Free
-
-open import UF.Large-Quotient pt fe pe
 open FreeGroupInterface pt fe pe
 
 private

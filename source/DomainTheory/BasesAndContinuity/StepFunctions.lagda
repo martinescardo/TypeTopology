@@ -12,7 +12,7 @@ completion, see below for details.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline --lossy-unification #-}
+{-# OPTIONS --safe --without-K --exact-split --lossy-unification #-}
 -- The flag --lossy-unification roughly reduces the timechecking
 -- time by 50%.
 

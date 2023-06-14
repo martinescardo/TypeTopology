@@ -1,6 +1,6 @@
 -- Martin Escardo and Paulo Oliva 2011
 
-{-# OPTIONS --without-K --no-termination-check --exact-split --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --without-K --no-termination-check --exact-split #-}
 
 -- Termination is proved externally, using bar induction and
 -- continuity in the case of this module (Escardo-Oliva 2010).

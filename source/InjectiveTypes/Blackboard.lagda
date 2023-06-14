@@ -95,7 +95,7 @@ All this dualizes with Π replaced by Σ and right replaced by left.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline  #-}
+{-# OPTIONS --safe --without-K --exact-split  #-}
 
 open import UF.FunExt
 
