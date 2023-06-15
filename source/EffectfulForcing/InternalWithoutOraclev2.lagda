@@ -363,17 +363,21 @@ Sub₀ Γ = Sub Γ 〈〉
 ＝Sub : {Γ₁ Γ₂ : Cxt} (s1 s2 : Sub Γ₁ Γ₂) → Type
 ＝Sub {Γ₁} {Γ₂} s1 s2 = {σ : type} (i : ∈Cxt σ Γ₁) → s1 i ＝ s2 i
 
-Sub,, : {Γ₁ Γ₂ : Cxt} {σ : type}
+Subƛ : {Γ₁ Γ₂ : Cxt} {σ : type}
       → Sub Γ₁ Γ₂
       → Sub (Γ₁ ,, σ) (Γ₂ ,, σ)
-Sub,, {Γ₁} {Γ₂} {σ} s {.σ} (∈Cxt0 .Γ₁) = ν₀
-Sub,, {Γ₁} {Γ₂} {σ} s {τ} (∈CxtS .σ i) = weaken, σ (s i)
+Subƛ {Γ₁} {Γ₂} {σ} s {.σ} (∈Cxt0 .Γ₁) = ν₀
+Subƛ {Γ₁} {Γ₂} {σ} s {τ} (∈CxtS .σ i) = weaken, σ (s i)
 
-＝Sub,, : {Γ₁ Γ₂ : Cxt} (s1 s2 : Sub Γ₁ Γ₂) (σ : type)
+Sub,, : {Γ₁ Γ₂ : Cxt} {σ : type} (s : Sub Γ₁ Γ₂) (t : T Γ₂ σ) → Sub (Γ₁ ,, σ) Γ₂
+Sub,, {Γ₁} {Γ₂} {σ} s t {.σ} (∈Cxt0 .Γ₁) = t
+Sub,, {Γ₁} {Γ₂} {σ} s t {τ} (∈CxtS .σ i) = s i
+
+＝Subƛ : {Γ₁ Γ₂ : Cxt} (s1 s2 : Sub Γ₁ Γ₂) (σ : type)
         → ＝Sub s1 s2
-        → ＝Sub (Sub,, {Γ₁} {Γ₂} {σ} s1) (Sub,, s2)
-＝Sub,, {Γ₁} {Γ₂} s1 s2 σ e {.σ} (∈Cxt0 .Γ₁) = refl
-＝Sub,, {Γ₁} {Γ₂} s1 s2 σ e {τ} (∈CxtS .σ i) = ap (weaken, σ) (e i)
+        → ＝Sub (Subƛ {Γ₁} {Γ₂} {σ} s1) (Subƛ s2)
+＝Subƛ {Γ₁} {Γ₂} s1 s2 σ e {.σ} (∈Cxt0 .Γ₁) = refl
+＝Subƛ {Γ₁} {Γ₂} s1 s2 σ e {τ} (∈CxtS .σ i) = ap (weaken, σ) (e i)
 
 {-
 suc-inj : {n : ℕ} (i j : Fin n) → Fin.suc i ＝ Fin.suc j → i ＝ j
@@ -419,7 +423,7 @@ close {_}       {Γ₁} {Γ₂} Zero        s = Zero
 close {_}       {Γ₁} {Γ₂} (Succ t)    s = Succ (close t s)
 close {_}       {Γ₁} {Γ₂} (Rec f g t) s = Rec (close f s) (close g s) (close t s)
 close {σ}       {Γ₁} {Γ₂} (ν i)       s = s i
-close {σ₁ ⇒ σ₂} {Γ₁} {Γ₂} (ƛ t)       s = ƛ (close t (Sub,, s))
+close {σ₁ ⇒ σ₂} {Γ₁} {Γ₂} (ƛ t)       s = ƛ (close t (Subƛ s))
 close {σ}       {Γ₁} {Γ₂} (t₁ · t₂)   s = close t₁ s · close t₂ s
 
 Sub1 : {Γ : Cxt} {τ : type} → T Γ τ → Sub (Γ ,, τ) Γ
@@ -780,9 +784,10 @@ close₀ {σ} {succ n} {Γ , τ} t s =
 R⋆ : {σ : type} → Baire → 〖 σ 〗 → T₀ (B-type〖 σ 〗 ((ι ⇒ ι) ⇒ ι)) → Type
 R⋆ {ι}     α n d  = n ＝ dialogue⋆ ⟦ d ⟧₀ α
 R⋆ {σ ⇒ τ} α f f' = (x  : 〖 σ 〗)
-                    (x' : T₀ (B-type〖 σ 〗 ((ι ⇒ ι) ⇒ ι)))
-                 → R⋆ {σ} α x x'
-                 → R⋆ {τ} α (f x) (f' · x')
+                    (x' : T₀ σ)
+                 → R⋆ {σ} α x ⌜ x' ⌝
+--                 → Σ u ꞉ T₀ (B-type〖 τ 〗 ((ι ⇒ ι) ⇒ ι)) , (⟦ u ⟧ ＝ ⟦ f' · x' ⟧)
+                 → R⋆ {τ} α (f x) (f' · ⌜ x' ⌝)
 {-                    (x' : T₀ σ)
                  → R⋆ {σ} α x ⌜ x' ⌝
                  → R⋆ {τ} α (f x) (f' · ⌜ x' ⌝)-} -- would this be enough?
@@ -1056,11 +1061,11 @@ weaken-eta {Γ₁} {Γ₂} {σ}     s1 s2 (t · t₁) e = ap₂ _·_ (weaken-eta
     ∎
 ⌜weaken⌝ {A} {Γ₁} {Γ₂} s {σ} (t · t₁) = ap₂ _·_ (⌜weaken⌝ s t) (⌜weaken⌝ s t₁)
 
-Sub,,⌜Sub⌝ : {A : type} {Γ Δ : Cxt} {σ : type} (s : Sub Γ Δ)
-           → ＝Sub (Sub,, {B-context【 Γ 】 A} {B-context【 Δ 】 A} {B-type〖 σ 〗 A} (⌜Sub⌝ s))
-                   (⌜Sub⌝ (Sub,, {Γ} {Δ} {σ} s))
-Sub,,⌜Sub⌝ {A} {Γ} {Δ} {σ} s {.(B-type〖 σ 〗 A)} (∈Cxt0 .(B-context【 Γ 】 A)) = refl
-Sub,,⌜Sub⌝ {A} {Γ} {Δ} {σ} s {τ} (∈CxtS .(B-type〖 σ 〗 A) i) with ∈Cxt-B-context'' i
+Subƛ⌜Sub⌝ : {A : type} {Γ Δ : Cxt} {σ : type} (s : Sub Γ Δ)
+           → ＝Sub (Subƛ {B-context【 Γ 】 A} {B-context【 Δ 】 A} {B-type〖 σ 〗 A} (⌜Sub⌝ s))
+                   (⌜Sub⌝ (Subƛ {Γ} {Δ} {σ} s))
+Subƛ⌜Sub⌝ {A} {Γ} {Δ} {σ} s {.(B-type〖 σ 〗 A)} (∈Cxt0 .(B-context【 Γ 】 A)) = refl
+Subƛ⌜Sub⌝ {A} {Γ} {Δ} {σ} s {τ} (∈CxtS .(B-type〖 σ 〗 A) i) with ∈Cxt-B-context'' i
 ... | τ₂ , refl , j₂ , z₂ =
  weaken (∈CxtS (B-type〖 σ 〗 A)) ⌜ s j₂ ⌝
   ＝⟨ weaken-eta _ _  ⌜ s j₂ ⌝ (＝⊆-∈CxtS-B-type {A} {Δ} σ) ⟩
@@ -1077,7 +1082,7 @@ close-eta {Γ₁} {Γ₂} {_}     s1 s2 Zero          e = refl
 close-eta {Γ₁} {Γ₂} {_}     s1 s2 (Succ t)      e = ap Succ (close-eta s1 s2 t e)
 close-eta {Γ₁} {Γ₂} {σ}     s1 s2 (Rec t t₁ t₂) e = ap₃ Rec (close-eta s1 s2 t e) (close-eta s1 s2 t₁ e) (close-eta s1 s2 t₂ e)
 close-eta {Γ₁} {Γ₂} {σ}     s1 s2 (ν i)         e = e i
-close-eta {Γ₁} {Γ₂} {σ ⇒ τ} s1 s2 (ƛ t)         e = ap ƛ (close-eta (Sub,, s1) (Sub,, s2) t (＝Sub,, s1 s2 σ e))
+close-eta {Γ₁} {Γ₂} {σ ⇒ τ} s1 s2 (ƛ t)         e = ap ƛ (close-eta (Subƛ s1) (Subƛ s2) t (＝Subƛ s1 s2 σ e))
 close-eta {Γ₁} {Γ₂} {σ}     s1 s2 (t · t₁)      e = ap₂ _·_ (close-eta s1 s2 t e) (close-eta s1 s2 t₁ e)
 
 -- close and ⌜ ⌝
@@ -1100,60 +1105,75 @@ close-eta {Γ₁} {Γ₂} {σ}     s1 s2 (t · t₁)      e = ap₂ _·_ (close-
 ... | refl = refl
 ⌜close⌝ {A} {σ₁ ⇒ σ₂} {Γ} (ƛ t)       {Δ} s = ap ƛ p
  where
-  p : close ⌜ t ⌝ (Sub,, (⌜Sub⌝ s)) ＝ ⌜ close t (Sub,, s) ⌝
+  p : close ⌜ t ⌝ (Subƛ (⌜Sub⌝ s)) ＝ ⌜ close t (Subƛ s) ⌝
   p =
-   close ⌜ t ⌝ (Sub,, (⌜Sub⌝ s))
-    ＝⟨ close-eta {_} {_} {B-type〖 σ₂ 〗 A} (Sub,, (⌜Sub⌝ s)) (⌜Sub⌝ (Sub,, s)) ⌜ t ⌝ (Sub,,⌜Sub⌝ s) ⟩
-   close ⌜ t ⌝ (⌜Sub⌝ {A} (Sub,, s))
-    ＝⟨ ⌜close⌝ t (Sub,, s) ⟩
-   ⌜ close t (Sub,, s) ⌝
+   close ⌜ t ⌝ (Subƛ (⌜Sub⌝ s))
+    ＝⟨ close-eta {_} {_} {B-type〖 σ₂ 〗 A} (Subƛ (⌜Sub⌝ s)) (⌜Sub⌝ (Subƛ s)) ⌜ t ⌝ (Subƛ⌜Sub⌝ s) ⟩
+   close ⌜ t ⌝ (⌜Sub⌝ {A} (Subƛ s))
+    ＝⟨ ⌜close⌝ t (Subƛ s) ⟩
+   ⌜ close t (Subƛ s) ⌝
     ∎
 ⌜close⌝ {A} {σ}       {Γ} (t · t₁)    {Δ} s = ap₂ _·_ (⌜close⌝ t s) (⌜close⌝ t₁ s)
 
--- ? No, it probably has to be integrated into the relation/main lemma.
-R⋆-preserves-⟦⟧ : {α : Baire} {A σ : type}
-     (a : 〖 σ 〗)
-     (t u : T₀ σ)
-   → ⟦ t ⟧ ＝ ⟦ u ⟧
-   → R⋆ α a ⌜ t ⌝
-   → R⋆ α a ⌜ u ⌝ -- ⌜ step t ⌝
-R⋆-preserves-⟦⟧ {α} {A} {σ} a t u e r = {!!}
+R⋆-preserves-⟦⟧ : {α : Baire} {σ : type}
+                  (a : 〖 σ 〗) (t u : T₀ σ)
+                → ⟦ ⌜_⌝ {〈〉} {σ} {(ι ⇒ ι) ⇒ ι} t ⟧₀ ＝ ⟦ ⌜ u ⌝ ⟧₀
+                → R⋆ α a ⌜ t ⌝
+                → R⋆ α a ⌜ u ⌝
+R⋆-preserves-⟦⟧ {α} {ι} a t u e r =
+ a                      ＝⟨ r ⟩
+ dialogue⋆ ⟦ ⌜ t ⌝ ⟧₀ α ＝⟨ ap (λ k → dialogue⋆ k α) e ⟩
+ dialogue⋆ ⟦ ⌜ u ⌝ ⟧₀ α ∎
+R⋆-preserves-⟦⟧ {α} {σ ⇒ σ₁} a t u e r x x' rx =
+ {!R⋆-preserves-⟦⟧ (a x) !}
+
+R⋆s-Sub,, : {α : Baire} {Γ : Cxt} {σ : type}
+            (xs : 【 Γ 】) (x : 〖 σ 〗)
+            (ys : IB【 Γ 】 ((ι ⇒ ι) ⇒ ι)) (y : T₀ (B-type〖 σ 〗 ((ι ⇒ ι) ⇒ ι)))
+          → R⋆s α xs ys
+          → R⋆ α x y
+          → R⋆s α (xs ‚ x) (Sub,, ys y)
+R⋆s-Sub,, {α} {Γ} {σ} xs x ys y rs r {.σ} (∈Cxt0 .Γ) = r
+R⋆s-Sub,, {α} {Γ} {σ} xs x ys y rs r {τ} (∈CxtS .σ i) = rs i
+
+R⋆s-⌜Sub,,⌝ : {α : Baire} {Γ : Cxt} {σ : type}
+            (xs : 【 Γ 】) (x : 〖 σ 〗)
+            (ys : Sub₀ Γ) (y : T₀ σ)
+          → R⋆s α xs (⌜Sub⌝ ys)
+          → R⋆ α x ⌜ y ⌝
+          → R⋆s α (xs ‚ x) (⌜Sub⌝ (Sub,, ys y))
+R⋆s-⌜Sub,,⌝ {α} {Γ} {σ} xs x ys y rs r {.σ} (∈Cxt0 .Γ) = r
+R⋆s-⌜Sub,,⌝ {α} {Γ} {σ} xs x ys y rs r {τ} (∈CxtS .σ i) with ∈Cxt-B-context'' {B-type〖 τ 〗 ((ι ⇒ ι) ⇒ ι)} (∈Cxt-B-type i)
+... | τ₁ , e , j , z with ＝B-type e
+... | refl with ＝type-refl e
+... | refl with ＝∈Cxt-B-type i j z
+... | refl = {!rs i!}
 
 ⌜main-lemma⌝ : {Γ : Cxt} {σ : type} (t : T Γ σ)
                (α : Baire)
-               (xs : 【 Γ 】) (ys : IB【 Γ 】 ((ι ⇒ ι) ⇒ ι))
-             → R⋆s α xs ys
-             → R⋆ α (⟦ t ⟧ xs) (close ⌜ t ⌝ ys)
+               (xs : 【 Γ 】) (ys : Sub₀ Γ) --IB【 Γ 】 ((ι ⇒ ι) ⇒ ι))
+             → R⋆s α xs (⌜Sub⌝ ys)
+             → R⋆ α (⟦ t ⟧ xs) (close ⌜ t ⌝ (⌜Sub⌝ ys))
 ⌜main-lemma⌝ {Γ} {_} Zero α xs ys rxys = refl
 ⌜main-lemma⌝ {Γ} {_} (Succ t) α xs ys rxys =
  succ (⟦ t ⟧ xs)
   ＝⟨ ap succ (⌜main-lemma⌝ t α xs ys rxys) ⟩
- succ (dialogue⋆ ⟦ close ⌜ t ⌝ ys ⟧₀ α)
-  ＝⟨ succ-dialogue⋆ (close ⌜ t ⌝ ys) α ⟩
- dialogue⋆ (succ⋆ ⟦ close ⌜ t ⌝ ys ⟧₀) α
+ succ (dialogue⋆ ⟦ close ⌜ t ⌝ (⌜Sub⌝ ys) ⟧₀ α)
+  ＝⟨ succ-dialogue⋆ (close ⌜ t ⌝ (⌜Sub⌝ ys)) α ⟩
+ dialogue⋆ (succ⋆ ⟦ close ⌜ t ⌝ (⌜Sub⌝ ys) ⟧₀) α
   ＝⟨ refl ⟩
- dialogue⋆ ⟦ close ⌜succ⌝ ys · (close ⌜ t ⌝ ys) ⟧₀ α
+ dialogue⋆ ⟦ close ⌜succ⌝ ys · (close ⌜ t ⌝ (⌜Sub⌝ ys)) ⟧₀ α
   ∎
 ⌜main-lemma⌝ {Γ} {_} (Rec f g t) α xs ys rxys = {!!}
 ⌜main-lemma⌝ {Γ} {σ} (ν i) α xs ys rxys = rxys i
 ⌜main-lemma⌝ {Γ} {σ ⇒ τ} (ƛ t) α xs ys rxys x y rxy =
  {!!}
- {-transport
-  (λ k → R⋆ α (⟦ t ⟧ (xs ‚ x)) (close (ƛ ⌜ t ⌝) ys · k))
-  (close₀ y ys)
-  (transport
-    (λ k → R⋆ α (⟦ t ⟧ (xs ‚ x)) k)
-    (close· (ƛ ⌜ t ⌝) (weaken₀ y) ys)
-    {!!})-}
--- [DONE] The plan for ƛ is to use close₀ to turn
---   (close (ƛ ⌜ t ⌝) ys · y) into (close (ƛ ⌜ t ⌝) ys · close (weaken y) ys)
--- [DONE] and then use close· to turn
---   (close (ƛ ⌜ t ⌝) ys · close (weaken y) ys) into (close ((ƛ ⌜ t ⌝) · y) ys)
--- [TODO] and then use the operational semantics of System T? to turn
---   (close ((ƛ ⌜ t ⌝) · y) ys) into (close ⌜ t ⌝ (y , ys))
-⌜main-lemma⌝ {Γ} {σ} (t · t₁) α xs ys rxys =
- ⌜main-lemma⌝
+ where
+  ind : R⋆ α (⟦ t ⟧ (xs ‚ x)) (close ⌜ t ⌝ (⌜Sub⌝ (Sub,, ys y)))
+  ind = ⌜main-lemma⌝ {Γ ,, σ} {τ} t α (xs ‚ x) (Sub,, ys y) {!!} --⌜main-lemma⌝ {Γ ,, σ} {τ} t α (xs ‚ x) (Sub,, ys y) (R⋆s-Sub,, xs x ys y rxys rxy)
+⌜main-lemma⌝ {Γ} {σ} (t · t₁) α xs ys rxys = {!!}
+ {- ⌜main-lemma⌝
   t α xs ys rxys (⟦ t₁ ⟧ xs) (close ⌜ t₁ ⌝ ys)
-  (⌜main-lemma⌝ t₁ α xs ys rxys )
+  (⌜main-lemma⌝ t₁ α xs ys rxys )-}
 
 \end{code}
