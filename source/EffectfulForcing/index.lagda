@@ -13,20 +13,23 @@ them in alphabetical order.
 
 module EffectfulForcing.index where
 
-import EffectfulForcing.Combinators
-import EffectfulForcing.CombinatoryT
-import EffectfulForcing.Continuity
-import EffectfulForcing.Dialogue
-import EffectfulForcing.MFPS-XXIX                   -- (2012)
-import EffectfulForcing.SystemT
-import EffectfulForcing.LambdaCalculusVersionOfMFPS -- (2013)
-import EffectfulForcing.Church                      -- (2013)
-import EffectfulForcing.Internal                    -- (2013)
-import EffectfulForcing.WithoutOracle               -- By Vincent Rahli (2015)
-import EffectfulForcing.Dialogue-to-Brouwer         -- By Martin Escardo and
-                                                    --    Paulo Oliva (2017)
-import EffectfulForcing.InternalWithoutOracle       -- By Vincent Rahli (2023)
-import EffectfulForcing.LambdaWithoutOracle         -- By Vincent Rahil (2023)
+import EffectfulForcing.MFPSAndVariations.Combinators
+import EffectfulForcing.MFPSAndVariations.CombinatoryT
+import EffectfulForcing.MFPSAndVariations.Continuity
+import EffectfulForcing.MFPSAndVariations.Dialogue
+import EffectfulForcing.MFPSAndVariations.MFPS-XXIX                   -- (2012)
+import EffectfulForcing.MFPSAndVariations.SystemT
+import EffectfulForcing.MFPSAndVariations.LambdaCalculusVersionOfMFPS -- (2013)
+import EffectfulForcing.MFPSAndVariations.Church                      -- (2013)
+import EffectfulForcing.MFPSAndVariations.Internal                    -- (2013)
+import EffectfulForcing.MFPSAndVariations.WithoutOracle               -- By Vincent Rahli (2015)
+import EffectfulForcing.MFPSAndVariations.Dialogue-to-Brouwer         -- By Martin Escardo and
+                                                                      --    Paulo Oliva (2017)
+import EffectfulForcing.Internal.InternalWithoutOracle       -- By Bruno da Rocha Paiva,
+                                                             -- Martin Escardo,
+                                                             -- Vincent Rahli, and
+                                                             -- Ayberk Tosun (2023)
+import EffectfulForcing.Internal.LambdaWithoutOracle         -- By Vincent Rahli (2023)
 
 \end{code}
 

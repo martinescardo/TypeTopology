@@ -11,15 +11,15 @@ the ``oracle'' α.
 
 {-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
-module EffectfulForcing.WithoutOracle where
+module EffectfulForcing.MFPSAndVariations.WithoutOracle where
 
 open import MLTT.Spartan
 open import MLTT.Athenian
 open import UF.Base
-open import EffectfulForcing.Combinators
-open import EffectfulForcing.Continuity
-open import EffectfulForcing.Dialogue
-open import EffectfulForcing.CombinatoryT
+open import EffectfulForcing.MFPSAndVariations.Combinators
+open import EffectfulForcing.MFPSAndVariations.Continuity
+open import EffectfulForcing.MFPSAndVariations.Dialogue
+open import EffectfulForcing.MFPSAndVariations.CombinatoryT
 
 B-Set⟦_⟧ : type → 𝓤₀ ̇
 B-Set⟦ ι ⟧     = B ℕ

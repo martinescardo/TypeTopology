@@ -4,7 +4,7 @@ Martin Escardo 2012
 
 {-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
-module EffectfulForcing.Continuity where
+module EffectfulForcing.MFPSAndVariations.Continuity where
 
 open import MLTT.Spartan
 open import MLTT.Athenian

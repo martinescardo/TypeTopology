@@ -6,21 +6,16 @@ Gödel's system T and its standard set-theoretical semantics.
 
 {-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
-module EffectfulForcing.SystemTv2 where
+module EffectfulForcing.Internal.SystemT where
 
 open import MLTT.Spartan  hiding (rec ; _^_)
 open import MLTT.Athenian using (Fin)
-open import EffectfulForcing.Combinators
-open import EffectfulForcing.Continuity
+open import EffectfulForcing.MFPSAndVariations.Combinators
+open import EffectfulForcing.MFPSAndVariations.Continuity
+open import EffectfulForcing.MFPSAndVariations.SystemT using (type ; ι ; _⇒_ ; 〖_〗)
 open import UF.Base
 
 open Fin
-
-data type : 𝓤₀ ̇ where
- ι   : type
- _⇒_ : type → type → type
-
-infixr 6 _⇒_
 
 \end{code}
 
@@ -65,10 +60,6 @@ infixl 6 _·_
 The standard interpretation of system T:
 
 \begin{code}
-
-〖_〗 : type → 𝓤₀ ̇
-〖 ι 〗     = ℕ
-〖 σ ⇒ τ 〗 = 〖 σ 〗 → 〖 τ 〗
 
 【_】 : (Γ : Cxt) → 𝓤₀ ̇
 【 Γ 】 = {σ : type} (i : ∈Cxt σ Γ) → 〖 σ 〗

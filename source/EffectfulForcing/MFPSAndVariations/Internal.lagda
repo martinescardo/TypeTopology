@@ -11,198 +11,36 @@ paper.
 
 {-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
-module EffectfulForcing.Internalv2 where
+module EffectfulForcing.MFPSAndVariations.Internal where
 
 open import MLTT.Spartan hiding (rec ; _^_) renaming (⋆ to 〈〉)
 open import MLTT.Athenian using (Fin)
 open import UF.Base
-open import EffectfulForcing.Combinators
-open import EffectfulForcing.Continuity
-open import EffectfulForcing.Dialogue
-open import EffectfulForcing.SystemTv2
+open import EffectfulForcing.MFPSAndVariations.Combinators
+open import EffectfulForcing.MFPSAndVariations.Continuity
+open import EffectfulForcing.MFPSAndVariations.Dialogue
+open import EffectfulForcing.MFPSAndVariations.SystemT
+open import EffectfulForcing.MFPSAndVariations.Church
 
 open Fin
 
 \end{code}
 
-We first discuss Church encoding of dialogue trees, denoted by D⋆.
-This is motivated by the recursion (or iteration, actually) principle
-for D.
-
-\begin{code}
-
-D-rec : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {A : 𝓣 ̇ }
-      → (Z → A) → ((Y → A) → X → A) → D X Y Z → A
-D-rec η' β' (η z)   = η' z
-D-rec η' β' (β φ x) = β' (λ y → D-rec η' β' (φ y)) x
-
-D⋆ : 𝓤 ̇ → 𝓥 ̇ → 𝓦 ̇ → 𝓣 ̇ → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓣 ̇
-D⋆ X Y Z A = (Z → A) → ((Y → A) → X → A) → A
-
-D⋆-rec : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {A : 𝓣 ̇ }
-       → (Z → A) → ((Y → A) → X → A) → D⋆ X Y Z A → A
-D⋆-rec η' β' d = d η' β'
-
-η⋆ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {A : 𝓣 ̇ }
-   → Z → D⋆ X Y Z A
-η⋆ z η' β' = η' z
-
-β⋆ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {A : 𝓣 ̇ }
-   → (Y → D⋆ X Y Z A) → X → D⋆ X Y Z A
-β⋆ Φ x η' β' = β' (λ y → Φ y η' β') x
-
-church-encode : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {A : 𝓣 ̇ }
-              → D X Y Z → D⋆ X Y Z A
-church-encode = D-rec η⋆ β⋆
-
-\end{code}
-
-To go back, we need to take A = D X Y Z:
-
-\begin{code}
-
-church-decode : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
-              → D⋆ X Y Z (D X Y Z) → D X Y Z
-church-decode = D⋆-rec η β
-
-\end{code}
-
-Hereditarily extensional equality on dialogue trees, to avoid the
-axiom of function extensionality:
-
-\begin{code}
-
-data _≣_ {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } : D X Y Z → D X Y Z → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇ where
-
- ap-η : {z z' : Z}
-      → z ＝ z'
-      → η z ≣ η z'
-
- ap-β : {φ φ' : Y → D X Y Z}
-        {x x' : X}
-      → ((y : Y) → φ y ≣ φ' y)
-      → x ＝ x'
-      → β φ x ≣ β φ' x'
-
-church-correctness : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
-                     (d : D X Y Z)
-                   → church-decode (church-encode d) ≣ d
-church-correctness (η z)   = ap-η refl
-church-correctness (β φ x) = ap-β (λ y → church-correctness (φ y)) refl
-
-\end{code}
-
-In the following definition we take A = ((X → Y) → Z).
-
-\begin{code}
-
-dialogue⋆ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
-          → D⋆ X Y Z ((X → Y) → Z)
-          → (X → Y) → Z
-dialogue⋆ = D⋆-rec (λ z α → z) (λ φ x α → φ (α x) α)
-
-B⋆ : 𝓦 ̇ → 𝓣 ̇ → 𝓦 ⊔ 𝓣 ̇
-B⋆ = D⋆ ℕ ℕ
-
-church-encode-B : {X : 𝓦 ̇ } {A : 𝓣  ̇ }
-                → B X → B⋆ X A
-church-encode-B = church-encode
-
-dialogues-agreement : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
-                      (d : D X Y Z)
-                      (α : X → Y)
-                    → dialogue d α ＝ dialogue⋆ (church-encode d) α
-dialogues-agreement (η z)   α = refl
-dialogues-agreement (β φ x) α = dialogues-agreement (φ (α x)) α
-
-decode⋆ : {X : 𝓦 ̇ } → Baire → B⋆ X (Baire → X) → X
-decode⋆ α d = dialogue⋆ d α
-
-kleisli-extension⋆ : {X : 𝓦  ̇ } {Y : 𝓦'  ̇ } {A : 𝓣 ̇ }
-                   → (X → B⋆ Y A)
-                   → B⋆ X A
-                   → B⋆ Y A
-kleisli-extension⋆ f d η' β' = d (λ x → f x η' β') β'
-
-B⋆-functor : {X Y A : Type} → (X → Y) → B⋆ X A → B⋆ Y A
-B⋆-functor f = kleisli-extension⋆ (λ x → η⋆ (f x))
-
-B⋆〖_〗 : type → Type → Type
-B⋆〖 ι 〗     A = B⋆(〖 ι 〗) A
-B⋆〖 σ ⇒ τ 〗 A = B⋆〖 σ 〗 A → B⋆〖 τ 〗 A
-
-Kleisli-extension⋆ : {X A : Type}
-                     {σ : type}
-                   → (X → B⋆〖 σ 〗 A)
-                   → (B⋆ X A → B⋆〖 σ 〗 A)
-Kleisli-extension⋆ {X} {A} {ι}     = kleisli-extension⋆
-Kleisli-extension⋆ {X} {A} {σ ⇒ τ} =
-  λ g d s → Kleisli-extension⋆ {X} {A} {τ} (λ x → g x s) d
-
-generic⋆ : {A : Type} → B⋆ ℕ A → B⋆ ℕ A
-generic⋆ = kleisli-extension⋆ (β⋆ η⋆)
-
-zero⋆ : {A : Type} → B⋆ ℕ A
-zero⋆ = η⋆ 0
-
-succ⋆ : {A : Type} → B⋆ ℕ A → B⋆ ℕ A
-succ⋆ = B⋆-functor succ
-
-rec⋆ : {σ : type}
-       {A : Type}
-     → (B⋆ ℕ A → B⋆〖 σ 〗 A → B⋆〖 σ 〗 A)
-     → B⋆〖 σ 〗 A
-     → B⋆ ℕ A → B⋆〖 σ 〗 A
-rec⋆ {σ} {A} f x = Kleisli-extension⋆ {ℕ} {A} {σ} (rec (f ∘ η⋆) x)
-
-B⋆【_】 : (Γ : Cxt) (A : Type) → Type
-B⋆【 Γ 】 A = {σ : type} (i : ∈Cxt σ Γ) → B⋆〖 σ 〗 A
-
-⟪⟫⋆ : {A : Type} → B⋆【 〈〉 】 A
-⟪⟫⋆ ()
-
-_‚‚⋆_ : {Γ : Cxt} {A : Type} {σ : type}
-      → B⋆【 Γ 】 A
-      → B⋆〖 σ 〗 A
-      → B⋆【 Γ ,, σ 】 A
-(xs ‚‚⋆ x) {σ} (∈Cxt0 _) = x
-(xs ‚‚⋆ x) {σ} (∈CxtS _ i) = xs i
-
-B⋆⟦_⟧ : {Γ : Cxt} {σ : type} {A : Type}
-      → T' Γ σ
-      → B⋆【 Γ 】 A
-      → B⋆〖 σ 〗 A
-B⋆⟦ Ω         ⟧  _ = generic⋆
-B⋆⟦ Zero      ⟧  _ = zero⋆
-B⋆⟦ Succ t    ⟧ xs = succ⋆ (B⋆⟦ t ⟧ xs)
-B⋆⟦ Rec f g t ⟧ xs = rec⋆ (B⋆⟦ f ⟧ xs) (B⋆⟦ g ⟧ xs) (B⋆⟦ t ⟧ xs)
-B⋆⟦ ν i       ⟧ xs = xs i
-B⋆⟦ ƛ t       ⟧ xs = λ x → B⋆⟦ t ⟧ (xs ‚‚⋆ x)
-B⋆⟦ t · u     ⟧ xs = (B⋆⟦ t ⟧ xs) (B⋆⟦ u ⟧ xs)
-
-dialogue-tree⋆ : {A : Type} → T₀ ((ι ⇒ ι) ⇒ ι) → B⋆ ℕ A
-dialogue-tree⋆ t = B⋆⟦ (embed t) · Ω ⟧ ⟪⟫⋆
-
-B↦B⋆ : {X A : Type} → B X → B⋆ X A
-B↦B⋆ = church-encode
-
-\end{code}
-
-We know internalize the above to system T.
+We now internalize Church encodings in system T.
 
 \begin{code}
 
 ⌜D⋆⌝ : type → type → type → type → type
 ⌜D⋆⌝ X Y Z A = (Z ⇒ A) ⇒ ((Y ⇒ A) ⇒ X ⇒ A) ⇒ A
 
-⌜η⌝ : {X Y Z A : type} {Γ : Cxt}
+⌜η⌝ : {X Y Z A : type} {n : ℕ} {Γ : Cxt n}
     → T Γ (Z ⇒ ⌜D⋆⌝ X Y Z A)
 ⌜η⌝ = ƛ (ƛ (ƛ (ν₁ · ν₂)))
 
 η-meaning : {X Y Z A : type} → ⟦ ⌜η⌝ {X} {Y} {Z} {A} ⟧₀ ＝ η⋆
 η-meaning = refl
 
-⌜β⌝ : {X Y Z A : type} {Γ : Cxt}
+⌜β⌝ : {X Y Z A : type} {n : ℕ} {Γ : Cxt n}
     → T Γ (((Y ⇒ ⌜D⋆⌝ X Y Z A) ⇒ X ⇒ ⌜D⋆⌝ X Y Z A))
 ⌜β⌝ = ƛ (ƛ (ƛ (ƛ (ν₀ · ƛ (ν₄ · ν₀ · ν₂ · ν₁) · ν₂))))
 
@@ -212,7 +50,7 @@ We know internalize the above to system T.
 ⌜B⌝ : type → type → type
 ⌜B⌝ = ⌜D⋆⌝ ι ι
 
-⌜kleisli-extension⌝ : {X Y A : type} {Γ : Cxt}
+⌜kleisli-extension⌝ : {X Y A : type} {n : ℕ} {Γ : Cxt n}
                     → T Γ ((X ⇒ ⌜B⌝ Y A) ⇒ ⌜B⌝ X A ⇒ ⌜B⌝ Y A)
 ⌜kleisli-extension⌝ = ƛ (ƛ (ƛ (ƛ (ν₂ · ƛ (ν₄ · ν₀ · ν₂ · ν₁) · ν₀))))
 
@@ -221,7 +59,7 @@ kleisli-extension-meaning : {X Y A : type}
                           ＝ kleisli-extension⋆
 kleisli-extension-meaning = refl
 
-⌜B-functor⌝ : {X Y A : type} {Γ : Cxt}
+⌜B-functor⌝ : {X Y A : type} {n : ℕ} {Γ : Cxt n}
             → T Γ ((X ⇒ Y) ⇒ ⌜B⌝ X A ⇒ ⌜B⌝ Y A)
 ⌜B-functor⌝ = ƛ (⌜kleisli-extension⌝ · ƛ (⌜η⌝ · (ν₁ · ν₀)))
 
@@ -234,7 +72,7 @@ B-type〖_〗 : type → type → type
 B-type〖 ι 〗 A     = ⌜B⌝ ι A
 B-type〖 σ ⇒ τ 〗 A = B-type〖 σ 〗 A ⇒ B-type〖 τ 〗 A
 
-⌜Kleisli-extension⌝ : {X A : type} {σ : type} {Γ : Cxt}
+⌜Kleisli-extension⌝ : {X A : type} {σ : type} {n : ℕ} {Γ : Cxt n}
                     → T Γ ((X ⇒ B-type〖 σ 〗 A) ⇒ ⌜B⌝ X A ⇒ B-type〖 σ 〗 A)
 ⌜Kleisli-extension⌝ {X} {A} {ι}     = ⌜kleisli-extension⌝
 ⌜Kleisli-extension⌝ {X} {A} {σ ⇒ τ} =
@@ -248,13 +86,13 @@ Kleisli-extension-meaning : {X A : type} {σ τ : type}
                                        d
 Kleisli-extension-meaning = refl
 
-⌜zero⌝ : {A : type} {Γ : Cxt} → T Γ (⌜B⌝ ι A)
+⌜zero⌝ : {A : type} {n : ℕ} {Γ : Cxt n} → T Γ (⌜B⌝ ι A)
 ⌜zero⌝ = ⌜η⌝ · Zero
 
-⌜succ⌝ : {A : type} {Γ : Cxt} → T Γ (⌜B⌝ ι A ⇒ ⌜B⌝ ι A)
-⌜succ⌝ =  ⌜B-functor⌝ · Succ'
+⌜succ⌝ : {A : type} {n : ℕ} {Γ : Cxt n} → T Γ (⌜B⌝ ι A ⇒ ⌜B⌝ ι A)
+⌜succ⌝ =  ⌜B-functor⌝ · Succ
 
-⌜rec⌝ : {σ A : type} {Γ : Cxt}
+⌜rec⌝ : {σ A : type} {n : ℕ} {Γ : Cxt n}
       → T Γ ((⌜B⌝ ι A
                ⇒ B-type〖 σ 〗 A
                ⇒ B-type〖 σ 〗 A)
@@ -262,7 +100,7 @@ Kleisli-extension-meaning = refl
             ⇒ ⌜B⌝ ι A
             ⇒ B-type〖 σ 〗 A)
 ⌜rec⌝ {σ} {A} = ƛ (ƛ (⌜Kleisli-extension⌝ {ι} {A} {σ}
-                        · (Rec' · (ƛ (ν₂ · (⌜η⌝ · ν₀))) · ν₀)))
+                        · (Rec · (ƛ (ν₂ · (⌜η⌝ · ν₀))) · ν₀)))
 
 rec-meaning : {σ A : type}
             → ⟦ ⌜rec⌝ {σ} {A} ⟧₀
@@ -271,19 +109,21 @@ rec-meaning : {σ A : type}
                         (rec (f ∘ ⟦ ⌜η⌝ {ι} {ι} {ι} {A} ⟧₀) x)
 rec-meaning = refl
 
-B-context【_】 : Cxt → type → Cxt
-B-context【_】 〈〉       A = 〈〉
-B-context【_】 (Γ ,, σ) A = B-context【_】 Γ A ,, B-type〖 σ 〗 A
+B-context【_】 : {n : ℕ} → Cxt n → type → Cxt n
+B-context【_】 {0}      〈〉       A = 〈〉
+B-context【_】 {succ n} (Γ , σ) A = (B-context【_】 {n} Γ A , B-type〖 σ 〗 A)
 
 infix 10 B-context【_】
 
-∈Cxt-B-type : {Γ : Cxt} {A : type} {σ : type} (i : ∈Cxt σ Γ) → ∈Cxt (B-type〖 σ 〗 A) (B-context【 Γ 】 A)
-∈Cxt-B-type {Γ ,, σ} {A} {σ} (∈Cxt0 Γ) = ∈Cxt0 (B-context【 Γ 】 A)
-∈Cxt-B-type {Γ ,, τ} {A} {σ} (∈CxtS τ i) = ∈CxtS (B-type〖 τ 〗 A) (∈Cxt-B-type i)
-
-⌜ν⌝ : {Γ : Cxt} {A : type} {σ : type} (i : ∈Cxt σ Γ)
-    → T (B-context【 Γ 】 A) (B-type〖 σ 〗 A)
-⌜ν⌝ {Γ} {A} {σ} i = ν (∈Cxt-B-type i)
+⌜ν⌝ : {n : ℕ} {Γ : Cxt n} {A : type} (i : Fin n)
+    → T (B-context【 Γ 】 A) (B-type〖 Γ [ i ] 〗 A)
+⌜ν⌝ i = transport (T (B-context【 _ 】 _)) (p i) (ν i)
+ where
+  p : {n : ℕ} {Γ : Cxt n} {A : type} (i : Fin n)
+    → B-context【 Γ 】 A [ i ] ＝ B-type〖 Γ [ i ] 〗 A
+  p {0}      {〈〉}     ()
+  p {succ n} {Γ , x} 𝟎       = refl
+  p {succ n} {Γ , x} (suc i) = p i
 
 \end{code}
 
@@ -291,15 +131,15 @@ infix 10 B-context【_】
 
 \begin{code}
 
-⌜_⌝ : {Γ : Cxt} {σ : type} {A : type}
+⌜_⌝ : {n : ℕ} {Γ : Cxt n} {σ : type} {A : type}
     → T Γ σ
     → T (B-context【 Γ 】 A) (B-type〖 σ 〗 A)
-⌜ Zero ⌝      = ⌜zero⌝
-⌜ Succ t ⌝    = ⌜succ⌝ · ⌜ t ⌝
-⌜ Rec f g t ⌝ = ⌜rec⌝ · ⌜ f ⌝ · ⌜ g ⌝ · ⌜ t ⌝
-⌜ ν i ⌝       = ⌜ν⌝ i
-⌜ ƛ t ⌝       = ƛ ⌜ t ⌝
-⌜ t · u ⌝     = ⌜ t ⌝ · ⌜ u ⌝
+⌜ Zero ⌝            = ⌜zero⌝
+⌜ Succ ⌝            = ⌜succ⌝
+⌜ Rec {_} {_} {σ} ⌝ = ⌜rec⌝ {σ}
+⌜ ν i ⌝             = ⌜ν⌝ i
+⌜ ƛ t ⌝             = ƛ ⌜ t ⌝
+⌜ t · u ⌝           = ⌜ t ⌝ · ⌜ u ⌝
 
 \end{code}
 
@@ -307,11 +147,11 @@ Given a term of type (ι ⇒ ι) ⇒ ι, we calculate a term defining its dialog
 
 \begin{code}
 
-⌜generic⌝ : {A : type} {Γ : Cxt}
+⌜generic⌝ : {A : type} {n : ℕ} {Γ : Cxt n}
           → T Γ (⌜B⌝ ι A ⇒ ⌜B⌝ ι A)
 ⌜generic⌝ = ⌜kleisli-extension⌝ · (⌜β⌝ · ⌜η⌝)
 
-⌜dialogue-tree⌝ : {A : type} {Γ : Cxt}
+⌜dialogue-tree⌝ : {A : type} {n : ℕ} {Γ : Cxt n}
                 → T Γ ((ι ⇒ ι) ⇒ ι)
                 → T (B-context【 Γ 】 A) (⌜B⌝ ι A)
 ⌜dialogue-tree⌝ t = ⌜ t ⌝ · ⌜generic⌝
@@ -338,8 +178,8 @@ max-agreement 0        n        = refl
 max-agreement (succ m) 0        = refl
 max-agreement (succ m) (succ n) = ap succ (max-agreement m n)
 
-maxᵀ : {Γ : Cxt} → T Γ (ι ⇒ ι ⇒ ι)
-maxᵀ = Rec' · ƛ (ƛ (Rec' · ƛ (ƛ (Succ (ν₂ · ν₁))) · (Succ ν₁))) · ƛ ν₀
+maxᵀ : {n : ℕ} {Γ : Cxt n} → T Γ (ι ⇒ ι ⇒ ι)
+maxᵀ = Rec · ƛ (ƛ (Rec · ƛ (ƛ (Succ · (ν₂ · ν₁))) · (Succ · ν₁))) · ƛ ν₀
 
 maxᵀ-meaning : ⟦ maxᵀ ⟧₀ ＝ max
 maxᵀ-meaning = refl
@@ -350,11 +190,11 @@ A modulus of continuity can be calculated from a dialogue tree.
 
 \begin{code}
 
-max-question-in-path : {Γ : Cxt}
+max-question-in-path : {n : ℕ} {Γ : Cxt n}
                      → T (B-context【 Γ 】 ((ι ⇒ ι) ⇒ ι))
                          ((⌜B⌝ ι ((ι ⇒ ι) ⇒ ι)) ⇒ (ι ⇒ ι) ⇒ ι)
 max-question-in-path =
- ƛ (ν₀ · ƛ (ƛ Zero) · ƛ (ƛ (ƛ (maxᵀ · (Succ ν₁) · (ν₂ · (ν₀ · ν₁) · ν₀)))))
+ ƛ (ν₀ · ƛ (ƛ Zero) · ƛ (ƛ (ƛ (maxᵀ · (Succ · ν₁) · (ν₂ · (ν₀ · ν₁) · ν₀)))))
 
 max-question-in-path-meaning-η :
 
@@ -369,7 +209,7 @@ max-question-in-path-meaning-β :
 
 max-question-in-path-meaning-β φ n α = refl
 
-internal-mod-cont : {Γ : Cxt}
+internal-mod-cont : {n : ℕ} {Γ : Cxt n}
                   → T Γ ((ι ⇒ ι) ⇒ ι)
                   → T (B-context【 Γ 】 ((ι ⇒ ι) ⇒ ι)) ((ι ⇒ ι) ⇒ ι)
 internal-mod-cont t = max-question-in-path · (⌜dialogue-tree⌝ {(ι ⇒ ι) ⇒ ι} t)
@@ -447,8 +287,8 @@ This is what m₂ evaluates to with Agda normalization:
  example₂''' : m₂ (succ ∘ succ) ＝ 20
  example₂''' = refl
 
- Add : {Γ : Cxt} → T Γ (ι ⇒ ι ⇒ ι)
- Add = Rec' · ƛ Succ'
+ Add : {n : ℕ} {Γ : Cxt n} → T Γ (ι ⇒ ι ⇒ ι)
+ Add = Rec · (ƛ Succ)
 
  t₃ : T₀ ((ι ⇒ ι) ⇒ ι)
  t₃ = ƛ (ν₀ · (ν₀ · (Add · (ν₀ · numeral 17) · (ν₀ · numeral 34))))

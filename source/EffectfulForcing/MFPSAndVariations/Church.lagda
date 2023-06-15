@@ -8,14 +8,14 @@ are Church encoded.
 
 {-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
-module EffectfulForcing.Church where
+module EffectfulForcing.MFPSAndVariations.Church where
 
 open import MLTT.Spartan hiding (rec ; _^_) renaming (⋆ to 〈〉)
 open import MLTT.Athenian using (Fin)
-open import EffectfulForcing.Combinators
-open import EffectfulForcing.Continuity
-open import EffectfulForcing.Dialogue
-open import EffectfulForcing.SystemT
+open import EffectfulForcing.MFPSAndVariations.Combinators
+open import EffectfulForcing.MFPSAndVariations.Continuity
+open import EffectfulForcing.MFPSAndVariations.Dialogue
+open import EffectfulForcing.MFPSAndVariations.SystemT
 
 open Fin
 
@@ -100,6 +100,9 @@ dialogue⋆ = D⋆-rec (λ z α → z) (λ φ x α → φ (α x) α)
 B⋆ : 𝓦 ̇ → 𝓣 ̇ → 𝓦 ⊔ 𝓣 ̇
 B⋆ = D⋆ ℕ ℕ
 
+B↦B⋆ : {X A : Type} → B X → B⋆ X A
+B↦B⋆ = church-encode
+
 church-encode-B : {X : 𝓦 ̇ } {A : 𝓣  ̇ }
                 → B X → B⋆ X A
 church-encode-B = church-encode
@@ -178,8 +181,5 @@ B⋆⟦ t · u           ⟧ xs = (B⋆⟦ t ⟧ xs) (B⋆⟦ u ⟧ xs)
 
 dialogue-tree⋆ : {A : Type} → T₀ ((ι ⇒ ι) ⇒ ι) → B⋆ ℕ A
 dialogue-tree⋆ t = B⋆⟦ (embed t) · Ω ⟧ ⟪⟫⋆
-
-B↦B⋆ : {X A : Type} → B X → B⋆ X A
-B↦B⋆ = church-encode
 
 \end{code}

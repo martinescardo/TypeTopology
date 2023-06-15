@@ -7,12 +7,12 @@ semantics.
 
 {-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
-module EffectfulForcing.CombinatoryT where
+module EffectfulForcing.MFPSAndVariations.CombinatoryT where
 
 open import MLTT.Spartan
 open import MLTT.Athenian
-open import EffectfulForcing.Continuity
-open import EffectfulForcing.Combinators
+open import EffectfulForcing.MFPSAndVariations.Continuity
+open import EffectfulForcing.MFPSAndVariations.Combinators
 open import UF.Base
 
 data type : 𝓤₀  ̇  where

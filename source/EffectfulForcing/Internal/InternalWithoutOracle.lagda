@@ -7,15 +7,17 @@ but directly using T.
 
 {-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
-module EffectfulForcing.InternalWithoutOraclev2 where
+module EffectfulForcing.Internal.InternalWithoutOracle where
 
 open import MLTT.Spartan hiding (rec ; _^_) renaming (⋆ to 〈〉)
 open import MLTT.Athenian using (Fin)
-open import EffectfulForcing.Continuity
-open import EffectfulForcing.Dialogue
-open import EffectfulForcing.Internalv2 hiding (B⋆⟦_⟧ ; dialogue-tree⋆)
-open import EffectfulForcing.LambdaWithoutOraclev2
-open import EffectfulForcing.SystemTv2
+open import EffectfulForcing.MFPSAndVariations.Continuity
+open import EffectfulForcing.MFPSAndVariations.Dialogue
+open import EffectfulForcing.MFPSAndVariations.SystemT using (type ; ι ; _⇒_ ; 〖_〗)
+open import EffectfulForcing.MFPSAndVariations.Church hiding (B⋆【_】 ; ⟪⟫⋆ ; _‚‚⋆_ ; B⋆⟦_⟧ ; dialogue-tree⋆)
+open import EffectfulForcing.Internal.Internal hiding (B⋆⟦_⟧ ; dialogue-tree⋆)
+open import EffectfulForcing.Internal.LambdaWithoutOracle
+open import EffectfulForcing.Internal.SystemT
 open import UF.Base using (transport₂ ; ap₂ ; ap₃)
 open import MGS.hlevels using (hedberg)
 open import MGS.MLTT using (has-decidable-equality)

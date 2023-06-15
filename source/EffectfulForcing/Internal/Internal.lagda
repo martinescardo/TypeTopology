@@ -11,36 +11,69 @@ paper.
 
 {-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
-module EffectfulForcing.Internal where
+module EffectfulForcing.Internal.Internal where
 
 open import MLTT.Spartan hiding (rec ; _^_) renaming (⋆ to 〈〉)
 open import MLTT.Athenian using (Fin)
 open import UF.Base
-open import EffectfulForcing.Combinators
-open import EffectfulForcing.Continuity
-open import EffectfulForcing.Dialogue
-open import EffectfulForcing.SystemT
-open import EffectfulForcing.Church
+open import EffectfulForcing.MFPSAndVariations.Combinators
+open import EffectfulForcing.MFPSAndVariations.Continuity
+open import EffectfulForcing.MFPSAndVariations.Dialogue
+open import EffectfulForcing.MFPSAndVariations.SystemT using (type ; ι ; _⇒_ ; 〖_〗)
+open import EffectfulForcing.MFPSAndVariations.Church hiding (B⋆【_】 ; ⟪⟫⋆ ; _‚‚⋆_ ; B⋆⟦_⟧ ; dialogue-tree⋆)
+open import EffectfulForcing.Internal.SystemT
 
 open Fin
 
 \end{code}
 
-We now internalize Church encodings in system T.
+\begin{code}
+
+B⋆【_】 : (Γ : Cxt) (A : Type) → Type
+B⋆【 Γ 】 A = {σ : type} (i : ∈Cxt σ Γ) → B⋆〖 σ 〗 A
+
+⟪⟫⋆ : {A : Type} → B⋆【 〈〉 】 A
+⟪⟫⋆ ()
+
+_‚‚⋆_ : {Γ : Cxt} {A : Type} {σ : type}
+      → B⋆【 Γ 】 A
+      → B⋆〖 σ 〗 A
+      → B⋆【 Γ ,, σ 】 A
+(xs ‚‚⋆ x) {σ} (∈Cxt0 _) = x
+(xs ‚‚⋆ x) {σ} (∈CxtS _ i) = xs i
+
+B⋆⟦_⟧ : {Γ : Cxt} {σ : type} {A : Type}
+      → T' Γ σ
+      → B⋆【 Γ 】 A
+      → B⋆〖 σ 〗 A
+B⋆⟦ Ω         ⟧  _ = generic⋆
+B⋆⟦ Zero      ⟧  _ = zero⋆
+B⋆⟦ Succ t    ⟧ xs = succ⋆ (B⋆⟦ t ⟧ xs)
+B⋆⟦ Rec f g t ⟧ xs = rec⋆ (B⋆⟦ f ⟧ xs) (B⋆⟦ g ⟧ xs) (B⋆⟦ t ⟧ xs)
+B⋆⟦ ν i       ⟧ xs = xs i
+B⋆⟦ ƛ t       ⟧ xs = λ x → B⋆⟦ t ⟧ (xs ‚‚⋆ x)
+B⋆⟦ t · u     ⟧ xs = (B⋆⟦ t ⟧ xs) (B⋆⟦ u ⟧ xs)
+
+dialogue-tree⋆ : {A : Type} → T₀ ((ι ⇒ ι) ⇒ ι) → B⋆ ℕ A
+dialogue-tree⋆ t = B⋆⟦ (embed t) · Ω ⟧ ⟪⟫⋆
+
+\end{code}
+
+We know internalize the above to system T.
 
 \begin{code}
 
 ⌜D⋆⌝ : type → type → type → type → type
 ⌜D⋆⌝ X Y Z A = (Z ⇒ A) ⇒ ((Y ⇒ A) ⇒ X ⇒ A) ⇒ A
 
-⌜η⌝ : {X Y Z A : type} {n : ℕ} {Γ : Cxt n}
+⌜η⌝ : {X Y Z A : type} {Γ : Cxt}
     → T Γ (Z ⇒ ⌜D⋆⌝ X Y Z A)
 ⌜η⌝ = ƛ (ƛ (ƛ (ν₁ · ν₂)))
 
 η-meaning : {X Y Z A : type} → ⟦ ⌜η⌝ {X} {Y} {Z} {A} ⟧₀ ＝ η⋆
 η-meaning = refl
 
-⌜β⌝ : {X Y Z A : type} {n : ℕ} {Γ : Cxt n}
+⌜β⌝ : {X Y Z A : type} {Γ : Cxt}
     → T Γ (((Y ⇒ ⌜D⋆⌝ X Y Z A) ⇒ X ⇒ ⌜D⋆⌝ X Y Z A))
 ⌜β⌝ = ƛ (ƛ (ƛ (ƛ (ν₀ · ƛ (ν₄ · ν₀ · ν₂ · ν₁) · ν₂))))
 
@@ -50,7 +83,7 @@ We now internalize Church encodings in system T.
 ⌜B⌝ : type → type → type
 ⌜B⌝ = ⌜D⋆⌝ ι ι
 
-⌜kleisli-extension⌝ : {X Y A : type} {n : ℕ} {Γ : Cxt n}
+⌜kleisli-extension⌝ : {X Y A : type} {Γ : Cxt}
                     → T Γ ((X ⇒ ⌜B⌝ Y A) ⇒ ⌜B⌝ X A ⇒ ⌜B⌝ Y A)
 ⌜kleisli-extension⌝ = ƛ (ƛ (ƛ (ƛ (ν₂ · ƛ (ν₄ · ν₀ · ν₂ · ν₁) · ν₀))))
 
@@ -59,7 +92,7 @@ kleisli-extension-meaning : {X Y A : type}
                           ＝ kleisli-extension⋆
 kleisli-extension-meaning = refl
 
-⌜B-functor⌝ : {X Y A : type} {n : ℕ} {Γ : Cxt n}
+⌜B-functor⌝ : {X Y A : type} {Γ : Cxt}
             → T Γ ((X ⇒ Y) ⇒ ⌜B⌝ X A ⇒ ⌜B⌝ Y A)
 ⌜B-functor⌝ = ƛ (⌜kleisli-extension⌝ · ƛ (⌜η⌝ · (ν₁ · ν₀)))
 
@@ -72,7 +105,7 @@ B-type〖_〗 : type → type → type
 B-type〖 ι 〗 A     = ⌜B⌝ ι A
 B-type〖 σ ⇒ τ 〗 A = B-type〖 σ 〗 A ⇒ B-type〖 τ 〗 A
 
-⌜Kleisli-extension⌝ : {X A : type} {σ : type} {n : ℕ} {Γ : Cxt n}
+⌜Kleisli-extension⌝ : {X A : type} {σ : type} {Γ : Cxt}
                     → T Γ ((X ⇒ B-type〖 σ 〗 A) ⇒ ⌜B⌝ X A ⇒ B-type〖 σ 〗 A)
 ⌜Kleisli-extension⌝ {X} {A} {ι}     = ⌜kleisli-extension⌝
 ⌜Kleisli-extension⌝ {X} {A} {σ ⇒ τ} =
@@ -86,13 +119,13 @@ Kleisli-extension-meaning : {X A : type} {σ τ : type}
                                        d
 Kleisli-extension-meaning = refl
 
-⌜zero⌝ : {A : type} {n : ℕ} {Γ : Cxt n} → T Γ (⌜B⌝ ι A)
+⌜zero⌝ : {A : type} {Γ : Cxt} → T Γ (⌜B⌝ ι A)
 ⌜zero⌝ = ⌜η⌝ · Zero
 
-⌜succ⌝ : {A : type} {n : ℕ} {Γ : Cxt n} → T Γ (⌜B⌝ ι A ⇒ ⌜B⌝ ι A)
-⌜succ⌝ =  ⌜B-functor⌝ · Succ
+⌜succ⌝ : {A : type} {Γ : Cxt} → T Γ (⌜B⌝ ι A ⇒ ⌜B⌝ ι A)
+⌜succ⌝ =  ⌜B-functor⌝ · Succ'
 
-⌜rec⌝ : {σ A : type} {n : ℕ} {Γ : Cxt n}
+⌜rec⌝ : {σ A : type} {Γ : Cxt}
       → T Γ ((⌜B⌝ ι A
                ⇒ B-type〖 σ 〗 A
                ⇒ B-type〖 σ 〗 A)
@@ -100,7 +133,7 @@ Kleisli-extension-meaning = refl
             ⇒ ⌜B⌝ ι A
             ⇒ B-type〖 σ 〗 A)
 ⌜rec⌝ {σ} {A} = ƛ (ƛ (⌜Kleisli-extension⌝ {ι} {A} {σ}
-                        · (Rec · (ƛ (ν₂ · (⌜η⌝ · ν₀))) · ν₀)))
+                        · (Rec' · (ƛ (ν₂ · (⌜η⌝ · ν₀))) · ν₀)))
 
 rec-meaning : {σ A : type}
             → ⟦ ⌜rec⌝ {σ} {A} ⟧₀
@@ -109,21 +142,19 @@ rec-meaning : {σ A : type}
                         (rec (f ∘ ⟦ ⌜η⌝ {ι} {ι} {ι} {A} ⟧₀) x)
 rec-meaning = refl
 
-B-context【_】 : {n : ℕ} → Cxt n → type → Cxt n
-B-context【_】 {0}      〈〉       A = 〈〉
-B-context【_】 {succ n} (Γ , σ) A = (B-context【_】 {n} Γ A , B-type〖 σ 〗 A)
+B-context【_】 : Cxt → type → Cxt
+B-context【_】 〈〉       A = 〈〉
+B-context【_】 (Γ ,, σ) A = B-context【_】 Γ A ,, B-type〖 σ 〗 A
 
 infix 10 B-context【_】
 
-⌜ν⌝ : {n : ℕ} {Γ : Cxt n} {A : type} (i : Fin n)
-    → T (B-context【 Γ 】 A) (B-type〖 Γ [ i ] 〗 A)
-⌜ν⌝ i = transport (T (B-context【 _ 】 _)) (p i) (ν i)
- where
-  p : {n : ℕ} {Γ : Cxt n} {A : type} (i : Fin n)
-    → B-context【 Γ 】 A [ i ] ＝ B-type〖 Γ [ i ] 〗 A
-  p {0}      {〈〉}     ()
-  p {succ n} {Γ , x} 𝟎       = refl
-  p {succ n} {Γ , x} (suc i) = p i
+∈Cxt-B-type : {Γ : Cxt} {A : type} {σ : type} (i : ∈Cxt σ Γ) → ∈Cxt (B-type〖 σ 〗 A) (B-context【 Γ 】 A)
+∈Cxt-B-type {Γ ,, σ} {A} {σ} (∈Cxt0 Γ) = ∈Cxt0 (B-context【 Γ 】 A)
+∈Cxt-B-type {Γ ,, τ} {A} {σ} (∈CxtS τ i) = ∈CxtS (B-type〖 τ 〗 A) (∈Cxt-B-type i)
+
+⌜ν⌝ : {Γ : Cxt} {A : type} {σ : type} (i : ∈Cxt σ Γ)
+    → T (B-context【 Γ 】 A) (B-type〖 σ 〗 A)
+⌜ν⌝ {Γ} {A} {σ} i = ν (∈Cxt-B-type i)
 
 \end{code}
 
@@ -131,15 +162,15 @@ infix 10 B-context【_】
 
 \begin{code}
 
-⌜_⌝ : {n : ℕ} {Γ : Cxt n} {σ : type} {A : type}
+⌜_⌝ : {Γ : Cxt} {σ : type} {A : type}
     → T Γ σ
     → T (B-context【 Γ 】 A) (B-type〖 σ 〗 A)
-⌜ Zero ⌝            = ⌜zero⌝
-⌜ Succ ⌝            = ⌜succ⌝
-⌜ Rec {_} {_} {σ} ⌝ = ⌜rec⌝ {σ}
-⌜ ν i ⌝             = ⌜ν⌝ i
-⌜ ƛ t ⌝             = ƛ ⌜ t ⌝
-⌜ t · u ⌝           = ⌜ t ⌝ · ⌜ u ⌝
+⌜ Zero ⌝      = ⌜zero⌝
+⌜ Succ t ⌝    = ⌜succ⌝ · ⌜ t ⌝
+⌜ Rec f g t ⌝ = ⌜rec⌝ · ⌜ f ⌝ · ⌜ g ⌝ · ⌜ t ⌝
+⌜ ν i ⌝       = ⌜ν⌝ i
+⌜ ƛ t ⌝       = ƛ ⌜ t ⌝
+⌜ t · u ⌝     = ⌜ t ⌝ · ⌜ u ⌝
 
 \end{code}
 
@@ -147,11 +178,11 @@ Given a term of type (ι ⇒ ι) ⇒ ι, we calculate a term defining its dialog
 
 \begin{code}
 
-⌜generic⌝ : {A : type} {n : ℕ} {Γ : Cxt n}
+⌜generic⌝ : {A : type} {Γ : Cxt}
           → T Γ (⌜B⌝ ι A ⇒ ⌜B⌝ ι A)
 ⌜generic⌝ = ⌜kleisli-extension⌝ · (⌜β⌝ · ⌜η⌝)
 
-⌜dialogue-tree⌝ : {A : type} {n : ℕ} {Γ : Cxt n}
+⌜dialogue-tree⌝ : {A : type} {Γ : Cxt}
                 → T Γ ((ι ⇒ ι) ⇒ ι)
                 → T (B-context【 Γ 】 A) (⌜B⌝ ι A)
 ⌜dialogue-tree⌝ t = ⌜ t ⌝ · ⌜generic⌝
@@ -178,8 +209,8 @@ max-agreement 0        n        = refl
 max-agreement (succ m) 0        = refl
 max-agreement (succ m) (succ n) = ap succ (max-agreement m n)
 
-maxᵀ : {n : ℕ} {Γ : Cxt n} → T Γ (ι ⇒ ι ⇒ ι)
-maxᵀ = Rec · ƛ (ƛ (Rec · ƛ (ƛ (Succ · (ν₂ · ν₁))) · (Succ · ν₁))) · ƛ ν₀
+maxᵀ : {Γ : Cxt} → T Γ (ι ⇒ ι ⇒ ι)
+maxᵀ = Rec' · ƛ (ƛ (Rec' · ƛ (ƛ (Succ (ν₂ · ν₁))) · (Succ ν₁))) · ƛ ν₀
 
 maxᵀ-meaning : ⟦ maxᵀ ⟧₀ ＝ max
 maxᵀ-meaning = refl
@@ -190,11 +221,11 @@ A modulus of continuity can be calculated from a dialogue tree.
 
 \begin{code}
 
-max-question-in-path : {n : ℕ} {Γ : Cxt n}
+max-question-in-path : {Γ : Cxt}
                      → T (B-context【 Γ 】 ((ι ⇒ ι) ⇒ ι))
                          ((⌜B⌝ ι ((ι ⇒ ι) ⇒ ι)) ⇒ (ι ⇒ ι) ⇒ ι)
 max-question-in-path =
- ƛ (ν₀ · ƛ (ƛ Zero) · ƛ (ƛ (ƛ (maxᵀ · (Succ · ν₁) · (ν₂ · (ν₀ · ν₁) · ν₀)))))
+ ƛ (ν₀ · ƛ (ƛ Zero) · ƛ (ƛ (ƛ (maxᵀ · (Succ ν₁) · (ν₂ · (ν₀ · ν₁) · ν₀)))))
 
 max-question-in-path-meaning-η :
 
@@ -209,7 +240,7 @@ max-question-in-path-meaning-β :
 
 max-question-in-path-meaning-β φ n α = refl
 
-internal-mod-cont : {n : ℕ} {Γ : Cxt n}
+internal-mod-cont : {Γ : Cxt}
                   → T Γ ((ι ⇒ ι) ⇒ ι)
                   → T (B-context【 Γ 】 ((ι ⇒ ι) ⇒ ι)) ((ι ⇒ ι) ⇒ ι)
 internal-mod-cont t = max-question-in-path · (⌜dialogue-tree⌝ {(ι ⇒ ι) ⇒ ι} t)
@@ -287,8 +318,8 @@ This is what m₂ evaluates to with Agda normalization:
  example₂''' : m₂ (succ ∘ succ) ＝ 20
  example₂''' = refl
 
- Add : {n : ℕ} {Γ : Cxt n} → T Γ (ι ⇒ ι ⇒ ι)
- Add = Rec · (ƛ Succ)
+ Add : {Γ : Cxt} → T Γ (ι ⇒ ι ⇒ ι)
+ Add = Rec' · ƛ Succ'
 
  t₃ : T₀ ((ι ⇒ ι) ⇒ ι)
  t₃ = ƛ (ν₀ · (ν₀ · (Add · (ν₀ · numeral 17) · (ν₀ · numeral 34))))

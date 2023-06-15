@@ -4,11 +4,11 @@ Martin Escardo 2012
 
 {-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
-module EffectfulForcing.Dialogue where
+module EffectfulForcing.MFPSAndVariations.Dialogue where
 
 open import MLTT.Spartan
 open import MLTT.Athenian
-open import EffectfulForcing.Continuity
+open import EffectfulForcing.MFPSAndVariations.Continuity
 
 data D (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) (Z : 𝓦 ̇ ) : 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇  where
  η : Z → D X Y Z
