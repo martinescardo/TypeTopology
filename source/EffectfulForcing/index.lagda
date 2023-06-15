@@ -20,6 +20,7 @@ import EffectfulForcing.Dialogue
 import EffectfulForcing.MFPS-XXIX                   -- (2012)
 import EffectfulForcing.SystemT
 import EffectfulForcing.LambdaCalculusVersionOfMFPS -- (2013)
+import EffectfulForcing.Church                      -- (2013)
 import EffectfulForcing.Internal                    -- (2013)
 import EffectfulForcing.WithoutOracle               -- By Vincent Rahli (2015)
 import EffectfulForcing.Dialogue-to-Brouwer         -- By Martin Escardo and

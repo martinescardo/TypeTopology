@@ -13,7 +13,8 @@ open import MLTT.Spartan hiding (rec ; _^_) renaming (⋆ to 〈〉)
 open import MLTT.Athenian using (Fin)
 open import EffectfulForcing.Continuity
 open import EffectfulForcing.Dialogue
-open import EffectfulForcing.Internal hiding (B⋆⟦_⟧ ; dialogue-tree⋆)
+open import EffectfulForcing.Church hiding (B⋆⟦_⟧ ; dialogue-tree⋆)
+open import EffectfulForcing.Internal
 open import EffectfulForcing.LambdaWithoutOracle
 open import EffectfulForcing.SystemT
 open import UF.Base using (from-×-＝' ; transport₂)
