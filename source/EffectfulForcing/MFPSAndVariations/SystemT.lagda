@@ -6,12 +6,12 @@ Gödel's system T and its standard set-theoretical semantics.
 
 {-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
-module EffectfulForcing.SystemT where
+module EffectfulForcing.MFPSAndVariations.SystemT where
 
 open import MLTT.Spartan  hiding (rec ; _^_) renaming (⋆ to 〈〉)
 open import MLTT.Athenian using (Fin)
-open import EffectfulForcing.Combinators
-open import EffectfulForcing.Continuity
+open import EffectfulForcing.MFPSAndVariations.Combinators
+open import EffectfulForcing.MFPSAndVariations.Continuity
 open import UF.Base
 
 open Fin

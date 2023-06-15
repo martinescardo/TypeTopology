@@ -4,7 +4,7 @@ sMartin Escardo 2012
 
 {-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
-module EffectfulForcing.Combinators where
+module EffectfulForcing.MFPSAndVariations.Combinators where
 
 open import MLTT.Spartan hiding (rec)
 

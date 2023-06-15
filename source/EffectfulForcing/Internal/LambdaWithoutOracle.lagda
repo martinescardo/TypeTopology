@@ -8,15 +8,16 @@ Alternatively, it can be seen as adaptation of LambdaCalculusVersionOfMFPS writt
 
 {-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
 
-module EffectfulForcing.LambdaWithoutOracle where
+module EffectfulForcing.Internal.LambdaWithoutOracle where
 
 open import MLTT.Spartan hiding (rec ; _^_) renaming (⋆ to 〈〉)
 open import MLTT.Athenian using (Fin)
 open import UF.Base
-open import EffectfulForcing.Combinators
-open import EffectfulForcing.Continuity
-open import EffectfulForcing.Dialogue
-open import EffectfulForcing.SystemT
+open import EffectfulForcing.MFPSAndVariations.Combinators
+open import EffectfulForcing.MFPSAndVariations.Continuity
+open import EffectfulForcing.MFPSAndVariations.Dialogue
+open import EffectfulForcing.MFPSAndVariations.SystemT using (type ; ι ; _⇒_ ; 〖_〗)
+open import EffectfulForcing.Internal.SystemT
 
 open Fin
 
@@ -37,25 +38,25 @@ succ' = B-functor succ
 rec' : {σ : type} → (B ℕ → B〖 σ 〗 → B〖 σ 〗) → B〖 σ 〗 → B ℕ → B〖 σ 〗
 rec' f x = Kleisli-extension (rec (f ∘ η) x)
 
-B【_】 : {n : ℕ} (Γ : Cxt n) → Type
-B【 Γ 】 = (i : Fin _) → B〖 (Γ [ i ]) 〗
+B【_】 : (Γ : Cxt) → Type
+B【 Γ 】 = {σ : type} (i : ∈Cxt σ Γ) → B〖 σ 〗
 
 ⟪⟫ : B【 〈〉 】
 ⟪⟫ ()
 
-_‚‚_ : {n : ℕ} {Γ : Cxt n} {σ : type} → B【 Γ 】 → B〖 σ 〗 → B【 Γ , σ 】
-(xs ‚‚ x) 𝟎       = x
-(xs ‚‚ x) (suc i) = xs i
+_‚‚_ : {Γ : Cxt} {σ : type} → B【 Γ 】 → B〖 σ 〗 → B【 Γ ,, σ 】
+(xs ‚‚ x) (∈Cxt0 _) = x
+(xs ‚‚ x) (∈CxtS _ i) = xs i
 
 infixl 6 _‚‚_
 
-B⟦_⟧ : {n : ℕ} {Γ : Cxt n} {σ : type} → T Γ σ → B【 Γ 】 → B〖 σ 〗
-B⟦ Zero  ⟧  _ = zero'
-B⟦ Succ  ⟧  _ = succ'
-B⟦ Rec   ⟧  _ = rec'
-B⟦ ν i   ⟧ xs = xs i
-B⟦ ƛ t   ⟧ xs = λ x → B⟦ t ⟧ (xs ‚‚ x)
-B⟦ t · u ⟧ xs = (B⟦ t ⟧ xs) (B⟦ u ⟧ xs)
+B⟦_⟧ : {Γ : Cxt} {σ : type} → T Γ σ → B【 Γ 】 → B〖 σ 〗
+B⟦ Zero      ⟧  _ = zero'
+B⟦ Succ t    ⟧ xs = succ' (B⟦ t ⟧ xs)
+B⟦ Rec f g t ⟧ xs = rec' (B⟦ f ⟧ xs) (B⟦ g ⟧ xs) (B⟦ t ⟧ xs)
+B⟦ ν i       ⟧ xs = xs i
+B⟦ ƛ t       ⟧ xs = λ x → B⟦ t ⟧ (xs ‚‚ x)
+B⟦ t · u     ⟧ xs = (B⟦ t ⟧ xs) (B⟦ u ⟧ xs)
 
 B⟦_⟧₀ : {σ : type} → T₀ σ → B〖 σ 〗
 B⟦ t ⟧₀ = B⟦ t ⟧ ⟪⟫
@@ -97,10 +98,10 @@ R-kleisli-lemma (σ ⇒ τ) α g g' rg n n' rn
                  n'
                  rn
 
-Rs : {n : ℕ} {Γ : Cxt n} → Baire → 【 Γ 】 → B【 Γ 】 → Type
-Rs {n} {Γ} α xs ys = (i : Fin n) → R {Γ [ i ]} α (xs i) (ys i)
+Rs : {Γ : Cxt} → Baire → 【 Γ 】 → B【 Γ 】 → Type
+Rs {Γ} α xs ys = {σ : type} (i : ∈Cxt σ Γ) → R {σ} α (xs i) (ys i)
 
-main-lemma : {n : ℕ} {Γ : Cxt n}
+main-lemma : {Γ : Cxt}
              {σ : type} (t : T Γ σ)
              (α : Baire)
              (xs : 【 Γ 】)
@@ -110,12 +111,15 @@ main-lemma : {n : ℕ} {Γ : Cxt n}
 
 main-lemma Zero α xs ys cr = refl
 
-main-lemma Succ α xs ys cr = λ n n' rn →
- succ n               ＝⟨ ap succ rn ⟩
- succ (dialogue n' α) ＝⟨ decode-α-is-natural succ n' α ⟩
- decode α (succ' n')  ∎
+main-lemma (Succ t) α xs ys cr =
+ succ (⟦ t ⟧ xs)      ＝⟨ ap succ (main-lemma t α xs ys cr) ⟩
+ succ (dialogue (B⟦ t ⟧ ys) α) ＝⟨ decode-α-is-natural succ (B⟦ t ⟧ ys) α ⟩
+ decode α (succ' (B⟦ t ⟧ ys))  ∎
 
-main-lemma (Rec {_} {_} {σ}) α xs ys cr = lemma
+main-lemma (Rec {_} {σ} a b t) α xs ys cr =
+ lemma (⟦ a ⟧ xs) (B⟦ a ⟧ ys) (main-lemma a α xs ys cr)
+       (⟦ b ⟧ xs) (B⟦ b ⟧ ys) (main-lemma b α xs ys cr)
+       (⟦ t ⟧ xs) (B⟦ t ⟧ ys) (main-lemma t α xs ys cr)
  where
   lemma : (f  : ℕ → 〖 σ 〗 → 〖 σ 〗)
           (f' : B ℕ → B〖 σ 〗 → B〖 σ 〗)
@@ -141,7 +145,7 @@ main-lemma (Rec {_} {_} {σ}) α xs ys cr = lemma
 
 main-lemma (ν i) α xs ys cr = cr i
 
-main-lemma {n} {Γ} {σ ⇒ τ} (ƛ t) α xs ys cr = lemma
+main-lemma {Γ} {σ ⇒ τ} (ƛ t) α xs ys cr = lemma
  where
   lemma : (x : 〖 σ 〗)
           (y : B〖 σ 〗)
@@ -149,9 +153,9 @@ main-lemma {n} {Γ} {σ ⇒ τ} (ƛ t) α xs ys cr = lemma
         → R α (⟦ t ⟧ (xs ‚ x)) (B⟦ t ⟧ (ys ‚‚ y))
   lemma x y r = main-lemma t α (xs ‚ x) (ys ‚‚ y) h
     where
-      h : (i : Fin (succ n)) → R α ((xs ‚ x) i) ((ys ‚‚ y) i)
-      h 𝟎       = r
-      h (suc i) = cr i
+      h : {σ₁ : type} (i : ∈Cxt σ₁ (Γ ,, σ)) → R α ((xs ‚ x) i) ((ys ‚‚ y) i)
+      h {σ₁} (∈Cxt0 .Γ) = r
+      h {σ₁} (∈CxtS .σ i) = cr i
 
 main-lemma (t · u) α xs ys cr = IH-t (⟦ u ⟧ xs) (B⟦ u ⟧ ys) IH-u
  where
