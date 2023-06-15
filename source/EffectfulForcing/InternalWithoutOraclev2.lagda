@@ -1125,7 +1125,7 @@ R⋆-preserves-⟦⟧ {α} {ι} a t u e r =
  dialogue⋆ ⟦ ⌜ t ⌝ ⟧₀ α ＝⟨ ap (λ k → dialogue⋆ k α) e ⟩
  dialogue⋆ ⟦ ⌜ u ⌝ ⟧₀ α ∎
 R⋆-preserves-⟦⟧ {α} {σ ⇒ σ₁} a t u e r x x' rx =
- {!R⋆-preserves-⟦⟧ (a x) !}
+ R⋆-preserves-⟦⟧ {α} {σ₁} (a x) (t · x') (u · x') (ap (λ x → x ⟦ ⌜ x' ⌝ ⟧₀) e) (r x x' rx)
 
 R⋆s-Sub,, : {α : Baire} {Γ : Cxt} {σ : type}
             (xs : 【 Γ 】) (x : 〖 σ 〗)
@@ -1167,13 +1167,38 @@ R⋆s-⌜Sub,,⌝ {α} {Γ} {σ} xs x ys y rs r {τ} (∈CxtS .σ i) with ∈Cxt
 ⌜main-lemma⌝ {Γ} {_} (Rec f g t) α xs ys rxys = {!!}
 ⌜main-lemma⌝ {Γ} {σ} (ν i) α xs ys rxys = rxys i
 ⌜main-lemma⌝ {Γ} {σ ⇒ τ} (ƛ t) α xs ys rxys x y rxy =
- {!!}
+ transport
+  (λ k → R⋆ α (⟦ t ⟧ (xs ‚ x)) k)
+  e
+  (R⋆-preserves-⟦⟧
+    (⟦ t ⟧ (xs ‚ x))
+    (close t (Sub,, ys y))
+    (ƛ (close t (Subƛ ys)) · y)
+    {!!}
+    (transport (λ k → R⋆ α (⟦ t ⟧ (xs ‚ x)) k) (⌜close⌝ t (Sub,, ys y)) ind))
  where
+  f : ⌜ close t (Subƛ ys) ⌝ ＝ close ⌜ t ⌝ (Subƛ (⌜Sub⌝ ys))
+  f =
+   ⌜ close t (Subƛ ys) ⌝
+    ＝⟨ (⌜close⌝ t (Subƛ ys)) ⁻¹ ⟩
+   close ⌜ t ⌝ (⌜Sub⌝ (Subƛ ys))
+    ＝⟨ (close-eta (Subƛ (⌜Sub⌝ ys)) (⌜Sub⌝ (Subƛ ys)) ⌜ t ⌝ (Subƛ⌜Sub⌝ ys)) ⁻¹ ⟩
+   close ⌜ t ⌝ (Subƛ (⌜Sub⌝ ys))
+    ∎
+  e : ⌜ (ƛ (close t (Subƛ ys))) · y ⌝ ＝ ƛ (close ⌜ t ⌝ (Subƛ (⌜Sub⌝ ys))) · ⌜ y ⌝
+  e = ap₂ _·_ (ap ƛ f) refl
+
   ind : R⋆ α (⟦ t ⟧ (xs ‚ x)) (close ⌜ t ⌝ (⌜Sub⌝ (Sub,, ys y)))
-  ind = ⌜main-lemma⌝ {Γ ,, σ} {τ} t α (xs ‚ x) (Sub,, ys y) {!!} --⌜main-lemma⌝ {Γ ,, σ} {τ} t α (xs ‚ x) (Sub,, ys y) (R⋆s-Sub,, xs x ys y rxys rxy)
-⌜main-lemma⌝ {Γ} {σ} (t · t₁) α xs ys rxys = {!!}
- {- ⌜main-lemma⌝
-  t α xs ys rxys (⟦ t₁ ⟧ xs) (close ⌜ t₁ ⌝ ys)
-  (⌜main-lemma⌝ t₁ α xs ys rxys )-}
+  ind = ⌜main-lemma⌝ {Γ ,, σ} {τ} t α (xs ‚ x) (Sub,, ys y) {!!} -- (R⋆s-Sub,, xs x ys y rxys rxy)
+⌜main-lemma⌝ {Γ} {σ} (t · t₁) α xs ys rxys =
+ transport
+  (λ k → R⋆ α (⟦ t ⟧ xs (⟦ t₁ ⟧ xs)) (close ⌜ t ⌝ (⌜Sub⌝ ys) · k))
+  ((⌜close⌝ t₁ ys) ⁻¹)
+  (⌜main-lemma⌝
+    t α xs ys rxys (⟦ t₁ ⟧ xs) _
+    (transport
+      (λ k → R⋆ α (⟦ t₁ ⟧ xs) k)
+      (⌜close⌝ t₁ ys)
+      (⌜main-lemma⌝ t₁ α xs ys rxys)))
 
 \end{code}
