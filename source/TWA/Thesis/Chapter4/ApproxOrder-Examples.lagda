@@ -12,18 +12,20 @@ open import UF.Subsingletons-FunExt
 open import UF.Quotient
 open import UF.Embeddings
 open import UF.Equiv
-
-module TWA.Thesis.Chapter4.ApproxOrder-Examples (fe : FunExt) where
-
-open import TWA.Thesis.Chapter2.FiniteDiscrete
-open import TWA.Thesis.Chapter3.ClosenessSpaces fe
-open import TWA.Thesis.Chapter3.ClosenessSpaces-Examples fe
-open import TWA.Thesis.Chapter3.SearchableTypes fe
-open import TWA.Thesis.Chapter4.ApproxOrder fe
 open import CoNaturals.GenericConvergentSequence
   renaming (ℕ-to-ℕ∞ to _↑
          ; Zero-smallest to zero-minimal
          ; ∞-largest to ∞-maximal)
+
+open import TWA.Thesis.Chapter2.FiniteDiscrete
+open import TWA.Thesis.Chapter2.Sequences
+
+module TWA.Thesis.Chapter4.ApproxOrder-Examples (fe : FunExt) where
+
+open import TWA.Thesis.Chapter3.ClosenessSpaces fe
+open import TWA.Thesis.Chapter3.ClosenessSpaces-Examples fe
+open import TWA.Thesis.Chapter3.SearchableTypes fe
+open import TWA.Thesis.Chapter4.ApproxOrder fe
 
 -- Lemma 4.1.8
 _≤𝔽_ : {n : ℕ} → 𝔽 n → 𝔽 n → 𝓤₀  ̇

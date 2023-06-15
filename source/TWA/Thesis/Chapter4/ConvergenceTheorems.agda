@@ -2,6 +2,7 @@
 
 open import UF.FunExt
 open import UF.Subsingletons
+open import UF.Subsingletons-FunExt  
 open import UF.Quotient
 open import MLTT.Spartan
 open import Notation.Order
@@ -21,7 +22,6 @@ open import TWA.Thesis.Chapter3.SearchableTypes fe
 open import TWA.Thesis.Chapter4.ApproxOrder fe
 open import TWA.Thesis.Chapter4.ApproxOrder-Examples fe
 open import TWA.Thesis.Chapter4.GlobalOptimisation fe
-open import UF.Subsingletons-FunExt  
 
 -- Definition 4.2.10 (Does not have continuity of M!)
 regressor : (X : ClosenessSpace 𝓤) (Y : ClosenessSpace 𝓥) → 𝓤 ⊔ 𝓥  ̇

@@ -20,13 +20,124 @@ open import MLTT.Two-Properties
 
 module TWA.Thesis.Chapter3.ClosenessSpaces-Examples (fe : FunExt) where
 
+open import TWA.Thesis.Chapter2.Sequences
 open import TWA.Thesis.Chapter2.FiniteDiscrete
 open import TWA.Thesis.Chapter3.ClosenessSpaces fe
 open import TWA.Closeness fe hiding (is-ultra; is-closeness)
 
--- [ TODO: Move to SequenceTypes file ]
-_∼ⁿ_ : {X : 𝓤 ̇ } → (ℕ → X) → (ℕ → X) → ℕ → 𝓤 ̇
-(α ∼ⁿ β) n = (i : ℕ) → i < n → α i ＝ β i
+c⟨_⟩ : (X : ClosenessSpace 𝓤) → ⟨ X ⟩ → ⟨ X ⟩ → ℕ∞
+c⟨ (X , c , _) ⟩ = c
+
+×-clofun' : (X : ClosenessSpace 𝓤) (Y : ClosenessSpace 𝓥)
+          → (⟨ X ⟩ × ⟨ Y ⟩ → ⟨ X ⟩ × ⟨ Y ⟩ → ℕ∞)
+×-clofun' X Y (x₁ , y₁) (x₂ , y₂)
+ = min (c⟨ X ⟩ x₁ x₂) (c⟨ Y ⟩ y₁ y₂)
+
+min-∞-l : (u v : ℕ∞) → min u v ＝ ∞ → u ＝ ∞ 
+min-∞-l u v min＝∞
+ = to-subtype-＝ (being-decreasing-is-prop (fe _ _))
+     (dfunext (fe _ _)
+       (λ i → Lemma[min𝟚ab＝₁→a＝₁] (ap (λ - → pr₁ - i) min＝∞)))
+       
+min-∞-r : (u v : ℕ∞) → min u v ＝ ∞ → v ＝ ∞ 
+min-∞-r u v min＝∞
+ = to-subtype-＝ (being-decreasing-is-prop (fe _ _))
+     (dfunext (fe _ _)
+       (λ i → Lemma[min𝟚ab＝₁→b＝₁] (ap (λ - → pr₁ - i) min＝∞)))
+
+×-clofun'-e : (X : ClosenessSpace 𝓤) (Y : ClosenessSpace 𝓥)
+            → indistinguishable-are-equal (×-clofun' X Y)
+×-clofun'-e X Y (x₁ , y₁) (x₂ , y₂) cxy＝∞
+ = ap (_, y₁) (ex x₁ x₂ cx＝∞) ∙ ap (x₂ ,_) (ey y₁ y₂ cy＝∞)
+ where
+  cx＝∞ : c⟨ X ⟩ x₁ x₂ ＝ ∞
+  cx＝∞ = min-∞-l (c⟨ X ⟩ x₁ x₂) (c⟨ Y ⟩ y₁ y₂) cxy＝∞
+  cy＝∞ : c⟨ Y ⟩ y₁ y₂ ＝ ∞
+  cy＝∞ = min-∞-r (c⟨ X ⟩ x₁ x₂) (c⟨ Y ⟩ y₁ y₂) cxy＝∞
+  ex : indistinguishable-are-equal c⟨ X ⟩
+  ex = pr₁ (pr₂ (pr₂ X))
+  ey : indistinguishable-are-equal c⟨ Y ⟩
+  ey = pr₁ (pr₂ (pr₂ Y))
+
+×-clofun'-i : (X : ClosenessSpace 𝓤) (Y : ClosenessSpace 𝓥)
+            → self-indistinguishable (×-clofun' X Y)
+×-clofun'-i X Y (x , y)
+ = ap (λ - → min - (c⟨ Y ⟩ y y)) (ex x)
+ ∙ ap (      min ∞             ) (ey y)
+ where
+  ex : self-indistinguishable c⟨ X ⟩
+  ex = pr₁ (pr₂ (pr₂ (pr₂ X)))
+  ey : self-indistinguishable c⟨ Y ⟩
+  ey = pr₁ (pr₂ (pr₂ (pr₂ Y)))
+
+
+
+×-clofun'-s : (X : ClosenessSpace 𝓤) (Y : ClosenessSpace 𝓥)
+            → is-symmetric (×-clofun' X Y)
+×-clofun'-s X Y (x₁ , y₁) (x₂ , y₂)
+ = ap (λ - → min - (c⟨ Y ⟩ y₁ y₂)) (sx x₁ x₂)
+ ∙ ap (      min (c⟨ X ⟩ x₂ x₁)  ) (sy y₁ y₂)
+ where
+  sx : is-symmetric c⟨ X ⟩
+  sx = pr₁ (pr₂ (pr₂ (pr₂ (pr₂ X))))
+  sy : is-symmetric c⟨ Y ⟩
+  sy = pr₁ (pr₂ (pr₂ (pr₂ (pr₂ Y))))
+
+min𝟚-abcd : {a b c d : 𝟚} → a ＝ c → b ＝ d → min𝟚 a b ＝ min𝟚 c d
+min𝟚-abcd {a} {b} {.a} {.b} refl refl = refl
+
+min𝟚-abcd-ac : (a b c d : 𝟚) → min𝟚 (min𝟚 a b) (min𝟚 c d) ＝ ₁ → min𝟚 a c ＝ ₁
+min𝟚-abcd-ac ₁ ₁ ₁ ₁ e = refl
+
+min𝟚-abcd-bd : (a b c d : 𝟚) → min𝟚 (min𝟚 a b) (min𝟚 c d) ＝ ₁ → min𝟚 b d ＝ ₁
+min𝟚-abcd-bd ₁ ₁ ₁ ₁ e = refl
+
+minℕ∞-abcdef : (a b c d e f : ℕ∞)
+             → min a b ≼ e → min c d ≼ f
+             → min (min a c) (min b d) ≼ min e f
+minℕ∞-abcdef a b c d e f mab≼e mcd≼f n minabcd＝₁
+ = Lemma[a＝₁→b＝₁→min𝟚ab＝₁]
+     (mab≼e n (min𝟚-abcd-ac (pr₁ a n) (pr₁ c n) (pr₁ b n) (pr₁ d n) minabcd＝₁))
+     (mcd≼f n (min𝟚-abcd-bd (pr₁ a n) (pr₁ c n) (pr₁ b n) (pr₁ d n) minabcd＝₁))
+
+×-clofun'-u : (X : ClosenessSpace 𝓤) (Y : ClosenessSpace 𝓥)
+            → is-ultra (×-clofun' X Y)
+×-clofun'-u X Y (x₁ , y₁) (x₂ , y₂) (x₃ , y₃)
+ = minℕ∞-abcdef
+     (c⟨ X ⟩ x₁ x₂) (c⟨ X ⟩ x₂ x₃)
+     (c⟨ Y ⟩ y₁ y₂) (c⟨ Y ⟩ y₂ y₃)
+     (c⟨ X ⟩ x₁ x₃) (c⟨ Y ⟩ y₁ y₃)
+     (ux x₁ x₂ x₃) (uy y₁ y₂ y₃)
+ where
+  ux : is-ultra c⟨ X ⟩
+  ux = pr₂ (pr₂ (pr₂ (pr₂ (pr₂ X))))
+  uy : is-ultra c⟨ Y ⟩
+  uy = pr₂ (pr₂ (pr₂ (pr₂ (pr₂ Y))))
+
+×-clofun : (X : ClosenessSpace 𝓤) (Y : ClosenessSpace 𝓥)
+         → is-closeness-space (⟨ X ⟩ × ⟨ Y ⟩)
+×-clofun X Y
+ = ×-clofun' X Y
+ , ×-clofun'-e X Y
+ , ×-clofun'-i X Y
+ , ×-clofun'-s X Y
+ , ×-clofun'-u X Y
+
+×-ClosenessSpace : (X : ClosenessSpace 𝓤) (Y : ClosenessSpace 𝓥)
+                 → ClosenessSpace (𝓤 ⊔ 𝓥)
+×-ClosenessSpace X Y = (⟨ X ⟩ × ⟨ Y ⟩) , (×-clofun X Y)
+
+×-C-left  : (X : ClosenessSpace 𝓤) (Y : ClosenessSpace 𝓥)
+          → (x₁ x₂ : ⟨ X ⟩) (y₁ y₂ : ⟨ Y ⟩)
+          → (ε : ℕ) → C (×-ClosenessSpace X Y) ε (x₁ , y₁) (x₂ , y₂)
+          → C X ε x₁ x₂
+×-C-left  X Y x₁ x₂ y₁ y₂ ε Cxy n = Lemma[min𝟚ab＝₁→a＝₁] ∘ (Cxy n)
+
+×-C-right : (X : ClosenessSpace 𝓤) (Y : ClosenessSpace 𝓥)
+          → (x₁ x₂ : ⟨ X ⟩) (y₁ y₂ : ⟨ Y ⟩)
+          → (ε : ℕ) → C (×-ClosenessSpace X Y) ε (x₁ , y₁) (x₂ , y₂)
+          → C Y ε y₁ y₂
+×-C-right X Y x₁ x₂ y₁ y₂ ε Cxy n = Lemma[min𝟚ab＝₁→b＝₁] ∘ (Cxy n)
 
 discrete-decidable-seq
  : {X : 𝓤 ̇ } → is-discrete X
@@ -224,13 +335,15 @@ discrete-seq-clofun-c d = discrete-seq-clofun-e d
 ℕ→𝟚-ClosenessSpace : ClosenessSpace 𝓤₀
 ℕ→𝟚-ClosenessSpace = ℕ→D-ClosenessSpace 𝟚-is-discrete
 
+open import TWA.Thesis.Chapter5.SignedDigit
+
+𝟛ᴺ-ClosenessSpace : ClosenessSpace 𝓤₀
+𝟛ᴺ-ClosenessSpace = ℕ→D-ClosenessSpace 𝟛-is-discrete
+
 ℕ∞-ClosenessSpace : ClosenessSpace 𝓤₀
 ℕ∞-ClosenessSpace
  = Σ-ClosenessSpace ℕ→𝟚-ClosenessSpace is-decreasing
      (being-decreasing-is-prop (fe _ _))
-
-c⟨_⟩ : (X : ClosenessSpace 𝓤) → ⟨ X ⟩ → ⟨ X ⟩ → ℕ∞
-c⟨ (X , c , _) ⟩ = c
 
 Π-clofun' : (T : ℕ → ClosenessSpace 𝓤)
           → Π (⟨_⟩ ∘ T) → Π (⟨_⟩ ∘ T) → (ℕ → 𝟚)

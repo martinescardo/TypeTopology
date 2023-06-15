@@ -1,15 +1,15 @@
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe #-}
 
 open import UF.FunExt
+open import MLTT.Spartan
+open import Naturals.Addition renaming (_+_ to _+ℕ_)
+open import UF.Subsingletons
 
 module TWA.Thesis.Chapter5.IntervalObject (fe : FunExt) where
 
-open import MLTT.Spartan
-open import Naturals.Addition renaming (_+_ to _+ℕ_)
 open import Naturals.Sequence fe
-open import UF.Subsingletons public
 
 associative' idempotent transpositional : {X : 𝓤 ̇ } → (X → X → X) → 𝓤 ̇
 associative'     _∙_ = ∀ a b c   → a ∙ (b ∙ c)       ＝ (a ∙ b) ∙ c

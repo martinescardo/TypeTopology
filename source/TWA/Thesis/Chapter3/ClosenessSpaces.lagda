@@ -13,9 +13,9 @@ open import UF.Quotient
 open import UF.Miscelanea
 open import MLTT.Two-Properties
 
-module TWA.Thesis.Chapter3.ClosenessSpaces (fe : FunExt) where
-
 open import TWA.Thesis.Chapter2.FiniteDiscrete
+
+module TWA.Thesis.Chapter3.ClosenessSpaces (fe : FunExt) where
 
 -- Definition 3.2.13-16, 21
 open import CoNaturals.GenericConvergentSequence

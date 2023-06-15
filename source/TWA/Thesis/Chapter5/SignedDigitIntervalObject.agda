@@ -4,7 +4,6 @@ open import MLTT.Spartan
 open import UF.FunExt
 open import Naturals.Addition renaming (_+_ to _+ℕ_)
 
--- open import TWA.Thesis.Chapter5.Prelude
 open import TWA.Thesis.Chapter2.Sequences
 open import TWA.Thesis.Chapter5.SignedDigit
 open import TWA.Thesis.Chapter5.IntervalObject hiding (⟨_⟩)

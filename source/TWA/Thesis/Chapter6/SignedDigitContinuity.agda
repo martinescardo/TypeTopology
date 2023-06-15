@@ -10,152 +10,20 @@ open import CoNaturals.GenericConvergentSequence
  hiding (max)
  renaming (ℕ-to-ℕ∞ to _↑)
 
+open import TWA.Thesis.Chapter2.Sequences
 open import TWA.Thesis.Chapter2.Vectors 
-open import TWA.Thesis.Chapter2.Sequences 
 open import TWA.Thesis.Chapter5.SignedDigit
 
 module TWA.Thesis.Chapter6.SignedDigitContinuity (fe : FunExt) where
 
 open import TWA.Thesis.Chapter3.ClosenessSpaces fe
+open import TWA.Thesis.Chapter3.ClosenessSpaces-Examples fe
 open import TWA.Thesis.Chapter3.SearchableTypes fe
--- open import TWA.Thesis.Chapter5.Prelude
-{-
-_∼ⁿ⋆_ : {X : 𝓤 ̇ } {d : ℕ}
-     → (Vec (ℕ → X) (succ d)) → (Vec (ℕ → X) (succ d))
-     → Vec ℕ (succ d) → 𝓤 ̇
-_∼ⁿ⋆_ {𝓤} {X} {zero} = ?
-_∼ⁿ⋆_ {𝓤} {X} {succ d} (α ∷ αs) (β ∷ βs) (n ∷ ns)
- = (α ∼ⁿ β) n × (αs ∼ⁿ⋆ βs) ns
+open import TWA.Thesis.Chapter6.SequenceContinuity fe
 
-_∼ⁿ⋆⋆_ : {X : 𝓤 ̇ } → (ℕ → (ℕ → X)) → (ℕ → (ℕ → X)) → ℕ → ℕ → 𝓤 ̇
-_∼ⁿ⋆⋆_ {𝓤} {X} αs βs m n = (k : ℕ) → k < n → (αs k ∼ⁿ βs k) m
-
-∼ⁿ-uc-mod-of² : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {d e : ℕ}
-             → (Vec (ℕ → X) (succ d) → Vec (ℕ → Y) (succ e))
-             → Vec ℕ (succ e) → Vec ℕ (succ d) → 𝓤 ⊔ 𝓥 ̇
-∼ⁿ-uc-mod-of² f ε δ = ∀ α β → (α ∼ⁿ⋆ β) δ → (f α ∼ⁿ⋆ f β) ε
-
-∼ⁿ-continuous² : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {d e : ℕ}
-              → (Vec (ℕ → X) (succ d) → Vec (ℕ → Y) (succ e) ) → 𝓤 ⊔ 𝓥 ̇
-∼ⁿ-continuous² f = ∀ ε → Σ (∼ⁿ-uc-mod-of² f ε)
-
-∼ⁿ-uc-mod-of : {X : 𝓤 ̇ } {d : ℕ}
-            → (Vec (ℕ → X) (succ d) → 𝓥 ̇ )
-            → Vec ℕ (succ d) → 𝓤 ⊔ 𝓥 ̇
-∼ⁿ-uc-mod-of p δ = ∀ α β → (α ∼ⁿ⋆ β) δ → p α → p β
-
-∼ⁿ-continuous : {X : 𝓤 ̇ } {d : ℕ}
-             → (Vec (ℕ → X) (succ d) → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
-∼ⁿ-continuous p = Σ (∼ⁿ-uc-mod-of p)
-
-∼ⁿ⋆⋆-uc-mod-of² : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {d : ℕ}
-              → ((ℕ → (ℕ → X)) → Vec (ℕ → Y) (succ d))
-              → Vec ℕ (succ d) → ℕ → ℕ → 𝓤 ⊔ 𝓥 ̇
-∼ⁿ⋆⋆-uc-mod-of² f ε δ₁ δ₂ = ∀ αs βs → (αs ∼ⁿ⋆⋆ βs) δ₁ δ₂ → (f αs ∼ⁿ⋆ f βs) ε
-
-∼ⁿ⋆⋆-continuous² : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {d : ℕ}
-               → ((ℕ → (ℕ → X)) → Vec (ℕ → Y) (succ d)) → 𝓤 ⊔ 𝓥 ̇ 
-∼ⁿ⋆⋆-continuous² f = ∀ ε → Σ (δs , δ) ꞉ (ℕ × ℕ) , (∼ⁿ⋆⋆-uc-mod-of² f ε δs δ)
-
-vec-repeat : {X : 𝓤 ̇ } {n : ℕ} → X → Vec X (succ n)
-vec-repeat {𝓤} {X} {0} x = [ x ]
-vec-repeat {𝓤} {X} {succ n} x = x ∷ vec-repeat x
-
-vec-max : {n : ℕ} → Vec ℕ (succ n) → ℕ
-vec-max {0} [ x ] = x
-vec-max {succ n} (x ∷ xs) = max x (vec-max xs)
-
-max⊏ : (k n m : ℕ) → k ⊏ (n ↑) → k ⊏ ((max n m) ↑)
-max⊏ k (succ n) zero k⊏n = k⊏n
-max⊏ zero (succ n) (succ m) k⊏n = refl
-max⊏ (succ k) (succ n) (succ m) k⊏n = max⊏ k n m k⊏n
-
-max≼ : (n m : ℕ) (v : ℕ∞)
-     → ((max n m) ↑) ≼ v
-     → (n ↑) ≼ v
-     × (m ↑) ≼ v
-max≼ n m v maxnm≼v
- = (λ k p → maxnm≼v k (max⊏ k n m p))
- , (λ k q → maxnm≼v k
-     (transport (λ - → k ⊏ (- ↑))
-       (max-comm m n) (max⊏ k m n q)))
--}
-{-
-∼ⁿ⋆→≼ : {X : 𝓤 ̇ } (dˣ : is-discrete X)
-     → (n : ℕ) (x y : (ℕ → X) ^⟨succ n ⟩)
-     → (ε : ℕ) → (x ∼ⁿ⋆ y) (vec-repeat ε)
-     → (ε ↑) ≼ ×ⁿ-codistance (codistance X dˣ) n x y
-∼ⁿ⋆→≼ dˣ 0 = ∼ⁿ→≼ dˣ
-∼ⁿ⋆→≼ {𝓤} {X} dˣ (succ n) (x , xs) (y , ys) ε (x∼ⁿy , xs∼ⁿys)
- = ×-codistance-min
-     (codistance X dˣ)
-     (×ⁿ-codistance (codistance X dˣ) n)
-     (under ε) x y xs ys
-     (∼ⁿ→≼ dˣ x y ε x∼ⁿy)
-     (∼ⁿ⋆→≼ dˣ n xs ys ε xs∼ⁿys)
-
-≼→∼ⁿ⋆ : {X : 𝓤 ̇ } (dˣ : is-discrete X)
-     → (n : ℕ) (x y : (ℕ → X) ^⟨succ n ⟩)
-     → (ε : ℕ)
-     → under ε ≼ ×ⁿ-codistance
-                   (codistance X dˣ) n x y
-     → (x ∼ⁿ⋆ y) (vec-repeat ε)
-≼→∼ⁿ⋆ dˣ 0 = ≼→∼ⁿ dˣ
-≼→∼ⁿ⋆ {𝓤} {X} dˣ (succ n) (x , xs) (y , ys) ε ε≼cxy
- = ≼→∼ⁿ dˣ x y ε (pr₁ γ)
- , ≼→∼ⁿ⋆ dˣ n xs ys ε (pr₂ γ)
- where
-   γ = ×-codistance-min'
-         (codistance X dˣ)
-         (×ⁿ-codistance (codistance X dˣ) n)
-         (under ε) x y xs ys
-         ε≼cxy
-
-≼→∼ⁿ⋆' : {X : 𝓤 ̇ } (dˣ : is-discrete X)
-      → (d n : ℕ) (x y : (ℕ → X) ^⟨succ n ⟩)
-      → (ε : ℕ) (f : ℕ ^⟨succ d ⟩ → ℕ ^⟨succ n ⟩)
-      → under (vec-max (f (vec-repeat ε)))
-                ≼ ×ⁿ-codistance
-                    (codistance X dˣ) n x y
-      → (x ∼ⁿ⋆ y) (f (vec-repeat ε))
-≼→∼ⁿ⋆' dˣ d 0 x y ε f = ≼→∼ⁿ dˣ x y (f (vec-repeat ε))
-≼→∼ⁿ⋆' {𝓤} {X} dˣ d (succ n) (x , xs) (y , ys) ε f δ≼cxy
- = ≼→∼ⁿ dˣ x y (pr₁ (f (vec-repeat ε)))
-     (pr₁ (max≼ δ₁ δ₂ (codistance X dˣ x y) (pr₁ γ)))
- , ≼→∼ⁿ⋆' dˣ d n xs ys ε (pr₂ ∘ f)
-     (pr₂ (max≼ δ₁ δ₂ (×ⁿ-codistance (codistance X dˣ) n xs ys) (pr₂ γ)))
- where
-   δ₁ = pr₁ (f (vec-repeat ε))
-   δ₂ = vec-max (pr₂ (f (vec-repeat ε)))
-   δ = max δ₁ δ₂
-   γ = ×-codistance-min'
-         (codistance X dˣ)
-         (×ⁿ-codistance (codistance X dˣ) n)
-         (under δ) x y xs ys
-         δ≼cxy
--}
-{-
-∼ⁿ-continuous→≼-continuous
-              : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-              → (dˣ : is-discrete X) (dʸ : is-discrete Y)
-              → (d e : ℕ)
-              → (f : (ℕ → X) ^⟨succ d ⟩ → (ℕ → Y) ^⟨succ e ⟩)
-              → ∼ⁿ-continuous² f
-              → f-ucontinuous
-                  (×ⁿ-codistance (codistance X dˣ) d)
-                  (×ⁿ-codistance (codistance Y dʸ) e)
-                  f
-∼ⁿ-continuous→≼-continuous {𝓤} {X} dˣ dʸ d e f ϕ ε
- = vec-max (pr₁ (ϕ (vec-repeat ε)))
- , (λ x y δ≼cxy → ∼ⁿ⋆→≼ dʸ e (f x) (f y) ε
-     (pr₂ (ϕ (vec-repeat ε)) x y
-       (≼→∼ⁿ⋆' dˣ e d x y ε (λ x → pr₁ (ϕ x)) δ≼cxy)))
--}
-
-
-div2-continuous : seq-f-ucontinuous¹ div2
-div2-continuous zero = 0 , λ α β _ k ()
-div2-continuous (succ ε) = succ (succ ε) , γ ε where
+div2-ucontinuous' : seq-f-ucontinuous¹ div2
+div2-ucontinuous' zero = 0 , λ α β _ k ()
+div2-ucontinuous' (succ ε) = succ (succ ε) , γ ε where
   γ : (ε : ℕ) → (α β : ℕ → 𝟝) → (α ∼ⁿ β) (succ (succ ε))
     →  (div2 α ∼ⁿ div2 β) (succ ε)
   γ ε α β α∼ⁿβ 0 ⋆ = ap (λ - → pr₁ (div2-aux - (α 1))) (α∼ⁿβ 0 ⋆)
@@ -169,28 +37,28 @@ div2-continuous (succ ε) = succ (succ ε) , γ ε where
              ∙ ap (λ - → pr₂ (div2-aux (β 0) -)) (α∼ⁿβ 1 ⋆)
     α∼ⁿβ' (succ j) = α∼ⁿβ (succ (succ j))
 
-map-continuous : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } 
+map-ucontinuous' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } 
                → (f : X → Y) → seq-f-ucontinuous¹ (map f)
-map-continuous f ε = ε , λ α β α∼ⁿβ k k<ε → ap f (α∼ⁿβ k k<ε)
+map-ucontinuous' f ε = ε , λ α β α∼ⁿβ k k<ε → ap f (α∼ⁿβ k k<ε)
 
-zipWith-continuous : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+zipWith-ucontinuous' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                 → (f : X → X → Y)
                 → seq-f-ucontinuous² (zipWith f)
-zipWith-continuous f ε
+zipWith-ucontinuous' f ε
  = (ε , ε)
  , (λ α₁ α₂ β₁ β₂ α∼ β∼ k k<ϵ
     → ap (λ - → f - (β₁ k)) (α∼ k k<ϵ)
     ∙ ap (f (α₂ k)) (β∼ k k<ϵ))
 
-neg-continuous : seq-f-ucontinuous¹ neg
-neg-continuous = map-continuous flip
+neg-ucontinuous' : seq-f-ucontinuous¹ neg
+neg-ucontinuous' = map-ucontinuous' flip
 
-mid-continuous : seq-f-ucontinuous² mid
-mid-continuous = seq-f-ucontinuous¹²-comp div2 add2
-                   div2-continuous (zipWith-continuous _+𝟛_)
+mid-ucontinuous' : seq-f-ucontinuous² mid
+mid-ucontinuous' = seq-f-ucontinuous¹²-comp div2 add2
+                   div2-ucontinuous' (zipWith-ucontinuous' _+𝟛_)
 
-bigMid'-continuous : seq-f-ucontinuousᴺ bigMid'
-bigMid'-continuous ε = dδ ε , γ ε where
+bigMid'-ucontinuous' : seq-f-ucontinuousᴺ bigMid'
+bigMid'-ucontinuous' ε = dδ ε , γ ε where
   d : ℕ → ℕ
   d 0 = 0
   d (succ ε) = succ (succ ε)
@@ -217,7 +85,7 @@ bigMid'-continuous ε = dδ ε , γ ε where
     αs∼ⁿβs' : (n : ℕ) → n < d (succ ε)
             → (αs' n ∼ⁿ βs' n) (δ (succ ε))
     αs∼ⁿβs' zero n<d i i<d
-     = pr₂ (mid-continuous (δ (succ ε)))
+     = pr₂ (mid-ucontinuous' (δ (succ ε)))
        (tail (tail (αs 0))) (tail (tail (βs 0)))
        (tail       (αs 1) ) (tail       (βs 1) ) 
        (λ i → αs∼ⁿβs zero ⋆ (succ (succ i)))
@@ -228,9 +96,9 @@ bigMid'-continuous ε = dδ ε , γ ε where
          (≤-trans i (succ (succ (δ ε))) (succ (succ (succ (succ (succ (δ ε))))))
            i≤δϵ (≤-+ (δ ε) 3))
            
-div4-continuous : seq-f-ucontinuous¹ div4
-div4-continuous zero = 0 , λ α β _ k ()
-div4-continuous (succ ε) = succ (succ ε) , γ ε where
+div4-ucontinuous' : seq-f-ucontinuous¹ div4
+div4-ucontinuous' zero = 0 , λ α β _ k ()
+div4-ucontinuous' (succ ε) = succ (succ ε) , γ ε where
   γ : (ε : ℕ) → (α β : ℕ → 𝟡) → (α ∼ⁿ β) (succ (succ ε))
     →  (div4 α ∼ⁿ div4 β) (succ ε) 
   γ ε α β α∼ⁿβ 0 ⋆ = ap (λ - → pr₁ (div4-aux - (α 1))) (α∼ⁿβ 0 ⋆)
@@ -244,46 +112,52 @@ div4-continuous (succ ε) = succ (succ ε) , γ ε where
              ∙ ap (λ - → pr₂ (div4-aux (β 0) -)) (α∼ⁿβ 1 ⋆)
     α∼ⁿβ' (succ j) = α∼ⁿβ (succ (succ j))  
 
-bigMid-continuous : seq-f-ucontinuousᴺ bigMid
-bigMid-continuous ε = dδ , γ where
+bigMid-ucontinuous' : seq-f-ucontinuousᴺ bigMid
+bigMid-ucontinuous' ε = dδ , γ where
   dδ : ℕ × ℕ
-  dδ = pr₁ (bigMid'-continuous (pr₁ (div4-continuous ε)))
+  dδ = pr₁ (bigMid'-ucontinuous' (pr₁ (div4-ucontinuous' ε)))
   γ : (x₁ x₂ : ℕ → 𝟛ᴺ)
     → ((n : ℕ) → n < pr₁ dδ → ((x₁ n) ∼ⁿ (x₂ n)) (pr₂ dδ))
     → (bigMid x₁ ∼ⁿ bigMid x₂) ε 
   γ αs βs αs∼ⁿβs
-   = pr₂ (div4-continuous ε)
+   = pr₂ (div4-ucontinuous' ε)
        (bigMid' αs) (bigMid' βs)
-       (pr₂ (bigMid'-continuous (pr₁ (div4-continuous ε)))
+       (pr₂ (bigMid'-ucontinuous' (pr₁ (div4-ucontinuous' ε)))
          αs βs αs∼ⁿβs)
 
-mul-continuous : seq-f-ucontinuous² mul
-mul-continuous ε = δ ε , γ ε where
+mul-ucontinuous' : seq-f-ucontinuous² mul
+mul-ucontinuous' ε = δ ε , γ ε where
   δ : ℕ → ℕ × ℕ
-  δ ε = pr₁ (bigMid-continuous ε)
+  δ ε = pr₁ (bigMid-ucontinuous' ε)
   γ : (ε : ℕ) → (α₁ α₂ : 𝟛ᴺ) (β₁ β₂ : 𝟛ᴺ)
     → (α₁ ∼ⁿ α₂) (pr₁ (δ ε)) → (β₁ ∼ⁿ β₂) (pr₂ (δ ε))
     → (mul α₁ β₁ ∼ⁿ mul α₂ β₂) ε
   γ ε α₁ α₂ β₁ β₂ α∼ β∼
-   = pr₂ (bigMid-continuous ε) (zipWith digitMul α₁ (λ _ → β₁)) (zipWith digitMul α₂ (λ _ → β₂))
+   = pr₂ (bigMid-ucontinuous' ε) (zipWith digitMul α₁ (λ _ → β₁)) (zipWith digitMul α₂ (λ _ → β₂))
        (λ n n<d k k<δ → ap (_*𝟛 β₁ k) (α∼ n n<d)
                       ∙ ap (α₂ n *𝟛_) (β∼ k k<δ))
-         
-{-
-c𝟛ᴺ : 𝟛ᴺ → 𝟛ᴺ → ℕ∞
-c𝟛ᴺ = codistance 𝟛 𝟛-is-discrete
 
-c𝟛ᴺ×𝟛ᴺ : (𝟛ᴺ × 𝟛ᴺ) → (𝟛ᴺ × 𝟛ᴺ) → ℕ∞ 
-c𝟛ᴺ×𝟛ᴺ = ×-codistance c𝟛ᴺ c𝟛ᴺ
+neg-ucontinuous
+ : f-ucontinuous 𝟛ᴺ-ClosenessSpace 𝟛ᴺ-ClosenessSpace neg
+neg-ucontinuous
+ = seq-f-ucontinuous¹-to-closeness
+     𝟛-is-discrete 𝟛-is-discrete
+     neg neg-ucontinuous'
 
-∼ⁿ→≼-continuous-𝟛ᴺ = ∼ⁿ-continuous→≼-continuous 𝟛-is-discrete 𝟛-is-discrete
+mid-ucontinuous
+ : f-ucontinuous
+     (×-ClosenessSpace 𝟛ᴺ-ClosenessSpace 𝟛ᴺ-ClosenessSpace)
+     𝟛ᴺ-ClosenessSpace (uncurry mid)
+mid-ucontinuous
+ = seq-f-ucontinuous²-to-closeness
+     𝟛-is-discrete 𝟛-is-discrete 𝟛-is-discrete
+     mid mid-ucontinuous'
 
-neg-continuous≼ : continuous² c𝟛ᴺ c𝟛ᴺ neg
-neg-continuous≼ = ∼ⁿ→≼-continuous-𝟛ᴺ 0 0 neg neg-continuous
-
-mid-continuous≼ : continuous² c𝟛ᴺ×𝟛ᴺ c𝟛ᴺ (uncurry mid)
-mid-continuous≼ = ∼ⁿ→≼-continuous-𝟛ᴺ 1 0 (uncurry mid) mid-continuous
-
-mul-continuous≼ : continuous² c𝟛ᴺ×𝟛ᴺ c𝟛ᴺ (uncurry mul)
-mul-continuous≼ = ∼ⁿ→≼-continuous-𝟛ᴺ 1 0 (uncurry mul) mul-continuous
--}
+mul-ucontinuous
+ : f-ucontinuous
+     (×-ClosenessSpace 𝟛ᴺ-ClosenessSpace 𝟛ᴺ-ClosenessSpace)
+     𝟛ᴺ-ClosenessSpace (uncurry mul)
+mul-ucontinuous
+ = seq-f-ucontinuous²-to-closeness
+     𝟛-is-discrete 𝟛-is-discrete 𝟛-is-discrete
+     mul mul-ucontinuous'

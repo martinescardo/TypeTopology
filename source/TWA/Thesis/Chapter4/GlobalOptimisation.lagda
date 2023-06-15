@@ -5,9 +5,10 @@
 open import MLTT.Spartan
 open import UF.FunExt
 
+open import TWA.Thesis.Chapter2.FiniteDiscrete
+
 module TWA.Thesis.Chapter4.GlobalOptimisation (fe : FunExt) where
 
-open import TWA.Thesis.Chapter2.FiniteDiscrete
 open import TWA.Thesis.Chapter3.ClosenessSpaces fe
 open import TWA.Thesis.Chapter4.ApproxOrder fe
 
