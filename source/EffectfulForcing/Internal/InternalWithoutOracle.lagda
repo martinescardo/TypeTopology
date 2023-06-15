@@ -1145,11 +1145,15 @@ R⋆s-⌜Sub,,⌝ : {α : Baire} {Γ : Cxt} {σ : type}
           → R⋆ α x ⌜ y ⌝
           → R⋆s α (xs ‚ x) (⌜Sub⌝ (Sub,, ys y))
 R⋆s-⌜Sub,,⌝ {α} {Γ} {σ} xs x ys y rs r {.σ} (∈Cxt0 .Γ) = r
-R⋆s-⌜Sub,,⌝ {α} {Γ} {σ} xs x ys y rs r {τ} (∈CxtS .σ i) with ∈Cxt-B-context'' {B-type〖 τ 〗 ((ι ⇒ ι) ⇒ ι)} (∈Cxt-B-type i)
-... | τ₁ , e , j , z with ＝B-type e
-... | refl with ＝type-refl e
-... | refl with ＝∈Cxt-B-type i j z
-... | refl = {!rs i!}
+R⋆s-⌜Sub,,⌝ {α} {Γ} {σ} xs x ys y rs r {τ} (∈CxtS .σ i) = p (rs i)
+ where
+  p : (ri : R⋆ α (xs i) (⌜Sub⌝ ys (∈Cxt-B-type i)))
+    → R⋆ α (xs i) (⌜Sub⌝ (Sub,, ys y) (∈CxtS (B-type〖 σ 〗 ((ι ⇒ ι) ⇒ ι)) (∈Cxt-B-type i)))
+  p ri with ∈Cxt-B-context'' {B-type〖 τ 〗 ((ι ⇒ ι) ⇒ ι)} (∈Cxt-B-type i)
+  ... | τ₁ , e , j , z with ＝B-type e
+  ... | refl with ＝type-refl e
+  ... | refl with ＝∈Cxt-B-type i j z
+  ... | refl = ri
 
 ⌜main-lemma⌝ : {Γ : Cxt} {σ : type} (t : T Γ σ)
                (α : Baire)
@@ -1171,27 +1175,36 @@ R⋆s-⌜Sub,,⌝ {α} {Γ} {σ} xs x ys y rs r {τ} (∈CxtS .σ i) with ∈Cxt
 ⌜main-lemma⌝ {Γ} {σ ⇒ τ} (ƛ t) α xs ys rxys x y rxy =
  transport
   (λ k → R⋆ α (⟦ t ⟧ (xs ‚ x)) k)
-  e
+  e₁
   (R⋆-preserves-⟦⟧
     (⟦ t ⟧ (xs ‚ x))
     (close t (Sub,, ys y))
     (ƛ (close t (Subƛ ys)) · y)
-    {!!}
+    e₃
     (transport (λ k → R⋆ α (⟦ t ⟧ (xs ‚ x)) k) (⌜close⌝ t (Sub,, ys y)) ind))
  where
-  f : ⌜ close t (Subƛ ys) ⌝ ＝ close ⌜ t ⌝ (Subƛ (⌜Sub⌝ ys))
-  f =
+  e₃ : ⟦ ⌜ close t (Sub,, ys y) ⌝ ⟧₀ ＝ ⟦ ƛ ⌜ close t (Subƛ ys) ⌝ · ⌜ y ⌝ ⟧₀
+  e₃ =
+   ⟦ ⌜ close t (Sub,, ys y) ⌝ ⟧₀
+    ＝⟨ {!!} ⟩
+   {!!}
+    ＝⟨ {!!} ⟩
+   ⟦ ⌜ close t (Subƛ ys) ⌝ ⟧ (⟨⟩ ‚ ⟦ ⌜ y ⌝ ⟧₀)
+    ∎
+
+  e₂ : ⌜ close t (Subƛ ys) ⌝ ＝ close ⌜ t ⌝ (Subƛ (⌜Sub⌝ ys))
+  e₂ =
    ⌜ close t (Subƛ ys) ⌝
     ＝⟨ (⌜close⌝ t (Subƛ ys)) ⁻¹ ⟩
    close ⌜ t ⌝ (⌜Sub⌝ (Subƛ ys))
     ＝⟨ (close-eta (Subƛ (⌜Sub⌝ ys)) (⌜Sub⌝ (Subƛ ys)) ⌜ t ⌝ (Subƛ⌜Sub⌝ ys)) ⁻¹ ⟩
    close ⌜ t ⌝ (Subƛ (⌜Sub⌝ ys))
     ∎
-  e : ⌜ (ƛ (close t (Subƛ ys))) · y ⌝ ＝ ƛ (close ⌜ t ⌝ (Subƛ (⌜Sub⌝ ys))) · ⌜ y ⌝
-  e = ap₂ _·_ (ap ƛ f) refl
+  e₁ : ⌜ (ƛ (close t (Subƛ ys))) · y ⌝ ＝ ƛ (close ⌜ t ⌝ (Subƛ (⌜Sub⌝ ys))) · ⌜ y ⌝
+  e₁ = ap₂ _·_ (ap ƛ e₂) refl
 
   ind : R⋆ α (⟦ t ⟧ (xs ‚ x)) (close ⌜ t ⌝ (⌜Sub⌝ (Sub,, ys y)))
-  ind = ⌜main-lemma⌝ {Γ ,, σ} {τ} t α (xs ‚ x) (Sub,, ys y) {!!} -- (R⋆s-Sub,, xs x ys y rxys rxy)
+  ind = ⌜main-lemma⌝ {Γ ,, σ} {τ} t α (xs ‚ x) (Sub,, ys y) (R⋆s-⌜Sub,,⌝ xs x ys y rxys rxy)
 ⌜main-lemma⌝ {Γ} {σ} (t · t₁) α xs ys rxys =
  transport
   (λ k → R⋆ α (⟦ t ⟧ xs (⟦ t₁ ⟧ xs)) (close ⌜ t ⌝ (⌜Sub⌝ ys) · k))
