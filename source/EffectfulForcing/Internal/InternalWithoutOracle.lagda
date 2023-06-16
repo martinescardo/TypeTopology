@@ -11,6 +11,7 @@ module EffectfulForcing.Internal.InternalWithoutOracle where
 
 open import MLTT.Spartan hiding (rec ; _^_) renaming (⋆ to 〈〉)
 open import MLTT.Athenian using (Fin)
+open import EffectfulForcing.MFPSAndVariations.Combinators
 open import EffectfulForcing.MFPSAndVariations.Continuity
 open import EffectfulForcing.MFPSAndVariations.Dialogue
 open import EffectfulForcing.MFPSAndVariations.SystemT using (type ; ι ; _⇒_ ; 〖_〗)
@@ -813,7 +814,10 @@ R⋆s : Baire → {Γ : Cxt}
 R⋆s α {Γ} xs ys = {σ : type} (i : ∈Cxt σ Γ) → R⋆ α (xs i) (ys (∈Cxt-B-type i))
 
 【sub】 : {Γ : Cxt} (s : Sub₀ Γ) → 【 Γ 】
-【sub】 {Γ} s i = ⟦ s i ⟧₀
+【sub】 {Γ} s {σ} i = ⟦ s i ⟧₀
+
+Sub₀1 : {σ : type} (t : T₀ σ) → Sub₀ (〈〉 ,, σ)
+Sub₀1 {σ} t {.σ} (∈Cxt0 .〈〉) = t
 
 {-
 close-⌜zero⌝ : {σ : type} {Γ : Cxt} (ys : IB【 Γ 】 σ)
@@ -1155,6 +1159,112 @@ R⋆s-⌜Sub,,⌝ {α} {Γ} {σ} xs x ys y rs r {τ} (∈CxtS .σ i) = p (rs i)
   ... | refl with ＝∈Cxt-B-type i j z
   ... | refl = ri
 
+Sub【】 : {Γ Δ : Cxt} (s : Sub Γ Δ) → 【 Δ 】 → 【 Γ 】
+Sub【】 {Γ} {Δ} s c {τ} i = ⟦ s i ⟧ c
+
+【】,,₁ : {Γ : Cxt} {σ : type} → 【 Γ ,, σ 】 → 【 Γ 】
+【】,,₁ {Γ} {σ} h {τ} i = h (∈CxtS σ i)
+
+【】,,₂ : {Γ : Cxt} {σ : type} → 【 Γ ,, σ 】 → 〖 σ 〗
+【】,,₂ {Γ} {σ} h = h (∈Cxt0 Γ)
+
+⟦⟧【sub】 : {Γ Δ : Cxt} {σ : type} (t : T Γ σ) (s : Sub Γ Δ)
+           → ⟦ close t s ⟧ ＝ λ y → ⟦ t ⟧ (Sub【】 s y)
+⟦⟧【sub】 {Γ} {Δ} Zero s = refl
+⟦⟧【sub】 {Γ} {Δ} (Succ t) s = ap (λ f xs → succ (f xs)) (⟦⟧【sub】 t s)
+⟦⟧【sub】 {Γ} {Δ} (Rec t t₁ t₂) s =
+ ap₃ (λ f g h xs → rec (f xs) (g xs) (h xs)) (⟦⟧【sub】 t s) (⟦⟧【sub】 t₁ s) (⟦⟧【sub】 t₂ s)
+⟦⟧【sub】 {Γ} {Δ} (ν i) s = refl
+⟦⟧【sub】 {Γ} {Δ} {σ ⇒ τ} (ƛ t) s =
+ ap {_} {_} {【 Δ ,, σ 】 → 〖 τ 〗} {【 Δ 】 → 〖 σ 〗 → 〖 τ 〗} (λ f xs x → f (xs ‚ x))
+    {⟦ close t (Subƛ s) ⟧}
+    {λ y → ⟦ t ⟧ (Sub【】 s (【】,,₁  y) ‚ 【】,,₂ y)}
+    c
+ where
+ c : ⟦ close t (Subƛ s) ⟧ ＝ (λ y → ⟦ t ⟧ (Sub【】 s (【】,,₁ y) ‚ 【】,,₂ y))
+ c = (⟦⟧【sub】 t (Subƛ s)) ∙ {!!}
+⟦⟧【sub】 {Γ} {Δ} (t · t₁) s = ap₂ (λ f g xs → f xs (g xs)) (⟦⟧【sub】 t s) (⟦⟧【sub】 t₁ s)
+
+{-
+⟦⟧【sub】'' : {Γ Δ : Cxt} {σ : type} (t : T Γ σ) (s : Sub Γ Δ) (y : 【 Δ 】)
+           → ⟦ close t s ⟧ y ＝ ⟦ t ⟧ (Sub【】 s y)
+⟦⟧【sub】'' {Γ} {Δ} Zero s y = refl
+⟦⟧【sub】'' {Γ} {Δ} (Succ t) s y = ap succ (⟦⟧【sub】'' t s y)
+⟦⟧【sub】'' {Γ} {Δ} (Rec t t₁ t₂) s y = ap₃ rec (⟦⟧【sub】'' t s y) (⟦⟧【sub】'' t₁ s y) (⟦⟧【sub】'' t₂ s y)
+⟦⟧【sub】'' {Γ} {Δ} (ν i) s y = refl
+⟦⟧【sub】'' {Γ} {Δ} (ƛ t) s y = {!!}
+⟦⟧【sub】'' {Γ} {Δ} (t · t₁) s y = {!!}
+-}
+
+{-
+Rsub : {Γ : Cxt} {σ : type} (t : T Γ σ) (s : Sub₀ Γ) → Type
+Rsub {Γ} {ι} t s = ⟦ close t s ⟧₀ ＝ ⟦ t ⟧ (【sub】 s)
+Rsub {Γ} {σ ⇒ τ} t s = (x : T Γ σ)
+                     → Rsub x s
+                     → Rsub (t · x) s
+
+⟦⟧【sub】 : {Γ : Cxt} {σ : type} (t : T Γ σ) (s : Sub₀ Γ)
+          → Rsub t s
+⟦⟧【sub】 {Γ} {_} Zero s = refl
+⟦⟧【sub】 {Γ} {_} (Succ t) s = ap succ (⟦⟧【sub】 t s)
+⟦⟧【sub】 {Γ} {σ} (Rec t t₁ t₂) s = {!!}
+⟦⟧【sub】 {Γ} {σ} (ν i) s = {!!}
+⟦⟧【sub】 {Γ} {σ ⇒ τ} (ƛ t) s x rx = {!!}
+⟦⟧【sub】 {Γ} {σ} (t · t₁) s = ⟦⟧【sub】 t s t₁ (⟦⟧【sub】 t₁ s)
+-}
+
+{-
+⟦⟧【sub】 : {Γ : Cxt} {σ : type} (t : T Γ σ) (s : Sub₀ Γ)
+          → ⟦ close t s ⟧₀ ＝ ⟦ t ⟧ (【sub】 s)
+⟦⟧【sub】 {Γ} {_}     Zero          s = refl
+⟦⟧【sub】 {Γ} {_}     (Succ t)      s = ap succ (⟦⟧【sub】 t s)
+⟦⟧【sub】 {Γ} {σ}     (Rec t t₁ t₂) s = ap₃ rec (⟦⟧【sub】 t s) (⟦⟧【sub】 t₁ s) (⟦⟧【sub】 t₂ s)
+⟦⟧【sub】 {Γ} {σ}     (ν i)         s = refl
+⟦⟧【sub】 {Γ} {σ ⇒ τ} (ƛ t)         s = {!ap (λ f x → f x) {}!}
+⟦⟧【sub】 {Γ} {σ}     (t · u)       s =
+ ⟦ close t s · close u s ⟧₀
+  ＝⟨ ap (λ k → k ⟦ close u s ⟧₀) (⟦⟧【sub】 t s) ⟩
+ ⟦ t ⟧ (【sub】 s) ⟦ close u s ⟧₀
+  ＝⟨ ap (⟦ t ⟧ (【sub】 s)) (⟦⟧【sub】 u s) ⟩
+ ⟦ t ⟧ (【sub】 s) (⟦ u ⟧ (【sub】 s))
+  ∎
+-}
+
+＝【】 : {Γ : Cxt} (a b : 【 Γ 】) → Type
+＝【】 {Γ} a b = {σ : type} (i : ∈Cxt σ Γ) → a i ＝ b i
+
+{-
+Reta : {Γ : Cxt} {σ : type} (t : T Γ σ) → Type
+Reta {Γ} {ι} t = (a b : 【 Γ 】)
+               → ＝【】 a b
+               → ⟦ t ⟧ a ＝ ⟦ t ⟧ b
+Reta {Γ} {σ ⇒ τ} t = (x : T Γ σ) → Reta x → Reta (t · x)
+
+⟦⟧-eta' : {Γ : Cxt} {σ : type} (t : T Γ σ)
+         → Reta t
+⟦⟧-eta' {Γ} {.ι} Zero = {!!}
+⟦⟧-eta' {Γ} {.ι} (Succ t) = {!!}
+⟦⟧-eta' {Γ} {σ} (Rec t t₁ t₂) = {!!}
+⟦⟧-eta' {Γ} {σ} (ν i) = {!!}
+⟦⟧-eta' {Γ} {.(_ ⇒ _)} (ƛ t) = {!!}
+⟦⟧-eta' {Γ} {σ} (t · t₁) = {!!}
+-}
+
+⟦⟧-eta : {Γ : Cxt} {σ : type} (t : T Γ σ) (a b : 【 Γ 】)
+       → ＝【】 a b
+       → ⟦ t ⟧ a ＝ ⟦ t ⟧ b
+⟦⟧-eta {Γ} {_} Zero a b e = refl
+⟦⟧-eta {Γ} {_} (Succ t) a b e = ap succ (⟦⟧-eta t a b e)
+⟦⟧-eta {Γ} {σ} (Rec t t₁ t₂) a b e = ap₃ rec (⟦⟧-eta t a b e) (⟦⟧-eta t₁ a b e) (⟦⟧-eta t₂ a b e)
+⟦⟧-eta {Γ} {σ} (ν i) a b e = e i
+⟦⟧-eta {Γ} {σ ⇒ τ} (ƛ t) a b e = {!ap (λ f x → f x)!}
+⟦⟧-eta {Γ} {σ} (t · t₁) a b e = ap₂ (λ f g → f g) (⟦⟧-eta t a b e) (⟦⟧-eta t₁ a b e)
+
+＝【】-【sub】-⌜Sub⌝-Sub₀1 : {σ : type} (y : T₀ σ)
+                          → ＝【】 (【sub】 (⌜Sub⌝ (Sub₀1 y))) (⟨⟩ ‚ ⟦ ⌜ y ⌝ ⟧₀)
+＝【】-【sub】-⌜Sub⌝-Sub₀1 {σ} y {τ} i with ∈Cxt-B-context'' i
+... | τ₁ , refl , ∈Cxt0 .〈〉 , refl = refl
+
 ⌜main-lemma⌝ : {Γ : Cxt} {σ : type} (t : T Γ σ)
                (α : Baire)
                (xs : 【 Γ 】) (ys : Sub₀ Γ) --IB【 Γ 】 ((ι ⇒ ι) ⇒ ι))
@@ -1170,7 +1280,15 @@ R⋆s-⌜Sub,,⌝ {α} {Γ} {σ} xs x ys y rs r {τ} (∈CxtS .σ i) = p (rs i)
   ＝⟨ refl ⟩
  dialogue⋆ ⟦ close ⌜succ⌝ ys · (close ⌜ t ⌝ (⌜Sub⌝ ys)) ⟧₀ α
   ∎
-⌜main-lemma⌝ {Γ} {_} (Rec f g t) α xs ys rxys = {!!}
+⌜main-lemma⌝ {Γ} {_} (Rec f g t) α xs ys rxys =
+ transport (λ k → R⋆ α (rec (⟦ f ⟧ xs) (⟦ g ⟧ xs) (⟦ t ⟧ xs))
+                       (k · close ⌜ f ⌝ (⌜Sub⌝ ys) · close ⌜ g ⌝ (⌜Sub⌝ ys) · close ⌜ t ⌝ (⌜Sub⌝ ys)))
+           (close-⌜rec⌝ (⌜Sub⌝ ys))
+           c
+ where
+  c : R⋆ α (rec (⟦ f ⟧ xs) (⟦ g ⟧ xs) (⟦ t ⟧ xs))
+           (⌜rec⌝ · close ⌜ f ⌝ (⌜Sub⌝ ys) · close ⌜ g ⌝ (⌜Sub⌝ ys) · close ⌜ t ⌝ (⌜Sub⌝ ys))
+  c = {!!}
 ⌜main-lemma⌝ {Γ} {σ} (ν i) α xs ys rxys = rxys i
 ⌜main-lemma⌝ {Γ} {σ ⇒ τ} (ƛ t) α xs ys rxys x y rxy =
  transport
@@ -1186,9 +1304,13 @@ R⋆s-⌜Sub,,⌝ {α} {Γ} {σ} xs x ys y rs r {τ} (∈CxtS .σ i) = p (rs i)
   e₃ : ⟦ ⌜ close t (Sub,, ys y) ⌝ ⟧₀ ＝ ⟦ ƛ ⌜ close t (Subƛ ys) ⌝ · ⌜ y ⌝ ⟧₀
   e₃ =
    ⟦ ⌜ close t (Sub,, ys y) ⌝ ⟧₀
-    ＝⟨ {!!} ⟩
-   {!!}
-    ＝⟨ {!!} ⟩
+    ＝⟨ ap (λ k → ⟦ ⌜ k ⌝ ⟧₀) {!!} ⟩
+   ⟦ ⌜ close (close t (Subƛ ys)) (Sub₀1 y) ⌝ ⟧₀
+    ＝⟨ ap (λ k → ⟦ k ⟧₀) (⌜close⌝ (close t (Subƛ ys)) (Sub₀1 y) ⁻¹) ⟩
+   ⟦ close ⌜ close t (Subƛ ys) ⌝ (⌜Sub⌝ (Sub₀1 y)) ⟧₀
+    ＝⟨ {!!} ⟩ -- something like ⟦⟧【sub】'
+   ⟦ ⌜ close t (Subƛ ys) ⌝ ⟧ (【sub】 (⌜Sub⌝ (Sub₀1 y)))
+    ＝⟨ ⟦⟧-eta ⌜ close t (Subƛ ys) ⌝ (【sub】 (⌜Sub⌝ (Sub₀1 y))) (⟨⟩ ‚ ⟦ ⌜ y ⌝ ⟧₀) (＝【】-【sub】-⌜Sub⌝-Sub₀1 y) ⟩
    ⟦ ⌜ close t (Subƛ ys) ⌝ ⟧ (⟨⟩ ‚ ⟦ ⌜ y ⌝ ⟧₀)
     ∎
 
