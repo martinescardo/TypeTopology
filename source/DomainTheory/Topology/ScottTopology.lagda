@@ -63,7 +63,7 @@ I find it convenient to define the type of directed families.
   the-sup (underlying-order 𝓓) (directed-completeness 𝓓 (index S) (S [_]) δ )
 
  is-upwards-closed : 𝓟 ⟨ 𝓓 ⟩ → Ω (𝓤 ⊔ 𝓣)
- is-upwards-closed P = Ɐ x ꞉ ⟨ 𝓓 ⟩ , Ɐ y ꞉ ⟨ 𝓓 ⟩ , P x ⇒ x ⊑⟨ 𝓓 ⟩ₚ y ⇒ P y  
+ is-upwards-closed P = Ɐ x ꞉ ⟨ 𝓓 ⟩ , Ɐ y ꞉ ⟨ 𝓓 ⟩ , P x ⇒ x ⊑⟨ 𝓓 ⟩ₚ y ⇒ P y
 
  is-inaccessible-by-directed-joins : 𝓟 ⟨ 𝓓 ⟩ → Ω (𝓤 ⊔ 𝓥 ⁺ ⊔ 𝓣)
  is-inaccessible-by-directed-joins P =
