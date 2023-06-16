@@ -52,8 +52,8 @@ y ∈imageₚ f = y ∈image f , ∃-is-prop
 We define the notion of a Scott-open subset in the following module. The DCPO
 `𝓓` taken as an argument has a carrier set living in 𝓤 and order living in 𝓣.
 The parameter `𝓦` is for the universe of the subsets for which Scott-openness is
-defined. In other words, we define what it means for `P : ⟨ 𝓓 ⟩ → Ω 𝓦` to be
-Scott-open.
+defined. In other words, we define what it means for a subset `P : ⟨ 𝓓 ⟩ → Ω 𝓦`
+to be Scott-open.
 
 \begin{code}
 
