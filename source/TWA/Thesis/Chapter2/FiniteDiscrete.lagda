@@ -16,6 +16,7 @@ module TWA.Thesis.Chapter2.FiniteDiscrete where
 𝔽 (succ n) = 𝟙 + 𝔽 n
 
 -- Definition 3.1.6
+-- COMMENT: Change to finite-linear-order (see Fin)
 finite-discrete : 𝓤 ̇ → 𝓤  ̇
 finite-discrete X = Σ n ꞉ ℕ , 𝔽 n ≃ X
 

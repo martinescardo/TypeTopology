@@ -22,7 +22,8 @@ open import TWA.Thesis.Chapter3.ClosenessSpaces-Examples fe
 open import MLTT.Two-Properties
 
 seq-f-ucontinuous¹ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-                   → (f : (ℕ → X) → (ℕ → Y)) → 𝓤 ⊔ 𝓥 ̇
+                   → (f : (ℕ → X) → (ℕ → Y))
+                   → 𝓤 ⊔ 𝓥 ̇
 seq-f-ucontinuous¹ {𝓤} {𝓥} {X} f
  = (ϵ : ℕ) → Σ δ ꞉ ℕ , ((x₁ x₂ : (ℕ → X))
  → (x₁ ∼ⁿ x₂) δ → (f x₁ ∼ⁿ f x₂) ϵ)
@@ -35,11 +36,45 @@ seq-f-ucontinuous² {𝓤} {𝓥} {𝓦} {X} {Y} f
    ((x₁ x₂ : (ℕ → X)) (y₁ y₂ : (ℕ → Y))
  → (x₁ ∼ⁿ x₂) δˣ → (y₁ ∼ⁿ y₂) δʸ → (f x₁ y₁ ∼ⁿ f x₂ y₂) ϵ)
 
+seq-f-ucontinuous²-left : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
+                        → (f : (ℕ → X) → (ℕ → Y) → (ℕ → Z))
+                        → seq-f-ucontinuous² f
+                        → (β : ℕ → Y)
+                        → seq-f-ucontinuous¹ (λ α → f α β)
+seq-f-ucontinuous²-left f ϕ β ε
+ = pr₁ (pr₁ (ϕ ε))
+ , λ α₁ α₂ α∼ → pr₂ (ϕ ε) α₁ α₂ β β α∼ (λ _ _ → refl)
+
+seq-f-ucontinuous²-right : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
+                         → (f : (ℕ → X) → (ℕ → Y) → (ℕ → Z))
+                         → seq-f-ucontinuous² f
+                         → (α : ℕ → X)
+                         → seq-f-ucontinuous¹ (f α)
+seq-f-ucontinuous²-right f ϕ α ε
+ = pr₂ (pr₁ (ϕ ε))
+ , λ β₁ β₂ → pr₂ (ϕ ε) α α β₁ β₂ (λ _ _ → refl)
+
+seq-f-ucontinuous²-both : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                        → (f : (ℕ → X) → (ℕ → X) → (ℕ → Y))
+                        → seq-f-ucontinuous² f
+                        → seq-f-ucontinuous¹ (λ α → f α α)
+seq-f-ucontinuous²-both f ϕ ε
+ = δ
+ , λ α β α∼ᵐβ → pr₂ (ϕ ε) α β α β
+     (λ i i<m → α∼ᵐβ i (<-≤-trans i δ₁ δ i<m (max-≤-upper-bound  δ₁ δ₂)))
+     (λ i i<m → α∼ᵐβ i (<-≤-trans i δ₂ δ i<m (max-≤-upper-bound' δ₂ δ₁)))
+ where
+  δ₁ δ₂ δ : ℕ
+  δ₁ = pr₁ (pr₁ (ϕ ε))
+  δ₂ = pr₂ (pr₁ (ϕ ε))
+  δ  = max δ₁ δ₂
+
 seq-f-ucontinuous¹²-comp
  : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {W : 𝓣 ̇ }
  → (f : (ℕ → Z) → (ℕ → W))
  → (g : (ℕ → X) → (ℕ → Y) → (ℕ → Z))
- → seq-f-ucontinuous¹ f → seq-f-ucontinuous² g
+ → seq-f-ucontinuous¹ f
+ → seq-f-ucontinuous² g
  → seq-f-ucontinuous² λ x y → f (g x y)
 seq-f-ucontinuous¹²-comp {_} {_} {_} {_} {X} {Y} {Z} {W}
  f g ϕᶠ ϕᵍ ϵ = δ , γ

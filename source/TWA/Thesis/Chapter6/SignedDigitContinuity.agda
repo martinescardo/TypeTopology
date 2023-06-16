@@ -161,3 +161,38 @@ mul-ucontinuous
  = seq-f-ucontinuous²-to-closeness
      𝟛-is-discrete 𝟛-is-discrete 𝟛-is-discrete
      mul mul-ucontinuous'
+
+mid-l-ucontinuous
+ : (y : 𝟛ᴺ)
+ → f-ucontinuous 𝟛ᴺ-ClosenessSpace 𝟛ᴺ-ClosenessSpace (λ x → mid x y)
+mid-l-ucontinuous y
+ = seq-f-ucontinuous¹-to-closeness
+     𝟛-is-discrete 𝟛-is-discrete
+     (λ x → mid x y)
+     (seq-f-ucontinuous²-left mid mid-ucontinuous' y)
+
+mid-r-ucontinuous
+ : (x : 𝟛ᴺ)
+ → f-ucontinuous 𝟛ᴺ-ClosenessSpace 𝟛ᴺ-ClosenessSpace (λ y → mid x y)
+mid-r-ucontinuous x
+ = seq-f-ucontinuous¹-to-closeness
+     𝟛-is-discrete 𝟛-is-discrete
+     (λ y → mid x y)
+     (seq-f-ucontinuous²-right mid mid-ucontinuous' x)
+
+mul-l-ucontinuous
+ : (y : 𝟛ᴺ)
+ → f-ucontinuous 𝟛ᴺ-ClosenessSpace 𝟛ᴺ-ClosenessSpace (λ x → mul x y)
+mul-l-ucontinuous y
+ = seq-f-ucontinuous¹-to-closeness
+     𝟛-is-discrete 𝟛-is-discrete
+     (λ x → mul x y)
+     (seq-f-ucontinuous²-left mul mul-ucontinuous' y)
+
+mul-b-ucontinuous
+ : f-ucontinuous 𝟛ᴺ-ClosenessSpace 𝟛ᴺ-ClosenessSpace (λ x → mul x x)
+mul-b-ucontinuous
+ = seq-f-ucontinuous¹-to-closeness
+     𝟛-is-discrete 𝟛-is-discrete
+     (λ x → mul x x)
+     (seq-f-ucontinuous²-both mul mul-ucontinuous')

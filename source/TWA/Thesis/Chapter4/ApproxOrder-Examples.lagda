@@ -16,6 +16,7 @@ open import CoNaturals.GenericConvergentSequence
   renaming (ℕ-to-ℕ∞ to _↑
          ; Zero-smallest to zero-minimal
          ; ∞-largest to ∞-maximal)
+open import NotionsOfDecidability.Decidable
 
 open import TWA.Thesis.Chapter2.FiniteDiscrete
 open import TWA.Thesis.Chapter2.Sequences
@@ -119,6 +120,18 @@ trichotomous : {X : 𝓤 ̇ } → (_<_ : X → X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥
 trichotomous {𝓤} {𝓥} {X} _<_
  = (x y : X) → (x < y) + (x ＝ y) + (y < x)
 
+strict-trichotomous-order-decidable : {X : 𝓤  ̇ }
+                                    → (_<'_ : X → X → 𝓦  ̇ )
+                                    → is-strict-order _<'_
+                                    → trichotomous _<'_
+                                    → (x y : X)
+                                    → is-decidable (x <' y)
+strict-trichotomous-order-decidable _<'_ (i , t , a , p) tri x y
+ = Cases (tri x y) inl
+  (cases (λ x＝y → inr (transport (λ - → ¬ (x <' -)) x＝y (i x)))
+         (inr ∘ a y x))
+
+
 <𝔽-trichotomous : {n : ℕ} → trichotomous (_<𝔽_ {n})
 <𝔽-trichotomous {succ n} (inl ⋆) (inl ⋆) = inr (inl refl)
 <𝔽-trichotomous {succ n} (inl _) (inr _) = inl ⋆
@@ -175,9 +188,9 @@ finite-strict-order-trichotomous (n , f)
      (≃-gives-↪ (≃-sym f))
      _<𝔽_ <𝔽-trichotomous
 
-discrete-lexicorder : {F : 𝓤 ̇ } → is-discrete F
-                    → (_<_ : F → F → 𝓥 ̇ )
-                    → (ℕ → F) → (ℕ → F) → 𝓤 ⊔ 𝓥  ̇ 
+discrete-lexicorder : {D : 𝓤 ̇ } → is-discrete D
+                    → (_<_ : D → D → 𝓥 ̇ )
+                    → (ℕ → D) → (ℕ → D) → 𝓤 ⊔ 𝓥  ̇ 
 discrete-lexicorder f _<_ α β
  = (α ∼ β) + (Σ n ꞉ ℕ , ((α ∼ⁿ β) n × (α n) < (β n)))
 
@@ -252,11 +265,27 @@ finite-lexicorder-is-preorder f
      (finite-strict-order f)
      (finite-strict-order-is-strict-order f)
 
-discrete-approx-lexicorder : {F : 𝓤 ̇ } → is-discrete F
-                           → (_<_ : F → F → 𝓥 ̇ )
-                           → (ℕ → F) → (ℕ → F) → ℕ → 𝓤 ⊔ 𝓥  ̇
+discrete-approx-lexicorder : {D : 𝓤 ̇ } → is-discrete D
+                           → (_<_ : D → D → 𝓥 ̇ )
+                           → (ℕ → D) → (ℕ → D) → ℕ → 𝓤 ⊔ 𝓥  ̇
 discrete-approx-lexicorder d _<'_ α β n
  = (α ∼ⁿ β) n + (Σ i ꞉ ℕ , ((i < n) × (α ∼ⁿ β) i × (α i) <' (β i)))
+
+open import NotionsOfDecidability.Complemented
+
+bounded-decidable : {X : ℕ → 𝓤 ̇ } → is-complemented X
+                  → (n : ℕ)
+                  → is-decidable (Σ i ꞉ ℕ , ((i < n) × X i))
+bounded-decidable d 0 = inr (λ (i , i<0 , _) → i<0)
+bounded-decidable {𝓤} {X} d (succ n)
+ = Cases (bounded-decidable d n)
+    (λ (i , i<n , Xi)
+     → inl (i , <-trans i n (succ n) i<n (<-succ n) , Xi))
+    (λ ¬Σi<n → Cases (d n)
+      (λ Xn → inl (n , <-succ n , Xn))
+      (λ ¬Xn → inr (λ (i , i<sn , Xi) → Cases (<-split i n i<sn)
+        (λ i<n → ¬Σi<n (i , i<n , Xi))
+        (λ i＝n → ¬Xn (transport X i＝n Xi)))))
 
 discrete-approx-lexicorder-is-approx-order
  : {D : 𝓤 ̇ } (d : is-discrete D) (s : is-set D)
@@ -270,6 +299,7 @@ discrete-approx-lexicorder-is-approx-order
  {𝓤} {𝓥} {D} d s _<'_ s'@(i' , t' , a' , p') l'
  = discrete-lexicorder-is-preorder d s _<'_ s'
  , (λ ϵ → (r ϵ , ((t ϵ) , (p ϵ))) , l ϵ)
+ , dec
  , c
  , a
  where
@@ -356,6 +386,16 @@ discrete-approx-lexicorder-is-approx-order
          (λ i=n → transport (λ - → y - ＝ x -) (i=n ⁻¹) (xn=yn ⁻¹))))
   ... | inr (inl y∼ⁿx) | inr (inr yn<xn)
    = inr (inr (n , <-succ n , y∼ⁿx , yn<xn))
+  dec : (ϵ : ℕ) (x y : ℕ → D)
+      → is-decidable (discrete-approx-lexicorder d _<'_ x y ϵ)
+  dec ϵ x y
+    = +-preserves-decidability (discrete-decidable-seq d x y ϵ)
+        (bounded-decidable
+          (λ i → ×-preserves-decidability
+                   (discrete-decidable-seq d x y i)
+                   (strict-trichotomous-order-decidable
+                     _<'_ s' l' (x i) (y i)))
+          ϵ)
   c : (n : ℕ) → (x y : ℕ → D)
     → C (ℕ→D-ClosenessSpace d) n x y
     → discrete-approx-lexicorder d _<'_ x y n
@@ -442,7 +482,7 @@ inclusion-approx-order f _≤ⁿ_ x y = f x ≤ⁿ f y
  → is-approx-order (Σ-ClosenessSpace X P p)
      (Σ-order P _≤_) (Σ-approx-order P _≤ⁿ_)
 Σ-approx-order-is-approx-order
- X P p _≤_ _≤ⁿ_ (pre' , lin' , c' , a') = pre , lin , c , a
+ X P p _≤_ _≤ⁿ_ (pre' , lin' , d' , c' , a') = pre , lin , d , c , a
  where
   pre : is-preorder (Σ-order P _≤_)
   pre = Σ-order-is-preorder P _≤_ pre'
@@ -456,6 +496,8 @@ inclusion-approx-order f _≤ⁿ_ x y = f x ≤ⁿ f y
     t' = (pr₁ ∘ pr₂ ∘ pr₁) (lin' ϵ)
     p' = (pr₂ ∘ pr₂ ∘ pr₁) (lin' ϵ)
     l' = pr₂               (lin' ϵ)
+  d : (ϵ : ℕ) (x y : Σ P) → is-decidable (Σ-approx-order P _≤ⁿ_ x y ϵ)
+  d ϵ (x , _) (y , _) = d' ϵ x y
   c : (ϵ : ℕ) (x y : ⟨ Σ-ClosenessSpace X P p ⟩)
     →   C (Σ-ClosenessSpace X P p) ϵ x y → Σ-approx-order P _≤ⁿ_ x y ϵ
   c ϵ (x , _) (y , _) = c' ϵ x y

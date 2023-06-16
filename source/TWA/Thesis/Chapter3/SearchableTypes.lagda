@@ -22,6 +22,9 @@ searchable 𝓦 X = Σ 𝓔 ꞉ (decidable-predicate 𝓦 X → X)
                 → (Σ x ꞉ X , (p x holds)) → p (𝓔 (p , d)) holds)
 
 -- Lemma 3.1.4
+-- COMMENT: EVERYWHERE either
+--  (a) have the type fit on one line
+--  (b) only have one arrow per line (at the start of the line)
 searchable-inhabited : (𝓦 : Universe) → (X : 𝓤 ̇ )
                      → searchable 𝓦 X → X
 searchable-inhabited 𝓦 X (𝓔 , S) = 𝓔 ((λ _ → ⊤Ω) , (λ _ → inl ⋆))
@@ -140,6 +143,14 @@ csearchable' 𝓦 X
  = (((p , d) , ϕ) : decidable-uc-predicate 𝓦 X)
  → Σ x₀ ꞉ ⟨ X ⟩ , ((Σ x ꞉ ⟨ X ⟩ , (p x holds)) → p x₀ holds)
 
+csearchable'→csearchable
+ : {𝓦 : Universe}
+ → (X : ClosenessSpace 𝓤)
+ → csearchable' 𝓦 X
+ → csearchable  𝓦 X
+csearchable'→csearchable X 𝓔S
+ = (λ p → pr₁ (𝓔S p)) , (λ p → pr₂ (𝓔S p))
+
 -- Theorem 3.3.7
 -- Should be in paper TODO
 semi-searchable : ClosenessSpace 𝓤 → (𝓥 𝓦 : Universe)
@@ -180,7 +191,7 @@ searchable-covers-csearchable {𝓤} {𝓥} {𝓦} X S ((p , d) , δ , ϕ)
 -- Add inhabited assumption
 totally-bounded-csearchable : (X : ClosenessSpace 𝓤)
                             → (t : totally-bounded X 𝓥)
-                            → ((ϵ : ℕ) → pr₁ (pr₁ (t ϵ)))
+                            → ((ϵ : ℕ) → pr₁ (pr₁ (t ϵ))) -- TODO
                             → csearchable' 𝓦 X
 totally-bounded-csearchable X t i
  = searchable-covers-csearchable X

@@ -23,10 +23,12 @@ open import TWA.Thesis.Chapter4.ApproxOrder fe
 open import TWA.Thesis.Chapter4.ApproxOrder-Examples fe
 open import TWA.Thesis.Chapter4.GlobalOptimisation fe
 
+open import TWA.Closeness fe hiding (is-ultra;is-closeness)
+
 -- Definition 4.2.10 (Does not have continuity of M!)
-regressor : (X : ClosenessSpace 𝓤) (Y : ClosenessSpace 𝓥) → 𝓤 ⊔ 𝓥  ̇
+regressor : (X : ClosenessSpace 𝓤) (Y : PseudoClosenessSpace 𝓥) → 𝓤 ⊔ 𝓥  ̇
 regressor {𝓤} {𝓥} X Y
- = (M : ⟨ X ⟩ → ⟨ Y ⟩) → f-ucontinuous X Y M → ⟨ Y ⟩ → ⟨ X ⟩
+ = (M : ⟨ X ⟩ → ⟪ Y ⟫) → f-ucontinuous' (ι X) Y M → ⟪ Y ⟫ → ⟨ X ⟩
 
 C-ucontinuous : (X : ClosenessSpace 𝓤)
               → (ε : ℕ) (x : ⟨ X ⟩) → p-ucontinuous X (CΩ X ε x)
@@ -36,15 +38,15 @@ C-ucontinuous X ε x = ε , γ
   γ y z Cyz Cxy = C-trans X ε x y z Cxy Cyz
 
 -- TODO: Fix overloaded Ω
-p-regressor : (X : ClosenessSpace 𝓤) (Y : ClosenessSpace 𝓥)
+p-regressor : (X : ClosenessSpace 𝓤) (Y : PseudoClosenessSpace 𝓥)
             → (𝓔S : csearchable 𝓤₀ X)
             → (ε : ℕ) → regressor X Y
 p-regressor {𝓤} {𝓥} X Y (𝓔 , S) ε M ϕᴹ Ω' = 𝓔 ((p , d) , ϕ)
  where
   p : ⟨ X ⟩ → Ω 𝓤₀
-  p x = CΩ Y ε Ω' (M x)
+  p x = C'Ω Y ε Ω' (M x)
   d : is-complemented (λ x → p x holds)
-  d x = C-decidable Y ε Ω' (M x)
+  d x = C'-decidable Y ε Ω' (M x)
   ϕ : p-ucontinuous X p
   ϕ = δ , γ
    where
@@ -52,22 +54,7 @@ p-regressor {𝓤} {𝓥} X Y (𝓔 , S) ε M ϕᴹ Ω' = 𝓔 ((p , d) , ϕ)
     δ = pr₁ (ϕᴹ ε)
     γ : (x₁ x₂ : ⟨ X ⟩) → C X δ x₁ x₂ → p x₁ holds → p x₂ holds
     γ x₁ x₂ Cδx₁x₂ px₁
-     = C-trans Y ε Ω' (M x₁) (M x₂) px₁ (pr₂ (ϕᴹ ε) x₁ x₂ Cδx₁x₂)
-
-ℕ∞-≽-preorder : is-preorder _≽_
-ℕ∞-≽-preorder = r , t , p
- where
-  r : reflexive _≽_
-  r x n = id
-  t : transitive _≽_
-  t x y z x≽z y≽z n = x≽z n ∘ (y≽z n)
-  p : is-prop-valued _≽_
-  p x y = ≼-is-prop-valued (fe _ _) y x
-
--- Global min of _≽_ is the global max of _≼_
--- Not covered in paper on this section very well
-_≽ⁿ_ : ℕ∞ → ℕ∞ → ℕ → 𝓤₀ ̇
-(u ≽ⁿ v) n = (i : ℕ) → i < n → i ⊏ v → i ⊏ u
+     = C'-trans Y ε Ω' (M x₁) (M x₂) px₁ (pr₂ (ϕᴹ ε) x₁ x₂ Cδx₁x₂)
 
 invert-rel : {X : 𝓤 ̇ } → (X → X → 𝓥 ̇ ) → (X → X → 𝓥 ̇ )
 invert-rel R x y = R y x
@@ -95,8 +82,9 @@ invert-approx-order-is-approx-order
  → let _≥_  = invert-rel  _≤_  in
    let _≥ⁿ_ = invert-rel' _≤ⁿ_ in
    is-approx-order X _≥_ _≥ⁿ_
-invert-approx-order-is-approx-order X _≤_ _≤ⁿ_ (pre' , lin' , c' , a')
- = pre , lin , c , a
+invert-approx-order-is-approx-order
+ X _≤_ _≤ⁿ_ (pre' , lin' , dec' , c' , a')
+ = pre , lin , dec , c , a
  where
   pre : is-preorder (invert-rel _≤_)
   pre = invert-preorder-is-preorder _≤_ pre'
@@ -110,6 +98,8 @@ invert-approx-order-is-approx-order X _≤_ _≤ⁿ_ (pre' , lin' , c' , a')
     t' = (pr₁ ∘ pr₂ ∘ pr₁) (lin' ϵ)
     p' = (pr₂ ∘ pr₂ ∘ pr₁) (lin' ϵ)
     l' = pr₂               (lin' ϵ)
+  dec : (ϵ : ℕ) (x y : ⟨ X ⟩) → is-decidable (invert-rel' _≤ⁿ_ x y ϵ)
+  dec ϵ x y = dec' ϵ y x
   c : (ϵ : ℕ) (x y : ⟨ X ⟩) → C X ϵ x y → invert-rel' _≤ⁿ_ x y ϵ
   c ϵ x y Cxy = c' ϵ y x (C-sym X ϵ x y Cxy)
   a : (ϵ : ℕ) (x y : ⟨ X ⟩) → ¬ C X ϵ x y → invert-rel' _≤ⁿ_ x y ϵ
@@ -166,28 +156,28 @@ optimisation-convergence X Y x₀ t M Ω ϕᴹ ϕᶜ
 -- Make sure the fixed oracle is on the left (in paper too)
 -- Theorem 4.2.12
 s-imperfect-convergence
-       : (X : ClosenessSpace 𝓤) (Y : ClosenessSpace 𝓥)
+       : (X : ClosenessSpace 𝓤) (Y : PseudoClosenessSpace 𝓥)
        → (𝓔S : csearchable 𝓤₀ X)
        → (ε : ℕ)
-       → (M : ⟨ X ⟩ → ⟨ Y ⟩) (ϕᴹ : f-ucontinuous X Y M)
-       → (Ψ : ⟨ Y ⟩ → ⟨ Y ⟩) (k : ⟨ X ⟩)
+       → (M : ⟨ X ⟩ → ⟪ Y ⟫) (ϕᴹ : f-ucontinuous' (ι X) Y M)
+       → (Ψ : ⟪ Y ⟫ → ⟪ Y ⟫) (k : ⟨ X ⟩)
        → let
            Ω = M k
            ΨΩ = Ψ Ω
            reg = p-regressor X Y 𝓔S ε
            ω = M (reg M ϕᴹ ΨΩ)
-         in (C Y ε Ω ΨΩ) → (C Y ε Ω ω)
+         in (C' Y ε Ω ΨΩ) → (C' Y ε Ω ω)
 s-imperfect-convergence X Y (𝓔 , S) ε M ϕᴹ Ψ k CεΩΨΩ
- = C-trans Y ε Ω' ΨΩ ω CεΩΨΩ (S ((p , d) , ϕ) (k , C-sym Y ε Ω' ΨΩ CεΩΨΩ))
+ = C'-trans Y ε Ω' ΨΩ ω CεΩΨΩ (S ((p , d) , ϕ) (k , C'-sym Y ε Ω' ΨΩ CεΩΨΩ))
  where
   Ω' = M k -- fix Ω definition in paper and agda
   ΨΩ = Ψ Ω'
   reg = p-regressor X Y (𝓔 , S) ε
   ω = M (reg M ϕᴹ ΨΩ)
   p : ⟨ X ⟩ → Ω 𝓤₀
-  p x = CΩ Y ε ΨΩ (M x)
+  p x = C'Ω Y ε ΨΩ (M x)
   d : is-complemented (λ x → p x holds)
-  d x = C-decidable Y ε ΨΩ (M x)
+  d x = C'-decidable Y ε ΨΩ (M x)
   ϕ : p-ucontinuous X p
   ϕ = δ , γ
    where
@@ -195,22 +185,22 @@ s-imperfect-convergence X Y (𝓔 , S) ε M ϕᴹ Ψ k CεΩΨΩ
     δ = pr₁ (ϕᴹ ε)
     γ : (x₁ x₂ : ⟨ X ⟩) → C X δ x₁ x₂ → p x₁ holds → p x₂ holds
     γ x₁ x₂ Cδx₁x₂ CεΨΩMx₂
-     = C-trans Y ε ΨΩ (M x₁) (M x₂) CεΨΩMx₂
+     = C'-trans Y ε ΨΩ (M x₁) (M x₂) CεΨΩMx₂
          (pr₂ (ϕᴹ ε) x₁ x₂ Cδx₁x₂)
 
 perfect-convergence
-       : (X : ClosenessSpace 𝓤) (Y : ClosenessSpace 𝓥)
+       : (X : ClosenessSpace 𝓤) (Y : PseudoClosenessSpace 𝓥)
        → (𝓔S : csearchable 𝓤₀ X)
        → (ε : ℕ)
-       → (M : ⟨ X ⟩ → ⟨ Y ⟩) (ϕᴹ : f-ucontinuous X Y M)
+       → (M : ⟨ X ⟩ → ⟪ Y ⟫) (ϕᴹ : f-ucontinuous' (ι X) Y M)
        → (k : ⟨ X ⟩)
        → let
            Ω = M k
            reg = p-regressor X Y 𝓔S ε
            ω = M (reg M ϕᴹ Ω)
-         in C Y ε Ω ω
+         in C' Y ε Ω ω
 perfect-convergence X Y 𝓔S ε M ϕᴹ k
- = s-imperfect-convergence X Y 𝓔S ε M ϕᴹ id k (C-refl Y ε Ω')
+ = s-imperfect-convergence X Y 𝓔S ε M ϕᴹ id k (C'-refl Y ε Ω')
  where Ω' = M k
 
 {-

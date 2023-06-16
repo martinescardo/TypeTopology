@@ -40,6 +40,7 @@ is-approx-order : (X : ClosenessSpace 𝓤)
 is-approx-order X _≤_ _≤ⁿ_
  = is-preorder _≤_
  × ((ϵ : ℕ) → is-linear-order (λ x y → (x ≤ⁿ y) ϵ))
+ × ((ϵ : ℕ) (x y : ⟨ X ⟩) → is-decidable ((x ≤ⁿ y) ϵ))
  × ((ϵ : ℕ) (x y : ⟨ X ⟩) →   C X ϵ x y → (x ≤ⁿ y) ϵ)
  × ((ϵ : ℕ) (x y : ⟨ X ⟩) → ¬ C X ϵ x y → (x ≤ⁿ y) ϵ ⇔ x ≤ y)
 
@@ -49,7 +50,7 @@ approx-order-refl : (X : ClosenessSpace 𝓤)
                   → (_≤ⁿ_ : ⟨ X ⟩ → ⟨ X ⟩ → ℕ → 𝓦'  ̇ )
                   → is-approx-order X _≤_ _≤ⁿ_
                   → (ϵ : ℕ) (x : ⟨ X ⟩) → (x ≤ⁿ x) ϵ
-approx-order-refl X _≤_ _≤ⁿ_ (p , l , c , a) ϵ x
+approx-order-refl X _≤_ _≤ⁿ_ (p , l , d , c , a) ϵ x
  = c ϵ x x (C-refl X ϵ x)
 
 approx-order-trans : (X : ClosenessSpace 𝓤)
@@ -77,7 +78,7 @@ apart-total : {X : ClosenessSpace 𝓤}
             → is-approx-order X _≤_ _≤ⁿ_
             → (ϵ : ℕ) (x y : ⟨ X ⟩) 
             → ¬ C X ϵ x y → (x ≤ y) + (y ≤ x)
-apart-total {_} {_} {_} {X} _≤_ _≤ⁿ_ (p , l , c , a) ϵ x y ¬Bϵxy
+apart-total {_} {_} {_} {X} _≤_ _≤ⁿ_ (p , l , d , c , a) ϵ x y ¬Bϵxy
  = Cases (pr₂ (l ϵ) x y)
      (inl ∘ pr₁ (a ϵ x y ¬Bϵxy))
      (inr ∘ pr₁ (a ϵ y x λ Bϵxy → ¬Bϵxy (C-sym X ϵ y x Bϵxy)))

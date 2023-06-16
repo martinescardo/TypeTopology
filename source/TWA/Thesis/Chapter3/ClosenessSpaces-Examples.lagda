@@ -70,8 +70,6 @@ min-∞-r u v min＝∞
   ey : self-indistinguishable c⟨ Y ⟩
   ey = pr₁ (pr₂ (pr₂ (pr₂ Y)))
 
-
-
 ×-clofun'-s : (X : ClosenessSpace 𝓤) (Y : ClosenessSpace 𝓥)
             → is-symmetric (×-clofun' X Y)
 ×-clofun'-s X Y (x₁ , y₁) (x₂ , y₂)
@@ -114,18 +112,21 @@ minℕ∞-abcdef a b c d e f mab≼e mcd≼f n minabcd＝₁
   uy : is-ultra c⟨ Y ⟩
   uy = pr₂ (pr₂ (pr₂ (pr₂ (pr₂ Y))))
 
-×-clofun : (X : ClosenessSpace 𝓤) (Y : ClosenessSpace 𝓥)
-         → is-closeness-space (⟨ X ⟩ × ⟨ Y ⟩)
-×-clofun X Y
- = ×-clofun' X Y
- , ×-clofun'-e X Y
+×-clofun'-is-clofun : (X : ClosenessSpace 𝓤) (Y : ClosenessSpace 𝓥)
+                    → is-closeness (×-clofun' X Y)
+×-clofun'-is-clofun X Y 
+ = ×-clofun'-e X Y
  , ×-clofun'-i X Y
  , ×-clofun'-s X Y
  , ×-clofun'-u X Y
 
+×-clospace : (X : ClosenessSpace 𝓤) (Y : ClosenessSpace 𝓥)
+           → is-closeness-space (⟨ X ⟩ × ⟨ Y ⟩)
+×-clospace X Y = ×-clofun' X Y , ×-clofun'-is-clofun X Y
+
 ×-ClosenessSpace : (X : ClosenessSpace 𝓤) (Y : ClosenessSpace 𝓥)
                  → ClosenessSpace (𝓤 ⊔ 𝓥)
-×-ClosenessSpace X Y = (⟨ X ⟩ × ⟨ Y ⟩) , (×-clofun X Y)
+×-ClosenessSpace X Y = (⟨ X ⟩ × ⟨ Y ⟩) , (×-clospace X Y)
 
 ×-C-left  : (X : ClosenessSpace 𝓤) (Y : ClosenessSpace 𝓥)
           → (x₁ x₂ : ⟨ X ⟩) (y₁ y₂ : ⟨ Y ⟩)
@@ -338,7 +339,8 @@ discrete-seq-clofun-c d = discrete-seq-clofun-e d
 open import TWA.Thesis.Chapter5.SignedDigit
 
 𝟛ᴺ-ClosenessSpace : ClosenessSpace 𝓤₀
-𝟛ᴺ-ClosenessSpace = ℕ→D-ClosenessSpace 𝟛-is-discrete
+𝟛ᴺ-ClosenessSpace
+ = ℕ→D-ClosenessSpace 𝟛-is-discrete
 
 ℕ∞-ClosenessSpace : ClosenessSpace 𝓤₀
 ℕ∞-ClosenessSpace
@@ -740,4 +742,11 @@ Vec-to-Seq-decreasing (succ (succ n)) (₁ ∷ (₁ ∷ v)) d = γ
   ζ α (succ ϵ) (succ n) n<ϵ (succ i) i<n
    = ζ ((pr₁ α ∘ succ) , (pr₂ α ∘ succ)) ϵ n n<ϵ i i<n
 
+≃-ClosenessSpace : (X : 𝓤 ̇)
+                 → (Y : ClosenessSpace 𝓥)
+                 → X ≃ ⟨ Y ⟩
+                 → ClosenessSpace 𝓤
+≃-ClosenessSpace X Y e
+ = X , ↪-clofun (≃-gives-↪ e) (pr₂ Y)
+ 
 \end{code}

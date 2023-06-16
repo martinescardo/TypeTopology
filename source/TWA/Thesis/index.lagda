@@ -33,5 +33,6 @@ open import TWA.Thesis.Chapter5.SignedDigitIntervalObject
 
 -- Chapter 6.1
 open import TWA.Thesis.Chapter6.SignedDigitContinuity
+open import TWA.Thesis.Chapter6.SignedDigitSearch
 
 \end{code}

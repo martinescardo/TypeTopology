@@ -67,6 +67,8 @@ finite-global-minimal x (succ n , e@(g , (h , η) , _)) _≤_ l f
                 , λ x → transport (f (g x₀) ≤_) (ap f (η x)) (γ₀ (h x))
 
 -- Definition 4.1.20
+-- COMMENT: Maybe prove that if the set of minima is a proposition
+-- then there exists a minimum
 is_global-minimal : ℕ → {𝓤 𝓥 : Universe}
                   → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                   → (_≤ⁿ_ : Y → Y → ℕ → 𝓦 ̇ )
@@ -139,7 +141,7 @@ cover-continuity-lemma
  → finite-discrete X'
  → (x : ⟨ X ⟩) → Σ x' ꞉ X' , (f (g x') ≤ⁿ f x) ϵ
 cover-continuity-lemma
- X Y _≤_ _≤ⁿ_ (_ , _ , c , a) ϵ f ϕ (X' , g , η) e x
+ X Y _≤_ _≤ⁿ_ (_ , _ , _ , c , a) ϵ f ϕ (X' , g , η) e x
  = (pr₁ (η x))
  , c ϵ (f (g (pr₁ (η x)))) (f x)
      (C-sym Y ϵ (f x) (f (g (pr₁ (η x))))

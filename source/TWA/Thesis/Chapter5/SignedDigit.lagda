@@ -4,7 +4,9 @@
 
 open import MLTT.Spartan
 open import TypeTopology.DiscreteAndSeparated
+open import UF.Equiv
 
+open import TWA.Thesis.Chapter2.FiniteDiscrete
 open import TWA.Thesis.Chapter2.Sequences
 
 module TWA.Thesis.Chapter5.SignedDigit where
@@ -13,16 +15,29 @@ module TWA.Thesis.Chapter5.SignedDigit where
 data 𝟛 : 𝓤₀ ̇ where
   −1 O +1 : 𝟛
 
+𝟛-finite : finite-discrete 𝟛
+pr₁ 𝟛-finite = 3
+pr₂ 𝟛-finite = qinveq g (h , η , μ)
+ where
+  g : 𝔽 3 → 𝟛
+  g (inl ⋆)             = −1
+  g (inr (inl ⋆))       =  O
+  g (inr (inr (inl ⋆))) = +1
+  h : 𝟛 → 𝔽 3
+  h −1 = inl ⋆
+  h  O = inr (inl ⋆)
+  h +1 = inr (inr (inl ⋆))
+  η : (λ x → h (g x)) ∼ (λ x → x)
+  η (inl ⋆)             = refl
+  η (inr (inl ⋆))       = refl
+  η (inr (inr (inl ⋆))) = refl
+  μ : (λ x → g (h x)) ∼ (λ x → x)
+  μ −1 = refl
+  μ  O = refl
+  μ +1 = refl
+
 𝟛-is-discrete : is-discrete 𝟛
-𝟛-is-discrete −1 −1 = inl refl
-𝟛-is-discrete −1  O = inr (λ ())
-𝟛-is-discrete −1 +1 = inr (λ ())
-𝟛-is-discrete  O −1 = inr (λ ())
-𝟛-is-discrete  O  O = inl refl
-𝟛-is-discrete  O +1 = inr (λ ())
-𝟛-is-discrete +1 −1 = inr (λ ())
-𝟛-is-discrete +1  O = inr (λ ())
-𝟛-is-discrete +1 +1 = inl refl
+𝟛-is-discrete = finite-discrete-is-discrete 𝟛-finite
 
 -- Definition 5.2.6
 𝟛ᴺ : 𝓤₀ ̇ 
