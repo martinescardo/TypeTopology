@@ -1185,6 +1185,10 @@ Sub【】 {Γ} {Δ} s c {τ} i = ⟦ s i ⟧ c
  c = (⟦⟧【sub】 t (Subƛ s)) ∙ {!!}
 ⟦⟧【sub】 {Γ} {Δ} (t · t₁) s = ap₂ (λ f g xs → f xs (g xs)) (⟦⟧【sub】 t s) (⟦⟧【sub】 t₁ s)
 
+⟦⟧【sub】' : {Γ : Cxt} {σ : type} (t : T Γ σ) (s : Sub₀ Γ)
+           → ⟦ close t s ⟧₀ ＝ ⟦ t ⟧ (【sub】 s)
+⟦⟧【sub】' {Γ} {σ} t s = ap (λ k → k ⟨⟩) (⟦⟧【sub】 t s)
+
 {-
 ⟦⟧【sub】'' : {Γ Δ : Cxt} {σ : type} (t : T Γ σ) (s : Sub Γ Δ) (y : 【 Δ 】)
            → ⟦ close t s ⟧ y ＝ ⟦ t ⟧ (Sub【】 s y)
@@ -1260,10 +1264,98 @@ Reta {Γ} {σ ⇒ τ} t = (x : T Γ σ) → Reta x → Reta (t · x)
 ⟦⟧-eta {Γ} {σ ⇒ τ} (ƛ t) a b e = {!ap (λ f x → f x)!}
 ⟦⟧-eta {Γ} {σ} (t · t₁) a b e = ap₂ (λ f g → f g) (⟦⟧-eta t a b e) (⟦⟧-eta t₁ a b e)
 
-＝【】-【sub】-⌜Sub⌝-Sub₀1 : {σ : type} (y : T₀ σ)
-                          → ＝【】 (【sub】 (⌜Sub⌝ (Sub₀1 y))) (⟨⟩ ‚ ⟦ ⌜ y ⌝ ⟧₀)
-＝【】-【sub】-⌜Sub⌝-Sub₀1 {σ} y {τ} i with ∈Cxt-B-context'' i
+＝【】-【sub】-⌜Sub⌝-Sub₀1 : {A : type} {σ : type} (y : T₀ σ)
+                          → ＝【】 (【sub】 (⌜Sub⌝ {A} (Sub₀1 y))) (⟨⟩ ‚ ⟦ ⌜ y ⌝ ⟧₀)
+＝【】-【sub】-⌜Sub⌝-Sub₀1 {A} {σ} y {τ} i with ∈Cxt-B-context'' i
 ... | τ₁ , refl , ∈Cxt0 .〈〉 , refl = refl
+
+∘Sub : {Γ₁ Γ₂ Γ₃ : Cxt} (s₁ : Sub Γ₁ Γ₂) (s₂ : Sub Γ₂ Γ₃) → Sub Γ₁ Γ₃
+∘Sub {Γ₁} {Γ₂} {Γ₃} s₁ s₂ {τ} i = close (s₁ i) s₂
+
+⊆Sub : {Γ₁ Γ₂ Γ₃ : Cxt} (s1 : Γ₁ ⊆ Γ₂) (s2 : Sub Γ₂ Γ₃) → Sub Γ₁ Γ₃
+⊆Sub {Γ₁} {Γ₂} {Γ₃} s1 s2 {σ} i = s2 (s1 i)
+
+＝Sub-⊆Sub-⊆,, : {σ : type} {Γ₁ Γ₂ Γ₃ : Cxt} (s1 : Γ₁ ⊆ Γ₂) (s2 : Sub Γ₂ Γ₃)
+                → ＝Sub (⊆Sub (⊆,, σ s1) (Subƛ s2)) (Subƛ (⊆Sub s1 s2))
+＝Sub-⊆Sub-⊆,, {σ} {Γ₁} {Γ₂} {Γ₃} s1 s2 {.σ} (∈Cxt0 .Γ₁) = refl
+＝Sub-⊆Sub-⊆,, {σ} {Γ₁} {Γ₂} {Γ₃} s1 s2 {τ} (∈CxtS .σ i) = refl
+
+close-weaken : {σ : type} {Γ₁ Γ₂ Γ₃ : Cxt} (t : T Γ₁ σ) (s1 : Γ₁ ⊆ Γ₂) (s2 : Sub Γ₂ Γ₃)
+              → close (weaken s1 t) s2 ＝ close t (⊆Sub s1 s2)
+close-weaken {_} {Γ₁} {Γ₂} {Γ₃} Zero s1 s2 = refl
+close-weaken {_} {Γ₁} {Γ₂} {Γ₃} (Succ t) s1 s2 = ap Succ (close-weaken t s1 s2)
+close-weaken {σ} {Γ₁} {Γ₂} {Γ₃} (Rec t t₁ t₂) s1 s2 =
+ ap₃ Rec (close-weaken t s1 s2) (close-weaken t₁ s1 s2) (close-weaken t₂ s1 s2)
+close-weaken {σ} {Γ₁} {Γ₂} {Γ₃} (ν i) s1 s2 = refl
+close-weaken {σ ⇒ τ} {Γ₁} {Γ₂} {Γ₃} (ƛ t) s1 s2 =
+ ap ƛ (close-weaken t (⊆,, σ s1) (Subƛ s2)
+       ∙ close-eta (⊆Sub (⊆,, σ s1) (Subƛ s2)) (Subƛ (⊆Sub s1 s2)) t (＝Sub-⊆Sub-⊆,, s1 s2))
+close-weaken {σ} {Γ₁} {Γ₂} {Γ₃} (t · t₁) s1 s2 = ap₂ _·_ (close-weaken t s1 s2) (close-weaken t₁ s1 s2)
+
+Sub⊆ : {Γ₁ Γ₂ Γ₃ : Cxt} (s1 : Sub Γ₁ Γ₂) (s2 : Γ₂ ⊆ Γ₃) → Sub Γ₁ Γ₃
+Sub⊆ {Γ₁} {Γ₂} {Γ₃} s1 s2 {σ} i = weaken s2 (s1 i)
+
+＝Sub-Sub⊆-Subƛ : {σ : type} {Γ₁ Γ₂ Γ₃ : Cxt} (s1 : Sub Γ₁ Γ₂) (s2 : Γ₂ ⊆ Γ₃)
+                → ＝Sub (Sub⊆ (Subƛ s1) (⊆,, σ s2)) (Subƛ (Sub⊆ s1 s2))
+＝Sub-Sub⊆-Subƛ {σ} {Γ₁} {Γ₂} {Γ₃} s1 s2 {.σ} (∈Cxt0 .Γ₁) = refl
+＝Sub-Sub⊆-Subƛ {σ} {Γ₁} {Γ₂} {Γ₃} s1 s2 {τ} (∈CxtS .σ i) = c
+ where
+  c : weaken (⊆,, σ s2) (weaken, σ (s1 i)) ＝ weaken, σ (weaken s2 (s1 i))
+  c = {!!} -- need to swap the weakens
+
+weaken-close : {σ : type} {Γ₁ Γ₂ Γ₃ : Cxt} (t : T Γ₁ σ) (s1 : Sub Γ₁ Γ₂) (s2 : Γ₂ ⊆ Γ₃)
+              → weaken s2 (close t s1) ＝ close t (Sub⊆ s1 s2)
+weaken-close {.ι} {Γ₁} {Γ₂} {Γ₃} Zero s1 s2 = refl
+weaken-close {.ι} {Γ₁} {Γ₂} {Γ₃} (Succ t) s1 s2 = ap Succ (weaken-close t s1 s2)
+weaken-close {σ} {Γ₁} {Γ₂} {Γ₃} (Rec t t₁ t₂) s1 s2 =
+ ap₃ Rec (weaken-close t s1 s2) (weaken-close t₁ s1 s2) (weaken-close t₂ s1 s2)
+weaken-close {σ} {Γ₁} {Γ₂} {Γ₃} (ν i) s1 s2 = refl
+weaken-close {σ ⇒ τ} {Γ₁} {Γ₂} {Γ₃} (ƛ t) s1 s2 =
+ ap ƛ (weaken-close t (Subƛ s1) (⊆,, σ s2)
+       ∙ close-eta (Sub⊆ (Subƛ s1) (⊆,, σ s2)) (Subƛ (Sub⊆ s1 s2)) t (＝Sub-Sub⊆-Subƛ s1 s2))
+weaken-close {σ} {Γ₁} {Γ₂} {Γ₃} (t · t₁) s1 s2 = ap₂ _·_ (weaken-close t s1 s2) (weaken-close t₁ s1 s2)
+
+＝Sub-∘Sub-Subƛ : {Γ₁ Γ₂ Γ₃ : Cxt} {τ : type} (s1 : Sub Γ₁ Γ₂) (s2 : Sub Γ₂ Γ₃)
+               → ＝Sub (∘Sub (Subƛ {_} {_} {τ} s1) (Subƛ s2)) (Subƛ (∘Sub s1 s2))
+＝Sub-∘Sub-Subƛ {Γ₁} {Γ₂} {Γ₃} {τ} s1 s2 {.τ} (∈Cxt0 .Γ₁) = refl
+＝Sub-∘Sub-Subƛ {Γ₁} {Γ₂} {Γ₃} {τ} s1 s2 {σ} (∈CxtS .τ i) =
+ close (weaken, τ (s1 i)) (Subƛ s2)
+  ＝⟨ close-weaken (s1 i) (⊆, Γ₂ τ) (Subƛ s2) ⟩
+ close (s1 i) (⊆Sub (λ i₁ → ∈CxtS τ i₁) (Subƛ s2))
+  ＝⟨ refl ⟩
+ close (s1 i) (Sub⊆ s2 (λ i₁ → ∈CxtS τ i₁))
+  ＝⟨ (weaken-close (s1 i) s2 (⊆, Γ₃ τ)) ⁻¹ ⟩
+ weaken, τ (close (s1 i) s2)
+  ∎
+
+close-close : {Γ₁ Γ₂ Γ₃ : Cxt} {σ : type} (t : T Γ₁ σ) (s1 : Sub Γ₁ Γ₂) (s2 : Sub Γ₂ Γ₃)
+            → close (close t s1) s2 ＝ close t (∘Sub s1 s2)
+close-close {Γ₁} {Γ₂} {Γ₃} {.ι} Zero s1 s2 = refl
+close-close {Γ₁} {Γ₂} {Γ₃} {.ι} (Succ t) s1 s2 = ap Succ (close-close t s1 s2)
+close-close {Γ₁} {Γ₂} {Γ₃} {σ} (Rec t t₁ t₂) s1 s2 = ap₃ Rec (close-close t s1 s2) (close-close t₁ s1 s2) (close-close t₂ s1 s2)
+close-close {Γ₁} {Γ₂} {Γ₃} {σ} (ν i) s1 s2 = refl
+close-close {Γ₁} {Γ₂} {Γ₃} {.(_ ⇒ _)} (ƛ t) s1 s2 =
+ ap ƛ (close-close t (Subƛ s1) (Subƛ s2)
+       ∙ close-eta (∘Sub (Subƛ s1) (Subƛ s2)) (Subƛ (∘Sub s1 s2)) t (＝Sub-∘Sub-Subƛ s1 s2))
+close-close {Γ₁} {Γ₂} {Γ₃} {σ} (t · t₁) s1 s2 = ap₂ _·_ (close-close t s1 s2) (close-close t₁ s1 s2)
+
+＝Sub-Sub,, : {Γ : Cxt} {σ τ : type} (y : T₀ σ) (ys : Sub₀ Γ)
+            → ＝Sub (Sub,, ys y) (∘Sub (Subƛ ys) (Sub₀1 y))
+＝Sub-Sub,, {Γ} {σ} {τ} y ys {.σ} (∈Cxt0 .Γ) = refl
+＝Sub-Sub,, {Γ} {σ} {τ} y ys {x} (∈CxtS .σ i) = c
+ where
+  c : ys i ＝ close (weaken, σ (ys i)) (Sub₀1 y)
+  c = {!!}
+
+close-Sub,,-as-close-Subƛ : {Γ : Cxt} {σ τ : type} (t : T (Γ ,, σ) τ) (ys : Sub₀ Γ) (y : T₀ σ)
+                          → close t (Sub,, ys y) ＝ close (close t (Subƛ ys)) (Sub₀1 y)
+close-Sub,,-as-close-Subƛ {Γ} {σ} {τ} t ys y =
+ close t (Sub,, ys y)
+  ＝⟨ close-eta (Sub,, ys y) (∘Sub (Subƛ ys) (Sub₀1 y)) t (＝Sub-Sub,, {Γ} {σ} {τ} y ys) ⟩
+ close t (∘Sub (Subƛ ys) (Sub₀1 y))
+  ＝⟨ close-close t (Subƛ ys) (Sub₀1 y) ⁻¹ ⟩
+ close (close t (Subƛ ys)) (Sub₀1 y)
+  ∎
 
 ⌜main-lemma⌝ : {Γ : Cxt} {σ : type} (t : T Γ σ)
                (α : Baire)
@@ -1304,11 +1396,11 @@ Reta {Γ} {σ ⇒ τ} t = (x : T Γ σ) → Reta x → Reta (t · x)
   e₃ : ⟦ ⌜ close t (Sub,, ys y) ⌝ ⟧₀ ＝ ⟦ ƛ ⌜ close t (Subƛ ys) ⌝ · ⌜ y ⌝ ⟧₀
   e₃ =
    ⟦ ⌜ close t (Sub,, ys y) ⌝ ⟧₀
-    ＝⟨ ap (λ k → ⟦ ⌜ k ⌝ ⟧₀) {!!} ⟩
+    ＝⟨ ap (λ k → ⟦ ⌜ k ⌝ ⟧₀) (close-Sub,,-as-close-Subƛ t ys y) ⟩
    ⟦ ⌜ close (close t (Subƛ ys)) (Sub₀1 y) ⌝ ⟧₀
     ＝⟨ ap (λ k → ⟦ k ⟧₀) (⌜close⌝ (close t (Subƛ ys)) (Sub₀1 y) ⁻¹) ⟩
    ⟦ close ⌜ close t (Subƛ ys) ⌝ (⌜Sub⌝ (Sub₀1 y)) ⟧₀
-    ＝⟨ {!!} ⟩ -- something like ⟦⟧【sub】'
+    ＝⟨ ⟦⟧【sub】' (⌜ close t (Subƛ ys) ⌝) (⌜Sub⌝ (Sub₀1 y)) ⟩
    ⟦ ⌜ close t (Subƛ ys) ⌝ ⟧ (【sub】 (⌜Sub⌝ (Sub₀1 y)))
     ＝⟨ ⟦⟧-eta ⌜ close t (Subƛ ys) ⌝ (【sub】 (⌜Sub⌝ (Sub₀1 y))) (⟨⟩ ‚ ⟦ ⌜ y ⌝ ⟧₀) (＝【】-【sub】-⌜Sub⌝-Sub₀1 y) ⟩
    ⟦ ⌜ close t (Subƛ ys) ⌝ ⟧ (⟨⟩ ‚ ⟦ ⌜ y ⌝ ⟧₀)
