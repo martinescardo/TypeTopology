@@ -124,6 +124,14 @@ import DomainTheory.ScottModelOfPCF.PCF             -- (0)
 import DomainTheory.ScottModelOfPCF.PCFCombinators  -- (1)
 import DomainTheory.ScottModelOfPCF.ScottModelOfPCF -- (2)
 
+{- Topology (by Ayberk Tosun)
+
+0. The definition of the Scott topology of a dcpo
+
+import DomainTheory.Topology.ScottTopology          -- (0)
+
+-}
+
 \end{code}
 
 Additional formalization targets
