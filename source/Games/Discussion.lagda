@@ -1,6 +1,7 @@
 Martin Escardo, Paulo Oliva, 9-17 June 2023
 
 We relate our game trees to Aczel's W type of CZF sets in various ways.
+https://www.sciencedirect.com/science/article/abs/pii/S0049237X0871989X
 
 \begin{code}
 
@@ -586,3 +587,7 @@ trees. However, empty internal nodes play no role, as, as we have
 discussed, if we prune them we obtain a tree with the same paths, and
 all that matters about a tree, for the purposes of game theory, are
 its paths, which correspond to full plays in a game.
+
+In practice it is easoer to work with 𝕋, rather than the subtype of
+hereditarily decidable subtrees of 𝔸, because all decidability
+questions are posponed to the base case [].
