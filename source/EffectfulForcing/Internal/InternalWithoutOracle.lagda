@@ -11,6 +11,7 @@ module EffectfulForcing.Internal.InternalWithoutOracle where
 
 open import MLTT.Spartan hiding (rec ; _^_) renaming (⋆ to 〈〉)
 open import MLTT.Athenian using (Fin)
+open import EffectfulForcing.MFPSAndVariations.Combinators
 open import EffectfulForcing.MFPSAndVariations.Continuity
 open import EffectfulForcing.MFPSAndVariations.Dialogue
 open import EffectfulForcing.MFPSAndVariations.SystemT using (type ; ι ; _⇒_ ; 〖_〗)
@@ -19,6 +20,7 @@ open import EffectfulForcing.Internal.Internal hiding (B⋆⟦_⟧ ; dialogue-tr
 open import EffectfulForcing.Internal.LambdaWithoutOracle
 open import EffectfulForcing.Internal.SystemT
 open import UF.Base using (transport₂ ; ap₂ ; ap₃)
+open import UF.FunExt using (naive-funext)
 open import MGS.hlevels using (hedberg)
 open import MGS.MLTT using (has-decidable-equality)
 
@@ -346,6 +348,7 @@ R⋆₁ {σ ⇒ τ} α f f' = (x  : 〖 σ 〗)
                  → R⋆₁ {σ} α x x'
                  → R⋆₁ {τ} α (f x) (⌜app⌝ f' x')
 
+{-
 ⌜main-lemma⌝₁ : {Γ : Cxt}
                 {σ : type}
                 (t : T Γ σ)
@@ -355,6 +358,7 @@ R⋆₁ {σ ⇒ τ} α f f' = (x  : 〖 σ 〗)
 --             → R⋆s α xs ys
               → R⋆₁ α (⟦ t ⟧ xs) (ƛ (ƛ (ƛ Zero))) --(close ⌜ t ⌝ ys)
 ⌜main-lemma⌝₁ {Γ} {σ} t α xs {--ys rxys--} = {!!}
+-}
 
 Sub : (Γ₁ Γ₂ : Cxt) → Type
 Sub Γ₁ Γ₂ = {σ : type} (i : ∈Cxt σ Γ₁) → T Γ₂ σ
@@ -375,6 +379,10 @@ Sub,, : {Γ₁ Γ₂ : Cxt} {σ : type} (s : Sub Γ₁ Γ₂) (t : T Γ₂ σ) �
 Sub,, {Γ₁} {Γ₂} {σ} s t {.σ} (∈Cxt0 .Γ₁) = t
 Sub,, {Γ₁} {Γ₂} {σ} s t {τ} (∈CxtS .σ i) = s i
 
+Sub1 : {Γ : Cxt} {τ : type} → T Γ τ → Sub (Γ ,, τ) Γ
+Sub1 {Γ} {τ} t {.τ} (∈Cxt0 .Γ) = t
+Sub1 {Γ} {τ} t {σ} (∈CxtS .τ i) = ν i
+
 ＝Subƛ : {Γ₁ Γ₂ : Cxt} (s1 s2 : Sub Γ₁ Γ₂) (σ : type)
         → ＝Sub s1 s2
         → ＝Sub (Subƛ {Γ₁} {Γ₂} {σ} s1) (Subƛ s2)
@@ -394,6 +402,7 @@ Fin.suc i =? Fin.suc j with i =? j
 ... | inr p = inr λ q → p (suc-inj i j q)
 -}
 
+{-
 subν : {Γ : Cxt} {σ : type} (j : ∈Cxt σ Γ) {τ : type} (i : ∈Cxt τ Γ) → T₀ τ → T (rmCxt i) σ
 subν {.(Γ ,, σ)} {σ} (∈Cxt0 Γ) {.σ} (∈Cxt0 .Γ) u = weaken₀ u
 subν {.(Γ ,, σ)} {σ} (∈Cxt0 Γ) {τ} (∈CxtS .σ i) u = ν (∈Cxt0 (rmCxt i))
@@ -410,6 +419,7 @@ sub {σ}       {Γ} {τ} (t₁ · t₂)   i u = sub t₁ i u · sub t₂ i u
 
 sub₀ : {σ : type} {Γ : Cxt} {τ : type} → T (Γ ,, τ) σ → T₀ τ → T Γ σ
 sub₀ {σ} {Γ} {τ} t u = sub t (∈Cxt0 Γ) u
+-}
 
 {-
 -- This can either be defined through a succession of applications
@@ -427,10 +437,6 @@ close {_}       {Γ₁} {Γ₂} (Rec f g t) s = Rec (close f s) (close g s) (clo
 close {σ}       {Γ₁} {Γ₂} (ν i)       s = s i
 close {σ₁ ⇒ σ₂} {Γ₁} {Γ₂} (ƛ t)       s = ƛ (close t (Subƛ s))
 close {σ}       {Γ₁} {Γ₂} (t₁ · t₂)   s = close t₁ s · close t₂ s
-
-Sub1 : {Γ : Cxt} {τ : type} → T Γ τ → Sub (Γ ,, τ) Γ
-Sub1 {Γ} {τ} t {.τ} (∈Cxt0 .Γ) = t
-Sub1 {Γ} {τ} t {σ} (∈CxtS .τ i) = ν i
 
 close₀ : {σ τ : type} {Γ : Cxt} → T (Γ ,, τ) σ → T Γ τ → T Γ σ
 close₀ {σ} {τ} {Γ} t u = close {σ} {Γ ,, τ} {Γ} t (Sub1 u)
@@ -812,8 +818,16 @@ R⋆s : Baire → {Γ : Cxt}
   → 【 Γ 】 → IB【 Γ 】 ((ι ⇒ ι) ⇒ ι) → Type
 R⋆s α {Γ} xs ys = {σ : type} (i : ∈Cxt σ Γ) → R⋆ α (xs i) (ys (∈Cxt-B-type i))
 
-【sub】 : {Γ : Cxt} (s : Sub₀ Γ) → 【 Γ 】
-【sub】 {Γ} s i = ⟦ s i ⟧₀
+【Sub】 : {Γ Δ : Cxt} (s : Sub Γ Δ) → 【 Δ 】 → 【 Γ 】
+【Sub】 {Γ} {Δ} s c {τ} i = ⟦ s i ⟧ c
+
+【Sub₀】 : {Γ : Cxt} (s : Sub₀ Γ) → 【 Γ 】
+【Sub₀】 {Γ} s = 【Sub】 s ⟨⟩
+
+{-
+Sub₀1 : {σ : type} (t : T₀ σ) → Sub₀ (〈〉 ,, σ)
+Sub₀1 {σ} t = Sub1 t
+-}
 
 {-
 close-⌜zero⌝ : {σ : type} {Γ : Cxt} (ys : IB【 Γ 】 σ)
@@ -826,12 +840,17 @@ close-⌜succ⌝ {σ} {Γ} ys = refl
 -}
 
 -- testing...
+{-
+=======
+>>>>>>> 3a7aa5eac7928b89ea8dc65d5bafc3e8cae660bd
 succ-dialogue⋆-aux' : {A : Type} {σ τ : type} (d : T₀ (⌜B⌝ σ ((τ ⇒ τ) ⇒ σ))) (α : 〖 τ 〗 → 〖 τ 〗) (f : 〖 σ 〗 → 〖 σ 〗)
                      (a : 〖 σ 〗 → (〖 τ 〗 → 〖 τ 〗) → 〖 σ 〗)
                      (b : (ℕ → (〖 τ 〗 → 〖 τ 〗) → 〖 σ 〗) → ℕ → (〖 τ 〗 → 〖 τ 〗) → 〖 σ 〗)
                    → f (⟦ d ⟧₀ a b α)
                      ＝ ⟦ d ⟧₀ (λ x → a (f x)) b α
 succ-dialogue⋆-aux' {A} {σ} {τ} d α f a b = {!!}
+<<<<<<< HEAD
+-}
 
 {-
 succ-dialogue⋆-aux : {A : Type} {σ τ : type} {n : ℕ} {Γ : Cxt n} (d : T Γ σ)
@@ -955,7 +974,6 @@ close-⌜rec⌝ : {A : type} {Γ₁ Γ₂ : Cxt} (s : Sub Γ₁ Γ₂) {σ : typ
 close-⌜rec⌝ {A} {Γ₁} {Γ₂} s {σ} =
  ap ƛ (ap ƛ (ap₂ _·_ (close-⌜Kleisli-extension⌝ _) refl))
 
-
 ＝B-type : {A σ τ : type}
          → B-type〖 σ 〗 A ＝ B-type〖 τ 〗 A
          → σ ＝ τ
@@ -1071,7 +1089,7 @@ Subƛ⌜Sub⌝ {A} {Γ} {Δ} {σ} s {τ} (∈CxtS .(B-type〖 σ 〗 A) i) with 
 ... | τ₂ , refl , j₂ , z₂ =
  weaken (∈CxtS (B-type〖 σ 〗 A)) ⌜ s j₂ ⌝
   ＝⟨ weaken-eta _ _  ⌜ s j₂ ⌝ (＝⊆-∈CxtS-B-type {A} {Δ} σ) ⟩
- weaken (⊆-B-context (λ i₁ → ∈CxtS σ i₁)) ⌜ s j₂ ⌝
+ weaken (⊆-B-context (∈CxtS σ)) ⌜ s j₂ ⌝
   ＝⟨ ⌜weaken⌝ (⊆, Δ σ) (s j₂) ⁻¹ ⟩
  ⌜ weaken, σ (s j₂) ⌝
   ∎
@@ -1155,6 +1173,295 @@ R⋆s-⌜Sub,,⌝ {α} {Γ} {σ} xs x ys y rs r {τ} (∈CxtS .σ i) = p (rs i)
   ... | refl with ＝∈Cxt-B-type i j z
   ... | refl = ri
 
+＝【】 : {Γ : Cxt} (a b : 【 Γ 】) → Type
+＝【】 {Γ} a b = {σ : type} (i : ∈Cxt σ Γ) → a i ＝ b i
+
+{-
+Reta : {Γ : Cxt} {σ : type} (t : T Γ σ) → Type
+Reta {Γ} {ι} t = (a b : 【 Γ 】)
+               → ＝【】 a b
+               → ⟦ t ⟧ a ＝ ⟦ t ⟧ b
+Reta {Γ} {σ ⇒ τ} t = (x : T Γ σ) → Reta x → Reta (t · x)
+
+⟦⟧-eta' : {Γ : Cxt} {σ : type} (t : T Γ σ)
+         → Reta t
+⟦⟧-eta' {Γ} {.ι} Zero = {!!}
+⟦⟧-eta' {Γ} {.ι} (Succ t) = {!!}
+⟦⟧-eta' {Γ} {σ} (Rec t t₁ t₂) = {!!}
+⟦⟧-eta' {Γ} {σ} (ν i) = {!!}
+⟦⟧-eta' {Γ} {.(_ ⇒ _)} (ƛ t) = {!!}
+⟦⟧-eta' {Γ} {σ} (t · t₁) = {!!}
+-}
+
+＝【】‚ : {Γ : Cxt} {σ : type} (a b : 【 Γ 】) (x : 〖 σ 〗)
+        → ＝【】 a b
+        → ＝【】 (a ‚ x) (b ‚ x)
+＝【】‚ {Γ} {σ} a b x e {.σ} (∈Cxt0 .Γ) = refl
+＝【】‚ {Γ} {σ} a b x e {τ} (∈CxtS .σ i) = e i
+
+⟦⟧-eta : {Γ : Cxt} {σ : type} (t : T Γ σ) (a b : 【 Γ 】)
+       → ＝【】 a b
+       → ⟦ t ⟧ a ＝ ⟦ t ⟧ b
+⟦⟧-eta {Γ} {_} Zero a b e = refl
+⟦⟧-eta {Γ} {_} (Succ t) a b e = ap succ (⟦⟧-eta t a b e)
+⟦⟧-eta {Γ} {σ} (Rec t t₁ t₂) a b e = ap₃ rec (⟦⟧-eta t a b e) (⟦⟧-eta t₁ a b e) (⟦⟧-eta t₂ a b e)
+⟦⟧-eta {Γ} {σ} (ν i) a b e = e i
+⟦⟧-eta {Γ} {σ ⇒ τ} (ƛ t) a b e = c {!!}
+ where
+  c : (ext : naive-funext 𝓤₀ 𝓤₀) → (λ x → ⟦ t ⟧ (a ‚ x)) ＝ (λ x → ⟦ t ⟧ (b ‚ x))
+  c ext = ext (λ x → ⟦⟧-eta t (a ‚ x) (b ‚ x) (＝【】‚ a b x e))
+⟦⟧-eta {Γ} {σ} (t · t₁) a b e = ap₂ (λ f g → f g) (⟦⟧-eta t a b e) (⟦⟧-eta t₁ a b e)
+
+⊆【】 : {Γ Δ : Cxt} (s : Γ ⊆ Δ) → 【 Δ 】 → 【 Γ 】
+⊆【】 {Γ} {Δ} s c {τ} i = c (s i)
+
+【】,,₁ : {Γ : Cxt} {σ : type} → 【 Γ ,, σ 】 → 【 Γ 】
+【】,,₁ {Γ} {σ} h {τ} i = h (∈CxtS σ i)
+
+【】,,₂ : {Γ : Cxt} {σ : type} → 【 Γ ,, σ 】 → 〖 σ 〗
+【】,,₂ {Γ} {σ} h = h (∈Cxt0 Γ)
+
+＝【】-⊆【】-⊆,, : {Γ Δ : Cxt} {σ : type} (s : Γ ⊆ Δ) (y : 【 Δ ,, σ 】)
+                 → ＝【】 (⊆【】 (⊆,, σ s) y) (⊆【】 s (【】,,₁ y) ‚ 【】,,₂ y)
+＝【】-⊆【】-⊆,, {Γ} {Δ} {σ} s y {.σ} (∈Cxt0 .Γ) = refl
+＝【】-⊆【】-⊆,, {Γ} {Δ} {σ} s y {τ} (∈CxtS .σ i) = refl
+
+-- can we prove this without funext?
+⟦weaken⟧-aux : (ext : naive-funext 𝓤₀ 𝓤₀) {Γ Δ : Cxt} {σ τ : type} (t : T (Γ ,, σ) τ) (s : Γ ⊆ Δ)
+              → (λ (y : 【 Δ ,, σ 】) → ⟦ t ⟧ (⊆【】 (⊆,, σ s) y))
+                ＝ (λ y → ⟦ t ⟧ (⊆【】 s (【】,,₁ y) ‚ 【】,,₂ y))
+⟦weaken⟧-aux ext {Γ} {Δ} {σ} {τ} t s = ext e
+ where
+  e : (λ (y : 【 Δ ,, σ 】) → ⟦ t ⟧ (⊆【】 (⊆,, σ s) y)) ∼ (λ y → ⟦ t ⟧ (⊆【】 s (【】,,₁ y) ‚ 【】,,₂ y))
+  e y = ⟦⟧-eta t (⊆【】 (⊆,, σ s) y) (⊆【】 s (【】,,₁ y) ‚ 【】,,₂ y) (＝【】-⊆【】-⊆,, s y)
+
+⟦weaken⟧ : {Γ Δ : Cxt} {σ : type} (t : T Γ σ) (s : Γ ⊆ Δ)
+           → ⟦ weaken s t ⟧ ＝ λ y → ⟦ t ⟧ (⊆【】 s y)
+⟦weaken⟧ {Γ} {Δ} {_} Zero s = refl
+⟦weaken⟧ {Γ} {Δ} {_} (Succ t) s = ap (λ f xs → succ (f xs)) (⟦weaken⟧ t s)
+⟦weaken⟧ {Γ} {Δ} {σ} (Rec t t₁ t₂) s =
+ ap₃ (λ f g h xs → rec (f xs) (g xs) (h xs)) (⟦weaken⟧ t s) (⟦weaken⟧ t₁ s) (⟦weaken⟧ t₂ s)
+⟦weaken⟧ {Γ} {Δ} {σ} (ν i) s = refl
+⟦weaken⟧ {Γ} {Δ} {σ ⇒ τ} (ƛ t) s =
+ ap {_} {_} {【 Δ ,, σ 】 → 〖 τ 〗} {【 Δ 】 → 〖 σ 〗 → 〖 τ 〗}
+   (λ f xs x → f (xs ‚ x)) {⟦ weaken (⊆,, σ s) t ⟧}
+   {λ y → ⟦ t ⟧ (⊆【】 s (【】,,₁ y) ‚ 【】,,₂ y)}
+   (⟦weaken⟧ t (⊆,, σ s)  ∙ ⟦weaken⟧-aux {!!} t s) -- can we prove this without funext?
+⟦weaken⟧ {Γ} {Δ} {σ} (t · t₁) s = ap₂ (λ f g xs → f xs (g xs)) (⟦weaken⟧ t s) (⟦weaken⟧ t₁ s)
+
+＝【】-【Sub】-Subƛ :  {Γ Δ : Cxt} {σ : type} (y : 【 Δ ,, σ 】) (s : Sub Γ Δ)
+                    → ＝【】 (【Sub】 (Subƛ s) y) (【Sub】 s (【】,,₁ y) ‚ 【】,,₂ y)
+＝【】-【Sub】-Subƛ {Γ} {Δ} {σ} y s {.σ} (∈Cxt0 .Γ) = refl
+＝【】-【Sub】-Subƛ {Γ} {Δ} {σ} y s {τ} (∈CxtS .σ i) = ap (λ k → k y) (⟦weaken⟧ (s i) (⊆, Δ σ))
+
+-- can we prove this without funext?
+⟦close⟧-aux : (ext : naive-funext 𝓤₀ 𝓤₀) {Γ Δ : Cxt} {σ τ : type} (t : T (Γ ,, σ) τ) (s : Sub Γ Δ)
+              → (λ (y : 【 Δ ,, σ 】) → ⟦ t ⟧ (【Sub】 (Subƛ s) y))
+                ＝ (λ y → ⟦ t ⟧ (【Sub】 s (【】,,₁ y) ‚ 【】,,₂ y))
+⟦close⟧-aux ext {Γ} {Δ} {σ} {τ} t s = ext e
+ where
+  e : (λ (y : 【 Δ ,, σ 】) → ⟦ t ⟧ (【Sub】 (Subƛ s) y)) ∼ (λ y → ⟦ t ⟧ (【Sub】 s (【】,,₁ y) ‚ 【】,,₂ y))
+  e y = ⟦⟧-eta t (【Sub】 (Subƛ s) y) (【Sub】 s (【】,,₁ y) ‚ 【】,,₂ y) (＝【】-【Sub】-Subƛ y s)
+
+⟦close⟧ : {Γ Δ : Cxt} {σ : type} (t : T Γ σ) (s : Sub Γ Δ)
+           → ⟦ close t s ⟧ ＝ λ y → ⟦ t ⟧ (【Sub】 s y)
+⟦close⟧ {Γ} {Δ} Zero s = refl
+⟦close⟧ {Γ} {Δ} (Succ t) s = ap (λ f xs → succ (f xs)) (⟦close⟧ t s)
+⟦close⟧ {Γ} {Δ} (Rec t t₁ t₂) s =
+ ap₃ (λ f g h xs → rec (f xs) (g xs) (h xs)) (⟦close⟧ t s) (⟦close⟧ t₁ s) (⟦close⟧ t₂ s)
+⟦close⟧ {Γ} {Δ} (ν i) s = refl
+⟦close⟧ {Γ} {Δ} {σ ⇒ τ} (ƛ t) s =
+ ap {_} {_} {【 Δ ,, σ 】 → 〖 τ 〗} {【 Δ 】 → 〖 σ 〗 → 〖 τ 〗} (λ f xs x → f (xs ‚ x))
+    {⟦ close t (Subƛ s) ⟧}
+    {λ y → ⟦ t ⟧ (【Sub】 s (【】,,₁  y) ‚ 【】,,₂ y)}
+    (⟦close⟧ t (Subƛ s) ∙ ⟦close⟧-aux {!!} t s) -- can we prove this without funext?
+⟦close⟧ {Γ} {Δ} (t · t₁) s = ap₂ (λ f g xs → f xs (g xs)) (⟦close⟧ t s) (⟦close⟧ t₁ s)
+
+⟦close⟧' : {Γ : Cxt} {σ : type} (t : T Γ σ) (s : Sub₀ Γ)
+           → ⟦ close t s ⟧₀ ＝ ⟦ t ⟧ (【Sub₀】 s)
+⟦close⟧' {Γ} {σ} t s = ap (λ k → k ⟨⟩) (⟦close⟧ t s)
+
+{-
+⟦close⟧'' : {Γ Δ : Cxt} {σ : type} (t : T Γ σ) (s : Sub Γ Δ) (y : 【 Δ 】)
+           → ⟦ close t s ⟧ y ＝ ⟦ t ⟧ (【Sub】 s y)
+⟦close⟧'' {Γ} {Δ} Zero s y = refl
+⟦close⟧'' {Γ} {Δ} (Succ t) s y = ap succ (⟦close⟧'' t s y)
+⟦close⟧'' {Γ} {Δ} (Rec t t₁ t₂) s y = ap₃ rec (⟦close⟧'' t s y) (⟦close⟧'' t₁ s y) (⟦close⟧'' t₂ s y)
+⟦close⟧'' {Γ} {Δ} (ν i) s y = refl
+⟦close⟧'' {Γ} {Δ} (ƛ t) s y = {!!}
+⟦close⟧'' {Γ} {Δ} (t · t₁) s y = {!!}
+-}
+
+{-
+Rsub : {Γ : Cxt} {σ : type} (t : T Γ σ) (s : Sub₀ Γ) → Type
+Rsub {Γ} {ι} t s = ⟦ close t s ⟧₀ ＝ ⟦ t ⟧ (【sub】 s)
+Rsub {Γ} {σ ⇒ τ} t s = (x : T Γ σ)
+                     → Rsub x s
+                     → Rsub (t · x) s
+
+⟦close⟧ : {Γ : Cxt} {σ : type} (t : T Γ σ) (s : Sub₀ Γ)
+          → Rsub t s
+⟦close⟧ {Γ} {_} Zero s = refl
+⟦close⟧ {Γ} {_} (Succ t) s = ap succ (⟦close⟧ t s)
+⟦close⟧ {Γ} {σ} (Rec t t₁ t₂) s = {!!}
+⟦close⟧ {Γ} {σ} (ν i) s = {!!}
+⟦close⟧ {Γ} {σ ⇒ τ} (ƛ t) s x rx = {!!}
+⟦close⟧ {Γ} {σ} (t · t₁) s = ⟦close⟧ t s t₁ (⟦close⟧ t₁ s)
+-}
+
+{-
+⟦close⟧ : {Γ : Cxt} {σ : type} (t : T Γ σ) (s : Sub₀ Γ)
+          → ⟦ close t s ⟧₀ ＝ ⟦ t ⟧ (【sub】 s)
+⟦close⟧ {Γ} {_}     Zero          s = refl
+⟦close⟧ {Γ} {_}     (Succ t)      s = ap succ (⟦close⟧ t s)
+⟦close⟧ {Γ} {σ}     (Rec t t₁ t₂) s = ap₃ rec (⟦close⟧ t s) (⟦close⟧ t₁ s) (⟦close⟧ t₂ s)
+⟦close⟧ {Γ} {σ}     (ν i)         s = refl
+⟦close⟧ {Γ} {σ ⇒ τ} (ƛ t)         s = {!ap (λ f x → f x) {}!}
+⟦close⟧ {Γ} {σ}     (t · u)       s =
+ ⟦ close t s · close u s ⟧₀
+  ＝⟨ ap (λ k → k ⟦ close u s ⟧₀) (⟦close⟧ t s) ⟩
+ ⟦ t ⟧ (【sub】 s) ⟦ close u s ⟧₀
+  ＝⟨ ap (⟦ t ⟧ (【sub】 s)) (⟦close⟧ u s) ⟩
+ ⟦ t ⟧ (【sub】 s) (⟦ u ⟧ (【sub】 s))
+  ∎
+-}
+
+＝【】-【sub】-⌜Sub⌝-Sub1 : {A : type} {σ : type} (y : T₀ σ)
+                          → ＝【】 (【Sub₀】 (⌜Sub⌝ {A} (Sub1 y))) (⟨⟩ ‚ ⟦ ⌜ y ⌝ ⟧₀)
+＝【】-【sub】-⌜Sub⌝-Sub1 {A} {σ} y {τ} i with ∈Cxt-B-context'' i
+... | τ₁ , refl , ∈Cxt0 .〈〉 , refl = refl
+
+Sub-trans : {Γ₁ Γ₂ Γ₃ : Cxt} (s₁ : Sub Γ₁ Γ₂) (s₂ : Sub Γ₂ Γ₃) → Sub Γ₁ Γ₃
+Sub-trans {Γ₁} {Γ₂} {Γ₃} s₁ s₂ {τ} i = close (s₁ i) s₂
+
+⊆Sub : {Γ₁ Γ₂ Γ₃ : Cxt} (s1 : Γ₁ ⊆ Γ₂) (s2 : Sub Γ₂ Γ₃) → Sub Γ₁ Γ₃
+⊆Sub {Γ₁} {Γ₂} {Γ₃} s1 s2 {σ} i = s2 (s1 i)
+
+Sub⊆ : {Γ₁ Γ₂ Γ₃ : Cxt} (s1 : Sub Γ₁ Γ₂) (s2 : Γ₂ ⊆ Γ₃) → Sub Γ₁ Γ₃
+Sub⊆ {Γ₁} {Γ₂} {Γ₃} s1 s2 {σ} i = weaken s2 (s1 i)
+
+＝Sub-⊆Sub-⊆,, : {σ : type} {Γ₁ Γ₂ Γ₃ : Cxt} (s1 : Γ₁ ⊆ Γ₂) (s2 : Sub Γ₂ Γ₃)
+                → ＝Sub (⊆Sub (⊆,, σ s1) (Subƛ s2)) (Subƛ (⊆Sub s1 s2))
+＝Sub-⊆Sub-⊆,, {σ} {Γ₁} {Γ₂} {Γ₃} s1 s2 {.σ} (∈Cxt0 .Γ₁) = refl
+＝Sub-⊆Sub-⊆,, {σ} {Γ₁} {Γ₂} {Γ₃} s1 s2 {τ} (∈CxtS .σ i) = refl
+
+close-weaken : {σ : type} {Γ₁ Γ₂ Γ₃ : Cxt} (t : T Γ₁ σ) (s1 : Γ₁ ⊆ Γ₂) (s2 : Sub Γ₂ Γ₃)
+              → close (weaken s1 t) s2 ＝ close t (⊆Sub s1 s2)
+close-weaken {_} {Γ₁} {Γ₂} {Γ₃} Zero s1 s2 = refl
+close-weaken {_} {Γ₁} {Γ₂} {Γ₃} (Succ t) s1 s2 = ap Succ (close-weaken t s1 s2)
+close-weaken {σ} {Γ₁} {Γ₂} {Γ₃} (Rec t t₁ t₂) s1 s2 =
+ ap₃ Rec (close-weaken t s1 s2) (close-weaken t₁ s1 s2) (close-weaken t₂ s1 s2)
+close-weaken {σ} {Γ₁} {Γ₂} {Γ₃} (ν i) s1 s2 = refl
+close-weaken {σ ⇒ τ} {Γ₁} {Γ₂} {Γ₃} (ƛ t) s1 s2 =
+ ap ƛ (close-weaken t (⊆,, σ s1) (Subƛ s2)
+       ∙ close-eta (⊆Sub (⊆,, σ s1) (Subƛ s2)) (Subƛ (⊆Sub s1 s2)) t (＝Sub-⊆Sub-⊆,, s1 s2))
+close-weaken {σ} {Γ₁} {Γ₂} {Γ₃} (t · t₁) s1 s2 = ap₂ _·_ (close-weaken t s1 s2) (close-weaken t₁ s1 s2)
+
+＝⊆-⊆-trans-⊆,, : {σ : type} {Γ₁ Γ₂ Γ₃ : Cxt} (s1 : Γ₁ ⊆ Γ₂) (s2 : Γ₂ ⊆ Γ₃)
+                → ＝⊆ (⊆-trans (⊆,, σ s1) (⊆,, σ s2)) (⊆,, σ (⊆-trans s1 s2))
+＝⊆-⊆-trans-⊆,, {σ} {Γ₁} {Γ₂} {Γ₃} s1 s2 {.σ} (∈Cxt0 .Γ₁) = refl
+＝⊆-⊆-trans-⊆,, {σ} {Γ₁} {Γ₂} {Γ₃} s1 s2 {τ} (∈CxtS .σ i) = refl
+
+weaken-weaken : {σ : type} {Γ₁ Γ₂ Γ₃ : Cxt} (t : T Γ₁ σ) (s1 : Γ₁ ⊆ Γ₂) (s2 : Γ₂ ⊆ Γ₃)
+              → weaken s2 (weaken s1 t) ＝ weaken (⊆-trans s1 s2) t
+weaken-weaken {_} {Γ₁} {Γ₂} {Γ₃} Zero s1 s2 = refl
+weaken-weaken {_} {Γ₁} {Γ₂} {Γ₃} (Succ t) s1 s2 = ap Succ (weaken-weaken t s1 s2)
+weaken-weaken {σ} {Γ₁} {Γ₂} {Γ₃} (Rec t t₁ t₂) s1 s2 =
+ ap₃ Rec (weaken-weaken t s1 s2) (weaken-weaken t₁ s1 s2) (weaken-weaken t₂ s1 s2)
+weaken-weaken {σ} {Γ₁} {Γ₂} {Γ₃} (ν i) s1 s2 = refl
+weaken-weaken {σ ⇒ τ} {Γ₁} {Γ₂} {Γ₃} (ƛ t) s1 s2 =
+ ap ƛ (weaken-weaken t (⊆,, σ s1) (⊆,, σ s2)
+       ∙ weaken-eta (⊆-trans (⊆,, σ s1) (⊆,, σ s2)) (⊆,, σ (⊆-trans s1 s2)) t (＝⊆-⊆-trans-⊆,, s1 s2))
+weaken-weaken {σ} {Γ₁} {Γ₂} {Γ₃} (t · t₁) s1 s2 =
+ ap₂ _·_ (weaken-weaken t s1 s2) (weaken-weaken t₁ s1 s2)
+
+＝⊆-⊆-trans-S-⊆,, : {σ : type} {Γ₁ Γ₂ Γ₃ : Cxt} (s1 : Sub Γ₁ Γ₂) (s2 : Γ₂ ⊆ Γ₃)
+                  → ＝⊆ (⊆-trans (∈CxtS σ) (⊆,, σ s2)) (⊆-trans s2 (∈CxtS σ))
+＝⊆-⊆-trans-S-⊆,, {σ} {Γ₁} {.(Γ ,, τ)} {Γ₃} s1 s2 {τ} (∈Cxt0 Γ) = refl
+＝⊆-⊆-trans-S-⊆,, {σ} {Γ₁} {.(_ ,, τ₁)} {Γ₃} s1 s2 {τ} (∈CxtS τ₁ i) = refl
+
+＝Sub-Sub⊆-Subƛ : {σ : type} {Γ₁ Γ₂ Γ₃ : Cxt} (s1 : Sub Γ₁ Γ₂) (s2 : Γ₂ ⊆ Γ₃)
+                → ＝Sub (Sub⊆ (Subƛ s1) (⊆,, σ s2)) (Subƛ (Sub⊆ s1 s2))
+＝Sub-Sub⊆-Subƛ {σ} {Γ₁} {Γ₂} {Γ₃} s1 s2 {.σ} (∈Cxt0 .Γ₁) = refl
+＝Sub-Sub⊆-Subƛ {σ} {Γ₁} {Γ₂} {Γ₃} s1 s2 {τ} (∈CxtS .σ i) = c
+ where
+  c : weaken (⊆,, σ s2) (weaken, σ (s1 i)) ＝ weaken, σ (weaken s2 (s1 i))
+  c = weaken-weaken (s1 i) (⊆, Γ₂ σ) (⊆,, σ s2)
+      ∙ weaken-eta (⊆-trans (∈CxtS σ) (⊆,, σ s2)) (⊆-trans s2 (∈CxtS σ)) (s1 i) (＝⊆-⊆-trans-S-⊆,, s1 s2)
+      ∙ weaken-weaken (s1 i) s2 (⊆, Γ₃ σ) ⁻¹
+
+weaken-close : {σ : type} {Γ₁ Γ₂ Γ₃ : Cxt} (t : T Γ₁ σ) (s1 : Sub Γ₁ Γ₂) (s2 : Γ₂ ⊆ Γ₃)
+              → weaken s2 (close t s1) ＝ close t (Sub⊆ s1 s2)
+weaken-close {.ι} {Γ₁} {Γ₂} {Γ₃} Zero s1 s2 = refl
+weaken-close {.ι} {Γ₁} {Γ₂} {Γ₃} (Succ t) s1 s2 = ap Succ (weaken-close t s1 s2)
+weaken-close {σ} {Γ₁} {Γ₂} {Γ₃} (Rec t t₁ t₂) s1 s2 =
+ ap₃ Rec (weaken-close t s1 s2) (weaken-close t₁ s1 s2) (weaken-close t₂ s1 s2)
+weaken-close {σ} {Γ₁} {Γ₂} {Γ₃} (ν i) s1 s2 = refl
+weaken-close {σ ⇒ τ} {Γ₁} {Γ₂} {Γ₃} (ƛ t) s1 s2 =
+ ap ƛ (weaken-close t (Subƛ s1) (⊆,, σ s2)
+       ∙ close-eta (Sub⊆ (Subƛ s1) (⊆,, σ s2)) (Subƛ (Sub⊆ s1 s2)) t (＝Sub-Sub⊆-Subƛ s1 s2))
+weaken-close {σ} {Γ₁} {Γ₂} {Γ₃} (t · t₁) s1 s2 = ap₂ _·_ (weaken-close t s1 s2) (weaken-close t₁ s1 s2)
+
+＝Sub-∘Sub-Subƛ : {Γ₁ Γ₂ Γ₃ : Cxt} {τ : type} (s1 : Sub Γ₁ Γ₂) (s2 : Sub Γ₂ Γ₃)
+               → ＝Sub (Sub-trans (Subƛ {_} {_} {τ} s1) (Subƛ s2)) (Subƛ (Sub-trans s1 s2))
+＝Sub-∘Sub-Subƛ {Γ₁} {Γ₂} {Γ₃} {τ} s1 s2 {.τ} (∈Cxt0 .Γ₁) = refl
+＝Sub-∘Sub-Subƛ {Γ₁} {Γ₂} {Γ₃} {τ} s1 s2 {σ} (∈CxtS .τ i) =
+ close (weaken, τ (s1 i)) (Subƛ s2)
+  ＝⟨ close-weaken (s1 i) (⊆, Γ₂ τ) (Subƛ s2) ⟩
+ close (s1 i) (⊆Sub (∈CxtS τ) (Subƛ s2))
+  ＝⟨ refl ⟩
+ close (s1 i) (Sub⊆ s2 (∈CxtS τ))
+  ＝⟨ (weaken-close (s1 i) s2 (⊆, Γ₃ τ)) ⁻¹ ⟩
+ weaken, τ (close (s1 i) s2)
+  ∎
+
+close-close : {Γ₁ Γ₂ Γ₃ : Cxt} {σ : type} (t : T Γ₁ σ) (s1 : Sub Γ₁ Γ₂) (s2 : Sub Γ₂ Γ₃)
+            → close (close t s1) s2 ＝ close t (Sub-trans s1 s2)
+close-close {Γ₁} {Γ₂} {Γ₃} {.ι} Zero s1 s2 = refl
+close-close {Γ₁} {Γ₂} {Γ₃} {.ι} (Succ t) s1 s2 = ap Succ (close-close t s1 s2)
+close-close {Γ₁} {Γ₂} {Γ₃} {σ} (Rec t t₁ t₂) s1 s2 = ap₃ Rec (close-close t s1 s2) (close-close t₁ s1 s2) (close-close t₂ s1 s2)
+close-close {Γ₁} {Γ₂} {Γ₃} {σ} (ν i) s1 s2 = refl
+close-close {Γ₁} {Γ₂} {Γ₃} {.(_ ⇒ _)} (ƛ t) s1 s2 =
+ ap ƛ (close-close t (Subƛ s1) (Subƛ s2)
+       ∙ close-eta (Sub-trans (Subƛ s1) (Subƛ s2)) (Subƛ (Sub-trans s1 s2)) t (＝Sub-∘Sub-Subƛ s1 s2))
+close-close {Γ₁} {Γ₂} {Γ₃} {σ} (t · t₁) s1 s2 = ap₂ _·_ (close-close t s1 s2) (close-close t₁ s1 s2)
+
+＝Subν : {Γ : Cxt} {τ : type} (y : T Γ τ)
+       → ＝Sub (⊆Sub (∈CxtS τ) (Sub1 y)) ν
+＝Subν {Γ} {τ} y {x} i = refl
+
+＝Sub-Subƛ-ν : {Γ : Cxt} {σ : type}
+             → ＝Sub (Subƛ {Γ} {Γ} {σ} ν) ν
+＝Sub-Subƛ-ν {Γ} {σ} {.σ} (∈Cxt0 .Γ) = refl
+＝Sub-Subƛ-ν {Γ} {σ} {x} (∈CxtS .σ i) = refl
+
+close-refl : {Γ : Cxt} {σ : type} (t : T Γ σ)
+           → close t ν ＝ t
+close-refl {Γ} {.ι} Zero = refl
+close-refl {Γ} {.ι} (Succ t) = ap Succ (close-refl t)
+close-refl {Γ} {σ} (Rec t t₁ t₂) = ap₃ Rec (close-refl t) (close-refl t₁) (close-refl t₂)
+close-refl {Γ} {σ} (ν i) = refl
+close-refl {Γ} {.(_ ⇒ _)} (ƛ t) = ap ƛ (close-eta (Subƛ ν) ν t ＝Sub-Subƛ-ν ∙ close-refl t)
+close-refl {Γ} {σ} (t · t₁) = ap₂ _·_ (close-refl t) (close-refl t₁)
+
+＝Sub-Sub,, : {Γ : Cxt} {σ τ : type} (y : T₀ σ) (ys : Sub₀ Γ)
+            → ＝Sub (Sub,, ys y) (Sub-trans (Subƛ ys) (Sub1 y))
+＝Sub-Sub,, {Γ} {σ} {τ} y ys {.σ} (∈Cxt0 .Γ) = refl
+＝Sub-Sub,, {Γ} {σ} {τ} y ys {x} (∈CxtS .σ i) =
+ close-refl (ys i) ⁻¹
+ ∙ close-eta (⊆Sub (∈CxtS σ) (Sub1 y)) ν (ys i) (＝Subν y) ⁻¹
+ ∙ (close-weaken (ys i) (⊆, 〈〉 σ) (Sub1 y)) ⁻¹
+
+close-Sub,,-as-close-Subƛ : {Γ : Cxt} {σ τ : type} (t : T (Γ ,, σ) τ) (ys : Sub₀ Γ) (y : T₀ σ)
+                          → close t (Sub,, ys y) ＝ close (close t (Subƛ ys)) (Sub1 y)
+close-Sub,,-as-close-Subƛ {Γ} {σ} {τ} t ys y =
+ close t (Sub,, ys y)
+  ＝⟨ close-eta (Sub,, ys y) (Sub-trans (Subƛ ys) (Sub1 y)) t (＝Sub-Sub,, {Γ} {σ} {τ} y ys) ⟩
+ close t (Sub-trans (Subƛ ys) (Sub1 y))
+  ＝⟨ close-close t (Subƛ ys) (Sub1 y) ⁻¹ ⟩
+ close (close t (Subƛ ys)) (Sub1 y)
+  ∎
+
 ⌜main-lemma⌝ : {Γ : Cxt} {σ : type} (t : T Γ σ)
                (α : Baire)
                (xs : 【 Γ 】) (ys : Sub₀ Γ) --IB【 Γ 】 ((ι ⇒ ι) ⇒ ι))
@@ -1170,7 +1477,15 @@ R⋆s-⌜Sub,,⌝ {α} {Γ} {σ} xs x ys y rs r {τ} (∈CxtS .σ i) = p (rs i)
   ＝⟨ refl ⟩
  dialogue⋆ ⟦ close ⌜succ⌝ ys · (close ⌜ t ⌝ (⌜Sub⌝ ys)) ⟧₀ α
   ∎
-⌜main-lemma⌝ {Γ} {_} (Rec f g t) α xs ys rxys = {!!}
+⌜main-lemma⌝ {Γ} {_} (Rec f g t) α xs ys rxys =
+ transport (λ k → R⋆ α (rec (⟦ f ⟧ xs) (⟦ g ⟧ xs) (⟦ t ⟧ xs))
+                       (k · close ⌜ f ⌝ (⌜Sub⌝ ys) · close ⌜ g ⌝ (⌜Sub⌝ ys) · close ⌜ t ⌝ (⌜Sub⌝ ys)))
+           (close-⌜rec⌝ (⌜Sub⌝ ys))
+           c
+ where
+  c : R⋆ α (rec (⟦ f ⟧ xs) (⟦ g ⟧ xs) (⟦ t ⟧ xs))
+           (⌜rec⌝ · close ⌜ f ⌝ (⌜Sub⌝ ys) · close ⌜ g ⌝ (⌜Sub⌝ ys) · close ⌜ t ⌝ (⌜Sub⌝ ys))
+  c = {!!}
 ⌜main-lemma⌝ {Γ} {σ} (ν i) α xs ys rxys = rxys i
 ⌜main-lemma⌝ {Γ} {σ ⇒ τ} (ƛ t) α xs ys rxys x y rxy =
  transport
@@ -1186,9 +1501,13 @@ R⋆s-⌜Sub,,⌝ {α} {Γ} {σ} xs x ys y rs r {τ} (∈CxtS .σ i) = p (rs i)
   e₃ : ⟦ ⌜ close t (Sub,, ys y) ⌝ ⟧₀ ＝ ⟦ ƛ ⌜ close t (Subƛ ys) ⌝ · ⌜ y ⌝ ⟧₀
   e₃ =
    ⟦ ⌜ close t (Sub,, ys y) ⌝ ⟧₀
-    ＝⟨ {!!} ⟩
-   {!!}
-    ＝⟨ {!!} ⟩
+    ＝⟨ ap (λ k → ⟦ ⌜ k ⌝ ⟧₀) (close-Sub,,-as-close-Subƛ t ys y) ⟩
+   ⟦ ⌜ close (close t (Subƛ ys)) (Sub1 y) ⌝ ⟧₀
+    ＝⟨ ap (λ k → ⟦ k ⟧₀) (⌜close⌝ (close t (Subƛ ys)) (Sub1 y) ⁻¹) ⟩
+   ⟦ close ⌜ close t (Subƛ ys) ⌝ (⌜Sub⌝ (Sub1 y)) ⟧₀
+    ＝⟨ ⟦close⟧' (⌜ close t (Subƛ ys) ⌝) (⌜Sub⌝ (Sub1 y)) ⟩
+   ⟦ ⌜ close t (Subƛ ys) ⌝ ⟧ (【Sub₀】 (⌜Sub⌝ (Sub1 y)))
+    ＝⟨ ⟦⟧-eta ⌜ close t (Subƛ ys) ⌝ (【Sub₀】 (⌜Sub⌝ (Sub1 y))) (⟨⟩ ‚ ⟦ ⌜ y ⌝ ⟧₀) (＝【】-【sub】-⌜Sub⌝-Sub1 y) ⟩
    ⟦ ⌜ close t (Subƛ ys) ⌝ ⟧ (⟨⟩ ‚ ⟦ ⌜ y ⌝ ⟧₀)
     ∎
 
