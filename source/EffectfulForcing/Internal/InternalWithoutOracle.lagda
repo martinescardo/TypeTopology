@@ -841,12 +841,15 @@ close-⌜succ⌝ {σ} {Γ} ys = refl
 
 -- testing...
 {-
+=======
+>>>>>>> 3a7aa5eac7928b89ea8dc65d5bafc3e8cae660bd
 succ-dialogue⋆-aux' : {A : Type} {σ τ : type} (d : T₀ (⌜B⌝ σ ((τ ⇒ τ) ⇒ σ))) (α : 〖 τ 〗 → 〖 τ 〗) (f : 〖 σ 〗 → 〖 σ 〗)
                      (a : 〖 σ 〗 → (〖 τ 〗 → 〖 τ 〗) → 〖 σ 〗)
                      (b : (ℕ → (〖 τ 〗 → 〖 τ 〗) → 〖 σ 〗) → ℕ → (〖 τ 〗 → 〖 τ 〗) → 〖 σ 〗)
                    → f (⟦ d ⟧₀ a b α)
                      ＝ ⟦ d ⟧₀ (λ x → a (f x)) b α
 succ-dialogue⋆-aux' {A} {σ} {τ} d α f a b = {!!}
+<<<<<<< HEAD
 -}
 
 {-
