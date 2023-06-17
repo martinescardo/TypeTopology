@@ -400,7 +400,7 @@ set-theoretic axioms: ∈-extensionality and ∈-induction.
                            (λ _ → Π₂-is-prop fe (λ _ _ → 𝕍-is-large-set))
                            γ
     where
-     γ : {B : 𝓤 ̇  } (g : B → 𝕍)
+     γ : {B : 𝓤 ̇ } (g : B → 𝕍)
        → 𝕍-set g ⊆ 𝕍-set f → 𝕍-set f ⊆ 𝕍-set g → 𝕍-set g ＝ 𝕍-set f
      γ g s t = 𝕍-set-ext g f (⊆-to-≲ g f s , ⊆-to-≲ f g t)
 

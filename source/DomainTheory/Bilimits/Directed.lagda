@@ -849,7 +849,7 @@ criteria for calculating its supremum and for it being directed.
 \begin{code}
 
  module 𝓓∞-family
-         (J : (i : I) → 𝓥 ̇  )
+         (J : (i : I) → 𝓥 ̇ )
          (α : (i : I) → J i → ⟨ 𝓓 i ⟩)
         where
 

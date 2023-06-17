@@ -50,7 +50,7 @@ module Ordinals.WellOrderingTaboo
        where
 
 module _
-        {X : 𝓤 ̇  } (_≺_ : X → X → 𝓣 ̇  )
+        {X : 𝓤 ̇ } (_≺_ : X → X → 𝓣 ̇ )
        where
 
  extensionality-for-minimal-elements : 𝓤 ⊔ 𝓣 ̇

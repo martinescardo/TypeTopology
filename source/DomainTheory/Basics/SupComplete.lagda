@@ -36,14 +36,14 @@ module _
 
  record is-sup-complete : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇  where
   field
-   ⋁ : {I : 𝓥 ̇  } (α : I → ⟨ 𝓓 ⟩) → ⟨ 𝓓 ⟩
-   ⋁-is-sup : {I : 𝓥 ̇  } (α : I → ⟨ 𝓓 ⟩) → is-sup (underlying-order 𝓓) (⋁ α) α
+   ⋁ : {I : 𝓥 ̇ } (α : I → ⟨ 𝓓 ⟩) → ⟨ 𝓓 ⟩
+   ⋁-is-sup : {I : 𝓥 ̇ } (α : I → ⟨ 𝓓 ⟩) → is-sup (underlying-order 𝓓) (⋁ α) α
 
-  ⋁-is-upperbound : {I : 𝓥 ̇  } (α : I → ⟨ 𝓓 ⟩)
+  ⋁-is-upperbound : {I : 𝓥 ̇ } (α : I → ⟨ 𝓓 ⟩)
                   → is-upperbound (underlying-order 𝓓) (⋁ α) α
   ⋁-is-upperbound α = sup-is-upperbound (underlying-order 𝓓) (⋁-is-sup α)
 
-  ⋁-is-lowerbound-of-upperbounds : {I : 𝓥 ̇  } (α : I → ⟨ 𝓓 ⟩)
+  ⋁-is-lowerbound-of-upperbounds : {I : 𝓥 ̇ } (α : I → ⟨ 𝓓 ⟩)
                                  → is-lowerbound-of-upperbounds
                                     (underlying-order 𝓓) (⋁ α) α
   ⋁-is-lowerbound-of-upperbounds α =
@@ -104,7 +104,7 @@ supremum).
 \begin{code}
 
  module _
-         {I : 𝓦 ̇  }
+         {I : 𝓦 ̇ }
          (α : I → ⟨ 𝓓 ⟩)
         where
 
@@ -263,7 +263,7 @@ by a small type (provided the original family was indexed by a small type).
 
  module _
          (𝓓-is-locally-small : is-locally-small 𝓓)
-         {I : 𝓥 ̇  }
+         {I : 𝓥 ̇ }
          (α : I → ⟨ 𝓓 ⟩)
         where
 

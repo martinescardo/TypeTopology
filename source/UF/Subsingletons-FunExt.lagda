@@ -63,7 +63,7 @@ being-prop-is-prop {𝓤} {X} fe f g = c₁
   c₁ : f ＝ g
   c₁  = dfunext fe c₀
 
-⇔-is-prop : {X : 𝓤 ̇  } {Y : 𝓥 ̇  }
+⇔-is-prop : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
           → funext 𝓤 𝓥
           → funext 𝓥 𝓤
           → is-prop X

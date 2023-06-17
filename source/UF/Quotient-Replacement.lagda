@@ -41,7 +41,7 @@ open import UF.Size
 
 module _
         (R : Set-Replacement pt)
-        {X : 𝓤 ̇  }
+        {X : 𝓤 ̇ }
         (≋@(_≈_ , ≈p , ≈r , ≈s , ≈t) : EqRel {𝓤} {𝓥} X)
        where
 
@@ -105,7 +105,7 @@ UF.Quotient.lagda.
    γ = /-induction' ≋ (λ y → i (⌜ φ ⌝⁻¹ y)) h
    e : ⌜ φ ⌝⁻¹ (⌜ φ ⌝ x') ＝ x'
    e = ≃-sym-is-linv φ x'
- /ₛ-universality : {A : 𝓦 ̇  } → is-set A
+ /ₛ-universality : {A : 𝓦 ̇ } → is-set A
                  → (f : X → A)
                  → identifies-related-points ≋ f
                  → ∃! f' ꞉ (X/ₛ≈ → A), f' ∘ η/ₛ ∼ f

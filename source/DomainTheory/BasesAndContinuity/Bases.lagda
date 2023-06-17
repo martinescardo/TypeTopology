@@ -61,7 +61,7 @@ of D, we only need the elements of B to do so.
 
 module _
         (𝓓 : DCPO {𝓤} {𝓣})
-        {B : 𝓥 ̇  }
+        {B : 𝓥 ̇ }
         (β : B → ⟨ 𝓓 ⟩)
        where
 
@@ -141,7 +141,7 @@ our record-based definition is equivalent to one using Σ-types.
 
 module _
         (𝓓 : DCPO {𝓤} {𝓣})
-        {B : 𝓥 ̇  }
+        {B : 𝓥 ̇ }
         (β : B → ⟨ 𝓓 ⟩)
        where
 
@@ -225,7 +225,7 @@ be locally small, as we show now.
 
 module _
         (𝓓 : DCPO {𝓤} {𝓣})
-        {B : 𝓥 ̇  }
+        {B : 𝓥 ̇ }
         (β : B → ⟨ 𝓓 ⟩)
         (sb : is-small-basis 𝓓 β)
        where
@@ -328,7 +328,7 @@ of D, we can do so using compact elements from B.
 
 module _
         (𝓓 : DCPO {𝓤} {𝓣})
-        {B : 𝓥 ̇  }
+        {B : 𝓥 ̇ }
         (β : B → ⟨ 𝓓 ⟩)
        where
 
@@ -520,10 +520,10 @@ and have suprema x. So the results are type-theoretic versions of Proposition
 
 module _
         (𝓓 : DCPO {𝓤} {𝓣})
-        {B : 𝓥 ̇  }
+        {B : 𝓥 ̇ }
         (β : B → ⟨ 𝓓 ⟩)
         (x : ⟨ 𝓓 ⟩)
-        {I : 𝓥 ̇  }
+        {I : 𝓥 ̇ }
         (σ : I → ↡ᴮ 𝓓 β x)
        where
 
@@ -587,7 +587,7 @@ module _
 
  open _continuous-retract-of_ ρ
 
- small-basis-from-continuous-retract : Prop-Ext → {B : 𝓥 ̇  } (β : B → ⟨ 𝓔 ⟩)
+ small-basis-from-continuous-retract : Prop-Ext → {B : 𝓥 ̇ } (β : B → ⟨ 𝓔 ⟩)
                                      → is-small-basis 𝓔 β
                                      → is-small-basis 𝓓 (r ∘ β)
  small-basis-from-continuous-retract pe {B} β sb =

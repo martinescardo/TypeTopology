@@ -55,7 +55,7 @@ prop-indexed-product-one : funext 𝓤 𝓥
 prop-indexed-product-one {𝓤} {𝓥} {𝓦} {𝓣} fe {X} {Y} v = γ
  where
   g : 𝟙 → Π Y
-  g * x = unique-from-𝟘 {𝓥} {𝓦} (v x)
+  g ⋆ x = unique-from-𝟘 {𝓥} {𝓦} (v x)
 
   η : (u : 𝟙) → ⋆ ＝ u
   η ⋆ = refl

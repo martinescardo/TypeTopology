@@ -10,7 +10,7 @@ open import MLTT.Spartan hiding (J)
 
 module Games.Structure
         {𝓤 : Universe}
-        (S : Type → 𝓤 ̇  )
+        (S : Type → 𝓤 ̇ )
        where
 
 open import Games.TypeTrees

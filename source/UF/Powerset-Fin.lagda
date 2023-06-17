@@ -49,7 +49,7 @@ is-Kuratowski-finite-subset A = is-Kuratowski-finite (𝕋 A)
   σ (x , x-in-emptyset) = 𝟘-elim x-in-emptyset
 
 module _
-        {X : 𝓤 ̇  }
+        {X : 𝓤 ̇ }
         (X-is-set : is-set X)
        where
 
@@ -149,11 +149,11 @@ FreeJoinSemiLattice.lagda.)
 
 \begin{code}
 
-𝓚 : (X : 𝓤 ̇  ) → 𝓤 ⁺ ̇
+𝓚 : (X : 𝓤 ̇ ) → 𝓤 ⁺ ̇
 𝓚 X = Σ A ꞉ 𝓟 X , is-Kuratowski-finite-subset A
 
 module _
-        {X : 𝓤 ̇  }
+        {X : 𝓤 ̇ }
        where
 
  ⟨_⟩ : 𝓚 X → 𝓟 X
@@ -234,7 +234,7 @@ We are now ready to prove that the Kuratowski finite subsets are a join-semilatt
 module _
         (pe : propext 𝓤)
         (fe : funext 𝓤 (𝓤 ⁺))
-        (X : 𝓤 ̇  )
+        (X : 𝓤 ̇ )
        where
 
  𝓚-join-semilattice : JoinSemiLattice (𝓤 ⁺) 𝓤
@@ -295,7 +295,7 @@ proving a general induction principle for Kuratowski finite subsets.
         ν k x refl = 𝕋-to-membership ⟨ A ⟩ (e k)
 
   Kuratowski-finite-subset-induction :
-     (Q : 𝓚 X → 𝓣 ̇  )
+     (Q : 𝓚 X → 𝓣 ̇ )
    → ((A : 𝓚 X) → is-prop (Q A))
    → Q (∅[𝓚])
    → ((x : X) → Q (❴ x ❵[𝓚]))
@@ -329,7 +329,7 @@ that its image is exactly the type of Kuratowski finite powersets of X.
 \begin{code}
 
 module canonical-map-from-lists-to-subsets
-        {X : 𝓤 ̇  }
+        {X : 𝓤 ̇ }
         (X-is-set : is-set X)
        where
 

@@ -936,7 +936,7 @@ module _ (pt : propositional-truncations-exist) where
  open import UF.ImageAndSurjection pt
 
  Set-Replacement : 𝓤ω
- Set-Replacement = {𝓦 𝓣 𝓤 𝓥 : Universe} {X : 𝓣 ̇  } {Y : 𝓦 ̇  } (f : X → Y)
+ Set-Replacement = {𝓦 𝓣 𝓤 𝓥 : Universe} {X : 𝓣 ̇ } {Y : 𝓦 ̇ } (f : X → Y)
                  → X is 𝓤 small
                  → Y is-locally 𝓥 small
                  → is-set Y

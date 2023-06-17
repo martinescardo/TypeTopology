@@ -80,7 +80,7 @@ statement is a proposition.)
 
 Ordinal-Of-Ordinals-Has-Small-Suprema : (𝓤 : Universe) → 𝓤 ⁺ ̇
 Ordinal-Of-Ordinals-Has-Small-Suprema 𝓤 =
-   (I : 𝓤 ̇  ) (α : I → Ordinal 𝓤)
+   (I : 𝓤 ̇ ) (α : I → Ordinal 𝓤)
  → Σ β ꞉ Ordinal 𝓤 , ((i : I) → α i ⊴ β)
                    × ((γ : Ordinal 𝓤) → ((i : I) → α i ⊴ γ) → β ⊴ γ)
 
@@ -89,7 +89,7 @@ Ordinal-Of-Ordinals-Has-Small-Suprema-is-prop :
 Ordinal-Of-Ordinals-Has-Small-Suprema-is-prop =
  Π₂-is-prop fe' h
   where
-   h : (I : 𝓤 ̇  ) (α : I → Ordinal 𝓤)
+   h : (I : 𝓤 ̇ ) (α : I → Ordinal 𝓤)
      → is-prop (Σ β ꞉ Ordinal 𝓤 , ((i : I) → α i ⊴ β)
                                 × ((γ : Ordinal 𝓤) → ((i : I) → α i ⊴ γ)
                                                    → β ⊴ γ))
@@ -101,7 +101,7 @@ Ordinal-Of-Ordinals-Has-Small-Suprema-is-prop =
 
 module construction-using-quotient
         (sq : set-quotients-exist)
-        {I : 𝓤 ̇  }
+        {I : 𝓤 ̇ }
         (α : I → Ordinal 𝓤)
        where
 
@@ -597,7 +597,7 @@ open import UF.EquivalenceExamples
 
 module construction-using-image
         (pt : propositional-truncations-exist)
-        {I : 𝓤 ̇  }
+        {I : 𝓤 ̇ }
         (α : I → Ordinal 𝓤)
        where
 
@@ -1033,7 +1033,7 @@ module suprema
  open PropositionalTruncation pt
  open import UF.ImageAndSurjection pt
 
- module _ {I : 𝓤 ̇  } (α : I → Ordinal 𝓤) where
+ module _ {I : 𝓤 ̇ } (α : I → Ordinal 𝓤) where
 
   open construction-using-image pt α
 

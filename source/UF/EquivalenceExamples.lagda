@@ -628,7 +628,7 @@ NatΣ-equiv-gives-fiberwise-equiv = NatΣ-equiv-converse _ _
                        → (Σ y ꞉ Y , A (⌜ e ⌝ y)) ≃ (Σ x ꞉ X , A x)
 Σ-change-of-variable-≃ A (g , i) = Σ-change-of-variable A g i
 
-Σ-bicong : {X  : 𝓤 ̇  } (Y  : X  → 𝓥 ̇  )
+Σ-bicong : {X  : 𝓤 ̇ } (Y  : X  → 𝓥 ̇ )
            {X' : 𝓤' ̇ } (Y' : X' → 𝓥' ̇ )
            (𝕗 : X ≃ X')
          → ((x : X) → Y x ≃ Y' (⌜ 𝕗 ⌝ x))
@@ -697,7 +697,7 @@ dprecomp-is-equiv fe fe' {X} {Y} A f i = qinvs-are-equivs φ ((ψ , ψφ , φψ)
  ≃-sym (Π-change-of-variable (fe _ _) (fe _ _) A f i)
 
 Π-bicong : FunExt
-         → {X  : 𝓤 ̇  } (Y  : X  → 𝓥 ̇  )
+         → {X  : 𝓤 ̇ } (Y  : X  → 𝓥 ̇ )
            {X' : 𝓤' ̇ } (Y' : X' → 𝓥' ̇ )
            (𝕗 : X ≃ X')
          → ((x : X) → Y x ≃ Y' (⌜ 𝕗 ⌝ x))
@@ -1056,22 +1056,20 @@ Completely unrelated to the above, but still useful.
 
 open import UF.PropTrunc
 
-module _
-        (pt : propositional-truncations-exist)
-       where
+module _ (pt : propositional-truncations-exist) where
 
  open PropositionalTruncation pt
 
- ∥∥-cong : {X : 𝓤 ̇  } {Y : 𝓥 ̇  } → X ≃ Y → ∥ X ∥ ≃ ∥ Y ∥
+ ∥∥-cong : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → X ≃ Y → ∥ X ∥ ≃ ∥ Y ∥
  ∥∥-cong f = logically-equivalent-props-are-equivalent ∥∥-is-prop ∥∥-is-prop
               (∥∥-functor ⌜ f ⌝) (∥∥-functor ⌜ f ⌝⁻¹)
 
- ∃-cong : {X : 𝓤 ̇  } {Y : X → 𝓥 ̇  } {Y' : X → 𝓦 ̇  }
+ ∃-cong : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {Y' : X → 𝓦 ̇ }
         → ((x : X) → Y x ≃ Y' x)
         → ∃ Y ≃ ∃ Y'
  ∃-cong e = ∥∥-cong (Σ-cong e)
 
- outer-∃-inner-Σ : {X : 𝓤 ̇  } {Y : X → 𝓥 ̇  } {A : (x : X) → Y x → 𝓦 ̇  }
+ outer-∃-inner-Σ : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {A : (x : X) → Y x → 𝓦 ̇ }
                  → (∃ x ꞉ X , ∃ y ꞉ Y x , A x y)
                  ≃ (∃ x ꞉ X , Σ y ꞉ Y x , A x y)
  outer-∃-inner-Σ {𝓤} {𝓥} {𝓦} {X} {Y} {A} =
