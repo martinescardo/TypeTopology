@@ -16,8 +16,7 @@ In our development of games we worked with pure Martin-Löf type theory
 (in Agda notation) for our constructions, sometimes assuming function
 extensionality for proving properties of the constructions. For the
 purposes of this discussion we further assume univalence and the
-existence of propositional truncations
-(https://homotopytypetheory.org/book/).
+existence of propositional truncations (https://homotopytypetheory.org/book/).
 
 \begin{code}
 
