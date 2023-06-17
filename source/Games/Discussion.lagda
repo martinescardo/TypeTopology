@@ -9,12 +9,45 @@ We relate our game trees to Aczel's W type of CZF sets in various ways.
 open import UF.PropTrunc
 open import UF.Univalence
 
+\end{code}
+
+In our development of games we worked with pure Martin-Löf type theory
+(in Agda notation) for our constructions, sometimes assuming function
+extensionality for proving properties of the constructions. For the
+purposes of this discussion we further assume univalence and the
+existence of propositional truncations
+(https://homotopytypetheory.org/book/).
+
+\begin{code}
+
 module Games.Discussion
-        (pt  : propositional-truncations-exist)
         (ua : Univalence)
+        (pt  : propositional-truncations-exist)
        where
 
-open import Games.TypeTrees
+open PropositionalTruncation pt
+
+\end{code}
+
+We get function extensionality from univalence:
+
+\begin{code}
+
+open import UF.FunExt
+open import UF.UA-FunExt
+
+fe : Fun-Ext
+fe = Univalence-gives-Fun-Ext ua
+
+\end{code}
+
+To make this file self-contained, we will repeat some definitions of
+the module Games.TypeTrees, and hence we hide them from the present
+file.
+
+\begin{code}
+
+open import Games.TypeTrees hiding (𝕋 ; Path ; _::_ ; ⟨⟩)
 open import MLTT.Spartan
 open import UF.Base
 open import UF.Equiv
@@ -26,41 +59,123 @@ open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.UA-FunExt
 
-fe : Fun-Ext
-fe = Univalence-gives-Fun-Ext ua
+\end{code}
 
+The following is the type of type trees, whose nodes X represent the
+available moves at some stage of the game, and whose leaves "[]"
+represent the endings of the game.
 
-open PropositionalTruncation pt
+\begin{code}
 
-is-hereditarily-inhabited : 𝕋 → Type
-is-hereditarily-inhabited []       = 𝟙
-is-hereditarily-inhabited (X ∷ Xf) =
- ∥ X ∥ × ((x : X) → is-hereditarily-inhabited (Xf x))
+data 𝕋 : Type₁ where
+  []  : 𝕋
+  _∷_ : (X : Type) (Xf : X → 𝕋) → 𝕋
 
-being-hereditarily-inhabited-is-prop : (Xt : 𝕋)
-                                     → is-prop (is-hereditarily-inhabited Xt)
-being-hereditarily-inhabited-is-prop []       = 𝟙-is-prop
-being-hereditarily-inhabited-is-prop (X ∷ Xf) =
- ×-is-prop
-  ∥∥-is-prop
-  (Π-is-prop fe (λ x → being-hereditarily-inhabited-is-prop (Xf x)))
+\end{code}
+
+The following is the type of paths in a type tree, which represent
+full plays in a game.
+
+\begin{code}
+
+Path : 𝕋 → Type
+Path []       = 𝟙
+Path (X ∷ Xf) = Σ x ꞉ X , Path (Xf x)
+
+⟨⟩ : Path []
+⟨⟩ = ⋆
+
+\end{code}
+
+Another view of the type Path Xt for a type tree Xt : 𝕋 is as the
+cardinality of the occurrences of leaves in Xt. Under this view, the
+type ∥ Path Xt ∥ expresses that there is at least one leaf [] in the
+tree Xt.
+
+The type X may well be empty (there are no moves left to play) and
+hence the addition of leaves [] seems superfluous.
+
+\begin{code}
+
+[]' : 𝕋
+[]' = 𝟘 ∷ unique-from-𝟘
+
+\end{code}
+
+So we don't seem to need [] as we could just use []'. However, if we
+adopt this definition, we clearly need to modify our definition of path.
+
+To begin with, there are no paths with the original definition in
+[]-free trees.
+
+\begin{code}
 
 is-[]-free : 𝕋 → Type
 is-[]-free []       = 𝟘
 is-[]-free (X ∷ Xf) = (x : X) → is-[]-free (Xf x)
 
-being-[]-free-is-prop : (t : 𝕋) → is-prop (is-[]-free t)
-being-[]-free-is-prop [] = 𝟘-is-prop
-being-[]-free-is-prop (X ∷ Xf) = Π-is-prop fe (λ x → being-[]-free-is-prop (Xf x))
-
 []-free-trees-have-no-paths : (Xt : 𝕋) → is-[]-free Xt → is-empty (Path Xt)
 []-free-trees-have-no-paths []       p ⟨⟩        = p
-[]-free-trees-have-no-paths (X ∷ Xf) p (x :: xs) = []-free-trees-have-no-paths (Xf x) (p x) xs
+[]-free-trees-have-no-paths (X ∷ Xf) p (x , xs) = []-free-trees-have-no-paths (Xf x) (p x) xs
+
+\end{code}
+
+However, it is possible to modify the notion of path so that, in some
+precise sense, established below, it agrees with the original
+definition of path. For that purpose, we consider type trees defined
+without the "superfluous" base case [].
+
+\begin{code}
 
 data 𝔸 : Type₁ where
   _∷_ : (X : Type) (Xf : X → 𝔸) → 𝔸
 
+\end{code}
+
+This definition is due to Aczel, who used it to give a model of CZF
+(constructive Zermelo-Frankel set theory).
+
+Their paths can be defined as follows.
+
+\begin{code}
+
+𝔸-Path : 𝔸 → Type
+𝔸-Path (X ∷ Xf) = is-empty X + (Σ x ꞉ X , 𝔸-Path (Xf x))
+
+\end{code}
+
+So there is a path when X is empty, which ends, or there starting with
+a move x : X, followed, recursively, in the tree Xf x of the forest Xf.
+
+We'll come back to this alternative notion of path in a moment. First
+we want to explore our original definition of type tree a bit more.
+
+Of course, the type 𝔸 is isomorphic to the subtype of 𝕋 consisting of
+[]-free trees.
+
+\begin{code}
+
+𝔽 : Type₁
 𝔽 = Σ t ꞉ 𝕋 , is-[]-free t
+
+\end{code}
+
+To know that this is really a subtype, we need to know that
+[]-freeness is property rather than data:
+
+\begin{code}
+
+being-[]-free-is-prop : (t : 𝕋) → is-prop (is-[]-free t)
+being-[]-free-is-prop [] = 𝟘-is-prop
+being-[]-free-is-prop (X ∷ Xf) = Π-is-prop fe (λ x → being-[]-free-is-prop (Xf x))
+
+\end{code}
+
+The following should be obvious, but nevertheless we include a proof
+because it will serve as a prototype for more sophisticated proofs to
+come later.
+
+\begin{code}
 
 af : 𝔸 ≃ 𝔽
 af = qinveq f (g , gf , fg)
@@ -91,82 +206,98 @@ af = qinveq f (g , gf , fg)
   gf : g ∘ f ∼ id
   gf (X ∷ Xf) = ap (X ∷_) (dfunext fe (λ x → gf (Xf x)))
 
-prune : 𝕋 → 𝕋
-prune [] = []
-prune (X ∷ Xf) = (Σ x ꞉ X , ∥ Path (Xf x) ∥)
-               ∷ (λ (x , _) → prune (Xf x))
+\end{code}
 
-prune-path : (Xt : 𝕋) → Path Xt ≃ Path (prune Xt)
-prune-path Xt = qinveq (f Xt) (g Xt , gf Xt , fg Xt)
- where
-  f : (Xt : 𝕋) → Path Xt → Path (prune Xt)
-  f []       ⟨⟩        = ⟨⟩
-  f (X ∷ Xf) (x :: xs) = (x , ∣ xs ∣) :: f (Xf x) xs
+Now suppose we insist, for the purposes of game theory, as we will, on
+working with 𝕋 rather than 𝔸, with our original definition of path,
+and with [] to indicate the end of a play in a game.
 
-  g : (Xt : 𝕋) → Path (prune Xt) → Path Xt
-  g []       ⟨⟩              = ⟨⟩
-  g (X ∷ Xf) ((x , p) :: xs) = x :: g (Xf x) xs
+Then we should better disregard subtrees X ∷ Xf with X empty.
 
-  gf : (Xt : 𝕋) → g Xt ∘ f Xt ∼ id
-  gf []       ⟨⟩        = refl
-  gf (X ∷ Xf) (x :: xs) = ap (x ::_) (gf (Xf x) xs)
+In constructive mathematics it is usual to regard a type X to be
+inhabited if we can exhibit some x : X. But this is data rather than
+property. Following the philosophy of univalent foundations and
+homotopy type theory, we will instead say that X is inhabited if we
+can exibit a point of its propositional truncation ∥ X ∥. (In the case
+where we can exhibit some x : X, we say that X is pointed.)
 
-  fg : (Xt : 𝕋) → f Xt ∘ g Xt ∼ id
-  fg []       ⟨⟩              = refl
-  fg (X ∷ Xf) ((x , p) :: xs) =
-   (f (X ∷ Xf) ∘ g (X ∷ Xf)) ((x :: p) :: xs)        ＝⟨ refl ⟩
-   ((x :: ∣ g (Xf x) xs ∣) :: f (Xf x) (g (Xf x) xs)) ＝⟨ I ⟩
-   ((x :: p) :: f (Xf x) (g (Xf x) xs))              ＝⟨ II ⟩
-   (x :: p) :: xs                                    ∎
-    where
-     I = ap (λ - →  ((x :: -) :: f (Xf x) (g (Xf x) xs)))
-            (∥∥-is-prop ∣ g (Xf x) xs ∣ p)
-     II = ap ((x :: p) ::_)
-             (fg (Xf x) xs)
+Instead of disregarding the subtrees X ∷ Xf with X empty, we consider
+the subtrees with X inhabited.
 
-prune-is-hereditarily-inhabited : (Xt : 𝕋)
-                                → ∥ Path Xt ∥
-                                → is-hereditarily-inhabited (prune Xt)
-prune-is-hereditarily-inhabited []       _ = ⋆
-prune-is-hereditarily-inhabited (X ∷ Xf) p = γ , ϕ
- where
-  γ : ∥(Σ x ꞉ X , ∥ Path (Xf x) ∥)∥
-  γ = ∥∥-functor (λ (x :: xs) → x :: ∣ xs ∣) p
+\begin{code}
 
-  ϕ : ((x , p) : (Σ x ꞉ X , ∥ Path (Xf x) ∥))
-    → is-hereditarily-inhabited (prune (Xf x))
-  ϕ (x , p) = prune-is-hereditarily-inhabited (Xf x) p
+is-hereditarily-inhabited : 𝕋 → Type
+is-hereditarily-inhabited []       = 𝟙
+is-hereditarily-inhabited (X ∷ Xf) =
+ ∥ X ∥ × ((x : X) → is-hereditarily-inhabited (Xf x))
 
-has-at-least-one-[] : 𝕋 → Type
-has-at-least-one-[] []       = 𝟙
-has-at-least-one-[] (X ∷ Xf) = ∃ x ꞉ X , has-at-least-one-[] (Xf x)
+being-hereditarily-inhabited-is-prop : (Xt : 𝕋)
+                                     → is-prop (is-hereditarily-inhabited Xt)
+being-hereditarily-inhabited-is-prop []       = 𝟙-is-prop
+being-hereditarily-inhabited-is-prop (X ∷ Xf) =
+ ×-is-prop
+  ∥∥-is-prop
+  (Π-is-prop fe (λ x → being-hereditarily-inhabited-is-prop (Xf x)))
 
-having-at-least-one-[]-is-prop : (t : 𝕋) → is-prop (has-at-least-one-[] t)
-having-at-least-one-[]-is-prop []       = 𝟙-is-prop
-having-at-least-one-[]-is-prop (X ∷ Xf) = ∃-is-prop
+\end{code}
 
-path-gives-at-least-one-[] : (Xt : 𝕋) → ∥ Path Xt ∥ → has-at-least-one-[] Xt
-path-gives-at-least-one-[] []       s = ⟨⟩
-path-gives-at-least-one-[] (X ∷ Xf) s = γ
- where
-  IH : (x : X) → ∥ Path (Xf x) ∥ → has-at-least-one-[] (Xf x)
-  IH x = path-gives-at-least-one-[] (Xf x)
+The good game trees, when we adopt [] to signal the end of a play in a
+game, are those which are hereditarily inhabited.
 
-  γ : ∃ x ꞉ X , has-at-least-one-[] (Xf x)
-  γ = ∥∥-functor (λ (x , xs) → x , IH x ∣ xs ∣) s
+We define a subtype of 𝕋 with such good game trees.
 
-at-least-one-[]-gives-path : (Xt : 𝕋) → has-at-least-one-[] Xt → ∥ Path Xt ∥
-at-least-one-[]-gives-path []       h = ∣ ⟨⟩ ∣
-at-least-one-[]-gives-path (X ∷ Xf) h = γ
- where
-  IH : (x : X) → has-at-least-one-[] (Xf x) → ∥ Path (Xf x) ∥
-  IH x = at-least-one-[]-gives-path (Xf x)
+\begin{code}
 
-  γ : ∃ x ꞉ X , Path (Xf x)
-  γ = ∥∥-rec ∃-is-prop (λ (x , g) → remove-truncation-inside-∃ ∣ x , IH x g ∣) h
+𝔾 : Type₁
+𝔾 = Σ t ꞉ 𝕋 , is-hereditarily-inhabited t
+
+\end{code}
+
+This type is isomorphic to a subtype ℍ of 𝔸 define as follows.
+
+\begin{code}
+
+is-hereditarily-decidable : 𝔸 → Type
+is-hereditarily-decidable (X ∷ Xf) = (is-decidable ∥ X ∥)
+                                   × ((x : X) → is-hereditarily-decidable (Xf x))
+
+being-hereditarily-decidable-is-prop : (a : 𝔸) → is-prop (is-hereditarily-decidable a)
+being-hereditarily-decidable-is-prop (X ∷ Xf) =
+ ×-is-prop
+  (+-is-prop ∥∥-is-prop (negations-are-props fe) ¬¬-intro)
+  (Π-is-prop fe (λ x → being-hereditarily-decidable-is-prop (Xf x)))
+
+ℍ : Type₁
+ℍ = Σ a ꞉ 𝔸 , is-hereditarily-decidable a
+
+\end{code}
+
+In order to show that 𝔾 ≃ H we need some preparation.
+
+First we define the leaves of 𝔸 trees.
+
+\begin{code}
 
 []ᴬ : 𝔸
 []ᴬ = 𝟘 ∷ 𝟘-elim
+
+[]ᴬ-is-hd : is-hereditarily-decidable []ᴬ
+[]ᴬ-is-hd = inr (∥∥-rec 𝟘-is-prop id) , (λ x → 𝟘-elim x)
+
+\end{code}
+
+Then the leaves of ℍ trees are defined as follows.
+
+\begin{code}
+
+[]ᴴ : ℍ
+[]ᴴ = []ᴬ , []ᴬ-is-hd
+
+\end{code}
+
+We now need lemma for establishing equality in 𝔸.
+
+\begin{code}
 
 to-𝔸-＝ : {X Y : Type}
           (Xf : X → 𝔸) (Yf : Y → 𝔸)
@@ -174,6 +305,13 @@ to-𝔸-＝ : {X Y : Type}
         → Xf ＝ Yf ∘ idtofun X Y p
         → (X ∷ Xf) ＝[ 𝔸 ] (Y ∷ Yf)
 to-𝔸-＝ Xf Xf refl refl = refl
+
+\end{code}
+
+With this, using univalence, we see that if X is empty then
+[]ᴬ ＝ (X ∷ Xf) for any forest Xf : X → 𝔸.
+
+\begin{code}
 
 []ᴬ-＝ : {X : Type} (Xf : X → 𝔸) → is-empty X → []ᴬ ＝ (X ∷ Xf)
 []ᴬ-＝ {X} Xf e =
@@ -187,33 +325,12 @@ to-𝔸-＝ Xf Xf refl refl = refl
     II : 𝟘-elim ＝ Xf ∘ idtofun 𝟘 X I
     II = dfunext fe (λ (x : 𝟘) → 𝟘-elim x)
 
-[]-property : (Xt : 𝕋) → is-[]-free Xt → ¬ has-at-least-one-[] Xt
-[]-property (X ∷ Xf) f h = ∥∥-rec 𝟘-is-prop (λ (x , g) → IH x (f x) g) h
- where
-  IH : (x : X) → is-[]-free (Xf x) → ¬ has-at-least-one-[] (Xf x)
-  IH x = []-property (Xf x)
+\end{code}
 
-[]-property₂ : (Xt : 𝕋) → is-[]-free Xt → ¬ ∥ Path Xt ∥
-[]-property₂ Xt f = contrapositive (path-gives-at-least-one-[] Xt) ([]-property Xt f)
+And with this we can prove that the hereditarily decidable 𝔸-trees
+form a type isomorphic to that of hereditarily-inhabited 𝕋-trees.
 
-is-hereditarily-decidable : 𝔸 → Type
-is-hereditarily-decidable (X ∷ Xf) = (is-decidable ∥ X ∥)
-                                   × ((x : X) → is-hereditarily-decidable (Xf x))
-
-being-hereditarily-decidable-is-prop : (a : 𝔸) → is-prop (is-hereditarily-decidable a)
-being-hereditarily-decidable-is-prop (X ∷ Xf) =
- ×-is-prop
-  (+-is-prop ∥∥-is-prop (negations-are-props fe) ¬¬-intro)
-  (Π-is-prop fe (λ x → being-hereditarily-decidable-is-prop (Xf x)))
-
-𝔾 = Σ t ꞉ 𝕋 , is-hereditarily-inhabited t -- Good game trees.
-ℍ = Σ a ꞉ 𝔸 , is-hereditarily-decidable a -- An isomorphic copy.
-
-[]ᴬ-is-hd : is-hereditarily-decidable []ᴬ
-[]ᴬ-is-hd = inr (∥∥-rec 𝟘-is-prop id) , (λ x → 𝟘-elim x)
-
-[]ᴴ : ℍ
-[]ᴴ = []ᴬ , []ᴬ-is-hd
+\begin{code}
 
 hg : ℍ ≃ 𝔾
 hg = qinveq f (g , gf , fg)
@@ -277,7 +394,7 @@ hg = qinveq f (g , gf , fg)
 
   gf' (X ∷ Xf) (inr n , k) =
    g (f ((X ∷ Xf) , inr n , k)) ＝⟨ refl ⟩
-   []ᴬ , []ᴬ-is-hd              ＝⟨ I ⟩
+   []ᴴ                          ＝⟨ I ⟩
    (X ∷ Xf) , inr n , k         ∎
     where
      I = to-subtype-＝
@@ -287,8 +404,12 @@ hg = qinveq f (g , gf , fg)
   gf : g ∘ f ∼ id
   gf (Xt , i) = gf' Xt i
 
-𝔸-Path : 𝔸 → Type
-𝔸-Path (X ∷ Xf) = is-empty X + (Σ x ꞉ X , 𝔸-Path (Xf x))
+\end{code}
+
+Not only are ℍ and 𝔾 isomorphic, but also so are the types of ℍ-paths
+and 𝔾-paths along this isomorphism.
+
+\begin{code}
 
 ℍ-Path : ℍ → Type
 ℍ-Path (a , _) = 𝔸-Path a
@@ -339,3 +460,129 @@ gh-path g = ≃-sym I
                    (inverses-are-sections ⌜ hg ⌝ ⌜ hg ⌝-is-equiv g))
 
 \end{code}
+
+So the above justifies working with 𝕋 rather than 𝔸, but it also show
+that we could have worked with 𝔸 if we wished. In practice, it is more
+convenient to work with 𝕋.
+
+As we have seen above, 𝕋 contains trees with empty internal nodes,
+which are undesirable if we use [] to indicate the end of a path.
+
+Given any tree Xt : 𝕋, we can prune away such undesirable subtrees, to
+get a tree that has the same paths as Xt.
+
+\begin{code}
+
+prune : 𝕋 → 𝕋
+prune [] = []
+prune (X ∷ Xf) = (Σ x ꞉ X , ∥ Path (Xf x) ∥)
+               ∷ (λ (x , _) → prune (Xf x))
+
+prune-path : (Xt : 𝕋) → Path Xt ≃ Path (prune Xt)
+prune-path Xt = qinveq (f Xt) (g Xt , gf Xt , fg Xt)
+ where
+  f : (Xt : 𝕋) → Path Xt → Path (prune Xt)
+  f []       ⟨⟩        = ⟨⟩
+  f (X ∷ Xf) (x , xs) = (x , ∣ xs ∣) , f (Xf x) xs
+
+  g : (Xt : 𝕋) → Path (prune Xt) → Path Xt
+  g []       ⟨⟩              = ⟨⟩
+  g (X ∷ Xf) ((x , p) , xs) = x , g (Xf x) xs
+
+  gf : (Xt : 𝕋) → g Xt ∘ f Xt ∼ id
+  gf []       ⟨⟩        = refl
+  gf (X ∷ Xf) (x , xs) = ap (x ,_) (gf (Xf x) xs)
+
+  fg : (Xt : 𝕋) → f Xt ∘ g Xt ∼ id
+  fg []       ⟨⟩              = refl
+  fg (X ∷ Xf) ((x , p) , xs) =
+   (f (X ∷ Xf) ∘ g (X ∷ Xf)) ((x , p) , xs)        ＝⟨ refl ⟩
+   ((x , ∣ g (Xf x) xs ∣) , f (Xf x) (g (Xf x) xs)) ＝⟨ I ⟩
+   ((x , p) , f (Xf x) (g (Xf x) xs))              ＝⟨ II ⟩
+   (x , p) , xs                                    ∎
+    where
+     I = ap (λ - →  ((x , -) , f (Xf x) (g (Xf x) xs)))
+            (∥∥-is-prop ∣ g (Xf x) xs ∣ p)
+     II = ap ((x , p) ,_)
+             (fg (Xf x) xs)
+
+\end{code}
+
+We would like the tree prune Xt to be hereditarily inhabited, but this
+is not possible, constructively, as e.g. the root may be empty but
+emptiness is not decidable in general. However, if there is at least
+one path in Xt, then this holds:
+
+\begin{code}
+
+prune-is-hereditarily-inhabited : (Xt : 𝕋)
+                                → ∥ Path Xt ∥
+                                → is-hereditarily-inhabited (prune Xt)
+prune-is-hereditarily-inhabited []       _ = ⋆
+prune-is-hereditarily-inhabited (X ∷ Xf) p = γ , ϕ
+ where
+  γ : ∥(Σ x ꞉ X , ∥ Path (Xf x) ∥)∥
+  γ = ∥∥-functor (λ (x , xs) → x , ∣ xs ∣) p
+
+  ϕ : ((x , p) : (Σ x ꞉ X , ∥ Path (Xf x) ∥))
+    → is-hereditarily-inhabited (prune (Xf x))
+  ϕ (x , p) = prune-is-hereditarily-inhabited (Xf x) p
+
+\end{code}
+
+Notice that the type Path Xt is inhabited if there is at least one
+leaf [] in the tree Xt.
+
+\begin{code}
+
+has-at-least-one-[] : 𝕋 → Type
+has-at-least-one-[] []       = 𝟙
+has-at-least-one-[] (X ∷ Xf) = ∃ x ꞉ X , has-at-least-one-[] (Xf x)
+
+having-at-least-one-[]-is-prop : (t : 𝕋) → is-prop (has-at-least-one-[] t)
+having-at-least-one-[]-is-prop []       = 𝟙-is-prop
+having-at-least-one-[]-is-prop (X ∷ Xf) = ∃-is-prop
+
+path-gives-at-least-one-[] : (Xt : 𝕋) → ∥ Path Xt ∥ → has-at-least-one-[] Xt
+path-gives-at-least-one-[] []       s = ⟨⟩
+path-gives-at-least-one-[] (X ∷ Xf) s = γ
+ where
+  IH : (x : X) → ∥ Path (Xf x) ∥ → has-at-least-one-[] (Xf x)
+  IH x = path-gives-at-least-one-[] (Xf x)
+
+  γ : ∃ x ꞉ X , has-at-least-one-[] (Xf x)
+  γ = ∥∥-functor (λ (x , xs) → x , IH x ∣ xs ∣) s
+
+at-least-one-[]-gives-path : (Xt : 𝕋) → has-at-least-one-[] Xt → ∥ Path Xt ∥
+at-least-one-[]-gives-path []       h = ∣ ⟨⟩ ∣
+at-least-one-[]-gives-path (X ∷ Xf) h = γ
+ where
+  IH : (x : X) → has-at-least-one-[] (Xf x) → ∥ Path (Xf x) ∥
+  IH x = at-least-one-[]-gives-path (Xf x)
+
+  γ : ∃ x ꞉ X , Path (Xf x)
+  γ = ∥∥-rec ∃-is-prop (λ (x , g) → remove-truncation-inside-∃ ∣ x , IH x g ∣) h
+
+\end{code}
+
+And, of course:
+
+\begin{code}
+
+[]-property : (Xt : 𝕋) → is-[]-free Xt → ¬ has-at-least-one-[] Xt
+[]-property (X ∷ Xf) f h = ∥∥-rec 𝟘-is-prop (λ (x , g) → IH x (f x) g) h
+ where
+  IH : (x : X) → is-[]-free (Xf x) → ¬ has-at-least-one-[] (Xf x)
+  IH x = []-property (Xf x)
+
+[]-property₂ : (Xt : 𝕋) → is-[]-free Xt → ¬ ∥ Path Xt ∥
+[]-property₂ Xt f = contrapositive (path-gives-at-least-one-[] Xt) ([]-property Xt f)
+
+\end{code}
+
+A last remark is that the developent of game theory here using 𝕋
+doesn't actually require us to restrict to hereditarily inhabited
+trees. However, empty internal nodes play no role, as, as we have
+discussed, if we prune them we obtain a tree with the same paths, and
+all that matters about a tree, for the purposes of game theory, are
+its paths, which correspond to full plays in a game.
