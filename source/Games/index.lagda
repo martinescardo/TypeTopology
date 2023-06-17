@@ -23,6 +23,8 @@ open import Games.TicTacToe1              -- Like TicTacToe0 but using Games.Con
 open import Games.TicTacToe2              -- More efficient and less elegant version.
 open import Games.TypeTrees               -- Dependent type trees.
 open import Games.alpha-beta              -- Many new things for efficiency.
+open import Games.Discussion
+
 -- open import Games.Main                 -- To be able to compile for efficieny.
                                           -- Can't be imported here as it's not --safe.
                                           -- This is for Agda compilation to Haskell of
