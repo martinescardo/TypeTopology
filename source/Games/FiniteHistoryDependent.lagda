@@ -76,6 +76,9 @@ selection functions.
 
 \end{code}
 
+NB. 𝓚 can be defined by 𝓚 = structure K where structure is defined in
+the module Games.Structure.
+
  * ϕ  ranges over the type K X of quantifiers.
  * ϕt ranges over the type 𝓚 Xt of quantifier trees.
  * ϕf ranges over the type (x : X) → 𝓚 (Xf x) of quantifier forests.
@@ -273,7 +276,10 @@ in another module.
 
 \end{code}
 
- * ε ranges over the type J X of selection functions.
+NB. 𝓙 can be defined by 𝓙 = structure J where structure is defined in
+the module Games.Structure.
+
+* ε ranges over the type J X of selection functions.
  * εt ranges over the type 𝓙 Xt of selection-function trees.
  * εf ranges over the type (x : X) → 𝓙 (Xf x) of selection-function forests.
 

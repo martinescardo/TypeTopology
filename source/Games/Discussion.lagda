@@ -484,7 +484,7 @@ prune-path : (Xt : 𝕋) → Path Xt ≃ Path (prune Xt)
 prune-path Xt = qinveq (f Xt) (g Xt , gf Xt , fg Xt)
  where
   f : (Xt : 𝕋) → Path Xt → Path (prune Xt)
-  f []       ⟨⟩        = ⟨⟩
+  f []       ⟨⟩       = ⟨⟩
   f (X ∷ Xf) (x , xs) = (x , ∣ xs ∣) , f (Xf x) xs
 
   g : (Xt : 𝕋) → Path (prune Xt) → Path Xt
@@ -587,4 +587,6 @@ doesn't actually require us to restrict to hereditarily inhabited
 trees. However, empty internal nodes play no role, because, as we have
 discussed, if we prune them we obtain a tree with the same paths, and
 all that matters about a tree, for the purposes of game theory, are
-its paths, which correspond to full plays in a game.
+its paths, which correspond to full plays in a game. One advantage of
+the the original development using 𝕋 is that it works in pure MLTT,
+whereas the approach using 𝔾 or ℍ requires propositional truncation and function extensionality.
