@@ -241,8 +241,8 @@ being-hereditarily-inhabited-is-prop (X ∷ Xf) =
 
 \end{code}
 
-The good game trees, when we adopt [] to signal the end of a play in a
-game, are those which are hereditarily inhabited.
+The good game trees, when we adopt [] to indicate the end of a play in
+a game, are those that are hereditarily inhabited.
 
 We define a subtype of 𝕋 with such good game trees.
 
@@ -253,7 +253,7 @@ We define a subtype of 𝕋 with such good game trees.
 
 \end{code}
 
-This type is isomorphic to a subtype ℍ of 𝔸 define as follows.
+This type is isomorphic to a subtype ℍ of 𝔸 defined as follows.
 
 \begin{code}
 
@@ -272,21 +272,21 @@ being-hereditarily-decidable-is-prop (X ∷ Xf) =
 
 \end{code}
 
-In order to show that 𝔾 ≃ H we need some preparation.
+In order to show that 𝔾 ≃ ℍ we need some preparation.
 
-First we define the leaves of 𝔸 trees.
+First we define the leafs of 𝔸 trees.
 
 \begin{code}
 
 []ᴬ : 𝔸
-[]ᴬ = 𝟘 ∷ 𝟘-elim
+[]ᴬ = 𝟘 ∷ unique-from-𝟘
 
 []ᴬ-is-hd : is-hereditarily-decidable []ᴬ
 []ᴬ-is-hd = inr (∥∥-rec 𝟘-is-prop id) , (λ x → 𝟘-elim x)
 
 \end{code}
 
-Then the leaves of ℍ trees are defined as follows.
+Then the leafs of ℍ trees are defined as follows.
 
 \begin{code}
 
@@ -302,7 +302,7 @@ We now need lemma for establishing equality in 𝔸.
 to-𝔸-＝ : {X Y : Type}
           (Xf : X → 𝔸) (Yf : Y → 𝔸)
           (p : X ＝ Y)
-        → Xf ＝ Yf ∘ idtofun X Y p
+        → Xf ＝ Yf ∘ Idtofun p
         → (X ∷ Xf) ＝[ 𝔸 ] (Y ∷ Yf)
 to-𝔸-＝ Xf Xf refl refl = refl
 
@@ -315,15 +315,15 @@ With this, using univalence, we see that if X is empty then
 
 []ᴬ-＝ : {X : Type} (Xf : X → 𝔸) → is-empty X → []ᴬ ＝ (X ∷ Xf)
 []ᴬ-＝ {X} Xf e =
-   []ᴬ        ＝⟨ refl ⟩
-   𝟘 ∷ 𝟘-elim ＝⟨ to-𝔸-＝ 𝟘-elim Xf I II ⟩
-   (X ∷ Xf)    ∎
-   where
-    I : 𝟘 ＝ X
-    I = eqtoid (ua 𝓤₀) 𝟘 X (≃-sym (empty-≃-𝟘 e))
+ []ᴬ               ＝⟨ refl ⟩
+ 𝟘 ∷ unique-from-𝟘 ＝⟨ to-𝔸-＝ 𝟘-elim Xf I II ⟩
+ (X ∷ Xf)          ∎
+  where
+   I : 𝟘 ＝ X
+   I = eqtoid (ua 𝓤₀) 𝟘 X (≃-sym (empty-≃-𝟘 e))
 
-    II : 𝟘-elim ＝ Xf ∘ idtofun 𝟘 X I
-    II = dfunext fe (λ (x : 𝟘) → 𝟘-elim x)
+   II : unique-from-𝟘 ＝ Xf ∘ Idtofun I
+   II = dfunext fe (λ x → 𝟘-elim x)
 
 \end{code}
 
@@ -360,7 +360,7 @@ hg = qinveq f (g , gf , fg)
       → f (g (Xt , i)) ＝ (Xt , i)
   fg' []       ⟨⟩      = refl
   fg' (X ∷ Xf) (s , k) =
-   f (g ((X ∷ Xf) , (s , k)))    ＝⟨ refl ⟩
+   f (g ((X ∷ Xf) , s , k))      ＝⟨ refl ⟩
    (X ∷ (pr₁ ∘ h)) , s , pr₂ ∘ h ＝⟨ I ⟩
    ((X ∷ Xf) , s , k)            ∎
     where
@@ -461,12 +461,13 @@ gh-path g = ≃-sym I
 
 \end{code}
 
-So the above justifies working with 𝕋 rather than 𝔸, but it also show
+So the above justifies working with 𝕋 rather than 𝔸, but it also shows
 that we could have worked with 𝔸 if we wished. In practice, it is more
 convenient to work with 𝕋.
 
 As we have seen above, 𝕋 contains trees with empty internal nodes,
-which are undesirable if we use [] to indicate the end of a path.
+which are undesirable as they are useless, if we use [] to indicate
+the end of a path.
 
 Given any tree Xt : 𝕋, we can prune away such undesirable subtrees, to
 get a tree that has the same paths as Xt.
@@ -586,7 +587,3 @@ trees. However, empty internal nodes play no role, as, as we have
 discussed, if we prune them we obtain a tree with the same paths, and
 all that matters about a tree, for the purposes of game theory, are
 its paths, which correspond to full plays in a game.
-
-In practice it is easoer to work with 𝕋, rather than the subtype of
-hereditarily decidable subtrees of 𝔸, because all decidability
-questions are posponed to the base case [].
