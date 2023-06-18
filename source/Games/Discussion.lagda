@@ -22,7 +22,7 @@ existence of propositional truncations (https://homotopytypetheory.org/book/).
 
 module Games.Discussion
         (ua : Univalence)
-        (pt  : propositional-truncations-exist)
+        (pt : propositional-truncations-exist)
        where
 
 open PropositionalTruncation pt
@@ -144,8 +144,9 @@ Their paths can be defined as follows.
 
 \end{code}
 
-So there is a path when X is empty, which ends, or there starting with
-a move x : X, followed, recursively, in the tree Xf x of the forest Xf.
+So there is a path when X is empty, which ends, or there is a path
+starting with a move x : X, followed, recursively, by a path in the
+tree Xf x of the forest Xf.
 
 We'll come back to this alternative notion of path in a moment. First
 we want to explore our original definition of type tree a bit more.
@@ -519,7 +520,7 @@ one path in Xt, then this holds:
 prune-is-hereditarily-inhabited : (Xt : 𝕋)
                                 → ∥ Path Xt ∥
                                 → is-hereditarily-inhabited (prune Xt)
-prune-is-hereditarily-inhabited []       _ = ⋆
+prune-is-hereditarily-inhabited []       _ = ⟨⟩
 prune-is-hereditarily-inhabited (X ∷ Xf) p = γ , ϕ
  where
   γ : ∥(Σ x ꞉ X , ∥ Path (Xf x) ∥)∥
