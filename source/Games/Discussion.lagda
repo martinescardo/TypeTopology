@@ -167,7 +167,7 @@ To know that this is really a subtype, we need to know that
 \begin{code}
 
 being-[]-free-is-prop : (t : 𝕋) → is-prop (is-[]-free t)
-being-[]-free-is-prop [] = 𝟘-is-prop
+being-[]-free-is-prop []       = 𝟘-is-prop
 being-[]-free-is-prop (X ∷ Xf) = Π-is-prop fe (λ x → being-[]-free-is-prop (Xf x))
 
 \end{code}
@@ -328,8 +328,8 @@ With this, using univalence, we see that if X is empty then
 
 \end{code}
 
-And with this we can prove that the hereditarily decidable 𝔸-trees
-form a type isomorphic to that of hereditarily-inhabited 𝕋-trees.
+And with this we can prove that the hereditarily decidable 𝔸 trees
+form a type isomorphic to that of hereditarily-inhabited 𝕋 trees.
 
 \begin{code}
 
@@ -584,7 +584,7 @@ And, of course:
 
 A last remark is that the developent of game theory here using 𝕋
 doesn't actually require us to restrict to hereditarily inhabited
-trees. However, empty internal nodes play no role, as, as we have
+trees. However, empty internal nodes play no role, because, as we have
 discussed, if we prune them we obtain a tree with the same paths, and
 all that matters about a tree, for the purposes of game theory, are
 its paths, which correspond to full plays in a game.
