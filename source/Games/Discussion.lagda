@@ -68,8 +68,8 @@ represent the endings of the game.
 \begin{code}
 
 data 𝕋 : Type₁ where
-  []  : 𝕋
-  _∷_ : (X : Type) (Xf : X → 𝕋) → 𝕋
+ []  : 𝕋
+ _∷_ : (X : Type) (Xf : X → 𝕋) → 𝕋
 
 \end{code}
 
@@ -128,12 +128,13 @@ without the "superfluous" base case [].
 \begin{code}
 
 data 𝔸 : Type₁ where
-  _∷_ : (X : Type) (Xf : X → 𝔸) → 𝔸
+ _∷_ : (X : Type) (Xf : X → 𝔸) → 𝔸
 
 \end{code}
 
 This definition is due to Aczel, who used it to give a model of CZF
-(constructive Zermelo-Frankel set theory).
+(constructive Zermelo-Frankel set theory), as in the reference given
+at the top of this file.
 
 Their paths can be defined as follows.
 
@@ -213,7 +214,7 @@ Now suppose we insist, for the purposes of game theory, as we will, on
 working with 𝕋 rather than 𝔸, with our original definition of path,
 and with [] to indicate the end of a play in a game.
 
-Then we should better disregard subtrees X ∷ Xf with X empty.
+Then we should better disregard subtrees whose roots are empty.
 
 In constructive mathematics it is usual to regard a type X to be
 inhabited if we can exhibit some x : X. But this is data rather than
@@ -222,8 +223,8 @@ homotopy type theory, we will instead say that X is inhabited if we
 can exibit a point of its propositional truncation ∥ X ∥. (In the case
 where we can exhibit some x : X, we say that X is pointed.)
 
-Instead of disregarding the subtrees X ∷ Xf with X empty, we consider
-the subtrees with X inhabited.
+So we consider trees with the property that the root of each subtree
+is inhabited. We call them *hereditarily inhabited*.
 
 \begin{code}
 
@@ -245,7 +246,8 @@ being-hereditarily-inhabited-is-prop (X ∷ Xf) =
 The good game trees, when we adopt [] to indicate the end of a play in
 a game, are those that are hereditarily inhabited.
 
-We define a subtype of 𝕋 with such good game trees.
+We define a subtype of 𝕋 with such good game trees, with 𝔾 ambiguously
+standing for "good" or "game".
 
 \begin{code}
 
@@ -262,7 +264,8 @@ is-hereditarily-decidable : 𝔸 → Type
 is-hereditarily-decidable (X ∷ Xf) = (is-decidable ∥ X ∥)
                                    × ((x : X) → is-hereditarily-decidable (Xf x))
 
-being-hereditarily-decidable-is-prop : (a : 𝔸) → is-prop (is-hereditarily-decidable a)
+being-hereditarily-decidable-is-prop : (a : 𝔸)
+                                     → is-prop (is-hereditarily-decidable a)
 being-hereditarily-decidable-is-prop (X ∷ Xf) =
  ×-is-prop
   (+-is-prop ∥∥-is-prop (negations-are-props fe) ¬¬-intro)
@@ -296,7 +299,8 @@ Then the leafs of ℍ trees are defined as follows.
 
 \end{code}
 
-We now need lemma for establishing equality in 𝔸.
+We now need a lemma for establishing equality in 𝔸, where Idtofun p
+converts a type identification p : X ＝ Y into a function X → Y.
 
 \begin{code}
 
@@ -329,7 +333,7 @@ With this, using univalence, we see that if X is empty then
 \end{code}
 
 And with this we can prove that the hereditarily decidable 𝔸 trees
-form a type isomorphic to that of hereditarily-inhabited 𝕋 trees.
+form a type isomorphic to that of hereditarily inhabited 𝕋 trees.
 
 \begin{code}
 
@@ -464,11 +468,11 @@ gh-path g = ≃-sym I
 
 So the above justifies working with 𝕋 rather than 𝔸, but it also shows
 that we could have worked with 𝔸 if we wished. In practice, it is more
-convenient to work with 𝕋.
+convenient to work with 𝕋, but the difference is only convenience.
 
 As we have seen above, 𝕋 contains trees with empty internal nodes,
-which are undesirable as they are useless, if we use [] to indicate
-the end of a path.
+which are undesirable as they are useless, and play no role, if we use
+[] to indicate the end of a path.
 
 Given any tree Xt : 𝕋, we can prune away such undesirable subtrees, to
 get a tree that has the same paths as Xt.
@@ -488,15 +492,15 @@ prune-path Xt = qinveq (f Xt) (g Xt , gf Xt , fg Xt)
   f (X ∷ Xf) (x , xs) = (x , ∣ xs ∣) , f (Xf x) xs
 
   g : (Xt : 𝕋) → Path (prune Xt) → Path Xt
-  g []       ⟨⟩              = ⟨⟩
+  g []       ⟨⟩             = ⟨⟩
   g (X ∷ Xf) ((x , p) , xs) = x , g (Xf x) xs
 
   gf : (Xt : 𝕋) → g Xt ∘ f Xt ∼ id
-  gf []       ⟨⟩        = refl
+  gf []       ⟨⟩       = refl
   gf (X ∷ Xf) (x , xs) = ap (x ,_) (gf (Xf x) xs)
 
   fg : (Xt : 𝕋) → f Xt ∘ g Xt ∼ id
-  fg []       ⟨⟩              = refl
+  fg []       ⟨⟩             = refl
   fg (X ∷ Xf) ((x , p) , xs) =
    (f (X ∷ Xf) ∘ g (X ∷ Xf)) ((x , p) , xs)        ＝⟨ refl ⟩
    ((x , ∣ g (Xf x) xs ∣) , f (Xf x) (g (Xf x) xs)) ＝⟨ I ⟩
@@ -585,8 +589,9 @@ And, of course:
 A last remark is that the developent of game theory here using 𝕋
 doesn't actually require us to restrict to hereditarily inhabited
 trees. However, empty internal nodes play no role, because, as we have
-discussed, if we prune them we obtain a tree with the same paths, and
-all that matters about a tree, for the purposes of game theory, are
-its paths, which correspond to full plays in a game. One advantage of
-the the original development using 𝕋 is that it works in pure MLTT,
-whereas the approach using 𝔾 or ℍ requires propositional truncation and function extensionality.
+discussed, if we prune them away we obtain a tree with the same paths,
+and all that matters about a tree, for the purposes of game theory,
+are its paths, which correspond to full plays in a game. One advantage
+of the the original development using 𝕋 is that it works in pure MLTT,
+whereas the approach using 𝔾 or ℍ requires propositional truncation
+and function extensionality.
