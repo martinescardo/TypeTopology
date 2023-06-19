@@ -471,8 +471,8 @@ that we could have worked with 𝔸 if we wished. In practice, it is more
 convenient to work with 𝕋, but the difference is only convenience.
 
 As we have seen above, 𝕋 contains trees with empty internal nodes,
-which are useless as they are useless, and play no role, if we use []
-to indicate the end of a path.
+which are undesirable as they are useless, and play no role, if we use
+[] to indicate the end of a path.
 
 Given any tree Xt : 𝕋, we can prune away such useless subtrees, to get
 a tree that has the same paths as Xt.
