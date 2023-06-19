@@ -417,13 +417,13 @@ and 𝔾-paths along this isomorphism.
 \begin{code}
 
 ℍ-Path : ℍ → Type
-ℍ-Path (a , _) = 𝔸-Path a
+ℍ-Path (Xt , _) = 𝔸-Path Xt
 
 𝔾-Path : 𝔾 → Type
 𝔾-Path (Xt , _) = Path Xt
 
 hg-path : (h : ℍ) → ℍ-Path h ≃ 𝔾-Path (⌜ hg ⌝ h)
-hg-path (a , d) = γ a d
+hg-path (Xt , d) = γ Xt d
  where
   γ : (Xt : 𝔸) (i : is-hereditarily-decidable Xt)
     → 𝔸-Path Xt ≃ 𝔾-Path (⌜ hg ⌝ (Xt , i))
