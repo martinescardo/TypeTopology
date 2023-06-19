@@ -115,8 +115,8 @@ is-[]-free []       = 𝟘
 is-[]-free (X ∷ Xf) = (x : X) → is-[]-free (Xf x)
 
 []-free-trees-have-no-paths : (Xt : 𝕋) → is-[]-free Xt → is-empty (Path Xt)
-[]-free-trees-have-no-paths []       p ⟨⟩        = p
-[]-free-trees-have-no-paths (X ∷ Xf) p (x , xs) = []-free-trees-have-no-paths (Xf x) (p x) xs
+[]-free-trees-have-no-paths []       φ ⟨⟩        = φ
+[]-free-trees-have-no-paths (X ∷ Xf) φ (x , xs) = []-free-trees-have-no-paths (Xf x) (φ x) xs
 
 \end{code}
 
@@ -158,7 +158,7 @@ Of course, the type 𝔸 is isomorphic to the subtype of 𝕋 consisting of
 \begin{code}
 
 𝔽 : Type₁
-𝔽 = Σ t ꞉ 𝕋 , is-[]-free t
+𝔽 = Σ Xt ꞉ 𝕋 , is-[]-free Xt
 
 \end{code}
 
@@ -167,7 +167,7 @@ To know that this is really a subtype, we need to know that
 
 \begin{code}
 
-being-[]-free-is-prop : (t : 𝕋) → is-prop (is-[]-free t)
+being-[]-free-is-prop : (Xt : 𝕋) → is-prop (is-[]-free Xt)
 being-[]-free-is-prop []       = 𝟘-is-prop
 being-[]-free-is-prop (X ∷ Xf) = Π-is-prop fe (λ x → being-[]-free-is-prop (Xf x))
 
@@ -252,7 +252,7 @@ standing for "good" or "game".
 \begin{code}
 
 𝔾 : Type₁
-𝔾 = Σ t ꞉ 𝕋 , is-hereditarily-inhabited t
+𝔾 = Σ Xt ꞉ 𝕋 , is-hereditarily-inhabited Xt
 
 \end{code}
 
@@ -264,15 +264,15 @@ is-hereditarily-decidable : 𝔸 → Type
 is-hereditarily-decidable (X ∷ Xf) = (is-decidable ∥ X ∥)
                                    × ((x : X) → is-hereditarily-decidable (Xf x))
 
-being-hereditarily-decidable-is-prop : (a : 𝔸)
-                                     → is-prop (is-hereditarily-decidable a)
+being-hereditarily-decidable-is-prop : (Xt : 𝔸)
+                                     → is-prop (is-hereditarily-decidable Xt)
 being-hereditarily-decidable-is-prop (X ∷ Xf) =
  ×-is-prop
   (+-is-prop ∥∥-is-prop (negations-are-props fe) ¬¬-intro)
   (Π-is-prop fe (λ x → being-hereditarily-decidable-is-prop (Xf x)))
 
 ℍ : Type₁
-ℍ = Σ a ꞉ 𝔸 , is-hereditarily-decidable a
+ℍ = Σ Xt ꞉ 𝔸 , is-hereditarily-decidable Xt
 
 \end{code}
 
@@ -340,7 +340,7 @@ form a type isomorphic to that of hereditarily inhabited 𝕋 trees.
 hg : ℍ ≃ 𝔾
 hg = qinveq f (g , gf , fg)
  where
-  f' : (a : 𝔸) → is-hereditarily-decidable a → 𝔾
+  f' : (Xt : 𝔸) → is-hereditarily-decidable Xt → 𝔾
   f' (X ∷ Xf) (inl s , k) = (X ∷ (pr₁ ∘ φ)) , s , pr₂ ∘ φ
    where
     φ : X → 𝔾
@@ -351,7 +351,7 @@ hg = qinveq f (g , gf , fg)
   f : ℍ → 𝔾
   f = uncurry f'
 
-  g' : (t : 𝕋) → is-hereditarily-inhabited t → ℍ
+  g' : (Xt : 𝕋) → is-hereditarily-inhabited Xt → ℍ
   g' []       _       = []ᴴ
   g' (X ∷ Xf) (s , k) = (X ∷ (pr₁ ∘ γ)) , inl s , pr₂ ∘ γ
    where
@@ -381,8 +381,8 @@ hg = qinveq f (g , gf , fg)
   fg : f ∘ g ∼ id
   fg (Xt , i) = fg' Xt i
 
-  gf' : (a : 𝔸) (d : is-hereditarily-decidable a)
-      → g (f (a , d)) ＝ (a , d)
+  gf' : (Xt : 𝔸) (d : is-hereditarily-decidable Xt)
+      → g (f (Xt , d)) ＝ (Xt , d)
   gf' (X ∷ Xf) (inl s , k) =
    g (f ((X ∷ Xf) , inl s , k))      ＝⟨ refl ⟩
    (X ∷ (pr₁ ∘ h)) , inl s , pr₂ ∘ h ＝⟨ I ⟩
@@ -425,8 +425,8 @@ and 𝔾-paths along this isomorphism.
 hg-path : (h : ℍ) → ℍ-Path h ≃ 𝔾-Path (⌜ hg ⌝ h)
 hg-path (a , d) = γ a d
  where
-  γ : (a : 𝔸) (i : is-hereditarily-decidable a)
-    → 𝔸-Path a ≃ 𝔾-Path (⌜ hg ⌝ (a , i))
+  γ : (Xt : 𝔸) (i : is-hereditarily-decidable Xt)
+    → 𝔸-Path Xt ≃ 𝔾-Path (⌜ hg ⌝ (Xt , i))
   γ (X ∷ Xf) (inl s , k) =
    𝔸-Path (X ∷ Xf)                              ≃⟨ ≃-refl _ ⟩
    is-empty X + (Σ x ꞉ X , 𝔸-Path (Xf x))       ≃⟨ I ⟩
@@ -545,7 +545,7 @@ has-at-least-one-[] : 𝕋 → Type
 has-at-least-one-[] []       = 𝟙
 has-at-least-one-[] (X ∷ Xf) = ∃ x ꞉ X , has-at-least-one-[] (Xf x)
 
-having-at-least-one-[]-is-prop : (t : 𝕋) → is-prop (has-at-least-one-[] t)
+having-at-least-one-[]-is-prop : (Xt : 𝕋) → is-prop (has-at-least-one-[] Xt)
 having-at-least-one-[]-is-prop []       = 𝟙-is-prop
 having-at-least-one-[]-is-prop (X ∷ Xf) = ∃-is-prop
 
