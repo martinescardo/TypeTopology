@@ -129,7 +129,7 @@ Kleisli-extension-meaning = refl
       → T Γ ((⌜B⌝ ι A
                ⇒ B-type〖 σ 〗 A
                ⇒ B-type〖 σ 〗 A)
-               ⇒ B-type〖 σ 〗 A
+            ⇒ B-type〖 σ 〗 A
             ⇒ ⌜B⌝ ι A
             ⇒ B-type〖 σ 〗 A)
 ⌜rec⌝ {σ} {A} = ƛ (ƛ (⌜Kleisli-extension⌝ {ι} {A} {σ}

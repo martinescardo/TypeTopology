@@ -1135,17 +1135,23 @@ close-eta {Γ₁} {Γ₂} {σ}     s1 s2 (t · t₁)      e = ap₂ _·_ (close-
     ∎
 ⌜close⌝ {A} {σ}       {Γ} (t · t₁)    {Δ} s = ap₂ _·_ (⌜close⌝ t s) (⌜close⌝ t₁ s)
 
+-- Since the equality is only used in the ι case, could we relax that hypothesis for function types?
+-- Some of the funext we use are related to this, as we end up having to prove this for higher types.
+R⋆-preserves-⟦⟧' : {α : Baire} {σ : type}
+                  (a : 〖 σ 〗) (t u : T₀ (B-type〖 σ 〗 ((ι ⇒ ι) ⇒ ι)))
+                → ⟦ t ⟧₀ ＝ ⟦ u ⟧₀
+                → R⋆ α a t
+                → R⋆ α a u
+R⋆-preserves-⟦⟧' {α} {ι} a t u e r = r ∙ ap (λ k → k (λ z α₁ → z) (λ φ x α₁ → φ (α₁ x) α₁) α) e
+R⋆-preserves-⟦⟧' {α} {σ ⇒ σ₁} a t u e r x x' rx =
+ R⋆-preserves-⟦⟧' (a x) (t · ⌜ x' ⌝) (u · ⌜ x' ⌝) (ap (λ x → x ⟦ ⌜ x' ⌝ ⟧₀) e) (r x x' rx)
+
 R⋆-preserves-⟦⟧ : {α : Baire} {σ : type}
                   (a : 〖 σ 〗) (t u : T₀ σ)
                 → ⟦ ⌜_⌝ {〈〉} {σ} {(ι ⇒ ι) ⇒ ι} t ⟧₀ ＝ ⟦ ⌜ u ⌝ ⟧₀
                 → R⋆ α a ⌜ t ⌝
                 → R⋆ α a ⌜ u ⌝
-R⋆-preserves-⟦⟧ {α} {ι} a t u e r =
- a                      ＝⟨ r ⟩
- dialogue⋆ ⟦ ⌜ t ⌝ ⟧₀ α ＝⟨ ap (λ k → dialogue⋆ k α) e ⟩
- dialogue⋆ ⟦ ⌜ u ⌝ ⟧₀ α ∎
-R⋆-preserves-⟦⟧ {α} {σ ⇒ σ₁} a t u e r x x' rx =
- R⋆-preserves-⟦⟧ {α} {σ₁} (a x) (t · x') (u · x') (ap (λ x → x ⟦ ⌜ x' ⌝ ⟧₀) e) (r x x' rx)
+R⋆-preserves-⟦⟧ {α} {σ} a t u e r = R⋆-preserves-⟦⟧' a ⌜ t ⌝ ⌜ u ⌝ e r
 
 R⋆s-Sub,, : {α : Baire} {Γ : Cxt} {σ : type}
             (xs : 【 Γ 】) (x : 〖 σ 〗)
@@ -1462,6 +1468,55 @@ close-Sub,,-as-close-Subƛ {Γ} {σ} {τ} t ys y =
  close (close t (Subƛ ys)) (Sub1 y)
   ∎
 
+⟦⌜Kleisli-extension⌝⟧ : (ext : naive-funext 𝓤₀ 𝓤₀) {X A σ : type} {Γ Δ : Cxt} (xs : 【 Γ 】) (ys : 【 Δ 】)
+                      → ⟦ ⌜Kleisli-extension⌝ {X} {A} {σ} ⟧ xs
+                     ＝ ⟦ ⌜Kleisli-extension⌝ {X} {A} {σ} ⟧ ys
+⟦⌜Kleisli-extension⌝⟧ ext {X} {A} {ι} {Γ} {Δ} xs ys = refl
+⟦⌜Kleisli-extension⌝⟧ ext {X} {A} {σ ⇒ τ} {Γ} {Δ} xs ys =
+ ext (λ x → ext (λ y → ext λ z → ap (λ k → k (λ x₁ → x x₁ z) y) (⟦⌜Kleisli-extension⌝⟧ ext (xs ‚ x ‚ y ‚ z) (ys ‚ x ‚ y ‚ z))))
+
+⟦⌜Rec⌝⟧-aux : (ext : naive-funext 𝓤₀ 𝓤₀) {A : type} {σ : type} (a : T₀ (ι ⇒ σ ⇒ σ)) (b : T₀ σ)
+            → rec (λ y → ⟦ ⌜_⌝ {_} {_} {A} a ⟧₀ (η⋆ y)) ⟦ ⌜ b ⌝ ⟧₀
+           ＝ (λ x → rec (λ y → ⟦ weaken, ι (weaken, ι ⌜ a ⌝) ⟧ (⟨⟩ ‚ x ‚ y) (η⋆ y)) (⟦ weaken, ι ⌜ b ⌝ ⟧ (⟨⟩ ‚ x)) x)
+⟦⌜Rec⌝⟧-aux ext {A} {σ} a b = ext h
+ where
+   h : rec (λ y → ⟦ ⌜ a ⌝ ⟧₀ (η⋆ y)) ⟦ ⌜ b ⌝ ⟧₀
+       ∼ (λ x → rec (λ y → ⟦ weaken, ι (weaken, ι ⌜ a ⌝) ⟧ (⟨⟩ ‚ x ‚ y) (η⋆ y)) (⟦ weaken, ι ⌜ b ⌝ ⟧ (⟨⟩ ‚ x)) x)
+   h x = ap₂ (λ p q → rec p (q (⟨⟩ ‚ x)) x)
+             (ext (λ y → ap (λ k → k (⟨⟩ ‚ x) (η⋆ y)) (⟦weaken⟧ ⌜ a ⌝ (⊆, 〈〉 ι)) ⁻¹
+                       ∙ ap (λ k → k (⟨⟩ ‚ x ‚ y) (η⋆ y)) (⟦weaken⟧ (weaken, ι ⌜ a ⌝) (⊆, (〈〉 ,, ι) ι)) ⁻¹))
+             ((⟦weaken⟧ ⌜ b ⌝ (⊆, 〈〉 ι)) ⁻¹)
+
+{-
+⟦⌜Rec⌝⟧' : {A : type} {σ : type} (a : T₀ (ι ⇒ σ ⇒ σ)) (b : T₀ σ) (c : T₀ ι)
+        → ⟦ ⌜_⌝  {〈〉} {σ} {A} (Rec a b c) ⟧₀
+       ＝ ⟦ ⌜Kleisli-extension⌝ {ι} {A} {σ} ⟧₀ (λ x → rec (λ y → ⟦ ⌜ a ⌝ ⟧₀ (η⋆ y)) ⟦ ⌜ b ⌝ ⟧₀ x) ⟦ ⌜ c ⌝ ⟧₀
+⟦⌜Rec⌝⟧' {A} {σ} a b c =
+ ⟦ ⌜_⌝  {〈〉} {σ} {A} (Rec a b c) ⟧₀
+  ＝⟨ refl ⟩
+ ⟦ ⌜Kleisli-extension⌝ {ι} {A} {σ} ⟧ (⟨⟩ ‚ ⟦ ⌜ a ⌝ ⟧₀ ‚ ⟦ ⌜ b ⌝ ⟧₀) (λ x → rec (λ y → ⟦ ⌜ a ⌝ ⟧₀ (η⋆ y)) ⟦ ⌜ b ⌝ ⟧₀ x) ⟦ ⌜ c ⌝ ⟧₀
+  ＝⟨ ap (λ k → k (λ x → rec (λ y → ⟦ ⌜ a ⌝ ⟧₀ (η⋆ y)) ⟦ ⌜ b ⌝ ⟧₀ x) ⟦ ⌜ c ⌝ ⟧₀) (⟦⌜Kleisli-extension⌝⟧ {!!} (⟨⟩ ‚ ⟦ ⌜ a ⌝ ⟧₀ ‚ ⟦ ⌜ b ⌝ ⟧₀) ⟨⟩)  ⟩
+ ⟦ ⌜Kleisli-extension⌝ {ι} {A} {σ} ⟧₀ (λ x → rec (λ y → ⟦ ⌜ a ⌝ ⟧₀ (η⋆ y)) ⟦ ⌜ b ⌝ ⟧₀ x) ⟦ ⌜ c ⌝ ⟧₀
+  ∎
+-}
+
+⟦⌜Rec⌝⟧ : {A : type} {σ : type} (a : T₀ (ι ⇒ σ ⇒ σ)) (b : T₀ σ) (c : T₀ ι)
+        → ⟦ ⌜_⌝  {〈〉} {σ} {A} (Rec a b c) ⟧₀
+       ＝ ⟦ ⌜Kleisli-extension⌝ {ι} {A} {σ} · (ƛ (Rec (ƛ (weaken, ι (weaken, ι ⌜ a ⌝) · (⌜η⌝ · ν₀))) (weaken, ι ⌜ b ⌝) ν₀)) · ⌜ c ⌝ ⟧₀
+⟦⌜Rec⌝⟧ {A} {σ} a b c =
+ ⟦ ⌜_⌝  {〈〉} {σ} {A} (Rec a b c) ⟧₀
+  ＝⟨ refl ⟩
+ ⟦ ⌜Kleisli-extension⌝ {ι} {A} {σ} ⟧ (⟨⟩ ‚ ⟦ ⌜ a ⌝ ⟧₀ ‚ ⟦ ⌜ b ⌝ ⟧₀)
+  (λ x → rec (λ y → ⟦ ⌜ a ⌝ ⟧₀ (η⋆ y)) ⟦ ⌜ b ⌝ ⟧₀ x)
+  ⟦ ⌜ c ⌝ ⟧₀
+  ＝⟨ ap₂ (λ p q → p q ⟦ ⌜ c ⌝ ⟧₀) (⟦⌜Kleisli-extension⌝⟧ {!!} (⟨⟩ ‚ ⟦ ⌜ a ⌝ ⟧₀ ‚ ⟦ ⌜ b ⌝ ⟧₀) ⟨⟩) (⟦⌜Rec⌝⟧-aux {!!} a b)  ⟩
+ ⟦ ⌜Kleisli-extension⌝ {ι} {A} {σ} ⟧₀
+   (λ x → rec (λ y → ⟦ weaken, ι (weaken, ι ⌜ a ⌝) ⟧ (⟨⟩ ‚ x ‚ y) (η⋆ y)) (⟦ weaken, ι ⌜ b ⌝ ⟧ (⟨⟩ ‚ x)) x)
+   ⟦ ⌜ c ⌝ ⟧₀
+  ＝⟨ refl ⟩
+ ⟦ ⌜Kleisli-extension⌝ {ι} {A} {σ} · (ƛ (Rec (ƛ (weaken, ι (weaken, ι ⌜ a ⌝) · (⌜η⌝ · ν₀))) (weaken, ι ⌜ b ⌝) ν₀)) · ⌜ c ⌝ ⟧₀
+  ∎
+
 ⌜main-lemma⌝ : {Γ : Cxt} {σ : type} (t : T Γ σ)
                (α : Baire)
                (xs : 【 Γ 】) (ys : Sub₀ Γ) --IB【 Γ 】 ((ι ⇒ ι) ⇒ ι))
@@ -1477,14 +1532,21 @@ close-Sub,,-as-close-Subƛ {Γ} {σ} {τ} t ys y =
   ＝⟨ refl ⟩
  dialogue⋆ ⟦ close ⌜succ⌝ ys · (close ⌜ t ⌝ (⌜Sub⌝ ys)) ⟧₀ α
   ∎
-⌜main-lemma⌝ {Γ} {_} (Rec f g t) α xs ys rxys =
- transport (λ k → R⋆ α (rec (⟦ f ⟧ xs) (⟦ g ⟧ xs) (⟦ t ⟧ xs))
-                       (k · close ⌜ f ⌝ (⌜Sub⌝ ys) · close ⌜ g ⌝ (⌜Sub⌝ ys) · close ⌜ t ⌝ (⌜Sub⌝ ys)))
-           (close-⌜rec⌝ (⌜Sub⌝ ys))
-           c
+⌜main-lemma⌝ {Γ} {σ} (Rec f g t) α xs ys rxys =
+ transport
+  (λ k → R⋆ α (rec (⟦ f ⟧ xs) (⟦ g ⟧ xs) (⟦ t ⟧ xs)) k)
+  (⌜close⌝ (Rec f g t) ys ⁻¹)
+  (R⋆-preserves-⟦⟧'
+    (rec (⟦ f ⟧ xs) (⟦ g ⟧ xs) (⟦ t ⟧ xs))
+    (⌜Kleisli-extension⌝ {ι} {(ι ⇒ ι) ⇒ ι} {σ} · (ƛ (Rec (ƛ (weaken, ι (weaken, ι ⌜ close f ys ⌝) · (⌜η⌝ · ν₀))) (weaken, ι ⌜ close g ys ⌝) ν₀)) · ⌜ close t ys ⌝)
+    ⌜ Rec (close f ys) (close g ys) (close t ys) ⌝
+    ((⟦⌜Rec⌝⟧ (close f ys) (close g ys) (close t ys)) ⁻¹)
+    c)
  where
   c : R⋆ α (rec (⟦ f ⟧ xs) (⟦ g ⟧ xs) (⟦ t ⟧ xs))
-           (⌜rec⌝ · close ⌜ f ⌝ (⌜Sub⌝ ys) · close ⌜ g ⌝ (⌜Sub⌝ ys) · close ⌜ t ⌝ (⌜Sub⌝ ys))
+           (⌜Kleisli-extension⌝
+             · ƛ (Rec (ƛ (weaken, ι (weaken, ι ⌜ close f ys ⌝) · (⌜η⌝ · ν₀))) (weaken, ι ⌜ close g ys ⌝) ν₀)
+             · ⌜ close t ys ⌝)
   c = {!!}
 ⌜main-lemma⌝ {Γ} {σ} (ν i) α xs ys rxys = rxys i
 ⌜main-lemma⌝ {Γ} {σ ⇒ τ} (ƛ t) α xs ys rxys x y rxy =
