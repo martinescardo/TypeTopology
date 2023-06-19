@@ -411,7 +411,7 @@ hg = qinveq f (g , gf , fg)
 
 \end{code}
 
-Not only are ℍ and 𝔾 isomorphic, but also so are the types of ℍ-paths
+Not only do we have an isomorphism ℍ ≃ 𝔾, but also so are the types of ℍ-paths
 and 𝔾-paths along this isomorphism.
 
 \begin{code}
@@ -480,7 +480,7 @@ a tree that has the same paths as Xt.
 \begin{code}
 
 prune : 𝕋 → 𝕋
-prune [] = []
+prune []       = []
 prune (X ∷ Xf) = (Σ x ꞉ X , ∥ Path (Xf x) ∥)
                ∷ (λ (x , _) → prune (Xf x))
 
