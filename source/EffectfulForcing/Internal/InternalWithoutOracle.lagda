@@ -1646,11 +1646,30 @@ allows us to pattern match on the structure of internal dialogue trees.
 
 \begin{code}
 
+data _≣⋆_ {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {A : 𝓣 ̇ } : D⋆ X Y Z A → D⋆ X Y Z A → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓣 ̇ where
+
+ ap-η⋆ : {z z' : Z}
+       → z ＝ z'
+       → η⋆ z ≣⋆ η⋆ z'
+
+ ap-β⋆ : {φ φ' : Y → D⋆ X Y Z A}
+         {x x' : X}
+       → ((y : Y) → φ y ≣⋆ φ' y)
+       → x ＝ x'
+       → β⋆ φ x ≣⋆ β⋆ φ' x'
+
+≣⋆-trans : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {A : 𝓣 ̇ } (d d' d'' : D⋆ X Y Z A)
+         → d ≣⋆ d' → d' ≣⋆ d'' → d ≣⋆ d''
+≣⋆-trans .(η⋆ _) .(η⋆ _) _ (ap-η⋆ x) y = {!!}
+≣⋆-trans .(β⋆ _ _) .(β⋆ _ _) d'' (ap-β⋆ x x₁) y = {!!}
+
+is-dialogue-for : (A : type) (d : B ℕ) (t : T₀ (B-type〖 ι 〗 A)) → Type
+is-dialogue-for A d t = ⟦ t ⟧₀ ≣⋆ church-encode d
+
 -- Logical predicate for internal dialogue trees which can be pattern matched on
 -- and for functions that preserve said pattern matching.
 Rnorm : {σ : type} (A : type) (t : T₀ (B-type〖 σ 〗 A)) → Type
-Rnorm {ι} A t = (Σ n ꞉ ℕ , ⟦ t ⟧₀ ＝ η⋆ n)
-              + (Σ ϕ ꞉ (ℕ → T₀ ι) , (Σ n ꞉ ℕ , ⟦ t ⟧₀ ＝ β⋆ (λ i → ⟦ ⌜ ϕ i ⌝ ⟧₀) n))
+Rnorm {ι}     A t = Σ d ꞉ B ℕ , is-dialogue-for A d t
 Rnorm {σ ⇒ τ} A t = (u : T₀ (B-type〖 σ 〗 A)) → Rnorm A u → Rnorm A (t · u)
 
 
@@ -1673,11 +1692,11 @@ Rnorm-preserves-⟦⟧ : {σ : type} (A : type) (t u : T₀ (B-type〖 σ 〗 A)
                    → ⟦ t ⟧₀ ＝ ⟦ u ⟧₀
                    → Rnorm A t
                    → Rnorm A u
-Rnorm-preserves-⟦⟧ {ι} A t u t＝u (inl (n ,     eq)) = inl (n     , (t＝u ⁻¹ ∙ eq))
-Rnorm-preserves-⟦⟧ {ι} A t u t＝u (inr (ϕ , n , eq)) = inr (ϕ , n , (t＝u ⁻¹ ∙ eq))
+Rnorm-preserves-⟦⟧ {ι} A t u t＝u (d , eq) = d , transport (_≣⋆ church-encode d) t＝u {!eq!}
 Rnorm-preserves-⟦⟧ {σ ⇒ τ} A t u t＝u Rnorm-t v Rnorm-v =
  Rnorm-preserves-⟦⟧ A (t · v) (u · v) (ap (λ f → f ⟦ v ⟧₀) t＝u) (Rnorm-t v Rnorm-v)
 
+{--
 -- Since rec is interpreted using ⌜Kleisli-extension⌝, we need to know that
 -- ⌜Kleisli-extension⌝ preserves this normalisation property.
 Rnorm-kleisli-lemma : {Γ : Cxt} {σ : type} (A : type) (xs : IB【 Γ 】 A)
@@ -1705,7 +1724,6 @@ Rnorm-kleisli-lemma {Γ} {σ ⇒ τ} A xs f t Rnorm-xs Rnorm-f Rnorm-t u Rnorm-u
 
   --foo : Rnorm A {!!}
   --foo = {!!} Rnorm-kleisli-lemma A {!!} (ƛ (ν₃ · ν₀ · ν₁)) ν₁ {!!} {!!} {!!} {!!} {!!}
-
 
 {-
 Rnorm A
@@ -1780,18 +1798,28 @@ Rnorm-Rec {Γ} {σ ⇒ τ} A xs t u v Rnorm-xs Rnorm-t Rnorm-u Rnorm-v w Rnorm-w
 --Rnorm-Rec xs t u v Rnorm-xs Rnorm-t Rnorm-u (inr x) = {!!}
 -}
 
+
+--}
+
+church-encode-is-natural : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓣 ̇ } (g : X → Y) (d : B X)
+                         → B⋆-functor g (church-encode {A = A} d) ≣⋆ church-encode (B-functor g d)
+church-encode-is-natural g (η n)   = ap-η⋆ refl
+church-encode-is-natural g (β ϕ n) = ap-β⋆ (λ y → church-encode-is-natural g (ϕ y)) refl
+
 Rnorm-lemma : {Γ : Cxt} {σ : type} (A : type) (xs : IB【 Γ 】 A) (t : T Γ σ)
             → Rnorms A xs
             → Rnorm A (close ⌜ t ⌝ xs)
 
 -- The zero term is always equal to the leaf holding zero.
-Rnorm-lemma A xs Zero Rnorm-xs = inl (zero , refl)
+Rnorm-lemma A xs Zero Rnorm-xs = η zero , ap-η⋆ refl
 
 -- If at a leaf, apply successor to leaf value.
 -- If at a branching node, propagate the successor one level down.
 Rnorm-lemma A xs (Succ t) Rnorm-xs with Rnorm-lemma A xs t Rnorm-xs
-... | inl (n ,     eq) = inl (succ n                 , ap (λ d η' β' → d (λ x → η' (succ x)) β') eq)
-... | inr (ϕ , n , eq) = inr ((λ i → Succ (ϕ i)) , n , ap (λ d η' β' → d (λ x → η' (succ x)) β') eq)
+... | (d , eq) = B-functor succ d , {!!}
+ where
+  foo : B⋆-functor succ (church-encode {A = (ℕ → ℕ) → ℕ} d) ≣⋆ church-encode (B-functor succ d)
+  foo = church-encode-is-natural succ d
 
 Rnorm-lemma A xs (Rec t u v) Rnorm-xs =
  {!!} -- Rnorm-Rec xs t u v Rnorm-xs (Rnorm-lemma xs t Rnorm-xs) (Rnorm-lemma xs u Rnorm-xs) (Rnorm-lemma xs v Rnorm-xs)
@@ -1799,16 +1827,16 @@ Rnorm-lemma A xs (Rec t u v) Rnorm-xs =
 Rnorm-lemma A xs (ν i) Rnorm-xs = Rnorm-xs i
 
 
-Rnorm-lemma A xs (ƛ t) Rnorm-xs u Rnorm-u =
- Rnorm-preserves-⟦⟧ A (close ⌜ t ⌝ (Sub,, xs u)) (ƛ (close ⌜ t ⌝ (Subƛ xs)) · u) eq (Rnorm-lemma A (Sub,, xs u) t Rnorm-xs,,u)
- where
+Rnorm-lemma A xs (ƛ t) Rnorm-xs u Rnorm-u = {!!}
+ --Rnorm-preserves-⟦⟧ A (close ⌜ t ⌝ (Sub,, xs u)) (ƛ (close ⌜ t ⌝ (Subƛ xs)) · u) eq (Rnorm-lemma A (Sub,, xs u) t Rnorm-xs,,u)
+ --where
 
-  eq : ⟦ close ⌜ t ⌝ (Sub,, xs u) ⟧₀ ＝ ⟦ ƛ (close ⌜ t ⌝ (Subƛ xs)) · u ⟧₀
-  eq = {!!}
+ -- eq : ⟦ close ⌜ t ⌝ (Sub,, xs u) ⟧₀ ＝ ⟦ ƛ (close ⌜ t ⌝ (Subƛ xs)) · u ⟧₀
+ -- eq = {!!}
 
-  Rnorm-xs,,u : Rnorms A (Sub,, xs u)
-  Rnorm-xs,,u (∈Cxt0 _)   = Rnorm-u
-  Rnorm-xs,,u (∈CxtS _ i) = Rnorm-xs i
+ -- Rnorm-xs,,u : Rnorms A (Sub,, xs u)
+ -- Rnorm-xs,,u (∈Cxt0 _)   = Rnorm-u
+ -- Rnorm-xs,,u (∈CxtS _ i) = Rnorm-xs i
 
 Rnorm-lemma A xs (t · u) Rnorm-xs = Rnorm-lemma A xs t Rnorm-xs (close ⌜ u ⌝ xs) (Rnorm-lemma A xs u Rnorm-xs)
 
@@ -1862,7 +1890,6 @@ Rnorm-lemma A xs (t · u) Rnorm-xs = Rnorm-lemma A xs t Rnorm-xs (close ⌜ u �
 With this normalisation lemma proved, we can now prove results about
 church-encoded dialogue trees much more easily.
 
-\begin{code}
 
 close-Sub〈〉 : {σ : type} (t : T₀ σ) → close t Sub〈〉 ＝ t
 close-Sub〈〉 Zero        = refl
