@@ -214,17 +214,18 @@ Now suppose we insist, for the purposes of game theory, as we will, on
 working with 𝕋 rather than 𝔸, with our original definition of path,
 and with [] to indicate the end of a play in a game.
 
-Then we should better disregard subtrees whose roots are empty.
+Then we should better rule out subtrees whose roots are empty.
 
 In constructive mathematics it is usual to regard a type X to be
-inhabited if we can exhibit some x : X. But this is data rather than
-property. Following the philosophy of univalent foundations and
+inhabited if we can exhibit some x : X. But this is *data* rather than
+*property*. Following the philosophy of univalent foundations and
 homotopy type theory, we will instead say that X is inhabited if we
-can exibit a point of its propositional truncation ∥ X ∥. (In the case
-where we can exhibit some x : X, we say that X is pointed.)
+can exibit a point of its propositional truncation ∥ X ∥, which is
+property. (In the case where we can exhibit some x : X, we say that X
+is pointed.)
 
-So we consider trees with the property that the root of each subtree
-is inhabited. We call them *hereditarily inhabited*.
+So we consider trees whose internal nodes are all inhabited. We call
+them *hereditarily inhabited*.
 
 \begin{code}
 
@@ -300,7 +301,8 @@ Then the leafs of ℍ trees are defined as follows.
 \end{code}
 
 We now need a lemma for establishing equality in 𝔸, where Idtofun p
-converts a type identification p : X ＝ Y into a function X → Y.
+converts a type identification p : X ＝ Y of two types X and Y into a
+function X → Y (which is automatically an isomorphism).
 
 \begin{code}
 
@@ -314,7 +316,8 @@ to-𝔸-＝ Xf Xf refl refl = refl
 \end{code}
 
 With this, using univalence, we see that if X is empty then
-[]ᴬ ＝ (X ∷ Xf) for any forest Xf : X → 𝔸.
+[]ᴬ ＝ (X ∷ Xf) for any forest Xf : X → 𝔸. (This is actually the only
+use of univalence in this file.)
 
 \begin{code}
 
@@ -328,12 +331,21 @@ With this, using univalence, we see that if X is empty then
    I = eqtoid (ua 𝓤₀) 𝟘 X (≃-sym (empty-≃-𝟘 e))
 
    II : unique-from-𝟘 ＝ Xf ∘ Idtofun I
-   II = dfunext fe (λ x → 𝟘-elim x)
+   II = dfunext fe (λ (x : 𝟘) → 𝟘-elim x)
 
 \end{code}
 
 And with this we can prove that the hereditarily decidable 𝔸 trees
 form a type isomorphic to that of hereditarily inhabited 𝕋 trees.
+
+The idea of the construction of the isomorphism is to replace every
+subtree X ∷ Xf of the given tree, with X empty, by []. This is
+possible because we assumed that the internal nodes are decidable. And
+then it is clear that the resulting internal nodes are all inhabited.
+
+In the other direction, we replace [] by []ᴬ := 𝟘 : unique-from-𝟘,
+whose root decidable because it is empty. And also the resulting
+internal nodes are decible because they are inhabited
 
 \begin{code}
 
@@ -592,6 +604,6 @@ trees. However, empty internal nodes play no role, because, as we have
 discussed, if we prune them away we obtain a tree with the same paths,
 and all that matters about a tree, for the purposes of game theory,
 are its paths, which correspond to full plays in a game. One advantage
-of the the original development using 𝕋 is that it works in pure MLTT,
+of the original development using 𝕋 is that it works in pure MLTT,
 whereas the approach using 𝔾 or ℍ requires propositional truncation
 and function extensionality.
