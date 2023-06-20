@@ -12,6 +12,7 @@ open import UF.Univalence
 open import UF.FunExt
 open import UF.Equiv-FunExt
 open import UF.Equiv hiding (_≅_; ≅-refl)
+open import UF.EquivalenceExamples
 open import UF.UA-FunExt
 open import UF.Subsingletons-FunExt
 import UF.PairFun as PairFun
@@ -78,22 +79,15 @@ module
   ≅-refl : (u : L X) → u ≅ u
   ≅-refl u = (id , id) , λ _ → refl
 
-  -- TODO: move or find in library
-  Σ-assoc-equiv
-   : {𝓥 𝓦 𝓧 : _} {A : 𝓥 ̇} {B : A → 𝓦 ̇} {C : (x : A) → B x → 𝓧 ̇}
-   → (Σ xy ꞉ Σ B , C (pr₁ xy) (pr₂ xy)) ≃ (Σ x ꞉ A , Σ y ꞉ B x , C x y)
-  pr₁ Σ-assoc-equiv ((x , y) , z) = x , (y , z)
-  pr₁ (pr₁ (pr₂ Σ-assoc-equiv)) (x , y , z) = (x , y) , z
-  pr₂ (pr₁ (pr₂ Σ-assoc-equiv)) _ = refl
-  pr₁ (pr₂ (pr₂ Σ-assoc-equiv)) (x , y , z) = (x , y) , z
-  pr₂ (pr₂ (pr₂ Σ-assoc-equiv)) _ = refl
-
   module _ (𝓣𝓥-fe : funext 𝓣 𝓥) where
    ＝-to-≅ : (u v : L X) → (u ＝ v) ≃ (u ≅ v)
    ＝-to-≅ u v =
-    (u ＝ v) ≃⟨ step1 u v ⟩
-    fam-≅ (u ↓ , value u) (v ↓ , value v) ≃⟨ step2 ⟩
-    (Σ f ꞉ (u ↓ → v ↓) , (v ↓ → u ↓) × value u ∼ value v ∘ f) ≃⟨ ≃-sym Σ-assoc-equiv ⟩
+    (u ＝ v)
+     ≃⟨ step1 u v ⟩
+    fam-≅ (u ↓ , value u) (v ↓ , value v)
+     ≃⟨ step2 ⟩
+    (Σ f ꞉ (u ↓ → v ↓) , (v ↓ → u ↓) × value u ∼ value v ∘ f)
+     ≃⟨ ≃-sym Σ-assoc ⟩
     u ≅ v ■
 
     where
