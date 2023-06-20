@@ -1530,7 +1530,7 @@ close-Sub,,-as-close-Subƛ {Γ} {σ} {τ} t ys y =
                           · t')
 ⌜main-lemma⌝-rec {ι} α f g t f' g' t' rf rg rt =
  rec f g t
-  ＝⟨ {!ap (rec f g) rt!} ⟩
+  ＝⟨ ap (rec f g) rt ⟩
  rec f g (⟦ t' ⟧₀ (λ z α₁ → z) (λ φ x α₁ → φ (α₁ x) α₁) α)
   ＝⟨ {!!} ⟩
  ⟦ t' ⟧₀
@@ -1543,7 +1543,85 @@ close-Sub,,-as-close-Subƛ {Γ} {σ} {τ} t ys y =
   ＝⟨ refl ⟩
  dialogue⋆ ⟦ ⌜kleisli-extension⌝ · ƛ (Rec (ƛ (weaken, ι (weaken, ι f') · (⌜η⌝ · ν₀))) (weaken, ι g') ν₀) · t' ⟧₀ α
   ∎
-⌜main-lemma⌝-rec {σ ⇒ σ₁} α f g t f' g' t' rf rg rt = {!!}
+⌜main-lemma⌝-rec {σ ⇒ τ} α f g t f' g' t' rf rg rt x x' rx =
+ R⋆-preserves-⟦⟧'
+  (rec f g t x)
+  (⌜Kleisli-extension⌝ · ƛ (Rec (ƛ (weaken, ι (weaken, ι f') · (⌜η⌝ · ν₀))) (weaken, ι g') ν₀ · weaken, ι  ⌜ x' ⌝) · t')
+  (ƛ (ƛ (ƛ (⌜Kleisli-extension⌝ · ƛ (ν₃ · ν₀ · ν₁) · ν₁))) ·
+    ƛ (Rec (ƛ (weaken, ι (weaken, ι f') · (⌜η⌝ · ν₀))) (weaken, ι g') ν₀)
+    · t'
+    · ⌜ x' ⌝)
+   e c
+ where
+  c : R⋆ α (rec f g t x)
+           (⌜Kleisli-extension⌝
+            · ƛ (Rec (ƛ (weaken, ι (weaken, ι f') · (⌜η⌝ · ν₀))) (weaken, ι g') ν₀ · weaken, ι ⌜ x' ⌝)
+            · t')
+  c = {!!}
+
+  e : ⟦ ⌜Kleisli-extension⌝
+        · ƛ (Rec (ƛ (weaken, ι (weaken, ι f') · (⌜η⌝ · ν₀))) (weaken, ι g') ν₀ · weaken, ι ⌜ x' ⌝)
+        · t' ⟧₀
+      ＝ ⟦ ƛ (ƛ (ƛ (⌜Kleisli-extension⌝ · ƛ (ν₃ · ν₀ · ν₁) · ν₁)))
+           · ƛ (Rec (ƛ (weaken, ι (weaken, ι f') · (⌜η⌝ · ν₀))) (weaken, ι g') ν₀)
+           · t'
+           · ⌜ x' ⌝ ⟧₀
+  e =
+   ⟦ ⌜Kleisli-extension⌝
+     · ƛ (Rec (ƛ (weaken, ι (weaken, ι f') · (⌜η⌝ · ν₀))) (weaken, ι g') ν₀ · weaken, ι ⌜ x' ⌝)
+     · t' ⟧₀
+    ＝⟨ refl ⟩
+   ⟦ ⌜Kleisli-extension⌝ ⟧₀
+     (λ w → ⟦ Rec (ƛ (weaken, ι (weaken, ι f') · (⌜η⌝ · ν₀))) (weaken, ι g') ν₀ ⟧ (⟨⟩ ‚ w) (⟦ weaken, ι ⌜ x' ⌝ ⟧ (⟨⟩ ‚ w)))
+     ⟦ t' ⟧₀
+    ＝⟨ ap₂
+          (λ p q → p (λ w → ⟦ Rec (ƛ (weaken, ι (weaken, ι f') · (⌜η⌝ · ν₀))) (weaken, ι g') ν₀ ⟧ (⟨⟩ ‚ w) (q (⟨⟩ ‚ w))) ⟦ t' ⟧₀)
+          (⟦⌜Kleisli-extension⌝⟧ {!!} ⟨⟩ (⟨⟩ ‚ ⟦ ƛ (Rec (ƛ (weaken, ι (weaken, ι f') · (⌜η⌝ · ν₀))) (weaken, ι g') ν₀) ⟧₀ ‚ ⟦ t' ⟧₀ ‚ ⟦ ⌜ x' ⌝ ⟧₀))
+          (⟦weaken⟧ ⌜ x' ⌝ (⊆, 〈〉 ι)) ⟩
+   ⟦ ⌜Kleisli-extension⌝ ⟧ (⟨⟩ ‚ ⟦ ƛ (Rec (ƛ (weaken, ι (weaken, ι f') · (⌜η⌝ · ν₀))) (weaken, ι g') ν₀) ⟧₀ ‚ ⟦ t' ⟧₀ ‚ ⟦ ⌜ x' ⌝ ⟧₀)
+     (λ w → ⟦ Rec (ƛ (weaken, ι (weaken, ι f') · (⌜η⌝ · ν₀))) (weaken, ι g') ν₀ ⟧ (⟨⟩ ‚ w) ⟦ ⌜ x' ⌝ ⟧₀)
+     ⟦ t' ⟧₀
+    ＝⟨ refl ⟩
+   ⟦ ƛ (ƛ (ƛ (⌜Kleisli-extension⌝ · ƛ (ν₃ · ν₀ · ν₁) · ν₁)))
+     · ƛ (Rec (ƛ (weaken, ι (weaken, ι f') · (⌜η⌝ · ν₀))) (weaken, ι g') ν₀)
+     · t'
+     · ⌜ x' ⌝ ⟧₀
+    ∎
+
+ℕ→T : ℕ → T 〈〉 ι
+ℕ→T zero = Zero
+ℕ→T (succ n) = Succ (ℕ→T n)
+
+⌜main-lemma⌝-rec-zero : {σ : type}
+                        (a : T (〈〉 ,, ι) (ι ⇒ B-type〖 σ ⇒ σ 〗 ((ι ⇒ ι) ⇒ ι)))
+                        (b : T₀ (B-type〖 σ 〗 ((ι ⇒ ι) ⇒ ι)))
+                      → ⟦ (ƛ (Rec a (weaken, ι b) ν₀)) · Zero ⟧₀
+                     ＝ ⟦ b ⟧₀
+⌜main-lemma⌝-rec-zero {σ} a b =
+ ⟦ (ƛ (Rec a (weaken, ι b) ν₀)) · Zero ⟧₀
+  ＝⟨ refl ⟩
+ rec (⟦ a ⟧ (⟨⟩ ‚ zero)) (⟦ weaken, ι b ⟧ (⟨⟩ ‚ zero)) zero
+  ＝⟨ refl ⟩
+ ⟦ weaken, ι b ⟧ (⟨⟩ ‚ zero)
+  ＝⟨ ap (λ k → k (⟨⟩ ‚ zero)) (⟦weaken⟧ b (⊆, 〈〉 ι)) ⟩
+ ⟦ b ⟧₀
+  ∎
+
+⌜main-lemma⌝-rec-succ : {σ : type}
+                        (a : T₀ (B-type〖 ι ⇒ σ ⇒ σ 〗 ((ι ⇒ ι) ⇒ ι)))
+                        (b : T₀ (B-type〖 σ 〗 ((ι ⇒ ι) ⇒ ι)))
+                        (n : T₀ ι)
+                      → ⟦ (ƛ (Rec (ƛ (weaken, ι (weaken, ι a) · (⌜η⌝ · ν₀))) (weaken, ι b) ν₀)) · Succ n ⟧₀
+                     ＝ ⟦ a · (⌜η⌝ · n) · Rec (ƛ (weaken, ι a · (⌜η⌝ · ν₀))) b n ⟧₀
+⌜main-lemma⌝-rec-succ {σ} a b n =
+ ⟦ (ƛ (Rec (ƛ (weaken, ι (weaken, ι a) · (⌜η⌝ · ν₀))) (weaken, ι b) ν₀)) · Succ n ⟧₀
+  ＝⟨ refl ⟩
+ rec (⟦ ƛ (weaken, ι (weaken, ι a) · (⌜η⌝ · ν₀)) ⟧ (⟨⟩ ‚ succ ⟦ n ⟧₀)) (⟦ weaken, ι b ⟧ (⟨⟩ ‚ succ ⟦ n ⟧₀)) (succ ⟦ n ⟧₀)
+  ＝⟨ refl ⟩
+ ⟦ ƛ (weaken, ι (weaken, ι a) · (⌜η⌝ · ν₀)) ⟧ (⟨⟩ ‚ succ ⟦ n ⟧₀) ⟦ n ⟧₀ (rec (⟦ ƛ (weaken, ι (weaken, ι a) · (⌜η⌝ · ν₀)) ⟧ (⟨⟩ ‚ succ ⟦ n ⟧₀)) (⟦ weaken, ι b ⟧ (⟨⟩ ‚ succ ⟦ n ⟧₀)) ⟦ n ⟧₀)
+  ＝⟨ {!!} ⟩
+ ⟦ a · (⌜η⌝ · n) · Rec (ƛ (weaken, ι a · (⌜η⌝ · ν₀))) b n ⟧₀
+  ∎
 
 ⌜main-lemma⌝ : {Γ : Cxt} {σ : type} (t : T Γ σ)
                (α : Baire)
@@ -1575,8 +1653,30 @@ close-Sub,,-as-close-Subƛ {Γ} {σ} {τ} t ys y =
                                  · r))
        (⌜close⌝ f ys) (⌜close⌝ g ys) (⌜close⌝ t ys) c))
  where
+  rn : ℕ → 〖 σ 〗
+  rn n = rec (⟦ f ⟧ xs) (⟦ g ⟧ xs) n
+
+  rn' : T₀ (ι ⇒ B-type〖 σ 〗 ((ι ⇒ ι) ⇒ ι))
+  rn' = ƛ (Rec (ƛ (weaken, ι (weaken, ι (close ⌜ f ⌝ (⌜Sub⌝ ys))) · (⌜η⌝ · ν₀))) (weaken, ι (close ⌜ g ⌝ (⌜Sub⌝ ys))) ν₀)
+
+  rnn : (n : ℕ) → R⋆ α (rn n) (rn' · ℕ→T n)
+  rnn zero = r
+   where
+    r : R⋆ α (⟦ g ⟧ xs) (rn' · Zero)
+    r = R⋆-preserves-⟦⟧'
+         (⟦ g ⟧ xs)
+         (close ⌜ g ⌝ (⌜Sub⌝ ys))
+         (rn' · Zero)
+         (⌜main-lemma⌝-rec-zero (ƛ (weaken, ι (weaken, ι (close ⌜ f ⌝ (⌜Sub⌝ ys))) · (⌜η⌝ · ν₀))) (close ⌜ g ⌝ (⌜Sub⌝ ys)) ⁻¹)
+         (⌜main-lemma⌝ g α xs ys rxys)
+  rnn (succ n) = r
+   where
+    r : R⋆ α (⟦ f ⟧ xs n (rn n)) (rn' · Succ (ℕ→T n))
+    r = {!!} -- use R⋆-preserves-⟦⟧' and ⌜main-lemma⌝-rec-succ
+
+  -- Could we generalise this lemma (⌜main-lemma⌝-rec) with the above as it is done in LambdaWithoutOracle?
   c : R⋆ α (rec (⟦ f ⟧ xs) (⟦ g ⟧ xs) (⟦ t ⟧ xs))
-           (⌜Kleisli-extension⌝
+           (⌜Kleisli-extension⌝ {ι} {(ι ⇒ ι) ⇒ ι} {σ}
              · ƛ (Rec (ƛ (weaken, ι (weaken, ι (close ⌜ f ⌝ (⌜Sub⌝ ys))) · (⌜η⌝ · ν₀))) (weaken, ι (close ⌜ g ⌝ (⌜Sub⌝ ys))) ν₀)
              · close ⌜ t ⌝ (⌜Sub⌝ ys))
   c = ⌜main-lemma⌝-rec α
