@@ -83,6 +83,11 @@ _<₃_ = finite-strict-order 𝟛-finite
 
 test : ℕ → 𝟛ᴺ
 test ε = pr₁ (𝟛ᴺ-global-opt¹ neg neg-ucontinuous ε)
+
+test2 : ℕ → 𝟛ᴺ
+test2 ε = pr₁ (𝟛ᴺ-global-opt¹ (λ x → mul x x)
+            mul-b-ucontinuous ε)
+
 {-
 test-eq : test 5 4 ＝ +1
 test-eq = refl
@@ -90,6 +95,7 @@ test-eq = refl
 test-eq-vec : test 5 ＝ Vec-to-Seq O (+1 ∷ (+1 ∷ (+1 ∷ (+1 ∷ [ +1 ]))))
 test-eq-vec = refl
 -}
+
 𝟛ᴺ-csearchable : {𝓦 : Universe} → csearchable 𝓦 𝟛ᴺ-ClosenessSpace
 𝟛ᴺ-csearchable
  = csearchable'→csearchable 𝟛ᴺ-ClosenessSpace
@@ -98,6 +104,11 @@ test-eq-vec = refl
   γ : (ϵ : ℕ) → pr₁ (pr₁ (𝟛ᴺ-totally-bounded ϵ)) -- TODO separate
   γ zero = []
   γ (succ ε) = O ∷ γ ε
+
+𝟛ᴺ-csearchable₂ : {𝓦 : Universe} → csearchable 𝓦 𝟛ᴺ-ClosenessSpace
+𝟛ᴺ-csearchable₂
+ = csearchable'→csearchable 𝟛ᴺ-ClosenessSpace
+   (discrete-finite-seq-csearchable O 𝟛-finite)
 
 -- Move to ApproxOrder?
 {-
@@ -154,7 +165,6 @@ discrete-approx-lexicorder-l-decidable f ε y x
        , transport (_<₃ y i)
            (C-to-∼ⁿ 𝟛-is-discrete x₁ x₂ ε Cx₁x₂ i i<ε) x₁i<yi)
   
-
 -- TODO: Move to Chapter3.ClosenessSpaces
 p-ucontinuous-comp : (X : ClosenessSpace 𝓤)
                    → (Y : ClosenessSpace 𝓥)
@@ -229,6 +239,9 @@ question* ε = ((λ x → question x ε)
 search-test : ℕ → 𝟛ᴺ
 search-test ε = pr₁ 𝟛ᴺ-csearchable (question* ε)
 
+search-test₂ : ℕ → 𝟛ᴺ
+search-test₂ ε = pr₁ 𝟛ᴺ-csearchable₂ (question* ε) 
+
 1/3 : 𝟛ᴺ
 1/3 0 =  O
 1/3 1 = +1
@@ -297,12 +310,7 @@ FunPoints-clofun-is-psclofun X Y {n} v
  where
   γ : is-closeness (pr₁ (Vec-clospace Y n))
   γ = pr₂ (Vec-clospace Y n)
- {-
 
- where
-  γ : is-closeness (pr₁ (Vec-clospace Y n))
-  γ = pr₂ (Vec-clospace Y n)
--}
 FunPoints-PseudoClosenessSpace : (X : 𝓤 ̇ ) (Y : ClosenessSpace 𝓥)
                                → (f : X → ⟨ Y ⟩)
                                → {n : ℕ}
@@ -315,6 +323,36 @@ FunPoints-PseudoClosenessSpace X Y f v
 
 open import MLTT.Two-Properties
 
+close-to-close' : (X : ClosenessSpace 𝓤)
+                → (Y : ClosenessSpace 𝓥)
+                → (Z : ClosenessSpace 𝓦)
+                → (f : ⟨ X ⟩ → ⟨ Y ⟩ → ⟨ Z ⟩)
+                → (Ω' : ⟨ Y ⟩ → ⟨ Z ⟩)
+                → {n : ℕ} (v : Vec ⟨ Y ⟩ n)
+                → f-ucontinuous (×-ClosenessSpace X Y) Z (uncurry f)
+                → f-ucontinuous' (ι X)
+                    (FunPoints-PseudoClosenessSpace ⟨ Y ⟩ Z Ω' v) f
+close-to-close' X Y Z f Ω' [] ϕ ε = 0 , λ _ _ _ _ _ → refl
+close-to-close' X Y Z f Ω' v@(y ∷ ys) ϕ ε = δ , γ
+ where
+  IH = close-to-close' X Y Z f Ω' ys ϕ ε
+  δ δ₁ δ₂ : ℕ
+  δ₁ = pr₁ (ϕ ε)
+  δ₂ = pr₁ IH
+  δ  = max δ₁ δ₂
+  γ : (x₁ x₂ : ⟨ X ⟩) → C X δ x₁ x₂
+    → C' (FunPoints-PseudoClosenessSpace ⟨ Y ⟩ Z Ω' v) ε (f x₁) (f x₂)
+  γ x₁ x₂ Cδx₁x₂ n z
+   = Lemma[a＝₁→b＝₁→min𝟚ab＝₁]
+       (pr₂ (ϕ ε) (x₁ , y) (x₂ , y)
+         (C-prev (×-ClosenessSpace X Y) δ δ₁ (max-≤-upper-bound δ₁ δ₂)
+           (x₁ , y) (x₂ , y)
+           (×-C-combine X Y x₁ x₂ y y δ Cδx₁x₂ (C-refl Y δ y))) n z)
+       (pr₂ IH x₁ x₂
+         (C-prev X δ δ₂ (max-≤-upper-bound' δ₂ δ₁) x₁ x₂ Cδx₁x₂) n z)
+  
+
+-- check if below needed, or if above is enough
 close-to-close : (X : ClosenessSpace 𝓤)
                → (Y : ClosenessSpace 𝓥)
                → (Z : ClosenessSpace 𝓦)
@@ -415,11 +453,160 @@ perfect-regression-test-param-only {n} ε v
             𝟛ᴺ-ClosenessSpace Ω' v)
           𝟛ᴺ-csearchable ε
 
+-- Move to Chapter 3
+id-ucontinuous : (X : ClosenessSpace 𝓤)
+               → f-ucontinuous X X id
+id-ucontinuous X ε = ε , λ _ _ → id
+
+simpler-perfect-regression-test : {n : ℕ} → ℕ → Vec 𝟛ᴺ n → (𝟛ᴺ → 𝟛ᴺ)
+simpler-perfect-regression-test {n} ε v
+ = M (reg M ϕᴹ Ω')
+ where
+  M : 𝟛ᴺ → (𝟛ᴺ → 𝟛ᴺ)
+  M = mid
+  k : 𝟛ᴺ
+  k = 1/3
+  Ω' = M k -- Ω(x) ≔ (1/3 + x) / 2
+  𝟛ᴺ→𝟛ᴺ-PseudoClosenessSpace
+   = FunPoints-PseudoClosenessSpace 𝟛ᴺ 𝟛ᴺ-ClosenessSpace Ω' v
+  ϕᴹ' : (y : 𝟛ᴺ) → f-ucontinuous 𝟛ᴺ-ClosenessSpace 𝟛ᴺ-ClosenessSpace
+                     (λ x → mid y x)
+  ϕᴹ' y = f-ucontinuous-comp
+            𝟛ᴺ-ClosenessSpace 𝟛ᴺ-ClosenessSpace 𝟛ᴺ-ClosenessSpace
+            id (mid y)
+            (id-ucontinuous 𝟛ᴺ-ClosenessSpace) (mid-r-ucontinuous y)
+  ϕᴹ'' : (x : 𝟛ᴺ) → f-ucontinuous 𝟛ᴺ-ClosenessSpace 𝟛ᴺ-ClosenessSpace
+                     (λ y → mid y x)
+  ϕᴹ'' x = mid-l-ucontinuous x
+  ϕᴹ : f-ucontinuous' (ι 𝟛ᴺ-ClosenessSpace)
+         (FunPoints-PseudoClosenessSpace ⟨ 𝟛ᴺ-ClosenessSpace ⟩
+           𝟛ᴺ-ClosenessSpace Ω' v) M 
+  ϕᴹ = close-to-close
+         𝟛ᴺ-ClosenessSpace 𝟛ᴺ-ClosenessSpace 𝟛ᴺ-ClosenessSpace
+         M v ϕᴹ' ϕᴹ'' k
+  𝓔S : csearchable 𝓤₀ 𝟛ᴺ-ClosenessSpace
+  𝓔S = 𝟛ᴺ-csearchable {𝓤₀}
+  reg : regressor
+          𝟛ᴺ-ClosenessSpace
+          (FunPoints-PseudoClosenessSpace 𝟛ᴺ 𝟛ᴺ-ClosenessSpace Ω' v)
+  reg = p-regressor 𝟛ᴺ-ClosenessSpace
+          (FunPoints-PseudoClosenessSpace 𝟛ᴺ
+            𝟛ᴺ-ClosenessSpace Ω' v)
+          𝟛ᴺ-csearchable ε
+
 endpoints : Vec 𝟛ᴺ 3
 endpoints = repeat −1 ∷ ((repeat O) ∷ [ (repeat +1) ])
 
-preg-test-eq : ℕ → 𝟛ᴺ
-preg-test-eq n = perfect-regression-test-param-only n endpoints
+preg-test-eq : ℕ → (𝟛ᴺ → 𝟛ᴺ)
+preg-test-eq n = simpler-perfect-regression-test n endpoints
+
+allofthemare : (Y : PseudoClosenessSpace 𝓥)
+-- Replace condition in Theorem 4.2.8 with this
+             → (Ω : ⟪ Y ⟫)
+             → let c = pr₁ (pr₂ Y) in
+               f-ucontinuous' Y (ι ℕ∞-ClosenessSpace) (c Ω)
+allofthemare Y Ω ϵ = ϵ , γ
+ where
+  c = pr₁ (pr₂ Y)
+  c-sym = pr₁ (pr₂ (pr₂ (pr₂ Y)))
+  c-ult = pr₂ (pr₂ (pr₂ (pr₂ Y)))
+  γ : (y₁ y₂ : ⟪ Y ⟫)
+    → C' Y ϵ y₁ y₂
+    → C' (ι ℕ∞-ClosenessSpace) ϵ (c Ω y₁) (c Ω y₂)
+  γ y₁ y₂ Cϵy₁y₂ n n⊏ϵ
+   = decidable-𝟚₁ (discrete-decidable-seq _ _ _ (succ n))
+       λ k k<sn → CΩ-eq k (<-≤-trans k (succ n) ϵ k<sn (⊏-gives-< n ϵ n⊏ϵ))
+   where
+    CΩ-eq : (pr₁ (c Ω y₁) ∼ⁿ pr₁ (c Ω y₂)) ϵ
+    CΩ-eq n n<ϵ with 𝟚-possibilities (pr₁ (c Ω y₁) n)
+                   | 𝟚-possibilities (pr₁ (c Ω y₂) n)
+    ... | inl cΩy₁＝₀ | inl cΩy₂＝₀ = cΩy₁＝₀ ∙ cΩy₂＝₀ ⁻¹
+    ... | inl cΩy₁＝₀ | inr cΩy₂＝₁
+     = 𝟘-elim (zero-is-not-one
+     (cΩy₁＝₀ ⁻¹
+     ∙ c-ult Ω y₂ y₁ n
+         (Lemma[a＝₁→b＝₁→min𝟚ab＝₁] cΩy₂＝₁
+           (ap (λ - → pr₁ - n) (c-sym y₂ y₁)
+            ∙ Cϵy₁y₂ n (<-gives-⊏ n ϵ n<ϵ)))))
+    ... | inr cΩy₁＝₁ | inl cΩy₂＝₀
+     = 𝟘-elim (zero-is-not-one
+     (cΩy₂＝₀ ⁻¹
+     ∙ c-ult Ω y₁ y₂ n
+         (Lemma[a＝₁→b＝₁→min𝟚ab＝₁] cΩy₁＝₁
+           (Cϵy₁y₂ n (<-gives-⊏ n ϵ n<ϵ))))) 
+    ... | inr cΩy₁＝₁ | inr cΩy₂＝₁ = cΩy₁＝₁ ∙ cΩy₂＝₁ ⁻¹
+    
+
+{-λ y₁ y₂ Cϵy₁y₂ n n⊏ε
+ → decidable-𝟚₁ (discrete-decidable-seq 𝟚-is-discrete _ _ (succ n))
+     λ i i<sn → γ y₁ y₂ Cϵy₁y₂ i
+       (<-≤-trans i (succ n) ϵ i<sn (⊏-gives-< n ϵ n⊏ε))
+ where
+  c = pr₁ (pr₂ Y)
+  γ : (y₁ y₂ : ⟪ Y ⟫) → C' Y ϵ y₁ y₂ → (pr₁ (c Ω y₁) ∼ⁿ pr₁ (c Ω y₂)) ϵ
+  γ y₁ y₂ Cϵy₁y₂ n n<ϵ with C'-decidable Y ϵ Ω y₁
+  ... | inl CϵΩy₁ = CϵΩy₁ n (<-gives-⊏ n ϵ n<ϵ) ∙ {!!}
+  ... | inr x = {!!} -}
+
+regression-opt : {n : ℕ} → ℕ → Vec 𝟛ᴺ n → 𝟛ᴺ
+regression-opt ε v -- WORK ON THIS FIRST TOMORROW
+ = pr₁ (optimisation-convergence 𝟛ᴺ-ClosenessSpace
+             𝟛ᴺ→𝟛ᴺ-PseudoClosenessSpace (repeat O) 𝟛ᴺ-totally-bounded
+             M Ω' ϕᴹ ϕᶜ ε)
+ where
+  M : 𝟛ᴺ → (𝟛ᴺ → 𝟛ᴺ)
+  M y x = mid (neg y) x
+  Ω' = mid (repeat O) -- Ω(x) ≔ (1/3 + x) / 2
+  𝟛ᴺ→𝟛ᴺ-PseudoClosenessSpace
+   = FunPoints-PseudoClosenessSpace 𝟛ᴺ 𝟛ᴺ-ClosenessSpace Ω' v
+  ϕᴹ' : f-ucontinuous
+          (×-ClosenessSpace 𝟛ᴺ-ClosenessSpace 𝟛ᴺ-ClosenessSpace)
+          𝟛ᴺ-ClosenessSpace (uncurry (λ y x → mid (neg y) x))
+  ϕᴹ' = seq-f-ucontinuous²-to-closeness
+          𝟛-is-discrete 𝟛-is-discrete 𝟛-is-discrete
+          (λ y x → mid (neg y) x)
+          (seq-f-ucontinuous²¹-comp-left mid neg
+            mid-ucontinuous' neg-ucontinuous')
+  ϕᴹ : f-ucontinuous' (ι 𝟛ᴺ-ClosenessSpace) 𝟛ᴺ→𝟛ᴺ-PseudoClosenessSpace
+         (λ y x → mid (neg y) x)
+  ϕᴹ = close-to-close'
+         𝟛ᴺ-ClosenessSpace 𝟛ᴺ-ClosenessSpace 𝟛ᴺ-ClosenessSpace
+         (λ y x → mid (neg y) x) Ω' v ϕᴹ'
+  ϕᶜ : f-ucontinuous' 𝟛ᴺ→𝟛ᴺ-PseudoClosenessSpace (ι ℕ∞-ClosenessSpace)
+         (pr₁ (pr₂ 𝟛ᴺ→𝟛ᴺ-PseudoClosenessSpace) Ω')
+  ϕᶜ = allofthemare 𝟛ᴺ→𝟛ᴺ-PseudoClosenessSpace Ω'
+
+regression-opt' : {n : ℕ} → ℕ → Vec 𝟛ᴺ n → 𝟛ᴺ
+regression-opt' ε v
+ = pr₁ (optimisation-convergence 𝟛ᴺ-ClosenessSpace
+             𝟛ᴺ→𝟛ᴺ-PseudoClosenessSpace (repeat O) 𝟛ᴺ-totally-bounded
+             M Ω' ϕᴹ ϕᶜ ε)
+ where
+  M : 𝟛ᴺ → (𝟛ᴺ → 𝟛ᴺ)
+  M y x = mid y x
+  Ω' = mid (repeat O) -- Ω(x) ≔ (1/3 + x) / 2
+  𝟛ᴺ→𝟛ᴺ-PseudoClosenessSpace
+   = FunPoints-PseudoClosenessSpace 𝟛ᴺ 𝟛ᴺ-ClosenessSpace Ω' v
+  ϕᴹ' : f-ucontinuous
+          (×-ClosenessSpace 𝟛ᴺ-ClosenessSpace 𝟛ᴺ-ClosenessSpace)
+          𝟛ᴺ-ClosenessSpace (uncurry (λ y x → mid y x))
+  ϕᴹ' = seq-f-ucontinuous²-to-closeness
+          𝟛-is-discrete 𝟛-is-discrete 𝟛-is-discrete
+          (λ y x → mid y x)
+          mid-ucontinuous' {-
+          (seq-f-ucontinuous²¹-comp-left mid neg
+            mid-ucontinuous' neg-ucontinuous') -}
+  ϕᴹ : f-ucontinuous' (ι 𝟛ᴺ-ClosenessSpace) 𝟛ᴺ→𝟛ᴺ-PseudoClosenessSpace
+         (λ y x → mid y x)
+  ϕᴹ = close-to-close'
+         𝟛ᴺ-ClosenessSpace 𝟛ᴺ-ClosenessSpace 𝟛ᴺ-ClosenessSpace
+         (λ y x → mid y x) Ω' v ϕᴹ'
+  ϕᶜ : f-ucontinuous' 𝟛ᴺ→𝟛ᴺ-PseudoClosenessSpace (ι ℕ∞-ClosenessSpace)
+         (pr₁ (pr₂ 𝟛ᴺ→𝟛ᴺ-PseudoClosenessSpace) Ω')
+  ϕᶜ = allofthemare 𝟛ᴺ→𝟛ᴺ-PseudoClosenessSpace Ω'
+
+regression-opt-example : ℕ → 𝟛ᴺ
+regression-opt-example n = regression-opt' n endpoints 
 
 run = Seq-to-Vec
 

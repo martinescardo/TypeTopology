@@ -88,6 +88,25 @@ seq-f-ucontinuous¹²-comp {_} {_} {_} {_} {X} {Y} {Z} {W}
     = pr₂ (ϕᶠ ϵ) (g x₁ y₁) (g x₂ y₂)
         (pr₂ (ϕᵍ (pr₁ (ϕᶠ ϵ))) x₁ x₂ y₁ y₂ x∼ y∼)
 
+seq-f-ucontinuous²¹-comp-left
+ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {W : 𝓣 ̇ }
+ → (f : (ℕ → W) → (ℕ → Y) → (ℕ → Z))
+ → (g : (ℕ → X) → (ℕ → W))
+ → seq-f-ucontinuous² f
+ → seq-f-ucontinuous¹ g
+ → seq-f-ucontinuous² (λ x y → f (g x) y)
+seq-f-ucontinuous²¹-comp-left {_} {_} {_} {_} {X} {Y} {Z} {W}
+ f g ϕᶠ ϕᵍ ϵ = δ , γ
+ where
+  δ : ℕ × ℕ
+  δ = pr₁ (ϕᵍ (pr₁ (pr₁ (ϕᶠ ϵ)))) , (pr₂ (pr₁ (ϕᶠ ϵ)))
+  γ : (x₁ x₂ : ℕ → X) (y₁ y₂ : ℕ → Y)
+    → (x₁ ∼ⁿ x₂) (pr₁ δ) → (y₁ ∼ⁿ y₂) (pr₂ δ)
+    → (f (g x₁) y₁ ∼ⁿ f (g x₂) y₂) ϵ
+  γ x₁ x₂ y₁ y₂ x∼ y∼
+    = pr₂ (ϕᶠ ϵ) (g x₁) (g x₂) y₁ y₂
+        (pr₂ (ϕᵍ (pr₁ (pr₁ (ϕᶠ ϵ)))) x₁ x₂ x∼) y∼
+
 seq-f-ucontinuousᴺ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                    → (f : (ℕ → (ℕ → X)) → (ℕ → Y))
                    → 𝓤 ⊔ 𝓥  ̇

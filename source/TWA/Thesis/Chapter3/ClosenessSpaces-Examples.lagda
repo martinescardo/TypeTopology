@@ -140,6 +140,15 @@ minℕ∞-abcdef a b c d e f mab≼e mcd≼f n minabcd＝₁
           → C Y ε y₁ y₂
 ×-C-right X Y x₁ x₂ y₁ y₂ ε Cxy n = Lemma[min𝟚ab＝₁→b＝₁] ∘ (Cxy n)
 
+×-C-combine : (X : ClosenessSpace 𝓤) (Y : ClosenessSpace 𝓥)
+            → (x₁ x₂ : ⟨ X ⟩) (y₁ y₂ : ⟨ Y ⟩)
+            → (ε : ℕ)
+            → C X ε x₁ x₂
+            → C Y ε y₁ y₂
+            → C (×-ClosenessSpace X Y) ε (x₁ , y₁) (x₂ , y₂)
+×-C-combine X Y x₁ x₂ y₁ y₂ ε Cεx₁x₂ Cεy₁y₂ n n⊏ε
+ = Lemma[a＝₁→b＝₁→min𝟚ab＝₁] (Cεx₁x₂ n n⊏ε) (Cεy₁y₂ n n⊏ε)
+
 discrete-decidable-seq
  : {X : 𝓤 ̇ } → is-discrete X
  → (α β : ℕ → X) → (n : ℕ) → is-decidable ((α ∼ⁿ β) n)

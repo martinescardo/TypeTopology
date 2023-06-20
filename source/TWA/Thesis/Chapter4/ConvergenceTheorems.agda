@@ -136,12 +136,12 @@ global-max-ℕ∞ X x₀ t f ϕ ϵ
 
 -- Theorem 4.2.8
 optimisation-convergence
-       : (X : ClosenessSpace 𝓤) (Y : ClosenessSpace 𝓥)
+       : (X : ClosenessSpace 𝓤) (Y : PseudoClosenessSpace 𝓥)
        → ⟨ X ⟩ → totally-bounded X 𝓤'
-       → (M : ⟨ X ⟩ → ⟨ Y ⟩) (Ω : ⟨ Y ⟩)
-       → f-ucontinuous X Y M
+       → (M : ⟨ X ⟩ → ⟪ Y ⟫) (Ω : ⟪ Y ⟫)
+       → f-ucontinuous' (ι X) Y M
        → let c = pr₁ (pr₂ Y) in
-         f-ucontinuous Y ℕ∞-ClosenessSpace (c Ω)
+         f-ucontinuous' Y (ι ℕ∞-ClosenessSpace) (c Ω)
        → (ϵ : ℕ)
        → (has ϵ global-maximal) ℕ∞-approx-lexicorder (λ x → c Ω (M x))
 optimisation-convergence X Y x₀ t M Ω ϕᴹ ϕᶜ
@@ -150,7 +150,7 @@ optimisation-convergence X Y x₀ t M Ω ϕᴹ ϕᶜ
           , λ x₁ x₂ Cδᶜx₁x₂ → pr₂ (ϕᶜ ϵ) (M x₁) (M x₂)
                                (pr₂ (ϕᴹ (pr₁ (ϕᶜ ϵ))) x₁ x₂ Cδᶜx₁x₂))
  where
-  c : ⟨ Y ⟩ → ⟨ Y ⟩ → ℕ∞
+  c : ⟪ Y ⟫ → ⟪ Y ⟫ → ℕ∞
   c = pr₁ (pr₂ Y)
 
 -- Make sure the fixed oracle is on the left (in paper too)

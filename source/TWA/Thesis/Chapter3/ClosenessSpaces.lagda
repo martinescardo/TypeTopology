@@ -206,15 +206,24 @@ ucontinuous-continuous : (X : ClosenessSpace 𝓤)
 ucontinuous-continuous X Y f ϕ ϵ x₁ = pr₁ (ϕ ϵ)  , pr₂ (ϕ ϵ) x₁
 
 -- Definition 3.2.28
+p-ucontinuous'-with-mod : (X : PseudoClosenessSpace 𝓤)
+                        → (p : ⟪ X ⟫ → Ω 𝓦) → ℕ → 𝓤 ⊔ 𝓦  ̇
+p-ucontinuous'-with-mod X p δ
+ = (x₁ x₂ : ⟪ X ⟫) → C' X δ x₁ x₂ → (p x₁ holds → p x₂ holds)
+
 p-ucontinuous' : (X : PseudoClosenessSpace 𝓤)
                → (p : ⟪ X ⟫ → Ω 𝓦) → 𝓤 ⊔ 𝓦  ̇  
 p-ucontinuous' X p
- = Σ δ ꞉ ℕ , ((x₁ x₂ : ⟪ X ⟫)
- → C' X δ x₁ x₂ → (p x₁ holds → p x₂ holds))
+ = Σ δ ꞉ ℕ , p-ucontinuous'-with-mod X p δ
+
+p-ucontinuous-with-mod : (X : ClosenessSpace 𝓤)
+                       → (p : ⟨ X ⟩ → Ω 𝓦) → ℕ → 𝓤 ⊔ 𝓦  ̇
+p-ucontinuous-with-mod X p δ = p-ucontinuous'-with-mod (ι X) p δ
 
 p-ucontinuous : (X : ClosenessSpace 𝓤)
               → (p : ⟨ X ⟩ → Ω 𝓦) → 𝓤 ⊔ 𝓦  ̇  
-p-ucontinuous = p-ucontinuous' ∘ ι
+p-ucontinuous X p 
+ = Σ δ ꞉ ℕ , p-ucontinuous-with-mod X p δ
           
 -- Examples 3.2.3 [ TODO Finish file ]
 -- in Thesis.Chapter3.ClosenessSpaces-Examples fe
