@@ -1,4 +1,5 @@
 Martin Escardo, January 2018, May 2020
+Jonathan Sterling, June 2023
 
 \begin{code}
 
@@ -180,3 +181,4 @@ module
     pr₂ α ((p , q) , r) = p , q , r
 
 \end{code}
+ 
