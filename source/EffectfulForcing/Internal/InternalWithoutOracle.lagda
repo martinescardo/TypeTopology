@@ -1987,6 +1987,18 @@ Rnorm-lemma A xs (t · u) Rnorm-xs = Rnorm-lemma A xs t Rnorm-xs (close ⌜ u �
 -- ⟦ ƛ (close t (Subƛ xs)) · u ⟧₀ ⟦ ƛ (close v (Subƛ xs)) · u ⟧₀
 --  ∎
 
+{--
+Can we get R⋆'s main lemma from R's and Rnorm's:
+
+  ⟦ t ⟧ ＝ dialogue B⟦ t ⟧ α
+→ ⟦ ⌜ t ⌝ ⟧₀ ≣⋆ church-encode B⟦ t ⟧
+→ ⟦ t ⟧ ＝ dialogue⋆ ⟦ ⌜ t ⌝ ⟧₀ α
+
+----
+
+→ dialogue B⟦ t ⟧ α ＝ dialogue⋆ church-encode B⟦ t ⟧ α
+--}
+
 \end{code}
 
 With this normalisation lemma proved, we can now prove results about
