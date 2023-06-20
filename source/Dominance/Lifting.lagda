@@ -185,7 +185,9 @@ module
 
 \end{code}
 
-TODO: state and prove the naturality of all the monad components, define both algebras for the endofunctor and for the monad, recall the results of Joyal and Moerdijk on monads and algebras with successor, etc.
+TODO: state and prove the naturality of all the monad components, define both 
+algebras for the endofunctor and for the monad, recall the results of Joyal and 
+Moerdijk on monads and algebras with successor, etc.
 
 We can define carrier of the initial lift algebra using a W-type.
 
