@@ -19,7 +19,7 @@ open import EffectfulForcing.MFPSAndVariations.Church hiding (B⋆【_】 ; ⟪�
 open import EffectfulForcing.Internal.Internal hiding (B⋆⟦_⟧ ; dialogue-tree⋆)
 open import EffectfulForcing.Internal.LambdaWithoutOracle
 open import EffectfulForcing.Internal.SystemT
-open import UF.Base using (transport₂ ; ap₂ ; ap₃)
+open import UF.Base using (transport₂ ; transport₃ ; ap₂ ; ap₃)
 open import UF.FunExt using (naive-funext)
 open import MGS.hlevels using (hedberg)
 open import MGS.MLTT using (has-decidable-equality)
@@ -1517,6 +1517,34 @@ close-Sub,,-as-close-Subƛ {Γ} {σ} {τ} t ys y =
  ⟦ ⌜Kleisli-extension⌝ {ι} {A} {σ} · (ƛ (Rec (ƛ (weaken, ι (weaken, ι ⌜ a ⌝) · (⌜η⌝ · ν₀))) (weaken, ι ⌜ b ⌝) ν₀)) · ⌜ c ⌝ ⟧₀
   ∎
 
+⌜main-lemma⌝-rec : {σ : type} (α : Baire) (f : 〖 ι ⇒ σ ⇒ σ 〗) (g : 〖 σ 〗) (t : ℕ)
+                   (f' : T₀ (B-type〖 ι ⇒ σ ⇒ σ 〗 ((ι ⇒ ι) ⇒ ι)))
+                   (g' : T₀ (B-type〖 σ 〗 ((ι ⇒ ι) ⇒ ι)))
+                   (t' : T₀ (B-type〖 ι 〗 ((ι ⇒ ι) ⇒ ι)))
+                 → R⋆ α f f'
+                 → R⋆ α g g'
+                 → R⋆ α t t'
+                 → R⋆ α (rec f g t)
+                        (⌜Kleisli-extension⌝ {ι} {(ι ⇒ ι) ⇒ ι} {σ}
+                          · ƛ (Rec (ƛ (weaken, ι (weaken, ι f') · (⌜η⌝ · ν₀))) (weaken, ι g') ν₀)
+                          · t')
+⌜main-lemma⌝-rec {ι} α f g t f' g' t' rf rg rt =
+ rec f g t
+  ＝⟨ {!ap (rec f g) rt!} ⟩
+ rec f g (⟦ t' ⟧₀ (λ z α₁ → z) (λ φ x α₁ → φ (α₁ x) α₁) α)
+  ＝⟨ {!!} ⟩
+ ⟦ t' ⟧₀
+   (λ s → rec (λ u → ⟦ weaken, ι (weaken, ι f') ⟧ (⟨⟩ ‚ s ‚ u) (η⋆ u))
+              (⟦ weaken, ι g' ⟧ (⟨⟩ ‚ s))
+              s
+          (λ z α → z) (λ φ x α → φ (α x) α))
+   (λ φ x α → φ (α x) α)
+   α
+  ＝⟨ refl ⟩
+ dialogue⋆ ⟦ ⌜kleisli-extension⌝ · ƛ (Rec (ƛ (weaken, ι (weaken, ι f') · (⌜η⌝ · ν₀))) (weaken, ι g') ν₀) · t' ⟧₀ α
+  ∎
+⌜main-lemma⌝-rec {σ ⇒ σ₁} α f g t f' g' t' rf rg rt = {!!}
+
 ⌜main-lemma⌝ : {Γ : Cxt} {σ : type} (t : T Γ σ)
                (α : Baire)
                (xs : 【 Γ 】) (ys : Sub₀ Γ) --IB【 Γ 】 ((ι ⇒ ι) ⇒ ι))
@@ -1541,13 +1569,20 @@ close-Sub,,-as-close-Subƛ {Γ} {σ} {τ} t ys y =
     (⌜Kleisli-extension⌝ {ι} {(ι ⇒ ι) ⇒ ι} {σ} · (ƛ (Rec (ƛ (weaken, ι (weaken, ι ⌜ close f ys ⌝) · (⌜η⌝ · ν₀))) (weaken, ι ⌜ close g ys ⌝) ν₀)) · ⌜ close t ys ⌝)
     ⌜ Rec (close f ys) (close g ys) (close t ys) ⌝
     ((⟦⌜Rec⌝⟧ (close f ys) (close g ys) (close t ys)) ⁻¹)
-    c)
+    (transport₃ (λ p q r → R⋆ α (rec (⟦ f ⟧ xs) (⟦ g ⟧ xs) (⟦ t ⟧ xs))
+                                (⌜Kleisli-extension⌝
+                                 · ƛ (Rec (ƛ (weaken, ι (weaken, ι p) · (⌜η⌝ · ν₀))) (weaken, ι q) ν₀)
+                                 · r))
+       (⌜close⌝ f ys) (⌜close⌝ g ys) (⌜close⌝ t ys) c))
  where
   c : R⋆ α (rec (⟦ f ⟧ xs) (⟦ g ⟧ xs) (⟦ t ⟧ xs))
            (⌜Kleisli-extension⌝
-             · ƛ (Rec (ƛ (weaken, ι (weaken, ι ⌜ close f ys ⌝) · (⌜η⌝ · ν₀))) (weaken, ι ⌜ close g ys ⌝) ν₀)
-             · ⌜ close t ys ⌝)
-  c = {!!}
+             · ƛ (Rec (ƛ (weaken, ι (weaken, ι (close ⌜ f ⌝ (⌜Sub⌝ ys))) · (⌜η⌝ · ν₀))) (weaken, ι (close ⌜ g ⌝ (⌜Sub⌝ ys))) ν₀)
+             · close ⌜ t ⌝ (⌜Sub⌝ ys))
+  c = ⌜main-lemma⌝-rec α
+        (⟦ f ⟧ xs) (⟦ g ⟧ xs) (⟦ t ⟧ xs)
+        (close ⌜ f ⌝ (⌜Sub⌝ ys)) (close ⌜ g ⌝ (⌜Sub⌝ ys)) (close ⌜ t ⌝ (⌜Sub⌝ ys))
+        (⌜main-lemma⌝ f α xs ys rxys) (⌜main-lemma⌝ g α xs ys rxys) (⌜main-lemma⌝ t α xs ys rxys)
 ⌜main-lemma⌝ {Γ} {σ} (ν i) α xs ys rxys = rxys i
 ⌜main-lemma⌝ {Γ} {σ ⇒ τ} (ƛ t) α xs ys rxys x y rxy =
  transport
