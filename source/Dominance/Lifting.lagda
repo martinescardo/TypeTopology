@@ -74,7 +74,7 @@ module
 
   _≅_ : L X → L X → 𝓣 ⊔ 𝓥 ̇
   (P , u , dP) ≅ (Q , v , dQ) =
-    Σ f ꞉ P ⇔ Q , u ∼ v ∘ pr₁ f
+   Σ f ꞉ P ⇔ Q , u ∼ v ∘ pr₁ f
 
   ≅-refl : (u : L X) → u ≅ u
   ≅-refl u = (id , id) , λ _ → refl
