@@ -1506,7 +1506,9 @@ close-Sub,,-as-close-Subƛ {Γ} {σ} {τ} t ys y =
 
 ⟦⌜Rec⌝⟧ : {A : type} {σ : type} (a : T₀ (ι ⇒ σ ⇒ σ)) (b : T₀ σ) (c : T₀ ι)
         → ⟦ ⌜_⌝  {〈〉} {σ} {A} (Rec a b c) ⟧₀
-       ＝ ⟦ ⌜Kleisli-extension⌝ {ι} {A} {σ} · (ƛ (Rec (ƛ (weaken, ι (weaken, ι ⌜ a ⌝) · (⌜η⌝ · ν₀))) (weaken, ι ⌜ b ⌝) ν₀)) · ⌜ c ⌝ ⟧₀
+       ＝ ⟦ ⌜Kleisli-extension⌝ {ι} {A} {σ}
+            · (ƛ (Rec (ƛ (weaken, ι (weaken, ι ⌜ a ⌝) · (⌜η⌝ · ν₀))) (weaken, ι ⌜ b ⌝) ν₀))
+            · ⌜ c ⌝ ⟧₀
 ⟦⌜Rec⌝⟧ {A} {σ} a b c =
  ⟦ ⌜_⌝  {〈〉} {σ} {A} (Rec a b c) ⟧₀
   ＝⟨ refl ⟩
