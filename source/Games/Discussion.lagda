@@ -338,14 +338,26 @@ use of univalence in this file.)
 And with this we can prove that the hereditarily decidable 𝔸 trees
 form a type isomorphic to that of hereditarily inhabited 𝕋 trees.
 
-The idea of the construction of the isomorphism is to replace every
-subtree X ∷ Xf of the given tree, with X empty, by []. This is
-possible because we assumed that the internal nodes are decidable. And
-then it is clear that the resulting internal nodes are all inhabited.
+ 1. The idea of the construction of the isomorphism is to replace
+    every subtree X ∷ Xf of the given tree, with X empty, by []. This
+    is possible because we assumed that the internal nodes are
+    decidable. And then it is clear that the resulting internal nodes
+    are all inhabited.
 
-In the other direction, we replace [] by []ᴬ := 𝟘 : unique-from-𝟘,
-whose root decidable because it is empty. And also the resulting
-internal nodes are decible because they are inhabited
+    This construction is given by the function f of the isomorphism hg
+    defined below.
+
+ 2. In the other direction, we replace [] by []ᴬ := 𝟘 : unique-from-𝟘,
+    whose root decidable because it is empty. And also the resulting
+    internal nodes are decible because they are inhabited.
+
+    This construction is given by the function g of the isomorphism hg
+    defined below.
+
+There is minor technical inconvenience in the construction, which is
+that Agda is unable to check that f and g defined directly as sketched
+above are structuraly recursive, and so we have to work with their
+curried versions, which we call f' and g' respectively.
 
 \begin{code}
 
