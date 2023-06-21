@@ -1648,11 +1648,12 @@ close-Sub,,-as-close-Subƛ {Γ} {σ} {τ} t ys y =
  ⟦ b ⟧₀
   ∎
 
-＝rec : {X : 𝓤 ̇ } → (f g : ℕ → X → X) → (x : X) → (n : ℕ)
+＝rec : {X : 𝓤 ̇ } → (f g : ℕ → X → X) → (x y : X) → (n : ℕ)
+       → x ＝ y
        → ((i : ℕ) (u v : X) → u ＝ v → f i u ＝ g i v)
-       → rec f x n ＝ rec g x n
-＝rec {X} {X₁} f g x zero e = refl
-＝rec {X} {X₁} f g x (succ n) e = e n (rec f x n) (rec g x n) (＝rec f g x n e)
+       → rec f x n ＝ rec g y n
+＝rec {X} {X₁} f g x y zero z e = z
+＝rec {X} {X₁} f g x y (succ n) z e = e n (rec f x n) (rec g y n) (＝rec f g x y n z e)
 
 ⟦weaken,-weaken,⟧-as-⟦weaken,⟧ : {Γ : Cxt} {σ τ : type} (s : 【 Γ 】) (x y z : 〖 σ 〗) (a : T Γ τ)
                                → ⟦ weaken, σ (weaken, σ a) ⟧ (s ‚ y ‚ z)
@@ -1691,7 +1692,8 @@ close-Sub,,-as-close-Subƛ {Γ} {σ} {τ} t ys y =
          (＝rec
            (λ x → ⟦ weaken, ι (weaken, ι a) ⟧ (⟨⟩ ‚ succ ⟦ n ⟧₀ ‚ x) (η⋆ x))
            (λ x → ⟦ weaken, ι a ⟧ (⟨⟩ ‚ x) (η⋆ x))
-           ⟦ b ⟧₀ ⟦ n ⟧₀ (λ i u v e → ap₂ (λ q r → q (η⋆ i) r) (⟦weaken,-weaken,⟧-as-⟦weaken,⟧ ⟨⟩ i (succ ⟦ n ⟧₀) i a) e )) ⟩
+           ⟦ b ⟧₀ ⟦ b ⟧₀ ⟦ n ⟧₀ refl
+           (λ i u v e → ap₂ (λ q r → q (η⋆ i) r) (⟦weaken,-weaken,⟧-as-⟦weaken,⟧ ⟨⟩ i (succ ⟦ n ⟧₀) i a) e )) ⟩
  ⟦ a · (⌜η⌝ · n) · Rec (ƛ (weaken, ι a · (⌜η⌝ · ν₀))) b n ⟧₀
   ∎
 
@@ -2025,6 +2027,113 @@ Rnorm-lemma-rec-zero {A} {σ} {Γ} a b s =
  ⟦ close b s ⟧₀
   ∎
 
+Rnorm-lemma-rec-succ : {A σ : type} {Γ : Cxt}
+                       (a : T Γ (B-type〖 ι ⇒ σ ⇒ σ 〗 A))
+                       (b : T Γ (B-type〖 σ 〗 A))
+                       (n : T₀ ι)
+                       (s : Sub₀ Γ)
+                     → ⟦ close (ƛ (Rec (ƛ (weaken, ι (weaken, ι a) · (⌜η⌝ · ν₀))) (weaken, ι b) ν₀)) s · Succ n ⟧₀
+                    ＝ ⟦ close a s · (⌜η⌝ · n) · Rec (close (ƛ (weaken, ι a · (⌜η⌝ · ν₀))) s) (close b s) n ⟧₀
+Rnorm-lemma-rec-succ {A} {σ} {Γ} a b n s =
+ ⟦ close (ƛ (Rec (ƛ (weaken, ι (weaken, ι a) · (⌜η⌝ · ν₀))) (weaken, ι b) ν₀)) s · Succ n ⟧₀
+  ＝⟨ refl ⟩
+ ⟦ close (weaken, ι (weaken, ι a)) (Subƛ (Subƛ s)) ⟧ (⟨⟩ ‚ succ ⟦ n ⟧₀ ‚ ⟦ n ⟧₀)
+  (η⋆ ⟦ n ⟧₀)
+  (rec (λ x → ⟦ close (weaken, ι (weaken, ι a) · (⌜η⌝ · ν₀)) (Subƛ (Subƛ s)) ⟧ (⟨⟩ ‚ succ ⟦ n ⟧₀ ‚ x))
+       (⟦ close (weaken, ι b) (Subƛ s) ⟧ (⟨⟩ ‚ succ ⟦ n ⟧₀))
+       ⟦ n ⟧₀)
+  ＝⟨ ap₂ (λ p q → p (η⋆ ⟦ n ⟧₀) q) e1 e2 ⟩
+ ⟦ close a s ⟧₀
+  (η⋆ ⟦ n ⟧₀)
+  (rec ⟦ close (ƛ (weaken, ι a · (⌜η⌝ · ν₀))) s ⟧₀ ⟦ close b s ⟧₀ ⟦ n ⟧₀)
+  ＝⟨ refl ⟩
+ ⟦ close a s · (⌜η⌝ · n) · Rec (close (ƛ (weaken, ι a · (⌜η⌝ · ν₀))) s) (close b s) n ⟧₀
+  ∎
+ where
+  e0 : {τ : type} (i : ∈Cxt τ Γ)
+     → ⟦ weaken, ι (weaken, ι (s i)) ⟧ (⟨⟩ ‚ succ ⟦ n ⟧₀ ‚ ⟦ n ⟧₀)
+     ＝ ⟦ s i ⟧₀
+  e0 {τ} i =
+   ⟦ weaken, ι (weaken, ι (s i)) ⟧ (⟨⟩ ‚ succ ⟦ n ⟧₀ ‚ ⟦ n ⟧₀)
+    ＝⟨ ap (λ k → k (⟨⟩ ‚ succ ⟦ n ⟧₀ ‚ ⟦ n ⟧₀)) (⟦weaken,⟧ (weaken, ι (s i)) ι) ⟩
+   ⟦ weaken, ι (s i) ⟧ (⊆【】 (⊆, (〈〉 ,, ι) ι) (⟨⟩ ‚ succ ⟦ n ⟧₀ ‚ ⟦ n ⟧₀))
+    ＝⟨ ap (λ k → k (⊆【】 (⊆, (〈〉 ,, ι) ι) (⟨⟩ ‚ succ ⟦ n ⟧₀ ‚ ⟦ n ⟧₀))) (⟦weaken,⟧ (s i) ι) ⟩
+   ⟦ s i ⟧₀
+    ∎
+
+  e4 : {τ : type} (i : ∈Cxt τ Γ)
+     → ⟦ weaken, ι (s i) ⟧ (⟨⟩ ‚ succ ⟦ n ⟧₀)
+     ＝ ⟦ s i ⟧₀
+  e4 {τ} i = ap (λ k → k (⟨⟩ ‚ succ ⟦ n ⟧₀)) (⟦weaken,⟧ (s i) ι)
+
+  e1 : ⟦ close (weaken, ι (weaken, ι a)) (Subƛ (Subƛ s)) ⟧ (⟨⟩ ‚ succ ⟦ n ⟧₀ ‚ ⟦ n ⟧₀) ＝ ⟦ close a s ⟧₀
+  e1 =
+   ⟦ close (weaken, ι (weaken, ι a)) (Subƛ (Subƛ s)) ⟧ (⟨⟩ ‚ succ ⟦ n ⟧₀ ‚ ⟦ n ⟧₀)
+    ＝⟨ ap (λ k → k (⟨⟩ ‚ succ ⟦ n ⟧₀ ‚ ⟦ n ⟧₀)) (⟦close⟧ (weaken, ι (weaken, ι a)) (Subƛ (Subƛ s))) ⟩
+   ⟦ weaken, ι (weaken, ι a) ⟧ (【Sub】 (Subƛ (Subƛ s)) (⟨⟩ ‚ succ ⟦ n ⟧₀ ‚ ⟦ n ⟧₀))
+    ＝⟨ ap (λ k → k (【Sub】 (Subƛ (Subƛ s)) (⟨⟩ ‚ succ ⟦ n ⟧₀ ‚ ⟦ n ⟧₀))) (⟦weaken,⟧ (weaken, ι a) ι) ⟩
+   ⟦ weaken, ι a ⟧ (⊆【】 (⊆, (Γ ,, ι) ι) (【Sub】 (Subƛ (Subƛ s)) (⟨⟩ ‚ succ ⟦ n ⟧₀ ‚ ⟦ n ⟧₀)))
+    ＝⟨ ap (λ k → k (⊆【】 (⊆, (Γ ,, ι) ι) (【Sub】 (Subƛ (Subƛ s)) (⟨⟩ ‚ succ ⟦ n ⟧₀ ‚ ⟦ n ⟧₀)))) (⟦weaken,⟧ a ι) ⟩
+   ⟦ a ⟧ (⊆【】 (⊆, Γ ι) (⊆【】 (∈CxtS ι) (【Sub】 (Subƛ (Subƛ s)) (⟨⟩ ‚ succ ⟦ n ⟧₀ ‚ ⟦ n ⟧₀))))
+    ＝⟨ ⟦⟧-eta a (⊆【】 (⊆, Γ ι) (⊆【】 (∈CxtS ι) (【Sub】 (Subƛ (Subƛ s)) (⟨⟩ ‚ succ ⟦ n ⟧₀ ‚ ⟦ n ⟧₀)))) (【Sub₀】 s) e0 ⟩
+   ⟦ a ⟧ (【Sub₀】 s)
+    ＝⟨ (⟦close⟧' a s) ⁻¹ ⟩
+   ⟦ close a s ⟧₀
+    ∎
+
+  e3 : ⟦ close (weaken, ι b) (Subƛ s) ⟧ (⟨⟩ ‚ succ ⟦ n ⟧₀) ＝ ⟦ close b s ⟧₀
+  e3 =
+   ⟦ close (weaken, ι b) (Subƛ s) ⟧ (⟨⟩ ‚ succ ⟦ n ⟧₀)
+    ＝⟨ ap (λ k → k (⟨⟩ ‚ succ ⟦ n ⟧₀)) (⟦close⟧ (weaken, ι b) (Subƛ s)) ⟩
+   ⟦ weaken, ι b ⟧ (【Sub】 (Subƛ s) (⟨⟩ ‚ succ ⟦ n ⟧₀))
+    ＝⟨ ap (λ k → k (【Sub】 (Subƛ s) (⟨⟩ ‚ succ ⟦ n ⟧₀))) (⟦weaken,⟧ b ι) ⟩
+   ⟦ b ⟧ (⊆【】 (⊆, Γ ι) (【Sub】 (Subƛ s) (⟨⟩ ‚ succ ⟦ n ⟧₀)))
+    ＝⟨ ⟦⟧-eta b (⊆【】 (⊆, Γ ι) (【Sub】 (Subƛ s) (⟨⟩ ‚ succ ⟦ n ⟧₀))) (【Sub₀】 s) e4 ⟩
+   ⟦ b ⟧ (【Sub₀】 s)
+    ＝⟨ (⟦close⟧' b s) ⁻¹ ⟩
+   ⟦ close b s ⟧₀
+    ∎
+
+  e6 : (i : ℕ) {τ : type} (j : ∈Cxt τ Γ)
+     → ⟦ weaken, ι (weaken, ι (s j)) ⟧ (⟨⟩ ‚ succ ⟦ n ⟧₀ ‚ i)
+    ＝ ⟦ weaken, ι (s j) ⟧ (⟨⟩ ‚ i)
+  e6 i {τ} j = ⟦weaken,-weaken,⟧-as-⟦weaken,⟧ ⟨⟩ i (succ ⟦ n ⟧₀) i (s j)
+
+  e5 : (i : ℕ) (u v : 〖 B-type〖 σ 〗 A 〗)
+     → u ＝ v
+     → ⟦ close (weaken, ι (weaken, ι a)) (Subƛ (Subƛ s)) ⟧ (⟨⟩ ‚ succ ⟦ n ⟧₀ ‚ i) (η⋆ i) u
+    ＝ ⟦ close (weaken, ι a) (Subƛ s) ⟧ (⟨⟩ ‚ i) (η⋆ i) v
+  e5 i u v e =
+   ⟦ close (weaken, ι (weaken, ι a)) (Subƛ (Subƛ s)) ⟧ (⟨⟩ ‚ succ ⟦ n ⟧₀ ‚ i) (η⋆ i) u
+    ＝⟨ ap₂ (λ p q → p (⟨⟩ ‚ succ ⟦ n ⟧₀ ‚ i) (η⋆ i) q) (⟦close⟧ (weaken, ι (weaken, ι a)) (Subƛ (Subƛ s))) e ⟩
+   ⟦ weaken, ι (weaken, ι a) ⟧ (【Sub】 (Subƛ (Subƛ s)) (⟨⟩ ‚ succ ⟦ n ⟧₀ ‚ i)) (η⋆ i) v
+    ＝⟨ ap (λ k → k (【Sub】 (Subƛ (Subƛ s)) (⟨⟩ ‚ succ ⟦ n ⟧₀ ‚ i)) (η⋆ i) v) (⟦weaken,⟧ (weaken, ι a) ι) ⟩
+   ⟦ weaken, ι a ⟧ (⊆【】 (⊆, (Γ ,, ι) ι) (【Sub】 (Subƛ (Subƛ s)) (⟨⟩ ‚ succ ⟦ n ⟧₀ ‚ i))) (η⋆ i) v
+    ＝⟨ ap (λ k → k (⊆【】 (⊆, (Γ ,, ι) ι) (【Sub】 (Subƛ (Subƛ s)) (⟨⟩ ‚ succ ⟦ n ⟧₀ ‚ i))) (η⋆ i) v) (⟦weaken,⟧ a ι) ⟩
+   ⟦ a ⟧ (⊆【】 (⊆, Γ ι) (⊆【】 (∈CxtS ι) (【Sub】 (Subƛ (Subƛ s)) (⟨⟩ ‚ succ ⟦ n ⟧₀ ‚ i)))) (η⋆ i) v
+    ＝⟨ ap (λ k → k (η⋆ i) v)
+           (⟦⟧-eta a (⊆【】 (⊆, Γ ι) (⊆【】 (∈CxtS ι) (【Sub】 (Subƛ (Subƛ s)) (⟨⟩ ‚ succ ⟦ n ⟧₀ ‚ i))))
+                     (⊆【】 (⊆, Γ ι) (【Sub】 (Subƛ s) (⟨⟩ ‚ i)))
+                     (e6 i)) ⟩
+   ⟦ a ⟧ (⊆【】 (⊆, Γ ι) (【Sub】 (Subƛ s) (⟨⟩ ‚ i))) (η⋆ i) v
+    ＝⟨ ap (λ k → k (【Sub】 (Subƛ s) (⟨⟩ ‚ i)) (η⋆ i) v) ((⟦weaken,⟧ a ι) ⁻¹) ⟩
+   ⟦ weaken, ι a ⟧ (【Sub】 (Subƛ s) (⟨⟩ ‚ i)) (η⋆ i) v
+    ＝⟨ ap (λ k → k (⟨⟩ ‚ i) (η⋆ i) v) ((⟦close⟧ (weaken, ι a) (Subƛ s)) ⁻¹) ⟩
+   ⟦ close (weaken, ι a) (Subƛ s) ⟧ (⟨⟩ ‚ i) (η⋆ i) v
+    ∎
+
+  e2 : rec (λ x → ⟦ close (weaken, ι (weaken, ι a) · (⌜η⌝ · ν₀)) (Subƛ (Subƛ s)) ⟧ (⟨⟩ ‚ succ ⟦ n ⟧₀ ‚ x))
+        (⟦ close (weaken, ι b) (Subƛ s) ⟧ (⟨⟩ ‚ succ ⟦ n ⟧₀))
+        ⟦ n ⟧₀
+       ＝ rec ⟦ close (ƛ (weaken, ι a · (⌜η⌝ · ν₀))) s ⟧₀ ⟦ close b s ⟧₀ ⟦ n ⟧₀
+  e2 = ＝rec
+          (λ x → ⟦ close (weaken, ι (weaken, ι a) · (⌜η⌝ · ν₀)) (Subƛ (Subƛ s)) ⟧ (⟨⟩ ‚ succ ⟦ n ⟧₀ ‚ x))
+          ⟦ close (ƛ (weaken, ι a · (⌜η⌝ · ν₀))) s ⟧₀
+          (⟦ close (weaken, ι b) (Subƛ s) ⟧ (⟨⟩ ‚ succ ⟦ n ⟧₀))
+          ⟦ close b s ⟧₀ ⟦ n ⟧₀
+          e3 e5
+
+
 Rnorm-lemma : {Γ : Cxt} {σ : type} (A : type) (xs : B【 Γ 】) (ys : IB【 Γ 】 A) (t : T Γ σ)
             → Rnorms A xs ys
             → Rnorm A (B⟦ t ⟧ xs) (close ⌜ t ⌝ ys)
@@ -2080,7 +2189,7 @@ Rnorm-lemma {Γ} {σ} A xs ys (Rec t u v) Rnorm-xs =
          A (B⟦ t ⟧ xs (η n) (rn n))
          (close ⌜ t ⌝ ys · (⌜η⌝ · ℕ→T n) · Rec (ƛ (weaken, ι (close ⌜ t ⌝ ys) · (⌜η⌝ · ν₀))) (close ⌜ u ⌝ ys) (ℕ→T n))
          (rn' · Succ (ℕ→T n))
-         {!!} -- adapt ⌜main-lemma⌝-rec-succ
+         {!(Rnorm-lemma-rec-succ ⌜ t ⌝ ⌜ u ⌝ (ℕ→T n) ys) ⁻¹!} -- adapt ⌜main-lemma⌝-rec-succ
          {!!}
  {-R⋆-preserves-⟦⟧'
          (⟦ f ⟧ xs n (rn n))
