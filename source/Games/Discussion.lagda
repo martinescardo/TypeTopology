@@ -3,6 +3,8 @@ Martin Escardo, Paulo Oliva, 9-17 June 2023
 We relate our game trees to Aczel's W type of CZF sets in various ways.
 https://www.sciencedirect.com/science/article/abs/pii/S0049237X0871989X
 
+We also briefly discuss Conway's games.
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K --exact-split #-}
@@ -58,7 +60,7 @@ open import UF.Subsingletons
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.UA-FunExt
-
+open import NotionsOfDecidability.Decidable
 \end{code}
 
 The following is the type of type trees, whose nodes X represent the
@@ -768,7 +770,7 @@ goodness = transfinite-induction-on-OO _ ϕ
     h a b ((x , m) , n) = x , n
 
     I : (a : ⟨ α ⟩) → ((b , l) : ⟨ α ↓ a ⟩) → is-decidable (∃ (x , m) ꞉ ⟨ α ↓ a ⟩ , x ≺⟨  α ⟩ b )
-    I a (b , l) = map-decidable (∥∥-functor (g a b l)) (∥∥-functor (h a b)) (e b)
+    I a (b , l) = map-is-decidable (∥∥-functor (g a b l)) (∥∥-functor (h a b)) (e b)
 
     II : (a : ⟨ α ⟩) → is-hereditarily-decidable (Ord-to-𝔸 (α ↓ a))
     II a = f a (e a , I a)
@@ -792,7 +794,110 @@ Ord-to-𝔾 α g = ⌜ hg ⌝ (Ord-to-𝔸 α , goodness α g)
 
 \end{code}
 
-TODO. An ordinal α is good if and only if it is decidable whether
-⟨ α ⟩ is inhabited and whether any x : ⟨ α ⟩ is the least element of α.
-The second condition means that the least element, if it exists, is
-isolated, which in turn means that α is of the form 1 + α'.
+TODO. Implement this in Agda (easy). An ordinal α is good if and only
+if it is decidable whether ⟨ α ⟩ is inhabited and whether any
+x : ⟨ α ⟩ is the least element of α.  The second condition means that
+the least element, if it exists, is isolated, which in turn means that
+α is of the form 1 + α'.
+
+We now discuss the relation to Conway's games.
+
+As preparation, let's look at the type 𝔸 set-theoretically, as
+intented by Aczel. An 𝔸 tree X ∷ Xf represents a set whose members are
+the sets represented by Xf x, for each x : X. This is an inductive
+definition of "representation".
+
+So, in our encoding of game trees as suitable 𝔸 trees, a game tree is
+just a set. The first move, if any move is available, is an element of
+that set, which is itself a set and so a game tree. The second move is
+in that set, and so on, until we reach the empty set (by the axiom of
+foundation), which is when the game ends.
+
+Conway defines two-person games inductively, in set theory rather than
+type theory, as follows: a game is a pair (L,R) with L and R are two
+sets of games.
+
+https://en.wikipedia.org/wiki/On_Numbers_and_Games
+https://en.wikipedia.org/wiki/Surreal_number
+
+Our definition, corresponding to 𝔸, can be restated as follows: a game
+is a set G, where each g : G is a game. But this is just the inductive
+definition of (material) set.
+
+\begin{code}
+
+data ℂ : Type₁ where
+ conway : (L R : Type) (Lf : L → ℂ) (Rf : R → ℂ) → ℂ
+
+\end{code}
+
+Here L is the type of available moves (also called "options") for the
+left player, R is the type of available moves for the right player,
+and Lf and Rf respectively say which subgame the game transitions to
+after a move has been played.
+
+\begin{code}
+
+L-Path R-Path : ℂ → Type
+
+L-Path (conway L _ Lf  _) = is-empty L + (Σ l ꞉ L , R-Path (Lf l))
+
+R-Path (conway _ R _  Rf) = is-empty R + (Σ r ꞉ R , L-Path (Rf r))
+
+\end{code}
+
+The player that has no available moves loses the game, according to
+Conway's convention.
+
+\begin{code}
+
+loses-L : (c : ℂ) → L-Path c → Type
+loses-R : (c : ℂ) → R-Path c → Type
+
+loses-L (conway L R Lf Rf) (inl L-is-empty) = 𝟙
+loses-L (conway L R Lf Rf) (inr (l , ms))   = ¬ loses-R (Lf l) ms
+
+loses-R (conway L R Lf Rf) (inl R-is-empty) = 𝟙
+loses-R (conway L R Lf Rf) (inr (r , ms))   = ¬ loses-L (Rf r) ms
+
+L-loss-is-decidable : (c : ℂ) (ms : L-Path c) → is-decidable (loses-L c ms)
+R-loss-is-decidable : (c : ℂ) (ms : R-Path c) → is-decidable (loses-R c ms)
+
+L-loss-is-decidable (conway L R Lf Rf) (inl L-is-empty) = 𝟙-is-decidable
+L-loss-is-decidable (conway L R Lf Rf) (inr (l , ms))   = ¬-preserves-decidability (R-loss-is-decidable (Lf l) ms)
+
+R-loss-is-decidable (conway L R Lf Rf) (inl R-is-empty) = 𝟙-is-decidable
+R-loss-is-decidable (conway L R Lf Rf) (inr (r , ms))   = ¬-preserves-decidability (L-loss-is-decidable (Rf r) ms)
+
+wins-L : (c : ℂ) → L-Path c → Type
+wins-R : (c : ℂ) → R-Path c → Type
+
+wins-L c ms = ¬ loses-L c ms
+wins-R c ms = ¬ loses-R c ms
+
+\end{code}
+
+So Conway's games allow only win-or-lose. In particular, there is no
+draw, such as in tic-tac-toe or chess. Or outcomes more general than
+win, draw or lose.
+
+Our conception of game, defined in Games.FiniteHistoryDependent,
+allows for two-person games of the above kind, but in general is
+defined for multiple-person games, with outcomes (or "pay offs") in
+any type, for example the real numbes.
+
+In this paper https://doi.org/10.1017/S0305004119000045, Håkon
+Gylterud shows that Aczel's original W-type gives a model of
+multisets.
+
+The idea of carving out the sets (or the cumulative hierarchy) from
+Aczel's 𝕎-type using hereditary embeddings is due to Håkon Gylterud.
+
+  H. R. Gylterud, “From multisets to sets in homotopy type theory,” The
+  Journal of Symbolic Logic, vol. 83, no. 3, pp. 1132–1146, 2018.
+
+The abstract https://hott-uf.github.io/2023/HoTTUF_2023_paper_1981.pdf
+by Håkon, Elisabeth Bonnevier, Anders Mörtberg and Daniel Gratzer is
+also worth mentionting.
+
+We thank Tom de Jong for discussions and bibliographic references.
