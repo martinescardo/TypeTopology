@@ -1832,149 +1832,135 @@ close-Sub,,-as-close-Subƛ {Γ} {σ} {τ} t ys y =
 TODO move results about substitution to Internal.lagda and move this
      to either Internal.lagda or a new file.
 
-The following normalisation result about internal dialogue trees effectively
-allows us to pattern match on the structure of internal dialogue trees.
+Using a logical relation we show that the the internal, church-encoded dialogue
+translation of a System T term coincides with its external, inductive dialogue
+translation.
+
+From this result and the main-lemma we can derive an internal result of
+strong continuity in System T.
 
 \begin{code}
 
-data _≣⋆_ {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {A : 𝓣 ̇ } : D⋆ X Y Z A → D⋆ X Y Z A → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓣 ̇ where
+_≣⋆_ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
+      → ({A : type} → D⋆ X Y Z 〖 A 〗) → ({A : type } → D⋆ X Y Z 〖 A 〗) → 𝓤 ⊔ 𝓥 ⊔ 𝓦  ̇
+_≣⋆_ {_} {_} {_} {X} {Y} {Z} d d' =
+ (A : type ) → (η' : Z → 〖 A 〗) → (β' : (Y → 〖 A 〗) → X → 〖 A 〗) → d η' β' ＝ d' η' β'
 
- ap-η⋆ : {z z' : Z}
-       → z ＝ z'
-       → η⋆ z ≣⋆ η⋆ z'
+≣⋆-symm : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {d d' : {A : type} → D⋆ X Y Z 〖 A 〗}
+        → d ≣⋆ d' → d' ≣⋆ d
+≣⋆-symm eq A η' β' = (eq A η' β') ⁻¹
 
- ap-β⋆ : {φ φ' : Y → D⋆ X Y Z A}
-         {x x' : X}
-       → ((y : Y) → φ y ≣⋆ φ' y)
-       → x ＝ x'
-       → β⋆ φ x ≣⋆ β⋆ φ' x'
+≣⋆-trans : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {d d' d'' : {A : type} → D⋆ X Y Z 〖 A 〗}
+          → d ≣⋆ d' → d' ≣⋆ d'' → d ≣⋆ d''
+≣⋆-trans eq eq' A η' β' = eq A η' β' ∙ eq' A η' β'
 
-≣⋆-trans : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {A : 𝓣 ̇ } (d d' d'' : D⋆ X Y Z A)
-         → d ≣⋆ d' → d' ≣⋆ d'' → d ≣⋆ d''
-≣⋆-trans .(η⋆ _) .(η⋆ _) d'' (ap-η⋆ x) y = transport (λ z → η⋆ z ≣⋆ d'') (x ⁻¹) y
-≣⋆-trans .(β⋆ _ _) .(β⋆ _ _) d'' (ap-β⋆ x x₁) y = {!!}
-
-is-dialogue-for : (A : type) (d : B ℕ) (t : T₀ (B-type〖 ι 〗 A)) → Type
-is-dialogue-for A d t = ⟦ t ⟧₀ ≣⋆ church-encode d
+is-dialogue-for : (d : B ℕ) (t : {A : type} → T₀ (B-type〖 ι 〗 A)) → Type
+is-dialogue-for d t = ⟦ t ⟧₀ ≣⋆ church-encode d
 
 -- Logical predicate for internal dialogue trees which can be pattern matched on
 -- and for functions that preserve said pattern matching.
-Rnorm : {σ : type} (A : type) (d : B〖 σ 〗) (t : T₀ (B-type〖 σ 〗 A)) → Type
-Rnorm {ι}     A d t = is-dialogue-for A d t
-Rnorm {σ ⇒ τ} A d t = (u : B〖 σ 〗) (u' : T₀ (B-type〖 σ 〗 A)) → Rnorm A u u' → Rnorm A (d u) (t · u')
+Rnorm : {σ : type} (d : B〖 σ 〗) (t : {A : type} → T₀ (B-type〖 σ 〗 A)) → Type
+Rnorm {ι}     d t = is-dialogue-for d t
+Rnorm {σ ⇒ τ} d t = (u : B〖 σ 〗) (u' : {A : type} → T₀ (B-type〖 σ 〗 A))
+                  → Rnorm u u' → Rnorm (d u) (t · u')
 
-
--- TODO the foregoing logical predicate asks for equality on the nose. We might
---      instead want to ask for extensional equality of functions as seen below.
---      Possibly this will cause problems in proving main-lemma though.
---Rnorm {ι} A t = (Σ n ꞉ ℕ , ((η' : ℕ → 〖 A 〗 ) (β' : (ℕ → 〖 A 〗) → ℕ → 〖 A 〗)
---               → ⟦ t ⟧₀ η' β' ＝ η⋆ n η' β'))
---            + (Σ ϕ ꞉ (ℕ → T₀ ι) , (Σ n ꞉ ℕ , ((η' : ℕ → 〖 A 〗) (β' : (ℕ → 〖 A 〗) → ℕ → 〖 A 〗)
---               → ⟦ t ⟧₀ η' β' ＝ β⋆ (λ i → ⟦ ⌜ ϕ i ⌝ ⟧₀) n η' β')))
---Rnorm {σ ⇒ τ} A t = (u : T₀ (B-type〖 σ 〗 A)) → Rnorm A u → Rnorm A (t · u)
-
-
-Rnorms : {Γ : Cxt} → (A : type) → B【 Γ 】 → IB【 Γ 】 A → Type
-Rnorms {Γ} A xs ys = {σ : type} (i : ∈Cxt σ Γ) → Rnorm A (xs i) (ys (∈Cxt-B-type i))
+Rnorms : {Γ : Cxt} → B【 Γ 】 → ({A : type} → IB【 Γ 】 A) → Type
+Rnorms {Γ} xs ys = {σ : type} (i : ∈Cxt σ Γ) → Rnorm (xs i) (ys (∈Cxt-B-type i))
 
 -- To avoid the operational semantics, we use the following lemma.
-Rnorm-preserves-⟦⟧ : {σ : type} (A : type) (d : B〖 σ 〗) (t u : T₀ (B-type〖 σ 〗 A))
-                   → ⟦ t ⟧₀ ＝ ⟦ u ⟧₀
-                   → Rnorm A d t
-                   → Rnorm A d u
-Rnorm-preserves-⟦⟧ {ι} A d t u t＝u eq = transport (_≣⋆ church-encode d) t＝u eq
-Rnorm-preserves-⟦⟧ {σ ⇒ τ} A d t u t＝u Rnorm-t v v' Rnorm-v =
- Rnorm-preserves-⟦⟧ A (d v) (t · v') (u · v') (ap (λ f → f ⟦ v' ⟧₀) t＝u) (Rnorm-t v v' Rnorm-v)
+Rnorm-preserves-⟦⟧ : {σ : type} (d : B〖 σ 〗) (t u : {A : type} → T₀ (B-type〖 σ 〗 A))
+                   → ((A : type) →  ⟦ t {A} ⟧₀ ＝ ⟦ u {A} ⟧₀)
+                   → Rnorm d t
+                   → Rnorm d u
+Rnorm-preserves-⟦⟧ {ι} d t u t＝u eq A η' β' =
+ transport (λ f → f η' β' ＝ church-encode d η' β') (t＝u A) (eq A η' β')
+Rnorm-preserves-⟦⟧ {σ ⇒ τ} d t u t＝u Rnorm-t v v' Rnorm-v =
+ Rnorm-preserves-⟦⟧ (d v) (t · v') (u · v') (λ A → ap (λ f → f ⟦ v' ⟧₀) (t＝u A)) (Rnorm-t v v' Rnorm-v)
+
+\end{code}
+
+As Rnorm quantifies over all System T types, we can elimate a family of
+church-encoded trees into different types, allowing us to reify terms into
+the shape of ⌜η⌝ or ⌜β⌝.
+
+This sort of reification is crucial when we need to pattern match on the
+constructor of a church-encoded tree.
+
+\begin{code}
+
+Rnorm-reify-η : (n : ℕ) (t : {A : type} → T₀ (⌜B⌝ ι A))
+                → Rnorm (η n) t
+                → Σ n' ꞉ T₀ ι , ⟦ t ⟧₀ ≣⋆ ⟦ ⌜η⌝ · n' ⟧₀ × Rnorm (η n) (⌜η⌝ · n')
+Rnorm-reify-η n t eq = n' , eq' , rη
+ where
+ -- We get the leaf value at t with the following
+ --   t · (ƛ n : ι , n)
+ --     · foobar
+ -- It does not matter what the second argument to t is, since it is definitely
+ -- something of the shape η n.
+  n' : T₀ ι
+  n' = t · ƛ ν₀ · ƛ (ƛ Zero)
+
+  eq' : ⟦ t ⟧₀ ≣⋆ ⟦ ⌜η⌝ · n' ⟧₀
+  eq' A η' β' = ⟦ t ⟧₀ η' β' ＝⟨ eq A η' β' ⟩
+                η' n         ＝⟨ ap η' (eq ι ⟦ ƛ ν₀ ⟧₀ ⟦ ƛ (ƛ Zero) ⟧₀) ⁻¹ ⟩
+                η' ⟦ n' ⟧₀   ∎
+
+  rη : Rnorm (η n) (⌜η⌝ · n')
+  rη = ≣⋆-trans (≣⋆-symm eq') eq
+
+Rnorm-reify-β : (ϕ : ℕ → B ℕ) (n : ℕ) (t : {A : type} → T₀ (⌜B⌝ ι A))
+                → Rnorm (β ϕ n) t
+                → Σ ϕ' ꞉ ({A : type} → T₀ (ι ⇒ ⌜B⌝ ι A))
+                , Σ n' ꞉ T₀ ι
+                , ⟦ t ⟧₀ ≣⋆ ⟦ ⌜β⌝ · ϕ' · n' ⟧₀ × Rnorm (β ϕ n) (⌜β⌝ · ϕ' · n')
+Rnorm-reify-β ϕ n t eq = ϕ' , n' , eq' , rβ
+ where
+  -- We get the branching at t with the following
+  --   ϕ' = t · ( ƛ n : ι . ƛ x : ι , ⌜η⌝ · n )
+  --          · ( ƛ ψ : ι ⇒ (ι ⇒ ⌜B⌝ ι A) , ƛ n : ι , ƛ x : ι , ψ x x )
+  -- Which does ?TODO figure out what this does?
+  ϕ' : {A : type} → T₀ (ι ⇒ ⌜B⌝ ι A)
+  ϕ' {A} = t {ι ⇒ ⌜B⌝ ι A} · ƛ (ƛ (⌜η⌝ · Zero)) · ƛ (ƛ (ƛ (ν₂ · ν₀ · ν₀)))
+
+  -- We get the oracle query at t with the following
+  --   n' = t · foobar · ƛ ψ : ι ⇒ ι , ƛ n : ι , n
+  -- Which ignores the branching and immediately returns the query.
+  n' : T₀ ι
+  n' = t · ƛ Zero · ƛ (ƛ ν₀)
+
+  eq' : ⟦ t ⟧₀ ≣⋆ ⟦ ⌜β⌝ · ϕ' · n' ⟧₀
+  eq' A η' β' = {!!}
+
+  rβ : Rnorm (β ϕ n) (⌜β⌝ · ϕ' · n')
+  rβ = ≣⋆-trans (≣⋆-symm eq') eq
 
 -- Since rec is interpreted using ⌜Kleisli-extension⌝, we need to know that
 -- ⌜Kleisli-extension⌝ preserves this normalisation property.
 -- TODO is it enough to get a context free kleisli lemma
-Rnorm-kleisli-lemma : {σ : type} (A : type)
+Rnorm-kleisli-lemma : {σ : type}
 
                       (f : ℕ → B〖 σ 〗)
-                      (f' : T₀ (ι ⇒ B-type〖 σ 〗 A))
-                    → ((x : ℕ) (x' : T₀ ι) → Rnorm A (f x) (f' · x'))
+                      (f' : {A : type} → T₀ (ι ⇒ B-type〖 σ 〗 A))
+                    → ((x : ℕ) (x' : T₀ ι) → Rnorm (η x) (⌜η⌝ · x') → Rnorm (f x) (f' · x'))
 
                     → (n : B ℕ)
-                      (n' : T₀ (⌜B⌝ ι A))
-                    → Rnorm {ι} A n n'
+                      (n' : {A : type} → T₀ (⌜B⌝ ι A))
+                    → Rnorm {ι} n n'
 
-                    → Rnorm A (Kleisli-extension f n) (⌜Kleisli-extension⌝ · f' · n')
-Rnorm-kleisli-lemma {ι} A f f' rf n n' rn = {!!} --η' β' = ?
-Rnorm-kleisli-lemma {σ ⇒ τ} A f f' rf n n' rn = {!!}
-
-{-
-Rnorm A
-      (ƛ
-       (ƛ
-        (ƛ
-         (close ⌜Kleisli-extension⌝ (Sub,, (Sub,, (Sub,, xs))) ·
-          ƛ
-          (weaken, ι (weaken, (B-type〖 σ 〗 A) (weaken, (⌜B⌝ ι A) ν₀)) · ν₀ ·
-           weaken, ι ν₀)
-          · weaken, (B-type〖 σ 〗 A) ν₀)))
-       · close f xs
-       · close t xs
-       · u)
--}
-
-{-
-Rnorm-Rec : {Γ : Cxt} {σ : type} (A : type) (xs : Sub₀ Γ)
-            (t : T Γ (ι ⇒ σ ⇒ σ)) (u : T Γ σ) (v : T Γ ι)
-          → Rnorms A xs → Rnorm A (close t xs) → Rnorm A (close u xs) → Rnorm A (close v xs)
-          → Rnorm A (close (Rec t u v) xs)
-Rnorm-Rec {Γ} {ι} A xs t u v Rnorm-xs Rnorm-t Rnorm-u (inl (zero , eq)) = {!!}
- where
-  foo : ⟦ ⌜ close (Rec t u v) xs ⌝ ⟧₀ ＝[ B⋆ ℕ 〖 A 〗 ] ⟦ ⌜ close u xs ⌝ ⟧₀
-  foo = ⟦ ⌜ close (Rec t u v) xs ⌝ ⟧₀
-         ＝⟨ (ap ⟦_⟧₀ (⌜close⌝ (Rec t u v) xs) )⁻¹ ⟩
-        ⟦ (close (⌜rec⌝ · ⌜ t ⌝ · ⌜ u ⌝) (⌜Sub⌝ xs)) · (close (⌜ v ⌝) (⌜Sub⌝ xs)) ⟧₀
-         ＝⟨ ap (λ x → ⟦ (close (⌜rec⌝ · ⌜ t ⌝ · ⌜ u ⌝) (⌜Sub⌝ xs)) · x ⟧₀) (⌜close⌝ v xs) ⟩
-        ⟦ (close (⌜rec⌝ · ⌜ t ⌝ · ⌜ u ⌝) (⌜Sub⌝ xs)) ⟧₀ ⟦ ⌜ close v xs ⌝ ⟧₀
-         ＝⟨ {!!} ⟩
-        ⟦ close ⌜rec⌝ (⌜Sub⌝ xs) ⟧₀ ⟦ close ⌜ t ⌝ (⌜Sub⌝ xs) ⟧₀ ⟦ close ⌜ u ⌝ (⌜Sub⌝ xs) ⟧₀ ⟦ ⌜ Zero ⌝ ⟧₀
-         ＝⟨ {!!} ⟩
-        ⟦ ⌜rec⌝ ⟧₀ ⟦ close ⌜ t ⌝ (⌜Sub⌝ xs) ⟧₀ ⟦ close ⌜ u ⌝ (⌜Sub⌝ xs) ⟧₀ ⟦ ⌜ Zero ⌝ ⟧₀
-         ＝⟨ {!!} ⟩
-        ⟦ ⌜rec⌝ ⟧₀ ⟦ close ⌜ t ⌝ (⌜Sub⌝ xs) ⟧₀ ⟦ close ⌜ u ⌝ (⌜Sub⌝ xs) ⟧₀ ⟦ ⌜ Zero ⌝ ⟧₀
-         ＝⟨ {!!} ⟩
-        ⟦ close ⌜ u ⌝ (⌜Sub⌝ xs) ⟧₀
-         ＝⟨ ap ⟦_⟧₀ (⌜close⌝ u xs) ⟩
-        ⟦ ⌜ close u xs ⌝ ⟧₀
-         ∎
-Rnorm-Rec {Γ} {ι} A xs t u v Rnorm-xs Rnorm-t Rnorm-u (inl (succ pr₃ , pr₄)) = {!!}
-Rnorm-Rec {Γ} {ι} A xs t u v Rnorm-xs Rnorm-t Rnorm-u (inr x) = {!!}
-Rnorm-Rec {Γ} {σ ⇒ τ} A xs t u v Rnorm-xs Rnorm-t Rnorm-u Rnorm-v w Rnorm-w = {!!}
-
---Rnorm-Rec xs t u v Rnorm-xs Rnorm-t Rnorm-u (inl (zero , eq)) = {!!}
--- where
---  bar : ⟦ ⌜rec⌝ ⟧₀ ⟦ ⌜ close t xs ⌝ ⟧₀ ⟦ ⌜ close u xs ⌝  ⟧₀ ⟦ ⌜ Zero ⌝ ⟧₀ ＝ ⟦ ⌜ close u xs ⌝  ⟧₀
---  bar = ⟦ ⌜Kleisli-extension⌝ ⟧ (⟨⟩ ‚ ⟦ ⌜ close t xs ⌝ ⟧₀ ‚ ⟦ ⌜ close u xs ⌝  ⟧₀) (rec (⟦ ⌜ close t xs ⌝ ⟧₀ ∘ ⟦ ⌜η⌝ ⟧₀) ⟦ ⌜ close u xs ⌝  ⟧₀) ⟦ ⌜ Zero ⌝ ⟧₀
---         ＝⟨ {!!} ⟩
---        ⟦ ⌜ close u xs ⌝  ⟧₀
---         ∎
---
----- ⟦ ⌜ Rec t u v ⌝ ⟧ = ⟦ ⌜rec⌝ · ⌜ f ⌝ · ⌜ g ⌝ · ⌜ t ⌝ ⟧ = ⟦ ⌜ Rec t u Zero ⌝ ⟧ = ⟦ ⌜ u ⌝ ⟧
---  foo : ⟦ ⌜ close (Rec t u v) xs ⌝ ⟧₀ ＝ ⟦ ⌜ close u xs ⌝ ⟧₀
---  foo = ⟦ ⌜ close (Rec t u v) xs ⌝ ⟧₀
---         ＝⟨ (ap ⟦_⟧₀ (⌜close⌝ (Rec t u v) xs) )⁻¹ ⟩
---        ⟦ (close (⌜rec⌝ · ⌜ t ⌝ · ⌜ u ⌝) (⌜Sub⌝ xs)) · (close (⌜ v ⌝) (⌜Sub⌝ xs)) ⟧₀
---         ＝⟨ ap (λ x → ⟦ (close (⌜rec⌝ · ⌜ t ⌝ · ⌜ u ⌝) (⌜Sub⌝ xs)) · x ⟧₀) (⌜close⌝ v xs) ⟩
---        ⟦ (close (⌜rec⌝ · ⌜ t ⌝ · ⌜ u ⌝) (⌜Sub⌝ xs)) ⟧₀ ⟦ ⌜ close v xs ⌝ ⟧₀
---         ＝⟨ ap ⟦ (close (⌜rec⌝ · ⌜ t ⌝ · ⌜ u ⌝) (⌜Sub⌝ xs)) ⟧₀ eq ⟩
---        ⟦ close ⌜rec⌝ (⌜Sub⌝ xs) ⟧₀ ⟦ close ⌜ t ⌝ (⌜Sub⌝ xs) ⟧₀ ⟦ close ⌜ u ⌝ (⌜Sub⌝ xs) ⟧₀ ⟦ ⌜ Zero ⌝ ⟧₀
---         ＝⟨ {!!} ⟩
---        ⟦ ⌜rec⌝ ⟧₀ ⟦ close ⌜ t ⌝ (⌜Sub⌝ xs) ⟧₀ ⟦ close ⌜ u ⌝ (⌜Sub⌝ xs) ⟧₀ ⟦ ⌜ Zero ⌝ ⟧₀
---         ＝⟨ {!!} ⟩
---        ⟦ ⌜rec⌝ ⟧₀ ⟦ close ⌜ t ⌝ (⌜Sub⌝ xs) ⟧₀ ⟦ close ⌜ u ⌝ (⌜Sub⌝ xs) ⟧₀ ⟦ ⌜ Zero ⌝ ⟧₀
---         ＝⟨ {!!} ⟩
---        ⟦ close ⌜ u ⌝ (⌜Sub⌝ xs) ⟧₀
---         ＝⟨ ap ⟦_⟧₀ (⌜close⌝ u xs) ⟩
---        ⟦ ⌜ close u xs ⌝ ⟧₀
---         ∎
---Rnorm-Rec xs t u v Rnorm-xs Rnorm-t Rnorm-u (inl (succ n , eq)) = {!!}
---Rnorm-Rec xs t u v Rnorm-xs Rnorm-t Rnorm-u (inr x) = {!!}
--}
+                    → Rnorm (Kleisli-extension f n) (⌜Kleisli-extension⌝ · f' · n')
+Rnorm-kleisli-lemma {ι} f f' rf (η y) n' rn A η' β' with Rnorm-reify-η y n' rn
+... | (y' , eq , ry) =
+ ⟦ n' ⟧₀ (λ x → ⟦ f' ⟧₀ x η' β') β'
+  ＝⟨ eq A (λ x → ⟦ f' ⟧₀ x η' β') β' ⟩
+ ⟦ ⌜η⌝ · y' ⟧₀ (λ x → ⟦ f' ⟧₀ x η' β') β'
+  ＝⟨ by-definition ⟩
+ ⟦ f' · y' ⟧₀ η' β'
+  ＝⟨ rf y y' ry A η' β' ⟩
+ church-encode (f y) η' β'
+  ∎
+Rnorm-kleisli-lemma {ι} f f' rf (β ψ y) n' rn A = {!!}
+Rnorm-kleisli-lemma {σ ⇒ τ} f f' rf n n' rn A = {!!}
 
 ＝【】-【Sub】-Sub,, : {Γ : Cxt} {A σ : type} (ys : IB【 Γ 】 A) (u : T₀ (B-type〖 σ 〗 A))
                      → ＝【】 (【Sub】 (Sub,, ys u) ⟨⟩) (【Sub】 (Subƛ ys) (⟨⟩ ‚ ⟦ u ⟧₀))
@@ -1987,9 +1973,9 @@ Rnorm-Rec {Γ} {σ ⇒ τ} A xs t u v Rnorm-xs Rnorm-t Rnorm-u Rnorm-v w Rnorm-w
 ℕ→B (succ n) = succ' (ℕ→B n)
 
 church-encode-is-natural : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓣 ̇ } (g : X → Y) (d : B X)
-                         → B⋆-functor g (church-encode {A = A} d) ≣⋆ church-encode (B-functor g d)
-church-encode-is-natural g (η n)   = ap-η⋆ refl
-church-encode-is-natural g (β ϕ n) = ap-β⋆ (λ y → church-encode-is-natural g (ϕ y)) refl
+                         → B⋆-functor g (church-encode d) ≣⋆ church-encode (B-functor g d)
+church-encode-is-natural g (η n)   = {!!}
+church-encode-is-natural g (β ϕ n) = {!!}
 
 ＝【】-【Sub】-⊆Sub : {Γ : Cxt} (s : Sub₀ Γ)
                    → ＝【】 (【Sub】 (⊆Sub (∈CxtS ι) (Subƛ s)) (⟨⟩ ‚ zero))
@@ -2121,11 +2107,9 @@ Rnorm-lemma-rec-succ {A} {σ} {Γ} a b n s =
           ⟦ close b s ⟧₀ ⟦ n ⟧₀
           e3 e5
 
-Rnormη : {A : type} (n : ℕ) → Rnorm A (η n) (⌜η⌝ · ℕ→T n)
-Rnormη {A} n = Rnorm-preserves-⟦⟧ A (η n) ⌜ ℕ→T n ⌝ (⌜η⌝ · ℕ→T n) ((⌜η⌝ℕ→T n) ⁻¹) c
- where
-  c : ⟦ ⌜ ℕ→T n ⌝ ⟧₀ ≣⋆ church-encode (η n)
-  c = transport (λ k → k ≣⋆ church-encode (η n)) (η⋆ℕ→T n) (ap-η⋆ (⟦ℕ→T⟧ n))
+Rnormη : (n : ℕ) → Rnorm (η n) (⌜η⌝ · ℕ→T n)
+Rnormη zero     A η' β' = refl
+Rnormη (succ n) A η' β' = Rnormη n A (λ z → η' (succ z)) (λ z → z)
 
 -- as opposed to Rnorm-lemma-rec-succ, this one does not "reduce" as much
 Rnorm-lemma-rec-succ2 : {A σ : type} {Γ : Cxt}
@@ -2194,96 +2178,97 @@ Rnorm-lemma-rec-succ2 {A} {σ} {Γ} a b n s =
    ⟦ close b s ⟧₀
     ∎
 
-Rnorm-lemma : {Γ : Cxt} {σ : type} (A : type) (xs : B【 Γ 】) (ys : IB【 Γ 】 A) (t : T Γ σ)
-            → Rnorms A xs ys
-            → Rnorm A (B⟦ t ⟧ xs) (close ⌜ t ⌝ ys)
+Rnorm-lemma : {Γ : Cxt} {σ : type}
+              (xs : B【 Γ 】) (ys : {A : type} → IB【 Γ 】 A)
+              (t : T Γ σ)
+            → Rnorms xs ys
+            → Rnorm (B⟦ t ⟧ xs) (close ⌜ t ⌝ ys)
 
 -- The zero term is always equal to the leaf holding zero.
-Rnorm-lemma A xs ys Zero Rnorm-xs = ap-η⋆ refl
+Rnorm-lemma xs ys Zero Rnorm-xs = {!!} -- ap-η⋆ refl
 
 -- If at a leaf, apply successor to leaf value.
 -- If at a branching node, propagate the successor one level down.
-Rnorm-lemma A xs ys (Succ t) Rnorm-xs with Rnorm-lemma A xs ys t Rnorm-xs
+Rnorm-lemma xs ys (Succ t) Rnorm-xs with Rnorm-lemma xs ys t Rnorm-xs
 ... | eq = {!!} --B-functor succ d , {!!}
  where
   d : B〖 ι 〗
   d = B⟦ t ⟧ xs
 
-  foo : B⋆-functor succ (church-encode {A = (ℕ → ℕ) → ℕ} d) ≣⋆ church-encode (B-functor succ d)
-  foo = church-encode-is-natural succ d
+  --foo : B⋆-functor succ (church-encode {A = (ℕ → ℕ) → ℕ} d) ≣⋆ church-encode (B-functor succ d)
+  --foo = church-encode-is-natural succ d
 
-Rnorm-lemma {Γ} {σ} A xs ys (Rec t u v) Rnorm-xs =
+Rnorm-lemma {Γ} {σ} xs ys (Rec t u v) Rnorm-xs =
 -- Rnorm-Rec xs t u v Rnorm-xs (Rnorm-lemma xs t Rnorm-xs) (Rnorm-lemma xs u Rnorm-xs) (Rnorm-lemma xs v Rnorm-xs)
  Rnorm-preserves-⟦⟧
-   A (rec' (B⟦ t ⟧ xs) (B⟦ u ⟧ xs) (B⟦ v ⟧ xs))
+   (rec' (B⟦ t ⟧ xs) (B⟦ u ⟧ xs) (B⟦ v ⟧ xs))
    (⌜Kleisli-extension⌝
     · close (ƛ (Rec (ƛ (weaken, ι (weaken, ι ⌜ t ⌝) · (⌜η⌝ · ν₀))) (weaken, ι ⌜ u ⌝) ν₀)) ys
     · close ⌜ v ⌝ ys)
    (close ⌜ Rec t u v ⌝ ys)
-   ((⟦close-⌜Rec⌝⟧ ys t u v) ⁻¹)
+   {!!} -- ((⟦close-⌜Rec⌝⟧ ys t u v) ⁻¹)
    c2
  where
-  rt : (x  : B〖 ι 〗) (x' : T₀ (B-type〖 ι 〗 A)) (rx : Rnorm {ι} A x x')
-       (y  : B〖 σ 〗) (y' : T₀ (B-type〖 σ 〗 A)) (ry : Rnorm {σ} A y y')
-     → Rnorm A (B⟦ t ⟧ xs x y) (close ⌜ t ⌝ ys · x' · y')
-  rt = Rnorm-lemma A xs ys t Rnorm-xs
+  rt : (x  : B〖 ι 〗) (x' : {A : type} → T₀ (B-type〖 ι 〗 A)) (rx : Rnorm {ι} x x')
+       (y  : B〖 σ 〗) (y' : {A : type} → T₀ (B-type〖 σ 〗 A)) (ry : Rnorm {σ} y y')
+     → Rnorm (B⟦ t ⟧ xs x y) (close ⌜ t ⌝ ys · x' · y')
+  rt = Rnorm-lemma xs ys t Rnorm-xs
 
   rn : ℕ → B〖 σ 〗
   rn n = rec (B⟦ t ⟧ xs ∘ η) (B⟦ u ⟧ xs) n
 
-  rn' : T₀ (ι ⇒ B-type〖 σ 〗 A)
+  rn' : {A : type} → T₀ (ι ⇒ B-type〖 σ 〗 A)
   rn' = close (ƛ (Rec (ƛ (weaken, ι (weaken, ι ⌜ t ⌝) · (⌜η⌝ · ν₀))) (weaken, ι ⌜ u ⌝) ν₀)) ys
 
-  rnn' : (n : ℕ) → Rnorm A (rn n) (rn' · ℕ→T n)
+  rnn' : (n : ℕ) → Rnorm (rn n) (rn' · ℕ→T n)
   rnn' zero = r
    where
-    r : Rnorm A (B⟦ u ⟧ xs) (rn' · Zero)
+    r : Rnorm (B⟦ u ⟧ xs) (rn' · Zero)
     r = Rnorm-preserves-⟦⟧
-         A (B⟦ u ⟧ xs) (close ⌜ u ⌝ ys) (rn' · Zero)
-         ((Rnorm-lemma-rec-zero (ƛ (weaken, ι (weaken, ι ⌜ t ⌝) · (⌜η⌝ · ν₀))) ⌜ u ⌝ ys) ⁻¹)
-         (Rnorm-lemma A xs ys u Rnorm-xs)
+         (B⟦ u ⟧ xs) (close ⌜ u ⌝ ys) (rn' · Zero)
+         {!!} -- ((Rnorm-lemma-rec-zero (ƛ (weaken, ι (weaken, ι ⌜ t ⌝) · (⌜η⌝ · ν₀))) ⌜ u ⌝ ys) ⁻¹)
+         (Rnorm-lemma xs ys u Rnorm-xs)
   rnn' (succ n) = r
    where
-    r : Rnorm A (B⟦ t ⟧ xs (η n) (rn n)) (rn' · Succ (ℕ→T n))
+    r : Rnorm (B⟦ t ⟧ xs (η n) (rn n)) (rn' · Succ (ℕ→T n))
     r = Rnorm-preserves-⟦⟧
-         A (B⟦ t ⟧ xs (η n) (rn n))
+         (B⟦ t ⟧ xs (η n) (rn n))
          (close ⌜ t ⌝ ys · (⌜η⌝ · ℕ→T n) · Rec (ƛ (weaken, ι (close ⌜ t ⌝ ys) · (⌜η⌝ · ν₀))) (close ⌜ u ⌝ ys) (ℕ→T n))
          (rn' · Succ (ℕ→T n))
-         ((Rnorm-lemma-rec-succ ⌜ t ⌝ ⌜ u ⌝ (ℕ→T n) ys) ⁻¹)
+         {!!} -- ((Rnorm-lemma-rec-succ ⌜ t ⌝ ⌜ u ⌝ (ℕ→T n) ys) ⁻¹)
          (rt (η n) (⌜η⌝ · ℕ→T n) (Rnormη n)
              (rn n) (Rec (ƛ (weaken, ι (close ⌜ t ⌝ ys) · (⌜η⌝ · ν₀))) (close ⌜ u ⌝ ys) (ℕ→T n))
              (Rnorm-preserves-⟦⟧
-               A (rn n)
+               (rn n)
                (close (ƛ (Rec (ƛ (weaken, ι (weaken, ι ⌜ t ⌝) · (⌜η⌝ · ν₀))) (weaken, ι ⌜ u ⌝) ν₀)) ys · ℕ→T n)
                (Rec (ƛ (weaken, ι (close ⌜ t ⌝ ys) · (⌜η⌝ · ν₀))) (close ⌜ u ⌝ ys) (ℕ→T n))
-               (Rnorm-lemma-rec-succ2 ⌜ t ⌝ ⌜ u ⌝ (ℕ→T n) ys)
+               {!!} -- (Rnorm-lemma-rec-succ2 ⌜ t ⌝ ⌜ u ⌝ (ℕ→T n) ys)
                (rnn' n)))
 
-  c1 : Rnorm A (Kleisli-extension (rec (B⟦ t ⟧ xs ∘ η) (B⟦ u ⟧ xs)) (B⟦ v ⟧ xs))
-               (⌜Kleisli-extension⌝
-                · close (ƛ (Rec (ƛ (weaken, ι (weaken, ι ⌜ t ⌝) · (⌜η⌝ · ν₀))) (weaken, ι ⌜ u ⌝) ν₀)) ys
-                · close ⌜ v ⌝ ys)
+  c1 : Rnorm (Kleisli-extension (rec (B⟦ t ⟧ xs ∘ η) (B⟦ u ⟧ xs)) (B⟦ v ⟧ xs))
+             (⌜Kleisli-extension⌝
+              · close (ƛ (Rec (ƛ (weaken, ι (weaken, ι ⌜ t ⌝) · (⌜η⌝ · ν₀))) (weaken, ι ⌜ u ⌝) ν₀)) ys
+              · close ⌜ v ⌝ ys)
   c1 = {!!} -- use rnn?
 
-  c2 : Rnorm A (rec' (B⟦ t ⟧ xs) (B⟦ u ⟧ xs) (B⟦ v ⟧ xs))
-              (⌜Kleisli-extension⌝
-               · close (ƛ (Rec (ƛ (weaken, ι (weaken, ι ⌜ t ⌝) · (⌜η⌝ · ν₀))) (weaken, ι ⌜ u ⌝) ν₀)) ys
-               · close ⌜ v ⌝ ys)
+  c2 : Rnorm (rec' (B⟦ t ⟧ xs) (B⟦ u ⟧ xs) (B⟦ v ⟧ xs))
+             (⌜Kleisli-extension⌝
+              · close (ƛ (Rec (ƛ (weaken, ι (weaken, ι ⌜ t ⌝) · (⌜η⌝ · ν₀))) (weaken, ι ⌜ u ⌝) ν₀)) ys
+              · close ⌜ v ⌝ ys)
   c2 = c1
 
-Rnorm-lemma A xs ys (ν i) Rnorm-xs = Rnorm-xs i
+Rnorm-lemma xs ys (ν i) Rnorm-xs = Rnorm-xs i
 
-Rnorm-lemma A xs ys (ƛ t) Rnorm-xs u u' Rnorm-u =
+Rnorm-lemma xs ys (ƛ t) Rnorm-xs u u' Rnorm-u =
  Rnorm-preserves-⟦⟧
-  A
   (B⟦ t ⟧ (xs ‚‚ u))
   (close ⌜ t ⌝ (Sub,, ys u'))
   (ƛ (close ⌜ t ⌝ (Subƛ ys)) · u')
   eq
-  (Rnorm-lemma A (xs ‚‚ u) (Sub,, ys u') t Rnorm-xs,,u)
+  (Rnorm-lemma (xs ‚‚ u) (Sub,, ys u') t Rnorm-xs,,u)
  where
-  eq : ⟦ close ⌜ t ⌝ (Sub,, ys u') ⟧₀ ＝ ⟦ ƛ (close ⌜ t ⌝ (Subƛ ys)) · u' ⟧₀
-  eq =
+  eq : (A : type) → ⟦ close ⌜ t ⌝ (Sub,, ys u') ⟧₀ ＝[ 〖 B-type〖 _ 〗 A 〗 ] ⟦ ƛ (close ⌜ t ⌝ (Subƛ ys)) · u' ⟧₀
+  eq A =
    ⟦ close ⌜ t ⌝ (Sub,, ys u') ⟧₀
     ＝⟨ ap (λ k → k ⟨⟩) (⟦close⟧ ⌜ t ⌝ (Sub,, ys u')) ⟩
    ⟦ ⌜ t ⌝ ⟧ (【Sub】 (Sub,, ys u') ⟨⟩)
@@ -2293,57 +2278,12 @@ Rnorm-lemma A xs ys (ƛ t) Rnorm-xs u u' Rnorm-u =
    ⟦ ƛ (close ⌜ t ⌝ (Subƛ ys)) · u' ⟧₀
     ∎
 
-  Rnorm-xs,,u : Rnorms A (xs ‚‚ u) (Sub,, ys u')
+  Rnorm-xs,,u : Rnorms (xs ‚‚ u) (Sub,, ys u')
   Rnorm-xs,,u (∈Cxt0 _)   = Rnorm-u
   Rnorm-xs,,u (∈CxtS _ i) = Rnorm-xs i
 
-Rnorm-lemma A xs ys (t · u) Rnorm-xs =
- Rnorm-lemma A xs ys t Rnorm-xs (B⟦ u ⟧ xs) (close ⌜ u ⌝ ys) (Rnorm-lemma A xs ys u Rnorm-xs)
-
---⟦close-Sub1⟧ : (ext : naive-funext 𝓤₀ 𝓤₀){Γ : Cxt} {σ τ : type} (t : T (Γ ,, σ) τ) (u : T Γ σ) (xs : 【 Γ 】)
---             → ⟦ close t (Sub1 u) ⟧ xs ＝ ⟦ ƛ t · u ⟧ xs
---⟦close-Sub1⟧ ext Zero            u xs = refl
---⟦close-Sub1⟧ ext (Succ t)        u xs = ap succ (⟦close-Sub1⟧ ext t u xs)
---⟦close-Sub1⟧ ext (Rec f x n)     u xs = ap₃ rec (⟦close-Sub1⟧ ext f u xs) (⟦close-Sub1⟧ ext x u xs) (⟦close-Sub1⟧ ext n u xs)
---⟦close-Sub1⟧ ext (ν (∈Cxt0 _))   u xs = refl
---⟦close-Sub1⟧ ext (ν (∈CxtS _ i)) u xs = refl
---⟦close-Sub1⟧ ext (ƛ t)           u xs =
--- (λ x → ⟦ close t (Subƛ (Sub1 u)) ⟧ (xs ‚ x))
---  ＝⟨ ext {!!} ⟩
--- (λ x → ⟦ t ⟧ (xs ‚ ⟦ u ⟧ xs ‚ x))
---  ∎
--- where
---  foo : (λ x → ⟦ close t (Subƛ (Sub1 u)) ⟧ (xs ‚ x)) ∼ (λ x → ⟦ t ⟧ (xs ‚ ⟦ u ⟧ xs ‚ x))
---  foo x = ⟦ close t (Subƛ (Sub1 u)) ⟧ (xs ‚ x)
---           ＝⟨ ap (λ f → f (xs ‚ x)) (⟦close⟧ t (Subƛ (Sub1 u))) ⟩
---          ⟦ t ⟧ (λ i → ⟦ Subƛ (Sub1 u) i ⟧ (xs ‚ x))
---           ＝⟨ {!ap ⟦ t ⟧ bar!} ⟩
---          ⟦ t ⟧ (xs ‚ ⟦ u ⟧ xs ‚ x)
---           ∎
---
---⟦close-Sub1⟧ ext (t · v)         u xs = ap₂ (λ x y → x y) (⟦close-Sub1⟧ ext t u xs) (⟦close-Sub1⟧ ext v u xs)
-
---close-ƛ· : {Γ : Cxt} {σ τ : type} (xs : Sub₀ Γ) (t : T (Γ ,, σ) τ) (u : T₀ σ)
---         → ⟦ close t (Sub,, xs u) ⟧₀ ＝ ⟦ ƛ (close t (Subƛ xs)) · u ⟧₀
---close-ƛ· xs t u = {!!}
--- where
---  bar : ⟦ close (close t (Subƛ xs)) (Sub1 u) ⟧₀ ＝ ⟦ ƛ (close t (Subƛ xs)) · u ⟧₀
---  bar = {!!}
---
---  foo : close t (Sub,, xs u) ＝ close (close t (Subƛ xs)) (Sub1 u)
---  foo = close-Sub,,-as-close-Subƛ t xs u
---close-ƛ· xs Zero            u = refl
---close-ƛ· xs (Succ t)        u = ap succ (close-ƛ· xs t u)
---close-ƛ· xs (Rec f x n)     u = {!!}
---close-ƛ· xs (ν i) u = {!!}
---close-ƛ· xs (ƛ t) u = {!!}
---close-ƛ· xs (t · v) u =
--- ⟦ close t (Sub,, xs u) ⟧₀ ⟦ close v (Sub,, xs u) ⟧₀
---  ＝⟨ ap ⟦ close t (Sub,, xs u) ⟧₀ (close-ƛ· xs v u) ⟩
--- ⟦ close t (Sub,, xs u) ⟧₀ ⟦ ƛ (close v (Subƛ xs)) · u ⟧₀
---  ＝⟨ ap (λ f → f ⟦ ƛ (close v (Subƛ xs)) · u ⟧₀) (close-ƛ· xs t u) ⟩
--- ⟦ ƛ (close t (Subƛ xs)) · u ⟧₀ ⟦ ƛ (close v (Subƛ xs)) · u ⟧₀
---  ∎
+Rnorm-lemma xs ys (t · u) Rnorm-xs =
+ Rnorm-lemma xs ys t Rnorm-xs (B⟦ u ⟧ xs) (close ⌜ u ⌝ ys) (Rnorm-lemma xs ys u Rnorm-xs)
 
 {--
 Can we get R⋆'s main lemma from R's and Rnorm's:
@@ -2358,44 +2298,3 @@ Can we get R⋆'s main lemma from R's and Rnorm's:
 --}
 
 \end{code}
-
-With this normalisation lemma proved, we can now prove results about
-church-encoded dialogue trees much more easily.
-
-
-close-Sub〈〉 : {σ : type} (t : T₀ σ) → close t Sub〈〉 ＝ t
-close-Sub〈〉 Zero        = refl
-close-Sub〈〉 (Succ t)    = ap Succ (close-Sub〈〉 t)
-close-Sub〈〉 (Rec t u v) = ap₃ Rec (close-Sub〈〉 t) (close-Sub〈〉 u) (close-Sub〈〉 v)
-close-Sub〈〉 (ƛ t)       = ap ƛ ((close-eta (Subƛ Sub〈〉) ν t eq) ∙ (close-refl t))
- where
-  eq : ＝Sub (Subƛ Sub〈〉) ν
-  eq (∈Cxt0 _)   = refl
-  eq (∈CxtS _ ())
-close-Sub〈〉 (t · u)     = ap₂ _·_ (close-Sub〈〉 t) (close-Sub〈〉 u)
-
-⟦⌜t⌝⟧₀-is-η⋆or-β⋆ : (A : type) (t : T₀ ι)
-                  → (Σ n ꞉ ℕ , ⟦ ⌜ t ⌝ ⟧₀ ＝ η⋆ n)
-                    + (Σ ϕ ꞉ (ℕ → T₀ ι) , (Σ n ꞉ ℕ , ⟦ ⌜ t ⌝ ⟧₀ ＝ β⋆ (λ i → ⟦ ⌜ ϕ i ⌝ ⟧₀) n))
-⟦⌜t⌝⟧₀-is-η⋆or-β⋆ A t =
- Rnorm-preserves-⟦⟧ A (close ⌜ t ⌝ Sub〈〉) ⌜ t ⌝ (ap ⟦_⟧₀ (close-Sub〈〉 ⌜ t ⌝)) (Rnorm-lemma A Sub〈〉 t (λ ()))
-
-{-
-TODO figure out how to convince Agda that this terminates. Unfortunately Agda
-     has no way of knowing that the System T terms ϕ i are derived from subterms
-     of t, so it does not realise this terminates.
-
-dialogue⋆-α-is-natural : (g : ℕ → ℕ) (α : Baire) (t : T₀ ι)
-                       → g (dialogue⋆ ⟦ ⌜ t ⌝ ⟧₀  α) ＝ dialogue⋆ (B⋆-functor g ⟦ ⌜ t ⌝ ⟧₀) α
-dialogue⋆-α-is-natural g α t with ⟦⌜t⌝⟧₀-is-η⋆or-β⋆ ((ι ⇒ ι) ⇒ ι) t
-... | inl (n ,     eq) =
- g (dialogue⋆ ⟦ ⌜ t ⌝ ⟧₀ α)            ＝⟨ ap (λ x → g (dialogue⋆ x α)) eq ⟩
- g (dialogue⋆ (η⋆ n) α)                ＝⟨ by-definition ⟩
- dialogue⋆ (B⋆-functor g (η⋆ n)) α     ＝⟨ ap (λ x → dialogue⋆ (B⋆-functor g x) α) (eq ⁻¹) ⟩
- dialogue⋆ (B⋆-functor g ⟦ ⌜ t ⌝ ⟧₀) α ∎
-... | inr (ϕ , n , eq) =
- g (dialogue⋆ ⟦ ⌜ t ⌝ ⟧₀ α)                             ＝⟨ ap (λ x → g (dialogue⋆ x α)) eq ⟩
- g (dialogue⋆ (β⋆ (λ i → ⟦ ⌜ ϕ i ⌝ ⟧₀) n) α)            ＝⟨ dialogue⋆-α-is-natural g α (ϕ (α n)) ⟩
- dialogue⋆ (B⋆-functor g (β⋆ (λ i → ⟦ ⌜ ϕ i ⌝ ⟧₀) n)) α ＝⟨ ap (λ x → dialogue⋆ (B⋆-functor g x) α) (eq ⁻¹) ⟩
- dialogue⋆ (B⋆-functor g ⟦ ⌜ t ⌝ ⟧₀) α                  ∎
- -}
