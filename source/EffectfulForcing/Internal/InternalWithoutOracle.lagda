@@ -1930,7 +1930,10 @@ Rnorm-reify-β ϕ n t eq = ϕ' , n' , eq' , rβ
   n' = t · ƛ Zero · ƛ (ƛ ν₀)
 
   eq' : ⟦ t ⟧₀ ≣⋆ ⟦ ⌜β⌝ · ϕ' · n' ⟧₀
-  eq' A η' β' = {!!}
+  eq' A η' β' = c
+   where
+    c : ⟦ t ⟧₀ η' β' ＝ β' (λ e → ⟦ ϕ' ⟧₀ e η' β') ⟦ n' ⟧₀
+    c = {!!} --?
 
   rβ : Rnorm (β ϕ n) (⌜β⌝ · ϕ' · n')
   rβ = ≣⋆-trans (≣⋆-symm eq') eq
@@ -2178,8 +2181,11 @@ Rnorm-lemma-rec-succ2 {A} {σ} {Γ} a b n s =
    ⟦ close b s ⟧₀
     ∎
 
+Rnormη⌜η⌝ : (n : ℕ) (n' : T₀ ι) → Rnorm (η n) (⌜η⌝ · n') → ⟦ n' ⟧₀ ＝ ⟦ ℕ→T n ⟧₀
+Rnormη⌜η⌝ n n' rn = rn ι (λ x → x) (λ x → x) ∙ ⟦ℕ→T⟧ n ⁻¹
+
 is-dialogue-for-zero : ⟦ ⌜zero⌝ ⟧₀ ≣⋆ church-encode zero'
-is-dialogue-for-zero A η' β' = {!!}
+is-dialogue-for-zero A η' β' = refl
 
 Rnorm-lemma : {Γ : Cxt} {σ : type}
               (xs : B【 Γ 】) (ys : {A : type} → IB【 Γ 】 A)
@@ -2188,7 +2194,7 @@ Rnorm-lemma : {Γ : Cxt} {σ : type}
             → Rnorm (B⟦ t ⟧ xs) (close ⌜ t ⌝ ys)
 
 -- The zero term is always equal to the leaf holding zero.
-Rnorm-lemma xs ys Zero Rnorm-xs = {!!} -- ap-η⋆ refl
+Rnorm-lemma xs ys Zero Rnorm-xs = is-dialogue-for-zero
 
 -- If at a leaf, apply successor to leaf value.
 -- If at a branching node, propagate the successor one level down.
@@ -2248,11 +2254,16 @@ Rnorm-lemma {Γ} {σ} xs ys (Rec t u v) Rnorm-xs =
                (λ A → Rnorm-lemma-rec-succ2 {A} ⌜ t ⌝ ⌜ u ⌝ (ℕ→T n) ys)
                (rnn' n)))
 
-  c1 : Rnorm (Kleisli-extension (rec (B⟦ t ⟧ xs ∘ η) (B⟦ u ⟧ xs)) (B⟦ v ⟧ xs))
-             (⌜Kleisli-extension⌝
-              · close (ƛ (Rec (ƛ (weaken, ι (weaken, ι ⌜ t ⌝) · (⌜η⌝ · ν₀))) (weaken, ι ⌜ u ⌝) ν₀)) ys
-              · close ⌜ v ⌝ ys)
-  c1 = {!!} -- use rnn?
+  rnn'' : (n : ℕ) (n' : T₀ ι) → Rnorm (η n) (⌜η⌝ · n') → Rnorm (rn n) (rn' · n')
+  rnn'' n n' r =
+   Rnorm-preserves-⟦⟧
+    (rn n) (rn' · ℕ→T n) (rn' · n')
+    (λ A → ap (λ k → ⟦ rn' ⟧₀ k) (Rnormη⌜η⌝ n n' r) ⁻¹)
+    (rnn' n)
+
+  c1 : Rnorm (Kleisli-extension rn (B⟦ v ⟧ xs))
+             (⌜Kleisli-extension⌝ · rn' · close ⌜ v ⌝ ys)
+  c1 = Rnorm-kleisli-lemma rn rn' rnn'' (B⟦ v ⟧ xs) (close ⌜ v ⌝ ys) (Rnorm-lemma xs ys v Rnorm-xs)
 
   c2 : Rnorm (rec' (B⟦ t ⟧ xs) (B⟦ u ⟧ xs) (B⟦ v ⟧ xs))
              (⌜Kleisli-extension⌝
