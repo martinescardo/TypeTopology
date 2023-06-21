@@ -37,7 +37,6 @@ open import MLTT.Spartan hiding (J)
 open import MLTT.Fin
 open import Games.FiniteHistoryDependent
 open import Games.TypeTrees
-open import Games.Structure
 open import Games.K
 open import Games.J
 open import MLTT.Athenian

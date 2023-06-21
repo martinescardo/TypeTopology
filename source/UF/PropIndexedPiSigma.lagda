@@ -98,7 +98,8 @@ prop-indexed-sum {𝓤} {𝓥} {X} {Y} i a = qinveq f (g , ε , η)
   ε : (σ : Σ Y) → g (f σ) ＝ σ
   ε (x , y) = to-Σ-＝ (i a x , c x y (i x a))
 
-prop-indexed-sum-zero : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } → (X → 𝟘 {𝓦})
+prop-indexed-sum-zero : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
+                      → (X → 𝟘 {𝓦})
                       → Σ Y ≃ (𝟘 {𝓣})
 prop-indexed-sum-zero {𝓤} {𝓥} {𝓦} {𝓣} {X} {Y} φ = qinveq f (g , ε , η)
  where

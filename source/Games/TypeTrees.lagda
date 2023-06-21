@@ -71,3 +71,71 @@ data Path₁ : 𝕋 → Type₁ where
  _∷_ : {X : Type} {Xf : X → 𝕋} (x : X) (xs : Path₁ (Xf x)) → Path₁ (X ∷ Xf)
 
 \end{code}
+
+Equip the internal nodes of a type tree with structure:
+
+\begin{code}
+
+structure : (S : Type → 𝓤 ̇ ) → 𝕋 → 𝓤 ̇
+structure S []       = 𝟙
+structure S (X ∷ Xf) = S X × ((x : X) → structure S (Xf x))
+
+\end{code}
+
+The induction principle for 𝕋 is included for the sake of
+completeness, but won't be used directly:
+
+\begin{code}
+
+𝕋-induction : (P : 𝕋 → 𝓤 ̇ )
+            → P []
+            → ((X : Type) (Xf : X → 𝕋) → ((x : X) → P (Xf x)) → P (X ∷ Xf))
+            → (Xt : 𝕋) → P Xt
+𝕋-induction P b f = h
+ where
+  h : (Xt : 𝕋) → P Xt
+  h []       = b
+  h (X ∷ Xf) = f X Xf (λ x → h (Xf x))
+
+𝕋-recursion : (A : 𝓤 ̇ )
+            → A
+            → ((X : Type) → (X → 𝕋) → (X → A) → A)
+            → 𝕋 → A
+𝕋-recursion A = 𝕋-induction (λ _ → A)
+
+𝕋-iteration : (A : 𝓤 ̇ )
+            → A
+            → ((X : Type) → (X → A) → A)
+            → 𝕋 → A
+𝕋-iteration A a g = 𝕋-induction (λ _ → A) a (λ X Xf → g X)
+
+\end{code}
+
+Here are some examples for the sake of illustration:
+
+\begin{code}
+
+private
+
+ Path' : 𝕋 → Type
+ Path' = 𝕋-iteration Type 𝟙 (λ X F → Σ x ꞉ X , F x)
+
+ Path'-[] : Path' [] ＝ 𝟙
+ Path'-[] = refl
+
+ Path'-∷ : (X : Type) (Xf : X → 𝕋)
+         → Path' (X ∷ Xf) ＝ (Σ x ꞉ X , Path' (Xf x))
+ Path'-∷ X Xf = refl
+
+ structure' : (S : Type → 𝓤 ̇ ) → 𝕋 → 𝓤 ̇
+ structure' {𝓤} S = 𝕋-iteration (𝓤 ̇ ) 𝟙 (λ X F → S X × ((x : X) → F x))
+
+ structure'-[] : (S : Type → 𝓤 ̇ )
+               → structure' S [] ＝ 𝟙
+ structure'-[] S = refl
+
+ structure'-∷ : (S : Type → 𝓤 ̇ ) (X : Type) (Xf : X → 𝕋)
+              → structure' S (X ∷ Xf) ＝ S X × ((x : X) → structure' S (Xf x))
+ structure'-∷ S X Xf = refl
+
+\end{code}

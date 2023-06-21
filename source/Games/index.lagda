@@ -17,7 +17,6 @@ open import Games.J                       -- Selection monad.
 open import Games.K                       -- Continuation (or quantifier) monad.
 open import Games.Monad                   -- (Automatically strong, wild) monads on types.
 open import Games.Reader
-open import Games.Structure               -- Equips game trees with structure.
 open import Games.TicTacToe0
 open import Games.TicTacToe1              -- Like TicTacToe0 but using Games.Constructor.
 open import Games.TicTacToe2              -- More efficient and less elegant version.

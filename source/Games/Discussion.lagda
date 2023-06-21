@@ -365,22 +365,37 @@ hg : ℍ ≃ 𝔾
 hg = qinveq f (g , gf , fg)
  where
   f' : (Xt : 𝔸) → is-hereditarily-decidable Xt → 𝔾
-  f' (X ∷ Xf) (inl s , k) = (X ∷ (pr₁ ∘ φ)) , s , pr₂ ∘ φ
+  f' (X ∷ Xf) (inl s , d) = (X ∷ (pr₁ ∘ φ)) , s , pr₂ ∘ φ
    where
-    φ : X → 𝔾
-    φ x = f' (Xf x) (k x)
+    have-s : ∥ X ∥
+    have-s = s
 
-  f' (X ∷ Xf) (inr _ , _) = [] , ⟨⟩
+    have-d : (x : X) → is-hereditarily-decidable (Xf x)
+    have-d = d
+
+    φ : X → 𝔾
+    φ x = f' (Xf x) (d x)
+
+  f' (X ∷ Xf) (inr e , _) = [] , ⟨⟩
+   where
+    have-e : is-empty ∥ X ∥
+    have-e = e
 
   f : ℍ → 𝔾
   f = uncurry f'
 
   g' : (Xt : 𝕋) → is-hereditarily-inhabited Xt → ℍ
   g' []       _       = []ᴴ
-  g' (X ∷ Xf) (s , k) = (X ∷ (pr₁ ∘ γ)) , inl s , pr₂ ∘ γ
+  g' (X ∷ Xf) (s , i) = (X ∷ (pr₁ ∘ γ)) , inl s , pr₂ ∘ γ
    where
+    have-s : ∥ X ∥
+    have-s = s
+
+    have-i : (x : X) → is-hereditarily-inhabited (Xf x)
+    have-i = i
+
     γ : X → ℍ
-    γ x = g' (Xf x) (k x)
+    γ x = g' (Xf x) (i x)
 
   g : 𝔾 → ℍ
   g = uncurry g'
@@ -388,16 +403,16 @@ hg = qinveq f (g , gf , fg)
   fg' : (Xt : 𝕋) (i : is-hereditarily-inhabited Xt)
       → f (g (Xt , i)) ＝ (Xt , i)
   fg' []       ⟨⟩      = refl
-  fg' (X ∷ Xf) (s , k) =
-   f (g ((X ∷ Xf) , s , k))      ＝⟨ refl ⟩
+  fg' (X ∷ Xf) (s , i) =
+   f (g ((X ∷ Xf) , s , i))      ＝⟨ refl ⟩
    (X ∷ (pr₁ ∘ h)) , s , pr₂ ∘ h ＝⟨ I ⟩
-   ((X ∷ Xf) , s , k)            ∎
+   ((X ∷ Xf) , s , i)            ∎
     where
      h : X → 𝔾
-     h x = f (g (Xf x , k x))
+     h x = f (g (Xf x , i x))
 
-     IH : (x : X) → h x ＝ (Xf x , k x)
-     IH x = fg' (Xf x) (k x)
+     IH : (x : X) → h x ＝ (Xf x , i x)
+     IH x = fg' (Xf x) (i x)
 
      I = ap (λ - → (X ∷ (pr₁ ∘ -)) , s , pr₂ ∘ -)
             (dfunext fe IH)
@@ -407,36 +422,40 @@ hg = qinveq f (g , gf , fg)
 
   gf' : (Xt : 𝔸) (d : is-hereditarily-decidable Xt)
       → g (f (Xt , d)) ＝ (Xt , d)
-  gf' (X ∷ Xf) (inl s , k) =
-   g (f ((X ∷ Xf) , inl s , k))      ＝⟨ refl ⟩
+  gf' (X ∷ Xf) (inl s , d) =
+   g (f ((X ∷ Xf) , inl s , d))      ＝⟨ refl ⟩
    (X ∷ (pr₁ ∘ h)) , inl s , pr₂ ∘ h ＝⟨ I ⟩
-   (X ∷ Xf) , inl s , k              ∎
+   (X ∷ Xf) , inl s , d              ∎
    where
     h : X → ℍ
-    h x = g (f (Xf x , k x))
+    h x = g (f (Xf x , d x))
 
-    IH : (x : X) → h x ＝ (Xf x , k x)
-    IH x = gf' (Xf x) (k x)
+    IH : (x : X) → h x ＝ (Xf x , d x)
+    IH x = gf' (Xf x) (d x)
 
     I = ap (λ - → (X ∷ (pr₁ ∘ -)) , inl s , pr₂ ∘ -)
            (dfunext fe IH)
 
-  gf' (X ∷ Xf) (inr n , k) =
-   g (f ((X ∷ Xf) , inr n , k)) ＝⟨ refl ⟩
-   []ᴴ                          ＝⟨ I ⟩
-   (X ∷ Xf) , inr n , k         ∎
+  gf' (X ∷ Xf) (inr e , d) =
+   g (f ((X ∷ Xf) , inr e , d)) ＝⟨ refl ⟩
+   []ᴬ , []ᴬ-is-hd              ＝⟨ II ⟩
+   (X ∷ Xf) , inr e , d         ∎
     where
-     I = to-subtype-＝
-          being-hereditarily-decidable-is-prop
-          ([]ᴬ-＝ Xf (λ x → n ∣ x ∣))
+     I : []ᴬ ＝ (X ∷ Xf)
+     I = []ᴬ-＝ Xf (λ x → e ∣ x ∣)
+
+     II = to-subtype-＝ being-hereditarily-decidable-is-prop I
 
   gf : g ∘ f ∼ id
   gf (Xt , i) = gf' Xt i
 
 \end{code}
 
-Not only do we have an isomorphism ℍ ≃ 𝔾, but also so are the types of ℍ-paths
-and 𝔾-paths along this isomorphism.
+Not only do we have an isomorphism hg : ℍ ≃ 𝔾, but also an isomorphism
+ℍ-Path h ≃ 𝔾-Path (⌜ hg ⌝ h), for each h : ℍ, of type of ℍ-paths of h
+and the type of 𝔾-paths along hg, where ⌜ hg ⌝ : ℍ → 𝔾 is the forward
+direction of the isomosphism (the function f in the above
+construction).
 
 \begin{code}
 
@@ -449,33 +468,44 @@ and 𝔾-paths along this isomorphism.
 hg-path : (h : ℍ) → ℍ-Path h ≃ 𝔾-Path (⌜ hg ⌝ h)
 hg-path (Xt , d) = γ Xt d
  where
-  γ : (Xt : 𝔸) (i : is-hereditarily-decidable Xt)
-    → 𝔸-Path Xt ≃ 𝔾-Path (⌜ hg ⌝ (Xt , i))
-  γ (X ∷ Xf) (inl s , k) =
+  γ : (Xt : 𝔸) (d : is-hereditarily-decidable Xt)
+    → 𝔸-Path Xt ≃ 𝔾-Path (⌜ hg ⌝ (Xt , d))
+  γ (X ∷ Xf) (inl s , d) =
    𝔸-Path (X ∷ Xf)                              ≃⟨ ≃-refl _ ⟩
-   is-empty X + (Σ x ꞉ X , 𝔸-Path (Xf x))       ≃⟨ I ⟩
+   is-empty X + (Σ x ꞉ X , 𝔸-Path (Xf x))       ≃⟨ II ⟩
    𝟘 + (Σ x ꞉ X , 𝔸-Path (Xf x))               ≃⟨ 𝟘-lneutral {𝓤₀} {𝓤₀} ⟩
    (Σ x ꞉ X , 𝔸-Path (Xf x))                    ≃⟨ Σ-cong IH ⟩
-   (Σ x ꞉ X , Path (pr₁ (⌜ hg ⌝ (Xf x , k x)))) ≃⟨ ≃-refl _ ⟩
-   𝔾-Path (⌜ hg ⌝ ((X ∷ Xf) , inl s , k))       ■
+   (Σ x ꞉ X , Path (pr₁ (⌜ hg ⌝ (Xf x , d x)))) ≃⟨ ≃-refl _ ⟩
+   𝔾-Path (⌜ hg ⌝ ((X ∷ Xf) , inl s , d))       ■
    where
-    IH : (x : X) → 𝔸-Path (Xf x) ≃ Path (pr₁ (⌜ hg ⌝ (Xf x , k x)))
-    IH x = γ (Xf x) (k x)
+    have-s : ∥ X ∥
+    have-s = s
 
-    I = +-cong
-        (empty-≃-𝟘 (λ e → ∥∥-rec 𝟘-is-prop e s))
-        (≃-refl _)
+    I : is-empty X ≃ 𝟘
+    I = empty-≃-𝟘 (λ e → ∥∥-rec 𝟘-is-prop e s)
 
-  γ (X ∷ Xf) (inr n , i) =
+    IH : (x : X) → 𝔸-Path (Xf x) ≃ Path (pr₁ (⌜ hg ⌝ (Xf x , d x)))
+    IH x = γ (Xf x) (d x)
+
+    II = +-cong I (≃-refl _)
+
+  γ (X ∷ Xf) (inr e , d) =
    𝔸-Path (X ∷ Xf)                        ≃⟨ ≃-refl _ ⟩
-   is-empty X + (Σ x ꞉ X , 𝔸-Path (Xf x)) ≃⟨ I ⟩
+   is-empty X + (Σ x ꞉ X , 𝔸-Path (Xf x)) ≃⟨ III ⟩
    𝟙 + 𝟘                                  ≃⟨ 𝟘-rneutral' {𝓤₀} {𝓤₀}⟩
    𝟙                                      ≃⟨ ≃-refl _ ⟩
    Path []                                ■
     where
-     I = +-cong
-          (prop-indexed-product-one fe (λ x → n ∣ x ∣))
-          (prop-indexed-sum-zero (λ x → n ∣ x ∣))
+     have-e : is-empty ∥ X ∥
+     have-e = e
+
+     I : is-empty X ≃ 𝟙
+     I = prop-indexed-product-one fe (λ x → e ∣ x ∣)
+
+     II : (Σ x ꞉ X , 𝔸-Path (Xf x)) ≃ 𝟘
+     II = prop-indexed-sum-zero (λ x → e ∣ x ∣)
+
+     III = +-cong I II
 
 gh-path : (g : 𝔾) → 𝔾-Path g ≃ ℍ-Path (⌜ hg ⌝⁻¹ g)
 gh-path g = ≃-sym I
@@ -495,11 +525,15 @@ that we could have worked with 𝔸 if we wished. In practice, it is more
 convenient to work with 𝕋, but the difference is only convenience.
 
 As we have seen above, 𝕋 contains trees with empty internal nodes,
-which are undesirable as they are useless, and play no role, if we use
-[] to indicate the end of a path.
+which don't occur in our work, because we assume, in our main results
+on games, that the types X of moves have selection functions
+(X → R) → X, with R pointed in the examples, the types of moves are
+pointed and hence inhabited.
 
-Given any tree Xt : 𝕋, we can prune away such useless subtrees, to get
-a tree that has the same paths as Xt.
+Given any tree Xt : 𝕋, we can prune away the subtrees, to get a tree
+that has the same paths as Xt, and which is hereditarily inhabited as
+soon as there is at least one path in Xt (see further discussion
+below).
 
 \begin{code}
 
@@ -517,7 +551,7 @@ prune-path Xt = qinveq (f Xt) (g Xt , gf Xt , fg Xt)
 
   g : (Xt : 𝕋) → Path (prune Xt) → Path Xt
   g []       ⟨⟩             = ⟨⟩
-  g (X ∷ Xf) ((x , p) , xs) = x , g (Xf x) xs
+  g (X ∷ Xf) ((x , _) , xs) = x , g (Xf x) xs
 
   gf : (Xt : 𝕋) → g Xt ∘ f Xt ∼ id
   gf []       ⟨⟩       = refl
@@ -531,6 +565,9 @@ prune-path Xt = qinveq (f Xt) (g Xt , gf Xt , fg Xt)
    ((x , p) , f (Xf x) (g (Xf x) xs))              ＝⟨ II ⟩
    (x , p) , xs                                    ∎
     where
+     have-p : ∥ Path (Xf x) ∥
+     have-p = p
+
      I = ap (λ - →  ((x , -) , f (Xf x) (g (Xf x) xs)))
             (∥∥-is-prop ∣ g (Xf x) xs ∣ p)
      II = ap ((x , p) ,_)
@@ -619,3 +656,143 @@ are its paths, which correspond to full plays in a game. One advantage
 of the original development using 𝕋 is that it works in pure MLTT,
 whereas the approach using 𝔾 or ℍ requires propositional truncation
 and function extensionality.
+
+We now show how the file Games.FiniteHistoryDependent could have been
+written using ℍ instead of 𝕋, for the sake of illustration, including
+a few of the original definitions with 𝕋 alongside the required
+modification needed to use ℍ instead:
+
+\begin{code}
+
+module illustration (R : Type) where
+
+ open import Games.FiniteHistoryDependent using ()
+ open import Games.K
+
+ open K-definitions R
+
+ Path' : ℍ → Type
+ Path' ((X ∷ Xf) , inr _ , _) = 𝟙
+ Path' ((X ∷ Xf) , inl _ , h) = Σ x ꞉ X , Path' (Xf x , h x)
+
+ 𝓚 : 𝕋 → Type
+ 𝓚 []       = 𝟙
+ 𝓚 (X ∷ Xf) = K X × ((x : X) → 𝓚 (Xf x))
+
+ 𝓚' : ℍ → Type
+ 𝓚' ((X ∷ Xf) , inr _ , _) = 𝟙
+ 𝓚' ((X ∷ Xf) , inl _ , h) = K X × ((x : X) → 𝓚' (Xf x , h x))
+
+ K-sequence : {Xt : 𝕋} → 𝓚 Xt → K (Path Xt)
+ K-sequence {[]}     ⟨⟩       = λ q → q ⟨⟩
+ K-sequence {X ∷ Xf} (ϕ , ϕf) = ϕ ⊗ᴷ (λ x → K-sequence {Xf x} (ϕf x))
+
+ K-sequence' : {Xt : ℍ} → 𝓚' Xt → K (Path' Xt)
+ K-sequence' {(X ∷ Xf) , inr _ , h} ⋆        = λ q → q ⋆
+ K-sequence' {(X ∷ Xf) , inl _ , h} (ϕ , ϕf) = ϕ ⊗ᴷ (λ x → K-sequence' {Xf x , h x} (ϕf x))
+
+ Strategy : 𝕋 -> Type
+ Strategy []       = 𝟙
+ Strategy (X ∷ Xf) = X × ((x : X) → Strategy (Xf x))
+
+ Strategy' : ℍ -> Type
+ Strategy' ((X ∷ Xf) , inr _ , _) = 𝟙
+ Strategy' ((X ∷ Xf) , inl _ , h) = X × ((x : X) → Strategy' (Xf x , h x))
+
+ strategic-path : {Xt : 𝕋} → Strategy Xt → Path Xt
+ strategic-path {[]}     ⟨⟩       = ⟨⟩
+ strategic-path {X ∷ Xf} (x , σf) = x , strategic-path {Xf x} (σf x)
+
+ strategic-path' : {Xt : ℍ} → Strategy' Xt → Path' Xt
+ strategic-path' {(X ∷ Xf) , inr _ , h} ⟨⟩       = ⟨⟩
+ strategic-path' {(X ∷ Xf) , inl _ , h} (x , σf) = x , strategic-path' {Xf x , h x} (σf x)
+
+\end{code}
+
+The above illustrates that the definitions are almost the same, but
+more cumbersome in terms of the patterns for case analysis. So we
+prefer to work with 𝕋 in practice.
+
+To illustrate the richness of 𝔸 and 𝕋, we now show how to embed the
+type of all ordinals into 𝔸, and then some kinds of ordinals in 𝔾, following
+
+   Tom de Jong, Nicolai Kraus, Fredrik Nordvall Forsberg and Chuangjie
+   Xu. *Set-Theoretic and Type-Theoretic Ordinals Coincide.*
+   To appear at [LICS 2023][LICS23]. June 2023.
+
+   https://arxiv.org/abs/2301.10696
+
+This paper is formalized in Ordinals.CumulativeHierarchy. We redefine
+the function Ord-to-𝔸 below.
+
+\begin{code}
+
+open import Ordinals.CumulativeHierarchy using ()
+open import Ordinals.Type
+open import Ordinals.OrdinalOfOrdinals ua
+open import Ordinals.Underlying
+
+Ord-to-𝔸 : Ordinal 𝓤₀ → 𝔸
+Ord-to-𝔸 = transfinite-recursion-on-OO 𝔸 (λ α f → ⟨ α ⟩ ∷ f)
+
+Ord-to-𝔸-behaviour : (α : Ordinal 𝓤₀) → Ord-to-𝔸 α ＝ (⟨ α ⟩ ∷ λ (a : ⟨ α ⟩) → Ord-to-𝔸 (α ↓ a))
+Ord-to-𝔸-behaviour = transfinite-recursion-on-OO-behaviour 𝔸 (λ α f → ⟨ α ⟩ ∷ f)
+
+\end{code}
+
+Which ordinals produce hereditarily decidable trees? The ones that are
+good in the following sense:
+
+\begin{code}
+
+is-good : Ordinal 𝓤₀ → Type
+is-good α = is-decidable ∥ ⟨ α ⟩ ∥ × ((a : ⟨ α ⟩) → is-decidable (∃ x ꞉ ⟨ α ⟩ , x ≺⟨ α ⟩ a))
+
+goodness : (α : Ordinal 𝓤₀) → is-good α → is-hereditarily-decidable (Ord-to-𝔸 α)
+goodness = transfinite-induction-on-OO _ ϕ
+ where
+  ϕ : (α : Ordinal 𝓤₀)
+    → ((a : ⟨ α ⟩) → is-good (α ↓ a) → is-hereditarily-decidable (Ord-to-𝔸 (α ↓ a)))
+    → is-good α → is-hereditarily-decidable (Ord-to-𝔸 α)
+  ϕ α f (d , e) = IV
+   where
+    g : (a b : ⟨ α ⟩)
+      → b ≺⟨ α ⟩ a
+      → (Σ x ꞉ ⟨ α ⟩ , x ≺⟨ α ⟩ b)
+      → (Σ (x , m) ꞉ ⟨ α ↓ a ⟩ , x ≺⟨  α ⟩ b)
+    g a b l (x , m) = (x , Transitivity α x b a m l) , m
+
+    h : (a b : ⟨ α ⟩)
+      → (Σ (x , m) ꞉ ⟨ α ↓ a ⟩ , x ≺⟨  α ⟩ b)
+      → (Σ x ꞉ ⟨ α ⟩ , x ≺⟨ α ⟩ b)
+    h a b ((x , m) , n) = x , n
+
+    I : (a : ⟨ α ⟩) → ((b , l) : ⟨ α ↓ a ⟩) → is-decidable (∃ (x , m) ꞉ ⟨ α ↓ a ⟩ , x ≺⟨  α ⟩ b )
+    I a (b , l) = map-decidable (∥∥-functor (g a b l)) (∥∥-functor (h a b)) (e b)
+
+    II : (a : ⟨ α ⟩) → is-hereditarily-decidable (Ord-to-𝔸 (α ↓ a))
+    II a = f a (e a , I a)
+
+    III : is-hereditarily-decidable (⟨ α ⟩ ∷ λ (a : ⟨ α ⟩) → Ord-to-𝔸 (α ↓ a))
+    III = d , II
+
+    IV : is-hereditarily-decidable (Ord-to-𝔸 α)
+    IV = transport is-hereditarily-decidable ((Ord-to-𝔸-behaviour α)⁻¹) III
+
+\end{code}
+
+So every good ordinal gives rise to a good game tree. Plays in the
+game are (automatically finite) decreasing sequences that end with the
+least element.
+
+\begin{code}
+
+Ord-to-𝔾 : (α : Ordinal 𝓤₀) → is-good α → 𝔾
+Ord-to-𝔾 α g = ⌜ hg ⌝ (Ord-to-𝔸 α , goodness α g)
+
+\end{code}
+
+TODO. An ordinal α is good if and only if it is decidable whether
+⟨ α ⟩ is inhabited and whether any x : ⟨ α ⟩ is the least element of α.
+The second condition means that the least element, if it exists, is
+isolated, which in turn means that α is of the form 1 + α'.

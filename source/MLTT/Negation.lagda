@@ -62,6 +62,19 @@ dual R f p = p ∘ f
 contrapositive : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → (A → B) → ¬ B → ¬ A
 contrapositive = dual _
 
+map-decidable : {A : 𝓤 ̇ } {B : 𝓥 ̇ }
+              → (A → B)
+              → (B → A)
+              → is-decidable A
+              → is-decidable B
+map-decidable f g (inl a) = inl (f a)
+map-decidable f g (inr n) = inr (contrapositive g n)
+
+map-decidable' : {A : 𝓤 ̇ } {B : 𝓥 ̇ }
+              → (A ⇔ B)
+              → (is-decidable A ⇔ is-decidable B)
+map-decidable' (f , g) = map-decidable f g , map-decidable g f
+
 double-contrapositive : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → (A → B) → ¬¬ A → ¬¬ B
 double-contrapositive = contrapositive ∘ contrapositive
 
