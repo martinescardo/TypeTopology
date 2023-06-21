@@ -1,7 +1,8 @@
 --------------------------------------------------------------------------------
 Ettore Aldrovandi, ealdrovandi@fsu.edu
 
-November 2022
+Started: November 2022
+Revision: June 2023
 --------------------------------------------------------------------------------
 
 Port of [HoTT-Agda](https://github.com/HoTT/HoTT-Agda) `PathSeq`
@@ -35,7 +36,8 @@ point-from-start (succ n) {x} (p ◃∙ s) = point-from-start n s
 \end{code}
 
 
-"Drop" from a the base point returns the subsequence. 
+"Drop" returns the subsequence from the `point-from-start` to the end
+of the original sequence.
 
 \begin{code}
 drop : ( n : ℕ) {x y : X} (s : x ≡ y) → point-from-start n s ≡ y
@@ -48,7 +50,8 @@ tail = drop 1
 \end{code}
 
 
-"Take" from the beginning of a sequence to the base point.
+"Take" from the beginning of a sequence to the chosen point (taken
+from start), that is, the complementary operation to `drap`.
 
 \begin{code}
 take : (n : ℕ) {x y : X} (s : x ≡ y) → x ≡ point-from-start n s
@@ -58,10 +61,11 @@ take (succ n) (p ◃∙ s) = p ◃∙ (take n s)
 \end{code}
 
 Given a path sequence, build a different one with the same end points:
-1. Choose a point in it using point-from-start
+1. Choose a point in it using point-from-start 
 2. Drop, take, and concat the resulting subsequences.
 
-In `take-drop-split` the sequence is "reconstructed" from the corresponding paths.
+In `take-drop-split` the sequence is "reconstructed" from the
+corresponding paths.
 
 \begin{code}
 
@@ -78,13 +82,11 @@ take-drop-split n s = ＝ₛ-in ( [ s ↓]                        ＝⟨ ap (λ 
                               [ take n s ↓] ∙ [ drop n s ↓]  ∎
                               )
 
-
-
 \end{code}
 
 Select a base point, "point from end," by traveling a path sequence in
-the reverse direction, that is from the end. This requires some helper
-functions: `last1`, `strip`, `split`.
+the reverse direction, that is, from the end. This requires some
+helper functions: `last1`, `strip`, `split`.
 
 The "point from end" function comes in two different forms,
 `point-from-end` and `point-from-end'`.
@@ -110,14 +112,14 @@ private
   split {x} (p ◃∙ p₁ ◃∙ s) = let z , s' , q = split (p₁ ◃∙ s)
                                     in z , (p ◃∙ s' , q) 
 
-point-from-end : (n : ℕ) {x y : X} (s : x ≡ y) → X
-point-from-end zero {x} {y} s = y
-point-from-end (succ n) s = point-from-end n (strip s)
+  point-from-end : (n : ℕ) {x y : X} (s : x ≡ y) → X
+  point-from-end zero {x} {y} s = y
+  point-from-end (succ n) s = point-from-end n (strip s)
 
-point-from-end' : (n : ℕ) {x y : X} (s : x ≡ y) → X
-point-from-end' n {x} [] = x
-point-from-end' zero (p ◃∙ s) = point-from-end' zero s
-point-from-end' (succ n) (p ◃∙ s) = point-from-end' n (pr₁ (pr₂ (split (p ◃∙ s))))
+  point-from-end' : (n : ℕ) {x y : X} (s : x ≡ y) → X
+  point-from-end' n {x} [] = x
+  point-from-end' zero (p ◃∙ s) = point-from-end' zero s
+  point-from-end' (succ n) (p ◃∙ s) = point-from-end' n (pr₁ (pr₂ (split (p ◃∙ s))))
 
 \end{code}
 
@@ -134,24 +136,25 @@ private
   point-from-end'-lemma m x = refl
 \end{code}
 
-Using "take from end" (both versions) we define the analogs of "drop"
-and "take," but starting from the end of the path-sequence.
+Using "take from end" we define the analogs of "drop" and "take," but
+starting from the end of the path-sequence.
 
 \begin{code}
 
-take-from-end : (n : ℕ) {x y : X} (s : x ≡ y) → x ≡ point-from-end n s
-take-from-end zero s = s
-take-from-end (succ n) s = take-from-end n (strip s)
+private
+  take-from-end : (n : ℕ) {x y : X} (s : x ≡ y) → x ≡ point-from-end n s
+  take-from-end zero s = s
+  take-from-end (succ n) s = take-from-end n (strip s)
 
 
-drop-from-end : (n : ℕ) {x y : X} (s : x ≡ y) → point-from-end' n s ≡ y
-drop-from-end n {x} [] = []
-drop-from-end zero {x} (p ◃∙ s) = drop-from-end zero s
-drop-from-end (succ n) (p ◃∙ s) = let z , (t , q) = split (p ◃∙ s)
-                                          in drop-from-end n t ∙▹ q
+  drop-from-end : (n : ℕ) {x y : X} (s : x ≡ y) → point-from-end' n s ≡ y
+  drop-from-end n {x} [] = []
+  drop-from-end zero {x} (p ◃∙ s) = drop-from-end zero s
+  drop-from-end (succ n) (p ◃∙ s) = let z , (t , q) = split (p ◃∙ s)
+                                            in drop-from-end n t ∙▹ q
 \end{code}
 
-The following names are found in the orginal implementation.
+The following names are also found in the orginal implementation.
 
 \begin{code}
 !- = take-from-end

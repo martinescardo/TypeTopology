@@ -1,7 +1,8 @@
 --------------------------------------------------------------------------------
 Ettore Aldrovandi, ealdrovandi@fsu.edu
 
-November 2022
+Started: November 2022
+Revision: June 2023
 --------------------------------------------------------------------------------
 
 Port of [HoTT-Agda](https://github.com/HoTT/HoTT-Agda) `PathSeq`
@@ -21,9 +22,9 @@ open import UF.Base
 The development at [HoTT-Agda](https://github.com/HoTT/HoTT-Agda) has
 a `PathSeq` library with the goal of facilitating path
 (i.e. concatenations of terms in identity types) manipulations. These
-include: stripping, replacing, and normalizing concatenations. The
-result is that we abstract away mindless passing around associativity,
-identity morphisms to just reshuffle parentheses.
+include: stripping, replacing, and normalizing concatenations. This
+way we can abstract away the mindless passing around of associativity,
+identity morphisms, etc. to just reshuffle parentheses.
 
 Example. With the usual identity type reasoning
 
@@ -81,8 +82,7 @@ p ◃∎ = p ◃∙ []
 \end{code}
 
 Convert to identity type and normalize.  The resulting concatenation
-of identity types is normalized. This will be (is) shown in
-PathSequences.Concat
+of identity types is normalized. See the module PathSequences.Concat
 
 \begin{code}
 ≡-to-＝ : {X : 𝓤 ̇ } {x y : X}
@@ -90,25 +90,27 @@ PathSequences.Concat
 ≡-to-＝ [] = refl
 ≡-to-＝ (p ◃∙ s) = p ∙ ≡-to-＝ s
 
--- syntax ≡-to-＝ s = [ s ↓]
-
-[_↓] = ≡-to-＝ 
+infix 30 ≡-to-＝ 
+syntax ≡-to-＝ s = [ s ↓]
+-- [_↓] = ≡-to-＝ 
 
 \end{code}
 
 Equality for path sequences.
-
-TODO: Find better names for the field and constructor.
 
 \begin{code}
 
 record _＝ₛ_ {X : 𝓤 ̇ }{x y : X} (s t : x ≡ y) : 𝓤 ̇ where
   constructor ＝ₛ-in
   field
-    ＝ₛ-out : (≡-to-＝ s) ＝ (≡-to-＝ t)
+--    ＝ₛ-out : (≡-to-＝ s) ＝ (≡-to-＝ t)
+    ＝ₛ-out : [ s ↓] ＝ [ t ↓]
 open _＝ₛ_ public
 
 \end{code}
+
+NOTE: The constructor and field names in the record below are the same
+as the originals, but maybe we want to find better names.
 
 Elementary reasoning with path sequences.  More of it is in
 PathSequences.Concat.
@@ -130,7 +132,7 @@ Fixities
 
 \begin{code}
 
-infix  30 [_↓]
+-- infix  30 [_↓]
 infix  90 _◃∎
 infixr 80 _◃∙_
 infix  30 _≡_

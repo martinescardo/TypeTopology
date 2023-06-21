@@ -1,7 +1,8 @@
 --------------------------------------------------------------------------------
 Ettore Aldrovandi, ealdrovandi@fsu.edu
 
-January 2023
+Started: January 2023
+Revision: June 2023
 --------------------------------------------------------------------------------
 
 Port of [HoTT-Agda](https://github.com/HoTT/HoTT-Agda) `PathSeq`
@@ -25,6 +26,7 @@ module PathSequences.Reasoning where
 
 \begin{code}
 
+infix 30 _＝↓_
 _＝↓_ : {X : 𝓤 ̇ } {x y : X} → x ≡ y → x ≡ y → 𝓤 ̇
 s ＝↓ t = [ s ↓] ＝ [ t ↓]
 
@@ -45,6 +47,12 @@ module _ {X : 𝓤 ̇ } {x y : X} where
 
   contract : {s : x ≡ y} → s ＝ₛ [ s ↓] ◃∎
   contract = ＝ₛ-in refl
+
+\end{code}
+
+Utility functions
+
+\begin{code}
 
   private
     infixr 10 _＝↓⟨_&_&_&_⟩_
@@ -68,13 +76,48 @@ module _ {X : 𝓤 ̇ } {x y : X} where
           ii  = ap (λ v → [ take n s ↓] ∙ (v ∙ [ drop m (drop n s) ↓])) p
           iii = ap ([ take n s ↓] ∙_) ([↓]-hom t (drop m (drop n s)))
           iv   = [↓]-hom (take n s) (t ∙≡ drop m (drop n s))
-\end{code}
+
+  infixr 10 _＝ₛ⟨id⟩_
+  _＝ₛ⟨id⟩_ : (s : x ≡ y) {u : x ≡ y}
+          → s ＝ₛ u
+          → s ＝ₛ u
+  s ＝ₛ⟨id⟩ e = e  -- ＝ₛ-in (＝ₛ-out e)
 
 
-Fixities:
+  infixr 10 _＝ₛ⟨_⟩_
+  _＝ₛ⟨_⟩_ : (s : x ≡ y) {t u : x ≡ y}
+         → s ＝ₛ t
+         → t ＝ₛ u
+         → s ＝ₛ u
+  s ＝ₛ⟨ p ⟩ q = p ∙ₛ q
 
-\begin{code}
 
-infix 30 _＝↓_
+  infixr 10 _＝ₛ₁⟨_⟩_
+  _＝ₛ₁⟨_⟩_ : (s : x ≡ y) {u : x ≡ y}
+          → {r : x ＝ y}
+          → [ s ↓] ＝ r
+          → r ◃∎ ＝ₛ u
+          → s ＝ₛ u
+  s ＝ₛ₁⟨ p ⟩ q = ＝ₛ-in p  ∙ₛ q
+
+  
+  infixr 10 _＝↓⟨_&_&_⟩_
+  _＝↓⟨_&_&_⟩_ : (s : x ≡ y) {u : x ≡ y}
+              → (m n : ℕ)
+              → {r : point-from-start m s ≡ point-from-start n (drop m s)}
+              → take n (drop m s) ＝ₛ r
+              → take m s ∙≡ r ∙≡ drop n (drop m s) ＝ₛ u
+              → s ＝ₛ u
+  _＝↓⟨_&_&_⟩_ s {u} m n {r} p q = ＝ₛ-in (s ＝↓⟨ m & n & r & ＝ₛ-out p ⟩ ＝ₛ-out q )
+
+
+  infixr 10 _＝↓₁⟨_&_&_⟩_
+  _＝↓₁⟨_&_&_⟩_ : (s : x ≡ y) {u : x ≡ y}
+               → (m n : ℕ)
+               → {r : point-from-start m s ＝ point-from-start n (drop m s)}
+               → [ take n (drop m s) ↓] ＝ r
+               → take m s ∙≡ r ◃∙ drop n (drop m s) ＝ₛ u
+               → s ＝ₛ u
+  _＝↓₁⟨_&_&_⟩_ s {u} m n {r} p q = s ＝↓⟨ m & n & ＝ₛ-in p ⟩ q
 
 \end{code}

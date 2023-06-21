@@ -1,7 +1,8 @@
 --------------------------------------------------------------------------------
 Ettore Aldrovandi, ealdrovandi@fsu.edu
 
-November 2022
+Started: November 2022
+Revision: June 2023
 --------------------------------------------------------------------------------
 
 Port of [HoTT-Agda](https://github.com/HoTT/HoTT-Agda) `PathSeq`
@@ -20,7 +21,8 @@ open import PathSequences.Base
 \end{code}
 
 This module handles concatenation of path sequences. The developmenet
-is very close to the module `Concat` in the original repository.
+is very close to the module `Concat` in the original repository, with
+a couple of extra items.
 
 \begin{code}
 
@@ -35,10 +37,25 @@ _∙≡_ : {X : 𝓤 ̇ } {x y z : X}
 ∙≡-assoc [] t u = refl
 ∙≡-assoc (p ◃∙ s) t u = ap (p ◃∙_) (∙≡-assoc s t u)
 
+\end{code}
+
+The following is not in the original module, but it seems one should
+have a proof of associativity for the direct equality _＝ₛ_ between
+path sequences.
+
+\begin{code}
+
 ∙≡-assoc-＝ₛ : {X : 𝓤 ̇ } {x y z w : X}
             → (s : x ≡ y) (t : y ≡ z) (u : z ≡ w)
             → ((s ∙≡ t) ∙≡ u) ＝ₛ (s ∙≡ (t ∙≡ u))
 ∙≡-assoc-＝ₛ s t u = ＝ₛ-in (ap (λ v → [ v ↓]) (∙≡-assoc s t u))
+
+\end{code}
+
+We see ∙≡-assoc is more fundamental. 
+Resuming…
+
+\begin{code}
 
 []-∙≡-right-neutral : {X : 𝓤 ̇ } {x y : X}
                     → (s : x ≡ y)
@@ -50,6 +67,7 @@ _∙≡_ : {X : 𝓤 ̇ } {x y z : X}
                        → (s : x ≡ y)
                        → s ∙≡ [] ＝ₛ s
 []-∙≡-right-neutral-＝ₛ s = ＝ₛ-in (ap (λ v → [ v ↓]) ([]-∙≡-right-neutral s))
+
 
 _∙▹_ : {X : 𝓤 ̇ } {x y z : X}
      → x ≡ y → y ＝ z → x ≡ z
@@ -74,18 +92,6 @@ s ∙▹ p = s ∙≡ (p ◃∎)
 
 \end{code}
 
-Tests
-
-\begin{code}
-
-module _ {X : 𝓤 ̇ } {x y z t u : X} where
-  
-  _ : (a : x ＝ y) (b : y ＝ z) (c : z ＝ t) (d : t ＝ u)
-    → [ (a ◃∙ b ◃∎ ∙≡ c ◃∙ d ◃∎) ↓] ＝ a ∙ (b ∙ (c ∙ (d ∙ refl)))
-  _ = λ a b c d → refl
-
-
-\end{code}
 
 Fixities
 
