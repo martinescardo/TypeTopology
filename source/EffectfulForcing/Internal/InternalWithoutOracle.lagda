@@ -1880,34 +1880,22 @@ Rnorm-preserves-⟦⟧ {ι} A d t u t＝u eq = transport (_≣⋆ church-encode 
 Rnorm-preserves-⟦⟧ {σ ⇒ τ} A d t u t＝u Rnorm-t v v' Rnorm-v =
  Rnorm-preserves-⟦⟧ A (d v) (t · v') (u · v') (ap (λ f → f ⟦ v' ⟧₀) t＝u) (Rnorm-t v v' Rnorm-v)
 
-{--
 -- Since rec is interpreted using ⌜Kleisli-extension⌝, we need to know that
 -- ⌜Kleisli-extension⌝ preserves this normalisation property.
-Rnorm-kleisli-lemma : {Γ : Cxt} {σ : type} (A : type) (xs : IB【 Γ 】 A)
-                      (f : T (B-context【 Γ 】 A) (ι ⇒ B-type〖 σ 〗 A))
-                      (t : T (B-context【 Γ 】 A) (B-type〖 ι 〗 A))
-                    → ((x : T (B-context【 Γ 】 A) ι) → Rnorm A (close (f · x) xs))
-                    → Rnorms A xs
-                    → Rnorm {ι} A (close t xs)
-                    → Rnorm A (close (⌜Kleisli-extension⌝ · f · t) xs)
-Rnorm-kleisli-lemma {Γ} {ι} A xs f t Rnorm-f Rnorm-t = {!!}
-Rnorm-kleisli-lemma {Γ} {σ ⇒ τ} A xs f t Rnorm-xs Rnorm-f Rnorm-t u Rnorm-u =
- {!!}
- where
-  bar : ⟦ close (⌜Kleisli-extension⌝ {ι} {A} {σ ⇒ τ} · f · t) xs ⟧₀ ＝ {!!}
-  bar = ⟦ close (⌜Kleisli-extension⌝ {ι} {A} {σ ⇒ τ} · f · t) xs ⟧₀
-         ＝⟨ refl ⟩
-        ⟦ close ((ƛ (ƛ (ƛ (⌜Kleisli-extension⌝ {ι} {A} {τ} · ƛ (ν₃ · ν₀ · ν₁) · ν₁)))) · f · t ) xs ⟧₀
-         ＝⟨ ⟦close⟧' _ xs ⟩
-        ⟦ (ƛ (ƛ (ƛ (⌜Kleisli-extension⌝ {ι} {A} {τ} · ƛ (ν₃ · ν₀ · ν₁) · ν₁)))) · f · t ⟧ (【Sub₀】 xs)
-         ＝⟨ {!!} ⟩
-        ⟦ ƛ (⌜Kleisli-extension⌝ {ι} {A} {τ} · ƛ (weaken, ι (weaken, (B-type〖 σ 〗 A) f) · ν₀ · ν₁) · weaken, (B-type〖 σ 〗 A) t) ⟧ (【Sub₀】 xs)
-         ＝⟨ {!!} ⟩
-        ⟦ close ((ƛ (⌜Kleisli-extension⌝ {ι} {A} {τ} · ƛ (weaken, ι (weaken, (B-type〖 σ 〗 A) f) · ν₀ · ν₁) · weaken, (B-type〖 σ 〗 A) t))) xs ⟧₀
-         ∎
+-- TODO is it enough to get a context free kleisli lemma
+Rnorm-kleisli-lemma : {σ : type} (A : type)
 
-  --foo : Rnorm A {!!}
-  --foo = {!!} Rnorm-kleisli-lemma A {!!} (ƛ (ν₃ · ν₀ · ν₁)) ν₁ {!!} {!!} {!!} {!!} {!!}
+                      (f : ℕ → B〖 σ 〗)
+                      (f' : T₀ (ι ⇒ B-type〖 σ 〗 A))
+                    → ((x : ℕ) (x' : T₀ ι) → Rnorm A (f x) (f' · x'))
+
+                    → (n : B ℕ)
+                      (n' : T₀ (⌜B⌝ ι A))
+                    → Rnorm {ι} A n n'
+
+                    → Rnorm A (Kleisli-extension f n) (⌜Kleisli-extension⌝ · f' · n')
+Rnorm-kleisli-lemma {ι} A f f' rf n n' rn η' β' = ?
+Rnorm-kleisli-lemma {σ ⇒ τ} A f f' rf n n' rn = {!!}
 
 {-
 Rnorm A
@@ -1981,9 +1969,6 @@ Rnorm-Rec {Γ} {σ ⇒ τ} A xs t u v Rnorm-xs Rnorm-t Rnorm-u Rnorm-v w Rnorm-w
 --Rnorm-Rec xs t u v Rnorm-xs Rnorm-t Rnorm-u (inl (succ n , eq)) = {!!}
 --Rnorm-Rec xs t u v Rnorm-xs Rnorm-t Rnorm-u (inr x) = {!!}
 -}
-
-
---}
 
 ＝【】-【Sub】-Sub,, : {Γ : Cxt} {A σ : type} (ys : IB【 Γ 】 A) (u : T₀ (B-type〖 σ 〗 A))
                      → ＝【】 (【Sub】 (Sub,, ys u) ⟨⟩) (【Sub】 (Subƛ ys) (⟨⟩ ‚ ⟦ u ⟧₀))
