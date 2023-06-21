@@ -2300,6 +2300,22 @@ Rnorm-lemma A xs ys (ƛ t) Rnorm-xs u u' Rnorm-u =
 Rnorm-lemma A xs ys (t · u) Rnorm-xs =
  Rnorm-lemma A xs ys t Rnorm-xs (B⟦ u ⟧ xs) (close ⌜ u ⌝ ys) (Rnorm-lemma A xs ys u Rnorm-xs)
 
+-- derived from Rnorm-lemma and main-lemma?
+⌜main-lemma⌝' : {σ : type} (t : T₀ σ)
+                (α : Baire)
+              → R⋆ α ⟦ t ⟧₀ ⌜ t ⌝
+⌜main-lemma⌝' {ι} t α = c
+ where
+  c1 : ⟦ t ⟧₀ ＝ dialogue B⟦ t ⟧₀ α
+  c1 = main-lemma t α ⟨⟩ ⟪⟫ (λ ())
+
+  c2 : ⟦ ⌜_⌝ {_} {_} {(ι ⇒ ι) ⇒ ι} t ⟧₀ ≣⋆ church-encode B⟦ t ⟧₀
+  c2 = Rnorm-lemma {〈〉} {ι} ((ι ⇒ ι) ⇒ ι) ⟪⟫ (λ ()) {!t!} λ ()
+
+  c : ⟦ t ⟧₀ ＝ dialogue⋆ ⟦ ⌜ t ⌝ ⟧₀ α
+  c = {!!}
+⌜main-lemma⌝' {σ ⇒ σ₁} t α x x' rx = {!!}
+
 --⟦close-Sub1⟧ : (ext : naive-funext 𝓤₀ 𝓤₀){Γ : Cxt} {σ τ : type} (t : T (Γ ,, σ) τ) (u : T Γ σ) (xs : 【 Γ 】)
 --             → ⟦ close t (Sub1 u) ⟧ xs ＝ ⟦ ƛ t · u ⟧ xs
 --⟦close-Sub1⟧ ext Zero            u xs = refl
