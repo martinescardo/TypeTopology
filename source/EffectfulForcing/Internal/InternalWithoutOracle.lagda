@@ -808,6 +808,9 @@ R⋆ {σ ⇒ τ} α f f' = (x  : 〖 σ 〗)
 IB【_】 : Cxt → type → Type
 IB【 Γ 】 A = Sub₀ (B-context【 Γ 】 A)
 
+IB₀ : {A : type} → IB【 〈〉 】 A
+IB₀ {A} ()
+
 {-
 T₀-B-context-sel : {A : type} (Γ : Cxt) {σ : type} (i : ∈Cxt σ (B-context【 Γ 】 A))
                  → T₀ σ
@@ -2308,8 +2311,14 @@ Rnorm-lemma xs ys (t · u) Rnorm-xs =
   c1 : ⟦ t ⟧₀ ＝ dialogue B⟦ t ⟧₀ α
   c1 = main-lemma t α ⟨⟩ ⟪⟫ (λ ())
 
+  qt : {A : type} → T₀ (B-type〖 ι 〗 A)
+  qt {A} = ⌜ t ⌝
+
+  cx : Rnorm {ι} B⟦ t ⟧₀ (close qt IB₀)
+  cx = Rnorm-lemma {〈〉} {ι} ⟪⟫ IB₀ t λ ()
+
   c2 : ⟦ ⌜ t ⌝ ⟧₀ ≣⋆ church-encode B⟦ t ⟧₀
-  c2 = Rnorm-lemma ⟪⟫ (λ ()) {!t!} (λ ())
+  c2 = {!!} --Rnorm-lemma ⟪⟫ (λ ()) {!t!} (λ ())
 
   c : ⟦ t ⟧₀ ＝ dialogue⋆ ⟦ ⌜ t ⌝ ⟧₀ α
   c = {!!}
