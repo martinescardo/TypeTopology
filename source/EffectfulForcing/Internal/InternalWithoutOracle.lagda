@@ -1640,6 +1640,9 @@ close-Sub,,-as-close-Subƛ {Γ} {σ} {τ} t ys y =
 ⌜η⌝ℕ→T : {A : type} (n : ℕ) → ⟦ ⌜η⌝ · ℕ→T n ⟧₀ ＝ ⟦ ⌜_⌝ {_} {_} {A} (ℕ→T n) ⟧₀
 ⌜η⌝ℕ→T {A} n = ap (λ k → k ⟦ ℕ→T n ⟧₀) η-meaning ∙ η⋆ℕ→T n
 
+⌜η⌝ℕ→T' : {X Y A : type} (n : ℕ) → ⟦ ⌜η⌝ {X} {Y} {ι} {A} · ℕ→T n ⟧₀ ＝ η⋆ n
+⌜η⌝ℕ→T' {X} {Y} {A} n = ap η⋆ (⟦ℕ→T⟧ n)
+
 ⌜main-lemma⌝-rec-zero : {σ : type}
                         (a : T (〈〉 ,, ι) (ι ⇒ B-type〖 σ ⇒ σ 〗 ((ι ⇒ ι) ⇒ ι)))
                         (b : T₀ (B-type〖 σ 〗 ((ι ⇒ ι) ⇒ ι)))
@@ -1890,6 +1893,13 @@ This sort of reification is crucial when we need to pattern match on the
 constructor of a church-encoded tree.
 
 \begin{code}
+
+Rnorm-reify-η' : (n : ℕ) (t : {A : type} → T₀ (⌜B⌝ ι A))
+               → Rnorm (η n) t
+               → ⟦ t ⟧₀ ≣⋆ ⟦ ⌜η⌝ · ℕ→T n ⟧₀ × Rnorm (η n) (⌜η⌝ · ℕ→T n)
+Rnorm-reify-η' n t eq =
+ ≣⋆-trans eq (λ A η' β' → ap (λ k → k η' β') ((⌜η⌝ℕ→T' n) ⁻¹)) ,
+ λ A η' β' → ap (λ k → k η' β') (⌜η⌝ℕ→T' n)
 
 Rnorm-reify-η : (n : ℕ) (t : {A : type} → T₀ (⌜B⌝ ι A))
                 → Rnorm (η n) t
@@ -2357,6 +2367,26 @@ Rnorm-lemmaι t α =
  dialogue⋆ ⟦ ⌜ t ⌝ ⟧₀ α
   ∎
 ⌜main-lemma⌝' {σ ⇒ σ₁} t α x x' rx = {!!}
+
+RnormAs : {σ : type} (d : B〖 σ 〗) (t : {A : type} → T₀ (B-type〖 σ 〗 A)) (α : Baire)
+         → Rnorm d t ⇔ (Σ x ꞉ 〖 σ 〗 , ((R α x d) × (R⋆ α x t)))
+RnormAs {ι} d t α = c1 , c2
+ where
+  c0 : is-dialogue-for d t → dialogue d α ＝ dialogue⋆ ⟦ t ⟧₀ α
+  c0 i =
+   dialogue d α
+    ＝⟨ dialogues-agreement d α ⟩
+   dialogue⋆ (church-encode d) α
+    ＝⟨ ap (λ k → k α) (i ((ι ⇒ ι) ⇒ ι) (λ z α → z) (λ φ x α → φ (α x) α) ⁻¹) ⟩
+   dialogue⋆ ⟦ t ⟧₀ α
+    ∎
+
+  c1 : is-dialogue-for d t → (Σ n ꞉ ℕ , ((n ＝ dialogue d α ) × (n ＝ dialogue⋆ ⟦ t ⟧₀ α)))
+  c1 h = dialogue d α , refl , c0 h
+
+  c2 : Σ x ꞉ ℕ , (x ＝ dialogue d α) × (x ＝ dialogue⋆ ⟦ t ⟧₀ α) → is-dialogue-for d t
+  c2 (x , a , b) A η' β' = {!!}
+RnormAs {σ ⇒ σ₁} d t α = {!!} , {!!}
 
 {--
 Can we get R⋆'s main lemma from R's and Rnorm's:
