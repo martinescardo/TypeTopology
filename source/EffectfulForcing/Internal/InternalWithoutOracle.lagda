@@ -1263,6 +1263,20 @@ Reta {Γ} {σ ⇒ τ} t = (x : T Γ σ) → Reta x → Reta (t · x)
            → ⟦ weaken, τ t ⟧ ＝ λ y → ⟦ t ⟧ (⊆【】 (⊆, Γ τ) y)
 ⟦weaken,⟧ {Γ} {σ} t τ = ⟦weaken⟧ t (⊆, Γ τ)
 
+＝【】-⊆【】-⊆〈〉 : {Γ : Cxt} (s : 【 Γ 】)
+                 → ＝【】 (⊆【】 (⊆〈〉 Γ) s) ⟨⟩
+＝【】-⊆【】-⊆〈〉 {Γ} s {σ} ()
+
+⟦weaken₀⟧ : {Γ : Cxt} {σ : type} (t : T₀ σ) (s : 【 Γ 】)
+          → ⟦ weaken₀ t ⟧ s ＝ ⟦ t ⟧₀
+⟦weaken₀⟧ {Γ} {σ} t s =
+ ⟦ weaken₀ t ⟧ s
+  ＝⟨ ap (λ k → k s) (⟦weaken⟧ t (⊆〈〉 Γ)) ⟩
+ ⟦ t ⟧ (⊆【】 (⊆〈〉 Γ) s)
+  ＝⟨ ⟦⟧-eta t (⊆【】 (⊆〈〉 Γ) s) ⟨⟩ (＝【】-⊆【】-⊆〈〉 s) ⟩
+ ⟦ t ⟧₀
+  ∎
+
 ＝【】-【Sub】-Subƛ :  {Γ Δ : Cxt} {σ : type} (y : 【 Δ ,, σ 】) (s : Sub Γ Δ)
                     → ＝【】 (【Sub】 (Subƛ s) y) (【Sub】 s (【】,,₁ y) ‚ 【】,,₂ y)
 ＝【】-【Sub】-Subƛ {Γ} {Δ} {σ} y s {.σ} (∈Cxt0 .Γ) = refl
@@ -1944,10 +1958,29 @@ B-branch t {A} =
   h : T (〈〉 ,, ι ,, (ι ⇒ A) ,, ((ι ⇒ A) ⇒ ι ⇒ A)) ((ι ⇒ A) ⇒ ι ⇒ A)
   h = ƛ (ƛ (ν₁ · ν₄))
 
-⟦B-branch⟧ : (ϕ : ℕ → B ℕ) (y : ℕ) (n : ℕ) (t : {A : type} → T₀ (⌜B⌝ ι A))
+⟦B-branch⟧ : (ϕ : ℕ → B ℕ) (i : ℕ) (n : ℕ) (t : {A : type} → T₀ (⌜B⌝ ι A))
            → Rnorm (β ϕ n) t
-           → ⟦ B-branch t ⟧₀ y ≣⋆ church-encode (ϕ y)
-⟦B-branch⟧ ϕ y n t = ?
+           → ⟦ B-branch t ⟧₀ i ≣⋆ church-encode (ϕ i)
+⟦B-branch⟧ ϕ i n t h A η' β' =
+ ⟦ B-branch t ⟧₀ i η' β'
+  ＝⟨ refl ⟩
+ ⟦ weaken₀ (t {((ι ⇒ A) ⇒ (ι ⇒ A)) ⇒ A}) ⟧ (⟨⟩ ‚ i ‚ η' ‚ β') η₀ β₀ h₀
+  ＝⟨ ap (λ k → k η₀ β₀ h₀) (⟦weaken₀⟧ (t {((ι ⇒ A) ⇒ (ι ⇒ A)) ⇒ A}) (⟨⟩ ‚ i ‚ η' ‚ β')) ⟩
+ ⟦ t {((ι ⇒ A) ⇒ (ι ⇒ A)) ⇒ A} ⟧₀ η₀ β₀ h₀
+  ＝⟨ ap (λ k → k h₀) (h (((ι ⇒ A) ⇒ (ι ⇒ A)) ⇒ A) η₀ β₀) ⟩
+ church-encode (β ϕ n) η₀ β₀ h₀
+  ＝⟨ {!!} ⟩ -- won't be easy
+ church-encode (ϕ i) η' β'
+  ∎
+ where
+  η₀ : 〖 ι ⇒ ((ι ⇒ A) ⇒ ι ⇒ A) ⇒ A 〗
+  η₀ = λ n → λ k → η' n
+
+  β₀ : 〖 (ι ⇒ ((ι ⇒ A) ⇒ ι ⇒ A) ⇒ A) ⇒ ι ⇒ ((ι ⇒ A) ⇒ ι ⇒ A) ⇒ A 〗
+  β₀ = λ g → λ n → λ h → h (λ j → g j β') n
+
+  h₀ : 〖 (ι ⇒ A) ⇒ ι ⇒ A 〗
+  h₀ = λ k → λ n → k i
 
 Rnorm-reify-β : (ϕ : ℕ → B ℕ) (n : ℕ) (t : {A : type} → T₀ (⌜B⌝ ι A))
                 → Rnorm (β ϕ n) t
