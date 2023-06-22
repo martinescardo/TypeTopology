@@ -1,4 +1,4 @@
-Martin Escardo, Paulo Oliva, 9-17 June 2023
+Martin Escardo, Paulo Oliva, 7-22 June 2023
 
 We relate our game trees to Aczel's W type of CZF sets in various ways.
 https://www.sciencedirect.com/science/article/abs/pii/S0049237X0871989X
@@ -649,8 +649,8 @@ And, of course:
 
 \end{code}
 
-A last remark is that the developent of game theory here using 𝕋
-doesn't actually require us to restrict to hereditarily inhabited
+We remark that the developent of game theory here using 𝕋 doesn't
+actually require us to restrict to hereditarily inhabited
 trees. However, empty internal nodes play no role, because, as we have
 discussed, if we prune them away we obtain a tree with the same paths,
 and all that matters about a tree, for the purposes of game theory,
@@ -690,7 +690,7 @@ module illustration (R : Type) where
  K-sequence {X ∷ Xf} (ϕ , ϕf) = ϕ ⊗ᴷ (λ x → K-sequence {Xf x} (ϕf x))
 
  K-sequence' : {Xt : ℍ} → 𝓚' Xt → K (Path' Xt)
- K-sequence' {(X ∷ Xf) , inr _ , h} ⋆        = λ q → q ⋆
+ K-sequence' {(X ∷ Xf) , inr _ , h} ⟨⟩        = λ q → q ⟨⟩
  K-sequence' {(X ∷ Xf) , inl _ , h} (ϕ , ϕf) = ϕ ⊗ᴷ (λ x → K-sequence' {Xf x , h x} (ϕf x))
 
  Strategy : 𝕋 -> Type
@@ -720,7 +720,7 @@ type of all ordinals into 𝔸, and then some kinds of ordinals in 𝔾, followi
 
    Tom de Jong, Nicolai Kraus, Fredrik Nordvall Forsberg and Chuangjie
    Xu. *Set-Theoretic and Type-Theoretic Ordinals Coincide.*
-   To appear at [LICS 2023][LICS23]. June 2023.
+   To appear at LICS 2023, June 2023.
 
    https://arxiv.org/abs/2301.10696
 
@@ -737,7 +737,8 @@ open import Ordinals.Underlying
 Ord-to-𝔸 : Ordinal 𝓤₀ → 𝔸
 Ord-to-𝔸 = transfinite-recursion-on-OO 𝔸 (λ α f → ⟨ α ⟩ ∷ f)
 
-Ord-to-𝔸-behaviour : (α : Ordinal 𝓤₀) → Ord-to-𝔸 α ＝ (⟨ α ⟩ ∷ λ (a : ⟨ α ⟩) → Ord-to-𝔸 (α ↓ a))
+Ord-to-𝔸-behaviour : (α : Ordinal 𝓤₀)
+                   → Ord-to-𝔸 α ＝ (⟨ α ⟩ ∷ λ (a : ⟨ α ⟩) → Ord-to-𝔸 (α ↓ a))
 Ord-to-𝔸-behaviour = transfinite-recursion-on-OO-behaviour 𝔸 (λ α f → ⟨ α ⟩ ∷ f)
 
 \end{code}
@@ -748,7 +749,8 @@ good in the following sense:
 \begin{code}
 
 is-good : Ordinal 𝓤₀ → Type
-is-good α = is-decidable ∥ ⟨ α ⟩ ∥ × ((a : ⟨ α ⟩) → is-decidable (∃ x ꞉ ⟨ α ⟩ , x ≺⟨ α ⟩ a))
+is-good α = is-decidable ∥ ⟨ α ⟩ ∥
+          × ((a : ⟨ α ⟩) → is-decidable (∃ x ꞉ ⟨ α ⟩ , x ≺⟨ α ⟩ a))
 
 goodness : (α : Ordinal 𝓤₀) → is-good α → is-hereditarily-decidable (Ord-to-𝔸 α)
 goodness = transfinite-induction-on-OO _ ϕ
@@ -769,7 +771,9 @@ goodness = transfinite-induction-on-OO _ ϕ
       → (Σ x ꞉ ⟨ α ⟩ , x ≺⟨ α ⟩ b)
     h a b ((x , m) , n) = x , n
 
-    I : (a : ⟨ α ⟩) → ((b , l) : ⟨ α ↓ a ⟩) → is-decidable (∃ (x , m) ꞉ ⟨ α ↓ a ⟩ , x ≺⟨  α ⟩ b )
+    I : (a : ⟨ α ⟩)
+        ((b , l) : ⟨ α ↓ a ⟩)
+      → is-decidable (∃ (x , m) ꞉ ⟨ α ↓ a ⟩ , x ≺⟨ α ⟩ b )
     I a (b , l) = map-is-decidable (∥∥-functor (g a b l)) (∥∥-functor (h a b)) (e b)
 
     II : (a : ⟨ α ⟩) → is-hereditarily-decidable (Ord-to-𝔸 (α ↓ a))
@@ -803,7 +807,7 @@ the least element, if it exists, is isolated, which in turn means that
 We now discuss the relation to Conway's games.
 
 As preparation, let's look at the type 𝔸 set-theoretically, as
-intented by Aczel. An 𝔸 tree X ∷ Xf represents a set whose members are
+intended by Aczel. An 𝔸 tree X ∷ Xf represents a set whose members are
 the sets represented by Xf x, for each x : X. This is an inductive
 definition of "representation".
 
@@ -814,8 +818,8 @@ in that set, and so on, until we reach the empty set (by the axiom of
 foundation), which is when the game ends.
 
 Conway defines two-person games inductively, in set theory rather than
-type theory, as follows: a game is a pair (L,R) with L and R are two
-sets of games.
+type theory, inductively as follows: a game is a pair (L,R) where L
+and R are two sets of games.
 
 https://en.wikipedia.org/wiki/On_Numbers_and_Games
 https://en.wikipedia.org/wiki/Surreal_number
@@ -839,9 +843,7 @@ after a move has been played.
 \begin{code}
 
 L-Path R-Path : ℂ → Type
-
 L-Path (conway L _ Lf  _) = is-empty L + (Σ l ꞉ L , R-Path (Lf l))
-
 R-Path (conway _ R _  Rf) = is-empty R + (Σ r ꞉ R , L-Path (Rf r))
 
 \end{code}
@@ -851,35 +853,43 @@ Conway's convention.
 
 \begin{code}
 
-loses-L : (c : ℂ) → L-Path c → Type
-loses-R : (c : ℂ) → R-Path c → Type
+wins-L loses-L : (c : ℂ) → L-Path c → Type
+wins-R loses-R : (c : ℂ) → R-Path c → Type
 
-loses-L (conway L R Lf Rf) (inl L-is-empty) = 𝟙
-loses-L (conway L R Lf Rf) (inr (l , ms))   = ¬ loses-R (Lf l) ms
+loses-L (conway L R Lf Rf) (inl _)          = 𝟙
+loses-L (conway L R Lf Rf) (inr (l , ms))   = wins-R (Lf l) ms
 
-loses-R (conway L R Lf Rf) (inl R-is-empty) = 𝟙
-loses-R (conway L R Lf Rf) (inr (r , ms))   = ¬ loses-L (Rf r) ms
+loses-R (conway L R Lf Rf) (inl _)          = 𝟙
+loses-R (conway L R Lf Rf) (inr (r , ms))   = wins-L (Rf r) ms
+
+wins-L c ms = ¬ loses-L c ms
+wins-R c ms = ¬ loses-R c ms
+
+loses-L-is-prop : (c : ℂ) (xs : L-Path c) → is-prop (loses-L c xs)
+loses-R-is-prop : (c : ℂ) (xs : R-Path c) → is-prop (loses-R c xs)
+
+loses-L-is-prop (conway L R Lf Rf) (inl _)        = 𝟙-is-prop
+loses-L-is-prop (conway L R Lf Rf) (inr (l , ms)) = negations-are-props fe
+
+loses-R-is-prop (conway L R Lf Rf) (inl _)        = 𝟙-is-prop
+loses-R-is-prop (conway L R Lf Rf) (inr (r , ms)) = negations-are-props fe
 
 L-loss-is-decidable : (c : ℂ) (ms : L-Path c) → is-decidable (loses-L c ms)
 R-loss-is-decidable : (c : ℂ) (ms : R-Path c) → is-decidable (loses-R c ms)
 
 L-loss-is-decidable (conway L R Lf Rf) (inl L-is-empty) = 𝟙-is-decidable
-L-loss-is-decidable (conway L R Lf Rf) (inr (l , ms))   = ¬-preserves-decidability (R-loss-is-decidable (Lf l) ms)
+L-loss-is-decidable (conway L R Lf Rf) (inr (l , ms))   =
+ ¬-preserves-decidability (R-loss-is-decidable (Lf l) ms)
 
 R-loss-is-decidable (conway L R Lf Rf) (inl R-is-empty) = 𝟙-is-decidable
-R-loss-is-decidable (conway L R Lf Rf) (inr (r , ms))   = ¬-preserves-decidability (L-loss-is-decidable (Rf r) ms)
-
-wins-L : (c : ℂ) → L-Path c → Type
-wins-R : (c : ℂ) → R-Path c → Type
-
-wins-L c ms = ¬ loses-L c ms
-wins-R c ms = ¬ loses-R c ms
+R-loss-is-decidable (conway L R Lf Rf) (inr (r , ms))   =
+ ¬-preserves-decidability (L-loss-is-decidable (Rf r) ms)
 
 \end{code}
 
 So Conway's games allow only win-or-lose. In particular, there is no
 draw, such as in tic-tac-toe or chess. Or outcomes more general than
-win, draw or lose.
+win, draw or lose, such as in poker.
 
 Our conception of game, defined in Games.FiniteHistoryDependent,
 allows for two-person games of the above kind, but in general is
@@ -893,11 +903,24 @@ multisets.
 The idea of carving out the sets (or the cumulative hierarchy) from
 Aczel's 𝕎-type using hereditary embeddings is due to Håkon Gylterud.
 
-  H. R. Gylterud, “From multisets to sets in homotopy type theory,” The
+  H. R. Gylterud, "From multisets to sets in homotopy type theory," The
   Journal of Symbolic Logic, vol. 83, no. 3, pp. 1132–1146, 2018.
+
+\begin{code}
+
+open import UF.Embeddings
+
+is-aczel-set : 𝔸 → Type₁
+is-aczel-set (X ∷ Xf) = is-embedding Xf × ((x : X) → is-aczel-set (Xf x))
+
+\end{code}
+
+Aczel instead considers, in the reference at the top of this file, an
+equivalence relation to identify repetitions in multisets to get sets.
 
 The abstract https://hott-uf.github.io/2023/HoTTUF_2023_paper_1981.pdf
 by Håkon, Elisabeth Bonnevier, Anders Mörtberg and Daniel Gratzer is
-also worth mentionting.
+also worth mentioning.
 
-We thank Tom de Jong for discussions and bibliographic references.
+We thank Tom de Jong for discussions and bibliographic references. He
+also asks: can we embed ℂ into 𝔸? We leave this for further thought.
