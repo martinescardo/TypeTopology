@@ -1639,6 +1639,10 @@ close-Sub,,-as-close-Subƛ {Γ} {σ} {τ} t ys y =
      · ⌜ x' ⌝ ⟧₀
     ∎
 
+ℕ→B : ℕ → B ℕ
+ℕ→B zero = zero'
+ℕ→B (succ n) = succ' (ℕ→B n)
+
 ℕ→T : ℕ → T 〈〉 ι
 ℕ→T zero = Zero
 ℕ→T (succ n) = Succ (ℕ→T n)
@@ -2001,12 +2005,18 @@ B-branch t {A} =
    church-encode (β ψ y) η' β'
     ∎
 
+η⋆≣⋆ : (x : ℕ) (x' : T₀ ι) → η⋆ {_} {_} {_} {_} {ℕ} {ℕ} ⟦ x' ⟧₀ ≣⋆ η⋆ x → ⟦ x' ⟧₀ ＝ x
+η⋆≣⋆ x x' h = h ι (λ z → z) (λ _ z → z)
+
 Rnorm-reify-β : (ϕ : ℕ → B ℕ) (n : ℕ) (t : {A : type} → T₀ (⌜B⌝ ι A))
                 → Rnorm (β ϕ n) t
                 → Σ ϕ' ꞉ ({A : type} → T₀ (ι ⇒ ⌜B⌝ ι A))
                 , Σ n' ꞉ T₀ ι
-                , ⟦ t ⟧₀ ≣⋆ ⟦ ⌜β⌝ · ϕ' · n' ⟧₀ × Rnorm (β ϕ n) (⌜β⌝ · ϕ' · n')
-Rnorm-reify-β ϕ n t eq = ϕ' , n' , eq' {!!} , rβ
+                , ⟦ t ⟧₀ ≣⋆ ⟦ ⌜β⌝ · ϕ' · n' ⟧₀
+                × Rnorm (β ϕ n) (⌜β⌝ · ϕ' · n')
+                × (⟦ n' ⟧₀ ＝ n)
+                × ((x : ℕ) (x' : T₀ ι) → Rnorm (η x) (⌜η⌝ · x') → Rnorm (ϕ x) (ϕ' · x'))
+Rnorm-reify-β ϕ n t eq = ϕ' , n' , eq' {!!} , rβ , ⟦ℕ→T⟧ n , rϕ
  where
   -- We get the branching at t with the following
   --   ϕ' = t · ( ƛ n : ι . ƛ x : ι , n )
@@ -2043,6 +2053,11 @@ Rnorm-reify-β ϕ n t eq = ϕ' , n' , eq' {!!} , rβ
   rβ : Rnorm (β ϕ n) (⌜β⌝ · ϕ' · n')
   rβ = ≣⋆-trans (≣⋆-symm (eq' {!!})) eq
 
+  rϕ : (x : ℕ) (x' : T₀ ι)
+     → η⋆ ⟦ x' ⟧₀ ≣⋆ η⋆ x
+     → ⟦ B-branch t ⟧₀ ⟦ x' ⟧₀ ≣⋆ church-encode (ϕ x)
+  rϕ x x' h = transport (λ k → ⟦ B-branch t ⟧₀ k ≣⋆ church-encode (ϕ x)) ((η⋆≣⋆ x x' h) ⁻¹) (⟦B-branch⟧ ϕ x n t eq)
+
 -- Since rec is interpreted using ⌜Kleisli-extension⌝, we need to know that
 -- ⌜Kleisli-extension⌝ preserves this normalisation property.
 -- TODO is it enough to get a context free kleisli lemma
@@ -2067,12 +2082,14 @@ Rnorm-kleisli-lemma {ι} f f' rf (η y) n' rn A η' β' =
  church-encode (f y) η' β'
   ∎
 Rnorm-kleisli-lemma {ι} f f' rf (β ϕ y) n' rn A η' β' with Rnorm-reify-β ϕ y n' rn
-... | (ϕ' , y' , eq , ry) =
+... | (ϕ' , y' , eq , rb , ry , rϕ) =
  ⟦ n' ⟧₀ (λ x → ⟦ f' ⟧₀ x η' β') β'
   ＝⟨ eq A (λ x → ⟦ f' ⟧₀ x η' β') β' ⟩
  ⟦ ⌜β⌝ · ϕ' · y' ⟧₀ (λ x → ⟦ f' ⟧₀ x η' β') β'
   ＝⟨ by-definition ⟩
  β' (λ x → ⟦ ϕ' ⟧₀ x (λ z → ⟦ f' ⟧₀ z η' β') β') ⟦ y' ⟧₀
+  ＝⟨ ap (β' (λ x → ⟦ ϕ' ⟧₀ x (λ z → ⟦ f' ⟧₀ z η' β') β')) ry ⟩
+ β' (λ x → ⟦ ϕ' ⟧₀ x (λ z → ⟦ f' ⟧₀ z η' β') β') y
   ＝⟨ {!!} ⟩
  β' (λ x → church-encode (kleisli-extension f (ϕ x)) η' β') y -- church-encode (f y) η' β'
   ∎
@@ -2083,10 +2100,6 @@ Rnorm-kleisli-lemma {σ ⇒ τ} f f' rf n n' rn A η' β' = {!!}
 ＝【】-【Sub】-Sub,, {Γ} {A} {σ} ys u {.(B-type〖 σ 〗 A)} (∈Cxt0 .(B-context【 Γ 】 A)) = refl
 ＝【】-【Sub】-Sub,, {Γ} {A} {σ} ys u {τ} (∈CxtS .(B-type〖 σ 〗 A) i) =
  ap (λ k → k (⟨⟩ ‚ ⟦ u ⟧₀)) (⟦weaken,⟧ (ys i) (B-type〖 σ 〗 A)) ⁻¹
-
-ℕ→B : ℕ → B ℕ
-ℕ→B zero = zero'
-ℕ→B (succ n) = succ' (ℕ→B n)
 
 church-encode-is-natural : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (g : X → Y) (d : B X)
                          → B⋆-functor g (church-encode d) ≣⋆ church-encode (B-functor g d)
@@ -2337,7 +2350,7 @@ Rnorm-lemma {Γ} {σ} xs ys (Rec t u v) Rnorm-xs =
     · close ⌜ v ⌝ ys)
    (close ⌜ Rec t u v ⌝ ys)
    (λ A → (⟦close-⌜Rec⌝⟧ {A} ys t u v) ⁻¹)
-   c2
+   c1
  where
   rt : (x  : B〖 ι 〗) (x' : {A : type} → T₀ (B-type〖 ι 〗 A)) (rx : Rnorm {ι} x x')
        (y  : B〖 σ 〗) (y' : {A : type} → T₀ (B-type〖 σ 〗 A)) (ry : Rnorm {σ} y y')
@@ -2385,12 +2398,6 @@ Rnorm-lemma {Γ} {σ} xs ys (Rec t u v) Rnorm-xs =
   c1 : Rnorm (Kleisli-extension rn (B⟦ v ⟧ xs))
              (⌜Kleisli-extension⌝ · rn' · close ⌜ v ⌝ ys)
   c1 = Rnorm-kleisli-lemma rn rn' rnn'' (B⟦ v ⟧ xs) (close ⌜ v ⌝ ys) (Rnorm-lemma xs ys v Rnorm-xs)
-
-  c2 : Rnorm (rec' (B⟦ t ⟧ xs) (B⟦ u ⟧ xs) (B⟦ v ⟧ xs))
-             (⌜Kleisli-extension⌝
-              · close (ƛ (Rec (ƛ (weaken, ι (weaken, ι ⌜ t ⌝) · (⌜η⌝ · ν₀))) (weaken, ι ⌜ u ⌝) ν₀)) ys
-              · close ⌜ v ⌝ ys)
-  c2 = c1
 
 Rnorm-lemma xs ys (ν i) Rnorm-xs = Rnorm-xs i
 
