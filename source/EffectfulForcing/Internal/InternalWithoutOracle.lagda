@@ -1944,6 +1944,11 @@ B-branch t {A} =
   h : T (〈〉 ,, ι ,, (ι ⇒ A) ,, ((ι ⇒ A) ⇒ ι ⇒ A)) ((ι ⇒ A) ⇒ ι ⇒ A)
   h = ƛ (ƛ (ν₁ · ν₄))
 
+⟦B-branch⟧ : (ϕ : ℕ → B ℕ) (y : ℕ) (n : ℕ) (t : {A : type} → T₀ (⌜B⌝ ι A))
+           → Rnorm (β ϕ n) t
+           → ⟦ B-branch t ⟧₀ y ≣⋆ church-encode (ϕ y)
+⟦B-branch⟧ ϕ y n t = ?
+
 Rnorm-reify-β : (ϕ : ℕ → B ℕ) (n : ℕ) (t : {A : type} → T₀ (⌜B⌝ ι A))
                 → Rnorm (β ϕ n) t
                 → Σ ϕ' ꞉ ({A : type} → T₀ (ι ⇒ ⌜B⌝ ι A))
@@ -1973,7 +1978,7 @@ Rnorm-reify-β ϕ n t eq = ϕ' , n' , eq' , rβ
     ＝⟨ by-definition ⟩
    --β' (λ y → D-rec (λ z η'' β'' → η'' z) (λ Φ x η'' β'' → β'' (λ y₁ → Φ y₁ η'' β'') x) (ϕ y) η' β') n
    β' (λ y → church-encode (ϕ y) η' β') n
-    ＝⟨ {!!} ⟩
+    ＝⟨ {!!} ⟩ -- use ⟦B-branch⟧?
    β' (λ y → ⟦ B-branch t ⟧₀ y η' β') n
     ＝⟨ ap (λ k → β' (λ y → ⟦ ϕ' ⟧₀ y η' β') k) ((⟦ℕ→T⟧ n) ⁻¹) ⟩
    β' (λ y → ⟦ ϕ' ⟧₀ y η' β') ⟦ n' ⟧₀ --β' ⟦ ϕ' ⟧₀ ⟦ n' ⟧₀
