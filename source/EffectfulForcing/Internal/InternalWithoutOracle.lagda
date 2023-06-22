@@ -1941,6 +1941,11 @@ Rnorm-reify-η n t eq = n' , eq' , rη
   rη : Rnorm (η n) (⌜η⌝ · n')
   rη = ≣⋆-trans (≣⋆-symm eq') eq
 
+church-encode-β : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {A : 𝓣 ̇ } (ψ : Y → D X Y Z) (y : X)
+                  (η' : Z → A) (β' : (Y → A) → X → A)
+                → church-encode (β ψ y) η' β' ＝ β' (λ y → church-encode (ψ y) η' β') y
+church-encode-β {X} {Y} {Z} {A} ψ y η' β' = refl
+
 B-branch : (t : {A : type} → T₀ (⌜B⌝ ι A)) → {A : type} → T₀ (ι ⇒ ⌜B⌝ ι A)
 B-branch t {A} =
  -- λ i. λ η. λ β. t η' β' h
@@ -1969,7 +1974,9 @@ B-branch t {A} =
  ⟦ t {((ι ⇒ A) ⇒ (ι ⇒ A)) ⇒ A} ⟧₀ η₀ β₀ h₀
   ＝⟨ ap (λ k → k h₀) (h (((ι ⇒ A) ⇒ (ι ⇒ A)) ⇒ A) η₀ β₀) ⟩
  church-encode (β ϕ n) η₀ β₀ h₀
-  ＝⟨ {!!} ⟩ -- won't be easy
+  ＝⟨ refl ⟩
+ church-encode (ϕ i) η₀ β₀ β'
+  ＝⟨ q {!!} (ϕ i) ⟩ -- can we do without funext?
  church-encode (ϕ i) η' β'
   ∎
  where
@@ -1982,12 +1989,24 @@ B-branch t {A} =
   h₀ : 〖 (ι ⇒ A) ⇒ ι ⇒ A 〗
   h₀ = λ k → λ n → k i
 
+  q : (ext : naive-funext 𝓤₀ 𝓤₀) (d : B ℕ) → church-encode d η₀ β₀ β' ＝ church-encode d η' β'
+  q ext (η x) = refl
+  q ext (β ψ y) =
+   church-encode (β ψ y) η₀ β₀ β'
+    ＝⟨ refl ⟩
+   β' (λ j → church-encode (ψ j) η₀ β₀ β') y
+    ＝⟨ ap (λ k → β' k y) (ext (λ j → q ext (ψ j))) ⟩
+   β' (λ y → church-encode (ψ y) η' β') y
+    ＝⟨ refl ⟩
+   church-encode (β ψ y) η' β'
+    ∎
+
 Rnorm-reify-β : (ϕ : ℕ → B ℕ) (n : ℕ) (t : {A : type} → T₀ (⌜B⌝ ι A))
                 → Rnorm (β ϕ n) t
                 → Σ ϕ' ꞉ ({A : type} → T₀ (ι ⇒ ⌜B⌝ ι A))
                 , Σ n' ꞉ T₀ ι
                 , ⟦ t ⟧₀ ≣⋆ ⟦ ⌜β⌝ · ϕ' · n' ⟧₀ × Rnorm (β ϕ n) (⌜β⌝ · ϕ' · n')
-Rnorm-reify-β ϕ n t eq = ϕ' , n' , eq' , rβ
+Rnorm-reify-β ϕ n t eq = ϕ' , n' , eq' {!!} , rβ
  where
   -- We get the branching at t with the following
   --   ϕ' = t · ( ƛ n : ι . ƛ x : ι , n )
@@ -1995,7 +2014,6 @@ Rnorm-reify-β ϕ n t eq = ϕ' , n' , eq' , rβ
   -- Which does ?TODO figure out what this does?
   ϕ' : {A : type} → T₀ (ι ⇒ ⌜B⌝ ι A)
   ϕ' {A} = B-branch t -- t {ι ⇒ A} · ƛ (ƛ ν₀) · ƛ (ƛ (ƛ (ν₂ · ν₀ · ν₀)))
--- use B-branch
 
   -- We get the oracle query at t with the following
   --   n' = t · foobar · ƛ ψ : ι ⇒ ι , ƛ n : ι , n
@@ -2003,15 +2021,16 @@ Rnorm-reify-β ϕ n t eq = ϕ' , n' , eq' , rβ
   n' : T₀ ι
   n' = ℕ→T n --t · ƛ Zero · ƛ (ƛ ν₀)
 
-  eq' : ⟦ t ⟧₀ ≣⋆ ⟦ ⌜β⌝ · ϕ' · n' ⟧₀
-  eq' A η' β' =
+  -- can we do without funext?
+  eq' : (ext : naive-funext 𝓤₀ 𝓤₀) → ⟦ t ⟧₀ ≣⋆ ⟦ ⌜β⌝ · ϕ' · n' ⟧₀
+  eq' ext A η' β' =
    ⟦ t ⟧₀ η' β'
     ＝⟨ eq A η' β' ⟩
    church-encode (β ϕ n) η' β'
     ＝⟨ by-definition ⟩
    --β' (λ y → D-rec (λ z η'' β'' → η'' z) (λ Φ x η'' β'' → β'' (λ y₁ → Φ y₁ η'' β'') x) (ϕ y) η' β') n
    β' (λ y → church-encode (ϕ y) η' β') n
-    ＝⟨ {!!} ⟩ -- use ⟦B-branch⟧?
+    ＝⟨ ap (λ k → β' k n) (ext (λ j → ⟦B-branch⟧ ϕ j n t eq A η' β' ⁻¹)) ⟩
    β' (λ y → ⟦ B-branch t ⟧₀ y η' β') n
     ＝⟨ ap (λ k → β' (λ y → ⟦ ϕ' ⟧₀ y η' β') k) ((⟦ℕ→T⟧ n) ⁻¹) ⟩
    β' (λ y → ⟦ ϕ' ⟧₀ y η' β') ⟦ n' ⟧₀ --β' ⟦ ϕ' ⟧₀ ⟦ n' ⟧₀
@@ -2022,7 +2041,7 @@ Rnorm-reify-β ϕ n t eq = ϕ' , n' , eq' , rβ
     ∎
 
   rβ : Rnorm (β ϕ n) (⌜β⌝ · ϕ' · n')
-  rβ = ≣⋆-trans (≣⋆-symm eq') eq
+  rβ = ≣⋆-trans (≣⋆-symm (eq' {!!})) eq
 
 -- Since rec is interpreted using ⌜Kleisli-extension⌝, we need to know that
 -- ⌜Kleisli-extension⌝ preserves this normalisation property.
