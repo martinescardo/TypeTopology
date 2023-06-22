@@ -1946,7 +1946,7 @@ B-branch t {A} =
 
 Rnorm-reify-β : (ϕ : ℕ → B ℕ) (n : ℕ) (t : {A : type} → T₀ (⌜B⌝ ι A))
                 → Rnorm (β ϕ n) t
-                → Σ ϕ' ꞉ ({A : type} → T₀ (ι ⇒ A))
+                → Σ ϕ' ꞉ ({A : type} → T₀ (ι ⇒ ⌜B⌝ ι A))
                 , Σ n' ꞉ T₀ ι
                 , ⟦ t ⟧₀ ≣⋆ ⟦ ⌜β⌝ · ϕ' · n' ⟧₀ × Rnorm (β ϕ n) (⌜β⌝ · ϕ' · n')
 Rnorm-reify-β ϕ n t eq = ϕ' , n' , eq' , rβ
@@ -1955,15 +1955,15 @@ Rnorm-reify-β ϕ n t eq = ϕ' , n' , eq' , rβ
   --   ϕ' = t · ( ƛ n : ι . ƛ x : ι , n )
   --          · ( ƛ ψ : ι ⇒ (ι ⇒ ⌜B⌝ ι A) , ƛ n : ι , ƛ x : ι , ψ x x )
   -- Which does ?TODO figure out what this does?
-  ϕ' : {A : type} → T₀ (ι ⇒ A)
-  ϕ' {A} = {!B-branch t!} -- t {ι ⇒ A} · ƛ (ƛ ν₀) · ƛ (ƛ (ƛ (ν₂ · ν₀ · ν₀)))
+  ϕ' : {A : type} → T₀ (ι ⇒ ⌜B⌝ ι A)
+  ϕ' {A} = B-branch t -- t {ι ⇒ A} · ƛ (ƛ ν₀) · ƛ (ƛ (ƛ (ν₂ · ν₀ · ν₀)))
 -- use B-branch
 
   -- We get the oracle query at t with the following
   --   n' = t · foobar · ƛ ψ : ι ⇒ ι , ƛ n : ι , n
   -- Which ignores the branching and immediately returns the query.
   n' : T₀ ι
-  n' = t · ƛ Zero · ƛ (ƛ ν₀)
+  n' = ℕ→T n --t · ƛ Zero · ƛ (ƛ ν₀)
 
   eq' : ⟦ t ⟧₀ ≣⋆ ⟦ ⌜β⌝ · ϕ' · n' ⟧₀
   eq' A η' β' =
@@ -1974,7 +1974,11 @@ Rnorm-reify-β ϕ n t eq = ϕ' , n' , eq' , rβ
    --β' (λ y → D-rec (λ z η'' β'' → η'' z) (λ Φ x η'' β'' → β'' (λ y₁ → Φ y₁ η'' β'') x) (ϕ y) η' β') n
    β' (λ y → church-encode (ϕ y) η' β') n
     ＝⟨ {!!} ⟩
-   β' ⟦ ϕ' ⟧₀ ⟦ n' ⟧₀
+   β' (λ y → ⟦ B-branch t ⟧₀ y η' β') n
+    ＝⟨ ap (λ k → β' (λ y → ⟦ ϕ' ⟧₀ y η' β') k) ((⟦ℕ→T⟧ n) ⁻¹) ⟩
+   β' (λ y → ⟦ ϕ' ⟧₀ y η' β') ⟦ n' ⟧₀ --β' ⟦ ϕ' ⟧₀ ⟦ n' ⟧₀
+    ＝⟨ by-definition ⟩
+   β⋆ ⟦ ϕ' ⟧₀ ⟦ n' ⟧₀ η' β'
     ＝⟨ by-definition ⟩
    ⟦ ⌜β⌝ · ϕ' · n' ⟧₀ η' β'
     ∎
