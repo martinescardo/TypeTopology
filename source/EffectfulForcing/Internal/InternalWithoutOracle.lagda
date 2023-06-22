@@ -1901,7 +1901,7 @@ Rnorm-reify-η' : (n : ℕ) (t : {A : type} → T₀ (⌜B⌝ ι A))
                → Rnorm (η n) t
                → ⟦ t ⟧₀ ≣⋆ ⟦ ⌜η⌝ · ℕ→T n ⟧₀ × Rnorm (η n) (⌜η⌝ · ℕ→T n)
 Rnorm-reify-η' n t eq =
- ≣⋆-trans eq (≣⋆-symm {!Rnormη n!}) , --(λ A η' β' → ap (λ k → k η' β') ((⌜η⌝ℕ→T' n) ⁻¹)) ,
+ ≣⋆-trans eq (≣⋆-symm (Rnormη n)) ,
  Rnormη n
 
 Rnorm-reify-η : (n : ℕ) (t : {A : type} → T₀ (⌜B⌝ ι A))
@@ -1927,6 +1927,9 @@ Rnorm-reify-η n t eq = n' , eq' , rη
   rη : Rnorm (η n) (⌜η⌝ · n')
   rη = ≣⋆-trans (≣⋆-symm eq') eq
 
+--B-encode : (A : type) → B ℕ → T₀ (⌜B⌝ ι A)
+--B-encode = ?
+
 Rnorm-reify-β : (ϕ : ℕ → B ℕ) (n : ℕ) (t : {A : type} → T₀ (⌜B⌝ ι A))
                 → Rnorm (β ϕ n) t
                 → Σ ϕ' ꞉ ({A : type} → T₀ (ι ⇒ A))
@@ -1940,6 +1943,8 @@ Rnorm-reify-β ϕ n t eq = ϕ' , n' , eq' , rβ
   -- Which does ?TODO figure out what this does?
   ϕ' : {A : type} → T₀ (ι ⇒ A)
   ϕ' {A} = {!!} -- t {ι ⇒ A} · ƛ (ƛ ν₀) · ƛ (ƛ (ƛ (ν₂ · ν₀ · ν₀)))
+-- T₀ (ι ⇒ ⌜B⌝ ι A)
+-- ƛ (B-encode A (ϕ ⟦ ν₀ ⟧))
 
   -- We get the oracle query at t with the following
   --   n' = t · foobar · ƛ ψ : ι ⇒ ι , ƛ n : ι , n
@@ -2009,10 +2014,15 @@ Rnorm-kleisli-lemma {σ ⇒ τ} f f' rf n n' rn A η' β' = {!!}
 ℕ→B zero = zero'
 ℕ→B (succ n) = succ' (ℕ→B n)
 
-church-encode-is-natural : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓣 ̇ } (g : X → Y) (d : B X)
+church-encode-is-natural : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (g : X → Y) (d : B X)
                          → B⋆-functor g (church-encode d) ≣⋆ church-encode (B-functor g d)
-church-encode-is-natural g (η n)   = {!!}
-church-encode-is-natural g (β ϕ n) = {!!}
+church-encode-is-natural g (η n) A η' β' = refl
+church-encode-is-natural g (β ϕ n) A η' β' = c {!!}
+ where
+  c : (ext : naive-funext 𝓤₀ 𝓤₀)
+    → β' (λ y → B⋆-functor g (church-encode (ϕ y)) η' β') n
+   ＝ β' (λ y → church-encode (B-functor g (ϕ y)) η' β') n
+  c ext = ap (λ k → β' k n) (ext (λ y → church-encode-is-natural g (ϕ y) A η' β'))
 
 ＝【】-【Sub】-⊆Sub : {Γ : Cxt} (s : Sub₀ Γ)
                    → ＝【】 (【Sub】 (⊆Sub (∈CxtS ι) (Subƛ s)) (⟨⟩ ‚ zero))
@@ -2228,11 +2238,16 @@ Rnorm-lemma xs ys Zero Rnorm-xs = is-dialogue-for-zero
 
 -- If at a leaf, apply successor to leaf value.
 -- If at a branching node, propagate the successor one level down.
-Rnorm-lemma xs ys (Succ t) Rnorm-xs with Rnorm-lemma xs ys t Rnorm-xs
-... | eq = {!!} --B-functor succ d , {!!}
+Rnorm-lemma xs ys (Succ t) Rnorm-xs = c
  where
-  d : B〖 ι 〗
-  d = B⟦ t ⟧ xs
+  ind : Rnorm (B⟦ t ⟧ xs) (close ⌜ t ⌝ ys)
+  ind = Rnorm-lemma xs ys t Rnorm-xs
+
+  c1 : B⋆-functor succ ⟦ close ⌜ t ⌝ ys ⟧₀ ≣⋆ B⋆-functor succ (church-encode (B⟦ t ⟧ xs))
+  c1 = {!!}
+
+  c : B⋆-functor succ ⟦ close ⌜ t ⌝ ys ⟧₀ ≣⋆ church-encode (B-functor succ (B⟦ t ⟧ xs))
+  c = ≣⋆-trans c1 (church-encode-is-natural succ (B⟦ t ⟧ xs))
 
   --foo : B⋆-functor succ (church-encode {A = (ℕ → ℕ) → ℕ} d) ≣⋆ church-encode (B-functor succ d)
   --foo = church-encode-is-natural succ d
@@ -2352,10 +2367,10 @@ Rnorm-lemmaι t α =
   β' = λ φ x α → φ (α x) α
 
 -- derived from Rnorm-lemma and main-lemma?
-⌜main-lemma⌝' : {σ : type} (t : T₀ σ)
+⌜main-lemma⌝' : (t : T₀ ι)
                 (α : Baire)
               → R⋆ α ⟦ t ⟧₀ ⌜ t ⌝
-⌜main-lemma⌝' {ι} t α =
+⌜main-lemma⌝' t α =
  ⟦ t ⟧₀
   ＝⟨ main-lemma t α ⟨⟩ ⟪⟫ (λ ()) ⟩
  dialogue B⟦ t ⟧₀ α
@@ -2364,7 +2379,6 @@ Rnorm-lemmaι t α =
   ＝⟨ ap (λ k → k α) ((Rnorm-lemmaι t α) ⁻¹) ⟩
  dialogue⋆ ⟦ ⌜ t ⌝ ⟧₀ α
   ∎
-⌜main-lemma⌝' {σ ⇒ σ₁} t α x x' rx = {!!}
 
 RnormAs : {σ : type} (d : B〖 σ 〗) (t : {A : type} → T₀ (B-type〖 σ 〗 A)) (α : Baire)
          → Rnorm d t ⇔ (Σ x ꞉ 〖 σ 〗 , ((R α x d) × (R⋆ α x t)))
