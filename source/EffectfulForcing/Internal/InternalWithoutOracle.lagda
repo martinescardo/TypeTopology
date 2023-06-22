@@ -1905,26 +1905,28 @@ Rnorm-reify-η n t eq = n' , eq' , rη
   n' = t · ƛ ν₀ · ƛ (ƛ Zero)
 
   eq' : ⟦ t ⟧₀ ≣⋆ ⟦ ⌜η⌝ · n' ⟧₀
-  eq' A η' β' = ⟦ t ⟧₀ η' β' ＝⟨ eq A η' β' ⟩
-                η' n         ＝⟨ ap η' (eq ι ⟦ ƛ ν₀ ⟧₀ ⟦ ƛ (ƛ Zero) ⟧₀) ⁻¹ ⟩
-                η' ⟦ n' ⟧₀   ∎
+  eq' A η' β' = ⟦ t ⟧₀ η' β'              ＝⟨ eq A η' β' ⟩
+                church-encode (η n) η' β' ＝⟨ by-definition ⟩
+                η' n                      ＝⟨ ap η' (eq ι ⟦ ƛ ν₀ ⟧₀ ⟦ ƛ (ƛ Zero) ⟧₀) ⁻¹ ⟩
+                η' ⟦ n' ⟧₀                ＝⟨ by-definition ⟩
+                ⟦ ⌜η⌝ · n' ⟧₀ η' β'       ∎
 
   rη : Rnorm (η n) (⌜η⌝ · n')
   rη = ≣⋆-trans (≣⋆-symm eq') eq
 
 Rnorm-reify-β : (ϕ : ℕ → B ℕ) (n : ℕ) (t : {A : type} → T₀ (⌜B⌝ ι A))
                 → Rnorm (β ϕ n) t
-                → Σ ϕ' ꞉ ({A : type} → T₀ (ι ⇒ ⌜B⌝ ι A))
+                → Σ ϕ' ꞉ ({A : type} → T₀ (ι ⇒ A))
                 , Σ n' ꞉ T₀ ι
                 , ⟦ t ⟧₀ ≣⋆ ⟦ ⌜β⌝ · ϕ' · n' ⟧₀ × Rnorm (β ϕ n) (⌜β⌝ · ϕ' · n')
 Rnorm-reify-β ϕ n t eq = ϕ' , n' , eq' , rβ
  where
   -- We get the branching at t with the following
-  --   ϕ' = t · ( ƛ n : ι . ƛ x : ι , ⌜η⌝ · n )
+  --   ϕ' = t · ( ƛ n : ι . ƛ x : ι , n )
   --          · ( ƛ ψ : ι ⇒ (ι ⇒ ⌜B⌝ ι A) , ƛ n : ι , ƛ x : ι , ψ x x )
   -- Which does ?TODO figure out what this does?
-  ϕ' : {A : type} → T₀ (ι ⇒ ⌜B⌝ ι A)
-  ϕ' {A} = t {ι ⇒ ⌜B⌝ ι A} · ƛ (ƛ (⌜η⌝ · Zero)) · ƛ (ƛ (ƛ (ν₂ · ν₀ · ν₀)))
+  ϕ' : {A : type} → T₀ (ι ⇒ A)
+  ϕ' {A} = {!!} -- t {ι ⇒ A} · ƛ (ƛ ν₀) · ƛ (ƛ (ƛ (ν₂ · ν₀ · ν₀)))
 
   -- We get the oracle query at t with the following
   --   n' = t · foobar · ƛ ψ : ι ⇒ ι , ƛ n : ι , n
@@ -1933,10 +1935,18 @@ Rnorm-reify-β ϕ n t eq = ϕ' , n' , eq' , rβ
   n' = t · ƛ Zero · ƛ (ƛ ν₀)
 
   eq' : ⟦ t ⟧₀ ≣⋆ ⟦ ⌜β⌝ · ϕ' · n' ⟧₀
-  eq' A η' β' = c
-   where
-    c : ⟦ t ⟧₀ η' β' ＝ β' (λ e → ⟦ ϕ' ⟧₀ e η' β') ⟦ n' ⟧₀
-    c = {!!} --?
+  eq' A η' β' =
+   ⟦ t ⟧₀ η' β'
+    ＝⟨ eq A η' β' ⟩
+   church-encode (β ϕ n) η' β'
+    ＝⟨ by-definition ⟩
+   --β' (λ y → D-rec (λ z η'' β'' → η'' z) (λ Φ x η'' β'' → β'' (λ y₁ → Φ y₁ η'' β'') x) (ϕ y) η' β') n
+   β' (λ y → church-encode (ϕ y) η' β') n
+    ＝⟨ {!!} ⟩
+   β' ⟦ ϕ' ⟧₀ ⟦ n' ⟧₀
+    ＝⟨ by-definition ⟩
+   ⟦ ⌜β⌝ · ϕ' · n' ⟧₀ η' β'
+    ∎
 
   rβ : Rnorm (β ϕ n) (⌜β⌝ · ϕ' · n')
   rβ = ≣⋆-trans (≣⋆-symm eq') eq
@@ -1965,8 +1975,17 @@ Rnorm-kleisli-lemma {ι} f f' rf (η y) n' rn A η' β' with Rnorm-reify-η y n'
   ＝⟨ rf y y' ry A η' β' ⟩
  church-encode (f y) η' β'
   ∎
-Rnorm-kleisli-lemma {ι} f f' rf (β ψ y) n' rn A = {!!}
-Rnorm-kleisli-lemma {σ ⇒ τ} f f' rf n n' rn A = {!!}
+Rnorm-kleisli-lemma {ι} f f' rf (β ϕ y) n' rn A η' β' with Rnorm-reify-β ϕ y n' rn
+... | (ϕ' , y' , eq , ry) =
+ ⟦ n' ⟧₀ (λ x → ⟦ f' ⟧₀ x η' β') β'
+  ＝⟨ eq A (λ x → ⟦ f' ⟧₀ x η' β') β' ⟩
+ ⟦ ⌜β⌝ · ϕ' · y' ⟧₀ (λ x → ⟦ f' ⟧₀ x η' β') β'
+  ＝⟨ by-definition ⟩
+ β' (λ x → ⟦ ϕ' ⟧₀ x (λ z → ⟦ f' ⟧₀ z η' β') β') ⟦ y' ⟧₀
+  ＝⟨ {!!} ⟩
+ β' (λ x → church-encode (kleisli-extension f (ϕ x)) η' β') y -- church-encode (f y) η' β'
+  ∎
+Rnorm-kleisli-lemma {σ ⇒ τ} f f' rf n n' rn A η' β' = {!!}
 
 ＝【】-【Sub】-Sub,, : {Γ : Cxt} {A σ : type} (ys : IB【 Γ 】 A) (u : T₀ (B-type〖 σ 〗 A))
                      → ＝【】 (【Sub】 (Sub,, ys u) ⟨⟩) (【Sub】 (Subƛ ys) (⟨⟩ ‚ ⟦ u ⟧₀))
@@ -2302,26 +2321,41 @@ Rnorm-lemma xs ys (ƛ t) Rnorm-xs u u' Rnorm-u =
 Rnorm-lemma xs ys (t · u) Rnorm-xs =
  Rnorm-lemma xs ys t Rnorm-xs (B⟦ u ⟧ xs) (close ⌜ u ⌝ ys) (Rnorm-lemma xs ys u Rnorm-xs)
 
+＝【】-⟨⟩ : ＝【】 ⟨⟩ (【Sub】 (λ ()) ⟨⟩)
+＝【】-⟨⟩ {τ} ()
+
+-- a consequence of Rnorm-lemma for terms of type ι
+Rnorm-lemmaι : (t : T₀ ι) (α : Baire)
+             → dialogue⋆ ⟦ ⌜ t ⌝ ⟧₀ ＝ dialogue⋆ (church-encode B⟦ t ⟧₀)
+Rnorm-lemmaι t α =
+ dialogue⋆ ⟦ ⌜ t ⌝ ⟧₀
+  ＝⟨ ap dialogue⋆ (⟦⟧-eta ⌜ t ⌝ ⟨⟩ (【Sub】 (λ ()) ⟨⟩) ＝【】-⟨⟩) ⟩
+ dialogue⋆ (⟦ ⌜ t ⌝ ⟧ (【Sub】 (λ ()) ⟨⟩))
+  ＝⟨ ap (λ k → dialogue⋆ (k ⟨⟩)) (⟦close⟧ ⌜ t ⌝ (λ ()) ⁻¹) ⟩
+ dialogue⋆ ⟦ close ⌜ t ⌝ (λ ()) ⟧₀
+  ＝⟨ Rnorm-lemma ⟪⟫ (λ ()) t (λ ()) ((ι ⇒ ι) ⇒ ι) η' β' ⟩
+ dialogue⋆ (church-encode B⟦ t ⟧₀)
+  ∎
+ where
+  η' : ℕ → (ℕ → ℕ) → ℕ
+  η' = λ z α → z
+
+  β' : (ℕ → (ℕ → ℕ) → ℕ) → ℕ → (ℕ → ℕ) → ℕ
+  β' = λ φ x α → φ (α x) α
+
 -- derived from Rnorm-lemma and main-lemma?
 ⌜main-lemma⌝' : {σ : type} (t : T₀ σ)
                 (α : Baire)
               → R⋆ α ⟦ t ⟧₀ ⌜ t ⌝
-⌜main-lemma⌝' {ι} t α = c
- where
-  c1 : ⟦ t ⟧₀ ＝ dialogue B⟦ t ⟧₀ α
-  c1 = main-lemma t α ⟨⟩ ⟪⟫ (λ ())
-
-  qt : {A : type} → T₀ (B-type〖 ι 〗 A)
-  qt {A} = ⌜ t ⌝
-
-  cx : Rnorm {ι} B⟦ t ⟧₀ (close qt IB₀)
-  cx = Rnorm-lemma {〈〉} {ι} ⟪⟫ IB₀ t λ ()
-
-  c2 : ⟦ ⌜ t ⌝ ⟧₀ ≣⋆ church-encode B⟦ t ⟧₀
-  c2 = {!!} --Rnorm-lemma ⟪⟫ (λ ()) {!t!} (λ ())
-
-  c : ⟦ t ⟧₀ ＝ dialogue⋆ ⟦ ⌜ t ⌝ ⟧₀ α
-  c = {!!}
+⌜main-lemma⌝' {ι} t α =
+ ⟦ t ⟧₀
+  ＝⟨ main-lemma t α ⟨⟩ ⟪⟫ (λ ()) ⟩
+ dialogue B⟦ t ⟧₀ α
+  ＝⟨ dialogues-agreement B⟦ t ⟧₀ α ⟩
+ dialogue⋆ (church-encode B⟦ t ⟧₀) α
+  ＝⟨ ap (λ k → k α) ((Rnorm-lemmaι t α) ⁻¹) ⟩
+ dialogue⋆ ⟦ ⌜ t ⌝ ⟧₀ α
+  ∎
 ⌜main-lemma⌝' {σ ⇒ σ₁} t α x x' rx = {!!}
 
 {--
