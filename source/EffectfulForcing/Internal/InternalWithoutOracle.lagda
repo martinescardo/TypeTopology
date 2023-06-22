@@ -1894,12 +1894,15 @@ constructor of a church-encoded tree.
 
 \begin{code}
 
+Rnormη : (n : ℕ) → Rnorm (η n) (⌜η⌝ · ℕ→T n)
+Rnormη n A η' β' = ap (λ k → k η' β') (⌜η⌝ℕ→T' n)
+
 Rnorm-reify-η' : (n : ℕ) (t : {A : type} → T₀ (⌜B⌝ ι A))
                → Rnorm (η n) t
                → ⟦ t ⟧₀ ≣⋆ ⟦ ⌜η⌝ · ℕ→T n ⟧₀ × Rnorm (η n) (⌜η⌝ · ℕ→T n)
 Rnorm-reify-η' n t eq =
- ≣⋆-trans eq (λ A η' β' → ap (λ k → k η' β') ((⌜η⌝ℕ→T' n) ⁻¹)) ,
- λ A η' β' → ap (λ k → k η' β') (⌜η⌝ℕ→T' n)
+ ≣⋆-trans eq (≣⋆-symm {!Rnormη n!}) , --(λ A η' β' → ap (λ k → k η' β') ((⌜η⌝ℕ→T' n) ⁻¹)) ,
+ Rnormη n
 
 Rnorm-reify-η : (n : ℕ) (t : {A : type} → T₀ (⌜B⌝ ι A))
                 → Rnorm (η n) t
@@ -1975,14 +1978,13 @@ Rnorm-kleisli-lemma : {σ : type}
                     → Rnorm {ι} n n'
 
                     → Rnorm (Kleisli-extension f n) (⌜Kleisli-extension⌝ · f' · n')
-Rnorm-kleisli-lemma {ι} f f' rf (η y) n' rn A η' β' with Rnorm-reify-η y n' rn
-... | (y' , eq , ry) =
+Rnorm-kleisli-lemma {ι} f f' rf (η y) n' rn A η' β' =
  ⟦ n' ⟧₀ (λ x → ⟦ f' ⟧₀ x η' β') β'
-  ＝⟨ eq A (λ x → ⟦ f' ⟧₀ x η' β') β' ⟩
- ⟦ ⌜η⌝ · y' ⟧₀ (λ x → ⟦ f' ⟧₀ x η' β') β'
-  ＝⟨ by-definition ⟩
- ⟦ f' · y' ⟧₀ η' β'
-  ＝⟨ rf y y' ry A η' β' ⟩
+  ＝⟨ rn A (λ x → ⟦ f' ⟧₀ x η' β') β' ⟩
+ ⟦ f' ⟧₀ y η' β'
+  ＝⟨ ap (λ k → ⟦ f' ⟧₀ k η' β') (⟦ℕ→T⟧ y ⁻¹) ⟩
+ ⟦ f' · ℕ→T y ⟧₀ η' β'
+  ＝⟨ rf y (ℕ→T y) (Rnormη y) A η' β' ⟩
  church-encode (f y) η' β'
   ∎
 Rnorm-kleisli-lemma {ι} f f' rf (β ϕ y) n' rn A η' β' with Rnorm-reify-β ϕ y n' rn
@@ -2141,10 +2143,6 @@ Rnorm-lemma-rec-succ {A} {σ} {Γ} a b n s =
           (⟦ close (weaken, ι b) (Subƛ s) ⟧ (⟨⟩ ‚ succ ⟦ n ⟧₀))
           ⟦ close b s ⟧₀ ⟦ n ⟧₀
           e3 e5
-
-Rnormη : (n : ℕ) → Rnorm (η n) (⌜η⌝ · ℕ→T n)
-Rnormη zero     A η' β' = refl
-Rnormη (succ n) A η' β' = Rnormη n A (λ z → η' (succ z)) (λ z → z)
 
 -- as opposed to Rnorm-lemma-rec-succ, this one does not "reduce" as much
 Rnorm-lemma-rec-succ2 : {A σ : type} {Γ : Cxt}
