@@ -2227,6 +2227,11 @@ Rnormη⌜η⌝ n n' rn = rn ι (λ x → x) (λ x → x) ∙ ⟦ℕ→T⟧ n �
 is-dialogue-for-zero : ⟦ ⌜zero⌝ ⟧₀ ≣⋆ church-encode zero'
 is-dialogue-for-zero A η' β' = refl
 
+≣⋆-B⋆-functor : {X Y : 𝓤 ̇ } {d d' : {A : type} → B⋆ X 〖 A 〗} (f : X → Y)
+              → d ≣⋆ d'
+              → B⋆-functor f d ≣⋆ B⋆-functor f d'
+≣⋆-B⋆-functor {_} {X} {Y} {d} {d'} f eq A η' β' = eq _ _ _
+
 Rnorm-lemma : {Γ : Cxt} {σ : type}
               (xs : B【 Γ 】) (ys : {A : type} → IB【 Γ 】 A)
               (t : T Γ σ)
@@ -2240,14 +2245,11 @@ Rnorm-lemma xs ys Zero Rnorm-xs = is-dialogue-for-zero
 -- If at a branching node, propagate the successor one level down.
 Rnorm-lemma xs ys (Succ t) Rnorm-xs = c
  where
-  ind : Rnorm (B⟦ t ⟧ xs) (close ⌜ t ⌝ ys)
+  ind : ⟦ close ⌜ t ⌝ ys ⟧₀ ≣⋆ church-encode (B⟦ t ⟧ xs)
   ind = Rnorm-lemma xs ys t Rnorm-xs
 
-  c1 : B⋆-functor succ ⟦ close ⌜ t ⌝ ys ⟧₀ ≣⋆ B⋆-functor succ (church-encode (B⟦ t ⟧ xs))
-  c1 = {!!}
-
   c : B⋆-functor succ ⟦ close ⌜ t ⌝ ys ⟧₀ ≣⋆ church-encode (B-functor succ (B⟦ t ⟧ xs))
-  c = ≣⋆-trans c1 (church-encode-is-natural succ (B⟦ t ⟧ xs))
+  c = ≣⋆-trans (≣⋆-B⋆-functor succ ind) (church-encode-is-natural succ (B⟦ t ⟧ xs))
 
   --foo : B⋆-functor succ (church-encode {A = (ℕ → ℕ) → ℕ} d) ≣⋆ church-encode (B-functor succ d)
   --foo = church-encode-is-natural succ d
