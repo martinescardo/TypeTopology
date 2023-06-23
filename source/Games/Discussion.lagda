@@ -44,12 +44,13 @@ fe = Univalence-gives-Fun-Ext ua
 \end{code}
 
 To make this file self-contained, we will repeat some definitions of
-the module Games.TypeTrees, and hence we hide them from the present
-file.
+the module Games.TypeTrees. We import the module here, but using
+nothing, so that the reader can click at the link to see what is
+there.
 
 \begin{code}
 
-open import Games.TypeTrees hiding (𝕋 ; Path ; _::_ ; ⟨⟩)
+open import Games.TypeTrees using ()
 open import MLTT.Spartan
 open import UF.Base
 open import UF.Equiv
@@ -744,20 +745,28 @@ Ord-to-𝔸-behaviour = transfinite-recursion-on-OO-behaviour 𝔸 (λ α f → 
 \end{code}
 
 Which ordinals produce hereditarily decidable trees? The ones that are
-good in the following sense:
+hereditarily decidable in the following sense.
 
 \begin{code}
 
-is-good : Ordinal 𝓤₀ → Type
-is-good α = is-decidable ∥ ⟨ α ⟩ ∥
-          × ((a : ⟨ α ⟩) → is-decidable (∃ x ꞉ ⟨ α ⟩ , x ≺⟨ α ⟩ a))
+is-hereditarily-decidableₒ : Ordinal 𝓤₀ → Type
+is-hereditarily-decidableₒ α = is-decidable ∥ ⟨ α ⟩ ∥
+                             × ((a : ⟨ α ⟩) → is-decidable ∥ ⟨ α ↓ a ⟩ ∥)
+\end{code}
 
-goodness : (α : Ordinal 𝓤₀) → is-good α → is-hereditarily-decidable (Ord-to-𝔸 α)
-goodness = transfinite-induction-on-OO _ ϕ
+Notice that the above definition doesn't use induction.
+
+\begin{code}
+
+hereditarily-decidable→ : (α : Ordinal 𝓤₀)
+                        → is-hereditarily-decidableₒ α
+                        → is-hereditarily-decidable (Ord-to-𝔸 α)
+hereditarily-decidable→ = transfinite-induction-on-OO _ ϕ
  where
   ϕ : (α : Ordinal 𝓤₀)
-    → ((a : ⟨ α ⟩) → is-good (α ↓ a) → is-hereditarily-decidable (Ord-to-𝔸 (α ↓ a)))
-    → is-good α → is-hereditarily-decidable (Ord-to-𝔸 α)
+    → ((a : ⟨ α ⟩) → is-hereditarily-decidableₒ (α ↓ a)
+                   → is-hereditarily-decidable (Ord-to-𝔸 (α ↓ a)))
+    → is-hereditarily-decidableₒ α → is-hereditarily-decidable (Ord-to-𝔸 α)
   ϕ α f (d , e) = IV
    where
     g : (a b : ⟨ α ⟩)
@@ -785,24 +794,45 @@ goodness = transfinite-induction-on-OO _ ϕ
     IV : is-hereditarily-decidable (Ord-to-𝔸 α)
     IV = transport is-hereditarily-decidable ((Ord-to-𝔸-behaviour α)⁻¹) III
 
+hereditarily-decidable← : (α : Ordinal 𝓤₀)
+                        → is-hereditarily-decidable (Ord-to-𝔸 α)
+                        → is-hereditarily-decidableₒ α
+hereditarily-decidable← = transfinite-induction-on-OO _ ϕ
+ where
+  ϕ : (α : Ordinal 𝓤₀)
+    → ((a : ⟨ α ⟩) → is-hereditarily-decidable (Ord-to-𝔸 (α ↓ a))
+                   → is-hereditarily-decidableₒ (α ↓ a))
+    → is-hereditarily-decidable (Ord-to-𝔸 α) → is-hereditarily-decidableₒ α
+  ϕ α f h = II , V
+   where
+    I : is-hereditarily-decidable (⟨ α ⟩ ∷ λ (a : ⟨ α ⟩) → Ord-to-𝔸 (α ↓ a))
+    I = transport is-hereditarily-decidable (Ord-to-𝔸-behaviour α) h
+
+    II : is-decidable ∥ ⟨ α ⟩ ∥
+    II = pr₁ I
+
+    III : (a : ⟨ α ⟩) → is-hereditarily-decidable (Ord-to-𝔸 (α ↓ a))
+    III = pr₂ I
+
+    IV : (a : ⟨ α ⟩) → is-hereditarily-decidableₒ (α ↓ a)
+    IV a = f a (III a)
+
+    V : (a : ⟨ α ⟩) → is-decidable ∥ ⟨ α ↓ a ⟩ ∥
+    V a = pr₁ (IV a)
+
 \end{code}
 
-So every good ordinal gives rise to a good game tree. Plays in the
-game are (automatically finite) decreasing sequences that end with the
-least element.
+So every hereditarily-decidable ordinal gives rise to a
+hereditarily-decidableₒ game tree. Plays in the game are
+(automatically finite) decreasing sequences that end with the least
+element.
 
 \begin{code}
 
-Ord-to-𝔾 : (α : Ordinal 𝓤₀) → is-good α → 𝔾
-Ord-to-𝔾 α g = ⌜ hg ⌝ (Ord-to-𝔸 α , goodness α g)
+Ord-to-𝔾 : (α : Ordinal 𝓤₀) → is-hereditarily-decidableₒ α → 𝔾
+Ord-to-𝔾 α g = ⌜ hg ⌝ (Ord-to-𝔸 α , hereditarily-decidable→ α g)
 
 \end{code}
-
-TODO. Implement this in Agda (easy). An ordinal α is good if and only
-if it is decidable whether ⟨ α ⟩ is inhabited and whether any
-x : ⟨ α ⟩ is the least element of α.  The second condition means that
-the least element, if it exists, is isolated, which in turn means that
-α is of the form 1 + α'.
 
 We now discuss the relation to Conway's games.
 
@@ -910,8 +940,8 @@ Aczel's 𝕎-type using hereditary embeddings is due to Håkon Gylterud.
 
 open import UF.Embeddings
 
-is-aczel-set : 𝔸 → Type₁
-is-aczel-set (X ∷ Xf) = is-embedding Xf × ((x : X) → is-aczel-set (Xf x))
+is-CZF-set : 𝔸 → Type₁
+is-CZF-set (X ∷ Xf) = is-embedding Xf × ((x : X) → is-CZF-set (Xf x))
 
 \end{code}
 
