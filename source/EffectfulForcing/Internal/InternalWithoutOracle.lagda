@@ -2534,6 +2534,44 @@ R-main-lemma-ι t α =
  dialogue⋆ ⟦ ⌜ t ⌝ ⟧₀ α
   ∎
 
+Rnorm-lemma₀ : {σ : type} (t : T₀ σ) → Rnorm B⟦ t ⟧₀ ⌜ t ⌝
+Rnorm-lemma₀ {σ} t =
+ Rnorm-preserves-⟦⟧
+  B⟦ t ⟧₀ (close ⌜ t ⌝ (λ ())) ⌜ t ⌝
+  (λ A → ap (λ k → k ⟨⟩) (⟦close⟧ ⌜ t ⌝ (λ ())) ∙ (⟦⟧-eta ⌜ t ⌝ ⟨⟩ (【Sub】 (λ ()) ⟨⟩) ＝【】-⟨⟩) ⁻¹) -- TODO: abstact that into a lemma
+  (Rnorm-lemma ⟪⟫ (λ ()) t λ ())
+
+Rnorm-generic : (u : B ℕ) (u' : {A : type} → T₀ (⌜B⌝ ι A))
+              → is-dialogue-for u u'
+              → is-dialogue-for (generic u) (⌜generic⌝ · u')
+Rnorm-generic u u' ru =
+ Rnorm-kleisli-lemma {!!} (β η) (⌜β⌝ · ⌜η⌝) c u u' ru
+ where
+  c : (x : ℕ) (x' : T₀ ι)
+    → is-dialogue-for (η x) (⌜η⌝ · x')
+    → β⋆ η⋆ ⟦ x' ⟧₀ ≣⋆ β⋆ η⋆ x
+  c x x' rx A η' β' = ap (λ k → β⋆ η⋆ k η' β') (η⋆≣⋆ x x' rx)
+
+⌜dialogue-tree⌝-correct : (t : T₀ ((ι ⇒ ι) ⇒ ι))
+                          (α : Baire)
+                        → ⟦ t ⟧₀ α ＝ dialogue⋆ ⟦ ⌜dialogue-tree⌝ t ⟧₀ α
+⌜dialogue-tree⌝-correct t α =
+ dialogue-tree-correct t α
+ ∙ dialogues-agreement (dialogue-tree t) α
+ ∙ ap (λ k → k α) (e ⁻¹)
+ where
+  η' : ℕ → Baire → ℕ
+  η' = λ z i → z
+
+  β' : (ℕ → Baire → ℕ) → ℕ → Baire → ℕ
+  β' = λ φ x α → φ (α x) α
+
+  rt : Rnorm B⟦ t ⟧₀ ⌜ t ⌝
+  rt = Rnorm-lemma₀ {(ι ⇒ ι) ⇒ ι} t
+
+  e : ⟦ ⌜ t ⌝ · ⌜generic⌝ ⟧₀ η' β' ＝ church-encode (B⟦ t ⟧₀ generic) η' β'
+  e = rt generic ⌜generic⌝ Rnorm-generic ((ι ⇒ ι) ⇒ ι) η' β'
+
 -- Is that even provable? (we probably don't need it)
 RnormAs : {σ : type} (d : B〖 σ 〗) (t : {A : type} → T₀ (B-type〖 σ 〗 A)) (α : Baire)
          → Rnorm d t ⇔ (Σ x ꞉ 〖 σ 〗 , ((R α x d) × (R⋆ α x t)))
