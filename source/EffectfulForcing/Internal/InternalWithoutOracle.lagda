@@ -2572,6 +2572,17 @@ Rnorm-generic u u' ru =
   e : ⟦ ⌜ t ⌝ · ⌜generic⌝ ⟧₀ η' β' ＝ church-encode (B⟦ t ⟧₀ generic) η' β'
   e = rt generic ⌜generic⌝ Rnorm-generic ((ι ⇒ ι) ⇒ ι) η' β'
 
+⌜dialogue⌝ : {Γ : Cxt}
+           → T (B-context【 Γ 】 ((ι ⇒ ι) ⇒ ι)) (⌜B⌝ ι ((ι ⇒ ι) ⇒ ι))
+           → T (B-context【 Γ 】 ((ι ⇒ ι) ⇒ ι)) ((ι ⇒ ι) ⇒ ι)
+⌜dialogue⌝ {Γ} t = t · ƛ (ƛ ν₁) · ƛ (ƛ (ƛ (ν₂ · (ν₀ · ν₁) · ν₀)))
+
+-- Same as ⌜dialogue-tree⌝-correct but using an internal dialogue function
+⌜dialogue-tree⌝-correct' : (t : T₀ ((ι ⇒ ι) ⇒ ι))
+                           (α : Baire)
+                         → ⟦ t ⟧₀ α ＝ ⟦ ⌜dialogue⌝ (⌜dialogue-tree⌝ t) ⟧₀ α
+⌜dialogue-tree⌝-correct' t α = ⌜dialogue-tree⌝-correct t α
+
 -- Is that even provable? (we probably don't need it)
 RnormAs : {σ : type} (d : B〖 σ 〗) (t : {A : type} → T₀ (B-type〖 σ 〗 A)) (α : Baire)
          → Rnorm d t ⇔ (Σ x ꞉ 〖 σ 〗 , ((R α x d) × (R⋆ α x t)))
