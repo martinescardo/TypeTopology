@@ -2064,14 +2064,14 @@ Rnorm-reify-β ϕ n t eq = ϕ' , n' , eq' {!!} , rβ , ⟦ℕ→T⟧ n , rϕ
      → ⟦ B-branch t ⟧₀ ⟦ x' ⟧₀ ≣⋆ church-encode (ϕ x)
   rϕ x x' h = transport (λ k → ⟦ B-branch t ⟧₀ k ≣⋆ church-encode (ϕ x)) ((η⋆≣⋆ x x' h) ⁻¹) (⟦B-branch⟧ ϕ x n t eq)
 
--- an instance of naturality?
+-- TODO: can we generalize this?
 church-encode-kleisli-extension : (ext : naive-funext 𝓤₀ 𝓤₀)
                                   {A : type} (η' : ℕ → 〖 A 〗) (β' : (ℕ → 〖 A 〗) → ℕ → 〖 A 〗) (d : B ℕ)
                                   (f : ℕ → B ℕ)
                                   (f' : {A : type} → T₀ (ι ⇒ ⌜B⌝ ι A))
                                 → ((x : ℕ) (x' : T₀ ι) → Rnorm (η x) (⌜η⌝ · x') → Rnorm (f x) (f' · x'))
                                 → church-encode (kleisli-extension f d) η' β'
-                               ＝ church-encode d (λ z → ⟦ f' ⟧₀ z η' β') β'
+                               ＝ kleisli-extension⋆ ⟦ f' ⟧₀ (church-encode d) η' β'
 church-encode-kleisli-extension ext {A} η' β' (η x) f f' rf =
  church-encode (f x) η' β'
   ＝⟨ (rf x (ℕ→T x) (Rnormη x) A η' β') ⁻¹ ⟩
@@ -2131,13 +2131,28 @@ Rnorm-kleisli-lemma ext {ι} f f' rf (β ϕ y) n' rn A η' β' with Rnorm-reify-
   ∎
 Rnorm-kleisli-lemma ext {σ ⇒ τ} f f' rf n n' rn A η' β' =
  Rnorm-preserves-⟦⟧ (Kleisli-extension (λ x → f x A) n)
-   (⌜Kleisli-extension⌝ · ƛ (weaken, ι f' · ν₀ · weaken, ι η') · n')
+   (⌜Kleisli-extension⌝ · ƛ (weaken₀ f' · ν₀ · weaken₀ η') · n')
    (ƛ (ƛ (ƛ (⌜Kleisli-extension⌝ · ƛ (ν₃ · ν₀ · ν₁) · ν₁))) · f' · n' · η')
-   {!!}
+   e
    (Rnorm-kleisli-lemma ext (λ x → f x A)
-     (ƛ (weaken, ι f' · ν₀ · weaken, ι η'))
+     (ƛ (weaken₀ f' · ν₀ · weaken₀ η'))
      {!!}
      n n' rn)
+ where
+  e : (A : type)
+    → ⟦ ⌜Kleisli-extension⌝ · ƛ (weaken₀ f' · ν₀ · weaken₀ η') · n' ⟧₀
+   ＝ ⟦ ƛ (ƛ (ƛ (⌜Kleisli-extension⌝ · ƛ (ν₃ · ν₀ · ν₁) · ν₁))) · f' · n' · η' ⟧₀
+  e A =
+   ⟦ ⌜Kleisli-extension⌝ · ƛ (weaken₀ f' · ν₀ · weaken₀ η') · n' ⟧₀
+    ＝⟨ refl ⟩
+   ⟦ ⌜Kleisli-extension⌝ ⟧₀ (λ x → ⟦ weaken₀ f' ⟧ (⟨⟩ ‚ x) x (⟦ weaken₀ η' ⟧ (⟨⟩ ‚ x))) ⟦ n' ⟧₀
+    ＝⟨ ap₂ (λ p q → p q ⟦ n' ⟧₀)
+            (⟦⌜Kleisli-extension⌝⟧ {!!} ⟨⟩ (⟨⟩ ‚ ⟦ f' ⟧₀ ‚ ⟦ n' ⟧₀ ‚ ⟦ η' ⟧₀))
+            (ext (λ x → ap₂ (λ i j → i x j) (⟦weaken₀⟧ f' (⟨⟩ ‚ x)) (⟦weaken₀⟧ η' (⟨⟩ ‚ x)))) ⟩
+   ⟦ ⌜Kleisli-extension⌝ ⟧ (⟨⟩ ‚ ⟦ f' ⟧₀ ‚ ⟦ n' ⟧₀ ‚ ⟦ η' ⟧₀) (λ x → ⟦ f' ⟧₀ x ⟦ η' ⟧₀) ⟦ n' ⟧₀
+    ＝⟨ refl ⟩
+   ⟦ ƛ (ƛ (ƛ (⌜Kleisli-extension⌝ · ƛ (ν₃ · ν₀ · ν₁) · ν₁))) · f' · n' · η' ⟧₀
+    ∎
 
 ＝【】-【Sub】-Sub,, : {Γ : Cxt} {A σ : type} (ys : IB【 Γ 】 A) (u : T₀ (B-type〖 σ 〗 A))
                      → ＝【】 (【Sub】 (Sub,, ys u) ⟨⟩) (【Sub】 (Subƛ ys) (⟨⟩ ‚ ⟦ u ⟧₀))
