@@ -391,8 +391,7 @@ Sub1 {Γ} {τ} t {σ} (∈CxtS .τ i) = ν i
 ＝Subƛ {Γ₁} {Γ₂} s1 s2 σ e {.σ} (∈Cxt0 .Γ₁) = refl
 ＝Subƛ {Γ₁} {Γ₂} s1 s2 σ e {τ} (∈CxtS .σ i) = ap (weaken, σ) (e i)
 
-
-Sub〈〉 : Sub 〈〉 〈〉
+Sub〈〉 : Sub₀ 〈〉
 Sub〈〉 ()
 
 {-
@@ -1240,6 +1239,10 @@ Reta {Γ} {σ ⇒ τ} t = (x : T Γ σ) → Reta x → Reta (t · x)
 ＝【】-⊆【】-⊆,, {Γ} {Δ} {σ} s y {.σ} (∈Cxt0 .Γ) = refl
 ＝【】-⊆【】-⊆,, {Γ} {Δ} {σ} s y {τ} (∈CxtS .σ i) = refl
 
+＝【】-⊆【】-⊆〈〉 : {Γ : Cxt} (s : 【 Γ 】)
+                 → ＝【】 (⊆【】 (⊆〈〉 Γ) s) ⟨⟩
+＝【】-⊆【】-⊆〈〉 {Γ} s {σ} ()
+
 -- can we prove this without funext?
 ⟦weaken⟧-aux : (ext : naive-funext 𝓤₀ 𝓤₀) {Γ Δ : Cxt} {σ τ : type} (t : T (Γ ,, σ) τ) (s : Γ ⊆ Δ)
               → (λ (y : 【 Δ ,, σ 】) → ⟦ t ⟧ (⊆【】 (⊆,, σ s) y))
@@ -1267,10 +1270,6 @@ Reta {Γ} {σ ⇒ τ} t = (x : T Γ σ) → Reta x → Reta (t · x)
            → ⟦ weaken, τ t ⟧ ＝ λ y → ⟦ t ⟧ (⊆【】 (⊆, Γ τ) y)
 ⟦weaken,⟧ {Γ} {σ} t τ = ⟦weaken⟧ t (⊆, Γ τ)
 
-＝【】-⊆【】-⊆〈〉 : {Γ : Cxt} (s : 【 Γ 】)
-                 → ＝【】 (⊆【】 (⊆〈〉 Γ) s) ⟨⟩
-＝【】-⊆【】-⊆〈〉 {Γ} s {σ} ()
-
 ⟦weaken₀⟧ : {Γ : Cxt} {σ : type} (t : T₀ σ) (s : 【 Γ 】)
           → ⟦ weaken₀ t ⟧ s ＝ ⟦ t ⟧₀
 ⟦weaken₀⟧ {Γ} {σ} t s =
@@ -1285,6 +1284,17 @@ Reta {Γ} {σ ⇒ τ} t = (x : T Γ σ) → Reta x → Reta (t · x)
                     → ＝【】 (【Sub】 (Subƛ s) y) (【Sub】 s (【】,,₁ y) ‚ 【】,,₂ y)
 ＝【】-【Sub】-Subƛ {Γ} {Δ} {σ} y s {.σ} (∈Cxt0 .Γ) = refl
 ＝【】-【Sub】-Subƛ {Γ} {Δ} {σ} y s {τ} (∈CxtS .σ i) = ap (λ k → k y) (⟦weaken,⟧ (s i) σ)
+
+＝【】-【sub】-⌜Sub⌝-Sub1 : {A : type} {σ : type} (y : T₀ σ)
+                          → ＝【】 (【Sub₀】 (⌜Sub⌝ {A} (Sub1 y))) (⟨⟩ ‚ ⟦ ⌜ y ⌝ ⟧₀)
+＝【】-【sub】-⌜Sub⌝-Sub1 {A} {σ} y {τ} i with ∈Cxt-B-context'' i
+... | τ₁ , refl , ∈Cxt0 .〈〉 , refl = refl
+
+＝【】-【Sub】-Sub,, : {Γ : Cxt} {A σ : type} (ys : IB【 Γ 】 A) (u : T₀ (B-type〖 σ 〗 A))
+                     → ＝【】 (【Sub】 (Sub,, ys u) ⟨⟩) (【Sub】 (Subƛ ys) (⟨⟩ ‚ ⟦ u ⟧₀))
+＝【】-【Sub】-Sub,, {Γ} {A} {σ} ys u {.(B-type〖 σ 〗 A)} (∈Cxt0 .(B-context【 Γ 】 A)) = refl
+＝【】-【Sub】-Sub,, {Γ} {A} {σ} ys u {τ} (∈CxtS .(B-type〖 σ 〗 A) i) =
+ ap (λ k → k (⟨⟩ ‚ ⟦ u ⟧₀)) (⟦weaken,⟧ (ys i) (B-type〖 σ 〗 A)) ⁻¹
 
 -- can we prove this without funext?
 ⟦close⟧-aux : (ext : naive-funext 𝓤₀ 𝓤₀) {Γ Δ : Cxt} {σ τ : type} (t : T (Γ ,, σ) τ) (s : Sub Γ Δ)
@@ -1362,11 +1372,6 @@ Rsub {Γ} {σ ⇒ τ} t s = (x : T Γ σ)
   ∎
 -}
 
-＝【】-【sub】-⌜Sub⌝-Sub1 : {A : type} {σ : type} (y : T₀ σ)
-                          → ＝【】 (【Sub₀】 (⌜Sub⌝ {A} (Sub1 y))) (⟨⟩ ‚ ⟦ ⌜ y ⌝ ⟧₀)
-＝【】-【sub】-⌜Sub⌝-Sub1 {A} {σ} y {τ} i with ∈Cxt-B-context'' i
-... | τ₁ , refl , ∈Cxt0 .〈〉 , refl = refl
-
 Sub-trans : {Γ₁ Γ₂ Γ₃ : Cxt} (s₁ : Sub Γ₁ Γ₂) (s₂ : Sub Γ₂ Γ₃) → Sub Γ₁ Γ₃
 Sub-trans {Γ₁} {Γ₂} {Γ₃} s₁ s₂ {τ} i = close (s₁ i) s₂
 
@@ -1375,6 +1380,11 @@ Sub-trans {Γ₁} {Γ₂} {Γ₃} s₁ s₂ {τ} i = close (s₁ i) s₂
 
 Sub⊆ : {Γ₁ Γ₂ Γ₃ : Cxt} (s1 : Sub Γ₁ Γ₂) (s2 : Γ₂ ⊆ Γ₃) → Sub Γ₁ Γ₃
 Sub⊆ {Γ₁} {Γ₂} {Γ₃} s1 s2 {σ} i = weaken s2 (s1 i)
+
+＝【】-【Sub】-⊆Sub : {Γ : Cxt} (s : Sub₀ Γ)
+                   → ＝【】 (【Sub】 (⊆Sub (∈CxtS ι) (Subƛ s)) (⟨⟩ ‚ zero))
+                            (【Sub₀】 s)
+＝【】-【Sub】-⊆Sub {Γ} s {σ} i = ap (λ k → k (⟨⟩ ‚ zero)) (⟦weaken,⟧ (s i) ι)
 
 ＝Sub-⊆Sub-⊆,, : {σ : type} {Γ₁ Γ₂ Γ₃ : Cxt} (s1 : Γ₁ ⊆ Γ₂) (s2 : Sub Γ₂ Γ₃)
                 → ＝Sub (⊆Sub (⊆,, σ s1) (Subƛ s2)) (Subƛ (⊆Sub s1 s2))
@@ -1671,6 +1681,7 @@ close-Sub,,-as-close-Subƛ {Γ} {σ} {τ} t ys y =
 ⌜η⌝ℕ→T' : {X Y A : type} (n : ℕ) → ⟦ ⌜η⌝ {X} {Y} {ι} {A} · ℕ→T n ⟧₀ ＝ η⋆ n
 ⌜η⌝ℕ→T' {X} {Y} {A} n = ap η⋆ (⟦ℕ→T⟧ n)
 
+{-
 ⌜main-lemma⌝-rec-zero : {σ : type}
                         (a : T (〈〉 ,, ι) (ι ⇒ B-type〖 σ ⇒ σ 〗 ((ι ⇒ ι) ⇒ ι)))
                         (b : T₀ (B-type〖 σ 〗 ((ι ⇒ ι) ⇒ ι)))
@@ -1685,6 +1696,7 @@ close-Sub,,-as-close-Subƛ {Γ} {σ} {τ} t ys y =
   ＝⟨ ap (λ k → k (⟨⟩ ‚ zero)) (⟦weaken,⟧ b ι) ⟩
  ⟦ b ⟧₀
   ∎
+-}
 
 ＝rec : {X : 𝓤 ̇ } → (f g : ℕ → X → X) → (x y : X) → (n : ℕ)
        → x ＝ y
@@ -2036,17 +2048,12 @@ Rnorm-reify-β : (ϕ : ℕ → B ℕ) (n : ℕ) (t : {A : type} → T₀ (⌜B�
 Rnorm-reify-β ϕ n t eq = ϕ' , n' , eq' {!!} , rβ , ⟦ℕ→T⟧ n , rϕ
  where
   -- We get the branching at t with the following
-  --   ϕ' = t · ( ƛ z : ι . ƛ i : ι , ⌜η⌝ n )
-  --          · ( ƛ ψ : ι ⇒ (ι ⇒ ⌜B⌝ ι A) , ƛ n : ι , ƛ x : ι , ⌜β⌝ ψ x x )
-  -- Which does ?TODO figure out what this does?
   ϕ' : {A : type} → T₀ (ι ⇒ ⌜B⌝ ι A)
-  ϕ' {A} = B-branch t -- t {ι ⇒ A} · ƛ (ƛ ν₀) · ƛ (ƛ (ƛ (ν₂ · ν₀ · ν₀)))
+  ϕ' {A} = B-branch t
 
   -- We get the oracle query at t with the following
-  --   n' = t · foobar · ƛ ψ : ι ⇒ ι , ƛ n : ι , n
-  -- Which ignores the branching and immediately returns the query.
   n' : T₀ ι
-  n' = ℕ→T n --t · ƛ Zero · ƛ (ƛ ν₀)
+  n' = ℕ→T n
 
   -- can we do without funext?
   eq' : (ext : naive-funext 𝓤₀ 𝓤₀) → ⟦ t ⟧₀ ≣⋆ ⟦ ⌜β⌝ · ϕ' · n' ⟧₀
@@ -2055,14 +2062,11 @@ Rnorm-reify-β ϕ n t eq = ϕ' , n' , eq' {!!} , rβ , ⟦ℕ→T⟧ n , rϕ
     ＝⟨ eq A η' β' ⟩
    church-encode (β ϕ n) η' β'
     ＝⟨ by-definition ⟩
-   --β' (λ y → D-rec (λ z η'' β'' → η'' z) (λ Φ x η'' β'' → β'' (λ y₁ → Φ y₁ η'' β'') x) (ϕ y) η' β') n
    β' (λ y → church-encode (ϕ y) η' β') n
     ＝⟨ ap (λ k → β' k n) (ext (λ j → ⟦B-branch⟧ ϕ j n t eq A η' β' ⁻¹)) ⟩
    β' (λ y → ⟦ B-branch t ⟧₀ y η' β') n
     ＝⟨ ap (λ k → β' (λ y → ⟦ ϕ' ⟧₀ y η' β') k) ((⟦ℕ→T⟧ n) ⁻¹) ⟩
    β' (λ y → ⟦ ϕ' ⟧₀ y η' β') ⟦ n' ⟧₀
-    ＝⟨ by-definition ⟩
-   β⋆ ⟦ ϕ' ⟧₀ ⟦ n' ⟧₀ η' β'
     ＝⟨ by-definition ⟩
    ⟦ ⌜β⌝ · ϕ' · n' ⟧₀ η' β'
     ∎
@@ -2071,7 +2075,7 @@ Rnorm-reify-β ϕ n t eq = ϕ' , n' , eq' {!!} , rβ , ⟦ℕ→T⟧ n , rϕ
   rβ = ≣⋆-trans (≣⋆-symm (eq' {!!})) eq
 
   rϕ : (x : ℕ) → ⟦ B-branch t ⟧₀ ⟦ ℕ→T x ⟧₀ ≣⋆ church-encode (ϕ x)
-  rϕ x = transport (λ k → ⟦ B-branch t ⟧₀ k ≣⋆ church-encode (ϕ x)) {!!} (⟦B-branch⟧ ϕ x n t eq)
+  rϕ x = transport (λ k → ⟦ B-branch t ⟧₀ k ≣⋆ church-encode (ϕ x)) (⟦ℕ→T⟧ x ⁻¹) (⟦B-branch⟧ ϕ x n t eq)
 
 -- TODO: can we generalize this?
 church-encode-kleisli-extension : (ext : naive-funext 𝓤₀ 𝓤₀)
@@ -2171,12 +2175,6 @@ Rnorm-kleisli-lemma ext {σ ⇒ τ} f f' rf n n' rn A η' β' =
     (λ A → ap₂ (λ i j → i ⟦ ℕ→T x ⟧₀ j) ((⟦weaken₀⟧ f' (⟨⟩ ‚ ⟦ ℕ→T x ⟧₀)) ⁻¹) ((⟦weaken₀⟧ η' (⟨⟩ ‚ ⟦ ℕ→T x ⟧₀)) ⁻¹))
     (rf x A η' β')
 
-＝【】-【Sub】-Sub,, : {Γ : Cxt} {A σ : type} (ys : IB【 Γ 】 A) (u : T₀ (B-type〖 σ 〗 A))
-                     → ＝【】 (【Sub】 (Sub,, ys u) ⟨⟩) (【Sub】 (Subƛ ys) (⟨⟩ ‚ ⟦ u ⟧₀))
-＝【】-【Sub】-Sub,, {Γ} {A} {σ} ys u {.(B-type〖 σ 〗 A)} (∈Cxt0 .(B-context【 Γ 】 A)) = refl
-＝【】-【Sub】-Sub,, {Γ} {A} {σ} ys u {τ} (∈CxtS .(B-type〖 σ 〗 A) i) =
- ap (λ k → k (⟨⟩ ‚ ⟦ u ⟧₀)) (⟦weaken,⟧ (ys i) (B-type〖 σ 〗 A)) ⁻¹
-
 church-encode-is-natural : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (g : X → Y) (d : B X)
                          → B⋆-functor g (church-encode d) ≣⋆ church-encode (B-functor g d)
 church-encode-is-natural g (η n) A η' β' = refl
@@ -2186,11 +2184,6 @@ church-encode-is-natural g (β ϕ n) A η' β' = c {!!}
     → β' (λ y → B⋆-functor g (church-encode (ϕ y)) η' β') n
    ＝ β' (λ y → church-encode (B-functor g (ϕ y)) η' β') n
   c ext = ap (λ k → β' k n) (ext (λ y → church-encode-is-natural g (ϕ y) A η' β'))
-
-＝【】-【Sub】-⊆Sub : {Γ : Cxt} (s : Sub₀ Γ)
-                   → ＝【】 (【Sub】 (⊆Sub (∈CxtS ι) (Subƛ s)) (⟨⟩ ‚ zero))
-                            (【Sub₀】 s)
-＝【】-【Sub】-⊆Sub {Γ} s {σ} i = ap (λ k → k (⟨⟩ ‚ zero)) (⟦weaken,⟧ (s i) ι)
 
 Rnorm-lemma-rec-zero : {A σ : type} {Γ : Cxt}
                        (a : T (Γ ,, ι) (ι ⇒ B-type〖 σ ⇒ σ 〗 A))
