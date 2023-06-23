@@ -2058,6 +2058,31 @@ Rnorm-reify-β ϕ n t eq = ϕ' , n' , eq' {!!} , rβ , ⟦ℕ→T⟧ n , rϕ
      → ⟦ B-branch t ⟧₀ ⟦ x' ⟧₀ ≣⋆ church-encode (ϕ x)
   rϕ x x' h = transport (λ k → ⟦ B-branch t ⟧₀ k ≣⋆ church-encode (ϕ x)) ((η⋆≣⋆ x x' h) ⁻¹) (⟦B-branch⟧ ϕ x n t eq)
 
+-- an instance of naturality?
+church-encode-kleisli-extension : (ext : naive-funext 𝓤₀ 𝓤₀)
+                                  {A : type} (η' : ℕ → 〖 A 〗) (β' : (ℕ → 〖 A 〗) → ℕ → 〖 A 〗) (d : B ℕ)
+                                  (f : ℕ → B ℕ)
+                                  (f' : {A : type} → T₀ (ι ⇒ ⌜B⌝ ι A))
+                                → ((x : ℕ) (x' : T₀ ι) → Rnorm (η x) (⌜η⌝ · x') → Rnorm (f x) (f' · x'))
+                                → church-encode (kleisli-extension f d) η' β'
+                               ＝ church-encode d (λ z → ⟦ f' ⟧₀ z η' β') β'
+church-encode-kleisli-extension ext {A} η' β' (η x) f f' rf =
+ church-encode (f x) η' β'
+  ＝⟨ (rf x (ℕ→T x) (Rnormη x) A η' β') ⁻¹ ⟩
+ ⟦ f' · ℕ→T x ⟧₀ η' β'
+  ＝⟨ ap (λ x → ⟦ f' ⟧₀ x η' β') (⟦ℕ→T⟧ x) ⟩
+ ⟦ f' ⟧₀ x η' β'
+  ∎
+church-encode-kleisli-extension ext {A} η' β' (β g y) f f' rf =
+ church-encode (β (λ j → kleisli-extension f (g j)) y) η' β'
+  ＝⟨ refl ⟩
+ β' (λ y → church-encode (kleisli-extension f (g y)) η' β') y
+  ＝⟨ ap (λ k → β' k y) (ext (λ y → church-encode-kleisli-extension ext {A} η' β' (g y) f f' rf)) ⟩
+ β' (λ y → church-encode (g y) (λ z → ⟦ f' ⟧₀ z η' β') β') y
+  ＝⟨ refl ⟩
+ church-encode (β g y) (λ z → ⟦ f' ⟧₀ z η' β') β'
+  ∎
+
 -- Since rec is interpreted using ⌜Kleisli-extension⌝, we need to know that
 -- ⌜Kleisli-extension⌝ preserves this normalisation property.
 -- TODO is it enough to get a context free kleisli lemma
@@ -2094,8 +2119,8 @@ Rnorm-kleisli-lemma ext {ι} f f' rf (β ϕ y) n' rn A η' β' with Rnorm-reify-
   ＝⟨ ap (λ k → β' k y) (ext (λ x → ap (λ j → ⟦ ϕ' ⟧₀ j (λ z → ⟦ f' ⟧₀ z η' β') β') ((⟦ℕ→T⟧ x) ⁻¹))) ⟩
  β' (λ x → ⟦ ϕ' · ℕ→T x ⟧₀ (λ z → ⟦ f' ⟧₀ z η' β') β') y
   ＝⟨ ap (λ k → β' k y) (ext (λ x → rϕ x (ℕ→T x) (Rnormη x) A (λ z → ⟦ f' ⟧₀ z η' β') β')) ⟩
- β' (λ z → church-encode (ϕ z) (λ z → ⟦ f' ⟧₀ z η' β') β') y
-  ＝⟨ {!!} ⟩
+ β' (λ x → church-encode (ϕ x) (λ z → ⟦ f' ⟧₀ z η' β') β') y
+  ＝⟨ ap (λ k → β' k y) (ext (λ x → church-encode-kleisli-extension ext η' β' (ϕ x) f f' rf ⁻¹)) ⟩
  β' (λ x → church-encode (kleisli-extension f (ϕ x)) η' β') y -- church-encode (f y) η' β'
   ∎
 Rnorm-kleisli-lemma ext {σ ⇒ τ} f f' rf n n' rn A η' β' = {!!}
