@@ -1700,6 +1700,7 @@ close-Sub,,-as-close-Subƛ {Γ} {σ} {τ} t ys y =
  ⟦ weaken, σ a ⟧ (s ‚ x)
   ∎
 
+{-
 ⌜main-lemma⌝-rec-succ : {σ : type}
                         (a : T₀ (B-type〖 ι ⇒ σ ⇒ σ 〗 ((ι ⇒ ι) ⇒ ι)))
                         (b : T₀ (B-type〖 σ 〗 ((ι ⇒ ι) ⇒ ι)))
@@ -1728,6 +1729,7 @@ close-Sub,,-as-close-Subƛ {Γ} {σ} {τ} t ys y =
            (λ i u v e → ap₂ (λ q r → q (η⋆ i) r) (⟦weaken,-weaken,⟧-as-⟦weaken,⟧ ⟨⟩ i (succ ⟦ n ⟧₀) i a) e )) ⟩
  ⟦ a · (⌜η⌝ · n) · Rec (ƛ (weaken, ι a · (⌜η⌝ · ν₀))) b n ⟧₀
   ∎
+-}
 
 {-
 ⌜main-lemma⌝ : {Γ : Cxt} {σ : type} (t : T Γ σ)
@@ -1920,6 +1922,9 @@ constructor of a church-encoded tree.
 
 Rnormη : (n : ℕ) → Rnorm (η n) (⌜η⌝ · ℕ→T n)
 Rnormη n A η' β' = ap (λ k → k η' β') (⌜η⌝ℕ→T' n)
+
+Rnormη⌜η⌝ : (n : ℕ) (n' : T₀ ι) → Rnorm (η n) (⌜η⌝ · n') → ⟦ n' ⟧₀ ＝ ⟦ ℕ→T n ⟧₀
+Rnormη⌜η⌝ n n' rn = rn ι (λ x → x) (λ x → x) ∙ ⟦ℕ→T⟧ n ⁻¹
 
 Rnorm-reify-η' : (n : ℕ) (t : {A : type} → T₀ (⌜B⌝ ι A))
                → Rnorm (η n) t
@@ -2377,9 +2382,6 @@ Rnorm-lemma-rec-succ2 {A} {σ} {Γ} a b n s =
    ⟦ close b s ⟧₀
     ∎
 
-Rnormη⌜η⌝ : (n : ℕ) (n' : T₀ ι) → Rnorm (η n) (⌜η⌝ · n') → ⟦ n' ⟧₀ ＝ ⟦ ℕ→T n ⟧₀
-Rnormη⌜η⌝ n n' rn = rn ι (λ x → x) (λ x → x) ∙ ⟦ℕ→T⟧ n ⁻¹
-
 is-dialogue-for-zero : ⟦ ⌜zero⌝ ⟧₀ ≣⋆ church-encode zero'
 is-dialogue-for-zero A η' β' = refl
 
@@ -2518,11 +2520,11 @@ Rnorm-lemmaι t α =
   β' : (ℕ → (ℕ → ℕ) → ℕ) → ℕ → (ℕ → ℕ) → ℕ
   β' = λ φ x α → φ (α x) α
 
--- derived from Rnorm-lemma and main-lemma?
-⌜main-lemma⌝' : (t : T₀ ι)
-                (α : Baire)
-              → R⋆ α ⟦ t ⟧₀ ⌜ t ⌝
-⌜main-lemma⌝' t α =
+-- derived from Rnorm-lemma and main-lemma
+R-main-lemma-ι : (t : T₀ ι)
+                 (α : Baire)
+               → R⋆ α ⟦ t ⟧₀ ⌜ t ⌝
+R-main-lemma-ι t α =
  ⟦ t ⟧₀
   ＝⟨ main-lemma t α ⟨⟩ ⟪⟫ (λ ()) ⟩
  dialogue B⟦ t ⟧₀ α
@@ -2532,6 +2534,7 @@ Rnorm-lemmaι t α =
  dialogue⋆ ⟦ ⌜ t ⌝ ⟧₀ α
   ∎
 
+-- Is that even provable? (we probably don't need it)
 RnormAs : {σ : type} (d : B〖 σ 〗) (t : {A : type} → T₀ (B-type〖 σ 〗 A)) (α : Baire)
          → Rnorm d t ⇔ (Σ x ꞉ 〖 σ 〗 , ((R α x d) × (R⋆ α x t)))
 RnormAs {ι} d t α = c1 , c2
