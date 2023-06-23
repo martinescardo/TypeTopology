@@ -870,53 +870,6 @@ left player, R is the type of available moves for the right player,
 and Lf and Rf respectively say which subgame the game transitions to
 after a move has been played.
 
-\begin{code}
-
-L-Path R-Path : ℂ → Type
-L-Path (conway L _ Lf  _) = is-empty L + (Σ l ꞉ L , R-Path (Lf l))
-R-Path (conway _ R _  Rf) = is-empty R + (Σ r ꞉ R , L-Path (Rf r))
-
-\end{code}
-
-The player that has no available moves loses the game, according to
-Conway's convention.
-
-\begin{code}
-
-wins-L loses-L : (c : ℂ) → L-Path c → Type
-wins-R loses-R : (c : ℂ) → R-Path c → Type
-
-loses-L (conway L R Lf Rf) (inl _)          = 𝟙
-loses-L (conway L R Lf Rf) (inr (l , ms))   = wins-R (Lf l) ms
-
-loses-R (conway L R Lf Rf) (inl _)          = 𝟙
-loses-R (conway L R Lf Rf) (inr (r , ms))   = wins-L (Rf r) ms
-
-wins-L c ms = ¬ loses-L c ms
-wins-R c ms = ¬ loses-R c ms
-
-loses-L-is-prop : (c : ℂ) (xs : L-Path c) → is-prop (loses-L c xs)
-loses-R-is-prop : (c : ℂ) (xs : R-Path c) → is-prop (loses-R c xs)
-
-loses-L-is-prop (conway L R Lf Rf) (inl _)        = 𝟙-is-prop
-loses-L-is-prop (conway L R Lf Rf) (inr (l , ms)) = negations-are-props fe
-
-loses-R-is-prop (conway L R Lf Rf) (inl _)        = 𝟙-is-prop
-loses-R-is-prop (conway L R Lf Rf) (inr (r , ms)) = negations-are-props fe
-
-L-loss-is-decidable : (c : ℂ) (ms : L-Path c) → is-decidable (loses-L c ms)
-R-loss-is-decidable : (c : ℂ) (ms : R-Path c) → is-decidable (loses-R c ms)
-
-L-loss-is-decidable (conway L R Lf Rf) (inl L-is-empty) = 𝟙-is-decidable
-L-loss-is-decidable (conway L R Lf Rf) (inr (l , ms))   =
- ¬-preserves-decidability (R-loss-is-decidable (Lf l) ms)
-
-R-loss-is-decidable (conway L R Lf Rf) (inl R-is-empty) = 𝟙-is-decidable
-R-loss-is-decidable (conway L R Lf Rf) (inr (r , ms))   =
- ¬-preserves-decidability (L-loss-is-decidable (Rf r) ms)
-
-\end{code}
-
 So Conway's games allow only win-or-lose. In particular, there is no
 draw, such as in tic-tac-toe or chess. Or outcomes more general than
 win, draw or lose, such as in poker.
