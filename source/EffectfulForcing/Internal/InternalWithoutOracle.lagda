@@ -884,6 +884,7 @@ RR⋆₀ (σ ⇒ τ) f g = (x : B⋆〖 σ 〗 (B ℕ))
                → RR⋆₀ τ (f x η' β') (g y η' β') ?
 -}
 
+{-
 succ-dialogue⋆ : (d : T₀ (⌜B⌝ ι ((ι ⇒ ι) ⇒ ι))) (α : Baire)
               → succ (dialogue⋆ ⟦ d ⟧₀ α) ＝ dialogue⋆ (succ⋆ ⟦ d ⟧₀) α
 succ-dialogue⋆ d α =
@@ -895,6 +896,7 @@ succ-dialogue⋆ d α =
   ＝⟨ refl ⟩
  dialogue⋆ (succ⋆ ⟦ d ⟧₀) α
   ∎
+-}
 
 ∈Cxt-B-context : {σ : type} {Γ : Cxt} {A : type} {Δ : Cxt}
                → Δ ＝ B-context【 Γ 】 A
@@ -1567,6 +1569,7 @@ close-Sub,,-as-close-Subƛ {Γ} {σ} {τ} t ys y =
    · close ⌜ c ⌝ s ⟧₀
   ∎
 
+{-
 -- in the middle of generalising this lemma
 ⌜main-lemma⌝-rec : {σ : type} (α : Baire) (f : 〖 ι ⇒ σ ⇒ σ 〗) (g : 〖 σ 〗) (t : ℕ)
                    (f' : T₀ (B-type〖 ι ⇒ σ ⇒ σ 〗 ((ι ⇒ ι) ⇒ ι)))
@@ -1638,6 +1641,7 @@ close-Sub,,-as-close-Subƛ {Γ} {σ} {τ} t ys y =
      · t'
      · ⌜ x' ⌝ ⟧₀
     ∎
+-}
 
 ℕ→B : ℕ → B ℕ
 ℕ→B zero = zero'
@@ -1725,6 +1729,7 @@ close-Sub,,-as-close-Subƛ {Γ} {σ} {τ} t ys y =
  ⟦ a · (⌜η⌝ · n) · Rec (ƛ (weaken, ι a · (⌜η⌝ · ν₀))) b n ⟧₀
   ∎
 
+{-
 ⌜main-lemma⌝ : {Γ : Cxt} {σ : type} (t : T Γ σ)
                (α : Baire)
                (xs : 【 Γ 】) (ys : Sub₀ Γ) --IB【 Γ 】 ((ι ⇒ ι) ⇒ ι))
@@ -1850,6 +1855,7 @@ close-Sub,,-as-close-Subƛ {Γ} {σ} {τ} t ys y =
       (λ k → R⋆ α (⟦ t₁ ⟧ xs) k)
       (⌜close⌝ t₁ ys)
       (⌜main-lemma⌝ t₁ α xs ys rxys)))
+-}
 
 \end{code}
 
@@ -2123,7 +2129,15 @@ Rnorm-kleisli-lemma ext {ι} f f' rf (β ϕ y) n' rn A η' β' with Rnorm-reify-
   ＝⟨ ap (λ k → β' k y) (ext (λ x → church-encode-kleisli-extension ext η' β' (ϕ x) f f' rf ⁻¹)) ⟩
  β' (λ x → church-encode (kleisli-extension f (ϕ x)) η' β') y -- church-encode (f y) η' β'
   ∎
-Rnorm-kleisli-lemma ext {σ ⇒ τ} f f' rf n n' rn A η' β' = {!!}
+Rnorm-kleisli-lemma ext {σ ⇒ τ} f f' rf n n' rn A η' β' =
+ Rnorm-preserves-⟦⟧ (Kleisli-extension (λ x → f x A) n)
+   (⌜Kleisli-extension⌝ · ƛ (weaken, ι f' · ν₀ · weaken, ι η') · n')
+   (ƛ (ƛ (ƛ (⌜Kleisli-extension⌝ · ƛ (ν₃ · ν₀ · ν₁) · ν₁))) · f' · n' · η')
+   {!!}
+   (Rnorm-kleisli-lemma ext (λ x → f x A)
+     (ƛ (weaken, ι f' · ν₀ · weaken, ι η'))
+     {!!}
+     n n' rn)
 
 ＝【】-【Sub】-Sub,, : {Γ : Cxt} {A σ : type} (ys : IB【 Γ 】 A) (u : T₀ (B-type〖 σ 〗 A))
                      → ＝【】 (【Sub】 (Sub,, ys u) ⟨⟩) (【Sub】 (Subƛ ys) (⟨⟩ ‚ ⟦ u ⟧₀))
