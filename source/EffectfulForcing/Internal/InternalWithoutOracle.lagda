@@ -2025,8 +2025,8 @@ Rnorm-reify-β : (ϕ : ℕ → B ℕ) (n : ℕ) (t : {A : type} → T₀ (⌜B�
 Rnorm-reify-β ϕ n t eq = ϕ' , n' , eq' {!!} , rβ , ⟦ℕ→T⟧ n , rϕ
  where
   -- We get the branching at t with the following
-  --   ϕ' = t · ( ƛ n : ι . ƛ x : ι , n )
-  --          · ( ƛ ψ : ι ⇒ (ι ⇒ ⌜B⌝ ι A) , ƛ n : ι , ƛ x : ι , ψ x x )
+  --   ϕ' = t · ( ƛ z : ι . ƛ i : ι , ⌜η⌝ n )
+  --          · ( ƛ ψ : ι ⇒ (ι ⇒ ⌜B⌝ ι A) , ƛ n : ι , ƛ x : ι , ⌜β⌝ ψ x x )
   -- Which does ?TODO figure out what this does?
   ϕ' : {A : type} → T₀ (ι ⇒ ⌜B⌝ ι A)
   ϕ' {A} = B-branch t -- t {ι ⇒ A} · ƛ (ƛ ν₀) · ƛ (ƛ (ƛ (ν₂ · ν₀ · ν₀)))
@@ -2136,8 +2136,19 @@ Rnorm-kleisli-lemma ext {σ ⇒ τ} f f' rf n n' rn A η' β' =
    {!!}
    (Rnorm-kleisli-lemma ext (λ x → f x A)
      (ƛ (weaken, ι f' · ν₀ · weaken, ι η'))
-     {!!}
+     rf'
      n n' rn)
+ where
+  rf' : (x : ℕ) (x' : T₀ ι)
+      → is-dialogue-for (η x) (⌜η⌝ · x')
+      → Rnorm (f x A) (ƛ (weaken, ι f' · ν₀ · weaken, ι η') · x')
+  rf' x x' rx =
+   Rnorm-preserves-⟦⟧ (f x A)
+    (f' · x' · η')
+    (ƛ (weaken, ι f' · ν₀ · weaken, ι η') · x')
+    {!!}
+    (rf x x' (λ A η' β' → rx A η' (λ z → z)) A η' β')
+
 
 ＝【】-【Sub】-Sub,, : {Γ : Cxt} {A σ : type} (ys : IB【 Γ 】 A) (u : T₀ (B-type〖 σ 〗 A))
                      → ＝【】 (【Sub】 (Sub,, ys u) ⟨⟩) (【Sub】 (Subƛ ys) (⟨⟩ ‚ ⟦ u ⟧₀))
