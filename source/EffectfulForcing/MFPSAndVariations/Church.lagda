@@ -117,13 +117,13 @@ dialogues-agreement (β φ x) α = dialogues-agreement (φ (α x)) α
 decode⋆ : {X : 𝓦 ̇ } → Baire → B⋆ X (Baire → X) → X
 decode⋆ α d = dialogue⋆ d α
 
-kleisli-extension⋆ : {X : 𝓦  ̇ } {Y : 𝓦'  ̇ } {A : 𝓣 ̇ }
+kleisli-extension⋆ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓣 ̇ }
                    → (X → B⋆ Y A)
                    → B⋆ X A
                    → B⋆ Y A
 kleisli-extension⋆ f d η' β' = d (λ x → f x η' β') β'
 
-B⋆-functor : {X Y A : Type} → (X → Y) → B⋆ X A → B⋆ Y A
+B⋆-functor : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓣 ̇ } → (X → Y) → B⋆ X A → B⋆ Y A
 B⋆-functor f = kleisli-extension⋆ (λ x → η⋆ (f x))
 
 B⋆〖_〗 : type → Type → Type

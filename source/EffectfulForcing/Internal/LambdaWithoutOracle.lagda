@@ -117,31 +117,17 @@ main-lemma (Succ t) α xs ys cr =
  decode α (succ' (B⟦ t ⟧ ys))  ∎
 
 main-lemma (Rec {_} {σ} a b t) α xs ys cr =
- lemma (⟦ a ⟧ xs) (B⟦ a ⟧ ys) (main-lemma a α xs ys cr)
-       (⟦ b ⟧ xs) (B⟦ b ⟧ ys) (main-lemma b α xs ys cr)
-       (⟦ t ⟧ xs) (B⟦ t ⟧ ys) (main-lemma t α xs ys cr)
- where
-  lemma : (f  : ℕ → 〖 σ 〗 → 〖 σ 〗)
-          (f' : B ℕ → B〖 σ 〗 → B〖 σ 〗)
-        → R {ι ⇒ σ ⇒ σ} α f f'
-        → (x  : 〖 σ 〗)
-          (y : B〖 σ 〗)
-        → R {σ} α x y
-        → (n  : ℕ)
-          (n' : B ℕ)
-        → R {ι} α n n'
-        → R {σ} α (rec f x n) (Kleisli-extension (rec (f' ∘ η) y) n')
-  lemma f f' rf x y rx = R-kleisli-lemma σ α g g' rg
-   where
-    g : ℕ → 〖 σ 〗
-    g k = rec f x k
+ R-kleisli-lemma σ α g g' rg (⟦ t ⟧ xs) (B⟦ t ⟧ ys) (main-lemma t α xs ys cr)
+  where
+   g : ℕ → 〖 σ 〗
+   g = rec (⟦ a ⟧ xs) (⟦ b ⟧ xs)
 
-    g' : ℕ → B〖 σ 〗
-    g' k = rec (f' ∘ η) y k
+   g' : ℕ → B〖 σ 〗
+   g' = rec (B⟦ a ⟧ ys ∘ η) (B⟦ b ⟧ ys)
 
-    rg : (k : ℕ) → R α (g k) (g' k)
-    rg zero     = rx
-    rg (succ k) = rf k (η k) refl (g k) (g' k) (rg k)
+   rg : (k : ℕ) → R α (g k) (g' k)
+   rg zero     = main-lemma b α xs ys cr
+   rg (succ k) = main-lemma a α xs ys cr k (η k) refl (g k) (g' k) (rg k)
 
 main-lemma (ν i) α xs ys cr = cr i
 
