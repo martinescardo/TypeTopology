@@ -2061,7 +2061,8 @@ Rnorm-reify-β ϕ n t eq = ϕ' , n' , eq' {!!} , rβ , ⟦ℕ→T⟧ n , rϕ
 -- Since rec is interpreted using ⌜Kleisli-extension⌝, we need to know that
 -- ⌜Kleisli-extension⌝ preserves this normalisation property.
 -- TODO is it enough to get a context free kleisli lemma
-Rnorm-kleisli-lemma : {σ : type}
+Rnorm-kleisli-lemma : (ext : naive-funext 𝓤₀ 𝓤₀)
+                      {σ : type}
 
                       (f : ℕ → B〖 σ 〗)
                       (f' : {A : type} → T₀ (ι ⇒ B-type〖 σ 〗 A))
@@ -2072,7 +2073,7 @@ Rnorm-kleisli-lemma : {σ : type}
                     → Rnorm {ι} n n'
 
                     → Rnorm (Kleisli-extension f n) (⌜Kleisli-extension⌝ · f' · n')
-Rnorm-kleisli-lemma {ι} f f' rf (η y) n' rn A η' β' =
+Rnorm-kleisli-lemma ext {ι} f f' rf (η y) n' rn A η' β' =
  ⟦ n' ⟧₀ (λ x → ⟦ f' ⟧₀ x η' β') β'
   ＝⟨ rn A (λ x → ⟦ f' ⟧₀ x η' β') β' ⟩
  ⟦ f' ⟧₀ y η' β'
@@ -2081,7 +2082,7 @@ Rnorm-kleisli-lemma {ι} f f' rf (η y) n' rn A η' β' =
   ＝⟨ rf y (ℕ→T y) (Rnormη y) A η' β' ⟩
  church-encode (f y) η' β'
   ∎
-Rnorm-kleisli-lemma {ι} f f' rf (β ϕ y) n' rn A η' β' with Rnorm-reify-β ϕ y n' rn
+Rnorm-kleisli-lemma ext {ι} f f' rf (β ϕ y) n' rn A η' β' with Rnorm-reify-β ϕ y n' rn
 ... | (ϕ' , y' , eq , rb , ry , rϕ) =
  ⟦ n' ⟧₀ (λ x → ⟦ f' ⟧₀ x η' β') β'
   ＝⟨ eq A (λ x → ⟦ f' ⟧₀ x η' β') β' ⟩
@@ -2090,10 +2091,14 @@ Rnorm-kleisli-lemma {ι} f f' rf (β ϕ y) n' rn A η' β' with Rnorm-reify-β �
  β' (λ x → ⟦ ϕ' ⟧₀ x (λ z → ⟦ f' ⟧₀ z η' β') β') ⟦ y' ⟧₀
   ＝⟨ ap (β' (λ x → ⟦ ϕ' ⟧₀ x (λ z → ⟦ f' ⟧₀ z η' β') β')) ry ⟩
  β' (λ x → ⟦ ϕ' ⟧₀ x (λ z → ⟦ f' ⟧₀ z η' β') β') y
+  ＝⟨ ap (λ k → β' k y) (ext (λ x → ap (λ j → ⟦ ϕ' ⟧₀ j (λ z → ⟦ f' ⟧₀ z η' β') β') ((⟦ℕ→T⟧ x) ⁻¹))) ⟩
+ β' (λ x → ⟦ ϕ' · ℕ→T x ⟧₀ (λ z → ⟦ f' ⟧₀ z η' β') β') y
+  ＝⟨ ap (λ k → β' k y) (ext (λ x → rϕ x (ℕ→T x) (Rnormη x) A (λ z → ⟦ f' ⟧₀ z η' β') β')) ⟩
+ β' (λ z → church-encode (ϕ z) (λ z → ⟦ f' ⟧₀ z η' β') β') y
   ＝⟨ {!!} ⟩
  β' (λ x → church-encode (kleisli-extension f (ϕ x)) η' β') y -- church-encode (f y) η' β'
   ∎
-Rnorm-kleisli-lemma {σ ⇒ τ} f f' rf n n' rn A η' β' = {!!}
+Rnorm-kleisli-lemma ext {σ ⇒ τ} f f' rf n n' rn A η' β' = {!!}
 
 ＝【】-【Sub】-Sub,, : {Γ : Cxt} {A σ : type} (ys : IB【 Γ 】 A) (u : T₀ (B-type〖 σ 〗 A))
                      → ＝【】 (【Sub】 (Sub,, ys u) ⟨⟩) (【Sub】 (Subƛ ys) (⟨⟩ ‚ ⟦ u ⟧₀))
@@ -2397,7 +2402,7 @@ Rnorm-lemma {Γ} {σ} xs ys (Rec t u v) Rnorm-xs =
 
   c1 : Rnorm (Kleisli-extension rn (B⟦ v ⟧ xs))
              (⌜Kleisli-extension⌝ · rn' · close ⌜ v ⌝ ys)
-  c1 = Rnorm-kleisli-lemma rn rn' rnn'' (B⟦ v ⟧ xs) (close ⌜ v ⌝ ys) (Rnorm-lemma xs ys v Rnorm-xs)
+  c1 = Rnorm-kleisli-lemma {!!} rn rn' rnn'' (B⟦ v ⟧ xs) (close ⌜ v ⌝ ys) (Rnorm-lemma xs ys v Rnorm-xs)
 
 Rnorm-lemma xs ys (ν i) Rnorm-xs = Rnorm-xs i
 
