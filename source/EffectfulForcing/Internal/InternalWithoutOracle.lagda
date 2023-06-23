@@ -340,6 +340,7 @@ CXT Γ A = {σ : type} (i : ∈Cxt σ Γ) → T₀ (⌜B⌝ σ A)
 ⌜main-lemma⌝ = {!!}
 -}
 
+{-
 -- 1st attempt
 R⋆₁ : {σ : type} → Baire → 〖 σ 〗 → T₀ (⌜B⌝ σ ((ι ⇒ ι) ⇒ ι)) → Type
 R⋆₁ {ι}     α n d  = n ＝ dialogue⋆ ⟦ d ⟧₀ α
@@ -347,6 +348,7 @@ R⋆₁ {σ ⇒ τ} α f f' = (x  : 〖 σ 〗)
                     (x' : T₀ (⌜B⌝ σ ((ι ⇒ ι) ⇒ ι)))
                  → R⋆₁ {σ} α x x'
                  → R⋆₁ {τ} α (f x) (⌜app⌝ f' x')
+-}
 
 {-
 ⌜main-lemma⌝₁ : {Γ : Cxt}
@@ -442,8 +444,8 @@ close {σ}       {Γ₁} {Γ₂} (ν i)       s = s i
 close {σ₁ ⇒ σ₂} {Γ₁} {Γ₂} (ƛ t)       s = ƛ (close t (Subƛ s))
 close {σ}       {Γ₁} {Γ₂} (t₁ · t₂)   s = close t₁ s · close t₂ s
 
-close₀ : {σ τ : type} {Γ : Cxt} → T (Γ ,, τ) σ → T Γ τ → T Γ σ
-close₀ {σ} {τ} {Γ} t u = close {σ} {Γ ,, τ} {Γ} t (Sub1 u)
+close0 : {σ τ : type} {Γ : Cxt} → T (Γ ,, τ) σ → T Γ τ → T Γ σ
+close0 {σ} {τ} {Γ} t u = close {σ} {Γ ,, τ} {Γ} t (Sub1 u)
 
 {-
 close· : {σ τ : type} {Γ : Cxt} → (t : T Γ (σ ⇒ τ)) (u : T Γ σ) (s : Sub₀ Γ)
@@ -1311,6 +1313,10 @@ Reta {Γ} {σ ⇒ τ} t = (x : T Γ σ) → Reta x → Reta (t · x)
            → ⟦ close t s ⟧₀ ＝ ⟦ t ⟧ (【Sub₀】 s)
 ⟦close⟧' {Γ} {σ} t s = ap (λ k → k ⟨⟩) (⟦close⟧ t s)
 
+⟦closeν⟧ : {Γ : Cxt} {σ : type} (t : T Γ σ)
+         → ⟦ close t ν ⟧ ＝ ⟦ t ⟧
+⟦closeν⟧ {Γ} {σ} t = ⟦close⟧ t ν
+
 {-
 ⟦close⟧'' : {Γ Δ : Cxt} {σ : type} (t : T Γ σ) (s : Sub Γ Δ) (y : 【 Δ 】)
            → ⟦ close t s ⟧ y ＝ ⟦ t ⟧ (【Sub】 s y)
@@ -1553,11 +1559,11 @@ close-Sub,,-as-close-Subƛ {Γ} {σ} {τ} t ys y =
 ⟦close-⌜Rec⌝⟧ {A} {σ} {Γ} s a b c =
  ⟦ close (⌜_⌝  {Γ} {σ} {A} (Rec a b c)) s ⟧₀
   ＝⟨ ap (λ k → k ⟨⟩) (⟦close⟧ (⌜_⌝  {Γ} {σ} {A} (Rec a b c)) s) ⟩
- ⟦ ⌜_⌝  {Γ} {σ} {A} (Rec a b c) ⟧ (【Sub】 s ⟨⟩)
-  ＝⟨ ⟦⌜Rec⌝⟧ (【Sub】 s ⟨⟩) a b c ⟩
+ ⟦ ⌜_⌝  {Γ} {σ} {A} (Rec a b c) ⟧ (【Sub₀】 s)
+  ＝⟨ ⟦⌜Rec⌝⟧ (【Sub₀】 s) a b c ⟩
  ⟦ ⌜Kleisli-extension⌝ {ι} {A} {σ}
    · (ƛ (Rec (ƛ (weaken, ι (weaken, ι ⌜ a ⌝) · (⌜η⌝ · ν₀))) (weaken, ι ⌜ b ⌝) ν₀))
-   · ⌜ c ⌝ ⟧ (【Sub】 s ⟨⟩)
+   · ⌜ c ⌝ ⟧ (【Sub₀】 s)
   ＝⟨ (ap (λ k → k ⟨⟩) (⟦close⟧ (⌜Kleisli-extension⌝ {ι} {A} {σ} · (ƛ (Rec (ƛ (weaken, ι (weaken, ι ⌜ a ⌝) · (⌜η⌝ · ν₀))) (weaken, ι ⌜ b ⌝) ν₀)) · ⌜ c ⌝) s)) ⁻¹ ⟩
  ⟦ close ⌜Kleisli-extension⌝ s
    · close (ƛ (Rec (ƛ (weaken, ι (weaken, ι ⌜ a ⌝) · (⌜η⌝ · ν₀))) (weaken, ι ⌜ b ⌝) ν₀)) s
@@ -2187,7 +2193,7 @@ church-encode-is-natural g (β ϕ n) A η' β' = c {!!}
 
 ＝【】-【Sub】-⊆Sub : {Γ : Cxt} (s : Sub₀ Γ)
                    → ＝【】 (【Sub】 (⊆Sub (∈CxtS ι) (Subƛ s)) (⟨⟩ ‚ zero))
-                            (【Sub】 s ⟨⟩)
+                            (【Sub₀】 s)
 ＝【】-【Sub】-⊆Sub {Γ} s {σ} i = ap (λ k → k (⟨⟩ ‚ zero)) (⟦weaken,⟧ (s i) ι)
 
 Rnorm-lemma-rec-zero : {A σ : type} {Γ : Cxt}
@@ -2204,8 +2210,8 @@ Rnorm-lemma-rec-zero {A} {σ} {Γ} a b s =
  ⟦ close b (⊆Sub (∈CxtS ι) (Subƛ s)) ⟧ (⟨⟩ ‚ zero)
   ＝⟨ ap (λ k → k (⟨⟩ ‚ zero)) (⟦close⟧ b (⊆Sub (∈CxtS ι) (Subƛ s))) ⟩
  ⟦ b ⟧ (【Sub】 (⊆Sub (∈CxtS ι) (Subƛ s)) (⟨⟩ ‚ zero))
-  ＝⟨ ⟦⟧-eta b (【Sub】 (⊆Sub (∈CxtS ι) (Subƛ s)) (⟨⟩ ‚ zero)) (【Sub】 s ⟨⟩) (＝【】-【Sub】-⊆Sub s) ⟩
- ⟦ b ⟧ (【Sub】 s ⟨⟩)
+  ＝⟨ ⟦⟧-eta b (【Sub】 (⊆Sub (∈CxtS ι) (Subƛ s)) (⟨⟩ ‚ zero)) (【Sub₀】 s) (＝【】-【Sub】-⊆Sub s) ⟩
+ ⟦ b ⟧ (【Sub₀】 s)
   ＝⟨ ap (λ k → k ⟨⟩) ((⟦close⟧ b s) ⁻¹) ⟩
  ⟦ close b s ⟧₀
   ∎
@@ -2484,8 +2490,8 @@ Rnorm-lemma xs ys (ƛ t) Rnorm-xs u u' Rnorm-u =
   eq A =
    ⟦ close ⌜ t ⌝ (Sub,, ys u') ⟧₀
     ＝⟨ ap (λ k → k ⟨⟩) (⟦close⟧ ⌜ t ⌝ (Sub,, ys u')) ⟩
-   ⟦ ⌜ t ⌝ ⟧ (【Sub】 (Sub,, ys u') ⟨⟩)
-    ＝⟨ ⟦⟧-eta ⌜ t ⌝ (【Sub】 (Sub,, ys u') ⟨⟩) (【Sub】 (Subƛ ys) (⟨⟩ ‚ ⟦ u' ⟧₀)) (＝【】-【Sub】-Sub,, ys u') ⟩
+   ⟦ ⌜ t ⌝ ⟧ (【Sub₀】 (Sub,, ys u'))
+    ＝⟨ ⟦⟧-eta ⌜ t ⌝ (【Sub₀】 (Sub,, ys u')) (【Sub】 (Subƛ ys) (⟨⟩ ‚ ⟦ u' ⟧₀)) (＝【】-【Sub】-Sub,, ys u') ⟩
    ⟦ ⌜ t ⌝ ⟧ (【Sub】 (Subƛ ys) (⟨⟩ ‚ ⟦ u' ⟧₀))
     ＝⟨ ap (λ k → k (⟨⟩ ‚ ⟦ u' ⟧₀)) (⟦close⟧ ⌜ t ⌝ (Subƛ ys) ⁻¹) ⟩
    ⟦ ƛ (close ⌜ t ⌝ (Subƛ ys)) · u' ⟧₀
@@ -2498,19 +2504,17 @@ Rnorm-lemma xs ys (ƛ t) Rnorm-xs u u' Rnorm-u =
 Rnorm-lemma xs ys (t · u) Rnorm-xs =
  Rnorm-lemma xs ys t Rnorm-xs (B⟦ u ⟧ xs) (close ⌜ u ⌝ ys) (Rnorm-lemma xs ys u Rnorm-xs)
 
-＝【】-⟨⟩ : ＝【】 ⟨⟩ (【Sub】 (λ ()) ⟨⟩)
-＝【】-⟨⟩ {τ} ()
+{-＝【】-⟨⟩ : ＝【】 ⟨⟩ (【Sub】 (λ ()) ⟨⟩)
+＝【】-⟨⟩ {τ} ()--}
 
 -- a consequence of Rnorm-lemma for terms of type ι
 Rnorm-lemmaι : (t : T₀ ι) (α : Baire)
              → dialogue⋆ ⟦ ⌜ t ⌝ ⟧₀ ＝ dialogue⋆ (church-encode B⟦ t ⟧₀)
 Rnorm-lemmaι t α =
  dialogue⋆ ⟦ ⌜ t ⌝ ⟧₀
-  ＝⟨ ap dialogue⋆ (⟦⟧-eta ⌜ t ⌝ ⟨⟩ (【Sub】 (λ ()) ⟨⟩) ＝【】-⟨⟩) ⟩
- dialogue⋆ (⟦ ⌜ t ⌝ ⟧ (【Sub】 (λ ()) ⟨⟩))
-  ＝⟨ ap (λ k → dialogue⋆ (k ⟨⟩)) (⟦close⟧ ⌜ t ⌝ (λ ()) ⁻¹) ⟩
- dialogue⋆ ⟦ close ⌜ t ⌝ (λ ()) ⟧₀
-  ＝⟨ Rnorm-lemma ⟪⟫ (λ ()) t (λ ()) ((ι ⇒ ι) ⇒ ι) η' β' ⟩
+  ＝⟨ ap (λ k → dialogue⋆ (k ⟨⟩)) ((⟦closeν⟧ ⌜ t ⌝) ⁻¹) ⟩
+ dialogue⋆ ⟦ close ⌜ t ⌝ ν ⟧₀
+  ＝⟨ Rnorm-lemma ⟪⟫ ν t (λ ()) ((ι ⇒ ι) ⇒ ι) η' β' ⟩
  dialogue⋆ (church-encode B⟦ t ⟧₀)
   ∎
  where
@@ -2537,9 +2541,9 @@ R-main-lemma-ι t α =
 Rnorm-lemma₀ : {σ : type} (t : T₀ σ) → Rnorm B⟦ t ⟧₀ ⌜ t ⌝
 Rnorm-lemma₀ {σ} t =
  Rnorm-preserves-⟦⟧
-  B⟦ t ⟧₀ (close ⌜ t ⌝ (λ ())) ⌜ t ⌝
-  (λ A → ap (λ k → k ⟨⟩) (⟦close⟧ ⌜ t ⌝ (λ ())) ∙ (⟦⟧-eta ⌜ t ⌝ ⟨⟩ (【Sub】 (λ ()) ⟨⟩) ＝【】-⟨⟩) ⁻¹) -- TODO: abstact that into a lemma
-  (Rnorm-lemma ⟪⟫ (λ ()) t λ ())
+  B⟦ t ⟧₀ (close ⌜ t ⌝ ν) ⌜ t ⌝
+  (λ A → ap (λ k → k ⟨⟩) (⟦closeν⟧ ⌜ t ⌝))
+  (Rnorm-lemma ⟪⟫ ν t (λ ()))
 
 Rnorm-generic : (u : B ℕ) (u' : {A : type} → T₀ (⌜B⌝ ι A))
               → is-dialogue-for u u'
