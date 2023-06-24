@@ -1891,10 +1891,29 @@ strong continuity in System T.
 
 \begin{code}
 
+-- TODO: Add extβ to ≣⋆, and switch to using this equality everywhere
+-- (e.g., in ≣⋆, but also in lemmas such as ⟦⟧-eta)?
+-- ⟦⟧-eta for example would use ≡ and wouldn't need funext?
+_≡_ : {A : type} (f g : 〖 A 〗) → Type
+_≡_ {ι} f g = f ＝ g
+_≡_ {σ ⇒ τ} f g = (a : 〖 σ 〗) → f a ≡ g a
+
+≡→＝ : (ext : naive-funext 𝓤₀ 𝓤₀) {A : type} {f g : 〖 A 〗} → f ≡ g → f ＝ g
+≡→＝ ext {ι} {f} {g} e = e
+≡→＝ ext {A ⇒ A₁} {f} {g} e = ext (λ x → ≡→＝ ext (e x))
+
+extβ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : type} (β' : (Y → 〖 A 〗) → X → 〖 A 〗) → 𝓤 ⊔ 𝓥  ̇
+extβ {_} {_} {X} {Y} {A} β' =
+ (f g : Y → 〖 A 〗) (x : X)
+ → ((y : Y) → f y ≡ g y)
+ → β' f x ≡ β' g x
+
 _≣⋆_ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
       → ({A : type} → D⋆ X Y Z 〖 A 〗) → ({A : type } → D⋆ X Y Z 〖 A 〗) → 𝓤 ⊔ 𝓥 ⊔ 𝓦  ̇
 _≣⋆_ {_} {_} {_} {X} {Y} {Z} d d' =
- (A : type ) → (η' : Z → 〖 A 〗) → (β' : (Y → 〖 A 〗) → X → 〖 A 〗) → d η' β' ＝ d' η' β'
+ (A : type) (η' : Z → 〖 A 〗) (β' : (Y → 〖 A 〗) → X → 〖 A 〗)
+-- extβ β'
+ → d η' β' ＝ d' η' β'
 
 ≣⋆-symm : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {d d' : {A : type} → D⋆ X Y Z 〖 A 〗}
         → d ≣⋆ d' → d' ≣⋆ d
