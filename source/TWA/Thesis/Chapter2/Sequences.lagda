@@ -9,6 +9,8 @@ open import TypeTopology.DiscreteAndSeparated
 open import UF.Subsingletons
 open import UF.Miscelanea
 open import UF.Equiv
+open import Fin.Variation
+open import Fin.Order
 
 module TWA.Thesis.Chapter2.Sequences where
 
@@ -30,7 +32,17 @@ _∶∶_ : {X : 𝓤 ̇ } → X → (ℕ → X) → (ℕ → X)
 (h ∶∶ α) 0 = h
 (h ∶∶ α) (succ n) = α n
 
+_::_ : {T : ℕ → 𝓤 ̇ } → T 0 → Π (T ∘ succ) → Π T
+(h :: α) 0 = h
+(h :: α) (succ n) = α n
+
 _∼ⁿ_ : {X : 𝓤 ̇ } → (ℕ → X) → (ℕ → X) → ℕ → 𝓤 ̇
 (α ∼ⁿ β) n = (i : ℕ) → i < n → α i ＝ β i
 
+_≈ⁿ_ : {X : ℕ → 𝓤 ̇ } → Π X → Π X → ℕ → 𝓤 ̇
+(α ≈ⁿ β) n = (i : ℕ) → i < n → α i ＝ β i
+
+{- _≈ⁿ_ : {d : ℕ} {Y : Fin' (succ d) → 𝓤 ̇ } → Π Y → Π Y → Fin' (succ d) → 𝓤  ̇
+_≈ⁿ_ {𝓤} {d} α β n = (i : Fin' (succ d)) → pr₁ i < pr₁ n → α i ＝ β i
+-}
 \end{code}

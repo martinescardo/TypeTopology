@@ -297,3 +297,121 @@ discrete-finite-seq-csearchable
      (ℕ→D-ClosenessSpace (finite-discrete-is-discrete f))
 discrete-finite-seq-csearchable x₀ f ((p , d) , (δ , ϕ))
  = discrete-finite-seq-csearchable' x₀ f δ ((p , d) , ϕ)
+
+
+LPO : 𝓤₀  ̇
+LPO = (α : ℕ → 𝟚) → ((n : ℕ) → α n ＝ ₀) + (Σ n ꞉ ℕ , α n ＝ ₁)
+
+open import UF.Miscelanea
+open import MLTT.Two-Properties
+
+no-ones-means-all-zero : (α : ℕ → 𝟚) → ¬ (Σ n ꞉ ℕ , α n ＝ ₁)
+                       → (n : ℕ) → α n ＝ ₀
+no-ones-means-all-zero α f n
+ = Cases (𝟚-possibilities (α n)) id
+     (λ αn＝₁ → 𝟘-elim (f (n , αn＝₁)))
+
+ℕ-searchability-is-taboo : searchable 𝓤₀ ℕ → LPO
+ℕ-searchability-is-taboo (𝓔 , S) α
+ = Cases (𝟚-possibilities (α n))
+     (λ αn＝₀ → inl (no-ones-means-all-zero α
+                      (λ (i , αi＝₁) → zero-is-not-one
+                                         (αn＝₀ ⁻¹ ∙ S p (i , αi＝₁)))))
+     (λ αn＝₁ → inr (n , αn＝₁))
+ where
+  p : decidable-predicate 𝓤₀ ℕ
+  pr₁ p n = (α n ＝ ₁) , 𝟚-is-set
+  pr₂ p n = 𝟚-is-discrete (α n) ₁
+  n : ℕ
+  n = 𝓔 p
+
+open import NotionsOfDecidability.Decidable
+
+decidable-to-𝟚 : {X : 𝓤 ̇ } → is-decidable X
+               → Σ b ꞉ 𝟚 , ((b ＝ ₁ ⇔ X) × (b ＝ ₀ ⇔ ¬ X))
+decidable-to-𝟚 (inl  x)
+ = ₁ , (((λ _ → x) , (λ _ → refl))
+     , (𝟘-elim ∘ zero-is-not-one ∘ _⁻¹) , (λ ¬x → 𝟘-elim (¬x x)))
+decidable-to-𝟚 (inr ¬x)
+ = ₀ , ((𝟘-elim ∘ zero-is-not-one) , (λ x → 𝟘-elim (¬x x)))
+     , (λ _ → ¬x) , (λ _ → refl)
+
+LPO-implies-ℕ-searchability : LPO → searchable 𝓦 ℕ
+LPO-implies-ℕ-searchability {𝓦} f = 𝓔 , S
+ where
+  α : decidable-predicate 𝓦 ℕ → ℕ → 𝟚
+  α (p , d) n = pr₁ (decidable-to-𝟚 (d n))
+  𝓔 : decidable-predicate 𝓦 ℕ → ℕ
+  𝓔 p with f (α p)
+  ... | inl _ = 0
+  ... | inr (n , _) = n
+  S : ((p , d) : decidable-predicate 𝓦 ℕ)
+    → (Σ n ꞉ ℕ , p n holds)
+    → p (𝓔 (p , d)) holds
+  S (p , d) (n , pn) with f (α (p , d))
+  ... | inl Πα₀
+   = 𝟘-elim (zero-is-not-one
+              (Πα₀ n ⁻¹ ∙ pr₂ (pr₁ (pr₂ (decidable-to-𝟚 (d n)))) pn))
+  ... | inr (i , αi＝₁) = pr₁ (pr₁ (pr₂ (decidable-to-𝟚 (d i)))) αi＝₁
+{-
+open import CoNaturals.GenericConvergentSequence
+ renaming (ℕ-to-ℕ∞ to _↑)
+
+
+discrete-∞-lemma : {X : 𝓤 ̇} (d : is-discrete X) (x y : X)
+                 → C (D-ClosenessSpace d) 1 x y
+                 → x ＝ y
+discrete-∞-lemma d x y C1xy = {!!}
+
+open import UF.Embeddings
+
+discrete-only-cover-itself
+ : {X : 𝓤 ̇ } {X' : 𝓤' ̇}
+ → (d : is-discrete X)
+ → X' is 1 cover-of (D-ClosenessSpace d)
+ → finite-discrete X'
+ → X' ≃ X
+discrete-only-cover-itself {𝓤} {𝓤'} {X} {X'} d (g , ρ) f
+ = qinveq g (h , η , μ)
+ where
+  e : (x y : X) → c⟨ D-ClosenessSpace d ⟩ x y ＝ ∞ → x ＝ y
+  e = pr₁ (pr₂ (pr₂ (D-ClosenessSpace d)))
+  h : X → X'
+  h x = pr₁ (ρ x)
+  g-lc : left-cancellable g
+  g-lc {x} {x'} e = discrete-∞-lemma (finite-discrete-is-discrete f) x x' {!!}
+  η : (λ x → h (g x)) ∼ (λ x → x)
+  η x' = Cases (finite-discrete-is-discrete f (h (g x')) x') id
+           (𝟘-elim ∘ γ)
+   -- 
+   where
+    fact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) → (x y : X) → f x ≠ f y → x ≠ y
+    fact f x x z refl = z refl
+    η' : g (h (g x')) ＝ g x'
+    η' = discrete-∞-lemma d (g x') (g (pr₁ (ρ (g x')))) (pr₂ (ρ (g x'))) ⁻¹
+    γ : ¬¬ (h (g x') ＝ x')
+    γ ¬hgx'＝x' = {!!}
+     where
+      η'' : ¬ (g (h (g x')) ＝ g x')
+      η'' e = {!!}
+  μ : (λ x → g (h x)) ∼ (λ x → x)
+  μ x = discrete-∞-lemma d x (g (h x)) (pr₂ (ρ x)) ⁻¹
+{- e x (g (h x))
+          (to-subtype-＝ (being-decreasing-is-prop (fe _ _))
+            (dfunext (fe _ _) (λ i → pr₂ (ρ x) i {!!}))) -}
+    
+
+ℕ-ClosenessSpace : ClosenessSpace 𝓤₀
+ℕ-ClosenessSpace = D-ClosenessSpace ℕ-is-discrete
+
+¬ℕ-totally-bounded : ¬ totally-bounded ℕ-ClosenessSpace 𝓤'
+¬ℕ-totally-bounded {𝓤'} t = {!!}
+ where
+  γ = t 1
+  γ' : Σ X' ꞉ 𝓤' ̇ , X' is 1 cover-of ℕ-ClosenessSpace
+  γ' = pr₁ γ
+
+taboo : ((X : ClosenessSpace 𝓤) → csearchable 𝓦 X → totally-bounded X 𝓤')
+      → LPO
+taboo f = {!!}
+-}
