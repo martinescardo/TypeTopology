@@ -65,7 +65,7 @@ open import NotionsOfDecidability.Decidable
 \end{code}
 
 The following is the type of type trees, whose nodes X represent the
-available moves at some stage of the game, and whose leafs "[]"
+available moves at some stage of the game, and whose leaves "[]"
 represent the endings of the game.
 
 \begin{code}
@@ -91,12 +91,12 @@ Path (X ∷ Xf) = Σ x ꞉ X , Path (Xf x)
 \end{code}
 
 Another view of the type Path Xt for a type tree Xt : 𝕋 is as the
-cardinality of the occurrences of leafs in Xt. Under this view, the
+cardinality of the occurrences of leaves in Xt. Under this view, the
 type ∥ Path Xt ∥ expresses that there is at least one leaf [] in the
 tree Xt.
 
 The type X may well be empty (there are no moves left to play) and
-hence the addition of leafs [] seems superfluous.
+hence the addition of leaves [] seems superfluous.
 
 \begin{code}
 
@@ -282,7 +282,7 @@ being-hereditarily-decidable-is-prop (X ∷ Xf) =
 
 In order to show that 𝔾 ≃ ℍ we need some preparation.
 
-First we define the leafs of 𝔸 trees.
+First we define the leaves of 𝔸 trees.
 
 \begin{code}
 
@@ -294,7 +294,7 @@ First we define the leafs of 𝔸 trees.
 
 \end{code}
 
-Then the leafs of ℍ trees are defined as follows.
+Then the leaves of ℍ trees are defined as follows.
 
 \begin{code}
 
