@@ -27,25 +27,6 @@ open import TWA.Thesis.Chapter2.FiniteDiscrete
 open import TWA.Thesis.Chapter3.ClosenessSpaces fe
 open import TWA.Closeness fe hiding (is-ultra; is-closeness)
 
-c⟨_⟩ : (X : ClosenessSpace 𝓤) → ⟨ X ⟩ → ⟨ X ⟩ → ℕ∞
-c⟨ (X , c , e , i , s , u) ⟩ = c
-
-e⟨_⟩ : (X : ClosenessSpace 𝓤)
-     → indistinguishable-are-equal c⟨ X ⟩
-e⟨ (X , c , e , i , s , u) ⟩ = e
-
-i⟨_⟩ : (X : ClosenessSpace 𝓤)
-     → self-indistinguishable c⟨ X ⟩
-i⟨ (X , c , e , i , s , u) ⟩ = i
-
-s⟨_⟩ : (X : ClosenessSpace 𝓤)
-     → is-symmetric c⟨ X ⟩
-s⟨ (X , c , e , i , s , u) ⟩ = s
-
-u⟨_⟩ : (X : ClosenessSpace 𝓤)
-     → is-ultra c⟨ X ⟩
-u⟨ (X , c , e , i , s , u) ⟩ = u
-
 open import UF.Equiv
 
 -- Move to ClosenessSpaces
@@ -232,6 +213,16 @@ finite-discrete-totally-bounded {𝓤} {X} f x (succ ε)
   d = finite-discrete-is-discrete f
   η : (x : X) → C (D-ClosenessSpace d) (succ ε) x x
   η x n _ = ap (λ - → pr₁ - n) (i⟨ D-ClosenessSpace d ⟩ x)
+
+discrete-apart-implies-closeness-0
+ : {X : 𝓤 ̇ }
+ → (d : is-discrete X)
+ → (x y : X)
+ → x ≠ y
+ → c⟨ D-ClosenessSpace d ⟩ x y ＝ 0 ↑
+discrete-apart-implies-closeness-0 d x y f with d x y
+... | inl e = 𝟘-elim (f e)
+... | inr _ = refl
 
 -- Disjoint union of closeness spaces
 
@@ -468,10 +459,6 @@ minℕ∞-abcdef a b c d e f mab≼e mcd≼f n minabcd＝₁
 
 -- Subtype closeness spaces
 
-
-
--- Embedding closeness space
-
 ↪-clospace : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X ↪ Y)
            → is-closeness-space Y
            → is-closeness-space X
@@ -502,36 +489,58 @@ minℕ∞-abcdef a b c d e f mab≼e mcd≼f n minabcd＝₁
 Σ-ClosenessSpace {𝓤} {𝓥} X P p
  = ↪-ClosenessSpace X (pr₁ , (pr₁-is-embedding p))
 
-≃-ClosenessSpace : {X : 𝓤 ̇}
-                 → (Y : ClosenessSpace 𝓥)
+≃-ClosenessSpace : {X : 𝓤 ̇} (Y : ClosenessSpace 𝓥)
                  → X ≃ ⟨ Y ⟩
                  → ClosenessSpace 𝓤
 ≃-ClosenessSpace Y e
-  = ↪-ClosenessSpace Y (equivs-embedding e)
+  = ↪-ClosenessSpace Y (equivs-embedding e)                      
+
+≃-preserves-nets : {X : 𝓤 ̇ } (Y : ClosenessSpace 𝓥)
+                 → (e : X ≃ ⟨ Y ⟩)
+                 → (ε : ℕ)
+                 → (Y' : 𝓥'  ̇ )
+                 → Y' is ε net-of Y
+                 → Y' is ε net-of (≃-ClosenessSpace Y e)
+≃-preserves-nets Y (f , ((g , η) , (h , μ))) ε Y' ((gₙ , hₙ , ηₙ) , fₙ)
+ = (g ∘ gₙ , hₙ ∘ f
+ , λ x
+ → C-trans Y ε (f x) (gₙ (hₙ (f x))) (f (g (gₙ (hₙ (f x))))) (ηₙ (f x))
+    (closeness-∞-implies-ϵ-close Y (gₙ (hₙ (f x))) (f (g (gₙ (hₙ (f x)))))
+      (identical-implies-closeness-∞ Y _ _ (η (gₙ (hₙ (f x))) ⁻¹)) ε))
+ , fₙ
+
+≃-totally-bounded : {X : 𝓤 ̇}
+                  → (Y : ClosenessSpace 𝓥)
+                  → (e : X ≃ ⟨ Y ⟩)
+                  → totally-bounded Y 𝓥'
+                  → totally-bounded (≃-ClosenessSpace Y e) 𝓥'
+≃-totally-bounded Y e t ε
+ = pr₁ (t ε) , ≃-preserves-nets Y e ε (pr₁ (t ε)) (pr₂ (t ε))
 
 -- Discrete sequence closeness spaces
 
 discrete-decidable-seq
- : {X : 𝓤 ̇ } → is-discrete X
- → (α β : ℕ → X) → (n : ℕ) → is-decidable ((α ∼ⁿ β) n)
+ : {X : ℕ → 𝓤 ̇ }
+ → ((i : ℕ) → is-discrete (X i))
+ → (α β : Π X) → (n : ℕ) → is-decidable ((α ≈ⁿ β) n)
 discrete-decidable-seq d α β 0 = inl (λ _ ())
 discrete-decidable-seq d α β (succ n)
  = Cases (discrete-decidable-seq d α β n) γ₁ (inr ∘ γ₂)
  where
-   γ₁ : (α ∼ⁿ β) n → is-decidable ((α ∼ⁿ β) (succ n))
-   γ₁ α∼ⁿβ = Cases (d (α n) (β n)) (inl ∘ γ₁₁) (inr ∘ γ₁₂)
+   γ₁ : (α ≈ⁿ β) n → is-decidable ((α ≈ⁿ β) (succ n))
+   γ₁ α∼ⁿβ = Cases (d n (α n) (β n)) (inl ∘ γ₁₁) (inr ∘ γ₁₂)
     where
-      γ₁₁ :    α n ＝ β n →     (α ∼ⁿ β) (succ n)
+      γ₁₁ :    α n ＝ β n →     (α ≈ⁿ β) (succ n)
       γ₁₁ e k k<sn = Cases (≤-split (succ k) n k<sn)
                        (λ k<n → α∼ⁿβ k k<n)
                        (λ sk=sn → transport (λ - → α - ＝ β -)
                          (succ-lc sk=sn ⁻¹) e)
-      γ₁₂ : ¬ (α n ＝ β n) → ¬ ((α ∼ⁿ β) (succ n))
+      γ₁₂ : ¬ (α n ＝ β n) → ¬ ((α ≈ⁿ β) (succ n))
       γ₁₂ g α∼ˢⁿβ = g (α∼ˢⁿβ n (<-succ n))
-   γ₂ : ¬ ((α ∼ⁿ β) n) → ¬ ((α ∼ⁿ β) (succ n))
+   γ₂ : ¬ ((α ≈ⁿ β) n) → ¬ ((α ≈ⁿ β) (succ n))
    γ₂ f = f
         ∘ λ α∼ˢⁿβ k k<n → α∼ˢⁿβ k (<-trans k n (succ n) k<n (<-succ n))
-      
+
 decidable-𝟚 : {X : 𝓤 ̇ } → is-decidable X → 𝟚
 decidable-𝟚 (inl _) = ₁
 decidable-𝟚 (inr _) = ₀
@@ -562,12 +571,14 @@ decidable-seq-𝟚 : {X : ℕ → 𝓤 ̇ } → is-complemented X → (ℕ → �
 decidable-seq-𝟚 d n = decidable-𝟚 (d (succ n))
 
 discrete-seq-clofun'
- : {X : 𝓤 ̇ } → is-discrete X → (ℕ → X) → (ℕ → X) → (ℕ → 𝟚)
+ : {X : ℕ → 𝓤 ̇ } → ((i : ℕ) → is-discrete (X i)) → Π X → Π X → (ℕ → 𝟚)
 discrete-seq-clofun' d α β
  = decidable-seq-𝟚 (discrete-decidable-seq d α β)
  
 discrete-seq-clofun'-e
- : {X : 𝓤 ̇ } → (d : is-discrete X) → (α β : ℕ → X)
+ : {X : ℕ → 𝓤 ̇ }
+ → (d : (i : ℕ) → is-discrete (X i))
+ → (α β : Π X)
  → ((n : ℕ) → discrete-seq-clofun' d α β n ＝ ₁)
  → α ＝ β
 discrete-seq-clofun'-e d α β f
@@ -576,13 +587,17 @@ discrete-seq-clofun'-e d α β f
               (f n) n (<-succ n))
 
 discrete-seq-clofun'-i
- : {X : 𝓤 ̇ } → (d : is-discrete X) → (α : ℕ → X)
+ : {X : ℕ → 𝓤 ̇ } 
+ → (d : (i : ℕ) → is-discrete (X i))
+ → (α : Π X)
  → (n : ℕ) → discrete-seq-clofun' d α α n ＝ ₁
 discrete-seq-clofun'-i d α n
  = decidable-𝟚₁ (discrete-decidable-seq d α α (succ n)) (λ _ _ → refl)
 
 discrete-seq-clofun'-s
- : {X : 𝓤 ̇ } → (d : is-discrete X) → (α β : ℕ → X)
+ : {X : ℕ → 𝓤 ̇ }
+ → (d : (i : ℕ) → is-discrete (X i))
+ → (α β : Π X)
  → (n : ℕ)
  → discrete-seq-clofun' d α β n ＝ discrete-seq-clofun' d β α n
 discrete-seq-clofun'-s d α β n
@@ -595,7 +610,9 @@ discrete-seq-clofun'-s d α β n
      (λ α∼ⁿβ → ¬α∼ⁿβ (λ i i<n → α∼ⁿβ i i<n ⁻¹)) ⁻¹
 
 discrete-seq-clofun'-u
- : {X : 𝓤 ̇ } → (d : is-discrete X) → (α β ζ : ℕ → X)
+ : {X : ℕ → 𝓤 ̇ }
+ → (d : (i : ℕ) → is-discrete (X i))
+ → (α β ζ : Π X)
  → (n : ℕ)
  → min𝟚 (discrete-seq-clofun' d α β n)
         (discrete-seq-clofun' d β ζ n) ＝ ₁
@@ -609,7 +626,9 @@ discrete-seq-clofun'-u d α β ζ n minₙ=1
  = 𝟘-elim (¬α∼ⁿζ (λ i i<n → α∼ⁿβ i i<n ∙ β∼ⁿζ i i<n))
 
 discrete-decidable-seq-𝟚-decreasing
- : {X : 𝓤 ̇ } → (d : is-discrete X) → (α β : ℕ → X)
+ : {X : ℕ → 𝓤 ̇ }
+ → (d : (i : ℕ) → is-discrete (X i))
+ → (α β : Π X)
  → is-decreasing (discrete-seq-clofun' d α β)
 discrete-decidable-seq-𝟚-decreasing d α β n
  with discrete-decidable-seq d α β (succ n)
@@ -621,48 +640,62 @@ discrete-decidable-seq-𝟚-decreasing d α β n
 ... | inr     _ | inr      _ = ⋆
 
 discrete-seq-clofun
- : {X : 𝓤 ̇ } → is-discrete X → (ℕ → X) → (ℕ → X) → ℕ∞
+ : {X : ℕ → 𝓤 ̇ }
+ → ((i : ℕ) → is-discrete (X i))
+ → Π X → Π X → ℕ∞
 discrete-seq-clofun d α β
  = discrete-seq-clofun' d α β
  , discrete-decidable-seq-𝟚-decreasing d α β
 
 discrete-seq-clofun-e
- : {X : 𝓤 ̇ } → (d : is-discrete X)
+ : {X : ℕ → 𝓤 ̇ }
+ → (d : (i : ℕ) → is-discrete (X i))
  → indistinguishable-are-equal (discrete-seq-clofun d)
 discrete-seq-clofun-e d α β cαβ=∞
  = discrete-seq-clofun'-e d α β (λ n → ap (λ - → pr₁ - n) cαβ=∞) 
      
-discrete-seq-clofun-i : {X : 𝓤 ̇ } → (d : is-discrete X)
+discrete-seq-clofun-i : {X : ℕ → 𝓤 ̇ }
+                      → (d : (i : ℕ) → is-discrete (X i))
                       → self-indistinguishable (discrete-seq-clofun d)
 discrete-seq-clofun-i d α
  = to-subtype-＝ (being-decreasing-is-prop (fe _ _))
      (dfunext (fe _ _) (discrete-seq-clofun'-i d α))
 
-discrete-seq-clofun-s : {X : 𝓤 ̇ } → (d : is-discrete X)
+discrete-seq-clofun-s : {X : ℕ → 𝓤 ̇ }
+                      → (d : (i : ℕ) → is-discrete (X i))
                       → is-symmetric (discrete-seq-clofun d)
 discrete-seq-clofun-s d α β
  = to-subtype-＝ (being-decreasing-is-prop (fe _ _))
      (dfunext (fe _ _) (discrete-seq-clofun'-s d α β))
 
-discrete-seq-clofun-u : {X : 𝓤 ̇ } → (d : is-discrete X)
+discrete-seq-clofun-u : {X : ℕ → 𝓤 ̇ }
+                      → (d : (i : ℕ) → is-discrete (X i))
                       → is-ultra (discrete-seq-clofun d)
 discrete-seq-clofun-u = discrete-seq-clofun'-u
 
-discrete-seq-clofun-c : {X : 𝓤 ̇ } → (d : is-discrete X)
+discrete-seq-clofun-c : {X : ℕ → 𝓤 ̇ }
+                      → (d : (i : ℕ) → is-discrete (X i))
                       → is-closeness (discrete-seq-clofun d)
 discrete-seq-clofun-c d = discrete-seq-clofun-e d
                         , discrete-seq-clofun-i d
                         , discrete-seq-clofun-s d
                         , discrete-seq-clofun-u d
 
-ℕ→D-clofun : {X : 𝓤 ̇ } → (d : is-discrete X)
-           → is-closeness-space (ℕ → X)
-ℕ→D-clofun d = discrete-seq-clofun d
-             , discrete-seq-clofun-c d
+discrete-seq-clospace : {X : ℕ → 𝓤 ̇ }
+                      → ((i : ℕ) → is-discrete (X i))
+                      → is-closeness-space (Π X)
+discrete-seq-clospace d = discrete-seq-clofun d
+                        , discrete-seq-clofun-c d
 
-ℕ→D-ClosenessSpace : {X : 𝓤 ̇ } → (d : is-discrete X)
+ΠD-ClosenessSpace : {X : ℕ → 𝓤 ̇ }
+                  → (d : (i : ℕ) → is-discrete (X i))
+                  → ClosenessSpace 𝓤
+ΠD-ClosenessSpace {𝓤} {X} d = Π X , discrete-seq-clospace d
+
+ℕ→D-ClosenessSpace : {X : 𝓤 ̇ }
+                   → (d : is-discrete X)
                    → ClosenessSpace 𝓤
-ℕ→D-ClosenessSpace {𝓤} {X} d = (ℕ → X) , ℕ→D-clofun d
+ℕ→D-ClosenessSpace {𝓤} {X} d = ΠD-ClosenessSpace (λ _ → d)
 
 Vec-to-Seq : {X : 𝓤 ̇ } {n : ℕ} → X → Vec X n → (ℕ → X)
 Vec-to-Seq x₀ [] n = x₀
@@ -882,6 +915,53 @@ Lemma[min𝟚abcd＝₁→min𝟚bd＝₁] ₁ ₁ ₁ ₁ e = refl
   f = ×-preserves-finite-discrete
         (pr₂ t₀'-is-sϵ-net) (pr₂ IH'-is-ϵ-net)
 
+Π-clofuns-id' : {T : ℕ → 𝓤 ̇ }
+              → (d : (i : ℕ) → is-discrete (T i))
+              → (x y : Π T)
+              → discrete-seq-clofun' d x y
+              ∼ Π-clofun' (λ n → D-ClosenessSpace (d n)) x y
+Π-clofuns-id' d x y 0 with d 0 (x 0) (y 0)
+... | inl _ = refl
+... | inr _ = refl
+Π-clofuns-id' d x y (succ i)
+ with discrete-decidable-seq d x y (succ (succ i))
+... | inl z
+   = Lemma[a＝₁→b＝₁→min𝟚ab＝₁]
+       (closeness-∞-implies-ϵ-close (D-ClosenessSpace (d 0))
+          (x 0) (y 0)
+          (identical-implies-closeness-∞ (D-ClosenessSpace (d 0))
+            (x 0) (y 0) (z 0 ⋆))
+          (succ (succ i)) (succ i)
+          (<-gives-⊏ (succ i) (succ (succ i)) (<-succ (succ i))))
+       (Π-clofuns-id' (d ∘ succ) (x ∘ succ) (y ∘ succ) i ⁻¹
+       ∙ decidable-𝟚₁ (discrete-decidable-seq _ _ _ _) (z ∘ succ))  ⁻¹
+... | inr z
+ = Cases (d 0 (x 0) (y 0))
+     (λ e → Lemma[min𝟚ab＝₀] (inr
+              (Π-clofuns-id' (d ∘ succ) (x ∘ succ) (y ∘ succ) i ⁻¹
+                ∙ decidable-𝟚₀ (discrete-decidable-seq _ _ _ _)
+                    (λ g → z (γ e g)))))
+     (λ f → Lemma[min𝟚ab＝₀]
+              (inl (ap (λ - → pr₁ - (succ i))
+                (discrete-apart-implies-closeness-0
+                  (d 0) (x 0) (y 0) f)))) ⁻¹
+  where
+   γ : x 0 ＝ y 0
+     → ((x ∘ succ) ≈ⁿ (y ∘ succ)) (succ i)
+     → (x ≈ⁿ y) (succ (succ i))
+   γ e g 0 j<ssi = e
+   γ e g (succ j) j<ssi = g j j<ssi
+
+Π-clofuns-id
+ : {T : ℕ → 𝓤 ̇ }
+ → (d : (i : ℕ) → is-discrete (T i))
+ → c⟨ ΠD-ClosenessSpace d ⟩
+ ＝ c⟨ Π-ClosenessSpace (λ n → D-ClosenessSpace (d n)) ⟩
+Π-clofuns-id d
+ = dfunext (fe _ _) (λ x → dfunext (fe _ _) (λ y →
+     to-subtype-＝ (being-decreasing-is-prop (fe _ _))
+       (dfunext (fe _ _) (Π-clofuns-id' d x y))))
+
 -- Some examples:
 
 ℕ→𝟚-ClosenessSpace : ClosenessSpace 𝓤₀
@@ -1060,7 +1140,7 @@ Vec-to-Seq-decreasing (succ (succ n)) (₁ ∷ (₁ ∷ v)) d = γ
 -}
 
 -- Finite vectors TODO later - needed for TBR
-
+{-
 <-pred : {n : ℕ} (d : ℕ) → succ n < succ d → n < succ d
 <-pred {n} d = <-trans n (succ n) (succ d) (<-succ n)
 
@@ -1092,5 +1172,5 @@ discrete-decidable-vec {𝓤} {m} d α β (succ n) sn<m
    γ₂ f = f
         ∘ λ α≈ˢⁿβ (k , k<sm) k<n
         → α≈ˢⁿβ (k , k<sm) (<-trans k n (succ n) k<n (<-succ n))
-
+-}
 \end{code}

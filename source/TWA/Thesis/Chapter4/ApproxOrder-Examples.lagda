@@ -162,6 +162,18 @@ inclusion-order-is-strict-order
   p→ : is-prop-valued (inclusion-order f _<_)
   p→ x y = p (f x) (f y)
 
+f' : ℕ → 𝟚
+f' _ = ₀
+
+open import MLTT.Two-Properties
+
+_<<_ : ℕ → ℕ → 𝓤₀ ̇
+_<<_ = inclusion-order (λ _ → ₀) _<₂_
+
+<<-irreflexive : (x : ℕ) → ¬ (x << x)
+<<-irreflexive x ₀<₂₀ = 𝟘-elim ₀<₂₀
+
+
 embedding-strict-order-trichotomous
  : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } ((f , _) : X ↪ Y)
  → (_<_ : Y → Y → 𝓦 ̇) → trichotomous _<_
@@ -389,10 +401,10 @@ discrete-approx-lexicorder-is-approx-order
   dec : (ϵ : ℕ) (x y : ℕ → D)
       → is-decidable (discrete-approx-lexicorder d _<'_ x y ϵ)
   dec ϵ x y
-    = +-preserves-decidability (discrete-decidable-seq d x y ϵ)
+    = +-preserves-decidability (discrete-decidable-seq (λ _ → d) x y ϵ)
         (bounded-decidable
           (λ i → ×-preserves-decidability
-                   (discrete-decidable-seq d x y i)
+                   (discrete-decidable-seq (λ _ → d) x y i)
                    (strict-trichotomous-order-decidable
                      _<'_ s' l' (x i) (y i)))
           ϵ)
@@ -402,7 +414,7 @@ discrete-approx-lexicorder-is-approx-order
   c 0 x y Bnxy
    = inl (λ _ ())
   c (succ n) x y Bnxy
-   = inl (𝟚-decidable₁ (discrete-decidable-seq d x y (succ n))
+   = inl (𝟚-decidable₁ (discrete-decidable-seq (λ _ → d) x y (succ n))
       (Bnxy n (ℕ-to-ℕ∞-diagonal₁ n)))
   a : (n : ℕ) → (x y : ℕ → D)
     → ¬ C (ℕ→D-ClosenessSpace d) n x y
@@ -410,7 +422,7 @@ discrete-approx-lexicorder-is-approx-order
     ⇔ discrete-lexicorder d _<'_ x y
   pr₁ (a n x y ¬Bxy) (inl x∼ⁿy)
    = 𝟘-elim (¬Bxy (λ i i⊏n
-   → decidable-𝟚₁ (discrete-decidable-seq d x y (succ i))
+   → decidable-𝟚₁ (discrete-decidable-seq (λ _ → d) x y (succ i))
        (λ j j<si → x∼ⁿy j
          (≤-<-trans j i n j<si
            (⊏-gives-< i n i⊏n)))))

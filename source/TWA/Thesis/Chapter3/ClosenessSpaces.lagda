@@ -100,6 +100,25 @@ ClosenessSpace 𝓤
 ⟨_⟩ : ClosenessSpace 𝓤 → 𝓤 ̇
 ⟨ X , _ ⟩ = X
 
+c⟨_⟩ : (X : ClosenessSpace 𝓤) → ⟨ X ⟩ → ⟨ X ⟩ → ℕ∞
+c⟨ (X , c , e , i , s , u) ⟩ = c
+
+e⟨_⟩ : (X : ClosenessSpace 𝓤)
+     → indistinguishable-are-equal c⟨ X ⟩
+e⟨ (X , c , e , i , s , u) ⟩ = e
+
+i⟨_⟩ : (X : ClosenessSpace 𝓤)
+     → self-indistinguishable c⟨ X ⟩
+i⟨ (X , c , e , i , s , u) ⟩ = i
+
+s⟨_⟩ : (X : ClosenessSpace 𝓤)
+     → is-symmetric c⟨ X ⟩
+s⟨ (X , c , e , i , s , u) ⟩ = s
+
+u⟨_⟩ : (X : ClosenessSpace 𝓤)
+     → is-ultra c⟨ X ⟩
+u⟨ (X , c , e , i , s , u) ⟩ = u
+
 -- Definition 3.2.23 [ Doesn't say in paper that this is an equiv rel ? TODO ]
 C' : (X : PseudoClosenessSpace 𝓤) → ℕ → ⟪ X ⟫ → ⟪ X ⟫ → 𝓤₀ ̇   
 C' (X , c , _) n x y = (n ↑) ≼ c x y
@@ -172,6 +191,19 @@ C-prev : (X : ClosenessSpace 𝓤)
        → C X i x y
 C-prev X n i i≤n x y Cnxy k k⊏i
  = Cnxy k (<-gives-⊏ k n (<-≤-trans k i n (⊏-gives-< k i k⊏i) i≤n))
+
+identical-implies-closeness-∞ : (X : ClosenessSpace 𝓤)
+                              → (x y : ⟨ X ⟩)
+                              → x ＝ y
+                              → c⟨ X ⟩ x y ＝ ∞
+identical-implies-closeness-∞ X x x refl = i⟨ X ⟩ x
+
+closeness-∞-implies-ϵ-close : (X : ClosenessSpace 𝓤)
+                            → (x y : ⟨ X ⟩)
+                            → c⟨ X ⟩ x y ＝ ∞
+                            → (ε : ℕ) → C X ε x y
+closeness-∞-implies-ϵ-close X x y cxy＝∞ ε n _
+ = ap (λ - → pr₁ - n) cxy＝∞     
 
 -- Definition 3.2.24 [ not needed ? ]
 

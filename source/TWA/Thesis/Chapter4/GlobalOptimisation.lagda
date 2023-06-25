@@ -131,22 +131,23 @@ F-ϵ-global-minimal Y x (n , (g , (h , η) , _)) _≤_ _≤ⁿ_ a ϵ f
  , λ x → transport (λ - → (f (g x₀) ≤ⁿ f -) ϵ) (η x) (m (h x))
 
 -- Lemma 4.1.23
+
 cover-continuity-lemma
- : (X : ClosenessSpace 𝓤) (Y : ClosenessSpace 𝓥)
+ : (X : ClosenessSpace 𝓤) {X' : 𝓤' ̇ } (Y : ClosenessSpace 𝓥)
  → (_≤_  : ⟨ Y ⟩ → ⟨ Y ⟩ → 𝓦 ̇ )
  → (_≤ⁿ_ : ⟨ Y ⟩ → ⟨ Y ⟩ → ℕ → 𝓦'  ̇ )
  → is-approx-order Y _≤_ _≤ⁿ_
  → (ϵ : ℕ) → (f : ⟨ X ⟩ → ⟨ Y ⟩) (ϕ : f-ucontinuous X Y f)
- → let δ = pr₁ (ϕ ϵ) in ((X' , g , _) : (δ cover-of X) 𝓤')
+ → let δ = pr₁ (ϕ ϵ) in (((g , _) , _) : X' is δ net-of X)
  → finite-discrete X'
  → (x : ⟨ X ⟩) → Σ x' ꞉ X' , (f (g x') ≤ⁿ f x) ϵ
 cover-continuity-lemma
- X Y _≤_ _≤ⁿ_ (_ , _ , _ , c , a) ϵ f ϕ (X' , g , η) e x
- = (pr₁ (η x))
- , c ϵ (f (g (pr₁ (η x)))) (f x)
-     (C-sym Y ϵ (f x) (f (g (pr₁ (η x))))
-       (pr₂ (ϕ ϵ) x (g (pr₁ (η x)))
-         (pr₂ (η x))))
+ X Y _≤_ _≤ⁿ_ (_ , _ , _ , c , a) ϵ f ϕ ((g , h , η) , _) e x
+ = h x
+ , c ϵ (f (g (h x))) (f x)
+     (C-sym Y ϵ (f x) (f (g (h x)))
+       (pr₂ (ϕ ϵ) x (g (h x))
+         (η x)))
 
 -- Theorem 4.1.22
 global-opt : (X : ClosenessSpace 𝓤) (Y : ClosenessSpace 𝓥)
@@ -165,20 +166,18 @@ global-opt {𝓤} {𝓥} {𝓦} {𝓦'} {𝓤'} X Y x₁ _≤_ _≤ⁿ_ a ϵ f �
  where
   δ : ℕ
   δ = pr₁ (ϕ ϵ)
-  δ-cover : (δ cover-of X) 𝓤'
-  δ-cover = pr₁ (t δ)
   X' : 𝓤'  ̇
-  X' = pr₁ δ-cover
-  X'-is-δ-cover : X' is δ cover-of X
-  X'-is-δ-cover  = pr₂ δ-cover
+  X' =  pr₁ (t δ)
+  X'-is-δ-net : X' is δ net-of X
+  X'-is-δ-net  = pr₂ (t δ)
   X'-is-finite : finite-discrete X'
-  X'-is-finite = pr₂ (t δ)
-  g : X' → ⟨ X ⟩
-  g = pr₁ X'-is-δ-cover
+  X'-is-finite = pr₂ X'-is-δ-net
+  g :   X'  → ⟨ X ⟩
+  g = pr₁ (pr₁ X'-is-δ-net)
+  h : ⟨ X ⟩ →   X'
+  h = pr₁ (pr₂ (pr₁ X'-is-δ-net))
   η : (x : ⟨ X ⟩) → Σ x' ꞉ X' , (f (g x') ≤ⁿ f x) ϵ
-  η = cover-continuity-lemma X Y _≤_ _≤ⁿ_ a ϵ f ϕ δ-cover X'-is-finite
-  h : ⟨ X ⟩ → X'
-  h x = pr₁ (η x)
+  η = cover-continuity-lemma X Y _≤_ _≤ⁿ_ a ϵ f ϕ X'-is-δ-net X'-is-finite
   h-min : (x : ⟨ X ⟩) → (f (g (h x)) ≤ⁿ f x) ϵ
   h-min x = pr₂ (η x)
   first  : has ϵ global-minimal _≤ⁿ_ (f ∘ g)
@@ -188,6 +187,7 @@ global-opt {𝓤} {𝓥} {𝓦} {𝓦'} {𝓤'} X Y x₁ _≤_ _≤ⁿ_ a ϵ f �
   x'₀ = pr₁ first
   m  : is ϵ global-minimal _≤ⁿ_ (f ∘ g) x'₀
   m  = pr₂ first
+
 {-
 open import UF.Subsingletons
 open import CoNaturals.GenericConvergentSequence

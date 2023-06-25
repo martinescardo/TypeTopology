@@ -160,15 +160,17 @@ csearchable'→csearchable X 𝓔S
 
 -- Theorem 3.3.7
 -- Should be in paper TODO
+{-
 semi-searchable : ClosenessSpace 𝓤 → (𝓥 𝓦 : Universe)
                 → 𝓤 ⊔ (𝓥 ⁺) ⊔ (𝓦 ⁺)  ̇ 
 semi-searchable X 𝓥 𝓦
- = (ϵ : ℕ) → Σ (X' , _) ꞉ (ϵ cover-of X) 𝓥 , searchable 𝓦 X'
-
+ = (ϵ : ℕ) → Σ X' ꞉ 𝓥 ̇ , X' is ϵ net-of X
+-}
+{-
 searchable-covers-csearchable : (X : ClosenessSpace 𝓤)
                               → semi-searchable X 𝓥 𝓦
                               → csearchable' 𝓦 X
-searchable-covers-csearchable {𝓤} {𝓥} {𝓦} X S ((p , d) , δ , ϕ)
+searchable-covers-csearchable {𝓤} {𝓥} {𝓦} X t ((p , d) , δ , ϕ)
  = x₀ , γ
  where
   X' : 𝓥 ̇
@@ -193,17 +195,39 @@ searchable-covers-csearchable {𝓤} {𝓥} {𝓦} X S ((p , d) , δ , ϕ)
   η  = pr₂ (pr₂ (pr₁ (S δ)))
   𝓔' = pr₁ (pr₂ (S δ))
   S' = pr₂ (pr₂ (S δ))
-  
+-}
+
 -- Corollary 3.3.8
 -- Add inhabited assumption
 totally-bounded-csearchable : (X : ClosenessSpace 𝓤)
-                            → (t : totally-bounded X 𝓥)
-                            → ((ϵ : ℕ) → pr₁ (pr₁ (t ϵ))) -- TODO
+                            → ⟨ X ⟩
+                            → (t : totally-bounded X 𝓤')
                             → csearchable' 𝓦 X
-totally-bounded-csearchable X t i
- = searchable-covers-csearchable X
-     (λ ϵ → (pr₁ (t ϵ)) , finite-discrete-searchable (i ϵ) (pr₂ (t ϵ)))
-
+totally-bounded-csearchable {𝓤} {𝓤'} {𝓦} X x t ((p , d) , δ , ϕ)
+ = x₀ , γ
+ where
+  X' : 𝓤'  ̇
+  g  :   X'  → ⟨ X ⟩
+  h  : ⟨ X ⟩ →   X'
+  η  : (x : ⟨ X ⟩) → C X δ x (g (h x))
+  𝓔' : decidable-predicate 𝓦 X' → X'
+  S' : ((p' , d') : decidable-predicate 𝓦 X')
+     → (Σ x' ꞉ X' , p' x' holds)
+     → p' (𝓔' (p' , d')) holds 
+  p' : decidable-predicate 𝓦 X'
+  p' = p ∘ g , d ∘ g
+  x₀  : ⟨ X ⟩
+  x₀  = g (𝓔' p')
+  γ : (Σ x ꞉ ⟨ X ⟩ , p x holds) → p x₀ holds
+  γ (x , px) = S' p' (h x , (ϕ x (g (h x)) (η x) px))
+  X'  = pr₁ (t δ)
+  g   = pr₁ (pr₁ (pr₂ (t δ))) 
+  h   = pr₁ (pr₂ (pr₁ (pr₂ (t δ))))
+  η   = pr₂ (pr₂ (pr₁ (pr₂ (t δ))))
+  𝓔S' = finite-discrete-searchable (h x) (pr₂ (pr₂ (t δ)))
+  𝓔'  = pr₁ 𝓔S'
+  S'  = pr₂ 𝓔S'
+  
 -- Theorem 3.3.9 [ TODO link to blog post ]
 -- in Tychonoff
 

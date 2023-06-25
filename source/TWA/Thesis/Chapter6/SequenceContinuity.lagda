@@ -119,15 +119,15 @@ seq-f-ucontinuousᴺ {𝓤} {𝓥} {X} f
         → (α β : (ℕ → X)) (n : ℕ)
         → (α ∼ⁿ β) n → C (ℕ→D-ClosenessSpace d) n α β
 ∼ⁿ-to-C d α β (succ n) α∼ⁿβ i i<n
- = is-decreasing' (discrete-seq-clofun d α β)
+ = is-decreasing' (discrete-seq-clofun (λ _ → d) α β)
      n i (⊏-gives-< i (succ n) i<n)
-     (decidable-𝟚₁ (discrete-decidable-seq d α β (succ n)) α∼ⁿβ)
+     (decidable-𝟚₁ (discrete-decidable-seq (λ _ → d) α β (succ n)) α∼ⁿβ)
 
 C-to-∼ⁿ : {X : 𝓤 ̇ } → (d : is-discrete X)
         → (α β : (ℕ → X)) (n : ℕ)
         → C (ℕ→D-ClosenessSpace d) n α β → (α ∼ⁿ β) n
 C-to-∼ⁿ d α β (succ n) Cαβ i i<n
- = 𝟚-decidable₁ (discrete-decidable-seq d α β (succ n))
+ = 𝟚-decidable₁ (discrete-decidable-seq (λ _ → d) α β (succ n))
      (Cαβ n (<-gives-⊏ n (succ n) (<-succ n))) i i<n
 
 seq-f-ucontinuous¹-to-closeness
@@ -169,5 +169,4 @@ seq-f-ucontinuous²-to-closeness dˣ dʸ dᶻ f ϕ ε
   δα = pr₁ (pr₁ (ϕ ε))
   δβ = pr₂ (pr₁ (ϕ ε))
   δ  = max δα δβ
-
 \end{code}
