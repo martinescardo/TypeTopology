@@ -1,7 +1,20 @@
 Martin Escardo, Paulo Oliva, 7-22 June 2023
 
 We relate our game trees to Aczel's W type of CZF sets in various ways.
+
+Peter Aczel. "The Type Theoretic Interpretation of Constructive Set
+Theory". Studies in Logic and the Foundations of Mathematics, Volume
+96, 1978, Pages 55-66.  https://doi.org/10.1016/S0049-237X(08)71989-X
+
+This type was previousely studied by his student Leversha for the
+purpose of formulating ordinals.
+
+Gerald Leversha. "Formal Systems for Constructive Mathematics".  PhD
+Thesis, 1976, The University of Manchester (United
+Kingdom). Department of Pure and Applied Mathematics.
 https://www.sciencedirect.com/science/article/abs/pii/S0049237X0871989X
+
+More references are given below.
 
 We also briefly discuss Conway's games.
 
@@ -879,15 +892,19 @@ allows for two-person games of the above kind, but in general is
 defined for multiple-person games, with outcomes (or "pay offs") in
 any type, for example the real numbes.
 
-In this paper https://doi.org/10.1017/S0305004119000045, Håkon
-Gylterud shows that Aczel's original W-type gives a model of
-multisets.
+In the following paper the author shows that shows that Aczel and
+Leversha's original W-type gives a model of multisets.
+
+Håkon Gylterud. Multisets in type theory.  Mathematical Proceedings of
+the Cambridge Philosophical Society , Volume 169 , Issue 1 , July
+2020, pp. 1-18. https://doi.org/10.1017/S0305004119000045
 
 The idea of carving out the sets (or the cumulative hierarchy) from
 Aczel's 𝕎-type using hereditary embeddings is due to Håkon Gylterud.
 
   H. R. Gylterud, "From multisets to sets in homotopy type theory," The
   Journal of Symbolic Logic, vol. 83, no. 3, pp. 1132–1146, 2018.
+  https://doi.org/10.1017/jsl.2017.84
 
 \begin{code}
 
