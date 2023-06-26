@@ -130,8 +130,18 @@ dep-vec : {n : ℕ} (Y : 𝔽 (succ n) → 𝓤 ̇ ) → 𝓤 ̇
 dep-vec {𝓤} {zero} Y = Y (inl ⋆)
 dep-vec {𝓤} {succ n} Y = Y (inl ⋆) × dep-vec (Y ∘ inr)
 
+-- Trivial closeness spaces
 
+𝟘-clospace : is-closeness-space (𝟘 {𝓤})
+𝟘-clospace = (λ ()) , ((λ ()) , (λ ()) , ((λ ()) , (λ ())))
 
+𝟙-clospace : is-closeness-space (𝟙 {𝓤})
+𝟙-clospace
+ = (λ _ _ → ∞)
+ , (λ _ _ _     → refl)
+ , (λ _         → refl)
+ , (λ _ _       → refl)
+ , (λ _ _ _ _ _ → refl)  
 
 -- Discrete closeness spaces
 
@@ -224,6 +234,20 @@ discrete-apart-implies-closeness-0 d x y f with d x y
 ... | inl e = 𝟘-elim (f e)
 ... | inr _ = refl
 
+discrete-closeness-succ-implies-equal
+ : {X : 𝓤 ̇ }
+ → (d : is-discrete X)
+ → (x y : X)
+ → (n : ℕ)
+ → C (D-ClosenessSpace d) (succ n) x y
+ → x ＝ y
+discrete-closeness-succ-implies-equal d x y n Csnxy
+ with d x y
+... | inl e = e
+... | inr f
+ = 𝟘-elim (zero-is-not-one
+     (Csnxy n (<-gives-⊏ n (succ n) (<-succ n))))
+
 -- Disjoint union of closeness spaces
 
 +-clofun' : (X : ClosenessSpace 𝓤) (Y : ClosenessSpace 𝓥)
@@ -315,6 +339,13 @@ discrete-apart-implies-closeness-0 d x y f with d x y
   Y' = pr₁ (ty ε)
   X'-is-ε-net = pr₂ (tx ε)
   Y'-is-ε-net = pr₂ (ty ε)
+
++-C-left  : (X : ClosenessSpace 𝓤) (Y : ClosenessSpace 𝓥)
+          → (x₁ x₂ : ⟨ X ⟩) 
+          → (ε : ℕ) → C (+-ClosenessSpace X Y) ε (inl x₁) (inl x₂)
+          → C X ε x₁ x₂
++-C-left  X Y x₁ x₂ ε Cxy n = Cxy n
+
 
 -- Binary product of closeness spaces
 
@@ -961,6 +992,20 @@ Lemma[min𝟚abcd＝₁→min𝟚bd＝₁] ₁ ₁ ₁ ₁ e = refl
  = dfunext (fe _ _) (λ x → dfunext (fe _ _) (λ y →
      to-subtype-＝ (being-decreasing-is-prop (fe _ _))
        (dfunext (fe _ _) (Π-clofuns-id' d x y))))
+
+Π-C-combine : (T : ℕ → ClosenessSpace 𝓤)
+            → (x₁ x₂ : ⟨ T 0 ⟩) (y₁ y₂ : Π (⟨_⟩ ∘ T ∘ succ))
+            → (ε : ℕ)
+            → C (T 0) (succ ε) x₁ x₂
+            → C (Π-ClosenessSpace (T ∘ succ)) ε y₁ y₂
+            → C (Π-ClosenessSpace T) (succ ε) (x₁ :: y₁) (x₂ :: y₂)
+Π-C-combine T x₁ x₂ y₁ y₂ ε Cεx₁x₂ Cεy₁y₂ 0
+ = Cεx₁x₂ 0 -- Cεx₁x₂ 0
+Π-C-combine T x₁ x₂ y₁ y₂ ε Cεx₁x₂ Cεy₁y₂ (succ n) sn⊏ε
+ = Lemma[a＝₁→b＝₁→min𝟚ab＝₁]
+     (Cεx₁x₂ (succ n) sn⊏ε)
+     (Cεy₁y₂ n sn⊏ε)
+ 
 
 -- Some examples:
 

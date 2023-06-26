@@ -203,7 +203,14 @@ closeness-∞-implies-ϵ-close : (X : ClosenessSpace 𝓤)
                             → c⟨ X ⟩ x y ＝ ∞
                             → (ε : ℕ) → C X ε x y
 closeness-∞-implies-ϵ-close X x y cxy＝∞ ε n _
- = ap (λ - → pr₁ - n) cxy＝∞     
+ = ap (λ - → pr₁ - n) cxy＝∞
+
+C-id : (X : ClosenessSpace 𝓤)
+     → (n : ℕ)
+     → (x y : ⟨ X ⟩)
+     → x ＝ y
+     → C X n x y
+C-id X n x x refl = C-refl X n x
 
 -- Definition 3.2.24 [ not needed ? ]
 
