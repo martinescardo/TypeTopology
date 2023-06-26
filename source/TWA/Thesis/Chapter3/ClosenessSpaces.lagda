@@ -212,9 +212,6 @@ C-id : (X : ClosenessSpace 𝓤)
      → C X n x y
 C-id X n x x refl = C-refl X n x
 
--- Definition 3.2.24 [ not needed ? ]
-
--- Definition 3.2.25
 f-continuous' : (X : PseudoClosenessSpace 𝓤) (Y : PseudoClosenessSpace 𝓥)
               → (f : ⟪ X ⟫ → ⟪ Y ⟫) → 𝓤 ̇  
 f-continuous' X Y f

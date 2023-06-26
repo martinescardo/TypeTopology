@@ -117,9 +117,9 @@ finite-discrete-csearchable f x
 -- Disjoint union of continuously searchable spaces.
 
 +-csearchable : (X : ClosenessSpace 𝓤) (Y : ClosenessSpace 𝓥)
-              → csearchable' 𝓦 X
-              → csearchable' 𝓦 Y
-              → csearchable' 𝓦 (+-ClosenessSpace X Y)
+              → csearchable 𝓦 X
+              → csearchable 𝓦 Y
+              → csearchable 𝓦 (+-ClosenessSpace X Y)
 +-csearchable {𝓤} {𝓥} {𝓦} X Y Sx Sy ((p , d) , δ , ϕ)
  = xy₀ , γ
  where
@@ -168,9 +168,9 @@ finite-discrete-csearchable f x
      (×-C-combine X Y x x y₁ y₂ δ (C-refl X δ x) Cδy₁y₂)
 
 ×-csearchable : (X : ClosenessSpace 𝓤) (Y : ClosenessSpace 𝓥)
-              → csearchable' 𝓦 X
-              → csearchable' 𝓦 Y
-              → csearchable' 𝓦 (×-ClosenessSpace X Y)
+              → csearchable 𝓦 X
+              → csearchable 𝓦 Y
+              → csearchable 𝓦 (×-ClosenessSpace X Y)
 ×-csearchable {𝓤} {𝓥} {𝓦} X Y Sx Sy ((p , d) , δ , ϕ)
  = xy₀ , γ
  where
@@ -215,8 +215,8 @@ finite-discrete-csearchable f x
 
 ≃-csearchable : {X : 𝓤 ̇} (Y : ClosenessSpace 𝓥)
               → (e : X ≃ ⟨ Y ⟩)
-              → csearchable' 𝓦 Y
-              → csearchable' 𝓦 (≃-ClosenessSpace Y e)
+              → csearchable 𝓦 Y
+              → csearchable 𝓦 (≃-ClosenessSpace Y e)
 ≃-csearchable {𝓤} {𝓥} {𝓦} {X}
  Y e@(f , (g , η) , (h , μ)) S ((p' , d') , δ , ϕ')
  = x₀ , γ
@@ -299,23 +299,27 @@ discrete-finite-seq-csearchable' x₀ f zero ((p , d) , ϕ)
  = (λ _ → x₀)
  , λ (y , py) → ϕ y (λ _ → x₀) (λ n ()) py
 discrete-finite-seq-csearchable'
- {𝓤} {𝓦} {X} x₀ f (succ δ) ((p , d) , ϕ)
- = (x ∶∶ pr₁ (xs→ x)) , γ
+ {𝓤} {𝓦} {X} x' f (succ δ) ((p , d) , ϕ)
+ = xs₀ , γ
  where
+   pₕ  = head-predicate x' f δ ((p , d) , ϕ)
+   x₀ : X
+   x₀ = pr₁ (finite-discrete-searchable f x' pₕ)
+   γₕ : Σ x ꞉ X , pr₁ pₕ x holds → pr₁ pₕ x₀ holds
+   γₕ = pr₂ (finite-discrete-searchable f x' pₕ)
    pₜ→ = λ x → tail-predicate f δ x ((p , d) , ϕ)
-   pₕ  = head-predicate x₀ f δ ((p , d) , ϕ)
-   xs→ : (x : X) →  Σ xs₀ ꞉ (ℕ → X)
+   xs→ : (x : X) → Σ xs₀ ꞉ (ℕ → X)
        , ((Σ xs ꞉ (ℕ → X) , (pr₁ ∘ pr₁) (pₜ→ x) xs holds)
        → (pr₁ ∘ pr₁) (pₜ→ x) xs₀ holds) 
-   xs→ x = discrete-finite-seq-csearchable' x₀ f δ (pₜ→ x)
-   x : X
-   x = pr₁ (finite-discrete-searchable f x₀) pₕ
-   γₕ : _
-   γₕ = pr₂ (finite-discrete-searchable f x₀) pₕ
-   γ : _
+   xs→ x = discrete-finite-seq-csearchable' x' f δ (pₜ→ x)
+   xs₀ : ℕ → X
+   xs₀ = x₀ ∶∶ pr₁ (xs→ x₀)
+   γ : Σ xs ꞉ (ℕ → X) , (p xs holds) → p xs₀ holds
    γ (y , py)
-    = γₕ (head y , pr₂ (xs→ (head y)) (tail y , transport (pr₁ ∘ p)
-        (dfunext (fe _ _) ζ) py))
+    = γₕ (y 0 , pr₂ (xs→ (y 0))
+        (y ∘ succ , ϕ y (y 0 ∶∶ (y ∘ succ))
+          (λ n _ → decidable-𝟚₁ (discrete-decidable-seq _ _ _ _)
+            λ i _ → ζ i) py))
     where
      ζ : y ∼ (y 0 ∶∶ (λ x₁ → y (succ x₁)))
      ζ zero = refl
@@ -325,7 +329,7 @@ discrete-finite-seq-csearchable
  : {X : 𝓤 ̇ }
  → X 
  → (f : finite-discrete X)
- → csearchable' 𝓦
+ → csearchable 𝓦
      (ℕ→D-ClosenessSpace (finite-discrete-is-discrete f))
 discrete-finite-seq-csearchable x₀ f ((p , d) , (δ , ϕ))
  = discrete-finite-seq-csearchable' x₀ f δ ((p , d) , ϕ)
@@ -355,7 +359,7 @@ tail-predicate-tych {𝓤} {𝓦} T δ x₀ ((p' , d') , ϕ') = (p , d) , ϕ
 
 tychonoff'
  : (T : ℕ → ClosenessSpace 𝓤)
- → ((n : ℕ) → csearchable' 𝓦 (T n))
+ → ((n : ℕ) → csearchable 𝓦 (T n))
  → (δ : ℕ)
  → (((p , _) , _) : decidable-uc-predicate-with-mod 𝓦
      (Π-ClosenessSpace T) δ)
@@ -364,7 +368,7 @@ tychonoff'
 
 head-predicate-tych
  : (T : ℕ → ClosenessSpace 𝓤)
- → ((n : ℕ) → csearchable' 𝓦 (T n))
+ → ((n : ℕ) → csearchable 𝓦 (T n))
  → (δ : ℕ)
  → decidable-uc-predicate-with-mod 𝓦
      (Π-ClosenessSpace T) (succ δ)
@@ -437,6 +441,6 @@ tychonoff' T S (succ δ) ((p , d) , ϕ)
      ζ (succ i) = refl
 
 tychonoff : (T : ℕ → ClosenessSpace 𝓤)
-          → ((n : ℕ) → csearchable' 𝓦 (T n))
-          → csearchable' 𝓦 (Π-ClosenessSpace T)
+          → ((n : ℕ) → csearchable 𝓦 (T n))
+          → csearchable 𝓦 (Π-ClosenessSpace T)
 tychonoff T S ((p , d) , δ , ϕ) = tychonoff' T S δ ((p , d) , ϕ)
