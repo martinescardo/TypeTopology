@@ -10,13 +10,11 @@ module TWA.Thesis.Chapter4.ApproxOrder (fe : FunExt) where
 
 open import TWA.Thesis.Chapter3.ClosenessSpaces fe
 
--- Definition 4.1.4
 is-preorder : {X : 𝓤  ̇ } → (X → X → 𝓦  ̇ ) → 𝓤 ⊔ 𝓦  ̇ 
 is-preorder _≤_ = reflexive _≤_
                 × transitive _≤_
                 × is-prop-valued _≤_
 
--- Definition 4.1.5
 is-linear-order : {X : 𝓤  ̇ } → (X → X → 𝓦  ̇ ) → 𝓤 ⊔ 𝓦  ̇
 is-linear-order {_} {_} {X} _≤_
  = is-preorder _≤_
@@ -29,10 +27,6 @@ is-strict-order {_} {_} {X} _<_
  × ((x y : X) → x < y → ¬ (y < x))
  × is-prop-valued _<_
 
--- Lemma 4.1.13
--- TODO
-
--- Definition 4.1.14
 is-approx-order : (X : ClosenessSpace 𝓤)
                 → (_≤_  : ⟨ X ⟩ → ⟨ X ⟩ → 𝓦 ̇ )
                 → (_≤ⁿ_ : ⟨ X ⟩ → ⟨ X ⟩ → ℕ → 𝓦'  ̇ )
@@ -44,7 +38,6 @@ is-approx-order X _≤_ _≤ⁿ_
  × ((ϵ : ℕ) (x y : ⟨ X ⟩) →   C X ϵ x y → (x ≤ⁿ y) ϵ)
  × ((ϵ : ℕ) (x y : ⟨ X ⟩) → ¬ C X ϵ x y → (x ≤ⁿ y) ϵ ⇔ x ≤ y)
 
--- Make clearer in thesis:
 approx-order-refl : (X : ClosenessSpace 𝓤)
                   → (_≤_  : ⟨ X ⟩ → ⟨ X ⟩ → 𝓦 ̇ )
                   → (_≤ⁿ_ : ⟨ X ⟩ → ⟨ X ⟩ → ℕ → 𝓦'  ̇ )
@@ -71,7 +64,6 @@ approx-order-linear : (X : ClosenessSpace 𝓤)
 approx-order-linear X _≤_ _≤ⁿ_ (_ , l , _ , _) ϵ
  = pr₂ (l ϵ)
 
--- Lemma 4.1.15
 apart-total : {X : ClosenessSpace 𝓤}
             → (_≤_  : ⟨ X ⟩ → ⟨ X ⟩ → 𝓦 ̇ )
             → (_≤ⁿ_ : ⟨ X ⟩ → ⟨ X ⟩ → ℕ → 𝓦'  ̇ )
@@ -83,9 +75,4 @@ apart-total {_} {_} {_} {X} _≤_ _≤ⁿ_ (p , l , d , c , a) ϵ x y ¬Bϵxy
      (inl ∘ pr₁ (a ϵ x y ¬Bϵxy))
      (inr ∘ pr₁ (a ϵ y x λ Bϵxy → ¬Bϵxy (C-sym X ϵ y x Bϵxy)))
 
--- Definition 4.1.16
--- TODO
-
--- Lemma 4.1.17
--- TODO
 \end{code}

@@ -728,6 +728,21 @@ discrete-seq-clospace d = discrete-seq-clofun d
                    → ClosenessSpace 𝓤
 ℕ→D-ClosenessSpace {𝓤} {X} d = ΠD-ClosenessSpace (λ _ → d)
 
+∼ⁿ-to-C : {X : 𝓤 ̇ } → (d : is-discrete X)
+        → (α β : (ℕ → X)) (n : ℕ)
+        → (α ∼ⁿ β) n → C (ℕ→D-ClosenessSpace d) n α β
+∼ⁿ-to-C d α β (succ n) α∼ⁿβ i i<n
+ = is-decreasing' (discrete-seq-clofun (λ _ → d) α β)
+     n i (⊏-gives-< i (succ n) i<n)
+     (decidable-𝟚₁ (discrete-decidable-seq (λ _ → d) α β (succ n)) α∼ⁿβ)
+
+C-to-∼ⁿ : {X : 𝓤 ̇ } → (d : is-discrete X)
+        → (α β : (ℕ → X)) (n : ℕ)
+        → C (ℕ→D-ClosenessSpace d) n α β → (α ∼ⁿ β) n
+C-to-∼ⁿ d α β (succ n) Cαβ i i<n
+ = 𝟚-decidable₁ (discrete-decidable-seq (λ _ → d) α β (succ n))
+     (Cαβ n (<-gives-⊏ n (succ n) (<-succ n))) i i<n
+
 Vec-to-Seq : {X : 𝓤 ̇ } {n : ℕ} → X → Vec X n → (ℕ → X)
 Vec-to-Seq x₀ [] n = x₀
 Vec-to-Seq x₀ (x ∷ xs) 0 = x
