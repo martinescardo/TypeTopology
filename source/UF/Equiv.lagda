@@ -772,6 +772,52 @@ _◾ = ≅-refl
 
 \end{code}
 
+Added by Tom de Jong, November 2021.
+
+\begin{code}
+
+≃-2-out-of-3-right : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
+                   → {f : X → Y} {g : Y → Z}
+                   → is-equiv f
+                   → is-equiv (g ∘ f)
+                   → is-equiv g
+≃-2-out-of-3-right {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {f} {g} i j =
+ equiv-closed-under-∼ (g ∘ f ∘ f⁻¹) g k h
+  where
+   𝕗 : X ≃ Y
+   𝕗 = (f , i)
+
+   f⁻¹ : Y → X
+   f⁻¹ = ⌜ 𝕗 ⌝⁻¹
+
+   k : is-equiv (g ∘ f ∘ f⁻¹)
+   k = ∘-is-equiv (⌜⌝⁻¹-is-equiv 𝕗) j
+
+   h : g ∼ g ∘ f ∘ f⁻¹
+   h y = ap g ((≃-sym-is-rinv 𝕗 y) ⁻¹)
+
+≃-2-out-of-3-left : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
+                  → {f : X → Y} {g : Y → Z}
+                  → is-equiv g
+                  → is-equiv (g ∘ f)
+                  → is-equiv f
+≃-2-out-of-3-left {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {f} {g} i j =
+ equiv-closed-under-∼ (g⁻¹ ∘ g ∘ f) f k h
+  where
+   𝕘 : Y ≃ Z
+   𝕘 = (g , i)
+
+   g⁻¹ : Z → Y
+   g⁻¹ = ⌜ 𝕘 ⌝⁻¹
+
+   k : is-equiv (g⁻¹ ∘ g ∘ f)
+   k = ∘-is-equiv j (⌜⌝⁻¹-is-equiv 𝕘)
+
+   h : f ∼ g⁻¹ ∘ g ∘ f
+   h x = (≃-sym-is-linv 𝕘 (f x)) ⁻¹
+
+\end{code}
+
 Associativities and precedences.
 
 \begin{code}
