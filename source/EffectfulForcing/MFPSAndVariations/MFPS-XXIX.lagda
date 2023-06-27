@@ -7,15 +7,15 @@ with full, selfcontained Agda code.
 
 {-# OPTIONS --safe --without-K --exact-split #-}
 
-module EffectfulForcing.MFPS-XXIX where
+module EffectfulForcing.MFPSAndVariations.MFPS-XXIX where
 
 open import MLTT.Spartan
 open import MLTT.Athenian
 open import UF.Base
-open import EffectfulForcing.Combinators
-open import EffectfulForcing.Continuity
-open import EffectfulForcing.Dialogue
-open import EffectfulForcing.CombinatoryT
+open import EffectfulForcing.MFPSAndVariations.Combinators
+open import EffectfulForcing.MFPSAndVariations.Continuity
+open import EffectfulForcing.MFPSAndVariations.Dialogue
+open import EffectfulForcing.MFPSAndVariations.CombinatoryT
 
 \end{code}
 
