@@ -76,6 +76,7 @@ Convenience: to have a more practical and visible Path Sequence
 termination
 
 \begin{code}
+
 _◃∎ : {X : 𝓤 ̇ } {x y : X} → x ＝ y → x ≡ y
 p ◃∎ = p ◃∙ []
 
@@ -85,6 +86,7 @@ Convert to identity type and normalize.  The resulting concatenation
 of identity types is normalized. See the module PathSequences.Concat
 
 \begin{code}
+
 ≡-to-＝ : {X : 𝓤 ̇ } {x y : X}
         → x ≡ y → x ＝ y
 ≡-to-＝ [] = refl
@@ -103,7 +105,6 @@ Equality for path sequences.
 record _＝ₛ_ {X : 𝓤 ̇ }{x y : X} (s t : x ≡ y) : 𝓤 ̇ where
   constructor ＝ₛ-in
   field
---    ＝ₛ-out : (≡-to-＝ s) ＝ (≡-to-＝ t)
     ＝ₛ-out : [ s ↓] ＝ [ t ↓]
 open _＝ₛ_ public
 

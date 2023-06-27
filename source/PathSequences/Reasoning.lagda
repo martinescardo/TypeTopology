@@ -50,7 +50,7 @@ module _ {X : 𝓤 ̇ } {x y : X} where
 
 \end{code}
 
-Utility functions
+The first is a utility only used in the latter reasoning items.
 
 \begin{code}
 
@@ -120,4 +120,8 @@ Utility functions
                → s ＝ₛ u
   _＝↓₁⟨_&_&_⟩_ s {u} m n {r} p q = s ＝↓⟨ m & n & ＝ₛ-in p ⟩ q
 
+
+  infix 15 _∎ₛ
+  _∎ₛ : (s : x ≡ y) → s ＝ₛ s
+  _ ∎ₛ = ＝ₛ-in refl
 \end{code}
