@@ -9,11 +9,10 @@ Gödel's system T and its standard set-theoretical semantics.
 module EffectfulForcing.Internal.SystemT where
 
 open import MLTT.Spartan  hiding (rec ; _^_)
-open import MLTT.Fin
 open import EffectfulForcing.MFPSAndVariations.Combinators
 open import EffectfulForcing.MFPSAndVariations.Continuity
 open import EffectfulForcing.MFPSAndVariations.SystemT using (type ; ι ; _⇒_ ; 〖_〗)
-open import UF.Base
+open import UF.Base using (ap₂ ; ap₃)
 
 \end{code}
 
@@ -28,10 +27,6 @@ X ^ 0        = 𝟙
 X ^ (succ n) = X ^ n × X
 
 infixr 3 _^_
-
-_[_] : {X : Set} {n : ℕ} → X ^ n → Fin n → X
-_[_] {X} {succ n} (xs , x) 𝟎       = x
-_[_] {X} {succ n} (xs , x) (suc i) = xs [ i ]
 
 data Cxt : 𝓤₀ ̇  where
  〈〉 : Cxt
