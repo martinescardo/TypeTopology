@@ -49,6 +49,7 @@ curry-uncurry {𝓤} {𝓥} {𝓦} fe = curry-uncurry' (fe 𝓤 (𝓥 ⊔ 𝓦))
  where
   η : (σ : Σ p ꞉ x ＝ y , transport A p a ＝ b) → from-Σ-＝ (to-Σ-＝ σ) ＝ σ
   η (refl , refl) = refl
+
   ε : (q : x , a ＝ y , b) → to-Σ-＝ (from-Σ-＝ q) ＝ q
   ε refl = refl
 
@@ -1005,7 +1006,7 @@ fiber-of-unique-to-𝟙 {𝓤} {𝓥} {X} ⋆ =
 \end{code}
 
 Added by Tom de Jong, November 2021.
-
+s
 \begin{code}
 
 open import UF.PropTrunc

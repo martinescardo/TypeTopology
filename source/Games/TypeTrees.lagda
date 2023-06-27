@@ -82,6 +82,26 @@ structure S (X ∷ Xf) = S X × ((x : X) → structure S (Xf x))
 
 \end{code}
 
+NB. An alternative inductive definition of structure is the following,
+where, unfortunately, we get a higher type level, and so we won't use
+it:
+
+\begin{code}
+
+data structure₁ (S : Type → 𝓤 ̇ ) : 𝕋 → 𝓤 ⁺ ̇ where
+ []  : structure₁ S []
+ _∷_ : {X : Type} {Xf : X → 𝕋} → S X → ((x : X) → structure₁ S (Xf x)) → structure₁ S (X ∷ Xf)
+
+structure-up : (S : Type → 𝓤 ̇ ) (Xt : 𝕋) → structure S Xt → structure₁ S Xt
+structure-up S []      ⟨⟩         = []
+structure-up S (X ∷ Xf) (s :: sf) = s ∷ (λ x → structure-up S (Xf x) (sf x))
+
+structure-down : (S : Type → 𝓤 ̇ ) (Xt : 𝕋) → structure₁ S Xt → structure S Xt
+structure-down S []      []        = ⟨⟩
+structure-down S (X ∷ Xf) (s ∷ sf) = s :: (λ x → structure-down S (Xf x) (sf x))
+
+\end{code}
+
 The induction principle for 𝕋 is included for the sake of
 completeness, but won't be used directly:
 

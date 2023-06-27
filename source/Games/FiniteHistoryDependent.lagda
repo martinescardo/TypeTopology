@@ -137,6 +137,9 @@ Strategy (X ∷ Xf) = X × ((x : X) → Strategy (Xf x))
 
 \end{code}
 
+NB. Strategy can be defined by Strategy = structure (λ X → X) where
+structure is defined in the module Games.Structure.
+
  * σ ranges over the type Strategy Xt of strategies for a
    dependent-type tree Xt.
 
