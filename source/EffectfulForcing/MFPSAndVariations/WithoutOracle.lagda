@@ -11,32 +11,16 @@ the ``oracle'' α.
 
 {-# OPTIONS --safe --without-K --exact-split #-}
 
-module EffectfulForcing.WithoutOracle where
+module EffectfulForcing.MFPSAndVariations.WithoutOracle where
 
 open import MLTT.Spartan
 open import MLTT.Athenian
 open import UF.Base
-open import EffectfulForcing.Combinators
-open import EffectfulForcing.Continuity
-open import EffectfulForcing.Dialogue
-open import EffectfulForcing.CombinatoryT
-
-B-Set⟦_⟧ : type → 𝓤₀ ̇
-B-Set⟦ ι ⟧     = B ℕ
-B-Set⟦ σ ⇒ τ ⟧ = B-Set⟦ σ ⟧ → B-Set⟦ τ ⟧
-
-Kleisli-extension : {X : 𝓤₀ ̇ } {σ : type} → (X → B-Set⟦ σ ⟧) → B X → B-Set⟦ σ ⟧
-Kleisli-extension {X} {ι}     = kleisli-extension
-Kleisli-extension {X} {σ ⇒ τ} = λ g d s → Kleisli-extension {X} {τ} (λ x → g x s) d
-
-zero' : B ℕ
-zero' = η zero
-
-succ' : B ℕ → B ℕ
-succ' = B-functor succ
-
-iter' : {σ : type} → (B-Set⟦ σ ⟧ → B-Set⟦ σ ⟧) → B-Set⟦ σ ⟧ → B ℕ → B-Set⟦ σ ⟧
-iter' f x = Kleisli-extension (iter f x)
+open import EffectfulForcing.MFPSAndVariations.Combinators
+open import EffectfulForcing.MFPSAndVariations.Continuity
+open import EffectfulForcing.MFPSAndVariations.Dialogue
+open import EffectfulForcing.MFPSAndVariations.CombinatoryT
+open import EffectfulForcing.MFPSAndVariations.MFPS-XXIX using (B-Set⟦_⟧ ; Kleisli-extension ; zero' ; succ' ; iter')
 
 B⟦_⟧ : {σ : type} → T σ → B-Set⟦ σ ⟧
 B⟦ Zero ⟧  = zero'
