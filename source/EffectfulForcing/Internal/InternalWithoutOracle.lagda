@@ -1,11 +1,11 @@
 Martin Escardo, Vincent Rahli, Bruno da Rocha Paiva, Ayberk Tosun 20 May 2023
 
-This is an adaptation of Internal.lagda written by Martin, which defines dialogue-tree⋆ without using T'
-but directly using T.
+This is an adaptation of Internal.lagda written by Martin, which
+defines dialogue-tree⋆ without using T' but directly using T.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module EffectfulForcing.Internal.InternalWithoutOracle where
 
@@ -14,8 +14,10 @@ open import EffectfulForcing.MFPSAndVariations.Combinators
 open import EffectfulForcing.MFPSAndVariations.Continuity
 open import EffectfulForcing.MFPSAndVariations.Dialogue
 open import EffectfulForcing.MFPSAndVariations.SystemT using (type ; ι ; _⇒_ ; 〖_〗)
-open import EffectfulForcing.MFPSAndVariations.LambdaCalculusVersionOfMFPS using (B〖_〗 ; Kleisli-extension ; zero' ; succ' ; rec')
-open import EffectfulForcing.MFPSAndVariations.Church hiding (B⋆【_】 ; ⟪⟫⋆ ; _‚‚⋆_ ; B⋆⟦_⟧ ; dialogue-tree⋆)
+open import EffectfulForcing.MFPSAndVariations.LambdaCalculusVersionOfMFPS
+                              using (B〖_〗 ; Kleisli-extension ; zero' ; succ' ; rec')
+open import EffectfulForcing.MFPSAndVariations.Church
+                              hiding (B⋆【_】 ; ⟪⟫⋆ ; _‚‚⋆_ ; B⋆⟦_⟧ ; dialogue-tree⋆)
 open import EffectfulForcing.Internal.Internal hiding (B⋆⟦_⟧ ; dialogue-tree⋆)
 open import EffectfulForcing.Internal.LambdaWithoutOracle
 open import EffectfulForcing.Internal.SystemT
@@ -68,9 +70,10 @@ main-lemma⋆ : {n : ℕ} {Γ : Cxt n}
             → R⋆ σ (B⋆⟦ t ⟧ xs) (B⟦ t ⟧ ys)
 main-lemma⋆ = {!!}
 -}
+
 \end{code}
 
-The above should be true, but do we really need it?
+TODO. The above should be true, but do we really need it?
 
 \begin{code}
 
@@ -1310,8 +1313,8 @@ infixr 0 _≡＝⟨_⟩_
 
 \end{code}
 
-TODO move results about substitution to Internal.lagda and move this
-     to either Internal.lagda or a new file.
+TODO. move results about substitution to Internal.lagda and move this
+to either Internal.lagda or a new file.
 
 Using a logical relation we show that the the internal, church-encoded dialogue
 translation of a System T term coincides with its external, inductive dialogue
