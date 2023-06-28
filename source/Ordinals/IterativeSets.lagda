@@ -87,6 +87,13 @@ The type of iterative multisets:
 data 𝕄 : 𝓤⁺ ̇ where
  sup : (X : 𝓤 ̇ ) (φ : X → 𝕄) → 𝕄
 
+𝕄-root : 𝕄 → 𝓤 ̇
+𝕄-root (sup X φ) = X
+
+𝕄-forest : (M : 𝕄) → 𝕄-root M → 𝕄
+𝕄-forest (sup X φ) = φ
+
+
 to-𝕄-＝ : {X Y : 𝓤 ̇ }
           {φ : X → 𝕄}
           {γ : Y → 𝕄}
@@ -197,6 +204,40 @@ A ⊆ B = (C : 𝕍) → C ∈ A → C ∈ B
 𝕍-forest : (A : 𝕍) → 𝕍-root A → 𝕍
 𝕍-forest (sup X φ , _ , i) x = φ x , i x
 
+𝕍-sup : (X : 𝓤 ̇ ) (ϕ : X → 𝕍) → is-embedding ϕ → 𝕍
+𝕍-sup X ϕ ϕ-emb = sup X φ , I , φi
+ where
+  φ : X → 𝕄
+  φ = pr₁ ∘ ϕ
+
+  φi : (x : X) → is-iterative-set (φ x)
+  φi = pr₂ ∘ ϕ
+
+  I : is-embedding (pr₁ ∘ ϕ)
+  I = ∘-is-embedding ϕ-emb (pr₁-is-embedding being-iterative-set-is-prop)
+
+∈-behaviour : (A : 𝕍) (X : 𝓤 ̇ ) (ϕ : X → 𝕍) (e : is-embedding ϕ)
+            → A ∈ 𝕍-sup X ϕ e ≃ (Σ x ꞉ X , ϕ x ＝ A)
+∈-behaviour A X ϕ e =
+ (A ∈ 𝕍-sup X ϕ e)              ≃⟨ ≃-refl _ ⟩
+ (Σ x ꞉ X , pr₁ (ϕ x) ＝ pr₁ A) ≃⟨ Σ-cong I ⟩
+ (Σ x ꞉ X , ϕ x ＝ A)           ■
+  where
+   I : (x : X) → (pr₁ (ϕ x) ＝ pr₁ A) ≃ (ϕ x ＝ A)
+   I x = embedding-criterion-converse
+          pr₁
+          (pr₁-is-embedding being-iterative-set-is-prop)
+          (ϕ x)
+          A
+
+𝕍-sup-root : (X : 𝓤 ̇ ) (ϕ : X → 𝕍) (e : is-embedding ϕ)
+           → 𝕍-root (𝕍-sup X ϕ e) ＝ X
+𝕍-sup-root X ϕ e = refl
+
+𝕍-sup-forest : (X : 𝓤 ̇ ) (ϕ : X → 𝕍) (e : is-embedding ϕ)
+             → 𝕍-forest (𝕍-sup X ϕ e) ＝ ϕ
+𝕍-sup-forest X ϕ e = refl
+
 𝕍-forest-is-embedding : (A : 𝕍) → is-embedding (𝕍-forest A)
 𝕍-forest-is-embedding (sup X φ , φ-emb , i) B@(M , j) = III
  where
@@ -218,6 +259,53 @@ A ⊆ B = (C : 𝕍) → C ∈ A → C ∈ B
                    (𝕍-forest A)
                    (𝕍-forest-is-embedding A)
                    𝕍-is-set
+
+𝕍-η : (A : 𝕍) → 𝕍-sup (𝕍-root A) (𝕍-forest A) (𝕍-forest-is-embedding A) ＝ A
+𝕍-η (sup X φ , e , i) = to-subtype-＝ being-iterative-set-is-prop refl
+
+𝕍-induction : (P : 𝕍 → 𝓥 ̇ )
+            → ((X : 𝓤 ̇ ) (ϕ : X → 𝕍) (e : is-embedding ϕ)
+                  → ((x : X) → P (ϕ x))
+                  → P (𝕍-sup X ϕ e))
+            → (A : 𝕍) → P A
+𝕍-induction P f (M , i) = h M i
+ where
+  h : (M : 𝕄) (i : is-iterative-set M) → P (M , i)
+  h M@(sup X φ) i@(φ-emb , φ-iter) = II
+   where
+    A : 𝕍
+    A = (M , i)
+
+    IH : (x : X) → P (𝕍-forest A x)
+    IH x = h (φ x) (φ-iter x)
+
+    I : P (𝕍-sup X (𝕍-forest A) (𝕍-forest-is-embedding A))
+    I = f X (𝕍-forest A) (𝕍-forest-is-embedding A) IH
+
+    II : P A
+    II = transport P (𝕍-η A) I
+
+∈-induction : (P : 𝕍 → 𝓥 ̇ )
+            → ((A : 𝕍) → ((B : 𝕍) → B ∈ A → P B) → P A)
+            → (A : 𝕍) → P A
+∈-induction P g = 𝕍-induction P f
+ where
+  f : (X : 𝓤 ̇) (ϕ : X → 𝕍) (e : is-embedding ϕ)
+    → ((x : X) → P (ϕ x))
+    → P (𝕍-sup X ϕ e)
+  f X ϕ e u = g A s
+   where
+    A : 𝕍
+    A = 𝕍-sup X ϕ e
+
+    s : (B : 𝕍) → B ∈ A → P B
+    s (.(pr₁ (ϕ x)) , j) (x , refl) = II
+     where
+      I : P (ϕ x)
+      I = u x
+
+      II : P (pr₁ (ϕ x) , j)
+      II = transport P (to-subtype-＝ being-iterative-set-is-prop refl) I
 
 ∈-is-accessible : (𝔸 : 𝕍) → is-accessible _∈_ 𝔸
 ∈-is-accessible (A , i) = h A i
