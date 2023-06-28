@@ -198,17 +198,17 @@ A ⊆ B = (C : 𝕍) → C ∈ A → C ∈ B
 𝕍-forest (sup X φ , _ , i) x = φ x , i x
 
 𝕍-forest-is-embedding : (A : 𝕍) → is-embedding (𝕍-forest A)
-𝕍-forest-is-embedding (sup X φ , φ-emb , i) B@(m , j) = III
+𝕍-forest-is-embedding (sup X φ , φ-emb , i) B@(M , j) = III
  where
   I = (Σ x ꞉ X , (φ x , i x) ＝ B)                                         ≃⟨ a ⟩
-      (Σ x ꞉ X , Σ p ꞉ φ x ＝ m , transport is-iterative-set p (i x) ＝ j) ≃⟨ b ⟩
-      (Σ (x , p) ꞉ fiber φ m , transport is-iterative-set p (i x) ＝ j)    ■
+      (Σ x ꞉ X , Σ p ꞉ φ x ＝ M , transport is-iterative-set p (i x) ＝ j) ≃⟨ b ⟩
+      (Σ (x , p) ꞉ fiber φ M , transport is-iterative-set p (i x) ＝ j)    ■
        where
         a = Σ-cong (λ x → Σ-＝-≃)
         b = ≃-sym Σ-assoc
 
-  II : is-prop (Σ (x , p) ꞉ fiber φ m , transport is-iterative-set p (i x) ＝ j)
-  II = Σ-is-prop (φ-emb m) (λ _ → props-are-sets (being-iterative-set-is-prop m))
+  II : is-prop (Σ (x , p) ꞉ fiber φ M , transport is-iterative-set p (i x) ＝ j)
+  II = Σ-is-prop (φ-emb M) (λ _ → props-are-sets (being-iterative-set-is-prop M))
 
   III : is-prop (Σ x ꞉ X , (φ x , i x) ＝ B)
   III = equiv-to-prop I II
@@ -298,7 +298,7 @@ _↡_ : (α : 𝕆) (x : ⟪ α ⟫) → 𝕆
   B-io = ordinal-is-hereditary A B m io
 
 ↡-is-< : (α : 𝕆) (x : ⟪ α ⟫) → (α ↡ x) < α
-↡-is-< (A@(sup X φ , φ-emb , is) , io) x = x , refl
+↡-is-< ((sup X φ , φ-emb , is) , io) x = x , refl
 
 -- TODO: (β < α) ＝ (Σ x ꞉ ⟪ α ⟫ , β = (α ↡ x)). (Direct.)
 
