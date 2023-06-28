@@ -307,26 +307,8 @@ A ⊆ B = (C : 𝕍) → C ∈ A → C ∈ B
       II : P (pr₁ (ϕ x) , j)
       II = transport P (to-subtype-＝ being-iterative-set-is-prop refl) I
 
-∈-is-accessible : (𝔸 : 𝕍) → is-accessible _∈_ 𝔸
-∈-is-accessible (A , i) = h A i
- where
-  h : (A : 𝕄) (i : is-iterative-set A) → is-accessible _∈_ (A , i)
-  h A@(sup X φ) (i , g) = step II
-   where
-    IH : (x : X) → is-accessible _∈_ (φ x , g x)
-    IH x = h (φ x) (g x)
-
-    I : (M : 𝕄) (j : is-iterative-set M) → fiber φ M → is-accessible _∈_ (M , j)
-    I .(φ x) j (x , refl) = I₂
-     where
-      I₁ : (φ x , g x) ＝ (φ x , j)
-      I₁ = ap (φ x ,_) (being-iterative-set-is-prop (φ x) (g x) j)
-
-      I₂ : is-accessible _∈_ (φ x , j)
-      I₂ = transport (is-accessible _∈_) I₁ (IH x)
-
-    II : (B : 𝕍) → B ∈ (A , (i , g)) → is-accessible _∈_ B
-    II (M , j) = I M j
+∈-is-accessible : (A : 𝕍) → is-accessible _∈_ A
+∈-is-accessible = ∈-induction (is-accessible _∈_) (λ A → step)
 
 is-transitive-iset : 𝕍 → 𝓤⁺ ̇
 is-transitive-iset A = (B C : 𝕍) → B ∈ A → C ∈ B → C ∈ A
