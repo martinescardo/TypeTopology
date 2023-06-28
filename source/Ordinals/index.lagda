@@ -17,7 +17,8 @@ import Ordinals.CumulativeHierarchy           -- by de Jong, Kraus, Nordvall For
 import Ordinals.CumulativeHierarchy-Addendum  -- by de Jong, Kraus, Nordvall Forsberg, and Xu.
 import Ordinals.Equivalence
 import Ordinals.Indecomposable
-import Ordinals.Injectivity
+import Ordinals.Injectivity                   -- by Martin Escardo and Tom de Jong
+import Ordinals.IterativeSets
 import Ordinals.LexicographicOrder
 import Ordinals.Maps
 import Ordinals.NotationInterpretation
