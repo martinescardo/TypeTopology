@@ -9,12 +9,17 @@ https://github.com/vrahli/opentt/blob/master/encoding3.lagda
 module EffectfulForcing.Internal.Quote where
 
 open import MLTT.Spartan  hiding (rec ; _^_ ; _+_)
---open import Naturals.Order
+open import Naturals.Order renaming (_≤ℕ_ to _≤_; _<ℕ_ to _<_)
 open import EffectfulForcing.MFPSAndVariations.SystemT using (type ; ι ; _⇒_ ; 〖_〗)
 open import EffectfulForcing.Internal.SystemT
 open import UF.Base using (transport₂ ; transport₃ ; ap₂ ; ap₃)
 
--- System T with quotations
+\end{code}
+
+System T with quoting.
+
+\begin{code}
+
 data QT : (Γ : Cxt) (σ : type) → 𝓤₀ ̇  where
  Zero    : {Γ : Cxt} → QT Γ ι
  Succ    : {Γ : Cxt} → QT Γ ι → QT Γ ι
