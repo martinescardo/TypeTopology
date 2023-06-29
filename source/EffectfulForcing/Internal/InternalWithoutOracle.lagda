@@ -373,26 +373,22 @@ R⋆s-⌜Sub,,⌝ {α} {Γ} {σ} xs x ys y rs r {τ} (∈CxtS .σ i) = p (rs i)
 ℕ→B zero = zero'
 ℕ→B (succ n) = succ' (ℕ→B n)
 
-ℕ→T : ℕ → T 〈〉 ι
-ℕ→T zero = Zero
-ℕ→T (succ n) = Succ (ℕ→T n)
+⟦numeral⟧ : (n : ℕ) → ⟦ numeral n ⟧₀ ＝ n
+⟦numeral⟧ zero = refl
+⟦numeral⟧ (succ n) = ap succ (⟦numeral⟧ n)
 
-⟦ℕ→T⟧ : (n : ℕ) → ⟦ ℕ→T n ⟧₀ ＝ n
-⟦ℕ→T⟧ zero = refl
-⟦ℕ→T⟧ (succ n) = ap succ (⟦ℕ→T⟧ n)
+η⋆numeral : {A : type} (n : ℕ) → η⋆ ⟦ numeral n ⟧₀ ＝ ⟦ ⌜_⌝ {_} {_} {A} (numeral n) ⟧₀
+η⋆numeral {A} zero = refl
+η⋆numeral {A} (succ n) = ap₂ (λ p q → p succ q) (B-functor-meaning ⁻¹) (η⋆numeral n)
 
-η⋆ℕ→T : {A : type} (n : ℕ) → η⋆ ⟦ ℕ→T n ⟧₀ ＝ ⟦ ⌜_⌝ {_} {_} {A} (ℕ→T n) ⟧₀
-η⋆ℕ→T {A} zero = refl
-η⋆ℕ→T {A} (succ n) = ap₂ (λ p q → p succ q) (B-functor-meaning ⁻¹) (η⋆ℕ→T n)
+⌜η⌝numeral : {A : type} (n : ℕ) → ⟦ ⌜η⌝ · numeral n ⟧₀ ＝ ⟦ ⌜_⌝ {_} {_} {A} (numeral n) ⟧₀
+⌜η⌝numeral {A} n = ap (λ k → k ⟦ numeral n ⟧₀) η-meaning ∙ η⋆numeral n
 
-⌜η⌝ℕ→T : {A : type} (n : ℕ) → ⟦ ⌜η⌝ · ℕ→T n ⟧₀ ＝ ⟦ ⌜_⌝ {_} {_} {A} (ℕ→T n) ⟧₀
-⌜η⌝ℕ→T {A} n = ap (λ k → k ⟦ ℕ→T n ⟧₀) η-meaning ∙ η⋆ℕ→T n
+⌜η⌝numeral' : {X Y A : type} (n : ℕ) → ⟦ ⌜η⌝ {X} {Y} {ι} {A} · numeral n ⟧₀ ＝ η⋆ n
+⌜η⌝numeral' {X} {Y} {A} n = ap η⋆ (⟦numeral⟧ n)
 
-⌜η⌝ℕ→T' : {X Y A : type} (n : ℕ) → ⟦ ⌜η⌝ {X} {Y} {ι} {A} · ℕ→T n ⟧₀ ＝ η⋆ n
-⌜η⌝ℕ→T' {X} {Y} {A} n = ap η⋆ (⟦ℕ→T⟧ n)
-
-⌜η⌝ℕ→T≡ : {X Y A : type} (n : ℕ) → ⟦ ⌜η⌝ {X} {Y} {ι} {A} · ℕ→T n ⟧₀ ≡ η⋆ n
-⌜η⌝ℕ→T≡ {X} {Y} {A} n = ≡η⋆ {_} {_} {_} {_} {⟦ ℕ→T n ⟧₀} {n} (⟦ℕ→T⟧ n)
+⌜η⌝numeral≡ : {X Y A : type} (n : ℕ) → ⟦ ⌜η⌝ {X} {Y} {ι} {A} · numeral n ⟧₀ ≡ η⋆ n
+⌜η⌝numeral≡ {X} {Y} {A} n = ≡η⋆ {_} {_} {_} {_} {⟦ numeral n ⟧₀} {n} (⟦numeral⟧ n)
 
 {-
 ⌜main-lemma⌝-rec-zero : {σ : type}
@@ -493,14 +489,14 @@ R⋆s-⌜Sub,,⌝ {α} {Γ} {σ} xs x ys y rs r {τ} (∈CxtS .σ i) = p (rs i)
   rn' : T₀ (ι ⇒ B-type〖 σ 〗 ((ι ⇒ ι) ⇒ ι))
   rn' = ƛ (Rec (ƛ (weaken, ι (weaken, ι (close ⌜ f ⌝ (⌜Sub⌝ ys))) · (⌜η⌝ · ν₀))) (weaken, ι (close ⌜ g ⌝ (⌜Sub⌝ ys))) ν₀)
 
-  r1 : (n : ℕ) → ⟦ ⌜η⌝ · ℕ→T n ⟧₀ ＝ ⟦ ⌜_⌝ {_} {_} {(ι ⇒ ι) ⇒ ι} (ℕ→T n) ⟧₀
-  r1 n = ⌜η⌝ℕ→T n
+  r1 : (n : ℕ) → ⟦ ⌜η⌝ · numeral n ⟧₀ ＝ ⟦ ⌜_⌝ {_} {_} {(ι ⇒ ι) ⇒ ι} (numeral n) ⟧₀
+  r1 n = ⌜η⌝numeral n
 
---  r2 : (n : ℕ) → ⟦ Rec (ƛ (weaken, ι (close ⌜ f ⌝ (⌜Sub⌝ ys)) · (⌜η⌝ · ν₀))) (close ⌜ g ⌝ (⌜Sub⌝ ys)) (ℕ→T n) ⟧₀
+--  r2 : (n : ℕ) → ⟦ Rec (ƛ (weaken, ι (close ⌜ f ⌝ (⌜Sub⌝ ys)) · (⌜η⌝ · ν₀))) (close ⌜ g ⌝ (⌜Sub⌝ ys)) (numeral n) ⟧₀
 --              ＝ ⟦ ⌜ ? ⌝ ⟧₀
 --  r2 n = ?
 
-  rnn : (n : ℕ) → R⋆ α (rn n) (rn' · ℕ→T n)
+  rnn : (n : ℕ) → R⋆ α (rn n) (rn' · numeral n)
   rnn zero = r
    where
     r : R⋆ α (⟦ g ⟧ xs) (rn' · Zero)
@@ -512,12 +508,12 @@ R⋆s-⌜Sub,,⌝ {α} {Γ} {σ} xs x ys y rs r {τ} (∈CxtS .σ i) = p (rs i)
          (⌜main-lemma⌝ g α xs ys rxys)
   rnn (succ n) = r
    where
-    r : R⋆ α (⟦ f ⟧ xs n (rn n)) (rn' · Succ (ℕ→T n))
+    r : R⋆ α (⟦ f ⟧ xs n (rn n)) (rn' · Succ (numeral n))
     r = R⋆-preserves-⟦⟧'
          (⟦ f ⟧ xs n (rn n))
-         (close ⌜ f ⌝ (⌜Sub⌝ ys) · (⌜η⌝ · ℕ→T n) · Rec (ƛ (weaken, ι (close ⌜ f ⌝ (⌜Sub⌝ ys)) · (⌜η⌝ · ν₀))) (close ⌜ g ⌝ (⌜Sub⌝ ys)) (ℕ→T n))
-         (rn' · Succ (ℕ→T n))
-         ((⌜main-lemma⌝-rec-succ (close ⌜ f ⌝ (⌜Sub⌝ ys)) (close ⌜ g ⌝ (⌜Sub⌝ ys)) (ℕ→T n)) ⁻¹)
+         (close ⌜ f ⌝ (⌜Sub⌝ ys) · (⌜η⌝ · numeral n) · Rec (ƛ (weaken, ι (close ⌜ f ⌝ (⌜Sub⌝ ys)) · (⌜η⌝ · ν₀))) (close ⌜ g ⌝ (⌜Sub⌝ ys)) (numeral n))
+         (rn' · Succ (numeral n))
+         ((⌜main-lemma⌝-rec-succ (close ⌜ f ⌝ (⌜Sub⌝ ys)) (close ⌜ g ⌝ (⌜Sub⌝ ys)) (numeral n)) ⁻¹)
          {!!} -- use rf, but for that turn the arguments into ⌜_⌝s (r1 & ?)
 
   -- Generalise this lemma (⌜main-lemma⌝-rec) with the above as it is done in LambdaWithoutOracle?
@@ -671,15 +667,15 @@ extη-id n = refl
 extβ-id : extβ {_} {_} {ℕ} {ℕ} {ι} (λ x → x)
 extβ-id f g x .x refl f≡ = f≡ x
 
-Rnormη : (n : ℕ) → Rnorm (η n) (⌜η⌝ · ℕ→T n)
-Rnormη n A η' β' eη eβ = ⌜η⌝ℕ→T≡ n η' η' (extηℕ eη) β' β' (extβℕ eβ)
+Rnormη : (n : ℕ) → Rnorm (η n) (⌜η⌝ · numeral n)
+Rnormη n A η' β' eη eβ = ⌜η⌝numeral≡ n η' η' (extηℕ eη) β' β' (extβℕ eβ)
 
-Rnormη⌜η⌝ : (n : ℕ) (n' : T₀ ι) → Rnorm (η n) (⌜η⌝ · n') → ⟦ n' ⟧₀ ＝ ⟦ ℕ→T n ⟧₀
-Rnormη⌜η⌝ n n' rn = rn ι (λ x → x) (λ x → x) extη-id extβ-id ∙ ⟦ℕ→T⟧ n ⁻¹
+Rnormη⌜η⌝ : (n : ℕ) (n' : T₀ ι) → Rnorm (η n) (⌜η⌝ · n') → ⟦ n' ⟧₀ ＝ ⟦ numeral n ⟧₀
+Rnormη⌜η⌝ n n' rn = rn ι (λ x → x) (λ x → x) extη-id extβ-id ∙ ⟦numeral⟧ n ⁻¹
 
 Rnorm-reify-η : (n : ℕ) (t : {A : type} → T₀ (⌜B⌝ ι A))
               → Rnorm (η n) t
-              → ⟦ t ⟧₀ ≣⋆ ⟦ ⌜η⌝ · ℕ→T n ⟧₀ × Rnorm (η n) (⌜η⌝ · ℕ→T n)
+              → ⟦ t ⟧₀ ≣⋆ ⟦ ⌜η⌝ · numeral n ⟧₀ × Rnorm (η n) (⌜η⌝ · numeral n)
 Rnorm-reify-η n t eq =
  ≣⋆-trans eq (≣⋆-symm (Rnormη n)) ,
  Rnormη n
@@ -792,8 +788,8 @@ Rnorm-reify-β : (ϕ : ℕ → B ℕ) (n : ℕ) (t : {A : type} → T₀ (⌜B�
                 , ⟦ t ⟧₀ ≣⋆ ⟦ ⌜β⌝ · ϕ' · n' ⟧₀
                 × Rnorm (β ϕ n) (⌜β⌝ · ϕ' · n')
                 × (⟦ n' ⟧₀ ≡ n)
-                × ((x : ℕ) → Rnorm (ϕ x) (ϕ' · ℕ→T x))
-Rnorm-reify-β ϕ n t eq = ϕ' , n' , eq' , rβ , ⟦ℕ→T⟧ n , rϕ
+                × ((x : ℕ) → Rnorm (ϕ x) (ϕ' · numeral x))
+Rnorm-reify-β ϕ n t eq = ϕ' , n' , eq' , rβ , ⟦numeral⟧ n , rϕ
  where
   -- We get the branching at t with the following
   ϕ' : {A : type} → T₀ (ι ⇒ ⌜B⌝ ι A)
@@ -801,36 +797,36 @@ Rnorm-reify-β ϕ n t eq = ϕ' , n' , eq' , rβ , ⟦ℕ→T⟧ n , rϕ
 
   -- We get the oracle query at t with the following
   n' : T₀ ι
-  n' = ℕ→T n
+  n' = numeral n
 
   eq' : ⟦ t ⟧₀ ≣⋆ ⟦ ⌜β⌝ · ϕ' · n' ⟧₀
   eq' A η' β' eη eβ =
    ⟦ t ⟧₀ η' β'
     ≡⟨ eq A η' β' eη eβ ⟩
    β' (λ y → church-encode (ϕ y) η' β') n
-    ≡＝⟨ eβ _ _ _ _ ((⟦ℕ→T⟧ n) ⁻¹) (λ y → ≡-sym (⟦B-branch⟧ ϕ y n t eq A η' β' eη eβ)) ⟩
+    ≡＝⟨ eβ _ _ _ _ ((⟦numeral⟧ n) ⁻¹) (λ y → ≡-sym (⟦B-branch⟧ ϕ y n t eq A η' β' eη eβ)) ⟩
    ⟦ ⌜β⌝ · ϕ' · n' ⟧₀ η' β'
     ∎
 
   rβ : Rnorm (β ϕ n) (⌜β⌝ · ϕ' · n')
   rβ = ≣⋆-trans (≣⋆-symm eq') eq
 
-  rϕ : (x : ℕ) → ⟦ B-branch t ⟧₀ ⟦ ℕ→T x ⟧₀ ≣⋆ church-encode (ϕ x)
-  rϕ x = transport (λ k → ⟦ B-branch t ⟧₀ k ≣⋆ church-encode (ϕ x)) (⟦ℕ→T⟧ x ⁻¹) (⟦B-branch⟧ ϕ x n t eq)
+  rϕ : (x : ℕ) → ⟦ B-branch t ⟧₀ ⟦ numeral x ⟧₀ ≣⋆ church-encode (ϕ x)
+  rϕ x = transport (λ k → ⟦ B-branch t ⟧₀ k ≣⋆ church-encode (ϕ x)) (⟦numeral⟧ x ⁻¹) (⟦B-branch⟧ ϕ x n t eq)
 
 -- TODO: can we generalize this?
 church-encode-kleisli-extension : {A : type} (η' : ℕ → 〖 A 〗) (β' : (ℕ → 〖 A 〗) → ℕ → 〖 A 〗) (d : B ℕ)
                                 → extη η'
                                 → extβ β'
                                 → (f : ℕ → B ℕ) (f' : {A : type} → T₀ (ι ⇒ ⌜B⌝ ι A))
-                                → ((x : ℕ) → Rnorm (f x) (f' · ℕ→T x))
+                                → ((x : ℕ) → Rnorm (f x) (f' · numeral x))
                                 → church-encode (kleisli-extension f d) η' β'
                                 ≡ kleisli-extension⋆ ⟦ f' ⟧₀ (church-encode d) η' β'
 church-encode-kleisli-extension {A} η' β' (η x) eη eβ f f' rf =
  church-encode (f x) η' β'
   ≡⟨ ≡-sym (rf x A η' β' eη eβ) ⟩
- ⟦ f' · ℕ→T x ⟧₀ η' β'
-  ≡＝⟨ ≡-refl₀ f' _ _ (⟦ℕ→T⟧ x) _ _ (extηℕ eη) _ _ (extβℕ eβ) ⟩
+ ⟦ f' · numeral x ⟧₀ η' β'
+  ≡＝⟨ ≡-refl₀ f' _ _ (⟦numeral⟧ x) _ _ (extηℕ eη) _ _ (extβℕ eβ) ⟩
  ⟦ f' ⟧₀ x η' β'
   ∎
 church-encode-kleisli-extension {A} η' β' (β g y) eη eβ f f' rf =
@@ -846,7 +842,7 @@ Rnorm-kleisli-lemma : {σ : type}
 
                       (f : ℕ → B〖 σ 〗)
                       (f' : {A : type} → T₀ (ι ⇒ B-type〖 σ 〗 A))
-                    → ((x : ℕ) → Rnorm (f x) (f' · ℕ→T x))
+                    → ((x : ℕ) → Rnorm (f x) (f' · numeral x))
 
                     → (n : B ℕ)
                       (n' : {A : type} → T₀ (⌜B⌝ ι A))
@@ -857,8 +853,8 @@ Rnorm-kleisli-lemma {ι} f f' rf (η y) n' rn A η' β' eη eβ =
  ⟦ n' ⟧₀ (λ x → ⟦ f' ⟧₀ x η' β') β'
   ≡⟨ rn A (λ x → ⟦ f' ⟧₀ x η' β') β' (λ x → ≡-refl₀ f' _ _ refl _ _ (extηℕ eη) _ _ (extβℕ eβ)) eβ ⟩
  ⟦ f' ⟧₀ y η' β'
-  ≡⟨ ≡-refl₀ f' _ _ (⟦ℕ→T⟧ y ⁻¹) _ _ (extηℕ eη) _ _ (extβℕ eβ) ⟩
- ⟦ f' · ℕ→T y ⟧₀ η' β'
+  ≡⟨ ≡-refl₀ f' _ _ (⟦numeral⟧ y ⁻¹) _ _ (extηℕ eη) _ _ (extβℕ eβ) ⟩
+ ⟦ f' · numeral y ⟧₀ η' β'
   ≡＝⟨ rf y A η' β' eη eβ ⟩
  church-encode (f y) η' β'
   ∎
@@ -867,8 +863,8 @@ Rnorm-kleisli-lemma {ι} f f' rf (β ϕ y) n' rn A η' β' eη eβ with Rnorm-re
  ⟦ n' ⟧₀ (λ x → ⟦ f' ⟧₀ x η' β') β'
   ≡⟨ eq A (λ x → ⟦ f' ⟧₀ x η' β') β' (λ x → ≡-refl₀ f' _ _ refl _ _ (extηℕ eη) _ _ (extβℕ eβ)) eβ ⟩
  β' (λ x → ⟦ ϕ' ⟧₀ x (λ z → ⟦ f' ⟧₀ z η' β') β') ⟦ y' ⟧₀
-  ≡⟨ eβ _ _ _ _ ry (λ y → ≡-sym (≡-refl₀ ϕ' _ _ (⟦ℕ→T⟧ y) _ _ (λ a b e → ≡-refl₀ f' _ _ e _ _ (extηℕ eη) _ _ (extβℕ eβ)) _ _ (extβℕ eβ))) ⟩
- β' (λ x → ⟦ ϕ' · ℕ→T x ⟧₀ (λ z → ⟦ f' ⟧₀ z η' β') β') y
+  ≡⟨ eβ _ _ _ _ ry (λ y → ≡-sym (≡-refl₀ ϕ' _ _ (⟦numeral⟧ y) _ _ (λ a b e → ≡-refl₀ f' _ _ e _ _ (extηℕ eη) _ _ (extβℕ eβ)) _ _ (extβℕ eβ))) ⟩
+ β' (λ x → ⟦ ϕ' · numeral x ⟧₀ (λ z → ⟦ f' ⟧₀ z η' β') β') y
   ≡⟨ eβ _ _ _ _ refl (λ x → rϕ x A (λ z → ⟦ f' ⟧₀ z η' β') β' (λ x → ≡-refl₀ f' _ _ refl _ _ (extηℕ eη) _ _ (extβℕ eβ)) eβ) ⟩
  β' (λ x → church-encode (ϕ x) (λ z → ⟦ f' ⟧₀ z η' β') β') y
   ≡＝⟨ eβ _ _ _ _ refl (λ x → ≡-sym (church-encode-kleisli-extension η' β' (ϕ x) eη eβ f f' rf)) ⟩
@@ -896,12 +892,12 @@ Rnorm-kleisli-lemma {σ ⇒ τ} f f' rf n n' rn A η' β' =
    ⟦ ƛ (ƛ (ƛ (⌜Kleisli-extension⌝ · ƛ (ν₃ · ν₀ · ν₁) · ν₁))) · f' · n' · η' ⟧₀
     ∎
 
-  rf' : (x : ℕ) → Rnorm (f x A) (ƛ (weaken₀ f' · ν₀ · weaken₀ η') · ℕ→T x)
+  rf' : (x : ℕ) → Rnorm (f x A) (ƛ (weaken₀ f' · ν₀ · weaken₀ η') · numeral x)
   rf' x =
    Rnorm-preserves-⟦⟧ (f x A)
-    (f' · ℕ→T x · η')
-    (ƛ (weaken₀ f' · ν₀ · weaken₀ η') · ℕ→T x)
-    (λ A → ≡-sym (⟦weaken₀⟧ f' (⟨⟩ ‚ ⟦ ℕ→T x ⟧₀) _ _ refl _ _ (⟦weaken₀⟧ η' (⟨⟩ ‚ ⟦ ℕ→T x ⟧₀))))
+    (f' · numeral x · η')
+    (ƛ (weaken₀ f' · ν₀ · weaken₀ η') · numeral x)
+    (λ A → ≡-sym (⟦weaken₀⟧ f' (⟨⟩ ‚ ⟦ numeral x ⟧₀) _ _ refl _ _ (⟦weaken₀⟧ η' (⟨⟩ ‚ ⟦ numeral x ⟧₀))))
     (rf x A η' β')
 
 church-encode-is-natural : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (g : X → Y) (d : B X)
@@ -1165,7 +1161,7 @@ Rnorm-lemma {Γ} {σ} xs ys (Rec t u v) Rnorm-xs =
   rn' : {A : type} → T₀ (ι ⇒ B-type〖 σ 〗 A)
   rn' = close (ƛ (Rec (ƛ (weaken, ι (weaken, ι ⌜ t ⌝) · (⌜η⌝ · ν₀))) (weaken, ι ⌜ u ⌝) ν₀)) ys
 
-  rnn' : (n : ℕ) → Rnorm (rn n) (rn' · ℕ→T n)
+  rnn' : (n : ℕ) → Rnorm (rn n) (rn' · numeral n)
   rnn' zero = r
    where
     r : Rnorm (B⟦ u ⟧ xs) (rn' · Zero)
@@ -1175,25 +1171,25 @@ Rnorm-lemma {Γ} {σ} xs ys (Rec t u v) Rnorm-xs =
          (Rnorm-lemma xs ys u Rnorm-xs)
   rnn' (succ n) = r
    where
-    r : Rnorm (B⟦ t ⟧ xs (η n) (rn n)) (rn' · Succ (ℕ→T n))
+    r : Rnorm (B⟦ t ⟧ xs (η n) (rn n)) (rn' · Succ (numeral n))
     r = Rnorm-preserves-⟦⟧
          (B⟦ t ⟧ xs (η n) (rn n))
-         (close ⌜ t ⌝ ys · (⌜η⌝ · ℕ→T n) · Rec (ƛ (weaken, ι (close ⌜ t ⌝ ys) · (⌜η⌝ · ν₀))) (close ⌜ u ⌝ ys) (ℕ→T n))
-         (rn' · Succ (ℕ→T n))
-         (λ A → ≡-sym (Rnorm-lemma-rec-succ {A} ⌜ t ⌝ ⌜ u ⌝ (ℕ→T n) ys))
-         (rt (η n) (⌜η⌝ · ℕ→T n) (Rnormη n)
-             (rn n) (Rec (ƛ (weaken, ι (close ⌜ t ⌝ ys) · (⌜η⌝ · ν₀))) (close ⌜ u ⌝ ys) (ℕ→T n))
+         (close ⌜ t ⌝ ys · (⌜η⌝ · numeral n) · Rec (ƛ (weaken, ι (close ⌜ t ⌝ ys) · (⌜η⌝ · ν₀))) (close ⌜ u ⌝ ys) (numeral n))
+         (rn' · Succ (numeral n))
+         (λ A → ≡-sym (Rnorm-lemma-rec-succ {A} ⌜ t ⌝ ⌜ u ⌝ (numeral n) ys))
+         (rt (η n) (⌜η⌝ · numeral n) (Rnormη n)
+             (rn n) (Rec (ƛ (weaken, ι (close ⌜ t ⌝ ys) · (⌜η⌝ · ν₀))) (close ⌜ u ⌝ ys) (numeral n))
              (Rnorm-preserves-⟦⟧
                (rn n)
-               (close (ƛ (Rec (ƛ (weaken, ι (weaken, ι ⌜ t ⌝) · (⌜η⌝ · ν₀))) (weaken, ι ⌜ u ⌝) ν₀)) ys · ℕ→T n)
-               (Rec (ƛ (weaken, ι (close ⌜ t ⌝ ys) · (⌜η⌝ · ν₀))) (close ⌜ u ⌝ ys) (ℕ→T n))
-               (λ A → Rnorm-lemma-rec-succ2 {A} ⌜ t ⌝ ⌜ u ⌝ (ℕ→T n) ys)
+               (close (ƛ (Rec (ƛ (weaken, ι (weaken, ι ⌜ t ⌝) · (⌜η⌝ · ν₀))) (weaken, ι ⌜ u ⌝) ν₀)) ys · numeral n)
+               (Rec (ƛ (weaken, ι (close ⌜ t ⌝ ys) · (⌜η⌝ · ν₀))) (close ⌜ u ⌝ ys) (numeral n))
+               (λ A → Rnorm-lemma-rec-succ2 {A} ⌜ t ⌝ ⌜ u ⌝ (numeral n) ys)
                (rnn' n)))
 
   rnn'' : (n : ℕ) (n' : T₀ ι) → Rnorm (η n) (⌜η⌝ · n') → Rnorm (rn n) (rn' · n')
   rnn'' n n' r =
    Rnorm-preserves-⟦⟧
-    (rn n) (rn' · ℕ→T n) (rn' · n')
+    (rn n) (rn' · numeral n) (rn' · n')
     (λ A → ≡-sym (≡-refl₀ rn' _ _ (Rnormη⌜η⌝ n n' r)))
     (rnn' n)
 
@@ -1293,8 +1289,8 @@ Rnorm-generic u u' ru =
  Rnorm-kleisli-lemma (β η) (⌜β⌝ · ⌜η⌝) c u u' ru
  where
   c : (x : ℕ)
-    → β⋆ η⋆ ⟦ ℕ→T x ⟧₀ ≣⋆ β⋆ η⋆ x
-  c x A η' β' eη eβ = eβ _ _ _ _ (⟦ℕ→T⟧ x) eη
+    → β⋆ η⋆ ⟦ numeral x ⟧₀ ≣⋆ β⋆ η⋆ x
+  c x A η' β' eη eβ = eβ _ _ _ _ (⟦numeral⟧ x) eη
 
 ⌜dialogue-tree⌝-correct : (t : T₀ ((ι ⇒ ι) ⇒ ι))
                           (α : Baire)
