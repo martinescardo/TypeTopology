@@ -44,15 +44,10 @@ infixr 6 _∧_
 succ-injective : ∀ {m n} → succ m ＝ succ n → m ＝ n
 succ-injective refl = refl
 
-comp-ind-ℕ-aux2 : (P : ℕ → Set)
-                → ((n : ℕ) → ((m : ℕ) → m < n → P m) → P n)
-                → (n m : ℕ) → m ≤ n → P m
-comp-ind-ℕ-aux2 P φ n m p = course-of-values-induction P φ m
-
 <ℕind2 : (P : ℕ → Set)
        → ((n : ℕ) → ((m : ℕ) → m < n → P m) → P n)
        → (n : ℕ) → P n
-<ℕind2 P ind n = comp-ind-ℕ-aux2 P ind n n (≤-refl n)
+<ℕind2 P ind n = course-of-values-induction P ind n
 
 ∧＝true→ₗ : {a b : 𝟚} → a ∧ b ＝ ₁ → a ＝ ₁
 ∧＝true→ₗ {₁} {b} x = refl
@@ -69,44 +64,82 @@ comp-ind-ℕ-aux2 P φ n m p = course-of-values-induction P φ m
 ∧＝true→3-3 : {a b c : 𝟚} → a ∧ b ∧ c ＝ ₁ → c ＝ ₁
 ∧＝true→3-3 {a} {b} {c} x = ∧＝true→ᵣ {b} {c} (∧＝true→ᵣ {a} {b ∧ c} x)
 
-pairingAux : ℕ → ℕ
-pairingAux 0 = 0
-pairingAux (succ i) = (succ i) + pairingAux i
+\end{code}
 
-pairing : ℕ × ℕ → ℕ
-pairing (x , y) = y + pairingAux (y + x)
+The following function is used for the purposes of defining the pairing.
 
-pairing3 : ℕ × ℕ × ℕ → ℕ
-pairing3 (x , y , z) = pairing (x , pairing (y , z))
+\begin{code}
 
-pairing4 : ℕ × ℕ × ℕ × ℕ → ℕ
-pairing4 (x , y , z , w) = pairing (x , pairing3 (y , z , w))
+sum-up-to : ℕ → ℕ
+sum-up-to 0        = 0
+sum-up-to (succ i) = succ i + sum-up-to i
 
-unpairing : ℕ → ℕ × ℕ
-unpairing 0 = 0 , 0
-unpairing (succ n) with unpairing n
+\end{code}
+
+The pairing function `pair`:
+
+\begin{code}
+
+pair : ℕ × ℕ → ℕ
+pair (m , n) = n + sum-up-to (n + m)
+
+\end{code}
+
+Pairing functions for triples and quadruples:
+
+\begin{code}
+
+pair₃ : ℕ × ℕ × ℕ → ℕ
+pair₃ (x , y , z) = pair (x , pair (y , z))
+
+pair₄ : ℕ × ℕ × ℕ × ℕ → ℕ
+pair₄ (x , y , z , w) = pair (x , pair₃ (y , z , w))
+
+\end{code}
+
+The unpairing function `unpair`:
+
+\begin{code}
+
+unpair : ℕ → ℕ × ℕ
+unpair 0 = 0 , 0
+unpair (succ n) with unpair n
 ... | succ x , y = x , succ y
 ... | 0 , y = succ y , 0
 
--- n is (pairing x y), and we want to return x
-pairing→₁ : (n : ℕ) → ℕ
-pairing→₁ n = pr₁ (unpairing n)
+\end{code}
 
--- n is (pairing x y), and we want to return y
-pairing→₂ : (n : ℕ) → ℕ
-pairing→₂ n = pr₂ (unpairing n)
+`p` is `pairing m n`, and we want to return `m`
+
+\begin{code}
+
+π₁ : ℕ → ℕ
+π₁ p = pr₁ (unpair p)
+
+\end{code}
+
+p is (pairing m n), and we want to return n
+
+\begin{code}
+
+π₂ : ℕ → ℕ
+π₂ p = pr₂ (unpair p)
+
+\end{code}
+
+\begin{code}
 
 -- n is (pairing3 x y z), and we want to return x
 pairing3→₁ : (n : ℕ) → ℕ
-pairing3→₁ n = pr₁ (unpairing n)
+pairing3→₁ n = pr₁ (unpair n)
 
 -- n is (pairing3 x y z), and we want to return y
 pairing3→₂ : (n : ℕ) → ℕ
-pairing3→₂ n = pr₁ (unpairing (pr₂ (unpairing n)))
+pairing3→₂ n = pr₁ (unpair (pr₂ (unpair n)))
 
 -- n is (pairing3 x y z), and we want to return z
 pairing3→₃ : (n : ℕ) → ℕ
-pairing3→₃ n = pr₂ (unpairing (pr₂ (unpairing n)))
+pairing3→₃ n = pr₂ (unpair (pr₂ (unpair n)))
 
 +＝0→ : (n m : ℕ) → n + m ＝ 0 → (n ＝ 0) × (m ＝ 0)
 +＝0→ n m h = sum-to-zero-gives-zero m n h′ , sum-to-zero-gives-zero n m h
@@ -118,19 +151,19 @@ pairing3→₃ n = pr₂ (unpairing (pr₂ (unpairing n)))
 +0 0 = refl
 +0 (succ n) = ap succ (+0 n)
 
-pairingAux＝0→ : (n : ℕ) → pairingAux n ＝ 0 → n ＝ 0
+pairingAux＝0→ : (n : ℕ) → sum-up-to n ＝ 0 → n ＝ 0
 pairingAux＝0→ = {!!}
 
-pairing＝0→ : (x y : ℕ) → pairing (x , y) ＝ 0 → (x ＝ 0) × (y ＝ 0)
+pairing＝0→ : (x y : ℕ) → pair (x , y) ＝ 0 → (x ＝ 0) × (y ＝ 0)
 pairing＝0→ = {!!}
 
-pairing-x0 : (x : ℕ) → pairing (x , 0) ＝ pairingAux x
+pairing-x0 : (x : ℕ) → pair (x , 0) ＝ sum-up-to x
 pairing-x0 x = {!!}
 
-pairing-s0 : (x : ℕ) → pairing (succ x , 0) ＝ succ (pairing (0 , x))
+pairing-s0 : (x : ℕ) → pair (succ x , 0) ＝ succ (pair (0 , x))
 pairing-s0 x = {!!}
 
-pairing-xs : (x y : ℕ) → pairing (x , succ y) ＝ succ (pairing (succ x , y))
+pairing-xs : (x y : ℕ) → pair (x , succ y) ＝ succ (pair (succ x , y))
 pairing-xs x y = {!!}
 
 ＝pair : {A : 𝓤 ̇ } {B : 𝓥 ̇ } {a₁ a₂ : A} {b₁ b₂ : B} → a₁ ＝ a₂ → b₁ ＝ b₂ → (a₁ , b₁) ＝ (a₂ , b₂)
@@ -142,97 +175,97 @@ pairing-xs x y = {!!}
 ¬succ＝0 : (a : ℕ) → ¬ (succ a ＝ 0)
 ¬succ＝0 a ()
 
-unpairing-pairing-aux : (p : ℕ × ℕ) (n : ℕ) → pairing p ＝ n → unpairing n ＝ p
-unpairing-pairing-aux (x , y) 0 h = ＝pair ((pr₁ (pairing＝0→ x y h)) ⁻¹) ((pr₂ (pairing＝0→ x y h)) ⁻¹)
-unpairing-pairing-aux (x , 0) (succ n) h with x
+unpair-pairing-aux : (p : ℕ × ℕ) (n : ℕ) → pair p ＝ n → unpair n ＝ p
+unpair-pairing-aux (x , y) 0 h = ＝pair ((pr₁ (pairing＝0→ x y h)) ⁻¹) ((pr₂ (pairing＝0→ x y h)) ⁻¹)
+unpair-pairing-aux (x , 0) (succ n) h with x
 ... | 0 = 𝟘-elim (¬succ＝0 n (h ⁻¹))
 ... | succ x
- with unpairing-pairing-aux (0 , x) n
-... | z with unpairing n
+ with unpair-pairing-aux (0 , x) n
+... | z with unpair n
 ... | 0 , b = ap (λ k → succ k , 0) (pr₂ (＝pair→ (z (succ-injective ((pairing-s0 x) ⁻¹ ∙ h)))))
 ... | succ a , b = 𝟘-elim (¬succ＝0 a (pr₁ (＝pair→ (z (succ-injective ((pairing-s0 x) ⁻¹ ∙ h))))))
-unpairing-pairing-aux (x , succ y) (succ n) h with unpairing-pairing-aux (succ x , y) n
-... | z with unpairing n
+unpair-pairing-aux (x , succ y) (succ n) h with unpair-pairing-aux (succ x , y) n
+... | z with unpair n
 ... | 0 , b = 𝟘-elim (¬succ＝0 x ((pr₁ (＝pair→ (z (succ-injective ((pairing-xs x y) ⁻¹ ∙ h))))) ⁻¹))
 ... | succ a , b =
  ＝pair
   (succ-injective (pr₁ (＝pair→ (z (succ-injective ((pairing-xs x y) ⁻¹ ∙ h))))))
   (ap succ (pr₂ (＝pair→ (z (succ-injective ((pairing-xs x y) ⁻¹ ∙ h))))))
 
-unpairing-pairing : (p : ℕ × ℕ) → unpairing (pairing p) ＝ p
-unpairing-pairing p = unpairing-pairing-aux p (pairing p) refl
+unpair-pairing : (p : ℕ × ℕ) → unpair (pair p) ＝ p
+unpair-pairing p = unpair-pairing-aux p (pair p) refl
 
-pairing→₁-pairing : (x₁ x₂ : ℕ) → pairing→₁ (pairing (x₁ , x₂)) ＝ x₁
-pairing→₁-pairing x₁ x₂ = ap pr₁ (unpairing-pairing (x₁ , x₂))
+pairing→₁-pairing : (x₁ x₂ : ℕ) → π₁ (pair (x₁ , x₂)) ＝ x₁
+pairing→₁-pairing x₁ x₂ = ap pr₁ (unpair-pairing (x₁ , x₂))
 
-＝pairing→₁ : {x₁ x₂ : ℕ} → x₁ ＝ x₂ → pairing→₁ x₁ ＝ pairing→₁ x₂
+＝pairing→₁ : {x₁ x₂ : ℕ} → x₁ ＝ x₂ → π₁ x₁ ＝ π₁ x₂
 ＝pairing→₁ {x₁} {x₂} refl = refl
 
-pairing→₂-pairing : (x₁ x₂ : ℕ) → pairing→₂ (pairing (x₁ , x₂)) ＝ x₂
-pairing→₂-pairing x₁ x₂ = ap pr₂ (unpairing-pairing (x₁ , x₂))
+pairing→₂-pairing : (x₁ x₂ : ℕ) → π₂ (pair (x₁ , x₂)) ＝ x₂
+pairing→₂-pairing x₁ x₂ = ap pr₂ (unpair-pairing (x₁ , x₂))
 
-＝pairing→₂ : {x₁ x₂ : ℕ} → x₁ ＝ x₂ → pairing→₂ x₁ ＝ pairing→₂ x₂
+＝pairing→₂ : {x₁ x₂ : ℕ} → x₁ ＝ x₂ → π₂ x₁ ＝ π₂ x₂
 ＝pairing→₂ {x₁} {x₂} refl = refl
 
-pairing3→₁-pairing3 : (x₁ x₂ x₃ : ℕ) → pairing3→₁ (pairing3 (x₁ , x₂ , x₃)) ＝ x₁
-pairing3→₁-pairing3 x₁ x₂ x₃ = ap pr₁ (unpairing-pairing (x₁ , pairing (x₂ , x₃)))
+pairing3→₁-pairing3 : (x₁ x₂ x₃ : ℕ) → pairing3→₁ (pair₃ (x₁ , x₂ , x₃)) ＝ x₁
+pairing3→₁-pairing3 x₁ x₂ x₃ = ap pr₁ (unpair-pairing (x₁ , pair (x₂ , x₃)))
 
 ＝pairing3→₁ : {x₁ x₂ : ℕ} → x₁ ＝ x₂ → pairing3→₁ x₁ ＝ pairing3→₁ x₂
 ＝pairing3→₁ {x₁} {x₂} refl = refl
 
-pairing3→₂-pairing3 : (x₁ x₂ x₃ : ℕ) → pairing3→₂ (pairing3 (x₁ , x₂ , x₃)) ＝ x₂
+pairing3→₂-pairing3 : (x₁ x₂ x₃ : ℕ) → pairing3→₂ (pair₃ (x₁ , x₂ , x₃)) ＝ x₂
 pairing3→₂-pairing3 x₁ x₂ x₃ =
- ap (λ k → pr₁ (unpairing (pr₂ k))) (unpairing-pairing (x₁ , pairing (x₂ , x₃)))
- ∙ ap pr₁ (unpairing-pairing (x₂ , x₃))
+ ap (λ k → pr₁ (unpair (pr₂ k))) (unpair-pairing (x₁ , pair (x₂ , x₃)))
+ ∙ ap pr₁ (unpair-pairing (x₂ , x₃))
 
 ＝pairing3→₂ : {x₁ x₂ : ℕ} → x₁ ＝ x₂ → pairing3→₂ x₁ ＝ pairing3→₂ x₂
 ＝pairing3→₂ {x₁} {x₂} refl = refl
 
-pairing3→₃-pairing3 : (x₁ x₂ x₃ : ℕ) → pairing3→₃ (pairing3 (x₁ , x₂ , x₃)) ＝ x₃
+pairing3→₃-pairing3 : (x₁ x₂ x₃ : ℕ) → pairing3→₃ (pair₃ (x₁ , x₂ , x₃)) ＝ x₃
 pairing3→₃-pairing3 x₁ x₂ x₃ =
- ap (λ k → pr₂ (unpairing (pr₂ k))) (unpairing-pairing (x₁ , pairing (x₂ , x₃)))
- ∙ ap pr₂ (unpairing-pairing (x₂ , x₃))
+ ap (λ k → pr₂ (unpair (pr₂ k))) (unpair-pairing (x₁ , pair (x₂ , x₃)))
+ ∙ ap pr₂ (unpair-pairing (x₂ , x₃))
 
 ＝pairing3→₃ : {x₁ x₂ : ℕ} → x₁ ＝ x₂ → pairing3→₃ x₁ ＝ pairing3→₃ x₂
 ＝pairing3→₃ {x₁} {x₂} refl = refl
 
-pairing-inj : (p q : ℕ × ℕ) → pairing p ＝ pairing q → p ＝ q
+pairing-inj : (p q : ℕ × ℕ) → pair p ＝ pair q → p ＝ q
 pairing-inj p q h =
-  (((unpairing-pairing p) ⁻¹) ∙ h1) ∙ (unpairing-pairing q)
+  (((unpair-pairing p) ⁻¹) ∙ h1) ∙ (unpair-pairing q)
   where
-    h1 : unpairing (pairing p) ＝ unpairing (pairing q)
-    h1 = ap unpairing h
+    h1 : unpair (pair p) ＝ unpair (pair q)
+    h1 = ap unpair h
 
-unpairing＝ : (n : ℕ) → Σ x ꞉ ℕ , Σ y ꞉ ℕ , unpairing n ＝ (x , y)
-unpairing＝ n with unpairing n
+unpair＝ : (n : ℕ) → Σ x ꞉ ℕ , Σ y ꞉ ℕ , unpair n ＝ (x , y)
+unpair＝ n with unpair n
 ... | x , y = x , y , refl
 
-fst-unpairing＝ : (n x y : ℕ) → unpairing n ＝ (x , y) → pr₁ (unpairing n) ＝ x
-fst-unpairing＝ n x y u = ap pr₁ u
+fst-unpair＝ : (n x y : ℕ) → unpair n ＝ (x , y) → pr₁ (unpair n) ＝ x
+fst-unpair＝ n x y u = ap pr₁ u
 
-snd-unpairing＝ : (n x y : ℕ) → unpairing n ＝ (x , y) → pr₂ (unpairing n) ＝ y
-snd-unpairing＝ n x y u = ap pr₂ u
+snd-unpair＝ : (n x y : ℕ) → unpair n ＝ (x , y) → pr₂ (unpair n) ＝ y
+snd-unpair＝ n x y u = ap pr₂ u
 
-pairing-unpairing : (n : ℕ) → pairing (unpairing n) ＝ n
-pairing-unpairing 0 = refl
-pairing-unpairing (succ n) with unpairing＝ n
-... | succ x , y , p = {!!} --rewrite p = →s＝s (trans h1 (pairing-unpairing n))
+pairing-unpair : (n : ℕ) → pair (unpair n) ＝ n
+pairing-unpair 0 = refl
+pairing-unpair (succ n) with unpair＝ n
+... | succ x , y , p = {!!} --rewrite p = →s＝s (trans h1 (pairing-unpair n))
   where
-    h1 : y + succ ((y + x) + pairingAux (y + x)) ＝ pairing (unpairing n)
-    h1 with unpairing n
+    h1 : y + succ ((y + x) + sum-up-to (y + x)) ＝ pair (unpair n)
+    h1 with unpair n
     ... | a , b = {!!}
-... | 0 , y , p = {!!} --rewrite p = →s＝s (trans h1 (pairing-unpairing n))
+... | 0 , y , p = {!!} --rewrite p = →s＝s (trans h1 (pairing-unpair n))
   where
-    h1 : y + pairingAux y ＝ pairing (unpairing n)
-    h1 with unpairing n
-    ... | a , b = ap (λ k → y + pairingAux k) (+0 y ⁻¹) ∙ ap₂ (λ i j → pairing (i , j)) (pr₁ (＝pair→ p) ⁻¹) (pr₂ (＝pair→ p) ⁻¹)
+    h1 : y + sum-up-to y ＝ pair (unpair n)
+    h1 with unpair n
+    ... | a , b = ap (λ k → y + sum-up-to k) (+0 y ⁻¹) ∙ ap₂ (λ i j → pair (i , j)) (pr₁ (＝pair→ p) ⁻¹) (pr₂ (＝pair→ p) ⁻¹)
 
-unpairing-inj : (n m : ℕ) → unpairing n ＝ unpairing m → n ＝ m
-unpairing-inj n m h =
-  (((pairing-unpairing n) ⁻¹) ∙ h1) ∙ (pairing-unpairing m)
+unpair-inj : (n m : ℕ) → unpair n ＝ unpair m → n ＝ m
+unpair-inj n m h =
+  (((pairing-unpair n) ⁻¹) ∙ h1) ∙ (pairing-unpair m)
   where
-    h1 : pairing (unpairing n) ＝ pairing (unpairing m)
-    h1 = ap pairing h
+    h1 : pair (unpair n) ＝ pair (unpair m)
+    h1 = ap pair h
 
 +assoc-aux : (x y : ℕ) → x + x + (y + y) ＝ y + x + (y + x)
 +assoc-aux x y = {!!}
@@ -246,11 +279,11 @@ unpairing-inj n m h =
 -}
 
 {-
-pairing-spec-aux : (n x y : ℕ) → n ＝ y + x → pairing (x , y) * 2 ＝ y * 2 + n * suc n
+pairing-spec-aux : (n x y : ℕ) → n ＝ y + x → pair (x , y) * 2 ＝ y * 2 + n * suc n
 pairing-spec-aux 0 x y h rewrite fst (+＝0→ y x (sym h)) | snd (+＝0→ y x (sym h)) = refl
 pairing-spec-aux (suc n) 0 0 ()
 pairing-spec-aux (suc n) (suc x) 0 h
-  rewrite *-distribʳ-+ 2 x (pairingAux x)
+  rewrite *-distribʳ-+ 2 x (sum-up-to x)
         | sym (pairing-x0 x)
         | pairing-spec-aux n x 0 (suc-injective h)
         | suc-injective h
@@ -260,10 +293,10 @@ pairing-spec-aux (suc n) (suc x) 0 h
         | +-assoc x x (x * suc x)
   = refl
 pairing-spec-aux (suc n) x (suc y) h
-  rewrite *-distribʳ-+ 2 y (suc (y + x + pairingAux (y + x)))
+  rewrite *-distribʳ-+ 2 y (suc (y + x + sum-up-to (y + x)))
         | +-comm y x
-        | +-assoc x y (pairingAux (x + y))
-        | *-distribʳ-+ 2 x (y + pairingAux (x + y))
+        | +-assoc x y (sum-up-to (x + y))
+        | *-distribʳ-+ 2 x (y + sum-up-to (x + y))
         | +-comm x y
         | pairing-spec-aux n x y (suc-injective h)
         | suc-injective h
@@ -278,7 +311,7 @@ pairing-spec-aux (suc n) x (suc y) h
 -}
 
 {-
-pairing-spec : (x y : ℕ) → pairing (x , y) * 2 ＝ y * 2 + (y + x) * suc (y + x)
+pairing-spec : (x y : ℕ) → pair (x , y) * 2 ＝ y * 2 + (y + x) * suc (y + x)
 pairing-spec x y = pairing-spec-aux (y + x) x y refl
 -}
 
@@ -304,7 +337,7 @@ pairing-spec x y = pairing-spec-aux (y + x) x y refl
 →＝+ₗ {a} {b} {c} refl = refl
 
 {-
-pairing-spec2 : (x y : ℕ) → pairing (x , y) ＝ y + (y + x) * suc (y + x) / 2
+pairing-spec2 : (x y : ℕ) → pair (x , y) ＝ y + (y + x) * suc (y + x) / 2
 pairing-spec2 x y = trans (sym (m*n/n＝m (pairing (x , y)) 2)) (trans h1 h2)
   where
     h1 : (pairing (x , y) * 2) / 2 ＝ (y * 2 + (y + x) * suc (y + x)) / 2
@@ -347,7 +380,7 @@ m≤m*m (suc m) = m≤m*n (suc m) (_≤_.s≤s _≤_.z≤n)
 -}
 
 {-
-pairing-non-dec : (x y : ℕ) → y + x ≤ pairing (x , y)
+pairing-non-dec : (x y : ℕ) → y + x ≤ pair (x , y)
 pairing-non-dec x y
   rewrite pairing-spec2 x y
   = +-mono-≤ {y} {y} {x} {(y + x) * suc (y + x) / 2} ≤-refl h1
