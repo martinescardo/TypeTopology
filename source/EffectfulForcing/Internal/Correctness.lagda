@@ -1,7 +1,6 @@
 Martin Escardo, Vincent Rahli, Bruno da Rocha Paiva, Ayberk Tosun 20 May 2023
 
-This is an adaptation of Internal.lagda written by Martin, which
-defines dialogue-tree⋆ without using T' but directly using T.
+We prove the correctness of the internal translation.
 
 \begin{code}
 
