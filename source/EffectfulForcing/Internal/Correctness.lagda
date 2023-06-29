@@ -396,7 +396,7 @@ Rnorm-lemma-rec-zero {A} {σ} {Γ} a b s =
  ⟦ close b (⊆Sub (∈CxtS ι) (Subƛ s)) ⟧ (⟨⟩ ‚ zero)
   ≡⟨ ⟦close⟧ b (⊆Sub (∈CxtS ι) (Subƛ s)) _ _ (【≡】-is-refl‚ _ _ (λ ()) refl) (【≡】-【Sub】-⊆Sub' s) ⟩
  ⟦ b ⟧ (【Sub】 (⊆Sub (∈CxtS ι) (Subƛ s)) (⟨⟩ ‚ zero))
-  ≡⟨ ⟦⟧-eta b _ _ (【≡】-【Sub】-⊆Sub s) ⟩
+  ≡⟨ ≡-refl b _ _ (【≡】-【Sub】-⊆Sub s) ⟩
  ⟦ b ⟧ (【Sub₀】 s)
   ≡＝⟨ ≡-sym (⟦close⟧ b s _ _ (λ ()) (【≡】-is-refl-【Sub₀】 s)) ⟩
  ⟦ close b s ⟧₀
@@ -472,7 +472,7 @@ Rnorm-lemma-rec-succ {A} {σ} {Γ} a b n s =
    ⟦ weaken, ι b ⟧ (【Sub】 (Subƛ s) (⟨⟩ ‚ succ ⟦ n ⟧₀))
     ≡⟨ ⟦weaken,⟧ b ι _ _ (【≡】-is-refl-【⊆】-⊆,-【Sub】-Subƛ s _ refl) ⟩
    ⟦ b ⟧ (【⊆】 (⊆, Γ ι) (【Sub】 (Subƛ s) (⟨⟩ ‚ succ ⟦ n ⟧₀)))
-    ≡⟨ ⟦⟧-eta b (【⊆】 (⊆, Γ ι) (【Sub】 (Subƛ s) (⟨⟩ ‚ succ ⟦ n ⟧₀))) (【Sub₀】 s) e4 ⟩
+    ≡⟨ ≡-refl b (【⊆】 (⊆, Γ ι) (【Sub】 (Subƛ s) (⟨⟩ ‚ succ ⟦ n ⟧₀))) (【Sub₀】 s) e4 ⟩
    ⟦ b ⟧ (【Sub₀】 s)
     ≡＝⟨ ≡-sym (⟦close⟧' b s) ⟩
    ⟦ close b s ⟧₀
@@ -610,7 +610,7 @@ Rnorm-lemma-rec-succ2 {A} {σ} {Γ} a b n s =
    ⟦ weaken, ι b ⟧ (【Sub】 (Subƛ s) (⟨⟩ ‚ ⟦ n ⟧₀))
     ≡⟨ ⟦weaken,⟧ b ι _ _ (【≡】-is-refl-【⊆】-⊆,-【Sub】-Subƛ s _ refl) ⟩
    ⟦ b ⟧ (【⊆】 (⊆, Γ ι) (【Sub】 (Subƛ s) (⟨⟩ ‚ ⟦ n ⟧₀)))
-    ≡⟨ ⟦⟧-eta b (【⊆】 (⊆, Γ ι) (【Sub】 (Subƛ s) (⟨⟩ ‚ ⟦ n ⟧₀))) (【Sub₀】 s) e2 ⟩
+    ≡⟨ ≡-refl b (【⊆】 (⊆, Γ ι) (【Sub】 (Subƛ s) (⟨⟩ ‚ ⟦ n ⟧₀))) (【Sub₀】 s) e2 ⟩
    ⟦ b ⟧ (【Sub₀】 s)
     ≡＝⟨ ≡-sym (⟦close⟧' b s) ⟩
    ⟦ close b s ⟧₀
@@ -802,7 +802,7 @@ Rnorm-lemma xs ys (ƛ t) Rnorm-xs u u' Rnorm-u =
    ⟦ close ⌜ t ⌝ (Sub,, ys u') ⟧₀
     ≡⟨ ⟦close⟧' ⌜ t ⌝ (Sub,, ys u') ⟩
    ⟦ ⌜ t ⌝ ⟧ (【Sub₀】 (Sub,, ys u'))
-    ≡⟨ ⟦⟧-eta ⌜ t ⌝ (【Sub₀】 (Sub,, ys u')) (【Sub】 (Subƛ ys) (⟨⟩ ‚ ⟦ u' ⟧₀)) (【≡】-【Sub】-Sub,, ys u') ⟩
+    ≡⟨ ≡-refl ⌜ t ⌝ (【Sub₀】 (Sub,, ys u')) (【Sub】 (Subƛ ys) (⟨⟩ ‚ ⟦ u' ⟧₀)) (【≡】-【Sub】-Sub,, ys u') ⟩
    ⟦ ⌜ t ⌝ ⟧ (【Sub】 (Subƛ ys) (⟨⟩ ‚ ⟦ u' ⟧₀))
     ≡＝⟨ ≡-sym (⟦close⟧ ⌜ t ⌝ (Subƛ ys)
                         _ _ (【≡】-is-refl‚ _ _ (λ ()) (≡-refl₀ u'))
