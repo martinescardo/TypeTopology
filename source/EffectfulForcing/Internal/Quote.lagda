@@ -114,7 +114,7 @@ unpair (succ n) with unpair n
 \begin{code}
 
 π₁ : ℕ → ℕ
-π₁ p = pr₁ (unpair p)
+π₁ = pr₁ ∘ unpair
 
 \end{code}
 
@@ -123,15 +123,15 @@ p is (pairing m n), and we want to return n
 \begin{code}
 
 π₂ : ℕ → ℕ
-π₂ p = pr₂ (unpair p)
+π₂ = pr₂ ∘ unpair
 
 \end{code}
 
 \begin{code}
 
 -- n is (pairing3 x y z), and we want to return x
-pairing3→₁ : (n : ℕ) → ℕ
-pairing3→₁ n = pr₁ (unpair n)
+π3₁ : ℕ → ℕ
+π3₁ = π₁
 
 -- n is (pairing3 x y z), and we want to return y
 pairing3→₂ : (n : ℕ) → ℕ
@@ -207,11 +207,11 @@ pairing→₂-pairing x₁ x₂ = ap pr₂ (unpair-pairing (x₁ , x₂))
 ＝pairing→₂ : {x₁ x₂ : ℕ} → x₁ ＝ x₂ → π₂ x₁ ＝ π₂ x₂
 ＝pairing→₂ {x₁} {x₂} refl = refl
 
-pairing3→₁-pairing3 : (x₁ x₂ x₃ : ℕ) → pairing3→₁ (pair₃ (x₁ , x₂ , x₃)) ＝ x₁
-pairing3→₁-pairing3 x₁ x₂ x₃ = ap pr₁ (unpair-pairing (x₁ , pair (x₂ , x₃)))
+π3₁-pairing3 : (x₁ x₂ x₃ : ℕ) → π3₁ (pair₃ (x₁ , x₂ , x₃)) ＝ x₁
+π3₁-pairing3 x₁ x₂ x₃ = ap pr₁ (unpair-pairing (x₁ , pair (x₂ , x₃)))
 
-＝pairing3→₁ : {x₁ x₂ : ℕ} → x₁ ＝ x₂ → pairing3→₁ x₁ ＝ pairing3→₁ x₂
-＝pairing3→₁ {x₁} {x₂} refl = refl
+＝π3₁ : {x₁ x₂ : ℕ} → x₁ ＝ x₂ → π3₁ x₁ ＝ π3₁ x₂
+＝π3₁ {x₁} {x₂} refl = refl
 
 pairing3→₂-pairing3 : (x₁ x₂ x₃ : ℕ) → pairing3→₂ (pair₃ (x₁ , x₂ , x₃)) ＝ x₂
 pairing3→₂-pairing3 x₁ x₂ x₃ =
