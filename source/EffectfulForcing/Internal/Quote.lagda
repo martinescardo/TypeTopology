@@ -9,12 +9,18 @@ https://github.com/vrahli/opentt/blob/master/encoding3.lagda
 module EffectfulForcing.Internal.Quote where
 
 open import MLTT.Spartan  hiding (rec ; _^_ ; _+_)
---open import Naturals.Order
+open import Naturals.Order renaming (_≤ℕ_ to _≤_; _<ℕ_ to _<_)
+open import Naturals.Addition using (_+_; succ-right; sum-to-zero-gives-zero; addition-commutativity)
 open import EffectfulForcing.MFPSAndVariations.SystemT using (type ; ι ; _⇒_ ; 〖_〗)
 open import EffectfulForcing.Internal.SystemT
 open import UF.Base using (transport₂ ; transport₃ ; ap₂ ; ap₃)
 
--- System T with quotations
+\end{code}
+
+System T with quoting.
+
+\begin{code}
+
 data QT : (Γ : Cxt) (σ : type) → 𝓤₀ ̇  where
  Zero    : {Γ : Cxt} → QT Γ ι
  Succ    : {Γ : Cxt} → QT Γ ι → QT Γ ι
@@ -25,21 +31,9 @@ data QT : (Γ : Cxt) (σ : type) → 𝓤₀ ̇  where
  Quote   : {Γ : Cxt} {σ : type} → QT Γ σ → QT Γ ι
  Unquote : {Γ : Cxt} {σ : type} → QT Γ ι → QT Γ σ
 
--- From the standard library
-data _≤_ : ℕ → ℕ → Type where
-  z≤n : ∀ {n}                 → zero  ≤ n
-  s≤s : ∀ {m n} (m≤n : m ≤ n) → succ m ≤ succ n
+\end{code}
 
-_<_ : ℕ → ℕ → Type
-m < n = succ m ≤ n
-
-≤-trans : {a b c : ℕ} → a ≤ b → b ≤ c → a ≤ c
-≤-trans z≤n       _         = z≤n
-≤-trans (s≤s m≤n) (s≤s n≤o) = s≤s (≤-trans m≤n n≤o)
-
-≤-refl : {a : ℕ} → a ≤ a
-≤-refl {zero}  = z≤n
-≤-refl {succ m} = s≤s (≤-refl {m})
+\begin{code}
 
 _∧_ : 𝟚 → 𝟚 → 𝟚
 ₁ ∧ b = b
@@ -47,35 +41,18 @@ _∧_ : 𝟚 → 𝟚 → 𝟚
 
 infixr 6 _∧_
 
-_+_ : ℕ → ℕ → ℕ
-zero   + m = m
-succ n + m = succ (n + m)
-
-infixl 6 _+_
-
-+-succ : ∀ m n → m + succ n ＝ succ (m + n)
-+-succ zero    n = refl
-+-succ (succ m) n = ap succ (+-succ m n)
-
 succ-injective : ∀ {m n} → succ m ＝ succ n → m ＝ n
 succ-injective refl = refl
--- End
-
-s≤s-inj : {a b : ℕ} → succ a ≤ succ b → a ≤ b
-s≤s-inj {a} {b} (_≤_.s≤s h) = h
 
 comp-ind-ℕ-aux2 : (P : ℕ → Set)
-                   → ((n : ℕ) → ((m : ℕ) → m < n → P m) → P n)
-                   → (n m : ℕ) → m ≤ n → P m
-comp-ind-ℕ-aux2 P ind 0 0 z = ind 0 (λ m ())
-comp-ind-ℕ-aux2 P ind (succ n) 0 z = ind 0 (λ m ())
-comp-ind-ℕ-aux2 P ind (succ n) (succ m) z =
-  ind (succ m) (λ k h → comp-ind-ℕ-aux2 P ind n k (≤-trans (s≤s-inj h) (s≤s-inj z)))
+                → ((n : ℕ) → ((m : ℕ) → m < n → P m) → P n)
+                → (n m : ℕ) → m ≤ n → P m
+comp-ind-ℕ-aux2 P φ n m p = course-of-values-induction P φ m
 
 <ℕind2 : (P : ℕ → Set)
-          → ((n : ℕ) → ((m : ℕ) → m < n → P m) → P n)
-          → (n : ℕ) → P n
-<ℕind2 P ind n = comp-ind-ℕ-aux2 P ind n n ≤-refl
+       → ((n : ℕ) → ((m : ℕ) → m < n → P m) → P n)
+       → (n : ℕ) → P n
+<ℕind2 P ind n = comp-ind-ℕ-aux2 P ind n n (≤-refl n)
 
 ∧＝true→ₗ : {a b : 𝟚} → a ∧ b ＝ ₁ → a ＝ ₁
 ∧＝true→ₗ {₁} {b} x = refl
@@ -132,29 +109,29 @@ pairing3→₃ : (n : ℕ) → ℕ
 pairing3→₃ n = pr₂ (unpairing (pr₂ (unpairing n)))
 
 +＝0→ : (n m : ℕ) → n + m ＝ 0 → (n ＝ 0) × (m ＝ 0)
-+＝0→ 0 m h = refl , h
-+＝0→ (succ n) m ()
++＝0→ n m h = sum-to-zero-gives-zero m n h′ , sum-to-zero-gives-zero n m h
+ where
+  h′ : m + n ＝ 0
+  h′ = m + n ＝⟨ addition-commutativity m n ⟩ n + m ＝⟨ h ⟩ 0 ∎
 
 +0 : (n : ℕ) → n + 0 ＝ n
 +0 0 = refl
 +0 (succ n) = ap succ (+0 n)
 
-pairingAux＝0→ : (x : ℕ) → pairingAux x ＝ 0 → x ＝ 0
-pairingAux＝0→ 0 h = refl
-pairingAux＝0→ (succ x) ()
+pairingAux＝0→ : (n : ℕ) → pairingAux n ＝ 0 → n ＝ 0
+pairingAux＝0→ = {!!}
 
 pairing＝0→ : (x y : ℕ) → pairing (x , y) ＝ 0 → (x ＝ 0) × (y ＝ 0)
-pairing＝0→ x 0 h = pairingAux＝0→ _ h , refl
-pairing＝0→ x (succ y) ()
+pairing＝0→ = {!!}
 
 pairing-x0 : (x : ℕ) → pairing (x , 0) ＝ pairingAux x
-pairing-x0 x = refl
+pairing-x0 x = {!!}
 
 pairing-s0 : (x : ℕ) → pairing (succ x , 0) ＝ succ (pairing (0 , x))
-pairing-s0 x = pairing-x0 (succ x) ∙ ap (λ k → succ (x + pairingAux k)) ((+0 x) ⁻¹)
+pairing-s0 x = {!!}
 
 pairing-xs : (x y : ℕ) → pairing (x , succ y) ＝ succ (pairing (succ x , y))
-pairing-xs x y = ap (λ k → succ (y + k)) (ap pairingAux (+-succ y x) ⁻¹)
+pairing-xs x y = {!!}
 
 ＝pair : {A : 𝓤 ̇ } {B : 𝓥 ̇ } {a₁ a₂ : A} {b₁ b₂ : B} → a₁ ＝ a₂ → b₁ ＝ b₂ → (a₁ , b₁) ＝ (a₂ , b₂)
 ＝pair {_} {_} {A} {B} {a₁} {a₂} {b₁} {b₂} refl refl = refl
@@ -243,7 +220,7 @@ pairing-unpairing (succ n) with unpairing＝ n
   where
     h1 : y + succ ((y + x) + pairingAux (y + x)) ＝ pairing (unpairing n)
     h1 with unpairing n
-    ... | a , b = ap₂ _+_ ((pr₂ (＝pair→ p)) ⁻¹) (ap pairingAux (+-succ y x ⁻¹) ∙ ap₂ (λ u v → pairingAux (u + v)) (pr₂ (＝pair→ p) ⁻¹) (pr₁ (＝pair→ p) ⁻¹))
+    ... | a , b = {!!}
 ... | 0 , y , p = {!!} --rewrite p = →s＝s (trans h1 (pairing-unpairing n))
   where
     h1 : y + pairingAux y ＝ pairing (unpairing n)
