@@ -22,14 +22,14 @@ System T with quoting.
 \begin{code}
 
 data QT : (Γ : Cxt) (σ : type) → 𝓤₀ ̇  where
- Zero    : {Γ : Cxt} → QT Γ ι
- Succ    : {Γ : Cxt} → QT Γ ι → QT Γ ι
- Rec     : {Γ : Cxt} {σ : type} → QT Γ (ι ⇒ σ ⇒ σ) → QT Γ σ → QT Γ ι → QT Γ σ
- ν       : {Γ : Cxt} {σ : type} (i : ∈Cxt σ Γ)  → QT Γ σ
+ Zero    : {Γ : Cxt}              → QT Γ ι
+ Succ    : {Γ : Cxt}              → QT Γ ι → QT Γ ι
+ Rec     : {Γ : Cxt} {σ   : type} → QT Γ (ι ⇒ σ ⇒ σ) → QT Γ σ → QT Γ ι → QT Γ σ
+ ν       : {Γ : Cxt} {σ   : type} → ∈Cxt σ Γ  → QT Γ σ
  ƛ       : {Γ : Cxt} {σ τ : type} → QT (Γ ,, σ) τ → QT Γ (σ ⇒ τ)
  _·_     : {Γ : Cxt} {σ τ : type} → QT Γ (σ ⇒ τ) → QT Γ σ → QT Γ τ
- Quote   : {Γ : Cxt} {σ : type} → QT Γ σ → QT Γ ι
- Unquote : {Γ : Cxt} {σ : type} → QT Γ ι → QT Γ σ
+ Quote   : {Γ : Cxt} {σ   : type} → QT Γ σ → QT Γ ι
+ Unquote : {Γ : Cxt} {σ   : type} → QT Γ ι → QT Γ σ
 
 \end{code}
 
