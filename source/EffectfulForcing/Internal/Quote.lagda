@@ -104,8 +104,8 @@ The unpairing function `unpair`:
 unpair : ℕ → ℕ × ℕ
 unpair 0 = 0 , 0
 unpair (succ n) with unpair n
-... | succ x , y = x , succ y
-... | 0 , y = succ y , 0
+... | zero   , y = succ y , zero
+... | succ x , y = x      , succ y
 
 \end{code}
 
