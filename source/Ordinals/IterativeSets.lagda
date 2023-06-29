@@ -352,11 +352,11 @@ _≤_ : 𝕆 → 𝕆 → 𝓤⁺ ̇
 
 -- TODO (direct). (A , _) ≤ (B , _) ⇔ A ⊆ B
 
-⟪_⟫ : 𝕆 → 𝓤 ̇
-⟪ (sup X _ , _) , _ ⟫ = X
+𝕆-root : 𝕆 → 𝓤 ̇
+𝕆-root ((sup X _ , _) , _) = X
 
-_↡_ : (α : 𝕆) (x : ⟪ α ⟫) → 𝕆
-(A@(sup X φ , φ-emb , is) , io) ↡ x = B , B-io
+𝕆-forest : (α : 𝕆) → 𝕆-root α → 𝕆
+𝕆-forest (A@(sup X φ , φ-emb , is) , io) x = B , B-io
  where
   B : 𝕍
   B = φ x , is x
@@ -367,10 +367,13 @@ _↡_ : (α : 𝕆) (x : ⟪ α ⟫) → 𝕆
   B-io : is-iterative-ordinal B
   B-io = ordinal-is-hereditary A B m io
 
-↡-is-< : (α : 𝕆) (x : ⟪ α ⟫) → (α ↡ x) < α
-↡-is-< ((sup X φ , φ-emb , is) , io) x = x , refl
+-- TODO. 𝕆-forest α is an embedding.
+--       Define 𝕆-sup.
 
--- TODO: (β < α) ＝ (Σ x ꞉ ⟪ α ⟫ , β = (α ↡ x)). (Direct.)
+𝕆-forest-is-< : (α : 𝕆) (x : 𝕆-root α) → 𝕆-forest α x < α
+𝕆-forest-is-< ((sup X φ , φ-emb , is) , io) x = x , refl
+
+-- TODO. (β < α) ＝ (Σ x ꞉ 𝕆-root α , β = 𝕆-forest α x). (Direct.)
 
 <-is-prop-valued : (α β : 𝕆) → is-prop (α < β)
 <-is-prop-valued (A , _) (B , _) = ∈-is-prop-valued A B
@@ -389,10 +392,10 @@ _↡_ : (α : 𝕆) (x : ⟪ α ⟫) → 𝕆
   have-uv = u , v
 
   I : (x : X) → Σ y ꞉ Y , γ y ＝ φ x
-  I x = u (α ↡ x) (↡-is-< α x)
+  I x = u (𝕆-forest α x) (𝕆-forest-is-< α x)
 
   II : (y : Y) → Σ x ꞉ X , φ x ＝ γ y
-  II y = v (β ↡ y) (↡-is-< β y)
+  II y = v (𝕆-forest β y) (𝕆-forest-is-< β y)
 
   f : X → Y
   f x = pr₁ (I x)
@@ -500,3 +503,7 @@ open import Ordinals.Type
 \end{code}
 
 To be continued.
+
+TODO. Define 𝕆-induction following the pattern for 𝕍-induction and
+∈-induction. Then replace the proof of accessibility by a shorter one
+using 𝕆-induction.
