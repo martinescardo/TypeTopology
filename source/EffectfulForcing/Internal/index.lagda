@@ -19,13 +19,15 @@ import EffectfulForcing.Internal.FurtherThoughts
 
 \end{code}
 
- 1. The file Internal gives a Church-encoded dialogue tree of system T.
+ 1. The file Internal gives Church-encoded dialogue trees of system T
+    terms t : (ι → ι) → ι.
 
  2. The file External gives a semantics in terms of inductive dialogue
-    trees and proves the correctness of the dialogue trees.
+    trees and formulates and proves the correctness of the produced
+    dialogue trees.
 
- 3. The file Correctness proves the correctness (1) using the
-    composition of the logical relation defined in (2) with second
-    logical relation.
+ 3. The file Correctness proves the correctness of (1) using the
+    composition of the logical relation defined in (2) with a second
+    logical relation defined for that purpose.
 
  4. The file FurtherThoughts contains some work in progress.
