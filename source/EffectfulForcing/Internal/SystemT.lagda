@@ -2,7 +2,8 @@ Martin Escardo, Bruno da Rocha Paiva, Ayberk Tosun, and Vincent Rahli, June 2023
 
 Gödel's system T and its standard set-theoretical semantics. This is a
 modification of EffectufulForcing.MFPSAndVariations.SystemT, based on
-PLFA (https://plfa.github.io/), which avoids lots of transport.
+PLFA (https://plfa.github.io/), which avoids lots of transport in the
+file Subst.
 
 \begin{code}
 

@@ -16,7 +16,7 @@ open import EffectfulForcing.MFPSAndVariations.LambdaCalculusVersionOfMFPS
 open import EffectfulForcing.MFPSAndVariations.Church
                               hiding (B⋆【_】 ; ⟪⟫⋆ ; _‚‚⋆_ ; B⋆⟦_⟧ ; dialogue-tree⋆)
 open import EffectfulForcing.Internal.Internal hiding (B⋆⟦_⟧ ; dialogue-tree⋆)
-open import EffectfulForcing.Internal.LambdaWithoutOracle
+open import EffectfulForcing.Internal.External
 open import EffectfulForcing.Internal.SystemT
 open import EffectfulForcing.Internal.Subst
 open import EffectfulForcing.Internal.Correctness

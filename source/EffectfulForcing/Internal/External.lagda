@@ -1,14 +1,15 @@
-Vincent Rahli 20 May 2023
+Vincent Rahli 2015, 20 May 2023
 
 The original version of effectful forcing used system T extended with
 oracles. Here we avoid the oracles by modifying the logical
-relation. We work with the lambda calculus version of system T.
+relation. We work with the lambda calculus version of system T. The
+original 2015 version was for the combinatory version of system T.
 
 \begin{code}
 
 {-# OPTIONS --safe --without-K --exact-split #-}
 
-module EffectfulForcing.Internal.LambdaWithoutOracle where
+module EffectfulForcing.Internal.External where
 
 open import MLTT.Spartan hiding (rec ; _^_) renaming (⋆ to 〈〉)
 open import EffectfulForcing.MFPSAndVariations.Combinators
