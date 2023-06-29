@@ -76,7 +76,7 @@ Equip the internal nodes of a type tree with structure:
 
 \begin{code}
 
-structure : (S : Type → 𝓤 ̇ ) → 𝕋 → 𝓤 ̇
+structure : (Type → 𝓤 ̇ ) → 𝕋 → 𝓤 ̇
 structure S []       = 𝟙
 structure S (X ∷ Xf) = S X × ((x : X) → structure S (Xf x))
 

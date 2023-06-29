@@ -1,8 +1,8 @@
 Vincent Rahli 20 May 2023
 
-This is an adaptation of WithoutOracle where we're using SystemT instead of CombinatoryT.
-
-Alternatively, it can be seen as adaptation of LambdaCalculusVersionOfMFPS written by Martin, where we use a slighlty different relation instead of using T'.
+The original version of effectful forcing used system T extended with
+oracles. Here we avoid the oracles by modifying the logical
+relation. We work with the lambda calculus version of system T.
 
 \begin{code}
 
@@ -17,25 +17,6 @@ open import EffectfulForcing.MFPSAndVariations.Dialogue
 open import EffectfulForcing.MFPSAndVariations.SystemT using (type ; ι ; _⇒_ ; 〖_〗)
 open import EffectfulForcing.MFPSAndVariations.LambdaCalculusVersionOfMFPS using (B〖_〗 ; Kleisli-extension ; zero' ; succ' ; rec')
 open import EffectfulForcing.Internal.SystemT
-
-{-
-B〖_〗 : type → 𝓤₀ ̇
-B〖 ι 〗     = B ℕ
-B〖 σ ⇒ τ 〗 = B〖 σ 〗 → B〖 τ 〗
-
-Kleisli-extension : {X : 𝓤₀ ̇ } {σ : type} → (X → B〖 σ 〗) → B X → B〖 σ 〗
-Kleisli-extension {X} {ι}     = kleisli-extension
-Kleisli-extension {X} {σ ⇒ τ} = λ g d s → Kleisli-extension {X} {τ} (λ x → g x s) d
-
-zero' : B ℕ
-zero' = η zero
-
-succ' : B ℕ → B ℕ
-succ' = B-functor succ
-
-rec' : {σ : type} → (B ℕ → B〖 σ 〗 → B〖 σ 〗) → B〖 σ 〗 → B ℕ → B〖 σ 〗
-rec' f x = Kleisli-extension (rec (f ∘ η) x)
--}
 
 B【_】 : (Γ : Cxt) → Type
 B【 Γ 】 = {σ : type} (i : ∈Cxt σ Γ) → B〖 σ 〗
