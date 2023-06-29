@@ -95,6 +95,20 @@ B-functor-meaning : {X Y A : type}
                   ＝ B⋆-functor
 B-functor-meaning = refl
 
+⌜star⌝ : {X Y A : type} {Γ : Cxt}
+       → T Γ ((⌜B⌝ (X ⇒ Y) A) ⇒ ⌜B⌝ X A ⇒ ⌜B⌝ Y A)
+⌜star⌝ =
+ ƛ (ƛ (⌜kleisli-extension⌝
+       · ƛ (⌜B-functor⌝
+            · ƛ (ν₀ · ν₁)
+            · ν₂)
+       · ν₀))
+
+-- λη.λβ.t (λs.f (λg.η(g s)) β) β
+⌜app⌝ : {A : type} {σ τ : type} {Γ : Cxt}
+       (f : T Γ (⌜B⌝ (σ ⇒ τ) A)) (t : T Γ (⌜B⌝ σ A)) → T Γ (⌜B⌝ τ A)
+⌜app⌝ {A} {σ} {τ} {Γ} f t = ⌜star⌝ · f · t
+
 B-type〖_〗 : type → type → type
 B-type〖 ι 〗 A     = ⌜B⌝ ι A
 B-type〖 σ ⇒ τ 〗 A = B-type〖 σ 〗 A ⇒ B-type〖 τ 〗 A
