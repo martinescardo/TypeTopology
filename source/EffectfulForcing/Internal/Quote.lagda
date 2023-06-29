@@ -30,21 +30,9 @@ data QT : (Γ : Cxt) (σ : type) → 𝓤₀ ̇  where
  Quote   : {Γ : Cxt} {σ : type} → QT Γ σ → QT Γ ι
  Unquote : {Γ : Cxt} {σ : type} → QT Γ ι → QT Γ σ
 
--- From the standard library
-data _≤_ : ℕ → ℕ → Type where
-  z≤n : ∀ {n}                 → zero  ≤ n
-  s≤s : ∀ {m n} (m≤n : m ≤ n) → succ m ≤ succ n
+\end{code}
 
-_<_ : ℕ → ℕ → Type
-m < n = succ m ≤ n
-
-≤-trans : {a b c : ℕ} → a ≤ b → b ≤ c → a ≤ c
-≤-trans z≤n       _         = z≤n
-≤-trans (s≤s m≤n) (s≤s n≤o) = s≤s (≤-trans m≤n n≤o)
-
-≤-refl : {a : ℕ} → a ≤ a
-≤-refl {zero}  = z≤n
-≤-refl {succ m} = s≤s (≤-refl {m})
+\begin{code}
 
 _∧_ : 𝟚 → 𝟚 → 𝟚
 ₁ ∧ b = b
@@ -64,23 +52,27 @@ infixl 6 _+_
 
 succ-injective : ∀ {m n} → succ m ＝ succ n → m ＝ n
 succ-injective refl = refl
--- End
-
-s≤s-inj : {a b : ℕ} → succ a ≤ succ b → a ≤ b
-s≤s-inj {a} {b} (_≤_.s≤s h) = h
 
 comp-ind-ℕ-aux2 : (P : ℕ → Set)
-                   → ((n : ℕ) → ((m : ℕ) → m < n → P m) → P n)
-                   → (n m : ℕ) → m ≤ n → P m
-comp-ind-ℕ-aux2 P ind 0 0 z = ind 0 (λ m ())
-comp-ind-ℕ-aux2 P ind (succ n) 0 z = ind 0 (λ m ())
-comp-ind-ℕ-aux2 P ind (succ n) (succ m) z =
-  ind (succ m) (λ k h → comp-ind-ℕ-aux2 P ind n k (≤-trans (s≤s-inj h) (s≤s-inj z)))
+                → ((n : ℕ) → ((m : ℕ) → m < n → P m) → P n)
+                → (n m : ℕ) → m ≤ n → P m
+comp-ind-ℕ-aux2 P ind 0        0        z = ind 0 λ _ ()
+comp-ind-ℕ-aux2 P ind (succ n) 0        z = ind 0 λ _ ()
+comp-ind-ℕ-aux2 P ind (succ n) (succ m) z = ind (succ m) †
+ where
+  † : (k : ℕ) → k < succ m → P k
+  † k p = comp-ind-ℕ-aux2 P ind n k ‡
+   where
+    ※ : succ k ≤ succ n
+    ※ = ≤-trans (succ k) (succ m) (succ n) p z
+
+    ‡ : k ≤ n
+    ‡ = succ-order-injective k n ※
 
 <ℕind2 : (P : ℕ → Set)
-          → ((n : ℕ) → ((m : ℕ) → m < n → P m) → P n)
-          → (n : ℕ) → P n
-<ℕind2 P ind n = comp-ind-ℕ-aux2 P ind n n ≤-refl
+       → ((n : ℕ) → ((m : ℕ) → m < n → P m) → P n)
+       → (n : ℕ) → P n
+<ℕind2 P ind n = comp-ind-ℕ-aux2 P ind n n (≤-refl n)
 
 ∧＝true→ₗ : {a b : 𝟚} → a ∧ b ＝ ₁ → a ＝ ₁
 ∧＝true→ₗ {₁} {b} x = refl
