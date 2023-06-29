@@ -66,18 +66,22 @@ In the same way as the type of moves at a given stage of the game
 depends on the previously played moves, so do the quantifiers and
 selection functions.
 
-𝓚 assigns a quantifier to each node in a given tree:
+𝓚 decorates each internal node X of a type tree with the type K X of
+quantifiers over X.
 
 \begin{code}
 
 𝓚 : 𝕋 → Type
-𝓚 []       = 𝟙
-𝓚 (X ∷ Xf) = K X × ((x : X) → 𝓚 (Xf x))
+𝓚 = structure K
+
+remark-𝓚-[] : 𝓚 [] ＝ 𝟙
+remark-𝓚-[] = refl
+
+remark-𝓚-∷ : (X : Type) (Xf : X → 𝕋)
+           → 𝓚 (X ∷ Xf) ＝ K X × ((x : X) → 𝓚 (Xf x))
+remark-𝓚-∷ X Xf = refl
 
 \end{code}
-
-NB. 𝓚 can be defined by 𝓚 = structure K where structure is defined in
-the module Games.Structure.
 
  * ϕ  ranges over the type K X of quantifiers.
  * ϕt ranges over the type 𝓚 Xt of quantifier trees.
@@ -126,19 +130,23 @@ optimal-outcome (game Xt q ϕt) = K-sequence ϕt q
 
 \end{code}
 
-A strategy defines how to pick a path of a tree. The type Strategy of
-all possible strategies is constructed as follows (Definition 4 of [1]):
+
+A strategy assigns a move to each mode of a tree. This corresponds to
+Definition 4 of [1]:
 
 \begin{code}
 
 Strategy : 𝕋 -> Type
-Strategy []       = 𝟙
-Strategy (X ∷ Xf) = X × ((x : X) → Strategy (Xf x))
+Strategy = structure (λ (X : Type) → X)
+
+remark-Strategy-[] : Strategy [] ＝ 𝟙
+remark-Strategy-[] = refl
+
+remark-Strategy-∷ : (X : Type) (Xf : X → 𝕋)
+                  → Strategy (X ∷ Xf) ＝ X × ((x : X) → Strategy (Xf x))
+remark-Strategy-∷ X Xf = refl
 
 \end{code}
-
-NB. Strategy can be defined by Strategy = structure (λ X → X) where
-structure is defined in the module Games.Structure.
 
  * σ ranges over the type Strategy Xt of strategies for a
    dependent-type tree Xt.
@@ -269,18 +277,21 @@ We now show how to use selection functions to compute a sgpe strategy.
 We use selection functions, as in Section 2 of reference [1], defined
 in another module.
 
-𝓙 assigns selection functions to the nodes.
+𝓙 assigns types of selection functions to the nodes.
 
 \begin{code}
 
 𝓙 : 𝕋 → Type
-𝓙 []       = 𝟙
-𝓙 (X ∷ Xf) = J X × ((x : X) → 𝓙 (Xf x))
+𝓙 = structure J
+
+remark-𝓙-[] : 𝓙 [] ＝ 𝟙
+remark-𝓙-[] = refl
+
+remark-𝓙-∷ : (X : Type) (Xf : X → 𝕋)
+           → 𝓙 (X ∷ Xf) ＝ J X × ((x : X) → 𝓙 (Xf x))
+remark-𝓙-∷ X Xf = refl
 
 \end{code}
-
-NB. 𝓙 can be defined by 𝓙 = structure J where structure is defined in
-the module Games.Structure.
 
 * ε ranges over the type J X of selection functions.
  * εt ranges over the type 𝓙 Xt of selection-function trees.

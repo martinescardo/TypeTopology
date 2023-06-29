@@ -42,11 +42,11 @@ list-Fin-correct (succ n) (suc i) = in-tail g
   g : member (suc i) (map suc (list-Fin n))
   g = member-map suc i (list-Fin n) IH
 
-Fin-listable : (n : ℕ) → listable (Fin n)
-Fin-listable n = list-Fin n , list-Fin-correct n
+Fin-listed : (n : ℕ) → listed (Fin n)
+Fin-listed n = list-Fin n , list-Fin-correct n
 
-Fin-listable⁺ : (n : ℕ) → listable⁺ (Fin (succ n))
-Fin-listable⁺ n = 𝟎 , Fin-listable (succ n)
+Fin-listed⁺ : (n : ℕ) → listed⁺ (Fin (succ n))
+Fin-listed⁺ n = 𝟎 , Fin-listed (succ n)
 
 Fin-== : {n : ℕ} → Fin n → Fin n → Bool
 Fin-== {succ n} (suc x) (suc y) = Fin-== {n} x y

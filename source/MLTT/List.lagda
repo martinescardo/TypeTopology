@@ -98,22 +98,22 @@ member'-map : {X Y : Type} (f : X → Y) (x : X) (xs : List X)
 member'-map f x' (x ∷ xs) (inl p) = inl (ap f p)
 member'-map f x' (x ∷ xs) (inr m) = inr (member-map f x' xs m)
 
-listable : Type → Type
-listable X = Σ xs ꞉ List X , ((x : X) → member x xs)
+listed : Type → Type
+listed X = Σ xs ꞉ List X , ((x : X) → member x xs)
 
-listable⁺ : Type → Type
-listable⁺ X = X × listable X
+listed⁺ : Type → Type
+listed⁺ X = X × listed X
 
 type-from-list : {X : Type} → List X → Type
 type-from-list {X} xs = Σ x ꞉ X , member x xs
 
-type-from-list-is-listable : {X : Type} (xs : List X)
-                           → listable (type-from-list xs)
-type-from-list-is-listable {X} [] = [] , g
+type-from-list-is-listed : {X : Type} (xs : List X)
+                         → listed (type-from-list xs)
+type-from-list-is-listed {X} [] = [] , g
  where
   g : (σ : type-from-list []) → member σ []
   g (x , ())
-type-from-list-is-listable {X} (x ∷ xs) = g
+type-from-list-is-listed {X} (x ∷ xs) = g
  where
   h : (x : X) → type-from-list (x ∷ xs)
   h x = x , in-head
@@ -124,16 +124,16 @@ type-from-list-is-listable {X} (x ∷ xs) = g
   α : List (type-from-list xs) → List (type-from-list (x ∷ xs))
   α σs = h x ∷ map t σs
 
-  β : ((σs , μ) : listable (type-from-list xs))
+  β : ((σs , μ) : listed (type-from-list xs))
     → (τ : type-from-list (x ∷ xs)) → member τ (α σs)
   β (σs , μ) (y , in-head)   = in-head
   β (σs , μ) (y , in-tail m) = in-tail (member-map t (y , m) σs (μ (y , m)))
 
-  f : listable (type-from-list xs) → listable (type-from-list (x ∷ xs))
+  f : listed (type-from-list xs) → listed (type-from-list (x ∷ xs))
   f (σs , μ) = α σs , β (σs , μ)
 
-  g : listable (type-from-list (x ∷ xs))
-  g = f (type-from-list-is-listable xs)
+  g : listed (type-from-list (x ∷ xs))
+  g = f (type-from-list-is-listed xs)
 
 module _ {X : 𝓤 ̇ } where
 
