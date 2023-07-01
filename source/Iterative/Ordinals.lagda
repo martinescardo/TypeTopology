@@ -141,7 +141,7 @@ _≤_ : 𝕆 → 𝕆 → 𝓤 ⁺ ̇
 
 𝕆-forest-is-embedding : (α : 𝕆) → is-embedding (𝕆-forest α)
 𝕆-forest-is-embedding α@(A@(sup _ _ , _) , _) =
- pair-fun-embedding-special
+ pair-fun-is-embedding-special
   (pr₁ ∘ 𝕆-forest α)
   (pr₂ ∘ 𝕆-forest α)
   (𝕍-forest-is-embedding A)

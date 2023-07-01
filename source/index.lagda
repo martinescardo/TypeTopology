@@ -146,6 +146,7 @@ import Groups.index                   -- originally by Martin Escardo with many 
                                       -- by Ettore Aldrovandi and Keri D'Angelo
 import InjectiveTypes.index
 import Integers.index                 -- by Andrew Sneap
+import Iterative.index                -- by Martin Escardo and Tom de Jong
 import Lifting.index
 import Locales.index                  -- by Ayberk Tosun
 import MGS.index                      -- Modular version of https://github.com/martinescardo/HoTT-UF-Agda-Lecture-Notes

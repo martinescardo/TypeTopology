@@ -155,7 +155,7 @@ A ⊆ B = (C : 𝕍) → C ∈ A → C ∈ B
 
 𝕍-forest-is-embedding : (A : 𝕍) → is-embedding (𝕍-forest A)
 𝕍-forest-is-embedding A@(sup X φ , φ-emb , is) =
- pair-fun-embedding-special φ is φ-emb being-iset-is-prop
+ pair-fun-is-embedding-special φ is φ-emb being-iset-is-prop
 
 𝕍-sup : (X : 𝓤 ̇ ) (ϕ : X → 𝕍) → is-embedding ϕ → 𝕍
 𝕍-sup X ϕ ϕ-emb = sup X φ , I , φi

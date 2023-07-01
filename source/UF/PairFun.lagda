@@ -163,14 +163,14 @@ pair-fun-embedding (f , i) g = pair-fun f (λ x → ⌊ g x ⌋) ,
                                 (λ x → ⌊ g x ⌋-is-embedding)
 
 
-pair-fun-embedding-special : {𝓤 𝓥 𝓦 : Universe}
-                             {X : 𝓤 ̇  } {Y : 𝓥 ̇  } {B : Y → 𝓦 ̇  }
-                           → (f : X → Y)
-                           → (g : (x : X) → B (f x))
-                           → is-embedding f
-                           → ((y : Y) → is-prop (B y))
-                           → is-embedding (λ x → f x , g x)
-pair-fun-embedding-special {𝓤} {𝓥} {𝓦} {X} {Y} {B} f g f-emb B-is-prop = e
+pair-fun-is-embedding-special : {𝓤 𝓥 𝓦 : Universe}
+                                {X : 𝓤 ̇  } {Y : 𝓥 ̇  } {B : Y → 𝓦 ̇  }
+                              → (f : X → Y)
+                              → (g : (x : X) → B (f x))
+                              → is-embedding f
+                              → ((y : Y) → is-prop (B y))
+                              → is-embedding (λ x → f x , g x)
+pair-fun-is-embedding-special {𝓤} {𝓥} {𝓦} {X} {Y} {B} f g f-emb B-is-prop = e
  where
   k : X ≃ X × 𝟙 {𝓤}
   k = ≃-sym 𝟙-rneutral
