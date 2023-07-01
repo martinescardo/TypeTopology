@@ -12,9 +12,10 @@ module UF.PairFun where
 open import MLTT.Spartan
 open import TypeTopology.Density
 
-open import UF.Subsingletons
-open import UF.Equiv
 open import UF.Embeddings
+open import UF.Equiv
+open import UF.EquivalenceExamples
+open import UF.Subsingletons
 
 module _ {𝓤 𝓥 𝓦 𝓣}
          {X : 𝓤 ̇ }
@@ -160,5 +161,36 @@ pair-fun-embedding (f , i) g = pair-fun f (λ x → ⌊ g x ⌋) ,
                                 ((λ x → ⌊ g x ⌋))
                                 i
                                 (λ x → ⌊ g x ⌋-is-embedding)
+
+
+pair-fun-embedding-special : {𝓤 𝓥 𝓦 : Universe}
+                             {X : 𝓤 ̇  } {Y : 𝓥 ̇  } {B : Y → 𝓦 ̇  }
+                           → (f : X → Y)
+                           → (g : (x : X) → B (f x))
+                           → is-embedding f
+                           → ((y : Y) → is-prop (B y))
+                           → is-embedding (λ x → f x , g x)
+pair-fun-embedding-special {𝓤} {𝓥} {𝓦} {X} {Y} {B} f g f-emb B-is-prop = e
+ where
+  k : X ≃ X × 𝟙 {𝓤}
+  k = ≃-sym 𝟙-rneutral
+
+  k-emb : is-embedding ⌜ k ⌝
+  k-emb = equivs-are-embeddings ⌜ k ⌝ ⌜ k ⌝-is-equiv
+
+  h : X → Σ B
+  h x = f x , g x
+
+  g' : (x : X) → 𝟙 → B (f x)
+  g' x _ = g x
+
+  g'-emb : (x : X) → is-embedding (g' x)
+  g'-emb x = maps-of-props-are-embeddings (g' x) 𝟙-is-prop (B-is-prop (f x))
+
+  remark : h ＝ pair-fun f g' ∘ ⌜ k ⌝
+  remark = refl
+
+  e : is-embedding h
+  e = ∘-is-embedding k-emb (pair-fun-is-embedding f g' f-emb g'-emb)
 
 \end{code}
