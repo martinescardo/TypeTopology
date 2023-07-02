@@ -49,12 +49,12 @@ The induction principle for 𝕄:
 
 \begin{code}
 
-𝕍-induction : (P : 𝕄 → 𝓥 ̇ )
+𝕄-induction : (P : 𝕄 → 𝓥 ̇ )
             → ((X : 𝓤 ̇ ) (ϕ : X → 𝕄)
                   → ((x : X) → P (ϕ x))
                   → P (sup X ϕ))
             → (M : 𝕄) → P M
-𝕍-induction P f = h
+𝕄-induction P f = h
  where
   h : (M : 𝕄) → P M
   h (sup X φ) = f X φ (λ x → h (φ x))
