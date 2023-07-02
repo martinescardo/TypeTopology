@@ -45,4 +45,4 @@ Coincide" is carried out but using Gylterud's construction of the cumulative
 hierarchy 𝕍 as iterative sets, instead of (axiomatically) working with the
 higher inductive presentation. The type 𝕆 of hereditarily transitive sets is the
 type of iterative ordinals and corresponds to 𝕍ᵒʳᵈ in the original development
-OrdinalsCumulativeHierarchy.lagda.
+Ordinals.CumulativeHierarchy.lagda.
