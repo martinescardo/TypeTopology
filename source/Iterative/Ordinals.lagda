@@ -287,6 +287,16 @@ being-lower-closed-is-prop ϕ e = Π₃-is-prop fe (λ x β _ → e β)
   io : is-iterative-ordinal A
   io = II , III
 
+𝕆-sup-root : (X : 𝓤 ̇ )
+             (ϕ : X → 𝕆) (e : is-embedding ϕ) (l : is-lower-closed ϕ)
+           → 𝕆-root (𝕆-sup X ϕ e l) ＝ X
+𝕆-sup-root X ϕ e l = refl
+
+𝕆-sup-forest : (X : 𝓤 ̇ )
+               (ϕ : X → 𝕆) (e : is-embedding ϕ) (l : is-lower-closed ϕ)
+             → 𝕆-forest (𝕆-sup X ϕ e l) ∼ ϕ
+𝕆-sup-forest X ϕ e l x = to-subtype-＝ being-iordinal-is-prop refl
+
 𝕆-η : (α : 𝕆)
     → 𝕆-sup (𝕆-root α)
             (𝕆-forest α)
@@ -303,6 +313,24 @@ being-lower-closed-is-prop ϕ e = Π₃-is-prop fe (λ x β _ → e β)
          where
           I = ap (𝕍-sup (𝕍-root A) (𝕍-forest A)) (being-embedding-is-prop fe _ _ _)
 
+\end{code}
+
+𝕆-sup doesn't actually compute suprema: 𝕆-sup X ϕ e l is the unique
+ordinal whose predecessors are precisely the members of the family ϕ.
+
+\begin{code}
+
+𝕆-sup-behaviour : (X : 𝓤 ̇ )
+                  (ϕ : X → 𝕆) (e : is-embedding ϕ) (l : is-lower-closed ϕ)
+                  (α : 𝕆)
+                → (α < 𝕆-sup X ϕ e l) ≃ (Σ x ꞉ X , ϕ x ＝ α)
+𝕆-sup-behaviour X ϕ e l α =
+ (α < 𝕆-sup X ϕ e l)                         ≃⟨ I ⟩
+ (Σ x ꞉ X , 𝕆-forest (𝕆-sup X ϕ e l) x ＝ α) ≃⟨ II ⟩
+ (Σ x ꞉ X , ϕ x ＝ α)                         ■
+ where
+  I = <-behaviour α (𝕆-sup X ϕ e l)
+  II = Σ-cong (λ x → ＝-cong-l _ _ (𝕆-sup-forest X ϕ e l x))
 
 \end{code}
 
