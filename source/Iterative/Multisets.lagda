@@ -30,6 +30,12 @@ data 𝕄 : 𝓤 ⁺ ̇ where
 𝕄-forest : (M : 𝕄) → 𝕄-root M → 𝕄
 𝕄-forest (sup X φ) = φ
 
+\end{code}
+
+A criterion for equality in 𝕄:
+
+\begin{code}
+
 to-𝕄-＝ : {X Y : 𝓤 ̇ }
           {φ : X → 𝕄}
           {γ : Y → 𝕄}
@@ -38,3 +44,21 @@ to-𝕄-＝ : {X Y : 𝓤 ̇ }
 to-𝕄-＝ {X} (refl , f) = ap (sup X) f
 
 \end{code}
+
+The induction principle for 𝕄:
+
+\begin{code}
+
+𝕍-induction : (P : 𝕄 → 𝓥 ̇ )
+            → ((X : 𝓤 ̇ ) (ϕ : X → 𝕄)
+                  → ((x : X) → P (ϕ x))
+                  → P (sup X ϕ))
+            → (M : 𝕄) → P M
+𝕍-induction P f = h
+ where
+  h : (M : 𝕄) → P M
+  h (sup X φ) = f X φ (λ x → h (φ x))
+
+\end{code}
+
+TODO. 𝕄 is locally small.

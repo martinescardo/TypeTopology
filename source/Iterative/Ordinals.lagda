@@ -4,7 +4,7 @@ Iterative ordinals.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K --exact-split --lossy-unification #-}
 
 open import MLTT.Spartan
 open import UF.Univalence
@@ -27,6 +27,7 @@ private
 open import Iterative.Multisets 𝓤
 open import Iterative.Sets 𝓤 ua
 open import Ordinals.Notions
+open import Ordinals.Type
 open import UF.Base
 open import UF.Embeddings
 open import UF.Equiv
@@ -36,10 +37,9 @@ open import UF.PropIndexedPiSigma
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
-
 \end{code}
 
-The type of iterative ordinals.
+An iterative ordinal is a transitive iterative set.
 
 \begin{code}
 
@@ -84,6 +84,12 @@ ordinal-is-hereditary A B B-in-A (A-trans , A-members-trans) = III
   III : is-iterative-ordinal B
   III = I , II
 
+\end{code}
+
+The type of iterative ordinals.
+
+\begin{code}
+
 𝕆 : 𝓤 ⁺ ̇
 𝕆 = Σ A ꞉ 𝕍 , is-iterative-ordinal A
 
@@ -93,11 +99,20 @@ underlying-iset = pr₁
 underlying-iset-is-embedding : is-embedding underlying-iset
 underlying-iset-is-embedding = pr₁-is-embedding being-iordinal-is-prop
 
-ordinals-are-iterative : (α : 𝕆) → is-iterative-ordinal (underlying-iset α)
-ordinals-are-iterative = pr₂
+underlying-iset-is-iordinal : (α : 𝕆) → is-iterative-ordinal (underlying-iset α)
+underlying-iset-is-iordinal = pr₂
 
 _<_ : 𝕆 → 𝕆 → 𝓤 ⁺ ̇
 α < β = underlying-iset α ∈ underlying-iset β
+
+<-is-prop-valued : (α β : 𝕆) → is-prop (α < β)
+<-is-prop-valued (A , _) (B , _) = ∈-is-prop-valued A B
+
+<-is-transitive : (α β γ : 𝕆) → α < β → β < γ → α < γ
+<-is-transitive (A , _) (B , _) (C , C-trans , _) u v = I
+ where
+  I : A ∈ C
+  I = C-trans B A v u
 
 _≤_ : 𝕆 → 𝕆 → 𝓤 ⁺ ̇
 α ≤ β = ∀ γ → γ < α → γ < β
@@ -139,6 +154,9 @@ _≤_ : 𝕆 → 𝕆 → 𝓤 ⁺ ̇
   io' : is-iterative-ordinal (𝕍-forest A x)
   io' = ordinal-is-hereditary A (𝕍-forest A x) m io
 
+𝕆-forest-is-< : (α : 𝕆) (x : 𝕆-root α) → 𝕆-forest α x < α
+𝕆-forest-is-< ((sup X φ , φ-emb , is) , io) x = x , refl
+
 𝕆-forest-is-embedding : (α : 𝕆) → is-embedding (𝕆-forest α)
 𝕆-forest-is-embedding α@(A@(sup _ _ , _) , _) =
  pair-fun-is-embedding-special
@@ -146,28 +164,6 @@ _≤_ : 𝕆 → 𝕆 → 𝓤 ⁺ ̇
   (pr₂ ∘ 𝕆-forest α)
   (𝕍-forest-is-embedding A)
   being-iordinal-is-prop
-
-is-lower-closed : {X : 𝓤 ̇ } → (X → 𝕆) → 𝓤 ⁺ ̇
-is-lower-closed {X} ϕ = (x : X) (β : 𝕆) → β < ϕ x → Σ y ꞉ X , ϕ y ＝ β
-
-being-lower-closed-is-prop : {X : 𝓤 ̇ } (ϕ : X → 𝕆)
-                           → is-embedding ϕ
-                           → is-prop (is-lower-closed ϕ)
-being-lower-closed-is-prop ϕ e = Π₃-is-prop fe (λ x β _ → e β)
-
-𝕆-forest-is-< : (α : 𝕆) (x : 𝕆-root α) → 𝕆-forest α x < α
-𝕆-forest-is-< ((sup X φ , φ-emb , is) , io) x = x , refl
-
--- TODO. (β < α) ＝ (Σ x ꞉ 𝕆-root α , β = 𝕆-forest α x). (Direct.)
-
-<-is-prop-valued : (α β : 𝕆) → is-prop (α < β)
-<-is-prop-valued (A , _) (B , _) = ∈-is-prop-valued A B
-
-<-is-transitive : (α β γ : 𝕆) → α < β → β < γ → α < γ
-<-is-transitive (A , _) (B , _) (C , C-trans , _) u v = I
- where
-  I : A ∈ C
-  I = C-trans B A v u
 
 <-is-extensional : is-extensional _<_
 <-is-extensional α@(A , iA) β@(B , iB) u v = II
@@ -178,61 +174,221 @@ being-lower-closed-is-prop ϕ e = Π₃-is-prop fe (λ x β _ → e β)
   II : A , iA ＝ B , iB
   II = to-subtype-＝ (being-iordinal-is-prop) I
 
-<-is-accessible : (α : 𝕆) → is-accessible _<_ α
-<-is-accessible ((M , is) , io) = h M is io
+<-behaviour : (α β : 𝕆)
+            → (α < β)
+            ≃ (Σ y ꞉ 𝕆-root β , 𝕆-forest β y ＝ α)
+<-behaviour α@(A@(M , _) , _) β@(B@(N@(sup Y γ) , _) , _) = II
+ where
+  I : (y : Y) → (γ y ＝ M) ≃ (𝕆-forest β y ＝ α)
+  I y = (γ y ＝ M)          ≃⟨ a ⟩
+        (𝕍-forest B y ＝ A) ≃⟨ b ⟩
+        (𝕆-forest β y ＝ α) ■
+         where
+          a = embedding-criterion-converse
+               pr₁
+               (pr₁-is-embedding being-iset-is-prop)
+               (𝕍-forest B y)
+               A
+          b = embedding-criterion-converse
+               pr₁
+               (pr₁-is-embedding being-iordinal-is-prop)
+               (𝕆-forest β y)
+               α
+
+  II : (Σ y ꞉ Y , γ y ＝ M) ≃ (Σ y ꞉ Y , 𝕆-forest β y ＝ α)
+  II = Σ-cong I
+
+is-lower-closed : {X : 𝓤 ̇ } → (X → 𝕆) → 𝓤 ⁺ ̇
+is-lower-closed {X} ϕ = (x : X) (β : 𝕆) → β < ϕ x → Σ y ꞉ X , ϕ y ＝ β
+
+being-lower-closed-is-prop : {X : 𝓤 ̇ } (ϕ : X → 𝕆)
+                           → is-embedding ϕ
+                           → is-prop (is-lower-closed ϕ)
+being-lower-closed-is-prop ϕ e = Π₃-is-prop fe (λ x β _ → e β)
+
+𝕆-forest-is-lower-closed : (α : 𝕆) → is-lower-closed (𝕆-forest α)
+𝕆-forest-is-lower-closed α@(A@(M@(sup X φ) , _) , _)
+                         x
+                         β@(B@(N , _) , _) l = VII
+ where
+  have-l : β < 𝕆-forest α x
+  have-l = l
+
+  I : 𝕆-forest α x < α
+  I = 𝕆-forest-is-< α x
+
+  II : β < α
+  II = <-is-transitive β (𝕆-forest α x) α l I
+
+  VII : Σ y ꞉ X , 𝕆-forest α y ＝ β
+  VII = ⌜ <-behaviour β α ⌝ II
+
+𝕆-sup : (X : 𝓤 ̇ ) (ϕ : X → 𝕆) → is-embedding ϕ → is-lower-closed ϕ → 𝕆
+𝕆-sup X ϕ ϕ-emb ϕ-lower = A , io
+ where
+  φ : X → 𝕍
+  φ = underlying-iset ∘ ϕ
+
+  φ-iter : (x : X) → is-iterative-ordinal (φ x)
+  φ-iter = underlying-iset-is-iordinal ∘ ϕ
+
+  φ-emb : is-embedding φ
+  φ-emb = ∘-is-embedding ϕ-emb (pr₁-is-embedding being-iordinal-is-prop)
+
+  A : 𝕍
+  A = 𝕍-sup X φ φ-emb
+
+  A-behaviour : (B : 𝕍) → B ∈ A ≃ (Σ x ꞉ X , φ x ＝ B)
+  A-behaviour B = ∈-behaviour B X φ φ-emb
+
+  I : (B : 𝕍) → B ∈ A → is-iterative-ordinal B
+  I B B-in-A = transport is-iterative-ordinal (pr₂ I₀) (φ-iter (pr₁ I₀))
+   where
+    I₀ : Σ x ꞉ X , φ x ＝ B
+    I₀ = ⌜ A-behaviour B ⌝ B-in-A
+
+  II :  (B C : 𝕍) → B ∈ A → C ∈ B → C ∈ A
+  II B C B-in-A C-in-B = II₅
+   where
+    x : X
+    x = pr₁ (⌜ A-behaviour B ⌝ B-in-A)
+
+    p : φ x ＝ B
+    p = pr₂ (⌜ A-behaviour B ⌝ B-in-A)
+
+    β γ : 𝕆
+    β = (B , I B B-in-A)
+    γ = (C , ordinal-is-hereditary B C C-in-B (I B B-in-A))
+
+    II₀ : γ < β
+    II₀ = C-in-B
+
+    q : ϕ x ＝ β
+    q = embeddings-are-lc pr₁ (pr₁-is-embedding being-iordinal-is-prop) p
+
+    II₁ : γ < ϕ x
+    II₁ = transport (γ <_) (q ⁻¹) II₀
+
+    II₂ : Σ y ꞉ X , ϕ y ＝ γ
+    II₂ = ϕ-lower x γ II₁
+
+    II₃ : type-of II₂ → Σ y ꞉ X , φ y ＝ C
+    II₃ (y , p) = y , ap underlying-iset p
+
+    II₄ : Σ x ꞉ X , underlying-mset (φ x) ＝ underlying-mset C
+    II₄ = ⌜ A-behaviour C ⌝⁻¹ (II₃ II₂)
+
+    II₅ : C ∈ A
+    II₅ = II₄
+
+  III : (B : 𝕍) → B ∈ A → is-transitive-iset B
+  III B m = iterative-ordinals-are-transitive B (I B m)
+
+  io : is-iterative-ordinal A
+  io = II , III
+
+𝕆-η : (α : 𝕆)
+    → 𝕆-sup (𝕆-root α)
+            (𝕆-forest α)
+            (𝕆-forest-is-embedding α)
+            (𝕆-forest-is-lower-closed α)
+    ＝ α
+𝕆-η (A@(sup _ _ , _) , _) =  to-subtype-＝ being-iordinal-is-prop (p _)
+ where
+  p : (e : is-embedding (𝕍-forest (sup _ _ , _)))
+    → 𝕍-sup (𝕍-root A) (𝕍-forest A) e ＝ A
+  p e = 𝕍-sup (𝕍-root A) (𝕍-forest A) e                         ＝⟨ I ⟩
+        𝕍-sup (𝕍-root A) (𝕍-forest A) (𝕍-forest-is-embedding A) ＝⟨ 𝕍-η A ⟩
+        A                                                        ∎
+         where
+          I = ap (𝕍-sup (𝕍-root A) (𝕍-forest A)) (being-embedding-is-prop fe _ _ _)
+
+
+\end{code}
+
+All iterative ordinals are generated by the "constructor" 𝕆-sup, in
+the following sense:
+
+\begin{code}
+
+𝕆-induction : (P : 𝕆 → 𝓥 ̇ )
+            → ((X : 𝓤 ̇ ) (ϕ : X → 𝕆) (e : is-embedding ϕ) (l : is-lower-closed ϕ)
+                  → ((x : X) → P (ϕ x))
+                  → P (𝕆-sup X ϕ e l))
+            → (α : 𝕆) → P α
+𝕆-induction P f ((M , is) , io) = h M is io
  where
   h : (M : 𝕄) (is : is-iterative-set M) (io : is-iterative-ordinal (M , is))
-    → is-accessible _<_ ((M , is) , io)
-  h M@(sup X φ) (φ-emb , i) io@(io₁ , io₂) = step III
+    → P ((M , is)  , io)
+  h M@(sup X φ) is@(φ-emb , φ-iter) io = II
    where
-    have-i : (x : X) → is-iterative-set (φ x)
-    have-i = i
-
-    have-io : is-iterative-ordinal (sup X φ , φ-emb , i)
-    have-io = io
-
-    A : 𝕍
-    A = M , φ-emb , i
-
     α : 𝕆
-    α = A , io
+    α = (M , is) , io
 
-    A' : X → 𝕍
-    A' x = φ x , i x
+    IH : (x : X) → P (𝕆-forest α x)
+    IH x = h (φ x)
+             (φ-iter x)
+             (ordinal-is-hereditary (M , is) (φ x , φ-iter x) (x , refl) io)
 
-    m : (x : X) → A' x ∈ A
-    m x = (x , refl)
+    I : P (𝕆-sup X
+                 (𝕆-forest α)
+                 (𝕆-forest-is-embedding α)
+                 (𝕆-forest-is-lower-closed α))
+    I = f X (𝕆-forest α) (𝕆-forest-is-embedding α) (𝕆-forest-is-lower-closed α) IH
 
-    I : (x : X) (B : 𝕍) → B ∈ A' x → is-transitive-iset B
-    I x B b = I₂
+    II : P α
+    II = transport P (𝕆-η α) I
+
+\end{code}
+
+The usual induction principle follows directly from the above form of
+induction.
+
+\begin{code}
+
+<-induction : (P : 𝕆 → 𝓥 ̇ )
+            → ((α : 𝕆) → ((β : 𝕆) → β < α → P β) → P α)
+            → (α : 𝕆) → P α
+<-induction P g = 𝕆-induction P f
+ where
+  f : (X : 𝓤 ̇) (ϕ : X → 𝕆) (e : is-embedding ϕ) (l : is-lower-closed ϕ)
+    → ((x : X) → P (ϕ x))
+    → P (𝕆-sup X ϕ e l)
+  f X ϕ e l u = g α s
+   where
+    α : 𝕆
+    α = 𝕆-sup X ϕ e l
+
+    s : (β : 𝕆) → β < α → P β
+    s β@((.(underlying-mset (underlying-iset (ϕ x))) , is) , io) (x , refl) = II
      where
-      I₁ : B ∈ A
-      I₁ = io₁ (A' x) B (m x) b
+      I : P (ϕ x)
+      I = u x
 
-      I₂ : is-transitive-iset B
-      I₂ = io₂ B I₁
-
-    IH : (x : X) → is-accessible _<_ (A' x , io₂ (A' x) (m x) , I x)
-    IH x = h (φ x) (i x) (io₂ (A' x) (m x) , I x)
-
-    II : (M : 𝕄) (j : is-iterative-set M) (k : is-iterative-ordinal (M , j))
-       → fiber φ M
-       → is-accessible _<_ ((M , j) , k)
-    II .(φ x) j k (x , refl) = II₂
-     where
-      II₁ : (A' x , io₂ (A' x) (m x) , I x) ＝[ 𝕆 ] ((φ x , j) , k)
-      II₁ = to-subtype-＝
+      III : ϕ x ＝ β
+      III = to-subtype-＝
              being-iordinal-is-prop
-             (ap (λ - → φ x , -)
-                 (being-iset-is-prop (φ x) (i x) j))
+              (to-subtype-＝ being-iset-is-prop refl)
 
-      II₂ : is-accessible _<_ ((φ x , j) , k)
-      II₂ = transport (is-accessible _<_) II₁ (IH x)
+      II : P β
+      II = transport P III I
 
-    III : (β : 𝕆) → β < α → is-accessible _<_ β
-    III ((N , is) , io) = II N is io
+\end{code}
 
-open import Ordinals.Type
+Which in turn gives the accessibility of the order:
+
+\begin{code}
+
+<-is-accessible : (α : 𝕆) → is-accessible _<_ α
+<-is-accessible = <-induction (is-accessible _<_) (λ _ → step)
+
+\end{code}
+
+Putting the above together we conclude that the type of iterative
+ordinals has the structure of an ordinal in the sense of the HoTT
+book.
+
+\begin{code}
 
 𝓞 : Ordinal (𝓤 ⁺)
 𝓞 = 𝕆 ,
@@ -246,6 +402,4 @@ open import Ordinals.Type
 
 To be continued.
 
-TODO. Define 𝕆-induction following the pattern for 𝕍-induction and
-∈-induction. Then replace the proof of accessibility by a shorter one
-using 𝕆-induction.
+TODO. 𝓞 is locally small.
