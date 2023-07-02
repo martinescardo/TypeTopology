@@ -22,13 +22,13 @@ The type of iterative multisets:
 \begin{code}
 
 data 𝕄 : 𝓤 ⁺ ̇ where
- sup : (X : 𝓤 ̇ ) (φ : X → 𝕄) → 𝕄
+ lim : (X : 𝓤 ̇ ) (φ : X → 𝕄) → 𝕄
 
 𝕄-root : 𝕄 → 𝓤 ̇
-𝕄-root (sup X φ) = X
+𝕄-root (lim X φ) = X
 
 𝕄-forest : (M : 𝕄) → 𝕄-root M → 𝕄
-𝕄-forest (sup X φ) = φ
+𝕄-forest (lim X φ) = φ
 
 \end{code}
 
@@ -40,8 +40,8 @@ to-𝕄-＝ : {X Y : 𝓤 ̇ }
           {φ : X → 𝕄}
           {γ : Y → 𝕄}
         → Σ p ꞉ X ＝ Y , φ ＝ γ ∘ Idtofun p
-        → (sup X φ) ＝ (sup Y γ)
-to-𝕄-＝ {X} (refl , f) = ap (sup X) f
+        → (lim X φ) ＝ (lim Y γ)
+to-𝕄-＝ {X} (refl , f) = ap (lim X) f
 
 \end{code}
 
@@ -52,12 +52,12 @@ The induction principle for 𝕄:
 𝕄-induction : (P : 𝕄 → 𝓥 ̇ )
             → ((X : 𝓤 ̇ ) (ϕ : X → 𝕄)
                   → ((x : X) → P (ϕ x))
-                  → P (sup X ϕ))
+                  → P (lim X ϕ))
             → (M : 𝕄) → P M
 𝕄-induction P f = h
  where
   h : (M : 𝕄) → P M
-  h (sup X φ) = f X φ (λ x → h (φ x))
+  h (lim X φ) = f X φ (λ x → h (φ x))
 
 \end{code}
 

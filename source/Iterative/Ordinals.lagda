@@ -143,10 +143,10 @@ _≤_ : 𝕆 → 𝕆 → 𝓤 ⁺ ̇
     I₃ = u (C , I₁ , I₂) C-in-A
 
 𝕆-root : 𝕆 → 𝓤 ̇
-𝕆-root ((sup X _ , _) , _) = X
+𝕆-root ((lim X _ , _) , _) = X
 
 𝕆-forest : (α : 𝕆) → 𝕆-root α → 𝕆
-𝕆-forest (A@(sup X φ , φ-emb , is) , io) x = 𝕍-forest A x , io'
+𝕆-forest (A@(lim X φ , φ-emb , is) , io) x = 𝕍-forest A x , io'
  where
   m : 𝕍-forest A x ∈ A
   m = (x , refl)
@@ -155,10 +155,10 @@ _≤_ : 𝕆 → 𝕆 → 𝓤 ⁺ ̇
   io' = ordinal-is-hereditary A (𝕍-forest A x) m io
 
 𝕆-forest-is-< : (α : 𝕆) (x : 𝕆-root α) → 𝕆-forest α x < α
-𝕆-forest-is-< ((sup X φ , φ-emb , is) , io) x = x , refl
+𝕆-forest-is-< ((lim X φ , φ-emb , is) , io) x = x , refl
 
 𝕆-forest-is-embedding : (α : 𝕆) → is-embedding (𝕆-forest α)
-𝕆-forest-is-embedding α@(A@(sup _ _ , _) , _) =
+𝕆-forest-is-embedding α@(A@(lim _ _ , _) , _) =
  pair-fun-is-embedding-special
   (pr₁ ∘ 𝕆-forest α)
   (pr₂ ∘ 𝕆-forest α)
@@ -177,7 +177,7 @@ _≤_ : 𝕆 → 𝕆 → 𝓤 ⁺ ̇
 <-behaviour : (α β : 𝕆)
             → (α < β)
             ≃ (Σ y ꞉ 𝕆-root β , 𝕆-forest β y ＝ α)
-<-behaviour α@(A@(M , _) , _) β@(B@(N@(sup Y γ) , _) , _) = II
+<-behaviour α@(A@(M , _) , _) β@(B@(N@(lim Y γ) , _) , _) = II
  where
   I : (y : Y) → (γ y ＝ M) ≃ (𝕆-forest β y ＝ α)
   I y = (γ y ＝ M)          ≃⟨ a ⟩
@@ -207,7 +207,7 @@ being-lower-closed-is-prop : {X : 𝓤 ̇ } (ϕ : X → 𝕆)
 being-lower-closed-is-prop ϕ e = Π₃-is-prop fe (λ x β _ → e β)
 
 𝕆-forest-is-lower-closed : (α : 𝕆) → is-lower-closed (𝕆-forest α)
-𝕆-forest-is-lower-closed α@(A@(M@(sup X φ) , _) , _)
+𝕆-forest-is-lower-closed α@(A@(M@(lim X φ) , _) , _)
                          x
                          β@(B@(N , _) , _) l = VII
  where
@@ -223,8 +223,8 @@ being-lower-closed-is-prop ϕ e = Π₃-is-prop fe (λ x β _ → e β)
   VII : Σ y ꞉ X , 𝕆-forest α y ＝ β
   VII = ⌜ <-behaviour β α ⌝ II
 
-𝕆-sup : (X : 𝓤 ̇ ) (ϕ : X → 𝕆) → is-embedding ϕ → is-lower-closed ϕ → 𝕆
-𝕆-sup X ϕ ϕ-emb ϕ-lower = A , io
+𝕆-lim : (X : 𝓤 ̇ ) (ϕ : X → 𝕆) → is-embedding ϕ → is-lower-closed ϕ → 𝕆
+𝕆-lim X ϕ ϕ-emb ϕ-lower = A , io
  where
   φ : X → 𝕍
   φ = underlying-iset ∘ ϕ
@@ -236,7 +236,7 @@ being-lower-closed-is-prop ϕ e = Π₃-is-prop fe (λ x β _ → e β)
   φ-emb = ∘-is-embedding ϕ-emb (pr₁-is-embedding being-iordinal-is-prop)
 
   A : 𝕍
-  A = 𝕍-sup X φ φ-emb
+  A = 𝕍-lim X φ φ-emb
 
   A-behaviour : (B : 𝕍) → B ∈ A ≃ (Σ x ꞉ X , φ x ＝ B)
   A-behaviour B = ∈-behaviour B X φ φ-emb
@@ -287,54 +287,54 @@ being-lower-closed-is-prop ϕ e = Π₃-is-prop fe (λ x β _ → e β)
   io : is-iterative-ordinal A
   io = II , III
 
-𝕆-sup-root : (X : 𝓤 ̇ )
+𝕆-lim-root : (X : 𝓤 ̇ )
              (ϕ : X → 𝕆) (e : is-embedding ϕ) (l : is-lower-closed ϕ)
-           → 𝕆-root (𝕆-sup X ϕ e l) ＝ X
-𝕆-sup-root X ϕ e l = refl
+           → 𝕆-root (𝕆-lim X ϕ e l) ＝ X
+𝕆-lim-root X ϕ e l = refl
 
-𝕆-sup-forest : (X : 𝓤 ̇ )
+𝕆-lim-forest : (X : 𝓤 ̇ )
                (ϕ : X → 𝕆) (e : is-embedding ϕ) (l : is-lower-closed ϕ)
-             → 𝕆-forest (𝕆-sup X ϕ e l) ∼ ϕ
-𝕆-sup-forest X ϕ e l x = to-subtype-＝ being-iordinal-is-prop refl
+             → 𝕆-forest (𝕆-lim X ϕ e l) ∼ ϕ
+𝕆-lim-forest X ϕ e l x = to-subtype-＝ being-iordinal-is-prop refl
 
 𝕆-η : (α : 𝕆)
-    → 𝕆-sup (𝕆-root α)
+    → 𝕆-lim (𝕆-root α)
             (𝕆-forest α)
             (𝕆-forest-is-embedding α)
             (𝕆-forest-is-lower-closed α)
     ＝ α
-𝕆-η (A@(sup _ _ , _) , _) =  to-subtype-＝ being-iordinal-is-prop (p _)
+𝕆-η (A@(lim _ _ , _) , _) =  to-subtype-＝ being-iordinal-is-prop (p _)
  where
-  p : (e : is-embedding (𝕍-forest (sup _ _ , _)))
-    → 𝕍-sup (𝕍-root A) (𝕍-forest A) e ＝ A
-  p e = 𝕍-sup (𝕍-root A) (𝕍-forest A) e                         ＝⟨ I ⟩
-        𝕍-sup (𝕍-root A) (𝕍-forest A) (𝕍-forest-is-embedding A) ＝⟨ 𝕍-η A ⟩
+  p : (e : is-embedding (𝕍-forest (lim _ _ , _)))
+    → 𝕍-lim (𝕍-root A) (𝕍-forest A) e ＝ A
+  p e = 𝕍-lim (𝕍-root A) (𝕍-forest A) e                         ＝⟨ I ⟩
+        𝕍-lim (𝕍-root A) (𝕍-forest A) (𝕍-forest-is-embedding A) ＝⟨ 𝕍-η A ⟩
         A                                                        ∎
          where
-          I = ap (𝕍-sup (𝕍-root A) (𝕍-forest A)) (being-embedding-is-prop fe _ _ _)
+          I = ap (𝕍-lim (𝕍-root A) (𝕍-forest A)) (being-embedding-is-prop fe _ _ _)
 
 \end{code}
 
-𝕆-sup doesn't actually compute suprema: 𝕆-sup X ϕ e l is the unique
-ordinal whose predecessors are precisely the members of the family ϕ.
+𝕆-lim X ϕ e l is the unique ordinal whose predecessors are precisely
+the members of the family ϕ.
 
 \begin{code}
 
-𝕆-sup-behaviour : (X : 𝓤 ̇ )
+𝕆-lim-behaviour : (X : 𝓤 ̇ )
                   (ϕ : X → 𝕆) (e : is-embedding ϕ) (l : is-lower-closed ϕ)
                   (α : 𝕆)
-                → (α < 𝕆-sup X ϕ e l) ≃ (Σ x ꞉ X , ϕ x ＝ α)
-𝕆-sup-behaviour X ϕ e l α =
- (α < 𝕆-sup X ϕ e l)                         ≃⟨ I ⟩
- (Σ x ꞉ X , 𝕆-forest (𝕆-sup X ϕ e l) x ＝ α) ≃⟨ II ⟩
+                → (α < 𝕆-lim X ϕ e l) ≃ (Σ x ꞉ X , ϕ x ＝ α)
+𝕆-lim-behaviour X ϕ e l α =
+ (α < 𝕆-lim X ϕ e l)                         ≃⟨ I ⟩
+ (Σ x ꞉ X , 𝕆-forest (𝕆-lim X ϕ e l) x ＝ α) ≃⟨ II ⟩
  (Σ x ꞉ X , ϕ x ＝ α)                         ■
  where
-  I = <-behaviour α (𝕆-sup X ϕ e l)
-  II = Σ-cong (λ x → ＝-cong-l _ _ (𝕆-sup-forest X ϕ e l x))
+  I = <-behaviour α (𝕆-lim X ϕ e l)
+  II = Σ-cong (λ x → ＝-cong-l _ _ (𝕆-lim-forest X ϕ e l x))
 
 \end{code}
 
-All iterative ordinals are generated by the "constructor" 𝕆-sup, in
+All iterative ordinals are generated by the "constructor" 𝕆-lim, in
 the following sense:
 
 \begin{code}
@@ -342,13 +342,13 @@ the following sense:
 𝕆-induction : (P : 𝕆 → 𝓥 ̇ )
             → ((X : 𝓤 ̇ ) (ϕ : X → 𝕆) (e : is-embedding ϕ) (l : is-lower-closed ϕ)
                   → ((x : X) → P (ϕ x))
-                  → P (𝕆-sup X ϕ e l))
+                  → P (𝕆-lim X ϕ e l))
             → (α : 𝕆) → P α
 𝕆-induction P f ((M , is) , io) = h M is io
  where
   h : (M : 𝕄) (is : is-iterative-set M) (io : is-iterative-ordinal (M , is))
     → P ((M , is)  , io)
-  h M@(sup X φ) is@(φ-emb , φ-iter) io = II
+  h M@(lim X φ) is@(φ-emb , φ-iter) io = II
    where
     α : 𝕆
     α = (M , is) , io
@@ -358,7 +358,7 @@ the following sense:
              (φ-iter x)
              (ordinal-is-hereditary (M , is) (φ x , φ-iter x) (x , refl) io)
 
-    I : P (𝕆-sup X
+    I : P (𝕆-lim X
                  (𝕆-forest α)
                  (𝕆-forest-is-embedding α)
                  (𝕆-forest-is-lower-closed α))
@@ -381,11 +381,11 @@ induction.
  where
   f : (X : 𝓤 ̇) (ϕ : X → 𝕆) (e : is-embedding ϕ) (l : is-lower-closed ϕ)
     → ((x : X) → P (ϕ x))
-    → P (𝕆-sup X ϕ e l)
+    → P (𝕆-lim X ϕ e l)
   f X ϕ e l u = g α s
    where
     α : 𝕆
-    α = 𝕆-sup X ϕ e l
+    α = 𝕆-lim X ϕ e l
 
     s : (β : 𝕆) → β < α → P β
     s β@((.(underlying-mset (underlying-iset (ϕ x))) , is) , io) (x , refl) = II
