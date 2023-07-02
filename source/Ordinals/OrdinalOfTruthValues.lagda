@@ -34,13 +34,13 @@ open import Ordinals.Underlying
   pv p q = ×-is-prop (Ω-is-set (fe 𝓤 𝓤) pe) (Ω-is-set (fe 𝓤 𝓤) pe)
 
   w : is-well-founded _≺_
-  w p = step s
+  w p = acc s
    where
     t : (q : Ω 𝓤) →  q ≺ ⊥ → is-accessible _≺_ q
     t ⊥ (refl , b) = 𝟘-elim (⊥-is-not-⊤ b)
 
     ⊥-accessible : is-accessible _≺_ ⊥
-    ⊥-accessible = step t
+    ⊥-accessible = acc t
 
     s : (q : Ω 𝓤) → q ≺ p → is-accessible _≺_ q
     s ⊥ (refl , b) = ⊥-accessible

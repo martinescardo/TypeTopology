@@ -408,7 +408,7 @@ Which in turn gives the accessibility of the order:
 \begin{code}
 
 <-is-accessible : (α : 𝕆) → is-accessible _<_ α
-<-is-accessible = <-induction (is-accessible _<_) (λ _ → step)
+<-is-accessible = <-induction (is-accessible _<_) (λ _ → acc)
 
 \end{code}
 

@@ -199,7 +199,7 @@ theoretic ordinal.
  ∈-is-well-founded : is-well-founded _∈_
  ∈-is-well-founded = ∈-induction (is-accessible _∈_)
                                  (λ x → accessibility-is-prop _∈_ fe' x)
-                                 (λ x IH → step IH)
+                                 (λ x IH → acc IH)
 
  ∈ᵒʳᵈ-is-well-founded : is-well-founded _∈ᵒʳᵈ_
  ∈ᵒʳᵈ-is-well-founded = transfinite-induction-converse _∈ᵒʳᵈ_ W

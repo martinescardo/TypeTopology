@@ -284,7 +284,7 @@ induction.
       II = transport P (to-subtype-＝ being-iset-is-prop refl) I
 
 ∈-is-accessible : (A : 𝕍) → is-accessible _∈_ A
-∈-is-accessible = ∈-induction (is-accessible _∈_) (λ _ → step)
+∈-is-accessible = ∈-induction (is-accessible _∈_) (λ _ → acc)
 
 \end{code}
 

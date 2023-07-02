@@ -151,7 +151,7 @@ _↓_ : (α : Ordinal 𝓤) → ⟨ α ⟩ → Ordinal 𝓤
     f : ∀ x
       → is-accessible (underlying-order α) x
       → ∀ l → is-accessible _<_ (x , l)
-    f x (step s) l = step (λ σ m → f (pr₁ σ) (s (pr₁ σ) m) (pr₂ σ))
+    f x (acc s) l = acc (λ σ m → f (pr₁ σ) (s (pr₁ σ) m) (pr₂ σ))
 
   e : is-extensional _<_
   e (x , l) (y , m) f g =
@@ -355,7 +355,7 @@ It remains to show that _⊲_ is a well-order:
   f : (a : ⟨ α ⟩)
     → is-accessible (underlying-order α) a
     → is-accessible _⊲_ (α ↓ a)
-  f a (step s) = step g
+  f a (acc s) = acc g
    where
     IH : (b : ⟨ α ⟩) → b ≺⟨ α ⟩ a → is-accessible _⊲_ (α ↓ b)
     IH b l = f b (s b l)
@@ -367,7 +367,7 @@ It remains to show that _⊲_ is a well-order:
       q = p ∙ iterated-↓ α a b l
 
 ⊲-is-well-founded : is-well-founded (_⊲_ {𝓤})
-⊲-is-well-founded {𝓤} α = step g
+⊲-is-well-founded {𝓤} α = acc g
  where
   g : (β : Ordinal 𝓤) → β ⊲ α → is-accessible _⊲_ β
   g β (b , p) = transport⁻¹ (is-accessible _⊲_) p (↓-accessible α b)

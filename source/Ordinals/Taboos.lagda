@@ -123,11 +123,11 @@ module discrete-trichotomous-taboo-construction
  ≺-well-founded-lemma ₁ l = 𝟘-elim l
 
  ≺-is-well-founded : is-well-founded _≺_
- ≺-is-well-founded ₀ = step ≺-well-founded-lemma
- ≺-is-well-founded ₁ = step γ
+ ≺-is-well-founded ₀ = acc ≺-well-founded-lemma
+ ≺-is-well-founded ₁ = acc γ
   where
    γ : (y : 𝟚) → y ≺ ₁ → is-accessible _≺_ y
-   γ ₀ l = step ≺-well-founded-lemma
+   γ ₀ l = acc ≺-well-founded-lemma
 
  ≺-is-extensional : ¬¬ P → is-extensional _≺_
  ≺-is-extensional h ₀ ₀ u v = refl

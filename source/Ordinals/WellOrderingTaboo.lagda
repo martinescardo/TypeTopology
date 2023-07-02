@@ -572,7 +572,7 @@ A remark on well-order-gives-minimal (see below) is in order.
        x-minimal : (y : X) → B y → ¬ (y ≺ x)
        x-minimal = pr₂ (pr₂ m)
        x-acc : is-accessible x
-       x-acc = step ϕ
+       x-acc = acc ϕ
         where
          ε : (y : X) → y ≺ x → ¬¬ (is-accessible y)
          ε y l y-not-acc = x-minimal y y-not-acc l
