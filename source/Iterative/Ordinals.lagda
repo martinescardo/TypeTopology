@@ -163,14 +163,17 @@ _≤_ : 𝕆 → 𝕆 → 𝓤 ⁺ ̇
   (𝕍-forest-is-embedding A)
   being-iordinal-is-prop
 
-<-is-extensional : is-extensional _<_
-<-is-extensional α@(A , iA) β@(B , iB) u v = II
+≤-is-antisymmetric : (α β : 𝕆) → α ≤ β → β ≤ α → α ＝ β
+≤-is-antisymmetric α@(A , _) β@(B , _) u v = II
  where
   I : A ＝ B
   I = ∈-is-extensional A B (≤-gives-⊆ α β u) (≤-gives-⊆ β α v)
 
-  II : A , iA ＝ B , iB
+  II : α ＝ β
   II = to-subtype-＝ (being-iordinal-is-prop) I
+
+<-is-extensional : is-extensional _<_
+<-is-extensional = ≤-is-antisymmetric
 
 <-behaviour : (α β : 𝕆)
             → (α < β)
@@ -183,13 +186,13 @@ _≤_ : 𝕆 → 𝕆 → 𝓤 ⁺ ̇
         (𝕆-forest β y ＝ α) ■
          where
           a = embedding-criterion-converse
-               pr₁
-               (pr₁-is-embedding being-iset-is-prop)
+               underlying-mset
+               underlying-mset-is-embedding
                (𝕍-forest B y)
                A
           b = embedding-criterion-converse
-               pr₁
-               (pr₁-is-embedding being-iordinal-is-prop)
+               underlying-iset
+               underlying-iset-is-embedding
                (𝕆-forest β y)
                α
 
@@ -231,7 +234,7 @@ being-lower-closed-is-prop ϕ e = Π₃-is-prop fe (λ x β _ → e β)
   φ-iter = underlying-iset-is-iordinal ∘ ϕ
 
   φ-emb : is-embedding φ
-  φ-emb = ∘-is-embedding ϕ-emb (pr₁-is-embedding being-iordinal-is-prop)
+  φ-emb = ∘-is-embedding ϕ-emb underlying-iset-is-embedding
 
   A : 𝕍
   A = 𝕍-ssup X φ φ-emb

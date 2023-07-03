@@ -14,6 +14,12 @@ module Iterative.Sets
         (ua : Univalence)
        where
 
+\end{code}
+
+NB. The only use of univalence is to prove extensionality, which in
+turns gives that the type of iterative sets is a 0-type.
+\begin{code}
+
 open import UF.FunExt
 open import UF.UA-FunExt
 
@@ -179,25 +185,25 @@ It follows that 𝕍 is a set, or 0-type, in the sense of the HoTT book:
 𝕍-ssup X ϕ ϕ-emb = ssup X φ , I , φi
  where
   φ : X → 𝕄
-  φ = pr₁ ∘ ϕ
+  φ = underlying-mset ∘ ϕ
 
   φi : (x : X) → is-iterative-set (φ x)
-  φi = pr₂ ∘ ϕ
+  φi = isets-are-iterative ∘ ϕ
 
-  I : is-embedding (pr₁ ∘ ϕ)
-  I = ∘-is-embedding ϕ-emb (pr₁-is-embedding being-iset-is-prop)
+  I : is-embedding φ
+  I = ∘-is-embedding ϕ-emb underlying-mset-is-embedding
 
 ∈-behaviour : (A : 𝕍) (X : 𝓤 ̇ ) (ϕ : X → 𝕍) (e : is-embedding ϕ)
             → A ∈ 𝕍-ssup X ϕ e ≃ (Σ x ꞉ X , ϕ x ＝ A)
 ∈-behaviour A X ϕ e =
- (A ∈ 𝕍-ssup X ϕ e)             ≃⟨ ≃-refl _ ⟩
- (Σ x ꞉ X , pr₁ (ϕ x) ＝ pr₁ A) ≃⟨ Σ-cong I ⟩
- (Σ x ꞉ X , ϕ x ＝ A)           ■
+ (A ∈ 𝕍-ssup X ϕ e)                                     ≃⟨ ≃-refl _ ⟩
+ (Σ x ꞉ X , underlying-mset (ϕ x) ＝ underlying-mset A) ≃⟨ Σ-cong I ⟩
+ (Σ x ꞉ X , ϕ x ＝ A)                                   ■
   where
    I : (x : X) → (pr₁ (ϕ x) ＝ pr₁ A) ≃ (ϕ x ＝ A)
    I x = embedding-criterion-converse
-          pr₁
-          (pr₁-is-embedding being-iset-is-prop)
+          underlying-mset
+          underlying-mset-is-embedding
           (ϕ x)
           A
 
@@ -275,7 +281,7 @@ induction.
     A = 𝕍-ssup X ϕ e
 
     s : (B : 𝕍) → B ∈ A → P B
-    s (.(pr₁ (ϕ x)) , j) (x , refl) = II
+    s B@(.(pr₁ (ϕ x)) , j) (x , refl) = II
      where
       I : P (ϕ x)
       I = u x
