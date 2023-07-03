@@ -24,9 +24,12 @@ module Locales.ScottLocale
 
 open Universal fe
 open Implication fe
+open Existential pt
 open import Locales.Frame pt fe
 open import DomainTheory.Basics.Dcpo pt fe 𝓥 renaming (⟨_⟩ to ⟨_⟩∙)
-open import DomainTheory.Topology.ScottTopology pt fe 𝓥 hiding (Fam)
+open import DomainTheory.Topology.ScottTopology pt fe 𝓥 hiding (Fam; index)
+
+open PropositionalTruncation pt
 
 module DefnOfScottLocale (𝓓 : DCPO {𝓤} {𝓣}) (𝓦 : Universe) where
 
@@ -45,7 +48,10 @@ module DefnOfScottLocale (𝓓 : DCPO {𝓤} {𝓣}) (𝓦 : Universe) where
    υ _ _ _ _ = ⋆
 
    ι : is-inaccessible-by-directed-joins (λ _ → ⊤Ω) holds
-   ι S ⋆ = {!∣ ? ∣!}
+   ι (S , (∣i∣ , γ)) ⋆ = ∥∥-rec ∃-is-prop † ∣i∣
+    where
+     † : index S → ∃ _ ꞉ index S , ⊤Ω holds
+     † i = ∣ i , ⋆ ∣
 
  𝒪ₛ-frame-structure : frame-structure (𝓤 ⊔ 𝓦) {!!} 𝒪ₛ
  𝒪ₛ-frame-structure = (_≤ₛ_ , ⊤ₛ , {!!}) , {!!}
