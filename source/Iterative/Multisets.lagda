@@ -22,13 +22,20 @@ The type of iterative multisets:
 \begin{code}
 
 data 𝕄 : 𝓤 ⁺ ̇ where
- lim : (X : 𝓤 ̇ ) (φ : X → 𝕄) → 𝕄
+ ssup : (X : 𝓤 ̇ ) (φ : X → 𝕄) → 𝕄
+
+\end{code}
+
+In the case of ordinals, ssup stands for "strong supremum", "strict
+supremum" or "supremum of successors.
+
+\begin{code}
 
 𝕄-root : 𝕄 → 𝓤 ̇
-𝕄-root (lim X φ) = X
+𝕄-root (ssup X φ) = X
 
 𝕄-forest : (M : 𝕄) → 𝕄-root M → 𝕄
-𝕄-forest (lim X φ) = φ
+𝕄-forest (ssup X φ) = φ
 
 \end{code}
 
@@ -40,8 +47,8 @@ to-𝕄-＝ : {X Y : 𝓤 ̇ }
           {φ : X → 𝕄}
           {γ : Y → 𝕄}
         → Σ p ꞉ X ＝ Y , φ ＝ γ ∘ Idtofun p
-        → (lim X φ) ＝ (lim Y γ)
-to-𝕄-＝ {X} (refl , f) = ap (lim X) f
+        → (ssup X φ) ＝ (ssup Y γ)
+to-𝕄-＝ {X} (refl , f) = ap (ssup X) f
 
 \end{code}
 
@@ -52,12 +59,12 @@ The induction principle for 𝕄:
 𝕄-induction : (P : 𝕄 → 𝓥 ̇ )
             → ((X : 𝓤 ̇ ) (ϕ : X → 𝕄)
                   → ((x : X) → P (ϕ x))
-                  → P (lim X ϕ))
+                  → P (ssup X ϕ))
             → (M : 𝕄) → P M
 𝕄-induction P f = h
  where
   h : (M : 𝕄) → P M
-  h (lim X φ) = f X φ (λ x → h (φ x))
+  h (ssup X φ) = f X φ (λ x → h (φ x))
 
 \end{code}
 
