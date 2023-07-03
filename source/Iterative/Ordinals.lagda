@@ -158,8 +158,8 @@ _≤_ : 𝕆 → 𝕆 → 𝓤 ⁺ ̇
 𝕆-forest-is-embedding : (α : 𝕆) → is-embedding (𝕆-forest α)
 𝕆-forest-is-embedding α@(A@(ssup _ _ , _) , _) =
  pair-fun-is-embedding-special
-  (pr₁ ∘ 𝕆-forest α)
-  (pr₂ ∘ 𝕆-forest α)
+  (underlying-iset ∘ 𝕆-forest α)
+  (underlying-iset-is-iordinal ∘ 𝕆-forest α)
   (𝕍-forest-is-embedding A)
   being-iordinal-is-prop
 
@@ -265,7 +265,7 @@ being-lower-closed-is-prop ϕ e = Π₃-is-prop fe (λ x β _ → e β)
     II₀ = C-in-B
 
     q : ϕ x ＝ β
-    q = embeddings-are-lc pr₁ (pr₁-is-embedding being-iordinal-is-prop) p
+    q = embeddings-are-lc underlying-iset underlying-iset-is-embedding p
 
     II₁ : γ < ϕ x
     II₁ = transport (γ <_) (q ⁻¹) II₀
