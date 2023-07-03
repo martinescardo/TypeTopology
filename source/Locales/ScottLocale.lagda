@@ -28,7 +28,6 @@ open import Locales.Frame pt fe
 open import DomainTheory.Basics.Dcpo pt fe 𝓥 renaming (⟨_⟩ to ⟨_⟩∙)
 open import DomainTheory.Topology.ScottTopology pt fe 𝓥 hiding (Fam)
 
-
 module DefnOfScottLocale (𝓓 : DCPO {𝓤} {𝓣}) (𝓦 : Universe) where
 
  open DefnOfScottTopology 𝓓 𝓦
@@ -40,7 +39,13 @@ module DefnOfScottLocale (𝓓 : DCPO {𝓤} {𝓣}) (𝓦 : Universe) where
  (U , _) ≤ₛ (V , _) = Ɐ x ꞉ ⟨ 𝓓 ⟩∙ , U x ⇒ V x
 
  ⊤ₛ : 𝒪ₛ
- ⊤ₛ = {!λ _ → ⊤ {𝓦}!} , {!!}
+ ⊤ₛ = (λ _ → ⊤Ω {𝓦}) , υ , ι
+  where
+   υ : is-upwards-closed (λ _ → ⊤Ω) holds
+   υ _ _ _ _ = ⋆
+
+   ι : is-inaccessible-by-directed-joins (λ _ → ⊤Ω) holds
+   ι S ⋆ = {!∣ ? ∣!}
 
  𝒪ₛ-frame-structure : frame-structure (𝓤 ⊔ 𝓦) {!!} 𝒪ₛ
  𝒪ₛ-frame-structure = (_≤ₛ_ , ⊤ₛ , {!!}) , {!!}
