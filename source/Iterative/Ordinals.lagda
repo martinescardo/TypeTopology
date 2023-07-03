@@ -28,12 +28,10 @@ open import Iterative.Multisets 𝓤
 open import Iterative.Sets 𝓤 ua
 open import Ordinals.Notions
 open import Ordinals.Type
-open import UF.Base
 open import UF.Embeddings
 open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.PairFun
-open import UF.PropIndexedPiSigma
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
