@@ -16,5 +16,6 @@ import Locales.PatchLocale
 import Locales.PatchProperties
 import Locales.BooleanAlgebra
 import Locales.UniversalPropertyOfPatch -- with contributions by Igor Arrieta.
+import Locales.ScottLocale
 
 \end{code}
