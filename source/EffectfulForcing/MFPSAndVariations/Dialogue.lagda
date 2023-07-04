@@ -33,19 +33,19 @@ dialogue-continuity (η n) α = ([] , lemma)
   lemma α' r = refl
 
 dialogue-continuity (β φ i) α = ((i ∷ is) , lemma)
-  where
-   IH : (i : ℕ) → is-continuous (dialogue (φ (α i)))
-   IH i = dialogue-continuity (φ (α i))
+ where
+  IH : (i : ℕ) → is-continuous (dialogue (φ (α i)))
+  IH i = dialogue-continuity (φ (α i))
 
-   is : List ℕ
-   is = pr₁ (IH i α)
+  is : List ℕ
+  is = pr₁ (IH i α)
 
-   lemma : (α' : Baire)
-         → α ＝⟪ i ∷ is ⟫ α'
-         → dialogue (φ (α i)) α ＝ dialogue (φ (α' i)) α'
-   lemma α' (r ∷ rs) = dialogue (φ (α i)) α  ＝⟨ pr₂ (IH i α) α' rs ⟩
-                       dialogue (φ (α i)) α' ＝⟨ ap (λ n → dialogue (φ n) α') r ⟩
-                       dialogue (φ (α' i)) α' ∎
+  lemma : (α' : Baire)
+        → α ＝⟪ i ∷ is ⟫ α'
+        → dialogue (φ (α i)) α ＝ dialogue (φ (α' i)) α'
+  lemma α' (r ∷ rs) = dialogue (φ (α i)) α  ＝⟨ pr₂ (IH i α) α' rs ⟩
+                      dialogue (φ (α i)) α' ＝⟨ ap (λ n → dialogue (φ n) α') r ⟩
+                      dialogue (φ (α' i)) α' ∎
 
 eloquent-functions-are-continuous : (f : Baire → ℕ)
                                   → eloquent f
