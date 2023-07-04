@@ -506,19 +506,27 @@ minℕ∞-abcdef a b c d e f mab≼e mcd≼f n minabcd＝₁
   s : is-symmetric c
   s x y = sy (f x) (f y)
   u : is-ultra c
-  u x y z = uy (f x) (f y) (f z)                  
+  u x y z = uy (f x) (f y) (f z)
 
 ↪-ClosenessSpace : {X : 𝓤 ̇ } (Y : ClosenessSpace 𝓥)
                  → X ↪ ⟨ Y ⟩
                  → ClosenessSpace 𝓤
-↪-ClosenessSpace {𝓤} {𝓥} {X} Y f = X , ↪-clospace f (pr₂ Y)                 
+↪-ClosenessSpace {𝓤} {𝓥} {X} Y f = X , ↪-clospace f (pr₂ Y)
+
+
+Σ-clospace : {X : 𝓤 ̇ }
+           → (P : X → 𝓥 ̇ )
+           → (p : (x : X) → is-prop (P x))
+           → is-closeness-space X
+           → is-closeness-space (Σ P)
+Σ-clospace P p i = ↪-clospace (pr₁ , pr₁-is-embedding p) i
 
 Σ-ClosenessSpace : (X : ClosenessSpace 𝓤)
                  → (P : ⟨ X ⟩ → 𝓥 ̇ )
                  → (p : (x : ⟨ X ⟩) → is-prop (P x))
                  → ClosenessSpace (𝓤 ⊔ 𝓥)
 Σ-ClosenessSpace {𝓤} {𝓥} X P p
- = ↪-ClosenessSpace X (pr₁ , (pr₁-is-embedding p))
+ = Σ P , Σ-clospace P p (pr₂ X)
 
 ≃-ClosenessSpace : {X : 𝓤 ̇} (Y : ClosenessSpace 𝓥)
                  → X ≃ ⟨ Y ⟩
@@ -1015,13 +1023,23 @@ Lemma[min𝟚abcd＝₁→min𝟚bd＝₁] ₁ ₁ ₁ ₁ e = refl
             → C (Π-ClosenessSpace (T ∘ succ)) ε y₁ y₂
             → C (Π-ClosenessSpace T) (succ ε) (x₁ :: y₁) (x₂ :: y₂)
 Π-C-combine T x₁ x₂ y₁ y₂ ε Cεx₁x₂ Cεy₁y₂ 0
- = Cεx₁x₂ 0 -- Cεx₁x₂ 0
+ = Cεx₁x₂ 0
 Π-C-combine T x₁ x₂ y₁ y₂ ε Cεx₁x₂ Cεy₁y₂ (succ n) sn⊏ε
  = Lemma[a＝₁→b＝₁→min𝟚ab＝₁]
      (Cεx₁x₂ (succ n) sn⊏ε)
      (Cεy₁y₂ n sn⊏ε)
- 
 
+Π-C-eta : (T : ℕ → ClosenessSpace 𝓤)
+        → (α : Π (⟨_⟩ ∘ T))
+        → (ε : ℕ)
+        → C (Π-ClosenessSpace T) ε α (α 0 :: (α ∘ succ))
+Π-C-eta T α ε 0 = C-refl (T 0) ε (α 0) 0
+Π-C-eta T α (succ ε) (succ n)
+ = Π-C-combine T (α 0) (α 0) (α ∘ succ) (α ∘ succ) ε
+     (C-refl (T 0) (succ ε) (α 0))
+     (C-refl (Π-ClosenessSpace (T ∘ succ)) ε (α ∘ succ))
+     (succ n)
+ 
 -- Some examples:
 
 ℕ→𝟚-ClosenessSpace : ClosenessSpace 𝓤₀
@@ -1032,6 +1050,10 @@ open import TWA.Thesis.Chapter5.SignedDigit
 𝟛ᴺ-ClosenessSpace : ClosenessSpace 𝓤₀
 𝟛ᴺ-ClosenessSpace
  = ℕ→D-ClosenessSpace 𝟛-is-discrete
+
+𝟛ᴺ×𝟛ᴺ-ClosenessSpace : ClosenessSpace 𝓤₀
+𝟛ᴺ×𝟛ᴺ-ClosenessSpace
+ = ×-ClosenessSpace 𝟛ᴺ-ClosenessSpace 𝟛ᴺ-ClosenessSpace
 
 ℕ∞-ClosenessSpace : ClosenessSpace 𝓤₀
 ℕ∞-ClosenessSpace

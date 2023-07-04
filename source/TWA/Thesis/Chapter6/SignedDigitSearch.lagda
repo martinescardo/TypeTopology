@@ -14,7 +14,8 @@ open import UF.FunExt
 open import UF.Miscelanea
 open import UF.Equiv
 
-module TWA.Thesis.Chapter6.SignedDigitSearch (fe : FunExt) where
+module TWA.Thesis.Chapter6.SignedDigitSearch
+  (fe : FunExt) (pe : PropExt) where
 
 open import TWA.Thesis.Chapter2.FiniteDiscrete
 open import TWA.Thesis.Chapter2.Sequences
@@ -22,6 +23,7 @@ open import TWA.Thesis.Chapter2.Vectors
 open import TWA.Thesis.Chapter3.ClosenessSpaces fe
 open import TWA.Thesis.Chapter3.ClosenessSpaces-Examples fe
 open import TWA.Thesis.Chapter3.SearchableTypes fe
+open import TWA.Thesis.Chapter3.SearchableTypes-Examples fe pe
 open import TWA.Thesis.Chapter4.ApproxOrder fe
 open import TWA.Thesis.Chapter4.ApproxOrder-Examples fe
 open import TWA.Thesis.Chapter4.GlobalOptimisation fe
@@ -81,34 +83,18 @@ _<₃_ = finite-strict-order 𝟛-finite
      𝟛ᴺ-approx-lexicorder-is-approx-order ϵ f ϕ
      𝟛ᴺ-totally-bounded
 
-test : ℕ → 𝟛ᴺ
-test ε = pr₁ (𝟛ᴺ-global-opt¹ neg neg-ucontinuous ε)
-
-test2 : ℕ → 𝟛ᴺ
-test2 ε = pr₁ (𝟛ᴺ-global-opt¹ (λ x → mul x x)
-            mul-b-ucontinuous ε)
-
-{-
-test-eq : test 5 4 ＝ +1
-test-eq = refl
-
-test-eq-vec : test 5 ＝ Vec-to-Seq O (+1 ∷ (+1 ∷ (+1 ∷ (+1 ∷ [ +1 ]))))
-test-eq-vec = refl
--}
-
 𝟛ᴺ-csearchable : {𝓦 : Universe} → csearchable 𝓦 𝟛ᴺ-ClosenessSpace
-𝟛ᴺ-csearchable
- = csearchable'→csearchable 𝟛ᴺ-ClosenessSpace
-   (totally-bounded-csearchable 𝟛ᴺ-ClosenessSpace 𝟛ᴺ-totally-bounded γ)
- where
-  γ : (ϵ : ℕ) → pr₁ (pr₁ (𝟛ᴺ-totally-bounded ϵ)) -- TODO separate
-  γ zero = []
-  γ (succ ε) = O ∷ γ ε
+𝟛ᴺ-csearchable = totally-bounded-csearchable
+                   𝟛ᴺ-ClosenessSpace (repeat O) 𝟛ᴺ-totally-bounded 
 
 𝟛ᴺ-csearchable₂ : {𝓦 : Universe} → csearchable 𝓦 𝟛ᴺ-ClosenessSpace
 𝟛ᴺ-csearchable₂
- = csearchable'→csearchable 𝟛ᴺ-ClosenessSpace
-   (discrete-finite-seq-csearchable O 𝟛-finite)
+ = discrete-finite-seq-csearchable O 𝟛-finite
+
+𝟛ᴺ×𝟛ᴺ-csearchable : {𝓦 : Universe} → csearchable 𝓦 𝟛ᴺ×𝟛ᴺ-ClosenessSpace
+𝟛ᴺ×𝟛ᴺ-csearchable
+ = ×-csearchable 𝟛ᴺ-ClosenessSpace 𝟛ᴺ-ClosenessSpace
+     𝟛ᴺ-csearchable₂ 𝟛ᴺ-csearchable₂
 
 -- Move to ApproxOrder?
 {-
@@ -203,49 +189,126 @@ f-ucontinuous-comp X Y Z f g ϕᶠ ϕᵍ ε
      (λ α → 𝟛ᴺ-approx-lexicorder' α ζ ε)
      (𝟛ᴺ-approx-lexicorder-l-ucontinuous ε ζ)
 
-open import TWA.Thesis.Chapter2.Sequences
 
-1/4 : 𝟛ᴺ
-1/4 = O ∶∶ (O ∶∶ (repeat +1))
+module Search-Example1 where
 
-question : 𝟛ᴺ → ℕ → Ω 𝓤₀
-question x
- = 𝟛ᴺ-approx-lexicorder'
-     (mid (neg x) (repeat O)) 1/4
+ 1/4 : 𝟛ᴺ
+ 1/4 = O ∶∶ (+1 ∶∶ (repeat O))
 
-question-decidable : (ε : ℕ)
-                   → is-complemented (λ x → question x ε holds)
-question-decidable ε x
- = 𝟛ᴺ-approx-lexicorder-l-decidable ε
-     1/4 (mid (neg x) (repeat O))
+ question : ℕ → 𝟛ᴺ → Ω 𝓤₀
+ question ε x
+  = 𝟛ᴺ-approx-lexicorder'
+      (mid (neg x) (repeat O)) 1/4 ε
 
-question-ucontinuous : (ε : ℕ)
-                     → p-ucontinuous 𝟛ᴺ-ClosenessSpace
-                         (λ x → question x ε)
-question-ucontinuous ε
- = 𝟛ᴺ-approx-lexicorder-l-f-ucontinuous ε 1/4
-     (λ x → mid (neg x) (repeat O))
-     (f-ucontinuous-comp
-        𝟛ᴺ-ClosenessSpace 𝟛ᴺ-ClosenessSpace 𝟛ᴺ-ClosenessSpace
-        neg (λ x → mid x (repeat O))
-        neg-ucontinuous (mid-l-ucontinuous (repeat O)))
+ question-decidable : (ε : ℕ)
+                    → is-complemented (λ x → question ε x holds)
+ question-decidable ε x
+  = 𝟛ᴺ-approx-lexicorder-l-decidable ε
+      1/4 (mid (neg x) (repeat O))
 
-question* : ℕ → decidable-uc-predicate 𝓤₀ 𝟛ᴺ-ClosenessSpace
-question* ε = ((λ x → question x ε)
-            , (question-decidable ε))
-            , question-ucontinuous ε
+ question-ucontinuous : (ε : ℕ)
+                      → p-ucontinuous 𝟛ᴺ-ClosenessSpace
+                          (λ x → question ε x)
+ question-ucontinuous ε
+  = 𝟛ᴺ-approx-lexicorder-l-f-ucontinuous ε 1/4
+      (λ x → mid (neg x) (repeat O))
+      (f-ucontinuous-comp
+         𝟛ᴺ-ClosenessSpace 𝟛ᴺ-ClosenessSpace 𝟛ᴺ-ClosenessSpace
+         neg (λ x → mid x (repeat O))
+         neg-ucontinuous (mid-l-ucontinuous (repeat O)))
 
--- find x such that (-x/2) ≼ᵉ (1/4)
-search-test : ℕ → 𝟛ᴺ
-search-test ε = pr₁ 𝟛ᴺ-csearchable (question* ε)
+ question* : ℕ → decidable-uc-predicate 𝓤₀ 𝟛ᴺ-ClosenessSpace
+ question* ε = ((λ x → question ε x)
+             , (question-decidable ε))
+             , question-ucontinuous ε
 
-search-test₂ : ℕ → 𝟛ᴺ
-search-test₂ ε = pr₁ 𝟛ᴺ-csearchable₂ (question* ε) 
+ search-test : ℕ → 𝟛ᴺ
+ search-test ε = pr₁ (𝟛ᴺ-csearchable (question* ε))
 
-1/3 : 𝟛ᴺ
-1/3 0 =  O
-1/3 1 = +1
-1/3 (succ (succ n)) = 1/3 n
+ search-test₂ : ℕ → 𝟛ᴺ
+ search-test₂ ε = pr₁ (𝟛ᴺ-csearchable₂ (question* ε))
+
+module Search-Example2 where
+
+ 1/2 : 𝟛ᴺ
+ 1/2 = +1 ∶∶ (repeat O)
+
+ question : ℕ → 𝟛ᴺ → Ω 𝓤₀
+ question ε x
+  = CΩ 𝟛ᴺ-ClosenessSpace ε (mul x x) 1/2
+
+ question-decidable : (ε : ℕ)
+                    → is-complemented (λ x → question ε x holds)
+ question-decidable ε x
+  = C-decidable 𝟛ᴺ-ClosenessSpace ε (mul x x) 1/2
+
+ question-ucontinuous : (ε : ℕ)
+                      → p-ucontinuous 𝟛ᴺ-ClosenessSpace
+                          (λ x → question ε x)
+ question-ucontinuous ε = δ , γ
+  where
+   δ = pr₁ (mul-ucontinuous ε)
+   γ : p-ucontinuous-with-mod 𝟛ᴺ-ClosenessSpace (question ε) δ
+   γ x₁ x₂ Cx₁x₂
+    = C-trans 𝟛ᴺ-ClosenessSpace ε (mul x₂ x₂) (mul x₁ x₁) 1/2
+        (pr₂ (mul-ucontinuous ε) (x₂ , x₂) (x₁ , x₁)
+          (×-C-combine 𝟛ᴺ-ClosenessSpace 𝟛ᴺ-ClosenessSpace
+            x₂ x₁ x₂ x₁ δ
+            (C-sym 𝟛ᴺ-ClosenessSpace δ x₁ x₂ Cx₁x₂)
+            (C-sym 𝟛ᴺ-ClosenessSpace δ x₁ x₂ Cx₁x₂)))
+
+ question* : ℕ → decidable-uc-predicate 𝓤₀ 𝟛ᴺ-ClosenessSpace
+ question* ε = ((λ x → question ε x)
+             , (question-decidable ε))
+             , question-ucontinuous ε
+
+ search-test : ℕ → 𝟛ᴺ
+ search-test ε = pr₁ (𝟛ᴺ-csearchable (question* ε))
+
+ search-test₂ : ℕ → 𝟛ᴺ
+ search-test₂ ε = pr₁ (𝟛ᴺ-csearchable₂ (question* ε))
+
+module Search-Example3 where
+
+ question : ℕ → 𝟛ᴺ × 𝟛ᴺ → Ω 𝓤₀
+ question ε (x , y)
+  = CΩ 𝟛ᴺ-ClosenessSpace ε (mid x y) (repeat O)
+
+ question-decidable : (ε : ℕ)
+                    → is-complemented (λ x → question ε x holds)
+ question-decidable ε (x , y)
+  = C-decidable 𝟛ᴺ-ClosenessSpace ε (mid x y) (repeat O)
+
+ question-ucontinuous : (ε : ℕ)
+                      → p-ucontinuous 𝟛ᴺ×𝟛ᴺ-ClosenessSpace
+                          (question ε)
+ question-ucontinuous ε = δ , γ
+  where
+   δ = pr₁ (mid-ucontinuous ε)
+   γ : p-ucontinuous-with-mod 𝟛ᴺ×𝟛ᴺ-ClosenessSpace (question ε) δ
+   γ (x₁ , y₁) (x₂ , y₂) Cxy₁xy₂
+    = C-trans 𝟛ᴺ-ClosenessSpace ε (mid x₂ y₂) (mid x₁ y₁) (repeat O)
+        (pr₂ (mid-ucontinuous ε) (x₂ , y₂) (x₁ , y₁)
+        (C-sym 𝟛ᴺ×𝟛ᴺ-ClosenessSpace δ (x₁ , y₁) (x₂ , y₂) Cxy₁xy₂))
+
+ question* : ℕ → decidable-uc-predicate 𝓤₀
+                   𝟛ᴺ×𝟛ᴺ-ClosenessSpace
+ question* ε = ((λ x → question ε x)
+             , (question-decidable ε))
+             , question-ucontinuous ε
+
+ search-test₂ : ℕ → 𝟛ᴺ × 𝟛ᴺ
+ search-test₂ ε = pr₁ (𝟛ᴺ×𝟛ᴺ-csearchable (question* ε))
+
+module Optimisation-Example1 where
+
+ opt-test : ℕ → 𝟛ᴺ
+ opt-test ε = pr₁ (𝟛ᴺ-global-opt¹ neg neg-ucontinuous ε)
+
+module Optimisation-Example2 where
+
+ opt-test : ℕ → 𝟛ᴺ
+ opt-test ε = pr₁ (𝟛ᴺ-global-opt¹ (λ x → mul x x) mul-b-ucontinuous ε)
 
 ℕ∞-vec-min : (n : ℕ) → Vec ℕ∞ n → ℕ∞
 ℕ∞-vec-min 0 [] = ∞
@@ -287,7 +350,7 @@ Vec-clospace X 0
   u : is-ultra (λ _ _ → ∞)
   u [] [] [] _ _ = refl
 Vec-clospace X (succ n)
- = pr₂ (≃-ClosenessSpace (Vec ⟨ X ⟩ (succ n))
+ = pr₂ (≃-ClosenessSpace 
      (×-ClosenessSpace X (Vec-ClosenessSpace X n))
      (Vec-≃ n))
 
@@ -379,6 +442,11 @@ close-to-close X Y Z f v@(y ∷ ys) ϕˣ ϕʸ k ε = δ , γ
          (C-prev X δ δ₁ (max-≤-upper-bound δ₁ δ₂) x₁ x₂ Cx₁x₂) n z)
        (pr₂ IH x₁ x₂
          (C-prev X δ δ₂ (max-≤-upper-bound' δ₂ δ₁) x₁ x₂ Cx₁x₂) n z)
+
+1/3 : 𝟛ᴺ
+1/3 0 =  O
+1/3 1 = +1
+1/3 (succ (succ n)) = 1/3 n
     
 perfect-regression-test : {n : ℕ} → ℕ → Vec 𝟛ᴺ n → (𝟛ᴺ → 𝟛ᴺ)
 perfect-regression-test {n} ε v
@@ -500,41 +568,7 @@ endpoints = repeat −1 ∷ ((repeat O) ∷ [ (repeat +1) ])
 preg-test-eq : ℕ → (𝟛ᴺ → 𝟛ᴺ)
 preg-test-eq n = simpler-perfect-regression-test n endpoints
 
-allofthemare : (Y : PseudoClosenessSpace 𝓥)
--- Replace condition in Theorem 4.2.8 with this
-             → (Ω : ⟪ Y ⟫)
-             → let c = pr₁ (pr₂ Y) in
-               f-ucontinuous' Y (ι ℕ∞-ClosenessSpace) (c Ω)
-allofthemare Y Ω ϵ = ϵ , γ
- where
-  c = pr₁ (pr₂ Y)
-  c-sym = pr₁ (pr₂ (pr₂ (pr₂ Y)))
-  c-ult = pr₂ (pr₂ (pr₂ (pr₂ Y)))
-  γ : (y₁ y₂ : ⟪ Y ⟫)
-    → C' Y ϵ y₁ y₂
-    → C' (ι ℕ∞-ClosenessSpace) ϵ (c Ω y₁) (c Ω y₂)
-  γ y₁ y₂ Cϵy₁y₂ n n⊏ϵ
-   = decidable-𝟚₁ (discrete-decidable-seq _ _ _ (succ n))
-       λ k k<sn → CΩ-eq k (<-≤-trans k (succ n) ϵ k<sn (⊏-gives-< n ϵ n⊏ϵ))
-   where
-    CΩ-eq : (pr₁ (c Ω y₁) ∼ⁿ pr₁ (c Ω y₂)) ϵ
-    CΩ-eq n n<ϵ with 𝟚-possibilities (pr₁ (c Ω y₁) n)
-                   | 𝟚-possibilities (pr₁ (c Ω y₂) n)
-    ... | inl cΩy₁＝₀ | inl cΩy₂＝₀ = cΩy₁＝₀ ∙ cΩy₂＝₀ ⁻¹
-    ... | inl cΩy₁＝₀ | inr cΩy₂＝₁
-     = 𝟘-elim (zero-is-not-one
-     (cΩy₁＝₀ ⁻¹
-     ∙ c-ult Ω y₂ y₁ n
-         (Lemma[a＝₁→b＝₁→min𝟚ab＝₁] cΩy₂＝₁
-           (ap (λ - → pr₁ - n) (c-sym y₂ y₁)
-            ∙ Cϵy₁y₂ n (<-gives-⊏ n ϵ n<ϵ)))))
-    ... | inr cΩy₁＝₁ | inl cΩy₂＝₀
-     = 𝟘-elim (zero-is-not-one
-     (cΩy₂＝₀ ⁻¹
-     ∙ c-ult Ω y₁ y₂ n
-         (Lemma[a＝₁→b＝₁→min𝟚ab＝₁] cΩy₁＝₁
-           (Cϵy₁y₂ n (<-gives-⊏ n ϵ n<ϵ))))) 
-    ... | inr cΩy₁＝₁ | inr cΩy₂＝₁ = cΩy₁＝₁ ∙ cΩy₂＝₁ ⁻¹
+
     
 
 {-λ y₁ y₂ Cϵy₁y₂ n n⊏ε
@@ -552,7 +586,7 @@ regression-opt : {n : ℕ} → ℕ → Vec 𝟛ᴺ n → 𝟛ᴺ
 regression-opt ε v -- WORK ON THIS FIRST TOMORROW
  = pr₁ (optimisation-convergence 𝟛ᴺ-ClosenessSpace
              𝟛ᴺ→𝟛ᴺ-PseudoClosenessSpace (repeat O) 𝟛ᴺ-totally-bounded
-             M Ω' ϕᴹ ϕᶜ ε)
+             M Ω' ϕᴹ ε)
  where
   M : 𝟛ᴺ → (𝟛ᴺ → 𝟛ᴺ)
   M y x = mid (neg y) x
@@ -580,7 +614,7 @@ regression-opt' : {n : ℕ} → ℕ → Vec 𝟛ᴺ n → 𝟛ᴺ
 regression-opt' ε v
  = pr₁ (optimisation-convergence 𝟛ᴺ-ClosenessSpace
              𝟛ᴺ→𝟛ᴺ-PseudoClosenessSpace (repeat O) 𝟛ᴺ-totally-bounded
-             M Ω' ϕᴹ ϕᶜ ε)
+             M Ω' ϕᴹ ε)
  where
   M : 𝟛ᴺ → (𝟛ᴺ → 𝟛ᴺ)
   M y x = mid y x

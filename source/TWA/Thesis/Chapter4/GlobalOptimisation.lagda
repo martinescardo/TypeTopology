@@ -95,11 +95,11 @@ has_global-minimal : ℕ → {𝓤 𝓥 : Universe} {X : 𝓤 ̇ }
  = inl ⋆ , γ
  where
   γ : is ϵ global-minimal _≤ⁿ_ f (inl ⋆)
-  γ (inl ⋆) = approx-order-refl Y _≤_ _≤ⁿ_ a ϵ (f (inl ⋆)) 
+  γ (inl ⋆) = ≤ⁿ-refl Y a ϵ (f (inl ⋆)) 
 𝔽-ϵ-global-minimal (succ (succ n)) _ Y _≤_ _≤ⁿ_ a ϵ f 
  with 𝔽-ϵ-global-minimal (succ n) (inl ⋆) Y _≤_ _≤ⁿ_ a ϵ (f ∘ inr) 
 ... | (x₀ , m)
- = Cases (approx-order-linear Y _≤_ _≤ⁿ_ a ϵ (f (inr x₀)) (f (inl ⋆)))
+ = Cases (≤ⁿ-linear Y a ϵ (f (inr x₀)) (f (inl ⋆)))
      γ₁ γ₂
  where
   γ₁ : (f (inr x₀) ≤ⁿ f (inl ⋆)) ϵ → has ϵ global-minimal _≤ⁿ_ f
@@ -112,8 +112,8 @@ has_global-minimal : ℕ → {𝓤 𝓥 : Universe} {X : 𝓤 ̇ }
   γ₂ ⋆≤x₀ = inl ⋆ , γ
    where
     γ : is ϵ global-minimal _≤ⁿ_ f (inl ⋆)
-    γ (inl ⋆) = approx-order-refl Y _≤_ _≤ⁿ_ a ϵ (f (inl ⋆))
-    γ (inr x) = approx-order-trans Y _≤_ _≤ⁿ_ a ϵ
+    γ (inl ⋆) = ≤ⁿ-refl Y a ϵ (f (inl ⋆))
+    γ (inr x) = ≤ⁿ-trans Y a ϵ
                   (f (inl ⋆)) (f (inr x₀)) (f (inr x))
                   ⋆≤x₀ (m x)
 
@@ -160,7 +160,7 @@ global-opt : (X : ClosenessSpace 𝓤) (Y : ClosenessSpace 𝓥)
            → (has ϵ global-minimal) _≤ⁿ_ f
 global-opt {𝓤} {𝓥} {𝓦} {𝓦'} {𝓤'} X Y x₁ _≤_ _≤ⁿ_ a ϵ f ϕ t
  = (g x'₀)
- , (λ x → approx-order-trans Y _≤_ _≤ⁿ_ a ϵ
+ , (λ x → ≤ⁿ-trans Y a ϵ
             (f (g x'₀)) (f (g (h x))) (f x)
             (m (h x)) (h-min x))
  where

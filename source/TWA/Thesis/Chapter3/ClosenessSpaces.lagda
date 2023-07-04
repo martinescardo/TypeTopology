@@ -156,13 +156,20 @@ CΩ X n x y = C X n x y , C-prop X n x y
 C⁼ : (X : ClosenessSpace 𝓤) (n : ℕ) → EqRel ⟨ X ⟩
 C⁼ X n = C X n , C-is-eq X n
 
+C'-pred : (X : PseudoClosenessSpace 𝓤)
+        → (ε : ℕ)
+        → (x y : ⟪ X ⟫)
+        → C' X (succ ε) x y
+        → C' X ε x y
+C'-pred X ε x y Csεxy n n⊏ε
+ = Csεxy n (⊏-trans n ε (Succ (ε ↑)) n⊏ε (ℕ-to-ℕ∞-diagonal₁ ε))
+
 C-pred : (X : ClosenessSpace 𝓤)
        → (ε : ℕ)
        → (x y : ⟨ X ⟩)
        → C X (succ ε) x y
        → C X ε x y
-C-pred X ε x y Csεxy n n⊏ε
- = Csεxy n (⊏-trans n ε (Succ (ε ↑)) n⊏ε (ℕ-to-ℕ∞-diagonal₁ ε))
+C-pred X = C'-pred (ι X)
 
 C-prev : (X : ClosenessSpace 𝓤)
        → (n i : ℕ)

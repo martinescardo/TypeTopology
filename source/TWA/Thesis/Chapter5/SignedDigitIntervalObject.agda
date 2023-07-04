@@ -36,6 +36,9 @@ f realises² f' = (α β : 𝟛ᴺ) → ⟪ f α β ⟫ ＝ f' ⟪ α ⟫ ⟪ β
 _pw-realises¹_ : (𝟛 → 𝟛) → (𝕀 → 𝕀) → 𝓦 ̇
 f pw-realises¹ f' = (a : 𝟛) → f' ⟨ a ⟩ ＝ ⟨ f a ⟩
 
+_pw-realises²_ : (𝟛 → 𝟛 → 𝟛) → (𝕀 → 𝕀 → 𝕀) → 𝓦 ̇
+f pw-realises² f' = (a b : 𝟛) → f' ⟨ a ⟩ ⟨ b ⟩ ＝ ⟨ f a b ⟩
+
 _realises'_ : (𝟛 → 𝟛ᴺ → 𝟛ᴺ) → (𝕀 → 𝕀 → 𝕀) → 𝓦 ̇
 f realises' f' = (a : 𝟛) (β : 𝟛ᴺ) → ⟪ f a β ⟫ ＝ f' ⟨ a ⟩ ⟪ β ⟫
 
@@ -56,6 +59,12 @@ map-realiser : (f : 𝟛 → 𝟛) (f' : 𝕀 → 𝕀)
              → (map f) realises¹ f'
 map-realiser f f' f→ f⊕ α = ⊕-homs-are-M-homs f' f⊕ (map ⟨_⟩ α)
                           ∙ ap M (dfunext (fe 𝓤₀ 𝓦) (λ i → f→ (α i)))
+
+map-realiser²' : (f : 𝟛 → 𝟛ᴺ → 𝟛ᴺ) (f' : 𝕀 → 𝕀 → 𝕀)
+              → f realises' f'
+              → ((a : 𝟛) → is-⊕-homomorphism fe 𝓘 𝓘 (f' ⟨ a ⟩))
+              → (λ α β → {!zipWith!}) realises² {!!}
+map-realiser²' f f' f→ f⊕ α β = {!!}
 
 map-realiser² : (f : 𝟛 → 𝟛ᴺ → 𝟛ᴺ) (f' : 𝕀 → 𝕀 → 𝕀)
               → f realises' f'
@@ -619,7 +628,8 @@ bigMid'-approx n f αs
 -- Theorem 5.2.33
 M-realiser : bigMid realisesᴺ M
 M-realiser δs = fg-approx-holds (map ⟪_⟫) (map quarter ∘ bigMid')
-                  bigMid'-approx δs ∙ quarter-realiser (bigMid' δs) ⁻¹
+                  bigMid'-approx δs
+                  ∙ quarter-realiser (bigMid' δs) ⁻¹
 
 -- Lemma 5.2.36
 digitMul-realiser : digitMul realises' _*_

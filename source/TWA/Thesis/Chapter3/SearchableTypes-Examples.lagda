@@ -21,13 +21,13 @@ open import TWA.Thesis.Chapter3.PredicateEquality fe pe
 -- Finite continuously searchable spaces.
 
 finite-discrete-csearchable
- : {X : 𝓤 ̇ }
- → (f : finite-discrete X)
- → pointed X
+ : (X : ClosenessSpace 𝓤)
+ → (f : finite-discrete ⟨ X ⟩)
+ → pointed ⟨ X ⟩
  → let d = finite-discrete-is-discrete f in
-   csearchable 𝓦 (D-ClosenessSpace d)
-finite-discrete-csearchable f x
- = searchable→csearchable (D-ClosenessSpace d)
+   csearchable 𝓦 X
+finite-discrete-csearchable X f x
+ = searchable→csearchable X
      (finite-discrete-searchable f x)
  where d = finite-discrete-is-discrete f
 
@@ -260,7 +260,7 @@ tail-predicate-tych
  → decidable-uc-predicate-with-mod 𝓦
      (Π-ClosenessSpace T) (succ δ)
  → decidable-uc-predicate-with-mod 𝓦
-     (Π-ClosenessSpace (T ∘ succ)) δ
+     (Π-ClosenessSpace (tail T)) δ
 tail-predicate-tych {𝓤} {𝓦} T δ x₀ ((p' , d') , ϕ') = (p , d) , ϕ
  where
   p : Π (⟨_⟩ ∘ T ∘ succ) → Ω 𝓦
@@ -350,14 +350,15 @@ tychonoff' T S (succ δ) ((p , d) , ϕ)
    γₕ = pr₂ (S 0 pₕ)
    γ : _
    γ (y , py)
-    = γₕ (y 0 , pr₂ (xs→ (y 0)) (y ∘ succ , transport (pr₁ ∘ p)
-        (dfunext (fe _ _) ζ) py))
-    where
-     ζ : y ∼ (y 0 :: (y ∘ succ))
-     ζ zero = refl
-     ζ (succ i) = refl
+    = γₕ (y 0 , pr₂ (xs→ (y 0))
+           (y ∘ succ
+           , ϕ y (y 0 :: (y ∘ succ)) (Π-C-eta T y (succ δ)) py))
 
 tychonoff : (T : ℕ → ClosenessSpace 𝓤)
           → ((n : ℕ) → csearchable 𝓦 (T n))
           → csearchable 𝓦 (Π-ClosenessSpace T)
 tychonoff T S ((p , d) , δ , ϕ) = tychonoff' T S δ ((p , d) , ϕ)
+
+
+{-
+-}

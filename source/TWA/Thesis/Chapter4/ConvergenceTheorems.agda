@@ -41,7 +41,7 @@ C-ucontinuous X ε x = ε , γ
 p-regressor : (X : ClosenessSpace 𝓤) (Y : PseudoClosenessSpace 𝓥)
             → (𝓔S : csearchable 𝓤₀ X)
             → (ε : ℕ) → regressor X Y
-p-regressor {𝓤} {𝓥} X Y (𝓔 , S) ε M ϕᴹ Ω' = 𝓔 ((p , d) , ϕ)
+p-regressor {𝓤} {𝓥} X Y S ε M ϕᴹ Ω' = pr₁ (S ((p , d) , ϕ))
  where
   p : ⟨ X ⟩ → Ω 𝓤₀
   p x = C'Ω Y ε Ω' (M x)
@@ -135,20 +135,96 @@ global-max-ℕ∞ X x₀ t f ϕ ϵ
      ϵ f ϕ t
 
 -- Theorem 4.2.8
+-- open import CoNaturals.GenericConvergentSequence
+
+um : (u : ℕ∞) (n : ℕ) → ¬ ((n ↑) ≼ u) → u ≺ (n ↑)
+um u zero ¬n≼u = 𝟘-elim (¬n≼u (λ _ ()))
+um u (succ n) ¬sn≼u with ≼-left-decidable n u
+... | inl  n≼u = n
+               , to-subtype-＝ (being-decreasing-is-prop (fe _ _))
+                   (dfunext (fe _ _) γ)
+               , <-gives-⊏ n (succ n) (<-succ n)
+ where
+  γ : pr₁ u ∼ pr₁ (n ↑)
+  γ i = Cases (<-decidable i n)
+          (λ  i<n → n≼u i (<-gives-⊏ i n i<n) ∙ <-gives-⊏ i n i<n ⁻¹)
+          (λ ¬i<n → not-⊏-is-⊒ {i} {u}
+                      (λ i⊏u → ¬sn≼u
+                        (λ j j⊏sn → ⊏-trans'' u i j
+                                      (<-≤-trans j (succ n) (succ i)
+                                        (⊏-gives-< j (succ n) j⊏sn)
+                                        (not-less-bigger-or-equal
+                                          n i ¬i<n))
+                                      i⊏u))
+                  ∙ not-⊏-is-⊒ {i} {n ↑}
+                      (λ i⊏n → ¬i<n (⊏-gives-< i n i⊏n)) ⁻¹)
+... | inr ¬n≼u
+ = ≺-trans u (n ↑) (succ n ↑)
+     (um u n ¬n≼u) (n , refl , (<-gives-⊏ n (succ n) (<-succ n)))
+
+thingy : (Y : PseudoClosenessSpace 𝓥)
+       → (n : ℕ)
+       → (x y : ⟪ Y ⟫)
+       → ¬ C' Y n x y
+       → let c = pr₁ (pr₂ Y) in
+         c x y ≺ (n ↑)
+thingy Y n x y ¬Cnxy = um (pr₁ (pr₂ Y) x y) n ¬Cnxy
+
+open import TWA.Thesis.Chapter2.Sequences
+open import MLTT.Two-Properties
+  
+allofthemare' : (Y : PseudoClosenessSpace 𝓥)
+              → (Ω : ⟪ Y ⟫)
+              → (ϵ : ℕ)
+              → let c = pr₁ (pr₂ Y) in
+                (y₁ y₂ : ⟪ Y ⟫)
+              → C' Y ϵ y₁ y₂
+              → C' (ι ℕ∞-ClosenessSpace) ϵ (c Ω y₁) (c Ω y₂)
+allofthemare' Y Ω ϵ y₁ y₂ Cϵy₁y₂ n n⊏ϵ
+ = decidable-𝟚₁ (discrete-decidable-seq _ _ _ (succ n))
+       λ k k<sn → CΩ-eq k (<-≤-trans k (succ n) ϵ k<sn (⊏-gives-< n ϵ n⊏ϵ))
+   where
+    c = pr₁ (pr₂ Y)
+    c-sym = pr₁ (pr₂ (pr₂ (pr₂ Y)))
+    c-ult = pr₂ (pr₂ (pr₂ (pr₂ Y)))
+    CΩ-eq : (pr₁ (c Ω y₁) ∼ⁿ pr₁ (c Ω y₂)) ϵ
+    CΩ-eq n n<ϵ with 𝟚-possibilities (pr₁ (c Ω y₁) n)
+                   | 𝟚-possibilities (pr₁ (c Ω y₂) n)
+    ... | inl cΩy₁＝₀ | inl cΩy₂＝₀ = cΩy₁＝₀ ∙ cΩy₂＝₀ ⁻¹
+    ... | inl cΩy₁＝₀ | inr cΩy₂＝₁
+     = 𝟘-elim (zero-is-not-one
+     (cΩy₁＝₀ ⁻¹
+     ∙ c-ult Ω y₂ y₁ n
+         (Lemma[a＝₁→b＝₁→min𝟚ab＝₁] cΩy₂＝₁
+           (ap (λ - → pr₁ - n) (c-sym y₂ y₁)
+            ∙ Cϵy₁y₂ n (<-gives-⊏ n ϵ n<ϵ)))))
+    ... | inr cΩy₁＝₁ | inl cΩy₂＝₀
+     = 𝟘-elim (zero-is-not-one
+     (cΩy₂＝₀ ⁻¹
+     ∙ c-ult Ω y₁ y₂ n
+         (Lemma[a＝₁→b＝₁→min𝟚ab＝₁] cΩy₁＝₁
+           (Cϵy₁y₂ n (<-gives-⊏ n ϵ n<ϵ))))) 
+    ... | inr cΩy₁＝₁ | inr cΩy₂＝₁ = cΩy₁＝₁ ∙ cΩy₂＝₁ ⁻¹
+  
+allofthemare : (Y : PseudoClosenessSpace 𝓥)
+             → (Ω : ⟪ Y ⟫)
+             → let c = pr₁ (pr₂ Y) in
+               f-ucontinuous' Y (ι ℕ∞-ClosenessSpace) (c Ω)
+allofthemare Y Ω ϵ = ϵ , allofthemare' Y Ω ϵ
+    
 optimisation-convergence
        : (X : ClosenessSpace 𝓤) (Y : PseudoClosenessSpace 𝓥)
        → ⟨ X ⟩ → totally-bounded X 𝓤'
        → (M : ⟨ X ⟩ → ⟪ Y ⟫) (Ω : ⟪ Y ⟫)
        → f-ucontinuous' (ι X) Y M
        → let c = pr₁ (pr₂ Y) in
-         f-ucontinuous' Y (ι ℕ∞-ClosenessSpace) (c Ω)
-       → (ϵ : ℕ)
+         (ϵ : ℕ)
        → (has ϵ global-maximal) ℕ∞-approx-lexicorder (λ x → c Ω (M x))
-optimisation-convergence X Y x₀ t M Ω ϕᴹ ϕᶜ
+optimisation-convergence X Y x₀ t M Ω ϕᴹ
  = global-max-ℕ∞ X x₀ t (c Ω ∘ M)
-     (λ ϵ → pr₁ (ϕᴹ (pr₁ (ϕᶜ ϵ)))
-          , λ x₁ x₂ Cδᶜx₁x₂ → pr₂ (ϕᶜ ϵ) (M x₁) (M x₂)
-                               (pr₂ (ϕᴹ (pr₁ (ϕᶜ ϵ))) x₁ x₂ Cδᶜx₁x₂))
+     (λ ϵ → pr₁ (ϕᴹ ϵ)
+          , λ x₁ x₂ Cδᶜx₁x₂ → allofthemare' Y Ω ϵ (M x₁) (M x₂)
+                               (pr₂ (ϕᴹ ϵ) x₁ x₂ Cδᶜx₁x₂))
  where
   c : ⟪ Y ⟫ → ⟪ Y ⟫ → ℕ∞
   c = pr₁ (pr₂ Y)
@@ -157,22 +233,22 @@ optimisation-convergence X Y x₀ t M Ω ϕᴹ ϕᶜ
 -- Theorem 4.2.12
 s-imperfect-convergence
        : (X : ClosenessSpace 𝓤) (Y : PseudoClosenessSpace 𝓥)
-       → (𝓔S : csearchable 𝓤₀ X)
+       → (S : csearchable 𝓤₀ X)
        → (ε : ℕ)
        → (M : ⟨ X ⟩ → ⟪ Y ⟫) (ϕᴹ : f-ucontinuous' (ι X) Y M)
        → (Ψ : ⟪ Y ⟫ → ⟪ Y ⟫) (k : ⟨ X ⟩)
        → let
            Ω = M k
            ΨΩ = Ψ Ω
-           reg = p-regressor X Y 𝓔S ε
+           reg = p-regressor X Y S ε
            ω = M (reg M ϕᴹ ΨΩ)
          in (C' Y ε Ω ΨΩ) → (C' Y ε Ω ω)
-s-imperfect-convergence X Y (𝓔 , S) ε M ϕᴹ Ψ k CεΩΨΩ
- = C'-trans Y ε Ω' ΨΩ ω CεΩΨΩ (S ((p , d) , ϕ) (k , C'-sym Y ε Ω' ΨΩ CεΩΨΩ))
+s-imperfect-convergence X Y S ε M ϕᴹ Ψ k CεΩΨΩ
+ = C'-trans Y ε Ω' ΨΩ ω CεΩΨΩ (pr₂ (S ((p , d) , ϕ)) (k , C'-sym Y ε Ω' ΨΩ CεΩΨΩ))
  where
   Ω' = M k -- fix Ω definition in paper and agda
   ΨΩ = Ψ Ω'
-  reg = p-regressor X Y (𝓔 , S) ε
+  reg = p-regressor X Y S ε
   ω = M (reg M ϕᴹ ΨΩ)
   p : ⟨ X ⟩ → Ω 𝓤₀
   p x = C'Ω Y ε ΨΩ (M x)
@@ -190,17 +266,17 @@ s-imperfect-convergence X Y (𝓔 , S) ε M ϕᴹ Ψ k CεΩΨΩ
 
 perfect-convergence
        : (X : ClosenessSpace 𝓤) (Y : PseudoClosenessSpace 𝓥)
-       → (𝓔S : csearchable 𝓤₀ X)
+       → (S : csearchable 𝓤₀ X)
        → (ε : ℕ)
        → (M : ⟨ X ⟩ → ⟪ Y ⟫) (ϕᴹ : f-ucontinuous' (ι X) Y M)
        → (k : ⟨ X ⟩)
        → let
            Ω = M k
-           reg = p-regressor X Y 𝓔S ε
+           reg = p-regressor X Y S ε
            ω = M (reg M ϕᴹ Ω)
          in C' Y ε Ω ω
-perfect-convergence X Y 𝓔S ε M ϕᴹ k
- = s-imperfect-convergence X Y 𝓔S ε M ϕᴹ id k (C'-refl Y ε Ω')
+perfect-convergence X Y S ε M ϕᴹ k
+ = s-imperfect-convergence X Y S ε M ϕᴹ id k (C'-refl Y ε Ω')
  where Ω' = M k
 
 {-

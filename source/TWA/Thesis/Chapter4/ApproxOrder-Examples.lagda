@@ -19,6 +19,7 @@ open import CoNaturals.GenericConvergentSequence
          ; ∞-largest to ∞-maximal)
 open import NotionsOfDecidability.Decidable
 open import MLTT.Two-Properties
+open import UF.Miscelanea
 
 open import TWA.Thesis.Chapter2.FiniteDiscrete
 open import TWA.Thesis.Chapter2.Sequences
@@ -29,6 +30,138 @@ open import TWA.Thesis.Chapter3.ClosenessSpaces fe
 open import TWA.Thesis.Chapter3.ClosenessSpaces-Examples fe
 open import TWA.Thesis.Chapter3.SearchableTypes fe
 open import TWA.Thesis.Chapter4.ApproxOrder fe
+
+-- Inclusion/embeddings/sigmas
+
+inclusion-order
+ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (f : X → Y) (_≤_ : Y → Y → 𝓦 ̇) → X → X → 𝓦 ̇
+inclusion-order f _≤_ x₁ x₂ = f x₁ ≤ f x₂
+
+inclusion-order-is-preorder
+ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+ → (_≤_ : Y → Y → 𝓦 ̇)
+ → is-preorder _≤_
+ → is-preorder (inclusion-order f _≤_)
+inclusion-order-is-preorder
+ {_} {_} {_} {X} {Y} f _≤_ x@(p , r , t) = r→ , t→ , p→
+ where
+  r→ : reflexive (inclusion-order f _≤_)
+  r→ x = p (f x)
+  t→ : transitive (inclusion-order f _≤_)
+  t→ x y z = r (f x) (f y) (f z)
+  p→ : is-prop-valued (inclusion-order f _≤_)
+  p→ x y = t (f x) (f y)
+
+inclusion-order-is-linear-order
+ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+ → (_≤_ : Y → Y → 𝓦 ̇)
+ → is-linear-order _≤_
+ → is-linear-order (inclusion-order f _≤_)
+inclusion-order-is-linear-order
+ {_} {_} {_} {X} {Y} f _≤_ (pre , l)
+ = inclusion-order-is-preorder f _≤_ pre , l→
+ where
+  l→ : (x y : X) → inclusion-order f _≤_ x y
+                 + inclusion-order f _≤_ y x
+  l→ x y = l (f x) (f y)
+
+inclusion-order-is-strict-order
+ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+ → (_<_ : Y → Y → 𝓦 ̇)
+ → is-strict-order _<_
+ → is-strict-order (inclusion-order f _<_)
+inclusion-order-is-strict-order
+ {_} {_} {_} {X} {Y} f _<_ (i , t , a , p)
+ = i→ , t→ , a→ , p→
+ where
+  i→ : (x : X) → ¬ inclusion-order f _<_ x x
+  i→ x e = i (f x) e
+  t→ : transitive (inclusion-order f _<_)
+  t→ x y z = t (f x) (f y) (f z)
+  a→ : (x y : X)
+     →   inclusion-order f _<_ x y
+     → ¬ inclusion-order f _<_ y x
+  a→ x y = a (f x) (f y)
+  p→ : is-prop-valued (inclusion-order f _<_)
+  p→ x y = p (f x) (f y)
+
+embedding-strict-order-trichotomous
+ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } ((f , _) : X ↪ Y)
+ → (_<_ : Y → Y → 𝓦 ̇) → trichotomous _<_
+ → trichotomous (inclusion-order f _<_)
+embedding-strict-order-trichotomous
+ {_} {_} {_} {X} {Y} (f , η) _<_ t x y
+ = Cases (t (f x) (f y))
+     inl (cases (inr ∘ inl ∘ λ e → ap pr₁ (f-lc x y e)) (inr ∘ inr))
+ where
+  f-lc : (x y : X) (e : f x ＝ f y) → x , e ＝ y , refl
+  f-lc x y fx＝fy = η (f y) (x , fx＝fy) (y , refl)
+
+inclusion-approx-order
+ : {X : 𝓤 ̇ } {Y : ClosenessSpace 𝓥} (f : X → ⟨ Y ⟩)
+ → (_≤ⁿ_ : ⟨ Y ⟩ → ⟨ Y ⟩ → ℕ → 𝓦  ̇)
+ → X → X → ℕ → 𝓦  ̇ 
+inclusion-approx-order f _≤ⁿ_ x y = f x ≤ⁿ f y
+
+Σ-order : {X : 𝓤 ̇ } → (P : X → 𝓥 ̇ ) → (_≤_ : X → X → 𝓦  ̇)
+        → Σ P → Σ P → 𝓦  ̇
+Σ-order P _≤_ (x , _) (y , _) = x ≤ y
+
+Σ-order-is-preorder
+ : {X : 𝓤 ̇ }
+ → (P : X → 𝓥 ̇ )
+ → (_≤_ : X → X → 𝓦 ̇ )
+ → is-preorder _≤_
+ → is-preorder (Σ-order P _≤_)
+Σ-order-is-preorder P _≤_ (r' , t' , p') = r , t , p
+ where
+  r : reflexive (Σ-order P _≤_)
+  r (x , _) = r' x
+  t : transitive (Σ-order P _≤_)
+  t (x , _) (y , _) (z , _) = t' x y z
+  p : is-prop-valued (Σ-order P _≤_)
+  p (x , _) (y , _) = p' x y
+
+Σ-approx-order : {X : 𝓤 ̇ } → (P : X → 𝓥 ̇ ) → (_≤ⁿ_ : X → X → ℕ → 𝓦  ̇)
+               → Σ P → Σ P → ℕ → 𝓦  ̇ 
+Σ-approx-order P _≤ⁿ_ (x , _) (y , _) = x ≤ⁿ y
+
+Σ-approx-order-is-approx-order
+ : (X : ClosenessSpace 𝓤)
+ → (P : ⟨ X ⟩ → 𝓥 ̇ )
+ → (p : (x : ⟨ X ⟩) → is-prop (P x))
+ → (_≤_ : ⟨ X ⟩ → ⟨ X ⟩ → 𝓦 ̇ )
+ → (_≤ⁿ_ : ⟨ X ⟩ → ⟨ X ⟩ → ℕ → 𝓦'  ̇)
+ → is-approx-order X _≤_ _≤ⁿ_
+ → is-approx-order (Σ-ClosenessSpace X P p)
+     (Σ-order P _≤_) (Σ-approx-order P _≤ⁿ_)
+Σ-approx-order-is-approx-order
+ X P p _≤_ _≤ⁿ_ (pre' , lin' , d' , c' , a') = pre , lin , d , c , a
+ where
+  pre : is-preorder (Σ-order P _≤_)
+  pre = Σ-order-is-preorder P _≤_ pre'
+  lin : (ϵ : ℕ) → is-linear-order (λ x y → Σ-approx-order P _≤ⁿ_ x y ϵ)
+  lin ϵ = (r' ∘ pr₁
+        , (λ (x , _) (y , _) (z , _) → t' x y z)
+        , λ (x , _) (y , _) → p' x y)
+        , λ (x , _) (y , _) → l' x y
+   where
+    r' = (pr₁ ∘ pr₁)       (lin' ϵ)
+    t' = (pr₁ ∘ pr₂ ∘ pr₁) (lin' ϵ)
+    p' = (pr₂ ∘ pr₂ ∘ pr₁) (lin' ϵ)
+    l' = pr₂               (lin' ϵ)
+  d : (ϵ : ℕ) (x y : Σ P) → is-decidable (Σ-approx-order P _≤ⁿ_ x y ϵ)
+  d ϵ (x , _) (y , _) = d' ϵ x y
+  c : (ϵ : ℕ) (x y : ⟨ Σ-ClosenessSpace X P p ⟩)
+    →   C (Σ-ClosenessSpace X P p) ϵ x y → Σ-approx-order P _≤ⁿ_ x y ϵ
+  c ϵ (x , _) (y , _) = c' ϵ x y
+  a : (ϵ : ℕ) (x y : ⟨ Σ-ClosenessSpace X P p ⟩)
+    → ¬ C (Σ-ClosenessSpace X P p) ϵ x y
+    → Σ-approx-order P _≤ⁿ_ x y ϵ ⇔ Σ-order P _≤_ x y
+  a ϵ (x , _) (y , _) = a' ϵ x y
+
+
+-- Finite
 
 _≤𝔽_ : {n : ℕ} → 𝔽 n → 𝔽 n → 𝓤₀  ̇
 _≤𝔽_ {succ n} (inl x) y = 𝟙
@@ -53,29 +186,6 @@ _≤𝔽_ {succ n} (inr x) (inr y) = x ≤𝔽 y
   l {succ n} (inl x) y = inl ⋆
   l {succ n} (inr x) (inl y) = inr ⋆
   l {succ n} (inr x) (inr y) = l x y
-
-inclusion-order
- : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (f : X → Y) (_≤_ : Y → Y → 𝓦 ̇) → X → X → 𝓦 ̇
-inclusion-order f _≤_ x₁ x₂ = f x₁ ≤ f x₂
-
-inclusion-order-is-linear-order
- : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
- → (_≤_ : Y → Y → 𝓦 ̇)
- → is-linear-order _≤_
- → is-linear-order (inclusion-order f _≤_)
-inclusion-order-is-linear-order
- {_} {_} {_} {X} {Y} f _≤_ ((p , r , t) , l)
- = (r→ , t→ , p→) , l→
- where
-  r→ : reflexive (inclusion-order f _≤_)
-  r→ x = p (f x)
-  t→ : transitive (inclusion-order f _≤_)
-  t→ x y z = r (f x) (f y) (f z)
-  p→ : is-prop-valued (inclusion-order f _≤_)
-  p→ x y = t (f x) (f y)
-  l→ : (x y : X) → inclusion-order f _≤_ x y
-                 + inclusion-order f _≤_ y x
-  l→ x y = l (f x) (f y)
 
 finite-order : {F : 𝓤 ̇ } → finite-discrete F → F → F → 𝓤₀  ̇
 finite-order (n , _ , (h , _) , _) = inclusion-order h _≤𝔽_ 
@@ -116,20 +226,6 @@ _<𝔽_ {succ n} (inr x) (inr y) = x <𝔽 y
   p {succ n} (inr x) (inl y) = 𝟘-is-prop
   p {succ n} (inr x) (inr y) = p x y
 
-trichotomous : {X : 𝓤 ̇ } → (_<_ : X → X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
-trichotomous {𝓤} {𝓥} {X} _<_ = (x y : X) → (x < y) + (x ＝ y) + (y < x)
-
-strict-trichotomous-order-decidable : {X : 𝓤  ̇ }
-                                    → (_<'_ : X → X → 𝓦  ̇ )
-                                    → is-strict-order _<'_
-                                    → trichotomous _<'_
-                                    → (x y : X)
-                                    → is-decidable (x <' y)
-strict-trichotomous-order-decidable _<'_ (i , t , a , p) tri x y
- = Cases (tri x y) inl
-  (cases (λ x＝y → inr (transport (λ - → ¬ (x <' -)) x＝y (i x)))
-         (inr ∘ a y x))
-
 <𝔽-trichotomous : {n : ℕ} → trichotomous (_<𝔽_ {n})
 <𝔽-trichotomous {succ n} (inl ⋆) (inl ⋆) = inr (inl refl)
 <𝔽-trichotomous {succ n} (inl _) (inr _) = inl ⋆
@@ -140,38 +236,6 @@ strict-trichotomous-order-decidable _<'_ (i , t , a , p) tri x y
 
 finite-strict-order : {F : 𝓤 ̇ } → finite-discrete F → F → F → 𝓤₀ ̇
 finite-strict-order (n , _ , (h , _) , _) = inclusion-order h _<𝔽_
-
-inclusion-order-is-strict-order
- : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
- → (_<_ : Y → Y → 𝓦 ̇)
- → is-strict-order _<_
- → is-strict-order (inclusion-order f _<_)
-inclusion-order-is-strict-order
- {_} {_} {_} {X} {Y} f _<_ (i , t , a , p)
- = i→ , t→ , a→ , p→
- where
-  i→ : (x : X) → ¬ inclusion-order f _<_ x x
-  i→ x e = i (f x) e
-  t→ : transitive (inclusion-order f _<_)
-  t→ x y z = t (f x) (f y) (f z)
-  a→ : (x y : X)
-     →   inclusion-order f _<_ x y
-     → ¬ inclusion-order f _<_ y x
-  a→ x y = a (f x) (f y)
-  p→ : is-prop-valued (inclusion-order f _<_)
-  p→ x y = p (f x) (f y)
-
-embedding-strict-order-trichotomous
- : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } ((f , _) : X ↪ Y)
- → (_<_ : Y → Y → 𝓦 ̇) → trichotomous _<_
- → trichotomous (inclusion-order f _<_)
-embedding-strict-order-trichotomous
- {_} {_} {_} {X} {Y} (f , η) _<_ t x y
- = Cases (t (f x) (f y))
-     inl (cases (inr ∘ inl ∘ λ e → ap pr₁ (f-lc x y e)) (inr ∘ inr))
- where
-  f-lc : (x y : X) (e : f x ＝ f y) → x , e ＝ y , refl
-  f-lc x y fx＝fy = η (f y) (x , fx＝fy) (y , refl)
   
 finite-strict-order-is-strict-order
  : {F : 𝓤 ̇ } → (f : finite-discrete F)
@@ -186,6 +250,225 @@ finite-strict-order-trichotomous (n , f)
  = embedding-strict-order-trichotomous
      (≃-gives-↪ (≃-sym f))
      _<𝔽_ <𝔽-trichotomous
+
+-- Disjoint union
+
+disjoint-order : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+               → (_≤x_ : X → X → 𝓦  ̇ )
+               → (_≤y_ : Y → Y → 𝓦  ̇ )
+               → (xy₁ xy₂ : (X + Y))
+               → 𝓦  ̇ 
+disjoint-order _≤x_ _≤y_ (inl x₁) (inl x₂) = x₁ ≤x x₂
+disjoint-order _≤x_ _≤y_ (inl x ) (inr y ) = 𝟙
+disjoint-order _≤x_ _≤y_ (inr y ) (inl x ) = 𝟘
+disjoint-order _≤x_ _≤y_ (inr y₁) (inr y₂) = y₁ ≤y y₂
+
+disjoint-order-is-transitive
+ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+ → (_≤x_ : X → X → 𝓦  ̇ )
+ → (_≤y_ : Y → Y → 𝓦  ̇ )
+ → transitive _≤x_
+ → transitive _≤y_
+ → transitive (disjoint-order _≤x_ _≤y_)
+disjoint-order-is-transitive _≤x_ _≤y_ tx ty
+  (inl x₁) (inl x₂) (inl x₃) p q = tx x₁ x₂ x₃ p q
+disjoint-order-is-transitive _≤x_ _≤y_ tx ty
+  (inl x₁) (inl x₂) (inr y ) p q = ⋆
+disjoint-order-is-transitive _≤x_ _≤y_ tx ty
+  (inl x ) (inr y₁) (inr y₂) p q = ⋆
+disjoint-order-is-transitive _≤x_ _≤y_ tx ty
+  (inr y₁) (inr y₂) (inr y₃) p q = ty y₁ y₂ y₃ p q
+
+disjoint-order-is-prop-valued
+ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+ → (_≤x_ : X → X → 𝓦  ̇ )
+ → (_≤y_ : Y → Y → 𝓦  ̇ )
+ → is-prop-valued _≤x_
+ → is-prop-valued _≤y_
+ → is-prop-valued (disjoint-order _≤x_ _≤y_)
+disjoint-order-is-prop-valued _≤x_ _≤y_ px py
+ (inl x₁) (inl x₂) = px x₁ x₂
+disjoint-order-is-prop-valued _≤x_ _≤y_ px py
+ (inl x ) (inr y ) = 𝟙-is-prop
+disjoint-order-is-prop-valued _≤x_ _≤y_ px py
+ (inr y ) (inl x ) = 𝟘-is-prop
+disjoint-order-is-prop-valued _≤x_ _≤y_ px py
+ (inr y₁) (inr y₂) = py y₁ y₂
+
+disjoint-order-is-preorder
+ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+ → (_≤x_ : X → X → 𝓦  ̇ )
+ → (_≤y_ : Y → Y → 𝓦  ̇ )
+ → is-preorder _≤x_
+ → is-preorder _≤y_
+ → is-preorder (disjoint-order _≤x_ _≤y_)
+disjoint-order-is-preorder _≤x_ _≤y_ px py
+ = ≤-refl∙
+ , disjoint-order-is-transitive _≤x_ _≤y_ ≤-trans⟨ px ⟩ ≤-trans⟨ py ⟩
+ , disjoint-order-is-prop-valued _≤x_ _≤y_ ≤-prop⟨ px ⟩ ≤-prop⟨ py ⟩
+ where
+  ≤-refl∙  : reflexive (disjoint-order _≤x_ _≤y_)
+  ≤-refl∙ (inl x) = ≤-refl⟨ px ⟩ x
+  ≤-refl∙ (inr y) = ≤-refl⟨ py ⟩ y
+
+disjoint-order-is-linear-order
+ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+ → (_≤x_ : X → X → 𝓦  ̇ )
+ → (_≤y_ : Y → Y → 𝓦  ̇ )
+ → is-linear-order _≤x_
+ → is-linear-order _≤y_
+ → is-linear-order (disjoint-order _≤x_ _≤y_)
+disjoint-order-is-linear-order _≤x_ _≤y_ lx ly
+ = disjoint-order-is-preorder _≤x_ _≤y_ ≤-pre⟨ lx ⟩ ≤-pre⟨ ly ⟩
+ , ≤-linear∙
+ where
+  ≤-linear∙ : linear (disjoint-order _≤x_ _≤y_)
+  ≤-linear∙ (inl x₁) (inl x₂) = ≤-linear⟨ lx ⟩ x₁ x₂
+  ≤-linear∙ (inl x ) (inr y ) = inl ⋆
+  ≤-linear∙ (inr y ) (inl x ) = inr ⋆
+  ≤-linear∙ (inr y₁) (inr y₂) = ≤-linear⟨ ly ⟩ y₁ y₂
+
+disjoint-order-is-strict-order
+ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+ → (_<x_ : X → X → 𝓦  ̇ )
+ → (_<y_ : Y → Y → 𝓦  ̇ )
+ → is-strict-order _<x_
+ → is-strict-order _<y_
+ → is-strict-order (disjoint-order _<x_ _<y_)
+disjoint-order-is-strict-order {_} {_} {_} {X} {Y} _<x_ _<y_ sx sy
+ = <-irref∙
+ , disjoint-order-is-transitive _<x_ _<y_ <-trans⟨ sx ⟩ <-trans⟨ sy ⟩
+ , <-anti∙
+ , disjoint-order-is-prop-valued _<x_ _<y_ <-prop⟨ sx ⟩ <-prop⟨ sy ⟩
+ where
+  <-irref∙ : (x : X + Y) → ¬ disjoint-order _<x_ _<y_ x x
+  <-irref∙ (inl x) = <-irref⟨ sx ⟩ x
+  <-irref∙ (inr y) = <-irref⟨ sy ⟩ y
+  <-anti∙  : (x y : X + Y)
+           → disjoint-order _<x_ _<y_ x y
+           → ¬ disjoint-order _<x_ _<y_ y x
+  <-anti∙ (inl x₁) (inl x₂) = <-anti⟨ sx ⟩ x₁ x₂
+  <-anti∙ (inr y₁) (inr y₂) = <-anti⟨ sy ⟩ y₁ y₂
+
+disjoint-order-is-strict-linear-order
+ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+ → (_<x_ : X → X → 𝓦  ̇ )
+ → (_<y_ : Y → Y → 𝓦  ̇ )
+ → is-strict-linear-order _<x_
+ → is-strict-linear-order _<y_
+ → is-strict-linear-order (disjoint-order _<x_ _<y_)
+disjoint-order-is-strict-linear-order {_} {_} {_} {X} {Y}
+ _<x_ _<y_ slx sly
+ = disjoint-order-is-strict-order _<x_ _<y_
+     <-strict⟨ slx ⟩ <-strict⟨ sly ⟩
+ , <-trich∙
+ where
+  <-trich∙ : trichotomous (disjoint-order _<x_ _<y_)
+  <-trich∙ (inl x₁) (inl x₂) with <-trich⟨ slx ⟩ x₁ x₂
+  ... | inl x₁<x₂       = inl x₁<x₂
+  ... | inr (inl refl)  = inr (inl refl)
+  ... | inr (inr x₂<x₁) = inr (inr x₂<x₁)
+  <-trich∙ (inl x ) (inr y ) = inl ⋆
+  <-trich∙ (inr y ) (inl x ) = inr (inr ⋆)
+  <-trich∙ (inr y₁) (inr y₂) with <-trich⟨ sly ⟩ y₁ y₂
+  ... | inl y₁<y₂       = inl y₁<y₂
+  ... | inr (inl refl)  = inr (inl refl)
+  ... | inr (inr y₂<y₁) = inr (inr y₂<y₁)
+
+disjoint-approx-order : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                      → (_≤ⁿx_ : X → X → ℕ → 𝓦  ̇ )
+                      → (_≤ⁿy_ : Y → Y → ℕ → 𝓦  ̇ )
+                      → (xy₁ xy₂ : (X + Y))
+                      → ℕ
+                      → 𝓦  ̇
+disjoint-approx-order _≤ⁿx_ _≤ⁿy_ (inl x₁) (inl x₂)   = x₁ ≤ⁿx x₂
+disjoint-approx-order _≤ⁿx_ _≤ⁿy_ (inl x ) (inr y ) _        = 𝟙
+disjoint-approx-order _≤ⁿx_ _≤ⁿy_ (inr y ) (inl x ) 0        = 𝟙
+disjoint-approx-order _≤ⁿx_ _≤ⁿy_ (inr y ) (inl x ) (succ _) = 𝟘
+disjoint-approx-order _≤ⁿx_ _≤ⁿy_ (inr y₁) (inr y₂)   = y₁ ≤ⁿy y₂
+
+disjoint-order-is-approx-order
+ : (X : ClosenessSpace 𝓤) (Y : ClosenessSpace 𝓥)
+ → (_≤x_ : ⟨ X ⟩ → ⟨ X ⟩ → 𝓦  ̇ ) (_≤ⁿx_ : ⟨ X ⟩ → ⟨ X ⟩ → ℕ → 𝓦' ̇ )
+ → (_≤y_ : ⟨ Y ⟩ → ⟨ Y ⟩ → 𝓦  ̇ ) (_≤ⁿy_ : ⟨ Y ⟩ → ⟨ Y ⟩ → ℕ → 𝓦' ̇ )
+ → is-approx-order X _≤x_ _≤ⁿx_
+ → is-approx-order Y _≤y_ _≤ⁿy_
+ → is-approx-order (+-ClosenessSpace X Y)
+     (disjoint-order _≤x_ _≤y_)
+     (disjoint-approx-order _≤ⁿx_ _≤ⁿy_)
+disjoint-order-is-approx-order X Y _≤x_ _≤ⁿx_ _≤y_ _≤ⁿy_ ax ay
+ = disjoint-order-is-preorder _≤x_ _≤y_ (≤ⁿ-pre X ax) (≤ⁿ-pre Y ay)
+ , (λ ϵ → (≤-refl∙ ϵ , ≤-trans∙ ϵ , ≤-prop∙ ϵ) , ≤-linear∙ ϵ)
+ , ≤-decidable∙
+ , ≤-close∙ , ≤-apart∙
+ where
+  ≤-refl∙   : (ϵ : ℕ) → reflexive
+                (λ x y → disjoint-approx-order _≤ⁿx_ _≤ⁿy_ x y ϵ)
+  ≤-refl∙ ϵ (inl x) = ≤ⁿ-refl X ax ϵ x
+  ≤-refl∙ ϵ (inr y) = ≤ⁿ-refl Y ay ϵ y
+  ≤-trans∙  : (ϵ : ℕ) → transitive
+                (λ x y → disjoint-approx-order _≤ⁿx_ _≤ⁿy_ x y ϵ)
+  ≤-trans∙ ϵ (inl x₁) (inl x₂) (inl x₃) = ≤ⁿ-trans X ax ϵ x₁ x₂ x₃
+  ≤-trans∙ ϵ (inl x₁) (inl x₂) (inr y ) _ _ = ⋆
+  ≤-trans∙ ϵ (inl x₁) (inr y ) (inl x₂) with ϵ
+  ... | zero   = λ _ _ → ≤ⁿ-close X ax 0 x₁ x₂ (λ _ ())
+  ... | succ _ = λ _ ()
+  ≤-trans∙ ϵ (inl x ) (inr y₁) (inr y₂) _ _ = ⋆
+  ≤-trans∙ ϵ (inr y ) (inl x₁) (inl x₂) with ϵ
+  ... | zero = λ _ _ → ⋆
+  ... | succ _ = λ ()
+  ≤-trans∙ ϵ (inr y₁) (inl x ) (inr y₂) with ϵ
+  ... | zero = λ _ _ → ≤ⁿ-close Y ay 0 y₁ y₂ (λ _ ())
+  ... | succ _ = λ ()
+  ≤-trans∙ ϵ (inr y₁) (inr y₂) (inl x ) with ϵ
+  ... | zero = λ _ _ → ⋆
+  ... | succ _ = λ _ ()
+  ≤-trans∙ ϵ (inr x₁) (inr x₂) (inr x₃) = ≤ⁿ-trans Y ay ϵ x₁ x₂ x₃
+  ≤-prop∙   : (ϵ : ℕ) → is-prop-valued
+                (λ x y → disjoint-approx-order _≤ⁿx_ _≤ⁿy_ x y ϵ)
+  ≤-prop∙ ϵ (inl x₁) (inl x₂) = ≤ⁿ-prop X ax ϵ x₁ x₂
+  ≤-prop∙ ϵ (inl x ) (inr y ) = 𝟙-is-prop
+  ≤-prop∙ ϵ (inr y ) (inl x ) with ϵ
+  ... | 0 = 𝟙-is-prop
+  ... | succ _ = 𝟘-is-prop
+  ≤-prop∙ ϵ (inr y₁) (inr y₂) = ≤ⁿ-prop Y ay ϵ y₁ y₂
+  ≤-linear∙ : (ϵ : ℕ) → linear
+                (λ x y → disjoint-approx-order _≤ⁿx_ _≤ⁿy_ x y ϵ)
+  ≤-linear∙ ϵ (inl x₁) (inl x₂) = ≤ⁿ-linear X ax ϵ x₁ x₂
+  ≤-linear∙ ϵ (inl x ) (inr y ) = inl ⋆
+  ≤-linear∙ ϵ (inr y ) (inl x ) = inr ⋆
+  ≤-linear∙ ϵ (inr y₁) (inr y₂) = ≤ⁿ-linear Y ay ϵ y₁ y₂
+  ≤-decidable∙  : (ϵ : ℕ)
+                → (x y : ⟨ +-ClosenessSpace X Y ⟩)
+                → is-decidable
+                    (disjoint-approx-order _≤ⁿx_ _≤ⁿy_ x y ϵ)
+  ≤-decidable∙ ϵ (inl x₁) (inl x₂) = ≤ⁿ-decidable X ax ϵ x₁ x₂
+  ≤-decidable∙ ϵ (inl x ) (inr y ) = inl ⋆
+  ≤-decidable∙ ϵ (inr y ) (inl x ) with ϵ
+  ... | 0 = inl ⋆
+  ... | succ _ = inr (λ ())
+  ≤-decidable∙ ϵ (inr y₁) (inr y₂) = ≤ⁿ-decidable Y ay ϵ y₁ y₂
+  ≤-close∙  : (ϵ : ℕ) (x y : ⟨ +-ClosenessSpace X Y ⟩)
+            → C (+-ClosenessSpace X Y) ϵ x y
+            → disjoint-approx-order _≤ⁿx_ _≤ⁿy_ x y ϵ
+  ≤-close∙ ϵ (inl x₁) (inl x₂) Cx₁x₂ = ≤ⁿ-close X ax ϵ x₁ x₂ Cx₁x₂
+  ≤-close∙ ϵ (inl x ) (inr y ) Cxy   = ⋆
+  ≤-close∙ ϵ (inr y ) (inl x ) Cxy with ϵ
+  ... | 0 = ⋆
+  ... | succ _ = 𝟘-elim (zero-is-not-one (Cxy 0 refl))
+  ≤-close∙ ϵ (inr y₁) (inr y₂) Cy₁y₂ = ≤ⁿ-close Y ay ϵ y₁ y₂ Cy₁y₂
+  ≤-apart∙  : (ϵ : ℕ) (x y : ⟨ +-ClosenessSpace X Y ⟩)
+            → ¬ C (+-ClosenessSpace X Y) ϵ x y
+            → disjoint-approx-order _≤ⁿx_ _≤ⁿy_ x y ϵ
+            ⇔ disjoint-order _≤x_ _≤y_ x y
+  ≤-apart∙ ϵ (inl x₁) (inl x₂) ¬Cxy = ≤ⁿ-apart X ax ϵ x₁ x₂ ¬Cxy
+  ≤-apart∙ ϵ (inl x ) (inr y ) ¬Cxy = (λ _ → ⋆) , (λ _ → ⋆)
+  ≤-apart∙ ϵ (inr y ) (inl x ) ¬Cxy with ϵ
+  ... | 0 = (𝟘-elim ∘ ¬Cxy) (λ _ ())
+  ... | succ _ = (λ ()) , (λ ())
+  ≤-apart∙ ϵ (inr y₁) (inr y₂) ¬Cxy = ≤ⁿ-apart Y ay ϵ y₁ y₂ ¬Cxy
+
+-- Discrete-sequences
 
 discrete-lexicorder : {D : 𝓤 ̇ }
                     → is-discrete D
@@ -250,7 +533,22 @@ discrete-lexicorder-is-preorder d s _<_ (i' , t' , a' , p')
     c : _
     c g (n , w , v) = i' (y n) (transport (_< y n) (g n) v)
 
--- Lemma 4.1.12
+<₂-lemma-₀ : {a : 𝟚} → ₀ < a → a ＝ ₁
+<₂-lemma-₀ {₁} ₀<a = refl
+<₂-lemma-₁ : {a : 𝟚} → ¬ (a < ₀)
+<₂-lemma-₁ {₀} ()
+<₂-lemma-₁ {₁} ()
+
+𝟚-discrete-lexicorder-linearity-implies-LPO
+ : is-linear-order (discrete-lexicorder 𝟚-is-discrete _<₂_)
+ → LPO
+𝟚-discrete-lexicorder-linearity-implies-LPO ((r , t , p) , l) α
+ = Cases (l (λ _ → ₀) α)
+     (cases (λ ₀∼α → inl (λ n → ₀∼α n ⁻¹))
+            (λ (n , ₀∼ⁿα , ₀<αn) → inr (n , <₂-lemma-₀ ₀<αn)))
+     (cases (λ α∼z → inl α∼z)
+            (λ (n , a∼ⁿ₀ , αn<₀) → 𝟘-elim (<₂-lemma-₁ αn<₀)))
+ 
 finite-lexicorder
  : {F : 𝓤 ̇ } (f : finite-discrete F) → (ℕ → F) → (ℕ → F) → 𝓤 ⊔ 𝓤₀ ̇
 finite-lexicorder f = discrete-lexicorder
@@ -449,78 +747,13 @@ finite-approx-lexicorder-is-approx-order f
      (finite-strict-order-is-strict-order f)
      (finite-strict-order-trichotomous f)
 
-inclusion-approx-order
- : {X : 𝓤 ̇ } {Y : ClosenessSpace 𝓥} (f : X → ⟨ Y ⟩)
- → (_≤ⁿ_ : ⟨ Y ⟩ → ⟨ Y ⟩ → ℕ → 𝓦  ̇)
- → X → X → ℕ → 𝓦  ̇ 
-inclusion-approx-order f _≤ⁿ_ x y = f x ≤ⁿ f y
-
-Σ-order : {X : 𝓤 ̇ } → (P : X → 𝓥 ̇ ) → (_≤_ : X → X → 𝓦  ̇)
-        → Σ P → Σ P → 𝓦  ̇
-Σ-order P _≤_ (x , _) (y , _) = x ≤ y
-
-Σ-order-is-preorder
- : {X : 𝓤 ̇ }
- → (P : X → 𝓥 ̇ )
- → (_≤_ : X → X → 𝓦 ̇ )
- → is-preorder _≤_
- → is-preorder (Σ-order P _≤_)
-Σ-order-is-preorder P _≤_ (r' , t' , p') = r , t , p
- where
-  r : reflexive (Σ-order P _≤_)
-  r (x , _) = r' x
-  t : transitive (Σ-order P _≤_)
-  t (x , _) (y , _) (z , _) = t' x y z
-  p : is-prop-valued (Σ-order P _≤_)
-  p (x , _) (y , _) = p' x y
-
-Σ-approx-order : {X : 𝓤 ̇ } → (P : X → 𝓥 ̇ ) → (_≤ⁿ_ : X → X → ℕ → 𝓦  ̇)
-               → Σ P → Σ P → ℕ → 𝓦  ̇ 
-Σ-approx-order P _≤ⁿ_ (x , _) (y , _) = x ≤ⁿ y
-
-Σ-approx-order-is-approx-order
- : (X : ClosenessSpace 𝓤)
- → (P : ⟨ X ⟩ → 𝓥 ̇ )
- → (p : (x : ⟨ X ⟩) → is-prop (P x))
- → (_≤_ : ⟨ X ⟩ → ⟨ X ⟩ → 𝓦 ̇ )
- → (_≤ⁿ_ : ⟨ X ⟩ → ⟨ X ⟩ → ℕ → 𝓦'  ̇)
- → is-approx-order X _≤_ _≤ⁿ_
- → is-approx-order (Σ-ClosenessSpace X P p)
-     (Σ-order P _≤_) (Σ-approx-order P _≤ⁿ_)
-Σ-approx-order-is-approx-order
- X P p _≤_ _≤ⁿ_ (pre' , lin' , d' , c' , a') = pre , lin , d , c , a
- where
-  pre : is-preorder (Σ-order P _≤_)
-  pre = Σ-order-is-preorder P _≤_ pre'
-  lin : (ϵ : ℕ) → is-linear-order (λ x y → Σ-approx-order P _≤ⁿ_ x y ϵ)
-  lin ϵ = (r' ∘ pr₁
-        , (λ (x , _) (y , _) (z , _) → t' x y z)
-        , λ (x , _) (y , _) → p' x y)
-        , λ (x , _) (y , _) → l' x y
-   where
-    r' = (pr₁ ∘ pr₁)       (lin' ϵ)
-    t' = (pr₁ ∘ pr₂ ∘ pr₁) (lin' ϵ)
-    p' = (pr₂ ∘ pr₂ ∘ pr₁) (lin' ϵ)
-    l' = pr₂               (lin' ϵ)
-  d : (ϵ : ℕ) (x y : Σ P) → is-decidable (Σ-approx-order P _≤ⁿ_ x y ϵ)
-  d ϵ (x , _) (y , _) = d' ϵ x y
-  c : (ϵ : ℕ) (x y : ⟨ Σ-ClosenessSpace X P p ⟩)
-    →   C (Σ-ClosenessSpace X P p) ϵ x y → Σ-approx-order P _≤ⁿ_ x y ϵ
-  c ϵ (x , _) (y , _) = c' ϵ x y
-  a : (ϵ : ℕ) (x y : ⟨ Σ-ClosenessSpace X P p ⟩)
-    → ¬ C (Σ-ClosenessSpace X P p) ϵ x y
-    → Σ-approx-order P _≤ⁿ_ x y ϵ ⇔ Σ-order P _≤_ x y
-  a ϵ (x , _) (y , _) = a' ϵ x y
-
-open import MLTT.Two-Properties
+-- Specific examples
 
 ℕ→𝟚-lexicorder : (ℕ → 𝟚) → (ℕ → 𝟚) → 𝓤₀ ̇
 ℕ→𝟚-lexicorder = discrete-lexicorder 𝟚-is-discrete _<₂_
 
 ℕ∞-lexicorder : ℕ∞ → ℕ∞ → 𝓤₀ ̇
 ℕ∞-lexicorder = Σ-order is-decreasing ℕ→𝟚-lexicorder
-
-open import UF.Miscelanea
 
 <₂-is-strict : is-strict-order _<₂_
 pr₁ <₂-is-strict ₀ ()
