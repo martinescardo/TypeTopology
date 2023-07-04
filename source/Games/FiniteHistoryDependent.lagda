@@ -340,10 +340,10 @@ obvious way, by induction:
 
 open JK R
 
-_are-selections-of_ : {Xt : 𝕋} → 𝓙 Xt → 𝓚 Xt → Type
-_are-selections-of_ {[]}     ⟨⟩        ⟨⟩        = 𝟙
-_are-selections-of_ {X ∷ Xf} (ε :: εf) (ϕ :: ϕf) = (ε is-a-selection-of ϕ)
-                                                 × ((x : X) → (εf x) are-selections-of (ϕf x))
+_Attains_ : {Xt : 𝕋} → 𝓙 Xt → 𝓚 Xt → Type
+_Attains_ {[]}     ⟨⟩        ⟨⟩        = 𝟙
+_Attains_ {X ∷ Xf} (ε :: εf) (ϕ :: ϕf) = (ε attains ϕ)
+                                       × ((x : X) → (εf x) Attains (ϕf x))
 
 \end{code}
 
@@ -364,7 +364,7 @@ The following is proved by straightforward induction on trees:
 
 observation : Fun-Ext
             → {Xt : 𝕋} (εt : 𝓙 Xt) (ϕt : 𝓚 Xt)
-            → εt are-selections-of ϕt
+            → εt Attains ϕt
             → Overline εt ＝ ϕt
 observation fe {[]}     ⟨⟩        ⟨⟩        ⟨⟩        = refl
 observation fe {X ∷ Xf} (ε :: εf) (ϕ :: ϕf) (a :: af) = γ
@@ -380,6 +380,14 @@ observation fe {X ∷ Xf} (ε :: εf) (ϕ :: ϕf) (a :: af) = γ
 
   γ : overline ε :: (λ x → Overline (εf x)) ＝ ϕ :: ϕf
   γ = ap₂ _::_ I II
+
+observation-converse : {Xt : 𝕋} (εt : 𝓙 Xt) (ϕt : 𝓚 Xt)
+                     → Overline εt ＝ ϕt
+                     → εt Attains ϕt
+observation-converse {[]}     εt ϕt p = ⟨⟩
+observation-converse {X ∷ Xf} (ε :: εf)
+                     (.(λ p → p (ε p)) :: .(λ x → Overline (εf x))) refl =
+ (λ x → refl) :: (λ x → observation-converse (εf x) (Overline (εf x)) refl)
 
 \end{code}
 
@@ -457,7 +465,7 @@ optimal strategies, corresponds to Theorem 6.2 of [1].
 selection-strategy-theorem : Fun-Ext
                            → {Xt : 𝕋} (εt : 𝓙 Xt)
                              (ϕt : 𝓚 Xt) (q : Path Xt → R)
-                           → εt are-selections-of ϕt
+                           → εt Attains ϕt
                            → is-sgpe ϕt q (selection-strategy εt q)
 selection-strategy-theorem fe εt ϕt q a = III
  where
@@ -473,7 +481,7 @@ selection-strategy-theorem fe εt ϕt q a = III
 
 Selection-Strategy-Theorem : Fun-Ext
                            → (G : Game) (εt : 𝓙 (Xt G))
-                           → εt are-selections-of (ϕt G)
+                           → εt Attains (ϕt G)
                            → is-optimal G (selection-strategy εt (q G))
 Selection-Strategy-Theorem fe (game Xt ϕt q) εt = selection-strategy-theorem fe εt q ϕt
 
@@ -485,7 +493,7 @@ Added 27th August 2023 after the above was submitted for publication.
 
 selection-strategy-corollary : Fun-Ext
                              → (G : Game) (εt : 𝓙 (Xt G))
-                             → εt are-selections-of (ϕt G)
+                             → εt Attains (ϕt G)
                              → q G (J-sequence εt (q G)) ＝ optimal-outcome G
 selection-strategy-corollary fe G εt a =
  q G (J-sequence εt (q G))                          ＝⟨ I ⟩

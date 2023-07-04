@@ -27,8 +27,8 @@ module JK (R : Type) where
                   → overline (ε ⊗ᴶ δ) ∼ overline ε ⊗ᴷ (λ x → overline (δ x))
  overline-theorem ε δ q = refl
 
- _is-a-selection-of_ : {X : Type} → J X → K X → Type
- ε is-a-selection-of ϕ = overline ε ∼ ϕ
+ _attains_ : {X : Type} → J X → K X → Type
+ ε attains ϕ = overline ε ∼ ϕ
 
 \end{code}
 
