@@ -39,19 +39,6 @@ supremum" or "supremum of successors.
 
 \end{code}
 
-A criterion for equality in 𝕄:
-
-\begin{code}
-
-to-𝕄-＝ : {X Y : 𝓤 ̇ }
-          {φ : X → 𝕄}
-          {γ : Y → 𝕄}
-        → Σ p ꞉ X ＝ Y , φ ＝ γ ∘ Idtofun p
-        → (ssup X φ) ＝ (ssup Y γ)
-to-𝕄-＝ {X} (refl , f) = ap (ssup X) f
-
-\end{code}
-
 The induction principle for 𝕄:
 
 \begin{code}
@@ -65,6 +52,26 @@ The induction principle for 𝕄:
  where
   h : (M : 𝕄) → P M
   h (ssup X φ) = f X φ (λ x → h (φ x))
+
+\end{code}
+
+A criterion for equality in 𝕄:
+
+\begin{code}
+
+to-𝕄-＝ : {X Y : 𝓤 ̇ }
+          {φ : X → 𝕄}
+          {γ : Y → 𝕄}
+        → Σ p ꞉ X ＝ Y , φ ＝ γ ∘ Idtofun p
+        → (ssup X φ) ＝ (ssup Y γ)
+to-𝕄-＝ {X} (refl , f) = ap (ssup X) f
+
+from-𝕄-＝ : {X Y : 𝓤 ̇ }
+            {φ : X → 𝕄}
+            {γ : Y → 𝕄}
+          → (ssup X φ) ＝ (ssup Y γ)
+          → Σ p ꞉ X ＝ Y , φ ＝ γ ∘ Idtofun p
+from-𝕄-＝ {X} refl = refl , refl
 
 \end{code}
 
