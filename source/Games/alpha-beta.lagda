@@ -898,7 +898,7 @@ the tic-tac-toe board:
 
 \end{code}
 
-This tries to compute the optimal play suing selection functions
+This tries to compute an optimal play using selection functions
 without any optimization:
 
 \begin{code}

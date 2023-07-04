@@ -7,7 +7,7 @@ Theory". Studies in Logic and the Foundations of Mathematics, Volume
 96, 1978, Pages 55-66.  https://doi.org/10.1016/S0049-237X(08)71989-X
 
 This type was previously studied by his student Leversha for the
-purpose of formulating ordinals.
+purpose of encoding ordinals in dependent type theory.
 
 Gerald Leversha. "Formal Systems for Constructive Mathematics".  PhD
 Thesis, 1976, The University of Manchester (United
@@ -542,10 +542,38 @@ convenient to work with 𝕋, but the difference is only convenience.
 
 As we have seen above, 𝕋 contains trees with empty internal nodes,
 which don't occur in our work, because we assume, in our main results
-on games, that the types X of moves have selection functions
-(X → R) → X, with R pointed in the examples, the types of moves are
-pointed and hence inhabited.
+on games, that the types X of moves have selection functions (X → R) →
+X, with R pointed in the examples, the types of moves are pointed and
+hence inhabited. More importantly, the whole point of our work is to
+compute optimal strategies, but if there is any strategy at all, the
+tree must be hereditarily inhabited.
 
+\begin{code}
+
+Strategy : 𝕋 -> Type
+Strategy [] = 𝟙
+Strategy (X ∷ Xf) = X × ((x : X) → Strategy (Xf x))
+
+trees-with-strategies-are-hereditarily-inhabited : (Xt : 𝕋)
+                                                 → Strategy Xt
+                                                 → is-hereditarily-inhabited Xt
+trees-with-strategies-are-hereditarily-inhabited []       ⟨⟩ = ⟨⟩
+trees-with-strategies-are-hereditarily-inhabited (X ∷ Xf) (x₀ , σf) =
+ ∣ x₀ ∣ , λ x → trees-with-strategies-are-hereditarily-inhabited (Xf x) (σf x)
+
+\end{code}
+
+However, it is possible to define a correct notion of strategy for the
+isomorphic copy ℍ of 𝔾.
+
+\begin{code}
+
+Strategy' : ℍ -> Type
+Strategy' ((X ∷ Xf) , inr _ , _) = 𝟙
+Strategy' ((X ∷ Xf) , inl _ , h) = X × ((x : X) → Strategy' (Xf x , h x))
+
+\end{code}
+NoNo
 Given any tree Xt : 𝕋, we can prune away the subtrees, to get a tree
 that has the same paths as Xt, and which is hereditarily inhabited as
 soon as there is at least one path in Xt (see further discussion
@@ -706,14 +734,6 @@ module illustration (R : Type) where
  K-sequence' : {Xt : ℍ} → 𝓚' Xt → K (Path' Xt)
  K-sequence' {(X ∷ Xf) , inr _ , h} ⟨⟩        = λ q → q ⟨⟩
  K-sequence' {(X ∷ Xf) , inl _ , h} (ϕ , ϕf) = ϕ ⊗ᴷ (λ x → K-sequence' {Xf x , h x} (ϕf x))
-
- Strategy : 𝕋 -> Type
- Strategy []       = 𝟙
- Strategy (X ∷ Xf) = X × ((x : X) → Strategy (Xf x))
-
- Strategy' : ℍ -> Type
- Strategy' ((X ∷ Xf) , inr _ , _) = 𝟙
- Strategy' ((X ∷ Xf) , inl _ , h) = X × ((x : X) → Strategy' (Xf x , h x))
 
  strategic-path : {Xt : 𝕋} → Strategy Xt → Path Xt
  strategic-path {[]}     ⟨⟩       = ⟨⟩
