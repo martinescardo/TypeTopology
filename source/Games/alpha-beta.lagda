@@ -180,7 +180,7 @@ TODO. Prove the lemma formulated as an assumption of the above module (easy).
 
 \begin{code}
 
- module _ (lemma : _are-selections-of_ R G-selections G-quantifiers)
+ module _ (lemma : _Attains_ R G-selections G-quantifiers)
           (fe : Fun-Ext)
         where
 
