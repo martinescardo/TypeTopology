@@ -59,4 +59,7 @@ module _ {𝓓 : DCPO⊥ {𝓤 ⁺} {𝓤}} where
                    → is-inaccessible-by-directed-joins (to-predicate 𝒻) holds
  predicate-is-ibdj = {!!}
 
+ to-𝕊-map : (⟪ 𝓓 ⟫ → Ω 𝓤) → (⟪ 𝓓 ⟫ → ⟪ 𝕊 ⟫)
+ to-𝕊-map P x = (P x) holds , (λ _ → ⋆) , (holds-is-prop (P x))
+
 \end{code}
