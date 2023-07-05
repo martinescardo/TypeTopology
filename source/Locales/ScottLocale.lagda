@@ -39,6 +39,7 @@ open Existential pt
 open Conjunction
 open import Locales.Frame pt fe
 open import DomainTheory.Basics.Dcpo pt fe 𝓥 renaming (⟨_⟩ to ⟨_⟩∙)
+open import DomainTheory.Basics.Pointed pt fe
 open import DomainTheory.Topology.ScottTopology pt fe 𝓥
 
 open PropositionalTruncation pt
@@ -55,6 +56,7 @@ We carry out the construction in the following submodule which is parameterised 
 
 module DefnOfScottLocale (𝓓 : DCPO {𝓤} {𝓣}) (𝓦 : Universe) (pe : propext 𝓦) where
 
+ open import DomainTheory.Lifting.LiftingSet pt fe 𝓦 pe
  open DefnOfScottTopology 𝓓 𝓦
 
 \end{code}
@@ -237,5 +239,33 @@ We now have everything we need to write down the Scott locale of `𝓓`.
 
  ScottLocale : Locale (𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ⊔ 𝓦 ⁺) (𝓤 ⊔ 𝓦) 𝓦
  ScottLocale = record { ⟨_⟩ₗ = 𝒪ₛ ; frame-str-of = 𝒪ₛ-frame-structure }
+
+\end{code}
+
+We now check that this definition of the Scott locale is correct.
+
+First, we define the Sierpinski domain.
+
+\begin{code}
+
+module ClassificationOfScottOpens (𝓓 : DCPO⊥ 𝓤 {𝓤 ⁺} {𝓤}) (pe : propext 𝓤) where
+
+ open import DomainTheory.Lifting.LiftingSet pt fe
+
+ 𝕊 : DCPO⊥ 𝓤
+ 𝕊 = 𝓛-DCPO⊥ 𝓤 pe (props-are-sets {X = 𝟙 {𝓤 ⁺}} 𝟙-is-prop)
+
+\end{code}
+
+\begin{code}
+
+ -- open-to-map : (𝓓 : DCPO⊥ {𝓤} {𝓣}) → DCPO⊥[ 𝓓 , 𝕊 ] → 𝒪ₛ
+ -- open-to-map 𝓓 (f , p) = P , {!!} , {!!}
+ --  where
+ --   P : {!⟨ 𝓓₁ ⟩∙ → Ω 𝓦!}
+ --   P = {!!}
+
+ -- map-to-open : (𝓓 : DCPO⊥ {𝓤} {𝓣}) → 𝒪ₛ → DCPO⊥[ 𝓓 , 𝕊 ]
+ -- map-to-open = {!!}
 
 \end{code}
