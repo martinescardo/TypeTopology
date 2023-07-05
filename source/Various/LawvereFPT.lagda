@@ -579,7 +579,7 @@ module GeneralizedCoquand where
    𝕎 = W A T
 
    α : 𝕎 → (𝕎 → 𝓤 ̇ )
-   α (sup _ φ) = fiber φ
+   α (ssup _ φ) = fiber φ
 
    module _ (X : 𝓤 ̇ ) where
 
@@ -587,7 +587,7 @@ module GeneralizedCoquand where
      H w = α w w → X
 
      R : 𝕎
-     R = sup (S (Σ H)) (pr₁ ∘ ρ)
+     R = ssup (S (Σ H)) (pr₁ ∘ ρ)
 
      B : 𝓤 ̇
      B = α R R
@@ -761,7 +761,7 @@ module Coquand-further-generalized (𝓤 𝓥 : Universe)
     𝕎 = W A T
 
     α : 𝕎 → (𝕎 → 𝓤 ̇ )
-    α (sup _ φ) = fiber φ
+    α (ssup _ φ) = fiber φ
 
     module _ (X : 𝓤 ̇ ) (X-is-P : P X) where
 
@@ -774,7 +774,7 @@ module Coquand-further-generalized (𝓤 𝓥 : Universe)
             (λ w → P-exponential-ideal X (α w w) X-is-P)
 
       R : 𝕎
-      R = sup (S (Σ H) p) (pr₁ ∘ ρ p)
+      R = ssup (S (Σ H) p) (pr₁ ∘ ρ p)
 
       B : 𝓤 ̇
       B = α R R

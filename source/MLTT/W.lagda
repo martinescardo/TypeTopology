@@ -9,7 +9,7 @@ module MLTT.W where
 open import MLTT.Spartan
 
 data W {𝓤 𝓥 : Universe} (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) : 𝓤 ⊔ 𝓥 ̇ where
- sup : (x : X) → (A x → W X A) → W X A
+ ssup : (x : X) → (A x → W X A) → W X A
 
 \end{code}
 
@@ -20,7 +20,7 @@ The record version of W in case we need it:
 record W' {𝓤 𝓥 : Universe} (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) : 𝓤 ⊔ 𝓥 ̇ where
  inductive
  constructor
-  sup
+  ssup
  field
   pr₁ : X
   pr₂ : A pr₁ → W' X A
@@ -39,7 +39,7 @@ data Wᵢ {𝓤 𝓥 𝓦 : Universe}
         (s : (a : A) → B a → I)
       : I → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
  where
- sup : (a : A) → ((b : B a) → Wᵢ I A t B s (s a b)) → Wᵢ I A t B s (t a)
+ ssup : (a : A) → ((b : B a) → Wᵢ I A t B s (s a b)) → Wᵢ I A t B s (t a)
 
 \end{code}
 
