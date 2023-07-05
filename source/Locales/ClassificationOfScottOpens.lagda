@@ -55,4 +55,8 @@ module _ {𝓓 : DCPO⊥ {𝓤 ⁺} {𝓤}} where
     μ : is-monotone (𝓓 ⁻) (𝕊 ⁻) f
     μ = monotone-if-continuous (𝓓 ⁻) (𝕊 ⁻) 𝒻
 
+ predicate-is-ibdj : (𝒻 : DCPO⊥[ 𝓓 , 𝕊 ])
+                   → is-inaccessible-by-directed-joins (to-predicate 𝒻) holds
+ predicate-is-ibdj = {!!}
+
 \end{code}
