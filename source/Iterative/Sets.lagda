@@ -30,8 +30,6 @@ private
  fe' : FunExt
  fe' 𝓤 𝓥 = fe {𝓤} {𝓥}
 
-open import Iterative.Multisets 𝓤
-open import Ordinals.Notions
 open import UF.Base
 open import UF.Embeddings
 open import UF.Equiv
@@ -39,6 +37,9 @@ open import UF.EquivalenceExamples
 open import UF.PairFun
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
+
+open import Iterative.Multisets 𝓤
+open import Ordinals.Notions
 
 \end{code}
 

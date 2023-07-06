@@ -11,6 +11,23 @@ open import MLTT.Spartan
 data W {𝓤 𝓥 : Universe} (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) : 𝓤 ⊔ 𝓥 ̇ where
  ssup : (x : X) → (A x → W X A) → W X A
 
+module _ {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } where
+
+ W-root : W X A → X
+ W-root (ssup x f) = x
+
+ W-forest : (w : W X A) → A (W-root w) → W X A
+ W-forest (ssup x f) = f
+
+ W-induction : (P : W X A → 𝓥 ̇ )
+             → ((x : X) (f : A x → W X A)
+                       → ((a : A x) → P (f a)) → P (ssup x f))
+             → (w : W X A) → P w
+ W-induction P g = h
+  where
+   h : (w : W X A) → P w
+   h (ssup x f) = g x f (λ x → h (f x))
+
 \end{code}
 
 The record version of W in case we need it:
