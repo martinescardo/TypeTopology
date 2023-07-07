@@ -24,7 +24,7 @@ private
  fe' : FunExt
  fe' 𝓤 𝓥 = fe {𝓤} {𝓥}
 
-open import Iterative.Multisets hiding (𝕄)
+open import Iterative.Multisets hiding (𝕄) -- workaround for Agda issue #6719
 open import Iterative.Sets 𝓤 ua
 open import Ordinals.Notions
 open import Ordinals.Type
@@ -35,7 +35,7 @@ open import UF.PairFun
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
-private
+private -- #6719
  𝕄 = Iterative.Multisets.𝕄 {𝓤}
 
 \end{code}

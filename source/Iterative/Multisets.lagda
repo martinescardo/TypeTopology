@@ -8,6 +8,14 @@ Iterative multisets.
 
 open import MLTT.Spartan
 
+\end{code}
+
+The following universe parameter needs to be implicit - don't change
+this. See Agda issue #6719.
+
+\begin{code}
+
+
 module Iterative.Multisets
         {𝓤 : Universe}
        where
