@@ -38,10 +38,10 @@ open import UF.PairFun
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
-open import Iterative.Multisets hiding (𝕄)
+open import Iterative.Multisets hiding (𝕄) -- workaround for Agda issue #6719
 open import Ordinals.Notions
 
-private
+private -- #6719
  𝕄 = Iterative.Multisets.𝕄 {𝓤}
 
 \end{code}
