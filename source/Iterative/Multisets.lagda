@@ -9,7 +9,7 @@ Iterative multisets.
 open import MLTT.Spartan
 
 module Iterative.Multisets
-        (𝓤 : Universe)
+        {𝓤 : Universe}
        where
 
 open import UF.Base
@@ -23,6 +23,8 @@ The type of iterative multisets:
 
 data 𝕄 : 𝓤 ⁺ ̇ where
  ssup : (X : 𝓤 ̇ ) (φ : X → 𝕄) → 𝕄
+
+open import Ordinals.Notions
 
 \end{code}
 
