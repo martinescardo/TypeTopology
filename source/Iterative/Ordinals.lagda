@@ -35,7 +35,8 @@ open import UF.PairFun
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
-𝕄 = Iterative.Multisets.𝕄 𝓤
+private
+ 𝕄 = Iterative.Multisets.𝕄 {𝓤}
 
 \end{code}
 

@@ -38,8 +38,11 @@ open import UF.PairFun
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
-open import Iterative.Multisets 𝓤
+open import Iterative.Multisets hiding (𝕄)
 open import Ordinals.Notions
+
+private
+ 𝕄 = Iterative.Multisets.𝕄 {𝓤}
 
 \end{code}
 
