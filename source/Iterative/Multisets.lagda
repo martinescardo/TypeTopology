@@ -8,22 +8,13 @@ Iterative multisets.
 
 open import MLTT.Spartan
 
-\end{code}
-
-The following universe parameter needs to be implicit - don't to make
-it explicit. See Agda issue #6719.
-
-\begin{code}
-
-
 module Iterative.Multisets
-        {𝓤 : Universe}
+        (𝓤 : Universe)
        where
 
 open import MLTT.W
 open import UF.Base
 open import UF.Equiv
--- open import Ordinals.Notions
 open import Iterative.W-Properties
 
 \end{code}

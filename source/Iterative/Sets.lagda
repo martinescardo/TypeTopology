@@ -31,7 +31,7 @@ private
  fe' 𝓤 𝓥 = fe {𝓤} {𝓥}
 
 
-open import Iterative.Multisets hiding (𝕄) -- workaround for Agda issue #6719
+open import Iterative.Multisets 𝓤
 open import MLTT.W
 open import Ordinals.Notions
 open import UF.Base
@@ -42,8 +42,6 @@ open import UF.PairFun
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
-private -- #6719
- 𝕄 = Iterative.Multisets.𝕄 {𝓤}
 
 \end{code}
 
@@ -65,8 +63,7 @@ is-iterative-set (ssup X φ) = is-embedding φ
                          → (x : 𝕄-root M) → is-iterative-set (𝕄-forest M x)
 𝕄-subtrees-are-iterative (ssup X φ) = pr₂
 
-being-iset-is-prop : (A : 𝕄)
-                   → is-prop (is-iterative-set A)
+being-iset-is-prop : (M : 𝕄) → is-prop (is-iterative-set M)
 being-iset-is-prop (ssup X φ) =
  ×-is-prop
   (being-embedding-is-prop fe φ)

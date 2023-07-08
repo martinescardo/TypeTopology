@@ -130,7 +130,7 @@ module _ (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) where
 
  W-is-set : funext 𝓥 (𝓤 ⊔ 𝓥)
           → is-set X
-          → is-set (𝕎)
+          → is-set 𝕎
  W-is-set fe X-is-set {ssup x φ} {ssup x' φ'} = γ
   where
    S = Σ p ꞉ x ＝ x' , (φ ∼ φ' ∘ transport A p)
