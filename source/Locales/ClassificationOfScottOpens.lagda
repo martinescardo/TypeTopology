@@ -61,7 +61,6 @@ module _ {𝓓 : DCPO⊥ {𝓤 ⁺} {𝓤}} where
  ⋁ₛ_ : (Σ S ꞉ Fam 𝓤 ⟪ 𝕊 ⟫ , is-Directed (𝕊 ⁻) (S .pr₂)) → ⟪ 𝕊 ⟫
  ⋁ₛ (S , δ) =
   the-sup (underlying-order (𝕊 ⁻)) (directed-completeness (𝕊 ⁻) (index S) (S [_]) δ )
-  -- the-sup (underlying-order 𝓓) (directed-completeness 𝓓 (index S) (S [_]) δ )
 
  image-on-directed-set-is-directed : {I : 𝓤  ̇}(𝒻 : DCPO⊥[ 𝓓 , 𝕊 ])
                                    → (α : I → ⟪ 𝓓 ⟫)
@@ -87,18 +86,24 @@ module _ {𝓓 : DCPO⊥ {𝓤 ⁺} {𝓤}} where
     μ : is-monotone (𝓓 ⁻) (𝕊 ⁻) f
     μ = monotone-if-continuous (𝓓 ⁻) (𝕊 ⁻) 𝒻
 
-    δ′ : is-Directed (𝕊 ⁻) (⁅ f x ∣ x ε S ⁆ .pr₂)
+    δ′ : is-Directed (𝕊 ⁻) (⁅ f x ∣ x ε S ⁆ [_])
     δ′ = image-on-directed-set-is-directed 𝒻 (S .pr₂) (δ₁ , δ₂)
 
+    d : has-sup (underlying-order (𝕊 ⁻)) (⁅ f x ∣ x ε S ⁆ [_])
+    d = directed-completeness (𝕊 ⁻) (index S) (⁅ f x ∣ x ε S ⁆ [_]) δ′
+
+    ♣ : f (∐ (𝓓 ⁻) (δ₁ , δ₂)) ＝ the-sup (underlying-order (𝕊 ⁻)) d
+    ♣ = sups-are-unique
+         (underlying-order (𝕊 ⁻))
+         (pr₁ (axioms-of-dcpo (𝕊 ⁻)))
+         (⁅ f x ∣ x ε S ⁆ [_])
+         (ζ (index S) (S [_]) (δ₁ , δ₂))
+         (sup-property
+          (underlying-order (𝕊 ⁻))
+          (directed-completeness (𝕊 ⁻) (index S) (⁅ f x ∣ x ε S ⁆ .pr₂) δ′))
+
     † : is-defined (⋁ₛ (⁅ f x ∣ x ε S ⁆ , δ′))
-    † = transport
-         is-defined
-         (sups-are-unique
-           (underlying-order (𝕊 ⁻))
-           (pr₁ (axioms-of-dcpo (𝕊 ⁻)))
-           (⁅ f x ∣ x ε S ⁆ .pr₂)
-          (ζ (index S) (S [_]) (δ₁ , δ₂)) (sup-property (underlying-order (𝕊 ⁻)) (directed-completeness (𝕊 ⁻) (index S) (⁅ f x ∣ x ε S ⁆ .pr₂) δ′)))
-        p
+    † = transport is-defined ♣ p
 
     ‡ : Σ i ꞉ index S , is-defined (f (S [ i ]))
       → ∃ i ꞉ index S , to-predicate 𝒻 (S [ i ]) holds
