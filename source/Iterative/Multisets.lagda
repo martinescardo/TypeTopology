@@ -33,10 +33,23 @@ This is equivalent to the following alternative definition.
 \begin{code}
 
 private
+
  data 𝕄' : 𝓤 ⁺ ̇ where
   ssup : (X : 𝓤 ̇ ) (φ : X → 𝕄') → 𝕄'
 
+ 𝕄-to-𝕄' : 𝕄 → 𝕄'
+ 𝕄-to-𝕄' (ssup X φ) = ssup X (λ x → 𝕄-to-𝕄' (φ x))
+
+ 𝕄'-to-𝕄 : 𝕄' → 𝕄
+ 𝕄'-to-𝕄 (ssup X φ) = ssup X (λ x → 𝕄'-to-𝕄 (φ x))
+
 \end{code}
+
+Maybe add the proof that the above two functions are mutually
+inverse. But the only point of adding them is to make sure that the
+above comment remains valid if any change is made, and the above two
+definitions seems to be enough for that purpose.
+
 
 Every W-type can be mapped to 𝕄 as follows:
 
