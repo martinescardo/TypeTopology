@@ -45,13 +45,13 @@ We first define the Sierpinski domain.
 
 module _ {𝓓 : DCPO⊥ {𝓤 ⁺} {𝓤}} where
 
- to-predicate : DCPO⊥[ 𝓓 , 𝕊 ] → (⟪ 𝓓 ⟫ → Ω 𝓤)
- to-predicate (f , p) x = is-defined (f x) , being-defined-is-prop (f x)
+ to-predicate₀ : DCPO⊥[ 𝓓 , 𝕊 ] → (⟪ 𝓓 ⟫ → Ω 𝓤)
+ to-predicate₀ (f , p) x = is-defined (f x) , being-defined-is-prop (f x)
 
  open DefnOfScottTopology (𝓓 ⁻) 𝓤
 
  predicate-is-upwards-closed : (𝒻 : DCPO⊥[ 𝓓 , 𝕊 ])
-                             → is-upwards-closed (to-predicate 𝒻) holds
+                             → is-upwards-closed (to-predicate₀ 𝒻) holds
  predicate-is-upwards-closed 𝒻@(f , υ) x y p q =
   transport is-defined (μ x y q p) p
    where
@@ -79,7 +79,7 @@ module _ {𝓓 : DCPO⊥ {𝓤 ⁺} {𝓤}} where
      γ (k , p₁ , p₂) = ∣ k , μ (α i) (α k) p₁ , μ (α j) (α k) p₂ ∣
 
  predicate-is-ibdj : (𝒻 : DCPO⊥[ 𝓓 , 𝕊 ])
-                   → is-inaccessible-by-directed-joins (to-predicate 𝒻) holds
+                   → is-inaccessible-by-directed-joins (to-predicate₀ 𝒻) holds
  predicate-is-ibdj 𝒻@(f , ζ) (S , (δ₁ , δ₂)) p =
   ∥∥-rec ∃-is-prop ‡ †
    where
@@ -106,7 +106,7 @@ module _ {𝓓 : DCPO⊥ {𝓤 ⁺} {𝓤}} where
     † = transport is-defined ♣ p
 
     ‡ : Σ i ꞉ index S , is-defined (f (S [ i ]))
-      → ∃ i ꞉ index S , to-predicate 𝒻 (S [ i ]) holds
+      → ∃ i ꞉ index S , to-predicate₀ 𝒻 (S [ i ]) holds
     ‡ (i , p) = ∣ i , p ∣
 
  to-𝕊-map : (⟪ 𝓓 ⟫ → Ω 𝓤) → (⟪ 𝓓 ⟫ → ⟪ 𝕊 ⟫)
