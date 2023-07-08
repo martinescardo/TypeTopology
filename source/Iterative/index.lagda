@@ -8,6 +8,7 @@ Iterative multisets, iterative sets, and iterative ordinals.
 
 module Iterative.index where
 
+import Iterative.W-Properties
 import Iterative.Multisets
 import Iterative.Sets
 import Iterative.Ordinals

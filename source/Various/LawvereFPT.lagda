@@ -868,7 +868,7 @@ silly-theorem {𝓤} fe (A , A-is-set , e) =
   𝟘-is-set
   (λ X Y X-is-set → Π-is-set fe (λ _ → X-is-set))
   (λ X Y → Σ-is-set)
-  (λ X X-is-set → W-is-set fe)
+  (λ X X-is-set → W-is-set X X-is-set fe)
   ((A , A-is-set) , e)
 
 \end{code}
@@ -888,7 +888,7 @@ sillier-theorem {𝓤} fe (A , A-is-prop , e) =
   𝟘-is-prop
   (λ X Y X-is-prop → Π-is-prop fe (λ _ → X-is-prop))
   (λ X Y → Σ-is-prop)
-  (λ X X-is-set → W-is-prop fe)
+  (λ X X-is-set → W-is-prop X X-is-set fe)
   ((A , A-is-prop) , e)
 
 \end{code}

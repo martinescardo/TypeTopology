@@ -34,6 +34,7 @@ open import UF.EquivalenceExamples
 open import UF.PairFun
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
+open import MLTT.W
 
 private -- #6719
  𝕄 = Iterative.Multisets.𝕄 {𝓤}
