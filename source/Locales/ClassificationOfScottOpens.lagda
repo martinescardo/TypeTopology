@@ -109,6 +109,11 @@ module _ {𝓓 : DCPO⊥ {𝓤 ⁺} {𝓤}} where
       → ∃ i ꞉ index S , to-predicate₀ 𝒻 (S [ i ]) holds
     ‡ (i , p) = ∣ i , p ∣
 
+ to-predicate : DCPO⊥[ 𝓓 , 𝕊 ] → 𝒪ₛ
+ to-predicate 𝒻@(f , _) = to-predicate₀ 𝒻
+                        , predicate-is-upwards-closed 𝒻
+                        , predicate-is-ibdj 𝒻
+
  to-𝕊-map : (⟪ 𝓓 ⟫ → Ω 𝓤) → (⟪ 𝓓 ⟫ → ⟪ 𝕊 ⟫)
  to-𝕊-map P x = P x holds , (λ _ → ⋆) , (holds-is-prop (P x))
 
