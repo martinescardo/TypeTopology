@@ -10,19 +10,13 @@ module Iterative.W-Properties where
 
 open import MLTT.Spartan
 open import MLTT.W
-open import Ordinals.Notions
 open import UF.Base
-open import UF.Embeddings
 open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.FunExt
-open import UF.PairFun
-open import UF.PropIndexedPiSigma
 open import UF.Retracts
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-open import UF.Univalence
-open import UF.Yoneda
 
 \end{code}
 

@@ -26,6 +26,7 @@ private
 
 open import Iterative.Multisets hiding (𝕄) -- workaround for Agda issue #6719
 open import Iterative.Sets 𝓤 ua
+open import MLTT.W
 open import Ordinals.Notions
 open import Ordinals.Type
 open import UF.Embeddings
@@ -34,7 +35,6 @@ open import UF.EquivalenceExamples
 open import UF.PairFun
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-open import MLTT.W
 
 private -- #6719
  𝕄 = Iterative.Multisets.𝕄 {𝓤}
