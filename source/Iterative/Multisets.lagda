@@ -26,10 +26,15 @@ The type of iterative multisets:
 𝕄 : 𝓤 ⁺ ̇
 𝕄 = W (𝓤 ̇ ) id
 
-{-
-data 𝕄 : 𝓤 ⁺ ̇ where
- ssup : (X : 𝓤 ̇ ) (φ : X → 𝕄) → 𝕄
--}
+\end{code}
+
+This is equivalent to the following alternative definition.
+
+\begin{code}
+
+private
+ data 𝕄' : 𝓤 ⁺ ̇ where
+  ssup : (X : 𝓤 ̇ ) (φ : X → 𝕄') → 𝕄'
 
 \end{code}
 
