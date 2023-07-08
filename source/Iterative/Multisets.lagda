@@ -10,8 +10,8 @@ open import MLTT.Spartan
 
 \end{code}
 
-The following universe parameter needs to be implicit - don't change
-this. See Agda issue #6719.
+The following universe parameter needs to be implicit - don't to make
+it explicit. See Agda issue #6719.
 
 \begin{code}
 
@@ -63,6 +63,16 @@ The induction principle for 𝕄:
   h : (M : 𝕄) → P M
   h (ssup X φ) = f X φ (λ x → h (φ x))
 
+𝕄-recursion : (P : 𝓥 ̇ )
+            → ((X : 𝓤 ̇ ) → (X → 𝕄) → (X → P) → P)
+            → 𝕄 → P
+𝕄-recursion P f = 𝕄-induction (λ _ → P) f
+
+𝕄-iteration : (P : 𝓥 ̇ )
+            → ((X : 𝓤 ̇ ) → (X → P) → P)
+            → 𝕄 → P
+𝕄-iteration P f = 𝕄-recursion P (λ X ϕ → f X)
+
 \end{code}
 
 A criterion for equality in 𝕄:
@@ -70,18 +80,42 @@ A criterion for equality in 𝕄:
 \begin{code}
 
 to-𝕄-＝ : {X Y : 𝓤 ̇ }
-          {φ : X → 𝕄}
-          {γ : Y → 𝕄}
-        → Σ p ꞉ X ＝ Y , φ ＝ γ ∘ Idtofun p
-        → (ssup X φ) ＝ (ssup Y γ)
-to-𝕄-＝ {X} (refl , f) = ap (ssup X) f
+          (φ : X → 𝕄)
+          (γ : Y → 𝕄)
+        → (Σ p ꞉ X ＝ Y , φ ＝ γ ∘ Idtofun p)
+        → ssup X φ ＝ ssup Y γ
+to-𝕄-＝ {X} φ γ (refl , f) = ap (ssup X) f
 
 from-𝕄-＝ : {X Y : 𝓤 ̇ }
-            {φ : X → 𝕄}
-            {γ : Y → 𝕄}
-          → (ssup X φ) ＝ (ssup Y γ)
+            (φ : X → 𝕄)
+            (γ : Y → 𝕄)
+          → ssup X φ ＝ ssup Y γ
           → Σ p ꞉ X ＝ Y , φ ＝ γ ∘ Idtofun p
-from-𝕄-＝ {X} refl = refl , refl
+from-𝕄-＝ {X}  φ γ refl = refl , refl
+
+from-to-𝕄 : {X Y : 𝓤 ̇ }
+            (φ : X → 𝕄)
+            (γ : Y → 𝕄)
+            (σ : Σ p ꞉ X ＝ Y , φ ＝ γ ∘ Idtofun p)
+          → from-𝕄-＝ φ γ (to-𝕄-＝  φ γ σ) ＝ σ
+from-to-𝕄 φ φ (refl , refl) = refl
+
+to-from-𝕄 : {X Y : 𝓤 ̇ }
+            (φ : X → 𝕄)
+            (γ : Y → 𝕄)
+            (p : ssup X φ ＝ ssup Y γ)
+          → to-𝕄-＝  φ γ (from-𝕄-＝ φ γ p) ＝ p
+to-from-𝕄 φ φ refl = refl
+
+𝕄-＝ : {X Y : 𝓤 ̇ }
+       (φ : X → 𝕄)
+       (γ : Y → 𝕄)
+     → ((ssup X φ) ＝ (ssup Y γ))
+     ≃ (Σ p ꞉ X ＝ Y , φ ＝ γ ∘ Idtofun p)
+𝕄-＝ φ γ = qinveq (from-𝕄-＝ φ γ) (to-𝕄-＝ φ γ , to-from-𝕄 φ γ , from-to-𝕄 φ γ)
+
+
+
 
 \end{code}
 

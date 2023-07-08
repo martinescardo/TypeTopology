@@ -102,7 +102,7 @@ to-𝕍-＝ : {X Y : 𝓤 ̇ }
         → (i : is-iterative-set (ssup X φ))
           (j : is-iterative-set (ssup Y γ))
         → (ssup X φ , i) ＝[ 𝕍 ] (ssup Y γ , j)
-to-𝕍-＝ {X} σ i j = to-subtype-＝ being-iset-is-prop (to-𝕄-＝ σ)
+to-𝕍-＝ {X} σ i j = to-subtype-＝ being-iset-is-prop (to-𝕄-＝ _ _ σ)
 
 _∈_ : 𝕍 → 𝕍 → 𝓤 ⁺ ̇
 (M , _) ∈ (ssup X φ , _) = Σ x ꞉ X , φ x ＝ M
