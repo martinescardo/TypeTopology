@@ -7,6 +7,8 @@ open import UF.PropTrunc
 open import UF.FunExt
 open import UF.Logic
 open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
+open import UF.EquivalenceExamples
 
 module Locales.ClassificationOfScottOpens
         (𝓤  : Universe)
@@ -114,7 +116,54 @@ module _ {𝓓 : DCPO⊥ {𝓤 ⁺} {𝓤}} where
                         , predicate-is-upwards-closed 𝒻
                         , predicate-is-ibdj 𝒻
 
- to-𝕊-map : (⟪ 𝓓 ⟫ → Ω 𝓤) → (⟪ 𝓓 ⟫ → ⟪ 𝕊 ⟫)
- to-𝕊-map P x = P x holds , (λ _ → ⋆) , (holds-is-prop (P x))
+ to-𝕊-map₀ : (⟪ 𝓓 ⟫ → Ω 𝓤) → (⟪ 𝓓 ⟫ → ⟪ 𝕊 ⟫)
+ to-𝕊-map₀ P x = P x holds , (λ _ → ⋆) , holds-is-prop (P x)
+
+ to-𝕊-map : 𝒪ₛ → DCPO⊥[ 𝓓 , 𝕊 ]
+ to-𝕊-map (P , υ , ι) = to-𝕊-map₀ P , c
+  where
+   c : is-continuous (𝓓 ⁻) (𝕊 ⁻) (to-𝕊-map₀ P)
+   c I α δ = †
+    where
+     u = sup-property (underlying-order (𝓓 ⁻)) ((directed-completeness (𝓓 ⁻) (index (I , α)) α δ))
+
+     † : is-sup
+          (underlying-order (𝕊 ⁻))
+          (to-𝕊-map₀ P (⋁ ((I , α) , δ)))
+          (to-𝕊-map₀ P ∘ α)
+     † = †₀ , †₁
+      where
+       †₀ : (i : I)
+          → underlying-order (𝕊 ⁻) (to-𝕊-map₀ P (α i)) (to-𝕊-map₀ P (⋁ ((I , α) , δ)))
+       †₀ i p = to-subtype-＝
+                 ((λ _ → ×-is-prop (Π-is-prop fe (λ _ → 𝟙-is-prop)) (being-prop-is-prop fe)))
+                 (P (α i) holds ＝⟨ Ⅰ ⟩ 𝟙 ＝⟨ Ⅱ ⟩ P (⋁ ((I , α) , δ)) holds ∎)
+        where
+         q : (α i ⊑⟨ 𝓓 ⁻ ⟩ₚ (⋁ ((I , α) , δ))) holds
+         q = sup-is-upperbound (underlying-order (𝓓 ⁻)) u i
+
+         Ⅰ : P (α i) holds ＝ 𝟙
+         Ⅰ = pr₁ (pr₁ (pr₂ (𝟙-＝-≃ (P (α i) holds) fe pe (holds-is-prop (P (α i)))))) p ⁻¹
+
+         Ⅱ : 𝟙 ＝ P (⋁ ((I , α) , δ)) holds
+         Ⅱ = pr₁
+              (pr₁ (pr₂ (𝟙-＝-≃ (P (⋁ ((I , α) , δ)) holds) fe pe (holds-is-prop _))))
+              (υ (α i) (⋁ ((I , α) , δ)) p q)
+
+       †₁ : is-lowerbound-of-upperbounds
+             (underlying-order (𝕊 ⁻))
+             (to-𝕊-map₀ P (⋁ ((I , α) , δ)))
+             (to-𝕊-map₀ P ∘ α)
+       †₁ Q φ q =
+        ∥∥-rec (sethood (𝕊 ⁻)) †₂ (ι ((I , α) , δ) q)
+         where
+          †₂ : Σ i ꞉ I , P (α i) holds
+             → to-𝕊-map₀ P (⋁ ((I , α) , δ)) ＝ Q
+          †₂ (i , r) =
+           to-subtype-＝
+            (λ _ → ×-is-prop (Π-is-prop fe (λ _ → 𝟙-is-prop)) (being-prop-is-prop fe))
+            (P (⋁ ((I , α) , δ)) holds ＝⟨ {!!} ⟩
+             P (α i) holds             ＝⟨ {!φ i ?!} ⟩
+             Q .pr₁                    ∎)
 
 \end{code}
