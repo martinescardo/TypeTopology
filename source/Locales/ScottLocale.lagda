@@ -16,6 +16,7 @@ open import UF.UA-FunExt
 open import UF.EquivalenceExamples
 open import MLTT.List hiding ([_])
 open import MLTT.Pi
+open import Slice.Family
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.Logic
@@ -38,7 +39,7 @@ open Existential pt
 open Conjunction
 open import Locales.Frame pt fe
 open import DomainTheory.Basics.Dcpo pt fe 𝓥 renaming (⟨_⟩ to ⟨_⟩∙)
-open import DomainTheory.Topology.ScottTopology pt fe 𝓥 hiding (Fam; index; _[_])
+open import DomainTheory.Topology.ScottTopology pt fe 𝓥
 
 open PropositionalTruncation pt
 

@@ -19,6 +19,7 @@ module Locales.InitialFrame
 open import UF.Subsingletons
 open import UF.Logic
 open import UF.Subsingletons-FunExt
+open import Slice.Family
 open import Locales.Frame pt fe
 open AllCombinators pt fe
 

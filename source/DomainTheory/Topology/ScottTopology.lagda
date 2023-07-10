@@ -21,6 +21,7 @@ open import UF.Subsingletons-FunExt
 open import Posets.Poset fe
 open import UF.ImageAndSurjection pt
 open import UF.Powerset
+open import Slice.Family
 
 open import UF.Logic
 open Universal fe
@@ -29,17 +30,6 @@ open Implication fe
 open Conjunction
 
 open import DomainTheory.Basics.Dcpo pt fe 𝓥
-
-Fam : (𝓤 : Universe) → 𝓦  ̇ → 𝓤 ⁺ ⊔ 𝓦  ̇
-Fam 𝓤 A = Σ I ꞉ 𝓤  ̇ , (I → A)
-
-index : {A : 𝓤  ̇ } → Fam 𝓦 A → 𝓦  ̇
-index (I , _) = I
-
-_[_] : {A : 𝓤 ̇ } → (U : Fam 𝓥 A) → index U → A
-(_ , f) [ i ] = f i
-
-infix 9 _[_]
 
 underlying-orderₚ : (𝓓 : DCPO {𝓤} {𝓣}) → ⟨ 𝓓 ⟩ → ⟨ 𝓓 ⟩ → Ω 𝓣
 underlying-orderₚ 𝓓 x y = (x ⊑⟨ 𝓓 ⟩ y) , prop-valuedness 𝓓 x y
