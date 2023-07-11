@@ -52,6 +52,8 @@ module Games.FiniteHistoryDependentMonadic
         (𝓐  : Algebra 𝓣 R)
  where
 
+open import Games.FiniteHistoryDependent R
+
 \end{code}
 
 If the original set of outcomes is R, then we should take the new R to
@@ -228,9 +230,6 @@ assigns selection functions to the nodes.
 
 \begin{code}
 
-𝓚 :  𝕋 → Type
-𝓚 = structure K
-
 𝓙𝓣 :  𝕋 → Type
 𝓙𝓣 = structure JT
 
@@ -257,8 +256,6 @@ _⊗ᴷ_ : {X : Type} {Y : X → Type}
      → K (Σ x ꞉ X , Y x)
 _⊗ᴷ_ = _⊗_ (𝕂 R)
 
-K-sequence : {Xt : 𝕋} → 𝓚 Xt → K (Path Xt)
-K-sequence = path-sequence (𝕂 R)
 
 _⊗ᴶᵀ_ : {X : Type} {Y : X → Type}
       → JT X
@@ -278,14 +275,6 @@ quantifier tree ϕt and an outcome function q:
 
 \begin{code}
 
-record Game : Type₁ where
- constructor game
- field
-  Xt  : 𝕋
-  q   : Path Xt → R
-  ϕt  : 𝓚 Xt
-
-open Game
 
 \end{code}
 
@@ -297,8 +286,6 @@ quantifiers applied to the outcome function (Theorem 3.1 of [1]).
 
 \begin{code}
 
-optimal-outcome : Game → R
-optimal-outcome (game Xt q ϕt) = K-sequence ϕt q
 
 \end{code}
 
@@ -307,8 +294,6 @@ all possible strategies is constructed as follows (Definition 4 of [1]):
 
 \begin{code}
 
-Strategy : 𝕋 -> Type
-Strategy = structure id
 
 T-Strategy : 𝕋 -> Type
 T-Strategy = structure T
@@ -329,10 +314,6 @@ sub-T-Strategy {X ∷ Xf} (t :: σf) (inr (x :: xs)) = sub-T-Strategy {Xf x} (σ
 We get a path in the tree by following any given strategy:
 
 \begin{code}
-
-strategic-path : {Xt : 𝕋} → Strategy Xt → Path Xt
-strategic-path {[]}     ⟨⟩        = ⟨⟩
-strategic-path {X ∷ Xf} (x :: σf) = x :: strategic-path {Xf x} (σf x)
 
 T-strategic-path : {Xt : 𝕋} → T-Strategy Xt → T (Path Xt)
 T-strategic-path {[]}     ⟨⟩        = ηᵀ ⟨⟩
@@ -536,21 +517,21 @@ here, for the moment, we consider only single-valued quantifiers.
 \begin{code}
 
 -- Definition 3.7 (paper)
-selection-strategy : {Xt : 𝕋} → 𝓙𝓣 Xt → (Path Xt → R) → T-Strategy Xt
-selection-strategy {[]}     ⟨⟩           q = ⟨⟩
-selection-strategy {X ∷ Xf} εt@(ε :: εf) q = t :: σf
+T-selection-strategy : {Xt : 𝕋} → 𝓙𝓣 Xt → (Path Xt → R) → T-Strategy Xt
+T-selection-strategy {[]}     ⟨⟩           q = ⟨⟩
+T-selection-strategy {X ∷ Xf} εt@(ε :: εf) q = t :: σf
  where
   t : T X
   t = mapᵀ path-head (JT-sequence εt (ηᵀ ∘ q))
 
   σf : (x : X) → T-Strategy (Xf x)
-  σf x = selection-strategy {Xf x} (εf x) (λ xs → q (x :: xs))
+  σf x = T-selection-strategy {Xf x} (εf x) (λ xs → q (x :: xs))
 
 -- Lemma 3.9 (paper)
 strategic-path-lemma : ext-const 𝓣
                      → {Xt : 𝕋} (εt : 𝓙𝓣 Xt) (q : Path Xt → R)
                      → JT-sequence εt (ηᵀ ∘ q)
-                     ＝ T-strategic-path (selection-strategy εt q)
+                     ＝ T-strategic-path (T-selection-strategy εt q)
 strategic-path-lemma ext-const {[]}     ⟨⟩           q = by-def
 strategic-path-lemma ext-const {X ∷ Xf} εt@(ε :: εf) q = γ
  where
@@ -562,7 +543,7 @@ strategic-path-lemma ext-const {X ∷ Xf} εt@(ε :: εf) q = γ
   q' x = ηᵀ ∘ subpred q x
 
   σf : (x : X) → T-Strategy (Xf x)
-  σf x = selection-strategy {Xf x} (εf x) (subpred q x)
+  σf x = T-selection-strategy {Xf x} (εf x) (subpred q x)
 
   b c : (x : X) → T (Path (Xf x))
   b x = δ x (q' x)
@@ -587,7 +568,7 @@ strategic-path-lemma ext-const {X ∷ Xf} εt@(ε :: εf) q = γ
     ⦅3⦆ = (ap (mapᵀ path-head) (⊗ᴶᵀ-in-terms-of-⊗ᵀ ε δ (ηᵀ ∘ q)))⁻¹
 
   γ : JT-sequence (ε :: εf) (ηᵀ ∘ q)
-    ＝ T-strategic-path (selection-strategy (ε :: εf) q)
+    ＝ T-strategic-path (T-selection-strategy (ε :: εf) q)
   γ = JT-sequence (ε :: εf) (ηᵀ ∘ q)                    ＝⟨ by-def ⟩
       (ε ⊗ᴶᵀ δ) (ηᵀ ∘ q)                                ＝⟨ ⦅1⦆ ⟩
       ε (λ x → extᵀ (q' x) (b x)) ⊗ᵀ b                  ＝⟨ ⦅2⦆ ⟩
@@ -595,7 +576,7 @@ strategic-path-lemma ext-const {X ∷ Xf} εt@(ε :: εf) q = γ
       t ⊗ᵀ c                                            ＝⟨ by-def ⟩
       t ⊗ᵀ (λ x → T-strategic-path {Xf x} (σf x))       ＝⟨ by-def ⟩
       T-strategic-path (t :: σf)                        ＝⟨ by-def ⟩
-      T-strategic-path (selection-strategy (ε :: εf) q) ∎
+      T-strategic-path (T-selection-strategy (ε :: εf) q) ∎
    where
     ⦅1⦆ = ⊗ᴶᵀ-in-terms-of-⊗ᵀ ε δ (ηᵀ ∘ q)
     ⦅2⦆ = ap (λ - → ε (λ x → extᵀ (q' x) (- x)) ⊗ᵀ -) (fext IH)
@@ -605,7 +586,7 @@ strategic-path-lemma ext-const {X ∷ Xf} εt@(ε :: εf) q = γ
 is-in-head-equilibrium : (G : Game) → 𝓙𝓣 (Xt G) → Type
 is-in-head-equilibrium (game [] q ϕt) εs = 𝟙
 is-in-head-equilibrium G@(game (X ∷ Xf) q (ϕ :: ϕf)) εt@(ε :: εf) =
-  ε attainsᵀ ϕ → is-T-pe G (selection-strategy εt q)
+  ε attainsᵀ ϕ → is-T-pe G (T-selection-strategy εt q)
 
 overlineᵀ-lemma : {X : Type} (ε : JT X)
                 → (Σ ϕ ꞉ K X , ε attainsᵀ ϕ)
@@ -639,14 +620,14 @@ head-equilibrium ext-const G@(game (X ∷ Xf) q (ϕ :: ϕf)) εt@(ε :: εf) = �
   p x = extᵀ q' (f x q')
 
   σ : (x : X) → T (Path (Xf x))
-  σ x = T-strategic-path (selection-strategy {Xf x} (εf x) (subpred q x))
+  σ x = T-strategic-path (T-selection-strategy {Xf x} (εf x) (subpred q x))
 
   I : (λ x → δ x (ηᵀ ∘ subpred q x)) ＝ σ
   I = fext (λ x → strategic-path-lemma ext-const (εf x) (subpred q x))
 
-  γ : ε attainsᵀ ϕ → is-T-pe G (selection-strategy εt q)
+  γ : ε attainsᵀ ϕ → is-T-pe G (T-selection-strategy εt q)
   γ h =
-   varextᵀ q (T-strategic-path (selection-strategy εt q))                                     ＝⟨ ⦅1⦆ ⟩
+   varextᵀ q (T-strategic-path (T-selection-strategy εt q))                                     ＝⟨ ⦅1⦆ ⟩
    varextᵀ q (JT-sequence εt q')                                                              ＝⟨ by-def ⟩
    varextᵀ q ((ε ⊗ᴶᵀ δ) q')                                                                   ＝⟨ by-def ⟩
    varextᵀ q (extᴶᵀ f ε q')                                                                   ＝⟨ by-def ⟩
