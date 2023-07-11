@@ -136,7 +136,7 @@ Definition 4 of [1]:
 \begin{code}
 
 Strategy : 𝕋 -> Type
-Strategy = structure (λ (X : Type) → X)
+Strategy = structure id
 
 remark-Strategy-[] : Strategy [] ＝ 𝟙
 remark-Strategy-[] = refl
@@ -158,8 +158,7 @@ We get a path in the tree by following any given strategy:
 \begin{code}
 
 strategic-path : {Xt : 𝕋} → Strategy Xt → Path Xt
-strategic-path {[]}     ⟨⟩        = ⟨⟩
-strategic-path {X ∷ Xf} (x :: σf) = x :: strategic-path {Xf x} (σf x)
+strategic-path = path-sequence 𝕀𝕕
 
 \end{code}
 
