@@ -436,6 +436,7 @@ TODO. 𝓞 is locally small.
 
 \begin{code}
 
+{- We need to wait until we know that 𝓞 is locally small
 O : 𝕆 → Ordinal 𝓤
 O α@(A@(ssup X φ , φ-emb , g) , A-io@(A-trans , A-trans-h)) = α'
  where
@@ -482,5 +483,5 @@ O α@(A@(ssup X φ , φ-emb , g) , A-io@(A-trans , A-trans-h)) = α'
 
   α' : Ordinal 𝓤
   α' = 𝕆-root α , {!!} , {!!} , {!!} , {!!} , {!!}
-
+-}
 \end{code}
