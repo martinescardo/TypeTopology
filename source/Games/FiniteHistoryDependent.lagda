@@ -94,8 +94,7 @@ but using our tree representation of games instead:
 \begin{code}
 
 K-sequence : {Xt : 𝕋} → 𝓚 Xt → K (Path Xt)
-K-sequence {[]}     ⟨⟩        = λ q → q ⟨⟩
-K-sequence {X ∷ Xf} (ϕ :: ϕf) = ϕ ⊗ᴷ (λ x → K-sequence {Xf x} (ϕf x))
+K-sequence = path-sequence (𝕂 R)
 
 \end{code}
 
@@ -303,8 +302,7 @@ reference [1], but using our tree representation of games instead:
 \begin{code}
 
 J-sequence : {Xt : 𝕋} → 𝓙 Xt → J (Path Xt)
-J-sequence {[]}     ⟨⟩        = λ q → ⟨⟩
-J-sequence {X ∷ Xf} (ε :: εf) = ε ⊗ᴶ (λ x → J-sequence {Xf x} (εf x))
+J-sequence = path-sequence (𝕁 R)
 
 \end{code}
 

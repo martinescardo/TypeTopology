@@ -74,13 +74,13 @@ private
  extᵀ : {X Y : Type} → (X → T Y) → T X → T Y
  extᵀ = ext 𝓣
 
- extᵀ-η : {X : Set} → extᵀ (ηᵀ {X}) ∼ 𝑖𝑑 (T X)
+ extᵀ-η : {X : Type} → extᵀ (ηᵀ {X}) ∼ 𝑖𝑑 (T X)
  extᵀ-η = ext-η 𝓣
 
- unitᵀ : {X Y : Set} (f : X → T Y) → extᵀ f ∘ ηᵀ ∼ f
+ unitᵀ : {X Y : Type} (f : X → T Y) → extᵀ f ∘ ηᵀ ∼ f
  unitᵀ = unit 𝓣
 
- assocᵀ : {X Y Z : Set} (g : Y → T Z) (f : X → T Y)
+ assocᵀ : {X Y Z : Type} (g : Y → T Z) (f : X → T Y)
         → extᵀ (extᵀ g ∘ f) ∼ extᵀ g ∘ extᵀ f
  assocᵀ = assoc 𝓣
 
@@ -172,21 +172,6 @@ mapᵀ-path-head {X} {Xf} a b ext-const =
 
 \end{code}
 
-Partial, possibly empty, paths in 𝕋's:
-
-\begin{code}
-
-pPath : 𝕋 → Type
-pPath []       = 𝟙
-pPath (X ∷ Xf) = 𝟙 + (Σ x ꞉ X , pPath (Xf x))
-
-sub𝕋 : (Xt : 𝕋) → pPath Xt → 𝕋
-sub𝕋 []       ⟨⟩              = []
-sub𝕋 (X ∷ Xf) (inl ⟨⟩)        = X ∷ Xf
-sub𝕋 (X ∷ Xf) (inr (x :: xs)) = sub𝕋 (Xf x) xs
-
-\end{code}
-
 Quantifiers and selections, as in Sections 1 and 2 of reference [1]:
 
 \begin{code}
@@ -209,7 +194,7 @@ private
 
 KT is probably not needed for our purposes:
 
-NB. We define J in paper but we don't really use it. We have to do
+NB. We define J in the paper but we don't really use it. We have to do
 something about that (Definition 2.6). Also Definition 2.9 is not
 really used. Perhaps it is better to refer to this as recalling
 previous work to compare what is different here. Same with Definition
@@ -244,12 +229,10 @@ assigns selection functions to the nodes.
 \begin{code}
 
 𝓚 :  𝕋 → Type
-𝓚 []       = 𝟙
-𝓚 (X ∷ Xf) = K X × ((x : X) → 𝓚 (Xf x))
+𝓚 = structure K
 
 𝓙𝓣 :  𝕋 → Type
-𝓙𝓣 []       = 𝟙
-𝓙𝓣 (X ∷ Xf) = JT X × ((x : X) → 𝓙𝓣 (Xf x))
+𝓙𝓣 = structure JT
 
 \end{code}
 
@@ -274,17 +257,8 @@ _⊗ᴷ_ : {X : Type} {Y : X → Type}
      → K (Σ x ꞉ X , Y x)
 _⊗ᴷ_ = _⊗_ (𝕂 R)
 
-fact-about-⊗ᴷ : {X : Type} {Y : X → Type}
-                (ϕ : K X)
-                (f : (x : X) → K (Y x))
-                (q : (Σ x ꞉ X , Y x) → R)
-              → (ϕ ⊗ᴷ f) q ＝ ϕ (λ x → f x (λ y → q (x , y)))
-fact-about-⊗ᴷ ϕ f q = refl
-
 K-sequence : {Xt : 𝕋} → 𝓚 Xt → K (Path Xt)
-K-sequence {[]}     ⟨⟩        = λ q → q ⟨⟩
-K-sequence {X ∷ Xf} (ϕ :: ϕf) = ϕ ⊗ᴷ (λ x → K-sequence {Xf x} (ϕf x))
-
+K-sequence = path-sequence (𝕂 R)
 
 _⊗ᴶᵀ_ : {X : Type} {Y : X → Type}
       → JT X
@@ -293,8 +267,7 @@ _⊗ᴶᵀ_ : {X : Type} {Y : X → Type}
 _⊗ᴶᵀ_ = _⊗_ (𝕁-transf fe 𝓣 R)
 
 JT-sequence : {Xt : 𝕋} → 𝓙𝓣 Xt → JT (Path Xt)
-JT-sequence {[]}     ⟨⟩        = ηᴶᵀ ⟨⟩
-JT-sequence {X ∷ Xf} (ε :: εf) = ε ⊗ᴶᵀ (λ x → JT-sequence {Xf x} (εf x))
+JT-sequence = path-sequence (𝕁-transf fe 𝓣 R)
 
 \end{code}
 
@@ -305,7 +278,6 @@ quantifier tree ϕt and an outcome function q:
 
 \begin{code}
 
--- Definition 2.10 (paper)
 record Game : Type₁ where
  constructor game
  field
@@ -314,33 +286,6 @@ record Game : Type₁ where
   ϕt  : 𝓚 Xt
 
 open Game
-
-{-
-is-nonempty-game : Game → Type
-is-nonempty-game (game [] q ϕt)       = 𝟘
-is-nonempty-game (game (X ∷ Xf) q ϕt) = 𝟙
--}
-
-sub : {X : Type} {Xf : X → 𝕋} → ((Σ x ꞉ X , Path (Xf x)) → R) → (x : X) → Path (Xf x) → R
-sub q x xs = q (x :: xs)
-
-subpred : {Xt : 𝕋} → (Path Xt → R) → (xs : pPath Xt) → Path (sub𝕋 Xt xs) → R
-subpred {[]} q ⟨⟩ ⟨⟩ = q ⟨⟩
-subpred {X ∷ Xf} q (inl ⟨⟩) (y :: ys) = q (y :: ys)
-subpred {X ∷ Xf} q (inr (x :: xs)) ys = subpred {Xf x} (sub q x) xs ys
-
-sub𝓚 : {Xt : 𝕋} → 𝓚 Xt → (xs : pPath Xt) → 𝓚 (sub𝕋 Xt xs)
-sub𝓚 {[]} ϕt ⟨⟩ = ⟨⟩
-sub𝓚 {X ∷ Xf} ϕt (inl ⟨⟩) = ϕt
-sub𝓚 {X ∷ Xf} (ϕ :: ϕf) (inr (x :: xs)) = sub𝓚 {Xf x} (ϕf x) xs
-
-sub𝓙𝓣 : {Xt : 𝕋} → 𝓙𝓣 Xt → (xs : pPath Xt) → 𝓙𝓣 (sub𝕋 Xt xs)
-sub𝓙𝓣 {[]} εt ⟨⟩ = ⟨⟩
-sub𝓙𝓣 {X ∷ Xf} εt (inl ⟨⟩) = εt
-sub𝓙𝓣 {X ∷ Xf} (ε :: εf) (inr (x :: xs)) = sub𝓙𝓣 {Xf x} (εf x) xs
-
-subgame : (G : Game) → pPath (Xt G) → Game
-subgame (game Xt q ϕt) xs = game (sub𝕋 Xt xs) (subpred q xs) (sub𝓚 ϕt xs)
 
 \end{code}
 
@@ -363,12 +308,10 @@ all possible strategies is constructed as follows (Definition 4 of [1]):
 \begin{code}
 
 Strategy : 𝕋 -> Type
-Strategy []       = 𝟙
-Strategy (X ∷ Xf) = X × ((x : X) → Strategy (Xf x))
+Strategy = structure id
 
 T-Strategy : 𝕋 -> Type
-T-Strategy []       = 𝟙
-T-Strategy (X ∷ Xf) = T X × ((x : X) → T-Strategy (Xf x))
+T-Strategy = structure T
 
 sub-T-Strategy : {Xt : 𝕋} → T-Strategy Xt → (xs : pPath Xt) → T-Strategy (sub𝕋 Xt xs)
 sub-T-Strategy {[]} ⟨⟩ ⟨⟩ = ⟨⟩
@@ -534,31 +477,10 @@ is-T-sgpe' : {Xt : 𝕋} → 𝓚 Xt → (Path Xt → R) → T-Strategy Xt → T
 is-T-sgpe' {[]}     ⟨⟩        q ⟨⟩        = 𝟙
 is-T-sgpe' {X ∷ Xf} (ϕ :: ϕf) q (t :: σf) =
       is-T-pe (game (X ∷ Xf) q (ϕ :: ϕf)) (t :: σf)
-    × ((x : X) → is-T-sgpe' {Xf x} (ϕf x) (sub q x) (σf x))
+    × ((x : X) → is-T-sgpe' {Xf x} (ϕf x) (subpred q x) (σf x))
 
 is-T-sgpe : (G : Game) (σ : T-Strategy (Xt G)) → Type
 is-T-sgpe (game Xt q ϕt) = is-T-sgpe' {Xt} ϕt q
-
-is-T-sgpe₂ : (G : Game) (σ : T-Strategy (Xt G)) → Type
-is-T-sgpe₂ G σ = (xs : pPath (Xt G)) → is-T-pe (subgame G xs) (sub-T-Strategy σ xs)
-
-T-sgpe-equiv : (G : Game) (σ : T-Strategy (Xt G))
-             → is-T-sgpe G σ ⇔ is-T-sgpe₂ G σ
-T-sgpe-equiv (game Xt q ϕt) σ = I ϕt q σ , II ϕt q σ
- where
-  I : {Xt : 𝕋} (ϕt : 𝓚 Xt) (q : Path Xt → R) (σ : T-Strategy Xt)
-    → is-T-sgpe (game Xt q ϕt) σ → is-T-sgpe₂ (game Xt q ϕt) σ
-  I {[]}     ⟨⟩        q ⟨⟩        ⟨⟩        ⟨⟩              = ⟨⟩
-  I {X ∷ Xf} (ϕ :: ϕf) q (t :: σf) (i :: _)  (inl ⟨⟩)        = i
-  I {X ∷ Xf} (ϕ :: ϕf) q (t :: σf) (_ :: is) (inr (x :: xs)) =
-    I {Xf x} (ϕf x) (sub q x) (σf x) (is x) xs
-
-  II : {Xt : 𝕋} (ϕt : 𝓚 Xt) (q : Path Xt → R) (σ : T-Strategy Xt)
-    → is-T-sgpe₂ (game Xt q ϕt) σ → is-T-sgpe (game Xt q ϕt) σ
-  II {[]}     ⟨⟩        q ⟨⟩        j = ⟨⟩
-  II {X ∷ Xf} (ϕ :: ϕf) q (t :: σf) j =
-     j (inl ⟨⟩) ,
-     (λ x → II {Xf x} (ϕf x) (sub q x) (σf x) (λ xs → j (inr (x :: xs))))
 
 \end{code}
 
@@ -582,13 +504,13 @@ T-sgpe-lemma [] ⟨⟩ q ⟨⟩ ⟨⟩ =
 
 T-sgpe-lemma (X ∷ Xf) (ϕ :: ϕt) q (a :: σf) (h :: t) =
  K-sequence (ϕ :: ϕt) q                        ＝⟨ by-def ⟩
- ϕ (λ x → K-sequence (ϕt x) (sub q x))         ＝⟨ ap ϕ (fext IH) ⟩
+ ϕ (λ x → K-sequence (ϕt x) (subpred q x))     ＝⟨ ap ϕ (fext IH) ⟩
  ϕ (λ z → T-sub q z (T-strategic-path (σf z))) ＝⟨ h ⁻¹ ⟩
  varextᵀ q (T-strategic-path (a :: σf))        ∎
   where
-   IH : (x : X) → K-sequence (ϕt x) (sub q x)
+   IH : (x : X) → K-sequence (ϕt x) (subpred q x)
                 ＝ T-sub q x (T-strategic-path (σf x))
-   IH x = T-sgpe-lemma (Xf x) (ϕt x) (sub q x) (σf x) (t x)
+   IH x = T-sgpe-lemma (Xf x) (ϕt x) (subpred q x) (σf x) (t x)
 
 \end{code}
 
@@ -637,17 +559,17 @@ strategic-path-lemma ext-const {X ∷ Xf} εt@(ε :: εf) q = γ
   δ x = JT-sequence {Xf x} (εf x)
 
   q' : (x : X) → Path (Xf x) → T R
-  q' x = ηᵀ ∘ sub q x
+  q' x = ηᵀ ∘ subpred q x
 
   σf : (x : X) → T-Strategy (Xf x)
-  σf x = selection-strategy {Xf x} (εf x) (sub q x)
+  σf x = selection-strategy {Xf x} (εf x) (subpred q x)
 
   b c : (x : X) → T (Path (Xf x))
   b x = δ x (q' x)
   c x = T-strategic-path (σf x)
 
   IH : b ∼ c
-  IH x = strategic-path-lemma ext-const (εf x) (sub q x)
+  IH x = strategic-path-lemma ext-const (εf x) (subpred q x)
 
   t : T X
   t = mapᵀ path-head (JT-sequence εt (ηᵀ ∘ q))
@@ -717,10 +639,10 @@ head-equilibrium ext-const G@(game (X ∷ Xf) q (ϕ :: ϕf)) εt@(ε :: εf) = �
   p x = extᵀ q' (f x q')
 
   σ : (x : X) → T (Path (Xf x))
-  σ x = T-strategic-path (selection-strategy {Xf x} (εf x) (sub q x))
+  σ x = T-strategic-path (selection-strategy {Xf x} (εf x) (subpred q x))
 
-  I : (λ x → δ x (ηᵀ ∘ sub q x)) ＝ σ
-  I = fext (λ x → strategic-path-lemma ext-const (εf x) (sub q x))
+  I : (λ x → δ x (ηᵀ ∘ subpred q x)) ＝ σ
+  I = fext (λ x → strategic-path-lemma ext-const (εf x) (subpred q x))
 
   γ : ε attainsᵀ ϕ → is-T-pe G (selection-strategy εt q)
   γ h =
@@ -742,7 +664,7 @@ head-equilibrium ext-const G@(game (X ∷ Xf) q (ϕ :: ϕf)) εt@(ε :: εf) = �
    ϕ (λ x → α (extᵀ q' (extᵀ (ηᵀ ∘ (x ::_)) (δ x (λ xs → extᵀ q' (ηᵀ (x :: xs)))))))          ＝⟨ ⦅6⦆ ⟩
    ϕ (λ x → α (extᵀ (λ xs → extᵀ q' (ηᵀ (x :: xs))) (δ x (λ xs → extᵀ q' (ηᵀ (x :: xs))))))   ＝⟨ ⦅7⦆ ⟩
    ϕ (λ x → α (extᵀ (λ xs → ηᵀ (q (x :: xs))) (δ x (λ xs → ηᵀ (q (x :: xs))))))               ＝⟨ by-def ⟩
-   ϕ (λ x → T-sub q x (δ x (ηᵀ ∘ sub q x)))                                                   ＝⟨ ⦅8⦆ ⟩
+   ϕ (λ x → T-sub q x (δ x (ηᵀ ∘ subpred q x)))                                                   ＝⟨ ⦅8⦆ ⟩
    ϕ (λ x → T-sub q x (σ x))                                                                  ∎
     where
      ⦅1⦆ = ap (varextᵀ q) ((strategic-path-lemma ext-const εt q)⁻¹)
@@ -753,6 +675,59 @@ head-equilibrium ext-const G@(game (X ∷ Xf) q (ϕ :: ϕf)) εt@(ε :: εf) = �
      ⦅6⦆ = ap (λ - → ϕ (λ x → α (- x))) ((fext (λ x → assocᵀ q' (ηᵀ ∘ (x ::_)) (δ x (λ xs → extᵀ q' (ηᵀ (x :: xs))))))⁻¹)
      ⦅7⦆ = ap (λ - → ϕ (λ x → α (extᵀ (- x) (δ x (- x))))) (fext (λ x → fext (λ xs → unitᵀ q' (x :: xs))))
      ⦅8⦆ = ap (λ - → ϕ (λ x → T-sub q x (- x))) I
+
+
+\end{code}
+
+Last time, in the other file, we tried examples such as tic-tac-toe in
+Agda. But this had a number of disadvantages, including inefficiency.
+
+So I think we should actually code the examples is Haskell. This
+amounts to translating the parts of this file which are constructions
+rather than proofs of correctness.
+
+We don't work with subgames induced by partial paths any more:
+
+\begin{code}
+
+Subpred : {Xt : 𝕋} → (Path Xt → R) → (xs : pPath Xt) → Path (sub𝕋 Xt xs) → R
+Subpred {[]} q ⟨⟩ ⟨⟩ = q ⟨⟩
+Subpred {X ∷ Xf} q (inl ⟨⟩) (y :: ys) = q (y :: ys)
+Subpred {X ∷ Xf} q (inr (x :: xs)) ys = Subpred {Xf x} (subpred q x) xs ys
+
+sub𝓚 : {Xt : 𝕋} → 𝓚 Xt → (xs : pPath Xt) → 𝓚 (sub𝕋 Xt xs)
+sub𝓚 {[]} ϕt ⟨⟩ = ⟨⟩
+sub𝓚 {X ∷ Xf} ϕt (inl ⟨⟩) = ϕt
+sub𝓚 {X ∷ Xf} (ϕ :: ϕf) (inr (x :: xs)) = sub𝓚 {Xf x} (ϕf x) xs
+
+sub𝓙𝓣 : {Xt : 𝕋} → 𝓙𝓣 Xt → (xs : pPath Xt) → 𝓙𝓣 (sub𝕋 Xt xs)
+sub𝓙𝓣 {[]} εt ⟨⟩ = ⟨⟩
+sub𝓙𝓣 {X ∷ Xf} εt (inl ⟨⟩) = εt
+sub𝓙𝓣 {X ∷ Xf} (ε :: εf) (inr (x :: xs)) = sub𝓙𝓣 {Xf x} (εf x) xs
+
+subgame : (G : Game) → pPath (Xt G) → Game
+subgame (game Xt q ϕt) xs = game (sub𝕋 Xt xs) (Subpred q xs) (sub𝓚 ϕt xs)
+
+is-T-sgpe₂ : (G : Game) (σ : T-Strategy (Xt G)) → Type
+is-T-sgpe₂ G σ = (xs : pPath (Xt G)) → is-T-pe (subgame G xs) (sub-T-Strategy σ xs)
+
+T-sgpe-equiv : (G : Game) (σ : T-Strategy (Xt G))
+             → is-T-sgpe G σ ⇔ is-T-sgpe₂ G σ
+T-sgpe-equiv (game Xt q ϕt) σ = I ϕt q σ , II ϕt q σ
+ where
+  I : {Xt : 𝕋} (ϕt : 𝓚 Xt) (q : Path Xt → R) (σ : T-Strategy Xt)
+    → is-T-sgpe (game Xt q ϕt) σ → is-T-sgpe₂ (game Xt q ϕt) σ
+  I {[]}     ⟨⟩        q ⟨⟩        ⟨⟩        ⟨⟩              = ⟨⟩
+  I {X ∷ Xf} (ϕ :: ϕf) q (t :: σf) (i :: _)  (inl ⟨⟩)        = i
+  I {X ∷ Xf} (ϕ :: ϕf) q (t :: σf) (_ :: is) (inr (x :: xs)) =
+    I {Xf x} (ϕf x) (subpred q x) (σf x) (is x) xs
+
+  II : {Xt : 𝕋} (ϕt : 𝓚 Xt) (q : Path Xt → R) (σ : T-Strategy Xt)
+    → is-T-sgpe₂ (game Xt q ϕt) σ → is-T-sgpe (game Xt q ϕt) σ
+  II {[]}     ⟨⟩        q ⟨⟩        j = ⟨⟩
+  II {X ∷ Xf} (ϕ :: ϕf) q (t :: σf) j =
+     j (inl ⟨⟩) ,
+     (λ x → II {Xf x} (ϕf x) (subpred q x) (σf x) (λ xs → j (inr (x :: xs))))
 
 is-in-equilibrium : (G : Game) → 𝓙𝓣 (Xt G) → Type
 is-in-equilibrium G εt = (xs : pPath (Xt G))
@@ -766,10 +741,3 @@ main-corollary : ext-const 𝓣
 main-corollary ext-const G εt xs = head-equilibrium ext-const (subgame G xs) (sub𝓙𝓣 εt xs)
 
 \end{code}
-
-Last time, in the other file, we tried examples such as tic-tac-toe in
-Agda. But this had a number of disadvantages, including inefficiency.
-
-So I think we should actually code the examples is Haskell. This
-amounts to translating the parts of this file which are constructions
-rather than proofs of correctness.

@@ -40,6 +40,14 @@ record Monad : Type₁ where
 
 open Monad public
 
+tensor : (𝓣 : Monad) → {X : Type} {Y : X → Type}
+       → functor 𝓣 X
+       → ((x : X) → functor 𝓣 (Y x))
+       → functor 𝓣 (Σ x ꞉ X , Y x)
+tensor 𝓣 = _⊗_ 𝓣
+
+syntax tensor 𝓣 t f = t ⊗[ 𝓣 ] f
+
 𝕀𝕕 : Monad
 𝕀𝕕 = record {
       functor = id ;
