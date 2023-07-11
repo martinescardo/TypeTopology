@@ -50,7 +50,6 @@ open import UF.UniverseEmbedding
 
 \end{code}
 
-
 We say that a type X has size 𝓥, or that it is 𝓥 small if it is
 equivalent to a type in the universe 𝓥:
 
@@ -592,7 +591,7 @@ module Image
  restriction : (f : X → Y) → image f → Y
  restriction f (y , _) = y
 
- restriction-embedding : (f : X → Y) → is-embedding(restriction f)
+ restriction-embedding : (f : X → Y) → is-embedding (restriction f)
  restriction-embedding f = pr₁-is-embedding (λ y → resize-is-prop R _ _)
 
  corestriction : (f : X → Y) → X → image f
@@ -603,8 +602,6 @@ module Image
 TODO. Prove the properties / perform the constructions in
 UF.ImageAndSurjection. Better: reorganize the code so that reproving
 is not necessary.
-
-\end{code}
 
 Added 24 January 2020 (originally proved 19 November 2019) by Tom de Jong.
 
@@ -886,6 +883,44 @@ x ≠⟦ ls ⟧ y = ¬ (x ＝⟦ ls ⟧ y)
 ≠⟦ ls ⟧-gives-≠ = contrapositive ＝-gives-＝⟦ ls ⟧
 
 \end{code}
+
+Added 11 Jul 2023 by Martin Escardo.
+
+\begin{code}
+
+subtype-is-small : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
+                 → ((x : X) → is-prop (A x))
+                 → X is 𝓦 small
+                 → Σ A is 𝓥 ⊔ 𝓦 small
+subtype-is-small {𝓤} {𝓥} {𝓦} {X} {A} A-is-prop-valued (X' , 𝕗) = S , 𝕘
+ where
+  S : 𝓥 ⊔ 𝓦 ̇
+  S = Σ x' ꞉ X' , A (⌜ 𝕗 ⌝ x')
+
+  𝕘 = (Σ x' ꞉ X' , A (⌜ 𝕗 ⌝ x')) ≃⟨ Σ-change-of-variable-≃ A 𝕗 ⟩
+      (Σ x ꞉ X , A x)            ■
+
+subtype-is-locally-small : {X : 𝓤 ⁺ ̇ } {A : X → 𝓤 ̇ }
+                         → ((x : X) → is-prop (A x))
+                         → is-locally-small X
+                         → is-locally-small (Σ A)
+subtype-is-locally-small {𝓤} {X} {A} A-is-prop-valued ls (x , a) (y , b) = γ
+ where
+  γ : is-small ((x , a) ＝ (y , b))
+  γ = x ＝⟦ ls ⟧ y ,
+     (x ＝⟦ ls ⟧ y          ≃⟨ resizing-condition (ls x y) ⟩
+     (x ＝ y)               ≃⟨ I ⟩
+     ((x , a) ＝ (y , b))   ■)
+    where
+     I = ≃-sym (ap pr₁ ,
+                embedding-gives-embedding'
+                 pr₁
+                 (pr₁-is-embedding A-is-prop-valued)
+                 (x , a)
+                 (y , b))
+\end{code}
+
+TODO. Generalize the above to resize (the values of) A as well.
 
 Added 5 April 2022 by Tom de Jong, after discussion with Martín.
 (Refactoring an earlier addition dated 15 March 2022.)
