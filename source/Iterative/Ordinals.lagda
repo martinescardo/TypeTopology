@@ -466,10 +466,13 @@ O α@(A@(ssup X φ , φ-emb , g) , A-io@(A-trans , A-trans-h)) = α'
    where
     I : Σ z ꞉ X , 𝕆-forest α z ＝ β
     I = 𝕆-forest-is-lower-closed α x β m
+
     II : pr₁ I ≺ x
     II = transport⁻¹ (_< 𝕆-forest α x) (pr₂ I) m
+
     III : pr₁ I ≺ y
     III = l (pr₁ I) II
+
     IV : β < (𝕆-forest α y)
     IV = transport (_< (𝕆-forest α y)) (pr₂ I) III
 
@@ -486,13 +489,19 @@ O α@(A@(ssup X φ , φ-emb , g) , A-io@(A-trans , A-trans-h)) = α'
     f x (acc u) = acc (λ y l → f y (u (𝕆-forest α y) l))
 
   ≺-is-extensional : is-extensional _≺_
-  ≺-is-extensional x y u v = embeddings-are-lc (𝕆-forest α) (𝕆-forest-is-embedding α) I
+  ≺-is-extensional x y u v = embeddings-are-lc
+                              (𝕆-forest α)
+                              (𝕆-forest-is-embedding α)
+                              I
    where
     I : 𝕆-forest α x ＝ 𝕆-forest α y
     I = <-is-extensional _ _ (≼-gives-≤ x y u) (≼-gives-≤ y x v)
 
   ≺-is-transitive : is-transitive _≺_
-  ≺-is-transitive x y z = <-is-transitive (𝕆-forest α x) (𝕆-forest α y) (𝕆-forest α z)
+  ≺-is-transitive x y z = <-is-transitive
+                           (𝕆-forest α x)
+                           (𝕆-forest α y)
+                           (𝕆-forest α z)
 
   ≺-is-well-order : is-well-order _≺_
   ≺-is-well-order = ≺-is-prop-valued ,
