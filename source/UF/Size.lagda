@@ -904,11 +904,11 @@ subtype-is-locally-small : {X : 𝓤 ⁺ ̇ } {A : X → 𝓤 ̇ }
                          → ((x : X) → is-prop (A x))
                          → is-locally-small X
                          → is-locally-small (Σ A)
-subtype-is-locally-small {𝓤} {X} {A} A-is-prop-valued ls (x , a) (y , b) = γ
+subtype-is-locally-small {𝓤} {X} {A} A-is-prop-valued X-is-ls (x , a) (y , b) = γ
  where
   γ : is-small ((x , a) ＝ (y , b))
-  γ = x ＝⟦ ls ⟧ y ,
-     (x ＝⟦ ls ⟧ y          ≃⟨ resizing-condition (ls x y) ⟩
+  γ = x ＝⟦ X-is-ls ⟧ y ,
+     (x ＝⟦ X-is-ls ⟧ y     ≃⟨ resizing-condition (X-is-ls x y) ⟩
      (x ＝ y)               ≃⟨ I ⟩
      ((x , a) ＝ (y , b))   ■)
     where
