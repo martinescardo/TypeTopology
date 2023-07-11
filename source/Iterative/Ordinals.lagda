@@ -33,6 +33,7 @@ open import UF.Embeddings
 open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.PairFun
+open import UF.Size
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
@@ -91,6 +92,11 @@ The type of iterative ordinals.
 
 𝕆 : 𝓤 ⁺ ̇
 𝕆 = Σ A ꞉ 𝕍 , is-iterative-ordinal A
+
+𝕆-is-locally-small : is-locally-small 𝕆
+𝕆-is-locally-small = subtype-is-locally-small
+                      being-iordinal-is-prop
+                      𝕍-is-locally-small
 
 underlying-iset : 𝕆 → 𝕍
 underlying-iset = pr₁
@@ -429,10 +435,6 @@ book.
     <-is-transitive
 
 \end{code}
-
-To be continued.
-
-TODO. 𝓞 is locally small.
 
 \begin{code}
 

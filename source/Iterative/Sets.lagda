@@ -39,6 +39,7 @@ open import UF.Embeddings
 open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.PairFun
+open import UF.Size
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
@@ -77,6 +78,11 @@ The type of iterative sets:
 
 𝕍 : 𝓤 ⁺ ̇
 𝕍 = Σ M ꞉ 𝕄 , is-iterative-set M
+
+𝕍-is-locally-small : is-locally-small 𝕍
+𝕍-is-locally-small = subtype-is-locally-small
+                      being-iset-is-prop
+                      (𝕄-is-locally-small ua)
 
 underlying-mset : 𝕍 → 𝕄
 underlying-mset = pr₁
@@ -295,5 +301,3 @@ induction.
 ∈-is-accessible = ∈-induction (is-accessible _∈_) (λ _ → acc)
 
 \end{code}
-
-TODO. 𝕍 is locally small.
