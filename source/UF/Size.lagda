@@ -922,6 +922,9 @@ subtype-is-locally-small {𝓤} {X} {A} A-is-prop-valued ls (x , a) (y , b) = γ
 
 TODO. Generalize the above to resize (the values of) A as well.
 
+TODO. Add a characterization of equality of subtypes somewhere (the
+proof is "I" above. Perhaps in UF.EquivalenceExamples.)
+
 Added 5 April 2022 by Tom de Jong, after discussion with Martín.
 (Refactoring an earlier addition dated 15 March 2022.)
 
