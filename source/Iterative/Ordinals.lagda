@@ -29,6 +29,7 @@ open import Iterative.Sets 𝓤 ua
 open import MLTT.W
 open import Ordinals.Notions
 open import Ordinals.Type
+open import Ordinals.WellOrderTransport
 open import UF.Embeddings
 open import UF.Equiv
 open import UF.EquivalenceExamples
@@ -508,8 +509,6 @@ O α@(A@(ssup X φ , φ-emb , g) , A-io@(A-trans , A-trans-h)) = α'
                     ≺-is-accessible ,
                     ≺-is-extensional ,
                     ≺-is-transitive
-
-  open import Ordinals.WellOrderTransport
 
   ≺⁻-is-well-order : is-well-order _≺⁻_
   ≺⁻-is-well-order = order-transfer-lemma₃.well-order←
