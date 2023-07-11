@@ -110,6 +110,12 @@ underlying-iset-is-iordinal = pr₂
 _<_ : 𝕆 → 𝕆 → 𝓤 ⁺ ̇
 α < β = underlying-iset α ∈ underlying-iset β
 
+_<⁻_ : 𝕆 → 𝕆 → 𝓤 ̇
+α <⁻ β = underlying-iset α ∈⁻ underlying-iset β
+
+<⁻≃-< : (α β : 𝕆) → (α < β) ≃ (α <⁻ β)
+<⁻≃-< α@(A@(ssup _ _ , _) , _) β@(B@(ssup _ _ , _) , _) = ∈⁻≃∈ A B
+
 <-is-prop-valued : (α β : 𝕆) → is-prop (α < β)
 <-is-prop-valued (A , _) (B , _) = ∈-is-prop-valued A B
 
@@ -436,14 +442,21 @@ book.
 
 \end{code}
 
+Every iterative ordinal can be mapped to a HoTT-book ordinal:
+
 \begin{code}
 
-{- We need to wait until we know that 𝓞 is locally small
 O : 𝕆 → Ordinal 𝓤
 O α@(A@(ssup X φ , φ-emb , g) , A-io@(A-trans , A-trans-h)) = α'
  where
   _≺_ :  X → X → 𝓤 ⁺ ̇
   x ≺ y = (𝕆-forest α x) < (𝕆-forest α y)
+
+  _≺⁻_ :  X → X → 𝓤 ̇
+  x ≺⁻ y = (𝕆-forest α x) <⁻ (𝕆-forest α y)
+
+  ≺⁻≃-≺ : (x y : X) → (x ≺ y) ≃ (x ≺⁻ y)
+  ≺⁻≃-≺ x y = <⁻≃-< (𝕆-forest α x) (𝕆-forest α y)
 
   _≼_ :  X → X → 𝓤 ⁺ ̇
   x ≼ y = ∀ z → z ≺ x → z ≺ y
@@ -481,9 +494,26 @@ O α@(A@(ssup X φ , φ-emb , g) , A-io@(A-trans , A-trans-h)) = α'
   ≺-is-transitive : is-transitive _≺_
   ≺-is-transitive x y z = <-is-transitive (𝕆-forest α x) (𝕆-forest α y) (𝕆-forest α z)
 
+  ≺-is-well-order : is-well-order _≺_
+  ≺-is-well-order = ≺-is-prop-valued ,
+                    ≺-is-accessible ,
+                    ≺-is-extensional ,
+                    ≺-is-transitive
 
+  open import Ordinals.WellOrderTransport
+
+  ≺⁻-is-well-order : is-well-order _≺⁻_
+  ≺⁻-is-well-order = order-transfer-lemma₃.well-order←
+                      fe'
+                      X
+                      _≺⁻_
+                      _≺_
+                      (λ x y → ≃-sym (≺⁻≃-≺ x y))
+                      ≺-is-well-order
 
   α' : Ordinal 𝓤
-  α' = 𝕆-root α , {!!} , {!!} , {!!} , {!!} , {!!}
--}
+  α' = 𝕆-root α , _≺⁻_ , ≺⁻-is-well-order
+
 \end{code}
+
+TODO. This map is an equivalence.

@@ -85,6 +85,9 @@ idtoeqʷ-is-equiv fe w = I
   I : (t : 𝕎) → is-equiv (idtoeqʷ w t)
   I = NatΣ-equiv-gives-fiberwise-equiv (idtoeqʷ w) f-is-equiv
 
+W-≃-＝ : Fun-Ext → (w t : 𝕎) → (w ＝ t) ≃ (w ＝ʷ t)
+W-≃-＝ fe w t = idtoeqʷ w t , idtoeqʷ-is-equiv fe w t
+
 to-W-＝ : {x  : X} {φ  : A x  → 𝕎}
           {x' : X} {φ' : A x' → 𝕎}
         → (Σ p ꞉ x ＝ x' , (φ ＝ φ' ∘ transport A p))

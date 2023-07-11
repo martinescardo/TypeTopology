@@ -32,6 +32,7 @@ private
 
 
 open import Iterative.Multisets 𝓤
+open import Iterative.W-Properties (𝓤 ̇ ) id
 open import MLTT.W
 open import Ordinals.Notions
 open import UF.Base
@@ -110,6 +111,14 @@ to-𝕍-＝ {X} σ i j = to-subtype-＝ being-iset-is-prop (to-𝕄-＝ σ)
 
 _∈_ : 𝕍 → 𝕍 → 𝓤 ⁺ ̇
 (M , _) ∈ (ssup X φ , _) = Σ x ꞉ X , φ x ＝ M
+
+_∈⁻_ : 𝕍 → 𝕍 → 𝓤 ̇
+(M , _) ∈⁻ (ssup X φ , _) = Σ x ꞉ X , φ x ≃ᴹ M
+
+∈⁻≃∈ : (A B : 𝕍) → (A ∈ B) ≃ (A ∈⁻ B)
+∈⁻≃∈ A@(M , _) B@(ssup X φ , _) =
+ (Σ x ꞉ X , φ x ＝ M) ≃⟨ Σ-cong (λ x → 𝕄-=-≃ ua (φ x) M) ⟩
+ (Σ x ꞉ X , φ x ≃ᴹ M) ■
 
 ∈-is-prop-valued : (A B : 𝕍) → is-prop (A ∈ B)
 ∈-is-prop-valued (M , _) (ssup X φ , φ-emb , _) = φ-emb M

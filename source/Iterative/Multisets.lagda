@@ -212,6 +212,9 @@ idtoeqᴹ-is-equiv ua M = I
   I : (t : 𝕄) → is-equiv (idtoeqᴹ M t)
   I = NatΣ-equiv-gives-fiberwise-equiv (idtoeqᴹ M) f-is-equiv
 
+𝕄-=-≃ : Univalence
+      → (M N : 𝕄) → (M ＝ N) ≃ (M ≃ᴹ N)
+𝕄-=-≃ ua M N = idtoeqᴹ M N , idtoeqᴹ-is-equiv ua M N
+
 𝕄-is-locally-small : Univalence → is-locally-small 𝕄
-𝕄-is-locally-small ua M N = M ≃ᴹ N ,
-                          ≃-sym (idtoeqᴹ M N , idtoeqᴹ-is-equiv ua M N)
+𝕄-is-locally-small ua M N = M ≃ᴹ N , ≃-sym (𝕄-=-≃ ua M N)
