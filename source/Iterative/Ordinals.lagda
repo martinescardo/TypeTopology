@@ -433,3 +433,54 @@ book.
 To be continued.
 
 TODO. 𝓞 is locally small.
+
+\begin{code}
+
+O : 𝕆 → Ordinal 𝓤
+O α@(A@(ssup X φ , φ-emb , g) , A-io@(A-trans , A-trans-h)) = α'
+ where
+  _≺_ :  X → X → 𝓤 ⁺ ̇
+  x ≺ y = (𝕆-forest α x) < (𝕆-forest α y)
+
+  _≼_ :  X → X → 𝓤 ⁺ ̇
+  x ≼ y = ∀ z → z ≺ x → z ≺ y
+
+  ≼-gives-≤ : (x y : X) → x ≼ y → (𝕆-forest α x) ≤ (𝕆-forest α y)
+  ≼-gives-≤ x y l β m = IV
+   where
+    I : Σ z ꞉ X , 𝕆-forest α z ＝ β
+    I = 𝕆-forest-is-lower-closed α x β m
+    II : pr₁ I ≺ x
+    II = transport⁻¹ (_< 𝕆-forest α x) (pr₂ I) m
+    III : pr₁ I ≺ y
+    III = l (pr₁ I) II
+    IV : β < (𝕆-forest α y)
+    IV = transport (_< (𝕆-forest α y)) (pr₂ I) III
+
+  ≤-gives-≼ : (x y : X) → (𝕆-forest α x) ≤ (𝕆-forest α y) → x ≼ y
+  ≤-gives-≼ x y l z = l (𝕆-forest α z)
+
+  ≺-is-prop-valued : (x y : X) → is-prop (x ≺ y)
+  ≺-is-prop-valued x y = <-is-prop-valued (𝕆-forest α x) (𝕆-forest α y)
+
+  ≺-is-accessible : (x : X) → is-accessible _≺_ x
+  ≺-is-accessible x = f x (<-is-accessible (𝕆-forest α x))
+   where
+    f : ∀ x → is-accessible _<_ (𝕆-forest α x) → is-accessible _≺_ x
+    f x (acc u) = acc (λ y l → f y (u (𝕆-forest α y) l))
+
+  ≺-is-extensional : is-extensional _≺_
+  ≺-is-extensional x y u v = embeddings-are-lc (𝕆-forest α) (𝕆-forest-is-embedding α) I
+   where
+    I : 𝕆-forest α x ＝ 𝕆-forest α y
+    I = <-is-extensional _ _ (≼-gives-≤ x y u) (≼-gives-≤ y x v)
+
+  ≺-is-transitive : is-transitive _≺_
+  ≺-is-transitive x y z = <-is-transitive (𝕆-forest α x) (𝕆-forest α y) (𝕆-forest α z)
+
+
+
+  α' : Ordinal 𝓤
+  α' = 𝕆-root α , {!!} , {!!} , {!!} , {!!} , {!!}
+
+\end{code}

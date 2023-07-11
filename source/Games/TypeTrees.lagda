@@ -16,7 +16,11 @@ range over such trees.
 
 module Games.TypeTrees where
 
+open import Games.Monad
 open import MLTT.Spartan
+open import UF.FunExt
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
 
 data 𝕋 : Type₁ where
   []  : 𝕋
@@ -57,6 +61,9 @@ path-tail (x :: xs) = xs
 plength : {Xt : 𝕋} → Path Xt → ℕ
 plength {[]}     ⟨⟩        = 0
 plength {X ∷ Xf} (x :: xs) = succ (plength {Xf x} xs)
+
+subpred : {X R : Type} {Xf : X → 𝕋} → ((Σ x ꞉ X , Path (Xf x)) → R) → (x : X) → Path (Xf x) → R
+subpred q x xs = q (x :: xs)
 
 \end{code}
 
@@ -99,6 +106,37 @@ structure-up S (X ∷ Xf) (s :: sf) = s ∷ (λ x → structure-up S (Xf x) (sf 
 structure-down : (S : Type → 𝓤 ̇ ) (Xt : 𝕋) → structure₁ S Xt → structure S Xt
 structure-down S []      []        = ⟨⟩
 structure-down S (X ∷ Xf) (s ∷ sf) = s :: (λ x → structure-down S (Xf x) (sf x))
+
+\end{code}
+
+Xt is hereditarily P if all its internal nodes satisfy P:
+
+\begin{code}
+
+_is-hereditarily_ : 𝕋 → (Type → Type) → Type
+[]       is-hereditarily P = 𝟙
+(X ∷ Xf) is-hereditarily P = P X × ((x : X) → Xf x is-hereditarily P)
+
+being-hereditary-is-prop : Fun-Ext
+                         → (P : Type → Type)
+                         → ((X : Type) → is-prop (P X))
+                         → (Xt : 𝕋) → is-prop (Xt is-hereditarily P)
+being-hereditary-is-prop fe P P-is-prop-valued [] = 𝟙-is-prop
+being-hereditary-is-prop fe P P-is-prop-valued (X ∷ Xf) =
+ ×-is-prop
+  (P-is-prop-valued X)
+  (Π-is-prop fe λ x → being-hereditary-is-prop fe P P-is-prop-valued (Xf x))
+
+\end{code}
+
+The sequence operator for monads is defined on lists, but here we
+consider a version on paths of a tree instead:
+
+\begin{code}
+
+path-sequence : (𝓣 : Monad) {Xt : 𝕋} → structure (functor 𝓣) Xt → functor 𝓣 (Path Xt)
+path-sequence 𝓣 {[]}     ⟨⟩        = η 𝓣 ⟨⟩
+path-sequence 𝓣 {X ∷ Xf} (t :: tf) = t ⊗[ 𝓣 ] (λ x → path-sequence 𝓣 {Xf x} (tf x))
 
 \end{code}
 
@@ -157,5 +195,23 @@ private
  structure'-∷ : (S : Type → 𝓤 ̇ ) (X : Type) (Xf : X → 𝕋)
               → structure' S (X ∷ Xf) ＝ S X × ((x : X) → structure' S (Xf x))
  structure'-∷ S X Xf = refl
+
+\end{code}
+
+The following are not used any more, because we work with hereditary
+properties instead.
+
+Partial, possibly empty, paths in 𝕋's:
+
+\begin{code}
+
+pPath : 𝕋 → Type
+pPath []       = 𝟙
+pPath (X ∷ Xf) = 𝟙 + (Σ x ꞉ X , pPath (Xf x))
+
+sub𝕋 : (Xt : 𝕋) → pPath Xt → 𝕋
+sub𝕋 []       ⟨⟩              = []
+sub𝕋 (X ∷ Xf) (inl ⟨⟩)        = X ∷ Xf
+sub𝕋 (X ∷ Xf) (inr (x :: xs)) = sub𝕋 (Xf x) xs
 
 \end{code}

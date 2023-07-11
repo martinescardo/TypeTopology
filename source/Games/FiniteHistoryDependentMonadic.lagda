@@ -92,7 +92,6 @@ private
  μᵀ : {X : Type} → T (T X) → T X
  μᵀ = μ 𝓣
 
--- Definition 2.8 (paper)
  _⊗ᵀ_ : {X : Type} {Y : X → Type}
       → T X
       → ((x : X) → T (Y x))
@@ -294,14 +293,8 @@ all possible strategies is constructed as follows (Definition 4 of [1]):
 
 \begin{code}
 
-
 T-Strategy : 𝕋 -> Type
 T-Strategy = structure T
-
-sub-T-Strategy : {Xt : 𝕋} → T-Strategy Xt → (xs : pPath Xt) → T-Strategy (sub𝕋 Xt xs)
-sub-T-Strategy {[]} ⟨⟩ ⟨⟩ = ⟨⟩
-sub-T-Strategy {X ∷ Xf} (t :: σf) (inl ⟨⟩) = t :: σf
-sub-T-Strategy {X ∷ Xf} (t :: σf) (inr (x :: xs)) = sub-T-Strategy {Xf x} (σf x) xs
 
 \end{code}
 
@@ -316,8 +309,7 @@ We get a path in the tree by following any given strategy:
 \begin{code}
 
 T-strategic-path : {Xt : 𝕋} → T-Strategy Xt → T (Path Xt)
-T-strategic-path {[]}     ⟨⟩        = ηᵀ ⟨⟩
-T-strategic-path {X ∷ Xf} (t :: σf) = t ⊗ᵀ (λ x → T-strategic-path {Xf x} (σf x))
+T-strategic-path = path-sequence 𝓣
 
 \end{code}
 
@@ -516,7 +508,6 @@ here, for the moment, we consider only single-valued quantifiers.
 
 \begin{code}
 
--- Definition 3.7 (paper)
 T-selection-strategy : {Xt : 𝕋} → 𝓙𝓣 Xt → (Path Xt → R) → T-Strategy Xt
 T-selection-strategy {[]}     ⟨⟩           q = ⟨⟩
 T-selection-strategy {X ∷ Xf} εt@(ε :: εf) q = t :: σf
@@ -527,7 +518,6 @@ T-selection-strategy {X ∷ Xf} εt@(ε :: εf) q = t :: σf
   σf : (x : X) → T-Strategy (Xf x)
   σf x = T-selection-strategy {Xf x} (εf x) (λ xs → q (x :: xs))
 
--- Lemma 3.9 (paper)
 strategic-path-lemma : ext-const 𝓣
                      → {Xt : 𝕋} (εt : 𝓙𝓣 Xt) (q : Path Xt → R)
                      → JT-sequence εt (ηᵀ ∘ q)
@@ -688,6 +678,11 @@ sub𝓙𝓣 {X ∷ Xf} (ε :: εf) (inr (x :: xs)) = sub𝓙𝓣 {Xf x} (εf x) 
 
 subgame : (G : Game) → pPath (Xt G) → Game
 subgame (game Xt q ϕt) xs = game (sub𝕋 Xt xs) (Subpred q xs) (sub𝓚 ϕt xs)
+
+sub-T-Strategy : {Xt : 𝕋} → T-Strategy Xt → (xs : pPath Xt) → T-Strategy (sub𝕋 Xt xs)
+sub-T-Strategy {[]} ⟨⟩ ⟨⟩ = ⟨⟩
+sub-T-Strategy {X ∷ Xf} (t :: σf) (inl ⟨⟩) = t :: σf
+sub-T-Strategy {X ∷ Xf} (t :: σf) (inr (x :: xs)) = sub-T-Strategy {Xf x} (σf x) xs
 
 is-T-sgpe₂ : (G : Game) (σ : T-Strategy (Xt G)) → Type
 is-T-sgpe₂ G σ = (xs : pPath (Xt G)) → is-T-pe (subgame G xs) (sub-T-Strategy σ xs)
