@@ -526,3 +526,5 @@ O α@(A@(ssup X φ , φ-emb , g) , A-io@(A-trans , A-trans-h)) = α'
 \end{code}
 
 TODO. This map is an equivalence.
+
+TODO. Add lots of comments to this file and the files it depends on.
