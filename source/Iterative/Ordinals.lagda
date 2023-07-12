@@ -576,7 +576,7 @@ Ord-to-𝕄-lc = transfinite-induction-on-OO _ f
   f : (α : Ordinal 𝓤)
     → ((a : ⟨ α ⟩) (β : Ordinal 𝓤) → Ord-to-𝕄 (α ↓ a) ＝ Ord-to-𝕄 β → (α ↓ a) ＝ β)
     → (β : Ordinal 𝓤) → Ord-to-𝕄 α ＝ Ord-to-𝕄 β → α ＝ β
-  f α σ β p = Extensionality (OO 𝓤) α β VI VI'
+  f α g β p = Extensionality (OO 𝓤) α β VI VI'
    where
     I : (ssup ⟨ α ⟩ λ (a : ⟨ α ⟩) → Ord-to-𝕄 (α ↓ a))
      ＝ (ssup ⟨ β ⟩ λ (b : ⟨ β ⟩) → Ord-to-𝕄 (β ↓ b))
@@ -589,7 +589,7 @@ Ord-to-𝕄-lc = transfinite-induction-on-OO _ f
     III = happly (pr₂ (from-𝕄-＝ I))
 
     IV : (a : ⟨ α ⟩) → (α ↓ a) ＝ (β ↓ Idtofun II a)
-    IV a = σ a (β ↓ Idtofun II a) (III a)
+    IV a = g a (β ↓ Idtofun II a) (III a)
 
     V : (a : ⟨ α ⟩) → (α ↓ a) ⊲ β
     V a = Idtofun II a , IV a
@@ -604,7 +604,7 @@ Ord-to-𝕄-lc = transfinite-induction-on-OO _ f
     III' = happly (pr₂ (from-𝕄-＝ (I ⁻¹)))
 
     IV' : (b : ⟨ β ⟩) → (β ↓ b) ＝ (α ↓ Idtofun II' b)
-    IV' b = (σ (Idtofun II' b) (β ↓ b) ((III' b)⁻¹))⁻¹
+    IV' b = (g (Idtofun II' b) (β ↓ b) ((III' b)⁻¹))⁻¹
 
     V' : (b : ⟨ β ⟩) → (β ↓ b) ⊲ α
     V' b = Idtofun II' b , IV' b
