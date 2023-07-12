@@ -30,6 +30,7 @@ open import MLTT.W
 open import Ordinals.Notions
 open import Ordinals.Type
 open import Ordinals.WellOrderTransport
+open import UF.Base
 open import UF.Embeddings
 open import UF.Equiv
 open import UF.EquivalenceExamples
@@ -64,7 +65,7 @@ members-of-iordinals-are-transitive : (A : 𝕍)
                                     → (B : 𝕍) → B ∈ A → is-transitive-iset B
 members-of-iordinals-are-transitive A = pr₂
 
-being-iordinal-is-prop : (A : 𝕍) → is-prop (is-iterative-ordinal A )
+being-iordinal-is-prop : (A : 𝕍) → is-prop (is-iterative-ordinal A)
 being-iordinal-is-prop A =
  ×-is-prop
   (being-transitive-iset-is-prop A)
@@ -190,8 +191,7 @@ _≤_ : 𝕆 → 𝕆 → 𝓤 ⁺ ̇
 <-is-extensional = ≤-is-antisymmetric
 
 <-behaviour : (α β : 𝕆)
-            → (α < β)
-            ≃ (Σ y ꞉ 𝕆-root β , 𝕆-forest β y ＝ α)
+            → (α < β) ≃ (Σ y ꞉ 𝕆-root β , 𝕆-forest β y ＝ α)
 <-behaviour α@(A@(M , _) , _) β@(B@(N@(ssup Y γ) , _) , _) = II
  where
   I : (y : Y) → (γ y ＝ M) ≃ (𝕆-forest β y ＝ α)
@@ -448,8 +448,11 @@ Every iterative ordinal can be mapped to a HoTT-book ordinal:
 \begin{code}
 
 O : 𝕆 → Ordinal 𝓤
-O α@(A@(ssup X φ , φ-emb , g) , A-io@(A-trans , A-trans-h)) = α'
+O α = α'
  where
+  X : 𝓤 ̇
+  X = 𝕆-root α
+
   _≺_ :  X → X → 𝓤 ⁺ ̇
   x ≺ y = (𝕆-forest α x) < (𝕆-forest α y)
 
@@ -527,3 +530,124 @@ O α@(A@(ssup X φ , φ-emb , g) , A-io@(A-trans , A-trans-h)) = α'
 TODO. This map is an equivalence.
 
 TODO. Add lots of comments to this file and the files it depends on.
+
+\begin{code}
+
+open import Ordinals.OrdinalOfOrdinals ua
+open import Ordinals.Underlying
+open import UF.Equiv-FunExt
+
+Ord-to-𝕄 : Ordinal 𝓤 → 𝕄
+Ord-to-𝕄 = transfinite-recursion-on-OO 𝕄 (λ α → ssup ⟨ α ⟩)
+
+Ord-to-𝕄-behaviour : (α : Ordinal 𝓤)
+                   → Ord-to-𝕄 α ＝ ssup ⟨ α ⟩ (λ (x : ⟨ α ⟩) → Ord-to-𝕄 (α ↓ x))
+Ord-to-𝕄-behaviour = transfinite-recursion-on-OO-behaviour 𝕄 (λ α → ssup ⟨ α ⟩)
+
+\end{code}
+
+The following says that if φ is an embedding then ssup X φ is homotopy
+isolated:
+
+\begin{code}
+
+𝕄-ssup-is-h-isolated : (X : 𝓤 ̇ ) (φ : X → 𝕄)
+                     → is-embedding φ
+                     → (M : 𝕄) → is-prop (M ＝ ssup X φ)
+𝕄-ssup-is-h-isolated X φ φ-emb (ssup Y γ) = III
+ where
+  I = (ssup Y γ ＝ ssup X φ)              ≃⟨ 𝕄-＝ ⟩
+      (Σ p ꞉ Y ＝ X , γ ＝ φ ∘ Idtofun p) ≃⟨ Σ-cong (λ p → ＝-flip) ⟩
+      (Σ p ꞉ Y ＝ X , φ ∘ Idtofun p ＝ γ) ≃⟨ ≃-refl _ ⟩
+      fiber (λ p → φ ∘ Idtofun p) γ       ≃⟨ ≃-refl _ ⟩
+      fiber ((φ ∘_) ∘ Idtofun) γ          ■
+
+  II : is-embedding ((φ ∘_) ∘ Idtofun)
+  II = ∘-is-embedding
+        (Idtofun-is-embedding (ua 𝓤) fe)
+        (precomp-is-embedding fe' φ φ-emb)
+
+  III : is-prop (ssup Y γ ＝ ssup X φ)
+  III = equiv-to-prop I (II γ)
+
+Ord-to-𝕄-lc : (α β : Ordinal 𝓤) → Ord-to-𝕄 α ＝ Ord-to-𝕄 β → α ＝ β
+Ord-to-𝕄-lc = transfinite-induction-on-OO _ f
+ where
+  f : (α : Ordinal 𝓤)
+    → ((a : ⟨ α ⟩) (β : Ordinal 𝓤) → Ord-to-𝕄 (α ↓ a) ＝ Ord-to-𝕄 β → (α ↓ a) ＝ β)
+    → (β : Ordinal 𝓤) → Ord-to-𝕄 α ＝ Ord-to-𝕄 β → α ＝ β
+  f α σ β p = Extensionality (OO 𝓤) α β VI VI'
+   where
+    I : (ssup ⟨ α ⟩ λ (a : ⟨ α ⟩) → Ord-to-𝕄 (α ↓ a))
+     ＝ (ssup ⟨ β ⟩ λ (b : ⟨ β ⟩) → Ord-to-𝕄 (β ↓ b))
+    I = transport₂ (_＝_) (Ord-to-𝕄-behaviour α) (Ord-to-𝕄-behaviour β) p
+
+    II : ⟨ α ⟩ ＝ ⟨ β ⟩
+    II = pr₁ (from-𝕄-＝ I)
+
+    III : (a : ⟨ α ⟩) → Ord-to-𝕄 (α ↓ a) ＝ Ord-to-𝕄 (β ↓ Idtofun II a)
+    III = happly (pr₂ (from-𝕄-＝ I))
+
+    IV : (a : ⟨ α ⟩) → (α ↓ a) ＝ (β ↓ Idtofun II a)
+    IV a = σ a (β ↓ Idtofun II a) (III a)
+
+    V : (a : ⟨ α ⟩) → (α ↓ a) ⊲ β
+    V a = Idtofun II a , IV a
+
+    VI : α ≼ β
+    VI = to-≼ V
+
+    II' : ⟨ β ⟩ ＝ ⟨ α ⟩
+    II' = pr₁ (from-𝕄-＝ (I ⁻¹))
+
+    III' : (b : ⟨ β ⟩) → Ord-to-𝕄 (β ↓ b) ＝ Ord-to-𝕄 (α ↓ Idtofun II' b)
+    III' = happly (pr₂ (from-𝕄-＝ (I ⁻¹)))
+
+    IV' : (b : ⟨ β ⟩) → (β ↓ b) ＝ (α ↓ Idtofun II' b)
+    IV' b = (σ (Idtofun II' b) (β ↓ b) ((III' b)⁻¹))⁻¹
+
+    V' : (b : ⟨ β ⟩) → (β ↓ b) ⊲ α
+    V' b = Idtofun II' b , IV' b
+
+    VI' : β ≼ α
+    VI' = to-≼ V'
+
+Ord-to-𝕄-is-iterative-set : (α : Ordinal 𝓤) → is-iterative-set (Ord-to-𝕄 α)
+Ord-to-𝕄-is-iterative-set = transfinite-induction-on-OO _ f
+ where
+  f :  (α : Ordinal 𝓤)
+    → ((x : ⟨ α ⟩) → is-iterative-set (Ord-to-𝕄 (α ↓ x)))
+    → is-iterative-set (Ord-to-𝕄 α)
+  f α g = transport⁻¹ is-iterative-set (Ord-to-𝕄-behaviour α) I
+   where
+    I : is-iterative-set (ssup ⟨ α ⟩ (λ (x : ⟨ α ⟩) → Ord-to-𝕄 (α ↓ x)))
+    I = II , g
+     where
+      II : is-embedding (λ x → Ord-to-𝕄 (α ↓ x))
+      II (ssup X φ) = III
+       where
+        III : is-prop (Σ a ꞉ ⟨ α ⟩ , Ord-to-𝕄 (α ↓ a) ＝ ssup X φ)
+        III (a , p) (b , q) = VIII
+         where
+          IV : is-embedding φ
+          IV = 𝕄-forest-is-embedding
+                (ssup X φ)
+                (transport is-iterative-set p (g a))
+
+          V = Ord-to-𝕄 (α ↓ a) ＝⟨ p ⟩
+              ssup X φ         ＝⟨ q ⁻¹ ⟩
+              Ord-to-𝕄 (α ↓ b) ∎
+
+          VI : α ↓ a ＝ α ↓ b
+          VI = Ord-to-𝕄-lc (α ↓ a) (α ↓ b) V
+
+          VII : a ＝ b
+          VII = ↓-lc α a b VI
+
+          VIII : (a , p) ＝ (b , q)
+          VIII = to-Σ-＝
+                  (VII ,
+                   𝕄-ssup-is-h-isolated X φ IV (Ord-to-𝕄 (α ↓ b)) _ _)
+\end{code}
+
+To be continued.

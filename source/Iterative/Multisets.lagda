@@ -56,7 +56,6 @@ inverse. But the only point of adding them is to make sure that the
 above comment remains valid if any change is made, and the above two
 definitions seems to be enough for that purpose.
 
-
 Every W-type can be mapped to 𝕄 as follows:
 
 \begin{code}
@@ -149,10 +148,10 @@ We now show that 𝕄 is locally small assuming univalence.
 \begin{code}
 
 _≃ᴹ_ : 𝕄 → 𝕄 → 𝓤 ̇
-ssup X f ≃ᴹ ssup X' f' = Σ 𝕗 ꞉ X ≃ X' , ((x : X) → f x ≃ᴹ f' (⌜ 𝕗 ⌝ x))
+ssup X φ ≃ᴹ ssup X' φ' = Σ 𝕗 ꞉ X ≃ X' , ((x : X) → φ x ≃ᴹ φ' (⌜ 𝕗 ⌝ x))
 
 ≃ᴹ-refl : (M : 𝕄) → M ≃ᴹ M
-≃ᴹ-refl (ssup X f) = ≃-refl X , (λ x → ≃ᴹ-refl (f x))
+≃ᴹ-refl (ssup X φ) = ≃-refl X , (λ x → ≃ᴹ-refl (φ x))
 
 singleton-typeᴹ : 𝕄 → 𝓤 ⁺ ̇
 singleton-typeᴹ M = Σ t ꞉ 𝕄 , M ≃ᴹ t

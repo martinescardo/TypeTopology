@@ -10,17 +10,18 @@ open import MLTT.Spartan
 
 open import MLTT.Plus-Properties
 open import UF.Base
-open import UF.Subsingletons
 open import UF.Equiv
+open import UF.Equiv-FunExt
 open import UF.EquivalenceExamples
-open import UF.LeftCancellable
-open import UF.Yoneda
-open import UF.Retracts
 open import UF.FunExt
+open import UF.LeftCancellable
 open import UF.Lower-FunExt
+open import UF.Retracts
+open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-open import UF.Univalence
 open import UF.UA-FunExt
+open import UF.Univalence
+open import UF.Yoneda
 
 is-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 is-embedding f = each-fiber-of f is-prop
@@ -328,11 +329,11 @@ factor-is-embedding {𝓤} {𝓥} {𝓦} {X} {Y} {Z} f g i j = γ
   γ : is-embedding f
   γ = embedding-criterion' f c
 
-embedding-exponential : FunExt
-                      → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } (f : X → Y)
-                      → is-embedding f
-                      → is-embedding (λ (φ : A → X) → f ∘ φ)
-embedding-exponential {𝓤} {𝓥} {𝓦} fe {X} {Y} {A} f i = γ
+precomp-is-embedding : FunExt
+                     → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } (f : X → Y)
+                     → is-embedding f
+                     → is-embedding (λ (φ : A → X) → f ∘ φ)
+precomp-is-embedding {𝓤} {𝓥} {𝓦} fe {X} {Y} {A} f i = γ
  where
   g : (φ φ' : A → X) (a : A) → (φ a ＝ φ' a) ≃ (f (φ a) ＝ f (φ' a))
   g φ φ' a = ap f {φ a} {φ' a} , embedding-gives-embedding' f i (φ a) (φ' a)
@@ -510,6 +511,34 @@ embedding-into-prop i (f , e) x y = d
 
    d : x ＝ y
    d = inverse a b c
+
+\end{code}
+
+Added by Martin Escardo 12th July 2023.
+
+Assuming univalence, the canonical map of X = Y into X → Y is an
+embedding.
+
+\begin{code}
+
+idtofun-is-embedding : is-univalent 𝓤
+                     → {X Y : 𝓤 ̇ } → is-embedding (idtofun X Y)
+idtofun-is-embedding ua {X} {Y} =
+ ∘-is-embedding
+  (equivs-are-embeddings (idtoeq X Y) (ua X Y))
+  (pr₁-is-embedding (being-equiv-is-prop'' (univalence-gives-funext ua)))
+ where
+  remark : pr₁ ∘ idtoeq X Y ＝ idtofun X Y
+  remark = refl
+
+Idtofun-is-embedding : is-univalent 𝓤
+                     → funext (𝓤 ⁺) 𝓤
+                     → {X Y : 𝓤 ̇ } → is-embedding (Idtofun {𝓤} {X} {Y})
+Idtofun-is-embedding ua fe {X} {Y} =
+ transport
+  is-embedding
+  (dfunext fe (idtofun-agreement X Y))
+  (idtofun-is-embedding ua)
 
 \end{code}
 

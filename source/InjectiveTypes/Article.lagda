@@ -1311,7 +1311,7 @@ ainjective-retract-sub {𝓤} {𝓣} R A φ X β i = ainjective-retract-of-subty
   k = j ∘_
 
   b : is-embedding k
-  b = embedding-exponential fe j a
+  b = precomp-is-embedding fe j a
 
   l : X → (X → Σ A)
   l x x' = (x ＝ x') , β x x'
