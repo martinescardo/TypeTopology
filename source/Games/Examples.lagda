@@ -57,7 +57,7 @@ module search (fe : Fun-Ext) where
  εs (succ n) = ε₂ :: λ _ → εs n
 
  ε : (n : ℕ) → J (Path (h n))
- ε n = J-sequence (εs n)
+ ε n = sequenceᴶ (εs n)
 
  qq : (n : ℕ) → Path (h n) → Bool
  qq 0        ⟨⟩        = true

@@ -94,8 +94,8 @@ but using our tree representation of games instead:
 
 \begin{code}
 
-K-sequence : {Xt : 𝕋} → 𝓚 Xt → K (Path Xt)
-K-sequence = path-sequence (𝕂 R)
+sequenceᴷ : {Xt : 𝕋} → 𝓚 Xt → K (Path Xt)
+sequenceᴷ = path-sequence (𝕂 R)
 
 \end{code}
 
@@ -126,7 +126,7 @@ quantifiers applied to the outcome function (Theorem 3.1 of [1]).
 \begin{code}
 
 optimal-outcome : Game → R
-optimal-outcome (game Xt q ϕt) = K-sequence ϕt q
+optimal-outcome (game Xt q ϕt) = sequenceᴷ ϕt q
 
 \end{code}
 
@@ -246,19 +246,19 @@ The following is Theorem 3.1 of reference [1].
 sgpe-lemma : Fun-Ext
            → (Xt : 𝕋) (ϕt : 𝓚 Xt) (q : Path Xt → R) (σ : Strategy Xt)
            → is-sgpe ϕt q σ
-           → q (strategic-path σ) ＝ K-sequence ϕt q
+           → q (strategic-path σ) ＝ sequenceᴷ ϕt q
 sgpe-lemma fe []       ⟨⟩        q ⟨⟩        ⟨⟩       = refl
 sgpe-lemma fe (X ∷ Xf) (ϕ :: ϕt) q (a :: σf) (h :: t) = γ
  where
   observation-t : type-of t ＝ ((x : X) → is-sgpe (ϕt x) (sub q x) (σf x))
   observation-t = refl
 
-  IH : (x : X) → sub q x (strategic-path (σf x)) ＝ K-sequence (ϕt x) (sub q x)
+  IH : (x : X) → sub q x (strategic-path (σf x)) ＝ sequenceᴷ (ϕt x) (sub q x)
   IH x = sgpe-lemma fe (Xf x) (ϕt x) (sub q x) (σf x) (t x)
 
   γ = sub q a (strategic-path (σf a))           ＝⟨ h ⟩
       ϕ (λ x → sub q x (strategic-path (σf x))) ＝⟨ ap ϕ (dfunext fe IH) ⟩
-      ϕ (λ x → K-sequence (ϕt x) (sub q x))     ∎
+      ϕ (λ x → sequenceᴷ (ϕt x) (sub q x))      ∎
 
 \end{code}
 
@@ -286,16 +286,14 @@ in another module.
 𝓙 : 𝕋 → Type
 𝓙 = structure J
 
-remark-𝓙-[] : 𝓙 [] ＝ 𝟙
-remark-𝓙-[] = refl
-
-remark-𝓙-∷ : (X : Type) (Xf : X → 𝕋)
-           → 𝓙 (X ∷ Xf) ＝ J X × ((x : X) → 𝓙 (Xf x))
-remark-𝓙-∷ X Xf = refl
+remark-𝓙 : {X : Type} {Xf : X → 𝕋}
+         → (𝓙 [] ＝ 𝟙)
+         × (𝓙 (X ∷ Xf) ＝ J X × ((x : X) → 𝓙 (Xf x)))
+remark-𝓙 = refl , refl
 
 \end{code}
 
-* ε ranges over the type J X of selection functions.
+ * ε ranges over the type J X of selection functions.
  * εt ranges over the type 𝓙 Xt of selection-function trees.
  * εf ranges over the type (x : X) → 𝓙 (Xf x) of selection-function forests.
 
@@ -304,8 +302,8 @@ reference [1], but using our tree representation of games instead:
 
 \begin{code}
 
-J-sequence : {Xt : 𝕋} → 𝓙 Xt → J (Path Xt)
-J-sequence = path-sequence (𝕁 R)
+sequenceᴶ : {Xt : 𝕋} → 𝓙 Xt → J (Path Xt)
+sequenceᴶ = path-sequence (𝕁 R)
 
 \end{code}
 
@@ -320,7 +318,7 @@ selection-strategy {[]}     ⟨⟩           q = ⟨⟩
 selection-strategy {X ∷ Xf} εt@(ε :: εf) q = x₀ :: σf
  where
   x₀ : X
-  x₀ = path-head (J-sequence εt q)
+  x₀ = path-head (sequenceᴶ εt q)
 
   σf : (x : X) → Strategy (Xf x)
   σf x = selection-strategy {Xf x} (εf x) (sub q x)
@@ -399,18 +397,18 @@ then εt are selections of ϕt, but we don't need this fact here.
 
 main-lemma : {Xt : 𝕋} (εt : 𝓙 Xt) (q : Path Xt → R)
            → strategic-path (selection-strategy εt q)
-           ＝ J-sequence εt q
+           ＝ sequenceᴶ εt q
 main-lemma {[]}     ⟨⟩           q = refl
 main-lemma {X ∷ Xf} εt@(ε :: εf) q =
  strategic-path (selection-strategy (ε :: εf) q) ＝⟨ refl ⟩
  x₀ :: strategic-path (σf x₀)                    ＝⟨ ap (x₀ ::_) IH ⟩
- x₀ :: J-sequence {Xf x₀} (εf x₀) (sub q x₀)     ＝⟨ refl ⟩
+ x₀ :: sequenceᴶ {Xf x₀} (εf x₀) (sub q x₀)      ＝⟨ refl ⟩
  x₀ :: ν x₀                                      ＝⟨ refl ⟩
- (ε ⊗ᴶ (λ x → J-sequence {Xf x} (εf x))) q       ＝⟨ refl ⟩
- J-sequence (ε :: εf) q                          ∎
+ (ε ⊗ᴶ (λ x → sequenceᴶ {Xf x} (εf x))) q        ＝⟨ refl ⟩
+ sequenceᴶ (ε :: εf) q                           ∎
  where
   ν : (x : X) → Path (Xf x)
-  ν x = J-sequence {Xf x} (εf x) (sub q x)
+  ν x = sequenceᴶ {Xf x} (εf x) (sub q x)
 
   x₀ : X
   x₀ = ε (λ x → sub q x (ν x))
@@ -418,7 +416,7 @@ main-lemma {X ∷ Xf} εt@(ε :: εf) q =
   σf : (x : X) → Strategy (Xf x)
   σf x = selection-strategy {Xf x} (εf x) (sub q x)
 
-  IH : strategic-path (σf x₀) ＝ J-sequence {Xf x₀} (εf x₀) (sub q x₀)
+  IH : strategic-path (σf x₀) ＝ sequenceᴶ {Xf x₀} (εf x₀) (sub q x₀)
   IH = main-lemma (εf x₀) (sub q x₀)
 
 selection-strategy-lemma : Fun-Ext
@@ -431,10 +429,10 @@ selection-strategy-lemma fe {X ∷ Xf} εt@(ε :: εf) q = γ
   σf x = selection-strategy (εf x) (sub q x)
 
   x₀ x₁ : X
-  x₀ = ε (λ x → sub q x (J-sequence (εf x) (sub q x)))
+  x₀ = ε (λ x → sub q x (sequenceᴶ (εf x) (sub q x)))
   x₁ = ε (λ x → sub q x (strategic-path (σf x)))
 
-  I : (x : X) → strategic-path (σf x) ＝ J-sequence (εf x) (sub q x)
+  I : (x : X) → strategic-path (σf x) ＝ sequenceᴶ (εf x) (sub q x)
   I x = main-lemma (εf x) (sub q x)
 
   II : x₁ ＝ x₀
@@ -495,9 +493,9 @@ Added 27th August 2023 after the above was submitted for publication.
 selection-strategy-corollary : Fun-Ext
                              → (G : Game) (εt : 𝓙 (Xt G))
                              → εt Attains (ϕt G)
-                             → q G (J-sequence εt (q G)) ＝ optimal-outcome G
+                             → q G (sequenceᴶ εt (q G)) ＝ optimal-outcome G
 selection-strategy-corollary fe G εt a =
- q G (J-sequence εt (q G))                          ＝⟨ I ⟩
+ q G (sequenceᴶ εt (q G))                           ＝⟨ I ⟩
  q G (strategic-path (selection-strategy εt (q G))) ＝⟨ II ⟩
  optimal-outcome G                                  ∎
   where

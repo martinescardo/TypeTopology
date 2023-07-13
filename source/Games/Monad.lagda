@@ -64,6 +64,73 @@ syntax tensor 𝓣 t f = t ⊗[ 𝓣 ] f
     → x ⊗[ 𝕀𝕕 ] f ＝ x , f x
 𝕀𝕕⊗ x f = refl
 
+\end{code}
+
+We we want to call a monad (literally) T, then we can use the
+following module:
+
+\begin{code}
+
+module T-definitions (𝓣 : Monad) where
+
+ T : Type → Type
+ T = functor 𝓣
+
+ ηᵀ : {X : Type} → X → T X
+ ηᵀ = η 𝓣
+
+ extᵀ : {X Y : Type} → (X → T Y) → T X → T Y
+ extᵀ = ext 𝓣
+
+ extᵀ-η : {X : Type} → extᵀ (ηᵀ {X}) ∼ 𝑖𝑑 (T X)
+ extᵀ-η = ext-η 𝓣
+
+ unitᵀ : {X Y : Type} (f : X → T Y) → extᵀ f ∘ ηᵀ ∼ f
+ unitᵀ = unit 𝓣
+
+ assocᵀ : {X Y Z : Type} (g : Y → T Z) (f : X → T Y)
+        → extᵀ (extᵀ g ∘ f) ∼ extᵀ g ∘ extᵀ f
+ assocᵀ = assoc 𝓣
+
+ mapᵀ : {X Y : Type} → (X → Y) → T X → T Y
+ mapᵀ = map 𝓣
+
+ μᵀ : {X : Type} → T (T X) → T X
+ μᵀ = μ 𝓣
+
+ _⊗ᵀ_ : {X : Type} {Y : X → Type}
+      → T X
+      → ((x : X) → T (Y x))
+      → T (Σ x ꞉ X , Y x)
+ _⊗ᵀ_ = _⊗_ 𝓣
+
+\end{code}
+
+For some results, we need our monad to satisfy the condition
+extᵀ-const defined below. Ohad Kammar pointed out to us that this
+condition is equivalent to the monad being affine. We include his
+proof here.
+
+References given by Ohad Kammar and Alex Simpson:
+
+[1] Anders Kock, Bilinearity and Cartesian closed monads,
+Math. Stand. 29 (1971) 161-174.
+https://users-math.au.dk/kock/BCCM.pdf
+
+[2]
+https://www.denotational.co.uk/publications/kammar-plotkin-algebraic-foundations-for-effect-dependent-optimisations.pdf
+
+[3] https://www.denotational.co.uk/publications/kammar-ohad-thesis.pdf
+
+[4] Gavin Wraith mentions affine theories in his lecture notes form
+1969 (Prop. 3.5 here:
+https://www.denotational.co.uk/scans/wraith-algebraic-theories.pdf)
+
+[5] Bart Jacobs' "Semantics of weakening and contraction".
+https://doi.org/10.1016/0168-0072(94)90020-5
+
+\begin{code}
+
 module _ (T : Monad) where
 
  is-affine : Type
@@ -76,23 +143,26 @@ module _ (T : Monad) where
  ext-const : Type₁
  ext-const = {X : Type} → ext-const' X
 
- Kammars-Lemma₁ : Fun-Ext → is-affine → ext-const' 𝟙
- Kammars-Lemma₁ fe a {Y} u t = γ
+ affine-gives-ext-const' : Fun-Ext → is-affine → ext-const' 𝟙
+ affine-gives-ext-const' fe a {Y} u t = γ
   where
    f = λ (x : 𝟙) → u
 
    I : f ∘ inverse (η T {𝟙}) a ∼ ext T f
-   I s = (f ∘ inverse (η T) a) s           ＝⟨ (unit T f (inverse (η T) a s))⁻¹ ⟩
-         ext T f (η T (inverse (η T) a s)) ＝⟨ ap (ext T f) (inverses-are-sections (η T) a s) ⟩
+   I s = (f ∘ inverse (η T) a) s           ＝⟨ I₀ ⟩
+         ext T f (η T (inverse (η T) a s)) ＝⟨ I₁ ⟩
          ext T f s                         ∎
+    where
+     I₀ = (unit T f (inverse (η T) a s))⁻¹
+     I₁ = ap (ext T f) (inverses-are-sections (η T) a s)
 
    γ : ext T f t ＝ u
    γ = ext T f t                   ＝⟨ (ap (λ - → - t) (dfunext fe I))⁻¹ ⟩
        (f ∘ inverse (η T {𝟙}) a) t ＝⟨ refl ⟩
        u                           ∎
 
- Kammars-Lemma₂ : Fun-Ext → is-affine → ext-const
- Kammars-Lemma₂ fe a {X} {Y} u t = γ
+ affine-gives-ext-const : Fun-Ext → is-affine → ext-const
+ affine-gives-ext-const fe a {X} {Y} u t = γ
   where
    g : X → functor T Y
    g _ = u
@@ -107,7 +177,7 @@ module _ (T : Monad) where
    k = η T {𝟙} ∘ unique-to-𝟙
 
    I : ext T h ＝ f
-   I = dfunext fe (Kammars-Lemma₁ fe a u)
+   I = dfunext fe (affine-gives-ext-const' fe a u)
 
    γ = ext T g t             ＝⟨ refl ⟩
        ext T (f ∘ k) t       ＝⟨ ap (λ - → ext T (- ∘ k) t) (I ⁻¹) ⟩
@@ -116,9 +186,8 @@ module _ (T : Monad) where
        f (ext T k t)         ＝⟨ refl ⟩
        u                     ∎
 
- Kammars-Lemma-converse : ext-const
-                        → is-affine
- Kammars-Lemma-converse ϕ = γ
+ ext-const-gives-affine : ext-const → is-affine
+ ext-const-gives-affine ϕ = γ
   where
    η⁻¹ : functor T 𝟙 → 𝟙
    η⁻¹ t = ⋆
@@ -136,6 +205,12 @@ module _ (T : Monad) where
    γ : is-equiv (η T {𝟙})
    γ = qinvs-are-equivs (η T) (η⁻¹ , I , II)
 
+\end{code}
+
+Monad algebras.
+
+\begin{code}
+
 record Algebra (T : Monad) (A : Type) : Type₁ where
  field
   structure-map : functor T A → A
@@ -146,4 +221,28 @@ open Algebra public
 
 \end{code}
 
-TODO. Define monad morphism.
+If we want to call an algebra (literally) α, we can used this module:
+
+\begin{code}
+
+module α-definitions
+        (𝓣 : Monad)
+        (R : Type)
+        (𝓐 : Algebra 𝓣 R)
+       where
+
+ open T-definitions 𝓣
+
+ α : T R → R
+ α = structure-map 𝓐
+
+ α-unitᵀ : α ∘ ηᵀ ∼ id
+ α-unitᵀ = unit 𝓐
+
+ α-assocᵀ : α ∘ extᵀ (ηᵀ ∘ α) ∼ α ∘ extᵀ id
+ α-assocᵀ = assoc 𝓐
+
+\end{code}
+
+TODO. Define monad morphism (for example overline is a monad morphism
+from J to K).

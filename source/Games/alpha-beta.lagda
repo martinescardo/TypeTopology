@@ -172,7 +172,7 @@ quantifiers in an alternating fashion.
  G-strategy = selection-strategy R G-selections q
 
  optimal-play : Path Xt
- optimal-play = J-sequence R G-selections q
+ optimal-play = sequenceᴶ R G-selections q
 
 \end{code}
 
@@ -250,7 +250,7 @@ reader monad, to speed-up the computation of the optimal play.
   ρ : T R → R
   ρ = structure-map 𝓡
 
-  open import Games.FiniteHistoryDependentMonadic
+  open import Games.FiniteHistoryDependentTransformer
                fe
                (Reader AB)
                R
@@ -273,7 +273,7 @@ reader monad, to speed-up the computation of the optimal play.
   G-selections† = argmaxmin† Xt Xt-is-listed⁺
 
   optimal-play† : Path Xt
-  optimal-play† = JT-sequence G-selections† q† (-∞ , ∞)
+  optimal-play† = sequenceᴶᵀ G-selections† q† (-∞ , ∞)
 
 \end{code}
 
@@ -406,7 +406,7 @@ module minimax'
 
   theorem' : optimal-outcome R' G'
            ＝ (K-sequence R (maxmin Xt Xt-is-listed⁺) q ,
-              J-sequence R (argmaxmin Xt Xt-is-listed⁺) q)
+              sequenceᴶ R (argmaxmin Xt Xt-is-listed⁺) q)
   theorem' = {!!}
 -}
 
