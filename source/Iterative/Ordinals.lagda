@@ -551,25 +551,6 @@ isolated:
 
 \begin{code}
 
-𝕄-ssup-is-h-isolated : (X : 𝓤 ̇ ) (φ : X → 𝕄)
-                     → is-embedding φ
-                     → (M : 𝕄) → is-prop (M ＝ ssup X φ)
-𝕄-ssup-is-h-isolated X φ φ-emb (ssup Y γ) = III
- where
-  I = (ssup Y γ ＝ ssup X φ)              ≃⟨ 𝕄-＝ ⟩
-      (Σ p ꞉ Y ＝ X , γ ＝ φ ∘ Idtofun p) ≃⟨ Σ-cong (λ p → ＝-flip) ⟩
-      (Σ p ꞉ Y ＝ X , φ ∘ Idtofun p ＝ γ) ≃⟨ ≃-refl _ ⟩
-      fiber (λ p → φ ∘ Idtofun p) γ       ≃⟨ ≃-refl _ ⟩
-      fiber ((φ ∘_) ∘ Idtofun) γ          ■
-
-  II : is-embedding ((φ ∘_) ∘ Idtofun)
-  II = ∘-is-embedding
-        (Idtofun-is-embedding (ua 𝓤) fe)
-        (precomp-is-embedding fe' φ φ-emb)
-
-  III : is-prop (ssup Y γ ＝ ssup X φ)
-  III = equiv-to-prop I (II γ)
-
 Ord-to-𝕄-lc : (α β : Ordinal 𝓤) → Ord-to-𝕄 α ＝ Ord-to-𝕄 β → α ＝ β
 Ord-to-𝕄-lc = transfinite-induction-on-OO _ f
  where
@@ -615,7 +596,7 @@ Ord-to-𝕄-lc = transfinite-induction-on-OO _ f
 Ord-to-𝕄-is-iterative-set : (α : Ordinal 𝓤) → is-iterative-set (Ord-to-𝕄 α)
 Ord-to-𝕄-is-iterative-set = transfinite-induction-on-OO _ f
  where
-  f :  (α : Ordinal 𝓤)
+  f : (α : Ordinal 𝓤)
     → ((x : ⟨ α ⟩) → is-iterative-set (Ord-to-𝕄 (α ↓ x)))
     → is-iterative-set (Ord-to-𝕄 α)
   f α g = transport⁻¹ is-iterative-set (Ord-to-𝕄-behaviour α) I

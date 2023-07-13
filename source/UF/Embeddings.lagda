@@ -239,6 +239,15 @@ pr₁-is-embedding f x ((x , y') , refl) ((x , y'') , refl) = g
   g : (x , y') , refl ＝ (x , y'') , refl
   g = ap (λ - → (x , -) , refl) (f x y' y'')
 
+
+to-subtype-＝-≃ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
+                → ((x : X) → is-prop (A x))
+                → {x y : X} {a : A x} {b : A y}
+                → (x ＝ y) ≃ ((x , a) ＝ (y , b))
+to-subtype-＝-≃ A-is-prop-valued {x} {y} {a} {b} =
+ embedding-criterion-converse pr₁ (pr₁-is-embedding A-is-prop-valued) (x , a) (y , b)
+
+
 pr₁-lc-bis : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
            → ({x : X} → is-prop (Y x))
            → left-cancellable pr₁

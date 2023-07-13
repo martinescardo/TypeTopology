@@ -185,8 +185,45 @@ It follows that 𝕍 is a set, or 0-type, in the sense of the HoTT book:
 
 𝕍-is-set : is-set 𝕍
 𝕍-is-set = extensionally-ordered-types-are-sets _∈_ fe'
-            ∈-is-prop-valued
-            ∈-is-extensional
+             ∈-is-prop-valued
+             ∈-is-extensional
+
+\end{code}
+
+Here is a second, more direct, proof:
+
+\begin{code}
+
+𝕄-ssup-is-h-isolated : (X : 𝓤 ̇ ) (φ : X → 𝕄)
+                     → is-embedding φ
+                     → (M : 𝕄) → is-prop (M ＝ ssup X φ)
+𝕄-ssup-is-h-isolated X φ φ-emb M = II
+ where
+  I : is-embedding ((φ ∘_) ∘ Idtofun {𝓤} {𝕄-root M} {X})
+  I = ∘-is-embedding
+       (Idtofun-is-embedding (ua 𝓤) fe)
+       (precomp-is-embedding fe' φ φ-emb)
+
+  II : is-prop (M ＝ ssup X φ)
+  II = equiv-to-prop (𝕄-＝' M (ssup X φ)) (I (𝕄-forest M))
+
+isets-are-h-isolated : (M N : 𝕄)
+                     → is-iterative-set N
+                     → is-prop (M ＝ N)
+isets-are-h-isolated M (ssup X φ) (φ-emb , _) = 𝕄-ssup-is-h-isolated X φ φ-emb M
+
+𝕍-is-set' : is-set 𝕍
+𝕍-is-set' {M , _} {N , N-is-iset} =
+ equiv-to-prop
+  (≃-sym (to-subtype-＝-≃ being-iset-is-prop))
+  (isets-are-h-isolated M N N-is-iset)
+
+\end{code}
+
+We will have an opportunity use again the above two lemmas, when
+discussing ordinals.
+
+\begin{code}
 
 𝕍-root : 𝕍 → 𝓤 ̇
 𝕍-root (ssup X φ , _) = X
