@@ -58,6 +58,12 @@ syntax tensor 𝓣 t f = t ⊗[ 𝓣 ] f
       assoc   = λ g f x → refl
      }
 
+𝕀𝕕⊗ : {X : Type} {Y : X → Type}
+      (x : X)
+      (f : (x : X) → (Y x))
+    → x ⊗[ 𝕀𝕕 ] f ＝ x , f x
+𝕀𝕕⊗ x f = refl
+
 module _ (T : Monad) where
 
  is-affine : Type
