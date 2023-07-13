@@ -1,5 +1,8 @@
 Martin Escardo, Paulo Oliva, 2-27 July 2021
 
+A paper based on this file is available at
+https://doi.org/10.48550/arXiv.2212.07735
+
 We study finite, history dependent games of perfect information using
 selection functions and dependent-type trees.
 
@@ -74,12 +77,10 @@ quantifiers over X.
 𝓚 : 𝕋 → Type
 𝓚 = structure K
 
-remark-𝓚-[] : 𝓚 [] ＝ 𝟙
-remark-𝓚-[] = refl
-
-remark-𝓚-∷ : (X : Type) (Xf : X → 𝕋)
-           → 𝓚 (X ∷ Xf) ＝ K X × ((x : X) → 𝓚 (Xf x))
-remark-𝓚-∷ X Xf = refl
+remark-𝓚 : {X : Type} {Xf : X → 𝕋}
+         → (𝓚 []       ＝ 𝟙)
+         × (𝓚 (X ∷ Xf) ＝ K X × ((x : X) → 𝓚 (Xf x)))
+remark-𝓚 = refl , refl
 
 \end{code}
 
@@ -128,7 +129,6 @@ optimal-outcome : Game → R
 optimal-outcome (game Xt q ϕt) = K-sequence ϕt q
 
 \end{code}
-
 
 A strategy assigns a move to each mode of a tree. This corresponds to
 Definition 4 of [1]:
