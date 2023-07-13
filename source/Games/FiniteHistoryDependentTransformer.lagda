@@ -45,7 +45,7 @@ open import UF.Base
 open import UF.FunExt
 
 
-module Games.FiniteHistoryDependentMonadic
+module Games.FiniteHistoryDependent
         (fe : Fun-Ext)
         (𝓣  : Monad)
         (R  : Type)
