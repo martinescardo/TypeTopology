@@ -1,4 +1,4 @@
-\begin{code}
+```agda
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
@@ -45,4 +45,4 @@ _≈ⁿ_ : {X : ℕ → 𝓤 ̇ } → Π X → Π X → ℕ → 𝓤 ̇
 {- _≈ⁿ_ : {d : ℕ} {Y : Fin' (succ d) → 𝓤 ̇ } → Π Y → Π Y → Fin' (succ d) → 𝓤  ̇
 _≈ⁿ_ {𝓤} {d} α β n = (i : Fin' (succ d)) → pr₁ i < pr₁ n → α i ＝ β i
 -}
-\end{code}
+```

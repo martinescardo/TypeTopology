@@ -1,4 +1,4 @@
-\begin{code}
+```agda
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
@@ -295,4 +295,4 @@ sigma-witness→inv p q f x y n
  ∘ (sigma→vector-witness p x y n)
 
 
-\end{code}
+```

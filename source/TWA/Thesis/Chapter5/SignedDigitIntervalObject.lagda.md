@@ -1,5 +1,4 @@
-{-# OPTIONS --without-K --exact-split --safe #-}
-
+```agda
 open import MLTT.Spartan
 open import UF.FunExt
 open import Naturals.Addition renaming (_+_ to _+ℕ_)
@@ -59,12 +58,6 @@ map-realiser : (f : 𝟛 → 𝟛) (f' : 𝕀 → 𝕀)
              → (map f) realises¹ f'
 map-realiser f f' f→ f⊕ α = ⊕-homs-are-M-homs f' f⊕ (map ⟨_⟩ α)
                           ∙ ap M (dfunext (fe 𝓤₀ 𝓦) (λ i → f→ (α i)))
-
-map-realiser²' : (f : 𝟛 → 𝟛ᴺ → 𝟛ᴺ) (f' : 𝕀 → 𝕀 → 𝕀)
-              → f realises' f'
-              → ((a : 𝟛) → is-⊕-homomorphism fe 𝓘 𝓘 (f' ⟨ a ⟩))
-              → (λ α β → {!zipWith!}) realises² {!!}
-map-realiser²' f f' f→ f⊕ α β = {!!}
 
 map-realiser² : (f : 𝟛 → 𝟛ᴺ → 𝟛ᴺ) (f' : 𝕀 → 𝕀 → 𝕀)
               → f realises' f'
@@ -644,3 +637,4 @@ mul-realiser α β = M-realiser (zipWith digitMul α (λ _ → β)) ⁻¹
                      (λ a → *-is-⊕-homomorphism-l ⟨ a ⟩) α β
                  ∙ ⊕-homs-are-M-homs (_* ⟪ β ⟫) (*-is-⊕-homomorphism-r ⟪ β ⟫)
                      (map ⟨_⟩ α) ⁻¹
+```

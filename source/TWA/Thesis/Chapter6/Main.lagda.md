@@ -1,5 +1,4 @@
-\begin{code}
-
+```agda
 {-# OPTIONS --without-K --exact-split #-}
 
 open import UF.FunExt
@@ -8,13 +7,16 @@ open import Integers.Type
 open import MLTT.Spartan
 open import Unsafe.Haskell
 open import TWA.Thesis.Chapter5.SignedDigit
+open import TWA.Thesis.Chapter2.Vectors hiding (_+++_)
 
 module TWA.Thesis.Chapter6.Main where
 
 postulate fe : FunExt
 postulate pe : PropExt
 
-open import TWA.Thesis.Chapter6.SignedDigitSearch fe pe
+open import TWA.Thesis.Chapter6.SignedDigitExamples fe pe
+
+𝟚ᴺ = ℕ → 𝟚
 
 𝟛-to-ℤ : 𝟛 → ℤ
 𝟛-to-ℤ −1 = negsucc 0
@@ -24,6 +26,11 @@ open import TWA.Thesis.Chapter6.SignedDigitSearch fe pe
 show𝟛 : 𝟛 → String
 show𝟛 = showℤ ∘ 𝟛-to-ℤ
 
+show𝟚ᴺ-prefix : (ℕ → 𝟚) → ℕ → String
+show𝟚ᴺ-prefix x 0 = ""
+show𝟚ᴺ-prefix x (succ n)
+ = show𝟛 (𝟚→𝟛 (x 0)) +++ "," +++ show𝟚ᴺ-prefix (x ∘ succ) n
+
 show𝟛ᴺ-prefix : 𝟛ᴺ → ℕ → String
 show𝟛ᴺ-prefix x 0 = ""
 show𝟛ᴺ-prefix x (succ n)
@@ -31,26 +38,29 @@ show𝟛ᴺ-prefix x (succ n)
 
 show𝟛ᴺ×𝟛ᴺ-prefix : 𝟛ᴺ × 𝟛ᴺ → ℕ → String
 show𝟛ᴺ×𝟛ᴺ-prefix (x , y) n
- = show𝟛ᴺ-prefix x n +++ " ; " +++ show𝟛ᴺ-prefix y n
+ = show𝟛ᴺ-prefix x n +++ " ;\n" +++ show𝟛ᴺ-prefix y n
 
-module _ where
+show𝟚ᴺ×𝟚ᴺ-prefix : 𝟚ᴺ × 𝟚ᴺ → ℕ → String
+show𝟚ᴺ×𝟚ᴺ-prefix (x , y) n
+ = show𝟚ᴺ-prefix x n +++ " ;\n" +++ show𝟚ᴺ-prefix y n
 
- open Search-Example3
 
- search-example-ty : ℕ → 𝟛ᴺ × 𝟛ᴺ
- search-example-ty = search-test₂
+open Regression-Example1a
 
 main : IO Unit
-main = putStrLn (show𝟛ᴺ×𝟛ᴺ-prefix
-             (search-example-ty 10)
-             30)
-
+main = putStrLn (show𝟚ᴺ-prefix (opt𝓞 12) 30
+     --       +++ "\n" +++ show𝟚ᴺ-prefix (example' 2) 30
+       --   +++ "\n" +++ show𝟚ᴺ-prefix (example' 3) 30
+         -- +++ "\n" +++ show𝟚ᴺ-prefix (example' 4) 30
+       --   +++ "\n" +++ show𝟚ᴺ-prefix (example' 5) 30
+           )
+            --  ++ show𝟚ᴺ-prefix (example2 
 
 
 
 -- putStrLn (show𝟛ᴺ-prefix (preg-test-eq fe 6 (1/3 fe)) 50)
 
-\end{code}
+```
 
 Optimisation example 1 : Minimise neg to 8 degrees of precision
 More complex examples get stack overflow or take too long :(
@@ -76,4 +86,3 @@ Regression example 3  : Line of best fit the points (-1,-1), (O,O), (1,-1)
  [Interpolated]
 
 Regression example 4  : 
-

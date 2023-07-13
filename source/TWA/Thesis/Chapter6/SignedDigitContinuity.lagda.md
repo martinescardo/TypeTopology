@@ -1,3 +1,4 @@
+```agda
 {-# OPTIONS --without-K --exact-split --safe #-}
 
 open import MLTT.Spartan
@@ -196,3 +197,4 @@ mul-b-ucontinuous
      𝟛-is-discrete 𝟛-is-discrete
      (λ x → mul x x)
      (seq-f-ucontinuous²-both mul mul-ucontinuous')
+```

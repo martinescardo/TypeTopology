@@ -1,4 +1,4 @@
-\begin{code}
+```agda
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
@@ -98,6 +98,9 @@ s⟨ (X , c , e , i , s , u) ⟩ = s
 u⟨_⟩ : (X : ClosenessSpace 𝓤)
      → is-ultra c⟨ X ⟩
 u⟨ (X , c , e , i , s , u) ⟩ = u
+
+c'⟨_⟩ : (X : PseudoClosenessSpace 𝓤) → ⟪ X ⟫ → ⟪ X ⟫ → ℕ∞
+c'⟨ (X , c , _) ⟩ = c
 
 C' : (X : PseudoClosenessSpace 𝓤) → ℕ → ⟪ X ⟫ → ⟪ X ⟫ → 𝓤₀ ̇   
 C' (X , c , _) n x y = (n ↑) ≼ c x y
@@ -262,4 +265,4 @@ X' is ϵ net-of X
 totally-bounded : ClosenessSpace 𝓤 → (𝓤' : Universe) → 𝓤 ⊔ (𝓤' ⁺)  ̇ 
 totally-bounded X 𝓤' = (ϵ : ℕ) → Σ X' ꞉ 𝓤' ̇ , X' is ϵ net-of X
 
-\end{code}
+```

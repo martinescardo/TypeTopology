@@ -1,5 +1,4 @@
-{-# OPTIONS --without-K --exact-split --safe #-}
-
+```agda
 open import MLTT.Spartan
 
 open import UF.FunExt
@@ -226,3 +225,4 @@ fg-approx-holds {_} {X} f g h x
   γ : (x : X) → Π (n-approx' (f x) (g x))
   γ x 0 = (g x 0 , f x 0) , ⊕-comm _ _
   γ x (succ n) = h n (λ y → γ y n) x
+```

@@ -1,4 +1,4 @@
-\begin{code}
+```agda
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
@@ -126,17 +126,18 @@ inclusion-approx-order f _≤ⁿ_ x y = f x ≤ⁿ f y
                → Σ P → Σ P → ℕ → 𝓦  ̇ 
 Σ-approx-order P _≤ⁿ_ (x , _) (y , _) = x ≤ⁿ y
 
-Σ-approx-order-is-approx-order
+Σ-approx-order-is-approx-order-for
  : (X : ClosenessSpace 𝓤)
  → (P : ⟨ X ⟩ → 𝓥 ̇ )
  → (p : (x : ⟨ X ⟩) → is-prop (P x))
  → (_≤_ : ⟨ X ⟩ → ⟨ X ⟩ → 𝓦 ̇ )
  → (_≤ⁿ_ : ⟨ X ⟩ → ⟨ X ⟩ → ℕ → 𝓦'  ̇)
- → is-approx-order X _≤_ _≤ⁿ_
- → is-approx-order (Σ-ClosenessSpace X P p)
+ → is-approx-order-for X _≤_ _≤ⁿ_
+ → is-approx-order-for (Σ-ClosenessSpace X P p)
      (Σ-order P _≤_) (Σ-approx-order P _≤ⁿ_)
-Σ-approx-order-is-approx-order
- X P p _≤_ _≤ⁿ_ (pre' , lin' , d' , c' , a') = pre , lin , d , c , a
+Σ-approx-order-is-approx-order-for
+ X P p _≤_ _≤ⁿ_ (pre' , (lin' , d' , c') , a')
+  = pre , (lin , d , c) , a
  where
   pre : is-preorder (Σ-order P _≤_)
   pre = Σ-order-is-preorder P _≤_ pre'
@@ -387,20 +388,216 @@ disjoint-approx-order _≤ⁿx_ _≤ⁿy_ (inr y ) (inl x ) 0        = 𝟙
 disjoint-approx-order _≤ⁿx_ _≤ⁿy_ (inr y ) (inl x ) (succ _) = 𝟘
 disjoint-approx-order _≤ⁿx_ _≤ⁿy_ (inr y₁) (inr y₂)   = y₁ ≤ⁿy y₂
 
-disjoint-order-is-approx-order
+disjoint-order-is-approx-order-for
+ : (X : ClosenessSpace 𝓤) (Y : ClosenessSpace 𝓥)
+ → (_≤x_ : ⟨ X ⟩ → ⟨ X ⟩ → 𝓦  ̇ ) (_≤ⁿx_ : ⟨ X ⟩ → ⟨ X ⟩ → ℕ → 𝓦' ̇ )
+ → (_≤y_ : ⟨ Y ⟩ → ⟨ Y ⟩ → 𝓦  ̇ ) (_≤ⁿy_ : ⟨ Y ⟩ → ⟨ Y ⟩ → ℕ → 𝓦' ̇ )
+ → is-approx-order-for X _≤x_ _≤ⁿx_
+ → is-approx-order-for Y _≤y_ _≤ⁿy_
+ → is-approx-order-for (+-ClosenessSpace X Y)
+     (disjoint-order _≤x_ _≤y_)
+     (disjoint-approx-order _≤ⁿx_ _≤ⁿy_)
+disjoint-order-is-approx-order-for X Y _≤x_ _≤ⁿx_ _≤y_ _≤ⁿy_ ax ay
+ = disjoint-order-is-preorder _≤x_ _≤y_ (≤ⁿ-pre X ax) (≤ⁿ-pre Y ay)
+ , ((λ ϵ → (≤-refl∙ ϵ , ≤-trans∙ ϵ , ≤-prop∙ ϵ) , ≤-linear∙ ϵ)
+ , ≤-decidable∙
+ , ≤-close∙) , ≤-apart∙
+ where
+  ax' = is-approx-order-ι X _≤x_ _≤ⁿx_ ax
+  ay' = is-approx-order-ι Y _≤y_ _≤ⁿy_ ay
+  ≤-refl∙   : (ϵ : ℕ) → reflexive
+                (λ x y → disjoint-approx-order _≤ⁿx_ _≤ⁿy_ x y ϵ)
+  ≤-refl∙ ϵ (inl x) = ≤ⁿ-refl X ax' ϵ x
+  ≤-refl∙ ϵ (inr y) = ≤ⁿ-refl Y ay' ϵ y
+  ≤-trans∙  : (ϵ : ℕ) → transitive
+                (λ x y → disjoint-approx-order _≤ⁿx_ _≤ⁿy_ x y ϵ)
+  ≤-trans∙ ϵ (inl x₁) (inl x₂) (inl x₃) = ≤ⁿ-trans X ax' ϵ x₁ x₂ x₃
+  ≤-trans∙ ϵ (inl x₁) (inl x₂) (inr y ) _ _ = ⋆
+  ≤-trans∙ ϵ (inl x₁) (inr y ) (inl x₂) with ϵ
+  ... | zero   = λ _ _ → ≤ⁿ-close X ax' 0 x₁ x₂ (λ _ ())
+  ... | succ _ = λ _ ()
+  ≤-trans∙ ϵ (inl x ) (inr y₁) (inr y₂) _ _ = ⋆
+  ≤-trans∙ ϵ (inr y ) (inl x₁) (inl x₂) with ϵ
+  ... | zero = λ _ _ → ⋆
+  ... | succ _ = λ ()
+  ≤-trans∙ ϵ (inr y₁) (inl x ) (inr y₂) with ϵ
+  ... | zero = λ _ _ → ≤ⁿ-close Y ay' 0 y₁ y₂ (λ _ ())
+  ... | succ _ = λ ()
+  ≤-trans∙ ϵ (inr y₁) (inr y₂) (inl x ) with ϵ
+  ... | zero = λ _ _ → ⋆
+  ... | succ _ = λ _ ()
+  ≤-trans∙ ϵ (inr x₁) (inr x₂) (inr x₃) = ≤ⁿ-trans Y ay' ϵ x₁ x₂ x₃
+  ≤-prop∙   : (ϵ : ℕ) → is-prop-valued
+                (λ x y → disjoint-approx-order _≤ⁿx_ _≤ⁿy_ x y ϵ)
+  ≤-prop∙ ϵ (inl x₁) (inl x₂) = ≤ⁿ-prop X ax' ϵ x₁ x₂
+  ≤-prop∙ ϵ (inl x ) (inr y ) = 𝟙-is-prop
+  ≤-prop∙ ϵ (inr y ) (inl x ) with ϵ
+  ... | 0 = 𝟙-is-prop
+  ... | succ _ = 𝟘-is-prop
+  ≤-prop∙ ϵ (inr y₁) (inr y₂) = ≤ⁿ-prop Y ay' ϵ y₁ y₂
+  ≤-linear∙ : (ϵ : ℕ) → linear
+                (λ x y → disjoint-approx-order _≤ⁿx_ _≤ⁿy_ x y ϵ)
+  ≤-linear∙ ϵ (inl x₁) (inl x₂) = ≤ⁿ-linear X ax' ϵ x₁ x₂
+  ≤-linear∙ ϵ (inl x ) (inr y ) = inl ⋆
+  ≤-linear∙ ϵ (inr y ) (inl x ) = inr ⋆
+  ≤-linear∙ ϵ (inr y₁) (inr y₂) = ≤ⁿ-linear Y ay' ϵ y₁ y₂
+  ≤-decidable∙  : (ϵ : ℕ)
+                → (x y : ⟨ +-ClosenessSpace X Y ⟩)
+                → is-decidable
+                    (disjoint-approx-order _≤ⁿx_ _≤ⁿy_ x y ϵ)
+  ≤-decidable∙ ϵ (inl x₁) (inl x₂) = ≤ⁿ-decidable X ax' ϵ x₁ x₂
+  ≤-decidable∙ ϵ (inl x ) (inr y ) = inl ⋆
+  ≤-decidable∙ ϵ (inr y ) (inl x ) with ϵ
+  ... | 0 = inl ⋆
+  ... | succ _ = inr (λ ())
+  ≤-decidable∙ ϵ (inr y₁) (inr y₂) = ≤ⁿ-decidable Y ay' ϵ y₁ y₂
+  ≤-close∙  : (ϵ : ℕ) (x y : ⟨ +-ClosenessSpace X Y ⟩)
+            → C (+-ClosenessSpace X Y) ϵ x y
+            → disjoint-approx-order _≤ⁿx_ _≤ⁿy_ x y ϵ
+  ≤-close∙ ϵ (inl x₁) (inl x₂) Cx₁x₂ = ≤ⁿ-close X ax' ϵ x₁ x₂ Cx₁x₂
+  ≤-close∙ ϵ (inl x ) (inr y ) Cxy   = ⋆
+  ≤-close∙ ϵ (inr y ) (inl x ) Cxy with ϵ
+  ... | 0 = ⋆
+  ... | succ _ = 𝟘-elim (zero-is-not-one (Cxy 0 refl))
+  ≤-close∙ ϵ (inr y₁) (inr y₂) Cy₁y₂ = ≤ⁿ-close Y ay' ϵ y₁ y₂ Cy₁y₂
+  ≤-apart∙  : (ϵ : ℕ) (x y : ⟨ +-ClosenessSpace X Y ⟩)
+            → ¬ C (+-ClosenessSpace X Y) ϵ x y
+            → disjoint-approx-order _≤ⁿx_ _≤ⁿy_ x y ϵ
+            ⇔ disjoint-order _≤x_ _≤y_ x y
+  ≤-apart∙ ϵ (inl x₁) (inl x₂) ¬Cxy = ≤ⁿ-apart X ax ϵ x₁ x₂ ¬Cxy
+  ≤-apart∙ ϵ (inl x ) (inr y ) ¬Cxy = (λ _ → ⋆) , (λ _ → ⋆)
+  ≤-apart∙ ϵ (inr y ) (inl x ) ¬Cxy with ϵ
+  ... | 0 = (𝟘-elim ∘ ¬Cxy) (λ _ ())
+  ... | succ _ = (λ ()) , (λ ())
+  ≤-apart∙ ϵ (inr y₁) (inr y₂) ¬Cxy = ≤ⁿ-apart Y ay ϵ y₁ y₂ ¬Cxy
+
+-- Binary product
+{-
+product-order
+ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+ → (_≤x_ : X → X → 𝓦  ̇ )
+ → (_≤y_ : Y → Y → 𝓦  ̇ )
+ → (xy₁ xy₂ : X × Y)
+ → 𝓦 ̇
+product-order _≤x_ _≤y_ (x₁ , y₁) (x₂ , y₂) = (x₁ ≤x x₂) × (y₁ ≤y y₂)
+
+product-order-is-transitive
+ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+ → (_≤x_ : X → X → 𝓦  ̇ )
+ → (_≤y_ : Y → Y → 𝓦  ̇ )
+ → transitive _≤x_
+ → transitive _≤y_
+ → transitive (product-order _≤x_ _≤y_)
+product-order-is-transitive _≤x_ _≤y_ tx ty
+ (x₁ , y₁) (x₂ , y₂) (x₃ , y₃) (x₁≤x₂ , y₁≤y₂) (x₂≤x₃ , y₂≤y₃)
+ = (tx x₁ x₂ x₃ x₁≤x₂ x₂≤x₃) , (ty y₁ y₂ y₃ y₁≤y₂ y₂≤y₃)
+
+product-order-is-prop-valued
+ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+ → (_≤x_ : X → X → 𝓦  ̇ )
+ → (_≤y_ : Y → Y → 𝓦  ̇ )
+ → is-prop-valued _≤x_
+ → is-prop-valued _≤y_
+ → is-prop-valued (product-order _≤x_ _≤y_)
+product-order-is-prop-valued _≤x_ _≤y_ px py (x₁ , y₁) (x₂ , y₂)
+ = ×-is-prop (px x₁ x₂) (py y₁ y₂)
+
+product-order-is-preorder
+ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+ → (_≤x_ : X → X → 𝓦  ̇ )
+ → (_≤y_ : Y → Y → 𝓦  ̇ )
+ → is-preorder _≤x_
+ → is-preorder _≤y_
+ → is-preorder (product-order _≤x_ _≤y_)
+product-order-is-preorder _≤x_ _≤y_ px py
+ = ≤-refl∙
+ , product-order-is-transitive _≤x_ _≤y_ ≤-trans⟨ px ⟩ ≤-trans⟨ py ⟩
+ , product-order-is-prop-valued _≤x_ _≤y_ ≤-prop⟨ px ⟩ ≤-prop⟨ py ⟩
+ where
+  ≤-refl∙  : reflexive (product-order _≤x_ _≤y_)
+  ≤-refl∙ (x , y) = ≤-refl⟨ px ⟩ x , ≤-refl⟨ py ⟩ y
+
+binary-order-is-linear-order
+ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+ → (_≤x_ : X → X → 𝓦  ̇ )
+ → (_≤y_ : Y → Y → 𝓦  ̇ )
+ → is-linear-order _≤x_
+ → is-linear-order _≤y_
+ → is-linear-order (product-order _≤x_ _≤y_)
+binary-order-is-linear-order _≤x_ _≤y_ lx ly
+ = product-order-is-preorder _≤x_ _≤y_ ≤-pre⟨ lx ⟩ ≤-pre⟨ ly ⟩
+ , ≤-linear∙
+ where
+  ≤-linear∙ : linear (product-order _≤x_ _≤y_)
+  ≤-linear∙ (x₁ , y₁) (x₂ , y₂)
+   with ≤-linear⟨ lx ⟩ x₁ x₂ | ≤-linear⟨ ly ⟩ y₁ y₂
+  ... | inl x₁≤x₂ | inl y₁≤y₂ = inl (x₁≤x₂ , y₁≤y₂)
+  ... | inl x₁≤x₂ | inr y₂≤y₁ = inl ({!!} , {!!})
+  ... | inr x₂≤x₁ | inl y₁≤y₂ = {!!}
+  ... | inr x₂≤x₁ | inr y₂≤y₁ = inr (x₂≤x₁ , y₂≤y₁)
+
+product-order-is-strict-order
+ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+ → (_<x_ : X → X → 𝓦  ̇ )
+ → (_<y_ : Y → Y → 𝓦  ̇ )
+ → is-strict-order _<x_
+ → is-strict-order _<y_
+ → is-strict-order (product-order _<x_ _<y_)
+product-order-is-strict-order {_} {_} {_} {X} {Y} _<x_ _<y_ sx sy
+ = <-irref∙
+ , product-order-is-transitive _<x_ _<y_ <-trans⟨ sx ⟩ <-trans⟨ sy ⟩
+ , <-anti∙
+ , product-order-is-prop-valued _<x_ _<y_ <-prop⟨ sx ⟩ <-prop⟨ sy ⟩
+ where
+  <-irref∙ : (x : X × Y) → ¬ product-order _<x_ _<y_ x x
+  <-irref∙ = {!!}
+  <-anti∙  : (x y : X × Y)
+           → product-order _<x_ _<y_ x y
+           → ¬ product-order _<x_ _<y_ y x
+  <-anti∙ = {!!}
+
+product-order-is-strict-linear-order
+ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+ → (_<x_ : X → X → 𝓦  ̇ )
+ → (_<y_ : Y → Y → 𝓦  ̇ )
+ → is-strict-linear-order _<x_
+ → is-strict-linear-order _<y_
+ → is-strict-linear-order (product-order _<x_ _<y_)
+product-order-is-strict-linear-order {_} {_} {_} {X} {Y}
+ _<x_ _<y_ slx sly
+ = product-order-is-strict-order _<x_ _<y_
+     <-strict⟨ slx ⟩ <-strict⟨ sly ⟩
+ , <-trich∙
+ where
+  <-trich∙ : trichotomous (product-order _<x_ _<y_)
+  <-trich∙ = {!!}
+
+product-approx-order : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                     → (_≤ⁿx_ : X → X → ℕ → 𝓦  ̇ )
+                     → (_≤ⁿy_ : Y → Y → ℕ → 𝓦  ̇ )
+                     → (xy₁ xy₂ : (X × Y))
+                     → ℕ
+                     → {!!}  ̇
+product-approx-order = {!!}
+
+product-order-is-approx-order
  : (X : ClosenessSpace 𝓤) (Y : ClosenessSpace 𝓥)
  → (_≤x_ : ⟨ X ⟩ → ⟨ X ⟩ → 𝓦  ̇ ) (_≤ⁿx_ : ⟨ X ⟩ → ⟨ X ⟩ → ℕ → 𝓦' ̇ )
  → (_≤y_ : ⟨ Y ⟩ → ⟨ Y ⟩ → 𝓦  ̇ ) (_≤ⁿy_ : ⟨ Y ⟩ → ⟨ Y ⟩ → ℕ → 𝓦' ̇ )
  → is-approx-order X _≤x_ _≤ⁿx_
  → is-approx-order Y _≤y_ _≤ⁿy_
- → is-approx-order (+-ClosenessSpace X Y)
-     (disjoint-order _≤x_ _≤y_)
-     (disjoint-approx-order _≤ⁿx_ _≤ⁿy_)
-disjoint-order-is-approx-order X Y _≤x_ _≤ⁿx_ _≤y_ _≤ⁿy_ ax ay
- = disjoint-order-is-preorder _≤x_ _≤y_ (≤ⁿ-pre X ax) (≤ⁿ-pre Y ay)
+ → is-approx-order (×-ClosenessSpace X Y)
+     (product-order _≤x_ _≤y_)
+     (product-approx-order _≤ⁿx_ _≤ⁿy_)
+product-order-is-approx-order X Y _≤x_ _≤ⁿx_ _≤y_ _≤ⁿy_ ax ay
+ = {!!}
+-}
+
+{- product-order-is-preorder _≤x_ _≤y_ (≤ⁿ-pre X ax) (≤ⁿ-pre Y ay)
  , (λ ϵ → (≤-refl∙ ϵ , ≤-trans∙ ϵ , ≤-prop∙ ϵ) , ≤-linear∙ ϵ)
  , ≤-decidable∙
- , ≤-close∙ , ≤-apart∙
+ , ≤-close∙ , ≤-apart∙ -}
+ {-
  where
   ≤-refl∙   : (ϵ : ℕ) → reflexive
                 (λ x y → disjoint-approx-order _≤ⁿx_ _≤ⁿy_ x y ϵ)
@@ -467,7 +664,7 @@ disjoint-order-is-approx-order X Y _≤x_ _≤ⁿx_ _≤y_ _≤ⁿy_ ax ay
   ... | 0 = (𝟘-elim ∘ ¬Cxy) (λ _ ())
   ... | succ _ = (λ ()) , (λ ())
   ≤-apart∙ ϵ (inr y₁) (inr y₂) ¬Cxy = ≤ⁿ-apart Y ay ϵ y₁ y₂ ¬Cxy
-
+-}
 -- Discrete-sequences
 
 discrete-lexicorder : {D : 𝓤 ̇ }
@@ -550,20 +747,10 @@ discrete-lexicorder-is-preorder d s _<_ (i' , t' , a' , p')
             (λ (n , a∼ⁿ₀ , αn<₀) → 𝟘-elim (<₂-lemma-₁ αn<₀)))
  
 finite-lexicorder
- : {F : 𝓤 ̇ } (f : finite-discrete F) → (ℕ → F) → (ℕ → F) → 𝓤 ⊔ 𝓤₀ ̇
-finite-lexicorder f = discrete-lexicorder
-                       (finite-discrete-is-discrete f)
-                       (finite-strict-order f)
-
-finite-lexicorder-is-preorder
- : {F : 𝓤 ̇ } (f : finite-discrete F)
- → is-preorder (finite-lexicorder f)
-finite-lexicorder-is-preorder f
- = discrete-lexicorder-is-preorder
-     (finite-discrete-is-discrete f)
-     (finite-is-set f)
-     (finite-strict-order f)
-     (finite-strict-order-is-strict-order f)
+ : {F : 𝓤 ̇ } (f : finite-discrete F) (d : is-discrete F)
+ → (_<_ : F → F → 𝓦 ̇ )
+ → (ℕ → F) → (ℕ → F) → 𝓤 ⊔ 𝓦  ̇
+finite-lexicorder f d _<_ = discrete-lexicorder d _<_
 
 discrete-approx-lexicorder : {D : 𝓤 ̇ }
                            → is-discrete D
@@ -588,20 +775,20 @@ bounded-decidable {𝓤} {X} d (succ n)
         (λ i<n → ¬Σi<n (i , i<n , Xi))
         (λ i＝n → ¬Xn (transport X i＝n Xi)))))
 
-discrete-approx-lexicorder-is-approx-order
+discrete-approx-lexicorder-is-approx-order-for
  : {D : 𝓤 ̇ } (d : is-discrete D) (s : is-set D)
  → (_<_ : D → D → 𝓥 ̇ ) (s : is-strict-order _<_)
  → ((x y : D) → (x < y) + (x ＝ y) + (y < x))
- → is-approx-order
+ → is-approx-order-for
      (ℕ→D-ClosenessSpace d)
      (discrete-lexicorder d _<_)
      (discrete-approx-lexicorder d _<_)
-discrete-approx-lexicorder-is-approx-order
+discrete-approx-lexicorder-is-approx-order-for
  {𝓤} {𝓥} {D} d s _<'_ s'@(i' , t' , a' , p') l'
  = discrete-lexicorder-is-preorder d s _<'_ s'
- , (λ ϵ → (r ϵ , ((t ϵ) , (p ϵ))) , l ϵ)
+ , ((λ ϵ → (r ϵ , ((t ϵ) , (p ϵ))) , l ϵ)
  , dec
- , c
+ , c)
  , a
  where
   r : (n : ℕ)
@@ -726,31 +913,14 @@ discrete-approx-lexicorder-is-approx-order
        (λ i=n → inl (λ j j<n → x∼ⁱy j (transport (j <_) (i=n ⁻¹) j<n)))
        (λ n<i → inl (λ j j<n → x∼ⁱy j (<-trans j n i j<n n<i))))
 
-finite-approx-lexicorder : {F : 𝓤 ̇ } (f : finite-discrete F)
-                         → (ℕ → F) → (ℕ → F) → ℕ → 𝓤 ⊔ 𝓤₀ ̇
-finite-approx-lexicorder f
- = discrete-approx-lexicorder
-     (finite-discrete-is-discrete f)
-     (finite-strict-order f)
-
-finite-approx-lexicorder-is-approx-order
- : {F : 𝓤 ̇ } (f : finite-discrete F)
- → is-approx-order
-     (ℕ→D-ClosenessSpace (finite-discrete-is-discrete f))
-     (finite-lexicorder f)
-     (finite-approx-lexicorder f)
-finite-approx-lexicorder-is-approx-order f
- = discrete-approx-lexicorder-is-approx-order
-     (finite-discrete-is-discrete f)
-     (finite-is-set f)
-     (finite-strict-order f)
-     (finite-strict-order-is-strict-order f)
-     (finite-strict-order-trichotomous f)
+-- Countable product
+-- Further Work
 
 -- Specific examples
 
 ℕ→𝟚-lexicorder : (ℕ → 𝟚) → (ℕ → 𝟚) → 𝓤₀ ̇
-ℕ→𝟚-lexicorder = discrete-lexicorder 𝟚-is-discrete _<₂_
+ℕ→𝟚-lexicorder
+ = discrete-lexicorder 𝟚-is-discrete _<₂_
 
 ℕ∞-lexicorder : ℕ∞ → ℕ∞ → 𝓤₀ ̇
 ℕ∞-lexicorder = Σ-order is-decreasing ℕ→𝟚-lexicorder
@@ -794,22 +964,22 @@ pr₂ (pr₂ (pr₂ <₂-is-strict)) ₁ ₁ = 𝟘-is-prop
 ℕ→𝟚-approx-lexicorder : (ℕ → 𝟚) → (ℕ → 𝟚) → ℕ → 𝓤₀ ̇ 
 ℕ→𝟚-approx-lexicorder = discrete-approx-lexicorder 𝟚-is-discrete _<₂_
 
-ℕ→𝟚-approx-lexicorder-is-approx-order
- : is-approx-order ℕ→𝟚-ClosenessSpace ℕ→𝟚-lexicorder ℕ→𝟚-approx-lexicorder
-ℕ→𝟚-approx-lexicorder-is-approx-order
- = discrete-approx-lexicorder-is-approx-order
+ℕ→𝟚-approx-lexicorder-is-approx-order-for
+ : is-approx-order-for 𝟚ᴺ-ClosenessSpace ℕ→𝟚-lexicorder ℕ→𝟚-approx-lexicorder
+ℕ→𝟚-approx-lexicorder-is-approx-order-for
+ = discrete-approx-lexicorder-is-approx-order-for
      𝟚-is-discrete 𝟚-is-set _<₂_ <₂-is-strict <₂-trichotomous
 
 ℕ∞-approx-lexicorder : ℕ∞ → ℕ∞ → ℕ → 𝓤₀ ̇
 ℕ∞-approx-lexicorder
  = Σ-approx-order is-decreasing ℕ→𝟚-approx-lexicorder
 
-ℕ∞-approx-lexicorder-is-approx-order
- : is-approx-order ℕ∞-ClosenessSpace ℕ∞-lexicorder ℕ∞-approx-lexicorder
-ℕ∞-approx-lexicorder-is-approx-order
- = Σ-approx-order-is-approx-order ℕ→𝟚-ClosenessSpace
+ℕ∞-approx-lexicorder-is-approx-order-for
+ : is-approx-order-for ℕ∞-ClosenessSpace ℕ∞-lexicorder ℕ∞-approx-lexicorder
+ℕ∞-approx-lexicorder-is-approx-order-for
+ = Σ-approx-order-is-approx-order-for 𝟚ᴺ-ClosenessSpace
      is-decreasing (being-decreasing-is-prop (fe _ _))
      ℕ→𝟚-lexicorder ℕ→𝟚-approx-lexicorder
-     ℕ→𝟚-approx-lexicorder-is-approx-order
+     ℕ→𝟚-approx-lexicorder-is-approx-order-for
 
-\end{code}
+```

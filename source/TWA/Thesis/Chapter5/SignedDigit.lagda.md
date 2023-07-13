@@ -1,5 +1,4 @@
-\begin{code}
-
+```agda
 {-# OPTIONS --without-K --exact-split --safe #-}
 
 open import MLTT.Spartan
@@ -37,7 +36,15 @@ pr₂ 𝟛-finite = qinveq g (h , η , μ)
   μ +1 = refl
 
 𝟛-is-discrete : is-discrete 𝟛
-𝟛-is-discrete = finite-discrete-is-discrete 𝟛-finite
+𝟛-is-discrete −1 −1 = inl refl
+𝟛-is-discrete −1 O = inr (λ ())
+𝟛-is-discrete −1 +1 = inr (λ ())
+𝟛-is-discrete O −1 = inr (λ ())
+𝟛-is-discrete O O = inl refl
+𝟛-is-discrete O +1 = inr (λ ())
+𝟛-is-discrete +1 −1 = inr (λ ())
+𝟛-is-discrete +1 O = inr (λ ())
+𝟛-is-discrete +1 +1 = inl refl
 
 -- Definition 5.2.6
 𝟛ᴺ : 𝓤₀ ̇ 
@@ -234,5 +241,4 @@ digitMul a = map (a *𝟛_)
 -- Definition 5.2.35
 mul : 𝟛ᴺ → 𝟛ᴺ → 𝟛ᴺ
 mul x y = bigMid (zipWith digitMul x (repeat y))
-
-\end{code}
+```

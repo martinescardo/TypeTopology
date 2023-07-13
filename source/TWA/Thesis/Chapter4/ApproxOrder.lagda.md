@@ -1,4 +1,4 @@
-\begin{code}
+```agda
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
@@ -57,6 +57,30 @@ is-approx-order X _≤_ _≤ⁿ_
  × ((ϵ : ℕ) (x y : ⟨ X ⟩) → is-decidable ((x ≤ⁿ y) ϵ))
  × ((ϵ : ℕ) (x y : ⟨ X ⟩) →   C X ϵ x y → (x ≤ⁿ y) ϵ)
  × ((ϵ : ℕ) (x y : ⟨ X ⟩) → ¬ C X ϵ x y → (x ≤ⁿ y) ϵ ⇔ x ≤ y)
+
+is-approx-order' : (X : ClosenessSpace 𝓤)
+                 → (_≤ⁿ_ : ⟨ X ⟩ → ⟨ X ⟩ → ℕ → 𝓦'  ̇ )
+                 → 𝓤 ⊔ 𝓦'  ̇
+is-approx-order' X _≤ⁿ_
+ = ((ϵ : ℕ) → is-linear-order (λ x y → (x ≤ⁿ y) ϵ))
+ × ((ϵ : ℕ) (x y : ⟨ X ⟩) → is-decidable ((x ≤ⁿ y) ϵ))
+ × ((ϵ : ℕ) (x y : ⟨ X ⟩) →   C X ϵ x y → (x ≤ⁿ y) ϵ)
+
+is-approx-order-for : (X : ClosenessSpace 𝓤)
+                    → (_≤_  : ⟨ X ⟩ → ⟨ X ⟩ → 𝓦 ̇ )
+                    → (_≤ⁿ_ : ⟨ X ⟩ → ⟨ X ⟩ → ℕ → 𝓦'  ̇ )
+                    → 𝓤 ⊔ 𝓦 ⊔ 𝓦'  ̇
+is-approx-order-for X _≤_ _≤ⁿ_
+ = is-preorder _≤_
+ × is-approx-order' X _≤ⁿ_
+ ×  ((ϵ : ℕ) (x y : ⟨ X ⟩) → ¬ C X ϵ x y → (x ≤ⁿ y) ϵ ⇔ x ≤ y)
+
+is-approx-order-ι : (X : ClosenessSpace 𝓤)
+                  → (_≤_  : ⟨ X ⟩ → ⟨ X ⟩ → 𝓦 ̇ )
+                  → (_≤ⁿ_ : ⟨ X ⟩ → ⟨ X ⟩ → ℕ → 𝓦'  ̇ )
+                  → is-approx-order-for X _≤_ _≤ⁿ_
+                  → is-approx-order' X _≤ⁿ_
+is-approx-order-ι X _≤_ _≤ⁿ_ = pr₁ ∘ pr₂
 
 ≤-refl⟨_⟩
  : {X : 𝓤 ̇ } {_≤_ : X → X → 𝓦 ̇ }
@@ -127,108 +151,101 @@ is-approx-order X _≤_ _≤ⁿ_
  : (X : ClosenessSpace 𝓤)
  → {_≤_  : ⟨ X ⟩ → ⟨ X ⟩ → 𝓦 ̇ }
  → {_≤ⁿ_ : ⟨ X ⟩ → ⟨ X ⟩ → ℕ → 𝓦'  ̇ }
- → is-approx-order X _≤_ _≤ⁿ_
+ → is-approx-order-for X _≤_ _≤ⁿ_
  → is-preorder _≤_
-≤ⁿ-pre X (p , l , d , c , a) = p
+≤ⁿ-pre X (p , x , a) = p
 
 ≤ⁿ-all-linear
  : (X : ClosenessSpace 𝓤)
- → {_≤_  : ⟨ X ⟩ → ⟨ X ⟩ → 𝓦 ̇ }
  → {_≤ⁿ_ : ⟨ X ⟩ → ⟨ X ⟩ → ℕ → 𝓦'  ̇ }
- → is-approx-order X _≤_ _≤ⁿ_
+ → is-approx-order' X _≤ⁿ_
  → (ϵ : ℕ) → is-linear-order (λ x y → (x ≤ⁿ y) ϵ)
-≤ⁿ-all-linear X (p , l , d , c , a) = l
+≤ⁿ-all-linear X (l , d , c) = l
 
 ≤ⁿ-refl
  : (X : ClosenessSpace 𝓤)
- → {_≤_  : ⟨ X ⟩ → ⟨ X ⟩ → 𝓦 ̇ }
  → {_≤ⁿ_ : ⟨ X ⟩ → ⟨ X ⟩ → ℕ → 𝓦'  ̇ }
- → is-approx-order X _≤_ _≤ⁿ_
+ → is-approx-order' X _≤ⁿ_
  → (ϵ : ℕ)
  → (x : ⟨ X ⟩) → (x ≤ⁿ x) ϵ
-≤ⁿ-refl X (p , l , d , c , a) ϵ = (pr₁ ∘ pr₁) (l ϵ)
+≤ⁿ-refl X (l , d , c) ϵ = (pr₁ ∘ pr₁) (l ϵ)
 
 ≤ⁿ-trans
  : (X : ClosenessSpace 𝓤)
- → {_≤_  : ⟨ X ⟩ → ⟨ X ⟩ → 𝓦 ̇ }
- → {_≤ⁿ_ : ⟨ X ⟩ → ⟨ X ⟩ → ℕ → 𝓦'  ̇ }
- → is-approx-order X _≤_ _≤ⁿ_
+ → {_≤ⁿ_  : ⟨ X ⟩ → ⟨ X ⟩ → ℕ → 𝓦 ̇ }
+ → is-approx-order' X _≤ⁿ_
  → (ϵ : ℕ) (x y z : ⟨ X ⟩)
  → (x ≤ⁿ y) ϵ → (y ≤ⁿ z) ϵ → (x ≤ⁿ z) ϵ
-≤ⁿ-trans X (p , l , d , c , a) ϵ = (pr₁ ∘ pr₂ ∘ pr₁) (l ϵ)
+≤ⁿ-trans X (l , d , c) ϵ = (pr₁ ∘ pr₂ ∘ pr₁) (l ϵ)
 
 ≤ⁿ-prop
  : (X : ClosenessSpace 𝓤)
- → {_≤_  : ⟨ X ⟩ → ⟨ X ⟩ → 𝓦 ̇ }
  → {_≤ⁿ_ : ⟨ X ⟩ → ⟨ X ⟩ → ℕ → 𝓦'  ̇ }
- → is-approx-order X _≤_ _≤ⁿ_
+ → is-approx-order' X _≤ⁿ_
  → (ϵ : ℕ) (x y : ⟨ X ⟩)
  → is-prop ((x ≤ⁿ y) ϵ)
-≤ⁿ-prop X (p , l , d , c , a) ϵ = (pr₂ ∘ pr₂ ∘ pr₁) (l ϵ)
+≤ⁿ-prop X (l , d , c) ϵ = (pr₂ ∘ pr₂ ∘ pr₁) (l ϵ)
 
 ≤ⁿ-linear
  : (X : ClosenessSpace 𝓤)
- → {_≤_  : ⟨ X ⟩ → ⟨ X ⟩ → 𝓦 ̇ }
  → {_≤ⁿ_ : ⟨ X ⟩ → ⟨ X ⟩ → ℕ → 𝓦'  ̇ }
- → is-approx-order X _≤_ _≤ⁿ_
+ → is-approx-order' X _≤ⁿ_
  → (ϵ : ℕ) (x y : ⟨ X ⟩)
  → (x ≤ⁿ y) ϵ + (y ≤ⁿ x) ϵ
-≤ⁿ-linear X (p , l , d , c , a) ϵ = pr₂ (l ϵ)
+≤ⁿ-linear X (l , d , c) ϵ = pr₂ (l ϵ)
 
 ≤ⁿ-decidable
  : (X : ClosenessSpace 𝓤)
- → {_≤_  : ⟨ X ⟩ → ⟨ X ⟩ → 𝓦 ̇ }
  → {_≤ⁿ_ : ⟨ X ⟩ → ⟨ X ⟩ → ℕ → 𝓦'  ̇ }
- → is-approx-order X _≤_ _≤ⁿ_
+ → is-approx-order' X _≤ⁿ_
  → (ϵ : ℕ) (x y : ⟨ X ⟩)
  → is-decidable ((x ≤ⁿ y) ϵ)
-≤ⁿ-decidable X (p , l , d , c , a) = d
+≤ⁿ-decidable X (l , d , c) = d
 
 ≤ⁿ-close
  : (X : ClosenessSpace 𝓤)
- → {_≤_  : ⟨ X ⟩ → ⟨ X ⟩ → 𝓦 ̇ }
  → {_≤ⁿ_ : ⟨ X ⟩ → ⟨ X ⟩ → ℕ → 𝓦'  ̇ }
- → is-approx-order X _≤_ _≤ⁿ_
+ → is-approx-order' X _≤ⁿ_
  → (ϵ : ℕ) (x y : ⟨ X ⟩)
  → C X ϵ x y → (x ≤ⁿ y) ϵ
-≤ⁿ-close X (p , l , d , c , a) = c
+≤ⁿ-close X (l , d , c) = c
 
 ≤ⁿ-apart
  : (X : ClosenessSpace 𝓤)
  → {_≤_  : ⟨ X ⟩ → ⟨ X ⟩ → 𝓦 ̇ }
  → {_≤ⁿ_ : ⟨ X ⟩ → ⟨ X ⟩ → ℕ → 𝓦'  ̇ }
- → is-approx-order X _≤_ _≤ⁿ_
+ → is-approx-order-for X _≤_ _≤ⁿ_
  → (ϵ : ℕ) (x y : ⟨ X ⟩)
  → ¬ C X ϵ x y → (x ≤ⁿ y) ϵ ⇔ x ≤ y
-≤ⁿ-apart X (p , l , d , c , a) ϵ x y f = a ϵ x y f
+≤ⁿ-apart X (p , _ , a) ϵ x y f = a ϵ x y f
 
 ≤ⁿ-apart→
  : (X : ClosenessSpace 𝓤)
  → {_≤_  : ⟨ X ⟩ → ⟨ X ⟩ → 𝓦 ̇ }
  → {_≤ⁿ_ : ⟨ X ⟩ → ⟨ X ⟩ → ℕ → 𝓦'  ̇ }
- → is-approx-order X _≤_ _≤ⁿ_
+ → is-approx-order-for X _≤_ _≤ⁿ_
  → (ϵ : ℕ) (x y : ⟨ X ⟩)
  → ¬ C X ϵ x y → (x ≤ⁿ y) ϵ → x ≤ y
-≤ⁿ-apart→ X (p , l , d , c , a) ϵ x y f = pr₁ (a ϵ x y f)
+≤ⁿ-apart→ X (p , _ , a) ϵ x y f = pr₁ (a ϵ x y f)
 
 ≤ⁿ-apart←
  : (X : ClosenessSpace 𝓤)
  → {_≤_  : ⟨ X ⟩ → ⟨ X ⟩ → 𝓦 ̇ }
  → {_≤ⁿ_ : ⟨ X ⟩ → ⟨ X ⟩ → ℕ → 𝓦'  ̇ }
- → is-approx-order X _≤_ _≤ⁿ_
+ → is-approx-order-for X _≤_ _≤ⁿ_
  → (ϵ : ℕ) (x y : ⟨ X ⟩)
  → ¬ C X ϵ x y → x ≤ y → (x ≤ⁿ y) ϵ 
-≤ⁿ-apart← X (p , l , d , c , a) ϵ x y f = pr₂ (a ϵ x y f)
+≤ⁿ-apart← X (p , _ , a) ϵ x y f = pr₂ (a ϵ x y f)
 
 apart-total : {X : ClosenessSpace 𝓤}
             → (_≤_  : ⟨ X ⟩ → ⟨ X ⟩ → 𝓦 ̇ )
             → (_≤ⁿ_ : ⟨ X ⟩ → ⟨ X ⟩ → ℕ → 𝓦'  ̇ )
-            → is-approx-order X _≤_ _≤ⁿ_
+            → is-approx-order-for X _≤_ _≤ⁿ_
             → (ϵ : ℕ) (x y : ⟨ X ⟩) 
             → ¬ C X ϵ x y → (x ≤ y) + (y ≤ x)
 apart-total {_} {_} {_} {X} _≤_ _≤ⁿ_ a ϵ x y ¬Bϵxy
- = Cases (≤ⁿ-linear X a ϵ x y)
+ = Cases (≤ⁿ-linear X (pr₁ (pr₂ a)) ϵ x y)
      (inl ∘ ≤ⁿ-apart→ X a ϵ x y ¬Bϵxy)
      (inr ∘ ≤ⁿ-apart→ X a ϵ y x (λ Bϵxy → ¬Bϵxy (C-sym X ϵ y x Bϵxy)))
 
-\end{code}
+```

@@ -1,4 +1,4 @@
-\begin{code}
+```agda
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
@@ -7,6 +7,7 @@ open import UF.FunExt
 open import NotionsOfDecidability.Complemented
 open import UF.Subsingletons
 open import UF.Equiv
+open import TypeTopology.DiscreteAndSeparated
 open import TWA.Thesis.Chapter2.FiniteDiscrete
 open import TWA.Thesis.Chapter2.Sequences
 
@@ -24,12 +25,10 @@ finite-discrete-csearchable
  : (X : ClosenessSpace 𝓤)
  → (f : finite-discrete ⟨ X ⟩)
  → pointed ⟨ X ⟩
- → let d = finite-discrete-is-discrete f in
-   csearchable 𝓦 X
+ → csearchable 𝓦 X
 finite-discrete-csearchable X f x
  = searchable→csearchable X
      (finite-discrete-searchable f x)
- where d = finite-discrete-is-discrete f
 
 -- Disjoint union of continuously searchable spaces.
 
@@ -163,15 +162,16 @@ finite-discrete-csearchable X f x
 tail-predicate
  : {X : 𝓤 ̇ }
  → (f : finite-discrete X)
+ → (i : is-discrete X)
  → (δ : ℕ)
  → (x : X)
  → decidable-uc-predicate-with-mod 𝓦
-     (ℕ→D-ClosenessSpace (finite-discrete-is-discrete f))
+     (ℕ→D-ClosenessSpace i)
      (succ δ)
  → decidable-uc-predicate-with-mod 𝓦
-     (ℕ→D-ClosenessSpace (finite-discrete-is-discrete f))
+     (ℕ→D-ClosenessSpace i)
      δ
-tail-predicate {𝓤} {𝓦} {X} f δ x ((p' , d') , ϕ') = (p , d) , ϕ
+tail-predicate {𝓤} {𝓦} {X} f i' δ x ((p' , d') , ϕ') = (p , d) , ϕ
  where
   p : (ℕ → X) → Ω _
   p xs = p' (x ∶∶ xs)
@@ -180,20 +180,21 @@ tail-predicate {𝓤} {𝓦} {X} f δ x ((p' , d') , ϕ') = (p , d) , ϕ
   ϕ : p-ucontinuous-with-mod (ℕ→D-ClosenessSpace _) p δ
   ϕ x₁ x₂ Cδx₁x₂
    = ϕ' (x ∶∶ x₁) (x ∶∶ x₂)
-       (∼ⁿ-to-C (finite-discrete-is-discrete f) _ _ (succ δ) γ)
+       (∼ⁿ-to-C i' _ _ (succ δ) γ)
    where
     γ : ((x ∶∶ x₁) ∼ⁿ (x ∶∶ x₂)) (succ δ)
     γ zero i<sδ = refl
     γ (succ i) i<sδ
-     = C-to-∼ⁿ (finite-discrete-is-discrete f) _ _ δ Cδx₁x₂ i i<sδ
+     = C-to-∼ⁿ i' _ _ δ Cδx₁x₂ i i<sδ
 
 discrete-finite-seq-csearchable'
  : {X : 𝓤 ̇ }
  → X 
  → (f : finite-discrete X)
+ → (i : is-discrete X)
  → (δ : ℕ)
  → (((p , _) , _) : decidable-uc-predicate-with-mod 𝓦
-     (ℕ→D-ClosenessSpace (finite-discrete-is-discrete f)) δ)
+                      (ℕ→D-ClosenessSpace i) δ)
  → Σ xs₀ ꞉ (ℕ → X)
  , ((Σ xs ꞉ (ℕ → X) , p xs holds) → p xs₀ holds)
 
@@ -201,34 +202,34 @@ head-predicate
  : {X : 𝓤 ̇ }
  → X
  → (f : finite-discrete X)
+ → (i : is-discrete X)
  → (δ : ℕ)
- → decidable-uc-predicate-with-mod 𝓦
-     (ℕ→D-ClosenessSpace (finite-discrete-is-discrete f)) (succ δ)
+ → decidable-uc-predicate-with-mod 𝓦 (ℕ→D-ClosenessSpace i) (succ δ)
  → decidable-predicate 𝓦 X
-head-predicate {𝓤} {𝓦} {X} x₀ f δ ((p , d) , ϕ)
+head-predicate {𝓤} {𝓦} {X} x₀ f i δ ((p , d) , ϕ)
  = p ∘ xs→ , d ∘ xs→
  where
   xs→ : X → (ℕ → X)
-  xs→ x = x ∶∶ pr₁ (discrete-finite-seq-csearchable' x₀ f δ
-                     (tail-predicate f δ x ((p , d) , ϕ)))
+  xs→ x = x ∶∶ pr₁ (discrete-finite-seq-csearchable' x₀ f i δ
+                     (tail-predicate f i δ x ((p , d) , ϕ)))
      
-discrete-finite-seq-csearchable' x₀ f zero ((p , d) , ϕ)
+discrete-finite-seq-csearchable' x₀ f i zero ((p , d) , ϕ)
  = (λ _ → x₀)
  , λ (y , py) → ϕ y (λ _ → x₀) (λ n ()) py
 discrete-finite-seq-csearchable'
- {𝓤} {𝓦} {X} x' f (succ δ) ((p , d) , ϕ)
+ {𝓤} {𝓦} {X} x' f i (succ δ) ((p , d) , ϕ)
  = xs₀ , γ
  where
-   pₕ  = head-predicate x' f δ ((p , d) , ϕ)
+   pₕ  = head-predicate x' f i δ ((p , d) , ϕ)
    x₀ : X
    x₀ = pr₁ (finite-discrete-searchable f x' pₕ)
    γₕ : Σ x ꞉ X , pr₁ pₕ x holds → pr₁ pₕ x₀ holds
    γₕ = pr₂ (finite-discrete-searchable f x' pₕ)
-   pₜ→ = λ x → tail-predicate f δ x ((p , d) , ϕ)
+   pₜ→ = λ x → tail-predicate f i δ x ((p , d) , ϕ)
    xs→ : (x : X) → Σ xs₀ ꞉ (ℕ → X)
        , ((Σ xs ꞉ (ℕ → X) , (pr₁ ∘ pr₁) (pₜ→ x) xs holds)
        → (pr₁ ∘ pr₁) (pₜ→ x) xs₀ holds) 
-   xs→ x = discrete-finite-seq-csearchable' x' f δ (pₜ→ x)
+   xs→ x = discrete-finite-seq-csearchable' x' f i δ (pₜ→ x)
    xs₀ : ℕ → X
    xs₀ = x₀ ∶∶ pr₁ (xs→ x₀)
    γ : Σ xs ꞉ (ℕ → X) , (p xs holds) → p xs₀ holds
@@ -246,10 +247,10 @@ discrete-finite-seq-csearchable
  : {X : 𝓤 ̇ }
  → X 
  → (f : finite-discrete X)
- → csearchable 𝓦
-     (ℕ→D-ClosenessSpace (finite-discrete-is-discrete f))
-discrete-finite-seq-csearchable x₀ f ((p , d) , (δ , ϕ))
- = discrete-finite-seq-csearchable' x₀ f δ ((p , d) , ϕ)
+ → (i : is-discrete X)
+ → csearchable 𝓦 (ℕ→D-ClosenessSpace i)
+discrete-finite-seq-csearchable x₀ f i ((p , d) , (δ , ϕ))
+ = discrete-finite-seq-csearchable' x₀ f i δ ((p , d) , ϕ)
 
 -- Tychonoff
 
@@ -358,7 +359,7 @@ tychonoff : (T : ℕ → ClosenessSpace 𝓤)
           → ((n : ℕ) → csearchable 𝓦 (T n))
           → csearchable 𝓦 (Π-ClosenessSpace T)
 tychonoff T S ((p , d) , δ , ϕ) = tychonoff' T S δ ((p , d) , ϕ)
-
+```
 
 {-
 -}

@@ -1,3 +1,4 @@
+```agda
 {-# OPTIONS --without-K --exact-split --safe #-}
 
 open import UF.FunExt
@@ -41,12 +42,12 @@ C-ucontinuous X ε x = ε , γ
 p-regressor : (X : ClosenessSpace 𝓤) (Y : PseudoClosenessSpace 𝓥)
             → (𝓔S : csearchable 𝓤₀ X)
             → (ε : ℕ) → regressor X Y
-p-regressor {𝓤} {𝓥} X Y S ε M ϕᴹ Ω' = pr₁ (S ((p , d) , ϕ))
+p-regressor {𝓤} {𝓥} X Y S ε M ϕᴹ 𝓞 = pr₁ (S ((p , d) , ϕ))
  where
   p : ⟨ X ⟩ → Ω 𝓤₀
-  p x = C'Ω Y ε Ω' (M x)
+  p x = C'Ω Y ε 𝓞 (M x)
   d : is-complemented (λ x → p x holds)
-  d x = C'-decidable Y ε Ω' (M x)
+  d x = C'-decidable Y ε 𝓞 (M x)
   ϕ : p-ucontinuous X p
   ϕ = δ , γ
    where
@@ -54,7 +55,7 @@ p-regressor {𝓤} {𝓥} X Y S ε M ϕᴹ Ω' = pr₁ (S ((p , d) , ϕ))
     δ = pr₁ (ϕᴹ ε)
     γ : (x₁ x₂ : ⟨ X ⟩) → C X δ x₁ x₂ → p x₁ holds → p x₂ holds
     γ x₁ x₂ Cδx₁x₂ px₁
-     = C'-trans Y ε Ω' (M x₁) (M x₂) px₁ (pr₂ (ϕᴹ ε) x₁ x₂ Cδx₁x₂)
+     = C'-trans Y ε 𝓞 (M x₁) (M x₂) px₁ (pr₂ (ϕᴹ ε) x₁ x₂ Cδx₁x₂)
 
 invert-rel : {X : 𝓤 ̇ } → (X → X → 𝓥 ̇ ) → (X → X → 𝓥 ̇ )
 invert-rel R x y = R y x
@@ -75,16 +76,16 @@ invert-preorder-is-preorder _≤_ (r' , t' , p') = r , t , p
   p : is-prop-valued (invert-rel _≤_)
   p x y = p' y x
 
-invert-approx-order-is-approx-order
+invert-approx-order-is-approx-order-for
  : (X : ClosenessSpace 𝓤)
  → (_≤_ : ⟨ X ⟩ → ⟨ X ⟩ → 𝓥 ̇ ) (_≤ⁿ_ : ⟨ X ⟩ → ⟨ X ⟩ → ℕ → 𝓥' ̇ )
- → is-approx-order X _≤_ _≤ⁿ_
+ → is-approx-order-for X _≤_ _≤ⁿ_
  → let _≥_  = invert-rel  _≤_  in
    let _≥ⁿ_ = invert-rel' _≤ⁿ_ in
-   is-approx-order X _≥_ _≥ⁿ_
-invert-approx-order-is-approx-order
- X _≤_ _≤ⁿ_ (pre' , lin' , dec' , c' , a')
- = pre , lin , dec , c , a
+   is-approx-order-for X _≥_ _≥ⁿ_
+invert-approx-order-is-approx-order-for
+ X _≤_ _≤ⁿ_ (pre' , (lin' , dec' , c') , a')
+ = pre , (lin , dec , c) , a
  where
   pre : is-preorder (invert-rel _≤_)
   pre = invert-preorder-is-preorder _≤_ pre'
@@ -128,10 +129,12 @@ global-max-ℕ∞ : (X : ClosenessSpace 𝓤) → ⟨ X ⟩
               → (has ϵ global-maximal) ℕ∞-approx-lexicorder f
 global-max-ℕ∞ X x₀ t f ϕ ϵ
  = global-opt X ℕ∞-ClosenessSpace x₀
-     (invert-rel ℕ∞-lexicorder) (invert-rel' ℕ∞-approx-lexicorder)
-     (invert-approx-order-is-approx-order ℕ∞-ClosenessSpace
-       ℕ∞-lexicorder ℕ∞-approx-lexicorder
-         ℕ∞-approx-lexicorder-is-approx-order)
+     (invert-rel' ℕ∞-approx-lexicorder)
+     (is-approx-order-ι ℕ∞-ClosenessSpace
+       (invert-rel ℕ∞-lexicorder) (invert-rel' ℕ∞-approx-lexicorder)
+       (invert-approx-order-is-approx-order-for ℕ∞-ClosenessSpace
+         ℕ∞-lexicorder ℕ∞-approx-lexicorder
+         ℕ∞-approx-lexicorder-is-approx-order-for))
      ϵ f ϕ t
 
 -- Theorem 4.2.8
@@ -410,3 +413,4 @@ interpolation-theorem cx cy cy→ cy-r 𝓔S o d ys or ε M ϕᴹ k
   Ω = M k
   ϕᴸ = sampled-loss-right-continuous cy cy-r d ys
 -}
+```

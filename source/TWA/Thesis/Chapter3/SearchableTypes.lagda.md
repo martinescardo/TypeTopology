@@ -1,4 +1,4 @@
-\begin{code}
+```agda
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
@@ -31,7 +31,8 @@ searchable 𝓦 X
  = ((p , d) : decidable-predicate 𝓦 X)
  → Σ x₀ ꞉ X , ((Σ x ꞉ X , (p x holds)) → p x₀ holds)
 
-searchable-pointed : (𝓦 : Universe) → (X : 𝓤 ̇ ) → searchable 𝓦 X → X
+searchable-pointed
+ : (𝓦 : Universe) → (X : 𝓤 ̇ ) → searchable 𝓦 X → X
 searchable-pointed 𝓦 X Sx = pr₁ (Sx ((λ _ → ⊤Ω) , (λ _ → inl ⋆)))
 
 𝟙-searchable : searchable 𝓦 (𝟙 {𝓤})
@@ -236,7 +237,16 @@ csearchable𝓔→csearchable X (𝓔 , S) p = 𝓔 p , S p
 searchable→csearchable : {𝓦 : Universe} (X : ClosenessSpace 𝓤)
                        →  searchable 𝓦 ⟨ X ⟩
                        → csearchable 𝓦   X
-searchable→csearchable X S ((p , d) , _) = S (p , d) 
+searchable→csearchable X S ((p , d) , _) = S (p , d)
+
+csearchable-pointed
+ : (𝓦 : Universe)
+ → (X : ClosenessSpace 𝓤)
+ → csearchable 𝓦 X
+ → ⟨ X ⟩ 
+csearchable-pointed 𝓦 X Sx
+ = pr₁ (Sx (((λ _ → ⊤Ω) , (λ _ → inl ⋆)) , 0 , λ _ _ _ → id))
+
 
 totally-bounded-csearchable : (X : ClosenessSpace 𝓤)
                             → ⟨ X ⟩
@@ -267,3 +277,4 @@ totally-bounded-csearchable {𝓤} {𝓤'} {𝓦} X x t ((p , d) , δ , ϕ)
   x₀  = g x'₀
   γ : (Σ x ꞉ ⟨ X ⟩ , p x holds) → p x₀ holds
   γ (x , px) = γ' (h x , (ϕ x (g (h x)) (η x) px))
+```

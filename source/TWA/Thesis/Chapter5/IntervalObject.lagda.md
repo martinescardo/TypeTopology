@@ -1,5 +1,4 @@
-\begin{code}
-
+```agda
 {-# OPTIONS --without-K --exact-split --safe #-}
 
 open import UF.FunExt
@@ -496,4 +495,4 @@ module basic-interval-object-development {𝓤 : Universe}
  half-same x = ap (λ - → affine - +1/2 x) −1-half
              ∙ affine-uniqueness· _/2 −1/2 +1/2
                refl refl half-is-⊕-homomorphism x
-\end{code}
+```

@@ -1,4 +1,4 @@
-\begin{code}
+```agda
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
@@ -210,17 +210,14 @@ D-ClosenessSpace : {X : 𝓤 ̇ } → is-discrete X → ClosenessSpace 𝓤
 D-ClosenessSpace {𝓤} {X} d = X , discrete-clospace d
 
 finite-discrete-totally-bounded
- : {X : 𝓤 ̇ } (f : finite-discrete X)
+ : {X : 𝓤 ̇ } (f : finite-discrete X) (d : is-discrete X)
  → pointed X
- → let d = finite-discrete-is-discrete f in
-   totally-bounded (D-ClosenessSpace d) 𝓤
-finite-discrete-totally-bounded f x 0
+ → totally-bounded (D-ClosenessSpace d) 𝓤
+finite-discrete-totally-bounded f d x 0
  = pointed-has-a-0-net (D-ClosenessSpace d) x
- where d = finite-discrete-is-discrete f
-finite-discrete-totally-bounded {𝓤} {X} f x (succ ε)
+finite-discrete-totally-bounded {𝓤} {X} f d x (succ ε)
  = X , (id , id , η) , f
  where
-  d = finite-discrete-is-discrete f
   η : (x : X) → C (D-ClosenessSpace d) (succ ε) x x
   η x n _ = ap (λ - → pr₁ - n) (i⟨ D-ClosenessSpace d ⟩ x)
 
@@ -768,15 +765,13 @@ Seq-to-Vec-∼ α x₀ (succ ϵ) 0 i<ϵ = refl
 Seq-to-Vec-∼ α x₀ (succ ϵ) (succ i) i<ϵ
  = Seq-to-Vec-∼ (α ∘ succ) x₀ ϵ i i<ϵ
 
-ℕ→F-is-totally-bounded : {F : 𝓤 ̇ } → (f : finite-discrete F) → F
-                       → totally-bounded
-                           (ℕ→D-ClosenessSpace
-                             (finite-discrete-is-discrete f)) 𝓤
-ℕ→F-is-totally-bounded {𝓤} {F} f x₀ ϵ
+ℕ→F-is-totally-bounded : {F : 𝓤 ̇ }
+                       → (f : finite-discrete F) → F
+                       → (d : is-discrete F)
+                       → totally-bounded (ℕ→D-ClosenessSpace d) 𝓤
+ℕ→F-is-totally-bounded {𝓤} {F} f x₀ d ϵ
  = Vec F ϵ , (Vec-to-Seq x₀ , Seq-to-Vec ϵ , γ) , Vec-finite-discrete ϵ f
  where
-  d : is-discrete F
-  d = finite-discrete-is-discrete f
   γ : (α : ℕ → F)
     → C (ℕ→D-ClosenessSpace d) ϵ α (Vec-to-Seq x₀ (Seq-to-Vec ϵ α))
   γ α n n⊏ϵ = decidable-𝟚₁ (discrete-decidable-seq _ _ _ _)
@@ -1042,8 +1037,12 @@ Lemma[min𝟚abcd＝₁→min𝟚bd＝₁] ₁ ₁ ₁ ₁ e = refl
  
 -- Some examples:
 
-ℕ→𝟚-ClosenessSpace : ClosenessSpace 𝓤₀
-ℕ→𝟚-ClosenessSpace = ℕ→D-ClosenessSpace 𝟚-is-discrete
+𝟚ᴺ-ClosenessSpace : ClosenessSpace 𝓤₀
+𝟚ᴺ-ClosenessSpace = ℕ→D-ClosenessSpace 𝟚-is-discrete
+
+𝟚ᴺ×𝟚ᴺ-ClosenessSpace : ClosenessSpace 𝓤₀
+𝟚ᴺ×𝟚ᴺ-ClosenessSpace
+ = ×-ClosenessSpace 𝟚ᴺ-ClosenessSpace 𝟚ᴺ-ClosenessSpace
 
 open import TWA.Thesis.Chapter5.SignedDigit
 
@@ -1057,7 +1056,7 @@ open import TWA.Thesis.Chapter5.SignedDigit
 
 ℕ∞-ClosenessSpace : ClosenessSpace 𝓤₀
 ℕ∞-ClosenessSpace
- = Σ-ClosenessSpace ℕ→𝟚-ClosenessSpace is-decreasing
+ = Σ-ClosenessSpace 𝟚ᴺ-ClosenessSpace is-decreasing
      (being-decreasing-is-prop (fe _ _))
   
 
@@ -1255,4 +1254,4 @@ discrete-decidable-vec {𝓤} {m} d α β (succ n) sn<m
         ∘ λ α≈ˢⁿβ (k , k<sm) k<n
         → α≈ˢⁿβ (k , k<sm) (<-trans k n (succ n) k<n (<-succ n))
 -}
-\end{code}
+```

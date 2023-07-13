@@ -1,5 +1,4 @@
-\begin{code}
-
+```agda
 {-# OPTIONS --without-K --exact-split --safe #-}
 
 open import MLTT.Spartan
@@ -69,6 +68,29 @@ seq-f-ucontinuous²-both f ϕ ε
   δ₂ = pr₂ (pr₁ (ϕ ε))
   δ  = max δ₁ δ₂
 
+seq-f-ucontinuous²-comp
+ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {W : 𝓣 ̇ } {T : 𝓤' ̇ }
+ → (f : (ℕ → X) → (ℕ → W) → (ℕ → T))
+ → (g : (ℕ → Y) → (ℕ → Z) → (ℕ → W))
+ → seq-f-ucontinuous² f
+ → seq-f-ucontinuous² g
+ → (z : ℕ → Z) → seq-f-ucontinuous² λ x y → f x (g y z)
+seq-f-ucontinuous²-comp
+ {_} {_} {_} {_} {_} {X} {Y} {Z} {W} {T} f g ϕᶠ ϕᵍ z ϵ = δ , γ
+ where
+  δ : ℕ × ℕ
+  δ = (pr₁ (pr₁ (ϕᶠ ϵ))) , pr₁ (pr₁ (ϕᵍ (pr₂ (pr₁ (ϕᶠ ϵ)))))
+  γ : (x₁ x₂ : ℕ → X) (y₁ y₂ : ℕ → Y)
+    → (x₁ ∼ⁿ x₂) (pr₁ δ)
+    → (y₁ ∼ⁿ y₂) (pr₂ δ)
+    → (f x₁ (g y₁ z) ∼ⁿ f x₂ (g y₂ z)) ϵ
+  γ x₁ x₂ y₁ y₂ x₁∼x₂ y₁∼y₂
+   = pr₂ (ϕᶠ ϵ) x₁ x₂ (g y₁ z) (g y₂ z)
+       x₁∼x₂
+       (pr₂ (ϕᵍ (pr₂ (pr₁ (ϕᶠ ϵ)))) y₁ y₂ z z
+       y₁∼y₂
+       (λ _ _ → refl))
+ 
 seq-f-ucontinuous¹²-comp
  : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {W : 𝓣 ̇ }
  → (f : (ℕ → Z) → (ℕ → W))
@@ -126,6 +148,7 @@ seq-f-ucontinuous¹-to-closeness dˣ dʸ f ϕ ε
  , λ α β Cαβ → ∼ⁿ-to-C dʸ (f α) (f β) ε
                 (pr₂ (ϕ ε) α β (C-to-∼ⁿ dˣ α β (pr₁ (ϕ ε)) Cαβ))
 
+
 seq-f-ucontinuous²-to-closeness
  : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
  → (dˣ : is-discrete X) (dʸ : is-discrete Y) (dᶻ : is-discrete Z)
@@ -154,4 +177,4 @@ seq-f-ucontinuous²-to-closeness dˣ dʸ dᶻ f ϕ ε
   δα = pr₁ (pr₁ (ϕ ε))
   δβ = pr₂ (pr₁ (ϕ ε))
   δ  = max δα δβ
-\end{code}
+```

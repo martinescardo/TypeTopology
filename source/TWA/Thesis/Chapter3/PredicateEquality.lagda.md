@@ -1,4 +1,4 @@
-\begin{code}
+```agda
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
@@ -93,3 +93,4 @@ decidable-uc-predicate-with-mod-＝
  = to-subtype-＝ (λ p → uc-continuous-is-prop X (pr₁ p) δ)
      (to-subtype-＝ (λ p → complemented-is-prop p)
        (predicate-＝ p₁ p₂ f))
+```
