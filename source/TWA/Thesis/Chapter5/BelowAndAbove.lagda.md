@@ -1,5 +1,5 @@
 ```agda
-{-# OPTIONS --exact-split --auto-inline --without-K
+{-# OPTIONS --safe --exact-split --auto-inline --without-K
             --experimental-lossy-unification #-}
 
 open import Integers.Addition renaming (_+_ to _ℤ+_)

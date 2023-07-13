@@ -1,29 +1,30 @@
 on:
   push:
     branches:
-    - master
+      - thesis
   pull_request:
     branches:
-    - master
+      - thesis
 
 jobs:
   typecheck:
+    permissions: write-all
     runs-on: ubuntu-latest
     name: Typechecking
     steps:
-    - name: "Clone repository"
-      uses: actions/checkout@v2
-    - name: Run Agda
-      id: typecheck
-      uses: ayberkt/agda-github-action@v3.1
-      with:
-        main-file: AllModulesIndex.lagda
-        source-dir: source
-        unsafe: true
-    - name: Upload HTML
-      id: html-upload
-      if: github.ref == 'refs/heads/master'
-      uses: actions/upload-artifact@v3
-      with:
-        name: html
-        path: source/html
+      - name: "Clone repository"
+        uses: actions/checkout@v2
+      - name: Run Agda
+        id: typecheck
+        uses: georgejkaye/agda-github-action@v1.0
+        with:
+          main-file: index.lagda.md
+          source-dir: source/TWA/Thesis/
+          unsafe: true
+      - name: Deploy HTML to branch
+        uses: s0/git-publish-subdir-action@develop
+        env:
+          REPO: self
+          BRANCH: html
+          FOLDER: source/TWA/Thesis/html
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
