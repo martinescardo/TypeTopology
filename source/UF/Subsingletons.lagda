@@ -658,7 +658,6 @@ The type of truth values.
 _holds : Ω 𝓤 → 𝓤 ̇
 (P , i) holds = P
 
-
 holds-is-prop : (p : Ω 𝓤) → is-prop (p holds)
 holds-is-prop (P , i) = i
 

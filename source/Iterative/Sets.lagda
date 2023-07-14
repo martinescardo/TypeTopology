@@ -190,33 +190,40 @@ It follows that 𝕍 is a set, or 0-type, in the sense of the HoTT book:
 
 \end{code}
 
-Here is a second, more direct, proof:
+Here is a second, more direct, proof.
+
+The following say that ssup φ ＝ M is a proposition for every M : 𝕄 if
+φ is an embedding.
 
 \begin{code}
 
 𝕄-ssup-is-h-isolated : (X : 𝓤 ̇ ) (φ : X → 𝕄)
                      → is-embedding φ
-                     → (M : 𝕄) → is-prop (M ＝ ssup X φ)
-𝕄-ssup-is-h-isolated X φ φ-emb M = II
+                     → is-h-isolated (ssup X φ)
+𝕄-ssup-is-h-isolated X φ φ-emb {M} = III
  where
-  I : is-embedding ((φ ∘_) ∘ Idtofun {𝓤} {𝕄-root M} {X})
-  I = ∘-is-embedding
-       (Idtofun-is-embedding (ua 𝓤) fe)
-       (precomp-is-embedding fe' φ φ-emb)
+  I = (ssup X φ ＝ M)                        ≃⟨ ＝-flip ⟩
+      (M ＝ ssup X φ)                        ≃⟨ 𝕄-＝' M (ssup X φ) ⟩
+      fiber ((φ ∘_) ∘ Idtofun) (𝕄-forest M)  ■
 
-  II : is-prop (M ＝ ssup X φ)
-  II = equiv-to-prop (𝕄-＝' M (ssup X φ)) (I (𝕄-forest M))
+  II : is-embedding ((φ ∘_) ∘ Idtofun)
+  II = ∘-is-embedding
+        (Idtofun-is-embedding (ua 𝓤) fe)
+        (precomp-is-embedding fe' φ φ-emb)
 
-isets-are-h-isolated : (M N : 𝕄)
-                     → is-iterative-set N
-                     → is-prop (M ＝ N)
-isets-are-h-isolated M (ssup X φ) (φ-emb , _) = 𝕄-ssup-is-h-isolated X φ φ-emb M
+  III : is-prop (ssup X φ ＝ M)
+  III = equiv-to-prop I (II (𝕄-forest M))
+
+isets-are-h-isolated : (M : 𝕄)
+                     → is-iterative-set M
+                     → is-h-isolated M
+isets-are-h-isolated (ssup X φ) (φ-emb , _) = 𝕄-ssup-is-h-isolated X φ φ-emb
 
 𝕍-is-set' : is-set 𝕍
-𝕍-is-set' {M , _} {N , N-is-iset} =
+𝕍-is-set' {M , M-is-is-set} =
  equiv-to-prop
   (≃-sym (to-subtype-＝-≃ being-iset-is-prop))
-  (isets-are-h-isolated M N N-is-iset)
+  (isets-are-h-isolated M M-is-is-set)
 
 \end{code}
 

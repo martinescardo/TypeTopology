@@ -17,6 +17,9 @@ module Iterative.Ordinals
 open import UF.FunExt
 open import UF.UA-FunExt
 
+𝓤⁺ : Universe
+𝓤⁺ = 𝓤 ⁺
+
 private
  fe : Fun-Ext
  fe = Univalence-gives-Fun-Ext ua
@@ -45,13 +48,13 @@ An iterative ordinal is a transitive iterative set.
 
 \begin{code}
 
-is-transitive-iset : 𝕍 → 𝓤 ⁺ ̇
+is-transitive-iset : 𝕍 → 𝓤⁺ ̇
 is-transitive-iset A = (B C : 𝕍) → B ∈ A → C ∈ B → C ∈ A
 
 being-transitive-iset-is-prop : (A : 𝕍) → is-prop (is-transitive-iset A)
 being-transitive-iset-is-prop A = Π₄-is-prop fe (λ B C l m → ∈-is-prop-valued C A)
 
-is-iterative-ordinal : 𝕍 → 𝓤 ⁺ ̇
+is-iterative-ordinal : 𝕍 → 𝓤⁺ ̇
 is-iterative-ordinal A = is-transitive-iset A
                        × ((B : 𝕍) → B ∈ A → is-transitive-iset B)
 
@@ -92,7 +95,7 @@ The type of iterative ordinals.
 
 \begin{code}
 
-𝕆 : 𝓤 ⁺ ̇
+𝕆 : 𝓤⁺ ̇
 𝕆 = Σ A ꞉ 𝕍 , is-iterative-ordinal A
 
 𝕆-is-locally-small : is-locally-small 𝕆
@@ -109,7 +112,7 @@ underlying-iset-is-embedding = pr₁-is-embedding being-iordinal-is-prop
 underlying-iset-is-iordinal : (α : 𝕆) → is-iterative-ordinal (underlying-iset α)
 underlying-iset-is-iordinal = pr₂
 
-_<_ : 𝕆 → 𝕆 → 𝓤 ⁺ ̇
+_<_ : 𝕆 → 𝕆 → 𝓤⁺ ̇
 α < β = underlying-iset α ∈ underlying-iset β
 
 _<⁻_ : 𝕆 → 𝕆 → 𝓤 ̇
@@ -127,7 +130,7 @@ _<⁻_ : 𝕆 → 𝕆 → 𝓤 ̇
   I : A ∈ C
   I = C-trans B A v u
 
-_≤_ : 𝕆 → 𝕆 → 𝓤 ⁺ ̇
+_≤_ : 𝕆 → 𝕆 → 𝓤⁺ ̇
 α ≤ β = ∀ γ → γ < α → γ < β
 
 ⊆-gives-≤ : (α β : 𝕆)
@@ -213,7 +216,7 @@ _≤_ : 𝕆 → 𝕆 → 𝓤 ⁺ ̇
   II : (Σ y ꞉ Y , γ y ＝ M) ≃ (Σ y ꞉ Y , 𝕆-forest β y ＝ α)
   II = Σ-cong I
 
-is-lower-closed : {X : 𝓤 ̇ } → (X → 𝕆) → 𝓤 ⁺ ̇
+is-lower-closed : {X : 𝓤 ̇ } → (X → 𝕆) → 𝓤⁺ ̇
 is-lower-closed {X} ϕ = (x : X) (β : 𝕆) → β < ϕ x → Σ y ꞉ X , ϕ y ＝ β
 
 being-lower-closed-is-prop : {X : 𝓤 ̇ } (ϕ : X → 𝕆)
@@ -222,9 +225,7 @@ being-lower-closed-is-prop : {X : 𝓤 ̇ } (ϕ : X → 𝕆)
 being-lower-closed-is-prop ϕ e = Π₃-is-prop fe (λ x β _ → e β)
 
 𝕆-forest-is-lower-closed : (α : 𝕆) → is-lower-closed (𝕆-forest α)
-𝕆-forest-is-lower-closed α@(A@(M@(ssup X φ) , _) , _)
-                         x
-                         β@(B@(N , _) , _) l = VII
+𝕆-forest-is-lower-closed α x β l = VII
  where
   have-l : β < 𝕆-forest α x
   have-l = l
@@ -235,7 +236,7 @@ being-lower-closed-is-prop ϕ e = Π₃-is-prop fe (λ x β _ → e β)
   II : β < α
   II = <-is-transitive β (𝕆-forest α x) α l I
 
-  VII : Σ y ꞉ X , 𝕆-forest α y ＝ β
+  VII : Σ y ꞉ 𝕆-root α , 𝕆-forest α y ＝ β
   VII = ⌜ <-behaviour β α ⌝ II
 
 𝕆-ssup : (X : 𝓤 ̇ ) (ϕ : X → 𝕆) → is-embedding ϕ → is-lower-closed ϕ → 𝕆
@@ -374,9 +375,9 @@ the following sense:
              (ordinal-is-hereditary (M , is) (φ x , φ-iter x) (x , refl) io)
 
     I : P (𝕆-ssup X
-                  (𝕆-forest α)
-                  (𝕆-forest-is-embedding α)
-                  (𝕆-forest-is-lower-closed α))
+            (𝕆-forest α)
+            (𝕆-forest-is-embedding α)
+            (𝕆-forest-is-lower-closed α))
     I = f X (𝕆-forest α) (𝕆-forest-is-embedding α) (𝕆-forest-is-lower-closed α) IH
 
     II : P α
@@ -403,18 +404,18 @@ induction.
     α = 𝕆-ssup X ϕ e l
 
     s : (β : 𝕆) → β < α → P β
-    s β@((.(underlying-mset (underlying-iset (ϕ x))) , is) , io) (x , refl) = II
+    s β@((.(underlying-mset (underlying-iset (ϕ x))) , is) , io) (x , refl) = III
      where
       I : P (ϕ x)
       I = u x
 
-      III : ϕ x ＝ β
-      III = to-subtype-＝
-             being-iordinal-is-prop
-              (to-subtype-＝ being-iset-is-prop refl)
+      II : ϕ x ＝ β
+      II = to-subtype-＝
+            being-iordinal-is-prop
+             (to-subtype-＝ being-iset-is-prop refl)
 
-      II : P β
-      II = transport P III I
+      III : P β
+      III = transport P II I
 
 \end{code}
 
@@ -433,7 +434,7 @@ book.
 
 \begin{code}
 
-𝓞 : Ordinal (𝓤 ⁺)
+𝓞 : Ordinal 𝓤⁺
 𝓞 = 𝕆 ,
     _<_ ,
     <-is-prop-valued ,
@@ -453,16 +454,10 @@ O α = α'
   X : 𝓤 ̇
   X = 𝕆-root α
 
-  _≺_ :  X → X → 𝓤 ⁺ ̇
+  _≺_ :  X → X → 𝓤⁺ ̇
   x ≺ y = (𝕆-forest α x) < (𝕆-forest α y)
 
-  _≺⁻_ :  X → X → 𝓤 ̇
-  x ≺⁻ y = (𝕆-forest α x) <⁻ (𝕆-forest α y)
-
-  ≺⁻≃-≺ : (x y : X) → (x ≺ y) ≃ (x ≺⁻ y)
-  ≺⁻≃-≺ x y = <⁻≃-< (𝕆-forest α x) (𝕆-forest α y)
-
-  _≼_ :  X → X → 𝓤 ⁺ ̇
+  _≼_ :  X → X → 𝓤⁺ ̇
   x ≼ y = ∀ z → z ≺ x → z ≺ y
 
   ≼-gives-≤ : (x y : X) → x ≼ y → (𝕆-forest α x) ≤ (𝕆-forest α y)
@@ -489,17 +484,17 @@ O α = α'
   ≺-is-accessible : (x : X) → is-accessible _≺_ x
   ≺-is-accessible x = f x (<-is-accessible (𝕆-forest α x))
    where
-    f : ∀ x → is-accessible _<_ (𝕆-forest α x) → is-accessible _≺_ x
+    f : (x : X) → is-accessible _<_ (𝕆-forest α x) → is-accessible _≺_ x
     f x (acc u) = acc (λ y l → f y (u (𝕆-forest α y) l))
 
   ≺-is-extensional : is-extensional _≺_
-  ≺-is-extensional x y u v = embeddings-are-lc
-                              (𝕆-forest α)
-                              (𝕆-forest-is-embedding α)
-                              I
+  ≺-is-extensional x y u v = II
    where
     I : 𝕆-forest α x ＝ 𝕆-forest α y
     I = <-is-extensional _ _ (≼-gives-≤ x y u) (≼-gives-≤ y x v)
+
+    II : x ＝ y
+    II = embeddings-are-lc (𝕆-forest α) (𝕆-forest-is-embedding α) I
 
   ≺-is-transitive : is-transitive _≺_
   ≺-is-transitive x y z = <-is-transitive
@@ -513,6 +508,12 @@ O α = α'
                     ≺-is-extensional ,
                     ≺-is-transitive
 
+  _≺⁻_ :  X → X → 𝓤 ̇
+  x ≺⁻ y = (𝕆-forest α x) <⁻ (𝕆-forest α y)
+
+  ≺⁻≃-≺ : (x y : X) → (x ≺ y) ≃ (x ≺⁻ y)
+  ≺⁻≃-≺ x y = <⁻≃-< (𝕆-forest α x) (𝕆-forest α y)
+
   ≺⁻-is-well-order : is-well-order _≺⁻_
   ≺⁻-is-well-order = order-transfer-lemma₃.well-order←
                       fe'
@@ -523,7 +524,7 @@ O α = α'
                       ≺-is-well-order
 
   α' : Ordinal 𝓤
-  α' = 𝕆-root α , _≺⁻_ , ≺⁻-is-well-order
+  α' = X , _≺⁻_ , ≺⁻-is-well-order
 
 \end{code}
 
@@ -546,8 +547,6 @@ Ord-to-𝕄-behaviour = transfinite-recursion-on-OO-behaviour 𝕄 (λ α → ss
 
 \end{code}
 
-The following says that if φ is an embedding then ssup X φ is homotopy
-isolated:
 
 \begin{code}
 
@@ -557,10 +556,10 @@ Ord-to-𝕄-lc = transfinite-induction-on-OO _ f
   f : (α : Ordinal 𝓤)
     → ((a : ⟨ α ⟩) (β : Ordinal 𝓤) → Ord-to-𝕄 (α ↓ a) ＝ Ord-to-𝕄 β → (α ↓ a) ＝ β)
     → (β : Ordinal 𝓤) → Ord-to-𝕄 α ＝ Ord-to-𝕄 β → α ＝ β
-  f α g β p = Extensionality (OO 𝓤) α β VI VI'
+  f α IH β p = Extensionality (OO 𝓤) α β VI VI'
    where
-    I : (ssup ⟨ α ⟩ λ (a : ⟨ α ⟩) → Ord-to-𝕄 (α ↓ a))
-     ＝ (ssup ⟨ β ⟩ λ (b : ⟨ β ⟩) → Ord-to-𝕄 (β ↓ b))
+    I : ssup ⟨ α ⟩ (λ (a : ⟨ α ⟩) → Ord-to-𝕄 (α ↓ a))
+     ＝ ssup ⟨ β ⟩ (λ (b : ⟨ β ⟩) → Ord-to-𝕄 (β ↓ b))
     I = transport₂ (_＝_) (Ord-to-𝕄-behaviour α) (Ord-to-𝕄-behaviour β) p
 
     II : ⟨ α ⟩ ＝ ⟨ β ⟩
@@ -570,7 +569,7 @@ Ord-to-𝕄-lc = transfinite-induction-on-OO _ f
     III = happly (pr₂ (from-𝕄-＝ I))
 
     IV : (a : ⟨ α ⟩) → (α ↓ a) ＝ (β ↓ Idtofun II a)
-    IV a = g a (β ↓ Idtofun II a) (III a)
+    IV a = IH a (β ↓ Idtofun II a) (III a)
 
     V : (a : ⟨ α ⟩) → (α ↓ a) ⊲ β
     V a = Idtofun II a , IV a
@@ -585,7 +584,7 @@ Ord-to-𝕄-lc = transfinite-induction-on-OO _ f
     III' = happly (pr₂ (from-𝕄-＝ (I ⁻¹)))
 
     IV' : (b : ⟨ β ⟩) → (β ↓ b) ＝ (α ↓ Idtofun II' b)
-    IV' b = (g (Idtofun II' b) (β ↓ b) ((III' b)⁻¹))⁻¹
+    IV' b = (IH (Idtofun II' b) (β ↓ b) ((III' b)⁻¹))⁻¹
 
     V' : (b : ⟨ β ⟩) → (β ↓ b) ⊲ α
     V' b = Idtofun II' b , IV' b
@@ -593,42 +592,36 @@ Ord-to-𝕄-lc = transfinite-induction-on-OO _ f
     VI' : β ≼ α
     VI' = to-≼ V'
 
-Ord-to-𝕄-is-iterative-set : (α : Ordinal 𝓤) → is-iterative-set (Ord-to-𝕄 α)
-Ord-to-𝕄-is-iterative-set = transfinite-induction-on-OO _ f
+Ord-to-𝕄-is-iset : (α : Ordinal 𝓤) → is-iterative-set (Ord-to-𝕄 α)
+Ord-to-𝕄-is-iset = transfinite-induction-on-OO _ f
  where
   f : (α : Ordinal 𝓤)
     → ((x : ⟨ α ⟩) → is-iterative-set (Ord-to-𝕄 (α ↓ x)))
     → is-iterative-set (Ord-to-𝕄 α)
-  f α g = transport⁻¹ is-iterative-set (Ord-to-𝕄-behaviour α) I
+  f α IH = transport⁻¹ is-iterative-set (Ord-to-𝕄-behaviour α) I
    where
     I : is-iterative-set (ssup ⟨ α ⟩ (λ (x : ⟨ α ⟩) → Ord-to-𝕄 (α ↓ x)))
-    I = II , g
+    I = II , IH
      where
       II : is-embedding (λ x → Ord-to-𝕄 (α ↓ x))
-      II (ssup X φ) = III
+      II M = III
        where
-        III : is-prop (Σ a ꞉ ⟨ α ⟩ , Ord-to-𝕄 (α ↓ a) ＝ ssup X φ)
-        III (a , p) (b , q) = VIII
+        III : is-prop (Σ a ꞉ ⟨ α ⟩ , Ord-to-𝕄 (α ↓ a) ＝ M)
+        III (a , p) (b , q) = VI
          where
-          IV : is-embedding φ
-          IV = 𝕄-forest-is-embedding
-                (ssup X φ)
-                (transport is-iterative-set p (g a))
+          IV : α ↓ a ＝ α ↓ b
+          IV = Ord-to-𝕄-lc _ _
+                (Ord-to-𝕄 (α ↓ a) ＝⟨ p ⟩
+                 M                ＝⟨ q ⁻¹ ⟩
+                 Ord-to-𝕄 (α ↓ b) ∎)
 
-          V = Ord-to-𝕄 (α ↓ a) ＝⟨ p ⟩
-              ssup X φ         ＝⟨ q ⁻¹ ⟩
-              Ord-to-𝕄 (α ↓ b) ∎
+          V : a ＝ b
+          V = ↓-lc α a b IV
 
-          VI : α ↓ a ＝ α ↓ b
-          VI = Ord-to-𝕄-lc (α ↓ a) (α ↓ b) V
-
-          VII : a ＝ b
-          VII = ↓-lc α a b VI
-
-          VIII : (a , p) ＝ (b , q)
-          VIII = to-Σ-＝
-                  (VII ,
-                   𝕄-ssup-is-h-isolated X φ IV (Ord-to-𝕄 (α ↓ b)) _ _)
+          VI : (a , p) ＝ (b , q)
+          VI = to-subtype-＝
+                (λ x → isets-are-h-isolated (Ord-to-𝕄 (α ↓ x)) (IH x))
+                V
 \end{code}
 
 To be continued.
