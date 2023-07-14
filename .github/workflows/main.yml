@@ -16,7 +16,7 @@ jobs:
         uses: actions/checkout@v2
       - name: Run Agda
         id: typecheck
-        uses: georgejkaye/agda-github-action@v1.0
+        uses: georgejkaye/agda-github-action@v1.2
         with:
           main-file: index.lagda.md
           source-dir: source/TWA/Thesis/
