@@ -14,7 +14,7 @@ open import UF.Miscelanea
 open import UF.Equiv
 open import MLTT.Two-Properties
 
-module TWA.Thesis.Chapter6.ZeroNormalisation
+module TWA.Thesis.Chapter6.SignedDigitOrder
   (fe : FunExt) (pe : PropExt) where
 
 open import TWA.Thesis.Chapter2.FiniteDiscrete
@@ -164,9 +164,8 @@ _≤ⁿ𝟛ᴺ'_ : 𝟛ᴺ → 𝟛ᴺ → ℕ → Ω 𝓤₀
 (x ≤ⁿ𝟛ᴺ' y) n = (x ≤ⁿ𝟛ᴺ y) n
               , ≤ⁿ-prop 𝟛ᴺ-ClosenessSpace ≤ⁿ𝟛ᴺ-is-approx-order n x y 
 
-{-
-open import UF.
-PropTrunc
+
+open import UF.PropTrunc
 
 module _ (pt : propositional-truncations-exist) where
 
@@ -177,6 +176,4 @@ module _ (pt : propositional-truncations-exist) where
   = ∃ n ꞉ ℕ
   , ((i : ℕ) → n ≤ i → ternary-to-ℤ²-pos x i ≤ ternary-to-ℤ²-pos y i)
 
- ≤𝟛ᴺ-is-preorder :
- -}
 ```
