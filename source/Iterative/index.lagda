@@ -15,7 +15,15 @@ import Iterative.Ordinals
 
 \end{code}
 
-The above is based on
+Abstract. Some of the development of "Set-Theoretic and Type-Theoretic
+Ordinals Coincide" is carried out but using Gylterud's construction of
+the cumulative hierarchy 𝕍 as iterative sets, instead of
+(axiomatically) working with the higher inductive presentation. The
+type 𝕆 of hereditarily transitive sets is the type of iterative
+ordinals and corresponds to 𝕍ᵒʳᵈ in the original development
+Ordinals.CumulativeHierarchy.lagda.
+
+References.
 
   * Peter Aczel. "The Type Theoretic Interpretation of Constructive
     Set Theory". Studies in Logic and the Foundations of Mathematics,
@@ -38,12 +46,10 @@ The above is based on
   * Tom de Jong, Nicolai Kraus, Fredrik Nordvall Forsberg and
     Chuangjie Xu. "Set-Theoretic and Type-Theoretic Ordinals
     Coincide". To appear at LICS 2023, June 2023.
-
     https://arxiv.org/abs/2301.10696
 
-In short, some of the development of "Set-Theoretic and Type-Theoretic Ordinals
-Coincide" is carried out but using Gylterud's construction of the cumulative
-hierarchy 𝕍 as iterative sets, instead of (axiomatically) working with the
-higher inductive presentation. The type 𝕆 of hereditarily transitive sets is the
-type of iterative ordinals and corresponds to 𝕍ᵒʳᵈ in the original development
-Ordinals.CumulativeHierarchy.lagda.
+  * Elisabeth Bonnevier, Håkon Robbestad Gylterud, Daniel Gratzer, and
+    Anders Mörtberg, "The category of iterative sets in HoTT".
+    Workshop on Homotopy Type Theory/ Univalent Foundations
+    Vienna, Austria, April 22-23, 2023
+    https://hott-uf.github.io/2023/
