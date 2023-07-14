@@ -693,7 +693,7 @@ Ord-to-𝕍-is-lower α A x m = IV III
   I : A ∈ Ord-to-𝕍' (α ↓ x)
   I = transport (A ∈_) (Ord-to-𝕍-behaviour (α ↓ x)) m
 
-  II : (A ∈ Ord-to-𝕍' (α ↓ x)) ≃ (Σ u ꞉ ⟨ α ↓ x ⟩ , Ord-to-𝕍 ((α ↓ x) ↓ u) ＝ A)
+  II : A ∈ Ord-to-𝕍' (α ↓ x) ≃ (Σ u ꞉ ⟨ α ↓ x ⟩ , Ord-to-𝕍 ((α ↓ x) ↓ u) ＝ A)
   II = Ord-to-𝕍'-membership A (α ↓ x)
 
   III : Σ u ꞉ ⟨ α ↓ x ⟩ , Ord-to-𝕍 ((α ↓ x) ↓ u) ＝ A
@@ -735,21 +735,18 @@ Ord-to-𝕍-has-transitive-members : (α : Ordinal 𝓤)
                                 → has-transitive-members (Ord-to-𝕍 α)
 Ord-to-𝕍-has-transitive-members α =
  transport⁻¹ has-transitive-members (Ord-to-𝕍-behaviour α) I
-  where
-   A : 𝕍
-   A = 𝕍-ssup ⟨ α ⟩ (λ x → Ord-to-𝕍 (α ↓ x)) (Ord-to-𝕍↓-is-embedding α)
+ where
+  I : has-transitive-members (Ord-to-𝕍' α)
+  I B B-in-α = I₁ I₀
+   where
+    I₀ : Σ x ꞉ ⟨ α ⟩ , Ord-to-𝕍 (α ↓ x) ＝ B
+    I₀ = ⌜ Ord-to-𝕍'-membership B α ⌝ B-in-α
 
-   g : (B : 𝕍) → B ∈ A ≃ (Σ x ꞉ ⟨ α ⟩ , Ord-to-𝕍 (α ↓ x) ＝ B)
-   g B = ∈-behaviour B ⟨ α ⟩ (λ x → Ord-to-𝕍 (α ↓ x)) (Ord-to-𝕍↓-is-embedding α)
-
-   I : has-transitive-members A
-   I B B-in-A = I₁
-    where
-     I₀ : Σ x ꞉ ⟨ α ⟩ , Ord-to-𝕍 (α ↓ x) ＝ B
-     I₀ = ⌜ g B ⌝ B-in-A
-
-     I₁ : is-transitive-iset B
-     I₁ = transport is-transitive-iset (pr₂ I₀) (Ord-to-𝕍-is-transitive-iset (α ↓ pr₁ I₀))
+    I₁ : type-of I₀ → is-transitive-iset B
+    I₁ (x , p) = transport
+                  is-transitive-iset
+                  p
+                  (Ord-to-𝕍-is-transitive-iset (α ↓ x))
 
 Ord-to-𝕍-is-iordinal : (α : Ordinal 𝓤) → is-iterative-ordinal (Ord-to-𝕍 α)
 Ord-to-𝕍-is-iordinal α = Ord-to-𝕍-is-transitive-iset α ,
