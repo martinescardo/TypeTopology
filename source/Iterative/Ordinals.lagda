@@ -454,8 +454,8 @@ Every iterative ordinal can be mapped to a HoTT-book ordinal:
 
 \begin{code}
 
-O : 𝕆 → Ordinal 𝓤
-O α = α'
+𝕆-to-Ord : 𝕆 → Ordinal 𝓤
+𝕆-to-Ord α = α'
  where
   X : 𝓤 ̇
   X = 𝕆-root α
@@ -761,6 +761,18 @@ Ord-to-𝕆-is-embedding = pair-fun-is-embedding-special
                          Ord-to-𝕍-is-iordinal
                          Ord-to-𝕍-is-embedding
                          being-iordinal-is-prop
+
+{-
+Ord-to-𝕆-is-equiv : is-equiv Ord-to-𝕆
+Ord-to-𝕆-is-equiv = embeddings-with-sections-are-equivs
+                     Ord-to-𝕆
+                     Ord-to-𝕆-is-embedding
+                     (𝕆-to-Ord , η)
+ where
+  η : Ord-to-𝕆 ∘ 𝕆-to-Ord ∼ id
+  η = 𝕆-induction _ {!!}
+-}
+
 \end{code}
 
 To be continued.
