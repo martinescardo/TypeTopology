@@ -17,10 +17,10 @@ module Iterative.Ordinals
 open import UF.FunExt
 open import UF.UA-FunExt
 
-𝓤⁺ : Universe
-𝓤⁺ = 𝓤 ⁺
-
 private
+ 𝓤⁺ : Universe
+ 𝓤⁺ = 𝓤 ⁺
+
  fe : Fun-Ext
  fe = Univalence-gives-Fun-Ext ua
 
@@ -58,10 +58,10 @@ is-iterative-ordinal : 𝕍 → 𝓤⁺ ̇
 is-iterative-ordinal A = is-transitive-iset A
                        × ((B : 𝕍) → B ∈ A → is-transitive-iset B)
 
-iterative-ordinals-are-transitive : (A : 𝕍)
-                                  → is-iterative-ordinal A
-                                  → is-transitive-iset A
-iterative-ordinals-are-transitive A = pr₁
+iordinals-are-transitive : (A : 𝕍)
+                         → is-iterative-ordinal A
+                         → is-transitive-iset A
+iordinals-are-transitive A = pr₁
 
 members-of-iordinals-are-transitive : (A : 𝕍)
                                     → is-iterative-ordinal A
@@ -150,7 +150,7 @@ _≤_ : 𝕆 → 𝕆 → 𝓤⁺ ̇
     iC = ordinal-is-hereditary A C C-in-A iA
 
     I₁ : is-transitive-iset C
-    I₁ = iterative-ordinals-are-transitive C iC
+    I₁ = iordinals-are-transitive C iC
 
     I₂ : (B : 𝕍) → B ∈ C → is-transitive-iset B
     I₂ = members-of-iordinals-are-transitive C iC
@@ -298,7 +298,7 @@ being-lower-closed-is-prop ϕ e = Π₃-is-prop fe (λ x β _ → e β)
     II₅ = II₄
 
   III : (B : 𝕍) → B ∈ A → is-transitive-iset B
-  III B m = iterative-ordinals-are-transitive B (I B m)
+  III B m = iordinals-are-transitive B (I B m)
 
   io : is-iterative-ordinal A
   io = II , III
@@ -622,6 +622,144 @@ Ord-to-𝕄-is-iset = transfinite-induction-on-OO _ f
           VI = to-subtype-＝
                 (λ x → isets-are-h-isolated (Ord-to-𝕄 (α ↓ x)) (IH x))
                 V
+
+Ord-to-𝕄-is-embedding : is-embedding Ord-to-𝕄
+Ord-to-𝕄-is-embedding α' = I
+ where
+  I : is-prop (Σ α ꞉ Ordinal 𝓤 , Ord-to-𝕄 α ＝ α')
+  I (α , p) (β , q) = IV
+   where
+    II = Ord-to-𝕄 α ＝⟨ p ⟩
+         α'         ＝⟨ q ⁻¹ ⟩
+         Ord-to-𝕄 β ∎
+
+    III : α ＝ β
+    III = Ord-to-𝕄-lc α β II
+
+    IV : (α , p) ＝ (β , q)
+    IV = to-subtype-＝
+           (λ α → isets-are-h-isolated (Ord-to-𝕄 α) (Ord-to-𝕄-is-iset α))
+           III
+
+Ord-to-𝕍 : Ordinal 𝓤 → 𝕍
+Ord-to-𝕍 α = Ord-to-𝕄 α , Ord-to-𝕄-is-iset α
+
+Ord-to-𝕍-is-embedding : is-embedding Ord-to-𝕍
+Ord-to-𝕍-is-embedding = pair-fun-is-embedding-special
+                         Ord-to-𝕄
+                         Ord-to-𝕄-is-iset
+                         Ord-to-𝕄-is-embedding
+                         being-iset-is-prop
+
+Ord-to-𝕍↓-is-embedding : (α : Ordinal 𝓤) → is-embedding (λ x → Ord-to-𝕍 (α ↓ x))
+Ord-to-𝕍↓-is-embedding α = ∘-is-embedding
+                            (↓-is-embedding α)
+                            Ord-to-𝕍-is-embedding
+
+Ord-to-𝕍-behaviour : (α : Ordinal 𝓤)
+                   → Ord-to-𝕍 α ＝ 𝕍-ssup ⟨ α ⟩
+                                          (λ (x : ⟨ α ⟩) → Ord-to-𝕍 (α ↓ x))
+                                          (Ord-to-𝕍↓-is-embedding α)
+Ord-to-𝕍-behaviour α = to-subtype-＝ being-iset-is-prop (Ord-to-𝕄-behaviour α)
+
+Ord-to-𝕍-is-lower : (α : Ordinal 𝓤) (A : 𝕍) (x : ⟨ α ⟩)
+                  → A ∈ Ord-to-𝕍 (α ↓ x)
+                  → Σ y ꞉ ⟨ α ⟩ , (y ≺⟨ α ⟩ x) × (A ＝ Ord-to-𝕍 (α ↓ y))
+Ord-to-𝕍-is-lower α A x m = V IV
+ where
+  B : 𝕍
+  B = 𝕍-ssup
+       ⟨ α ↓ x ⟩
+       (λ (y : ⟨ α ↓ x ⟩) → Ord-to-𝕍 ((α ↓ x) ↓ y))
+       (Ord-to-𝕍↓-is-embedding (α ↓ x))
+
+  I : Ord-to-𝕍 (α ↓ x) ＝ B
+  I = Ord-to-𝕍-behaviour (α ↓ x)
+
+  II : A ∈ B
+  II = transport (A ∈_) I m
+
+  III : (A ∈ B) ≃ (Σ u ꞉ ⟨ α ↓ x ⟩ , Ord-to-𝕍 ((α ↓ x) ↓ u) ＝ A)
+  III = ∈-behaviour
+         A
+         ⟨ α ↓ x ⟩
+         (λ (y : ⟨ α ↓ x ⟩) → Ord-to-𝕍 ((α ↓ x) ↓ y))
+         (Ord-to-𝕍↓-is-embedding (α ↓ x))
+
+  IV : Σ u ꞉ ⟨ α ↓ x ⟩ , Ord-to-𝕍 ((α ↓ x) ↓ u) ＝ A
+  IV = ⌜ III ⌝ II
+
+  V : type-of IV → Σ y ꞉ ⟨ α ⟩ , (y ≺⟨ α ⟩ x) × (A ＝ Ord-to-𝕍 (α ↓ y))
+  V ((y , l) , p) = y , l , q
+   where
+    q = A                            ＝⟨ p ⁻¹ ⟩
+        Ord-to-𝕍 ((α ↓ x) ↓ (y , l)) ＝⟨ ap Ord-to-𝕍 (iterated-↓ α x y l) ⟩
+        Ord-to-𝕍 (α ↓ y)             ∎
+
+Ord-to-𝕍-is-iordinal : (α : Ordinal 𝓤) → is-iterative-ordinal (Ord-to-𝕍 α)
+Ord-to-𝕍-is-iordinal = transfinite-induction-on-OO _ f
+ where
+  f : (α : Ordinal 𝓤)
+    → ((a : ⟨ α ⟩) → is-iterative-ordinal (Ord-to-𝕍 (α ↓ a)))
+    → is-iterative-ordinal (Ord-to-𝕍 α)
+  f α IH = transport⁻¹ is-iterative-ordinal (Ord-to-𝕍-behaviour α) I
+   where
+    IH₀ : (a : ⟨ α ⟩) → is-transitive-iset (Ord-to-𝕍 (α ↓ a))
+    IH₀ a = iordinals-are-transitive (Ord-to-𝕍 (α ↓ a)) (IH a)
+
+    -- Not used:
+    IH₁ : (a : ⟨ α ⟩) → (B : 𝕍) → B ∈ Ord-to-𝕍 (α ↓ a) → is-transitive-iset B
+    IH₁ a = members-of-iordinals-are-transitive (Ord-to-𝕍 (α ↓ a)) (IH a)
+
+    A : 𝕍
+    A = 𝕍-ssup ⟨ α ⟩ (λ x → Ord-to-𝕍 (α ↓ x)) (Ord-to-𝕍↓-is-embedding α)
+
+    g : (B : 𝕍) → B ∈ A ≃ (Σ x ꞉ ⟨ α ⟩ , Ord-to-𝕍 (α ↓ x) ＝ B)
+    g B = ∈-behaviour B ⟨ α ⟩ (λ x → Ord-to-𝕍 (α ↓ x)) (Ord-to-𝕍↓-is-embedding α)
+
+    II : (B C : 𝕍) → B ∈ A → C ∈ B → C ∈ A
+    II B C B-in-A C-in-B = II₃ II₂
+     where
+      II₀ : Σ x ꞉ ⟨ α ⟩ , Ord-to-𝕍 (α ↓ x) ＝ B
+      II₀ = ⌜ g B ⌝ B-in-A
+
+      x : ⟨ α ⟩
+      x = pr₁ II₀
+
+      p : Ord-to-𝕍 (α ↓ x) ＝ B
+      p = pr₂ II₀
+
+      II₁ : C ∈ Ord-to-𝕍 (α ↓ x)
+      II₁ = transport (C ∈_) (p ⁻¹) C-in-B
+
+      II₂ : Σ y ꞉ ⟨ α ⟩ , (y ≺⟨ α ⟩ x) × (C ＝ Ord-to-𝕍 (α ↓ y))
+      II₂ = Ord-to-𝕍-is-lower α C x II₁
+
+      II₃ : type-of II₂ → C ∈ A
+      II₃ (y , l , p) = ⌜ g C ⌝⁻¹ (y , (p ⁻¹))
+
+    III : (B : 𝕍) → B ∈ A → is-transitive-iset B
+    III B B-in-A = III₁
+     where
+      III₀ : Σ x ꞉ ⟨ α ⟩ , Ord-to-𝕍 (α ↓ x) ＝ B
+      III₀ = ⌜ g B ⌝ B-in-A
+
+      III₁ : is-transitive-iset B
+      III₁ = transport is-transitive-iset (pr₂ III₀) (IH₀ (pr₁ III₀))
+
+    I : is-iterative-ordinal A
+    I = II , III
+
+Ord-to-𝕆 : Ordinal 𝓤 → 𝕆
+Ord-to-𝕆 α = Ord-to-𝕍 α , Ord-to-𝕍-is-iordinal α
+
+Ord-to-𝕆-is-embedding : is-embedding Ord-to-𝕆
+Ord-to-𝕆-is-embedding = pair-fun-is-embedding-special
+                         Ord-to-𝕍
+                         Ord-to-𝕍-is-iordinal
+                         Ord-to-𝕍-is-embedding
+                         being-iordinal-is-prop
+
 \end{code}
 
 To be continued.

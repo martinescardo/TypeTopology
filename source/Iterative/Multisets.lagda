@@ -23,13 +23,17 @@ open import UF.Subsingletons
 open import UF.UA-FunExt
 open import UF.Univalence
 
+private
+ 𝓤⁺ : Universe
+ 𝓤⁺ = 𝓤 ⁺
+
 \end{code}
 
 The type of iterative multisets:
 
 \begin{code}
 
-𝕄 : 𝓤 ⁺ ̇
+𝕄 : 𝓤⁺ ̇
 𝕄 = W (𝓤 ̇ ) id
 
 \end{code}
@@ -40,7 +44,7 @@ This is equivalent to the following alternative definition.
 
 private
 
- data 𝕄' : 𝓤 ⁺ ̇ where
+ data 𝕄' : 𝓤⁺ ̇ where
   ssup : (X : 𝓤 ̇ ) (φ : X → 𝕄') → 𝕄'
 
  𝕄-to-𝕄' : 𝕄 → 𝕄'
@@ -76,6 +80,9 @@ supremum" or "supremum of successors.
 
 𝕄-forest : (M : 𝕄) → 𝕄-root M → 𝕄
 𝕄-forest = W-forest
+
+_⁅_ : 𝕄 → 𝕄 → 𝓤⁺ ̇
+M ⁅ N = Σ x ꞉ 𝕄-root N , 𝕄-forest N x ＝ M
 
 \end{code}
 
@@ -160,7 +167,7 @@ ssup X φ ≃ᴹ ssup X' φ' = Σ 𝕗 ꞉ X ≃ X' , ((x : X) → φ x ≃ᴹ �
 ≃ᴹ-refl : (M : 𝕄) → M ≃ᴹ M
 ≃ᴹ-refl (ssup X φ) = ≃-refl X , (λ x → ≃ᴹ-refl (φ x))
 
-singleton-typeᴹ : 𝕄 → 𝓤 ⁺ ̇
+singleton-typeᴹ : 𝕄 → 𝓤⁺ ̇
 singleton-typeᴹ M = Σ t ꞉ 𝕄 , M ≃ᴹ t
 
 M-center : (M : 𝕄) → singleton-typeᴹ M
@@ -218,9 +225,16 @@ idtoeqᴹ-is-equiv ua M = I
   I : (t : 𝕄) → is-equiv (idtoeqᴹ M t)
   I = NatΣ-equiv-gives-fiberwise-equiv (idtoeqᴹ M) f-is-equiv
 
-𝕄-=-≃ : Univalence
-      → (M N : 𝕄) → (M ＝ N) ≃ (M ≃ᴹ N)
+𝕄-=-≃ : Univalence → (M N : 𝕄) → (M ＝ N) ≃ (M ≃ᴹ N)
 𝕄-=-≃ ua M N = idtoeqᴹ M N , idtoeqᴹ-is-equiv ua M N
 
 𝕄-is-locally-small : Univalence → is-locally-small 𝕄
 𝕄-is-locally-small ua M N = M ≃ᴹ N , ≃-sym (𝕄-=-≃ ua M N)
+
+_⁅⁻_ : 𝕄 → 𝕄 → 𝓤 ̇
+M ⁅⁻ N = Σ x ꞉ 𝕄-root N , 𝕄-forest N x ≃ᴹ M
+
+⁅⁻≃⁅ : Univalence → (M N : 𝕄) → (M ⁅ N) ≃ (M ⁅⁻ N)
+⁅⁻≃⁅ ua M N = Σ-cong (λ x → 𝕄-=-≃ ua (𝕄-forest N x) M)
+
+\end{code}

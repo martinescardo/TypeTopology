@@ -25,6 +25,7 @@ open import Ordinals.Notions
 open import Ordinals.Type
 open import Ordinals.Underlying
 open import UF.Base
+open import UF.Embeddings
 open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.FunExt
@@ -221,6 +222,11 @@ segment-⊴ α a = segment-inclusion α a , segment-inclusion-is-simulation α a
   (↓-⊴-lc α a b (transport      (λ - → (α ↓ a) ⊴ -) p (⊴-refl (α ↓ a))))
   (↓-⊴-lc α b a (transport⁻¹ (λ - → (α ↓ b) ⊴ -) p (⊴-refl (α ↓ b))))
 
+↓-is-embedding : (α : Ordinal 𝓤) → is-embedding (α ↓_)
+↓-is-embedding α = lc-maps-into-sets-are-embeddings
+                    (α ↓_)
+                    (↓-lc α _ _)
+                    (the-type-of-ordinals-is-a-set (ua _) fe')
 \end{code}
 
 We are now ready to make the type of ordinals into an ordinal.

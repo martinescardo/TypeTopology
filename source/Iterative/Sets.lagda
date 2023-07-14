@@ -24,6 +24,9 @@ open import UF.FunExt
 open import UF.UA-FunExt
 
 private
+ 𝓤⁺ : Universe
+ 𝓤⁺ = 𝓤 ⁺
+
  fe : Fun-Ext
  fe = Univalence-gives-Fun-Ext ua
 
@@ -51,7 +54,7 @@ An iterative set is a multiset whose forests are all embeddings.
 
 \begin{code}
 
-is-iterative-set : 𝕄 → 𝓤 ⁺ ̇
+is-iterative-set : 𝕄 → 𝓤⁺ ̇
 is-iterative-set (ssup X φ) = is-embedding φ
                             × ((x : X) → is-iterative-set (φ x))
 
@@ -77,7 +80,7 @@ The type of iterative sets:
 
 \begin{code}
 
-𝕍 : 𝓤 ⁺ ̇
+𝕍 : 𝓤⁺ ̇
 𝕍 = Σ M ꞉ 𝕄 , is-iterative-set M
 
 𝕍-is-locally-small : is-locally-small 𝕍
@@ -109,21 +112,25 @@ to-𝕍-＝ : {X Y : 𝓤 ̇ }
         → (ssup X φ , i) ＝[ 𝕍 ] (ssup Y γ , j)
 to-𝕍-＝ σ i j = to-subtype-＝ being-iset-is-prop (to-𝕄-＝ σ)
 
-_∈_ : 𝕍 → 𝕍 → 𝓤 ⁺ ̇
-(M , _) ∈ (ssup X φ , _) = Σ x ꞉ X , φ x ＝ M
+𝕍-root : 𝕍 → 𝓤 ̇
+𝕍-root (ssup X φ , _) = X
+
+𝕍-forest : (A : 𝕍) → 𝕍-root A → 𝕍
+𝕍-forest (ssup X φ , _ , is) x = φ x , is x
+
+_∈_ : 𝕍 → 𝕍 → 𝓤⁺ ̇
+A ∈ B = underlying-mset A ⁅ underlying-mset B
 
 _∈⁻_ : 𝕍 → 𝕍 → 𝓤 ̇
-(M , _) ∈⁻ (ssup X φ , _) = Σ x ꞉ X , φ x ≃ᴹ M
+A ∈⁻ B = underlying-mset A ⁅⁻ underlying-mset B
 
 ∈⁻≃∈ : (A B : 𝕍) → (A ∈ B) ≃ (A ∈⁻ B)
-∈⁻≃∈ A@(M , _) B@(ssup X φ , _) =
- (Σ x ꞉ X , φ x ＝ M) ≃⟨ Σ-cong (λ x → 𝕄-=-≃ ua (φ x) M) ⟩
- (Σ x ꞉ X , φ x ≃ᴹ M) ■
+∈⁻≃∈ A B = ⁅⁻≃⁅ ua (underlying-mset A) (underlying-mset B)
 
 ∈-is-prop-valued : (A B : 𝕍) → is-prop (A ∈ B)
 ∈-is-prop-valued (M , _) (ssup X φ , φ-emb , _) = φ-emb M
 
-_⊆_ : 𝕍 → 𝕍 → 𝓤 ⁺ ̇
+_⊆_ : 𝕍 → 𝕍 → 𝓤⁺ ̇
 A ⊆ B = (C : 𝕍) → C ∈ A → C ∈ B
 
 ⊆-is-prop-valued : (A B : 𝕍) → is-prop (A ⊆ B)
@@ -192,8 +199,8 @@ It follows that 𝕍 is a set, or 0-type, in the sense of the HoTT book:
 
 Here is a second, more direct, proof.
 
-The following say that ssup φ ＝ M is a proposition for every M : 𝕄 if
-φ is an embedding.
+The following says that ssup φ ＝ M is a proposition for every M : 𝕄
+if φ is an embedding.
 
 \begin{code}
 
@@ -232,12 +239,6 @@ discussing ordinals.
 
 \begin{code}
 
-𝕍-root : 𝕍 → 𝓤 ̇
-𝕍-root (ssup X φ , _) = X
-
-𝕍-forest : (A : 𝕍) → 𝕍-root A → 𝕍
-𝕍-forest (ssup X φ , _ , is) x = φ x , is x
-
 𝕍-forest-is-embedding : (A : 𝕍) → is-embedding (𝕍-forest A)
 𝕍-forest-is-embedding A@(ssup X φ , φ-emb , is) =
  pair-fun-is-embedding-special φ is φ-emb being-iset-is-prop
@@ -254,6 +255,17 @@ discussing ordinals.
   I : is-embedding φ
   I = ∘-is-embedding ϕ-emb underlying-mset-is-embedding
 
+𝕍-ssup-root : (X : 𝓤 ̇ ) (ϕ : X → 𝕍) (e : is-embedding ϕ)
+            → 𝕍-root (𝕍-ssup X ϕ e) ＝ X
+𝕍-ssup-root X ϕ e = refl
+
+𝕍-ssup-forest : (X : 𝓤 ̇ ) (ϕ : X → 𝕍) (e : is-embedding ϕ)
+              → 𝕍-forest (𝕍-ssup X ϕ e) ＝ ϕ
+𝕍-ssup-forest X ϕ e = refl
+
+𝕍-η : (A : 𝕍) → 𝕍-ssup (𝕍-root A) (𝕍-forest A) (𝕍-forest-is-embedding A) ＝ A
+𝕍-η (ssup _ _ , _) = to-subtype-＝ being-iset-is-prop refl
+
 ∈-behaviour : (A : 𝕍) (X : 𝓤 ̇ ) (ϕ : X → 𝕍) (e : is-embedding ϕ)
             → A ∈ 𝕍-ssup X ϕ e ≃ (Σ x ꞉ X , ϕ x ＝ A)
 ∈-behaviour A X ϕ e =
@@ -268,13 +280,12 @@ discussing ordinals.
           (ϕ x)
           A
 
-𝕍-ssup-root : (X : 𝓤 ̇ ) (ϕ : X → 𝕍) (e : is-embedding ϕ)
-            → 𝕍-root (𝕍-ssup X ϕ e) ＝ X
-𝕍-ssup-root X ϕ e = refl
-
-𝕍-ssup-forest : (X : 𝓤 ̇ ) (ϕ : X → 𝕍) (e : is-embedding ϕ)
-              → 𝕍-forest (𝕍-ssup X ϕ e) ＝ ϕ
-𝕍-ssup-forest X ϕ e = refl
+∈-behaviour' : (A B : 𝕍) → A ∈ B ≃ (Σ x ꞉ 𝕍-root B , 𝕍-forest B x ＝ A)
+∈-behaviour' A B =
+ transport
+  (λ - → A ∈ - ≃ (Σ x ꞉ 𝕍-root - , 𝕍-forest - x ＝ A))
+  (𝕍-η B)
+  (∈-behaviour A (𝕍-root B) (𝕍-forest B) (𝕍-forest-is-embedding B))
 
 \end{code}
 
@@ -288,9 +299,6 @@ embedding that the root of any iterative set is a 0-type:
                    (𝕍-forest A)
                    (𝕍-forest-is-embedding A)
                    𝕍-is-set
-
-𝕍-η : (A : 𝕍) → 𝕍-ssup (𝕍-root A) (𝕍-forest A) (𝕍-forest-is-embedding A) ＝ A
-𝕍-η (ssup _ _ , _) = to-subtype-＝ being-iset-is-prop refl
 
 \end{code}
 
