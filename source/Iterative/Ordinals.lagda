@@ -51,12 +51,18 @@ An iterative ordinal is a transitive iterative set.
 is-transitive-iset : 𝕍 → 𝓤⁺ ̇
 is-transitive-iset A = (B C : 𝕍) → B ∈ A → C ∈ B → C ∈ A
 
+has-transitive-members : 𝕍 → 𝓤⁺ ̇
+has-transitive-members A = (B : 𝕍) → B ∈ A → is-transitive-iset B
+
 being-transitive-iset-is-prop : (A : 𝕍) → is-prop (is-transitive-iset A)
 being-transitive-iset-is-prop A = Π₄-is-prop fe (λ B C l m → ∈-is-prop-valued C A)
 
+having-transitive-members-is-prop : (A : 𝕍) → is-prop (has-transitive-members A)
+having-transitive-members-is-prop A =
+ Π₂-is-prop fe (λ B l → being-transitive-iset-is-prop B)
+
 is-iterative-ordinal : 𝕍 → 𝓤⁺ ̇
-is-iterative-ordinal A = is-transitive-iset A
-                       × ((B : 𝕍) → B ∈ A → is-transitive-iset B)
+is-iterative-ordinal A = is-transitive-iset A × has-transitive-members A
 
 iordinals-are-transitive : (A : 𝕍)
                          → is-iterative-ordinal A
@@ -65,14 +71,14 @@ iordinals-are-transitive A = pr₁
 
 members-of-iordinals-are-transitive : (A : 𝕍)
                                     → is-iterative-ordinal A
-                                    → (B : 𝕍) → B ∈ A → is-transitive-iset B
+                                    → has-transitive-members A
 members-of-iordinals-are-transitive A = pr₂
 
 being-iordinal-is-prop : (A : 𝕍) → is-prop (is-iterative-ordinal A)
 being-iordinal-is-prop A =
  ×-is-prop
   (being-transitive-iset-is-prop A)
-  (Π₂-is-prop fe (λ B l → being-transitive-iset-is-prop B))
+  (having-transitive-members-is-prop A)
 
 ordinal-is-hereditary : (A B : 𝕍)
                       → B ∈ A
@@ -656,99 +662,98 @@ Ord-to-𝕍↓-is-embedding α = ∘-is-embedding
                             (↓-is-embedding α)
                             Ord-to-𝕍-is-embedding
 
+Ord-to-𝕍' : Ordinal 𝓤 → 𝕍
+Ord-to-𝕍' α = 𝕍-ssup ⟨ α ⟩
+                     (λ (x : ⟨ α ⟩) → Ord-to-𝕍 (α ↓ x))
+                     (Ord-to-𝕍↓-is-embedding α)
+
 Ord-to-𝕍-behaviour : (α : Ordinal 𝓤)
-                   → Ord-to-𝕍 α ＝ 𝕍-ssup ⟨ α ⟩
-                                          (λ (x : ⟨ α ⟩) → Ord-to-𝕍 (α ↓ x))
-                                          (Ord-to-𝕍↓-is-embedding α)
+                   → Ord-to-𝕍 α ＝ Ord-to-𝕍' α
 Ord-to-𝕍-behaviour α = to-subtype-＝ being-iset-is-prop (Ord-to-𝕄-behaviour α)
+
+Ord-to-𝕍'-membership : (A : 𝕍) (α : Ordinal 𝓤)
+                     → A ∈ Ord-to-𝕍' α ≃ (Σ x ꞉ ⟨ α ⟩ , Ord-to-𝕍 (α ↓ x) ＝ A)
+Ord-to-𝕍'-membership A α = ∈-behaviour
+                            A
+                            ⟨ α ⟩
+                            (λ x → Ord-to-𝕍 (α ↓ x))
+                            (Ord-to-𝕍↓-is-embedding α)
+\end{code}
+
+We now show that Ord-to-𝕍 α is an iterative ordinal. The proof
+doesn't require induction.
+
+\begin{code}
 
 Ord-to-𝕍-is-lower : (α : Ordinal 𝓤) (A : 𝕍) (x : ⟨ α ⟩)
                   → A ∈ Ord-to-𝕍 (α ↓ x)
                   → Σ y ꞉ ⟨ α ⟩ , (y ≺⟨ α ⟩ x) × (A ＝ Ord-to-𝕍 (α ↓ y))
-Ord-to-𝕍-is-lower α A x m = V IV
+Ord-to-𝕍-is-lower α A x m = IV III
  where
-  B : 𝕍
-  B = 𝕍-ssup
-       ⟨ α ↓ x ⟩
-       (λ (y : ⟨ α ↓ x ⟩) → Ord-to-𝕍 ((α ↓ x) ↓ y))
-       (Ord-to-𝕍↓-is-embedding (α ↓ x))
+  I : A ∈ Ord-to-𝕍' (α ↓ x)
+  I = transport (A ∈_) (Ord-to-𝕍-behaviour (α ↓ x)) m
 
-  I : Ord-to-𝕍 (α ↓ x) ＝ B
-  I = Ord-to-𝕍-behaviour (α ↓ x)
+  II : (A ∈ Ord-to-𝕍' (α ↓ x)) ≃ (Σ u ꞉ ⟨ α ↓ x ⟩ , Ord-to-𝕍 ((α ↓ x) ↓ u) ＝ A)
+  II = Ord-to-𝕍'-membership A (α ↓ x)
 
-  II : A ∈ B
-  II = transport (A ∈_) I m
+  III : Σ u ꞉ ⟨ α ↓ x ⟩ , Ord-to-𝕍 ((α ↓ x) ↓ u) ＝ A
+  III = ⌜ II ⌝ I
 
-  III : (A ∈ B) ≃ (Σ u ꞉ ⟨ α ↓ x ⟩ , Ord-to-𝕍 ((α ↓ x) ↓ u) ＝ A)
-  III = ∈-behaviour
-         A
-         ⟨ α ↓ x ⟩
-         (λ (y : ⟨ α ↓ x ⟩) → Ord-to-𝕍 ((α ↓ x) ↓ y))
-         (Ord-to-𝕍↓-is-embedding (α ↓ x))
-
-  IV : Σ u ꞉ ⟨ α ↓ x ⟩ , Ord-to-𝕍 ((α ↓ x) ↓ u) ＝ A
-  IV = ⌜ III ⌝ II
-
-  V : type-of IV → Σ y ꞉ ⟨ α ⟩ , (y ≺⟨ α ⟩ x) × (A ＝ Ord-to-𝕍 (α ↓ y))
-  V ((y , l) , p) = y , l , q
+  IV : type-of III → Σ y ꞉ ⟨ α ⟩ , (y ≺⟨ α ⟩ x) × (A ＝ Ord-to-𝕍 (α ↓ y))
+  IV ((y , l) , p) = y , l , q
    where
     q = A                            ＝⟨ p ⁻¹ ⟩
         Ord-to-𝕍 ((α ↓ x) ↓ (y , l)) ＝⟨ ap Ord-to-𝕍 (iterated-↓ α x y l) ⟩
         Ord-to-𝕍 (α ↓ y)             ∎
 
-Ord-to-𝕍-is-iordinal : (α : Ordinal 𝓤) → is-iterative-ordinal (Ord-to-𝕍 α)
-Ord-to-𝕍-is-iordinal = transfinite-induction-on-OO _ f
+Ord-to-𝕍-is-transitive-iset : (α : Ordinal 𝓤) → is-transitive-iset (Ord-to-𝕍 α)
+Ord-to-𝕍-is-transitive-iset α =
+ transport⁻¹ is-transitive-iset (Ord-to-𝕍-behaviour α) I
  where
-  f : (α : Ordinal 𝓤)
-    → ((a : ⟨ α ⟩) → is-iterative-ordinal (Ord-to-𝕍 (α ↓ a)))
-    → is-iterative-ordinal (Ord-to-𝕍 α)
-  f α IH = transport⁻¹ is-iterative-ordinal (Ord-to-𝕍-behaviour α) I
+  g : (B : 𝕍) → B ∈ Ord-to-𝕍' α ≃ (Σ x ꞉ ⟨ α ⟩ , Ord-to-𝕍 (α ↓ x) ＝ B)
+  g B = Ord-to-𝕍'-membership B α
+
+  I : is-transitive-iset (Ord-to-𝕍' α)
+  I B C B-in-α C-in-B = I₁ I₀
    where
-    IH₀ : (a : ⟨ α ⟩) → is-transitive-iset (Ord-to-𝕍 (α ↓ a))
-    IH₀ a = iordinals-are-transitive (Ord-to-𝕍 (α ↓ a)) (IH a)
+    I₀ : Σ x ꞉ ⟨ α ⟩ , Ord-to-𝕍 (α ↓ x) ＝ B
+    I₀ = ⌜ g B ⌝ B-in-α
 
-    -- Not used:
-    IH₁ : (a : ⟨ α ⟩) → (B : 𝕍) → B ∈ Ord-to-𝕍 (α ↓ a) → is-transitive-iset B
-    IH₁ a = members-of-iordinals-are-transitive (Ord-to-𝕍 (α ↓ a)) (IH a)
-
-    A : 𝕍
-    A = 𝕍-ssup ⟨ α ⟩ (λ x → Ord-to-𝕍 (α ↓ x)) (Ord-to-𝕍↓-is-embedding α)
-
-    g : (B : 𝕍) → B ∈ A ≃ (Σ x ꞉ ⟨ α ⟩ , Ord-to-𝕍 (α ↓ x) ＝ B)
-    g B = ∈-behaviour B ⟨ α ⟩ (λ x → Ord-to-𝕍 (α ↓ x)) (Ord-to-𝕍↓-is-embedding α)
-
-    II : (B C : 𝕍) → B ∈ A → C ∈ B → C ∈ A
-    II B C B-in-A C-in-B = II₃ II₂
+    I₁ : type-of I₀ → C ∈ Ord-to-𝕍' α
+    I₁ (x , p) = I₄ I₃
      where
-      II₀ : Σ x ꞉ ⟨ α ⟩ , Ord-to-𝕍 (α ↓ x) ＝ B
-      II₀ = ⌜ g B ⌝ B-in-A
+      I₂ : C ∈ Ord-to-𝕍 (α ↓ x)
+      I₂ = transport (C ∈_) (p ⁻¹) C-in-B
 
-      x : ⟨ α ⟩
-      x = pr₁ II₀
+      I₃ : Σ y ꞉ ⟨ α ⟩ , (y ≺⟨ α ⟩ x) × (C ＝ Ord-to-𝕍 (α ↓ y))
+      I₃ = Ord-to-𝕍-is-lower α C x I₂
 
-      p : Ord-to-𝕍 (α ↓ x) ＝ B
-      p = pr₂ II₀
+      I₄ : type-of I₃ → C ∈ Ord-to-𝕍' α
+      I₄ (y , _ , q) = ⌜ g C ⌝⁻¹ (y , (q ⁻¹))
 
-      II₁ : C ∈ Ord-to-𝕍 (α ↓ x)
-      II₁ = transport (C ∈_) (p ⁻¹) C-in-B
+Ord-to-𝕍-has-transitive-members : (α : Ordinal 𝓤)
+                                → has-transitive-members (Ord-to-𝕍 α)
+Ord-to-𝕍-has-transitive-members α =
+ transport⁻¹ has-transitive-members (Ord-to-𝕍-behaviour α) I
+  where
+   A : 𝕍
+   A = 𝕍-ssup ⟨ α ⟩ (λ x → Ord-to-𝕍 (α ↓ x)) (Ord-to-𝕍↓-is-embedding α)
 
-      II₂ : Σ y ꞉ ⟨ α ⟩ , (y ≺⟨ α ⟩ x) × (C ＝ Ord-to-𝕍 (α ↓ y))
-      II₂ = Ord-to-𝕍-is-lower α C x II₁
+   g : (B : 𝕍) → B ∈ A ≃ (Σ x ꞉ ⟨ α ⟩ , Ord-to-𝕍 (α ↓ x) ＝ B)
+   g B = ∈-behaviour B ⟨ α ⟩ (λ x → Ord-to-𝕍 (α ↓ x)) (Ord-to-𝕍↓-is-embedding α)
 
-      II₃ : type-of II₂ → C ∈ A
-      II₃ (y , l , p) = ⌜ g C ⌝⁻¹ (y , (p ⁻¹))
+   I : has-transitive-members A
+   I B B-in-A = I₁
+    where
+     I₀ : Σ x ꞉ ⟨ α ⟩ , Ord-to-𝕍 (α ↓ x) ＝ B
+     I₀ = ⌜ g B ⌝ B-in-A
 
-    III : (B : 𝕍) → B ∈ A → is-transitive-iset B
-    III B B-in-A = III₁
-     where
-      III₀ : Σ x ꞉ ⟨ α ⟩ , Ord-to-𝕍 (α ↓ x) ＝ B
-      III₀ = ⌜ g B ⌝ B-in-A
+     I₁ : is-transitive-iset B
+     I₁ = transport is-transitive-iset (pr₂ I₀) (Ord-to-𝕍-is-transitive-iset (α ↓ pr₁ I₀))
 
-      III₁ : is-transitive-iset B
-      III₁ = transport is-transitive-iset (pr₂ III₀) (IH₀ (pr₁ III₀))
-
-    I : is-iterative-ordinal A
-    I = II , III
+Ord-to-𝕍-is-iordinal : (α : Ordinal 𝓤) → is-iterative-ordinal (Ord-to-𝕍 α)
+Ord-to-𝕍-is-iordinal α = Ord-to-𝕍-is-transitive-iset α ,
+                         Ord-to-𝕍-has-transitive-members α
 
 Ord-to-𝕆 : Ordinal 𝓤 → 𝕆
 Ord-to-𝕆 α = Ord-to-𝕍 α , Ord-to-𝕍-is-iordinal α
@@ -759,7 +764,6 @@ Ord-to-𝕆-is-embedding = pair-fun-is-embedding-special
                          Ord-to-𝕍-is-iordinal
                          Ord-to-𝕍-is-embedding
                          being-iordinal-is-prop
-
 \end{code}
 
 To be continued.
