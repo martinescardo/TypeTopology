@@ -762,16 +762,40 @@ Ord-to-𝕆-is-embedding = pair-fun-is-embedding-special
                          Ord-to-𝕍-is-embedding
                          being-iordinal-is-prop
 
-{-
-Ord-to-𝕆-is-equiv : is-equiv Ord-to-𝕆
-Ord-to-𝕆-is-equiv = embeddings-with-sections-are-equivs
-                     Ord-to-𝕆
-                     Ord-to-𝕆-is-embedding
-                     (𝕆-to-Ord , η)
+Ord-to-𝕆↓-is-embedding : (α : Ordinal 𝓤)
+                       → is-embedding (λ x → Ord-to-𝕆 (α ↓ x))
+Ord-to-𝕆↓-is-embedding α = ∘-is-embedding
+                            (↓-is-embedding α)
+                            Ord-to-𝕆-is-embedding
+
+Ord-to-𝕆↓-is-lower-closed : (α : Ordinal 𝓤)
+                          → is-lower-closed (λ x → Ord-to-𝕆 (α ↓ x))
+Ord-to-𝕆↓-is-lower-closed α x β l = II I
  where
-  η : Ord-to-𝕆 ∘ 𝕆-to-Ord ∼ id
-  η = 𝕆-induction _ {!!}
--}
+  B : 𝕍
+  B = underlying-iset β
+
+  I : Σ y ꞉ ⟨ α ⟩ , (y ≺⟨ α ⟩ x) × (B ＝ Ord-to-𝕍 (α ↓ y))
+  I = Ord-to-𝕍-is-lower α B x l
+
+  II : type-of I → Σ y ꞉ ⟨ α ⟩ , Ord-to-𝕆 (α ↓ y) ＝ β
+  II (y , _ , p) = y , to-subtype-＝ being-iordinal-is-prop (p ⁻¹)
+
+Ord-to-𝕆' : Ordinal 𝓤 → 𝕆
+Ord-to-𝕆' α = 𝕆-ssup
+               ⟨ α ⟩
+               ((λ (x : ⟨ α ⟩) → Ord-to-𝕆 (α ↓ x)))
+               (Ord-to-𝕆↓-is-embedding α)
+               (Ord-to-𝕆↓-is-lower-closed α)
+
+Ord-to-𝕆-behaviour : (α : Ordinal 𝓤)
+                   → Ord-to-𝕆 α ＝ Ord-to-𝕆' α
+Ord-to-𝕆-behaviour α =
+ to-subtype-＝
+  being-iordinal-is-prop
+   (to-subtype-＝
+     being-iset-is-prop
+     (Ord-to-𝕄-behaviour α))
 
 \end{code}
 
