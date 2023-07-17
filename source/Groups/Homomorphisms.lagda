@@ -7,7 +7,7 @@ August 28, 2021
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan
 open import UF.Base

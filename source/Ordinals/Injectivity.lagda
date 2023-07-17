@@ -4,7 +4,7 @@ The type of ordinals is (algebraically) injective.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import UF.FunExt
 
@@ -12,6 +12,8 @@ module Ordinals.Injectivity where
 
 open import MLTT.Spartan
 open import Notation.CanonicalMap
+open import Ordinals.Equivalence
+open import Ordinals.Maps
 open import Ordinals.Type
 open import Ordinals.Underlying
 open import Ordinals.WellOrderArithmetic
@@ -109,7 +111,7 @@ that have infs of complemented subsets is injective. These two results
 are already proved in other modules, but these results are not
 explicitly stated. We should refactor that code.
 
-Added 11th May 2022. But we still need to clean it up.
+Added 11th May 2022.
 
 \begin{code}
 

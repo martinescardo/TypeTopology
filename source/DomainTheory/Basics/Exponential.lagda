@@ -9,7 +9,7 @@ useful when proving that exponentials of sup-complete dcpos are algebraic.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan hiding (J)
 open import UF.FunExt
@@ -40,10 +40,10 @@ module _ (𝓓 : DCPO {𝓤} {𝓣})
  _hom-⊑_ : DCPO[ 𝓓 , 𝓔 ] → DCPO[ 𝓓 , 𝓔 ] → 𝓤 ⊔ 𝓣' ̇
  (f , _) hom-⊑ (g , _) = ∀ d → f d ⊑⟨ 𝓔 ⟩ g d
 
- pointwise-family : {I : 𝓥 ̇} (α : I → DCPO[ 𝓓 , 𝓔 ]) → ⟨ 𝓓 ⟩ → I → ⟨ 𝓔 ⟩
+ pointwise-family : {I : 𝓥 ̇ } (α : I → DCPO[ 𝓓 , 𝓔 ]) → ⟨ 𝓓 ⟩ → I → ⟨ 𝓔 ⟩
  pointwise-family α d i = underlying-function 𝓓 𝓔 (α i) d
 
- pointwise-family-is-directed : {I : 𝓥 ̇} (α : I → DCPO[ 𝓓 , 𝓔 ])
+ pointwise-family-is-directed : {I : 𝓥 ̇ } (α : I → DCPO[ 𝓓 , 𝓔 ])
                                 (δ : is-directed _hom-⊑_ α)
                                 (d : ⟨ 𝓓 ⟩)
                               → is-directed (underlying-order 𝓔)
@@ -57,7 +57,7 @@ module _ (𝓓 : DCPO {𝓤} {𝓣})
     (k , l , m) ← semidirected-if-directed _hom-⊑_ α δ i j
     ∣ k , l d , m d ∣
 
- continuous-functions-sup : {I : 𝓥 ̇} (α : I → DCPO[ 𝓓 , 𝓔 ])
+ continuous-functions-sup : {I : 𝓥 ̇ } (α : I → DCPO[ 𝓓 , 𝓔 ])
                           → is-directed _hom-⊑_ α → DCPO[ 𝓓 , 𝓔 ]
  continuous-functions-sup {I} α δ = f , c
   where
@@ -277,7 +277,7 @@ module _
 
  open is-sup-complete 𝓔-is-sup-complete
 
- sup-of-continuous-functions : {I : 𝓥 ̇  } → (I → DCPO[ 𝓓 , 𝓔 ]) → DCPO[ 𝓓 , 𝓔 ]
+ sup-of-continuous-functions : {I : 𝓥 ̇ } → (I → DCPO[ 𝓓 , 𝓔 ]) → DCPO[ 𝓓 , 𝓔 ]
  sup-of-continuous-functions {I} α = (f , c)
   where
    f : ⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩
@@ -329,7 +329,7 @@ module _
    ; ⋁-is-sup = λ {I} → lemma
    }
    where
-    lemma : {I : 𝓥 ̇  } (α : I → DCPO[ 𝓓 , 𝓔 ])
+    lemma : {I : 𝓥 ̇ } (α : I → DCPO[ 𝓓 , 𝓔 ])
           → is-sup (underlying-order (𝓓 ⟹ᵈᶜᵖᵒ 𝓔))
              (sup-of-continuous-functions α) α
     lemma {I} α = (ub , lb-of-ubs)

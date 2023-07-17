@@ -2,7 +2,7 @@ Jon Sterling, started 16th Dec 2022
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import UF.FunExt
 

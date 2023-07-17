@@ -2,7 +2,7 @@ Martin Escardo, 27 April 2014
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module UF.PropIndexedPiSigma where
 
@@ -55,7 +55,7 @@ prop-indexed-product-one : funext 𝓤 𝓥
 prop-indexed-product-one {𝓤} {𝓥} {𝓦} {𝓣} fe {X} {Y} v = γ
  where
   g : 𝟙 → Π Y
-  g * x = unique-from-𝟘 {𝓥} {𝓦} (v x)
+  g ⋆ x = unique-from-𝟘 {𝓥} {𝓦} (v x)
 
   η : (u : 𝟙) → ⋆ ＝ u
   η ⋆ = refl
@@ -98,7 +98,8 @@ prop-indexed-sum {𝓤} {𝓥} {X} {Y} i a = qinveq f (g , ε , η)
   ε : (σ : Σ Y) → g (f σ) ＝ σ
   ε (x , y) = to-Σ-＝ (i a x , c x y (i x a))
 
-prop-indexed-sum-zero : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } → (X → 𝟘 {𝓦})
+prop-indexed-sum-zero : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
+                      → (X → 𝟘 {𝓦})
                       → Σ Y ≃ (𝟘 {𝓣})
 prop-indexed-sum-zero {𝓤} {𝓥} {𝓦} {𝓣} {X} {Y} φ = qinveq f (g , ε , η)
  where

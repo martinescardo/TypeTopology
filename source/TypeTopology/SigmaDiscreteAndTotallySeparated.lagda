@@ -8,7 +8,7 @@ ordinals.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module TypeTopology.SigmaDiscreteAndTotallySeparated where
 
@@ -34,13 +34,13 @@ open import UF.Subsingletons renaming (⊤Ω to ⊤ ; ⊥Ω to ⊥)
            → is-isolated (x , y)
 Σ-isolated {𝓤} {𝓥} {X} {Y} {x} {y} d e (x' , y') = g (d x')
  where
-  g : decidable (x ＝ x') → decidable ((x , y) ＝ (x' , y'))
+  g : is-decidable (x ＝ x') → is-decidable ((x , y) ＝ (x' , y'))
   g (inl p) = f (e' y')
    where
     e' : is-isolated (transport Y p y)
     e' = equivs-preserve-isolatedness (transport Y p) (transports-are-equivs p) y e
 
-    f : decidable (transport Y p y ＝ y') → decidable ((x , y) ＝ (x' , y'))
+    f : is-decidable (transport Y p y ＝ y') → is-decidable ((x , y) ＝ (x' , y'))
     f (inl q) = inl (to-Σ-＝ (p , q))
     f (inr ψ) = inr c
      where
@@ -84,7 +84,7 @@ open import UF.Subsingletons renaming (⊤Ω to ⊤ ; ⊥Ω to ⊥)
                 → is-isolated x
 ×-isolated-left {𝓤} {𝓥} {X} {Y} {x} {y} i x' = γ (i (x' , y))
  where
-  γ : decidable ((x , y) ＝ (x' , y)) → decidable (x ＝ x')
+  γ : is-decidable ((x , y) ＝ (x' , y)) → is-decidable (x ＝ x')
   γ (inl p) = inl (ap pr₁ p)
   γ (inr ν) = inr (λ (q : x ＝ x') → ν (to-×-＝ q refl))
 
@@ -93,7 +93,7 @@ open import UF.Subsingletons renaming (⊤Ω to ⊤ ; ⊥Ω to ⊥)
                  → is-isolated y
 ×-isolated-right {𝓤} {𝓥} {X} {Y} {x} {y} i y' = γ (i (x , y'))
  where
-  γ : decidable ((x , y) ＝ (x , y')) → decidable (y ＝ y')
+  γ : is-decidable ((x , y) ＝ (x , y')) → is-decidable (y ＝ y')
   γ (inl p) = inl (ap pr₂ p)
   γ (inr ν) = inr (λ (q : y ＝ y') → ν (to-×-＝ refl q))
 
@@ -104,7 +104,7 @@ open import UF.Subsingletons renaming (⊤Ω to ⊤ ; ⊥Ω to ⊥)
                  → is-isolated y
 Σ-isolated-right {𝓤} {𝓥} {X} {Y} {x} {y} s i y' = γ (i (x , y'))
  where
-  γ : decidable ((x , y) ＝ (x , y')) → decidable (y ＝ y')
+  γ : is-decidable ((x , y) ＝ (x , y')) → is-decidable (y ＝ y')
   γ (inl p) =
     inl (y                               ＝⟨ refl ⟩
          transport Y refl y              ＝⟨ ap (λ - → transport Y - y) (s refl (ap pr₁ p)) ⟩
@@ -120,7 +120,7 @@ Here we need a compactness assumption:
 \begin{code}
 
 Σ-isolated-left : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {x : X} {y : Y x}
-                → ((x : X) → Compact (Y x))
+                → ((x : X) → is-Compact (Y x))
                 → is-isolated (x , y)
                 → is-isolated x
 Σ-isolated-left {𝓤} {𝓥} {X} {Y} {x} {y} σ i x' = γ δ
@@ -128,13 +128,13 @@ Here we need a compactness assumption:
    A : (y' : Y x') → 𝓤 ⊔ 𝓥 ̇
    A y' = (x , y) ＝ (x' , y')
 
-   d : complemented A
+   d : is-complemented A
    d y' = i (x' , y')
 
-   δ : decidable (Σ A)
+   δ : is-decidable (Σ A)
    δ = σ x' A d
 
-   γ : decidable (Σ A) → decidable (x ＝ x')
+   γ : is-decidable (Σ A) → is-decidable (x ＝ x')
    γ (inl (y' , p)) = inl (ap pr₁ p)
    γ (inr ν)        = inr (λ (q : x ＝ x') → ν (transport Y q y , to-Σ-＝ (q , refl)))
 
@@ -196,8 +196,8 @@ Even compact totally separated types fail to be closed under Σ:
  Σ-totally-separated-stronger-taboo :
 
       (∀ {𝓤} {𝓥} (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ )
-          → compact X
-          → ((x : X) → compact (Y x))
+          → is-compact X
+          → ((x : X) → is-compact (Y x))
           → is-totally-separated X
           → ((x : X) → is-totally-separated (Y x))
           → is-totally-separated (Σ Y))
@@ -208,7 +208,8 @@ Even compact totally separated types fail to be closed under Σ:
    concrete-example.Failure fe
     (τ ℕ∞ (λ u → u ＝ ∞ → 𝟚)
        (ℕ∞-compact fe₀)
-       (λ _ → compact∙-gives-compact (prop-tychonoff fe (ℕ∞-is-set fe₀) (λ _ → 𝟚-compact∙)))
+       (λ _ → compact∙-types-are-compact
+               (prop-tychonoff fe (ℕ∞-is-set fe₀) (λ _ → 𝟚-is-compact∙)))
        (ℕ∞-is-totally-separated fe₀)
           (λ u → Π-is-totally-separated fe₀ (λ _ → 𝟚-is-totally-separated)))
 

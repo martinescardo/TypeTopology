@@ -19,7 +19,7 @@ TODO: adapt to use (small) quotients defined in UF-Quotient
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 open import UF.Base hiding (_≈_)

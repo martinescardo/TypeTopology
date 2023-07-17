@@ -4,7 +4,7 @@ We construct the free 𝓥-sup-lattice on a set X : 𝓥 as the (𝓥-)powerset 
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan
 

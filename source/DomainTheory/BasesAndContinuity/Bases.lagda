@@ -23,7 +23,7 @@ continuous and algebraic dcpos are actually examples of dcpos with small
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan hiding (J)
 open import UF.FunExt
@@ -61,7 +61,7 @@ of D, we only need the elements of B to do so.
 
 module _
         (𝓓 : DCPO {𝓤} {𝓣})
-        {B : 𝓥 ̇  }
+        {B : 𝓥 ̇ }
         (β : B → ⟨ 𝓓 ⟩)
        where
 
@@ -141,7 +141,7 @@ our record-based definition is equivalent to one using Σ-types.
 
 module _
         (𝓓 : DCPO {𝓤} {𝓣})
-        {B : 𝓥 ̇  }
+        {B : 𝓥 ̇ }
         (β : B → ⟨ 𝓓 ⟩)
        where
 
@@ -156,7 +156,7 @@ module _
   Π-is-prop fe (λ x →
    ×₃-is-prop (Π-is-prop fe
                (λ b → prop-being-small-is-prop (λ _ → pe) (λ _ _ → fe)
-                       (β b ≪⟨ 𝓓 ⟩ x) (≪-is-prop-valued 𝓓) 𝓥))
+                       (β b ≪⟨ 𝓓 ⟩ x) (≪-is-prop-valued 𝓓)))
               (being-directed-is-prop (underlying-order 𝓓) (↡-inclusion 𝓓 β x))
               (is-sup-is-prop (underlying-order 𝓓) (pr₁ (axioms-of-dcpo 𝓓))
                               x (↡-inclusion 𝓓 β x)))
@@ -225,7 +225,7 @@ be locally small, as we show now.
 
 module _
         (𝓓 : DCPO {𝓤} {𝓣})
-        {B : 𝓥 ̇  }
+        {B : 𝓥 ̇ }
         (β : B → ⟨ 𝓓 ⟩)
         (sb : is-small-basis 𝓓 β)
        where
@@ -258,10 +258,8 @@ module _
           (∀ (b : B) → β b ≪⟨ 𝓓 ⟩ x → β b ≪⟨ 𝓓 ⟩ y) ≃⟨ III ⟩
           x ⊑⟨ 𝓓 ⟩ y                                ■
        where
-        I   = Π-cong fe fe B _ _
-                     (λ b → →cong fe fe (≃-refl (b ≪ᴮₛ x)) ≪ᴮₛ-≃-≪ᴮ)
-        II  = Π-cong fe fe B _ _
-                     (λ b → →cong fe fe ≪ᴮₛ-≃-≪ᴮ (≃-refl (β b ≪⟨ 𝓓 ⟩ y)))
+        I   = Π-cong fe fe (λ b → →cong fe fe (≃-refl (b ≪ᴮₛ x)) ≪ᴮₛ-≃-≪ᴮ)
+        II  = Π-cong fe fe (λ b → →cong fe fe ≪ᴮₛ-≃-≪ᴮ (≃-refl (β b ≪⟨ 𝓓 ⟩ y)))
         III = ≃-sym (⊑-in-terms-of-≪ᴮ)
 
 \end{code}
@@ -330,7 +328,7 @@ of D, we can do so using compact elements from B.
 
 module _
         (𝓓 : DCPO {𝓤} {𝓣})
-        {B : 𝓥 ̇  }
+        {B : 𝓥 ̇ }
         (β : B → ⟨ 𝓓 ⟩)
        where
 
@@ -522,10 +520,10 @@ and have suprema x. So the results are type-theoretic versions of Proposition
 
 module _
         (𝓓 : DCPO {𝓤} {𝓣})
-        {B : 𝓥 ̇  }
+        {B : 𝓥 ̇ }
         (β : B → ⟨ 𝓓 ⟩)
         (x : ⟨ 𝓓 ⟩)
-        {I : 𝓥 ̇  }
+        {I : 𝓥 ̇ }
         (σ : I → ↡ᴮ 𝓓 β x)
        where
 
@@ -589,7 +587,7 @@ module _
 
  open _continuous-retract-of_ ρ
 
- small-basis-from-continuous-retract : Prop-Ext → {B : 𝓥 ̇  } (β : B → ⟨ 𝓔 ⟩)
+ small-basis-from-continuous-retract : Prop-Ext → {B : 𝓥 ̇ } (β : B → ⟨ 𝓔 ⟩)
                                      → is-small-basis 𝓔 β
                                      → is-small-basis 𝓓 (r ∘ β)
  small-basis-from-continuous-retract pe {B} β sb =

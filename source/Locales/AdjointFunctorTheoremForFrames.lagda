@@ -2,7 +2,7 @@ Ayberk Tosun, 1 March 2022.
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 open import UF.Base
@@ -16,6 +16,7 @@ module Locales.AdjointFunctorTheoremForFrames
 
 open import Locales.Frame pt fe
 open import Locales.GaloisConnection pt fe
+open import Slice.Family
 open import UF.Subsingletons
 open import UF.Logic
 
@@ -55,7 +56,7 @@ module AdjointFunctorTheorem (X : Locale 𝓤' 𝓥 𝓥)
     β : (f (⋁[ 𝒪 Y ] S) is-an-upper-bound-of ⁅ f s ∣ s ε S ⁆) holds
     β i = μ (S [ i ] , ⋁[ 𝒪 Y ] S) (⋁[ 𝒪 Y ]-upper S i)
 
-    γ : (Ɐ (u , _) ∶ upper-bound ⁅ f s ∣ s ε S ⁆ , f (⋁[ 𝒪 Y ] S) ≤[ 𝒪Xₚ ] u) holds
+    γ : (Ɐ (u , _) ꞉ upper-bound ⁅ f s ∣ s ε S ⁆ , f (⋁[ 𝒪 Y ] S) ≤[ 𝒪Xₚ ] u) holds
     γ (u , q) = pr₂ (p (⋁[ 𝒪 Y ] S) u) (⋁[ 𝒪 Y ]-least S (g u , δ))
      where
       δ : (g u is-a-ub-of S) holds
@@ -204,5 +205,80 @@ module AdjointFunctorTheorem (X : Locale 𝓤' 𝓥 𝓥)
 
     γ : is-join-preserving (𝒪 Y) (𝒪 X) (𝒻ₘ .pr₁) holds
     γ S = ⋁[ 𝒪 X ]-unique ⁅ f V ∣ V ε S ⁆ (f (⋁[ 𝒪 Y ] S)) (p S)
+
+ f₊-is-right-adjoint-of-f⁺ : (𝒻@(f , _) : X ─c→ Y)
+                           → let
+                              𝒻ₘ = monotone-map-of (𝒪 Y) (𝒪 X) 𝒻
+                             in
+                              (𝒻ₘ ⊣ right-adjoint-of 𝒻) holds
+ f₊-is-right-adjoint-of-f⁺ 𝒻 V U =
+  adjunction-inequality-forward 𝒻 U V , adjunction-inequality-backward 𝒻 U V
+
+ f⁺f₊-is-deflationary : (𝒻 : X ─c→ Y)
+                      → let
+                         𝒻₊ = right-adjoint-of 𝒻 .pr₁
+                        in
+                         (U : ⟨ 𝒪 X ⟩)
+                        → (𝒻 .pr₁ (𝒻₊ U) ≤[ poset-of (𝒪 X) ] U) holds
+ f⁺f₊-is-deflationary 𝒻 = counit 𝒻⁺ₘ 𝒻₊ₘ (f₊-is-right-adjoint-of-f⁺ 𝒻)
+  where
+   𝒻₊   = right-adjoint-of 𝒻 .pr₁
+   𝒻₊ₘ  = right-adjoint-of 𝒻
+   𝒻⁺ₘ  = monotone-map-of (𝒪 Y) (𝒪 X) 𝒻
+
+ f₊-preserves-binary-meets : (𝒻@(f , _) : X ─c→ Y)
+                           → (U V : ⟨ 𝒪 X ⟩)
+                           → let
+                              𝒻₊ = right-adjoint-of 𝒻 .pr₁
+                             in
+                              𝒻₊ (U ∧[ 𝒪 X ] V) ＝ 𝒻₊ U ∧[ 𝒪 Y ] 𝒻₊ V
+ f₊-preserves-binary-meets 𝒻 U V = ∧[ 𝒪 Y ]-unique †
+  where
+   open Meets (λ U V → U ≤[ poset-of (𝒪 Y) ] V)
+
+   𝒻₊ = right-adjoint-of 𝒻 .pr₁
+
+   †₁ : (𝒻₊ (U ∧[ 𝒪 X ] V) is-a-lower-bound-of (𝒻₊ U , 𝒻₊ V)) holds
+   †₁ = β₁ , β₂
+    where
+     open PosetReasoning (poset-of (𝒪 X))
+
+     Ⅰ = f⁺f₊-is-deflationary 𝒻 (U ∧[ 𝒪 X ] V)
+
+     β₁ : (𝒻₊ (U ∧[ 𝒪 X ] V) ≤[ poset-of (𝒪 Y) ] (𝒻₊ U)) holds
+     β₁ = adjunction-inequality-forward 𝒻 U (𝒻₊ (U ∧[ 𝒪 X ] V)) ※
+      where
+       ※ : (𝒻 ⋆∙ 𝒻₊ (U ∧[ 𝒪 X ] V) ≤[ poset-of (𝒪 X) ] U) holds
+       ※ = 𝒻 ⋆∙ 𝒻₊ (U ∧[ 𝒪 X ] V)     ≤⟨ Ⅰ ⟩
+           U ∧[ 𝒪 X ] V               ≤⟨ Ⅱ ⟩
+           U                          ■
+            where
+             Ⅱ = ∧[ 𝒪 X ]-lower₁ U V
+
+     β₂ : (𝒻₊ (U ∧[ 𝒪 X ] V) ≤[ poset-of (𝒪 Y) ] (𝒻₊ V)) holds
+     β₂ = adjunction-inequality-forward 𝒻 V (𝒻₊ (U ∧[ 𝒪 X ] V)) ※
+      where
+       ※ : (𝒻 ⋆∙ 𝒻₊ (U ∧[ 𝒪 X ] V) ≤[ poset-of (𝒪 X) ] V) holds
+       ※ = 𝒻 ⋆∙ 𝒻₊ (U ∧[ 𝒪 X ] V)     ≤⟨ Ⅰ ⟩
+           U ∧[ 𝒪 X ] V               ≤⟨ Ⅱ ⟩
+           V                          ■
+            where
+             Ⅱ = ∧[ 𝒪 X ]-lower₂ U V
+
+   †₂ : ((u , _) : lower-bound (𝒻₊ U , 𝒻₊ V))
+      → (u ≤[ poset-of (𝒪 Y) ] 𝒻₊ (U ∧[ 𝒪 X ] V)) holds
+   †₂ (u , p , q) = adjunction-inequality-forward 𝒻 (U ∧[ 𝒪 X ] V) u ※
+    where
+     ♣₁ : (𝒻 ⋆∙ u ≤[ poset-of (𝒪 X) ] U) holds
+     ♣₁ = adjunction-inequality-backward 𝒻 U u p
+
+     ♣₂ : (𝒻 ⋆∙ u ≤[ poset-of (𝒪 X) ] V) holds
+     ♣₂ = adjunction-inequality-backward 𝒻 V u q
+
+     ※ : (𝒻 ⋆∙ u ≤[ poset-of (𝒪 X) ]  (U ∧[ 𝒪 X ] V)) holds
+     ※ = ∧[ 𝒪 X ]-greatest U V (𝒻 ⋆∙ u) ♣₁ ♣₂
+
+   † : (𝒻₊ (U ∧[ 𝒪 X ] V) is-glb-of (𝒻₊ U , 𝒻₊ V)) holds
+   † = †₁ , †₂
 
 \end{code}

@@ -31,7 +31,7 @@ choice where X is a proposition (see https://arxiv.org/abs/1610.03346).
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan
 open import TypeTopology.DiscreteAndSeparated
@@ -240,7 +240,7 @@ module ExcludedMiddle
 
  decidability-lemma : {X : 𝓤 ̇ } (a : 𝟚 → X)
                     → ((x : X) → (∃ i ꞉ 𝟚 , a i ＝ x) → Σ i ꞉ 𝟚 , a i ＝ x)
-                    → decidable (a ₀ ＝ a ₁)
+                    → is-decidable (a ₀ ＝ a ₁)
  decidability-lemma a c = claim (𝟚-is-discrete (s(r ₀)) (s(r ₁)))
   where
    r : 𝟚 → image a
@@ -273,7 +273,7 @@ module ExcludedMiddle
    s-a : {i j : 𝟚} → s(r i) ＝ s(r j) → a i ＝ a j
    s-a p = r-a (s-lc p)
 
-   claim : decidable (s(r ₀) ＝ s(r ₁)) → decidable (a ₀ ＝ a ₁)
+   claim : is-decidable (s(r ₀) ＝ s(r ₁)) → is-decidable (a ₀ ＝ a ₁)
    claim (inl p) = inl (s-a p)
    claim (inr u) = inr (contrapositive a-s u)
 
@@ -281,14 +281,14 @@ module ExcludedMiddle
                      → is-set X
                      → (a : 𝟚 → X)
                      → ∥((x : X) → (∃ i ꞉ 𝟚 , a i ＝ x) → Σ i ꞉ 𝟚 , a i ＝ x)∥
-                     → decidable (a ₀ ＝ a ₁)
+                     → is-decidable (a ₀ ＝ a ₁)
  decidability-lemma₂ i a =
   ∥∥-rec (decidability-of-prop-is-prop (fe _ _) i) (decidability-lemma a)
 
  ac-renders-all-sets-discrete' : AC {𝓤} {𝓤}
                                → (X : 𝓤 ̇ )
                                → is-set X
-                               → (a : 𝟚 → X) → decidable (a ₀ ＝ a ₁)
+                               → (a : 𝟚 → X) → is-decidable (a ₀ ＝ a ₁)
  ac-renders-all-sets-discrete' {𝓤} ac X i a =
   decidability-lemma₂ i a (ac₂ X A i j)
   where
@@ -304,7 +304,7 @@ module ExcludedMiddle
  ac-renders-all-sets-discrete : AC {𝓤} {𝓤}
                               → (X : 𝓤 ̇ )
                               → is-set X
-                              → (a₀ a₁ : X) → decidable (a₀ ＝ a₁)
+                              → (a₀ a₁ : X) → is-decidable (a₀ ＝ a₁)
  ac-renders-all-sets-discrete {𝓤} ac X isx a₀ a₁ =
   ac-renders-all-sets-discrete' {𝓤} ac X isx (𝟚-cases a₀ a₁)
 
@@ -578,11 +578,11 @@ module choice-functions
    II (ε⁺ , f) x = ε , ε-behaviour
 
     where
-     ε' : (A : 𝓟 X) → decidable (is-inhabited A) → X
+     ε' : (A : 𝓟 X) → is-decidable (is-inhabited A) → X
      ε' A (inl i) = ε⁺ (A , i)
      ε' A (inr ν) = x
 
-     d : (A : 𝓟 X) → decidable (is-inhabited A)
+     d : (A : 𝓟 X) → is-decidable (is-inhabited A)
      d A = em (is-inhabited A) (being-inhabited-is-prop A)
 
      ε : 𝓟 X → X
@@ -590,7 +590,7 @@ module choice-functions
 
      ε'-behaviour : (A : 𝓟 X)
                   → is-inhabited A
-                  → (δ : decidable (is-inhabited A))
+                  → (δ : is-decidable (is-inhabited A))
                   →  ε' A δ ∈ A
      ε'-behaviour A _ (inl j) = f A j
      ε'-behaviour A i (inr ν) = 𝟘-elim (ν i)
@@ -620,7 +620,7 @@ module Observation
 
  decidability-observation : {X : 𝓤 ̇ } (a : 𝟚 → X)
                           → ((x : X) → ¬¬ (Σ i ꞉ 𝟚 , a i ＝ x) → Σ i ꞉ 𝟚 , a i ＝ x)
-                          → decidable (a ₀ ＝ a ₁)
+                          → is-decidable (a ₀ ＝ a ₁)
  decidability-observation {𝓤} {X} a c = claim (𝟚-is-discrete (s(r ₀)) (s(r ₁)))
   where
    Y = Σ x ꞉ X , ¬¬ (Σ i ꞉ 𝟚 , a i ＝ x)
@@ -655,7 +655,7 @@ module Observation
    s-a : {i j : 𝟚} → s(r i) ＝ s(r j) → a i ＝ a j
    s-a p = r-a (s-lc p)
 
-   claim : decidable (s(r ₀) ＝ s(r ₁)) → decidable (a ₀ ＝ a ₁)
+   claim : is-decidable (s(r ₀) ＝ s(r ₁)) → is-decidable (a ₀ ＝ a ₁)
    claim (inl p) = inl (s-a p)
    claim (inr u) = inr (λ p → u (a-s p))
 

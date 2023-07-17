@@ -8,7 +8,7 @@ Further properties and developments are in the file IdealCompletion-Properties.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan hiding (J)
 
@@ -171,7 +171,7 @@ module Ideals
      pa = s , pv , r , t , a
       where
        s : is-set Idl
-       s = subtypes-of-sets-are-sets carrier
+       s = subtypes-of-sets-are-sets' carrier
             (pr₁-lc λ {I} → being-ideal-is-prop I)
             (powersets-are-sets'' fe fe pe)
        pv : is-prop-valued _⊑_

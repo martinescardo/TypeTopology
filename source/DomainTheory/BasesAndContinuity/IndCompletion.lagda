@@ -15,7 +15,7 @@ Ind-completion is a preorder and not a poset is seen to be important there.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan hiding (J)
 open import UF.FunExt
@@ -78,7 +78,7 @@ We now construct directed suprema of 𝓥-small families in Ind.
 
 \begin{code}
 
- Ind-∐ : {I : 𝓥 ̇  } (𝓐 : I → Ind)
+ Ind-∐ : {I : 𝓥 ̇ } (𝓐 : I → Ind)
        → is-directed _≲_ 𝓐
        → Ind
  Ind-∐ {I} 𝓐 (I-inhabited , 𝓐-semidirected) =
@@ -127,16 +127,16 @@ We now construct directed suprema of 𝓥-small families in Ind.
                                   β (i  , jⁱ₂) ⊑⟨ 𝓓 ⟩[ w₂ ]
                                   β (i  , j)   ∎⟨ 𝓓 ⟩))
 
- Ind-∐-is-directed : {I : 𝓥 ̇  } (𝓐 : I → Ind) (δ : is-directed _≲_ 𝓐)
+ Ind-∐-is-directed : {I : 𝓥 ̇ } (𝓐 : I → Ind) (δ : is-directed _≲_ 𝓐)
                    → is-Directed 𝓓 (underlying-family (Ind-∐ 𝓐 δ))
  Ind-∐-is-directed 𝓐 δ = pr₂ (pr₂ (Ind-∐ 𝓐 δ))
 
- Ind-∐-is-upperbound : {I : 𝓥 ̇  } (𝓐 : I → Ind) (δ : is-directed _≲_ 𝓐)
+ Ind-∐-is-upperbound : {I : 𝓥 ̇ } (𝓐 : I → Ind) (δ : is-directed _≲_ 𝓐)
                      → is-upperbound _≲_ (Ind-∐ 𝓐 δ) 𝓐
  Ind-∐-is-upperbound 𝓐 δ i j =
   ∣ (i , j) , reflexivity 𝓓 (pr₁ (pr₂ (𝓐 i)) j) ∣
 
- Ind-∐-is-lowerbound-of-upperbounds : {I : 𝓥 ̇  } (𝓐 : I → Ind)
+ Ind-∐-is-lowerbound-of-upperbounds : {I : 𝓥 ̇ } (𝓐 : I → Ind)
                                       (δ : is-directed _≲_ 𝓐)
                                     → is-lowerbound-of-upperbounds _≲_
                                        (Ind-∐ 𝓐 δ) 𝓐
@@ -152,7 +152,7 @@ monotone map from Ind to 𝓓.
  ∐-map : Ind → ⟨ 𝓓 ⟩
  ∐-map (I , α , δ) = ∐ 𝓓 δ
 
- ≲-to-⊑-of-∐ : {I J : 𝓥 ̇  } {α : I → ⟨ 𝓓 ⟩} {β : J → ⟨ 𝓓 ⟩}
+ ≲-to-⊑-of-∐ : {I J : 𝓥 ̇ } {α : I → ⟨ 𝓓 ⟩} {β : J → ⟨ 𝓓 ⟩}
                (δ : is-Directed 𝓓 α) (ε : is-Directed 𝓓 β)
              → (I , α , δ) ≲ (J , β , ε)
              → ∐ 𝓓 δ ⊑⟨ 𝓓 ⟩ ∐ 𝓓 ε
@@ -273,10 +273,7 @@ and the way-below relation.
                                         → is-approximating L
                                         ≃ left-adjoint-to-∐-map L
  left-adjoint-to-∐-map-characterization L =
-  Π-cong fe fe ⟨ 𝓓 ⟩
-   (λ x → (L x) approximates x)
-   (λ x → (L x) is-left-adjunct-to x)
-   (λ x → approximate-left-adjunct-to-≃ (L x) x)
+  Π-cong fe fe (λ x → approximate-left-adjunct-to-≃ (L x) x)
 
 \end{code}
 

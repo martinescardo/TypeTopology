@@ -14,7 +14,7 @@ searchable, which amounts to Theorem-3·6 of the paper
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan
 open import UF.FunExt
@@ -37,8 +37,8 @@ We recall the main notions defined in the above imported modules:
 private
  module recall {X : 𝓤 ̇ } where
 
-  recall₀ : compact∙ X    ＝ (Π p ꞉ (X → 𝟚) , Σ x₀ ꞉ X , (p x₀ ＝ ₁ → Π x ꞉ X , p x ＝ ₁))
-  recall₁ : compact  X    ＝ (Π p ꞉ (X → 𝟚) , (Σ x ꞉ X , p x ＝ ₀) + (Π x ꞉ X , p x ＝ ₁))
+  recall₀ : is-compact∙ X    ＝ (Π p ꞉ (X → 𝟚) , Σ x₀ ꞉ X , (p x₀ ＝ ₁ → Π x ꞉ X , p x ＝ ₁))
+  recall₁ : is-compact  X    ＝ (Π p ꞉ (X → 𝟚) , (Σ x ꞉ X , p x ＝ ₀) + (Π x ꞉ X , p x ＝ ₁))
   recall₂ : is-discrete X ＝ ((x y : X) → (x ＝ y) + (x ≠ y))
 
   recall₀ = by-definition
@@ -51,7 +51,7 @@ This is the main theorem proved in this module.
 
 \begin{code}
 
-ℕ∞-compact∙ : compact∙ ℕ∞
+ℕ∞-compact∙ : is-compact∙ ℕ∞
 ℕ∞-compact∙ p = a , Lemma
  where
   α : ℕ → 𝟚
@@ -129,26 +129,26 @@ Corollaries:
 
 \begin{code}
 
-ℕ∞-compact : compact ℕ∞
-ℕ∞-compact = compact∙-gives-compact ℕ∞-compact∙
+ℕ∞-compact : is-compact ℕ∞
+ℕ∞-compact = compact∙-types-are-compact ℕ∞-compact∙
 
-ℕ∞-Compact : Compact ℕ∞ {𝓤}
-ℕ∞-Compact = compact-gives-Compact ℕ∞-compact
+ℕ∞-Compact : is-Compact ℕ∞ {𝓤}
+ℕ∞-Compact = compact-types-are-Compact ℕ∞-compact
 
 ℕ∞→ℕ-is-discrete : is-discrete (ℕ∞ → ℕ)
-ℕ∞→ℕ-is-discrete = compact-discrete-discrete fe ℕ∞-compact (λ u → ℕ-is-discrete)
+ℕ∞→ℕ-is-discrete = discrete-to-power-compact-is-discrete fe ℕ∞-compact (λ u → ℕ-is-discrete)
 
 ℕ∞→𝟚-is-discrete : is-discrete (ℕ∞ → 𝟚)
-ℕ∞→𝟚-is-discrete = compact-discrete-discrete fe ℕ∞-compact (λ u → 𝟚-is-discrete)
+ℕ∞→𝟚-is-discrete = discrete-to-power-compact-is-discrete fe ℕ∞-compact (λ u → 𝟚-is-discrete)
 
 module _ (fe' : FunExt) (pt : propositional-truncations-exist) where
 
  open import TypeTopology.WeaklyCompactTypes fe' pt
 
- ℕ∞-is-∃-compact : ∃-compact ℕ∞
+ ℕ∞-is-∃-compact : is-∃-compact ℕ∞
  ℕ∞-is-∃-compact = compact-types-are-∃-compact ℕ∞-compact
 
- ℕ∞-is-Π-compact : Π-compact ℕ∞
- ℕ∞-is-Π-compact = ∃-compact-gives-Π-compact ℕ∞-is-∃-compact
+ ℕ∞-is-Π-compact : is-Π-compact ℕ∞
+ ℕ∞-is-Π-compact = ∃-compact-types-are-Π-compact ℕ∞-is-∃-compact
 
 \end{code}

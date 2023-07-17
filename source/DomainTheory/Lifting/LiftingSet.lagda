@@ -12,7 +12,7 @@ LiftingDcpo.lagda.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan
 
@@ -56,12 +56,12 @@ module _ {𝓤 : Universe}
          (s : is-set X)
        where
 
- family-value-map : {I : 𝓣 ̇}
+ family-value-map : {I : 𝓣 ̇ }
                   → (α : I → 𝓛 X)
                   → (Σ i ꞉ I , is-defined (α i)) → X
  family-value-map α (i , d) = value (α i) d
 
- directed-family-value-map-is-wconstant : {I : 𝓣 ̇  }
+ directed-family-value-map-is-wconstant : {I : 𝓣 ̇ }
                                         → (α : I → 𝓛 X)
                                         → (δ : is-directed _⊑'_ α )
                                         → wconstant (family-value-map α)
@@ -82,7 +82,7 @@ module _ {𝓤 : Universe}
        value (α i₁) d₁                         ＝⟨ refl ⟩
        f (i₁ , d₁)                             ∎
 
- lifting-sup-value : {I : 𝓣 ̇}
+ lifting-sup-value : {I : 𝓣 ̇ }
                    → (α : I → 𝓛 X)
                    → (δ : is-directed _⊑'_ α )
                    → (∃ i ꞉ I , is-defined (α i)) → X
@@ -91,11 +91,11 @@ module _ {𝓤 : Universe}
         s (family-value-map α)
         (directed-family-value-map-is-wconstant α δ))
 
- lifting-sup : {I : 𝓣 ̇} → (α : I → 𝓛 X) → (δ : is-directed _⊑'_ α) → 𝓛 X
+ lifting-sup : {I : 𝓣 ̇ } → (α : I → 𝓛 X) → (δ : is-directed _⊑'_ α) → 𝓛 X
  lifting-sup {I} α δ =
   (∃ i ꞉ I , is-defined (α i)) , lifting-sup-value α δ , ∥∥-is-prop
 
- lifting-sup-is-upperbound : {I : 𝓣 ̇} → (α : I → 𝓛 X)
+ lifting-sup-is-upperbound : {I : 𝓣 ̇ } → (α : I → 𝓛 X)
                              (δ : is-directed _⊑'_ α)
                            → (i : I) → α i ⊑' lifting-sup α δ
  lifting-sup-is-upperbound {I} α δ i = γ
@@ -115,7 +115,7 @@ module _ {𝓤 : Universe}
                   (directed-family-value-map-is-wconstant α δ)))
            (i , d)
 
- family-defined-somewhere-sup-＝ : {I : 𝓣 ̇} {α : I → 𝓛 X}
+ family-defined-somewhere-sup-＝ : {I : 𝓣 ̇ } {α : I → 𝓛 X}
                                 → (δ : is-directed _⊑'_ α)
                                 → (i : I)
                                 → is-defined (α i)
@@ -123,7 +123,7 @@ module _ {𝓤 : Universe}
  family-defined-somewhere-sup-＝ {I} {α} δ i d =
   (lifting-sup-is-upperbound α δ i) d
 
- lifting-sup-is-lowerbound-of-upperbounds : {I : 𝓣 ̇}
+ lifting-sup-is-lowerbound-of-upperbounds : {I : 𝓣 ̇ }
                                           → {α : I → 𝓛 X}
                                           → (δ : is-directed _⊑'_ α)
                                           → (v : 𝓛 X)
@@ -355,7 +355,7 @@ DomainTheory.Bilimits.Dinfinity.lagda.
 open import DomainTheory.Basics.SupComplete pt fe 𝓣
 
 module _
-        {P : 𝓤 ̇  }
+        {P : 𝓤 ̇ }
         (P-is-prop : is-prop P)
        where
 
@@ -366,11 +366,11 @@ module _
  lifting-of-prop-is-sup-complete : is-sup-complete 𝓛P
  lifting-of-prop-is-sup-complete = record { ⋁ = sup ; ⋁-is-sup = lemma }
   where
-   sup-map : {I : 𝓣 ̇  } (α : I → ⟨ 𝓛P ⟩) → (∃ i ꞉ I , is-defined (α i)) → P
+   sup-map : {I : 𝓣 ̇ } (α : I → ⟨ 𝓛P ⟩) → (∃ i ꞉ I , is-defined (α i)) → P
    sup-map α = ∥∥-rec P-is-prop (λ (i , q) → value (α i) q)
-   sup : {I : 𝓣 ̇  } (α : I → ⟨ 𝓛P ⟩) → ⟨ 𝓛P ⟩
+   sup : {I : 𝓣 ̇ } (α : I → ⟨ 𝓛P ⟩) → ⟨ 𝓛P ⟩
    sup {I} α = ((∃ i ꞉ I , is-defined (α i)) , sup-map α , ∃-is-prop)
-   lemma : {I : 𝓣 ̇  } (α : I → ⟨ 𝓛P ⟩) → is-sup _⊑'_ (sup α) α
+   lemma : {I : 𝓣 ̇ } (α : I → ⟨ 𝓛P ⟩) → is-sup _⊑'_ (sup α) α
    lemma {I} α = (ub , lb-of-ubs)
     where
      ub : (i : I) → α i ⊑' sup α

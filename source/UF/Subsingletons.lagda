@@ -9,7 +9,7 @@ https://unimath.github.io/bham2017/uf.pdf
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module UF.Subsingletons where
 
@@ -366,17 +366,17 @@ to-subtype-＝ : {X : 𝓦 ̇ } {A : X → 𝓥 ̇ }
 to-subtype-＝ {𝓤} {𝓥} {X} {A} {x} {y} {a} {b} s p =
  to-Σ-＝ (p , s y (transport A p a) b)
 
-subtype-of-prop-is-prop : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (m : X → Y)
-                        → left-cancellable m
-                        → is-prop Y
-                        → is-prop X
-subtype-of-prop-is-prop {𝓤} {𝓥} {X} m lc i x x' = lc (i (m x) (m x'))
+subtypes-of-props-are-props' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (m : X → Y)
+                             → left-cancellable m
+                             → is-prop Y
+                             → is-prop X
+subtypes-of-props-are-props' m lc i x x' = lc (i (m x) (m x'))
 
-subtypes-of-sets-are-sets : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (m : X → Y)
-                          → left-cancellable m
-                          → is-set Y
-                          → is-set X
-subtypes-of-sets-are-sets {𝓤} {𝓥} {X} m i h = Id-collapsibles-are-sets (f , g)
+subtypes-of-sets-are-sets' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (m : X → Y)
+                           → left-cancellable m
+                           → is-set Y
+                           → is-set X
+subtypes-of-sets-are-sets' {𝓤} {𝓥} {X} m i h = Id-collapsibles-are-sets (f , g)
  where
   f : {x x' : X} → x ＝ x' → x ＝ x'
   f r = i (ap m r)
@@ -392,7 +392,7 @@ subsets-of-sets-are-sets : (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ )
                          → is-set X
                          → ({x : X} → is-prop (Y x))
                          → is-set (Σ x ꞉ X , Y x)
-subsets-of-sets-are-sets X Y h p = subtypes-of-sets-are-sets pr₁ (pr₁-lc p) h
+subsets-of-sets-are-sets X Y h p = subtypes-of-sets-are-sets' pr₁ (pr₁-lc p) h
 
 inl-lc-is-section : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                     {x x' : X}
@@ -450,12 +450,15 @@ inr-lc-is-section refl = refl
 
 \end{code}
 
-Formulation of the K axiom for a universe U.
+Formulation of the K axiom for a universe 𝓤.
 
 \begin{code}
 
 K-axiom : ∀ 𝓤 → 𝓤 ⁺ ̇
 K-axiom 𝓤 = (X : 𝓤 ̇ ) → is-set X
+
+K-Axiom : 𝓤ω
+K-Axiom = (𝓤 : Universe) → K-axiom 𝓤
 
 \end{code}
 
@@ -503,17 +506,17 @@ values other than 𝟘 and 𝟙:
 no-props-other-than-𝟘-or-𝟙 : propext 𝓤 → ¬ (Σ P ꞉ 𝓤 ̇ , is-prop P × (P ≠ 𝟘) × (P ≠ 𝟙))
 no-props-other-than-𝟘-or-𝟙 pe (P , i , f , g) = 𝟘-elim (φ u)
  where
-   u : ¬ P
-   u p = g l
-     where
-       l : P ＝ 𝟙
-       l = pe i 𝟙-is-prop unique-to-𝟙 (λ _ → p)
+  u : ¬ P
+  u p = g l
+   where
+    l : P ＝ 𝟙
+    l = pe i 𝟙-is-prop unique-to-𝟙 (λ _ → p)
 
-   φ : ¬¬ P
-   φ u = f l
-     where
-       l : P ＝ 𝟘
-       l = pe i 𝟘-is-prop (λ p → 𝟘-elim (u p)) 𝟘-elim
+  φ : ¬¬ P
+  φ u = f l
+   where
+    l : P ＝ 𝟘
+    l = pe i 𝟘-is-prop (λ p → 𝟘-elim (u p)) 𝟘-elim
 
 \end{code}
 
@@ -654,7 +657,6 @@ The type of truth values.
 
 _holds : Ω 𝓤 → 𝓤 ̇
 (P , i) holds = P
-
 
 holds-is-prop : (p : Ω 𝓤) → is-prop (p holds)
 holds-is-prop (P , i) = i

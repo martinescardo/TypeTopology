@@ -10,7 +10,7 @@ motivation coming from univalent type theory is also discussed.)
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module Various.DummettDisjunction where
 
@@ -90,7 +90,7 @@ of the propositions is decidable:
 
 \begin{code}
 
-dl : (P Q : Type) → decidable P → linearity-axiom P Q
+dl : (P Q : Type) → is-decidable P → linearity-axiom P Q
 dl P Q (inl p) = inr (λ _ → p)
 dl P Q (inr u) = inl (λ p → 𝟘-elim (u p))
 
@@ -105,7 +105,7 @@ propositions is decidable, then P ⊞ Q and P + Q are equivalent:
 
 \begin{code}
 
-classical-logic-gives-agreement : (P Q : Type) → decidable P → P ⊞ Q → P + Q
+classical-logic-gives-agreement : (P Q : Type) → is-decidable P → P ⊞ Q → P + Q
 classical-logic-gives-agreement P Q dp = equivalent-to-intuitionistic P Q (dl P Q dp)
 
 \end{code}
@@ -351,7 +351,7 @@ case of Peirce's Law with an empty type.
 Curry-Howard-EM-gives-⊕-Curry-Howard-EM-left : Curry-Howard-EM → (P : Type) → ¬ P ⊕ P
 Curry-Howard-EM-gives-⊕-Curry-Howard-EM-left em P = more-generally P (em P)
  where
-  more-generally : (P : Type) → decidable P → ¬ P ⊕ P
+  more-generally : (P : Type) → is-decidable P → ¬ P ⊕ P
   more-generally P (inl p) = λ φ → p
   more-generally P (inr u) = λ φ → φ u
 
@@ -379,7 +379,7 @@ agreement-gives-Curry-Howard-EM f P = f P (¬ P) (⊕-em-right P)
 Curry-Howard-EM-gives-agreement : Curry-Howard-EM → (P Q : Type) → P ⊕ Q → P + Q
 Curry-Howard-EM-gives-agreement em P Q = more-generally P Q (em P)
  where
-  more-generally : (P Q : Type) → decidable P → P ⊕ Q → P + Q
+  more-generally : (P Q : Type) → is-decidable P → P ⊕ Q → P + Q
   more-generally P Q (inl p) φ = inl p
   more-generally P Q (inr u) φ = inr (φ (λ p → 𝟘-elim (u p)))
 
@@ -404,7 +404,7 @@ We also have, of course:
 equivalent-to-classical : Curry-Howard-EM → (P Q : Type) → ¬ (¬ P × ¬ Q) → P ⊕ Q
 equivalent-to-classical em P Q = more-generally P Q (em P) (em Q)
  where
-  more-generally : (P Q : Type) → decidable P → decidable Q → ¬ (¬ P × ¬ Q) → P ⊕ Q
+  more-generally : (P Q : Type) → is-decidable P → is-decidable Q → ¬ (¬ P × ¬ Q) → P ⊕ Q
   more-generally P Q (inl p) e v w = w p
   more-generally P Q (inr p) (inl q) v w = q
   more-generally P Q (inr p) (inr q) v w = 𝟘-elim (v ((λ p → q (w p)) , q))

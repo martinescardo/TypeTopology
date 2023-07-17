@@ -4,7 +4,7 @@ Based on `ayberkt/formal-topology-in-UF`.
 
 \begin{code}[hide]
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline --lossy-unification #-}
+{-# OPTIONS --safe --without-K --exact-split --lossy-unification #-}
 
 open import MLTT.Spartan
 open import UF.Base
@@ -13,6 +13,7 @@ open import UF.FunExt
 open import UF.Univalence
 open import UF.UA-FunExt
 open import UF.EquivalenceExamples
+open import Slice.Family
 open import MLTT.List hiding ([_])
 open import MLTT.Pi
 
@@ -100,6 +101,13 @@ A nucleus is called perfect iff it is Scott-continuous:
      → is-prop ((is-nucleus (𝒪 X) j ∧ is-perfect j) holds)
    γ j = holds-is-prop (is-nucleus (𝒪 X) j ∧ is-perfect j)
 
+ perfect-nuclei-eq-inverse : (𝒿 𝓀 : Perfect-Nucleus) → 𝒿 ＝ 𝓀 → 𝒿 $_ ∼ 𝓀 $_
+ perfect-nuclei-eq-inverse 𝒿 𝓀 p =
+  transport (λ - → 𝒿 $_ ∼ - $_) p λ _ → refl
+   where
+    † : 𝒿 .pr₁ ＝ 𝓀 .pr₁
+    † = pr₁ (from-Σ-＝ p)
+
 \end{code}
 
 Nuclei are ordered pointwise.
@@ -107,7 +115,7 @@ Nuclei are ordered pointwise.
 \begin{code}
 
  _≼₀_ : (⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩) → (⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩) → Ω (𝓤 ⊔ 𝓥)
- _≼₀_ j k = Ɐ U ∶ ⟨ 𝒪 X ⟩ , (j U) ≤[ poset-of (𝒪 X) ] (k U)
+ _≼₀_ j k = Ɐ U ꞉ ⟨ 𝒪 X ⟩ , (j U) ≤[ poset-of (𝒪 X) ] (k U)
 
  _≼₁_ : Prenucleus (𝒪 X) → Prenucleus (𝒪 X) → Ω (𝓤 ⊔ 𝓥)
  𝒿 ≼₁ 𝓀 = pr₁ 𝒿 ≼₀ pr₁ 𝓀
@@ -257,7 +265,7 @@ Nuclei are ordered pointwise.
            i  = ∧[ 𝒪 X ]-left-monotone  (μj (S [ l ] , ⋁[ 𝒪 X ] S) †)
            ii = ∧[ 𝒪 X ]-right-monotone (μk (S [ l ] , ⋁[ 𝒪 X ] S) ‡)
 
-   γ : (Ɐ (u , _) ∶ upper-bound ⁅ (j ⋏₀ k) s ∣ s ε S ⁆ ,
+   γ : (Ɐ (u , _) ꞉ upper-bound ⁅ (j ⋏₀ k) s ∣ s ε S ⁆ ,
          (j ⋏₀ k) (⋁[ 𝒪 X ] S) ≤[ poset-of (𝒪 X) ] u) holds
    γ 𝓊@(u , _) =
     (j ⋏₀ k) (⋁[ 𝒪 X ] S)                                           ＝⟨ refl ⟩ₚ
@@ -369,8 +377,8 @@ indices.
 \begin{code}
 
  𝔡𝔦𝔯-prenuclei : (K : Fam 𝓦 (⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩))
-                → (Ɐ i ∶ index K , is-prenucleus (𝒪 X) (K [ i ])) holds
-                → (Ɐ is ∶ List (index K) , is-prenucleus (𝒪 X) (𝔡𝔦𝔯 K [ is ])) holds
+                → (Ɐ i ꞉ index K , is-prenucleus (𝒪 X) (K [ i ])) holds
+                → (Ɐ is ꞉ List (index K) , is-prenucleus (𝒪 X) (𝔡𝔦𝔯 K [ is ])) holds
  𝔡𝔦𝔯-prenuclei K ϑ []       = pr₂ (nucleus-pre (𝒪 X) (identity-nucleus (𝒪 X)))
  𝔡𝔦𝔯-prenuclei K ϑ (j ∷ js) = n₁ , n₂
   where
@@ -459,9 +467,9 @@ indices.
 \begin{code}
 
  ^*-scott-continuous : (K : Fam 𝓦 (⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩))
-                     → (Ɐ i ∶ index K ,
+                     → (Ɐ i ꞉ index K ,
                          is-scott-continuous (𝒪 X) (𝒪 X) (K [ i ])) holds
-                     → (Ɐ is ∶ List (index K) ,
+                     → (Ɐ is ꞉ List (index K) ,
                          is-scott-continuous (𝒪 X) (𝒪 X) (𝔡𝔦𝔯 K [ is ])) holds
  ^*-scott-continuous K ϑ []       = id-is-scott-continuous (𝒪 X)
  ^*-scott-continuous K ϑ (i ∷ is) = ∘-of-scott-cont-is-scott-cont (𝒪 X) (𝒪 X) (𝒪 X)
@@ -517,7 +525,7 @@ The definition of the join:
    K₀ : Fam 𝓦 (⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩)
    K₀ = ⁅ pr₁ j ∣ j ε K ⁆
 
-   ϑ : (Ɐ i ∶ index K₀ , is-scott-continuous (𝒪 X) (𝒪 X) (K₀ [ i ])) holds
+   ϑ : (Ɐ i ꞉ index K₀ , is-scott-continuous (𝒪 X) (𝒪 X) (K₀ [ i ])) holds
    ϑ i = pr₂ (pr₂ (K [ i ]))
 
    K₁ : Fam 𝓦 (Nucleus (𝒪 X))
@@ -661,13 +669,13 @@ The definition of the join:
           † : (𝟏 (⋁[ 𝒪 X ] S) is-an-upper-bound-of ⁅ 𝟏[ 𝒪 X ] ∣ _ ε S ⁆) holds
           † i = 𝟏-is-top (𝒪 X) 𝟏[ 𝒪 X ]
 
-          ‡ : (Ɐ (u , _) ∶ upper-bound ⁅ 𝟏[ 𝒪 X ] ∣ _ ε S ⁆ , 𝟏[ 𝒪 X ] ≤[ P ] u) holds
+          ‡ : (Ɐ (u , _) ꞉ upper-bound ⁅ 𝟏[ 𝒪 X ] ∣ _ ε S ⁆ , 𝟏[ 𝒪 X ] ≤[ P ] u) holds
           ‡ (u , φ) = ∥∥-rec (holds-is-prop (𝟏[ 𝒪 X ] ≤[ P ] u)) φ (pr₁ δ)
 
  𝟏ₚ-is-top : Meets.is-top (λ 𝒿 𝓀 → 𝒿 ≼ 𝓀) 𝟏ₚ holds
  𝟏ₚ-is-top 𝒿 U = 𝟏-is-top (𝒪 X) (𝒿 $ U)
 
- ⋏-is-meet : (Ɐ (𝒿 , 𝓀) ∶ Perfect-Nucleus × Perfect-Nucleus ,
+ ⋏-is-meet : (Ɐ (𝒿 , 𝓀) ꞉ Perfect-Nucleus × Perfect-Nucleus ,
                Meets._is-glb-of_ _≼_ (𝒿 ⋏ 𝓀) (𝒿 , 𝓀)) holds
  ⋏-is-meet (𝒿 , 𝓀) = β , γ
   where
@@ -675,10 +683,10 @@ The definition of the join:
    β = (λ U → ∧[ 𝒪 X ]-lower₁ (𝒿 $ U) (𝓀 $ U))
      , (λ U → ∧[ 𝒪 X ]-lower₂ (𝒿 $ U) (𝓀 $ U))
 
-   γ : (Ɐ (𝒾 , _) ∶ (Meets.lower-bound _≼_ (𝒿 , 𝓀)) , 𝒾 ≼ (𝒿 ⋏ 𝓀)) holds
+   γ : (Ɐ (𝒾 , _) ꞉ (Meets.lower-bound _≼_ (𝒿 , 𝓀)) , 𝒾 ≼ (𝒿 ⋏ 𝓀)) holds
    γ (𝒾 , φ , ϑ) U = ∧[ 𝒪 X ]-greatest (𝒿 $ U) (𝓀 $ U) (𝒾 $ U) (φ U) (ϑ U)
 
- ⋁ₙ-is-join : (Ɐ K ∶ Fam 𝓦 Perfect-Nucleus , Joins._is-lub-of_ _≼_ (⋁ₙ K) K) holds
+ ⋁ₙ-is-join : (Ɐ K ꞉ Fam 𝓦 Perfect-Nucleus , Joins._is-lub-of_ _≼_ (⋁ₙ K) K) holds
  ⋁ₙ-is-join K = β , γ
   where
    K₀ : Fam 𝓦 (⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩)
@@ -690,8 +698,8 @@ The definition of the join:
    β : Joins._is-an-upper-bound-of_ _≼_ (⋁ₙ K) K holds
    β i U = ⋁[ 𝒪 X ]-upper ⁅ α U ∣ α ε 𝔡𝔦𝔯 K₀ ⁆ (i ∷ [])
 
-   γ : (Ɐ (𝒾 , _) ∶ Joins.upper-bound _≼_ K , (⋁ₙ K) ≼ 𝒾) holds
-   γ (𝓀@(k , (n₁ , n₂ , n₃) , ζ) , φ) U =
+   γ : (Ɐ (𝒾 , _) ꞉ Joins.upper-bound _≼_ K , (⋁ₙ K) ≼ 𝒾) holds
+   γ (𝓀@(k , (n₁ , n₂ , n₃) , _) , φ) U =
     ⋁[ 𝒪 X ]-least ⁅ α U ∣ α ε 𝔡𝔦𝔯 K₀ ⁆ (𝓀 $ U , λ is → † is U)
      where
       open Joins (λ x y → x ≤[ poset-of (𝒪 X) ] y)
@@ -887,6 +895,9 @@ module SmallPatchConstruction (X : Locale 𝓤 𝓥 𝓦) (σᴰ : spectralᴰ (
  ℬ : Fam 𝓦 ⟨ 𝒪 X ⟩
  ℬ = basisₛ (𝒪 X) σᴰ
 
+ ℬₖ : Fam 𝓦 (Σ C ꞉ ⟨ 𝒪 X ⟩ , is-compact-open (𝒪 X) C holds)
+ ℬₖ = index ℬ , λ i → ℬ [ i ] , pr₁ (pr₂ (pr₂ σᴰ)) i
+
  ℬ-is-basis : is-basis-for (𝒪 X) ℬ
  ℬ-is-basis = pr₁ (pr₁ (pr₂ σᴰ))
 
@@ -905,7 +916,10 @@ module SmallPatchConstruction (X : Locale 𝓤 𝓥 𝓦) (σᴰ : spectralᴰ (
 
  _≼ᵏ_ : Perfect-Nucleus-on-X → Perfect-Nucleus-on-X → Ω (𝓥 ⊔ 𝓦)
  _≼ᵏ_ (j , ζⱼ) (k , ζₖ) =
-  Ɐ i ∶ index ℬ , j (ℬ [ i ]) ≤[ poset-of (𝒪 X) ] k (ℬ [ i ])
+  Ɐ i ꞉ index ℬ , j (ℬ [ i ]) ≤[ poset-of (𝒪 X) ] k (ℬ [ i ])
+
+ _＝ᵏ_ : Perfect-Nucleus-on-X → Perfect-Nucleus-on-X → Ω (𝓥 ⊔ 𝓦)
+ _＝ᵏ_ 𝒿@(j , ζⱼ) 𝓀@(k , ζₖ) = (𝒿 ≼ᵏ 𝓀) ∧ (𝓀 ≼ᵏ 𝒿)
 
  open Meets (λ 𝒿 𝓀 → 𝒿 ≼ᵏ 𝓀)
   using ()
@@ -989,7 +1003,7 @@ module SmallPatchConstruction (X : Locale 𝓤 𝓥 𝓦) (σᴰ : spectralᴰ (
       β₂ : ((𝒿 ⋏ 𝓀) ≼ 𝓀) holds
       β₂ = pr₂ (pr₁ (⋏-is-meet (𝒿 , 𝓀)))
 
-   γ : (Ɐ (𝒾 , _) ∶ (Meets.lower-bound _≼ᵏ_ (𝒿 , 𝓀)) , 𝒾 ≼ᵏ (𝒿 ⋏ 𝓀)) holds
+   γ : (Ɐ (𝒾 , _) ꞉ (Meets.lower-bound _≼ᵏ_ (𝒿 , 𝓀)) , 𝒾 ≼ᵏ (𝒿 ⋏ 𝓀)) holds
    γ (𝒾 , φ , ψ) = ≼-implies-≼ᵏ 𝒾 (𝒿 ⋏ 𝓀) δ
     where
      † = pr₂ (⋏-is-meet (𝒿 , 𝓀))
@@ -997,7 +1011,7 @@ module SmallPatchConstruction (X : Locale 𝓤 𝓥 𝓦) (σᴰ : spectralᴰ (
      δ : (𝒾 ≼ (𝒿 ⋏ 𝓀)) holds
      δ = † (𝒾 , ≼ᵏ-implies-≼ 𝒾 𝒿 φ , ≼ᵏ-implies-≼ 𝒾 𝓀 ψ)
 
- ⋁ₙ-is-joinₖ : (Ɐ K ∶ Fam 𝓦 Perfect-Nucleus-on-X , Joins._is-lub-of_ _≼ᵏ_ (⋁ₙ K) K) holds
+ ⋁ₙ-is-joinₖ : (Ɐ K ꞉ Fam 𝓦 Perfect-Nucleus-on-X , Joins._is-lub-of_ _≼ᵏ_ (⋁ₙ K) K) holds
  ⋁ₙ-is-joinₖ 𝒦 = β , γ
   where
    β : (_≼ᵏ_ Joins.is-an-upper-bound-of ⋁ₙ 𝒦) 𝒦 holds
@@ -1006,7 +1020,7 @@ module SmallPatchConstruction (X : Locale 𝓤 𝓥 𝓦) (σᴰ : spectralᴰ (
      † : ((𝒦 [ i ]) ≼ ⋁ₙ 𝒦) holds
      † = pr₁ (⋁ₙ-is-join 𝒦) i
 
-   γ : (Ɐ (𝒾 , _) ∶ Joins.upper-bound _≼ᵏ_ 𝒦 , (⋁ₙ 𝒦) ≼ᵏ 𝒾) holds
+   γ : (Ɐ (𝒾 , _) ꞉ Joins.upper-bound _≼ᵏ_ 𝒦 , (⋁ₙ 𝒦) ≼ᵏ 𝒾) holds
    γ (𝒾 , φ) = ≼-implies-≼ᵏ (⋁ₙ 𝒦) 𝒾 (pr₂ (⋁ₙ-is-join 𝒦) (𝒾 , †))
     where
      † : (_≼_ Joins.is-an-upper-bound-of 𝒾) 𝒦 holds

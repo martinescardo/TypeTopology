@@ -4,7 +4,7 @@ This module has functions to build games.
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe --auto-inline --exact-split #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan hiding (J)
 
@@ -14,6 +14,10 @@ open import UF.FunExt
 
 open import Games.TypeTrees
 open import Games.FiniteHistoryDependent R
+open import Games.J
+open import Games.JK
+
+open J-definitions R
 
 \end{code}
 
@@ -39,6 +43,8 @@ selections : (Γ : GameJ) → 𝓙 (dtt Γ)
 selections (leaf r)        = ⟨⟩
 selections (branch X Xf ε) = ε :: (λ x → selections (Xf x))
 
+open JK R
+
 quantifiers : (Γ : GameJ) → 𝓚 (dtt Γ)
 quantifiers (leaf r)        = ⟨⟩
 quantifiers (branch X Xf ε) = overline ε :: (λ x → quantifiers (Xf x))
@@ -54,7 +60,7 @@ Selection-Strategy-TheoremJ : Fun-Ext
                             → is-optimal (Game-from-GameJ Γ) (strategyJ Γ)
 Selection-Strategy-TheoremJ fe Γ = γ
  where
-  δ : (Γ : GameJ) → (selections Γ) are-selections-of (quantifiers Γ)
+  δ : (Γ : GameJ) → (selections Γ) Attains (quantifiers Γ)
   δ (leaf r)        = ⟨⟩
   δ (branch X Xf ε) = (λ p → refl) , (λ x → δ (Xf x))
 

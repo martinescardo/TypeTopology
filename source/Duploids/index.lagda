@@ -57,7 +57,7 @@ structure theorem in a univalent setting.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module Duploids.index where
 

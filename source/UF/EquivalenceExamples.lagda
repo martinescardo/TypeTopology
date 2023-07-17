@@ -4,7 +4,7 @@ Expanded on demand whenever a general equivalence is needed.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan
 open import MLTT.Two-Properties
@@ -49,6 +49,7 @@ curry-uncurry {𝓤} {𝓥} {𝓦} fe = curry-uncurry' (fe 𝓤 (𝓥 ⊔ 𝓦))
  where
   η : (σ : Σ p ꞉ x ＝ y , transport A p a ＝ b) → from-Σ-＝ (to-Σ-＝ σ) ＝ σ
   η (refl , refl) = refl
+
   ε : (q : x , a ＝ y , b) → to-Σ-＝ (from-Σ-＝ q) ＝ q
   ε refl = refl
 
@@ -105,12 +106,25 @@ curry-uncurry {𝓤} {𝓥} {𝓦} fe = curry-uncurry' (fe 𝓤 (𝓥 ⊔ 𝓦))
   gf : (w : Σ Y) → g (f w) ＝ w
   gf (x , y) = to-Σ-＝' (inverses-are-retractions ⌜ φ x ⌝ ⌜ φ x ⌝-is-equiv y)
 
-
-
 ΠΣ-distr-≃ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {P : (x : X) → A x → 𝓦 ̇ }
            → (Π x ꞉ X , Σ a ꞉ A x , P x a)
            ≃ (Σ f ꞉ Π A , Π x ꞉ X , P x (f x))
 ΠΣ-distr-≃ = qinveq ΠΣ-distr (ΠΣ-distr⁻¹ , (λ _ → refl) , (λ _ → refl))
+
+Π×-distr : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {B : X → 𝓦 ̇ }
+         → (Π x ꞉ X , A x × B x)
+         ≃ ((Π x ꞉ X , A x) × (Π x ꞉ X , B x))
+Π×-distr = ΠΣ-distr-≃
+
+Π×-distr₂ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+            {A : X → Y → 𝓦 ̇ } {B : X → Y → 𝓣 ̇ }
+          → (Π x ꞉ X , Π y ꞉ Y , A x y × B x y)
+          ≃ ((Π x ꞉ X , Π y ꞉ Y , A x y) × (Π x ꞉ X , Π y ꞉ Y , B x y))
+Π×-distr₂ = qinveq
+             (λ f → (λ x y → pr₁ (f x y)) , (λ x y → pr₂ (f x y)))
+             ((λ (g , h) x y → g x y , h x y) ,
+              (λ _ → refl) ,
+              (λ _ → refl))
 
 Σ+-distr : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ )
          → (Σ x ꞉ X , A x + B x)
@@ -156,9 +170,10 @@ curry-uncurry {𝓤} {𝓥} {𝓦} fe = curry-uncurry' (fe 𝓤 (𝓥 ⊔ 𝓦))
 
 Π-cong : funext 𝓤 𝓥
        → funext 𝓤 𝓦
-       → (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ ) (Y' : X → 𝓦 ̇ )
-       → ((x : X) → Y x ≃ Y' x) → Π Y ≃ Π Y'
-Π-cong fe fe' X Y Y' φ = qinveq f (g , gf , fg)
+       → {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {Y' : X → 𝓦 ̇ }
+       → ((x : X) → Y x ≃ Y' x)
+       → Π Y ≃ Π Y'
+Π-cong fe fe' {X} {Y} {Y'} φ = qinveq f (g , gf , fg)
  where
   f : ((x : X) → Y x) → ((x : X) → Y' x)
   f h x = ⌜ φ x ⌝ (h x)
@@ -186,14 +201,9 @@ An application of Π-cong is the following:
             (f g : (x : X) (y : Y x) → A x y)
           → (f ＝ g) ≃ (∀ x y → f x y ＝ g x y)
 ≃-funext₂ fe fe' {X} f g =
- (f ＝ g)            ≃⟨ ≃-funext fe f g ⟩
- (f ∼ g)            ≃⟨ I ⟩
+ (f ＝ g)           ≃⟨ ≃-funext fe f g ⟩
+ (f ∼ g)            ≃⟨ Π-cong fe fe (λ x → ≃-funext fe' (f x) (g x)) ⟩
  (∀ x → f x ∼ g x)  ■
-  where
-   I = Π-cong fe fe X
-        (λ x → f x ＝ g x)
-        (λ x → f x ∼ g x)
-        (λ x → ≃-funext fe' (f x) (g x))
 
 𝟙-lneutral : {Y : 𝓤 ̇ } → 𝟙 {𝓥} × Y ≃ Y
 𝟙-lneutral {𝓤} {𝓥} {Y} = qinveq f (g , ε , η)
@@ -606,8 +616,7 @@ NatΣ-equiv-gives-fiberwise-equiv = NatΣ-equiv-converse _ _
 
 Σ-change-of-variable : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : X → 𝓦 ̇ ) (g : Y → X)
                      → is-equiv g
-                     → (Σ y ꞉ Y , A (g y))
-                     ≃ (Σ x ꞉ X , A x)
+                     → (Σ y ꞉ Y , A (g y)) ≃ (Σ x ꞉ X , A x)
 Σ-change-of-variable {𝓤} {𝓥} {𝓦} {X} {Y} A g e = γ , qinvs-are-equivs γ q
  where
   γ :  (Σ y ꞉ Y , A (g y)) → Σ A
@@ -620,16 +629,95 @@ NatΣ-equiv-gives-fiberwise-equiv = NatΣ-equiv-converse _ _
                        → (Σ y ꞉ Y , A (⌜ e ⌝ y)) ≃ (Σ x ꞉ X , A x)
 Σ-change-of-variable-≃ A (g , i) = Σ-change-of-variable A g i
 
+Σ-bicong : {X  : 𝓤 ̇ } (Y  : X  → 𝓥 ̇ )
+           {X' : 𝓤' ̇ } (Y' : X' → 𝓥' ̇ )
+           (𝕗 : X ≃ X')
+         → ((x : X) → Y x ≃ Y' (⌜ 𝕗 ⌝ x))
+         → Σ Y ≃ Σ Y'
+Σ-bicong {𝓤} {𝓥} {𝓤'} {𝓥'} {X} Y {X'} Y' 𝕗 φ =
+ Σ Y                      ≃⟨ Σ-cong φ ⟩
+ (Σ x ꞉ X , Y' (⌜ 𝕗 ⌝ x)) ≃⟨ Σ-change-of-variable-≃ Y' 𝕗 ⟩
+ Σ Y'                     ■
+
+dprecomp : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : Y → 𝓦 ̇ ) (f : X → Y)
+         → Π A → Π (A ∘ f)
+
+dprecomp A f = _∘ f
+
+dprecomp-is-equiv : funext 𝓤 𝓦
+                  → funext 𝓥 𝓦
+                  → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : Y → 𝓦 ̇ ) (f : X → Y)
+                  → is-equiv f
+                  → is-equiv (dprecomp A f)
+
+dprecomp-is-equiv fe fe' {X} {Y} A f i = qinvs-are-equivs φ ((ψ , ψφ , φψ))
+ where
+  g = inverse f i
+  η = inverses-are-retractions f i
+  ε = inverses-are-sections f i
+
+  τ : (x : X) → ap f (η x) ＝ ε (f x)
+  τ = half-adjoint-condition f i
+
+  φ : Π A → Π (A ∘ f)
+  φ = dprecomp A f
+
+  ψ : Π (A ∘ f) → Π A
+  ψ k y = transport A (ε y) (k (g y))
+
+  φψ₀ : (k : Π (A ∘ f)) (x : X) → transport A (ε (f x)) (k (g (f x))) ＝ k x
+  φψ₀ k x = transport A (ε (f x))   (k (g (f x))) ＝⟨ a ⟩
+            transport A (ap f (η x))(k (g (f x))) ＝⟨ b ⟩
+            transport (A ∘ f) (η x) (k (g (f x))) ＝⟨ c ⟩
+            k x                                   ∎
+    where
+     a = ap (λ - → transport A - (k (g (f x)))) ((τ x)⁻¹)
+     b = (transport-ap A f (η x)) ⁻¹
+     c = apd k (η x)
+
+  φψ : φ ∘ ψ ∼ id
+  φψ k = dfunext fe (φψ₀ k)
+
+  ψφ₀ : (h : Π A) (y : Y) → transport A (ε y) (h (f (g y))) ＝ h y
+  ψφ₀ h y = apd h (ε y)
+
+  ψφ : ψ ∘ φ ∼ id
+  ψφ h = dfunext fe' (ψφ₀ h)
+
+Π-change-of-variable : funext 𝓤 𝓦
+                     → funext 𝓥 𝓦
+                     → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : Y → 𝓦 ̇ ) (f : X → Y)
+                     → is-equiv f
+                     → (Π y ꞉ Y , A y) ≃ (Π x ꞉ X , A (f x))
+Π-change-of-variable fe fe' A f i = dprecomp A f , dprecomp-is-equiv fe fe' A f i
+
+Π-change-of-variable-≃ : FunExt
+                       → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : Y → 𝓦 ̇ ) (𝕗 : X ≃ Y)
+                       → (Π x ꞉ X , A (⌜ 𝕗 ⌝ x)) ≃ (Π y ꞉ Y , A y)
+Π-change-of-variable-≃ fe A (f , i) =
+ ≃-sym (Π-change-of-variable (fe _ _) (fe _ _) A f i)
+
+Π-bicong : FunExt
+         → {X  : 𝓤 ̇ } (Y  : X  → 𝓥 ̇ )
+           {X' : 𝓤' ̇ } (Y' : X' → 𝓥' ̇ )
+           (𝕗 : X ≃ X')
+         → ((x : X) → Y x ≃ Y' (⌜ 𝕗 ⌝ x))
+         → Π Y ≃ Π Y'
+Π-bicong {𝓤} {𝓥} {𝓤'} {𝓥'} fe {X} Y {X'} Y' 𝕗 φ =
+ Π Y                      ≃⟨ Π-cong (fe 𝓤 𝓥) (fe 𝓤 𝓥') φ ⟩
+ (Π x ꞉ X , Y' (⌜ 𝕗 ⌝ x)) ≃⟨ Π-change-of-variable-≃ fe Y' 𝕗 ⟩
+ Π Y'                     ■
+
 NatΠ-fiber-equiv : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ ) (ζ : Nat A B)
                  → funext 𝓤 𝓦
-                 → (g : Π B) → (Π x ꞉ X , fiber (ζ x) (g x))
-                 ≃ fiber (NatΠ ζ) g
+                 → (g : Π B)
+                 → (Π x ꞉ X , fiber (ζ x) (g x)) ≃ fiber (NatΠ ζ) g
 NatΠ-fiber-equiv {𝓤} {𝓥} {𝓦} {X} A B ζ fe g =
-  (Π x ꞉ X , fiber (ζ x) (g x))           ≃⟨ i ⟩
+  (Π x ꞉ X , fiber (ζ x) (g x))            ≃⟨ i ⟩
   (Π x ꞉ X , Σ a ꞉ A x , ζ x a ＝ g x)     ≃⟨ ii ⟩
   (Σ f ꞉ Π A , Π x ꞉ X , ζ x (f x) ＝ g x) ≃⟨ iii ⟩
   (Σ f ꞉ Π A , (λ x → ζ x (f x)) ＝ g)     ≃⟨ iv ⟩
-  fiber (NatΠ ζ) g                        ■
+  fiber (NatΠ ζ) g                         ■
    where
     i   = ≃-refl _
     ii  = ΠΣ-distr-≃
@@ -654,12 +742,13 @@ NatΠ-equiv A B ζ fe i = vv-equivs-are-equivs
                              (NatΠ-vv-equiv A B ζ fe
                                (λ x → equivs-are-vv-equivs (ζ x) (i x)))
 
-Π-cong' : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ )
+Π-cong' : {X : 𝓤 ̇ }
         → funext 𝓤 (𝓥 ⊔ 𝓦)
+        → {A : X → 𝓥 ̇ } {B : X → 𝓦 ̇ }
         → ((x : X) → A x ≃ B x)
         → Π A ≃ Π B
-Π-cong' A B fe e = NatΠ (λ x → pr₁ (e x)) ,
-                   NatΠ-equiv A B (λ x → pr₁ (e x)) fe (λ x → pr₂ (e x))
+Π-cong' fe {A} {B} e = NatΠ (λ x → pr₁ (e x)) ,
+                       NatΠ-equiv A B (λ x → pr₁ (e x)) fe (λ x → pr₂ (e x))
 
 ＝-cong : {X : 𝓤 ̇ } (x y : X) {x' y' : X}
         → x ＝ x'
@@ -707,7 +796,7 @@ singleton-≃-𝟙' = singleton-≃ 𝟙-is-singleton
   η p = i (Idtofun (f p) ⋆) p
 
   ε : (q : 𝟙 ＝ P) → f (Idtofun q ⋆) ＝ q
-  ε q = identifications-of-props-are-props pe fe P i 𝟙 (f (Idtofun q ⋆)) q
+  ε q = identifications-with-props-are-props pe fe P i 𝟙 (f (Idtofun q ⋆)) q
 
 empty-≃-𝟘 : {X : 𝓤 ̇ } → (X → 𝟘 {𝓥}) → X ≃ 𝟘 {𝓦}
 empty-≃-𝟘 i = qinveq
@@ -917,73 +1006,25 @@ fiber-of-unique-to-𝟙 {𝓤} {𝓥} {X} ⋆ =
 \end{code}
 
 Added by Tom de Jong, November 2021.
-
-\begin{code}
-
-≃-2-out-of-3-right : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
-                   → {f : X → Y} {g : Y → Z}
-                   → is-equiv f
-                   → is-equiv (g ∘ f)
-                   → is-equiv g
-≃-2-out-of-3-right {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {f} {g} i j =
- equiv-closed-under-∼ (g ∘ f ∘ f⁻¹) g k h
-  where
-   𝕗 : X ≃ Y
-   𝕗 = (f , i)
-
-   f⁻¹ : Y → X
-   f⁻¹ = ⌜ 𝕗 ⌝⁻¹
-
-   k : is-equiv (g ∘ f ∘ f⁻¹)
-   k = ∘-is-equiv (⌜⌝⁻¹-is-equiv 𝕗) j
-
-   h : g ∼ g ∘ f ∘ f⁻¹
-   h y = ap g ((≃-sym-is-rinv 𝕗 y) ⁻¹)
-
-≃-2-out-of-3-left : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
-                  → {f : X → Y} {g : Y → Z}
-                  → is-equiv g
-                  → is-equiv (g ∘ f)
-                  → is-equiv f
-≃-2-out-of-3-left {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {f} {g} i j =
- equiv-closed-under-∼ (g⁻¹ ∘ g ∘ f) f k h
-  where
-   𝕘 : Y ≃ Z
-   𝕘 = (g , i)
-
-   g⁻¹ : Z → Y
-   g⁻¹ = ⌜ 𝕘 ⌝⁻¹
-
-   k : is-equiv (g⁻¹ ∘ g ∘ f)
-   k = ∘-is-equiv j (⌜⌝⁻¹-is-equiv 𝕘)
-
-   h : f ∼ g⁻¹ ∘ g ∘ f
-   h x = (≃-sym-is-linv 𝕘 (f x)) ⁻¹
-
-\end{code}
-
-Completely unrelated to the above, but still useful.
-
+s
 \begin{code}
 
 open import UF.PropTrunc
 
-module _
-        (pt : propositional-truncations-exist)
-       where
+module _ (pt : propositional-truncations-exist) where
 
  open PropositionalTruncation pt
 
- ∥∥-cong : {X : 𝓤 ̇  } {Y : 𝓥 ̇  } → X ≃ Y → ∥ X ∥ ≃ ∥ Y ∥
+ ∥∥-cong : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → X ≃ Y → ∥ X ∥ ≃ ∥ Y ∥
  ∥∥-cong f = logically-equivalent-props-are-equivalent ∥∥-is-prop ∥∥-is-prop
               (∥∥-functor ⌜ f ⌝) (∥∥-functor ⌜ f ⌝⁻¹)
 
- ∃-cong : {X : 𝓤 ̇  } {Y : X → 𝓥 ̇  } {Y' : X → 𝓦 ̇  }
+ ∃-cong : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {Y' : X → 𝓦 ̇ }
         → ((x : X) → Y x ≃ Y' x)
         → ∃ Y ≃ ∃ Y'
  ∃-cong e = ∥∥-cong (Σ-cong e)
 
- outer-∃-inner-Σ : {X : 𝓤 ̇  } {Y : X → 𝓥 ̇  } {A : (x : X) → Y x → 𝓦 ̇  }
+ outer-∃-inner-Σ : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {A : (x : X) → Y x → 𝓦 ̇ }
                  → (∃ x ꞉ X , ∃ y ꞉ Y x , A x y)
                  ≃ (∃ x ꞉ X , Σ y ꞉ Y x , A x y)
  outer-∃-inner-Σ {𝓤} {𝓥} {𝓦} {X} {Y} {A} =

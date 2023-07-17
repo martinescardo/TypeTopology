@@ -5,7 +5,7 @@ in UF.Large-Quotient.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan
 open import UF.FunExt
@@ -24,8 +24,8 @@ open import UF.ImageAndSurjection pt
 open import UF.Subsingletons-FunExt
 
 module poset-reflection
-        (X : 𝓤 ̇  )
-        (_≲_ : X → X → 𝓣 ̇  )
+        (X : 𝓤 ̇ )
+        (_≲_ : X → X → 𝓣 ̇ )
         (≲-is-prop-valued : (x y : X) → is-prop (x ≲ y))
         (≲-is-reflexive : (x : X) → x ≲ x)
         (≲-is-transitive : (x y z : X) → x ≲ y → y ≲ z → x ≲ z)
@@ -123,7 +123,7 @@ it is convenient to assume it (for now) anyway.
 \begin{code}
 
  universal-property :
-    {Q : 𝓤' ̇  } (_⊑_ : Q → Q → 𝓣' ̇  )
+    {Q : 𝓤' ̇ } (_⊑_ : Q → Q → 𝓣' ̇ )
   → is-set Q
   → ((p q : Q) → is-prop (p ⊑ q))
   → ((q : Q) → q ⊑ q)

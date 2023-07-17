@@ -11,7 +11,7 @@ TODO: Variable reorganization.
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe --auto-inline --exact-split #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 
 open import MLTT.Spartan
@@ -155,7 +155,7 @@ torsor₁→torsor {G = G} (X , a) (n , e) = n , ee
 
 The type of G-Torsors.
 
-\begin{code} 
+\begin{code}
 
 TORS Tors Torsor : (G : Group 𝓤) → (𝓤 ⁺) ̇
 TORS G = Σ 𝕏 ꞉ Action G , is-torsor G 𝕏
@@ -186,9 +186,9 @@ torsor-carrier-prop {G} X = pr₁ (torsor-prop {G} X)
 torsor-nonempty : {G : Group 𝓤} (X : Tors G) → is-nonempty (pr₁ (pr₁ X))
 torsor-nonempty {G} X = inhabited-is-nonempty (torsor-carrier-prop {G} X)
 
-torsor-splitting : {G : Group 𝓤} (X : Tors G) → 
+torsor-splitting : {G : Group 𝓤} (X : Tors G) →
                    ((x : ⟨ pr₁ X ⟩) → is-equiv (right-mult G (pr₁ X) x))
-torsor-splitting {G}  X = pr₂ (torsor-prop {G} X) 
+torsor-splitting {G}  X = pr₂ (torsor-prop {G} X)
 
 torsor-splitting₁ : {G : Group 𝓤} (X : Tors G)
                   → is-equiv (mult G (pr₁ X))
@@ -236,7 +236,7 @@ torsor-linv-mult G X (y , x) = (pr₁ (li (y , x))) , x
     li : ⟨ pr₁ X ⟩ × ⟨ pr₁ X ⟩ → ⟨ G ⟩ × ⟨ pr₁ X ⟩
     li = pr₁ (pr₂ e)
 
-torsor-rinv-mult-is-right-inverse : (G : Group 𝓤) (X : Tors G) → 
+torsor-rinv-mult-is-right-inverse : (G : Group 𝓤) (X : Tors G) →
                                     (mult G (pr₁ X)) ∘ (torsor-rinv-mult G X) ∼ id
 torsor-rinv-mult-is-right-inverse G X (y , x) =  q ⁻¹
   where
@@ -268,7 +268,7 @@ torsor-rinv-mult-is-right-inverse G X (y , x) =  q ⁻¹
         r (u y) , x ∎
 
 
-torsor-linv-mult-is-left-inverse : (G : Group 𝓤) (X : Tors G) → 
+torsor-linv-mult-is-left-inverse : (G : Group 𝓤) (X : Tors G) →
                                    (torsor-linv-mult G X) ∘ (mult G (pr₁ X)) ∼ id
 torsor-linv-mult-is-left-inverse G X (g , x) = q ⁻¹
   where
@@ -323,7 +323,7 @@ left-mult-gives-ActionIso G i X g = (action-to-Aut G (pr₁ X) g) ,
 
 \end{code}
 
- 
+
 Forgetting the torsor axiom is an inclusion into the type of actions.
 
 \begin{code}
@@ -347,7 +347,7 @@ underlying-action-injectivity' {G} {X} {Y} = ≃-sym
 
 
 underlying-action-injectivity-comp : {G : Group 𝓤} {X Y : Tors G} (p : X ＝ Y)
-                                   → pr₁ (underlying-action-injectivity G X Y) p ＝ 
+                                   → pr₁ (underlying-action-injectivity G X Y) p ＝
                                        ap (underlying-action {G})  p
 underlying-action-injectivity-comp p = refl
 
@@ -359,7 +359,7 @@ below we need both "inverses" of the shear map (see above).
 
 \begin{code}
 
-torsor-division : (G : Group 𝓤) (X : Tors G) (y x : ⟨ pr₁ X ⟩) → 
+torsor-division : (G : Group 𝓤) (X : Tors G) (y x : ⟨ pr₁ X ⟩) →
                       ∃! g ꞉ ⟨ G ⟩ , action-op G (pr₁ X) g x ＝ y
 torsor-division G X y x = (g , ap pr₁ u) ,
                λ { (h , p) → to-Σ-＝ (ap pr₁ (ii h p) , carrier-is-set G (pr₁ X) _ _)}
@@ -477,7 +477,7 @@ univ-function {G} X x = right-mult G (pr₁ X) x
 univ-function-equivariant : {G : Group 𝓤} (X : Tors G) (x : ⟨ pr₁ X ⟩)
                           → is-equivariant G  (pr₁ (𝕋 G)) (pr₁ X) (univ-function {G} X x)
 univ-function-equivariant {G} X x = λ g a →  (g ·⟨ G ⟩ a) · x ＝⟨  action-assoc G (pr₁ X) g a x ⟩
-                                              g · (a · x)     ∎ 
+                                              g · (a · x)     ∎
   where
     _·_ : action-structure G (pr₁ (pr₁ X))
     _·_ = action-op G (pr₁ X)
@@ -518,7 +518,7 @@ triv-iso-compute G = pr₁ φ γ
 
     φ : (∣u∣ ＝ ∣v∣) ≃ (u ＝ v)
     φ = ≃-sym (underlying-iso-injectivity G fe (pr₁ (𝕋 G)) (pr₁ (𝕋 G)) u v)
-    
+
 \end{code}
 
 At any other point g, triv-iso (𝕋 G) provides a self-equivalence
@@ -626,14 +626,14 @@ module _ (G : Group 𝓤) where
   triv-torsor-Aut-mult a b = pr₁ φ γ
     where
       𝕋G : Action G
-      𝕋G = pr₁ (𝕋 G) 
+      𝕋G = pr₁ (𝕋 G)
 
       τab : Action-Iso G 𝕋G 𝕋G
       τab = compose-Action-Iso G {𝕋G} {𝕋G} {𝕋G} (τ a) (τ b)
 
       φ : (pr₁ (τab) ＝ pr₁ (τ (a ·⟨ G ⟩ b))) ≃ (τab ＝ τ (a ·⟨ G ⟩ b))
       φ = ≃-sym (underlying-iso-injectivity G fe 𝕋G 𝕋G τab (τ (a ·⟨ G ⟩ b)))
-      
+
       γ : pr₁ (τab) ＝ pr₁ (τ (a ·⟨ G ⟩ b))
       γ = to-Σ-＝ (dfunext fe (λ g → assoc G g a b) ,
                    being-equiv-is-prop'' fe (ρ (a ·⟨ G ⟩ b)) _ _)
@@ -643,7 +643,7 @@ module _ (G : Group 𝓤) where
     t : (x : ⟨ pr₁ X ⟩) → ⟨ pr₁ (𝕋 G) ⟩ → ⟨ pr₁ X ⟩
     t  x = triv-map {G} X x
 
-    triv-map-right-equivariance : (x : ⟨ pr₁ X ⟩) (a : ⟨ G ⟩) → 
+    triv-map-right-equivariance : (x : ⟨ pr₁ X ⟩) (a : ⟨ G ⟩) →
                                   t (action-op G (pr₁ X) a x) ＝ (t x) ∘ (ρ a)
     triv-map-right-equivariance x a = dfunext fe (λ g → (g · (a · x)     ＝⟨ ( action-assoc G 𝕏 g a x ) ⁻¹ ⟩
                                                          (g ·⟨ G ⟩ a) · x ∎ ) )
@@ -672,7 +672,7 @@ is the trivialization map of the trivial torsor G, that is, the
 right-multiplication map of G on itself.
 
 \begin{code}
-  
+
     j : Hom {G} X X → ⟨ pr₁ X ⟩ → ⟨ G ⟩
     j φ x = torsor-division-map {G} {X} (pr₁ φ x) x
 
@@ -702,7 +702,7 @@ right-multiplication map of G on itself.
             a · ( (j φ x) · x)         ＝⟨ (action-assoc G 𝕏 _ _ _) ⁻¹ ⟩
             (a ·⟨ G ⟩ (j φ x)) · x      ∎
               where
-                l : j φ x · x ＝ f x 
+                l : j φ x · x ＝ f x
                 l = pr₂ (pr₁ (torsor-division G X (f x) x))
 
 
@@ -728,14 +728,11 @@ right-multiplication map of G on itself.
         i : is-equivariant G 𝕏 𝕏 f
         i = pr₂ φ
 
-        l : j φ x · x ＝ f x 
+        l : j φ x · x ＝ f x
         l = pr₂ (pr₁ (torsor-division G X (f x) x))
 
     j-equivariance₁ : (φ : Hom {G} X X) (x : ⟨ pr₁ X ⟩)
                     → (pr₁ φ) ∘ (t x) ＝ (t x) ∘ (ρ (j φ x))
     j-equivariance₁ φ x = dfunext fe (j-equivariance₁-pointwise φ x)
-        
+
 \end{code}
-
-
-

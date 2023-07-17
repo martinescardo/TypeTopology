@@ -2,7 +2,7 @@ Martin Escardo.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import UF.PropTrunc
 

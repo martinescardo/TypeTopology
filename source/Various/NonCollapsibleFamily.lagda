@@ -2,7 +2,7 @@ Martin Escardo, 1st April 2013
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module Various.NonCollapsibleFamily where
 
@@ -15,7 +15,7 @@ open import TypeTopology.DiscreteAndSeparated
 
 decidable-equality-criterion : (X : 𝓤 ̇ )
                                (a : 𝟚 → X) → ((x : X) → collapsible(Σ i ꞉ 𝟚 , a i ＝ x))
-                             → decidable(a ₀ ＝ a ₁)
+                             → is-decidable(a ₀ ＝ a ₁)
 decidable-equality-criterion {𝓤} X a c = equal-or-different
  where
   κ : (x : X) → (Σ i ꞉ 𝟚 , a i ＝ x) → Σ i ꞉ 𝟚 , a i ＝ x

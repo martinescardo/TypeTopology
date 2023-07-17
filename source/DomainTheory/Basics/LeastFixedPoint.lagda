@@ -9,7 +9,7 @@ typechecking.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline --lossy-unification #-}
+{-# OPTIONS --safe --without-K --exact-split --lossy-unification #-}
 
 open import MLTT.Spartan
 open import UF.FunExt

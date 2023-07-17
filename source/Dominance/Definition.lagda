@@ -14,7 +14,7 @@ Convention:
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan
 open import UF.Equiv
@@ -100,6 +100,10 @@ and condition D5' below is easier to check:
 
  dominant-types-are-props : (D : Dominance) → (X : 𝓣 ̇ ) → is-dominant D X → is-prop X
  dominant-types-are-props (_ , (_ , (disp , _))) = disp
+  
+ dominant-prop : Dominance → 𝓣 ⁺ ⊔ 𝓚 ̇
+ dominant-prop D = Σ P ꞉ 𝓣 ̇ , is-dominant D P 
+
 
  𝟙-is-dominant : (D : Dominance) → is-dominant D 𝟙
  𝟙-is-dominant (_ , (_ , (_ , (oisd , _)))) = oisd
@@ -126,3 +130,4 @@ and condition D5' below is easier to check:
 
 TODO. Define a dominance to be a function Ω → Ω and prove the
 equivalence with the above definition. But keep the above definition.
+ 

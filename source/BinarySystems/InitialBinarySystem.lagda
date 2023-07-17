@@ -19,7 +19,7 @@ quotients - it just happens to have the quotient we want.
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe --auto-inline --exact-split #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module BinarySystems.InitialBinarySystem where
 

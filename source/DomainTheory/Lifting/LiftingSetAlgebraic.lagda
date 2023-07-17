@@ -5,7 +5,7 @@ particular, this dcpo is algebraic.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline --lossy-unification #-}
+{-# OPTIONS --safe --without-K --exact-split --lossy-unification #-}
 
 open import MLTT.Spartan
 

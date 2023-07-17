@@ -5,7 +5,7 @@ background for this file.
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe --auto-inline --exact-split #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module BinarySystems.InitialBinarySystem2 where
 

@@ -1,0 +1,8 @@
+# agda --html dialogue.lagda
+agda --latex dialogue.lagda
+# The following is needed to fix a bug in --latex in Agda 2.3.2:
+sed 's|extbackslash|\\textbackslash|' < latex/dialogue.tex > dialogue.tex
+# bibtex dialogue # .bbl is now included in the file
+pdflatex dialogue.tex # run a couple of times, as usual
+
+

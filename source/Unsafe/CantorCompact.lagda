@@ -22,13 +22,13 @@ open import TypeTopology.CompactTypes
 open import TypeTopology.CompactTypes
 open import TypeTopology.WeaklyCompactTypes
 
-cantor-compact∙ : compact∙ (ℕ → 𝟚)
-cantor-compact∙ = countable-Tychonoff (λ i → 𝟚-compact∙)
+cantor-compact∙ : is-compact∙ (ℕ → 𝟚)
+cantor-compact∙ = countable-Tychonoff (λ i → 𝟚-is-compact∙)
 
-cantor-compact : compact (ℕ → 𝟚)
-cantor-compact = compact∙-gives-compact cantor-compact∙
+cantor-compact : is-compact (ℕ → 𝟚)
+cantor-compact = compact∙-types-are-compact cantor-compact∙
 
-cantor-wcompact : wcompact (ℕ → 𝟚)
+cantor-wcompact : is-wcompact (ℕ → 𝟚)
 cantor-wcompact = compact-gives-wcompact cantor-compact∙
 
 \end{code}
@@ -39,7 +39,7 @@ of the Cantor space:
 \begin{code}
 
 A : ((ℕ → 𝟚) → 𝟚) → 𝟚
-A = pr₁ (wcompact-implies-wcompact' cantor-wcompact)
+A = pr₁ (wcompact-types-are-wcompact' cantor-wcompact)
 
 \end{code}
 
@@ -50,7 +50,9 @@ Discreteness of ((ℕ → 𝟚) → ℕ):
 open import TypeTopology.DiscreteAndSeparated
 
 Cantor→ℕ-is-discrete : is-discrete ((ℕ → 𝟚) → ℕ)
-Cantor→ℕ-is-discrete = compact-discrete-discrete' (fe 𝓤₀ 𝓤₀) cantor-compact ℕ-is-discrete
+Cantor→ℕ-is-discrete = discrete-to-power-compact-is-discrete' (fe 𝓤₀ 𝓤₀)
+                        cantor-compact
+                        ℕ-is-discrete
 
 \end{code}
 

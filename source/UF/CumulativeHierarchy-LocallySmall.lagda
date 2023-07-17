@@ -28,7 +28,7 @@ References
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import UF.FunExt
 open import UF.Subsingletons
@@ -82,10 +82,10 @@ module 𝕍-is-locally-small
          where
 
    ＝⁻-aux₁ : {B : 𝓤 ̇ } → (B → 𝕍) → Ω 𝓤
-   ＝⁻-aux₁ {B} g = (Ɐ a ∶ A , Ǝ b ∶ B , r a (g b) holds)
-                  ∧ (Ɐ b ∶ B , Ǝ a ∶ A , r a (g b) holds)
+   ＝⁻-aux₁ {B} g = (Ɐ a ꞉ A , Ǝ b ꞉ B , r a (g b) holds)
+                  ∧ (Ɐ b ꞉ B , Ǝ a ꞉ A , r a (g b) holds)
 
-   ＝⁻-aux₁-respects-≈ : {B' B : 𝓤 ̇} (g' : B' → 𝕍) (g : B → 𝕍)
+   ＝⁻-aux₁-respects-≈ : {B' B : 𝓤 ̇ } (g' : B' → 𝕍) (g : B → 𝕍)
                        → g' ≈ g
                        → ＝⁻-aux₁ g' holds
                        → ＝⁻-aux₁ g  holds
@@ -108,7 +108,7 @@ module 𝕍-is-locally-small
          h₂ : (Σ a ꞉ A , r a (g' b') holds) → Σ a ꞉ A , r a (g b) holds
          h₂ (a , p) = a , transport (λ - → (r a -) holds) e p
 
-   ＝⁻-aux₁-respects-≈' : {B' B : 𝓤 ̇} (g' : B' → 𝕍) (g : B → 𝕍)
+   ＝⁻-aux₁-respects-≈' : {B' B : 𝓤 ̇ } (g' : B' → 𝕍) (g : B → 𝕍)
                         → g' ≈ g
                         → ＝⁻-aux₁ g' ＝ ＝⁻-aux₁ g
    ＝⁻-aux₁-respects-≈' {B'} {B} g' g e =
@@ -156,7 +156,7 @@ module 𝕍-is-locally-small
           → Σ b ꞉ B , r₂ b (h c) holds
         m (b , _ , q) = b , Idtofun (ap _holds (happly q (h c))) w
 
-  ＝⁻-aux₂-respects-≈' : {A B : 𝓤 ̇} (f : A → 𝕍) (g : B → 𝕍)
+  ＝⁻-aux₂-respects-≈' : {A B : 𝓤 ̇ } (f : A → 𝕍) (g : B → 𝕍)
                          (r₁ : A → 𝕍 → Ω 𝓤) (r₂ : B → 𝕍 → Ω 𝓤)
                        → ((a : A) → ∃ b ꞉ B , (f a ＝ g b) × (r₁ a ＝ r₂ b))
                        → ((b : B) → ∃ a ꞉ A , (g b ＝ f a) × (r₂ b ＝ r₁ a))
@@ -185,7 +185,7 @@ of the relation on the 𝕍-set constructor.
 
 \begin{code}
 
-  ＝⁻[Ω]-packaged : Σ ϕ ꞉ (𝕍 → 𝕍 → Ω 𝓤) , ({A : 𝓤 ̇} (f : A → 𝕍)
+  ＝⁻[Ω]-packaged : Σ ϕ ꞉ (𝕍 → 𝕍 → Ω 𝓤) , ({A : 𝓤 ̇ } (f : A → 𝕍)
                                            (r : A → 𝕍 → Ω 𝓤)
                                         → ϕ (𝕍-set f) ＝ ＝⁻-aux₂ f r)
   ＝⁻[Ω]-packaged = 𝕍-recursion-with-computation

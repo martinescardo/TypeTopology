@@ -1,6 +1,6 @@
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module UF.Equiv where
 
@@ -21,7 +21,8 @@ is-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 is-equiv f = has-section f × is-section f
 
 inverse : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-        → is-equiv f → (Y → X)
+        → is-equiv f
+        → (Y → X)
 inverse f = pr₁ ∘ pr₁
 
 equivs-have-sections : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
@@ -41,7 +42,8 @@ section-retraction-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
 section-retraction-equiv f hr hs = (hr , hs)
 
 equivs-are-lc : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-              → is-equiv f → left-cancellable f
+              → is-equiv f
+              → left-cancellable f
 equivs-are-lc f e = sections-are-lc f (equivs-are-sections f e)
 
 _≃_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
@@ -165,29 +167,43 @@ invertible f = Σ g ꞉ (codomain f → domain f), (g ∘ f ∼ id) × (f ∘ g 
 
 qinv = invertible
 
+inverses-are-retractions : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equiv f)
+                         → inverse f e ∘ f ∼ id
+inverses-are-retractions f ((g , ε) , (g' , η)) = η'
+ where
+  η' : g ∘ f ∼ id
+  η' x = g (f x)          ＝⟨ (η (g (f x)))⁻¹ ⟩
+         g' (f (g (f x))) ＝⟨ ap g' (ε (f x)) ⟩
+         g' (f x)         ＝⟨ η x ⟩
+         x                ∎
+
 equivs-are-qinvs : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                  → is-equiv f
                  → qinv f
-equivs-are-qinvs {𝓤} {𝓥} {X} {Y} f ((s , fs) , (r , rf)) = s , (sf , fs)
- where
-  sf : (x : X) → s (f x) ＝ x
-  sf x = s (f x)         ＝⟨ (rf (s (f x)))⁻¹ ⟩
-         r (f (s (f x))) ＝⟨ ap r (fs (f x)) ⟩
-         r (f x)         ＝⟨ rf x ⟩
-         x               ∎
+equivs-are-qinvs {𝓤} {𝓥} {X} {Y} f e@((g , ε) , (g' , η)) =
+ g ,
+ inverses-are-retractions f e ,
+ ε
+
+naive-inverses-are-sections : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                              (f : X → Y) (e : is-equiv f)
+                            → f ∘ inverse f e ∼ id
+naive-inverses-are-sections f ((g' , ε) , (g , η)) = ε
 
 inverses-are-sections : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equiv f)
                       → f ∘ inverse f e ∼ id
-inverses-are-sections f ((s , fs) , (r , rf)) = fs
-
-inverses-are-retractions : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equiv f)
-                         → inverse f e ∘ f ∼ id
-inverses-are-retractions f e = pr₁ (pr₂ (equivs-are-qinvs f e))
+inverses-are-sections f e@((g , ε) , (g' , η)) = ε'
+ where
+  ε' : f ∘ g ∼ id
+  ε' y = f (g y)         ＝⟨ (ε (f (g y)))⁻¹ ⟩
+         f (g (f (g y))) ＝⟨ ap f (inverses-are-retractions f e (g y)) ⟩
+         f (g y)         ＝⟨ ε y ⟩
+         y               ∎
 
 inverses-are-equivs : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equiv f)
                     → is-equiv (inverse f e)
-
-inverses-are-equivs f e = (f , inverses-are-retractions f e) , (f , inverses-are-sections f e)
+inverses-are-equivs f e = (f , inverses-are-retractions f e) ,
+                          (f , inverses-are-sections f e)
 
 ⌜⌝⁻¹-is-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (e : X ≃ Y) → is-equiv ⌜ e ⌝⁻¹
 ⌜⌝⁻¹-is-equiv (f , i) = inverses-are-equivs f i
@@ -256,10 +272,15 @@ Id-retract-r p = ≃-gives-▷ (idtoeq (lhs p) (rhs p) p)
 equiv-to-prop : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → Y ≃ X → is-prop X → is-prop Y
 equiv-to-prop e = retract-of-prop (≃-gives-◁ e)
 
-equiv-to-singleton : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → Y ≃ X → is-singleton X → is-singleton Y
+equiv-to-singleton : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                   → Y ≃ X
+                   → is-singleton X
+                   → is-singleton Y
 equiv-to-singleton e = retract-of-singleton (≃-gives-◁ e)
 
-equiv-to-singleton' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → X ≃ Y → is-singleton X → is-singleton Y
+equiv-to-singleton' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → X ≃ Y
+                    → is-singleton X
+                    → is-singleton Y
 equiv-to-singleton' e = retract-of-singleton (≃-gives-▷ e)
 
 pt-pf-equiv : {X : 𝓤 ̇ } (x : X) → singleton-type x ≃ singleton-type' x
@@ -310,8 +331,14 @@ fiber-identification : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f : X → Y} {y : Y} (w : 
                      → f (fiber-point w) ＝ y
 fiber-identification = pr₂
 
+each-fiber-of : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+              → (X → Y)
+              → (𝓤 ⊔ 𝓥 ̇ → 𝓦 ̇)
+              → 𝓥 ⊔ 𝓦 ̇
+each-fiber-of f P = ∀ y → P (fiber f y)
+
 is-vv-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
-is-vv-equiv f = ∀ y → is-singleton (fiber f y)
+is-vv-equiv f = each-fiber-of f is-singleton
 
 is-vv-equiv-NB : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                → is-vv-equiv f ＝ (Π y ꞉ Y , ∃! x ꞉ X , f x ＝ y)
@@ -388,51 +415,61 @@ id-homotopies-are-natural h η {x} =
    III = ap (λ - → η (h x) ∙ - ∙ (η x)⁻¹) ((ap-id-is-id' (η x)))
    IV  = homotopies-are-natural' h id η {h x} {x} {η x}
 
-qinvs-are-haes : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-               → qinv f
-               → is-hae f
-qinvs-are-haes {𝓤} {𝓥} {X} {Y} f (g , (η , ε)) = g , η , ε' , τ
+half-adjoint-condition : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                         (e : is-equiv f) (x : X)
+                       → ap f (inverses-are-retractions f e x)
+                       ＝ inverses-are-sections f e (f x)
+half-adjoint-condition {𝓤} {𝓥} {X} {Y} f e@((g , ε) , (g' , η)) = τ
  where
+  η' : g ∘ f ∼ id
+  η' = inverses-are-retractions f e
+
   ε' : f ∘ g ∼ id
-  ε' y = f (g y)         ＝⟨ (ε (f (g y)))⁻¹ ⟩
-         f (g (f (g y))) ＝⟨ ap f (η (g y)) ⟩
-         f (g y)         ＝⟨ ε y ⟩
-         y               ∎
+  ε' = inverses-are-sections f e
 
-  a : (x : X) → η (g (f x)) ＝ ap g (ap f (η x))
-  a x = η (g (f x))       ＝⟨ id-homotopies-are-natural (g ∘ f) η ⟩
-        ap (g ∘ f) (η x)  ＝⟨ (ap-ap f g (η x))⁻¹ ⟩
-        ap g (ap f (η x)) ∎
+  a : (x : X) → η' (g (f x)) ＝ ap g (ap f (η' x))
+  a x = η' (g (f x))       ＝⟨ id-homotopies-are-natural (g ∘ f) η' ⟩
+        ap (g ∘ f) (η' x)  ＝⟨ (ap-ap f g (η' x))⁻¹ ⟩
+        ap g (ap f (η' x)) ∎
 
-  b : (x : X) → ap f (η (g (f x))) ∙ ε (f x) ＝ ε (f (g (f x))) ∙ ap f (η x)
-  b x = ap f (η (g (f x))) ∙ ε (f x)         ＝⟨ I ⟩
-        ap f (ap g (ap f (η x))) ∙ ε (f x)   ＝⟨ II ⟩
-        ap (f ∘ g) (ap f (η x)) ∙ ε (f x)    ＝⟨ III ⟩
-        ε (f (g (f x))) ∙ ap id (ap f (η x)) ＝⟨ IV ⟩
-        ε (f (g (f x))) ∙ ap f (η x)         ∎
+  b : (x : X) → ap f (η' (g (f x))) ∙ ε (f x) ＝ ε (f (g (f x))) ∙ ap f (η' x)
+  b x = ap f (η' (g (f x))) ∙ ε (f x)         ＝⟨ I ⟩
+        ap f (ap g (ap f (η' x))) ∙ ε (f x)   ＝⟨ II ⟩
+        ap (f ∘ g) (ap f (η' x)) ∙ ε (f x)    ＝⟨ III ⟩
+        ε (f (g (f x))) ∙ ap id (ap f (η' x)) ＝⟨ IV ⟩
+        ε (f (g (f x))) ∙ ap f (η' x)         ∎
          where
           I   = ap (λ - → - ∙ ε (f x)) (ap (ap f) (a x))
-          II  = ap (λ - → - ∙ ε (f x)) (ap-ap g f (ap f (η x)))
-          III = (homotopies-are-natural (f ∘ g) id ε {f (g (f x))} {f x} {ap f (η x)})⁻¹
-          IV  = ap (λ - → ε (f (g (f x))) ∙ -) (ap-ap f id (η x))
+          II  = ap (λ - → - ∙ ε (f x)) (ap-ap g f (ap f (η' x)))
+          III = (homotopies-are-natural (f ∘ g) id ε {_} {_} {ap f (η' x)})⁻¹
+          IV  = ap (λ - → ε (f (g (f x))) ∙ -) (ap-ap f id (η' x))
 
-  τ : (x : X) → ap f (η x) ＝ ε' (f x)
-  τ x = ap f (η x)                                           ＝⟨ I ⟩
-        refl ∙ ap f (η x)                                    ＝⟨ II ⟩
-        (ε (f (g (f x))))⁻¹ ∙ ε (f (g (f x))) ∙ ap f (η x)   ＝⟨ III ⟩
-        (ε (f (g (f x))))⁻¹ ∙ (ε (f (g (f x))) ∙ ap f (η x)) ＝⟨ IV ⟩
-        (ε (f (g (f x))))⁻¹ ∙ (ap f (η (g (f x))) ∙ ε (f x)) ＝⟨ refl ⟩
+  τ : (x : X) → ap f (η' x) ＝ ε' (f x)
+  τ x = ap f (η' x)                                           ＝⟨ I ⟩
+        refl ∙ ap f (η' x)                                    ＝⟨ II ⟩
+        (ε (f (g (f x))))⁻¹ ∙ ε (f (g (f x))) ∙ ap f (η' x)   ＝⟨ III ⟩
+        (ε (f (g (f x))))⁻¹ ∙ (ε (f (g (f x))) ∙ ap f (η' x)) ＝⟨ IV ⟩
+        (ε (f (g (f x))))⁻¹ ∙ (ap f (η' (g (f x))) ∙ ε (f x)) ＝⟨ refl ⟩
         ε' (f x)                                             ∎
          where
           I   = refl-left-neutral ⁻¹
-          II  = ap (λ - → - ∙ ap f (η x)) ((trans-sym (ε (f (g (f x)))))⁻¹)
-          III = ∙assoc ((ε (f (g (f x))))⁻¹) (ε (f (g (f x)))) (ap f (η x))
+          II  = ap (λ - → - ∙ ap f (η' x)) ((trans-sym (ε (f (g (f x)))))⁻¹)
+          III = ∙assoc ((ε (f (g (f x))))⁻¹) (ε (f (g (f x)))) (ap f (η' x))
           IV  = ap (λ - → (ε (f (g (f x))))⁻¹ ∙ -) (b x)⁻¹
 
 equivs-are-haes : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                 → is-equiv f
                 → is-hae f
-equivs-are-haes f e = qinvs-are-haes f (equivs-are-qinvs f e)
+equivs-are-haes {𝓤} {𝓥} {X} {Y} f e@((g , ε) , (g' , η)) =
+ inverse f e ,
+ inverses-are-retractions f e ,
+ inverses-are-sections f e ,
+ half-adjoint-condition f e
+
+qinvs-are-haes : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+               → qinv f
+               → is-hae f
+qinvs-are-haes {𝓤} {𝓥} {X} {Y} f = equivs-are-haes f ∘ qinvs-are-equivs f
 
 \end{code}
 
@@ -641,7 +678,7 @@ equiv-to-set : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
              → X ≃ Y
              → is-set Y
              → is-set X
-equiv-to-set e = subtypes-of-sets-are-sets ⌜ e ⌝
+equiv-to-set e = subtypes-of-sets-are-sets' ⌜ e ⌝
                   (equivs-are-lc ⌜ e ⌝ (⌜⌝-is-equiv e))
 \end{code}
 
@@ -732,6 +769,52 @@ _ ≅⟨ d ⟩ e = ≅-comp d e
 
 _◾ : (X : 𝓤 ̇ ) → X ≅ X
 _◾ = ≅-refl
+
+\end{code}
+
+Added by Tom de Jong, November 2021.
+
+\begin{code}
+
+≃-2-out-of-3-right : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
+                   → {f : X → Y} {g : Y → Z}
+                   → is-equiv f
+                   → is-equiv (g ∘ f)
+                   → is-equiv g
+≃-2-out-of-3-right {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {f} {g} i j =
+ equiv-closed-under-∼ (g ∘ f ∘ f⁻¹) g k h
+  where
+   𝕗 : X ≃ Y
+   𝕗 = (f , i)
+
+   f⁻¹ : Y → X
+   f⁻¹ = ⌜ 𝕗 ⌝⁻¹
+
+   k : is-equiv (g ∘ f ∘ f⁻¹)
+   k = ∘-is-equiv (⌜⌝⁻¹-is-equiv 𝕗) j
+
+   h : g ∼ g ∘ f ∘ f⁻¹
+   h y = ap g ((≃-sym-is-rinv 𝕗 y) ⁻¹)
+
+≃-2-out-of-3-left : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
+                  → {f : X → Y} {g : Y → Z}
+                  → is-equiv g
+                  → is-equiv (g ∘ f)
+                  → is-equiv f
+≃-2-out-of-3-left {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {f} {g} i j =
+ equiv-closed-under-∼ (g⁻¹ ∘ g ∘ f) f k h
+  where
+   𝕘 : Y ≃ Z
+   𝕘 = (g , i)
+
+   g⁻¹ : Z → Y
+   g⁻¹ = ⌜ 𝕘 ⌝⁻¹
+
+   k : is-equiv (g⁻¹ ∘ g ∘ f)
+   k = ∘-is-equiv j (⌜⌝⁻¹-is-equiv 𝕘)
+
+   h : f ∼ g⁻¹ ∘ g ∘ f
+   h x = (≃-sym-is-linv 𝕘 (f x)) ⁻¹
 
 \end{code}
 

@@ -2,7 +2,7 @@ General terminology and notation.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module Notation.General where
 
@@ -65,14 +65,14 @@ lr-implication = pr₁
 rl-implication : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X ⇔ Y) → (Y → X)
 rl-implication = pr₂
 
-⇔-sym : {X : 𝓤' ̇  } {Y : 𝓥' ̇  } → X ⇔ Y → Y ⇔ X
+⇔-sym : {X : 𝓤' ̇ } {Y : 𝓥' ̇ } → X ⇔ Y → Y ⇔ X
 ⇔-sym (f , g) = (g , f)
 
-⇔-trans : {X : 𝓤' ̇  } {Y : 𝓥' ̇  } {Z : 𝓦' ̇  }
+⇔-trans : {X : 𝓤' ̇ } {Y : 𝓥' ̇ } {Z : 𝓦' ̇ }
         → X ⇔ Y → Y ⇔ Z → X ⇔ Z
 ⇔-trans (f , g) (h , k) = (h ∘ f , g ∘ k)
 
-⇔-refl : {X : 𝓤' ̇  } → X ⇔ X
+⇔-refl : {X : 𝓤' ̇ } → X ⇔ X
 ⇔-refl = (id , id)
 
 \end{code}

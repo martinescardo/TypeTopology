@@ -33,7 +33,7 @@ a theorem rather than a metatheorem.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import UF.FunExt
 
@@ -244,7 +244,7 @@ extensionality. (Cf. the module DiscreteAndSeparated.)
 \begin{code}
 
  weakly-isolated : {X : 𝓤 ̇ } (x : X) → 𝓤 ̇
- weakly-isolated x = ∀ x' → decidable (x' ≠ x)
+ weakly-isolated x = ∀ x' → is-decidable (x' ≠ x)
 
  Theorem : (Σ g ꞉ (Y → 𝟚), g a₀ ≠ g a₁) → weakly-isolated a
  Theorem (g , d) = λ x → 𝟚-equality-cases' (claim₀' x) (claim₁' x)

@@ -23,7 +23,7 @@ constructively, well, taboos!
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module Taboos.WLPO where
 

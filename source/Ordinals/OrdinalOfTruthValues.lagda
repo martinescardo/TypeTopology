@@ -3,7 +3,7 @@ Martin Escardo, 4th October 2018
 The ordinal of truth values in a universe 𝓤.
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan
 open import UF.FunExt
@@ -18,7 +18,8 @@ module Ordinals.OrdinalOfTruthValues
 open import UF.Subsingletons-FunExt
 
 open import Ordinals.Arithmetic fe
-open import Ordinals.Type
+open import Ordinals.Equivalence
+open import Ordinals.Maps
 open import Ordinals.Notions
 open import Ordinals.Type
 open import Ordinals.Underlying
@@ -33,13 +34,13 @@ open import Ordinals.Underlying
   pv p q = ×-is-prop (Ω-is-set (fe 𝓤 𝓤) pe) (Ω-is-set (fe 𝓤 𝓤) pe)
 
   w : is-well-founded _≺_
-  w p = step s
+  w p = acc s
    where
     t : (q : Ω 𝓤) →  q ≺ ⊥ → is-accessible _≺_ q
     t ⊥ (refl , b) = 𝟘-elim (⊥-is-not-⊤ b)
 
     ⊥-accessible : is-accessible _≺_ ⊥
-    ⊥-accessible = step t
+    ⊥-accessible = acc t
 
     s : (q : Ω 𝓤) → q ≺ p → is-accessible _≺_ q
     s ⊥ (refl , b) = ⊥-accessible

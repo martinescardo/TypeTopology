@@ -5,7 +5,7 @@ A function is dense if the complement of its image is empty. Maybe
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module TypeTopology.Density where
 

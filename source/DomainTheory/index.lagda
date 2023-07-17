@@ -4,12 +4,25 @@ Updated 12 and 14 June 2022
 
 Index for the formalization of domain theory, briefly describing the contents of
 each directory, ordered almost¹ alphabetically by directory name.
+(¹ Basics is first.)
 
-¹ Basics is first
+Several additional domain-theoretic formalization targets are listed at the end.
+
+─────────────────────────────────────────────────────────────────────
+This accompanies the PhD thesis
+  Domain Theory in Constructive and Predicative Univalent Foundations
+  Tom de Jong
+  School of Computer Science, University of Birmingham
+  https://arxiv.org/abs/2301.12405
+
+  Submitted: 30 September 2022
+  Defended:  20 December  2022
+  Accepted:   1 February  2023
+─────────────────────────────────────────────────────────────────────
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module DomainTheory.index where
 
@@ -102,11 +115,54 @@ import DomainTheory.Lifting.LiftingSetAlgebraic -- (3)
 
 {- ScottModelOfPCF
 
+0. Combinatory version of PCF
 1. Denotational semantics of the K, S and ifZero combinators of PCF
 2. The Scott model of the typed programming language PCF
 -}
 
+import DomainTheory.ScottModelOfPCF.PCF             -- (0)
 import DomainTheory.ScottModelOfPCF.PCFCombinators  -- (1)
 import DomainTheory.ScottModelOfPCF.ScottModelOfPCF -- (2)
 
+{- Topology (by Ayberk Tosun)
+
+0. The definition of the Scott topology of a dcpo
+
+-}
+
+import DomainTheory.Topology.ScottTopology          -- (0)
+
 \end{code}
+
+Additional formalization targets
+────────────────────────────────
+
+The Formalization chapter in the aforementioned PhD thesis
+(https://arxiv.org/abs/2301.12405) details a few things (in the form of specific
+lemmas) that have been left unformalized.
+
+We present a succinct list of domain-theoretic formalization targets here:
+
+1. Complete the formalization that bounded complete (continuous) dcpos with a
+   small basis are closed under exponentials. It follows from the case of
+   algebraic domains through a lemma that is left unformalized.
+   See DomainTheory.BasesAndContinuity.StepFunctions for details.
+
+2. Formalize the untyped λ-calculus and its interpretation in Scott's D∞.
+   See DomainTheory.Bilimits.Dinfinity for the construction of D∞.
+
+3. Formalize the results in reverse mathematics and delta-complete posets.
+   See Chapter 6 of the PhD thesis for details.
+
+4. Formalize the definition of the Scott topology of a (continuous) dcpo and
+   show that the Scott opens form a frame, using Ayberk Tosun's formalization of
+   frames and locales, see Locales.index.
+
+   Additionally, show that the Scott topology of a continuous dcpo is spectral,
+   as defined in Locales.CompactRegular.
+
+
+Item 2 should be a fun challenge for a student with an interest in
+(domain-theoretic semantics of) programming languages.
+
+If you'd like to work on Item 4, please get in touch with Ayberk Tosun.

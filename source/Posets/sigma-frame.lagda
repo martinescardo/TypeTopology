@@ -20,7 +20,7 @@ did with σ-sup-lattices. Perhaps it would be better to define a
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan
 open import UF.FunExt

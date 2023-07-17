@@ -7,7 +7,7 @@ universe 𝓤 and we show that 𝟚 ≃ Ωᵈ 𝓤 (for any universe 𝓤).
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module NotionsOfDecidability.DecidableClassifier where
 
@@ -20,7 +20,7 @@ open import NotionsOfDecidability.Decidable
 open import NotionsOfDecidability.Complemented
 
 boolean-value' : {A : 𝓤 ̇ }
-               → decidable A
+               → is-decidable A
                → Σ b ꞉ 𝟚 , (b ＝ ₀ ⇔ ¬ A)
                          × (b ＝ ₁ ⇔   A)
 boolean-value' {𝓤} {A} (inl a ) = (₁ , ϕ , ψ)
@@ -40,7 +40,7 @@ boolean-value' {𝓤} {A} (inr na) = ₀ , ϕ , ψ
 
 private
  Ωᵈ : (𝓤 : Universe) → 𝓤 ⁺ ̇
- Ωᵈ 𝓤 = Σ P ꞉ Ω 𝓤 , decidable (P holds)
+ Ωᵈ 𝓤 = Σ P ꞉ Ω 𝓤 , is-decidable (P holds)
 
  ⟨_⟩ : Ωᵈ 𝓤 → 𝓤 ̇
  ⟨ (P , i) , δ ⟩ = P
@@ -63,9 +63,9 @@ module _
  to-Ωᵈ-equality ((P , i) , δ) ((Q , j) , ε) α β =
   to-subtype-＝ σ (to-subtype-＝ τ (pe i j α β))
   where
-   σ : (P : Ω 𝓤) → is-prop (decidable (P holds))
+   σ : (P : Ω 𝓤) → is-prop (is-decidable (P holds))
    σ P = decidability-of-prop-is-prop (lower-funext 𝓤 𝓤 fe) (holds-is-prop P)
-   τ : (X : 𝓤 ̇) → is-prop (is-prop X)
+   τ : (X : 𝓤 ̇ )→ is-prop (is-prop X)
    τ _ = being-prop-is-prop fe
 
  𝟚-is-the-type-of-decidable-propositions : 𝟚 ≃ Ωᵈ 𝓤
@@ -109,8 +109,8 @@ equivalences.
 open import UF.Powerset
 open import UF.EquivalenceExamples
 
-is-complemented-subset : {X : 𝓤 ̇  } → (X → Ω 𝓣) → 𝓤 ⊔ 𝓣 ̇
-is-complemented-subset {𝓤} {𝓣} {X} A = (x : X) → decidable (x ∈ A)
+is-complemented-subset : {X : 𝓤 ̇ } → (X → Ω 𝓣) → 𝓤 ⊔ 𝓣 ̇
+is-complemented-subset {𝓤} {𝓣} {X} A = (x : X) → is-decidable (x ∈ A)
 
 module _
         (fe  : funext 𝓤 (𝓣 ⁺))
@@ -118,7 +118,7 @@ module _
         (pe : propext 𝓣)
        where
 
- 𝟚-classifies-decidable-subsets : {X : 𝓤 ̇  }
+ 𝟚-classifies-decidable-subsets : {X : 𝓤 ̇ }
                                 → (X → 𝟚)
                                 ≃ (Σ A ꞉ (X → Ω 𝓣) , is-complemented-subset A)
  𝟚-classifies-decidable-subsets {X} =
@@ -130,7 +130,7 @@ module _
          (𝟚-is-the-type-of-decidable-propositions fe' pe)
 
  𝟚-classifies-decidable-subsets-values :
-   {X : 𝓤 ̇  }
+   {X : 𝓤 ̇ }
    (A : X → Ω 𝓣)
    (δ : is-complemented-subset A)
    (x : X)
@@ -152,15 +152,15 @@ Added by Tom de Jong, November 2021.
 
 decidable-⇔ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
             → X ⇔ Y
-            → decidable X
-            → decidable Y
+            → is-decidable X
+            → is-decidable Y
 decidable-⇔ {𝓤} {𝓥} {X} {Y} (f , g) (inl  x) = inl (f x)
 decidable-⇔ {𝓤} {𝓥} {X} {Y} (f , g) (inr nx) = inr (nx ∘ g)
 
 decidable-cong : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                → X ≃ Y
-               → decidable X
-               → decidable Y
+               → is-decidable X
+               → is-decidable Y
 decidable-cong e = decidable-⇔ (⌜ e ⌝ , ⌜ e ⌝⁻¹)
 
 \end{code}
@@ -169,7 +169,7 @@ Added by Tom de Jong in January 2022.
 
 \begin{code}
 
-all-types-are-¬¬-decidable : (X : 𝓤 ̇  ) → ¬¬ (decidable X)
+all-types-are-¬¬-decidable : (X : 𝓤 ̇ ) → ¬¬ (is-decidable X)
 all-types-are-¬¬-decidable X h = claim₂ claim₁
  where
   claim₁ : ¬ X
@@ -177,7 +177,7 @@ all-types-are-¬¬-decidable X h = claim₂ claim₁
   claim₂ : ¬¬ X
   claim₂ nx = h (inr nx)
 
-¬¬-stable-if-decidable : (X : 𝓤 ̇  ) → decidable X → ¬¬-stable X
+¬¬-stable-if-decidable : (X : 𝓤 ̇ ) → is-decidable X → ¬¬-stable X
 ¬¬-stable-if-decidable X (inl  x) = λ _ → x
 ¬¬-stable-if-decidable X (inr nx) = λ h → 𝟘-elim (h nx)
 

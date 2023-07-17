@@ -4,7 +4,7 @@ This file needs reorganization and clean-up.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module UF.Base where
 
@@ -204,6 +204,11 @@ ap₂ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (f : X → Y → Z) {x₀ x
     → f x₀ y₀ ＝ f x₁ y₁
 ap₂ f refl refl = refl
 
+ap₃ : {W : 𝓣 ̇} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
+      (f : W → X → Y → Z) {w₀ w₁ : W} {x₀ x₁ : X} {y₀ y₁ : Y}
+    → w₀ ＝ w₁ → x₀ ＝ x₁ → y₀ ＝ y₁ → f w₀ x₀ y₀ ＝ f w₁ x₁ y₁
+ap₃ f refl refl refl = refl
+
 refl-left-neutral : {X : 𝓤 ̇ } {x y : X} {p : x ＝ y}
                   → refl ∙ p ＝ p
 refl-left-neutral {𝓤} {X} {x} {_} {refl} = refl
@@ -336,8 +341,8 @@ from-Σ-＝ : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {σ τ : Σ Y} (r : σ ＝ τ)
 from-Σ-＝ r = (ap pr₁ r , from-Σ-＝' r)
 
 to-Σ-＝ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {σ τ : Σ A}
-       → (Σ p ꞉ pr₁ σ ＝ pr₁ τ , transport A p (pr₂ σ) ＝ pr₂ τ)
-       → σ ＝ τ
+        → (Σ p ꞉ pr₁ σ ＝ pr₁ τ , transport A p (pr₂ σ) ＝ pr₂ τ)
+        → σ ＝ τ
 to-Σ-＝ (refl , refl) = refl
 
 ap-pr₁-to-Σ-＝ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {σ τ : Σ A}
@@ -346,8 +351,8 @@ ap-pr₁-to-Σ-＝ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {σ τ : Σ A}
 ap-pr₁-to-Σ-＝ (refl , refl) = refl
 
 to-Σ-＝' : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {x : X} {y y' : Y x}
-        → y ＝ y'
-        → (x , y) ＝[ Σ Y ] (x , y')
+         → y ＝ y'
+         → (x , y) ＝[ Σ Y ] (x , y')
 to-Σ-＝' {𝓤} {𝓥} {X} {Y} {x} = ap (λ - → (x , -))
 
 fromto-Σ-＝ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
@@ -357,7 +362,7 @@ fromto-Σ-＝ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
 fromto-Σ-＝ (refl , refl) = refl
 
 tofrom-Σ-＝ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {σ τ : Σ A} (r : σ ＝ τ)
-           → to-Σ-＝ (from-Σ-＝ r) ＝ r
+            → to-Σ-＝ (from-Σ-＝ r) ＝ r
 tofrom-Σ-＝ refl = refl
 
 ap-pr₁-to-×-＝ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {z t : X × Y}

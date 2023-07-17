@@ -7,7 +7,7 @@ This is ported from the Midlands Graduate School 2019 lecture notes
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module MGS.Solved-Exercises where
 
@@ -104,7 +104,7 @@ equivs-closed-under-∼ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f g : X → Y}
 equiv-to-singleton' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                     → X ≃ Y → is-singleton X → is-singleton Y
 
-subtypes-of-sets-are-sets : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (m : X → Y)
+subtypes-of-sets-are-sets' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (m : X → Y)
                           → left-cancellable m → is-set Y → is-set X
 
 pr₁-lc : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
@@ -267,7 +267,7 @@ comp-inverses = sol
 equiv-to-set = sol
  where
   sol : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → X ≃ Y → is-set Y → is-set X
-  sol e = subtypes-of-sets-are-sets ⌜ e ⌝ (equivs-are-lc ⌜ e ⌝ (⌜⌝-is-equiv e))
+  sol e = subtypes-of-sets-are-sets' ⌜ e ⌝ (equivs-are-lc ⌜ e ⌝ (⌜⌝-is-equiv e))
 
 sections-closed-under-∼ = sol
  where
@@ -343,7 +343,7 @@ equiv-to-singleton' = sol
       → X ≃ Y → is-singleton X → is-singleton Y
   sol e = retract-of-singleton (≃-gives-▷ e)
 
-subtypes-of-sets-are-sets = sol
+subtypes-of-sets-are-sets' = sol
  where
   sol : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (m : X → Y)
       → left-cancellable m → is-set Y → is-set X
@@ -371,7 +371,7 @@ subsets-of-sets-are-sets = sol
      → is-set X
      → ((x : X) → is-subsingleton (A x))
      → is-set (Σ x ꞉ X , A x)
-  sol X A h p = subtypes-of-sets-are-sets pr₁ (pr₁-lc p) h
+  sol X A h p = subtypes-of-sets-are-sets' pr₁ (pr₁-lc p) h
 
 to-subtype-＝ = sol
  where

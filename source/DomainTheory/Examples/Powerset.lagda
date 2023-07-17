@@ -10,7 +10,7 @@ finite subsets.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan
 
@@ -22,7 +22,7 @@ module DomainTheory.Examples.Powerset
         (pt : propositional-truncations-exist)
         (fe : Fun-Ext)
         (pe : Prop-Ext)
-        {X : 𝓤 ̇  }
+        {X : 𝓤 ̇ }
         (X-is-set : is-set X)
        where
 

@@ -64,7 +64,7 @@ because the type (Σ y ꞉ 𝕍 , y ∈ x) of elements contained in x is a large
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline --lossy-unification #-}
+{-# OPTIONS --safe --without-K --exact-split --lossy-unification #-}
 
 open import MLTT.Spartan
 
@@ -104,11 +104,13 @@ open import UF.CumulativeHierarchy pt fe pe
 open import UF.CumulativeHierarchy-LocallySmall pt fe pe
 
 open import Ordinals.CumulativeHierarchy pt ua 𝓤
+open import Ordinals.Equivalence
+open import Ordinals.Maps
 open import Ordinals.Notions
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.Type
-open import Ordinals.WellOrderTransport fe'
 open import Ordinals.Underlying
+open import Ordinals.WellOrderTransport fe'
 
 module _
         (ch : cumulative-hierarchy-exists 𝓤)
@@ -170,7 +172,7 @@ ordinal x is a (large) type theoretic ordinal when ordered by membership.
       h : (y : 𝕍)
         → ((u : 𝕍) → u ∈ y → (m : u ∈ x) → is-accessible _∈ₓ_ (u , m))
         → (m : y ∈ x) → is-accessible _∈ₓ_ (y , m)
-      h y IH m = step (λ (u , u-in-x) u-in-y → IH u u-in-y u-in-x)
+      h y IH m = acc (λ (u , u-in-x) u-in-y → IH u u-in-y u-in-x)
 
   𝕋xᵒʳᵈ : Ordinal (𝓤 ⁺)
   𝕋xᵒʳᵈ = 𝕋x , _∈ₓ_ , ∈ₓ-is-prop-valued , ∈ₓ-is-well-founded
@@ -362,7 +364,7 @@ equivalent to a large one. We do *not* use resizing axioms.
            h (c , refl) = ≺-to-∈ (t [ c ] (∈-to-≺ m))
 
   ≺-is-well-founded : is-well-founded _≺_
-  ≺-is-well-founded = /-induction ~EqRel acc-is-prop acc
+  ≺-is-well-founded = /-induction ~EqRel acc-is-prop acc''
    where
     acc-is-prop : (x : A/~) → is-prop (is-accessible _≺_ x)
     acc-is-prop = accessibility-is-prop _≺_ fe'
@@ -373,12 +375,12 @@ equivalent to a large one. We do *not* use resizing axioms.
         → ((y : 𝕍) → y ∈ x → (a : A) → f a ＝ y → is-accessible _≺_ [ a ])
         → (a : A) → f a ＝ x → is-accessible _≺_ [ a ]
       h x IH a refl =
-       step (/-induction ~EqRel (λ _ → Π-is-prop fe (λ _ → acc-is-prop _)) α)
+       acc (/-induction ~EqRel (λ _ → Π-is-prop fe (λ _ → acc-is-prop _)) α)
         where
          α : (b : A) → [ b ] ≺ [ a ] → is-accessible _≺_ [ b ]
          α b m = IH (f b) (≺-to-∈ m) b refl
-    acc : (a : A) → is-accessible _≺_ [ a ]
-    acc a = acc' (f a) a refl
+    acc'' : (a : A) → is-accessible _≺_ [ a ]
+    acc'' a = acc' (f a) a refl
 
   module quotient-as-ordinal
           (σ : is-set-theoretic-ordinal (𝕍-set f))
@@ -466,8 +468,10 @@ preserving and reflecting.
                                 image-fᵒʳᵈ ＝⟨ ⦅2⦆ ⟩
                                 A/~ᵒʳᵈ     ∎
     where
-     ⦅1⦆ = eqtoidₒ 𝕋xᵒʳᵈ image-fᵒʳᵈ 𝕋xᵒʳᵈ-≃-image-fᵒʳᵈ
-     ⦅2⦆ = eqtoidₒ image-fᵒʳᵈ A/~ᵒʳᵈ (≃ₒ-sym A/~ᵒʳᵈ image-fᵒʳᵈ (ϕ , ϕ-is-order-equiv))
+     ⦅1⦆ = eqtoidₒ (ua (𝓤 ⁺)) fe 𝕋xᵒʳᵈ image-fᵒʳᵈ 𝕋xᵒʳᵈ-≃-image-fᵒʳᵈ
+     ⦅2⦆ = eqtoidₒ (ua (𝓤 ⁺)) fe
+           image-fᵒʳᵈ A/~ᵒʳᵈ
+           (≃ₒ-sym A/~ᵒʳᵈ image-fᵒʳᵈ (ϕ , ϕ-is-order-equiv))
       where
        ϕ-is-order-equiv : is-order-equiv A/~ᵒʳᵈ image-fᵒʳᵈ ϕ
        ϕ-is-order-equiv =
@@ -754,7 +758,7 @@ ordinal to the total space 𝕋xᵒʳᵈ of x.
     prop-valued : (x : 𝕍)
                 → is-prop ((σ : is-set-theoretic-ordinal x) → 𝕍ᵒʳᵈ-to-Ord (x , σ)
                                                             ≃ₒ total-spaceᵒʳᵈ x σ)
-    prop-valued x = Π-is-prop fe (λ σ → ≃ₒ-is-prop-valued _ _)
+    prop-valued x = Π-is-prop fe (λ σ → ≃ₒ-is-prop-valued fe _ _)
     γ : {A : 𝓤 ̇ } (f : A → 𝕍) (σ : is-set-theoretic-ordinal (𝕍-set f))
       → 𝕍ᵒʳᵈ-to-Ord (𝕍-set f , σ) ≃ₒ total-spaceᵒʳᵈ (𝕍-set f) σ
     γ {A} f σ = ≃ₒ-trans (𝕍ᵒʳᵈ-to-Ord (𝕍-set f , σ))

@@ -10,7 +10,7 @@ dcpos.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan
 
@@ -69,7 +69,7 @@ module _ {𝓤 𝓣 : Universe}
  is-inhabited : (X : 𝓦 ̇ ) → 𝓦 ̇
  is-inhabited = ∥_∥
 
- is-semidirected : {I : 𝓦 ̇  } → (I → D) → 𝓦 ⊔ 𝓣 ̇
+ is-semidirected : {I : 𝓦 ̇ } → (I → D) → 𝓦 ⊔ 𝓣 ̇
  is-semidirected {𝓦} {I} α = (i j : I) → ∃ k ꞉ I , (α i ⊑ α k) × (α j ⊑ α k)
 
  is-directed : {I : 𝓦 ̇ } → (I → D) → 𝓦 ⊔ 𝓣 ̇
@@ -85,7 +85,7 @@ module _ {𝓤 𝓣 : Universe}
  being-inhabited-is-prop : {I : 𝓦 ̇ } → is-prop (is-inhabited I)
  being-inhabited-is-prop = ∥∥-is-prop
 
- being-semidirected-is-prop : {I : 𝓦 ̇  } (α : I → D) → is-prop (is-semidirected α)
+ being-semidirected-is-prop : {I : 𝓦 ̇ } (α : I → D) → is-prop (is-semidirected α)
  being-semidirected-is-prop α = Π₂-is-prop fe (λ i j → ∥∥-is-prop)
 
  being-directed-is-prop : {I : 𝓦 ̇ } (α : I → D) → is-prop (is-directed α)
@@ -240,12 +240,12 @@ Next, we introduce ∐-notation for the supremum of a directed family in a dcpo.
  is-Directed : (𝓓 : DCPO) {I : 𝓦 ̇ } (α : I → ⟨ 𝓓 ⟩) → 𝓦 ⊔ 𝓣 ̇
  is-Directed 𝓓 α = is-directed (underlying-order 𝓓) α
 
- inhabited-if-Directed : (𝓓 : DCPO) {I : 𝓦 ̇} (α : I → ⟨ 𝓓 ⟩)
+ inhabited-if-Directed : (𝓓 : DCPO) {I : 𝓦 ̇ } (α : I → ⟨ 𝓓 ⟩)
                        → is-Directed 𝓓 α
                        → ∥ I ∥
  inhabited-if-Directed 𝓓 α = pr₁
 
- semidirected-if-Directed : (𝓓 : DCPO) {I : 𝓦 ̇} (α : I → ⟨ 𝓓 ⟩)
+ semidirected-if-Directed : (𝓓 : DCPO) {I : 𝓦 ̇ } (α : I → ⟨ 𝓓 ⟩)
                           → is-Directed 𝓓 α
                           → is-Semidirected 𝓓 α
  semidirected-if-Directed 𝓓 α = pr₂

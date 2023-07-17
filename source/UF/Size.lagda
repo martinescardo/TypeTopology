@@ -25,32 +25,30 @@ which seems to be a new result.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module UF.Size where
 
 open import MLTT.Spartan
-
 open import UF.Base
-open import UF.FunExt
-open import UF.Subsingletons renaming (⊤Ω to ⊤ ; ⊥Ω to ⊥)
-open import UF.Subsingletons-FunExt
+open import UF.Embeddings
 open import UF.Equiv
 open import UF.Equiv-FunExt
-open import UF.Retracts
-open import UF.Embeddings
 open import UF.EquivalenceExamples
 open import UF.ExcludedMiddle
-open import UF.Univalence
-open import UF.UA-FunExt
-open import UF.UniverseEmbedding
+open import UF.FunExt
+open import UF.KrausLemma
 open import UF.PropIndexedPiSigma
 open import UF.PropTrunc
-open import UF.KrausLemma
+open import UF.Retracts
 open import UF.Section-Embedding
+open import UF.Subsingletons renaming (⊤Ω to ⊤ ; ⊥Ω to ⊥)
+open import UF.Subsingletons-FunExt
+open import UF.UA-FunExt
+open import UF.Univalence
+open import UF.UniverseEmbedding
 
 \end{code}
-
 
 We say that a type X has size 𝓥, or that it is 𝓥 small if it is
 equivalent to a type in the universe 𝓥:
@@ -60,11 +58,12 @@ equivalent to a type in the universe 𝓥:
 _is_small : 𝓤 ̇ → (𝓥 : Universe) → 𝓥 ⁺  ⊔ 𝓤 ̇
 X is 𝓥 small = Σ Y ꞉ 𝓥 ̇ , Y ≃ X
 
-resized : (𝓥 : Universe) → (X : 𝓤 ̇) → X is 𝓥 small → 𝓥 ̇
-resized 𝓥 X = pr₁
+resized : (X : 𝓤 ̇ ) → X is 𝓥 small → 𝓥 ̇
+resized X = pr₁
 
-resizing-condition : (𝓥 : Universe) (X : 𝓤 ̇) (s : X is 𝓥 small) → resized 𝓥 X s ≃ X
-resizing-condition 𝓥 X = pr₂
+resizing-condition : {X : 𝓤 ̇ } (s : X is 𝓥 small)
+                   → resized X s ≃ X
+resizing-condition = pr₂
 
 \end{code}
 
@@ -133,12 +132,12 @@ Definitions:
 
 \begin{code}
 
-resize               {𝓤} {𝓥} ρ P i = resized 𝓥 P (ρ P i)
-resize-is-prop       {𝓤} {𝓥} ρ P i = equiv-to-prop (resizing-condition 𝓥 P (ρ P i)) i
-to-resize            {𝓤} {𝓥} ρ P i = ⌜ resizing-condition 𝓥 P (ρ P i) ⌝⁻¹
-from-resize          {𝓤} {𝓥} ρ P i = ⌜ resizing-condition 𝓥 P (ρ P i) ⌝
-to-resize-is-equiv   {𝓤} {𝓥} ρ P i = ⌜⌝⁻¹-is-equiv (resizing-condition 𝓥 P (ρ P i))
-from-resize-is-equiv {𝓤} {𝓥} ρ P i = ⌜⌝-is-equiv (resizing-condition 𝓥 P (ρ P i))
+resize               {𝓤} {𝓥} ρ P i = resized P (ρ P i)
+resize-is-prop       {𝓤} {𝓥} ρ P i = equiv-to-prop (resizing-condition (ρ P i)) i
+to-resize            {𝓤} {𝓥} ρ P i = ⌜ resizing-condition (ρ P i) ⌝⁻¹
+from-resize          {𝓤} {𝓥} ρ P i = ⌜ resizing-condition (ρ P i) ⌝
+to-resize-is-equiv   {𝓤} {𝓥} ρ P i = ⌜⌝⁻¹-is-equiv (resizing-condition (ρ P i))
+from-resize-is-equiv {𝓤} {𝓥} ρ P i = ⌜⌝-is-equiv (resizing-condition (ρ P i))
 
 Propositional-resizing : 𝓤ω
 Propositional-resizing = {𝓤 𝓥 : Universe} → propositional-resizing 𝓤 𝓥
@@ -152,27 +151,27 @@ excluded middle, which is consistent (with or without univalence):
 
 decidable-propositions-have-any-size : (P : 𝓤  ̇ )
                                      → is-prop P
-                                     → decidable P
+                                     → is-decidable P
                                      → P is 𝓥 small
 decidable-propositions-have-any-size {𝓤} {𝓥} P i d = Q d , e d
  where
-  Q : decidable P → 𝓥 ̇
+  Q : is-decidable P → 𝓥 ̇
   Q (inl p) = 𝟙
   Q (inr n) = 𝟘
 
-  j : (d : decidable P) → is-prop (Q d)
+  j : (d : is-decidable P) → is-prop (Q d)
   j (inl p) = 𝟙-is-prop
   j (inr n) = 𝟘-is-prop
 
-  f : (d : decidable P) → P → Q d
+  f : (d : is-decidable P) → P → Q d
   f (inl p) p' = ⋆
   f (inr n) p  = 𝟘-elim (n p)
 
-  g : (d : decidable P) → Q d → P
+  g : (d : is-decidable P) → Q d → P
   g (inl p) q = p
   g (inr n) q = 𝟘-elim q
 
-  e : (d : decidable P) → Q d ≃ P
+  e : (d : is-decidable P) → Q d ≃ P
   e d = logically-equivalent-props-are-equivalent
          (j d) i (g d) (f d)
 
@@ -184,7 +183,7 @@ EM-gives-PR em P i = decidable-propositions-have-any-size P i (em P i)
 To show that the axiom of propositional resizing is itself a
 proposition, we use univalence here (and there is a proof with weaker
 hypotheses below). But notice that the type "X is 𝓥 small" is a
-proposition if and only if univalence holds.
+proposition for every type X if and only if univalence holds.
 
 \begin{code}
 
@@ -212,10 +211,12 @@ being-small-is-prop {𝓤} ua X 𝓥 = c
   c : is-prop (Σ Y ꞉ 𝓥 ̇ , Y ≃ X)
   c = equiv-to-prop b (Lift-is-embedding ua (Lift 𝓥 X))
 
-propositional-resizing-is-prop : Univalence → is-prop (propositional-resizing 𝓤 𝓥)
-propositional-resizing-is-prop {𝓤} {𝓥} ua =  Π-is-prop (fe (𝓤 ⁺) (𝓥 ⁺ ⊔ 𝓤))
-                                                (λ P → Π-is-prop (fe 𝓤 (𝓥 ⁺ ⊔ 𝓤))
-                                                (λ i → being-small-is-prop ua P 𝓥))
+propositional-resizing-is-prop : Univalence
+                               → is-prop (propositional-resizing 𝓤 𝓥)
+propositional-resizing-is-prop {𝓤} {𝓥} ua =
+ Π-is-prop (fe (𝓤 ⁺) (𝓥 ⁺ ⊔ 𝓤))
+  (λ P → Π-is-prop (fe 𝓤 (𝓥 ⁺ ⊔ 𝓤))
+  (λ i → being-small-is-prop ua P 𝓥))
  where
   fe : FunExt
   fe = Univalence-gives-FunExt ua
@@ -232,8 +233,8 @@ prop-being-small-is-prop : PropExt
                          → FunExt
                          → (P : 𝓤 ̇ )
                          → is-prop P
-                         → (𝓥 :  Universe) → is-prop (P is 𝓥 small)
-prop-being-small-is-prop {𝓤} pe fe P i 𝓥 = c
+                         → {𝓥 :  Universe} → is-prop (P is 𝓥 small)
+prop-being-small-is-prop {𝓤} pe fe P i {𝓥} = c
  where
   j : is-prop (Lift 𝓥 P)
   j = equiv-to-prop (Lift-is-universe-embedding 𝓥 P) i
@@ -241,7 +242,7 @@ prop-being-small-is-prop {𝓤} pe fe P i 𝓥 = c
   a : (Y : 𝓥 ̇ ) → (Y ≃ P) ≃ (Lift 𝓤 Y ＝ Lift 𝓥 P)
   a Y = (Y ≃ P)                ≃⟨ a₀ ⟩
         (Lift 𝓤 Y ≃ Lift 𝓥 P)  ≃⟨ a₁ ⟩
-        (Lift 𝓤 Y ＝ Lift 𝓥 P)  ■
+        (Lift 𝓤 Y ＝ Lift 𝓥 P) ■
    where
     a₀ = ≃-cong fe
            (≃-sym (Lift-is-universe-embedding 𝓤 Y))
@@ -259,10 +260,9 @@ prop-being-small-is-prop {𝓤} pe fe P i 𝓥 = c
 propositional-resizing-is-prop' : PropExt
                                 → FunExt
                                 → is-prop (propositional-resizing 𝓤 𝓥)
-propositional-resizing-is-prop' {𝓤} {𝓥} pe fe =
-  Π-is-prop (fe (𝓤 ⁺) (𝓥 ⁺ ⊔ 𝓤))
-   (λ P → Π-is-prop (fe 𝓤 (𝓥 ⁺ ⊔ 𝓤))
-           (λ i → prop-being-small-is-prop pe fe P i 𝓥))
+propositional-resizing-is-prop' pe fe =
+ Π₂-is-prop (fe _ _) (λ P i → prop-being-small-is-prop pe fe P i)
+
 \end{code}
 
 Impredicativity. We begin with this strong notion, which says that the
@@ -349,17 +349,17 @@ universe, and of all other universes, of course:
   φ (inl x) = ⊥
   φ (inr y) = ⊤
 
-  ψ : (p : Ω 𝓤) → decidable (p holds) → 𝟙 + 𝟙
+  ψ : (p : Ω 𝓤) → is-decidable (p holds) → 𝟙 + 𝟙
   ψ p (inl h) = inr ⋆
   ψ p (inr n) = inl ⋆
 
-  ψφ : (z : 𝟙 + 𝟙) (d : decidable ((φ z) holds)) → ψ (φ z) d ＝ z
+  ψφ : (z : 𝟙 + 𝟙) (d : is-decidable ((φ z) holds)) → ψ (φ z) d ＝ z
   ψφ (inl x) (inl h) = 𝟘-elim h
   ψφ (inl x) (inr n) = ap inl (𝟙-is-prop ⋆ x)
   ψφ (inr y) (inl h) = ap inr (𝟙-is-prop ⋆ y)
   ψφ (inr y) (inr n) = 𝟘-elim (n ⋆)
 
-  φψ : (p : Ω 𝓤) (d : decidable (p holds)) → φ (ψ p d) ＝ p
+  φψ : (p : Ω 𝓤) (d : is-decidable (p holds)) → φ (ψ p d) ＝ p
   φψ p (inl h) = (true-is-equal-⊤  pe fe (p holds) (holds-is-prop p) h)⁻¹
   φψ p (inr n) = (false-is-equal-⊥ pe fe (p holds) (holds-is-prop p) n)⁻¹
 
@@ -439,7 +439,7 @@ the second universe 𝓤₁:
                             → FunExt
                             → Ω 𝓤 ≃ Ω 𝓤₀
 Ω-resizing₁-≃-from-pr-pe-fe {𝓤} ρ pe fe =
-  ≃-sym (resizing-condition 𝓤₁ (Ω 𝓤) (Ω-resizing₁-from-pr-pe-fe {𝓤} ρ pe fe))
+  ≃-sym (resizing-condition (Ω-resizing₁-from-pr-pe-fe {𝓤} ρ pe fe))
 
 Ω-𝓤₀-lives-in-𝓤₁ : universe-of (Ω 𝓤₀) ＝ 𝓤₁
 Ω-𝓤₀-lives-in-𝓤₁ = refl
@@ -591,7 +591,7 @@ module Image
  restriction : (f : X → Y) → image f → Y
  restriction f (y , _) = y
 
- restriction-embedding : (f : X → Y) → is-embedding(restriction f)
+ restriction-embedding : (f : X → Y) → is-embedding (restriction f)
  restriction-embedding f = pr₁-is-embedding (λ y → resize-is-prop R _ _)
 
  corestriction : (f : X → Y) → X → image f
@@ -602,8 +602,6 @@ module Image
 TODO. Prove the properties / perform the constructions in
 UF.ImageAndSurjection. Better: reorganize the code so that reproving
 is not necessary.
-
-\end{code}
 
 Added 24 January 2020 (originally proved 19 November 2019) by Tom de Jong.
 
@@ -622,23 +620,23 @@ being-small-is-idempotent : (ua : Univalence) (𝓤 𝓥 : Universe) (Y : 𝓤 �
 being-small-is-idempotent ua 𝓤 𝓥 Y i (H , e) = X , γ
  where
   X : 𝓥 ̇
-  X = Σ h ꞉ H , resized 𝓥 Y (eqtofun e h)
+  X = Σ h ꞉ H , resized Y (eqtofun e h)
 
-  γ = X  ≃⟨ Σ-change-of-variable (resized 𝓥 Y) (eqtofun e) (eqtofun- e) ⟩
+  γ = X  ≃⟨ Σ-change-of-variable (resized Y) (eqtofun e) (eqtofun- e) ⟩
       X' ≃⟨ ϕ ⟩
       Y  ■
    where
     X' : 𝓥 ⁺ ⊔ 𝓤 ̇
-    X' = Σ h ꞉ Y is 𝓥 small , resized 𝓥 Y h
+    X' = Σ h ꞉ Y is 𝓥 small , resized Y h
 
     ϕ = logically-equivalent-props-are-equivalent j i f g
      where
       j : is-prop X'
       j = Σ-is-prop (being-small-is-prop ua Y 𝓥)
-            (λ (h : Y is 𝓥 small) → equiv-to-prop (resizing-condition 𝓥 Y h) i)
+            (λ (h : Y is 𝓥 small) → equiv-to-prop (resizing-condition h) i)
 
       f : X' → Y
-      f (e' , x) = eqtofun (resizing-condition 𝓥 Y e') x
+      f (e' , x) = eqtofun (resizing-condition e') x
 
       g : Y → X'
       g y = (𝟙{𝓥} , singleton-≃-𝟙' (pointed-props-are-singletons y i)) , ⋆
@@ -693,8 +691,11 @@ is-small {𝓤} X = X is 𝓤 small
 is-large : 𝓤 ⁺ ̇ → 𝓤 ⁺ ̇
 is-large X = ¬ is-small X
 
-_is_small-map : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → (𝓦 : Universe) → 𝓤 ⊔ 𝓥 ⊔ (𝓦 ⁺) ̇
-f is 𝓦 small-map = ∀ y → (fiber f y) is 𝓦 small
+_is_small-map : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+              → (X → Y)
+              → (𝓦 : Universe)
+              → 𝓤 ⊔ 𝓥 ⊔ (𝓦 ⁺) ̇
+f is 𝓦 small-map = ∀ y → fiber f y is 𝓦 small
 
 _is-small-map : {X Y : 𝓤 ⁺ ̇ } → (X → Y) → 𝓤 ⁺ ̇
 _is-small-map {𝓤} f = f is 𝓤 small-map
@@ -722,10 +723,10 @@ size-contravariance : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
 size-contravariance {𝓤} {𝓥} {𝓦} {X} {Y} f f-size (Y' , 𝕘) = γ
  where
   F : Y → 𝓦 ̇
-  F y = resized 𝓦 (fiber f y) (f-size y)
+  F y = resized (fiber f y) (f-size y)
 
   F-is-fiber : (y : Y) → F y ≃ fiber f y
-  F-is-fiber y = resizing-condition 𝓦 (fiber f y) (f-size y)
+  F-is-fiber y = resizing-condition (f-size y)
 
   X' : 𝓦 ̇
   X' = Σ y' ꞉ Y' , F (⌜ 𝕘 ⌝ y')
@@ -852,19 +853,19 @@ For example, by univalence, universes are locally small, and so is the
 \begin{code}
 
 _＝⟦_⟧_ : {X : 𝓤 ⁺ ̇ } → X → is-locally-small X → X → 𝓤 ̇
-x ＝⟦ ls ⟧ y = resized _ (x ＝ y) (ls x y)
+x ＝⟦ ls ⟧ y = resized (x ＝ y) (ls x y)
 
 Id⟦_⟧ : {X : 𝓤 ⁺ ̇ } → is-locally-small X → X → X → 𝓤 ̇
 Id⟦ ls ⟧ x y = x ＝⟦ ls ⟧ y
 
 ＝⟦_⟧-gives-＝ : {X : 𝓤 ⁺ ̇ } (ls : is-locally-small X) {x y : X} → x ＝⟦ ls ⟧ y → x ＝ y
-＝⟦ ls ⟧-gives-＝ {x} {y} = ⌜ resizing-condition _ (x ＝ y) (ls x y) ⌝
+＝⟦ ls ⟧-gives-＝ {x} {y} = ⌜ resizing-condition (ls x y) ⌝
 
 ＝-gives-＝⟦_⟧ : {X : 𝓤 ⁺ ̇ } (ls : is-locally-small X) {x y : X} → x ＝ y → x ＝⟦ ls ⟧ y
-＝-gives-＝⟦ ls ⟧ {x} {y} = ⌜ resizing-condition _ (x ＝ y) (ls x y) ⌝⁻¹
+＝-gives-＝⟦ ls ⟧ {x} {y} = ⌜ resizing-condition (ls x y) ⌝⁻¹
 
 ⟦_⟧-refl : {X : 𝓤 ⁺ ̇ } (ls : is-locally-small X) {x : X} → x ＝⟦ ls ⟧ x
-⟦ ls ⟧-refl {x} = ⌜ ≃-sym (resizing-condition _ (x ＝ x) (ls x x)) ⌝ refl
+⟦ ls ⟧-refl {x} = ⌜ ≃-sym (resizing-condition (ls x x)) ⌝ refl
 
 ＝⟦_⟧-sym : {X : 𝓤 ⁺ ̇ } (ls : is-locally-small X) → {x y : X} → x ＝⟦ ls ⟧ y → y ＝⟦ ls ⟧ x
 ＝⟦ ls ⟧-sym p = ＝-gives-＝⟦ ls ⟧ (＝⟦ ls ⟧-gives-＝ p ⁻¹)
@@ -882,6 +883,67 @@ x ≠⟦ ls ⟧ y = ¬ (x ＝⟦ ls ⟧ y)
 ≠⟦ ls ⟧-gives-≠ = contrapositive ＝-gives-＝⟦ ls ⟧
 
 \end{code}
+
+Added 11 Jul 2023 by Martin Escardo.
+
+\begin{code}
+
+subtype-is-small : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
+                 → ((x : X) → is-prop (A x))
+                 → X is 𝓦 small
+                 → Σ A is 𝓥 ⊔ 𝓦 small
+subtype-is-small {𝓤} {𝓥} {𝓦} {X} {A} A-is-prop-valued (X' , 𝕗) = S , 𝕘
+ where
+  S : 𝓥 ⊔ 𝓦 ̇
+  S = Σ x' ꞉ X' , A (⌜ 𝕗 ⌝ x')
+
+  𝕘 = (Σ x' ꞉ X' , A (⌜ 𝕗 ⌝ x')) ≃⟨ Σ-change-of-variable-≃ A 𝕗 ⟩
+      (Σ x ꞉ X , A x)            ■
+
+subtype-is-locally-small : {X : 𝓤 ⁺ ̇ } {A : X → 𝓤 ⁺ ̇ }
+                         → ((x : X) → is-prop (A x))
+                         → is-locally-small X
+                         → is-locally-small (Σ A)
+subtype-is-locally-small A-is-prop-valued X-is-ls (x , a) (y , b) = γ
+ where
+  γ : is-small ((x , a) ＝ (y , b))
+  γ = x ＝⟦ X-is-ls ⟧ y ,
+     (x ＝⟦ X-is-ls ⟧ y     ≃⟨ resizing-condition (X-is-ls x y) ⟩
+     (x ＝ y)               ≃⟨ I ⟩
+     ((x , a) ＝ (y , b))   ■)
+    where
+     I = ≃-sym (ap pr₁ ,
+                embedding-gives-embedding'
+                 pr₁
+                 (pr₁-is-embedding A-is-prop-valued)
+                 (x , a)
+                 (y , b))
+
+subtype-is-locally-small⁻ : {X : 𝓤 ⁺ ̇ } {A : X → 𝓤 ̇ }
+                          → ((x : X) → is-prop (A x))
+                          → is-locally-small X
+                          → is-locally-small (Σ A)
+subtype-is-locally-small⁻ A-is-prop-valued X-is-ls (x , a) (y , b) = γ
+ where
+  γ : is-small ((x , a) ＝ (y , b))
+  γ = x ＝⟦ X-is-ls ⟧ y ,
+     (x ＝⟦ X-is-ls ⟧ y     ≃⟨ resizing-condition (X-is-ls x y) ⟩
+     (x ＝ y)               ≃⟨ I ⟩
+     ((x , a) ＝ (y , b))   ■)
+    where
+     I = ≃-sym (ap pr₁ ,
+                embedding-gives-embedding'
+                 pr₁
+                 (pr₁-is-embedding A-is-prop-valued)
+                 (x , a)
+                 (y , b))
+
+\end{code}
+
+TODO. Generalize the above to resize (the values of) A as well.
+
+TODO. Add a characterization of equality of subtypes somewhere (the
+proof is "I" above. Perhaps in UF.EquivalenceExamples.)
 
 Added 5 April 2022 by Tom de Jong, after discussion with Martín.
 (Refactoring an earlier addition dated 15 March 2022.)
@@ -932,7 +994,7 @@ module _ (pt : propositional-truncations-exist) where
  open import UF.ImageAndSurjection pt
 
  Set-Replacement : 𝓤ω
- Set-Replacement = {𝓦 𝓣 𝓤 𝓥 : Universe} {X : 𝓣 ̇  } {Y : 𝓦 ̇  } (f : X → Y)
+ Set-Replacement = {𝓦 𝓣 𝓤 𝓥 : Universe} {X : 𝓣 ̇ } {Y : 𝓦 ̇ } (f : X → Y)
                  → X is 𝓤 small
                  → Y is-locally 𝓥 small
                  → is-set Y

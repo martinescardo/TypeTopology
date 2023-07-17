@@ -9,7 +9,7 @@ least element to X when viewed as a discretely-ordered dcpo.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan hiding (J)
 
@@ -95,10 +95,10 @@ module freely-add-⊥
       where
        lemma = ＝-to-⊑ 𝓓 (value-is-constant k (g (⌜ e ⌝ p)) p)
 
- family-in-dcpo : {I : 𝓥 ̇  } (α : I → 𝓛D) → (Σ i ꞉ I , is-defined (α i)) → ⟨ 𝓓 ⟩
+ family-in-dcpo : {I : 𝓥 ̇ } (α : I → 𝓛D) → (Σ i ꞉ I , is-defined (α i)) → ⟨ 𝓓 ⟩
  family-in-dcpo {I} α (i , p) = value (α i) p
 
- family-in-dcpo-is-semidirected : {I : 𝓥 ̇  } (α : I → 𝓛D)
+ family-in-dcpo-is-semidirected : {I : 𝓥 ̇ } (α : I → 𝓛D)
                                 → is-semidirected _⊑_ α
                                 → is-semidirected (underlying-order 𝓓)
                                    (family-in-dcpo α)
@@ -117,7 +117,7 @@ module freely-add-⊥
        where
         lemma = ＝-to-⊑ 𝓓 (value-is-constant (α k) (g pⱼ) (f pᵢ))
 
- family-in-dcpo-is-directed : {I : 𝓥 ̇  } (α : I → 𝓛D)
+ family-in-dcpo-is-directed : {I : 𝓥 ̇ } (α : I → 𝓛D)
                             → is-directed _⊑_ α
                             → ∃ i ꞉ I , is-defined (α i)
                             → is-Directed 𝓓 (family-in-dcpo α)
@@ -238,7 +238,7 @@ dcpo.
   f̃-is-continuous' : is-continuous 𝓛-DCPO (𝓔 ⁻) f̃
   f̃-is-continuous' = continuity-criterion 𝓛-DCPO (𝓔 ⁻) f̃ f̃-is-monotone γ
    where
-    γ : (I : 𝓥 ̇) (α : I → ⟨ 𝓛-DCPO ⟩) (δ : is-Directed 𝓛-DCPO α)
+    γ : (I : 𝓥 ̇ )(α : I → ⟨ 𝓛-DCPO ⟩) (δ : is-Directed 𝓛-DCPO α)
       → f̃ (∐ 𝓛-DCPO {I} {α} δ) ⊑⟪ 𝓔 ⟫
         ∐ (𝓔 ⁻) (image-is-Directed 𝓛-DCPO (𝓔 ⁻) f̃-is-monotone {I} {α} δ)
     γ I α δ = ∐ˢˢ-is-lowerbound-of-upperbounds 𝓔 (f ∘ value s)
@@ -286,7 +286,7 @@ dcpo.
                    → is-monotone 𝓛-DCPOₛ (𝓔 ⁻) g
   𝓛-monotone-lemma g g-mon k l k-below-l = g-mon k l (𝓛-order-lemma k-below-l)
 
-  𝓛-directed-lemma : {I : 𝓥 ̇  } {α : I → 𝓛D}
+  𝓛-directed-lemma : {I : 𝓥 ̇ } {α : I → 𝓛D}
                    → is-Directed 𝓛-DCPOₛ α
                    → is-Directed 𝓛-DCPO α
   𝓛-directed-lemma {I} {α} δ = (inhabited-if-Directed 𝓛-DCPOₛ α δ , σ)
@@ -298,7 +298,7 @@ dcpo.
         → (Σ k ꞉ I , (α i ⊑ α k) × (α j ⊑ α k))
       γ (k , u , v) = (k , 𝓛-order-lemma u , 𝓛-order-lemma v)
 
-  𝓛-sup-lemma : {I : 𝓥 ̇  } {α : I → 𝓛D} (δ : is-Directed 𝓛-DCPOₛ α)
+  𝓛-sup-lemma : {I : 𝓥 ̇ } {α : I → 𝓛D} (δ : is-Directed 𝓛-DCPOₛ α)
               → ∐ 𝓛-DCPOₛ δ ＝ ∐ 𝓛-DCPO {I} {α} (𝓛-directed-lemma δ)
   𝓛-sup-lemma {I} {α} δ = ⋍-to-＝ (e , dfunext fe γ)
    where
@@ -347,7 +347,7 @@ dcpo.
    where
     g-mon : is-monotone 𝓛-DCPOₛ (𝓔 ⁻) g
     g-mon = 𝓛-monotone-lemma g (monotone-if-continuous 𝓛-DCPO (𝓔 ⁻) (g , g-cont))
-    lemma : (I : 𝓥 ̇) (α : I → 𝓛D) (δ : is-Directed 𝓛-DCPOₛ α)
+    lemma : (I : 𝓥 ̇ )(α : I → 𝓛D) (δ : is-Directed 𝓛-DCPOₛ α)
           → is-lowerbound-of-upperbounds (underlying-order (𝓔 ⁻))
                                          (g (∐ 𝓛-DCPOₛ δ)) (g ∘ α)
     lemma I α δ = transport T claim

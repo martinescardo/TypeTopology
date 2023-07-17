@@ -13,7 +13,7 @@ Contents
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan
 open import UF.FunExt
@@ -39,7 +39,7 @@ way-below 𝓓 x y = (I : 𝓥 ̇ ) (α : I → ⟨ 𝓓 ⟩) (δ : is-Directed 
                 → y ⊑⟨ 𝓓 ⟩ ∐ 𝓓 δ
                 → ∃ i ꞉ I , x ⊑⟨ 𝓓 ⟩ α i
 
-is-way-upperbound : (𝓓 : DCPO {𝓤} {𝓣}) {I : 𝓥 ̇  } (x : ⟨ 𝓓 ⟩) (α : I → ⟨ 𝓓 ⟩)
+is-way-upperbound : (𝓓 : DCPO {𝓤} {𝓣}) {I : 𝓥 ̇ } (x : ⟨ 𝓓 ⟩) (α : I → ⟨ 𝓓 ⟩)
                   → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
 is-way-upperbound 𝓓 {I} x α = (i : I) → α i ≪⟨ 𝓓 ⟩ x
 

@@ -2,7 +2,7 @@ Chuangjie Xu 2011, with changes by Martin Escardo later.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module Naturals.Addition where
 
@@ -14,6 +14,11 @@ infixl 31 _+_
 _+_ : ℕ → ℕ → ℕ
 n + 0 = n
 n + (succ m) = succ (n + m)
+
+_+ᴸ_ : ℕ → ℕ → ℕ
+m +ᴸ n = n + m
+
+{-# BUILTIN NATPLUS _+_ #-}
 
 zero-right-neutral : (n : ℕ) → n + 0 ＝ n
 zero-right-neutral n = refl
@@ -93,18 +98,20 @@ succ-right : (x y : ℕ) → x + succ y ＝ succ (x + y)
 succ-right x y = refl
 
 succ-left : (x y : ℕ) → succ x + y ＝ succ (x + y)
-succ-left x = induction base step 
-  where
-    base : succ x + 0 ＝ succ (x + 0)
-    base = succ x + 0   ＝⟨ refl         ⟩
-           succ x       ＝⟨ ap succ refl ⟩ 
-           succ (x + 0) ∎
+succ-left x = induction base step
+ where
+  base : succ x + 0 ＝ succ (x + 0)
+  base = succ x + 0   ＝⟨ refl         ⟩
+         succ x       ＝⟨ ap succ refl ⟩
+         succ (x + 0) ∎
 
-    step : (k : ℕ) → succ x + k ＝ succ (x + k) → succ x + succ k ＝ succ (x + succ k)
-    step k IH = succ x + succ k     ＝⟨ refl ⟩
-                succ (succ x + k)   ＝⟨ ap succ IH ⟩
-                succ (succ (x + k)) ＝⟨ refl ⟩
-                succ (x + succ k)   ∎
+  step : (k : ℕ)
+       → succ x + k ＝ succ (x + k)
+       → succ x + succ k ＝ succ (x + succ k)
+  step k IH = succ x + succ k     ＝⟨ refl       ⟩
+              succ (succ x + k)   ＝⟨ ap succ IH ⟩
+              succ (succ (x + k)) ＝⟨ refl       ⟩
+              succ (x + succ k)   ∎
 
 addition-left-cancellable : (x y z : ℕ) → z + x ＝ z + y → x ＝ y
 addition-left-cancellable x y = induction base step
@@ -124,7 +131,7 @@ addition-left-cancellable x y = induction base step
     lemma₁ r = succ (k + x)           ＝⟨ succ-left k x ⁻¹ ⟩
                succ k + x             ＝⟨ r                ⟩
                succ k + y             ＝⟨ succ-left k y    ⟩
-               succ (k + y) ∎        
+               succ (k + y) ∎
 
 
 addition-right-cancellable : (x y z : ℕ) → x + z ＝ y + z → x ＝ y
@@ -133,7 +140,7 @@ addition-right-cancellable x y z r = addition-left-cancellable x y z lemma₀
   lemma₀ : z + x ＝ z + y
   lemma₀ = z + x      ＝⟨ addition-commutativity z x ⟩
            x + z      ＝⟨ r                          ⟩
-           y + z      ＝⟨ addition-commutativity y z ⟩ 
+           y + z      ＝⟨ addition-commutativity y z ⟩
            z + y ∎
 
 \end{code}
@@ -146,6 +153,6 @@ commutativity of addition. This function is needed in the HCF file.
 
 sum-to-zero-gives-zero : (x y : ℕ) → x + y ＝ 0 → y ＝ 0
 sum-to-zero-gives-zero x 0        e = refl
-sum-to-zero-gives-zero x (succ y) e = have positive-not-zero (x + y) which-contradicts e
+sum-to-zero-gives-zero x (succ y) e = 𝟘-elim (positive-not-zero (x + y) e)
 
 \end{code}

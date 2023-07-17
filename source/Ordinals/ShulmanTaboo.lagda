@@ -35,7 +35,7 @@ On 22/07/18 06:17, Michael Shulman wrote:
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan
 

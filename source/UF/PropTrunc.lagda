@@ -2,7 +2,7 @@ Martin Escardo
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module UF.PropTrunc where
 
@@ -90,6 +90,14 @@ module PropositionalTruncation (pt : propositional-truncations-exist) where
 
  infixr -1 Exists
  infixr -1 ¬Exists
+
+ remove-truncation-inside-∃ : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
+                            → (∃ x ꞉ X , ∥ Y x ∥)
+                            → (∃ x ꞉ X , Y x )
+ remove-truncation-inside-∃ =
+  ∥∥-rec ∃-is-prop
+   (λ (x , s) → ∥∥-rec ∃-is-prop
+                 (λ y → ∣ x , y ∣) s)
 
  Nat∃ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {B : X → 𝓦 ̇ } → Nat A B → ∃ A → ∃ B
  Nat∃ ζ = ∥∥-functor (NatΣ ζ)

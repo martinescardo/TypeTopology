@@ -12,7 +12,7 @@ type into X, or, equivalently, a map of X into the subtype classifier
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module UF.Powerset where
 
@@ -239,7 +239,7 @@ We use a named module when defining singleton subsets, so that we can write
 \begin{code}
 
 module singleton-subsets
-        {X : 𝓤 ̇  }
+        {X : 𝓤 ̇ }
         (X-is-set : is-set X)
        where
 
@@ -402,8 +402,8 @@ module unions-of-small-families
         (pt : propositional-truncations-exist)
         (𝓥 : Universe)
         (𝓣 : Universe)
-        (X : 𝓤 ̇  )
-        {I : 𝓥 ̇  }
+        (X : 𝓤 ̇ )
+        {I : 𝓥 ̇ }
        where
 
  open PropositionalTruncation pt

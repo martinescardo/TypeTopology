@@ -16,7 +16,7 @@ replacement assumption (again, see UF.Size.lagda for details).
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import UF.FunExt
 open import UF.PropTrunc
@@ -41,7 +41,7 @@ open import UF.Size
 
 module _
         (R : Set-Replacement pt)
-        {X : 𝓤 ̇  }
+        {X : 𝓤 ̇ }
         (≋@(_≈_ , ≈p , ≈r , ≈s , ≈t) : EqRel {𝓤} {𝓥} X)
        where
 
@@ -65,7 +65,7 @@ module _
           S       ■
        where
         I : (f ∼ g) ≃ S
-        I = Π-cong fe fe X (λ x → f x ＝ g x) (λ x → f x holds ⇔ g x holds) II
+        I = Π-cong fe fe II
          where
           II : (x : X) → (f x ＝ g x) ≃ (f x holds ⇔ g x holds)
           II x = logically-equivalent-props-are-equivalent
@@ -105,7 +105,7 @@ UF.Quotient.lagda.
    γ = /-induction' ≋ (λ y → i (⌜ φ ⌝⁻¹ y)) h
    e : ⌜ φ ⌝⁻¹ (⌜ φ ⌝ x') ＝ x'
    e = ≃-sym-is-linv φ x'
- /ₛ-universality : {A : 𝓦 ̇  } → is-set A
+ /ₛ-universality : {A : 𝓦 ̇ } → is-set A
                  → (f : X → A)
                  → identifies-related-points ≋ f
                  → ∃! f' ꞉ (X/ₛ≈ → A), f' ∘ η/ₛ ∼ f
@@ -119,8 +119,7 @@ UF.Quotient.lagda.
      where
       ⦅1⦆ = Σ-cong (λ f' → ≃-funext fe (f' ∘ η/ ≋) f)
       ⦅2⦆ = Σ-cong
-            (λ f' → Π-cong fe fe X _ _
-                    (λ x → ＝-cong-l (f' (η/ ≋ x)) (f x)
+            (λ f' → Π-cong fe fe (λ x → ＝-cong-l (f' (η/ ≋ x)) (f x)
                                     (ap f' ((≃-sym-is-rinv φ (η/ ≋ x)) ⁻¹))))
       ⦅3⦆ = Σ-change-of-variable _ (_∘ ⌜ φ ⌝)
             (qinvs-are-equivs (_∘ ⌜ φ ⌝)

@@ -2,7 +2,7 @@
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --lossy-unification #-}
 
 open import MLTT.Spartan
 open import UF.Base
@@ -28,13 +28,13 @@ open Locale
 
 is-heyting-implication-of : (X : Locale 𝓤 𝓥 𝓦) → ⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩ × ⟨ 𝒪 X ⟩ →  Ω (𝓤 ⊔ 𝓥)
 is-heyting-implication-of X z (x , y) =
- Ɐ w ∶ ⟨ 𝒪 X ⟩ , ((w ∧[ 𝒪 X ] x) ≤[ poset-of (𝒪 X) ] y) ↔ (w ≤[ poset-of (𝒪 X) ] z)
+ Ɐ w ꞉ ⟨ 𝒪 X ⟩ , ((w ∧[ 𝒪 X ] x) ≤[ poset-of (𝒪 X) ] y) ↔ (w ≤[ poset-of (𝒪 X) ] z)
 
 is-heyting-implication-operation : (X : Locale 𝓤 𝓥 𝓦)
                                  → (⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩)
                                  → Ω (𝓤 ⊔ 𝓥)
 is-heyting-implication-operation X _==>_ =
- Ɐ x ∶ ⟨ 𝒪 X ⟩ , Ɐ y ∶ ⟨ 𝒪 X ⟩ , is-heyting-implication-of X (x ==> y) (x , y)
+ Ɐ x ꞉ ⟨ 𝒪 X ⟩ , Ɐ y ꞉ ⟨ 𝒪 X ⟩ , is-heyting-implication-of X (x ==> y) (x , y)
 
 modus-ponens : (X : Locale 𝓤 𝓥 𝓦) {U V W : ⟨ 𝒪 X ⟩}
              → is-heyting-implication-of X W (U , V) holds
@@ -133,5 +133,145 @@ module HeytingImplicationConstruction (X : Locale 𝓤  𝓥  𝓥)
   where
    † : (𝟏[ 𝒪 X ] ≤[ poset-of (𝒪 X ) ] (U ==> U)) holds
    † = heyting-implication₁ U U 𝟏[ 𝒪 X ] (∧[ 𝒪 X ]-lower₂ 𝟏[ 𝒪 X ] U)
+
+ weakening : (U V : ⟨ 𝒪 X ⟩) → (V ≤[ poset-of (𝒪 X) ] (U ==> V)) holds
+ weakening U V = heyting-implication₁ U V V (∧[ 𝒪 X ]-lower₁ V U)
+
+ ex-falso-quodlibet : (U : ⟨ 𝒪 X ⟩)
+                    → (𝟏[ 𝒪 X ] ≤[ poset-of (𝒪 X) ] (𝟎[ 𝒪 X ] ==> U)) holds
+ ex-falso-quodlibet U = heyting-implication₁ 𝟎[ 𝒪 X ] U 𝟏[ 𝒪 X ] †
+  where
+   open PosetReasoning (poset-of (𝒪 X))
+
+   † : ((𝟏[ 𝒪 X ] ∧[ 𝒪 X ] 𝟎[ 𝒪 X ]) ≤[ poset-of (𝒪 X) ] U) holds
+   † = 𝟏[ 𝒪 X ] ∧[ 𝒪 X ] 𝟎[ 𝒪 X ]  ＝⟨ 𝟏-left-unit-of-∧ (𝒪 X) 𝟎[ 𝒪 X ] ⟩ₚ
+       𝟎[ 𝒪 X ]                    ≤⟨ 𝟎-is-bottom (𝒪 X) U ⟩
+       U                           ■
+
+ H₈ : (U V : ⟨ 𝒪 X ⟩) → U ＝ (U ∨[ 𝒪 X ] V) ∧[ 𝒪 X ] (V ==> U)
+ H₈ U V = ≤-is-antisymmetric (poset-of (𝒪 X)) † ‡
+  where
+   open PosetReasoning (poset-of (𝒪 X))
+
+   † : (U ≤[ poset-of (𝒪 X) ] ((U ∨[ 𝒪 X ] V) ∧[ 𝒪 X ] V ==> U)) holds
+   † = ∧[ 𝒪 X ]-greatest (U ∨[ 𝒪 X ] V) (V ==> U) U
+        (∨[ 𝒪 X ]-upper₁ U V)
+        (weakening V U)
+
+   ‡ : (((U ∨[ 𝒪 X ] V) ∧[ 𝒪 X ] (V ==> U)) ≤[ poset-of (𝒪 X) ] U) holds
+   ‡ = (U ∨[ 𝒪 X ] V) ∧[ 𝒪 X ] (V ==> U)                        ＝⟨ Ⅰ ⟩ₚ
+       (V ==> U) ∧[ 𝒪 X ] (U ∨[ 𝒪 X ] V)                        ＝⟨ Ⅱ ⟩ₚ
+       ((V ==> U) ∧[ 𝒪 X ] U) ∨[ 𝒪 X ] ((V ==> U) ∧[ 𝒪 X ] V)   ≤⟨ Ⅲ ⟩
+       ((V ==> U) ∧[ 𝒪 X ] U) ∨[ 𝒪 X ] U                        ≤⟨ Ⅳ ⟩
+       U ∨[ 𝒪 X ] U                                             ＝⟨ Ⅴ ⟩ₚ
+       U                                                        ■
+        where
+         Ⅰ = ∧[ 𝒪 X ]-is-commutative (U ∨[ 𝒪 X ] V) (V ==> U)
+         Ⅱ = binary-distributivity (𝒪 X) (V ==> U) U V
+         Ⅲ = ∨[ 𝒪 X ]-right-monotone (mp-right V U)
+         Ⅳ = ∨[ 𝒪 X ]-left-monotone (∧[ 𝒪 X ]-lower₂ (V ==> U) U)
+         Ⅴ = ∨[ 𝒪 X ]-is-idempotent U ⁻¹
+
+ heyting-implication-law₄ : (U V : ⟨ 𝒪 X ⟩) → (U ==> V) ＝ U ==> (U ∧[ 𝒪 X ] V)
+ heyting-implication-law₄ U V = ≤-is-antisymmetric (poset-of (𝒪 X)) † ‡
+  where
+   open PosetReasoning (poset-of (𝒪 X))
+
+   † : (U ==> V ≤[ poset-of (𝒪 X) ] U ==> (U ∧[ 𝒪 X ] V)) holds
+   † = heyting-implication₁ U (U ∧[ 𝒪 X ] V) (U ==> V) †₁
+    where
+     †₁ : (((U ==> V) ∧[ 𝒪 X ] U) ≤ (U ∧[ 𝒪 X ] V)) holds
+     †₁ = (U ==> V) ∧[ 𝒪 X ] U                  ＝⟨ I   ⟩ₚ
+          U ∧[ 𝒪 X ] (U ==> V)                  ＝⟨ II  ⟩ₚ
+          (U ∧[ 𝒪 X ] U) ∧[ 𝒪 X ] (U ==> V)     ＝⟨ III ⟩ₚ
+          U ∧[ 𝒪 X ] (U ∧[ 𝒪 X ] (U ==> V))     ≤⟨ IV   ⟩
+          U ∧[ 𝒪 X ] V                          ■
+           where
+            I   = ∧[ 𝒪 X ]-is-commutative (U ==> V) U
+            II  = ap (λ - → - ∧[ 𝒪 X ] (U ==> V)) (∧[ 𝒪 X ]-is-idempotent U)
+            III = ∧[ 𝒪 X ]-is-associative U U (U ==> V) ⁻¹
+            IV  = ∧[ 𝒪 X ]-right-monotone (mp-left U V)
+
+   ‡ : (U ==> (U ∧[ 𝒪 X ] V) ≤[ poset-of (𝒪 X) ] (U ==> V)) holds
+   ‡ = heyting-implication₁ U V (U ==> (U ∧[ 𝒪 X ] V)) ‡₁
+    where
+     I  = mp-right U (U ∧[ 𝒪 X ] V)
+     II = ∧[ 𝒪 X ]-lower₂ U V
+
+     ‡₁ : ((U ==> (U ∧[ 𝒪 X ] V) ∧[ 𝒪 X ] U) ≤ V) holds
+     ‡₁ = (U ==> (U ∧[ 𝒪 X ] V)) ∧[ 𝒪 X ] U     ≤⟨ I  ⟩
+          U ∧[ 𝒪 X ] V                          ≤⟨ II ⟩
+          V                                     ■
+
+ ==>-right-monotone : {U V W : ⟨ 𝒪 X ⟩}
+                    → (V ≤[ poset-of (𝒪 X) ] W) holds
+                    → ((U ==> V) ≤[ poset-of (𝒪 X ) ] (U ==> W)) holds
+ ==>-right-monotone {U} {V} {W} p = heyting-implication₁ U W (U ==> V) †
+  where
+   open PosetReasoning (poset-of (𝒪 X))
+
+   † : (((U ==> V) ∧[ 𝒪 X ] U) ≤[ poset-of (𝒪 X) ] W) holds
+   † = (U ==> V) ∧[ 𝒪 X ] U ≤⟨ mp-right U V ⟩ V ≤⟨ p ⟩ W ■
+
+ 𝟏-==>-law : (U : ⟨ 𝒪 X ⟩) → U ＝ 𝟏[ 𝒪 X ] ==> U
+ 𝟏-==>-law U = ≤-is-antisymmetric (poset-of (𝒪 X)) † ‡
+  where
+   open PosetReasoning (poset-of (𝒪 X))
+
+   † : (U ≤[ poset-of (𝒪 X) ] 𝟏[ 𝒪 X ] ==> U) holds
+   † = weakening 𝟏[ 𝒪 X ] U
+
+   ‡ : (𝟏[ 𝒪 X ] ==> U ≤[ poset-of (𝒪 X) ] U) holds
+   ‡ = (𝟏[ 𝒪 X ] ==> U)                    ＝⟨ Ⅰ ⟩ₚ
+       (𝟏[ 𝒪 X ] ==> U) ∧[ 𝒪 X ] 𝟏[ 𝒪 X ]  ≤⟨ Ⅱ ⟩
+       U                                   ■
+        where
+         Ⅰ = 𝟏-right-unit-of-∧ (𝒪 X) (𝟏[ 𝒪 X ] ==> U) ⁻¹
+         Ⅱ = mp-right 𝟏[ 𝒪 X ] U
+
+ ==>-left-reverses-joins : (U V W : ⟨ 𝒪 X ⟩)
+                         → U ==> W ∧[ 𝒪 X ] (V ==> W) ＝ (U ∨[ 𝒪 X ] V) ==> W
+ ==>-left-reverses-joins U V W = ≤-is-antisymmetric (poset-of (𝒪 X)) † ‡
+  where
+   open PosetReasoning (poset-of (𝒪 X))
+   lhs₁ = U ==> W
+   lhs₂ = V ==> W
+   lhs₃ = (U ∨[ 𝒪 X ] V) ==> W
+
+   ※ =
+    (lhs₁ ∧[ 𝒪 X ] lhs₂) ∧[ 𝒪 X ] (U ∨[ 𝒪 X ] V)                                  ＝⟨ Ⅰ ⟩ₚ
+    ((lhs₁ ∧[ 𝒪 X ] lhs₂) ∧[ 𝒪 X ] U) ∨[ 𝒪 X ] ((lhs₁ ∧[ 𝒪 X ] lhs₂) ∧[ 𝒪 X ] V)  ≤⟨ Ⅱ  ⟩
+    (lhs₁ ∧[ 𝒪 X ] U) ∨[ 𝒪 X ] ((lhs₁ ∧[ 𝒪 X ] lhs₂) ∧[ 𝒪 X ] V)                  ≤⟨ Ⅲ  ⟩
+    (lhs₁ ∧[ 𝒪 X ] U) ∨[ 𝒪 X ] (lhs₂ ∧[ 𝒪 X ] V)                                  ≤⟨ Ⅳ  ⟩
+    W                                                                             ■
+     where
+      Ⅰ = binary-distributivity (𝒪 X) (lhs₁ ∧[ 𝒪 X ] lhs₂) U V
+      Ⅱ = ∨[ 𝒪 X ]-left-monotone (∧[ 𝒪 X ]-left-monotone (∧[ 𝒪 X ]-lower₁ lhs₁ lhs₂))
+      Ⅲ = ∨[ 𝒪 X ]-right-monotone (∧[ 𝒪 X ]-left-monotone (∧[ 𝒪 X ]-lower₂ lhs₁ lhs₂))
+      Ⅳ = ∨[ 𝒪 X ]-least (mp-right U W) (mp-right V W)
+
+   † : ((lhs₁ ∧[ 𝒪 X ] lhs₂) ≤[ poset-of (𝒪 X) ] lhs₃) holds
+   † = heyting-implication₁ (U ∨[ 𝒪 X ] V) W ((U ==> W) ∧[ 𝒪 X ] (V ==> W)) ※
+
+   ‡ : (lhs₃ ≤[ poset-of (𝒪 X) ] (lhs₁ ∧[ 𝒪 X ] lhs₂)) holds
+   ‡ = ∧[ 𝒪 X ]-greatest lhs₁ lhs₂ lhs₃ ♣ ♠
+        where
+         ♣ : (lhs₃ ≤[ poset-of (𝒪 X) ] lhs₁) holds
+         ♣ = heyting-implication₁ U W lhs₃ ♢
+          where
+           Ⅰ = ∧[ 𝒪 X ]-right-monotone (∨[ 𝒪 X ]-upper₁ U V)
+           Ⅱ = mp-right (U ∨[ 𝒪 X ] V) W
+           ♢ = lhs₃ ∧[ 𝒪 X ] U               ≤⟨ Ⅰ ⟩
+               lhs₃ ∧[ 𝒪 X ] (U ∨[ 𝒪 X ] V)  ≤⟨ Ⅱ ⟩
+               W                             ■
+
+         ♠ : (lhs₃ ≤[ poset-of (𝒪 X) ] lhs₂) holds
+         ♠ = heyting-implication₁ V W lhs₃ ♢
+          where
+           Ⅰ = ∧[ 𝒪 X ]-right-monotone (∨[ 𝒪 X ]-upper₂ U V)
+           Ⅱ = mp-right (U ∨[ 𝒪 X ] V) W
+           ♢ = lhs₃ ∧[ 𝒪 X ] V               ≤⟨ Ⅰ ⟩
+               lhs₃ ∧[ 𝒪 X ] (U ∨[ 𝒪 X ] V)  ≤⟨ Ⅱ ⟩
+               W                             ■
 
 \end{code}

@@ -10,7 +10,7 @@ lemmas. More additions after that date.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module CoNaturals.GenericConvergentSequence where
 
@@ -415,18 +415,18 @@ u ＝ ι (n+1) if and only if n ⊏ u ⊑ n+1.
 \begin{code}
 
 finite-isolated : funext₀ → (n : ℕ) → is-isolated (ι n)
-finite-isolated fe n u = decidable-eq-sym u (ι n) (f u n)
+finite-isolated fe n u = is-decidable-eq-sym u (ι n) (f u n)
  where
-  f : (u : ℕ∞) (n : ℕ) → decidable (u ＝ ι n)
+  f : (u : ℕ∞) (n : ℕ) → is-decidable (u ＝ ι n)
   f u 0 = 𝟚-equality-cases g₀ g₁
    where
-    g₀ : is-Zero u → decidable (u ＝ Zero)
+    g₀ : is-Zero u → is-decidable (u ＝ Zero)
     g₀ r = inl (is-Zero-equal-Zero fe r)
 
     h : u ＝ Zero → is-Zero u
     h = ap (λ - → ι - 0)
 
-    g₁ : is-positive u → decidable (u ＝ Zero)
+    g₁ : is-positive u → is-decidable (u ＝ Zero)
     g₁ r = inr (contrapositive h (equal-₁-different-from-₀ r))
 
   f u (succ n) = 𝟚-equality-cases g₀ g₁
@@ -434,19 +434,19 @@ finite-isolated fe n u = decidable-eq-sym u (ι n) (f u n)
     g : u ＝ ι (n ∔ 1) → n ⊏ u
     g r = ap (λ - → ι - n) r ∙ ℕ-to-ℕ∞-diagonal₁ n
 
-    g₀ :  u ⊑ n → decidable (u ＝ ι (n ∔ 1))
+    g₀ :  u ⊑ n → is-decidable (u ＝ ι (n ∔ 1))
     g₀ r = inr (contrapositive g (equal-₀-different-from-₁ r))
 
     h : u ＝ ι (n ∔ 1) → u ⊑ n ∔ 1
     h r = ap (λ - → ι - (n ∔ 1)) r ∙ ℕ-to-ℕ∞-diagonal₀ (n ∔ 1)
 
-    g₁ :  n ⊏ u → decidable (u ＝ ι (n ∔ 1))
+    g₁ :  n ⊏ u → is-decidable (u ＝ ι (n ∔ 1))
     g₁ r = 𝟚-equality-cases g₁₀ g₁₁
      where
-      g₁₀ : u ⊑ n ∔ 1 → decidable (u ＝ ι (n ∔ 1))
+      g₁₀ : u ⊑ n ∔ 1 → is-decidable (u ＝ ι (n ∔ 1))
       g₁₀ s = inl (Succ-criterion fe r s)
 
-      g₁₁ : n ∔ 1 ⊏ u → decidable (u ＝ ι (n ∔ 1))
+      g₁₁ : n ∔ 1 ⊏ u → is-decidable (u ＝ ι (n ∔ 1))
       g₁₁ s = inr (contrapositive h (equal-₁-different-from-₀ s))
 
 
@@ -661,13 +661,13 @@ finite-accessible = course-of-values-induction (λ n → is-accessible _≺_ (ι
   φ : (n : ℕ)
     → ((m : ℕ) → m < n → is-accessible _≺_ (ι m))
     → is-accessible _≺_ (ι n)
-  φ n σ = step τ
+  φ n σ = acc τ
    where
     τ : (u : ℕ∞) → u ≺ ι n → is-accessible _≺_ u
     τ u (m , r , l) = transport⁻¹ (is-accessible _≺_) r (σ m (⊏-gives-< m n l))
 
 ≺-well-founded : is-well-founded _≺_
-≺-well-founded v = step σ
+≺-well-founded v = acc σ
  where
   σ : (u : ℕ∞) → u ≺ v → is-accessible _≺_ u
   σ u (n , r , l) = transport⁻¹ (is-accessible _≺_) r (finite-accessible n)
@@ -728,7 +728,7 @@ proved above, that ≺ is well founded:
   IH : u ⊑ n → Σ m ꞉ ℕ , (m ≤ n) × (u ＝ ι m)
   IH = ℕ-to-ℕ∞-lemma fe u n
 
-  g : decidable(u ⊑ n) → Σ m ꞉ ℕ , (m ≤ n ∔ 1) × (u ＝ ι m)
+  g : is-decidable(u ⊑ n) → Σ m ꞉ ℕ , (m ≤ n ∔ 1) × (u ＝ ι m)
   g (inl q) = pr₁(IH q) , ≤-trans (pr₁ (IH q)) n (n ∔ 1)
                            (pr₁ (pr₂ (IH q)))
                            (≤-succ n) , pr₂ (pr₂ (IH q))
@@ -743,7 +743,7 @@ proved above, that ≺ is well founded:
 ≺-cotransitive : funext₀ → cotransitive _≺_
 ≺-cotransitive fe u v w (n , r , a) = g (𝟚-is-discrete (ι w n) ₁)
  where
-  g : decidable(n ⊏ w) → (u ≺ w) + (w ≺ v)
+  g : is-decidable (n ⊏ w) → (u ≺ w) + (w ≺ v)
   g (inl a) = inl (n , r , a)
   g (inr f) = inr (m , s , ⊏-trans'' v n m l a)
    where

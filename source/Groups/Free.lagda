@@ -22,7 +22,7 @@ way to do it is already present in the module Fin.lagda.)
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe --auto-inline #-} -- --exact-split
+{-# OPTIONS --safe --without-K #-} -- --exact-split
 
 \end{code}
 
@@ -153,8 +153,11 @@ induction on u₀ and u₁:
          x₀      ＝⟨ equal-heads p ⟩
          y₁      ∎
 
+     r : v₀ ＝ x₁ ⁻ ∷ v₁
+     r = equal-tails (equal-tails p)
+
      γ : v₀ ＝ y₁ ∷ v₁
-     γ = transport (λ - → v₀ ＝ - ∷ v₁) q (equal-tails (equal-tails p))
+     γ = transport (λ - → v₀ ＝ - ∷ v₁) q r
 
    f [] (y₁ ∷ z₁ ∷ u₁) p = inr γ
     where
@@ -165,8 +168,11 @@ induction on u₀ and u₁:
      d' : u₁ ++ [ x₁ ] ++ [ x₁ ⁻ ] ++ v₁ ▷ u₁ ++ v₁
      d' = u₁ , v₁ , x₁ , refl , refl
 
+     p' : u₁ ++ [ x₁ ] ++ [ x₁ ⁻ ] ++ v₁ ＝ v₀
+     p' = (equal-tails (equal-tails p))⁻¹
+
      d : v₀ ▷ u₁ ++ v₁
-     d = transport (_▷ u₁ ++ v₁) ((equal-tails (equal-tails p))⁻¹) d'
+     d = transport (_▷ u₁ ++ v₁) p' d'
 
      q = y₁ ⁻ ＝⟨ (ap (_⁻) (equal-heads p)⁻¹) ⟩
          x₀ ⁻ ＝⟨ equal-heads (equal-tails p) ⟩
@@ -244,18 +250,42 @@ induction on u₀ and u₁:
                → (t₀ ＝ t₁) + (Σ t ꞉ FA , (t₀ ▷ t) × (t₁ ▷ t))
  Church-Rosser s t₀ t₁ (u₀ , v₀ , x₀ , p₀ , q₀) (u₁ , v₁ , x₁ , p₁ , q₁) = γ δ
   where
+   have-p₀ : s ＝ u₀ ++ [ x₀ ] ++ [ x₀ ⁻ ] ++ v₀
+   have-p₀ = p₀
+
+   have-p₁ : s ＝ u₁ ++ [ x₁ ] ++ [ x₁ ⁻ ] ++ v₁
+   have-p₁ = p₁
+
+   have-q₀ : t₀ ＝ u₀ ++ v₀
+   have-q₀ = q₀
+
+   have-q₁ : t₁ ＝ u₁ ++ v₁
+   have-q₁ = q₁
+
    δ : (u₀ ++ v₀ ＝ u₁ ++ v₁) + (Σ t ꞉ FA , (u₀ ++ v₀ ▷ t) × (u₁ ++ v₁ ▷ t))
-   δ = church-rosser u₀ v₀ u₁ v₁ x₀ x₁ (p₀ ⁻¹ ∙ p₁)
+   δ = church-rosser u₀ v₀ u₁ v₁ x₀ x₁
+        (u₀ ++ [ x₀ ] ++ [ x₀ ⁻ ] ++ v₀ ＝⟨ p₀ ⁻¹ ⟩
+         s                              ＝⟨ p₁ ⟩
+         u₁ ++ [ x₁ ] ++ [ x₁ ⁻ ] ++ v₁ ∎)
 
    γ : type-of δ → (t₀ ＝ t₁) + (Σ t ꞉ FA , (t₀ ▷ t) × (t₁ ▷ t))
-   γ (inl q)           = inl (q₀ ∙ q ∙ q₁ ⁻¹)
-   γ (inr (t , p , q)) = inr (t , transport (_▷ t) (q₀ ⁻¹) p ,
-                                  transport (_▷ t) (q₁ ⁻¹) q)
+   γ (inl q)             = inl (t₀       ＝⟨ q₀ ⟩
+                                u₀ ++ v₀ ＝⟨ q ⟩
+                                u₁ ++ v₁ ＝⟨ q₁ ⁻¹ ⟩
+                                t₁       ∎)
+   γ (inr (t , p₀ , p₁)) = inr (t , I₀ , I₁)
+    where
+     I₀ : t₀ ▷ t
+     I₀ = transport (_▷ t) (q₀ ⁻¹) p₀
+
+     I₁ : t₁ ▷ t
+     I₁ = transport (_▷ t) (q₁ ⁻¹) p₁
+
 \end{code}
 
 It is noteworthy and remarkable that the above doesn't need decidable
 equality on A. We repeat that this construction is due to Mines,
-Richman and Ruttenberg
+Richman and Ruitenburg.
 
 The following import defines
 
@@ -270,8 +300,8 @@ consequences of the Church-Rosser property in a general setting.
 
 \begin{code}
 
- open import Groups.SRTclosure
- open Church-Rosser-consequences {𝓤} {𝓤} _▷_ public
+ open import Relations.SRTclosure
+ open import Relations.ChurchRosser {𝓤} {𝓤} _▷_ public
 
 \end{code}
 
@@ -348,7 +378,7 @@ steps:
  ++-▷-left s s' t (u , v , x , p , q) = u , (v ++ t) , x , p' , q'
   where
    p' = s ++ t                            ＝⟨ ap (_++ t) p ⟩
-        (u ++ [ x ] ++ [ x ⁻ ] ++ v) ++ t ＝⟨ ++-assoc u ([ x ] ++ [ x ⁻ ] ++ v) t ⟩
+        (u ++ [ x ] ++ [ x ⁻ ] ++ v) ++ t ＝⟨ ++-assoc u _ t ⟩
         u ++ [ x ] ++ [ x ⁻ ] ++ v ++ t   ∎
 
    q' = s' ++ t       ＝⟨ ap (_++ t) q ⟩
@@ -709,20 +739,22 @@ The following proofs rely on the above naturality conditions:
 
    assoc/ : associative _·_
    assoc/ = /-induction -∾- (λ x → ∀ y z → (x · y) · z ＝ x · (y · z))
-              (λ x → Π₂-is-prop fe (λ y z → quotient-is-set -∾-))
-              (λ s → /-induction -∾- (λ y → ∀ z → (η/∾ s · y) · z ＝ η/∾ s · (y · z))
-                       (λ y → Π-is-prop fe (λ z → quotient-is-set -∾-))
-                       (λ t → /-induction -∾- (λ z → (η/∾ s · η/∾ t) · z ＝ η/∾ s · (η/∾ t · z))
-                                (λ z → quotient-is-set -∾-)
-                                (γ s t)))
-    where
-     γ : (s t u : FA) → (η/∾ s · η/∾ t) · η/∾ u ＝ η/∾ s · (η/∾ t · η/∾ u)
-     γ s t u = (η/∾ s · η/∾ t) · η/∾ u ＝⟨ ap (_· η/∾ u) (·-natural s t) ⟩
-               η/∾ (s ++ t) · η/∾ u    ＝⟨ ·-natural (s ++ t) u ⟩
-               η/∾ ((s ++ t) ++ u)     ＝⟨ ap η/∾ (++-assoc s t u) ⟩
-               η/∾ (s ++ (t ++ u))     ＝⟨ (·-natural s (t ++ u))⁻¹ ⟩
-               η/∾ s · η/∾ (t ++ u)    ＝⟨ ap (η/∾ s ·_) ((·-natural t u)⁻¹) ⟩
-               η/∾ s · (η/∾ t · η/∾ u) ∎
+             (λ x → Π₂-is-prop fe (λ y z → quotient-is-set -∾-))
+             (λ s → /-induction -∾-
+                      (λ y → ∀ z → (η/∾ s · y) · z ＝ η/∾ s · (y · z))
+                      (λ y → Π-is-prop fe (λ z → quotient-is-set -∾-))
+                      (λ t → /-induction -∾-
+                               (λ z → (η/∾ s · η/∾ t) · z ＝ η/∾ s · (η/∾ t · z))
+                               (λ z → quotient-is-set -∾-)
+                               (γ s t)))
+          where
+           γ : (s t u : FA) → (η/∾ s · η/∾ t) · η/∾ u ＝ η/∾ s · (η/∾ t · η/∾ u)
+           γ s t u = (η/∾ s · η/∾ t) · η/∾ u ＝⟨ ap (_· η/∾ u) (·-natural s t) ⟩
+                 η/∾ (s ++ t) · η/∾ u    ＝⟨ ·-natural (s ++ t) u ⟩
+                 η/∾ ((s ++ t) ++ u)     ＝⟨ ap η/∾ (++-assoc s t u) ⟩
+                 η/∾ (s ++ (t ++ u))     ＝⟨ (·-natural s (t ++ u))⁻¹ ⟩
+                 η/∾ s · η/∾ (t ++ u)    ＝⟨ ap (η/∾ s ·_) ((·-natural t u)⁻¹) ⟩
+                 η/∾ s · (η/∾ t · η/∾ u) ∎
 \end{code}
 
 So we have constructed a group with underlying set FA/∾ and a map
@@ -938,20 +970,20 @@ But for this one we do:
              e           ＝⟨ (homs-preserve-unit 𝓕 𝓖 f₁ i₁)⁻¹ ⟩
              f₁ (η/∾ []) ∎
       δ ((₀ , a) ∷ s) =
-             f₀ (η/∾ (η a ++ s))    ＝⟨ ap f₀ ((·-natural (η a) s)⁻¹) ⟩
+             f₀ (η/∾ (η a ++ s))      ＝⟨ ap f₀ ((·-natural (η a) s)⁻¹) ⟩
              f₀ (ηᴳʳᵖ a · η/∾ s)      ＝⟨ i₀  ⟩
              f₀ (ηᴳʳᵖ a) * f₀ (η/∾ s) ＝⟨ ap₂ _*_ (p a) (δ s) ⟩
              f₁ (ηᴳʳᵖ a) * f₁ (η/∾ s) ＝⟨ i₁ ⁻¹ ⟩
              f₁ (ηᴳʳᵖ a · η/∾ s)      ＝⟨ ap f₁ (·-natural (η a) s) ⟩
-             f₁ (η/∾ (η a ++ s))    ∎
+             f₁ (η/∾ (η a ++ s))      ∎
       δ ((₁ , a) ∷ s) =
              f₀ (η/∾ (finv (η a) ++ s))         ＝⟨ I ⟩
              f₀ (η/∾ (finv (η a)) · η/∾ s)      ＝⟨ II ⟩
              f₀ (η/∾ (finv (η a))) * f₀ (η/∾ s) ＝⟨ III ⟩
-             f₀ (inv/ (ηᴳʳᵖ a)) * f₀ (η/∾ s)      ＝⟨ IV ⟩
-             invG (f₀ (ηᴳʳᵖ a)) * f₀ (η/∾ s)      ＝⟨ IH ⟩
-             invG (f₁ (ηᴳʳᵖ a)) * f₁ (η/∾ s)      ＝⟨ IV' ⟩
-             f₁ (inv/ (ηᴳʳᵖ a)) * f₁ (η/∾ s)      ＝⟨ III' ⟩
+             f₀ (inv/ (ηᴳʳᵖ a)) * f₀ (η/∾ s)    ＝⟨ IV ⟩
+             invG (f₀ (ηᴳʳᵖ a)) * f₀ (η/∾ s)    ＝⟨ IH ⟩
+             invG (f₁ (ηᴳʳᵖ a)) * f₁ (η/∾ s)    ＝⟨ IV' ⟩
+             f₁ (inv/ (ηᴳʳᵖ a)) * f₁ (η/∾ s)    ＝⟨ III' ⟩
              f₁ (η/∾ (finv (η a))) * f₁ (η/∾ s) ＝⟨ II' ⟩
              f₁ (η/∾ (finv (η a)) · η/∾ s)      ＝⟨ I' ⟩
              f₁ (η/∾ (finv (η a) ++ s))         ∎
@@ -984,7 +1016,8 @@ But for this one we do:
                          (Π-is-prop fe (λ a → group-is-set 𝓖))
 
         b : f' ＝ f₀
-        b = dfunext fe (f'-uniqueness' f' f₀ f'-is-hom f₀-is-hom f'-triangle f₀-triangle)
+        b = dfunext fe
+             (f'-uniqueness' f' f₀ f'-is-hom f₀-is-hom f'-triangle f₀-triangle)
 
       γ : ∃! f' ꞉ (⟨ 𝓕 ⟩ → ⟨ 𝓖 ⟩) , is-hom 𝓕 𝓖 f' × f' ∘ ηᴳʳᵖ ∼ f
       γ = c , i

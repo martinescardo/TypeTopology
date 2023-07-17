@@ -14,7 +14,7 @@ that the group axioms, as defined in Groups, form a proposition.
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe --auto-inline --exact-split #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan
 open import UF.Base hiding (_≈_)
@@ -83,7 +83,7 @@ module _ (G : Group 𝓤) where
   ap-⟪⟫ S T = ap ⟪_⟫
 
   ap-⟪⟫-is-equiv : (S T : Subgroups) → is-equiv (ap-⟪⟫ S T)
-  ap-⟪⟫-is-equiv = embedding-embedding' ⟪_⟫ ⟪⟫-is-embedding
+  ap-⟪⟫-is-equiv = embedding-gives-embedding' ⟪_⟫ ⟪⟫-is-embedding
 
   subgroups-form-a-set : is-set Subgroups
   subgroups-form-a-set {S} {T} = equiv-to-prop
@@ -208,7 +208,7 @@ module _ (G : Group 𝓤) where
                                      h unitH ∎)
 
      j : is-set X
-     j = subtypes-of-sets-are-sets h h-lc (group-is-set G)
+     j = subtypes-of-sets-are-sets' h h-lc (group-is-set G)
 
      τ : T X
      τ = _*_ , (j , (assocH , unitH , (unitH-left , (unitH-right , group-axiomH))))

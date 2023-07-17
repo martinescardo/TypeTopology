@@ -6,7 +6,7 @@ Assuming set quotients, we
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module UF.Quotient where
 
@@ -31,20 +31,20 @@ EqRel {𝓤} {𝓥} X = Σ R ꞉ (X → X → 𝓥 ̇ ) , is-equiv-relation R
 _≈[_]_ : {X : 𝓤 ̇ } → X → EqRel X → X → 𝓥 ̇
 x ≈[ _≈_ , _ ] y = x ≈ y
 
-identifies-related-points : {X : 𝓤 ̇  } (≈ : EqRel {𝓤} {𝓥} X) {Y : 𝓦 ̇  }
+identifies-related-points : {X : 𝓤 ̇ } (≈ : EqRel {𝓤} {𝓥} X) {Y : 𝓦 ̇ }
                           → (X → Y) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
 identifies-related-points (_≈_ , _) f = ∀ {x x'} → x ≈ x' → f x ＝ f x'
 
 record set-quotients-exist : 𝓤ω where
  field
-  _/_ : {𝓤 𝓥 : Universe} (X : 𝓤 ̇  ) → EqRel {𝓤} {𝓥} X → 𝓤 ⊔ 𝓥 ̇
-  η/ : {𝓤 𝓥 : Universe} {X : 𝓤 ̇  } (≋ : EqRel {𝓤} {𝓥} X) → X → X / ≋
+  _/_ : {𝓤 𝓥 : Universe} (X : 𝓤 ̇ ) → EqRel {𝓤} {𝓥} X → 𝓤 ⊔ 𝓥 ̇
+  η/ : {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } (≋ : EqRel {𝓤} {𝓥} X) → X → X / ≋
   η/-identifies-related-points : {𝓤 𝓥 : Universe}
-                                 {X : 𝓤 ̇  } (≋ : EqRel {𝓤} {𝓥} X)
+                                 {X : 𝓤 ̇ } (≋ : EqRel {𝓤} {𝓥} X)
                                → identifies-related-points ≋ (η/ ≋)
-  /-is-set : {𝓤 𝓥 : Universe} {X : 𝓤 ̇  } (≋ : EqRel {𝓤} {𝓥} X) → is-set (X / ≋)
-  /-universality : {𝓤 𝓥 : Universe} {X : 𝓤 ̇  } (≋ : EqRel {𝓤} {𝓥} X)
-                   {𝓦 : Universe} {Y : 𝓦 ̇  }
+  /-is-set : {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } (≋ : EqRel {𝓤} {𝓥} X) → is-set (X / ≋)
+  /-universality : {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } (≋ : EqRel {𝓤} {𝓥} X)
+                   {𝓦 : Universe} {Y : 𝓦 ̇ }
                  → is-set Y → (f : X → Y)
                  → identifies-related-points ≋ f
                  → ∃! f̅ ꞉ (X / ≋ → Y) , f̅ ∘ η/ ≋ ∼ f
@@ -56,8 +56,8 @@ The induction principle follows from the universal property.
 
 \begin{code}
 
- /-induction : {X : 𝓤 ̇  } (≋ : EqRel {𝓤} {𝓥} X)
-               {P : X / ≋ → 𝓦 ̇  }
+ /-induction : {X : 𝓤 ̇ } (≋ : EqRel {𝓤} {𝓥} X)
+               {P : X / ≋ → 𝓦 ̇ }
              → ((x' : X / ≋) → is-prop (P x'))
              → ((x : X) → P (η/ ≋ x)) → (y : X / ≋) → P y
  /-induction {X = X} ≋ {P} P-is-prop-valued ρ y =
@@ -117,12 +117,12 @@ TODO: Implement this in Agda.
 \begin{code}
 
  module _
-         {X : 𝓤 ̇  }
+         {X : 𝓤 ̇ }
          (≋@(_≈_ , ≈p , ≈r , ≈s , ≈t) : EqRel {𝓤} {𝓥} X)
         where
 
   module _
-          {A : 𝓦 ̇  }
+          {A : 𝓦 ̇ }
           (A-is-set : is-set A)
          where
 
@@ -145,7 +145,7 @@ We extend unary and binary prop-valued relations to the quotient.
  module extending-relations-to-quotient (fe : Fun-Ext) (pe : Prop-Ext) where
 
   module _
-          {X : 𝓤 ̇  }
+          {X : 𝓤 ̇ }
           (≋@(_≈_ , ≈p , ≈r , ≈s , ≈t) : EqRel {𝓤} {𝓥} X)
          where
 
@@ -211,7 +211,7 @@ binary and ternary versions of quotient induction.
 
  module _
          (fe : Fun-Ext)
-         {X : 𝓤 ̇  }
+         {X : 𝓤 ̇ }
          (≋ : EqRel {𝓤 } {𝓥} X)
         where
 
@@ -278,7 +278,7 @@ proposition.
 \begin{code}
 
  private
-  module _ {X : 𝓤 ̇  } where
+  module _ {X : 𝓤 ̇ } where
    _≈_ : X → X → 𝓤₀ ̇
    x ≈ y = 𝟙
    ≋ : EqRel X
@@ -287,15 +287,15 @@ proposition.
   ∥_∥ : 𝓤 ̇  → 𝓤 ̇
   ∥_∥ X = X / ≋
 
-  ∣_∣ : {X : 𝓤 ̇  } → X → ∥ X ∥
+  ∣_∣ : {X : 𝓤 ̇ } → X → ∥ X ∥
   ∣_∣ = η/ ≋
 
-  ∥∥-is-prop : {X : 𝓤 ̇  } → funext 𝓤 𝓤 → is-prop ∥ X ∥
+  ∥∥-is-prop : {X : 𝓤 ̇ } → funext 𝓤 𝓤 → is-prop ∥ X ∥
   ∥∥-is-prop {𝓤} {X} fe = /-induction ≋ (λ x' → Π-is-prop fe (λ y' → /-is-set ≋))
                            (λ x → /-induction ≋ (λ y' → /-is-set ≋)
                                   (λ y → η/-identifies-related-points ≋ ⋆))
 
-  ∥∥-rec : {X : 𝓤 ̇  } {P : 𝓥 ̇  } → is-prop P → (X → P) → ∥ X ∥ → P
+  ∥∥-rec : {X : 𝓤 ̇ } {P : 𝓥 ̇ } → is-prop P → (X → P) → ∥ X ∥ → P
   ∥∥-rec {𝓤} {𝓥} {X} {P} i f =
    ∃!-witness (/-universality ≋ (props-are-sets i) f
                               (λ {x} {x'}_ → i (f x) (f x')))
@@ -331,8 +331,8 @@ module _
  open import UF.ImageAndSurjection pt
 
  module set-replacement-construction
-         {X : 𝓤 ̇  }
-         {Y : 𝓦 ̇  }
+         {X : 𝓤 ̇ }
+         {Y : 𝓦 ̇ }
          (f : X → Y)
          (Y-is-loc-small : Y is-locally 𝓥 small)
          (Y-is-set : is-set Y)

@@ -8,7 +8,7 @@ characterize the compact elements of Ω 𝓤 as the decidable propositions.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan
 
@@ -190,17 +190,17 @@ propositions.
 
 \begin{code}
 
-compact-iff-decidable : (P : Ω 𝓤) → is-compact Ω-DCPO P ⇔ decidable (P holds)
+compact-iff-decidable : (P : Ω 𝓤) → is-compact Ω-DCPO P ⇔ is-decidable (P holds)
 compact-iff-decidable P = ⦅⇒⦆ , ⦅⇐⦆
  where
-  ⦅⇒⦆ : is-compact Ω-DCPO P → decidable (P holds)
+  ⦅⇒⦆ : is-compact Ω-DCPO P → is-decidable (P holds)
   ⦅⇒⦆ c = ∥∥-rec (decidability-of-prop-is-prop fe (holds-is-prop P))
                  γ (in-image-of-κ-if-compact P c)
    where
-    γ : (Σ b ꞉ Bool , κ b ＝ P) → decidable (P holds)
-    γ (inl ⋆ , refl) = 𝟘-decidable
-    γ (inr ⋆ , refl) = 𝟙-decidable
-  ⦅⇐⦆ : decidable (P holds) → is-compact Ω-DCPO P
+    γ : (Σ b ꞉ Bool , κ b ＝ P) → is-decidable (P holds)
+    γ (inl ⋆ , refl) = 𝟘-is-decidable
+    γ (inr ⋆ , refl) = 𝟙-is-decidable
+  ⦅⇐⦆ : is-decidable (P holds) → is-compact Ω-DCPO P
   ⦅⇐⦆ (inl p) = transport (is-compact Ω-DCPO) e ⊤-is-compact
    where
     e : ⊤ ＝ P

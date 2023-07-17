@@ -17,7 +17,7 @@ induces a map from the ideal completion to the dcpo.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan hiding (J)
 
@@ -117,7 +117,7 @@ module Idl-Properties
  ↓-is-monotone : {x y : X} → x ≺ y → ↓ x ⊑⟨ Idl-DCPO ⟩ ↓ y
  ↓-is-monotone {x} {y} l _ m = ≺-trans m l
 
- Idl-sups-from-powerset : {𝓐 : 𝓥 ̇  } (α : 𝓐 → Idl) (I : Idl)
+ Idl-sups-from-powerset : {𝓐 : 𝓥 ̇ } (α : 𝓐 → Idl) (I : Idl)
                         → is-sup _⊆_ (carrier I) (carrier ∘ α)
                         → is-sup _⊑_ I α
  Idl-sups-from-powerset {𝓐} α I I-is-sup = (ub , lb-of-ubs)

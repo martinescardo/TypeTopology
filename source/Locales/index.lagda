@@ -2,7 +2,7 @@ Ayberk Tosun.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module Locales.index where
 
@@ -15,5 +15,7 @@ import Locales.HeytingImplication
 import Locales.PatchLocale
 import Locales.PatchProperties
 import Locales.BooleanAlgebra
+import Locales.UniversalPropertyOfPatch -- with contributions by Igor Arrieta.
+import Locales.ScottLocale
 
 \end{code}
