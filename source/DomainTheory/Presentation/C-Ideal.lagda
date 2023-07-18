@@ -23,7 +23,7 @@ open PropositionalTruncation pt
 open import UF.ImageAndSurjection pt
 open import Posets.Poset fe
 open PosetAxioms
-open import Posets.FreeSupLattice pt
+open import Posets.FreeSupLattice pt using (SupLattice)
 
 open import DomainTheory.Basics.Dcpo pt fe 𝓥
 open import DomainTheory.Basics.Miscelanea pt fe 𝓥
@@ -39,6 +39,7 @@ syntax Conjunction I (λ i → p) = ⋀ i ꞉ I , p
 
 module C-Ideal
   (G : 𝓤 ̇)
+  (G-is-set : is-set G)
   (_≲_ : G → G → 𝓣 ̇)
   (_◃_ : Cover-set G _≲_)
  where
@@ -147,4 +148,12 @@ module C-Ideal
 
         υ' : is-C-ideal 𝔍'
         υ' = {!   !}  -- deducible from propositional equivalence
+
+  -- The map from G to C-Idl
+  η : G → C-Idl (𝓤 ⊔ 𝓣 ⊔ (𝓥 ⁺) ⊔ 𝓦 ⊔ (𝓣' ⁺))
+  η {𝓣' = 𝓣'} g = Generated {𝓥' = 𝓤} 𝓣' λ g' → (g ＝ g') , G-is-set
+
+  -- Every map from G to a suplattice S preserving covers
+  -- factors uniquely through C-Idl
+
 \end{code}
