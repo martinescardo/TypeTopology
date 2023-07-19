@@ -316,6 +316,13 @@ TODO. Redo the above proof using the technique of the following proof.
 
 \begin{code}
 
+factor-is-lc : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
+               (f : X → Y)
+               (g : Y → Z)
+             → left-cancellable (g ∘ f)
+             → left-cancellable f
+factor-is-lc f g gf-lc {x} {x'} p = gf-lc (ap g p)
+
 factor-is-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
                       (f : X → Y)
                       (g : Y → Z)

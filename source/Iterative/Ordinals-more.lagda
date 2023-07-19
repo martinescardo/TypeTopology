@@ -33,7 +33,7 @@ open import MLTT.W
 open import Ordinals.Equivalence
 open import Ordinals.Notions
 open import Ordinals.OrdinalOfOrdinals ua
-open import Ordinals.Type
+open import Ordinals.Type hiding (Ord)
 open import Ordinals.Underlying
 open import Ordinals.WellOrderTransport
 open import UF.Equiv-FunExt
@@ -126,7 +126,7 @@ Ord-to-𝕆-is-equiv = embeddings-with-sections-are-equivs
   η : Ord-to-𝕆 ∘ 𝕆-to-Ord ∼ id
   η = 𝕆-induction' _ f
 
-Ordinals-≃ : Ordinal 𝓤 ≃ 𝕆
+Ordinals-≃ : Ord ≃ 𝕆
 Ordinals-≃ = Ord-to-𝕆 , Ord-to-𝕆-is-equiv
 
 𝕆-to-Ord-reflects-< : (α β : 𝕆) → 𝕆-to-Ord α ⊲ 𝕆-to-Ord β → α < β

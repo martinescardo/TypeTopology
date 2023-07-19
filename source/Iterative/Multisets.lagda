@@ -159,6 +159,10 @@ to-from-𝕄-＝ = to-from-W-＝
 
 We now show that 𝕄 is locally small assuming univalence.
 
+TODO. Notice that there is some ammount of repetition compared with
+Iterative.W-Properties. Can we avoid it by proving something more
+general that subsumes both cases?
+
 \begin{code}
 
 _≃ᴹ_ : 𝕄 → 𝕄 → 𝓤 ̇
