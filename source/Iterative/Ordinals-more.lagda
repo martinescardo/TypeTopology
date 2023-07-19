@@ -49,41 +49,84 @@ open import UF.Subsingletons-FunExt
 
 open import Iterative.Ordinals 𝓤 ua
 
+\end{code}
+
+TODO. The lemma below should have a more descriptive name.
+
+We perform a double induction: first on 𝕆 and then on the ordinal (𝕆-to-Ord α).
+
+\begin{code}
+
 𝕆-to-Ord-lemma : (α : 𝕆) (x : 𝕆-root α)
                → (𝕆-to-Ord α) ↓ x ＝ 𝕆-to-Ord (𝕆-forest α x)
-𝕆-to-Ord-lemma α x = eqtoidₒ (ua 𝓤) fe (𝕆-to-Ord α ↓ x) (𝕆-to-Ord (𝕆-forest α x)) (f , {!!} , {!!})
+𝕆-to-Ord-lemma = 𝕆-induction' _ inductive-proof₁
  where
-  f : ⟨ (𝕆-to-Ord α) ↓ x ⟩ → ⟨ 𝕆-to-Ord (𝕆-forest α x) ⟩
-  f (a , l) = pr₁ II
+  inductive-proof₁ : (α : 𝕆)
+                   → ((x : 𝕆-root α) (y : 𝕆-root (𝕆-forest α x))
+                         →    𝕆-to-Ord (𝕆-forest α x) ↓ y
+                           ＝ 𝕆-to-Ord (𝕆-forest (𝕆-forest α x) y))
+                   → (x : 𝕆-root α) → (𝕆-to-Ord α ↓ x) ＝ 𝕆-to-Ord (𝕆-forest α x)
+  inductive-proof₁ α IH₁ = Transfinite-induction (𝕆-to-Ord α) _ inductive-proof₂
    where
-    I : 𝕆-forest α a < 𝕆-forest α x
-    I = ⌜ 𝕆-to-Ord-order α a x ⌝⁻¹ l
+    inductive-proof₂ : (x : 𝕆-root α)
+                     → ((y : 𝕆-root α) → y ≺⟨ 𝕆-to-Ord α ⟩ x
+                           → (𝕆-to-Ord α ↓ y) ＝ 𝕆-to-Ord (𝕆-forest α y))
+                     → (𝕆-to-Ord α ↓ x) ＝ 𝕆-to-Ord (𝕆-forest α x)
+    inductive-proof₂ x IH₂ = ⊲-is-extensional _ _ (to-≼ I) (to-≼ II)
+     where
+      I : (y : ⟨ 𝕆-to-Ord α ↓ x ⟩)
+        → ((𝕆-to-Ord α ↓ x) ↓ y) ⊲ 𝕆-to-Ord (𝕆-forest α x)
+      I 𝕪@(y , l) = (y' , eq)
+       where
+        iterated-𝕆-forest₁ : Σ y' ꞉ 𝕆-root (𝕆-forest α x) ,
+                                 𝕆-forest (𝕆-forest α x) y' ＝ 𝕆-forest α y
+        iterated-𝕆-forest₁ = ⌜ <-behaviour (𝕆-forest α y) (𝕆-forest α x) ⌝
+                             (⌜ 𝕆-to-Ord-order α y x ⌝⁻¹ l)
+        y'  = pr₁ iterated-𝕆-forest₁
+        eq' = pr₂ iterated-𝕆-forest₁
 
-    II : Σ y ꞉ 𝕆-root (𝕆-forest α x) , 𝕆-forest (𝕆-forest α x) y ＝ 𝕆-forest α a
-    II = ⌜ <-behaviour (𝕆-forest α a) (𝕆-forest α x) ⌝ I
+        eq = (𝕆-to-Ord α ↓ x) ↓ 𝕪                  ＝⟨ ⦅1⦆ ⟩
+             𝕆-to-Ord α ↓ y                        ＝⟨ ⦅2⦆ ⟩
+             𝕆-to-Ord (𝕆-forest α y)               ＝⟨ ⦅3⦆ ⟩
+             𝕆-to-Ord (𝕆-forest (𝕆-forest α x) y') ＝⟨ ⦅4⦆ ⟩
+             𝕆-to-Ord (𝕆-forest α x) ↓ y'          ∎
+         where
+          ⦅1⦆ = iterated-↓ (𝕆-to-Ord α) x y l
+          ⦅2⦆ = IH₂ y l
+          ⦅3⦆ = ap 𝕆-to-Ord (eq' ⁻¹)
+          ⦅4⦆ = (IH₁ x y') ⁻¹
+      II : (y : ⟨ 𝕆-to-Ord (𝕆-forest α x) ⟩)
+         → (𝕆-to-Ord (𝕆-forest α x) ↓ y) ⊲ (𝕆-to-Ord α ↓ x)
+      II y = (𝕪 , (eq ⁻¹))
+       where
+        note : 𝕆-root (𝕆-forest α x) ＝ ⟨ 𝕆-to-Ord (𝕆-forest α x) ⟩
+        note = refl
+        iterated-𝕆-forest₂ : Σ y' ꞉ 𝕆-root α ,
+                             𝕆-forest α y' ＝ 𝕆-forest (𝕆-forest α x) y
+        iterated-𝕆-forest₂ = 𝕆-forest-is-lower-closed
+                              α x
+                              (𝕆-forest (𝕆-forest α x) y)
+                              (𝕆-forest-is-< (𝕆-forest α x) y)
+        y'  = pr₁ iterated-𝕆-forest₂
+        eq' = pr₂ iterated-𝕆-forest₂
 
-  g : ⟨ 𝕆-to-Ord (𝕆-forest α x) ⟩ → ⟨ (𝕆-to-Ord α) ↓ x ⟩
-  g y = a , l
-   where
-    have-y : 𝕆-root (𝕆-forest α x)
-    have-y = y
-    IV : 𝕆-forest (𝕆-forest α x) y < 𝕆-forest α x
-    IV = 𝕆-forest-is-< (𝕆-forest α x) y
-    III : Σ a ꞉ 𝕆-root α , 𝕆-forest α a ＝ 𝕆-forest (𝕆-forest α x) y
-    III = 𝕆-forest-is-lower-closed α x (𝕆-forest (𝕆-forest α x) y) IV
-    a : 𝕆-root α
-    a = pr₁ III
-    p : 𝕆-forest (𝕆-forest α x) y ＝ 𝕆-forest α a
-    p = (pr₂ III)⁻¹
-    II : Σ y ꞉ 𝕆-root (𝕆-forest α x) , 𝕆-forest (𝕆-forest α x) y ＝ 𝕆-forest α a
-    II = y , p
-    I : 𝕆-forest α a < 𝕆-forest α x
-    I = ⌜ <-behaviour (𝕆-forest α a) (𝕆-forest α x) ⌝⁻¹ II
-    l : a ≺⟨ 𝕆-to-Ord α ⟩ x
-    l = ⌜ 𝕆-to-Ord-order α a x ⌝ I
+        l : 𝕆-forest α y' < 𝕆-forest α x
+        l = ⌜ <-behaviour (𝕆-forest α y') (𝕆-forest α x) ⌝⁻¹
+             (y , (eq' ⁻¹))
+        l' : y' ≺⟨ 𝕆-to-Ord α ⟩ x
+        l' = ⌜ 𝕆-to-Ord-order α y' x ⌝ l
+        𝕪 = (y' , l')
 
-  fg : f ∘ g ∼ id
-  fg y = {!!}
+        eq = (𝕆-to-Ord α ↓ x) ↓ 𝕪                 ＝⟨ ⦅1⦆ ⟩
+             𝕆-to-Ord α ↓ y'                      ＝⟨ ⦅2⦆ ⟩
+             𝕆-to-Ord (𝕆-forest α y')             ＝⟨ ⦅3⦆ ⟩
+             𝕆-to-Ord (𝕆-forest (𝕆-forest α x) y) ＝⟨ ⦅4⦆ ⟩
+             𝕆-to-Ord (𝕆-forest α x) ↓ y          ∎
+         where
+          ⦅1⦆ = iterated-↓ (𝕆-to-Ord α) x y' l'
+          ⦅2⦆ = IH₂ y' l'
+          ⦅3⦆ = ap 𝕆-to-Ord eq'
+          ⦅4⦆ = (IH₁ x y) ⁻¹
 
 𝕆-to-Ord-preserves-< : (α β : 𝕆) → α < β → 𝕆-to-Ord α ⊲ 𝕆-to-Ord β
 𝕆-to-Ord-preserves-< α β l = II I
