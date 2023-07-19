@@ -1,3 +1,5 @@
+# Uniform continuity of sequence functions
+
 ```agda
 {-# OPTIONS --without-K --exact-split --safe #-}
 
@@ -35,6 +37,19 @@ seq-f-ucontinuous² {𝓤} {𝓥} {𝓦} {X} {Y} f
    ((x₁ x₂ : (ℕ → X)) (y₁ y₂ : (ℕ → Y))
  → (x₁ ∼ⁿ x₂) δˣ → (y₁ ∼ⁿ y₂) δʸ → (f x₁ y₁ ∼ⁿ f x₂ y₂) ϵ)
 
+map-ucontinuous' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } 
+               → (f : X → Y) → seq-f-ucontinuous¹ (map f)
+map-ucontinuous' f ε = ε , λ α β α∼ⁿβ k k<ε → ap f (α∼ⁿβ k k<ε)
+
+zipWith-ucontinuous' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                     → (f : X → X → Y)
+                     → seq-f-ucontinuous² (zipWith f)
+zipWith-ucontinuous' f ε
+ = (ε , ε)
+ , (λ α₁ α₂ β₁ β₂ α∼ β∼ k k<ϵ
+    → ap (λ - → f - (β₁ k)) (α∼ k k<ϵ)
+    ∙ ap (f (α₂ k)) (β∼ k k<ϵ))
+
 seq-f-ucontinuous²-left : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
                         → (f : (ℕ → X) → (ℕ → Y) → (ℕ → Z))
                         → seq-f-ucontinuous² f
@@ -60,8 +75,10 @@ seq-f-ucontinuous²-both : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
 seq-f-ucontinuous²-both f ϕ ε
  = δ
  , λ α β α∼ᵐβ → pr₂ (ϕ ε) α β α β
-     (λ i i<m → α∼ᵐβ i (<-≤-trans i δ₁ δ i<m (max-≤-upper-bound  δ₁ δ₂)))
-     (λ i i<m → α∼ᵐβ i (<-≤-trans i δ₂ δ i<m (max-≤-upper-bound' δ₂ δ₁)))
+     (λ i i<m → α∼ᵐβ i
+       (<-≤-trans i δ₁ δ i<m (max-≤-upper-bound  δ₁ δ₂)))
+     (λ i i<m → α∼ᵐβ i
+       (<-≤-trans i δ₂ δ i<m (max-≤-upper-bound' δ₂ δ₁)))
  where
   δ₁ δ₂ δ : ℕ
   δ₁ = pr₁ (pr₁ (ϕ ε))

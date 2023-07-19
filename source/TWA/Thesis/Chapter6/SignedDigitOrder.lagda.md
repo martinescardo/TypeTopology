@@ -17,7 +17,7 @@ open import MLTT.Two-Properties
 module TWA.Thesis.Chapter6.SignedDigitOrder
   (fe : FunExt) (pe : PropExt) where
 
-open import TWA.Thesis.Chapter2.FiniteDiscrete
+open import TWA.Thesis.Chapter2.Finite
 open import TWA.Thesis.Chapter2.Sequences
 -- open import TWA.Thesis.Chapter2.Vectors
 open import TWA.Thesis.Chapter3.ClosenessSpaces fe
@@ -27,7 +27,7 @@ open import TWA.Thesis.Chapter3.SearchableTypes-Examples fe pe
 open import TWA.Thesis.Chapter4.ApproxOrder fe
 open import TWA.Thesis.Chapter4.ApproxOrder-Examples fe
 open import TWA.Thesis.Chapter4.GlobalOptimisation fe
-open import TWA.Thesis.Chapter4.ConvergenceTheorems fe
+open import TWA.Thesis.Chapter4.ParametricRegression fe
 open import TWA.Thesis.Chapter5.SignedDigit
 open import TWA.Thesis.Chapter6.SequenceContinuity fe
 open import TWA.Thesis.Chapter6.SignedDigitContinuity fe
@@ -99,16 +99,16 @@ _≤ⁿ𝟛ᴺ_ : 𝟛ᴺ → 𝟛ᴺ → ℕ → 𝓤₀ ̇
 +1≠O ()
 
 zα zβ : 𝟛ᴺ
-zα =  O ∶∶ (+1 ∶∶ repeat −1)
-zβ = +1 ∶∶ (repeat      −1)
+zα =  O ∷ (+1 ∷ repeat −1)
+zβ = +1 ∷ (repeat      −1)
 
 test-incorrect : (n : ℕ)
                → n > 0
                → (discrete-lexicorder
-                      𝟛-is-discrete (finite-strict-order 𝟛-finite)
+                      𝟛-is-discrete (finite-strict-order 𝟛-is-finite)
                       zα zβ)
                × ¬ (discrete-lexicorder
-                      𝟛-is-discrete (finite-strict-order 𝟛-finite)
+                      𝟛-is-discrete (finite-strict-order 𝟛-is-finite)
                       zβ zα)
 pr₁ (test-incorrect (succ n) _) = inr (0 , (λ _ ()) , ⋆)
 pr₂ (test-incorrect (succ n) _) (inl x) = +1≠O (x 0)
@@ -154,9 +154,9 @@ ternary-to-ℤ²-pos'-ucontinuous (succ ϵ) x y x∼y k
                → (x ≤ⁿ𝟛ᴺ y) ϵ
 ≤ⁿ𝟛ᴺ-closeness ϵ x y Cxy
  = 0 , ternary-to-ℤ²-pos'-ucontinuous ϵ x y
-         (C-to-∼ⁿ _ x y ϵ Cxy) (negsucc 0)
+         (C-to-∼ⁿ 𝟛-is-discrete x y ϵ Cxy) (negsucc 0)
 
-≤ⁿ𝟛ᴺ-is-approx-order : is-approx-order' 𝟛ᴺ-ClosenessSpace _≤ⁿ𝟛ᴺ_
+≤ⁿ𝟛ᴺ-is-approx-order : is-approx-order 𝟛ᴺ-ClosenessSpace _≤ⁿ𝟛ᴺ_
 ≤ⁿ𝟛ᴺ-is-approx-order
  = ≤ⁿ𝟛ᴺ-is-linear-order , ≤ⁿ𝟛ᴺ-is-decidable , ≤ⁿ𝟛ᴺ-closeness
 

@@ -1,20 +1,23 @@
+# Structural properties of ternary Boehm encodings
+
 ```agda
-{-# OPTIONS --safe --exact-split --auto-inline --without-K
-            --experimental-lossy-unification #-}
+{-# OPTIONS --exact-split --without-K --safe #-}
 
 open import Integers.Addition renaming (_+_ to _ℤ+_)
+open import Notation.Order
 open import Integers.Order
 open import Integers.Type
 open import MLTT.Spartan
 open import Naturals.Addition renaming (_+_ to _ℕ+_)
 open import Naturals.Order
 
-open import TWA.Thesis.Chapter5.PLDIPrelude
+open import TWA.Thesis.Chapter2.Vectors
+open import TWA.Thesis.Chapter5.Integers
 
 module TWA.Thesis.Chapter5.BelowAndAbove where
 ```
 
-downLeft, downMid and downRight
+## downLeft, downMid and downRight
 
 ```agda
 downLeft downMid downRight : ℤ → ℤ
@@ -23,7 +26,7 @@ downMid   a = succℤ (downLeft a)
 downRight a = succℤ (downMid  a)
 ```
 
-downLeft and downRight properties
+## downLeft and downRight properties
 
 ```agda
 pred-downMid : (a : ℤ) → predℤ (downMid a) ＝ downLeft a
@@ -32,7 +35,8 @@ pred-downMid a = predsuccℤ _
 pred-downRight : (a : ℤ) → predℤ (downRight a) ＝ downMid a
 pred-downRight a = predsuccℤ _
 
-pred-pred-downRight : (a : ℤ) → predℤ (predℤ (downRight a)) ＝ downLeft a
+pred-pred-downRight
+ : (a : ℤ) → predℤ (predℤ (downRight a)) ＝ downLeft a
 pred-pred-downRight a = ap predℤ (predsuccℤ _) ∙ predsuccℤ _
 
 downLeft-monotone' : (a b : ℤ) → ((n , _) : a ≤ℤ b)
@@ -51,7 +55,7 @@ downLeft-monotone' a b (n , refl)
 ℤ≤<-trans a b c (m , refl) (n , refl)
  = m ℕ+ n
  , (ap (succℤ a ℤ+_) (distributivity-pos-addition m n ⁻¹)
- ∙ ℤ+-assoc (succℤ a) (pos m) (pos n) ⁻¹ -- ℤ-left-succ a (pos m +pos n)
+ ∙ ℤ+-assoc (succℤ a) (pos m) (pos n) ⁻¹ 
  ∙ ap (_+pos n) (ℤ-left-succ-pos a m))
 
 downLeft<<downRight : (a b : ℤ) → a <ℤ b → downLeft a <ℤ downRight b
@@ -71,12 +75,15 @@ downLeft<<downRight a b (n , refl)
    ∙ ℤ-left-succ (a +pos n) (succℤ a +pos n) ⁻¹
    ∙ ap (_ℤ+ (succℤ a +pos n)) (ℤ-left-succ-pos a n ⁻¹))
 
-downLeft<downRight : (a : ℤ) (n : ℕ)
-                   → rec a downLeft (succ n) <ℤ rec a downRight (succ n)
+downLeft<downRight
+ : (a : ℤ) (n : ℕ)
+ → rec a downLeft (succ n) <ℤ rec a downRight (succ n)
 downLeft<downRight a zero = 1 , refl
-downLeft<downRight a (succ n) = downLeft<<downRight _ _ (downLeft<downRight a n)
+downLeft<downRight a (succ n)
+ = downLeft<<downRight _ _ (downLeft<downRight a n)
 
-downLeft≤downRight : (a : ℤ) (n : ℕ) → rec a downLeft n ≤ℤ rec a downRight n
+downLeft≤downRight
+ : (a : ℤ) (n : ℕ) → rec a downLeft n ≤ℤ rec a downRight n
 downLeft≤downRight a 0 = zero , refl
 downLeft≤downRight a (succ n) = <-is-≤ _ _ (downLeft<downRight a n)
 
@@ -100,8 +107,10 @@ downRight-≤-succ a = 2 , ap (succℤ ∘ succℤ) (pr₂ (downLeft-≤-succ a)
 downRight-monotone : (a b : ℤ) → a ≤ℤ b → downRight a ≤ℤ downRight b
 downRight-monotone = ≤-succ-to-monotone downRight downRight-≤-succ
 
-downRightⁿ-monotone : (a b : ℤ) (n : ℕ) → a ≤ℤ b
-                    → rec a downRight (succ n) ≤ℤ rec b downRight (succ n)
+downRightⁿ-monotone
+ : (a b : ℤ) (n : ℕ)
+ → a ≤ℤ b
+ → rec a downRight (succ n) ≤ℤ rec b downRight (succ n)
 downRightⁿ-monotone a b 0 a≤b
  = downRight-monotone a b a≤b
 downRightⁿ-monotone a b (succ n) a≤b
@@ -127,15 +136,16 @@ downMid≠downRight a a refl
      (0 , refl)
 
 downRight＝downLeft : (a : ℤ) → downRight a ＝ downLeft (succℤ a)
-downRight＝downLeft a = ap succℤ (ℤ-left-succ a a ⁻¹ ∙ ℤ+-comm (succℤ a) a)
-                     ∙ ℤ-left-succ a (succℤ a) ⁻¹
+downRight＝downLeft a
+ = ap succℤ (ℤ-left-succ a a ⁻¹ ∙ ℤ+-comm (succℤ a) a)
+ ∙ ℤ-left-succ a (succℤ a) ⁻¹
 ```
 
-below and below'
+## below and below'
 
 ```agda
 _below_ : ℤ → ℤ → 𝓤₀ ̇ 
-a below b = downLeft b ≤ℤ a ≤ℤ downRight b
+a below b = downLeft b ≤ a ≤ downRight b
 
 downLeft-below  : (a : ℤ) → downLeft a below a
 downLeft-below  a = (0 , refl) , (2 , refl)
@@ -150,9 +160,12 @@ _below'_ : ℤ → ℤ → 𝓤₀ ̇
 a below' b = (a ＝ downLeft b) + (a ＝ downMid b) + (a ＝ downRight b)
 
 below'-implies-below : (a b : ℤ) → a below' b → a below b
-below'-implies-below .(downLeft  b) b (inl      refl ) = downLeft-below b
-below'-implies-below .(downMid   b) b (inr (inl refl)) = downMid-below b
-below'-implies-below .(downRight b) b (inr (inr refl)) = downRight-below b
+below'-implies-below .(downLeft  b) b (inl      refl )
+ = downLeft-below b
+below'-implies-below .(downMid   b) b (inr (inl refl))
+ = downMid-below b
+below'-implies-below .(downRight b) b (inr (inr refl))
+ = downRight-below b
 
 below-implies-below' : (a b : ℤ) → a below b → a below' b
 below-implies-below' a b ((0 , e) , _)
@@ -167,20 +180,25 @@ below-implies-below' a b ((succ (succ (succ _)) , _) , (1 , f))
  = (inr ∘ inl) (succℤ-lc f)
 below-implies-below' a b ((succ (succ (succ _)) , _) , (2 , f))
  = inl (succℤ-lc (succℤ-lc f))
-below-implies-below' a b ((succ (succ (succ n)) , e) , (succ (succ (succ m))
-                         , f))
+below-implies-below' a b
+ ((succ (succ (succ n)) , e) , (succ (succ (succ m)) , f))
  = 𝟘-elim (k≠2 k＝2)
  where
    k : ℕ
    k = (succ (succ (succ (succ (succ (succ (n ℕ+ m)))))))
    η : downLeft b +pos k ＝ downRight b
-   η = (ap ((succℤ ^ 6) ∘ downLeft b ℤ+_) (distributivity-pos-addition n m ⁻¹)
-     ∙ ap (succℤ ^ 6) (ℤ+-assoc (downLeft b) (pos n) (pos m) ⁻¹)
-     ∙ ap (succℤ ^ 5) (ℤ-left-succ-pos (downLeft b +pos n) m ⁻¹)
-     ∙ ap (succℤ ^ 4) (ℤ-left-succ-pos (succℤ (downLeft b +pos n)) m ⁻¹)
-     ∙ ap (succℤ ^ 3) (ℤ-left-succ-pos ((succℤ ^ 2) (downLeft b +pos n)) m ⁻¹)
+   η = ap ((succℤ ^ 6) ∘ downLeft b ℤ+_)
+          (distributivity-pos-addition n m ⁻¹)
+     ∙ ap (succℤ ^ 6)
+         (ℤ+-assoc (downLeft b) (pos n) (pos m) ⁻¹)
+     ∙ ap (succℤ ^ 5)
+         (ℤ-left-succ-pos (downLeft b +pos n) m ⁻¹)
+     ∙ ap (succℤ ^ 4)
+         (ℤ-left-succ-pos (succℤ (downLeft b +pos n)) m ⁻¹)
+     ∙ ap (succℤ ^ 3)
+         (ℤ-left-succ-pos ((succℤ ^ 2) (downLeft b +pos n)) m ⁻¹)
      ∙ ap ((succℤ ^ 3) ∘ (_+pos m)) e
-     ∙ f)
+     ∙ f
    ζ : downLeft b +pos 2 ＝ downRight b
    ζ = refl
    k＝2 : k ＝ 2
@@ -189,7 +207,7 @@ below-implies-below' a b ((succ (succ (succ n)) , e) , (succ (succ (succ m))
    k≠2 = λ ()
 ```
 
-upLeft and upRight
+## upLeft and upRight
 
 ```agda
 upRight : ℤ → ℤ
@@ -199,7 +217,7 @@ upLeft : ℤ → ℤ
 upLeft x = upRight (predℤ x)
 ```
 
-upLeft and upRight properties
+## upLeft and upRight properties
 
 ```agda
 upRight-suc : (a : ℤ) → upRight (succℤ (succℤ a)) ＝ succℤ (upRight a)
@@ -238,8 +256,8 @@ upRight-succ-pos (succ (succ a))
    IH = upRight-succ-pos a
    m = pr₁ IH
 
-upRight-succ-negsucc : (a : ℕ)
-                     → upRight (negsucc a) ≤ℤ upRight (succℤ (negsucc a))
+upRight-succ-negsucc
+ : (a : ℕ) → upRight (negsucc a) ≤ℤ upRight (succℤ (negsucc a))
 upRight-succ-negsucc 0 = 1 , refl
 upRight-succ-negsucc 1 = 0 , refl
 upRight-succ-negsucc (succ (succ a))
@@ -259,7 +277,8 @@ upRight-monotone : (a b : ℤ) → a ≤ℤ b → upRight a ≤ℤ upRight b
 upRight-monotone = ≤-succ-to-monotone upRight upRight-≤-succ
 
 upLeft-monotone : (a b : ℤ) → a ≤ℤ b → upLeft a ≤ℤ upLeft b
-upLeft-monotone a b (n , refl) = upRight-monotone _ _ (n , ℤ-left-pred-pos a n)
+upLeft-monotone a b (n , refl)
+ = upRight-monotone _ _ (n , ℤ-left-pred-pos a n)
 
 upRight≤upLeft-succ : (a : ℤ) → upRight a ＝ upLeft (succℤ a)
 upRight≤upLeft-succ a = ap upRight (predsuccℤ _ ⁻¹)
@@ -270,7 +289,8 @@ upRight≤upLeft a b (n      , refl)
      (upLeft-monotone _ _ (n , refl))
 
 upRight-<-succ-succ : (a : ℤ) → upRight a <ℤ upRight (succℤ (succℤ a))
-upRight-<-succ-succ a = transport (upRight a <ℤ_) (upRight-suc a ⁻¹) (0 , refl)
+upRight-<-succ-succ a
+ = transport (upRight a <ℤ_) (upRight-suc a ⁻¹) (0 , refl)
 
 upRight-<<' : (a b : ℤ) (n : ℕ) → (a +pos succ n) ＝ predℤ b
             → upRight a <ℤ upRight b
@@ -297,7 +317,7 @@ upLeft-<< a b (n , refl)
          ∙ ap predℤ (ℤ-left-succ-pos a n ⁻¹)))
 ```
 
-above and above'
+## above and above'
 
 ```agda
 _above_ : ℤ → ℤ → 𝓤₀ ̇ 
@@ -326,7 +346,8 @@ upLeft-＝-+-negsucc (succ (succ a))
       (λ l → inl (upLeft-pred (negsucc a) ∙ ap predℤ l))
       (λ r → inr (predsuccℤ _ ⁻¹ ∙ ap predℤ r))
 
-upLeft-＝-+ : (a : ℤ) → (upLeft a ＝ upRight a) + (succℤ (upLeft a) ＝ upRight a)
+upLeft-＝-+
+ : (a : ℤ) → (upLeft a ＝ upRight a) + (succℤ (upLeft a) ＝ upRight a)
 upLeft-＝-+ = ℤ-elim _ upLeft-＝-+-pos upLeft-＝-+-negsucc
 
 upLeft≤upRight : (a : ℤ) → upLeft a ≤ℤ upRight a
@@ -368,7 +389,7 @@ above-implies-above' a b (l≤a , a≤r)
      (inl ∘ _⁻¹)
 ```
 
-Relationship between below and above
+## Relationship between below and above
 
 ```agda
 upRight-downLeft-pos : (b : ℕ) → pos b ＝ upRight (downLeft (pos b))
@@ -378,7 +399,8 @@ upRight-downLeft-pos (succ b)
  ∙ upRight-suc (downLeft (pos b)) ⁻¹
  ∙ ap (upRight ∘ succℤ) (ℤ-left-succ-pos (pos b) b ⁻¹)
 
-upRight-downLeft-negsucc : (b : ℕ) → negsucc b ＝ upRight (downLeft (negsucc b))
+upRight-downLeft-negsucc
+ : (b : ℕ) → negsucc b ＝ upRight (downLeft (negsucc b))
 upRight-downLeft-negsucc 0 = refl
 upRight-downLeft-negsucc (succ b)
  = ap predℤ (upRight-downLeft-negsucc b)
@@ -392,7 +414,8 @@ upRight-downMid-pos (succ b)
  ∙ upRight-suc (downMid (pos b)) ⁻¹
  ∙ ap (upRight ∘ succℤ ∘ succℤ) (ℤ-left-succ-pos (pos b) b ⁻¹)
 
-upRight-downMid-negsucc : (b : ℕ) → negsucc b ＝ upRight (downMid (negsucc b))
+upRight-downMid-negsucc
+ : (b : ℕ) → negsucc b ＝ upRight (downMid (negsucc b))
 upRight-downMid-negsucc 0 = refl
 upRight-downMid-negsucc (succ b)
  = ap predℤ (upRight-downMid-negsucc b)
@@ -402,7 +425,8 @@ upRight-downMid-negsucc (succ b)
  ∙ ap upRight (succpredℤ _ ⁻¹)
 
 upRight-downLeft : (a : ℤ) → a ＝ upRight (downLeft a)
-upRight-downLeft = ℤ-elim _ upRight-downLeft-pos upRight-downLeft-negsucc
+upRight-downLeft
+ = ℤ-elim _ upRight-downLeft-pos upRight-downLeft-negsucc
 
 upRight-downMid : (a : ℤ) → a ＝ upRight (downMid a)
 upRight-downMid = ℤ-elim _ upRight-downMid-pos upRight-downMid-negsucc
@@ -420,7 +444,8 @@ upLeft-downMid : (a : ℤ) → upLeft (downMid a) ＝ a
 upLeft-downMid a = ap upRight (pred-downMid a) ∙ upRight-downLeft a ⁻¹
 
 upLeft-downRight : (a : ℤ) → upLeft (downRight a) ＝ a
-upLeft-downRight a = ap upRight (pred-downRight a) ∙ upRight-downMid a ⁻¹
+upLeft-downRight a
+ = ap upRight (pred-downRight a) ∙ upRight-downMid a ⁻¹
 
 below-implies-above-dL : (b : ℤ) → b above (downLeft b)
 below-implies-above-dL b
@@ -448,13 +473,17 @@ below'-implies-above .(downRight b) b (inr (inr refl))
 dL-transform : (a : ℤ) → downLeft (succℤ a) ＝ (succℤ ^ 2) (downLeft a)
 dL-transform a = ℤ-left-succ a (succℤ a) ∙ ap succℤ (ℤ-right-succ a a)
 
-dL-transform-pred : (a : ℤ) → downLeft (predℤ a) ＝ (predℤ ^ 2) (downLeft a)
-dL-transform-pred a = ℤ-left-pred a (predℤ a) ∙ ap predℤ (ℤ-right-pred a a)
+dL-transform-pred
+ : (a : ℤ) → downLeft (predℤ a) ＝ (predℤ ^ 2) (downLeft a)
+dL-transform-pred a
+ = ℤ-left-pred a (predℤ a) ∙ ap predℤ (ℤ-right-pred a a)
 
-dR-transform : (a : ℤ) → downRight (succℤ a) ＝ (succℤ ^ 2) (downRight a)
+dR-transform
+ : (a : ℤ) → downRight (succℤ a) ＝ (succℤ ^ 2) (downRight a)
 dR-transform a = ap (succℤ ^ 2) (dL-transform a)
 
-dR-transform-pred : (a b : ℤ) → downRight (predℤ a) ＝ (predℤ ^ 2) (downRight a)
+dR-transform-pred
+ : (a b : ℤ) → downRight (predℤ a) ＝ (predℤ ^ 2) (downRight a)
 dR-transform-pred a b = ap (succℤ ^ 2) (dL-transform-pred a)
                       ∙ ap succℤ (succpredℤ _)
                       ∙ succpredℤ _
@@ -462,17 +491,19 @@ dR-transform-pred a b = ap (succℤ ^ 2) (dL-transform-pred a)
                       ∙ ap predℤ (predsuccℤ _ ⁻¹)
 
 downLeft-upRight : (b : ℤ) → downLeft (upRight b) ≤ℤ b
-downLeft-upRight = ℤ-elim _ downLeft-upRight-pos downLeft-upRight-negsucc
+downLeft-upRight
+ = ℤ-elim _ downLeft-upRight-pos downLeft-upRight-negsucc
  where
   downLeft-upRight-pos : (b : ℕ) → downLeft (upRight (pos b)) ≤ℤ pos b
   downLeft-upRight-pos 0 = 0 , refl
   downLeft-upRight-pos 1 = 1 , refl
   downLeft-upRight-pos (succ (succ b))
    = transport (_≤ℤ succℤ (succℤ (pos b)))
-      ((ap downLeft (upRight-suc (pos b)) ∙ dL-transform (upRight (pos b))) ⁻¹)
+      ((ap downLeft (upRight-suc (pos b))
+        ∙ dL-transform (upRight (pos b))) ⁻¹)
       (ℤ≤-succⁿ-inj _ _ 2 (downLeft-upRight-pos b))
-  downLeft-upRight-negsucc : (b : ℕ)
-                           → downLeft (upRight (negsucc b)) ≤ℤ negsucc b
+  downLeft-upRight-negsucc
+   : (b : ℕ) → downLeft (upRight (negsucc b)) ≤ℤ negsucc b
   downLeft-upRight-negsucc 0 = 1 , refl
   downLeft-upRight-negsucc 1 = 0 , refl
   downLeft-upRight-negsucc (succ (succ b))
@@ -492,10 +523,12 @@ downRight-upLeft-pos 0 = 0 , refl
 downRight-upLeft-pos 1 = 1 , refl
 downRight-upLeft-pos (succ (succ b))
  = transport ((succℤ ^ 2) (pos b) ≤ℤ_)
-    ((ap downRight (upLeft-suc (pos b)) ∙ dR-transform (upLeft (pos b))) ⁻¹)
+    ((ap downRight (upLeft-suc (pos b))
+      ∙ dR-transform (upLeft (pos b))) ⁻¹)
     (ℤ≤-succⁿ-inj _ _ 2 (downRight-upLeft-pos b))
 
-downRight-upLeft-negsucc : (b : ℕ) → negsucc b ≤ℤ downRight (upLeft (negsucc b))
+downRight-upLeft-negsucc
+ : (b : ℕ) → negsucc b ≤ℤ downRight (upLeft (negsucc b))
 downRight-upLeft-negsucc 0 = 1 , refl
 downRight-upLeft-negsucc 1 = 0 , refl
 downRight-upLeft-negsucc (succ (succ b))
@@ -505,7 +538,8 @@ downRight-upLeft-negsucc (succ (succ b))
      (ℤ≤-predⁿ-inj _ _ 2 (downRight-upLeft-negsucc b)) 
  
 downRight-upLeft : (b : ℤ) → b ≤ℤ downRight (upLeft b)
-downRight-upLeft = ℤ-elim _ downRight-upLeft-pos downRight-upLeft-negsucc
+downRight-upLeft
+ = ℤ-elim _ downRight-upLeft-pos downRight-upLeft-negsucc
 
 downRight-upRight : (b : ℤ) → b ≤ℤ downRight (upRight b)
 downRight-upRight b
@@ -524,89 +558,22 @@ above'-implies-below .(upLeft  b) b (inl refl) = above-upLeft b
 above'-implies-below .(upRight b) b (inr refl) = above-upRight b
 
 above-implies-below : (a b : ℤ) → a above b → b below a
-above-implies-below a b = above'-implies-below a b ∘ above-implies-above' a b
+above-implies-below a b
+ = above'-implies-below a b ∘ above-implies-above' a b
 
 below-implies-above : (a b : ℤ) → a below b → b above a
-below-implies-above a b = below'-implies-above a b ∘ below-implies-below' a b
+below-implies-above a b
+ = below'-implies-above a b ∘ below-implies-below' a b
 
 above-downLeft : (a : ℤ) → a above (downLeft a)
-above-downLeft a = below-implies-above (downLeft a) a (downLeft-below a)
+above-downLeft a
+ = below-implies-above (downLeft a) a (downLeft-below a)
 
 above-downMid : (a : ℤ) → a above (downMid a)
-above-downMid a = below-implies-above (downMid a) a (downMid-below a)
+above-downMid a
+ = below-implies-above (downMid a) a (downMid-below a)
 
 above-downRight : (a : ℤ) → a above (downRight a)
-above-downRight a = below-implies-above (downRight a) a (downRight-below a)
-```
-
-Recursive above and below
-
-```agda
-_aboveⁿ_ _belowⁿ_ _aboveⁿ-vec_ _belowⁿ-vec_ : (a c : ℤ) → ℕ → 𝓤₀ ̇ 
-_aboveⁿ_     = sigma-witness  _above_
-_belowⁿ_     = sigma-witness  _below_
-_aboveⁿ-vec_ = vector-witness _above_
-_belowⁿ-vec_ = vector-witness _below_
-
-below-up : (a c : ℤ) (n : ℕ) → (a belowⁿ c) (succ n)
-         → (upLeft a belowⁿ c) n + (upRight a belowⁿ c) n
-below-up a c n (b , η , θ)
- = Cases (above-implies-above' b a (below-implies-above a b η))
-     (λ l → inl (transport (λ - → (- belowⁿ c) n) l θ))
-     (λ r → inr (transport (λ - → (- belowⁿ c) n) r θ))
-
-below-vec' : (a c : ℤ) → (n : ℕ) → (a belowⁿ c) n → Vec ℤ (succ n)
-below-vec' a c zero b = [ a ]
-below-vec' a c (succ n) (a' , _ , f) = a ∷ below-vec' a' c n f
-
-below-vec : (a c : ℤ) → (n : ℕ) → (a belowⁿ c) n → Vec ℤ (succ (succ n))
-below-vec a c n b = (below-vec' a c n b) +++ c
-
-below-vec-!!0 : (a c : ℤ) (n : ℕ) (b : (a belowⁿ c) n)
-              → (below-vec a c n b !! zero) ⋆ ＝ a
-below-vec-!!0 a c zero b = refl
-below-vec-!!0 a c (succ n) b = refl
-
-below-vec-!!sn : (a c : ℤ) (n : ℕ) (b : (a belowⁿ c) n)
-               → (n<sn : n <ℕ succ n)
-               → (below-vec a c n b !! succ n) n<sn ＝ c
-below-vec-!!sn a c zero b n<sn = refl
-below-vec-!!sn a c (succ n) (b , e , f) n<sn
- = below-vec-!!sn b c n f n<sn
-
-pairwise-below-vec : (a c : ℤ) → (n : ℕ) → (b : (a belowⁿ c) n)
-                   → pairwise (below-vec a c n b) _below_
-pairwise-below-vec a c zero b zero k<n k<sn
- = b
-pairwise-below-vec a c (succ n) (b' , e , f) zero k<n k<sn
- = transport (a below_) (below-vec-!!0 b' c n f ⁻¹) e
-pairwise-below-vec a c (succ n) (b' , e , f) (succ k) k<n k<sn
- = pairwise-below-vec b' c n f k k<n k<sn
-
-below-everything-in-vec : (a c : ℤ) → (n : ℕ) → (b : (a belowⁿ c) n)
-                        → (k : ℕ) → (k<sn : k <ℕ succ n)
-                        → (a belowⁿ ((below-vec a c n b !! (succ k)) k<sn)) k
-below-everything-in-vec a c zero b zero k<sn
- = b
-below-everything-in-vec a c (succ n) (b , η , θ) zero k<sn
- = transport (a below_) (below-vec-!!0 b c n θ ⁻¹) η 
-below-everything-in-vec a c (succ n) (b , η , θ) (succ k) k<sn
- = b , η , below-everything-in-vec b c n θ k k<sn
-
-aboveⁿ-implies-belowⁿ : (a c : ℤ) (n : ℕ) → (c aboveⁿ a) n → (a belowⁿ c) n
-aboveⁿ-implies-belowⁿ a c n
- = sigma-witness→inv _above_ _below_ above-implies-below c a n
-```
-
-
-
-```agda
-
--- RENAME
-apparently : (k₁ k₂ c : ℤ)
-           → downRight (upLeft k₁) ≤ℤ c ≤ℤ downLeft (upRight k₂)
-           → k₁ ≤ℤ c ≤ℤ k₂
-apparently k₁ k₂ c (l≤c , c≤u)
- = ℤ≤-trans _ _ _ (downRight-upLeft k₁) l≤c
- , ℤ≤-trans _ _ _ c≤u (downLeft-upRight k₂)
+above-downRight a
+ = below-implies-above (downRight a) a (downRight-below a)
 ```

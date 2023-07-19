@@ -1,3 +1,5 @@
+# Ternary Boehm encodings of real numbers
+
 ```agda
 {-# OPTIONS --exact-split --without-K --safe #-}
 
@@ -6,23 +8,27 @@ open import Integers.Multiplication renaming (_*_ to _ℤ*_)
 open import Integers.Negation renaming (-_ to ℤ-_ )
 open import Integers.Order
 open import Integers.Type
-open import MLTT.Spartan -- renaming (_+_ to _∔_)
+open import MLTT.Spartan
+open import MLTT.Two-Properties
 open import Notation.Order
 open import Naturals.Addition renaming (_+_ to _ℕ+_)
 open import Naturals.Order hiding (≤-refl)
 open import Naturals.Order
   renaming (max to ℕmax) hiding (≤-refl ; ≤-trans ; ≤-split)
--- open import UF.Base
 open import UF.FunExt
 open import UF.Powerset hiding (𝕋)
 open import UF.PropTrunc
 open import UF.Quotient
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
+open import UF.Equiv
 
+open import TWA.Thesis.Chapter5.BelowAndAbove
+ hiding (downLeft; downMid; downRight; upRight; upLeft; _below_)
 open import TWA.Thesis.AndrewSneap.DyadicRationals
  renaming (normalise to ι)
-open import TWA.Thesis.Chapter5.PLDIPrelude
+open import TWA.Thesis.Chapter5.Integers
+open import TWA.Thesis.Chapter5.SignedDigit
 
 module TWA.Thesis.Chapter5.BoehmVerification
   (pt : propositional-truncations-exist)
@@ -37,7 +43,13 @@ open Dyadics dy
            ; _ℤ[1/2]*_ to _*_ )
 
 open import TWA.Thesis.AndrewSneap.DyadicReals pe pt fe dy
+open import TWA.Thesis.Chapter3.ClosenessSpaces fe hiding (⟨_⟩ ; ι)
+open import TWA.Thesis.Chapter3.ClosenessSpaces-Examples fe
+```
 
+## Structural operations and properties
+
+```
 downLeft downMid downRight : ℤ → ℤ
 downLeft  k = (k ℤ+ k)
 downMid   k = (k ℤ+ k) +pos 1
@@ -48,13 +60,13 @@ upRight k = sign k (num k /2)
 upLeft  k = upRight (predℤ k)
 
 _below_ : ℤ → ℤ → 𝓤₀ ̇
-a below b = downLeft b ≤ℤ a ≤ℤ downRight b
+a below b = downLeft b ≤ a ≤ downRight b
 
-fully-ternary : (ℤ → ℤ) → 𝓤₀  ̇
-fully-ternary x = (δ : ℤ) → x (succℤ δ) below x δ
+ternary : (ℤ → ℤ) → 𝓤₀  ̇
+ternary x = (δ : ℤ) → x (succℤ δ) below x δ
 
 𝕋 : 𝓤₀ ̇ 
-𝕋 = Σ x ꞉ (ℤ → ℤ) , fully-ternary x
+𝕋 = Σ x ꞉ (ℤ → ℤ) , ternary x
 
 ℤ[1/2]ᴵ : 𝓤₀ ̇
 ℤ[1/2]ᴵ = Σ (l , r) ꞉ (ℤ[1/2] × ℤ[1/2]) , l ≤ r
@@ -77,9 +89,9 @@ covers-trans a b c (l≤₁ , r≤₁) (l≤₂ , r≤₂)
  = trans' (ld a) (ld b) (ld c) l≤₁ l≤₂
  , trans' (rd c ) (rd b) (rd a) r≤₂ r≤₁
 
-nested locatable : (ℤ → ℤ[1/2]ᴵ) → 𝓤₀ ̇
+nested positioned : (ℤ → ℤ[1/2]ᴵ) → 𝓤₀ ̇
 nested      ζ = (n : ℤ) → (ζ n) covers (ζ (succℤ n))
-locatable     ζ = (ϵ : ℤ[1/2]) → is-positive ϵ
+positioned     ζ = (ϵ : ℤ[1/2]) → is-positive ϵ
               → Σ n ꞉ ℤ , (rd (ζ n) - ld (ζ n)) ≤ ϵ
 
 fully-nested' : (ℤ → ℤ[1/2]ᴵ) → ℕ → 𝓤₀ ̇
@@ -99,9 +111,13 @@ nested-implies-fully-nested
  : (ζ : ℤ → ℤ[1/2]ᴵ) → nested ζ → fully-nested ζ
 nested-implies-fully-nested ζ ρ n m (k , refl)
  = nested-implies-fully-nested' ζ ρ k n
+```
 
+## Verification of the structure of ternary Boehm encodings
+
+```
 -- By Andrew Sneap
-⦅_⦆ : (χ : ℤ → ℤ[1/2]ᴵ) → nested χ → locatable χ → ℝ-d
+⦅_⦆ : (χ : ℤ → ℤ[1/2]ᴵ) → nested χ → positioned χ → ℝ-d
 ⦅_⦆ χ τ π = (L , R)
           , inhabited-l , inhabited-r
           , rounded-l   , rounded-r
@@ -114,11 +130,13 @@ nested-implies-fully-nested ζ ρ n m (k , refl)
   
   inhabited-l : inhabited-left L
   inhabited-l = ∣ ld (χ (pos 0)) - 1ℤ[1/2]
-              , ∣ (pos 0) , (ℤ[1/2]<-neg (ld (χ (pos 0))) 1ℤ[1/2] 0<1ℤ[1/2]) ∣ ∣
+              , ∣ (pos 0)
+                  , (ℤ[1/2]<-neg (ld (χ (pos 0))) 1ℤ[1/2] 0<1ℤ[1/2]) ∣ ∣
   
   inhabited-r : inhabited-right R
   inhabited-r = ∣ (rd (χ (pos 0)) +𝔻 1ℤ[1/2])
-              , ∣ pos 0  , ℤ[1/2]<-+ (rd (χ (pos 0))) 1ℤ[1/2] 0<1ℤ[1/2] ∣ ∣
+              , ∣ pos 0
+                  , ℤ[1/2]<-+ (rd (χ (pos 0))) 1ℤ[1/2] 0<1ℤ[1/2] ∣ ∣
   
   rounded-l : rounded-left L
   rounded-l p = ltr , rtl
@@ -139,7 +157,8 @@ nested-implies-fully-nested ζ ρ n m (k , refl)
         → ∃ n ꞉ ℤ , (p <ℤ[1/2] ld (χ n))
       I (p' , p<p' , te) = ∥∥-functor II te
        where
-        II : Σ n ꞉ ℤ , (p' <ℤ[1/2] ld (χ n)) → Σ n ꞉ ℤ , (p <ℤ[1/2] ld (χ n))
+        II : Σ n ꞉ ℤ , (p' <ℤ[1/2] ld (χ n))
+           → Σ n ꞉ ℤ , (p <ℤ[1/2] ld (χ n))
         II (n  , p'<ζn) = n , (trans p p' (ld (χ n)) p<p' p'<ζn)
       
   rounded-r : rounded-right R
@@ -164,35 +183,44 @@ nested-implies-fully-nested ζ ρ n m (k , refl)
   is-disjoint p q (tp<x , tx<q)
    = ∥∥-rec (<ℤ[1/2]-is-prop p q) I (binary-choice tp<x tx<q)
    where
-    I : (Σ n ꞉ ℤ , (p <ℤ[1/2] ld (χ n))) × (Σ n' ꞉ ℤ , (rd (χ n') <ℤ[1/2] q))
+    I : (Σ n ꞉ ℤ , (p <ℤ[1/2] ld (χ n)))
+      × (Σ n' ꞉ ℤ , (rd (χ n') <ℤ[1/2] q))
       → p <ℤ[1/2] q
     I ((n , p<l) , (n' , r<q)) with ℤ-dichotomous n n'
     ... | inl n≤n'
            = let p<l' = ℤ[1/2]<-≤ p (ld (χ n)) (ld (χ n')) p<l
-                          (pr₁ (nested-implies-fully-nested χ τ n n' n≤n'))
-                 l<q' = ℤ[1/2]≤-< (ld (χ n')) (rd (χ n')) q (ld≤rd (χ n')) r<q 
+                          (pr₁ (nested-implies-fully-nested
+                                  χ τ n n' n≤n'))
+                 l<q' = ℤ[1/2]≤-< (ld (χ n')) (rd (χ n')) q
+                          (ld≤rd (χ n')) r<q 
            in trans p (ld (χ n')) q p<l' l<q'
     ... | inr n'≤n
-           = let p<r' = ℤ[1/2]<-≤ p (ld (χ n)) (rd (χ n)) p<l (ld≤rd (χ n))
+           = let p<r' = ℤ[1/2]<-≤ p (ld (χ n)) (rd (χ n)) p<l
+                          (ld≤rd (χ n))
                  r<q' = ℤ[1/2]≤-< (rd (χ n)) (rd (χ n')) q
-                          (pr₂ (nested-implies-fully-nested χ τ n' n n'≤n))
-                             r<q
+                          (pr₂ (nested-implies-fully-nested
+                             χ τ n' n n'≤n))
+                          r<q
            in trans p (rd (χ n)) q p<r' r<q'
  
   is-located : located L R
   is-located p q p<q
    = I (π (1/2ℤ[1/2] * (q - p))
-         (ℤ[1/2]<-positive-mult 1/2ℤ[1/2] (q - p) 0<1/2ℤ[1/2] (diff-positive p q p<q)))
+         (ℤ[1/2]<-positive-mult 1/2ℤ[1/2] (q - p)
+            0<1/2ℤ[1/2] (diff-positive p q p<q)))
    where
     0<ε : 0ℤ[1/2] < (1/2ℤ[1/2] * (q - p))
-    0<ε = <-pos-mult' 1/2ℤ[1/2] (q - p) 0<1/2ℤ[1/2] (diff-positive p q p<q)
-    I : (Σ n ꞉ ℤ , ((rd (χ n) - ld (χ n)) ≤ℤ[1/2] (1/2ℤ[1/2] * (q - p))))
+    0<ε = <-pos-mult' 1/2ℤ[1/2] (q - p) 0<1/2ℤ[1/2]
+            (diff-positive p q p<q)
+    I : (Σ n ꞉ ℤ , ((rd (χ n) - ld (χ n))
+                     ≤ℤ[1/2] (1/2ℤ[1/2] * (q - p))))
       → (L p holds) ∨ (R q holds)
-    I (n , l₁) = II (ℤ[1/2]-ordering-property (rd (χ n)) (ld (χ n)) q p l₂)
+    I (n , l₁) = II (ℤ[1/2]-ordering-property (rd (χ n))
+                       (ld (χ n)) q p l₂)
      where
       l₂ :(rd (χ n) - ld (χ n)) < (q - p)
-      l₂ = ℤ[1/2]≤-< (rd (χ n) - ld (χ n)) (1/2ℤ[1/2] * (q - p)) (q - p) l₁
-             (ℤ[1/2]-1/2-< (q - p) (diff-positive p q p<q))
+      l₂ = ℤ[1/2]≤-< (rd (χ n) - ld (χ n)) (1/2ℤ[1/2] * (q - p))
+             (q - p) l₁ (ℤ[1/2]-1/2-< (q - p) (diff-positive p q p<q))
       II : (rd (χ n) < q) + (p < ld (χ n)) → (L p holds) ∨ (R q holds) 
       II (inl ζ<q) = ∣ inr ∣ n , ζ<q ∣ ∣
       II (inr p<ζ) = ∣ inl ∣ n , p<ζ ∣ ∣
@@ -205,7 +233,7 @@ nested-implies-fully-nested ζ ρ n m (k , refl)
  = ((ι (l , p)) , ι (r , p)) , normalise-≤2 l r p i
 
 ⦅_⦆' : (χ : ℤ → ℤ³)
-      → nested (ℤ³-to-ℤ[1/2]ᴵ ∘ χ) → locatable (ℤ³-to-ℤ[1/2]ᴵ ∘ χ)
+      → nested (ℤ³-to-ℤ[1/2]ᴵ ∘ χ) → positioned (ℤ³-to-ℤ[1/2]ᴵ ∘ χ)
       → ℝ-d
 ⦅ χ ⦆' = ⦅ ℤ³-to-ℤ[1/2]ᴵ ∘ χ ⦆
 
@@ -223,7 +251,7 @@ nested-implies-fully-nested ζ ρ n m (k , refl)
 
 ⦅_⦆'' : (χ : ℤ → ℤ²)
       → nested  (ℤ²-to-ℤ[1/2]ᴵ ∘ χ)
-      → locatable (ℤ²-to-ℤ[1/2]ᴵ ∘ χ)
+      → positioned (ℤ²-to-ℤ[1/2]ᴵ ∘ χ)
       → ℝ-d
 ⦅_⦆'' = ⦅_⦆' ∘ (ℤ²-to-ℤ³ ∘_)
 
@@ -239,15 +267,18 @@ normalised χ = (n : ℤ) → pr₂ (χ n) ＝ n
      ∙ ap succℤ (ℤ-left-succ k (ℤ- k))
      ∙ ap (succℤ ∘ succℤ) (ℤ-sum-of-inverse-is-zero k))
 
-normalised-locatable : (χ : ℤ → ℤ²)
+normalised-positioned : (χ : ℤ → ℤ²)
                    → normalised χ
-                   → locatable (ℤ²-to-ℤ[1/2]ᴵ ∘ χ)
-normalised-locatable χ η ϵ ϵ⁺
+                   → positioned (ℤ²-to-ℤ[1/2]ᴵ ∘ χ)
+normalised-positioned χ η ϵ ϵ⁺
  = q , transport (_≤ ϵ) (ℤ²-width (χ q) ⁻¹)
          (transport (λ - → ι (pos 2 , -) ≤ ϵ) (η q ⁻¹) γ)
  where
   q : ℤ
   q = pr₁ (ℤ[1/2]-find-lower ϵ ϵ⁺)
+  f : pr₁ (ℤ[1/2]-find-lower ϵ ϵ⁺) ＝
+        pr₂ (χ (pr₁ (ℤ[1/2]-find-lower ϵ ϵ⁺)))
+  f = η q ⁻¹
   γ : ι (pos 2 , q) ≤ ϵ
   γ = <-is-≤ℤ[1/2] (ι (pos 2 , q)) ϵ (pr₂ (ℤ[1/2]-find-lower ϵ ϵ⁺))
 
@@ -281,11 +312,9 @@ downLeft-downRight-2 a
          → (ι (r , p) - ι (l , p)) ＝ ι (r ℤ- l , p)
 ℤ³-width (((l , r) , p) , _) = normalise-negation r l p
 
-
-
 ternary-nested : (χ : ℤ → ℤ²)
                → normalised χ
-               → fully-ternary (pr₁ ∘ χ)
+               → ternary (pr₁ ∘ χ)
                ⇔ nested (ℤ²-to-ℤ[1/2]ᴵ ∘ χ)
 pr₁ (pr₁ (ternary-nested χ η) f n) = γ
  where
@@ -405,8 +434,8 @@ below-is-prop a b
  = ×-is-prop (ℤ≤-is-prop (downLeft b) a)
              (ℤ≤-is-prop a (downRight b))
 
-fully-ternary-is-prop : (χ : ℤ → ℤ) → is-prop (fully-ternary χ)
-fully-ternary-is-prop χ
+ternary-is-prop : (χ : ℤ → ℤ) → is-prop (ternary χ)
+ternary-is-prop χ
  = Π-is-prop (fe _ _) (λ n → below-is-prop (χ (succℤ n)) (χ n)) 
 
 ternary-normalised≃𝕋 : (Σ χ ꞉ (ℤ → ℤ²)
@@ -423,17 +452,17 @@ ternary-normalised≃𝕋
     γ : to-interval-seq (ternary-normalised→𝕋 (χ , τ , π)) ∼ χ
     γ i = ap (pr₁ (χ i) ,_) (π i ⁻¹)
   μ : (ternary-normalised→𝕋 ∘ 𝕋→nested-normalised) ∼ id
-  μ (χ , b) = to-subtype-＝ fully-ternary-is-prop (dfunext (fe _ _) γ)
+  μ (χ , b) = to-subtype-＝ ternary-is-prop (dfunext (fe _ _) γ)
    where
     γ : (λ x → pr₁ (pr₁ (𝕋→nested-normalised (χ , b)) x)) ∼ χ
     γ i = refl
 
-𝕋→nested-locatable
+𝕋→nested-positioned
  : 𝕋
  → Σ χ ꞉ (ℤ → ℤ²) , (nested (ℤ²-to-ℤ[1/2]ᴵ ∘ χ)
-                  × locatable (ℤ²-to-ℤ[1/2]ᴵ ∘ χ))
-𝕋→nested-locatable χ
- = χ' , τ , normalised-locatable χ' π
+                  × positioned (ℤ²-to-ℤ[1/2]ᴵ ∘ χ))
+𝕋→nested-positioned χ
+ = χ' , τ , normalised-positioned χ' π
  where
   γ = 𝕋→nested-normalised χ
   χ' = pr₁ γ 
@@ -443,16 +472,15 @@ ternary-normalised≃𝕋
 ⟦_⟧ : 𝕋 → ℝ-d
 ⟦ χ ⟧ = ⦅ χ' ⦆'' τ π
  where
-  γ = 𝕋→nested-locatable χ
+  γ = 𝕋→nested-positioned χ
   χ' = pr₁ γ 
   τ  = pr₁ (pr₂ γ)
   π  = pr₂ (pr₂ γ)
+```
 
----
+## Representing compact intervals
 
-_≈_ : 𝕋 → 𝕋 → 𝓤₀ ̇
-(χ₁ , _) ≈ (χ₂ , _) = Σ δ ꞉ ℤ , ((n : ℤ) → δ ≤ n → χ₁ n ＝ χ₂ n)
- 
+``` 
 CompactInterval : ℤ × ℤ → 𝓤₀ ̇
 CompactInterval (k , δ) = Σ (x , _) ꞉ 𝕋 , x(δ) ＝ k
 
@@ -461,7 +489,6 @@ CompactInterval2 (k , δ)
  = Σ χ ꞉ (ℕ → ℤ) , (χ 0 below k)
                  × ((n : ℕ) → χ (succ n) below χ n)
 
--- not quite, but similar..
 CompactInterval-1-to-2 : ((k , δ) : ℤ × ℤ)
                        → CompactInterval  (k , δ)
                        → CompactInterval2 (k , δ)
@@ -475,7 +502,6 @@ CompactInterval-1-to-2 (k , δ) ((χ' , b') , e')
   bₛ : (n : ℕ) → χ (succ n) below χ n
   bₛ n = b' (succℤ (δ +pos n))
 
--- Need better function names
 replace-right''
  : ((k , δ) : ℤ × ℤ) → (ℕ → ℤ) → (n : ℤ) → trich-locate n δ → ℤ
 replace-right'' (k , δ) χ n (inl (i , n+si＝δ))
@@ -484,9 +510,6 @@ replace-right'' (k , δ) χ n (inr (inl refl))
  = k
 replace-right'' (k , δ) χ n (inr (inr (i , δ+si＝n)))
  = χ i
-
-open import TWA.Thesis.Chapter5.BelowAndAbove
- hiding (downLeft; downMid; downRight; _below_)
 
 replace-right''-correct
  : ((k , δ) : ℤ × ℤ)
@@ -532,6 +555,9 @@ CompactInterval-2-to-1 (k , δ) (χ' , b'₀ , b'ₛ)
         (ℤ-trichotomous-is-prop _ _ (ℤ-trichotomous δ δ)
         (inr (inl refl)))
 
+_≈_ : 𝕋 → 𝕋 → 𝓤₀ ̇
+(χ₁ , _) ≈ (χ₂ , _) = Σ δ ꞉ ℤ , ((n : ℤ) → δ ≤ n → χ₁ n ＝ χ₂ n)
+
 CompactInterval-≈
  : ((k , δ) : ℤ × ℤ)
  → ((χ , b) : CompactInterval (k , δ))
@@ -551,14 +577,14 @@ CompactInterval-≈ (k , δ) ((χ' , b') , e') = δ , γ
          (inr (inl refl))) ⁻¹
   γ n (succ i , refl)
    = ap (replace-right'' (k , δ)
-       (pr₁ (CompactInterval-1-to-2 (k , δ) ((χ' , b') , e'))) (δ +pos succ i))
+       (pr₁ (CompactInterval-1-to-2 (k , δ) ((χ' , b') , e')))
+       (δ +pos succ i))
        (ℤ-trichotomous-is-prop _ _
          (ℤ-trichotomous (δ +pos succ i) δ)
          (inr (inr (i , ℤ-left-succ-pos δ i)))) ⁻¹
 
-open import TWA.Thesis.Chapter5.SignedDigit
-
-CI2-to-𝟛ᴺ : ((k , i) : ℤ × ℤ) → CompactInterval2 (k , i) → 𝟛ᴺ
+CI2-to-𝟛ᴺ
+ : ((k , i) : ℤ × ℤ) → CompactInterval2 (k , i) → 𝟛ᴺ
 CI2-to-𝟛ᴺ (k , i) (χ , b₀ , bₛ) 0
  with below-implies-below' (χ 0) k b₀
 ... | inl      dL  = −1
@@ -591,8 +617,6 @@ CI2-to-𝟛ᴺ (k , i) (χ , b₀ , bₛ) (succ n)
   bₛ : (n : ℕ) → χ (succ n) below χ n
   bₛ n = 𝟛-to-down-is-below (α (succ n)) (χ n)
 
-open import UF.Equiv
-
 𝟛-possibilities : (a : 𝟛) → (a ＝ −1) + (a ＝ O) + (a ＝ +1)
 𝟛-possibilities −1 = inl refl
 𝟛-possibilities  O = inr (inl refl)
@@ -610,8 +634,9 @@ CI2-prop (k , i) χ
  = ×-is-prop (below-is-prop (χ 0) k)
      (Π-is-prop (fe _ _) (λ n → below-is-prop (χ (succ n)) (χ n)))
 
-CI2≃𝟛ᴺ : ((k , i) : ℤ × ℤ) → CompactInterval2 (k , i) ≃ 𝟛ᴺ
-CI2≃𝟛ᴺ (k , i)
+CompactInterval3-ternary
+ : ((k , i) : ℤ × ℤ) → CompactInterval2 (k , i) ≃ 𝟛ᴺ
+CompactInterval3-ternary (k , i)
  = qinveq (CI2-to-𝟛ᴺ (k , i)) (𝟛ᴺ-to-CI2 (k , i) , η , μ)
  where
   η : (𝟛ᴺ-to-CI2 (k , i)) ∘ (CI2-to-𝟛ᴺ (k , i)) ∼ id
@@ -692,9 +717,6 @@ CI2≃𝟛ᴺ (k , i)
      = 𝟘-elim (downLeft≠downRight (pr₁ α' n) (pr₁ α' n) refl
          (ap (λ a → 𝟛-to-down a (pr₁ α' n)) (−1' ⁻¹) ∙ dR))
 
-open import TWA.Thesis.Chapter3.ClosenessSpaces fe hiding (⟨_⟩ ; ι)
-open import TWA.Thesis.Chapter3.ClosenessSpaces-Examples fe
-
 CI2-ClosenessSpace
  : ((k , i) : ℤ × ℤ)
  → is-closeness-space (CompactInterval2 (k , i))
@@ -702,104 +724,125 @@ CI2-ClosenessSpace (k , i)
  = Σ-clospace (CI2-criteria (k , i)) (CI2-prop (k , i))
      (discrete-seq-clospace (λ _ → ℤ-is-discrete))
 
-_below-split_ : ℤ → ℤ → 𝓤₀ ̇
-n below-split m = (n ＝ downLeft m) + (n ＝ downRight m)
+_split-below_ : ℤ → ℤ → 𝓤₀ ̇
+n split-below m = (n ＝ downLeft m) + (n ＝ downRight m)
 
-below-split-is-prop : (n m : ℤ) → is-prop (n below-split m)
-below-split-is-prop n m
+split-below-is-prop : (n m : ℤ) → is-prop (n split-below m)
+split-below-is-prop n m
  = +-is-prop ℤ-is-set ℤ-is-set
      (λ l r → downLeft≠downRight m m refl (l ⁻¹ ∙ r))
 
 CI3-criteria : ((k , i) : ℤ × ℤ) → (ℕ → ℤ) → 𝓤₀ ̇
-CI3-criteria (k , i) χ = (χ 0 below-split k)
-                       × ((n : ℕ) → χ (succ n) below-split χ n)
+CI3-criteria (k , i) χ = (χ 0 split-below k)
+                       × ((n : ℕ) → χ (succ n) split-below χ n)
 
 CI3-prop : ((k , i) : ℤ × ℤ)
          → (χ : ℕ → ℤ)
          → is-prop (CI3-criteria (k , i) χ)
 CI3-prop (k , i) χ
- = ×-is-prop (below-split-is-prop (χ 0) k)
+ = ×-is-prop (split-below-is-prop (χ 0) k)
      (Π-is-prop (fe _ _)
-       (λ n → below-split-is-prop (χ (succ n)) (χ n)))
+       (λ n → split-below-is-prop (χ (succ n)) (χ n)))
 
-𝕋_³ : ℤ × ℤ → 𝓤₀ ̇
-𝕋 (k , i) ³ = Σ (CI3-criteria (k , i))
+CompactInterval3 : ℤ × ℤ → 𝓤₀ ̇
+CompactInterval3 (k , i) = Σ (CI3-criteria (k , i))
 
-below-split-implies-below : (n m : ℤ) → n below-split m → n below m
-below-split-implies-below n m (inl refl) = (0 , refl) , (2 , refl)
-below-split-implies-below n m (inr refl) = (2 , refl) , (0 , refl)
+split-below-implies-below : (n m : ℤ) → n split-below m → n below m
+split-below-implies-below n m (inl refl) = (0 , refl) , (2 , refl)
+split-below-implies-below n m (inr refl) = (2 , refl) , (0 , refl)
 
-𝕋_³-to-² : ((k , i) : ℤ × ℤ) → 𝕋 (k , i) ³ → CompactInterval2 (k , i)
-𝕋 (k , i) ³-to-² (χ , b₀ , bₛ)
- = χ , below-split-implies-below (χ 0) k b₀
- , λ n → below-split-implies-below (χ (succ n)) (χ n) (bₛ n)
+CI3-to-CI2 : ((k , i) : ℤ × ℤ)
+           → CompactInterval3 (k , i)
+           → CompactInterval2 (k , i)
+CI3-to-CI2 (k , i) (χ , b₀ , bₛ)
+ = χ , split-below-implies-below (χ 0) k b₀
+ , λ n → split-below-implies-below (χ (succ n)) (χ n) (bₛ n)
 
-𝕋_³-clospace : ((k , i) : ℤ × ℤ) → is-closeness-space (𝕋 (k , i) ³)
-𝕋 (k , i) ³-clospace
+CI3-ClosenessSpace
+ : ((k , i) : ℤ × ℤ) → is-closeness-space (CompactInterval3 (k , i))
+CI3-ClosenessSpace (k , i) 
  = Σ-clospace (CI3-criteria (k , i)) (CI3-prop (k , i))
      (discrete-seq-clospace (λ _ → ℤ-is-discrete))
 
-𝕋_³-ClosenessSpace : ((k , i) : ℤ × ℤ) → ClosenessSpace 𝓤₀
-𝕋 (k , i) ³-ClosenessSpace = 𝕋 (k , i) ³ , 𝕋 (k , i) ³-clospace
+𝟚ᴺ = ℕ → 𝟚
 
-C* : ((k , i) : ℤ × ℤ) → 𝕋 (k , i) ³ → 𝕋 (k , i) ³ → ℕ → 𝓤₀ ̇ -- TODO: extend to 𝕋
-C* (k , i) x y δ = pr₁ x δ ＝ pr₁ y δ
-{-
-open import TWA.Thesis.Chapter2.Sequences
+CI3-to-𝟚ᴺ
+ : ((k , i) : ℤ × ℤ) → CompactInterval3 (k , i) → 𝟚ᴺ
+CI3-to-𝟚ᴺ (k , i) (χ , b₀ , bₛ) 0
+ with b₀
+... | inl dL = ₀
+... | inr dR = ₁
+CI3-to-𝟚ᴺ (k , i) (χ , b₀ , bₛ) (succ n)
+ with bₛ n
+... | inl dL = ₀
+... | inr dR = ₁
 
-above-unique : (n : ℤ) → ∃! m ꞉ ℤ , n below-split m
-above-unique n = ({!!} , {!!}) , {!!}
+𝟚-to-down : (a : 𝟚) → (ℤ → ℤ)
+𝟚-to-down ₀ = downLeft
+𝟚-to-down ₁ = downRight
 
-above-unique' : (n m o : ℤ) → n below-split m → n below-split o → m ＝ o
-above-unique' n m o (inl x) (inl x₁)
- = {!!}
-above-unique' n m o (inl x) (inr x₁) = {!!}
-above-unique' n m o (inr x) (inl x₁) = {!!}
-above-unique' n m o (inr x) (inr x₁) = {!!}
+𝟚-to-down-is-below : (a : 𝟚) (k : ℤ) → 𝟚-to-down a k split-below k
+𝟚-to-down-is-below ₀ k = inl refl
+𝟚-to-down-is-below ₁ k = inr refl
 
-open import Naturals.Addition renaming (_+_ to _+'_)
-open import Naturals.Properties
-
-C*-mono : ((k , i) : ℤ × ℤ)
-        → (x y : 𝕋 (k , i) ³)
-        → (δ : ℕ)
-        → C* (k , i) x y (succ δ)
-        → C* (k , i) x y δ
-C*-mono (k , i) x y δ Cxy
- = above-unique' (pr₁ x (succ δ)) (pr₁ x δ) (pr₁ y δ)
-     (pr₂ (pr₂ x) δ)
-     (transport (_below-split pr₁ y δ) (Cxy ⁻¹) (pr₂ (pr₂ y) δ))
-
-C*-ext'' : ((k , i) : ℤ × ℤ)
-         → (x y : 𝕋 (k , i) ³)
-         → (δ : ℕ)
-         → C* (k , i) x y δ
-         → (n m : ℕ)
-         → n +' m ＝ δ
-         → pr₁ x n ＝ pr₁ y n
-C*-ext'' (k , i) x y δ Cxy .δ zero refl = Cxy
-C*-ext'' (k , i) x y (succ δ) Cxy n (succ m) n≤δ
- = C*-ext'' (k , i) x y δ
-     (C*-mono (k , i) x y δ Cxy) n m (succ-lc n≤δ)
-
-C*-ext' : ((k , i) : ℤ × ℤ)
-       → (x y : 𝕋 (k , i) ³)
-       → (δ : ℕ)
-       → C* (k , i) x y δ ⇔ ((pr₁ x) ∼ⁿ (pr₁ y)) (succ δ)
-pr₁ (C*-ext' (k , i) x y δ) xδ＝yδ n n<sδ
- = C*-ext'' (k , i) x y δ xδ＝yδ n (pr₁ sub)
-     (addition-commutativity n (pr₁ sub) ∙ pr₂ sub)
+𝟚ᴺ-to-CI3 : ((k , i) : ℤ × ℤ) → 𝟚ᴺ → CompactInterval3 (k , i)
+𝟚ᴺ-to-CI3 (k , i) α = χ , b₀ , bₛ
  where
-   sub = subtraction n δ n<sδ
-pr₂ (C*-ext' (k , i) x y δ) f = f δ (<-succ δ)
+  χ  : ℕ → ℤ
+  χ 0        = 𝟚-to-down (α 0) k
+  χ (succ n) = 𝟚-to-down (α (succ n)) (χ n)
+  b₀ : χ 0 split-below k
+  b₀ = 𝟚-to-down-is-below (α 0) k
+  bₛ : (n : ℕ) → χ (succ n) split-below χ n
+  bₛ n = 𝟚-to-down-is-below (α (succ n)) (χ n)
 
--- This is the last result I'll prove in Agda!
-C*-ext : ((k , i) : ℤ × ℤ)
-       → (x y : 𝕋 (k , i) ³)
-       → (δ : ℕ)
-       → C* (k , i) x y δ ⇔ C 𝕋 (k , i) ³-ClosenessSpace δ x y
-pr₁ (C*-ext (k , i) x y δ) xδ＝yδ n i⊏δ
- = 𝟚-decidable₁ {!!} {!!}
-pr₂ (C*-ext (k , i) x y δ) = {!!}
--}
+CompactInterval2-cantor
+ : ((k , i) : ℤ × ℤ) → CompactInterval3 (k , i) ≃ 𝟚ᴺ
+CompactInterval2-cantor (k , i)
+ = qinveq (CI3-to-𝟚ᴺ (k , i)) (𝟚ᴺ-to-CI3 (k , i) , η , μ)
+ where
+  η : (𝟚ᴺ-to-CI3 (k , i)) ∘ (CI3-to-𝟚ᴺ (k , i)) ∼ id
+  η (χ , b₀ , bₛ)
+   = to-subtype-＝ (CI3-prop (k , i)) (dfunext (fe _ _) γ)
+   where
+    χ' = pr₁ (𝟚ᴺ-to-CI3 (k , i) (CI3-to-𝟚ᴺ (k , i) (χ , b₀ , bₛ))) 
+    γ : χ' ∼ χ
+    γ zero = γ' b₀ refl
+     where
+      γ' : (b₀' : χ 0 split-below k) → b₀ ＝ b₀' → χ' 0 ＝ χ 0
+      γ' b₀' e with b₀'
+      γ' b₀' refl | inl dL = dL ⁻¹
+      γ' b₀' refl | inr dR = dR ⁻¹
+    γ (succ n) with bₛ n
+    ... | inl dL = ap (_ℤ+ χ' n) (γ n)
+                 ∙ ap (χ n ℤ+_ ) (γ n)
+                 ∙ dL ⁻¹ 
+    ... | inr dR = ap (succℤ ∘ succℤ)
+                     (ap (_ℤ+ χ' n) (γ n)
+                     ∙ ap (χ n ℤ+_ ) (γ n))
+                 ∙ dR ⁻¹
+  μ : (CI3-to-𝟚ᴺ (k , i)) ∘ (𝟚ᴺ-to-CI3 (k , i)) ∼ id
+  μ α = dfunext (fe _ _) γ
+   where
+    α' = 𝟚ᴺ-to-CI3 (k , i) α
+    γ : CI3-to-𝟚ᴺ (k , i) α' ∼ α
+    γ 0 with 𝟚-to-down-is-below (α 0) k | 𝟚-possibilities (α 0)
+    ... | inl dL | inl ₀' = ₀' ⁻¹
+    ... | inr dR | inr ₁' = ₁' ⁻¹
+    ... | inl dL | inr ₁'
+     = 𝟘-elim (downLeft≠downRight k k refl
+         (dL ⁻¹ ∙ ap (λ a → 𝟚-to-down a k) ₁'))
+    ... | inr dR | inl ₀'
+     = 𝟘-elim (downLeft≠downRight k k refl
+         (ap (λ a → 𝟚-to-down a k) (₀' ⁻¹) ∙ dR))
+    γ (succ n) with 𝟚-to-down-is-below (α (succ n)) (pr₁ α' n)
+                  | 𝟚-possibilities (α (succ n))
+    ... | inl dL | inl ₀' = ₀' ⁻¹
+    ... | inr dR | inr ₁' = ₁' ⁻¹
+    ... | inl dL | inr ₁'
+     = 𝟘-elim (downLeft≠downRight (pr₁ α' n) (pr₁ α' n) refl
+         (dL ⁻¹ ∙ ap (λ a → 𝟚-to-down a (pr₁ α' n)) ₁'))
+    ... | inr dR | inl ₀'
+     = 𝟘-elim (downLeft≠downRight (pr₁ α' n) (pr₁ α' n) refl
+         (ap (λ a → 𝟚-to-down a (pr₁ α' n)) (₀' ⁻¹) ∙ dR))
 ```

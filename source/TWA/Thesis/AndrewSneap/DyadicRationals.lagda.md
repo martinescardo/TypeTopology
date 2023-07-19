@@ -17,7 +17,7 @@ open import UF.Miscelanea
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
-open import TWA.Thesis.Chapter5.PLDIPrelude
+open import TWA.Thesis.Chapter5.Integers
 
 module TWA.Thesis.AndrewSneap.DyadicRationals where
 ```

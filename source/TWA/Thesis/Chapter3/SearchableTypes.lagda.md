@@ -1,5 +1,6 @@
-```agda
+# Uniformly continuously searchable closeness spaces
 
+```agda
 {-# OPTIONS --without-K --exact-split --safe #-}
 
 open import MLTT.Spartan
@@ -10,13 +11,21 @@ open import UF.Equiv
 open import TypeTopology.DiscreteAndSeparated
 open import UF.Miscelanea
 open import MLTT.Two-Properties
-open import TWA.Thesis.Chapter2.FiniteDiscrete
+open import Fin.Type
+open import Fin.Bishop
+
+open import TWA.Thesis.Chapter2.Finite
 
 module TWA.Thesis.Chapter3.SearchableTypes (fe : FunExt) where
 
 open import TWA.Thesis.Chapter3.ClosenessSpaces fe
+ hiding (decidable-predicate;decidable-uc-predicate)
 open import TWA.Thesis.Chapter3.ClosenessSpaces-Examples fe
+```
 
+## Searchable types
+
+```
 decidable-predicate : (𝓦 : Universe) → 𝓤 ̇ → 𝓤 ⊔ 𝓦 ⁺  ̇
 decidable-predicate 𝓦 X
  = Σ p ꞉ (X → Ω 𝓦) , is-complemented (λ x → (p x) holds)
@@ -41,19 +50,19 @@ searchable-pointed 𝓦 X Sx = pr₁ (Sx ((λ _ → ⊤Ω) , (λ _ → inl ⋆))
   S : (Σ x ꞉ 𝟙 , p x holds) → p ⋆ holds
   S  (⋆ , p⋆) = p⋆
 
-+𝟘-searchable
- : {X : 𝓤 ̇ } → searchable 𝓦 X → searchable 𝓦 (X + 𝟘 {𝓥})
-+𝟘-searchable {𝓤} {𝓦} {𝓥} {X} Sx (p , d)
- = inl x₀ , γ
+𝟘+-searchable
+ : {X : 𝓤 ̇ } → searchable 𝓦 X → searchable 𝓦 (𝟘 {𝓥} + X)
+𝟘+-searchable {𝓤} {𝓦} {𝓥} {X} Sx (p , d)
+ = inr x₀ , γ
  where
   px : decidable-predicate 𝓦 X
-  px = p ∘ inl , d ∘ inl
+  px = p ∘ inr , d ∘ inr
   x₀ : X
   x₀ = pr₁ (Sx px)
   γx : (Σ x ꞉ X , (pr₁ px x holds)) → pr₁ px x₀ holds
   γx = pr₂ (Sx px)
-  γ : (Σ x ꞉ X + 𝟘 , (p x holds)) → pr₁ px x₀ holds
-  γ (inl x , pix) = γx (x , pix)
+  γ : (Σ x ꞉ 𝟘 + X , (p x holds)) → pr₁ px x₀ holds
+  γ (inr x , pix) = γx (x , pix)
 
 +-searchable : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
              → searchable 𝓦 X
@@ -82,10 +91,10 @@ searchable-pointed 𝓦 X Sx = pr₁ (Sx ((λ _ → ⊤Ω) , (λ _ → inl ⋆))
   γ ¬px₀ (inl x , pix) = 𝟘-elim (¬px₀ (γx (x , pix)))
   γ ¬px₀ (inr y , piy) = γy (y , piy)
 
-𝔽-searchable : (n : ℕ) → 𝔽 n → searchable 𝓦 (𝔽 n)
-𝔽-searchable 1 _ = +𝟘-searchable 𝟙-searchable
-𝔽-searchable (succ (succ n)) _
- = +-searchable 𝟙-searchable (𝔽-searchable (succ n) (inl ⋆))
+Fin-searchable : (n : ℕ) → Fin n → searchable 𝓦 (Fin n)
+Fin-searchable 1 _ = 𝟘+-searchable 𝟙-searchable
+Fin-searchable (succ (succ n)) _
+ = +-searchable (Fin-searchable (succ n) 𝟎) 𝟙-searchable
 
 equivs-preserve-searchability
  : {X : 𝓤  ̇ } {Y : 𝓥  ̇}
@@ -111,13 +120,13 @@ equivs-preserve-searchability {𝓤} {𝓥} {𝓦} {X} {Y}
  : {X : 𝓤  ̇ } {Y : 𝓥 ̇ } → X ≃ Y → searchable 𝓦 X → searchable 𝓦 Y
 ≃-searchable (f , e) = equivs-preserve-searchability f e
              
-finite-discrete-searchable : {X : 𝓤 ̇ }
-                           → finite-discrete X
-                           → X
-                           → searchable 𝓦 X
-finite-discrete-searchable (0 , _ , (g , _) , _) x = 𝟘-elim (g x)
-finite-discrete-searchable (succ n , e) x
- = ≃-searchable e (𝔽-searchable (succ n) (inl ⋆))
+finite-searchable : {X : 𝓤 ̇ }
+                  → finite-linear-order X
+                  → X
+                  → searchable 𝓦 X
+finite-searchable (0 , (g , _)) x = 𝟘-elim (g x)
+finite-searchable (succ n , e) x
+ = ≃-searchable (≃-sym e) (Fin-searchable (succ n) 𝟎) 
 
 ×-searchable : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
              → searchable 𝓦 X
@@ -142,7 +151,11 @@ finite-discrete-searchable (succ n , e) x
   xy₀ = x₀ , y₀ x₀
   γ : Σ (x , y) ꞉ X × Y , p (x , y) holds → p (x₀ , y₀ x₀) holds
   γ ((x , y) , pxy) = γx (x , (γy x (y , pxy)))
+```
 
+## Cantor searchability is LPO
+
+```
 LPO : 𝓤₀  ̇
 LPO = (α : ℕ → 𝟚) → ((n : ℕ) → α n ＝ ₀) + (Σ n ꞉ ℕ , α n ＝ ₁)
 
@@ -192,7 +205,11 @@ LPO-implies-ℕ-searchability {𝓦} f (p , d) = n , γ
    = 𝟘-elim (zero-is-not-one
               (Πα₀ n ⁻¹ ∙ pr₂ (pr₁ (pr₂ (decidable-to-𝟚 (d n)))) pn))
   ... | inr (i , αi＝₁) = pr₁ (pr₁ (pr₂ (decidable-to-𝟚 (d i)))) αi＝₁
+```
 
+## Uniformly continuously searchable closeness spaces
+
+```
 decidable-uc-predicate-with-mod
  : (𝓦 : Universe) → ClosenessSpace 𝓤 → ℕ → 𝓤 ⊔ 𝓦 ⁺  ̇
 decidable-uc-predicate-with-mod 𝓦 X δ
@@ -247,7 +264,6 @@ csearchable-pointed
 csearchable-pointed 𝓦 X Sx
  = pr₁ (Sx (((λ _ → ⊤Ω) , (λ _ → inl ⋆)) , 0 , λ _ _ _ → id))
 
-
 totally-bounded-csearchable : (X : ClosenessSpace 𝓤)
                             → ⟨ X ⟩
                             → (t : totally-bounded X 𝓤')
@@ -263,12 +279,12 @@ totally-bounded-csearchable {𝓤} {𝓤'} {𝓦} X x t ((p , d) , δ , ϕ)
   h  = pr₁ (pr₂ (pr₁ (pr₂ (t δ))))
   η  : (x : ⟨ X ⟩) → C X δ x (g (h x))
   η  = pr₂ (pr₂ (pr₁ (pr₂ (t δ))))
-  f  : finite-discrete X'
+  f  : finite-linear-order X'
   f  = pr₂ (pr₂ (t δ))
   p' : decidable-predicate 𝓦 X'
   p' = p ∘ g , d ∘ g
   Sx : searchable 𝓦 X'
-  Sx = finite-discrete-searchable f (h x)
+  Sx = finite-searchable f (h x)
   x'₀ : X'
   x'₀ = pr₁ (Sx p')
   γ' : (Σ x' ꞉ X' , p (g x') holds) → p (g x'₀) holds

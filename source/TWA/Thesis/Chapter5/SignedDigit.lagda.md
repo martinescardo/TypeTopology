@@ -1,56 +1,60 @@
+# Ternary signed-digit encodings
+
 ```agda
 {-# OPTIONS --without-K --exact-split --safe #-}
 
 open import MLTT.Spartan
 open import TypeTopology.DiscreteAndSeparated
 open import UF.Equiv
+open import Fin.Type
+open import Fin.Bishop
+open import UF.Subsingletons
 
-open import TWA.Thesis.Chapter2.FiniteDiscrete
+open import TWA.Thesis.Chapter2.Finite
 open import TWA.Thesis.Chapter2.Sequences
 
 module TWA.Thesis.Chapter5.SignedDigit where
+```
 
--- Definition 5.2.5
+## Definition
+
+```
 data 𝟛 : 𝓤₀ ̇ where
   −1 O +1 : 𝟛
 
-𝟛-finite : finite-discrete 𝟛
-pr₁ 𝟛-finite = 3
-pr₂ 𝟛-finite = qinveq g (h , η , μ)
+𝟛-is-finite : finite-linear-order 𝟛
+𝟛-is-finite = 3 , qinveq g (h , η , μ)
  where
-  g : 𝔽 3 → 𝟛
-  g (inl ⋆)             = −1
-  g (inr (inl ⋆))       =  O
-  g (inr (inr (inl ⋆))) = +1
-  h : 𝟛 → 𝔽 3
-  h −1 = inl ⋆
-  h  O = inr (inl ⋆)
-  h +1 = inr (inr (inl ⋆))
-  η : (λ x → h (g x)) ∼ (λ x → x)
-  η (inl ⋆)             = refl
-  η (inr (inl ⋆))       = refl
-  η (inr (inr (inl ⋆))) = refl
-  μ : (λ x → g (h x)) ∼ (λ x → x)
-  μ −1 = refl
-  μ  O = refl
-  μ +1 = refl
-
+  g : 𝟛 → Fin 3
+  g −1 = 𝟎
+  g  O = 𝟏
+  g +1 = 𝟐
+  h : Fin 3 → 𝟛
+  h 𝟎 = −1
+  h 𝟏 =  O
+  h 𝟐 = +1
+  η : h ∘ g ∼ id
+  η −1 = refl
+  η  O = refl
+  η +1 = refl
+  μ : g ∘ h ∼ id
+  μ 𝟎 = refl
+  μ 𝟏 = refl
+  μ 𝟐 = refl
+  
 𝟛-is-discrete : is-discrete 𝟛
-𝟛-is-discrete −1 −1 = inl refl
-𝟛-is-discrete −1 O = inr (λ ())
-𝟛-is-discrete −1 +1 = inr (λ ())
-𝟛-is-discrete O −1 = inr (λ ())
-𝟛-is-discrete O O = inl refl
-𝟛-is-discrete O +1 = inr (λ ())
-𝟛-is-discrete +1 −1 = inr (λ ())
-𝟛-is-discrete +1 O = inr (λ ())
-𝟛-is-discrete +1 +1 = inl refl
+𝟛-is-discrete = finite-is-discrete 𝟛-is-finite
 
--- Definition 5.2.6
+𝟛-is-set : is-set 𝟛
+𝟛-is-set = finite-is-set 𝟛-is-finite
+
 𝟛ᴺ : 𝓤₀ ̇ 
 𝟛ᴺ = ℕ → 𝟛
+```
 
--- Definition 5.2.11
+## Negation
+
+```
 flip : 𝟛 → 𝟛
 flip −1 = +1
 flip  O =  O
@@ -58,15 +62,17 @@ flip +1 = −1
 
 neg : 𝟛ᴺ → 𝟛ᴺ
 neg = map flip
+```
 
--- Definition 5.2.14
+## Binary midpoint
+
+```
 data 𝟝 : 𝓤₀ ̇ where
   −2 −1 O +1 +2 : 𝟝
 
 𝟝ᴺ : 𝓤₀ ̇
 𝟝ᴺ = ℕ → 𝟝
 
--- Definition 5.2.15
 _+𝟛_ : 𝟛 → 𝟛 → 𝟝
 (−1 +𝟛 −1) = −2
 (−1 +𝟛  O) = −1
@@ -81,7 +87,6 @@ _+𝟛_ : 𝟛 → 𝟛 → 𝟝
 add2 : 𝟛ᴺ → 𝟛ᴺ → 𝟝ᴺ
 add2 = zipWith _+𝟛_
 
--- Definition 5.2.16
 div2-aux : 𝟝 → 𝟝 → 𝟛 × 𝟝
 div2-aux −2  b = −1 ,  b
 div2-aux  O  b =  O ,  b
@@ -101,23 +106,24 @@ div2 : 𝟝ᴺ → 𝟛ᴺ
 div2 α 0 = a
  where
   a = pr₁ (div2-aux (α 0) (α 1))
-div2 α (succ n) = div2 (b ∶∶ x) n
+div2 α (succ n) = div2 (b ∷ x) n
  where
   b = pr₂ (div2-aux (α 0) (α 1))
   x = tail (tail α)
 
--- Definition 5.2.17
 mid : 𝟛ᴺ → 𝟛ᴺ → 𝟛ᴺ
 mid α β = div2 (add2 α β)
+```
 
--- Definition 5.2.23
+## Infinitary midpoint
+
+```
 data 𝟡 : 𝓤₀ ̇ where
   −4 −3 −2 −1 O +1 +2 +3 +4 : 𝟡
 
 𝟡ᴺ : 𝓤₀ ̇ 
 𝟡ᴺ = ℕ → 𝟡
 
--- Definition 5.2.24
 _+𝟝_ : 𝟝 → 𝟝 → 𝟡
 (−2 +𝟝 −2) = −4
 (−2 +𝟝 −1) = −3
@@ -145,7 +151,6 @@ _+𝟝_ : 𝟝 → 𝟝 → 𝟡
 (+2 +𝟝 +1) = +3
 (+2 +𝟝 +2) = +4
 
--- Definition 5.2.25
 div4-aux : 𝟡 → 𝟡 → 𝟛 × 𝟡
 div4-aux −4    = −1 ,_
 div4-aux  O    =  O ,_
@@ -209,27 +214,26 @@ div4 : 𝟡ᴺ → 𝟛ᴺ
 div4 α 0 = a
  where
   a = pr₁ (div4-aux (α 0) (α 1))
-div4 α (succ n) = div4 (b ∶∶ x) n
+div4 α (succ n) = div4 (b ∷ x) n
  where
   b = pr₂ (div4-aux (α 0) (α 1))
   x = tail (tail α)
 
--- Definition 5.2.28
 bigMid' : (ℕ → 𝟛ᴺ) → 𝟡ᴺ
 bigMid' zs 0 = (x 0 +𝟛 x 0) +𝟝 (x 1 +𝟛 y 0)
  where x  = zs 0
        y  = zs 1
-bigMid' zs (succ n) = bigMid' (mid (tail (tail x)) (tail y) ∶∶ tail (tail zs)) n
+bigMid' zs (succ n) = bigMid' (mid (tail (tail x)) (tail y) ∷ tail (tail zs)) n
  where x = zs 0
        y = zs 1
 
 bigMid : (ℕ → 𝟛ᴺ) → 𝟛ᴺ
 bigMid = div4 ∘ bigMid'
+```
 
-repeat : {X : 𝓤 ̇ } → X → ℕ → X
-repeat α _ = α
+## Multiplication
 
--- Definition 5.2.34
+```
 _*𝟛_ : 𝟛 → 𝟛 → 𝟛
 (−1 *𝟛 x) = flip x
 ( O *𝟛 x) = O
@@ -238,7 +242,6 @@ _*𝟛_ : 𝟛 → 𝟛 → 𝟛
 digitMul : 𝟛 → 𝟛ᴺ → 𝟛ᴺ
 digitMul a = map (a *𝟛_)
 
--- Definition 5.2.35
 mul : 𝟛ᴺ → 𝟛ᴺ → 𝟛ᴺ
 mul x y = bigMid (zipWith digitMul x (repeat y))
 ```

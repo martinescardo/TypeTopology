@@ -10,7 +10,7 @@ open import UF.Powerset
 open import UF.Subsingletons
 
 open import TWA.Thesis.AndrewSneap.DyadicRationals
-open import TWA.Thesis.Chapter5.PLDIPrelude
+open import TWA.Thesis.Chapter5.Integers
 
 module TWA.Thesis.AndrewSneap.DyadicReals
   (pe : PropExt)

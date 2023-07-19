@@ -1,48 +1,55 @@
+# Exact Real Search: Formalised Optimisation and Regression in Constructive Univalent Mathematics
+
 ```agda
 module TWA.Thesis.index where
+```
 
--- Prelude files
-open import TWA.Thesis.Chapter2.FiniteDiscrete
-open import TWA.Thesis.Chapter2.Vectors
+## Chapter 2
+
+```
+open import TWA.Thesis.Chapter2.Finite
+open import TWA.Thesis.Chapter2.Vectors 
 open import TWA.Thesis.Chapter2.Sequences
-open import TWA.Thesis.Chapter5.PLDIPrelude -- TODO
+```
 
--- Chapter 3.2
+## Chapter 3
+
+```
 open import TWA.Thesis.Chapter3.ClosenessSpaces
 open import TWA.Thesis.Chapter3.ClosenessSpaces-Examples
-
--- Chapter 3.1 + 3.3
 open import TWA.Thesis.Chapter3.SearchableTypes
 open import TWA.Thesis.Chapter3.SearchableTypes-Examples
+open import TWA.Thesis.Chapter3.PredicateEquality
+```
 
--- Chapter 4.1.1
+## Chapter 4
+
+```
 open import TWA.Thesis.Chapter4.ApproxOrder
 open import TWA.Thesis.Chapter4.ApproxOrder-Examples
-
--- Chapter 4.1.3
 open import TWA.Thesis.Chapter4.GlobalOptimisation
+open import TWA.Thesis.Chapter4.ParametricRegression
+```
 
--- Chapter 4.2
-open import TWA.Thesis.Chapter4.ConvergenceTheorems
+## Chapter 5
 
--- Chapter 5.1
+```
 open import TWA.Thesis.Chapter5.IntervalObject
 open import TWA.Thesis.Chapter5.IntervalObjectApproximation
-
--- Chapter 5.2
 open import TWA.Thesis.Chapter5.SignedDigit
-open import TWA.Thesis.Chapter5.SignedDigitIntervalObject -- TODO
-
--- Chapter 5.3
--- open import TWA.Thesis.Chapter5.BoehmVerification
+open import TWA.Thesis.Chapter5.SignedDigitIntervalObject
+open import TWA.Thesis.Chapter5.BoehmVerification
 open import TWA.Thesis.Chapter5.BelowAndAbove
+open import TWA.Thesis.Chapter5.Integers
+```
 
--- Chapter 6.1
+## Chapter 6
 
+```
+open import TWA.Thesis.Chapter6.SequenceContinuity
+open import TWA.Thesis.Chapter6.SignedDigitSearch -- *
+open import TWA.Thesis.Chapter6.SignedDigitOrder -- *
 open import TWA.Thesis.Chapter6.SignedDigitContinuity
-open import TWA.Thesis.Chapter6.SignedDigitSearch
-open import TWA.Thesis.Chapter6.SignedDigitExamples
-open import TWA.Thesis.Chapter6.ZeroNormalisation
-open import TWA.Thesis.Chapter6.Main
-
+open import TWA.Thesis.Chapter6.SignedDigitExamples -- *
+open import TWA.Thesis.Chapter6.Main -- *
 ```

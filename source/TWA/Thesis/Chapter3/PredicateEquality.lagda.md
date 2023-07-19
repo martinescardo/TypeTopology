@@ -1,5 +1,6 @@
-```agda
+# Equality of uniformly continuous predicates
 
+```agda
 {-# OPTIONS --without-K --exact-split --safe #-}
 
 open import MLTT.Spartan
@@ -12,6 +13,7 @@ module TWA.Thesis.Chapter3.PredicateEquality
   (fe : FunExt) (pe : PropExt) where
 
 open import TWA.Thesis.Chapter3.SearchableTypes fe
+ hiding (decidable-predicate;decidable-uc-predicate)
 open import TWA.Thesis.Chapter3.ClosenessSpaces fe
 
 predicate-＝ : {X : 𝓤 ̇ }
