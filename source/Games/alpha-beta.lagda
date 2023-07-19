@@ -13,7 +13,7 @@ alternating quantifiers min and max (or max and min).
 
 Part 0 (module minimax). In order to make the calculation of the
 optimal outcome more efficient, we assume that the types of moves in
-the game tree Xt are listable. Moreover, we add alpha-beta pruned
+the game tree Xt are listed. Moreover, we add alpha-beta pruned
 selection functions (indicated by the symbol "†").
 
 Part 1. We transform such a minimax game G into a game G' so that we
@@ -37,7 +37,6 @@ open import MLTT.Spartan hiding (J)
 open import MLTT.Fin
 open import Games.FiniteHistoryDependent
 open import Games.TypeTrees
-open import Games.Structure
 open import Games.K
 open import Games.J
 open import MLTT.Athenian
@@ -58,7 +57,7 @@ module minimax
         (_<_ : R → R → Type)
         (δ : (r s : R) → is-decidable (r < s))
         (Xt : 𝕋)
-        (Xt-is-listable⁺ : structure listable⁺ Xt)
+        (Xt-is-listed⁺ : structure listed⁺ Xt)
         (q : Path Xt → R)
        where
 
@@ -90,7 +89,7 @@ Part 0.
 
  open K-definitions R
 
- Min Max : {X : Type} → listable⁺ X → K X
+ Min Max : {X : Type} → listed⁺ X → K X
  Min (x₀ , xs , _) p = foldr (λ x → min (p x)) (p x₀) xs
  Max (x₀ , xs , _) p = foldr (λ x → max (p x)) (p x₀) xs
 
@@ -105,7 +104,7 @@ in an alternating fashion.
 \begin{code}
 
  minmax maxmin : (Xt : 𝕋)
-               → structure listable⁺ Xt
+               → structure listed⁺ Xt
                → 𝓚 R Xt
  minmax []       ⟨⟩        = ⟨⟩
  minmax (X ∷ Xf) (ℓ :: ss) = Min ℓ :: (λ x → maxmin (Xf x) (ss x))
@@ -114,7 +113,7 @@ in an alternating fashion.
  maxmin (X ∷ Xf) (ℓ :: ss) = Max ℓ :: (λ x → minmax (Xf x) (ss x))
 
  G-quantifiers : 𝓚 R Xt
- G-quantifiers = maxmin Xt Xt-is-listable⁺
+ G-quantifiers = maxmin Xt Xt-is-listed⁺
 
 \end{code}
 
@@ -143,7 +142,7 @@ Now we define selection functions for this game.
 
  open J-definitions R
 
- ArgMin ArgMax : {X : Type} → listable⁺ X → J X
+ ArgMin ArgMax : {X : Type} → listed⁺ X → J X
  ArgMin (x₀ , xs , _) p = foldr (argmin p) x₀ xs
  ArgMax (x₀ , xs , _) p = foldr (argmax p) x₀ xs
 
@@ -158,7 +157,7 @@ quantifiers in an alternating fashion.
 \begin{code}
 
  argminmax argmaxmin : (Xt : 𝕋)
-                     → structure listable⁺ Xt
+                     → structure listed⁺ Xt
                      → 𝓙 R Xt
  argminmax []       ⟨⟩        = ⟨⟩
  argminmax (X ∷ Xf) (ℓ :: ℓf) = ArgMin ℓ :: (λ x → argmaxmin (Xf x) (ℓf x))
@@ -167,13 +166,13 @@ quantifiers in an alternating fashion.
  argmaxmin (X ∷ Xf) (ℓ :: ℓf) = ArgMax ℓ :: (λ x → argminmax (Xf x) (ℓf x))
 
  G-selections : 𝓙 R Xt
- G-selections = argmaxmin Xt Xt-is-listable⁺
+ G-selections = argmaxmin Xt Xt-is-listed⁺
 
  G-strategy : Strategy R Xt
  G-strategy = selection-strategy R G-selections q
 
  optimal-play : Path Xt
- optimal-play = J-sequence R G-selections q
+ optimal-play = sequenceᴶ R G-selections q
 
 \end{code}
 
@@ -181,7 +180,7 @@ TODO. Prove the lemma formulated as an assumption of the above module (easy).
 
 \begin{code}
 
- module _ (lemma : _are-selections-of_ R G-selections G-quantifiers)
+ module _ (lemma : _Attains_ R G-selections G-quantifiers)
           (fe : Fun-Ext)
         where
 
@@ -251,14 +250,14 @@ reader monad, to speed-up the computation of the optimal play.
   ρ : T R → R
   ρ = structure-map 𝓡
 
-  open import Games.FiniteHistoryDependentMonadic
+  open import Games.FiniteHistoryDependentTransformer
                fe
                (Reader AB)
                R
                𝓡
 
   argminmax† argmaxmin† : (Xt : 𝕋)
-                        → structure listable⁺ Xt
+                        → structure listed⁺ Xt
                         → 𝓙𝓣 Xt
   argminmax† []       ⟨⟩                    = ⟨⟩
   argminmax† (X ∷ Xf) ((x₀ , xs , _) :: ss) =
@@ -271,10 +270,10 @@ reader monad, to speed-up the computation of the optimal play.
    :: (λ x → argminmax† (Xf x) (ss x))
 
   G-selections† : 𝓙𝓣 Xt
-  G-selections† = argmaxmin† Xt Xt-is-listable⁺
+  G-selections† = argmaxmin† Xt Xt-is-listed⁺
 
   optimal-play† : Path Xt
-  optimal-play† = JT-sequence G-selections† q† (-∞ , ∞)
+  optimal-play† = sequenceᴶᵀ G-selections† q† (-∞ , ∞)
 
 \end{code}
 
@@ -294,12 +293,12 @@ wikipedia-tree =
                        λ _ → []
 
 
-wikipedia-tree-is-listable⁺ : structure listable⁺ wikipedia-tree
-wikipedia-tree-is-listable⁺ =
- Fin-listable⁺ 2 ,
-  λ _ → Fin-listable⁺ 1 ,
-         λ _ → Fin-listable⁺ 1 ,
-                λ _ → Fin-listable⁺ 2 ,
+wikipedia-tree-is-listed⁺ : structure listed⁺ wikipedia-tree
+wikipedia-tree-is-listed⁺ =
+ Fin-listed⁺ 2 ,
+  λ _ → Fin-listed⁺ 1 ,
+         λ _ → Fin-listed⁺ 1 ,
+                λ _ → Fin-listed⁺ 2 ,
                        λ _ → ⟨⟩
 
 wikipedia-q : Path wikipedia-tree → ℕ
@@ -324,7 +323,7 @@ module _ where
        _<ℕ_
        <-decidable
        wikipedia-tree
-       wikipedia-tree-is-listable⁺
+       wikipedia-tree-is-listed⁺
        wikipedia-q
 
  wikipedia-G : Game ℕ
@@ -359,7 +358,7 @@ module minimax'
         (_<_ : R → R → Type)
         (δ : (r s : R) → is-decidable (r < s))
         (Xt : 𝕋)
-        (Xt-is-listable⁺ : structure listable⁺ Xt)
+        (Xt-is-listed⁺ : structure listed⁺ Xt)
         (q : Path Xt → R)
        where
 
@@ -384,12 +383,12 @@ module minimax'
 
  open K-definitions R'
 
- Min' Max' : {X : Type} → listable⁺ X → K X
+ Min' Max' : {X : Type} → listed⁺ X → K X
  Min' (x₀ , xs , _) p = foldr (λ x → min' (p x)) (p x₀) xs
  Max' (x₀ , xs , _) p = foldr (λ x → max' (p x)) (p x₀) xs
 
  minmax' maxmin' : (Xt : 𝕋)
-                 → structure listable⁺ Xt
+                 → structure listed⁺ Xt
                  → 𝓚 R' Xt
  minmax' []       ⟨⟩        = ⟨⟩
  minmax' (X ∷ Xf) (ℓ :: ℓf) = Min' ℓ :: (λ x → maxmin' (Xf x) (ℓf x))
@@ -397,17 +396,17 @@ module minimax'
  maxmin' (X ∷ Xf) (ℓ :: ℓf) = Max' ℓ :: (λ x → minmax' (Xf x) (ℓf x))
 
  G' : Game R'
- G' = game Xt q' (maxmin' Xt Xt-is-listable⁺)
+ G' = game Xt q' (maxmin' Xt Xt-is-listed⁺)
 
 {- TODO.
 
  module _ where
 
-  open minimax R _<_ δ Xt Xt-is-listable⁺ q
+  open minimax R _<_ δ Xt Xt-is-listed⁺ q
 
   theorem' : optimal-outcome R' G'
-           ＝ (K-sequence R (maxmin Xt Xt-is-listable⁺) q ,
-              J-sequence R (argmaxmin Xt Xt-is-listable⁺) q)
+           ＝ (K-sequence R (maxmin Xt Xt-is-listed⁺) q ,
+              sequenceᴶ R (argmaxmin Xt Xt-is-listed⁺) q)
   theorem' = {!!}
 -}
 
@@ -426,7 +425,7 @@ wikipedia-G' = G'
         _<ℕ_
         <-decidable
         wikipedia-tree
-        wikipedia-tree-is-listable⁺
+        wikipedia-tree-is-listed⁺
         wikipedia-q
 
 wikipedia-optimal-outcome' : ℕ × Path wikipedia-tree
@@ -449,7 +448,7 @@ module minimax⋆
         (_<_ : R → R → Type)
         (δ : (r s : R) → is-decidable (r < s))
         (Xt : 𝕋)
-        (Xt-is-listable⁺ : structure listable⁺ Xt)
+        (Xt-is-listed⁺ : structure listed⁺ Xt)
         (q : Path Xt → R)
        where
 
@@ -518,7 +517,7 @@ module minimax⋆
               → (s , ys))
 
  minmax⋆ maxmin⋆ : (Xt : 𝕋)
-                 → structure listable⁺ Xt
+                 → structure listed⁺ Xt
                  → 𝓚 R⋆ Xt
  minmax⋆ []       ⟨⟩                    = ⟨⟩
  minmax⋆ (X ∷ Xf) ((x₀ , xs , _) :: ss) = (λ p → Min⋆ xs (p x₀ (-∞ , ∞)) p)
@@ -528,13 +527,13 @@ module minimax⋆
                                        :: (λ x → minmax⋆ (Xf x) (ss x))
 
  G⋆ : Game R⋆
- G⋆ = game Xt q⋆ (maxmin⋆ Xt Xt-is-listable⁺)
+ G⋆ = game Xt q⋆ (maxmin⋆ Xt Xt-is-listed⁺)
 
 {- TODO.
 
  module _ where
 
-  open minimax' R _<_ δ Xt Xt-is-listable⁺ q
+  open minimax' R _<_ δ Xt Xt-is-listed⁺ q
 
   theorem⋆₁ : pr₁ (optimal-outcome R⋆ G⋆ (-∞ , ∞)) ＝ pr₁ (optimal-outcome R' G')
   theorem⋆₁ = {!!}
@@ -554,7 +553,7 @@ wikipedia-G⋆ = G⋆
         _<ℕ_
         <-decidable
         wikipedia-tree
-        wikipedia-tree-is-listable⁺
+        wikipedia-tree-is-listed⁺
         wikipedia-q
 
 wikipedia-optimal-outcome⋆ : ℕ × ℕ → ℕ × Path wikipedia-tree
@@ -574,12 +573,12 @@ module _ {X : Type }
  perm-tree {succ n} v@(xs , _) = type-from-list xs
                                ∷ λ (_ , m) → perm-tree {n} (delete v m)
 
- perm-tree-is-listable⁺ : {n : ℕ}
+ perm-tree-is-listed⁺ : {n : ℕ}
                           (v : Vector' X n)
-                        → structure listable⁺ (perm-tree {n} v)
- perm-tree-is-listable⁺ {0}      ([]         , _) = ⟨⟩
- perm-tree-is-listable⁺ {succ n} (xs@(y ∷ _) , p) = ((y , in-head) , type-from-list-is-listable xs)
-                                                  :: λ (_ , m) → perm-tree-is-listable⁺ {n}
+                        → structure listed⁺ (perm-tree {n} v)
+ perm-tree-is-listed⁺ {0}      ([]         , _) = ⟨⟩
+ perm-tree-is-listed⁺ {succ n} (xs@(y ∷ _) , p) = ((y , in-head) , type-from-list-is-listed xs)
+                                                  :: λ (_ , m) → perm-tree-is-listed⁺ {n}
                                                                   (delete (xs , p) m)
 
 module tic-tac-toe where
@@ -594,8 +593,8 @@ module tic-tac-toe where
  TTT-tree : 𝕋
  TTT-tree = perm-tree all-moves
 
- TTT-tree-is-listable⁺ : structure listable⁺ TTT-tree
- TTT-tree-is-listable⁺ = perm-tree-is-listable⁺ all-moves
+ TTT-tree-is-listed⁺ : structure listed⁺ TTT-tree
+ TTT-tree-is-listed⁺ = perm-tree-is-listed⁺ all-moves
 
  R      = ℕ -- We use 0 (minimizer player wins) , 1 (draw) , 2 (maximizer player wins)
  Board  = List Move × List Move -- Moves of maximizer, respectively minimizer, player so far
@@ -650,7 +649,7 @@ module tic-tac-toe where
          _<ℕ_
          <-decidable
          TTT-tree
-         TTT-tree-is-listable⁺
+         TTT-tree-is-listed⁺
          TTT-q
 
  TTT-optimal-outcome : R
@@ -665,7 +664,7 @@ module tic-tac-toe where
          _<ℕ_
          <-decidable
          TTT-tree
-         TTT-tree-is-listable⁺
+         TTT-tree-is-listed⁺
          TTT-q
 
  TTT-optimal-outcome' : R × Path TTT-tree
@@ -681,7 +680,7 @@ module tic-tac-toe where
          _<ℕ_
          <-decidable
          TTT-tree
-         TTT-tree-is-listable⁺
+         TTT-tree-is-listed⁺
          TTT-q
 
  TTT-optimal-outcome⋆ : R × Path TTT-tree
@@ -704,7 +703,7 @@ module tic-tac-toe where
          _<ℕ_
          <-decidable
          TTT-tree
-         TTT-tree-is-listable⁺
+         TTT-tree-is-listed⁺
          TTT-q
 
  TTT-optimal-play† : Fun-Ext → Path TTT-tree
@@ -716,7 +715,7 @@ module tic-tac-toe where
          _<ℕ_
          <-decidable
          TTT-tree
-         TTT-tree-is-listable⁺
+         TTT-tree-is-listed⁺
          TTT-q
 
 module tic-tac-toe-variation where
@@ -734,8 +733,8 @@ module tic-tac-toe-variation where
  TTT-tree : 𝕋
  TTT-tree = perm-tree all-moves
 
- TTT-tree-is-listable⁺ : structure listable⁺ TTT-tree
- TTT-tree-is-listable⁺ = perm-tree-is-listable⁺ all-moves
+ TTT-tree-is-listed⁺ : structure listed⁺ TTT-tree
+ TTT-tree-is-listed⁺ = perm-tree-is-listed⁺ all-moves
 
  data Player : Type where
   X O : Player
@@ -816,7 +815,7 @@ module tic-tac-toe-variation where
          _<ℕ_
          <-decidable
          TTT-tree
-         TTT-tree-is-listable⁺
+         TTT-tree-is-listed⁺
          TTT-q
 
  TTT-optimal-outcome : R
@@ -831,7 +830,7 @@ module tic-tac-toe-variation where
          _<ℕ_
          <-decidable
          TTT-tree
-         TTT-tree-is-listable⁺
+         TTT-tree-is-listed⁺
          TTT-q
 
  TTT-optimal-outcome' : R × Path TTT-tree
@@ -847,7 +846,7 @@ module tic-tac-toe-variation where
          _<ℕ_
          <-decidable
          TTT-tree
-         TTT-tree-is-listable⁺
+         TTT-tree-is-listed⁺
          TTT-q
 
  TTT-optimal-outcome⋆ : R × Path TTT-tree
@@ -899,7 +898,7 @@ the tic-tac-toe board:
 
 \end{code}
 
-This tries to compute the optimal play suing selection functions
+This tries to compute an optimal play using selection functions
 without any optimization:
 
 \begin{code}

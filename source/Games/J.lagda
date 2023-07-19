@@ -89,10 +89,47 @@ module J-definitions (R : Type) where
  ηᴶ : {X : Type} → X → J X
  ηᴶ = η (𝕁 R)
 
- J-ext : {X Y : Type} → (X → J Y) → J X → J Y
- J-ext = ext (𝕁 R)
+ extᴶ : {X Y : Type} → (X → J Y) → J X → J Y
+ extᴶ = ext (𝕁 R)
 
- J-map : {X Y : Type} → (X → Y) → J X → J Y
- J-map = map (𝕁 R)
+ mapᴶ : {X Y : Type} → (X → Y) → J X → J Y
+ mapᴶ = map (𝕁 R)
+
+module JT-definitions
+        (𝓣 : Monad)
+        (R : Type)
+        (𝓐 : Algebra 𝓣 R)
+        (fe : Fun-Ext)
+       where
+
+ open import Games.K
+
+ open T-definitions 𝓣
+ open α-definitions 𝓣 R 𝓐
+ open K-definitions R
+
+ JT : Type → Type
+ JT = functor (𝕁-transf fe 𝓣 R)
+
+ ηᴶᵀ : {X : Type} → X → JT X
+ ηᴶᵀ = η (𝕁-transf fe 𝓣 R)
+
+ extᴶᵀ : {X Y : Type} → (X → JT Y) → JT X → JT Y
+ extᴶᵀ = ext (𝕁-transf fe 𝓣 R)
+
+ mapᴶᵀ : {X Y : Type} → (X → Y) → JT X → JT Y
+ mapᴶᵀ = map (𝕁-transf fe 𝓣 R)
+
+ _⊗ᴶᵀ_ : {X : Type} {Y : X → Type}
+       → JT X
+       → ((x : X) → JT (Y x))
+       → JT (Σ x ꞉ X , Y x)
+ _⊗ᴶᵀ_ = _⊗_ (𝕁-transf fe 𝓣 R)
+
+ overlineᵀ : {X : Type} → JT X → (X → T R) → R
+ overlineᵀ ε = λ p → α (extᵀ p (ε p))
+
+ _attainsᵀ_ : {X : Type} → JT X → K X → Type
+ _attainsᵀ_ {X} ε ϕ = (p : X → T R) → overlineᵀ ε p ＝ ϕ (α ∘ p)
 
 \end{code}

@@ -506,17 +506,17 @@ values other than 𝟘 and 𝟙:
 no-props-other-than-𝟘-or-𝟙 : propext 𝓤 → ¬ (Σ P ꞉ 𝓤 ̇ , is-prop P × (P ≠ 𝟘) × (P ≠ 𝟙))
 no-props-other-than-𝟘-or-𝟙 pe (P , i , f , g) = 𝟘-elim (φ u)
  where
-   u : ¬ P
-   u p = g l
-     where
-       l : P ＝ 𝟙
-       l = pe i 𝟙-is-prop unique-to-𝟙 (λ _ → p)
+  u : ¬ P
+  u p = g l
+   where
+    l : P ＝ 𝟙
+    l = pe i 𝟙-is-prop unique-to-𝟙 (λ _ → p)
 
-   φ : ¬¬ P
-   φ u = f l
-     where
-       l : P ＝ 𝟘
-       l = pe i 𝟘-is-prop (λ p → 𝟘-elim (u p)) 𝟘-elim
+  φ : ¬¬ P
+  φ u = f l
+   where
+    l : P ＝ 𝟘
+    l = pe i 𝟘-is-prop (λ p → 𝟘-elim (u p)) 𝟘-elim
 
 \end{code}
 
@@ -657,7 +657,6 @@ The type of truth values.
 
 _holds : Ω 𝓤 → 𝓤 ̇
 (P , i) holds = P
-
 
 holds-is-prop : (p : Ω 𝓤) → is-prop (p holds)
 holds-is-prop (P , i) = i

@@ -60,7 +60,7 @@ Selection-Strategy-TheoremJ : Fun-Ext
                             → is-optimal (Game-from-GameJ Γ) (strategyJ Γ)
 Selection-Strategy-TheoremJ fe Γ = γ
  where
-  δ : (Γ : GameJ) → (selections Γ) are-selections-of (quantifiers Γ)
+  δ : (Γ : GameJ) → (selections Γ) Attains (quantifiers Γ)
   δ (leaf r)        = ⟨⟩
   δ (branch X Xf ε) = (λ p → refl) , (λ x → δ (Xf x))
 

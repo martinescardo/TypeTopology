@@ -109,7 +109,7 @@ equivalences.
 open import UF.Powerset
 open import UF.EquivalenceExamples
 
-is-complemented-subset : {X : 𝓤 ̇  } → (X → Ω 𝓣) → 𝓤 ⊔ 𝓣 ̇
+is-complemented-subset : {X : 𝓤 ̇ } → (X → Ω 𝓣) → 𝓤 ⊔ 𝓣 ̇
 is-complemented-subset {𝓤} {𝓣} {X} A = (x : X) → is-decidable (x ∈ A)
 
 module _
@@ -118,7 +118,7 @@ module _
         (pe : propext 𝓣)
        where
 
- 𝟚-classifies-decidable-subsets : {X : 𝓤 ̇  }
+ 𝟚-classifies-decidable-subsets : {X : 𝓤 ̇ }
                                 → (X → 𝟚)
                                 ≃ (Σ A ꞉ (X → Ω 𝓣) , is-complemented-subset A)
  𝟚-classifies-decidable-subsets {X} =
@@ -130,7 +130,7 @@ module _
          (𝟚-is-the-type-of-decidable-propositions fe' pe)
 
  𝟚-classifies-decidable-subsets-values :
-   {X : 𝓤 ̇  }
+   {X : 𝓤 ̇ }
    (A : X → Ω 𝓣)
    (δ : is-complemented-subset A)
    (x : X)
@@ -169,7 +169,7 @@ Added by Tom de Jong in January 2022.
 
 \begin{code}
 
-all-types-are-¬¬-decidable : (X : 𝓤 ̇  ) → ¬¬ (is-decidable X)
+all-types-are-¬¬-decidable : (X : 𝓤 ̇ ) → ¬¬ (is-decidable X)
 all-types-are-¬¬-decidable X h = claim₂ claim₁
  where
   claim₁ : ¬ X
@@ -177,7 +177,7 @@ all-types-are-¬¬-decidable X h = claim₂ claim₁
   claim₂ : ¬¬ X
   claim₂ nx = h (inr nx)
 
-¬¬-stable-if-decidable : (X : 𝓤 ̇  ) → is-decidable X → ¬¬-stable X
+¬¬-stable-if-decidable : (X : 𝓤 ̇ ) → is-decidable X → ¬¬-stable X
 ¬¬-stable-if-decidable X (inl  x) = λ _ → x
 ¬¬-stable-if-decidable X (inr nx) = λ h → 𝟘-elim (h nx)
 

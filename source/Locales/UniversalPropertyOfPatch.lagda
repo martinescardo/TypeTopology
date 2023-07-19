@@ -17,6 +17,7 @@ open import UF.Equiv renaming (_■ to _𝔔𝔈𝔇)
 open import UF.Retracts
 open import UF.Embeddings
 open import UF.PropTrunc
+open import Slice.Family
 open import MLTT.List hiding ([_])
 
 module Locales.UniversalPropertyOfPatch

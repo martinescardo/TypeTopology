@@ -70,7 +70,7 @@ module so that we can conveniently reuse them.
 
 module Idl-retract-common
         (𝓓 : DCPO {𝓤} {𝓣})
-        {B : 𝓥 ̇  }
+        {B : 𝓥 ̇ }
         (β : B → ⟨ 𝓓 ⟩)
         (β-is-small-basis : is-small-basis 𝓓 β)
        where
@@ -95,7 +95,7 @@ Scott continuous here.
  ↡ᴮ-is-monotone x y x-below-y b b-way-below-x =
   ≪ᴮ-to-≪ᴮₛ (≪-⊑-to-≪ 𝓓 (≪ᴮₛ-to-≪ᴮ b-way-below-x) x-below-y)
 
- ↡ᴮ-is-continuous : {I : 𝓥 ̇  } {α : I → ⟨ 𝓓 ⟩} (δ : is-Directed 𝓓 α)
+ ↡ᴮ-is-continuous : {I : 𝓥 ̇ } {α : I → ⟨ 𝓓 ⟩} (δ : is-Directed 𝓓 α)
                   → is-sup _⊆_ (↡ᴮ-subset (∐ 𝓓 δ)) (↡ᴮ-subset ∘ α)
  ↡ᴮ-is-continuous {I} {α} δ = (ub , lb-of-ubs)
   where
@@ -191,7 +191,7 @@ semidirected and lower-closed.
 \begin{code}
 
  module _
-         (_≺_ : B → B → 𝓥 ̇  )
+         (_≺_ : B → B → 𝓥 ̇ )
         where
 
   ↡ᴮ-lowerset-criterion : (x : ⟨ 𝓓 ⟩)
@@ -225,7 +225,7 @@ we have an embedding-projection pair) of an algebraic dcpo, namely of Idl(B,⊑)
 
 module Idl-continuous-retract-of-algebraic
         (𝓓 : DCPO {𝓤} {𝓣})
-        {B : 𝓥 ̇  }
+        {B : 𝓥 ̇ }
         (β : B → ⟨ 𝓓 ⟩)
         (β-is-small-basis : is-small-basis 𝓓 β)
        where
@@ -334,7 +334,7 @@ consider Idl(B,≪) which is isomorphic to D.
 
 module Idl-continuous
         (𝓓 : DCPO {𝓤} {𝓣})
-        {B : 𝓥 ̇  }
+        {B : 𝓥 ̇ }
         (β : B → ⟨ 𝓓 ⟩)
         (β-is-small-basis : is-small-basis 𝓓 β)
        where
@@ -444,7 +444,7 @@ Idl(B,⊑) is isomorphic to D.
 
 module Idl-algebraic
         (𝓓 : DCPO {𝓤} {𝓣})
-        {B : 𝓥 ̇  }
+        {B : 𝓥 ̇ }
         (β : B → ⟨ 𝓓 ⟩)
         (β-is-small-compact-basis : is-small-compact-basis 𝓓 β)
        where

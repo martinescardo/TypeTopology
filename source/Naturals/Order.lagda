@@ -204,8 +204,8 @@ regress P ρ (succ n) m l p = cases (λ (l' : m ≤ n) → IH m l' (ρ n p))
   IH = regress P ρ n
 
 <-is-well-founded : (m : ℕ) → is-accessible _<_ m
-<-is-well-founded zero     = step (λ y l → unique-from-𝟘 l)
-<-is-well-founded (succ m) = step (τ (<-is-well-founded m))
+<-is-well-founded zero     = acc (λ y l → unique-from-𝟘 l)
+<-is-well-founded (succ m) = acc (τ (<-is-well-founded m))
  where
   τ : is-accessible _<_ m → (n : ℕ) → n < succ m → is-accessible _<_ n
   τ a n u = cases (λ (v : n < m) → prev _<_ a n v)

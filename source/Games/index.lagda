@@ -12,17 +12,18 @@ module Games.index where
 open import Games.Constructor             -- For simplifying the construction of games.
 open import Games.Examples                -- Miscelaneous small examples.
 open import Games.FiniteHistoryDependent  -- Theory of finite history dependent games.
-open import Games.FiniteHistoryDependentMonadic -- With additional monad for irrational players.
+open import Games.FiniteHistoryDependentTransformer -- With additional monad for irrational players.
 open import Games.J                       -- Selection monad.
 open import Games.K                       -- Continuation (or quantifier) monad.
 open import Games.Monad                   -- (Automatically strong, wild) monads on types.
 open import Games.Reader
-open import Games.Structure               -- Equips game trees with structure.
 open import Games.TicTacToe0
 open import Games.TicTacToe1              -- Like TicTacToe0 but using Games.Constructor.
 open import Games.TicTacToe2              -- More efficient and less elegant version.
 open import Games.TypeTrees               -- Dependent type trees.
 open import Games.alpha-beta              -- Many new things for efficiency.
+open import Games.Discussion
+
 -- open import Games.Main                 -- To be able to compile for efficieny.
                                           -- Can't be imported here as it's not --safe.
                                           -- This is for Agda compilation to Haskell of

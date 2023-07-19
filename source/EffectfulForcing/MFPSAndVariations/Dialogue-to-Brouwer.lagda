@@ -6,10 +6,10 @@ Conversion of dialogue trees to Brouwer trees.
 
 {-# OPTIONS --safe --without-K --exact-split #-}
 
-module EffectfulForcing.Dialogue-to-Brouwer where
+module EffectfulForcing.MFPSAndVariations.Dialogue-to-Brouwer where
 
 open import MLTT.Spartan
-open import EffectfulForcing.Dialogue
+open import EffectfulForcing.MFPSAndVariations.Dialogue
 
 \end{code}
 

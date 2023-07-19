@@ -55,7 +55,7 @@ module suprema-of-ordinals-assumptions
  Sups-Of-Discretely-Indexed-Trichotomous-Ordinals-Are-Discrete :
   (𝓤 : Universe) → 𝓤 ⁺ ̇
  Sups-Of-Discretely-Indexed-Trichotomous-Ordinals-Are-Discrete 𝓤 =
-  (I : 𝓤 ̇  ) → is-discrete I → (α : I → Ordinal 𝓤)
+  (I : 𝓤 ̇ ) → is-discrete I → (α : I → Ordinal 𝓤)
              → ((i : I) → is-trichotomous-order (underlying-order (α i)))
              → is-discrete ⟨ sup α ⟩
 
@@ -97,7 +97,7 @@ proposition P, which is equivalent to excluded middle.
 \begin{code}
 
 module discrete-trichotomous-taboo-construction
-        (P : 𝓤 ̇  )
+        (P : 𝓤 ̇ )
        where
 
  _≺_ : 𝟚 {𝓤} → 𝟚 {𝓤} → 𝓤 ̇
@@ -123,11 +123,11 @@ module discrete-trichotomous-taboo-construction
  ≺-well-founded-lemma ₁ l = 𝟘-elim l
 
  ≺-is-well-founded : is-well-founded _≺_
- ≺-is-well-founded ₀ = step ≺-well-founded-lemma
- ≺-is-well-founded ₁ = step γ
+ ≺-is-well-founded ₀ = acc ≺-well-founded-lemma
+ ≺-is-well-founded ₁ = acc γ
   where
    γ : (y : 𝟚) → y ≺ ₁ → is-accessible _≺_ y
-   γ ₀ l = step ≺-well-founded-lemma
+   γ ₀ l = acc ≺-well-founded-lemma
 
  ≺-is-extensional : ¬¬ P → is-extensional _≺_
  ≺-is-extensional h ₀ ₀ u v = refl
@@ -203,7 +203,7 @@ module _
  open import Ordinals.WellOrderArithmetic
 
  module discrete-sup-taboo-construction-I
-         (P : 𝓤 ̇  )
+         (P : 𝓤 ̇ )
          (P-is-prop : is-prop P)
         where
 
@@ -248,7 +248,7 @@ module _
  open import UF.ImageAndSurjection pt
 
  module discrete-sup-taboo-construction-II
-          (P : 𝓤 ̇  )
+          (P : 𝓤 ̇ )
           (P-is-prop : is-prop P)
          where
 

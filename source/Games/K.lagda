@@ -41,10 +41,10 @@ module K-definitions (R : Type) where
  ηᴷ : {X : Type} → X → K X
  ηᴷ = η (𝕂 R)
 
- K-ext : {X Y : Type} → (X → K Y) → K X → K Y
- K-ext = ext (𝕂 R)
+ extᴷ : {X Y : Type} → (X → K Y) → K X → K Y
+ extᴷ = ext (𝕂 R)
 
- K-map : {X Y : Type} → (X → Y) → K X → K Y
- K-map = map (𝕂 R)
+ mapᴷ : {X Y : Type} → (X → Y) → K X → K Y
+ mapᴷ = map (𝕂 R)
 
 \end{code}

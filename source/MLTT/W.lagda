@@ -1,3 +1,5 @@
+Martin Escardo.
+
 W-types.
 
 \begin{code}
@@ -9,18 +11,49 @@ module MLTT.W where
 open import MLTT.Spartan
 
 data W {𝓤 𝓥 : Universe} (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) : 𝓤 ⊔ 𝓥 ̇ where
- sup : (x : X) → (A x → W X A) → W X A
+ ssup : (x : X) (φ : A x → W X A) → W X A
+
+module _ {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } where
+
+ W-root : W X A → X
+ W-root (ssup x φ) = x
+
+ W-forest : (w : W X A) → A (W-root w) → W X A
+ W-forest (ssup x φ) = φ
+
+ W-η : (w : W X A) → ssup (W-root w) (W-forest w) ＝ w
+ W-η (ssup x φ) = refl
+
+ W-induction : (P : W X A → 𝓦 ̇ )
+             → ((x : X) (φ : A x → W X A)
+                       → ((a : A x) → P (φ a)) → P (ssup x φ))
+             → (w : W X A) → P w
+ W-induction P g = h
+  where
+   h : (w : W X A) → P w
+   h (ssup x φ) = g x φ (λ x → h (φ x))
+
+ W-recursion : (P : 𝓦 ̇ )
+             → ((x : X) → (A x → W X A)
+                        → (A x → P) → P)
+             → W X A → P
+ W-recursion P = W-induction (λ _ → P)
+
+ W-iteration : (P : 𝓦 ̇ )
+             → ((x : X) → (A x → P) → P)
+             → W X A → P
+ W-iteration P g = W-recursion P (λ X _ → g X)
 
 \end{code}
 
-The record version of W in case we need it:
+The record version of W:
 
 \begin{code}
 
 record W' {𝓤 𝓥 : Universe} (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) : 𝓤 ⊔ 𝓥 ̇ where
  inductive
  constructor
-  sup
+  ssup
  field
   pr₁ : X
   pr₂ : A pr₁ → W' X A
@@ -39,7 +72,7 @@ data Wᵢ {𝓤 𝓥 𝓦 : Universe}
         (s : (a : A) → B a → I)
       : I → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
  where
- sup : (a : A) → ((b : B a) → Wᵢ I A t B s (s a b)) → Wᵢ I A t B s (t a)
+  ssup : (a : A) → ((b : B a) → Wᵢ I A t B s (s a b)) → Wᵢ I A t B s (t a)
 
 \end{code}
 

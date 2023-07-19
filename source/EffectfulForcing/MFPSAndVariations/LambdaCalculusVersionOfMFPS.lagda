@@ -10,15 +10,15 @@ combinator for system T.
 
 {-# OPTIONS --safe --without-K --exact-split #-}
 
-module EffectfulForcing.LambdaCalculusVersionOfMFPS where
+module EffectfulForcing.MFPSAndVariations.LambdaCalculusVersionOfMFPS where
 
 open import MLTT.Spartan hiding (rec ; _^_) renaming (⋆ to 〈〉)
 open import MLTT.Fin
 open import UF.Base
-open import EffectfulForcing.Combinators
-open import EffectfulForcing.Continuity
-open import EffectfulForcing.Dialogue
-open import EffectfulForcing.SystemT
+open import EffectfulForcing.MFPSAndVariations.Combinators
+open import EffectfulForcing.MFPSAndVariations.Continuity
+open import EffectfulForcing.MFPSAndVariations.Dialogue
+open import EffectfulForcing.MFPSAndVariations.SystemT
 
 \end{code}
 

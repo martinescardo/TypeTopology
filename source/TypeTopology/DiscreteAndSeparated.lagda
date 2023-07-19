@@ -516,19 +516,19 @@ Another logical place for these three lemmas would be Negation.lagda, but
 
 \begin{code}
 
-¬¬-stable-⇔ : {X : 𝓤 ̇  } {Y : 𝓥 ̇  }
+¬¬-stable-⇔ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
             → X ⇔ Y
             → ¬¬-stable X
             → ¬¬-stable Y
 ¬¬-stable-⇔ (f , g) σ h = f (σ (¬¬-functor g h))
 
-¬¬-stable-≃ : {X : 𝓤 ̇  } {Y : 𝓥 ̇  }
+¬¬-stable-≃ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
             → X ≃ Y
             → ¬¬-stable X
             → ¬¬-stable Y
 ¬¬-stable-≃ e = ¬¬-stable-⇔ (⌜ e ⌝ , ⌜ e ⌝⁻¹)
 
-being-¬¬-stable-is-prop : {X : 𝓤 ̇  }
+being-¬¬-stable-is-prop : {X : 𝓤 ̇ }
                         → funext 𝓤 𝓤
                         → is-prop X → is-prop (¬¬-stable X)
 being-¬¬-stable-is-prop fe i = Π-is-prop fe (λ _ → i)

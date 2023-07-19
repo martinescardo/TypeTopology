@@ -386,19 +386,19 @@ relations.
 
 \begin{code}
 
-is-small : (X : 𝓤 ̇  ) → 𝓥 ⁺ ⊔ 𝓤 ̇
+is-small : (X : 𝓤 ̇ ) → 𝓥 ⁺ ⊔ 𝓤 ̇
 is-small X = X is 𝓥 small
 
-small-binary-relation-equivalence : {X : 𝓤 ̇  } {Y : 𝓦 ̇  } {R : X → Y → 𝓣 ̇  }
+small-binary-relation-equivalence : {X : 𝓤 ̇ } {Y : 𝓦 ̇ } {R : X → Y → 𝓣 ̇ }
                                   → ((x : X) (y : Y) → is-small (R x y))
-                                  ≃ (Σ Rₛ ꞉ (X → Y → 𝓥 ̇  ) ,
+                                  ≃ (Σ Rₛ ꞉ (X → Y → 𝓥 ̇ ) ,
                                       ((x : X) (y : Y) → Rₛ x y ≃ R x y))
 small-binary-relation-equivalence {𝓤} {𝓦} {𝓣} {X} {Y} {R} =
  ((x : X) (y : Y)    → is-small (R x y))                            ≃⟨ I   ⟩
  ((((x , y) : X × Y) → is-small (R x y)))                           ≃⟨ II  ⟩
- (Σ R' ꞉ (X × Y → 𝓥 ̇  ) , (((x , y) : X × Y) → R' (x , y) ≃ R x y)) ≃⟨ III ⟩
- (Σ R' ꞉ (X × Y → 𝓥 ̇  ) , ((x : X) (y : Y) → R' (x , y) ≃ R x y))   ≃⟨ IV  ⟩
- (Σ Rₛ ꞉ (X → Y → 𝓥 ̇  ) , ((x : X) (y : Y) → Rₛ x y ≃ R x y))       ■
+ (Σ R' ꞉ (X × Y → 𝓥 ̇ ) , (((x , y) : X × Y) → R' (x , y) ≃ R x y)) ≃⟨ III ⟩
+ (Σ R' ꞉ (X × Y → 𝓥 ̇ ) , ((x : X) (y : Y) → R' (x , y) ≃ R x y))   ≃⟨ IV  ⟩
+ (Σ Rₛ ꞉ (X → Y → 𝓥 ̇ ) , ((x : X) (y : Y) → Rₛ x y ≃ R x y))       ■
   where
    φ : {𝓤 𝓥 𝓦 : Universe}
        {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {Z : (Σ x ꞉ X , Y x) → 𝓦 ̇ }
@@ -453,7 +453,7 @@ alternative definitions of local smallness and proving their equivalence.
 
  is-locally-small-Σ : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
  is-locally-small-Σ =
-   Σ _⊑ₛ_ ꞉ (⟨ 𝓓 ⟩ → ⟨ 𝓓 ⟩ → 𝓥 ̇  ) , ((x y : ⟨ 𝓓 ⟩) → (x ⊑ₛ y) ≃ (x ⊑⟨ 𝓓 ⟩ y))
+   Σ _⊑ₛ_ ꞉ (⟨ 𝓓 ⟩ → ⟨ 𝓓 ⟩ → 𝓥 ̇ ) , ((x y : ⟨ 𝓓 ⟩) → (x ⊑ₛ y) ≃ (x ⊑⟨ 𝓓 ⟩ y))
 
  is-locally-small-record-equivalence : is-locally-small ≃ is-locally-small-Σ
  is-locally-small-record-equivalence = qinveq f (g , (λ _ → refl) , (λ _ → refl))
@@ -527,7 +527,7 @@ Moving on from local smallness, we present a few useful lemmas on cofinality and
 
 \begin{code}
 
-semidirected-if-bicofinal : (𝓓 : DCPO {𝓤} {𝓣}) {I J : 𝓦 ̇  }
+semidirected-if-bicofinal : (𝓓 : DCPO {𝓤} {𝓣}) {I J : 𝓦 ̇ }
                             (α : I → ⟨ 𝓓 ⟩) (β : J → ⟨ 𝓓 ⟩)
                           → ((i : I) → ∃ j ꞉ J , α i ⊑⟨ 𝓓 ⟩ β j)
                           → ((j : J) → ∃ i ꞉ I , β j ⊑⟨ 𝓓 ⟩ α i)
@@ -556,7 +556,7 @@ semidirected-if-bicofinal 𝓓 {I} {J} α β α-cofinal-in-β β-cofinal-in-α �
                          α i  ⊑⟨ 𝓓 ⟩[ w ]
                          β j  ∎⟨ 𝓓 ⟩))
 
-directed-if-bicofinal : (𝓓 : DCPO {𝓤} {𝓣}) {I J : 𝓦 ̇  }
+directed-if-bicofinal : (𝓓 : DCPO {𝓤} {𝓣}) {I J : 𝓦 ̇ }
                         {α : I → ⟨ 𝓓 ⟩} {β : J → ⟨ 𝓓 ⟩}
                       → ((i : I) → ∃ j ꞉ J , α i ⊑⟨ 𝓓 ⟩ β j)
                       → ((j : J) → ∃ i ꞉ I , β j ⊑⟨ 𝓓 ⟩ α i)
@@ -571,7 +571,7 @@ directed-if-bicofinal 𝓓 {I} {J} {α} {β} κ₁ κ₂ δ =
      ϕ : I → ∥ J ∥
      ϕ i = ∥∥-functor pr₁ (κ₁ i)
 
-∐-⊑-if-cofinal : (𝓓 : DCPO {𝓤} {𝓣}) {I J : 𝓥 ̇  }
+∐-⊑-if-cofinal : (𝓓 : DCPO {𝓤} {𝓣}) {I J : 𝓥 ̇ }
                  {α : I → ⟨ 𝓓 ⟩} {β : J → ⟨ 𝓓 ⟩}
                → ((i : I) → ∃ j ꞉ J , α i ⊑⟨ 𝓓 ⟩ β j)
                → (δ : is-Directed 𝓓 α)
@@ -589,7 +589,7 @@ directed-if-bicofinal 𝓓 {I} {J} {α} {β} κ₁ κ₂ δ =
                  β j   ⊑⟨ 𝓓 ⟩[ ∐-is-upperbound 𝓓 ε j ]
                  ∐ 𝓓 ε ∎⟨ 𝓓 ⟩
 
-∐-＝-if-bicofinal : (𝓓 : DCPO {𝓤} {𝓣}) {I J : 𝓥 ̇  }
+∐-＝-if-bicofinal : (𝓓 : DCPO {𝓤} {𝓣}) {I J : 𝓥 ̇ }
                    {α : I → ⟨ 𝓓 ⟩} {β : J → ⟨ 𝓓 ⟩}
                  → ((i : I) → ∃ j ꞉ J , α i ⊑⟨ 𝓓 ⟩ β j)
                  → ((j : J) → ∃ i ꞉ I , β j ⊑⟨ 𝓓 ⟩ α i)
@@ -610,7 +610,7 @@ supremum, which is what we prove here.
 
 module _
         (𝓓 : DCPO {𝓤} {𝓣})
-        {I : 𝓦 ̇  } {J : 𝓦' ̇  }
+        {I : 𝓦 ̇ } {J : 𝓦' ̇ }
         (ρ : I ≃ J)
         (α : I → ⟨ 𝓓 ⟩)
        where

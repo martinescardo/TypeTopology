@@ -277,7 +277,7 @@ module _
 
  open is-sup-complete 𝓔-is-sup-complete
 
- sup-of-continuous-functions : {I : 𝓥 ̇  } → (I → DCPO[ 𝓓 , 𝓔 ]) → DCPO[ 𝓓 , 𝓔 ]
+ sup-of-continuous-functions : {I : 𝓥 ̇ } → (I → DCPO[ 𝓓 , 𝓔 ]) → DCPO[ 𝓓 , 𝓔 ]
  sup-of-continuous-functions {I} α = (f , c)
   where
    f : ⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩
@@ -329,7 +329,7 @@ module _
    ; ⋁-is-sup = λ {I} → lemma
    }
    where
-    lemma : {I : 𝓥 ̇  } (α : I → DCPO[ 𝓓 , 𝓔 ])
+    lemma : {I : 𝓥 ̇ } (α : I → DCPO[ 𝓓 , 𝓔 ])
           → is-sup (underlying-order (𝓓 ⟹ᵈᶜᵖᵒ 𝓔))
              (sup-of-continuous-functions α) α
     lemma {I} α = (ub , lb-of-ubs)

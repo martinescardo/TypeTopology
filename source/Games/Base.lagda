@@ -1,4 +1,4 @@
-Martin Escardo, Paulo Oliva, 2023
+TyMartin Escardo, Paulo Oliva, 2023
 
 \begin{code}
 

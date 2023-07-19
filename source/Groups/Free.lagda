@@ -153,8 +153,11 @@ induction on u₀ and u₁:
          x₀      ＝⟨ equal-heads p ⟩
          y₁      ∎
 
+     r : v₀ ＝ x₁ ⁻ ∷ v₁
+     r = equal-tails (equal-tails p)
+
      γ : v₀ ＝ y₁ ∷ v₁
-     γ = transport (λ - → v₀ ＝ - ∷ v₁) q (equal-tails (equal-tails p))
+     γ = transport (λ - → v₀ ＝ - ∷ v₁) q r
 
    f [] (y₁ ∷ z₁ ∷ u₁) p = inr γ
     where
@@ -165,8 +168,11 @@ induction on u₀ and u₁:
      d' : u₁ ++ [ x₁ ] ++ [ x₁ ⁻ ] ++ v₁ ▷ u₁ ++ v₁
      d' = u₁ , v₁ , x₁ , refl , refl
 
+     p' : u₁ ++ [ x₁ ] ++ [ x₁ ⁻ ] ++ v₁ ＝ v₀
+     p' = (equal-tails (equal-tails p))⁻¹
+
      d : v₀ ▷ u₁ ++ v₁
-     d = transport (_▷ u₁ ++ v₁) ((equal-tails (equal-tails p))⁻¹) d'
+     d = transport (_▷ u₁ ++ v₁) p' d'
 
      q = y₁ ⁻ ＝⟨ (ap (_⁻) (equal-heads p)⁻¹) ⟩
          x₀ ⁻ ＝⟨ equal-heads (equal-tails p) ⟩
@@ -244,13 +250,37 @@ induction on u₀ and u₁:
                → (t₀ ＝ t₁) + (Σ t ꞉ FA , (t₀ ▷ t) × (t₁ ▷ t))
  Church-Rosser s t₀ t₁ (u₀ , v₀ , x₀ , p₀ , q₀) (u₁ , v₁ , x₁ , p₁ , q₁) = γ δ
   where
+   have-p₀ : s ＝ u₀ ++ [ x₀ ] ++ [ x₀ ⁻ ] ++ v₀
+   have-p₀ = p₀
+
+   have-p₁ : s ＝ u₁ ++ [ x₁ ] ++ [ x₁ ⁻ ] ++ v₁
+   have-p₁ = p₁
+
+   have-q₀ : t₀ ＝ u₀ ++ v₀
+   have-q₀ = q₀
+
+   have-q₁ : t₁ ＝ u₁ ++ v₁
+   have-q₁ = q₁
+
    δ : (u₀ ++ v₀ ＝ u₁ ++ v₁) + (Σ t ꞉ FA , (u₀ ++ v₀ ▷ t) × (u₁ ++ v₁ ▷ t))
-   δ = church-rosser u₀ v₀ u₁ v₁ x₀ x₁ (p₀ ⁻¹ ∙ p₁)
+   δ = church-rosser u₀ v₀ u₁ v₁ x₀ x₁
+        (u₀ ++ [ x₀ ] ++ [ x₀ ⁻ ] ++ v₀ ＝⟨ p₀ ⁻¹ ⟩
+         s                              ＝⟨ p₁ ⟩
+         u₁ ++ [ x₁ ] ++ [ x₁ ⁻ ] ++ v₁ ∎)
 
    γ : type-of δ → (t₀ ＝ t₁) + (Σ t ꞉ FA , (t₀ ▷ t) × (t₁ ▷ t))
-   γ (inl q)           = inl (q₀ ∙ q ∙ q₁ ⁻¹)
-   γ (inr (t , p , q)) = inr (t , transport (_▷ t) (q₀ ⁻¹) p ,
-                                  transport (_▷ t) (q₁ ⁻¹) q)
+   γ (inl q)             = inl (t₀       ＝⟨ q₀ ⟩
+                                u₀ ++ v₀ ＝⟨ q ⟩
+                                u₁ ++ v₁ ＝⟨ q₁ ⁻¹ ⟩
+                                t₁       ∎)
+   γ (inr (t , p₀ , p₁)) = inr (t , I₀ , I₁)
+    where
+     I₀ : t₀ ▷ t
+     I₀ = transport (_▷ t) (q₀ ⁻¹) p₀
+
+     I₁ : t₁ ▷ t
+     I₁ = transport (_▷ t) (q₁ ⁻¹) p₁
+
 \end{code}
 
 It is noteworthy and remarkable that the above doesn't need decidable

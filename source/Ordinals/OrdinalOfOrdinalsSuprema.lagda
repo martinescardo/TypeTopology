@@ -80,7 +80,7 @@ statement is a proposition.)
 
 Ordinal-Of-Ordinals-Has-Small-Suprema : (𝓤 : Universe) → 𝓤 ⁺ ̇
 Ordinal-Of-Ordinals-Has-Small-Suprema 𝓤 =
-   (I : 𝓤 ̇  ) (α : I → Ordinal 𝓤)
+   (I : 𝓤 ̇ ) (α : I → Ordinal 𝓤)
  → Σ β ꞉ Ordinal 𝓤 , ((i : I) → α i ⊴ β)
                    × ((γ : Ordinal 𝓤) → ((i : I) → α i ⊴ γ) → β ⊴ γ)
 
@@ -89,7 +89,7 @@ Ordinal-Of-Ordinals-Has-Small-Suprema-is-prop :
 Ordinal-Of-Ordinals-Has-Small-Suprema-is-prop =
  Π₂-is-prop fe' h
   where
-   h : (I : 𝓤 ̇  ) (α : I → Ordinal 𝓤)
+   h : (I : 𝓤 ̇ ) (α : I → Ordinal 𝓤)
      → is-prop (Σ β ꞉ Ordinal 𝓤 , ((i : I) → α i ⊴ β)
                                 × ((γ : Ordinal 𝓤) → ((i : I) → α i ⊴ γ)
                                                    → β ⊴ γ))
@@ -101,7 +101,7 @@ Ordinal-Of-Ordinals-Has-Small-Suprema-is-prop =
 
 module construction-using-quotient
         (sq : set-quotients-exist)
-        {I : 𝓤 ̇  }
+        {I : 𝓤 ̇ }
         (α : I → Ordinal 𝓤)
        where
 
@@ -373,7 +373,7 @@ induced order on Σα.
     where
      ϕ : (p : Σα) → ((q : Σα) → q ≺ p → is-accessible _≺/_ [ q ])
        → is-accessible _≺/_ [ p ]
-     ϕ p IH = step IH'
+     ϕ p IH = acc IH'
       where
        IH' : (y : α/) → y ≺/ [ p ] → is-accessible _≺/_ y
        IH' = /-induction ≋ (λ q → Π-is-prop fe' (λ _ → a q))
@@ -597,7 +597,7 @@ open import UF.EquivalenceExamples
 
 module construction-using-image
         (pt : propositional-truncations-exist)
-        {I : 𝓤 ̇  }
+        {I : 𝓤 ̇ }
         (α : I → Ordinal 𝓤)
        where
 
@@ -675,7 +675,7 @@ The ordinal structure on the image of σ will be the one induced from Ordinal �
                           → (t : ∃ i ꞉ I , γ ⊲ α i)
                           → is-accessible _≺_ (γ , t))
        → (s : ∃ i ꞉ I , β ⊲ α i) → is-accessible _≺_ (β , s)
-     ϕ β IH s = step IH'
+     ϕ β IH s = acc IH'
       where
        IH' : (γ : α⁺) → γ ≺ (β , s) → is-accessible _≺_ γ
        IH' (γ , t) l = IH γ l t
@@ -1033,7 +1033,7 @@ module suprema
  open PropositionalTruncation pt
  open import UF.ImageAndSurjection pt
 
- module _ {I : 𝓤 ̇  } (α : I → Ordinal 𝓤) where
+ module _ {I : 𝓤 ̇ } (α : I → Ordinal 𝓤) where
 
   open construction-using-image pt α
 

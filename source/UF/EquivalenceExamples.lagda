@@ -49,6 +49,7 @@ curry-uncurry {𝓤} {𝓥} {𝓦} fe = curry-uncurry' (fe 𝓤 (𝓥 ⊔ 𝓦))
  where
   η : (σ : Σ p ꞉ x ＝ y , transport A p a ＝ b) → from-Σ-＝ (to-Σ-＝ σ) ＝ σ
   η (refl , refl) = refl
+
   ε : (q : x , a ＝ y , b) → to-Σ-＝ (from-Σ-＝ q) ＝ q
   ε refl = refl
 
@@ -628,7 +629,7 @@ NatΣ-equiv-gives-fiberwise-equiv = NatΣ-equiv-converse _ _
                        → (Σ y ꞉ Y , A (⌜ e ⌝ y)) ≃ (Σ x ꞉ X , A x)
 Σ-change-of-variable-≃ A (g , i) = Σ-change-of-variable A g i
 
-Σ-bicong : {X  : 𝓤 ̇  } (Y  : X  → 𝓥 ̇  )
+Σ-bicong : {X  : 𝓤 ̇ } (Y  : X  → 𝓥 ̇ )
            {X' : 𝓤' ̇ } (Y' : X' → 𝓥' ̇ )
            (𝕗 : X ≃ X')
          → ((x : X) → Y x ≃ Y' (⌜ 𝕗 ⌝ x))
@@ -697,7 +698,7 @@ dprecomp-is-equiv fe fe' {X} {Y} A f i = qinvs-are-equivs φ ((ψ , ψφ , φψ)
  ≃-sym (Π-change-of-variable (fe _ _) (fe _ _) A f i)
 
 Π-bicong : FunExt
-         → {X  : 𝓤 ̇  } (Y  : X  → 𝓥 ̇  )
+         → {X  : 𝓤 ̇ } (Y  : X  → 𝓥 ̇ )
            {X' : 𝓤' ̇ } (Y' : X' → 𝓥' ̇ )
            (𝕗 : X ≃ X')
          → ((x : X) → Y x ≃ Y' (⌜ 𝕗 ⌝ x))
@@ -1005,73 +1006,25 @@ fiber-of-unique-to-𝟙 {𝓤} {𝓥} {X} ⋆ =
 \end{code}
 
 Added by Tom de Jong, November 2021.
-
-\begin{code}
-
-≃-2-out-of-3-right : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
-                   → {f : X → Y} {g : Y → Z}
-                   → is-equiv f
-                   → is-equiv (g ∘ f)
-                   → is-equiv g
-≃-2-out-of-3-right {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {f} {g} i j =
- equiv-closed-under-∼ (g ∘ f ∘ f⁻¹) g k h
-  where
-   𝕗 : X ≃ Y
-   𝕗 = (f , i)
-
-   f⁻¹ : Y → X
-   f⁻¹ = ⌜ 𝕗 ⌝⁻¹
-
-   k : is-equiv (g ∘ f ∘ f⁻¹)
-   k = ∘-is-equiv (⌜⌝⁻¹-is-equiv 𝕗) j
-
-   h : g ∼ g ∘ f ∘ f⁻¹
-   h y = ap g ((≃-sym-is-rinv 𝕗 y) ⁻¹)
-
-≃-2-out-of-3-left : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
-                  → {f : X → Y} {g : Y → Z}
-                  → is-equiv g
-                  → is-equiv (g ∘ f)
-                  → is-equiv f
-≃-2-out-of-3-left {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {f} {g} i j =
- equiv-closed-under-∼ (g⁻¹ ∘ g ∘ f) f k h
-  where
-   𝕘 : Y ≃ Z
-   𝕘 = (g , i)
-
-   g⁻¹ : Z → Y
-   g⁻¹ = ⌜ 𝕘 ⌝⁻¹
-
-   k : is-equiv (g⁻¹ ∘ g ∘ f)
-   k = ∘-is-equiv j (⌜⌝⁻¹-is-equiv 𝕘)
-
-   h : f ∼ g⁻¹ ∘ g ∘ f
-   h x = (≃-sym-is-linv 𝕘 (f x)) ⁻¹
-
-\end{code}
-
-Completely unrelated to the above, but still useful.
-
+s
 \begin{code}
 
 open import UF.PropTrunc
 
-module _
-        (pt : propositional-truncations-exist)
-       where
+module _ (pt : propositional-truncations-exist) where
 
  open PropositionalTruncation pt
 
- ∥∥-cong : {X : 𝓤 ̇  } {Y : 𝓥 ̇  } → X ≃ Y → ∥ X ∥ ≃ ∥ Y ∥
+ ∥∥-cong : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → X ≃ Y → ∥ X ∥ ≃ ∥ Y ∥
  ∥∥-cong f = logically-equivalent-props-are-equivalent ∥∥-is-prop ∥∥-is-prop
               (∥∥-functor ⌜ f ⌝) (∥∥-functor ⌜ f ⌝⁻¹)
 
- ∃-cong : {X : 𝓤 ̇  } {Y : X → 𝓥 ̇  } {Y' : X → 𝓦 ̇  }
+ ∃-cong : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {Y' : X → 𝓦 ̇ }
         → ((x : X) → Y x ≃ Y' x)
         → ∃ Y ≃ ∃ Y'
  ∃-cong e = ∥∥-cong (Σ-cong e)
 
- outer-∃-inner-Σ : {X : 𝓤 ̇  } {Y : X → 𝓥 ̇  } {A : (x : X) → Y x → 𝓦 ̇  }
+ outer-∃-inner-Σ : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {A : (x : X) → Y x → 𝓦 ̇ }
                  → (∃ x ꞉ X , ∃ y ꞉ Y x , A x y)
                  ≃ (∃ x ꞉ X , Σ y ꞉ Y x , A x y)
  outer-∃-inner-Σ {𝓤} {𝓥} {𝓦} {X} {Y} {A} =

@@ -58,9 +58,9 @@
 
      (https://www.cs.bham.ac.uk/~mhe/TypeTopology/AllModulesIndex.html)
 
-   * In our last count, on 7th June 2023, this development has 153k
-     lines, including comments and blank lines. But we don't update
-     the count frequently.
+   * In our last count, on 15th July 2023, this development has 574
+     files and 163k lines of code, including comments and blank
+     lines. But we don't update the count frequently.
 
 Philosophy of the repository
 ----------------------------
@@ -109,7 +109,7 @@ Philosophy of the repository
      because at present it is not known whether (some) cubical type
      theory has an interpretation in any ∞ topos.
 
-   * Howover, by fulfilling the HoTT hypotheses with Cubical-Agda
+   * However, by fulfilling the HoTT hypotheses with Cubical-Agda
      implementations, we should be able to run the constructions and
      proofs given here, so that we get constructivity in the
      computational sense (as opposed to constructivity in the sense of
@@ -129,6 +129,7 @@ import Categories.index               -- by Jon Sterling
 import Circle.index                   -- by Tom de Jong
 import CoNaturals.index
 import ContinuityAxiom.index          -- by Martin Escardo and Chuangjie Xu
+import Coslice.index                  -- by Jon Sterling
 import CrossedModules.index           -- by Ettore Aldrovandi and Keri D'Angelo
 import DedekindReals.index            -- by Andrew Sneap
 import DomainTheory.index             -- by Tom de Jong
@@ -145,6 +146,7 @@ import Groups.index                   -- originally by Martin Escardo with many 
                                       -- by Ettore Aldrovandi and Keri D'Angelo
 import InjectiveTypes.index
 import Integers.index                 -- by Andrew Sneap
+import Iterative.index                -- by Martin Escardo and Tom de Jong
 import Lifting.index
 import Locales.index                  -- by Ayberk Tosun
 import MGS.index                      -- Modular version of https://github.com/martinescardo/HoTT-UF-Agda-Lecture-Notes

@@ -142,7 +142,7 @@ simulations-are-lc α β f (i , p) = γ
     → is-accessible (underlying-order α) y
     → f x ＝ f y
     → x ＝ y
-  φ x y (step s) (step t) r = Extensionality α x y g h
+  φ x y (acc s) (acc t) r = Extensionality α x y g h
    where
     g : (u : ⟨ α ⟩) → u ≺⟨ α ⟩ x → u ≺⟨ α ⟩ y
     g u l = d
@@ -313,7 +313,7 @@ at-most-one-simulation α β f f' (i , p) (i' , p') x = γ
   φ : ∀ x
     → is-accessible (underlying-order α) x
     → f x ＝ f' x
-  φ x (step u) = Extensionality β (f x) (f' x) a b
+  φ x (acc u) = Extensionality β (f x) (f' x) a b
    where
     IH : ∀ y → y ≺⟨ α ⟩ x → f y ＝ f' y
     IH y l = φ y (u y l)
@@ -455,7 +455,7 @@ module _ (pt : propositional-truncations-exist)
      → is-accessible (underlying-order α) y
      → f x ＝ f y
      → x ＝ y
-   φ x y (step s) (step t) r = Extensionality α x y g h
+   φ x y (acc s) (acc t) r = Extensionality α x y g h
     where
      g : (u : ⟨ α ⟩) → u ≺⟨ α ⟩ x → u ≺⟨ α ⟩ y
      g u l = ∥∥-rec (Prop-valuedness α u y) b (i y (f u) a)
