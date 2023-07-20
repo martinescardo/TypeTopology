@@ -41,7 +41,6 @@ open import MLTT.Spartan hiding (J)
 module Games.FiniteHistoryDependent (R : Type) where
 
 open import Games.Monad
-open import Games.Base
 open import Games.J
 open import Games.K
 open import Games.JK
@@ -196,10 +195,8 @@ is convenient to define this notion by induction on the game tree Xt:
 is-sgpe : {Xt : 𝕋} → 𝓚 Xt → (Path Xt → R) → Strategy Xt → Type
 is-sgpe {[]}     ⟨⟩        q ⟨⟩         = 𝟙
 is-sgpe {X ∷ Xf} (ϕ :: ϕf) q (x₀ :: σf) =
-
-      (sub q x₀ (strategic-path (σf x₀)) ＝ ϕ (λ x → sub q x (strategic-path (σf x))))
-    ×
-      ((x : X) → is-sgpe {Xf x} (ϕf x) (sub q x) (σf x))
+   (curry q x₀ (strategic-path (σf x₀)) ＝ ϕ (λ x → curry q x (strategic-path (σf x))))
+ × ((x : X) → is-sgpe {Xf x} (ϕf x) (curry q x) (σf x))
 
 \end{code}
 
@@ -216,14 +213,14 @@ In the above definition:
 
    So the first part
 
-     sub q x₀ (strategic-path (σf x₀)) ＝ ϕ (λ x → sub q x (strategic-path (σf x)))
+     curry q x₀ (strategic-path (σf x₀)) ＝ ϕ (λ x → curry q x (strategic-path (σf x)))
 
    of the definition is as in the comment above, but with a partial
    play of length k=0, and the second (inductive) part, says that the
    substrategy σf x, for any deviation x, is in subgame perfect
    equilibrium in the subgame
 
-     (Xf x , R , ϕf x , sub q x).
+     (Xf x , R , ϕf x , curry q x).
 
 As discussed above, we say that a strategy for a game is optimal if it
 is in subgame perfect equilibrium.
@@ -250,15 +247,15 @@ sgpe-lemma : Fun-Ext
 sgpe-lemma fe []       ⟨⟩        q ⟨⟩        ⟨⟩       = refl
 sgpe-lemma fe (X ∷ Xf) (ϕ :: ϕt) q (a :: σf) (h :: t) = γ
  where
-  observation-t : type-of t ＝ ((x : X) → is-sgpe (ϕt x) (sub q x) (σf x))
+  observation-t : type-of t ＝ ((x : X) → is-sgpe (ϕt x) (curry q x) (σf x))
   observation-t = refl
 
-  IH : (x : X) → sub q x (strategic-path (σf x)) ＝ sequenceᴷ (ϕt x) (sub q x)
-  IH x = sgpe-lemma fe (Xf x) (ϕt x) (sub q x) (σf x) (t x)
+  IH : (x : X) → curry q x (strategic-path (σf x)) ＝ sequenceᴷ (ϕt x) (curry q x)
+  IH x = sgpe-lemma fe (Xf x) (ϕt x) (curry q x) (σf x) (t x)
 
-  γ = sub q a (strategic-path (σf a))           ＝⟨ h ⟩
-      ϕ (λ x → sub q x (strategic-path (σf x))) ＝⟨ ap ϕ (dfunext fe IH) ⟩
-      ϕ (λ x → sequenceᴷ (ϕt x) (sub q x))      ∎
+  γ = curry q a (strategic-path (σf a))           ＝⟨ h ⟩
+      ϕ (λ x → curry q x (strategic-path (σf x))) ＝⟨ ap ϕ (dfunext fe IH) ⟩
+      ϕ (λ x → sequenceᴷ (ϕt x) (curry q x))      ∎
 
 \end{code}
 
@@ -321,7 +318,7 @@ selection-strategy {X ∷ Xf} εt@(ε :: εf) q = x₀ :: σf
   x₀ = path-head (sequenceᴶ εt q)
 
   σf : (x : X) → Strategy (Xf x)
-  σf x = selection-strategy {Xf x} (εf x) (sub q x)
+  σf x = selection-strategy {Xf x} (εf x) (curry q x)
 
 \end{code}
 
@@ -402,22 +399,22 @@ main-lemma {[]}     ⟨⟩           q = refl
 main-lemma {X ∷ Xf} εt@(ε :: εf) q =
  strategic-path (selection-strategy (ε :: εf) q) ＝⟨ refl ⟩
  x₀ :: strategic-path (σf x₀)                    ＝⟨ ap (x₀ ::_) IH ⟩
- x₀ :: sequenceᴶ {Xf x₀} (εf x₀) (sub q x₀)      ＝⟨ refl ⟩
+ x₀ :: sequenceᴶ {Xf x₀} (εf x₀) (curry q x₀)    ＝⟨ refl ⟩
  x₀ :: ν x₀                                      ＝⟨ refl ⟩
  (ε ⊗ᴶ (λ x → sequenceᴶ {Xf x} (εf x))) q        ＝⟨ refl ⟩
  sequenceᴶ (ε :: εf) q                           ∎
  where
   ν : (x : X) → Path (Xf x)
-  ν x = sequenceᴶ {Xf x} (εf x) (sub q x)
+  ν x = sequenceᴶ {Xf x} (εf x) (curry q x)
 
   x₀ : X
-  x₀ = ε (λ x → sub q x (ν x))
+  x₀ = ε (λ x → curry q x (ν x))
 
   σf : (x : X) → Strategy (Xf x)
-  σf x = selection-strategy {Xf x} (εf x) (sub q x)
+  σf x = selection-strategy {Xf x} (εf x) (curry q x)
 
-  IH : strategic-path (σf x₀) ＝ sequenceᴶ {Xf x₀} (εf x₀) (sub q x₀)
-  IH = main-lemma (εf x₀) (sub q x₀)
+  IH : strategic-path (σf x₀) ＝ sequenceᴶ {Xf x₀} (εf x₀) (curry q x₀)
+  IH = main-lemma (εf x₀) (curry q x₀)
 
 selection-strategy-lemma : Fun-Ext
                          → {Xt : 𝕋} (εt : 𝓙 Xt) (q : Path Xt → R)
@@ -426,30 +423,30 @@ selection-strategy-lemma fe {[]}     ⟨⟩           q = ⟨⟩
 selection-strategy-lemma fe {X ∷ Xf} εt@(ε :: εf) q = γ
  where
   σf : (x : X) → Strategy (Xf x)
-  σf x = selection-strategy (εf x) (sub q x)
+  σf x = selection-strategy (εf x) (curry q x)
 
   x₀ x₁ : X
-  x₀ = ε (λ x → sub q x (sequenceᴶ (εf x) (sub q x)))
-  x₁ = ε (λ x → sub q x (strategic-path (σf x)))
+  x₀ = ε (λ x → curry q x (sequenceᴶ (εf x) (curry q x)))
+  x₁ = ε (λ x → curry q x (strategic-path (σf x)))
 
-  I : (x : X) → strategic-path (σf x) ＝ sequenceᴶ (εf x) (sub q x)
-  I x = main-lemma (εf x) (sub q x)
+  I : (x : X) → strategic-path (σf x) ＝ sequenceᴶ (εf x) (curry q x)
+  I x = main-lemma (εf x) (curry q x)
 
   II : x₁ ＝ x₀
-  II = ap (λ - → ε (λ x → sub q x (- x))) (dfunext fe I)
+  II = ap (λ - → ε (λ x → curry q x (- x))) (dfunext fe I)
 
-  III = overline ε (λ x → sub q x (strategic-path (σf x))) ＝⟨ refl ⟩
-        sub q x₁ (strategic-path (σf x₁))                  ＝⟨ IV ⟩
-        sub q x₀ (strategic-path (σf x₀))                  ∎
+  III = overline ε (λ x → curry q x (strategic-path (σf x))) ＝⟨ refl ⟩
+        curry q x₁ (strategic-path (σf x₁))                  ＝⟨ IV ⟩
+        curry q x₀ (strategic-path (σf x₀))                  ∎
 
    where
-    IV = ap (λ - → sub q - (strategic-path (σf -))) II
+    IV = ap (λ - → curry q - (strategic-path (σf -))) II
 
   IH : (x : X) → is-sgpe
                    (Overline (εf x))
-                   (sub q x)
-                   (selection-strategy (εf x) (sub q x))
-  IH x = selection-strategy-lemma fe (εf x) (sub q x)
+                   (curry q x)
+                   (selection-strategy (εf x) (curry q x))
+  IH x = selection-strategy-lemma fe (εf x) (curry q x)
 
   γ : is-sgpe (Overline εt) q (x₀ :: σf)
   γ = (III ⁻¹) :: IH

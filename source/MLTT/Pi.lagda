@@ -37,6 +37,11 @@ _∘_ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : Y → 𝓦 ̇ }
     → (f : X → Y) (x : X) → Z (f x)
 g ∘ f = λ x → g (f x)
 
+S-combinator : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {Z : (x : X) → Y x → 𝓦 ̇ }
+             → ((x : X) (y : Y x) → Z x y)
+             → (f : (x : X) → Y x) (x : X) → Z x (f x)
+S-combinator g f = λ x → g x (f x)
+
 \end{code}
 
 The domain and codomain of a function, mainly to avoid implicit

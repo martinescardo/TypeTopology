@@ -242,6 +242,14 @@ module α-definitions
  α-assocᵀ : α ∘ extᵀ (ηᵀ ∘ α) ∼ α ∘ extᵀ id
  α-assocᵀ = assoc 𝓐
 
+ α-extᵀ : {A : Type} → (A → R) → T A → R
+ α-extᵀ q = α ∘ mapᵀ q
+
+ α-curryᵀ : {X : Type} {Y : X → Type}
+          → ((Σ x ꞉ X , Y x) → R)
+          → (x : X) → T (Y x) → R
+ α-curryᵀ q x = α-extᵀ (curry q x)
+
 \end{code}
 
 TODO. Define monad morphism (for example overline is a monad morphism

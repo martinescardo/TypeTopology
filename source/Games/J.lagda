@@ -9,7 +9,6 @@ open import MLTT.Spartan hiding (J)
 module Games.J where
 
 open import UF.FunExt
-open import Games.Base
 open import Games.Monad
 
 𝕁 : Type → Monad
@@ -23,39 +22,39 @@ open import Games.Monad
  }
 
 𝕁-transf : Fun-Ext → Monad → Type → Monad
-𝕁-transf fe 𝓣 R = monad J ηᴶ extᴶ extᴶ-η unitᴶ assocᴶ
+𝕁-transf fe 𝓣 R = monad JT ηᴶᵀ extᴶᵀ extᴶᵀ-η unitᴶᵀ assocᴶᵀ
  where
  T = functor 𝓣
 
- J : Type → Type
- J X = (X → T R) → T X
+ JT : Type → Type
+ JT X = (X → T R) → T X
 
- ηᴶ : {X : Type} → X → J X
- ηᴶ = λ x p → η 𝓣 x
+ ηᴶᵀ : {X : Type} → X → JT X
+ ηᴶᵀ = λ x p → η 𝓣 x
 
- extᴶ : {X Y : Type} → (X → J Y) → J X → J Y
- extᴶ f ε p = ext 𝓣 (λ x → f x p) (ε (λ x → ext 𝓣 p (f x p)))
+ extᴶᵀ : {X Y : Type} → (X → JT Y) → JT X → JT Y
+ extᴶᵀ f ε p = ext 𝓣 (λ x → f x p) (ε (λ x → ext 𝓣 p (f x p)))
 
- extᴶ-η : {X : Set} → extᴶ (ηᴶ {X}) ∼ 𝑖𝑑 (J X)
- extᴶ-η ε = dfunext fe λ p →
+ extᴶᵀ-η : {X : Set} → extᴶᵀ (ηᴶᵀ {X}) ∼ 𝑖𝑑 (JT X)
+ extᴶᵀ-η ε = dfunext fe λ p →
   ext 𝓣 (η 𝓣) (ε (λ x → ext 𝓣 p (η 𝓣 x))) ＝⟨ ext-η 𝓣 _ ⟩
   ε (λ x → ext 𝓣 p (η 𝓣 x))               ＝⟨ ap ε (dfunext fe (unit 𝓣 _)) ⟩
   ε p                                     ∎
 
- unitᴶ : {X Y : Type} (f : X → J Y) (x : X) → extᴶ f (ηᴶ x) ＝ f x
- unitᴶ f x = dfunext fe (λ p → unit 𝓣 (λ x → f x p) x)
+ unitᴶᵀ : {X Y : Type} (f : X → JT Y) (x : X) → extᴶᵀ f (ηᴶᵀ x) ＝ f x
+ unitᴶᵀ f x = dfunext fe (λ p → unit 𝓣 (λ x → f x p) x)
 
- assocᴶ : {X Y Z : Type} (g : Y → J Z) (f : X → J Y) (ε : J X)
-        → extᴶ (λ x → extᴶ g (f x)) ε ＝ extᴶ g (extᴶ f ε)
- assocᴶ g f ε = dfunext fe γ
+ assocᴶᵀ : {X Y Z : Type} (g : Y → JT Z) (f : X → JT Y) (ε : JT X)
+        → extᴶᵀ (λ x → extᴶᵀ g (f x)) ε ＝ extᴶᵀ g (extᴶᵀ f ε)
+ assocᴶᵀ g f ε = dfunext fe γ
   where
-   γ : ∀ p → extᴶ (λ x → extᴶ g (f x)) ε p ＝ extᴶ g (extᴶ f ε) p
+   γ : ∀ p → extᴶᵀ (λ x → extᴶᵀ g (f x)) ε p ＝ extᴶᵀ g (extᴶᵀ f ε) p
    γ p =
-    extᴶ (λ x → extᴶ g (f x)) ε p                  ＝⟨ refl ⟩
+    extᴶᵀ (λ x → extᴶᵀ g (f x)) ε p                 ＝⟨ refl ⟩
     𝕖 (λ x → 𝕖 𝕘 (𝕗 x)) (ε (λ x → 𝕖 p (𝕖 𝕘 (𝕗 x)))) ＝⟨ assoc 𝓣 _ _ _ ⟩
     𝕖 𝕘 (𝕖 𝕗 (ε (λ x → 𝕖 p (𝕖 𝕘 (𝕗 x)))))           ＝⟨ again-by-assoc ⟩
     𝕖 𝕘 (𝕖 𝕗 (ε (λ x → 𝕖 (λ y → 𝕖 p (𝕘 y)) (𝕗 x)))) ＝⟨ refl ⟩
-    extᴶ g (extᴶ f ε) p ∎
+    extᴶᵀ g (extᴶᵀ f ε) p ∎
      where
       𝕖 = ext 𝓣
       𝕘 = λ y → g y p
@@ -81,8 +80,8 @@ module J-definitions (R : Type) where
                         (ε : J X)
                         (δ : (x : X) → J (Y x))
                       → ε ⊗ᴶ δ ∼ (λ q → let
-                                         ν  = λ x → δ x (sub q x)
-                                         x₀ = ε (λ x → sub q x (ν x))
+                                         ν  = λ x → δ x (curry q x)
+                                         x₀ = ε (λ x → curry q x (ν x))
                                         in (x₀ , ν x₀))
  ⊗ᴶ-direct-definition ε δ q = refl
 
@@ -126,10 +125,10 @@ module JT-definitions
        → JT (Σ x ꞉ X , Y x)
  _⊗ᴶᵀ_ = _⊗_ (𝕁-transf fe 𝓣 R)
 
- overlineᵀ : {X : Type} → JT X → (X → T R) → R
- overlineᵀ ε = λ p → α (extᵀ p (ε p))
+ α-overlineᵀ : {X : Type} → JT X → (X → T R) → R
+ α-overlineᵀ ε = λ p → α (extᵀ p (ε p))
 
- _attainsᵀ_ : {X : Type} → JT X → K X → Type
- _attainsᵀ_ {X} ε ϕ = (p : X → T R) → overlineᵀ ε p ＝ ϕ (α ∘ p)
+ _α-attainsᵀ_ : {X : Type} → JT X → K X → Type
+ _α-attainsᵀ_ {X} ε ϕ = (p : X → T R) → α-overlineᵀ ε p ＝ ϕ (α ∘ p)
 
 \end{code}
