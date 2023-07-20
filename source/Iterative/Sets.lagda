@@ -173,8 +173,8 @@ A ∈ B = underlying-mset A ⁅ underlying-mset B
 \end{code}
 
 As is the case for iterative multisets, there is a resized down,
-equivalent definition of membership (we need the large and the small
-one):
+equivalent definition of membership, and we need the large and the
+small ones:
 
 \begin{code}
 
@@ -277,9 +277,9 @@ time, to establish the extensionality axiom for iterative sets:
 
 It follows that 𝕍 is 0-type, or set, in the sense of the HoTT
 book. But notice that we now have two notions of set in this
-discussion: the "material" (iterative set) and the "structural one"
-(0-type or set). The reader should keep this distinction in mind when
-reading the comments and code below.
+discussion: the "material" (iterative set) one and the "structural"
+one (0-type or set). The reader should keep this distinction in mind
+when reading the comments and code below.
 
 \begin{code}
 
@@ -316,7 +316,8 @@ if φ is an embedding.
 
 \end{code}
 
-And a particular case of this is that if M is an iterative set then M ＝ N is a proposition for every *multiset* N.
+And a particular case of this is that if M is an iterative set then M
+＝ N is a proposition for every *multiset* N.
 
 \begin{code}
 
@@ -327,7 +328,7 @@ isets-are-h-isolated (ssup X φ) (φ-emb , _) = 𝕄-ssup-is-h-isolated X φ φ-
 
 \end{code}
 
-Because a subtype of any type whatsoever consisting of isolated
+Because a subtype of any type whatsoever consisting of h-isolated
 elements is a 0-type, we get a second proof that the type of iterative
 sets is a 0-type.
 
@@ -388,7 +389,8 @@ It behaves as expected with respect to the corresponding destructors:
 Notice that the identifications are definitional.
 
 We have the following η rules for 𝕍, where the first is more gemeral
-and the second is more natural:
+and the second is more natural. In both cases the identifications are
+not definitional.
 
 \begin{code}
 
@@ -401,7 +403,7 @@ and the second is more natural:
 
 \end{code}
 
-Here is are two characterizations of the membership relation:
+Here are two characterizations of the membership relation:
 
 \begin{code}
 
@@ -428,7 +430,7 @@ Here is are two characterizations of the membership relation:
 
 \end{code}
 
-It also follows from the fact that 𝕍 is a set and that 𝕍-forest in an
+It also follows from the facts that 𝕍 is a set and that 𝕍-forest is an
 embedding that the root of any iterative set is a 0-type:
 
 \begin{code}

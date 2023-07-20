@@ -10,9 +10,9 @@ Iterative.Multisets, respectively.
 See the module Iterative.index for bibliographic references regarding
 this file.
 
-Iterative ordinals are defined in the same way as in constructive and
-non-constructive sets theories CZF and ZFC, following von Neumann, as
-transitive sets whose members are also transitive.
+Iterative ordinals are defined in the same way as in the constructive
+and non-constructive set theories CZF and ZFC, following von Neumann,
+as transitive sets whose members are also transitive.
 
 The main theorem in this module is that the iterative ordinals
 coincide with the HoTT-book ordinals. This builds on
@@ -119,11 +119,9 @@ members-of-iordinals-are-transitive : (A : 𝕍)
                                     → has-transitive-members A
 members-of-iordinals-are-transitive A = pr₂
 
-
 \end{code}
 
-It follows that every member of an iterative ordinal is an iterative
-ordinal itself.
+Every member of an iterative ordinal is an iterative ordinal itself.
 
 \begin{code}
 
@@ -180,8 +178,9 @@ underlying-iset-is-embedding = pr₁-is-embedding being-iordinal-is-prop
 
 \end{code}
 
-We define the less-than relation of ordinals to be the membership
-relation, as it is done in material set theory:
+We define the less-than relation on ordinals to be the membership
+relation, as it is done in material set theory under von Newmann's
+encoding:
 
 \begin{code}
 
@@ -191,8 +190,8 @@ _<_ : 𝕆 → 𝕆 → 𝓤⁺ ̇
 \end{code}
 
 As is the case for iterative sets, there is a resized down, equivalent
-definition of the less-than relation on ordinals (we need the large
-and the small one):
+definition of the less-than relation on ordinals, and we need the large
+and the small ones:
 
 \begin{code}
 
@@ -248,7 +247,7 @@ _≤_ : 𝕆 → 𝕆 → 𝓤⁺ ̇
 
 \end{code}
 
-We pause briefly to define root and forest "destructors":
+We pause briefly to define root and forest "destructors" for the type 𝕆:
 
 \begin{code}
 
@@ -438,7 +437,7 @@ The canonical "constructor" of elements of 𝕆:
 
 \end{code}
 
-It satisfies the expected properties:
+It satisfies the expected properties with respect to the destructors:
 
 \begin{code}
 
@@ -481,11 +480,10 @@ to-𝕆-＝-special X ϕ ϕ' e l e' l' refl = to-subtype-＝
                                          (to-subtype-＝
                                            being-iset-is-prop
                                            refl)
-
 \end{code}
 
 We now justify our notation "ssup" in comparison with the more
-traditional notion "sup" for the constructors.a
+traditional notion "sup" for the constructors.
 
 𝕆-ssup X ϕ e l is the unique ordinal whose predecessors are precisely
 the members of the family ϕ, which is known as the strict supremum (or
@@ -732,10 +730,10 @@ order of 𝕆, by definition:
 \end{code}
 
 We now define the map in the other direction, essentially in the same
-way as in Ordinals.CumulativeHierarchy, in several steps. The
-difference is that there one works with 𝕍ᵒʳᵈ rather than 𝕆, which is
-defined in terms of the presentation of 𝕍 as a higher-inductive type
-as in the HoTT book.
+way as in the module Ordinals.CumulativeHierarchy, in several
+steps. The difference is that there one works with 𝕍ᵒʳᵈ rather than 𝕆,
+which is defined in terms of the presentation of 𝕍 as a
+higher-inductive type as in the HoTT book.
 
 \begin{code}
 
@@ -749,7 +747,7 @@ Ord-to-𝕄-behaviour = transfinite-recursion-on-OO-behaviour 𝕄 (λ α → ss
 \end{code}
 
 This map is left cancellable and we will later conclude that it is an
-embedding using this favct.
+embedding using this fact.
 
 \begin{code}
 
@@ -797,7 +795,7 @@ Ord-to-𝕄-is-lc {α} {β} = transfinite-induction-on-OO _ f α β
 
 \end{code}
 
-Using this we can show that elements in the image of Ord-to-𝕄 are
+Using this we can show that the elements in the image of Ord-to-𝕄 are
 iterative sets, by induction on the ordinal of ordinals in the sense
 of the HoTT book.
 
@@ -858,11 +856,11 @@ We have the definitionally commutative triangle
                    v
                    𝕄
 
-We previously showed that Ord-to-𝕄 is left cancellable. Therefore,
-Ord-to-𝕍 is left cancellable as well. But 𝕍 is a 0-type, so Ord-to-𝕍
-is actually an embedding. Finally, underlying-mset is an embedding (as
-𝕍 is a subtype of 𝕄), so Ord-to-𝕄 is a composition of embeddings, and
-hence an embedding itself.
+We previously showed that Ord-to-𝕄 is left cancellable. Hence Ord-to-𝕍
+is left cancellable as well. But 𝕍 is a 0-type, so Ord-to-𝕍 is
+actually an embedding. Finally, underlying-mset is an embedding, as 𝕍
+is a subtype of 𝕄, so Ord-to-𝕄 is a composition of embeddings, and
+therefore an embedding itself.
 
 \begin{code}
 
@@ -888,7 +886,6 @@ Ord-to-𝕍↓-is-embedding : (α : Ord) → is-embedding (λ x → Ord-to-𝕍 
 Ord-to-𝕍↓-is-embedding α = ∘-is-embedding
                             (↓-is-embedding α)
                             Ord-to-𝕍-is-embedding
-
 \end{code}
 
 The following gives the body of a recursive characterization of
@@ -919,7 +916,6 @@ Ord-to-𝕍'-membership A α = ∈-behaviour
                             ⟨ α ⟩
                             (λ x → Ord-to-𝕍 (α ↓ x))
                             (Ord-to-𝕍↓-is-embedding α)
-
 \end{code}
 
 Ord-to-𝕍 is lower closed in the following sense:
@@ -998,7 +994,6 @@ Ord-to-𝕍-has-transitive-members α =
 Ord-to-𝕍-is-iordinal : (α : Ord) → is-iterative-ordinal (Ord-to-𝕍 α)
 Ord-to-𝕍-is-iordinal α = Ord-to-𝕍-is-transitive-iset α ,
                          Ord-to-𝕍-has-transitive-members α
-
 \end{code}
 
 From this we get the desired map Ord → 𝕆, which is easily seen to be
@@ -1015,10 +1010,9 @@ Ord-to-𝕆-is-embedding = pair-fun-is-embedding-special
                          Ord-to-𝕍-is-iordinal
                          Ord-to-𝕍-is-embedding
                          being-iordinal-is-prop
-
 \end{code}
 
-In order to show that this map is an equivalence, with inverse,
+In order to show that this map is an equivalence, with inverse
 𝕆-to-Ord, we need some preparation:
 
 \begin{code}
@@ -1068,10 +1062,11 @@ Ord-to-𝕆-behaviour α =
 \end{code}
 
 We now establish the following commutative square, which shows that
-doing "↓ x" on HoTT-book ordinals corresponds to doing "𝕆-forest - x"
-on iterative ordinals, along the correspondence 𝕆-to-Ord-square.
+doing "- ↓ x" on HoTT-book ordinals corresponds to doing
+"𝕆-forest - x" on iterative ordinals, along the correspondence
+𝕆-to-Ord-square.
 
-We perform a double induction: first on 𝕆 and then on the ordinal
+We perform a double induction, first on 𝕆 and then on the ordinal
 𝕆-to-Ord α.
 
 \begin{code}
@@ -1150,7 +1145,7 @@ We perform a double induction: first on 𝕆 and then on the ordinal
 
 \end{code}
 
-TODO. Question. Is induction really needed to prove the above?
+TODO. Is induction really needed to prove the above?
 
 From this square and the previous results, we easily deduce that the
 map Ord-to-𝕆 is an equivalence, by induction on 𝕆.
@@ -1251,7 +1246,7 @@ And a second application of the above commutative square shows that
 
 \end{code}
 
-Putting this together with get our desired isomorphism:
+Putting this together with get our desired isomorphism of ordinals:
 
 \begin{code}
 
@@ -1264,7 +1259,6 @@ Ordinals-agreementₒ = ⌜ Ordinals-≃ ⌝⁻¹ ,
                        ⌜ Ordinals-≃ ⌝⁻¹-is-equiv
                        𝕆-to-Ord-preserves-order
                        𝕆-to-Ord-reflects-order
-
 \end{code}
 
 Which then gives an identification between the two types, which is

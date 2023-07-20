@@ -73,7 +73,7 @@ W-to-𝕄 {X} {A} (ssup x f) = ssup (A x) (λ a → W-to-𝕄 (f a))
 
 \end{code}
 
-TODO. Is the above remark relevant in anyway?
+TODO. Is the above remark relevant in any way?
 
 In the case of ordinals, "ssup" stands for "strong supremum", "strict
 supremum" or "supremum of successors". See the module
