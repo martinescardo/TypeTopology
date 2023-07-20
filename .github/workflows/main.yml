@@ -16,11 +16,12 @@ jobs:
         uses: actions/checkout@v2
       - name: Run Agda
         id: typecheck
-        uses: georgejkaye/agda-github-action@v1.2
+        uses: georgejkaye/agda-github-action@v1.5
         with:
           main-file: index.lagda.md
           source-dir: source/TWA/Thesis/
           unsafe: true
+          css: https://www.cs.bham.ac.uk/~txw467/tychonoff/Agda.css
       - name: Deploy HTML to branch
         uses: s0/git-publish-subdir-action@develop
         if: github.event_name != 'pull_request'
