@@ -316,8 +316,8 @@ if φ is an embedding.
 
 \end{code}
 
-And a particular case of this is that if M is an iterative set then M
-＝ N is a proposition for every *multiset* N.
+And a particular case of this is that if M is an iterative set then
+M ＝ N is a proposition for every *multiset* N.
 
 \begin{code}
 
@@ -388,7 +388,7 @@ It behaves as expected with respect to the corresponding destructors:
 
 Notice that the identifications are definitional.
 
-We have the following η rules for 𝕍, where the first is more gemeral
+We have the following η rules for 𝕍, where the first is more general
 and the second is more natural. In both cases the identifications are
 not definitional.
 
