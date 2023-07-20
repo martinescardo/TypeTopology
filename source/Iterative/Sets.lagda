@@ -188,7 +188,7 @@ A ∈⁻ B = underlying-mset A ⁅⁻ underlying-mset B
 
 As discussed above, the membership relation becomes a proposition
 precisely because we required forests to be embeddings to define the
-subtype of iterative multisets.
+subtype of iterative sets.
 
 \begin{code}
 
