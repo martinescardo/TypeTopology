@@ -103,15 +103,6 @@ A criterion for equality in 𝕍:
 
 \begin{code}
 
-to-𝕍-＝ : {X Y : 𝓤 ̇ }
-          {φ : X → 𝕄}
-          {γ : Y → 𝕄}
-        → (Σ p ꞉ X ＝ Y , φ ＝ γ ∘ Idtofun p)
-        → (i : is-iterative-set (ssup X φ))
-          (j : is-iterative-set (ssup Y γ))
-        → (ssup X φ , i) ＝[ 𝕍 ] (ssup Y γ , j)
-to-𝕍-＝ σ i j = to-subtype-＝ being-iset-is-prop (to-𝕄-＝ σ)
-
 𝕍-root : 𝕍 → 𝓤 ̇
 𝕍-root A = 𝕄-root (underlying-mset A)
 
@@ -121,6 +112,15 @@ to-𝕍-＝ σ i j = to-subtype-＝ being-iset-is-prop (to-𝕄-＝ σ)
                 (underlying-mset A)
                 (isets-are-iterative A)
                 x
+
+to-𝕍-＝ : {X Y : 𝓤 ̇ }
+          {φ : X → 𝕄}
+          {γ : Y → 𝕄}
+        → (Σ p ꞉ X ＝ Y , φ ＝ γ ∘ Idtofun p)
+        → (i : is-iterative-set (ssup X φ))
+          (j : is-iterative-set (ssup Y γ))
+        → (ssup X φ , i) ＝[ 𝕍 ] (ssup Y γ , j)
+to-𝕍-＝ σ i j = to-subtype-＝ being-iset-is-prop (to-𝕄-＝ σ)
 
 _∈_ : 𝕍 → 𝕍 → 𝓤⁺ ̇
 A ∈ B = underlying-mset A ⁅ underlying-mset B
@@ -270,8 +270,12 @@ discussing ordinals.
               → 𝕍-forest (𝕍-ssup X ϕ e) ＝ ϕ
 𝕍-ssup-forest X ϕ e = refl
 
+𝕍-η' : (A : 𝕍) (e : is-embedding (𝕍-forest A))
+     → 𝕍-ssup (𝕍-root A) (𝕍-forest A) e ＝ A
+𝕍-η' (ssup _ _ , _) _ = to-subtype-＝ being-iset-is-prop refl
+
 𝕍-η : (A : 𝕍) → 𝕍-ssup (𝕍-root A) (𝕍-forest A) (𝕍-forest-is-embedding A) ＝ A
-𝕍-η (ssup _ _ , _) = to-subtype-＝ being-iset-is-prop refl
+𝕍-η A = 𝕍-η' A (𝕍-forest-is-embedding A)
 
 \end{code}
 

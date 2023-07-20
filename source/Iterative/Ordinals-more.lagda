@@ -63,8 +63,8 @@ We perform a double induction: first on 𝕆 and then on the ordinal (𝕆-to-Or
  where
   inductive-proof₁ : (α : 𝕆)
                    → ((x : 𝕆-root α) (y : 𝕆-root (𝕆-forest α x))
-                         →    𝕆-to-Ord (𝕆-forest α x) ↓ y
-                           ＝ 𝕆-to-Ord (𝕆-forest (𝕆-forest α x) y))
+                         →  𝕆-to-Ord (𝕆-forest α x) ↓ y
+                         ＝ 𝕆-to-Ord (𝕆-forest (𝕆-forest α x) y))
                    → (x : 𝕆-root α) → (𝕆-to-Ord α ↓ x) ＝ 𝕆-to-Ord (𝕆-forest α x)
   inductive-proof₁ α IH₁ = Transfinite-induction (𝕆-to-Ord α) _ inductive-proof₂
    where
@@ -101,6 +101,7 @@ We perform a double induction: first on 𝕆 and then on the ordinal (𝕆-to-Or
        where
         note : 𝕆-root (𝕆-forest α x) ＝ ⟨ 𝕆-to-Ord (𝕆-forest α x) ⟩
         note = refl
+
         iterated-𝕆-forest₂ : Σ y' ꞉ 𝕆-root α ,
                              𝕆-forest α y' ＝ 𝕆-forest (𝕆-forest α x) y
         iterated-𝕆-forest₂ = 𝕆-forest-is-lower-closed
@@ -126,7 +127,7 @@ We perform a double induction: first on 𝕆 and then on the ordinal (𝕆-to-Or
           ⦅1⦆ = iterated-↓ (𝕆-to-Ord α) x y' l'
           ⦅2⦆ = IH₂ y' l'
           ⦅3⦆ = ap 𝕆-to-Ord eq'
-          ⦅4⦆ = (IH₁ x y) ⁻¹
+          ⦅4⦆ = (IH₁ x y)⁻¹
 
 𝕆-to-Ord-preserves-< : (α β : 𝕆) → α < β → 𝕆-to-Ord α ⊲ 𝕆-to-Ord β
 𝕆-to-Ord-preserves-< α β l = II I
@@ -154,17 +155,29 @@ Ord-to-𝕆-is-equiv = embeddings-with-sections-are-equivs
     → Ord-to-𝕆 (𝕆-to-Ord α) ＝ α
   f α g =
    Ord-to-𝕆 (𝕆-to-Ord α) ＝⟨ I ⟩
-   𝕆-ssup (𝕆-root α) (λ x → Ord-to-𝕆 (𝕆-to-Ord α ↓ x)) a b ＝⟨ II ⟩
-   𝕆-ssup (𝕆-root α) (λ x → Ord-to-𝕆 (𝕆-to-Ord (𝕆-forest α x))) {!!} {!!} ＝⟨ {!!} ⟩
-   {!!} ＝⟨ III ⟩
-   𝕆-ssup (𝕆-root α) (𝕆-forest α) {!!} {!!} ＝⟨ 𝕆-η α ⟩
-   α ∎
+   𝕆-ssup (𝕆-root α) (λ x → Ord-to-𝕆 (𝕆-to-Ord α ↓ x)) e l ＝⟨ II ⟩
+   𝕆-ssup (𝕆-root α) (𝕆-forest α) e' l'                    ＝⟨ 𝕆-η α ⟩
+   α                                                       ∎
     where
-     a = Ord-to-𝕆↓-is-embedding (𝕆-to-Ord α)
-     b = Ord-to-𝕆↓-is-lower-closed (𝕆-to-Ord α)
+     e = Ord-to-𝕆↓-is-embedding (𝕆-to-Ord α)
+     l = Ord-to-𝕆↓-is-lower-closed (𝕆-to-Ord α)
+
      I   = Ord-to-𝕆-behaviour (𝕆-to-Ord α)
-     II  = ap (λ - → 𝕆-ssup (𝕆-root α) (Ord-to-𝕆 ∘ -) {!!} {!!}) (dfunext fe (𝕆-to-Ord-lemma α))
-     III = ap (λ - → 𝕆-ssup (𝕆-root α) - {!!} {!!}) (dfunext fe g)
+
+     e' = 𝕆-forest-is-embedding α
+     l' = 𝕆-forest-is-lower-closed α
+
+     II' = λ x →
+      Ord-to-𝕆 (𝕆-to-Ord α ↓ x)          ＝⟨ ap Ord-to-𝕆 (𝕆-to-Ord-lemma α x) ⟩
+      Ord-to-𝕆 (𝕆-to-Ord (𝕆-forest α x)) ＝⟨ g x ⟩
+      𝕆-forest α x                       ∎
+
+     II  = to-𝕆-＝-special
+            (𝕆-root α)
+            (λ x → Ord-to-𝕆 (𝕆-to-Ord α ↓ x))
+            (𝕆-forest α)
+            e l e' l'
+            (dfunext fe II')
 
   η : Ord-to-𝕆 ∘ 𝕆-to-Ord ∼ id
   η = 𝕆-induction' _ f
@@ -184,7 +197,6 @@ Ordinals-≃ = Ord-to-𝕆 , Ord-to-𝕆-is-equiv
 
   III : α < β
   III = ⌜ <-behaviour α β ⌝⁻¹ (y , II)
-
 
 Ordinals-agreementₒ : 𝓞 ≃ₒ OO 𝓤
 Ordinals-agreementₒ = ⌜ Ordinals-≃ ⌝⁻¹ ,

@@ -257,7 +257,7 @@ TODO. Can the following construction be made more transparent?
 \begin{code}
 
 𝕆-ssup : (X : 𝓤 ̇ ) (ϕ : X → 𝕆) → is-embedding ϕ → is-lower-closed ϕ → 𝕆
-𝕆-ssup X ϕ ϕ-emb ϕ-lower = A , io
+𝕆-ssup X ϕ ϕ-emb ϕ-lower = A , A-is-iord
  where
   φ : X → 𝕍
   φ = underlying-iset ∘ ϕ
@@ -317,8 +317,8 @@ TODO. Can the following construction be made more transparent?
   III : (B : 𝕍) → B ∈ A → is-transitive-iset B
   III B m = iordinals-are-transitive B (I B m)
 
-  io : is-iterative-ordinal A
-  io = II , III
+  A-is-iord : is-iterative-ordinal A
+  A-is-iord = II , III
 
 𝕆-ssup-root : (X : 𝓤 ̇ )
               (ϕ : X → 𝕆) (e : is-embedding ϕ) (l : is-lower-closed ϕ)
@@ -330,21 +330,28 @@ TODO. Can the following construction be made more transparent?
               → 𝕆-forest (𝕆-ssup X ϕ e l) ∼ ϕ
 𝕆-ssup-forest X ϕ e l x = to-subtype-＝ being-iordinal-is-prop refl
 
+to-𝕆-＝-special : (X : 𝓤 ̇ ) (ϕ ϕ' : X → 𝕆)
+                  (e  : is-embedding ϕ ) (l  : is-lower-closed ϕ )
+                  (e' : is-embedding ϕ') (l' : is-lower-closed ϕ')
+                → ϕ ＝ ϕ'
+                → 𝕆-ssup X ϕ e l ＝ 𝕆-ssup X ϕ' e' l'
+to-𝕆-＝-special X ϕ ϕ' e l e' l' refl = to-subtype-＝
+                                         being-iordinal-is-prop
+                                         (to-subtype-＝
+                                           being-iset-is-prop
+                                           refl)
+
+𝕆-η' : (α : 𝕆) (e : is-embedding (𝕆-forest α)) (l : is-lower-closed (𝕆-forest α))
+     → 𝕆-ssup (𝕆-root α) (𝕆-forest α) e l ＝ α
+𝕆-η' (A@(ssup _ _ , _) , _) _ _ = to-subtype-＝ being-iordinal-is-prop (𝕍-η' A _)
+
 𝕆-η : (α : 𝕆)
     → 𝕆-ssup (𝕆-root α)
              (𝕆-forest α)
              (𝕆-forest-is-embedding α)
              (𝕆-forest-is-lower-closed α)
     ＝ α
-𝕆-η (A@(ssup _ _ , _) , _) =  to-subtype-＝ being-iordinal-is-prop (p _)
- where
-  p : (e : is-embedding (𝕍-forest (ssup _ _ , _)))
-    → 𝕍-ssup (𝕍-root A) (𝕍-forest A) e ＝ A
-  p e = 𝕍-ssup (𝕍-root A) (𝕍-forest A) e                         ＝⟨ I ⟩
-        𝕍-ssup (𝕍-root A) (𝕍-forest A) (𝕍-forest-is-embedding A) ＝⟨ 𝕍-η A ⟩
-        A                                                        ∎
-         where
-          I = ap (𝕍-ssup (𝕍-root A) (𝕍-forest A)) (being-embedding-is-prop fe _ _ _)
+𝕆-η A =  𝕆-η' A (𝕆-forest-is-embedding A) (𝕆-forest-is-lower-closed A)
 
 \end{code}
 
@@ -573,7 +580,7 @@ Ord = Ordinal 𝓤
 
 𝕆-to-Ord-order : (α : 𝕆) (x y : ⟨ 𝕆-to-Ord α ⟩)
                → (𝕆-forest α x < 𝕆-forest α y) ≃ (x ≺⟨ 𝕆-to-Ord α ⟩ y)
-𝕆-to-Ord-order α x y =  <⁻≃-< (𝕆-forest α x) (𝕆-forest α y)
+𝕆-to-Ord-order α x y = <⁻≃-< (𝕆-forest α x) (𝕆-forest α y)
 
 \end{code}
 
