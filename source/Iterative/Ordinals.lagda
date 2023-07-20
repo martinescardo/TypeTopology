@@ -585,8 +585,8 @@ Ord = Ordinal 𝓤
 \end{code}
 
 We now define the map in the other direction, essentially in the same
-way as in Ordinals.CumulativeHierarchy. The difference that there one
-works with 𝕍ᵒʳᵈ rather than 𝕆, which is defined in terms of the
+way as in Ordinals.CumulativeHierarchy. The difference is that there
+one works with 𝕍ᵒʳᵈ rather than 𝕆, which is defined in terms of the
 presentation of 𝕍 as a higher-inductive type as in the HoTT book.
 
 \begin{code}
