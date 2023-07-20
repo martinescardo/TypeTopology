@@ -2,6 +2,9 @@ Martin Escardo & Tom de Jong, June 2023.
 
 Iterative multisets.
 
+See the module Iterative.index for bibliographic references regarding
+this file.
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K --exact-split #-}
@@ -57,10 +60,10 @@ private
 
 Maybe add the proof that the above two functions are mutually
 inverse. But the only point of adding them is to make sure that the
-above comment remains valid if any change is made, and the above two
-definitions seems to be enough for that purpose.
+above comment remains valid if any change is made in the code, and the
+above two definitions seem to be enough for that purpose.
 
-Every W-type can be mapped to 𝕄 as follows:
+Aside. Every W-type can be mapped to 𝕄 as follows:
 
 \begin{code}
 
@@ -70,8 +73,13 @@ W-to-𝕄 {X} {A} (ssup x f) = ssup (A x) (λ a → W-to-𝕄 (f a))
 
 \end{code}
 
-In the case of ordinals, ssup stands for "strong supremum", "strict
-supremum" or "supremum of successors.
+TODO. Is the above remark relevant in anyway?
+
+In the case of ordinals, "ssup" stands for "strong supremum", "strict
+supremum" or "supremum of successors". See the module
+Iterative.Ordinals.
+
+The two destructors:
 
 \begin{code}
 
@@ -81,19 +89,68 @@ supremum" or "supremum of successors.
 𝕄-forest : (M : 𝕄) → 𝕄-root M → 𝕄
 𝕄-forest = W-forest
 
+\end{code}
+
+The following properties of the above two destructors hold
+definitionally;
+
+\begin{code}
+
+𝕄-ssup-root : (X : 𝓤 ̇ ) (φ : X → 𝕄)
+            → 𝕄-root (ssup X φ) ＝ X
+𝕄-ssup-root X φ = refl
+
+𝕄-ssup-forest : (X : 𝓤 ̇ ) (φ : X → 𝕄)
+              → 𝕄-forest (ssup X φ) ＝ φ
+𝕄-ssup-forest X φ = refl
+
+\end{code}
+
+But the η-law holds only up to an identification:
+
+\begin{code}
+
+𝕄-η : (M : 𝕄)
+    → ssup (𝕄-root M) (𝕄-forest M) ＝ M
+𝕄-η (ssup _ _) = refl
+
+\end{code}
+
+The membership relation for multisets:
+
+\begin{code}
+
 _⁅_ : 𝕄 → 𝕄 → 𝓤⁺ ̇
 M ⁅ N = Σ x ꞉ 𝕄-root N , 𝕄-forest N x ＝ M
 
 \end{code}
 
-The induction principle for 𝕄:
+The relation M ⁅ N can hold in multiple ways in general. We can think
+of M ⁅ N as measuring how many times M occurs as an element on N.
+
+Notice the following:
+
+\begin{code}
+
+private
+ ⁅-remark : (M N : 𝕄)
+          → (M ⁅ N) ＝ fiber (𝕄-forest N) M
+ ⁅-remark M N = refl
+
+\end{code}
+
+In particular, if 𝕄-forest N is an embedding, then M ⁅ N holds in at
+most one way. This situation is investigated in the module
+Iterative.Multisets.
+
+The induction principle for 𝕄, and particular cases:
 
 \begin{code}
 
 𝕄-induction : (P : 𝕄 → 𝓥 ̇ )
-            → ((X : 𝓤 ̇ ) (ϕ : X → 𝕄)
-                  → ((x : X) → P (ϕ x))
-                  → P (ssup X ϕ))
+            → ((X : 𝓤 ̇ ) (φ : X → 𝕄)
+                  → ((x : X) → P (φ x))
+                  → P (ssup X φ))
             → (M : 𝕄) → P M
 𝕄-induction = W-induction
 
@@ -157,7 +214,10 @@ to-from-𝕄-＝ = to-from-W-＝
 
 \end{code}
 
-We now show that 𝕄 is locally small assuming univalence.
+The above works in pure MLTT without any HoTT/UF assumptions.
+
+We now show that 𝕄 is locally small assuming univalence. For this
+purposes, we characterize identification of multisets as follows.
 
 TODO. Notice that there is some ammount of repetition compared with
 Iterative.W-Properties. Can we avoid it by proving something more
@@ -232,8 +292,21 @@ idtoeqᴹ-is-equiv ua M = I
 𝕄-=-≃ : Univalence → (M N : 𝕄) → (M ＝ N) ≃ (M ≃ᴹ N)
 𝕄-=-≃ ua M N = idtoeqᴹ M N , idtoeqᴹ-is-equiv ua M N
 
+\end{code}
+
+And here is the desired conclusion:
+
+\begin{code}
+
 𝕄-is-locally-small : Univalence → is-locally-small 𝕄
 𝕄-is-locally-small ua M N = M ≃ᴹ N , ≃-sym (𝕄-=-≃ ua M N)
+
+\end{code}
+
+Not only the type of identifications of elements of 𝕄 has a small
+copy, but also so does the (multi-valued) membership relation:
+
+\begin{code}
 
 _⁅⁻_ : 𝕄 → 𝕄 → 𝓤 ̇
 M ⁅⁻ N = Σ x ꞉ 𝕄-root N , 𝕄-forest N x ≃ᴹ M

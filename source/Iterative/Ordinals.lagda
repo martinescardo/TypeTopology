@@ -2,6 +2,34 @@ Martin Escardo & Tom de Jong, June 2023.
 
 Iterative ordinals.
 
+We define the type of iterative ordinals as a subtype of that of
+iterative sets, which in turn, is defined a subtype of that of
+iterative multisets, defined in the modules Iterative.Sets and
+Iterative.Multisets, respectively.
+
+See the module Iterative.index for bibliographic references regarding
+this file.
+
+Iterative ordinals are defined in the same way as in constructive and
+non-constructive sets theories CZF and ZFC, following von Neumann, as
+transitive sets whose members are also transitive.
+
+The main theorem in this module is that the iterative ordinals
+coincide with the HoTT-book ordinals. This builds on
+
+  * Tom de Jong, Nicolai Kraus, Fredrik Nordvall Forsberg and
+    Chuangjie Xu. "Set-Theoretic and Type-Theoretic Ordinals
+    Coincide". To appear at LICS 2023, June 2023.
+    https://arxiv.org/abs/2301.10696
+
+The difference is that instead of using the HoTT-book higher-inductive
+definition of the cumulative hierarchy, we use Gylterud's
+construction.
+
+  * H. R. Gylterud, "From multisets to sets in homotopy type theory".
+    The Journal of Symbolic Logic, vol. 83, no. 3, pp. 1132–1146,
+    2018. https://doi.org/10.1017/jsl.2017.84
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K --exact-split --lossy-unification #-}
@@ -48,7 +76,8 @@ open import UF.Subsingletons-FunExt
 
 \end{code}
 
-An iterative ordinal is a transitive iterative set.
+An iterative ordinal is a transitive iterative set whose members are
+also transitive.
 
 \begin{code}
 
@@ -68,6 +97,18 @@ having-transitive-members-is-prop A =
 is-iterative-ordinal : 𝕍 → 𝓤⁺ ̇
 is-iterative-ordinal A = is-transitive-iset A × has-transitive-members A
 
+being-iordinal-is-prop : (A : 𝕍) → is-prop (is-iterative-ordinal A)
+being-iordinal-is-prop A =
+ ×-is-prop
+  (being-transitive-iset-is-prop A)
+  (having-transitive-members-is-prop A)
+
+\end{code}
+
+We name the projections for the sake of clarity:
+
+\begin{code}
+
 iordinals-are-transitive : (A : 𝕍)
                          → is-iterative-ordinal A
                          → is-transitive-iset A
@@ -78,11 +119,13 @@ members-of-iordinals-are-transitive : (A : 𝕍)
                                     → has-transitive-members A
 members-of-iordinals-are-transitive A = pr₂
 
-being-iordinal-is-prop : (A : 𝕍) → is-prop (is-iterative-ordinal A)
-being-iordinal-is-prop A =
- ×-is-prop
-  (being-transitive-iset-is-prop A)
-  (having-transitive-members-is-prop A)
+
+\end{code}
+
+It follows that every member of an iterative ordinal is an iterative
+ordinal itself.
+
+\begin{code}
 
 ordinal-is-hereditary : (A B : 𝕍)
                       → B ∈ A
@@ -101,7 +144,8 @@ ordinal-is-hereditary A B B-in-A (A-trans , A-members-trans) = III
 
 \end{code}
 
-The type of iterative ordinals.
+The type of iterative ordinals is defined as a subtype of that of
+iterative sets.
 
 \begin{code}
 
@@ -112,18 +156,45 @@ The type of iterative ordinals.
 𝕆-is-locally-small = subtype-is-locally-small
                       being-iordinal-is-prop
                       𝕍-is-locally-small
+\end{code}
+
+We again name the projections for the sake of clarity:
+
+\begin{code}
 
 underlying-iset : 𝕆 → 𝕍
 underlying-iset = pr₁
 
-underlying-iset-is-embedding : is-embedding underlying-iset
-underlying-iset-is-embedding = pr₁-is-embedding being-iordinal-is-prop
-
 underlying-iset-is-iordinal : (α : 𝕆) → is-iterative-ordinal (underlying-iset α)
 underlying-iset-is-iordinal = pr₂
 
+\end{code}
+
+Because the notion of iterative ordinal is property, we get that 𝕆 is
+a subtype of 𝕍.
+
+\begin{code}
+
+underlying-iset-is-embedding : is-embedding underlying-iset
+underlying-iset-is-embedding = pr₁-is-embedding being-iordinal-is-prop
+
+\end{code}
+
+We define the less-than relation of ordinals to be the membership
+relation, as it is done in material set theory:
+
+\begin{code}
+
 _<_ : 𝕆 → 𝕆 → 𝓤⁺ ̇
 α < β = underlying-iset α ∈ underlying-iset β
+
+\end{code}
+
+As is the case for iterative sets, there is a resized down, equivalent
+definition of the less-than relation on ordinals (we need the large
+and the small one):
+
+\begin{code}
 
 _<⁻_ : 𝕆 → 𝕆 → 𝓤 ̇
 α <⁻ β = underlying-iset α ∈⁻ underlying-iset β
@@ -133,6 +204,13 @@ _<⁻_ : 𝕆 → 𝕆 → 𝓤 ̇
 
 <-is-prop-valued : (α β : 𝕆) → is-prop (α < β)
 <-is-prop-valued (A , _) (B , _) = ∈-is-prop-valued A B
+
+\end{code}
+
+We now show that this order is transitive, extensional and accessible,
+so that 𝕆 is an ordinal in the sense of the HoTT book.
+
+\begin{code}
 
 <-is-transitive : (α β γ : 𝕆) → α < β → β < γ → α < γ
 <-is-transitive (A , _) (B , _) (C , C-trans , _) u v = I
@@ -168,6 +246,12 @@ _≤_ : 𝕆 → 𝕆 → 𝓤⁺ ̇
     I₃ : C ∈ B
     I₃ = u (C , I₁ , I₂) C-in-A
 
+\end{code}
+
+We pause briefly to define root and forest "destructors":
+
+\begin{code}
+
 𝕆-root : 𝕆 → 𝓤 ̇
 𝕆-root α = 𝕍-root (underlying-iset α)
 
@@ -181,8 +265,21 @@ _≤_ : 𝕆 → 𝕆 → 𝓤⁺ ̇
  where
   A = underlying-iset α
 
+\end{code}
+
+By definition, any (immediate) subtree of α is less than α:
+
+\begin{code}
+
 𝕆-forest-is-< : (α : 𝕆) (x : 𝕆-root α) → 𝕆-forest α x < α
 𝕆-forest-is-< α = 𝕍-forest-is-∈ (underlying-iset α)
+
+\end{code}
+
+The 𝕆-forest map is an embedding, which follows from the fact that the
+𝕍-forest map is an embedding:
+
+\begin{code}
 
 𝕆-forest-is-embedding : (α : 𝕆) → is-embedding (𝕆-forest α)
 𝕆-forest-is-embedding α@(A@(ssup _ _ , _) , _) =
@@ -191,6 +288,13 @@ _≤_ : 𝕆 → 𝕆 → 𝓤⁺ ̇
   (underlying-iset-is-iordinal ∘ 𝕆-forest α)
   (𝕍-forest-is-embedding A)
   being-iordinal-is-prop
+
+\end{code}
+
+The antisymmetry of the ≤ relation, which amounts to the
+extensionality condition:
+
+\begin{code}
 
 ≤-is-antisymmetric : (α β : 𝕆) → α ≤ β → β ≤ α → α ＝ β
 ≤-is-antisymmetric α@(A , _) β@(B , _) u v = II
@@ -203,6 +307,12 @@ _≤_ : 𝕆 → 𝕆 → 𝓤⁺ ̇
 
 <-is-extensional : is-extensional _<_
 <-is-extensional = ≤-is-antisymmetric
+
+\end{code}
+
+A characterization of the < relation:
+
+\begin{code}
 
 <-behaviour : (α β : 𝕆)
             → (α < β) ≃ (Σ y ꞉ 𝕆-root β , 𝕆-forest β y ＝ α)
@@ -226,6 +336,12 @@ _≤_ : 𝕆 → 𝕆 → 𝓤⁺ ̇
 
   II : (Σ y ꞉ Y , γ y ＝ M) ≃ (Σ y ꞉ Y , 𝕆-forest β y ＝ α)
   II = Σ-cong I
+
+\end{code}
+
+The 𝕆-forest map is lower closed:
+
+\begin{code}
 
 is-lower-closed : {X : 𝓤 ̇ } → (X → 𝕆) → 𝓤⁺ ̇
 is-lower-closed {X} ϕ = (x : X) (β : 𝕆) → β < ϕ x → Σ y ꞉ X , ϕ y ＝ β
@@ -252,7 +368,7 @@ being-lower-closed-is-prop ϕ e = Π₃-is-prop fe (λ x β _ → e β)
 
 \end{code}
 
-TODO. Can the following construction be made more transparent?
+The canonical "constructor" of elements of 𝕆:
 
 \begin{code}
 
@@ -320,6 +436,12 @@ TODO. Can the following construction be made more transparent?
   A-is-iord : is-iterative-ordinal A
   A-is-iord = II , III
 
+\end{code}
+
+It satisfies the expected properties:
+
+\begin{code}
+
 𝕆-ssup-root : (X : 𝓤 ̇ )
               (ϕ : X → 𝕆) (e : is-embedding ϕ) (l : is-lower-closed ϕ)
             → 𝕆-root (𝕆-ssup X ϕ e l) ＝ X
@@ -329,17 +451,6 @@ TODO. Can the following construction be made more transparent?
                 (ϕ : X → 𝕆) (e : is-embedding ϕ) (l : is-lower-closed ϕ)
               → 𝕆-forest (𝕆-ssup X ϕ e l) ∼ ϕ
 𝕆-ssup-forest X ϕ e l x = to-subtype-＝ being-iordinal-is-prop refl
-
-to-𝕆-＝-special : (X : 𝓤 ̇ ) (ϕ ϕ' : X → 𝕆)
-                  (e  : is-embedding ϕ ) (l  : is-lower-closed ϕ )
-                  (e' : is-embedding ϕ') (l' : is-lower-closed ϕ')
-                → ϕ ＝ ϕ'
-                → 𝕆-ssup X ϕ e l ＝ 𝕆-ssup X ϕ' e' l'
-to-𝕆-＝-special X ϕ ϕ' e l e' l' refl = to-subtype-＝
-                                         being-iordinal-is-prop
-                                         (to-subtype-＝
-                                           being-iset-is-prop
-                                           refl)
 
 𝕆-η' : (α : 𝕆) (e : is-embedding (𝕆-forest α)) (l : is-lower-closed (𝕆-forest α))
      → 𝕆-ssup (𝕆-root α) (𝕆-forest α) e l ＝ α
@@ -354,6 +465,27 @@ to-𝕆-＝-special X ϕ ϕ' e l e' l' refl = to-subtype-＝
 𝕆-η A =  𝕆-η' A (𝕆-forest-is-embedding A) (𝕆-forest-is-lower-closed A)
 
 \end{code}
+
+A criterion for equality in 𝕆, which is much less general than we can
+have, but enough for our purposes for the moment:
+
+\begin{code}
+
+to-𝕆-＝-special : (X : 𝓤 ̇ ) (ϕ ϕ' : X → 𝕆)
+                  (e  : is-embedding ϕ ) (l  : is-lower-closed ϕ )
+                  (e' : is-embedding ϕ') (l' : is-lower-closed ϕ')
+                → ϕ ＝ ϕ'
+                → 𝕆-ssup X ϕ e l ＝ 𝕆-ssup X ϕ' e' l'
+to-𝕆-＝-special X ϕ ϕ' e l e' l' refl = to-subtype-＝
+                                         being-iordinal-is-prop
+                                         (to-subtype-＝
+                                           being-iset-is-prop
+                                           refl)
+
+\end{code}
+
+We now justify our notation "ssup" in comparison with the more
+traditional notion "sup" for the constructors.a
 
 𝕆-ssup X ϕ e l is the unique ordinal whose predecessors are precisely
 the members of the family ϕ, which is known as the strict supremum (or
@@ -372,6 +504,12 @@ successor supremum, or strong supremum) of ϕ, and is also its rank.
  where
   I  = <-behaviour α (𝕆-ssup X ϕ e l)
   II = Σ-cong (λ x → ＝-cong-l _ _ (𝕆-ssup-forest X ϕ e l x))
+
+\end{code}
+
+We now discuss various equivalent induction principles on 𝕆.
+
+\begin{code}
 
 𝕆-induction' : (P : 𝕆 → 𝓥 ̇ )
              → ((α : 𝕆) → ((x : 𝕆-root α) → P (𝕆-forest α x)) → P α)
@@ -406,8 +544,9 @@ It would be nice if we could define 𝕆 as follows:
 However, this is not a strictly positive definition, for the criterion
 of strict positivity used by Agda, and so it is not accepted.
 
-Nevertheless, all iterative ordinals *are* generated by the
-"constructor" 𝕆-ssup, in the following sense:
+Nevertheless, all iterative ordinals *are* generated by the "constructor"
+𝕆-ssup, in the following sense, so that we can view 𝕆 as really
+defined by the above data declaration.
 
 \begin{code}
 
@@ -467,9 +606,7 @@ induction.
 
 \end{code}
 
-TODO. Can we get <-induction in a more transparent way?
-
-Which in turn gives the accessibility of the order:
+Which in turn gives the accessibility of the order directly:
 
 \begin{code}
 
@@ -493,6 +630,9 @@ book.
     <-is-transitive
 
 \end{code}
+
+We now want to show that 𝓞 is equivalent to the "ordinal of ordinals"
+in the sense of the HoTT book.
 
 Every iterative ordinal can be mapped to a HoTT-book ordinal:
 
@@ -578,6 +718,13 @@ Ord = Ordinal 𝓤
   α' : Ord
   α' = X , _≺⁻_ , ≺⁻-is-well-order
 
+\end{code}
+
+The order of 𝕆-to-Ord α is characterized as follows in terms of the
+order of 𝕆, by definition:
+
+\begin{code}
+
 𝕆-to-Ord-order : (α : 𝕆) (x y : ⟨ 𝕆-to-Ord α ⟩)
                → (𝕆-forest α x < 𝕆-forest α y) ≃ (x ≺⟨ 𝕆-to-Ord α ⟩ y)
 𝕆-to-Ord-order α x y = <⁻≃-< (𝕆-forest α x) (𝕆-forest α y)
@@ -585,9 +732,10 @@ Ord = Ordinal 𝓤
 \end{code}
 
 We now define the map in the other direction, essentially in the same
-way as in Ordinals.CumulativeHierarchy. The difference is that there
-one works with 𝕍ᵒʳᵈ rather than 𝕆, which is defined in terms of the
-presentation of 𝕍 as a higher-inductive type as in the HoTT book.
+way as in Ordinals.CumulativeHierarchy, in several steps. The
+difference is that there one works with 𝕍ᵒʳᵈ rather than 𝕆, which is
+defined in terms of the presentation of 𝕍 as a higher-inductive type
+as in the HoTT book.
 
 \begin{code}
 
@@ -597,6 +745,13 @@ Ord-to-𝕄 = transfinite-recursion-on-OO 𝕄 (λ α → ssup ⟨ α ⟩)
 Ord-to-𝕄-behaviour : (α : Ord)
                    → Ord-to-𝕄 α ＝ ssup ⟨ α ⟩ (λ (x : ⟨ α ⟩) → Ord-to-𝕄 (α ↓ x))
 Ord-to-𝕄-behaviour = transfinite-recursion-on-OO-behaviour 𝕄 (λ α → ssup ⟨ α ⟩)
+
+\end{code}
+
+This map is left cancellable and we will later conclude that it is an
+embedding using this favct.
+
+\begin{code}
 
 Ord-to-𝕄-is-lc : left-cancellable Ord-to-𝕄
 Ord-to-𝕄-is-lc {α} {β} = transfinite-induction-on-OO _ f α β
@@ -640,6 +795,14 @@ Ord-to-𝕄-is-lc {α} {β} = transfinite-induction-on-OO _ f α β
     VI' : β ≼ α
     VI' = to-≼ V'
 
+\end{code}
+
+Using this we can show that elements in the image of Ord-to-𝕄 are
+iterative sets, by induction on the ordinal of ordinals in the sense
+of the HoTT book.
+
+\begin{code}
+
 Ord-to-𝕄-is-iset : (α : Ord) → is-iterative-set (Ord-to-𝕄 α)
 Ord-to-𝕄-is-iset = transfinite-induction-on-OO _ f
  where
@@ -671,10 +834,18 @@ Ord-to-𝕄-is-iset = transfinite-induction-on-OO _ f
                 (λ x → isets-are-h-isolated (Ord-to-𝕄 (α ↓ x)) (IH x))
                 V
 
+\end{code}
+
+So we get a map Ord → 𝕍 from the above map Ord → 𝕄.
+
+\begin{code}
+
 Ord-to-𝕍 : Ord → 𝕍
 Ord-to-𝕍 α = Ord-to-𝕄 α , Ord-to-𝕄-is-iset α
 
 \end{code}
+
+The next step is to get a map Ord → 𝕆 from this map Ord-to-𝕍.
 
 We have the definitionally commutative triangle
 
@@ -718,6 +889,13 @@ Ord-to-𝕍↓-is-embedding α = ∘-is-embedding
                             (↓-is-embedding α)
                             Ord-to-𝕍-is-embedding
 
+\end{code}
+
+The following gives the body of a recursive characterization of
+Ord-to-𝕍:
+
+\begin{code}
+
 Ord-to-𝕍' : Ord → 𝕍
 Ord-to-𝕍' α = 𝕍-ssup ⟨ α ⟩
                      (λ (x : ⟨ α ⟩) → Ord-to-𝕍 (α ↓ x))
@@ -727,6 +905,13 @@ Ord-to-𝕍-behaviour : (α : Ord)
                    → Ord-to-𝕍 α ＝ Ord-to-𝕍' α
 Ord-to-𝕍-behaviour α = to-subtype-＝ being-iset-is-prop (Ord-to-𝕄-behaviour α)
 
+\end{code}
+
+We now show that Ord-to-𝕍 α is an iterative ordinal. The proof
+doesn't require induction. We begin with a useful observation.
+
+\begin{code}
+
 Ord-to-𝕍'-membership : (A : 𝕍) (α : Ord)
                      → A ∈ Ord-to-𝕍' α ≃ (Σ x ꞉ ⟨ α ⟩ , Ord-to-𝕍 (α ↓ x) ＝ A)
 Ord-to-𝕍'-membership A α = ∈-behaviour
@@ -734,10 +919,10 @@ Ord-to-𝕍'-membership A α = ∈-behaviour
                             ⟨ α ⟩
                             (λ x → Ord-to-𝕍 (α ↓ x))
                             (Ord-to-𝕍↓-is-embedding α)
+
 \end{code}
 
-We now show that Ord-to-𝕍 α is an iterative ordinal. The proof
-doesn't require induction.
+Ord-to-𝕍 is lower closed in the following sense:
 
 \begin{code}
 
@@ -761,6 +946,12 @@ Ord-to-𝕍-is-lower α A x m = IV III
     q = A                            ＝⟨ p ⁻¹ ⟩
         Ord-to-𝕍 ((α ↓ x) ↓ (y , l)) ＝⟨ ap Ord-to-𝕍 (iterated-↓ α x y l) ⟩
         Ord-to-𝕍 (α ↓ y)             ∎
+
+\end{code}
+
+After the above preparation we are ready to show the desired result:
+
+\begin{code}
 
 Ord-to-𝕍-is-transitive-iset : (α : Ord) → is-transitive-iset (Ord-to-𝕍 α)
 Ord-to-𝕍-is-transitive-iset α =
@@ -808,6 +999,13 @@ Ord-to-𝕍-is-iordinal : (α : Ord) → is-iterative-ordinal (Ord-to-𝕍 α)
 Ord-to-𝕍-is-iordinal α = Ord-to-𝕍-is-transitive-iset α ,
                          Ord-to-𝕍-has-transitive-members α
 
+\end{code}
+
+From this we get the desired map Ord → 𝕆, which is easily seen to be
+an embedding from the above development:
+
+\begin{code}
+
 Ord-to-𝕆 : Ord → 𝕆
 Ord-to-𝕆 α = Ord-to-𝕍 α , Ord-to-𝕍-is-iordinal α
 
@@ -817,6 +1015,13 @@ Ord-to-𝕆-is-embedding = pair-fun-is-embedding-special
                          Ord-to-𝕍-is-iordinal
                          Ord-to-𝕍-is-embedding
                          being-iordinal-is-prop
+
+\end{code}
+
+In order to show that this map is an equivalence, with inverse,
+𝕆-to-Ord, we need some preparation:
+
+\begin{code}
 
 Ord-to-𝕆↓-is-embedding : (α : Ord)
                        → is-embedding (λ x → Ord-to-𝕆 (α ↓ x))
@@ -837,6 +1042,13 @@ Ord-to-𝕆↓-is-lower-closed α x β l = II I
   II : type-of I → Σ y ꞉ ⟨ α ⟩ , Ord-to-𝕆 (α ↓ y) ＝ β
   II (y , _ , p) = y , to-subtype-＝ being-iordinal-is-prop (p ⁻¹)
 
+\end{code}
+
+We use this to obtain the following recursive chracterization of the
+map Ord-to-𝕆.
+
+\begin{code}
+
 Ord-to-𝕆' : Ord → 𝕆
 Ord-to-𝕆' α = 𝕆-ssup
                ⟨ α ⟩
@@ -855,15 +1067,18 @@ Ord-to-𝕆-behaviour α =
 
 \end{code}
 
-TODO. The lemma below should have a more descriptive name.
+We now establish the following commutative square, which shows that
+doing "↓ x" on HoTT-book ordinals corresponds to doing "𝕆-forest - x"
+on iterative ordinals, along the correspondence 𝕆-to-Ord-square.
 
-We perform a double induction: first on 𝕆 and then on the ordinal (𝕆-to-Ord α).
+We perform a double induction: first on 𝕆 and then on the ordinal
+𝕆-to-Ord α.
 
 \begin{code}
 
-𝕆-to-Ord-lemma : (α : 𝕆) (x : 𝕆-root α)
+𝕆-to-Ord-square : (α : 𝕆) (x : 𝕆-root α)
                → (𝕆-to-Ord α) ↓ x ＝ 𝕆-to-Ord (𝕆-forest α x)
-𝕆-to-Ord-lemma = 𝕆-induction' _ inductive-proof₁
+𝕆-to-Ord-square = 𝕆-induction' _ inductive-proof₁
  where
   inductive-proof₁ : (α : 𝕆)
                    → ((x : 𝕆-root α) (y : 𝕆-root (𝕆-forest α x))
@@ -933,20 +1148,14 @@ We perform a double induction: first on 𝕆 and then on the ordinal (𝕆-to-Or
           ⦅3⦆ = ap 𝕆-to-Ord eq'
           ⦅4⦆ = (IH₁ x y)⁻¹
 
-𝕆-to-Ord-preserves-< : (α β : 𝕆) → α < β → 𝕆-to-Ord α ⊲ 𝕆-to-Ord β
-𝕆-to-Ord-preserves-< α β l = II I
- where
-  I : Σ y ꞉ 𝕆-root β , 𝕆-forest β y ＝ α
-  I = ⌜ <-behaviour α β ⌝ l
+\end{code}
 
-  II : type-of I → 𝕆-to-Ord α ⊲ 𝕆-to-Ord β
-  II (y , refl) = IV
-   where
-    III : 𝕆-to-Ord (𝕆-forest β y) ＝ (𝕆-to-Ord β ↓ y)
-    III = (𝕆-to-Ord-lemma β y)⁻¹
+TODO. Question. Is induction really needed to prove the above?
 
-    IV : 𝕆-to-Ord (𝕆-forest β y) ⊲ 𝕆-to-Ord β
-    IV = y , III
+From this square and the previous results, we easily deduce that the
+map Ord-to-𝕆 is an equivalence, by induction on 𝕆.
+
+\begin{code}
 
 Ord-to-𝕆-is-equiv : is-equiv Ord-to-𝕆
 Ord-to-𝕆-is-equiv = embeddings-with-sections-are-equivs
@@ -972,7 +1181,7 @@ Ord-to-𝕆-is-equiv = embeddings-with-sections-are-equivs
      l' = 𝕆-forest-is-lower-closed α
 
      II' = λ x →
-      Ord-to-𝕆 (𝕆-to-Ord α ↓ x)          ＝⟨ ap Ord-to-𝕆 (𝕆-to-Ord-lemma α x) ⟩
+      Ord-to-𝕆 (𝕆-to-Ord α ↓ x)          ＝⟨ ap Ord-to-𝕆 (𝕆-to-Ord-square α x) ⟩
       Ord-to-𝕆 (𝕆-to-Ord (𝕆-forest α x)) ＝⟨ g x ⟩
       𝕆-forest α x                       ∎
 
@@ -986,13 +1195,29 @@ Ord-to-𝕆-is-equiv = embeddings-with-sections-are-equivs
   η : Ord-to-𝕆 ∘ 𝕆-to-Ord ∼ id
   η = 𝕆-induction' _ f
 
+\end{code}
+
+Hence Ord and 𝕆 are equivalent types:
+
+\begin{code}
+
 Ordinals-≃ : Ord ≃ 𝕆
 Ordinals-≃ = Ord-to-𝕆 , Ord-to-𝕆-is-equiv
 
-𝕆-to-Ord-reflects-< : (α β : 𝕆) → 𝕆-to-Ord α ⊲ 𝕆-to-Ord β → α < β
-𝕆-to-Ord-reflects-< α β (y , p) = III
+\end{code}
+
+But more than this is true: the types 𝓞 (HoTT-book-ordinal of
+iterative ordinals) OO 𝓤 (HoTT-book-ordinal of HoTT-book-ordinals) are
+isomorphic as HoTT-book ordinals.
+
+It is easy to see that 𝕆-to-Ord reflects order:
+
+\begin{code}
+
+𝕆-to-Ord-reflects-order : (α β : 𝕆) → 𝕆-to-Ord α ⊲ 𝕆-to-Ord β → α < β
+𝕆-to-Ord-reflects-order α β (y , p) = III
  where
-  I = 𝕆-to-Ord (𝕆-forest β y) ＝⟨ (𝕆-to-Ord-lemma β y)⁻¹ ⟩
+  I = 𝕆-to-Ord (𝕆-forest β y) ＝⟨ (𝕆-to-Ord-square β y)⁻¹ ⟩
       (𝕆-to-Ord β ↓ y)        ＝⟨ p ⁻¹ ⟩
       𝕆-to-Ord α              ∎
 
@@ -1002,6 +1227,34 @@ Ordinals-≃ = Ord-to-𝕆 , Ord-to-𝕆-is-equiv
   III : α < β
   III = ⌜ <-behaviour α β ⌝⁻¹ (y , II)
 
+\end{code}
+
+And a second application of the above commutative square shows that
+𝕆-to-Ord preserves order.
+
+\begin{code}
+
+𝕆-to-Ord-preserves-order : (α β : 𝕆) → α < β → 𝕆-to-Ord α ⊲ 𝕆-to-Ord β
+𝕆-to-Ord-preserves-order α β l = II I
+ where
+  I : Σ y ꞉ 𝕆-root β , 𝕆-forest β y ＝ α
+  I = ⌜ <-behaviour α β ⌝ l
+
+  II : type-of I → 𝕆-to-Ord α ⊲ 𝕆-to-Ord β
+  II (y , refl) = IV
+   where
+    III : 𝕆-to-Ord (𝕆-forest β y) ＝ (𝕆-to-Ord β ↓ y)
+    III = (𝕆-to-Ord-square β y)⁻¹
+
+    IV : 𝕆-to-Ord (𝕆-forest β y) ⊲ 𝕆-to-Ord β
+    IV = y , III
+
+\end{code}
+
+Putting this together with get our desired isomorphism:
+
+\begin{code}
+
 Ordinals-agreementₒ : 𝓞 ≃ₒ OO 𝓤
 Ordinals-agreementₒ = ⌜ Ordinals-≃ ⌝⁻¹ ,
                       order-preserving-reflecting-equivs-are-order-equivs
@@ -1009,8 +1262,15 @@ Ordinals-agreementₒ = ⌜ Ordinals-≃ ⌝⁻¹ ,
                        (OO 𝓤)
                        ⌜ Ordinals-≃ ⌝⁻¹
                        ⌜ Ordinals-≃ ⌝⁻¹-is-equiv
-                       𝕆-to-Ord-preserves-<
-                       𝕆-to-Ord-reflects-<
+                       𝕆-to-Ord-preserves-order
+                       𝕆-to-Ord-reflects-order
+
+\end{code}
+
+Which then gives an identification between the two types, which is
+unique because both of them are 0-types, as shown above.
+
+\begin{code}
 
 Ordinals-agreement : 𝓞 ＝ OO 𝓤
 Ordinals-agreement = eqtoidₒ (ua 𝓤⁺) fe 𝓞 (OO 𝓤) Ordinals-agreementₒ

@@ -2,6 +2,16 @@ Martin Escardo & Tom de Jong, June 2023.
 
 Iterative sets.
 
+We define the type of iterative sets as a subtype of that of multisets.
+
+See the module Iterative.index for bibliographic references regarding
+this file.
+
+The previous module Iterative.Multisets doesn't make significant use
+of univalence, and so we assumed it only for specific
+constructions. But here the use of univalence is more pervasive, and
+so we assume it globally.
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K --exact-split --lossy-unification #-}
@@ -13,12 +23,6 @@ module Iterative.Sets
         (𝓤 : Universe)
         (ua : Univalence)
        where
-
-\end{code}
-
-NB. The only use of univalence is to prove extensionality, which in
-turns gives that the type of iterative sets is a 0-type.
-\begin{code}
 
 open import UF.FunExt
 open import UF.UA-FunExt
@@ -33,7 +37,6 @@ private
  fe' : FunExt
  fe' 𝓤 𝓥 = fe {𝓤} {𝓥}
 
-
 open import Iterative.Multisets 𝓤
 open import Iterative.W-Properties (𝓤 ̇ ) id
 open import MLTT.W
@@ -47,10 +50,12 @@ open import UF.Size
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
-
 \end{code}
 
-An iterative set is a multiset whose forests are all embeddings.
+An iterative set is a multiset whose subforests are all
+embeddings. The effect of that is the the membership relation on
+iterative sets is proposition-valued, rather than just type-valued, as
+is the case for multisets.
 
 \begin{code}
 
@@ -58,15 +63,28 @@ is-iterative-set : 𝕄 → 𝓤⁺ ̇
 is-iterative-set (ssup X φ) = is-embedding φ
                             × ((x : X) → is-iterative-set (φ x))
 
+\end{code}
+
+It is convenient to name the projections for the sake of clarity:
+
+\begin{code}
+
 𝕄-forest-is-embedding : (M : 𝕄)
                       → is-iterative-set M
                       → is-embedding (𝕄-forest M)
-𝕄-forest-is-embedding (ssup X φ) = pr₁
+𝕄-forest-is-embedding (ssup _ _) = pr₁
 
 𝕄-subtrees-are-iterative : (M : 𝕄)
                          → is-iterative-set M
                          → (x : 𝕄-root M) → is-iterative-set (𝕄-forest M x)
-𝕄-subtrees-are-iterative (ssup X φ) = pr₂
+𝕄-subtrees-are-iterative (ssup _ _) = pr₂
+
+\end{code}
+
+It is crucial that the notion of iterative set is property rather than
+data:
+
+\begin{code}
 
 being-iset-is-prop : (M : 𝕄) → is-prop (is-iterative-set M)
 being-iset-is-prop (ssup X φ) =
@@ -76,7 +94,8 @@ being-iset-is-prop (ssup X φ) =
 
 \end{code}
 
-The type of iterative sets:
+The type of iterative sets as a subtype of that of iterative
+multisets:
 
 \begin{code}
 
@@ -87,19 +106,33 @@ The type of iterative sets:
 𝕍-is-locally-small = subtype-is-locally-small
                       being-iset-is-prop
                       (𝕄-is-locally-small ua)
+\end{code}
+
+We again name the projections for the sake of clarity:
+
+\begin{code}
 
 underlying-mset : 𝕍 → 𝕄
 underlying-mset = pr₁
-
-underlying-mset-is-embedding : is-embedding underlying-mset
-underlying-mset-is-embedding = pr₁-is-embedding being-iset-is-prop
 
 isets-are-iterative : (A : 𝕍) → is-iterative-set (underlying-mset A)
 isets-are-iterative = pr₂
 
 \end{code}
 
-A criterion for equality in 𝕍:
+Because the notion of iterative set is property, we get that 𝕍 is a
+subtype of 𝕄.
+
+\begin{code}
+
+underlying-mset-is-embedding : is-embedding underlying-mset
+underlying-mset-is-embedding = pr₁-is-embedding being-iset-is-prop
+
+\end{code}
+
+We define the root and the forest of an iterative set in terms of
+those for multisets, but we need to add a "proof obligation" in the
+case of the forest.
 
 \begin{code}
 
@@ -113,6 +146,12 @@ A criterion for equality in 𝕍:
                 (isets-are-iterative A)
                 x
 
+\end{code}
+
+A criterion for equality in 𝕍:
+
+\begin{code}
+
 to-𝕍-＝ : {X Y : 𝓤 ̇ }
           {φ : X → 𝕄}
           {γ : Y → 𝕄}
@@ -122,8 +161,22 @@ to-𝕍-＝ : {X Y : 𝓤 ̇ }
         → (ssup X φ , i) ＝[ 𝕍 ] (ssup Y γ , j)
 to-𝕍-＝ σ i j = to-subtype-＝ being-iset-is-prop (to-𝕄-＝ σ)
 
+\end{code}
+
+We define membership of iterative sets in terms of that for multisets:
+
+\begin{code}
+
 _∈_ : 𝕍 → 𝕍 → 𝓤⁺ ̇
 A ∈ B = underlying-mset A ⁅ underlying-mset B
+
+\end{code}
+
+As is the case for iterative multisets, there is a resized down,
+equivalent definition of membership (we need the large and the small
+one):
+
+\begin{code}
 
 _∈⁻_ : 𝕍 → 𝕍 → 𝓤 ̇
 A ∈⁻ B = underlying-mset A ⁅⁻ underlying-mset B
@@ -131,17 +184,46 @@ A ∈⁻ B = underlying-mset A ⁅⁻ underlying-mset B
 ∈⁻≃∈ : (A B : 𝕍) → (A ∈ B) ≃ (A ∈⁻ B)
 ∈⁻≃∈ A B = ⁅⁻≃⁅ ua (underlying-mset A) (underlying-mset B)
 
+\end{code}
+
+As discussed above, the membership relation becomes a proposition
+precisely because we required forests to be embeddings to define the
+subtype of iterative multisets.
+
+\begin{code}
+
 ∈-is-prop-valued : (A B : 𝕍) → is-prop (A ∈ B)
 ∈-is-prop-valued (M , _) (ssup X φ , φ-emb , _) = φ-emb M
 
+\end{code}
+
+The following fact is trivial, but it is good to have a name for it
+for the sake of clarity.
+
+\begin{code}
+
 𝕍-forest-is-∈ : (A : 𝕍) (x : 𝕍-root A) → 𝕍-forest A x ∈ A
 𝕍-forest-is-∈ _ x = x , refl
+
+\end{code}
+
+The subset relation is defined in the usual way and is
+proposition-valued:
+
+\begin{code}
 
 _⊆_ : 𝕍 → 𝕍 → 𝓤⁺ ̇
 A ⊆ B = (C : 𝕍) → C ∈ A → C ∈ B
 
 ⊆-is-prop-valued : (A B : 𝕍) → is-prop (A ⊆ B)
 ⊆-is-prop-valued A B = Π₂-is-prop fe (λ C _ → ∈-is-prop-valued C B)
+
+\end{code}
+
+It is in the following that the univalence axiom is used for the first
+time, to establish the extensionality axiom for iterative sets:
+
+\begin{code}
 
 ∈-is-extensional : (A B : 𝕍) → A ⊆ B → B ⊆ A → A ＝ B
 ∈-is-extensional A@(ssup X φ , φ-emb , g) B@(ssup Y γ , γ-emb , h) u v = V
@@ -193,7 +275,11 @@ A ⊆ B = (C : 𝕍) → C ∈ A → C ∈ B
 
 \end{code}
 
-It follows that 𝕍 is a set, or 0-type, in the sense of the HoTT book:
+It follows that 𝕍 is 0-type, or set, in the sense of the HoTT
+book. But notice that we now have two notions of set in this
+discussion: the "material" (iterative set) and the "structural one"
+(0-type or set). The reader should keep this distinction in mind when
+reading the comments and code below.
 
 \begin{code}
 
@@ -228,10 +314,24 @@ if φ is an embedding.
   III : is-prop (ssup X φ ＝ M)
   III = equiv-to-prop I (II (𝕄-forest M))
 
+\end{code}
+
+And a particular case of this is that if M is an iterative set then M ＝ N is a proposition for every *multiset* N.
+
+\begin{code}
+
 isets-are-h-isolated : (M : 𝕄)
                      → is-iterative-set M
                      → is-h-isolated M
 isets-are-h-isolated (ssup X φ) (φ-emb , _) = 𝕄-ssup-is-h-isolated X φ φ-emb
+
+\end{code}
+
+Because a subtype of any type whatsoever consisting of isolated
+elements is a 0-type, we get a second proof that the type of iterative
+sets is a 0-type.
+
+\begin{code}
 
 𝕍-is-set' : is-set 𝕍
 𝕍-is-set' {M , M-is-is-set} =
@@ -241,14 +341,21 @@ isets-are-h-isolated (ssup X φ) (φ-emb , _) = 𝕄-ssup-is-h-isolated X φ φ-
 
 \end{code}
 
-We will have an opportunity use again the above two lemmas, when
-discussing ordinals.
+By definition, an iterative multiset is an iterative set if its
+forests are all embeddings. The 𝕍-forests are also embeddings:
 
 \begin{code}
 
 𝕍-forest-is-embedding : (A : 𝕍) → is-embedding (𝕍-forest A)
 𝕍-forest-is-embedding A@(ssup X φ , φ-emb , is) =
  pair-fun-is-embedding-special φ is φ-emb being-iset-is-prop
+
+\end{code}
+
+We construct elements of 𝕄 using the constructor ssup. We now
+introduce a corresponding constructor 𝕍-ssup to construct elements of 𝕍.
+
+\begin{code}
 
 𝕍-ssup : (X : 𝓤 ̇ ) (ϕ : X → 𝕍) → is-embedding ϕ → 𝕍
 𝕍-ssup X ϕ ϕ-emb = ssup X φ , φ-emb , φ-iset
@@ -262,6 +369,12 @@ discussing ordinals.
   φ-emb : is-embedding φ
   φ-emb = ∘-is-embedding ϕ-emb underlying-mset-is-embedding
 
+\end{code}
+
+It behaves as expected with respect to the corresponding destructors:
+
+\begin{code}
+
 𝕍-ssup-root : (X : 𝓤 ̇ ) (ϕ : X → 𝕍) (e : is-embedding ϕ)
             → 𝕍-root (𝕍-ssup X ϕ e) ＝ X
 𝕍-ssup-root X ϕ e = refl
@@ -269,6 +382,15 @@ discussing ordinals.
 𝕍-ssup-forest : (X : 𝓤 ̇ ) (ϕ : X → 𝕍) (e : is-embedding ϕ)
               → 𝕍-forest (𝕍-ssup X ϕ e) ＝ ϕ
 𝕍-ssup-forest X ϕ e = refl
+
+\end{code}
+
+Notice that the identifications are definitional.
+
+We have the following η rules for 𝕍, where the first is more gemeral
+and the second is more natural:
+
+\begin{code}
 
 𝕍-η' : (A : 𝕍) (e : is-embedding (𝕍-forest A))
      → 𝕍-ssup (𝕍-root A) (𝕍-forest A) e ＝ A
@@ -279,15 +401,12 @@ discussing ordinals.
 
 \end{code}
 
-TODO. Define 𝕄-η in the file Iterative.Multisets and use it to define 𝕍-η.
+Here is are two characterizations of the membership relation:
 
 \begin{code}
 
-⋃ : {X : 𝓤 ̇ } (ϕ : X → 𝕍) → is-embedding ϕ → 𝕍
-⋃ = 𝕍-ssup _
-
 ∈-behaviour : (A : 𝕍) (X : 𝓤 ̇ ) (ϕ : X → 𝕍) (e : is-embedding ϕ)
-            → A ∈ ⋃ ϕ e ≃ (Σ x ꞉ X , ϕ x ＝ A)
+            → A ∈ 𝕍-ssup X ϕ e ≃ (Σ x ꞉ X , ϕ x ＝ A)
 ∈-behaviour A X ϕ e =
  (A ∈ 𝕍-ssup X ϕ e)                                     ≃⟨ ≃-refl _ ⟩
  (Σ x ꞉ X , underlying-mset (ϕ x) ＝ underlying-mset A) ≃⟨ Σ-cong I ⟩
@@ -324,13 +443,14 @@ embedding that the root of any iterative set is a 0-type:
 It would be nice if we could define 𝕍 as follows:
 
  data 𝕍 : 𝓤⁺ ̇ where
-  ssup : (X : 𝓤 ̇ ) (φ : X → 𝕍) → is-embedding φ → 𝕍
+  𝕍-ssup : (X : 𝓤 ̇ ) (φ : X → 𝕍) → is-embedding φ → 𝕍
 
 However, this is not a strictly positive definition, for the criterion
 of strict positivity used by Agda, and so it is not accepted.
 
 Nevertheless, all iterative sets *are* generated by the "constructor"
-𝕍-ssup, in the following sense:
+𝕍-ssup, in the following sense, so that we can view 𝕍 as really
+defined by the above data declaration.
 
 \begin{code}
 
@@ -390,7 +510,8 @@ the above form of induction.
 
 \end{code}
 
-TODO. Write the above proof in a more transparent way.
+And then is follows immediately that the membership relation is
+accessible:
 
 \begin{code}
 
