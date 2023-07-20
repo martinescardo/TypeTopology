@@ -23,8 +23,16 @@ jobs:
           unsafe: true
       - name: Deploy HTML to branch
         uses: s0/git-publish-subdir-action@develop
+        if: github.event_name != 'pull_request'
         env:
           REPO: self
           BRANCH: html
           FOLDER: source/TWA/Thesis/html
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Upload HTML as artifact
+        id: html-upload
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v3
+        with:
+          name: html
+          path: source/TWA/Thesis/html
