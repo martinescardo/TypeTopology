@@ -483,11 +483,12 @@ to-𝕆-＝-special X ϕ ϕ' e l e' l' refl = to-subtype-＝
 \end{code}
 
 We now justify our notation "ssup" in comparison with the more
-traditional notion "sup" for the constructors.
+traditional notation "sup" for the constructors.
 
-𝕆-ssup X ϕ e l is the unique ordinal whose predecessors are precisely
-the members of the family ϕ, which is known as the strict supremum (or
-successor supremum, or strong supremum) of ϕ, and is also its rank.
+𝕆-ssup X ϕ e l is the unique iterative ordinal whose predecessors are
+precisely the members of the family ϕ, which is known as the strict
+supremum (or successor supremum, or strong supremum) of ϕ, and is also
+its rank.
 
 \begin{code}
 
@@ -534,7 +535,7 @@ We now discuss various equivalent induction principles on 𝕆.
 TODO. Do things get nicer if use use induction on 𝕍 rather than 𝕄 in
 the above proof?
 
-It would be nice if we could define 𝕆 as follows:
+It would be nice if we could define 𝕆 inductively as follows:
 
  data 𝕆 : 𝓤⁺ ̇ where
   ssup : (X : 𝓤 ̇ ) (φ : X → 𝕆) → is-embedding φ → is-lower-closed φ → 𝕆
@@ -570,8 +571,8 @@ defined by the above data declaration.
 
 \end{code}
 
-The usual induction principle follows directly from the above form of
-induction.
+The usual induction principle for ordinals follows directly from the
+above form of induction.
 
 \begin{code}
 

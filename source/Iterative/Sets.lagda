@@ -442,7 +442,7 @@ embedding that the root of any iterative set is a 0-type:
                    𝕍-is-set
 \end{code}
 
-It would be nice if we could define 𝕍 as follows:
+It would be nice if we could define 𝕍 inductively as follows:
 
  data 𝕍 : 𝓤⁺ ̇ where
   𝕍-ssup : (X : 𝓤 ̇ ) (φ : X → 𝕍) → is-embedding φ → 𝕍
@@ -512,7 +512,7 @@ the above form of induction.
 
 \end{code}
 
-And then is follows immediately that the membership relation is
+And then it follows immediately that the membership relation is
 accessible:
 
 \begin{code}
