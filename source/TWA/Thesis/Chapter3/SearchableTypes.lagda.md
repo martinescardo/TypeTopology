@@ -14,13 +14,10 @@ open import MLTT.Two-Properties
 open import Fin.Type
 open import Fin.Bishop
 
-open import TWA.Thesis.Chapter2.Finite
-
 module TWA.Thesis.Chapter3.SearchableTypes (fe : FunExt) where
 
 open import TWA.Thesis.Chapter3.ClosenessSpaces fe
  hiding (decidable-predicate;decidable-uc-predicate)
-open import TWA.Thesis.Chapter3.ClosenessSpaces-Examples fe
 ```
 
 ## Searchable types

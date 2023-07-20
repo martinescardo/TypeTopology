@@ -9,9 +9,7 @@ open import Integers.Order
 open import Integers.Type
 open import MLTT.Spartan
 open import Naturals.Addition renaming (_+_ to _ℕ+_)
-open import Naturals.Order
 
-open import TWA.Thesis.Chapter2.Vectors
 open import TWA.Thesis.Chapter5.Integers
 
 module TWA.Thesis.Chapter5.BelowAndAbove where

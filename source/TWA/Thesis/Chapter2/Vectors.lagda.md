@@ -4,10 +4,7 @@
 {-# OPTIONS --without-K --exact-split --safe #-}
 
 open import MLTT.Spartan
-open import Notation.Order
-open import Naturals.Order
 open import MLTT.SpartanList hiding ([_])
-open import Fin.Type
 open import Fin.Embeddings
 
 open import TWA.Thesis.Chapter2.Sequences

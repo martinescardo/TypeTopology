@@ -156,6 +156,12 @@ div-by-two' (succ k)
 ## Integer order definitions and properties
 
 ```
+ℤ≤-decidable : (n m : ℤ) → (n ≤ m) + ¬ (n ≤ m)
+ℤ≤-decidable n m
+ = Cases (ℤ-trichotomous m n)
+     (inr ∘ ℤ-less-not-bigger-or-equal m n)
+     (inl ∘ ℤ≤-attach n m)
+
 pred-shift : (a b : ℤ) → predℤ a ℤ- b ＝ a ℤ- succℤ b
 pred-shift a b = ℤ-left-pred a (ℤ- b)
                ∙ ℤ-right-pred a (ℤ- b) ⁻¹

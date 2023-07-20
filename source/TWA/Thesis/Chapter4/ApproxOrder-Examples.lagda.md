@@ -13,8 +13,6 @@ open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.Quotient
 open import UF.Embeddings
-open import UF.Equiv
-open import NotionsOfDecidability.Complemented
 open import CoNaturals.GenericConvergentSequence
   renaming (ℕ-to-ℕ∞ to _↑
          ; Zero-smallest to zero-minimal
@@ -24,7 +22,6 @@ open import MLTT.Two-Properties
 open import UF.Miscelanea
 open import Fin.Type
 open import Fin.Bishop
-open import Fin.Order
 open import UF.PropTrunc
 
 open import TWA.Thesis.Chapter2.Finite

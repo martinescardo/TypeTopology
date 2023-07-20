@@ -9,14 +9,10 @@ open import CoNaturals.GenericConvergentSequence
  hiding (max)
 open import Notation.Order
 open import Naturals.Order
-open import Naturals.Properties
 open import NotionsOfDecidability.Complemented
 open import TypeTopology.DiscreteAndSeparated
 open import UF.FunExt
 open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
-open import UF.Quotient
-open import UF.Miscelanea
 open import UF.Embeddings
 open import MLTT.Two-Properties
 open import Fin.Type
@@ -34,44 +30,6 @@ open import TWA.Thesis.Chapter2.Vectors
 open import TWA.Thesis.Chapter2.Finite
 open import TWA.Thesis.Chapter3.ClosenessSpaces fe
 open import TWA.Closeness fe hiding (is-ultra; is-closeness)
-
--- MOVE
-𝟙-is-finite : finite-linear-order (𝟙 {𝓦})
-𝟙-is-finite = 1 , qinveq g (h , η , μ)
- where
-  g : 𝟙 → Fin 1
-  g ⋆ = 𝟎
-  h : Fin 1 → 𝟙
-  h 𝟎 = ⋆
-  η : h ∘ g ∼ id
-  η ⋆ = refl 
-  μ : g ∘ h ∼ id
-  μ 𝟎 = refl
-  μ (suc ())
-
-+-is-finite : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-            → finite-linear-order X
-            → finite-linear-order Y
-            → finite-linear-order (X + Y)
-+-is-finite (n , e) (m , f)
- = n +' m , (+-cong e f ● ≃-sym (Fin+homo n m))
-
-×-is-finite : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-            → finite-linear-order X
-            → finite-linear-order Y
-            → finite-linear-order (X × Y)
-×-is-finite (n , e) (m , f)
- = n ×' m , (×-cong e f ● ≃-sym (Fin×homo n m))
-
-vec-is-finite : (ϵ : ℕ) {F : Fin ϵ → 𝓤 ̇ }
-              → (f : (n : Fin ϵ) → finite-linear-order (F n))
-              → finite-linear-order (vec ϵ F)
-vec-is-finite 0 f = 𝟙-is-finite
-vec-is-finite (succ ϵ) f
- = ×-is-finite (f 𝟎) (vec-is-finite ϵ (f ∘ suc))
-
-pointed : 𝓤 ̇ → 𝓤 ̇
-pointed X = X
 
 -- MOVE
 pointed-has-a-0-net : (X : ClosenessSpace 𝓤)
@@ -1082,7 +1040,7 @@ Lemma[min𝟚abcd＝₁→min𝟚bd＝₁] ₁ ₁ ₁ ₁ e = refl
      (succ n)
 ```
 
-Specific examples of closeness spaces
+## Specific examples of closeness spaces
 
 ```
 𝟚ᴺ-ClosenessSpace : ClosenessSpace 𝓤₀
@@ -1092,220 +1050,17 @@ Specific examples of closeness spaces
 𝟚ᴺ×𝟚ᴺ-ClosenessSpace
  = ×-ClosenessSpace 𝟚ᴺ-ClosenessSpace 𝟚ᴺ-ClosenessSpace
 
-open import TWA.Thesis.Chapter5.SignedDigit
-
-𝟛ᴺ-ClosenessSpace : ClosenessSpace 𝓤₀
-𝟛ᴺ-ClosenessSpace
- = ℕ→D-ClosenessSpace 𝟛-is-discrete
-
-𝟛ᴺ×𝟛ᴺ-ClosenessSpace : ClosenessSpace 𝓤₀
-𝟛ᴺ×𝟛ᴺ-ClosenessSpace
- = ×-ClosenessSpace 𝟛ᴺ-ClosenessSpace 𝟛ᴺ-ClosenessSpace
-
 ℕ∞-ClosenessSpace : ClosenessSpace 𝓤₀
 ℕ∞-ClosenessSpace
  = Σ-ClosenessSpace 𝟚ᴺ-ClosenessSpace is-decreasing
      (being-decreasing-is-prop (fe _ _))
-```
 
-TODO: ℕ∞ is totally bounded
+open import TWA.Thesis.Chapter5.SignedDigit
 
-```
-{-
-Vec-decreasing : {n : ℕ} → Vec 𝟚 n → 𝓤₀ ̇
-Vec-decreasing {0} ⟨⟩    = 𝟙
-Vec-decreasing {1} [ ₀ ] = 𝟙
-Vec-decreasing {1} [ ₁ ] = 𝟙
-Vec-decreasing {succ (succ n)} (₀ ∷ (₀ ∷ v))
- = Vec-decreasing (₀ ∷ v)
-Vec-decreasing {succ (succ n)} (₀ ∷ (₁ ∷ v))
- = 𝟘
-Vec-decreasing {succ (succ n)} (₁ ∷ v)
- = Vec-decreasing v
+𝟛ᴺ-ClosenessSpace : ClosenessSpace 𝓤₀
+𝟛ᴺ-ClosenessSpace = ℕ→D-ClosenessSpace 𝟛-is-discrete
 
-Vec-decreasing-is-prop : {n : ℕ} → (x : Vec 𝟚 n)
-                       → is-prop (Vec-decreasing x)
-Vec-decreasing-is-prop {0} ⟨⟩    = 𝟙-is-prop
-Vec-decreasing-is-prop {1} [ ₀ ] = 𝟙-is-prop
-Vec-decreasing-is-prop {1} [ ₁ ] = 𝟙-is-prop
-Vec-decreasing-is-prop {succ (succ n)} (₀ ∷ (₀ ∷ v))
- = Vec-decreasing-is-prop (₀ ∷ v)
-Vec-decreasing-is-prop {succ (succ n)} (₀ ∷ (₁ ∷ v))
- = 𝟘-is-prop
-Vec-decreasing-is-prop {succ (succ n)} (₁ ∷ v)
- = Vec-decreasing-is-prop v
-
-Vec-comp-decreasing : {n : ℕ} → ((v , _) : Σ (Vec-decreasing {n}))
-                    → Vec-decreasing (₁ ∷ v)
-Vec-comp-decreasing {zero} (⟨⟩ , _) = ⋆
-Vec-comp-decreasing {succ n} (_ , d) = d
-
-repeat-vec : {X : 𝓤 ̇ } {n : ℕ} → X → Vec X n
-repeat-vec {𝓤} {X} {zero} x₀ = ⟨⟩
-repeat-vec {𝓤} {X} {succ n} x₀ = x₀ ∷ repeat-vec x₀
-
-repeat-₀-decreasing : (n : ℕ) → Vec-decreasing {n} (repeat-vec ₀)
-repeat-₀-decreasing zero = ⋆
-repeat-₀-decreasing (succ zero) = ⋆
-repeat-₀-decreasing (succ (succ n)) = repeat-₀-decreasing (succ n)
-
-head-₀-only-repeat-₀-decreasing
- : (n : ℕ) → ((v , _) : Σ (Vec-decreasing {n}))
- → Vec-decreasing (₀ ∷ v)
- → repeat-vec ₀ ＝ v
-head-₀-only-repeat-₀-decreasing zero (⟨⟩ , _) _         = refl
-head-₀-only-repeat-₀-decreasing (succ zero) ([ ₀ ] , _) _ = refl
-head-₀-only-repeat-₀-decreasing (succ (succ n)) ((₀ ∷ (₀ ∷ v)) , d) d'
- = ap (₀ ∷_) (head-₀-only-repeat-₀-decreasing (succ n) (₀ ∷ v , d) d')
-
-Vec-decreasing-finite : (n : ℕ) → finite-linear-order (Σ (Vec-decreasing {n}))
-Vec-decreasing-finite n = succ n , qinveq (g n) (h n , η n , μ n)
- where
-  g : (n : ℕ) → Fin (succ n) → Σ (Vec-decreasing {n})
-  g 0     (inl _) = ⟨⟩    , ⋆
-  g 1     (inl _) = [ ₀ ] , ⋆
-  g 1     (inr _) = [ ₁ ] , ⋆
-  g (succ (succ n)) (inl _) = repeat-vec ₀
-                            , repeat-₀-decreasing (succ (succ n))
-  g (succ (succ n)) (inr x) = (₁ ∷ pr₁ (g (succ n) x))
-                            , pr₂ (g (succ n) x)
-  h : (n : ℕ) → Σ (Vec-decreasing {n}) → Fin (succ n)
-  h 0     (⟨⟩    , ⋆) = inl ⋆
-  h 1     ([ ₀ ] , ⋆) = inl ⋆
-  h 1     ([ ₁ ] , ⋆) = inr (inl ⋆)
-  h (succ (succ n)) ((₀ ∷ _) , _) = inl ⋆
-  h (succ (succ n)) ((₁ ∷ v) , d) = inr (h (succ n) (v , d))
-  η : (n : ℕ) → (x : Fin (succ n)) → h n (g n x) ＝ x
-  η 0     (inl ⋆) = refl
-  η 1     (inl ⋆) = refl
-  η 1     (inr (inl ⋆)) = refl
-  η (succ (succ n)) (inl ⋆) = refl
-  η (succ (succ n)) (inr x) = ap inr (η (succ n) x)
-  μ : (n : ℕ) → (x : Σ (Vec-decreasing {n})) → g n (h n x) ＝ x
-  μ 0     (⟨⟩    , ⋆) = refl
-  μ 1     ([ ₀ ] , ⋆) = refl
-  μ 1     ([ ₁ ] , ⋆) = refl
-  μ (succ (succ n)) ((₀ ∷ v) , d)
-   = to-subtype-＝ Vec-decreasing-is-prop
-      (head-₀-only-repeat-₀-decreasing (succ (succ n)) ((₀ ∷ v) , d) d)
-  μ (succ (succ n)) ((₁ ∷ v) , d)
-   = to-subtype-＝ Vec-decreasing-is-prop
-      (ap (₁ ∷_) (ap pr₁ (μ (succ n) (v , d))))
-
-Seq-to-Vec-decreasing' : (n : ℕ) (v : Vec 𝟚 n)
-                       → (a b : 𝟚) → ¬ ((a ＝ ₀) × (b ＝ ₁))
-                       → Vec-decreasing (b ∷ v)
-                       → Vec-decreasing (a ∷ (b ∷ v))
-Seq-to-Vec-decreasing' n v ₀ ₀ f g = g
-Seq-to-Vec-decreasing' n v ₁ ₀ f g = g
-Seq-to-Vec-decreasing' n v ₁ ₁ f g = g
-Seq-to-Vec-decreasing' n v ₀ ₁ f g = 𝟘-elim (f (refl , refl))
-
-Seq-to-Vec-decreasing : (n : ℕ) (α : ℕ → 𝟚)
-                      → is-decreasing α
-                      → Vec-decreasing (Seq-to-Vec n α)
-Seq-to-Vec-decreasing zero α d = ⋆
-Seq-to-Vec-decreasing (succ zero) α d with α 0
-... | ₀ = ⋆
-... | ₁ = ⋆
-Seq-to-Vec-decreasing (succ (succ n)) α d
- = Seq-to-Vec-decreasing' n (Seq-to-Vec n (α ∘ succ ∘ succ))
-     (α 0) (α 1) γ
-     (Seq-to-Vec-decreasing (succ n) (α ∘ succ) (d ∘ succ))
- where
-  γ : ¬ ((α 0 ＝ ₀) × (α 1 ＝ ₁))
-  γ (e₀ , e₁) = u (α 0) (α 1) e₀ e₁ (d 0)
-   where
-    u : (a b : 𝟚) → a ＝ ₀ → b ＝ ₁ → ¬ (a ≥ b)
-    u a b refl refl = id
-
-Vec-to-Seq-decreasing : (n : ℕ) (v : Vec 𝟚 n)
-                      → Vec-decreasing v
-                      → is-decreasing (Vec-to-Seq ₀ v)
-Vec-to-Seq-decreasing 0 ⟨⟩ d _ = ⋆
-Vec-to-Seq-decreasing 1 [ ₀ ] d _ = ⋆
-Vec-to-Seq-decreasing 1 [ ₁ ] d _ = ⋆
-Vec-to-Seq-decreasing (succ (succ n)) (₀ ∷ (₀ ∷ v)) d = γ
- where
-  γ : is-decreasing (Vec-to-Seq ₀ (₀ ∷ (₀ ∷ v)))
-  γ zero = ⋆
-  γ (succ i) = Vec-to-Seq-decreasing (succ n) (₀ ∷ v) d i
-Vec-to-Seq-decreasing (succ (succ n)) (₁ ∷ (₀ ∷ v)) d = γ
- where
-  γ : is-decreasing (Vec-to-Seq ₀ (₁ ∷ (₀ ∷ v)))
-  γ zero = ⋆
-  γ (succ i) = Vec-to-Seq-decreasing (succ n) (₀ ∷ v) d i
-Vec-to-Seq-decreasing (succ (succ n)) (₁ ∷ (₁ ∷ v)) d = γ
- where
-  γ : is-decreasing (Vec-to-Seq ₀ (₁ ∷ (₁ ∷ v)))
-  γ zero = ⋆
-  γ (succ i) = Vec-to-Seq-decreasing (succ n) (₁ ∷ v) d i
-
--}
-
-{-
-ℕ∞-is-totally-bounded : totally-bounded ℕ∞-ClosenessSpace 𝓤₀
-ℕ∞-is-totally-bounded ϵ'
- = (Σ Vec-decreasing , (f ϵ' , γ ϵ')) , Vec-decreasing-finite ϵ'
- where
-  f : (n : ℕ) → Σ (Vec-decreasing {n}) → ⟨ ℕ∞-ClosenessSpace ⟩
-  f n (v , d) = (Vec-to-Seq ₀ v) , Vec-to-Seq-decreasing n v d
-
-  γ : (ϵ : ℕ) → (α : ℕ∞) → Σ v ꞉ (Σ Vec-decreasing)
-    , (C ℕ∞-ClosenessSpace ϵ α (f ϵ v))
-  ζ : (α : ℕ∞) (ϵ n : ℕ) → n < ϵ
-    → ((λ z → pr₁ α z) ∼ⁿ
-       (λ z →
-          pr₁
-          (f ϵ
-           (Seq-to-Vec (pr₁ α) ϵ , Seq-to-Vec-decreasing ϵ (pr₁ α) (pr₂ α)))
-          z))
-      (succ n)
-
-  γ ϵ α = (Seq-to-Vec (pr₁ α) ϵ
-               , Seq-to-Vec-decreasing ϵ (pr₁ α) (pr₂ α))
-               , λ n n⊏ϵ → decidable-𝟚₁
-                   (∼ⁿ-decidable _ _ _ (succ n))
-                   (ζ α ϵ n (⊏-gives-< n ϵ n⊏ϵ))
-   where
-    IH = γ ϵ ((pr₁ α ∘ succ) , (pr₂ α ∘ succ))
-  ζ α (succ ϵ) n n<ϵ zero i<n = refl
-  ζ α (succ ϵ) (succ n) n<ϵ (succ i) i<n
-   = ζ ((pr₁ α ∘ succ) , (pr₂ α ∘ succ)) ϵ n n<ϵ i i<n
--}
-
--- Finite vectors TODO later - needed for TBR
-{-
-<-pred : {n : ℕ} (d : ℕ) → succ n < succ d → n < succ d
-<-pred {n} d = <-trans n (succ n) (succ d) (<-succ n)
-
-discrete-decidable-vec
- : {m : ℕ} {Y : Fin' (succ m) → 𝓤 ̇ }
- → ({i : Fin' (succ m)} → is-discrete (Y i))
- → (α β : Π Y) → (n : ℕ) → (sn<m : n < succ m)
- → is-decidable ((α ≈ⁿ β) (n , sn<m))
-discrete-decidable-vec d α β 0 _ = inl (λ _ ())
-discrete-decidable-vec {𝓤} {m} d α β (succ n) sn<m
- = Cases (discrete-decidable-vec d α β n n<m) γ₁ (inr ∘ γ₂)
- where
-   n<m = <-pred m sn<m
-   n*  = n , n<m
-   sn* = succ n , sn<m
-   γ₁ : (α ≈ⁿ β) n* → is-decidable ((α ≈ⁿ β) sn*)
-   γ₁ α≈ⁿβ = Cases (d (α n*) (β n*)) (inl ∘ γ₁₁) (inr ∘ γ₁₂)
-    where
-      γ₁₁ : α n* ＝ β n* → (α ≈ⁿ β) sn*
-      γ₁₁ e (k , k<sm) k<sn
-       = Cases (≤-split (succ k) n k<sn)
-           (λ k<n → α≈ⁿβ (k , k<sm) k<n)
-           (λ sk＝sn → transport (λ - → α - ＝ β -)
-             (to-subtype-＝ (λ i → <-is-prop-valued i (succ m))
-               (succ-lc sk＝sn ⁻¹)) e)
-      γ₁₂ : ¬ (α n* ＝ β n*) → ¬ ((α ≈ⁿ β) sn*)
-      γ₁₂ g α∼ˢⁿβ = g (α∼ˢⁿβ (n , n<m) (<-succ n))
-   γ₂ : ¬ ((α ≈ⁿ β) n*) → ¬ ((α ≈ⁿ β) sn*)
-   γ₂ f = f
-        ∘ λ α≈ˢⁿβ (k , k<sm) k<n
-        → α≈ˢⁿβ (k , k<sm) (<-trans k n (succ n) k<n (<-succ n))
--}
+𝟛ᴺ×𝟛ᴺ-ClosenessSpace : ClosenessSpace 𝓤₀
+𝟛ᴺ×𝟛ᴺ-ClosenessSpace
+ = ×-ClosenessSpace 𝟛ᴺ-ClosenessSpace 𝟛ᴺ-ClosenessSpace
 ```

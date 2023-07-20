@@ -7,11 +7,6 @@ open import MLTT.Spartan
 open import Notation.Order
 open import Naturals.Order
 open import TypeTopology.DiscreteAndSeparated
-open import UF.Subsingletons
-open import UF.Miscelanea
-open import UF.Equiv
-open import Fin.Variation
-open import Fin.Order
 open import NotionsOfDecidability.Complemented
 
 module TWA.Thesis.Chapter2.Sequences where

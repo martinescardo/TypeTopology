@@ -331,7 +331,11 @@ C-ucontinuous-r X ϵ y = ϵ , γ
  where
   γ : (x₁ x₂ : ⟨ X ⟩) → C X ϵ x₁ x₂ → C X ϵ y x₁ → C X ϵ y x₂
   γ x₁ x₂ Cx₁x₂ Cyx₁ = C-trans X ϵ y x₁ x₂ Cyx₁ Cx₁x₂
+```
 
+## Predicates from closeness relations
+
+```
 decidable-predicate : (𝓦 : Universe) → 𝓤 ̇ → 𝓤 ⊔ 𝓦 ⁺  ̇
 decidable-predicate 𝓦 X
  = Σ p ꞉ (X → Ω 𝓦) , is-complemented (λ x → (p x) holds)

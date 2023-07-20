@@ -4,24 +4,17 @@
 {-# OPTIONS --exact-split --without-K --safe #-}
 
 open import Integers.Addition renaming (_+_ to _ℤ+_;  _-_ to _ℤ-_)
-open import Integers.Multiplication renaming (_*_ to _ℤ*_)
 open import Integers.Negation renaming (-_ to ℤ-_ )
 open import Integers.Order
 open import Integers.Type
 open import MLTT.Spartan
 open import MLTT.Two-Properties
 open import Notation.Order
-open import Naturals.Addition renaming (_+_ to _ℕ+_)
-open import Naturals.Order hiding (≤-refl)
-open import Naturals.Order
-  renaming (max to ℕmax) hiding (≤-refl ; ≤-trans ; ≤-split)
 open import UF.FunExt
 open import UF.Powerset hiding (𝕋)
 open import UF.PropTrunc
-open import UF.Quotient
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-open import UF.Equiv
 
 open import TWA.Thesis.Chapter5.BelowAndAbove
  hiding (downLeft; downMid; downRight; upRight; upLeft; _below_)
@@ -616,6 +609,9 @@ CI2-to-𝟛ᴺ (k , i) (χ , b₀ , bₛ) (succ n)
   b₀ = 𝟛-to-down-is-below (α 0) k
   bₛ : (n : ℕ) → χ (succ n) below χ n
   bₛ n = 𝟛-to-down-is-below (α (succ n)) (χ n)
+
+integer-approx : 𝟛ᴺ → (ℕ → ℤ)
+integer-approx α = pr₁ (𝟛ᴺ-to-CI2 (negsucc 0 , pos 0) α)
 
 𝟛-possibilities : (a : 𝟛) → (a ＝ −1) + (a ＝ O) + (a ＝ +1)
 𝟛-possibilities −1 = inl refl

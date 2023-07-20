@@ -5,7 +5,6 @@
 
 open import UF.FunExt
 open import UF.Subsingletons
-open import UF.Subsingletons-FunExt  
 open import UF.Quotient
 open import MLTT.Spartan
 open import Notation.Order
