@@ -1291,14 +1291,14 @@ Ordinals-agreement = eqtoidₒ (ua 𝓤⁺) fe 𝓞 (OO 𝓤) Ordinals-agreement
 
 \end{code}
 
-Notice that this identification lives in the identity type of OO 𝓤⁺,
-the ordinal of ordinals in the universe 𝓤⁺, which is a 0-type, and
-therefore is unique.
+Notice that this identification lives in the identity type of the type
+of ordinals in the universe 𝓤⁺, which is a 0-type, and therefore is
+unique.
 
 \begin{code}
 
-Ordinals-agreement-is-unique : is-singleton (𝓞 ＝ OO 𝓤)
+Ordinals-agreement-is-unique : is-singleton (𝓞 ＝[ Ordinal 𝓤⁺ ] OO 𝓤)
 Ordinals-agreement-is-unique = pointed-props-are-singletons
                                 Ordinals-agreement
-                                (underlying-type-is-set fe' (OO 𝓤⁺))
+                                (the-type-of-ordinals-is-a-set (ua (𝓤 ⁺)) fe)
 \end{code}
