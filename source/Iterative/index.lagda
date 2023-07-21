@@ -12,6 +12,7 @@ import Iterative.W-Properties
 import Iterative.Multisets
 import Iterative.Sets
 import Iterative.Ordinals
+import Iterative.Ordinals-Addendum
 
 \end{code}
 
