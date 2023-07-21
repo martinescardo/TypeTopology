@@ -72,40 +72,41 @@ W-centrality fe w@(ssup x f) σ@(ssup x g , refl , u) = IV
        ssup x g , refl , u                      ＝⟨ refl ⟩
        σ                                        ∎
 
-singleton-typesʷ-are-singletons : Fun-Ext → (w : 𝕎) → is-singleton (singleton-typeʷ w)
+singleton-typesʷ-are-singletons : Fun-Ext
+                                → (w : 𝕎) → is-singleton (singleton-typeʷ w)
 singleton-typesʷ-are-singletons fe w = W-center w , W-centrality fe w
 
 \end{code}
 
 From this it follows that the canonical map from the native notion of
-𝕎 identity to the notion of 𝕎 identity defined above is an
+𝕎-identity to the alternative notion of 𝕎-identity defined above is an
 equivalence:
 
 \begin{code}
 
-idtoeqʷ : (w t : 𝕎) → w ＝ t → w ＝ʷ t
-idtoeqʷ w w refl = ＝ʷ-refl w
+idtoidʷ : (w t : 𝕎) → w ＝ t → w ＝ʷ t
+idtoidʷ w w refl = ＝ʷ-refl w
 
-idtoeqʷ-is-equiv : Fun-Ext → (w t : 𝕎) → is-equiv (idtoeqʷ w t)
-idtoeqʷ-is-equiv fe w = I
+idtoidʷ-is-equiv : Fun-Ext → (w t : 𝕎) → is-equiv (idtoidʷ w t)
+idtoidʷ-is-equiv fe w = I
  where
   f : singleton-type w → singleton-typeʷ w
-  f = NatΣ (idtoeqʷ w)
+  f = NatΣ (idtoidʷ w)
 
   f-is-equiv : is-equiv f
   f-is-equiv = maps-of-singletons-are-equivs f
                 (singleton-types-are-singletons w)
                 (singleton-typesʷ-are-singletons fe w)
 
-  I : (t : 𝕎) → is-equiv (idtoeqʷ w t)
-  I = NatΣ-equiv-gives-fiberwise-equiv (idtoeqʷ w) f-is-equiv
+  I : (t : 𝕎) → is-equiv (idtoidʷ w t)
+  I = NatΣ-equiv-gives-fiberwise-equiv (idtoidʷ w) f-is-equiv
 
-W-≃-＝ : Fun-Ext → (w t : 𝕎) → (w ＝ t) ≃ (w ＝ʷ t)
-W-≃-＝ fe w t = idtoeqʷ w t , idtoeqʷ-is-equiv fe w t
+idtoidʷ-≃ : Fun-Ext → (w t : 𝕎) → (w ＝ t) ≃ (w ＝ʷ t)
+idtoidʷ-≃ fe w t = idtoidʷ w t , idtoidʷ-is-equiv fe w t
 
 \end{code}
 
-We now describe ways to construct and "destruct" native 𝕎
+We now describe ways to "construct" and "destruct" native 𝕎
 identifications, which are mutually inverse and hence induce an
 equivalence.
 
@@ -148,7 +149,9 @@ proposition or a set respectively:
 
 \begin{code}
 
-W-is-prop : funext 𝓥 (𝓤 ⊔ 𝓥) → is-prop X → is-prop 𝕎
+W-is-prop : funext 𝓥 (𝓤 ⊔ 𝓥)
+          → is-prop X
+          → is-prop 𝕎
 W-is-prop fe X-is-prop (ssup x φ) (ssup x' φ') = γ
  where
   p : x ＝ x'

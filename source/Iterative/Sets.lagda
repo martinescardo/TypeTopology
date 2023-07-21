@@ -53,16 +53,15 @@ open import UF.Subsingletons-FunExt
 \end{code}
 
 An iterative set is a multiset whose subforests are all
-embeddings. The effect of that is the the membership relation on
+embeddings. The effect of that is that the membership relation on
 iterative sets is proposition-valued, rather than just type-valued, as
-is the case for multisets.
+is the case for general multisets.
 
 \begin{code}
 
 is-iterative-set : 𝕄 → 𝓤⁺ ̇
 is-iterative-set (ssup X φ) = is-embedding φ
                             × ((x : X) → is-iterative-set (φ x))
-
 \end{code}
 
 It is convenient to name the projections for the sake of clarity:

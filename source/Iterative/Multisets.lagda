@@ -76,8 +76,7 @@ W-to-𝕄 {X} {A} (ssup x f) = ssup (A x) (λ a → W-to-𝕄 (f a))
 TODO. Is the above remark relevant in any way?
 
 In the case of ordinals, "ssup" stands for "strong supremum", "strict
-supremum" or "supremum of successors". See the module
-Iterative.Ordinals.
+supremum" or "supremum of successors". See the module Iterative.Ordinals.
 
 The two destructors:
 
@@ -141,7 +140,7 @@ private
 
 In particular, if 𝕄-forest N is an embedding, then M ⁅ N holds in at
 most one way. This situation is investigated in the module
-Iterative.Multisets.
+Iterative.Sets.
 
 The induction principle for 𝕄, and particular cases:
 
@@ -217,7 +216,7 @@ to-from-𝕄-＝ = to-from-W-＝
 The above works in pure MLTT without any HoTT/UF assumptions.
 
 We now show that 𝕄 is locally small assuming univalence. For this
-purposes, we characterize identification of multisets as follows.
+purpose, we characterize identification of multisets as follows.
 
 TODO. Notice that there is some ammount of repetition compared with
 Iterative.W-Properties. Can we avoid it by proving something more
@@ -258,7 +257,8 @@ M-centrality ua (ssup X φ) (ssup Y γ , 𝕗 , u) =
     II : (φ , λ x → ≃ᴹ-refl (φ x)) ＝ (γ ∘ ⌜ 𝕗 ⌝ , u)
     II = ap ΠΣ-distr I
 
-    III : (ssup X φ , ≃-refl X , λ x → ≃ᴹ-refl (φ x)) ＝ (ssup X (γ ∘ ⌜ 𝕗 ⌝) , ≃-refl X , u)
+    III : (ssup X φ ,           ≃-refl X , λ x → ≃ᴹ-refl (φ x))
+       ＝ (ssup X (γ ∘ ⌜ 𝕗 ⌝) , ≃-refl X , u)
     III = ap π II
 
     IV =
@@ -289,7 +289,8 @@ idtoeqᴹ-is-equiv ua M = I
   I : (t : 𝕄) → is-equiv (idtoeqᴹ M t)
   I = NatΣ-equiv-gives-fiberwise-equiv (idtoeqᴹ M) f-is-equiv
 
-𝕄-=-≃ : Univalence → (M N : 𝕄) → (M ＝ N) ≃ (M ≃ᴹ N)
+𝕄-=-≃ : Univalence
+      → (M N : 𝕄) → (M ＝ N) ≃ (M ≃ᴹ N)
 𝕄-=-≃ ua M N = idtoeqᴹ M N , idtoeqᴹ-is-equiv ua M N
 
 \end{code}
@@ -298,7 +299,8 @@ And here is the desired conclusion:
 
 \begin{code}
 
-𝕄-is-locally-small : Univalence → is-locally-small 𝕄
+𝕄-is-locally-small : Univalence
+                   → is-locally-small 𝕄
 𝕄-is-locally-small ua M N = M ≃ᴹ N , ≃-sym (𝕄-=-≃ ua M N)
 
 \end{code}
@@ -311,7 +313,8 @@ copy, but also so does the (multi-valued) membership relation:
 _⁅⁻_ : 𝕄 → 𝕄 → 𝓤 ̇
 M ⁅⁻ N = Σ x ꞉ 𝕄-root N , 𝕄-forest N x ≃ᴹ M
 
-⁅⁻≃⁅ : Univalence → (M N : 𝕄) → (M ⁅ N) ≃ (M ⁅⁻ N)
+⁅⁻≃⁅ : Univalence
+     → (M N : 𝕄) → (M ⁅ N) ≃ (M ⁅⁻ N)
 ⁅⁻≃⁅ ua M N = Σ-cong (λ x → 𝕄-=-≃ ua (𝕄-forest N x) M)
 
 \end{code}
