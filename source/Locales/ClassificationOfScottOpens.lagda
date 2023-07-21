@@ -190,10 +190,8 @@ module _ {𝓓 : DCPO⊥ {𝓤 ⁺} {𝓤}} where
             ♣ = pe (holds-is-prop _) p (λ _ → Q-holds) (λ _ → p₂)
 
  section : (U : 𝒪ₛ) → to-predicate (to-𝕊-map U) ＝ U
- section U = to-subtype-＝ (holds-is-prop ∘ is-scott-open) (dfunext fe †)
-  where
-   † : (x : ⟪ 𝓓 ⟫) → to-predicate (to-𝕊-map U) .pr₁ x ＝ U .pr₁ x
-   † x = refl
+ section U =
+  to-subtype-＝ (holds-is-prop ∘ is-scott-open) (dfunext fe λ _ → refl)
 
  retract : (f : DCPO⊥[ 𝓓 , 𝕊 ]) → to-𝕊-map (to-predicate f) ＝ f
  retract f =
