@@ -1308,9 +1308,8 @@ Almost, for the moment.
 
 \begin{code}
 
-open import Ordinals.Injectivity
-open import UF.Retracts
 open import InjectiveTypes.Blackboard fe'
+open import Ordinals.Injectivity
 
 open ordinals-injectivity fe'
 
@@ -1332,4 +1331,26 @@ private
 \end{code}
 
 To get retractions we would like to extend the identity functions,
-rather than ⌊ e ⌋, but the universe levels get on the way.
+rather than ⌊ e ⌋, but the universe levels get on the way. Unless we
+assume propositional resizing.
+
+\begin{code}
+
+open import UF.Retracts
+
+Ord-is-retract-of-𝕄 : propositional-resizing 𝓤⁺ 𝓤
+                    → retract Ord of 𝕄
+Ord-is-retract-of-𝕄 pe = embedding-retract Ord 𝕄 Ord-to-𝕄
+                           Ord-to-𝕄-is-embedding
+                           (ainjective-resizing {𝓤} {𝓤} pe (Ordinal 𝓤)
+                             (Ordinal-is-ainjective (ua 𝓤)))
+
+Ord-is-retract-of-𝕍 : propositional-resizing 𝓤⁺ 𝓤
+                    → retract Ord of 𝕍
+Ord-is-retract-of-𝕍 pe = embedding-retract Ord 𝕍 Ord-to-𝕍
+                          Ord-to-𝕍-is-embedding
+                          (ainjective-resizing {𝓤} {𝓤} pe (Ordinal 𝓤)
+                            (Ordinal-is-ainjective (ua 𝓤)))
+\end{code}
+
+TODO. Can we get the same conclusion without propositional resizing?
