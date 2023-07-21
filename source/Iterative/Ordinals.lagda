@@ -903,8 +903,7 @@ Ord-to-𝕍↓-is-embedding α = ∘-is-embedding
                             Ord-to-𝕍-is-embedding
 \end{code}
 
-The following gives a recursive characterization of
-Ord-to-𝕍:
+The following gives a recursive characterization of Ord-to-𝕍:
 
 \begin{code}
 
@@ -941,14 +940,14 @@ Ord-to-𝕍-membership A α = ∈-behaviour
                            (Ord-to-𝕍↓-is-embedding α)
 \end{code}
 
-The map Ord-to-𝕍 is lower closed in the following sense:
+The map Ord-to-𝕍 (α ↓ -) is lower closed in the following sense:
 
 \begin{code}
 
-Ord-to-𝕍-is-lower : (α : Ord) (A : 𝕍) (x : ⟨ α ⟩)
-                  → A ∈ Ord-to-𝕍 (α ↓ x)
-                  → Σ y ꞉ ⟨ α ⟩ , (y ≺⟨ α ⟩ x) × (A ＝ Ord-to-𝕍 (α ↓ y))
-Ord-to-𝕍-is-lower α A x m = IV III
+Ord-to-𝕍↓-is-lower : (α : Ord) (A : 𝕍) (x : ⟨ α ⟩)
+                   → A ∈ Ord-to-𝕍 (α ↓ x)
+                   → Σ y ꞉ ⟨ α ⟩ , (y ≺⟨ α ⟩ x) × (A ＝ Ord-to-𝕍 (α ↓ y))
+Ord-to-𝕍↓-is-lower α A x m = IV III
  where
   I : A ∈ Ord-to-𝕍-body (α ↓ x)
   I = transport (A ∈_) (Ord-to-𝕍-behaviour (α ↓ x)) m
@@ -993,7 +992,7 @@ Ord-to-𝕍-is-transitive-iset α =
       I₂ = transport (C ∈_) (p ⁻¹) C-in-B
 
       I₃ : Σ y ꞉ ⟨ α ⟩ , (y ≺⟨ α ⟩ x) × (C ＝ Ord-to-𝕍 (α ↓ y))
-      I₃ = Ord-to-𝕍-is-lower α C x I₂
+      I₃ = Ord-to-𝕍↓-is-lower α C x I₂
 
       I₄ : type-of I₃ → C ∈ Ord-to-𝕍-body α
       I₄ (y , _ , q) = ⌜ g C ⌝⁻¹ (y , (q ⁻¹))
@@ -1055,7 +1054,7 @@ Ord-to-𝕆↓-is-lower-closed α β x l = II I
   B = underlying-iset β
 
   I : Σ y ꞉ ⟨ α ⟩ , (y ≺⟨ α ⟩ x) × (B ＝ Ord-to-𝕍 (α ↓ y))
-  I = Ord-to-𝕍-is-lower α B x l
+  I = Ord-to-𝕍↓-is-lower α B x l
 
   II : type-of I → Σ y ꞉ ⟨ α ⟩ , Ord-to-𝕆 (α ↓ y) ＝ β
   II (y , _ , p) = y , to-subtype-＝ being-iordinal-is-prop (p ⁻¹)
