@@ -63,8 +63,9 @@ module _ {𝓓 : DCPO⊥ {𝓤 ⁺} {𝓤}} where
     μ = monotone-if-continuous (𝓓 ⁻) (𝕊 ⁻) 𝒻
 
  ⋁ₛ_ : (Σ S ꞉ Fam 𝓤 ⟪ 𝕊 ⟫ , is-Directed (𝕊 ⁻) (S .pr₂)) → ⟪ 𝕊 ⟫
- ⋁ₛ (S , δ) =
-  the-sup (underlying-order (𝕊 ⁻)) (directed-completeness (𝕊 ⁻) (index S) (S [_]) δ )
+ ⋁ₛ (S , δ) = the-sup
+               (underlying-order (𝕊 ⁻))
+               (directed-completeness (𝕊 ⁻) (index S) (S [_]) δ)
 
  image-on-directed-set-is-directed : {I : 𝓤  ̇}(𝒻 : DCPO⊥[ 𝓓 , 𝕊 ])
                                    → (α : I → ⟪ 𝓓 ⟫)
@@ -84,34 +85,33 @@ module _ {𝓓 : DCPO⊥ {𝓤 ⁺} {𝓤}} where
 
  predicate-is-ibdj : (𝒻 : DCPO⊥[ 𝓓 , 𝕊 ])
                    → is-inaccessible-by-directed-joins (to-predicate₀ 𝒻) holds
- predicate-is-ibdj 𝒻@(f , ζ) (S , (δ₁ , δ₂)) p =
-  ∥∥-rec ∃-is-prop ‡ †
-   where
-    μ : is-monotone (𝓓 ⁻) (𝕊 ⁻) f
-    μ = monotone-if-continuous (𝓓 ⁻) (𝕊 ⁻) 𝒻
+ predicate-is-ibdj 𝒻@(f , ζ) (S , (δ₁ , δ₂)) p = ∥∥-rec ∃-is-prop ‡ †
+  where
+   μ : is-monotone (𝓓 ⁻) (𝕊 ⁻) f
+   μ = monotone-if-continuous (𝓓 ⁻) (𝕊 ⁻) 𝒻
 
-    δ′ : is-Directed (𝕊 ⁻) (⁅ f x ∣ x ε S ⁆ [_])
-    δ′ = image-on-directed-set-is-directed 𝒻 (S .pr₂) (δ₁ , δ₂)
+   δ′ : is-Directed (𝕊 ⁻) (⁅ f x ∣ x ε S ⁆ [_])
+   δ′ = image-on-directed-set-is-directed 𝒻 (S .pr₂) (δ₁ , δ₂)
 
-    d : has-sup (underlying-order (𝕊 ⁻)) (⁅ f x ∣ x ε S ⁆ [_])
-    d = directed-completeness (𝕊 ⁻) (index S) (⁅ f x ∣ x ε S ⁆ [_]) δ′
+   d : has-sup (underlying-order (𝕊 ⁻)) (⁅ f x ∣ x ε S ⁆ [_])
+   d = directed-completeness (𝕊 ⁻) (index S) (⁅ f x ∣ x ε S ⁆ [_]) δ′
 
-    ♣ : f (∐ (𝓓 ⁻) (δ₁ , δ₂)) ＝ the-sup (underlying-order (𝕊 ⁻)) d
-    ♣ = sups-are-unique
+   ♣ : f (∐ (𝓓 ⁻) (δ₁ , δ₂)) ＝ the-sup (underlying-order (𝕊 ⁻)) d
+   ♣ = sups-are-unique
+        (underlying-order (𝕊 ⁻))
+        (pr₁ (axioms-of-dcpo (𝕊 ⁻)))
+        (⁅ f x ∣ x ε S ⁆ [_])
+        (ζ (index S) (S [_]) (δ₁ , δ₂))
+        (sup-property
          (underlying-order (𝕊 ⁻))
-         (pr₁ (axioms-of-dcpo (𝕊 ⁻)))
-         (⁅ f x ∣ x ε S ⁆ [_])
-         (ζ (index S) (S [_]) (δ₁ , δ₂))
-         (sup-property
-          (underlying-order (𝕊 ⁻))
-          (directed-completeness (𝕊 ⁻) (index S) (⁅ f x ∣ x ε S ⁆ .pr₂) δ′))
+         (directed-completeness (𝕊 ⁻) (index S) (⁅ f x ∣ x ε S ⁆ .pr₂) δ′))
 
-    † : is-defined (⋁ₛ (⁅ f x ∣ x ε S ⁆ , δ′))
-    † = transport is-defined ♣ p
+   † : is-defined (⋁ₛ (⁅ f x ∣ x ε S ⁆ , δ′))
+   † = transport is-defined ♣ p
 
-    ‡ : Σ i ꞉ index S , is-defined (f (S [ i ]))
-      → ∃ i ꞉ index S , to-predicate₀ 𝒻 (S [ i ]) holds
-    ‡ (i , p) = ∣ i , p ∣
+   ‡ : Σ i ꞉ index S , is-defined (f (S [ i ]))
+     → ∃ i ꞉ index S , to-predicate₀ 𝒻 (S [ i ]) holds
+   ‡ (i , p) = ∣ i , p ∣
 
  to-predicate : DCPO⊥[ 𝓓 , 𝕊 ] → 𝒪ₛ
  to-predicate 𝒻@(f , _) = to-predicate₀ 𝒻
@@ -127,7 +127,9 @@ module _ {𝓓 : DCPO⊥ {𝓤 ⁺} {𝓤}} where
    c : is-continuous (𝓓 ⁻) (𝕊 ⁻) (to-𝕊-map₀ P)
    c I α δ = †
     where
-     u = sup-property (underlying-order (𝓓 ⁻)) ((directed-completeness (𝓓 ⁻) (index (I , α)) α δ))
+     u = sup-property
+          (underlying-order (𝓓 ⁻))
+          (directed-completeness (𝓓 ⁻) (index (I , α)) α δ)
 
      † : is-sup
           (underlying-order (𝕊 ⁻))
@@ -136,10 +138,8 @@ module _ {𝓓 : DCPO⊥ {𝓤 ⁺} {𝓤}} where
      † = †₀ , †₁
       where
        †₀ : (i : I)
-          → underlying-order (𝕊 ⁻) (to-𝕊-map₀ P (α i)) (to-𝕊-map₀ P (⋁ ((I , α) , δ)))
-       †₀ i p = to-subtype-＝
-                 ((λ _ → ×-is-prop (Π-is-prop fe (λ _ → 𝟙-is-prop)) (being-prop-is-prop fe)))
-                 (P (α i) holds ＝⟨ Ⅰ ⟩ 𝟙 ＝⟨ Ⅱ ⟩ P (⋁ ((I , α) , δ)) holds ∎)
+          → to-𝕊-map₀ P (α i) ⊑⟨ 𝕊 ⁻ ⟩ to-𝕊-map₀ P (⋁ ((I , α) , δ))
+       †₀ i p = to-subtype-＝ ♠ ♣
         where
          q : (α i ⊑⟨ 𝓓 ⁻ ⟩ₚ (⋁ ((I , α) , δ))) holds
          q = sup-is-upperbound (underlying-order (𝓓 ⁻)) u i
@@ -152,6 +152,12 @@ module _ {𝓓 : DCPO⊥ {𝓤 ⁺} {𝓤}} where
               (pr₁ (pr₂ (𝟙-＝-≃ (P (⋁ ((I , α) , δ)) holds) fe pe (holds-is-prop _))))
               (υ (α i) (⋁ ((I , α) , δ)) p q)
 
+         ♠ : (P : 𝓤  ̇) → is-prop ((P → 𝟙) × is-prop P)
+         ♠ _ = ×-is-prop (Π-is-prop fe (λ _ → 𝟙-is-prop)) (being-prop-is-prop fe)
+
+         ♣ : P (α i) holds ＝ P (⋁ ((I , α) , δ)) holds
+         ♣ = P (α i) holds ＝⟨ Ⅰ ⟩ 𝟙 ＝⟨ Ⅱ ⟩ P (⋁ ((I , α) , δ)) holds ∎
+
        †₁ : is-lowerbound-of-upperbounds
              (underlying-order (𝕊 ⁻))
              (to-𝕊-map₀ P (⋁ ((I , α) , δ)))
@@ -161,31 +167,42 @@ module _ {𝓓 : DCPO⊥ {𝓤 ⁺} {𝓤}} where
          where
           †₂ : Σ i ꞉ I , P (α i) holds
              → to-𝕊-map₀ P (⋁ ((I , α) , δ)) ＝ 𝒬
-          †₂ (i , r) =
-           to-subtype-＝
-            (λ _ → ×-is-prop (Π-is-prop fe (λ _ → 𝟙-is-prop)) (being-prop-is-prop fe))
-            (P (⋁ ((I , α) , δ)) holds ＝⟨ pe (holds-is-prop _) p (λ _ → Q-holds) (λ _ → pr₁ ♣) ⟩
-            Q                         ∎)
-              where
-               upper : (α i ⊑⟨ 𝓓 ⁻ ⟩ₚ (⋁ ((I , α) , δ))) holds
-               upper = sup-is-upperbound (underlying-order (𝓓 ⁻)) u i
+          †₂ (i , r) = to-subtype-＝ ♠ ♣
+           where
+            ♠ : (Q : 𝓤  ̇) (x y : Π (λ _ → 𝟙) × is-prop Q) → x ＝ y
+            ♠ _ = ×-is-prop
+                   (Π-is-prop fe (λ _ → 𝟙-is-prop))
+                   (being-prop-is-prop fe)
 
-               ρ : is-prop (P (α i) holds)
-               ρ = holds-is-prop (P (α i))
+            eq : P (α i) holds ＝ Q
+            eq = pr₁ (from-Σ-＝ (φ i r))
 
-               ♣ : is-singleton (P (⋁ ((I , α) , δ)) holds)
-               ♣ = pr₂ the-singletons-are-the-inhabited-propositions (holds-is-prop _ , ∣ υ (α i) (⋁ ((I , α) , δ)) r upper ∣)
+            upper : (α i ⊑⟨ 𝓓 ⁻ ⟩ₚ (⋁ ((I , α) , δ))) holds
+            upper = sup-is-upperbound (underlying-order (𝓓 ⁻)) u i
 
-               ♠ : P (⋁ ((I , α) , δ)) holds ≃ 𝟙 {𝓤}
-               ♠ = pr₁ singletons-are-equiv-to-𝟙 ♣
+            p₂ : P (⋁ ((I , α) , δ)) holds
+            p₂ = υ (α i) (⋁ ((I , α) , δ)) r upper
 
-               bar : P (α i) holds , ((λ _ → ⋆) , holds-is-prop (P (α i))) ＝ 𝒬
-               bar = φ i r
+            Q-holds : Q
+            Q-holds = transport id eq r
 
-               foo : 𝒬 .pr₁ ＝ P (α i) .pr₁
-               foo = pr₁ (from-Σ-＝ bar) ⁻¹
+            ♣ : P (⋁ ((I , α) , δ)) holds ＝ Q
+            ♣ = pe (holds-is-prop _) p (λ _ → Q-holds) (λ _ → p₂)
 
-               Q-holds : Q
-               Q-holds = transport id (foo ⁻¹) r
+ section : (U : 𝒪ₛ) → to-predicate (to-𝕊-map U) ＝ U
+ section U = to-subtype-＝ (holds-is-prop ∘ is-scott-open) (dfunext fe †)
+  where
+   † : (x : ⟪ 𝓓 ⟫) → to-predicate (to-𝕊-map U) .pr₁ x ＝ U .pr₁ x
+   † x = refl
+
+ retract : (f : DCPO⊥[ 𝓓 , 𝕊 ]) → to-𝕊-map (to-predicate f) ＝ f
+ retract f =
+  to-subtype-＝ (being-continuous-is-prop (𝓓 ⁻) (𝕊 ⁻)) (dfunext fe †)
+   where
+    † : (x : ⟪ 𝓓 ⟫) → to-𝕊-map₀ (to-predicate f .pr₁) x ＝ f .pr₁ x
+    † x = refl {x = f .pr₁ x}
+
+ bijection : 𝒪ₛ ≃ DCPO⊥[ 𝓓 , 𝕊 ]
+ bijection = to-𝕊-map , ((to-predicate , retract) , to-predicate , section)
 
 \end{code}
