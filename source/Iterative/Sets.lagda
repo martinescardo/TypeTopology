@@ -4,8 +4,11 @@ Iterative sets.
 
 We define the type of iterative sets as a subtype of that of multisets.
 
-See the module Iterative.index for bibliographic references regarding
-this file.
+  * H. R. Gylterud, "From multisets to sets in homotopy type theory".
+    The Journal of Symbolic Logic, vol. 83, no. 3, pp. 1132–1146,
+    2018. https://doi.org/10.1017/jsl.2017.84
+
+See the module Iterative.index for further bibliographic references.
 
 The previous module Iterative.Multisets doesn't make significant use
 of univalence, and so we assumed it only for specific
@@ -119,8 +122,8 @@ isets-are-iterative = pr₂
 
 \end{code}
 
-Because the notion of iterative set is property, we get that 𝕍 is a
-subtype of 𝕄.
+Because the notion of iterative set is property, we get that 𝕍 is
+indeed a subtype of 𝕄.
 
 \begin{code}
 
@@ -172,8 +175,7 @@ A ∈ B = underlying-mset A ⁅ underlying-mset B
 \end{code}
 
 As is the case for iterative multisets, there is a resized down,
-equivalent definition of membership, and we need the large and the
-small ones:
+equivalent definition of membership.
 
 \begin{code}
 
@@ -194,15 +196,8 @@ subtype of iterative sets.
 ∈-is-prop-valued : (A B : 𝕍) → is-prop (A ∈ B)
 ∈-is-prop-valued (M , _) (ssup X φ , φ-emb , _) = φ-emb M
 
-\end{code}
-
-The following fact is trivial, but it is good to have a name for it
-for the sake of clarity.
-
-\begin{code}
-
-𝕍-forest-is-∈ : (A : 𝕍) (x : 𝕍-root A) → 𝕍-forest A x ∈ A
-𝕍-forest-is-∈ _ x = x , refl
+𝕍-forest-∈ : (A : 𝕍) (x : 𝕍-root A) → 𝕍-forest A x ∈ A
+𝕍-forest-∈ A x = 𝕄-forest-⁅ (underlying-mset A) x
 
 \end{code}
 
@@ -225,16 +220,17 @@ time, to establish the extensionality axiom for iterative sets:
 \begin{code}
 
 ∈-is-extensional : (A B : 𝕍) → A ⊆ B → B ⊆ A → A ＝ B
-∈-is-extensional A@(ssup X φ , φ-emb , g) B@(ssup Y γ , γ-emb , h) u v = V
+∈-is-extensional A@(M@(ssup X φ) , φ-emb , g)
+                 B@(N@(ssup Y γ) , γ-emb , h) u v = V
  where
   have-uv : (A ⊆ B) × (B ⊆ A)
   have-uv = u , v
 
   I : (x : X) → Σ y ꞉ Y , γ y ＝ φ x
-  I x = u (φ x , g x) (x , refl)
+  I x = u (φ x , g x) (𝕄-forest-⁅ M x)
 
   II : (y : Y) → Σ x ꞉ X , φ x ＝ γ y
-  II y = v (γ y , h y) (y , refl)
+  II y = v (γ y , h y) (𝕄-forest-⁅ N y)
 
   f : X → Y
   f x = pr₁ (I x)
@@ -263,8 +259,7 @@ time, to establish the extensionality axiom for iterative sets:
   III : Idtofun p ＝ f
   III = Idtofun-eqtoid (ua 𝓤) 𝕗
 
-  IV : (x : X) → φ x ＝ γ (Idtofun p x)
-  IV x =
+  IV = λ x →
    φ x             ＝⟨ (pr₂ (I x))⁻¹ ⟩
    γ (f x)         ＝⟨ ap (λ - → γ (- x)) (III ⁻¹) ⟩
    γ (Idtofun p x) ∎
@@ -278,18 +273,18 @@ It follows that 𝕍 is 0-type, or set, in the sense of the HoTT
 book. But notice that we now have two notions of set in this
 discussion: the "material" (iterative set) one and the "structural"
 one (0-type or set). The reader should keep this distinction in mind
-when reading the comments and code below.
+for the comments and code below.
 
 \begin{code}
 
 𝕍-is-set : is-set 𝕍
 𝕍-is-set = extensionally-ordered-types-are-sets _∈_ fe'
-             ∈-is-prop-valued
-             ∈-is-extensional
+            ∈-is-prop-valued
+            ∈-is-extensional
 
 \end{code}
 
-Here is a second, more direct, proof.
+Here is a second, more direct, proof of this fact.
 
 The following says that ssup φ ＝ M is a proposition for every M : 𝕄
 if φ is an embedding.
@@ -342,7 +337,7 @@ sets is a 0-type.
 \end{code}
 
 By definition, an iterative multiset is an iterative set if its
-forests are all embeddings. The 𝕍-forests are also embeddings:
+𝕄-forests are all embeddings. The 𝕍-forests are also embeddings:
 
 \begin{code}
 
@@ -353,7 +348,8 @@ forests are all embeddings. The 𝕍-forests are also embeddings:
 \end{code}
 
 We construct elements of 𝕄 using the constructor ssup. We now
-introduce a corresponding constructor 𝕍-ssup to construct elements of 𝕍.
+introduce a corresponding constructor 𝕍-ssup to construct elements of
+the type 𝕍.
 
 \begin{code}
 
@@ -420,12 +416,23 @@ Here are two characterizations of the membership relation:
           (ϕ x)
           A
 
+\end{code}
+
+The above says that 𝕍-ssup X ϕ e is the union of the family ϕ of
+iterative sets.
+
+\begin{code}
+
 ∈-behaviour' : (A B : 𝕍) → A ∈ B ≃ (Σ x ꞉ 𝕍-root B , 𝕍-forest B x ＝ A)
 ∈-behaviour' A B =
  transport
   (λ - → A ∈ - ≃ (Σ x ꞉ 𝕍-root - , 𝕍-forest - x ＝ A))
   (𝕍-η B)
   (∈-behaviour A (𝕍-root B) (𝕍-forest B) (𝕍-forest-is-embedding B))
+
+private
+ ∈-remark : (A B : 𝕍) → A ∈ B ≃ fiber (𝕍-forest B) A
+ ∈-remark = ∈-behaviour'
 
 \end{code}
 
@@ -447,11 +454,11 @@ It would be nice if we could define 𝕍 inductively as follows:
   𝕍-ssup : (X : 𝓤 ̇ ) (φ : X → 𝕍) → is-embedding φ → 𝕍
 
 However, this is not a strictly positive definition, for the criterion
-of strict positivity used by Agda, and so it is not accepted.
+of strict positivity adopted by Agda, and so it is not accepted.
 
 Nevertheless, all iterative sets *are* generated by the "constructor"
 𝕍-ssup, in the following sense, so that we can view 𝕍 as really
-defined by the above data declaration.
+inductively defined by the above data declaration.
 
 \begin{code}
 
@@ -490,21 +497,21 @@ the above form of induction.
 ∈-induction : (P : 𝕍 → 𝓥 ̇ )
             → ((A : 𝕍) → ((B : 𝕍) → B ∈ A → P B) → P A)
             → (A : 𝕍) → P A
-∈-induction P g = 𝕍-induction P f
+∈-induction P IH = 𝕍-induction P f
  where
   f : (X : 𝓤 ̇) (ϕ : X → 𝕍) (e : is-embedding ϕ)
     → ((x : X) → P (ϕ x))
     → P (𝕍-ssup X ϕ e)
-  f X ϕ e u = g A s
+  f X ϕ e IH' = IH A s
    where
     A : 𝕍
     A = 𝕍-ssup X ϕ e
 
     s : (B : 𝕍) → B ∈ A → P B
-    s B@(_ , j) (x , refl) = II
+    s B@(.(underlying-mset (ϕ x)) , j) (x , refl) = II
      where
       I : P (ϕ x)
-      I = u x
+      I = IH' x
 
       II : P (underlying-mset (ϕ x) , j)
       II = transport P (to-subtype-＝ being-iset-is-prop refl) I

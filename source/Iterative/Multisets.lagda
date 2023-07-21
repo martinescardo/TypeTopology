@@ -142,6 +142,16 @@ In particular, if 𝕄-forest N is an embedding, then M ⁅ N holds in at
 most one way. This situation is investigated in the module
 Iterative.Sets.
 
+The following fact is trivial, but it is good to have a name for it
+for the sake of clarity.
+
+\begin{code}
+
+𝕄-forest-⁅ : (M : 𝕄) (x : 𝕄-root M) → 𝕄-forest M x ⁅ M
+𝕄-forest-⁅ _ x = x , refl
+
+\end{code}
+
 The induction principle for 𝕄, and particular cases:
 
 \begin{code}
