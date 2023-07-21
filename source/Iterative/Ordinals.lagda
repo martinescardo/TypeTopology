@@ -903,7 +903,7 @@ Ord-to-𝕍↓-is-embedding α = ∘-is-embedding
                             Ord-to-𝕍-is-embedding
 \end{code}
 
-The following gives the body of a recursive characterization of
+The following gives a recursive characterization of
 Ord-to-𝕍:
 
 \begin{code}
