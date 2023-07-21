@@ -9,15 +9,11 @@
 
    Tested with Agda 2.6.3
 
-   The main new results are about compact types, totally separated
-   types, compact ordinals and injective types, but there are many
-   other things (see the clickable index below).
-
    * Our main use of this development is as a personal blackboard or
-     notepad for our research. In particular, some modules have better
-     and better results or approaches, as time progresses, with the
-     significant steps kept, and with failed ideas and calculations
-     eventually erased.
+     notepad for our research and that of collaborators. In
+     particular, some modules have better and better results or
+     approaches, as time progresses, with the significant steps kept,
+     and with failed ideas and calculations eventually erased.
 
    * We offer this page as a preliminary announcement of results to be
      submitted for publication, of the kind we would get when we visit
