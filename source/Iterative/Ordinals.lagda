@@ -642,6 +642,7 @@ the HoTT-book ordinal.
 
 \begin{code}
 
+Ord : 𝓤⁺ ̇
 Ord = Ordinal 𝓤
 
 𝕆-to-Ord : 𝕆 → Ord
@@ -1300,3 +1301,35 @@ Ordinals-agreement-is-unique = pointed-props-are-singletons
                                 Ordinals-agreement
                                 (the-type-of-ordinals-is-a-set (ua (𝓤 ⁺)) fe)
 \end{code}
+
+TODO. Can we get retractions of Ord-to-𝕄 and Ord-to-𝕍?
+
+Almost, for the moment.
+
+\begin{code}
+
+open import Ordinals.Injectivity
+open import UF.Retracts
+open import InjectiveTypes.Blackboard fe'
+
+open ordinals-injectivity fe'
+
+private
+ e : Ordinal 𝓤 ↪ Ordinal 𝓤⁺
+ e = Ordinal-embedded-in-next-Ordinal
+
+ almost-a-retraction-𝕄 : Σ f ꞉ (𝕄 → Ordinal 𝓤⁺) , f ∘ Ord-to-𝕄 ∼ ⌊ e ⌋
+ almost-a-retraction-𝕄 = Ordinal-is-ainjective (ua 𝓤⁺)
+                          Ord-to-𝕄
+                          Ord-to-𝕄-is-embedding
+                          ⌊ e ⌋
+
+ almost-a-retraction-𝕍 : Σ f ꞉ (𝕍 → Ordinal 𝓤⁺) , f ∘ Ord-to-𝕍 ∼ ⌊ e ⌋
+ almost-a-retraction-𝕍 = Ordinal-is-ainjective (ua 𝓤⁺)
+                          Ord-to-𝕍
+                          Ord-to-𝕍-is-embedding
+                          ⌊ e ⌋
+\end{code}
+
+To get retractions we would like to extend the identity functions,
+rather than ⌊ e ⌋, but the universe levels get on the way.

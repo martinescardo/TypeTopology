@@ -213,7 +213,7 @@ The above gives an extension up to ordinal equivalence
 module Κ-extension (ν : E) (A : ⟨ Δ ν ⟩ → E) where
 
  ϕ : (x : ⟨ Δ ν ⟩) → [ 𝓚 ν A (ι ν x) ] ≃ₒ [ Κ (A x) ]
- ϕ = ↗-property (Κ ∘ A) (j ν)
+ ϕ = ↗-propertyₒ (Κ ∘ A) (j ν)
 
  φ : (x : ⟨ Δ ν ⟩) → ⟨ 𝓚 ν A (ι ν x) ⟩ → ⟨ Κ (A x) ⟩
  φ x = ≃ₒ-to-fun [ 𝓚 ν A (ι ν x) ] [ Κ (A x) ] (ϕ x)

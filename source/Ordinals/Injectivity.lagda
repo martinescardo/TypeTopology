@@ -20,6 +20,7 @@ open import Ordinals.WellOrderArithmetic
 open import UF.Base
 open import UF.Embeddings
 open import UF.Equiv
+open import UF.Univalence
 
 module ordinals-injectivity (fe : FunExt) where
 
@@ -36,12 +37,12 @@ module ordinals-injectivity (fe : FunExt) where
    a = λ i → ⟨ α i ⟩
    module Extension = extension fe a e e-is-embedding (λ {i} → underlying-order (α i))
 
- ↗-property : {I : 𝓤  ̇ } {J : 𝓥 ̇ }
-              (α : I → Ordinal 𝓤)
+ ↗-propertyₒ : {I : 𝓤  ̇ } {J : 𝓥 ̇ }
+              (α : I → Ordinal 𝓦)
               (𝓮@(e , e-is-embedding) : I ↪ J)
               (i : I)
             → (α ↗ 𝓮) (e i) ≃ₒ α i
- ↗-property {𝓤} {𝓥} {I} {J} α 𝓮@(e , e-is-embedding) i = γ
+ ↗-propertyₒ {𝓤} {𝓥} {I} {J} α 𝓮@(e , e-is-embedding) i = γ
   where
    ϕ : ⟨ (α ↗ 𝓮) (e i) ⟩ ≃ ⟨ α i ⟩
    ϕ = Π-extension-property (λ i → ⟨ α i ⟩) e e-is-embedding i
@@ -79,6 +80,19 @@ module ordinals-injectivity (fe : FunExt) where
    γ : (α ↗ 𝓮) (e i) ≃ₒ α i
    γ = g , g-is-order-preserving , g-is-equiv , g⁻¹-is-order-preserving
 
+ ↗-property : is-univalent (𝓤 ⊔ 𝓥)
+            → {I : 𝓤  ̇ } {J : 𝓥 ̇ }
+              (α : I → Ordinal (𝓤 ⊔ 𝓥))
+              (𝓮@(e , e-is-embedding) : I ↪ J)
+              (i : I)
+            → (α ↗ 𝓮) (e i) ＝ α i
+ ↗-property ua α 𝓮@(e , e-is-embedding) i =
+  eqtoidₒ ua (fe _ _) ((α ↗ 𝓮) (e i)) (α i) (↗-propertyₒ α 𝓮 i)
+
+ Ordinal-is-ainjective : is-univalent (𝓤 ⊔ 𝓥)
+                       → ainjective-type (Ordinal (𝓤 ⊔ 𝓥)) 𝓤 𝓥
+ Ordinal-is-ainjective ua e e-is-embedding α = (α ↗ (e , e-is-embedding)) ,
+                                               ↗-property ua α (e , e-is-embedding)
 
 module topped-ordinals-injectivity (fe : FunExt) where
 
@@ -97,12 +111,12 @@ module topped-ordinals-injectivity (fe : FunExt) where
    t = λ x → ⟨ τ x ⟩
    module Extension = extension fe t e e-is-embedding (λ {i} → underlying-order (τ i))
 
- ↗-property : {I : 𝓤  ̇ } {J : 𝓥 ̇ }
-              (α : I → Ordinalᵀ 𝓤)
-              (𝓮@(e , e-is-embedding) : I ↪ J)
-              (i : I)
-            → [ (α ↗ 𝓮) (e i) ] ≃ₒ [ α i ]
- ↗-property α = ordinals-injectivity.↗-property fe (λ i → [ α i ])
+ ↗-propertyₒ : {I : 𝓤  ̇ } {J : 𝓥 ̇ }
+               (α : I → Ordinalᵀ 𝓦)
+               (𝓮@(e , e-is-embedding) : I ↪ J)
+               (i : I)
+             → [ (α ↗ 𝓮) (e i) ] ≃ₒ [ α i ]
+ ↗-propertyₒ α = ordinals-injectivity.↗-propertyₒ fe (λ i → [ α i ])
 
 \end{code}
 
@@ -150,7 +164,7 @@ module ordinals-injectivity-order (ua : Univalence) where
    fi ϕ γ ((i , refl) , m) = ⦅b⦆ ⦅a⦆
     where
      g⁻¹ : ⟨ α i ⟩ → ⟨ (α ↗ 𝓮) (e i) ⟩
-     g⁻¹ = case (↗-property α 𝓮 i) of (λ (g , gop , geq , g⁻¹op) → inverse g geq)
+     g⁻¹ = case (↗-propertyₒ α 𝓮 i) of (λ (g , gop , geq , g⁻¹op) → inverse g geq)
 
      w : fiber e (e i)
      w = (i , refl)

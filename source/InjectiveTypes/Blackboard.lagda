@@ -460,7 +460,8 @@ There is more to do about this.
                          → (f : X → 𝓤 ⊔ 𝓥 ̇ ) → (f / j) ∘ j ∼ f
 Π-extension-is-extension ua j e f x = eqtoid ua _ _ (Π-extension-property f j e x)
 
-Π-extension-is-extension' : is-univalent (𝓤 ⊔ 𝓥) → funext 𝓤 ((𝓤 ⊔ 𝓥)⁺)
+Π-extension-is-extension' : is-univalent (𝓤 ⊔ 𝓥)
+                          → funext 𝓤 ((𝓤 ⊔ 𝓥)⁺)
                           → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (j : X → Y)
                           → is-embedding j
                           → (f : X → 𝓤 ⊔ 𝓥 ̇ ) → (f / j) ∘ j ＝ f
@@ -473,7 +474,8 @@ There is more to do about this.
                            → (λ f → (f / j) ∘ j) ＝ id
 Π-extension-is-extension'' {𝓤} {𝓥} ua fe j e = dfunext fe (Π-extension-is-extension' ua (lower-fun-ext 𝓤 fe) j e)
 
-Σ-extension-is-extension : is-univalent (𝓤 ⊔ 𝓥) → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (j : X → Y)
+Σ-extension-is-extension : is-univalent (𝓤 ⊔ 𝓥)
+                         → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (j : X → Y)
                          → is-embedding j
                          → (f : X → 𝓤 ⊔ 𝓥 ̇ ) → (f ∖ j) ∘ j ∼ f
 Σ-extension-is-extension ua j e f x = eqtoid ua _ _ (Σ-extension-property f j e x)
@@ -531,7 +533,8 @@ equiv-to-ainjective : (D' : 𝓦' ̇ ) (D : 𝓦 ̇ )
                     → ainjective-type D' 𝓤 𝓥
 equiv-to-ainjective D' D i e = retract-of-ainjective D' D i (≃-gives-◁ e)
 
-universes-are-ainjective-Π : is-univalent (𝓤 ⊔ 𝓥) → ainjective-type (𝓤 ⊔ 𝓥 ̇ ) 𝓤 𝓥
+universes-are-ainjective-Π : is-univalent (𝓤 ⊔ 𝓥)
+                           → ainjective-type (𝓤 ⊔ 𝓥 ̇ ) 𝓤 𝓥
 universes-are-ainjective-Π ua j e f = f / j , Π-extension-is-extension ua j e f
 
 universes-are-ainjective-Π' : is-univalent 𝓤 → ainjective-type (𝓤 ̇ ) 𝓤 𝓤
@@ -1281,7 +1284,8 @@ of 𝓤.
 \begin{code}
 
 ainjective-characterization : is-univalent 𝓤
-                            → propositional-resizing (𝓤 ⁺) 𝓤 → (D : 𝓤 ̇ )
+                            → propositional-resizing (𝓤 ⁺) 𝓤
+                            → (D : 𝓤 ̇ )
                             → ainjective-type D 𝓤 𝓤 ⇔ (Σ X ꞉ 𝓤 ̇ , retract D of (X → 𝓤 ̇ ))
 ainjective-characterization {𝓤} ua R D = a , b
  where
@@ -1635,10 +1639,13 @@ Here are some corollaries:
 
 \begin{code}
 
- injective-resizing : is-univalent 𝓤 → Ω-resizing 𝓤
+ injective-resizing : is-univalent 𝓤
+                    → Ω-resizing 𝓤
                     → (D : 𝓤 ̇ )
                     → injective-type D 𝓤 𝓤
-                    → (𝓥 𝓦 : Universe) → propositional-resizing (𝓥 ⊔ 𝓦) 𝓤 → injective-type D 𝓥 𝓦
+                    → (𝓥 𝓦 : Universe)
+                    → propositional-resizing (𝓥 ⊔ 𝓦) 𝓤
+                    → injective-type D 𝓥 𝓦
  injective-resizing {𝓤} ua ω₀ D i 𝓥 𝓦 R = c
   where
    a : ∥ ainjective-type D 𝓤 𝓤 ∥

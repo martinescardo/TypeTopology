@@ -177,6 +177,15 @@ simulations-are-lc α β f (i , p) = γ
   γ : left-cancellable f
   γ {x} {y} = φ x y (Well-foundedness α x) (Well-foundedness α y)
 
+simulations-are-embeddings : FunExt
+                           → (α : Ordinal 𝓤) (β : Ordinal 𝓥)
+                             (f : ⟨ α ⟩ → ⟨ β ⟩)
+                           → is-simulation α β f
+                           → is-embedding f
+simulations-are-embeddings fe α β f s = lc-maps-into-sets-are-embeddings f
+                                         (simulations-are-lc α β f s)
+                                         (underlying-type-is-set fe β)
+
 being-initial-segment-is-prop : Fun-Ext
                               → (α : Ordinal 𝓤) (β : Ordinal 𝓥)
                                 (f : ⟨ α ⟩ → ⟨ β ⟩)
